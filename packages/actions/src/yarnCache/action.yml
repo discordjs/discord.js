@@ -21,7 +21,7 @@ runs:
         echo "NPM_GLOBAL_CACHE_FOLDER=$(npm config get cache)" >> $GITHUB_OUTPUT
 
     - name: Restore yarn cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       id: yarn-download-cache
       with:
         path: ${{ steps.yarn-config.outputs.CACHE_FOLDER }}
@@ -31,7 +31,7 @@ runs:
 
     - name: Restore global npm cache folder
       id: npm-global-cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ${{ steps.yarn-config.outputs.NPM_GLOBAL_CACHE_FOLDER }}
         key: npm-global-cache-default-${{ runner.os }}-${{ steps.yarn-config.outputs.CURRENT_NODE_VERSION }}-${{ hashFiles(yarn.lock, .yarnrc.yml) }}

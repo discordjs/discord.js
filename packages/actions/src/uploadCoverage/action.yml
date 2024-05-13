@@ -1,88 +1,106 @@
 name: 'Upload Coverage'
 description: 'Uploads code coverage reports to codecov with separate flags for separate packages'
+inputs:
+  codecov_token:
+    description: 'Codecov token.'
+    required: true
 runs:
   using: 'composite'
   steps:
     - name: Upload Guide Coverage
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         files: ./apps/guide/coverage/cobertura-coverage.xml
         flags: guide
+        token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Website Coverage
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         files: ./apps/website/coverage/cobertura-coverage.xml
         flags: website
+        token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Brokers Coverage
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         files: ./packages/brokers/coverage/cobertura-coverage.xml
         flags: brokers
+        token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Builders Coverage
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         files: ./packages/builders/coverage/cobertura-coverage.xml
         flags: builders
+        token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Collection Coverage
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         files: ./packages/collection/coverage/cobertura-coverage.xml
         flags: collection
+        token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Discord.js Coverage
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         files: ./packages/discord.js/coverage/cobertura-coverage.xml
         flags: discord.js
+        token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Formatters Coverage
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         files: ./packages/formatters/coverage/cobertura-coverage.xml
         flags: formatters
+        token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Next Coverage
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         files: ./packages/next/coverage/cobertura-coverage.xml
         flags: next
+        token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Proxy Coverage
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         files: ./packages/proxy/coverage/cobertura-coverage.xml
         flags: proxy
+        token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Rest Coverage
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         files: ./packages/rest/coverage/cobertura-coverage.xml
         flags: rest
+        token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Voice Coverage
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         files: ./packages/voice/coverage/cobertura-coverage.xml
         flags: voice
+        token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload WS Coverage
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         files: ./packages/ws/coverage/cobertura-coverage.xml
         flags: ws
+        token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Util Coverage
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         files: ./packages/util/coverage/cobertura-coverage.xml
         flags: util
+        token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Utilities Coverage
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         files: ./packages/actions/coverage/cobertura-coverage.xml, ./packages/scripts/coverage/cobertura-coverage.xml
         flags: utilities
+        token: ${{ inputs.CODECOV_TOKEN }}

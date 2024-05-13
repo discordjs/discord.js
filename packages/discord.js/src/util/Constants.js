@@ -95,15 +95,15 @@ exports.GuildTextBasedChannelTypes = [
 
 /**
  * The channels that are text-based.
- * * DMChannel
- * * GuildTextBasedChannel
+ * * {@link DMChannel}
+ * * {@link GuildTextBasedChannel}
  * @typedef {DMChannel|GuildTextBasedChannel} TextBasedChannels
  */
 
 /**
  * Data that resolves to give a text-based channel. This can be:
- * * A text-based channel
- * * A snowflake
+ * * A {@link TextBasedChannel}
+ * * A {@link Snowflake}
  * @typedef {TextBasedChannels|Snowflake} TextBasedChannelsResolvable
  */
 
