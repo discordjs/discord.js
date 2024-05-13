@@ -2,6 +2,96 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.15.2](https://github.com/discordjs/discord.js/compare/14.15.1...14.15.2) - (2024-05-05)
+
+## Bug Fixes
+
+- **PollAnswer:** FetchVoters route changed to MessageManager (#10251) ([30d79e8](https://github.com/discordjs/discord.js/commit/30d79e85fb8502aee5c63fe7effd9029e347d266))
+
+# [14.15.1](https://github.com/discordjs/discord.js/compare/14.15.0...14.15.1) - (2024-05-04)
+
+## Bug Fixes
+
+- **MessageManager:** Poll methods don't need a channel id (#10249) ([0474a43](https://github.com/discordjs/discord.js/commit/0474a4375146b57b35074dadbaa83274416f899e))
+
+# [14.15.0](https://github.com/discordjs/discord.js/compare/14.14.1...14.15.0) - (2024-05-04)
+
+## Bug Fixes
+
+- **Message:** Not crosspostable if has a poll (#10246) ([a6b9f1b](https://github.com/discordjs/discord.js/commit/a6b9f1b37e60a9cd6689cec9d9d062a01d179165))
+- **actions:** Always emit message create for own messages (#10211) ([798f28c](https://github.com/discordjs/discord.js/commit/798f28cb9b25f9f1760be1300465869772f43978))
+- **Embed:** Address `equals` method issue (#10152) ([ddc927f](https://github.com/discordjs/discord.js/commit/ddc927fabdc4d79a00a89652fb7d6310a40e6397))
+- **types:** Export `ReadonlyCollection` (#10184) ([6cc5fa2](https://github.com/discordjs/discord.js/commit/6cc5fa28e6dc540a48c9e6f734ffb3832b78b3df))
+- Anchor link for events ([0efd1be](https://github.com/discordjs/discord.js/commit/0efd1bea46fa2fc8bcd3dcfd0ac5cd608a0a7df0))
+- **resolveColor:** Address case for numbers (#10115) ([3755e66](https://github.com/discordjs/discord.js/commit/3755e66d411efd6ed210d5070a0257c742c336d6))
+- Invert deletable message types list (#10093) ([42bc5d2](https://github.com/discordjs/discord.js/commit/42bc5d2c744d59a63ba2cccff2099092556da49e))
+- **BaseClient:** Fall back to `userAgentAppendix` (#10113) ([b16647e](https://github.com/discordjs/discord.js/commit/b16647e6cc6c1d0ee13ac5ce3bf31fd743355eb3))
+- **InteractionResponses:** Check if ephemeral message flag is used (#10021) ([62e31cb](https://github.com/discordjs/discord.js/commit/62e31cb9ee4b21b15fcce45b2cdfab970bb89824))
+- Replace internal calls to Emoji#url (#10025) ([941642a](https://github.com/discordjs/discord.js/commit/941642ad2ff31017cfe0419fda55f1f2a1f12286))
+- Export "ESM" types when discord.js is imported in ESM land (#10009) ([e412a22](https://github.com/discordjs/discord.js/commit/e412a22ceb92f142fbeddb6b9330e046bec92c69))
+- **website:** Discord-api-types links, URL links and some minor doc issues (#9990) ([57c414b](https://github.com/discordjs/discord.js/commit/57c414be21157a83a5dfe0f720b0f8d495e28538))
+- **website:** Cross package deprecated links (#9981) ([802ec63](https://github.com/discordjs/discord.js/commit/802ec63a4872430577431a2b8fbff87d504f81e4))
+- Minify mainlib docs json (#9963) ([4b88306](https://github.com/discordjs/discord.js/commit/4b88306dcb2b16b840ec61e9e33047af3a31c45d))
+- **website:** Misc improvements (#9940) ([b79351b](https://github.com/discordjs/discord.js/commit/b79351ba99d71b1c0e9263539634cd2532ee7b60))
+
+## Documentation
+
+- Remove unused `Locale` typedef (#10191) ([f1f2683](https://github.com/discordjs/discord.js/commit/f1f2683dc7179a84f9efe0217381fe0a9f61283e))
+- **ActionRow:** Fix deprecated message (#10130) ([f67da74](https://github.com/discordjs/discord.js/commit/f67da74a5aca929aa71d5b1ff040cef17eda7c62))
+- **ApplicationCommandPermissionsManager:** Remove incorrect comment (#10123) ([e9d6547](https://github.com/discordjs/discord.js/commit/e9d654772d1edb55e3aed69e7778e84c204b38e7))
+- Split docs.api.json into multiple json files ([597340f](https://github.com/discordjs/discord.js/commit/597340f288437c35da8c703d9b621274de60d880))
+- Convert comment into private remark (#10097) ([bfc7bb5](https://github.com/discordjs/discord.js/commit/bfc7bb55641c60d4d67e57c27c9d1e63b6f30c9b))
+- **BaseInteraction:** Correct return type of `member` (#10096) ([f48787e](https://github.com/discordjs/discord.js/commit/f48787eef183ff3ae24cf353c191f3c672c8de73))
+- **ThreadMember:** Fix docblock async return type (#10058) ([4824ac1](https://github.com/discordjs/discord.js/commit/4824ac154d89e5168754d46c5a55f3493c5ae14f))
+- **CategoryCreateChannelOptions:** Update reference (#10031) ([8ace6fa](https://github.com/discordjs/discord.js/commit/8ace6face82315d7e6453f49ca121663e36bcb1e))
+- **resolvePartialEmoji:** Add `@internal` to all overloads (#10033) ([e245a39](https://github.com/discordjs/discord.js/commit/e245a390e7b8c665e5dcd1dbfeb0265af91db4e7))
+- **PermissionOverwriteManager:** `PermissionsFlagsBit` typo (#10004) ([b992019](https://github.com/discordjs/discord.js/commit/b992019a78d4e35024fe9bb5536ec352672a2de9))
+- Fix links in @deprecated tags (#9976) ([9868772](https://github.com/discordjs/discord.js/commit/9868772b6418d521650c3690dd5f5172e2a36d00))
+
+## Features
+
+- **MessageManager:** Poll methods (#10239) ([6cf094c](https://github.com/discordjs/discord.js/commit/6cf094c28214c24fd70045e848c48bfb33eaf47a))
+- Consumable entitlements (#10235) ([9978870](https://github.com/discordjs/discord.js/commit/997887069a00b732e62ba7bdceed714e3ede1079))
+- Polls (#10185) ([a1aeaeb](https://github.com/discordjs/discord.js/commit/a1aeaeb9d804b126dd525b6090c6f2ff9591cb9c))
+- **ClientUser:** Add support for setting bot banner (#10176) ([de14c92](https://github.com/discordjs/discord.js/commit/de14c92c1158d3e5d7d87d29d2fe9d99eb407df5))
+- **GuildBanManager:** Add `bulkCreate()` method (#10182) ([b6bdd57](https://github.com/discordjs/discord.js/commit/b6bdd578b9c26158ce5552993e649e92c52f1024))
+- Local and preview detection ([79fbda3](https://github.com/discordjs/discord.js/commit/79fbda3aac6d4f0f8bfb193e797d09cbe331d315))
+- **MessageCreateOptions:** Add `enforceNonce` (#10129) ([992aa67](https://github.com/discordjs/discord.js/commit/992aa67841720bedb41829076580f22bbbdfbab6))
+- Add support for `using` keyword on discord.js `Client` and `WebSocketManager` (#10063) ([543d617](https://github.com/discordjs/discord.js/commit/543d61737e0709b9d88029d01156d48cfcaf3bcc))
+- **Webhook:** Allow setting `appliedTags` on `send()` (#10027) ([33674be](https://github.com/discordjs/discord.js/commit/33674be85ef705e35307a66ffdfa232059386ca6))
+- Premium application subscriptions (#9907) ([c4fcee3](https://github.com/discordjs/discord.js/commit/c4fcee3ef6021c440f162a5764d5d9465f06dc9b))
+- **website:** Show union members of type aliases (#10001) ([a44ada6](https://github.com/discordjs/discord.js/commit/a44ada661f14504b56102e081b1c7108f4d9b06e))
+
+## Performance
+
+- **Presence:** Prefer boolean client status comparison before activity checks (#10213) ([4ad2858](https://github.com/discordjs/discord.js/commit/4ad285804bfd72b157139dde61c3fd8ac2544322))
+
+## Refactor
+
+- **ThreadChannel:** Use single thread member endpoint (#10136) ([f500ad6](https://github.com/discordjs/discord.js/commit/f500ad6e2ee7e3cd75371bce37fc3908c19d6466))
+- Docs (#10126) ([18cce83](https://github.com/discordjs/discord.js/commit/18cce83d80598c430218775c53441b6b2ecdc776))
+- Remove usage of mixin on error classes (#10128) ([f48cb2a](https://github.com/discordjs/discord.js/commit/f48cb2a357b754ac1748d67dd71be93f9795e038))
+- **resolveColor:** Prioritise number type check (#10116) ([d4472f8](https://github.com/discordjs/discord.js/commit/d4472f85a57a13a9ddd90b877cca977d18be5dee))
+- **Messages:** Improve `ColorConvert` error (#10108) ([fc1f8ae](https://github.com/discordjs/discord.js/commit/fc1f8ae3748354cb2fc847bbc3e631d1adb7b2e6))
+- **formatters:** Add support for object and name param in `formatEmoji()` (#10076) ([7b8e0de](https://github.com/discordjs/discord.js/commit/7b8e0debebb944184b5817edd76cb0ac7e870993))
+- Document relevant types as `@internal` (#9974) ([2b8ac35](https://github.com/discordjs/discord.js/commit/2b8ac35e56f1684f696bda9bcd5f772eefb39fdc))
+- **ThreadMemberManager:** #remove accepts UserResolvable (#10000) ([179af38](https://github.com/discordjs/discord.js/commit/179af387d06fd38c40d7a51b73bb73b41b298c2a))
+
+## Typings
+
+- Add `Poll` to `Message` (#10245) ([cb961f5](https://github.com/discordjs/discord.js/commit/cb961f5be3369cc2fc7c65e84e3cea534c3fa683))
+- Generic for Webhook type (#10188) ([980a2b7](https://github.com/discordjs/discord.js/commit/980a2b71c7b2b27bcea58b6e9d98f16d5b509006))
+- Fix duplicate props in merged interfaces (#10160) ([a1010c6](https://github.com/discordjs/discord.js/commit/a1010c61f5978093d1a9ff087679a2d7ddff5b03))
+- Update accessibility modifiers on constructors (#10147) ([efa3cac](https://github.com/discordjs/discord.js/commit/efa3cac6f223d8781b1ebab857f1da6a25c3e6b4))
+- **Builder.from:** Fix wrong types (#10071) ([bfbd62e](https://github.com/discordjs/discord.js/commit/bfbd62e3e00ab47013f6f4a7a63c29074452de54))
+- Use readonly array / collection types for user input (#10045) ([bcd4c2c](https://github.com/discordjs/discord.js/commit/bcd4c2cb23a1121b06e00e0a39c364c7b1de6e8a))
+- **InteractionReplyOptions:** Allow setting `MessageFlags.SuppressNotifications` (#9199) ([c89c343](https://github.com/discordjs/discord.js/commit/c89c343b0a6f74fc760ae6a2dab42cc07fef6b39))
+- Replace Mixins with interface merging (#10094) ([54106db](https://github.com/discordjs/discord.js/commit/54106dbd8175881840654a1936988e05b5f60c1e))
+- **DirectoryChannel:** Ensure directory channels cannot contain user mentions when stringified (#10043) ([db56324](https://github.com/discordjs/discord.js/commit/db56324624b4eca706b487f425df990a2e44a369))
+- Change Awaitable<void> to void (#10017) ([1acc9ab](https://github.com/discordjs/discord.js/commit/1acc9abae2c3c6aafac464bd7a85be994b55737f))
+- Omit unnecessary methods from <ContextMenuCommandInteraction>.options (#10003) ([17a6f5d](https://github.com/discordjs/discord.js/commit/17a6f5d3c971bf8d47dfed37c96e064ae74535e3))
+- **InteractionWebhook:** Add `client` (#9997) ([30f6a5f](https://github.com/discordjs/discord.js/commit/30f6a5fc5666e2131270a5b358fca2a6948f0d57))
+
 # [14.14.1](https://github.com/discordjs/discord.js/compare/14.14.0...14.14.1) - (2023-11-12)
 
 ## Bug Fixes

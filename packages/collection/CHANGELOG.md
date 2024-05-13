@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/collection@2.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@2.0.0...@discordjs/collection@2.1.0) - (2024-05-04)
+
+## Bug Fixes
+
+- **ReadonlyCollection:** Omit `clear` method (#10148) ([c8bbdb7](https://github.com/discordjs/discord.js/commit/c8bbdb70f218f381b46b4a22230bc56dbbdf04f5))
+- Minify mainlib docs json (#9963) ([4b88306](https://github.com/discordjs/discord.js/commit/4b88306dcb2b16b840ec61e9e33047af3a31c45d))
+
+## Documentation
+
+- Split docs.api.json into multiple json files ([597340f](https://github.com/discordjs/discord.js/commit/597340f288437c35da8c703d9b621274de60d880))
+
+## Features
+
+- Local and preview detection ([79fbda3](https://github.com/discordjs/discord.js/commit/79fbda3aac6d4f0f8bfb193e797d09cbe331d315))
+
+## Refactor
+
+- Docs (#10126) ([18cce83](https://github.com/discordjs/discord.js/commit/18cce83d80598c430218775c53441b6b2ecdc776))
+
 # [@discordjs/collection@2.0.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.5.3...@discordjs/collection@2.0.0) - (2023-11-12)
 
 ## Documentation

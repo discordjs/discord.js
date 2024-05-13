@@ -1,4 +1,4 @@
-import { setTimeout, clearTimeout } from 'node:timers';
+import { clearTimeout, setTimeout } from 'node:timers';
 import type { REST } from '@discordjs/rest';
 import { calculateShardId } from '@discordjs/util';
 import { WebSocketShardEvents } from '@discordjs/ws';
@@ -49,6 +49,7 @@ import {
 	type GatewayMessageCreateDispatchData,
 	type GatewayMessageDeleteBulkDispatchData,
 	type GatewayMessageDeleteDispatchData,
+	type GatewayMessagePollVoteDispatchData,
 	type GatewayMessageReactionAddDispatchData,
 	type GatewayMessageReactionRemoveAllDispatchData,
 	type GatewayMessageReactionRemoveDispatchData,
@@ -143,6 +144,8 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.MessageCreate]: [WithIntrinsicProps<GatewayMessageCreateDispatchData>];
 	[GatewayDispatchEvents.MessageDelete]: [WithIntrinsicProps<GatewayMessageDeleteDispatchData>];
 	[GatewayDispatchEvents.MessageDeleteBulk]: [WithIntrinsicProps<GatewayMessageDeleteBulkDispatchData>];
+	[GatewayDispatchEvents.MessagePollVoteAdd]: [WithIntrinsicProps<GatewayMessagePollVoteDispatchData>];
+	[GatewayDispatchEvents.MessagePollVoteRemove]: [WithIntrinsicProps<GatewayMessagePollVoteDispatchData>];
 	[GatewayDispatchEvents.MessageReactionAdd]: [WithIntrinsicProps<GatewayMessageReactionAddDispatchData>];
 	[GatewayDispatchEvents.MessageReactionRemove]: [WithIntrinsicProps<GatewayMessageReactionRemoveDispatchData>];
 	[GatewayDispatchEvents.MessageReactionRemoveAll]: [WithIntrinsicProps<GatewayMessageReactionRemoveAllDispatchData>];
@@ -198,9 +201,8 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 
 		this.gateway.on(WebSocketShardEvents.Dispatch, ({ data: dispatch, shardId }) => {
 			this.emit(
-				// TODO: This comment will have to be moved down once the new Poll events are added to the `ManagerShardEventsMap`
-				// @ts-expect-error event props can't be resolved properly, but they are correct
 				dispatch.t,
+				// @ts-expect-error event props can't be resolved properly, but they are correct
 				this.wrapIntrinsicProps(dispatch.d, shardId),
 			);
 		});
