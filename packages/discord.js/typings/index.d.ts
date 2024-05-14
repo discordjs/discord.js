@@ -2464,6 +2464,8 @@ export class NewsChannel extends BaseGuildTextChannel {
   public addFollower(channel: TextChannelResolvable, reason?: string): Promise<NewsChannel>;
 }
 
+export type NewsChannelResolvable = NewsChannel | Snowflake;
+
 export class OAuth2Guild extends BaseGuild {
   private constructor(client: Client<true>, data: RawOAuth2GuildData);
   public owner: boolean;
@@ -4219,7 +4221,7 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
   public guild: Guild;
 
   public addFollower(
-    channel: NewsChannel | Snowflake,
+    channel: NewsChannelResolvable,
     targetChannel: TextChannelResolvable,
     reason?: string,
   ): Promise<Snowflake>;
