@@ -387,10 +387,11 @@ export class ChannelsAPI {
 	public async followAnnouncements(
 		channelId: Snowflake,
 		webhookChannelId: Snowflake,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
 		return this.rest.post(Routes.channelFollowers(channelId), {
 			body: { webhook_channel_id: webhookChannelId },
+			reason,
 			signal,
 		}) as Promise<RESTPostAPIChannelFollowersResult>;
 	}
