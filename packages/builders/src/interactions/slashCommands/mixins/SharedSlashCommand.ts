@@ -28,6 +28,17 @@ export class SharedSlashCommand {
 	public readonly options: ToAPIApplicationCommandOptions[] = [];
 
 	/**
+	 * @deprecated Use {@link SharedSlashCommand.setDefaultMemberPermissions} or {@link SharedSlashCommand.setDMPermission} instead.
+	 */
+	public readonly default_permission: boolean | undefined = undefined;
+
+	public readonly default_member_permissions: Permissions | null | undefined = undefined;
+
+	public readonly dm_permission: boolean | undefined = undefined;
+
+	public readonly nsfw: boolean | undefined = undefined;
+
+	/**
 	 * Sets whether the command is enabled by default when the application is added to a guild.
 	 *
 	 * @remarks
