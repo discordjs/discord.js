@@ -1,6 +1,7 @@
 import type { Readable } from 'node:stream';
 import type { ReadableStream } from 'node:stream/web';
 import type { Collection } from '@discordjs/collection';
+import type { Awaitable } from '@discordjs/util';
 import type { Agent, Dispatcher, RequestInit, BodyInit, Response } from 'undici';
 import type { IHandler } from '../interfaces/Handler.js';
 
@@ -13,9 +14,7 @@ export interface RestEvents {
 	restDebug: [info: string];
 }
 
-export type RestEventsMap = {
-	[K in keyof RestEvents]: RestEvents[K];
-};
+export interface RestEventsMap extends RestEvents {}
 
 /**
  * Options to be passed when creating the REST instance
@@ -91,7 +90,7 @@ export interface RESTOptions {
 	 *
 	 * @defaultValue `50`
 	 */
-	offset: number;
+	offset: GetRateLimitOffsetFunction | number;
 	/**
 	 * Determines how rate limiting and pre-emptive throttling should be handled.
 	 * When an array of strings, each element is treated as a prefix for the request route
@@ -156,11 +155,29 @@ export interface RateLimitData {
 	 */
 	method: string;
 	/**
+	 * The time, in milliseconds, that will need to pass before this specific request can be retried
+	 */
+	retryAfter: number;
+	/**
 	 * The route being hit in this request
 	 */
 	route: string;
 	/**
-	 * The time, in milliseconds, until the request-lock is reset
+	 * The scope of the rate limit that was hit.
+	 *
+	 * This can be `user` for rate limits that are per client, `global` for rate limits that affect all clients or `shared` for rate limits that
+	 * are shared per resource.
+	 */
+	scope: 'global' | 'shared' | 'user';
+	/**
+	 * The time, in milliseconds, that will need to pass before the sublimit lock for the route resets, and requests that fall under a sublimit
+	 * can be retried
+	 *
+	 * This is only present on certain sublimits, and `0` otherwise
+	 */
+	sublimitTimeout: number;
+	/**
+	 * The time, in milliseconds, until the route's request-lock is reset
 	 */
 	timeToReset: number;
 	/**
@@ -172,7 +189,12 @@ export interface RateLimitData {
 /**
  * A function that determines whether the rate limit hit should throw an Error
  */
-export type RateLimitQueueFilter = (rateLimitData: RateLimitData) => Promise<boolean> | boolean;
+export type RateLimitQueueFilter = (rateLimitData: RateLimitData) => Awaitable<boolean>;
+
+/**
+ * A function that determines the rate limit offset for a given request.
+ */
+export type GetRateLimitOffsetFunction = (route: string) => number;
 
 export interface APIRequest {
 	/**

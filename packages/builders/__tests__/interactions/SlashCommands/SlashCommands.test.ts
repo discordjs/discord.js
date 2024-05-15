@@ -144,23 +144,22 @@ describe('Slash Commands', () => {
 							integer
 								.setName('iscool')
 								.setDescription('Are we cool or what?')
-								.addChoices({ name: 'Very cool', value: 1_000 }),
+								.addChoices({ name: 'Very cool', value: 1_000 })
+								.addChoices([{ name: 'Even cooler', value: 2_000 }]),
 						)
 						.addNumberOption((number) =>
 							number
 								.setName('iscool')
 								.setDescription('Are we cool or what?')
-								.addChoices({ name: 'Very cool', value: 1.5 }),
+								.addChoices({ name: 'Very cool', value: 1.5 })
+								.addChoices([{ name: 'Even cooler', value: 2.5 }]),
 						)
 						.addStringOption((string) =>
 							string
 								.setName('iscool')
 								.setDescription('Are we cool or what?')
-								.addChoices(
-									{ name: 'Fancy Pants', value: 'fp_1' },
-									{ name: 'Fancy Shoes', value: 'fs_1' },
-									{ name: 'The Whole shebang', value: 'all' },
-								),
+								.addChoices({ name: 'Fancy Pants', value: 'fp_1' }, { name: 'Fancy Shoes', value: 'fs_1' })
+								.addChoices([{ name: 'The Whole shebang', value: 'all' }]),
 						)
 						.addIntegerOption((integer) =>
 							integer.setName('iscool').setDescription('Are we cool or what?').setAutocomplete(true),
@@ -229,7 +228,9 @@ describe('Slash Commands', () => {
 
 			test('GIVEN a builder with valid channel options and channel_types THEN does not throw an error', () => {
 				expect(() =>
-					getBuilder().addChannelOption(getChannelOption().addChannelTypes(ChannelType.GuildText)),
+					getBuilder().addChannelOption(
+						getChannelOption().addChannelTypes(ChannelType.GuildText).addChannelTypes([ChannelType.GuildVoice]),
+					),
 				).not.toThrowError();
 
 				expect(() => {
@@ -355,6 +356,10 @@ describe('Slash Commands', () => {
 				expect(() =>
 					getBuilder().addStringOption(getStringOption().setChoices({ name: 'owo', value: 'uwu' })),
 				).not.toThrowError();
+			});
+
+			test('GIVEN valid builder with NSFW, THEN does not throw error', () => {
+				expect(() => getBuilder().setName('foo').setDescription('foo').setNSFW(true)).not.toThrowError();
 			});
 		});
 
@@ -517,6 +522,14 @@ describe('Slash Commands', () => {
 				expect(() => getBuilder().setDefaultMemberPermissions('1.1')).toThrowError();
 
 				expect(() => getBuilder().setDefaultMemberPermissions(1.1)).toThrowError();
+			});
+
+			test('GIVEN valid permission with options THEN does not throw error', () => {
+				expect(() =>
+					getBuilder().addBooleanOption(getBooleanOption()).setDefaultMemberPermissions('1'),
+				).not.toThrowError();
+
+				expect(() => getBuilder().addChannelOption(getChannelOption()).setDMPermission(false)).not.toThrowError();
 			});
 		});
 	});

@@ -123,7 +123,7 @@ class ApplicationCommand extends Base {
        * The options of this command
        * @type {ApplicationCommandOption[]}
        */
-      this.options = data.options.map(o => this.constructor.transformOption(o, true));
+      this.options = data.options.map(option => this.constructor.transformOption(option, true));
     } else {
       this.options ??= [];
     }
@@ -144,7 +144,7 @@ class ApplicationCommand extends Base {
       /**
        * Whether the command can be used in DMs
        * <info>This property is always `null` on guild commands</info>
-       * @type {boolean|null}
+       * @type {?boolean}
        */
       this.dmPermission = data.dm_permission;
     } else {
@@ -577,7 +577,7 @@ class ApplicationCommand extends Base {
         [nameLocalizationsKey]: choice.nameLocalizations ?? choice.name_localizations,
         value: choice.value,
       })),
-      options: option.options?.map(o => this.transformOption(o, received)),
+      options: option.options?.map(opt => this.transformOption(opt, received)),
       [channelTypesKey]: option.channelTypes ?? option.channel_types,
       [minValueKey]: option.minValue ?? option.min_value,
       [maxValueKey]: option.maxValue ?? option.max_value,
@@ -590,16 +590,6 @@ class ApplicationCommand extends Base {
 module.exports = ApplicationCommand;
 
 /* eslint-disable max-len */
-/**
- * @external APIApplicationCommand
- * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-structure}
- */
-
-/**
- * @external APIApplicationCommandOption
- * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure}
- */
-
 /**
  * @external ApplicationCommandOptionAllowedChannelTypes
  * @see {@link https://discord.js.org/docs/packages/builders/stable/ApplicationCommandOptionAllowedChannelTypes:TypeAlias}

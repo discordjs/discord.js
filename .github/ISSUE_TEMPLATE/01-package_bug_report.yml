@@ -123,6 +123,8 @@ body:
         - GuildScheduledEvents
         - AutoModerationConfiguration
         - AutoModerationExecution
+        - GuildMessagePolls
+        - DirectMessagePolls
       multiple: true
     validations:
       required: true

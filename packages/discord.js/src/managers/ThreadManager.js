@@ -64,20 +64,6 @@ class ThreadManager extends CachedManager {
    */
 
   /**
-   * Options for creating a thread. <warn>Only one of `startMessage` or `type` can be defined.</warn>
-   * @typedef {StartThreadOptions} ThreadCreateOptions
-   * @property {MessageResolvable} [startMessage] The message to start a thread from. <warn>If this is defined then type
-   * of thread gets automatically defined and cannot be changed. The provided `type` field will be ignored</warn>
-   * @property {ChannelType.AnnouncementThread|ChannelType.PublicThread|ChannelType.PrivateThread} [type]
-   * The type of thread to create.
-   * Defaults to {@link ChannelType.PublicThread} if created in a {@link TextChannel}
-   * <warn>When creating threads in a {@link NewsChannel} this is ignored and is always
-   * {@link ChannelType.AnnouncementThread}</warn>
-   * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to the thread
-   * <info>Can only be set when type will be {@link ChannelType.PrivateThread}</info>
-   */
-
-  /**
    * Options for fetching multiple threads.
    * @typedef {Object} FetchThreadsOptions
    * @property {FetchArchivedThreadOptions} [archived] Options used to fetch archived threads

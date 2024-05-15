@@ -1,6 +1,7 @@
 'use strict';
 
 const { deprecate } = require('node:util');
+const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { InteractionType, ApplicationCommandType, ComponentType } = require('discord-api-types/v10');
 const Base = require('./Base');
@@ -62,7 +63,7 @@ class BaseInteraction extends Base {
 
     /**
      * If this interaction was sent in a guild, the member which sent it
-     * @type {?(GuildMember|APIGuildMember)}
+     * @type {?(GuildMember|APIInteractionGuildMember)}
      */
     this.member = data.member ? this.guild?.members._add(data.member) ?? data.member : null;
 
@@ -87,42 +88,6 @@ class BaseInteraction extends Base {
       : null;
 
     /**
-     * A Discord locale string, possible values are:
-     * * en-US (English, US)
-     * * en-GB (English, UK)
-     * * bg (Bulgarian)
-     * * zh-CN (Chinese, China)
-     * * zh-TW (Chinese, Taiwan)
-     * * hr (Croatian)
-     * * cs (Czech)
-     * * da (Danish)
-     * * nl (Dutch)
-     * * fi (Finnish)
-     * * fr (French)
-     * * de (German)
-     * * el (Greek)
-     * * hi (Hindi)
-     * * hu (Hungarian)
-     * * it (Italian)
-     * * ja (Japanese)
-     * * ko (Korean)
-     * * lt (Lithuanian)
-     * * no (Norwegian)
-     * * pl (Polish)
-     * * pt-BR (Portuguese, Brazilian)
-     * * ro (Romanian, Romania)
-     * * ru (Russian)
-     * * es-ES (Spanish)
-     * * sv-SE (Swedish)
-     * * th (Thai)
-     * * tr (Turkish)
-     * * uk (Ukrainian)
-     * * vi (Vietnamese)
-     * @see {@link https://discord.com/developers/docs/reference#locales}
-     * @typedef {string} Locale
-     */
-
-    /**
      * The locale of the user who invoked this interaction
      * @type {Locale}
      */
@@ -133,6 +98,15 @@ class BaseInteraction extends Base {
      * @type {?Locale}
      */
     this.guildLocale = data.guild_locale ?? null;
+
+    /**
+     * The entitlements for the invoking user, representing access to premium SKUs
+     * @type {Collection<Snowflake, Entitlement>}
+     */
+    this.entitlements = data.entitlements.reduce(
+      (coll, entitlement) => coll.set(entitlement.id, this.client.application.entitlements._add(entitlement)),
+      new Collection(),
+    );
   }
 
   /**

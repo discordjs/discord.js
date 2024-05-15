@@ -7,7 +7,10 @@ export default defineConfig({
 	plugins: [
 		dts(),
 		react(),
-		Unocss({ content: { pipeline: { include: ['.storybook/preview.ts'] } }, configFile: '../../unocss.config.ts' }),
+		Unocss({
+			content: { pipeline: { include: ['.storybook/preview.ts'] } },
+			configFile: '../../unocss.config.ts',
+		}),
 	],
 	build: {
 		lib: {

@@ -1,7 +1,7 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/proxy",
-	"version": "2.0.1",
+	"version": "2.1.0",
 	"description": "Tools for running an HTTP proxy for Discord's API",
 	"scripts": {
 		"test": "vitest run",
@@ -10,7 +10,7 @@
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
 		"fmt": "pnpm run format",
-		"docs": "pnpm run build:docs && api-extractor run --local && api-extractor run --local --config ./api-extractor-docs.json",
+		"docs": "pnpm run build:docs && api-extractor run --local --minify && generate-split-documentation",
 		"prepack": "pnpm run lint && pnpm run test && pnpm run build",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/proxy/*'",
 		"release": "cliff-jumper"
@@ -63,33 +63,37 @@
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@discordjs/rest": "workspace:^",
 		"@discordjs/util": "workspace:^",
 		"tslib": "^2.6.2",
-		"undici": "5.23.0"
+		"undici": "6.13.0"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^2.1.1",
-		"@microsoft/api-extractor": "^7.36.4",
-		"@types/node": "18.17.9",
-		"@types/supertest": "^2.0.12",
-		"@vitest/coverage-v8": "^0.34.3",
+		"@discordjs/api-extractor": "workspace:^",
+		"@discordjs/scripts": "workspace:^",
+		"@favware/cliff-jumper": "^3.0.2",
+		"@types/node": "18.18.8",
+		"@types/supertest": "^6.0.2",
+		"@vitest/coverage-v8": "^1.5.0",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.48.0",
-		"eslint-config-neon": "^0.1.56",
-		"eslint-formatter-pretty": "^5.0.0",
-		"prettier": "^3.0.2",
-		"supertest": "^6.3.3",
-		"tsup": "^7.2.0",
-		"turbo": "^1.10.13",
-		"typescript": "^5.2.2",
-		"vitest": "^0.34.3"
+		"esbuild-plugin-version-injector": "^1.2.1",
+		"eslint": "^8.57.0",
+		"eslint-config-neon": "^0.1.62",
+		"eslint-formatter-pretty": "^6.0.1",
+		"prettier": "^3.2.5",
+		"supertest": "^6.3.4",
+		"tsup": "^8.0.2",
+		"turbo": "^1.13.2",
+		"typescript": "^5.4.5",
+		"vitest": "^1.5.0"
 	},
 	"engines": {
-		"node": ">=16.11.0"
+		"node": ">=18"
 	},
 	"publishConfig": {
-		"access": "public"
+		"access": "public",
+		"provenance": true
 	}
 }

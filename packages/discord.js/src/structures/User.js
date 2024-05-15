@@ -1,6 +1,6 @@
 'use strict';
 
-const { userMention } = require('@discordjs/builders');
+const { userMention } = require('@discordjs/formatters');
 const { calculateUserDefaultAvatarIndex } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
@@ -405,8 +405,3 @@ class User extends Base {
 TextBasedChannel.applyToClass(User);
 
 module.exports = User;
-
-/**
- * @external APIUser
- * @see {@link https://discord.com/developers/docs/resources/user#user-object}
- */

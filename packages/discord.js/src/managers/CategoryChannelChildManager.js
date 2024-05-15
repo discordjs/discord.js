@@ -23,7 +23,7 @@ class CategoryChannelChildManager extends DataManager {
    * @readonly
    */
   get cache() {
-    return this.guild.channels.cache.filter(c => c.parentId === this.channel.id);
+    return this.guild.channels.cache.filter(channel => channel.parentId === this.channel.id);
   }
 
   /**
@@ -36,7 +36,7 @@ class CategoryChannelChildManager extends DataManager {
   }
 
   /**
-   * Options for creating a channel using {@link CategoryChannel#createChannel}.
+   * Options for creating a channel using {@link CategoryChannelChildManager#create}.
    * @typedef {Object} CategoryCreateChannelOptions
    * @property {string} name The name for the new channel
    * @property {ChannelType} [type=ChannelType.GuildText] The type of the new channel.

@@ -126,4 +126,6 @@ export class SlashCommandSubcommandBuilder implements ToAPIApplicationCommandOpt
 	}
 }
 
-export interface SlashCommandSubcommandBuilder extends SharedNameAndDescription, SharedSlashCommandOptions<false> {}
+export interface SlashCommandSubcommandBuilder
+	extends SharedNameAndDescription,
+		SharedSlashCommandOptions<SlashCommandSubcommandBuilder> {}

@@ -4,10 +4,10 @@ const { Buffer } = require('node:buffer');
 const { lazy, isJSONEncodable } = require('@discordjs/util');
 const { MessageFlags } = require('discord-api-types/v10');
 const ActionRowBuilder = require('./ActionRowBuilder');
-const { DiscordjsRangeError, ErrorCodes } = require('../errors');
-const DataResolver = require('../util/DataResolver');
+const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors');
+const { resolveFile } = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
-const { basename, verifyString } = require('../util/Util');
+const { basename, verifyString, resolvePartialEmoji } = require('../util/Util');
 
 const getBaseInteraction = lazy(() => require('./BaseInteraction'));
 
@@ -133,15 +133,24 @@ class MessagePayload {
       }
     }
 
-    const components = this.options.components?.map(c => (isJSONEncodable(c) ? c : new ActionRowBuilder(c)).toJSON());
+    const enforce_nonce = Boolean(this.options.enforceNonce);
+    if (enforce_nonce && nonce === undefined) {
+      throw new DiscordjsError(ErrorCodes.MessageNonceRequired);
+    }
+
+    const components = this.options.components?.map(component =>
+      (isJSONEncodable(component) ? component : new ActionRowBuilder(component)).toJSON(),
+    );
 
     let username;
     let avatarURL;
     let threadName;
+    let appliedTags;
     if (isWebhook) {
       username = this.options.username ?? this.target.name;
       if (this.options.avatarURL) avatarURL = this.options.avatarURL;
       if (this.options.threadName) threadName = this.options.threadName;
+      if (this.options.appliedTags) appliedTags = this.options.appliedTags;
     }
 
     let flags;
@@ -193,10 +202,26 @@ class MessagePayload {
       this.options.attachments = attachments;
     }
 
+    let poll;
+    if (this.options.poll) {
+      poll = {
+        question: {
+          text: this.options.poll.question.text,
+        },
+        answers: this.options.poll.answers.map(answer => ({
+          poll_media: { text: answer.text, emoji: resolvePartialEmoji(answer.emoji) },
+        })),
+        duration: this.options.poll.duration,
+        allow_multiselect: this.options.poll.allowMultiselect,
+        layout_type: this.options.poll.layoutType,
+      };
+    }
+
     this.body = {
       content,
       tts,
       nonce,
+      enforce_nonce,
       embeds: this.options.embeds?.map(embed =>
         isJSONEncodable(embed) ? embed.toJSON() : this.target.client.options.jsonTransformer(embed),
       ),
@@ -209,6 +234,8 @@ class MessagePayload {
       attachments: this.options.attachments,
       sticker_ids: this.options.stickers?.map(sticker => sticker.id ?? sticker),
       thread_name: threadName,
+      applied_tags: appliedTags,
+      poll,
     };
     return this;
   }
@@ -255,7 +282,7 @@ class MessagePayload {
       name = fileLike.name ?? findName(attachment);
     }
 
-    const { data, contentType } = await DataResolver.resolveFile(attachment);
+    const { data, contentType } = await resolveFile(attachment);
     return { data, name, contentType };
   }
 
@@ -286,11 +313,6 @@ module.exports = MessagePayload;
  * A possible payload option.
  * @typedef {MessageCreateOptions|MessageEditOptions|WebhookMessageCreateOptions|WebhookMessageEditOptions|
  * InteractionReplyOptions|InteractionUpdateOptions} MessagePayloadOption
- */
-
-/**
- * @external APIMessage
- * @see {@link https://discord.com/developers/docs/resources/channel#message-object}
  */
 
 /**

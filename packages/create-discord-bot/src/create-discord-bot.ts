@@ -58,16 +58,18 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 
 		if (typescript) {
 			await cp(
-				new URL('../template/Bun/Typescript/tsconfig.eslint.json', import.meta.url),
+				new URL('../template/Bun/TypeScript/tsconfig.eslint.json', import.meta.url),
 				`${root}/tsconfig.eslint.json`,
 			);
-			await cp(new URL('../template/Bun/Typescript/tsconfig.json', import.meta.url), `${root}/tsconfig.json`);
+			await cp(new URL('../template/Bun/TypeScript/tsconfig.json', import.meta.url), `${root}/tsconfig.json`);
 		}
 	}
 
 	process.chdir(root);
 
-	const newVSCodeSettings = await readFile('./.vscode/settings.json', { encoding: 'utf8' }).then((str) => {
+	const newVSCodeSettings = await readFile('./.vscode/settings.json', {
+		encoding: 'utf8',
+	}).then((str) => {
 		let newStr = str.replace('[REPLACE_ME]', deno || bun ? 'auto' : packageManager);
 		if (deno) {
 			// @ts-expect-error: This is fine
@@ -87,7 +89,9 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 	}
 
 	if (!deno) {
-		const newPackageJSON = await readFile('./package.json', { encoding: 'utf8' }).then((str) => {
+		const newPackageJSON = await readFile('./package.json', {
+			encoding: 'utf8',
+		}).then((str) => {
 			let newStr = str.replace('[REPLACE_ME]', directoryName);
 			newStr = newStr.replaceAll('[REPLACE_IMPORT_EXT]', typescript ? 'ts' : 'js');
 			return newStr;

@@ -6,7 +6,7 @@ const { GuildScheduledEventEntityType, Routes } = require('discord-api-types/v10
 const CachedManager = require('./CachedManager');
 const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../errors');
 const { GuildScheduledEvent } = require('../structures/GuildScheduledEvent');
-const DataResolver = require('../util/DataResolver');
+const { resolveImage } = require('../util/DataResolver');
 
 /**
  * Manages API methods for GuildScheduledEvents and stores their cache.
@@ -103,7 +103,7 @@ class GuildScheduledEventManager extends CachedManager {
         description,
         entity_type: entityType,
         entity_metadata,
-        image: image && (await DataResolver.resolveImage(image)),
+        image: image && (await resolveImage(image)),
       },
       reason,
     });
@@ -222,7 +222,7 @@ class GuildScheduledEventManager extends CachedManager {
         description,
         entity_type: entityType,
         status,
-        image: image && (await DataResolver.resolveImage(image)),
+        image: image && (await resolveImage(image)),
         entity_metadata,
       },
       reason,

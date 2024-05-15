@@ -1,5 +1,6 @@
 {
 	"name": "proxy",
 	"org": "discordjs",
-	"packagePath": "packages/proxy"
+	"packagePath": "packages/proxy",
+	"identifierBase": false
 }

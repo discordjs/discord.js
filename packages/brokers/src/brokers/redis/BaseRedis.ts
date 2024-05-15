@@ -1,4 +1,5 @@
 import type { Buffer } from 'node:buffer';
+import { randomBytes } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
@@ -19,10 +20,30 @@ declare module 'ioredis' {
  */
 export interface RedisBrokerOptions extends BaseBrokerOptions {
 	/**
-	 * The Redis client to use
+	 * How long to block for messages when polling
 	 */
-	redisClient: Redis;
+	blockTimeout?: number;
+	/**
+	 * Max number of messages to poll at once
+	 */
+	maxChunk?: number;
+	/**
+	 * Unique consumer name.
+	 *
+	 * @see {@link https://redis.io/commands/xreadgroup/}
+	 */
+	name?: string;
 }
+
+/**
+ * Default broker options for redis
+ */
+export const DefaultRedisBrokerOptions = {
+	...DefaultBrokerOptions,
+	name: randomBytes(20).toString('hex'),
+	maxChunk: 10,
+	blockTimeout: 5_000,
+} as const satisfies Required<RedisBrokerOptions>;
 
 /**
  * Helper class with shared Redis logic
@@ -56,14 +77,17 @@ export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 	 */
 	protected listening = false;
 
-	public constructor(options: RedisBrokerOptions) {
+	public constructor(
+		protected readonly redisClient: Redis,
+		options: RedisBrokerOptions,
+	) {
 		super();
-		this.options = { ...DefaultBrokerOptions, ...options };
-		options.redisClient.defineCommand('xcleangroup', {
+		this.options = { ...DefaultRedisBrokerOptions, ...options };
+		redisClient.defineCommand('xcleangroup', {
 			numberOfKeys: 1,
 			lua: readFileSync(resolve(__dirname, '..', 'scripts', 'xcleangroup.lua'), 'utf8'),
 		});
-		this.streamReadClient = options.redisClient.duplicate();
+		this.streamReadClient = redisClient.duplicate();
 	}
 
 	/**
@@ -75,7 +99,7 @@ export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 			events.map(async (event) => {
 				this.subscribedEvents.add(event as string);
 				try {
-					return await this.options.redisClient.xgroup('CREATE', event as string, group, 0, 'MKSTREAM');
+					return await this.redisClient.xgroup('CREATE', event as string, group, 0, 'MKSTREAM');
 				} catch (error) {
 					if (!(error instanceof ReplyError)) {
 						throw error;
@@ -97,7 +121,7 @@ export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 			commands[idx + 1] = ['xcleangroup', event as string, group];
 		}
 
-		await this.options.redisClient.pipeline(commands).exec();
+		await this.redisClient.pipeline(commands).exec();
 
 		for (const event of events) {
 			this.subscribedEvents.delete(event as string);
@@ -162,7 +186,7 @@ export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 	 */
 	public async destroy() {
 		this.streamReadClient.disconnect();
-		this.options.redisClient.disconnect();
+		this.redisClient.disconnect();
 	}
 
 	/**

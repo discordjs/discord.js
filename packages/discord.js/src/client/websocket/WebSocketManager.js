@@ -258,7 +258,7 @@ class WebSocketManager extends EventEmitter {
          * @param {number} id The shard id that disconnected
          */
         this.client.emit(Events.ShardDisconnect, { code, reason: reasonIsDeprecated, wasClean: true }, shardId);
-        this.debug(GatewayCloseCodes[code], shardId);
+        this.debug(`Shard not resumable: ${code} (${GatewayCloseCodes[code] ?? CloseCodes[code]})`, shardId);
         return;
       }
 
@@ -324,9 +324,9 @@ class WebSocketManager extends EventEmitter {
   async destroy() {
     if (this.destroyed) return;
     // TODO: Make a util for getting a stack
-    this.debug(`Manager was destroyed. Called by:\n${new Error().stack}`);
+    this.debug(Object.assign(new Error(), { name: 'Manager was destroyed:' }).stack);
     this.destroyed = true;
-    await this._ws?.destroy({ code: CloseCodes.Normal });
+    await this._ws?.destroy({ code: CloseCodes.Normal, reason: 'Manager was destroyed' });
   }
 
   /**
@@ -364,7 +364,7 @@ class WebSocketManager extends EventEmitter {
    */
   checkShardsReady() {
     if (this.status === Status.Ready) return;
-    if (this.shards.size !== this.totalShards || this.shards.some(s => s.status !== Status.Ready)) {
+    if (this.shards.size !== this.totalShards || this.shards.some(shard => shard.status !== Status.Ready)) {
       return;
     }
 

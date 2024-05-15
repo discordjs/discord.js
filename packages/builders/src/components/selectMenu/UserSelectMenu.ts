@@ -1,5 +1,11 @@
-import type { APIUserSelectComponent } from 'discord-api-types/v10';
-import { ComponentType } from 'discord-api-types/v10';
+import {
+	type APIUserSelectComponent,
+	type Snowflake,
+	ComponentType,
+	SelectMenuDefaultValueType,
+} from 'discord-api-types/v10';
+import { type RestOrArray, normalizeArray } from '../../util/normalizeArray.js';
+import { optionsLengthValidator } from '../Assertions.js';
 import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 
 /**
@@ -30,5 +36,42 @@ export class UserSelectMenuBuilder extends BaseSelectMenuBuilder<APIUserSelectCo
 	 */
 	public constructor(data?: Partial<APIUserSelectComponent>) {
 		super({ ...data, type: ComponentType.UserSelect });
+	}
+
+	/**
+	 * Adds default users to this auto populated select menu.
+	 *
+	 * @param users - The users to add
+	 */
+	public addDefaultUsers(...users: RestOrArray<Snowflake>) {
+		const normalizedValues = normalizeArray(users);
+		optionsLengthValidator.parse((this.data.default_values?.length ?? 0) + normalizedValues.length);
+		this.data.default_values ??= [];
+
+		this.data.default_values.push(
+			...normalizedValues.map((id) => ({
+				id,
+				type: SelectMenuDefaultValueType.User as const,
+			})),
+		);
+
+		return this;
+	}
+
+	/**
+	 * Sets default users to this auto populated select menu.
+	 *
+	 * @param users - The users to set
+	 */
+	public setDefaultUsers(...users: RestOrArray<Snowflake>) {
+		const normalizedValues = normalizeArray(users);
+		optionsLengthValidator.parse(normalizedValues.length);
+
+		this.data.default_values = normalizedValues.map((id) => ({
+			id,
+			type: SelectMenuDefaultValueType.User as const,
+		}));
+
+		return this;
 	}
 }

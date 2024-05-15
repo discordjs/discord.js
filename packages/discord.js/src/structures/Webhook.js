@@ -6,7 +6,7 @@ const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes, WebhookType } = require('discord-api-types/v10');
 const MessagePayload = require('./MessagePayload');
 const { DiscordjsError, ErrorCodes } = require('../errors');
-const DataResolver = require('../util/DataResolver');
+const { resolveImage } = require('../util/DataResolver');
 
 const getMessage = lazy(() => require('./Message').Message);
 
@@ -134,7 +134,9 @@ class Webhook {
    * @property {string} [avatarURL] Avatar URL override for the message
    * @property {Snowflake} [threadId] The id of the thread in the channel to send to.
    * <info>For interaction webhooks, this property is ignored</info>
-   * @property {string} [threadName] Name of the thread to create (only available if webhook is in a forum channel)
+   * @property {string} [threadName] Name of the thread to create (only available if the webhook is in a forum channel)
+   * @property {Snowflake[]} [appliedTags]
+   * The tags to apply to the created thread (only available if the webhook is in a forum channel)
    */
 
   /**
@@ -276,7 +278,7 @@ class Webhook {
    */
   async edit({ name = this.name, avatar, channel, reason }) {
     if (avatar && !(typeof avatar === 'string' && avatar.startsWith('data:'))) {
-      avatar = await DataResolver.resolveImage(avatar);
+      avatar = await resolveImage(avatar);
     }
     channel &&= channel.id ?? channel;
     const data = await this.client.rest.patch(Routes.webhook(this.id, channel ? undefined : this.token), {

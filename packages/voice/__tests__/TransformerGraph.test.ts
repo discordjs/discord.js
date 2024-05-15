@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { findPipeline, StreamType, TransformerType, type Edge } from '../src/audio/TransformerGraph';
 
 const noConstraint = () => true;

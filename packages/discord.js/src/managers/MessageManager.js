@@ -86,7 +86,8 @@ class MessageManager extends CachedManager {
    * @example
    * // Fetch messages and filter by a user id
    * channel.messages.fetch()
-   *   .then(messages => console.log(`${messages.filter(m => m.author.id === '84484653687267328').size} messages`))
+   *   .then(messages => console.log(`${messages.filter(message =>
+   *          message.author.id === '84484653687267328').size} messages`))
    *   .catch(console.error);
    */
   fetch(options) {
@@ -153,10 +154,16 @@ class MessageManager extends CachedManager {
    */
 
   /**
+   * Data used to reference an attachment.
+   * @typedef {Object} MessageEditAttachmentData
+   * @property {Snowflake} id The id of the attachment
+   */
+
+  /**
    * Options that can be passed to edit a message.
    * @typedef {BaseMessageOptions} MessageEditOptions
-   * @property {AttachmentPayload[]} [attachments] An array of attachments to keep,
-   * all attachments will be kept if omitted
+   * @property {Array<Attachment|MessageEditAttachmentData>} [attachments] An array of attachments to keep.
+   * All attachments will be kept if omitted
    * @property {MessageFlags} [flags] Which flags to set for the message
    * <info>Only the {@link MessageFlags.SuppressEmbeds} flag can be modified.</info>
    */
@@ -171,9 +178,10 @@ class MessageManager extends CachedManager {
     const messageId = this.resolveId(message);
     if (!messageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
-    const { body, files } = await (options instanceof MessagePayload
-      ? options
-      : MessagePayload.create(message instanceof Message ? message : this, options)
+    const { body, files } = await (
+      options instanceof MessagePayload
+        ? options
+        : MessagePayload.create(message instanceof Message ? message : this, options)
     )
       .resolveBody()
       .resolveFiles();
@@ -257,6 +265,36 @@ class MessageManager extends CachedManager {
     if (!message) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
     await this.client.rest.delete(Routes.channelMessage(this.channel.id, message));
+  }
+
+  /**
+   * Ends a poll.
+   * @param {Snowflake} messageId The id of the message
+   * @returns {Promise<Message>}
+   */
+  async endPoll(messageId) {
+    const message = await this.client.rest.post(Routes.expirePoll(this.channel.id, messageId));
+    return this._add(message, false);
+  }
+
+  /**
+   * Options used for fetching voters of an answer in a poll.
+   * @typedef {BaseFetchPollAnswerVotersOptions} FetchPollAnswerVotersOptions
+   * @param {Snowflake} messageId The id of the message
+   * @param {number} answerId The id of the answer
+   */
+
+  /**
+   * Fetches the users that voted for a poll answer.
+   * @param {FetchPollAnswerVotersOptions} options The options for fetching the poll answer voters
+   * @returns {Promise<Collection<Snowflake, User>>}
+   */
+  async fetchPollAnswerVoters({ messageId, answerId, after, limit }) {
+    const voters = await this.client.rest.get(Routes.pollAnswerVoters(this.channel.id, messageId, answerId), {
+      query: makeURLSearchParams({ limit, after }),
+    });
+
+    return voters.users.reduce((acc, user) => acc.set(user.id, this.client.users._add(user, false)), new Collection());
   }
 }
 

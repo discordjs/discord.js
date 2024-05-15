@@ -14,6 +14,9 @@
  * @property {string} ChannelUpdate channelUpdate
  * @property {string} ClientReady ready
  * @property {string} Debug debug
+ * @property {string} EntitlementCreate entitlementCreate
+ * @property {string} EntitlementUpdate entitlementUpdate
+ * @property {string} EntitlementDelete entitlementDelete
  * @property {string} Error error
  * @property {string} GuildAuditLogEntryCreate guildAuditLogEntryCreate
  * @property {string} GuildAvailable guildAvailable
@@ -50,6 +53,8 @@
  * @property {string} MessageBulkDelete messageDeleteBulk
  * @property {string} MessageCreate messageCreate
  * @property {string} MessageDelete messageDelete
+ * @property {string} MessagePollVoteAdd messagePollVoteAdd
+ * @property {string} MessagePollVoteRemove messagePollVoteRemove
  * @property {string} MessageReactionAdd messageReactionAdd
  * @property {string} MessageReactionRemove messageReactionRemove
  * @property {string} MessageReactionRemoveAll messageReactionRemoveAll
@@ -96,6 +101,9 @@ module.exports = {
   ChannelUpdate: 'channelUpdate',
   ClientReady: 'ready',
   Debug: 'debug',
+  EntitlementCreate: 'entitlementCreate',
+  EntitlementUpdate: 'entitlementUpdate',
+  EntitlementDelete: 'entitlementDelete',
   Error: 'error',
   GuildAuditLogEntryCreate: 'guildAuditLogEntryCreate',
   GuildAvailable: 'guildAvailable',
@@ -132,6 +140,8 @@ module.exports = {
   MessageBulkDelete: 'messageDeleteBulk',
   MessageCreate: 'messageCreate',
   MessageDelete: 'messageDelete',
+  MessagePollVoteAdd: 'messagePollVoteAdd',
+  MessagePollVoteRemove: 'messagePollVoteRemove',
   MessageReactionAdd: 'messageReactionAdd',
   MessageReactionRemove: 'messageReactionRemove',
   MessageReactionRemoveAll: 'messageReactionRemoveAll',

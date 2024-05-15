@@ -3,15 +3,15 @@ on:
   schedule:
     - cron: '0 16 * * *'
   workflow_dispatch:
-permissions:
-  issues: write
 concurrency:
   group: lock
 jobs:
   action:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
-      - uses: dessant/lock-threads@v4
+      - uses: dessant/lock-threads@v5
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           issue-inactive-days: 365

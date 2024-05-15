@@ -6,6 +6,7 @@ const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes, RouteBases } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
+const ShardClientUtil = require('../sharding/ShardClientUtil');
 const { Guild } = require('../structures/Guild');
 const GuildChannel = require('../structures/GuildChannel');
 const GuildEmoji = require('../structures/GuildEmoji');
@@ -13,7 +14,7 @@ const { GuildMember } = require('../structures/GuildMember');
 const Invite = require('../structures/Invite');
 const OAuth2Guild = require('../structures/OAuth2Guild');
 const { Role } = require('../structures/Role');
-const DataResolver = require('../util/DataResolver');
+const { resolveImage } = require('../util/DataResolver');
 const Events = require('../util/Events');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
@@ -96,7 +97,7 @@ class GuildManager extends CachedManager {
    */
 
   /**
-   * Resolves a GuildResolvable to a Guild object.
+   * Resolves a {@link GuildResolvable} to a {@link Guild} object.
    * @method resolve
    * @memberof GuildManager
    * @instance
@@ -178,7 +179,7 @@ class GuildManager extends CachedManager {
     const data = await this.client.rest.post(Routes.guilds(), {
       body: {
         name,
-        icon: icon && (await DataResolver.resolveImage(icon)),
+        icon: icon && (await resolveImage(icon)),
         verification_level: verificationLevel,
         default_message_notifications: defaultMessageNotifications,
         explicit_content_filter: explicitContentFilter,
@@ -272,6 +273,7 @@ class GuildManager extends CachedManager {
       const data = await this.client.rest.get(Routes.guild(id), {
         query: makeURLSearchParams({ with_counts: options.withCounts ?? true }),
       });
+      data.shardId = ShardClientUtil.shardIdForGuildId(id, this.client.options.shardCount);
       return this._add(data, options.cache);
     }
 

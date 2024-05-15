@@ -6,8 +6,9 @@ import node from 'eslint-config-neon/flat/node.js';
 import prettier from 'eslint-config-neon/flat/prettier.js';
 import react from 'eslint-config-neon/flat/react.js';
 import typescript from 'eslint-config-neon/flat/typescript.js';
+// import oxlint from 'eslint-plugin-oxlint';
 import merge from 'lodash.merge';
-// import {join} from "node:path"
+import tseslint from 'typescript-eslint';
 
 const commonFiles = '{js,mjs,cjs,ts,mts,cts,jsx,tsx}';
 
@@ -26,6 +27,17 @@ const typeScriptRuleset = merge(...typescript, {
 	},
 	rules: {
 		'@typescript-eslint/consistent-type-definitions': [2, 'interface'],
+		'@typescript-eslint/naming-convention': [
+			2,
+			{
+				selector: 'typeParameter',
+				format: ['PascalCase'],
+				custom: {
+					regex: '^\\w{3,}',
+					match: true,
+				},
+			},
+		],
 	},
 	settings: {
 		'import/resolver': {
@@ -38,9 +50,7 @@ const typeScriptRuleset = merge(...typescript, {
 
 const reactRuleset = merge(...react, {
 	files: [`apps/**/*${commonFiles}`, `packages/ui/**/*${commonFiles}`],
-	plugins: { '@unocss': unocss },
 	rules: {
-		'@unocss/order': 2,
 		'@next/next/no-html-link-for-pages': 0,
 		'react/react-in-jsx-scope': 0,
 		'react/jsx-filename-extension': [1, { extensions: ['.tsx'] }],
@@ -53,8 +63,9 @@ const edgeRuleset = merge(...edge, { files: [`apps/**/*${commonFiles}`] });
 
 const prettierRuleset = merge(...prettier, { files: [`**/*${commonFiles}`] });
 
-/** @type {import('eslint').Linter.FlatConfig[]} */
-export default [
+// const oxlintRuleset = merge({ rules: oxlint.rules }, { files: [`**/*${commonFiles}`] });
+
+export default tseslint.config(
 	{
 		ignores: [
 			'**/node_modules/',
@@ -75,8 +86,8 @@ export default [
 		rules: { 'jsdoc/no-undefined-types': 0 },
 	},
 	{
-		files: [`packages/docgen/**/*${commonFiles}`],
-		rules: { 'import/extensions': 0 },
+		files: [`packages/{api-extractor,brokers,create-discord-bot,docgen,ws}/**/*${commonFiles}`],
+		rules: { 'n/no-sync': 0 },
 	},
 	{
 		files: [`packages/rest/**/*${commonFiles}`],
@@ -91,12 +102,38 @@ export default [
 	},
 	{
 		files: [`packages/voice/**/*${commonFiles}`],
+		rules: { 'no-restricted-globals': 0 },
+	},
+	{
+		files: [`packages/api-extractor-model/**/*${commonFiles}`],
 		rules: {
-			'import/extensions': 0,
-			'no-restricted-globals': 0,
+			'@typescript-eslint/no-namespace': 0,
+			'no-prototype-builtins': 0,
+			'consistent-this': 0,
+			'unicorn/no-this-assignment': 0,
+			'@typescript-eslint/no-this-alias': 0,
 		},
 	},
+	{
+		files: [`packages/api-extractor/**/*${commonFiles}`],
+		rules: {
+			'consistent-this': 0,
+			'unicorn/no-this-assignment': 0,
+			'@typescript-eslint/no-this-alias': 0,
+		},
+	},
+	{
+		files: [`packages/{api-extractor,api-extractor-model,api-extractor-utils}/**/*${commonFiles}`],
+		rules: { '@typescript-eslint/naming-convention': 0 },
+	},
 	reactRuleset,
+	{
+		files: [`apps/guide/**/*${commonFiles}`, `packages/ui/**/*${commonFiles}`],
+		plugins: { '@unocss': unocss },
+		rules: {
+			'@unocss/order': 2,
+		},
+	},
 	nextRuleset,
 	edgeRuleset,
 	{
@@ -104,4 +141,5 @@ export default [
 		rules: { 'tsdoc/syntax': 0 },
 	},
 	prettierRuleset,
-];
+	// oxlintRuleset,
+);

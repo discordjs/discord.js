@@ -4,5 +4,6 @@
 	"compilerOptions": {
 		"allowJs": true
 	},
-	"include": ["*.ts", "*.js", "*.mjs"]
+	"include": ["*.ts", "*.tsx", "*.js", ".jsx", ".cjs", "*.mjs"],
+	"exclude": ["node_modules"]
 }

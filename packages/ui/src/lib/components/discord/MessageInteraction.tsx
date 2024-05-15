@@ -11,8 +11,8 @@ export interface IDiscordMessageInteraction {
 export function DiscordMessageInteraction({ author, authorNode, command }: IDiscordMessageInteraction) {
 	return (
 		<DiscordMessageBaseReply author={author} authorNode={authorNode}>
-			<span className="mr-1 select-none text-sm leading-snug text-white">used</span>
-			<div className="cursor-pointer text-sm leading-snug text-blurple hover:underline">{command}</div>
+			<span className="mr-1 select-none text-sm text-white leading-snug">used</span>
+			<div className="cursor-pointer text-sm text-blurple leading-snug hover:underline">{command}</div>
 		</DiscordMessageBaseReply>
 	);
 }

@@ -140,7 +140,7 @@ export class TextInputBuilder
 	}
 
 	/**
-	 * {@inheritDoc Equatable.equals}
+	 * Whether this is equal to another structure.
 	 */
 	public equals(other: APITextInputComponent | JSONEncodable<APITextInputComponent>): boolean {
 		if (isJSONEncodable(other)) {
