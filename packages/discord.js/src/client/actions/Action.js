@@ -40,12 +40,10 @@ class GenericAction {
     }
 
     if (id !== undefined) payloadData.id = id;
-    if ('guild_id' in data) payloadData.guild_id = data.guild_id;
-    if ('last_message_id' in data) payloadData.last_message_id = data.last_message_id;
 
     return (
       data[this.client.actions.injectedChannel] ??
-      this.getPayload(payloadData, this.client.channels, id, Partials.Channel)
+      this.getPayload({ ...data, ...payloadData }, this.client.channels, id, Partials.Channel)
     );
   }
 
