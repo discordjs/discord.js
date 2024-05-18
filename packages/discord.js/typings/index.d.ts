@@ -2027,6 +2027,12 @@ export class LimitedCollection<Key, Value> extends Collection<Key, Value> {
   public keepOverLimit: ((value: Value, key: Key, collection: this) => boolean) | null;
 }
 
+export interface MessageCall {
+  endedAt: Date | null;
+  endedTimestamp: number | null;
+  participants: readonly Snowflake[];
+}
+
 export type MessageComponentType = Exclude<ComponentType, ComponentType.TextInput | ComponentType.ActionRow>;
 
 export interface MessageCollectorOptionsParams<
