@@ -124,7 +124,7 @@ class BaseChannel extends Base {
   }
 
   /**
-   * Indicates whether this channel is {@link TextBasedChannels text-based}.
+   * Indicates whether this channel is {@link TextBasedChannel text-based}.
    * @returns {boolean}
    */
   isTextBased() {
