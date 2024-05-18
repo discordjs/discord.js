@@ -972,10 +972,10 @@ class Message extends Base {
       this.id === message.id &&
       this.author.id === message.author.id &&
       this.content === message.content &&
-      this.tts === message.tts &&
       this.nonce === message.nonce &&
-      this.embeds.length === message.embeds.length &&
-      this.attachments.length === message.attachments.length;
+      this.tts === message.tts &&
+      this.attachments.every(attachment => message.attachments.get(attachment.id)) &&
+      this.embeds.every((embed, index) => embed.equals(message.embeds[index]));
 
     if (equal && rawData) {
       equal =
