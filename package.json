@@ -6,19 +6,19 @@
 	"private": true,
 	"scripts": {
 		"build": "turbo run build --concurrency=4",
-		"build:affected": "turbo run build --filter='...[origin/main]' --concurrency=4",
-		"build:apps": "turbo run build:local --filter='...{apps/*}' --concurrency=4",
-		"build:apps:affected": "turbo run build:local --filter='...{apps/*}[origin/main]' --concurrency=4",
+		"build:affected": "turbo run build --filter=...[origin/main] --concurrency=4",
+		"build:apps": "turbo run build:local --filter=...{apps/*} --concurrency=4",
+		"build:apps:affected": "turbo run build:local --filter=...{apps/*}[origin/main] --concurrency=4",
 		"test": "turbo run test --concurrency=4",
-		"test:affected": "turbo run test --filter='...[origin/main]' --concurrency=4",
+		"test:affected": "turbo run test --filter=...[origin/main] --concurrency=4",
 		"lint": "turbo run lint --concurrency=4",
-		"lint:affected": "turbo run lint --filter='...[origin/main]' --concurrency=4",
+		"lint:affected": "turbo run lint --filter=...[origin/main] --concurrency=4",
 		"format": "turbo run format --concurrency=4",
-		"format:affected": "turbo run format --filter='...[origin/main]' --concurrency=4",
+		"format:affected": "turbo run format --filter=...[origin/main] --concurrency=4",
 		"fmt": "turbo run format --concurrency=4",
-		"fmt:affected": "turbo run format --filter='...[origin/main]' --concurrency=4",
+		"fmt:affected": "turbo run format --filter=...[origin/main] --concurrency=4",
 		"docs": "turbo run docs --concurrency=4",
-		"docs:affected": "turbo run docs --filter='...[origin/main]' --concurrency=4",
+		"docs:affected": "turbo run docs --filter=...[origin/main] --concurrency=4",
 		"prepare": "is-ci || husky",
 		"update": "pnpm --recursive update --interactive",
 		"update:latest": "pnpm --recursive update --interactive --latest",
@@ -69,7 +69,7 @@
 		"turbo": "^1.13.2",
 		"typescript": "^5.4.5",
 		"typescript-eslint": "^7.7.0",
-		"unocss": "^0.59.3",
+		"unocss": "^0.60.2",
 		"vercel": "^34.0.0",
 		"vitest": "^1.5.0"
 	},
@@ -97,5 +97,5 @@
 	"engines": {
 		"node": ">=18"
 	},
-	"packageManager": "pnpm@8.15.7+sha256.50783dd0fa303852de2dd1557cd4b9f07cb5b018154a6e76d0f40635d6cee019"
+	"packageManager": "pnpm@9.1.1"
 }
