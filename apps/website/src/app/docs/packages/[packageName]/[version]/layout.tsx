@@ -5,7 +5,6 @@ import { Navigation } from '~/components/Navigation';
 import { OverlayScrollbarsComponent } from '~/components/OverlayScrollbars';
 import { Drawer } from '~/components/ui/Drawer';
 import { Footer } from '~/components/ui/Footer';
-import { ENV } from '~/util/env';
 import { fetchDependencies } from '~/util/fetchDependencies';
 
 // eslint-disable-next-line promise/prefer-await-to-then
@@ -33,11 +32,9 @@ export default async function Layout({
 	return (
 		// eslint-disable-next-line react/no-unknown-property
 		<div vaul-drawer-wrapper="" className="mx-auto flex max-w-screen-2xl flex-col gap-12 p-6 md:flex-row">
-			<div
-				className={`sticky hidden flex-shrink-0 self-start md:block ${ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'top-[64px]' : 'top-6'}`}
-			>
+			<div className="sticky top-6 hidden flex-shrink-0 self-start md:block">
 				<OverlayScrollbarsComponent
-					className={`${ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'max-h-[calc(100dvh-48px-40px)]' : 'max-h-[calc(100dvh-48px)]'}`}
+					className="max-h-[calc(100dvh-48px)]"
 					defer
 					options={{
 						overflow: { x: 'hidden' },

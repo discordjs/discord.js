@@ -5,7 +5,7 @@ import { useAtom, useSetAtom } from 'jotai';
 import { ArrowRight } from 'lucide-react';
 import MeiliSearch from 'meilisearch';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDebounceValue } from 'usehooks-ts';
 import { isCmdKOpenAtom } from '~/stores/cmdk';
 import { isDrawerOpenAtom } from '~/stores/drawer';
@@ -25,32 +25,29 @@ export function CmdK({ dependencies }: { readonly dependencies: string[] }) {
 	const [search, setSearch] = useDebounceValue('', 250);
 	const [searchResults, setSearchResults] = useState<any[]>([]);
 
-	const packageName = useMemo(() => pathname?.split('/').slice(3, 4)[0], [pathname]);
-	const branchName = useMemo(() => pathname?.split('/').slice(4, 5)[0], [pathname]);
+	const packageName = pathname?.split('/').slice(3, 4)[0];
+	const branchName = pathname?.split('/').slice(4, 5)[0];
 
-	const searchResultItems = useMemo(
-		() =>
-			searchResults?.map((item, idx) => (
-				<Command.Item
-					key={`${item.id}-${idx}`}
-					className="flex cursor-pointer place-items-center gap-2 rounded-md p-2 data-[selected]:bg-neutral-200 dark:data-[selected]:bg-neutral-800"
-					onSelect={() => {
-						router.push(item.path);
-						setOpen(false);
-					}}
-					value={item.id}
-				>
-					{resolveKind(item.kind)}
-					<div className="flex flex-grow flex-col">
-						<span className="font-semibold">{item.name}</span>
-						<span className="line-clamp-1 text-sm">{item.summary}</span>
-						<span className="truncate text-xs">{item.path}</span>
-					</div>
-					<ArrowRight aria-hidden className="flex-shrink-0" />
-				</Command.Item>
-			)) ?? [],
-		[router, searchResults, setOpen],
-	);
+	const searchResultItems =
+		searchResults?.map((item, idx) => (
+			<Command.Item
+				key={`${item.id}-${idx}`}
+				className="flex cursor-pointer place-items-center gap-2 rounded-md p-2 data-[selected='true']:bg-neutral-200 dark:data-[selected='true']:bg-neutral-800"
+				onSelect={() => {
+					router.push(item.path);
+					setOpen(false);
+				}}
+				value={item.id}
+			>
+				{resolveKind(item.kind)}
+				<div className="flex flex-grow flex-col">
+					<span className="font-semibold">{item.name}</span>
+					<span className="line-clamp-1 text-sm">{item.summary}</span>
+					<span className="truncate text-xs">{item.path}</span>
+				</div>
+				<ArrowRight aria-hidden className="flex-shrink-0" />
+			</Command.Item>
+		)) ?? [];
 
 	// Toggle the menu when ⌘K is pressed
 	useEffect(() => {
