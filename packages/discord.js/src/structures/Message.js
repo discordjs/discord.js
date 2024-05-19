@@ -974,7 +974,7 @@ class Message extends Base {
       this.content === message.content &&
       this.nonce === message.nonce &&
       this.tts === message.tts &&
-      this.attachments.every(attachment => message.attachments.get(attachment.id)) &&
+      this.attachments.every(attachment => message.attachments.has(attachment.id)) &&
       this.embeds.every((embed, index) => embed.equals(message.embeds[index]));
 
     if (equal && rawData) {
