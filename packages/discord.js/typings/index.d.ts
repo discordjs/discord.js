@@ -2028,7 +2028,7 @@ export class LimitedCollection<Key, Value> extends Collection<Key, Value> {
 }
 
 export interface MessageCall {
-  endedAt: Date | null;
+  get endedAt(): Readonly<Date> | null;
   endedTimestamp: number | null;
   participants: readonly Snowflake[];
 }

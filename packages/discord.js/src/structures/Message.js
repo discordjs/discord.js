@@ -421,7 +421,7 @@ class Message extends Base {
     /**
      * The call associated with the message
      * @typedef {Object} MessageCall
-     * @property {?Date} endedAt The time the call ended
+     * @property {?Readonly<Date>} endedAt The time the call ended
      * @property {?number} endedTimestamp The timestamp the call ended
      * @property {Snowflake[]} participants The ids of the users that participated in the call
      */
@@ -432,9 +432,11 @@ class Message extends Base {
        * @type {?MessageCall}
        */
       this.call = {
-        endedAt: data.call.ended_timestamp && new Date(data.call.ended_timestamp),
         endedTimestamp: data.call.ended_timestamp && Date.parse(data.call.ended_timestamp),
         participants: data.call.participants,
+        get endedAt() {
+          return this.endedTimestamp && new Date(this.endedTimestamp);
+        },
       };
     } else {
       this.call ??= null;
