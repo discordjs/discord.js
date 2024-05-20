@@ -300,7 +300,7 @@ class ThreadChannel extends BaseChannel {
     }
 
     // TODO: Remove that catch in the next major version
-    const member = await this.members._fetchSingle({ ...options, user: this.ownerId }).catch(error => {
+    const member = await this.members._fetchSingle({ ...options, member: this.ownerId }).catch(error => {
       if (error instanceof DiscordAPIError && error.code === RESTJSONErrorCodes.UnknownMember) {
         return null;
       }
