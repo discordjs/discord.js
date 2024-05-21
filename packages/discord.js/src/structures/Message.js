@@ -360,9 +360,9 @@ class Message extends Base {
      * * {@link MessageType.ThreadStarterMessage}
      * @see {@link https://discord.com/developers/docs/resources/channel#message-types}
      * @typedef {Object} MessageReference
-     * @property {Snowflake} channelId The channel's id the message was referenced
-     * @property {Snowflake|undefined} guildId The guild's id the message was referenced
-     * @property {Snowflake|undefined} messageId The message's id that was referenced
+     * @property {Snowflake} channelId The channel id that was referenced
+     * @property {Snowflake|undefined} guildId The guild id that was referenced
+     * @property {Snowflake|undefined} messageId The message id that was referenced
      */
 
     if ('message_reference' in data) {
