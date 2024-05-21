@@ -708,6 +708,7 @@ class Message extends Base {
   async fetchReference() {
     if (!this.reference) throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
     const { channelId, messageId } = this.reference;
+    if (!messageId) throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
     const channel = this.client.channels.resolve(channelId);
     if (!channel) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
     const message = await channel.messages.fetch(messageId);
