@@ -138,7 +138,7 @@ export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 
 		this.listening = true;
 
-		while (true) {
+		while (this.subscribedEvents.size > 0) {
 			try {
 				const data = await this.streamReadClient.xreadgroupBuffer(
 					'GROUP',
@@ -187,6 +187,7 @@ export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 	public async destroy() {
 		this.streamReadClient.disconnect();
 		this.redisClient.disconnect();
+		this.removeAllListeners();
 	}
 
 	/**
