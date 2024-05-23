@@ -18,7 +18,8 @@ export async function fetchSitemap({
 			);
 
 			return JSON.parse(fileContent);
-		} catch {
+		} catch (error_) {
+			console.error(error_);
 			notFound();
 		}
 	}
@@ -31,7 +32,8 @@ export async function fetchSitemap({
 		);
 
 		return await fileContent.json();
-	} catch {
+	} catch (error_) {
+		console.error(error_);
 		notFound();
 	}
 }

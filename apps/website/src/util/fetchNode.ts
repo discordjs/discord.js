@@ -25,7 +25,8 @@ export async function fetchNode({
 			);
 
 			return JSON.parse(fileContent);
-		} catch {
+		} catch (error_) {
+			console.error(error_);
 			notFound();
 		}
 	}
@@ -38,7 +39,8 @@ export async function fetchNode({
 		);
 
 		return await fileContent.json();
-	} catch {
+	} catch (error_) {
+		console.error(error_);
 		notFound();
 	}
 }
