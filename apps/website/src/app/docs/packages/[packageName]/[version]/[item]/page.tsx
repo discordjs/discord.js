@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { DocItem } from '~/components/DocItem';
 import { fetchNode } from '~/util/fetchNode';
 
@@ -24,6 +25,10 @@ export default async function Page({
 	readonly params: { readonly item: string; readonly packageName: string; readonly version: string };
 }) {
 	const node = await fetchNode({ item: params.item, packageName: params.packageName, version: params.version });
+
+	if (!node) {
+		notFound();
+	}
 
 	return (
 		<main className="flex w-full flex-col gap-8 pb-12 md:pb-0">
