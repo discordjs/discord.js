@@ -693,7 +693,7 @@ importers:
         version: 3.22.4
       zod-validation-error:
         specifier: ^3.0.0
-        version: 3.0.0(zod@3.22.4)
+        version: 3.3.0(zod@3.22.4)
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -5088,10 +5088,6 @@ packages:
   '@sapphire/result@2.6.6':
     resolution: {integrity: sha512-QCjj7X/QlY0QUCeAaZQmnrsMH/b2BMQYee3F1Y5iF17JagUQqO3KZlG7vfXWQU3SRAJX5OgZZynBjixUH+nNGg==}
     engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
-
-  '@sapphire/shapeshift@3.9.7':
-    resolution: {integrity: sha512-4It2mxPSr4OGn4HSQWGmhFMsNFGfFVhWeRPCRwbH972Ek2pzfGRZtb0pJ4Ze6oIzcyh2jw7nUDa6qGlWofgd9g==}
-    engines: {node: '>=v16'}
 
   '@sapphire/snowflake@3.5.3':
     resolution: {integrity: sha512-jjmJywLAFoWeBi1W7994zZyiNWPIiqRRNAmSERxyg93xRGzNYvGjlZ0gR6x0F4gPRi2+0O6S71kOZYyr3cxaIQ==}
@@ -13795,6 +13791,12 @@ packages:
 
   zod-validation-error@2.1.0:
     resolution: {integrity: sha512-VJh93e2wb4c3tWtGgTa0OF/dTt/zoPCPzXq4V11ZjxmEAFaPi/Zss1xIZdEB5RD8GD00U0/iVXgqkF77RV7pdQ==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      zod: ^3.18.0
+
+  zod-validation-error@3.3.0:
+    resolution: {integrity: sha512-Syib9oumw1NTqEv4LT0e6U83Td9aVRk9iTXPUQr1otyV1PuXQKOvOwhMNqZIq5hluzHP2pMgnOmHEo7kPdI2mw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       zod: ^3.18.0
@@ -31352,22 +31354,14 @@ snapshots:
     dependencies:
       nan: 2.18.0
 
-  /zod-validation-error@3.0.0(zod@3.22.4):
-    resolution: {integrity: sha512-x+agsJJG9rvC7axF0xqTEdZhJkLHyIZkdOAWDJSmwGPzxNHMHwtU6w2yDOAAP6yuSfTAUhAMJRBfhVGY64ySEQ==}
-    engines: {node: '>=18.0.0'}
-    peerDependencies:
-      zod: ^3.18.0
-    peerDependenciesMeta:
-      zod:
-        optional: true
+  zod-validation-error@2.1.0(zod@3.22.4):
     dependencies:
       zod: 3.22.4
-    dev: false
 
-  /zod@3.22.4:
-    resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
-    dev: false
-  
+  zod-validation-error@3.3.0(zod@3.22.4):
+    dependencies:
+      zod: 3.22.4
+
   zod@3.22.4: {}
 
   zwitch@2.0.4: {}
