@@ -31,5 +31,9 @@ export async function fetchNode({
 		{ next: isMainVersion ? { revalidate: 0 } : { revalidate: 604_800 } },
 	);
 
+	if (!fileContent.ok) {
+		return null;
+	}
+
 	return fileContent.json();
 }
