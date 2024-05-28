@@ -44,11 +44,11 @@ export interface IBaseBroker<TEvents extends Record<string, any>> {
 	/**
 	 * Subscribes to the given events, grouping them by the given group name
 	 */
-	subscribe(group: string, events: (keyof TEvents)[]): Promise<void>;
+	subscribe(events: (keyof TEvents)[]): Promise<void>;
 	/**
 	 * Unsubscribes from the given events - it's required to pass the same group name as when subscribing for proper cleanup
 	 */
-	unsubscribe(group: string, events: (keyof TEvents)[]): Promise<void>;
+	unsubscribe(events: (keyof TEvents)[]): Promise<void>;
 }
 
 export interface IPubSubBroker<TEvents extends Record<string, any>>
