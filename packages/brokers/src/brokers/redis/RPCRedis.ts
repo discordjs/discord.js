@@ -24,7 +24,7 @@ export interface RPCRedisBrokerOptions extends RedisBrokerOptions {
 export const DefaultRPCRedisBrokerOptions = {
 	...DefaultRedisBrokerOptions,
 	timeout: 5_000,
-} as const satisfies Required<RPCRedisBrokerOptions>;
+} as const satisfies Required<Omit<RPCRedisBrokerOptions, 'group'>>;
 
 /**
  * RPC broker powered by Redis
@@ -114,11 +114,11 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 		});
 	}
 
-	protected emitEvent(id: Buffer, group: string, event: string, data: unknown) {
+	protected emitEvent(id: Buffer, event: string, data: unknown) {
 		const payload: { ack(): Promise<void>; data: unknown; reply(data: unknown): Promise<void> } = {
 			data,
 			ack: async () => {
-				await this.redisClient.xack(event, group, id);
+				await this.redisClient.xack(event, this.options.group, id);
 			},
 			reply: async (data) => {
 				await this.redisClient.publish(`${event}:${id.toString()}`, this.options.encode(data));
