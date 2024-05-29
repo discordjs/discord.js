@@ -197,7 +197,6 @@ export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 		await this.unsubscribe(Array.from(this.subscribedEvents));
 		this.streamReadClient.disconnect();
 		this.redisClient.disconnect();
-		this.removeAllListeners();
 	}
 
 	/**
