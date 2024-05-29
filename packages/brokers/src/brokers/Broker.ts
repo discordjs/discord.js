@@ -42,7 +42,7 @@ export type ToEventMap<
 
 export interface IBaseBroker<TEvents extends Record<string, any>> {
 	/**
-	 * Subscribes to the given events, grouping them by the given group name
+	 * Subscribes to the given events
 	 */
 	subscribe(events: (keyof TEvents)[]): Promise<void>;
 	/**
