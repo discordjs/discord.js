@@ -46,7 +46,7 @@ export interface IBaseBroker<TEvents extends Record<string, any>> {
 	 */
 	subscribe(events: (keyof TEvents)[]): Promise<void>;
 	/**
-	 * Unsubscribes from the given events - it's required to pass the same group name as when subscribing for proper cleanup
+	 * Unsubscribes from the given events
 	 */
 	unsubscribe(events: (keyof TEvents)[]): Promise<void>;
 }
