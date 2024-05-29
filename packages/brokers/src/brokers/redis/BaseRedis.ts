@@ -194,7 +194,7 @@ export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 	 * Destroys the broker, closing all connections
 	 */
 	public async destroy() {
-		await this.unsubscribe(Array.from(this.subscribedEvents));
+		await this.unsubscribe([...this.subscribedEvents]);
 		this.streamReadClient.disconnect();
 		this.redisClient.disconnect();
 	}
