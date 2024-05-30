@@ -3322,7 +3322,7 @@ export class User extends Base {
 
   public accentColor: number | null | undefined;
   public avatar: string | null;
-  /** @deprecated Use {@link avatarDecorationData} instead */
+  /** @deprecated Use {@link User.avatarDecorationData} instead */
   public avatarDecoration: string | null;
   public avatarDecorationData: AvatarDecorationData | null;
   public banner: string | null | undefined;
