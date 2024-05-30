@@ -31,7 +31,7 @@ export interface MappedComponentTypes {
 	 */
 	[ComponentType.StringSelect]: StringSelectMenuBuilder;
 	/**
-	 * The text inpiut component type is associated with an {@link TextInputBuilder}.
+	 * The text input component type is associated with an {@link TextInputBuilder}.
 	 */
 	[ComponentType.TextInput]: TextInputBuilder;
 	/**
