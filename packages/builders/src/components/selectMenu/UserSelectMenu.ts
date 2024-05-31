@@ -59,7 +59,7 @@ export class UserSelectMenuBuilder extends BaseSelectMenuBuilder<APIUserSelectCo
 	}
 
 	/**
-	 * Sets default users to this auto populated select menu.
+	 * Sets default users for this auto populated select menu.
 	 *
 	 * @param users - The users to set
 	 */
