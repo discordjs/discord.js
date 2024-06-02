@@ -411,6 +411,11 @@
  */
 
 /**
+ * @external InviteType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InviteType}
+ */
+
+/**
  * @external InviteTargetType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InviteTargetType}
  */

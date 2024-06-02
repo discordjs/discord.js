@@ -180,6 +180,7 @@ import {
   APIPollAnswer,
   APISelectMenuDefaultValue,
   SelectMenuDefaultValueType,
+  InviteType,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -1990,6 +1991,7 @@ export class Invite extends Base {
   public targetUser: User | null;
   public targetType: InviteTargetType | null;
   public temporary: boolean | null;
+  public type: InviteType;
   public get url(): string;
   public uses: number | null;
   public delete(reason?: string): Promise<Invite>;
