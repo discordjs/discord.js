@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.8.2](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.8.1...@discordjs/builders@1.8.2) - (2024-06-02)
+
+## Bug Fixes
+
+- **SlashCommandBuilder:** Add missing shared properties (#10255) ([29fd89f](https://github.com/discordjs/discord.js/commit/29fd89f23c22ac5b4ce0a3ed34f5d27e28b1a0b8))
+
+## Documentation
+
+- **SelectMenuBuilder:** Correct grammatical errors  (#10309) ([aae2faf](https://github.com/discordjs/discord.js/commit/aae2faf9e923a268f84c8b7fb3283aea09dca586))
+- **TextInputBuilder:** Correct constructor documentation (#10308) ([c1e6890](https://github.com/discordjs/discord.js/commit/c1e6890132d5597a6ebd9d79383ec572582c0601))
+- **MappedComponentTypes:** Fix "inpiut" typo (#10306) ([29a50bb](https://github.com/discordjs/discord.js/commit/29a50bb476e8e84896dbaec96c6009589afaafbf))
+
+# [@discordjs/builders@1.8.1](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.8.0...@discordjs/builders@1.8.1) - (2024-05-05)
+
+## Bug Fixes
+
+- Slashcommand builder type split (#10253) ([07c1210](https://github.com/discordjs/discord.js/commit/07c12101e534fdce836a94bc571b53f75979ea86))
+- Don't mutate user provided array (#10014) ([7ea3638](https://github.com/discordjs/discord.js/commit/7ea3638dbcf38926596fb5da8b85040e70f1b98b))
+- Minify mainlib docs json (#9963) ([4b88306](https://github.com/discordjs/discord.js/commit/4b88306dcb2b16b840ec61e9e33047af3a31c45d))
+
+## Documentation
+
+- Split docs.api.json into multiple json files ([597340f](https://github.com/discordjs/discord.js/commit/597340f288437c35da8c703d9b621274de60d880))
+
+## Features
+
+- **api-extractor:** Support `export * as ___` syntax (#10173) ([1c5de21](https://github.com/discordjs/discord.js/commit/1c5de21a2905fe21b54dea805013f089ed9000d0))
+- Allow RestOrArray for command option builders (#10175) ([a1a3a95](https://github.com/discordjs/discord.js/commit/a1a3a95c94194a8ab789d567a778b376e13ea973))
+- Local and preview detection ([79fbda3](https://github.com/discordjs/discord.js/commit/79fbda3aac6d4f0f8bfb193e797d09cbe331d315))
+
+## Refactor
+
+- Docs (#10126) ([18cce83](https://github.com/discordjs/discord.js/commit/18cce83d80598c430218775c53441b6b2ecdc776))
+- Make builders types great again (#10026) ([a0c83a2](https://github.com/discordjs/discord.js/commit/a0c83a254c21dad5ac14b649a95ded57d6678d95))
+
 # [@discordjs/builders@1.8.1](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.8.0...@discordjs/builders@1.8.1) - (2024-05-05)
 
 ## Bug Fixes
