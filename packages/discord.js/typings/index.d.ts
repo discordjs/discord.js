@@ -180,6 +180,7 @@ import {
   APIPollAnswer,
   APISelectMenuDefaultValue,
   SelectMenuDefaultValueType,
+  InviteType,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -1990,6 +1991,7 @@ export class Invite extends Base {
   public targetUser: User | null;
   public targetType: InviteTargetType | null;
   public temporary: boolean | null;
+  public type: InviteType;
   public get url(): string;
   public uses: number | null;
   public delete(reason?: string): Promise<Invite>;
@@ -3311,6 +3313,11 @@ export class Typing extends Base {
   };
 }
 
+export interface AvatarDecorationData {
+  asset: string;
+  skuId: Snowflake;
+}
+
 // tslint:disable-next-line no-empty-interface
 export interface User extends PartialTextBasedChannelFields<false> {}
 export class User extends Base {
@@ -3319,7 +3326,9 @@ export class User extends Base {
 
   public accentColor: number | null | undefined;
   public avatar: string | null;
+  /** @deprecated Use {@link User.avatarDecorationData} instead */
   public avatarDecoration: string | null;
+  public avatarDecorationData: AvatarDecorationData | null;
   public banner: string | null | undefined;
   public bot: boolean;
   public get createdAt(): Date;
