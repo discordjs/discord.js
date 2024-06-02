@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-# [14.15.3](https://github.com/discordjs/discord.js/compare/14.15.1...14.15.3) - (2024-06-02)
+# [14.15.3](https://github.com/discordjs/discord.js/compare/14.15.2...14.15.3) - (2024-06-02)
 
 ## Bug Fixes
 
