@@ -2,6 +2,7 @@ import { VscGithubInverted } from '@react-icons/all-files/vsc/VscGithubInverted'
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { fetchSitemap } from '~/util/fetchSitemap';
 import { fetchVersions } from '~/util/fetchVersions';
 import { resolveNodeKind } from './DocKind';
@@ -28,6 +29,11 @@ export async function Navigation({
 	readonly version: string;
 }) {
 	const node = await fetchSitemap({ packageName, version });
+
+	if (!node) {
+		notFound();
+	}
+
 	const versions = await fetchVersions(packageName);
 
 	const groupedNodes = node.reduce((acc: any, node: any) => {

@@ -96,9 +96,9 @@ export interface OptionalWebSocketManagerOptions {
 	 */
 	buildStrategy(manager: WebSocketManager): IShardingStrategy;
 	/**
-	 * The transport compression method to use - mutually exclusive with `useIdentifyCompression`
+	 * The compression method to use
 	 *
-	 * @defaultValue `null` (no transport compression)
+	 * @defaultValue `null` (no compression)
 	 */
 	compression: CompressionMethod | null;
 	/**
@@ -176,12 +176,6 @@ export interface OptionalWebSocketManagerOptions {
 	 * Function used to store session information for a given shard
 	 */
 	updateSessionInfo(shardId: number, sessionInfo: SessionInfo | null): Awaitable<void>;
-	/**
-	 * Whether to use the `compress` option when identifying
-	 *
-	 * @defaultValue `false`
-	 */
-	useIdentifyCompression: boolean;
 	/**
 	 * The gateway version to use
 	 *

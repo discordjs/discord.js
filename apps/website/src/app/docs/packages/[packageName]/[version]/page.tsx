@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import rehypeShikiFromHighlighter from '@shikijs/rehype/core';
-import { MDXRemote } from 'next-mdx-remote/rsc';
+import { MDXRemote } from 'next-mdx-remote-client/rsc';
 import remarkGfm from 'remark-gfm';
 import { getHighlighterCore } from 'shiki/core';
 import getWasm from 'shiki/wasm';
@@ -30,7 +30,7 @@ export default async function Page({ params }: { readonly params: { readonly pac
 						remarkPlugins: [remarkGfm],
 						rehypePlugins: [
 							[
-								rehypeShikiFromHighlighter as any,
+								rehypeShikiFromHighlighter,
 								highlighter,
 								{
 									themes: {

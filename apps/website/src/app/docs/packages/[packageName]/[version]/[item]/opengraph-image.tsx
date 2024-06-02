@@ -1,4 +1,5 @@
 /* eslint-disable react/no-unknown-property */
+
 import { ImageResponse } from 'next/og';
 import { resolveKind } from '~/util/resolveNodeKind';
 

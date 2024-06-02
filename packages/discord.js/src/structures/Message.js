@@ -354,15 +354,15 @@ class Message extends Base {
      * Reference data sent in a message that contains ids identifying the referenced message.
      * This can be present in the following types of message:
      * * Crossposted messages (`MessageFlags.Crossposted`)
-     * * {@link MessageType.ChannelFollowAdd}
      * * {@link MessageType.ChannelPinnedMessage}
+     * * {@link MessageType.ChannelFollowAdd}
      * * {@link MessageType.Reply}
      * * {@link MessageType.ThreadStarterMessage}
      * @see {@link https://discord.com/developers/docs/resources/channel#message-types}
      * @typedef {Object} MessageReference
-     * @property {Snowflake} channelId The channel's id the message was referenced
-     * @property {?Snowflake} guildId The guild's id the message was referenced
-     * @property {?Snowflake} messageId The message's id that was referenced
+     * @property {Snowflake} channelId The channel id that was referenced
+     * @property {Snowflake|undefined} guildId The guild id that was referenced
+     * @property {Snowflake|undefined} messageId The message id that was referenced
      */
 
     if ('message_reference' in data) {
@@ -708,6 +708,7 @@ class Message extends Base {
   async fetchReference() {
     if (!this.reference) throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
     const { channelId, messageId } = this.reference;
+    if (!messageId) throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
     const channel = this.client.channels.resolve(channelId);
     if (!channel) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
     const message = await channel.messages.fetch(messageId);
@@ -972,10 +973,12 @@ class Message extends Base {
       this.id === message.id &&
       this.author.id === message.author.id &&
       this.content === message.content &&
-      this.tts === message.tts &&
       this.nonce === message.nonce &&
+      this.tts === message.tts &&
+      this.attachments.size === message.attachments.size &&
       this.embeds.length === message.embeds.length &&
-      this.attachments.length === message.attachments.length;
+      this.attachments.every(attachment => message.attachments.has(attachment.id)) &&
+      this.embeds.every((embed, index) => embed.equals(message.embeds[index]));
 
     if (equal && rawData) {
       equal =

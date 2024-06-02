@@ -47,6 +47,7 @@ export class OAuth2API {
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
+			auth: false,
 			signal,
 		}) as Promise<RESTPostOAuth2AccessTokenResult>;
 	}
@@ -68,6 +69,7 @@ export class OAuth2API {
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
+			auth: false,
 			signal,
 		}) as Promise<RESTPostOAuth2RefreshTokenResult>;
 	}
@@ -91,6 +93,7 @@ export class OAuth2API {
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
+			auth: false,
 			signal,
 		}) as Promise<RESTPostOAuth2ClientCredentialsResult>;
 	}
