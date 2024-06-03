@@ -7,7 +7,7 @@ import { ComponentBuilder } from '../Component.js';
  *
  * @typeParam SelectMenuType - The type of select menu this would be instantiated for.
  */
-export class BaseSelectMenuBuilder<
+export abstract class BaseSelectMenuBuilder<
 	SelectMenuType extends APISelectMenuComponent,
 > extends ComponentBuilder<SelectMenuType> {
 	/**

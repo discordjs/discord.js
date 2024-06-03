@@ -49,7 +49,7 @@ class ModalSubmitInteraction extends BaseInteraction {
      * The components within the modal
      * @type {ActionRowModalData[]}
      */
-    this.components = data.data.components?.map(c => ModalSubmitInteraction.transformComponent(c));
+    this.components = data.data.components?.map(component => ModalSubmitInteraction.transformComponent(component));
 
     /**
      * The fields within the modal
@@ -88,12 +88,16 @@ class ModalSubmitInteraction extends BaseInteraction {
    * @returns {ModalData[]}
    */
   static transformComponent(rawComponent) {
-    return {
-      value: rawComponent.value,
-      type: rawComponent.type,
-      customId: rawComponent.custom_id,
-      components: rawComponent.components?.map(c => this.transformComponent(c)),
-    };
+    return rawComponent.components
+      ? {
+          type: rawComponent.type,
+          components: rawComponent.components.map(component => this.transformComponent(component)),
+        }
+      : {
+          value: rawComponent.value,
+          type: rawComponent.type,
+          customId: rawComponent.custom_id,
+        };
   }
 
   /**
@@ -114,6 +118,7 @@ class ModalSubmitInteraction extends BaseInteraction {
   followUp() {}
   deferUpdate() {}
   update() {}
+  sendPremiumRequired() {}
 }
 
 InteractionResponses.applyToClass(ModalSubmitInteraction, 'showModal');

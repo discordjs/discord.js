@@ -52,6 +52,10 @@
   color: e4e669
 - name: need repro
   color: c66037
+- name: packages:api-extractor
+  color: fbca04
+- name: packages:api-extractor-model
+  color: fbca04
 - name: packages:brokers
   color: fbca04
 - name: packages:builders
@@ -60,13 +64,15 @@
   color: fbca04
 - name: packages:core
   color: fbca04
-- name: packages:discord.js
+- name: packages:create-discord-bot
   color: fbca04
-- name: packages:next
+- name: packages:discord.js
   color: fbca04
 - name: packages:docgen
   color: fbca04
 - name: packages:formatters
+  color: fbca04
+- name: packages:next
   color: fbca04
 - name: packages:proxy
   color: fbca04

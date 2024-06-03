@@ -1,0 +1,12 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig.json",
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"types": ["jest", "node"],
+		"isolatedModules": false,
+		"outDir": "./dist",
+		"esModuleInterop": true
+	},
+	"include": ["src/**/*.ts"],
+	"exclude": ["node_modules"]
+}

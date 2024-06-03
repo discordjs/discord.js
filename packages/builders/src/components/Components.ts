@@ -23,31 +23,31 @@ export interface MappedComponentTypes {
 	 */
 	[ComponentType.ActionRow]: ActionRowBuilder<AnyComponentBuilder>;
 	/**
-	 * The button component type is associated with an {@link ButtonBuilder}.
+	 * The button component type is associated with a {@link ButtonBuilder}.
 	 */
 	[ComponentType.Button]: ButtonBuilder;
 	/**
-	 * The string select component type is associated with an {@link StringSelectMenuBuilder}.
+	 * The string select component type is associated with a {@link StringSelectMenuBuilder}.
 	 */
 	[ComponentType.StringSelect]: StringSelectMenuBuilder;
 	/**
-	 * The text inpiut component type is associated with an {@link TextInputBuilder}.
+	 * The text input component type is associated with a {@link TextInputBuilder}.
 	 */
 	[ComponentType.TextInput]: TextInputBuilder;
 	/**
-	 * The user select component type is associated with an {@link UserSelectMenuBuilder}.
+	 * The user select component type is associated with a {@link UserSelectMenuBuilder}.
 	 */
 	[ComponentType.UserSelect]: UserSelectMenuBuilder;
 	/**
-	 * The role select component type is associated with an {@link RoleSelectMenuBuilder}.
+	 * The role select component type is associated with a {@link RoleSelectMenuBuilder}.
 	 */
 	[ComponentType.RoleSelect]: RoleSelectMenuBuilder;
 	/**
-	 * The mentionable select component type is associated with an {@link MentionableSelectMenuBuilder}.
+	 * The mentionable select component type is associated with a {@link MentionableSelectMenuBuilder}.
 	 */
 	[ComponentType.MentionableSelect]: MentionableSelectMenuBuilder;
 	/**
-	 * The channel select component type is associated with an {@link ChannelSelectMenuBuilder}.
+	 * The channel select component type is associated with a {@link ChannelSelectMenuBuilder}.
 	 */
 	[ComponentType.ChannelSelect]: ChannelSelectMenuBuilder;
 }
@@ -55,21 +55,23 @@ export interface MappedComponentTypes {
 /**
  * Factory for creating components from API data.
  *
- * @typeParam T - The type of component to use
+ * @typeParam ComponentType - The type of component to use
  * @param data - The API data to transform to a component class
  */
-export function createComponentBuilder<T extends keyof MappedComponentTypes>(
-	// eslint-disable-next-line @typescript-eslint/sort-type-union-intersection-members
-	data: (APIModalComponent | APIMessageComponent) & { type: T },
-): MappedComponentTypes[T];
+export function createComponentBuilder<ComponentType extends keyof MappedComponentTypes>(
+	// eslint-disable-next-line @typescript-eslint/sort-type-constituents
+	data: (APIModalComponent | APIMessageComponent) & { type: ComponentType },
+): MappedComponentTypes[ComponentType];
 
 /**
  * Factory for creating components from API data.
  *
- * @typeParam C - The type of component to use
+ * @typeParam ComponentBuilder - The type of component to use
  * @param data - The API data to transform to a component class
  */
-export function createComponentBuilder<C extends MessageComponentBuilder | ModalComponentBuilder>(data: C): C;
+export function createComponentBuilder<ComponentBuilder extends MessageComponentBuilder | ModalComponentBuilder>(
+	data: ComponentBuilder,
+): ComponentBuilder;
 
 export function createComponentBuilder(
 	data: APIMessageComponent | APIModalComponent | MessageComponentBuilder,

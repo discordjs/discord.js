@@ -1,6 +1,6 @@
 import { Collection } from '@discordjs/collection';
 import type { GatewaySendPayload } from 'discord-api-types/v10';
-import type { WebSocketManager } from '../../ws/WebSocketManager';
+import type { WebSocketManager } from '../../ws/WebSocketManager.js';
 import { WebSocketShard, WebSocketShardEvents, type WebSocketShardDestroyOptions } from '../../ws/WebSocketShard.js';
 import { managerToFetchingStrategyOptions } from '../context/IContextFetchingStrategy.js';
 import { SimpleContextFetchingStrategy } from '../context/SimpleContextFetchingStrategy.js';

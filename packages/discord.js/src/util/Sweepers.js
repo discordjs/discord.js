@@ -7,8 +7,8 @@ const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 
 /**
  * @typedef {Function} GlobalSweepFilter
- * @returns {Function|null} Return `null` to skip sweeping, otherwise a function passed to `sweep()`,
- * See {@link [Collection#sweep](https://discord.js.org/docs/packages/collection/stable/Collection:Class#sweep)}
+ * @returns {?Function} Return `null` to skip sweeping, otherwise a function passed to `sweep()`,
+ * See {@link https://discord.js.org/docs/packages/collection/stable/Collection:Class#sweep Collection#sweep}
  * for the definition of this function.
  */
 
@@ -104,6 +104,23 @@ class Sweepers {
    */
   sweepEmojis(filter) {
     return this._sweepGuildDirectProp('emojis', filter).items;
+  }
+
+  /**
+   * Sweeps all client application entitlements and removes the ones which are indicated by the filter.
+   * @param {Function} filter The function used to determine which entitlements will be removed from the caches.
+   * @returns {number} Amount of entitlements that were removed from the caches
+   */
+  sweepEntitlements(filter) {
+    if (typeof filter !== 'function') {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'filter', 'function');
+    }
+
+    const entitlements = this.client.application.entitlements.cache.sweep(filter);
+
+    this.client.emit(Events.CacheSweep, `Swept ${entitlements} entitlements.`);
+
+    return entitlements;
   }
 
   /**
@@ -408,6 +425,9 @@ class Sweepers {
     let items = 0;
 
     for (const guild of this.client.guilds.cache.values()) {
+      // We may be unable to sweep the cache if the guild is unavailable and was never patched
+      if (!guild.available) continue;
+
       const { cache } = guild[key];
 
       guilds++;

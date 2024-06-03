@@ -210,17 +210,17 @@ class ApplicationCommandPermissionsManager extends BaseManager {
       );
     }
 
-    let existing = [];
+    let existingPermissions = [];
     try {
-      existing = await this.fetch({ guild: guildId, command: commandId });
+      existingPermissions = await this.fetch({ guild: guildId, command: commandId });
     } catch (error) {
       if (error.code !== RESTJSONErrorCodes.UnknownApplicationCommandPermissions) throw error;
     }
 
     const newPermissions = permissions.slice();
-    for (const perm of existing) {
-      if (!newPermissions.some(x => x.id === perm.id)) {
-        newPermissions.push(perm);
+    for (const existingPermission of existingPermissions) {
+      if (!newPermissions.some(newPermission => newPermission.id === existingPermission.id)) {
+        newPermissions.push(existingPermission);
       }
     }
 
@@ -356,7 +356,6 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    * @param {HasApplicationCommandPermissionsOptions} options Options used to check permissions
    * @returns {Promise<boolean>}
    * @example
-   * // Check whether a user has permission to use a command
    * guild.commands.permissions.has({ command: '123456789012345678', permissionId: '876543210123456789' })
    *  .then(console.log)
    *  .catch(console.error);
@@ -423,11 +422,6 @@ class ApplicationCommandPermissionsManager extends BaseManager {
 module.exports = ApplicationCommandPermissionsManager;
 
 /* eslint-disable max-len */
-/**
- * @external APIApplicationCommandPermissions
- * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-permissions-object-application-command-permissions-structure}
- */
-
 /**
  * Data that resolves to an id used for an application command permission
  * @typedef {UserResolvable|RoleResolvable|GuildChannelResolvable|RolePermissionConstant|ChannelPermissionConstant} ApplicationCommandPermissionIdResolvable

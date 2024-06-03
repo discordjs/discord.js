@@ -3,14 +3,19 @@ import { ApplicationCommandOptionType, type APIApplicationCommandIntegerOption }
 import { mix } from 'ts-mixer';
 import { ApplicationCommandNumericOptionMinMaxValueMixin } from '../mixins/ApplicationCommandNumericOptionMinMaxValueMixin.js';
 import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';
-import { ApplicationCommandOptionWithChoicesAndAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin.js';
+import { ApplicationCommandOptionWithAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithAutocompleteMixin.js';
+import { ApplicationCommandOptionWithChoicesMixin } from '../mixins/ApplicationCommandOptionWithChoicesMixin.js';
 
 const numberValidator = s.number.int;
 
 /**
  * A slash command integer option.
  */
-@mix(ApplicationCommandNumericOptionMinMaxValueMixin, ApplicationCommandOptionWithChoicesAndAutocompleteMixin)
+@mix(
+	ApplicationCommandNumericOptionMinMaxValueMixin,
+	ApplicationCommandOptionWithAutocompleteMixin,
+	ApplicationCommandOptionWithChoicesMixin,
+)
 export class SlashCommandIntegerOption
 	extends ApplicationCommandOptionBase
 	implements ApplicationCommandNumericOptionMinMaxValueMixin
@@ -52,10 +57,11 @@ export class SlashCommandIntegerOption
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
-		return { ...this };
+		return { ...this } as APIApplicationCommandIntegerOption;
 	}
 }
 
 export interface SlashCommandIntegerOption
 	extends ApplicationCommandNumericOptionMinMaxValueMixin,
-		ApplicationCommandOptionWithChoicesAndAutocompleteMixin<number> {}
+		ApplicationCommandOptionWithChoicesMixin<number>,
+		ApplicationCommandOptionWithAutocompleteMixin {}

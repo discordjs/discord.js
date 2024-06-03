@@ -1,33 +1,44 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/next",
 	"version": "0.1.0",
 	"description": "A powerful TypeScript library for interacting with the Discord API",
 	"scripts": {
 		"test": "vitest run",
-		"build": "tsup",
+		"build": "tsc --noEmit && tsup",
 		"build:docs": "tsc -p tsconfig.docs.json",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
-		"docs": "yarn build:docs && api-extractor run --local",
-		"prepack": "yarn build && yarn lint",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
+		"docs": "pnpm run build:docs && api-extractor run --local --minify && generate-split-documentation",
+		"prepack": "pnpm run build && pnpm run lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/next/*'",
 		"release": "cliff-jumper"
 	},
-	"main": "./dist/index.js",
-	"module": "./dist/index.mjs",
-	"typings": "./dist/index.d.ts",
 	"exports": {
 		".": {
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.js",
-			"types": "./dist/index.d.ts"
+			"require": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"import": {
+				"types": "./dist/index.d.mts",
+				"default": "./dist/index.mjs"
+			}
 		},
 		"./*": {
-			"import": "./dist/exports/*.mjs",
-			"require": "./dist/exports/*.js",
-			"types": "./dist/exports/*.d.ts"
+			"require": {
+				"types": "./dist/exports/*.d.ts",
+				"default": "./dist/exports/*.js"
+			},
+			"import": {
+				"types": "./dist/exports/*.d.mts",
+				"default": "./dist/exports/*.mjs"
+			}
 		}
 	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
 	"directories": {
 		"lib": "src",
 		"test": "__tests__"
@@ -45,12 +56,14 @@
 	"keywords": [],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/discordjs/discord.js.git"
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/next"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@discordjs/builders": "workspace:^",
 		"@discordjs/collection": "workspace:^",
@@ -59,27 +72,30 @@
 		"@discordjs/rest": "workspace:^",
 		"@discordjs/util": "workspace:^",
 		"@discordjs/ws": "workspace:^",
-		"discord-api-types": "^0.37.38"
+		"discord-api-types": "0.37.83"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^2.0.0",
-		"@microsoft/api-extractor": "^7.34.4",
-		"@types/node": "18.15.11",
-		"@vitest/coverage-c8": "^0.30.1",
+		"@discordjs/api-extractor": "workspace:^",
+		"@discordjs/scripts": "workspace:^",
+		"@favware/cliff-jumper": "^3.0.2",
+		"@types/node": "18.18.8",
+		"@vitest/coverage-v8": "^1.5.0",
 		"cross-env": "^7.0.3",
-		"esbuild-plugin-version-injector": "^1.1.0",
-		"eslint": "^8.38.0",
-		"eslint-config-neon": "^0.1.42",
-		"eslint-formatter-pretty": "^5.0.0",
-		"prettier": "^2.8.7",
-		"tsup": "^6.7.0",
-		"typescript": "^5.0.4",
-		"vitest": "^0.29.8"
+		"esbuild-plugin-version-injector": "^1.2.1",
+		"eslint": "^8.57.0",
+		"eslint-config-neon": "^0.1.62",
+		"eslint-formatter-pretty": "^6.0.1",
+		"prettier": "^3.2.5",
+		"tsup": "^8.0.2",
+		"turbo": "^1.13.2",
+		"typescript": "^5.4.5",
+		"vitest": "^1.5.0"
 	},
 	"engines": {
-		"node": ">=18.13.0"
+		"node": ">=18"
 	},
 	"publishConfig": {
-		"access": "public"
+		"access": "public",
+		"provenance": true
 	}
 }

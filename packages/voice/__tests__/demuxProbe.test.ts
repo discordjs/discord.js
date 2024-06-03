@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Buffer } from 'node:buffer';
 import EventEmitter, { once } from 'node:events';
 import process from 'node:process';

@@ -1,0 +1,82 @@
+{
+	"$schema": "https://json.schemastore.org/package.json",
+	"name": "create-discord-bot",
+	"version": "0.3.0",
+	"description": "A simple way to create a startup Discord bot.",
+	"scripts": {
+		"build": "tsc --noEmit && tsup",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
+		"prepack": "pnpm run build && pnpm run lint",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/create-discord-bot/*'",
+		"release": "cliff-jumper"
+	},
+	"type": "module",
+	"bin": "./dist/index.js",
+	"directories": {
+		"bin": "bin",
+		"lib": "src"
+	},
+	"files": [
+		"dist",
+		"template"
+	],
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Aura Román <kyradiscord@gmail.com>",
+		"Jiralite <jiralite@live.co.uk>"
+	],
+	"license": "Apache-2.0",
+	"keywords": [
+		"discord",
+		"discord-api",
+		"discord.js",
+		"create-bot",
+		"init-bot",
+		"init-discord",
+		"boilerplate"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/discordjs/discord.js.git",
+		"directory": "packages/create-discord-bot"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
+	"dependencies": {
+		"commander": "^12.0.0",
+		"fast-glob": "^3.3.2",
+		"picocolors": "^1.0.0",
+		"prompts": "^2.4.2",
+		"validate-npm-package-name": "^5.0.0"
+	},
+	"devDependencies": {
+		"@discordjs/api-extractor": "workspace:^",
+		"@favware/cliff-jumper": "^3.0.2",
+		"@types/node": "18.18.8",
+		"@types/prompts": "^2.4.9",
+		"@types/validate-npm-package-name": "^4.0.2",
+		"@vitest/coverage-v8": "^1.5.0",
+		"cross-env": "^7.0.3",
+		"eslint": "^8.57.0",
+		"eslint-config-neon": "^0.1.62",
+		"eslint-formatter-pretty": "^6.0.1",
+		"prettier": "^3.2.5",
+		"terser": "^5.29.1",
+		"tsup": "^8.0.2",
+		"typescript": "^5.4.5",
+		"vitest": "^1.5.0"
+	},
+	"engines": {
+		"node": ">=18"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	}
+}

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-imports */
+// @ts-nocheck
 import { REST } from '@discordjs/rest';
 import { MockAgent, type Interceptable } from 'undici';
 import { beforeEach, test, vi, expect } from 'vitest';

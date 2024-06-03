@@ -17,7 +17,7 @@ class GuildTextThreadManager extends ThreadManager {
 
   /**
    * Options for creating a thread. <warn>Only one of `startMessage` or `type` can be defined.</warn>
-   * @typedef {StartThreadOptions} ThreadCreateOptions
+   * @typedef {StartThreadOptions} GuildTextThreadCreateOptions
    * @property {MessageResolvable} [startMessage] The message to start a thread from.
    * <warn>If this is defined, then the `type` of thread gets inferred automatically and cannot be changed.</warn>
    * @property {ThreadChannelTypes} [type] The type of thread to create.
@@ -30,7 +30,7 @@ class GuildTextThreadManager extends ThreadManager {
 
   /**
    * Creates a new thread in the channel.
-   * @param {ThreadCreateOptions} [options] Options to create a new thread
+   * @param {GuildTextThreadCreateOptions} [options] Options to create a new thread
    * @returns {Promise<ThreadChannel>}
    * @example
    * // Create a new public thread

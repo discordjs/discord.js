@@ -3,9 +3,13 @@ import { join, isAbsolute, resolve } from 'node:path';
 import { Worker } from 'node:worker_threads';
 import { Collection } from '@discordjs/collection';
 import type { GatewaySendPayload } from 'discord-api-types/v10';
-import type { IIdentifyThrottler } from '../../throttling/IIdentifyThrottler';
-import type { SessionInfo, WebSocketManager } from '../../ws/WebSocketManager';
-import type { WebSocketShardDestroyOptions, WebSocketShardEvents, WebSocketShardStatus } from '../../ws/WebSocketShard';
+import type { IIdentifyThrottler } from '../../throttling/IIdentifyThrottler.js';
+import type { SessionInfo, WebSocketManager } from '../../ws/WebSocketManager.js';
+import type {
+	WebSocketShardDestroyOptions,
+	WebSocketShardEvents,
+	WebSocketShardStatus,
+} from '../../ws/WebSocketShard.js';
 import { managerToFetchingStrategyOptions, type FetchingStrategyOptions } from '../context/IContextFetchingStrategy.js';
 import type { IShardingStrategy } from './IShardingStrategy.js';
 
@@ -62,6 +66,10 @@ export interface WorkerShardingStrategyOptions {
 	 * Dictates how many shards should be spawned per worker thread.
 	 */
 	shardsPerWorker: number | 'all';
+	/**
+	 * Handles a payload not recognized by the handler.
+	 */
+	unknownPayloadHandler?(payload: any): unknown;
 	/**
 	 * Path to the worker file to use. The worker requires quite a bit of setup, it is recommended you leverage the {@link WorkerBootstrapper} class.
 	 */
@@ -221,7 +229,13 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			.on('messageerror', (err) => {
 				throw err;
 			})
-			.on('message', async (payload: WorkerReceivePayload) => this.onMessage(worker, payload));
+			.on('message', async (payload: any) => {
+				if ('op' in payload) {
+					await this.onMessage(worker, payload);
+				} else {
+					await this.options.unknownPayloadHandler?.(payload);
+				}
+			});
 
 		this.#workers.push(worker);
 		for (const shardId of workerData.shardIds) {
@@ -341,6 +355,11 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 				};
 				worker.postMessage(response);
 
+				break;
+			}
+
+			default: {
+				await this.options.unknownPayloadHandler?.(payload);
 				break;
 			}
 		}

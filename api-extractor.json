@@ -88,9 +88,52 @@
 		 *
 		 * DEFAULT VALUE: no overrideTsconfig section
 		 */
-		// "overrideTsconfig": {
-		//   . . .
-		// }
+		"overrideTsconfig": {
+			"compilerOptions": {
+				// Type Checking
+				"allowUnreachableCode": false,
+				"allowUnusedLabels": false,
+				"exactOptionalPropertyTypes": true,
+				"noFallthroughCasesInSwitch": true,
+				"noImplicitOverride": true,
+				"noImplicitReturns": true,
+				"noPropertyAccessFromIndexSignature": false,
+				"noUncheckedIndexedAccess": true,
+				"noUnusedLocals": true,
+				"noUnusedParameters": true,
+				"strict": true,
+
+				// Modules
+				"allowArbitraryExtensions": false,
+				"allowImportingTsExtensions": false,
+				"module": "ESNext",
+				"moduleResolution": "nodenext",
+				"resolveJsonModule": true,
+				"resolvePackageJsonExports": false,
+				"resolvePackageJsonImports": false,
+
+				// Emit
+				"declaration": true,
+				"declarationMap": true,
+				"importHelpers": false,
+				"newLine": "lf",
+				"noEmitHelpers": true,
+				"outDir": "dist",
+				"removeComments": false,
+				"sourceMap": true,
+
+				// Interop Constraints
+				"esModuleInterop": false,
+				"forceConsistentCasingInFileNames": true,
+				"isolatedModules": true,
+
+				// Language and Environment
+				"experimentalDecorators": true,
+				"lib": ["ESNext"],
+				"target": "ES2022",
+				"useDefineForClassFields": true
+			}
+		}
 		/**
 		 * This option causes the compiler to be invoked with the --skipLibCheck option. This option is not recommended
 		 * and may cause API Extractor to produce incomplete or incorrect declarations, but it may be required when
@@ -181,7 +224,7 @@
 		/**
 		 * (REQUIRED) Whether to generate the .d.ts rollup file.
 		 */
-		"enabled": false
+		"enabled": false,
 
 		/**
 		 * Specifies the output path for a .d.ts rollup file to be generated without any trimming.
@@ -195,7 +238,7 @@
 		 * SUPPORTED TOKENS: <projectFolder>, <packageName>, <unscopedPackageName>
 		 * DEFAULT VALUE: "<projectFolder>/dist/<unscopedPackageName>.d.ts"
 		 */
-		// "untrimmedFilePath": "<projectFolder>/dist/<unscopedPackageName>.d.ts",
+		"untrimmedFilePath": "<projectFolder>/dist-docs/index.d.ts"
 
 		/**
 		 * Specifies the output path for a .d.ts rollup file to be generated with trimming for an "alpha" release.

@@ -17,7 +17,6 @@ const libs = {
 			return null;
 		},
 		close: (opusPacket: Buffer, nonce: Buffer, secretKey: Uint8Array) => {
-			// eslint-disable-next-line @typescript-eslint/restrict-plus-operands
 			const output = Buffer.allocUnsafe(opusPacket.length + sodium.crypto_box_MACBYTES);
 			sodium.crypto_secretbox_easy(output, opusPacket, nonce, secretKey);
 			return output;

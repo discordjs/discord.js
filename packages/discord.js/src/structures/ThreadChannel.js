@@ -1,10 +1,13 @@
 'use strict';
 
-const { ChannelType, PermissionFlagsBits, Routes, ChannelFlags } = require('discord-api-types/v10');
+const { DiscordAPIError } = require('@discordjs/rest');
+const { lazy } = require('@discordjs/util');
+const { RESTJSONErrorCodes, ChannelFlags, ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
 const { BaseChannel } = require('./BaseChannel');
+const getThreadOnlyChannel = lazy(() => require('./ThreadOnlyChannel'));
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const { DiscordjsRangeError, ErrorCodes } = require('../errors');
-const MessageManager = require('../managers/MessageManager');
+const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors');
+const GuildMessageManager = require('../managers/GuildMessageManager');
 const ThreadMemberManager = require('../managers/ThreadMemberManager');
 const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
 
@@ -14,7 +17,7 @@ const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
  * @implements {TextBasedChannel}
  */
 class ThreadChannel extends BaseChannel {
-  constructor(guild, data, client, fromInteraction = false) {
+  constructor(guild, data, client) {
     super(guild?.client ?? client, data, false);
 
     /**
@@ -31,19 +34,19 @@ class ThreadChannel extends BaseChannel {
 
     /**
      * A manager of the messages sent to this thread
-     * @type {MessageManager}
+     * @type {GuildMessageManager}
      */
-    this.messages = new MessageManager(this);
+    this.messages = new GuildMessageManager(this);
 
     /**
      * A manager of the members that are part of this thread
      * @type {ThreadMemberManager}
      */
     this.members = new ThreadMemberManager(this);
-    if (data) this._patch(data, fromInteraction);
+    if (data) this._patch(data);
   }
 
-  _patch(data, partial = false) {
+  _patch(data) {
     super._patch(data);
 
     if ('message' in data) this.messages._add(data.message);
@@ -149,7 +152,7 @@ class ThreadChannel extends BaseChannel {
       this.lastPinTimestamp ??= null;
     }
 
-    if ('rate_limit_per_user' in data || !partial) {
+    if ('rate_limit_per_user' in data) {
       /**
        * The rate limit per user (slowmode) for this thread in seconds
        * @type {?number}
@@ -248,7 +251,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * The parent channel of this thread
-   * @type {?(NewsChannel|TextChannel|ForumChannel)}
+   * @type {?(NewsChannel|TextChannel|ForumChannel|MediaChannel)}
    * @readonly
    */
   get parent() {
@@ -291,28 +294,34 @@ class ThreadChannel extends BaseChannel {
    * @param {BaseFetchOptions} [options] The options for fetching the member
    * @returns {Promise<?ThreadMember>}
    */
-  async fetchOwner({ cache = true, force = false } = {}) {
-    if (!force) {
-      const existing = this.members.cache.get(this.ownerId);
-      if (existing) return existing;
+  async fetchOwner(options) {
+    if (!this.ownerId) {
+      throw new DiscordjsError(ErrorCodes.FetchOwnerId, 'thread');
     }
 
-    // We cannot fetch a single thread member, as of this commit's date, Discord API responds with 405
-    const members = await this.members.fetch({ cache });
-    return members.get(this.ownerId) ?? null;
+    // TODO: Remove that catch in the next major version
+    const member = await this.members._fetchSingle({ ...options, member: this.ownerId }).catch(error => {
+      if (error instanceof DiscordAPIError && error.code === RESTJSONErrorCodes.UnknownMember) {
+        return null;
+      }
+
+      throw error;
+    });
+
+    return member;
   }
 
   /**
    * Fetches the message that started this thread, if any.
    * <info>The `Promise` will reject if the original message in a forum post is deleted
    * or when the original message in the parent channel is deleted.
-   * If you just need the id of that message, use {@link ThreadChannel#id} instead.</info>
+   * If you just need the id of that message, use {@link BaseChannel#id} instead.</info>
    * @param {BaseFetchOptions} [options] Additional options for this fetch
-   * @returns {Promise<Message<true>|null>}
+   * @returns {Promise<?Message<true>>}
    */
   // eslint-disable-next-line require-await
   async fetchStarterMessage(options) {
-    const channel = this.parent?.type === ChannelType.GuildForum ? this : this.parent;
+    const channel = this.parent instanceof getThreadOnlyChannel() ? this : this.parent;
     return channel?.messages.fetch({ message: this.id, ...options }) ?? null;
   }
 
