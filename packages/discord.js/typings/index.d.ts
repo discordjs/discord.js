@@ -3555,6 +3555,19 @@ export class VoiceChannel extends BaseGuildVoiceChannel {
   public type: ChannelType.GuildVoice;
 }
 
+export class VoiceChannelEffect {
+  // TODO: Revise after discord-api-types.
+  private constructor(data: unknown, guild: Guild);
+  public guild: Guild;
+  public channelId: Snowflake;
+  public userId: Snowflake;
+  public emoji: Emoji | null;
+  // TODO: Revise after discord-api-types.
+  public animationType: 0 | 1 | null;
+  public animationId: number | null;
+  public get channel(): VoiceChannel | null;
+}
+
 export class VoiceRegion {
   private constructor(data: RawVoiceRegionData);
   public custom: boolean;
@@ -5159,6 +5172,7 @@ export interface ClientEvents {
   threadUpdate: [oldThread: AnyThreadChannel, newThread: AnyThreadChannel];
   typingStart: [typing: Typing];
   userUpdate: [oldUser: User | PartialUser, newUser: User];
+  voiceChannelEffectSend: [voiceChannelEffect: VoiceChannelEffect];
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
   webhooksUpdate: [channel: TextChannel | AnnouncementChannel | VoiceChannel | ForumChannel | MediaChannel];
   interactionCreate: [interaction: Interaction];
@@ -5353,6 +5367,7 @@ export enum Events {
   ThreadMembersUpdate = 'threadMembersUpdate',
   UserUpdate = 'userUpdate',
   PresenceUpdate = 'presenceUpdate',
+  VoiceChannelEffectSend = 'voiceChannelEffectSend',
   VoiceServerUpdate = 'voiceServerUpdate',
   VoiceStateUpdate = 'voiceStateUpdate',
   TypingStart = 'typingStart',
