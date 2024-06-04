@@ -25,7 +25,7 @@ export const pollAnswerPredicate = s.object({
 
 export const pollMultiSelectPredicate = s.boolean.setValidationEnabled(isValidationEnabled);
 
-export const pollLayoutTypePredicate = s.enum(PollLayoutType).setValidationEnabled(isValidationEnabled);
+export const pollLayoutTypePredicate = s.nativeEnum(PollLayoutType).setValidationEnabled(isValidationEnabled);
 
 export const pollAnswersArrayPredicate = pollAnswerPredicate.array.setValidationEnabled(isValidationEnabled);
 
