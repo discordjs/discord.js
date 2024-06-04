@@ -4,15 +4,17 @@ import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
 import {
 	pollAnswersArrayPredicate,
 	pollDurationPredicate,
+	pollLayoutTypePredicate,
+	pollMultiSelectPredicate,
 	pollQuestionPredicate,
 	validateAnswerLength,
 } from './Assertions';
 
 export class PollBuilder {
-	public readonly data: RESTAPIPollCreate;
+	public readonly data: Partial<RESTAPIPollCreate>;
 
 	public constructor(data: Partial<RESTAPIPollCreate> = {}) {
-		this.data = { ...data } as RESTAPIPollCreate;
+		this.data = { ...data };
 	}
 
 	public addAnswers(...answers: RestOrArray<APIPollMedia>): this {
@@ -59,11 +61,15 @@ export class PollBuilder {
 	}
 
 	public setLayoutType(type = PollLayoutType.Default): this {
+		pollLayoutTypePredicate.parse(type);
+
 		this.data.layout_type = type;
 		return this;
 	}
 
 	public setMultiSelect(multiSelect = true): this {
+		pollMultiSelectPredicate.parse(multiSelect);
+
 		this.data.allow_multiselect = multiSelect;
 		return this;
 	}
@@ -76,6 +82,6 @@ export class PollBuilder {
 	}
 
 	public toJSON(): RESTAPIPollCreate {
-		return { ...this.data };
+		return { ...this.data } as RESTAPIPollCreate;
 	}
 }

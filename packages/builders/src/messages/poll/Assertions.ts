@@ -1,5 +1,5 @@
 import { s } from '@sapphire/shapeshift';
-import type { RESTAPIPollCreate } from 'discord-api-types/v10';
+import { PollLayoutType, type RESTAPIPollCreate } from 'discord-api-types/v10';
 import { isValidationEnabled } from '../../util/validation.js';
 
 export const pollQuestionPredicate = s.string
@@ -18,12 +18,16 @@ export const pollAnswerEmojiPredicate = s.object({
 	animated: s.boolean.optional,
 });
 
-export const pollAnswerMediaPredicate = s.object({
+export const pollAnswerPredicate = s.object({
 	text: pollAnswerTextPredicate,
 	emoji: pollAnswerEmojiPredicate.optional,
 });
 
-export const pollAnswersArrayPredicate = pollAnswerMediaPredicate.array.setValidationEnabled(isValidationEnabled);
+export const pollMultiSelectPredicate = s.boolean.setValidationEnabled(isValidationEnabled);
+
+export const pollLayoutTypePredicate = s.enum(PollLayoutType).setValidationEnabled(isValidationEnabled);
+
+export const pollAnswersArrayPredicate = pollAnswerPredicate.array.setValidationEnabled(isValidationEnabled);
 
 export const answerLengthPredicate = s.number.lessThanOrEqual(10).setValidationEnabled(isValidationEnabled);
 
