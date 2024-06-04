@@ -13,7 +13,7 @@ describe('Poll', () => {
 		test('GIVEN a poll with question text THEN return valid toJSON data', () => {
 			const poll = new PollBuilder();
 
-			poll.setQuestion('foo');
+			poll.setQuestion({ text: 'foo' });
 
 			expect(poll.toJSON()).toStrictEqual({ question: { text: 'foo' } });
 		});
@@ -21,7 +21,7 @@ describe('Poll', () => {
 		test('GIVEN a poll with invalid question THEN throws error', () => {
 			const poll = new PollBuilder();
 
-			expect(() => poll.setQuestion('.'.repeat(301))).toThrowError();
+			expect(() => poll.setQuestion({ text: '.'.repeat(301) })).toThrowError();
 		});
 	});
 
