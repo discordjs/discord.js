@@ -135,13 +135,13 @@ export class PollBuilder {
 	/**
 	 * Sets the question for this poll.
 	 *
-	 * @param text - The question to use
+	 * @param data - The data to use for this poll's question
 	 */
-	public setQuestion(text: string): this {
+	public setQuestion(data: Omit<APIPollMedia, 'emoji'>): this {
 		// Data assertions
-		pollQuestionPredicate.parse(text);
+		pollQuestionPredicate.parse(data);
 
-		this.data.question = { text };
+		this.data.question = data;
 		return this;
 	}
 
@@ -149,8 +149,8 @@ export class PollBuilder {
 	 * Sets the layout type for this poll.
 	 *
 	 * @remarks
-	 * This method is redundant while only one type of poll layout exists (`1`)
-	 * due to Discord automatically setting the layout to `1` if none provided,
+	 * This method is redundant while only one type of poll layout exists (`PollLayoutType.Default`)
+	 * due to Discord automatically setting the layout to `PollLayoutType.Default` if none provided,
 	 * and thus is not required to be called when creating a poll.
 	 * @param type - The type of poll layout to use
 	 */
