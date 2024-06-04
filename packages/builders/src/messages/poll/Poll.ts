@@ -11,8 +11,8 @@ import {
 export class PollBuilder {
 	public readonly data: RESTAPIPollCreate;
 
-	public constructor(data: RESTAPIPollCreate = {} as RESTAPIPollCreate) {
-		this.data = { ...data };
+	public constructor(data: Partial<RESTAPIPollCreate> = {}) {
+		this.data = { ...data } as RESTAPIPollCreate;
 	}
 
 	public addAnswers(...answers: RestOrArray<APIPollMedia>): this {
