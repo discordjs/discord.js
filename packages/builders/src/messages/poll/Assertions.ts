@@ -2,10 +2,14 @@ import { s } from '@sapphire/shapeshift';
 import { PollLayoutType, type RESTAPIPollCreate } from 'discord-api-types/v10';
 import { isValidationEnabled } from '../../util/validation.js';
 
-export const pollQuestionPredicate = s.string
+export const pollQuestionTextPredicate = s.string
 	.lengthGreaterThanOrEqual(1)
 	.lengthLessThanOrEqual(300)
 	.setValidationEnabled(isValidationEnabled);
+
+export const pollQuestionPredicate = s.object({
+	text: pollQuestionTextPredicate,
+});
 
 export const pollAnswerTextPredicate = s.string
 	.lengthGreaterThanOrEqual(1)
