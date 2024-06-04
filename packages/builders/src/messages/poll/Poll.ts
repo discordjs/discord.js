@@ -19,6 +19,7 @@ export class PollBuilder {
 
 	public addAnswers(...answers: RestOrArray<APIPollMedia>): this {
 		const normalizedAnswers = normalizeArray(answers);
+
 		validateAnswerLength(normalizedAnswers.length, this.data.answers);
 
 		pollAnswersArrayPredicate.parse(normalizedAnswers);
