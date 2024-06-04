@@ -10,7 +10,7 @@ export const pollQuestionPredicate = s.string
 export const pollAnswerTextPredicate = s.string
 	.lengthGreaterThanOrEqual(1)
 	.lengthLessThanOrEqual(55)
-	.optional.setValidationEnabled(isValidationEnabled);
+	.setValidationEnabled(isValidationEnabled);
 
 export const pollAnswerEmojiPredicate = s.object({
 	id: s.string.nullable,
