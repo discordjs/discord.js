@@ -31,7 +31,10 @@ export const pollAnswersArrayPredicate = pollAnswerPredicate.array.setValidation
 
 export const answerLengthPredicate = s.number.lessThanOrEqual(10).setValidationEnabled(isValidationEnabled);
 
-export const pollDurationPredicate = s.number.greaterThanOrEqual(1).lessThanOrEqual(168).setValidationEnabled(isValidationEnabled);
+export const pollDurationPredicate = s.number
+	.greaterThanOrEqual(1)
+	.lessThanOrEqual(168)
+	.setValidationEnabled(isValidationEnabled);
 
 export function validateAnswerLength(amountAdding: number, answers?: RESTAPIPollCreate['answers']): void {
 	answerLengthPredicate.parse((answers?.length ?? 0) + amountAdding);
