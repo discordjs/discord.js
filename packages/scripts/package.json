@@ -66,25 +66,25 @@
 		"@microsoft/tsdoc-config": "0.16.2",
 		"@vercel/blob": "^0.22.3",
 		"@vercel/postgres": "^0.8.0",
-		"commander": "^12.0.0",
+		"commander": "^12.1.0",
 		"tslib": "^2.6.2",
-		"undici": "6.13.0",
-		"yaml": "2.4.1"
+		"undici": "6.18.2",
+		"yaml": "2.4.3"
 	},
 	"devDependencies": {
-		"@turbo/gen": "^1.12.5",
+		"@turbo/gen": "^1.13.3",
 		"@types/node": "18.18.8",
-		"@vitest/coverage-v8": "^1.5.0",
+		"@vitest/coverage-v8": "^1.6.0",
 		"cross-env": "^7.0.3",
 		"env-cmd": "^10.1.0",
 		"eslint": "^8.57.0",
 		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.2.5",
-		"tsup": "^8.0.2",
-		"turbo": "^1.13.2",
+		"prettier": "^3.3.0",
+		"tsup": "^8.1.0",
+		"turbo": "^1.13.3",
 		"typescript": "^5.4.5",
-		"vitest": "^1.5.0"
+		"vitest": "^1.6.0"
 	},
 	"engines": {
 		"node": ">=18"

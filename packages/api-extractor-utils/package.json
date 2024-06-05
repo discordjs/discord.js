@@ -55,9 +55,9 @@
 		"eslint": "^8.57.0",
 		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.2.5",
-		"tsup": "^8.0.2",
-		"turbo": "^1.13.2",
+		"prettier": "^3.3.0",
+		"tsup": "^8.1.0",
+		"turbo": "^1.13.3",
 		"typescript": "^5.4.5"
 	},
 	"engines": {
