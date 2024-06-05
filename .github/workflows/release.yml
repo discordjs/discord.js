@@ -1,0 +1,56 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'The published name of a single package to release'
+        type: choice
+        options:
+          - discord.js
+          - '@discordjs/brokers'
+          - '@discordjs/builders'
+          - '@discordjs/collection'
+          - '@discordjs/core'
+          - '@discordjs/create-discord-bot'
+          - '@discordjs/docgen'
+          - '@discordjs/formatters'
+          - '@discordjs/next'
+          - '@discordjs/proxy'
+          - '@discordjs/rest'
+          - '@discordjs/util'
+          - '@discordjs/voice'
+          - '@discordjs/ws'
+jobs:
+  npm-publish:
+    name: npm publish
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+    if: github.repository_owner == 'discordjs'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js v20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install dependencies
+        uses: ./packages/actions/src/pnpmCache
+
+      - name: Build dependencies
+        run: pnpm run build
+
+      - name: Release packages
+        uses: ./packages/actions/src/releasePackages
+        with:
+          package: ${{ inputs.package }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,6 +1,7 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/ui",
+	"private": true,
 	"version": "0.1.0",
 	"description": "",
 	"scripts": {

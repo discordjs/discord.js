@@ -1,0 +1,8 @@
+name: 'Release Packages'
+description: 'Tags and releases any unreleased packages'
+inputs:
+  package:
+    description: 'The published name of a single package to release'
+runs:
+  using: node20
+  main: ../../dist/releasePackages/index.js
