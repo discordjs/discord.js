@@ -1,5 +1,4 @@
 import { PollLayoutType, type RESTAPIPollCreate, type APIPollMedia } from 'discord-api-types/v10';
-import {} from '../..';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
 import {
 	pollAnswersArrayPredicate,
