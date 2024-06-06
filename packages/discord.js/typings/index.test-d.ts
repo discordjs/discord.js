@@ -204,7 +204,9 @@ import {
   RoleSelectMenuComponent,
   ChannelSelectMenuComponent,
   MentionableSelectMenuComponent,
+  PartialPoll,
   Poll,
+  PartialPollAnswer,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -2540,14 +2542,35 @@ await textChannel.send({
   },
 });
 
+declare const partialPoll: PartialPoll;
+{
+  if (partialPoll.partial) {
+    expectType<null>(partialPoll.question);
+    expectType<null>(partialPoll.allowMultiselect);
+    expectType<null>(partialPoll.resultsFinalized);
+    expectType<null>(partialPoll.layoutType);
+    expectType<null>(partialPoll.expiresTimestamp);
+    expectType<null>(partialPoll.answers);
+  }
+}
+
+declare const partialPollAnswer: PartialPollAnswer;
+{
+  if (partialPollAnswer.partial) {
+    expectType<null>(partialPollAnswer.poll);
+    expectType<null>(partialPollAnswer.voteCount);
+  }
+}
 declare const poll: Poll;
 {
   expectType<Message>(await poll.end());
-
   const answer = poll.answers.first()!;
-  expectType<number>(answer.voteCount);
 
-  expectType<Collection<Snowflake, User>>(await answer.fetchVoters({ after: snowflake, limit: 10 }));
+  if (!answer.partial) {
+    expectType<number>(answer.voteCount);
+
+    expectType<Collection<Snowflake, User>>(await answer.fetchVoters({ after: snowflake, limit: 10 }));
+  }
 
   await messageManager.endPoll(snowflake);
   await messageManager.fetchPollAnswerVoters({
