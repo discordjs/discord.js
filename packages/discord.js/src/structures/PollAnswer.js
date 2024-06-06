@@ -92,12 +92,7 @@ class PollAnswer extends Base {
    * @returns {Promise<Collection<Snowflake, User>>}
    */
   fetchVoters({ after, limit } = {}) {
-    return this.poll.message.channel.messages.fetchPollAnswerVoters({
-      messageId: this.poll.message.id,
-      answerId: this.id,
-      after,
-      limit,
-    });
+    return this.users.fetch({ after, limit });
   }
 }
 
