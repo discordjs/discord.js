@@ -2,6 +2,7 @@
 
 const Base = require('./Base');
 const { Emoji } = require('./Emoji');
+const PollAnswerVoterManager = require('../managers/PollAnswerVoterManager');
 
 /**
  * Represents an answer to a {@link Poll}
@@ -14,7 +15,7 @@ class PollAnswer extends Base {
     /**
      * The {@link Poll} this answer is part of
      * @name PollAnswer#poll
-     * @type {Poll}
+     * @type {Poll | PartialPoll}
      * @readonly
      */
     Object.defineProperty(this, 'poll', { value: poll });
@@ -30,6 +31,12 @@ class PollAnswer extends Base {
      * @type {?string}
      */
     this.text = data.poll_media.text ?? null;
+
+    /**
+     * The manager of the users that voted for this answer
+     * @type {PollAnswerVoterManager}
+     */
+    this.users = new PollAnswerVoterManager(this, []);
 
     /**
      * The raw emoji of this answer
@@ -62,6 +69,14 @@ class PollAnswer extends Base {
   get emoji() {
     if (!this._emoji || (!this._emoji.id && !this._emoji.name)) return null;
     return this.client.emojis.resolve(this._emoji.id) ?? new Emoji(this.client, this._emoji);
+  }
+
+  /**
+   * Whether or not this answer is a partial.
+   * @type {boolean}
+   */
+  get partial() {
+    return this.poll.partial;
   }
 
   /**

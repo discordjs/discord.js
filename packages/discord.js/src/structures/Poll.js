@@ -11,8 +11,29 @@ const { ErrorCodes } = require('../errors/index');
  * @extends {Base}
  */
 class Poll extends Base {
-  constructor(client, data, message) {
+  constructor(client, data, message, channel) {
     super(client);
+
+    /**
+     * The id of the channel that this poll is in
+     * @type {Snowflake}
+     */
+    this.channelId = data.channel_id;
+
+    /**
+     * The channel that this poll is in
+     * @name Poll#channel
+     * @type {TextBasedChannel}
+     * @readonly
+     */
+
+    Object.defineProperty(this, 'channel', { value: channel });
+
+    /**
+     * The id of the message that started this poll
+     * @type {Snowflake}
+     */
+    this.messageId = data.message_id;
 
     /**
      * The message that started this poll
@@ -39,7 +60,7 @@ class Poll extends Base {
 
     /**
      * The answers of this poll
-     * @type {Collection<number, PollAnswer>}
+     * @type {Collection<number, PollAnswer | PartialPollAnswer>}
      */
     this.answers = data.answers.reduce(
       (acc, answer) => acc.set(answer.answer_id, new PollAnswer(this.client, answer, this)),
@@ -91,6 +112,40 @@ class Poll extends Base {
    */
   get expiresAt() {
     return new Date(this.expiresTimestamp);
+  }
+
+  /**
+   * Whether or not this poll is a partial
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return (
+      typeof this.question.text !== 'string' ||
+      typeof this.layoutType !== 'number' ||
+      typeof this.allowMultiselect !== 'boolean'
+    );
+  }
+
+  /**
+   * Fetches the poll
+   * @returns {Promise<Poll>}
+   */
+  async fetch() {
+    const message = await this.message.channel.messages.fetch(this.message.id);
+
+    const existing = message.poll;
+    this._patch(existing);
+
+    return this;
+  }
+
+  /**
+   * Fetches the message that started this poll
+   * @returns {Promise<Message>}
+   */
+  fetchMessage() {
+    return this.message.channel.messages.fetch(this.message.id);
   }
 
   /**
