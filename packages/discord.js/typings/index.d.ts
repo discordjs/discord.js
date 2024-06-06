@@ -2602,16 +2602,28 @@ export interface PollQuestionMedia {
   text: string;
 }
 
+export class PollAnswerVoterManager extends CachedManager<Snowflake, User, UserResolvable> {
+  public constructor(answer: PollAnswer, iterable: Iterable<APIUser>);
+  public answer: PollAnswer;
+  public fetch(): Promise<Collection<Snowflake, User>>;
+}
+
 export class Poll extends Base {
-  private constructor(client: Client<true>, data: APIPoll, message: Message);
+  private constructor(client: Client<true>, data: APIPoll, message: Message, channel: TextBasedChannel);
+  public readonly channel: TextBasedChannel;
+  public channelId: Snowflake;
   public readonly message: Message;
+  public messageId: Snowflake;
   public question: PollQuestionMedia;
-  public answers: Collection<number, PollAnswer>;
+  public answers: Collection<number, PollAnswer | PartialPollAnswer>;
   public expiresTimestamp: number;
   public get expiresAt(): Date;
   public allowMultiselect: boolean;
   public layoutType: PollLayoutType;
   public resultsFinalized: boolean;
+  public get partial(): false;
+  public fetch(): Promise<Poll>;
+  public fetchMessage(): Promise<Message>;
   public end(): Promise<Message>;
 }
 
@@ -2623,11 +2635,13 @@ export interface BaseFetchPollAnswerVotersOptions {
 export class PollAnswer extends Base {
   private constructor(client: Client<true>, data: APIPollAnswer & { count?: number }, poll: Poll);
   private _emoji: APIPartialEmoji | null;
-  public readonly poll: Poll;
+  public readonly poll: Poll | PartialPoll;
   public id: number;
   public text: string | null;
   public voteCount: number;
+  public users: PollAnswerVoterManager;
   public get emoji(): GuildEmoji | Emoji | null;
+  public get partial(): false;
   public fetchVoters(options?: BaseFetchPollAnswerVotersOptions): Promise<Collection<Snowflake, User>>;
 }
 
@@ -4678,7 +4692,9 @@ export type AllowedPartial =
   | Message
   | MessageReaction
   | GuildScheduledEvent
-  | ThreadMember;
+  | ThreadMember
+  | Poll
+  | PollAnswer;
 
 export type AllowedThreadTypeForNewsChannel = ChannelType.AnnouncementThread;
 
@@ -6535,6 +6551,14 @@ export interface PartialMessage
 
 export interface PartialMessageReaction extends Partialize<MessageReaction, 'count'> {}
 
+export interface PartialPoll
+  extends Partialize<
+    Poll,
+    'allowMultiselect' | 'answers' | 'expiresTimestamp' | 'layoutType' | 'question' | 'resultsFinalized' | 'message'
+  > {}
+
+export interface PartialPollAnswer extends Partialize<PollAnswer, 'voteCount' | 'emoji' | 'poll' | 'text'> {}
+
 export interface PartialGuildScheduledEvent
   extends Partialize<GuildScheduledEvent, 'userCount', 'status' | 'privacyLevel' | 'name' | 'entityType'> {}
 
@@ -6559,6 +6583,8 @@ export enum Partials {
   Reaction,
   GuildScheduledEvent,
   ThreadMember,
+  Poll,
+  PollAnswer,
 }
 
 export interface PartialUser extends Partialize<User, 'username' | 'tag' | 'discriminator'> {}
