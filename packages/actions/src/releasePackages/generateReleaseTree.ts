@@ -1,16 +1,25 @@
-import { create } from '@actions/glob';
+import { execSync } from 'node:child_process';
+import { readFile } from 'node:fs/promises';
 
 const nonNodePackages = new Set(['@discordjs/proxy-container']);
-const globber = await create(`packages/*/package.json`);
 
-interface PackageJSON {
-	dependencies?: Record<string, string>;
+interface pnpmTreeDependency {
+	from: string;
+	path: string;
+	version: string;
+}
+
+interface pnpmTree {
+	dependencies?: Record<string, pnpmTreeDependency>;
 	name?: string;
+	path: string;
 	private?: boolean;
+	unsavedDependencies?: Record<string, pnpmTreeDependency>;
 	version?: string;
 }
 
 export interface ReleaseEntry {
+	changelog?: string;
 	dependsOn?: string[];
 	name: string;
 	version: string;
@@ -18,28 +27,56 @@ export interface ReleaseEntry {
 
 async function getReleaseEntries() {
 	const releaseEntries: ReleaseEntry[] = [];
-	for await (const packageJsonPath of globber.globGenerator()) {
-		const { default: packageJson }: { default: PackageJSON } = await import(`file://${packageJsonPath}`, {
-			with: { type: 'json' },
-		});
+	const packageList: pnpmTree[] = JSON.parse(
+		// This is a command line utility
+		// eslint-disable-next-line n/no-sync
+		execSync('pnpm list --recursive --only-projects --filter {packages/*} --prod --json', { encoding: 'utf8' }),
+	);
+	for (const pkg of packageList) {
 		// Don't release private packages ever (npm will error anyways)
-		if (packageJson.private) continue;
-
+		if (pkg.private) continue;
 		// Just in case
-		if (!packageJson.version || !packageJson.name) continue;
-
-		if (nonNodePackages.has(packageJson.name)) continue;
+		if (!pkg.version || !pkg.name) continue;
+		if (nonNodePackages.has(pkg.name)) continue;
 
 		const release: ReleaseEntry = {
-			name: packageJson.name,
-			version: packageJson.version,
+			name: pkg.name,
+			version: pkg.version,
 		};
 
-		for (const [dep, depVersion] of Object.entries(packageJson.dependencies ?? {})) {
-			if (depVersion.startsWith('workspace')) {
-				release.dependsOn ??= [];
-				release.dependsOn.push(dep);
+		try {
+			// Find and parse changelog to post in github release
+			const changelogFile = await readFile(`${pkg.path}/CHANGELOG.md`, 'utf8');
+
+			let changelogLines: string[] = [];
+			let foundChangelog = false;
+
+			for (const line of changelogFile.split('\n')) {
+				if (line.startsWith('# [')) {
+					if (foundChangelog) {
+						if (changelogLines.at(-1) === '') {
+							changelogLines = changelogLines.slice(2, -1);
+						}
+
+						break;
+					}
+
+					foundChangelog = true;
+				}
+
+				if (foundChangelog) {
+					changelogLines.push(line);
+				}
 			}
+
+			release.changelog = changelogLines.join('\n');
+		} catch (error) {
+			// Probably just no changelog file but log just in case
+			console.error(`Error parsing changelog for ${pkg.name}, will use auto generated`, error);
+		}
+
+		if (pkg.dependencies) {
+			release.dependsOn = Object.keys(pkg.dependencies);
 		}
 
 		releaseEntries.push(release);
