@@ -1,15 +1,11 @@
 'use strict';
 
+const process = require('node:process');
+const { formatEmoji } = require('@discordjs/formatters');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
 
-/**
- * Represents raw emoji data from the API
- * @typedef {APIEmoji} RawEmoji
- * @property {?Snowflake} id The emoji's id
- * @property {?string} name The emoji's name
- * @property {?boolean} animated Whether the emoji is animated
- */
+let deprecationEmittedForURL = false;
 
 /**
  * Represents an emoji, see {@link GuildEmoji} and {@link ReactionEmoji}.
@@ -34,7 +30,7 @@ class Emoji extends Base {
      * The emoji's id
      * @type {?Snowflake}
      */
-    this.id = emoji.id;
+    this.id = emoji.id ?? null;
   }
 
   /**
@@ -48,12 +44,27 @@ class Emoji extends Base {
   }
 
   /**
-   * The URL to the emoji file if it's a custom emoji
+   * Returns a URL for the emoji or `null` if this is not a custom emoji.
+   * @param {BaseImageURLOptions} [options] Options for the image URL
+   * @returns {?string}
+   */
+  imageURL(options) {
+    return this.id && this.client.rest.cdn.emoji(this.id, options);
+  }
+
+  /**
+   * Returns a URL for the emoji or `null` if this is not a custom emoji.
    * @type {?string}
    * @readonly
+   * @deprecated Use {@link Emoji#imageURL} instead.
    */
   get url() {
-    return this.id && this.client.rest.cdn.emoji(this.id, this.animated ? 'gif' : 'png');
+    if (!deprecationEmittedForURL) {
+      process.emitWarning('The Emoji#url getter is deprecated. Use Emoji#imageURL() instead.', 'DeprecationWarning');
+      deprecationEmittedForURL = true;
+    }
+
+    return this.imageURL({ extension: this.animated ? 'gif' : 'png' });
   }
 
   /**
@@ -87,22 +98,18 @@ class Emoji extends Base {
    * reaction.message.channel.send(`The emoji used was: ${reaction.emoji}`);
    */
   toString() {
-    return this.id ? `<${this.animated ? 'a' : ''}:${this.name}:${this.id}>` : this.name;
+    return this.id ? formatEmoji({ animated: this.animated, id: this.id, name: this.name }) : this.name;
   }
 
   toJSON() {
-    return super.toJSON({
+    const json = super.toJSON({
       guild: 'guildId',
       createdTimestamp: true,
-      url: true,
       identifier: true,
     });
+    json.imageURL = this.imageURL();
+    return json;
   }
 }
 
 exports.Emoji = Emoji;
-
-/**
- * @external APIEmoji
- * @see {@link https://discord.com/developers/docs/resources/emoji#emoji-object}
- */

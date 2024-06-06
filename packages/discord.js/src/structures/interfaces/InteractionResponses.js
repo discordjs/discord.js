@@ -3,6 +3,7 @@
 const { isJSONEncodable } = require('@discordjs/util');
 const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../../errors');
+const MessageFlagsBitField = require('../../util/MessageFlagsBitField');
 const InteractionCollector = require('../InteractionCollector');
 const InteractionResponse = require('../InteractionResponse');
 const MessagePayload = require('../MessagePayload');
@@ -39,7 +40,8 @@ class InteractionResponses {
    * @property {boolean} [ephemeral] Whether the reply should be ephemeral
    * @property {boolean} [fetchReply] Whether to fetch the reply
    * @property {MessageFlags} [flags] Which flags to set for the message.
-   * <info>Only `MessageFlags.SuppressEmbeds` and `MessageFlags.Ephemeral` can be set.</info>
+   * <info>Only `MessageFlags.Ephemeral`, `MessageFlags.SuppressEmbeds`, and `MessageFlags.SuppressNotifications`
+   * can be set.</info>
    */
 
   /**
@@ -100,13 +102,14 @@ class InteractionResponses {
    */
   async reply(options) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
-    this.ephemeral = options.ephemeral ?? false;
 
     let messagePayload;
     if (options instanceof MessagePayload) messagePayload = options;
     else messagePayload = MessagePayload.create(this, options);
 
     const { body: data, files } = await messagePayload.resolveBody().resolveFiles();
+
+    this.ephemeral = new MessageFlagsBitField(data.flags).has(MessageFlags.Ephemeral);
 
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
@@ -261,6 +264,22 @@ class InteractionResponses {
   }
 
   /**
+   * Responds to the interaction with an upgrade button.
+   * <info>Only available for applications with monetization enabled.</info>
+   * @returns {Promise<void>}
+   */
+  async sendPremiumRequired() {
+    if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
+    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+      body: {
+        type: InteractionResponseType.PremiumRequired,
+      },
+      auth: false,
+    });
+    this.replied = true;
+  }
+
+  /**
    * An object containing the same properties as {@link CollectorOptions}, but a few less:
    * @typedef {Object} AwaitModalSubmitOptions
    * @property {CollectorFilter} [filter] The filter applied to this collector
@@ -303,6 +322,7 @@ class InteractionResponses {
       'deferUpdate',
       'update',
       'showModal',
+      'sendPremiumRequired',
       'awaitModalSubmit',
     ];
 

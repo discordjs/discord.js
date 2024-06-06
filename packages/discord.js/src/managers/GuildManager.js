@@ -4,8 +4,9 @@ const process = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v10');
+const { Routes, RouteBases } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
+const ShardClientUtil = require('../sharding/ShardClientUtil');
 const { Guild } = require('../structures/Guild');
 const GuildChannel = require('../structures/GuildChannel');
 const GuildEmoji = require('../structures/GuildEmoji');
@@ -13,7 +14,7 @@ const { GuildMember } = require('../structures/GuildMember');
 const Invite = require('../structures/Invite');
 const OAuth2Guild = require('../structures/OAuth2Guild');
 const { Role } = require('../structures/Role');
-const DataResolver = require('../util/DataResolver');
+const { resolveImage } = require('../util/DataResolver');
 const Events = require('../util/Events');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
@@ -96,7 +97,7 @@ class GuildManager extends CachedManager {
    */
 
   /**
-   * Resolves a GuildResolvable to a Guild object.
+   * Resolves a {@link GuildResolvable} to a {@link Guild} object.
    * @method resolve
    * @memberof GuildManager
    * @instance
@@ -178,7 +179,7 @@ class GuildManager extends CachedManager {
     const data = await this.client.rest.post(Routes.guilds(), {
       body: {
         name,
-        icon: icon && (await DataResolver.resolveImage(icon)),
+        icon: icon && (await resolveImage(icon)),
         verification_level: verificationLevel,
         default_message_notifications: defaultMessageNotifications,
         explicit_content_filter: explicitContentFilter,
@@ -272,11 +273,26 @@ class GuildManager extends CachedManager {
       const data = await this.client.rest.get(Routes.guild(id), {
         query: makeURLSearchParams({ with_counts: options.withCounts ?? true }),
       });
+      data.shardId = ShardClientUtil.shardIdForGuildId(id, this.client.options.shardCount);
       return this._add(data, options.cache);
     }
 
     const data = await this.client.rest.get(Routes.userGuilds(), { query: makeURLSearchParams(options) });
     return data.reduce((coll, guild) => coll.set(guild.id, new OAuth2Guild(this.client, guild)), new Collection());
+  }
+
+  /**
+   * Returns a URL for the PNG widget of a guild.
+   * @param {GuildResolvable} guild The guild of the widget image
+   * @param {GuildWidgetStyle} [style] The style for the widget image
+   * @returns {string}
+   */
+  widgetImageURL(guild, style) {
+    const urlSearchParams = String(makeURLSearchParams({ style }));
+
+    return `${RouteBases.api}${Routes.guildWidgetImage(this.resolveId(guild))}${
+      urlSearchParams ? `?${urlSearchParams}` : ''
+    }`;
   }
 }
 

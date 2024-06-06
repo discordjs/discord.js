@@ -1,8 +1,8 @@
 'use client';
 
 import { Scrollbars } from 'react-custom-scrollbars-2';
-import { Sidebar } from './Sidebar';
 import { useNav } from '~/contexts/nav';
+import { Sidebar } from './Sidebar';
 
 export function Nav() {
 	const { opened } = useNav();
@@ -23,7 +23,9 @@ export function Nav() {
 				)}
 				universal
 			>
-				<Sidebar />
+				<div className="flex flex-col gap-4 p-3">
+					<Sidebar />
+				</div>
 			</Scrollbars>
 		</nav>
 	);

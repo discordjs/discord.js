@@ -1,3 +1,6 @@
+@import '@unocss/reset/tailwind-compat.css';
+@unocss all;
+
 body {
 	font-family: var(--font-inter);
 	min-height: 100vh;

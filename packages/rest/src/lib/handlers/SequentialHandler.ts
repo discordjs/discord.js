@@ -1,11 +1,10 @@
-import { setTimeout as sleep } from 'node:timers/promises';
 import { AsyncQueue } from '@sapphire/async-queue';
 import type { RequestInit } from 'undici';
-import type { RateLimitData, ResponseLike } from '../REST.js';
-import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager.js';
+import type { REST } from '../REST.js';
 import type { IHandler } from '../interfaces/Handler.js';
 import { RESTEvents } from '../utils/constants.js';
-import { hasSublimit, onRateLimit } from '../utils/utils.js';
+import type { RateLimitData, ResponseLike, HandlerRequestData, RouteData } from '../utils/types.js';
+import { hasSublimit, normalizeRateLimitOffset, onRateLimit, sleep } from '../utils/utils.js';
 import { handleErrors, incrementInvalidCount, makeNetworkRequest } from './Shared.js';
 
 const enum QueueType {
@@ -63,7 +62,7 @@ export class SequentialHandler implements IHandler {
 	 * @param majorParameter - The major parameter for this handler
 	 */
 	public constructor(
-		private readonly manager: RequestManager,
+		private readonly manager: REST,
 		private readonly hash: string,
 		private readonly majorParameter: string,
 	) {
@@ -105,8 +104,9 @@ export class SequentialHandler implements IHandler {
 	/**
 	 * The time until queued requests can continue
 	 */
-	private get timeToReset(): number {
-		return this.reset + this.manager.options.offset - Date.now();
+	private getTimeToReset(routeId: RouteData): number {
+		const offset = normalizeRateLimitOffset(this.manager.options.offset, routeId.bucketRoute);
+		return this.reset + offset - Date.now();
 	}
 
 	/**
@@ -210,9 +210,11 @@ export class SequentialHandler implements IHandler {
 			let delay: Promise<void>;
 
 			if (isGlobal) {
+				const offset = normalizeRateLimitOffset(this.manager.options.offset, routeId.bucketRoute);
+
 				// Set RateLimitData based on the global limit
 				limit = this.manager.options.globalRequestsPerSecond;
-				timeout = this.manager.globalReset + this.manager.options.offset - Date.now();
+				timeout = this.manager.globalReset + offset - Date.now();
 				// If this is the first task to reach the global timeout, set the global delay
 				if (!this.manager.globalDelay) {
 					// The global delay function clears the global delay state when it is resolved
@@ -223,24 +225,29 @@ export class SequentialHandler implements IHandler {
 			} else {
 				// Set RateLimitData based on the route-specific limit
 				limit = this.limit;
-				timeout = this.timeToReset;
+				timeout = this.getTimeToReset(routeId);
 				delay = sleep(timeout);
 			}
 
 			const rateLimitData: RateLimitData = {
-				timeToReset: timeout,
-				limit,
+				global: isGlobal,
 				method: options.method ?? 'get',
-				hash: this.hash,
 				url,
 				route: routeId.bucketRoute,
 				majorParameter: this.majorParameter,
-				global: isGlobal,
+				hash: this.hash,
+				limit,
+				timeToReset: timeout,
+				retryAfter: timeout,
+				sublimitTimeout: 0,
+				scope: 'user',
 			};
+
 			// Let library users know they have hit a rate limit
 			this.manager.emit(RESTEvents.RateLimited, rateLimitData);
 			// Determine whether a RateLimitError should be thrown
 			await onRateLimit(this.manager, rateLimitData);
+
 			// When not erroring, emit debug for what is happening
 			if (isGlobal) {
 				this.debug(`Global rate limit hit, blocking all requests for ${timeout}ms`);
@@ -278,16 +285,19 @@ export class SequentialHandler implements IHandler {
 		const reset = res.headers.get('X-RateLimit-Reset-After');
 		const hash = res.headers.get('X-RateLimit-Bucket');
 		const retry = res.headers.get('Retry-After');
+		const scope = (res.headers.get('X-RateLimit-Scope') ?? 'user') as RateLimitData['scope'];
+
+		const offset = normalizeRateLimitOffset(this.manager.options.offset, routeId.bucketRoute);
 
 		// Update the total number of requests that can be made before the rate limit resets
 		this.limit = limit ? Number(limit) : Number.POSITIVE_INFINITY;
 		// Update the number of remaining requests that can be made before the rate limit resets
 		this.remaining = remaining ? Number(remaining) : 1;
 		// Update the time when this rate limit resets (reset-after is in seconds)
-		this.reset = reset ? Number(reset) * 1_000 + Date.now() + this.manager.options.offset : Date.now();
+		this.reset = reset ? Number(reset) * 1_000 + Date.now() + offset : Date.now();
 
 		// Amount of time in milliseconds until we should retry if rate limited (globally or otherwise)
-		if (retry) retryAfter = Number(retry) * 1_000 + this.manager.options.offset;
+		if (retry) retryAfter = Number(retry) * 1_000 + offset;
 
 		// Handle buckets via the hash header retroactively
 		if (hash && hash !== this.hash) {
@@ -336,25 +346,31 @@ export class SequentialHandler implements IHandler {
 			let timeout: number;
 
 			if (isGlobal) {
+				const offset = normalizeRateLimitOffset(this.manager.options.offset, routeId.bucketRoute);
+
 				// Set RateLimitData based on the global limit
 				limit = this.manager.options.globalRequestsPerSecond;
-				timeout = this.manager.globalReset + this.manager.options.offset - Date.now();
+				timeout = this.manager.globalReset + offset - Date.now();
 			} else {
 				// Set RateLimitData based on the route-specific limit
 				limit = this.limit;
-				timeout = this.timeToReset;
+				timeout = this.getTimeToReset(routeId);
 			}
 
 			await onRateLimit(this.manager, {
-				timeToReset: timeout,
-				limit,
+				global: isGlobal,
 				method,
-				hash: this.hash,
 				url,
 				route: routeId.bucketRoute,
 				majorParameter: this.majorParameter,
-				global: isGlobal,
+				hash: this.hash,
+				limit,
+				timeToReset: timeout,
+				retryAfter,
+				sublimitTimeout: sublimitTimeout ?? 0,
+				scope,
 			});
+
 			this.debug(
 				[
 					'Encountered unexpected 429 rate limit',
@@ -367,8 +383,10 @@ export class SequentialHandler implements IHandler {
 					`  Limit          : ${limit}`,
 					`  Retry After    : ${retryAfter}ms`,
 					`  Sublimit       : ${sublimitTimeout ? `${sublimitTimeout}ms` : 'None'}`,
+					`  Scope          : ${scope}`,
 				].join('\n'),
 			);
+
 			// If caused by a sublimit, wait it out here so other requests on the route can be handled
 			if (sublimitTimeout) {
 				// Normally the sublimit queue will not exist, however, if a sublimit is hit while in the sublimit queue, it will

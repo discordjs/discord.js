@@ -16,8 +16,8 @@ import type {
 	ApiConstructor,
 	ApiItemContainerMixin,
 	ApiReturnTypeMixin,
-} from '@microsoft/api-extractor-model';
-import { ApiDeclaredItem, ApiItemKind } from '@microsoft/api-extractor-model';
+} from '@discordjs/api-extractor-model';
+import { ApiDeclaredItem, ApiItemKind } from '@discordjs/api-extractor-model';
 import { generateTypeParamData } from './TypeParameterJSONEncoder.js';
 import { type TokenDocumentation, resolveName, genReference, genToken, genParameter, generatePath } from './parse.js';
 import type { DocBlockJSON } from './tsdoc/CommentBlock.js';
@@ -252,7 +252,7 @@ export class ApiNodeJSONEncoder {
 							parentKey: item.parent.containerKey,
 							parentName: item.parent.displayName,
 							path: generatePath(item.parent.getHierarchy(), version),
-					  }
+						}
 					: null,
 		};
 	}

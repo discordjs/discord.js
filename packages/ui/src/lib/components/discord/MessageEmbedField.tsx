@@ -1,7 +1,7 @@
 export interface IDiscordMessageEmbedField {
-	inline?: boolean;
-	name: string;
-	value: string;
+	readonly inline?: boolean;
+	readonly name: string;
+	readonly value: string;
 }
 
 export function DiscordMessageEmbedField({ name, value, inline }: IDiscordMessageEmbedField) {

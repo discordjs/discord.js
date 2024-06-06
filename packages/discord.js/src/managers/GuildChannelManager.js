@@ -13,7 +13,7 @@ const Webhook = require('../structures/Webhook');
 const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
 const { transformGuildForumTag, transformGuildDefaultReaction } = require('../util/Channels');
 const { ThreadChannelTypes } = require('../util/Constants');
-const DataResolver = require('../util/DataResolver');
+const { resolveImage } = require('../util/DataResolver');
 const { setPosition } = require('../util/Util');
 
 let cacheWarningEmitted = false;
@@ -99,16 +99,28 @@ class GuildChannelManager extends CachedManager {
   }
 
   /**
+   * Data that can be resolved to a News Channel object. This can be:
+   * * A NewsChannel object
+   * * A Snowflake
+   * @typedef {NewsChannel|Snowflake} NewsChannelResolvable
+   */
+
+  /**
    * Adds the target channel to a channel's followers.
-   * @param {NewsChannel|Snowflake} channel The channel to follow
+   * @param {NewsChannelResolvable} channel The channel to follow
    * @param {TextChannelResolvable} targetChannel The channel where published announcements will be posted at
    * @param {string} [reason] Reason for creating the webhook
    * @returns {Promise<Snowflake>} Returns created target webhook id.
    */
   async addFollower(channel, targetChannel, reason) {
     const channelId = this.resolveId(channel);
+    if (!channelId) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'NewsChannelResolvable');
+    }
     const targetChannelId = this.resolveId(targetChannel);
-    if (!channelId || !targetChannelId) throw new Error(ErrorCodes.GuildChannelResolve);
+    if (!targetChannelId) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'targetChannel', 'TextChannelResolvable');
+    }
     const { webhook_id } = await this.client.rest.post(Routes.channelFollowers(channelId), {
       body: { webhook_channel_id: targetChannelId },
       reason,
@@ -157,6 +169,7 @@ class GuildChannelManager extends CachedManager {
     rateLimitPerUser,
     rtcRegion,
     videoQualityMode,
+    defaultThreadRateLimitPerUser,
     availableTags,
     defaultReactionEmoji,
     defaultAutoArchiveDuration,
@@ -165,7 +178,7 @@ class GuildChannelManager extends CachedManager {
     reason,
   }) {
     parent &&= this.client.channels.resolveId(parent);
-    permissionOverwrites &&= permissionOverwrites.map(o => PermissionOverwrites.resolve(o, this.guild));
+    permissionOverwrites &&= permissionOverwrites.map(overwrite => PermissionOverwrites.resolve(overwrite, this.guild));
 
     const data = await this.client.rest.post(Routes.guildChannels(this.guild.id), {
       body: {
@@ -181,6 +194,7 @@ class GuildChannelManager extends CachedManager {
         rate_limit_per_user: rateLimitPerUser,
         rtc_region: rtcRegion,
         video_quality_mode: videoQualityMode,
+        default_thread_rate_limit_per_user: defaultThreadRateLimitPerUser,
         available_tags: availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
         default_reaction_emoji: defaultReactionEmoji && transformGuildDefaultReaction(defaultReactionEmoji),
         default_auto_archive_duration: defaultAutoArchiveDuration,
@@ -194,7 +208,7 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * @typedef {ChannelWebhookCreateOptions} WebhookCreateOptions
-   * @property {TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel|Snowflake} channel
+   * @property {TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel|MediaChannel|Snowflake} channel
    * The channel to create the webhook for
    */
 
@@ -217,7 +231,7 @@ class GuildChannelManager extends CachedManager {
     const id = this.resolveId(channel);
     if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
     if (typeof avatar === 'string' && !avatar.startsWith('data:')) {
-      avatar = await DataResolver.resolveImage(avatar);
+      avatar = await resolveImage(avatar);
     }
     const data = await this.client.rest.post(Routes.channelWebhooks(id), {
       body: {
@@ -279,19 +293,21 @@ class GuildChannelManager extends CachedManager {
       await this.setPosition(channel, options.position, { position: options.position, reason: options.reason });
     }
 
-    let permission_overwrites = options.permissionOverwrites?.map(o => PermissionOverwrites.resolve(o, this.guild));
+    let permission_overwrites = options.permissionOverwrites?.map(overwrite =>
+      PermissionOverwrites.resolve(overwrite, this.guild),
+    );
 
     if (options.lockPermissions) {
       if (parent) {
         const newParent = this.guild.channels.resolve(parent);
         if (newParent?.type === ChannelType.GuildCategory) {
-          permission_overwrites = newParent.permissionOverwrites.cache.map(o =>
-            PermissionOverwrites.resolve(o, this.guild),
+          permission_overwrites = newParent.permissionOverwrites.cache.map(overwrite =>
+            PermissionOverwrites.resolve(overwrite, this.guild),
           );
         }
       } else if (channel.parent) {
-        permission_overwrites = channel.parent.permissionOverwrites.cache.map(o =>
-          PermissionOverwrites.resolve(o, this.guild),
+        permission_overwrites = channel.parent.permissionOverwrites.cache.map(overwrite =>
+          PermissionOverwrites.resolve(overwrite, this.guild),
         );
       }
     }
@@ -436,11 +452,11 @@ class GuildChannelManager extends CachedManager {
    *   .catch(console.error);
    */
   async setPositions(channelPositions) {
-    channelPositions = channelPositions.map(r => ({
-      id: this.client.channels.resolveId(r.channel),
-      position: r.position,
-      lock_permissions: r.lockPermissions,
-      parent_id: r.parent !== undefined ? this.resolveId(r.parent) : undefined,
+    channelPositions = channelPositions.map(channelPosition => ({
+      id: this.client.channels.resolveId(channelPosition.channel),
+      position: channelPosition.position,
+      lock_permissions: channelPosition.lockPermissions,
+      parent_id: channelPosition.parent !== undefined ? this.resolveId(channelPosition.parent) : undefined,
     }));
 
     await this.client.rest.patch(Routes.guildChannels(this.guild.id), { body: channelPositions });

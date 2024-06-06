@@ -1,7 +1,7 @@
 'use strict';
 
-const { messageLink } = require('@discordjs/builders');
 const { Collection } = require('@discordjs/collection');
+const { messageLink } = require('@discordjs/formatters');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const {
   InteractionType,
@@ -17,15 +17,16 @@ const Embed = require('./Embed');
 const InteractionCollector = require('./InteractionCollector');
 const Mentions = require('./MessageMentions');
 const MessagePayload = require('./MessagePayload');
+const { Poll } = require('./Poll.js');
 const ReactionCollector = require('./ReactionCollector');
 const { Sticker } = require('./Sticker');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const { createComponent } = require('../util/Components');
-const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, DeletableMessageTypes } = require('../util/Constants');
+const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, UndeletableMessageTypes } = require('../util/Constants');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
-const { cleanContent, resolvePartialEmoji } = require('../util/Util');
+const { cleanContent, resolvePartialEmoji, transformResolved } = require('../util/Util');
 
 /**
  * Represents a message on Discord.
@@ -141,19 +142,19 @@ class Message extends Base {
        * in a guild for messages that do not mention the client.</info>
        * @type {Embed[]}
        */
-      this.embeds = data.embeds.map(e => new Embed(e));
+      this.embeds = data.embeds.map(embed => new Embed(embed));
     } else {
       this.embeds = this.embeds?.slice() ?? [];
     }
 
     if ('components' in data) {
       /**
-       * An array of of action rows in the message.
+       * An array of action rows in the message.
        * <info>This property requires the {@link GatewayIntentBits.MessageContent} privileged intent
        * in a guild for messages that do not mention the client.</info>
        * @type {ActionRow[]}
        */
-      this.components = data.components.map(c => createComponent(c));
+      this.components = data.components.map(component => createComponent(component));
     } else {
       this.components = this.components?.slice() ?? [];
     }
@@ -181,7 +182,7 @@ class Message extends Base {
        * @type {Collection<Snowflake, Sticker>}
        */
       this.stickers = new Collection(
-        (data.sticker_items ?? data.stickers)?.map(s => [s.id, new Sticker(this.client, s)]),
+        (data.sticker_items ?? data.stickers)?.map(sticker => [sticker.id, new Sticker(this.client, sticker)]),
       );
     } else {
       this.stickers = new Collection(this.stickers);
@@ -221,6 +222,19 @@ class Message extends Base {
       };
     } else {
       this.roleSubscriptionData ??= null;
+    }
+
+    if ('resolved' in data) {
+      /**
+       * Resolved data from auto-populated select menus.
+       * @typedef {Object} CommandInteractionResolvedData
+       */
+      this.resolved = transformResolved(
+        { client: this.client, guild: this.guild, channel: this.channel },
+        data.resolved,
+      );
+    } else {
+      this.resolved ??= null;
     }
 
     // Discord sends null if the message has not been edited
@@ -340,15 +354,15 @@ class Message extends Base {
      * Reference data sent in a message that contains ids identifying the referenced message.
      * This can be present in the following types of message:
      * * Crossposted messages (`MessageFlags.Crossposted`)
-     * * {@link MessageType.ChannelFollowAdd}
      * * {@link MessageType.ChannelPinnedMessage}
+     * * {@link MessageType.ChannelFollowAdd}
      * * {@link MessageType.Reply}
      * * {@link MessageType.ThreadStarterMessage}
      * @see {@link https://discord.com/developers/docs/resources/channel#message-types}
      * @typedef {Object} MessageReference
-     * @property {Snowflake} channelId The channel's id the message was referenced
-     * @property {?Snowflake} guildId The guild's id the message was referenced
-     * @property {?Snowflake} messageId The message's id that was referenced
+     * @property {Snowflake} channelId The channel id that was referenced
+     * @property {Snowflake|undefined} guildId The guild id that was referenced
+     * @property {Snowflake|undefined} messageId The message id that was referenced
      */
 
     if ('message_reference' in data) {
@@ -392,6 +406,16 @@ class Message extends Base {
       };
     } else {
       this.interaction ??= null;
+    }
+
+    if (data.poll) {
+      /**
+       * The poll that was sent with the message
+       * @type {?Poll}
+       */
+      this.poll = new Poll(this.client, data.poll, this);
+    } else {
+      this.poll ??= null;
     }
   }
 
@@ -622,7 +646,7 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
-    if (!DeletableMessageTypes.includes(this.type)) return false;
+    if (UndeletableMessageTypes.includes(this.type)) return false;
 
     if (!this.guild) {
       return this.author.id === this.client.user.id;
@@ -684,6 +708,7 @@ class Message extends Base {
   async fetchReference() {
     if (!this.reference) throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
     const { channelId, messageId } = this.reference;
+    if (!messageId) throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
     const channel = this.client.channels.resolve(channelId);
     if (!channel) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
     const message = await channel.messages.fetch(messageId);
@@ -704,6 +729,7 @@ class Message extends Base {
       channel?.type === ChannelType.GuildAnnouncement &&
         !this.flags.has(MessageFlags.Crossposted) &&
         this.type === MessageType.Default &&
+        !this.poll &&
         channel.viewable &&
         channel.permissionsFor(this.client.user)?.has(bitfield, false),
     );
@@ -947,10 +973,12 @@ class Message extends Base {
       this.id === message.id &&
       this.author.id === message.author.id &&
       this.content === message.content &&
-      this.tts === message.tts &&
       this.nonce === message.nonce &&
+      this.tts === message.tts &&
+      this.attachments.size === message.attachments.size &&
       this.embeds.length === message.embeds.length &&
-      this.attachments.length === message.attachments.length;
+      this.attachments.every(attachment => message.attachments.has(attachment.id)) &&
+      this.embeds.every((embed, index) => embed.equals(message.embeds[index]));
 
     if (equal && rawData) {
       equal =

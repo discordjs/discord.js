@@ -1,6 +1,6 @@
 'use strict';
 
-const { userMention } = require('@discordjs/builders');
+const { userMention } = require('@discordjs/formatters');
 const { ChannelType } = require('discord-api-types/v10');
 const { BaseChannel } = require('./BaseChannel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
@@ -38,7 +38,7 @@ class DMChannel extends BaseChannel {
        */
       this.recipientId = recipient.id;
 
-      if ('username' in recipient || this.client.options.partials.includes(Partials.Users)) {
+      if ('username' in recipient || this.client.options.partials.includes(Partials.User)) {
         this.client.users._add(recipient);
       }
     }

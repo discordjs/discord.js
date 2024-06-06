@@ -5,14 +5,14 @@ import { Disclosure, DisclosureContent, useDisclosureState } from 'ariakit/discl
 import type { PropsWithChildren } from 'react';
 
 export interface SectionOptions {
-	background?: boolean | undefined;
-	buttonClassName?: string;
-	className?: string;
-	defaultClosed?: boolean | undefined;
-	gutter?: boolean | undefined;
-	icon?: JSX.Element | undefined;
-	padded?: boolean | undefined;
-	title: string;
+	readonly background?: boolean | undefined;
+	readonly buttonClassName?: string;
+	readonly className?: string;
+	readonly defaultClosed?: boolean | undefined;
+	readonly gutter?: boolean | undefined;
+	readonly icon?: JSX.Element | undefined;
+	readonly padded?: boolean | undefined;
+	readonly title: string;
 }
 
 export function Section({

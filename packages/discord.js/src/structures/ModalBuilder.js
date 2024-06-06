@@ -12,7 +12,9 @@ class ModalBuilder extends BuildersModal {
   constructor({ components, ...data } = {}) {
     super({
       ...toSnakeCase(data),
-      components: components?.map(c => (c instanceof ComponentBuilder ? c : toSnakeCase(c))),
+      components: components?.map(component =>
+        component instanceof ComponentBuilder ? component : toSnakeCase(component),
+      ),
     });
   }
 

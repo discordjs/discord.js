@@ -29,7 +29,7 @@ export class DocumentedConstructor extends DocumentedItem<Constructor | Declarat
 				params: signature.parameters
 					? (signature as SignatureReflection).parameters?.map((param) =>
 							new DocumentedParam(param, this.config).serialize(),
-					  )
+						)
 					: undefined,
 			};
 		}

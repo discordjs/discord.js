@@ -1,19 +1,37 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/docgen",
 	"version": "0.12.1",
 	"description": "The docs.json generator for discord.js and its related projects",
 	"scripts": {
 		"build": "tsup",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --format=pretty",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --fix --format=pretty",
-		"fmt": "yarn format",
-		"prepack": "yarn format && yarn build"
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
+		"fmt": "pnpm run format",
+		"prepack": "pnpm run format && pnpm run build"
 	},
-	"bin": "./dist/cli.js",
+	"bin": "./bin/index.js",
+	"exports": {
+		".": {
+			"require": {
+				"types": "./dist/src/index.d.ts",
+				"default": "./dist/src/index.js"
+			},
+			"import": {
+				"types": "./dist/src/index.d.mts",
+				"default": "./dist/src/index.mjs"
+			}
+		}
+	},
+	"main": "./dist/src/index.js",
+	"module": "./dist/src/index.mjs",
+	"types": "./dist/src/index.d.ts",
 	"directories": {
+		"bin": "bin",
 		"lib": "src"
 	},
 	"files": [
+		"bin/index.js",
 		"dist"
 	],
 	"contributors": [
@@ -40,29 +58,31 @@
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
-		"commander": "^10.0.1",
-		"jsdoc-to-markdown": "^8.0.0",
-		"tslib": "^2.5.2",
-		"typedoc": "^0.24.7"
+		"commander": "^12.1.0",
+		"jsdoc-to-markdown": "^8.0.1",
+		"tslib": "^2.6.2",
+		"typedoc": "^0.25.13"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^2.0.0",
-		"@types/jsdoc-to-markdown": "^7.0.3",
-		"@types/node": "16.18.32",
+		"@favware/cliff-jumper": "^3.0.3",
+		"@types/jsdoc-to-markdown": "^7.0.6",
+		"@types/node": "18.18.8",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.41.0",
-		"eslint-config-neon": "^0.1.47",
-		"eslint-formatter-pretty": "^5.0.0",
-		"prettier": "^2.8.8",
-		"tsup": "^6.7.0",
-		"turbo": "^1.9.8",
-		"typescript": "^5.0.4"
+		"eslint": "^8.57.0",
+		"eslint-config-neon": "^0.1.62",
+		"eslint-formatter-pretty": "^6.0.1",
+		"prettier": "^3.3.0",
+		"tsup": "^8.1.0",
+		"turbo": "^1.13.3",
+		"typescript": "^5.4.5"
 	},
 	"engines": {
-		"node": ">=16.9.0"
+		"node": ">=18"
 	},
 	"publishConfig": {
-		"access": "public"
+		"access": "public",
+		"provenance": true
 	}
 }

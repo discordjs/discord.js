@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/brokers@0.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/brokers@0.2.3...@discordjs/brokers@0.3.0) - (2024-05-04)
+
+## Bug Fixes
+
+- Minify mainlib docs json (#9963) ([4b88306](https://github.com/discordjs/discord.js/commit/4b88306dcb2b16b840ec61e9e33047af3a31c45d))
+
+## Documentation
+
+- Split docs.api.json into multiple json files ([597340f](https://github.com/discordjs/discord.js/commit/597340f288437c35da8c703d9b621274de60d880))
+
+## Features
+
+- Local and preview detection ([79fbda3](https://github.com/discordjs/discord.js/commit/79fbda3aac6d4f0f8bfb193e797d09cbe331d315))
+
+## Refactor
+
+- Docs (#10126) ([18cce83](https://github.com/discordjs/discord.js/commit/18cce83d80598c430218775c53441b6b2ecdc776))
+- Use interfaces for AsyncEventEmitter event maps (#10044) ([adfd9cd](https://github.com/discordjs/discord.js/commit/adfd9cd3b32cfabdcc45ec90f535b2852a3ca4a6))
+
+# [@discordjs/brokers@0.2.2](https://github.com/discordjs/discord.js/compare/@discordjs/brokers@0.2.1...@discordjs/brokers@0.2.2) - (2023-08-17)
+
+## Documentation
+
+- Update Node.js requirement to 16.11.0 (#9764) ([188877c](https://github.com/discordjs/discord.js/commit/188877c50af70f0d5cffb246620fa277435c6ce6))
+
+# [@discordjs/brokers@0.2.1](https://github.com/discordjs/discord.js/compare/@discordjs/brokers@0.2.0...@discordjs/brokers@0.2.1) - (2023-05-01)
+
+## Bug Fixes
+
+- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
+
+## Documentation
+
+- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
+- Use `@link` in `@see` (#9348) ([d66d113](https://github.com/discordjs/discord.js/commit/d66d1133331b81563588db4500c63a18c3c3dfae))
+
 # [@discordjs/brokers@0.2.1](https://github.com/discordjs/discord.js/compare/@discordjs/brokers@0.2.0...@discordjs/brokers@0.2.1) - (2023-05-01)
 
 ## Bug Fixes

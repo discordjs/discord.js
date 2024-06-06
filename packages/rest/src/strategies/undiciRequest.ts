@@ -1,8 +1,8 @@
-import { Buffer } from 'node:buffer';
+import { STATUS_CODES } from 'node:http';
 import { URLSearchParams } from 'node:url';
 import { types } from 'node:util';
-import { type RequestInit, request } from 'undici';
-import type { ResponseLike } from '../index.js';
+import { type RequestInit, request, Headers } from 'undici';
+import type { ResponseLike } from '../shared.js';
 
 export type RequestOptions = Exclude<Parameters<typeof request>[1], undefined>;
 
@@ -30,6 +30,7 @@ export async function makeRequest(url: string, init: RequestInit): Promise<Respo
 		},
 		headers: new Headers(res.headers as Record<string, string[] | string>),
 		status: res.statusCode,
+		statusText: STATUS_CODES[res.statusCode]!,
 		ok: res.statusCode >= 200 && res.statusCode < 300,
 	};
 }

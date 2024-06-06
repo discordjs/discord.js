@@ -1,17 +1,20 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"name": "create-discord-bot",
-	"version": "0.1.0",
+	"version": "0.3.0",
 	"description": "A simple way to create a startup Discord bot.",
 	"scripts": {
-		"build": "tsup",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --format=pretty",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --fix --format=pretty",
-		"prepack": "yarn build && yarn lint",
+		"build": "tsc --noEmit && tsup",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
+		"prepack": "pnpm run build && pnpm run lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/create-discord-bot/*'",
 		"release": "cliff-jumper"
 	},
-	"bin": "./dist/create-discord-bot.mjs",
+	"type": "module",
+	"bin": "./dist/index.js",
 	"directories": {
+		"bin": "bin",
 		"lib": "src"
 	},
 	"files": [
@@ -44,30 +47,36 @@
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
-		"chalk": "^5.2.0",
-		"commander": "^10.0.1",
-		"validate-npm-package-name": "^5.0.0"
+		"commander": "^12.1.0",
+		"fast-glob": "^3.3.2",
+		"picocolors": "^1.0.1",
+		"prompts": "^2.4.2",
+		"validate-npm-package-name": "^5.0.1"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^2.0.0",
-		"@microsoft/api-extractor": "^7.35.0",
-		"@types/node": "16.18.32",
-		"@types/validate-npm-package-name": "^4.0.0",
-		"@vitest/coverage-c8": "^0.31.1",
+		"@discordjs/api-extractor": "workspace:^",
+		"@favware/cliff-jumper": "^3.0.3",
+		"@types/node": "18.18.8",
+		"@types/prompts": "^2.4.9",
+		"@types/validate-npm-package-name": "^4.0.2",
+		"@vitest/coverage-v8": "^1.6.0",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.41.0",
-		"eslint-config-neon": "^0.1.47",
-		"eslint-formatter-pretty": "^5.0.0",
-		"prettier": "^2.8.8",
-		"tsup": "^6.7.0",
-		"typescript": "^5.0.4",
-		"vitest": "^0.31.1"
+		"eslint": "^8.57.0",
+		"eslint-config-neon": "^0.1.62",
+		"eslint-formatter-pretty": "^6.0.1",
+		"prettier": "^3.3.0",
+		"terser": "^5.31.0",
+		"tsup": "^8.1.0",
+		"typescript": "^5.4.5",
+		"vitest": "^1.6.0"
 	},
 	"engines": {
-		"node": ">=18.16.0"
+		"node": ">=18"
 	},
 	"publishConfig": {
-		"access": "public"
+		"access": "public",
+		"provenance": true
 	}
 }

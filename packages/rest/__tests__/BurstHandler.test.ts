@@ -1,5 +1,6 @@
 /* eslint-disable id-length */
 /* eslint-disable promise/prefer-await-to-then */
+// @ts-nocheck
 import { performance } from 'node:perf_hooks';
 import { MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
@@ -40,15 +41,14 @@ const responseOptions: MockInterceptor.MockResponseOptions = {
 test('Interaction callback creates burst handler', async () => {
 	mockPool.intercept({ path: callbackPath, method: 'POST' }).reply(200);
 
-	expect(api.requestManager.handlers.get(callbackKey)).toBe(undefined);
+	expect(api.handlers.get(callbackKey)).toBe(undefined);
 	expect(
 		await api.post('/interactions/1234567890123456789/totallyarealtoken/callback', {
 			auth: false,
 			body: { type: 4, data: { content: 'Reply' } },
 		}),
-		// TODO: This should be ArrayBuffer, there is a bug in undici request
-	).toBeInstanceOf(Uint8Array);
-	expect(api.requestManager.handlers.get(callbackKey)).toBeInstanceOf(BurstHandler);
+	).toBeInstanceOf(ArrayBuffer);
+	expect(api.handlers.get(callbackKey)).toBeInstanceOf(BurstHandler);
 });
 
 test('Requests are handled in bursts', async () => {

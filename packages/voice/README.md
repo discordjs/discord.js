@@ -32,12 +32,13 @@
 
 ## Installation
 
-**Node.js 16.9.0 or newer is required.**
+**Node.js 16.11.0 or newer is required.**
 
 ```sh
 npm install @discordjs/voice
 yarn add @discordjs/voice
 pnpm add @discordjs/voice
+bun add @discordjs/voice
 ```
 
 ## Dependencies

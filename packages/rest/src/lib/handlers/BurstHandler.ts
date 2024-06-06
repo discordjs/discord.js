@@ -1,10 +1,9 @@
-import { setTimeout as sleep } from 'node:timers/promises';
 import type { RequestInit } from 'undici';
-import type { ResponseLike } from '../REST.js';
-import type { HandlerRequestData, RequestManager, RouteData } from '../RequestManager.js';
+import type { REST } from '../REST.js';
 import type { IHandler } from '../interfaces/Handler.js';
 import { RESTEvents } from '../utils/constants.js';
-import { onRateLimit } from '../utils/utils.js';
+import type { ResponseLike, HandlerRequestData, RouteData, RateLimitData } from '../utils/types.js';
+import { normalizeRateLimitOffset, onRateLimit, sleep } from '../utils/utils.js';
 import { handleErrors, incrementInvalidCount, makeNetworkRequest } from './Shared.js';
 
 /**
@@ -32,7 +31,7 @@ export class BurstHandler implements IHandler {
 	 * @param majorParameter - The major parameter for this handler
 	 */
 	public constructor(
-		private readonly manager: RequestManager,
+		private readonly manager: REST,
 		private readonly hash: string,
 		private readonly majorParameter: string,
 	) {
@@ -91,7 +90,8 @@ export class BurstHandler implements IHandler {
 		const retry = res.headers.get('Retry-After');
 
 		// Amount of time in milliseconds until we should retry if rate limited (globally or otherwise)
-		if (retry) retryAfter = Number(retry) * 1_000 + this.manager.options.offset;
+		const offset = normalizeRateLimitOffset(this.manager.options.offset, routeId.bucketRoute);
+		if (retry) retryAfter = Number(retry) * 1_000 + offset;
 
 		// Count the invalid requests
 		if (status === 401 || status === 403 || status === 429) {
@@ -103,16 +103,22 @@ export class BurstHandler implements IHandler {
 		} else if (status === 429) {
 			// Unexpected ratelimit
 			const isGlobal = res.headers.has('X-RateLimit-Global');
+			const scope = (res.headers.get('X-RateLimit-Scope') ?? 'user') as RateLimitData['scope'];
+
 			await onRateLimit(this.manager, {
-				timeToReset: retryAfter,
-				limit: Number.POSITIVE_INFINITY,
+				global: isGlobal,
 				method,
-				hash: this.hash,
 				url,
 				route: routeId.bucketRoute,
 				majorParameter: this.majorParameter,
-				global: isGlobal,
+				hash: this.hash,
+				limit: Number.POSITIVE_INFINITY,
+				timeToReset: retryAfter,
+				retryAfter,
+				sublimitTimeout: 0,
+				scope,
 			});
+
 			this.debug(
 				[
 					'Encountered unexpected 429 rate limit',
@@ -125,6 +131,7 @@ export class BurstHandler implements IHandler {
 					`  Limit          : ${Number.POSITIVE_INFINITY}`,
 					`  Retry After    : ${retryAfter}ms`,
 					`  Sublimit       : None`,
+					`  Scope          : ${scope}`,
 				].join('\n'),
 			);
 

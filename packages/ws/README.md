@@ -23,19 +23,19 @@
 
 ## Installation
 
-**Node.js 16.9.0 or newer is required.**
+**Node.js 16.11.0 or newer is required.**
 
 ```sh
 npm install @discordjs/ws
 yarn add @discordjs/ws
 pnpm add @discordjs/ws
+bun add @discordjs/ws
 ```
 
 ### Optional packages
 
 - [zlib-sync](https://www.npmjs.com/package/zlib-sync) for WebSocket data compression and inflation (`npm install zlib-sync`)
 - [bufferutil](https://www.npmjs.com/package/bufferutil) for a much faster WebSocket connection (`npm install bufferutil`)
-- [utf-8-validate](https://www.npmjs.com/package/utf-8-validate) in combination with `bufferutil` for much faster WebSocket processing (`npm install utf-8-validate`)
 
 ## Example usage
 
@@ -50,7 +50,10 @@ const manager = new WebSocketManager({
 	intents: 0, // for no intents
 	rest,
 	// uncomment if you have zlib-sync installed and want to use compression
-	// compression: CompressionMethod.ZlibStream,
+	// compression: CompressionMethod.ZlibSync,
+
+	// alternatively, we support compression using node's native `node:zlib` module:
+	// compression: CompressionMethod.ZlibNative,
 });
 
 manager.on(WebSocketShardEvents.Dispatch, (event) => {
@@ -132,6 +135,10 @@ const manager = new WebSocketManager({
 		new WorkerShardingStrategy(manager, {
 			shardsPerWorker: 2,
 			workerPath: './worker.js',
+			// Optionally, if you have custom messaging, like for analytic collection, you can use this:
+			async unknownPayloadHandler(data: any) {
+				// handle data here :3
+			},
 		}),
 });
 ```
@@ -140,6 +147,7 @@ And your `worker.ts` file:
 
 ```ts
 import { WorkerBootstrapper, WebSocketShardEvents } from '@discordjs/ws';
+import { parentPort } from 'node:worker_threads';
 
 const bootstrapper = new WorkerBootstrapper();
 void bootstrapper.bootstrap({
@@ -158,6 +166,9 @@ void bootstrapper.bootstrap({
 		});
 	},
 });
+
+// This will go to `unknownPayloadHandler` in the main thread, or be ignored if not provided
+parentPort!.postMessage({ custom: 'data' });
 ```
 
 ## Links

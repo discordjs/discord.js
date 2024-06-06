@@ -6,18 +6,21 @@ const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const ThreadChannel = require('../structures/ThreadChannel');
+const { MakeCacheOverrideSymbol } = require('../util/Symbols');
 
 /**
  * Manages API methods for thread-based channels and stores their cache.
  * @extends {CachedManager}
  */
 class ThreadManager extends CachedManager {
+  static [MakeCacheOverrideSymbol] = ThreadManager;
+
   constructor(channel, iterable) {
     super(channel.client, ThreadChannel, iterable);
 
     /**
      * The channel this Manager belongs to
-     * @type {TextChannel|NewsChannel|ForumChannel}
+     * @type {TextChannel|NewsChannel|ForumChannel|MediaChannel}
      */
     this.channel = channel;
   }
@@ -58,20 +61,6 @@ class ThreadManager extends CachedManager {
    * @instance
    * @param {ThreadChannelResolvable} thread The ThreadChannel resolvable to resolve
    * @returns {?Snowflake}
-   */
-
-  /**
-   * Options for creating a thread. <warn>Only one of `startMessage` or `type` can be defined.</warn>
-   * @typedef {StartThreadOptions} ThreadCreateOptions
-   * @property {MessageResolvable} [startMessage] The message to start a thread from. <warn>If this is defined then type
-   * of thread gets automatically defined and cannot be changed. The provided `type` field will be ignored</warn>
-   * @property {ChannelType.AnnouncementThread|ChannelType.PublicThread|ChannelType.PrivateThread} [type]
-   * The type of thread to create.
-   * Defaults to {@link ChannelType.PublicThread} if created in a {@link TextChannel}
-   * <warn>When creating threads in a {@link NewsChannel} this is ignored and is always
-   * {@link ChannelType.AnnouncementThread}</warn>
-   * @property {boolean} [invitable] Whether non-moderators can add other non-moderators to the thread
-   * <info>Can only be set when type will be {@link ChannelType.PrivateThread}</info>
    */
 
   /**

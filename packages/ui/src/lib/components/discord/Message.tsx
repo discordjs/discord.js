@@ -4,14 +4,14 @@ import { DiscordMessageInteraction, type IDiscordMessageInteraction } from './Me
 import { DiscordMessageReply, type IDiscordMessageReply } from './MessageReply.js';
 
 export interface IDiscordMessage {
-	author?: IDiscordMessageAuthor | undefined;
-	authorNode?: ReactNode | undefined;
-	followUp?: boolean;
-	interaction?: IDiscordMessageInteraction | undefined;
-	interactionNode?: ReactNode | undefined;
-	reply?: IDiscordMessageReply | undefined;
-	replyNode?: ReactNode | undefined;
-	time?: string | undefined;
+	readonly author?: IDiscordMessageAuthor | undefined;
+	readonly authorNode?: ReactNode | undefined;
+	readonly followUp?: boolean;
+	readonly interaction?: IDiscordMessageInteraction | undefined;
+	readonly interactionNode?: ReactNode | undefined;
+	readonly reply?: IDiscordMessageReply | undefined;
+	readonly replyNode?: ReactNode | undefined;
+	readonly time?: string | undefined;
 }
 
 export function DiscordMessage({
@@ -42,7 +42,7 @@ export function DiscordMessage({
 				<div className="static" id="content-wrapper">
 					{followUp ? (
 						<span
-							className="absolute left-0 mr-1 hidden h-5.5 w-[56px] cursor-default select-none text-right text-xs leading-loose text-[rgb(163_166_170)] group-hover:inline-block"
+							className="absolute left-0 mr-1 hidden h-5.5 w-[56px] cursor-default select-none text-right text-xs text-[rgb(163_166_170)] leading-loose group-hover:inline-block"
 							id="time"
 						>
 							{time}

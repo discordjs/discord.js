@@ -1,12 +1,12 @@
 import { FiCheck } from '@react-icons/all-files/fi/FiCheck';
 
 export interface IDiscordMessageAuthor {
-	avatar: string;
-	bot?: boolean;
-	color?: string;
-	time: string;
-	username: string;
-	verified?: boolean;
+	readonly avatar: string;
+	readonly bot?: boolean;
+	readonly color?: string;
+	readonly time: string;
+	readonly username: string;
+	readonly verified?: boolean;
 }
 
 export function DiscordMessageAuthor({ avatar, bot, verified, color, time, username }: IDiscordMessageAuthor) {
@@ -24,14 +24,14 @@ export function DiscordMessageAuthor({ avatar, bot, verified, color, time, usern
 					</span>
 					{bot ? (
 						<span
-							className="mr-1 inline-flex place-items-center rounded bg-blurple px-1 vertical-top text-[0.7rem]/4 font-normal text-white"
+							className="mr-1 inline-flex place-items-center rounded bg-blurple px-1 vertical-top text-[0.7rem]/4 text-white font-normal"
 							id="bot"
 						>
 							{verified ? <FiCheck className="mr-0.5 inline-block stroke-3" /> : null} BOT
 						</span>
 					) : null}
 				</span>
-				<span className="ml-1 cursor-default text-xs leading-snug text-[rgb(163_166_170)]" id="time">
+				<span className="ml-1 cursor-default text-xs text-[rgb(163_166_170)] leading-snug" id="time">
 					{time}
 				</span>
 			</h2>

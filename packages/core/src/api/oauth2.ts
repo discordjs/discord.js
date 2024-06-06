@@ -1,6 +1,5 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import { URL } from 'node:url';
 import { type RequestData, type REST, makeURLSearchParams } from '@discordjs/rest';
 import {
 	Routes,
@@ -48,6 +47,7 @@ export class OAuth2API {
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
+			auth: false,
 			signal,
 		}) as Promise<RESTPostOAuth2AccessTokenResult>;
 	}
@@ -69,6 +69,7 @@ export class OAuth2API {
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
+			auth: false,
 			signal,
 		}) as Promise<RESTPostOAuth2RefreshTokenResult>;
 	}
@@ -92,6 +93,7 @@ export class OAuth2API {
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
+			auth: false,
 			signal,
 		}) as Promise<RESTPostOAuth2ClientCredentialsResult>;
 	}

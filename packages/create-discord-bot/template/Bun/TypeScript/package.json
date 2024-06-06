@@ -1,0 +1,27 @@
+{
+	"$schema": "https://json.schemastore.org/package.json",
+	"name": "[REPLACE_ME]",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"lint": "tsc && prettier --check . && eslint --ext .[REPLACE_IMPORT_EXT] --format=pretty src",
+		"deploy": "bun run src/util/deploy.[REPLACE_IMPORT_EXT]",
+		"format": "prettier --write . && eslint --ext .[REPLACE_IMPORT_EXT] --fix --format=pretty src",
+		"start": "bun run src/index.[REPLACE_IMPORT_EXT]"
+	},
+	"dependencies": {
+		"@discordjs/core": "^1.2.0",
+		"discord.js": "^14.15.0"
+	},
+	"devDependencies": {
+		"@sapphire/ts-config": "^5.0.0",
+		"bun-types": "^1.0.9",
+		"eslint": "^8.53.0",
+		"eslint-config-neon": "^0.1.57",
+		"eslint-formatter-pretty": "^5.0.0",
+		"prettier": "^3.1.0",
+		"typescript": "^5.2.2",
+		"zod": "^3.22.4"
+	}
+}

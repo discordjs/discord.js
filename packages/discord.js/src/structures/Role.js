@@ -1,10 +1,12 @@
 'use strict';
 
+const { roleMention } = require('@discordjs/formatters');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { PermissionFlagsBits } = require('discord-api-types/v10');
 const Base = require('./Base');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const PermissionsBitField = require('../util/PermissionsBitField');
+const RoleFlagsBitField = require('../util/RoleFlagsBitField');
 
 /**
  * Represents a role on Discord.
@@ -101,6 +103,16 @@ class Role extends Base {
 
     if ('unicode_emoji' in data) this.unicodeEmoji = data.unicode_emoji;
 
+    if ('flags' in data) {
+      /**
+       * The flags of this role
+       * @type {Readonly<RoleFlagsBitField>}
+       */
+      this.flags = new RoleFlagsBitField(data.flags).freeze();
+    } else {
+      this.flags ??= new RoleFlagsBitField().freeze();
+    }
+
     /**
      * The tags this role has
      * @type {?Object}
@@ -169,7 +181,7 @@ class Role extends Base {
   get members() {
     return this.id === this.guild.id
       ? this.guild.members.cache.clone()
-      : this.guild.members.cache.filter(m => m._roles.includes(this.id));
+      : this.guild.members.cache.filter(member => member._roles.includes(this.id));
   }
 
   /**
@@ -194,7 +206,7 @@ class Role extends Base {
       (acc, role) =>
         acc +
         (this.rawPosition === role.rawPosition
-          ? BigInt(this.id) > BigInt(role.id)
+          ? BigInt(this.id) < BigInt(role.id)
           : this.rawPosition > role.rawPosition),
       0,
     );
@@ -441,7 +453,7 @@ class Role extends Base {
    */
   toString() {
     if (this.id === this.guild.id) return '@everyone';
-    return `<@&${this.id}>`;
+    return roleMention(this.id);
   }
 
   toJSON() {
@@ -453,8 +465,3 @@ class Role extends Base {
 }
 
 exports.Role = Role;
-
-/**
- * @external APIRole
- * @see {@link https://discord.com/developers/docs/topics/permissions#role-object}
- */
