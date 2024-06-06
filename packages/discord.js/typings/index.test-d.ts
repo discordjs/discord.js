@@ -207,6 +207,8 @@ import {
   PartialPoll,
   Poll,
   PartialPollAnswer,
+  PollAnswerVoterManager,
+  PollAnswer,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1686,6 +1688,12 @@ declare const messageManager: MessageManager;
   messageManager.fetch({ message: '1234567890', after: '1234567890', cache: true, force: false });
 }
 
+declare const pollAnswerVoterManager: PollAnswerVoterManager;
+{
+  expectType<Promise<Collection<Snowflake, User>>>(pollAnswerVoterManager.fetch());
+  expectType<PollAnswer>(pollAnswerVoterManager.answer);
+}
+
 declare const roleManager: RoleManager;
 expectType<Promise<Collection<Snowflake, Role>>>(roleManager.fetch());
 expectType<Promise<Collection<Snowflake, Role>>>(roleManager.fetch(undefined, {}));
@@ -2568,7 +2576,6 @@ declare const poll: Poll;
 
   if (!answer.partial) {
     expectType<number>(answer.voteCount);
-
     expectType<Collection<Snowflake, User>>(await answer.fetchVoters({ after: snowflake, limit: 10 }));
   }
 
