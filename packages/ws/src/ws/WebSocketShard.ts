@@ -245,7 +245,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		this.debug([`Connecting to ${url}`]);
 
-		const connection = new WebSocketConstructor(url, {
+		const connection = new WebSocketConstructor(url, [], {
 			handshakeTimeout: this.strategy.options.handshakeTimeout ?? undefined,
 		});
 

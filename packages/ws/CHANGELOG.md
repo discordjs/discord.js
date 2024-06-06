@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/ws@1.1.1](https://github.com/discordjs/discord.js/compare/@discordjs/ws@1.1.0...@discordjs/ws@1.1.1) - (2024-06-02)
+
+## Bug Fixes
+
+- Deno compat (#10271) ([616208b](https://github.com/discordjs/discord.js/commit/616208ba7766ac66a8969ffd2cb7b341fdc2c67b))
+
 # [@discordjs/ws@1.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@1.0.2...@discordjs/ws@1.1.0) - (2024-05-04)
 
 ## Bug Fixes
