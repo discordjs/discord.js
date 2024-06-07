@@ -11,6 +11,7 @@ runs:
       uses: codecov/codecov-action@v4
       with:
         files: ./apps/guide/coverage/cobertura-coverage.xml
+        disable_search: true
         flags: guide
         token: ${{ inputs.CODECOV_TOKEN }}
 
@@ -18,6 +19,7 @@ runs:
       uses: codecov/codecov-action@v4
       with:
         files: ./apps/website/coverage/cobertura-coverage.xml
+        disable_search: true
         flags: website
         token: ${{ inputs.CODECOV_TOKEN }}
 
@@ -25,6 +27,7 @@ runs:
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/brokers/coverage/cobertura-coverage.xml
+        disable_search: true
         flags: brokers
         token: ${{ inputs.CODECOV_TOKEN }}
 
@@ -32,6 +35,7 @@ runs:
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/builders/coverage/cobertura-coverage.xml
+        disable_search: true
         flags: builders
         token: ${{ inputs.CODECOV_TOKEN }}
 
@@ -39,6 +43,7 @@ runs:
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/collection/coverage/cobertura-coverage.xml
+        disable_search: true
         flags: collection
         token: ${{ inputs.CODECOV_TOKEN }}
 
@@ -46,6 +51,7 @@ runs:
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/discord.js/coverage/cobertura-coverage.xml
+        disable_search: true
         flags: discord.js
         token: ${{ inputs.CODECOV_TOKEN }}
 
@@ -53,6 +59,7 @@ runs:
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/formatters/coverage/cobertura-coverage.xml
+        disable_search: true
         flags: formatters
         token: ${{ inputs.CODECOV_TOKEN }}
 
@@ -60,6 +67,7 @@ runs:
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/next/coverage/cobertura-coverage.xml
+        disable_search: true
         flags: next
         token: ${{ inputs.CODECOV_TOKEN }}
 
@@ -67,6 +75,7 @@ runs:
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/proxy/coverage/cobertura-coverage.xml
+        disable_search: true
         flags: proxy
         token: ${{ inputs.CODECOV_TOKEN }}
 
@@ -74,6 +83,7 @@ runs:
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/rest/coverage/cobertura-coverage.xml
+        disable_search: true
         flags: rest
         token: ${{ inputs.CODECOV_TOKEN }}
 
@@ -81,6 +91,7 @@ runs:
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/voice/coverage/cobertura-coverage.xml
+        disable_search: true
         flags: voice
         token: ${{ inputs.CODECOV_TOKEN }}
 
@@ -88,6 +99,7 @@ runs:
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/ws/coverage/cobertura-coverage.xml
+        disable_search: true
         flags: ws
         token: ${{ inputs.CODECOV_TOKEN }}
 
@@ -95,6 +107,7 @@ runs:
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/util/coverage/cobertura-coverage.xml
+        disable_search: true
         flags: util
         token: ${{ inputs.CODECOV_TOKEN }}
 
@@ -102,5 +115,6 @@ runs:
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/actions/coverage/cobertura-coverage.xml, ./packages/scripts/coverage/cobertura-coverage.xml
+        disable_search: true
         flags: utilities
         token: ${{ inputs.CODECOV_TOKEN }}
