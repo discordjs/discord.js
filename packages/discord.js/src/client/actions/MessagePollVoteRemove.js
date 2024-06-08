@@ -31,7 +31,9 @@ class MessagePollVoteRemoveAction extends Action {
       const pollAnswer = new PollAnswer(this.client, data, poll);
 
       poll.answers.set(data.answer_id, pollAnswer);
-    } else { return false; }
+    } else {
+      return false;
+    }
 
     answer.voters.cache.delete(data.user_id);
     answer.voteCount--;
