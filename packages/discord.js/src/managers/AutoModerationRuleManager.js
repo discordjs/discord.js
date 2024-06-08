@@ -57,7 +57,9 @@ class AutoModerationRuleManager extends CachedManager {
    * @property {AutoModerationRuleKeywordPresetType[]} [presets]
    * The internally pre-defined wordsets which will be searched for in the content
    * @property {string[]} [allowList] The substrings that will be exempt from triggering
-   * {@link AutoModerationRuleTriggerType.Keyword} and {@link AutoModerationRuleTriggerType.KeywordPreset}
+   * {@link AutoModerationRuleTriggerType.Keyword},
+   * {@link AutoModerationRuleTriggerType.KeywordPreset},
+   * and {@link AutoModerationRuleTriggerType.MemberProfile}
    * @property {?number} [mentionTotalLimit] The total number of role & user mentions allowed per message
    * @property {boolean} [mentionRaidProtectionEnabled] Whether to automatically detect mention raids
    */
@@ -87,8 +89,10 @@ class AutoModerationRuleManager extends CachedManager {
    * @property {AutoModerationRuleTriggerType} triggerType The trigger type of the auto moderation rule
    * @property {AutoModerationTriggerMetadataOptions} [triggerMetadata] The trigger metadata of the auto moderation rule
    * <info>This property is required if using a `triggerType` of
-   * {@link AutoModerationRuleTriggerType.Keyword}, {@link AutoModerationRuleTriggerType.KeywordPreset},
-   * or {@link AutoModerationRuleTriggerType.MentionSpam}.</info>
+   * {@link AutoModerationRuleTriggerType.Keyword},
+   * {@link AutoModerationRuleTriggerType.KeywordPreset},
+   * {@link AutoModerationRuleTriggerType.MentionSpam},
+   * or {@link AutoModerationRuleTriggerType.MemberProfile}.</info>
    * @property {AutoModerationActionOptions[]} actions
    * The actions that will execute when the auto moderation rule is triggered
    * @property {boolean} [enabled] Whether the auto moderation rule should be enabled
