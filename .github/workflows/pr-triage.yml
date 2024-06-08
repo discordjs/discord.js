@@ -1,6 +1,11 @@
 name: 'PR Triage'
 on:
   pull_request_target:
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
 jobs:
   pr-triage:
     name: PR Triage
@@ -8,6 +13,19 @@ jobs:
     steps:
       - name: Automatically label PR
         uses: actions/labeler@v5
+        if: github.event.action != 'edited'
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
           sync-labels: true
+
+      - name: Validate commit convention
+        if: github.event.action != 'synchronize'
+        run: |
+          TITLE="${{ github.event.pull_request.title }}"
+          REGEX="^(revert: )?(feat|fix|docs|style|refactor|perf|test|workflow|build|ci|chore|types|wip)(\\(.+\\))?: .{1,72}$"
+
+          echo "Title: \"$TITLE\""
+
+          if [[ ! "$TITLE" =~ $REGEX ]]; then
+            exit 1
+          fi
