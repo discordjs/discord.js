@@ -66,7 +66,9 @@ class AutoModerationRule extends Base {
        * @property {AutoModerationRuleKeywordPresetType[]} presets
        * The internally pre-defined wordsets which will be searched for in the content
        * @property {string[]} allowList The substrings that will be exempt from triggering
-       * {@link AutoModerationRuleTriggerType.Keyword} and {@link AutoModerationRuleTriggerType.KeywordPreset}
+       * {@link AutoModerationRuleTriggerType.Keyword},
+       * {@link AutoModerationRuleTriggerType.KeywordPreset},
+       * and {@link AutoModerationRuleTriggerType.MemberProfile}
        * @property {?number} mentionTotalLimit The total number of role & user mentions allowed per message
        * @property {boolean} mentionRaidProtectionEnabled Whether mention raid protection is enabled
        */
@@ -209,7 +211,9 @@ class AutoModerationRule extends Base {
   /**
    * Sets the allow list for this auto moderation rule.
    * @param {string[]} allowList The substrings that will be exempt from triggering
-   * {@link AutoModerationRuleTriggerType.Keyword} and {@link AutoModerationRuleTriggerType.KeywordPreset}
+   * {@link AutoModerationRuleTriggerType.Keyword},
+   * {@link AutoModerationRuleTriggerType.KeywordPreset},
+   * and {@link AutoModerationRuleTriggerType.MemberProfile}
    * @param {string} [reason] The reason for changing the allow list of this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */
