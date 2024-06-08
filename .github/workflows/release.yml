@@ -5,6 +5,7 @@ on:
       package:
         description: 'The published name of a single package to release'
         type: choice
+        required: false
         options:
           - discord.js
           - '@discordjs/brokers'
@@ -20,6 +21,11 @@ on:
           - '@discordjs/util'
           - '@discordjs/voice'
           - '@discordjs/ws'
+      exclude:
+        description: 'Comma separated list of packages to exclude from release (if not depended upon)'
+        required: false
+        type: string
+        default: '@discordjs/docgen,@discordjs/next'
 jobs:
   npm-publish:
     name: npm publish

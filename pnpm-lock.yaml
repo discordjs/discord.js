@@ -465,6 +465,9 @@ importers:
       cloudflare:
         specifier: ^4.4.1
         version: 4.4.1(encoding@0.1.13)
+      commander:
+        specifier: ^14.0.0
+        version: 14.0.0
       meilisearch:
         specifier: ^0.38.0
         version: 0.38.0(encoding@0.1.13)

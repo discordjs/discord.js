@@ -1,13 +1,24 @@
-import process from 'node:process';
 import { getInput } from '@actions/core';
+import { program } from 'commander';
 import { generateReleaseTree } from './generateReleaseTree.js';
 import { releasePackage } from './releasePackage.js';
 
-const argInput = process.argv[2];
-const useableArg = argInput === 'discord.js' || argInput?.startsWith('@discordjs/');
-const packageName = getInput('package') || useableArg ? argInput : '';
+program
+	.name('release packages')
+	.description('releases monorepo packages with proper sequencing')
+	.argument('[package]', "release a specific package (and it's dependencies)", getInput('package'))
+	.option(
+		'-e, --exclude <packages...>',
+		'exclude specific packages from releasing (will still release if necessary for another package)',
+		getInput('exclude').split(','),
+	)
+	.parse();
 
-const tree = await generateReleaseTree(packageName);
+const { exclude } = program.opts<{ exclude: string[] }>();
+const packageName = program.args[0]!;
+
+const tree = await generateReleaseTree(packageName, exclude);
+console.log(tree);
 for (const branch of tree) {
 	console.log(`Releasing ${branch.map((entry) => `${entry.name}@${entry.version}`).join(', ')}`);
 	await Promise.all(branch.map(async (release) => releasePackage(release)));

@@ -49,6 +49,7 @@
 		"@vercel/blob": "^1.1.1",
 		"@vercel/postgres": "^0.10.0",
 		"cloudflare": "^4.4.1",
+		"commander": "^14.0.0",
 		"meilisearch": "^0.38.0",
 		"p-limit": "^6.2.0",
 		"p-queue": "^8.1.0",

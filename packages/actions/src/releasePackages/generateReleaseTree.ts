@@ -85,7 +85,7 @@ async function getReleaseEntries() {
 	return releaseEntries;
 }
 
-export async function generateReleaseTree(packageName?: string) {
+export async function generateReleaseTree(packageName?: string, exclude?: string[]) {
 	let releaseEntries = await getReleaseEntries();
 	// Try to early return if the package doesn't have deps
 	if (packageName) {
@@ -133,6 +133,31 @@ export async function generateReleaseTree(packageName?: string) {
 
 		releaseTree.push(nextBranch);
 		releaseEntries = unreleased;
+	}
+
+	// Prune exclusions
+	if (exclude) {
+		const neededPackages = new Set<string>();
+		const excludedReleaseTree: ReleaseEntry[][] = [];
+
+		for (const releaseBranch of releaseTree.reverse()) {
+			const newThisBranch: ReleaseEntry[] = [];
+
+			for (const entry of releaseBranch) {
+				if (exclude.includes(entry.name) && !neededPackages.has(entry.name)) {
+					continue;
+				}
+
+				newThisBranch.push(entry);
+				for (const dep of entry.dependsOn ?? []) {
+					neededPackages.add(dep);
+				}
+			}
+
+			if (newThisBranch.length) excludedReleaseTree.unshift(newThisBranch);
+		}
+
+		return excludedReleaseTree;
 	}
 
 	if (!packageName) {
