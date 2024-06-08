@@ -1,7 +1,10 @@
 'use strict';
 
 const Action = require('./Action');
+const { Poll } = require('../../structures/Poll');
+const { PollAnswer } = require('../../structures/PollAnswer');
 const Events = require('../../util/Events');
+const Partials = require('../../util/Partials');
 
 class MessagePollVoteAddAction extends Action {
   handle(data) {
@@ -13,9 +16,24 @@ class MessagePollVoteAddAction extends Action {
 
     const { poll } = message;
 
-    const answer = poll?.answers.get(data.answer_id);
-    if (!answer) return false;
+    const includePollPartial = this.client.options.partials.includes(Partials.Poll);
+    if (message.partial && !includePollPartial) return false;
 
+    if (!poll && includePollPartial) {
+      message.poll = new Poll(this.client, { ...data, partial: true }, message, channel);
+    }
+
+    const includePollAnswerPartial = this.client.options.partials.includes(Partials.PollAnswer);
+    if (message.partial && includePollPartial && !includePollAnswerPartial) return false;
+
+    const answer = poll?.answers?.get(data.answer_id);
+    if (!answer && poll) {
+      const pollAnswer = new PollAnswer(this.client, data, poll);
+
+      poll.answers.set(data.answer_id, pollAnswer);
+    } else { return false; }
+
+    answer.voters._add(data.user_id);
     answer.voteCount++;
 
     /**

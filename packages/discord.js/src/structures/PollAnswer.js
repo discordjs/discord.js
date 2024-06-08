@@ -33,10 +33,10 @@ class PollAnswer extends Base {
     this.text = data.poll_media.text ?? null;
 
     /**
-     * The manager of the users that voted for this answer
+     * The manager of the voters that voted for this answer
      * @type {PollAnswerVoterManager}
      */
-    this.users = new PollAnswerVoterManager(this, []);
+    this.voters = new PollAnswerVoterManager(this, []);
 
     /**
      * The raw emoji of this answer
@@ -76,7 +76,7 @@ class PollAnswer extends Base {
    * @type {boolean}
    */
   get partial() {
-    return this.poll.partial;
+    return this.poll.partial || (this.text === null && this.emoji === null);
   }
 
   /**
