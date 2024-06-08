@@ -2027,6 +2027,12 @@ export class LimitedCollection<Key, Value> extends Collection<Key, Value> {
   public keepOverLimit: ((value: Value, key: Key, collection: this) => boolean) | null;
 }
 
+export interface MessageCall {
+  get endedAt(): Date | null;
+  endedTimestamp: number | null;
+  participants: readonly Snowflake[];
+}
+
 export type MessageComponentType = Exclude<ComponentType, ComponentType.TextInput | ComponentType.ActionRow>;
 
 export interface MessageCollectorOptionsParams<
@@ -2118,6 +2124,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public get thread(): AnyThreadChannel | null;
   public tts: boolean;
   public poll: Poll | null;
+  public call: MessageCall | null;
   public type: MessageType;
   public get url(): string;
   public webhookId: Snowflake | null;
