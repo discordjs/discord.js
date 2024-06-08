@@ -18,7 +18,6 @@ const { exclude } = program.opts<{ exclude: string[] }>();
 const packageName = program.args[0]!;
 
 const tree = await generateReleaseTree(packageName, exclude);
-console.log(tree);
 for (const branch of tree) {
 	console.log(`Releasing ${branch.map((entry) => `${entry.name}@${entry.version}`).join(', ')}`);
 	await Promise.all(branch.map(async (release) => releasePackage(release)));
