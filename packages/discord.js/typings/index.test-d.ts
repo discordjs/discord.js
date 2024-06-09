@@ -2557,7 +2557,7 @@ declare const partialPoll: PartialPoll;
     expectType<null>(partialPoll.allowMultiselect);
     expectType<null>(partialPoll.resultsFinalized);
     expectType<null>(partialPoll.layoutType);
-    expectType<null>(partialPoll.expiresTimestamp);
+    expectType<number | null>(partialPoll.expiresTimestamp);
     expectType<null>(partialPoll.answers);
   }
 }
