@@ -69,9 +69,9 @@ class Poll extends Base {
 
     /**
      * The timestamp when this poll expires
-     * @type {number}
+     * @type {?number}
      */
-    this.expiresTimestamp = Date.parse(data.expiry);
+    this.expiresTimestamp = Date.parse(data.expiry) ?? null;
 
     /**
      * Whether this poll allows multiple answers
