@@ -14,28 +14,33 @@ class MessagePollVoteAddAction extends Action {
     const message = this.getMessage(data, channel);
     if (!message) return false;
 
-    const { poll } = message;
-
     const includePollPartial = this.client.options.partials.includes(Partials.Poll);
     if (message.partial && !includePollPartial) return false;
 
-    if (!poll && includePollPartial) {
-      message.poll = new Poll(this.client, { ...data, partial: true }, message, channel);
+    if (!message.poll && includePollPartial) {
+      message.poll = new Poll(
+        this.client,
+        { ...data, question: { text: '' }, answers: [], partial: true },
+        message,
+        channel,
+      );
     }
 
     const includePollAnswerPartial = this.client.options.partials.includes(Partials.PollAnswer);
     if (message.partial && includePollPartial && !includePollAnswerPartial) return false;
 
-    const answer = poll?.answers?.get(data.answer_id);
-    if (!answer && poll) {
-      const pollAnswer = new PollAnswer(this.client, data, poll);
+    let answer = message.poll?.answers?.get(data.answer_id);
+    if (!answer && message.poll) {
+      const pollAnswer = new PollAnswer(this.client, data, message.poll);
 
-      poll.answers.set(data.answer_id, pollAnswer);
-    } else {
-      return false;
+      message.poll.answers.set(data.answer_id, pollAnswer);
+
+      answer = pollAnswer;
     }
 
-    answer.voters._add(data.user_id);
+    const user = this.getUser(data);
+
+    answer.voters._add(user);
     answer.voteCount++;
 
     /**
@@ -45,6 +50,8 @@ class MessagePollVoteAddAction extends Action {
      * @param {Snowflake} userId The id of the user that voted
      */
     this.client.emit(Events.MessagePollVoteAdd, answer, data.user_id);
+
+    const { poll } = message;
 
     return { poll };
   }

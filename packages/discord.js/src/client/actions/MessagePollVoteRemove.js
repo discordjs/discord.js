@@ -14,29 +14,32 @@ class MessagePollVoteRemoveAction extends Action {
     const message = this.getMessage(data, channel);
     if (!message) return false;
 
-    const { poll } = message;
-
     const includePollPartial = this.client.options.partials.includes(Partials.Poll);
     if (message.partial && !includePollPartial) return false;
 
-    if (!poll && includePollPartial) {
-      message.poll = new Poll(this.client, { ...data, partial: true }, message, channel);
+    if (!message.poll && includePollPartial) {
+      message.poll = new Poll(
+        this.client,
+        { ...data, question: { text: '' }, answers: [], partial: true },
+        message,
+        channel,
+      );
     }
 
     const includePollAnswerPartial = this.client.options.partials.includes(Partials.PollAnswer);
-    if (message.partial && includePollPartial && !includePollAnswerPartial) return false;
+    if (message.partial && !includePollAnswerPartial) return false;
 
-    const answer = poll?.answers?.get(data.answer_id);
-    if (!answer && poll) {
-      const pollAnswer = new PollAnswer(this.client, data, poll);
+    let answer = message.poll?.answers?.get(data.answer_id);
+    if (!answer && message.poll) {
+      const pollAnswer = new PollAnswer(this.client, data, message.poll);
 
-      poll.answers.set(data.answer_id, pollAnswer);
-    } else {
-      return false;
+      message.poll.answers.set(data.answer_id, pollAnswer);
+
+      answer = pollAnswer;
     }
 
     answer.voters.cache.delete(data.user_id);
-    answer.voteCount--;
+    answer.voteCount = answer.voteCount > 0 ? answer.voteCount-- : 0;
 
     /**
      * Emitted whenever a user removes their vote in a poll.
@@ -45,6 +48,8 @@ class MessagePollVoteRemoveAction extends Action {
      * @param {Snowflake} userId The id of the user that removed their vote
      */
     this.client.emit(Events.MessagePollVoteRemove, answer, data.user_id);
+
+    const { poll } = message;
 
     return { poll };
   }
