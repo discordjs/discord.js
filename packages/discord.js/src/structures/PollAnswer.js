@@ -57,6 +57,10 @@ class PollAnswer extends Base {
        * @type {number}
        */
       this.voteCount = data.count;
+    } else if (data.poll_media.text) {
+      this.text = data.poll_media.text ?? null;
+    } else if (data.poll_media.emoji) {
+      Object.defineProperty(this, '_emoji', { value: data.poll_media.emoji ?? null });
     } else {
       this.voteCount ??= 0;
     }
@@ -72,7 +76,7 @@ class PollAnswer extends Base {
   }
 
   /**
-   * Whether or not this answer is a partial.
+   * Whether or not this poll answer is a partial.
    * @type {boolean}
    */
   get partial() {
@@ -92,7 +96,7 @@ class PollAnswer extends Base {
    * @returns {Promise<Collection<Snowflake, User>>}
    */
   fetchVoters({ after, limit } = {}) {
-    return this.users.fetch({ after, limit });
+    return this.voters.fetch({ after, limit });
   }
 }
 
