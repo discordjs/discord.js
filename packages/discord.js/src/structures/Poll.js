@@ -85,6 +85,14 @@ class Poll extends Base {
      */
     this.layoutType = data.layout_type;
 
+    /**
+     * Whether or not this poll is a partial
+     * @name Poll#_partial
+     * @type {boolean}
+     * @private
+     */
+    Object.defineProperty(this, '_partial', { value: data.partial ?? false });
+
     this._patch(data);
   }
 
@@ -100,6 +108,21 @@ class Poll extends Base {
         const answer = this.answers.get(answerResult.id);
         answer?._patch(answerResult);
       }
+    } else if (data.question) {
+      this.question = {
+        text: data.question.text,
+      };
+    } else if (data.answers) {
+      for (const answer of data.answers) {
+        const existing = this.answers.get(answer.answer_id);
+        if (existing) {
+          existing._patch(answer);
+        } else {
+          this.answers.set(answer.answer_id, new PollAnswer(this.client, answer, this));
+        }
+      }
+    } else if (data.partial) {
+      Object.defineProperty(this, '_partial', { value: data.partial });
     } else {
       this.resultsFinalized ??= false;
     }
@@ -123,29 +146,22 @@ class Poll extends Base {
     return (
       typeof this.question.text !== 'string' ||
       typeof this.layoutType !== 'number' ||
-      typeof this.allowMultiselect !== 'boolean'
+      typeof this.allowMultiselect !== 'boolean' ||
+      this._partial
     );
   }
 
   /**
-   * Fetches the poll
+   * Fetches the message that started this poll, then updates the poll from the fetched message.
    * @returns {Promise<Poll>}
    */
   async fetch() {
     const message = await this.message.channel.messages.fetch(this.message.id);
 
     const existing = message.poll;
-    this._patch(existing);
+    this._patch({ ...existing, partial: false });
 
     return this;
-  }
-
-  /**
-   * Fetches the message that started this poll
-   * @returns {Promise<Message>}
-   */
-  fetchMessage() {
-    return this.message.channel.messages.fetch(this.message.id);
   }
 
   /**
