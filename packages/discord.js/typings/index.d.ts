@@ -2616,7 +2616,7 @@ export class Poll extends Base {
   public messageId: Snowflake;
   public question: PollQuestionMedia;
   public answers: Collection<number, PollAnswer | PartialPollAnswer>;
-  public expiresTimestamp: number;
+  public expiresTimestamp: number | null;
   public get expiresAt(): Date;
   public allowMultiselect: boolean;
   public layoutType: PollLayoutType;
@@ -2639,7 +2639,7 @@ export class PollAnswer extends Base {
   public id: number;
   public text: string | null;
   public voteCount: number;
-  public users: PollAnswerVoterManager;
+  public voters: PollAnswerVoterManager;
   public get emoji(): GuildEmoji | Emoji | null;
   public get partial(): false;
   public fetchVoters(options?: BaseFetchPollAnswerVotersOptions): Promise<Collection<Snowflake, User>>;
@@ -6554,7 +6554,7 @@ export interface PartialMessageReaction extends Partialize<MessageReaction, 'cou
 export interface PartialPoll
   extends Partialize<
     Poll,
-    'allowMultiselect' | 'answers' | 'expiresTimestamp' | 'layoutType' | 'question' | 'resultsFinalized' | 'message'
+    'allowMultiselect' | 'answers' | 'layoutType' | 'question' | 'resultsFinalized' | 'message'
   > {}
 
 export interface PartialPollAnswer extends Partialize<PollAnswer, 'voteCount' | 'emoji' | 'poll' | 'text'> {}
