@@ -70,10 +70,17 @@ export default function generator(plop: PlopTypes.NodePlopAPI): void {
 				type: 'modify',
 				path: `${plop.getDestBasePath()}/../../.github/labeler.yml`,
 				transform(content, answers) {
-					const labelerYAML = parseYAML(content) as Record<string, string[]>;
-					labelerYAML[`packages:${answers.name}`] = [`packages/${answers.name}/*`, `packages/${answers.name}/**/*`];
+					const labelerYAML = parseYAML(content) as Record<string, Record<string, Record<string, string[]>[]>[]>;
 
-					return stringifyYAML(sortYAMLObject(labelerYAML));
+					labelerYAML[`packages:${answers.name}`] = [
+						{
+							'changed-files': [
+								{ 'any-glob-to-any-file': [`packages/${answers.name}/*`, `packages/${answers.name}/**/*`] },
+							],
+						},
+					];
+
+					return stringifyYAML(labelerYAML, { sortMapEntries: true });
 				},
 			},
 			{

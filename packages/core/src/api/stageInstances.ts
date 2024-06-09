@@ -17,7 +17,7 @@ export class StageInstancesAPI {
 	/**
 	 * Creates a new stage instance
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/stage-instance#get-stage-instance}
+	 * @see {@link https://discord.com/developers/docs/resources/stage-instance#create-stage-instance}
 	 * @param body - The data for creating the new stage instance
 	 * @param options - The options for creating the new stage instance
 	 */
