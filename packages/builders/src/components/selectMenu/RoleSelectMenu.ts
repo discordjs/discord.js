@@ -59,7 +59,7 @@ export class RoleSelectMenuBuilder extends BaseSelectMenuBuilder<APIRoleSelectCo
 	}
 
 	/**
-	 * Sets default roles to this auto populated select menu.
+	 * Sets default roles for this auto populated select menu.
 	 *
 	 * @param roles - The roles to set
 	 */

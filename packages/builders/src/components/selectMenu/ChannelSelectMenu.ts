@@ -85,7 +85,7 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSe
 	}
 
 	/**
-	 * Sets default channels to this auto populated select menu.
+	 * Sets default channels for this auto populated select menu.
 	 *
 	 * @param channels - The channels to set
 	 */

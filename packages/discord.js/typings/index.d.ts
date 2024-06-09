@@ -180,6 +180,7 @@ import {
   APIPollAnswer,
   APISelectMenuDefaultValue,
   SelectMenuDefaultValueType,
+  InviteType,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -1990,6 +1991,7 @@ export class Invite extends Base {
   public targetUser: User | null;
   public targetType: InviteTargetType | null;
   public temporary: boolean | null;
+  public type: InviteType;
   public get url(): string;
   public uses: number | null;
   public delete(reason?: string): Promise<Invite>;
@@ -2023,6 +2025,12 @@ export class LimitedCollection<Key, Value> extends Collection<Key, Value> {
   public constructor(options?: LimitedCollectionOptions<Key, Value>, iterable?: Iterable<readonly [Key, Value]>);
   public maxSize: number;
   public keepOverLimit: ((value: Value, key: Key, collection: this) => boolean) | null;
+}
+
+export interface MessageCall {
+  get endedAt(): Date | null;
+  endedTimestamp: number | null;
+  participants: readonly Snowflake[];
 }
 
 export type MessageComponentType = Exclude<ComponentType, ComponentType.TextInput | ComponentType.ActionRow>;
@@ -2116,6 +2124,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public get thread(): AnyThreadChannel | null;
   public tts: boolean;
   public poll: Poll | null;
+  public call: MessageCall | null;
   public type: MessageType;
   public get url(): string;
   public webhookId: Snowflake | null;
@@ -2463,6 +2472,8 @@ export class NewsChannel extends BaseGuildTextChannel {
   public type: ChannelType.GuildAnnouncement;
   public addFollower(channel: TextChannelResolvable, reason?: string): Promise<NewsChannel>;
 }
+
+export type NewsChannelResolvable = NewsChannel | Snowflake;
 
 export class OAuth2Guild extends BaseGuild {
   private constructor(client: Client<true>, data: RawOAuth2GuildData);
@@ -3308,6 +3319,11 @@ export class Typing extends Base {
   };
 }
 
+export interface AvatarDecorationData {
+  asset: string;
+  skuId: Snowflake;
+}
+
 // tslint:disable-next-line no-empty-interface
 export interface User extends PartialTextBasedChannelFields<false> {}
 export class User extends Base {
@@ -3316,7 +3332,9 @@ export class User extends Base {
 
   public accentColor: number | null | undefined;
   public avatar: string | null;
+  /** @deprecated Use {@link User.avatarDecorationData} instead */
   public avatarDecoration: string | null;
+  public avatarDecorationData: AvatarDecorationData | null;
   public banner: string | null | undefined;
   public bot: boolean;
   public get createdAt(): Date;
@@ -4218,7 +4236,7 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
   public guild: Guild;
 
   public addFollower(
-    channel: NewsChannel | Snowflake,
+    channel: NewsChannelResolvable,
     targetChannel: TextChannelResolvable,
     reason?: string,
   ): Promise<Snowflake>;
@@ -6335,7 +6353,7 @@ export interface MessageCreateOptions extends BaseMessageOptions {
 }
 
 export interface GuildForumThreadMessageCreateOptions
-  extends BaseMessageOptions,
+  extends Omit<BaseMessageOptions, 'poll'>,
     Pick<MessageCreateOptions, 'flags' | 'stickers'> {}
 
 export interface MessageEditAttachmentData {

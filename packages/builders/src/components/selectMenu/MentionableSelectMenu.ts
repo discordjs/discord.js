@@ -98,7 +98,7 @@ export class MentionableSelectMenuBuilder extends BaseSelectMenuBuilder<APIMenti
 	}
 
 	/**
-	 * Sets default values to this auto populated select menu.
+	 * Sets default values for this auto populated select menu.
 	 *
 	 * @param values - The values to set
 	 */
