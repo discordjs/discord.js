@@ -56,16 +56,17 @@ export async function releasePackage(release: ReleaseEntry) {
 	const before = performance.now();
 
 	// Poll registry to ensure next publishes won't fail
-	await new Promise<void>((resolve) => {
+	await new Promise<void>((resolve, reject) => {
 		const interval = setInterval(async () => {
 			if (await checkRegistry(release)) {
 				clearInterval(interval);
 				resolve();
+				return;
 			}
 
 			if (performance.now() > before + 5 * 60 * 1_000) {
 				clearInterval(interval);
-				throw new Error(`Release for ${release.name} failed.`);
+				reject(new Error(`Release for ${release.name} failed.`));
 			}
 		}, 15_000);
 	});
