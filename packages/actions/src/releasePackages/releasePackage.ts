@@ -45,7 +45,10 @@ async function gitTagAndRelease(release: ReleaseEntry) {
 
 export async function releasePackage(release: ReleaseEntry) {
 	// Sanity check against the registry first
-	if (await checkRegistry(release)) return;
+	if (await checkRegistry(release)) {
+		console.log(`${release.name}@${release.version} already published, skipping.`);
+		return;
+	}
 
 	await execPromise(`pnpm --filter=${release.name} publish --provenance --no-git-checks`);
 	await gitTagAndRelease(release);

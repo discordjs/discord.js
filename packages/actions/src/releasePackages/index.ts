@@ -1,4 +1,4 @@
-import { getInput } from '@actions/core';
+import { getInput, startGroup, endGroup } from '@actions/core';
 import { program } from 'commander';
 import { generateReleaseTree } from './generateReleaseTree.js';
 import { releasePackage } from './releasePackage.js';
@@ -19,8 +19,9 @@ const packageName = program.args[0]!;
 
 const tree = await generateReleaseTree(packageName, exclude);
 for (const branch of tree) {
-	console.log(`Releasing ${branch.map((entry) => `${entry.name}@${entry.version}`).join(', ')}`);
+	startGroup(`Releasing ${branch.map((entry) => `${entry.name}@${entry.version}`).join(', ')}`);
 	await Promise.all(branch.map(async (release) => releasePackage(release)));
+	endGroup();
 }
 
 console.log(
