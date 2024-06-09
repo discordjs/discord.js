@@ -30,7 +30,7 @@ class PollAnswer extends Base {
      * The text of this answer
      * @type {?string}
      */
-    this.text = data.poll_media.text ?? null;
+    this.text = data.poll_media?.text ?? null;
 
     /**
      * The manager of the voters that voted for this answer
@@ -44,7 +44,7 @@ class PollAnswer extends Base {
      * @type {?APIPartialEmoji}
      * @private
      */
-    Object.defineProperty(this, '_emoji', { value: data.poll_media.emoji ?? null });
+    Object.defineProperty(this, '_emoji', { value: data.poll_media?.emoji ?? null });
 
     this._patch(data);
   }
@@ -57,10 +57,10 @@ class PollAnswer extends Base {
        * @type {number}
        */
       this.voteCount = data.count;
-    } else if (data.poll_media.text) {
-      this.text = data.poll_media.text ?? null;
-    } else if (data.poll_media.emoji) {
-      Object.defineProperty(this, '_emoji', { value: data.poll_media.emoji ?? null });
+    } else if (data.poll_media?.text) {
+      this.text = data.poll_media?.text ?? null;
+    } else if (data.poll_media?.emoji) {
+      Object.defineProperty(this, '_emoji', { value: data.poll_media?.emoji ?? null });
     } else {
       this.voteCount ??= 0;
     }
