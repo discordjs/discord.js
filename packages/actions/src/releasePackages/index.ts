@@ -3,6 +3,8 @@ import { program } from 'commander';
 import { generateReleaseTree } from './generateReleaseTree.js';
 import { releasePackage } from './releasePackage.js';
 
+const excludeInput = getInput('exclude');
+
 program
 	.name('release packages')
 	.description('releases monorepo packages with proper sequencing')
@@ -10,7 +12,7 @@ program
 	.option(
 		'-e, --exclude <packages...>',
 		'exclude specific packages from releasing (will still release if necessary for another package)',
-		getInput('exclude').split(','),
+		excludeInput ? excludeInput.split(',') : [],
 	)
 	.parse();
 
