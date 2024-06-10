@@ -5247,8 +5247,8 @@ export interface ClientEvents {
   inviteDelete: [invite: Invite];
   messageCreate: [message: Message];
   messageDelete: [message: Message | PartialMessage];
-  messagePollVoteAdd: [pollAnswer: PollAnswer, userId: Snowflake];
-  messagePollVoteRemove: [pollAnswer: PollAnswer, userId: Snowflake];
+  messagePollVoteAdd: [pollAnswer: PollAnswer | PartialPollAnswer, userId: Snowflake];
+  messagePollVoteRemove: [pollAnswer: PollAnswer | PartialPollAnswer, userId: Snowflake];
   messageReactionRemoveAll: [
     message: Message | PartialMessage,
     reactions: ReadonlyCollection<string | Snowflake, MessageReaction>,
@@ -6561,10 +6561,10 @@ export interface PartialMessageReaction extends Partialize<MessageReaction, 'cou
 export interface PartialPoll
   extends Partialize<
     Poll,
-    'allowMultiselect' | 'answers' | 'layoutType' | 'question' | 'resultsFinalized' | 'message'
+    'allowMultiselect' | 'answers' | 'layoutType' | 'expiresTimestamp' | 'question' | 'resultsFinalized' | 'message'
   > {}
 
-export interface PartialPollAnswer extends Partialize<PollAnswer, 'voteCount' | 'emoji' | 'poll' | 'text'> {}
+export interface PartialPollAnswer extends Partialize<PollAnswer, 'voteCount' | 'emoji' | 'text'> {}
 
 export interface PartialGuildScheduledEvent
   extends Partialize<GuildScheduledEvent, 'userCount', 'status' | 'privacyLevel' | 'name' | 'entityType'> {}

@@ -629,6 +629,48 @@ client.on('messageDeleteBulk', (messages, { client }) => {
   expectType<Client<true>>(client);
 });
 
+client.on('messagePollVoteAdd', async (answer, userId) => {
+  expectType<Client<true>>(answer.client);
+  expectType<Snowflake>(userId);
+
+  if (answer.partial) {
+    expectType<null>(answer.emoji);
+    expectType<null>(answer.text);
+    expectNotType<null>(answer.id);
+    expectNotType<null>(answer.poll);
+
+    await answer.poll.fetch();
+    answer = answer.poll.answers?.get(answer.id) ?? answer;
+
+    expectType<User>(answer.voters.cache.get(userId)!);
+  }
+
+  expectType<string | null>(answer.text);
+  expectType<GuildEmoji | Emoji | null>(answer.emoji);
+  expectType<number>(answer.id);
+  expectType<number>(answer.voteCount!);
+});
+
+client.on('messagePollVoteRemove', async (answer, userId) => {
+  expectType<Client<true>>(answer.client);
+  expectType<Snowflake>(userId);
+
+  if (answer.partial) {
+    expectType<null>(answer.emoji);
+    expectType<null>(answer.text);
+    expectNotType<null>(answer.id);
+    expectNotType<null>(answer.poll);
+
+    await answer.poll.fetch();
+    answer = answer.poll.answers?.get(answer.id) ?? answer;
+  }
+
+  expectType<string | null>(answer.text);
+  expectType<GuildEmoji | Emoji | null>(answer.emoji);
+  expectType<number>(answer.id);
+  expectType<number>(answer.voteCount!);
+});
+
 client.on('messageReactionAdd', async (reaction, { client }) => {
   expectType<Client<true>>(reaction.client);
   expectType<Client<true>>(client);
@@ -2557,7 +2599,7 @@ declare const partialPoll: PartialPoll;
     expectType<null>(partialPoll.allowMultiselect);
     expectType<null>(partialPoll.resultsFinalized);
     expectType<null>(partialPoll.layoutType);
-    expectType<number | null>(partialPoll.expiresTimestamp);
+    expectType<null>(partialPoll.expiresTimestamp);
     expectType<null>(partialPoll.answers);
   }
 }
@@ -2565,7 +2607,6 @@ declare const partialPoll: PartialPoll;
 declare const partialPollAnswer: PartialPollAnswer;
 {
   if (partialPollAnswer.partial) {
-    expectType<null>(partialPollAnswer.poll);
     expectType<null>(partialPollAnswer.voteCount);
   }
 }
