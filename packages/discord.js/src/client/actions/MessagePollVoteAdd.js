@@ -15,28 +15,25 @@ class MessagePollVoteAddAction extends Action {
     if (!message) return false;
 
     const includePollPartial = this.client.options.partials.includes(Partials.Poll);
-    if (message.partial && !includePollPartial) return false;
+    const includePollAnswerPartial = this.client.options.partials.includes(Partials.PollAnswer);
+    if (message.partial && (!includePollPartial || !includePollAnswerPartial)) return false;
 
-    if (!message.poll && includePollPartial) {
+    if (!message.poll && includePollPartial && includePollAnswerPartial) {
       message.poll = new Poll(
         this.client,
         { ...data, question: { text: '' }, answers: [], partial: true },
         message,
         channel,
       );
-    }
 
-    const includePollAnswerPartial = this.client.options.partials.includes(Partials.PollAnswer);
-    if (message.partial && includePollPartial && !includePollAnswerPartial) return false;
-
-    let answer = message.poll?.answers?.get(data.answer_id);
-    if (!answer && message.poll) {
       const pollAnswer = new PollAnswer(this.client, data, message.poll);
 
       message.poll.answers.set(data.answer_id, pollAnswer);
-
-      answer = pollAnswer;
     }
+
+    const answer = message.poll.answers.get(data.answer_id);
+
+    if (!answer) return false;
 
     const user = this.getUser(data);
 
