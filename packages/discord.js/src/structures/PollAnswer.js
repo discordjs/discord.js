@@ -78,6 +78,7 @@ class PollAnswer extends Base {
   /**
    * Whether or not this poll answer is a partial.
    * @type {boolean}
+   * @readonly
    */
   get partial() {
     return this.poll.partial || (this.text === null && this.emoji === null);
