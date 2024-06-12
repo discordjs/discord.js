@@ -5,7 +5,7 @@ import type {
 	Permissions,
 	RESTPostAPIChatInputApplicationCommandsJSONBody,
 } from 'discord-api-types/v10';
-import type { RestOrArray} from '../../../util/normalizeArray.js';
+import type { RestOrArray } from '../../../util/normalizeArray.js';
 import { normalizeArray } from '../../../util/normalizeArray.js';
 import {
 	contextsPredicate,
