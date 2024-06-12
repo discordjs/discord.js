@@ -552,10 +552,10 @@ describe('Slash Commands', () => {
 
 			test('GIVEN a builder with invalid contexts THEN does throw an error', () => {
 				// @ts-expect-error: Invalid contexts
-				expect(() => getBuilder().addContexts(999)).toThrowError();
+				expect(() => getBuilder().setContexts(999)).toThrowError();
 
 				// @ts-expect-error: Invalid contexts
-				expect(() => getBuilder().addContexts([999, 998])).toThrowError();
+				expect(() => getBuilder().setContexts([999, 998])).toThrowError();
 			});
 		});
 
@@ -578,10 +578,10 @@ describe('Slash Commands', () => {
 
 			test('GIVEN a builder with invalid integration types THEN does throw an error', () => {
 				// @ts-expect-error: Invalid integration types
-				expect(() => getBuilder().addIntegrationTypes(999)).toThrowError();
+				expect(() => getBuilder().setIntegrationTypes(999)).toThrowError();
 
 				// @ts-expect-error: Invalid integration types
-				expect(() => getBuilder().addIntegrationTypes([999, 998])).toThrowError();
+				expect(() => getBuilder().setIntegrationTypes([999, 998])).toThrowError();
 			});
 		});
 	});
