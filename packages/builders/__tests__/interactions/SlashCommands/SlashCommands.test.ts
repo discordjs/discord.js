@@ -1,4 +1,10 @@
-import { ChannelType, PermissionFlagsBits, type APIApplicationCommandOptionChoice } from 'discord-api-types/v10';
+import {
+	ApplicationIntegrationType,
+	ChannelType,
+	InteractionContextType,
+	PermissionFlagsBits,
+	type APIApplicationCommandOptionChoice,
+} from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
 	SlashCommandAssertions,
@@ -530,6 +536,51 @@ describe('Slash Commands', () => {
 				).not.toThrowError();
 
 				expect(() => getBuilder().addChannelOption(getChannelOption()).setDMPermission(false)).not.toThrowError();
+			});
+		});
+
+		describe('contexts', () => {
+			test('GIVEN a builder with valid contexts THEN does not throw an error', () => {
+				expect(() =>
+					getBuilder().addContexts(InteractionContextType.Guild).addContexts([InteractionContextType.BotDM]),
+				).not.toThrowError();
+
+				expect(() =>
+					getBuilder().addContexts(InteractionContextType.Guild, InteractionContextType.BotDM),
+				).not.toThrowError();
+			});
+
+			test('GIVEN a builder with invalid contexts THEN does throw an error', () => {
+				// @ts-expect-error: Invalid contexts
+				expect(() => getBuilder().addContexts(999)).toThrowError();
+
+				// @ts-expect-error: Invalid contexts
+				expect(() => getBuilder().addContexts([999, 998])).toThrowError();
+			});
+		});
+
+		describe('integration types', () => {
+			test('GIVEN a builder with valid integraton types THEN does not throw an error', () => {
+				expect(() =>
+					getBuilder()
+						.addIntegrationTypes(ApplicationIntegrationType.GuildInstall)
+						.addIntegrationTypes([ApplicationIntegrationType.UserInstall]),
+				).not.toThrowError();
+
+				expect(() =>
+					getBuilder().addIntegrationTypes(
+						ApplicationIntegrationType.GuildInstall,
+						ApplicationIntegrationType.UserInstall,
+					),
+				).not.toThrowError();
+			});
+
+			test('GIVEN a builder with invalid integration types THEN does throw an error', () => {
+				// @ts-expect-error: Invalid integration types
+				expect(() => getBuilder().addIntegrationTypes(999)).toThrowError();
+
+				// @ts-expect-error: Invalid integration types
+				expect(() => getBuilder().addIntegrationTypes([999, 998])).toThrowError();
 			});
 		});
 	});
