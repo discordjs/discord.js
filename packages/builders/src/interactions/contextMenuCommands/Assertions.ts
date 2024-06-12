@@ -53,6 +53,7 @@ export function validateDefaultMemberPermissions(permissions: unknown) {
 export const contextsPredicate = s.array(
 	s.nativeEnum(InteractionContextType).setValidationEnabled(isValidationEnabled),
 );
+
 export const integrationTypesPredicate = s.array(
 	s.nativeEnum(ApplicationIntegrationType).setValidationEnabled(isValidationEnabled),
 );

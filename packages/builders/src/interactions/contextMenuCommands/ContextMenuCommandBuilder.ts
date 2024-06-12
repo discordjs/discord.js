@@ -76,7 +76,7 @@ export class ContextMenuCommandBuilder {
 	public readonly integration_types?: ApplicationIntegrationType[];
 
 	/**
-	 * Adds contexts to this slash command.
+	 * Adds contexts to this command.
 	 *
 	 * @param contexts - The contexts
 	 */
@@ -91,9 +91,9 @@ export class ContextMenuCommandBuilder {
 	}
 
 	/**
-	 * Adds integration types to this slash command.
+	 * Adds integration types to this command.
 	 *
-	 * @param contexts - The integration types
+	 * @param integrationTypes - The integration types
 	 */
 	public addIntegrationTypes(...integrationTypes: RestOrArray<ApplicationIntegrationType>) {
 		if (this.integration_types === undefined) {
