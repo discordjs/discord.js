@@ -76,31 +76,23 @@ export class ContextMenuCommandBuilder {
 	public readonly integration_types?: ApplicationIntegrationType[];
 
 	/**
-	 * Adds contexts to this command.
+	 * Sets the contexts of this command.
 	 *
 	 * @param contexts - The contexts
 	 */
-	public addContexts(...contexts: RestOrArray<InteractionContextType>) {
-		if (this.contexts === undefined) {
-			Reflect.set(this, 'contexts', []);
-		}
-
-		this.contexts!.push(...contextsPredicate.parse(normalizeArray(contexts)));
+	public setContexts(...contexts: RestOrArray<InteractionContextType>) {
+		Reflect.set(this, 'contexts', contextsPredicate.parse(normalizeArray(contexts)));
 
 		return this;
 	}
 
 	/**
-	 * Adds integration types to this command.
+	 * Sets integration types of this command.
 	 *
 	 * @param integrationTypes - The integration types
 	 */
-	public addIntegrationTypes(...integrationTypes: RestOrArray<ApplicationIntegrationType>) {
-		if (this.integration_types === undefined) {
-			Reflect.set(this, 'integration_types', []);
-		}
-
-		this.integration_types!.push(...integrationTypesPredicate.parse(normalizeArray(integrationTypes)));
+	public setIntegrationTypes(...integrationTypes: RestOrArray<ApplicationIntegrationType>) {
+		Reflect.set(this, 'integration_types', integrationTypesPredicate.parse(normalizeArray(integrationTypes)));
 
 		return this;
 	}

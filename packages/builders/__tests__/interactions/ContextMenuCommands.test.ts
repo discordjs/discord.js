@@ -148,11 +148,11 @@ describe('Context Menu Commands', () => {
 		describe('contexts', () => {
 			test('GIVEN a builder with valid contexts THEN does not throw an error', () => {
 				expect(() =>
-					getBuilder().addContexts(InteractionContextType.Guild).addContexts([InteractionContextType.BotDM]),
+					getBuilder().setContexts([InteractionContextType.Guild, InteractionContextType.BotDM]),
 				).not.toThrowError();
 
 				expect(() =>
-					getBuilder().addContexts(InteractionContextType.Guild, InteractionContextType.BotDM),
+					getBuilder().setContexts(InteractionContextType.Guild, InteractionContextType.BotDM),
 				).not.toThrowError();
 			});
 
@@ -168,13 +168,14 @@ describe('Context Menu Commands', () => {
 		describe('integration types', () => {
 			test('GIVEN a builder with valid integraton types THEN does not throw an error', () => {
 				expect(() =>
-					getBuilder()
-						.addIntegrationTypes(ApplicationIntegrationType.GuildInstall)
-						.addIntegrationTypes([ApplicationIntegrationType.UserInstall]),
+					getBuilder().setIntegrationTypes([
+						ApplicationIntegrationType.GuildInstall,
+						ApplicationIntegrationType.UserInstall,
+					]),
 				).not.toThrowError();
 
 				expect(() =>
-					getBuilder().addIntegrationTypes(
+					getBuilder().setIntegrationTypes(
 						ApplicationIntegrationType.GuildInstall,
 						ApplicationIntegrationType.UserInstall,
 					),
