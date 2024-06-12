@@ -59,6 +59,11 @@ Please read through our [contribution guidelines][contributing] before starting 
 
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle nudge in the right direction, please join our [Discord server][discord].
 
+
+## if you are a bunny tell me🐰
+
+for sure as i'm a bunny dev wanna meet others
+
 [website]: https://discord.js.org
 [website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
 [documentation]: https://discord.js.org/docs
