@@ -834,15 +834,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	private debug(messages: [string, ...string[]]) {
-		const message = `${messages[0]}${
-			messages.length > 1
-				? `\n${messages
-						.slice(1)
-						.map((m) => `	${m}`)
-						.join('\n')}`
-				: ''
-		}`;
-
-		this.emit(WebSocketShardEvents.Debug, { message });
+		this.emit(WebSocketShardEvents.Debug, { message: messages.join('\n\t') });
 	}
 }
