@@ -110,10 +110,13 @@ class WebSocketShard extends EventEmitter {
       wasClean: false,
     },
   ) {
-    this.debug(`[CLOSE]
-    Event Code: ${event.code}
-    Clean     : ${event.wasClean}
-    Reason    : ${event.reason ?? 'No reason received'}`);
+    this.debug([
+      '[CLOSE]',
+      `Event Code: ${event.code}`,
+      `Clean     : ${event.wasClean}`,
+      `Reason    : ${event.reason ?? 'No reason received'}`,
+    ]);
+
     /**
      * Emitted when a shard's WebSocket closes.
      * @private
@@ -130,7 +133,7 @@ class WebSocketShard extends EventEmitter {
    */
   onReadyPacket(packet) {
     if (!packet) {
-      this.debug(`Received broken packet: '${packet}'.`);
+      this.debug([`Received broken packet: '${packet}'.`]);
       return;
     }
 
@@ -167,7 +170,7 @@ class WebSocketShard extends EventEmitter {
     }
     // Step 1. If we don't have any other guilds pending, we are ready
     if (!this.expectedGuilds.size) {
-      this.debug('Shard received all its guilds. Marking as fully ready.');
+      this.debug(['Shard received all its guilds. Marking as fully ready.']);
       this.status = Status.Ready;
 
       /**
@@ -191,12 +194,11 @@ class WebSocketShard extends EventEmitter {
 
     this.readyTimeout = setTimeout(
       () => {
-        this.debug(
-          `Shard ${hasGuildsIntent ? 'did' : 'will'} not receive any more guild packets` +
-            `${hasGuildsIntent ? ` in ${waitGuildTimeout} ms` : ''}.\nUnavailable guild count: ${
-              this.expectedGuilds.size
-            }`,
-        );
+        this.debug([
+          // eslint-disable-next-line max-len
+          `Shard ${hasGuildsIntent ? 'did' : 'will'} not receive anymore guild packets${hasGuildsIntent ? ` in ${waitGuildTimeout} ms` : ''}.`,
+          `Unavailable guild count: ${this.expectedGuilds.size}`,
+        ]);
 
         this.readyTimeout = null;
         this.status = Status.Ready;
