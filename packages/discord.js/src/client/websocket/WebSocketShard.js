@@ -85,11 +85,11 @@ class WebSocketShard extends EventEmitter {
 
   /**
    * Emits a debug event.
-   * @param {string} message The debug message
+   * @param {string[]} messages The debug message
    * @private
    */
-  debug(message) {
-    this.manager.debug(message, this.id);
+  debug(messages) {
+    this.manager.debug(messages, this.id);
   }
 
   /**
