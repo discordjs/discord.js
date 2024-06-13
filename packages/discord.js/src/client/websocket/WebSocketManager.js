@@ -4,7 +4,6 @@ const EventEmitter = require('node:events');
 const process = require('node:process');
 const { setImmediate } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
-const { formatDebugLog } = require('@discordjs/util');
 const {
   WebSocketManager: WSWebSocketManager,
   WebSocketShardEvents: WSWebSocketShardEvents,
@@ -125,7 +124,7 @@ class WebSocketManager extends EventEmitter {
   debug(messages, shardId) {
     this.client.emit(
       Events.Debug,
-      `[WS => ${typeof shardId === 'number' ? `Shard ${shardId}` : 'Manager'}] ${formatDebugLog(messages)}`,
+      `[WS => ${typeof shardId === 'number' ? `Shard ${shardId}` : 'Manager'}] ${messages.join('\n\t')}`,
     );
   }
 

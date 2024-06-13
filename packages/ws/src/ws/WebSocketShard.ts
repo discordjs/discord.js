@@ -6,7 +6,7 @@ import { URLSearchParams } from 'node:url';
 import { TextDecoder } from 'node:util';
 import type * as nativeZlib from 'node:zlib';
 import { Collection } from '@discordjs/collection';
-import { formatDebugLog, lazy, shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
+import { lazy, shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -915,6 +915,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	private debug(messages: [string, ...string[]]) {
-		this.emit(WebSocketShardEvents.Debug, { message: formatDebugLog(messages) });
+		this.emit(WebSocketShardEvents.Debug, { message: messages.join('\n\t') });
 	}
 }
