@@ -195,8 +195,9 @@ class WebSocketShard extends EventEmitter {
     this.readyTimeout = setTimeout(
       () => {
         this.debug([
-          // eslint-disable-next-line max-len
-          `Shard ${hasGuildsIntent ? 'did' : 'will'} not receive anymore guild packets${hasGuildsIntent ? ` in ${waitGuildTimeout} ms` : ''}.`,
+          hasGuildsIntent
+            ? `Shard did not receive any guild packets in ${waitGuildTimeout} ms.`
+            : 'Shard will not receive anymore guild packets.',
           `Unavailable guild count: ${this.expectedGuilds.size}`,
         ]);
 
