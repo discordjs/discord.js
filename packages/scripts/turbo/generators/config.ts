@@ -41,14 +41,14 @@ export default function generator(plop: PlopTypes.NodePlopAPI): void {
 			{
 				type: 'addMany',
 				destination: `${plop.getDestBasePath()}/../{{name}}`,
-				templateFiles: ['templates/**'],
+				templateFiles: ['templates/**', '!templates/default/cliff.toml'],
 				globOptions: { dot: true },
 				base: 'templates/default/',
 				stripExtensions: ['hbs'],
 			},
 			{
 				type: 'modify',
-				path: `${plop.getDestBasePath()}/turbo/generators/templates/cliff.toml`,
+				path: `${plop.getDestBasePath()}/turbo/generators/templates/default/cliff.toml`,
 				async transform(content, answers) {
 					const cliffTOML = content.replace('{{name}}', answers.name);
 					await writeFile(`${plop.getDestBasePath()}/../${answers.name}/cliff.toml`, cliffTOML);
