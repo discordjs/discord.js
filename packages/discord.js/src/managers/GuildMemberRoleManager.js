@@ -162,14 +162,14 @@ class GuildMemberRoleManager extends DataManager {
   
   /**
    * Modifies the roles of the member.
-   * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} roleIdsToAdd The roles to add
-   * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} roleIdsToRemove The roles to remove
+   * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} rolesToAdd The roles to add
+   * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} rolesToRemove The roles to remove
    * @param {string} [reason] Reason for modifying the roles
    * @returns {Promise<GuildMember>}
    */
-  public static async modify(roleIdsToAdd, roleIdsToRemove, reason) {
-    const resolvedRolesToAdd = this.resolveRoles(roleIdsToAdd)
-    const resolvedRolesToRemove = this.resolveRoles(roleIdsToRemove);
+  public static async modify(rolesToAdd, rolesToRemove, reason) {
+    const resolvedRolesToAdd = this.resolveRoles(rolesToAdd)
+    const resolvedRolesToRemove = this.resolveRoles(rolesToRemove);
 
     const currentRoles = new Set(this.member.roles.cache.keys());
     for (const role of resolvedRolesToAdd) {
