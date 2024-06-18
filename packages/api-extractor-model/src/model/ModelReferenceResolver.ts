@@ -115,6 +115,7 @@ export class ModelReferenceResolver {
 			if (memberSelector === undefined) {
 				if (foundMembers.length > 1) {
 					const foundClass: ApiItem | undefined = foundMembers.find((member) => member.kind === ApiItemKind.Class);
+					const foundEvent: ApiItem | undefined = foundMembers.find((member) => member.kind === ApiItemKind.Event);
 					if (
 						foundClass &&
 						foundMembers.filter((member) => member.kind === ApiItemKind.Interface).length === foundMembers.length - 1
@@ -124,6 +125,11 @@ export class ModelReferenceResolver {
 						foundMembers.every((member) => member.kind === ApiItemKind.Method && (member as ApiMethod).overloadIndex)
 					) {
 						currentItem = foundMembers.find((member) => (member as ApiMethod).overloadIndex === 1)!;
+					} else if (
+						foundEvent &&
+						foundMembers.filter((member) => member.kind === ApiItemKind.Method).length === foundMembers.length - 1
+					) {
+						currentItem = foundEvent;
 					} else {
 						result.errorMessage = `The member reference ${JSON.stringify(identifier)} was ambiguous`;
 						return result;

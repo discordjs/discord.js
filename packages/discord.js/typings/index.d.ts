@@ -2027,6 +2027,12 @@ export class LimitedCollection<Key, Value> extends Collection<Key, Value> {
   public keepOverLimit: ((value: Value, key: Key, collection: this) => boolean) | null;
 }
 
+export interface MessageCall {
+  get endedAt(): Date | null;
+  endedTimestamp: number | null;
+  participants: readonly Snowflake[];
+}
+
 export type MessageComponentType = Exclude<ComponentType, ComponentType.TextInput | ComponentType.ActionRow>;
 
 export interface MessageCollectorOptionsParams<
@@ -2118,6 +2124,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public get thread(): AnyThreadChannel | null;
   public tts: boolean;
   public poll: Poll | null;
+  public call: MessageCall | null;
   public type: MessageType;
   public get url(): string;
   public webhookId: Snowflake | null;
@@ -3646,7 +3653,7 @@ export class WebSocketManager extends EventEmitter {
   public on(event: GatewayDispatchEvents, listener: (data: any, shardId: number) => void): this;
   public once(event: GatewayDispatchEvents, listener: (data: any, shardId: number) => void): this;
 
-  private debug(message: string, shardId?: number): void;
+  private debug(messages: readonly string[], shardId?: number): void;
   private connect(): Promise<void>;
   private broadcast(packet: unknown): void;
   private destroy(): Promise<void>;
@@ -3677,7 +3684,7 @@ export class WebSocketShard extends EventEmitter {
   public status: Status;
   public ping: number;
 
-  private debug(message: string): void;
+  private debug(messages: readonly string[]): void;
   private onReadyPacket(packet: unknown): void;
   private gotGuild(guildId: Snowflake): void;
   private checkReady(): void;
