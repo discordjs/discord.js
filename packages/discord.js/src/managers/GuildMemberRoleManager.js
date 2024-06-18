@@ -167,11 +167,11 @@ class GuildMemberRoleManager extends DataManager {
    * @param {string} [reason] Reason for modifying the roles
    * @returns {Promise<GuildMember>}
    */
-  public static async modify(roleIdsToAdd, roleIdsToRemove, member, reason) {
+  public static async modify(roleIdsToAdd, roleIdsToRemove, reason) {
     const resolvedRolesToAdd = this.resolveRoles(roleIdsToAdd)
     const resolvedRolesToRemove = this.resolveRoles(roleIdsToRemove);
 
-    const currentRoles = new Set(member.roles.cache.keys());
+    const currentRoles = new Set(this.member.roles.cache.keys());
     for (const role of resolvedRolesToAdd) {
         currentRoles.add(role.id);
     }
@@ -179,7 +179,7 @@ class GuildMemberRoleManager extends DataManager {
         currentRoles.delete(role.id);
     }
 
-    return await member.roles.set([...currentRoles], reason);
+    return await this.member.roles.set([...currentRoles], reason);
 }
 
 /**
