@@ -51,7 +51,6 @@ describe('Button Components', () => {
 			}).not.toThrowError();
 
 			expect(() => {
-				// @ts-expect-error: discord-api-types.
 				const button = buttonComponent().setSKUId('123456789012345678').setStyle(ButtonStyle.Premium);
 				button.toJSON();
 			}).not.toThrowError();

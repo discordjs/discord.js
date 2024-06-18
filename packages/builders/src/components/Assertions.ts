@@ -84,7 +84,6 @@ export function validateRequiredButtonParameters(
 	skuId?: string,
 	url?: string,
 ) {
-	// @ts-expect-error discord-api-types.
 	if (style === ButtonStyle.Premium) {
 		if (!skuId) {
 			throw new RangeError('Premium buttons must have an SKU id.');

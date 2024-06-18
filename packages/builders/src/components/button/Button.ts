@@ -97,7 +97,6 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	 * @param skuId - The SKU id to use
 	 */
 	public setSKUId(skuId: Snowflake) {
-		// @ts-expect-error discord-api-types.
 		(this.data as APIButtonComponentWithSKUId).sku_id = skuId;
 		return this;
 	}
@@ -141,7 +140,6 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 			(this.data as Exclude<APIButtonComponent, APIButtonComponentWithSKUId>).label,
 			(this.data as Exclude<APIButtonComponent, APIButtonComponentWithSKUId>).emoji,
 			(this.data as APIButtonComponentWithCustomId).custom_id,
-			// @ts-expect-error discord-api-types.
 			(this.data as APIButtonComponentWithSKUId).sku_id,
 			(this.data as APIButtonComponentWithURL).url,
 		);
