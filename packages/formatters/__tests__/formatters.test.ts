@@ -314,7 +314,7 @@ describe('Message formatters', () => {
 		});
 	});
 
-	describe('applicationDirectoryStore', () => {
+	describe('applicationDirectory', () => {
 		test('GIVEN application id THEN returns application directory store', () => {
 			expect(applicationDirectory('123456789012345678')).toEqual(
 				'https://discord.com/application-directory/123456789012345678/store',
