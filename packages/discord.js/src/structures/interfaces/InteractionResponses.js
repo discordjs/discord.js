@@ -1,5 +1,6 @@
 'use strict';
 
+const { deprecate } = require('node:util');
 const { isJSONEncodable } = require('@discordjs/util');
 const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../../errors');
@@ -337,5 +338,11 @@ class InteractionResponses {
     }
   }
 }
+
+InteractionResponses.prototype.sendPremiumRequired = deprecate(
+  InteractionResponses.prototype.sendPremiumRequired,
+  // eslint-disable-next-line max-len
+  'InteractionResponses#sendPremiumRequired() is deprecated. Sending a premium-style button is the new Discord behaviour.',
+);
 
 module.exports = InteractionResponses;
