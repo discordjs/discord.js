@@ -81,21 +81,37 @@ export function validateRequiredButtonParameters(
 	label?: string,
 	emoji?: APIMessageComponentEmoji,
 	customId?: string,
+	skuId?: string,
 	url?: string,
 ) {
-	if (url && customId) {
-		throw new RangeError('URL and custom id are mutually exclusive');
-	}
-
-	if (!label && !emoji) {
-		throw new RangeError('Buttons must have a label and/or an emoji');
-	}
-
-	if (style === ButtonStyle.Link) {
-		if (!url) {
-			throw new RangeError('Link buttons must have a url');
+	// @ts-expect-error discord-api-types.
+	if (style === ButtonStyle.Premium) {
+		if (!skuId) {
+			throw new RangeError('Premium buttons must have an SKU id.');
 		}
-	} else if (url) {
-		throw new RangeError('Non-link buttons cannot have a url');
+
+		if (customId || label || url || emoji) {
+			throw new RangeError('Premium buttons cannot have a custom id, label, URL, or emoji.');
+		}
+	} else {
+		if (skuId) {
+			throw new RangeError('Non-premium buttons must not have an SKU id.');
+		}
+
+		if (url && customId) {
+			throw new RangeError('URL and custom id are mutually exclusive.');
+		}
+
+		if (!label && !emoji) {
+			throw new RangeError('Non-premium buttons must have a label and/or an emoji.');
+		}
+
+		if (style === ButtonStyle.Link) {
+			if (!url) {
+				throw new RangeError('Link buttons must have a URL.');
+			}
+		} else if (url) {
+			throw new RangeError('Non-premium and non-link buttons cannot have a URL.');
+		}
 	}
 }

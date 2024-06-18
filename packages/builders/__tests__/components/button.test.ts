@@ -50,6 +50,12 @@ describe('Button Components', () => {
 				button.toJSON();
 			}).not.toThrowError();
 
+			expect(() => {
+				// @ts-expect-error: discord-api-types.
+				const button = buttonComponent().setSKUId('123456789012345678').setStyle(ButtonStyle.Premium);
+				button.toJSON();
+			}).not.toThrowError();
+
 			expect(() => buttonComponent().setURL('https://google.com')).not.toThrowError();
 		});
 
@@ -98,6 +104,47 @@ describe('Button Components', () => {
 
 			expect(() => {
 				const button = buttonComponent().setStyle(ButtonStyle.Link).setLabel('test');
+				button.toJSON();
+			}).toThrowError();
+
+			expect(() => {
+				const button = buttonComponent().setStyle(ButtonStyle.Primary).setSKUId('123456789012345678');
+				button.toJSON();
+			}).toThrowError();
+
+			expect(() => {
+				const button = buttonComponent()
+					.setStyle(ButtonStyle.Secondary)
+					.setLabel('button')
+					.setSKUId('123456789012345678');
+
+				button.toJSON();
+			}).toThrowError();
+
+			expect(() => {
+				const button = buttonComponent()
+					.setStyle(ButtonStyle.Success)
+					.setEmoji({ name: '😇' })
+					.setSKUId('123456789012345678');
+
+				button.toJSON();
+			}).toThrowError();
+
+			expect(() => {
+				const button = buttonComponent()
+					.setStyle(ButtonStyle.Danger)
+					.setCustomId('test')
+					.setSKUId('123456789012345678');
+
+				button.toJSON();
+			}).toThrowError();
+
+			expect(() => {
+				const button = buttonComponent()
+					.setStyle(ButtonStyle.Link)
+					.setURL('https://google.com')
+					.setSKUId('123456789012345678');
+
 				button.toJSON();
 			}).toThrowError();
 
