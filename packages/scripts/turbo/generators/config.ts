@@ -41,6 +41,7 @@ export default function generator(plop: PlopTypes.NodePlopAPI): void {
 			{
 				type: 'addMany',
 				destination: `${plop.getDestBasePath()}/../{{name}}`,
+				// plop doesn't like our cliff.toml file since it tries to parse it. we add it manually later
 				templateFiles: ['templates/**', '!templates/default/cliff.toml'],
 				globOptions: { dot: true },
 				base: 'templates/default/',
