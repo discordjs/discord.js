@@ -1,9 +1,10 @@
 import {
 	ComponentType,
-	type APIMessageComponentEmoji,
 	type APIButtonComponent,
-	type APIButtonComponentWithURL,
 	type APIButtonComponentWithCustomId,
+	type APIButtonComponentWithSKUId,
+	type APIButtonComponentWithURL,
+	type APIMessageComponentEmoji,
 	type ButtonStyle,
 } from 'discord-api-types/v10';
 import {
@@ -94,7 +95,7 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	 * @param emoji - The emoji to use
 	 */
 	public setEmoji(emoji: APIMessageComponentEmoji) {
-		this.data.emoji = emojiValidator.parse(emoji);
+		(this.data as Exclude<APIButtonComponent, APIButtonComponentWithSKUId>).emoji = emojiValidator.parse(emoji);
 		return this;
 	}
 
@@ -114,7 +115,7 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	 * @param label - The label to use
 	 */
 	public setLabel(label: string) {
-		this.data.label = buttonLabelValidator.parse(label);
+		(this.data as Exclude<APIButtonComponent, APIButtonComponentWithSKUId>).label = buttonLabelValidator.parse(label);
 		return this;
 	}
 
@@ -124,8 +125,8 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	public toJSON(): APIButtonComponent {
 		validateRequiredButtonParameters(
 			this.data.style,
-			this.data.label,
-			this.data.emoji,
+			(this.data as Exclude<APIButtonComponent, APIButtonComponentWithSKUId>).label,
+			(this.data as Exclude<APIButtonComponent, APIButtonComponentWithSKUId>).emoji,
 			(this.data as APIButtonComponentWithCustomId).custom_id,
 			(this.data as APIButtonComponentWithURL).url,
 		);
