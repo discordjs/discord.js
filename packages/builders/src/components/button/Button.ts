@@ -6,6 +6,7 @@ import {
 	type APIButtonComponentWithURL,
 	type APIMessageComponentEmoji,
 	type ButtonStyle,
+	type Snowflake,
 } from 'discord-api-types/v10';
 import {
 	buttonLabelValidator,
@@ -86,6 +87,18 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	 */
 	public setCustomId(customId: string) {
 		(this.data as APIButtonComponentWithCustomId).custom_id = customIdValidator.parse(customId);
+		return this;
+	}
+
+	/**
+	 * Sets the SKU id that represents a purchasable SKU for this button.
+	 *
+	 * @remarks Only available when using premium-style buttons.
+	 * @param skuId - The SKU id to use
+	 */
+	public setSKUId(skuId: Snowflake) {
+		// @ts-expect-error discord-api-types.
+		(this.data as APIButtonComponentWithSKUId).sku_id = skuId;
 		return this;
 	}
 

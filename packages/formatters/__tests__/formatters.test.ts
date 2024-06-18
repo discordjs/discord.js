@@ -2,6 +2,7 @@
 import { URL } from 'node:url';
 import { describe, test, expect, vitest } from 'vitest';
 import {
+	applicationDirectory,
 	chatInputApplicationCommandMention,
 	blockQuote,
 	bold,
@@ -310,6 +311,20 @@ describe('Message formatters', () => {
 
 		test('GIVEN a date and a format from enum THEN returns "<t:${time}:${style}>"', () => {
 			expect<'<t:1867424897:R>'>(time(1_867_424_897, TimestampStyles.RelativeTime)).toEqual('<t:1867424897:R>');
+		});
+	});
+
+	describe('applicationDirectoryStore', () => {
+		test('GIVEN application id THEN returns application directory store', () => {
+			expect(applicationDirectory('123456789012345678')).toEqual(
+				'https://discord.com/application-directory/123456789012345678/store',
+			);
+		});
+
+		test('GIVEN application id AND SKU id THEN returns SKU within the application directory store', () => {
+			expect(applicationDirectory('123456789012345678', '123456789012345678')).toEqual(
+				'https://discord.com/application-directory/123456789012345678/store/123456789012345678',
+			);
 		});
 	});
 

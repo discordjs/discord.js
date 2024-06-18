@@ -616,6 +616,34 @@ export function time(timeOrSeconds?: Date | number, style?: TimestampStylesStrin
 }
 
 /**
+ * Formats an application directory link.
+ *
+ * @typeParam ApplicationId - This is inferred by the supplied application id
+ * @param applicationId - The application id
+ */
+export function applicationDirectory<ApplicationId extends Snowflake>(applicationId: ApplicationId): string;
+
+/**
+ * Formats an application directory SKU link.
+ *
+ * @typeParam ApplicationId - This is inferred by the supplied application id
+ * @typeParam SKUId - This is inferred by the supplied SKU id
+ * @param applicationId - The application id
+ * @param skuId - The SKU id
+ */
+export function applicationDirectory<ApplicationId extends Snowflake, SKUId extends Snowflake>(
+	applicationId: ApplicationId,
+	skuId: SKUId,
+): string;
+
+export function applicationDirectory<ApplicationId extends Snowflake, SKUId extends Snowflake>(
+	applicationId: ApplicationId,
+	skuId?: SKUId,
+): string {
+	return `https://discord.com/application-directory/${applicationId}/store${skuId ? `/${skuId}` : ''}`;
+}
+
+/**
  * The {@link https://discord.com/developers/docs/reference#message-formatting-timestamp-styles | message formatting timestamp styles}
  * supported by Discord.
  */

@@ -266,6 +266,7 @@ class InteractionResponses {
   /**
    * Responds to the interaction with an upgrade button.
    * <info>Only available for applications with monetization enabled.</info>
+   * @deprecated Using a premium button is the new Discord behaviour.
    * @returns {Promise<void>}
    */
   async sendPremiumRequired() {
