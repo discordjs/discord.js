@@ -167,7 +167,7 @@ class GuildMemberRoleManager extends DataManager {
    * @param {string} [reason] Reason for modifying the roles
    * @returns {Promise<GuildMember>}
    */
-  public static async modify(rolesToAdd, rolesToRemove, reason) {
+  async modify(rolesToAdd, rolesToRemove, reason) {
     const resolvedRolesToAdd = this.resolveRoles(rolesToAdd)
     const resolvedRolesToRemove = this.resolveRoles(rolesToRemove);
 
@@ -182,12 +182,12 @@ class GuildMemberRoleManager extends DataManager {
     return await this.member.roles.set([...currentRoles], reason);
 }
 
-/**
- * Resolves roles from the input.
- * @param {RoleResolvable[] | Collection<Snowflake, Role>} rolesToResolve The roles to resolve
- * @returns {Array} The resolved roles
- */
-private static resolveRoles(rolesToResolve, guild) {
+  /**
+   * Resolves roles from the input.
+   * @param {RoleResolvable[] | Collection<Snowflake, Role>} rolesToResolve The roles to resolve
+   * @returns {Array} The resolved roles
+   */
+  resolveRoles(rolesToResolve, guild) {
     const resolvedRoles = [];
     for (const role of rolesToResolve.values()) {
         const resolvedRole = this.guild.roles.resolveId(role);
