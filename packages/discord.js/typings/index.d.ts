@@ -4408,6 +4408,12 @@ export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleRes
     roleOrRoles: RoleResolvable | readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>,
     reason?: string,
   ): Promise<GuildMember>;
+  public remove(
+    roleIdsToAdd: readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>,
+    roleIdsToRemove: readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>,
+    member: GuildMember,
+    reason?: any
+  ): Promise<GuildMember>;
   public set(
     roles: readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>,
     reason?: string,

@@ -107,7 +107,7 @@ class GuildMemberRoleManager extends DataManager {
    */
   async add(roleOrRoles, reason) {
     if (roleOrRoles instanceof Collection || Array.isArray(roleOrRoles)) {
-      const resolvedRoles = this.resolveRoles(roleOrRoles, this.guild);
+      const resolvedRoles = this.resolveRoles(roleOrRoles);
 
       const newRoles = [...new Set(resolvedRoles.concat(...this.cache.keys()))];
       return this.set(newRoles, reason);
@@ -137,7 +137,7 @@ class GuildMemberRoleManager extends DataManager {
    */
   async remove(roleOrRoles, reason) {
     if (roleOrRoles instanceof Collection || Array.isArray(roleOrRoles)) {
-      const resolvedRoles = this.resolveRoles(roleOrRoles, this.guild);
+      const resolvedRoles = this.resolveRoles(roleOrRoles);
 
       const newRoles = this.cache.filter(role => !resolvedRoles.includes(role.id));
       return this.set(newRoles, reason);
@@ -162,19 +162,14 @@ class GuildMemberRoleManager extends DataManager {
   
   /**
    * Modifies the roles of the member.
-   * @param {RoleResolvable[]} roleIdsToAdd The role ids to add
-   * @param {RoleResolvable[]} roleIdsToRemove The role ids to remove
+   * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} roleIdsToAdd The roles to add
+   * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} roleIdsToRemove The roles to remove
    * @param {string} [reason] Reason for modifying the roles
    * @returns {Promise<GuildMember>}
    */
-  public static async modify(
-    roleIdsToAdd: RoleResolvable[],
-    roleIdsToRemove: RoleResolvable[],
-    member: GuildMember,
-    reason?: any
-): Promise<GuildMember> {
-    const resolvedRolesToAdd = this.resolveRoles(roleIdsToAdd, member.guild)
-    const resolvedRolesToRemove = this.resolveRoles(roleIdsToRemove, member.guild);
+  public static async modify(roleIdsToAdd, roleIdsToRemove, member, reason) {
+    const resolvedRolesToAdd = this.resolveRoles(roleIdsToAdd)
+    const resolvedRolesToRemove = this.resolveRoles(roleIdsToRemove);
 
     const currentRoles = new Set(member.roles.cache.keys());
     for (const role of resolvedRolesToAdd) {
@@ -189,14 +184,13 @@ class GuildMemberRoleManager extends DataManager {
 
 /**
  * Resolves roles from the input.
- * @param {RoleResolvable[]} rolesToResolve The roles to resolve
- * @param {Guild} guild The guild to resolve the roles in
+ * @param {RoleResolvable[] | Collection<Snowflake, Role>} rolesToResolve The roles to resolve
  * @returns {Array} The resolved roles
  */
-private static resolveRoles(rolesToResolve: RoleResolvable[], guild: Guild): Role[] {
+private static resolveRoles(rolesToResolve, guild) {
     const resolvedRoles = [];
-    for (const role of rolesToResolve) {
-        const resolvedRole = guild.roles.resolve(role);
+    for (const role of rolesToResolve.values()) {
+        const resolvedRole = this.guild.roles.resolveId(role);
         if (!resolvedRole) {
           throw new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array or Collection', 'roles', role);
         }
