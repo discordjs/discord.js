@@ -159,7 +159,7 @@ class GuildMemberRoleManager extends DataManager {
       return clone;
     }
   }
-  
+
   /**
    * Modifies the roles of the member.
    * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} rolesToAdd The roles to add
@@ -168,36 +168,36 @@ class GuildMemberRoleManager extends DataManager {
    * @returns {Promise<GuildMember>}
    */
   async modify(rolesToAdd, rolesToRemove, reason) {
-    const resolvedRolesToAdd = this.resolveRoles(rolesToAdd)
+    const resolvedRolesToAdd = this.resolveRoles(rolesToAdd);
     const resolvedRolesToRemove = this.resolveRoles(rolesToRemove);
 
     const currentRoles = new Set(this.member.roles.cache.keys());
     for (const role of resolvedRolesToAdd) {
-        currentRoles.add(role.id);
+      currentRoles.add(role.id);
     }
     for (const role of resolvedRolesToRemove) {
-        currentRoles.delete(role.id);
+      currentRoles.delete(role.id);
     }
 
-    return await this.member.roles.set([...currentRoles], reason);
-}
+    return this.member.roles.set([...currentRoles], reason);
+  }
 
   /**
    * Resolves roles from the input.
    * @param {RoleResolvable[] | Collection<Snowflake, Role>} rolesToResolve The roles to resolve
    * @returns {Array} The resolved roles
    */
-  resolveRoles(rolesToResolve, guild) {
+  resolveRoles(rolesToResolve) {
     const resolvedRoles = [];
     for (const role of rolesToResolve.values()) {
-        const resolvedRole = this.guild.roles.resolveId(role);
-        if (!resolvedRole) {
-          throw new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array or Collection', 'roles', role);
-        }
-        resolvedRoles.push(resolvedRole);
+      const resolvedRole = this.guild.roles.resolveId(role);
+      if (!resolvedRole) {
+        throw new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array or Collection', 'roles', role);
+      }
+      resolvedRoles.push(resolvedRole);
     }
     return resolvedRoles;
-}
+  }
 
   /**
    * Sets the roles applied to the member.
