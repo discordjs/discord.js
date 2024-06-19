@@ -161,6 +161,13 @@ class GuildMemberRoleManager extends DataManager {
   }
 
   /**
+   * @typedef {Object} ModifyGuildMemberRolesOptions
+   * @property {readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>} [rolesToAdd] The roles to add
+   * @property {readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>} [rolesToRemove] The roles to remove
+   * @property {readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>} [reason] Reason for modifying the roles
+   */
+
+  /**
    * Modifies the roles of the member.
    * @param {ModifyGuildMemberRolesOptions} [options] Options for modifying the roles
    * @returns {Promise<GuildMember>}
