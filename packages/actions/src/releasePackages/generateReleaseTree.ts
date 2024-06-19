@@ -29,6 +29,7 @@ async function getReleaseEntries() {
 	const releaseEntries: ReleaseEntry[] = [];
 	const packageList: pnpmTree[] =
 		await $`pnpm list --recursive --only-projects --filter {packages/\*} --prod --json`.json();
+
 	for (const pkg of packageList) {
 		// Don't release private packages ever (npm will error anyways)
 		if (pkg.private) continue;
