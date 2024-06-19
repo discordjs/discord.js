@@ -484,6 +484,9 @@ importers:
         specifier: 7.11.0
         version: 7.11.0
     devDependencies:
+      '@types/bun':
+        specifier: ^1.2.19
+        version: 1.2.19(@types/react@19.1.8)
       '@types/node':
         specifier: ^22.16.3
         version: 22.16.3
@@ -6078,6 +6081,9 @@ packages:
   '@types/body-parser@1.19.5':
     resolution: {integrity: sha512-fB3Zu92ucau0iQ0JMCFQE7b/dv8Ot07NI3KaZIkIUNXq82k4eBAqUaneXfleGY9JWskeS9y+u0nXMyspcuQrCg==}
 
+  '@types/bun@1.2.19':
+    resolution: {integrity: sha512-d9ZCmrH3CJ2uYKXQIUuZ/pUnTqIvLDS0SK7pFmbx8ma+ziH/FRMoAq5bYpRG7y+w1gl+HgyNZbtqgMq4W4e2Lg==}
+
   '@types/chai@5.2.2':
     resolution: {integrity: sha512-8kB30R7Hwqf40JPiKhVzodJs2Qc1ZJ5zuT3uzw5Hq/dhNCl3G3l83jfpdI1e20BP348+fV7VIL/+FxaXkqBmWg==}
 
@@ -7538,6 +7544,11 @@ packages:
   builtin-modules@4.0.0:
     resolution: {integrity: sha512-p1n8zyCkt1BVrKNFymOHjcDSAl7oq/gUvfgULv2EblgpPVQlQr9yHnWjg9IJ2MhfwPqiYqMMrr01OY7yQoK2yA==}
     engines: {node: '>=18.20'}
+
+  bun-types@1.2.19:
+    resolution: {integrity: sha512-uAOTaZSPuYsWIXRpj7o56Let0g/wjihKCkeRqUBhlLVM/Bt+Fj9xTo+LhC1OV1XDaGkz4hNC80et5xgy+9KTHQ==}
+    peerDependencies:
+      '@types/react': ^19
 
   bundle-require@5.1.0:
     resolution: {integrity: sha512-3WrrOuZiyaaZPWiEt4G3+IffISVC9HYlWueJEBWED4ZH4aIAC2PnkdnuRrR94M+w6yGWn4AglWtJtBI8YqvgoA==}
@@ -19421,6 +19432,12 @@ snapshots:
       '@types/connect': 3.4.38
       '@types/node': 22.16.3
 
+  '@types/bun@1.2.19(@types/react@19.1.8)':
+    dependencies:
+      bun-types: 1.2.19(@types/react@19.1.8)
+    transitivePeerDependencies:
+      - '@types/react'
+
   '@types/chai@5.2.2':
     dependencies:
       '@types/deep-eql': 4.0.2
@@ -21566,6 +21583,11 @@ snapshots:
   builtin-modules@3.3.0: {}
 
   builtin-modules@4.0.0: {}
+
+  bun-types@1.2.19(@types/react@19.1.8):
+    dependencies:
+      '@types/node': 22.16.3
+      '@types/react': 19.1.8
 
   bundle-require@5.1.0(esbuild@0.25.5):
     dependencies:

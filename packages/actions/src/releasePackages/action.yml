@@ -1,10 +1,15 @@
 name: 'Release Packages'
 description: 'Tags and releases any unreleased packages'
 inputs:
+  dry:
+    descrption: 'Perform a dry run that skips publishing and outputs logs indicating what would have happened'
+    default: false
   package:
     description: 'The published name of a single package to release'
   exclude:
     description: 'Comma separated list of packages to exclude from release (if not depended upon)'
 runs:
-  using: node20
-  main: ../../dist/releasePackages/index.js
+  using: composite
+  steps:
+    - uses: oven-sh/setup-bun@v1
+    - run: bun packages/actions/src/releasePackages/index.ts

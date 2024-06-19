@@ -1,5 +1,5 @@
-import { execSync } from 'node:child_process';
-import { readFile } from 'node:fs/promises';
+import { warning } from '@actions/core';
+import { $, file } from 'bun';
 
 const nonNodePackages = new Set(['@discordjs/proxy-container']);
 
@@ -27,11 +27,8 @@ export interface ReleaseEntry {
 
 async function getReleaseEntries() {
 	const releaseEntries: ReleaseEntry[] = [];
-	const packageList: pnpmTree[] = JSON.parse(
-		// This is a command line utility
-		// eslint-disable-next-line n/no-sync
-		execSync('pnpm list --recursive --only-projects --filter {packages/*} --prod --json', { encoding: 'utf8' }),
-	);
+	const packageList: pnpmTree[] =
+		await $`pnpm list --recursive --only-projects --filter {packages/\*} --prod --json`.json();
 	for (const pkg of packageList) {
 		// Don't release private packages ever (npm will error anyways)
 		if (pkg.private) continue;
@@ -46,7 +43,7 @@ async function getReleaseEntries() {
 
 		try {
 			// Find and parse changelog to post in github release
-			const changelogFile = await readFile(`${pkg.path}/CHANGELOG.md`, 'utf8');
+			const changelogFile = await file(`${pkg.path}/CHANGELOG.md`).text();
 
 			let changelogLines: string[] = [];
 			let foundChangelog = false;
@@ -72,7 +69,7 @@ async function getReleaseEntries() {
 			release.changelog = changelogLines.join('\n');
 		} catch (error) {
 			// Probably just no changelog file but log just in case
-			console.error(`Error parsing changelog for ${pkg.name}, will use auto generated`, error);
+			warning(`Error parsing changelog for ${pkg.name}, will use auto generated: ${error}`);
 		}
 
 		if (pkg.dependencies) {

@@ -26,6 +26,9 @@ on:
         required: false
         type: string
         default: '@discordjs/docgen,@discordjs/next'
+      dry_run:
+        type: boolean
+        default: false
 jobs:
   npm-publish:
     name: npm publish
@@ -50,13 +53,12 @@ jobs:
       - name: Install dependencies
         uses: ./packages/actions/src/pnpmCache
 
-      - name: Build dependencies
-        run: pnpm run build
-
       - name: Release packages
         uses: ./packages/actions/src/releasePackages
         with:
           package: ${{ inputs.package }}
+          exclude: ${{ inputs.exclude }}
+          dry: ${{ inputs.dry_run }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

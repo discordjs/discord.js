@@ -23,7 +23,7 @@
 		"update": "pnpm --recursive update --interactive",
 		"update:latest": "pnpm --recursive update --interactive --latest",
 		"create-package": "turbo gen create-package --args",
-		"release": "pnpm --filter @discordjs/actions build && node ./packages/actions/dist/releasePackages/index.js"
+		"release": "bun ./packages/actions/src/releasePackages/index.ts"
 	},
 	"type": "module",
 	"contributors": [

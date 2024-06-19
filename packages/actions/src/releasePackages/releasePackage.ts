@@ -1,7 +1,8 @@
-import { exec } from 'node:child_process';
 import process from 'node:process';
 import { setInterval, clearInterval } from 'node:timers';
+import { info, warning } from '@actions/core';
 import { getOctokit, context } from '@actions/github';
+import { $ } from 'bun';
 import type { ReleaseEntry } from './generateReleaseTree.js';
 
 let octokit: ReturnType<typeof getOctokit> | undefined;
@@ -15,20 +16,16 @@ async function checkRegistry(release: ReleaseEntry) {
 	return res.ok;
 }
 
-async function execPromise(execString: string) {
-	const child = exec(execString);
-	child.stdout?.pipe(process.stdout);
-	child.stderr?.pipe(process.stderr);
-	// Wait for exec to finish before polling the registry
-	return new Promise<void>((resolve) => {
-		child.once('close', () => resolve());
-	});
-}
-
-async function gitTagAndRelease(release: ReleaseEntry) {
+async function gitTagAndRelease(release: ReleaseEntry, dry: boolean) {
 	const tagName = `${release.name === 'discord.js' ? `` : `${release.name}@`}${release.version}`;
-	await execPromise(`git tag ${tagName}`);
-	await execPromise('git push --tags');
+	// Don't throw, if this exits non-zero it's probably because the tag already exists
+	await $`git tag ${tagName}`.nothrow();
+	if (dry) {
+		info(`[DRY] Tag "${tagName}" created, skipping push and release creation.`);
+		return;
+	}
+
+	await $`git push --tags`;
 	try {
 		await octokit?.rest.repos.createRelease({
 			...context.repo,
@@ -39,19 +36,26 @@ async function gitTagAndRelease(release: ReleaseEntry) {
 			generate_release_notes: !release.changelog,
 		});
 	} catch (error) {
-		console.error('Failed to create github release', error);
+		warning(`Failed to create github release: ${error}`);
 	}
 }
 
-export async function releasePackage(release: ReleaseEntry) {
+export async function releasePackage(release: ReleaseEntry, dry: boolean) {
 	// Sanity check against the registry first
 	if (await checkRegistry(release)) {
-		console.log(`${release.name}@${release.version} already published, skipping.`);
+		info(`${release.name}@${release.version} already published, skipping.`);
 		return;
 	}
 
-	await execPromise(`pnpm --filter=${release.name} publish --provenance --no-git-checks`);
-	await gitTagAndRelease(release);
+	if (dry) {
+		info(`[DRY] Releasing ${release.name}@${release.version}`);
+	} else {
+		await $`pnpm --filter=${release.name} publish --provenance --no-git-checks`;
+	}
+
+	await gitTagAndRelease(release, dry);
+
+	if (dry) return;
 
 	const before = performance.now();
 
