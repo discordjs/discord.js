@@ -417,7 +417,9 @@ class ApplicationCommand extends Base {
       !isEqual(
         command.descriptionLocalizations ?? command.description_localizations ?? {},
         this.descriptionLocalizations ?? {},
-      )
+      ) ||
+      !isEqual(command.integrationTypes ?? command.integration_types ?? [], this.integrationTypes) ||
+      !isEqual(command.contexts ?? [], this.contexts)
     ) {
       return false;
     }
