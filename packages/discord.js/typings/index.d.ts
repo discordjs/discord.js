@@ -3653,7 +3653,7 @@ export class WebSocketManager extends EventEmitter {
   public on(event: GatewayDispatchEvents, listener: (data: any, shardId: number) => void): this;
   public once(event: GatewayDispatchEvents, listener: (data: any, shardId: number) => void): this;
 
-  private debug(message: string, shardId?: number): void;
+  private debug(messages: readonly string[], shardId?: number): void;
   private connect(): Promise<void>;
   private broadcast(packet: unknown): void;
   private destroy(): Promise<void>;
@@ -3684,7 +3684,7 @@ export class WebSocketShard extends EventEmitter {
   public status: Status;
   public ping: number;
 
-  private debug(message: string): void;
+  private debug(messages: readonly string[]): void;
   private onReadyPacket(packet: unknown): void;
   private gotGuild(guildId: Snowflake): void;
   private checkReady(): void;
