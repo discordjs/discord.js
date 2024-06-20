@@ -41,14 +41,15 @@ export default function generator(plop: PlopTypes.NodePlopAPI): void {
 			{
 				type: 'addMany',
 				destination: `${plop.getDestBasePath()}/../{{name}}`,
-				templateFiles: ['templates/**'],
+				// plop doesn't like our cliff.toml file since it tries to parse it. we add it manually later
+				templateFiles: ['templates/**', '!templates/default/cliff.toml'],
 				globOptions: { dot: true },
 				base: 'templates/default/',
 				stripExtensions: ['hbs'],
 			},
 			{
 				type: 'modify',
-				path: `${plop.getDestBasePath()}/turbo/generators/templates/cliff.toml`,
+				path: `${plop.getDestBasePath()}/turbo/generators/templates/default/cliff.toml`,
 				async transform(content, answers) {
 					const cliffTOML = content.replace('{{name}}', answers.name);
 					await writeFile(`${plop.getDestBasePath()}/../${answers.name}/cliff.toml`, cliffTOML);
