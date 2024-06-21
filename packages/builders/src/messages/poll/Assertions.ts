@@ -17,8 +17,8 @@ export const pollAnswerTextPredicate = s.string
 	.setValidationEnabled(isValidationEnabled);
 
 export const pollAnswerEmojiPredicate = s.object({
-	id: s.string.nullable,
-	name: s.string.nullable,
+	id: s.string.optional,
+	name: s.string.optional,
 	animated: s.boolean.optional,
 });
 
