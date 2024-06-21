@@ -32,8 +32,21 @@ class PollBuilder extends BuildersPoll {
   }
 
   /**
+   * @typedef {Object} PollAnswerEmojiObject
+   * @property {Snowflake|undfined} id The id of the emoji
+   * @property {string|undefined} name The name of the emoji
+   * @property {boolean|undefined} animated Whether the emoji is animated
+   */
+
+  /**
+   * @typedef {Object} PollAnswerData Data used for an answer on a poll
+   * @property {string} text The text to use for the answer
+   * @property {string|PollAnswerEmojiObject|undefined} emoji The emoji to use for the answer
+   */
+
+  /**
    * Sets the answers for this poll.
-   * @param {...APIPollMedia} [answers] The answers to set
+   * @param {...PollAnswerData} [answers] The answers to set
    * @returns {PollBuilder}
    */
   setAnswers(...answers) {
@@ -48,7 +61,7 @@ class PollBuilder extends BuildersPoll {
 
   /**
    * Appends answers to the poll.
-   * @param {...APIPollMedia} [answers] The answers to add
+   * @param {...PollAnswerData} [answers] The answers to add
    * @returns {PollBuilder}
    */
   addAnswers(...answers) {
@@ -65,7 +78,7 @@ class PollBuilder extends BuildersPoll {
    * Removes, replaces, or inserts answers for this poll.
    * @param {number} index The index to start at
    * @param {number} deleteCount The number of answers to remove
-   * @param {...APIPollMedia} [answers] The replacing answer objects
+   * @param {...PollAnswerData} [answers] The replacing answer objects
    * @returns {PollBuilder}
    */
   spliceAnswers(index, deleteCount, ...answers) {
