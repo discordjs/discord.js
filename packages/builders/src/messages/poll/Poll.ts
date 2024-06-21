@@ -1,4 +1,4 @@
-import { PollLayoutType, type RESTAPIPollCreate, type APIPollMedia } from 'discord-api-types/v10';
+import { type APIPartialEmoji, PollLayoutType, type RESTAPIPollCreate, type APIPollMedia } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
 import {
 	pollAnswersArrayPredicate,
@@ -8,6 +8,8 @@ import {
 	pollQuestionPredicate,
 	validateAnswerLength,
 } from './Assertions';
+
+export type PollMediaPartialEmoji = Exclude<APIPollMedia, 'emoji'> & { emoji?: Partial<APIPartialEmoji> };
 
 /**
  * A builder that creates API-compatible JSON data for polls.
@@ -51,7 +53,7 @@ export class PollBuilder {
 	 * ```
 	 * @param answers - The answers to add
 	 */
-	public addAnswers(...answers: RestOrArray<APIPollMedia>): this {
+	public addAnswers(...answers: RestOrArray<PollMediaPartialEmoji>): this {
 		const normalizedAnswers = normalizeArray(answers);
 
 		// Ensure adding these answers won't exceed the 10 answer limit
@@ -98,7 +100,7 @@ export class PollBuilder {
 	 * @param deleteCount - The number of answers to remove
 	 * @param answers - The replacing answer objects
 	 */
-	public spliceAnswers(index: number, deleteCount: number, ...answers: RestOrArray<APIPollMedia>): this {
+	public spliceAnswers(index: number, deleteCount: number, ...answers: RestOrArray<PollMediaPartialEmoji>): this {
 		const normalizedAnswers = normalizeArray(answers);
 
 		// Ensure adding these answers won't exceed the 10 answer limit
@@ -126,7 +128,7 @@ export class PollBuilder {
 	 * You can set a maximum of 10 answers.
 	 * @param answers - The answers to set
 	 */
-	public setAnswers(...answers: RestOrArray<APIPollMedia>): this {
+	public setAnswers(...answers: RestOrArray<PollMediaPartialEmoji>): this {
 		this.spliceAnswers(0, this.data.answers?.length ?? 0, ...normalizeArray(answers));
 		return this;
 	}
@@ -136,7 +138,7 @@ export class PollBuilder {
 	 *
 	 * @param data - The data to use for this poll's question
 	 */
-	public setQuestion(data: Omit<APIPollMedia, 'emoji'>): this {
+	public setQuestion(data: Omit<PollMediaPartialEmoji, 'emoji'>): this {
 		// Data assertions
 		pollQuestionPredicate.parse(data);
 
