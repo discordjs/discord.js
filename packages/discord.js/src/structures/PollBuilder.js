@@ -39,9 +39,9 @@ class PollBuilder extends BuildersPoll {
   setAnswers(...answers) {
     super.setAnswers(
       normalizeArray(answers).map(answer => ({
-          text: answer.text,
-          emoji: answer.emoji && typeof answer.emoji === 'string' ? resolvePartialEmoji(answer.emoji) : answer.emoji,
-        })),
+        text: answer.text,
+        emoji: answer.emoji && typeof answer.emoji === 'string' ? resolvePartialEmoji(answer.emoji) : answer.emoji,
+      })),
     );
     return this;
   }
@@ -54,9 +54,9 @@ class PollBuilder extends BuildersPoll {
   addAnswers(...answers) {
     super.addAnswers(
       normalizeArray(answers).map(answer => ({
-          text: answer.text,
-          emoji: answer.emoji && typeof answer.emoji === 'string' ? resolvePartialEmoji(answer.emoji) : answer.emoji,
-        })),
+        text: answer.text,
+        emoji: answer.emoji && typeof answer.emoji === 'string' ? resolvePartialEmoji(answer.emoji) : answer.emoji,
+      })),
     );
     return this;
   }
@@ -73,9 +73,9 @@ class PollBuilder extends BuildersPoll {
       index,
       deleteCount,
       normalizeArray(answers).map(answer => ({
-          text: answer.text,
-          emoji: answer.emoji && typeof answer.emoji === 'string' ? resolvePartialEmoji(answer.emoji) : answer.emoji,
-        })),
+        text: answer.text,
+        emoji: answer.emoji && typeof answer.emoji === 'string' ? resolvePartialEmoji(answer.emoji) : answer.emoji,
+      })),
     );
     return this;
   }
