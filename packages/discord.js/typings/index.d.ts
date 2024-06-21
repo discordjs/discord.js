@@ -4414,7 +4414,7 @@ export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleRes
     roleOrRoles: RoleResolvable | readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>,
     reason?: string,
   ): Promise<GuildMember>;
-  public modify(options: ModifyGuildMemberRolesOptions): Promise<GuildMember>;
+  public modify(options: ModifyGuildMemberRolesOptions): GuildMember;
   public set(
     roles: readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>,
     reason?: string,
@@ -4423,6 +4423,7 @@ export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleRes
     roleOrRoles: RoleResolvable | readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>,
     reason?: string,
   ): Promise<GuildMember>;
+  private resolveRoles(rolesToResolve: readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>): Role[];
 }
 
 export interface FetchPollAnswerVotersOptions extends BaseFetchPollAnswerVotersOptions {

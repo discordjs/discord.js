@@ -107,10 +107,7 @@ class GuildMemberRoleManager extends DataManager {
    */
   async add(roleOrRoles, reason) {
     if (roleOrRoles instanceof Collection || Array.isArray(roleOrRoles)) {
-      const resolvedRoles = this.resolveRoles(roleOrRoles);
-
-      const newRoles = [...new Set(resolvedRoles.concat(...this.cache.keys()))];
-      return this.set(newRoles, reason);
+      return this.modify({ rolesToAdd: roleOrRoles, reason });
     } else {
       roleOrRoles = this.guild.roles.resolveId(roleOrRoles);
       if (roleOrRoles === null) {
@@ -137,10 +134,7 @@ class GuildMemberRoleManager extends DataManager {
    */
   async remove(roleOrRoles, reason) {
     if (roleOrRoles instanceof Collection || Array.isArray(roleOrRoles)) {
-      const resolvedRoles = this.resolveRoles(roleOrRoles);
-
-      const newRoles = this.cache.filter(role => !resolvedRoles.includes(role.id));
-      return this.set(newRoles, reason);
+      return this.modify({ rolesToRemove: roleOrRoles, reason });
     } else {
       roleOrRoles = this.guild.roles.resolveId(roleOrRoles);
       if (roleOrRoles === null) {
@@ -190,11 +184,12 @@ class GuildMemberRoleManager extends DataManager {
 
   /**
    * Resolves roles from the input.
-   * @param {RoleResolvable[] | Collection<Snowflake, Role>} rolesToResolve The roles to resolve
-   * @returns {Array} The resolved roles
+   * @param {Readonly<RoleResolvable[]> | ReadonlyCollection<Snowflake, Role>} rolesToResolve The roles to resolve
+   * @returns {Role[]} The resolved roles
    * @private
    */
   resolveRoles(rolesToResolve) {
+    if (!rolesToResolve) return [];
     const resolvedRoles = [];
     for (const role of rolesToResolve.values()) {
       const resolvedRole = this.guild.roles.resolveId(role);
