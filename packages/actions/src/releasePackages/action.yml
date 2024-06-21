@@ -1,6 +1,9 @@
 name: 'Release Packages'
 description: 'Tags and releases any unreleased packages'
 inputs:
+  dev:
+    description: 'Releases development versions of packages (skips tagging and github releases)'
+    default: false
   dry:
     descrption: 'Perform a dry run that skips publishing and outputs logs indicating what would have happened'
     default: false

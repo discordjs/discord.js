@@ -1,5 +1,6 @@
-import { warning } from '@actions/core';
-import { $, file } from 'bun';
+import { info, warning } from '@actions/core';
+import type { PackageJSON, PackumentVersion } from '@npm/types';
+import { $, file, write } from 'bun';
 
 const nonNodePackages = new Set(['@discordjs/proxy-container']);
 
@@ -25,10 +26,23 @@ export interface ReleaseEntry {
 	version: string;
 }
 
-async function getReleaseEntries() {
+async function fetchDevVersion(pkg: string) {
+	try {
+		const res = await fetch(`https://registry.npmjs.org/${pkg}/dev`);
+		if (!res.ok) return null;
+		const packument = (await res.json()) as PackumentVersion;
+		return packument.version;
+	} catch {
+		return null;
+	}
+}
+
+async function getReleaseEntries(dev: boolean, dry: boolean) {
 	const releaseEntries: ReleaseEntry[] = [];
 	const packageList: pnpmTree[] =
 		await $`pnpm list --recursive --only-projects --filter {packages/\*} --prod --json`.json();
+
+	const commitHash = (await $`git rev-parse --short HEAD`.text()).trim();
 
 	for (const pkg of packageList) {
 		// Don't release private packages ever (npm will error anyways)
@@ -42,35 +56,61 @@ async function getReleaseEntries() {
 			version: pkg.version,
 		};
 
-		try {
-			// Find and parse changelog to post in github release
-			const changelogFile = await file(`${pkg.path}/CHANGELOG.md`).text();
+		if (dev) {
+			const devVersion = await fetchDevVersion(pkg.name);
+			if (devVersion?.endsWith(commitHash)) {
+				// Write the currently released dev version so when pnpm publish runs on dependents they depend on the dev versions
+				if (dry) {
+					info(`[DRY] ${pkg.name}@${devVersion} already released. Editing package.json version.`);
+				} else {
+					const pkgJson = (await file(`${pkg.path}/package.json`).json()) as PackageJSON;
+					pkgJson.version = devVersion;
+					await write(`${pkg.path}/package.json`, JSON.stringify(pkgJson, null, '\t'));
+				}
 
-			let changelogLines: string[] = [];
-			let foundChangelog = false;
+				release.version = devVersion;
+			} else if (dry) {
+				info(`[DRY] Bumping ${pkg.name} via git-cliff.`);
+				release.version = `${pkg.version}.DRY-dev.${Math.round(Date.now() / 1_000)}-${commitHash}`;
+			} else {
+				await $`pnpm --filter=${pkg.name} run release --preid "dev.${Math.round(Date.now() / 1_000)}-${commitHash} --skip-changelog"`;
+				// Read again instead of parsing the output to be sure we're matching when checking against npm
+				const pkgJson = (await file(`${pkg.path}/package.json`).json()) as PackageJSON;
+				release.version = pkgJson.version;
+			}
+		}
+		// Only need changelog for releases published to github
+		else {
+			try {
+				// Find and parse changelog to post in github release
+				const changelogFile = await file(`${pkg.path}/CHANGELOG.md`).text();
 
-			for (const line of changelogFile.split('\n')) {
-				if (line.startsWith('# [')) {
-					if (foundChangelog) {
-						if (changelogLines.at(-1) === '') {
-							changelogLines = changelogLines.slice(2, -1);
+				let changelogLines: string[] = [];
+				let foundChangelog = false;
+
+				for (const line of changelogFile.split('\n')) {
+					if (line.startsWith('# [')) {
+						if (foundChangelog) {
+							if (changelogLines.at(-1) === '') {
+								changelogLines = changelogLines.slice(2, -1);
+							}
+
+							break;
 						}
 
-						break;
+						foundChangelog = true;
 					}
 
-					foundChangelog = true;
+					if (foundChangelog) {
+						changelogLines.push(line);
+					}
 				}
 
-				if (foundChangelog) {
-					changelogLines.push(line);
-				}
+				release.changelog = changelogLines.join('\n');
+			} catch (error) {
+				// Probably just no changelog file but log just in case
+				warning(`Error parsing changelog for ${pkg.name}, will use auto generated: ${error}`);
 			}
-
-			release.changelog = changelogLines.join('\n');
-		} catch (error) {
-			// Probably just no changelog file but log just in case
-			warning(`Error parsing changelog for ${pkg.name}, will use auto generated: ${error}`);
 		}
 
 		if (pkg.dependencies) {
@@ -83,8 +123,8 @@ async function getReleaseEntries() {
 	return releaseEntries;
 }
 
-export async function generateReleaseTree(packageName?: string, exclude?: string[]) {
-	let releaseEntries = await getReleaseEntries();
+export async function generateReleaseTree(dev: boolean, dry: boolean, packageName?: string, exclude?: string[]) {
+	let releaseEntries = await getReleaseEntries(dev, dry);
 	// Try to early return if the package doesn't have deps
 	if (packageName) {
 		const releaseEntry = releaseEntries.find((entry) => entry.name === packageName);

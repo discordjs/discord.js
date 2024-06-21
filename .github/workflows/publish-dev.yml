@@ -3,6 +3,10 @@ on:
   schedule:
     - cron: '0 */12 * * *'
   workflow_dispatch:
+    inputs:
+      dry_run:
+        type: boolean
+        default: false
 jobs:
   npm-publish:
     name: npm publish
@@ -55,32 +59,18 @@ jobs:
           node-version: 22
           registry-url: https://registry.npmjs.org/
 
-      - name: Check the current development version
-        id: release-check
-        run: |
-          if [[ $(npm view ${{ matrix.package }}@dev version | grep -e "$(git rev-parse --short HEAD)") ]]; \
-            then echo "RELEASE=0" >> "$GITHUB_OUTPUT"; \
-            else echo "RELEASE=1" >> "$GITHUB_OUTPUT"; \
-          fi
-
       - name: Install dependencies
-        if: steps.release-check.outputs.release == '1'
         uses: ./packages/actions/src/pnpmCache
 
       - name: Build dependencies
-        if: steps.release-check.outputs.release == '1'
         run: pnpm run build
 
-      - name: Publish package
-        if: steps.release-check.outputs.release == '1'
-        run: |
-          pnpm --filter=${{ matrix.package }} run release --preid "dev.$(date +%s)-$(git rev-parse --short HEAD)" --skip-changelog
-          pnpm --filter=${{ matrix.package }} publish --provenance --no-git-checks --tag dev || true
+      - name: Pubish packages
+        uses: ./packages/actions/src/releasePackages
+        with:
+          exclude: 'create-discord-bot,@discordjs/docgen'
+          dry: ${{ inputs.dry_run }}
+          dev: true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
-
-      - name: Deprecate prior development releases
-        if: steps.release-check.outputs.release == '1'
-        run: pnpm exec npm-deprecate --name "*dev*" --message "This version is deprecated. Please use a newer version." --package ${{ matrix.package }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

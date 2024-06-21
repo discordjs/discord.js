@@ -53,6 +53,9 @@ jobs:
       - name: Install dependencies
         uses: ./packages/actions/src/pnpmCache
 
+      - name: Build dependencies
+        run: pnpm run build
+
       - name: Release packages
         uses: ./packages/actions/src/releasePackages
         with:

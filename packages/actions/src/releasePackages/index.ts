@@ -5,8 +5,10 @@ import { releasePackage } from './releasePackage.js';
 
 const excludeInput = getInput('exclude');
 let dryInput = false;
+let devInput = false;
 try {
 	dryInput = getBooleanInput('dry');
+	devInput = getBooleanInput('dev');
 } catch {
 	// We're not running in actions
 }
@@ -21,15 +23,16 @@ program
 		excludeInput ? excludeInput.split(',') : [],
 	)
 	.option('--dry', 'skips actual publishing and outputs logs instead', dryInput)
+	.option('--dev', 'publishes development versions and skips tagging / github releases', devInput)
 	.parse();
 
-const { exclude, dry } = program.opts<{ dry: boolean; exclude: string[] }>();
+const { exclude, dry, dev } = program.opts<{ dev: boolean; dry: boolean; exclude: string[] }>();
 const packageName = program.args[0]!;
 
-const tree = await generateReleaseTree(packageName, exclude);
+const tree = await generateReleaseTree(dev, dry, packageName, exclude);
 for (const branch of tree) {
 	startGroup(`Releasing ${branch.map((entry) => `${entry.name}@${entry.version}`).join(', ')}`);
-	await Promise.all(branch.map(async (release) => releasePackage(release, dry)));
+	await Promise.all(branch.map(async (release) => releasePackage(release, dev, dry)));
 	endGroup();
 }
 
