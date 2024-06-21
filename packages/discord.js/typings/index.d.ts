@@ -5,6 +5,7 @@ import {
   EmbedBuilder as BuildersEmbed,
   ChannelSelectMenuBuilder as BuilderChannelSelectMenuComponent,
   MentionableSelectMenuBuilder as BuilderMentionableSelectMenuComponent,
+  PollBuilder as BuildersPoll,
   RoleSelectMenuBuilder as BuilderRoleSelectMenuComponent,
   StringSelectMenuBuilder as BuilderStringSelectMenuComponent,
   UserSelectMenuBuilder as BuilderUserSelectMenuComponent,
@@ -181,6 +182,7 @@ import {
   APISelectMenuDefaultValue,
   SelectMenuDefaultValueType,
   InviteType,
+  APIPollMedia,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -2603,6 +2605,18 @@ export class Presence extends Base {
   public get user(): User | null;
   public userId: Snowflake;
   public equals(presence: Presence): boolean;
+}
+
+export class PollBuilder extends BuildersPoll {
+  public constructor(data?: Poll | APIPoll);
+  public override addAnswers(...answers: RestOrArray<APIPollMedia & { emoji: EmojiResolvable }>): this;
+  public override setAnswers(...answers: RestOrArray<APIPollMedia & { emoji: EmojiResolvable }>): this;
+  public override spliceAnswers(
+    index: number,
+    deleteCount: number,
+    ...answers: RestOrArray<APIPollMedia & { emoji: EmojiResolvable }>
+  ): this;
+  public static from(other: JSONEncodable<APIPoll> | APIPoll): PollBuilder;
 }
 
 export interface PollQuestionMedia {
