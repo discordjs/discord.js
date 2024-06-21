@@ -17,6 +17,7 @@ import {
   ComponentBuilder,
   type RestOrArray,
   ApplicationCommandOptionAllowedChannelTypes,
+  PollMediaPartialEmoji,
 } from '@discordjs/builders';
 import {
   blockQuote,
@@ -2609,19 +2610,13 @@ export class Presence extends Base {
 
 export class PollBuilder extends BuildersPoll {
   public constructor(data?: Poll | APIPoll);
-  public override addAnswers(
-    ...answers: RestOrArray<Exclude<APIPollMedia, 'emoji'> & { emoji: PollEmojiResolvable }>
-  ): this;
-  public override setAnswers(
-    ...answers: RestOrArray<Exclude<APIPollMedia, 'emoji'> & { emoji: PollEmojiResolvable }>
-  ): this;
-  public override spliceAnswers(
-    index: number,
-    deleteCount: number,
-    ...answers: RestOrArray<Exclude<APIPollMedia, 'emoji'> & { emoji: PollEmojiResolvable }>
-  ): this;
+  public override addAnswers(...answers: RestOrArray<PollAnswerWithEmoji>): this;
+  public override setAnswers(...answers: RestOrArray<PollAnswerWithEmoji>): this;
+  public override spliceAnswers(index: number, deleteCount: number, ...answers: RestOrArray<PollAnswerWithEmoji>): this;
   public static from(other: JSONEncodable<APIPoll> | APIPoll): PollBuilder;
 }
+
+export type PollAnswerWithEmoji = Omit<PollMediaPartialEmoji, 'emoji'> & { emoji?: PollEmojiResolvable };
 
 export type PollEmojiResolvable = string | Partial<APIPartialEmoji>;
 
