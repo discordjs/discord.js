@@ -2772,7 +2772,7 @@ declare const pollData: PollData;
     messageId: snowflake,
     answerId: 1,
   });
-  
+
   await textChannel.send({ poll: new PollBuilder(poll) });
 
   // @ts-expect-error Incompatible parameter
@@ -2780,7 +2780,7 @@ declare const pollData: PollData;
 
   // @ts-expect-error Invalid emoji
   new PollBuilder().addAnswers({ text: '.', emoji: 1 });
-  
+
   new PollBuilder().addAnswers({ text: '.', emoji: guild.emojis.cache.get('874989932983238726')! });
 
   new PollBuilder().addAnswers({ text: '.', emoji: '874989932983238726' });
