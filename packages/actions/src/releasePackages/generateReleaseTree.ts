@@ -126,7 +126,7 @@ async function getReleaseEntries(dev: boolean, dry: boolean) {
 export async function generateReleaseTree(dev: boolean, dry: boolean, packageName?: string, exclude?: string[]) {
 	let releaseEntries = await getReleaseEntries(dev, dry);
 	// Try to early return if the package doesn't have deps
-	if (packageName) {
+	if (packageName && packageName !== 'all') {
 		const releaseEntry = releaseEntries.find((entry) => entry.name === packageName);
 		if (!releaseEntry) {
 			throw new Error(`Package ${packageName} not releaseable`);
@@ -198,7 +198,7 @@ export async function generateReleaseTree(dev: boolean, dry: boolean, packageNam
 		return excludedReleaseTree;
 	}
 
-	if (!packageName) {
+	if (!packageName || packageName === 'all') {
 		return releaseTree;
 	}
 

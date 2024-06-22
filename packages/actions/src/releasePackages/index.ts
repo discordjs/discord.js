@@ -6,11 +6,17 @@ import { releasePackage } from './releasePackage.js';
 const excludeInput = getInput('exclude');
 let dryInput = false;
 let devInput = false;
+
 try {
-	dryInput = getBooleanInput('dry');
 	devInput = getBooleanInput('dev');
 } catch {
 	// We're not running in actions
+}
+
+try {
+	dryInput = getBooleanInput('dry');
+} catch {
+	// We're not running in actions or the input isn't set (cron)
 }
 
 program
