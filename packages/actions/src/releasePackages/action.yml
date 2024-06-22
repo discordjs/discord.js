@@ -16,3 +16,9 @@ runs:
   steps:
     - uses: oven-sh/setup-bun@v1
     - run: bun packages/actions/src/releasePackages/index.ts
+      shell: bash
+      env:
+        INPUT_DEV: ${{ inputs.dev }}
+        INPUT_DRY: ${{ inputs.dry }}
+        INPUT_PACKAGE: ${{ inputs.package }}
+        INPUT_EXCLUDE: ${{ inputs.exclude }}
