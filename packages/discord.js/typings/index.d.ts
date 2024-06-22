@@ -2708,12 +2708,12 @@ export class PollBuilder extends BuildersPoll {
   public override addAnswers(...answers: RestOrArray<PollAnswerWithEmoji>): this;
   public override setAnswers(...answers: RestOrArray<PollAnswerWithEmoji>): this;
   public override spliceAnswers(index: number, deleteCount: number, ...answers: RestOrArray<PollAnswerWithEmoji>): this;
-  public static from(other: JSONEncodable<APIPoll> | APIPoll): PollBuilder;
+  public static from(other: JSONEncodable<RESTAPIPollCreate> | APIPoll): PollBuilder;
 }
 
 export type PollAnswerWithEmoji = Omit<PollMediaPartialEmoji, 'emoji'> & { emoji?: PollEmojiResolvable };
 
-export type PollEmojiResolvable = string | Partial<APIPartialEmoji>;
+export type PollEmojiResolvable = string | Partial<APIPartialEmoji> | EmojiResolvable;
 
 export interface PollQuestionMedia {
   text: string | null;
