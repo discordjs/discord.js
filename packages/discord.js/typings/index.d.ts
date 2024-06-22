@@ -184,6 +184,7 @@ import {
   SelectMenuDefaultValueType,
   InviteType,
   APIPollMedia,
+  RESTAPIPollCreate,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -6348,7 +6349,7 @@ export interface BaseMessageOptions {
     | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
-  poll?: PollData;
+  poll?: JSONEncodable<RESTAPIPollCreate> | PollData;
 }
 
 export interface MessageCreateOptions extends BaseMessageOptions {
