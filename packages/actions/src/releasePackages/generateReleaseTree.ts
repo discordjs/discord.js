@@ -174,7 +174,7 @@ export async function generateReleaseTree(dev: boolean, dry: boolean, packageNam
 	}
 
 	// Prune exclusions
-	if (Array.isArray(exclude) && exclude.length) {
+	if ((!packageName || packageName === 'all') && Array.isArray(exclude) && exclude.length) {
 		const neededPackages = new Set<string>();
 		const excludedReleaseTree: ReleaseEntry[][] = [];
 
