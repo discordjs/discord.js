@@ -37,7 +37,7 @@ export const answerLengthPredicate = s.number.lessThanOrEqual(10).setValidationE
 
 export const pollDurationPredicate = s.number
 	.greaterThanOrEqual(1)
-	.lessThanOrEqual(168)
+	.lessThanOrEqual(768)
 	.setValidationEnabled(isValidationEnabled);
 
 export function validateAnswerLength(amountAdding: number, answers?: RESTAPIPollCreate['answers']): void {
