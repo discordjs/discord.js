@@ -180,7 +180,7 @@ export class PollBuilder {
 	 * Sets how long this poll will be open for in hours.
 	 *
 	 * @remarks
-	 * Minimum duration is `1`, with maximum duration being `168` (one week).
+	 * Minimum duration is `1`, with maximum duration being `768` (32 days).
 	 * Default if none specified is `24` (one day).
 	 * @param hours - The amount of hours this poll will be open for
 	 */
