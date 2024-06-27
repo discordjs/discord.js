@@ -1,5 +1,5 @@
 import { s } from '@sapphire/shapeshift';
-import { ApplicationCommandType } from 'discord-api-types/v10';
+import { ApplicationCommandType, ApplicationIntegrationType, InteractionContextType } from 'discord-api-types/v10';
 import { isValidationEnabled } from '../../util/validation.js';
 import type { ContextMenuCommandType } from './ContextMenuCommandBuilder.js';
 
@@ -49,3 +49,11 @@ const memberPermissionPredicate = s.union(
 export function validateDefaultMemberPermissions(permissions: unknown) {
 	return memberPermissionPredicate.parse(permissions);
 }
+
+export const contextsPredicate = s.array(
+	s.nativeEnum(InteractionContextType).setValidationEnabled(isValidationEnabled),
+);
+
+export const integrationTypesPredicate = s.array(
+	s.nativeEnum(ApplicationIntegrationType).setValidationEnabled(isValidationEnabled),
+);
