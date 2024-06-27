@@ -621,7 +621,9 @@ export function time(timeOrSeconds?: Date | number, style?: TimestampStylesStrin
  * @typeParam ApplicationId - This is inferred by the supplied application id
  * @param applicationId - The application id
  */
-export function applicationDirectory<ApplicationId extends Snowflake>(applicationId: ApplicationId): string;
+export function applicationDirectory<ApplicationId extends Snowflake>(
+	applicationId: ApplicationId,
+): `https://discord.com/application-directory/${ApplicationId}/store`;
 
 /**
  * Formats an application directory SKU link.
@@ -634,13 +636,16 @@ export function applicationDirectory<ApplicationId extends Snowflake>(applicatio
 export function applicationDirectory<ApplicationId extends Snowflake, SKUId extends Snowflake>(
 	applicationId: ApplicationId,
 	skuId: SKUId,
-): string;
+): `https://discord.com/application-directory/${ApplicationId}/store/${SKUId}`;
 
 export function applicationDirectory<ApplicationId extends Snowflake, SKUId extends Snowflake>(
 	applicationId: ApplicationId,
 	skuId?: SKUId,
-): string {
-	return `https://discord.com/application-directory/${applicationId}/store${skuId ? `/${skuId}` : ''}`;
+):
+	| `https://discord.com/application-directory/${ApplicationId}/store/${SKUId}`
+	| `https://discord.com/application-directory/${ApplicationId}/store` {
+	const url = `https://discord.com/application-directory/${applicationId}/store` as const;
+	return skuId ? `${url}/${skuId}` : url;
 }
 
 /**
