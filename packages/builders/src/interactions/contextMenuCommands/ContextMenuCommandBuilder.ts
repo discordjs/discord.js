@@ -1,10 +1,14 @@
 import type {
 	ApplicationCommandType,
+	ApplicationIntegrationType,
+	InteractionContextType,
 	LocaleString,
 	LocalizationMap,
 	Permissions,
 	RESTPostAPIContextMenuApplicationCommandsJSONBody,
 } from 'discord-api-types/v10';
+import type { RestOrArray } from '../../util/normalizeArray.js';
+import { normalizeArray } from '../../util/normalizeArray.js';
 import { validateLocale, validateLocalizationMap } from '../slashCommands/Assertions.js';
 import {
 	validateRequiredParameters,
@@ -13,6 +17,8 @@ import {
 	validateDefaultPermission,
 	validateDefaultMemberPermissions,
 	validateDMPermission,
+	contextsPredicate,
+	integrationTypesPredicate,
 } from './Assertions.js';
 
 /**
@@ -40,6 +46,11 @@ export class ContextMenuCommandBuilder {
 	public readonly type: ContextMenuCommandType = undefined!;
 
 	/**
+	 * The contexts for this command.
+	 */
+	public readonly contexts?: InteractionContextType[];
+
+	/**
 	 * Whether this command is enabled by default when the application is added to a guild.
 	 *
 	 * @deprecated Use {@link ContextMenuCommandBuilder.setDefaultMemberPermissions} or {@link ContextMenuCommandBuilder.setDMPermission} instead.
@@ -58,6 +69,33 @@ export class ContextMenuCommandBuilder {
 	 * By default, commands are visible. This property is only for global commands.
 	 */
 	public readonly dm_permission: boolean | undefined = undefined;
+
+	/**
+	 * The integration types for this command.
+	 */
+	public readonly integration_types?: ApplicationIntegrationType[];
+
+	/**
+	 * Sets the contexts of this command.
+	 *
+	 * @param contexts - The contexts
+	 */
+	public setContexts(...contexts: RestOrArray<InteractionContextType>) {
+		Reflect.set(this, 'contexts', contextsPredicate.parse(normalizeArray(contexts)));
+
+		return this;
+	}
+
+	/**
+	 * Sets integration types of this command.
+	 *
+	 * @param integrationTypes - The integration types
+	 */
+	public setIntegrationTypes(...integrationTypes: RestOrArray<ApplicationIntegrationType>) {
+		Reflect.set(this, 'integration_types', integrationTypesPredicate.parse(normalizeArray(integrationTypes)));
+
+		return this;
+	}
 
 	/**
 	 * Sets the name of this command.

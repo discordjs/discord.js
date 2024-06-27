@@ -1,4 +1,10 @@
-import type { APIApplicationCommandOption, LocalizationMap, Permissions } from 'discord-api-types/v10';
+import type {
+	APIApplicationCommandOption,
+	ApplicationIntegrationType,
+	InteractionContextType,
+	LocalizationMap,
+	Permissions,
+} from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
 import { SharedNameAndDescription } from './mixins/NameAndDescription.js';
 import { SharedSlashCommand } from './mixins/SharedSlashCommand.js';
@@ -36,6 +42,11 @@ export class SlashCommandBuilder {
 	public readonly options: ToAPIApplicationCommandOptions[] = [];
 
 	/**
+	 * The contexts for this command.
+	 */
+	public readonly contexts?: InteractionContextType[];
+
+	/**
 	 * Whether this command is enabled by default when the application is added to a guild.
 	 *
 	 * @deprecated Use {@link SharedSlashCommand.setDefaultMemberPermissions} or {@link SharedSlashCommand.setDMPermission} instead.
@@ -54,6 +65,11 @@ export class SlashCommandBuilder {
 	 * By default, commands are visible. This property is only for global commands.
 	 */
 	public readonly dm_permission: boolean | undefined = undefined;
+
+	/**
+	 * The integration types for this command.
+	 */
+	public readonly integration_types?: ApplicationIntegrationType[];
 
 	/**
 	 * Whether this command is NSFW.
