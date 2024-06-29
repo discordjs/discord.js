@@ -3,6 +3,7 @@
 const Attachment = require('./Attachment');
 const BaseInteraction = require('./BaseInteraction');
 const InteractionWebhook = require('./InteractionWebhook');
+const { UncachedGuildMember } = require('./UncachedGuildMember');
 const InteractionResponses = require('./interfaces/InteractionResponses');
 
 /**
@@ -129,7 +130,11 @@ class CommandInteraction extends BaseInteraction {
       if (user) result.user = this.client.users._add(user);
 
       const member = resolved.members?.[option.value];
-      if (member) result.member = this.guild?.members._add({ user, ...member }) ?? member;
+      if (member) {
+        result.member =
+          this.guild?.members._add({ user, ...member }) ??
+          new UncachedGuildMember(this.client, { user, ...member }, this.guildId);
+      }
 
       const channel = resolved.channels?.[option.value];
       if (channel) result.channel = this.client.channels._add(channel, this.guild) ?? channel;
