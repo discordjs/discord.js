@@ -119,6 +119,16 @@ describe('Slash Commands', () => {
 				),
 			).not.toThrowError();
 		});
+
+		test('GIVEN missing required parameters THEN throw error', () => {
+			expect(() => SlashCommandAssertions.validateRequiredParameters(null, 'My name is missing', [])).toThrowError(
+				'Required parameter "name" is missing',
+			);
+
+			expect(() =>
+				SlashCommandAssertions.validateRequiredParameters('my-description-is-missing', null, []),
+			).toThrowError('Required parameter "description" is missing');
+		});
 	});
 
 	describe('SlashCommandBuilder', () => {
