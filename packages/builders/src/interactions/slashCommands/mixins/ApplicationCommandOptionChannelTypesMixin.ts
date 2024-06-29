@@ -26,7 +26,7 @@ const allowedChannelTypes = [
  */
 export type ApplicationCommandOptionAllowedChannelTypes = (typeof allowedChannelTypes)[number];
 
-const channelTypesPredicate = s.array(s.union(...allowedChannelTypes.map((type) => s.literal(type))));
+const channelTypesPredicate = s.array(s.union(allowedChannelTypes.map((type) => s.literal(type))));
 
 /**
  * This mixin holds channel type symbols used for options.
