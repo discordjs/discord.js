@@ -3,6 +3,7 @@
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { AuditLogOptionsType, AuditLogEvent } = require('discord-api-types/v10');
 const AutoModerationRule = require('./AutoModerationRule');
+const { GuildOnboardingPrompt } = require('./GuildOnboardingPrompt');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent');
 const Integration = require('./Integration');
 const Invite = require('./Invite');
@@ -29,6 +30,8 @@ const Targets = {
   Thread: 'Thread',
   ApplicationCommand: 'ApplicationCommand',
   AutoModeration: 'AutoModeration',
+  GuildOnboarding: 'GuildOnboarding',
+  GuildOnboardingPrompt: 'GuildOnboardingPrompt',
   Unknown: 'Unknown',
 };
 
@@ -49,10 +52,11 @@ const Targets = {
  * * A thread
  * * An application command
  * * An auto moderation rule
+ * * A guild onboarding prompt
  * * An object with an id key if target was deleted or fake entity
  * * An object where the keys represent either the new value or the old value
  * @typedef {?(Object|Guild|BaseChannel|User|Role|Invite|Webhook|GuildEmoji|Message|Integration|StageInstance|Sticker|
- * GuildScheduledEvent|ApplicationCommand|AutoModerationRule)} AuditLogEntryTarget
+ * GuildScheduledEvent|ApplicationCommand|AutoModerationRule|GuildOnboardingPrompt)} AuditLogEntryTarget
  */
 
 /**
@@ -80,6 +84,9 @@ const Targets = {
  * * Thread
  * * GuildScheduledEvent
  * * ApplicationCommandPermission
+ * * GuildOnboarding
+ * * GuildOnboardingPrompt
+ * * Unknown
  * @typedef {string} AuditLogTargetType
  */
 
@@ -349,6 +356,13 @@ class GuildAuditLogsEntry {
           changesReduce(this.changes, { id: data.target_id, guild_id: guild.id }),
           guild,
         );
+    } else if (targetType === Targets.GuildOnboardingPrompt) {
+      this.target =
+        data.action_type === AuditLogEvent.OnboardingPromptCreate
+          ? new GuildOnboardingPrompt(guild.client, changesReduce(this.changes, { id: data.target_id }), guild.id)
+          : changesReduce(this.changes, { id: data.target_id });
+    } else if (targetType === Targets.GuildOnboarding) {
+      this.target = changesReduce(this.changes, { id: data.target_id });
     } else if (data.target_id) {
       this.target = guild[`${targetType.toLowerCase()}s`]?.cache.get(data.target_id) ?? { id: data.target_id };
     }
@@ -375,6 +389,8 @@ class GuildAuditLogsEntry {
     if (target < 120) return Targets.Thread;
     if (target < 130) return Targets.ApplicationCommand;
     if (target >= 140 && target < 150) return Targets.AutoModeration;
+    if (target >= 163 && target <= 165) return Targets.GuildOnboardingPrompt;
+    if (target >= 160 && target < 170) return Targets.GuildOnboarding;
     return Targets.Unknown;
   }
 
@@ -402,6 +418,8 @@ class GuildAuditLogsEntry {
         AuditLogEvent.ThreadCreate,
         AuditLogEvent.AutoModerationRuleCreate,
         AuditLogEvent.AutoModerationBlockMessage,
+        AuditLogEvent.OnboardingPromptCreate,
+        AuditLogEvent.OnboardingCreate,
       ].includes(action)
     ) {
       return 'Create';
@@ -428,6 +446,7 @@ class GuildAuditLogsEntry {
         AuditLogEvent.GuildScheduledEventDelete,
         AuditLogEvent.ThreadDelete,
         AuditLogEvent.AutoModerationRuleDelete,
+        AuditLogEvent.OnboardingPromptDelete,
       ].includes(action)
     ) {
       return 'Delete';
@@ -452,6 +471,8 @@ class GuildAuditLogsEntry {
         AuditLogEvent.ThreadUpdate,
         AuditLogEvent.ApplicationCommandPermissionUpdate,
         AuditLogEvent.AutoModerationRuleUpdate,
+        AuditLogEvent.OnboardingPromptUpdate,
+        AuditLogEvent.OnboardingUpdate,
       ].includes(action)
     ) {
       return 'Update';
