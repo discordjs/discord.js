@@ -2630,7 +2630,6 @@ export class Poll extends Base {
   public resultsFinalized: boolean;
   public get partial(): false;
   public fetch(): Promise<Poll>;
-  public fetchMessage(): Promise<Message>;
   public end(): Promise<Message>;
 }
 
