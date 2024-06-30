@@ -47,7 +47,7 @@ class Poll extends Base {
     /**
      * The media for a poll's question
      * @typedef {Object} PollQuestionMedia
-     * @property {string} text The text of this question
+     * @property {?string} text The text of this question
      */
 
     /**
@@ -55,7 +55,7 @@ class Poll extends Base {
      * @type {PollQuestionMedia}
      */
     this.question = {
-      text: data.question.text,
+      text: data.question.text ?? null,
     };
 
     /**
@@ -108,11 +108,17 @@ class Poll extends Base {
         const answer = this.answers.get(answerResult.id);
         answer?._patch(answerResult);
       }
-    } else if (data.question) {
+    } else {
+      this.resultsFinalized ??= false;
+    }
+
+    if (data.question) {
       this.question = {
         text: data.question.text,
       };
-    } else if (data.answers) {
+    }
+
+    if (data.answers) {
       for (const answer of data.answers) {
         const existing = this.answers.get(answer.answer_id);
         if (existing) {
@@ -121,20 +127,20 @@ class Poll extends Base {
           this.answers.set(answer.answer_id, new PollAnswer(this.client, answer, this));
         }
       }
-    } else if (data.partial) {
+    }
+
+    if (data.partial) {
       Object.defineProperty(this, '_partial', { value: data.partial });
-    } else {
-      this.resultsFinalized ??= false;
     }
   }
 
   /**
    * The date when this poll expires
-   * @type {Date}
+   * @type {?Date}
    * @readonly
    */
   get expiresAt() {
-    return new Date(this.expiresTimestamp);
+    return this.expiresTimestamp && new Date(this.expiresTimestamp);
   }
 
   /**
@@ -143,12 +149,7 @@ class Poll extends Base {
    * @readonly
    */
   get partial() {
-    return (
-      typeof this.question.text !== 'string' ||
-      typeof this.layoutType !== 'number' ||
-      typeof this.allowMultiselect !== 'boolean' ||
-      this._partial
-    );
+    return this._partial || typeof this.layoutType !== 'number' || typeof this.allowMultiselect !== 'boolean';
   }
 
   /**
@@ -156,10 +157,7 @@ class Poll extends Base {
    * @returns {Promise<Poll>}
    */
   async fetch() {
-    const message = await this.message.channel.messages.fetch(this.message.id);
-
-    const existing = message.poll;
-    this._patch({ ...existing, partial: false });
+    await this.channel.messages.fetch(this.messageId);
 
     return this;
   }
@@ -173,7 +171,7 @@ class Poll extends Base {
       return Promise.reject(new DiscordjsError(ErrorCodes.PollAlreadyExpired));
     }
 
-    return this.message.channel.messages.endPoll(this.message.id);
+    return this.channel.messages.endPoll(this.messageId);
   }
 }
 

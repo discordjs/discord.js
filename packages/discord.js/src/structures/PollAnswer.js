@@ -62,7 +62,7 @@ class PollAnswer extends Base {
     } else if (data.poll_media?.emoji) {
       Object.defineProperty(this, '_emoji', { value: data.poll_media.emoji });
     } else {
-      this.voteCount ??= 0;
+      this.voteCount ??= this.voters.cache.size ?? 0;
     }
   }
 
@@ -95,6 +95,7 @@ class PollAnswer extends Base {
    * Fetches the users that voted for this answer.
    * @param {BaseFetchPollAnswerVotersOptions} [options={}] The options for fetching voters
    * @returns {Promise<Collection<Snowflake, User>>}
+   * @deprecated Use {@link PollAnswerVoterManager#fetch} instead
    */
   fetchVoters({ after, limit } = {}) {
     return this.voters.fetch({ after, limit });
