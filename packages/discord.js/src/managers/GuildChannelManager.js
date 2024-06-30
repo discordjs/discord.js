@@ -284,13 +284,13 @@ class GuildChannelManager extends CachedManager {
    *   .catch(console.error);
    */
   async edit(channel, options) {
-    channel = this.resolve(channel);
-    if (!channel) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
+    const resolvedChannel = this.resolve(channel);
+    if (!resolvedChannel) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
 
     const parent = options.parent && this.client.channels.resolveId(options.parent);
 
     if (options.position !== undefined) {
-      await this.setPosition(channel, options.position, { position: options.position, reason: options.reason });
+      await this.setPosition(resolvedChannel, options.position, { position: options.position, reason: options.reason });
     }
 
     let permission_overwrites = options.permissionOverwrites?.map(overwrite =>
@@ -305,22 +305,22 @@ class GuildChannelManager extends CachedManager {
             PermissionOverwrites.resolve(overwrite, this.guild),
           );
         }
-      } else if (channel.parent) {
-        permission_overwrites = channel.parent.permissionOverwrites.cache.map(overwrite =>
+      } else if (resolvedChannel.parent) {
+        permission_overwrites = resolvedChannel.parent.permissionOverwrites.cache.map(overwrite =>
           PermissionOverwrites.resolve(overwrite, this.guild),
         );
       }
     }
 
-    const newData = await this.client.rest.patch(Routes.channel(channel.id), {
+    const newData = await this.client.rest.patch(Routes.channel(resolvedChannel.id), {
       body: {
-        name: (options.name ?? channel.name).trim(),
+        name: options.name,
         type: options.type,
         topic: options.topic,
         nsfw: options.nsfw,
-        bitrate: options.bitrate ?? channel.bitrate,
-        user_limit: options.userLimit ?? channel.userLimit,
-        rtc_region: 'rtcRegion' in options ? options.rtcRegion : channel.rtcRegion,
+        bitrate: options.bitrate,
+        user_limit: options.userLimit,
+        rtc_region: options.rtcRegion,
         video_quality_mode: options.videoQualityMode,
         parent_id: parent,
         lock_permissions: options.lockPermissions,
