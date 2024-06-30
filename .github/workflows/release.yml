@@ -1,9 +1,32 @@
-name: Publish dev
+name: Release
 on:
-  schedule:
-    - cron: '0 */12 * * *'
   workflow_dispatch:
     inputs:
+      package:
+        description: 'The published name of a single package to release'
+        type: choice
+        required: false
+        options:
+          - all
+          - discord.js
+          - '@discordjs/brokers'
+          - '@discordjs/builders'
+          - '@discordjs/collection'
+          - '@discordjs/core'
+          - 'create-discord-bot'
+          - '@discordjs/docgen'
+          - '@discordjs/formatters'
+          - '@discordjs/next'
+          - '@discordjs/proxy'
+          - '@discordjs/rest'
+          - '@discordjs/util'
+          - '@discordjs/voice'
+          - '@discordjs/ws'
+      exclude:
+        description: 'Comma separated list of packages to exclude from release (if not depended upon)'
+        required: false
+        type: string
+        default: '@discordjs/docgen,@discordjs/next'
       dry_run:
         type: boolean
         default: false
@@ -13,6 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
+      contents: write
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
@@ -20,8 +44,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Install Node.js v20
         uses: actions/setup-node@v4
@@ -35,12 +57,12 @@ jobs:
       - name: Build dependencies
         run: pnpm run build
 
-      - name: Pubish packages
+      - name: Release packages
         uses: ./packages/actions/src/releasePackages
         with:
-          exclude: '@discordjs/docgen'
+          package: ${{ inputs.package }}
+          exclude: ${{ inputs.exclude }}
           dry: ${{ inputs.dry_run }}
-          dev: true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
