@@ -409,11 +409,17 @@ class Message extends Base {
     }
 
     if (data.poll) {
+      const existing = this.poll;
+
+      if (existing && data.poll) {
+        existing._patch({ ...existing, ...data.poll, partial: false });
+      }
+
       /**
        * The poll that was sent with the message
        * @type {?Poll}
        */
-      this.poll = new Poll(this.client, data.poll, this);
+      this.poll ??= new Poll(this.client, data.poll, this, this.channel);
     } else {
       this.poll ??= null;
     }
