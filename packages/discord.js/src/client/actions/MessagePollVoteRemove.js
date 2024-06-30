@@ -19,12 +19,7 @@ class MessagePollVoteRemoveAction extends Action {
     if (message.partial && (!includePollPartial || !includePollAnswerPartial)) return false;
 
     if (!message.poll && includePollPartial && includePollAnswerPartial) {
-      message.poll = new Poll(
-        this.client,
-        { ...data, question: { text: '' }, answers: [], partial: true },
-        message,
-        channel,
-      );
+      message.poll = new Poll(this.client, { ...data, answers: [], partial: true }, message, channel);
 
       const pollAnswer = new PollAnswer(this.client, data, message.poll);
 
@@ -36,7 +31,10 @@ class MessagePollVoteRemoveAction extends Action {
     if (!answer) return false;
 
     answer.voters.cache.delete(data.user_id);
-    answer.voteCount = answer.voteCount > 0 ? answer.voteCount-- : 0;
+
+    if (answer.voteCount > 0) {
+      answer.voteCount--;
+    }
 
     /**
      * Emitted whenever a user removes their vote in a poll.
