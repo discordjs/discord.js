@@ -38,7 +38,7 @@ jobs:
       - name: Pubish packages
         uses: ./packages/actions/src/releasePackages
         with:
-          exclude: 'create-discord-bot,@discordjs/docgen'
+          exclude: '@discordjs/docgen'
           dry: ${{ inputs.dry_run }}
           dev: true
         env:
