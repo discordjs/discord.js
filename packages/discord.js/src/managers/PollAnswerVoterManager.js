@@ -28,14 +28,14 @@ class PollAnswerVoterManager extends CachedManager {
    */
 
   /**
-   * Options used to fetch voters who voted for this poll answer.
+   * Options used to fetch users who voted for this poll answer.
    * @typedef {Object} FetchPollAnswerVotersOptions
    * @property {number} [limit] The maximum amount of users to fetch
    * @property {Snowflake} [after] The user id to fetch voters after
    */
 
   /**
-   * Fetches all the voters that voted on this poll answer. Resolves with a collection of users, mapped by their ids.
+   * Fetches the users that voted on this poll answer. Resolves with a collection of users, mapped by their ids.
    * @param {FetchPollAnswerVotersOptions} [options] Options for fetching the users
    * @returns {Promise<Collection<Snowflake, User>>}
    */

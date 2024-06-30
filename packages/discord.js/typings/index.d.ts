@@ -2624,7 +2624,7 @@ export class Poll extends Base {
   public question: PollQuestionMedia;
   public answers: Collection<number, PollAnswer | PartialPollAnswer>;
   public expiresTimestamp: number | null;
-  public get expiresAt(): Date;
+  public get expiresAt(): Date | null;
   public allowMultiselect: boolean;
   public layoutType: PollLayoutType;
   public resultsFinalized: boolean;

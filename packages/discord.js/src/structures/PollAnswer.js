@@ -15,7 +15,7 @@ class PollAnswer extends Base {
     /**
      * The {@link Poll} this answer is part of
      * @name PollAnswer#poll
-     * @type {Poll | PartialPoll}
+     * @type {Poll|PartialPoll}
      * @readonly
      */
     Object.defineProperty(this, 'poll', { value: poll });
@@ -33,10 +33,10 @@ class PollAnswer extends Base {
     this.text = data.poll_media?.text ?? null;
 
     /**
-     * The manager of the voters that voted for this answer
+     * The manager of the voters for this answer
      * @type {PollAnswerVoterManager}
      */
-    this.voters = new PollAnswerVoterManager(this, []);
+    this.voters = new PollAnswerVoterManager(this);
 
     /**
      * The raw emoji of this answer
@@ -58,9 +58,9 @@ class PollAnswer extends Base {
        */
       this.voteCount = data.count;
     } else if (data.poll_media?.text) {
-      this.text = data.poll_media?.text ?? null;
+      this.text = data.poll_media.text;
     } else if (data.poll_media?.emoji) {
-      Object.defineProperty(this, '_emoji', { value: data.poll_media?.emoji ?? null });
+      Object.defineProperty(this, '_emoji', { value: data.poll_media.emoji });
     } else {
       this.voteCount ??= 0;
     }
@@ -76,7 +76,7 @@ class PollAnswer extends Base {
   }
 
   /**
-   * Whether or not this poll answer is a partial.
+   * Whether this poll answer is a partial.
    * @type {boolean}
    * @readonly
    */

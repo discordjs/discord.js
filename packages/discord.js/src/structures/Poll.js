@@ -60,7 +60,7 @@ class Poll extends Base {
 
     /**
      * The answers of this poll
-     * @type {Collection<number, PollAnswer | PartialPollAnswer>}
+     * @type {Collection<number, PollAnswer|PartialPollAnswer>}
      */
     this.answers = data.answers.reduce(
       (acc, answer) => acc.set(answer.answer_id, new PollAnswer(this.client, answer, this)),
@@ -71,7 +71,7 @@ class Poll extends Base {
      * The timestamp when this poll expires
      * @type {?number}
      */
-    this.expiresTimestamp = Date.parse(data.expiry) ?? null;
+    this.expiresTimestamp = data.expiry && Date.parse(data.expiry);
 
     /**
      * Whether this poll allows multiple answers
@@ -86,7 +86,7 @@ class Poll extends Base {
     this.layoutType = data.layout_type;
 
     /**
-     * Whether or not this poll is a partial
+     * Whether this poll is a partial
      * @name Poll#_partial
      * @type {boolean}
      * @private
