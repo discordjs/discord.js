@@ -11,8 +11,8 @@ const User = require('../structures/User');
  * @extends {CachedManager}
  */
 class PollAnswerVoterManager extends CachedManager {
-  constructor(answer, iterable) {
-    super(answer.client, User, iterable);
+  constructor(answer) {
+    super(answer.client, User);
 
     /**
      * The poll answer that this manager belongs to
@@ -28,15 +28,8 @@ class PollAnswerVoterManager extends CachedManager {
    */
 
   /**
-   * Options used to fetch users who voted for this poll answer.
-   * @typedef {Object} FetchPollAnswerVotersOptions
-   * @property {number} [limit] The maximum amount of users to fetch
-   * @property {Snowflake} [after] The user id to fetch voters after
-   */
-
-  /**
    * Fetches the users that voted on this poll answer. Resolves with a collection of users, mapped by their ids.
-   * @param {FetchPollAnswerVotersOptions} [options] Options for fetching the users
+   * @param {BaseFetchPollAnswerVotersOptions} [options] Options for fetching the users
    * @returns {Promise<Collection<Snowflake, User>>}
    */
   async fetch({ after, limit }) {
@@ -46,16 +39,11 @@ class PollAnswerVoterManager extends CachedManager {
       query,
     });
 
-    const users = new Collection();
-    for (const rawUser of data) {
+    return data.reduce((coll, rawUser) => {
       const user = this.client.users._add(rawUser);
       this.cache.set(user.id, user);
-      users.set(user.id, user);
-    }
-
-    this.answer.voteCount = users.size;
-
-    return users;
+      return coll.set(user.id, user);
+    }, new Collection());
   }
 }
 
