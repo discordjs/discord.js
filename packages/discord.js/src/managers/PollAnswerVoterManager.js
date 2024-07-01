@@ -29,10 +29,10 @@ class PollAnswerVoterManager extends CachedManager {
 
   /**
    * Fetches the users that voted on this poll answer. Resolves with a collection of users, mapped by their ids.
-   * @param {BaseFetchPollAnswerVotersOptions} [options] Options for fetching the users
+   * @param {BaseFetchPollAnswerVotersOptions} [options = {}] Options for fetching the users
    * @returns {Promise<Collection<Snowflake, User>>}
    */
-  async fetch({ after, limit }) {
+  async fetch({ after, limit } = {}) {
     const poll = this.answer.poll;
     const query = makeURLSearchParams({ limit, after });
     const data = await this.client.rest.get(Routes.pollAnswerVoters(poll.channelId, poll.messageId, this.answer.id), {
