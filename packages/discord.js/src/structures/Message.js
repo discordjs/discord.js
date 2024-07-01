@@ -409,10 +409,8 @@ class Message extends Base {
     }
 
     if (data.poll) {
-      const existing = this.poll;
-
-      if (existing && data.poll) {
-        existing._patch({ ...existing, ...data.poll, partial: false });
+      if (this.poll) {
+        this.poll._patch({ ...data.poll });
       }
 
       /**
