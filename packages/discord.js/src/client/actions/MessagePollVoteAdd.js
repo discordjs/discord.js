@@ -1,10 +1,7 @@
 'use strict';
 
 const Action = require('./Action');
-const { Poll } = require('../../structures/Poll');
-const { PollAnswer } = require('../../structures/PollAnswer');
 const Events = require('../../util/Events');
-const Partials = require('../../util/Partials');
 
 class MessagePollVoteAddAction extends Action {
   handle(data) {
@@ -14,20 +11,10 @@ class MessagePollVoteAddAction extends Action {
     const message = this.getMessage(data, channel);
     if (!message) return false;
 
-    const includePollPartial = this.client.options.partials.includes(Partials.Poll);
-    const includePollAnswerPartial = this.client.options.partials.includes(Partials.PollAnswer);
-    if (message.partial && (!includePollPartial || !includePollAnswerPartial)) return false;
+    const poll = this.getPoll(data, message, channel);
+    if (!poll) return false;
 
-    if (!message.poll && includePollPartial && includePollAnswerPartial) {
-      message.poll = new Poll(this.client, { ...data, answers: [], partial: true }, message, channel);
-
-      const pollAnswer = new PollAnswer(this.client, data, message.poll);
-
-      message.poll.answers.set(data.answer_id, pollAnswer);
-    }
-
-    const answer = message.poll.answers.get(data.answer_id);
-
+    const answer = poll.answers.get(data.answer_id);
     if (!answer) return false;
 
     const user = this.getUser(data);
@@ -42,8 +29,6 @@ class MessagePollVoteAddAction extends Action {
      * @param {Snowflake} userId The id of the user that voted
      */
     this.client.emit(Events.MessagePollVoteAdd, answer, data.user_id);
-
-    const { poll } = message;
 
     return { poll };
   }

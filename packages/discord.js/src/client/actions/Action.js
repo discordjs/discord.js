@@ -1,5 +1,7 @@
 'use strict';
 
+const { Poll } = require('../../structures/Poll');
+const { PollAnswer } = require('../../structures/PollAnswer');
 const Partials = require('../../util/Partials');
 
 /*
@@ -61,6 +63,22 @@ class GenericAction {
         cache,
       )
     );
+  }
+
+  getPoll(data, message, channel) {
+    const includePollPartial = this.client.options.partials.includes(Partials.Poll);
+    const includePollAnswerPartial = this.client.options.partials.includes(Partials.PollAnswer);
+    if (message.partial && (!includePollPartial || !includePollAnswerPartial)) return null;
+
+    if (!message.poll && includePollPartial && includePollAnswerPartial) {
+      message.poll = new Poll(this.client, { ...data, answers: [], partial: true }, message, channel);
+
+      const pollAnswer = new PollAnswer(this.client, data, message.poll);
+
+      message.poll.answers.set(data.answer_id, pollAnswer);
+    }
+
+    return message.poll;
   }
 
   getReaction(data, message, user) {
