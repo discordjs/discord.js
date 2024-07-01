@@ -11,8 +11,29 @@ const { ErrorCodes } = require('../errors/index');
  * @extends {Base}
  */
 class Poll extends Base {
-  constructor(client, data, message) {
+  constructor(client, data, message, channel) {
     super(client);
+
+    /**
+     * The id of the channel that this poll is in
+     * @type {Snowflake}
+     */
+    this.channelId = data.channel_id;
+
+    /**
+     * The channel that this poll is in
+     * @name Poll#channel
+     * @type {TextBasedChannel}
+     * @readonly
+     */
+
+    Object.defineProperty(this, 'channel', { value: channel });
+
+    /**
+     * The id of the message that started this poll
+     * @type {Snowflake}
+     */
+    this.messageId = data.message_id;
 
     /**
      * The message that started this poll
@@ -26,7 +47,7 @@ class Poll extends Base {
     /**
      * The media for a poll's question
      * @typedef {Object} PollQuestionMedia
-     * @property {string} text The text of this question
+     * @property {?string} text The text of this question
      */
 
     /**
@@ -34,23 +55,14 @@ class Poll extends Base {
      * @type {PollQuestionMedia}
      */
     this.question = {
-      text: data.question.text,
+      text: data.question.text ?? null,
     };
 
     /**
-     * The answers of this poll
-     * @type {Collection<number, PollAnswer>}
-     */
-    this.answers = data.answers.reduce(
-      (acc, answer) => acc.set(answer.answer_id, new PollAnswer(this.client, answer, this)),
-      new Collection(),
-    );
-
-    /**
      * The timestamp when this poll expires
-     * @type {number}
+     * @type {?number}
      */
-    this.expiresTimestamp = Date.parse(data.expiry);
+    this.expiresTimestamp = data.expiry && Date.parse(data.expiry);
 
     /**
      * Whether this poll allows multiple answers
@@ -63,6 +75,14 @@ class Poll extends Base {
      * @type {PollLayoutType}
      */
     this.layoutType = data.layout_type;
+
+    /**
+     * Whether this poll is a partial
+     * @name Poll#_partial
+     * @type {boolean}
+     * @private
+     */
+    Object.defineProperty(this, '_partial', { value: data.partial ?? false });
 
     this._patch(data);
   }
@@ -82,15 +102,57 @@ class Poll extends Base {
     } else {
       this.resultsFinalized ??= false;
     }
+
+    if (data.question) {
+      this.question = {
+        text: data.question.text,
+      };
+    }
+
+    if (data.answers) {
+      /**
+       * The answers of this poll
+       * @type {Collection<number, PollAnswer|PartialPollAnswer>}
+       */
+      this.answers ??= new Collection();
+
+      for (const answer of data.answers) {
+        const existing = this.answers.get(answer.answer_id);
+        if (existing) {
+          existing._patch(answer);
+        } else {
+          this.answers.set(answer.answer_id, new PollAnswer(this.client, answer, this));
+        }
+      }
+    }
   }
 
   /**
    * The date when this poll expires
-   * @type {Date}
+   * @type {?Date}
    * @readonly
    */
   get expiresAt() {
-    return new Date(this.expiresTimestamp);
+    return this.expiresTimestamp && new Date(this.expiresTimestamp);
+  }
+
+  /**
+   * Whether this poll is a partial
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return typeof this.layoutType !== 'number' || typeof this.allowMultiselect !== 'boolean';
+  }
+
+  /**
+   * Fetches the message that started this poll, then updates the poll from the fetched message.
+   * @returns {Promise<Poll>}
+   */
+  async fetch() {
+    await this.channel.messages.fetch(this.messageId);
+
+    return this;
   }
 
   /**
@@ -102,7 +164,7 @@ class Poll extends Base {
       return Promise.reject(new DiscordjsError(ErrorCodes.PollAlreadyExpired));
     }
 
-    return this.message.channel.messages.endPoll(this.message.id);
+    return this.channel.messages.endPoll(this.messageId);
   }
 }
 

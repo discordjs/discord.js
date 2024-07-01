@@ -11,11 +11,15 @@ class MessagePollVoteAddAction extends Action {
     const message = this.getMessage(data, channel);
     if (!message) return false;
 
-    const { poll } = message;
+    const poll = this.getPoll(data, message, channel);
+    if (!poll) return false;
 
-    const answer = poll?.answers.get(data.answer_id);
+    const answer = poll.answers.get(data.answer_id);
     if (!answer) return false;
 
+    const user = this.getUser(data);
+
+    answer.voters._add(user);
     answer.voteCount++;
 
     /**
