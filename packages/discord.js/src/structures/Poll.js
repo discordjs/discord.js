@@ -59,15 +59,6 @@ class Poll extends Base {
     };
 
     /**
-     * The answers of this poll
-     * @type {Collection<number, PollAnswer|PartialPollAnswer>}
-     */
-    this.answers = data.answers.reduce(
-      (acc, answer) => acc.set(answer.answer_id, new PollAnswer(this.client, answer, this)),
-      new Collection(),
-    );
-
-    /**
      * The timestamp when this poll expires
      * @type {?number}
      */
@@ -119,6 +110,12 @@ class Poll extends Base {
     }
 
     if (data.answers) {
+      /**
+       * The answers of this poll
+       * @type {Collection<number, PollAnswer|PartialPollAnswer>}
+       */
+      this.answers ??= new Collection();
+
       for (const answer of data.answers) {
         const existing = this.answers.get(answer.answer_id);
         if (existing) {
@@ -127,10 +124,6 @@ class Poll extends Base {
           this.answers.set(answer.answer_id, new PollAnswer(this.client, answer, this));
         }
       }
-    }
-
-    if (data.partial) {
-      Object.defineProperty(this, '_partial', { value: data.partial });
     }
   }
 
@@ -144,12 +137,12 @@ class Poll extends Base {
   }
 
   /**
-   * Whether or not this poll is a partial
+   * Whether this poll is a partial
    * @type {boolean}
    * @readonly
    */
   get partial() {
-    return this._partial || typeof this.layoutType !== 'number' || typeof this.allowMultiselect !== 'boolean';
+    return typeof this.layoutType !== 'number' || typeof this.allowMultiselect !== 'boolean';
   }
 
   /**

@@ -57,13 +57,17 @@ class PollAnswer extends Base {
        * @type {number}
        */
       this.voteCount = data.count;
-    } else if (data.poll_media?.text) {
-      this.text = data.poll_media.text;
-    } else if (data.poll_media?.emoji) {
-      Object.defineProperty(this, '_emoji', { value: data.poll_media.emoji });
-    } else {
-      this.voteCount ??= this.voters.cache.size ?? 0;
     }
+
+    if (data.poll_media?.text) {
+      this.text = data.poll_media.text;
+    }
+
+    if (data.poll_media?.emoji) {
+      Object.defineProperty(this, '_emoji', { value: data.poll_media.emoji });
+    }
+
+    this.voteCount ??= this.voters.cache.size;
   }
 
   /**
