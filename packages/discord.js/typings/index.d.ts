@@ -2606,13 +2606,13 @@ export class Presence extends Base {
 }
 
 export interface PollQuestionMedia {
-  text: string;
+  text: string | null;
 }
 
 export class PollAnswerVoterManager extends CachedManager<Snowflake, User, UserResolvable> {
-  public constructor(answer: PollAnswer, iterable: Iterable<APIUser>);
+  public constructor(answer: PollAnswer);
   public answer: PollAnswer;
-  public fetch(): Promise<Collection<Snowflake, User>>;
+  public fetch(options?: BaseFetchPollAnswerVotersOptions): Promise<Collection<Snowflake, User>>;
 }
 
 export class Poll extends Base {
@@ -2629,7 +2629,7 @@ export class Poll extends Base {
   public layoutType: PollLayoutType;
   public resultsFinalized: boolean;
   public get partial(): false;
-  public fetch(): Promise<Poll>;
+  public fetch(): Promise<this>;
   public end(): Promise<Message>;
 }
 
@@ -2648,6 +2648,7 @@ export class PollAnswer extends Base {
   public voters: PollAnswerVoterManager;
   public get emoji(): GuildEmoji | Emoji | null;
   public get partial(): false;
+  /** @deprecated Use {@link PollAnswerVoterManager#fetch} instead */
   public fetchVoters(options?: BaseFetchPollAnswerVotersOptions): Promise<Collection<Snowflake, User>>;
 }
 
