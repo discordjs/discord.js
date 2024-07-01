@@ -206,7 +206,7 @@ import {
   MentionableSelectMenuComponent,
   Poll,
 } from '.';
-import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
+import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
 import { ReadonlyCollection } from '@discordjs/collection';
 
@@ -1763,6 +1763,7 @@ client.on('interactionCreate', async interaction => {
     expectType<AnySelectMenuInteraction | ButtonInteraction>(interaction);
     expectType<MessageActionRowComponent | APIButtonComponent | APISelectMenuComponent>(interaction.component);
     expectType<Message>(interaction.message);
+    expectDeprecated(interaction.sendPremiumRequired());
     if (interaction.inCachedGuild()) {
       expectAssignable<MessageComponentInteraction>(interaction);
       expectType<MessageActionRowComponent>(interaction.component);
@@ -1950,6 +1951,7 @@ client.on('interactionCreate', async interaction => {
     interaction.type === InteractionType.ApplicationCommand &&
     interaction.commandType === ApplicationCommandType.ChatInput
   ) {
+    expectDeprecated(interaction.sendPremiumRequired());
     if (interaction.inRawGuild()) {
       expectNotAssignable<Interaction<'cached'>>(interaction);
       expectAssignable<ChatInputCommandInteraction>(interaction);
@@ -2072,6 +2074,10 @@ client.on('interactionCreate', async interaction => {
       expectType<Promise<Message>>(interaction.deferUpdate({ fetchReply: true }));
       expectType<Promise<Message>>(interaction.followUp({ content: 'a' }));
     }
+  }
+
+  if (interaction.isModalSubmit()) {
+    expectDeprecated(interaction.sendPremiumRequired());
   }
 });
 
