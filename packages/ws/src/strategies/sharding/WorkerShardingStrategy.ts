@@ -48,7 +48,7 @@ export enum WorkerReceivePayloadOp {
 
 export type WorkerReceivePayload =
 	// Can't seem to get a type-safe union based off of the event, so I'm sadly leaving data as any for now
-	| { data: any; event: WebSocketShardEvents; op: WorkerReceivePayloadOp.Event; shardId: number }
+	| { data: any[]; event: WebSocketShardEvents; op: WorkerReceivePayloadOp.Event; shardId: number }
 	| { nonce: number; op: WorkerReceivePayloadOp.CancelIdentify }
 	| { nonce: number; op: WorkerReceivePayloadOp.FetchStatusResponse; status: WebSocketShardStatus }
 	| { nonce: number; op: WorkerReceivePayloadOp.RetrieveSessionInfo; shardId: number }
