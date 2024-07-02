@@ -293,7 +293,8 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			}
 
 			case WorkerReceivePayloadOp.Event: {
-				this.manager.emit(payload.event, { ...payload.data, shardId: payload.shardId });
+				// @ts-expect-error Event props can't be resolved properly, but they are correct
+				this.manager.emit(payload.event, ...payload.data, payload.shardId);
 				break;
 			}
 
