@@ -21,9 +21,15 @@ import {
 	type GatewaySendPayload,
 } from 'discord-api-types/v10';
 import { WebSocket, type Data } from 'ws';
-import type { Inflate } from 'zlib-sync';
-import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy.js';
-import { ImportantGatewayOpcodes, getInitialSendRateLimitState } from '../utils/constants.js';
+import type * as ZlibSync from 'zlib-sync';
+import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
+import {
+	CompressionMethod,
+	CompressionParameterMap,
+	ImportantGatewayOpcodes,
+	KnownNetworkErrorCodes,
+	getInitialSendRateLimitState,
+} from '../utils/constants.js';
 import type { SessionInfo } from './WebSocketManager.js';
 
 // eslint-disable-next-line promise/prefer-await-to-then
@@ -107,7 +113,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	// Indicates whether the shard has already resolved its original connect() call
 	private initialConnectResolved = false;
 
-	// Indicates if we failed to connect to the ws url (ECONNREFUSED/ECONNRESET)
+	// Indicates if we failed to connect to the ws url
 	private failedToConnectDueToNetworkError = false;
 
 	private readonly sendQueue = new AsyncQueue();
@@ -710,7 +716,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	private onError(error: Error) {
-		if ('code' in error && ['ECONNRESET', 'ECONNREFUSED'].includes(error.code as string)) {
+		if ('code' in error && KnownNetworkErrorCodes.has(error.code as string)) {
 			this.debug(['Failed to connect to the gateway URL specified due to a network error']);
 			this.failedToConnectDueToNetworkError = true;
 			return;
