@@ -82,3 +82,5 @@ export function getInitialSendRateLimitState(): SendRateLimitState {
 		resetAt: Date.now() + 60_000,
 	};
 }
+
+export const KnownNetworkErrorCodes = new Set(['ECONNRESET', 'ECONNREFUSED', 'ETIMEDOUT']);
