@@ -791,7 +791,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	private onError(error: Error) {
-		if ('code' in error && ['ECONNRESET', 'ECONNREFUSED'].includes(error.code as string)) {
+		if ('code' in error && ['ECONNRESET', 'ECONNREFUSED', 'ETIMEDOUT'].includes(error.code as string)) {
 			this.debug(['Failed to connect to the gateway URL specified due to a network error']);
 			this.failedToConnectDueToNetworkError = true;
 			return;
