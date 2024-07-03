@@ -29,7 +29,7 @@ class PollAnswerVoterManager extends CachedManager {
 
   /**
    * Fetches the users that voted on this poll answer. Resolves with a collection of users, mapped by their ids.
-   * @param {BaseFetchPollAnswerVotersOptions} [options = {}] Options for fetching the users
+   * @param {BaseFetchPollAnswerVotersOptions} [options={}] Options for fetching the users
    * @returns {Promise<Collection<Snowflake, User>>}
    */
   async fetch({ after, limit } = {}) {
