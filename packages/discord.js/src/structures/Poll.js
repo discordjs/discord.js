@@ -55,7 +55,7 @@ class Poll extends Base {
      * @type {PollQuestionMedia}
      */
     this.question = {
-      text: data.question.text ?? null,
+      text: null,
     };
 
     /**
@@ -63,26 +63,6 @@ class Poll extends Base {
      * @type {?number}
      */
     this.expiresTimestamp = data.expiry && Date.parse(data.expiry);
-
-    /**
-     * Whether this poll allows multiple answers
-     * @type {boolean}
-     */
-    this.allowMultiselect = data.allow_multiselect;
-
-    /**
-     * The layout type of this poll
-     * @type {PollLayoutType}
-     */
-    this.layoutType = data.layout_type;
-
-    /**
-     * Whether this poll is a partial
-     * @name Poll#_partial
-     * @type {boolean}
-     * @private
-     */
-    Object.defineProperty(this, '_partial', { value: data.partial ?? false });
 
     this._patch(data);
   }
@@ -103,19 +83,35 @@ class Poll extends Base {
       this.resultsFinalized ??= false;
     }
 
+    if (data.allow_multiselect) {
+      /**
+       * Whether this poll allows multiple answers
+       * @type {boolean}
+       */
+      this.allowMultiselect = data.allow_multiselect;
+    }
+
+    if (data.layout_type) {
+      /**
+       * The layout type of this poll
+       * @type {PollLayoutType}
+       */
+      this.layoutType = data.layout_type;
+    }
+
     if (data.question) {
       this.question = {
         text: data.question.text,
       };
     }
 
-    if (data.answers) {
-      /**
-       * The answers of this poll
-       * @type {Collection<number, PollAnswer|PartialPollAnswer>}
-       */
-      this.answers ??= new Collection();
+    /**
+     * The answers of this poll
+     * @type {Collection<number, PollAnswer|PartialPollAnswer>}
+     */
+    this.answers ??= new Collection();
 
+    if (data.answers) {
       for (const answer of data.answers) {
         const existing = this.answers.get(answer.answer_id);
         if (existing) {
