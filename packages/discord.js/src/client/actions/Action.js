@@ -71,7 +71,7 @@ class GenericAction {
     if (message.partial && (!includePollPartial || !includePollAnswerPartial)) return null;
 
     if (!message.poll && includePollPartial && includePollAnswerPartial) {
-      message.poll = new Poll(this.client, { ...data, answers: [] }, message, channel);
+      message.poll = new Poll(this.client, data, message, channel);
 
       const pollAnswer = new PollAnswer(this.client, data, message.poll);
 
