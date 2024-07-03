@@ -2595,29 +2595,37 @@ await textChannel.send({
 declare const partialPoll: PartialPoll;
 {
   if (partialPoll.partial) {
-    expectType<null>(partialPoll.question);
+    expectType<null>(partialPoll.question.text);
+    expectType<PartialMessage>(partialPoll.message);
     expectType<null>(partialPoll.allowMultiselect);
-    expectType<null>(partialPoll.resultsFinalized);
     expectType<null>(partialPoll.layoutType);
     expectType<null>(partialPoll.expiresTimestamp);
-    expectType<null>(partialPoll.answers);
+    expectType<Collection<number, PollAnswer | PartialPollAnswer>>(partialPoll.answers);
   }
 }
 
 declare const partialPollAnswer: PartialPollAnswer;
 {
   if (partialPollAnswer.partial) {
-    expectType<null>(partialPollAnswer.voteCount);
+    expectType<PartialPoll>(partialPollAnswer.poll);
+    expectType<null>(partialPollAnswer.emoji);
+    expectType<null>(partialPollAnswer.text);
   }
 }
 declare const poll: Poll;
 {
   expectType<Message>(await poll.end());
+  expectType<false>(poll.partial);
+  expectNotType<Collection<number, PartialPollAnswer>>(poll.answers);
+
   const answer = poll.answers.first()!;
 
   if (!answer.partial) {
     expectType<number>(answer.voteCount);
-    expectType<Collection<Snowflake, User>>(await answer.fetchVoters({ after: snowflake, limit: 10 }));
+    expectType<number>(answer.id);
+    expectType<PollAnswerVoterManager>(answer.voters);
+    expectType<false>(answer.partial);
+    expectType<Collection<Snowflake, User>>(await answer.voters.fetch({ after: snowflake, limit: 10 }));
   }
 
   await messageManager.endPoll(snowflake);
