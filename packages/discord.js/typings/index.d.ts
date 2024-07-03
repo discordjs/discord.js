@@ -6559,12 +6559,14 @@ export interface PartialMessage
 export interface PartialMessageReaction extends Partialize<MessageReaction, 'count'> {}
 
 export interface PartialPoll
-  extends Partialize<
-    Poll,
-    'allowMultiselect' | 'answers' | 'layoutType' | 'expiresTimestamp' | 'question' | 'resultsFinalized' | 'message'
-  > {}
+  extends Partialize<Poll, 'allowMultiselect' | 'layoutType' | 'expiresTimestamp', null, 'question' | 'message'> {
+  question: { text: null };
+  message: PartialMessage;
+}
 
-export interface PartialPollAnswer extends Partialize<PollAnswer, 'voteCount' | 'emoji' | 'text'> {}
+export interface PartialPollAnswer extends Partialize<PollAnswer, 'emoji' | 'text', null, 'poll'> {
+  readonly poll: PartialPoll;
+}
 
 export interface PartialGuildScheduledEvent
   extends Partialize<GuildScheduledEvent, 'userCount', 'status' | 'privacyLevel' | 'name' | 'entityType'> {}
