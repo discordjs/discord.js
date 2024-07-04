@@ -44,26 +44,6 @@ class Poll extends Base {
 
     Object.defineProperty(this, 'message', { value: message });
 
-    /**
-     * The media for a poll's question
-     * @typedef {Object} PollQuestionMedia
-     * @property {?string} text The text of this question
-     */
-
-    /**
-     * The media for this poll's question
-     * @type {PollQuestionMedia}
-     */
-    this.question = {
-      text: null,
-    };
-
-    /**
-     * The timestamp when this poll expires
-     * @type {?number}
-     */
-    this.expiresTimestamp = data.expiry && Date.parse(data.expiry);
-
     this._patch(data);
   }
 
@@ -83,25 +63,41 @@ class Poll extends Base {
       this.resultsFinalized ??= false;
     }
 
-    if (data.allow_multiselect) {
-      /**
-       * Whether this poll allows multiple answers
-       * @type {boolean}
-       */
-      this.allowMultiselect = data.allow_multiselect;
-    }
+    /**
+     * Whether this poll allows multiple answers
+     * @type {boolean}
+     */
+    this.allowMultiselect ??= data.allow_multiselect ?? null;
 
-    if (data.layout_type) {
-      /**
-       * The layout type of this poll
-       * @type {PollLayoutType}
-       */
-      this.layoutType = data.layout_type;
-    }
+    /**
+     * The layout type of this poll
+     * @type {PollLayoutType}
+     */
+    this.layoutType ??= data.layout_type ?? null;
+
+    /**
+     * The timestamp when this poll expires
+     * @type {?number}
+     */
+    this.expiresTimestamp ??= data.expiry ? Date.parse(data.expiry) : null;
 
     if (data.question) {
+      /**
+       * The media for a poll's question
+       * @typedef {Object} PollQuestionMedia
+       * @property {?string} text The text of this question
+       */
+
+      /**
+       * The media for this poll's question
+       * @type {PollQuestionMedia}
+       */
       this.question = {
         text: data.question.text,
+      };
+    } else {
+      this.question ??= {
+        text: null,
       };
     }
 

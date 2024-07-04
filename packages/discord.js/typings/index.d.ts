@@ -2610,7 +2610,7 @@ export interface PollQuestionMedia {
 }
 
 export class PollAnswerVoterManager extends CachedManager<Snowflake, User, UserResolvable> {
-  public constructor(answer: PollAnswer);
+  private constructor(answer: PollAnswer);
   public answer: PollAnswer;
   public fetch(options?: BaseFetchPollAnswerVotersOptions): Promise<Collection<Snowflake, User>>;
 }
@@ -2648,7 +2648,7 @@ export class PollAnswer extends Base {
   public voters: PollAnswerVoterManager;
   public get emoji(): GuildEmoji | Emoji | null;
   public get partial(): false;
-  /** @deprecated Use {@link PollAnswerVoterManager#fetch} instead */
+  /** @deprecated Use {@link PollAnswerVoterManager.fetch} instead */
   public fetchVoters(options?: BaseFetchPollAnswerVotersOptions): Promise<Collection<Snowflake, User>>;
 }
 
@@ -6559,9 +6559,16 @@ export interface PartialMessage
 export interface PartialMessageReaction extends Partialize<MessageReaction, 'count'> {}
 
 export interface PartialPoll
-  extends Partialize<Poll, 'allowMultiselect' | 'layoutType' | 'expiresTimestamp', null, 'question' | 'message'> {
+  extends Partialize<
+    Poll,
+    'allowMultiselect' | 'layoutType' | 'expiresTimestamp',
+    null,
+    'question' | 'message' | 'answers'
+  > {
   question: { text: null };
   message: PartialMessage;
+  // eslint-disable-next-line no-restricted-syntax
+  answers: Collection<number, PartialPollAnswer>;
 }
 
 export interface PartialPollAnswer extends Partialize<PollAnswer, 'emoji' | 'text', null, 'poll'> {

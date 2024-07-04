@@ -2600,7 +2600,7 @@ declare const partialPoll: PartialPoll;
     expectType<null>(partialPoll.allowMultiselect);
     expectType<null>(partialPoll.layoutType);
     expectType<null>(partialPoll.expiresTimestamp);
-    expectType<Collection<number, PollAnswer | PartialPollAnswer>>(partialPoll.answers);
+    expectType<Collection<number, PartialPollAnswer>>(partialPoll.answers);
   }
 }
 
@@ -2624,7 +2624,6 @@ declare const poll: Poll;
     expectType<number>(answer.voteCount);
     expectType<number>(answer.id);
     expectType<PollAnswerVoterManager>(answer.voters);
-    expectType<false>(answer.partial);
     expectType<Collection<Snowflake, User>>(await answer.voters.fetch({ after: snowflake, limit: 10 }));
   }
 

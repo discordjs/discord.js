@@ -27,12 +27,6 @@ class PollAnswer extends Base {
     this.id = data.answer_id;
 
     /**
-     * The text of this answer
-     * @type {?string}
-     */
-    this.text = null;
-
-    /**
      * The manager of the voters for this answer
      * @type {PollAnswerVoterManager}
      */
@@ -61,9 +55,11 @@ class PollAnswer extends Base {
       this.voteCount ??= this.voters.cache.size;
     }
 
-    if (data.poll_media?.text) {
-      this.text = data.poll_media.text;
-    }
+    /**
+     * The text of this answer
+     * @type {?string}
+     */
+    this.text ??= data.poll_media?.text ?? null;
 
     if (data.poll_media?.emoji) {
       Object.defineProperty(this, '_emoji', { value: data.poll_media.emoji });
