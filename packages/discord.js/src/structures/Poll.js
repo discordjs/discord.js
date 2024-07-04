@@ -18,7 +18,7 @@ class Poll extends Base {
      * The id of the channel that this poll is in
      * @type {Snowflake}
      */
-    this.channelId = data.channel_id;
+    this.channelId = data.channel_id ?? channel.id;
 
     /**
      * The channel that this poll is in
@@ -33,7 +33,7 @@ class Poll extends Base {
      * The id of the message that started this poll
      * @type {Snowflake}
      */
-    this.messageId = data.message_id;
+    this.messageId = data.message_id ?? message.id;
 
     /**
      * The message that started this poll
@@ -134,7 +134,7 @@ class Poll extends Base {
    * @readonly
    */
   get partial() {
-    return typeof this.layoutType !== 'number' || typeof this.allowMultiselect !== 'boolean';
+    return this.allowMultiselect === null;
   }
 
   /**

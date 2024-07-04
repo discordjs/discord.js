@@ -70,11 +70,12 @@ class GenericAction {
     const includePollAnswerPartial = this.client.options.partials.includes(Partials.PollAnswer);
     if (message.partial && (!includePollPartial || !includePollAnswerPartial)) return null;
 
-    if (!message.poll && includePollPartial && includePollAnswerPartial) {
+    if (!message.poll && includePollPartial) {
       message.poll = new Poll(this.client, data, message, channel);
+    }
 
+    if (message.poll && !message.poll.answers.has(data.answer_id) && includePollAnswerPartial) {
       const pollAnswer = new PollAnswer(this.client, data, message.poll);
-
       message.poll.answers.set(data.answer_id, pollAnswer);
     }
 

@@ -19,7 +19,10 @@ class MessagePollVoteAddAction extends Action {
 
     const user = this.getUser(data);
 
-    answer.voters._add(user);
+    if (user) {
+      answer.voters._add(user);
+    }
+
     answer.voteCount++;
 
     /**

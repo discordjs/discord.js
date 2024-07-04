@@ -39,7 +39,7 @@ class PollAnswerVoterManager extends CachedManager {
       query,
     });
 
-    return data.reduce((coll, rawUser) => {
+    return data.users.reduce((coll, rawUser) => {
       const user = this.client.users._add(rawUser);
       this.cache.set(user.id, user);
       return coll.set(user.id, user);
