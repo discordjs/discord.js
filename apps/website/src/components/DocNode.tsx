@@ -30,7 +30,7 @@ export async function DocNode({ node, version }: { readonly node?: any; readonly
 							rel="external noreferrer noopener"
 							target="_blank"
 						>
-							{`${node.text}${node.members}`}
+							{`${node.text}${node.members ?? ''}`}
 						</a>
 					);
 				}

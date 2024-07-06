@@ -1,4 +1,10 @@
-import { Locale, type APIApplicationCommandOptionChoice, type LocalizationMap } from 'discord-api-types/v10';
+import {
+	ApplicationIntegrationType,
+	InteractionContextType,
+	Locale,
+	type APIApplicationCommandOptionChoice,
+	type LocalizationMap,
+} from 'discord-api-types/v10';
 import { z } from 'zod';
 import { parse } from '../../util/validation.js';
 import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder.js';
@@ -99,3 +105,7 @@ export function validateDefaultMemberPermissions(permissions: unknown) {
 export function validateNSFW(value: unknown): asserts value is boolean {
 	parse(booleanPredicate, value);
 }
+
+export const contextsPredicate = z.nativeEnum(InteractionContextType).array();
+
+export const integrationTypesPredicate = z.nativeEnum(ApplicationIntegrationType).array();

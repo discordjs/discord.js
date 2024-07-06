@@ -604,6 +604,7 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
       | ModalComponentData
       | APIModalInteractionResponseCallbackData,
   ): Promise<void>;
+  /** @deprecated Sending a premium-style button is the new Discord behaviour. */
   public sendPremiumRequired(): Promise<void>;
   public awaitModalSubmit(
     options: AwaitModalSubmitOptions<ModalSubmitInteraction>,
@@ -2261,6 +2262,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
       | ModalComponentData
       | APIModalInteractionResponseCallbackData,
   ): Promise<void>;
+  /** @deprecated Sending a premium-style button is the new Discord behaviour. */
   public sendPremiumRequired(): Promise<void>;
   public awaitModalSubmit(
     options: AwaitModalSubmitOptions<ModalSubmitInteraction>,
@@ -2460,6 +2462,7 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
     options: InteractionDeferUpdateOptions & { fetchReply: true },
   ): Promise<Message<BooleanCache<Cached>>>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
+  /** @deprecated Sending a premium-style button is the new Discord behaviour. */
   public sendPremiumRequired(): Promise<void>;
   public inGuild(): this is ModalSubmitInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ModalSubmitInteraction<'cached'>;
@@ -3653,7 +3656,7 @@ export class WebSocketManager extends EventEmitter {
   public on(event: GatewayDispatchEvents, listener: (data: any, shardId: number) => void): this;
   public once(event: GatewayDispatchEvents, listener: (data: any, shardId: number) => void): this;
 
-  private debug(message: string, shardId?: number): void;
+  private debug(messages: readonly string[], shardId?: number): void;
   private connect(): Promise<void>;
   private broadcast(packet: unknown): void;
   private destroy(): Promise<void>;
@@ -3684,7 +3687,7 @@ export class WebSocketShard extends EventEmitter {
   public status: Status;
   public ping: number;
 
-  private debug(message: string): void;
+  private debug(messages: readonly string[]): void;
   private onReadyPacket(packet: unknown): void;
   private gotGuild(guildId: Snowflake): void;
   private checkReady(): void;
@@ -4069,7 +4072,7 @@ export class ApplicationCommandManager<
     id: Snowflake,
     options: FetchApplicationCommandOptions & { guildId: Snowflake },
   ): Promise<ApplicationCommand>;
-  public fetch(options: FetchApplicationCommandOptions): Promise<Collection<string, ApplicationCommandScope>>;
+  public fetch(options: FetchApplicationCommandOptions): Promise<Collection<Snowflake, ApplicationCommandScope>>;
   public fetch(id: Snowflake, options?: FetchApplicationCommandOptions): Promise<ApplicationCommandScope>;
   public fetch(
     id?: Snowflake,

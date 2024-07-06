@@ -1,4 +1,4 @@
-import { ApplicationCommandType } from 'discord-api-types/v10';
+import { ApplicationCommandType, ApplicationIntegrationType, InteractionContextType } from 'discord-api-types/v10';
 import { z } from 'zod';
 import { parse } from '../../util/validation.js';
 import type { ContextMenuCommandType } from './ContextMenuCommandBuilder.js';
@@ -53,3 +53,7 @@ const memberPermissionPredicate = z
 export function validateDefaultMemberPermissions(permissions: unknown) {
 	return parse(memberPermissionPredicate, permissions);
 }
+
+export const contextsPredicate = z.nativeEnum(InteractionContextType).array();
+
+export const integrationTypesPredicate = s.nativeEnum(ApplicationIntegrationType).array(isValidationEnabled);
