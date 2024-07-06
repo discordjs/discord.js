@@ -56,4 +56,4 @@ export function validateDefaultMemberPermissions(permissions: unknown) {
 
 export const contextsPredicate = z.nativeEnum(InteractionContextType).array();
 
-export const integrationTypesPredicate = s.nativeEnum(ApplicationIntegrationType).array(isValidationEnabled);
+export const integrationTypesPredicate = z.nativeEnum(ApplicationIntegrationType).array();
