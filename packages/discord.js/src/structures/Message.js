@@ -391,14 +391,14 @@ class Message extends Base {
        * @property {InteractionType} type The type of the interaction
        * @property {User} user The user that invoked the interaction
        * @property {APIAuthorizingIntegrationOwnersMap} authorizingIntegrationOwners
-       * ids for installation context(s) related to an interaction
+       * Ids for installation context(s) related to an interaction
        * @property {?Snowflake} originalResponseMessageId
-       * id of the original response message, present only on follow-up messages
+       * Id of the original response message. Present only on follow-up messages
        * @property {?Snowflake} interactedMessageId
-       * id of the message that contained interactive component,
-       * present only on messages created from component interactions
+       * Id of the message that contained interactive component.
+       * Present only on messages created from component interactions
        * @property {?MessageInteractionMetadata} triggeringInteractionMetadata
-       * Metadata for the interaction that was used to open the modal, present only on modal submit interactions
+       * Metadata for the interaction that was used to open the modal. Present only on modal submit interactions
        */
       this.interactionMetadata = {
         id: data.interaction_metadata.id,
