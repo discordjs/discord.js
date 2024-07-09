@@ -1077,6 +1077,7 @@ export class ClientApplication extends Application {
   public approximateGuildCount: number | null;
   public tags: string[];
   public installParams: ClientApplicationInstallParams | null;
+  public integrationTypesConfig: IntegrationTypesConfiguration;
   public customInstallURL: string | null;
   public owner: User | Team | null;
   public get partial(): boolean;
@@ -6157,6 +6158,18 @@ export interface IntegrationAccount {
 }
 
 export type IntegrationType = 'twitch' | 'youtube' | 'discord' | 'guild_subscription';
+
+export type IntegrationTypesConfigurationParameters = {
+  [T in keyof ClientApplicationInstallParams]: ClientApplicationInstallParams[T] | null;
+};
+
+export interface IntegrationTypesConfigurationContext {
+  oAuth2InstallParams: IntegrationTypesConfigurationParameters | null;
+}
+
+export type IntegrationTypesConfiguration = {
+  [key in ApplicationIntegrationType]: IntegrationTypesConfigurationContext | null;
+};
 
 export type CollectedInteraction<Cached extends CacheType = CacheType> =
   | StringSelectMenuInteraction<Cached>
