@@ -4711,6 +4711,8 @@ export interface BaseApplicationCommandData {
   dmPermission?: boolean;
   defaultMemberPermissions?: PermissionResolvable | null;
   nsfw?: boolean;
+  contexts?: InteractionContextType[];
+  integration_types?: ApplicationIntegrationType[];
 }
 
 export interface AttachmentData {
