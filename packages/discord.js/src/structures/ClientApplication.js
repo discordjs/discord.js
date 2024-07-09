@@ -61,7 +61,7 @@ class ClientApplication extends Application {
     } else {
       this.installParams ??= null;
     }
-    
+
     /**
      * OAuth2 installation paremeters.
      * @typedef {Object} IntegrationTypesConfigurationParameters
