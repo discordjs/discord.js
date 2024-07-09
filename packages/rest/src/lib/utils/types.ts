@@ -86,6 +86,12 @@ export interface RESTOptions {
 	 */
 	makeRequest(url: string, init: RequestInit): Promise<ResponseLike>;
 	/**
+	 * The media proxy path
+	 *
+	 * @defaultValue `'https://media.discordapp.net'`
+	 */
+	mediaProxy: string;
+	/**
 	 * The extra offset to add to rate limits in milliseconds
 	 *
 	 * @defaultValue `50`

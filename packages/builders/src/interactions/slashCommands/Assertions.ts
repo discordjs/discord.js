@@ -1,5 +1,11 @@
 import { s } from '@sapphire/shapeshift';
-import { Locale, type APIApplicationCommandOptionChoice, type LocalizationMap } from 'discord-api-types/v10';
+import {
+	ApplicationIntegrationType,
+	InteractionContextType,
+	Locale,
+	type APIApplicationCommandOptionChoice,
+	type LocalizationMap,
+} from 'discord-api-types/v10';
 import { isValidationEnabled } from '../../util/validation.js';
 import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder.js';
 import type { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands.js';
@@ -98,3 +104,11 @@ export function validateDefaultMemberPermissions(permissions: unknown) {
 export function validateNSFW(value: unknown): asserts value is boolean {
 	booleanPredicate.parse(value);
 }
+
+export const contextsPredicate = s.array(
+	s.nativeEnum(InteractionContextType).setValidationEnabled(isValidationEnabled),
+);
+
+export const integrationTypesPredicate = s.array(
+	s.nativeEnum(ApplicationIntegrationType).setValidationEnabled(isValidationEnabled),
+);

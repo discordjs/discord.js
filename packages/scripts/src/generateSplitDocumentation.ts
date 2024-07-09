@@ -240,7 +240,12 @@ function itemExcerptText(excerpt: Excerpt, apiPackage: ApiPackage) {
 				// dapi-types doesn't have routes for class members
 				// so we can assume this member is for an enum
 				if (meaning === 'member' && path && 'parent' in path) {
-					href += `/enum/${path.parent}#${path.component}`;
+					// unless it's a variable like FormattingPatterns.Role
+					if (path.parent.toString() === '__type') {
+						href += `#${token.text.split('.')[0]}`;
+					} else {
+						href += `/enum/${path.parent}#${path.component}`;
+					}
 				} else if (meaning === 'type' || meaning === 'var') {
 					href += `#${token.text}`;
 				} else {
@@ -951,11 +956,16 @@ export async function generateSplitDocumentation({
 
 			const members = entry.members
 				.filter((item) => {
-					if (item.kind !== 'Function') {
-						return true;
+					switch (item.kind) {
+						case ApiItemKind.Function:
+							return (item as ApiFunction).overloadIndex === 1;
+						case ApiItemKind.Interface:
+							return !entry.members.some(
+								(innerItem) => innerItem.kind === ApiItemKind.Class && innerItem.displayName === item.displayName,
+							);
+						default:
+							return true;
 					}
-
-					return (item as ApiFunction).overloadIndex === 1;
 				})
 				.map((item) => ({
 					kind: item.kind,
