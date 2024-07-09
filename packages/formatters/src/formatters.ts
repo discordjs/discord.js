@@ -616,6 +616,39 @@ export function time(timeOrSeconds?: Date | number, style?: TimestampStylesStrin
 }
 
 /**
+ * Formats an application directory link.
+ *
+ * @typeParam ApplicationId - This is inferred by the supplied application id
+ * @param applicationId - The application id
+ */
+export function applicationDirectory<ApplicationId extends Snowflake>(
+	applicationId: ApplicationId,
+): `https://discord.com/application-directory/${ApplicationId}/store`;
+
+/**
+ * Formats an application directory SKU link.
+ *
+ * @typeParam ApplicationId - This is inferred by the supplied application id
+ * @typeParam SKUId - This is inferred by the supplied SKU id
+ * @param applicationId - The application id
+ * @param skuId - The SKU id
+ */
+export function applicationDirectory<ApplicationId extends Snowflake, SKUId extends Snowflake>(
+	applicationId: ApplicationId,
+	skuId: SKUId,
+): `https://discord.com/application-directory/${ApplicationId}/store/${SKUId}`;
+
+export function applicationDirectory<ApplicationId extends Snowflake, SKUId extends Snowflake>(
+	applicationId: ApplicationId,
+	skuId?: SKUId,
+):
+	| `https://discord.com/application-directory/${ApplicationId}/store/${SKUId}`
+	| `https://discord.com/application-directory/${ApplicationId}/store` {
+	const url = `https://discord.com/application-directory/${applicationId}/store` as const;
+	return skuId ? `${url}/${skuId}` : url;
+}
+
+/**
  * The {@link https://discord.com/developers/docs/reference#message-formatting-timestamp-styles | message formatting timestamp styles}
  * supported by Discord.
  */
