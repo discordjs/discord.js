@@ -5311,7 +5311,7 @@ export interface ClientOptions {
   ws?: WebSocketOptions;
   rest?: Partial<RESTOptions>;
   jsonTransformer?: (obj: unknown) => unknown;
-  automatedMessageNonce?: boolean;
+  enforceNonce?: boolean;
 }
 
 export type ClientPresenceStatus = 'online' | 'idle' | 'dnd';

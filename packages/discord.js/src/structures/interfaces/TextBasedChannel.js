@@ -165,7 +165,7 @@ class TextBasedChannel {
       return dm.send(options);
     }
 
-    if (!options.nonce && this.client.options.automatedMessageNonce) {
+    if (typeof options.nonce === 'undefined' && this.client.options.enforceNonce) {
       options.nonce = DiscordSnowflake.generate().toString();
       options.enforceNonce = true;
     }
