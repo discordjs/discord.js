@@ -72,19 +72,23 @@ class ClientApplication extends Application {
     /**
      * The application's supported installation context data.
      * @typedef {Object} IntegrationTypesConfigurationContext
-     * @property {?IntegrationTypesConfigurationParameters} oAuth2InstallParams Scopes and permissions regarding the installation context
+     * @property {?IntegrationTypesConfigurationParameters} oAuth2InstallParams
+     * Scopes and permissions regarding the installation context
      */
 
     /**
      * The application's supported installation context data.
      * @typedef {Object} IntegrationTypesConfiguration
-     * @property {?IntegrationTypesConfigurationContext} 0 Scopes and permissions regarding the guild-installation context
-     * @property {?IntegrationTypesConfigurationContext} 1 Scopes and permissions regarding the user-installation context
+     * @property {?IntegrationTypesConfigurationContext} 0 Scopes and permissions
+     * regarding the guild-installation context
+     * @property {?IntegrationTypesConfigurationContext} 1 Scopes and permissions
+     * regarding the user-installation context
      */
 
     if ('integration_types_config' in data) {
       /**
-       * Default scopes and permissions for each supported installation context. The keys are stringified variants of {@link ApplicationIntegrationType}.
+       * Default scopes and permissions for each supported installation context.
+       * The keys are stringified variants of {@link ApplicationIntegrationType}.
        * @type {IntegrationTypesConfiguration}
        */
       this.integrationTypesConfig = {
