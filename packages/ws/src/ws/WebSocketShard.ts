@@ -26,6 +26,7 @@ import {
 	CompressionMethod,
 	CompressionParameterMap,
 	ImportantGatewayOpcodes,
+	KnownNetworkErrorCodes,
 	getInitialSendRateLimitState,
 } from '../utils/constants.js';
 import type { SessionInfo } from './WebSocketManager.js';
@@ -113,7 +114,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	// Indicates whether the shard has already resolved its original connect() call
 	private initialConnectResolved = false;
 
-	// Indicates if we failed to connect to the ws url (ECONNREFUSED/ECONNRESET)
+	// Indicates if we failed to connect to the ws url
 	private failedToConnectDueToNetworkError = false;
 
 	private readonly sendQueue = new AsyncQueue();
@@ -791,7 +792,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	private onError(error: Error) {
-		if ('code' in error && ['ECONNRESET', 'ECONNREFUSED'].includes(error.code as string)) {
+		if ('code' in error && KnownNetworkErrorCodes.has(error.code as string)) {
 			this.debug(['Failed to connect to the gateway URL specified due to a network error']);
 			this.failedToConnectDueToNetworkError = true;
 			return;
