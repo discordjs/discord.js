@@ -83,4 +83,4 @@ export function getInitialSendRateLimitState(): SendRateLimitState {
 	};
 }
 
-export const KnownNetworkErrorCodes = new Set(['ECONNRESET', 'ECONNREFUSED', 'ETIMEDOUT']);
+export const KnownNetworkErrorCodes = new Set(['ECONNRESET', 'ECONNREFUSED', 'ETIMEDOUT', 'EAI_AGAIN']);
