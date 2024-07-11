@@ -166,10 +166,9 @@ class TextBasedChannel {
     }
 
     /**
-     * If `nonce` is not provided, generate one and set `enforceNonce`, unless `enforceNonce` is explicitly set to `false`
+     * If `nonce` is not provided generate one & set `enforceNonce`, unless `enforceNonce` is explicitly set to `false`
      */
-    const clientEnforceNonce = this.client.options.enforceNonce;
-    if (options.nonce === undefined && options.enforceNonce !== false && clientEnforceNonce) {
+    if (options.nonce === undefined && options.enforceNonce !== false && this.client.options.enforceNonce) {
       options.nonce = DiscordSnowflake.generate().toString();
       options.enforceNonce = true;
     }
