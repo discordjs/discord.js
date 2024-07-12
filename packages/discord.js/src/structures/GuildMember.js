@@ -188,7 +188,7 @@ class GuildMember extends Base {
   /**
    * A link to the member's guild banner if they have one.
    * Otherwise, a link to their {@link User#bannerURL} will be returned.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
   displayBannerURL(options) {
