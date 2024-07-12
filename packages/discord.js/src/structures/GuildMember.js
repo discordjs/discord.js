@@ -523,6 +523,7 @@ class GuildMember extends Base {
     });
     json.avatarURL = this.avatarURL();
     json.displayAvatarURL = this.displayAvatarURL();
+    json.displayBannerURL = this.displayBannerURL();
     return json;
   }
 }
