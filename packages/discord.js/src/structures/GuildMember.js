@@ -522,6 +522,7 @@ class GuildMember extends Base {
       roles: true,
     });
     json.avatarURL = this.avatarURL();
+    json.bannerURL = this.bannerURL();
     json.displayAvatarURL = this.displayAvatarURL();
     json.displayBannerURL = this.displayBannerURL();
     return json;
