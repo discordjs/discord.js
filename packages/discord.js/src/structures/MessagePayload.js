@@ -2,6 +2,7 @@
 
 const { Buffer } = require('node:buffer');
 const { lazy, isJSONEncodable } = require('@discordjs/util');
+const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { MessageFlags } = require('discord-api-types/v10');
 const ActionRowBuilder = require('./ActionRowBuilder');
 const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors');
@@ -141,8 +142,8 @@ class MessagePayload {
      */
     if (nonce === undefined) {
       if (this.options.enforceNonce !== false && this.client.options.enforceNonce) {
-        options.nonce = DiscordSnowflake.generate().toString();
-        options.enforceNonce = true;
+        this.options.nonce = DiscordSnowflake.generate().toString();
+        this.options.enforceNonce = true;
       } else if (enforce_nonce) {
         throw new DiscordjsError(ErrorCodes.MessageNonceRequired);
       }
