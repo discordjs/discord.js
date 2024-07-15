@@ -153,7 +153,7 @@ class WebSocketManager extends EventEmitter {
         updateSessionInfo: (shardId, sessionInfo) => {
           this.shards.get(shardId).sessionInfo = sessionInfo;
         },
-        compression: zlib ? CompressionMethod.ZlibStream : null,
+        compression: ws.compressionMethod !== undefined ? ws.compressionMethod : zlib ? CompressionMethod.ZlibStream : null,
       };
       if (ws.buildIdentifyThrottler) wsOptions.buildIdentifyThrottler = ws.buildIdentifyThrottler;
       if (ws.buildStrategy) wsOptions.buildStrategy = ws.buildStrategy;

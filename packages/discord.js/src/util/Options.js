@@ -88,6 +88,7 @@ const { version } = require('../../package.json');
  * @typedef {Object} WebsocketOptions
  * @property {number} [large_threshold=50] Number of members in a guild after which offline users will no longer be
  * sent in the initial guild member list, must be between 50 and 250
+ * @property {CompressionMethod} [compressionMethod=undefined] The compression method to use, if any. Defaults off
  * @property {number} [version=10] The Discord gateway version to use <warn>Changing this can break the library;
  * only set this if you know what you are doing</warn>
  * @property {BuildStrategyFunction} [buildStrategy] Builds the strategy to use for sharding
@@ -124,6 +125,7 @@ class Options extends null {
       ws: {
         large_threshold: 50,
         version: 10,
+        compressionMethod: undefined
       },
       rest: {
         ...DefaultRestOptions,
