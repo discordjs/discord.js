@@ -134,8 +134,18 @@ class MessagePayload {
     }
 
     const enforce_nonce = Boolean(this.options.enforceNonce);
-    if (enforce_nonce && nonce === undefined) {
-      throw new DiscordjsError(ErrorCodes.MessageNonceRequired);
+
+    /**
+     * If `nonce` isn't provided, generate one & set `enforceNonce`
+     * Unless `enforceNonce` is explicitly set to `false`(not just falsy)
+     */
+    if (nonce === undefined) {
+      if (this.options.enforceNonce !== false && this.client.options.enforceNonce) {
+        options.nonce = DiscordSnowflake.generate().toString();
+        options.enforceNonce = true;
+      } else if (enforce_nonce) {
+        throw new DiscordjsError(ErrorCodes.MessageNonceRequired);
+      }
     }
 
     const components = this.options.components?.map(component =>
