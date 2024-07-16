@@ -142,8 +142,8 @@ class MessagePayload {
      */
     if (nonce === undefined) {
       if (this.options.enforceNonce !== false && this.client.options.enforceNonce) {
-        this.options.nonce = DiscordSnowflake.generate().toString();
-        this.options.enforceNonce = true;
+        nonce = DiscordSnowflake.generate().toString();
+        enforce_nonce = true;
       } else if (enforce_nonce) {
         throw new DiscordjsError(ErrorCodes.MessageNonceRequired);
       }
