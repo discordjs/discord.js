@@ -134,7 +134,7 @@ class MessagePayload {
       }
     }
 
-    const enforce_nonce = Boolean(this.options.enforceNonce);
+    let enforce_nonce = Boolean(this.options.enforceNonce);
 
     // If `nonce` isn't provided, generate one & set `enforceNonce`
     // Unless `enforceNonce` is explicitly set to `false`(not just falsy)
