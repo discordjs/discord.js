@@ -123,9 +123,15 @@ declare class ActionsManager {
         dtsLines.push(`  ${fileName}: Action<[import('discord-api-types/v10').GatewayMessagePollVoteDispatchData]>;`);
         break;
       }
+      case 'ChannelCreate': {
+        dtsLines.push(
+          `  ${fileName}: Action<[import('discord-api-types/v10').GatewayChannelCreateDispatchData], { channel?: BaseChannel | null }>;`,
+        );
+        break;
+      }
       case 'ChannelUpdate': {
         dtsLines.push(
-          `  ${fileName}: Action<[import('discord-api-types/v10').GatewayChannelUpdateDispatchData], { old?: BaseChannel; updated?: BaseChannel; }>;`,
+          `  ${fileName}: Action<[import('discord-api-types/v10').GatewayChannelUpdateDispatchData], { old?: BaseChannel | null; updated?: BaseChannel; }>;`,
         );
         break;
       }

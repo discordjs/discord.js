@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * @import { Guild } from '../structures/Guild';
+ * @import Client from '../client/Client';
+ */
+
 const process = require('node:process');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
@@ -15,12 +20,19 @@ let cacheWarningEmitted = false;
  * @extends {CachedManager}
  */
 class ChannelManager extends CachedManager {
+  /**
+   * @ignore
+   * @param {Client} client The client
+   * @param {unknown[]} iterable existing channels
+   */
   constructor(client, iterable) {
     super(client, BaseChannel, iterable);
+
     const defaultCaching =
       this._cache.constructor.name === 'Collection' ||
       this._cache.maxSize === undefined ||
       this._cache.maxSize === Infinity;
+
     if (!cacheWarningEmitted && !defaultCaching) {
       cacheWarningEmitted = true;
       process.emitWarning(
@@ -36,6 +48,15 @@ class ChannelManager extends CachedManager {
    * @name ChannelManager#cache
    */
 
+  // eslint-disable-next-line valid-jsdoc
+  /**
+   * @ignore
+   * @param {import('discord-api-types/v10').APIChannel} data
+   * @param {Guild} [guild]
+   * @param {{ cache?: boolean; allowUnknownGuild?: boolean; }} [options]
+   * @returns {?BaseChannel}
+   * @override
+   */
   _add(data, guild, { cache = true, allowUnknownGuild = false } = {}) {
     const existing = this.cache.get(data.id);
     if (existing) {

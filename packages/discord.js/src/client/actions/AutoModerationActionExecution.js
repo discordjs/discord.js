@@ -4,7 +4,16 @@ const Action = require('./Action');
 const AutoModerationActionExecution = require('../../structures/AutoModerationActionExecution');
 const Events = require('../../util/Events');
 
+/**
+ * @extends {Action<[import('discord-api-types/v10').GatewayAutoModerationActionExecutionDispatchData]>}
+ * @private
+ * @internal
+ */
 class AutoModerationActionExecutionAction extends Action {
+  /**
+   * @override
+   * @param {import('discord-api-types/v10').GatewayAutoModerationActionExecutionDispatchData} data
+   */
   handle(data) {
     const { client } = this;
     const guild = client.guilds.cache.get(data.guild_id);

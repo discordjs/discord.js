@@ -3,7 +3,16 @@
 const Action = require('./Action');
 const Events = require('../../util/Events');
 
+/**
+ * @extends {Action<[import('discord-api-types/v10').GatewayAutoModerationRuleDeleteDispatchData]>}
+ * @private
+ * @internal
+ */
 class AutoModerationRuleDeleteAction extends Action {
+  /**
+   * @override
+   * @param {import('discord-api-types/v10').GatewayAutoModerationRuleDeleteDispatchData} data
+   */
   handle(data) {
     const { client } = this;
     const guild = client.guilds.cache.get(data.guild_id);

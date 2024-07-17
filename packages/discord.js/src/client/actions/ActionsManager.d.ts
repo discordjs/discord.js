@@ -25,11 +25,14 @@ declare class ActionsManager {
   AutoModerationRuleCreate: Action<[import('discord-api-types/v10').GatewayAutoModerationRuleCreateDispatchData]>;
   AutoModerationRuleDelete: Action<[import('discord-api-types/v10').GatewayAutoModerationRuleDeleteDispatchData]>;
   AutoModerationRuleUpdate: Action<[import('discord-api-types/v10').GatewayAutoModerationRuleUpdateDispatchData]>;
-  ChannelCreate: Action<[import('discord-api-types/v10').GatewayChannelCreateDispatchData]>;
+  ChannelCreate: Action<
+    [import('discord-api-types/v10').GatewayChannelCreateDispatchData],
+    { channel?: BaseChannel | null }
+  >;
   ChannelDelete: Action<[import('discord-api-types/v10').GatewayChannelDeleteDispatchData]>;
   ChannelUpdate: Action<
     [import('discord-api-types/v10').GatewayChannelUpdateDispatchData],
-    { old?: BaseChannel; updated?: BaseChannel }
+    { old?: BaseChannel | null; updated?: BaseChannel }
   >;
   EntitlementCreate: Action<[import('discord-api-types/v10').GatewayEntitlementCreateDispatchData]>;
   EntitlementDelete: Action<[import('discord-api-types/v10').GatewayEntitlementDeleteDispatchData]>;

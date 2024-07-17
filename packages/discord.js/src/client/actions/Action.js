@@ -2,6 +2,7 @@
 
 /**
  * @import Client from '../Client';
+ * @import CachedManager from '../../managers/CachedManager';
  */
 
 const Partials = require('../../util/Partials');
@@ -21,6 +22,7 @@ that WebSocket events don't clash with REST methods.
 /**
  * @template {any[]} Arguments
  * @template {any} [ReturnType=void]
+ * @ignore
  */
 class GenericAction {
   /**
@@ -35,6 +37,7 @@ class GenericAction {
   /**
    * @param {Arguments} _args Arguments passed to the handler
    * @returns {ReturnType}
+   * @ignore
    */
   handle(..._args) {
     /** @type {any} */
@@ -42,6 +45,14 @@ class GenericAction {
     return casted;
   }
 
+  /**
+   * @param {unknown} data The data to add
+   * @param {CachedManager} manager The manager the data is for
+   * @param {string} id The id of the entry
+   * @param {Partials} partialType If a partial structure is supported, the type of partial
+   * @param {boolean} cache Whether the added data should be cached
+   * @returns {unknown}
+   */
   getPayload(data, manager, id, partialType, cache) {
     return this.client.options.partials.includes(partialType) ? manager._add(data, cache) : manager.cache.get(id);
   }

@@ -3,7 +3,16 @@
 const Action = require('./Action');
 const Events = require('../../util/Events');
 
+/**
+ * @extends {Action<[import('discord-api-types/v10').GatewayAutoModerationRuleCreateDispatchData]>}
+ * @private
+ * @internal
+ */
 class AutoModerationRuleCreateAction extends Action {
+  /**
+   * @override
+   * @param {import('discord-api-types/v10').GatewayAutoModerationRuleCreateDispatchData} data
+   */
   handle(data) {
     const { client } = this;
     const guild = client.guilds.cache.get(data.guild_id);

@@ -12,7 +12,16 @@ const Events = require('../../util/Events');
  * @property {ApplicationCommandPermissions[]} permissions The updated permissions
  */
 
+/**
+ * @extends {Action<[import('discord-api-types/v10').GatewayApplicationCommandPermissionsUpdateDispatchData]>}
+ * @private
+ * @internal
+ */
 class ApplicationCommandPermissionsUpdateAction extends Action {
+  /**
+   * @override
+   * @param {import('discord-api-types/v10').GatewayApplicationCommandPermissionsUpdateDispatchData} data
+   */
   handle(data) {
     const client = this.client;
     /**
