@@ -80,6 +80,10 @@ class ChannelManager extends CachedManager {
     return channel;
   }
 
+  /**
+   * @ignore
+   * @param {string} id The id to remove
+   */
   _remove(id) {
     const channel = this.cache.get(id);
     channel?.guild?.channels.cache.delete(id);
