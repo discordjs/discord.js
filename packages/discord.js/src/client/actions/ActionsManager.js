@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @import Client from '../Client';
+ */
+
 class ActionsManager {
   // These symbols represent fully built data that we inject at times when calling actions manually.
   // Action#getUser, for example, will return the injected data (which is assumed to be a built structure)
@@ -8,6 +12,11 @@ class ActionsManager {
   injectedChannel = Symbol('djs.actions.injectedChannel');
   injectedMessage = Symbol('djs.actions.injectedMessage');
 
+  /**
+   * @param {Client} client The client
+   * @internal
+   * @hideconstructor
+   */
   constructor(client) {
     this.client = client;
 

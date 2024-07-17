@@ -3,6 +3,17 @@
 const Events = require('../../../util/Events');
 const Status = require('../../../util/Status');
 
+/**
+ * @import Client from '../../Client';
+ * @import { GatewayGuildCreateDispatch } from 'discord-api-types/v10';
+ * @import WebSocketShard from '../WebSocketShard';
+ */
+
+/**
+ * @param {Client} client The client
+ * @param {GatewayGuildCreateDispatch} packet The received packet
+ * @param {WebSocketShard} shard The shard that the event was received on
+ */
 module.exports = (client, { d: data }, shard) => {
   let guild = client.guilds.cache.get(data.id);
   if (guild) {

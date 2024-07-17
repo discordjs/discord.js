@@ -5,8 +5,8 @@
   "description": "A powerful library for interacting with the Discord API",
   "scripts": {
     "test": "pnpm run docs:test && pnpm run test:typescript",
-    "test:typescript": "tsc --noEmit && tsd",
-    "lint": "prettier --check . && tslint typings/index.d.ts && cross-env ESLINT_USE_FLAT_CONFIG=false eslint --format=pretty src typings",
+    "test:typescript": "tsc && tsd",
+    "lint": "prettier --check . && tslint typings/index.d.ts && cross-env ESLINT_USE_FLAT_CONFIG=false eslint --format=pretty src",
     "format": "prettier --write . && cross-env ESLINT_USE_FLAT_CONFIG=false eslint --fix --format=pretty src",
     "fmt": "pnpm run format",
     "docs": "docgen -i \"./src/*.js\" \"./src/**/*.js\" -c ./docs/index.json -r ../../ -o ./docs/docs.json && pnpm run docs:new",
@@ -14,7 +14,9 @@
     "docs:new": "api-extractor run --local --minify && generate-split-documentation",
     "prepack": "pnpm run lint && pnpm run test && node ./scripts/esmDts.mjs",
     "changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/discord.js/*'",
-    "release": "cliff-jumper"
+    "release": "cliff-jumper",
+    "typecheck": "echo \"This is only used for vague type checking\" && tsc -p tsconfig.typechecking.json",
+    "scripts:generate-requires": "node scripts/generateRequires.mjs && pnpm run format"
   },
   "main": "./src/index.js",
   "types": "./typings/index.d.ts",

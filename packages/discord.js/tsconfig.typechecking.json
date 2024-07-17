@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Modules
+    "module": "Node16",
+    "moduleResolution": "Node16",
+
+    // Language and Environment
+    "allowJs": true,
+    "checkJs": true,
+    "target": "ES2020"
+  },
+  "include": ["src"],
+  "exclude": ["typings"]
+}

@@ -6,7 +6,7 @@ const Events = require('../../util/Events');
 /*
 { user_id: 'id',
      message_id: 'id',
-     emoji: { name: '�', id: null },
+     emoji: { name: '', id: null },
      channel_id: 'id',
      guild_id: 'id' }
 */

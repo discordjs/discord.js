@@ -3,6 +3,17 @@
 const ClientApplication = require('../../../structures/ClientApplication');
 let ClientUser;
 
+/**
+ * @import Client from '../../Client';
+ * @import { GatewayReadyDispatch } from 'discord-api-types/v10';
+ * @import WebSocketShard from '../WebSocketShard';
+ */
+
+/**
+ * @param {Client} client The client
+ * @param {GatewayReadyDispatch} packet The received packet
+ * @param {WebSocketShard} shard The shard that the event was received on
+ */
 module.exports = (client, { d: data }, shard) => {
   if (client.user) {
     client.user._patch(data.user);

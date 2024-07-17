@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * @import Client from '../Client';
+ */
+
 const Partials = require('../../util/Partials');
 
 /*
@@ -14,13 +18,28 @@ that WebSocket events don't clash with REST methods.
 
 */
 
+/**
+ * @template {any[]} Arguments
+ * @template {any} [ReturnType=void]
+ */
 class GenericAction {
+  /**
+   * @param {Client} client The client
+   * @internal
+   * @hideconstructor
+   */
   constructor(client) {
     this.client = client;
   }
 
-  handle(data) {
-    return data;
+  /**
+   * @param {Arguments} _args Arguments passed to the handler
+   * @returns {ReturnType}
+   */
+  handle(..._args) {
+    /** @type {any} */
+    const casted = _args;
+    return casted;
   }
 
   getPayload(data, manager, id, partialType, cache) {

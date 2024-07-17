@@ -2,6 +2,9 @@
   "$schema": "https://json.schemastore.org/tsconfig.json",
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    // Emit
+    "noEmit": true,
+
     // Output Formatting
     "pretty": false,
 
@@ -21,5 +24,7 @@
       "undici",
       "@sapphire/snowflake"
     ]
-  }
+  },
+  "include": ["typings", "scripts"],
+  "exclude": ["src/**/*.d.ts"]
 }

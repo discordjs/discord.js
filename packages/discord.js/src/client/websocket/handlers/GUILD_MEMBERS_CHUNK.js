@@ -3,6 +3,15 @@
 const { Collection } = require('@discordjs/collection');
 const Events = require('../../../util/Events');
 
+/**
+ * @import Client from '../../Client';
+ * @import { GatewayGuildMembersChunkDispatch } from 'discord-api-types/v10';
+ */
+
+/**
+ * @param {Client} client The client
+ * @param {GatewayGuildMembersChunkDispatch} packet The received packet
+ */
 module.exports = (client, { d: data }) => {
   const guild = client.guilds.cache.get(data.guild_id);
   if (!guild) return;

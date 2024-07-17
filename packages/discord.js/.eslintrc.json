@@ -248,6 +248,13 @@
           }
         ]
       }
+    },
+    {
+      "files": ["src/client/actions/*.js", "src/client/websocket/handlers/*.js"],
+      "rules": {
+        "max-len": "warn",
+        "valid-jsdoc": "off"
+      }
     }
   ]
 }

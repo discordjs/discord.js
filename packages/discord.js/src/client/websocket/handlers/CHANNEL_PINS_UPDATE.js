@@ -1,7 +1,16 @@
 'use strict';
 
+/**
+ * @import Client from '../../Client';
+ * @import { GatewayChannelPinsUpdateDispatch } from 'discord-api-types/v10';
+ */
+
 const Events = require('../../../util/Events');
 
+/**
+ * @param {Client} client The client
+ * @param {GatewayChannelPinsUpdateDispatch} packet The received packet
+ */
 module.exports = (client, { d: data }) => {
   const channel = client.channels.cache.get(data.channel_id);
   const time = data.last_pin_timestamp ? Date.parse(data.last_pin_timestamp) : null;

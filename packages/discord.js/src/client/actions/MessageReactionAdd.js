@@ -7,7 +7,7 @@ const Partials = require('../../util/Partials');
 /*
 { user_id: 'id',
      message_id: 'id',
-     emoji: { name: '�', id: null },
+     emoji: { name: '', id: null },
      channel_id: 'id',
      // If originating from a guild
      guild_id: 'id',
