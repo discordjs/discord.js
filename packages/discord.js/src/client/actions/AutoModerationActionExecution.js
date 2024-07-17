@@ -6,8 +6,7 @@ const Events = require('../../util/Events');
 
 /**
  * @extends {Action<[import('discord-api-types/v10').GatewayAutoModerationActionExecutionDispatchData]>}
- * @private
- * @internal
+ * @ignore
  */
 class AutoModerationActionExecutionAction extends Action {
   /**

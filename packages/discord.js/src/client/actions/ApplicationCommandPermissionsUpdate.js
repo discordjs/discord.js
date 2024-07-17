@@ -14,8 +14,7 @@ const Events = require('../../util/Events');
 
 /**
  * @extends {Action<[import('discord-api-types/v10').GatewayApplicationCommandPermissionsUpdateDispatchData]>}
- * @private
- * @internal
+ * @ignore
  */
 class ApplicationCommandPermissionsUpdateAction extends Action {
   /**

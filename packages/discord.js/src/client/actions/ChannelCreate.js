@@ -9,8 +9,7 @@ const Events = require('../../util/Events');
 
 /**
  * @extends {Action<[import('discord-api-types/v10').GatewayChannelCreateDispatchData], { channel?: BaseChannel | null }>}
- * @private
- * @internal
+ * @ignore
  */
 class ChannelCreateAction extends Action {
   /**
