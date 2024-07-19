@@ -300,7 +300,7 @@ class ThreadChannel extends BaseChannel {
     }
 
     // TODO: Remove that catch in the next major version
-    const member = await this.members._fetchSingle({ ...options, user: this.ownerId }).catch(error => {
+    const member = await this.members._fetchSingle({ ...options, member: this.ownerId }).catch(error => {
       if (error instanceof DiscordAPIError && error.code === RESTJSONErrorCodes.UnknownMember) {
         return null;
       }
@@ -315,7 +315,7 @@ class ThreadChannel extends BaseChannel {
    * Fetches the message that started this thread, if any.
    * <info>The `Promise` will reject if the original message in a forum post is deleted
    * or when the original message in the parent channel is deleted.
-   * If you just need the id of that message, use {@link ThreadChannel#id} instead.</info>
+   * If you just need the id of that message, use {@link BaseChannel#id} instead.</info>
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<?Message<true>>}
    */

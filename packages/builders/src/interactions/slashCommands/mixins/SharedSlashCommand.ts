@@ -1,9 +1,15 @@
 import type {
+	ApplicationIntegrationType,
+	InteractionContextType,
 	LocalizationMap,
 	Permissions,
 	RESTPostAPIChatInputApplicationCommandsJSONBody,
 } from 'discord-api-types/v10';
+import type { RestOrArray } from '../../../util/normalizeArray.js';
+import { normalizeArray } from '../../../util/normalizeArray.js';
 import {
+	contextsPredicate,
+	integrationTypesPredicate,
 	validateDMPermission,
 	validateDefaultMemberPermissions,
 	validateDefaultPermission,
@@ -26,6 +32,43 @@ export class SharedSlashCommand {
 	public readonly description_localizations?: LocalizationMap;
 
 	public readonly options: ToAPIApplicationCommandOptions[] = [];
+
+	public readonly contexts?: InteractionContextType[];
+
+	/**
+	 * @deprecated Use {@link SharedSlashCommand.setDefaultMemberPermissions} or {@link SharedSlashCommand.setDMPermission} instead.
+	 */
+	public readonly default_permission: boolean | undefined = undefined;
+
+	public readonly default_member_permissions: Permissions | null | undefined = undefined;
+
+	public readonly dm_permission: boolean | undefined = undefined;
+
+	public readonly integration_types?: ApplicationIntegrationType[];
+
+	public readonly nsfw: boolean | undefined = undefined;
+
+	/**
+	 * Sets the contexts of this command.
+	 *
+	 * @param contexts - The contexts
+	 */
+	public setContexts(...contexts: RestOrArray<InteractionContextType>) {
+		Reflect.set(this, 'contexts', contextsPredicate.parse(normalizeArray(contexts)));
+
+		return this;
+	}
+
+	/**
+	 * Sets the integration types of this command.
+	 *
+	 * @param integrationTypes - The integration types
+	 */
+	public setIntegrationTypes(...integrationTypes: RestOrArray<ApplicationIntegrationType>) {
+		Reflect.set(this, 'integration_types', integrationTypesPredicate.parse(normalizeArray(integrationTypes)));
+
+		return this;
+	}
 
 	/**
 	 * Sets whether the command is enabled by default when the application is added to a guild.

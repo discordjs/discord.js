@@ -36,14 +36,14 @@ jobs:
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref || '' }}
 
-      - name: Install node.js v18
-        uses: actions/setup-node@v3
+      - name: Install Node.js v20
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Install dependencies
         uses: ./packages/actions/src/pnpmCache
@@ -53,7 +53,7 @@ jobs:
 
       - name: Checkout main repository
         if: ${{ inputs.ref && inputs.ref != 'main' }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: 'main'
 
@@ -93,7 +93,7 @@ jobs:
           done
 
       - name: Checkout docs repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'discordjs/docs'
           token: ${{ secrets.DJS_DOCS }}
@@ -211,12 +211,12 @@ jobs:
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Install node.js v18
-        uses: actions/setup-node@v3
+      - name: Install Node.js v20
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Install dependencies
         uses: ./packages/actions/src/pnpmCache

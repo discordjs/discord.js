@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.15.3](https://github.com/discordjs/discord.js/compare/14.15.2...14.15.3) - (2024-06-02)
+
+## Bug Fixes
+
+- **Message:** Properly compare `attachments` and `embeds` (#10282) ([a468ae8](https://github.com/discordjs/discord.js/commit/a468ae8bb5a9de9cb34d40493c59693e84c2812a))
+- Throw error on no message id for `Message#fetchReference()` (#10295) ([638b896](https://github.com/discordjs/discord.js/commit/638b896efaf0a01b477f91c17170214ad96b1602))
+- **ThreadChannel:** Invalid owner fetch option (#10292) ([27d0659](https://github.com/discordjs/discord.js/commit/27d0659a45c44f0c5986688d16f28e75e99abcc1))
+- **Action:** Ensure all properties on `getChannel()` are passed (#10278) ([92c1a51](https://github.com/discordjs/discord.js/commit/92c1a511dc0d9b552b797ef25c7aed2eb36b4386))
+- **docs:** Some link tags didn't resolve correctly (#10269) ([914cc4b](https://github.com/discordjs/discord.js/commit/914cc4ba5441cde5aa6dc8ec6406a283855d6828))
+- **actions:** Handle missing poll object (#10266) ([7816ec2](https://github.com/discordjs/discord.js/commit/7816ec2e6b28daf400eaa9cb050fb72908e6f7c6))
+
+## Refactor
+
+- **GuildChannelManager:** Improve addFollower errors (#10277) ([555961b](https://github.com/discordjs/discord.js/commit/555961b3b8da8759349cd0e88f89f98d2e8a6363))
+
+## Typings
+
+- Forum starter messages do not support polls (#10276) ([35207b0](https://github.com/discordjs/discord.js/commit/35207b0b31929558eee69f4bd53a6f9adadb0362))
+- Add `defaultValues` to respective select menu components data (#10265) ([c2432d5](https://github.com/discordjs/discord.js/commit/c2432d5704e4e178c044bc0d02f2dabe51450d19))
+
 # [14.15.2](https://github.com/discordjs/discord.js/compare/14.15.1...14.15.2) - (2024-05-05)
 
 ## Bug Fixes

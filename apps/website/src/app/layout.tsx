@@ -20,11 +20,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-	metadataBase: new URL(
-		process.env.NEXT_PUBLIC_LOCAL_DEV === 'true'
-			? `http://localhost:${process.env.PORT ?? 3_000}`
-			: 'https://discord.js.org',
-	),
+	metadataBase: new URL(ENV.IS_LOCAL_DEV ? `http://localhost:${ENV.PORT}` : 'https://discord.js.org'),
 	title: {
 		template: '%s | discord.js',
 		default: 'discord.js',

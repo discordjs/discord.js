@@ -41,14 +41,15 @@ export default function generator(plop: PlopTypes.NodePlopAPI): void {
 			{
 				type: 'addMany',
 				destination: `${plop.getDestBasePath()}/../{{name}}`,
-				templateFiles: ['templates/**'],
+				// plop doesn't like our cliff.toml file since it tries to parse it. we add it manually later
+				templateFiles: ['templates/**', '!templates/default/cliff.toml'],
 				globOptions: { dot: true },
 				base: 'templates/default/',
 				stripExtensions: ['hbs'],
 			},
 			{
 				type: 'modify',
-				path: `${plop.getDestBasePath()}/turbo/generators/templates/cliff.toml`,
+				path: `${plop.getDestBasePath()}/turbo/generators/templates/default/cliff.toml`,
 				async transform(content, answers) {
 					const cliffTOML = content.replace('{{name}}', answers.name);
 					await writeFile(`${plop.getDestBasePath()}/../${answers.name}/cliff.toml`, cliffTOML);
@@ -70,10 +71,17 @@ export default function generator(plop: PlopTypes.NodePlopAPI): void {
 				type: 'modify',
 				path: `${plop.getDestBasePath()}/../../.github/labeler.yml`,
 				transform(content, answers) {
-					const labelerYAML = parseYAML(content) as Record<string, string[]>;
-					labelerYAML[`packages:${answers.name}`] = [`packages/${answers.name}/*`, `packages/${answers.name}/**/*`];
+					const labelerYAML = parseYAML(content) as Record<string, Record<string, Record<string, string[]>[]>[]>;
 
-					return stringifyYAML(sortYAMLObject(labelerYAML));
+					labelerYAML[`packages:${answers.name}`] = [
+						{
+							'changed-files': [
+								{ 'any-glob-to-any-file': [`packages/${answers.name}/*`, `packages/${answers.name}/**/*`] },
+							],
+						},
+					];
+
+					return stringifyYAML(labelerYAML, { sortMapEntries: true });
 				},
 			},
 			{

@@ -26,16 +26,16 @@ export class TextInputBuilder
 	 *
 	 * @param data - The API data to create this text input with
 	 * @example
-	 * Creating a select menu option from an API data object:
+	 * Creating a text input from an API data object:
 	 * ```ts
 	 * const textInput = new TextInputBuilder({
-	 * 	custom_id: 'a cool select menu',
+	 * 	custom_id: 'a cool text input',
 	 * 	label: 'Type something',
 	 * 	style: TextInputStyle.Short,
 	 * });
 	 * ```
 	 * @example
-	 * Creating a select menu option using setters and API data:
+	 * Creating a text input using setters and API data:
 	 * ```ts
 	 * const textInput = new TextInputBuilder({
 	 * 	label: 'Type something else',
