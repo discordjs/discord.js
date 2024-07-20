@@ -570,6 +570,16 @@ export function unorderedList(list: RecursiveArray<string>): string {
 }
 
 /**
+ * Formats the content into a subtext.
+ *
+ * @typeParam Content - This is inferred by the supplied content
+ * @param content - The content to wrap
+ */
+export function subtext<Content extends string>(content: Content): `-# ${Content}` {
+	return `-# ${content}`;
+}
+
+/**
  * Formats a date into a short date-time string.
  *
  * @param date - The date to format. Defaults to the current time
