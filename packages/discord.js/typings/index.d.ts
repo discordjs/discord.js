@@ -4712,7 +4712,7 @@ export interface BaseApplicationCommandData {
   defaultMemberPermissions?: PermissionResolvable | null;
   nsfw?: boolean;
   contexts?: readonly InteractionContextType[];
-  integration_types?: readonly ApplicationIntegrationType[];
+  integrationTypes?: readonly ApplicationIntegrationType[];
 }
 
 export interface AttachmentData {
