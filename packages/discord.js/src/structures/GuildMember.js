@@ -62,7 +62,7 @@ class GuildMember extends Base {
      */
     Object.defineProperty(this, '_roles', { value: [], writable: true });
 
-     /**
+    /**
      * The voice mute state of the member
      * @name GuildMember#_mute
      * @type {boolean}
@@ -70,7 +70,7 @@ class GuildMember extends Base {
      */
     Object.defineProperty(this, '_mute', { value: false, writable: true });
 
-     /**
+    /**
      * The voice deaf state of the member
      * @name GuildMember#_deaf
      * @type {boolean}
