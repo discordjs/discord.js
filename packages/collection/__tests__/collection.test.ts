@@ -138,6 +138,12 @@ describe('each() tests', () => {
 		expectInvalidFunctionError(() => coll.each(123), 123);
 	});
 
+	test('binds the thisArg', () => {
+		coll.each(function each() {
+			expect(this).toBeNull();
+		}, null);
+	});
+
 	test('iterate over each item', () => {
 		const coll = createTestCollection();
 		const a: [string, number][] = [];
@@ -964,6 +970,10 @@ describe('findLast() tests', () => {
 		expect(coll.findLast((value) => value % 2 === 1)).toStrictEqual(3);
 	});
 
+	test('returns undefined if no item matches', () => {
+		expect(coll.findLast((value) => value === 10)).toBeUndefined();
+	});
+
 	test('throws if fn is not a function', () => {
 		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => createCollection().findLast());
@@ -983,6 +993,10 @@ describe('findLastKey() tests', () => {
 	const coll = createTestCollection();
 	test('it returns last matched element', () => {
 		expect(coll.findLastKey((value) => value % 2 === 1)).toStrictEqual('c');
+	});
+
+	test('returns undefined if no item matches', () => {
+		expect(coll.findLastKey((value) => value === 10)).toBeUndefined();
 	});
 
 	test('throws if fn is not a function', () => {

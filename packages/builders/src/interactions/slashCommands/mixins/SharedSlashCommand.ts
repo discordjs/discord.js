@@ -1,9 +1,10 @@
-import type {
-	ApplicationIntegrationType,
-	InteractionContextType,
-	LocalizationMap,
-	Permissions,
-	RESTPostAPIChatInputApplicationCommandsJSONBody,
+import {
+	ApplicationCommandType,
+	type ApplicationIntegrationType,
+	type InteractionContextType,
+	type LocalizationMap,
+	type Permissions,
+	type RESTPostAPIChatInputApplicationCommandsJSONBody,
 } from 'discord-api-types/v10';
 import type { RestOrArray } from '../../../util/normalizeArray.js';
 import { normalizeArray } from '../../../util/normalizeArray.js';
@@ -149,6 +150,7 @@ export class SharedSlashCommand {
 
 		return {
 			...this,
+			type: ApplicationCommandType.ChatInput,
 			options: this.options.map((option) => option.toJSON()),
 		};
 	}
