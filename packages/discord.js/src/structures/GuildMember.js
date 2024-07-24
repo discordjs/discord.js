@@ -63,20 +63,20 @@ class GuildMember extends Base {
     Object.defineProperty(this, '_roles', { value: [], writable: true });
 
     /**
-     * The voice mute state of the member
-     * @name GuildMember#_mute
+     * The server mute state of the member
+     * @name GuildMember#_serverMute
      * @type {boolean}
      * @private
      */
-    Object.defineProperty(this, '_mute', { value: false, writable: true });
+    Object.defineProperty(this, '_serverMute', { value: null, writable: true });
 
     /**
-     * The voice deaf state of the member
-     * @name GuildMember#_deaf
+     * The server deaf state of the member
+     * @name GuildMember#_serverDeaf
      * @type {boolean}
      * @private
      */
-    Object.defineProperty(this, '_deaf', { value: false, writable: true });
+    Object.defineProperty(this, '_serverDeaf', { value: null, writable: true });
 
     if (data) this._patch(data);
   }
@@ -105,8 +105,8 @@ class GuildMember extends Base {
       this.premiumSinceTimestamp = data.premium_since ? Date.parse(data.premium_since) : null;
     }
     if ('roles' in data) this._roles = data.roles;
-    if ('mute' in data) this._mute = data.mute;
-    if ('deaf' in data) this._deaf = data.deaf;
+    if ('mute' in data) this._serverMute = data.mute;
+    if ('deaf' in data) this._serverDeaf = data.deaf;
 
     if ('pending' in data) {
       this.pending = data.pending;
@@ -163,8 +163,8 @@ class GuildMember extends Base {
   get voice() {
     return this.guild.voiceStates.cache.get(this.id) ?? new VoiceState(this.guild, {
       user_id: this.id,
-      mute: this._mute,
-      deaf: this._deaf,
+      mute: this._serverMute,
+      deaf: this._serverDeaf,
     });
   }
 
