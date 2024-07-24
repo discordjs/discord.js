@@ -713,6 +713,11 @@ describe('reduce() tests', () => {
 		expect<number>(sum).toStrictEqual(6);
 	});
 
+	test('reduce collection into a single value with different accumulator type', () => {
+		const str = coll.reduce((a, x) => a.concat(x.toString()), '');
+		expect<string>(str).toStrictEqual('123');
+	});
+
 	test('reduce empty collection with initial value', () => {
 		const coll = createCollection();
 		expect<number>(coll.reduce((a, x) => a + x, 0)).toStrictEqual(0);
@@ -744,6 +749,11 @@ describe('reduceRight() tests', () => {
 	test('reduce collection into a single value without initial value', () => {
 		const sum = coll.reduceRight((a, x) => a + x);
 		expect<number>(sum).toStrictEqual(6);
+	});
+
+	test('reduce collection into a single value with different accumulator type', () => {
+		const str = coll.reduceRight((a, x) => a.concat(x.toString()), '');
+		expect<string>(str).toStrictEqual('321');
 	});
 
 	test('reduce empty collection with initial value', () => {
