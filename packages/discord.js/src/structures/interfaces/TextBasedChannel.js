@@ -164,7 +164,7 @@ class TextBasedChannel {
       const dm = await this.createDM();
       return dm.send(options);
     }
-    
+
     let messagePayload;
 
     if (options instanceof MessagePayload) {
