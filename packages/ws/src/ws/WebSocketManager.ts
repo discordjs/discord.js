@@ -197,15 +197,15 @@ export interface CreateWebSocketManagerOptions
 		RequiredWebSocketManagerOptions {}
 
 export interface ManagerShardEventsMap {
-	[WebSocketShardEvents.Closed]: [{ code: number; shardId: number }];
-	[WebSocketShardEvents.Debug]: [payload: { message: string; shardId: number }];
-	[WebSocketShardEvents.Dispatch]: [payload: { data: GatewayDispatchPayload; shardId: number }];
-	[WebSocketShardEvents.Error]: [payload: { error: Error; shardId: number }];
-	[WebSocketShardEvents.Hello]: [{ shardId: number }];
-	[WebSocketShardEvents.Ready]: [payload: { data: GatewayReadyDispatchData; shardId: number }];
-	[WebSocketShardEvents.Resumed]: [{ shardId: number }];
+	[WebSocketShardEvents.Closed]: [code: number, shardId: number];
+	[WebSocketShardEvents.Debug]: [message: string, shardId: number];
+	[WebSocketShardEvents.Dispatch]: [payload: GatewayDispatchPayload, shardId: number];
+	[WebSocketShardEvents.Error]: [error: Error, shardId: number];
+	[WebSocketShardEvents.Hello]: [shardId: number];
+	[WebSocketShardEvents.Ready]: [data: GatewayReadyDispatchData, shardId: number];
+	[WebSocketShardEvents.Resumed]: [shardId: number];
 	[WebSocketShardEvents.HeartbeatComplete]: [
-		payload: { ackAt: number; heartbeatAt: number; latency: number; shardId: number },
+		stats: { ackAt: number; heartbeatAt: number; latency: number; shardId: number },
 	];
 }
 
