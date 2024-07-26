@@ -164,15 +164,7 @@ class TextBasedChannel {
       const dm = await this.createDM();
       return dm.send(options);
     }
-
-    /**
-     * If `nonce` is not provided generate one & set `enforceNonce`, unless `enforceNonce` is explicitly set to `false`
-     */
-    if (options.nonce === undefined && options.enforceNonce !== false && this.client.options.enforceNonce) {
-      options.nonce = DiscordSnowflake.generate().toString();
-      options.enforceNonce = true;
-    }
-
+    
     let messagePayload;
 
     if (options instanceof MessagePayload) {
