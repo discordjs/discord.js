@@ -125,7 +125,7 @@ class Options extends null {
       ws: {
         large_threshold: 50,
         version: 10,
-        compressionMethod: undefined
+        compressionMethod: undefined,
       },
       rest: {
         ...DefaultRestOptions,
