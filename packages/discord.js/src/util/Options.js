@@ -118,7 +118,6 @@ class Options extends null {
       makeCache: this.cacheWithLimits(this.DefaultMakeCacheSettings),
       partials: [],
       failIfNotExists: true,
-      enforceNonce: false,
       presence: {},
       sweepers: this.DefaultSweeperSettings,
       ws: {
