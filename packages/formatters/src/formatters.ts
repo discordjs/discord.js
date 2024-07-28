@@ -570,6 +570,16 @@ export function unorderedList(list: RecursiveArray<string>): string {
 }
 
 /**
+ * Formats the content into a subtext.
+ *
+ * @typeParam Content - This is inferred by the supplied content
+ * @param content - The content to wrap
+ */
+export function subtext<Content extends string>(content: Content): `-# ${Content}` {
+	return `-# ${content}`;
+}
+
+/**
  * Formats a date into a short date-time string.
  *
  * @param date - The date to format. Defaults to the current time
@@ -613,6 +623,39 @@ export function time(timeOrSeconds?: Date | number, style?: TimestampStylesStrin
 	}
 
 	return typeof style === 'string' ? `<t:${timeOrSeconds}:${style}>` : `<t:${timeOrSeconds}>`;
+}
+
+/**
+ * Formats an application directory link.
+ *
+ * @typeParam ApplicationId - This is inferred by the supplied application id
+ * @param applicationId - The application id
+ */
+export function applicationDirectory<ApplicationId extends Snowflake>(
+	applicationId: ApplicationId,
+): `https://discord.com/application-directory/${ApplicationId}/store`;
+
+/**
+ * Formats an application directory SKU link.
+ *
+ * @typeParam ApplicationId - This is inferred by the supplied application id
+ * @typeParam SKUId - This is inferred by the supplied SKU id
+ * @param applicationId - The application id
+ * @param skuId - The SKU id
+ */
+export function applicationDirectory<ApplicationId extends Snowflake, SKUId extends Snowflake>(
+	applicationId: ApplicationId,
+	skuId: SKUId,
+): `https://discord.com/application-directory/${ApplicationId}/store/${SKUId}`;
+
+export function applicationDirectory<ApplicationId extends Snowflake, SKUId extends Snowflake>(
+	applicationId: ApplicationId,
+	skuId?: SKUId,
+):
+	| `https://discord.com/application-directory/${ApplicationId}/store/${SKUId}`
+	| `https://discord.com/application-directory/${ApplicationId}/store` {
+	const url = `https://discord.com/application-directory/${applicationId}/store` as const;
+	return skuId ? `${url}/${skuId}` : url;
 }
 
 /**

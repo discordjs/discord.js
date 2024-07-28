@@ -616,7 +616,15 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	 * collection.reduce((acc, guild) => acc + guild.memberCount, 0);
 	 * ```
 	 */
-	public reduce<InitialValue = Value>(
+	public reduce(
+		fn: (accumulator: Value, value: Value, key: Key, collection: this) => Value,
+		initialValue?: Value,
+	): Value;
+	public reduce<InitialValue>(
+		fn: (accumulator: InitialValue, value: Value, key: Key, collection: this) => InitialValue,
+		initialValue: InitialValue,
+	): InitialValue;
+	public reduce<InitialValue>(
 		fn: (accumulator: InitialValue, value: Value, key: Key, collection: this) => InitialValue,
 		initialValue?: InitialValue,
 	): InitialValue {
@@ -645,6 +653,14 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	 * @param fn - Function used to reduce, taking four arguments; `accumulator`, `value`, `key`, and `collection`
 	 * @param initialValue - Starting value for the accumulator
 	 */
+	public reduceRight(
+		fn: (accumulator: Value, value: Value, key: Key, collection: this) => Value,
+		initialValue?: Value,
+	): Value;
+	public reduceRight<InitialValue>(
+		fn: (accumulator: InitialValue, value: Value, key: Key, collection: this) => InitialValue,
+		initialValue: InitialValue,
+	): InitialValue;
 	public reduceRight<InitialValue>(
 		fn: (accumulator: InitialValue, value: Value, key: Key, collection: this) => InitialValue,
 		initialValue?: InitialValue,
