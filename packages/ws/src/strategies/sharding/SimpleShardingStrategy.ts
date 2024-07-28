@@ -28,8 +28,8 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 			const strategy = new SimpleContextFetchingStrategy(this.manager, strategyOptions);
 			const shard = new WebSocketShard(strategy, shardId);
 			for (const event of Object.values(WebSocketShardEvents)) {
-				// @ts-expect-error: Intentional
-				shard.on(event, (payload) => this.manager.emit(event, { ...payload, shardId }));
+				// @ts-expect-error Event props can't be resolved properly, but they are correct
+				shard.on(event, (...args) => this.manager.emit(event, ...args, shardId));
 			}
 
 			this.shards.set(shardId, shard);
