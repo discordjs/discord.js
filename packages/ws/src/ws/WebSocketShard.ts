@@ -644,10 +644,9 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 					this.nativeInflate!.write(decompressable, 'binary', (error) => {
 						if (error) {
 							this.emit(WebSocketShardEvents.Error, error);
-							resolve();
-						} else {
-							resolve();
 						}
+
+						resolve();
 					});
 				});
 
