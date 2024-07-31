@@ -1,4 +1,3 @@
-import { s } from '@sapphire/shapeshift';
 import {
 	ApplicationIntegrationType,
 	InteractionContextType,
@@ -6,38 +5,36 @@ import {
 	type APIApplicationCommandOptionChoice,
 	type LocalizationMap,
 } from 'discord-api-types/v10';
-import { isValidationEnabled } from '../../util/validation.js';
+import { z } from 'zod';
+import { parse } from '../../util/validation.js';
 import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder.js';
 import type { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands.js';
 import type { ApplicationCommandOptionBase } from './mixins/ApplicationCommandOptionBase.js';
 
-const namePredicate = s.string
-	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(32)
-	.regex(/^[\p{Ll}\p{Lm}\p{Lo}\p{N}\p{sc=Devanagari}\p{sc=Thai}_-]+$/u)
-	.setValidationEnabled(isValidationEnabled);
+const namePredicate = z
+	.string()
+	.min(1)
+	.max(32)
+	.regex(/^[\p{Ll}\p{Lm}\p{Lo}\p{N}\p{sc=Devanagari}\p{sc=Thai}_-]+$/u);
 
 export function validateName(name: unknown): asserts name is string {
-	namePredicate.parse(name);
+	parse(namePredicate, name);
 }
 
-const descriptionPredicate = s.string
-	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(100)
-	.setValidationEnabled(isValidationEnabled);
-const localePredicate = s.nativeEnum(Locale);
+const descriptionPredicate = z.string().min(1).max(100);
+const localePredicate = z.nativeEnum(Locale);
 
 export function validateDescription(description: unknown): asserts description is string {
-	descriptionPredicate.parse(description);
+	parse(descriptionPredicate, description);
 }
 
-const maxArrayLengthPredicate = s.unknown.array.lengthLessThanOrEqual(25).setValidationEnabled(isValidationEnabled);
+const maxArrayLengthPredicate = z.unknown().array().max(25);
 export function validateLocale(locale: unknown) {
-	return localePredicate.parse(locale);
+	return parse(localePredicate, locale);
 }
 
 export function validateMaxOptionsLength(options: unknown): asserts options is ToAPIApplicationCommandOptions[] {
-	maxArrayLengthPredicate.parse(options);
+	parse(maxArrayLengthPredicate, options);
 }
 
 export function validateRequiredParameters(
@@ -55,60 +52,60 @@ export function validateRequiredParameters(
 	validateMaxOptionsLength(options);
 }
 
-const booleanPredicate = s.boolean;
+const booleanPredicate = z.boolean();
 
 export function validateDefaultPermission(value: unknown): asserts value is boolean {
-	booleanPredicate.parse(value);
+	parse(booleanPredicate, value);
 }
 
 export function validateRequired(required: unknown): asserts required is boolean {
-	booleanPredicate.parse(required);
+	parse(booleanPredicate, required);
 }
 
-const choicesLengthPredicate = s.number.lessThanOrEqual(25).setValidationEnabled(isValidationEnabled);
+const choicesLengthPredicate = z.number().max(25);
 
 export function validateChoicesLength(amountAdding: number, choices?: APIApplicationCommandOptionChoice[]): void {
-	choicesLengthPredicate.parse((choices?.length ?? 0) + amountAdding);
+	parse(choicesLengthPredicate, (choices?.length ?? 0) + amountAdding);
 }
 
 export function assertReturnOfBuilder<
 	ReturnType extends ApplicationCommandOptionBase | SlashCommandSubcommandBuilder | SlashCommandSubcommandGroupBuilder,
 >(input: unknown, ExpectedInstanceOf: new () => ReturnType): asserts input is ReturnType {
-	s.instance(ExpectedInstanceOf).parse(input);
+	parse(z.instanceof(ExpectedInstanceOf), input);
 }
 
-export const localizationMapPredicate = s
-	.object<LocalizationMap>(Object.fromEntries(Object.values(Locale).map((locale) => [locale, s.string.nullish])))
-	.strict.nullish.setValidationEnabled(isValidationEnabled);
+export const localizationMapPredicate = z.record(z.nativeEnum(Locale), z.string().nullish()).nullish();
 
 export function validateLocalizationMap(value: unknown): asserts value is LocalizationMap {
-	localizationMapPredicate.parse(value);
+	parse(localizationMapPredicate, value);
 }
 
-const dmPermissionPredicate = s.boolean.nullish;
+const dmPermissionPredicate = z.boolean().nullish();
 
 export function validateDMPermission(value: unknown): asserts value is boolean | null | undefined {
-	dmPermissionPredicate.parse(value);
+	parse(dmPermissionPredicate, value);
 }
 
-const memberPermissionPredicate = s.union(
-	s.bigint.transform((value) => value.toString()),
-	s.number.safeInt.transform((value) => value.toString()),
-	s.string.regex(/^\d+$/),
-).nullish;
+const memberPermissionPredicate = z
+	.union([
+		z.bigint().transform((value) => value.toString()),
+		z
+			.number()
+			.int()
+			.safe()
+			.transform((value) => value.toString()),
+		z.string().regex(/^\d+$/),
+	])
+	.nullish();
 
 export function validateDefaultMemberPermissions(permissions: unknown) {
-	return memberPermissionPredicate.parse(permissions);
+	return parse(memberPermissionPredicate, permissions);
 }
 
 export function validateNSFW(value: unknown): asserts value is boolean {
-	booleanPredicate.parse(value);
+	parse(booleanPredicate, value);
 }
 
-export const contextsPredicate = s.array(
-	s.nativeEnum(InteractionContextType).setValidationEnabled(isValidationEnabled),
-);
+export const contextsPredicate = z.nativeEnum(InteractionContextType).array();
 
-export const integrationTypesPredicate = s.array(
-	s.nativeEnum(ApplicationIntegrationType).setValidationEnabled(isValidationEnabled),
-);
+export const integrationTypesPredicate = z.nativeEnum(ApplicationIntegrationType).array();

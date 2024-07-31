@@ -1,5 +1,6 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { APIMessageComponentEmoji, APISelectMenuOption } from 'discord-api-types/v10';
+import { parse } from '../../util/validation.js';
 import {
 	defaultValidator,
 	emojiValidator,
@@ -41,7 +42,7 @@ export class StringSelectMenuOptionBuilder implements JSONEncodable<APISelectMen
 	 * @param label - The label to use
 	 */
 	public setLabel(label: string) {
-		this.data.label = labelValueDescriptionValidator.parse(label);
+		this.data.label = parse(labelValueDescriptionValidator, label);
 		return this;
 	}
 
@@ -51,7 +52,7 @@ export class StringSelectMenuOptionBuilder implements JSONEncodable<APISelectMen
 	 * @param value - The value to use
 	 */
 	public setValue(value: string) {
-		this.data.value = labelValueDescriptionValidator.parse(value);
+		this.data.value = parse(labelValueDescriptionValidator, value);
 		return this;
 	}
 
@@ -61,7 +62,7 @@ export class StringSelectMenuOptionBuilder implements JSONEncodable<APISelectMen
 	 * @param description - The description to use
 	 */
 	public setDescription(description: string) {
-		this.data.description = labelValueDescriptionValidator.parse(description);
+		this.data.description = parse(labelValueDescriptionValidator, description);
 		return this;
 	}
 
@@ -71,7 +72,7 @@ export class StringSelectMenuOptionBuilder implements JSONEncodable<APISelectMen
 	 * @param isDefault - Whether this option is selected by default
 	 */
 	public setDefault(isDefault = true) {
-		this.data.default = defaultValidator.parse(isDefault);
+		this.data.default = parse(defaultValidator, isDefault);
 		return this;
 	}
 
@@ -81,7 +82,7 @@ export class StringSelectMenuOptionBuilder implements JSONEncodable<APISelectMen
 	 * @param emoji - The emoji to use
 	 */
 	public setEmoji(emoji: APIMessageComponentEmoji) {
-		this.data.emoji = emojiValidator.parse(emoji);
+		this.data.emoji = parse(emojiValidator, emoji);
 		return this;
 	}
 

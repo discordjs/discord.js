@@ -9,6 +9,7 @@ import type {
 } from 'discord-api-types/v10';
 import type { RestOrArray } from '../../util/normalizeArray.js';
 import { normalizeArray } from '../../util/normalizeArray.js';
+import { parse } from '../../util/validation.js';
 import { validateLocale, validateLocalizationMap } from '../slashCommands/Assertions.js';
 import {
 	validateRequiredParameters,
@@ -81,7 +82,7 @@ export class ContextMenuCommandBuilder {
 	 * @param contexts - The contexts
 	 */
 	public setContexts(...contexts: RestOrArray<InteractionContextType>) {
-		Reflect.set(this, 'contexts', contextsPredicate.parse(normalizeArray(contexts)));
+		Reflect.set(this, 'contexts', parse(contextsPredicate, normalizeArray(contexts)));
 
 		return this;
 	}
@@ -92,7 +93,7 @@ export class ContextMenuCommandBuilder {
 	 * @param integrationTypes - The integration types
 	 */
 	public setIntegrationTypes(...integrationTypes: RestOrArray<ApplicationIntegrationType>) {
-		Reflect.set(this, 'integration_types', integrationTypesPredicate.parse(normalizeArray(integrationTypes)));
+		Reflect.set(this, 'integration_types', parse(integrationTypesPredicate, normalizeArray(integrationTypes)));
 
 		return this;
 	}
