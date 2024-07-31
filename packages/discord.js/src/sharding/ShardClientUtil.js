@@ -61,22 +61,6 @@ class ShardClientUtil {
   }
 
   /**
-   * Array of shard ids of this client
-   * @returns {Promise<number[]>}
-   */
-  async ids() {
-    return this.client.ws.getShardIds();
-  }
-
-  /**
-   * Total number of shards
-   * @returns {Promise<number>}
-   */
-  async count() {
-    return this.client.ws.getShardCount();
-  }
-
-  /**
    * Sends a message to the master process.
    * @param {*} message Message to send
    * @returns {Promise<void>}
