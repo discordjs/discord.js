@@ -126,15 +126,6 @@ class Guild extends AnonymousGuild {
     this.shardId = data.shardId;
   }
 
-  /**
-   * The Shard this Guild belongs to.
-   * @type {WebSocketShard}
-   * @readonly
-   */
-  get shard() {
-    return this.client.ws.shards.get(this.shardId);
-  }
-
   _patch(data) {
     super._patch(data);
     this.id = data.id;
@@ -1418,8 +1409,8 @@ class Guild extends AnonymousGuild {
       this.client.voice.adapters.set(this.id, methods);
       return {
         sendPayload: data => {
-          if (this.shard.status !== Status.Ready) return false;
-          this.shard.send(data);
+          if (this.client.status !== Status.Ready) return false;
+          this.client.ws.send(this.shardId, data);
           return true;
         },
         destroy: () => {
