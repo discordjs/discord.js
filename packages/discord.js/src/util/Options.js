@@ -91,6 +91,7 @@ const { version } = require('../../package.json');
  * only set this if you know what you are doing</warn>
  * @property {BuildStrategyFunction} [buildStrategy] Builds the strategy to use for sharding
  * @property {IdentifyThrottlerFunction} [buildIdentifyThrottler] Builds the identify throttler to use for sharding
+ * @property {PresenceData} [presence={}] Presence data to use upon login
  */
 
 /**
