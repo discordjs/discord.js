@@ -558,8 +558,8 @@ class Client extends BaseClient {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'ws', 'an object');
     }
     if (
-      (typeof options.ws === 'object' && typeof options.ws.initialPresence !== 'object') ||
-      options.ws.initialPresence === null
+      typeof options.ws === 'object' &&
+      (typeof options.ws.initialPresence !== 'object' || options.ws.initialPresence === null)
     ) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'ws.initialPresence', 'an object');
     }
