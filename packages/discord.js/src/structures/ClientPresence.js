@@ -22,13 +22,13 @@ class ClientPresence extends Presence {
     const packet = this._parse(presence);
     this._patch(packet);
     if (presence.shardId === undefined) {
-      this.client.ws.broadcast({ op: GatewayOpcodes.PresenceUpdate, d: packet });
+      this.client._broadcast({ op: GatewayOpcodes.PresenceUpdate, d: packet });
     } else if (Array.isArray(presence.shardId)) {
       for (const shardId of presence.shardId) {
-        this.client.ws.shards.get(shardId).send({ op: GatewayOpcodes.PresenceUpdate, d: packet });
+        this.client.ws.send(shardId, { op: GatewayOpcodes.PresenceUpdate, d: packet });
       }
     } else {
-      this.client.ws.shards.get(presence.shardId).send({ op: GatewayOpcodes.PresenceUpdate, d: packet });
+      this.client.ws.send(presence.shardId, { op: GatewayOpcodes.PresenceUpdate, d: packet });
     }
     return this;
   }

@@ -273,7 +273,7 @@ class GuildManager extends CachedManager {
       const data = await this.client.rest.get(Routes.guild(id), {
         query: makeURLSearchParams({ with_counts: options.withCounts ?? true }),
       });
-      data.shardId = ShardClientUtil.shardIdForGuildId(id, this.client.options.shardCount);
+      data.shardId = ShardClientUtil.shardIdForGuildId(id, await this.client.ws.fetchShardCount());
       return this._add(data, options.cache);
     }
 

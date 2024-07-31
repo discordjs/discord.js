@@ -3,12 +3,12 @@
 const Events = require('../../../util/Events');
 const Status = require('../../../util/Status');
 
-module.exports = (client, { d: data }, shard) => {
+module.exports = (client, { d: data }) => {
   const guild = client.guilds.cache.get(data.guild_id);
   if (guild) {
     guild.memberCount++;
     const member = guild.members._add(data);
-    if (shard.status === Status.Ready) {
+    if (client.status === Status.Ready) {
       /**
        * Emitted whenever a user joins a guild.
        * @event Client#guildMemberAdd

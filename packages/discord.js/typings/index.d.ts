@@ -39,12 +39,7 @@ import {
 import { Awaitable, JSONEncodable } from '@discordjs/util';
 import { Collection, ReadonlyCollection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
-import {
-  WebSocketManager as WSWebSocketManager,
-  IShardingStrategy,
-  IIdentifyThrottler,
-  SessionInfo,
-} from '@discordjs/ws';
+import { WebSocketManager, WebSocketManagerOptions } from '@discordjs/ws';
 import {
   APIActionRowComponent,
   APIApplicationCommandInteractionData,
@@ -69,7 +64,6 @@ import {
   ButtonStyle,
   ChannelType,
   ComponentType,
-  GatewayDispatchEvents,
   GatewayVoiceServerUpdateDispatchData,
   GatewayVoiceStateUpdateDispatchData,
   GuildFeature,
@@ -181,6 +175,8 @@ import {
   APISelectMenuDefaultValue,
   SelectMenuDefaultValueType,
   InviteType,
+  GatewaySendPayload,
+  GatewayDispatchPayload,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -991,8 +987,16 @@ export type If<Value extends boolean, TrueResult, FalseResult = null> = Value ex
 export class Client<Ready extends boolean = boolean> extends BaseClient {
   public constructor(options: ClientOptions);
   private actions: unknown;
+  private expectedGuilds: Set<Snowflake>;
+  private readonly packetQueue: unknown[];
   private presence: ClientPresence;
+  private pings: Collection<number, number>;
+  private readyTimeout: NodeJS.Timeout | null;
+  private _broadcast(packet: GatewaySendPayload): void;
   private _eval(script: string): unknown;
+  private _handlePacket(packet?: GatewayDispatchPayload, shardId?: number): boolean;
+  private _checkReady(): void;
+  private _triggerClientReady(): void;
   private _validateOptions(options: ClientOptions): void;
   private get _censoredToken(): string | null;
   // This a technique used to brand the ready state. Or else we'll get `never` errors on typeguard checks.
@@ -1002,17 +1006,21 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public channels: ChannelManager;
   public get emojis(): BaseGuildEmojiManager;
   public guilds: GuildManager;
+  public lastPingTimestamp: number;
   public options: Omit<ClientOptions, 'intents'> & { intents: IntentsBitField };
+  public get ping(): number;
   public get readyAt(): If<Ready, Date>;
   public readyTimestamp: If<Ready, number>;
   public sweepers: Sweepers;
   public shard: ShardClientUtil | null;
+  public status: Status;
   public token: If<Ready, string, string | null>;
   public get uptime(): If<Ready, number>;
   public user: If<Ready, ClientUser>;
   public users: UserManager;
   public voice: ClientVoiceManager;
   public ws: WebSocketManager;
+
   public destroy(): Promise<void>;
   public deleteWebhook(id: Snowflake, options?: WebhookDeleteOptions): Promise<void>;
   public fetchGuildPreview(guild: GuildResolvable): Promise<GuildPreview>;
@@ -1414,7 +1422,6 @@ export class Guild extends AnonymousGuild {
   public get safetyAlertsChannel(): TextChannel | null;
   public safetyAlertsChannelId: Snowflake | null;
   public scheduledEvents: GuildScheduledEventManager;
-  public get shard(): WebSocketShard;
   public shardId: number;
   public stageInstances: StageInstanceManager;
   public stickers: GuildStickerManager;
@@ -3642,70 +3649,6 @@ export class WebhookClient extends BaseClient {
   public send(options: string | MessagePayload | WebhookMessageCreateOptions): Promise<APIMessage>;
 }
 
-export class WebSocketManager extends EventEmitter {
-  private constructor(client: Client);
-  private readonly packetQueue: unknown[];
-  private destroyed: boolean;
-
-  public readonly client: Client;
-  public gateway: string | null;
-  public shards: Collection<number, WebSocketShard>;
-  public status: Status;
-  public get ping(): number;
-
-  public on(event: GatewayDispatchEvents, listener: (data: any, shardId: number) => void): this;
-  public once(event: GatewayDispatchEvents, listener: (data: any, shardId: number) => void): this;
-
-  private debug(messages: readonly string[], shardId?: number): void;
-  private connect(): Promise<void>;
-  private broadcast(packet: unknown): void;
-  private destroy(): Promise<void>;
-  private handlePacket(packet?: unknown, shard?: WebSocketShard): boolean;
-  private checkShardsReady(): void;
-  private triggerClientReady(): void;
-}
-
-export interface WebSocketShardEventTypes {
-  ready: [];
-  resumed: [];
-  invalidSession: [];
-  destroyed: [];
-  close: [event: CloseEvent];
-  allReady: [unavailableGuilds?: Set<Snowflake>];
-}
-
-export class WebSocketShard extends EventEmitter {
-  private constructor(manager: WebSocketManager, id: number);
-  private closeSequence: number;
-  private sessionInfo: SessionInfo | null;
-  public lastPingTimestamp: number;
-  private expectedGuilds: Set<Snowflake> | null;
-  private readyTimeout: NodeJS.Timeout | null;
-
-  public manager: WebSocketManager;
-  public id: number;
-  public status: Status;
-  public ping: number;
-
-  private debug(messages: readonly string[]): void;
-  private onReadyPacket(packet: unknown): void;
-  private gotGuild(guildId: Snowflake): void;
-  private checkReady(): void;
-  private emitClose(event?: CloseEvent): void;
-
-  public send(data: unknown, important?: boolean): void;
-
-  public on<Event extends keyof WebSocketShardEventTypes>(
-    event: Event,
-    listener: (...args: WebSocketShardEventTypes[Event]) => void,
-  ): this;
-
-  public once<Event extends keyof WebSocketShardEventTypes>(
-    event: Event,
-    listener: (...args: WebSocketShardEventTypes[Event]) => void,
-  ): this;
-}
-
 export class Widget extends Base {
   private constructor(client: Client<true>, data: RawWidgetData);
   private _patch(data: RawWidgetData): void;
@@ -5271,11 +5214,6 @@ export interface ClientEvents {
   webhookUpdate: ClientEvents['webhooksUpdate'];
   webhooksUpdate: [channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel | MediaChannel];
   interactionCreate: [interaction: Interaction];
-  shardDisconnect: [closeEvent: CloseEvent, shardId: number];
-  shardError: [error: Error, shardId: number];
-  shardReady: [shardId: number, unavailableGuilds: Set<Snowflake> | undefined];
-  shardReconnecting: [shardId: number];
-  shardResume: [shardId: number, replayedEvents: number];
   stageInstanceCreate: [stageInstance: StageInstance];
   stageInstanceUpdate: [oldStageInstance: StageInstance | null, newStageInstance: StageInstance];
   stageInstanceDelete: [stageInstance: StageInstance];
@@ -5297,8 +5235,6 @@ export interface ClientFetchInviteOptions {
 }
 
 export interface ClientOptions {
-  shards?: number | readonly number[] | 'auto';
-  shardCount?: number;
   closeTimeout?: number;
   makeCache?: CacheFactory;
   allowedMentions?: MessageMentionOptions;
@@ -5308,7 +5244,7 @@ export interface ClientOptions {
   intents: BitFieldResolvable<GatewayIntentsString, number>;
   waitGuildTimeout?: number;
   sweepers?: SweeperOptions;
-  ws?: WebSocketOptions;
+  ws?: Partial<WebSocketManagerOptions>;
   rest?: Partial<RESTOptions>;
   jsonTransformer?: (obj: unknown) => unknown;
 }
@@ -5325,14 +5261,6 @@ export interface ClientUserEditOptions {
   username?: string;
   avatar?: BufferResolvable | Base64Resolvable | null;
   banner?: BufferResolvable | Base64Resolvable | null;
-}
-
-export interface CloseEvent {
-  /** @deprecated Not used anymore since using {@link @discordjs/ws#(WebSocketManager:class)} internally */
-  wasClean: boolean;
-  code: number;
-  /** @deprecated Not used anymore since using {@link @discordjs/ws#(WebSocketManager:class)} internally */
-  reason: string;
 }
 
 export type CollectorFilter<Arguments extends unknown[]> = (...args: Arguments) => Awaitable<boolean>;
@@ -6871,13 +6799,6 @@ export interface WebhookMessageCreateOptions extends Omit<MessageCreateOptions, 
   threadId?: Snowflake;
   threadName?: string;
   appliedTags?: readonly Snowflake[];
-}
-
-export interface WebSocketOptions {
-  large_threshold?: number;
-  version?: number;
-  buildStrategy?(manager: WSWebSocketManager): IShardingStrategy;
-  buildIdentifyThrottler?(manager: WSWebSocketManager): Awaitable<IIdentifyThrottler>;
 }
 
 export interface WidgetActivity {
