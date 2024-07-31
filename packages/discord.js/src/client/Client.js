@@ -259,6 +259,7 @@ class Client extends BaseClient {
     this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
     this.rest.setToken(token);
     this.emit(Events.Debug, `Provided token: ${this._censoredToken}`);
+
     this.emit(Events.Debug, 'Preparing to connect to the gateway...');
 
     if (this.ws.options.token !== this.token) this.ws.setToken(this.token);
@@ -710,7 +711,7 @@ class Client extends BaseClient {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'ws', 'an object');
     }
     if (typeof options.ws.initialPresence !== 'object') {
-      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'presence', 'an object');
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'ws.initialPresence', 'an object');
     }
     if (typeof options.rest !== 'object' || options.rest === null) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'rest', 'an object');

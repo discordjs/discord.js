@@ -5240,7 +5240,6 @@ export interface ClientOptions {
   allowedMentions?: MessageMentionOptions;
   partials?: readonly Partials[];
   failIfNotExists?: boolean;
-  presence?: PresenceData;
   intents: BitFieldResolvable<GatewayIntentsString, number>;
   waitGuildTimeout?: number;
   sweepers?: SweeperOptions;
