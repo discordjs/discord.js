@@ -153,11 +153,8 @@ class Client extends BaseClient {
      * @private
      * @type {ClientPresence}
      */
-    this.presence = new ClientPresence(this, this.options.presence ?? this.options.ws.initialPresence);
+    this.presence = new ClientPresence(this, this.options.ws.initialPresence);
 
-    if (this.options.presence) {
-      this.options.ws.initialPresence = this.presence._parse(this.options.presence);
-    }
     const wsOptions = {
       ...this.options.ws,
       intents: this.options.intents.bitfield,
