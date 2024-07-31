@@ -32,6 +32,7 @@ const Status = require('../util/Status');
 const Sweepers = require('../util/Sweepers');
 
 let deprecationEmittedForPremiumStickerPacks = false;
+let deprecationEmittedForClientPresence = false;
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -219,6 +220,15 @@ class Client extends BaseClient {
     this.emit(Events.Debug, `Provided token: ${this._censoredToken}`);
 
     if (this.options.presence) {
+      if (!deprecationEmittedForClientPresence) {
+        process.emitWarning(
+          'ClientOptions#presence is deprecated and will be removed. Use ClientOptions#ws#presence instead.',
+          'DeprecationWarning',
+        );
+
+        deprecationEmittedForClientPresence = true;
+      }
+
       this.options.ws.presence = this.presence._parse(this.options.presence);
     }
 
