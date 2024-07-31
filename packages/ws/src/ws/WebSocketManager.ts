@@ -207,7 +207,8 @@ export interface ManagerShardEventsMap {
 	[WebSocketShardEvents.Ready]: [data: GatewayReadyDispatchData, shardId: number];
 	[WebSocketShardEvents.Resumed]: [shardId: number];
 	[WebSocketShardEvents.HeartbeatComplete]: [
-		stats: { ackAt: number; heartbeatAt: number; latency: number; shardId: number },
+		stats: { ackAt: number; heartbeatAt: number; latency: number },
+		shardId: number,
 	];
 }
 
