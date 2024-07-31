@@ -118,7 +118,6 @@ class ModalSubmitInteraction extends BaseInteraction {
   followUp() {}
   deferUpdate() {}
   update() {}
-  sendPremiumRequired() {}
 }
 
 InteractionResponses.applyToClass(ModalSubmitInteraction, 'showModal');
