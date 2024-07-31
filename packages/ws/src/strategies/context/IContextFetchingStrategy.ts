@@ -33,7 +33,6 @@ export interface IContextFetchingStrategy {
 }
 
 export async function managerToFetchingStrategyOptions(manager: WebSocketManager): Promise<FetchingStrategyOptions> {
-	/* eslint-disable @typescript-eslint/unbound-method */
 	const {
 		buildIdentifyThrottler,
 		buildStrategy,
@@ -44,10 +43,10 @@ export async function managerToFetchingStrategyOptions(manager: WebSocketManager
 		rest,
 		...managerOptions
 	} = manager.options;
-	/* eslint-enable @typescript-eslint/unbound-method */
 
 	return {
 		...managerOptions,
+		token: manager.token,
 		gatewayInformation: await manager.fetchGatewayInformation(),
 		shardCount: await manager.getShardCount(),
 	};
