@@ -181,6 +181,7 @@ import {
   APISelectMenuDefaultValue,
   SelectMenuDefaultValueType,
   InviteType,
+  GatewayPresenceUpdateData,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -5304,6 +5305,7 @@ export interface ClientOptions {
   allowedMentions?: MessageMentionOptions;
   partials?: readonly Partials[];
   failIfNotExists?: boolean;
+  /** @deprecated Use {@link ClientOptions.ws.presence} instead */
   presence?: PresenceData;
   intents: BitFieldResolvable<GatewayIntentsString, number>;
   waitGuildTimeout?: number;
@@ -5784,6 +5786,11 @@ interface GuildAuditLogsTypes {
   [AuditLogEvent.AutoModerationBlockMessage]: ['AutoModerationRule', 'Create'];
   [AuditLogEvent.AutoModerationFlagToChannel]: ['AutoModerationRule', 'Create'];
   [AuditLogEvent.AutoModerationUserCommunicationDisabled]: ['AutoModerationRule', 'Create'];
+  [AuditLogEvent.OnboardingPromptCreate]: ['GuildOnboardingPrompt', 'Create'];
+  [AuditLogEvent.OnboardingPromptUpdate]: ['GuildOnboardingPrompt', 'Update'];
+  [AuditLogEvent.OnboardingPromptDelete]: ['GuildOnboardingPrompt', 'Delete'];
+  [AuditLogEvent.OnboardingCreate]: ['GuildOnboarding', 'Create'];
+  [AuditLogEvent.OnboardingUpdate]: ['GuildOnboarding', 'Update'];
 }
 
 export type GuildAuditLogsActionType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][1] | 'All';
@@ -5848,6 +5855,7 @@ export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLo
   GuildScheduledEvent: GuildScheduledEvent;
   ApplicationCommand: ApplicationCommand | { id: Snowflake };
   AutoModerationRule: AutoModerationRule;
+  GuildOnboardingPrompt: GuildOnboardingPrompt;
 }
 
 export interface GuildAuditLogsFetchOptions<Event extends GuildAuditLogsResolvable> {
@@ -6870,6 +6878,7 @@ export interface WebhookMessageCreateOptions extends Omit<MessageCreateOptions, 
 export interface WebSocketOptions {
   large_threshold?: number;
   version?: number;
+  presence?: GatewayPresenceUpdateData;
   buildStrategy?(manager: WSWebSocketManager): IShardingStrategy;
   buildIdentifyThrottler?(manager: WSWebSocketManager): Awaitable<IIdentifyThrottler>;
 }
