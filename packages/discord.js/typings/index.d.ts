@@ -5304,6 +5304,7 @@ export interface ClientOptions {
   allowedMentions?: MessageMentionOptions;
   partials?: readonly Partials[];
   failIfNotExists?: boolean;
+  /** @deprecated In the next release, use {@link ClientOptions.ws.initialPresence} instead */
   presence?: PresenceData;
   intents: BitFieldResolvable<GatewayIntentsString, number>;
   waitGuildTimeout?: number;
