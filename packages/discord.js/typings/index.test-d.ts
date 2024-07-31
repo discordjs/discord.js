@@ -49,7 +49,6 @@ import {
   Client,
   ClientApplication,
   ClientUser,
-  CloseEvent,
   Collection,
   ChatInputCommandInteraction,
   CommandInteractionOption,
@@ -100,7 +99,6 @@ import {
   User,
   VoiceChannel,
   Shard,
-  WebSocketShard,
   Collector,
   GuildAuditLogsEntry,
   GuildAuditLogs,
@@ -2098,12 +2096,6 @@ declare const shard: Shard;
 
 shard.on('death', process => {
   expectType<ChildProcess | Worker>(process);
-});
-
-declare const webSocketShard: WebSocketShard;
-
-webSocketShard.on('close', event => {
-  expectType<CloseEvent>(event);
 });
 
 declare const collector: Collector<string, Interaction, string[]>;
