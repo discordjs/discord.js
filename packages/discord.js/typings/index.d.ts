@@ -181,6 +181,7 @@ import {
   APISelectMenuDefaultValue,
   SelectMenuDefaultValueType,
   InviteType,
+  GatewayPresenceUpdateData,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -5304,7 +5305,7 @@ export interface ClientOptions {
   allowedMentions?: MessageMentionOptions;
   partials?: readonly Partials[];
   failIfNotExists?: boolean;
-  /** @deprecated In the next release, use {@link ClientOptions.ws.initialPresence} instead */
+  /** @deprecated Use {@link ClientOptions.ws.initialPresence} instead */
   presence?: PresenceData;
   intents: BitFieldResolvable<GatewayIntentsString, number>;
   waitGuildTimeout?: number;
@@ -6877,6 +6878,7 @@ export interface WebhookMessageCreateOptions extends Omit<MessageCreateOptions, 
 export interface WebSocketOptions {
   large_threshold?: number;
   version?: number;
+  initialPresence?: GatewayPresenceUpdateData;
   buildStrategy?(manager: WSWebSocketManager): IShardingStrategy;
   buildIdentifyThrottler?(manager: WSWebSocketManager): Awaitable<IIdentifyThrottler>;
 }

@@ -222,14 +222,14 @@ class Client extends BaseClient {
     if (this.options.presence) {
       if (!deprecationEmittedForClientPresence) {
         process.emitWarning(
-          'ClientOptions#presence is deprecated and will be removed. Use ClientOptions#ws#presence instead.',
+          'ClientOptions#presence is deprecated and will be removed. Use ClientOptions#ws#initialPresence instead.',
           'DeprecationWarning',
         );
 
         deprecationEmittedForClientPresence = true;
       }
 
-      this.options.ws.presence = this.presence._parse(this.options.presence);
+      this.options.ws.initialPresence = this.presence._parse(this.options.presence);
     }
 
     this.emit(Events.Debug, 'Preparing to connect to the gateway...');
@@ -556,6 +556,12 @@ class Client extends BaseClient {
     }
     if (typeof options.ws !== 'object' || options.ws === null) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'ws', 'an object');
+    }
+    if (
+      (typeof options.ws === 'object' && typeof options.ws.initialPresence !== 'object') ||
+      options.ws.initialPresence === null
+    ) {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'ws.initialPresence', 'an object');
     }
     if (typeof options.rest !== 'object' || options.rest === null) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'rest', 'an object');
