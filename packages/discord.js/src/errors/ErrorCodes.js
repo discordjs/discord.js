@@ -12,7 +12,7 @@
  * @property {'TokenMissing'} TokenMissing
  * @property {'ApplicationCommandPermissionsTokenMissing'} ApplicationCommandPermissionsTokenMissing
 
-* @property {'BitFieldInvalid'} BitFieldInvalid
+ * @property {'BitFieldInvalid'} BitFieldInvalid
 
  * @property {'ShardingNoShards'} ShardingNoShards
  * @property {'ShardingInProcess'} ShardingInProcess
