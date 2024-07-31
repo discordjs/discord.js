@@ -208,9 +208,9 @@ class Client extends BaseClient {
      * An array of queued events before this Client became ready
      * @type {Object[]}
      * @private
-     * @name Client#packetQueue
+     * @name Client#incomingPacketQueue
      */
-    Object.defineProperty(this, 'packetQueue', { value: [] });
+    Object.defineProperty(this, 'incomingPacketQueue', { value: [] });
 
     this._attachEvents();
   }
@@ -350,10 +350,10 @@ class Client extends BaseClient {
    */
   _handlePacket(packet, shardId) {
     if (packet && this.status !== Status.Ready && !BeforeReadyWhitelist.includes(packet.t)) {
-      this.packetQueue.push({ packet, shardId });
+      this.incomingPacketQueue.push({ packet, shardId });
     } else {
-      if (this.packetQueue.length) {
-        const item = this.packetQueue.shift();
+      if (this.incomingPacketQueue.length) {
+        const item = this.incomingPacketQueue.shift();
         setImmediate(() => {
           this._handlePacket(item.packet, item.shardId);
         }).unref();
