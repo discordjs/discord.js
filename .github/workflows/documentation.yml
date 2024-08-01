@@ -75,7 +75,7 @@ jobs:
 
       - name: Apply tag to api-extractor config
         if: ${{ env.REF_TYPE == 'tag' && !inputs.ref }}
-        run: sed -i 's!https://github.com/discordjs/discord.js/tree/main!https://github.com/discordjs/discord.js/tree/${{ steps.extract-tag.outputs.semver }}!' "packages/${{ steps.extract-tag.outputs.package}}/api-extractor.json"
+        run: sed -i 's!https://github.com/discordjs/discord.js/tree/main!https://github.com/discordjs/discord.js/tree/${{ github.ref_name }}!' "packages/${{ steps.extract-tag.outputs.package}}/api-extractor.json"
 
       - name: Build docs
         run: pnpm run docs
