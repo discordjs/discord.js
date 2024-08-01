@@ -153,7 +153,7 @@ class Client extends BaseClient {
      * @private
      * @type {ClientPresence}
      */
-    this.presence = new ClientPresence(this, this.options.ws.initialPresence);
+    this.presence = new ClientPresence(this, this.options.ws.initialPresence ?? {});
 
     const wsOptions = {
       ...this.options.ws,
