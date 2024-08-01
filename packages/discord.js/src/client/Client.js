@@ -373,10 +373,9 @@ class Client extends BaseClient {
    * @param {Object} packet The packet to send
    * @private
    */
-  _broadcast(packet) {
-    this.ws.getShardIds().then(shardIds => {
-      for (const shardId of shardIds) this.ws.send(shardId, packet);
-    });
+  async _broadcast(packet) {
+    const shardIds = await this.ws.getShardIds();
+    return Promise.all(shardIds.map(shardId => this.ws.send(shardId, packet)));
   }
 
   /**
