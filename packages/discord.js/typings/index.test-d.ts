@@ -675,7 +675,7 @@ client.on('presenceUpdate', (oldPresence, { client }) => {
 declare const slashCommandBuilder: SlashCommandBuilder;
 declare const contextMenuCommandBuilder: ContextMenuCommandBuilder;
 
-client.on('ready', async client => {
+client.on('clientReady', async client => {
   expectType<Client<true>>(client);
   console.log(`Client is logged in as ${client.user.tag} and ready!`);
 
