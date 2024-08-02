@@ -110,7 +110,6 @@ import {
   RepliableInteraction,
   ThreadChannelType,
   Events,
-  WebSocketShardEvents,
   Status,
   CategoryChannelChildManager,
   ActionRowData,
