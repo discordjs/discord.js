@@ -34,7 +34,7 @@ async function gitTagAndRelease(release: ReleaseEntry, dry: boolean) {
 			tag_name: tagName,
 			name: tagName,
 			body: release.changelog ?? '',
-			generate_release_notes: !release.changelog,
+			generate_release_notes: release.changelog === undefined,
 		});
 	} catch (error) {
 		warning(`Failed to create github release: ${error}`);
