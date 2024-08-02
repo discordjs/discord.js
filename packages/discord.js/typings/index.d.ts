@@ -5380,15 +5380,6 @@ export enum ShardEvents {
   Spawn = 'spawn',
 }
 
-export enum WebSocketShardEvents {
-  Close = 'close',
-  Destroyed = 'destroyed',
-  InvalidSession = 'invalidSession',
-  Ready = 'ready',
-  Resumed = 'resumed',
-  AllReady = 'allReady',
-}
-
 export enum Status {
   Ready = 0,
   Connecting = 1,
