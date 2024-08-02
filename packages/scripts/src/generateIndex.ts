@@ -129,7 +129,7 @@ export function visitNodes(item: ApiItem, tag: string) {
 
 		members.push({
 			id: idx++,
-			name: member.displayName,
+			name: member.getScopedNameWithinPackage(),
 			kind: member.kind,
 			summary: tryResolveSummaryText(member) ?? '',
 			path: generatePath(inherited ? [...item.getHierarchy(), member] : member.getHierarchy(), tag),
