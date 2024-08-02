@@ -5150,6 +5150,7 @@ export interface ClientEvents {
     oldChannel: DMChannel | NonThreadGuildBasedChannel,
     newChannel: DMChannel | NonThreadGuildBasedChannel,
   ];
+  clientReady: [client: Client<true>];
   debug: [message: string];
   warn: [message: string];
   emojiCreate: [emoji: GuildEmoji];
@@ -5192,7 +5193,6 @@ export interface ClientEvents {
   messageReactionRemove: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser];
   messageUpdate: [oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage];
   presenceUpdate: [oldPresence: Presence | null, newPresence: Presence];
-  ready: [client: Client<true>];
   invalidated: [];
   roleCreate: [role: Role];
   roleDelete: [role: Role];
@@ -5355,7 +5355,7 @@ export enum Events {
   AutoModerationRuleCreate = 'autoModerationRuleCreate',
   AutoModerationRuleDelete = 'autoModerationRuleDelete',
   AutoModerationRuleUpdate = 'autoModerationRuleUpdate',
-  ClientReady = 'ready',
+  ClientReady = 'clientReady',
   EntitlementCreate = 'entitlementCreate',
   EntitlementDelete = 'entitlementDelete',
   EntitlementUpdate = 'entitlementUpdate',
