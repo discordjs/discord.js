@@ -17,25 +17,6 @@ import {
   type RestOrArray,
   ApplicationCommandOptionAllowedChannelTypes,
 } from '@discordjs/builders';
-import {
-  blockQuote,
-  bold,
-  channelMention,
-  codeBlock,
-  formatEmoji,
-  hideLinkEmbed,
-  hyperlink,
-  inlineCode,
-  italic,
-  quote,
-  roleMention,
-  spoiler,
-  strikethrough,
-  time,
-  TimestampStyles,
-  underscore,
-  userMention,
-} from '@discordjs/formatters';
 import { Awaitable, JSONEncodable } from '@discordjs/util';
 import { Collection, ReadonlyCollection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
@@ -605,8 +586,6 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
       | ModalComponentData
       | APIModalInteractionResponseCallbackData,
   ): Promise<void>;
-  /** @deprecated Sending a premium-style button is the new Discord behaviour. */
-  public sendPremiumRequired(): Promise<void>;
   public awaitModalSubmit(
     options: AwaitModalSubmitOptions<ModalSubmitInteraction>,
   ): Promise<ModalSubmitInteraction<Cached>>;
@@ -787,13 +766,6 @@ export class StringSelectMenuBuilder extends BuilderStringSelectMenuComponent {
   ): StringSelectMenuBuilder;
 }
 
-export {
-  /** @deprecated Use {@link StringSelectMenuBuilder} instead */
-  StringSelectMenuBuilder as SelectMenuBuilder,
-  /** @deprecated Use {@link StringSelectMenuOptionBuilder} instead */
-  StringSelectMenuOptionBuilder as SelectMenuOptionBuilder,
-};
-
 export class UserSelectMenuBuilder extends BuilderUserSelectMenuComponent {
   public constructor(data?: Partial<UserSelectMenuComponentData | APIUserSelectComponent>);
   public static from(other: JSONEncodable<APIUserSelectComponent> | APIUserSelectComponent): UserSelectMenuBuilder;
@@ -853,11 +825,6 @@ export class BaseSelectMenuComponent<Data extends APISelectMenuComponent> extend
 export class StringSelectMenuComponent extends BaseSelectMenuComponent<APIStringSelectComponent> {
   public get options(): APISelectMenuOption[];
 }
-
-export {
-  /** @deprecated Use {@link StringSelectMenuComponent} instead */
-  StringSelectMenuComponent as SelectMenuComponent,
-};
 
 export class UserSelectMenuComponent extends BaseSelectMenuComponent<APIUserSelectComponent> {}
 
@@ -1022,8 +989,6 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
   public fetchSticker(id: Snowflake): Promise<Sticker>;
   public fetchStickerPacks(): Promise<Collection<Snowflake, StickerPack>>;
-  /** @deprecated Use {@link Client.fetchStickerPacks} instead. */
-  public fetchPremiumStickerPacks(): ReturnType<Client['fetchStickerPacks']>;
   public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
   public fetchGuildWidget(guild: GuildResolvable): Promise<Widget>;
   public generateInvite(options?: InviteGenerationOptions): string;
@@ -1909,8 +1874,6 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public isMessageContextMenuCommand(): this is MessageContextMenuCommandInteraction<Cached>;
   public isModalSubmit(): this is ModalSubmitInteraction<Cached>;
   public isUserContextMenuCommand(): this is UserContextMenuCommandInteraction<Cached>;
-  /** @deprecated Use {@link BaseInteraction.isStringSelectMenu} instead. */
-  public isSelectMenu(): this is StringSelectMenuInteraction<Cached>;
   public isAnySelectMenu(): this is AnySelectMenuInteraction<Cached>;
   public isStringSelectMenu(): this is StringSelectMenuInteraction<Cached>;
   public isUserSelectMenu(): this is UserSelectMenuInteraction<Cached>;
@@ -2000,22 +1963,7 @@ export class Invite extends Base {
   public toJSON(): unknown;
   public toString(): string;
   public static InvitesPattern: RegExp;
-  /** @deprecated Public Stage Instances don't exist anymore  */
-  public stageInstance: InviteStageInstance | null;
   public guildScheduledEvent: GuildScheduledEvent | null;
-}
-
-/** @deprecated Public Stage Instances don't exist anymore */
-export class InviteStageInstance extends Base {
-  private constructor(client: Client<true>, data: RawInviteStageInstance, channelId: Snowflake, guildId: Snowflake);
-  public channelId: Snowflake;
-  public guildId: Snowflake;
-  public members: Collection<Snowflake, GuildMember>;
-  public topic: string;
-  public participantCount: number;
-  public speakerCount: number;
-  public get channel(): StageChannel | null;
-  public get guild(): Guild | null;
 }
 
 export class InviteGuild extends AnonymousGuild {
@@ -2263,8 +2211,6 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
       | ModalComponentData
       | APIModalInteractionResponseCallbackData,
   ): Promise<void>;
-  /** @deprecated Sending a premium-style button is the new Discord behaviour. */
-  public sendPremiumRequired(): Promise<void>;
   public awaitModalSubmit(
     options: AwaitModalSubmitOptions<ModalSubmitInteraction>,
   ): Promise<ModalSubmitInteraction<Cached>>;
@@ -2463,8 +2409,6 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
     options: InteractionDeferUpdateOptions & { fetchReply: true },
   ): Promise<Message<BooleanCache<Cached>>>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
-  /** @deprecated Sending a premium-style button is the new Discord behaviour. */
-  public sendPremiumRequired(): Promise<void>;
   public inGuild(): this is ModalSubmitInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ModalSubmitInteraction<'cached'>;
   public inRawGuild(): this is ModalSubmitInteraction<'raw'>;
@@ -2764,11 +2708,6 @@ export class StringSelectMenuInteraction<
   public inRawGuild(): this is StringSelectMenuInteraction<'raw'>;
 }
 
-export {
-  /** @deprecated Use {@link StringSelectMenuInteraction} instead */
-  StringSelectMenuInteraction as SelectMenuInteraction,
-};
-
 export class UserSelectMenuInteraction<
   Cached extends CacheType = CacheType,
 > extends MessageComponentInteraction<Cached> {
@@ -3045,8 +2984,6 @@ export class StageInstance extends Base {
   public channelId: Snowflake;
   public topic: string;
   public privacyLevel: StageInstancePrivacyLevel;
-  /** @deprecated See https://github.com/discord/discord-api-docs/pull/4296 for more information */
-  public discoverableDisabled: boolean | null;
   public guildScheduledEventId?: Snowflake;
   public get channel(): StageChannel | null;
   public get guild(): Guild | null;
@@ -3199,8 +3136,6 @@ export class TeamMember extends Base {
   private constructor(team: Team, data: RawTeamMemberData);
   public team: Team;
   public get id(): Snowflake;
-  /** @deprecated Use {@link TeamMember.role} instead. */
-  public permissions: string[];
   public membershipState: TeamMemberMembershipState;
   public user: User;
   public role: TeamMemberRole;
@@ -3337,8 +3272,6 @@ export class User extends Base {
 
   public accentColor: number | null | undefined;
   public avatar: string | null;
-  /** @deprecated Use {@link User.avatarDecorationData} instead */
-  public avatarDecoration: string | null;
   public avatarDecorationData: AvatarDecorationData | null;
   public banner: string | null | undefined;
   public bot: boolean;
@@ -3492,44 +3425,6 @@ export function createComponentBuilder<Type extends keyof MappedComponentBuilder
 ): MappedComponentBuilderTypes[Type];
 export function createComponentBuilder<Data extends ComponentBuilder>(data: Data): Data;
 export function createComponentBuilder(data: APIMessageComponent | ComponentBuilder): ComponentBuilder;
-
-/** @deprecated This class is redundant as all methods of the class can be imported from discord.js directly. */
-export class Formatters extends null {
-  /** @deprecated Import this method directly from discord.js instead. */
-  public static blockQuote: typeof blockQuote;
-  /** @deprecated Import this method directly from discord.js instead. */
-  public static bold: typeof bold;
-  /** @deprecated Import this method directly from discord.js instead. */
-  public static channelMention: typeof channelMention;
-  /** @deprecated Import this method directly from discord.js instead. */
-  public static codeBlock: typeof codeBlock;
-  /** @deprecated Import this method directly from discord.js instead. */
-  public static formatEmoji: typeof formatEmoji;
-  /** @deprecated Import this method directly from discord.js instead. */
-  public static hideLinkEmbed: typeof hideLinkEmbed;
-  /** @deprecated Import this method directly from discord.js instead. */
-  public static hyperlink: typeof hyperlink;
-  /** @deprecated Import this method directly from discord.js instead. */
-  public static inlineCode: typeof inlineCode;
-  /** @deprecated Import this method directly from discord.js instead. */
-  public static italic: typeof italic;
-  /** @deprecated Import this method directly from discord.js instead. */
-  public static quote: typeof quote;
-  /** @deprecated Import this method directly from discord.js instead. */
-  public static roleMention: typeof roleMention;
-  /** @deprecated Import this method directly from discord.js instead. */
-  public static spoiler: typeof spoiler;
-  /** @deprecated Import this method directly from discord.js instead. */
-  public static strikethrough: typeof strikethrough;
-  /** @deprecated Import this method directly from discord.js instead. */
-  public static time: typeof time;
-  /** @deprecated Import this property directly from discord.js instead. */
-  public static TimestampStyles: typeof TimestampStyles;
-  /** @deprecated Import this method directly from discord.js instead. */
-  public static underscore: typeof underscore;
-  /** @deprecated Import this method directly from discord.js instead. */
-  public static userMention: typeof userMention;
-}
 
 /** @internal */
 export function resolveBase64(data: Base64Resolvable): string;
@@ -3773,30 +3668,6 @@ export type UndeletableMessageType =
   | MessageType.ChannelIconChange
   | MessageType.ThreadStarterMessage;
 
-/** @deprecated This type will no longer be updated. Use {@link UndeletableMessageType} instead. */
-export type DeletableMessageType =
-  | MessageType.AutoModerationAction
-  | MessageType.ChannelFollowAdd
-  | MessageType.ChannelPinnedMessage
-  | MessageType.ChatInputCommand
-  | MessageType.ContextMenuCommand
-  | MessageType.Default
-  | MessageType.GuildBoost
-  | MessageType.GuildBoostTier1
-  | MessageType.GuildBoostTier2
-  | MessageType.GuildBoostTier3
-  | MessageType.GuildInviteReminder
-  | MessageType.InteractionPremiumUpsell
-  | MessageType.Reply
-  | MessageType.RoleSubscriptionPurchase
-  | MessageType.StageEnd
-  | MessageType.StageRaiseHand
-  | MessageType.StageSpeaker
-  | MessageType.StageStart
-  | MessageType.StageTopic
-  | MessageType.ThreadCreated
-  | MessageType.UserJoin;
-
 export const Constants: {
   MaxBulkDeletableMessageAge: 1_209_600_000;
   SweeperKeys: SweeperKey[];
@@ -3807,8 +3678,6 @@ export const Constants: {
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
   SelectMenuTypes: SelectMenuType[];
   UndeletableMessageTypes: UndeletableMessageType[];
-  /** @deprecated This list will no longer be updated. Use {@link Constants.UndeletableMessageTypes} instead. */
-  DeletableMessageTypes: DeletableMessageType[];
   StickerFormatExtensionMap: Record<StickerFormatType, ImageFormat>;
 };
 
@@ -3827,25 +3696,6 @@ export enum DiscordjsErrorCodes {
   TokenMissing = 'TokenMissing',
   ApplicationCommandPermissionsTokenMissing = 'ApplicationCommandPermissionsTokenMissing',
 
-  /** @deprecated WebSocket errors are now handled in `@discordjs/ws` */
-  WSCloseRequested = 'WSCloseRequested',
-  /** @deprecated WebSocket errors are now handled in `@discordjs/ws` */
-  WSConnectionExists = 'WSConnectionExists',
-  /** @deprecated WebSocket errors are now handled in `@discordjs/ws` */
-  WSNotOpen = 'WSNotOpen',
-  /** @deprecated No longer in use */
-  ManagerDestroyed = 'ManagerDestroyed',
-
-  BitFieldInvalid = 'BitFieldInvalid',
-
-  /** @deprecated This error is now handled in `@discordjs/ws` */
-  ShardingInvalid = 'ShardingInvalid',
-  /** @deprecated This error is now handled in `@discordjs/ws` */
-  ShardingRequired = 'ShardingRequired',
-  /** @deprecated This error is now handled in `@discordjs/ws` */
-  InvalidIntents = 'InvalidIntents',
-  /** @deprecated This error is now handled in `@discordjs/ws` */
-  DisallowedIntents = 'DisallowedIntents',
   ShardingNoShards = 'ShardingNoShards',
   ShardingInProcess = 'ShardingInProcess',
   ShardingInvalidEvalBroadcast = 'ShardingInvalidEvalBroadcast',
@@ -3864,30 +3714,10 @@ export enum DiscordjsErrorCodes {
 
   InviteOptionsMissingChannel = 'InviteOptionsMissingChannel',
 
-  /** @deprecated Button validation errors are now handled in `@discordjs/builders` */
-  ButtonLabel = 'ButtonLabel',
-  /** @deprecated Button validation errors are now handled in `@discordjs/builders` */
-  ButtonURL = 'ButtonURL',
-  /** @deprecated Button validation errors are now handled in `@discordjs/builders` */
-  ButtonCustomId = 'ButtonCustomId',
-
-  /** @deprecated Select Menu validation errors are now handled in `@discordjs/builders` */
-  SelectMenuCustomId = 'SelectMenuCustomId',
-  /** @deprecated Select Menu validation errors are now handled in `@discordjs/builders` */
-  SelectMenuPlaceholder = 'SelectMenuPlaceholder',
-  /** @deprecated Select Menu validation errors are now handled in `@discordjs/builders` */
-  SelectOptionLabel = 'SelectOptionLabel',
-  /** @deprecated Select Menu validation errors are now handled in `@discordjs/builders` */
-  SelectOptionValue = 'SelectOptionValue',
-  /** @deprecated Select Menu validation errors are now handled in `@discordjs/builders` */
-  SelectOptionDescription = 'SelectOptionDescription',
-
   InteractionCollectorError = 'InteractionCollectorError',
 
   FileNotFound = 'FileNotFound',
 
-  /** @deprecated No longer in use */
-  UserBannerNotFetched = 'UserBannerNotFetched',
   UserNoDMChannel = 'UserNoDMChannel',
 
   VoiceNotStageChannel = 'VoiceNotStageChannel',
@@ -3897,18 +3727,10 @@ export enum DiscordjsErrorCodes {
 
   ReqResourceType = 'ReqResourceType',
 
-  /** @deprecated This error is now handled in `@discordjs/rest` */
-  ImageFormat = 'ImageFormat',
-  /** @deprecated This error is now handled in `@discordjs/rest` */
-  ImageSize = 'ImageSize',
-
   MessageBulkDeleteType = 'MessageBulkDeleteType',
   MessageContentType = 'MessageContentType',
   MessageNonceRequired = 'MessageNonceRequired',
   MessageNonceType = 'MessageNonceType',
-
-  /** @deprecated No longer in use */
-  SplitMaxLen = 'SplitMaxLen',
 
   BanResolveId = 'BanResolveId',
   FetchBanResolveId = 'FetchBanResolveId',
@@ -3943,15 +3765,10 @@ export enum DiscordjsErrorCodes {
   EmojiType = 'EmojiType',
   EmojiManaged = 'EmojiManaged',
   MissingManageGuildExpressionsPermission = 'MissingManageGuildExpressionsPermission',
-  /** @deprecated Use {@link DiscordjsErrorCodes.MissingManageGuildExpressionsPermission} instead. */
-  MissingManageEmojisAndStickersPermission = 'MissingManageEmojisAndStickersPermission',
 
   NotGuildSticker = 'NotGuildSticker',
 
   ReactionResolveUser = 'ReactionResolveUser',
-
-  /** @deprecated Not used anymore since the introduction of `GUILD_WEB_PAGE_VANITY_URL` feature */
-  VanityURL = 'VanityURL',
 
   InviteResolveCode = 'InviteResolveCode',
 
@@ -3967,8 +3784,6 @@ export enum DiscordjsErrorCodes {
 
   InteractionAlreadyReplied = 'InteractionAlreadyReplied',
   InteractionNotReplied = 'InteractionNotReplied',
-  /** @deprecated Not used anymore since ephemeral replies can now be deleted */
-  InteractionEphemeralReplied = 'InteractionEphemeralReplied',
 
   CommandInteractionOptionNotFound = 'CommandInteractionOptionNotFound',
   CommandInteractionOptionType = 'CommandInteractionOptionType',
@@ -5037,8 +4852,6 @@ export interface AwaitReactionsOptions extends ReactionCollectorOptions {
 }
 
 export interface BanOptions {
-  /** @deprecated Use {@link BanOptions.deleteMessageSeconds} instead. */
-  deleteMessageDays?: number;
   deleteMessageSeconds?: number;
   reason?: string;
 }
@@ -5268,8 +5081,6 @@ export interface ClientEvents {
   typingStart: [typing: Typing];
   userUpdate: [oldUser: User | PartialUser, newUser: User];
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
-  /** @deprecated Use {@link ClientEvents.webhooksUpdate} instead. */
-  webhookUpdate: ClientEvents['webhooksUpdate'];
   webhooksUpdate: [channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel | MediaChannel];
   interactionCreate: [interaction: Interaction];
   shardDisconnect: [closeEvent: CloseEvent, shardId: number];

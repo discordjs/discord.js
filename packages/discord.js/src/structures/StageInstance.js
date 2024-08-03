@@ -53,17 +53,6 @@ class StageInstance extends Base {
       this.privacyLevel = data.privacy_level;
     }
 
-    if ('discoverable_disabled' in data) {
-      /**
-       * Whether or not stage discovery is disabled
-       * @type {?boolean}
-       * @deprecated See https://github.com/discord/discord-api-docs/pull/4296 for more information
-       */
-      this.discoverableDisabled = data.discoverable_disabled;
-    } else {
-      this.discoverableDisabled ??= null;
-    }
-
     if ('guild_scheduled_event_id' in data) {
       /**
        * The associated guild scheduled event id of this stage instance

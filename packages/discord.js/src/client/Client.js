@@ -31,7 +31,6 @@ const PermissionsBitField = require('../util/PermissionsBitField');
 const Status = require('../util/Status');
 const Sweepers = require('../util/Sweepers');
 
-let deprecationEmittedForPremiumStickerPacks = false;
 let deprecationEmittedForClientPresence = false;
 
 /**
@@ -363,24 +362,6 @@ class Client extends BaseClient {
   async fetchStickerPacks() {
     const data = await this.rest.get(Routes.stickerPacks());
     return new Collection(data.sticker_packs.map(stickerPack => [stickerPack.id, new StickerPack(this, stickerPack)]));
-  }
-
-  /**
-   * Obtains the list of available sticker packs.
-   * @returns {Promise<Collection<Snowflake, StickerPack>>}
-   * @deprecated Use {@link Client#fetchStickerPacks} instead.
-   */
-  fetchPremiumStickerPacks() {
-    if (!deprecationEmittedForPremiumStickerPacks) {
-      process.emitWarning(
-        'The Client#fetchPremiumStickerPacks() method is deprecated. Use Client#fetchStickerPacks() instead.',
-        'DeprecationWarning',
-      );
-
-      deprecationEmittedForPremiumStickerPacks = true;
-    }
-
-    return this.fetchStickerPacks();
   }
 
   /**

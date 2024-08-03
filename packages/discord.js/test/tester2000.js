@@ -3,7 +3,7 @@
 const process = require('node:process');
 const { GatewayIntentBits } = require('discord-api-types/v10');
 const { token, prefix, owner } = require('./auth.js');
-const { Client, Options, Formatters } = require('../src');
+const { Client, Options, codeBlock } = require('../src');
 
 // eslint-disable-next-line no-console
 const log = (...args) => console.log(process.uptime().toFixed(3), ...args);
@@ -44,7 +44,7 @@ const commands = {
       console.error(err.stack);
       res = err.message;
     }
-    message.channel.send(Formatters.codeBlock(res));
+    message.channel.send(codeBlock(res));
   },
   ping: message => message.channel.send('pong'),
 };

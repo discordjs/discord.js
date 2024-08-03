@@ -107,7 +107,7 @@ import {
   StageInstance,
   ActionRowBuilder,
   ButtonComponent,
-  SelectMenuComponent,
+  StringSelectMenuComponent,
   RepliableInteraction,
   ThreadChannelType,
   Events,
@@ -153,7 +153,6 @@ import {
   GuildTextThreadManager,
   AnySelectMenuInteraction,
   StringSelectMenuInteraction,
-  StringSelectMenuComponent,
   UserSelectMenuInteraction,
   RoleSelectMenuInteraction,
   ChannelSelectMenuInteraction,
@@ -206,7 +205,7 @@ import {
   MentionableSelectMenuComponent,
   Poll,
 } from '.';
-import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
+import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
 import { ReadonlyCollection } from '@discordjs/collection';
 
@@ -1763,7 +1762,6 @@ client.on('interactionCreate', async interaction => {
     expectType<AnySelectMenuInteraction | ButtonInteraction>(interaction);
     expectType<MessageActionRowComponent | APIButtonComponent | APISelectMenuComponent>(interaction.component);
     expectType<Message>(interaction.message);
-    expectDeprecated(interaction.sendPremiumRequired());
     if (interaction.inCachedGuild()) {
       expectAssignable<MessageComponentInteraction>(interaction);
       expectType<MessageActionRowComponent>(interaction.component);
@@ -1928,7 +1926,7 @@ client.on('interactionCreate', async interaction => {
     expectType<Message>(interaction.message);
     if (interaction.inCachedGuild()) {
       expectAssignable<StringSelectMenuInteraction>(interaction);
-      expectType<SelectMenuComponent>(interaction.component);
+      expectType<StringSelectMenuComponent>(interaction.component);
       expectType<Message<true>>(interaction.message);
       expectType<Guild>(interaction.guild);
       expectType<Promise<Message<true>>>(interaction.reply({ fetchReply: true }));
@@ -1940,7 +1938,7 @@ client.on('interactionCreate', async interaction => {
       expectType<Promise<Message<false>>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inGuild()) {
       expectAssignable<StringSelectMenuInteraction>(interaction);
-      expectType<SelectMenuComponent | APIStringSelectComponent>(interaction.component);
+      expectType<StringSelectMenuComponent | APIStringSelectComponent>(interaction.component);
       expectType<Message>(interaction.message);
       expectType<Guild | null>(interaction.guild);
       expectType<Promise<Message>>(interaction.reply({ fetchReply: true }));
@@ -1951,7 +1949,6 @@ client.on('interactionCreate', async interaction => {
     interaction.type === InteractionType.ApplicationCommand &&
     interaction.commandType === ApplicationCommandType.ChatInput
   ) {
-    expectDeprecated(interaction.sendPremiumRequired());
     if (interaction.inRawGuild()) {
       expectNotAssignable<Interaction<'cached'>>(interaction);
       expectAssignable<ChatInputCommandInteraction>(interaction);
@@ -2074,10 +2071,6 @@ client.on('interactionCreate', async interaction => {
       expectType<Promise<Message>>(interaction.deferUpdate({ fetchReply: true }));
       expectType<Promise<Message>>(interaction.followUp({ content: 'a' }));
     }
-  }
-
-  if (interaction.isModalSubmit()) {
-    expectDeprecated(interaction.sendPremiumRequired());
   }
 });
 
@@ -2528,10 +2521,6 @@ declare const sku: SKU;
 
   client.on(Events.InteractionCreate, async interaction => {
     expectType<Collection<Snowflake, Entitlement>>(interaction.entitlements);
-
-    if (interaction.isRepliable()) {
-      await interaction.sendPremiumRequired();
-    }
   });
 }
 

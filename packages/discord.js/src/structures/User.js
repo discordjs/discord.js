@@ -123,17 +123,6 @@ class User extends Base {
       this.flags = new UserFlagsBitField(data.public_flags);
     }
 
-    if ('avatar_decoration' in data) {
-      /**
-       * The user avatar decoration's hash
-       * @type {?string}
-       * @deprecated Use `avatarDecorationData` instead
-       */
-      this.avatarDecoration = data.avatar_decoration;
-    } else {
-      this.avatarDecoration ??= null;
-    }
-
     /**
      * @typedef {Object} AvatarDecorationData
      * @property {string} asset The avatar decoration hash
