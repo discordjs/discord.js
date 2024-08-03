@@ -129,7 +129,7 @@ export function visitNodes(item: ApiItem, tag: string) {
 
 		members.push({
 			id: idx++,
-			name: (inherited
+			name: (inherited && member.parent
 				? member.getScopedNameWithinPackage().replace(new RegExp(`^${member.parent?.displayName}`), item.displayName)
 				: member.getScopedNameWithinPackage()
 			).replaceAll('.', '#'),
