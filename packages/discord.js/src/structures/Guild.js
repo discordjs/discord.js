@@ -27,7 +27,6 @@ const RoleManager = require('../managers/RoleManager');
 const StageInstanceManager = require('../managers/StageInstanceManager');
 const VoiceStateManager = require('../managers/VoiceStateManager');
 const { resolveImage } = require('../util/DataResolver');
-const Status = require('../util/Status');
 const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
 const { discordSort, getSortableGroupTypes, resolvePartialEmoji } = require('../util/Util');
 
@@ -1409,7 +1408,6 @@ class Guild extends AnonymousGuild {
       this.client.voice.adapters.set(this.id, methods);
       return {
         sendPayload: data => {
-          if (this.client.status !== Status.Ready) return false;
           this.client.ws.send(this.shardId, data);
           return true;
         },

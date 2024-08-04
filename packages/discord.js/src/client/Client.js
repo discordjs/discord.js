@@ -66,6 +66,13 @@ class Client extends BaseClient {
       this.options.ws.shardCount = Number(data.SHARD_COUNT);
     }
 
+    /**
+     * The presence of the Client
+     * @private
+     * @type {ClientPresence}
+     */
+    this.presence = new ClientPresence(this, this.options.ws.initialPresence ?? this.options.presence);
+
     this._validateOptions();
 
     /**
@@ -143,16 +150,11 @@ class Client extends BaseClient {
        * @type {?string}
        */
       this.token = process.env.DISCORD_TOKEN;
+    } else if (this.options.ws.token) {
+      this.token = this.options.ws.token;
     } else {
       this.token = null;
     }
-
-    /**
-     * The presence of the Client
-     * @private
-     * @type {ClientPresence}
-     */
-    this.presence = new ClientPresence(this, this.options.ws.initialPresence ?? {});
 
     const wsOptions = {
       ...this.options.ws,
@@ -187,7 +189,7 @@ class Client extends BaseClient {
 
     /**
      * The latencies of the WebSocketShard connections
-     * @type {Collection<number,number>}
+     * @type {Collection<number, number>}
      */
     this.pings = new Collection();
 
@@ -260,7 +262,7 @@ class Client extends BaseClient {
     this.emit(Events.Debug, `Provided token: ${this._censoredToken}`);
     this.emit(Events.Debug, 'Preparing to connect to the gateway...');
 
-    if (this.ws.options.token !== this.token) this.ws.setToken(this.token);
+    this.ws.setToken(this.token);
 
     try {
       await this.ws.connect();
@@ -328,13 +330,15 @@ class Client extends BaseClient {
     this.ws.on(WebSocketShardEvents.Dispatch, this._handlePacket.bind(this));
 
     this.ws.on(WebSocketShardEvents.Ready, data => {
-      this.expectedGuilds = new Set([...this.expectedGuilds, ...data.guilds.map(guild => guild.id)]);
+      for (const guild of data.guilds) {
+        this.expectedGuilds.add(guild.id);
+      }
       this.status = Status.WaitingForGuilds;
       this._checkReady();
     });
 
     this.ws.on(WebSocketShardEvents.HeartbeatComplete, ({ heartbeatAt, latency }, shardId) => {
-      this.emit(Events.Debug, `[Shard ${shardId}] Heartbeat acknowledged, latency of ${latency}ms.`);
+      this.emit(Events.Debug, `[WS => Shard ${shardId}] Heartbeat acknowledged, latency of ${latency}ms.`);
       this.lastPingTimestamp = heartbeatAt;
       this.pings.set(shardId, latency);
     });
@@ -708,8 +712,13 @@ class Client extends BaseClient {
     if (typeof options.ws !== 'object' || options.ws === null) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'ws', 'an object');
     }
-    if (typeof options.ws.initialPresence !== 'object') {
+    if (
+      (typeof options.presence !== 'object' || options.presence === null) &&
+      options.ws.initialPresence === undefined
+    ) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'presence', 'an object');
+    } else {
+      options.ws.initialPresence = options.ws.initialPresence ?? this.presence._parse(this.options.presence);
     }
     if (typeof options.rest !== 'object' || options.rest === null) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'rest', 'an object');

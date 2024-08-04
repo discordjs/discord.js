@@ -2,7 +2,6 @@
 
 const Action = require('./Action');
 const Events = require('../../util/Events');
-const Status = require('../../util/Status');
 
 class GuildMemberUpdateAction extends Action {
   handle(data) {
@@ -27,7 +26,7 @@ class GuildMemberUpdateAction extends Action {
          * @param {GuildMember} oldMember The member before the update
          * @param {GuildMember} newMember The member after the update
          */
-        if (client.status === Status.Ready && !member.equals(old)) client.emit(Events.GuildMemberUpdate, old, member);
+        if (!member.equals(old)) client.emit(Events.GuildMemberUpdate, old, member);
       } else {
         const newMember = guild.members._add(data);
         /**
