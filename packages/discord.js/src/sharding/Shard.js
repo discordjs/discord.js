@@ -136,7 +136,12 @@ class Shard extends EventEmitter {
           .on('exit', this._exitListener);
         break;
       case 'worker':
-        this.worker = new Worker(path.resolve(this.manager.file), { workerData: this.env })
+        this.worker = new Worker(path.resolve(this.manager.file), {
+          workerData: this.env,
+          env: this.env,
+          execArgv: this.execArgv,
+          argv: this.args,
+        })
           .on('message', this._handleMessage.bind(this))
           .on('exit', this._exitListener);
         break;
