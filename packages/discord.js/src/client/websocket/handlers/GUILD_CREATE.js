@@ -3,7 +3,7 @@
 const Events = require('../../../util/Events');
 const Status = require('../../../util/Status');
 
-module.exports = (client, { d: data }, shard) => {
+module.exports = (client, { d: data }, shardId) => {
   let guild = client.guilds.cache.get(data.id);
   if (guild) {
     if (!guild.available && !data.unavailable) {
@@ -19,9 +19,9 @@ module.exports = (client, { d: data }, shard) => {
     }
   } else {
     // A new guild
-    data.shardId = shard.id;
+    data.shardId = shardId;
     guild = client.guilds._add(data);
-    if (client.ws.status === Status.Ready) {
+    if (client.status === Status.Ready) {
       /**
        * Emitted whenever the client joins a guild.
        * @event Client#guildCreate

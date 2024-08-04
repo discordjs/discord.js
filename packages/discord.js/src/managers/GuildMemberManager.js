@@ -235,7 +235,7 @@ class GuildMemberManager extends CachedManager {
 
     return new Promise((resolve, reject) => {
       if (!query && !users) query = '';
-      this.guild.shard.send({
+      this.guild.client.ws.send(this.guild.shardId, {
         op: GatewayOpcodes.RequestGuildMembers,
         d: {
           guild_id: this.guild.id,

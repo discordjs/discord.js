@@ -2,6 +2,7 @@
 
 const process = require('node:process');
 const { calculateShardId } = require('@discordjs/util');
+const { WebSocketShardEvents } = require('@discordjs/ws');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 const Events = require('../util/Events');
 const { makeError, makePlainError } = require('../util/Util');
@@ -33,54 +34,30 @@ class ShardClientUtil {
     switch (mode) {
       case 'process':
         process.on('message', this._handleMessage.bind(this));
-        client.on(Events.ShardReady, () => {
+        client.on(Events.ClientReady, () => {
           process.send({ _ready: true });
         });
-        client.on(Events.ShardDisconnect, () => {
+        client.ws.on(WebSocketShardEvents.Closed, () => {
           process.send({ _disconnect: true });
         });
-        client.on(Events.ShardReconnecting, () => {
-          process.send({ _reconnecting: true });
-        });
-        client.on(Events.ShardResume, () => {
+        client.ws.on(WebSocketShardEvents.Resumed, () => {
           process.send({ _resume: true });
         });
         break;
       case 'worker':
         this.parentPort = require('node:worker_threads').parentPort;
         this.parentPort.on('message', this._handleMessage.bind(this));
-        client.on(Events.ShardReady, () => {
+        client.on(Events.ClientReady, () => {
           this.parentPort.postMessage({ _ready: true });
         });
-        client.on(Events.ShardDisconnect, () => {
+        client.ws.on(WebSocketShardEvents.Closed, () => {
           this.parentPort.postMessage({ _disconnect: true });
         });
-        client.on(Events.ShardReconnecting, () => {
-          this.parentPort.postMessage({ _reconnecting: true });
-        });
-        client.on(Events.ShardResume, () => {
+        client.ws.on(WebSocketShardEvents.Resumed, () => {
           this.parentPort.postMessage({ _resume: true });
         });
         break;
     }
-  }
-
-  /**
-   * Array of shard ids of this client
-   * @type {number[]}
-   * @readonly
-   */
-  get ids() {
-    return this.client.options.shards;
-  }
-
-  /**
-   * Total number of shards
-   * @type {number}
-   * @readonly
-   */
-  get count() {
-    return this.client.options.shardCount;
   }
 
   /**
