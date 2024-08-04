@@ -2,7 +2,6 @@
 
 const Action = require('./Action');
 const Events = require('../../util/Events');
-const Status = require('../../util/Status');
 
 class GuildMemberRemoveAction extends Action {
   handle(data) {
@@ -19,7 +18,7 @@ class GuildMemberRemoveAction extends Action {
          * @event Client#guildMemberRemove
          * @param {GuildMember} member The member that has left/been kicked from the guild
          */
-        if (client.status === Status.Ready) client.emit(Events.GuildMemberRemove, member);
+        client.emit(Events.GuildMemberRemove, member);
       }
       guild.presences.cache.delete(data.user.id);
       guild.voiceStates.cache.delete(data.user.id);
