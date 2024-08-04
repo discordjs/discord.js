@@ -49,13 +49,13 @@ class Shard extends EventEmitter {
     this.silent = manager.silent;
 
     /**
-     * Arguments for the shard's process (only when {@link ShardingManager#mode} is `process`)
+     * Arguments for the shard's process/worker
      * @type {string[]}
      */
     this.args = manager.shardArgs ?? [];
 
     /**
-     * Arguments for the shard's process executable (only when {@link ShardingManager#mode} is `process`)
+     * Arguments for the shard's process/worker executable
      * @type {string[]}
      */
     this.execArgv = manager.execArgv;
