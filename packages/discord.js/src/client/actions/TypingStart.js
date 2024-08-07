@@ -6,7 +6,7 @@ const Events = require('../../util/Events');
 
 class TypingStart extends Action {
   handle(data) {
-    const channel = this.getChannel(data);
+    const channel = this.getChannel({ channel_id: data.channel_id, guild_id: data.guild_id });
     if (!channel) return;
 
     if (!channel.isTextBased()) {
