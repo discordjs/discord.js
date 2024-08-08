@@ -175,6 +175,9 @@ import {
   SKUType,
   APIEntitlement,
   EntitlementType,
+  ApplicationIntegrationType,
+  InteractionContextType,
+  APIAuthorizingIntegrationOwnersMap,
   APIPoll,
   PollLayoutType,
   APIPollAnswer,
@@ -441,17 +444,20 @@ export abstract class Application extends Base {
 export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   private constructor(client: Client<true>, data: RawApplicationCommandData, guild?: Guild, guildId?: Snowflake);
   public applicationId: Snowflake;
+  public contexts: InteractionContextType[] | null;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public defaultMemberPermissions: Readonly<PermissionsBitField> | null;
   public description: string;
   public descriptionLocalizations: LocalizationMap | null;
   public descriptionLocalized: string | null;
+  /** @deprecated Use {@link ApplicationCommand.contexts} instead */
   public dmPermission: boolean | null;
   public guild: Guild | null;
   public guildId: Snowflake | null;
   public get manager(): ApplicationCommandManager;
   public id: Snowflake;
+  public integrationTypes: ApplicationIntegrationType[] | null;
   public name: string;
   public nameLocalizations: LocalizationMap | null;
   public nameLocalized: string | null;
@@ -553,6 +559,7 @@ export type GuildCacheMessage<Cached extends CacheType> = CacheTypeReducer<
 export type BooleanCache<Cached extends CacheType> = Cached extends 'cached' ? true : false;
 
 export abstract class CommandInteraction<Cached extends CacheType = CacheType> extends BaseInteraction<Cached> {
+  public authorizingIntegrationOwners: APIAuthorizingIntegrationOwnersMap;
   public type: InteractionType.ApplicationCommand;
   public get command(): ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
   public options: Omit<
@@ -577,6 +584,7 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   public commandName: string;
   public commandType: ApplicationCommandType;
   public commandGuildId: Snowflake | null;
+  public context: InteractionContextType | null;
   public deferred: boolean;
   public ephemeral: boolean | null;
   public replied: boolean;
@@ -1069,6 +1077,7 @@ export class ClientApplication extends Application {
   public approximateGuildCount: number | null;
   public tags: string[];
   public installParams: ClientApplicationInstallParams | null;
+  public integrationTypesConfig: IntegrationTypesConfiguration;
   public customInstallURL: string | null;
   public owner: User | Team | null;
   public get partial(): boolean;
@@ -1891,7 +1900,7 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public type: InteractionType;
   public user: User;
   public version: number;
-  public appPermissions: CacheTypeReducer<Cached, Readonly<PermissionsBitField>>;
+  public appPermissions: Readonly<PermissionsBitField>;
   public memberPermissions: CacheTypeReducer<Cached, Readonly<PermissionsBitField>>;
   public locale: Locale;
   public guildLocale: CacheTypeReducer<Cached, Locale>;
@@ -2109,7 +2118,9 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public get guild(): If<InGuild, Guild>;
   public get hasThread(): boolean;
   public id: Snowflake;
+  /** @deprecated Use {@link Message.interactionMetadata} instead. */
   public interaction: MessageInteraction | null;
+  public interactionMetadata: MessageInteractionMetadata | null;
   public get member(): GuildMember | null;
   public mentions: MessageMentions<InGuild>;
   public nonce: string | number | null;
@@ -4700,6 +4711,8 @@ export interface BaseApplicationCommandData {
   dmPermission?: boolean;
   defaultMemberPermissions?: PermissionResolvable | null;
   nsfw?: boolean;
+  contexts?: readonly InteractionContextType[];
+  integrationTypes?: readonly ApplicationIntegrationType[];
 }
 
 export interface AttachmentData {
@@ -6154,6 +6167,18 @@ export interface IntegrationAccount {
 
 export type IntegrationType = 'twitch' | 'youtube' | 'discord' | 'guild_subscription';
 
+export type IntegrationTypesConfigurationParameters = {
+  [T in keyof ClientApplicationInstallParams]: ClientApplicationInstallParams[T] | null;
+};
+
+export interface IntegrationTypesConfigurationContext {
+  oAuth2InstallParams: IntegrationTypesConfigurationParameters | null;
+}
+
+export type IntegrationTypesConfiguration = {
+  [key in ApplicationIntegrationType]: IntegrationTypesConfigurationContext | null;
+};
+
 export type CollectedInteraction<Cached extends CacheType = CacheType> =
   | StringSelectMenuInteraction<Cached>
   | UserSelectMenuInteraction<Cached>
@@ -6301,6 +6326,16 @@ export interface MessageComponentCollectorOptions<Interaction extends CollectedM
 
 export interface MessageChannelComponentCollectorOptions<Interaction extends CollectedMessageInteraction>
   extends Omit<InteractionCollectorOptions<Interaction>, 'channel' | 'guild' | 'interactionType'> {}
+
+export interface MessageInteractionMetadata {
+  id: Snowflake;
+  type: InteractionType;
+  user: User;
+  authorizingIntegrationOwners: APIAuthorizingIntegrationOwnersMap;
+  originalResponseMessageId: Snowflake | null;
+  interactedMessageId: Snowflake | null;
+  triggeringInteractionMetadata: MessageInteractionMetadata | null;
+}
 
 export interface MessageInteraction {
   id: Snowflake;

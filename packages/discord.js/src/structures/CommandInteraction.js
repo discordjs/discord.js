@@ -46,6 +46,18 @@ class CommandInteraction extends BaseInteraction {
     this.commandGuildId = data.data.guild_id ?? null;
 
     /**
+     * Mapping of installation contexts that the interaction was authorized for the related user or guild ids
+     * @type {APIAuthorizingIntegrationOwnersMap}
+     */
+    this.authorizingIntegrationOwners = data.authorizingIntegrationOwners;
+
+    /**
+     * Context where the interaction was triggered from
+     * @type {?InteractionContextType}
+     */
+    this.context = data.context ?? null;
+
+    /**
      * Whether the reply to this interaction has been deferred
      * @type {boolean}
      */

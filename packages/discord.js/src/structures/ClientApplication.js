@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v10');
+const { Routes, ApplicationIntegrationType } = require('discord-api-types/v10');
 const { ApplicationRoleConnectionMetadata } = require('./ApplicationRoleConnectionMetadata');
 const { SKU } = require('./SKU');
 const Team = require('./Team');
@@ -11,11 +11,12 @@ const { EntitlementManager } = require('../managers/EntitlementManager');
 const ApplicationFlagsBitField = require('../util/ApplicationFlagsBitField');
 const { resolveImage } = require('../util/DataResolver');
 const PermissionsBitField = require('../util/PermissionsBitField');
+const { _transformAPIIntegrationTypesConfiguration } = require('../util/Transformers');
 
 /**
  * @typedef {Object} ClientApplicationInstallParams
- * @property {OAuth2Scopes[]} scopes The scopes to add the application to the server with
- * @property {Readonly<PermissionsBitField>} permissions The permissions this bot will request upon joining
+ * @property {OAuth2Scopes[]} scopes Scopes that will be set upon adding this application
+ * @property {Readonly<PermissionsBitField>} permissions Permissions that will be requested for the integrated role
  */
 
 /**
@@ -59,6 +60,47 @@ class ClientApplication extends Application {
       };
     } else {
       this.installParams ??= null;
+    }
+
+    /**
+     * OAuth2 installation paremeters.
+     * @typedef {Object} IntegrationTypesConfigurationParameters
+     * @property {?string[]} scopes Scopes that will be set upon adding this application
+     * @property {?Readonly<PermissionsBitField>} permissions Permissions that will be requested for the integrated role
+     */
+
+    /**
+     * The application's supported installation context data.
+     * @typedef {Object} IntegrationTypesConfigurationContext
+     * @property {?IntegrationTypesConfigurationParameters} oAuth2InstallParams
+     * Scopes and permissions regarding the installation context
+     */
+
+    /**
+     * The application's supported installation context data.
+     * @typedef {Object} IntegrationTypesConfiguration
+     * @property {?IntegrationTypesConfigurationContext} 0 Scopes and permissions
+     * regarding the guild-installation context
+     * @property {?IntegrationTypesConfigurationContext} 1 Scopes and permissions
+     * regarding the user-installation context
+     */
+
+    if ('integration_types_config' in data) {
+      /**
+       * Default scopes and permissions for each supported installation context.
+       * The keys are stringified variants of {@link ApplicationIntegrationType}.
+       * @type {IntegrationTypesConfiguration}
+       */
+      this.integrationTypesConfig = {
+        [`${ApplicationIntegrationType.GuildInstall}`]: _transformAPIIntegrationTypesConfiguration(
+          data.integration_types_config[`${ApplicationIntegrationType.GuildInstall}`],
+        ),
+        [`${ApplicationIntegrationType.UserInstall}`]: _transformAPIIntegrationTypesConfiguration(
+          data.integration_types_config[`${ApplicationIntegrationType.UserInstall}`],
+        ),
+      };
+    } else {
+      this.integrationTypesConfig ??= null;
     }
 
     if ('custom_install_url' in data) {

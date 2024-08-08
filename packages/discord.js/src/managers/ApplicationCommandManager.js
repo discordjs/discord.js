@@ -259,6 +259,8 @@ class ApplicationCommandManager extends CachedManager {
       options: command.options?.map(option => ApplicationCommand.transformOption(option)),
       default_member_permissions,
       dm_permission: command.dmPermission ?? command.dm_permission,
+      integration_types: command.integrationTypes ?? command.integration_types,
+      contexts: command.contexts,
     };
   }
 }

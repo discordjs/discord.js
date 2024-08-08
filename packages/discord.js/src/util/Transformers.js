@@ -2,6 +2,7 @@
 
 const { isJSONEncodable } = require('@discordjs/util');
 const snakeCase = require('lodash.snakecase');
+const PermissionsBitField = require('./PermissionsBitField');
 
 /**
  * Transforms camel-cased keys into snake cased keys
@@ -33,4 +34,25 @@ function _transformAPIAutoModerationAction(autoModerationAction) {
   };
 }
 
-module.exports = { toSnakeCase, _transformAPIAutoModerationAction };
+/**
+ * Transforms an API integration types config object to a camel-cased variant.
+ * @param {APIApplicationIntegrationTypeConfiguration} integrationTypesConfiguration The data to transform
+ * @returns {IntegrationTypesConfiguration}
+ * @ignore
+ */
+function _transformAPIIntegrationTypesConfiguration(integrationTypesConfiguration) {
+  console.log(integrationTypesConfiguration);
+  return integrationTypesConfiguration
+    ? {
+        oAuth2InstallParams:
+          {
+            scopes: integrationTypesConfiguration.oauth2_install_params?.scopes ?? null,
+            permissions: integrationTypesConfiguration.oauth2_install_params
+              ? new PermissionsBitField(integrationTypesConfiguration.oauth2_install_params.permissions).freeze()
+              : null,
+          } ?? null,
+      }
+    : null;
+}
+
+module.exports = { toSnakeCase, _transformAPIAutoModerationAction, _transformAPIIntegrationTypesConfiguration };
