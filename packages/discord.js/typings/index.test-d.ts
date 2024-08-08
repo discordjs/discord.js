@@ -104,6 +104,7 @@ import {
   Collector,
   GuildAuditLogsEntry,
   GuildAuditLogs,
+  type AuditLogChange,
   StageInstance,
   ActionRowBuilder,
   ButtonComponent,
@@ -2170,6 +2171,16 @@ expectType<Promise<StageInstance | undefined>>(
 expectType<Promise<User | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MessageDelete }).then(al => al.entries.first()?.target),
 );
+
+declare const AuditLogChange: AuditLogChange;
+// @ts-expect-error
+expectType<boolean | undefined>(AuditLogChange.old);
+// @ts-expect-error
+expectType<boolean | undefined>(AuditLogChange.new);
+if (AuditLogChange.key === 'available') {
+  expectType<boolean | undefined>(AuditLogChange.old);
+  expectType<boolean | undefined>(AuditLogChange.new);
+}
 
 declare const TextBasedChannel: TextBasedChannel;
 declare const TextBasedChannelTypes: TextBasedChannelTypes;
