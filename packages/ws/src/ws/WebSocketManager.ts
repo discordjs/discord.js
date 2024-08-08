@@ -210,7 +210,7 @@ export interface ManagerShardEventsMap {
 		stats: { ackAt: number; heartbeatAt: number; latency: number },
 		shardId: number,
 	];
-	[WebSocketShardEvents.SocketError]: [error: Error];
+	[WebSocketShardEvents.SocketError]: [error: Error, shardId: number];
 }
 
 export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> implements AsyncDisposable {
