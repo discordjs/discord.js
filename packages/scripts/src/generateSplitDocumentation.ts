@@ -99,7 +99,7 @@ export function resolveMembers<WantedItem extends ApiItem>(
 		.getMergedSiblings()
 		.filter((sibling) => sibling.containerKey !== parent.containerKey)
 		.flatMap((sibling) => (sibling as ApiItemContainerMixin).findMembersWithInheritance().items)
-		.filter((item) => predicate(item) && !seenItems.has(item.containerKey))
+		.filter((item) => predicate(item) && !seenItems.has(item.displayName))
 		.map((item) => ({
 			item: item as WantedItem,
 			inherited: item.parent ? (item.parent as ApiItemContainerMixin) : undefined,
