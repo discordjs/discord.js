@@ -6,7 +6,7 @@ const Events = require('../../util/Events');
 class StageInstanceUpdateAction extends Action {
   handle(data) {
     const client = this.client;
-    const channel = this.getChannel(data);
+    const channel = this.getChannel({ id: data.channel_id, guild_id: data.guild_id });
 
     if (channel) {
       const oldStageInstance = channel.guild.stageInstances.cache.get(data.id)?._clone() ?? null;
