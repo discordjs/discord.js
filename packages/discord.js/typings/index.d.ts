@@ -5,6 +5,7 @@ import {
   EmbedBuilder as BuildersEmbed,
   ChannelSelectMenuBuilder as BuilderChannelSelectMenuComponent,
   MentionableSelectMenuBuilder as BuilderMentionableSelectMenuComponent,
+  PollBuilder as BuildersPoll,
   RoleSelectMenuBuilder as BuilderRoleSelectMenuComponent,
   StringSelectMenuBuilder as BuilderStringSelectMenuComponent,
   UserSelectMenuBuilder as BuilderUserSelectMenuComponent,
@@ -16,6 +17,7 @@ import {
   ComponentBuilder,
   type RestOrArray,
   ApplicationCommandOptionAllowedChannelTypes,
+  PollMediaPartialEmoji,
 } from '@discordjs/builders';
 import {
   blockQuote,
@@ -181,6 +183,8 @@ import {
   APISelectMenuDefaultValue,
   SelectMenuDefaultValueType,
   InviteType,
+  APIPollMedia,
+  RESTAPIPollCreate,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -2607,6 +2611,18 @@ export class Presence extends Base {
   public userId: Snowflake;
   public equals(presence: Presence): boolean;
 }
+
+export class PollBuilder extends BuildersPoll {
+  public constructor(data?: Poll | APIPoll);
+  public override addAnswers(...answers: RestOrArray<PollAnswerWithEmoji>): this;
+  public override setAnswers(...answers: RestOrArray<PollAnswerWithEmoji>): this;
+  public override spliceAnswers(index: number, deleteCount: number, ...answers: RestOrArray<PollAnswerWithEmoji>): this;
+  public static from(other: JSONEncodable<RESTAPIPollCreate> | APIPoll): PollBuilder;
+}
+
+export type PollAnswerWithEmoji = Omit<PollMediaPartialEmoji, 'emoji'> & { emoji?: PollEmojiResolvable };
+
+export type PollEmojiResolvable = string | Partial<APIPartialEmoji> | EmojiResolvable;
 
 export interface PollQuestionMedia {
   text: string;
@@ -6342,7 +6358,7 @@ export interface BaseMessageOptions {
     | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
-  poll?: PollData;
+  poll?: JSONEncodable<RESTAPIPollCreate> | PollData;
 }
 
 export interface MessageCreateOptions extends BaseMessageOptions {
