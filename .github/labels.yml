@@ -1,56 +1,31 @@
-- name: api changes
-  color: '5663e9'
-- name: api support
-  color: '5663e9'
 - name: apps:guide
   color: fbca04
 - name: apps:website
   color: fbca04
-- name: backlog
-  color: 7ef7ef
-- name: backport
-  color: 88aabb
 - name: blocked
+  description: Generic label to stop Kodiak from merging a pull request.
   color: fc1423
 - name: bug
-  color: d73a4a
-- name: caching
-  color: 80c042
-- name: chore
-  color: ffffff
-- name: ci
-  color: 0075ca
-- name: dependencies
-  color: 276bd1
+  description: Something is not working as expected.
+  color: '000000'
 - name: discord
-  color: '5663e9'
-- name: discussion
-  color: b6b1f9
-- name: documentation
-  color: 0075ca
+  description: This is a Discord-related issue.
+  color: 5865f2
 - name: duplicate
   color: cfd3d7
-- name: error handling
-  color: 80c042
 - name: feature request
   color: fcf95a
-- name: gateway
-  color: 80c042
 - name: good first issue
   color: 7057ff
-- name: has PR
-  color: 4b1f8e
 - name: help wanted
   color: '008672'
-- name: in progress
-  color: ffccd7
 - name: in review
+  description: This pull request is currently in review; halts Kodiak.
   color: aed5fc
-- name: interactions
-  color: 80c042
 - name: invalid
+  description: This is not related to discord.js.
   color: e4e669
-- name: need repro
+- name: need reproduction
   color: c66037
 - name: packages:api-extractor
   color: fbca04
@@ -88,37 +63,88 @@
   color: fbca04
 - name: packages:ws
   color: fbca04
-- name: performance
-  color: 80c042
-- name: permissions
-  color: 80c042
 - name: priority:high
   color: fc1423
-- name: question (please use Discord instead)
-  color: d876e3
-- name: ratelimits
-  color: 80c042
-- name: refactor
-  color: 1d637f
-- name: regression
-  color: ea8785
-- name: REST
-  color: 80c042
+- name: scope:backport
+  color: ff8357
+- name: scope:build
+  color: ff8357
+- name: scope:chore
+  color: ff8357
+- name: scope:ci
+  color: ff8357
+- name: scope:docs
+  color: ff8357
+- name: scope:feat
+  color: ff8357
+- name: scope:fix
+  color: ff8357
+- name: scope:perf
+  color: ff8357
+- name: scope:refactor
+  color: ff8357
+- name: scope:revert
+  color: ff8357
+- name: scope:style
+  color: ff8357
+- name: scope:test
+  color: ff8357
+- name: scope:types
+  color: ff8357
 - name: semver:major
   color: c10f47
 - name: semver:minor
   color: e4f486
 - name: semver:patch
   color: e8be8b
-- name: sharding
-  color: 80c042
-- name: tests
-  color: f06dff
-- name: threads
-  color: 80c042
-- name: typings
-  color: 80c042
-- name: utility
-  color: 80c042
-- name: wontfix
-  color: ffffff
+- name: type:application commands
+  color: b6b1f9
+- name: type:applications
+  color: b6b1f9
+- name: type:caching
+  color: b6b1f9
+- name: type:channel
+  color: b6b1f9
+- name: type:dependencies
+  color: b6b1f9
+- name: type:discord update
+  color: b6b1f9
+- name: type:gateway
+  color: b6b1f9
+- name: type:guild
+  color: b6b1f9
+- name: type:interactions
+  color: b6b1f9
+- name: type:invite
+  color: b6b1f9
+- name: type:monetization
+  color: b6b1f9
+- name: type:oauth2
+  color: b6b1f9
+- name: type:permissions
+  color: b6b1f9
+- name: type:poll
+  color: b6b1f9
+- name: type:rate limit
+  color: b6b1f9
+- name: type:regression
+  color: b6b1f9
+- name: type:role connections
+  color: b6b1f9
+- name: type:sharding
+  color: b6b1f9
+- name: type:stage instances
+  color: b6b1f9
+- name: type:sticker
+  color: b6b1f9
+- name: type:thread
+  color: b6b1f9
+- name: type:user
+  color: b6b1f9
+- name: type:voice
+  color: b6b1f9
+- name: type:webhook
+  color: b6b1f9
+- name: won't fix
+  description: No work will be done towards this issue.
+  color: cfd3d7
