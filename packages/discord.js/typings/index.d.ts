@@ -41,6 +41,7 @@ import { Collection, ReadonlyCollection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
 import {
   WebSocketManager as WSWebSocketManager,
+  CompressionMethod,
   IShardingStrategy,
   IIdentifyThrottler,
   SessionInfo,
@@ -6875,6 +6876,7 @@ export interface WebhookMessageCreateOptions extends Omit<MessageCreateOptions, 
 
 export interface WebSocketOptions {
   large_threshold?: number;
+  compressionMethod?: CompressionMethod;
   version?: number;
   buildStrategy?(manager: WSWebSocketManager): IShardingStrategy;
   buildIdentifyThrottler?(manager: WSWebSocketManager): Awaitable<IIdentifyThrottler>;
