@@ -26,7 +26,6 @@ import {
 	CompressionMethod,
 	CompressionParameterMap,
 	ImportantGatewayOpcodes,
-	KnownNetworkErrorCodes,
 	getInitialSendRateLimitState,
 } from '../utils/constants.js';
 import type { SessionInfo } from './WebSocketManager.js';
@@ -45,6 +44,7 @@ export enum WebSocketShardEvents {
 	Hello = 'hello',
 	Ready = 'ready',
 	Resumed = 'resumed',
+	SocketError = 'socketError',
 }
 
 export enum WebSocketShardStatus {
@@ -68,6 +68,7 @@ export interface WebSocketShardEventsMap {
 	[WebSocketShardEvents.Ready]: [payload: GatewayReadyDispatchData];
 	[WebSocketShardEvents.Resumed]: [];
 	[WebSocketShardEvents.HeartbeatComplete]: [stats: { ackAt: number; heartbeatAt: number; latency: number }];
+	[WebSocketShardEvents.SocketError]: [error: Error];
 }
 
 export interface WebSocketShardDestroyOptions {
@@ -791,13 +792,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	private onError(error: Error) {
-		if ('code' in error && KnownNetworkErrorCodes.has(error.code as string)) {
-			this.debug(['Failed to connect to the gateway URL specified due to a network error']);
-			this.failedToConnectDueToNetworkError = true;
-			return;
-		}
-
-		this.emit(WebSocketShardEvents.Error, error);
+		this.emit(WebSocketShardEvents.SocketError, error);
+		this.failedToConnectDueToNetworkError = true;
 	}
 
 	private async onClose(code: number) {
