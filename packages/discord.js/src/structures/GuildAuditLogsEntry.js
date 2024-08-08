@@ -172,7 +172,11 @@ class GuildAuditLogsEntry {
      * @type {AuditLogChange[]}
      */
     this.changes =
-      data.changes?.map(change => ({ key: change.key, old: change.old_value, new: change.new_value })) ?? [];
+      data.changes?.map(change => ({
+        key: change.key,
+        ...('old_value' in change ? { old: change.old_value } : {}),
+        ...('new_value' in change ? { new: change.new_value } : {}),
+      })) ?? [];
 
     /**
      * The entry's id
