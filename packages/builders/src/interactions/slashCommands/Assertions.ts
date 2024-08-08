@@ -11,6 +11,11 @@ import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder.js';
 import type { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands.js';
 import type { ApplicationCommandOptionBase } from './mixins/ApplicationCommandOptionBase.js';
 
+export class MissingRequiredParameterError extends Error {
+	public constructor(missingParameter: string) {
+		super(`Required parameter "${missingParameter}" is missing`);
+	}
+}
 const namePredicate = s.string
 	.lengthGreaterThanOrEqual(1)
 	.lengthLessThanOrEqual(32)
@@ -41,14 +46,22 @@ export function validateMaxOptionsLength(options: unknown): asserts options is T
 }
 
 export function validateRequiredParameters(
-	name: string,
-	description: string,
+	name: string | undefined,
+	description: string | undefined,
 	options: ToAPIApplicationCommandOptions[],
 ) {
 	// Assert name matches all conditions
+	if (!name) {
+		throw new MissingRequiredParameterError('name');
+	}
+
 	validateName(name);
 
 	// Assert description conditions
+	if (!description) {
+		throw new MissingRequiredParameterError('description');
+	}
+
 	validateDescription(description);
 
 	// Assert options conditions
