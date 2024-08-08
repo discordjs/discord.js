@@ -9,6 +9,7 @@ const Partials = require('../../util/Partials');
      message_id: 'id',
      emoji: { name: '�', id: null },
      channel_id: 'id',
+     burst: boolean
      // If originating from a guild
      guild_id: 'id',
      member: { ..., user: { ... } } }

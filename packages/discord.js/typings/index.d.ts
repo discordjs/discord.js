@@ -2343,6 +2343,7 @@ export class MessageReaction {
   public countDetails: ReactionCountDetailsData;
   public get emoji(): GuildEmoji | ReactionEmoji;
   public me: boolean;
+  public meBurst: boolean;
   public message: Message | PartialMessage;
   public get partial(): false;
   public users: ReactionUserManager;

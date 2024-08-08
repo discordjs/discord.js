@@ -32,6 +32,12 @@ class MessageReaction {
     this.me = data.me;
 
     /**
+     * Whether the client has super-reacted using this emoji
+     * @type {boolean}
+     */
+    this.meBurst = data.me_burst;
+
+    /**
      * A manager of the users that have given this reaction
      * @type {ReactionUserManager}
      */
@@ -152,27 +158,26 @@ class MessageReaction {
     this.users.cache.set(user.id, user);
     if (!this.me || user.id !== this.message.client.user.id || this.count === 0) {
       this.count++;
-      if (burst) {
-        this.countDetails.burst++;
-      } else {
-        this.countDetails.normal++;
-      }
+      if (burst) this.countDetails.burst++;
+      else this.countDetails.normal++;
     }
-    this.me ||= user.id === this.message.client.user.id;
+    if (user.id === this.message.client.user.id) {
+      if (burst) this.meBurst = true;
+      else this.me = true;
+    }
   }
-
   _remove(user, burst) {
     if (this.partial) return;
     this.users.cache.delete(user.id);
     if (!this.me || user.id !== this.message.client.user.id) {
       this.count--;
-      if (burst) {
-        this.countDetails.burst--;
-      } else {
-        this.countDetails.normal--;
-      }
+      if (burst) this.countDetails.burst--;
+      else this.countDetails.normal--;
     }
-    if (user.id === this.message.client.user.id) this.me = false;
+    if (user.id === this.message.client.user.id) {
+      if (burst) this.meBurst = false;
+      else this.me = false;
+    }
     if (this.count <= 0 && this.users.cache.size === 0) {
       this.message.reactions.cache.delete(this.emoji.id ?? this.emoji.name);
     }
