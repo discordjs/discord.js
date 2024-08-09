@@ -8,7 +8,7 @@ const Base = require('./Base');
 let deprecationEmittedForURL = false;
 
 /**
- * Represents an emoji, see {@link GuildEmoji} and {@link ReactionEmoji}.
+ * Represents an emoji, see {@link ApplicationEmoji}, {@link GuildEmoji} and {@link ReactionEmoji}.
  * @extends {Base}
  */
 class Emoji extends Base {
