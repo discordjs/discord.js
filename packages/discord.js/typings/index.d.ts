@@ -181,6 +181,7 @@ import {
   APISelectMenuDefaultValue,
   SelectMenuDefaultValueType,
   InviteType,
+  ReactionType,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -5693,6 +5694,7 @@ export interface FetchMessagesOptions {
 }
 
 export interface FetchReactionUsersOptions {
+  type?: ReactionType;
   limit?: number;
   after?: Snowflake;
 }
