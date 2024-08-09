@@ -98,7 +98,7 @@ export class MentionableSelectMenuBuilder extends BaseSelectMenuBuilder<APIMenti
 	}
 
 	/**
-	 * Sets default values to this auto populated select menu.
+	 * Sets default values for this auto populated select menu.
 	 *
 	 * @param values - The values to set
 	 */
@@ -110,7 +110,7 @@ export class MentionableSelectMenuBuilder extends BaseSelectMenuBuilder<APIMenti
 	) {
 		const normalizedValues = normalizeArray(values);
 		optionsLengthValidator.parse(normalizedValues.length);
-		this.data.default_values = normalizedValues.slice();
+		this.data.default_values = normalizedValues;
 		return this;
 	}
 }

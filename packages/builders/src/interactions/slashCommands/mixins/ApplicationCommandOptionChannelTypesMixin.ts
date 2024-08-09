@@ -1,5 +1,6 @@
 import { s } from '@sapphire/shapeshift';
 import { ChannelType } from 'discord-api-types/v10';
+import { normalizeArray, type RestOrArray } from '../../../util/normalizeArray';
 
 /**
  * The allowed channel types used for a channel option in a slash command builder.
@@ -41,12 +42,12 @@ export class ApplicationCommandOptionChannelTypesMixin {
 	 *
 	 * @param channelTypes - The channel types
 	 */
-	public addChannelTypes(...channelTypes: ApplicationCommandOptionAllowedChannelTypes[]) {
+	public addChannelTypes(...channelTypes: RestOrArray<ApplicationCommandOptionAllowedChannelTypes>) {
 		if (this.channel_types === undefined) {
 			Reflect.set(this, 'channel_types', []);
 		}
 
-		this.channel_types!.push(...channelTypesPredicate.parse(channelTypes));
+		this.channel_types!.push(...channelTypesPredicate.parse(normalizeArray(channelTypes)));
 
 		return this;
 	}

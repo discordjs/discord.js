@@ -48,7 +48,7 @@ export enum WorkerReceivePayloadOp {
 
 export type WorkerReceivePayload =
 	// Can't seem to get a type-safe union based off of the event, so I'm sadly leaving data as any for now
-	| { data: any; event: WebSocketShardEvents; op: WorkerReceivePayloadOp.Event; shardId: number }
+	| { data: any[]; event: WebSocketShardEvents; op: WorkerReceivePayloadOp.Event; shardId: number }
 	| { nonce: number; op: WorkerReceivePayloadOp.CancelIdentify }
 	| { nonce: number; op: WorkerReceivePayloadOp.FetchStatusResponse; status: WebSocketShardStatus }
 	| { nonce: number; op: WorkerReceivePayloadOp.RetrieveSessionInfo; shardId: number }
@@ -66,6 +66,10 @@ export interface WorkerShardingStrategyOptions {
 	 * Dictates how many shards should be spawned per worker thread.
 	 */
 	shardsPerWorker: number | 'all';
+	/**
+	 * Handles a payload not recognized by the handler.
+	 */
+	unknownPayloadHandler?(payload: any): unknown;
 	/**
 	 * Path to the worker file to use. The worker requires quite a bit of setup, it is recommended you leverage the {@link WorkerBootstrapper} class.
 	 */
@@ -225,7 +229,13 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			.on('messageerror', (err) => {
 				throw err;
 			})
-			.on('message', async (payload: WorkerReceivePayload) => this.onMessage(worker, payload));
+			.on('message', async (payload: any) => {
+				if ('op' in payload) {
+					await this.onMessage(worker, payload);
+				} else {
+					await this.options.unknownPayloadHandler?.(payload);
+				}
+			});
 
 		this.#workers.push(worker);
 		for (const shardId of workerData.shardIds) {
@@ -283,7 +293,8 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 			}
 
 			case WorkerReceivePayloadOp.Event: {
-				this.manager.emit(payload.event, { ...payload.data, shardId: payload.shardId });
+				// @ts-expect-error Event props can't be resolved properly, but they are correct
+				this.manager.emit(payload.event, ...payload.data, payload.shardId);
 				break;
 			}
 
@@ -345,6 +356,11 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 				};
 				worker.postMessage(response);
 
+				break;
+			}
+
+			default: {
+				await this.options.unknownPayloadHandler?.(payload);
 				break;
 			}
 		}

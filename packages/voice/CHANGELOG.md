@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/voice@0.17.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.16.0...@discordjs/voice@0.17.0) - (2024-05-04)
+
+## Bug Fixes
+
+- Minify mainlib docs json (#9963) ([4b88306](https://github.com/discordjs/discord.js/commit/4b88306dcb2b16b840ec61e9e33047af3a31c45d))
+- **TransformerGraph:** Explicitly include input args for readable input cases instead of just for string input cases (#9793) ([788888a](https://github.com/discordjs/discord.js/commit/788888ab9ad17f1c8d85d68656c617334feb4361))
+- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
+
+## Documentation
+
+- Split docs.api.json into multiple json files ([597340f](https://github.com/discordjs/discord.js/commit/597340f288437c35da8c703d9b621274de60d880))
+- **create-discord-bot:** Support bun in create-discord-bot (#9798) ([7157748](https://github.com/discordjs/discord.js/commit/7157748fe3a69265896adf0450cd3f37acbcf97b))
+- Update Node.js requirement to 16.11.0 (#9764) ([188877c](https://github.com/discordjs/discord.js/commit/188877c50af70f0d5cffb246620fa277435c6ce6))
+- Include StreamType enum description in new docs (#9457) ([36216c0](https://github.com/discordjs/discord.js/commit/36216c0e1a0c99e5200de97f08d054e278fd3f0f))
+- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
+
+## Features
+
+- Local and preview detection ([79fbda3](https://github.com/discordjs/discord.js/commit/79fbda3aac6d4f0f8bfb193e797d09cbe331d315))
+
+## Refactor
+
+- Docs (#10126) ([18cce83](https://github.com/discordjs/discord.js/commit/18cce83d80598c430218775c53441b6b2ecdc776))
+- Move `getNode`/`canEnableFFmpegOptimizations` into a lazy loaded call (#9918) ([637e1a4](https://github.com/discordjs/discord.js/commit/637e1a4ddb6d5810deb31c5b90400ca277218270))
+
 # [@discordjs/voice@0.16.1](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.16.0...@discordjs/voice@0.16.1) - (2023-11-12)
 
 ## Bug Fixes

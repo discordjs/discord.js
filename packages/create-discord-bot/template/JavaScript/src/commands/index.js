@@ -1,3 +1,5 @@
+import { z } from 'zod';
+
 /**
  * Defines the structure of a command.
  *
@@ -7,15 +9,17 @@
  */
 
 /**
+ * Defines the schema for a command
+ */
+export const schema = z.object({
+	data: z.record(z.any()),
+	execute: z.function(),
+});
+
+/**
  * Defines the predicate to check if an object is a valid Command type.
  *
  * @type {import('../util/loaders.js').StructurePredicate<Command>}
  * @returns {structure is Command}
  */
-export const predicate = (structure) =>
-	Boolean(structure) &&
-	typeof structure === 'object' &&
-	'data' in structure &&
-	'execute' in structure &&
-	typeof structure.data === 'object' &&
-	typeof structure.execute === 'function';
+export const predicate = (structure) => schema.safeParse(structure).success;

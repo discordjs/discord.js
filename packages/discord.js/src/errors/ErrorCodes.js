@@ -176,6 +176,10 @@
  * @property {'SweepFilterReturn'} SweepFilterReturn
 
  * @property {'EntitlementCreateInvalidOwner'} EntitlementCreateInvalidOwner
+
+ * @property {'BulkBanUsersOptionEmpty'} BulkBanUsersOptionEmpty
+
+ * @property {'PollAlreadyExpired'} PollAlreadyExpired
  */
 
 const keys = [
@@ -329,6 +333,10 @@ const keys = [
   'GuildForumMessageRequired',
 
   'EntitlementCreateInvalidOwner',
+
+  'BulkBanUsersOptionEmpty',
+
+  'PollAlreadyExpired',
 ];
 
 // JSDoc for IntelliSense purposes

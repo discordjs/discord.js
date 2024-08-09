@@ -26,6 +26,7 @@ import {
 	type RESTGetAPIGuildPreviewResult,
 	type RESTGetAPIGuildPruneCountQuery,
 	type RESTGetAPIGuildPruneCountResult,
+	type RESTGetAPIGuildQuery,
 	type RESTGetAPIGuildResult,
 	type RESTGetAPIGuildRolesResult,
 	type RESTGetAPIGuildScheduledEventQuery,
@@ -74,6 +75,8 @@ import {
 	type RESTPatchAPIGuildWidgetSettingsResult,
 	type RESTPostAPIAutoModerationRuleJSONBody,
 	type RESTPostAPIAutoModerationRuleResult,
+	type RESTPostAPIGuildBulkBanJSONBody,
+	type RESTPostAPIGuildBulkBanResult,
 	type RESTPostAPIGuildChannelJSONBody,
 	type RESTPostAPIGuildChannelResult,
 	type RESTPostAPIGuildEmojiJSONBody,
@@ -109,9 +112,38 @@ export class GuildsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild}
 	 * @param guildId - The id of the guild
 	 * @param options - The options for fetching the guild
+	 * @deprecated Use the overload with a query instead.
 	 */
-	public async get(guildId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
-		return this.rest.get(Routes.guild(guildId), { signal }) as Promise<RESTGetAPIGuildResult>;
+	public async get(guildId: Snowflake, { signal }?: Pick<RequestData, 'signal'>): Promise<RESTGetAPIGuildResult>;
+
+	/**
+	 * Fetches a guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild}
+	 * @param guildId - The id of the guild
+	 * @param query - The query options for fetching the guild
+	 * @param options - The options for fetching the guild
+	 */
+	public async get(
+		guildId: Snowflake,
+		query?: RESTGetAPIGuildQuery,
+		options?: Pick<RequestData, 'signal'>,
+	): Promise<RESTGetAPIGuildResult>;
+
+	public async get(
+		guildId: Snowflake,
+		queryOrOptions: Pick<RequestData, 'signal'> | RESTGetAPIGuildQuery = {},
+		options: Pick<RequestData, 'signal'> = {},
+	) {
+		const requestData: RequestData = {
+			signal: ('signal' in queryOrOptions ? queryOrOptions : options).signal,
+		};
+
+		if ('with_counts' in queryOrOptions) {
+			requestData.query = makeURLSearchParams(queryOrOptions);
+		}
+
+		return this.rest.get(Routes.guild(guildId), requestData) as Promise<RESTGetAPIGuildResult>;
 	}
 
 	/**
@@ -332,6 +364,26 @@ export class GuildsAPI {
 		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
 		await this.rest.delete(Routes.guildBan(guildId, userId), { reason, signal });
+	}
+
+	/**
+	 * Bulk ban users from a guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#bulk-guild-ban}
+	 * @param guildId - The id of the guild to bulk ban users in
+	 * @param body - The data for bulk banning users
+	 * @param options - The options for bulk banning users
+	 */
+	public async bulkBanUsers(
+		guildId: Snowflake,
+		body: RESTPostAPIGuildBulkBanJSONBody,
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+	) {
+		return this.rest.post(Routes.guildBulkBan(guildId), {
+			reason,
+			body,
+			signal,
+		}) as Promise<RESTPostAPIGuildBulkBanResult>;
 	}
 
 	/**

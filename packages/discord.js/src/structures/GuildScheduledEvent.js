@@ -229,7 +229,7 @@ class GuildScheduledEvent extends Base {
 
   /**
    * The time the guild scheduled event will start at
-   * <info>This can be potentially `null` only when it's an {@link AuditLogEntryTarget}</info>
+   * <info>This can be potentially `null` only when it's an {@link GuildAuditLogsEntry#target}</info>
    * @type {?Date}
    * @readonly
    */

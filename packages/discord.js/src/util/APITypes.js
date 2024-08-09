@@ -161,6 +161,11 @@
  */
 
 /**
+ * @external APIOverwrite
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIOverwrite}
+ */
+
+/**
  * @external APIPartialEmoji
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIPartialEmoji}
  */
@@ -406,6 +411,11 @@
  */
 
 /**
+ * @external InviteType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InviteType}
+ */
+
+/**
  * @external InviteTargetType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InviteTargetType}
  */
@@ -448,6 +458,11 @@
 /**
  * @external PermissionFlagsBits
  * @see {@link https://discord-api-types.dev/api/discord-api-types-payloads/common#PermissionFlagsBits}
+ */
+
+/**
+ * @external PollLayoutType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/PollLayoutType}
  */
 
 /**

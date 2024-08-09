@@ -46,16 +46,16 @@
 			"outputMode": "full"
 		},
 		"@discordjs/website#build:local": {
+			"env": ["VERCEL_ENV", "NEXT_PUBLIC_LOCAL_DEV"],
 			"dependsOn": ["^build", "^docs"],
 			"inputs": [
 				"../../packages/*/README.md",
 				"public/**",
 				"src/**",
 				"scripts/**",
-				"!src/styles/unocss.css",
 				"!src/assets/readme/**",
 				"scripts/**",
-				"next.config.js",
+				"next.config.mjs",
 				"package.json",
 				"tsconfig.json"
 			],
@@ -63,16 +63,16 @@
 			"outputMode": "full"
 		},
 		"@discordjs/website#build:prod": {
+			"env": ["VERCEL_ENV", "NEXT_PUBLIC_LOCAL_DEV"],
 			"dependsOn": ["^build"],
 			"inputs": [
 				"../../packages/*/README.md",
 				"public/**",
 				"src/**",
 				"scripts/**",
-				"!src/styles/unocss.css",
 				"!src/assets/readme/**",
 				"scripts/**",
-				"next.config.js",
+				"next.config.mjs",
 				"package.json",
 				"tsconfig.json"
 			],
@@ -177,10 +177,12 @@
 				"docs/**",
 				"!docs/docs.json",
 				"!docs/docs.api.json",
+				"!docs/*/split/**",
 				"tsconfig.docs.json"
 			],
-			"outputs": ["dist-docs/**", "docs/docs.json", "docs/docs.api.json"],
-			"outputMode": "errors-only"
+			"outputs": ["dist-docs/**", "docs/docs.json", "docs/docs.api.json", "docs/*/split/**"],
+			"outputMode": "errors-only",
+			"cache": false
 		},
 		"changelog": {
 			"inputs": ["cliff.toml"],
@@ -206,6 +208,7 @@
 			"persistent": true
 		},
 		"@discordjs/website#dev": {
+			"env": ["VERCEL_ENV", "NEXT_PUBLIC_LOCAL_DEV"],
 			"dependsOn": ["^build", "^docs"],
 			"outputMode": "full",
 			"cache": false,

@@ -12,6 +12,7 @@ import {
 import { generatePath } from '@discordjs/api-extractor-utils';
 import { DocNodeKind } from '@microsoft/tsdoc';
 import type { DocLinkTag, DocCodeSpan, DocNode, DocParagraph, DocPlainText } from '@microsoft/tsdoc';
+import { resolveMembers } from './generateSplitDocumentation.js';
 import { PACKAGES, fetchVersionDocs, fetchVersions } from './shared.js';
 
 export interface MemberJSON {
@@ -19,6 +20,7 @@ export interface MemberJSON {
 	name: string;
 	path: string;
 	summary: string | null;
+	type: number;
 }
 
 let idx = 0;
@@ -89,28 +91,52 @@ export function tryResolveSummaryText(item: ApiDeclaredItem): string | null {
 	return retVal;
 }
 
+export enum SearchOrderType {
+	Class,
+	Interface,
+	TypeAlias,
+	Function,
+	Enum,
+	Variable,
+	Event,
+	Method,
+	Property,
+	MethodSignature,
+	PropertySignature,
+	EnumMember,
+	Package,
+	Namespace,
+	IndexSignature,
+	CallSignature,
+	Constructor,
+	ConstructSignature,
+	EntryPoint,
+	Model,
+	None,
+}
+
 export function visitNodes(item: ApiItem, tag: string) {
 	const members: (MemberJSON & { id: number })[] = [];
 
-	for (const member of item.members) {
-		if (!(member instanceof ApiDeclaredItem)) {
-			continue;
-		}
-
+	for (const { item: member, inherited } of ApiItemContainerMixin.isBaseClassOf(item)
+		? resolveMembers(item, (child): child is ApiDeclaredItem => child instanceof ApiDeclaredItem)
+		: []) {
 		if (member.kind === ApiItemKind.Constructor || member.kind === ApiItemKind.Namespace) {
 			continue;
 		}
 
-		if (ApiItemContainerMixin.isBaseClassOf(member)) {
-			members.push(...visitNodes(member, tag));
-		}
+		members.push(...visitNodes(member, tag));
 
 		members.push({
 			id: idx++,
-			name: member.displayName,
+			name: (inherited && member.parent
+				? member.getScopedNameWithinPackage().replace(new RegExp(`^${member.parent?.displayName}`), item.displayName)
+				: member.getScopedNameWithinPackage()
+			).replaceAll('.', '#'),
 			kind: member.kind,
 			summary: tryResolveSummaryText(member) ?? '',
-			path: generatePath(member.getHierarchy(), tag),
+			path: generatePath(inherited ? [...item.getHierarchy(), member] : member.getHierarchy(), tag),
+			type: SearchOrderType[member.kind as keyof typeof SearchOrderType],
 		});
 	}
 

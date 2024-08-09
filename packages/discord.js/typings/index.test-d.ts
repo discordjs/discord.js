@@ -27,6 +27,12 @@ import {
   APIActionRowComponent,
   APIActionRowComponentTypes,
   APIStringSelectComponent,
+  APIUserSelectComponent,
+  APIRoleSelectComponent,
+  APIChannelSelectComponent,
+  APIMentionableSelectComponent,
+  APIModalInteractionResponseCallbackData,
+  WebhookType,
 } from 'discord-api-types/v10';
 import {
   ApplicationCommand,
@@ -81,12 +87,12 @@ import {
   Snowflake,
   StageChannel,
   TextBasedChannelFields,
-  TextBasedChannel,
-  TextBasedChannelTypes,
-  VoiceBasedChannel,
-  GuildBasedChannel,
-  NonThreadGuildBasedChannel,
-  GuildTextBasedChannel,
+  type TextBasedChannel,
+  type TextBasedChannelTypes,
+  type VoiceBasedChannel,
+  type GuildBasedChannel,
+  type NonThreadGuildBasedChannel,
+  type GuildTextBasedChannel,
   TextChannel,
   ThreadChannel,
   ThreadMember,
@@ -190,9 +196,19 @@ import {
   DirectoryChannel,
   Entitlement,
   SKU,
+  UserSelectMenuBuilder,
+  RoleSelectMenuBuilder,
+  ChannelSelectMenuBuilder,
+  MentionableSelectMenuBuilder,
+  UserSelectMenuComponent,
+  RoleSelectMenuComponent,
+  ChannelSelectMenuComponent,
+  MentionableSelectMenuComponent,
+  Poll,
 } from '.';
-import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
+import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
+import { ReadonlyCollection } from '@discordjs/collection';
 
 // Test type transformation:
 declare const serialize: <Value>(value: Value) => Serialized<Value>;
@@ -524,8 +540,10 @@ client.on('messageCreate', async message => {
   if (webhook.isChannelFollower()) {
     expectAssignable<Guild | APIPartialGuild>(webhook.sourceGuild);
     expectAssignable<NewsChannel | APIPartialChannel>(webhook.sourceChannel);
+    expectType<Webhook<WebhookType.ChannelFollower>>(webhook);
   } else if (webhook.isIncoming()) {
     expectType<string>(webhook.token);
+    expectType<Webhook<WebhookType.Incoming>>(webhook);
   }
 
   expectNotType<Guild | APIPartialGuild>(webhook.sourceGuild);
@@ -1171,8 +1189,8 @@ client.on('threadMembersUpdate', (addedMembers, removedMembers, thread) => {
   expectType<Client<true>>(addedMembers.first()!.client);
   expectType<Client<true>>(removedMembers.first()!.client);
   expectType<Client<true>>(thread.client);
-  expectType<Collection<Snowflake, ThreadMember>>(addedMembers);
-  expectType<Collection<Snowflake, ThreadMember | PartialThreadMember>>(removedMembers);
+  expectType<ReadonlyCollection<Snowflake, ThreadMember>>(addedMembers);
+  expectType<ReadonlyCollection<Snowflake, ThreadMember | PartialThreadMember>>(removedMembers);
   expectType<AnyThreadChannel>(thread);
   const left = removedMembers.first();
   if (!left) return;
@@ -1745,6 +1763,7 @@ client.on('interactionCreate', async interaction => {
     expectType<AnySelectMenuInteraction | ButtonInteraction>(interaction);
     expectType<MessageActionRowComponent | APIButtonComponent | APISelectMenuComponent>(interaction.component);
     expectType<Message>(interaction.message);
+    expectDeprecated(interaction.sendPremiumRequired());
     if (interaction.inCachedGuild()) {
       expectAssignable<MessageComponentInteraction>(interaction);
       expectType<MessageActionRowComponent>(interaction.component);
@@ -1932,6 +1951,7 @@ client.on('interactionCreate', async interaction => {
     interaction.type === InteractionType.ApplicationCommand &&
     interaction.commandType === ApplicationCommandType.ChatInput
   ) {
+    expectDeprecated(interaction.sendPremiumRequired());
     if (interaction.inRawGuild()) {
       expectNotAssignable<Interaction<'cached'>>(interaction);
       expectAssignable<ChatInputCommandInteraction>(interaction);
@@ -1990,7 +2010,7 @@ client.on('interactionCreate', async interaction => {
     const requiredOption = interaction.options.get('name', true);
     expectType<CommandInteractionOption | null>(optionalOption);
     expectType<CommandInteractionOption>(requiredOption);
-    expectType<CommandInteractionOption[] | undefined>(requiredOption.options);
+    expectType<readonly CommandInteractionOption[] | undefined>(requiredOption.options);
 
     expectType<string | null>(interaction.options.getString('name', booleanValue));
     expectType<string | null>(interaction.options.getString('name', false));
@@ -2055,6 +2075,10 @@ client.on('interactionCreate', async interaction => {
       expectType<Promise<Message>>(interaction.followUp({ content: 'a' }));
     }
   }
+
+  if (interaction.isModalSubmit()) {
+    expectDeprecated(interaction.sendPremiumRequired());
+  }
 });
 
 declare const shard: Shard;
@@ -2082,7 +2106,7 @@ collector.on('dispose', (vals, ...other) => {
 });
 
 collector.on('end', (collection, reason) => {
-  expectType<Collection<string, Interaction>>(collection);
+  expectType<ReadonlyCollection<string, Interaction>>(collection);
   expectType<string>(reason);
 });
 
@@ -2244,17 +2268,44 @@ chatInputInteraction.showModal({
   ],
 });
 
-declare const selectMenuData: APISelectMenuComponent;
-StringSelectMenuBuilder.from(selectMenuData);
+declare const stringSelectMenuData: APIStringSelectComponent;
+StringSelectMenuBuilder.from(stringSelectMenuData);
 
-declare const selectMenuComp: SelectMenuComponent;
-StringSelectMenuBuilder.from(selectMenuComp);
+declare const userSelectMenuData: APIUserSelectComponent;
+UserSelectMenuBuilder.from(userSelectMenuData);
+
+declare const roleSelectMenuData: APIRoleSelectComponent;
+RoleSelectMenuBuilder.from(roleSelectMenuData);
+
+declare const channelSelectMenuData: APIChannelSelectComponent;
+ChannelSelectMenuBuilder.from(channelSelectMenuData);
+
+declare const mentionableSelectMenuData: APIMentionableSelectComponent;
+MentionableSelectMenuBuilder.from(mentionableSelectMenuData);
+
+declare const stringSelectMenuComp: StringSelectMenuComponent;
+StringSelectMenuBuilder.from(stringSelectMenuComp);
+
+declare const userSelectMenuComp: UserSelectMenuComponent;
+UserSelectMenuBuilder.from(userSelectMenuComp);
+
+declare const roleSelectMenuComp: RoleSelectMenuComponent;
+RoleSelectMenuBuilder.from(roleSelectMenuComp);
+
+declare const channelSelectMenuComp: ChannelSelectMenuComponent;
+ChannelSelectMenuBuilder.from(channelSelectMenuComp);
+
+declare const mentionableSelectMenuComp: MentionableSelectMenuComponent;
+MentionableSelectMenuBuilder.from(mentionableSelectMenuComp);
 
 declare const buttonData: APIButtonComponent;
 ButtonBuilder.from(buttonData);
 
 declare const buttonComp: ButtonComponent;
 ButtonBuilder.from(buttonComp);
+
+declare const modalData: APIModalInteractionResponseCallbackData;
+ModalBuilder.from(modalData);
 
 declare const textInputData: APITextInputComponent;
 TextInputBuilder.from(textInputData);
@@ -2303,6 +2354,7 @@ declare const snowflake: Snowflake;
 expectType<Promise<Message>>(webhook.send('content'));
 expectType<Promise<Message>>(webhook.editMessage(snowflake, 'content'));
 expectType<Promise<Message>>(webhook.fetchMessage(snowflake));
+expectType<Promise<Webhook>>(webhook.edit({ name: 'name' }));
 
 expectType<Promise<APIMessage>>(webhookClient.send('content'));
 expectType<Promise<APIMessage>>(webhookClient.editMessage(snowflake, 'content'));
@@ -2449,6 +2501,8 @@ declare const sku: SKU;
 
   await application.entitlements.deleteTest(entitlement);
 
+  await application.entitlements.consume(snowflake);
+
   expectType<boolean>(entitlement.isActive());
 
   if (entitlement.isUserSubscription()) {
@@ -2478,5 +2532,32 @@ declare const sku: SKU;
     if (interaction.isRepliable()) {
       await interaction.sendPremiumRequired();
     }
+  });
+}
+
+await textChannel.send({
+  poll: {
+    question: {
+      text: 'Question',
+    },
+    duration: 60,
+    answers: [{ text: 'Answer 1' }, { text: 'Answer 2', emoji: '<:1blade:874989932983238726>' }],
+    allowMultiselect: false,
+  },
+});
+
+declare const poll: Poll;
+{
+  expectType<Message>(await poll.end());
+
+  const answer = poll.answers.first()!;
+  expectType<number>(answer.voteCount);
+
+  expectType<Collection<Snowflake, User>>(await answer.fetchVoters({ after: snowflake, limit: 10 }));
+
+  await messageManager.endPoll(snowflake);
+  await messageManager.fetchPollAnswerVoters({
+    messageId: snowflake,
+    answerId: 1,
   });
 }
