@@ -118,9 +118,8 @@ class ApplicationEmojiManager extends CachedManager {
     });
     const existing = this.cache.get(id);
     if (existing) {
-      const clone = existing._clone();
-      clone._patch(newData);
-      return clone;
+      existing._patch(newData);
+      return existing;
     }
     return this._add(newData);
   }

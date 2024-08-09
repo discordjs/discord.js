@@ -28,11 +28,6 @@ class ApplicationEmoji extends Emoji {
     this._patch(data);
   }
 
-  _clone() {
-    const clone = super._clone();
-    return clone;
-  }
-
   _patch(data) {
     if ('name' in data) this.name = data.name;
     if (data.user) this.author = this.client.users._add(data.user);
