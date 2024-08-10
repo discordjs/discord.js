@@ -35,22 +35,27 @@ function _transformAPIAutoModerationAction(autoModerationAction) {
 }
 
 /**
- * Transforms an API integration types config object to a camel-cased variant.
- * @param {APIApplicationIntegrationTypeConfiguration} integrationTypesConfiguration The data to transform
+ * Transforms an API integration types config map to a camel-cased variant.
+ * @param {APIApplicationIntegrationTypesConfigMap} integrationTypesConfiguration The data to transform
  * @returns {IntegrationTypesConfiguration}
  * @ignore
  */
 function _transformAPIIntegrationTypesConfiguration(integrationTypesConfiguration) {
-  return integrationTypesConfiguration
-    ? {
-        oauth2InstallParams: {
-          scopes: integrationTypesConfiguration.oauth2_install_params?.scopes ?? null,
-          permissions: integrationTypesConfiguration.oauth2_install_params
-            ? new PermissionsBitField(integrationTypesConfiguration.oauth2_install_params.permissions).freeze()
-            : null,
-        },
-      }
-    : null;
+  return Object.fromEntries(
+    Object.entries(integrationTypesConfiguration).map(([key, context]) => {
+      const data = context
+        ? {
+            oauth2InstallParams: {
+              scopes: context.oauth2_install_params?.scopes ?? null,
+              permissions: context.oauth2_install_params
+                ? new PermissionsBitField(context.oauth2_install_params.permissions).freeze()
+                : null,
+            },
+          }
+        : null;
+      return [parseInt(key), data];
+    }),
+  );
 }
 
 module.exports = { toSnakeCase, _transformAPIAutoModerationAction, _transformAPIIntegrationTypesConfiguration };

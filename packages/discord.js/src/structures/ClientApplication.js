@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { Routes, ApplicationIntegrationType } = require('discord-api-types/v10');
+const { Routes } = require('discord-api-types/v10');
 const { ApplicationRoleConnectionMetadata } = require('./ApplicationRoleConnectionMetadata');
 const { SKU } = require('./SKU');
 const Team = require('./Team');
@@ -91,14 +91,7 @@ class ClientApplication extends Application {
        * The keys are stringified variants of {@link ApplicationIntegrationType}.
        * @type {IntegrationTypesConfiguration}
        */
-      this.integrationTypesConfig = {
-        [ApplicationIntegrationType.GuildInstall]: _transformAPIIntegrationTypesConfiguration(
-          data.integration_types_config[`${ApplicationIntegrationType.GuildInstall}`],
-        ),
-        [ApplicationIntegrationType.UserInstall]: _transformAPIIntegrationTypesConfiguration(
-          data.integration_types_config[`${ApplicationIntegrationType.UserInstall}`],
-        ),
-      };
+      this.integrationTypesConfig = _transformAPIIntegrationTypesConfiguration(data.integration_types_config);
     } else {
       this.integrationTypesConfig ??= null;
     }
