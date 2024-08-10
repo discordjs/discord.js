@@ -41,7 +41,6 @@ function _transformAPIAutoModerationAction(autoModerationAction) {
  * @ignore
  */
 function _transformAPIIntegrationTypesConfiguration(integrationTypesConfiguration) {
-  console.log(integrationTypesConfiguration);
   return integrationTypesConfiguration
     ? {
         oAuth2InstallParams:
