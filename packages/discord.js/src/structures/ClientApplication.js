@@ -11,7 +11,6 @@ const { EntitlementManager } = require('../managers/EntitlementManager');
 const ApplicationFlagsBitField = require('../util/ApplicationFlagsBitField');
 const { resolveImage } = require('../util/DataResolver');
 const PermissionsBitField = require('../util/PermissionsBitField');
-const { _transformAPIIntegrationTypesConfiguration } = require('../util/Transformers');
 
 /**
  * @typedef {Object} ClientApplicationInstallParams
@@ -91,7 +90,19 @@ class ClientApplication extends Application {
        * The keys are stringified variants of {@link ApplicationIntegrationType}.
        * @type {IntegrationTypesConfiguration}
        */
-      this.integrationTypesConfig = _transformAPIIntegrationTypesConfiguration(data.integration_types_config);
+      this.integrationTypesConfig = Object.fromEntries(
+        Object.entries(data.integration_types_config).map(([key, config]) => {
+          const context = {
+            oauth2InstallParams: {
+              scopes: config.oauth2_install_params?.scopes ?? null,
+              permissions: config.oauth2_install_params
+                ? new PermissionsBitField(config.oauth2_install_params.permissions).freeze()
+                : null,
+            },
+          };
+          return [parseInt(key), context];
+        }),
+      );
     } else {
       this.integrationTypesConfig ??= null;
     }

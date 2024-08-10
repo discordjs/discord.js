@@ -177,7 +177,6 @@ import {
   EntitlementType,
   ApplicationIntegrationType,
   InteractionContextType,
-  APIAuthorizingIntegrationOwnersMap,
   APIPoll,
   PollLayoutType,
   APIPollAnswer,
@@ -559,7 +558,7 @@ export type GuildCacheMessage<Cached extends CacheType> = CacheTypeReducer<
 export type BooleanCache<Cached extends CacheType> = Cached extends 'cached' ? true : false;
 
 export abstract class CommandInteraction<Cached extends CacheType = CacheType> extends BaseInteraction<Cached> {
-  public authorizingIntegrationOwners: APIAuthorizingIntegrationOwnersMap;
+  public authorizingIntegrationOwners: AuthorizingIntegrationOwners;
   public type: InteractionType.ApplicationCommand;
   public get command(): ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
   public options: Omit<
@@ -6176,7 +6175,11 @@ export interface IntegrationTypesConfigurationContext {
 }
 
 export type IntegrationTypesConfiguration = {
-  [key in ApplicationIntegrationType]: IntegrationTypesConfigurationContext | null;
+  [key in ApplicationIntegrationType]?: IntegrationTypesConfigurationContext;
+};
+
+export type AuthorizingIntegrationOwners = {
+  [key in ApplicationIntegrationType]?: Snowflake;
 };
 
 export type CollectedInteraction<Cached extends CacheType = CacheType> =
@@ -6331,7 +6334,7 @@ export interface MessageInteractionMetadata {
   id: Snowflake;
   type: InteractionType;
   user: User;
-  authorizingIntegrationOwners: APIAuthorizingIntegrationOwnersMap;
+  authorizingIntegrationOwners: AuthorizingIntegrationOwners;
   originalResponseMessageId: Snowflake | null;
   interactedMessageId: Snowflake | null;
   triggeringInteractionMetadata: MessageInteractionMetadata | null;

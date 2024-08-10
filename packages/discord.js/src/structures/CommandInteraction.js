@@ -4,6 +4,7 @@ const Attachment = require('./Attachment');
 const BaseInteraction = require('./BaseInteraction');
 const InteractionWebhook = require('./InteractionWebhook');
 const InteractionResponses = require('./interfaces/InteractionResponses');
+const { _transformAPIAuthorizingIntegrationOwners } = require('../util/Transformers');
 
 /**
  * Represents a command interaction.
@@ -46,10 +47,17 @@ class CommandInteraction extends BaseInteraction {
     this.commandGuildId = data.data.guild_id ?? null;
 
     /**
-     * Mapping of installation contexts that the interaction was authorized for the related user or guild ids
-     * @type {APIAuthorizingIntegrationOwnersMap}
+     * Owner IDs the integration is installed on.
+     * @typedef {Object} AuthorizingIntegrationOwners
+     * @property {?Snowflake} 0 The guild id the integration is installed on
+     * @property {?Snowflake} 1 The user id the integration is installed on
      */
-    this.authorizingIntegrationOwners = data.authorizingIntegrationOwners;
+
+    /**
+     * Mapping of installation contexts that the interaction was authorized for the related user or guild ids
+     * @type {AuthorizingIntegrationOwners}
+     */
+    this.authorizingIntegrationOwners = _transformAPIAuthorizingIntegrationOwners(data.authorizingIntegrationOwners);
 
     /**
      * Context where the interaction was triggered from

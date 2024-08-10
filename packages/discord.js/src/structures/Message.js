@@ -26,6 +26,7 @@ const { createComponent } = require('../util/Components');
 const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, UndeletableMessageTypes } = require('../util/Constants');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
+const { _transformAPIAuthorizingIntegrationOwners } = require('../util/Transformers.js');
 const { cleanContent, resolvePartialEmoji, transformResolved } = require('../util/Util');
 
 /**
@@ -390,7 +391,7 @@ class Message extends Base {
        * @property {Snowflake} id The interaction's id
        * @property {InteractionType} type The type of the interaction
        * @property {User} user The user that invoked the interaction
-       * @property {APIAuthorizingIntegrationOwnersMap} authorizingIntegrationOwners
+       * @property {AuthorizingIntegrationOwners} authorizingIntegrationOwners
        * Ids for installation context(s) related to an interaction
        * @property {?Snowflake} originalResponseMessageId
        * Id of the original response message. Present only on follow-up messages
@@ -404,7 +405,9 @@ class Message extends Base {
         id: data.interaction_metadata.id,
         type: data.interaction_metadata.type,
         user: this.client.users._add(data.interaction_metadata.user),
-        authorizingIntegrationOwners: data.interaction_metadata.authorizing_integration_owners,
+        authorizingIntegrationOwners: _transformAPIAuthorizingIntegrationOwners(
+          data.interaction_metadata.authorizing_integration_owners,
+        ),
         originalResponseMessageId: data.interaction_metadata.original_response_message_id ?? null,
         interactedMessageId: data.interaction_metadata.interacted_message_id ?? null,
         triggeringInteractionMetadata: data.interaction_metadata.triggering_interaction_metadata ?? null,

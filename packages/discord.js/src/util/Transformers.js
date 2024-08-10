@@ -2,7 +2,6 @@
 
 const { isJSONEncodable } = require('@discordjs/util');
 const snakeCase = require('lodash.snakecase');
-const PermissionsBitField = require('./PermissionsBitField');
 
 /**
  * Transforms camel-cased keys into snake cased keys
@@ -35,27 +34,13 @@ function _transformAPIAutoModerationAction(autoModerationAction) {
 }
 
 /**
- * Transforms an API integration types config map to a camel-cased variant.
- * @param {APIApplicationIntegrationTypesConfigMap} integrationTypesConfiguration The data to transform
- * @returns {IntegrationTypesConfiguration}
+ * Transforms an API authorizing integration owners map to keyed by enum.
+ * @param {APIAuthorizingIntegrationOwnersMap} authorizingIntegrationOwners The data to transform
+ * @returns {AuthorizingIntegrationOwners}
  * @ignore
  */
-function _transformAPIIntegrationTypesConfiguration(integrationTypesConfiguration) {
-  return Object.fromEntries(
-    Object.entries(integrationTypesConfiguration).map(([key, context]) => {
-      const data = context
-        ? {
-            oauth2InstallParams: {
-              scopes: context.oauth2_install_params?.scopes ?? null,
-              permissions: context.oauth2_install_params
-                ? new PermissionsBitField(context.oauth2_install_params.permissions).freeze()
-                : null,
-            },
-          }
-        : null;
-      return [parseInt(key), data];
-    }),
-  );
+function _transformAPIAuthorizingIntegrationOwners(authorizingIntegrationOwners) {
+  return Object.fromEntries(Object.entries(authorizingIntegrationOwners).map(([key, owner]) => [parseInt(key), owner]));
 }
 
-module.exports = { toSnakeCase, _transformAPIAutoModerationAction, _transformAPIIntegrationTypesConfiguration };
+module.exports = { toSnakeCase, _transformAPIAutoModerationAction, _transformAPIAuthorizingIntegrationOwners };
