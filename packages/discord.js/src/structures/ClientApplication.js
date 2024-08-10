@@ -92,10 +92,10 @@ class ClientApplication extends Application {
        * @type {IntegrationTypesConfiguration}
        */
       this.integrationTypesConfig = {
-        [`${ApplicationIntegrationType.GuildInstall}`]: _transformAPIIntegrationTypesConfiguration(
+        [ApplicationIntegrationType.GuildInstall]: _transformAPIIntegrationTypesConfiguration(
           data.integration_types_config[`${ApplicationIntegrationType.GuildInstall}`],
         ),
-        [`${ApplicationIntegrationType.UserInstall}`]: _transformAPIIntegrationTypesConfiguration(
+        [ApplicationIntegrationType.UserInstall]: _transformAPIIntegrationTypesConfiguration(
           data.integration_types_config[`${ApplicationIntegrationType.UserInstall}`],
         ),
       };
