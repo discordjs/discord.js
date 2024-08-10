@@ -6172,7 +6172,7 @@ export type IntegrationTypesConfigurationParameters = {
 };
 
 export interface IntegrationTypesConfigurationContext {
-  oAuth2InstallParams: IntegrationTypesConfigurationParameters | null;
+  oauth2InstallParams: IntegrationTypesConfigurationParameters | null;
 }
 
 export type IntegrationTypesConfiguration = {

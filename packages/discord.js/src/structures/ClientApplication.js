@@ -72,7 +72,7 @@ class ClientApplication extends Application {
     /**
      * The application's supported installation context data.
      * @typedef {Object} IntegrationTypesConfigurationContext
-     * @property {?IntegrationTypesConfigurationParameters} oAuth2InstallParams
+     * @property {?IntegrationTypesConfigurationParameters} oauth2InstallParams
      * Scopes and permissions regarding the installation context
      */
 

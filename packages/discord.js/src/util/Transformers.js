@@ -43,7 +43,7 @@ function _transformAPIAutoModerationAction(autoModerationAction) {
 function _transformAPIIntegrationTypesConfiguration(integrationTypesConfiguration) {
   return integrationTypesConfiguration
     ? {
-        oAuth2InstallParams:
+        oauth2InstallParams:
           {
             scopes: integrationTypesConfiguration.oauth2_install_params?.scopes ?? null,
             permissions: integrationTypesConfiguration.oauth2_install_params
