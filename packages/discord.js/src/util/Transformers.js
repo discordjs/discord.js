@@ -43,13 +43,12 @@ function _transformAPIAutoModerationAction(autoModerationAction) {
 function _transformAPIIntegrationTypesConfiguration(integrationTypesConfiguration) {
   return integrationTypesConfiguration
     ? {
-        oauth2InstallParams:
-          {
-            scopes: integrationTypesConfiguration.oauth2_install_params?.scopes ?? null,
-            permissions: integrationTypesConfiguration.oauth2_install_params
-              ? new PermissionsBitField(integrationTypesConfiguration.oauth2_install_params.permissions).freeze()
-              : null,
-          } ?? null,
+        oauth2InstallParams: {
+          scopes: integrationTypesConfiguration.oauth2_install_params?.scopes ?? null,
+          permissions: integrationTypesConfiguration.oauth2_install_params
+            ? new PermissionsBitField(integrationTypesConfiguration.oauth2_install_params.permissions).freeze()
+            : null,
+        },
       }
     : null;
 }
