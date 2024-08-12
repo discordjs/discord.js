@@ -256,7 +256,7 @@ class VoiceState extends Base {
    * @returns {Promise<VoiceState>}
    */
   fetch(force = true) {
-    return this.guild.voiceStates.fetch(this.member, { force });
+    return this.guild.voiceStates.fetch(this.id, { force });
   }
 
   /**
