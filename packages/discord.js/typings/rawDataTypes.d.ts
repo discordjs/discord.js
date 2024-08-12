@@ -63,7 +63,6 @@ import {
   GatewayPresenceUpdate,
   GatewayReadyDispatchData,
   GatewayTypingStartDispatchData,
-  GatewayVoiceState,
   RESTAPIPartialCurrentUserGuild,
   RESTGetAPIWebhookWithTokenResult,
   RESTPatchAPIChannelMessageJSONBody,
