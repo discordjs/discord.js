@@ -47,6 +47,7 @@ import {
   APIUnavailableGuild,
   APIUser,
   APIVoiceRegion,
+  APIVoiceState,
   APIWebhook,
   GatewayActivity,
   GatewayActivityAssets,
@@ -194,7 +195,7 @@ export type RawUserData =
 
 export type RawVoiceRegionData = APIVoiceRegion;
 
-export type RawVoiceStateData = GatewayVoiceState | Omit<GatewayVoiceState, 'guild_id'>;
+export type RawVoiceStateData = APIVoiceState | Omit<APIVoiceState, 'guild_id'>;
 
 export type RawWebhookData =
   | APIWebhook
