@@ -102,6 +102,7 @@ import {
 	type RESTPutAPIGuildTemplateSyncResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
+import { VoiceAPI } from './voice';
 
 export class GuildsAPI {
 	public constructor(private readonly rest: REST) {}
@@ -692,7 +693,7 @@ export class GuildsAPI {
 	 * @param userId - The id of the user to edit the voice state for
 	 * @param body - The data for editing the voice state
 	 * @param options - The options for editing the voice state
-	 * @deprecated Use {@link VoiceAPI#editUserVoiceState} instead
+	 * @deprecated Use {@link VoiceAPI.editUserVoiceState} instead
 	 */
 	public async editUserVoiceState(
 		guildId: Snowflake,
@@ -1302,7 +1303,7 @@ export class GuildsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/voice#modify-current-user-voice-state}
 	 * @param guildId - The id of the guild
 	 * @param body - The options for setting the voice state
-	 * @deprecated Use {@link VoiceAPI#setVoiceState}
+	 * @deprecated Use {@link VoiceAPI.setVoiceState}
 	 */
 	public async setVoiceState(guildId: Snowflake, body: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {}) {
 		return this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
