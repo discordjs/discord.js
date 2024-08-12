@@ -41,8 +41,8 @@ class VoiceStateManager extends CachedManager {
    * @returns {Promise<VoiceState>}
    * @example
    * // Fetch a member's voice state
-   * guild.voiceStates.fetch("851588007697580033")
-   *    .then(state => console.log(`Member's voice channel: ${state.channel}`))
+   * guild.voiceStates.fetch("66564597481480192")
+   *    .then(console.log)
    *    .catch(console.error);
    */
   async fetch(member, { cache = true, force = false } = {}) {

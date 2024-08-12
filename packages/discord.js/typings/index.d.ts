@@ -3589,7 +3589,7 @@ export class VoiceState extends Base {
   public setRequestToSpeak(request?: boolean): Promise<this>;
   public setSuppressed(suppressed?: boolean): Promise<this>;
   public edit(options: VoiceStateEditOptions): Promise<this>;
-  public fetch(force?: boolean): Promise<this>;
+  public fetch(force?: boolean): Promise<VoiceState>;
 }
 
 // tslint:disable-next-line no-empty-interface

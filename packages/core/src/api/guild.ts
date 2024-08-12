@@ -1303,7 +1303,7 @@ export class GuildsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/voice#modify-current-user-voice-state}
 	 * @param guildId - The id of the guild
 	 * @param body - The options for setting the voice state
-	 * @deprecated Use {@link VoiceAPI.setVoiceState}
+	 * @deprecated Use {@link VoiceAPI.editVoiceState} instead
 	 */
 	public async setVoiceState(guildId: Snowflake, body: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {}) {
 		return this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {

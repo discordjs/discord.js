@@ -52,7 +52,7 @@ export class VoiceAPI {
 	/**
 	 * Edits a user's voice state in a guild
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/user#modify-user-voice-state}
+	 * @see {@link https://discord.com/developers/docs/resources/voice#modify-user-voice-state}
 	 * @param guildId - The id of the guild to edit the current user's voice state in
 	 * @param userId - The id of the user to edit the voice state for
 	 * @param body - The data for editing the voice state
@@ -68,15 +68,21 @@ export class VoiceAPI {
 	}
 
 	/**
-	 * Sets the voice state for the current user
+	 * Edits the voice state for the current user
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/voice#modify-current-user-voice-state}
 	 * @param guildId - The id of the guild
-	 * @param body - The options for setting the voice state
+	 * @param body - The data for editing the voice state
+	 * @param options - The options for editing the voice state
 	 */
-	public async setVoiceState(guildId: Snowflake, body: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {}) {
+	public async editVoiceState(
+		guildId: Snowflake,
+		body: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
 		return this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
 			body,
+			signal,
 		}) as Promise<RESTPatchAPIGuildVoiceStateCurrentMemberResult>;
 	}
 }
