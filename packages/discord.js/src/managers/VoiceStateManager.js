@@ -36,7 +36,7 @@ class VoiceStateManager extends CachedManager {
 
   /**
    * Obtains a user's voice state from discord or from the cache if it's already available.
-   * @param {GuildMemberResolvable} member The member whose voice state is to be fetched
+   * @param {GuildMemberResolvable|'@me'} member The member whose voice state is to be fetched
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<VoiceState>}
    * @example
@@ -46,9 +46,9 @@ class VoiceStateManager extends CachedManager {
    *    .catch(console.error);
    */
   async fetch(member, { cache = true, force = false } = {}) {
-    const id = this.guild.members.resolveId(member);
+    const id = member === '@me' ? member : this.guild.members.resolveId(member);
     if (!force) {
-      const existing = this.cache.get(id);
+      const existing = this.cache.get(id === '@me' ? this.client.user.id : id);
       if (existing) return existing;
     }
     const data = await this.client.rest.get(Routes.guildVoiceState(this.guild.id, id));
