@@ -28,6 +28,7 @@ import {
 	type RESTGetAPIGuildPruneCountResult,
 	type RESTGetAPIGuildQuery,
 	type RESTGetAPIGuildResult,
+	type RESTGetAPIGuildRoleResult,
 	type RESTGetAPIGuildRolesResult,
 	type RESTGetAPIGuildScheduledEventQuery,
 	type RESTGetAPIGuildScheduledEventResult,
@@ -395,6 +396,18 @@ export class GuildsAPI {
 	 */
 	public async getRoles(guildId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.guildRoles(guildId), { signal }) as Promise<RESTGetAPIGuildRolesResult>;
+	}
+
+	/**
+	 * Get a role in a guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild-role}
+	 * @param guildId - The id of the guild to fetch the role from
+	 * @param roleId - The id of the role to fetch
+	 * @param options - The options for fetching the guild role
+	 */
+	public async getRole(guildId: Snowflake, roleId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+		return this.rest.get(Routes.guildRole(guildId, roleId), { signal }) as Promise<RESTGetAPIGuildRoleResult>;
 	}
 
 	/**
