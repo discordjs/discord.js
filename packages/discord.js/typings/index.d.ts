@@ -2501,6 +2501,7 @@ export class PartialGroupDMChannel extends BaseChannel {
   public name: string | null;
   public icon: string | null;
   public recipients: PartialRecipient[];
+  public messages: PartialGroupDMMessageManager;
   public iconURL(options?: ImageURLOptions): string | null;
   public toString(): ChannelMention;
 }
@@ -4460,6 +4461,10 @@ export abstract class MessageManager<InGuild extends boolean = boolean> extends 
 
 export class DMMessageManager extends MessageManager {
   public channel: DMChannel;
+}
+
+export class PartialGroupDMMessageManager extends MessageManager {
+  public channel: PartialGroupDMChannel;
 }
 
 export class GuildMessageManager extends MessageManager<true> {
@@ -6794,10 +6799,7 @@ export type Channel =
   | ForumChannel
   | MediaChannel;
 
-export type TextBasedChannel = Exclude<
-  Extract<Channel, { type: TextChannelType }>,
-  PartialGroupDMChannel | ForumChannel | MediaChannel
->;
+export type TextBasedChannel = Exclude<Extract<Channel, { type: TextChannelType }>, ForumChannel | MediaChannel>;
 
 export type TextBasedChannels = TextBasedChannel;
 
