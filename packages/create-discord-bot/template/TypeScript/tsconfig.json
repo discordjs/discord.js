@@ -8,6 +8,7 @@
 		"moduleResolution": "NodeNext",
 		"target": "ESNext",
 		"outDir": "dist",
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"strictNullChecks": true
 	}
 }
