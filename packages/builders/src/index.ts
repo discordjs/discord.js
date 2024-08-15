@@ -1,67 +1,70 @@
-export * as EmbedAssertions from './messages/embed/Assertions.js';
-export * from './messages/embed/Embed.js';
-// TODO: Consider removing this dep in the next major version
-export * from '@discordjs/formatters';
-
-export * as ComponentAssertions from './components/Assertions.js';
-export * from './components/ActionRow.js';
+export * from './components/button/mixins/EmojiOrLabelButtonMixin.js';
 export * from './components/button/Button.js';
-export * from './components/Component.js';
-export * from './components/Components.js';
-export * from './components/textInput/TextInput.js';
-export * as TextInputAssertions from './components/textInput/Assertions.js';
-export * from './interactions/modals/Modal.js';
-export * as ModalAssertions from './interactions/modals/Assertions.js';
+export * from './components/button/CustomIdButton.js';
+export * from './components/button/LinkButton.js';
+export * from './components/button/PremiumButton.js';
 
 export * from './components/selectMenu/BaseSelectMenu.js';
 export * from './components/selectMenu/ChannelSelectMenu.js';
 export * from './components/selectMenu/MentionableSelectMenu.js';
 export * from './components/selectMenu/RoleSelectMenu.js';
 export * from './components/selectMenu/StringSelectMenu.js';
-// TODO: Remove those aliases in v2
-export {
-	/**
-	 * @deprecated Will be removed in the next major version, use {@link StringSelectMenuBuilder} instead.
-	 */
-	StringSelectMenuBuilder as SelectMenuBuilder,
-} from './components/selectMenu/StringSelectMenu.js';
-export {
-	/**
-	 * @deprecated Will be removed in the next major version, use {@link StringSelectMenuOptionBuilder} instead.
-	 */
-	StringSelectMenuOptionBuilder as SelectMenuOptionBuilder,
-} from './components/selectMenu/StringSelectMenuOption.js';
 export * from './components/selectMenu/StringSelectMenuOption.js';
 export * from './components/selectMenu/UserSelectMenu.js';
 
-export * as SlashCommandAssertions from './interactions/slashCommands/Assertions.js';
-export * from './interactions/slashCommands/SlashCommandBuilder.js';
-export * from './interactions/slashCommands/SlashCommandSubcommands.js';
-export * from './interactions/slashCommands/options/boolean.js';
-export * from './interactions/slashCommands/options/channel.js';
-export * from './interactions/slashCommands/options/integer.js';
-export * from './interactions/slashCommands/options/mentionable.js';
-export * from './interactions/slashCommands/options/number.js';
-export * from './interactions/slashCommands/options/role.js';
-export * from './interactions/slashCommands/options/attachment.js';
-export * from './interactions/slashCommands/options/string.js';
-export * from './interactions/slashCommands/options/user.js';
-export * from './interactions/slashCommands/mixins/ApplicationCommandNumericOptionMinMaxValueMixin.js';
-export * from './interactions/slashCommands/mixins/ApplicationCommandOptionBase.js';
-export * from './interactions/slashCommands/mixins/ApplicationCommandOptionChannelTypesMixin.js';
-export * from './interactions/slashCommands/mixins/ApplicationCommandOptionWithAutocompleteMixin.js';
-export * from './interactions/slashCommands/mixins/ApplicationCommandOptionWithChoicesMixin.js';
-export * from './interactions/slashCommands/mixins/NameAndDescription.js';
-export * from './interactions/slashCommands/mixins/SharedSlashCommandOptions.js';
-export * from './interactions/slashCommands/mixins/SharedSubcommands.js';
-export * from './interactions/slashCommands/mixins/SharedSlashCommand.js';
+export * from './components/textInput/TextInput.js';
+export * from './components/textInput/Assertions.js';
 
-export * as ContextMenuCommandAssertions from './interactions/contextMenuCommands/Assertions.js';
-export * from './interactions/contextMenuCommands/ContextMenuCommandBuilder.js';
+export * from './components/ActionRow.js';
+export * from './components/Assertions.js';
+export * from './components/Component.js';
+export * from './components/Components.js';
+
+export * from './interactions/commands/chatInput/mixins/ApplicationCommandNumericOptionMinMaxValueMixin.js';
+export * from './interactions/commands/chatInput/mixins/ApplicationCommandOptionChannelTypesMixin.js';
+export * from './interactions/commands/chatInput/mixins/ApplicationCommandOptionWithAutocompleteMixin.js';
+export * from './interactions/commands/chatInput/mixins/ApplicationCommandOptionWithChoicesMixin.js';
+export * from './interactions/commands/chatInput/mixins/SharedChatInputCommandOptions.js';
+export * from './interactions/commands/chatInput/mixins/SharedSubcommands.js';
+
+export * from './interactions/commands/chatInput/options/ApplicationCommandOptionBase.js';
+export * from './interactions/commands/chatInput/options/boolean.js';
+export * from './interactions/commands/chatInput/options/channel.js';
+export * from './interactions/commands/chatInput/options/integer.js';
+export * from './interactions/commands/chatInput/options/mentionable.js';
+export * from './interactions/commands/chatInput/options/number.js';
+export * from './interactions/commands/chatInput/options/role.js';
+export * from './interactions/commands/chatInput/options/attachment.js';
+export * from './interactions/commands/chatInput/options/string.js';
+export * from './interactions/commands/chatInput/options/user.js';
+
+export * from './interactions/commands/chatInput/Assertions.js';
+export * from './interactions/commands/chatInput/ChatInputCommand.js';
+export * from './interactions/commands/chatInput/ChatInputCommandSubcommands.js';
+
+export * from './interactions/commands/contextMenu/Assertions.js';
+export * from './interactions/commands/contextMenu/ContextMenuCommand.js';
+export * from './interactions/commands/contextMenu/MessageCommand.js';
+export * from './interactions/commands/contextMenu/UserCommand.js';
+
+export * from './interactions/commands/Command.js';
+export * from './interactions/commands/SharedName.js';
+export * from './interactions/commands/SharedNameAndDescription.js';
+
+export * from './interactions/modals/Assertions.js';
+export * from './interactions/modals/Modal.js';
+
+export * from './messages/embed/Assertions.js';
+export * from './messages/embed/Embed.js';
+export * from './messages/embed/EmbedAuthor.js';
+export * from './messages/embed/EmbedField.js';
+export * from './messages/embed/EmbedFooter.js';
 
 export * from './util/componentUtil.js';
 export * from './util/normalizeArray.js';
 export * from './util/validation.js';
+
+export * from './Assertions.js';
 
 /**
  * The {@link https://github.com/discordjs/discord.js/blob/main/packages/builders#readme | @discordjs/builders} version
