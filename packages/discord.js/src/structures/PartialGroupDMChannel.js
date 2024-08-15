@@ -41,7 +41,7 @@ class PartialGroupDMChannel extends BaseChannel {
 
     /**
      * A manager of the messages belonging to this channel
-     * @type {DMMessageManager}
+     * @type {PartialGroupDMMessageManager}
      */
     this.messages = new PartialGroupDMMessageManager(this);
   }
