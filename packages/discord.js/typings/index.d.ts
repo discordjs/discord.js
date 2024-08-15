@@ -1074,6 +1074,7 @@ export class ClientApplication extends Application {
   public cover: string | null;
   public flags: Readonly<ApplicationFlagsBitField>;
   public approximateGuildCount: number | null;
+  public approximateUserInstallCount: number | null;
   public tags: string[];
   public installParams: ClientApplicationInstallParams | null;
   public integrationTypesConfig: IntegrationTypesConfiguration;

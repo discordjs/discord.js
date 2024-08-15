@@ -135,6 +135,16 @@ class ClientApplication extends Application {
       this.approximateGuildCount ??= null;
     }
 
+    if ('approximate_user_install_count' in data) {
+      /**
+       * An approximate amount of users that have installed this application.
+       * @type {?number}
+       */
+      this.approximateUserInstallCount = data.approximate_user_install_count;
+    } else {
+      this.approximateUserInstallCount ??= null;
+    }
+
     if ('guild_id' in data) {
       /**
        * The id of the guild associated with this application.
