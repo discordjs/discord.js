@@ -138,7 +138,7 @@ export class OAuth2API {
 	  passThroughBody: true,
 	  headers: {
 	   'Content-Type': 'application/x-www-form-urlencoded',
-	   'Authorization': `Basic ${Buffer.from(`${applicationId}:${applicationSecret}`).toString('base64')}`,
+	   'Authorization': `Basic ${btoa(`${applicationId}:${applicationSecret}`)}`,
 	  },
 	  auth: false,
 	  signal,
