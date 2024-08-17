@@ -2182,6 +2182,7 @@ expectType<TextBasedChannel>(TextBasedChannel);
 expectType<
   | ChannelType.GuildText
   | ChannelType.DM
+  | ChannelType.GroupDM
   | ChannelType.GuildAnnouncement
   | ChannelType.GuildVoice
   | ChannelType.GuildStageVoice
