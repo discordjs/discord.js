@@ -133,7 +133,7 @@ export class OAuth2API {
 	 * @param options - The options for the token revocation request
 	 */
 	public async revokeToken(applicationId: Snowflake, applicationSecret: string, body: RESTPostOAuth2TokenRevocation, { signal }: Pick<RequestData, 'signal'> = {}) {
-	 return this.rest.post(Routes.oauth2TokenRevocation(), {
+	 await this.rest.post(Routes.oauth2TokenRevocation(), {
 	  body: makeURLSearchParams(body),
 	  passThroughBody: true,
 	  headers: {
