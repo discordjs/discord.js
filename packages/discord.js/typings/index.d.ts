@@ -5250,7 +5250,7 @@ export interface ClientEvents {
   guildUpdate: [oldGuild: Guild, newGuild: Guild];
   inviteCreate: [invite: Invite];
   inviteDelete: [invite: Invite];
-  messageCreate: [message: Message];
+  messageCreate: [message: Message & { channel: Exclude<TextBasedChannel, PartialGroupDMChannel> }];
   messageDelete: [message: Message | PartialMessage];
   messagePollVoteAdd: [pollAnswer: PollAnswer, userId: Snowflake];
   messagePollVoteRemove: [pollAnswer: PollAnswer, userId: Snowflake];
