@@ -142,6 +142,6 @@ export class OAuth2API {
 	  },
 	  auth: false,
 	  signal,
-	 }) as Promise<{}>;
+	 });
 	}
 }
