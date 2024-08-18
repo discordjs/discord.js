@@ -5213,7 +5213,7 @@ export interface GuildMembersChunk {
 }
 
 type NonPartialGroupDMChannel<Structure extends { channel: Channel }> = Structure & {
-  channel: Exclude<TextBasedChannel, PartialGroupDMChannel>;
+  channel: Exclude<Structure['channel'], PartialGroupDMChannel>;
 };
 
 export interface ClientEvents {
