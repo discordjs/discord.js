@@ -5212,7 +5212,9 @@ export interface GuildMembersChunk {
   nonce: string | undefined;
 }
 
-type NonPartialGroupDMChannel<Structute> = Structute & { channel: Exclude<TextBasedChannel, PartialGroupDMChannel> };
+type NonPartialGroupDMChannel<Structure extends { channel: Channel }> = Structure & {
+  channel: Exclude<TextBasedChannel, PartialGroupDMChannel>;
+};
 
 export interface ClientEvents {
   applicationCommandPermissionsUpdate: [data: ApplicationCommandPermissionsUpdateData];
