@@ -1612,7 +1612,7 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<Promise<Collection<Snowflake, Message>>>(messages.fetchPinned());
   expectType<Guild | null>(message.guild);
   expectType<Snowflake | null>(message.guildId);
-  expectType<DMChannel | GuildTextBasedChannel>(message.channel.messages.channel);
+  expectType<DMChannel | PartialGroupDMChannel | GuildTextBasedChannel>(message.channel.messages.channel);
   expectType<MessageMentions>(message.mentions);
   expectType<Guild | null>(message.mentions.guild);
   expectType<Collection<Snowflake, GuildMember> | null>(message.mentions.members);
