@@ -2150,23 +2150,27 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public createMessageComponentCollector<ComponentType extends MessageComponentType>(
     options?: MessageCollectorOptionsParams<ComponentType, InGuild>,
   ): InteractionCollector<MappedInteractionTypes<InGuild>[ComponentType]>;
-  public delete(): Promise<Message<InGuild>>;
-  public edit(content: string | MessageEditOptions | MessagePayload): Promise<Message<InGuild>>;
+  public delete(): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
+  public edit(
+    content: string | MessageEditOptions | MessagePayload,
+  ): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
   public equals(message: Message, rawData: unknown): boolean;
-  public fetchReference(): Promise<Message<InGuild>>;
+  public fetchReference(): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
   public fetchWebhook(): Promise<Webhook>;
-  public crosspost(): Promise<Message<InGuild>>;
-  public fetch(force?: boolean): Promise<Message<InGuild>>;
-  public pin(reason?: string): Promise<Message<InGuild>>;
+  public crosspost(): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
+  public fetch(force?: boolean): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
+  public pin(reason?: string): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
   public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
-  public removeAttachments(): Promise<Message<InGuild>>;
-  public reply(options: string | MessagePayload | MessageReplyOptions): Promise<Message<InGuild>>;
+  public removeAttachments(): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
+  public reply(
+    options: string | MessagePayload | MessageReplyOptions,
+  ): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
   public resolveComponent(customId: string): MessageActionRowComponent | null;
   public startThread(options: StartThreadOptions): Promise<AnyThreadChannel>;
-  public suppressEmbeds(suppress?: boolean): Promise<Message<InGuild>>;
+  public suppressEmbeds(suppress?: boolean): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
   public toJSON(): unknown;
   public toString(): string;
-  public unpin(reason?: string): Promise<Message<InGuild>>;
+  public unpin(reason?: string): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
   public inGuild(): this is Message<true>;
 }
 
@@ -5208,6 +5212,8 @@ export interface GuildMembersChunk {
   nonce: string | undefined;
 }
 
+type NonPartialGroupDMChannel<Structute> = Structute & { channel: Exclude<TextBasedChannel, PartialGroupDMChannel> };
+
 export interface ClientEvents {
   applicationCommandPermissionsUpdate: [data: ApplicationCommandPermissionsUpdateData];
   autoModerationActionExecution: [autoModerationActionExecution: AutoModerationActionExecution];
@@ -5250,17 +5256,17 @@ export interface ClientEvents {
   guildUpdate: [oldGuild: Guild, newGuild: Guild];
   inviteCreate: [invite: Invite];
   inviteDelete: [invite: Invite];
-  messageCreate: [message: Message & { channel: Exclude<TextBasedChannel, PartialGroupDMChannel> }];
-  messageDelete: [message: Message | PartialMessage];
+  messageCreate: [message: NonPartialGroupDMChannel<Message>];
+  messageDelete: [message: NonPartialGroupDMChannel<Message | PartialMessage>];
   messagePollVoteAdd: [pollAnswer: PollAnswer, userId: Snowflake];
   messagePollVoteRemove: [pollAnswer: PollAnswer, userId: Snowflake];
   messageReactionRemoveAll: [
-    message: Message | PartialMessage,
+    message: NonPartialGroupDMChannel<Message | PartialMessage>,
     reactions: ReadonlyCollection<string | Snowflake, MessageReaction>,
   ];
   messageReactionRemoveEmoji: [reaction: MessageReaction | PartialMessageReaction];
   messageDeleteBulk: [
-    messages: ReadonlyCollection<Snowflake, Message | PartialMessage>,
+    messages: ReadonlyCollection<Snowflake, NonPartialGroupDMChannel<Message | PartialMessage>>,
     channel: GuildTextBasedChannel,
   ];
   messageReactionAdd: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser];
