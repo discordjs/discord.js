@@ -444,7 +444,7 @@ client.on('messageCreate', async message => {
     expectType<Collection<Snowflake, GuildMember>>(message.mentions.members);
   }
 
-  expectType<TextBasedChannel>(message.channel);
+  expectType<Exclude<TextBasedChannel, PartialGroupDMChannel>>(message.channel);
   expectNotType<GuildTextBasedChannel>(message.channel);
 
   // @ts-expect-error
