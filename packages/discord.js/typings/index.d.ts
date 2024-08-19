@@ -2187,6 +2187,7 @@ export class Attachment {
   public proxyURL: string;
   public size: number;
   public get spoiler(): boolean;
+  public title: string | null;
   public url: string;
   public waveform: string | null;
   public width: number | null;
