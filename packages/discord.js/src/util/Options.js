@@ -41,6 +41,7 @@ const { version } = require('../../package.json');
  * @property {WebsocketOptions} [ws] Options for the WebSocket
  * @property {RESTOptions} [rest] Options for the REST manager
  * @property {Function} [jsonTransformer] A function used to transform outgoing json data
+ * @property {boolean} [enforceNonce=false] The default value for {@link MessageReplyOptions#enforceNonce}
  */
 
 /**
@@ -91,7 +92,6 @@ const { version } = require('../../package.json');
  * only set this if you know what you are doing</warn>
  * @property {BuildStrategyFunction} [buildStrategy] Builds the strategy to use for sharding
  * @property {IdentifyThrottlerFunction} [buildIdentifyThrottler] Builds the identify throttler to use for sharding
- * @property {PresenceData} [presence={}] Presence data to use upon login
  */
 
 /**
@@ -118,6 +118,7 @@ class Options extends null {
       makeCache: this.cacheWithLimits(this.DefaultMakeCacheSettings),
       partials: [],
       failIfNotExists: true,
+      enforceNonce: false,
       presence: {},
       sweepers: this.DefaultSweeperSettings,
       ws: {

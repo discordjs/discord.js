@@ -181,7 +181,6 @@ import {
   APISelectMenuDefaultValue,
   SelectMenuDefaultValueType,
   InviteType,
-  GatewayPresenceUpdateData,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -5306,7 +5305,6 @@ export interface ClientOptions {
   allowedMentions?: MessageMentionOptions;
   partials?: readonly Partials[];
   failIfNotExists?: boolean;
-  /** @deprecated Use {@link ClientOptions.ws.presence} instead */
   presence?: PresenceData;
   intents: BitFieldResolvable<GatewayIntentsString, number>;
   waitGuildTimeout?: number;
@@ -5314,6 +5312,7 @@ export interface ClientOptions {
   ws?: WebSocketOptions;
   rest?: Partial<RESTOptions>;
   jsonTransformer?: (obj: unknown) => unknown;
+  enforceNonce?: boolean;
 }
 
 export type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
@@ -6879,7 +6878,6 @@ export interface WebhookMessageCreateOptions extends Omit<MessageCreateOptions, 
 export interface WebSocketOptions {
   large_threshold?: number;
   version?: number;
-  presence?: GatewayPresenceUpdateData;
   buildStrategy?(manager: WSWebSocketManager): IShardingStrategy;
   buildIdentifyThrottler?(manager: WSWebSocketManager): Awaitable<IIdentifyThrottler>;
 }
