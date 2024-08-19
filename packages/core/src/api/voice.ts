@@ -10,6 +10,7 @@ import {
 	type RESTPatchAPIGuildVoiceStateUserJSONBody,
 	type RESTPatchAPIGuildVoiceStateCurrentMemberResult,
 	type RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
+	type RESTPatchAPIGuildVoiceStateUserResult,
 } from 'discord-api-types/v10';
 
 export class VoiceAPI {
@@ -64,7 +65,11 @@ export class VoiceAPI {
 		body: RESTPatchAPIGuildVoiceStateUserJSONBody,
 		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
-		await this.rest.patch(Routes.guildVoiceState(guildId, userId), { reason, body, signal });
+		return this.rest.patch(Routes.guildVoiceState(guildId, userId), {
+			reason,
+			body,
+			signal,
+		}) as Promise<RESTPatchAPIGuildVoiceStateUserResult>;
 	}
 
 	/**

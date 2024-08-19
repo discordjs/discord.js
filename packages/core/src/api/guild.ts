@@ -69,6 +69,7 @@ import {
 	type RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
 	type RESTPatchAPIGuildVoiceStateCurrentMemberResult,
 	type RESTPatchAPIGuildVoiceStateUserJSONBody,
+	type RESTPatchAPIGuildVoiceStateUserResult,
 	type RESTPatchAPIGuildWelcomeScreenJSONBody,
 	type RESTPatchAPIGuildWelcomeScreenResult,
 	type RESTPatchAPIGuildWidgetSettingsJSONBody,
@@ -701,7 +702,11 @@ export class GuildsAPI {
 		body: RESTPatchAPIGuildVoiceStateUserJSONBody,
 		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
-		await this.rest.patch(Routes.guildVoiceState(guildId, userId), { reason, body, signal });
+		return this.rest.patch(Routes.guildVoiceState(guildId, userId), {
+			reason,
+			body,
+			signal,
+		}) as Promise<RESTPatchAPIGuildVoiceStateUserResult>;
 	}
 
 	/**
