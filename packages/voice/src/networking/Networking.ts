@@ -9,13 +9,15 @@ import * as secretbox from '../util/Secretbox';
 import { noop } from '../util/util';
 import { VoiceUDPSocket } from './VoiceUDPSocket';
 import { VoiceWebSocket } from './VoiceWebSocket';
+import crypto from 'node:crypto';
 
 // The number of audio channels required by Discord
 const CHANNELS = 2;
 const TIMESTAMP_INC = (48_000 / 100) * CHANNELS;
 const MAX_NONCE_SIZE = 2 ** 32 - 1;
 
-export const SUPPORTED_ENCRYPTION_MODES = ['xsalsa20_poly1305_lite', 'xsalsa20_poly1305_suffix', 'xsalsa20_poly1305'];
+// export const SUPPORTED_ENCRYPTION_MODES = ['xsalsa20_poly1305_lite', 'xsalsa20_poly1305_suffix', 'xsalsa20_poly1305'];
+export const SUPPORTED_ENCRYPTION_MODES = ['aead_aes256_gcm_rtpsize', 'aead_xchacha20_poly1305_rtpsize'];
 
 /**
  * The different statuses that a networking instance can hold. The order
@@ -442,7 +444,7 @@ export class Networking extends EventEmitter {
 					sequence: randomNBit(16),
 					timestamp: randomNBit(32),
 					nonce: 0,
-					nonceBuffer: Buffer.alloc(24),
+					nonceBuffer: encryptionMode === 'aead_aes256_gcm_rtpsize' ? Buffer.alloc(12) : Buffer.alloc(24),
 					speaking: false,
 					packetsPlayed: 0,
 				},
@@ -565,7 +567,7 @@ export class Networking extends EventEmitter {
 		packetBuffer.writeUIntBE(ssrc, 8, 4);
 
 		packetBuffer.copy(nonce, 0, 0, 12);
-		return Buffer.concat([packetBuffer, ...this.encryptOpusPacket(opusPacket, connectionData)]);
+		return Buffer.concat([packetBuffer, ...this.encryptOpusPacket(opusPacket, connectionData, packetBuffer)]);
 	}
 
 	/**
@@ -574,22 +576,33 @@ export class Networking extends EventEmitter {
 	 * @param opusPacket - The Opus packet to encrypt
 	 * @param connectionData - The current connection data of the instance
 	 */
-	private encryptOpusPacket(opusPacket: Buffer, connectionData: ConnectionData) {
+	private encryptOpusPacket(opusPacket: Buffer, connectionData: ConnectionData, additionalData: Buffer) {
 		const { secretKey, encryptionMode } = connectionData;
 
-		if (encryptionMode === 'xsalsa20_poly1305_lite') {
-			connectionData.nonce++;
-			if (connectionData.nonce > MAX_NONCE_SIZE) connectionData.nonce = 0;
-			connectionData.nonceBuffer.writeUInt32BE(connectionData.nonce, 0);
-			return [
-				secretbox.methods.close(opusPacket, connectionData.nonceBuffer, secretKey),
-				connectionData.nonceBuffer.slice(0, 4),
-			];
-		} else if (encryptionMode === 'xsalsa20_poly1305_suffix') {
-			const random = secretbox.methods.random(24, connectionData.nonceBuffer);
-			return [secretbox.methods.close(opusPacket, random, secretKey), random];
-		}
+		connectionData.nonce++;
+		if (connectionData.nonce > MAX_NONCE_SIZE) connectionData.nonce = 0;
+		connectionData.nonceBuffer.writeUInt32BE(connectionData.nonce, 0);
 
-		return [secretbox.methods.close(opusPacket, nonce, secretKey)];
+		const noncePadding = connectionData.nonceBuffer.slice(0, 4);
+
+		if (encryptionMode === 'aead_aes256_gcm_rtpsize') {
+			const cipher = crypto.createCipheriv('aes-256-gcm', secretKey, connectionData.nonceBuffer);
+			cipher.setAAD(additionalData);
+
+			const encrypted = Buffer.concat([cipher.update(opusPacket), cipher.final(), cipher.getAuthTag()]);
+
+			return [encrypted, noncePadding];
+		} else if (encryptionMode === 'aead_xchacha20_poly1305_rtpsize') {
+			const encrypted = secretbox.methods.crypto_aead_xchacha20poly1305_ietf_encrypt(
+				opusPacket,
+				additionalData,
+				connectionData.nonceBuffer,
+				secretKey,
+			);
+
+			return [encrypted, noncePadding];
+		} else {
+			throw new Error('unsupported encryption method');
+		}
 	}
 }
