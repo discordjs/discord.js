@@ -206,6 +206,8 @@ import {
   ChannelSelectMenuComponent,
   MentionableSelectMenuComponent,
   Poll,
+  ApplicationEmoji,
+  ApplicationEmojiManager,
   StickerPack,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
@@ -1296,6 +1298,10 @@ client.on('guildCreate', async g => {
   );
 });
 
+// EventEmitter static method overrides
+expectType<Promise<[Client<true>]>>(Client.once(client, 'ready'));
+expectType<AsyncIterableIterator<[Client<true>]>>(Client.on(client, 'ready'));
+
 client.login('absolutely-valid-token');
 
 declare const loggedInClient: Client<true>;
@@ -1695,6 +1701,11 @@ declare const guildEmojiManager: GuildEmojiManager;
 expectType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch());
 expectType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch(undefined, {}));
 expectType<Promise<GuildEmoji>>(guildEmojiManager.fetch('0'));
+
+declare const applicationEmojiManager: ApplicationEmojiManager;
+expectType<Promise<Collection<Snowflake, ApplicationEmoji>>>(applicationEmojiManager.fetch());
+expectType<Promise<Collection<Snowflake, ApplicationEmoji>>>(applicationEmojiManager.fetch(undefined, {}));
+expectType<Promise<ApplicationEmoji>>(applicationEmojiManager.fetch('0'));
 
 declare const guildBanManager: GuildBanManager;
 {
