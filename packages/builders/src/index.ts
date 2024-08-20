@@ -1,12 +1,3 @@
-export * as EmbedAssertions from './messages/embed/Assertions.js';
-export * from './messages/embed/Embed.js';
-export * as PollAssertions from './messages/poll/Assertions.js';
-export * from './messages/poll/Poll.js';
-// TODO: Consider removing this dep in the next major version
-export * from '@discordjs/formatters';
-
-export * as ComponentAssertions from './components/Assertions.js';
-export * from './components/ActionRow.js';
 export * from './components/button/mixins/EmojiOrLabelButtonMixin.js';
 export * from './components/button/Button.js';
 export * from './components/button/CustomIdButton.js';
@@ -69,8 +60,16 @@ export * from './messages/embed/EmbedAuthor.js';
 export * from './messages/embed/EmbedField.js';
 export * from './messages/embed/EmbedFooter.js';
 
+export * from './messages/poll/Assertions.js';
+export * from './messages/poll/Poll.js';
+export * from './messages/poll/PollAnswer.js';
+export * from './messages/poll/PollAnswerMedia.js';
+export * from './messages/poll/PollMedia.js';
+export * from './messages/poll/PollQuestion.js';
+
 export * from './util/componentUtil.js';
 export * from './util/normalizeArray.js';
+export * from './util/resolveBuilder.js';
 export * from './util/validation.js';
 
 export * from './Assertions.js';

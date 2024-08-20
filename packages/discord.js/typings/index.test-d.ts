@@ -33,7 +33,7 @@ import {
   APIMentionableSelectComponent,
   APIModalInteractionResponseCallbackData,
   WebhookType,
-  RESTAPIPollCreate,
+  RESTAPIPoll,
 } from 'discord-api-types/v10';
 import {
   ApplicationCommand,
@@ -2589,8 +2589,8 @@ declare const pollData: PollData;
 
   new PollBuilder().addAnswers({ text: '.', emoji: '874989932983238726' });
 
-  expectType<RESTAPIPollCreate>(PollBuilder.from(new PollBuilder()).toJSON());
-  
+  expectType<RESTAPIPoll>(PollBuilder.from(new PollBuilder()).toJSON());
+
   await message.edit({
     // @ts-expect-error
     poll: pollData,

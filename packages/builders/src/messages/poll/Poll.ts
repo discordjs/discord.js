@@ -1,32 +1,44 @@
-import { type APIPartialEmoji, PollLayoutType, type RESTAPIPollCreate, type APIPollMedia } from 'discord-api-types/v10';
-import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
-import {
-	pollAnswersArrayPredicate,
-	pollDurationPredicate,
-	pollLayoutTypePredicate,
-	pollMultiSelectPredicate,
-	pollQuestionPredicate,
-	validateAnswerLength,
-} from './Assertions';
+import type { JSONEncodable } from '@discordjs/util';
+import type { RESTAPIPoll, APIPollMedia, PollLayoutType, APIPollAnswer } from 'discord-api-types/v10';
+import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
+import { resolveBuilder } from '../../util/resolveBuilder.js';
+import { validate } from '../../util/validation.js';
+import { pollPredicate } from './Assertions';
+import { PollAnswerBuilder } from './PollAnswer.js';
+import { PollQuestionBuilder } from './PollQuestion.js';
 
-export type PollMediaPartialEmoji = Exclude<APIPollMedia, 'emoji'> & { emoji?: Partial<APIPartialEmoji> };
+export interface PollData extends Omit<RESTAPIPoll, 'answers' | 'question'> {
+	answers: PollAnswerBuilder[];
+	question: PollQuestionBuilder;
+}
 
 /**
  * A builder that creates API-compatible JSON data for polls.
  */
-export class PollBuilder {
+export class PollBuilder implements JSONEncodable<RESTAPIPoll> {
 	/**
 	 * The API data associated with this poll.
 	 */
-	public readonly data: Partial<RESTAPIPollCreate>;
+	private readonly data: PollData;
+
+	/**
+	 * Gets the answers of this poll.
+	 */
+	public get answers(): readonly PollAnswerBuilder[] {
+		return this.data.answers;
+	}
 
 	/**
 	 * Creates a new poll from API data.
 	 *
 	 * @param data - The API data to create this poll with
 	 */
-	public constructor(data: Partial<RESTAPIPollCreate> = {}) {
-		this.data = { ...data };
+	public constructor(data: Partial<RESTAPIPoll> = {}) {
+		this.data = {
+			...structuredClone(data),
+			question: new PollQuestionBuilder(data.question),
+			answers: data.answers?.map((answer) => new PollAnswerBuilder(answer)) ?? [],
+		};
 	}
 
 	/**
@@ -53,21 +65,15 @@ export class PollBuilder {
 	 * ```
 	 * @param answers - The answers to add
 	 */
-	public addAnswers(...answers: RestOrArray<PollMediaPartialEmoji>): this {
+	public addAnswers(
+		...answers: RestOrArray<
+			Omit<APIPollAnswer, 'answer_id'> | PollAnswerBuilder | ((builder: PollAnswerBuilder) => PollAnswerBuilder)
+		>
+	): this {
 		const normalizedAnswers = normalizeArray(answers);
+		const resolved = normalizedAnswers.map((answer) => resolveBuilder(answer, PollAnswerBuilder));
 
-		// Ensure adding these answers won't exceed the 10 answer limit
-		validateAnswerLength(normalizedAnswers.length, this.data.answers);
-
-		// Data assertions
-		pollAnswersArrayPredicate.parse(normalizedAnswers);
-
-		if (this.data.answers) {
-			this.data.answers.push(...normalizedAnswers.map((answer) => ({ poll_media: answer })));
-		} else {
-			this.data.answers = normalizedAnswers.map((answer) => ({ poll_media: answer }));
-		}
-
+		this.data.answers.push(...resolved);
 		return this;
 	}
 
@@ -100,21 +106,19 @@ export class PollBuilder {
 	 * @param deleteCount - The number of answers to remove
 	 * @param answers - The replacing answer objects
 	 */
-	public spliceAnswers(index: number, deleteCount: number, ...answers: RestOrArray<PollMediaPartialEmoji>): this {
+	public spliceAnswers(
+		index: number,
+		deleteCount: number,
+		...answers: (
+			| Omit<APIPollAnswer, 'answer_id'>
+			| PollAnswerBuilder
+			| ((builder: PollAnswerBuilder) => PollAnswerBuilder)
+		)[]
+	): this {
 		const normalizedAnswers = normalizeArray(answers);
+		const resolved = normalizedAnswers.map((answer) => resolveBuilder(answer, PollAnswerBuilder));
 
-		// Ensure adding these answers won't exceed the 10 answer limit
-		validateAnswerLength(answers.length - deleteCount, this.data.answers);
-
-		// Data assertions
-		pollAnswersArrayPredicate.parse(answers);
-
-		if (this.data.answers) {
-			this.data.answers.splice(index, deleteCount, ...normalizedAnswers.map((answer) => ({ poll_media: answer })));
-		} else {
-			this.data.answers = normalizedAnswers.map((answer) => ({ poll_media: answer }));
-		}
-
+		this.data.answers.splice(index, deleteCount, ...resolved);
 		return this;
 	}
 
@@ -128,21 +132,36 @@ export class PollBuilder {
 	 * You can set a maximum of 10 answers.
 	 * @param answers - The answers to set
 	 */
-	public setAnswers(...answers: RestOrArray<PollMediaPartialEmoji>): this {
-		this.spliceAnswers(0, this.data.answers?.length ?? 0, ...normalizeArray(answers));
-		return this;
+	public setAnswers(
+		...answers: RestOrArray<
+			Omit<APIPollAnswer, 'answer_id'> | PollAnswerBuilder | ((builder: PollAnswerBuilder) => PollAnswerBuilder)
+		>
+	): this {
+		return this.spliceAnswers(0, this.data.answers.length, ...normalizeArray(answers));
 	}
 
 	/**
 	 * Sets the question for this poll.
 	 *
-	 * @param data - The data to use for this poll's question
+	 * @param options - The data to use for this poll's question
 	 */
-	public setQuestion(data: Omit<PollMediaPartialEmoji, 'emoji'>): this {
-		// Data assertions
-		pollQuestionPredicate.parse(data);
+	public setQuestion(
+		options:
+			| Omit<APIPollMedia, 'emoji'>
+			| PollQuestionBuilder
+			| ((builder: PollQuestionBuilder) => PollQuestionBuilder),
+	): this {
+		this.data.question = resolveBuilder(options, PollQuestionBuilder);
+		return this;
+	}
 
-		this.data.question = data;
+	/**
+	 * Updates the question of this poll.
+	 *
+	 * @param updater - The function to update the question with
+	 */
+	public updateQuestion(updater: (builder: PollQuestionBuilder) => void): this {
+		updater((this.data.question ??= new PollQuestionBuilder()));
 		return this;
 	}
 
@@ -151,15 +170,19 @@ export class PollBuilder {
 	 *
 	 * @remarks
 	 * This method is redundant while only one type of poll layout exists (`PollLayoutType.Default`)
-	 * due to Discord automatically setting the layout to `PollLayoutType.Default` if none provided,
-	 * and thus is not required to be called when creating a poll.
+	 * with Discord using that as the layout type if none is specified.
 	 * @param type - The type of poll layout to use
 	 */
-	public setLayoutType(type = PollLayoutType.Default): this {
-		// Data assertions
-		pollLayoutTypePredicate.parse(type);
-
+	public setLayoutType(type: PollLayoutType): this {
 		this.data.layout_type = type;
+		return this;
+	}
+
+	/**
+	 * Clears the layout type for this poll.
+	 */
+	public clearLayoutType(): this {
+		this.data.layout_type = undefined;
 		return this;
 	}
 
@@ -169,9 +192,6 @@ export class PollBuilder {
 	 * @param multiSelect - Whether to allow multi-select
 	 */
 	public setMultiSelect(multiSelect = true): this {
-		// Data assertions
-		pollMultiSelectPredicate.parse(multiSelect);
-
 		this.data.allow_multiselect = multiSelect;
 		return this;
 	}
@@ -182,24 +202,40 @@ export class PollBuilder {
 	 * @remarks
 	 * Minimum duration is `1`, with maximum duration being `768` (32 days).
 	 * Default if none specified is `24` (one day).
-	 * @param hours - The amount of hours this poll will be open for
+	 * @param duration - The amount of hours this poll will be open for
 	 */
-	public setDuration(hours: number): this {
-		// Data assertions
-		pollDurationPredicate.parse(hours);
+	public setDuration(duration: number): this {
+		this.data.duration = duration;
+		return this;
+	}
 
-		this.data.duration = hours;
+	/**
+	 * Clears the duration for this poll.
+	 */
+	public clearDuration(): this {
+		this.data.duration = undefined;
 		return this;
 	}
 
 	/**
 	 * Serializes this builder to API-compatible JSON data.
 	 *
-	 * @remarks
-	 * This method runs validations on the data before serializing it.
-	 * As such, it may throw an error if the data is invalid.
+	 * Note that by disabling validation, there is no guarantee that the resulting object will be valid.
+	 *
+	 * @param validationOverride - Force validation to run/not run regardless of your global preference
 	 */
-	public toJSON(): RESTAPIPollCreate {
-		return { ...this.data } as RESTAPIPollCreate;
+	public toJSON(validationOverride?: boolean): RESTAPIPoll {
+		const { answers, question, ...rest } = this.data;
+
+		const data = {
+			...structuredClone(rest),
+			// Disable validation because the pollPredicate below will validate those as well
+			answers: answers.map((answer) => answer.toJSON(false)),
+			question: question.toJSON(false),
+		};
+
+		validate(pollPredicate, data, validationOverride);
+
+		return data;
 	}
 }
