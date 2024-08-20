@@ -244,20 +244,6 @@ import {
   RawWidgetMemberData,
 } from './rawDataTypes.js';
 
-declare module 'node:events' {
-  class EventEmitter {
-    // Add type overloads for client events.
-    public static once<Emitter extends EventEmitter, Event extends keyof ClientEvents>(
-      eventEmitter: Emitter,
-      eventName: Emitter extends Client ? Event : string,
-    ): Promise<Emitter extends Client ? ClientEvents[Event] : any[]>;
-    public static on<Emitter extends EventEmitter, Events extends keyof ClientEvents>(
-      eventEmitter: Emitter,
-      eventName: Emitter extends Client ? Events : string,
-    ): AsyncIterableIterator<Emitter extends Client ? ClientEvents[Events] : any>;
-  }
-}
-
 //#region Classes
 
 export class Activity {
@@ -998,6 +984,18 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   private get _censoredToken(): string | null;
   // This a technique used to brand the ready state. Or else we'll get `never` errors on typeguard checks.
   private readonly _ready: Ready;
+
+  // Override inherited static EventEmitter methods, with added type checks for Client events.
+  public static once<Emitter extends EventEmitter, Event extends keyof ClientEvents>(
+    eventEmitter: Emitter,
+    eventName: Emitter extends Client ? Event : string | symbol,
+    options?: { signal?: AbortSignal | undefined },
+  ): Promise<Emitter extends Client ? ClientEvents[Event] : any[]>;
+  public static on<Emitter extends EventEmitter, Event extends keyof ClientEvents>(
+    eventEmitter: Emitter,
+    eventName: Emitter extends Client ? Event : string | symbol,
+    options?: { signal?: AbortSignal | undefined },
+  ): AsyncIterableIterator<Emitter extends Client ? ClientEvents[Event] : any[]>;
 
   public application: If<Ready, ClientApplication>;
   public channels: ChannelManager;
