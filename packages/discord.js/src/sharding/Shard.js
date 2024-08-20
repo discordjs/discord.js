@@ -8,6 +8,8 @@ const { setTimeout: sleep } = require('node:timers/promises');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const ShardEvents = require('../util/ShardEvents');
 const { makeError, makePlainError } = require('../util/Util');
+const { SHARE_ENV } = require('node:worker_threads');
+
 let childProcess = null;
 let Worker = null;
 
@@ -138,7 +140,7 @@ class Shard extends EventEmitter {
       case 'worker':
         this.worker = new Worker(path.resolve(this.manager.file), {
           workerData: this.env,
-          env: this.env,
+          env: SHARE_ENV,
           execArgv: this.execArgv,
           argv: this.args,
         })
