@@ -182,8 +182,8 @@ class Sticker extends Base {
    * Fetches the pack that contains this sticker.
    * @returns {Promise<?StickerPack>} The sticker pack or `null` if this sticker does not belong to one.
    */
-  async fetchPack() {
-    if (!this.packId) return null;
+  fetchPack() {
+    if (!this.packId) return Promise.resolve(null);
     return this.client.fetchStickerPacks({ packId: this.packId });
   }
 
