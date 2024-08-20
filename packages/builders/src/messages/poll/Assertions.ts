@@ -1,45 +1,20 @@
-import { s } from '@sapphire/shapeshift';
-import { PollLayoutType, type RESTAPIPollCreate } from 'discord-api-types/v10';
-import { isValidationEnabled } from '../../util/validation.js';
+import { PollLayoutType } from 'discord-api-types/v10';
+import { z } from 'zod';
+import { emojiPredicate } from '../../components/Assertions';
 
-export const pollQuestionTextPredicate = s.string
-	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(300)
-	.setValidationEnabled(isValidationEnabled);
+export const pollQuestionPredicate = z.object({ text: z.string().min(1).max(300) });
 
-export const pollQuestionPredicate = s.object({
-	text: pollQuestionTextPredicate,
+export const pollAnswerMediaPredicate = z.object({
+	text: z.string().min(1).max(55),
+	emoji: emojiPredicate.nullish(),
 });
 
-export const pollAnswerTextPredicate = s.string
-	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(55)
-	.setValidationEnabled(isValidationEnabled);
+export const pollAnswerPredicate = z.object({ poll_media: pollAnswerMediaPredicate });
 
-export const pollAnswerEmojiPredicate = s.object({
-	id: s.string.optional,
-	name: s.string.optional,
-	animated: s.boolean.optional,
+export const pollPredicate = z.object({
+	question: pollQuestionPredicate,
+	answers: z.array(pollAnswerPredicate).max(10),
+	duration: z.number().min(1).max(768).optional(),
+	allow_multiselect: z.boolean().optional(),
+	layout_type: z.nativeEnum(PollLayoutType).optional(),
 });
-
-export const pollAnswerPredicate = s.object({
-	text: pollAnswerTextPredicate,
-	emoji: pollAnswerEmojiPredicate.optional,
-});
-
-export const pollMultiSelectPredicate = s.boolean.setValidationEnabled(isValidationEnabled);
-
-export const pollLayoutTypePredicate = s.nativeEnum(PollLayoutType).setValidationEnabled(isValidationEnabled);
-
-export const pollAnswersArrayPredicate = pollAnswerPredicate.array.setValidationEnabled(isValidationEnabled);
-
-export const answerLengthPredicate = s.number.lessThanOrEqual(10).setValidationEnabled(isValidationEnabled);
-
-export const pollDurationPredicate = s.number
-	.greaterThanOrEqual(1)
-	.lessThanOrEqual(768)
-	.setValidationEnabled(isValidationEnabled);
-
-export function validateAnswerLength(amountAdding: number, answers?: RESTAPIPollCreate['answers']): void {
-	answerLengthPredicate.parse((answers?.length ?? 0) + amountAdding);
-}

@@ -5,7 +5,6 @@ import {
   EmbedBuilder as BuildersEmbed,
   ChannelSelectMenuBuilder as BuilderChannelSelectMenuComponent,
   MentionableSelectMenuBuilder as BuilderMentionableSelectMenuComponent,
-  PollBuilder as BuildersPoll,
   RoleSelectMenuBuilder as BuilderRoleSelectMenuComponent,
   StringSelectMenuBuilder as BuilderStringSelectMenuComponent,
   UserSelectMenuBuilder as BuilderUserSelectMenuComponent,
@@ -16,7 +15,6 @@ import {
   AnyComponentBuilder,
   type RestOrArray,
   ApplicationCommandOptionAllowedChannelTypes,
-  PollMediaPartialEmoji,
 } from '@discordjs/builders';
 import { Awaitable, JSONEncodable } from '@discordjs/util';
 import { Collection, ReadonlyCollection } from '@discordjs/collection';
@@ -178,8 +176,7 @@ import {
   RESTAPIInteractionCallbackActivityInstanceResource,
   VoiceChannelEffectSendAnimationType,
   GatewayVoiceChannelEffectSendDispatchData,
-  APIPollMedia,
-  RESTAPIPollCreate,
+  RESTAPIPoll,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { Stream } from 'node:stream';
@@ -2702,18 +2699,6 @@ export class Presence extends Base {
   public userId: Snowflake;
   public equals(presence: Presence): boolean;
 }
-
-export class PollBuilder extends BuildersPoll {
-  public constructor(data?: Poll | APIPoll);
-  public override addAnswers(...answers: RestOrArray<PollAnswerWithEmoji>): this;
-  public override setAnswers(...answers: RestOrArray<PollAnswerWithEmoji>): this;
-  public override spliceAnswers(index: number, deleteCount: number, ...answers: RestOrArray<PollAnswerWithEmoji>): this;
-  public static from(other: JSONEncodable<RESTAPIPollCreate> | APIPoll): PollBuilder;
-}
-
-export type PollAnswerWithEmoji = Omit<PollMediaPartialEmoji, 'emoji'> & { emoji?: PollEmojiResolvable };
-
-export type PollEmojiResolvable = string | Partial<APIPartialEmoji> | EmojiResolvable;
 
 export interface PollQuestionMedia {
   text: string | null;
@@ -6368,7 +6353,7 @@ export interface BaseMessageOptions {
 }
 
 export interface BaseMessageOptionsWithPoll extends BaseMessageOptions {
-  poll?: JSONEncodable<RESTAPIPollCreate> | PollData;
+  poll?: JSONEncodable<RESTAPIPoll> | PollData;
 }
 
 export interface MessageCreateOptions extends BaseMessageOptionsWithPoll {
