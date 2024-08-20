@@ -100,7 +100,7 @@ class ClientApplication extends Application {
                 : null,
             },
           };
-          return [parseInt(key), context];
+          return [key, context];
         }),
       );
     } else {
