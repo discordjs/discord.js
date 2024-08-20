@@ -1019,7 +1019,8 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public fetchGuildTemplate(template: GuildTemplateResolvable): Promise<GuildTemplate>;
   public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
   public fetchSticker(id: Snowflake): Promise<Sticker>;
-  public fetchStickerPacks(): Promise<Collection<Snowflake, StickerPack>>;
+  public fetchStickerPacks(options: { packId: Snowflake }): Promise<StickerPack>;
+  public fetchStickerPacks(options?: StickerPackFetchOptions): Promise<Collection<Snowflake, StickerPack>>;
   /** @deprecated Use {@link Client.fetchStickerPacks} instead. */
   public fetchPremiumStickerPacks(): ReturnType<Client['fetchStickerPacks']>;
   public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
@@ -1052,6 +1053,10 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
 
   public removeAllListeners<Event extends keyof ClientEvents>(event?: Event): this;
   public removeAllListeners<Event extends string | symbol>(event?: Exclude<Event, keyof ClientEvents>): this;
+}
+
+export interface StickerPackFetchOptions {
+  packId?: Snowflake;
 }
 
 export class ClientApplication extends Application {
