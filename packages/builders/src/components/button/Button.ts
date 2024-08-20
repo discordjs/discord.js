@@ -1,10 +1,12 @@
 import {
 	ComponentType,
-	type APIMessageComponentEmoji,
 	type APIButtonComponent,
-	type APIButtonComponentWithURL,
 	type APIButtonComponentWithCustomId,
+	type APIButtonComponentWithSKUId,
+	type APIButtonComponentWithURL,
+	type APIMessageComponentEmoji,
 	type ButtonStyle,
+	type Snowflake,
 } from 'discord-api-types/v10';
 import {
 	buttonLabelValidator,
@@ -89,12 +91,23 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	}
 
 	/**
+	 * Sets the SKU id that represents a purchasable SKU for this button.
+	 *
+	 * @remarks Only available when using premium-style buttons.
+	 * @param skuId - The SKU id to use
+	 */
+	public setSKUId(skuId: Snowflake) {
+		(this.data as APIButtonComponentWithSKUId).sku_id = skuId;
+		return this;
+	}
+
+	/**
 	 * Sets the emoji to display on this button.
 	 *
 	 * @param emoji - The emoji to use
 	 */
 	public setEmoji(emoji: APIMessageComponentEmoji) {
-		this.data.emoji = emojiValidator.parse(emoji);
+		(this.data as Exclude<APIButtonComponent, APIButtonComponentWithSKUId>).emoji = emojiValidator.parse(emoji);
 		return this;
 	}
 
@@ -114,7 +127,7 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	 * @param label - The label to use
 	 */
 	public setLabel(label: string) {
-		this.data.label = buttonLabelValidator.parse(label);
+		(this.data as Exclude<APIButtonComponent, APIButtonComponentWithSKUId>).label = buttonLabelValidator.parse(label);
 		return this;
 	}
 
@@ -124,9 +137,10 @@ export class ButtonBuilder extends ComponentBuilder<APIButtonComponent> {
 	public toJSON(): APIButtonComponent {
 		validateRequiredButtonParameters(
 			this.data.style,
-			this.data.label,
-			this.data.emoji,
+			(this.data as Exclude<APIButtonComponent, APIButtonComponentWithSKUId>).label,
+			(this.data as Exclude<APIButtonComponent, APIButtonComponentWithSKUId>).emoji,
 			(this.data as APIButtonComponentWithCustomId).custom_id,
+			(this.data as APIButtonComponentWithSKUId).sku_id,
 			(this.data as APIButtonComponentWithURL).url,
 		);
 

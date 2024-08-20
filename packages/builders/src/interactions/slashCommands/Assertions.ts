@@ -1,11 +1,18 @@
 import { s } from '@sapphire/shapeshift';
-import { Locale, type APIApplicationCommandOptionChoice, type LocalizationMap } from 'discord-api-types/v10';
+import {
+	ApplicationIntegrationType,
+	InteractionContextType,
+	Locale,
+	type APIApplicationCommandOptionChoice,
+	type LocalizationMap,
+} from 'discord-api-types/v10';
 import { isValidationEnabled } from '../../util/validation.js';
 import type { ToAPIApplicationCommandOptions } from './SlashCommandBuilder.js';
 import type { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands.js';
 import type { ApplicationCommandOptionBase } from './mixins/ApplicationCommandOptionBase.js';
 
-const namePredicate = s.string
+const namePredicate = s
+	.string()
 	.lengthGreaterThanOrEqual(1)
 	.lengthLessThanOrEqual(32)
 	.regex(/^[\p{Ll}\p{Lm}\p{Lo}\p{N}\p{sc=Devanagari}\p{sc=Thai}_-]+$/u)
@@ -15,7 +22,8 @@ export function validateName(name: unknown): asserts name is string {
 	namePredicate.parse(name);
 }
 
-const descriptionPredicate = s.string
+const descriptionPredicate = s
+	.string()
 	.lengthGreaterThanOrEqual(1)
 	.lengthLessThanOrEqual(100)
 	.setValidationEnabled(isValidationEnabled);
@@ -25,7 +33,7 @@ export function validateDescription(description: unknown): asserts description i
 	descriptionPredicate.parse(description);
 }
 
-const maxArrayLengthPredicate = s.unknown.array.lengthLessThanOrEqual(25).setValidationEnabled(isValidationEnabled);
+const maxArrayLengthPredicate = s.unknown().array().lengthLessThanOrEqual(25).setValidationEnabled(isValidationEnabled);
 export function validateLocale(locale: unknown) {
 	return localePredicate.parse(locale);
 }
@@ -49,7 +57,7 @@ export function validateRequiredParameters(
 	validateMaxOptionsLength(options);
 }
 
-const booleanPredicate = s.boolean;
+const booleanPredicate = s.boolean();
 
 export function validateDefaultPermission(value: unknown): asserts value is boolean {
 	booleanPredicate.parse(value);
@@ -59,7 +67,7 @@ export function validateRequired(required: unknown): asserts required is boolean
 	booleanPredicate.parse(required);
 }
 
-const choicesLengthPredicate = s.number.lessThanOrEqual(25).setValidationEnabled(isValidationEnabled);
+const choicesLengthPredicate = s.number().lessThanOrEqual(25).setValidationEnabled(isValidationEnabled);
 
 export function validateChoicesLength(amountAdding: number, choices?: APIApplicationCommandOptionChoice[]): void {
 	choicesLengthPredicate.parse((choices?.length ?? 0) + amountAdding);
@@ -72,24 +80,31 @@ export function assertReturnOfBuilder<
 }
 
 export const localizationMapPredicate = s
-	.object<LocalizationMap>(Object.fromEntries(Object.values(Locale).map((locale) => [locale, s.string.nullish])))
-	.strict.nullish.setValidationEnabled(isValidationEnabled);
+	.object<LocalizationMap>(Object.fromEntries(Object.values(Locale).map((locale) => [locale, s.string().nullish()])))
+	.strict()
+	.nullish()
+	.setValidationEnabled(isValidationEnabled);
 
 export function validateLocalizationMap(value: unknown): asserts value is LocalizationMap {
 	localizationMapPredicate.parse(value);
 }
 
-const dmPermissionPredicate = s.boolean.nullish;
+const dmPermissionPredicate = s.boolean().nullish();
 
 export function validateDMPermission(value: unknown): asserts value is boolean | null | undefined {
 	dmPermissionPredicate.parse(value);
 }
 
-const memberPermissionPredicate = s.union(
-	s.bigint.transform((value) => value.toString()),
-	s.number.safeInt.transform((value) => value.toString()),
-	s.string.regex(/^\d+$/),
-).nullish;
+const memberPermissionPredicate = s
+	.union([
+		s.bigint().transform((value) => value.toString()),
+		s
+			.number()
+			.safeInt()
+			.transform((value) => value.toString()),
+		s.string().regex(/^\d+$/),
+	])
+	.nullish();
 
 export function validateDefaultMemberPermissions(permissions: unknown) {
 	return memberPermissionPredicate.parse(permissions);
@@ -98,3 +113,11 @@ export function validateDefaultMemberPermissions(permissions: unknown) {
 export function validateNSFW(value: unknown): asserts value is boolean {
 	booleanPredicate.parse(value);
 }
+
+export const contextsPredicate = s.array(
+	s.nativeEnum(InteractionContextType).setValidationEnabled(isValidationEnabled),
+);
+
+export const integrationTypesPredicate = s.array(
+	s.nativeEnum(ApplicationIntegrationType).setValidationEnabled(isValidationEnabled),
+);

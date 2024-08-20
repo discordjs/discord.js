@@ -128,8 +128,9 @@ class GuildMemberManager extends CachedManager {
       resolvedOptions.roles = resolvedRoles;
     }
     const data = await this.client.rest.put(Routes.guildMember(this.guild.id, userId), { body: resolvedOptions });
-    // Data is an empty Uint8Array if the member is already part of the guild.
-    return data instanceof Uint8Array
+
+    // Data is an empty array buffer if the member is already part of the guild.
+    return data instanceof ArrayBuffer
       ? options.fetchWhenExisting === false
         ? null
         : this.fetch(userId)

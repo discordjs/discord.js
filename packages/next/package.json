@@ -49,7 +49,7 @@
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>",
 		"SpaceEEC <spaceeec@yahoo.com>",
-		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Vlad Frangu <me@vladfrangu.dev>",
 		"Aura Román <kyradiscord@gmail.com>"
 	],
 	"license": "Apache-2.0",
@@ -72,7 +72,7 @@
 		"@discordjs/rest": "workspace:^",
 		"@discordjs/util": "workspace:^",
 		"@discordjs/ws": "workspace:^",
-		"discord-api-types": "0.37.87"
+		"discord-api-types": "0.37.96"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
