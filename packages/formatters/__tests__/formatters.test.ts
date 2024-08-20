@@ -23,6 +23,7 @@ import {
 	roleMention,
 	spoiler,
 	strikethrough,
+	subtext,
 	time,
 	TimestampStyles,
 	underline,
@@ -274,6 +275,12 @@ describe('Message formatters', () => {
 			expect(unorderedList(['discord.js', 'discord.js 2', ['discord.js 3']])).toEqual(
 				'- discord.js\n- discord.js 2\n  - discord.js 3',
 			);
+		});
+	});
+
+	describe('subtext', () => {
+		test('GIVEN "discord.js" THEN returns "-# discord.js"', () => {
+			expect<'-# discord.js'>(subtext('discord.js')).toEqual('-# discord.js');
 		});
 	});
 

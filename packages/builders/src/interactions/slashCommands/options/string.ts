@@ -5,8 +5,8 @@ import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOption
 import { ApplicationCommandOptionWithAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithAutocompleteMixin.js';
 import { ApplicationCommandOptionWithChoicesMixin } from '../mixins/ApplicationCommandOptionWithChoicesMixin.js';
 
-const minLengthValidator = s.number.greaterThanOrEqual(0).lessThanOrEqual(6_000);
-const maxLengthValidator = s.number.greaterThanOrEqual(1).lessThanOrEqual(6_000);
+const minLengthValidator = s.number().greaterThanOrEqual(0).lessThanOrEqual(6_000);
+const maxLengthValidator = s.number().greaterThanOrEqual(1).lessThanOrEqual(6_000);
 
 /**
  * A slash command string option.

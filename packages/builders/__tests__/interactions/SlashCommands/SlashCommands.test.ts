@@ -1,4 +1,5 @@
 import {
+	ApplicationCommandType,
 	ApplicationIntegrationType,
 	ChannelType,
 	InteractionContextType,
@@ -133,6 +134,10 @@ describe('Slash Commands', () => {
 		});
 
 		describe('Builder with simple options', () => {
+			test('GIVEN valid builder THEN returns type included', () => {
+				expect(getNamedBuilder().toJSON()).includes({ type: ApplicationCommandType.ChatInput });
+			});
+
 			test('GIVEN valid builder with options THEN does not throw error', () => {
 				expect(() =>
 					getBuilder()
