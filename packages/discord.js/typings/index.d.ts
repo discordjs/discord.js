@@ -191,6 +191,7 @@ import {
   RawAnonymousGuildData,
   RawApplicationCommandData,
   RawApplicationData,
+  RawApplicationEmojiData,
   RawBaseGuildData,
   RawChannelData,
   RawClientApplicationData,
@@ -242,20 +243,6 @@ import {
   RawWidgetData,
   RawWidgetMemberData,
 } from './rawDataTypes.js';
-
-declare module 'node:events' {
-  class EventEmitter {
-    // Add type overloads for client events.
-    public static once<Emitter extends EventEmitter, Event extends keyof ClientEvents>(
-      eventEmitter: Emitter,
-      eventName: Emitter extends Client ? Event : string,
-    ): Promise<Emitter extends Client ? ClientEvents[Event] : any[]>;
-    public static on<Emitter extends EventEmitter, Events extends keyof ClientEvents>(
-      eventEmitter: Emitter,
-      eventName: Emitter extends Client ? Events : string,
-    ): AsyncIterableIterator<Emitter extends Client ? ClientEvents[Events] : any>;
-  }
-}
 
 //#region Classes
 
@@ -998,6 +985,18 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   // This a technique used to brand the ready state. Or else we'll get `never` errors on typeguard checks.
   private readonly _ready: Ready;
 
+  // Override inherited static EventEmitter methods, with added type checks for Client events.
+  public static once<Emitter extends EventEmitter, Event extends keyof ClientEvents>(
+    eventEmitter: Emitter,
+    eventName: Emitter extends Client ? Event : string | symbol,
+    options?: { signal?: AbortSignal | undefined },
+  ): Promise<Emitter extends Client ? ClientEvents[Event] : any[]>;
+  public static on<Emitter extends EventEmitter, Event extends keyof ClientEvents>(
+    eventEmitter: Emitter,
+    eventName: Emitter extends Client ? Event : string | symbol,
+    options?: { signal?: AbortSignal | undefined },
+  ): AsyncIterableIterator<Emitter extends Client ? ClientEvents[Event] : any[]>;
+
   public application: If<Ready, ClientApplication>;
   public channels: ChannelManager;
   public get emojis(): BaseGuildEmojiManager;
@@ -1061,6 +1060,7 @@ export class ClientApplication extends Application {
   public botRequireCodeGrant: boolean | null;
   public bot: User | null;
   public commands: ApplicationCommandManager;
+  public emojis: ApplicationEmojiManager;
   public entitlements: EntitlementManager;
   public guildId: Snowflake | null;
   public get guild(): Guild | null;
@@ -1340,6 +1340,41 @@ export class Emoji extends Base {
   public get url(): string | null;
   public toJSON(): unknown;
   public toString(): string;
+}
+
+export interface ApplicationEmojiCreateOptions {
+  attachment: BufferResolvable | Base64Resolvable;
+  name: string;
+}
+
+export interface ApplicationEmojiEditOptions {
+  name?: string;
+}
+
+export class ApplicationEmoji extends Emoji {
+  private constructor(client: Client<true>, data: RawApplicationEmojiData, application: ClientApplication);
+
+  public application: ClientApplication;
+  public author: User | null;
+  public id: Snowflake;
+  public managed: boolean | null;
+  public requiresColons: boolean | null;
+  public delete(): Promise<ApplicationEmoji>;
+  public edit(options: ApplicationEmojiEditOptions): Promise<ApplicationEmoji>;
+  public equals(other: ApplicationEmoji | unknown): boolean;
+  public fetchAuthor(): Promise<User>;
+  public setName(name: string): Promise<ApplicationEmoji>;
+}
+
+export class ApplicationEmojiManager extends CachedManager<Snowflake, ApplicationEmoji, EmojiResolvable> {
+  private constructor(application: ClientApplication, iterable?: Iterable<RawApplicationEmojiData>);
+  public application: ClientApplication;
+  public create(options: ApplicationEmojiCreateOptions): Promise<ApplicationEmoji>;
+  public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<ApplicationEmoji>;
+  public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, ApplicationEmoji>>;
+  public fetchAuthor(emoji: EmojiResolvable): Promise<User>;
+  public delete(emoji: EmojiResolvable): Promise<void>;
+  public edit(emoji: EmojiResolvable, options: ApplicationEmojiEditOptions): Promise<ApplicationEmoji>;
 }
 
 export class Entitlement extends Base {
