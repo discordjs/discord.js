@@ -191,6 +191,7 @@ import {
   RawAnonymousGuildData,
   RawApplicationCommandData,
   RawApplicationData,
+  RawApplicationEmojiData,
   RawBaseGuildData,
   RawChannelData,
   RawClientApplicationData,
@@ -1061,6 +1062,7 @@ export class ClientApplication extends Application {
   public botRequireCodeGrant: boolean | null;
   public bot: User | null;
   public commands: ApplicationCommandManager;
+  public emojis: ApplicationEmojiManager;
   public entitlements: EntitlementManager;
   public guildId: Snowflake | null;
   public get guild(): Guild | null;
@@ -1340,6 +1342,41 @@ export class Emoji extends Base {
   public get url(): string | null;
   public toJSON(): unknown;
   public toString(): string;
+}
+
+export interface ApplicationEmojiCreateOptions {
+  attachment: BufferResolvable | Base64Resolvable;
+  name: string;
+}
+
+export interface ApplicationEmojiEditOptions {
+  name?: string;
+}
+
+export class ApplicationEmoji extends Emoji {
+  private constructor(client: Client<true>, data: RawApplicationEmojiData, application: ClientApplication);
+
+  public application: ClientApplication;
+  public author: User | null;
+  public id: Snowflake;
+  public managed: boolean | null;
+  public requiresColons: boolean | null;
+  public delete(): Promise<ApplicationEmoji>;
+  public edit(options: ApplicationEmojiEditOptions): Promise<ApplicationEmoji>;
+  public equals(other: ApplicationEmoji | unknown): boolean;
+  public fetchAuthor(): Promise<User>;
+  public setName(name: string): Promise<ApplicationEmoji>;
+}
+
+export class ApplicationEmojiManager extends CachedManager<Snowflake, ApplicationEmoji, EmojiResolvable> {
+  private constructor(application: ClientApplication, iterable?: Iterable<RawApplicationEmojiData>);
+  public application: ClientApplication;
+  public create(options: ApplicationEmojiCreateOptions): Promise<ApplicationEmoji>;
+  public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<ApplicationEmoji>;
+  public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, ApplicationEmoji>>;
+  public fetchAuthor(emoji: EmojiResolvable): Promise<User>;
+  public delete(emoji: EmojiResolvable): Promise<void>;
+  public edit(emoji: EmojiResolvable, options: ApplicationEmojiEditOptions): Promise<ApplicationEmoji>;
 }
 
 export class Entitlement extends Base {
@@ -2187,6 +2224,7 @@ export class Attachment {
   public proxyURL: string;
   public size: number;
   public get spoiler(): boolean;
+  public title: string | null;
   public url: string;
   public waveform: string | null;
   public width: number | null;
@@ -4990,11 +5028,13 @@ export interface ApplicationRoleConnectionMetadataEditOptions {
   type: ApplicationRoleConnectionMetadataType;
 }
 
-export interface AuditLogChange {
-  key: APIAuditLogChange['key'];
-  old?: APIAuditLogChange['old_value'];
-  new?: APIAuditLogChange['new_value'];
-}
+export type AuditLogChange = {
+  [SourceElement in APIAuditLogChange as SourceElement['key']]: {
+    key: SourceElement['key'];
+    old?: SourceElement['old_value'];
+    new?: SourceElement['new_value'];
+  };
+}[APIAuditLogChange['key']];
 
 export interface AutoModerationAction {
   type: AutoModerationActionType;
@@ -5311,6 +5351,7 @@ export interface ClientOptions {
   ws?: WebSocketOptions;
   rest?: Partial<RESTOptions>;
   jsonTransformer?: (obj: unknown) => unknown;
+  enforceNonce?: boolean;
 }
 
 export type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
@@ -5778,12 +5819,12 @@ interface GuildAuditLogsTypes {
   [AuditLogEvent.ThreadUpdate]: ['Thread', 'Update'];
   [AuditLogEvent.ThreadDelete]: ['Thread', 'Delete'];
   [AuditLogEvent.ApplicationCommandPermissionUpdate]: ['ApplicationCommand', 'Update'];
-  [AuditLogEvent.AutoModerationRuleCreate]: ['AutoModerationRule', 'Create'];
-  [AuditLogEvent.AutoModerationRuleUpdate]: ['AutoModerationRule', 'Update'];
-  [AuditLogEvent.AutoModerationRuleDelete]: ['AutoModerationRule', 'Delete'];
-  [AuditLogEvent.AutoModerationBlockMessage]: ['AutoModerationRule', 'Create'];
-  [AuditLogEvent.AutoModerationFlagToChannel]: ['AutoModerationRule', 'Create'];
-  [AuditLogEvent.AutoModerationUserCommunicationDisabled]: ['AutoModerationRule', 'Create'];
+  [AuditLogEvent.AutoModerationRuleCreate]: ['AutoModeration', 'Create'];
+  [AuditLogEvent.AutoModerationRuleUpdate]: ['AutoModeration', 'Update'];
+  [AuditLogEvent.AutoModerationRuleDelete]: ['AutoModeration', 'Delete'];
+  [AuditLogEvent.AutoModerationBlockMessage]: ['AutoModeration', 'Create'];
+  [AuditLogEvent.AutoModerationFlagToChannel]: ['AutoModeration', 'Create'];
+  [AuditLogEvent.AutoModerationUserCommunicationDisabled]: ['AutoModeration', 'Create'];
   [AuditLogEvent.OnboardingPromptCreate]: ['GuildOnboardingPrompt', 'Create'];
   [AuditLogEvent.OnboardingPromptUpdate]: ['GuildOnboardingPrompt', 'Update'];
   [AuditLogEvent.OnboardingPromptDelete]: ['GuildOnboardingPrompt', 'Delete'];

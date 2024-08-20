@@ -104,6 +104,7 @@ import {
   Collector,
   GuildAuditLogsEntry,
   GuildAuditLogs,
+  type AuditLogChange,
   StageInstance,
   ActionRowBuilder,
   ButtonComponent,
@@ -205,6 +206,8 @@ import {
   ChannelSelectMenuComponent,
   MentionableSelectMenuComponent,
   Poll,
+  ApplicationEmoji,
+  ApplicationEmojiManager,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1694,6 +1697,11 @@ expectType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch()
 expectType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch(undefined, {}));
 expectType<Promise<GuildEmoji>>(guildEmojiManager.fetch('0'));
 
+declare const applicationEmojiManager: ApplicationEmojiManager;
+expectType<Promise<Collection<Snowflake, ApplicationEmoji>>>(applicationEmojiManager.fetch());
+expectType<Promise<Collection<Snowflake, ApplicationEmoji>>>(applicationEmojiManager.fetch(undefined, {}));
+expectType<Promise<ApplicationEmoji>>(applicationEmojiManager.fetch('0'));
+
 declare const guildBanManager: GuildBanManager;
 {
   expectType<Promise<GuildBan>>(guildBanManager.fetch('1234567890'));
@@ -2170,6 +2178,16 @@ expectType<Promise<StageInstance | undefined>>(
 expectType<Promise<User | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MessageDelete }).then(al => al.entries.first()?.target),
 );
+
+declare const AuditLogChange: AuditLogChange;
+// @ts-expect-error
+expectType<boolean | undefined>(AuditLogChange.old);
+// @ts-expect-error
+expectType<boolean | undefined>(AuditLogChange.new);
+if (AuditLogChange.key === 'available') {
+  expectType<boolean | undefined>(AuditLogChange.old);
+  expectType<boolean | undefined>(AuditLogChange.new);
+}
 
 declare const TextBasedChannel: TextBasedChannel;
 declare const TextBasedChannelTypes: TextBasedChannelTypes;
