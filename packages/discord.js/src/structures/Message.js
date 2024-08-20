@@ -26,6 +26,7 @@ const { createComponent } = require('../util/Components');
 const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, UndeletableMessageTypes } = require('../util/Constants');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
+const { _transformAPIMessageInteractionMetadata } = require('../util/Transformers.js');
 const { cleanContent, resolvePartialEmoji, transformResolved } = require('../util/Util');
 
 /**
@@ -400,15 +401,7 @@ class Message extends Base {
        * @property {?MessageInteractionMetadata} triggeringInteractionMetadata
        * Metadata for the interaction that was used to open the modal. Present only on modal submit interactions
        */
-      this.interactionMetadata = {
-        id: data.interaction_metadata.id,
-        type: data.interaction_metadata.type,
-        user: this.client.users._add(data.interaction_metadata.user),
-        authorizingIntegrationOwners: data.interaction_metadata.authorizing_integration_owners,
-        originalResponseMessageId: data.interaction_metadata.original_response_message_id ?? null,
-        interactedMessageId: data.interaction_metadata.interacted_message_id ?? null,
-        triggeringInteractionMetadata: data.interaction_metadata.triggering_interaction_metadata ?? null,
-      };
+      this.interactionMetadata = _transformAPIMessageInteractionMetadata(this.client, data.interaction_metadata);
     } else {
       this.interactionMetadata ??= null;
     }
