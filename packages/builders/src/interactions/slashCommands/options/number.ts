@@ -6,7 +6,7 @@ import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOption
 import { ApplicationCommandOptionWithAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithAutocompleteMixin.js';
 import { ApplicationCommandOptionWithChoicesMixin } from '../mixins/ApplicationCommandOptionWithChoicesMixin.js';
 
-const numberValidator = s.number;
+const numberValidator = s.number();
 
 /**
  * A slash command number option.
