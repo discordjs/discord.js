@@ -139,7 +139,7 @@ class MessagePayload {
     // If `nonce` isn't provided, generate one & set `enforceNonce`
     // Unless `enforceNonce` is explicitly set to `false`(not just falsy)
     if (nonce === undefined) {
-      if (this.options.enforceNonce !== false && this.client.options.enforceNonce) {
+      if (this.options.enforceNonce !== false && this.target.client.options.enforceNonce) {
         nonce = DiscordSnowflake.generate().toString();
         enforce_nonce = true;
       } else if (enforce_nonce) {
