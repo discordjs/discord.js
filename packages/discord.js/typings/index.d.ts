@@ -3625,6 +3625,7 @@ export class VoiceState extends Base {
   public setRequestToSpeak(request?: boolean): Promise<this>;
   public setSuppressed(suppressed?: boolean): Promise<this>;
   public edit(options: VoiceStateEditOptions): Promise<this>;
+  public fetch(force?: boolean): Promise<VoiceState>;
 }
 
 // tslint:disable-next-line no-empty-interface
@@ -4627,6 +4628,7 @@ export class UserManager extends CachedManager<Snowflake, User, UserResolvable> 
 export class VoiceStateManager extends CachedManager<Snowflake, VoiceState, typeof VoiceState> {
   private constructor(guild: Guild, iterable?: Iterable<RawVoiceStateData>);
   public guild: Guild;
+  public fetch(member: GuildMemberResolvable | '@me', options?: BaseFetchOptions): Promise<VoiceState>;
 }
 
 //#endregion
