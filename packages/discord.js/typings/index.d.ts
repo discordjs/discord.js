@@ -2192,6 +2192,7 @@ export class Attachment {
   public proxyURL: string;
   public size: number;
   public get spoiler(): boolean;
+  public title: string | null;
   public url: string;
   public waveform: string | null;
   public width: number | null;
@@ -4995,11 +4996,13 @@ export interface ApplicationRoleConnectionMetadataEditOptions {
   type: ApplicationRoleConnectionMetadataType;
 }
 
-export interface AuditLogChange {
-  key: APIAuditLogChange['key'];
-  old?: APIAuditLogChange['old_value'];
-  new?: APIAuditLogChange['new_value'];
-}
+export type AuditLogChange = {
+  [SourceElement in APIAuditLogChange as SourceElement['key']]: {
+    key: SourceElement['key'];
+    old?: SourceElement['old_value'];
+    new?: SourceElement['new_value'];
+  };
+}[APIAuditLogChange['key']];
 
 export interface AutoModerationAction {
   type: AutoModerationActionType;
@@ -5316,6 +5319,7 @@ export interface ClientOptions {
   ws?: WebSocketOptions;
   rest?: Partial<RESTOptions>;
   jsonTransformer?: (obj: unknown) => unknown;
+  enforceNonce?: boolean;
 }
 
 export type ClientPresenceStatus = 'online' | 'idle' | 'dnd';
@@ -5783,12 +5787,12 @@ interface GuildAuditLogsTypes {
   [AuditLogEvent.ThreadUpdate]: ['Thread', 'Update'];
   [AuditLogEvent.ThreadDelete]: ['Thread', 'Delete'];
   [AuditLogEvent.ApplicationCommandPermissionUpdate]: ['ApplicationCommand', 'Update'];
-  [AuditLogEvent.AutoModerationRuleCreate]: ['AutoModerationRule', 'Create'];
-  [AuditLogEvent.AutoModerationRuleUpdate]: ['AutoModerationRule', 'Update'];
-  [AuditLogEvent.AutoModerationRuleDelete]: ['AutoModerationRule', 'Delete'];
-  [AuditLogEvent.AutoModerationBlockMessage]: ['AutoModerationRule', 'Create'];
-  [AuditLogEvent.AutoModerationFlagToChannel]: ['AutoModerationRule', 'Create'];
-  [AuditLogEvent.AutoModerationUserCommunicationDisabled]: ['AutoModerationRule', 'Create'];
+  [AuditLogEvent.AutoModerationRuleCreate]: ['AutoModeration', 'Create'];
+  [AuditLogEvent.AutoModerationRuleUpdate]: ['AutoModeration', 'Update'];
+  [AuditLogEvent.AutoModerationRuleDelete]: ['AutoModeration', 'Delete'];
+  [AuditLogEvent.AutoModerationBlockMessage]: ['AutoModeration', 'Create'];
+  [AuditLogEvent.AutoModerationFlagToChannel]: ['AutoModeration', 'Create'];
+  [AuditLogEvent.AutoModerationUserCommunicationDisabled]: ['AutoModeration', 'Create'];
   [AuditLogEvent.OnboardingPromptCreate]: ['GuildOnboardingPrompt', 'Create'];
   [AuditLogEvent.OnboardingPromptUpdate]: ['GuildOnboardingPrompt', 'Update'];
   [AuditLogEvent.OnboardingPromptDelete]: ['GuildOnboardingPrompt', 'Delete'];
