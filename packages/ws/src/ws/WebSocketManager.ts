@@ -67,10 +67,6 @@ export interface RequiredWebSocketManagerOptions {
 	 * The REST instance to use for fetching gateway information
 	 */
 	rest: REST;
-	/**
-	 * The token to use for identifying with the gateway
-	 */
-	token: string;
 }
 
 /**
@@ -173,6 +169,12 @@ export interface OptionalWebSocketManagerOptions {
 	 */
 	shardIds: number[] | ShardRange | null;
 	/**
+	 * The token to use for identifying with the gateway
+	 *
+	 * If not provided, the token must be set using {@link WebSocketManager.setToken}
+	 */
+	token: string;
+	/**
 	 * Function used to store session information for a given shard
 	 */
 	updateSessionInfo(shardId: number, sessionInfo: SessionInfo | null): Awaitable<void>;
@@ -197,23 +199,27 @@ export interface CreateWebSocketManagerOptions
 		RequiredWebSocketManagerOptions {}
 
 export interface ManagerShardEventsMap {
-	[WebSocketShardEvents.Closed]: [{ code: number; shardId: number }];
-	[WebSocketShardEvents.Debug]: [payload: { message: string; shardId: number }];
-	[WebSocketShardEvents.Dispatch]: [payload: { data: GatewayDispatchPayload; shardId: number }];
-	[WebSocketShardEvents.Error]: [payload: { error: Error; shardId: number }];
-	[WebSocketShardEvents.Hello]: [{ shardId: number }];
-	[WebSocketShardEvents.Ready]: [payload: { data: GatewayReadyDispatchData; shardId: number }];
-	[WebSocketShardEvents.Resumed]: [{ shardId: number }];
+	[WebSocketShardEvents.Closed]: [code: number, shardId: number];
+	[WebSocketShardEvents.Debug]: [message: string, shardId: number];
+	[WebSocketShardEvents.Dispatch]: [payload: GatewayDispatchPayload, shardId: number];
+	[WebSocketShardEvents.Error]: [error: Error, shardId: number];
+	[WebSocketShardEvents.Hello]: [shardId: number];
+	[WebSocketShardEvents.Ready]: [data: GatewayReadyDispatchData, shardId: number];
+	[WebSocketShardEvents.Resumed]: [shardId: number];
 	[WebSocketShardEvents.HeartbeatComplete]: [
-		payload: { ackAt: number; heartbeatAt: number; latency: number; shardId: number },
+		stats: { ackAt: number; heartbeatAt: number; latency: number },
+		shardId: number,
 	];
+	[WebSocketShardEvents.SocketError]: [error: Error, shardId: number];
 }
 
 export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> implements AsyncDisposable {
+	#token: string | null = null;
+
 	/**
 	 * The options being used by this manager
 	 */
-	public readonly options: WebSocketManagerOptions;
+	public readonly options: Omit<WebSocketManagerOptions, 'token'>;
 
 	/**
 	 * Internal cache for a GET /gateway/bot result
@@ -235,10 +241,26 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 	 */
 	private readonly strategy: IShardingStrategy;
 
+	/**
+	 * Gets the token set for this manager. If no token is set, an error is thrown.
+	 * To set the token, use {@link WebSocketManager.setToken} or pass it in the options.
+	 *
+	 * @remarks
+	 * This getter is mostly used to pass the token to the sharding strategy internally, there's not much reason to use it.
+	 */
+	public get token(): string {
+		if (!this.#token) {
+			throw new Error('Token has not been set');
+		}
+
+		return this.#token;
+	}
+
 	public constructor(options: CreateWebSocketManagerOptions) {
 		super();
 		this.options = { ...DefaultWebSocketManagerOptions, ...options };
 		this.strategy = this.options.buildStrategy(this);
+		this.#token = options.token ?? null;
 	}
 
 	/**
@@ -331,6 +353,14 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 		}
 
 		await this.strategy.connect();
+	}
+
+	public setToken(token: string): void {
+		if (this.#token) {
+			throw new Error('Token has already been set');
+		}
+
+		this.#token = token;
 	}
 
 	public destroy(options?: Omit<WebSocketShardDestroyOptions, 'recover'>) {

@@ -158,7 +158,7 @@ class GuildMember extends Base {
   /**
    * A link to the member's guild avatar if they have one.
    * Otherwise, a link to their {@link User#displayAvatarURL} will be returned.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {string}
    */
   displayAvatarURL(options) {
