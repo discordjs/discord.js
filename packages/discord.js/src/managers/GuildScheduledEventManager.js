@@ -198,7 +198,7 @@ class GuildScheduledEventManager extends CachedManager {
    * {@link GuildScheduledEventEntityType.External}</warn>
    * @property {?(BufferResolvable|Base64Resolvable)} [image] The cover image of the guild scheduled event
    * @property {string} [reason] The reason for editing the guild scheduled event
-   * @property {GuildScheduledEventRecurrenceRuleOptions} [recurrenceRule]
+   * @property {?GuildScheduledEventRecurrenceRuleOptions} [recurrenceRule]
    * The recurrence rule of the guild scheduled event
    */
 

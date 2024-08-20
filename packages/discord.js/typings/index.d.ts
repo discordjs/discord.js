@@ -6206,9 +6206,10 @@ export interface GuildScheduledEventRecurrenceRuleOptions {
 export interface GuildScheduledEventEditOptions<
   Status extends GuildScheduledEventStatus,
   AcceptableStatus extends GuildScheduledEventSetStatusArg<Status>,
-> extends Omit<Partial<GuildScheduledEventCreateOptions>, 'channel'> {
+> extends Omit<Partial<GuildScheduledEventCreateOptions>, 'channel' | 'recurrenceRule'> {
   channel?: GuildVoiceChannelResolvable | null;
   status?: AcceptableStatus;
+  recurrenceRule?: GuildScheduledEventRecurrenceRuleOptions | null;
 }
 
 export interface GuildScheduledEventEntityMetadata {
