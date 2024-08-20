@@ -33,14 +33,4 @@ function _transformAPIAutoModerationAction(autoModerationAction) {
   };
 }
 
-/**
- * Transforms an API authorizing integration owners map to keyed by enum.
- * @param {APIAuthorizingIntegrationOwnersMap} authorizingIntegrationOwners The data to transform
- * @returns {AuthorizingIntegrationOwners}
- * @ignore
- */
-function _transformAPIAuthorizingIntegrationOwners(authorizingIntegrationOwners) {
-  return Object.fromEntries(Object.entries(authorizingIntegrationOwners).map(([key, owner]) => [parseInt(key), owner]));
-}
-
-module.exports = { toSnakeCase, _transformAPIAutoModerationAction, _transformAPIAuthorizingIntegrationOwners };
+module.exports = { toSnakeCase, _transformAPIAutoModerationAction };

@@ -183,6 +183,7 @@ import {
   APISelectMenuDefaultValue,
   SelectMenuDefaultValueType,
   InviteType,
+  APIAuthorizingIntegrationOwnersMap,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -558,7 +559,7 @@ export type GuildCacheMessage<Cached extends CacheType> = CacheTypeReducer<
 export type BooleanCache<Cached extends CacheType> = Cached extends 'cached' ? true : false;
 
 export abstract class CommandInteraction<Cached extends CacheType = CacheType> extends BaseInteraction<Cached> {
-  public authorizingIntegrationOwners: AuthorizingIntegrationOwners;
+  public authorizingIntegrationOwners: APIAuthorizingIntegrationOwnersMap;
   public type: InteractionType.ApplicationCommand;
   public get command(): ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
   public options: Omit<
@@ -6192,10 +6193,6 @@ export type IntegrationTypesConfiguration = {
   [key in ApplicationIntegrationType]?: IntegrationTypesConfigurationContext;
 };
 
-export type AuthorizingIntegrationOwners = {
-  [key in ApplicationIntegrationType]?: Snowflake;
-};
-
 export type CollectedInteraction<Cached extends CacheType = CacheType> =
   | StringSelectMenuInteraction<Cached>
   | UserSelectMenuInteraction<Cached>
@@ -6348,7 +6345,7 @@ export interface MessageInteractionMetadata {
   id: Snowflake;
   type: InteractionType;
   user: User;
-  authorizingIntegrationOwners: AuthorizingIntegrationOwners;
+  authorizingIntegrationOwners: APIAuthorizingIntegrationOwnersMap;
   originalResponseMessageId: Snowflake | null;
   interactedMessageId: Snowflake | null;
   triggeringInteractionMetadata: MessageInteractionMetadata | null;
