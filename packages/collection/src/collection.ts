@@ -626,7 +626,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		const iterator = this.entries();
 		if (initialValue === undefined) {
 			if (this.size === 0) throw new TypeError('Reduce of empty collection with no initial value');
-			accumulator = iterator.next().value![1];
+			accumulator = iterator.next().value![1] as unknown as InitialValue;
 		} else {
 			accumulator = initialValue;
 		}
