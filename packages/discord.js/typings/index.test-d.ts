@@ -206,6 +206,8 @@ import {
   ChannelSelectMenuComponent,
   MentionableSelectMenuComponent,
   Poll,
+  ApplicationEmoji,
+  ApplicationEmojiManager,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1694,6 +1696,11 @@ declare const guildEmojiManager: GuildEmojiManager;
 expectType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch());
 expectType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch(undefined, {}));
 expectType<Promise<GuildEmoji>>(guildEmojiManager.fetch('0'));
+
+declare const applicationEmojiManager: ApplicationEmojiManager;
+expectType<Promise<Collection<Snowflake, ApplicationEmoji>>>(applicationEmojiManager.fetch());
+expectType<Promise<Collection<Snowflake, ApplicationEmoji>>>(applicationEmojiManager.fetch(undefined, {}));
+expectType<Promise<ApplicationEmoji>>(applicationEmojiManager.fetch('0'));
 
 declare const guildBanManager: GuildBanManager;
 {

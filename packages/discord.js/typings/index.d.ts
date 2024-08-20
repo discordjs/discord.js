@@ -191,6 +191,7 @@ import {
   RawAnonymousGuildData,
   RawApplicationCommandData,
   RawApplicationData,
+  RawApplicationEmojiData,
   RawBaseGuildData,
   RawChannelData,
   RawClientApplicationData,
@@ -1061,6 +1062,7 @@ export class ClientApplication extends Application {
   public botRequireCodeGrant: boolean | null;
   public bot: User | null;
   public commands: ApplicationCommandManager;
+  public emojis: ApplicationEmojiManager;
   public entitlements: EntitlementManager;
   public guildId: Snowflake | null;
   public get guild(): Guild | null;
@@ -1340,6 +1342,41 @@ export class Emoji extends Base {
   public get url(): string | null;
   public toJSON(): unknown;
   public toString(): string;
+}
+
+export interface ApplicationEmojiCreateOptions {
+  attachment: BufferResolvable | Base64Resolvable;
+  name: string;
+}
+
+export interface ApplicationEmojiEditOptions {
+  name?: string;
+}
+
+export class ApplicationEmoji extends Emoji {
+  private constructor(client: Client<true>, data: RawApplicationEmojiData, application: ClientApplication);
+
+  public application: ClientApplication;
+  public author: User | null;
+  public id: Snowflake;
+  public managed: boolean | null;
+  public requiresColons: boolean | null;
+  public delete(): Promise<ApplicationEmoji>;
+  public edit(options: ApplicationEmojiEditOptions): Promise<ApplicationEmoji>;
+  public equals(other: ApplicationEmoji | unknown): boolean;
+  public fetchAuthor(): Promise<User>;
+  public setName(name: string): Promise<ApplicationEmoji>;
+}
+
+export class ApplicationEmojiManager extends CachedManager<Snowflake, ApplicationEmoji, EmojiResolvable> {
+  private constructor(application: ClientApplication, iterable?: Iterable<RawApplicationEmojiData>);
+  public application: ClientApplication;
+  public create(options: ApplicationEmojiCreateOptions): Promise<ApplicationEmoji>;
+  public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<ApplicationEmoji>;
+  public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, ApplicationEmoji>>;
+  public fetchAuthor(emoji: EmojiResolvable): Promise<User>;
+  public delete(emoji: EmojiResolvable): Promise<void>;
+  public edit(emoji: EmojiResolvable, options: ApplicationEmojiEditOptions): Promise<ApplicationEmoji>;
 }
 
 export class Entitlement extends Base {
