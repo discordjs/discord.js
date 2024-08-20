@@ -1,7 +1,8 @@
 'use strict';
 
-const { PollBuilder: BuildersPoll, normalizeArray } = require('@discordjs/builders');
+const { PollBuilder: BuildersPoll, normalizeArray, resolveBuilder } = require('@discordjs/builders');
 const { isJSONEncodable } = require('@discordjs/util');
+const PollAnswerBuilder = require('./PollAnswerBuilder');
 const { toSnakeCase } = require('../util/Transformers');
 const { resolvePartialEmoji } = require('../util/Util');
 
@@ -16,17 +17,13 @@ class PollBuilder extends BuildersPoll {
         ...data,
         answers:
           data.answers &&
-          data.answers.map(answer => {
-            if ('poll_media' in answer) answer = answer.poll_media;
-
-            return {
-              poll_media: {
-                text: answer.text,
-                emoji:
-                  answer.emoji && typeof answer.emoji === 'string' ? resolvePartialEmoji(answer.emoji) : answer.emoji,
-              },
-            };
-          }),
+          data.answers?.map(answer => ({
+            ...answer,
+            poll_media: {
+              ...answer.poll_media,
+              emoji: answer.poll_media?.emoji && resolvePartialEmoji(answer.poll_media.emoji),
+            },
+          })),
       }),
     );
   }
@@ -39,9 +36,14 @@ class PollBuilder extends BuildersPoll {
    */
 
   /**
-   * @typedef {Object} PollAnswerData Data used for an answer on a poll
+   * @typedef {Object} PollMediaData Data used for an answer on a poll
    * @property {string} text The text to use for the answer
-   * @property {string|PollAnswerEmojiObject|undefined} emoji The emoji to use for the answer
+   * @property {string|PollAnswerEmojiObject|EmojiResolvable|undefined} emoji The emoji to use for the answer
+   */
+
+  /**
+   * @typedef {Object} PollAnswerData
+   * @property {PollMediaData} poll_media The media for this poll answer
    */
 
   /**
@@ -50,13 +52,7 @@ class PollBuilder extends BuildersPoll {
    * @returns {PollBuilder}
    */
   setAnswers(...answers) {
-    super.setAnswers(
-      normalizeArray(answers).map(answer => ({
-        text: answer.text,
-        emoji: answer.emoji && typeof answer.emoji === 'string' ? resolvePartialEmoji(answer.emoji) : answer.emoji,
-      })),
-    );
-    return this;
+    return this.spliceAnswers(0, this.data.answers.length, normalizeArray(answers));
   }
 
   /**
@@ -65,13 +61,7 @@ class PollBuilder extends BuildersPoll {
    * @returns {PollBuilder}
    */
   addAnswers(...answers) {
-    super.addAnswers(
-      normalizeArray(answers).map(answer => ({
-        text: answer.text,
-        emoji: answer.emoji && typeof answer.emoji === 'string' ? resolvePartialEmoji(answer.emoji) : answer.emoji,
-      })),
-    );
-    return this;
+    return super.addAnswers(this.resolveAnswers(answers));
   }
 
   /**
@@ -82,15 +72,17 @@ class PollBuilder extends BuildersPoll {
    * @returns {PollBuilder}
    */
   spliceAnswers(index, deleteCount, ...answers) {
-    super.spliceAnswers(
-      index,
-      deleteCount,
-      normalizeArray(answers).map(answer => ({
-        text: answer.text,
-        emoji: answer.emoji && typeof answer.emoji === 'string' ? resolvePartialEmoji(answer.emoji) : answer.emoji,
-      })),
-    );
-    return this;
+    return super.spliceAnswers(index, deleteCount, this.resolveAnswers(answers));
+  }
+
+  /**
+   * Resolves poll answers.
+   * @private
+   * @param {...PollAnswerData} answers - The answers to resolve
+   * @returns {PollAnswerBuilder | PollAnswerData}
+   */
+  resolveAnswers(answers) {
+    return normalizeArray(answers).map(answer => resolveBuilder(answer, PollAnswerBuilder));
   }
 
   /**

@@ -16,8 +16,9 @@ import {
   AnyComponentBuilder,
   ComponentBuilder,
   type RestOrArray,
+  PollAnswerBuilder as BuildersPollAnswer,
+  PollAnswerMediaBuilder as BuildersPollAnswerMedia,
   ApplicationCommandOptionAllowedChannelTypes,
-  PollMediaPartialEmoji,
 } from '@discordjs/builders';
 import { Awaitable, JSONEncodable } from '@discordjs/util';
 import { Collection, ReadonlyCollection } from '@discordjs/collection';
@@ -173,7 +174,7 @@ import {
   GuildScheduledEventRecurrenceRuleMonth,
   GuildScheduledEventRecurrenceRuleFrequency,
   APIPollMedia,
-  RESTAPIPollCreate,
+  RESTAPIPoll,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -2655,15 +2656,46 @@ export class Presence extends Base {
 
 export class PollBuilder extends BuildersPoll {
   public constructor(data?: Poll | APIPoll);
-  public override addAnswers(...answers: RestOrArray<PollAnswerWithEmoji>): this;
-  public override setAnswers(...answers: RestOrArray<PollAnswerWithEmoji>): this;
-  public override spliceAnswers(index: number, deleteCount: number, ...answers: RestOrArray<PollAnswerWithEmoji>): this;
-  public static from(other: JSONEncodable<RESTAPIPollCreate> | APIPoll): PollBuilder;
+  public override addAnswers(
+    ...answers: RestOrArray<
+      PollAnswerWithEmojiResolvable | PollAnswerBuilder | ((builder: PollAnswerBuilder) => PollAnswerBuilder)
+    >
+  ): this;
+  public override setAnswers(
+    ...answers: RestOrArray<
+      PollAnswerWithEmojiResolvable | PollAnswerBuilder | ((builder: PollAnswerBuilder) => PollAnswerBuilder)
+    >
+  ): this;
+  public override spliceAnswers(
+    index: number,
+    deleteCount: number,
+    ...answers: RestOrArray<
+      PollAnswerWithEmojiResolvable | PollAnswerBuilder | ((builder: PollAnswerBuilder) => PollAnswerBuilder)
+    >
+  ): this;
+  public static from(other: JSONEncodable<RESTAPIPoll> | APIPoll): PollBuilder;
 }
 
-export type PollAnswerWithEmoji = Omit<PollMediaPartialEmoji, 'emoji'> & { emoji?: PollEmojiResolvable };
+export class PollAnswerMediaBuilder extends BuildersPollAnswerMedia {
+  setEmoji(emoji: PollEmojiResolvable): this;
+}
 
-export type PollEmojiResolvable = string | Partial<APIPartialEmoji> | EmojiResolvable;
+export class PollAnswerBuilder extends BuildersPollAnswer {
+  public setMedia(
+    options:
+      | PollMediaWithEmojiResolvable
+      | PollAnswerMediaBuilder
+      | ((builder: PollAnswerMediaBuilder) => PollAnswerMediaBuilder),
+  ): this;
+}
+
+export type PollAnswerWithEmojiResolvable = Omit<APIPollAnswer, 'poll_media' | 'answer_id'> & {
+  poll_media: PollMediaWithEmojiResolvable;
+};
+
+export type PollMediaWithEmojiResolvable = Omit<APIPollMedia, 'emoji'> & { emoji?: PollEmojiResolvable };
+
+export type PollEmojiResolvable = Partial<APIPartialEmoji> | EmojiResolvable;
 
 export interface PollQuestionMedia {
   text: string;
@@ -6354,7 +6386,7 @@ export interface BaseMessageOptions {
 }
 
 export interface BaseMessageOptionsWithPoll extends BaseMessageOptions {
-  poll?: JSONEncodable<RESTAPIPollCreate> | PollData;
+  poll?: JSONEncodable<RESTAPIPoll> | PollData;
 }
 
 export interface MessageCreateOptions extends BaseMessageOptionsWithPoll {
