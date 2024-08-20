@@ -230,6 +230,10 @@ const client: Client = new Client({
       maxSize: 200,
       keepOverLimit: member => member.id === client.user?.id,
     },
+    ThreadManager: {
+      maxSize: 200,
+      keepOverLimit: value => !value.archived,
+    },
   }),
 });
 
