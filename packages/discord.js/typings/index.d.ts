@@ -2374,7 +2374,7 @@ export class MessageReaction {
   private constructor(client: Client<true>, data: RawMessageReactionData, message: Message);
   private _emoji: GuildEmoji | ReactionEmoji;
 
-  public burstColors: string[];
+  public burstColors: string[] | null;
   public readonly client: Client<true>;
   public count: number;
   public countDetails: ReactionCountDetailsData;

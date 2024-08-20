@@ -45,6 +45,8 @@ class MessageReaction {
 
     this._emoji = new ReactionEmoji(this, data.emoji);
 
+    this.burstColors = null;
+
     this._patch(data);
   }
 
@@ -52,7 +54,7 @@ class MessageReaction {
     if ('burst_colors' in data) {
       /**
        * Hexadecimal colors used for this super reaction
-       * @type {string[]}
+       * @type {?(string[])}
        */
       this.burstColors = data.burst_colors;
     }
