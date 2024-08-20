@@ -67,9 +67,7 @@ import {
 	type RESTPatchAPIGuildTemplateJSONBody,
 	type RESTPatchAPIGuildTemplateResult,
 	type RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
-	type RESTPatchAPIGuildVoiceStateCurrentMemberResult,
 	type RESTPatchAPIGuildVoiceStateUserJSONBody,
-	type RESTPatchAPIGuildVoiceStateUserResult,
 	type RESTPatchAPIGuildWelcomeScreenJSONBody,
 	type RESTPatchAPIGuildWelcomeScreenResult,
 	type RESTPatchAPIGuildWidgetSettingsJSONBody,
@@ -702,11 +700,7 @@ export class GuildsAPI {
 		body: RESTPatchAPIGuildVoiceStateUserJSONBody,
 		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
-		return this.rest.patch(Routes.guildVoiceState(guildId, userId), {
-			reason,
-			body,
-			signal,
-		}) as Promise<RESTPatchAPIGuildVoiceStateUserResult>;
+		return new VoiceAPI(this.rest).editUserVoiceState(guildId, userId, body, { reason, signal });
 	}
 
 	/**
@@ -1307,13 +1301,16 @@ export class GuildsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/voice#modify-current-user-voice-state}
 	 * @param guildId - The id of the guild
-	 * @param body - The options for setting the voice state
+	 * @param body - The data for setting the voice state
+	 * @param options - The options for setting the voice state
 	 * @deprecated Use {@link VoiceAPI.editVoiceState} instead
 	 */
-	public async setVoiceState(guildId: Snowflake, body: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {}) {
-		return this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
-			body,
-		}) as Promise<RESTPatchAPIGuildVoiceStateCurrentMemberResult>;
+	public async setVoiceState(
+		guildId: Snowflake,
+		body: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		return new VoiceAPI(this.rest).editVoiceState(guildId, body, { signal });
 	}
 
 	/**
