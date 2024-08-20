@@ -2,6 +2,10 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
+      ref:
+        description: 'The branch, tag or SHA to checkout'
+        required: true
+        default: 'main'
       package:
         description: 'The published name of a single package to release'
         type: choice
@@ -44,6 +48,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || '' }}
 
       - name: Install Node.js v20
         uses: actions/setup-node@v4

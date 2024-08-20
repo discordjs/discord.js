@@ -65,7 +65,7 @@ jobs:
       - name: Build dependencies
         run: pnpm run build
 
-      - name: Pubish packages
+      - name: Publish packages
         uses: ./packages/actions/src/releasePackages
         with:
           exclude: '@discordjs/docgen'
