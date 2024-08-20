@@ -199,11 +199,11 @@ class GuildScheduledEvent extends Base {
      * @property {?Date} endAt The time the recurrence rule interval ends at
      * @property {GuildScheduledEventRecurrenceRuleFrequency} frequency How often the event occurs
      * @property {number} interval The spacing between the events
-     * @property {?(GuildScheduledEventRecurrenceRuleWeekday[])} byWeekday The days within a week to recur on
-     * @property {?(GuildScheduledEventRecurrenceRuleNWeekday[])} byNWeekday The days within a week to recur on
-     * @property {?(GuildScheduledEventRecurrenceRuleMonth[])} byMonth The months to recur on
-     * @property {?(number[])} byMonthDay The days within a month to recur on
-     * @property {?(number[])} byYearDay The days within a year to recur on
+     * @property {?GuildScheduledEventRecurrenceRuleWeekday[]} byWeekday The days within a week to recur on
+     * @property {?GuildScheduledEventRecurrenceRuleNWeekday[]} byNWeekday The days within a week to recur on
+     * @property {?GuildScheduledEventRecurrenceRuleMonth[]} byMonth The months to recur on
+     * @property {?number[]} byMonthDay The days within a month to recur on
+     * @property {?number[]} byYearDay The days within a year to recur on
      * @property {?number} count The total amount of times the event is allowed to recur before stopping
      */
 
