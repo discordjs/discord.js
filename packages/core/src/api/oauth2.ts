@@ -13,6 +13,8 @@ import {
 	type RESTGetAPIOAuth2CurrentApplicationResult,
 	type RESTPostOAuth2AccessTokenURLEncodedData,
 	type RESTPostOAuth2AccessTokenResult,
+	type RESTPostOAuth2TokenRevocationQuery,
+	type Snowflake,
 } from 'discord-api-types/v10';
 
 export class OAuth2API {
@@ -120,5 +122,32 @@ export class OAuth2API {
 		return this.rest.get(Routes.oauth2CurrentAuthorization(), {
 			signal,
 		}) as Promise<RESTGetAPIOAuth2CurrentAuthorizationResult>;
+	}
+
+	/**
+	 * Revokes an OAuth2 token
+	 *
+	 * @see {@link https://discord.com/developers/docs/topics/oauth2#authorization-code-grant-token-revocation-example}
+	 * @param applicationId - The application id
+	 * @param applicationSecret - The application secret
+	 * @param body - The body of the token revocation request
+	 * @param options - The options for the token revocation request
+	 */
+	public async revokeToken(
+		applicationId: Snowflake,
+		applicationSecret: string,
+		body: RESTPostOAuth2TokenRevocationQuery,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		await this.rest.post(Routes.oauth2TokenRevocation(), {
+			body: makeURLSearchParams(body),
+			passThroughBody: true,
+			headers: {
+				Authorization: `Basic ${btoa(`${applicationId}:${applicationSecret}`)}`,
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			auth: false,
+			signal,
+		});
 	}
 }
