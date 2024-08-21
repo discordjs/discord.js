@@ -713,14 +713,57 @@ describe('reduce() tests', () => {
 		expect<number>(sum).toStrictEqual(6);
 	});
 
+	test('reduce collection into a single value with different accumulator type', () => {
+		const str = coll.reduce((a, x) => a.concat(x.toString()), '');
+		expect<string>(str).toStrictEqual('123');
+	});
+
 	test('reduce empty collection with initial value', () => {
 		const coll = createCollection();
-		expect(coll.reduce((a, x) => a + x, 0)).toStrictEqual(0);
+		expect<number>(coll.reduce((a, x) => a + x, 0)).toStrictEqual(0);
 	});
 
 	test('reduce empty collection without initial value', () => {
 		const coll = createCollection();
-		expect(() => coll.reduce((a: number, x) => a + x)).toThrowError(
+		expect(() => coll.reduce((a, x) => a + x)).toThrowError(
+			new TypeError('Reduce of empty collection with no initial value'),
+		);
+	});
+});
+
+describe('reduceRight() tests', () => {
+	const coll = createTestCollection();
+
+	test('throws if fn is not a function', () => {
+		// @ts-expect-error: Invalid function
+		expectInvalidFunctionError(() => coll.reduceRight());
+		// @ts-expect-error: Invalid function
+		expectInvalidFunctionError(() => coll.reduceRight(123), 123);
+	});
+
+	test('reduce collection into a single value with initial value', () => {
+		const sum = coll.reduceRight((a, x) => a + x, 0);
+		expect<number>(sum).toStrictEqual(6);
+	});
+
+	test('reduce collection into a single value without initial value', () => {
+		const sum = coll.reduceRight((a, x) => a + x);
+		expect<number>(sum).toStrictEqual(6);
+	});
+
+	test('reduce collection into a single value with different accumulator type', () => {
+		const str = coll.reduceRight((a, x) => a.concat(x.toString()), '');
+		expect<string>(str).toStrictEqual('321');
+	});
+
+	test('reduce empty collection with initial value', () => {
+		const coll = createCollection();
+		expect<number>(coll.reduceRight((a, x) => a + x, 0)).toStrictEqual(0);
+	});
+
+	test('reduce empty collection without initial value', () => {
+		const coll = createCollection();
+		expect(() => coll.reduceRight((a, x) => a + x)).toThrowError(
 			new TypeError('Reduce of empty collection with no initial value'),
 		);
 	});
@@ -1011,33 +1054,5 @@ describe('findLastKey() tests', () => {
 			expect(this).toBeNull();
 			return true;
 		}, null);
-	});
-});
-
-describe('reduceRight() tests', () => {
-	const coll = createTestCollection();
-
-	test('throws if fn is not a function', () => {
-		// @ts-expect-error: Invalid function
-		expectInvalidFunctionError(() => coll.reduceRight());
-		// @ts-expect-error: Invalid function
-		expectInvalidFunctionError(() => coll.reduceRight(123), 123);
-	});
-
-	test('reduce collection into a single value with initial value', () => {
-		const sum = coll.reduceRight((a, x) => a + x, 0);
-		expect(sum).toStrictEqual(6);
-	});
-
-	test('reduce collection into a single value without initial value', () => {
-		const sum = coll.reduceRight<number>((a, x) => a + x);
-		expect(sum).toStrictEqual(6);
-	});
-
-	test('reduce empty collection without initial value', () => {
-		const coll = createCollection();
-		expect(() => coll.reduceRight((a: number, x) => a + x)).toThrowError(
-			new TypeError('Reduce of empty collection with no initial value'),
-		);
 	});
 });
