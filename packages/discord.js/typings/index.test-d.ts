@@ -208,6 +208,7 @@ import {
   Poll,
   ApplicationEmoji,
   ApplicationEmojiManager,
+  StickerPack,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -229,6 +230,10 @@ const client: Client = new Client({
     GuildMemberManager: {
       maxSize: 200,
       keepOverLimit: member => member.id === client.user?.id,
+    },
+    ThreadManager: {
+      maxSize: 200,
+      keepOverLimit: value => !value.archived,
     },
   }),
 });
@@ -1296,6 +1301,10 @@ client.on('guildCreate', async g => {
     }),
   );
 });
+
+// EventEmitter static method overrides
+expectType<Promise<[Client<true>]>>(Client.once(client, 'ready'));
+expectType<AsyncIterableIterator<[Client<true>]>>(Client.on(client, 'ready'));
 
 client.login('absolutely-valid-token');
 
@@ -2579,3 +2588,7 @@ declare const poll: Poll;
     answerId: 1,
   });
 }
+
+expectType<Collection<Snowflake, StickerPack>>(await client.fetchStickerPacks());
+expectType<Collection<Snowflake, StickerPack>>(await client.fetchStickerPacks({}));
+expectType<StickerPack>(await client.fetchStickerPacks({ packId: snowflake }));
