@@ -49,7 +49,7 @@ function _transformAPIMessageInteractionMetadata(client, messageInteractionMetad
     originalResponseMessageId: messageInteractionMetadata.original_response_message_id ?? null,
     interactedMessageId: messageInteractionMetadata.interacted_message_id ?? null,
     triggeringInteractionMetadata: messageInteractionMetadata.triggering_interaction_metadata
-      ? _transformAPIAutoModerationAction(messageInteractionMetadata.triggering_interaction_metadata)
+      ? _transformAPIMessageInteractionMetadata(messageInteractionMetadata.triggering_interaction_metadata)
       : null,
   };
 }
