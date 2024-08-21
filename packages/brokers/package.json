@@ -68,7 +68,7 @@
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@msgpack/msgpack": "^3.0.0-beta2",
-		"@vladfrangu/async_event_emitter": "^2.2.4",
+		"@vladfrangu/async_event_emitter": "^2.4.5",
 		"ioredis": "^5.4.1"
 	},
 	"devDependencies": {

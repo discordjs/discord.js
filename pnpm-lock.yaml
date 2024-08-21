@@ -616,8 +616,8 @@ importers:
         specifier: ^3.0.0-beta2
         version: 3.0.0-beta2
       '@vladfrangu/async_event_emitter':
-        specifier: ^2.2.4
-        version: 2.2.4
+        specifier: ^2.4.5
+        version: 2.4.5
       ioredis:
         specifier: ^5.4.1
         version: 5.4.1
@@ -801,8 +801,8 @@ importers:
         specifier: ^3.5.3
         version: 3.5.3
       '@vladfrangu/async_event_emitter':
-        specifier: ^2.2.4
-        version: 2.2.4
+        specifier: ^2.4.5
+        version: 2.4.5
       discord-api-types:
         specifier: 0.37.96
         version: 0.37.96
@@ -1304,8 +1304,8 @@ importers:
         specifier: ^3.5.3
         version: 3.5.3
       '@vladfrangu/async_event_emitter':
-        specifier: ^2.2.4
-        version: 2.2.4
+        specifier: ^2.4.5
+        version: 2.4.5
       discord-api-types:
         specifier: 0.37.96
         version: 0.37.96
@@ -1698,8 +1698,8 @@ importers:
         specifier: ^8.5.10
         version: 8.5.10
       '@vladfrangu/async_event_emitter':
-        specifier: ^2.2.4
-        version: 2.2.4
+        specifier: ^2.4.5
+        version: 2.4.5
       discord-api-types:
         specifier: 0.37.96
         version: 0.37.96
@@ -6996,6 +6996,10 @@ packages:
 
   '@vladfrangu/async_event_emitter@2.2.4':
     resolution: {integrity: sha512-ButUPz9E9cXMLgvAW8aLAKKJJsPu1dY1/l/E8xzLFuysowXygs6GBcyunK9rnGC4zTsnIc2mQo71rGw9U+Ykug==}
+    engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
+
+  '@vladfrangu/async_event_emitter@2.4.5':
+    resolution: {integrity: sha512-J7T3gUr3Wz0l7Ni1f9upgBZ7+J22/Q1B7dl0X6fG+fTsD+H+31DIosMHj4Um1dWQwqbcQ3oQf+YS2foYkDc9cQ==}
     engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
 
   '@volar/language-core@1.11.1':
@@ -22624,6 +22628,8 @@ snapshots:
       pretty-format: 29.7.0
 
   '@vladfrangu/async_event_emitter@2.2.4': {}
+
+  '@vladfrangu/async_event_emitter@2.4.5': {}
 
   '@volar/language-core@1.11.1':
     dependencies:
