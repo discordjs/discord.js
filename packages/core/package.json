@@ -69,7 +69,7 @@
 		"@discordjs/util": "workspace:^",
 		"@discordjs/ws": "workspace:^",
 		"@sapphire/snowflake": "^3.5.3",
-		"@vladfrangu/async_event_emitter": "^2.4.5",
+		"@vladfrangu/async_event_emitter": "^2.4.6",
 		"discord-api-types": "0.37.96"
 	},
 	"devDependencies": {

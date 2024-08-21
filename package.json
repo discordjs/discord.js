@@ -67,7 +67,7 @@
 		"prettier": "^3.3.0",
 		"tsup": "^8.1.0",
 		"turbo": "^1.13.3",
-		"typescript": "^5.4.5",
+		"typescript": "^5.5.4",
 		"typescript-eslint": "^7.11.0",
 		"unocss": "^0.60.4",
 		"vercel": "^34.2.4",
