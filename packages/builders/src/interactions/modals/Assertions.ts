@@ -3,8 +3,14 @@ import { ActionRowBuilder, type ModalActionRowComponentBuilder } from '../../com
 import { customIdValidator } from '../../components/Assertions.js';
 import { parse } from '../../util/validation.js';
 
-export const titleValidator = z.string().min(1).max(45);
-export const componentsValidator = z.instanceof(ActionRowBuilder).array().min(1);
+export const titleValidator = s.string
+	.lengthGreaterThanOrEqual(1)
+	.lengthLessThanOrEqual(45)
+	.setValidationEnabled(isValidationEnabled);
+export const componentsValidator = s
+	.instance(ActionRowBuilder)
+	.array.lengthGreaterThanOrEqual(1)
+	.setValidationEnabled(isValidationEnabled);
 
 export function validateRequiredParameters(
 	customId?: string,
