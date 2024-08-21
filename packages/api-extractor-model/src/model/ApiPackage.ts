@@ -380,7 +380,7 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 				toolPackage: ioptions.toolPackage ?? packageJson.name,
 				// In test mode, we don't write the real version, since that would cause spurious diffs whenever
 				// the version is bumped.  Instead we write a placeholder string.
-				toolVersion: ioptions.testMode ? '[test mode]' : ioptions.toolVersion ?? packageJson.version,
+				toolVersion: ioptions.testMode ? '[test mode]' : (ioptions.toolVersion ?? packageJson.version),
 				schemaVersion: ApiJsonSchemaVersion.LATEST,
 				oldestForwardsCompatibleVersion: ApiJsonSchemaVersion.OLDEST_FORWARDS_COMPATIBLE,
 				tsdocConfig,

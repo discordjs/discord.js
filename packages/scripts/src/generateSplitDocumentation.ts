@@ -376,7 +376,7 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 						resolvedPackage: {
 							packageName: resolved?.package ?? apiItem.getAssociatedPackage()?.displayName.replace('@discordjs/', ''),
 							version: resolved?.package
-								? apiItem.getAssociatedPackage()?.dependencies?.[resolved.package] ?? null
+								? (apiItem.getAssociatedPackage()?.dependencies?.[resolved.package] ?? null)
 								: null,
 						},
 					};
@@ -999,7 +999,7 @@ export async function generateSplitDocumentation({
 					containerKey = ApiFunction.getContainerKey(name, Number.parseInt(overloadIndex, 10));
 				}
 
-				const foundMember = memberName && containerKey ? findMemberByKey(model, pkgName, containerKey) ?? null : null;
+				const foundMember = memberName && containerKey ? (findMemberByKey(model, pkgName, containerKey) ?? null) : null;
 
 				const returnValue = memberKind(foundMember);
 

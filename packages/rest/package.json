@@ -85,7 +85,7 @@
 	"dependencies": {
 		"@discordjs/collection": "workspace:^",
 		"@discordjs/util": "workspace:^",
-		"@sapphire/async-queue": "^1.5.2",
+		"@sapphire/async-queue": "^1.5.3",
 		"@sapphire/snowflake": "^3.5.3",
 		"@vladfrangu/async_event_emitter": "^2.4.6",
 		"discord-api-types": "0.37.96",
@@ -104,10 +104,10 @@
 		"eslint": "^8.57.0",
 		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.3.0",
-		"tsup": "^8.1.0",
+		"prettier": "^3.3.3",
+		"tsup": "^8.2.4",
 		"turbo": "^1.13.3",
-		"typescript": "^5.4.5",
+		"typescript": "~5.5.4",
 		"vitest": "^1.6.0"
 	},
 	"engines": {
