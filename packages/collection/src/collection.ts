@@ -87,7 +87,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (amount < 0) return this.last(amount * -1);
 		amount = Math.min(this.size, amount);
 		const iter = this.values();
-		return Array.from({ length: amount }, (): Value => iter.next().value);
+		return Array.from({ length: amount }, (): Value => iter.next().value!);
 	}
 
 	/**
@@ -104,7 +104,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (amount < 0) return this.lastKey(amount * -1);
 		amount = Math.min(this.size, amount);
 		const iter = this.keys();
-		return Array.from({ length: amount }, (): Key => iter.next().value);
+		return Array.from({ length: amount }, (): Key => iter.next().value!);
 	}
 
 	/**
@@ -512,7 +512,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
 		const iter = this.entries();
 		return Array.from({ length: this.size }, (): NewValue => {
-			const [key, value] = iter.next().value;
+			const [key, value] = iter.next().value!;
 			return fn(value, key, this);
 		});
 	}
@@ -634,7 +634,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		const iterator = this.entries();
 		if (initialValue === undefined) {
 			if (this.size === 0) throw new TypeError('Reduce of empty collection with no initial value');
-			accumulator = iterator.next().value[1];
+			accumulator = iterator.next().value![1] as unknown as InitialValue;
 		} else {
 			accumulator = initialValue;
 		}

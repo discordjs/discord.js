@@ -6,7 +6,7 @@ import { URL } from 'node:url';
 import glob from 'fast-glob';
 import picocolors from 'picocolors';
 import type { PackageManager } from './helpers/packageManager.js';
-import { install } from './helpers/packageManager.js';
+import { install, isNodePackageManager } from './helpers/packageManager.js';
 import { GUIDE_URL } from './util/constants.js';
 
 interface Options {
@@ -83,7 +83,7 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 	const globStream = glob.stream('./src/**/*.ts');
 	for await (const file of globStream) {
 		const newData = await readFile(file, { encoding: 'utf8' }).then((str) =>
-			str.replaceAll('[REPLACE_IMPORT_EXT]', typescript ? 'ts' : 'js'),
+			str.replaceAll('[REPLACE_IMPORT_EXT]', typescript && !isNodePackageManager(packageManager) ? 'ts' : 'js'),
 		);
 		await writeFile(file, newData);
 	}
@@ -93,7 +93,10 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 			encoding: 'utf8',
 		}).then((str) => {
 			let newStr = str.replace('[REPLACE_ME]', directoryName);
-			newStr = newStr.replaceAll('[REPLACE_IMPORT_EXT]', typescript ? 'ts' : 'js');
+			newStr = newStr.replaceAll(
+				'[REPLACE_IMPORT_EXT]',
+				typescript && !isNodePackageManager(packageManager) ? 'ts' : 'js',
+			);
 			return newStr;
 		});
 		await writeFile('./package.json', newPackageJSON);
