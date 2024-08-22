@@ -575,7 +575,7 @@ export class Networking extends EventEmitter {
 	 * @param opusPacket - The Opus packet to encrypt
 	 * @param connectionData - The current connection data of the instance
 	 */
-	public encryptOpusPacket(opusPacket: Buffer, connectionData: ConnectionData, additionalData: Buffer) {
+	private encryptOpusPacket(opusPacket: Buffer, connectionData: ConnectionData, additionalData: Buffer) {
 		const { secretKey, encryptionMode } = connectionData;
 
 		// Both supported encryption methods want the nonce to be an incremental integer
