@@ -53,7 +53,6 @@ try {
 	console.log('Uploading indices...');
 
 	try {
-		// eslint-disable-next-line @typescript-eslint/no-floating-promises
 		promises = indices.map(async (index) =>
 			limit(async () => {
 				console.log(`Uploading ${index.index}...`);
