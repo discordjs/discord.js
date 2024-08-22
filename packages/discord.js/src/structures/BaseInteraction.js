@@ -154,7 +154,7 @@ class BaseInteraction extends Base {
   }
 
   /**
-   * Indicates whether or not this interaction is both cached and received from a guild.
+   * Indicates whether this interaction is received from a cached guild.
    * @returns {boolean}
    */
   inCachedGuild() {
