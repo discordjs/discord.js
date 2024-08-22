@@ -42,27 +42,27 @@
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@actions/core": "^1.10.1",
-		"@actions/glob": "^0.4.0",
+		"@actions/glob": "^0.5.0",
 		"@discordjs/scripts": "workspace:^",
-		"@vercel/blob": "^0.22.3",
-		"@vercel/postgres": "^0.8.0",
+		"@vercel/blob": "^0.23.4",
+		"@vercel/postgres": "^0.9.0",
 		"meilisearch": "^0.38.0",
-		"p-limit": "^5.0.0",
-		"tslib": "^2.6.2",
-		"undici": "6.18.2"
+		"p-limit": "^6.1.0",
+		"tslib": "^2.6.3",
+		"undici": "6.19.8"
 	},
 	"devDependencies": {
-		"@types/node": "18.18.8",
-		"@vitest/coverage-v8": "^1.6.0",
+		"@types/node": "^18.19.45",
+		"@vitest/coverage-v8": "^2.0.5",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.57.0",
 		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.3.0",
-		"tsup": "^8.1.0",
-		"turbo": "^1.13.3",
-		"typescript": "^5.4.5",
-		"vitest": "^1.6.0"
+		"prettier": "^3.3.3",
+		"tsup": "^8.2.4",
+		"turbo": "^2.0.14",
+		"typescript": "~5.5.4",
+		"vitest": "^2.0.5"
 	},
 	"engines": {
 		"node": ">=18"

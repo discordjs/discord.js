@@ -10,7 +10,6 @@
 		"outDir": "dist",
 		"noEmit": true,
 		"allowImportingTsExtensions": true,
-		"types": ["bun-types"],
 		"skipLibCheck": true
 	}
 }

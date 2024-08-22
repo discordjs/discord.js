@@ -115,7 +115,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private initialHeartbeatTimeoutController: AbortController | null = null;
 
-	private heartbeatInterval: NodeJS.Timer | null = null;
+	private heartbeatInterval: NodeJS.Timeout | null = null;
 
 	private lastHeartbeatAt = -1;
 
