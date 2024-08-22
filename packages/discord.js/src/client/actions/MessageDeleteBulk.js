@@ -12,6 +12,8 @@ class MessageDeleteBulkAction extends Action {
     if (channel) {
       if (!channel.isTextBased()) return {};
 
+      if (channel.isThread()) channel.messageCount -= data.ids.length;
+
       const ids = data.ids;
       const messages = new Collection();
       for (const id of ids) {

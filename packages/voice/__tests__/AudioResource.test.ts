@@ -1,14 +1,16 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
+import { Buffer } from 'node:buffer';
+import process from 'node:process';
 import { PassThrough, Readable } from 'node:stream';
 import { opus, VolumeTransformer } from 'prism-media';
 import { SILENCE_FRAME } from '../src/audio/AudioPlayer';
 import { AudioResource, createAudioResource, NO_CONSTRAINT, VOLUME_CONSTRAINT } from '../src/audio/AudioResource';
-import { Edge, findPipeline as _findPipeline, StreamType, TransformerType } from '../src/audio/TransformerGraph';
+import { findPipeline as _findPipeline, StreamType, TransformerType, type Edge } from '../src/audio/TransformerGraph';
 
 jest.mock('prism-media');
 jest.mock('../src/audio/TransformerGraph');
 
-function wait() {
+async function wait() {
+	// eslint-disable-next-line no-promise-executor-return
 	return new Promise((resolve) => process.nextTick(resolve));
 }
 
@@ -16,12 +18,14 @@ async function started(resource: AudioResource) {
 	while (!resource.started) {
 		await wait();
 	}
+
 	return resource;
 }
 
 const findPipeline = _findPipeline as unknown as jest.MockedFunction<typeof _findPipeline>;
 
 beforeAll(() => {
+	// @ts-expect-error: No type
 	findPipeline.mockImplementation((from: StreamType, constraint: (path: Edge[]) => boolean) => {
 		const base = [
 			{
@@ -33,11 +37,11 @@ beforeAll(() => {
 		if (constraint === VOLUME_CONSTRAINT) {
 			base.push({
 				cost: 1,
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 				transformer: () => new VolumeTransformer({} as any),
 				type: TransformerType.InlineVolume,
 			});
 		}
+
 		return base as any[];
 	});
 });
@@ -92,7 +96,6 @@ describe('createAudioResource', () => {
 	});
 
 	test('Infers from VolumeTransformer', () => {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		const stream = new VolumeTransformer({} as any);
 		const resource = createAudioResource(stream, { inlineVolume: true });
 		expect(findPipeline).toHaveBeenCalledWith(StreamType.Raw, NO_CONSTRAINT);
@@ -113,11 +116,12 @@ describe('createAudioResource', () => {
 		await started(resource);
 		expect(resource.readable).toEqual(true);
 		expect(resource.read()).toEqual(Buffer.from([1]));
-		for (let i = 0; i < 5; i++) {
+		for (let index = 0; index < 5; index++) {
 			await wait();
 			expect(resource.readable).toEqual(true);
 			expect(resource.read()).toEqual(SILENCE_FRAME);
 		}
+
 		await wait();
 		expect(resource.readable).toEqual(false);
 		expect(resource.read()).toEqual(null);

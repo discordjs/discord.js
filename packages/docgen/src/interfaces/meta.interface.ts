@@ -1,5 +1,5 @@
 export interface Meta {
-	lineno: number;
 	filename: string;
+	lineno: number;
 	path: string;
 }

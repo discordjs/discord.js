@@ -2,8 +2,8 @@
 
 const GuildChannel = require('./GuildChannel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const MessageManager = require('../managers/MessageManager');
-const ThreadManager = require('../managers/ThreadManager');
+const GuildMessageManager = require('../managers/GuildMessageManager');
+const GuildTextThreadManager = require('../managers/GuildTextThreadManager');
 
 /**
  * Represents a text-based guild channel on Discord.
@@ -16,15 +16,15 @@ class BaseGuildTextChannel extends GuildChannel {
 
     /**
      * A manager of the messages sent to this channel
-     * @type {MessageManager}
+     * @type {GuildMessageManager}
      */
-    this.messages = new MessageManager(this);
+    this.messages = new GuildMessageManager(this);
 
     /**
      * A manager of the threads belonging to this channel
-     * @type {ThreadManager}
+     * @type {GuildTextThreadManager}
      */
-    this.threads = new ThreadManager(this);
+    this.threads = new GuildTextThreadManager(this);
 
     /**
      * If the guild considers this channel NSFW
@@ -74,6 +74,16 @@ class BaseGuildTextChannel extends GuildChannel {
       this.defaultAutoArchiveDuration = data.default_auto_archive_duration;
     }
 
+    if ('default_thread_rate_limit_per_user' in data) {
+      /**
+       * The initial rate limit per user (slowmode) to set on newly created threads in a channel.
+       * @type {?number}
+       */
+      this.defaultThreadRateLimitPerUser = data.default_thread_rate_limit_per_user;
+    } else {
+      this.defaultThreadRateLimitPerUser ??= null;
+    }
+
     if ('messages' in data) {
       for (const message of data.messages) this.messages._add(message);
     }
@@ -92,7 +102,7 @@ class BaseGuildTextChannel extends GuildChannel {
   /**
    * Sets the type of this channel.
    * <info>Only conversion between {@link TextChannel} and {@link NewsChannel} is supported.</info>
-   * @param {ChannelType.GuildText|ChannelType.GuildNews} type The new channel type
+   * @param {ChannelType.GuildText|ChannelType.GuildAnnouncement} type The new channel type
    * @param {string} [reason] Reason for changing the channel's type
    * @returns {Promise<GuildChannel>}
    */
@@ -125,7 +135,7 @@ class BaseGuildTextChannel extends GuildChannel {
 
   /**
    * Options used to create an invite to a guild channel.
-   * @typedef {Object} CreateInviteOptions
+   * @typedef {Object} InviteCreateOptions
    * @property {boolean} [temporary] Whether members that joined via the invite should be automatically
    * kicked after 24 hours if they have not yet received a role
    * @property {number} [maxAge] How long the invite should last (in seconds, 0 for forever)
@@ -142,7 +152,7 @@ class BaseGuildTextChannel extends GuildChannel {
 
   /**
    * Creates an invite to this guild channel.
-   * @param {CreateInviteOptions} [options={}] The options for creating the invite
+   * @param {InviteCreateOptions} [options={}] The options for creating the invite
    * @returns {Promise<Invite>}
    * @example
    * // Create an invite to a channel

@@ -4,8 +4,9 @@ const { PermissionFlagsBits } = require('discord-api-types/v10');
 const Base = require('./Base');
 const VoiceState = require('./VoiceState');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const { Error, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
+const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
@@ -53,7 +54,14 @@ class GuildMember extends Base {
      */
     this.communicationDisabledUntilTimestamp = null;
 
-    this._roles = [];
+    /**
+     * The role ids of the member
+     * @name GuildMember#_roles
+     * @type {Snowflake[]}
+     * @private
+     */
+    Object.defineProperty(this, '_roles', { value: [], writable: true });
+
     if (data) this._patch(data);
   }
 
@@ -92,6 +100,16 @@ class GuildMember extends Base {
     if ('communication_disabled_until' in data) {
       this.communicationDisabledUntilTimestamp =
         data.communication_disabled_until && Date.parse(data.communication_disabled_until);
+    }
+
+    if ('flags' in data) {
+      /**
+       * The flags of this member
+       * @type {Readonly<GuildMemberFlagsBitField>}
+       */
+      this.flags = new GuildMemberFlagsBitField(data.flags).freeze();
+    } else {
+      this.flags ??= new GuildMemberFlagsBitField().freeze();
     }
   }
 
@@ -140,7 +158,7 @@ class GuildMember extends Base {
   /**
    * A link to the member's guild avatar if they have one.
    * Otherwise, a link to their {@link User#displayAvatarURL} will be returned.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {string}
    */
   displayAvatarURL(options) {
@@ -184,7 +202,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * The displayed color of this member in base 10
+   * The displayed role color of this member in base 10
    * @type {number}
    * @readonly
    */
@@ -193,7 +211,7 @@ class GuildMember extends Base {
   }
 
   /**
-   * The displayed color of this member in hexadecimal
+   * The displayed role color of this member in hexadecimal
    * @type {string}
    * @readonly
    */
@@ -220,12 +238,12 @@ class GuildMember extends Base {
   }
 
   /**
-   * The nickname of this member, or their username if they don't have one
+   * The nickname of this member, or their user display name if they don't have one
    * @type {?string}
    * @readonly
    */
   get displayName() {
-    return this.nickname ?? this.user.username;
+    return this.nickname ?? this.user.displayName;
   }
 
   /**
@@ -248,7 +266,7 @@ class GuildMember extends Base {
     if (this.user.id === this.guild.ownerId) return false;
     if (this.user.id === this.client.user.id) return false;
     if (this.client.user.id === this.guild.ownerId) return true;
-    if (!this.guild.members.me) throw new Error(ErrorCodes.GuildUncachedMe);
+    if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
     return this.guild.members.me.roles.highest.comparePositionTo(this.roles.highest) > 0;
   }
 
@@ -258,7 +276,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get kickable() {
-    if (!this.guild.members.me) throw new Error(ErrorCodes.GuildUncachedMe);
+    if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
     return this.manageable && this.guild.members.me.permissions.has(PermissionFlagsBits.KickMembers);
   }
 
@@ -268,7 +286,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get bannable() {
-    if (!this.guild.members.me) throw new Error(ErrorCodes.GuildUncachedMe);
+    if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
     return this.manageable && this.guild.members.me.permissions.has(PermissionFlagsBits.BanMembers);
   }
 
@@ -301,17 +319,27 @@ class GuildMember extends Base {
    */
   permissionsIn(channel) {
     channel = this.guild.channels.resolve(channel);
-    if (!channel) throw new Error(ErrorCodes.GuildChannelResolve);
+    if (!channel) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
     return channel.permissionsFor(this);
   }
 
   /**
    * Edits this member.
-   * @param {GuildMemberEditData} data The data to edit the member with
+   * @param {GuildMemberEditOptions} options The options to provide
    * @returns {Promise<GuildMember>}
    */
-  edit(data) {
-    return this.guild.members.edit(this, data);
+  edit(options) {
+    return this.guild.members.edit(this, options);
+  }
+
+  /**
+   * Sets the flags for this member.
+   * @param {GuildMemberFlagsResolvable} flags The flags to set
+   * @param {string} [reason] Reason for setting the flags
+   * @returns {Promise<GuildMember>}
+   */
+  setFlags(flags, reason) {
+    return this.edit({ flags, reason });
   }
 
   /**
@@ -319,6 +347,16 @@ class GuildMember extends Base {
    * @param {?string} nick The nickname for the guild member, or `null` if you want to reset their nickname
    * @param {string} [reason] Reason for setting the nickname
    * @returns {Promise<GuildMember>}
+   * @example
+   * // Set a nickname for a guild member
+   * guildMember.setNickname('cool nickname', 'Needed a new nickname')
+   *   .then(member => console.log(`Set nickname of ${member.user.username}`))
+   *   .catch(console.error);
+   * @example
+   * // Remove a nickname for a guild member
+   * guildMember.setNickname(null, 'No nicknames allowed!')
+   *   .then(member => console.log(`Removed nickname for ${member.user.username}`))
+   *   .catch(console.error);
    */
   setNickname(nick, reason) {
     return this.edit({ nick, reason });
@@ -355,18 +393,18 @@ class GuildMember extends Base {
    * @param {BanOptions} [options] Options for the ban
    * @returns {Promise<GuildMember>}
    * @example
-   * // ban a guild member
-   * guildMember.ban({ deleteMessageDays: 7, reason: 'They deserved it' })
+   * // Ban a guild member, deleting a week's worth of messages
+   * guildMember.ban({ deleteMessageSeconds: 60 * 60 * 24 * 7, reason: 'They deserved it' })
    *   .then(console.log)
    *   .catch(console.error);
    */
   ban(options) {
-    return this.guild.members.ban(this, options);
+    return this.guild.bans.create(this, options);
   }
 
   /**
    * Times this guild member out.
-   * @param {DateResolvable|null} communicationDisabledUntil The date or timestamp
+   * @param {?DateResolvable} communicationDisabledUntil The date or timestamp
    * for the member's communication to be disabled until. Provide `null` to remove the timeout.
    * @param {string} [reason] The reason for this timeout.
    * @returns {Promise<GuildMember>}
@@ -375,6 +413,11 @@ class GuildMember extends Base {
    * guildMember.disableCommunicationUntil(Date.now() + (5 * 60 * 1000), 'They deserved it')
    *   .then(console.log)
    *   .catch(console.error);
+   * @example
+   * // Remove the timeout of a guild member
+   * guildMember.disableCommunicationUntil(null)
+   *   .then(member => console.log(`Removed timeout for ${member.displayName}`))
+   *   .catch(console.error);
    */
   disableCommunicationUntil(communicationDisabledUntil, reason) {
     return this.edit({ communicationDisabledUntil, reason });
@@ -382,8 +425,8 @@ class GuildMember extends Base {
 
   /**
    * Times this guild member out.
-   * @param {number|null} timeout The time in milliseconds
-   * for the member's communication to be disabled until. Provide `null` to remove the timeout.
+   * @param {?number} timeout The duration in milliseconds
+   * for the member's communication to be disabled. Provide `null` to remove the timeout.
    * @param {string} [reason] The reason for this timeout.
    * @returns {Promise<GuildMember>}
    * @example
@@ -423,6 +466,7 @@ class GuildMember extends Base {
       this.avatar === member.avatar &&
       this.pending === member.pending &&
       this.communicationDisabledUntilTimestamp === member.communicationDisabledUntilTimestamp &&
+      this.flags.bitfield === member.flags.bitfield &&
       (this._roles === member._roles ||
         (this._roles.length === member._roles.length && this._roles.every((role, i) => role === member._roles[i])))
     );
@@ -450,17 +494,22 @@ class GuildMember extends Base {
     json.displayAvatarURL = this.displayAvatarURL();
     return json;
   }
-
-  // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  /* eslint-disable no-empty-function */
-  send() {}
 }
+
+/**
+ * Sends a message to this user.
+ * @method send
+ * @memberof GuildMember
+ * @instance
+ * @param {string|MessagePayload|MessageCreateOptions} options The options to provide
+ * @returns {Promise<Message>}
+ * @example
+ * // Send a direct message
+ * guildMember.send('Hello!')
+ *   .then(message => console.log(`Sent message: ${message.content} to ${guildMember.displayName}`))
+ *   .catch(console.error);
+ */
 
 TextBasedChannel.applyToClass(GuildMember);
 
 exports.GuildMember = GuildMember;
-
-/**
- * @external APIGuildMember
- * @see {@link https://discord.com/developers/docs/resources/guild#guild-member-object}
- */

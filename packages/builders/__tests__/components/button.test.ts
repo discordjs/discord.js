@@ -1,12 +1,12 @@
 import {
-	APIButtonComponentWithCustomId,
-	APIButtonComponentWithURL,
 	ButtonStyle,
 	ComponentType,
+	type APIButtonComponentWithCustomId,
+	type APIButtonComponentWithURL,
 } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
-import { buttonLabelValidator, buttonStyleValidator } from '../../src/components/Assertions';
-import { ButtonBuilder } from '../../src/components/button/Button';
+import { buttonLabelValidator, buttonStyleValidator } from '../../src/components/Assertions.js';
+import { ButtonBuilder } from '../../src/components/button/Button.js';
 
 const buttonComponent = () => new ButtonBuilder();
 
@@ -31,7 +31,7 @@ describe('Button Components', () => {
 			expect(() => buttonStyleValidator.parse(ButtonStyle.Secondary)).not.toThrowError();
 		});
 
-		test('GIVEN invalid style THEN validator does not throw', () => {
+		test('GIVEN invalid style THEN validator does throw', () => {
 			expect(() => buttonStyleValidator.parse(7)).toThrowError();
 		});
 
@@ -47,6 +47,11 @@ describe('Button Components', () => {
 					.setDisabled(true)
 					.setEmoji({ name: 'test' });
 
+				button.toJSON();
+			}).not.toThrowError();
+
+			expect(() => {
+				const button = buttonComponent().setSKUId('123456789012345678').setStyle(ButtonStyle.Premium);
 				button.toJSON();
 			}).not.toThrowError();
 
@@ -71,7 +76,7 @@ describe('Button Components', () => {
 			}).toThrowError();
 
 			expect(() => {
-				// @ts-expect-error
+				// @ts-expect-error: Invalid emoji
 				const button = buttonComponent().setEmoji('test');
 				button.toJSON();
 			}).toThrowError();
@@ -101,11 +106,53 @@ describe('Button Components', () => {
 				button.toJSON();
 			}).toThrowError();
 
+			expect(() => {
+				const button = buttonComponent().setStyle(ButtonStyle.Primary).setSKUId('123456789012345678');
+				button.toJSON();
+			}).toThrowError();
+
+			expect(() => {
+				const button = buttonComponent()
+					.setStyle(ButtonStyle.Secondary)
+					.setLabel('button')
+					.setSKUId('123456789012345678');
+
+				button.toJSON();
+			}).toThrowError();
+
+			expect(() => {
+				const button = buttonComponent()
+					.setStyle(ButtonStyle.Success)
+					.setEmoji({ name: '😇' })
+					.setSKUId('123456789012345678');
+
+				button.toJSON();
+			}).toThrowError();
+
+			expect(() => {
+				const button = buttonComponent()
+					.setStyle(ButtonStyle.Danger)
+					.setCustomId('test')
+					.setSKUId('123456789012345678');
+
+				button.toJSON();
+			}).toThrowError();
+
+			expect(() => {
+				const button = buttonComponent()
+					.setStyle(ButtonStyle.Link)
+					.setURL('https://google.com')
+					.setSKUId('123456789012345678');
+
+				button.toJSON();
+			}).toThrowError();
+
+			// @ts-expect-error: Invalid style
 			expect(() => buttonComponent().setStyle(24)).toThrowError();
 			expect(() => buttonComponent().setLabel(longStr)).toThrowError();
-			// @ts-expect-error
+			// @ts-expect-error: Invalid parameter for disabled
 			expect(() => buttonComponent().setDisabled(0)).toThrowError();
-			// @ts-expect-error
+			// @ts-expect-error: Invalid emoji
 			expect(() => buttonComponent().setEmoji('foo')).toThrowError();
 
 			expect(() => buttonComponent().setURL('foobar')).toThrowError();

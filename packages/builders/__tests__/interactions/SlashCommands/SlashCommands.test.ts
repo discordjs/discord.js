@@ -1,4 +1,11 @@
-import { APIApplicationCommandOptionChoice, ChannelType, PermissionFlagsBits } from 'discord-api-types/v10';
+import {
+	ApplicationCommandType,
+	ApplicationIntegrationType,
+	ChannelType,
+	InteractionContextType,
+	PermissionFlagsBits,
+	type APIApplicationCommandOptionChoice,
+} from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
 	SlashCommandAssertions,
@@ -14,7 +21,7 @@ import {
 	SlashCommandSubcommandBuilder,
 	SlashCommandSubcommandGroupBuilder,
 	SlashCommandUserOption,
-} from '../../../src/index';
+} from '../../../src/index.js';
 
 const largeArray = Array.from({ length: 26 }, () => 1 as unknown as APIApplicationCommandOptionChoice);
 
@@ -33,9 +40,7 @@ const getSubcommandGroup = () => new SlashCommandSubcommandGroupBuilder().setNam
 const getSubcommand = () => new SlashCommandSubcommandBuilder().setName('owo').setDescription('Testing 123');
 
 class Collection {
-	public get [Symbol.toStringTag]() {
-		return 'Map';
-	}
+	public readonly [Symbol.toStringTag] = 'Map';
 }
 
 describe('Slash Commands', () => {
@@ -129,6 +134,10 @@ describe('Slash Commands', () => {
 		});
 
 		describe('Builder with simple options', () => {
+			test('GIVEN valid builder THEN returns type included', () => {
+				expect(getNamedBuilder().toJSON()).includes({ type: ApplicationCommandType.ChatInput });
+			});
+
 			test('GIVEN valid builder with options THEN does not throw error', () => {
 				expect(() =>
 					getBuilder()
@@ -146,23 +155,22 @@ describe('Slash Commands', () => {
 							integer
 								.setName('iscool')
 								.setDescription('Are we cool or what?')
-								.addChoices({ name: 'Very cool', value: 1_000 }),
+								.addChoices({ name: 'Very cool', value: 1_000 })
+								.addChoices([{ name: 'Even cooler', value: 2_000 }]),
 						)
 						.addNumberOption((number) =>
 							number
 								.setName('iscool')
 								.setDescription('Are we cool or what?')
-								.addChoices({ name: 'Very cool', value: 1.5 }),
+								.addChoices({ name: 'Very cool', value: 1.5 })
+								.addChoices([{ name: 'Even cooler', value: 2.5 }]),
 						)
 						.addStringOption((string) =>
 							string
 								.setName('iscool')
 								.setDescription('Are we cool or what?')
-								.addChoices(
-									{ name: 'Fancy Pants', value: 'fp_1' },
-									{ name: 'Fancy Shoes', value: 'fs_1' },
-									{ name: 'The Whole shebang', value: 'all' },
-								),
+								.addChoices({ name: 'Fancy Pants', value: 'fp_1' }, { name: 'Fancy Shoes', value: 'fs_1' })
+								.addChoices([{ name: 'The Whole shebang', value: 'all' }]),
 						)
 						.addIntegerOption((integer) =>
 							integer.setName('iscool').setDescription('Are we cool or what?').setAutocomplete(true),
@@ -178,7 +186,7 @@ describe('Slash Commands', () => {
 			});
 
 			test('GIVEN a builder with invalid autocomplete THEN does throw an error', () => {
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addStringOption(getStringOption().setAutocomplete('not a boolean'))).toThrowError();
 			});
 
@@ -231,33 +239,37 @@ describe('Slash Commands', () => {
 
 			test('GIVEN a builder with valid channel options and channel_types THEN does not throw an error', () => {
 				expect(() =>
-					getBuilder().addChannelOption(getChannelOption().addChannelTypes(ChannelType.GuildText)),
+					getBuilder().addChannelOption(
+						getChannelOption().addChannelTypes(ChannelType.GuildText).addChannelTypes([ChannelType.GuildVoice]),
+					),
 				).not.toThrowError();
 
 				expect(() => {
 					getBuilder().addChannelOption(
-						getChannelOption().addChannelTypes(ChannelType.GuildNews, ChannelType.GuildText),
+						getChannelOption().addChannelTypes(ChannelType.GuildAnnouncement, ChannelType.GuildText),
 					);
 				}).not.toThrowError();
 			});
 
 			test('GIVEN a builder with valid channel options and channel_types THEN does throw an error', () => {
+				// @ts-expect-error: Invalid channel type
 				expect(() => getBuilder().addChannelOption(getChannelOption().addChannelTypes(100))).toThrowError();
 
+				// @ts-expect-error: Invalid channel types
 				expect(() => getBuilder().addChannelOption(getChannelOption().addChannelTypes(100, 200))).toThrowError();
 			});
 
 			test('GIVEN a builder with invalid number min/max options THEN does throw an error', () => {
-				// @ts-expect-error
+				// @ts-expect-error: Invalid max value
 				expect(() => getBuilder().addNumberOption(getNumberOption().setMaxValue('test'))).toThrowError();
 
-				// @ts-expect-error
+				// @ts-expect-error: Invalid max value
 				expect(() => getBuilder().addIntegerOption(getIntegerOption().setMaxValue('test'))).toThrowError();
 
-				// @ts-expect-error
+				// @ts-expect-error: Invalid min value
 				expect(() => getBuilder().addNumberOption(getNumberOption().setMinValue('test'))).toThrowError();
 
-				// @ts-expect-error
+				// @ts-expect-error: Invalid min value
 				expect(() => getBuilder().addIntegerOption(getIntegerOption().setMinValue('test'))).toThrowError();
 
 				expect(() => getBuilder().addIntegerOption(getIntegerOption().setMinValue(1.5))).toThrowError();
@@ -294,10 +306,10 @@ describe('Slash Commands', () => {
 			});
 
 			test('GIVEN no valid return for an addOption method THEN throw error', () => {
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addBooleanOption()).toThrowError();
 
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addBooleanOption(getRoleOption())).toThrowError();
 			});
 
@@ -318,18 +330,18 @@ describe('Slash Commands', () => {
 			});
 
 			test('GIVEN invalid returns for builder THEN throw error', () => {
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addBooleanOption(true)).toThrowError();
 
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addBooleanOption(null)).toThrowError();
 
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addBooleanOption(undefined)).toThrowError();
 
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addBooleanOption(() => SlashCommandStringOption)).toThrowError();
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addBooleanOption(() => new Collection())).toThrowError();
 			});
 
@@ -356,6 +368,10 @@ describe('Slash Commands', () => {
 					getBuilder().addStringOption(getStringOption().setChoices({ name: 'owo', value: 'uwu' })),
 				).not.toThrowError();
 			});
+
+			test('GIVEN valid builder with NSFW, THEN does not throw error', () => {
+				expect(() => getBuilder().setName('foo').setDescription('foo').setNSFW(true)).not.toThrowError();
+			});
 		});
 
 		describe('Builder with subcommand (group) options', () => {
@@ -370,6 +386,18 @@ describe('Slash Commands', () => {
 					getNamedBuilder().addSubcommand((subcommand) =>
 						subcommand.setName('boop').setDescription('Boops a fellow nerd (you)'),
 					),
+				).not.toThrowError();
+			});
+
+			test('GIVEN builder with subcommand THEN has regular slash command fields', () => {
+				expect(() =>
+					getBuilder()
+						.setName('name')
+						.setDescription('description')
+						.addSubcommand((option) => option.setName('ye').setDescription('ye'))
+						.addSubcommand((option) => option.setName('no').setDescription('no'))
+						.setDMPermission(false)
+						.setDefaultMemberPermissions(1n),
 				).not.toThrowError();
 			});
 
@@ -389,30 +417,29 @@ describe('Slash Commands', () => {
 
 			test('GIVEN builder with a subcommand that tries to add an invalid result THEN throw error', () => {
 				expect(() =>
-					// @ts-expect-error Checking if check works JS-side too
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
+					// @ts-expect-error: Checking if check works JS-side too
 					getNamedBuilder().addSubcommand(getSubcommand()).addInteger(getInteger()),
 				).toThrowError();
 			});
 
 			test('GIVEN no valid return for an addSubcommand(Group) method THEN throw error', () => {
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addSubcommandGroup()).toThrowError();
 
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addSubcommand()).toThrowError();
 
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getBuilder().addSubcommand(getSubcommandGroup())).toThrowError();
 			});
 		});
 
 		describe('Subcommand group builder', () => {
 			test('GIVEN no valid subcommand THEN throw error', () => {
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getSubcommandGroup().addSubcommand()).toThrowError();
 
-				// @ts-expect-error Checking if not providing anything, or an invalid return type causes an error
+				// @ts-expect-error: Checking if not providing anything, or an invalid return type causes an error
 				expect(() => getSubcommandGroup().addSubcommand(getSubcommandGroup())).toThrowError();
 			});
 
@@ -444,9 +471,9 @@ describe('Slash Commands', () => {
 			});
 
 			test('GIVEN invalid name localizations THEN does throw error', () => {
-				// @ts-expect-error
+				// @ts-expect-error: Invalid localization
 				expect(() => getBuilder().setNameLocalization('en-U', 'foobar')).toThrowError();
-				// @ts-expect-error
+				// @ts-expect-error: Invalid localization
 				expect(() => getBuilder().setNameLocalizations({ 'en-U': 'foobar' })).toThrowError();
 			});
 
@@ -467,9 +494,9 @@ describe('Slash Commands', () => {
 			});
 
 			test('GIVEN invalid description localizations THEN does throw error', () => {
-				// @ts-expect-error
+				// @ts-expect-error: Invalid localization description
 				expect(() => getBuilder().setDescriptionLocalization('en-U', 'foobar')).toThrowError();
-				// @ts-expect-error
+				// @ts-expect-error: Invalid localization description
 				expect(() => getBuilder().setDescriptionLocalizations({ 'en-U': 'foobar' })).toThrowError();
 			});
 
@@ -506,6 +533,60 @@ describe('Slash Commands', () => {
 				expect(() => getBuilder().setDefaultMemberPermissions('1.1')).toThrowError();
 
 				expect(() => getBuilder().setDefaultMemberPermissions(1.1)).toThrowError();
+			});
+
+			test('GIVEN valid permission with options THEN does not throw error', () => {
+				expect(() =>
+					getBuilder().addBooleanOption(getBooleanOption()).setDefaultMemberPermissions('1'),
+				).not.toThrowError();
+
+				expect(() => getBuilder().addChannelOption(getChannelOption()).setDMPermission(false)).not.toThrowError();
+			});
+		});
+
+		describe('contexts', () => {
+			test('GIVEN a builder with valid contexts THEN does not throw an error', () => {
+				expect(() =>
+					getBuilder().setContexts([InteractionContextType.Guild, InteractionContextType.BotDM]),
+				).not.toThrowError();
+
+				expect(() =>
+					getBuilder().setContexts(InteractionContextType.Guild, InteractionContextType.BotDM),
+				).not.toThrowError();
+			});
+
+			test('GIVEN a builder with invalid contexts THEN does throw an error', () => {
+				// @ts-expect-error: Invalid contexts
+				expect(() => getBuilder().setContexts(999)).toThrowError();
+
+				// @ts-expect-error: Invalid contexts
+				expect(() => getBuilder().setContexts([999, 998])).toThrowError();
+			});
+		});
+
+		describe('integration types', () => {
+			test('GIVEN a builder with valid integraton types THEN does not throw an error', () => {
+				expect(() =>
+					getBuilder().setIntegrationTypes([
+						ApplicationIntegrationType.GuildInstall,
+						ApplicationIntegrationType.UserInstall,
+					]),
+				).not.toThrowError();
+
+				expect(() =>
+					getBuilder().setIntegrationTypes(
+						ApplicationIntegrationType.GuildInstall,
+						ApplicationIntegrationType.UserInstall,
+					),
+				).not.toThrowError();
+			});
+
+			test('GIVEN a builder with invalid integration types THEN does throw an error', () => {
+				// @ts-expect-error: Invalid integration types
+				expect(() => getBuilder().setIntegrationTypes(999)).toThrowError();
+
+				// @ts-expect-error: Invalid integration types
+				expect(() => getBuilder().setIntegrationTypes([999, 998])).toThrowError();
 			});
 		});
 	});

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/method-signature-style */
 import { EventEmitter } from 'node:events';
 
 /**
@@ -11,15 +10,15 @@ export interface VoiceUserData {
 	audioSSRC: number;
 
 	/**
+	 * The Discord user id of the user.
+	 */
+	userId: string;
+
+	/**
 	 * The SSRC of the user's video stream (if one exists)
 	 * Cannot be 0. If undefined, the user has no video stream.
 	 */
 	videoSSRC?: number;
-
-	/**
-	 * The Discord user id of the user.
-	 */
-	userId: string;
 }
 
 export interface SSRCMap extends EventEmitter {
@@ -83,7 +82,6 @@ export class SSRCMap extends EventEmitter {
 	 * Deletes the stored voice data about a user.
 	 *
 	 * @param target - The target of the delete operation, either their audio SSRC or user id
-	 *
 	 * @returns The data that was deleted, if any
 	 */
 	public delete(target: number | string) {
@@ -93,6 +91,7 @@ export class SSRCMap extends EventEmitter {
 				this.map.delete(target);
 				this.emit('delete', existing);
 			}
+
 			return existing;
 		}
 

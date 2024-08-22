@@ -8,7 +8,7 @@ const BaseClient = require('./BaseClient');
 const ActionsManager = require('./actions/ActionsManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const WebSocketManager = require('./websocket/WebSocketManager');
-const { Error, TypeError, RangeError, ErrorCodes } = require('../errors');
+const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors');
 const BaseGuildEmojiManager = require('../managers/BaseGuildEmojiManager');
 const ChannelManager = require('../managers/ChannelManager');
 const GuildManager = require('../managers/GuildManager');
@@ -23,13 +23,15 @@ const StickerPack = require('../structures/StickerPack');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Widget = require('../structures/Widget');
-const DataResolver = require('../util/DataResolver');
+const { resolveInviteCode, resolveGuildTemplateCode } = require('../util/DataResolver');
 const Events = require('../util/Events');
 const IntentsBitField = require('../util/IntentsBitField');
 const Options = require('../util/Options');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const Status = require('../util/Status');
 const Sweepers = require('../util/Sweepers');
+
+let deprecationEmittedForPremiumStickerPacks = false;
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -211,16 +213,10 @@ class Client extends BaseClient {
    * client.login('my token');
    */
   async login(token = this.token) {
-    if (!token || typeof token !== 'string') throw new Error(ErrorCodes.TokenInvalid);
+    if (!token || typeof token !== 'string') throw new DiscordjsError(ErrorCodes.TokenInvalid);
     this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
     this.rest.setToken(token);
-    this.emit(
-      Events.Debug,
-      `Provided token: ${token
-        .split('.')
-        .map((val, i) => (i > 1 ? val.replace(/./g, '*') : val))
-        .join('.')}`,
-    );
+    this.emit(Events.Debug, `Provided token: ${this._censoredToken}`);
 
     if (this.options.presence) {
       this.options.ws.presence = this.presence._parse(this.options.presence);
@@ -232,7 +228,7 @@ class Client extends BaseClient {
       await this.ws.connect();
       return this.token;
     } catch (error) {
-      this.destroy();
+      await this.destroy();
       throw error;
     }
   }
@@ -243,18 +239,18 @@ class Client extends BaseClient {
    * @returns {boolean}
    */
   isReady() {
-    return this.ws.status === Status.Ready;
+    return !this.ws.destroyed && this.ws.status === Status.Ready;
   }
 
   /**
    * Logs out, terminates the connection to Discord, and destroys the client.
-   * @returns {void}
+   * @returns {Promise<void>}
    */
-  destroy() {
+  async destroy() {
     super.destroy();
 
     this.sweepers.destroy();
-    this.ws.destroy();
+    await this.ws.destroy();
     this.token = null;
     this.rest.setToken(null);
   }
@@ -277,7 +273,7 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   async fetchInvite(invite, options) {
-    const code = DataResolver.resolveInviteCode(invite);
+    const code = resolveInviteCode(invite);
     const query = makeURLSearchParams({
       with_counts: true,
       with_expiration: true,
@@ -297,7 +293,7 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   async fetchGuildTemplate(template) {
-    const code = DataResolver.resolveGuildTemplateCode(template);
+    const code = resolveGuildTemplateCode(template);
     const data = await this.rest.get(Routes.template(code));
     return new GuildTemplate(this, data);
   }
@@ -313,7 +309,7 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   async fetchWebhook(id, token) {
-    const data = await this.rest.get(Routes.webhook(id, token));
+    const data = await this.rest.get(Routes.webhook(id, token), { auth: token === undefined });
     return new Webhook(this, { token, ...data });
   }
 
@@ -347,16 +343,51 @@ class Client extends BaseClient {
   }
 
   /**
-   * Obtains the list of sticker packs available to Nitro subscribers from Discord.
-   * @returns {Promise<Collection<Snowflake, StickerPack>>}
+   * Options for fetching sticker packs.
+   * @typedef {Object} StickerPackFetchOptions
+   * @property {Snowflake} [packId] The id of the sticker pack to fetch
+   */
+
+  /**
+   * Obtains the list of available sticker packs.
+   * @param {StickerPackFetchOptions} [options={}] Options for fetching sticker packs
+   * @returns {Promise<Collection<Snowflake, StickerPack>|StickerPack>}
+   * A collection of sticker packs, or a single sticker pack if a packId was provided
    * @example
-   * client.fetchPremiumStickerPacks()
+   * client.fetchStickerPacks()
    *   .then(packs => console.log(`Available sticker packs are: ${packs.map(pack => pack.name).join(', ')}`))
    *   .catch(console.error);
+   * @example
+   * client.fetchStickerPacks({ packId: '751604115435421716' })
+   *   .then(pack => console.log(`Sticker pack name: ${pack.name}`))
+   *   .catch(console.error);
    */
-  async fetchPremiumStickerPacks() {
-    const data = await this.rest.get(Routes.nitroStickerPacks());
-    return new Collection(data.sticker_packs.map(p => [p.id, new StickerPack(this, p)]));
+  async fetchStickerPacks({ packId } = {}) {
+    if (packId) {
+      const data = await this.rest.get(Routes.stickerPack(packId));
+      return new StickerPack(this, data);
+    }
+
+    const data = await this.rest.get(Routes.stickerPacks());
+    return new Collection(data.sticker_packs.map(stickerPack => [stickerPack.id, new StickerPack(this, stickerPack)]));
+  }
+
+  /**
+   * Obtains the list of available sticker packs.
+   * @returns {Promise<Collection<Snowflake, StickerPack>>}
+   * @deprecated Use {@link Client#fetchStickerPacks} instead.
+   */
+  fetchPremiumStickerPacks() {
+    if (!deprecationEmittedForPremiumStickerPacks) {
+      process.emitWarning(
+        'The Client#fetchPremiumStickerPacks() method is deprecated. Use Client#fetchStickerPacks() instead.',
+        'DeprecationWarning',
+      );
+
+      deprecationEmittedForPremiumStickerPacks = true;
+    }
+
+    return this.fetchStickerPacks();
   }
 
   /**
@@ -366,7 +397,7 @@ class Client extends BaseClient {
    */
   async fetchGuildPreview(guild) {
     const id = this.guilds.resolveId(guild);
-    if (!id) throw new TypeError(ErrorCodes.InvalidType, 'guild', 'GuildResolvable');
+    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'guild', 'GuildResolvable');
     const data = await this.rest.get(Routes.guildPreview(id));
     return new GuildPreview(this, data);
   }
@@ -378,7 +409,7 @@ class Client extends BaseClient {
    */
   async fetchGuildWidget(guild) {
     const id = this.guilds.resolveId(guild);
-    if (!id) throw new TypeError(ErrorCodes.InvalidType, 'guild', 'GuildResolvable');
+    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'guild', 'GuildResolvable');
     const data = await this.rest.get(Routes.guildWidgetJSON(id));
     return new Widget(this, data);
   }
@@ -413,23 +444,26 @@ class Client extends BaseClient {
    * console.log(`Generated bot invite link: ${link}`);
    */
   generateInvite(options = {}) {
-    if (typeof options !== 'object') throw new TypeError(ErrorCodes.InvalidType, 'options', 'object', true);
-    if (!this.application) throw new Error(ErrorCodes.ClientNotReady, 'generate an invite link');
+    if (typeof options !== 'object') throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
+    if (!this.application) throw new DiscordjsError(ErrorCodes.ClientNotReady, 'generate an invite link');
 
     const { scopes } = options;
-    if (typeof scopes === 'undefined') {
-      throw new TypeError(ErrorCodes.InvalidMissingScopes);
+    if (scopes === undefined) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidMissingScopes);
     }
     if (!Array.isArray(scopes)) {
-      throw new TypeError(ErrorCodes.InvalidType, 'scopes', 'Array of Invite Scopes', true);
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'scopes', 'Array of Invite Scopes', true);
     }
     if (!scopes.some(scope => [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands].includes(scope))) {
-      throw new TypeError(ErrorCodes.InvalidMissingScopes);
+      throw new DiscordjsTypeError(ErrorCodes.InvalidMissingScopes);
+    }
+    if (!scopes.includes(OAuth2Scopes.Bot) && options.permissions) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidScopesWithPermissions);
     }
     const validScopes = Object.values(OAuth2Scopes);
     const invalidScope = scopes.find(scope => !validScopes.includes(scope));
     if (invalidScope) {
-      throw new TypeError(ErrorCodes.InvalidElement, 'Array', 'scopes', invalidScope);
+      throw new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array', 'scopes', invalidScope);
     }
 
     const query = makeURLSearchParams({
@@ -445,7 +479,7 @@ class Client extends BaseClient {
 
     if (options.guild) {
       const guildId = this.guilds.resolveId(options.guild);
-      if (!guildId) throw new TypeError(ErrorCodes.InvalidType, 'options.guild', 'GuildResolvable');
+      if (!guildId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options.guild', 'GuildResolvable');
       query.set('guild_id', guildId);
     }
 
@@ -457,6 +491,21 @@ class Client extends BaseClient {
       actions: false,
       presence: false,
     });
+  }
+
+  /**
+   * Partially censored client token for debug logging purposes.
+   * @type {?string}
+   * @readonly
+   * @private
+   */
+  get _censoredToken() {
+    if (!this.token) return null;
+
+    return this.token
+      .split('.')
+      .map((val, i) => (i > 1 ? val.replace(/./g, '*') : val))
+      .join('.');
   }
 
   /**
@@ -476,37 +525,70 @@ class Client extends BaseClient {
    * @private
    */
   _validateOptions(options = this.options) {
-    if (typeof options.intents === 'undefined') {
-      throw new TypeError(ErrorCodes.ClientMissingIntents);
+    if (options.intents === undefined) {
+      throw new DiscordjsTypeError(ErrorCodes.ClientMissingIntents);
     } else {
-      options.intents = IntentsBitField.resolve(options.intents);
+      options.intents = new IntentsBitField(options.intents).freeze();
     }
     if (typeof options.shardCount !== 'number' || isNaN(options.shardCount) || options.shardCount < 1) {
-      throw new TypeError(ErrorCodes.ClientInvalidOption, 'shardCount', 'a number greater than or equal to 1');
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'shardCount', 'a number greater than or equal to 1');
     }
     if (options.shards && !(options.shards === 'auto' || Array.isArray(options.shards))) {
-      throw new TypeError(ErrorCodes.ClientInvalidOption, 'shards', "'auto', a number or array of numbers");
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'shards', "'auto', a number or array of numbers");
     }
-    if (options.shards && !options.shards.length) throw new RangeError(ErrorCodes.ClientInvalidProvidedShards);
+    if (options.shards && !options.shards.length) throw new DiscordjsRangeError(ErrorCodes.ClientInvalidProvidedShards);
     if (typeof options.makeCache !== 'function') {
-      throw new TypeError(ErrorCodes.ClientInvalidOption, 'makeCache', 'a function');
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'makeCache', 'a function');
     }
     if (typeof options.sweepers !== 'object' || options.sweepers === null) {
-      throw new TypeError(ErrorCodes.ClientInvalidOption, 'sweepers', 'an object');
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'sweepers', 'an object');
     }
     if (!Array.isArray(options.partials)) {
-      throw new TypeError(ErrorCodes.ClientInvalidOption, 'partials', 'an Array');
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'partials', 'an Array');
     }
     if (typeof options.waitGuildTimeout !== 'number' || isNaN(options.waitGuildTimeout)) {
-      throw new TypeError(ErrorCodes.ClientInvalidOption, 'waitGuildTimeout', 'a number');
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'waitGuildTimeout', 'a number');
     }
     if (typeof options.failIfNotExists !== 'boolean') {
-      throw new TypeError(ErrorCodes.ClientInvalidOption, 'failIfNotExists', 'a boolean');
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'failIfNotExists', 'a boolean');
+    }
+    if (typeof options.enforceNonce !== 'boolean') {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'enforceNonce', 'a boolean');
+    }
+    if (
+      (typeof options.allowedMentions !== 'object' && options.allowedMentions !== undefined) ||
+      options.allowedMentions === null
+    ) {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'allowedMentions', 'an object');
+    }
+    if (typeof options.presence !== 'object' || options.presence === null) {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'presence', 'an object');
+    }
+    if (typeof options.ws !== 'object' || options.ws === null) {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'ws', 'an object');
+    }
+    if (typeof options.rest !== 'object' || options.rest === null) {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'rest', 'an object');
+    }
+    if (typeof options.jsonTransformer !== 'function') {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'jsonTransformer', 'a function');
     }
   }
 }
 
 module.exports = Client;
+
+/**
+ * @class SnowflakeUtil
+ * @classdesc This class is an alias for {@link https://www.npmjs.com/package/@sapphire/snowflake @sapphire/snowflake}'s
+ * `DiscordSnowflake` class.
+ *
+ * Check their documentation
+ * {@link https://www.sapphirejs.dev/docs/Documentation/api-utilities/classes/sapphire_snowflake.Snowflake here}
+ * ({@link https://www.sapphirejs.dev/docs/Guide/utilities/snowflake guide})
+ * to see what you can do.
+ * @hideconstructor
+ */
 
 /**
  * A {@link https://developer.twitter.com/en/docs/twitter-ids Twitter snowflake},
@@ -535,15 +617,15 @@ module.exports = Client;
 
 /**
  * @external Collection
- * @see {@link https://discord.js.org/#/docs/collection/main/class/Collection}
+ * @see {@link https://discord.js.org/docs/packages/collection/stable/Collection:Class}
  */
 
 /**
  * @external ImageURLOptions
- * @see {@link https://discord.js.org/#/docs/rest/main/typedef/ImageURLOptions}
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/ImageURLOptions:Interface}
  */
 
 /**
  * @external BaseImageURLOptions
- * @see {@link https://discord.js.org/#/docs/rest/main/typedef/BaseImageURLOptions}
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/BaseImageURLOptions:Interface}
  */

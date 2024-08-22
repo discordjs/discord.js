@@ -1,0 +1,35 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig.json",
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"lib": ["ESNext", "DOM", "DOM.Iterable"],
+		"jsx": "preserve",
+		"baseUrl": ".",
+		"outDir": "dist",
+		"noEmit": true,
+		"esModuleInterop": true,
+		"allowJs": true,
+		"incremental": true,
+		"skipLibCheck": true,
+		"plugins": [
+			{
+				"name": "next"
+			}
+		],
+		"paths": {
+			"~/*": ["./src/*"],
+			"contentlayer/generated": ["./.contentlayer/generated"]
+		}
+	},
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.tsx",
+		"src/**/*.js",
+		"src/**/*.jsx",
+		"src/**/*.cjs",
+		"src/**/*.mjs",
+		"next-env.d.ts",
+		".next/types/**/*.ts"
+	],
+	"exclude": ["node_modules"]
+}

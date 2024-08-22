@@ -1,22 +1,22 @@
 import {
-	APIModalInteractionResponseCallbackData,
-	APITextInputComponent,
 	ComponentType,
 	TextInputStyle,
+	type APIModalInteractionResponseCallbackData,
+	type APITextInputComponent,
 } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
 	ModalBuilder,
-	ModalActionRowComponentBuilder,
 	TextInputBuilder,
-} from '../../src';
+	type ModalActionRowComponentBuilder,
+} from '../../src/index.js';
 import {
 	componentsValidator,
 	titleValidator,
 	validateRequiredParameters,
-} from '../../src/interactions/modals/Assertions';
+} from '../../src/interactions/modals/Assertions.js';
 
 const modal = () => new ModalBuilder();
 
@@ -46,7 +46,7 @@ describe('Modals', () => {
 
 		test('GIVEN invalid required parameters THEN validator does throw', () => {
 			expect(() =>
-				// @ts-expect-error
+				// @ts-expect-error: Missing required parameter
 				validateRequiredParameters('123', undefined, [new ActionRowBuilder(), new ButtonBuilder()]),
 			).toThrowError();
 		});
@@ -66,7 +66,7 @@ describe('Modals', () => {
 	test('GIVEN invalid fields THEN builder does throw', () => {
 		expect(() => modal().setTitle('test').setCustomId('foobar').toJSON()).toThrowError();
 
-		// @ts-expect-error
+		// @ts-expect-error: CustomId is invalid
 		expect(() => modal().setTitle('test').setCustomId(42).toJSON()).toThrowError();
 	});
 

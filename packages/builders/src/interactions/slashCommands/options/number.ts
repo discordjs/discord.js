@@ -1,19 +1,33 @@
 import { s } from '@sapphire/shapeshift';
-import { APIApplicationCommandNumberOption, ApplicationCommandOptionType } from 'discord-api-types/v10';
+import { ApplicationCommandOptionType, type APIApplicationCommandNumberOption } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
-import { ApplicationCommandNumericOptionMinMaxValueMixin } from '../mixins/ApplicationCommandNumericOptionMinMaxValueMixin';
-import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase';
-import { ApplicationCommandOptionWithChoicesAndAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithChoicesAndAutocompleteMixin';
+import { ApplicationCommandNumericOptionMinMaxValueMixin } from '../mixins/ApplicationCommandNumericOptionMinMaxValueMixin.js';
+import { ApplicationCommandOptionBase } from '../mixins/ApplicationCommandOptionBase.js';
+import { ApplicationCommandOptionWithAutocompleteMixin } from '../mixins/ApplicationCommandOptionWithAutocompleteMixin.js';
+import { ApplicationCommandOptionWithChoicesMixin } from '../mixins/ApplicationCommandOptionWithChoicesMixin.js';
 
-const numberValidator = s.number;
+const numberValidator = s.number();
 
-@mix(ApplicationCommandNumericOptionMinMaxValueMixin, ApplicationCommandOptionWithChoicesAndAutocompleteMixin)
+/**
+ * A slash command number option.
+ */
+@mix(
+	ApplicationCommandNumericOptionMinMaxValueMixin,
+	ApplicationCommandOptionWithAutocompleteMixin,
+	ApplicationCommandOptionWithChoicesMixin,
+)
 export class SlashCommandNumberOption
 	extends ApplicationCommandOptionBase
 	implements ApplicationCommandNumericOptionMinMaxValueMixin
 {
+	/**
+	 * The type of this option.
+	 */
 	public readonly type = ApplicationCommandOptionType.Number as const;
 
+	/**
+	 * {@inheritDoc ApplicationCommandNumericOptionMinMaxValueMixin.setMaxValue}
+	 */
 	public setMaxValue(max: number): this {
 		numberValidator.parse(max);
 
@@ -22,6 +36,9 @@ export class SlashCommandNumberOption
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc ApplicationCommandNumericOptionMinMaxValueMixin.setMinValue}
+	 */
 	public setMinValue(min: number): this {
 		numberValidator.parse(min);
 
@@ -30,6 +47,9 @@ export class SlashCommandNumberOption
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc ApplicationCommandOptionBase.toJSON}
+	 */
 	public toJSON(): APIApplicationCommandNumberOption {
 		this.runRequiredValidations();
 
@@ -37,10 +57,11 @@ export class SlashCommandNumberOption
 			throw new RangeError('Autocomplete and choices are mutually exclusive to each other.');
 		}
 
-		return { ...this };
+		return { ...this } as APIApplicationCommandNumberOption;
 	}
 }
 
 export interface SlashCommandNumberOption
 	extends ApplicationCommandNumericOptionMinMaxValueMixin,
-		ApplicationCommandOptionWithChoicesAndAutocompleteMixin<number> {}
+		ApplicationCommandOptionWithChoicesMixin<number>,
+		ApplicationCommandOptionWithAutocompleteMixin {}

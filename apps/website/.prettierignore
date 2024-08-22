@@ -1,0 +1,8 @@
+.next
+.turbo
+.vscode
+coverage
+public/searchIndex
+src/assets/readme
+src/styles/unocss.css
+next-env.d.ts

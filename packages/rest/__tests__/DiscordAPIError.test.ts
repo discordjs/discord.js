@@ -1,5 +1,6 @@
+import { URLSearchParams } from 'node:url';
 import { test, expect } from 'vitest';
-import { DiscordAPIError } from '../src';
+import { DiscordAPIError } from '../src/index.js';
 
 test('Unauthorized', () => {
 	const error = new DiscordAPIError(
@@ -27,13 +28,13 @@ test('Unauthorized', () => {
 test('Invalid Form Body Error (error.{property}._errors.{index})', () => {
 	const error = new DiscordAPIError(
 		{
-			code: 50035,
+			code: 50_035,
 			errors: {
 				username: { _errors: [{ code: 'BASE_TYPE_BAD_LENGTH', message: 'Must be between 2 and 32 in length.' }] },
 			},
 			message: 'Invalid Form Body',
 		},
-		50035,
+		50_035,
 		400,
 		'PATCH',
 		'https://discord.com/api/v10/users/@me',
@@ -45,7 +46,7 @@ test('Invalid Form Body Error (error.{property}._errors.{index})', () => {
 		},
 	);
 
-	expect(error.code).toEqual(50035);
+	expect(error.code).toEqual(50_035);
 	expect(error.message).toEqual(
 		['Invalid Form Body', 'username[BASE_TYPE_BAD_LENGTH]: Must be between 2 and 32 in length.'].join('\n'),
 	);
@@ -60,7 +61,7 @@ test('Invalid Form Body Error (error.{property}._errors.{index})', () => {
 test('Invalid FormFields Error (error.errors.{property}.{property}.{index}.{property}._errors.{index})', () => {
 	const error = new DiscordAPIError(
 		{
-			code: 50035,
+			code: 50_035,
 			errors: {
 				embed: {
 					fields: { '0': { value: { _errors: [{ code: 'BASE_TYPE_REQUIRED', message: 'This field is required' }] } } },
@@ -68,14 +69,14 @@ test('Invalid FormFields Error (error.errors.{property}.{property}.{index}.{prop
 			},
 			message: 'Invalid Form Body',
 		},
-		50035,
+		50_035,
 		400,
 		'POST',
 		'https://discord.com/api/v10/channels/:id',
 		{},
 	);
 
-	expect(error.code).toEqual(50035);
+	expect(error.code).toEqual(50_035);
 	expect(error.message).toEqual(
 		['Invalid Form Body', 'embed.fields[0].value[BASE_TYPE_REQUIRED]: This field is required'].join('\n'),
 	);
@@ -88,7 +89,7 @@ test('Invalid FormFields Error (error.errors.{property}.{property}.{index}.{prop
 test('Invalid FormFields Error (error.errors.{property}.{property}._errors.{index}._errors)', () => {
 	const error = new DiscordAPIError(
 		{
-			code: 50035,
+			code: 50_035,
 			errors: {
 				form_fields: {
 					label: { _errors: [{ _errors: [{ code: 'BASE_TYPE_REQUIRED', message: 'This field is required' }] }] },
@@ -96,14 +97,14 @@ test('Invalid FormFields Error (error.errors.{property}.{property}._errors.{inde
 			},
 			message: 'Invalid Form Body',
 		},
-		50035,
+		50_035,
 		400,
 		'PATCH',
 		'https://discord.com/api/v10/guilds/:id',
 		{},
 	);
 
-	expect(error.code).toEqual(50035);
+	expect(error.code).toEqual(50_035);
 	expect(error.message).toEqual(
 		['Invalid Form Body', 'form_fields.label[0][BASE_TYPE_REQUIRED]: This field is required'].join('\n'),
 	);

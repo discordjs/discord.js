@@ -1,12 +1,12 @@
 export interface CustomDocs {
-	name?: string;
 	files: Record<
 		string,
 		{
-			name?: string;
-			type?: string;
 			content?: string;
+			name?: string;
 			path?: string;
+			type?: string;
 		}
 	>;
+	name?: string;
 }

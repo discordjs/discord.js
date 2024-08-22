@@ -3,8 +3,8 @@
 const { Collection } = require('@discordjs/collection');
 const { Routes, PermissionFlagsBits } = require('discord-api-types/v10');
 const BaseGuildEmojiManager = require('./BaseGuildEmojiManager');
-const { Error, TypeError, ErrorCodes } = require('../errors');
-const DataResolver = require('../util/DataResolver');
+const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
+const { resolveImage } = require('../util/DataResolver');
 
 /**
  * Manages API methods for GuildEmojis and stores their cache.
@@ -50,13 +50,13 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
    *   .catch(console.error);
    */
   async create({ attachment, name, roles, reason }) {
-    attachment = await DataResolver.resolveImage(attachment);
-    if (!attachment) throw new TypeError(ErrorCodes.ReqResourceType);
+    attachment = await resolveImage(attachment);
+    if (!attachment) throw new DiscordjsTypeError(ErrorCodes.ReqResourceType);
 
     const body = { image: attachment, name };
     if (roles) {
       if (!Array.isArray(roles) && !(roles instanceof Collection)) {
-        throw new TypeError(
+        throw new DiscordjsTypeError(
           ErrorCodes.InvalidType,
           'options.roles',
           'Array or Collection of Roles or Snowflakes',
@@ -67,7 +67,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
       for (const role of roles.values()) {
         const resolvedRole = this.guild.roles.resolveId(role);
         if (!resolvedRole) {
-          throw new TypeError(ErrorCodes.InvalidElement, 'Array or Collection', 'options.roles', role);
+          throw new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array or Collection', 'options.roles', role);
         }
         body.roles.push(resolvedRole);
       }
@@ -117,26 +117,26 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
    */
   async delete(emoji, reason) {
     const id = this.resolveId(emoji);
-    if (!id) throw new TypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
+    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
     await this.client.rest.delete(Routes.guildEmoji(this.guild.id, id), { reason });
   }
 
   /**
    * Edits an emoji.
    * @param {EmojiResolvable} emoji The Emoji resolvable to edit
-   * @param {GuildEmojiEditData} data The new data for the emoji
+   * @param {GuildEmojiEditOptions} options The options to provide
    * @returns {Promise<GuildEmoji>}
    */
-  async edit(emoji, data) {
+  async edit(emoji, options) {
     const id = this.resolveId(emoji);
-    if (!id) throw new TypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
-    const roles = data.roles?.map(r => this.guild.roles.resolveId(r));
+    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
+    const roles = options.roles?.map(role => this.guild.roles.resolveId(role));
     const newData = await this.client.rest.patch(Routes.guildEmoji(this.guild.id, id), {
       body: {
-        name: data.name,
+        name: options.name,
         roles,
       },
-      reason: data.reason,
+      reason: options.reason,
     });
     const existing = this.cache.get(id);
     if (existing) {
@@ -154,15 +154,15 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
    */
   async fetchAuthor(emoji) {
     emoji = this.resolve(emoji);
-    if (!emoji) throw new TypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
+    if (!emoji) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
     if (emoji.managed) {
-      throw new Error(ErrorCodes.EmojiManaged);
+      throw new DiscordjsError(ErrorCodes.EmojiManaged);
     }
 
     const { me } = this.guild.members;
-    if (!me) throw new Error(ErrorCodes.GuildUncachedMe);
-    if (!me.permissions.has(PermissionFlagsBits.ManageEmojisAndStickers)) {
-      throw new Error(ErrorCodes.MissingManageEmojisAndStickersPermission, this.guild);
+    if (!me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
+    if (!me.permissions.has(PermissionFlagsBits.ManageGuildExpressions)) {
+      throw new DiscordjsError(ErrorCodes.MissingManageGuildExpressionsPermission, this.guild);
     }
 
     const data = await this.client.rest.get(Routes.guildEmoji(this.guild.id, emoji.id));

@@ -3,12 +3,12 @@
 const { setInterval, clearInterval } = require('node:timers');
 const { ThreadChannelTypes, SweeperKeys } = require('./Constants');
 const Events = require('./Events');
-const { TypeError, ErrorCodes } = require('../errors');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 
 /**
  * @typedef {Function} GlobalSweepFilter
- * @returns {Function|null} Return `null` to skip sweeping, otherwise a function passed to `sweep()`,
- * See {@link [Collection#sweep](https://discord.js.org/#/docs/collection/main/class/Collection?scrollTo=sweep)}
+ * @returns {?Function} Return `null` to skip sweeping, otherwise a function passed to `sweep()`,
+ * See {@link https://discord.js.org/docs/packages/collection/stable/Collection:Class#sweep Collection#sweep}
  * for the definition of this function.
  */
 
@@ -79,6 +79,16 @@ class Sweepers {
   }
 
   /**
+   * Sweeps all auto moderation rules and removes the ones which are indicated by the filter.
+   * @param {Function} filter The function used to determine
+   * which auto moderation rules will be removed from the caches
+   * @returns {number} Amount of auto moderation rules that were removed from the caches
+   */
+  sweepAutoModerationRules(filter) {
+    return this._sweepGuildDirectProp('autoModerationRules', filter).items;
+  }
+
+  /**
    * Sweeps all guild bans and removes the ones which are indicated by the filter.
    * @param {Function} filter The function used to determine which bans will be removed from the caches.
    * @returns {number} Amount of bans that were removed from the caches
@@ -94,6 +104,23 @@ class Sweepers {
    */
   sweepEmojis(filter) {
     return this._sweepGuildDirectProp('emojis', filter).items;
+  }
+
+  /**
+   * Sweeps all client application entitlements and removes the ones which are indicated by the filter.
+   * @param {Function} filter The function used to determine which entitlements will be removed from the caches.
+   * @returns {number} Amount of entitlements that were removed from the caches
+   */
+  sweepEntitlements(filter) {
+    if (typeof filter !== 'function') {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'filter', 'function');
+    }
+
+    const entitlements = this.client.application.entitlements.cache.sweep(filter);
+
+    this.client.emit(Events.CacheSweep, `Swept ${entitlements} entitlements.`);
+
+    return entitlements;
   }
 
   /**
@@ -131,7 +158,7 @@ class Sweepers {
    */
   sweepMessages(filter) {
     if (typeof filter !== 'function') {
-      throw new TypeError(ErrorCodes.InvalidType, 'filter', 'function');
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'filter', 'function');
     }
     let channels = 0;
     let messages = 0;
@@ -162,7 +189,7 @@ class Sweepers {
    */
   sweepReactions(filter) {
     if (typeof filter !== 'function') {
-      throw new TypeError(ErrorCodes.InvalidType, 'filter', 'function');
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'filter', 'function');
     }
     let channels = 0;
     let messages = 0;
@@ -210,7 +237,7 @@ class Sweepers {
    */
   sweepThreadMembers(filter) {
     if (typeof filter !== 'function') {
-      throw new TypeError(ErrorCodes.InvalidType, 'filter', 'function');
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'filter', 'function');
     }
 
     let threads = 0;
@@ -240,7 +267,7 @@ class Sweepers {
    */
   sweepThreads(filter) {
     if (typeof filter !== 'function') {
-      throw new TypeError(ErrorCodes.InvalidType, 'filter', 'function');
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'filter', 'function');
     }
 
     let threads = 0;
@@ -262,7 +289,7 @@ class Sweepers {
    */
   sweepUsers(filter) {
     if (typeof filter !== 'function') {
-      throw new TypeError(ErrorCodes.InvalidType, 'filter', 'function');
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'filter', 'function');
     }
 
     const users = this.client.users.cache.sweep(filter);
@@ -313,13 +340,13 @@ class Sweepers {
     excludeFromSweep = () => false,
   } = {}) {
     if (typeof lifetime !== 'number') {
-      throw new TypeError(ErrorCodes.InvalidType, 'lifetime', 'number');
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'lifetime', 'number');
     }
     if (typeof getComparisonTimestamp !== 'function') {
-      throw new TypeError(ErrorCodes.InvalidType, 'getComparisonTimestamp', 'function');
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'getComparisonTimestamp', 'function');
     }
     if (typeof excludeFromSweep !== 'function') {
-      throw new TypeError(ErrorCodes.InvalidType, 'excludeFromSweep', 'function');
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'excludeFromSweep', 'function');
     }
     return () => {
       if (lifetime <= 0) return null;
@@ -391,13 +418,16 @@ class Sweepers {
    */
   _sweepGuildDirectProp(key, filter, { emit = true, outputName } = {}) {
     if (typeof filter !== 'function') {
-      throw new TypeError(ErrorCodes.InvalidType, 'filter', 'function');
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'filter', 'function');
     }
 
     let guilds = 0;
     let items = 0;
 
     for (const guild of this.client.guilds.cache.values()) {
+      // We may be unable to sweep the cache if the guild is unavailable and was never patched
+      if (!guild.available) continue;
+
       const { cache } = guild[key];
 
       guilds++;
@@ -419,20 +449,20 @@ class Sweepers {
   _validateProperties(key) {
     const props = this.options[key];
     if (typeof props !== 'object') {
-      throw new TypeError(ErrorCodes.InvalidType, `sweepers.${key}`, 'object', true);
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, `sweepers.${key}`, 'object', true);
     }
     if (typeof props.interval !== 'number') {
-      throw new TypeError(ErrorCodes.InvalidType, `sweepers.${key}.interval`, 'number');
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, `sweepers.${key}.interval`, 'number');
     }
     // Invites, Messages, and Threads can be provided a lifetime parameter, which we use to generate the filter
     if (['invites', 'messages', 'threads'].includes(key) && !('filter' in props)) {
       if (typeof props.lifetime !== 'number') {
-        throw new TypeError(ErrorCodes.InvalidType, `sweepers.${key}.lifetime`, 'number');
+        throw new DiscordjsTypeError(ErrorCodes.InvalidType, `sweepers.${key}.lifetime`, 'number');
       }
       return;
     }
     if (typeof props.filter !== 'function') {
-      throw new TypeError(ErrorCodes.InvalidType, `sweepers.${key}.filter`, 'function');
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, `sweepers.${key}.filter`, 'function');
     }
   }
 
@@ -448,7 +478,7 @@ class Sweepers {
     this.intervals[intervalKey] = setInterval(() => {
       const sweepFn = opts.filter();
       if (sweepFn === null) return;
-      if (typeof sweepFn !== 'function') throw new TypeError(ErrorCodes.SweepFilterReturn);
+      if (typeof sweepFn !== 'function') throw new DiscordjsTypeError(ErrorCodes.SweepFilterReturn);
       this[sweepKey](sweepFn);
     }, opts.interval * 1_000).unref();
   }

@@ -1,9 +1,10 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Routes, StickerFormatType } = require('discord-api-types/v10');
+const { Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
-const { ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
+const { StickerFormatExtensionMap } = require('../util/Constants');
 
 /**
  * Represents a Sticker.
@@ -164,7 +165,7 @@ class Sticker extends Base {
    * @readonly
    */
   get url() {
-    return this.client.rest.cdn.sticker(this.id, this.format === StickerFormatType.Lottie ? 'json' : 'png');
+    return this.client.rest.cdn.sticker(this.id, StickerFormatExtensionMap[this.format]);
   }
 
   /**
@@ -178,11 +179,12 @@ class Sticker extends Base {
   }
 
   /**
-   * Fetches the pack this sticker is part of from Discord, if this is a Nitro sticker.
-   * @returns {Promise<?StickerPack>}
+   * Fetches the pack that contains this sticker.
+   * @returns {Promise<?StickerPack>} The sticker pack or `null` if this sticker does not belong to one.
    */
-  async fetchPack() {
-    return (this.packId && (await this.client.fetchPremiumStickerPacks()).get(this.packId)) ?? null;
+  fetchPack() {
+    if (!this.packId) return Promise.resolve(null);
+    return this.client.fetchStickerPacks({ packId: this.packId });
   }
 
   /**
@@ -191,13 +193,13 @@ class Sticker extends Base {
    */
   async fetchUser() {
     if (this.partial) await this.fetch();
-    if (!this.guildId) throw new Error(ErrorCodes.NotGuildSticker);
+    if (!this.guildId) throw new DiscordjsError(ErrorCodes.NotGuildSticker);
     return this.guild.stickers.fetchUser(this);
   }
 
   /**
    * Data for editing a sticker.
-   * @typedef {Object} GuildStickerEditData
+   * @typedef {Object} GuildStickerEditOptions
    * @property {string} [name] The name of the sticker
    * @property {?string} [description] The description of the sticker
    * @property {string} [tags] The Discord name of a unicode emoji representing the sticker's expression
@@ -206,16 +208,16 @@ class Sticker extends Base {
 
   /**
    * Edits the sticker.
-   * @param {GuildStickerEditData} data The new data for the sticker
+   * @param {GuildStickerEditOptions} options The options to provide
    * @returns {Promise<Sticker>}
    * @example
    * // Update the name of a sticker
    * sticker.edit({ name: 'new name' })
-   *   .then(s => console.log(`Updated the name of the sticker to ${s.name}`))
+   *   .then(sticker => console.log(`Updated the name of the sticker to ${sticker.name}`))
    *   .catch(console.error);
    */
-  edit(data) {
-    return this.guild.stickers.edit(this, data);
+  edit(options) {
+    return this.guild.stickers.edit(this, options);
   }
 
   /**
@@ -225,7 +227,7 @@ class Sticker extends Base {
    * @example
    * // Delete a message
    * sticker.delete()
-   *   .then(s => console.log(`Deleted sticker ${s.name}`))
+   *   .then(sticker => console.log(`Deleted sticker ${sticker.name}`))
    *   .catch(console.error);
    */
   async delete(reason) {
@@ -264,8 +266,3 @@ class Sticker extends Base {
 }
 
 exports.Sticker = Sticker;
-
-/**
- * @external APISticker
- * @see {@link https://discord.com/developers/docs/resources/sticker#sticker-object}
- */

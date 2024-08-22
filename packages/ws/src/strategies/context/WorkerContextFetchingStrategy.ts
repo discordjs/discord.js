@@ -1,16 +1,21 @@
 import { isMainThread, parentPort } from 'node:worker_threads';
 import { Collection } from '@discordjs/collection';
-import type { FetchingStrategyOptions, IContextFetchingStrategy } from './IContextFetchingStrategy';
-import type { SessionInfo } from '../../ws/WebSocketManager';
+import type { SessionInfo } from '../../ws/WebSocketManager.js';
 import {
-	WorkerRecievePayload,
-	WorkerRecievePayloadOp,
-	WorkerSendPayload,
+	WorkerReceivePayloadOp,
 	WorkerSendPayloadOp,
-} from '../sharding/WorkerShardingStrategy';
+	type WorkerReceivePayload,
+	type WorkerSendPayload,
+} from '../sharding/WorkerShardingStrategy.js';
+import type { FetchingStrategyOptions, IContextFetchingStrategy } from './IContextFetchingStrategy.js';
 
 export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 	private readonly sessionPromises = new Collection<number, (session: SessionInfo | null) => void>();
+
+	private readonly waitForIdentifyPromises = new Collection<
+		number,
+		{ reject(error: unknown): void; resolve(): void; signal: AbortSignal }
+	>();
 
 	public constructor(public readonly options: FetchingStrategyOptions) {
 		if (isMainThread) {
@@ -19,31 +24,76 @@ export class WorkerContextFetchingStrategy implements IContextFetchingStrategy {
 
 		parentPort!.on('message', (payload: WorkerSendPayload) => {
 			if (payload.op === WorkerSendPayloadOp.SessionInfoResponse) {
-				const resolve = this.sessionPromises.get(payload.nonce);
-				resolve?.(payload.session);
+				this.sessionPromises.get(payload.nonce)?.(payload.session);
 				this.sessionPromises.delete(payload.nonce);
+			}
+
+			if (payload.op === WorkerSendPayloadOp.ShardIdentifyResponse) {
+				const promise = this.waitForIdentifyPromises.get(payload.nonce);
+				if (payload.ok) {
+					promise?.resolve();
+				} else {
+					// We need to make sure we reject with an abort error
+					promise?.reject(promise.signal.reason);
+				}
+
+				this.waitForIdentifyPromises.delete(payload.nonce);
 			}
 		});
 	}
 
 	public async retrieveSessionInfo(shardId: number): Promise<SessionInfo | null> {
 		const nonce = Math.random();
-		const payload: WorkerRecievePayload = {
-			op: WorkerRecievePayloadOp.RetrieveSessionInfo,
+		const payload: WorkerReceivePayload = {
+			op: WorkerReceivePayloadOp.RetrieveSessionInfo,
 			shardId,
 			nonce,
 		};
+		// eslint-disable-next-line no-promise-executor-return
 		const promise = new Promise<SessionInfo | null>((resolve) => this.sessionPromises.set(nonce, resolve));
 		parentPort!.postMessage(payload);
 		return promise;
 	}
 
 	public updateSessionInfo(shardId: number, sessionInfo: SessionInfo | null) {
-		const payload: WorkerRecievePayload = {
-			op: WorkerRecievePayloadOp.UpdateSessionInfo,
+		const payload: WorkerReceivePayload = {
+			op: WorkerReceivePayloadOp.UpdateSessionInfo,
 			shardId,
 			session: sessionInfo,
 		};
 		parentPort!.postMessage(payload);
+	}
+
+	public async waitForIdentify(shardId: number, signal: AbortSignal): Promise<void> {
+		const nonce = Math.random();
+
+		const payload: WorkerReceivePayload = {
+			op: WorkerReceivePayloadOp.WaitForIdentify,
+			nonce,
+			shardId,
+		};
+		const promise = new Promise<void>((resolve, reject) =>
+			// eslint-disable-next-line no-promise-executor-return
+			this.waitForIdentifyPromises.set(nonce, { signal, resolve, reject }),
+		);
+
+		parentPort!.postMessage(payload);
+
+		const listener = () => {
+			const payload: WorkerReceivePayload = {
+				op: WorkerReceivePayloadOp.CancelIdentify,
+				nonce,
+			};
+
+			parentPort!.postMessage(payload);
+		};
+
+		signal.addEventListener('abort', listener);
+
+		try {
+			await promise;
+		} finally {
+			signal.removeEventListener('abort', listener);
+		}
 	}
 }

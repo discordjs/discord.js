@@ -1,7 +1,7 @@
 import { basename, relative } from 'node:path';
 import type { SourceReference } from 'typedoc';
-import { DocumentedItem } from './item.js';
 import type { Meta } from '../interfaces/index.js';
+import { DocumentedItem } from './item.js';
 
 export class DocumentedItemMeta extends DocumentedItem<Meta | SourceReference> {
 	public override serializer() {
@@ -20,7 +20,7 @@ export class DocumentedItemMeta extends DocumentedItem<Meta | SourceReference> {
 		return {
 			line: data.lineno,
 			file: data.filename,
-			path: relative(this.config.root, data.path).replace(/\\/g, '/'),
+			path: relative(this.config.root, data.path).replaceAll('\\', '/'),
 		};
 	}
 }

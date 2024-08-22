@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { ComponentType } = require('discord-api-types/v10');
-const { TypeError, ErrorCodes } = require('../errors');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 
 /**
  * Represents the serialized fields from a modal submit interaction
@@ -11,16 +11,16 @@ class ModalSubmitFields {
   constructor(components) {
     /**
      * The components within the modal
-     * @type {ActionRowModalData[]} The components in the modal
+     * @type {ActionRowModalData[]}
      */
     this.components = components;
 
     /**
      * The extracted fields from the modal
-     * @type {Collection<string, ModalData>} The fields in the modal
+     * @type {Collection<string, ModalData>}
      */
     this.fields = components.reduce((accumulator, next) => {
-      next.components.forEach(c => accumulator.set(c.customId, c));
+      next.components.forEach(component => accumulator.set(component.customId, component));
       return accumulator;
     }, new Collection());
   }
@@ -33,10 +33,10 @@ class ModalSubmitFields {
    */
   getField(customId, type) {
     const field = this.fields.get(customId);
-    if (!field) throw new TypeError(ErrorCodes.ModalSubmitInteractionFieldNotFound, customId);
+    if (!field) throw new DiscordjsTypeError(ErrorCodes.ModalSubmitInteractionFieldNotFound, customId);
 
     if (type !== undefined && type !== field.type) {
-      throw new TypeError(ErrorCodes.ModalSubmitInteractionFieldType, customId, field.type, type);
+      throw new DiscordjsTypeError(ErrorCodes.ModalSubmitInteractionFieldType, customId, field.type, type);
     }
 
     return field;

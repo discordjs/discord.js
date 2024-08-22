@@ -5,7 +5,7 @@ const { Collection } = require('@discordjs/collection');
 const { ChannelType, RouteBases, Routes } = require('discord-api-types/v10');
 const { fetch } = require('undici');
 const Colors = require('./Colors');
-const { Error: DiscordError, RangeError, TypeError, ErrorCodes } = require('../errors');
+const { DiscordjsError, DiscordjsRangeError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 const isObject = d => typeof d === 'object' && d !== null;
 
 /**
@@ -18,8 +18,8 @@ function flatten(obj, ...props) {
   if (!isObject(obj)) return obj;
 
   const objProps = Object.keys(obj)
-    .filter(k => !k.startsWith('_'))
-    .map(k => ({ [k]: true }));
+    .filter(key => !key.startsWith('_'))
+    .map(key => ({ [key]: true }));
 
   props = objProps.length ? Object.assign(...objProps, ...props) : Object.assign({}, ...props);
 
@@ -39,7 +39,7 @@ function flatten(obj, ...props) {
     // If the valueOf is a Collection, use its array of keys
     else if (valueOf instanceof Collection) out[newProp] = Array.from(valueOf.keys());
     // If it's an array, call toJSON function on each element if present, otherwise flatten each element
-    else if (Array.isArray(element)) out[newProp] = element.map(e => e.toJSON?.() ?? flatten(e));
+    else if (Array.isArray(element)) out[newProp] = element.map(elm => elm.toJSON?.() ?? flatten(elm));
     // If it's an object with a primitive `valueOf`, use that value
     else if (typeof valueOf !== 'object') out[newProp] = valueOf;
     // If it's an object with a toJSON function, use the return value of it
@@ -51,163 +51,6 @@ function flatten(obj, ...props) {
   }
 
   return out;
-}
-
-/**
- * Options used to escape markdown.
- * @typedef {Object} EscapeMarkdownOptions
- * @property {boolean} [codeBlock=true] Whether to escape code blocks or not
- * @property {boolean} [inlineCode=true] Whether to escape inline code or not
- * @property {boolean} [bold=true] Whether to escape bolds or not
- * @property {boolean} [italic=true] Whether to escape italics or not
- * @property {boolean} [underline=true] Whether to escape underlines or not
- * @property {boolean} [strikethrough=true] Whether to escape strikethroughs or not
- * @property {boolean} [spoiler=true] Whether to escape spoilers or not
- * @property {boolean} [codeBlockContent=true] Whether to escape text inside code blocks or not
- * @property {boolean} [inlineCodeContent=true] Whether to escape text inside inline code or not
- */
-
-/**
- * Escapes any Discord-flavour markdown in a string.
- * @param {string} text Content to escape
- * @param {EscapeMarkdownOptions} [options={}] Options for escaping the markdown
- * @returns {string}
- */
-function escapeMarkdown(
-  text,
-  {
-    codeBlock = true,
-    inlineCode = true,
-    bold = true,
-    italic = true,
-    underline = true,
-    strikethrough = true,
-    spoiler = true,
-    codeBlockContent = true,
-    inlineCodeContent = true,
-  } = {},
-) {
-  if (!codeBlockContent) {
-    return text
-      .split('```')
-      .map((subString, index, array) => {
-        if (index % 2 && index !== array.length - 1) return subString;
-        return escapeMarkdown(subString, {
-          inlineCode,
-          bold,
-          italic,
-          underline,
-          strikethrough,
-          spoiler,
-          inlineCodeContent,
-        });
-      })
-      .join(codeBlock ? '\\`\\`\\`' : '```');
-  }
-  if (!inlineCodeContent) {
-    return text
-      .split(/(?<=^|[^`])`(?=[^`]|$)/g)
-      .map((subString, index, array) => {
-        if (index % 2 && index !== array.length - 1) return subString;
-        return escapeMarkdown(subString, {
-          codeBlock,
-          bold,
-          italic,
-          underline,
-          strikethrough,
-          spoiler,
-        });
-      })
-      .join(inlineCode ? '\\`' : '`');
-  }
-  if (inlineCode) text = escapeInlineCode(text);
-  if (codeBlock) text = escapeCodeBlock(text);
-  if (italic) text = escapeItalic(text);
-  if (bold) text = escapeBold(text);
-  if (underline) text = escapeUnderline(text);
-  if (strikethrough) text = escapeStrikethrough(text);
-  if (spoiler) text = escapeSpoiler(text);
-  return text;
-}
-
-/**
- * Escapes code block markdown in a string.
- * @param {string} text Content to escape
- * @returns {string}
- */
-function escapeCodeBlock(text) {
-  return text.replaceAll('```', '\\`\\`\\`');
-}
-
-/**
- * Escapes inline code markdown in a string.
- * @param {string} text Content to escape
- * @returns {string}
- */
-function escapeInlineCode(text) {
-  return text.replace(/(?<=^|[^`])``?(?=[^`]|$)/g, match => (match.length === 2 ? '\\`\\`' : '\\`'));
-}
-
-/**
- * Escapes italic markdown in a string.
- * @param {string} text Content to escape
- * @returns {string}
- */
-function escapeItalic(text) {
-  let i = 0;
-  text = text.replace(/(?<=^|[^*])\*([^*]|\*\*|$)/g, (_, match) => {
-    if (match === '**') return ++i % 2 ? `\\*${match}` : `${match}\\*`;
-    return `\\*${match}`;
-  });
-  i = 0;
-  return text.replace(/(?<=^|[^_])_([^_]|__|$)/g, (_, match) => {
-    if (match === '__') return ++i % 2 ? `\\_${match}` : `${match}\\_`;
-    return `\\_${match}`;
-  });
-}
-
-/**
- * Escapes bold markdown in a string.
- * @param {string} text Content to escape
- * @returns {string}
- */
-function escapeBold(text) {
-  let i = 0;
-  return text.replace(/\*\*(\*)?/g, (_, match) => {
-    if (match) return ++i % 2 ? `${match}\\*\\*` : `\\*\\*${match}`;
-    return '\\*\\*';
-  });
-}
-
-/**
- * Escapes underline markdown in a string.
- * @param {string} text Content to escape
- * @returns {string}
- */
-function escapeUnderline(text) {
-  let i = 0;
-  return text.replace(/__(_)?/g, (_, match) => {
-    if (match) return ++i % 2 ? `${match}\\_\\_` : `\\_\\_${match}`;
-    return '\\_\\_';
-  });
-}
-
-/**
- * Escapes strikethrough markdown in a string.
- * @param {string} text Content to escape
- * @returns {string}
- */
-function escapeStrikethrough(text) {
-  return text.replaceAll('~~', '\\~\\~');
-}
-
-/**
- * Escapes spoiler markdown in a string.
- * @param {string} text Content to escape
- * @returns {string}
- */
-function escapeSpoiler(text) {
-  return text.replaceAll('||', '\\|\\|');
 }
 
 /**
@@ -223,13 +66,13 @@ function escapeSpoiler(text) {
  * @returns {Promise<number>} The recommended number of shards
  */
 async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multipleOf = 1 } = {}) {
-  if (!token) throw new DiscordError(ErrorCodes.TokenMissing);
+  if (!token) throw new DiscordjsError(ErrorCodes.TokenMissing);
   const response = await fetch(RouteBases.api + Routes.gatewayBot(), {
     method: 'GET',
     headers: { Authorization: `Bot ${token.replace(/^Bot\s*/i, '')}` },
   });
   if (!response.ok) {
-    if (response.status === 401) throw new DiscordError(ErrorCodes.TokenInvalid);
+    if (response.status === 401) throw new DiscordjsError(ErrorCodes.TokenInvalid);
     throw response;
   }
   const { shards } = await response.json();
@@ -237,13 +80,20 @@ async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multi
 }
 
 /**
+ * A partial emoji object.
+ * @typedef {Object} PartialEmoji
+ * @property {boolean} animated Whether the emoji is animated
+ * @property {Snowflake|undefined} id The id of the emoji
+ * @property {string} name The name of the emoji
+ */
+
+/**
  * Parses emoji info out of a string. The string must be one of:
  * * A UTF-8 emoji (no id)
  * * A URL-encoded UTF-8 emoji (no id)
  * * A Discord custom emoji (`<:name:id>` or `<a:name:id>`)
  * @param {string} text Emoji string to parse
- * @returns {APIEmoji} Object with `animated`, `name`, and `id` properties
- * @private
+ * @returns {?PartialEmoji}
  */
 function parseEmoji(text) {
   if (text.includes('%')) text = decodeURIComponent(text);
@@ -253,9 +103,15 @@ function parseEmoji(text) {
 }
 
 /**
+ * A partial emoji object with only an id.
+ * @typedef {Object} PartialEmojiOnlyId
+ * @property {Snowflake} id The id of the emoji
+ */
+
+/**
  * Resolves a partial emoji object from an {@link EmojiIdentifierResolvable}, without checking a Client.
- * @param {EmojiIdentifierResolvable} emoji Emoji identifier to resolve
- * @returns {?RawEmoji}
+ * @param {Emoji|EmojiIdentifierResolvable} emoji Emoji identifier to resolve
+ * @returns {?(PartialEmoji|PartialEmojiOnlyId)} Supplying a snowflake yields `PartialEmojiOnlyId`.
  * @private
  */
 function resolvePartialEmoji(emoji) {
@@ -267,31 +123,12 @@ function resolvePartialEmoji(emoji) {
 }
 
 /**
- * Sets default properties on an object that aren't already specified.
- * @param {Object} def Default properties
- * @param {Object} given Object to assign defaults to
- * @returns {Object}
- * @private
- */
-function mergeDefault(def, given) {
-  if (!given) return def;
-  for (const key in def) {
-    if (!Object.hasOwn(given, key) || given[key] === undefined) {
-      given[key] = def[key];
-    } else if (given[key] === Object(given[key])) {
-      given[key] = mergeDefault(def[key], given[key]);
-    }
-  }
-
-  return given;
-}
-
-/**
  * Options used to make an error object.
  * @typedef {Object} MakeErrorOptions
  * @property {string} name Error type
  * @property {string} message Message for the error
  * @property {string} stack Stack for the error
+ * @private
  */
 
 /**
@@ -319,6 +156,42 @@ function makePlainError(err) {
     message: err.message,
     stack: err.stack,
   };
+}
+
+const TextSortableGroupTypes = [
+  ChannelType.GuildText,
+  ChannelType.GuildAnnouncement,
+  ChannelType.GuildForum,
+  ChannelType.GuildMedia,
+];
+
+const VoiceSortableGroupTypes = [ChannelType.GuildVoice, ChannelType.GuildStageVoice];
+const CategorySortableGroupTypes = [ChannelType.GuildCategory];
+
+/**
+ * Gets an array of the channel types that can be moved in the channel group. For example, a GuildText channel would
+ * return an array containing the types that can be ordered within the text channels (always at the top), and a voice
+ * channel would return an array containing the types that can be ordered within the voice channels (always at the
+ * bottom).
+ * @param {ChannelType} type The type of the channel
+ * @returns {ChannelType[]}
+ * @private
+ */
+function getSortableGroupTypes(type) {
+  switch (type) {
+    case ChannelType.GuildText:
+    case ChannelType.GuildAnnouncement:
+    case ChannelType.GuildForum:
+    case ChannelType.GuildMedia:
+      return TextSortableGroupTypes;
+    case ChannelType.GuildVoice:
+    case ChannelType.GuildStageVoice:
+      return VoiceSortableGroupTypes;
+    case ChannelType.GuildCategory:
+      return CategorySortableGroupTypes;
+    default:
+      return [type];
+  }
 }
 
 /**
@@ -405,18 +278,28 @@ function verifyString(
  * @returns {number} A color
  */
 function resolveColor(color) {
+  let resolvedColor;
+
   if (typeof color === 'string') {
     if (color === 'Random') return Math.floor(Math.random() * (0xffffff + 1));
     if (color === 'Default') return 0;
-    color = Colors[color] ?? parseInt(color.replace('#', ''), 16);
+    if (/^#?[\da-f]{6}$/i.test(color)) return parseInt(color.replace('#', ''), 16);
+    resolvedColor = Colors[color];
   } else if (Array.isArray(color)) {
-    color = (color[0] << 16) + (color[1] << 8) + color[2];
+    resolvedColor = (color[0] << 16) + (color[1] << 8) + color[2];
+  } else {
+    resolvedColor = color;
   }
 
-  if (color < 0 || color > 0xffffff) throw new RangeError(ErrorCodes.ColorRange);
-  else if (Number.isNaN(color)) throw new TypeError(ErrorCodes.ColorConvert);
+  if (!Number.isInteger(resolvedColor)) {
+    throw new DiscordjsTypeError(ErrorCodes.ColorConvert, color);
+  }
 
-  return color;
+  if (resolvedColor < 0 || resolvedColor > 0xffffff) {
+    throw new DiscordjsRangeError(ErrorCodes.ColorRange);
+  }
+
+  return resolvedColor;
 }
 
 /**
@@ -472,32 +355,40 @@ function basename(path, ext) {
  * @returns {string}
  */
 function cleanContent(str, channel) {
-  return str.replaceAll(/<(@[!&]?|#)(\d{17,19})>/g, (match, type, id) => {
-    switch (type) {
-      case '@':
-      case '@!': {
-        const member = channel.guild?.members.cache.get(id);
-        if (member) {
-          return `@${member.displayName}`;
-        }
+  return str.replaceAll(
+    /* eslint-disable max-len */
+    /<(?:(?<type>@[!&]?|#)|(?:\/(?<commandName>[-_\p{L}\p{N}\p{sc=Deva}\p{sc=Thai} ]+):)|(?:a?:(?<emojiName>[\w]+):))(?<id>\d{17,19})>/gu,
+    (match, type, commandName, emojiName, id) => {
+      if (commandName) return `/${commandName}`;
 
-        const user = channel.client.users.cache.get(id);
-        return user ? `@${user.username}` : match;
+      if (emojiName) return `:${emojiName}:`;
+
+      switch (type) {
+        case '@':
+        case '@!': {
+          const member = channel.guild?.members.cache.get(id);
+          if (member) {
+            return `@${member.displayName}`;
+          }
+
+          const user = channel.client.users.cache.get(id);
+          return user ? `@${user.displayName}` : match;
+        }
+        case '@&': {
+          if (channel.type === ChannelType.DM) return match;
+          const role = channel.guild.roles.cache.get(id);
+          return role ? `@${role.name}` : match;
+        }
+        case '#': {
+          const mentionedChannel = channel.client.channels.cache.get(id);
+          return mentionedChannel ? `#${mentionedChannel.name}` : match;
+        }
+        default: {
+          return match;
+        }
       }
-      case '@&': {
-        if (channel.type === ChannelType.DM) return match;
-        const role = channel.guild.roles.cache.get(id);
-        return role ? `@${role.name}` : match;
-      }
-      case '#': {
-        const mentionedChannel = channel.client.channels.cache.get(id);
-        return mentionedChannel ? `#${mentionedChannel.name}` : match;
-      }
-      default: {
-        return match;
-      }
-    }
-  });
+    },
+  );
 }
 
 /**
@@ -507,16 +398,6 @@ function cleanContent(str, channel) {
  */
 function cleanCodeBlockContent(text) {
   return text.replaceAll('```', '`\u200b``');
-}
-
-/**
- * Lazily evaluates a callback function
- * @param {Function} cb The callback to lazily evaluate
- * @returns {Function}
- */
-function lazy(cb) {
-  let defaultValue;
-  return () => (defaultValue ??= cb());
 }
 
 /**
@@ -538,22 +419,94 @@ function parseWebhookURL(url) {
   };
 }
 
+/**
+ * Supportive data for interaction resolved data.
+ * @typedef {Object} SupportingInteractionResolvedData
+ * @property {Client} client The client
+ * @property {Guild} [guild] A guild
+ * @property {GuildTextBasedChannel} [channel] A channel
+ * @private
+ */
+
+/**
+ * Transforms the resolved data received from the API.
+ * @param {SupportingInteractionResolvedData} supportingData Data to support the transformation
+ * @param {APIInteractionDataResolved} [data] The received resolved objects
+ * @returns {CommandInteractionResolvedData}
+ * @private
+ */
+function transformResolved(
+  { client, guild, channel },
+  { members, users, channels, roles, messages, attachments } = {},
+) {
+  const result = {};
+
+  if (members) {
+    result.members = new Collection();
+    for (const [id, member] of Object.entries(members)) {
+      const user = users[id];
+      result.members.set(id, guild?.members._add({ user, ...member }) ?? member);
+    }
+  }
+
+  if (users) {
+    result.users = new Collection();
+    for (const user of Object.values(users)) {
+      result.users.set(user.id, client.users._add(user));
+    }
+  }
+
+  if (roles) {
+    result.roles = new Collection();
+    for (const role of Object.values(roles)) {
+      result.roles.set(role.id, guild?.roles._add(role) ?? role);
+    }
+  }
+
+  if (channels) {
+    result.channels = new Collection();
+    for (const apiChannel of Object.values(channels)) {
+      result.channels.set(apiChannel.id, client.channels._add(apiChannel, guild) ?? apiChannel);
+    }
+  }
+
+  if (messages) {
+    result.messages = new Collection();
+    for (const message of Object.values(messages)) {
+      result.messages.set(message.id, channel?.messages?._add(message) ?? message);
+    }
+  }
+
+  if (attachments) {
+    result.attachments = new Collection();
+    for (const attachment of Object.values(attachments)) {
+      const patched = new Attachment(attachment);
+      result.attachments.set(attachment.id, patched);
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Resolves a SKU id from a SKU resolvable.
+ * @param {SKUResolvable} resolvable The SKU resolvable to resolve
+ * @returns {?Snowflake} The resolved SKU id, or `null` if the resolvable was invalid
+ */
+function resolveSKUId(resolvable) {
+  if (typeof resolvable === 'string') return resolvable;
+  if (resolvable instanceof SKU) return resolvable.id;
+  return null;
+}
+
 module.exports = {
   flatten,
-  escapeMarkdown,
-  escapeCodeBlock,
-  escapeInlineCode,
-  escapeItalic,
-  escapeBold,
-  escapeUnderline,
-  escapeStrikethrough,
-  escapeSpoiler,
   fetchRecommendedShardCount,
   parseEmoji,
   resolvePartialEmoji,
-  mergeDefault,
   makeError,
   makePlainError,
+  getSortableGroupTypes,
   moveElementInArray,
   verifyString,
   resolveColor,
@@ -562,9 +515,12 @@ module.exports = {
   basename,
   cleanContent,
   cleanCodeBlockContent,
-  lazy,
   parseWebhookURL,
+  transformResolved,
+  resolveSKUId,
 };
 
 // Fixes Circular
+const Attachment = require('../structures/Attachment');
 const GuildChannel = require('../structures/GuildChannel');
+const { SKU } = require('../structures/SKU.js');

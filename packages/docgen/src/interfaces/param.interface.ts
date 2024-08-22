@@ -1,11 +1,11 @@
 import type { Type } from './index.js';
 
 export interface Param {
-	type: Type;
+	defaultvalue?: string;
 	description: string;
 	name: string;
-	optional?: boolean;
-	defaultvalue?: string;
-	variable?: string;
 	nullable?: boolean;
+	optional?: boolean;
+	type: Type;
+	variable?: string;
 }

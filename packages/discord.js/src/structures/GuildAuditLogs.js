@@ -62,12 +62,23 @@ class GuildAuditLogs {
     }
 
     /**
+     * Cached auto moderation rules.
+     * @type {Collection<Snowflake, AutoModerationRule>}
+     * @private
+     */
+    this.autoModerationRules = data.auto_moderation_rules.reduce(
+      (autoModerationRules, autoModerationRule) =>
+        autoModerationRules.set(autoModerationRule.id, guild.autoModerationRules._add(autoModerationRule)),
+      new Collection(),
+    );
+
+    /**
      * The entries for this guild's audit logs
      * @type {Collection<Snowflake, GuildAuditLogsEntry>}
      */
     this.entries = new Collection();
     for (const item of data.audit_log_entries) {
-      const entry = new GuildAuditLogsEntry(this, guild, item);
+      const entry = new GuildAuditLogsEntry(guild, item, this);
       this.entries.set(entry.id, entry);
     }
   }

@@ -7,8 +7,8 @@ const process = require('node:process');
 const { setTimeout: sleep } = require('node:timers/promises');
 const { Collection } = require('@discordjs/collection');
 const Shard = require('./Shard');
-const { Error, TypeError, RangeError, ErrorCodes } = require('../errors');
-const { mergeDefault, fetchRecommendedShardCount } = require('../util/Util');
+const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors');
+const { fetchRecommendedShardCount } = require('../util/Util');
 
 /**
  * This is a utility class that makes multi-process sharding of a bot an easy and painless experience.
@@ -23,7 +23,7 @@ class ShardingManager extends EventEmitter {
   /**
    * The mode to spawn shards with for a {@link ShardingManager}. Can be either one of:
    * * 'process' to use child processes
-   * * 'worker' to use [Worker threads](https://nodejs.org/api/worker_threads.html)
+   * * 'worker' to use {@link Worker} threads
    * @typedef {string} ShardingManagerMode
    */
 
@@ -34,10 +34,10 @@ class ShardingManager extends EventEmitter {
    * @property {string|number[]} [shardList='auto'] List of shards to spawn or "auto"
    * @property {ShardingManagerMode} [mode='process'] Which mode to use for shards
    * @property {boolean} [respawn=true] Whether shards should automatically respawn upon exiting
+   * @property {boolean} [silent=false] Whether to pass the silent flag to child process
+   * (only available when mode is set to 'process')
    * @property {string[]} [shardArgs=[]] Arguments to pass to the shard script when spawning
-   * (only available when mode is set to 'process')
    * @property {string[]} [execArgv=[]] Arguments to pass to the shard script executable when spawning
-   * (only available when mode is set to 'process')
    * @property {string} [token] Token to use for automatic shard count and passing to shards
    */
 
@@ -45,49 +45,48 @@ class ShardingManager extends EventEmitter {
    * @param {string} file Path to your shard script file
    * @param {ShardingManagerOptions} [options] Options for the sharding manager
    */
-  constructor(file, options = {}) {
+  constructor(file, options) {
     super();
-    options = mergeDefault(
-      {
-        totalShards: 'auto',
-        mode: 'process',
-        respawn: true,
-        shardArgs: [],
-        execArgv: [],
-        token: process.env.DISCORD_TOKEN,
-      },
-      options,
-    );
+    const _options = {
+      totalShards: 'auto',
+      mode: 'process',
+      respawn: true,
+      silent: false,
+      shardArgs: [],
+      execArgv: [],
+      token: process.env.DISCORD_TOKEN,
+      ...options,
+    };
 
     /**
      * Path to the shard script file
      * @type {string}
      */
     this.file = file;
-    if (!file) throw new Error(ErrorCodes.ClientInvalidOption, 'File', 'specified.');
+    if (!file) throw new DiscordjsError(ErrorCodes.ClientInvalidOption, 'File', 'specified.');
     if (!path.isAbsolute(file)) this.file = path.resolve(process.cwd(), file);
     const stats = fs.statSync(this.file);
-    if (!stats.isFile()) throw new Error(ErrorCodes.ClientInvalidOption, 'File', 'a file');
+    if (!stats.isFile()) throw new DiscordjsError(ErrorCodes.ClientInvalidOption, 'File', 'a file');
 
     /**
      * List of shards this sharding manager spawns
      * @type {string|number[]}
      */
-    this.shardList = options.shardList ?? 'auto';
+    this.shardList = _options.shardList ?? 'auto';
     if (this.shardList !== 'auto') {
       if (!Array.isArray(this.shardList)) {
-        throw new TypeError(ErrorCodes.ClientInvalidOption, 'shardList', 'an array.');
+        throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'shardList', 'an array.');
       }
       this.shardList = [...new Set(this.shardList)];
       if (this.shardList.length < 1) {
-        throw new RangeError(ErrorCodes.ClientInvalidOption, 'shardList', 'at least 1 id.');
+        throw new DiscordjsRangeError(ErrorCodes.ClientInvalidOption, 'shardList', 'at least 1 id.');
       }
       if (
         this.shardList.some(
           shardId => typeof shardId !== 'number' || isNaN(shardId) || !Number.isInteger(shardId) || shardId < 0,
         )
       ) {
-        throw new TypeError(ErrorCodes.ClientInvalidOption, 'shardList', 'an array of positive integers.');
+        throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'shardList', 'an array of positive integers.');
       }
     }
 
@@ -95,16 +94,16 @@ class ShardingManager extends EventEmitter {
      * Amount of shards that all sharding managers spawn in total
      * @type {number}
      */
-    this.totalShards = options.totalShards || 'auto';
+    this.totalShards = _options.totalShards || 'auto';
     if (this.totalShards !== 'auto') {
       if (typeof this.totalShards !== 'number' || isNaN(this.totalShards)) {
-        throw new TypeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'a number.');
+        throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'a number.');
       }
       if (this.totalShards < 1) {
-        throw new RangeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'at least 1.');
+        throw new DiscordjsRangeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'at least 1.');
       }
       if (!Number.isInteger(this.totalShards)) {
-        throw new RangeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'an integer.');
+        throw new DiscordjsRangeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'an integer.');
       }
     }
 
@@ -112,34 +111,40 @@ class ShardingManager extends EventEmitter {
      * Mode for shards to spawn with
      * @type {ShardingManagerMode}
      */
-    this.mode = options.mode;
+    this.mode = _options.mode;
     if (this.mode !== 'process' && this.mode !== 'worker') {
-      throw new RangeError(ErrorCodes.ClientInvalidOption, 'Sharding mode', '"process" or "worker"');
+      throw new DiscordjsRangeError(ErrorCodes.ClientInvalidOption, 'Sharding mode', '"process" or "worker"');
     }
 
     /**
      * Whether shards should automatically respawn upon exiting
      * @type {boolean}
      */
-    this.respawn = options.respawn;
+    this.respawn = _options.respawn;
+
+    /**
+     * Whether to pass the silent flag to child process (only when {@link ShardingManager#mode} is `process`)
+     * @type {boolean}
+     */
+    this.silent = _options.silent;
 
     /**
      * An array of arguments to pass to shards (only when {@link ShardingManager#mode} is `process`)
      * @type {string[]}
      */
-    this.shardArgs = options.shardArgs;
+    this.shardArgs = _options.shardArgs;
 
     /**
      * An array of arguments to pass to the executable (only when {@link ShardingManager#mode} is `process`)
      * @type {string[]}
      */
-    this.execArgv = options.execArgv;
+    this.execArgv = _options.execArgv;
 
     /**
      * Token to use for obtaining the automatic shard count, and passing to shards
      * @type {?string}
      */
-    this.token = options.token?.replace(/^Bot\s*/i, '') ?? null;
+    this.token = _options.token?.replace(/^Bot\s*/i, '') ?? null;
 
     /**
      * A collection of shards that this manager has spawned
@@ -190,16 +195,16 @@ class ShardingManager extends EventEmitter {
       amount = await fetchRecommendedShardCount(this.token);
     } else {
       if (typeof amount !== 'number' || isNaN(amount)) {
-        throw new TypeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'a number.');
+        throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'a number.');
       }
-      if (amount < 1) throw new RangeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'at least 1.');
+      if (amount < 1) throw new DiscordjsRangeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'at least 1.');
       if (!Number.isInteger(amount)) {
-        throw new TypeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'an integer.');
+        throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'an integer.');
       }
     }
 
     // Make sure this many shards haven't already been spawned
-    if (this.shards.size >= amount) throw new Error(ErrorCodes.ShardingAlreadySpawned, this.shards.size);
+    if (this.shards.size >= amount) throw new DiscordjsError(ErrorCodes.ShardingAlreadySpawned, this.shards.size);
     if (this.shardList === 'auto' || this.totalShards === 'auto' || this.totalShards !== amount) {
       this.shardList = [...Array(amount).keys()];
     }
@@ -208,7 +213,7 @@ class ShardingManager extends EventEmitter {
     }
 
     if (this.shardList.some(shardId => shardId >= amount)) {
-      throw new RangeError(
+      throw new DiscordjsRangeError(
         ErrorCodes.ClientInvalidOption,
         'Amount of shards',
         'bigger than the highest shardId in the shardList option.',
@@ -252,7 +257,9 @@ class ShardingManager extends EventEmitter {
    * @returns {Promise<*|Array<*>>} Results of the script execution
    */
   broadcastEval(script, options = {}) {
-    if (typeof script !== 'function') return Promise.reject(new TypeError(ErrorCodes.ShardingInvalidEvalBroadcast));
+    if (typeof script !== 'function') {
+      return Promise.reject(new DiscordjsTypeError(ErrorCodes.ShardingInvalidEvalBroadcast));
+    }
     return this._performOnShards('eval', [`(${script})(this, ${JSON.stringify(options.context)})`], options.shard);
   }
 
@@ -279,14 +286,16 @@ class ShardingManager extends EventEmitter {
    * @private
    */
   _performOnShards(method, args, shard) {
-    if (this.shards.size === 0) return Promise.reject(new Error(ErrorCodes.ShardingNoShards));
+    if (this.shards.size === 0) return Promise.reject(new DiscordjsError(ErrorCodes.ShardingNoShards));
 
     if (typeof shard === 'number') {
       if (this.shards.has(shard)) return this.shards.get(shard)[method](...args);
-      return Promise.reject(new Error(ErrorCodes.ShardingShardNotFound, shard));
+      return Promise.reject(new DiscordjsError(ErrorCodes.ShardingShardNotFound, shard));
     }
 
-    if (this.shards.size !== this.shardList.length) return Promise.reject(new Error(ErrorCodes.ShardingInProcess));
+    if (this.shards.size !== this.shardList.length) {
+      return Promise.reject(new DiscordjsError(ErrorCodes.ShardingInProcess));
+    }
 
     const promises = [];
     for (const sh of this.shards.values()) promises.push(sh[method](...args));

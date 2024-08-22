@@ -1,204 +1,108 @@
 import type {
 	APIApplicationCommandOption,
+	ApplicationIntegrationType,
+	InteractionContextType,
 	LocalizationMap,
 	Permissions,
-	RESTPostAPIApplicationCommandsJSONBody,
 } from 'discord-api-types/v10';
 import { mix } from 'ts-mixer';
-import {
-	assertReturnOfBuilder,
-	validateDefaultMemberPermissions,
-	validateDefaultPermission,
-	validateLocalizationMap,
-	validateDMPermission,
-	validateMaxOptionsLength,
-	validateRequiredParameters,
-} from './Assertions';
-import { SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from './SlashCommandSubcommands';
-import { SharedNameAndDescription } from './mixins/NameAndDescription';
-import { SharedSlashCommandOptions } from './mixins/SharedSlashCommandOptions';
+import { SharedNameAndDescription } from './mixins/NameAndDescription.js';
+import { SharedSlashCommand } from './mixins/SharedSlashCommand.js';
+import { SharedSlashCommandOptions } from './mixins/SharedSlashCommandOptions.js';
+import { SharedSlashCommandSubcommands } from './mixins/SharedSubcommands.js';
 
-@mix(SharedSlashCommandOptions, SharedNameAndDescription)
+/**
+ * A builder that creates API-compatible JSON data for slash commands.
+ */
+@mix(SharedSlashCommandOptions, SharedNameAndDescription, SharedSlashCommandSubcommands, SharedSlashCommand)
 export class SlashCommandBuilder {
 	/**
-	 * The name of this slash command
+	 * The name of this command.
 	 */
 	public readonly name: string = undefined!;
 
 	/**
-	 * The localized names for this command
+	 * The name localizations of this command.
 	 */
 	public readonly name_localizations?: LocalizationMap;
 
 	/**
-	 * The description of this slash command
+	 * The description of this command.
 	 */
 	public readonly description: string = undefined!;
 
 	/**
-	 * The localized descriptions for this command
+	 * The description localizations of this command.
 	 */
 	public readonly description_localizations?: LocalizationMap;
 
 	/**
-	 * The options of this slash command
+	 * The options of this command.
 	 */
 	public readonly options: ToAPIApplicationCommandOptions[] = [];
 
 	/**
-	 * Whether the command is enabled by default when the app is added to a guild
+	 * The contexts for this command.
+	 */
+	public readonly contexts?: InteractionContextType[];
+
+	/**
+	 * Whether this command is enabled by default when the application is added to a guild.
 	 *
-	 * @deprecated This property is deprecated and will be removed in the future.
-	 * You should use `setDefaultMemberPermissions` or `setDMPermission` instead.
+	 * @deprecated Use {@link SharedSlashCommand.setDefaultMemberPermissions} or {@link SharedSlashCommand.setDMPermission} instead.
 	 */
 	public readonly default_permission: boolean | undefined = undefined;
 
 	/**
-	 * Set of permissions represented as a bit set for the command
+	 * The set of permissions represented as a bit set for the command.
 	 */
 	public readonly default_member_permissions: Permissions | null | undefined = undefined;
 
 	/**
-	 * Indicates whether the command is available in DMs with the application, only for globally-scoped commands.
-	 * By default, commands are visible.
+	 * Indicates whether the command is available in direct messages with the application.
+	 *
+	 * @remarks
+	 * By default, commands are visible. This property is only for global commands.
 	 */
 	public readonly dm_permission: boolean | undefined = undefined;
 
 	/**
-	 * Returns the final data that should be sent to Discord.
-	 *
-	 * **Note:** Calling this function will validate required properties based on their conditions.
+	 * The integration types for this command.
 	 */
-	public toJSON(): RESTPostAPIApplicationCommandsJSONBody {
-		validateRequiredParameters(this.name, this.description, this.options);
-
-		validateLocalizationMap(this.name_localizations);
-		validateLocalizationMap(this.description_localizations);
-
-		return {
-			...this,
-			options: this.options.map((option) => option.toJSON()),
-		};
-	}
+	public readonly integration_types?: ApplicationIntegrationType[];
 
 	/**
-	 * Sets whether the command is enabled by default when the application is added to a guild.
-	 *
-	 * **Note**: If set to `false`, you will have to later `PUT` the permissions for this command.
-	 *
-	 * @param value - Whether or not to enable this command by default
-	 *
-	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
-	 * @deprecated Use `setDefaultMemberPermissions` or `setDMPermission` instead.
+	 * Whether this command is NSFW.
 	 */
-	public setDefaultPermission(value: boolean) {
-		// Assert the value matches the conditions
-		validateDefaultPermission(value);
-
-		Reflect.set(this, 'default_permission', value);
-
-		return this;
-	}
-
-	/**
-	 * Sets the default permissions a member should have in order to run the command.
-	 *
-	 * **Note:** You can set this to `'0'` to disable the command by default.
-	 *
-	 * @param permissions - The permissions bit field to set
-	 *
-	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
-	 */
-	public setDefaultMemberPermissions(permissions: Permissions | bigint | number | null | undefined) {
-		// Assert the value and parse it
-		const permissionValue = validateDefaultMemberPermissions(permissions);
-
-		Reflect.set(this, 'default_member_permissions', permissionValue);
-
-		return this;
-	}
-
-	/**
-	 * Sets if the command is available in DMs with the application, only for globally-scoped commands.
-	 * By default, commands are visible.
-	 *
-	 * @param enabled - If the command should be enabled in DMs
-	 *
-	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
-	 */
-	public setDMPermission(enabled: boolean | null | undefined) {
-		// Assert the value matches the conditions
-		validateDMPermission(enabled);
-
-		Reflect.set(this, 'dm_permission', enabled);
-
-		return this;
-	}
-
-	/**
-	 * Adds a new subcommand group to this command
-	 *
-	 * @param input - A function that returns a subcommand group builder, or an already built builder
-	 */
-	public addSubcommandGroup(
-		input:
-			| SlashCommandSubcommandGroupBuilder
-			| ((subcommandGroup: SlashCommandSubcommandGroupBuilder) => SlashCommandSubcommandGroupBuilder),
-	): SlashCommandSubcommandsOnlyBuilder {
-		const { options } = this;
-
-		// First, assert options conditions - we cannot have more than 25 options
-		validateMaxOptionsLength(options);
-
-		// Get the final result
-		const result = typeof input === 'function' ? input(new SlashCommandSubcommandGroupBuilder()) : input;
-
-		assertReturnOfBuilder(result, SlashCommandSubcommandGroupBuilder);
-
-		// Push it
-		options.push(result);
-
-		return this;
-	}
-
-	/**
-	 * Adds a new subcommand to this command
-	 *
-	 * @param input - A function that returns a subcommand builder, or an already built builder
-	 */
-	public addSubcommand(
-		input:
-			| SlashCommandSubcommandBuilder
-			| ((subcommandGroup: SlashCommandSubcommandBuilder) => SlashCommandSubcommandBuilder),
-	): SlashCommandSubcommandsOnlyBuilder {
-		const { options } = this;
-
-		// First, assert options conditions - we cannot have more than 25 options
-		validateMaxOptionsLength(options);
-
-		// Get the final result
-		const result = typeof input === 'function' ? input(new SlashCommandSubcommandBuilder()) : input;
-
-		assertReturnOfBuilder(result, SlashCommandSubcommandBuilder);
-
-		// Push it
-		options.push(result);
-
-		return this;
-	}
+	public readonly nsfw: boolean | undefined = undefined;
 }
 
-export interface SlashCommandBuilder extends SharedNameAndDescription, SharedSlashCommandOptions {}
+export interface SlashCommandBuilder
+	extends SharedNameAndDescription,
+		SharedSlashCommandOptions<SlashCommandOptionsOnlyBuilder>,
+		SharedSlashCommandSubcommands<SlashCommandSubcommandsOnlyBuilder>,
+		SharedSlashCommand {}
 
+/**
+ * An interface specifically for slash command subcommands.
+ */
 export interface SlashCommandSubcommandsOnlyBuilder
 	extends SharedNameAndDescription,
-		Pick<SlashCommandBuilder, 'toJSON' | 'addSubcommand' | 'addSubcommandGroup'> {}
+		SharedSlashCommandSubcommands<SlashCommandSubcommandsOnlyBuilder>,
+		SharedSlashCommand {}
 
+/**
+ * An interface specifically for slash command options.
+ */
 export interface SlashCommandOptionsOnlyBuilder
 	extends SharedNameAndDescription,
-		SharedSlashCommandOptions,
-		Pick<SlashCommandBuilder, 'toJSON'> {}
+		SharedSlashCommandOptions<SlashCommandOptionsOnlyBuilder>,
+		SharedSlashCommand {}
 
+/**
+ * An interface that ensures the `toJSON()` call will return something
+ * that can be serialized into API-compatible data.
+ */
 export interface ToAPIApplicationCommandOptions {
-	toJSON: () => APIApplicationCommandOption;
+	toJSON(): APIApplicationCommandOption;
 }

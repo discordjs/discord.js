@@ -1,21 +1,37 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/docgen",
 	"version": "0.12.1",
 	"description": "The docs.json generator for discord.js and its related projects",
 	"scripts": {
-		"build": "unbuild",
-		"lint": "prettier --check . && TIMING=1 eslint src --ext mjs,js,ts",
-		"format": "prettier --write . && TIMING=1 eslint src --ext mjs,js,ts --fix",
-		"fmt": "yarn format",
-		"prepack": "yarn format && yarn build",
-		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/docgen/*'",
-		"release": "cliff-jumper"
+		"build": "tsup",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
+		"fmt": "pnpm run format",
+		"prepack": "pnpm run format && pnpm run build"
 	},
-	"bin": "./dist/cli.cjs",
+	"bin": "./bin/index.js",
+	"exports": {
+		".": {
+			"require": {
+				"types": "./dist/src/index.d.ts",
+				"default": "./dist/src/index.js"
+			},
+			"import": {
+				"types": "./dist/src/index.d.mts",
+				"default": "./dist/src/index.mjs"
+			}
+		}
+	},
+	"main": "./dist/src/index.js",
+	"module": "./dist/src/index.mjs",
+	"types": "./dist/src/index.d.ts",
 	"directories": {
+		"bin": "bin",
 		"lib": "src"
 	},
 	"files": [
+		"bin/index.js",
 		"dist"
 	],
 	"contributors": [
@@ -35,38 +51,38 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/discordjs/discord.js.git"
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/docgen"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
-		"commander": "^9.4.0",
-		"jsdoc-to-markdown": "^7.1.1",
-		"tslib": "^2.4.0",
-		"typedoc": "^0.23.10"
+		"commander": "^12.1.0",
+		"jsdoc-to-markdown": "^8.0.1",
+		"tslib": "^2.6.3",
+		"typedoc": "^0.25.13"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^1.8.6",
-		"@types/jsdoc-to-markdown": "^7.0.3",
-		"@types/node": "^16.11.48",
-		"@typescript-eslint/eslint-plugin": "^5.33.0",
-		"@typescript-eslint/parser": "^5.33.0",
-		"eslint": "^8.22.0",
-		"eslint-config-marine": "^9.4.1",
-		"eslint-config-prettier": "^8.5.0",
-		"eslint-import-resolver-typescript": "^3.4.1",
-		"eslint-plugin-import": "^2.26.0",
-		"prettier": "^2.7.1",
-		"rollup-plugin-typescript2": "0.32.1",
-		"typescript": "^4.7.4",
-		"unbuild": "^0.8.8"
+		"@favware/cliff-jumper": "^3.0.3",
+		"@types/jsdoc-to-markdown": "^7.0.6",
+		"@types/node": "^18.19.45",
+		"cross-env": "^7.0.3",
+		"eslint": "^8.57.0",
+		"eslint-config-neon": "^0.1.62",
+		"eslint-formatter-pretty": "^6.0.1",
+		"prettier": "^3.3.3",
+		"tsup": "^8.2.4",
+		"turbo": "^2.0.14",
+		"typescript": "~5.5.4"
 	},
 	"engines": {
-		"node": ">=16.9.0"
+		"node": ">=18"
 	},
 	"publishConfig": {
-		"access": "public"
+		"access": "public",
+		"provenance": true
 	}
 }

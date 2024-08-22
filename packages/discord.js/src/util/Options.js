@@ -1,13 +1,15 @@
 'use strict';
 
-const process = require('node:process');
-const { DefaultRestOptions } = require('@discordjs/rest');
+const { DefaultRestOptions, DefaultUserAgentAppendix } = require('@discordjs/rest');
 const { toSnakeCase } = require('./Transformers');
+const { version } = require('../../package.json');
 
+// TODO(ckohen): switch order of params so full manager is first and "type" is optional
 /**
  * @typedef {Function} CacheFactory
- * @param {Function} manager The manager class the cache is being requested from.
+ * @param {Function} managerType The base manager class the cache is being requested from.
  * @param {Function} holds The class that the cache will hold.
+ * @param {Function} manager The fully extended manager class the cache is being requested from.
  * @returns {Collection} A Collection used to store the cache of the manager.
  */
 
@@ -18,27 +20,28 @@ const { toSnakeCase } = require('./Transformers');
  * the client will spawn {@link ClientOptions#shardCount} shards. If set to `auto`, it will fetch the
  * recommended amount of shards from Discord and spawn that amount
  * @property {number} [closeTimeout=5_000] The amount of time in milliseconds to wait for the close frame to be received
- * from the WebSocket. Don't have this too high/low. Its best to have it between 2_000-6_000 ms.
+ * from the WebSocket. Don't have this too high/low. It's best to have it between 2_000-6_000 ms.
  * @property {number} [shardCount=1] The total amount of shards used by all processes of this bot
  * (e.g. recommended shard count, shard count of the ShardingManager)
  * @property {CacheFactory} [makeCache] Function to create a cache.
  * You can use your own function, or the {@link Options} class to customize the Collection used for the cache.
  * <warn>Overriding the cache used in `GuildManager`, `ChannelManager`, `GuildChannelManager`, `RoleManager`,
  * and `PermissionOverwriteManager` is unsupported and **will** break functionality</warn>
- * @property {MessageMentionOptions} [allowedMentions] Default value for {@link MessageOptions#allowedMentions}
+ * @property {MessageMentionOptions} [allowedMentions] The default value for {@link BaseMessageOptions#allowedMentions}
  * @property {Partials[]} [partials] Structures allowed to be partial. This means events can be emitted even when
  * they're missing all the data for a particular structure. See the "Partial Structures" topic on the
  * [guide](https://discordjs.guide/popular-topics/partials.html) for some
  * important usage information, as partials require you to put checks in place when handling data.
- * @property {boolean} [failIfNotExists=true] Default value for {@link ReplyMessageOptions#failIfNotExists}
+ * @property {boolean} [failIfNotExists=true] The default value for {@link MessageReplyOptions#failIfNotExists}
  * @property {PresenceData} [presence={}] Presence data to use upon login
  * @property {IntentsResolvable} intents Intents to enable for this connection
  * @property {number} [waitGuildTimeout=15_000] Time in milliseconds that clients with the
  * {@link GatewayIntentBits.Guilds} gateway intent should wait for missing guilds to be received before being ready.
- * @property {SweeperOptions} [sweepers={}] Options for cache sweeping
+ * @property {SweeperOptions} [sweepers=this.DefaultSweeperSettings] Options for cache sweeping
  * @property {WebsocketOptions} [ws] Options for the WebSocket
  * @property {RESTOptions} [rest] Options for the REST manager
  * @property {Function} [jsonTransformer] A function used to transform outgoing json data
+ * @property {boolean} [enforceNonce=false] The default value for {@link MessageReplyOptions#enforceNonce}
  */
 
 /**
@@ -58,18 +61,51 @@ const { toSnakeCase } = require('./Transformers');
  */
 
 /**
+ * A function to determine what strategy to use for sharding internally.
+ * ```js
+ * (manager) => new WorkerShardingStrategy(manager, { shardsPerWorker: 2 })
+ * ```
+ * @typedef {Function} BuildStrategyFunction
+ * @param {WSWebSocketManager} manager The WebSocketManager that is going to initiate the sharding
+ * @returns {IShardingStrategy} The strategy to use for sharding
+ */
+
+/**
+ * A function to change the concurrency handling for shard identifies of this manager
+ * ```js
+ * async (manager) => {
+ *   const gateway = await manager.fetchGatewayInformation();
+ *   return new SimpleIdentifyThrottler(gateway.session_start_limit.max_concurrency);
+ * }
+ * ```
+ * @typedef {Function} IdentifyThrottlerFunction
+ * @param {WSWebSocketManager} manager The WebSocketManager that is going to initiate the sharding
+ * @returns {Awaitable<IIdentifyThrottler>} The identify throttler that this ws manager will use
+ */
+
+/**
  * WebSocket options (these are left as snake_case to match the API)
  * @typedef {Object} WebsocketOptions
  * @property {number} [large_threshold=50] Number of members in a guild after which offline users will no longer be
  * sent in the initial guild member list, must be between 50 and 250
  * @property {number} [version=10] The Discord gateway version to use <warn>Changing this can break the library;
  * only set this if you know what you are doing</warn>
+ * @property {BuildStrategyFunction} [buildStrategy] Builds the strategy to use for sharding
+ * @property {IdentifyThrottlerFunction} [buildIdentifyThrottler] Builds the identify throttler to use for sharding
  */
 
 /**
  * Contains various utilities for client options.
  */
 class Options extends null {
+  /**
+   * The default user agent appendix.
+   * @type {string}
+   * @memberof Options
+   * @private
+   */
+  static userAgentAppendix = `discord.js/${version} ${DefaultUserAgentAppendix}`.trimEnd();
+
   /**
    * The default client options.
    * @returns {ClientOptions}
@@ -82,19 +118,17 @@ class Options extends null {
       makeCache: this.cacheWithLimits(this.DefaultMakeCacheSettings),
       partials: [],
       failIfNotExists: true,
+      enforceNonce: false,
       presence: {},
       sweepers: this.DefaultSweeperSettings,
       ws: {
         large_threshold: 50,
-        compress: false,
-        properties: {
-          os: process.platform,
-          browser: 'discord.js',
-          device: 'discord.js',
-        },
         version: 10,
       },
-      rest: DefaultRestOptions,
+      rest: {
+        ...DefaultRestOptions,
+        userAgentAppendix: this.userAgentAppendix,
+      },
       jsonTransformer: toSnakeCase,
     };
   }
@@ -120,8 +154,8 @@ class Options extends null {
     const { Collection } = require('@discordjs/collection');
     const LimitedCollection = require('./LimitedCollection');
 
-    return manager => {
-      const setting = settings[manager.name];
+    return (managerType, _, manager) => {
+      const setting = settings[manager.name] ?? settings[managerType.name];
       /* eslint-disable-next-line eqeqeq */
       if (setting == null) {
         return new Collection();
@@ -151,12 +185,9 @@ class Options extends null {
   }
 
   /**
-   * The default settings passed to {@link Options.cacheWithLimits}.
+   * The default settings passed to {@link ClientOptions.makeCache}.
    * The caches that this changes are:
    * * `MessageManager` - Limit to 200 messages
-   * * `ChannelManager` - Sweep archived threads
-   * * `GuildChannelManager` - Sweep archived threads
-   * * `ThreadManager` - Sweep archived threads
    * <info>If you want to keep default behavior and add on top of it you can use this object and add on to it, e.g.
    * `makeCache: Options.cacheWithLimits({ ...Options.DefaultMakeCacheSettings, ReactionManager: 0 })`</info>
    * @type {Object<string, LimitedCollectionOptions|number>}
@@ -168,11 +199,11 @@ class Options extends null {
   }
 
   /**
-   * The default settings passed to {@link Options.sweepers} (for v14).
+   * The default settings passed to {@link ClientOptions.sweepers}.
    * The sweepers that this changes are:
    * * `threads` - Sweep archived threads every hour, removing those archived more than 4 hours ago
    * <info>If you want to keep default behavior and add on top of it you can use this object and add on to it, e.g.
-   * `sweepers: { ...Options.DefaultSweeperSettings, messages: { interval: 300, lifetime: 600 } })`</info>
+   * `sweepers: { ...Options.DefaultSweeperSettings, messages: { interval: 300, lifetime: 600 } }`</info>
    * @type {SweeperOptions}
    */
   static get DefaultSweeperSettings() {
@@ -189,5 +220,20 @@ module.exports = Options;
 
 /**
  * @external RESTOptions
- * @see {@link https://discord.js.org/#/docs/rest/main/typedef/RESTOptions}
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/RESTOptions:Interface}
+ */
+
+/**
+ * @external WSWebSocketManager
+ * @see {@link https://discord.js.org/docs/packages/ws/stable/WebSocketManager:Class}
+ */
+
+/**
+ * @external IShardingStrategy
+ * @see {@link https://discord.js.org/docs/packages/ws/stable/IShardingStrategy:Interface}
+ */
+
+/**
+ * @external IIdentifyThrottler
+ * @see {@link https://discord.js.org/docs/packages/ws/stable/IIdentifyThrottler:Interface}
  */

@@ -3,7 +3,7 @@
 const EventEmitter = require('node:events');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
-const { TypeError, ErrorCodes } = require('../../errors');
+const { DiscordjsTypeError, ErrorCodes } = require('../../errors');
 const { flatten } = require('../../util/Util');
 
 /**
@@ -81,13 +81,13 @@ class Collector extends EventEmitter {
 
     /**
      * The reason the collector ended
-     * @type {string|null}
+     * @type {?string}
      * @private
      */
     this._endReason = null;
 
     if (typeof this.filter !== 'function') {
-      throw new TypeError(ErrorCodes.InvalidType, 'options.filter', 'function');
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options.filter', 'function');
     }
 
     this.handleCollect = this.handleCollect.bind(this);
@@ -95,6 +95,20 @@ class Collector extends EventEmitter {
 
     if (options.time) this._timeout = setTimeout(() => this.stop('time'), options.time).unref();
     if (options.idle) this._idletimeout = setTimeout(() => this.stop('idle'), options.idle).unref();
+
+    /**
+     * The timestamp at which this collector last collected an item
+     * @type {?number}
+     */
+    this.lastCollectedTimestamp = null;
+  }
+
+  /**
+   * The Date at which this collector last collected an item
+   * @type {?Date}
+   */
+  get lastCollectedAt() {
+    return this.lastCollectedTimestamp && new Date(this.lastCollectedTimestamp);
   }
 
   /**
@@ -118,6 +132,7 @@ class Collector extends EventEmitter {
          */
         this.emit('collect', ...args);
 
+        this.lastCollectedTimestamp = Date.now();
         if (this._idletimeout) {
           clearTimeout(this._idletimeout);
           this._idletimeout = setTimeout(() => this.stop('idle'), this.options.idle).unref();
@@ -181,7 +196,7 @@ class Collector extends EventEmitter {
 
       const onEnd = () => {
         cleanup();
-        reject(this.collected); // eslint-disable-line prefer-promise-reject-errors
+        reject(this.collected);
       };
 
       this.on('collect', onCollect);

@@ -19,7 +19,18 @@ const {
   TimestampStyles,
   underscore,
   userMention,
-} = require('@discordjs/builders');
+} = require('@discordjs/formatters');
+
+/**
+ * Formats an application command name and id into an application command mention.
+ * @method chatInputApplicationCommandMention
+ * @param {string} commandName The name of the application command
+ * @param {string|Snowflake} subcommandGroupOrSubOrId
+ * The subcommand group name, subcommand name, or application command id
+ * @param {string|Snowflake} [subcommandNameOrId] The subcommand name or application command id
+ * @param {string} [commandId] The id of the application command
+ * @returns {string}
+ */
 
 /**
  * Wraps the content inside a code block with an optional language.

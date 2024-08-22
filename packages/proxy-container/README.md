@@ -12,6 +12,7 @@
 	</p>
 	<p>
 		<a href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-vercel.svg" alt="Vercel" /></a>
+		<a href="https://www.cloudflare.com"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-workers.png" alt="Cloudflare Workers" height="44" /></a>
 	</p>
 </div>
 
@@ -23,35 +24,60 @@
 
 Quickly spin up an instance:
 
-`docker run -d --restart unless-stopped --name proxy -p 127.0.0.1:8080:8080 -e DISCORD_TOKEN=abc discordjs/proxy`
+`docker run -d --restart unless-stopped --name proxy -p 127.0.0.1:8080:8080 discordjs/proxy`
 
 Use it:
 
 ```ts
 import { Client } from 'discord.js';
-import { ProxyAgent } from 'undici';
 
 const client = new Client({
 	// other options,
 	rest: {
-		agent: new ProxyAgent('https://localhost:8080'),
+		api: 'http://localhost:8080/api',
 	},
 });
 ```
 
+Or with just `@discordjs/rest`:
+
+```ts
+import { REST } from '@discordjs/rest';
+
+const rest = new REST({
+	api: 'http://localhost:8080/api',
+});
+```
+
+**Do note that you should not use the same proxy with multiple bots. We cannot guarantee you won't hit rate limits.
+Webhooks with tokens or other requests that don't include the Authorization header are okay, though!**
+
 ## Links
 
-- [Website](https://discord.js.org/) ([source](https://github.com/discordjs/website))
-- [discord.js Discord server](https://discord.gg/djs)
-- [GitHub](https://github.com/discordjs/discord.js/tree/main/packages/proxy-container)
-- [Docker Hub](https://hub.docker.com/r/discordjs/proxy)
+- [Website][website] ([source][website-source])
+- [Guide][guide] ([source][guide-source])
+  Also see the v13 to v14 [Update Guide][guide-update], which includes updated and removed items from the library.
+- [discord.js Discord server][discord]
+- [Discord API Discord server][discord-api]
+- [GitHub][source]
+- [Related libraries][related-libs]
 
 ## Contributing
 
-Before creating an issue, please ensure that it hasn't already been reported/suggested.
-See [the contribution guide](https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md) if you'd like to submit a PR.
+Before creating an issue, please ensure that it hasn't already been reported/suggested.  
+See [the contribution guide][contributing] if you'd like to submit a PR.
 
 ## Help
 
-If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
-nudge in the right direction, please don't hesitate to join our official [discord.js Server](https://discord.gg/djs).
+If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle nudge in the right direction, please don't hesitate to join our official [discord.js Server][discord].
+
+[website]: https://discord.js.org
+[website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
+[guide]: https://discordjs.guide/
+[guide-source]: https://github.com/discordjs/guide
+[guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
+[discord]: https://discord.gg/djs
+[discord-api]: https://discord.gg/discord-api
+[source]: https://github.com/discordjs/discord.js/tree/main/packages/proxy-container
+[related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
+[contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md

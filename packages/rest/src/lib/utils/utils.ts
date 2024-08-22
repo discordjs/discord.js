@@ -1,20 +1,9 @@
-import { Blob } from 'node:buffer';
-import { URLSearchParams } from 'node:url';
-import { types } from 'node:util';
-import type { RESTPatchAPIChannelJSONBody } from 'discord-api-types/v10';
-import { FormData, type Dispatcher, type RequestInit } from 'undici';
-import type { RequestOptions } from '../REST';
-import { RequestMethod } from '../RequestManager';
-
-export function parseHeader(header: string | string[] | undefined): string | undefined {
-	if (header === undefined) {
-		return header;
-	} else if (typeof header === 'string') {
-		return header;
-	}
-
-	return header.join(';');
-}
+import type { RESTPatchAPIChannelJSONBody, Snowflake } from 'discord-api-types/v10';
+import type { REST } from '../REST.js';
+import { RateLimitError } from '../errors/RateLimitError.js';
+import { DEPRECATION_WARNING_PREFIX } from './constants.js';
+import { RequestMethod } from './types.js';
+import type { GetRateLimitOffsetFunction, RateLimitData, ResponseLike } from './types.js';
 
 function serializeSearchParam(value: unknown): string | null {
 	switch (typeof value) {
@@ -29,6 +18,7 @@ function serializeSearchParam(value: unknown): string | null {
 			if (value instanceof Date) {
 				return Number.isNaN(value.getTime()) ? null : value.toISOString();
 			}
+
 			// eslint-disable-next-line @typescript-eslint/no-base-to-string
 			if (typeof value.toString === 'function' && value.toString !== Object.prototype.toString) return value.toString();
 			return null;
@@ -42,10 +32,9 @@ function serializeSearchParam(value: unknown): string | null {
  * out null and undefined values, while also coercing non-strings to strings.
  *
  * @param options - The options to use
- *
  * @returns A populated URLSearchParams instance
  */
-export function makeURLSearchParams(options?: Record<string, unknown>) {
+export function makeURLSearchParams<OptionsType extends object>(options?: Readonly<OptionsType>) {
 	const params = new URLSearchParams();
 	if (!options) return params;
 
@@ -62,13 +51,12 @@ export function makeURLSearchParams(options?: Record<string, unknown>) {
  *
  * @param res - The fetch response
  */
-export function parseResponse(res: Dispatcher.ResponseData): Promise<unknown> {
-	const header = parseHeader(res.headers['content-type']);
-	if (header?.startsWith('application/json')) {
-		return res.body.json();
+export async function parseResponse(res: ResponseLike): Promise<unknown> {
+	if (res.headers.get('Content-Type')?.startsWith('application/json')) {
+		return res.json();
 	}
 
-	return res.body.arrayBuffer();
+	return res.arrayBuffer();
 }
 
 /**
@@ -77,7 +65,6 @@ export function parseResponse(res: Dispatcher.ResponseData): Promise<unknown> {
  * @param bucketRoute - The buckets route identifier
  * @param body - The options provided as JSON data
  * @param method - The HTTP method that will be used to make the request
- *
  * @returns Whether the request falls under a sublimit
  */
 export function hasSublimit(bucketRoute: string, body?: unknown, method?: string): boolean {
@@ -96,47 +83,92 @@ export function hasSublimit(bucketRoute: string, body?: unknown, method?: string
 	return true;
 }
 
-export async function resolveBody(body: RequestInit['body']): Promise<RequestOptions['body']> {
-	// eslint-disable-next-line no-eq-null
-	if (body == null) {
-		return null;
-	} else if (typeof body === 'string') {
-		return body;
-	} else if (types.isUint8Array(body)) {
-		return body;
-	} else if (types.isArrayBuffer(body)) {
-		return new Uint8Array(body);
-	} else if (body instanceof URLSearchParams) {
-		return body.toString();
-	} else if (body instanceof DataView) {
-		return new Uint8Array(body.buffer);
-	} else if (body instanceof Blob) {
-		return new Uint8Array(await body.arrayBuffer());
-	} else if (body instanceof FormData) {
-		return body;
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	} else if ((body as Iterable<Uint8Array>)[Symbol.iterator]) {
-		const chunks = [...(body as Iterable<Uint8Array>)];
-		const length = chunks.reduce((a, b) => a + b.length, 0);
+/**
+ * Check whether an error indicates that a retry can be attempted
+ *
+ * @param error - The error thrown by the network request
+ * @returns Whether the error indicates a retry should be attempted
+ */
+export function shouldRetry(error: Error | NodeJS.ErrnoException) {
+	// Retry for possible timed out requests
+	if (error.name === 'AbortError') return true;
+	// Downlevel ECONNRESET to retry as it may be recoverable
+	return ('code' in error && error.code === 'ECONNRESET') || error.message.includes('ECONNRESET');
+}
 
-		const uint8 = new Uint8Array(length);
-		let lengthUsed = 0;
+/**
+ * Determines whether the request should be queued or whether a RateLimitError should be thrown
+ *
+ * @internal
+ */
+export async function onRateLimit(manager: REST, rateLimitData: RateLimitData) {
+	const { options } = manager;
+	if (!options.rejectOnRateLimit) return;
 
-		return chunks.reduce((a, b) => {
-			a.set(b, lengthUsed);
-			lengthUsed += b.length;
-			return a;
-		}, uint8);
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	} else if ((body as AsyncIterable<Uint8Array>)[Symbol.asyncIterator]) {
-		const chunks: Uint8Array[] = [];
+	const shouldThrow =
+		typeof options.rejectOnRateLimit === 'function'
+			? await options.rejectOnRateLimit(rateLimitData)
+			: options.rejectOnRateLimit.some((route) => rateLimitData.route.startsWith(route.toLowerCase()));
+	if (shouldThrow) {
+		throw new RateLimitError(rateLimitData);
+	}
+}
 
-		for await (const chunk of body as AsyncIterable<Uint8Array>) {
-			chunks.push(chunk);
-		}
+/**
+ * Calculates the default avatar index for a given user id.
+ *
+ * @param userId - The user id to calculate the default avatar index for
+ */
+export function calculateUserDefaultAvatarIndex(userId: Snowflake) {
+	return Number(BigInt(userId) >> 22n) % 6;
+}
 
-		return Buffer.concat(chunks);
+/**
+ * Sleeps for a given amount of time.
+ *
+ * @param ms - The amount of time (in milliseconds) to sleep for
+ */
+export async function sleep(ms: number): Promise<void> {
+	return new Promise<void>((resolve) => {
+		setTimeout(() => resolve(), ms);
+	});
+}
+
+/**
+ * Verifies that a value is a buffer-like object.
+ *
+ * @param value - The value to check
+ */
+export function isBufferLike(value: unknown): value is ArrayBuffer | Buffer | Uint8Array | Uint8ClampedArray {
+	return value instanceof ArrayBuffer || value instanceof Uint8Array || value instanceof Uint8ClampedArray;
+}
+
+/**
+ * Irrespective environment warning.
+ *
+ * @remarks Only the message is needed. The deprecation prefix is handled already.
+ * @param message - A string the warning will emit with
+ * @internal
+ */
+export function deprecationWarning(message: string) {
+	if (typeof globalThis.process === 'undefined') {
+		console.warn(`${DEPRECATION_WARNING_PREFIX}: ${message}`);
+	} else {
+		process.emitWarning(message, DEPRECATION_WARNING_PREFIX);
+	}
+}
+
+/**
+ * Normalizes the offset for rate limits. Applies a Math.max(0, N) to prevent negative offsets,
+ * also deals with callbacks.
+ *
+ * @internal
+ */
+export function normalizeRateLimitOffset(offset: GetRateLimitOffsetFunction | number, route: string): number {
+	if (typeof offset === 'number') {
+		return Math.max(0, offset);
 	}
 
-	throw new TypeError(`Unable to resolve body.`);
+	const result = offset(route);
+	return Math.max(0, result);
 }

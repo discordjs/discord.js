@@ -1,6 +1,6 @@
-import { PermissionFlagsBits } from 'discord-api-types/v10';
+import { ApplicationIntegrationType, InteractionContextType, PermissionFlagsBits } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
-import { ContextMenuCommandAssertions, ContextMenuCommandBuilder } from '../../src/index';
+import { ContextMenuCommandAssertions, ContextMenuCommandBuilder } from '../../src/index.js';
 
 const getBuilder = () => new ContextMenuCommandBuilder();
 
@@ -105,9 +105,9 @@ describe('Context Menu Commands', () => {
 			});
 
 			test('GIVEN invalid name localizations THEN does throw error', () => {
-				// @ts-expect-error
+				// @ts-expect-error: Invalid localization
 				expect(() => getBuilder().setNameLocalization('en-U', 'foobar')).toThrowError();
-				// @ts-expect-error
+				// @ts-expect-error: Invalid localization
 				expect(() => getBuilder().setNameLocalizations({ 'en-U': 'foobar' })).toThrowError();
 			});
 
@@ -142,6 +142,52 @@ describe('Context Menu Commands', () => {
 				expect(() => getBuilder().setDefaultMemberPermissions('1.1')).toThrowError();
 
 				expect(() => getBuilder().setDefaultMemberPermissions(1.1)).toThrowError();
+			});
+		});
+
+		describe('contexts', () => {
+			test('GIVEN a builder with valid contexts THEN does not throw an error', () => {
+				expect(() =>
+					getBuilder().setContexts([InteractionContextType.Guild, InteractionContextType.BotDM]),
+				).not.toThrowError();
+
+				expect(() =>
+					getBuilder().setContexts(InteractionContextType.Guild, InteractionContextType.BotDM),
+				).not.toThrowError();
+			});
+
+			test('GIVEN a builder with invalid contexts THEN does throw an error', () => {
+				// @ts-expect-error: Invalid contexts
+				expect(() => getBuilder().setContexts(999)).toThrowError();
+
+				// @ts-expect-error: Invalid contexts
+				expect(() => getBuilder().setContexts([999, 998])).toThrowError();
+			});
+		});
+
+		describe('integration types', () => {
+			test('GIVEN a builder with valid integraton types THEN does not throw an error', () => {
+				expect(() =>
+					getBuilder().setIntegrationTypes([
+						ApplicationIntegrationType.GuildInstall,
+						ApplicationIntegrationType.UserInstall,
+					]),
+				).not.toThrowError();
+
+				expect(() =>
+					getBuilder().setIntegrationTypes(
+						ApplicationIntegrationType.GuildInstall,
+						ApplicationIntegrationType.UserInstall,
+					),
+				).not.toThrowError();
+			});
+
+			test('GIVEN a builder with invalid integration types THEN does throw an error', () => {
+				// @ts-expect-error: Invalid integration types
+				expect(() => getBuilder().setIntegrationTypes(999)).toThrowError();
+
+				// @ts-expect-error: Invalid integration types
+				expect(() => getBuilder().setIntegrationTypes([999, 998])).toThrowError();
 			});
 		});
 	});

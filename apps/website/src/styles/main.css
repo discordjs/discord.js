@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+	min-width: 0;
+}
+
+body {
+	font-family: var(--font-geist-sans);
+	min-height: 100dvh;
+}
+
+html.dark .os-scrollbar-handle {
+	--os-handle-bg: rgba(255, 255, 255, 0.5);
+}
+
+html.dark .os-scrollbar-handle:hover {
+	--os-handle-bg-hover: rgba(255, 255, 255, 0.7);
+}
+
+.os-scrollbar-handle {
+	--os-handle-bg: rgba(0, 0, 0, 0.5);
+}
+
+.os-scrollbar-handle:hover {
+	--os-handle-bg-hover: rgba(0, 0, 0, 0.7);
+}
+
+html.dark .shiki,
+html.dark .shiki span {
+	color: var(--shiki-dark) !important;
+	/* background-color: var(--shiki-dark-bg) !important; */
+	background-color: transparent !important;
+	font-style: var(--shiki-dark-font-style) !important;
+	font-weight: var(--shiki-dark-font-weight) !important;
+	text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
+pre {
+	background-color: transparent !important;
+}
+
+code {
+	font-family: var(--font-geist-mono);
+}
+
+code > .line {
+	padding: 0 1rem;
+}
+
+[cmdk-overlay] {
+	position: fixed;
+	inset: 0;
+	height: 100dvh;
+	width: 100vw;
+	background-color: rgb(0 0 0 / 80%);
+}
+
+[cmdk-dialog] {
+	position: fixed;
+	left: 50%;
+	top: 20%;
+	z-index: 50;
+	transform: translate(-50%, 0);
+	width: 100%;
+	max-width: 640px;
+	padding: 1rem;
+}
+
+[cmdk-list-sizer] {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	width: 100%;
+}

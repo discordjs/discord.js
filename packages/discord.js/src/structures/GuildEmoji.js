@@ -2,7 +2,7 @@
 
 const { PermissionFlagsBits } = require('discord-api-types/v10');
 const BaseGuildEmoji = require('./BaseGuildEmoji');
-const { Error, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 const GuildEmojiRoleManager = require('../managers/GuildEmojiRoleManager');
 
 /**
@@ -55,8 +55,8 @@ class GuildEmoji extends BaseGuildEmoji {
    * @readonly
    */
   get deletable() {
-    if (!this.guild.members.me) throw new Error(ErrorCodes.GuildUncachedMe);
-    return !this.managed && this.guild.members.me.permissions.has(PermissionFlagsBits.ManageEmojisAndStickers);
+    if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
+    return !this.managed && this.guild.members.me.permissions.has(PermissionFlagsBits.ManageGuildExpressions);
   }
 
   /**
@@ -78,7 +78,7 @@ class GuildEmoji extends BaseGuildEmoji {
 
   /**
    * Data for editing an emoji.
-   * @typedef {Object} GuildEmojiEditData
+   * @typedef {Object} GuildEmojiEditOptions
    * @property {string} [name] The name of the emoji
    * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] Roles to restrict emoji to
    * @property {string} [reason] Reason for editing this emoji
@@ -86,16 +86,16 @@ class GuildEmoji extends BaseGuildEmoji {
 
   /**
    * Edits the emoji.
-   * @param {GuildEmojiEditData} data The new data for the emoji
+   * @param {GuildEmojiEditOptions} options The options to provide
    * @returns {Promise<GuildEmoji>}
    * @example
    * // Edit an emoji
    * emoji.edit({ name: 'newemoji' })
-   *   .then(e => console.log(`Edited emoji ${e}`))
+   *   .then(emoji => console.log(`Edited emoji ${emoji}`))
    *   .catch(console.error);
    */
-  edit(data) {
-    return this.guild.emojis.edit(this.id, data);
+  edit(options) {
+    return this.guild.emojis.edit(this.id, options);
   }
 
   /**

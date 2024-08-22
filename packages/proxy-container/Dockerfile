@@ -1,18 +1,34 @@
-FROM node:16-alpine
+FROM node:18-alpine AS base
 
-WORKDIR /usr/proxy
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 
-# First copy over dependencies separate from src for better caching
-COPY package.json yarn.lock tsconfig.json .yarnrc.yml build.config.ts ./
-COPY .yarn ./.yarn
-COPY ./packages/proxy-container/package.json ./packages/proxy-container/
+RUN apk update
+RUN apk add --no-cache libc6-compat
 
-WORKDIR /usr/proxy/packages/proxy-container
+RUN corepack enable
+RUN corepack prepare pnpm@latest --activate
 
-RUN yarn workspaces focus
+COPY . /usr/proxy-container
+WORKDIR /usr/proxy-container
 
-# Next up, copy over our src and build it, then prune deps for prod
-COPY ./packages/proxy-container ./
-RUN yarn build && yarn workspaces focus --production
+FROM base AS builder
 
-CMD ["node", "--enable-source-maps", "./dist/index.mjs"]
+RUN pnpm install --frozen-lockfile --ignore-scripts
+RUN pnpm exec turbo run build --filter='@discordjs/proxy-container...'
+
+FROM builder AS pruned
+
+RUN pnpm --filter='@discordjs/proxy-container' --prod deploy pruned
+
+FROM node:18-alpine AS proxy
+
+WORKDIR /usr/proxy-container
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 proxy-container
+USER proxy-container
+
+COPY --from=pruned /usr/proxy-container/pruned .
+
+CMD ["node", "--enable-source-maps", "dist/index.js"]

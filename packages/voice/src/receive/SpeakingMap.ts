@@ -1,16 +1,18 @@
-/* eslint-disable @typescript-eslint/method-signature-style, @typescript-eslint/unified-signatures */
+/* eslint-disable @typescript-eslint/unified-signatures */
 import { EventEmitter } from 'node:events';
 
 export interface SpeakingMap extends EventEmitter {
 	/**
 	 * Emitted when a user starts speaking.
-	 * @event
+	 *
+	 * @eventProperty
 	 */
 	on(event: 'start', listener: (userId: string) => void): this;
 
 	/**
 	 * Emitted when a user ends speaking.
-	 * @event
+	 *
+	 * @eventProperty
 	 */
 	on(event: 'end', listener: (userId: string) => void): this;
 }
@@ -45,6 +47,7 @@ export class SpeakingMap extends EventEmitter {
 			this.users.set(userId, Date.now());
 			this.emit('start', userId);
 		}
+
 		this.startTimeout(userId);
 	}
 

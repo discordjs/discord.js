@@ -1,8 +1,8 @@
 import { REST } from '@discordjs/rest';
-import { APIGatewayBotInfo, GatewayOpcodes, GatewaySendPayload } from 'discord-api-types/v10';
-import { MockAgent, Interceptable } from 'undici';
+import { GatewayOpcodes, type APIGatewayBotInfo, type GatewaySendPayload } from 'discord-api-types/v10';
+import { MockAgent, type Interceptable } from 'undici';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { IShardingStrategy, WebSocketManager } from '../../src';
+import { WebSocketManager, type IShardingStrategy } from '../../src/index.js';
 
 vi.useFakeTimers();
 
@@ -54,13 +54,13 @@ test('fetch gateway information', async () => {
 	expect(initial).toEqual(data);
 	expect(fetch).toHaveBeenCalledOnce();
 
-	fetch.mockRestore();
+	fetch.mockClear();
 
 	const cached = await manager.fetchGatewayInformation();
 	expect(cached).toEqual(data);
 	expect(fetch).not.toHaveBeenCalled();
 
-	fetch.mockRestore();
+	fetch.mockClear();
 	mockPool
 		.intercept({
 			path: '/api/v10/gateway/bot',
@@ -72,7 +72,7 @@ test('fetch gateway information', async () => {
 	expect(forced).toEqual(data);
 	expect(fetch).toHaveBeenCalledOnce();
 
-	fetch.mockRestore();
+	fetch.mockClear();
 	mockPool
 		.intercept({
 			path: '/api/v10/gateway/bot',
@@ -80,7 +80,7 @@ test('fetch gateway information', async () => {
 		})
 		.reply(fetch);
 
-	NOW.mockReturnValue(Infinity);
+	NOW.mockReturnValue(Number.POSITIVE_INFINITY);
 	const cacheExpired = await manager.fetchGatewayInformation();
 	expect(cacheExpired).toEqual(data);
 	expect(fetch).toHaveBeenCalledOnce();
@@ -146,7 +146,7 @@ test('update shard count', async () => {
 	expect(await manager.getShardCount()).toBe(2);
 	expect(fetch).not.toHaveBeenCalled();
 
-	fetch.mockRestore();
+	fetch.mockClear();
 	mockPool
 		.intercept({
 			path: '/api/v10/gateway/bot',
@@ -171,17 +171,27 @@ test('it handles passing in both shardIds and shardCount', async () => {
 test('strategies', async () => {
 	class MockStrategy implements IShardingStrategy {
 		public spawn = vi.fn();
+
 		public connect = vi.fn();
+
 		public destroy = vi.fn();
+
 		public send = vi.fn();
+
+		public fetchStatus = vi.fn();
 	}
+
+	const strategy = new MockStrategy();
 
 	const rest = new REST().setAgent(mockAgent).setToken('A-Very-Fake-Token');
 	const shardIds = [0, 1, 2];
-	const manager = new WebSocketManager({ token: 'A-Very-Fake-Token', intents: 0, rest, shardIds });
-
-	const strategy = new MockStrategy();
-	manager.setStrategy(strategy);
+	const manager = new WebSocketManager({
+		token: 'A-Very-Fake-Token',
+		intents: 0,
+		rest,
+		shardIds,
+		buildStrategy: () => strategy,
+	});
 
 	const data: APIGatewayBotInfo = {
 		shards: 1,
@@ -219,7 +229,11 @@ test('strategies', async () => {
 	await manager.destroy(destroyOptions);
 	expect(strategy.destroy).toHaveBeenCalledWith(destroyOptions);
 
-	const send: GatewaySendPayload = { op: GatewayOpcodes.RequestGuildMembers, d: { guild_id: '1234', limit: 0 } };
+	const send: GatewaySendPayload = {
+		op: GatewayOpcodes.RequestGuildMembers,
+		// eslint-disable-next-line id-length
+		d: { guild_id: '1234', limit: 0, query: '' },
+	};
 	await manager.send(0, send);
 	expect(strategy.send).toHaveBeenCalledWith(0, send);
 });

@@ -1,20 +1,23 @@
 import type { DeclarationReflection } from 'typedoc';
 import type { Config, Item } from '../interfaces/index.js';
 
-export class DocumentedItem<T = Item | DeclarationReflection> {
-	public constructor(public readonly data: T, public readonly config: Config) {}
+export class DocumentedItem<Data = DeclarationReflection | Item> {
+	public constructor(
+		public readonly data: Data,
+		public readonly config: Config,
+	) {}
 
 	public serialize(): unknown {
 		try {
 			return this.serializer();
-		} catch (err) {
-			const error = err as Error;
+		} catch (error_) {
+			const error = error_ as Error;
 			error.message = `Error while serializing ${this.detailedName()}: ${error.message}`;
 			throw error;
 		}
 	}
 
-	protected serializer() {
+	protected serializer(): unknown {
 		throw new Error("Method 'serializer()' must be implemented.");
 	}
 

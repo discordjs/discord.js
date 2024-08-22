@@ -1,0 +1,29 @@
+{
+	"$schema": "https://json.schemastore.org/package.json",
+	"name": "[REPLACE_ME]",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "tsc",
+		"lint": "prettier --check . && eslint --ext .ts --format=pretty src",
+		"deploy": "node --require dotenv/config dist/util/deploy.js",
+		"format": "prettier --write . && eslint --ext .ts --fix --format=pretty src",
+		"start": "node --require dotenv/config dist/index.js"
+	},
+	"dependencies": {
+		"@discordjs/core": "^1.2.0",
+		"discord.js": "^14.15.3",
+		"dotenv": "^16.4.5"
+	},
+	"devDependencies": {
+		"@sapphire/ts-config": "^5.0.1",
+		"@types/node": "^18.19.45",
+		"eslint": "^8.57.0",
+		"eslint-config-neon": "^0.1.62",
+		"eslint-formatter-pretty": "^6.0.1",
+		"prettier": "^3.3.3",
+		"typescript": "~5.5.4",
+		"zod": "^3.23.8"
+	}
+}

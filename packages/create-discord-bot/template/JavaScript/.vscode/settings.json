@@ -1,0 +1,13 @@
+{
+	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll": true,
+		"source.organizeImports": false
+	},
+	"editor.trimAutoWhitespace": false,
+	"files.insertFinalNewline": true,
+	"files.eol": "\n",
+	"npm.packageManager": "[REPLACE_ME]"
+}

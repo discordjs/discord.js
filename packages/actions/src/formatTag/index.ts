@@ -1,10 +1,11 @@
 import { getInput, setOutput } from '@actions/core';
-import { formatTag } from './formatTag';
+import { formatTag } from './formatTag.js';
 
 const tag = getInput('tag', { required: true });
 const parsed = formatTag(tag);
 
 if (parsed) {
+	setOutput('subpackage', parsed.isSubpackage);
 	setOutput('package', parsed.package);
 	setOutput('semver', parsed.semver);
 }

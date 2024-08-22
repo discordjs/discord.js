@@ -1,0 +1,7 @@
+.contentlayer
+.next
+.turbo
+.vscode
+coverage
+src/styles/unocss.css
+next-env.d.ts

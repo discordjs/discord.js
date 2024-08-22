@@ -1,7 +1,7 @@
 export interface Config {
-	input: string[];
 	custom: string;
-	root: string;
+	input: string[];
 	output: string;
+	root: string;
 	typescript: boolean;
 }

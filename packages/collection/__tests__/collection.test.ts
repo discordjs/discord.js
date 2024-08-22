@@ -1,24 +1,26 @@
+/* eslint-disable unicorn/no-array-method-this-argument */
+/* eslint-disable id-length */
 import { describe, test, expect } from 'vitest';
-import { Collection } from '../src';
+import { Collection } from '../src/index.js';
 
-type TestCollection = Collection<string, number>;
+type TestCollection<Value> = Collection<string, Value>;
 
-function createCollection(): TestCollection {
+function createCollection<Value = number>(): TestCollection<Value> {
 	return new Collection();
 }
 
-function createCollectionFrom(...entries: [key: string, value: number][]): TestCollection {
+function createCollectionFrom<Value = number>(...entries: [key: string, value: Value][]): TestCollection<Value> {
 	return new Collection(entries);
 }
 
-function createTestCollection(): TestCollection {
+function createTestCollection(): TestCollection<number> {
 	return createCollectionFrom(['a', 1], ['b', 2], ['c', 3]);
 }
 
 function expectInvalidFunctionError(cb: () => unknown, val?: unknown): void {
 	expect(() => {
+		// eslint-disable-next-line promise/prefer-await-to-callbacks
 		cb();
-		// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 	}).toThrowError(new TypeError(`${val} is not a function`));
 }
 
@@ -114,16 +116,15 @@ describe('combineEntries() tests', () => {
 });
 
 describe('difference() tests', () => {
-	const coll1 = createCollectionFrom(['a', 1], ['b', 2]);
-	const coll2 = createTestCollection();
-	const diff = createCollectionFrom(['c', 3]);
+	const coll1 = createCollectionFrom(['a', 1], ['b', 2], ['c', 3]);
+	const coll2 = createCollectionFrom(['b', 2], ['d', 4], ['e', 5]);
 
-	test('it removes entries from the bigger collection on the right', () => {
-		expect(coll1.difference(coll2)).toStrictEqual(diff);
+	test('it returns the difference the collections', () => {
+		expect(coll1.difference(coll2)).toStrictEqual(createCollectionFrom(['a', 1], ['c', 3]));
 	});
 
-	test('removes the difference from the bigger collection on the left', () => {
-		expect(coll2.difference(coll1)).toStrictEqual(diff);
+	test('it returns the difference the collections from the opposite order', () => {
+		expect(coll2.difference(coll1)).toStrictEqual(createCollectionFrom(['d', 4], ['e', 5]));
 	});
 });
 
@@ -131,10 +132,16 @@ describe('each() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.each());
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.each(123), 123);
+	});
+
+	test('binds the thisArg', () => {
+		coll.each(function each() {
+			expect(this).toBeNull();
+		}, null);
 	});
 
 	test('iterate over each item', () => {
@@ -152,7 +159,7 @@ describe('each() tests', () => {
 describe('ensure() tests', () => {
 	test('throws if defaultValueGenerator is not a function', () => {
 		const coll = createTestCollection();
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.ensure('d', 'abc'), 'abc');
 	});
 
@@ -176,7 +183,7 @@ describe('equals() tests', () => {
 	const coll2 = createTestCollection();
 
 	test('returns false if no collection is passed', () => {
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expect(coll1.equals()).toBeFalsy();
 	});
 
@@ -198,9 +205,9 @@ describe('every() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.every());
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.every(123), 123);
 	});
 
@@ -224,9 +231,9 @@ describe('filter() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.filter());
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.filter(123), 123);
 	});
 
@@ -251,9 +258,9 @@ describe('find() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => createCollection().find());
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => createCollection().find(123), 123);
 	});
 
@@ -275,9 +282,9 @@ describe('findKey() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.findKey());
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.findKey(123), 123);
 	});
 
@@ -405,12 +412,12 @@ describe('hasAny() tests', () => {
 	});
 });
 
-describe('intersect() tests', () => {
+describe('intersection() tests', () => {
 	const coll1 = createCollectionFrom(['a', 1], ['b', 2]);
 	const coll2 = createCollectionFrom(['a', 1], ['c', 3]);
 
-	test('it returns a new collection', () => {
-		const c = coll1.intersect(coll2);
+	test('it returns the intersection of the collections', () => {
+		const c = coll1.intersection(coll2);
 		expect(c).toBeInstanceOf(Collection);
 		expect(c.size).toStrictEqual(1);
 
@@ -506,9 +513,9 @@ describe('map() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.map());
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.map(123), 123);
 	});
 
@@ -529,9 +536,9 @@ describe('mapValues() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.mapValues());
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.mapValues(123), 123);
 	});
 
@@ -606,9 +613,9 @@ describe('partition() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.partition());
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.partition(123), 123);
 	});
 
@@ -690,25 +697,73 @@ describe('reduce() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.reduce());
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.reduce(123), 123);
 	});
 
 	test('reduce collection into a single value with initial value', () => {
 		const sum = coll.reduce((a, x) => a + x, 0);
-		expect(sum).toStrictEqual(6);
+		expect<number>(sum).toStrictEqual(6);
 	});
 
 	test('reduce collection into a single value without initial value', () => {
-		const sum = coll.reduce<number>((a, x) => a + x);
-		expect(sum).toStrictEqual(6);
+		const sum = coll.reduce((a, x) => a + x);
+		expect<number>(sum).toStrictEqual(6);
+	});
+
+	test('reduce collection into a single value with different accumulator type', () => {
+		const str = coll.reduce((a, x) => a.concat(x.toString()), '');
+		expect<string>(str).toStrictEqual('123');
+	});
+
+	test('reduce empty collection with initial value', () => {
+		const coll = createCollection();
+		expect<number>(coll.reduce((a, x) => a + x, 0)).toStrictEqual(0);
 	});
 
 	test('reduce empty collection without initial value', () => {
 		const coll = createCollection();
-		expect(() => coll.reduce((a: number, x) => a + x)).toThrowError(
+		expect(() => coll.reduce((a, x) => a + x)).toThrowError(
+			new TypeError('Reduce of empty collection with no initial value'),
+		);
+	});
+});
+
+describe('reduceRight() tests', () => {
+	const coll = createTestCollection();
+
+	test('throws if fn is not a function', () => {
+		// @ts-expect-error: Invalid function
+		expectInvalidFunctionError(() => coll.reduceRight());
+		// @ts-expect-error: Invalid function
+		expectInvalidFunctionError(() => coll.reduceRight(123), 123);
+	});
+
+	test('reduce collection into a single value with initial value', () => {
+		const sum = coll.reduceRight((a, x) => a + x, 0);
+		expect<number>(sum).toStrictEqual(6);
+	});
+
+	test('reduce collection into a single value without initial value', () => {
+		const sum = coll.reduceRight((a, x) => a + x);
+		expect<number>(sum).toStrictEqual(6);
+	});
+
+	test('reduce collection into a single value with different accumulator type', () => {
+		const str = coll.reduceRight((a, x) => a.concat(x.toString()), '');
+		expect<string>(str).toStrictEqual('321');
+	});
+
+	test('reduce empty collection with initial value', () => {
+		const coll = createCollection();
+		expect<number>(coll.reduceRight((a, x) => a + x, 0)).toStrictEqual(0);
+	});
+
+	test('reduce empty collection without initial value', () => {
+		const coll = createCollection();
+		expect(() => coll.reduceRight((a, x) => a + x)).toThrowError(
 			new TypeError('Reduce of empty collection with no initial value'),
 		);
 	});
@@ -729,18 +784,14 @@ describe('some() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.some());
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.some(123), 123);
 	});
 
 	test('returns false if no items pass the predicate', () => {
 		expect(coll.some((v) => v > 3)).toBeFalsy();
-	});
-
-	test('returns true if at least one item passes the predicate', () => {
-		expect(coll.some((x) => x === 2)).toBeTruthy();
 	});
 });
 
@@ -750,14 +801,6 @@ describe('sort() tests', () => {
 		expect([...coll.values()]).toStrictEqual([3, 2, 1]);
 		coll.sort((a, b) => a - b);
 		expect([...coll.values()]).toStrictEqual([1, 2, 3]);
-	});
-
-	test('sort a collection', () => {
-		const coll = createCollectionFrom(['a', 3], ['b', 2], ['c', 1]);
-		expect([...coll.values()]).toStrictEqual([3, 2, 1]);
-		const sorted = coll.sorted((a, b) => a - b);
-		expect([...coll.values()]).toStrictEqual([3, 2, 1]);
-		expect([...sorted.values()]).toStrictEqual([1, 2, 3]);
 	});
 
 	describe('defaultSort', () => {
@@ -777,9 +820,9 @@ describe('sweep() test', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.sweep());
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.sweep(123), 123);
 	});
 
@@ -800,13 +843,24 @@ describe('sweep() test', () => {
 	});
 });
 
+describe('symmetricDifference() tests', () => {
+	const coll1 = createCollectionFrom(['a', 1], ['b', 2], ['c', 3]);
+	const coll2 = createCollectionFrom(['b', 2], ['d', 4], ['e', 5]);
+
+	test('it returns the symmetric difference of the collections', () => {
+		expect(coll1.symmetricDifference(coll2)).toStrictEqual(
+			createCollectionFrom(['a', 1], ['c', 3], ['d', 4], ['e', 5]),
+		);
+	});
+});
+
 describe('tap() tests', () => {
 	const coll = createTestCollection();
 
 	test('throws if fn is not a function', () => {
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.tap());
-		// @ts-expect-error
+		// @ts-expect-error: Invalid function
 		expectInvalidFunctionError(() => coll.tap(123), 123);
 	});
 
@@ -823,9 +877,69 @@ describe('tap() tests', () => {
 });
 
 describe('toJSON() tests', () => {
-	test('it returns the values as an array', () => {
+	test('it returns the entries of the collection', () => {
 		const c = createTestCollection();
-		expect(c.toJSON()).toStrictEqual([1, 2, 3]);
+
+		expect(c.toJSON()).toStrictEqual([
+			['a', 1],
+			['b', 2],
+			['c', 3],
+		]);
+	});
+});
+
+describe('union() tests', () => {
+	const coll1 = createCollectionFrom(['a', 1], ['b', 2]);
+	const coll2 = createCollectionFrom(['a', 1], ['c', 3]);
+
+	test('it returns the union of the collections', () => {
+		const c = coll1.union(coll2);
+		expect(c).toBeInstanceOf(Collection);
+		expect(c.size).toStrictEqual(3);
+
+		expect(c).toStrictEqual(createCollectionFrom(['a', 1], ['b', 2], ['c', 3]));
+	});
+});
+
+describe('toReversed() tests', () => {
+	test('reverses a collection', () => {
+		const coll = createTestCollection();
+		const reversed = coll.toReversed();
+		expect([...reversed.entries()]).toStrictEqual([
+			['c', 3],
+			['b', 2],
+			['a', 1],
+		]);
+	});
+
+	test('does not the modify original collection', () => {
+		const coll = createTestCollection();
+		const originalEntries = [...coll.entries()];
+		const reversed = coll.toReversed();
+
+		expect(reversed).not.toBe(coll);
+		expect([...coll.entries()]).toStrictEqual(originalEntries);
+	});
+});
+
+describe('toSorted() tests', () => {
+	test('sorts a collection', () => {
+		const coll = createCollectionFrom(['a', 3], ['b', 2], ['c', 1]);
+		const sorted = coll.toSorted((a, b) => a - b);
+		expect([...sorted.entries()]).toStrictEqual([
+			['c', 1],
+			['b', 2],
+			['a', 3],
+		]);
+	});
+
+	test('does not modify the original collection', () => {
+		const coll = createCollectionFrom(['a', 3], ['b', 2], ['c', 1]);
+		const originalEntries = [...coll.entries()];
+		const sorted = coll.toSorted();
+
+		expect(sorted).not.toBe(coll);
+		expect([...coll.entries()]).toStrictEqual(originalEntries);
 	});
 });
 
@@ -890,5 +1004,55 @@ describe('random thisArg tests', () => {
 			expect(Array.isArray(this)).toBeTruthy();
 			return value === this;
 		}, array);
+	});
+});
+
+describe('findLast() tests', () => {
+	const coll = createTestCollection();
+	test('it returns last matched element', () => {
+		expect(coll.findLast((value) => value % 2 === 1)).toStrictEqual(3);
+	});
+
+	test('returns undefined if no item matches', () => {
+		expect(coll.findLast((value) => value === 10)).toBeUndefined();
+	});
+
+	test('throws if fn is not a function', () => {
+		// @ts-expect-error: Invalid function
+		expectInvalidFunctionError(() => createCollection().findLast());
+		// @ts-expect-error: Invalid function
+		expectInvalidFunctionError(() => createCollection().findLast(123), 123);
+	});
+
+	test('binds the thisArg', () => {
+		coll.findLast(function findLast() {
+			expect(this).toBeNull();
+			return true;
+		}, null);
+	});
+});
+
+describe('findLastKey() tests', () => {
+	const coll = createTestCollection();
+	test('it returns last matched element', () => {
+		expect(coll.findLastKey((value) => value % 2 === 1)).toStrictEqual('c');
+	});
+
+	test('returns undefined if no item matches', () => {
+		expect(coll.findLastKey((value) => value === 10)).toBeUndefined();
+	});
+
+	test('throws if fn is not a function', () => {
+		// @ts-expect-error: Invalid function
+		expectInvalidFunctionError(() => createCollection().findLastKey());
+		// @ts-expect-error: Invalid function
+		expectInvalidFunctionError(() => createCollection().findLastKey(123), 123);
+	});
+
+	test('binds the thisArg', () => {
+		coll.findLastKey(function findLastKey() {
+			expect(this).toBeNull();
+			return true;
+		}, null);
 	});
 });

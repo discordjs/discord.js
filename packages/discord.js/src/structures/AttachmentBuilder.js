@@ -91,7 +91,7 @@ class AttachmentBuilder {
 
   /**
    * Makes a new builder instance from a preexisting attachment structure.
-   * @param {JSONEncodable<AttachmentPayload>} other The builder to construct a new instance from
+   * @param {AttachmentBuilder|Attachment|AttachmentPayload} other The builder to construct a new instance from
    * @returns {AttachmentBuilder}
    */
   static from(other) {
@@ -103,11 +103,6 @@ class AttachmentBuilder {
 }
 
 module.exports = AttachmentBuilder;
-
-/**
- * @external APIAttachment
- * @see {@link https://discord.com/developers/docs/resources/channel#attachment-object}
- */
 
 /**
  * @typedef {Object} AttachmentData

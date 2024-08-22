@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/method-signature-style */
-import { createSocket, Socket } from 'node:dgram';
+import { Buffer } from 'node:buffer';
+import { createSocket, type Socket } from 'node:dgram';
 import { EventEmitter } from 'node:events';
 import { isIPv4 } from 'node:net';
 
@@ -12,11 +12,6 @@ export interface SocketConfig {
 	port: number;
 }
 
-interface KeepAlive {
-	value: number;
-	timestamp: number;
-}
-
 /**
  * Parses the response from Discord to aid with local IP discovery.
  *
@@ -25,7 +20,7 @@ interface KeepAlive {
 export function parseLocalPacket(message: Buffer): SocketConfig {
 	const packet = Buffer.from(message);
 
-	const ip = packet.slice(8, packet.indexOf(0, 8)).toString('utf-8');
+	const ip = packet.slice(8, packet.indexOf(0, 8)).toString('utf8');
 
 	if (!isIPv4(ip)) {
 		throw new Error('Malformed IP address');
@@ -40,11 +35,6 @@ export function parseLocalPacket(message: Buffer): SocketConfig {
  * The interval in milliseconds at which keep alive datagrams are sent.
  */
 const KEEP_ALIVE_INTERVAL = 5e3;
-
-/**
- * The maximum number of keep alive packets which can be missed.
- */
-const KEEP_ALIVE_LIMIT = 12;
 
 /**
  * The maximum value of the keep alive counter.
@@ -73,11 +63,6 @@ export class VoiceUDPSocket extends EventEmitter {
 	private readonly remote: SocketConfig;
 
 	/**
-	 * A list of keep alives that are waiting to be acknowledged.
-	 */
-	private readonly keepAlives: KeepAlive[];
-
-	/**
 	 * The counter used in the keep alive mechanism.
 	 */
 	private keepAliveCounter = 0;
@@ -94,32 +79,26 @@ export class VoiceUDPSocket extends EventEmitter {
 
 	/**
 	 * The time taken to receive a response to keep alive messages.
+	 *
+	 * @deprecated This field is no longer updated as keep alive messages are no longer tracked.
 	 */
 	public ping?: number;
-
-	/**
-	 * The debug logger function, if debugging is enabled.
-	 */
-	private readonly debug: null | ((message: string) => void);
 
 	/**
 	 * Creates a new VoiceUDPSocket.
 	 *
 	 * @param remote - Details of the remote socket
 	 */
-	public constructor(remote: SocketConfig, debug = false) {
+	public constructor(remote: SocketConfig) {
 		super();
 		this.socket = createSocket('udp4');
 		this.socket.on('error', (error: Error) => this.emit('error', error));
 		this.socket.on('message', (buffer: Buffer) => this.onMessage(buffer));
 		this.socket.on('close', () => this.emit('close'));
 		this.remote = remote;
-		this.keepAlives = [];
 		this.keepAliveBuffer = Buffer.alloc(8);
 		this.keepAliveInterval = setInterval(() => this.keepAlive(), KEEP_ALIVE_INTERVAL);
 		setImmediate(() => this.keepAlive());
-
-		this.debug = debug ? (message: string) => this.emit('debug', message) : null;
 	}
 
 	/**
@@ -128,15 +107,6 @@ export class VoiceUDPSocket extends EventEmitter {
 	 * @param buffer - The received buffer
 	 */
 	private onMessage(buffer: Buffer): void {
-		// Handle keep alive message
-		if (buffer.length === 8) {
-			const counter = buffer.readUInt32LE(0);
-			const index = this.keepAlives.findIndex(({ value }) => value === counter);
-			if (index === -1) return;
-			this.ping = Date.now() - this.keepAlives[index]!.timestamp;
-			// Delete all keep alives up to and including the received one
-			this.keepAlives.splice(0, index);
-		}
 		// Propagate the message
 		this.emit('message', buffer);
 	}
@@ -145,18 +115,8 @@ export class VoiceUDPSocket extends EventEmitter {
 	 * Called at a regular interval to check whether we are still able to send datagrams to Discord.
 	 */
 	private keepAlive() {
-		if (this.keepAlives.length >= KEEP_ALIVE_LIMIT) {
-			this.debug?.('UDP socket has not received enough responses from Discord - closing socket');
-			this.destroy();
-			return;
-		}
-
 		this.keepAliveBuffer.writeUInt32LE(this.keepAliveCounter, 0);
 		this.send(this.keepAliveBuffer);
-		this.keepAlives.push({
-			value: this.keepAliveCounter,
-			timestamp: Date.now(),
-		});
 		this.keepAliveCounter++;
 		if (this.keepAliveCounter > MAX_COUNTER_VALUE) {
 			this.keepAliveCounter = 0;
@@ -169,7 +129,7 @@ export class VoiceUDPSocket extends EventEmitter {
 	 * @param buffer - The buffer to send
 	 */
 	public send(buffer: Buffer) {
-		return this.socket.send(buffer, this.remote.port, this.remote.ip);
+		this.socket.send(buffer, this.remote.port, this.remote.ip);
 	}
 
 	/**
@@ -179,6 +139,7 @@ export class VoiceUDPSocket extends EventEmitter {
 		try {
 			this.socket.close();
 		} catch {}
+
 		clearInterval(this.keepAliveInterval);
 	}
 
@@ -187,7 +148,7 @@ export class VoiceUDPSocket extends EventEmitter {
 	 *
 	 * @param ssrc - The SSRC received from Discord
 	 */
-	public performIPDiscovery(ssrc: number): Promise<SocketConfig> {
+	public async performIPDiscovery(ssrc: number): Promise<SocketConfig> {
 		return new Promise((resolve, reject) => {
 			const listener = (message: Buffer) => {
 				try {

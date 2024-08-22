@@ -13,14 +13,19 @@
 	</p>
 	<p>
 		<a href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-vercel.svg" alt="Vercel" /></a>
+		<a href="https://www.cloudflare.com"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-workers.png" alt="Cloudflare Workers" height="44" /></a>
 	</p>
 </div>
 
+## About
+
+`@discordjs/builders` is a utility package for easily building Discord API payloads.
+
 ## Installation
 
-**Node.js 16.9.0 or newer is required.**
+**Node.js 16.11.0 or newer is required.**
 
-```sh-session
+```sh
 npm install @discordjs/builders
 yarn add @discordjs/builders
 pnpm add @discordjs/builders
@@ -28,29 +33,40 @@ pnpm add @discordjs/builders
 
 ## Examples
 
-Here are some examples for the builders and utilities you can find in this package:
-
-- [Slash Command Builders](https://github.com/discordjs/discord.js/blob/main/packages/builders/docs/examples/Slash%20Command%20Builders.md)
+You can find examples of how to use the builders in the [Slash Command Builders][example] examples.
 
 ## Links
 
-- [Website](https://discord.js.org/) ([source](https://github.com/discordjs/discord.js/tree/main/packages/website))
-- [Documentation](https://discord.js.org/#/docs/builders)
-- [Guide](https://discordjs.guide/) ([source](https://github.com/discordjs/guide))
-  See also the [Update Guide](https://discordjs.guide/additional-info/changes-in-v14.html), including updated and removed items in the library.
-- [discord.js Discord server](https://discord.gg/djs)
-- [Discord API Discord server](https://discord.gg/discord-api)
-- [GitHub](https://github.com/discordjs/discord.js/tree/main/packages/builders)
-- [npm](https://www.npmjs.com/package/@discordjs/builders)
-- [Related libraries](https://discord.com/developers/docs/topics/community-resources#libraries)
+- [Website][website] ([source][website-source])
+- [Documentation][documentation]
+- [Guide][guide] ([source][guide-source])
+  Also see the v13 to v14 [Update Guide][guide-update], which includes updated and removed items from the library.
+- [discord.js Discord server][discord]
+- [Discord API Discord server][discord-api]
+- [GitHub][source]
+- [npm][npm]
+- [Related libraries][related-libs]
 
 ## Contributing
 
 Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation](https://discord.js.org/#/docs/builders).  
-See [the contribution guide](https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md) if you'd like to submit a PR.
+[documentation][documentation].  
+See [the contribution guide][contributing] if you'd like to submit a PR.
 
 ## Help
 
-If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle
-nudge in the right direction, please don't hesitate to join our official [discord.js Server](https://discord.gg/djs).
+If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle nudge in the right direction, please don't hesitate to join our official [discord.js Server][discord].
+
+[example]: https://github.com/discordjs/discord.js/blob/main/packages/builders/docs/examples/Slash%20Command%20Builders.md
+[website]: https://discord.js.org
+[website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
+[documentation]: https://discord.js.org/docs/packages/builders/stable
+[guide]: https://discordjs.guide/
+[guide-source]: https://github.com/discordjs/guide
+[guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
+[discord]: https://discord.gg/djs
+[discord-api]: https://discord.gg/discord-api
+[source]: https://github.com/discordjs/discord.js/tree/main/packages/builders
+[npm]: https://www.npmjs.com/package/@discordjs/builders
+[related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
+[contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md

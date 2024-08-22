@@ -1,7 +1,7 @@
 'use strict';
 
-const { messageLink } = require('@discordjs/builders');
 const { Collection } = require('@discordjs/collection');
+const { messageLink } = require('@discordjs/formatters');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const {
   InteractionType,
@@ -17,15 +17,16 @@ const Embed = require('./Embed');
 const InteractionCollector = require('./InteractionCollector');
 const Mentions = require('./MessageMentions');
 const MessagePayload = require('./MessagePayload');
+const { Poll } = require('./Poll.js');
 const ReactionCollector = require('./ReactionCollector');
 const { Sticker } = require('./Sticker');
-const { Error, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const { createComponent } = require('../util/Components');
-const { NonSystemMessageTypes } = require('../util/Constants');
+const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, UndeletableMessageTypes } = require('../util/Constants');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
-const { cleanContent, resolvePartialEmoji } = require('../util/Util');
+const { cleanContent, resolvePartialEmoji, transformResolved } = require('../util/Util');
 
 /**
  * Represents a message on Discord.
@@ -141,19 +142,19 @@ class Message extends Base {
        * in a guild for messages that do not mention the client.</info>
        * @type {Embed[]}
        */
-      this.embeds = data.embeds.map(e => new Embed(e));
+      this.embeds = data.embeds.map(embed => new Embed(embed));
     } else {
       this.embeds = this.embeds?.slice() ?? [];
     }
 
     if ('components' in data) {
       /**
-       * An array of of action rows in the message.
+       * An array of action rows in the message.
        * <info>This property requires the {@link GatewayIntentBits.MessageContent} privileged intent
        * in a guild for messages that do not mention the client.</info>
        * @type {ActionRow[]}
        */
-      this.components = data.components.map(c => createComponent(c));
+      this.components = data.components.map(component => createComponent(component));
     } else {
       this.components = this.components?.slice() ?? [];
     }
@@ -181,10 +182,59 @@ class Message extends Base {
        * @type {Collection<Snowflake, Sticker>}
        */
       this.stickers = new Collection(
-        (data.sticker_items ?? data.stickers)?.map(s => [s.id, new Sticker(this.client, s)]),
+        (data.sticker_items ?? data.stickers)?.map(sticker => [sticker.id, new Sticker(this.client, sticker)]),
       );
     } else {
       this.stickers = new Collection(this.stickers);
+    }
+
+    if ('position' in data) {
+      /**
+       * A generally increasing integer (there may be gaps or duplicates) that represents
+       * the approximate position of the message in a thread.
+       * @type {?number}
+       */
+      this.position = data.position;
+    } else {
+      this.position ??= null;
+    }
+
+    if ('role_subscription_data' in data) {
+      /**
+       * Role subscription data found on {@link MessageType.RoleSubscriptionPurchase} messages.
+       * @typedef {Object} RoleSubscriptionData
+       * @property {Snowflake} roleSubscriptionListingId The id of the SKU and listing the user is subscribed to
+       * @property {string} tierName The name of the tier the user is subscribed to
+       * @property {number} totalMonthsSubscribed The total number of months the user has been subscribed for
+       * @property {boolean} isRenewal Whether this notification is a renewal
+       */
+
+      /**
+       * The data of the role subscription purchase or renewal.
+       * <info>This is present on {@link MessageType.RoleSubscriptionPurchase} messages.</info>
+       * @type {?RoleSubscriptionData}
+       */
+      this.roleSubscriptionData = {
+        roleSubscriptionListingId: data.role_subscription_data.role_subscription_listing_id,
+        tierName: data.role_subscription_data.tier_name,
+        totalMonthsSubscribed: data.role_subscription_data.total_months_subscribed,
+        isRenewal: data.role_subscription_data.is_renewal,
+      };
+    } else {
+      this.roleSubscriptionData ??= null;
+    }
+
+    if ('resolved' in data) {
+      /**
+       * Resolved data from auto-populated select menus.
+       * @typedef {Object} CommandInteractionResolvedData
+       */
+      this.resolved = transformResolved(
+        { client: this.client, guild: this.guild, channel: this.channel },
+        data.resolved,
+      );
+    } else {
+      this.resolved ??= null;
     }
 
     // Discord sends null if the message has not been edited
@@ -304,15 +354,15 @@ class Message extends Base {
      * Reference data sent in a message that contains ids identifying the referenced message.
      * This can be present in the following types of message:
      * * Crossposted messages (`MessageFlags.Crossposted`)
-     * * {@link MessageType.ChannelFollowAdd}
      * * {@link MessageType.ChannelPinnedMessage}
+     * * {@link MessageType.ChannelFollowAdd}
      * * {@link MessageType.Reply}
      * * {@link MessageType.ThreadStarterMessage}
      * @see {@link https://discord.com/developers/docs/resources/channel#message-types}
      * @typedef {Object} MessageReference
-     * @property {Snowflake} channelId The channel's id the message was referenced
-     * @property {?Snowflake} guildId The guild's id the message was referenced
-     * @property {?Snowflake} messageId The message's id that was referenced
+     * @property {Snowflake} channelId The channel id that was referenced
+     * @property {Snowflake|undefined} guildId The guild id that was referenced
+     * @property {Snowflake|undefined} messageId The message id that was referenced
      */
 
     if ('message_reference' in data) {
@@ -356,6 +406,40 @@ class Message extends Base {
       };
     } else {
       this.interaction ??= null;
+    }
+
+    if (data.poll) {
+      /**
+       * The poll that was sent with the message
+       * @type {?Poll}
+       */
+      this.poll = new Poll(this.client, data.poll, this);
+    } else {
+      this.poll ??= null;
+    }
+
+    /**
+     * A call associated with a message
+     * @typedef {Object} MessageCall
+     * @property {Readonly<?Date>} endedAt The time the call ended
+     * @property {?number} endedTimestamp The timestamp the call ended
+     * @property {Snowflake[]} participants The ids of the users that participated in the call
+     */
+
+    if (data.call) {
+      /**
+       * The call associated with the message
+       * @type {?MessageCall}
+       */
+      this.call = {
+        endedTimestamp: data.call.ended_timestamp ? Date.parse(data.call.ended_timestamp) : null,
+        participants: data.call.participants,
+        get endedAt() {
+          return this.endedTimestamp && new Date(this.endedTimestamp);
+        },
+      };
+    } else {
+      this.call ??= null;
     }
   }
 
@@ -530,6 +614,9 @@ class Message extends Base {
    * @property {CollectorFilter} [filter] The filter applied to this collector
    * @property {number} [time] Time to wait for an interaction before rejecting
    * @property {ComponentType} [componentType] The type of component interaction to collect
+   * @property {number} [idle] Time to wait without another message component interaction before ending the collector
+   * @property {boolean} [dispose] Whether to remove the message component interaction after collecting
+   * @property {InteractionResponse} [interactionResponse] The interaction response to collect interactions from
    */
 
   /**
@@ -551,7 +638,7 @@ class Message extends Base {
       collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
         if (interaction) resolve(interaction);
-        else reject(new Error(ErrorCodes.InteractionCollectorError, reason));
+        else reject(new DiscordjsError(ErrorCodes.InteractionCollectorError, reason));
       });
     });
   }
@@ -563,11 +650,17 @@ class Message extends Base {
    */
   get editable() {
     const precheck = Boolean(this.author.id === this.client.user.id && (!this.guild || this.channel?.viewable));
+
     // Regardless of permissions thread messages cannot be edited if
-    // the thread is locked.
+    // the thread is archived or the thread is locked and the bot does not have permission to manage threads.
     if (this.channel?.isThread()) {
-      return precheck && !this.channel.locked;
+      if (this.channel.archived) return false;
+      if (this.channel.locked) {
+        const permissions = this.channel.permissionsFor(this.client.user);
+        if (!permissions?.has(PermissionFlagsBits.ManageThreads, true)) return false;
+      }
     }
+
     return precheck;
   }
 
@@ -577,6 +670,8 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
+    if (UndeletableMessageTypes.includes(this.type)) return false;
+
     if (!this.guild) {
       return this.author.id === this.client.user.id;
     }
@@ -590,10 +685,28 @@ class Message extends Base {
     // This flag allows deleting even if timed out
     if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
 
-    return Boolean(
-      this.author.id === this.client.user.id ||
-        (permissions.has(PermissionFlagsBits.ManageMessages, false) &&
-          this.guild.members.me.communicationDisabledUntilTimestamp < Date.now()),
+    // The auto moderation action message author is the reference message author
+    return (
+      (this.type !== MessageType.AutoModerationAction && this.author.id === this.client.user.id) ||
+      (permissions.has(PermissionFlagsBits.ManageMessages, false) && !this.guild.members.me.isCommunicationDisabled())
+    );
+  }
+
+  /**
+   * Whether the message is bulk deletable by the client user
+   * @type {boolean}
+   * @readonly
+   * @example
+   * // Filter for bulk deletable messages
+   * channel.bulkDelete(messages.filter(message => message.bulkDeletable));
+   */
+  get bulkDeletable() {
+    return (
+      (this.inGuild() &&
+        Date.now() - this.createdTimestamp < MaxBulkDeletableMessageAge &&
+        this.deletable &&
+        this.channel?.permissionsFor(this.client.user).has(PermissionFlagsBits.ManageMessages, false)) ??
+      false
     );
   }
 
@@ -617,10 +730,11 @@ class Message extends Base {
    * @returns {Promise<Message>}
    */
   async fetchReference() {
-    if (!this.reference) throw new Error(ErrorCodes.MessageReferenceMissing);
+    if (!this.reference) throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
     const { channelId, messageId } = this.reference;
+    if (!messageId) throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
     const channel = this.client.channels.resolve(channelId);
-    if (!channel) throw new Error(ErrorCodes.GuildChannelResolve);
+    if (!channel) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
     const message = await channel.messages.fetch(messageId);
     return message;
   }
@@ -636,29 +750,14 @@ class Message extends Base {
       (this.author.id === this.client.user.id ? PermissionsBitField.DefaultBit : PermissionFlagsBits.ManageMessages);
     const { channel } = this;
     return Boolean(
-      channel?.type === ChannelType.GuildNews &&
+      channel?.type === ChannelType.GuildAnnouncement &&
         !this.flags.has(MessageFlags.Crossposted) &&
         this.type === MessageType.Default &&
+        !this.poll &&
         channel.viewable &&
         channel.permissionsFor(this.client.user)?.has(bitfield, false),
     );
   }
-
-  /**
-   * Options that can be passed into {@link Message#edit}.
-   * @typedef {Object} MessageEditOptions
-   * @property {?string} [content] Content to be edited
-   * @property {Embed[]|APIEmbed[]} [embeds] Embeds to be added/edited
-   * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
-   * @property {MessageFlags} [flags] Which flags to set for the message
-   * <info>Only the {@link MessageFlags.SuppressEmbeds} flag can be modified.</info>
-   * @property {Attachment[]} [attachments] An array of attachments to keep,
-   * all attachments will be kept if omitted
-   * @property {Array<JSONEncodable<AttachmentPayload>>|BufferResolvable[]|Attachment[]|AttachmentBuilder[]} [files]
-   * Files to add to the message
-   * @property {ActionRow[]|ActionRowOptions[]} [components]
-   * Action rows containing interactive components for the message (buttons, select menus)
-   */
 
   /**
    * Edits the content of the message.
@@ -671,7 +770,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   edit(options) {
-    if (!this.channel) return Promise.reject(new Error(ErrorCodes.ChannelNotCached));
+    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
     return this.channel.messages.edit(this, options);
   }
 
@@ -680,14 +779,14 @@ class Message extends Base {
    * @returns {Promise<Message>}
    * @example
    * // Crosspost a message
-   * if (message.channel.type === ChannelType.GuildNews) {
+   * if (message.channel.type === ChannelType.GuildAnnouncement) {
    *   message.crosspost()
    *     .then(() => console.log('Crossposted message'))
    *     .catch(console.error);
    * }
    */
   crosspost() {
-    if (!this.channel) return Promise.reject(new Error(ErrorCodes.ChannelNotCached));
+    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
     return this.channel.messages.crosspost(this.id);
   }
 
@@ -702,7 +801,7 @@ class Message extends Base {
    *   .catch(console.error)
    */
   async pin(reason) {
-    if (!this.channel) throw new Error(ErrorCodes.ChannelNotCached);
+    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
     await this.channel.messages.pin(this.id, reason);
     return this;
   }
@@ -718,7 +817,7 @@ class Message extends Base {
    *   .catch(console.error)
    */
   async unpin(reason) {
-    if (!this.channel) throw new Error(ErrorCodes.ChannelNotCached);
+    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
     await this.channel.messages.unpin(this.id, reason);
     return this;
   }
@@ -739,14 +838,14 @@ class Message extends Base {
    *   .catch(console.error);
    */
   async react(emoji) {
-    if (!this.channel) throw new Error(ErrorCodes.ChannelNotCached);
+    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
     await this.channel.messages.react(this.id, emoji);
 
     return this.client.actions.MessageReactionAdd.handle(
       {
-        user: this.client.user,
-        channel: this.channel,
-        message: this,
+        [this.client.actions.injectedUser]: this.client.user,
+        [this.client.actions.injectedChannel]: this.channel,
+        [this.client.actions.injectedMessage]: this,
         emoji: resolvePartialEmoji(emoji),
       },
       true,
@@ -763,22 +862,21 @@ class Message extends Base {
    *   .catch(console.error);
    */
   async delete() {
-    if (!this.channel) throw new Error(ErrorCodes.ChannelNotCached);
+    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
     await this.channel.messages.delete(this.id);
     return this;
   }
 
   /**
    * Options provided when sending a message as an inline reply.
-   * @typedef {BaseMessageOptions} ReplyMessageOptions
+   * @typedef {BaseMessageCreateOptions} MessageReplyOptions
    * @property {boolean} [failIfNotExists=this.client.options.failIfNotExists] Whether to error if the referenced
    * message does not exist (creates a standard message in this case when false)
-   * @property {StickerResolvable[]} [stickers=[]] Stickers to send in the message
    */
 
   /**
    * Send an inline reply to this message.
-   * @param {string|MessagePayload|ReplyMessageOptions} options The options to provide
+   * @param {string|MessagePayload|MessageReplyOptions} options The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Reply to a message
@@ -787,7 +885,7 @@ class Message extends Base {
    *   .catch(console.error);
    */
   reply(options) {
-    if (!this.channel) return Promise.reject(new Error(ErrorCodes.ChannelNotCached));
+    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
     let data;
 
     if (options instanceof MessagePayload) {
@@ -815,16 +913,16 @@ class Message extends Base {
 
   /**
    * Create a new public thread from this message
-   * @see ThreadManager#create
+   * @see GuildTextThreadManager#create
    * @param {StartThreadOptions} [options] Options for starting a thread on this message
    * @returns {Promise<ThreadChannel>}
    */
   startThread(options = {}) {
-    if (!this.channel) return Promise.reject(new Error(ErrorCodes.ChannelNotCached));
-    if (![ChannelType.GuildText, ChannelType.GuildNews].includes(this.channel.type)) {
-      return Promise.reject(new Error(ErrorCodes.MessageThreadParent));
+    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
+    if (![ChannelType.GuildText, ChannelType.GuildAnnouncement].includes(this.channel.type)) {
+      return Promise.reject(new DiscordjsError(ErrorCodes.MessageThreadParent));
     }
-    if (this.hasThread) return Promise.reject(new Error(ErrorCodes.MessageExistingThread));
+    if (this.hasThread) return Promise.reject(new DiscordjsError(ErrorCodes.MessageExistingThread));
     return this.channel.threads.create({ ...options, startMessage: this });
   }
 
@@ -834,7 +932,7 @@ class Message extends Base {
    * @returns {Promise<Message>}
    */
   fetch(force = true) {
-    if (!this.channel) return Promise.reject(new Error(ErrorCodes.ChannelNotCached));
+    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
     return this.channel.messages.fetch({ message: this.id, force });
   }
 
@@ -843,8 +941,8 @@ class Message extends Base {
    * @returns {Promise<?Webhook>}
    */
   fetchWebhook() {
-    if (!this.webhookId) return Promise.reject(new Error(ErrorCodes.WebhookMessage));
-    if (this.webhookId === this.applicationId) return Promise.reject(new Error(ErrorCodes.WebhookApplication));
+    if (!this.webhookId) return Promise.reject(new DiscordjsError(ErrorCodes.WebhookMessage));
+    if (this.webhookId === this.applicationId) return Promise.reject(new DiscordjsError(ErrorCodes.WebhookApplication));
     return this.client.fetchWebhook(this.webhookId);
   }
 
@@ -899,10 +997,12 @@ class Message extends Base {
       this.id === message.id &&
       this.author.id === message.author.id &&
       this.content === message.content &&
-      this.tts === message.tts &&
       this.nonce === message.nonce &&
+      this.tts === message.tts &&
+      this.attachments.size === message.attachments.size &&
       this.embeds.length === message.embeds.length &&
-      this.attachments.length === message.attachments.length;
+      this.attachments.every(attachment => message.attachments.has(attachment.id)) &&
+      this.embeds.every((embed, index) => embed.equals(message.embeds[index]));
 
     if (equal && rawData) {
       equal =

@@ -1,9 +1,10 @@
 'use strict';
 
-const { channelLink } = require('@discordjs/builders');
+const { channelLink, channelMention } = require('@discordjs/formatters');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
+const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
 const { ThreadChannelTypes } = require('../util/Constants');
 
 /**
@@ -25,6 +26,17 @@ class BaseChannel extends Base {
   }
 
   _patch(data) {
+    if ('flags' in data) {
+      /**
+       * The flags that are applied to the channel.
+       * <info>This is only `null` in a {@link PartialGroupDMChannel}. In all other cases, it is not `null`.</info>
+       * @type {?Readonly<ChannelFlagsBitField>}
+       */
+      this.flags = new ChannelFlagsBitField(data.flags).freeze();
+    } else {
+      this.flags ??= new ChannelFlagsBitField().freeze();
+    }
+
     /**
      * The channel's id
      * @type {Snowflake}
@@ -77,7 +89,7 @@ class BaseChannel extends Base {
    * console.log(`Hello from ${channel}!`);
    */
   toString() {
-    return `<#${this.id}>`;
+    return channelMention(this.id);
   }
 
   /**
@@ -135,14 +147,17 @@ class BaseChannel extends Base {
     return 'bitrate' in this;
   }
 
+  /**
+   * Indicates whether this channel is {@link ThreadOnlyChannel thread-only}.
+   * @returns {boolean}
+   */
+  isThreadOnly() {
+    return 'availableTags' in this;
+  }
+
   toJSON(...props) {
     return super.toJSON({ createdTimestamp: true }, ...props);
   }
 }
 
 exports.BaseChannel = BaseChannel;
-
-/**
- * @external APIChannel
- * @see {@link https://discord.com/developers/docs/resources/channel#channel-object}
- */

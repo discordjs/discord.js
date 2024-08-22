@@ -25,7 +25,7 @@ class InteractionWebhook {
   }
 
   // These are here only for documentation purposes - they are implemented by Webhook
-  /* eslint-disable no-empty-function, valid-jsdoc */
+  /* eslint-disable no-empty-function */
   /**
    * Sends a message with this webhook.
    * @param {string|MessagePayload|InteractionReplyOptions} options The content for the reply
@@ -45,7 +45,7 @@ class InteractionWebhook {
   /**
    * Edits a message that was sent by this webhook.
    * @param {MessageResolvable|'@original'} message The message to edit
-   * @param {string|MessagePayload|WebhookEditMessageOptions} options The options to provide
+   * @param {string|MessagePayload|WebhookMessageEditOptions} options The options to provide
    * @returns {Promise<Message>} Returns the message edited by this webhook
    */
 

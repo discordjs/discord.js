@@ -4,16 +4,20 @@ const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const { TypeError, ErrorCodes } = require('../errors');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const { Message } = require('../structures/Message');
 const MessagePayload = require('../structures/MessagePayload');
+const { MakeCacheOverrideSymbol } = require('../util/Symbols');
 const { resolvePartialEmoji } = require('../util/Util');
 
 /**
  * Manages API methods for Messages and holds their cache.
  * @extends {CachedManager}
+ * @abstract
  */
 class MessageManager extends CachedManager {
+  static [MakeCacheOverrideSymbol] = MessageManager;
+
   constructor(channel, iterable) {
     super(channel.client, Message, iterable);
 
@@ -49,6 +53,7 @@ class MessageManager extends CachedManager {
 
   /**
    * Options used to fetch multiple messages.
+   * <info>The `before`, `after`, and `around` parameters are mutually exclusive.</info>
    * @typedef {Object} FetchMessagesOptions
    * @property {number} [limit] The maximum number of messages to return
    * @property {Snowflake} [before] Consider only messages before this id
@@ -81,7 +86,8 @@ class MessageManager extends CachedManager {
    * @example
    * // Fetch messages and filter by a user id
    * channel.messages.fetch()
-   *   .then(messages => console.log(`${messages.filter(m => m.author.id === '84484653687267328').size} messages`))
+   *   .then(messages => console.log(`${messages.filter(message =>
+   *          message.author.id === '84484653687267328').size} messages`))
    *   .catch(console.error);
    */
   fetch(options) {
@@ -148,6 +154,21 @@ class MessageManager extends CachedManager {
    */
 
   /**
+   * Data used to reference an attachment.
+   * @typedef {Object} MessageEditAttachmentData
+   * @property {Snowflake} id The id of the attachment
+   */
+
+  /**
+   * Options that can be passed to edit a message.
+   * @typedef {BaseMessageOptions} MessageEditOptions
+   * @property {Array<Attachment|MessageEditAttachmentData>} [attachments] An array of attachments to keep.
+   * All attachments will be kept if omitted
+   * @property {MessageFlags} [flags] Which flags to set for the message
+   * <info>Only the {@link MessageFlags.SuppressEmbeds} flag can be modified.</info>
+   */
+
+  /**
    * Edits a message, even if it's not cached.
    * @param {MessageResolvable} message The message to edit
    * @param {string|MessageEditOptions|MessagePayload} options The options to edit the message
@@ -155,11 +176,12 @@ class MessageManager extends CachedManager {
    */
   async edit(message, options) {
     const messageId = this.resolveId(message);
-    if (!messageId) throw new TypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    if (!messageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
-    const { body, files } = await (options instanceof MessagePayload
-      ? options
-      : MessagePayload.create(message instanceof Message ? message : this, options)
+    const { body, files } = await (
+      options instanceof MessagePayload
+        ? options
+        : MessagePayload.create(message instanceof Message ? message : this, options)
     )
       .resolveBody()
       .resolveFiles();
@@ -181,7 +203,7 @@ class MessageManager extends CachedManager {
    */
   async crosspost(message) {
     message = this.resolveId(message);
-    if (!message) throw new TypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    if (!message) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
     const data = await this.client.rest.post(Routes.channelMessageCrosspost(this.channel.id, message));
     return this.cache.get(data.id) ?? this._add(data);
@@ -195,7 +217,7 @@ class MessageManager extends CachedManager {
    */
   async pin(message, reason) {
     message = this.resolveId(message);
-    if (!message) throw new TypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    if (!message) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
     await this.client.rest.put(Routes.channelPin(this.channel.id, message), { reason });
   }
@@ -208,7 +230,7 @@ class MessageManager extends CachedManager {
    */
   async unpin(message, reason) {
     message = this.resolveId(message);
-    if (!message) throw new TypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    if (!message) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
     await this.client.rest.delete(Routes.channelPin(this.channel.id, message), { reason });
   }
@@ -221,10 +243,10 @@ class MessageManager extends CachedManager {
    */
   async react(message, emoji) {
     message = this.resolveId(message);
-    if (!message) throw new TypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    if (!message) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
     emoji = resolvePartialEmoji(emoji);
-    if (!emoji) throw new TypeError(ErrorCodes.EmojiType, 'emoji', 'EmojiIdentifierResolvable');
+    if (!emoji) throw new DiscordjsTypeError(ErrorCodes.EmojiType, 'emoji', 'EmojiIdentifierResolvable');
 
     const emojiId = emoji.id
       ? `${emoji.animated ? 'a:' : ''}${emoji.name}:${emoji.id}`
@@ -240,9 +262,39 @@ class MessageManager extends CachedManager {
    */
   async delete(message) {
     message = this.resolveId(message);
-    if (!message) throw new TypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    if (!message) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
     await this.client.rest.delete(Routes.channelMessage(this.channel.id, message));
+  }
+
+  /**
+   * Ends a poll.
+   * @param {Snowflake} messageId The id of the message
+   * @returns {Promise<Message>}
+   */
+  async endPoll(messageId) {
+    const message = await this.client.rest.post(Routes.expirePoll(this.channel.id, messageId));
+    return this._add(message, false);
+  }
+
+  /**
+   * Options used for fetching voters of an answer in a poll.
+   * @typedef {BaseFetchPollAnswerVotersOptions} FetchPollAnswerVotersOptions
+   * @param {Snowflake} messageId The id of the message
+   * @param {number} answerId The id of the answer
+   */
+
+  /**
+   * Fetches the users that voted for a poll answer.
+   * @param {FetchPollAnswerVotersOptions} options The options for fetching the poll answer voters
+   * @returns {Promise<Collection<Snowflake, User>>}
+   */
+  async fetchPollAnswerVoters({ messageId, answerId, after, limit }) {
+    const voters = await this.client.rest.get(Routes.pollAnswerVoters(this.channel.id, messageId, answerId), {
+      query: makeURLSearchParams({ limit, after }),
+    });
+
+    return voters.users.reduce((acc, user) => acc.set(user.id, this.client.users._add(user, false)), new Collection());
   }
 }
 

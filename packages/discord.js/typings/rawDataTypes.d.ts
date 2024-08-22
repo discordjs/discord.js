@@ -47,6 +47,7 @@ import {
   APIUnavailableGuild,
   APIUser,
   APIVoiceRegion,
+  APIVoiceState,
   APIWebhook,
   GatewayActivity,
   GatewayActivityAssets,
@@ -62,7 +63,6 @@ import {
   GatewayPresenceUpdate,
   GatewayReadyDispatchData,
   GatewayTypingStartDispatchData,
-  GatewayVoiceState,
   RESTAPIPartialCurrentUserGuild,
   RESTGetAPIWebhookWithTokenResult,
   RESTPatchAPIChannelMessageJSONBody,
@@ -77,7 +77,7 @@ import {
   Snowflake,
   APIGuildScheduledEvent,
 } from 'discord-api-types/v10';
-import { GuildChannel, Guild, PermissionOverwrites } from '.';
+import { GuildChannel, Guild, PermissionOverwrites } from './index.js';
 
 export type RawActivityData = GatewayActivity;
 
@@ -102,6 +102,7 @@ export type RawEmojiData =
   | RawReactionEmojiData
   | GatewayActivityEmoji
   | Omit<Partial<APIPartialEmoji>, 'animated'>;
+export type RawApplicationEmojiData = APIEmoji;
 export type RawGuildEmojiData = APIEmoji;
 export type RawReactionEmojiData = APIEmoji | APIPartialEmoji;
 
@@ -194,7 +195,7 @@ export type RawUserData =
 
 export type RawVoiceRegionData = APIVoiceRegion;
 
-export type RawVoiceStateData = GatewayVoiceState | Omit<GatewayVoiceState, 'guild_id'>;
+export type RawVoiceStateData = APIVoiceState | Omit<APIVoiceState, 'guild_id'>;
 
 export type RawWebhookData =
   | APIWebhook

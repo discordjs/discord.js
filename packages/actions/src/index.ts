@@ -1,1 +1,1 @@
-export * from './formatTag/formatTag';
+export * from './formatTag/formatTag.js';

@@ -1,5 +1,8 @@
+import { isJSONEncodable, type Equatable, type JSONEncodable } from '@discordjs/util';
 import { ComponentType, type TextInputStyle, type APITextInputComponent } from 'discord-api-types/v10';
 import isEqual from 'fast-deep-equal';
+import { customIdValidator } from '../Assertions.js';
+import { ComponentBuilder } from '../Component.js';
 import {
 	maxLengthValidator,
 	minLengthValidator,
@@ -9,20 +12,46 @@ import {
 	validateRequiredParameters,
 	labelValidator,
 	textInputStyleValidator,
-} from './Assertions';
-import { isJSONEncodable, type JSONEncodable } from '../../util/jsonEncodable';
-import { customIdValidator } from '../Assertions';
-import { ComponentBuilder } from '../Component';
+} from './Assertions.js';
 
-export class TextInputBuilder extends ComponentBuilder<APITextInputComponent> {
+/**
+ * A builder that creates API-compatible JSON data for text inputs.
+ */
+export class TextInputBuilder
+	extends ComponentBuilder<APITextInputComponent>
+	implements Equatable<APITextInputComponent | JSONEncodable<APITextInputComponent>>
+{
+	/**
+	 * Creates a new text input from API data.
+	 *
+	 * @param data - The API data to create this text input with
+	 * @example
+	 * Creating a text input from an API data object:
+	 * ```ts
+	 * const textInput = new TextInputBuilder({
+	 * 	custom_id: 'a cool text input',
+	 * 	label: 'Type something',
+	 * 	style: TextInputStyle.Short,
+	 * });
+	 * ```
+	 * @example
+	 * Creating a text input using setters and API data:
+	 * ```ts
+	 * const textInput = new TextInputBuilder({
+	 * 	label: 'Type something else',
+	 * })
+	 * 	.setCustomId('woah')
+	 * 	.setStyle(TextInputStyle.Paragraph);
+	 * ```
+	 */
 	public constructor(data?: APITextInputComponent & { type?: ComponentType.TextInput }) {
 		super({ type: ComponentType.TextInput, ...data });
 	}
 
 	/**
-	 * Sets the custom id for this text input
+	 * Sets the custom id for this text input.
 	 *
-	 * @param customId - The custom id of this text input
+	 * @param customId - The custom id to use
 	 */
 	public setCustomId(customId: string) {
 		this.data.custom_id = customIdValidator.parse(customId);
@@ -30,9 +59,9 @@ export class TextInputBuilder extends ComponentBuilder<APITextInputComponent> {
 	}
 
 	/**
-	 * Sets the label for this text input
+	 * Sets the label for this text input.
 	 *
-	 * @param label - The label for this text input
+	 * @param label - The label to use
 	 */
 	public setLabel(label: string) {
 		this.data.label = labelValidator.parse(label);
@@ -40,9 +69,9 @@ export class TextInputBuilder extends ComponentBuilder<APITextInputComponent> {
 	}
 
 	/**
-	 * Sets the style for this text input
+	 * Sets the style for this text input.
 	 *
-	 * @param style - The style for this text input
+	 * @param style - The style to use
 	 */
 	public setStyle(style: TextInputStyle) {
 		this.data.style = textInputStyleValidator.parse(style);
@@ -50,7 +79,7 @@ export class TextInputBuilder extends ComponentBuilder<APITextInputComponent> {
 	}
 
 	/**
-	 * Sets the minimum length of text for this text input
+	 * Sets the minimum length of text for this text input.
 	 *
 	 * @param minLength - The minimum length of text for this text input
 	 */
@@ -60,7 +89,7 @@ export class TextInputBuilder extends ComponentBuilder<APITextInputComponent> {
 	}
 
 	/**
-	 * Sets the maximum length of text for this text input
+	 * Sets the maximum length of text for this text input.
 	 *
 	 * @param maxLength - The maximum length of text for this text input
 	 */
@@ -70,9 +99,9 @@ export class TextInputBuilder extends ComponentBuilder<APITextInputComponent> {
 	}
 
 	/**
-	 * Sets the placeholder of this text input
+	 * Sets the placeholder for this text input.
 	 *
-	 * @param placeholder - The placeholder of this text input
+	 * @param placeholder - The placeholder to use
 	 */
 	public setPlaceholder(placeholder: string) {
 		this.data.placeholder = placeholderValidator.parse(placeholder);
@@ -80,9 +109,9 @@ export class TextInputBuilder extends ComponentBuilder<APITextInputComponent> {
 	}
 
 	/**
-	 * Sets the value of this text input
+	 * Sets the value for this text input.
 	 *
-	 * @param value - The value for this text input
+	 * @param value - The value to use
 	 */
 	public setValue(value: string) {
 		this.data.value = valueValidator.parse(value);
@@ -90,7 +119,7 @@ export class TextInputBuilder extends ComponentBuilder<APITextInputComponent> {
 	}
 
 	/**
-	 * Sets whether this text input is required
+	 * Sets whether this text input is required.
 	 *
 	 * @param required - Whether this text input is required
 	 */
@@ -99,15 +128,21 @@ export class TextInputBuilder extends ComponentBuilder<APITextInputComponent> {
 		return this;
 	}
 
+	/**
+	 * {@inheritDoc ComponentBuilder.toJSON}
+	 */
 	public toJSON(): APITextInputComponent {
 		validateRequiredParameters(this.data.custom_id, this.data.style, this.data.label);
-		// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+
 		return {
 			...this.data,
 		} as APITextInputComponent;
 	}
 
-	public equals(other: JSONEncodable<APITextInputComponent> | APITextInputComponent): boolean {
+	/**
+	 * Whether this is equal to another structure.
+	 */
+	public equals(other: APITextInputComponent | JSONEncodable<APITextInputComponent>): boolean {
 		if (isJSONEncodable(other)) {
 			return isEqual(other.toJSON(), this.data);
 		}

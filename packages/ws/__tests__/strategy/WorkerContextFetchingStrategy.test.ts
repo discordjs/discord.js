@@ -1,15 +1,17 @@
+/* eslint-disable @typescript-eslint/consistent-type-imports */
+// @ts-nocheck
 import { REST } from '@discordjs/rest';
-import { MockAgent, Interceptable } from 'undici';
+import { MockAgent, type Interceptable } from 'undici';
 import { beforeEach, test, vi, expect } from 'vitest';
 import {
 	managerToFetchingStrategyOptions,
 	WorkerContextFetchingStrategy,
-	WorkerRecievePayload,
-	WorkerSendPayload,
 	WebSocketManager,
 	WorkerSendPayloadOp,
-	WorkerRecievePayloadOp,
-} from '../../src';
+	WorkerReceivePayloadOp,
+	type WorkerReceivePayload,
+	type WorkerSendPayload,
+} from '../../src/index.js';
 
 let mockAgent: MockAgent;
 let mockPool: Interceptable;
@@ -30,8 +32,8 @@ const session = {
 vi.mock('node:worker_threads', async () => {
 	const { EventEmitter }: typeof import('node:events') = await vi.importActual('node:events');
 	class MockParentPort extends EventEmitter {
-		public postMessage(message: WorkerRecievePayload) {
-			if (message.op === WorkerRecievePayloadOp.RetrieveSessionInfo) {
+		public postMessage(message: WorkerReceivePayload) {
+			if (message.op === WorkerReceivePayloadOp.RetrieveSessionInfo) {
 				const response: WorkerSendPayload = {
 					op: WorkerSendPayloadOp.SessionInfoResponse,
 					nonce: message.nonce,
@@ -45,6 +47,7 @@ vi.mock('node:worker_threads', async () => {
 	return {
 		parentPort: new MockParentPort(),
 		isMainThread: false,
+		workerData: {},
 	};
 });
 

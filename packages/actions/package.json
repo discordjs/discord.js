@@ -1,17 +1,17 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/actions",
 	"version": "0.1.0",
 	"description": "A set of actions that we use for our workflows",
 	"private": true,
 	"scripts": {
 		"test": "vitest run",
-		"build": "unbuild",
-		"lint": "prettier --check . && TIMING=1 eslint src __tests__ --ext mjs,js,ts",
-		"format": "prettier --write . && TIMING=1 eslint src __tests__ --ext mjs,js,ts --fix",
-		"fmt": "yarn format"
+		"build": "tsc --noEmit --lib ESNext,DOM && tsup",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
+		"fmt": "pnpm run format"
 	},
-	"main": "./dist/index.mjs",
-	"types": "./dist/index.d.ts",
+	"type": "module",
 	"directories": {
 		"lib": "src",
 		"test": "__tests__"
@@ -32,33 +32,39 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/discordjs/discord.js.git"
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/actions"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
-		"@actions/core": "^1.9.1",
-		"tslib": "^2.4.0"
+		"@actions/core": "^1.10.1",
+		"@actions/glob": "^0.5.0",
+		"@discordjs/scripts": "workspace:^",
+		"@vercel/blob": "^0.23.4",
+		"@vercel/postgres": "^0.9.0",
+		"meilisearch": "^0.38.0",
+		"p-limit": "^6.1.0",
+		"tslib": "^2.6.3",
+		"undici": "6.19.8"
 	},
 	"devDependencies": {
-		"@types/node": "^16.11.48",
-		"@typescript-eslint/eslint-plugin": "^5.33.0",
-		"@typescript-eslint/parser": "^5.33.0",
-		"c8": "^7.12.0",
-		"eslint": "^8.22.0",
-		"eslint-config-marine": "^9.4.1",
-		"eslint-config-prettier": "^8.5.0",
-		"eslint-import-resolver-typescript": "^3.4.1",
-		"eslint-plugin-import": "^2.26.0",
-		"prettier": "^2.7.1",
-		"rollup-plugin-typescript2": "0.32.1",
-		"typescript": "^4.7.4",
-		"unbuild": "^0.8.8",
-		"vitest": "^0.21.1"
+		"@types/node": "^18.19.45",
+		"@vitest/coverage-v8": "^2.0.5",
+		"cross-env": "^7.0.3",
+		"eslint": "^8.57.0",
+		"eslint-config-neon": "^0.1.62",
+		"eslint-formatter-pretty": "^6.0.1",
+		"prettier": "^3.3.3",
+		"tsup": "^8.2.4",
+		"turbo": "^2.0.14",
+		"typescript": "~5.5.4",
+		"vitest": "^2.0.5"
 	},
 	"engines": {
-		"node": ">=16.9.0"
+		"node": ">=18"
 	}
 }

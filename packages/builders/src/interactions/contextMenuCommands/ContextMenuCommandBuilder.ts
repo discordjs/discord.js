@@ -1,10 +1,15 @@
 import type {
 	ApplicationCommandType,
+	ApplicationIntegrationType,
+	InteractionContextType,
 	LocaleString,
 	LocalizationMap,
 	Permissions,
-	RESTPostAPIApplicationCommandsJSONBody,
+	RESTPostAPIContextMenuApplicationCommandsJSONBody,
 } from 'discord-api-types/v10';
+import type { RestOrArray } from '../../util/normalizeArray.js';
+import { normalizeArray } from '../../util/normalizeArray.js';
+import { validateLocale, validateLocalizationMap } from '../slashCommands/Assertions.js';
 import {
 	validateRequiredParameters,
 	validateName,
@@ -12,48 +17,90 @@ import {
 	validateDefaultPermission,
 	validateDefaultMemberPermissions,
 	validateDMPermission,
-} from './Assertions';
-import { validateLocale, validateLocalizationMap } from '../slashCommands/Assertions';
+	contextsPredicate,
+	integrationTypesPredicate,
+} from './Assertions.js';
 
+/**
+ * The type a context menu command can be.
+ */
+export type ContextMenuCommandType = ApplicationCommandType.Message | ApplicationCommandType.User;
+
+/**
+ * A builder that creates API-compatible JSON data for context menu commands.
+ */
 export class ContextMenuCommandBuilder {
 	/**
-	 * The name of this context menu command
+	 * The name of this command.
 	 */
 	public readonly name: string = undefined!;
 
 	/**
-	 * The localized names for this command
+	 * The name localizations of this command.
 	 */
 	public readonly name_localizations?: LocalizationMap;
 
 	/**
-	 * The type of this context menu command
+	 * The type of this command.
 	 */
 	public readonly type: ContextMenuCommandType = undefined!;
 
 	/**
-	 * Whether the command is enabled by default when the app is added to a guild
+	 * The contexts for this command.
+	 */
+	public readonly contexts?: InteractionContextType[];
+
+	/**
+	 * Whether this command is enabled by default when the application is added to a guild.
 	 *
-	 * @deprecated This property is deprecated and will be removed in the future.
-	 * You should use `setDefaultMemberPermissions` or `setDMPermission` instead.
+	 * @deprecated Use {@link ContextMenuCommandBuilder.setDefaultMemberPermissions} or {@link ContextMenuCommandBuilder.setDMPermission} instead.
 	 */
 	public readonly default_permission: boolean | undefined = undefined;
 
 	/**
-	 * Set of permissions represented as a bit set for the command
+	 * The set of permissions represented as a bit set for the command.
 	 */
 	public readonly default_member_permissions: Permissions | null | undefined = undefined;
 
 	/**
-	 * Indicates whether the command is available in DMs with the application, only for globally-scoped commands.
-	 * By default, commands are visible.
+	 * Indicates whether the command is available in direct messages with the application.
+	 *
+	 * @remarks
+	 * By default, commands are visible. This property is only for global commands.
 	 */
 	public readonly dm_permission: boolean | undefined = undefined;
 
 	/**
-	 * Sets the name
+	 * The integration types for this command.
+	 */
+	public readonly integration_types?: ApplicationIntegrationType[];
+
+	/**
+	 * Sets the contexts of this command.
 	 *
-	 * @param name - The name
+	 * @param contexts - The contexts
+	 */
+	public setContexts(...contexts: RestOrArray<InteractionContextType>) {
+		Reflect.set(this, 'contexts', contextsPredicate.parse(normalizeArray(contexts)));
+
+		return this;
+	}
+
+	/**
+	 * Sets integration types of this command.
+	 *
+	 * @param integrationTypes - The integration types
+	 */
+	public setIntegrationTypes(...integrationTypes: RestOrArray<ApplicationIntegrationType>) {
+		Reflect.set(this, 'integration_types', integrationTypesPredicate.parse(normalizeArray(integrationTypes)));
+
+		return this;
+	}
+
+	/**
+	 * Sets the name of this command.
+	 *
+	 * @param name - The name to use
 	 */
 	public setName(name: string) {
 		// Assert the name matches the conditions
@@ -65,9 +112,9 @@ export class ContextMenuCommandBuilder {
 	}
 
 	/**
-	 * Sets the type
+	 * Sets the type of this command.
 	 *
-	 * @param type - The type
+	 * @param type - The type to use
 	 */
 	public setType(type: ContextMenuCommandType) {
 		// Assert the type is valid
@@ -81,12 +128,11 @@ export class ContextMenuCommandBuilder {
 	/**
 	 * Sets whether the command is enabled by default when the application is added to a guild.
 	 *
-	 * **Note**: If set to `false`, you will have to later `PUT` the permissions for this command.
-	 *
-	 * @param value - Whether or not to enable this command by default
-	 *
-	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
-	 * @deprecated Use `setDefaultMemberPermissions` or `setDMPermission` instead.
+	 * @remarks
+	 * If set to `false`, you will have to later `PUT` the permissions for this command.
+	 * @param value - Whether to enable this command by default
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#permissions}
+	 * @deprecated Use {@link ContextMenuCommandBuilder.setDefaultMemberPermissions} or {@link ContextMenuCommandBuilder.setDMPermission} instead.
 	 */
 	public setDefaultPermission(value: boolean) {
 		// Assert the value matches the conditions
@@ -98,13 +144,12 @@ export class ContextMenuCommandBuilder {
 	}
 
 	/**
-	 * Sets the default permissions a member should have in order to run the command.
+	 * Sets the default permissions a member should have in order to run this command.
 	 *
-	 * **Note:** You can set this to `'0'` to disable the command by default.
-	 *
+	 * @remarks
+	 * You can set this to `'0'` to disable the command by default.
 	 * @param permissions - The permissions bit field to set
-	 *
-	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#permissions}
 	 */
 	public setDefaultMemberPermissions(permissions: Permissions | bigint | number | null | undefined) {
 		// Assert the value and parse it
@@ -116,12 +161,12 @@ export class ContextMenuCommandBuilder {
 	}
 
 	/**
-	 * Sets if the command is available in DMs with the application, only for globally-scoped commands.
-	 * By default, commands are visible.
+	 * Sets if the command is available in direct messages with the application.
 	 *
-	 * @param enabled - If the command should be enabled in DMs
-	 *
-	 * @see https://discord.com/developers/docs/interactions/application-commands#permissions
+	 * @remarks
+	 * By default, commands are visible. This method is only for global commands.
+	 * @param enabled - Whether the command should be enabled in direct messages
+	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#permissions}
 	 */
 	public setDMPermission(enabled: boolean | null | undefined) {
 		// Assert the value matches the conditions
@@ -133,10 +178,10 @@ export class ContextMenuCommandBuilder {
 	}
 
 	/**
-	 * Sets a name localization
+	 * Sets a name localization for this command.
 	 *
-	 * @param locale - The locale to set a description for
-	 * @param localizedName - The localized description for the given locale
+	 * @param locale - The locale to set
+	 * @param localizedName - The localized name for the given `locale`
 	 */
 	public setNameLocalization(locale: LocaleString, localizedName: string | null) {
 		if (!this.name_localizations) {
@@ -157,9 +202,9 @@ export class ContextMenuCommandBuilder {
 	}
 
 	/**
-	 * Sets the name localizations
+	 * Sets the name localizations for this command.
 	 *
-	 * @param localizedNames - The dictionary of localized descriptions to set
+	 * @param localizedNames - The object of localized names to set
 	 */
 	public setNameLocalizations(localizedNames: LocalizationMap | null) {
 		if (localizedNames === null) {
@@ -169,18 +214,19 @@ export class ContextMenuCommandBuilder {
 
 		Reflect.set(this, 'name_localizations', {});
 
-		Object.entries(localizedNames).forEach((args) =>
-			this.setNameLocalization(...(args as [LocaleString, string | null])),
-		);
+		for (const args of Object.entries(localizedNames))
+			this.setNameLocalization(...(args as [LocaleString, string | null]));
 		return this;
 	}
 
 	/**
-	 * Returns the final data that should be sent to Discord.
+	 * Serializes this builder to API-compatible JSON data.
 	 *
-	 * **Note:** Calling this function will validate required properties based on their conditions.
+	 * @remarks
+	 * This method runs validations on the data before serializing it.
+	 * As such, it may throw an error if the data is invalid.
 	 */
-	public toJSON(): RESTPostAPIApplicationCommandsJSONBody {
+	public toJSON(): RESTPostAPIContextMenuApplicationCommandsJSONBody {
 		validateRequiredParameters(this.name, this.type);
 
 		validateLocalizationMap(this.name_localizations);
@@ -188,5 +234,3 @@ export class ContextMenuCommandBuilder {
 		return { ...this };
 	}
 }
-
-export type ContextMenuCommandType = ApplicationCommandType.User | ApplicationCommandType.Message;

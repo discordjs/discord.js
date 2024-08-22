@@ -1,12 +1,12 @@
 'use strict';
 
 const { makeURLSearchParams } = require('@discordjs/rest');
+const { lazy } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes, WebhookType } = require('discord-api-types/v10');
 const MessagePayload = require('./MessagePayload');
-const { Error, ErrorCodes } = require('../errors');
-const DataResolver = require('../util/DataResolver');
-const { lazy } = require('../util/Util');
+const { DiscordjsError, ErrorCodes } = require('../errors');
+const { resolveImage } = require('../util/DataResolver');
 
 const getMessage = lazy(() => require('./Message').Message);
 
@@ -39,7 +39,11 @@ class Webhook {
      * @name Webhook#token
      * @type {?string}
      */
-    Object.defineProperty(this, 'token', { value: data.token ?? null, writable: true, configurable: true });
+    Object.defineProperty(this, 'token', {
+      value: data.token ?? null,
+      writable: true,
+      configurable: true,
+    });
 
     if ('avatar' in data) {
       /**
@@ -73,7 +77,7 @@ class Webhook {
 
     if ('channel_id' in data) {
       /**
-       * The channel the webhook belongs to
+       * The id of the channel the webhook belongs to
        * @type {Snowflake}
        */
       this.channelId = data.channel_id;
@@ -122,33 +126,39 @@ class Webhook {
 
   /**
    * Options that can be passed into send.
-   * @typedef {BaseMessageOptions} WebhookMessageOptions
+   * @typedef {BaseMessageOptions} WebhookMessageCreateOptions
+   * @property {boolean} [tts=false] Whether the message should be spoken aloud
+   * @property {MessageFlags} [flags] Which flags to set for the message.
+   * <info>Only the {@link MessageFlags.SuppressEmbeds} flag can be set.</info>
    * @property {string} [username=this.name] Username override for the message
    * @property {string} [avatarURL] Avatar URL override for the message
    * @property {Snowflake} [threadId] The id of the thread in the channel to send to.
    * <info>For interaction webhooks, this property is ignored</info>
-   * @property {MessageFlags} [flags] Which flags to set for the message.
-   * <info>Only the {@link MessageFlags.SuppressEmbeds} flag can be set.</info>
+   * @property {string} [threadName] Name of the thread to create (only available if the webhook is in a forum channel)
+   * @property {Snowflake[]} [appliedTags]
+   * The tags to apply to the created thread (only available if the webhook is in a forum channel)
    */
 
   /**
    * Options that can be passed into editMessage.
-   * @typedef {Object} WebhookEditMessageOptions
-   * @property {Embed[]|APIEmbed[]} [embeds] See {@link WebhookMessageOptions#embeds}
-   * @property {string} [content] See {@link BaseMessageOptions#content}
-   * @property {JSONEncodable<AttachmentPayload>|BufferResolvable[]|Attachment[]|AttachmentBuilder[]} [files]
-   * See {@link BaseMessageOptions#files}
-   * @property {MessageMentionOptions} [allowedMentions] See {@link BaseMessageOptions#allowedMentions}
+   * @typedef {BaseMessageOptions} WebhookMessageEditOptions
    * @property {Attachment[]} [attachments] Attachments to send with the message
-   * @property {ActionRow[]|ActionRowOptions[]} [components]
-   * Action rows containing interactive components for the message (buttons, select menus)
    * @property {Snowflake} [threadId] The id of the thread this message belongs to
    * <info>For interaction webhooks, this property is ignored</info>
    */
 
   /**
+   * The channel the webhook belongs to
+   * @type {?(TextChannel|VoiceChannel|StageChannel|NewsChannel|ForumChannel|MediaChannel)}
+   * @readonly
+   */
+  get channel() {
+    return this.client.channels.resolve(this.channelId);
+  }
+
+  /**
    * Sends a message with this webhook.
-   * @param {string|MessagePayload|WebhookMessageOptions} options The options to provide
+   * @param {string|MessagePayload|WebhookMessageCreateOptions} options The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Send a basic message
@@ -195,7 +205,7 @@ class Webhook {
    *   .catch(console.error);
    */
   async send(options) {
-    if (!this.token) throw new Error(ErrorCodes.WebhookTokenUnavailable);
+    if (!this.token) throw new DiscordjsError(ErrorCodes.WebhookTokenUnavailable);
 
     let messagePayload;
 
@@ -211,7 +221,12 @@ class Webhook {
     });
 
     const { body, files } = await messagePayload.resolveFiles();
-    const d = await this.client.rest.post(Routes.webhook(this.id, this.token), { body, files, query, auth: false });
+    const d = await this.client.rest.post(Routes.webhook(this.id, this.token), {
+      body,
+      files,
+      query,
+      auth: false,
+    });
 
     if (!this.client.channels) return d;
     return this.client.channels.cache.get(d.channel_id)?.messages._add(d, false) ?? new (getMessage())(this.client, d);
@@ -236,7 +251,7 @@ class Webhook {
    * @see {@link https://api.slack.com/messaging/webhooks}
    */
   async sendSlackMessage(body) {
-    if (!this.token) throw new Error(ErrorCodes.WebhookTokenUnavailable);
+    if (!this.token) throw new DiscordjsError(ErrorCodes.WebhookTokenUnavailable);
 
     const data = await this.client.rest.post(Routes.webhookPlatform(this.id, this.token, 'slack'), {
       query: makeURLSearchParams({ wait: true }),
@@ -248,21 +263,22 @@ class Webhook {
 
   /**
    * Options used to edit a {@link Webhook}.
-   * @typedef {Object} WebhookEditData
+   * @typedef {Object} WebhookEditOptions
    * @property {string} [name=this.name] The new name for the webhook
    * @property {?(BufferResolvable)} [avatar] The new avatar for the webhook
-   * @property {GuildTextChannelResolvable} [channel] The new channel for the webhook
+   * @property {GuildTextChannelResolvable|VoiceChannel|StageChannel|ForumChannel|MediaChannel} [channel]
+   * The new channel for the webhook
    * @property {string} [reason] Reason for editing the webhook
    */
 
   /**
    * Edits this webhook.
-   * @param {WebhookEditData} options Options for editing the webhook
+   * @param {WebhookEditOptions} options Options for editing the webhook
    * @returns {Promise<Webhook>}
    */
   async edit({ name = this.name, avatar, channel, reason }) {
     if (avatar && !(typeof avatar === 'string' && avatar.startsWith('data:'))) {
-      avatar = await DataResolver.resolveImage(avatar);
+      avatar = await resolveImage(avatar);
     }
     channel &&= channel.id ?? channel;
     const data = await this.client.rest.patch(Routes.webhook(this.id, channel ? undefined : this.token), {
@@ -292,7 +308,7 @@ class Webhook {
    * @returns {Promise<Message>} Returns the message sent by this webhook
    */
   async fetchMessage(message, { threadId } = {}) {
-    if (!this.token) throw new Error(ErrorCodes.WebhookTokenUnavailable);
+    if (!this.token) throw new DiscordjsError(ErrorCodes.WebhookTokenUnavailable);
 
     const data = await this.client.rest.get(Routes.webhookMessage(this.id, this.token, message), {
       query: threadId ? makeURLSearchParams({ thread_id: threadId }) : undefined,
@@ -309,11 +325,11 @@ class Webhook {
   /**
    * Edits a message that was sent by this webhook.
    * @param {MessageResolvable|'@original'} message The message to edit
-   * @param {string|MessagePayload|WebhookEditMessageOptions} options The options to provide
+   * @param {string|MessagePayload|WebhookMessageEditOptions} options The options to provide
    * @returns {Promise<Message>} Returns the message edited by this webhook
    */
   async editMessage(message, options) {
-    if (!this.token) throw new Error(ErrorCodes.WebhookTokenUnavailable);
+    if (!this.token) throw new DiscordjsError(ErrorCodes.WebhookTokenUnavailable);
 
     let messagePayload;
 
@@ -353,8 +369,8 @@ class Webhook {
    * @param {string} [reason] Reason for deleting this webhook
    * @returns {Promise<void>}
    */
-  async delete(reason) {
-    await this.client.rest.delete(Routes.webhook(this.id, this.token), { reason, auth: !this.token });
+  delete(reason) {
+    return this.client.deleteWebhook(this.id, { token: this.token, reason });
   }
 
   /**
@@ -364,7 +380,7 @@ class Webhook {
    * @returns {Promise<void>}
    */
   async deleteMessage(message, threadId) {
-    if (!this.token) throw new Error(ErrorCodes.WebhookTokenUnavailable);
+    if (!this.token) throw new DiscordjsError(ErrorCodes.WebhookTokenUnavailable);
 
     await this.client.rest.delete(
       Routes.webhookMessage(this.id, this.token, typeof message === 'string' ? message : message.id),

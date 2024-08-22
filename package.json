@@ -1,24 +1,36 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/discord.js",
 	"version": "0.0.0",
 	"description": "A powerful library for interacting with the Discord API",
 	"private": true,
 	"scripts": {
-		"build": "turbo run build",
-		"test": "turbo run test --parallel",
-		"lint": "turbo run lint --parallel",
-		"format": "turbo run format --parallel",
-		"fmt": "turbo run format --parallel",
-		"postinstall": "is-ci || husky install",
-		"docs": "turbo run docs --parallel",
-		"update": "yarn upgrade-interactive"
+		"build": "turbo run build --concurrency=4",
+		"build:affected": "turbo run build --filter=...[origin/main] --concurrency=4",
+		"build:apps": "turbo run build:local --filter=...{apps/*} --concurrency=4",
+		"build:apps:affected": "turbo run build:local --filter=...{apps/*}[origin/main] --concurrency=4",
+		"test": "turbo run test --concurrency=4",
+		"test:affected": "turbo run test --filter=...[origin/main] --concurrency=4",
+		"lint": "turbo run lint --concurrency=4",
+		"lint:affected": "turbo run lint --filter=...[origin/main] --concurrency=4",
+		"format": "turbo run format --concurrency=4",
+		"format:affected": "turbo run format --filter=...[origin/main] --concurrency=4",
+		"fmt": "turbo run format --concurrency=4",
+		"fmt:affected": "turbo run format --filter=...[origin/main] --concurrency=4",
+		"docs": "turbo run docs --concurrency=4",
+		"docs:affected": "turbo run docs --filter=...[origin/main] --concurrency=4",
+		"prepare": "is-ci || husky",
+		"update": "pnpm --recursive update --interactive",
+		"update:latest": "pnpm --recursive update --interactive --latest",
+		"create-package": "turbo gen create-package --args"
 	},
+	"type": "module",
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>",
 		"Amish Shah <amishshah.2k@gmail.com>",
-		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Vlad Frangu <me@vladfrangu.dev>",
 		"SpaceEEC <spaceeec@yahoo.com>",
-		"Antonio Roman <kyradiscord@gmail.com>"
+		"Aura Román <kyradiscord@gmail.com>"
 	],
 	"keywords": [
 		"discord",
@@ -36,29 +48,54 @@
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"devDependencies": {
-		"@commitlint/cli": "^17.0.3",
-		"@commitlint/config-angular": "^17.0.3",
-		"@favware/cliff-jumper": "^1.8.6",
-		"@favware/npm-deprecate": "^1.0.5",
-		"@types/is-ci": "^3.0.0",
-		"conventional-changelog-cli": "^2.2.2",
-		"fast-glob": "^3.2.11",
-		"husky": "^8.0.1",
+		"@commitlint/cli": "^19.4.0",
+		"@commitlint/config-angular": "^19.3.0",
+		"@favware/cliff-jumper": "^3.0.3",
+		"@favware/npm-deprecate": "^1.0.7",
+		"@types/lodash.merge": "^4.6.9",
+		"@unocss/eslint-plugin": "^0.59.4",
+		"@vitest/coverage-v8": "^2.0.5",
+		"conventional-changelog-cli": "^4.1.0",
+		"eslint": "^8.57.0",
+		"eslint-config-neon": "^0.1.62",
+		"husky": "^9.1.5",
 		"is-ci": "^3.0.1",
-		"lint-staged": "^13.0.3",
-		"turbo": "^1.4.3",
-		"typescript": "^4.7.4"
+		"lint-staged": "^15.2.9",
+		"lodash.merge": "^4.6.2",
+		"prettier": "^3.3.3",
+		"tsup": "^8.2.4",
+		"turbo": "^2.0.14",
+		"typescript": "~5.5.4",
+		"typescript-eslint": "^8.2.0",
+		"unocss": "^0.60.4",
+		"vercel": "^37.0.0",
+		"vitest": "^2.0.5"
 	},
-	"resolutions": {
-		"rollup-plugin-typescript2@0.32.1": "patch:rollup-plugin-typescript2@npm:0.32.1#.yarn/patches/rollup-plugin-typescript2-npm-0.32.1-b5887420f2.patch",
-		"@microsoft/tsdoc-config": "patch:@microsoft/tsdoc-config@npm:0.16.1#.yarn/patches/@microsoft-tsdoc-config-npm-0.16.1-81031b1bbf.patch"
+	"pnpm": {
+		"peerDependencyRules": {
+			"ignoreMissing": [
+				"*"
+			],
+			"allowedAny": [
+				"*"
+			]
+		},
+		"overrides": {
+			"@contentlayer/utils>@opentelemetry/core": "^1.15.1",
+			"@contentlayer/utils>@opentelemetry/exporter-trace-otlp-grpc": "^0.41.1",
+			"@contentlayer/utils>@opentelemetry/resources": "^1.15.1",
+			"@contentlayer/utils>@opentelemetry/sdk-trace-base": "^1.15.1",
+			"@contentlayer/utils>@opentelemetry/sdk-trace-node": "^1.15.1",
+			"@contentlayer/utils>@opentelemetry/semantic-conventions": "^1.15.1"
+		},
+		"patchedDependencies": {
+			"@microsoft/tsdoc-config@0.16.2": "patches/@microsoft__tsdoc-config@0.16.2.patch"
+		}
 	},
 	"engines": {
-		"node": ">=16.9.0"
+		"node": ">=18"
 	},
-	"workspaces": [
-		"packages/*"
-	],
-	"packageManager": "yarn@3.2.1"
+	"packageManager": "pnpm@9.8.0"
 }

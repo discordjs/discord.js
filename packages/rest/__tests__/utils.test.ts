@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { makeURLSearchParams } from '../src';
+import { makeURLSearchParams } from '../src/index.js';
 
 describe('makeURLSearchParams', () => {
 	test('GIVEN undefined THEN returns empty URLSearchParams', () => {
@@ -41,7 +41,7 @@ describe('makeURLSearchParams', () => {
 
 	describe('objects', () => {
 		test('GIVEN a record of date values THEN URLSearchParams with ISO string values', () => {
-			const params = makeURLSearchParams({ before: new Date('2022-04-04T15:43:05.108Z'), after: new Date(NaN) });
+			const params = makeURLSearchParams({ before: new Date('2022-04-04T15:43:05.108Z'), after: new Date(Number.NaN) });
 
 			expect([...params.entries()]).toEqual([['before', '2022-04-04T15:43:05.108Z']]);
 		});
@@ -54,6 +54,33 @@ describe('makeURLSearchParams', () => {
 
 		test('GIVEN a record of objects with overridden toString THEN returns non-empty URLSearchParams', () => {
 			const params = makeURLSearchParams({ foo: { toString: () => 'bar' } });
+
+			expect([...params.entries()]).toEqual([['foo', 'bar']]);
+		});
+	});
+
+	describe('types', () => {
+		interface TestInput {
+			foo: string;
+		}
+
+		test("GIVEN object without index signature THEN TypeScript doesn't raise a type error", () => {
+			// Previously, `makeURLSearchParams` used `Record<string, unknown>` as an input, but that meant that it
+			// couldn't accept most interfaces, since they don't have an index signature. This test is to make sure
+			// non-Records can be used without casting.
+
+			const input = { foo: 'bar' } as TestInput;
+			const params = makeURLSearchParams(input);
+
+			expect([...params.entries()]).toEqual([['foo', 'bar']]);
+		});
+
+		test("GIVEN readonly object on a non-readonly generic type THEN TypeScript doesn't raise a type error", () => {
+			// While `Readonly<T>` type was always accepted in `makeURLSearchParams`, this test is to ensure that we can
+			// use the generic type and accept `Readonly<T>` rather than only [possibly] mutable `T`.
+
+			const input = Object.freeze({ foo: 'bar' } as TestInput);
+			const params = makeURLSearchParams<TestInput>(input);
 
 			expect([...params.entries()]).toEqual([['foo', 'bar']]);
 		});

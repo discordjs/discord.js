@@ -1,16 +1,34 @@
 import type { LocaleString, LocalizationMap } from 'discord-api-types/v10';
-import { validateDescription, validateLocale, validateName } from '../Assertions';
+import { validateDescription, validateLocale, validateName } from '../Assertions.js';
 
+/**
+ * This mixin holds name and description symbols for slash commands.
+ */
 export class SharedNameAndDescription {
+	/**
+	 * The name of this command.
+	 */
 	public readonly name!: string;
+
+	/**
+	 * The name localizations of this command.
+	 */
 	public readonly name_localizations?: LocalizationMap;
+
+	/**
+	 * The description of this command.
+	 */
 	public readonly description!: string;
+
+	/**
+	 * The description localizations of this command.
+	 */
 	public readonly description_localizations?: LocalizationMap;
 
 	/**
-	 * Sets the name
+	 * Sets the name of this command.
 	 *
-	 * @param name - The name
+	 * @param name - The name to use
 	 */
 	public setName(name: string): this {
 		// Assert the name matches the conditions
@@ -22,9 +40,9 @@ export class SharedNameAndDescription {
 	}
 
 	/**
-	 * Sets the description
+	 * Sets the description of this command.
 	 *
-	 * @param description - The description
+	 * @param description - The description to use
 	 */
 	public setDescription(description: string) {
 		// Assert the description matches the conditions
@@ -36,10 +54,10 @@ export class SharedNameAndDescription {
 	}
 
 	/**
-	 * Sets a name localization
+	 * Sets a name localization for this command.
 	 *
-	 * @param locale - The locale to set a description for
-	 * @param localizedName - The localized description for the given locale
+	 * @param locale - The locale to set
+	 * @param localizedName - The localized name for the given `locale`
 	 */
 	public setNameLocalization(locale: LocaleString, localizedName: string | null) {
 		if (!this.name_localizations) {
@@ -60,9 +78,9 @@ export class SharedNameAndDescription {
 	}
 
 	/**
-	 * Sets the name localizations
+	 * Sets the name localizations for this command.
 	 *
-	 * @param localizedNames - The dictionary of localized descriptions to set
+	 * @param localizedNames - The object of localized names to set
 	 */
 	public setNameLocalizations(localizedNames: LocalizationMap | null) {
 		if (localizedNames === null) {
@@ -72,16 +90,17 @@ export class SharedNameAndDescription {
 
 		Reflect.set(this, 'name_localizations', {});
 
-		Object.entries(localizedNames).forEach((args) =>
-			this.setNameLocalization(...(args as [LocaleString, string | null])),
-		);
+		for (const args of Object.entries(localizedNames)) {
+			this.setNameLocalization(...(args as [LocaleString, string | null]));
+		}
+
 		return this;
 	}
 
 	/**
-	 * Sets a description localization
+	 * Sets a description localization for this command.
 	 *
-	 * @param locale - The locale to set a description for
+	 * @param locale - The locale to set
 	 * @param localizedDescription - The localized description for the given locale
 	 */
 	public setDescriptionLocalization(locale: LocaleString, localizedDescription: string | null) {
@@ -103,9 +122,9 @@ export class SharedNameAndDescription {
 	}
 
 	/**
-	 * Sets the description localizations
+	 * Sets the description localizations for this command.
 	 *
-	 * @param localizedDescriptions - The dictionary of localized descriptions to set
+	 * @param localizedDescriptions - The object of localized descriptions to set
 	 */
 	public setDescriptionLocalizations(localizedDescriptions: LocalizationMap | null) {
 		if (localizedDescriptions === null) {
@@ -114,9 +133,10 @@ export class SharedNameAndDescription {
 		}
 
 		Reflect.set(this, 'description_localizations', {});
-		Object.entries(localizedDescriptions).forEach((args) =>
-			this.setDescriptionLocalization(...(args as [LocaleString, string | null])),
-		);
+		for (const args of Object.entries(localizedDescriptions)) {
+			this.setDescriptionLocalization(...(args as [LocaleString, string | null]));
+		}
+
 		return this;
 	}
 }
