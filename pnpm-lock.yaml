@@ -408,8 +408,8 @@ importers:
         specifier: ^2.6.3
         version: 2.6.3
       undici:
-        specifier: 6.18.2
-        version: 6.18.2
+        specifier: 6.19.8
+        version: 6.19.8
     devDependencies:
       '@types/node':
         specifier: ^18.19.45
@@ -950,8 +950,8 @@ importers:
         specifier: ^2.6.3
         version: 2.6.3
       undici:
-        specifier: 6.18.2
-        version: 6.18.2
+        specifier: 6.19.8
+        version: 6.19.8
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1191,8 +1191,8 @@ importers:
         specifier: ^2.6.3
         version: 2.6.3
       undici:
-        specifier: 6.18.2
-        version: 6.18.2
+        specifier: 6.19.8
+        version: 6.19.8
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1313,8 +1313,8 @@ importers:
         specifier: ^2.6.3
         version: 2.6.3
       undici:
-        specifier: 6.18.2
-        version: 6.18.2
+        specifier: 6.19.8
+        version: 6.19.8
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1392,8 +1392,8 @@ importers:
         specifier: ^2.6.3
         version: 2.6.3
       undici:
-        specifier: 6.18.2
-        version: 6.18.2
+        specifier: 6.19.8
+        version: 6.19.8
       yaml:
         specifier: ^2.5.0
         version: 2.5.0
@@ -1756,8 +1756,8 @@ importers:
         specifier: ~5.5.4
         version: 5.5.4
       undici:
-        specifier: 6.18.2
-        version: 6.18.2
+        specifier: 6.19.8
+        version: 6.19.8
       vitest:
         specifier: ^2.0.5
         version: 2.0.5(@edge-runtime/vm@3.2.0)(@types/node@18.19.45)(happy-dom@14.12.3)(terser@5.31.6)
@@ -12911,8 +12911,8 @@ packages:
     resolution: {integrity: sha512-Q2rtqmZWrbP8nePMq7mOJIN98M0fYvSgV89vwl/BQRT4mDOeY2GXZngfGpcBBhtky3woM7G24wZV3Q304Bv6cw==}
     engines: {node: '>=18.0'}
 
-  undici@6.18.2:
-    resolution: {integrity: sha512-o/MQLTwRm9IVhOqhZ0NQ9oXax1ygPjw6Vs+Vq/4QRjbOAC3B1GCHy7TYxxbExKlb7bzDRzt9vBWU6BDz0RFfYg==}
+  undici@6.19.8:
+    resolution: {integrity: sha512-U8uCCl2x9TK3WANvmBavymRzxbfFYG+tAu+fgx3zxQy3qdagQqBLwJVrdyO1TBfUXvfKveMKJZhpvUYoOjM+4g==}
     engines: {node: '>=18.17'}
 
   unicode-canonical-property-names-ecmascript@2.0.0:
@@ -28494,7 +28494,7 @@ snapshots:
 
   undici@6.13.0: {}
 
-  undici@6.18.2: {}
+  undici@6.19.8: {}
 
   unicode-canonical-property-names-ecmascript@2.0.0: {}
 
