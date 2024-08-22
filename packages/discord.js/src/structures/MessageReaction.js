@@ -54,7 +54,7 @@ class MessageReaction {
     if ('burst_colors' in data) {
       /**
        * Hexadecimal colors used for this super reaction
-       * @type {?(string[])}
+       * @type {?string[]}
        */
       this.burstColors = data.burst_colors;
     }
