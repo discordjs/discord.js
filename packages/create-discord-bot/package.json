@@ -61,7 +61,7 @@
 		"@types/node": "^18.19.45",
 		"@types/prompts": "^2.4.9",
 		"@types/validate-npm-package-name": "^4.0.2",
-		"@vitest/coverage-v8": "^1.6.0",
+		"@vitest/coverage-v8": "^2.0.5",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.57.0",
 		"eslint-config-neon": "^0.1.62",
@@ -70,7 +70,7 @@
 		"terser": "^5.31.0",
 		"tsup": "^8.2.4",
 		"typescript": "~5.5.4",
-		"vitest": "^1.6.0"
+		"vitest": "^2.0.5"
 	},
 	"engines": {
 		"node": ">=18"

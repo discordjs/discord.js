@@ -56,7 +56,7 @@
 		"@favware/npm-deprecate": "^1.0.7",
 		"@types/lodash.merge": "^4.6.9",
 		"@unocss/eslint-plugin": "^0.59.4",
-		"@vitest/coverage-v8": "^1.6.0",
+		"@vitest/coverage-v8": "^2.0.5",
 		"conventional-changelog-cli": "^4.1.0",
 		"eslint": "^8.57.0",
 		"eslint-config-neon": "^0.1.62",
@@ -68,10 +68,10 @@
 		"tsup": "^8.2.4",
 		"turbo": "^2.0.14",
 		"typescript": "~5.5.4",
-		"typescript-eslint": "^7.11.0",
+		"typescript-eslint": "^8.2.0",
 		"unocss": "^0.60.4",
-		"vercel": "^34.2.4",
-		"vitest": "^1.6.0"
+		"vercel": "^37.0.0",
+		"vitest": "^2.0.5"
 	},
 	"pnpm": {
 		"peerDependencyRules": {
