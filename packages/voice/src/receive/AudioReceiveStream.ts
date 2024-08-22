@@ -74,7 +74,14 @@ export class AudioReceiveStream extends Readable {
 			this.renewEndTimeout(this.end);
 		}
 
-		return super.push(buffer);
+		const result = super.push(buffer);
+
+		if (buffer === null) {
+			// null marks EOF for stream
+			this.destroy();
+		}
+
+		return result;
 	}
 
 	private renewEndTimeout(end: EndBehavior & { duration: number }) {
