@@ -2,6 +2,7 @@
 /* eslint-disable id-length */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Buffer } from 'node:buffer';
+import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
 import type { CloseEvent } from 'ws';
@@ -9,14 +10,12 @@ import * as secretbox from '../util/Secretbox';
 import { noop } from '../util/util';
 import { VoiceUDPSocket } from './VoiceUDPSocket';
 import { VoiceWebSocket } from './VoiceWebSocket';
-import crypto from 'node:crypto';
 
 // The number of audio channels required by Discord
 const CHANNELS = 2;
 const TIMESTAMP_INC = (48_000 / 100) * CHANNELS;
 const MAX_NONCE_SIZE = 2 ** 32 - 1;
 
-// export const SUPPORTED_ENCRYPTION_MODES = ['xsalsa20_poly1305_lite', 'xsalsa20_poly1305_suffix', 'xsalsa20_poly1305'];
 export const SUPPORTED_ENCRYPTION_MODES = ['aead_aes256_gcm_rtpsize', 'aead_xchacha20_poly1305_rtpsize'];
 
 /**
@@ -556,18 +555,18 @@ export class Networking extends EventEmitter {
 	 * @param connectionData - The current connection data of the instance
 	 */
 	private createAudioPacket(opusPacket: Buffer, connectionData: ConnectionData) {
-		const packetBuffer = Buffer.alloc(12);
-		packetBuffer[0] = 0x80;
-		packetBuffer[1] = 0x78;
+		const rtpHeader = Buffer.alloc(12);
+		rtpHeader[0] = 0x80;
+		rtpHeader[1] = 0x78;
 
 		const { sequence, timestamp, ssrc } = connectionData;
 
-		packetBuffer.writeUIntBE(sequence, 2, 2);
-		packetBuffer.writeUIntBE(timestamp, 4, 4);
-		packetBuffer.writeUIntBE(ssrc, 8, 4);
+		rtpHeader.writeUIntBE(sequence, 2, 2);
+		rtpHeader.writeUIntBE(timestamp, 4, 4);
+		rtpHeader.writeUIntBE(ssrc, 8, 4);
 
-		packetBuffer.copy(nonce, 0, 0, 12);
-		return Buffer.concat([packetBuffer, ...this.encryptOpusPacket(opusPacket, connectionData, packetBuffer)]);
+		rtpHeader.copy(nonce, 0, 0, 12);
+		return Buffer.concat([rtpHeader, ...this.encryptOpusPacket(opusPacket, connectionData, rtpHeader)]);
 	}
 
 	/**
@@ -576,13 +575,15 @@ export class Networking extends EventEmitter {
 	 * @param opusPacket - The Opus packet to encrypt
 	 * @param connectionData - The current connection data of the instance
 	 */
-	private encryptOpusPacket(opusPacket: Buffer, connectionData: ConnectionData, additionalData: Buffer) {
+	public encryptOpusPacket(opusPacket: Buffer, connectionData: ConnectionData, additionalData: Buffer) {
 		const { secretKey, encryptionMode } = connectionData;
 
+		// Both supported encryption methods want the nonce to be an incremental integer
 		connectionData.nonce++;
 		if (connectionData.nonce > MAX_NONCE_SIZE) connectionData.nonce = 0;
 		connectionData.nonceBuffer.writeUInt32BE(connectionData.nonce, 0);
 
+		// 4 extra bytes of padding on the end of the encrypted packet
 		const noncePadding = connectionData.nonceBuffer.slice(0, 4);
 
 		if (encryptionMode === 'aead_aes256_gcm_rtpsize') {

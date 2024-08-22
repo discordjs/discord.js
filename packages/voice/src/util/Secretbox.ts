@@ -11,6 +11,12 @@ interface Methods {
 		nonce: Buffer,
 		key: ArrayBufferLike,
 	): Buffer;
+	crypto_aead_xchacha20poly1305_ietf_decrypt(
+		message: Buffer,
+		additionalData: Buffer,
+		nonce: Buffer,
+		key: ArrayBufferLike,
+	): Buffer;
 }
 
 const libs = {
@@ -41,6 +47,14 @@ const libs = {
 		) => {
 			return sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(message, additionalData, null, nonce, key);
 		},
+		crypto_aead_xchacha20poly1305_ietf_decrypt: (
+			message: Buffer,
+			additionalData: Buffer,
+			nonce: Buffer,
+			key: ArrayBufferLike,
+		) => {
+			return sodium.crypto_aead_xchacha20poly1305_ietf_decrypt(message, additionalData, null, nonce, key);
+		},
 	}),
 	sodium: (sodium: any): Methods => ({
 		open: sodium.api.crypto_secretbox_open_easy,
@@ -56,7 +70,15 @@ const libs = {
 			nonce: Buffer,
 			key: ArrayBufferLike,
 		) => {
-			return sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(message, additionalData, null, nonce, key);
+			return sodium.api.crypto_aead_xchacha20poly1305_ietf_encrypt(message, additionalData, null, nonce, key);
+		},
+		crypto_aead_xchacha20poly1305_ietf_decrypt: (
+			message: Buffer,
+			additionalData: Buffer,
+			nonce: Buffer,
+			key: ArrayBufferLike,
+		) => {
+			return sodium.api.crypto_aead_xchacha20poly1305_ietf_decrypt(message, additionalData, null, nonce, key);
 		},
 	}),
 	'libsodium-wrappers': (sodium: any): Methods => ({
@@ -72,6 +94,14 @@ const libs = {
 		) => {
 			return sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(message, additionalData, null, nonce, key);
 		},
+		crypto_aead_xchacha20poly1305_ietf_decrypt: (
+			message: Buffer,
+			additionalData: Buffer,
+			nonce: Buffer,
+			key: ArrayBufferLike,
+		) => {
+			return sodium.crypto_aead_xchacha20poly1305_ietf_decrypt(null, message, additionalData, nonce, key);
+		},
 	}),
 	tweetnacl: (tweetnacl: any): Methods => ({
 		open: tweetnacl.secretbox.open,
@@ -79,6 +109,9 @@ const libs = {
 		random: tweetnacl.randomBytes,
 
 		crypto_aead_xchacha20poly1305_ietf_encrypt: () => {
+			throw new Error('tweetnacl :(');
+		},
+		crypto_aead_xchacha20poly1305_ietf_decrypt: () => {
 			throw new Error('tweetnacl :(');
 		},
 	}),
@@ -98,6 +131,7 @@ const methods: Methods = {
 	random: fallbackError,
 
 	crypto_aead_xchacha20poly1305_ietf_encrypt: fallbackError,
+	crypto_aead_xchacha20poly1305_ietf_decrypt: fallbackError,
 };
 
 void (async () => {
