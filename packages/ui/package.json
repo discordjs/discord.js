@@ -83,7 +83,7 @@
 		"prettier": "^3.3.3",
 		"prop-types": "^15.8.1",
 		"storybook": "^8.1.5",
-		"turbo": "^1.13.3",
+		"turbo": "^2.0.14",
 		"typescript": "~5.5.4",
 		"unocss": "^0.60.4",
 		"vite": "^5.2.12",

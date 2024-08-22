@@ -87,7 +87,7 @@
 		"html-escaper": "^3.0.3",
 		"postcss": "^8.4.38",
 		"prettier": "^3.3.3",
-		"turbo": "^1.13.3",
+		"turbo": "^2.0.14",
 		"typescript": "~5.5.4",
 		"unocss": "^0.60.4",
 		"vercel": "^34.2.4",
