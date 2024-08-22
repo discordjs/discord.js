@@ -80,7 +80,7 @@
 		"@types/ws": "^8.5.12",
 		"@vladfrangu/async_event_emitter": "^2.4.6",
 		"discord-api-types": "0.37.97",
-		"tslib": "^2.6.2",
+		"tslib": "^2.6.3",
 		"ws": "^8.18.0"
 	},
 	"devDependencies": {
@@ -96,7 +96,7 @@
 		"eslint-formatter-pretty": "^6.0.1",
 		"mock-socket": "^9.3.1",
 		"prettier": "^3.3.3",
-		"tsd": "^0.31.0",
+		"tsd": "^0.31.1",
 		"tsup": "^8.2.4",
 		"turbo": "^1.13.3",
 		"typescript": "~5.5.4",

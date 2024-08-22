@@ -62,7 +62,7 @@
 	"dependencies": {
 		"commander": "^12.1.0",
 		"jsdoc-to-markdown": "^8.0.1",
-		"tslib": "^2.6.2",
+		"tslib": "^2.6.3",
 		"typedoc": "^0.25.13"
 	},
 	"devDependencies": {

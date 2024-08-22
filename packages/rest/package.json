@@ -90,7 +90,7 @@
 		"@vladfrangu/async_event_emitter": "^2.4.6",
 		"discord-api-types": "0.37.97",
 		"magic-bytes.js": "^1.10.0",
-		"tslib": "^2.6.2",
+		"tslib": "^2.6.3",
 		"undici": "6.18.2"
 	},
 	"devDependencies": {

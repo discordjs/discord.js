@@ -67,7 +67,7 @@
 		"@vercel/blob": "^0.22.3",
 		"@vercel/postgres": "^0.8.0",
 		"commander": "^12.1.0",
-		"tslib": "^2.6.2",
+		"tslib": "^2.6.3",
 		"undici": "6.18.2",
 		"yaml": "^2.5.0"
 	},

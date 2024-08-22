@@ -48,7 +48,7 @@
 		"@vercel/postgres": "^0.8.0",
 		"meilisearch": "^0.38.0",
 		"p-limit": "^6.1.0",
-		"tslib": "^2.6.2",
+		"tslib": "^2.6.3",
 		"undici": "6.18.2"
 	},
 	"devDependencies": {
