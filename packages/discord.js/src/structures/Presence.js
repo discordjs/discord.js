@@ -123,11 +123,11 @@ class Presence extends Base {
       this === presence ||
       (presence &&
         this.status === presence.status &&
-        this.activities.length === presence.activities.length &&
-        this.activities.every((activity, index) => activity.equals(presence.activities[index])) &&
         this.clientStatus?.web === presence.clientStatus?.web &&
         this.clientStatus?.mobile === presence.clientStatus?.mobile &&
-        this.clientStatus?.desktop === presence.clientStatus?.desktop)
+        this.clientStatus?.desktop === presence.clientStatus?.desktop &&
+        this.activities.length === presence.activities.length &&
+        this.activities.every((activity, index) => activity.equals(presence.activities[index])))
     );
   }
 
@@ -141,6 +141,12 @@ class Presence extends Base {
  */
 class Activity {
   constructor(presence, data) {
+    /**
+     * The presence of the Activity
+     * @type {Presence}
+     * @readonly
+     * @name Activity#presence
+     */
     Object.defineProperty(this, 'presence', { value: presence });
 
     /**
@@ -211,6 +217,13 @@ class Activity {
     this.party = data.party ?? null;
 
     /**
+     * The sync id of the activity
+     * <info>This property is not documented by Discord and represents the track id in spotify activities.</info>
+     * @type {?string}
+     */
+    this.syncId = data.sync_id ?? null;
+
+    /**
      * Assets for rich presence
      * @type {?RichPresenceAssets}
      */
@@ -254,7 +267,9 @@ class Activity {
         this.type === activity.type &&
         this.url === activity.url &&
         this.state === activity.state &&
-        this.details === activity.details)
+        this.details === activity.details &&
+        this.emoji?.id === activity.emoji?.id &&
+        this.emoji?.name === activity.emoji?.name)
     );
   }
 
@@ -285,6 +300,12 @@ class Activity {
  */
 class RichPresenceAssets {
   constructor(activity, assets) {
+    /**
+     * The activity of the RichPresenceAssets
+     * @type {Activity}
+     * @readonly
+     * @name RichPresenceAssets#activity
+     */
     Object.defineProperty(this, 'activity', { value: activity });
 
     /**
@@ -344,6 +365,12 @@ class RichPresenceAssets {
       switch (platform) {
         case 'mp':
           return `https://media.discordapp.net/${id}`;
+        case 'spotify':
+          return `https://i.scdn.co/image/${id}`;
+        case 'youtube':
+          return `https://i.ytimg.com/vi/${id}/hqdefault_live.jpg`;
+        case 'twitch':
+          return `https://static-cdn.jtvnw.net/previews-ttv/live_user_${id}.png`;
         default:
           return null;
       }

@@ -39,7 +39,7 @@ const Messages = {
     `Calculated invalid shard ${shard} for guild ${guild} with ${count} shards.`,
 
   [DjsErrorCodes.ColorRange]: 'Color must be within the range 0 - 16777215 (0xFFFFFF).',
-  [DjsErrorCodes.ColorConvert]: 'Unable to convert color to a number.',
+  [DjsErrorCodes.ColorConvert]: color => `Unable to convert "${color}" to a number.`,
 
   [DjsErrorCodes.InviteOptionsMissingChannel]:
     'A valid guild channel must be provided when GuildScheduledEvent is EXTERNAL.',
@@ -74,8 +74,9 @@ const Messages = {
   [DjsErrorCodes.ImageSize]: size => `Invalid image size: ${size}`,
 
   [DjsErrorCodes.MessageBulkDeleteType]: 'The messages must be an Array, Collection, or number.',
-  [DjsErrorCodes.MessageNonceType]: 'Message nonce must be an integer or a string.',
   [DjsErrorCodes.MessageContentType]: 'Message content must be a string.',
+  [DjsErrorCodes.MessageNonceRequired]: 'Message nonce is required when enforceNonce is true.',
+  [DjsErrorCodes.MessageNonceType]: 'Message nonce must be an integer or a string.',
 
   [DjsErrorCodes.SplitMaxLen]: 'Chunk exceeds the max length and contains no split characters.',
 
@@ -94,7 +95,7 @@ const Messages = {
   [DjsErrorCodes.ChannelNotCached]: 'Could not find the channel where this message came from in the cache!',
   [DjsErrorCodes.StageChannelResolve]: 'Could not resolve channel to a stage channel.',
   [DjsErrorCodes.GuildScheduledEventResolve]: 'Could not resolve the guild scheduled event.',
-  [DjsErrorCodes.FetchOwnerId]: "Couldn't resolve the guild ownerId to fetch the member.",
+  [DjsErrorCodes.FetchOwnerId]: type => `Couldn't resolve the ${type} ownerId to fetch the ${type} member.`,
 
   [DjsErrorCodes.InvalidType]: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
   [DjsErrorCodes.InvalidElement]: (type, name, elem) => `Supplied ${type} ${name} includes an invalid element: ${elem}`,
@@ -111,8 +112,11 @@ const Messages = {
 
   [DjsErrorCodes.EmojiType]: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
   [DjsErrorCodes.EmojiManaged]: 'Emoji is managed and has no Author.',
+  [DjsErrorCodes.MissingManageGuildExpressionsPermission]: guild =>
+    `Client must have Manage Guild Expressions permission in guild ${guild} to see emoji authors.`,
   [DjsErrorCodes.MissingManageEmojisAndStickersPermission]: guild =>
     `Client must have Manage Emojis and Stickers permission in guild ${guild} to see emoji authors.`,
+
   [DjsErrorCodes.NotGuildSticker]: 'Sticker is a standard (non-guild) sticker and has no author.',
 
   [DjsErrorCodes.ReactionResolveUser]: "Couldn't resolve the user id to remove from the reaction.",
@@ -145,6 +149,8 @@ const Messages = {
     `Required option "${name}" is of type: ${type}; expected a non-empty value.`,
   [DjsErrorCodes.CommandInteractionOptionNoSubcommand]: 'No subcommand specified for interaction.',
   [DjsErrorCodes.CommandInteractionOptionNoSubcommandGroup]: 'No subcommand group specified for interaction.',
+  [DjsErrorCodes.CommandInteractionOptionInvalidChannelType]: (name, type, expected) =>
+    `The type of channel of the option "${name}" is: ${type}; expected ${expected}.`,
   [DjsErrorCodes.AutocompleteInteractionOptionNoFocusedOption]: 'No focused option for autocomplete interaction.',
 
   [DjsErrorCodes.ModalSubmitInteractionFieldNotFound]: customId =>
@@ -153,12 +159,20 @@ const Messages = {
     `Field with custom id "${customId}" is of type: ${type}; expected ${expected}.`,
 
   [DjsErrorCodes.InvalidMissingScopes]: 'At least one valid scope must be provided for the invite',
+  [DjsErrorCodes.InvalidScopesWithPermissions]: 'Permissions cannot be set without the bot scope.',
 
   [DjsErrorCodes.NotImplemented]: (what, name) => `Method ${what} not implemented on ${name}.`,
 
   [DjsErrorCodes.SweepFilterReturn]: 'The return value of the sweepFilter function was not false or a Function',
 
   [DjsErrorCodes.GuildForumMessageRequired]: 'You must provide a message to create a guild forum thread',
+
+  [DjsErrorCodes.EntitlementCreateInvalidOwner]:
+    'You must provide either a guild or a user to create an entitlement, but not both',
+
+  [DjsErrorCodes.BulkBanUsersOptionEmpty]: 'Option "users" array or collection is empty',
+
+  [DjsErrorCodes.PollAlreadyExpired]: 'This poll has already expired.',
 };
 
 module.exports = Messages;

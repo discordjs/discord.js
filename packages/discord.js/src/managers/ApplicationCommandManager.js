@@ -1,8 +1,8 @@
 'use strict';
 
-const { isJSONEncodable } = require('@discordjs/builders');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
+const { isJSONEncodable } = require('@discordjs/util');
 const { Routes } = require('discord-api-types/v10');
 const ApplicationCommandPermissionsManager = require('./ApplicationCommandPermissionsManager');
 const CachedManager = require('./CachedManager');
@@ -66,12 +66,10 @@ class ApplicationCommandManager extends CachedManager {
    * @typedef {ApplicationCommand|Snowflake} ApplicationCommandResolvable
    */
 
-  /* eslint-disable max-len */
   /**
    * Data that resolves to the data of an ApplicationCommand
-   * @typedef {ApplicationCommandData|APIApplicationCommand|JSONEncodable<APIApplicationCommand>} ApplicationCommandDataResolvable
+   * @typedef {ApplicationCommandData|APIApplicationCommand} ApplicationCommandDataResolvable
    */
-  /* eslint-enable max-len */
 
   /**
    * Options used to fetch data from Discord
@@ -90,7 +88,7 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Obtains one or multiple application commands from Discord, or the cache if it's already available.
-   * @param {Snowflake} [id] The application command's id
+   * @param {Snowflake|FetchApplicationCommandOptions} [id] Options for fetching application command(s)
    * @param {FetchApplicationCommandOptions} [options] Additional options for this fetch
    * @returns {Promise<ApplicationCommand|Collection<Snowflake, ApplicationCommand>>}
    * @example
@@ -171,9 +169,12 @@ class ApplicationCommandManager extends CachedManager {
    */
   async set(commands, guildId) {
     const data = await this.client.rest.put(this.commandPath({ guildId }), {
-      body: commands.map(c => this.constructor.transformCommand(c)),
+      body: commands.map(command => this.constructor.transformCommand(command)),
     });
-    return data.reduce((coll, command) => coll.set(command.id, this._add(command, true, guildId)), new Collection());
+    return data.reduce(
+      (collection, command) => collection.set(command.id, this._add(command, true, guildId)),
+      new Collection(),
+    );
   }
 
   /**
@@ -252,9 +253,10 @@ class ApplicationCommandManager extends CachedManager {
       name: command.name,
       name_localizations: command.nameLocalizations ?? command.name_localizations,
       description: command.description,
+      nsfw: command.nsfw,
       description_localizations: command.descriptionLocalizations ?? command.description_localizations,
       type: command.type,
-      options: command.options?.map(o => ApplicationCommand.transformOption(o)),
+      options: command.options?.map(option => ApplicationCommand.transformOption(option)),
       default_member_permissions,
       dm_permission: command.dmPermission ?? command.dm_permission,
     };

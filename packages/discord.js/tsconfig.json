@@ -1,10 +1,25 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig.json",
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     // Output Formatting
     "pretty": false,
 
     // Completeness
-    "skipDefaultLibCheck": true
+    "skipDefaultLibCheck": true,
+
+    "types": [
+      "@discordjs/builders",
+      "@discordjs/util",
+      "@discordjs/collection",
+      "@discordjs/rest",
+      "@discordjs/ws",
+      "discord-api-types/v10",
+      "node",
+      "tsd",
+      "jest",
+      "undici",
+      "@sapphire/snowflake"
+    ]
   }
 }

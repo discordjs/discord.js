@@ -36,11 +36,11 @@ class ButtonComponent extends Component {
 
   /**
    * Whether this button is disabled
-   * @type {?boolean}
+   * @type {boolean}
    * @readonly
    */
   get disabled() {
-    return this.data.disabled ?? null;
+    return this.data.disabled ?? false;
   }
 
   /**

@@ -1,0 +1,9 @@
+{
+	"$schema": "https://json.schemastore.org/tsconfig.json",
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"emitDeclarationOnly": true,
+		"declarationMap": true
+	},
+	"exclude": ["node_modules"]
+}

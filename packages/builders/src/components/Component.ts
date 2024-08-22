@@ -6,10 +6,13 @@ import type {
 	ComponentType,
 } from 'discord-api-types/v10';
 
+/**
+ * Any action row component data represented as an object.
+ */
 export type AnyAPIActionRowComponent = APIActionRowComponent<APIActionRowComponentTypes> | APIActionRowComponentTypes;
 
 /**
- * Represents a discord component
+ * The base component builder that contains common symbols for all sorts of components.
  *
  * @typeParam DataType - The type of internal API data that is stored within the component
  */
@@ -18,12 +21,12 @@ export abstract class ComponentBuilder<
 > implements JSONEncodable<AnyAPIActionRowComponent>
 {
 	/**
-	 * The API data associated with this component
+	 * The API data associated with this component.
 	 */
 	public readonly data: Partial<DataType>;
 
 	/**
-	 * Serializes this component to an API-compatible JSON object
+	 * Serializes this builder to API-compatible JSON data.
 	 *
 	 * @remarks
 	 * This method runs validations on the data before serializing it.
@@ -31,6 +34,11 @@ export abstract class ComponentBuilder<
 	 */
 	public abstract toJSON(): AnyAPIActionRowComponent;
 
+	/**
+	 * Constructs a new kind of component.
+	 *
+	 * @param data - The data to construct a component out of
+	 */
 	public constructor(data: Partial<DataType>) {
 		this.data = data;
 	}

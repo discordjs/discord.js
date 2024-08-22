@@ -1,0 +1,7 @@
+{
+  "extends": "../../api-extractor.json",
+  "mainEntryPointFilePath": "<projectFolder>/typings/index.d.ts",
+  "docModel": {
+    "projectFolderUrl": "https://github.com/discordjs/discord.js/tree/main/packages/discord.js"
+  }
+}

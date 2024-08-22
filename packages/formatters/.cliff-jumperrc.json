@@ -1,0 +1,6 @@
+{
+	"name": "formatters",
+	"org": "discordjs",
+	"packagePath": "packages/formatters",
+	"identifierBase": false
+}

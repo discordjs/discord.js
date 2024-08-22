@@ -1,0 +1,25 @@
+{
+	"$schema": "https://json.schemastore.org/package.json",
+	"name": "[REPLACE_ME]",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"lint": "prettier --check . && eslint --ext .js,.mjs,.cjs --format=pretty src",
+		"format": "prettier --write . && eslint --ext .js,.mjs,.cjs --fix --format=pretty src",
+		"start": "node --require dotenv/config src/index.js",
+		"deploy": "node --require dotenv/config src/util/deploy.js"
+	},
+	"dependencies": {
+		"@discordjs/core": "^1.2.0",
+		"discord.js": "^14.15.3",
+		"dotenv": "^16.4.5"
+	},
+	"devDependencies": {
+		"eslint": "^8.57.0",
+		"eslint-config-neon": "^0.1.62",
+		"eslint-formatter-pretty": "^6.0.1",
+		"prettier": "^3.3.3",
+		"zod": "^3.23.8"
+	}
+}

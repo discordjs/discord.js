@@ -1,11 +1,13 @@
 'use strict';
 
-const { PermissionFlagsBits } = require('discord-api-types/v10');
+const { Snowflake } = require('@sapphire/snowflake');
+const { PermissionFlagsBits, ChannelType } = require('discord-api-types/v10');
 const { BaseChannel } = require('./BaseChannel');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const PermissionOverwriteManager = require('../managers/PermissionOverwriteManager');
 const { VoiceBasedChannelTypes } = require('../util/Constants');
 const PermissionsBitField = require('../util/PermissionsBitField');
+const { getSortableGroupTypes } = require('../util/Util');
 
 /**
  * Represents a guild channel from any of the following:
@@ -15,12 +17,13 @@ const PermissionsBitField = require('../util/PermissionsBitField');
  * - {@link NewsChannel}
  * - {@link StageChannel}
  * - {@link ForumChannel}
+ * - {@link MediaChannel}
  * @extends {BaseChannel}
  * @abstract
  */
 class GuildChannel extends BaseChannel {
   constructor(guild, data, client, immediatePatch = true) {
-    super(guild?.client ?? client, data, false);
+    super(client, data, false);
 
     /**
      * The guild the channel is in
@@ -33,8 +36,6 @@ class GuildChannel extends BaseChannel {
      * @type {Snowflake}
      */
     this.guildId = guild?.id ?? data.guild_id;
-
-    this.parentId = this.parentId ?? null;
     /**
      * A manager of permission overwrites that belong to this channel
      * @type {PermissionOverwriteManager}
@@ -73,6 +74,8 @@ class GuildChannel extends BaseChannel {
        * @type {?Snowflake}
        */
       this.parentId = data.parent_id;
+    } else {
+      this.parentId ??= null;
     }
 
     if ('permission_overwrites' in data) {
@@ -131,8 +134,8 @@ class GuildChannel extends BaseChannel {
 
       // Compare overwrites
       return (
-        typeof channelVal !== 'undefined' &&
-        typeof parentVal !== 'undefined' &&
+        channelVal !== undefined &&
+        parentVal !== undefined &&
         channelVal.deny.bitfield === parentVal.deny.bitfield &&
         channelVal.allow.bitfield === parentVal.allow.bitfield
       );
@@ -145,8 +148,21 @@ class GuildChannel extends BaseChannel {
    * @readonly
    */
   get position() {
-    const sorted = this.guild._sortedChannels(this);
-    return [...sorted.values()].indexOf(sorted.get(this.id));
+    const selfIsCategory = this.type === ChannelType.GuildCategory;
+    const types = getSortableGroupTypes(this.type);
+
+    let count = 0;
+    for (const channel of this.guild.channels.cache.values()) {
+      if (!types.includes(channel.type)) continue;
+      if (!selfIsCategory && channel.parentId !== this.parentId) continue;
+      if (this.rawPosition === channel.rawPosition) {
+        if (Snowflake.compare(channel.id, this.id) === -1) count++;
+      } else if (this.rawPosition > channel.rawPosition) {
+        count++;
+      }
+    }
+
+    return count;
   }
 
   /**
@@ -263,12 +279,14 @@ class GuildChannel extends BaseChannel {
    * @readonly
    */
   get members() {
-    return this.guild.members.cache.filter(m => this.permissionsFor(m).has(PermissionFlagsBits.ViewChannel, false));
+    return this.guild.members.cache.filter(member =>
+      this.permissionsFor(member).has(PermissionFlagsBits.ViewChannel, false),
+    );
   }
 
   /**
    * Edits the channel.
-   * @param {GuildChannelEditOptions} data The new data for the channel
+   * @param {GuildChannelEditOptions} options The options to provide
    * @returns {Promise<GuildChannel>}
    * @example
    * // Edit a channel
@@ -276,8 +294,8 @@ class GuildChannel extends BaseChannel {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  edit(data) {
-    return this.guild.channels.edit(this, data);
+  edit(options) {
+    return this.guild.channels.edit(this, options);
   }
 
   /**

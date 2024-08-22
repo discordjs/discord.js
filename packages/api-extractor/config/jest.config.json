@@ -1,0 +1,64 @@
+{
+	// By default, don't hide console output
+	"silent": false,
+
+	// In order for HeftJestReporter to receive console.log() events, we must set verbose=false
+	"verbose": false,
+
+	// If mocks are not cleared between tests, it opens the door to accidental reliance on
+	// ordering of tests or describe blocks, eventually resulting in intermittent failures.
+	//
+	// We suggest this setting for any heft project (in a monorepo or not).
+	"clearMocks": true,
+
+	// "Adding '<rootDir>/dist' here enables dist/__mocks__ to be used for mocking Node.js system modules
+	"roots": ["<rootDir>/dist"],
+
+	"testMatch": ["<rootDir>/dist/**/*.test.{cjs,js}"],
+	"testPathIgnorePatterns": ["/node_modules/"],
+
+	"collectCoverageFrom": [
+		"dist/**/*.{cjs,js}",
+		"!dist/**/*.d.ts",
+		"!dist/**/*.test.{cjs,js}",
+		"!dist/**/test/**",
+		"!dist/**/__tests__/**",
+		"!dist/**/__fixtures__/**",
+		"!dist/**/__mocks__/**"
+	],
+	"coveragePathIgnorePatterns": ["/node_modules/"],
+
+	"testEnvironment": "jest-environment-node",
+
+	"testEnvironmentOptions": {
+		"url": "http://localhost/",
+		"customExportConditions": ["require", "node"]
+	},
+
+	// Retain pre-Jest 29 snapshot behavior
+	"snapshotFormat": {
+		"escapeString": true,
+		"printBasicPrototype": true
+	},
+
+	// Instruct jest not to run the transformer pipeline by default on JS files. The output files from TypeScript
+	// will already be fully transformed, so this avoids redundant file system operations.
+	"transformIgnorePatterns": ["\\.c?js$"],
+
+	// The modulePathIgnorePatterns below accepts these sorts of paths:
+	//   - <rootDir>/dist
+	//   - <rootDir>/dist/file.js
+	// ...and ignores anything else under <rootDir>
+	"modulePathIgnorePatterns": [],
+
+	// Prefer .cjs to .js to catch explicit commonjs output. Optimize for local files, which will be .js
+	"moduleFileExtensions": ["cjs", "js", "json", "node"],
+
+	// Enable code coverage for Jest
+	"collectCoverage": true,
+	"coverageDirectory": "<rootDir>/coverage",
+	"coverageReporters": ["cobertura", "html"],
+
+	// Use v8 coverage provider to avoid Babel
+	"coverageProvider": "v8"
+}

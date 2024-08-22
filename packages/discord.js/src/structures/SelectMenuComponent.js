@@ -7,6 +7,7 @@ let deprecationEmitted = false;
 
 /**
  * @deprecated Use {@link StringSelectMenuComponent} instead.
+ * @extends {StringSelectMenuComponent}
  */
 class SelectMenuComponent extends StringSelectMenuComponent {
   constructor(...params) {
@@ -14,7 +15,7 @@ class SelectMenuComponent extends StringSelectMenuComponent {
 
     if (!deprecationEmitted) {
       process.emitWarning(
-        'The SelectMenuComponent class is deprecated, use StringSelectMenuComponent instead.',
+        'The SelectMenuComponent class is deprecated. Use StringSelectMenuComponent instead.',
         'DeprecationWarning',
       );
       deprecationEmitted = true;

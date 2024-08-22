@@ -1,1 +1,1 @@
-## [View the documentation here.](https://discord.js.org/#/docs/brokers)
+## [View the documentation here.](https://discord.js.org/docs/packages/brokers/main)
