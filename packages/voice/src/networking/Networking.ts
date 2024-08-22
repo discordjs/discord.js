@@ -188,6 +188,7 @@ function stringifyState(state: NetworkingState) {
 function chooseEncryptionMode(options: string[]): string {
 	const option = options.find((option) => SUPPORTED_ENCRYPTION_MODES.includes(option));
 	if (!option) {
+		// This should only ever happen if the gateway does not give us any encryption modes we support.
 		throw new Error(`No compatible encryption modes. Available include: ${options.join(', ')}`);
 	}
 
@@ -586,24 +587,30 @@ export class Networking extends EventEmitter {
 		// 4 extra bytes of padding on the end of the encrypted packet
 		const noncePadding = connectionData.nonceBuffer.slice(0, 4);
 
-		if (encryptionMode === 'aead_aes256_gcm_rtpsize') {
-			const cipher = crypto.createCipheriv('aes-256-gcm', secretKey, connectionData.nonceBuffer);
-			cipher.setAAD(additionalData);
+		let encrypted;
+		switch (encryptionMode) {
+			case 'aead_aes256_gcm_rtpsize': {
+				const cipher = crypto.createCipheriv('aes-256-gcm', secretKey, connectionData.nonceBuffer);
+				cipher.setAAD(additionalData);
 
-			const encrypted = Buffer.concat([cipher.update(opusPacket), cipher.final(), cipher.getAuthTag()]);
+				encrypted = Buffer.concat([cipher.update(opusPacket), cipher.final(), cipher.getAuthTag()]);
 
-			return [encrypted, noncePadding];
-		} else if (encryptionMode === 'aead_xchacha20_poly1305_rtpsize') {
-			const encrypted = secretbox.methods.crypto_aead_xchacha20poly1305_ietf_encrypt(
-				opusPacket,
-				additionalData,
-				connectionData.nonceBuffer,
-				secretKey,
-			);
+				return [encrypted, noncePadding];
+			}
+			case 'aead_xchacha20_poly1305_rtpsize': {
+				encrypted = secretbox.methods.crypto_aead_xchacha20poly1305_ietf_encrypt(
+					opusPacket,
+					additionalData,
+					connectionData.nonceBuffer,
+					secretKey,
+				);
 
-			return [encrypted, noncePadding];
-		} else {
-			throw new Error('unsupported encryption method');
+				return [encrypted, noncePadding];
+			}
+			default: {
+				// This should never happen. Our encryption mode is chosen from a list given to us by the gateway and checked with the ones we support.
+				throw new RangeError(`Unsupported encryption method: ${encryptionMode}`);
+			}
 		}
 	}
 }

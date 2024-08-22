@@ -109,25 +109,30 @@ export class VoiceReceiver {
 			buffer.length - UNPADDED_NONCE_LENGTH,
 		);
 
-		if (mode === 'aead_aes256_gcm_rtpsize') {
-			const decipheriv = crypto.createDecipheriv('aes-256-gcm', secretKey, nonce);
-			decipheriv.setAAD(header);
-			decipheriv.setAuthTag(authTag);
+		let decrypted;
+		switch (mode) {
+			case 'aead_aes256_gcm_rtpsize': {
+				const decipheriv = crypto.createDecipheriv('aes-256-gcm', secretKey, nonce);
+				decipheriv.setAAD(header);
+				decipheriv.setAuthTag(authTag);
 
-			const decrypted = Buffer.concat([decipheriv.update(encrypted), decipheriv.final()]);
-			return decrypted;
-		} else if (mode === 'aead_xchacha20_poly1305_rtpsize') {
-			// Combined mode expects authtag in the encrypted message
-			const decrypted = methods.crypto_aead_xchacha20poly1305_ietf_decrypt(
-				Buffer.concat([encrypted, authTag]),
-				header,
-				nonce,
-				secretKey,
-			);
+				decrypted = Buffer.concat([decipheriv.update(encrypted), decipheriv.final()]);
+				return decrypted;
+			}
+			case 'aead_xchacha20_poly1305_rtpsize': {
+				// Combined mode expects authtag in the encrypted message
+				decrypted = methods.crypto_aead_xchacha20poly1305_ietf_decrypt(
+					Buffer.concat([encrypted, authTag]),
+					header,
+					nonce,
+					secretKey,
+				);
 
-			return Buffer.from(decrypted);
-		} else {
-			throw new RangeError(`Unsupported encryption method: ${mode}`);
+				return Buffer.from(decrypted);
+			}
+			default: {
+				throw new RangeError(`Unsupported decryption method: ${mode}`);
+			}
 		}
 	}
 
