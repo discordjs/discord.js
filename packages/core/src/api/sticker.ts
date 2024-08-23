@@ -3,7 +3,7 @@
 import type { RequestData, REST } from '@discordjs/rest';
 import {
 	Routes,
-	type RESTGetAPIStickerPack,
+	type RESTGetAPIStickerPackResult,
 	type RESTGetAPIStickerResult,
 	type RESTGetStickerPacksResult,
 	type Snowflake,
@@ -20,7 +20,7 @@ export class StickersAPI {
 	 * @param options - The options for fetching the sticker pack
 	 */
 	public async getStickerPack(packId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
-		return this.rest.get(Routes.stickerPack(packId), { signal }) as Promise<RESTGetAPIStickerPack>;
+		return this.rest.get(Routes.stickerPack(packId), { signal }) as Promise<RESTGetAPIStickerPackResult>;
 	}
 
 	/**

@@ -54,8 +54,8 @@ export const DefaultRPCRedisBrokerOptions = {
  * await broker.subscribe('responders', ['testcall']);
  * ```
  */
-export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses extends Record<keyof TEvents, any>>
-	extends BaseRedisBroker<TEvents>
+export class RPCRedisBroker<TEvents extends Record<string, any[]>, TResponses extends Record<keyof TEvents, any>>
+	extends BaseRedisBroker<TEvents, TResponses>
 	implements IRPCBroker<TEvents, TResponses>
 {
 	/**
@@ -125,6 +125,7 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 			},
 		};
 
+		// @ts-expect-error: Intended
 		this.emit(event, payload);
 	}
 }

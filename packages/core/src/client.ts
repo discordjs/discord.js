@@ -238,11 +238,9 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 		});
 
 		try {
-			const iterator = AsyncEventEmitter.on<
-				typeof this,
-				ManagerShardEventsMap,
-				GatewayDispatchEvents.GuildMembersChunk
-			>(this, GatewayDispatchEvents.GuildMembersChunk, { signal: controller.signal });
+			const iterator = AsyncEventEmitter.on(this, GatewayDispatchEvents.GuildMembersChunk, {
+				signal: controller.signal,
+			});
 
 			for await (const [{ data }] of iterator) {
 				if (data.nonce !== nonce) continue;

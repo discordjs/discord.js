@@ -1423,7 +1423,9 @@ export class ApiModelGenerator {
 						}${
 							'returns' in jsDoc
 								? jsDoc.returns
-										.map((ret) => ` * @returns ${Array.isArray(ret) ? '' : this._fixLinkTags(ret.description) ?? ''}\n`)
+										.map(
+											(ret) => ` * @returns ${Array.isArray(ret) ? '' : (this._fixLinkTags(ret.description) ?? '')}\n`,
+										)
 										.join('')
 								: ''
 						} */`,
@@ -1764,7 +1766,7 @@ export class ApiModelGenerator {
 	}
 
 	private _mapVarType(typey: DocgenVarTypeJson): IExcerptToken[] {
-		const mapper = Array.isArray(typey) ? typey : typey.types ?? [];
+		const mapper = Array.isArray(typey) ? typey : (typey.types ?? []);
 		const lookup: { [K in ts.SyntaxKind]?: string } = {
 			[ts.SyntaxKind.ClassDeclaration]: 'class',
 			[ts.SyntaxKind.EnumDeclaration]: 'enum',
