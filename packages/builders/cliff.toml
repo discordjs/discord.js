@@ -62,7 +62,7 @@ commit_parsers = [
 filter_commits = true
 tag_pattern = "@discordjs/builders@[0-9]*"
 ignore_tags = ""
-topo_order = true
+topo_order = false
 sort_commits = "newest"
 
 [remote.github]
