@@ -4,10 +4,10 @@ export default defineConfig({
 	test: {
 		exclude: ['**/node_modules', '**/dist', '.idea', '.git', '.cache'],
 		passWithNoTests: true,
-        typecheck: {
-            enabled: true,
-            include: ["**/__tests__/types.test.ts"]
-        },
+		typecheck: {
+			enabled: true,
+			include: ['**/__tests__/types.test.ts'],
+		},
 		coverage: {
 			enabled: true,
 			all: true,

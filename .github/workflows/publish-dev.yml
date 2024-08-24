@@ -72,7 +72,7 @@ jobs:
       - name: Publish package
         if: steps.release-check.outputs.release == '1'
         run: |
-          pnpm --filter=${{ matrix.package }} run release --preid "dev.$(date +%s)-$(git rev-parse --short HEAD)"
+          pnpm --filter=${{ matrix.package }} run release --preid "dev.$(date +%s)-$(git rev-parse --short HEAD)" --skip-changelog
           pnpm --filter=${{ matrix.package }} publish --provenance --no-git-checks --tag dev || true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

@@ -44,6 +44,7 @@ export enum WebSocketShardEvents {
 	Hello = 'hello',
 	Ready = 'ready',
 	Resumed = 'resumed',
+	SocketError = 'socketError',
 }
 
 export enum WebSocketShardStatus {
@@ -59,14 +60,15 @@ export enum WebSocketShardDestroyRecovery {
 }
 
 export interface WebSocketShardEventsMap {
-	[WebSocketShardEvents.Closed]: [{ code: number }];
-	[WebSocketShardEvents.Debug]: [payload: { message: string }];
-	[WebSocketShardEvents.Dispatch]: [payload: { data: GatewayDispatchPayload }];
-	[WebSocketShardEvents.Error]: [payload: { error: Error }];
+	[WebSocketShardEvents.Closed]: [code: number];
+	[WebSocketShardEvents.Debug]: [message: string];
+	[WebSocketShardEvents.Dispatch]: [payload: GatewayDispatchPayload];
+	[WebSocketShardEvents.Error]: [error: Error];
 	[WebSocketShardEvents.Hello]: [];
-	[WebSocketShardEvents.Ready]: [payload: { data: GatewayReadyDispatchData }];
+	[WebSocketShardEvents.Ready]: [payload: GatewayReadyDispatchData];
 	[WebSocketShardEvents.Resumed]: [];
-	[WebSocketShardEvents.HeartbeatComplete]: [payload: { ackAt: number; heartbeatAt: number; latency: number }];
+	[WebSocketShardEvents.HeartbeatComplete]: [stats: { ackAt: number; heartbeatAt: number; latency: number }];
+	[WebSocketShardEvents.SocketError]: [error: Error];
 }
 
 export interface WebSocketShardDestroyOptions {
@@ -96,6 +98,13 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private zLibSyncInflate: ZlibSync.Inflate | null = null;
 
+	/**
+	 * @privateRemarks
+	 *
+	 * Used only for native zlib inflate, zlib-sync buffering is handled by the library itself.
+	 */
+	private inflateBuffer: Buffer[] = [];
+
 	private readonly textDecoder = new TextDecoder();
 
 	private replayedEvents = 0;
@@ -106,14 +115,14 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private initialHeartbeatTimeoutController: AbortController | null = null;
 
-	private heartbeatInterval: NodeJS.Timer | null = null;
+	private heartbeatInterval: NodeJS.Timeout | null = null;
 
 	private lastHeartbeatAt = -1;
 
 	// Indicates whether the shard has already resolved its original connect() call
 	private initialConnectResolved = false;
 
-	// Indicates if we failed to connect to the ws url (ECONNREFUSED/ECONNRESET)
+	// Indicates if we failed to connect to the ws url
 	private failedToConnectDueToNetworkError = false;
 
 	private readonly sendQueue = new AsyncQueue();
@@ -196,13 +205,19 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				case CompressionMethod.ZlibNative: {
 					const zlib = await getNativeZlib();
 					if (zlib) {
+						this.inflateBuffer = [];
+
 						const inflate = zlib.createInflate({
 							chunkSize: 65_535,
 							flush: zlib.constants.Z_SYNC_FLUSH,
 						});
 
+						inflate.on('data', (chunk) => {
+							this.inflateBuffer.push(chunk);
+						});
+
 						inflate.on('error', (error) => {
-							this.emit(WebSocketShardEvents.Error, { error });
+							this.emit(WebSocketShardEvents.Error, error);
 						});
 
 						this.nativeInflate = inflate;
@@ -351,7 +366,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				this.connection.close(options.code, options.reason);
 
 				await promise;
-				this.emit(WebSocketShardEvents.Closed, { code: options.code });
+				this.emit(WebSocketShardEvents.Closed, options.code);
 			}
 
 			// Lastly, remove the error event.
@@ -625,24 +640,37 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				decompressable.at(-1) === 0xff;
 
 			if (this.nativeInflate) {
-				this.nativeInflate.write(decompressable, 'binary');
+				const doneWriting = new Promise<void>((resolve) => {
+					// eslint-disable-next-line promise/prefer-await-to-callbacks
+					this.nativeInflate!.write(decompressable, 'binary', (error) => {
+						if (error) {
+							this.emit(WebSocketShardEvents.Error, error);
+						}
+
+						resolve();
+					});
+				});
 
 				if (!flush) {
 					return null;
 				}
 
-				const [result] = await once(this.nativeInflate, 'data');
-				return this.parseInflateResult(result);
+				// This way we're ensuring the latest write has flushed and our buffer is ready
+				await doneWriting;
+
+				const result = this.parseInflateResult(Buffer.concat(this.inflateBuffer));
+				this.inflateBuffer = [];
+
+				return result;
 			} else if (this.zLibSyncInflate) {
 				const zLibSync = (await getZlibSync())!;
 				this.zLibSyncInflate.push(Buffer.from(decompressable), flush ? zLibSync.Z_SYNC_FLUSH : zLibSync.Z_NO_FLUSH);
 
 				if (this.zLibSyncInflate.err) {
-					this.emit(WebSocketShardEvents.Error, {
-						error: new Error(
-							`${this.zLibSyncInflate.err}${this.zLibSyncInflate.msg ? `: ${this.zLibSyncInflate.msg}` : ''}`,
-						),
-					});
+					this.emit(
+						WebSocketShardEvents.Error,
+						new Error(`${this.zLibSyncInflate.err}${this.zLibSyncInflate.msg ? `: ${this.zLibSyncInflate.msg}` : ''}`),
+					);
 				}
 
 				if (!flush) {
@@ -691,7 +719,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 						await this.strategy.updateSessionInfo(this.id, session);
 
-						this.emit(WebSocketShardEvents.Ready, { data: payload.d });
+						this.emit(WebSocketShardEvents.Ready, payload.d);
 						break;
 					}
 
@@ -718,7 +746,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 					]);
 				}
 
-				this.emit(WebSocketShardEvents.Dispatch, { data: payload });
+				this.emit(WebSocketShardEvents.Dispatch, payload);
 
 				break;
 			}
@@ -791,17 +819,12 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	private onError(error: Error) {
-		if ('code' in error && ['ECONNRESET', 'ECONNREFUSED'].includes(error.code as string)) {
-			this.debug(['Failed to connect to the gateway URL specified due to a network error']);
-			this.failedToConnectDueToNetworkError = true;
-			return;
-		}
-
-		this.emit(WebSocketShardEvents.Error, { error });
+		this.emit(WebSocketShardEvents.SocketError, error);
+		this.failedToConnectDueToNetworkError = true;
 	}
 
 	private async onClose(code: number) {
-		this.emit(WebSocketShardEvents.Closed, { code });
+		this.emit(WebSocketShardEvents.Closed, code);
 
 		switch (code) {
 			case CloseCodes.Normal: {
@@ -837,9 +860,11 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 
 			case GatewayCloseCodes.AuthenticationFailed: {
-				this.emit(WebSocketShardEvents.Error, {
-					error: new Error('Authentication failed'),
-				});
+				this.emit(
+					WebSocketShardEvents.Error,
+
+					new Error('Authentication failed'),
+				);
 				return this.destroy({ code });
 			}
 
@@ -864,37 +889,43 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 
 			case GatewayCloseCodes.InvalidShard: {
-				this.emit(WebSocketShardEvents.Error, {
-					error: new Error('Invalid shard'),
-				});
+				this.emit(WebSocketShardEvents.Error, new Error('Invalid shard'));
 				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.ShardingRequired: {
-				this.emit(WebSocketShardEvents.Error, {
-					error: new Error('Sharding is required'),
-				});
+				this.emit(
+					WebSocketShardEvents.Error,
+
+					new Error('Sharding is required'),
+				);
 				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.InvalidAPIVersion: {
-				this.emit(WebSocketShardEvents.Error, {
-					error: new Error('Used an invalid API version'),
-				});
+				this.emit(
+					WebSocketShardEvents.Error,
+
+					new Error('Used an invalid API version'),
+				);
 				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.InvalidIntents: {
-				this.emit(WebSocketShardEvents.Error, {
-					error: new Error('Used invalid intents'),
-				});
+				this.emit(
+					WebSocketShardEvents.Error,
+
+					new Error('Used invalid intents'),
+				);
 				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.DisallowedIntents: {
-				this.emit(WebSocketShardEvents.Error, {
-					error: new Error('Used disallowed intents'),
-				});
+				this.emit(
+					WebSocketShardEvents.Error,
+
+					new Error('Used disallowed intents'),
+				);
 				return this.destroy({ code });
 			}
 
@@ -915,6 +946,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	private debug(messages: [string, ...string[]]) {
-		this.emit(WebSocketShardEvents.Debug, { message: messages.join('\n\t') });
+		this.emit(WebSocketShardEvents.Debug, messages.join('\n\t'));
 	}
 }

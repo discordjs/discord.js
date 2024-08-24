@@ -48,6 +48,7 @@ export class PubSubRedisBroker<TEvents extends Record<string, any>>
 			},
 		};
 
+		// @ts-expect-error: Intended
 		this.emit(event, payload);
 	}
 }

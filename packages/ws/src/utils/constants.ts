@@ -68,7 +68,7 @@ export const DefaultWebSocketManagerOptions = {
 	handshakeTimeout: 30_000,
 	helloTimeout: 60_000,
 	readyTimeout: 15_000,
-} as const satisfies OptionalWebSocketManagerOptions;
+} as const satisfies Omit<OptionalWebSocketManagerOptions, 'token'>;
 
 export const ImportantGatewayOpcodes = new Set([
 	GatewayOpcodes.Heartbeat,

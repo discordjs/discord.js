@@ -1,13 +1,15 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/{{name}}",
 	"version": "0.1.0",
 	"description": "{{description}}",
 	"scripts": {
-		"test": "vitest run",
 		"build": "tsc --noEmit && tsup",
 		"build:docs": "tsc -p tsconfig.docs.json",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
-		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
+		"test": "vitest run",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
+		"fmt": "pnpm run format",
 		"docs": "pnpm run build:docs && api-extractor run --local",
 		"prepack": "pnpm run build && pnpm run lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/{{name}}/*'",
@@ -32,11 +34,13 @@
 		"lib": "src",
 		"test": "__tests__"
 	},
-	"files": ["dist"],
+	"files": [
+		"dist"
+	],
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>",
 		"SpaceEEC <spaceeec@yahoo.com>",
-		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Vlad Frangu <me@vladfrangu.dev>",
 		"Aura Román <kyradiscord@gmail.com>"
 	],
 	"license": "Apache-2.0",
@@ -54,18 +58,19 @@
 	"dependencies": {},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
-		"@favware/cliff-jumper": "^2.2.1",
-		"@types/node": "18.18.8",
-		"@vitest/coverage-v8": "^0.34.6",
+		"@favware/cliff-jumper": "^4.1.0",
+		"@types/node": "^18.19.45",
+		"@vitest/coverage-v8": "^2.0.5",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.2.1",
-		"eslint": "^8.53.0",
-		"eslint-config-neon": "^0.1.57",
-		"eslint-formatter-pretty": "^5.0.0",
-		"prettier": "^3.1.0",
-		"tsup": "^7.2.0",
-		"typescript": "^5.2.2",
-		"vitest": "^0.34.6"
+		"eslint": "^8.57.0",
+		"eslint-config-neon": "^0.1.62",
+		"eslint-formatter-pretty": "^6.0.1",
+		"prettier": "^3.3.3",
+		"tsup": "^8.2.4",
+		"turbo": "^2.0.14",
+		"typescript": "~5.5.4",
+		"vitest": "^2.0.5"
 	},
 	"engines": {
 		"node": ">=18"

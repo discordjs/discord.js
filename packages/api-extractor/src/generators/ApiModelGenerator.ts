@@ -1423,7 +1423,9 @@ export class ApiModelGenerator {
 						}${
 							'returns' in jsDoc
 								? jsDoc.returns
-										.map((ret) => ` * @returns ${Array.isArray(ret) ? '' : this._fixLinkTags(ret.description) ?? ''}\n`)
+										.map(
+											(ret) => ` * @returns ${Array.isArray(ret) ? '' : (this._fixLinkTags(ret.description) ?? '')}\n`,
+										)
 										.join('')
 								: ''
 						} */`,
@@ -1764,7 +1766,7 @@ export class ApiModelGenerator {
 	}
 
 	private _mapVarType(typey: DocgenVarTypeJson): IExcerptToken[] {
-		const mapper = Array.isArray(typey) ? typey : typey.types ?? [];
+		const mapper = Array.isArray(typey) ? typey : (typey.types ?? []);
 		const lookup: { [K in ts.SyntaxKind]?: string } = {
 			[ts.SyntaxKind.ClassDeclaration]: 'class',
 			[ts.SyntaxKind.EnumDeclaration]: 'enum',
@@ -1788,18 +1790,20 @@ export class ApiModelGenerator {
 						{
 							kind: type?.includes("'") ? ExcerptTokenKind.Content : ExcerptTokenKind.Reference,
 							text: fixPrimitiveTypes(type ?? 'unknown', symbol),
-							canonicalReference: type?.includes("'")
-								? undefined
-								: DeclarationReference.package(pkg)
-										.addNavigationStep(
-											Navigation.Members as any,
-											DeclarationReference.parseComponent(type ?? 'unknown'),
-										)
-										.withMeaning(
-											(lookup[astSymbol?.astDeclarations.at(-1)?.declaration.kind ?? ts.SyntaxKind.ClassDeclaration] ??
-												'class') as Meaning,
-										)
-										.toString(),
+							canonicalReference:
+								type?.includes("'") || !astEntity
+									? undefined
+									: DeclarationReference.package(pkg)
+											.addNavigationStep(
+												Navigation.Members as any,
+												DeclarationReference.parseComponent(type ?? 'unknown'),
+											)
+											.withMeaning(
+												(lookup[
+													astSymbol?.astDeclarations.at(-1)?.declaration.kind ?? ts.SyntaxKind.ClassDeclaration
+												] ?? 'class') as Meaning,
+											)
+											.toString(),
 						},
 						{ kind: ExcerptTokenKind.Content, text: symbol ?? '' },
 					];
@@ -1867,7 +1871,7 @@ export class ApiModelGenerator {
 					: `${method.access ? `${method.access} ` : ''}${method.scope === 'static' ? 'static ' : ''}${method.name}(`
 			}${
 				method.params?.length
-					? `${method.params[0]!.name}${method.params[0]!.nullable || method.params[0]!.optional ? '?' : ''}`
+					? `${method.params[0]!.name}${method.params[0]!.nullable || method.params[0]!.optional ? '?' : ''}: `
 					: '): '
 			}`,
 		});

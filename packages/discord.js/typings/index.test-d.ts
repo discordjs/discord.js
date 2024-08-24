@@ -104,6 +104,7 @@ import {
   Collector,
   GuildAuditLogsEntry,
   GuildAuditLogs,
+  type AuditLogChange,
   StageInstance,
   ActionRowBuilder,
   ButtonComponent,
@@ -206,11 +207,14 @@ import {
   MentionableSelectMenuComponent,
   PartialPoll,
   Poll,
+  ApplicationEmoji,
+  ApplicationEmojiManager,
+  StickerPack,
   PartialPollAnswer,
   PollAnswerVoterManager,
   PollAnswer,
 } from '.';
-import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
+import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
 import { ReadonlyCollection } from '@discordjs/collection';
 
@@ -230,6 +234,10 @@ const client: Client = new Client({
     GuildMemberManager: {
       maxSize: 200,
       keepOverLimit: member => member.id === client.user?.id,
+    },
+    ThreadManager: {
+      maxSize: 200,
+      keepOverLimit: value => !value.archived,
     },
   }),
 });
@@ -1340,6 +1348,10 @@ client.on('guildCreate', async g => {
   );
 });
 
+// EventEmitter static method overrides
+expectType<Promise<[Client<true>]>>(Client.once(client, 'ready'));
+expectType<AsyncIterableIterator<[Client<true>]>>(Client.on(client, 'ready'));
+
 client.login('absolutely-valid-token');
 
 declare const loggedInClient: Client<true>;
@@ -1746,6 +1758,11 @@ expectType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch()
 expectType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch(undefined, {}));
 expectType<Promise<GuildEmoji>>(guildEmojiManager.fetch('0'));
 
+declare const applicationEmojiManager: ApplicationEmojiManager;
+expectType<Promise<Collection<Snowflake, ApplicationEmoji>>>(applicationEmojiManager.fetch());
+expectType<Promise<Collection<Snowflake, ApplicationEmoji>>>(applicationEmojiManager.fetch(undefined, {}));
+expectType<Promise<ApplicationEmoji>>(applicationEmojiManager.fetch('0'));
+
 declare const guildBanManager: GuildBanManager;
 {
   expectType<Promise<GuildBan>>(guildBanManager.fetch('1234567890'));
@@ -1815,6 +1832,7 @@ client.on('interactionCreate', async interaction => {
     expectType<AnySelectMenuInteraction | ButtonInteraction>(interaction);
     expectType<MessageActionRowComponent | APIButtonComponent | APISelectMenuComponent>(interaction.component);
     expectType<Message>(interaction.message);
+    expectDeprecated(interaction.sendPremiumRequired());
     if (interaction.inCachedGuild()) {
       expectAssignable<MessageComponentInteraction>(interaction);
       expectType<MessageActionRowComponent>(interaction.component);
@@ -2002,6 +2020,7 @@ client.on('interactionCreate', async interaction => {
     interaction.type === InteractionType.ApplicationCommand &&
     interaction.commandType === ApplicationCommandType.ChatInput
   ) {
+    expectDeprecated(interaction.sendPremiumRequired());
     if (interaction.inRawGuild()) {
       expectNotAssignable<Interaction<'cached'>>(interaction);
       expectAssignable<ChatInputCommandInteraction>(interaction);
@@ -2125,6 +2144,10 @@ client.on('interactionCreate', async interaction => {
       expectType<Promise<Message>>(interaction.followUp({ content: 'a' }));
     }
   }
+
+  if (interaction.isModalSubmit()) {
+    expectDeprecated(interaction.sendPremiumRequired());
+  }
 });
 
 declare const shard: Shard;
@@ -2216,6 +2239,16 @@ expectType<Promise<StageInstance | undefined>>(
 expectType<Promise<User | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MessageDelete }).then(al => al.entries.first()?.target),
 );
+
+declare const AuditLogChange: AuditLogChange;
+// @ts-expect-error
+expectType<boolean | undefined>(AuditLogChange.old);
+// @ts-expect-error
+expectType<boolean | undefined>(AuditLogChange.new);
+if (AuditLogChange.key === 'available') {
+  expectType<boolean | undefined>(AuditLogChange.old);
+  expectType<boolean | undefined>(AuditLogChange.new);
+}
 
 declare const TextBasedChannel: TextBasedChannel;
 declare const TextBasedChannelTypes: TextBasedChannelTypes;
@@ -2633,3 +2666,7 @@ declare const poll: Poll;
     answerId: 1,
   });
 }
+
+expectType<Collection<Snowflake, StickerPack>>(await client.fetchStickerPacks());
+expectType<Collection<Snowflake, StickerPack>>(await client.fetchStickerPacks({}));
+expectType<StickerPack>(await client.fetchStickerPacks({ packId: snowflake }));

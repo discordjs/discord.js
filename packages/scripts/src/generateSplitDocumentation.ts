@@ -99,7 +99,7 @@ export function resolveMembers<WantedItem extends ApiItem>(
 		.getMergedSiblings()
 		.filter((sibling) => sibling.containerKey !== parent.containerKey)
 		.flatMap((sibling) => (sibling as ApiItemContainerMixin).findMembersWithInheritance().items)
-		.filter((item) => predicate(item) && !seenItems.has(item.containerKey))
+		.filter((item) => predicate(item) && !seenItems.has(item.displayName))
 		.map((item) => ({
 			item: item as WantedItem,
 			inherited: item.parent ? (item.parent as ApiItemContainerMixin) : undefined,
@@ -258,26 +258,35 @@ function itemExcerptText(excerpt: Excerpt, apiPackage: ApiPackage) {
 				};
 			}
 
-			const resolved = token.canonicalReference
-				? resolveCanonicalReference(token.canonicalReference, apiPackage)
-				: null;
+			if (token.canonicalReference) {
+				const resolved = resolveCanonicalReference(token.canonicalReference, apiPackage);
 
-			if (!resolved) {
+				if (!resolved) {
+					return {
+						text: token.text,
+					};
+				}
+
+				const declarationReference = apiPackage
+					.getAssociatedModel()
+					?.resolveDeclarationReference(token.canonicalReference, apiPackage);
+				const foundItem = declarationReference?.resolvedApiItem ?? resolved.item;
+
 				return {
 					text: token.text,
+					resolvedItem: {
+						kind: foundItem.kind,
+						displayName: foundItem.displayName,
+						containerKey: foundItem.containerKey,
+						uri: resolveItemURI(foundItem),
+						packageName: resolved.package?.replace('@discordjs/', ''),
+						version: resolved.version,
+					},
 				};
 			}
 
 			return {
 				text: token.text,
-				resolvedItem: {
-					kind: resolved.item.kind,
-					displayName: resolved.item.displayName,
-					containerKey: resolved.item.containerKey,
-					uri: resolveItemURI(resolved.item),
-					packageName: resolved.package?.replace('@discordjs/', ''),
-					version: resolved.version,
-				},
 			};
 		}
 
@@ -367,7 +376,7 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 						resolvedPackage: {
 							packageName: resolved?.package ?? apiItem.getAssociatedPackage()?.displayName.replace('@discordjs/', ''),
 							version: resolved?.package
-								? apiItem.getAssociatedPackage()?.dependencies?.[resolved.package] ?? null
+								? (apiItem.getAssociatedPackage()?.dependencies?.[resolved.package] ?? null)
 								: null,
 						},
 					};
@@ -990,7 +999,7 @@ export async function generateSplitDocumentation({
 					containerKey = ApiFunction.getContainerKey(name, Number.parseInt(overloadIndex, 10));
 				}
 
-				const foundMember = memberName && containerKey ? findMemberByKey(model, pkgName, containerKey) ?? null : null;
+				const foundMember = memberName && containerKey ? (findMemberByKey(model, pkgName, containerKey) ?? null) : null;
 
 				const returnValue = memberKind(foundMember);
 

@@ -7,6 +7,7 @@ const { SKU } = require('./SKU');
 const Team = require('./Team');
 const Application = require('./interfaces/Application');
 const ApplicationCommandManager = require('../managers/ApplicationCommandManager');
+const ApplicationEmojiManager = require('../managers/ApplicationEmojiManager');
 const { EntitlementManager } = require('../managers/EntitlementManager');
 const ApplicationFlagsBitField = require('../util/ApplicationFlagsBitField');
 const { resolveImage } = require('../util/DataResolver');
@@ -31,6 +32,12 @@ class ClientApplication extends Application {
      * @type {ApplicationCommandManager}
      */
     this.commands = new ApplicationCommandManager(this.client);
+
+    /**
+     * The application emoji manager for this application
+     * @type {ApplicationEmojiManager}
+     */
+    this.emojis = new ApplicationEmojiManager(this);
 
     /**
      * The entitlement manager for this application
@@ -177,7 +184,7 @@ class ClientApplication extends Application {
       ? new Team(this.client, data.team)
       : data.owner
         ? this.client.users._add(data.owner)
-        : this.owner ?? null;
+        : (this.owner ?? null);
   }
 
   /**

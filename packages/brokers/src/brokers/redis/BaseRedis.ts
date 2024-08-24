@@ -57,8 +57,11 @@ export const DefaultRedisBrokerOptions = {
 /**
  * Helper class with shared Redis logic
  */
-export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
-	extends AsyncEventEmitter<ToEventMap<TEvents>>
+export abstract class BaseRedisBroker<
+		TEvents extends Record<string, any[]>,
+		TResponses extends Record<keyof TEvents, any> | undefined = undefined,
+	>
+	extends AsyncEventEmitter<ToEventMap<TEvents, TResponses>>
 	implements IBaseBroker<TEvents>
 {
 	/**
@@ -182,6 +185,7 @@ export abstract class BaseRedisBroker<TEvents extends Record<string, any>>
 					}
 				}
 			} catch (error) {
+				// @ts-expect-error: Intended
 				this.emit('error', error);
 				break;
 			}
