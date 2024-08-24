@@ -63,23 +63,35 @@ class Poll extends Base {
       this.resultsFinalized ??= false;
     }
 
-    /**
-     * Whether this poll allows multiple answers
-     * @type {boolean}
-     */
-    this.allowMultiselect ??= data.allow_multiselect ?? null;
+    if ('allow_multiselect' in data) {
+      /**
+       * Whether this poll allows multiple answers
+       * @type {boolean}
+       */
+      this.allowMultiselect = data.allow_multiselect;
+    } else {
+      this.allowMultiselect ??= null;
+    }
 
-    /**
-     * The layout type of this poll
-     * @type {PollLayoutType}
-     */
-    this.layoutType ??= data.layout_type ?? null;
+    if ('layout_type' in data) {
+      /**
+       * The layout type of this poll
+       * @type {PollLayoutType}
+       */
+      this.layoutType = data.layout_type;
+    } else {
+      this.layoutType ??= null;
+    }
 
-    /**
-     * The timestamp when this poll expires
-     * @type {?number}
-     */
-    this.expiresTimestamp ??= data.expiry ? Date.parse(data.expiry) : null;
+    if ('expiry' in data) {
+      /**
+       * The timestamp when this poll expires
+       * @type {?number}
+       */
+      this.expiresTimestamp = data.expiry && Date.parse(data.expiry);
+    } else {
+      this.expiresTimestamp ??= null;
+    }
 
     if (data.question) {
       /**
