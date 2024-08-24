@@ -109,6 +109,19 @@ in non-node-like environments (CF Workers, etc.)
 - Abstract identify throttling and correct max_concurrency handling (#9375) ([02dfaf1](https://github.com/discordjs/discord.js/commit/02dfaf1aa2c798315d0dd7f809cc469771b36ffc))
 - **WebSocketShard:** WaitForEvent and its error handling (#9282) ([dcf58d8](https://github.com/discordjs/discord.js/commit/dcf58d81401387a5e157b20829aa56638e106e9d))
 
+# [@discordjs/ws@0.8.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.7.0...@discordjs/ws@0.8.0) - (2023-04-01)
+
+## Bug Fixes
+
+- **scripts:** Accessing tsComment ([d8d5f31](https://github.com/discordjs/discord.js/commit/d8d5f31d3927fd1de62f1fa3a1a6e454243ad87b))
+- **WebSocketShard:** Don't await #destroy in error bubbling logic (#9276) ([519825a](https://github.com/discordjs/discord.js/commit/519825a651fe22042a73046824d12f03f56ca9e2))
+- **WebSocketShard:** Don't close in #destroy when status is connecting (#9254) ([c76b17d](https://github.com/discordjs/discord.js/commit/c76b17d3b327fb55ef76770d4825e02ab8f26ad1))
+- **WebSocketShard:** Cancel initial heartbeat in destroy (#9244) ([9842082](https://github.com/discordjs/discord.js/commit/98420826bc2296fc392f17e8254cf4ad743ff5af))
+
+## Features
+
+- **website:** Render syntax and mdx on the server (#9086) ([ee5169e](https://github.com/discordjs/discord.js/commit/ee5169e0aadd7bbfcd752aae614ec0f69602b68b))
+
 # [@discordjs/ws@0.7.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.6.0...@discordjs/ws@0.7.0) - (2023-03-12)
 
 ## Bug Fixes
