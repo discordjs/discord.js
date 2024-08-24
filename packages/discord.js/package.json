@@ -82,7 +82,7 @@
     "@discordjs/api-extractor": "workspace:^",
     "@discordjs/docgen": "workspace:^",
     "@discordjs/scripts": "workspace:^",
-    "@favware/cliff-jumper": "^3.0.2",
+    "@favware/cliff-jumper": "^4.1.0",
     "@types/node": "^16.18.105",
     "@typescript-eslint/eslint-plugin": "^8.2.0",
     "@typescript-eslint/parser": "^8.2.0",
