@@ -304,9 +304,10 @@ class Client extends BaseClient {
       () => {
         this.emit(
           Events.Debug,
-          `${hasGuildsIntent
-            ? `Client did not receive any guild packets in ${this.options.waitGuildTimeout} ms.`
-            : 'Client will not receive anymore guild packets.'
+          `${
+            hasGuildsIntent
+              ? `Client did not receive any guild packets in ${this.options.waitGuildTimeout} ms.`
+              : 'Client will not receive anymore guild packets.'
           }\nUnavailable guild count: ${this.expectedGuilds.size}`,
         );
 
