@@ -194,10 +194,10 @@ class Client extends BaseClient {
     this.pings = new Collection();
 
     /**
-     * The last time a ping was sent (a timestamp)
-     * @type {?number}
+     * The last time a ping was sent (a timestamp) for each WebSocketShard connection
+     * @type {Collection<number,number>}
      */
-    this.lastPingTimestamp = null;
+    this.lastPingTimestamps = new Collection();
 
     /**
      * Timestamp of the time the client was last {@link Status.Ready} at
@@ -340,7 +340,7 @@ class Client extends BaseClient {
 
     this.ws.on(WebSocketShardEvents.HeartbeatComplete, ({ heartbeatAt, latency }, shardId) => {
       this.emit(Events.Debug, `[WS => Shard ${shardId}] Heartbeat acknowledged, latency of ${latency}ms.`);
-      this.lastPingTimestamp = heartbeatAt;
+      this.lastPingTimestamps.set(shardId, heartbeatAt);
       this.pings.set(shardId, latency);
     });
   }
