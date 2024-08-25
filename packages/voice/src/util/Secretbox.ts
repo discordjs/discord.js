@@ -45,15 +45,19 @@ const libs = {
 			nonce: Buffer,
 			key: ArrayBufferLike,
 		) => {
-			return sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(message, additionalData, null, nonce, key);
+			const cipherText = Buffer.alloc(message.length + sodium.crypto_aead_xchacha20poly1305_ietf_ABYTES);
+			sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(cipherText, message, additionalData, null, nonce, key);
+			return cipherText;
 		},
 		crypto_aead_xchacha20poly1305_ietf_decrypt: (
-			message: Buffer,
+			cipherText: Buffer,
 			additionalData: Buffer,
 			nonce: Buffer,
 			key: ArrayBufferLike,
 		) => {
-			return sodium.crypto_aead_xchacha20poly1305_ietf_decrypt(message, additionalData, null, nonce, key);
+			const message = Buffer.alloc(cipherText.length - sodium.crypto_aead_xchacha20poly1305_ietf_ABYTES);
+			sodium.crypto_aead_xchacha20poly1305_ietf_decrypt(message, null, cipherText, additionalData, nonce, key);
+			return message;
 		},
 	}),
 	sodium: (sodium: any): Methods => ({
