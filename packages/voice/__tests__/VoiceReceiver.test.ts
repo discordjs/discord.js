@@ -6,7 +6,7 @@ import { once } from 'node:events';
 import process from 'node:process';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
 import { describe, test, expect, vitest, beforeEach } from 'vitest';
-import { RTP_PACKET_DESKTOP, RTP_PACKET_CHROME, RTP_PACKET_ANDROID } from '../__mocks__/rtp';
+import { RTP_PACKET_DESKTOP, RTP_PACKET_CHROME, RTP_PACKET_ANDROID, XCHACHA20_SAMPLE } from '../__mocks__/rtp';
 import { VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
 import { VoiceReceiver } from '../src/receive/VoiceReceiver';
 import { methods } from '../src/util/Secretbox';
@@ -178,43 +178,23 @@ describe('VoiceReceiver', () => {
 			openSpy.mockClear();
 		});
 
-		test('decrypt: xsalsa20_poly1305_lite', () => {
-			// Arrange
-			const buffer = range(1, 32);
-			const nonce = Buffer.alloc(4);
+		test('decrypt: aead_xchacha20_poly1305_rtpsize', () => {
+			const sampleNonce = Buffer.alloc(24);
 
-			// Act
-			const decrypted = receiver['decrypt'](buffer, 'xsalsa20_poly1305_lite', nonce, secretKey);
+			const decrypted = receiver['decrypt'](
+				XCHACHA20_SAMPLE.encrypted,
+				'aead_xchacha20_poly1305_rtpsize',
+				sampleNonce,
+				XCHACHA20_SAMPLE.key,
+			);
 
-			// Assert
-			expect(nonce.equals(range(29, 32))).toEqual(true);
-			expect(decrypted!.equals(range(13, 28))).toEqual(true);
-		});
+			const expectedNonce = Buffer.concat([
+				XCHACHA20_SAMPLE.encrypted.slice(XCHACHA20_SAMPLE.encrypted.length - 4),
+				Buffer.alloc(20),
+			]);
 
-		test('decrypt: xsalsa20_poly1305_suffix', () => {
-			// Arrange
-			const buffer = range(1, 64);
-			const nonce = Buffer.alloc(24);
-
-			// Act
-			const decrypted = receiver['decrypt'](buffer, 'xsalsa20_poly1305_suffix', nonce, secretKey);
-
-			// Assert
-			expect(nonce.equals(range(41, 64))).toEqual(true);
-			expect(decrypted!.equals(range(13, 40))).toEqual(true);
-		});
-
-		test('decrypt: xsalsa20_poly1305', () => {
-			// Arrange
-			const buffer = range(1, 64);
-			const nonce = Buffer.alloc(12);
-
-			// Act
-			const decrypted = receiver['decrypt'](buffer, 'xsalsa20_poly1305', nonce, secretKey);
-
-			// Assert
-			expect(nonce.equals(range(1, 12))).toEqual(true);
-			expect(decrypted!.equals(range(13, 64))).toEqual(true);
+			expect(sampleNonce.equals(expectedNonce)).toEqual(true);
+			expect(decrypted!.equals(XCHACHA20_SAMPLE.decrypted)).toEqual(true);
 		});
 	});
 });
