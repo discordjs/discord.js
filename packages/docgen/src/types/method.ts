@@ -46,11 +46,11 @@ export class DocumentedMethod extends DocumentedItem<DeclarationReflection | Met
 				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				abstract: signature.comment?.blockTags?.some((block) => block.tag === '@abstract') || undefined,
 				deprecated: signature.comment?.blockTags?.some((block) => block.tag === '@deprecated')
-					? signature.comment.blockTags
+					? (signature.comment.blockTags
 							.find((block) => block.tag === '@deprecated')
 							// eslint-disable-next-line no-param-reassign
 							?.content.reduce((prev, curr) => (prev += curr.text), '')
-							.trim() ?? true
+							.trim() ?? true)
 					: undefined,
 				// emits: signature.comment?.blockTags?.filter((t) => t.tag === '@emits').map((t) => t.content),
 				// @ts-expect-error: Typescript doesn't know that this is a SignatureReflection

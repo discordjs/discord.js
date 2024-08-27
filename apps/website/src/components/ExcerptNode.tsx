@@ -4,7 +4,7 @@ import { BuiltinDocumentationLinks } from '~/util/builtinDocumentationLinks';
 
 export async function ExcerptNode({ node, version }: { readonly node?: any; readonly version: string }) {
 	const createExcerpt = (excerpts: any) => {
-		const excerpt = Array.isArray(excerpts) ? excerpts : excerpts.excerpts ?? [excerpts];
+		const excerpt = Array.isArray(excerpts) ? excerpts : (excerpts.excerpts ?? [excerpts]);
 
 		return (
 			<span

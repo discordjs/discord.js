@@ -6,7 +6,7 @@ import {
 	type RESTGetAPIEntitlementsQuery,
 	type RESTGetAPIEntitlementsResult,
 	type RESTGetAPISKUsResult,
-	type RESTPostAPIEntitlementBody,
+	type RESTPostAPIEntitlementJSONBody,
 	type RESTPostAPIEntitlementResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
@@ -53,7 +53,7 @@ export class MonetizationAPI {
 	 */
 	public async createTestEntitlement(
 		applicationId: Snowflake,
-		body: RESTPostAPIEntitlementBody,
+		body: RESTPostAPIEntitlementJSONBody,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.entitlements(applicationId), {

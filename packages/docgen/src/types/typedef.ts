@@ -36,11 +36,11 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 						? 'private'
 						: undefined,
 				deprecated: signature.comment?.blockTags?.some((block) => block.tag === '@deprecated')
-					? signature.comment.blockTags
+					? (signature.comment.blockTags
 							.find((block) => block.tag === '@deprecated')
 							// eslint-disable-next-line no-param-reassign
 							?.content.reduce((prev, curr) => (prev += curr.text), '')
-							.trim() ?? true
+							.trim() ?? true)
 					: undefined,
 				type: signature.type
 					? new DocumentedVarType({ names: [parseType(signature.type)] }, this.config).serialize()
@@ -163,11 +163,11 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 								? 'private'
 								: undefined,
 						deprecated: sig?.comment?.blockTags?.some((block) => block.tag === '@deprecated')
-							? sig.comment.blockTags
+							? (sig.comment.blockTags
 									.find((block) => block.tag === '@deprecated')
 									// eslint-disable-next-line no-param-reassign
 									?.content.reduce((prev, curr) => (prev += curr.text), '')
-									.trim() ?? true
+									.trim() ?? true)
 							: undefined,
 						params,
 						returns: sig?.type

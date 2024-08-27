@@ -1,6 +1,6 @@
 {
 	"$schema": "https://json.schemastore.org/tsconfig.json",
-	"extends": "@sapphire/ts-config/extra-strict",
+	"extends": ["@sapphire/ts-config", "@sapphire/ts-config/extra-strict"],
 	"compilerOptions": {
 		"declaration": false,
 		"declarationMap": false,
@@ -10,7 +10,6 @@
 		"outDir": "dist",
 		"noEmit": true,
 		"allowImportingTsExtensions": true,
-		"types": ["bun-types"],
 		"skipLibCheck": true
 	}
 }

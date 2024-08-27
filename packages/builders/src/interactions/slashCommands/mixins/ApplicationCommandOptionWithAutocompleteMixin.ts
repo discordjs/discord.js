@@ -1,7 +1,7 @@
 import { s } from '@sapphire/shapeshift';
 import type { ApplicationCommandOptionType } from 'discord-api-types/v10';
 
-const booleanPredicate = s.boolean;
+const booleanPredicate = s.boolean();
 
 /**
  * This mixin holds choices and autocomplete symbols used for options.
