@@ -181,6 +181,7 @@ import {
   APISelectMenuDefaultValue,
   SelectMenuDefaultValueType,
   InviteType,
+  ReactionType,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -2414,10 +2415,13 @@ export class MessageReaction {
   private constructor(client: Client<true>, data: RawMessageReactionData, message: Message);
   private _emoji: GuildEmoji | ReactionEmoji;
 
+  public burstColors: string[] | null;
   public readonly client: Client<true>;
   public count: number;
+  public countDetails: ReactionCountDetailsData;
   public get emoji(): GuildEmoji | ReactionEmoji;
   public me: boolean;
+  public meBurst: boolean;
   public message: Message | PartialMessage;
   public get partial(): false;
   public users: ReactionUserManager;
@@ -2426,6 +2430,10 @@ export class MessageReaction {
   public fetch(): Promise<MessageReaction>;
   public toJSON(): unknown;
   public valueOf(): Snowflake | string;
+}
+
+export interface MessageReactionEventDetails {
+  burst: boolean;
 }
 
 export interface ModalComponentData {
@@ -5294,8 +5302,16 @@ export interface ClientEvents {
     messages: ReadonlyCollection<Snowflake, Message | PartialMessage>,
     channel: GuildTextBasedChannel,
   ];
-  messageReactionAdd: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser];
-  messageReactionRemove: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser];
+  messageReactionAdd: [
+    reaction: MessageReaction | PartialMessageReaction,
+    user: User | PartialUser,
+    details: MessageReactionEventDetails,
+  ];
+  messageReactionRemove: [
+    reaction: MessageReaction | PartialMessageReaction,
+    user: User | PartialUser,
+    details: MessageReactionEventDetails,
+  ];
   messageUpdate: [oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage];
   presenceUpdate: [oldPresence: Presence | null, newPresence: Presence];
   ready: [client: Client<true>];
@@ -5740,6 +5756,7 @@ export interface FetchMessagesOptions {
 }
 
 export interface FetchReactionUsersOptions {
+  type?: ReactionType;
   limit?: number;
   after?: Snowflake;
 }
@@ -6473,6 +6490,11 @@ export interface MessageSelectOption {
   emoji: APIPartialEmoji | null;
   label: string;
   value: string;
+}
+
+export interface ReactionCountDetailsData {
+  burst: number;
+  normal: number;
 }
 
 export interface SelectMenuComponentOptionData {
