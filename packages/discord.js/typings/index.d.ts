@@ -2391,6 +2391,10 @@ export class MessageReaction {
   public valueOf(): Snowflake | string;
 }
 
+export interface MessageReactionEventDetails {
+  burst: boolean;
+}
+
 export interface ModalComponentData {
   customId: string;
   title: string;
@@ -5249,8 +5253,16 @@ export interface ClientEvents {
     messages: ReadonlyCollection<Snowflake, Message | PartialMessage>,
     channel: GuildTextBasedChannel,
   ];
-  messageReactionAdd: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser, burst: boolean];
-  messageReactionRemove: [reaction: MessageReaction | PartialMessageReaction, user: User | PartialUser, burst: boolean];
+  messageReactionAdd: [
+    reaction: MessageReaction | PartialMessageReaction,
+    user: User | PartialUser,
+    details: MessageReactionEventDetails,
+  ];
+  messageReactionRemove: [
+    reaction: MessageReaction | PartialMessageReaction,
+    user: User | PartialUser,
+    details: MessageReactionEventDetails,
+  ];
   messageUpdate: [oldMessage: Message | PartialMessage, newMessage: Message | PartialMessage];
   presenceUpdate: [oldPresence: Presence | null, newPresence: Presence];
   ready: [client: Client<true>];

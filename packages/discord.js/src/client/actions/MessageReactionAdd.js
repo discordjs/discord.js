@@ -43,13 +43,18 @@ class MessageReactionAdd extends Action {
     reaction._add(user, data.burst);
     if (fromStructure) return { message, reaction, user };
     /**
+     * Provides additional information about altered reaction
+     * @typedef {Object} MessageReactionEventDetails
+     * @property {boolean} burst Determines whether a super reaction was used
+     */
+    /**
      * Emitted whenever a reaction is added to a cached message.
      * @event Client#messageReactionAdd
      * @param {MessageReaction} messageReaction The reaction object
      * @param {User} user The user that applied the guild or reaction emoji
-     * @param {boolean} burst Determines when a super reaction is added
+     * @param {MessageReactionEventDetails} details Details of adding the reaction
      */
-    this.client.emit(Events.MessageReactionAdd, reaction, user, data.burst);
+    this.client.emit(Events.MessageReactionAdd, reaction, user, { burst: data.burst });
 
     return { message, reaction, user };
   }
