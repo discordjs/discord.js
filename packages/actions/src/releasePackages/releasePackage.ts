@@ -35,6 +35,7 @@ async function gitTagAndRelease(release: ReleaseEntry, dry: boolean) {
 			name: tagName,
 			body: release.changelog ?? '',
 			generate_release_notes: release.changelog === undefined,
+			make_latest: release.name === 'discord.js' ? 'true' : 'false',
 		});
 	} catch (error) {
 		warning(`Failed to create github release: ${error}`);
