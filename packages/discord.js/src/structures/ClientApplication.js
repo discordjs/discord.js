@@ -85,9 +85,9 @@ class ClientApplication extends Application {
     /**
      * The application's supported installation context data.
      * @typedef {Object} IntegrationTypesConfiguration
-     * @property {?IntegrationTypesConfigurationContext} 0 Scopes and permissions
+     * @property {IntegrationTypesConfigurationContext} [0] Scopes and permissions
      * regarding the guild-installation context
-     * @property {?IntegrationTypesConfigurationContext} 1 Scopes and permissions
+     * @property {IntegrationTypesConfigurationContext} [1] Scopes and permissions
      * regarding the user-installation context
      */
 
