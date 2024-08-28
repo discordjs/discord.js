@@ -386,7 +386,7 @@ class Message extends Base {
 
     if (data.interaction_metadata) {
       /**
-       * Partial data of the interaction that this message is a result of
+       * Partial data of the interaction that a message is a result of
        * @typedef {Object} MessageInteractionMetadata
        * @property {Snowflake} id The interaction's id
        * @property {InteractionType} type The type of the interaction
@@ -400,6 +400,11 @@ class Message extends Base {
        * Present only on messages created from component interactions
        * @property {?MessageInteractionMetadata} triggeringInteractionMetadata
        * Metadata for the interaction that was used to open the modal. Present only on modal submit interactions
+       */
+
+      /**
+       * Partial data of the interaction that this message is a result of
+       * @type {?MessageInteractionMetadata}
        */
       this.interactionMetadata = _transformAPIMessageInteractionMetadata(this.client, data.interaction_metadata);
     } else {
