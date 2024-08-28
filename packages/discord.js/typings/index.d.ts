@@ -6232,11 +6232,11 @@ export interface IntegrationAccount {
 export type IntegrationType = 'twitch' | 'youtube' | 'discord' | 'guild_subscription';
 
 export type IntegrationTypesConfigurationParameters = {
-  [T in keyof ClientApplicationInstallParams]: ClientApplicationInstallParams[T] | null;
+  [T in keyof ClientApplicationInstallParams]: ClientApplicationInstallParams[T];
 };
 
 export interface IntegrationTypesConfigurationContext {
-  oauth2InstallParams: IntegrationTypesConfigurationParameters;
+  oauth2InstallParams: IntegrationTypesConfigurationParameters | null;
 }
 
 export type IntegrationTypesConfiguration = {
