@@ -8,6 +8,7 @@ runs:
   using: 'composite'
   steps:
     - name: Upload Guide Coverage
+      if: ${{ hashFiles('apps/guide/coverage/cobertura-coverage.xml') != '' }}
       uses: codecov/codecov-action@v4
       with:
         files: ./apps/guide/coverage/cobertura-coverage.xml
@@ -16,6 +17,7 @@ runs:
         token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Website Coverage
+      if: ${{ hashFiles('apps/website/coverage/cobertura-coverage.xml') != '' }}
       uses: codecov/codecov-action@v4
       with:
         files: ./apps/website/coverage/cobertura-coverage.xml
@@ -24,6 +26,7 @@ runs:
         token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Brokers Coverage
+      if: ${{ hashFiles('packages/brokers/coverage/cobertura-coverage.xml') != '' }}
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/brokers/coverage/cobertura-coverage.xml
@@ -32,6 +35,7 @@ runs:
         token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Builders Coverage
+      if: ${{ hashFiles('packages/builders/coverage/cobertura-coverage.xml') != '' }}
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/builders/coverage/cobertura-coverage.xml
@@ -40,6 +44,7 @@ runs:
         token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Collection Coverage
+      if: ${{ hashFiles('packages/collection/coverage/cobertura-coverage.xml') != '' }}
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/collection/coverage/cobertura-coverage.xml
@@ -48,6 +53,7 @@ runs:
         token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Discord.js Coverage
+      if: ${{ hashFiles('packages/discord.js/coverage/cobertura-coverage.xml') != '' }}
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/discord.js/coverage/cobertura-coverage.xml
@@ -56,6 +62,7 @@ runs:
         token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Formatters Coverage
+      if: ${{ hashFiles('packages/formatters/coverage/cobertura-coverage.xml') != '' }}
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/formatters/coverage/cobertura-coverage.xml
@@ -64,6 +71,7 @@ runs:
         token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Next Coverage
+      if: ${{ hashFiles('packages/next/coverage/cobertura-coverage.xml') != '' }}
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/next/coverage/cobertura-coverage.xml
@@ -72,6 +80,7 @@ runs:
         token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Proxy Coverage
+      if: ${{ hashFiles('packages/proxy/coverage/cobertura-coverage.xml') != '' }}
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/proxy/coverage/cobertura-coverage.xml
@@ -80,6 +89,7 @@ runs:
         token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Rest Coverage
+      if: ${{ hashFiles('packages/rest/coverage/cobertura-coverage.xml') != '' }}
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/rest/coverage/cobertura-coverage.xml
@@ -88,6 +98,7 @@ runs:
         token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Voice Coverage
+      if: ${{ hashFiles('packages/voice/coverage/cobertura-coverage.xml') != '' }}
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/voice/coverage/cobertura-coverage.xml
@@ -96,6 +107,7 @@ runs:
         token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload WS Coverage
+      if: ${{ hashFiles('packages/ws/coverage/cobertura-coverage.xml') != '' }}
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/ws/coverage/cobertura-coverage.xml
@@ -104,6 +116,7 @@ runs:
         token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Util Coverage
+      if: ${{ hashFiles('packages/util/coverage/cobertura-coverage.xml') != '' }}
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/util/coverage/cobertura-coverage.xml
@@ -112,6 +125,7 @@ runs:
         token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Utilities Coverage
+      if: ${{ hashFiles('packages/actions/coverage/cobertura-coverage.xml') != '' || hashFiles('packages/scripts/coverage/cobertura-coverage.xml') != '' }}
       uses: codecov/codecov-action@v4
       with:
         files: ./packages/actions/coverage/cobertura-coverage.xml, ./packages/scripts/coverage/cobertura-coverage.xml

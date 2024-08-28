@@ -9,6 +9,7 @@ const Partials = require('../../util/Partials');
      message_id: 'id',
      emoji: { name: '�', id: null },
      channel_id: 'id',
+     burst: boolean
      // If originating from a guild
      guild_id: 'id',
      member: { ..., user: { ... } } }
@@ -36,17 +37,24 @@ class MessageReactionAdd extends Action {
       emoji: data.emoji,
       count: message.partial ? null : 0,
       me: user.id === this.client.user.id,
+      burst_colors: data.burst_colors,
     });
     if (!reaction) return false;
-    reaction._add(user);
+    reaction._add(user, data.burst);
     if (fromStructure) return { message, reaction, user };
+    /**
+     * Provides additional information about altered reaction
+     * @typedef {Object} MessageReactionEventDetails
+     * @property {boolean} burst Determines whether a super reaction was used
+     */
     /**
      * Emitted whenever a reaction is added to a cached message.
      * @event Client#messageReactionAdd
      * @param {MessageReaction} messageReaction The reaction object
      * @param {User} user The user that applied the guild or reaction emoji
+     * @param {MessageReactionEventDetails} details Details of adding the reaction
      */
-    this.client.emit(Events.MessageReactionAdd, reaction, user);
+    this.client.emit(Events.MessageReactionAdd, reaction, user, { burst: data.burst });
 
     return { message, reaction, user };
   }

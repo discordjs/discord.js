@@ -65,7 +65,7 @@ class BaseInteraction extends Base {
      * If this interaction was sent in a guild, the member which sent it
      * @type {?(GuildMember|APIInteractionGuildMember)}
      */
-    this.member = data.member ? this.guild?.members._add(data.member) ?? data.member : null;
+    this.member = data.member ? (this.guild?.members._add(data.member) ?? data.member) : null;
 
     /**
      * The version
@@ -154,7 +154,7 @@ class BaseInteraction extends Base {
   }
 
   /**
-   * Indicates whether or not this interaction is both cached and received from a guild.
+   * Indicates whether this interaction is received from a cached guild.
    * @returns {boolean}
    */
   inCachedGuild() {
