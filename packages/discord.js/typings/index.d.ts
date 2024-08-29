@@ -6248,9 +6248,7 @@ export interface IntegrationAccount {
 
 export type IntegrationType = 'twitch' | 'youtube' | 'discord' | 'guild_subscription';
 
-export type IntegrationTypesConfigurationParameters = {
-  [T in keyof ClientApplicationInstallParams]: ClientApplicationInstallParams[T];
-};
+export type IntegrationTypesConfigurationParameters = ClientApplicationInstallParams;
 
 export interface IntegrationTypesConfigurationContext {
   oauth2InstallParams: IntegrationTypesConfigurationParameters | null;
