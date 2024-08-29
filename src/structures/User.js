@@ -132,6 +132,17 @@ class User extends Base {
     } else {
       this.avatarDecoration ??= null;
     }
+
+    if ('clan' in data) {
+      /**
+       * The user's clan
+       * @type {?string}
+       */
+      this.clan = data.clan;
+    }
+    else {
+      this.clan ??= null;
+    }
   }
 
   /**
@@ -179,6 +190,10 @@ class User extends Base {
   avatarDecorationURL({ format, size } = {}) {
     if (!this.avatarDecoration) return null;
     return this.client.rest.cdn.AvatarDecoration(this.id, this.avatarDecoration, format, size);
+  }
+
+  clan() {
+    return this.clan;
   }
 
   /**
