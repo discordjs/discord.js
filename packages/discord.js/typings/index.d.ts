@@ -6256,9 +6256,9 @@ export interface IntegrationTypesConfigurationContext {
   oauth2InstallParams: IntegrationTypesConfigurationParameters | null;
 }
 
-export type IntegrationTypesConfiguration = {
-  [key in ApplicationIntegrationType]?: IntegrationTypesConfigurationContext;
-};
+export type IntegrationTypesConfiguration = Partial<
+  Record<ApplicationIntegrationType, IntegrationTypesConfigurationContext>
+>;
 
 export type CollectedInteraction<Cached extends CacheType = CacheType> =
   | StringSelectMenuInteraction<Cached>
