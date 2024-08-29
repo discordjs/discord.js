@@ -71,8 +71,8 @@ class ClientApplication extends Application {
     /**
      * OAuth2 installation paremeters.
      * @typedef {Object} IntegrationTypesConfigurationParameters
-     * @property {?OAuth2Scopes[]} scopes Scopes that will be set upon adding this application
-     * @property {?Readonly<PermissionsBitField>} permissions Permissions that will be requested for the integrated role
+     * @property {OAuth2Scopes[]} scopes Scopes that will be set upon adding this application
+     * @property {Readonly<PermissionsBitField>} permissions Permissions that will be requested for the integrated role
      */
 
     /**
