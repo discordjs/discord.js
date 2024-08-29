@@ -1,5 +1,7 @@
 import { Buffer } from 'node:buffer';
 
+// #todo: update the rtp packets to rtpsize format
+
 export const RTP_PACKET_DESKTOP = {
 	ssrc: 341_124,
 	packet: Buffer.from([

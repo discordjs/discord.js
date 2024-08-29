@@ -53,7 +53,7 @@ try installing another.
 
 - `sodium-native`: ^3.3.0
 - `sodium`: ^3.0.2
-- `tweetnacl`: ^1.0.3
+- `@stablelib/xchacha20poly1305`: ^2.0.0
 - `libsodium-wrappers`: ^0.7.9
 
 **Opus Libraries (npm install):**
