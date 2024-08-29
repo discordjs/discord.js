@@ -2729,6 +2729,7 @@ export class User extends PartialTextBasedChannel(Base) {
   public readonly dmChannel: DMChannel | null;
   public flags: Readonly<UserFlags> | null;
   public globalName: string | null;
+  public clan: string | null;
   public readonly hexAccentColor: HexColorString | null | undefined;
   public id: Snowflake;
   public readonly partial: false;
