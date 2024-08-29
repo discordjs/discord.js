@@ -99,14 +99,16 @@ class ClientApplication extends Application {
        */
       this.integrationTypesConfig = Object.fromEntries(
         Object.entries(data.integration_types_config).map(([key, config]) => {
+          let oauth2InstallParams = null;
+          if ('oauth2_install_params' in config) {
+            oauth2InstallParams = {
+              scopes: config.oauth2_install_params.scopes,
+              permissions: new PermissionsBitField(config.oauth2_install_params.permissions).freeze(),
+            };
+          }
+
           const context = {
-            oauth2InstallParams:
-              'oauth2_install_params' in config
-                ? {
-                    scopes: config.oauth2_install_params.scopes,
-                    permissions: new PermissionsBitField(config.oauth2_install_params.permissions).freeze(),
-                  }
-                : null,
+            oauth2InstallParams,
           };
 
           return [key, context];
