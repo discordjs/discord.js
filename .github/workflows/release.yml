@@ -50,6 +50,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref || '' }}
+          ssh_key: ${{ secrets.DEPLOY_KEY_CI_RELEASE_TAGS }}
 
       - name: Install Node.js v20
         uses: actions/setup-node@v4
