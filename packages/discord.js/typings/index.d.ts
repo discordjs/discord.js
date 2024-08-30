@@ -6449,13 +6449,15 @@ export interface MessageSnapshot
     Exclude<
       keyof Message,
       | 'attachments'
-      | 'content'
       | 'client'
+      | 'components'
+      | 'content'
       | 'createdTimestamp'
       | 'editedTimestamp'
       | 'embeds'
       | 'flags'
       | 'mentions'
+      | 'stickers'
       | 'type'
     >
   > {}
