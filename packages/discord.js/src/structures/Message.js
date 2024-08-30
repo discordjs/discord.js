@@ -453,9 +453,9 @@ class Message extends Base {
     if (data.message_snapshots) {
       /**
        * The message associated with the message reference
-       * @type {Array<Message>}
+       * @type {Collection<Snowflake, Message>}
        */
-      this.messageSnapshots = data.message_snapshots.map(snapshot => {
+      this.messageSnapshots = data.message_snapshots.reduce((coll, snapshot) => {
         const channel = this.client.channels.resolve(this.reference.channelId);
         const snapshotData = {
           ...snapshot.message,
@@ -464,10 +464,13 @@ class Message extends Base {
           guild_id: this.reference.guildId,
         };
 
-        return channel ? channel.messages._add(snapshotData) : new this.constructor(snapshotData);
-      });
+        return coll.set(
+          this.reference.messageId,
+          channel ? channel.messages._add(snapshotData) : new this.constructor(this.client, snapshotData),
+        );
+      }, new Collection());
     } else {
-      this.messageSnapshots = this.messageSnapshots?.slice() ?? [];
+      this.messageSnapshots ??= new Collection();
     }
 
     /**

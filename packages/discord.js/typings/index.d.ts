@@ -2185,7 +2185,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public webhookId: Snowflake | null;
   public flags: Readonly<MessageFlagsBitField>;
   public reference: MessageReference | null;
-  public messageSnapshots: MessageSnapshot[];
+  public messageSnapshots: Collection<Snowflake, MessageSnapshot>;
   public awaitMessageComponent<ComponentType extends MessageComponentType>(
     options?: AwaitMessageCollectorOptionsParams<ComponentType, InGuild>,
   ): Promise<MappedInteractionTypes<InGuild>[ComponentType]>;
