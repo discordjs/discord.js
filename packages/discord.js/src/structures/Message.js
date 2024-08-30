@@ -467,7 +467,7 @@ class Message extends Base {
         return channel ? channel.messages._add(snapshotData) : new this.constructor(snapshotData);
       });
     } else {
-      this.messageSnapshots = data.message_snapshots?.slice() ?? [];
+      this.messageSnapshots = this.messageSnapshots?.slice() ?? [];
     }
 
     /**
