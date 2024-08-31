@@ -1084,7 +1084,7 @@ export class ClientApplication extends Application {
   public approximateUserInstallCount: number | null;
   public tags: string[];
   public installParams: ClientApplicationInstallParams | null;
-  public integrationTypesConfig: IntegrationTypesConfiguration;
+  public integrationTypesConfig: IntegrationTypesConfiguration | null;
   public customInstallURL: string | null;
   public owner: User | Team | null;
   public get partial(): boolean;

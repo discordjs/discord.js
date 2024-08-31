@@ -95,7 +95,7 @@ class ClientApplication extends Application {
       /**
        * Default scopes and permissions for each supported installation context.
        * The keys are stringified variants of {@link ApplicationIntegrationType}.
-       * @type {IntegrationTypesConfiguration}
+       * @type {?IntegrationTypesConfiguration}
        */
       this.integrationTypesConfig = Object.fromEntries(
         Object.entries(data.integration_types_config).map(([key, config]) => {
