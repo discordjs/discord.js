@@ -21,11 +21,7 @@ All notable changes to this project will be documented in this file.
 - **WebSocketShard:** Error event handling (#10436) ([a6de270](https://github.com/discordjs/discord.js/commit/a6de2707fc1107262b12491f73b5b6887df91c67))
 - **ws:** Event layout (#10376) ([bf6761a](https://github.com/discordjs/discord.js/commit/bf6761a44adec1fe5017f6bf5d8bc0734916961f))
   - **BREAKING CHANGE:** All events now emit shard id as its own param
-
-* fix: worker event forwarding
-
----------
-  - **Co-authored-by:** kodiakhq[bot] <49736102+kodiakhq[bot]@users.noreply.github.com>
+  - fix: worker event forwarding
 - Native zlib support (#10316) ([94cc02a](https://github.com/discordjs/discord.js/commit/94cc02a2580496774d75673abc0caabc765d9ee0))
 
 # [@discordjs/ws@1.1.1](https://github.com/discordjs/discord.js/compare/@discordjs/ws@1.1.0...@discordjs/ws@1.1.1) - (2024-06-02)
