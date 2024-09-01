@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/rest@2.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.3.0...@discordjs/rest@2.4.0) - (2024-09-01)
+
+## Bug Fixes
+
+- Correct base path for GIF stickers (#10330) ([599ad3e](https://github.com/discordjs/discord.js/commit/599ad3eab556463bcde60f8941d0354475cde16b))
+
+## Features
+
+- **User:** Add `avatarDecorationData` (#9888) ([3b5c600](https://github.com/discordjs/discord.js/commit/3b5c600b9e3f8d40ed48f02e3c9acec7433f1cc3))
+
 # [@discordjs/rest@2.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.2.0...@discordjs/rest@2.3.0) - (2024-05-04)
 
 ## Bug Fixes
