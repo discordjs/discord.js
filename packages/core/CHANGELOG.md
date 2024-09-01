@@ -26,7 +26,6 @@ All notable changes to this project will be documented in this file.
 - Use get guild role endpoint (#10443) ([bba0e72](https://github.com/discordjs/discord.js/commit/bba0e72e2283630b9f84b77d53525397036c6b31))
 - **ws:** Event layout (#10376) ([bf6761a](https://github.com/discordjs/discord.js/commit/bf6761a44adec1fe5017f6bf5d8bc0734916961f))
   - **BREAKING CHANGE:** All events now emit shard id as its own param
-  - fix: worker event forwarding
 
 # [@discordjs/core@1.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@1.1.1...@discordjs/core@1.2.0) - (2024-05-04)
 
