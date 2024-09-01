@@ -10,11 +10,6 @@ All notable changes to this project will be documented in this file.
 - **brokers:** Make option props more correct (#10242) ([393ded4](https://github.com/discordjs/discord.js/commit/393ded4ea14e73b2bb42226f57896130329f88ca))
   - **BREAKING CHANGE:** Classes now take redis client as standalone parameter, various props from the base option interface moved to redis options
 
-* chore: update comment
-
----------
-  - **Co-authored-by:** kodiakhq[bot] <49736102+kodiakhq[bot]@users.noreply.github.com>
-
 # [@discordjs/brokers@0.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/brokers@0.2.3...@discordjs/brokers@0.3.0) - (2024-05-04)
 
 ## Bug Fixes
