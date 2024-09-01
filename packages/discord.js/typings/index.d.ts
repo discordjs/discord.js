@@ -175,6 +175,8 @@ import {
   SKUType,
   APIEntitlement,
   EntitlementType,
+  ApplicationIntegrationType,
+  InteractionContextType,
   APIPoll,
   PollLayoutType,
   APIPollAnswer,
@@ -182,6 +184,7 @@ import {
   SelectMenuDefaultValueType,
   InviteType,
   ReactionType,
+  APIAuthorizingIntegrationOwnersMap,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -429,17 +432,20 @@ export abstract class Application extends Base {
 export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   private constructor(client: Client<true>, data: RawApplicationCommandData, guild?: Guild, guildId?: Snowflake);
   public applicationId: Snowflake;
+  public contexts: InteractionContextType[] | null;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public defaultMemberPermissions: Readonly<PermissionsBitField> | null;
   public description: string;
   public descriptionLocalizations: LocalizationMap | null;
   public descriptionLocalized: string | null;
+  /** @deprecated Use {@link ApplicationCommand.contexts} instead */
   public dmPermission: boolean | null;
   public guild: Guild | null;
   public guildId: Snowflake | null;
   public get manager(): ApplicationCommandManager;
   public id: Snowflake;
+  public integrationTypes: ApplicationIntegrationType[] | null;
   public name: string;
   public nameLocalizations: LocalizationMap | null;
   public nameLocalized: string | null;
@@ -541,6 +547,7 @@ export type GuildCacheMessage<Cached extends CacheType> = CacheTypeReducer<
 export type BooleanCache<Cached extends CacheType> = Cached extends 'cached' ? true : false;
 
 export abstract class CommandInteraction<Cached extends CacheType = CacheType> extends BaseInteraction<Cached> {
+  public authorizingIntegrationOwners: APIAuthorizingIntegrationOwnersMap;
   public type: InteractionType.ApplicationCommand;
   public get command(): ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
   public options: Omit<
@@ -565,6 +572,7 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   public commandName: string;
   public commandType: ApplicationCommandType;
   public commandGuildId: Snowflake | null;
+  public context: InteractionContextType | null;
   public deferred: boolean;
   public ephemeral: boolean | null;
   public replied: boolean;
@@ -1073,8 +1081,10 @@ export class ClientApplication extends Application {
   public cover: string | null;
   public flags: Readonly<ApplicationFlagsBitField>;
   public approximateGuildCount: number | null;
+  public approximateUserInstallCount: number | null;
   public tags: string[];
   public installParams: ClientApplicationInstallParams | null;
+  public integrationTypesConfig: IntegrationTypesConfiguration | null;
   public customInstallURL: string | null;
   public owner: User | Team | null;
   public get partial(): boolean;
@@ -1932,7 +1942,7 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public type: InteractionType;
   public user: User;
   public version: number;
-  public appPermissions: CacheTypeReducer<Cached, Readonly<PermissionsBitField>>;
+  public appPermissions: Readonly<PermissionsBitField>;
   public memberPermissions: CacheTypeReducer<Cached, Readonly<PermissionsBitField>>;
   public locale: Locale;
   public guildLocale: CacheTypeReducer<Cached, Locale>;
@@ -2150,7 +2160,9 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public get guild(): If<InGuild, Guild>;
   public get hasThread(): boolean;
   public id: Snowflake;
+  /** @deprecated Use {@link Message.interactionMetadata} instead. */
   public interaction: MessageInteraction | null;
+  public interactionMetadata: MessageInteractionMetadata | null;
   public get member(): GuildMember | null;
   public mentions: MessageMentions<InGuild>;
   public nonce: string | number | null;
@@ -2180,23 +2192,27 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public createMessageComponentCollector<ComponentType extends MessageComponentType>(
     options?: MessageCollectorOptionsParams<ComponentType, InGuild>,
   ): InteractionCollector<MappedInteractionTypes<InGuild>[ComponentType]>;
-  public delete(): Promise<Message<InGuild>>;
-  public edit(content: string | MessageEditOptions | MessagePayload): Promise<Message<InGuild>>;
+  public delete(): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
+  public edit(
+    content: string | MessageEditOptions | MessagePayload,
+  ): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
   public equals(message: Message, rawData: unknown): boolean;
-  public fetchReference(): Promise<Message<InGuild>>;
+  public fetchReference(): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
   public fetchWebhook(): Promise<Webhook>;
-  public crosspost(): Promise<Message<InGuild>>;
-  public fetch(force?: boolean): Promise<Message<InGuild>>;
-  public pin(reason?: string): Promise<Message<InGuild>>;
+  public crosspost(): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
+  public fetch(force?: boolean): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
+  public pin(reason?: string): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
   public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
-  public removeAttachments(): Promise<Message<InGuild>>;
-  public reply(options: string | MessagePayload | MessageReplyOptions): Promise<Message<InGuild>>;
+  public removeAttachments(): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
+  public reply(
+    options: string | MessagePayload | MessageReplyOptions,
+  ): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
   public resolveComponent(customId: string): MessageActionRowComponent | null;
   public startThread(options: StartThreadOptions): Promise<PublicThreadChannel<false>>;
-  public suppressEmbeds(suppress?: boolean): Promise<Message<InGuild>>;
+  public suppressEmbeds(suppress?: boolean): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
   public toJSON(): unknown;
   public toString(): string;
-  public unpin(reason?: string): Promise<Message<InGuild>>;
+  public unpin(reason?: string): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
   public inGuild(): this is Message<true>;
 }
 
@@ -2540,6 +2556,7 @@ export class PartialGroupDMChannel extends BaseChannel {
   public name: string | null;
   public icon: string | null;
   public recipients: PartialRecipient[];
+  public messages: PartialGroupDMMessageManager;
   public iconURL(options?: ImageURLOptions): string | null;
   public toString(): ChannelMention;
 }
@@ -4501,6 +4518,10 @@ export class DMMessageManager extends MessageManager {
   public channel: DMChannel;
 }
 
+export class PartialGroupDMMessageManager extends MessageManager {
+  public channel: PartialGroupDMChannel;
+}
+
 export class GuildMessageManager extends MessageManager<true> {
   public channel: GuildTextBasedChannel;
   public crosspost(message: MessageResolvable): Promise<Message<true>>;
@@ -4755,6 +4776,8 @@ export interface BaseApplicationCommandData {
   dmPermission?: boolean;
   defaultMemberPermissions?: PermissionResolvable | null;
   nsfw?: boolean;
+  contexts?: readonly InteractionContextType[];
+  integrationTypes?: readonly ApplicationIntegrationType[];
 }
 
 export interface AttachmentData {
@@ -5247,6 +5270,10 @@ export interface GuildMembersChunk {
   nonce: string | undefined;
 }
 
+type NonPartialGroupDMChannel<Structure extends { channel: Channel }> = Structure & {
+  channel: Exclude<Structure['channel'], PartialGroupDMChannel>;
+};
+
 export interface ClientEvents {
   applicationCommandPermissionsUpdate: [data: ApplicationCommandPermissionsUpdateData];
   autoModerationActionExecution: [autoModerationActionExecution: AutoModerationActionExecution];
@@ -5289,17 +5316,17 @@ export interface ClientEvents {
   guildUpdate: [oldGuild: Guild, newGuild: Guild];
   inviteCreate: [invite: Invite];
   inviteDelete: [invite: Invite];
-  messageCreate: [message: Message];
-  messageDelete: [message: Message | PartialMessage];
+  messageCreate: [message: NonPartialGroupDMChannel<Message>];
+  messageDelete: [message: NonPartialGroupDMChannel<Message | PartialMessage>];
   messagePollVoteAdd: [pollAnswer: PollAnswer, userId: Snowflake];
   messagePollVoteRemove: [pollAnswer: PollAnswer, userId: Snowflake];
   messageReactionRemoveAll: [
-    message: Message | PartialMessage,
+    message: NonPartialGroupDMChannel<Message | PartialMessage>,
     reactions: ReadonlyCollection<string | Snowflake, MessageReaction>,
   ];
   messageReactionRemoveEmoji: [reaction: MessageReaction | PartialMessageReaction];
   messageDeleteBulk: [
-    messages: ReadonlyCollection<Snowflake, Message | PartialMessage>,
+    messages: ReadonlyCollection<Snowflake, NonPartialGroupDMChannel<Message | PartialMessage>>,
     channel: GuildTextBasedChannel,
   ];
   messageReactionAdd: [
@@ -6221,6 +6248,16 @@ export interface IntegrationAccount {
 
 export type IntegrationType = 'twitch' | 'youtube' | 'discord' | 'guild_subscription';
 
+export type IntegrationTypesConfigurationParameters = ClientApplicationInstallParams;
+
+export interface IntegrationTypesConfigurationContext {
+  oauth2InstallParams: IntegrationTypesConfigurationParameters | null;
+}
+
+export type IntegrationTypesConfiguration = Partial<
+  Record<ApplicationIntegrationType, IntegrationTypesConfigurationContext>
+>;
+
 export type CollectedInteraction<Cached extends CacheType = CacheType> =
   | StringSelectMenuInteraction<Cached>
   | UserSelectMenuInteraction<Cached>
@@ -6368,6 +6405,16 @@ export interface MessageComponentCollectorOptions<Interaction extends CollectedM
 
 export interface MessageChannelComponentCollectorOptions<Interaction extends CollectedMessageInteraction>
   extends Omit<InteractionCollectorOptions<Interaction>, 'channel' | 'guild' | 'interactionType'> {}
+
+export interface MessageInteractionMetadata {
+  id: Snowflake;
+  type: InteractionType;
+  user: User;
+  authorizingIntegrationOwners: APIAuthorizingIntegrationOwnersMap;
+  originalResponseMessageId: Snowflake | null;
+  interactedMessageId: Snowflake | null;
+  triggeringInteractionMetadata: MessageInteractionMetadata | null;
+}
 
 export interface MessageInteraction {
   id: Snowflake;
@@ -6829,10 +6876,7 @@ export type Channel =
   | ForumChannel
   | MediaChannel;
 
-export type TextBasedChannel = Exclude<
-  Extract<Channel, { type: TextChannelType }>,
-  PartialGroupDMChannel | ForumChannel | MediaChannel
->;
+export type TextBasedChannel = Exclude<Extract<Channel, { type: TextChannelType }>, ForumChannel | MediaChannel>;
 
 export type TextBasedChannels = TextBasedChannel;
 

@@ -43,6 +43,9 @@ export class SharedSlashCommand {
 
 	public readonly default_member_permissions: Permissions | null | undefined = undefined;
 
+	/**
+	 * @deprecated Use {@link SharedSlashCommand.contexts} instead.
+	 */
 	public readonly dm_permission: boolean | undefined = undefined;
 
 	public readonly integration_types?: ApplicationIntegrationType[];
@@ -113,6 +116,8 @@ export class SharedSlashCommand {
 	 * By default, commands are visible. This method is only for global commands.
 	 * @param enabled - Whether the command should be enabled in direct messages
 	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#permissions}
+	 * @deprecated
+	 * Use {@link SharedSlashCommand.setContexts} instead.
 	 */
 	public setDMPermission(enabled: boolean | null | undefined) {
 		// Assert the value matches the conditions
