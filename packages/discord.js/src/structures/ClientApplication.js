@@ -69,7 +69,7 @@ class ClientApplication extends Application {
     }
 
     /**
-     * OAuth2 installation paremeters.
+     * OAuth2 installation parameters.
      * @typedef {Object} IntegrationTypesConfigurationParameters
      * @property {OAuth2Scopes[]} scopes Scopes that will be set upon adding this application
      * @property {Readonly<PermissionsBitField>} permissions Permissions that will be requested for the integrated role
@@ -100,7 +100,7 @@ class ClientApplication extends Application {
       this.integrationTypesConfig = Object.fromEntries(
         Object.entries(data.integration_types_config).map(([key, config]) => {
           let oauth2InstallParams = null;
-          if ('oauth2_install_params' in config) {
+          if (config.oauth2_install_params) {
             oauth2InstallParams = {
               scopes: config.oauth2_install_params.scopes,
               permissions: new PermissionsBitField(config.oauth2_install_params.permissions).freeze(),
