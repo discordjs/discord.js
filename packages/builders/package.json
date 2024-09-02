@@ -91,7 +91,7 @@
 		"vitest": "^2.0.5"
 	},
 	"engines": {
-		"node": ">=16.11.0"
+		"node": ">=18"
 	},
 	"publishConfig": {
 		"access": "public",
