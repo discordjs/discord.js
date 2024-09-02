@@ -15,15 +15,24 @@ import {
 } from '../src/VoiceConnection';
 import * as _AudioPlayer from '../src/audio/AudioPlayer';
 import { PlayerSubscription as _PlayerSubscription } from '../src/audio/PlayerSubscription';
-import * as _Networking from '../src/networking/Networking';
+import * as Networking from '../src/networking/Networking';
 import type { DiscordGatewayAdapterLibraryMethods } from '../src/util/adapter';
 
 vitest.mock('../src/audio/AudioPlayer');
 vitest.mock('../src/audio/PlayerSubscription');
 vitest.mock('../src/DataStore');
+vitest.mock('../src/networking/Networking', async (importOriginal) => {
+	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+	const actual = await importOriginal<typeof import('../src/networking/Networking')>();
+	const Networking = actual.Networking;
+	Networking.prototype.createWebSocket = vitest.fn();
+	return {
+		...actual,
+		Networking,
+	};
+});
 
 const DataStore = _DataStore as unknown as vitest.Mocked<typeof _DataStore>;
-const Networking = _Networking as unknown as vitest.Mocked<typeof _Networking>;
 const AudioPlayer = _AudioPlayer as unknown as vitest.Mocked<typeof _AudioPlayer>;
 const PlayerSubscription = _PlayerSubscription as unknown as vitest.Mock<_PlayerSubscription>;
 
@@ -401,12 +410,12 @@ describe('VoiceConnection#onNetworkingStateChange', () => {
 		const { voiceConnection } = createFakeVoiceConnection();
 		const stateSetter = vitest.spyOn(voiceConnection, 'state', 'set');
 		voiceConnection['onNetworkingStateChange'](
-			{ code: _Networking.NetworkingStatusCode.Ready } as any,
-			{ code: _Networking.NetworkingStatusCode.Ready } as any,
+			{ code: Networking.NetworkingStatusCode.Ready } as any,
+			{ code: Networking.NetworkingStatusCode.Ready } as any,
 		);
 		voiceConnection['onNetworkingStateChange'](
-			{ code: _Networking.NetworkingStatusCode.Closed } as any,
-			{ code: _Networking.NetworkingStatusCode.Closed } as any,
+			{ code: Networking.NetworkingStatusCode.Closed } as any,
+			{ code: Networking.NetworkingStatusCode.Closed } as any,
 		);
 		expect(stateSetter).not.toHaveBeenCalled();
 	});
@@ -415,8 +424,8 @@ describe('VoiceConnection#onNetworkingStateChange', () => {
 		const { voiceConnection } = createFakeVoiceConnection();
 		const stateSetter = vitest.spyOn(voiceConnection, 'state', 'set');
 		const call = [
-			{ code: _Networking.NetworkingStatusCode.Ready } as any,
-			{ code: _Networking.NetworkingStatusCode.Closed } as any,
+			{ code: Networking.NetworkingStatusCode.Ready } as any,
+			{ code: Networking.NetworkingStatusCode.Closed } as any,
 		];
 		voiceConnection['_state'] = { status: VoiceConnectionStatus.Signalling } as any;
 		voiceConnection['onNetworkingStateChange'](call[0], call[1]);
@@ -437,8 +446,8 @@ describe('VoiceConnection#onNetworkingStateChange', () => {
 		};
 
 		voiceConnection['onNetworkingStateChange'](
-			{ code: _Networking.NetworkingStatusCode.Closed } as any,
-			{ code: _Networking.NetworkingStatusCode.Ready } as any,
+			{ code: Networking.NetworkingStatusCode.Closed } as any,
+			{ code: Networking.NetworkingStatusCode.Ready } as any,
 		);
 
 		expect(stateSetter).toHaveBeenCalledTimes(1);
@@ -455,8 +464,8 @@ describe('VoiceConnection#onNetworkingStateChange', () => {
 		};
 
 		voiceConnection['onNetworkingStateChange'](
-			{ code: _Networking.NetworkingStatusCode.Ready } as any,
-			{ code: _Networking.NetworkingStatusCode.Identifying } as any,
+			{ code: Networking.NetworkingStatusCode.Ready } as any,
+			{ code: Networking.NetworkingStatusCode.Identifying } as any,
 		);
 
 		expect(stateSetter).toHaveBeenCalledTimes(1);
@@ -667,7 +676,7 @@ describe('VoiceConnection#onSubscriptionRemoved', () => {
 
 			const oldNetworking = new Networking.Networking({} as any, false);
 			oldNetworking.state = {
-				code: _Networking.NetworkingStatusCode.Ready,
+				code: Networking.NetworkingStatusCode.Ready,
 				connectionData: {} as any,
 				connectionOptions: {} as any,
 				udp: new EventEmitter() as any,
@@ -697,7 +706,7 @@ describe('VoiceConnection#onSubscriptionRemoved', () => {
 
 			const oldNetworking = new Networking.Networking({} as any, false);
 			oldNetworking.state = {
-				code: _Networking.NetworkingStatusCode.Ready,
+				code: Networking.NetworkingStatusCode.Ready,
 				connectionData: {} as any,
 				connectionOptions: {} as any,
 				udp,
@@ -726,7 +735,7 @@ describe('VoiceConnection#onSubscriptionRemoved', () => {
 
 			const newNetworking = new Networking.Networking({} as any, false);
 			newNetworking.state = {
-				code: _Networking.NetworkingStatusCode.Ready,
+				code: Networking.NetworkingStatusCode.Ready,
 				connectionData: {} as any,
 				connectionOptions: {} as any,
 				udp: new EventEmitter() as any,
