@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "name": "discord.js",
-  "version": "14.15.3",
+  "version": "14.16.0",
   "description": "A powerful library for interacting with the Discord API",
   "scripts": {
     "test": "pnpm run docs:test && pnpm run test:typescript",

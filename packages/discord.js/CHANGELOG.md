@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.16.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@1.1.1...14.16.0) - (2024-09-02)
+
+## Bug Fixes
+
+- Message reaction crash (#10469) ([13dc779](https://github.com/discordjs/discord.js/commit/13dc779029acbea295e208cc0c058f0e6ec0e9aa))
+- **MessagePayload:** Crash when resolving body (#10454) ([dd795da](https://github.com/discordjs/discord.js/commit/dd795da790ac4107bc9d8d55aa7bc119367ee8c6))
+- **Shard:** Add env, execArgv, and argv for worker-based shards (#10429) ([b0f8df0](https://github.com/discordjs/discord.js/commit/b0f8df0f6c7d2a89838132c886294428ddf090d9))
+- **GuildAuditLogsEntry:** Correct mapped `AuditLogChange` objects (#10438) ([45f7e1a](https://github.com/discordjs/discord.js/commit/45f7e1a2e85da760f548765b768bd1b378bdedb9))
+- **GuildMemberManager:** Fix data type check for `add()` method (#10338) ([ab8bf0f](https://github.com/discordjs/discord.js/commit/ab8bf0f4d2a50cd85cf8b2aa1d4e2ea93872807b))
+- Consistent debug log spacing (#10349) ([38c699b](https://github.com/discordjs/discord.js/commit/38c699bc8a2ca40f37f70c93e08067e00f12ee81))
+
+## Documentation
+
+- Correct documentation for BaseInteraction#inCachedGuild (#10456) ([bddf018](https://github.com/discordjs/discord.js/commit/bddf018f266f7050d64f414aa60dd01b1568a1ef))
+- Lowercase "image" URL (#10386) ([785ec8f](https://github.com/discordjs/discord.js/commit/785ec8fd757da1d8cf7963e3cec231a6d5fe4a24))
+- Update rule trigger types (#9708) ([757bed0](https://github.com/discordjs/discord.js/commit/757bed0b1f345a8963bc4eb680bed4462531fb49))
+
+## Features
+
+- User-installable apps (#10227) ([fc0b6f7](https://github.com/discordjs/discord.js/commit/fc0b6f7f8ebd94a4a05fac0c76e49b23752a8e65))
+- Super reactions (#9336) ([a5afc40](https://github.com/discordjs/discord.js/commit/a5afc406b965b39a9cc90ef9e0e7a4b460c4e04c))
+- Use get sticker pack endpoint (#10445) ([1b1ae2f](https://github.com/discordjs/discord.js/commit/1b1ae2f0cb339170e4c0692eb43fbc966fd64030))
+- **VoiceState:** Add methods for fetching voice state (#10442) ([9907ff9](https://github.com/discordjs/discord.js/commit/9907ff915e7c72e7e980d68bf005763a3aacad1c))
+- Application emojis (#10399) ([5d92525](https://github.com/discordjs/discord.js/commit/5d92525596a0193fe65626119bb040c2eb9e945a))
+- **Attachment:** Add `title` (#10423) ([c63bde9](https://github.com/discordjs/discord.js/commit/c63bde9479359a863be4ffa4916d683a88eb46f1))
+- Add support for Automated Message nonce handling (#10381) ([2ca187b](https://github.com/discordjs/discord.js/commit/2ca187bd34a8cf2ac4ac7f2bdaecd0506c5b40bd))
+- **GuildAuditLogsEntry:** Onboarding events (#9726) ([3654efe](https://github.com/discordjs/discord.js/commit/3654efede26e28f572313cc9f3556ae59db61ba3))
+- Premium buttons (#10353) ([4f59b74](https://github.com/discordjs/discord.js/commit/4f59b740d01b9ff2213949708a36e17da32b89c3))
+- **Message:** Add `call` (#10283) ([6803121](https://github.com/discordjs/discord.js/commit/68031210f52f25dff80558e0a12d1eceb785b47b))
+- **Invite:** Add `type` (#10280) ([17d4c78](https://github.com/discordjs/discord.js/commit/17d4c78fdecff62f616546e69ef9d8ddaea3986c))
+- **User:** Add `avatarDecorationData` (#9888) ([3b5c600](https://github.com/discordjs/discord.js/commit/3b5c600b9e3f8d40ed48f02e3c9acec7433f1cc3))
+
+## Refactor
+
+- Use get guild role endpoint (#10443) ([bba0e72](https://github.com/discordjs/discord.js/commit/bba0e72e2283630b9f84b77d53525397036c6b31))
+- **actions:** Safer getChannel calls (#10434) ([87776bb](https://github.com/discordjs/discord.js/commit/87776bb0e8de0e04043ff61fdaf5e71cfbb69aef))
+- **GuildChannelManager:** Remove redundant edit code (#10370) ([9461045](https://github.com/discordjs/discord.js/commit/9461045e5a8b832778e7e8637f540ee51e6d1eef))
+
+## Typings
+
+- Use `ThreadChannel` and `AnyThreadChannel` consistently (#10181) ([1f7d1f8](https://github.com/discordjs/discord.js/commit/1f7d1f8094da8d9ee797b72711a4453b29589f8b))
+- **Client:** `EventEmitter` static method overrides (#10360) ([9b707f2](https://github.com/discordjs/discord.js/commit/9b707f2b832a57d5768757fad09cf8982f64d03b))
+- Fix wrong auto moderation target type (#10391) ([bbef68d](https://github.com/discordjs/discord.js/commit/bbef68d27116a2e0aa8c545a2043c46774c97887))
+- **ApplicationCommandManager:** `Snowflake` fetch (#10366) ([b8397b2](https://github.com/discordjs/discord.js/commit/b8397b24e5a3b27639a5a0bf495c2c47b7954dad))
+
 # [14.15.3](https://github.com/discordjs/discord.js/compare/14.15.2...14.15.3) - (2024-06-02)
 
 ## Bug Fixes
