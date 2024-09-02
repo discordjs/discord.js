@@ -23,7 +23,13 @@ class MessageReactionAdd extends Action {
     if (!user) return false;
 
     // Verify channel
-    const channel = this.getChannel({ id: data.channel_id, guild_id: data.guild_id, user_id: data.user_id });
+    const channel = this.getChannel({
+      id: data.channel_id,
+      guild_id: data.guild_id,
+      user_id: data.user_id,
+      ...this.spreadInjectedData(data),
+    });
+
     if (!channel?.isTextBased()) return false;
 
     // Verify message
