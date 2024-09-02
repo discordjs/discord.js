@@ -83,6 +83,8 @@ class MessageReaction {
         burst: data.count_details.burst,
         normal: data.count_details.normal,
       };
+    } else {
+      this.countDetails ??= { burst: 0, normal: 0 };
     }
   }
 
