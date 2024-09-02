@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-# [14.16.1](https://github.com/discordjs/discord.js/compare/create-discord-bot@0.3.1...14.16.1) - (2024-09-02)
+# [14.16.1](https://github.com/discordjs/discord.js/compare/14.16.0...14.16.1) - (2024-09-02)
 
 ## Bug Fixes
 
