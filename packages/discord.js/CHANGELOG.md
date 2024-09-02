@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-# [14.16.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@1.1.1...14.16.0) - (2024-09-02)
+# [14.16.0](https://github.com/discordjs/discord.js/compare/14.15.3...14.16.0) - (2024-09-01)
 
 ## Bug Fixes
 
