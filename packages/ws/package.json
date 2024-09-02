@@ -105,7 +105,7 @@
 		"zlib-sync": "^0.1.9"
 	},
 	"engines": {
-		"node": ">=16.11.0"
+		"node": ">=18"
 	},
 	"publishConfig": {
 		"access": "public",

@@ -98,7 +98,7 @@
     "typescript": "~5.5.4"
   },
   "engines": {
-    "node": ">=16.11.0"
+    "node": ">=18"
   },
   "publishConfig": {
     "provenance": true
