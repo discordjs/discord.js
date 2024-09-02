@@ -28,13 +28,20 @@ body = """
 			**{{commit.scope}}:** \
 		  {% endif %}\
 			{{ commit.message | upper_first }} ([{{ commit.id | truncate(length=7, end="") }}]({{ self::remote_url() }}/commit/{{ commit.id }}))\
+			{% if commit.github.username %} by @{{ commit.github.username }}{%- endif %}\
 		{% if commit.breaking %}\
 			{% for breakingChange in commit.footers %}\
 				\n{% raw %}  {% endraw %}- **{{ breakingChange.token }}{{ breakingChange.separator }}** {{ breakingChange.value }}\
 			{% endfor %}\
 		{% endif %}\
 	{% endfor %}
-{% endfor %}\n
+{% endfor %}\
+{% if github.contributors | filter(attribute="is_first_time", value=true) | length %}\
+	\n### New Contributors\n
+	{% for contributor in github.contributors | filter(attribute="is_first_time", value=true) %}\
+		* @{{ contributor.username }} made their first contribution in #{{ contributor.pr_number }}
+	{% endfor %}\
+{% endif %}\n
 """
 trim = true
 footer = ""
