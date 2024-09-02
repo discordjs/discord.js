@@ -149,9 +149,7 @@ void (async () => {
 			if (libName === 'libsodium-wrappers' && lib.ready) await lib.ready;
 			Object.assign(methods, libs[libName](lib));
 			break;
-		} catch (e) {
-			console.log(e);
-		}
+		} catch {}
 	}
 })();
 
