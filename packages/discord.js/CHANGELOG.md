@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.16.1](https://github.com/discordjs/discord.js/compare/14.16.0...14.16.1) - (2024-09-02)
+
+## Bug Fixes
+
+- **Message:** Reacting returning undefined (#10475) ([9257a09](https://github.com/discordjs/discord.js/commit/9257a09abbf80558ed2d5d209a2f6bd2a4b3d799)) by @vladfrangu
+- **Transformers:** Pass client to recursive call (#10474) ([4810f7c](https://github.com/discordjs/discord.js/commit/4810f7c8637dacf77d0442bd84e0d579e1f1d3bd)) by @SpaceEEC
+
 # [14.16.0](https://github.com/discordjs/discord.js/compare/14.15.3...14.16.0) - (2024-09-01)
 
 ## Bug Fixes
