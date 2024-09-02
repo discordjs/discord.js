@@ -113,13 +113,7 @@ class GenericAction {
   }
 
   spreadInjectedData(data) {
-    const ret = {};
-
-    for (const symbol of Object.getOwnPropertySymbols(data)) {
-      ret[symbol] = data[symbol];
-    }
-
-    return ret;
+    return Object.fromEntries(Object.getOwnPropertySymbols(data).map(symbol => [symbol, data[symbol]]));
   }
 }
 
