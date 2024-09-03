@@ -6876,7 +6876,7 @@ export type Channel =
   | ForumChannel
   | MediaChannel;
 
-export type TextBasedChannel = Exclude<Extract<Channel, { type: TextChannelType }>, ForumChannel | MediaChannel>;
+export type TextBasedChannel = Exclude<Extract<Channel, { type: TextChannelType }>, ForumChannel | MediaChannel | PartialGroupDMChannel>;
 
 export type TextBasedChannels = TextBasedChannel;
 
