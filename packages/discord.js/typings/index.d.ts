@@ -2429,13 +2429,13 @@ export class MessagePayload {
 
 export class MessageReaction {
   private constructor(client: Client<true>, data: RawMessageReactionData, message: Message);
-  private _emoji: GuildEmoji | ReactionEmoji | ApplicationEmoji;
+  private _emoji: GuildEmoji | ReactionEmoji;
 
   public burstColors: string[] | null;
   public readonly client: Client<true>;
   public count: number;
   public countDetails: ReactionCountDetailsData;
-  public get emoji(): GuildEmoji | ReactionEmoji | ApplicationEmoji;
+  public get emoji(): GuildEmoji | ReactionEmoji;
   public me: boolean;
   public meBurst: boolean;
   public message: Message | PartialMessage;
