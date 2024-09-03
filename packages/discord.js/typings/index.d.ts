@@ -5270,7 +5270,7 @@ export interface GuildMembersChunk {
   nonce: string | undefined;
 }
 
-type NonPartialGroupDMChannel<Structure extends { channel: Channel }> = Structure & {
+export type NonPartialGroupDMChannel<Structure extends { channel: Channel }> = Structure & {
   channel: Exclude<Structure['channel'], PartialGroupDMChannel>;
 };
 
