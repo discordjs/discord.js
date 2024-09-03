@@ -5675,7 +5675,7 @@ export type EmojiIdentifierResolvable =
   | `<${'' | 'a'}:${string}:${Snowflake}>`
   | string;
 
-export type EmojiResolvable = Snowflake | GuildEmoji | ReactionEmoji;
+export type EmojiResolvable = Snowflake | GuildEmoji | ReactionEmoji | ApplicationEmoji;
 
 export interface FetchApplicationCommandOptions extends BaseFetchOptions {
   guildId?: Snowflake;
