@@ -6416,6 +6416,7 @@ export interface MessageInteractionMetadata {
   triggeringInteractionMetadata: MessageInteractionMetadata | null;
 }
 
+/** @deprecated Use {@link MessageInteractionMetadata} instead. */
 export interface MessageInteraction {
   id: Snowflake;
   type: InteractionType;
