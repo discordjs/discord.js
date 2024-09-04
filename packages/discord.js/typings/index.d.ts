@@ -2192,27 +2192,27 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public createMessageComponentCollector<ComponentType extends MessageComponentType>(
     options?: MessageCollectorOptionsParams<ComponentType, InGuild>,
   ): InteractionCollector<MappedInteractionTypes<InGuild>[ComponentType]>;
-  public delete(): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
+  public delete(): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public edit(
     content: string | MessageEditOptions | MessagePayload,
-  ): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
+  ): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public equals(message: Message, rawData: unknown): boolean;
-  public fetchReference(): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
+  public fetchReference(): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public fetchWebhook(): Promise<Webhook>;
-  public crosspost(): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
-  public fetch(force?: boolean): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
-  public pin(reason?: string): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
+  public crosspost(): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
+  public fetch(force?: boolean): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
+  public pin(reason?: string): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public react(emoji: EmojiIdentifierResolvable): Promise<MessageReaction>;
-  public removeAttachments(): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
+  public removeAttachments(): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public reply(
     options: string | MessagePayload | MessageReplyOptions,
-  ): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
+  ): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public resolveComponent(customId: string): MessageActionRowComponent | null;
   public startThread(options: StartThreadOptions): Promise<PublicThreadChannel<false>>;
-  public suppressEmbeds(suppress?: boolean): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
+  public suppressEmbeds(suppress?: boolean): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public toJSON(): unknown;
   public toString(): string;
-  public unpin(reason?: string): Promise<NonPartialGroupDMChannel<Message<InGuild>>>;
+  public unpin(reason?: string): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public inGuild(): this is Message<true>;
 }
 
@@ -5270,7 +5270,7 @@ export interface GuildMembersChunk {
   nonce: string | undefined;
 }
 
-type NonPartialGroupDMChannel<Structure extends { channel: Channel }> = Structure & {
+export type OmitPartialGroupDMChannel<Structure extends { channel: Channel }> = Structure & {
   channel: Exclude<Structure['channel'], PartialGroupDMChannel>;
 };
 
@@ -5316,17 +5316,17 @@ export interface ClientEvents {
   guildUpdate: [oldGuild: Guild, newGuild: Guild];
   inviteCreate: [invite: Invite];
   inviteDelete: [invite: Invite];
-  messageCreate: [message: NonPartialGroupDMChannel<Message>];
-  messageDelete: [message: NonPartialGroupDMChannel<Message | PartialMessage>];
+  messageCreate: [message: OmitPartialGroupDMChannel<Message>];
+  messageDelete: [message: OmitPartialGroupDMChannel<Message | PartialMessage>];
   messagePollVoteAdd: [pollAnswer: PollAnswer, userId: Snowflake];
   messagePollVoteRemove: [pollAnswer: PollAnswer, userId: Snowflake];
   messageReactionRemoveAll: [
-    message: NonPartialGroupDMChannel<Message | PartialMessage>,
+    message: OmitPartialGroupDMChannel<Message | PartialMessage>,
     reactions: ReadonlyCollection<string | Snowflake, MessageReaction>,
   ];
   messageReactionRemoveEmoji: [reaction: MessageReaction | PartialMessageReaction];
   messageDeleteBulk: [
-    messages: ReadonlyCollection<Snowflake, NonPartialGroupDMChannel<Message | PartialMessage>>,
+    messages: ReadonlyCollection<Snowflake, OmitPartialGroupDMChannel<Message | PartialMessage>>,
     channel: GuildTextBasedChannel,
   ];
   messageReactionAdd: [
