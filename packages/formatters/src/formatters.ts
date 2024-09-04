@@ -765,7 +765,7 @@ export enum GuildNavigationMentions {
 	 */
 	Guide = '<id:guide>',
 	/**
-	 * Linked Roles tab.
+	 * {@link https://support.discord.com/hc/en-us/articles/10388356626711 | Linked Roles} tab.
 	 */
 	LinkedRoles = '<id:linked-roles>',
 }
