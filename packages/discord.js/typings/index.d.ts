@@ -975,6 +975,7 @@ export abstract class BaseChannel extends Base {
   public isDMBased(): this is PartialGroupDMChannel | DMChannel | PartialDMChannel;
   public isVoiceBased(): this is VoiceBasedChannel;
   public isThreadOnly(): this is ThreadOnlyChannel;
+  public isSendable(): this is SendableTextBasedChannels;
   public toString(): ChannelMention | UserMention;
 }
 
@@ -6877,6 +6878,8 @@ export type Channel =
   | MediaChannel;
 
 export type TextBasedChannel = Exclude<Extract<Channel, { type: TextChannelType }>, ForumChannel | MediaChannel>;
+
+export type SendableTextBasedChannels = Exclude<TextBasedChannel, PartialGroupDMChannel>;
 
 export type TextBasedChannels = TextBasedChannel;
 

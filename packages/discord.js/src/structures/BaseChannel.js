@@ -155,6 +155,14 @@ class BaseChannel extends Base {
     return 'availableTags' in this;
   }
 
+  /**
+   * Indicates whether this channel is {@link TextBasedChannels text-based} and can have messages sent in it.
+   * @returns {boolean}
+   */
+  isSendable() {
+    return this.isTextBased() && 'send' in this;
+  }
+
   toJSON(...props) {
     return super.toJSON({ createdTimestamp: true }, ...props);
   }
