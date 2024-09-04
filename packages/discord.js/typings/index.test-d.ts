@@ -2605,5 +2605,6 @@ client.on('interactionCreate', interaction => {
 
   if (interaction.channel.isSendable()) {
     expectType<SendableTextBasedChannels>(interaction.channel);
+    interaction.channel.send();
   }
 });
