@@ -132,9 +132,9 @@ exports.TextBasedChannelTypes = [...exports.GuildTextBasedChannelTypes, ChannelT
  * * {@link ChannelType.PrivateThread}
  * * {@link ChannelType.GuildVoice}
  * * {@link ChannelType.GuildStageVoice}
- * @typedef {ChannelType[]} SendableTextBasedChannelTypes
+ * @typedef {ChannelType[]} SendableChannels
  */
-exports.SendableTextBasedChannelTypes = [...exports.GuildTextBasedChannelTypes, ChannelType.DM];
+exports.SendableChannels = [...exports.GuildTextBasedChannelTypes, ChannelType.DM];
 
 /**
  * The types of channels that are threads. The available types are:

@@ -975,7 +975,7 @@ export abstract class BaseChannel extends Base {
   public isDMBased(): this is PartialGroupDMChannel | DMChannel | PartialDMChannel;
   public isVoiceBased(): this is VoiceBasedChannel;
   public isThreadOnly(): this is ThreadOnlyChannel;
-  public isSendable(): this is SendableTextBasedChannels;
+  public isSendable(): this is SendableChannels;
   public toString(): ChannelMention | UserMention;
 }
 
@@ -3868,7 +3868,7 @@ export const Constants: {
   SweeperKeys: SweeperKey[];
   NonSystemMessageTypes: NonSystemMessageType[];
   TextBasedChannelTypes: TextBasedChannelTypes[];
-  SendableTextBasedChannelTypes: SendableTextBasedChannelTypes[];
+  SendableChannels: SendableChannelTypes[];
   GuildTextBasedChannelTypes: GuildTextBasedChannelTypes[];
   ThreadChannelTypes: ThreadChannelType[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
@@ -6880,7 +6880,7 @@ export type Channel =
 
 export type TextBasedChannel = Exclude<Extract<Channel, { type: TextChannelType }>, ForumChannel | MediaChannel>;
 
-export type SendableTextBasedChannels = Exclude<TextBasedChannel, PartialGroupDMChannel>;
+export type SendableChannels = Extract<Channel, { send: (...args: any[]) => any }>;
 
 export type TextBasedChannels = TextBasedChannel;
 
@@ -6888,7 +6888,7 @@ export type TextBasedChannelTypes = TextBasedChannel['type'];
 
 export type GuildTextBasedChannelTypes = Exclude<TextBasedChannelTypes, ChannelType.DM | ChannelType.GroupDM>;
 
-export type SendableTextBasedChannelTypes = SendableTextBasedChannels['type'];
+export type SendableChannelTypes = SendableChannels['type'];
 
 export type VoiceBasedChannel = Extract<Channel, { bitrate: number }>;
 
