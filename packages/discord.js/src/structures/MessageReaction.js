@@ -121,18 +121,17 @@ class MessageReaction {
     if (this._emoji instanceof ApplicationEmoji) return this._emoji;
     // Check to see if the emoji has become known to the client
     if (this._emoji.id) {
+      const applicationEmojis = this.message.client.application.emojis.cache;
+      if (applicationEmojis.has(this._emoji.id)) {
+        const emoji = applicationEmojis.get(this._emoji.id);
+        this._emoji = emoji;
+        return emoji;
+      }
       const emojis = this.message.client.emojis.cache;
       if (emojis.has(this._emoji.id)) {
         const emoji = emojis.get(this._emoji.id);
         this._emoji = emoji;
         return emoji;
-      } else {
-        const applicationEmojis = this.message.client.application.emojis.cache;
-        if (applicationEmojis.has(this._emoji.id)) {
-          const emoji = applicationEmojis.get(this._emoji.id);
-          this._emoji = emoji;
-          return emoji;
-        }
       }
     }
     return this._emoji;
