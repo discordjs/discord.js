@@ -209,7 +209,7 @@ import {
   ApplicationEmoji,
   ApplicationEmojiManager,
   StickerPack,
-  SendableTextBasedChannels,
+  SendableChannels,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -2604,7 +2604,7 @@ client.on('interactionCreate', interaction => {
   interaction.channel.send();
 
   if (interaction.channel.isSendable()) {
-    expectType<SendableTextBasedChannels>(interaction.channel);
-    interaction.channel.send();
+    expectType<SendableChannels>(interaction.channel);
+    interaction.channel.send({ embeds: [] });
   }
 });
