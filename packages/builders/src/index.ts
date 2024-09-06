@@ -37,6 +37,7 @@ export * from './components/selectMenu/UserSelectMenu.js';
 export * as SlashCommandAssertions from './interactions/slashCommands/Assertions.js';
 export * from './interactions/slashCommands/SlashCommandBuilder.js';
 export * from './interactions/slashCommands/SlashCommandSubcommands.js';
+export * from './interactions/slashCommands/options/all.js';
 export * from './interactions/slashCommands/options/boolean.js';
 export * from './interactions/slashCommands/options/channel.js';
 export * from './interactions/slashCommands/options/integer.js';

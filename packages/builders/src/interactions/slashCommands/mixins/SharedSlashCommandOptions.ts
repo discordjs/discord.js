@@ -12,6 +12,46 @@ import { SlashCommandUserOption } from '../options/user.js';
 import type { ApplicationCommandOptionBase } from './ApplicationCommandOptionBase.js';
 
 /**
+ * Represents the slash command option type.
+ */
+export type SlashCommandOptionType =
+	| SlashCommandAttachmentOption
+	| SlashCommandBooleanOption
+	| SlashCommandChannelOption
+	| SlashCommandIntegerOption
+	| SlashCommandMentionableOption
+	| SlashCommandNumberOption
+	| SlashCommandRoleOption
+	| SlashCommandStringOption
+	| SlashCommandUserOption;
+
+/**
+ * Represents the slash command option type constructors.
+ */
+type SlashCommandOptionTypeConstructor =
+	| typeof SlashCommandAttachmentOption
+	| typeof SlashCommandBooleanOption
+	| typeof SlashCommandChannelOption
+	| typeof SlashCommandIntegerOption
+	| typeof SlashCommandMentionableOption
+	| typeof SlashCommandNumberOption
+	| typeof SlashCommandRoleOption
+	| typeof SlashCommandStringOption
+	| typeof SlashCommandUserOption;
+
+const optionMap = new Map<string, SlashCommandOptionTypeConstructor>([
+	['SlashCommandAttachmentOption', SlashCommandAttachmentOption],
+	['SlashCommandBooleanOption', SlashCommandBooleanOption],
+	['SlashCommandChannelOption', SlashCommandChannelOption],
+	['SlashCommandIntegerOption', SlashCommandIntegerOption],
+	['SlashCommandMentionableOption', SlashCommandMentionableOption],
+	['SlashCommandNumberOption', SlashCommandNumberOption],
+	['SlashCommandRoleOption', SlashCommandRoleOption],
+	['SlashCommandStringOption', SlashCommandStringOption],
+	['SlashCommandUserOption', SlashCommandUserOption],
+]);
+
+/**
  * This mixin holds symbols that can be shared in slash command options.
  *
  * @typeParam TypeAfterAddingOptions - The type this class should return after adding an option.
@@ -20,6 +60,33 @@ export class SharedSlashCommandOptions<
 	TypeAfterAddingOptions extends SharedSlashCommandOptions<TypeAfterAddingOptions>,
 > {
 	public readonly options!: ToAPIApplicationCommandOptions[];
+
+	/**
+	 * Adds an option of any type.
+	 *
+	 * @param input - A function that returns an option builder or an already built builder
+	 */
+	public addOption(input: SlashCommandOptionType | ((builder: SlashCommandOptionType) => SlashCommandOptionType)) {
+		if (typeof input === 'function') {
+			for (const OptionConstructor of optionMap.values()) {
+				try {
+					const instance = new OptionConstructor();
+					const result = input(instance);
+					const OptionBuilder = optionMap.get(result.constructor.name);
+					if (OptionBuilder) return this._sharedAddOptionMethod(input, OptionBuilder);
+				} catch {
+					// Ignore errors from passing incorrect arguments to input
+				}
+			}
+
+			throw new Error(`Unsupported option type returned from function input to addOption()`);
+		}
+
+		const OptionBuilder = optionMap.get(input?.constructor.name);
+		if (OptionBuilder) return this._sharedAddOptionMethod(input, OptionBuilder);
+
+		throw new Error(`Unsupported option type passed to addOption(): ${input?.constructor.name}`);
+	}
 
 	/**
 	 * Adds a boolean option.
