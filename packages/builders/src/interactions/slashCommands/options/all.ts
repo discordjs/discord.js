@@ -30,43 +30,26 @@ export type ApplicationCommandOptionStringType =
  */
 export type ApplicationCommandOptionTypeMap<
 	OptionType extends ApplicationCommandOptionStringType | ApplicationCommandOptionType | undefined,
-> = OptionType extends ApplicationCommandOptionType.Attachment
-	? SlashCommandAttachmentOption
-	: OptionType extends ApplicationCommandOptionType.Boolean
-		? SlashCommandBooleanOption
-		: OptionType extends ApplicationCommandOptionType.Channel
-			? SlashCommandChannelOption
-			: OptionType extends ApplicationCommandOptionType.Integer
-				? SlashCommandIntegerOption
-				: OptionType extends ApplicationCommandOptionType.Mentionable
-					? SlashCommandMentionableOption
-					: OptionType extends ApplicationCommandOptionType.Number
-						? SlashCommandNumberOption
-						: OptionType extends ApplicationCommandOptionType.Role
-							? SlashCommandRoleOption
-							: OptionType extends ApplicationCommandOptionType.String
-								? SlashCommandStringOption
-								: OptionType extends ApplicationCommandOptionType.User
-									? SlashCommandUserOption
-									: OptionType extends 'attachment'
-										? SlashCommandAttachmentOption
-										: OptionType extends 'boolean'
-											? SlashCommandBooleanOption
-											: OptionType extends 'channel'
-												? SlashCommandChannelOption
-												: OptionType extends 'integer'
-													? SlashCommandIntegerOption
-													: OptionType extends 'mentionable'
-														? SlashCommandMentionableOption
-														: OptionType extends 'number'
-															? SlashCommandNumberOption
-															: OptionType extends 'role'
-																? SlashCommandRoleOption
-																: OptionType extends 'string'
-																	? SlashCommandStringOption
-																	: OptionType extends 'user'
-																		? SlashCommandUserOption
-																		: SlashCommandStringOption;
+> = 
+    OptionType extends ApplicationCommandOptionType.Attachment ? SlashCommandAttachmentOption :
+    OptionType extends ApplicationCommandOptionType.Boolean ? SlashCommandBooleanOption :
+    OptionType extends ApplicationCommandOptionType.Channel ? SlashCommandChannelOption :
+    OptionType extends ApplicationCommandOptionType.Integer ? SlashCommandIntegerOption :
+    OptionType extends ApplicationCommandOptionType.Mentionable ? SlashCommandMentionableOption :
+    OptionType extends ApplicationCommandOptionType.Number ? SlashCommandNumberOption :
+    OptionType extends ApplicationCommandOptionType.Role ? SlashCommandRoleOption :
+    OptionType extends ApplicationCommandOptionType.String ? SlashCommandStringOption :
+    OptionType extends ApplicationCommandOptionType.User ? SlashCommandUserOption :
+    OptionType extends 'attachment' ? SlashCommandAttachmentOption :
+    OptionType extends 'boolean' ? SlashCommandBooleanOption :
+    OptionType extends 'channel' ? SlashCommandChannelOption :
+    OptionType extends 'integer' ? SlashCommandIntegerOption :
+    OptionType extends 'mentionable' ? SlashCommandMentionableOption :
+    OptionType extends 'number' ? SlashCommandNumberOption :
+    OptionType extends 'role' ? SlashCommandRoleOption :
+    OptionType extends 'string' ? SlashCommandStringOption :
+    OptionType extends 'user' ? SlashCommandUserOption :
+    SlashCommandStringOption;
 
 /**
  * Helper class to obtain any slash command option type.
