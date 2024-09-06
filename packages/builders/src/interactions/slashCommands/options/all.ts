@@ -24,32 +24,69 @@ export type ApplicationCommandOptionStringType =
 	| 'user';
 
 /**
+ * Returns the corresponding slash command option based on the {@link ApplicationCommandOptionType}.
+ *
+ * @typeParam OptionType - The type of option
+ */
+export type ApplicationCommandOptionEnumTypeMap<OptionType extends ApplicationCommandOptionType | undefined> =
+	OptionType extends ApplicationCommandOptionType.Attachment
+		? SlashCommandAttachmentOption
+		: OptionType extends ApplicationCommandOptionType.Boolean
+			? SlashCommandBooleanOption
+			: OptionType extends ApplicationCommandOptionType.Channel
+				? SlashCommandChannelOption
+				: OptionType extends ApplicationCommandOptionType.Integer
+					? SlashCommandIntegerOption
+					: OptionType extends ApplicationCommandOptionType.Mentionable
+						? SlashCommandMentionableOption
+						: OptionType extends ApplicationCommandOptionType.Number
+							? SlashCommandNumberOption
+							: OptionType extends ApplicationCommandOptionType.Role
+								? SlashCommandRoleOption
+								: OptionType extends ApplicationCommandOptionType.String
+									? SlashCommandStringOption
+									: OptionType extends ApplicationCommandOptionType.User
+										? SlashCommandUserOption
+										: never;
+
+/**
+ * Returns the corresponding slash command option based on the string type.
+ *
+ * @typeParam OptionType - The type of option
+ */
+export type ApplicationCommandOptionStringTypeMap<OptionType extends ApplicationCommandOptionStringType | undefined> =
+	OptionType extends 'attachment'
+		? SlashCommandAttachmentOption
+		: OptionType extends 'boolean'
+			? SlashCommandBooleanOption
+			: OptionType extends 'channel'
+				? SlashCommandChannelOption
+				: OptionType extends 'integer'
+					? SlashCommandIntegerOption
+					: OptionType extends 'mentionable'
+						? SlashCommandMentionableOption
+						: OptionType extends 'number'
+							? SlashCommandNumberOption
+							: OptionType extends 'role'
+								? SlashCommandRoleOption
+								: OptionType extends 'string'
+									? SlashCommandStringOption
+									: OptionType extends 'user'
+										? SlashCommandUserOption
+										: never;
+
+/**
  * Returns the corresponding slash command option based on the type.
  *
- * @typeParam type - The type of option
+ * @typeParam OptionType - The type of option
  */
 export type ApplicationCommandOptionTypeMap<
 	OptionType extends ApplicationCommandOptionStringType | ApplicationCommandOptionType | undefined,
-> = 
-    OptionType extends ApplicationCommandOptionType.Attachment ? SlashCommandAttachmentOption :
-    OptionType extends ApplicationCommandOptionType.Boolean ? SlashCommandBooleanOption :
-    OptionType extends ApplicationCommandOptionType.Channel ? SlashCommandChannelOption :
-    OptionType extends ApplicationCommandOptionType.Integer ? SlashCommandIntegerOption :
-    OptionType extends ApplicationCommandOptionType.Mentionable ? SlashCommandMentionableOption :
-    OptionType extends ApplicationCommandOptionType.Number ? SlashCommandNumberOption :
-    OptionType extends ApplicationCommandOptionType.Role ? SlashCommandRoleOption :
-    OptionType extends ApplicationCommandOptionType.String ? SlashCommandStringOption :
-    OptionType extends ApplicationCommandOptionType.User ? SlashCommandUserOption :
-    OptionType extends 'attachment' ? SlashCommandAttachmentOption :
-    OptionType extends 'boolean' ? SlashCommandBooleanOption :
-    OptionType extends 'channel' ? SlashCommandChannelOption :
-    OptionType extends 'integer' ? SlashCommandIntegerOption :
-    OptionType extends 'mentionable' ? SlashCommandMentionableOption :
-    OptionType extends 'number' ? SlashCommandNumberOption :
-    OptionType extends 'role' ? SlashCommandRoleOption :
-    OptionType extends 'string' ? SlashCommandStringOption :
-    OptionType extends 'user' ? SlashCommandUserOption :
-    SlashCommandStringOption;
+> = OptionType extends ApplicationCommandOptionType
+	? ApplicationCommandOptionEnumTypeMap<OptionType>
+	: OptionType extends ApplicationCommandOptionStringType
+		? ApplicationCommandOptionStringTypeMap<OptionType>
+		: SlashCommandStringOption;
 
 /**
  * Helper class to obtain any slash command option type.
