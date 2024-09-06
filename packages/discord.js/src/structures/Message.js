@@ -426,6 +426,7 @@ class Message extends Base {
       /**
        * Partial data of the interaction that this message is a reply to
        * @type {?MessageInteraction}
+       * @deprecated Use {@link Message#interactionMetadata} instead.
        */
       this.interaction = {
         id: data.interaction.id,
