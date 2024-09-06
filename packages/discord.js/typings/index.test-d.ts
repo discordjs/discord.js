@@ -209,6 +209,7 @@ import {
   ApplicationEmoji,
   ApplicationEmojiManager,
   StickerPack,
+  SendableChannels,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -2593,3 +2594,17 @@ declare const poll: Poll;
 expectType<Collection<Snowflake, StickerPack>>(await client.fetchStickerPacks());
 expectType<Collection<Snowflake, StickerPack>>(await client.fetchStickerPacks({}));
 expectType<StickerPack>(await client.fetchStickerPacks({ packId: snowflake }));
+
+client.on('interactionCreate', interaction => {
+  if (!interaction.channel) {
+    return;
+  }
+
+  // @ts-expect-error
+  interaction.channel.send();
+
+  if (interaction.channel.isSendable()) {
+    expectType<SendableChannels>(interaction.channel);
+    interaction.channel.send({ embeds: [] });
+  }
+});
