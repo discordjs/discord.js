@@ -97,7 +97,6 @@ export class SlashCommandOption {
 
 	/**
 	 * Creates and returns the slash command option of the specified type.
-	 * If no type is specified, it returns {@link SlashCommandStringOption} by default.
 	 *
 	 * @param type - The type of option to create
 	 */
