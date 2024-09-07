@@ -28,7 +28,7 @@ export type ApplicationCommandOptionStringType =
  *
  * @typeParam OptionType - The type of option
  */
-export type ApplicationCommandOptionEnumTypeMap<OptionType extends ApplicationCommandOptionType | undefined> =
+export type ApplicationCommandOptionEnumTypeMap<OptionType extends ApplicationCommandOptionType> =
 	OptionType extends ApplicationCommandOptionType.Attachment
 		? SlashCommandAttachmentOption
 		: OptionType extends ApplicationCommandOptionType.Boolean
@@ -54,7 +54,7 @@ export type ApplicationCommandOptionEnumTypeMap<OptionType extends ApplicationCo
  *
  * @typeParam OptionType - The type of option
  */
-export type ApplicationCommandOptionStringTypeMap<OptionType extends ApplicationCommandOptionStringType | undefined> =
+export type ApplicationCommandOptionStringTypeMap<OptionType extends ApplicationCommandOptionStringType> =
 	OptionType extends 'attachment'
 		? SlashCommandAttachmentOption
 		: OptionType extends 'boolean'
