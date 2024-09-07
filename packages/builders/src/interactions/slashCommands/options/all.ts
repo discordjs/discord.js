@@ -94,7 +94,7 @@ export type ApplicationCommandOptionTypeMap<
  *
  * @param type - The type of option to create
  */
-export const SlashCommandOption = <
+export const createSlashCommandOption = <
 	OptionType extends ApplicationCommandOptionStringType | ApplicationCommandOptionType | undefined = 'string',
 >(
 	type?: OptionType,
