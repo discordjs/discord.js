@@ -147,9 +147,13 @@ class MessagePayload {
       }
     }
 
-    const components = this.options.components?.map(component =>
-      (isJSONEncodable(component) ? component : new ActionRowBuilder(component)).toJSON(),
-    );
+    let components;
+    if (this.options.components) {
+      if (!Array.isArray(this.options.components)) this.options.components = [this.options.components];
+      components = this.options.components.map(component =>
+        (isJSONEncodable(component) ? component : new ActionRowBuilder(component)).toJSON(),
+      );
+    }
 
     let username;
     let avatarURL;
@@ -272,6 +276,9 @@ class MessagePayload {
   async resolveFiles() {
     if (this.files) return this;
 
+    if (this.options.files) {
+      if (!Array.isArray(this.options.files)) this.options.files = [this.options.files];
+    }
     this.files = await Promise.all(this.options.files?.map(file => this.constructor.resolveFile(file)) ?? []);
     return this;
   }

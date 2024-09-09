@@ -6451,16 +6451,17 @@ export type FileResolvable =
   | AttachmentBuilder
   | AttachmentPayload;
 
+export type MessageActionRow =
+  | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
+  | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>
+  | APIActionRowComponent<APIMessageActionRowComponent>;
+
 export interface BaseMessageOptions {
   content?: string;
   embeds?: readonly MessageEmbed[] | MessageEmbed;
   allowedMentions?: MessageMentionOptions;
   files?: readonly FileResolvable[] | FileResolvable;
-  components?: readonly (
-    | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
-    | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>
-    | APIActionRowComponent<APIMessageActionRowComponent>
-  )[];
+  components?: readonly MessageActionRow[] | MessageActionRow;
   poll?: PollData;
 }
 
