@@ -6442,18 +6442,20 @@ export interface MessageMentionOptions {
 
 export type MessageMentionTypes = 'roles' | 'users' | 'everyone';
 
+export type MessageEmbed = JSONEncodable<APIEmbed> | APIEmbed;
+export type FileResolvable =
+  | BufferResolvable
+  | Stream
+  | JSONEncodable<APIAttachment>
+  | Attachment
+  | AttachmentBuilder
+  | AttachmentPayload;
+
 export interface BaseMessageOptions {
   content?: string;
-  embeds?: readonly (JSONEncodable<APIEmbed> | APIEmbed)[];
+  embeds?: readonly MessageEmbed[] | MessageEmbed;
   allowedMentions?: MessageMentionOptions;
-  files?: readonly (
-    | BufferResolvable
-    | Stream
-    | JSONEncodable<APIAttachment>
-    | Attachment
-    | AttachmentBuilder
-    | AttachmentPayload
-  )[];
+  files?: readonly FileResolvable[] | FileResolvable;
   components?: readonly (
     | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
     | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>

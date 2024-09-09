@@ -179,16 +179,6 @@ class MessagePayload {
       flags |= MessageFlags.Ephemeral;
     }
 
-    let allowedMentions =
-      this.options.allowedMentions === undefined
-        ? this.target.client.options.allowedMentions
-        : this.options.allowedMentions;
-
-    if (allowedMentions?.repliedUser !== undefined) {
-      allowedMentions = { ...allowedMentions, replied_user: allowedMentions.repliedUser };
-      delete allowedMentions.repliedUser;
-    }
-
     let message_reference;
     if (typeof this.options.reply === 'object') {
       const reference = this.options.reply.messageReference;
@@ -201,14 +191,32 @@ class MessagePayload {
       }
     }
 
-    const attachments = this.options.files?.map((file, index) => ({
-      id: index.toString(),
-      description: file.description,
-    }));
+    let allowedMentions =
+      this.options.allowedMentions === undefined
+        ? this.target.client.options.allowedMentions
+        : this.options.allowedMentions;
+
+    if (allowedMentions?.repliedUser !== undefined) {
+      allowedMentions = { ...allowedMentions, replied_user: allowedMentions.repliedUser };
+      delete allowedMentions.repliedUser;
+    }
+    if (content === undefined && message_reference === undefined) {
+      allowedMentions = undefined;
+    }
+
+    let attachments;
+    if (this.options.files) {
+      if (!Array.isArray(this.options.files)) {
+        this.options.files = [this.options.files];
+      }
+      attachments = this.options.files.map((file, index) => ({
+        id: index.toString(),
+        description: file.description,
+      }));
+    }
     if (Array.isArray(this.options.attachments)) {
-      this.options.attachments.push(...(attachments ?? []));
-    } else {
-      this.options.attachments = attachments;
+      if (!attachments) attachments = [];
+      attachments.unshift(...this.options.attachments);
     }
 
     let poll;
@@ -226,21 +234,29 @@ class MessagePayload {
       };
     }
 
+    let embeds;
+    if (this.options.embeds) {
+      if (!Array.isArray(this.options.embeds)) {
+        this.options.embeds = [this.options.embeds];
+      }
+      embeds = this.options.embeds.map(embed =>
+        isJSONEncodable(embed) ? embed.toJSON() : this.target.client.options.jsonTransformer(embed),
+      );
+    }
+
     this.body = {
       content,
       tts,
       nonce,
       enforce_nonce,
-      embeds: this.options.embeds?.map(embed =>
-        isJSONEncodable(embed) ? embed.toJSON() : this.target.client.options.jsonTransformer(embed),
-      ),
+      embeds,
       components,
       username,
       avatar_url: avatarURL,
-      allowed_mentions: content === undefined && message_reference === undefined ? undefined : allowedMentions,
+      allowed_mentions: allowedMentions,
       flags,
       message_reference,
-      attachments: this.options.attachments,
+      attachments,
       sticker_ids: this.options.stickers?.map(sticker => sticker.id ?? sticker),
       thread_name: threadName,
       applied_tags: appliedTags,
