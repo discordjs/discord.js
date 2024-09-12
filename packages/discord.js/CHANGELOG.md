@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.16.2](https://github.com/discordjs/discord.js/compare/14.16.1...14.16.2) - (2024-09-12)
+
+## Bug Fixes
+
+- **ApplicationCommand:** Incorrect comparison in equals method (#10497) ([3c74aa2](https://github.com/discordjs/discord.js/commit/3c74aa204909323ff6d05991438bee2c583e838b)) by @monbrey
+- Type guard for sendable text-based channels (#10482) ([dea6840](https://github.com/discordjs/discord.js/commit/dea68400a38edb90b8b4242d64be14968943130d)) by @vladfrangu
+
+## Documentation
+
+- Update discord documentation links (#10484) ([799fa54](https://github.com/discordjs/discord.js/commit/799fa54fa4434144855be2f7a0bbac6ff8ce9d0b)) by @sdanialraza
+- **Message:** Mark `interaction` as deprecated (#10481) ([c13f18e](https://github.com/discordjs/discord.js/commit/c13f18e90eb6eb315397c095e948993856428757)) by @sdanialraza
+- **ApplicationEmojiManager:** Fix fetch example (#10480) ([4594896](https://github.com/discordjs/discord.js/commit/4594896b5404c6a34e07544951c59ff8f3657184)) by @sdanialraza
+
+## Typings
+
+- Export GroupDM helper type (#10478) ([aff772c](https://github.com/discordjs/discord.js/commit/aff772c7aa3b3de58780a94588d1f3576a434f32)) by @Qjuh
+
 # [14.16.1](https://github.com/discordjs/discord.js/compare/14.16.0...14.16.1) - (2024-09-02)
 
 ## Bug Fixes
