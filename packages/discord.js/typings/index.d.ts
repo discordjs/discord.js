@@ -166,6 +166,10 @@ import {
   GuildScheduledEventRecurrenceRuleFrequency,
   GatewaySendPayload,
   GatewayDispatchPayload,
+  RESTPostAPIInteractionCallbackWithResponseResult,
+  RESTAPIInteractionCallbackObject,
+  RESTAPIInteractionCallbackResourceObject,
+  InteractionResponseType,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -256,6 +260,10 @@ export class Activity {
   public url: string | null;
   public equals(activity: Activity): boolean;
   public toString(): string;
+}
+
+export interface ActivityInstance {
+  id: string;
 }
 
 export type ActivityFlagsString = keyof typeof ActivityFlags;
@@ -559,6 +567,9 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   public inCachedGuild(): this is CommandInteraction<'cached'>;
   public inRawGuild(): this is CommandInteraction<'raw'>;
   public deferReply(
+    options: InteractionDeferReplyOptions & { withResponse: true },
+  ): Promise<InteractionCallbackResponse>;
+  public deferReply(
     options: InteractionDeferReplyOptions & { fetchReply: true },
   ): Promise<Message<BooleanCache<Cached>>>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
@@ -635,7 +646,7 @@ export class BaseGuildEmoji extends Emoji {
 }
 
 // tslint:disable-next-line no-empty-interface
-export interface BaseGuildTextChannel extends TextBasedChannelFields<true> {}
+export interface BaseGuildTextChannel extends TextBasedChannelFields<true> { }
 export class BaseGuildTextChannel extends GuildChannel {
   protected constructor(guild: Guild, data?: RawGuildChannelData, client?: Client<true>, immediatePatch?: boolean);
   public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
@@ -656,7 +667,7 @@ export class BaseGuildTextChannel extends GuildChannel {
 }
 
 // tslint:disable-next-line no-empty-interface
-export interface BaseGuildVoiceChannel extends Omit<TextBasedChannelFields<true>, 'lastPinTimestamp' | 'lastPinAt'> {}
+export interface BaseGuildVoiceChannel extends Omit<TextBasedChannelFields<true>, 'lastPinTimestamp' | 'lastPinAt'> { }
 export class BaseGuildVoiceChannel extends GuildChannel {
   public constructor(guild: Guild, data?: RawGuildChannelData);
   public bitrate: number;
@@ -818,11 +829,11 @@ export class StringSelectMenuComponent extends BaseSelectMenuComponent<APIString
   public get options(): APISelectMenuOption[];
 }
 
-export class UserSelectMenuComponent extends BaseSelectMenuComponent<APIUserSelectComponent> {}
+export class UserSelectMenuComponent extends BaseSelectMenuComponent<APIUserSelectComponent> { }
 
-export class RoleSelectMenuComponent extends BaseSelectMenuComponent<APIRoleSelectComponent> {}
+export class RoleSelectMenuComponent extends BaseSelectMenuComponent<APIRoleSelectComponent> { }
 
-export class MentionableSelectMenuComponent extends BaseSelectMenuComponent<APIMentionableSelectComponent> {}
+export class MentionableSelectMenuComponent extends BaseSelectMenuComponent<APIMentionableSelectComponent> { }
 
 export class ChannelSelectMenuComponent extends BaseSelectMenuComponent<APIChannelSelectComponent> {
   public getChannelTypes(): ChannelType[] | null;
@@ -849,9 +860,9 @@ export interface IconData {
   proxyIconURL?: string;
 }
 
-export interface EmbedAuthorData extends Omit<APIEmbedAuthor, 'icon_url' | 'proxy_icon_url'>, IconData {}
+export interface EmbedAuthorData extends Omit<APIEmbedAuthor, 'icon_url' | 'proxy_icon_url'>, IconData { }
 
-export interface EmbedFooterData extends Omit<APIEmbedFooter, 'icon_url' | 'proxy_icon_url'>, IconData {}
+export interface EmbedFooterData extends Omit<APIEmbedFooter, 'icon_url' | 'proxy_icon_url'>, IconData { }
 
 export interface EmbedAssetData extends Omit<APIEmbedImage, 'proxy_url'> {
   proxyURL?: string;
@@ -946,8 +957,8 @@ export abstract class BaseChannel extends Base {
 export type If<Value extends boolean, TrueResult, FalseResult = null> = Value extends true
   ? TrueResult
   : Value extends false
-    ? FalseResult
-    : TrueResult | FalseResult;
+  ? FalseResult
+  : TrueResult | FalseResult;
 
 export class Client<Ready extends boolean = boolean> extends BaseClient {
   public constructor(options: ClientOptions);
@@ -1236,8 +1247,8 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
     NonNullable<CommandInteractionOption<Cached>['channel']>,
     {
       type: Type extends ChannelType.PublicThread | ChannelType.AnnouncementThread
-        ? ChannelType.PublicThread | ChannelType.AnnouncementThread
-        : Type;
+      ? ChannelType.PublicThread | ChannelType.AnnouncementThread
+      : Type;
     }
   >;
   /**
@@ -1254,8 +1265,8 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
     NonNullable<CommandInteractionOption<Cached>['channel']>,
     {
       type: Type extends ChannelType.PublicThread | ChannelType.AnnouncementThread
-        ? ChannelType.PublicThread | ChannelType.AnnouncementThread
-        : Type;
+      ? ChannelType.PublicThread | ChannelType.AnnouncementThread
+      : Type;
     }
   > | null;
   public getString(name: string, required: true): string;
@@ -1307,7 +1318,7 @@ export interface DMChannel
   extends Omit<
     TextBasedChannelFields<false>,
     'bulkDelete' | 'fetchWebhooks' | 'createWebhook' | 'setRateLimitPerUser' | 'setNSFW'
-  > {}
+  > { }
 export class DMChannel extends BaseChannel {
   private constructor(client: Client<true>, data?: RawDMChannelData);
   public flags: Readonly<ChannelFlagsBitField>;
@@ -1527,11 +1538,11 @@ export class GuildAuditLogs<Event extends GuildAuditLogsResolvable = AuditLogEve
 export class GuildAuditLogsEntry<
   TAction extends GuildAuditLogsResolvable = AuditLogEvent,
   TActionType extends GuildAuditLogsActionType = TAction extends keyof GuildAuditLogsTypes
-    ? GuildAuditLogsTypes[TAction][1]
-    : GuildAuditLogsActionType,
+  ? GuildAuditLogsTypes[TAction][1]
+  : GuildAuditLogsActionType,
   TTargetType extends GuildAuditLogsTargetType = TAction extends keyof GuildAuditLogsTypes
-    ? GuildAuditLogsTypes[TAction][0]
-    : GuildAuditLogsTargetType,
+  ? GuildAuditLogsTypes[TAction][0]
+  : GuildAuditLogsTargetType,
   TResolvedType = TAction extends null ? AuditLogEvent : TAction,
 > {
   private constructor(guild: Guild, data: RawGuildAuditLogEntryData, logs?: GuildAuditLogs);
@@ -1629,7 +1640,7 @@ export class GuildMemberFlagsBitField extends BitField<GuildMemberFlagsString> {
   public static resolve(bit?: BitFieldResolvable<GuildMemberFlagsString, GuildMemberFlags>): number;
 }
 
-export interface GuildMember extends PartialTextBasedChannelFields<false> {}
+export interface GuildMember extends PartialTextBasedChannelFields<false> { }
 export class GuildMember extends Base {
   private constructor(client: Client<true>, data: RawGuildMemberData, guild: Guild);
   private _roles: Snowflake[];
@@ -1903,10 +1914,10 @@ export type CacheTypeReducer<
 > = [State] extends ['cached']
   ? CachedType
   : [State] extends ['raw']
-    ? RawType
-    : [State] extends ['raw' | 'cached']
-      ? PresentType
-      : Fallback;
+  ? RawType
+  : [State] extends ['raw' | 'cached']
+  ? PresentType
+  : Fallback;
 
 export type Interaction<Cached extends CacheType = CacheType> =
   | ChatInputCommandInteraction<Cached>
@@ -1973,6 +1984,37 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public isRepliable(): this is RepliableInteraction<Cached>;
 }
 
+export class InteractionCallback {
+  public constructor(client: Client<true>, data: RESTAPIInteractionCallbackObject);
+  public activityInstanceId: string | null;
+  public readonly client: Client<true>;
+  public get channel(): TextBasedChannel | null;
+  public channelId: Snowflake | null;
+  public get createdAt(): Date;
+  public get createdTimestamp(): number;
+  public get guild(): Guild | null;
+  public guildId: Snowflake | null;
+  public id: Snowflake;
+  public responseMessageEphemeral: boolean | null;
+  public responseMessageId: Snowflake | null;
+  public responseMessageLoading: boolean | null;
+  public type: InteractionType;
+}
+
+export class InteractionCallbackResponse {
+  public constructor(client: Client<true>, data: RESTPostAPIInteractionCallbackWithResponseResult);
+  public readonly client: Client<true>;
+  public interaction: InteractionCallback;
+  public resource: InteractionCallbackResource | null;
+}
+
+export class InteractionCallbackResource {
+  public constructor(client: Client<true>, data: RESTAPIInteractionCallbackResourceObject);
+  public activityInstance: ActivityInstance | null;
+  public message: Message | null;
+  public type: InteractionResponseType;
+}
+
 export class InteractionCollector<Interaction extends CollectedInteraction> extends Collector<
   Snowflake,
   Interaction,
@@ -2012,7 +2054,7 @@ export class InteractionCollector<Interaction extends CollectedInteraction> exte
 }
 
 // tslint:disable-next-line no-empty-interface
-export interface InteractionWebhook extends PartialWebhookFields {}
+export interface InteractionWebhook extends PartialWebhookFields { }
 export class InteractionWebhook {
   public constructor(client: Client<true>, id: Snowflake, token: string);
   public readonly client: Client<true>;
@@ -2099,9 +2141,9 @@ export interface AwaitMessageCollectorOptionsParams<
   ComponentType extends MessageComponentType,
   Cached extends boolean = boolean,
 > extends Pick<
-    InteractionCollectorOptions<MappedInteractionTypes<Cached>[ComponentType]>,
-    keyof AwaitMessageComponentOptions<any>
-  > {
+  InteractionCollectorOptions<MappedInteractionTypes<Cached>[ComponentType]>,
+  keyof AwaitMessageComponentOptions<any>
+> {
   componentType?: ComponentType;
 }
 
@@ -2584,7 +2626,7 @@ export interface ThreadOnlyChannel
     | 'awaitMessages'
     | 'createMessageComponentCollector'
     | 'awaitMessageComponent'
-  > {}
+  > { }
 export abstract class ThreadOnlyChannel extends GuildChannel {
   public type: ChannelType.GuildForum | ChannelType.GuildMedia;
   public threads: GuildForumThreadManager;
@@ -3275,7 +3317,7 @@ export interface PrivateThreadChannel extends ThreadChannel<false> {
 
 // tslint:disable-next-line no-empty-interface
 export interface ThreadChannel<ThreadOnly extends boolean = boolean>
-  extends Omit<TextBasedChannelFields<true>, 'fetchWebhooks' | 'createWebhook' | 'setNSFW'> {}
+  extends Omit<TextBasedChannelFields<true>, 'fetchWebhooks' | 'createWebhook' | 'setNSFW'> { }
 export class ThreadChannel<ThreadOnly extends boolean = boolean> extends BaseChannel {
   private constructor(guild: Guild, data?: RawThreadChannelData, client?: Client<true>);
   public archived: boolean | null;
@@ -3374,7 +3416,7 @@ export interface AvatarDecorationData {
 }
 
 // tslint:disable-next-line no-empty-interface
-export interface User extends PartialTextBasedChannelFields<false> {}
+export interface User extends PartialTextBasedChannelFields<false> { }
 export class User extends Base {
   protected constructor(client: Client<true>, data: RawUserData);
   private _equals(user: APIUser): boolean;
@@ -3597,7 +3639,7 @@ export class VoiceState extends Base {
 }
 
 // tslint:disable-next-line no-empty-interface
-export interface Webhook<Type extends WebhookType = WebhookType> extends WebhookFields {}
+export interface Webhook<Type extends WebhookType = WebhookType> extends WebhookFields { }
 export class Webhook<Type extends WebhookType = WebhookType> {
   private constructor(client: Client<true>, data?: RawWebhookData);
   public avatar: string | null;
@@ -3612,8 +3654,8 @@ export class Webhook<Type extends WebhookType = WebhookType> {
   public token: Type extends WebhookType.Incoming
     ? string
     : Type extends WebhookType.ChannelFollower
-      ? null
-      : string | null;
+    ? null
+    : string | null;
   public type: Type;
   public applicationId: Type extends WebhookType.Application ? Snowflake : null;
   public get channel():
@@ -3640,7 +3682,7 @@ export class Webhook<Type extends WebhookType = WebhookType> {
 }
 
 // tslint:disable-next-line no-empty-interface
-export interface WebhookClient extends WebhookFields, BaseClient {}
+export interface WebhookClient extends WebhookFields, BaseClient { }
 export class WebhookClient extends BaseClient {
   public constructor(data: WebhookClientData, options?: WebhookClientOptions);
   public readonly client: this;
@@ -3985,23 +4027,23 @@ export class ApplicationCommandPermissionsManager<
   public remove(
     options:
       | (FetchSingleOptions & {
-          token: string;
-          channels?: readonly (GuildChannelResolvable | ChannelPermissionConstant)[];
-          roles?: readonly (RoleResolvable | RolePermissionConstant)[];
-          users: readonly UserResolvable[];
-        })
+        token: string;
+        channels?: readonly (GuildChannelResolvable | ChannelPermissionConstant)[];
+        roles?: readonly (RoleResolvable | RolePermissionConstant)[];
+        users: readonly UserResolvable[];
+      })
       | (FetchSingleOptions & {
-          token: string;
-          channels?: readonly (GuildChannelResolvable | ChannelPermissionConstant)[];
-          roles: readonly (RoleResolvable | RolePermissionConstant)[];
-          users?: readonly UserResolvable[];
-        })
+        token: string;
+        channels?: readonly (GuildChannelResolvable | ChannelPermissionConstant)[];
+        roles: readonly (RoleResolvable | RolePermissionConstant)[];
+        users?: readonly UserResolvable[];
+      })
       | (FetchSingleOptions & {
-          token: string;
-          channels: readonly (GuildChannelResolvable | ChannelPermissionConstant)[];
-          roles?: readonly (RoleResolvable | RolePermissionConstant)[];
-          users?: readonly UserResolvable[];
-        }),
+        token: string;
+        channels: readonly (GuildChannelResolvable | ChannelPermissionConstant)[];
+        roles?: readonly (RoleResolvable | RolePermissionConstant)[];
+        users?: readonly UserResolvable[];
+      }),
   ): Promise<ApplicationCommandPermissions[]>;
   public set(
     options: FetchSingleOptions & EditApplicationCommandPermissionsMixin,
@@ -4079,7 +4121,7 @@ export class EntitlementManager extends CachedManager<Snowflake, Entitlement, En
   public consume(entitlementId: Snowflake): Promise<void>;
 }
 
-export interface FetchGuildApplicationCommandFetchOptions extends Omit<FetchApplicationCommandOptions, 'guildId'> {}
+export interface FetchGuildApplicationCommandFetchOptions extends Omit<FetchApplicationCommandOptions, 'guildId'> { }
 
 export class GuildApplicationCommandManager extends ApplicationCommandManager<ApplicationCommand, {}, Guild> {
   private constructor(guild: Guild, iterable?: Iterable<RawApplicationCommandData>);
@@ -4541,7 +4583,7 @@ export interface WebhookFields extends PartialWebhookFields {
 
 //#region Typedefs
 
-export interface ActivitiesOptions extends Omit<ActivityOptions, 'shardId'> {}
+export interface ActivitiesOptions extends Omit<ActivityOptions, 'shardId'> { }
 
 export interface ActivityOptions {
   name: string;
@@ -4901,10 +4943,10 @@ export interface AutoModerationTriggerMetadata {
 }
 
 export interface AwaitMessageComponentOptions<Interaction extends CollectedMessageInteraction>
-  extends Omit<MessageComponentCollectorOptions<Interaction>, 'max' | 'maxComponents' | 'maxUsers'> {}
+  extends Omit<MessageComponentCollectorOptions<Interaction>, 'max' | 'maxComponents' | 'maxUsers'> { }
 
 export interface ModalSubmitInteractionCollectorOptions<Interaction extends ModalSubmitInteraction>
-  extends Omit<InteractionCollectorOptions<Interaction>, 'channel' | 'message' | 'guild' | 'interactionType'> {}
+  extends Omit<InteractionCollectorOptions<Interaction>, 'channel' | 'message' | 'guild' | 'interactionType'> { }
 
 export interface AwaitModalSubmitOptions<Interaction extends ModalSubmitInteraction>
   extends Omit<ModalSubmitInteractionCollectorOptions<Interaction>, 'max' | 'maxComponents' | 'maxUsers'> {
@@ -5012,8 +5054,8 @@ export type CacheFactory = (
 
 export type CacheWithLimitsOptions = {
   [K in keyof Caches]?: Caches[K][0]['prototype'] extends DataManager<infer Key, infer Value, any>
-    ? LimitedCollectionOptions<Key, Value> | number
-    : never;
+  ? LimitedCollectionOptions<Key, Value> | number
+  : never;
 };
 
 export interface CategoryCreateChannelOptions {
@@ -5264,9 +5306,9 @@ export interface CommandInteractionResolvedData<Cached extends CacheType = Cache
 export interface AutocompleteFocusedOption extends Pick<CommandInteractionOption, 'name'> {
   focused: true;
   type:
-    | ApplicationCommandOptionType.String
-    | ApplicationCommandOptionType.Integer
-    | ApplicationCommandOptionType.Number;
+  | ApplicationCommandOptionType.String
+  | ApplicationCommandOptionType.Integer
+  | ApplicationCommandOptionType.Number;
   value: string;
 }
 
@@ -5674,20 +5716,20 @@ export interface GuildAuditLogsEntryExtraField {
   [AuditLogEvent.MessageUnpin]: { channel: GuildTextBasedChannel | { id: Snowflake }; messageId: Snowflake };
   [AuditLogEvent.MemberDisconnect]: { count: number };
   [AuditLogEvent.ChannelOverwriteCreate]:
-    | Role
-    | GuildMember
-    | { id: Snowflake; name: string; type: AuditLogOptionsType.Role }
-    | { id: Snowflake; type: AuditLogOptionsType.Member };
+  | Role
+  | GuildMember
+  | { id: Snowflake; name: string; type: AuditLogOptionsType.Role }
+  | { id: Snowflake; type: AuditLogOptionsType.Member };
   [AuditLogEvent.ChannelOverwriteUpdate]:
-    | Role
-    | GuildMember
-    | { id: Snowflake; name: string; type: AuditLogOptionsType.Role }
-    | { id: Snowflake; type: AuditLogOptionsType.Member };
+  | Role
+  | GuildMember
+  | { id: Snowflake; name: string; type: AuditLogOptionsType.Role }
+  | { id: Snowflake; type: AuditLogOptionsType.Member };
   [AuditLogEvent.ChannelOverwriteDelete]:
-    | Role
-    | GuildMember
-    | { id: Snowflake; name: string; type: AuditLogOptionsType.Role }
-    | { id: Snowflake; type: AuditLogOptionsType.Member };
+  | Role
+  | GuildMember
+  | { id: Snowflake; name: string; type: AuditLogOptionsType.Role }
+  | { id: Snowflake; type: AuditLogOptionsType.Member };
   [AuditLogEvent.StageInstanceCreate]: StageChannel | { id: Snowflake };
   [AuditLogEvent.StageInstanceDelete]: StageChannel | { id: Snowflake };
   [AuditLogEvent.StageInstanceUpdate]: StageChannel | { id: Snowflake };
@@ -5716,8 +5758,8 @@ export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLo
   Invite: Invite;
   Message: TActionType extends AuditLogEvent.MessageBulkDelete ? Guild | { id: Snowflake } : User;
   Integration: Integration;
-  Channel: NonThreadGuildBasedChannel | { id: Snowflake; [x: string]: unknown };
-  Thread: AnyThreadChannel | { id: Snowflake; [x: string]: unknown };
+  Channel: NonThreadGuildBasedChannel | { id: Snowflake;[x: string]: unknown };
+  Thread: AnyThreadChannel | { id: Snowflake;[x: string]: unknown };
   StageInstance: StageInstance;
   Sticker: Sticker;
   GuildScheduledEvent: GuildScheduledEvent;
@@ -5758,9 +5800,9 @@ export interface AutoModerationRuleCreateOptions {
   reason?: string;
 }
 
-export interface AutoModerationRuleEditOptions extends Partial<Omit<AutoModerationRuleCreateOptions, 'triggerType'>> {}
+export interface AutoModerationRuleEditOptions extends Partial<Omit<AutoModerationRuleCreateOptions, 'triggerType'>> { }
 
-export interface AutoModerationTriggerMetadataOptions extends Partial<AutoModerationTriggerMetadata> {}
+export interface AutoModerationTriggerMetadataOptions extends Partial<AutoModerationTriggerMetadata> { }
 
 export interface AutoModerationActionOptions {
   type: AutoModerationActionType;
@@ -5988,10 +6030,10 @@ export type GuildScheduledEventResolvable = Snowflake | GuildScheduledEvent;
 
 export type GuildScheduledEventSetStatusArg<Status extends GuildScheduledEventStatus> =
   Status extends GuildScheduledEventStatus.Scheduled
-    ? GuildScheduledEventStatus.Active | GuildScheduledEventStatus.Canceled
-    : Status extends GuildScheduledEventStatus.Active
-      ? GuildScheduledEventStatus.Completed
-      : never;
+  ? GuildScheduledEventStatus.Active | GuildScheduledEventStatus.Canceled
+  : Status extends GuildScheduledEventStatus.Active
+  ? GuildScheduledEventStatus.Completed
+  : never;
 
 export interface GuildScheduledEventUser<WithMember> {
   guildScheduledEventId: Snowflake;
@@ -6073,7 +6115,7 @@ export interface InteractionCollectorOptions<
   interactionResponse?: InteractionResponse<BooleanCache<Cached>>;
 }
 
-export interface InteractionDeferReplyOptions {
+export interface InteractionDeferReplyOptions extends SharedInteractionResponseOptions {
   flags?: BitFieldResolvable<
     Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds' | 'SuppressNotifications'>,
     MessageFlags.Ephemeral | MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
@@ -6085,7 +6127,8 @@ export interface InteractionDeferUpdateOptions {
   fetchReply?: boolean;
 }
 
-export interface InteractionReplyOptions extends BaseMessageOptionsWithPoll {
+
+export interface InteractionReplyOptions extends BaseMessageOptionsWithPoll, SharedInteractionResponseOptions {
   tts?: boolean;
   fetchReply?: boolean;
   flags?: BitFieldResolvable<
@@ -6094,7 +6137,7 @@ export interface InteractionReplyOptions extends BaseMessageOptionsWithPoll {
   >;
 }
 
-export interface InteractionUpdateOptions extends MessageEditOptions {
+export interface InteractionUpdateOptions extends MessageEditOptions, SharedInteractionResponseOptions {
   fetchReply?: boolean;
 }
 
@@ -6196,10 +6239,10 @@ export type CollectedMessageInteraction<Cached extends CacheType = CacheType> = 
 >;
 
 export interface MessageComponentCollectorOptions<Interaction extends CollectedMessageInteraction>
-  extends Omit<InteractionCollectorOptions<Interaction>, 'channel' | 'message' | 'guild' | 'interactionType'> {}
+  extends Omit<InteractionCollectorOptions<Interaction>, 'channel' | 'message' | 'guild' | 'interactionType'> { }
 
 export interface MessageChannelComponentCollectorOptions<Interaction extends CollectedMessageInteraction>
-  extends Omit<InteractionCollectorOptions<Interaction>, 'channel' | 'guild' | 'interactionType'> {}
+  extends Omit<InteractionCollectorOptions<Interaction>, 'channel' | 'guild' | 'interactionType'> { }
 
 export interface MessageInteractionMetadata {
   id: Snowflake;
@@ -6253,7 +6296,7 @@ export interface MessageSnapshot
       | 'stickers'
       | 'type'
     >
-  > {}
+  > { }
 
 export interface BaseMessageOptions {
   content?: string;
@@ -6292,7 +6335,7 @@ export interface MessageCreateOptions extends BaseMessageOptionsWithPoll {
 
 export interface GuildForumThreadMessageCreateOptions
   extends BaseMessageOptions,
-    Pick<MessageCreateOptions, 'flags' | 'stickers'> {}
+  Pick<MessageCreateOptions, 'flags' | 'stickers'> { }
 
 export interface MessageEditAttachmentData {
   id: Snowflake;
@@ -6424,7 +6467,7 @@ export type PermissionResolvable = BitFieldResolvable<keyof typeof PermissionFla
 
 export type PermissionOverwriteResolvable = UserResolvable | RoleResolvable | PermissionOverwrites;
 
-export interface RecursiveReadonlyArray<ItemType> extends ReadonlyArray<ItemType | RecursiveReadonlyArray<ItemType>> {}
+export interface RecursiveReadonlyArray<ItemType> extends ReadonlyArray<ItemType | RecursiveReadonlyArray<ItemType>> { }
 
 export interface PartialRecipient {
   username: string;
@@ -6470,30 +6513,30 @@ export type Partialize<
   NullableKeys extends keyof PartialType | null = null,
   OverridableKeys extends keyof PartialType | '' = '',
 > = {
-  [K in keyof Omit<PartialType, OverridableKeys>]: K extends 'partial'
+    [K in keyof Omit<PartialType, OverridableKeys>]: K extends 'partial'
     ? true
     : K extends NulledKeys
-      ? null
-      : K extends NullableKeys
-        ? PartialType[K] | null
-        : PartialType[K];
-};
+    ? null
+    : K extends NullableKeys
+    ? PartialType[K] | null
+    : PartialType[K];
+  };
 
 export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'lastMessageId'> {
   lastMessageId: undefined;
 }
 
-export interface PartialGuildMember extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp' | 'pending'> {}
+export interface PartialGuildMember extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp' | 'pending'> { }
 
 export interface PartialMessage
-  extends Partialize<Message, 'type' | 'system' | 'pinned' | 'tts', 'content' | 'cleanContent' | 'author'> {}
+  extends Partialize<Message, 'type' | 'system' | 'pinned' | 'tts', 'content' | 'cleanContent' | 'author'> { }
 
-export interface PartialMessageReaction extends Partialize<MessageReaction, 'count'> {}
+export interface PartialMessageReaction extends Partialize<MessageReaction, 'count'> { }
 
 export interface PartialGuildScheduledEvent
-  extends Partialize<GuildScheduledEvent, 'userCount', 'status' | 'privacyLevel' | 'name' | 'entityType'> {}
+  extends Partialize<GuildScheduledEvent, 'userCount', 'status' | 'privacyLevel' | 'name' | 'entityType'> { }
 
-export interface PartialThreadMember extends Partialize<ThreadMember, 'flags' | 'joinedAt' | 'joinedTimestamp'> {}
+export interface PartialThreadMember extends Partialize<ThreadMember, 'flags' | 'joinedAt' | 'joinedTimestamp'> { }
 
 export interface PartialOverwriteData {
   id: Snowflake | number;
@@ -6516,7 +6559,7 @@ export enum Partials {
   ThreadMember,
 }
 
-export interface PartialUser extends Partialize<User, 'username' | 'tag' | 'discriminator'> {}
+export interface PartialUser extends Partialize<User, 'username' | 'tag' | 'discriminator'> { }
 
 export type PresenceStatusData = ClientPresenceStatus | 'invisible';
 
@@ -6606,6 +6649,12 @@ export interface ShardingManagerOptions {
   execArgv?: readonly string[];
 }
 
+export interface SharedInteractionResponseOptions {
+  withResponse?: boolean;
+}
+
+export interface ShowModalOptions extends SharedInteractionResponseOptions { }
+
 export { Snowflake };
 
 export type StageInstanceResolvable = StageInstance | Snowflake;
@@ -6673,8 +6722,8 @@ export interface SweeperDefinitions {
 
 export type SweeperOptions = {
   [Key in keyof SweeperDefinitions]?: SweeperDefinitions[Key][2] extends true
-    ? SweepOptions<SweeperDefinitions[Key][0], SweeperDefinitions[Key][1]> | LifetimeSweepOptions
-    : SweepOptions<SweeperDefinitions[Key][0], SweeperDefinitions[Key][1]>;
+  ? SweepOptions<SweeperDefinitions[Key][0], SweeperDefinitions[Key][1]> | LifetimeSweepOptions
+  : SweepOptions<SweeperDefinitions[Key][0], SweeperDefinitions[Key][1]>;
 };
 
 export interface LimitedCollectionOptions<Key, Value> {
@@ -6780,7 +6829,7 @@ export interface WebhookClientDataURL {
   url: string;
 }
 
-export interface WebhookClientOptions extends Pick<ClientOptions, 'allowedMentions' | 'rest'> {}
+export interface WebhookClientOptions extends Pick<ClientOptions, 'allowedMentions' | 'rest'> { }
 
 export interface WebhookDeleteOptions {
   token?: string;
@@ -6800,7 +6849,7 @@ export interface WebhookMessageEditOptions extends Omit<MessageEditOptions, 'fla
 
 export interface InteractionEditReplyOptions
   extends WebhookMessageEditOptions,
-    Pick<BaseMessageOptionsWithPoll, 'poll'> {
+  Pick<BaseMessageOptionsWithPoll, 'poll'> {
   message?: MessageResolvable | '@original';
 }
 
@@ -6858,14 +6907,14 @@ export interface ClientApplicationInstallParams {
 export type Serialized<Value> = Value extends symbol | bigint | (() => any)
   ? never
   : Value extends number | string | boolean | undefined
-    ? Value
-    : Value extends JSONEncodable<infer JSONResult>
-      ? JSONResult
-      : Value extends ReadonlyArray<infer ItemType>
-        ? Serialized<ItemType>[]
-        : Value extends ReadonlyMap<unknown, unknown> | ReadonlySet<unknown>
-          ? {}
-          : { [K in keyof Value]: Serialized<Value[K]> };
+  ? Value
+  : Value extends JSONEncodable<infer JSONResult>
+  ? JSONResult
+  : Value extends ReadonlyArray<infer ItemType>
+  ? Serialized<ItemType>[]
+  : Value extends ReadonlyMap<unknown, unknown> | ReadonlySet<unknown>
+  ? {}
+  : { [K in keyof Value]: Serialized<Value[K]> };
 
 //#endregion
 
