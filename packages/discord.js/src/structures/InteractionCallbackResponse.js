@@ -25,7 +25,7 @@ class InteractionCallbackResponse {
      * 	The resource that was created by the interaction response
      * @type {?InteractionCallbackResource}
      */
-    this.resource = new InteractionCallbackResource(client, data.resource) ?? null;
+    this.resource = data.resource ? new InteractionCallbackResource(client, data.resource) : null;
   }
 }
 
