@@ -52,13 +52,13 @@ class InteractionCallback {
     this.responseMessageId = data.response_message_id ?? null;
 
     /**
-     * Whether or not the message is in a loading state
+     * Whether the message is in a loading state
      * @type {boolean}
      */
     this.responseMessageLoading = data.response_message_loading ?? null;
 
     /**
-     * Whether or not the response message was ephemeral
+     * Whether the response message was ephemeral
      * @type {boolean}
      */
     this.responseMessageEphemeral = data.response_message_ephemeral ?? null;
