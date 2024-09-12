@@ -101,4 +101,4 @@ class InteractionCallback {
   }
 }
 
-exports.InteractionCallback = InteractionCallback;
+module.exports = InteractionCallback;
