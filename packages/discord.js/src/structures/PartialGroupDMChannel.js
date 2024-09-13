@@ -44,6 +44,12 @@ class PartialGroupDMChannel extends BaseChannel {
      * @type {PartialGroupDMMessageManager}
      */
     this.messages = new PartialGroupDMMessageManager(this);
+
+    /**
+     * The user id of the owner of this Group DM Channel
+     * @type {Snowflake}
+     */
+    this.ownerId = data.owner_id;
   }
 
   /**
@@ -53,6 +59,15 @@ class PartialGroupDMChannel extends BaseChannel {
    */
   iconURL(options = {}) {
     return this.icon && this.client.rest.cdn.channelIcon(this.id, this.icon, options);
+  }
+
+  /**
+   * Fetches the owner of this Group DM Channel.
+   * @param {BaseFetchOptions} [options] The options for fetching the user
+   * @returns {Promise<User>}
+   */
+  async fetchOwner(options) {
+    return this.client.users.fetch(this.ownerId, options);
   }
 
   delete() {

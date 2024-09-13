@@ -2609,7 +2609,9 @@ export class PartialGroupDMChannel extends BaseChannel {
   public icon: string | null;
   public recipients: PartialRecipient[];
   public messages: PartialGroupDMMessageManager;
+  public ownerId: Snowflake;
   public iconURL(options?: ImageURLOptions): string | null;
+  public fetchOwner(options?: BaseFetchOptions): Promise<User>;
   public toString(): ChannelMention;
 }
 
