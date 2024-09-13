@@ -257,7 +257,7 @@ export class DtsRollupGenerator {
 		switch (span.kind) {
 			case ts.SyntaxKind.JSDocComment:
 				// If the @packageDocumentation comment seems to be attached to one of the regular API items,
-				// omit it.  It gets explictly emitted at the top of the file.
+				// omit it. It gets explicitly emitted at the top of the file.
 				if (/[\s*]@packagedocumentation[\s*]/gi.test(span.node.getText())) {
 					span.modification.skipAll();
 				}

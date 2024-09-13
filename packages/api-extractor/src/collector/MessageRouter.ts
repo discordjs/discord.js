@@ -421,7 +421,7 @@ export class MessageRouter {
 
 	/**
 	 * This returns all remaining messages that were flagged with `addToApiReportFile`, but which were not
-	 * retreieved using `fetchAssociatedMessagesForReviewFile()`.
+	 * retrieved using `fetchAssociatedMessagesForReviewFile()`.
 	 */
 	public fetchUnassociatedMessagesForReviewFile(): ExtractorMessage[] {
 		const messagesForApiReportFile: ExtractorMessage[] = [];

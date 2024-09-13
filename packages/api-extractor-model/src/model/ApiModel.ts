@@ -37,7 +37,7 @@ import { ModelReferenceResolver, type IResolveDeclarationReferenceResult } from 
  *         - ApiMethodSignature
  *         - ApiPropertySignature
  *       - ApiNamespace
- *         - (ApiClass, ApiEnum, ApiInterace, ...)
+ *         - (ApiClass, ApiEnum, ApiInterface, ...)
  *
  * ```
  *
