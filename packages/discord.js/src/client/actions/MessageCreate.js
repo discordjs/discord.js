@@ -6,7 +6,11 @@ const Events = require('../../util/Events');
 class MessageCreateAction extends Action {
   handle(data) {
     const client = this.client;
-    const channel = this.getChannel({ id: data.channel_id, guild_id: data.guild_id, author: data.author });
+    const channel = this.getChannel({
+      id: data.channel_id,
+      author: data.author,
+      ...(data.guildId && { guild_id: data.guild_id }),
+    });
     if (channel) {
       if (!channel.isTextBased()) return {};
 
