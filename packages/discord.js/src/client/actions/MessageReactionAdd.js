@@ -25,7 +25,7 @@ class MessageReactionAdd extends Action {
     // Verify channel
     const channel = this.getChannel({
       id: data.channel_id,
-      guild_id: data.guild_id,
+      ...('guild_id' in data && { guild_id: data.guild_id }),
       user_id: data.user_id,
       ...this.spreadInjectedData(data),
     });
