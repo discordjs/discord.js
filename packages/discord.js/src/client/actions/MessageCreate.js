@@ -9,7 +9,7 @@ class MessageCreateAction extends Action {
     const channel = this.getChannel({
       id: data.channel_id,
       author: data.author,
-      ...(data.guildId && { guild_id: data.guild_id }),
+      ...('guild_id' in data && { guild_id: data.guild_id }),
     });
     if (channel) {
       if (!channel.isTextBased()) return {};
