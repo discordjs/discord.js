@@ -39,6 +39,7 @@ import {
 } from '@discordjs/api-extractor-model';
 import { DocNodeKind, SelectorKind, StandardTags } from '@microsoft/tsdoc';
 import type {
+	DocEscapedText,
 	DocNode,
 	DocNodeContainer,
 	DocDeclarationReference,
@@ -306,6 +307,11 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 				return {
 					kind: DocNodeKind.PlainText,
 					text: (node as DocPlainText).text,
+				};
+			case DocNodeKind.EscapedText:
+				return {
+					kind: DocNodeKind.PlainText,
+					text: (node as DocEscapedText).decodedText,
 				};
 			case DocNodeKind.Section:
 			case DocNodeKind.Paragraph:
