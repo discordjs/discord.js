@@ -92,12 +92,12 @@ class MessageComponentInteraction extends BaseInteraction {
   /* eslint-disable no-empty-function */
   deferReply() {}
   reply() {}
-  fetchReply() {}
-  editReply() {}
-  deleteReply() {}
+  fetchResponse() {}
+  editResponse() {}
+  deleteResponse() {}
   followUp() {}
-  deferUpdate() {}
-  update() {}
+  deferMessageUpdate() {}
+  updateMessage() {}
   showModal() {}
   sendPremiumRequired() {}
   awaitModalSubmit() {}

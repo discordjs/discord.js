@@ -112,12 +112,12 @@ class ModalSubmitInteraction extends BaseInteraction {
   /* eslint-disable no-empty-function */
   deferReply() {}
   reply() {}
-  fetchReply() {}
-  editReply() {}
-  deleteReply() {}
+  fetchResponse() {}
+  editResponse() {}
+  deleteResponse() {}
   followUp() {}
-  deferUpdate() {}
-  update() {}
+  deferMessageUpdate() {}
+  updateMessage() {}
   sendPremiumRequired() {}
 }
 
