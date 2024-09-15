@@ -1,7 +1,7 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "create-discord-bot",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"description": "A simple way to create a startup Discord bot.",
 	"scripts": {
 		"build": "tsc --noEmit && tsup",

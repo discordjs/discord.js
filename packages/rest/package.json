@@ -1,7 +1,7 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/rest",
-	"version": "2.3.0",
+	"version": "2.4.0",
 	"description": "The REST API for discord.js",
 	"scripts": {
 		"test": "vitest run",
@@ -111,7 +111,7 @@
 		"vitest": "^2.0.5"
 	},
 	"engines": {
-		"node": ">=16.11.0"
+		"node": ">=18"
 	},
 	"publishConfig": {
 		"access": "public",

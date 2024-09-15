@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.9.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.8.2...@discordjs/builders@1.9.0) - (2024-09-01)
+
+## Features
+
+- User-installable apps (#10227) ([fc0b6f7](https://github.com/discordjs/discord.js/commit/fc0b6f7f8ebd94a4a05fac0c76e49b23752a8e65))
+- **builders:** Update to @sapphire/shapeshift v4 (#10291) ([2d5531f](https://github.com/discordjs/discord.js/commit/2d5531f35c6b4d70f83e46b99c284030108dcf5c))
+- **SlashCommandBuilder:** Add explicit command type when building (#10395) ([b2970bb](https://github.com/discordjs/discord.js/commit/b2970bb2dddf70d2d918fda825059315f35d23f3))
+- Premium buttons (#10353) ([4f59b74](https://github.com/discordjs/discord.js/commit/4f59b740d01b9ff2213949708a36e17da32b89c3))
+- Add user-installable apps support  (#10348) ([9c76bbe](https://github.com/discordjs/discord.js/commit/9c76bbea172d49320f7fdac19ec1a43a49d05116))
+
 # [@discordjs/builders@1.8.2](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.8.1...@discordjs/builders@1.8.2) - (2024-06-02)
 
 ## Bug Fixes

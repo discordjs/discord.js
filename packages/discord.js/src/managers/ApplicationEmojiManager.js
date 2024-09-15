@@ -65,12 +65,12 @@ class ApplicationEmojiManager extends CachedManager {
    * @returns {Promise<ApplicationEmoji|Collection<Snowflake, ApplicationEmoji>>}
    * @example
    * // Fetch all emojis from the application
-   * message.application.emojis.fetch()
+   * application.emojis.fetch()
    *   .then(emojis => console.log(`There are ${emojis.size} emojis.`))
    *   .catch(console.error);
    * @example
    * // Fetch a single emoji
-   * message.application.emojis.fetch('222078108977594368')
+   * application.emojis.fetch('222078108977594368')
    *   .then(emoji => console.log(`The emoji name is: ${emoji.name}`))
    *   .catch(console.error);
    */

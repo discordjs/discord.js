@@ -359,7 +359,7 @@ class Message extends Base {
      * * {@link MessageType.ChannelFollowAdd}
      * * {@link MessageType.Reply}
      * * {@link MessageType.ThreadStarterMessage}
-     * @see {@link https://discord.com/developers/docs/resources/channel#message-types}
+     * @see {@link https://discord.com/developers/docs/resources/message#message-object-message-types}
      * @typedef {Object} MessageReference
      * @property {Snowflake} channelId The channel id that was referenced
      * @property {Snowflake|undefined} guildId The guild id that was referenced
@@ -426,6 +426,7 @@ class Message extends Base {
       /**
        * Partial data of the interaction that this message is a reply to
        * @type {?MessageInteraction}
+       * @deprecated Use {@link Message#interactionMetadata} instead.
        */
       this.interaction = {
         id: data.interaction.id,
