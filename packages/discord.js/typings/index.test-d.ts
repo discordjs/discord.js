@@ -210,6 +210,7 @@ import {
   ApplicationEmojiManager,
   StickerPack,
   SendableChannels,
+  PollData,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -2576,6 +2577,8 @@ await textChannel.send({
 });
 
 declare const poll: Poll;
+declare const message: Message;
+declare const pollData: PollData;
 {
   expectType<Message>(await poll.end());
 
@@ -2589,6 +2592,13 @@ declare const poll: Poll;
     messageId: snowflake,
     answerId: 1,
   });
+
+  await message.edit({
+    // @ts-expect-error
+    poll: pollData,
+  });
+
+  await chatInputInteraction.editReply({ poll: pollData });
 }
 
 expectType<Collection<Snowflake, StickerPack>>(await client.fetchStickerPacks());
