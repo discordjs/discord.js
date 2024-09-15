@@ -114,7 +114,7 @@ interface DocgenEventJson {
 }
 
 interface DocgenParamJson {
-	default?: string;
+	default?: boolean | number | string;
 	description: string;
 	name: string;
 	nullable?: boolean;
@@ -155,7 +155,7 @@ interface DocgenMethodJson {
 interface DocgenPropertyJson {
 	abstract?: boolean;
 	access?: DocgenAccess;
-	default?: string;
+	default?: boolean | number | string;
 	deprecated?: DocgenDeprecated;
 	description: string;
 	meta: DocgenMetaJson;
@@ -1744,6 +1744,14 @@ export class ApiModelGenerator {
 		return sourceLocation;
 	}
 
+	private _escapeSpecialChars(input: boolean | number | string) {
+		if (typeof input !== 'string') {
+			return input;
+		}
+
+		return input.replaceAll(/(?<char>[{}])/g, '\\$<char>');
+	}
+
 	private _fixLinkTags(input?: string): string | undefined {
 		return input
 			?.replaceAll(linkRegEx, (_match, _p1, _p2, _p3, _p4, _p5, _offset, _string, groups) => {
@@ -1819,7 +1827,7 @@ export class ApiModelGenerator {
 			isOptional: Boolean(prop.nullable),
 			isReadonly: Boolean(prop.readonly),
 			docComment: this._tsDocParser.parseString(
-				`/**\n * ${this._fixLinkTags(prop.description) ?? ''}\n${
+				`/**\n * ${this._fixLinkTags(prop.description) ?? ''}${prop.default ? ` (default: ${this._escapeSpecialChars(prop.default)})` : ''}\n${
 					prop.see?.map((see) => ` * @see ${see}\n`).join('') ?? ''
 				}${prop.readonly ? ' * @readonly\n' : ''} */`,
 			).docComment,
