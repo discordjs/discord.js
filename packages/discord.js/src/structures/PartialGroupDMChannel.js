@@ -45,11 +45,15 @@ class PartialGroupDMChannel extends BaseChannel {
      */
     this.messages = new PartialGroupDMMessageManager(this);
 
-    /**
-     * The user id of the owner of this Group DM Channel
-     * @type {Snowflake}
-     */
-    this.ownerId = data.owner_id;
+    if ('owner_id' in data) {
+      /**
+       * The user id of the owner of this Group DM Channel
+       * @type {?Snowflake}
+       */
+      this.ownerId = data.owner_id;
+    } else {
+      this.ownerId ??= null;
+    }
   }
 
   /**
@@ -67,6 +71,10 @@ class PartialGroupDMChannel extends BaseChannel {
    * @returns {Promise<User>}
    */
   async fetchOwner(options) {
+    if (!this.ownerId) {
+      throw new DiscordjsError(ErrorCodes.FetchOwnerId, 'group DM');
+    }
+
     return this.client.users.fetch(this.ownerId, options);
   }
 
