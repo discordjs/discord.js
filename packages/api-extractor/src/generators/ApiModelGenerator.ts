@@ -114,7 +114,7 @@ interface DocgenEventJson {
 }
 
 interface DocgenParamJson {
-	default?: string;
+	default?: boolean | number | string;
 	description: string;
 	name: string;
 	nullable?: boolean;
@@ -155,7 +155,7 @@ interface DocgenMethodJson {
 interface DocgenPropertyJson {
 	abstract?: boolean;
 	access?: DocgenAccess;
-	default?: string;
+	default?: boolean | number | string;
 	deprecated?: DocgenDeprecated;
 	description: string;
 	meta: DocgenMetaJson;
@@ -1264,7 +1264,7 @@ export class ApiModelGenerator {
 				const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 				const docComment: tsdoc.DocComment | undefined = jsDoc
 					? this._tsDocParser.parseString(
-							`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}\n${
+							`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}${jsDoc.default ? ` (default: ${this._escapeSpecialChars(jsDoc.default)})` : ''}\n${
 								'see' in jsDoc ? jsDoc.see.map((see) => ` * @see ${see}\n`).join('') : ''
 							}${'readonly' in jsDoc && jsDoc.readonly ? ' * @readonly\n' : ''}${
 								'deprecated' in jsDoc && jsDoc.deprecated
@@ -1342,7 +1342,7 @@ export class ApiModelGenerator {
 				const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 				const docComment: tsdoc.DocComment | undefined = jsDoc
 					? this._tsDocParser.parseString(
-							`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}\n${
+							`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}${jsDoc.default ? ` (default: ${this._escapeSpecialChars(jsDoc.default)})` : ''}\n${
 								'see' in jsDoc ? jsDoc.see.map((see) => ` * @see ${see}\n`).join('') : ''
 							}${'readonly' in jsDoc && jsDoc.readonly ? ' * @readonly\n' : ''}${
 								'deprecated' in jsDoc && jsDoc.deprecated
@@ -1510,15 +1510,17 @@ export class ApiModelGenerator {
 			const excerptTokens: IExcerptToken[] = [
 				{
 					kind: ExcerptTokenKind.Content,
-					text: `on('${name}', (${
-						jsDoc.params?.length ? `${jsDoc.params[0]?.name}${jsDoc.params[0]?.nullable ? '?' : ''}: ` : ') => {})'
+					text: `public on(eventName: '${name}', listener: (${
+						jsDoc.params?.length
+							? `${jsDoc.params[0]?.name}${jsDoc.params[0]?.optional ? '?' : ''}: `
+							: ') => void): this;'
 					}`,
 				},
 			];
 			const parameters: IApiParameterOptions[] = [];
 			for (let index = 0; index < (jsDoc.params?.length ?? 0) - 1; index++) {
 				const parameter = jsDoc.params![index]!;
-				const newTokens = this._mapVarType(parameter.type);
+				const newTokens = this._mapVarType(parameter.type, parameter.nullable);
 				parameters.push({
 					parameterName: parameter.name,
 					parameterTypeTokenRange: {
@@ -1537,7 +1539,7 @@ export class ApiModelGenerator {
 
 			if (jsDoc.params?.length) {
 				const parameter = jsDoc.params![jsDoc.params.length - 1]!;
-				const newTokens = this._mapVarType(parameter.type);
+				const newTokens = this._mapVarType(parameter.type, parameter.nullable);
 				parameters.push({
 					parameterName: parameter.name,
 					parameterTypeTokenRange: {
@@ -1550,7 +1552,7 @@ export class ApiModelGenerator {
 				excerptTokens.push(...newTokens);
 				excerptTokens.push({
 					kind: ExcerptTokenKind.Content,
-					text: `) => {})`,
+					text: `) => void): this;`,
 				});
 			}
 
@@ -1746,6 +1748,14 @@ export class ApiModelGenerator {
 		return sourceLocation;
 	}
 
+	private _escapeSpecialChars(input: boolean | number | string) {
+		if (typeof input !== 'string') {
+			return input;
+		}
+
+		return input.replaceAll(/(?<char>[{}])/g, '\\$<char>');
+	}
+
 	private _fixLinkTags(input?: string): string | undefined {
 		return input
 			?.replaceAll(linkRegEx, (_match, _p1, _p2, _p3, _p4, _p5, _offset, _string, groups) => {
@@ -1765,7 +1775,7 @@ export class ApiModelGenerator {
 			.replaceAll('* ', '\n * * ');
 	}
 
-	private _mapVarType(typey: DocgenVarTypeJson): IExcerptToken[] {
+	private _mapVarType(typey: DocgenVarTypeJson, nullable?: boolean): IExcerptToken[] {
 		const mapper = Array.isArray(typey) ? typey : (typey.types ?? []);
 		const lookup: { [K in ts.SyntaxKind]?: string } = {
 			[ts.SyntaxKind.ClassDeclaration]: 'class',
@@ -1808,7 +1818,22 @@ export class ApiModelGenerator {
 						{ kind: ExcerptTokenKind.Content, text: symbol ?? '' },
 					];
 				}, []);
-				return index === 0 ? result : [{ kind: ExcerptTokenKind.Content, text: ' | ' }, ...result];
+				return index === 0
+					? mapper.length === 1 && (nullable || ('nullable' in typey && typey.nullable))
+						? [
+								...result,
+								{ kind: ExcerptTokenKind.Content, text: ' | ' },
+								{ kind: ExcerptTokenKind.Reference, text: 'null' },
+							]
+						: result
+					: index === mapper.length - 1 && (nullable || ('nullable' in typey && typey.nullable))
+						? [
+								{ kind: ExcerptTokenKind.Content, text: ' | ' },
+								...result,
+								{ kind: ExcerptTokenKind.Content, text: ' | ' },
+								{ kind: ExcerptTokenKind.Reference, text: 'null' },
+							]
+						: [{ kind: ExcerptTokenKind.Content, text: ' | ' }, ...result];
 			})
 			.filter((excerpt) => excerpt.text.length);
 	}
@@ -1823,7 +1848,7 @@ export class ApiModelGenerator {
 			isOptional: Boolean(prop.nullable),
 			isReadonly: Boolean(prop.readonly),
 			docComment: this._tsDocParser.parseString(
-				`/**\n * ${this._fixLinkTags(prop.description) ?? ''}\n${
+				`/**\n * ${this._fixLinkTags(prop.description) ?? ''}${prop.default ? ` (default: ${this._escapeSpecialChars(prop.default)})` : ''}\n${
 					prop.see?.map((see) => ` * @see ${see}\n`).join('') ?? ''
 				}${prop.readonly ? ' * @readonly\n' : ''} */`,
 			).docComment,
