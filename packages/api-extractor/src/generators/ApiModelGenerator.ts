@@ -1753,7 +1753,7 @@ export class ApiModelGenerator {
 			return input;
 		}
 
-		return input.replaceAll(/(?<char>[{}])/g, '\\$<char>');
+		return input.replaceAll(/(?<char>[@{}])/g, '\\$<char>');
 	}
 
 	private _fixLinkTags(input?: string): string | undefined {
