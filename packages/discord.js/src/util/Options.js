@@ -30,7 +30,7 @@ const { version } = require('../../package.json');
  * @property {MessageMentionOptions} [allowedMentions] The default value for {@link BaseMessageOptions#allowedMentions}
  * @property {Partials[]} [partials] Structures allowed to be partial. This means events can be emitted even when
  * they're missing all the data for a particular structure. See the "Partial Structures" topic on the
- * [guide](https://discordjs.guide/popular-topics/partials.html) for some
+ * {@link https://discordjs.guide/popular-topics/partials.html guide} for some
  * important usage information, as partials require you to put checks in place when handling data.
  * @property {boolean} [failIfNotExists=true] The default value for {@link MessageReplyOptions#failIfNotExists}
  * @property {PresenceData} [presence={}] Presence data to use upon login
