@@ -566,6 +566,7 @@ function resolveParameters(item: ApiDocumentedItem & ApiParameterListMixin) {
 			isOptional: param.isOptional,
 			isRest: param.isRest,
 			parameterTypeExcerpt: param.parameterTypeExcerpt,
+			defaultValue: param.defaultValue,
 		};
 	});
 }
@@ -611,6 +612,7 @@ function itemParameters(item: ApiDocumentedItem & ApiParameterListMixin) {
 		),
 		isOptional: param.isOptional,
 		description: param.description ? itemTsDoc(param.description, item) : null,
+		defaultValue: param.defaultValue,
 	}));
 }
 
