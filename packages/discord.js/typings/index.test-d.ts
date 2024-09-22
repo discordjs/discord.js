@@ -210,6 +210,8 @@ import {
   ApplicationEmoji,
   ApplicationEmojiManager,
   StickerPack,
+  SendableChannels,
+  PollData,
   PartialPollAnswer,
   PollAnswerVoterManager,
   PollAnswer,
@@ -456,7 +458,7 @@ client.on('messageCreate', async message => {
     expectType<Collection<Snowflake, GuildMember>>(message.mentions.members);
   }
 
-  expectType<TextBasedChannel>(message.channel);
+  expectType<Exclude<TextBasedChannel, PartialGroupDMChannel>>(message.channel);
   expectNotType<GuildTextBasedChannel>(message.channel);
 
   // @ts-expect-error
@@ -1670,7 +1672,7 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<Promise<Collection<Snowflake, Message>>>(messages.fetchPinned());
   expectType<Guild | null>(message.guild);
   expectType<Snowflake | null>(message.guildId);
-  expectType<DMChannel | GuildTextBasedChannel>(message.channel.messages.channel);
+  expectType<DMChannel | PartialGroupDMChannel | GuildTextBasedChannel>(message.channel.messages.channel);
   expectType<MessageMentions>(message.mentions);
   expectType<Guild | null>(message.mentions.guild);
   expectType<Collection<Snowflake, GuildMember> | null>(message.mentions.members);
@@ -2261,6 +2263,7 @@ expectType<TextBasedChannel>(TextBasedChannel);
 expectType<
   | ChannelType.GuildText
   | ChannelType.DM
+  | ChannelType.GroupDM
   | ChannelType.GuildAnnouncement
   | ChannelType.GuildVoice
   | ChannelType.GuildStageVoice
@@ -2646,6 +2649,8 @@ declare const partialPollAnswer: PartialPollAnswer;
   }
 }
 declare const poll: Poll;
+declare const message: Message;
+declare const pollData: PollData;
 {
   expectType<Message>(await poll.end());
   expectType<false>(poll.partial);
@@ -2665,8 +2670,29 @@ declare const poll: Poll;
     messageId: snowflake,
     answerId: 1,
   });
+
+  await message.edit({
+    // @ts-expect-error
+    poll: pollData,
+  });
+
+  await chatInputInteraction.editReply({ poll: pollData });
 }
 
 expectType<Collection<Snowflake, StickerPack>>(await client.fetchStickerPacks());
 expectType<Collection<Snowflake, StickerPack>>(await client.fetchStickerPacks({}));
 expectType<StickerPack>(await client.fetchStickerPacks({ packId: snowflake }));
+
+client.on('interactionCreate', interaction => {
+  if (!interaction.channel) {
+    return;
+  }
+
+  // @ts-expect-error
+  interaction.channel.send();
+
+  if (interaction.channel.isSendable()) {
+    expectType<SendableChannels>(interaction.channel);
+    interaction.channel.send({ embeds: [] });
+  }
+});

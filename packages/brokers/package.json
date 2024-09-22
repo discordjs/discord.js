@@ -1,7 +1,7 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/brokers",
-	"version": "0.3.0",
+	"version": "1.0.0",
 	"description": "Powerful set of message brokers",
 	"scripts": {
 		"test": "vitest run",
@@ -89,7 +89,7 @@
 		"vitest": "^2.0.5"
 	},
 	"engines": {
-		"node": ">=18"
+		"node": ">=20"
 	},
 	"publishConfig": {
 		"access": "public",

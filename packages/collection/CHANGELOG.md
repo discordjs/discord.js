@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/collection@2.1.1](https://github.com/discordjs/discord.js/compare/@discordjs/collection@2.1.0...@discordjs/collection@2.1.1) - (2024-09-01)
+
+## Bug Fixes
+
+- **build:** Update to support strictBuiltinIteratorReturn (#10394) ([bf83db9](https://github.com/discordjs/discord.js/commit/bf83db9480e9f31d5dadee38a2d053a543150776))
+
+## Testing
+
+- Complete collection coverage (#10380) ([d8e94d8](https://github.com/discordjs/discord.js/commit/d8e94d8f10367d165d15904f7c7a31165842f9ec))
+
+## Typings
+
+- **collection:** Reduce* method signatures (#10405) ([6b38335](https://github.com/discordjs/discord.js/commit/6b383350a6de6d26b62cf62f619c89ffb0d6b0d1))
+
 # [@discordjs/collection@2.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@2.0.0...@discordjs/collection@2.1.0) - (2024-05-04)
 
 ## Bug Fixes

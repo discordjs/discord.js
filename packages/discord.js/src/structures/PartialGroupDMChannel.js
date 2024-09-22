@@ -2,6 +2,7 @@
 
 const { BaseChannel } = require('./BaseChannel');
 const { DiscordjsError, ErrorCodes } = require('../errors');
+const PartialGroupDMMessageManager = require('../managers/PartialGroupDMMessageManager');
 
 /**
  * Represents a Partial Group DM Channel on Discord.
@@ -37,6 +38,12 @@ class PartialGroupDMChannel extends BaseChannel {
      * @type {PartialRecipient[]}
      */
     this.recipients = data.recipients;
+
+    /**
+     * A manager of the messages belonging to this channel
+     * @type {PartialGroupDMMessageManager}
+     */
+    this.messages = new PartialGroupDMMessageManager(this);
   }
 
   /**
