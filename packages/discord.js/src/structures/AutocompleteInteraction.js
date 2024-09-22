@@ -43,6 +43,15 @@ class AutocompleteInteraction extends BaseInteraction {
      */
     this.commandGuildId = data.data.guild_id ?? null;
 
+    /* eslint-disable max-len */
+    /**
+     * Mapping of installation contexts that the interaction was authorized for the related user or guild ids
+     * @type {APIAuthorizingIntegrationOwnersMap}
+     * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-authorizing-integration-owners-object}
+     */
+    this.authorizingIntegrationOwners = data.authorizing_integration_owners;
+    /* eslint-enable max-len */
+
     /**
      * Whether this interaction has already received a response
      * @type {boolean}
