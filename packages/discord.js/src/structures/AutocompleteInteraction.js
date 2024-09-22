@@ -53,6 +53,12 @@ class AutocompleteInteraction extends BaseInteraction {
     /* eslint-enable max-len */
 
     /**
+     * Context where the interaction was triggered from
+     * @type {?InteractionContextType}
+     */
+    this.context = data.context ?? null;
+
+    /**
      * Whether this interaction has already received a response
      * @type {boolean}
      */
