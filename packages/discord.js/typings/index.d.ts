@@ -1197,12 +1197,14 @@ export class ChatInputCommandInteraction<Cached extends CacheType = CacheType> e
 
 export class AutocompleteInteraction<Cached extends CacheType = CacheType> extends BaseInteraction<Cached> {
   public type: InteractionType.ApplicationCommandAutocomplete;
+  public authorizingIntegrationOwners: APIAuthorizingIntegrationOwnersMap;
   public get command(): ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
   public channelId: Snowflake;
   public commandId: Snowflake;
   public commandName: string;
   public commandType: ApplicationCommandType.ChatInput;
   public commandGuildId: Snowflake | null;
+  public context: InteractionContextType | null;
   public responded: boolean;
   public options: Omit<
     CommandInteractionOptionResolver<Cached>,
