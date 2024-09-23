@@ -2610,6 +2610,9 @@ export class PartialGroupDMChannel extends BaseChannel {
   public recipients: PartialRecipient[];
   public messages: PartialGroupDMMessageManager;
   public ownerId: Snowflake | null;
+  public lastMessageId: Snowflake | null;
+  public lastPinTimestamp: number | null;
+  get lastPinAt(): Date | null;
   public iconURL(options?: ImageURLOptions): string | null;
   public fetchOwner(options?: BaseFetchOptions): Promise<User>;
   public toString(): ChannelMention;

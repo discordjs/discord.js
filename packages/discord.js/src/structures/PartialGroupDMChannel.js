@@ -54,6 +54,35 @@ class PartialGroupDMChannel extends BaseChannel {
     } else {
       this.ownerId ??= null;
     }
+
+    if ('last_message_id' in data) {
+      /**
+       * The channel's last message id, if one was sent
+       * @type {?Snowflake}
+       */
+      this.lastMessageId = data.last_message_id;
+    } else {
+      this.lastMessageId ??= null;
+    }
+
+    if ('last_pin_timestamp' in data) {
+      /**
+       * The timestamp when the last pinned message was pinned, if there was one
+       * @type {?number}
+       */
+      this.lastPinTimestamp = data.last_pin_timestamp;
+    } else {
+      this.lastPinTimestamp ??= null;
+    }
+  }
+
+  /**
+   * The date when the last pinned message was pinned, if there was one
+   * @type {?Date}
+   * @readonly
+   */
+  get lastPinAt() {
+    return this.lastPinTimestamp && new Date(this.lastPinTimestamp);
   }
 
   /**
