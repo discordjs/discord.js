@@ -1201,7 +1201,6 @@ export class AutocompleteInteraction<Cached extends CacheType = CacheType> exten
   public commandName: string;
   public commandType: ApplicationCommandType.ChatInput;
   public commandGuildId: Snowflake | null;
-  public context: InteractionContextType | null;
   public responded: boolean;
   public options: Omit<
     CommandInteractionOptionResolver<Cached>,
