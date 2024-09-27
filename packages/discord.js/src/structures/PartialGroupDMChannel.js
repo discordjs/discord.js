@@ -1,12 +1,14 @@
 'use strict';
 
 const { BaseChannel } = require('./BaseChannel');
+const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const PartialGroupDMMessageManager = require('../managers/PartialGroupDMMessageManager');
 
 /**
  * Represents a Partial Group DM Channel on Discord.
  * @extends {BaseChannel}
+ * @implements {TextBasedChannel}
  */
 class PartialGroupDMChannel extends BaseChannel {
   constructor(client, data) {
@@ -70,19 +72,10 @@ class PartialGroupDMChannel extends BaseChannel {
        * The timestamp when the last pinned message was pinned, if there was one
        * @type {?number}
        */
-      this.lastPinTimestamp = data.last_pin_timestamp;
+      this.lastPinTimestamp = Date.parse(data.last_pin_timestamp);
     } else {
       this.lastPinTimestamp ??= null;
     }
-  }
-
-  /**
-   * The date when the last pinned message was pinned, if there was one
-   * @type {?Date}
-   * @readonly
-   */
-  get lastPinAt() {
-    return this.lastPinTimestamp && new Date(this.lastPinTimestamp);
   }
 
   /**
@@ -114,6 +107,25 @@ class PartialGroupDMChannel extends BaseChannel {
   fetch() {
     return Promise.reject(new DiscordjsError(ErrorCodes.FetchGroupDMChannel));
   }
+
+  // These are here only for documentation purposes - they are implemented by TextBasedChannel
+  /* eslint-disable no-empty-function */
+  get lastMessage() {}
+  get lastPinAt() {}
+  createMessageComponentCollector() {}
+  awaitMessageComponent() {}
 }
+
+TextBasedChannel.applyToClass(PartialGroupDMChannel, true, [
+  'bulkDelete',
+  'send',
+  'sendTyping',
+  'createMessageCollector',
+  'awaitMessages',
+  'fetchWebhooks',
+  'createWebhook',
+  'setRateLimitPerUser',
+  'setNSFW',
+]);
 
 module.exports = PartialGroupDMChannel;
