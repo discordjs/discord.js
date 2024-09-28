@@ -5889,10 +5889,6 @@ interface GuildAuditLogsTypes {
   [AuditLogEvent.OnboardingPromptDelete]: ['GuildOnboardingPrompt', 'Delete'];
   [AuditLogEvent.OnboardingCreate]: ['GuildOnboarding', 'Create'];
   [AuditLogEvent.OnboardingUpdate]: ['GuildOnboarding', 'Update'];
-  // [AuditLogEvent.CreatorMonetizationRequestCreated]: ['CreatorMonetizationRequest', 'Create'];
-  // [AuditLogEvent.CreatorMonetizationTermsAccepted]: ['CreatorMonetizationRequest', 'Update'];
-  // [AuditLogEvent.HomeSettingsCreate]: ['HomeSetting', 'Create'];
-  // [AuditLogEvent.HomeSettingsUpdate]: ['HomeSetting', 'Update'];
 }
 
 export type GuildAuditLogsActionType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][1] | 'All';
