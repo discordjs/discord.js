@@ -1,0 +1,50 @@
+name: Deprecate version
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Package
+        required: true
+        type: choice
+        options:
+          - '@discordjs/brokers'
+          - '@discordjs/builders'
+          - '@discordjs/collection'
+          - '@discordjs/core'
+          - 'create-discord-bot'
+          - '@discordjs/formatters'
+          - 'discord.js'
+          - '@discordjs/next'
+          - '@discordjs/proxy'
+          - '@discordjs/rest'
+          - '@discordjs/util'
+          - '@discordjs/voice'
+          - '@discordjs/ws'
+      version:
+        description: Version(s)
+        required: true
+        type: string
+      message:
+        description: Deprecation message
+        required: false
+        type: string
+jobs:
+  deprecate:
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'discordjs'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js v20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        uses: ./packages/actions/src/pnpmCache
+
+      - name: Deprecate
+        run: pnpm exec npm-deprecate --name "${{inputs.version}}" --message "${{inputs.message || 'This version is deprecated. Please use a newer version.'}}" --package ${{inputs.package}}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

@@ -197,7 +197,7 @@ class VoiceState extends Base {
 
   /**
    * Moves the member to a different channel, or disconnects them from the one they're in.
-   * @param {GuildVoiceChannelResolvable|null} channel Channel to move the member to, or `null` if you want to
+   * @param {?GuildVoiceChannelResolvable} channel Channel to move the member to, or `null` if you want to
    * disconnect them from voice.
    * @param {string} [reason] Reason for moving member to another channel or disconnecting
    * @returns {Promise<GuildMember>}
@@ -242,12 +242,21 @@ class VoiceState extends Base {
         request_to_speak_timestamp: options.requestToSpeak
           ? new Date().toISOString()
           : options.requestToSpeak === false
-          ? null
-          : undefined,
+            ? null
+            : undefined,
         suppress: options.suppressed,
       },
     });
     return this;
+  }
+
+  /**
+   * Fetches this voice state.
+   * @param {boolean} [force=true] Whether to skip the cache check and request the API
+   * @returns {Promise<VoiceState>}
+   */
+  fetch(force = true) {
+    return this.guild.voiceStates.fetch(this.id, { force });
   }
 
   /**

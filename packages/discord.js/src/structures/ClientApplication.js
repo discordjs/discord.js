@@ -1,17 +1,22 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
 const { ApplicationRoleConnectionMetadata } = require('./ApplicationRoleConnectionMetadata');
+const { SKU } = require('./SKU');
 const Team = require('./Team');
 const Application = require('./interfaces/Application');
 const ApplicationCommandManager = require('../managers/ApplicationCommandManager');
+const ApplicationEmojiManager = require('../managers/ApplicationEmojiManager');
+const { EntitlementManager } = require('../managers/EntitlementManager');
 const ApplicationFlagsBitField = require('../util/ApplicationFlagsBitField');
+const { resolveImage } = require('../util/DataResolver');
 const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
  * @typedef {Object} ClientApplicationInstallParams
- * @property {OAuth2Scopes[]} scopes The scopes to add the application to the server with
- * @property {Readonly<PermissionsBitField>} permissions The permissions this bot will request upon joining
+ * @property {OAuth2Scopes[]} scopes Scopes that will be set upon adding this application
+ * @property {Readonly<PermissionsBitField>} permissions Permissions that will be requested for the integrated role
  */
 
 /**
@@ -27,6 +32,18 @@ class ClientApplication extends Application {
      * @type {ApplicationCommandManager}
      */
     this.commands = new ApplicationCommandManager(this.client);
+
+    /**
+     * The application emoji manager for this application
+     * @type {ApplicationEmojiManager}
+     */
+    this.emojis = new ApplicationEmojiManager(this);
+
+    /**
+     * The entitlement manager for this application
+     * @type {EntitlementManager}
+     */
+    this.entitlements = new EntitlementManager(this.client);
   }
 
   _patch(data) {
@@ -49,6 +66,56 @@ class ClientApplication extends Application {
       };
     } else {
       this.installParams ??= null;
+    }
+
+    /**
+     * OAuth2 installation parameters.
+     * @typedef {Object} IntegrationTypesConfigurationParameters
+     * @property {OAuth2Scopes[]} scopes Scopes that will be set upon adding this application
+     * @property {Readonly<PermissionsBitField>} permissions Permissions that will be requested for the integrated role
+     */
+
+    /**
+     * The application's supported installation context data.
+     * @typedef {Object} IntegrationTypesConfigurationContext
+     * @property {?IntegrationTypesConfigurationParameters} oauth2InstallParams
+     * Scopes and permissions regarding the installation context
+     */
+
+    /**
+     * The application's supported installation context data.
+     * @typedef {Object} IntegrationTypesConfiguration
+     * @property {IntegrationTypesConfigurationContext} [0] Scopes and permissions
+     * regarding the guild-installation context
+     * @property {IntegrationTypesConfigurationContext} [1] Scopes and permissions
+     * regarding the user-installation context
+     */
+
+    if ('integration_types_config' in data) {
+      /**
+       * Default scopes and permissions for each supported installation context.
+       * The keys are stringified variants of {@link ApplicationIntegrationType}.
+       * @type {?IntegrationTypesConfiguration}
+       */
+      this.integrationTypesConfig = Object.fromEntries(
+        Object.entries(data.integration_types_config).map(([key, config]) => {
+          let oauth2InstallParams = null;
+          if (config.oauth2_install_params) {
+            oauth2InstallParams = {
+              scopes: config.oauth2_install_params.scopes,
+              permissions: new PermissionsBitField(config.oauth2_install_params.permissions).freeze(),
+            };
+          }
+
+          const context = {
+            oauth2InstallParams,
+          };
+
+          return [key, context];
+        }),
+      );
+    } else {
+      this.integrationTypesConfig ??= null;
     }
 
     if ('custom_install_url' in data) {
@@ -77,6 +144,16 @@ class ClientApplication extends Application {
       this.approximateGuildCount = data.approximate_guild_count;
     } else {
       this.approximateGuildCount ??= null;
+    }
+
+    if ('approximate_user_install_count' in data) {
+      /**
+       * An approximate amount of users that have installed this application.
+       * @type {?number}
+       */
+      this.approximateUserInstallCount = data.approximate_user_install_count;
+    } else {
+      this.approximateUserInstallCount ??= null;
     }
 
     if ('guild_id' in data) {
@@ -119,6 +196,16 @@ class ClientApplication extends Application {
       this.botRequireCodeGrant ??= null;
     }
 
+    if ('bot' in data) {
+      /**
+       * The bot associated with this application.
+       * @type {?User}
+       */
+      this.bot = this.client.users._add(data.bot);
+    } else {
+      this.bot ??= null;
+    }
+
     if ('bot_public' in data) {
       /**
        * If this application's bot is public
@@ -127,6 +214,16 @@ class ClientApplication extends Application {
       this.botPublic = data.bot_public;
     } else {
       this.botPublic ??= null;
+    }
+
+    if ('interactions_endpoint_url' in data) {
+      /**
+       * This application's interaction endpoint URL.
+       * @type {?string}
+       */
+      this.interactionsEndpointURL = data.interactions_endpoint_url;
+    } else {
+      this.interactionsEndpointURL ??= null;
     }
 
     if ('role_connections_verification_url' in data) {
@@ -146,8 +243,8 @@ class ClientApplication extends Application {
     this.owner = data.team
       ? new Team(this.client, data.team)
       : data.owner
-      ? this.client.users._add(data.owner)
-      : this.owner ?? null;
+        ? this.client.users._add(data.owner)
+        : (this.owner ?? null);
   }
 
   /**
@@ -166,6 +263,55 @@ class ClientApplication extends Application {
    */
   get partial() {
     return !this.name;
+  }
+
+  /**
+   * Options used for editing an application.
+   * @typedef {Object} ClientApplicationEditOptions
+   * @property {string} [customInstallURL] The application's custom installation URL
+   * @property {string} [description] The application's description
+   * @property {string} [roleConnectionsVerificationURL] The application's role connection verification URL
+   * @property {ClientApplicationInstallParams} [installParams]
+   * Settings for the application's default in-app authorization
+   * @property {ApplicationFlagsResolvable} [flags] The flags for the application
+   * @property {?(BufferResolvable|Base64Resolvable)} [icon] The application's icon
+   * @property {?(BufferResolvable|Base64Resolvable)} [coverImage] The application's cover image
+   * @property {string} [interactionsEndpointURL] The application's interaction endpoint URL
+   * @property {string[]} [tags] The application's tags
+   */
+
+  /**
+   * Edits this application.
+   * @param {ClientApplicationEditOptions} [options] The options for editing this application
+   * @returns {Promise<ClientApplication>}
+   */
+  async edit({
+    customInstallURL,
+    description,
+    roleConnectionsVerificationURL,
+    installParams,
+    flags,
+    icon,
+    coverImage,
+    interactionsEndpointURL,
+    tags,
+  } = {}) {
+    const data = await this.client.rest.patch(Routes.currentApplication(), {
+      body: {
+        custom_install_url: customInstallURL,
+        description,
+        role_connections_verification_url: roleConnectionsVerificationURL,
+        install_params: installParams,
+        flags: flags === undefined ? undefined : ApplicationFlagsBitField.resolve(flags),
+        icon: icon && (await resolveImage(icon)),
+        cover_image: coverImage && (await resolveImage(coverImage)),
+        interactions_endpoint_url: interactionsEndpointURL,
+        tags,
+      },
+    });
+
+    this._patch(data);
+    return this;
   }
 
   /**
@@ -216,6 +362,15 @@ class ClientApplication extends Application {
     });
 
     return newRecords.map(data => new ApplicationRoleConnectionMetadata(data));
+  }
+
+  /**
+   * Gets this application's SKUs
+   * @returns {Promise<Collection<Snowflake, SKU>>}
+   */
+  async fetchSKUs() {
+    const skus = await this.client.rest.get(Routes.skus(this.id));
+    return skus.reduce((coll, sku) => coll.set(sku.id, new SKU(this.client, sku)), new Collection());
   }
 }
 

@@ -1,7 +1,10 @@
 'use client';
 
-import { Providers } from './providers';
 import { inter } from '~/util/fonts';
+import { Providers } from './providers';
+
+import '~/styles/cmdk.css';
+import '~/styles/main.css';
 
 export default function GlobalError({ error }: { readonly error: Error }) {
 	console.error(error);

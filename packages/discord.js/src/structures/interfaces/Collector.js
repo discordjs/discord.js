@@ -81,7 +81,7 @@ class Collector extends EventEmitter {
 
     /**
      * The reason the collector ended
-     * @type {string|null}
+     * @type {?string}
      * @private
      */
     this._endReason = null;

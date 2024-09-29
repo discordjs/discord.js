@@ -1,19 +1,24 @@
 /* eslint-disable jsdoc/check-param-names */
 
 import type { RawFile, RequestData, REST } from '@discordjs/rest';
-import { InteractionResponseType, Routes } from 'discord-api-types/v10';
-import type {
-	APICommandAutocompleteInteractionResponseCallbackData,
-	APIInteractionResponseCallbackData,
-	APIModalInteractionResponseCallbackData,
-	RESTGetAPIWebhookWithTokenMessageResult,
-	Snowflake,
-	APIInteractionResponseDeferredChannelMessageWithSource,
+import {
+	InteractionResponseType,
+	Routes,
+	type APICommandAutocompleteInteractionResponseCallbackData,
+	type APIInteractionResponseCallbackData,
+	type APIInteractionResponseDeferredChannelMessageWithSource,
+	type APIModalInteractionResponseCallbackData,
+	type APIPremiumRequiredInteractionResponse,
+	type RESTGetAPIWebhookWithTokenMessageResult,
+	type Snowflake,
 } from 'discord-api-types/v10';
 import type { WebhooksAPI } from './webhook.js';
 
 export class InteractionsAPI {
-	public constructor(private readonly rest: REST, private readonly webhooks: WebhooksAPI) {}
+	public constructor(
+		private readonly rest: REST,
+		private readonly webhooks: WebhooksAPI,
+	) {}
 
 	/**
 	 * Replies to an interaction
@@ -171,7 +176,7 @@ export class InteractionsAPI {
 	}
 
 	/**
-	 * Updates the the message the component interaction was triggered on
+	 * Updates the message the component interaction was triggered on
 	 *
 	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
 	 * @param interactionId - The id of the interaction
@@ -242,6 +247,29 @@ export class InteractionsAPI {
 				type: InteractionResponseType.Modal,
 				data: callbackData,
 			},
+			signal,
+		});
+	}
+
+	/**
+	 * Sends a premium required response to an interaction
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param options - The options for sending the premium required response
+	 * @deprecated Sending a premium-style button is the new Discord behaviour.
+	 */
+	public async sendPremiumRequired(
+		interactionId: Snowflake,
+		interactionToken: string,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			auth: false,
+			body: {
+				type: InteractionResponseType.PremiumRequired,
+			} satisfies APIPremiumRequiredInteractionResponse,
 			signal,
 		});
 	}

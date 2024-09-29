@@ -1,6 +1,9 @@
 'use strict';
 
+const { polyfillDispose } = require('@discordjs/util');
 const { __exportStar } = require('tslib');
+
+polyfillDispose();
 
 // "Root" classes (starting points)
 exports.BaseClient = require('./client/BaseClient');
@@ -26,7 +29,7 @@ exports.ChannelFlagsBitField = require('./util/ChannelFlagsBitField');
 exports.Collection = require('@discordjs/collection').Collection;
 exports.Constants = require('./util/Constants');
 exports.Colors = require('./util/Colors');
-exports.DataResolver = require('./util/DataResolver');
+__exportStar(require('./util/DataResolver.js'), exports);
 exports.Events = require('./util/Events');
 exports.Formatters = require('./util/Formatters');
 exports.GuildMemberFlagsBitField = require('./util/GuildMemberFlagsBitField').GuildMemberFlagsBitField;
@@ -38,6 +41,7 @@ exports.Partials = require('./util/Partials');
 exports.PermissionsBitField = require('./util/PermissionsBitField');
 exports.RoleFlagsBitField = require('./util/RoleFlagsBitField');
 exports.ShardEvents = require('./util/ShardEvents');
+exports.SKUFlagsBitField = require('./util/SKUFlagsBitField').SKUFlagsBitField;
 exports.Status = require('./util/Status');
 exports.SnowflakeUtil = require('@sapphire/snowflake').DiscordSnowflake;
 exports.Sweepers = require('./util/Sweepers');
@@ -50,6 +54,7 @@ exports.version = require('../package.json').version;
 
 // Managers
 exports.ApplicationCommandManager = require('./managers/ApplicationCommandManager');
+exports.ApplicationEmojiManager = require('./managers/ApplicationEmojiManager');
 exports.ApplicationCommandPermissionsManager = require('./managers/ApplicationCommandPermissionsManager');
 exports.AutoModerationRuleManager = require('./managers/AutoModerationRuleManager');
 exports.BaseGuildEmojiManager = require('./managers/BaseGuildEmojiManager');
@@ -58,6 +63,7 @@ exports.ChannelManager = require('./managers/ChannelManager');
 exports.ClientVoiceManager = require('./client/voice/ClientVoiceManager');
 exports.DataManager = require('./managers/DataManager');
 exports.DMMessageManager = require('./managers/DMMessageManager');
+exports.EntitlementManager = require('./managers/EntitlementManager').EntitlementManager;
 exports.GuildApplicationCommandManager = require('./managers/GuildApplicationCommandManager');
 exports.GuildBanManager = require('./managers/GuildBanManager');
 exports.GuildChannelManager = require('./managers/GuildChannelManager');
@@ -93,6 +99,7 @@ exports.Activity = require('./structures/Presence').Activity;
 exports.AnonymousGuild = require('./structures/AnonymousGuild');
 exports.Application = require('./structures/interfaces/Application');
 exports.ApplicationCommand = require('./structures/ApplicationCommand');
+exports.ApplicationEmoji = require('./structures/ApplicationEmoji');
 exports.ApplicationRoleConnectionMetadata =
   require('./structures/ApplicationRoleConnectionMetadata').ApplicationRoleConnectionMetadata;
 exports.AutocompleteInteraction = require('./structures/AutocompleteInteraction');
@@ -121,6 +128,7 @@ exports.DMChannel = require('./structures/DMChannel');
 exports.Embed = require('./structures/Embed');
 exports.EmbedBuilder = require('./structures/EmbedBuilder');
 exports.Emoji = require('./structures/Emoji').Emoji;
+exports.Entitlement = require('./structures/Entitlement').Entitlement;
 exports.ForumChannel = require('./structures/ForumChannel');
 exports.Guild = require('./structures/Guild').Guild;
 exports.GuildAuditLogs = require('./structures/GuildAuditLogs');
@@ -149,6 +157,7 @@ exports.Message = require('./structures/Message').Message;
 exports.Attachment = require('./structures/Attachment');
 exports.AttachmentBuilder = require('./structures/AttachmentBuilder');
 exports.ModalBuilder = require('./structures/ModalBuilder');
+exports.MediaChannel = require('./structures/MediaChannel');
 exports.MessageCollector = require('./structures/MessageCollector');
 exports.MessageComponentInteraction = require('./structures/MessageComponentInteraction');
 exports.MessageContextMenuCommandInteraction = require('./structures/MessageContextMenuCommandInteraction');
@@ -161,6 +170,8 @@ exports.NewsChannel = require('./structures/NewsChannel');
 exports.OAuth2Guild = require('./structures/OAuth2Guild');
 exports.PartialGroupDMChannel = require('./structures/PartialGroupDMChannel');
 exports.PermissionOverwrites = require('./structures/PermissionOverwrites');
+exports.Poll = require('./structures/Poll').Poll;
+exports.PollAnswer = require('./structures/PollAnswer').PollAnswer;
 exports.Presence = require('./structures/Presence').Presence;
 exports.ReactionCollector = require('./structures/ReactionCollector');
 exports.ReactionEmoji = require('./structures/ReactionEmoji');
@@ -187,6 +198,7 @@ exports.RoleSelectMenuInteraction = require('./structures/RoleSelectMenuInteract
 exports.StringSelectMenuInteraction = require('./structures/StringSelectMenuInteraction');
 exports.UserSelectMenuInteraction = require('./structures/UserSelectMenuInteraction');
 exports.SelectMenuOptionBuilder = require('./structures/SelectMenuOptionBuilder');
+exports.SKU = require('./structures/SKU').SKU;
 exports.StringSelectMenuOptionBuilder = require('./structures/StringSelectMenuOptionBuilder');
 exports.StageChannel = require('./structures/StageChannel');
 exports.StageInstance = require('./structures/StageInstance').StageInstance;
@@ -199,6 +211,7 @@ exports.TextInputBuilder = require('./structures/TextInputBuilder');
 exports.TextInputComponent = require('./structures/TextInputComponent');
 exports.ThreadChannel = require('./structures/ThreadChannel');
 exports.ThreadMember = require('./structures/ThreadMember');
+exports.ThreadOnlyChannel = require('./structures/ThreadOnlyChannel');
 exports.Typing = require('./structures/Typing');
 exports.User = require('./structures/User');
 exports.UserContextMenuCommandInteraction = require('./structures/UserContextMenuCommandInteraction');

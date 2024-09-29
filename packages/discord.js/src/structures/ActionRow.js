@@ -18,7 +18,7 @@ class ActionRow extends Component {
      * @type {Component[]}
      * @readonly
      */
-    this.components = components.map(c => createComponent(c));
+    this.components = components.map(component => createComponent(component));
   }
 
   /**
@@ -27,7 +27,7 @@ class ActionRow extends Component {
    * @memberof ActionRow
    * @param {ActionRowBuilder|ActionRow|APIActionRowComponent} other The other data
    * @returns {ActionRowBuilder}
-   * @deprecated Use {@link ActionRowBuilder.from} instead.
+   * @deprecated Use {@link ActionRowBuilder.from | ActionRowBuilder#from} instead.
    */
   static from = deprecate(
     other => new this(isJSONEncodable(other) ? other.toJSON() : other),
@@ -39,7 +39,7 @@ class ActionRow extends Component {
    * @returns {APIActionRowComponent}
    */
   toJSON() {
-    return { ...this.data, components: this.components.map(c => c.toJSON()) };
+    return { ...this.data, components: this.components.map(component => component.toJSON()) };
   }
 }
 

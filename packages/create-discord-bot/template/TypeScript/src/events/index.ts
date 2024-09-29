@@ -1,5 +1,6 @@
 import type { ClientEvents } from 'discord.js';
-import type { StructurePredicate } from '../util/loaders.js';
+import { z } from 'zod';
+import type { StructurePredicate } from '../util/loaders.[REPLACE_IMPORT_EXT]';
 
 /**
  * Defines the structure of an event.
@@ -23,11 +24,17 @@ export type Event<T extends keyof ClientEvents = keyof ClientEvents> = {
 	once?: boolean;
 };
 
-// Defines the predicate to check if an object is a valid Event type.
-export const predicate: StructurePredicate<Event> = (structure): structure is Event =>
-	Boolean(structure) &&
-	typeof structure === 'object' &&
-	'name' in structure! &&
-	'execute' in structure &&
-	typeof structure.name === 'string' &&
-	typeof structure.execute === 'function';
+/**
+ * Defines the schema for an event.
+ */
+export const schema = z.object({
+	name: z.string(),
+	once: z.boolean().optional().default(false),
+	execute: z.function(),
+});
+
+/**
+ * Defines the predicate to check if an object is a valid Event type.
+ */
+export const predicate: StructurePredicate<Event> = (structure: unknown): structure is Event =>
+	schema.safeParse(structure).success;

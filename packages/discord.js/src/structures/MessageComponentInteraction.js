@@ -99,6 +99,7 @@ class MessageComponentInteraction extends BaseInteraction {
   deferUpdate() {}
   update() {}
   showModal() {}
+  sendPremiumRequired() {}
   awaitModalSubmit() {}
 }
 

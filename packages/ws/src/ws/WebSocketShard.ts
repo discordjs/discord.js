@@ -1,13 +1,12 @@
-/* eslint-disable id-length */
 import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
 import { clearInterval, clearTimeout, setInterval, setTimeout } from 'node:timers';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { URLSearchParams } from 'node:url';
 import { TextDecoder } from 'node:util';
-import { inflate } from 'node:zlib';
+import type * as nativeZlib from 'node:zlib';
 import { Collection } from '@discordjs/collection';
-import { lazy } from '@discordjs/util';
+import { lazy, shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -21,13 +20,20 @@ import {
 	type GatewaySendPayload,
 } from 'discord-api-types/v10';
 import { WebSocket, type Data } from 'ws';
-import type { Inflate } from 'zlib-sync';
-import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy.js';
-import { ImportantGatewayOpcodes, getInitialSendRateLimitState } from '../utils/constants.js';
+import type * as ZlibSync from 'zlib-sync';
+import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
+import {
+	CompressionMethod,
+	CompressionParameterMap,
+	ImportantGatewayOpcodes,
+	getInitialSendRateLimitState,
+} from '../utils/constants.js';
 import type { SessionInfo } from './WebSocketManager.js';
 
-// eslint-disable-next-line promise/prefer-await-to-then
+/* eslint-disable promise/prefer-await-to-then */
 const getZlibSync = lazy(async () => import('zlib-sync').then((mod) => mod.default).catch(() => null));
+const getNativeZlib = lazy(async () => import('node:zlib').then((mod) => mod).catch(() => null));
+/* eslint-enable promise/prefer-await-to-then */
 
 export enum WebSocketShardEvents {
 	Closed = 'closed',
@@ -38,6 +44,7 @@ export enum WebSocketShardEvents {
 	Hello = 'hello',
 	Ready = 'ready',
 	Resumed = 'resumed',
+	SocketError = 'socketError',
 }
 
 export enum WebSocketShardStatus {
@@ -52,17 +59,17 @@ export enum WebSocketShardDestroyRecovery {
 	Resume,
 }
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export type WebSocketShardEventsMap = {
-	[WebSocketShardEvents.Closed]: [{ code: number }];
-	[WebSocketShardEvents.Debug]: [payload: { message: string }];
-	[WebSocketShardEvents.Dispatch]: [payload: { data: GatewayDispatchPayload }];
-	[WebSocketShardEvents.Error]: [payload: { error: Error }];
+export interface WebSocketShardEventsMap {
+	[WebSocketShardEvents.Closed]: [code: number];
+	[WebSocketShardEvents.Debug]: [message: string];
+	[WebSocketShardEvents.Dispatch]: [payload: GatewayDispatchPayload];
+	[WebSocketShardEvents.Error]: [error: Error];
 	[WebSocketShardEvents.Hello]: [];
-	[WebSocketShardEvents.Ready]: [payload: { data: GatewayReadyDispatchData }];
+	[WebSocketShardEvents.Ready]: [payload: GatewayReadyDispatchData];
 	[WebSocketShardEvents.Resumed]: [];
-	[WebSocketShardEvents.HeartbeatComplete]: [payload: { ackAt: number; heartbeatAt: number; latency: number }];
-};
+	[WebSocketShardEvents.HeartbeatComplete]: [stats: { ackAt: number; heartbeatAt: number; latency: number }];
+	[WebSocketShardEvents.SocketError]: [error: Error];
+}
 
 export interface WebSocketShardDestroyOptions {
 	code?: number;
@@ -76,22 +83,27 @@ export enum CloseCodes {
 }
 
 export interface SendRateLimitState {
-	remaining: number;
 	resetAt: number;
+	sent: number;
 }
 
-// TODO(vladfrangu): enable this once https://github.com/oven-sh/bun/issues/3392 is solved
-// const WebSocketConstructor: typeof WebSocket = shouldUseGlobalFetchAndWebSocket()
-// 	? (globalThis as any).WebSocket
-// 	: WebSocket;
-const WebSocketConstructor: typeof WebSocket = WebSocket;
+const WebSocketConstructor: typeof WebSocket = shouldUseGlobalFetchAndWebSocket()
+	? (globalThis as any).WebSocket
+	: WebSocket;
 
 export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	private connection: WebSocket | null = null;
 
-	private useIdentifyCompress = false;
+	private nativeInflate: nativeZlib.Inflate | null = null;
 
-	private inflate: Inflate | null = null;
+	private zLibSyncInflate: ZlibSync.Inflate | null = null;
+
+	/**
+	 * @privateRemarks
+	 *
+	 * Used only for native zlib inflate, zlib-sync buffering is handled by the library itself.
+	 */
+	private inflateBuffer: Buffer[] = [];
 
 	private readonly textDecoder = new TextDecoder();
 
@@ -103,14 +115,14 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private initialHeartbeatTimeoutController: AbortController | null = null;
 
-	private heartbeatInterval: NodeJS.Timer | null = null;
+	private heartbeatInterval: NodeJS.Timeout | null = null;
 
 	private lastHeartbeatAt = -1;
 
 	// Indicates whether the shard has already resolved its original connect() call
 	private initialConnectResolved = false;
 
-	// Indicates if we failed to connect to the ws url (ECONNREFUSED/ECONNRESET)
+	// Indicates if we failed to connect to the ws url
 	private failedToConnectDueToNetworkError = false;
 
 	private readonly sendQueue = new AsyncQueue();
@@ -122,6 +134,18 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	public readonly id: number;
 
 	#status: WebSocketShardStatus = WebSocketShardStatus.Idle;
+
+	private identifyCompressionEnabled = false;
+
+	/**
+	 * @privateRemarks
+	 *
+	 * This is needed because `this.strategy.options.compression` is not an actual reflection of the compression method
+	 * used, but rather the compression method that the user wants to use. This is because the libraries could just be missing.
+	 */
+	private get transportCompressionEnabled() {
+		return this.strategy.options.compression !== null && (this.nativeInflate ?? this.zLibSyncInflate) !== null;
+	}
 
 	public get status(): WebSocketShardStatus {
 		return this.#status;
@@ -164,21 +188,69 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			throw new Error("Tried to connect a shard that wasn't idle");
 		}
 
-		const { version, encoding, compression } = this.strategy.options;
+		const { version, encoding, compression, useIdentifyCompression } = this.strategy.options;
+		this.identifyCompressionEnabled = useIdentifyCompression;
+
+		// eslint-disable-next-line id-length
 		const params = new URLSearchParams({ v: version, encoding });
-		if (compression) {
-			const zlib = await getZlibSync();
-			if (zlib) {
-				params.append('compress', compression);
-				this.inflate = new zlib.Inflate({
-					chunkSize: 65_535,
-					to: 'string',
-				});
-			} else if (!this.useIdentifyCompress) {
-				this.useIdentifyCompress = true;
-				console.warn(
-					'WebSocketShard: Compression is enabled but zlib-sync is not installed, falling back to identify compress',
-				);
+		if (compression !== null) {
+			if (useIdentifyCompression) {
+				console.warn('WebSocketShard: transport compression is enabled, disabling identify compression');
+				this.identifyCompressionEnabled = false;
+			}
+
+			params.append('compress', CompressionParameterMap[compression]);
+
+			switch (compression) {
+				case CompressionMethod.ZlibNative: {
+					const zlib = await getNativeZlib();
+					if (zlib) {
+						this.inflateBuffer = [];
+
+						const inflate = zlib.createInflate({
+							chunkSize: 65_535,
+							flush: zlib.constants.Z_SYNC_FLUSH,
+						});
+
+						inflate.on('data', (chunk) => {
+							this.inflateBuffer.push(chunk);
+						});
+
+						inflate.on('error', (error) => {
+							this.emit(WebSocketShardEvents.Error, error);
+						});
+
+						this.nativeInflate = inflate;
+					} else {
+						console.warn('WebSocketShard: Compression is set to native but node:zlib is not available.');
+						params.delete('compress');
+					}
+
+					break;
+				}
+
+				case CompressionMethod.ZlibSync: {
+					const zlib = await getZlibSync();
+					if (zlib) {
+						this.zLibSyncInflate = new zlib.Inflate({
+							chunkSize: 65_535,
+							to: 'string',
+						});
+					} else {
+						console.warn('WebSocketShard: Compression is set to zlib-sync, but it is not installed.');
+						params.delete('compress');
+					}
+
+					break;
+				}
+			}
+		}
+
+		if (this.identifyCompressionEnabled) {
+			const zlib = await getNativeZlib();
+			if (!zlib) {
+				console.warn('WebSocketShard: Identify compression is enabled, but node:zlib is not available.');
+				this.identifyCompressionEnabled = false;
 			}
 		}
 
@@ -188,7 +260,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		this.debug([`Connecting to ${url}`]);
 
-		const connection = new WebSocketConstructor(url, {
+		const connection = new WebSocketConstructor(url, [], {
 			handshakeTimeout: this.strategy.options.handshakeTimeout ?? undefined,
 		});
 
@@ -206,11 +278,13 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			void this.onClose(event.code);
 		};
 
+		connection.onopen = () => {
+			this.sendRateLimitState = getInitialSendRateLimitState();
+		};
+
 		this.connection = connection;
 
 		this.#status = WebSocketShardStatus.Connecting;
-
-		this.sendRateLimitState = getInitialSendRateLimitState();
 
 		const { ok } = await this.waitForEvent(WebSocketShardEvents.Hello, this.strategy.options.helloTimeout);
 		if (!ok) {
@@ -292,7 +366,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				this.connection.close(options.code, options.reason);
 
 				await promise;
-				this.emit(WebSocketShardEvents.Closed, { code: options.code });
+				this.emit(WebSocketShardEvents.Closed, options.code);
 			}
 
 			// Lastly, remove the error event.
@@ -360,6 +434,15 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			throw new Error("WebSocketShard wasn't connected");
 		}
 
+		// Generally, the way we treat payloads is 115/60 seconds. The actual limit is 120/60, so we have a bit of leeway.
+		// We use that leeway for those special payloads that we just fire with no checking, since there's no shot we ever
+		// send more than 5 of those in a 60 second interval. This way we can avoid more complex queueing logic.
+
+		if (ImportantGatewayOpcodes.has(payload.op)) {
+			this.connection.send(JSON.stringify(payload));
+			return;
+		}
+
 		if (this.#status !== WebSocketShardStatus.Ready && !ImportantGatewayOpcodes.has(payload.op)) {
 			this.debug(['Tried to send a non-crucial payload before the shard was ready, waiting']);
 			// This will throw if the shard throws an error event in the meantime, just requeue the payload
@@ -372,33 +455,35 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		await this.sendQueue.wait();
 
-		if (--this.sendRateLimitState.remaining <= 0) {
-			const now = Date.now();
-
-			if (this.sendRateLimitState.resetAt > now) {
-				const sleepFor = this.sendRateLimitState.resetAt - now;
-
-				this.debug([`Was about to hit the send rate limit, sleeping for ${sleepFor}ms`]);
-				const controller = new AbortController();
-
-				// Sleep for the remaining time, but if the connection closes in the meantime, we shouldn't wait the remainder to avoid blocking the new conn
-				const interrupted = await Promise.race([
-					sleep(sleepFor).then(() => false),
-					once(this, WebSocketShardEvents.Closed, { signal: controller.signal }).then(() => true),
-				]);
-
-				if (interrupted) {
-					this.debug(['Connection closed while waiting for the send rate limit to reset, re-queueing payload']);
-					this.sendQueue.shift();
-					return this.send(payload);
-				}
-
-				// This is so the listener from the `once` call is removed
-				controller.abort();
-			}
-
+		const now = Date.now();
+		if (now >= this.sendRateLimitState.resetAt) {
 			this.sendRateLimitState = getInitialSendRateLimitState();
 		}
+
+		if (this.sendRateLimitState.sent + 1 >= 115) {
+			// Sprinkle in a little randomness just in case.
+			const sleepFor = this.sendRateLimitState.resetAt - now + Math.random() * 1_500;
+
+			this.debug([`Was about to hit the send rate limit, sleeping for ${sleepFor}ms`]);
+			const controller = new AbortController();
+
+			// Sleep for the remaining time, but if the connection closes in the meantime, we shouldn't wait the remainder to avoid blocking the new conn
+			const interrupted = await Promise.race([
+				sleep(sleepFor).then(() => false),
+				once(this, WebSocketShardEvents.Closed, { signal: controller.signal }).then(() => true),
+			]);
+
+			if (interrupted) {
+				this.debug(['Connection closed while waiting for the send rate limit to reset, re-queueing payload']);
+				this.sendQueue.shift();
+				return this.send(payload);
+			}
+
+			// This is so the listener from the `once` call is removed
+			controller.abort();
+		}
+
+		this.sendRateLimitState.sent++;
 
 		this.sendQueue.shift();
 		this.connection.send(JSON.stringify(payload));
@@ -441,28 +526,29 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			`shard id: ${this.id.toString()}`,
 			`shard count: ${this.strategy.options.shardCount}`,
 			`intents: ${this.strategy.options.intents}`,
-			`compression: ${this.inflate ? 'zlib-stream' : this.useIdentifyCompress ? 'identify' : 'none'}`,
+			`compression: ${this.transportCompressionEnabled ? CompressionParameterMap[this.strategy.options.compression!] : this.identifyCompressionEnabled ? 'identify' : 'none'}`,
 		]);
 
-		const d: GatewayIdentifyData = {
+		const data: GatewayIdentifyData = {
 			token: this.strategy.options.token,
 			properties: this.strategy.options.identifyProperties,
 			intents: this.strategy.options.intents,
-			compress: this.useIdentifyCompress,
+			compress: this.identifyCompressionEnabled,
 			shard: [this.id, this.strategy.options.shardCount],
 		};
 
 		if (this.strategy.options.largeThreshold) {
-			d.large_threshold = this.strategy.options.largeThreshold;
+			data.large_threshold = this.strategy.options.largeThreshold;
 		}
 
 		if (this.strategy.options.initialPresence) {
-			d.presence = this.strategy.options.initialPresence;
+			data.presence = this.strategy.options.initialPresence;
 		}
 
 		await this.send({
 			op: GatewayOpcodes.Identify,
-			d,
+			// eslint-disable-next-line id-length
+			d: data,
 		});
 
 		await this.waitForEvent(WebSocketShardEvents.Ready, this.strategy.options.readyTimeout);
@@ -480,6 +566,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.replayedEvents = 0;
 		return this.send({
 			op: GatewayOpcodes.Resume,
+			// eslint-disable-next-line id-length
 			d: {
 				token: this.strategy.options.token,
 				seq: session.sequence,
@@ -497,11 +584,20 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		await this.send({
 			op: GatewayOpcodes.Heartbeat,
+			// eslint-disable-next-line id-length
 			d: session?.sequence ?? null,
 		});
 
 		this.lastHeartbeatAt = Date.now();
 		this.isAck = false;
+	}
+
+	private parseInflateResult(result: any): GatewayReceivePayload | null {
+		if (!result) {
+			return null;
+		}
+
+		return JSON.parse(typeof result === 'string' ? result : this.textDecoder.decode(result)) as GatewayReceivePayload;
 	}
 
 	private async unpackMessage(data: Data, isBinary: boolean): Promise<GatewayReceivePayload | null> {
@@ -518,10 +614,12 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		const decompressable = new Uint8Array(data as ArrayBuffer);
 
 		// Deal with identify compress
-		if (this.useIdentifyCompress) {
-			return new Promise((resolve, reject) => {
+		if (this.identifyCompressionEnabled) {
+			// eslint-disable-next-line no-async-promise-executor
+			return new Promise(async (resolve, reject) => {
+				const zlib = (await getNativeZlib())!;
 				// eslint-disable-next-line promise/prefer-await-to-callbacks
-				inflate(decompressable, { chunkSize: 65_535 }, (err, result) => {
+				zlib.inflate(decompressable, { chunkSize: 65_535 }, (err, result) => {
 					if (err) {
 						reject(err);
 						return;
@@ -532,42 +630,63 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			});
 		}
 
-		// Deal with gw wide zlib-stream compression
-		if (this.inflate) {
-			const l = decompressable.length;
+		// Deal with transport compression
+		if (this.transportCompressionEnabled) {
 			const flush =
-				l >= 4 &&
-				decompressable[l - 4] === 0x00 &&
-				decompressable[l - 3] === 0x00 &&
-				decompressable[l - 2] === 0xff &&
-				decompressable[l - 1] === 0xff;
+				decompressable.length >= 4 &&
+				decompressable.at(-4) === 0x00 &&
+				decompressable.at(-3) === 0x00 &&
+				decompressable.at(-2) === 0xff &&
+				decompressable.at(-1) === 0xff;
 
-			const zlib = (await getZlibSync())!;
-			this.inflate.push(Buffer.from(decompressable), flush ? zlib.Z_SYNC_FLUSH : zlib.Z_NO_FLUSH);
+			if (this.nativeInflate) {
+				const doneWriting = new Promise<void>((resolve) => {
+					// eslint-disable-next-line promise/prefer-await-to-callbacks
+					this.nativeInflate!.write(decompressable, 'binary', (error) => {
+						if (error) {
+							this.emit(WebSocketShardEvents.Error, error);
+						}
 
-			if (this.inflate.err) {
-				this.emit(WebSocketShardEvents.Error, {
-					error: new Error(`${this.inflate.err}${this.inflate.msg ? `: ${this.inflate.msg}` : ''}`),
+						resolve();
+					});
 				});
-			}
 
-			if (!flush) {
-				return null;
-			}
+				if (!flush) {
+					return null;
+				}
 
-			const { result } = this.inflate;
-			if (!result) {
-				return null;
-			}
+				// This way we're ensuring the latest write has flushed and our buffer is ready
+				await doneWriting;
 
-			return JSON.parse(typeof result === 'string' ? result : this.textDecoder.decode(result)) as GatewayReceivePayload;
+				const result = this.parseInflateResult(Buffer.concat(this.inflateBuffer));
+				this.inflateBuffer = [];
+
+				return result;
+			} else if (this.zLibSyncInflate) {
+				const zLibSync = (await getZlibSync())!;
+				this.zLibSyncInflate.push(Buffer.from(decompressable), flush ? zLibSync.Z_SYNC_FLUSH : zLibSync.Z_NO_FLUSH);
+
+				if (this.zLibSyncInflate.err) {
+					this.emit(
+						WebSocketShardEvents.Error,
+						new Error(`${this.zLibSyncInflate.err}${this.zLibSyncInflate.msg ? `: ${this.zLibSyncInflate.msg}` : ''}`),
+					);
+				}
+
+				if (!flush) {
+					return null;
+				}
+
+				const { result } = this.zLibSyncInflate;
+				return this.parseInflateResult(result);
+			}
 		}
 
 		this.debug([
 			'Received a message we were unable to decompress',
 			`isBinary: ${isBinary.toString()}`,
-			`useIdentifyCompress: ${this.useIdentifyCompress.toString()}`,
-			`inflate: ${Boolean(this.inflate).toString()}`,
+			`identifyCompressionEnabled: ${this.identifyCompressionEnabled.toString()}`,
+			`inflate: ${this.transportCompressionEnabled ? CompressionMethod[this.strategy.options.compression!] : 'none'}`,
 		]);
 
 		return null;
@@ -600,7 +719,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 						await this.strategy.updateSessionInfo(this.id, session);
 
-						this.emit(WebSocketShardEvents.Ready, { data: payload.d });
+						this.emit(WebSocketShardEvents.Ready, payload.d);
 						break;
 					}
 
@@ -627,7 +746,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 					]);
 				}
 
-				this.emit(WebSocketShardEvents.Dispatch, { data: payload });
+				this.emit(WebSocketShardEvents.Dispatch, payload);
 
 				break;
 			}
@@ -700,17 +819,12 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	private onError(error: Error) {
-		if ('code' in error && ['ECONNRESET', 'ECONNREFUSED'].includes(error.code as string)) {
-			this.debug(['Failed to connect to the gateway URL specified due to a network error']);
-			this.failedToConnectDueToNetworkError = true;
-			return;
-		}
-
-		this.emit(WebSocketShardEvents.Error, { error });
+		this.emit(WebSocketShardEvents.SocketError, error);
+		this.failedToConnectDueToNetworkError = true;
 	}
 
 	private async onClose(code: number) {
-		this.emit(WebSocketShardEvents.Closed, { code });
+		this.emit(WebSocketShardEvents.Closed, code);
 
 		switch (code) {
 			case CloseCodes.Normal: {
@@ -746,9 +860,11 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 
 			case GatewayCloseCodes.AuthenticationFailed: {
-				this.emit(WebSocketShardEvents.Error, {
-					error: new Error('Authentication failed'),
-				});
+				this.emit(
+					WebSocketShardEvents.Error,
+
+					new Error('Authentication failed'),
+				);
 				return this.destroy({ code });
 			}
 
@@ -773,37 +889,43 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			}
 
 			case GatewayCloseCodes.InvalidShard: {
-				this.emit(WebSocketShardEvents.Error, {
-					error: new Error('Invalid shard'),
-				});
+				this.emit(WebSocketShardEvents.Error, new Error('Invalid shard'));
 				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.ShardingRequired: {
-				this.emit(WebSocketShardEvents.Error, {
-					error: new Error('Sharding is required'),
-				});
+				this.emit(
+					WebSocketShardEvents.Error,
+
+					new Error('Sharding is required'),
+				);
 				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.InvalidAPIVersion: {
-				this.emit(WebSocketShardEvents.Error, {
-					error: new Error('Used an invalid API version'),
-				});
+				this.emit(
+					WebSocketShardEvents.Error,
+
+					new Error('Used an invalid API version'),
+				);
 				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.InvalidIntents: {
-				this.emit(WebSocketShardEvents.Error, {
-					error: new Error('Used invalid intents'),
-				});
+				this.emit(
+					WebSocketShardEvents.Error,
+
+					new Error('Used invalid intents'),
+				);
 				return this.destroy({ code });
 			}
 
 			case GatewayCloseCodes.DisallowedIntents: {
-				this.emit(WebSocketShardEvents.Error, {
-					error: new Error('Used disallowed intents'),
-				});
+				this.emit(
+					WebSocketShardEvents.Error,
+
+					new Error('Used disallowed intents'),
+				);
 				return this.destroy({ code });
 			}
 
@@ -824,15 +946,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	}
 
 	private debug(messages: [string, ...string[]]) {
-		const message = `${messages[0]}${
-			messages.length > 1
-				? `\n${messages
-						.slice(1)
-						.map((m) => `	${m}`)
-						.join('\n')}`
-				: ''
-		}`;
-
-		this.emit(WebSocketShardEvents.Debug, { message });
+		this.emit(WebSocketShardEvents.Debug, messages.join('\n\t'));
 	}
 }

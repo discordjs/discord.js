@@ -2,6 +2,56 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/collection@2.1.1](https://github.com/discordjs/discord.js/compare/@discordjs/collection@2.1.0...@discordjs/collection@2.1.1) - (2024-09-01)
+
+## Bug Fixes
+
+- **build:** Update to support strictBuiltinIteratorReturn (#10394) ([bf83db9](https://github.com/discordjs/discord.js/commit/bf83db9480e9f31d5dadee38a2d053a543150776))
+
+## Testing
+
+- Complete collection coverage (#10380) ([d8e94d8](https://github.com/discordjs/discord.js/commit/d8e94d8f10367d165d15904f7c7a31165842f9ec))
+
+## Typings
+
+- **collection:** Reduce* method signatures (#10405) ([6b38335](https://github.com/discordjs/discord.js/commit/6b383350a6de6d26b62cf62f619c89ffb0d6b0d1))
+
+# [@discordjs/collection@2.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@2.0.0...@discordjs/collection@2.1.0) - (2024-05-04)
+
+## Bug Fixes
+
+- **ReadonlyCollection:** Omit `clear` method (#10148) ([c8bbdb7](https://github.com/discordjs/discord.js/commit/c8bbdb70f218f381b46b4a22230bc56dbbdf04f5))
+- Minify mainlib docs json (#9963) ([4b88306](https://github.com/discordjs/discord.js/commit/4b88306dcb2b16b840ec61e9e33047af3a31c45d))
+
+## Documentation
+
+- Split docs.api.json into multiple json files ([597340f](https://github.com/discordjs/discord.js/commit/597340f288437c35da8c703d9b621274de60d880))
+
+## Features
+
+- Local and preview detection ([79fbda3](https://github.com/discordjs/discord.js/commit/79fbda3aac6d4f0f8bfb193e797d09cbe331d315))
+
+## Refactor
+
+- Docs (#10126) ([18cce83](https://github.com/discordjs/discord.js/commit/18cce83d80598c430218775c53441b6b2ecdc776))
+
+# [@discordjs/collection@2.0.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.5.3...@discordjs/collection@2.0.0) - (2023-11-12)
+
+## Documentation
+
+- **collection:** Minor article additions (#9868) ([a674989](https://github.com/discordjs/discord.js/commit/a674989fe27ba9ecd4f1510b07699aeda2f7f01d))
+
+## Features
+
+- Return entries instead of values in toJSON method (#9345) ([defeee5](https://github.com/discordjs/discord.js/commit/defeee5eecdcbf77fa8a5394ac8edd2c895defcc))
+- Align some methods with the Change By Copy proposal (#9207) ([65966ae](https://github.com/discordjs/discord.js/commit/65966ae6ec65254cb196aa7ee9c96c386b93d95e))
+  - **BREAKING CHANGE:** The `sorted` method has been renamed to `toSorted`
+- Align some methods with the Set Methods proposal (#8890) ([3b8df63](https://github.com/discordjs/discord.js/commit/3b8df63a5a8fcec3709ce0a79eb7e2571233c826))
+  - **BREAKING CHANGE:** The `intersect` method has been renamed to `intersection`
+  - **BREAKING CHANGE:** The `difference` method has been renamed to `symmetricDifference`
+  - **BREAKING CHANGE:** The `subtract` method has been renamed to `difference`
+- Support `findLast` and `reduceRight` methods (#9573) ([ac64508](https://github.com/discordjs/discord.js/commit/ac645084f03433372c297e02383a88532f9d385c))
+
 # [@discordjs/collection@1.5.3](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.5.2...@discordjs/collection@1.5.3) - (2023-08-17)
 
 ## Documentation
@@ -13,32 +63,6 @@ All notable changes to this project will be documented in this file.
 ## Refactor
 
 - **collection:** Reduce `reduce`'s code (#9581) ([b85a3f2](https://github.com/discordjs/discord.js/commit/b85a3f2ddee8fc5974749b95fc07389a03093df2))
-
-# [@discordjs/collection@1.5.1](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.5.0...@discordjs/collection@1.5.1) - (2023-05-01)
-
-## Bug Fixes
-
-- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
-
-## Documentation
-
-- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
-
-# [@discordjs/collection@1.5.2](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.5.1...@discordjs/collection@1.5.2) - (2023-07-31)
-
-## Refactor
-
-- **collection:** Reduce `reduce`'s code (#9581) ([b85a3f2](https://github.com/discordjs/discord.js/commit/b85a3f2ddee8fc5974749b95fc07389a03093df2))
-
-# [@discordjs/collection@1.5.1](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.5.0...@discordjs/collection@1.5.1) - (2023-05-01)
-
-## Bug Fixes
-
-- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
-
-## Documentation
-
-- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
 
 # [@discordjs/collection@1.5.1](https://github.com/discordjs/discord.js/compare/@discordjs/collection@1.5.0...@discordjs/collection@1.5.1) - (2023-05-01)
 
@@ -164,7 +188,7 @@ All notable changes to this project will be documented in this file.
 
 - **collection:** Improve coverage (#8222) ([a51f721](https://github.com/discordjs/discord.js/commit/a51f7215eca67a0f46fba8b2d706f7ec6f6dc228))
 
-# [@discordjs/collection@0.7.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@0.6.0...@discordjs/collection@0.7.0) - (2022-06-04)
+# [@discordjs/collection@0.7.0](https://github.com/discordjs/discord.js/compare/@discordjs/collection@2.0.0...@discordjs/collection@0.7.0) - (2022-06-04)
 
 ## Styling
 

@@ -193,7 +193,7 @@ class Embed {
   get hexColor() {
     return typeof this.data.color === 'number'
       ? `#${this.data.color.toString(16).padStart(6, '0')}`
-      : this.data.color ?? null;
+      : (this.data.color ?? null);
   }
 
   /**
@@ -211,9 +211,26 @@ class Embed {
    */
   equals(other) {
     if (other instanceof Embed) {
-      return isEqual(other.data, this.data);
+      return isEqual(this.data, other.data);
     }
-    return isEqual(other, this.data);
+
+    return (
+      this.author?.iconURL === other.author?.icon_url &&
+      this.author?.name === other.author?.name &&
+      this.author?.url === other.author?.url &&
+      this.color === (other.color ?? null) &&
+      this.description === (other.description ?? null) &&
+      this.footer?.iconURL === other.footer?.icon_url &&
+      this.footer?.text === other.footer?.text &&
+      this.image?.url === other.image?.url &&
+      this.thumbnail?.url === other.thumbnail?.url &&
+      (this.timestamp && Date.parse(this.timestamp)) === (other.timestamp ? Date.parse(other.timestamp) : null) &&
+      this.title === (other.title ?? null) &&
+      this.url === (other.url ?? null) &&
+      this.video?.url === other.video?.url &&
+      isEqual(this.fields, other.fields?.map(field => ({ ...field, inline: field.inline ?? false })) ?? []) &&
+      isEqual(this.provider, other.provider ?? null)
+    );
   }
 }
 

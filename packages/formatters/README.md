@@ -23,12 +23,13 @@
 
 ## Installation
 
-**Node.js 16.11.0 or newer is required.**
+**Node.js 18 or newer is required.**
 
 ```sh
 npm install @discordjs/formatters
 yarn add @discordjs/formatters
 pnpm add @discordjs/formatters
+bun add @discordjs/formatters
 ```
 
 ## Example usage

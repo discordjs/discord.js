@@ -13,6 +13,8 @@ pids
 
 # Env
 .env
+!template/Bun/.env
+!template/Deno/.env
 !template/JavaScript/.env
 !template/TypeScript/.env
 

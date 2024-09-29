@@ -23,14 +23,13 @@
 
 ## Installation
 
-**Node.js 16.11.0 or newer is required.**
-
-Note: native fetch (not recommended) is unavailable in this node version, either use a newer node version or use the more performant `undiciRequest` strategy (default)
+**Node.js 18 or newer is required.**
 
 ```sh
 npm install @discordjs/rest
 yarn add @discordjs/rest
 pnpm add @discordjs/rest
+bun add @discordjs/rest
 ```
 
 ## Examples
@@ -41,6 +40,7 @@ Install all required dependencies:
 npm install @discordjs/rest discord-api-types
 yarn add @discordjs/rest discord-api-types
 pnpm add @discordjs/rest discord-api-types
+bun add @discordjs/rest discord-api-types
 ```
 
 Send a basic message:

@@ -1,7 +1,9 @@
 import type { RESTPatchAPIChannelJSONBody, Snowflake } from 'discord-api-types/v10';
 import type { REST } from '../REST.js';
 import { RateLimitError } from '../errors/RateLimitError.js';
-import { RequestMethod, type RateLimitData, type ResponseLike } from './types.js';
+import { DEPRECATION_WARNING_PREFIX } from './constants.js';
+import { RequestMethod } from './types.js';
+import type { GetRateLimitOffsetFunction, RateLimitData, ResponseLike } from './types.js';
 
 function serializeSearchParam(value: unknown): string | null {
 	switch (typeof value) {
@@ -32,7 +34,7 @@ function serializeSearchParam(value: unknown): string | null {
  * @param options - The options to use
  * @returns A populated URLSearchParams instance
  */
-export function makeURLSearchParams<T extends object>(options?: Readonly<T>) {
+export function makeURLSearchParams<OptionsType extends object>(options?: Readonly<OptionsType>) {
 	const params = new URLSearchParams();
 	if (!options) return params;
 
@@ -139,4 +141,34 @@ export async function sleep(ms: number): Promise<void> {
  */
 export function isBufferLike(value: unknown): value is ArrayBuffer | Buffer | Uint8Array | Uint8ClampedArray {
 	return value instanceof ArrayBuffer || value instanceof Uint8Array || value instanceof Uint8ClampedArray;
+}
+
+/**
+ * Irrespective environment warning.
+ *
+ * @remarks Only the message is needed. The deprecation prefix is handled already.
+ * @param message - A string the warning will emit with
+ * @internal
+ */
+export function deprecationWarning(message: string) {
+	if (typeof globalThis.process === 'undefined') {
+		console.warn(`${DEPRECATION_WARNING_PREFIX}: ${message}`);
+	} else {
+		process.emitWarning(message, DEPRECATION_WARNING_PREFIX);
+	}
+}
+
+/**
+ * Normalizes the offset for rate limits. Applies a Math.max(0, N) to prevent negative offsets,
+ * also deals with callbacks.
+ *
+ * @internal
+ */
+export function normalizeRateLimitOffset(offset: GetRateLimitOffsetFunction | number, route: string): number {
+	if (typeof offset === 'number') {
+		return Math.max(0, offset);
+	}
+
+	const result = offset(route);
+	return Math.max(0, result);
 }

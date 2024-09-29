@@ -93,7 +93,7 @@ class GuildMemberManager extends CachedManager {
    * <info>This method requires the {@link PermissionFlagsBits.CreateInstantInvite} permission.
    * @param {UserResolvable} user The user to add to the guild
    * @param {AddGuildMemberOptions} options Options for adding the user to the guild
-   * @returns {Promise<GuildMember|null>}
+   * @returns {Promise<?GuildMember>}
    */
   async add(user, options) {
     const userId = this.client.users.resolveId(user);
@@ -128,8 +128,9 @@ class GuildMemberManager extends CachedManager {
       resolvedOptions.roles = resolvedRoles;
     }
     const data = await this.client.rest.put(Routes.guildMember(this.guild.id, userId), { body: resolvedOptions });
-    // Data is an empty Uint8Array if the member is already part of the guild.
-    return data instanceof Uint8Array
+
+    // Data is an empty array buffer if the member is already part of the guild.
+    return data instanceof ArrayBuffer
       ? options.fetchWhenExisting === false
         ? null
         : this.fetch(userId)
@@ -326,9 +327,9 @@ class GuildMemberManager extends CachedManager {
    * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles or role ids to apply
    * @property {boolean} [mute] Whether or not the member should be muted
    * @property {boolean} [deaf] Whether or not the member should be deafened
-   * @property {GuildVoiceChannelResolvable|null} [channel] Channel to move the member to
+   * @property {?GuildVoiceChannelResolvable} [channel] Channel to move the member to
    * (if they are connected to voice), or `null` if you want to disconnect them from voice
-   * @property {DateResolvable|null} [communicationDisabledUntil] The date or timestamp
+   * @property {?DateResolvable} [communicationDisabledUntil] The date or timestamp
    * for the member's communication to be disabled until. Provide `null` to enable communication again.
    * @property {GuildMemberFlagsResolvable} [flags] The flags to set for the member
    * @property {string} [reason] Reason for editing this user
@@ -400,7 +401,7 @@ class GuildMemberManager extends CachedManager {
   /**
    * Prunes members from the guild based on how long they have been inactive.
    * @param {GuildPruneMembersOptions} [options] Options for pruning
-   * @returns {Promise<number|null>} The number of members that were/will be kicked
+   * @returns {Promise<?number>} The number of members that were/will be kicked
    * @example
    * // See how many members will be pruned
    * guild.members.prune({ dry: true })
@@ -498,6 +499,25 @@ class GuildMemberManager extends CachedManager {
    */
   unban(user, reason) {
     return this.guild.bans.remove(user, reason);
+  }
+
+  /**
+   * Bulk ban users from a guild, and optionally delete previous messages sent by them.
+   * @param {Collection<Snowflake, UserResolvable>|UserResolvable[]} users The users to ban
+   * @param {BulkBanOptions} [options] The options for bulk banning users
+   * @returns {Promise<BulkBanResult>} Returns an object with `bannedUsers` key containing the IDs of the banned users
+   * and the key `failedUsers` with the IDs that could not be banned or were already banned.
+   * Internally calls the GuildBanManager#bulkCreate method.
+   * @example
+   * // Bulk ban users by ids (or with user/guild member objects) and delete all their messages from the past 7 days
+   * guild.members.bulkBan(['84484653687267328'], { deleteMessageSeconds: 7 * 24 * 60 * 60 })
+   *   .then(result => {
+   *     console.log(`Banned ${result.bannedUsers.length} users, failed to ban ${result.failedUsers.length} users.`)
+   *   })
+   *   .catch(console.error);
+   */
+  bulkBan(users, options = {}) {
+    return this.guild.bans.bulkCreate(users, options);
   }
 
   /**

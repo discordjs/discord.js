@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, extname, basename, relative } from 'node:path';
 import jsdoc2md from 'jsdoc-to-markdown';
 import { type DeclarationReflection, Application, TSConfigReader } from 'typedoc';
-import type { CLIOptions } from './cli.js';
+import type { CLIOptions } from '../bin/index.js';
 import { Documentation } from './documentation.js';
 import type { RootTypes, ChildTypes, CustomDocs } from './interfaces/index.js';
 
@@ -17,14 +17,12 @@ interface CustomFiles {
 	path?: string;
 }
 
-export function build({ input, custom: customDocs, root, output, typescript }: CLIOptions) {
+export async function build({ input, custom: customDocs, root, output, newOutput, typescript }: CLIOptions) {
 	let data: (ChildTypes & RootTypes)[] | DeclarationReflection[] = [];
 	if (typescript) {
 		console.log('Parsing Typescript in source files...');
-		const app = new Application();
-		app.options.addReader(new TSConfigReader());
-		app.bootstrap({ entryPoints: input });
-		const project = app.convert();
+		const app = await Application.bootstrap({ entryPoints: input }, [new TSConfigReader()]);
+		const project = await app.convert();
 		if (project) {
 			// @ts-expect-error: Types are lost with this method
 			data = app.serializer.toObject(project).children!;
@@ -32,7 +30,7 @@ export function build({ input, custom: customDocs, root, output, typescript }: C
 		}
 	} else {
 		console.log('Parsing JSDocs in source files...');
-		// eslint-disable-next-line n/no-sync
+
 		data = jsdoc2md.getTemplateDataSync({ files: input }) as (ChildTypes & RootTypes)[];
 		console.log(`${data.length} JSDoc items parsed.`);
 	}
@@ -82,6 +80,11 @@ export function build({ input, custom: customDocs, root, output, typescript }: C
 	if (output) {
 		console.log(`Writing to ${output}...`);
 		writeFileSync(output, JSON.stringify(docs.serialize()));
+	}
+
+	if (newOutput) {
+		console.log(`Writing to ${newOutput}...`);
+		writeFileSync(newOutput, JSON.stringify(docs.serializeNew()));
 	}
 
 	console.log('Done!');

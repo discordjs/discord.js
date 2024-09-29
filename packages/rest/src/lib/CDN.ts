@@ -8,6 +8,9 @@ import {
 	type ImageSize,
 	type StickerExtension,
 } from './utils/constants.js';
+import { deprecationWarning } from './utils/utils.js';
+
+let deprecationEmittedForEmoji = false;
 
 /**
  * The options used for image URLs
@@ -44,6 +47,12 @@ export interface MakeURLOptions {
 	 */
 	allowedExtensions?: readonly string[];
 	/**
+	 * The base URL.
+	 *
+	 * @defaultValue `DefaultRestOptions.cdn`
+	 */
+	base?: string;
+	/**
 	 * The extension to use for the image URL
 	 *
 	 * @defaultValue `'webp'`
@@ -59,7 +68,10 @@ export interface MakeURLOptions {
  * The CDN link builder
  */
 export class CDN {
-	public constructor(private readonly base: string = DefaultRestOptions.cdn) {}
+	public constructor(
+		private readonly cdn: string = DefaultRestOptions.cdn,
+		private readonly mediaProxy: string = DefaultRestOptions.mediaProxy,
+	) {}
 
 	/**
 	 * Generates an app asset URL for a client's asset.
@@ -95,8 +107,16 @@ export class CDN {
 	}
 
 	/**
+	 * Generates a user avatar decoration preset URL.
+	 *
+	 * @param asset - The avatar decoration hash
+	 */
+	public avatarDecoration(asset: string): string;
+
+	/**
 	 * Generates a user avatar decoration URL.
 	 *
+	 * @deprecated This overload is deprecated. Pass a hash instead.
 	 * @param userId - The id of the user
 	 * @param userAvatarDecoration - The hash provided by Discord for this avatar decoration
 	 * @param options - Optional options for the avatar decoration
@@ -104,9 +124,20 @@ export class CDN {
 	public avatarDecoration(
 		userId: string,
 		userAvatarDecoration: string,
+		// eslint-disable-next-line @typescript-eslint/unified-signatures
+		options?: Readonly<BaseImageURLOptions>,
+	): string;
+
+	public avatarDecoration(
+		userIdOrAsset: string,
+		userAvatarDecoration?: string,
 		options?: Readonly<BaseImageURLOptions>,
 	): string {
-		return this.makeURL(`/avatar-decorations/${userId}/${userAvatarDecoration}`, options);
+		if (userAvatarDecoration) {
+			return this.makeURL(`/avatar-decorations/${userIdOrAsset}/${userAvatarDecoration}`, options);
+		}
+
+		return this.makeURL(`/avatar-decoration-presets/${userIdOrAsset}`, { extension: 'png' });
 	}
 
 	/**
@@ -158,10 +189,38 @@ export class CDN {
 	 * Generates an emoji's URL for an emoji.
 	 *
 	 * @param emojiId - The emoji id
-	 * @param extension - The extension of the emoji
+	 * @param options - Optional options for the emoji
 	 */
-	public emoji(emojiId: string, extension?: ImageExtension): string {
-		return this.makeURL(`/emojis/${emojiId}`, { extension });
+	public emoji(emojiId: string, options?: Readonly<BaseImageURLOptions>): string;
+
+	/**
+	 * Generates an emoji's URL for an emoji.
+	 *
+	 * @param emojiId - The emoji id
+	 * @param extension - The extension of the emoji
+	 * @deprecated This overload is deprecated. Pass an object containing the extension instead.
+	 */
+	// eslint-disable-next-line @typescript-eslint/unified-signatures
+	public emoji(emojiId: string, extension?: ImageExtension): string;
+
+	public emoji(emojiId: string, options?: ImageExtension | Readonly<BaseImageURLOptions>): string {
+		let resolvedOptions;
+
+		if (typeof options === 'string') {
+			if (!deprecationEmittedForEmoji) {
+				deprecationWarning(
+					'Passing a string for the second parameter of CDN#emoji() is deprecated. Use an object instead.',
+				);
+
+				deprecationEmittedForEmoji = true;
+			}
+
+			resolvedOptions = { extension: options };
+		} else {
+			resolvedOptions = options;
+		}
+
+		return this.makeURL(`/emojis/${emojiId}`, resolvedOptions);
 	}
 
 	/**
@@ -237,10 +296,15 @@ export class CDN {
 	 * @param stickerId - The sticker id
 	 * @param extension - The extension of the sticker
 	 * @privateRemarks
-	 * Stickers cannot have a `.webp` extension, so we default to a `.png`
+	 * Stickers cannot have a `.webp` extension, so we default to a `.png`.
+	 * Sticker GIFs do not use the CDN base URL.
 	 */
 	public sticker(stickerId: string, extension: StickerExtension = 'png'): string {
-		return this.makeURL(`/stickers/${stickerId}`, { allowedExtensions: ALLOWED_STICKER_EXTENSIONS, extension });
+		return this.makeURL(`/stickers/${stickerId}`, {
+			allowedExtensions: ALLOWED_STICKER_EXTENSIONS,
+			base: extension === 'gif' ? this.mediaProxy : this.cdn,
+			extension,
+		});
 	}
 
 	/**
@@ -302,7 +366,12 @@ export class CDN {
 	 */
 	private makeURL(
 		route: string,
-		{ allowedExtensions = ALLOWED_EXTENSIONS, extension = 'webp', size }: Readonly<MakeURLOptions> = {},
+		{
+			allowedExtensions = ALLOWED_EXTENSIONS,
+			base = this.cdn,
+			extension = 'webp',
+			size,
+		}: Readonly<MakeURLOptions> = {},
 	): string {
 		// eslint-disable-next-line no-param-reassign
 		extension = String(extension).toLowerCase();
@@ -315,7 +384,7 @@ export class CDN {
 			throw new RangeError(`Invalid size provided: ${size}\nMust be one of: ${ALLOWED_SIZES.join(', ')}`);
 		}
 
-		const url = new URL(`${this.base}${route}.${extension}`);
+		const url = new URL(`${base}${route}.${extension}`);
 
 		if (size) {
 			url.searchParams.set('size', String(size));

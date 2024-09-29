@@ -18,7 +18,7 @@ import { RequestMethod } from './utils/types.js';
 import type {
 	RESTOptions,
 	ResponseLike,
-	RestEventsMap,
+	RestEvents,
 	HashData,
 	InternalRequest,
 	RouteLike,
@@ -31,7 +31,7 @@ import { isBufferLike, parseResponse } from './utils/utils.js';
 /**
  * Represents the class that manages handlers for endpoints
  */
-export class REST extends AsyncEventEmitter<RestEventsMap> {
+export class REST extends AsyncEventEmitter<RestEvents> {
 	/**
 	 * The {@link https://undici.nodejs.org/#/docs/api/Agent | Agent} for all requests
 	 * performed by this manager.
@@ -75,9 +75,8 @@ export class REST extends AsyncEventEmitter<RestEventsMap> {
 
 	public constructor(options: Partial<RESTOptions> = {}) {
 		super();
-		this.cdn = new CDN(options.cdn ?? DefaultRestOptions.cdn);
+		this.cdn = new CDN(options.cdn ?? DefaultRestOptions.cdn, options.mediaProxy ?? DefaultRestOptions.mediaProxy);
 		this.options = { ...DefaultRestOptions, ...options };
-		this.options.offset = Math.max(0, this.options.offset);
 		this.globalRemaining = Math.max(1, this.options.globalRequestsPerSecond);
 		this.agent = options.agent ?? null;
 
@@ -317,7 +316,7 @@ export class REST extends AsyncEventEmitter<RestEventsMap> {
 			headers.Authorization = `${request.authPrefix ?? this.options.authPrefix} ${this.#token}`;
 		}
 
-		// If a reason was set, set it's appropriate header
+		// If a reason was set, set its appropriate header
 		if (request.reason?.length) {
 			headers['X-Audit-Log-Reason'] = encodeURIComponent(request.reason);
 		}
@@ -434,16 +433,20 @@ export class REST extends AsyncEventEmitter<RestEventsMap> {
 			};
 		}
 
-		const majorIdMatch = /^\/(?:channels|guilds|webhooks)\/(\d{17,19})/.exec(endpoint);
+		const majorIdMatch = /(?:^\/webhooks\/(\d{17,19}\/[^/?]+))|(?:^\/(?:channels|guilds|webhooks)\/(\d{17,19}))/.exec(
+			endpoint,
+		);
 
-		// Get the major id for this route - global otherwise
-		const majorId = majorIdMatch?.[1] ?? 'global';
+		// Get the major id or id + token for this route - global otherwise
+		const majorId = majorIdMatch?.[2] ?? majorIdMatch?.[1] ?? 'global';
 
 		const baseRoute = endpoint
 			// Strip out all ids
 			.replaceAll(/\d{17,19}/g, ':id')
 			// Strip out reaction as they fall under the same bucket
-			.replace(/\/reactions\/(.*)/, '/reactions/:reaction');
+			.replace(/\/reactions\/(.*)/, '/reactions/:reaction')
+			// Strip out webhook tokens
+			.replace(/\/webhooks\/:id\/[^/?]+/, '/webhooks/:id/:token');
 
 		let exceptions = '';
 

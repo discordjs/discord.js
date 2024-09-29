@@ -5,13 +5,16 @@ header = """
 All notable changes to this project will be documented in this file.\n
 """
 body = """
+{%- macro remote_url() -%}
+  https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}
+{%- endmacro -%}
 {% if version %}\
 	# [{{ version | trim_start_matches(pat="v") }}]\
 	{% if previous %}\
 		{% if previous.version %}\
-			(https://github.com/discordjs/discord.js/compare/{{ previous.version }}...{{ version }})\
+			({{ self::remote_url() }}/compare/{{ previous.version }}...{{ version }})\
 		{% else %}\
-			(https://github.com/discordjs/discord.js/tree/{{ version }})\
+			({{ self::remote_url() }}/tree/{{ version }})\
 		{% endif %}\
 	{% endif %} \
 	- ({{ timestamp | date(format="%Y-%m-%d") }})
@@ -24,14 +27,23 @@ body = """
 		- {% if commit.scope %}\
 			**{{commit.scope}}:** \
 		  {% endif %}\
-			{{ commit.message | upper_first }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/discordjs/discord.js/commit/{{ commit.id }}))\
+			{{ commit.message | upper_first }} ([{{ commit.id | truncate(length=7, end="") }}]({{ self::remote_url() }}/commit/{{ commit.id }}))\
+			{% if commit.github.username %} by @{{ commit.github.username }}{%- endif %}\
 		{% if commit.breaking %}\
-			{% for breakingChange in commit.footers %}\
-				\n{% raw %}  {% endraw %}- **{{ breakingChange.token }}{{ breakingChange.separator }}** {{ breakingChange.value }}\
+			{% for footer in commit.footers %}\
+				{% if footer.breaking %}\
+					\n{% raw %}  {% endraw %}- **{{ footer.token }}{{ footer.separator }}** {{ footer.value }}\
+				{% endif %}\
 			{% endfor %}\
 		{% endif %}\
 	{% endfor %}
-{% endfor %}\n
+{% endfor %}\
+{% if github.contributors | filter(attribute="is_first_time", value=true) | length %}\
+	\n### New Contributors\n
+	{% for contributor in github.contributors | filter(attribute="is_first_time", value=true) %}\
+		* @{{ contributor.username }} made their first contribution in #{{ contributor.pr_number }}
+	{% endfor %}\
+{% endif %}\n
 """
 trim = true
 footer = ""
@@ -59,5 +71,9 @@ commit_parsers = [
 filter_commits = true
 tag_pattern = "@discordjs/util@[0-9]*"
 ignore_tags = ""
-topo_order = true
+topo_order = false
 sort_commits = "newest"
+
+[remote.github]
+owner = "discordjs"
+repo = "discord.js"

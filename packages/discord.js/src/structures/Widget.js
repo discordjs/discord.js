@@ -83,6 +83,15 @@ class Widget extends Base {
     this._patch(data);
     return this;
   }
+
+  /**
+   * Returns a URL for the PNG widget of the guild.
+   * @param {GuildWidgetStyle} [style] The style for the widget image
+   * @returns {string}
+   */
+  imageURL(style) {
+    return this.client.guilds.widgetImageURL(this.id, style);
+  }
 }
 
 module.exports = Widget;

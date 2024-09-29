@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { setTimeout as sleep } from 'node:timers/promises';
 import { expect, test, vi } from 'vitest';
 import { SimpleIdentifyThrottler } from '../../src/index.js';

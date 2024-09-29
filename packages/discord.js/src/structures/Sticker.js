@@ -179,11 +179,12 @@ class Sticker extends Base {
   }
 
   /**
-   * Fetches the pack this sticker is part of from Discord, if this is a Nitro sticker.
-   * @returns {Promise<?StickerPack>}
+   * Fetches the pack that contains this sticker.
+   * @returns {Promise<?StickerPack>} The sticker pack or `null` if this sticker does not belong to one.
    */
-  async fetchPack() {
-    return (this.packId && (await this.client.fetchPremiumStickerPacks()).get(this.packId)) ?? null;
+  fetchPack() {
+    if (!this.packId) return Promise.resolve(null);
+    return this.client.fetchStickerPacks({ packId: this.packId });
   }
 
   /**
@@ -212,7 +213,7 @@ class Sticker extends Base {
    * @example
    * // Update the name of a sticker
    * sticker.edit({ name: 'new name' })
-   *   .then(s => console.log(`Updated the name of the sticker to ${s.name}`))
+   *   .then(sticker => console.log(`Updated the name of the sticker to ${sticker.name}`))
    *   .catch(console.error);
    */
   edit(options) {
@@ -226,7 +227,7 @@ class Sticker extends Base {
    * @example
    * // Delete a message
    * sticker.delete()
-   *   .then(s => console.log(`Deleted sticker ${s.name}`))
+   *   .then(sticker => console.log(`Deleted sticker ${sticker.name}`))
    *   .catch(console.error);
    */
   async delete(reason) {
@@ -265,8 +266,3 @@ class Sticker extends Base {
 }
 
 exports.Sticker = Sticker;
-
-/**
- * @external APISticker
- * @see {@link https://discord.com/developers/docs/resources/sticker#sticker-object}
- */

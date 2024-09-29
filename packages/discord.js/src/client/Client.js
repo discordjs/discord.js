@@ -23,13 +23,15 @@ const StickerPack = require('../structures/StickerPack');
 const VoiceRegion = require('../structures/VoiceRegion');
 const Webhook = require('../structures/Webhook');
 const Widget = require('../structures/Widget');
-const DataResolver = require('../util/DataResolver');
+const { resolveInviteCode, resolveGuildTemplateCode } = require('../util/DataResolver');
 const Events = require('../util/Events');
 const IntentsBitField = require('../util/IntentsBitField');
 const Options = require('../util/Options');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const Status = require('../util/Status');
 const Sweepers = require('../util/Sweepers');
+
+let deprecationEmittedForPremiumStickerPacks = false;
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -237,7 +239,7 @@ class Client extends BaseClient {
    * @returns {boolean}
    */
   isReady() {
-    return this.ws.status === Status.Ready;
+    return !this.ws.destroyed && this.ws.status === Status.Ready;
   }
 
   /**
@@ -251,23 +253,6 @@ class Client extends BaseClient {
     await this.ws.destroy();
     this.token = null;
     this.rest.setToken(null);
-  }
-
-  /**
-   * Options used for deleting a webhook.
-   * @typedef {Object} WebhookDeleteOptions
-   * @property {string} [token] Token of the webhook
-   * @property {string} [reason] The reason for deleting the webhook
-   */
-
-  /**
-   * Deletes a webhook.
-   * @param {Snowflake} id The webhook's id
-   * @param {WebhookDeleteOptions} [options] Options for deleting the webhook
-   * @returns {Promise<void>}
-   */
-  async deleteWebhook(id, { token, reason } = {}) {
-    await this.rest.delete(Routes.webhook(id, token), { auth: !token, reason });
   }
 
   /**
@@ -288,7 +273,7 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   async fetchInvite(invite, options) {
-    const code = DataResolver.resolveInviteCode(invite);
+    const code = resolveInviteCode(invite);
     const query = makeURLSearchParams({
       with_counts: true,
       with_expiration: true,
@@ -308,7 +293,7 @@ class Client extends BaseClient {
    *   .catch(console.error);
    */
   async fetchGuildTemplate(template) {
-    const code = DataResolver.resolveGuildTemplateCode(template);
+    const code = resolveGuildTemplateCode(template);
     const data = await this.rest.get(Routes.template(code));
     return new GuildTemplate(this, data);
   }
@@ -358,16 +343,51 @@ class Client extends BaseClient {
   }
 
   /**
-   * Obtains the list of sticker packs available to Nitro subscribers from Discord.
-   * @returns {Promise<Collection<Snowflake, StickerPack>>}
+   * Options for fetching sticker packs.
+   * @typedef {Object} StickerPackFetchOptions
+   * @property {Snowflake} [packId] The id of the sticker pack to fetch
+   */
+
+  /**
+   * Obtains the list of available sticker packs.
+   * @param {StickerPackFetchOptions} [options={}] Options for fetching sticker packs
+   * @returns {Promise<Collection<Snowflake, StickerPack>|StickerPack>}
+   * A collection of sticker packs, or a single sticker pack if a packId was provided
    * @example
-   * client.fetchPremiumStickerPacks()
+   * client.fetchStickerPacks()
    *   .then(packs => console.log(`Available sticker packs are: ${packs.map(pack => pack.name).join(', ')}`))
    *   .catch(console.error);
+   * @example
+   * client.fetchStickerPacks({ packId: '751604115435421716' })
+   *   .then(pack => console.log(`Sticker pack name: ${pack.name}`))
+   *   .catch(console.error);
    */
-  async fetchPremiumStickerPacks() {
-    const data = await this.rest.get(Routes.nitroStickerPacks());
-    return new Collection(data.sticker_packs.map(p => [p.id, new StickerPack(this, p)]));
+  async fetchStickerPacks({ packId } = {}) {
+    if (packId) {
+      const data = await this.rest.get(Routes.stickerPack(packId));
+      return new StickerPack(this, data);
+    }
+
+    const data = await this.rest.get(Routes.stickerPacks());
+    return new Collection(data.sticker_packs.map(stickerPack => [stickerPack.id, new StickerPack(this, stickerPack)]));
+  }
+
+  /**
+   * Obtains the list of available sticker packs.
+   * @returns {Promise<Collection<Snowflake, StickerPack>>}
+   * @deprecated Use {@link Client#fetchStickerPacks} instead.
+   */
+  fetchPremiumStickerPacks() {
+    if (!deprecationEmittedForPremiumStickerPacks) {
+      process.emitWarning(
+        'The Client#fetchPremiumStickerPacks() method is deprecated. Use Client#fetchStickerPacks() instead.',
+        'DeprecationWarning',
+      );
+
+      deprecationEmittedForPremiumStickerPacks = true;
+    }
+
+    return this.fetchStickerPacks();
   }
 
   /**
@@ -531,6 +551,9 @@ class Client extends BaseClient {
     }
     if (typeof options.failIfNotExists !== 'boolean') {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'failIfNotExists', 'a boolean');
+    }
+    if (typeof options.enforceNonce !== 'boolean') {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'enforceNonce', 'a boolean');
     }
     if (
       (typeof options.allowedMentions !== 'object' && options.allowedMentions !== undefined) ||

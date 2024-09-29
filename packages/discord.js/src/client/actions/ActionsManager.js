@@ -19,6 +19,9 @@ class ActionsManager {
     this.register(require('./ChannelCreate'));
     this.register(require('./ChannelDelete'));
     this.register(require('./ChannelUpdate'));
+    this.register(require('./EntitlementCreate'));
+    this.register(require('./EntitlementDelete'));
+    this.register(require('./EntitlementUpdate'));
     this.register(require('./GuildAuditLogEntryCreate'));
     this.register(require('./GuildBanAdd'));
     this.register(require('./GuildBanRemove'));
@@ -51,6 +54,8 @@ class ActionsManager {
     this.register(require('./MessageCreate'));
     this.register(require('./MessageDelete'));
     this.register(require('./MessageDeleteBulk'));
+    this.register(require('./MessagePollVoteAdd'));
+    this.register(require('./MessagePollVoteRemove'));
     this.register(require('./MessageReactionAdd'));
     this.register(require('./MessageReactionRemove'));
     this.register(require('./MessageReactionRemoveAll'));

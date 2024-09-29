@@ -13,7 +13,7 @@ class ActionRowBuilder extends BuildersActionRow {
   constructor({ components, ...data } = {}) {
     super({
       ...toSnakeCase(data),
-      components: components?.map(c => createComponentBuilder(c)),
+      components: components?.map(component => createComponentBuilder(component)),
     });
   }
 

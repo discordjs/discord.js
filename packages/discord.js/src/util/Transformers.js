@@ -33,4 +33,25 @@ function _transformAPIAutoModerationAction(autoModerationAction) {
   };
 }
 
-module.exports = { toSnakeCase, _transformAPIAutoModerationAction };
+/**
+ * Transforms an API message interaction metadata object to a camel-cased variant.
+ * @param {Client} client The client
+ * @param {APIMessageInteractionMetadata} messageInteractionMetadata The metadata to transform
+ * @returns {MessageInteractionMetadata}
+ * @ignore
+ */
+function _transformAPIMessageInteractionMetadata(client, messageInteractionMetadata) {
+  return {
+    id: messageInteractionMetadata.id,
+    type: messageInteractionMetadata.type,
+    user: client.users._add(messageInteractionMetadata.user),
+    authorizingIntegrationOwners: messageInteractionMetadata.authorizing_integration_owners,
+    originalResponseMessageId: messageInteractionMetadata.original_response_message_id ?? null,
+    interactedMessageId: messageInteractionMetadata.interacted_message_id ?? null,
+    triggeringInteractionMetadata: messageInteractionMetadata.triggering_interaction_metadata
+      ? _transformAPIMessageInteractionMetadata(client, messageInteractionMetadata.triggering_interaction_metadata)
+      : null,
+  };
+}
+
+module.exports = { toSnakeCase, _transformAPIAutoModerationAction, _transformAPIMessageInteractionMetadata };

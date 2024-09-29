@@ -2,11 +2,12 @@
 
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
-const { Routes } = require('discord-api-types/v10');
+const { DiscordAPIError } = require('@discordjs/rest');
+const { RESTJSONErrorCodes, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const { Role } = require('../structures/Role');
-const DataResolver = require('../util/DataResolver');
+const { resolveImage } = require('../util/DataResolver');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const { setPosition, resolveColor } = require('../util/Util');
 
@@ -61,16 +62,29 @@ class RoleManager extends CachedManager {
    *   .catch(console.error);
    */
   async fetch(id, { cache = true, force = false } = {}) {
-    if (id && !force) {
+    if (!id) {
+      const data = await this.client.rest.get(Routes.guildRoles(this.guild.id));
+      const roles = new Collection();
+      for (const role of data) roles.set(role.id, this._add(role, cache));
+      return roles;
+    }
+
+    if (!force) {
       const existing = this.cache.get(id);
       if (existing) return existing;
     }
 
-    // We cannot fetch a single role, as of this commit's date, Discord API throws with 405
-    const data = await this.client.rest.get(Routes.guildRoles(this.guild.id));
-    const roles = new Collection();
-    for (const role of data) roles.set(role.id, this._add(role, cache));
-    return id ? roles.get(id) ?? null : roles;
+    try {
+      const data = await this.client.rest.get(Routes.guildRole(this.guild.id, id));
+      return this._add(data, cache);
+    } catch (error) {
+      // TODO: Remove this catch in the next major version
+      if (error instanceof DiscordAPIError && error.code === RESTJSONErrorCodes.UnknownRole) {
+        return null;
+      }
+
+      throw error;
+    }
   }
 
   /**
@@ -139,8 +153,8 @@ class RoleManager extends CachedManager {
     color &&= resolveColor(color);
     if (permissions !== undefined) permissions = new PermissionsBitField(permissions);
     if (icon) {
-      const guildEmojiURL = this.guild.emojis.resolve(icon)?.url;
-      icon = guildEmojiURL ? await DataResolver.resolveImage(guildEmojiURL) : await DataResolver.resolveImage(icon);
+      const guildEmojiURL = this.guild.emojis.resolve(icon)?.imageURL();
+      icon = guildEmojiURL ? await resolveImage(guildEmojiURL) : await resolveImage(icon);
       if (typeof icon !== 'string') icon = undefined;
     }
 
@@ -191,8 +205,8 @@ class RoleManager extends CachedManager {
 
     let icon = options.icon;
     if (icon) {
-      const guildEmojiURL = this.guild.emojis.resolve(icon)?.url;
-      icon = guildEmojiURL ? await DataResolver.resolveImage(guildEmojiURL) : await DataResolver.resolveImage(icon);
+      const guildEmojiURL = this.guild.emojis.resolve(icon)?.imageURL();
+      icon = guildEmojiURL ? await resolveImage(guildEmojiURL) : await resolveImage(icon);
       if (typeof icon !== 'string') icon = undefined;
     }
 
@@ -280,9 +294,9 @@ class RoleManager extends CachedManager {
    */
   async setPositions(rolePositions) {
     // Make sure rolePositions are prepared for API
-    rolePositions = rolePositions.map(o => ({
-      id: this.resolveId(o.role),
-      position: o.position,
+    rolePositions = rolePositions.map(rolePosition => ({
+      id: this.resolveId(rolePosition.role),
+      position: rolePosition.position,
     }));
 
     // Call the API to update role positions

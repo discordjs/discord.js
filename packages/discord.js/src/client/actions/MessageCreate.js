@@ -6,7 +6,11 @@ const Events = require('../../util/Events');
 class MessageCreateAction extends Action {
   handle(data) {
     const client = this.client;
-    const channel = this.getChannel(data);
+    const channel = this.getChannel({
+      id: data.channel_id,
+      author: data.author,
+      ...('guild_id' in data && { guild_id: data.guild_id }),
+    });
     if (channel) {
       if (!channel.isTextBased()) return {};
 
@@ -16,8 +20,8 @@ class MessageCreateAction extends Action {
       }
 
       const existing = channel.messages.cache.get(data.id);
-      if (existing) return { message: existing };
-      const message = channel.messages._add(data);
+      if (existing && existing.author?.id !== this.client.user.id) return { message: existing };
+      const message = existing ?? channel.messages._add(data);
       channel.lastMessageId = data.id;
 
       /**
