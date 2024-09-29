@@ -210,6 +210,8 @@ import {
   ApplicationEmojiManager,
   StickerPack,
   GuildScheduledEventManager,
+  SendableChannels,
+  PollData,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -2576,6 +2578,8 @@ await textChannel.send({
 });
 
 declare const poll: Poll;
+declare const message: Message;
+declare const pollData: PollData;
 {
   expectType<Message>(await poll.end());
 
@@ -2589,11 +2593,32 @@ declare const poll: Poll;
     messageId: snowflake,
     answerId: 1,
   });
+
+  await message.edit({
+    // @ts-expect-error
+    poll: pollData,
+  });
+
+  await chatInputInteraction.editReply({ poll: pollData });
 }
 
 expectType<Collection<Snowflake, StickerPack>>(await client.fetchStickerPacks());
 expectType<Collection<Snowflake, StickerPack>>(await client.fetchStickerPacks({}));
 expectType<StickerPack>(await client.fetchStickerPacks({ packId: snowflake }));
+
+client.on('interactionCreate', interaction => {
+  if (!interaction.channel) {
+    return;
+  }
+
+  // @ts-expect-error
+  interaction.channel.send();
+
+  if (interaction.channel.isSendable()) {
+    expectType<SendableChannels>(interaction.channel);
+    interaction.channel.send({ embeds: [] });
+  }
+});
 
 declare const guildScheduledEventManager: GuildScheduledEventManager;
 await guildScheduledEventManager.edit(snowflake, { recurrenceRule: null });

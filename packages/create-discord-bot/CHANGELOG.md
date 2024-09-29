@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [create-discord-bot@0.3.1](https://github.com/discordjs/discord.js/compare/create-discord-bot@0.3.0...create-discord-bot@0.3.1) - (2024-09-01)
+
+## Bug Fixes
+
+- Failed build in node and bad lints (#10444) ([00accf7](https://github.com/discordjs/discord.js/commit/00accf74708b4ce8a032907005ae81460b79a988))
+
 # [create-discord-bot@0.3.0](https://github.com/discordjs/discord.js/compare/create-discord-bot@0.2.3...create-discord-bot@0.3.0) - (2024-05-04)
 
 ## Bug Fixes

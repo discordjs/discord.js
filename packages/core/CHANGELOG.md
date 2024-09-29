@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/core@2.0.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@1.2.0...@discordjs/core@2.0.0) - (2024-09-01)
+
+## Bug Fixes
+
+- **OAuth2API:** Enable token exchange without token (#10312) ([9b07036](https://github.com/discordjs/discord.js/commit/9b07036d707b123709480987d5741d6ba75b148b))
+
+## Documentation
+
+- **stageInstances:** Correct reference for stage instance creation (#10333) ([7f60a8f](https://github.com/discordjs/discord.js/commit/7f60a8fc5d412718e269774505b2ed4fc30a83cd))
+
+## Features
+
+- Use get sticker pack endpoint (#10445) ([1b1ae2f](https://github.com/discordjs/discord.js/commit/1b1ae2f0cb339170e4c0692eb43fbc966fd64030))
+- **VoiceState:** Add methods for fetching voice state (#10442) ([9907ff9](https://github.com/discordjs/discord.js/commit/9907ff915e7c72e7e980d68bf005763a3aacad1c))
+- Application emojis (#10399) ([5d92525](https://github.com/discordjs/discord.js/commit/5d92525596a0193fe65626119bb040c2eb9e945a))
+- **OAuth2API:** Add `revokeToken` method (#10440) ([69adc6f](https://github.com/discordjs/discord.js/commit/69adc6f4b9eb4fafe4a20b01137a270621f1365f))
+- Premium buttons (#10353) ([4f59b74](https://github.com/discordjs/discord.js/commit/4f59b740d01b9ff2213949708a36e17da32b89c3))
+- Add `reason` to `followAnnouncements` method (#10275) ([b36ec98](https://github.com/discordjs/discord.js/commit/b36ec983828c7001e47debcd435592ea026768d5))
+
+## Refactor
+
+- Use get guild role endpoint (#10443) ([bba0e72](https://github.com/discordjs/discord.js/commit/bba0e72e2283630b9f84b77d53525397036c6b31))
+- **ws:** Event layout (#10376) ([bf6761a](https://github.com/discordjs/discord.js/commit/bf6761a44adec1fe5017f6bf5d8bc0734916961f))
+  - **BREAKING CHANGE:** All events now emit shard id as its own param
+
 # [@discordjs/core@1.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@1.1.1...@discordjs/core@1.2.0) - (2024-05-04)
 
 ## Bug Fixes
