@@ -185,6 +185,7 @@ import {
   InviteType,
   ReactionType,
   APIAuthorizingIntegrationOwnersMap,
+  MessageReferenceType,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -2185,6 +2186,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public webhookId: Snowflake | null;
   public flags: Readonly<MessageFlagsBitField>;
   public reference: MessageReference | null;
+  public messageSnapshots: Collection<Snowflake, MessageSnapshot>;
   public awaitMessageComponent<ComponentType extends MessageComponentType>(
     options?: AwaitMessageCollectorOptionsParams<ComponentType, InGuild>,
   ): Promise<MappedInteractionTypes<InGuild>[ComponentType]>;
@@ -6442,6 +6444,26 @@ export interface MessageMentionOptions {
 
 export type MessageMentionTypes = 'roles' | 'users' | 'everyone';
 
+export interface MessageSnapshot
+  extends Partialize<
+    Message,
+    null,
+    Exclude<
+      keyof Message,
+      | 'attachments'
+      | 'client'
+      | 'components'
+      | 'content'
+      | 'createdTimestamp'
+      | 'editedTimestamp'
+      | 'embeds'
+      | 'flags'
+      | 'mentions'
+      | 'stickers'
+      | 'type'
+    >
+  > {}
+
 export interface BaseMessageOptions {
   content?: string;
   embeds?: readonly (JSONEncodable<APIEmbed> | APIEmbed)[];
@@ -6497,6 +6519,7 @@ export interface MessageReference {
   channelId: Snowflake;
   guildId: Snowflake | undefined;
   messageId: Snowflake | undefined;
+  type: MessageReferenceType;
 }
 
 export type MessageResolvable = Message | Snowflake;

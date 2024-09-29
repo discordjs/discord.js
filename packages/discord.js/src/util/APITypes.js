@@ -456,6 +456,11 @@
  */
 
 /**
+ * @external MessageReferenceType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/MessageReferenceType}
+ */
+
+/**
  * @external MessageType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/MessageType}
  */
