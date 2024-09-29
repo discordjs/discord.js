@@ -548,7 +548,6 @@ export type GuildCacheMessage<Cached extends CacheType> = CacheTypeReducer<
 export type BooleanCache<Cached extends CacheType> = Cached extends 'cached' ? true : false;
 
 export abstract class CommandInteraction<Cached extends CacheType = CacheType> extends BaseInteraction<Cached> {
-  public authorizingIntegrationOwners: APIAuthorizingIntegrationOwnersMap;
   public type: InteractionType.ApplicationCommand;
   public get command(): ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
   public options: Omit<
@@ -573,7 +572,6 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   public commandName: string;
   public commandType: ApplicationCommandType;
   public commandGuildId: Snowflake | null;
-  public context: InteractionContextType | null;
   public deferred: boolean;
   public ephemeral: boolean | null;
   public replied: boolean;
@@ -976,6 +974,7 @@ export abstract class BaseChannel extends Base {
   public isDMBased(): this is PartialGroupDMChannel | DMChannel | PartialDMChannel;
   public isVoiceBased(): this is VoiceBasedChannel;
   public isThreadOnly(): this is ThreadOnlyChannel;
+  public isSendable(): this is SendableChannels;
   public toString(): ChannelMention | UserMention;
 }
 
@@ -1925,6 +1924,7 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   private readonly _cacheType: Cached;
   protected constructor(client: Client<true>, data: RawInteractionData);
   public applicationId: Snowflake;
+  public authorizingIntegrationOwners: APIAuthorizingIntegrationOwnersMap;
   public get channel(): CacheTypeReducer<
     Cached,
     GuildTextBasedChannel | null,
@@ -1933,6 +1933,7 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
     TextBasedChannel | null
   >;
   public channelId: Snowflake | null;
+  public context: InteractionContextType | null;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public get guild(): CacheTypeReducer<Cached, Guild, null>;
@@ -3869,6 +3870,7 @@ export const Constants: {
   SweeperKeys: SweeperKey[];
   NonSystemMessageTypes: NonSystemMessageType[];
   TextBasedChannelTypes: TextBasedChannelTypes[];
+  SendableChannels: SendableChannelTypes[];
   GuildTextBasedChannelTypes: GuildTextBasedChannelTypes[];
   ThreadChannelTypes: ThreadChannelType[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
@@ -6291,7 +6293,7 @@ export interface InteractionDeferReplyOptions {
 
 export interface InteractionDeferUpdateOptions extends Omit<InteractionDeferReplyOptions, 'ephemeral'> {}
 
-export interface InteractionReplyOptions extends BaseMessageOptions {
+export interface InteractionReplyOptions extends BaseMessageOptionsWithPoll {
   tts?: boolean;
   ephemeral?: boolean;
   fetchReply?: boolean;
@@ -6479,10 +6481,13 @@ export interface BaseMessageOptions {
     | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>
     | APIActionRowComponent<APIMessageActionRowComponent>
   )[];
+}
+
+export interface BaseMessageOptionsWithPoll extends BaseMessageOptions {
   poll?: PollData;
 }
 
-export interface MessageCreateOptions extends BaseMessageOptions {
+export interface MessageCreateOptions extends BaseMessageOptionsWithPoll {
   tts?: boolean;
   nonce?: string | number;
   enforceNonce?: boolean;
@@ -6495,7 +6500,7 @@ export interface MessageCreateOptions extends BaseMessageOptions {
 }
 
 export interface GuildForumThreadMessageCreateOptions
-  extends Omit<BaseMessageOptions, 'poll'>,
+  extends BaseMessageOptions,
     Pick<MessageCreateOptions, 'flags' | 'stickers'> {}
 
 export interface MessageEditAttachmentData {
@@ -6902,11 +6907,15 @@ export type Channel =
 
 export type TextBasedChannel = Exclude<Extract<Channel, { type: TextChannelType }>, ForumChannel | MediaChannel>;
 
+export type SendableChannels = Extract<Channel, { send: (...args: any[]) => any }>;
+
 export type TextBasedChannels = TextBasedChannel;
 
 export type TextBasedChannelTypes = TextBasedChannel['type'];
 
-export type GuildTextBasedChannelTypes = Exclude<TextBasedChannelTypes, ChannelType.DM>;
+export type GuildTextBasedChannelTypes = Exclude<TextBasedChannelTypes, ChannelType.DM | ChannelType.GroupDM>;
+
+export type SendableChannelTypes = SendableChannels['type'];
 
 export type VoiceBasedChannel = Extract<Channel, { bitrate: number }>;
 
@@ -6998,7 +7007,9 @@ export interface WebhookMessageEditOptions extends Omit<MessageEditOptions, 'fla
   threadId?: Snowflake;
 }
 
-export interface InteractionEditReplyOptions extends WebhookMessageEditOptions {
+export interface InteractionEditReplyOptions
+  extends WebhookMessageEditOptions,
+    Pick<BaseMessageOptionsWithPoll, 'poll'> {
   message?: MessageResolvable | '@original';
 }
 
