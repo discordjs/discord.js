@@ -209,6 +209,7 @@ import {
   ApplicationEmoji,
   ApplicationEmojiManager,
   StickerPack,
+  GuildScheduledEventManager,
   SendableChannels,
   PollData,
 } from '.';
@@ -2618,3 +2619,6 @@ client.on('interactionCreate', interaction => {
     interaction.channel.send({ embeds: [] });
   }
 });
+
+declare const guildScheduledEventManager: GuildScheduledEventManager;
+await guildScheduledEventManager.edit(snowflake, { recurrenceRule: null });
