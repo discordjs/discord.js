@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.16.3](https://github.com/discordjs/discord.js/compare/14.16.2...14.16.3) - (2024-09-29)
+
+## Bug Fixes
+
+- **BaseInteraction:** Add missing props (#10517) ([6c77fee](https://github.com/discordjs/discord.js/commit/6c77fee41b1aabc243bff623debd157a4c7fad6a)) by @monbrey
+- `GuildChannel#guildId` not being patched to `undefined` (#10505) ([2adee06](https://github.com/discordjs/discord.js/commit/2adee06b6e92b7854ebb1c2bfd04940aab68dd10)) by @Qjuh
+
+## Typings
+
+- **MessageEditOptions:** Omit `poll` (#10509) ([665bf14](https://github.com/discordjs/discord.js/commit/665bf1486aec62e9528f5f7b5a6910ae6b5a6c9c)) by @TAEMBO
+
 # [14.16.2](https://github.com/discordjs/discord.js/compare/14.16.1...14.16.2) - (2024-09-12)
 
 ## Bug Fixes
