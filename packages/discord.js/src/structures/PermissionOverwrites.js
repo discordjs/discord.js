@@ -177,18 +177,20 @@ class PermissionOverwrites extends Base {
       throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'overwrite.id', 'GuildMemberResolvable or RoleResolvable');
     }
 
+    if (overwrite.type !== undefined && (typeof overwrite.type !== 'number' || !(overwrite.type in OverwriteType))) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'overwrite.type', 'OverwriteType', true);
+    }
+
     let type;
     if (typeof overwrite.id === 'string') {
-      if (typeof overwrite.type === 'number' && overwrite.type in OverwriteType) {
-        type = overwrite.type;
-      } else {
-        throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'overwrite.type', 'OverwriteType', true);
+      if (overwrite.type === undefined) {
+        throw new DiscordjsTypeError(ErrorCodes.PermissionOverwritesTypeMandatory);
       }
+      type = overwrite.type;
     } else {
       type = overwrite.id instanceof Role ? OverwriteType.Role : OverwriteType.Member;
-      // eslint-disable-next-line eqeqeq
-      if (overwrite.type != null && type !== overwrite.type) {
-        throw new DiscordjsTypeError(ErrorCodes.PermissionOverwriteTypeMismatch, OverwriteType[type]);
+      if (overwrite.type !== undefined && type !== overwrite.type) {
+        throw new DiscordjsTypeError(ErrorCodes.PermissionOverwritesTypeMismatch, OverwriteType[type]);
       }
     }
 
