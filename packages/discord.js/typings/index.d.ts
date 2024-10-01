@@ -186,6 +186,9 @@ import {
   ReactionType,
   APIAuthorizingIntegrationOwnersMap,
   MessageReferenceType,
+  GuildScheduledEventRecurrenceRuleWeekday,
+  GuildScheduledEventRecurrenceRuleMonth,
+  GuildScheduledEventRecurrenceRuleFrequency,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -1606,7 +1609,7 @@ export abstract class GuildChannel extends BaseChannel {
   public get permissionsLocked(): boolean | null;
   public get position(): number;
   public rawPosition: number;
-  public type: Exclude<ChannelType, ChannelType.DM | ChannelType.GroupDM>;
+  public type: GuildChannelTypes;
   public get viewable(): boolean;
   public clone(options?: GuildChannelCloneOptions): Promise<this>;
   public delete(reason?: string): Promise<this>;
@@ -1778,6 +1781,7 @@ export class GuildScheduledEvent<Status extends GuildScheduledEventStatus = Guil
   public entityMetadata: GuildScheduledEventEntityMetadata | null;
   public userCount: number | null;
   public creator: User | null;
+  public recurrenceRule: GuildScheduledEventRecurrenceRule | null;
   public get createdTimestamp(): number;
   public get createdAt(): Date;
   public get scheduledStartAt(): Date | null;
@@ -1814,6 +1818,26 @@ export class GuildScheduledEvent<Status extends GuildScheduledEventStatus = Guil
   public isCanceled(): this is GuildScheduledEvent<GuildScheduledEventStatus.Canceled>;
   public isCompleted(): this is GuildScheduledEvent<GuildScheduledEventStatus.Completed>;
   public isScheduled(): this is GuildScheduledEvent<GuildScheduledEventStatus.Scheduled>;
+}
+
+export interface GuildScheduledEventRecurrenceRule {
+  startTimestamp: number;
+  get startAt(): Date;
+  endTimestamp: number | null;
+  get endAt(): Date | null;
+  frequency: GuildScheduledEventRecurrenceRuleFrequency;
+  interval: number;
+  byWeekday: readonly GuildScheduledEventRecurrenceRuleWeekday[] | null;
+  byNWeekday: readonly GuildScheduledEventRecurrenceRuleNWeekday[] | null;
+  byMonth: readonly GuildScheduledEventRecurrenceRuleMonth[] | null;
+  byMonthDay: readonly number[] | null;
+  byYearDay: readonly number[] | null;
+  count: number | null;
+}
+
+export interface GuildScheduledEventRecurrenceRuleNWeekday {
+  n: number;
+  day: GuildScheduledEventRecurrenceRuleWeekday;
 }
 
 export class GuildTemplate extends Base {
@@ -2086,7 +2110,13 @@ export interface MessageCall {
   participants: readonly Snowflake[];
 }
 
-export type MessageComponentType = Exclude<ComponentType, ComponentType.TextInput | ComponentType.ActionRow>;
+export type MessageComponentType =
+  | ComponentType.Button
+  | ComponentType.ChannelSelect
+  | ComponentType.MentionableSelect
+  | ComponentType.RoleSelect
+  | ComponentType.StringSelect
+  | ComponentType.UserSelect;
 
 export interface MessageCollectorOptionsParams<
   ComponentType extends MessageComponentType,
@@ -2279,11 +2309,11 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public get component(): CacheTypeReducer<
     Cached,
     MessageActionRowComponent,
-    Exclude<APIMessageComponent, APIActionRowComponent<APIMessageActionRowComponent>>,
-    MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent<APIMessageActionRowComponent>>,
-    MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent<APIMessageActionRowComponent>>
+    APIMessageActionRowComponent,
+    MessageActionRowComponent | APIMessageActionRowComponent,
+    MessageActionRowComponent | APIMessageActionRowComponent
   >;
-  public componentType: Exclude<ComponentType, ComponentType.ActionRow | ComponentType.TextInput>;
+  public componentType: MessageComponentType;
   public customId: string;
   public channelId: Snowflake;
   public deferred: boolean;
@@ -2431,13 +2461,13 @@ export class MessagePayload {
 
 export class MessageReaction {
   private constructor(client: Client<true>, data: RawMessageReactionData, message: Message);
-  private _emoji: GuildEmoji | ReactionEmoji;
+  private _emoji: GuildEmoji | ReactionEmoji | ApplicationEmoji;
 
   public burstColors: string[] | null;
   public readonly client: Client<true>;
   public count: number;
   public countDetails: ReactionCountDetailsData;
-  public get emoji(): GuildEmoji | ReactionEmoji;
+  public get emoji(): GuildEmoji | ReactionEmoji | ApplicationEmoji;
   public me: boolean;
   public meBurst: boolean;
   public message: Message | PartialMessage;
@@ -5678,7 +5708,7 @@ export type EmojiIdentifierResolvable =
   | `<${'' | 'a'}:${string}:${Snowflake}>`
   | string;
 
-export type EmojiResolvable = Snowflake | GuildEmoji | ReactionEmoji;
+export type EmojiResolvable = Snowflake | GuildEmoji | ReactionEmoji | ApplicationEmoji;
 
 export interface FetchApplicationCommandOptions extends BaseFetchOptions {
   guildId?: Snowflake;
@@ -6166,14 +6196,29 @@ export interface GuildScheduledEventCreateOptions {
   entityMetadata?: GuildScheduledEventEntityMetadataOptions;
   image?: BufferResolvable | Base64Resolvable | null;
   reason?: string;
+  recurrenceRule?: GuildScheduledEventRecurrenceRuleOptions;
+}
+
+export interface GuildScheduledEventRecurrenceRuleOptions {
+  startAt: DateResolvable;
+  endAt: DateResolvable;
+  frequency: GuildScheduledEventRecurrenceRuleFrequency;
+  interval: number;
+  byWeekday: readonly GuildScheduledEventRecurrenceRuleWeekday[];
+  byNWeekday: readonly GuildScheduledEventRecurrenceRuleNWeekday[];
+  byMonth: readonly GuildScheduledEventRecurrenceRuleMonth[];
+  byMonthDay: readonly number[];
+  byYearDay: readonly number[];
+  count: number;
 }
 
 export interface GuildScheduledEventEditOptions<
   Status extends GuildScheduledEventStatus,
   AcceptableStatus extends GuildScheduledEventSetStatusArg<Status>,
-> extends Omit<Partial<GuildScheduledEventCreateOptions>, 'channel'> {
+> extends Omit<Partial<GuildScheduledEventCreateOptions>, 'channel' | 'recurrenceRule'> {
   channel?: GuildVoiceChannelResolvable | null;
   status?: AcceptableStatus;
+  recurrenceRule?: GuildScheduledEventRecurrenceRuleOptions | null;
 }
 
 export interface GuildScheduledEventEntityMetadata {

@@ -670,27 +670,21 @@ importers:
 
   packages/builders:
     dependencies:
-      '@discordjs/formatters':
-        specifier: workspace:^
-        version: link:../formatters
       '@discordjs/util':
         specifier: workspace:^
         version: link:../util
-      '@sapphire/shapeshift':
-        specifier: ^4.0.0
-        version: 4.0.0
       discord-api-types:
-        specifier: 0.37.100
-        version: 0.37.100
-      fast-deep-equal:
-        specifier: ^3.1.3
-        version: 3.1.3
+        specifier: ^0.37.101
+        version: 0.37.101
       ts-mixer:
         specifier: ^6.0.4
         version: 6.0.4
       tslib:
         specifier: ^2.6.3
         version: 2.6.3
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -702,11 +696,11 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0
       '@types/node':
-        specifier: ^16.18.105
-        version: 16.18.105
+        specifier: ^18.19.44
+        version: 18.19.45
       '@vitest/coverage-v8':
         specifier: ^2.0.5
-        version: 2.0.5(vitest@2.0.5(@edge-runtime/vm@3.2.0)(@types/node@16.18.105)(happy-dom@14.12.3)(terser@5.31.6))
+        version: 2.0.5(vitest@2.0.5(@edge-runtime/vm@3.2.0)(@types/node@18.19.45)(happy-dom@14.12.3)(terser@5.31.6))
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -727,7 +721,7 @@ importers:
         version: 3.3.3
       tsup:
         specifier: ^8.2.4
-        version: 8.2.4(@microsoft/api-extractor@7.43.0(@types/node@16.18.105))(jiti@1.21.6)(postcss@8.4.41)(typescript@5.5.4)(yaml@2.5.0)
+        version: 8.2.4(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.41)(typescript@5.5.4)(yaml@2.5.0)
       turbo:
         specifier: ^2.0.14
         version: 2.0.14
@@ -736,7 +730,7 @@ importers:
         version: 5.5.4
       vitest:
         specifier: ^2.0.5
-        version: 2.0.5(@edge-runtime/vm@3.2.0)(@types/node@16.18.105)(happy-dom@14.12.3)(terser@5.31.6)
+        version: 2.0.5(@edge-runtime/vm@3.2.0)(@types/node@18.19.45)(happy-dom@14.12.3)(terser@5.31.6)
 
   packages/collection:
     devDependencies:
@@ -804,8 +798,8 @@ importers:
         specifier: ^2.4.6
         version: 2.4.6
       discord-api-types:
-        specifier: 0.37.100
-        version: 0.37.100
+        specifier: ^0.37.101
+        version: 0.37.101
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -941,8 +935,8 @@ importers:
         specifier: 3.5.3
         version: 3.5.3
       discord-api-types:
-        specifier: 0.37.100
-        version: 0.37.100
+        specifier: ^0.37.101
+        version: 0.37.101
       fast-deep-equal:
         specifier: 3.1.3
         version: 3.1.3
@@ -1060,8 +1054,8 @@ importers:
   packages/formatters:
     dependencies:
       discord-api-types:
-        specifier: 0.37.100
-        version: 0.37.100
+        specifier: ^0.37.101
+        version: 0.37.101
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1133,8 +1127,8 @@ importers:
         specifier: workspace:^
         version: link:../ws
       discord-api-types:
-        specifier: 0.37.100
-        version: 0.37.100
+        specifier: ^0.37.101
+        version: 0.37.101
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1307,8 +1301,8 @@ importers:
         specifier: ^2.4.6
         version: 2.4.6
       discord-api-types:
-        specifier: 0.37.100
-        version: 0.37.100
+        specifier: ^0.37.101
+        version: 0.37.101
       magic-bytes.js:
         specifier: ^1.10.0
         version: 1.10.0
@@ -1461,25 +1455,25 @@ importers:
         version: 4.1.0
       '@storybook/addon-essentials':
         specifier: ^8.1.5
-        version: 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+        version: 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
       '@storybook/addon-interactions':
         specifier: ^8.1.5
-        version: 8.2.9(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@18.19.45))(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))(vitest@2.0.5(@edge-runtime/vm@3.2.0)(@types/node@18.19.45)(happy-dom@14.12.3)(terser@5.31.6))
+        version: 8.2.9(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@18.19.45)(ts-node@10.9.2(@types/node@18.19.45)(typescript@5.5.4)))(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))(vitest@2.0.5(@edge-runtime/vm@3.2.0)(@types/node@18.19.45)(happy-dom@14.12.3)(terser@5.31.6))
       '@storybook/addon-links':
         specifier: ^8.1.5
-        version: 8.2.9(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+        version: 8.2.9(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
       '@storybook/addon-styling':
         specifier: ^1.3.7
         version: 1.3.7(@types/react-dom@18.3.0)(@types/react@18.3.4)(encoding@0.1.13)(postcss@8.4.41)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.4)
       '@storybook/blocks':
         specifier: ^8.1.5
-        version: 8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+        version: 8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
       '@storybook/react':
         specifier: ^8.1.5
-        version: 8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))(typescript@5.5.4)
+        version: 8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))(typescript@5.5.4)
       '@storybook/react-vite':
         specifier: ^8.1.5
-        version: 8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.21.0)(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))(typescript@5.5.4)(vite@5.4.2(@types/node@18.19.45)(terser@5.31.6))
+        version: 8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.21.0)(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))(typescript@5.5.4)(vite@5.4.2(@types/node@18.19.45)(terser@5.31.6))
       '@storybook/testing-library':
         specifier: ^0.2.2
         version: 0.2.2
@@ -1527,7 +1521,7 @@ importers:
         version: 15.8.1
       storybook:
         specifier: ^8.1.5
-        version: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+        version: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       turbo:
         specifier: ^2.0.14
         version: 2.0.14
@@ -1604,8 +1598,8 @@ importers:
         specifier: ^8.5.12
         version: 8.5.12
       discord-api-types:
-        specifier: 0.37.100
-        version: 0.37.100
+        specifier: ^0.37.101
+        version: 0.37.101
       prism-media:
         specifier: ^1.3.5
         version: 1.3.5
@@ -1701,8 +1695,8 @@ importers:
         specifier: ^2.4.6
         version: 2.4.6
       discord-api-types:
-        specifier: 0.37.100
-        version: 0.37.100
+        specifier: ^0.37.101
+        version: 0.37.101
       tslib:
         specifier: ^2.6.3
         version: 2.6.3
@@ -7632,8 +7626,8 @@ packages:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
     engines: {node: '>=8'}
 
-  discord-api-types@0.37.100:
-    resolution: {integrity: sha512-a8zvUI0GYYwDtScfRd/TtaNBDTXwP5DiDVX7K5OmE+DRT57gBqKnwtOC5Ol8z0mRW8KQfETIgiB8U0YZ9NXiCA==}
+  discord-api-types@0.37.101:
+    resolution: {integrity: sha512-2wizd94t7G3A8U5Phr3AiuL4gSvhqistDwWnlk1VLTit8BI1jWUncFqFQNdPbHqS3661+Nx/iEyIwtVjPuBP3w==}
 
   discord-api-types@0.37.83:
     resolution: {integrity: sha512-urGGYeWtWNYMKnYlZnOnDHm8fVRffQs3U0SpE8RHeiuLKb/u92APS8HoQnPTFbnXmY1vVnXjXO4dOxcAn3J+DA==}
@@ -18183,76 +18177,76 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 3.0.1
 
-  '@storybook/addon-actions@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@storybook/addon-actions@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
       '@storybook/global': 5.0.0
       '@types/uuid': 9.0.8
       dequal: 2.0.3
       polished: 4.3.1
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       uuid: 9.0.1
 
-  '@storybook/addon-backgrounds@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@storybook/addon-backgrounds@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
       '@storybook/global': 5.0.0
       memoizerific: 1.11.3
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       ts-dedent: 2.2.0
 
-  '@storybook/addon-controls@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@storybook/addon-controls@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
       dequal: 2.0.3
       lodash: 4.17.21
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       ts-dedent: 2.2.0
 
-  '@storybook/addon-docs@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@storybook/addon-docs@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
       '@babel/core': 7.25.2
       '@mdx-js/react': 3.0.1(@types/react@18.3.4)(react@18.3.1)
-      '@storybook/blocks': 8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
-      '@storybook/csf-plugin': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      '@storybook/blocks': 8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      '@storybook/csf-plugin': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
       '@storybook/global': 5.0.0
-      '@storybook/react-dom-shim': 8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      '@storybook/react-dom-shim': 8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
       '@types/react': 18.3.4
       fs-extra: 11.2.0
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       rehype-external-links: 3.0.0
       rehype-slug: 6.0.0
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       ts-dedent: 2.2.0
     transitivePeerDependencies:
       - supports-color
 
-  '@storybook/addon-essentials@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@storybook/addon-essentials@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
-      '@storybook/addon-actions': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
-      '@storybook/addon-backgrounds': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
-      '@storybook/addon-controls': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
-      '@storybook/addon-docs': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
-      '@storybook/addon-highlight': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
-      '@storybook/addon-measure': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
-      '@storybook/addon-outline': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
-      '@storybook/addon-toolbars': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
-      '@storybook/addon-viewport': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      '@storybook/addon-actions': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      '@storybook/addon-backgrounds': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      '@storybook/addon-controls': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      '@storybook/addon-docs': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      '@storybook/addon-highlight': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      '@storybook/addon-measure': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      '@storybook/addon-outline': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      '@storybook/addon-toolbars': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      '@storybook/addon-viewport': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       ts-dedent: 2.2.0
     transitivePeerDependencies:
       - supports-color
 
-  '@storybook/addon-highlight@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@storybook/addon-highlight@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
       '@storybook/global': 5.0.0
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
 
-  '@storybook/addon-interactions@8.2.9(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@18.19.45))(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))(vitest@2.0.5(@edge-runtime/vm@3.2.0)(@types/node@18.19.45)(happy-dom@14.12.3)(terser@5.31.6))':
+  '@storybook/addon-interactions@8.2.9(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@18.19.45)(ts-node@10.9.2(@types/node@18.19.45)(typescript@5.5.4)))(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))(vitest@2.0.5(@edge-runtime/vm@3.2.0)(@types/node@18.19.45)(happy-dom@14.12.3)(terser@5.31.6))':
     dependencies:
       '@storybook/global': 5.0.0
-      '@storybook/instrumenter': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
-      '@storybook/test': 8.2.9(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@18.19.45))(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))(vitest@2.0.5(@edge-runtime/vm@3.2.0)(@types/node@18.19.45)(happy-dom@14.12.3)(terser@5.31.6))
+      '@storybook/instrumenter': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      '@storybook/test': 8.2.9(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@18.19.45)(ts-node@10.9.2(@types/node@18.19.45)(typescript@5.5.4)))(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))(vitest@2.0.5(@edge-runtime/vm@3.2.0)(@types/node@18.19.45)(happy-dom@14.12.3)(terser@5.31.6))
       polished: 4.3.1
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       ts-dedent: 2.2.0
     transitivePeerDependencies:
       - '@jest/globals'
@@ -18261,25 +18255,25 @@ snapshots:
       - jest
       - vitest
 
-  '@storybook/addon-links@8.2.9(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@storybook/addon-links@8.2.9(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
       '@storybook/csf': 0.1.11
       '@storybook/global': 5.0.0
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       ts-dedent: 2.2.0
     optionalDependencies:
       react: 18.3.1
 
-  '@storybook/addon-measure@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@storybook/addon-measure@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
       '@storybook/global': 5.0.0
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       tiny-invariant: 1.3.3
 
-  '@storybook/addon-outline@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@storybook/addon-outline@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
       '@storybook/global': 5.0.0
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       ts-dedent: 2.2.0
 
   '@storybook/addon-styling@1.3.7(@types/react-dom@18.3.0)(@types/react@18.3.4)(encoding@0.1.13)(postcss@8.4.41)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.4)':
@@ -18318,14 +18312,14 @@ snapshots:
       - supports-color
       - typescript
 
-  '@storybook/addon-toolbars@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@storybook/addon-toolbars@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
 
-  '@storybook/addon-viewport@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@storybook/addon-viewport@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
       memoizerific: 1.11.3
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
 
   '@storybook/api@7.6.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -18335,7 +18329,7 @@ snapshots:
       - react
       - react-dom
 
-  '@storybook/blocks@8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@storybook/blocks@8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
       '@storybook/csf': 0.1.11
       '@storybook/global': 5.0.0
@@ -18348,7 +18342,7 @@ snapshots:
       memoizerific: 1.11.3
       polished: 4.3.1
       react-colorful: 5.6.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       telejson: 7.2.0
       ts-dedent: 2.2.0
       util-deprecate: 1.0.2
@@ -18356,9 +18350,9 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@storybook/builder-vite@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))(typescript@5.5.4)(vite@5.4.2(@types/node@18.19.45)(terser@5.31.6))':
+  '@storybook/builder-vite@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))(typescript@5.5.4)(vite@5.4.2(@types/node@18.19.45)(terser@5.31.6))':
     dependencies:
-      '@storybook/csf-plugin': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      '@storybook/csf-plugin': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
       '@types/find-cache-dir': 3.2.1
       browser-assert: 1.2.1
       es-module-lexer: 1.5.4
@@ -18366,7 +18360,7 @@ snapshots:
       find-cache-dir: 3.3.2
       fs-extra: 11.2.0
       magic-string: 0.30.11
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       ts-dedent: 2.2.0
       vite: 5.4.2(@types/node@18.19.45)(terser@5.31.6)
     optionalDependencies:
@@ -18410,7 +18404,7 @@ snapshots:
       '@types/cross-spawn': 6.0.6
       cross-spawn: 7.0.3
       globby: 14.0.2
-      jscodeshift: 0.15.2(@babel/preset-env@7.25.4)
+      jscodeshift: 0.15.2(@babel/preset-env@7.25.4(@babel/core@7.25.2))
       lodash: 4.17.21
       prettier: 3.3.3
       recast: 0.23.9
@@ -18438,9 +18432,9 @@ snapshots:
       - '@types/react'
       - '@types/react-dom'
 
-  '@storybook/components@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@storybook/components@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
 
   '@storybook/core-common@7.6.20(encoding@0.1.13)':
     dependencies:
@@ -18497,9 +18491,9 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@storybook/csf-plugin@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@storybook/csf-plugin@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       unplugin: 1.12.2
 
   '@storybook/csf@0.1.11':
@@ -18513,11 +18507,11 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@storybook/instrumenter@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@storybook/instrumenter@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
       '@storybook/global': 5.0.0
       '@vitest/utils': 1.6.0
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       util: 0.12.5
 
   '@storybook/manager-api@7.6.17(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
@@ -18560,9 +18554,9 @@ snapshots:
       - react
       - react-dom
 
-  '@storybook/manager-api@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@storybook/manager-api@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
 
   '@storybook/node-logger@7.6.20': {}
 
@@ -18583,29 +18577,29 @@ snapshots:
       ts-dedent: 2.2.0
       util-deprecate: 1.0.2
 
-  '@storybook/preview-api@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@storybook/preview-api@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
 
-  '@storybook/react-dom-shim@8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@storybook/react-dom-shim@8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
 
-  '@storybook/react-vite@8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.21.0)(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))(typescript@5.5.4)(vite@5.4.2(@types/node@18.19.45)(terser@5.31.6))':
+  '@storybook/react-vite@8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(rollup@4.21.0)(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))(typescript@5.5.4)(vite@5.4.2(@types/node@18.19.45)(terser@5.31.6))':
     dependencies:
       '@joshwooding/vite-plugin-react-docgen-typescript': 0.3.1(typescript@5.5.4)(vite@5.4.2(@types/node@18.19.45)(terser@5.31.6))
       '@rollup/pluginutils': 5.1.0(rollup@4.21.0)
-      '@storybook/builder-vite': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))(typescript@5.5.4)(vite@5.4.2(@types/node@18.19.45)(terser@5.31.6))
-      '@storybook/react': 8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))(typescript@5.5.4)
+      '@storybook/builder-vite': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))(typescript@5.5.4)(vite@5.4.2(@types/node@18.19.45)(terser@5.31.6))
+      '@storybook/react': 8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))(typescript@5.5.4)
       find-up: 5.0.0
       magic-string: 0.30.11
       react: 18.3.1
       react-docgen: 7.0.3
       react-dom: 18.3.1(react@18.3.1)
       resolve: 1.22.8
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       tsconfig-paths: 4.2.0
       vite: 5.4.2(@types/node@18.19.45)(terser@5.31.6)
     transitivePeerDependencies:
@@ -18615,14 +18609,14 @@ snapshots:
       - typescript
       - vite-plugin-glimmerx
 
-  '@storybook/react@8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))(typescript@5.5.4)':
+  '@storybook/react@8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))(typescript@5.5.4)':
     dependencies:
-      '@storybook/components': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      '@storybook/components': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
       '@storybook/global': 5.0.0
-      '@storybook/manager-api': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
-      '@storybook/preview-api': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
-      '@storybook/react-dom-shim': 8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
-      '@storybook/theming': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      '@storybook/manager-api': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      '@storybook/preview-api': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      '@storybook/react-dom-shim': 8.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      '@storybook/theming': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
       '@types/escodegen': 0.0.6
       '@types/estree': 0.0.51
       '@types/node': 18.19.45
@@ -18637,7 +18631,7 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
       react-element-to-jsx-string: 15.0.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       semver: 7.5.4
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       util-deprecate: 1.0.2
@@ -18656,16 +18650,16 @@ snapshots:
       memoizerific: 1.11.3
       qs: 6.13.0
 
-  '@storybook/test@8.2.9(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@18.19.45))(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))(vitest@2.0.5(@edge-runtime/vm@3.2.0)(@types/node@18.19.45)(happy-dom@14.12.3)(terser@5.31.6))':
+  '@storybook/test@8.2.9(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@18.19.45)(ts-node@10.9.2(@types/node@18.19.45)(typescript@5.5.4)))(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))(vitest@2.0.5(@edge-runtime/vm@3.2.0)(@types/node@18.19.45)(happy-dom@14.12.3)(terser@5.31.6))':
     dependencies:
       '@storybook/csf': 0.1.11
-      '@storybook/instrumenter': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))
+      '@storybook/instrumenter': 8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))
       '@testing-library/dom': 10.1.0
-      '@testing-library/jest-dom': 6.4.5(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@18.19.45))(vitest@2.0.5(@edge-runtime/vm@3.2.0)(@types/node@18.19.45)(happy-dom@14.12.3)(terser@5.31.6))
+      '@testing-library/jest-dom': 6.4.5(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@18.19.45)(ts-node@10.9.2(@types/node@18.19.45)(typescript@5.5.4)))(vitest@2.0.5(@edge-runtime/vm@3.2.0)(@types/node@18.19.45)(happy-dom@14.12.3)(terser@5.31.6))
       '@testing-library/user-event': 14.5.2(@testing-library/dom@10.1.0)
       '@vitest/expect': 1.6.0
       '@vitest/spy': 1.6.0
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
       util: 0.12.5
     transitivePeerDependencies:
       - '@jest/globals'
@@ -18698,9 +18692,9 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@storybook/theming@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
+  '@storybook/theming@8.2.9(storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4))':
     dependencies:
-      storybook: 8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4)
+      storybook: 8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4)
 
   '@storybook/types@7.6.17':
     dependencies:
@@ -18772,7 +18766,7 @@ snapshots:
       lz-string: 1.5.0
       pretty-format: 27.5.1
 
-  '@testing-library/jest-dom@6.4.5(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@18.19.45))(vitest@2.0.5(@edge-runtime/vm@3.2.0)(@types/node@18.19.45)(happy-dom@14.12.3)(terser@5.31.6))':
+  '@testing-library/jest-dom@6.4.5(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@18.19.45)(ts-node@10.9.2(@types/node@18.19.45)(typescript@5.5.4)))(vitest@2.0.5(@edge-runtime/vm@3.2.0)(@types/node@18.19.45)(happy-dom@14.12.3)(terser@5.31.6))':
     dependencies:
       '@adobe/css-tools': 4.4.0
       '@babel/runtime': 7.25.4
@@ -21486,7 +21480,7 @@ snapshots:
     dependencies:
       path-type: 4.0.0
 
-  discord-api-types@0.37.100: {}
+  discord-api-types@0.37.101: {}
 
   discord-api-types@0.37.83: {}
 
@@ -24307,7 +24301,7 @@ snapshots:
 
   jsbn@1.1.0: {}
 
-  jscodeshift@0.15.2(@babel/preset-env@7.25.4):
+  jscodeshift@0.15.2(@babel/preset-env@7.25.4(@babel/core@7.25.2)):
     dependencies:
       '@babel/core': 7.25.2
       '@babel/parser': 7.25.4
@@ -27818,7 +27812,7 @@ snapshots:
 
   store2@2.14.3: {}
 
-  storybook@8.2.9(@babel/preset-env@7.25.4)(bufferutil@4.0.8)(utf-8-validate@6.0.4):
+  storybook@8.2.9(@babel/preset-env@7.25.4(@babel/core@7.25.2))(bufferutil@4.0.8)(utf-8-validate@6.0.4):
     dependencies:
       '@babel/core': 7.25.2
       '@babel/types': 7.25.4
@@ -27838,7 +27832,7 @@ snapshots:
       fs-extra: 11.2.0
       giget: 1.2.3
       globby: 14.0.2
-      jscodeshift: 0.15.2(@babel/preset-env@7.25.4)
+      jscodeshift: 0.15.2(@babel/preset-env@7.25.4(@babel/core@7.25.2))
       leven: 3.1.0
       ora: 5.4.1
       prettier: 3.3.3

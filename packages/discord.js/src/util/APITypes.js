@@ -101,6 +101,11 @@
  */
 
 /**
+ * @external APIGuildScheduledEventRecurrenceRule
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIGuildScheduledEventRecurrenceRule}
+ */
+
+/**
  * @external APIInteraction
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIInteraction}
  */
@@ -388,6 +393,21 @@
 /**
  * @external GuildScheduledEventPrivacyLevel
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildScheduledEventPrivacyLevel}
+ */
+
+/**
+ * @external GuildScheduledEventRecurrenceRuleFrequency
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildScheduledEventRecurrenceRuleFrequency}
+ */
+
+/**
+ * @external GuildScheduledEventRecurrenceRuleMonth
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildScheduledEventRecurrenceRuleMonth}
+ */
+
+/**
+ * @external GuildScheduledEventRecurrenceRuleWeekday
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildScheduledEventRecurrenceRuleWeekday}
  */
 
 /**
