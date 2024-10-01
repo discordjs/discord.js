@@ -1607,7 +1607,7 @@ export abstract class GuildChannel extends BaseChannel {
   public get permissionsLocked(): boolean | null;
   public get position(): number;
   public rawPosition: number;
-  public type: Exclude<ChannelType, ChannelType.DM | ChannelType.GroupDM>;
+  public type: GuildChannelTypes;
   public get viewable(): boolean;
   public clone(options?: GuildChannelCloneOptions): Promise<this>;
   public delete(reason?: string): Promise<this>;
@@ -2085,7 +2085,13 @@ export interface MessageCall {
   participants: readonly Snowflake[];
 }
 
-export type MessageComponentType = Exclude<ComponentType, ComponentType.TextInput | ComponentType.ActionRow>;
+export type MessageComponentType =
+  | ComponentType.Button
+  | ComponentType.ChannelSelect
+  | ComponentType.MentionableSelect
+  | ComponentType.RoleSelect
+  | ComponentType.StringSelect
+  | ComponentType.UserSelect;
 
 export interface MessageCollectorOptionsParams<
   ComponentType extends MessageComponentType,
@@ -2277,11 +2283,11 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public get component(): CacheTypeReducer<
     Cached,
     MessageActionRowComponent,
-    Exclude<APIMessageComponent, APIActionRowComponent<APIMessageActionRowComponent>>,
-    MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent<APIMessageActionRowComponent>>,
-    MessageActionRowComponent | Exclude<APIMessageComponent, APIActionRowComponent<APIMessageActionRowComponent>>
+    APIMessageActionRowComponent,
+    MessageActionRowComponent | APIMessageActionRowComponent,
+    MessageActionRowComponent | APIMessageActionRowComponent
   >;
-  public componentType: Exclude<ComponentType, ComponentType.ActionRow | ComponentType.TextInput>;
+  public componentType: MessageComponentType;
   public customId: string;
   public channelId: Snowflake;
   public deferred: boolean;

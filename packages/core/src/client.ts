@@ -196,7 +196,6 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 		this.api = new API(rest);
 
 		this.gateway.on(WebSocketShardEvents.Dispatch, (dispatch, shardId) => {
-			// @ts-expect-error event props can't be resolved properly, but they are correct
 			this.emit(dispatch.t, this.toEventProps(dispatch.d, shardId));
 		});
 	}
