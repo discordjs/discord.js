@@ -1,17 +1,35 @@
 name: 'PR Triage'
 on:
   pull_request_target:
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
 jobs:
-  pr-triage:
-    name: PR Triage
+  label:
+    name: Label
+    if: github.event.action != 'edited'
     runs-on: ubuntu-latest
     steps:
-      - name: Automatically label PR
-        uses: actions/labeler@v4
+      - name: Label pull request
+        uses: actions/labeler@v5
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
           sync-labels: true
+  validate-title:
+    name: Validate title
+    if: github.event.action != 'synchronize'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate pull request title
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          REGEX="^(revert: )?(feat|fix|docs|style|refactor|perf|test|build|ci|chore|types)(\\(.+\\))?!?: .{1,72}$"
 
-      - name: Automatically assign reviewers
-        if: github.event.action == 'opened'
-        uses: kentaro-m/auto-assign-action@v1.2.3
+          echo "Title: \"$TITLE\""
+
+          if [[ ! "$TITLE" =~ $REGEX ]]; then
+            exit 1
+          fi

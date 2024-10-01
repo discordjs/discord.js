@@ -1,2 +1,2 @@
 export * from './generateIndex.js';
-export * from './createPackage.js';
+export * from './generateSplitDocumentation.js';

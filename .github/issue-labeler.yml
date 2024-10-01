@@ -1,0 +1,51 @@
+apps:guide:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nGuide\\n"
+apps:website:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nDocumentation\\n"
+packages:brokers:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nbrokers\\n"
+packages:builders:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nbuilders\\n"
+packages:collection:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\ncollection\\n"
+packages:core:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\ncore\\n"
+packages:create-discord-bot:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\ncreate-discord-bot\\n"
+packages:discord.js:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\ndiscord.js\\n"
+packages:formatters:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nformatters\\n"
+packages:next:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nnext\\n"
+packages:proxy:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nproxy\\n"
+packages:proxy-container:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nproxy-container\\n"
+packages:rest:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nrest\\n"
+packages:ui:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\ui\\n"
+packages:util:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\util\\n"
+packages:voice:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nvoice\\n"
+packages:ws:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nws\\n"

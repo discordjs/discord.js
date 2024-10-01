@@ -1,5 +1,6 @@
 /* eslint-disable id-length */
 /* eslint-disable @typescript-eslint/dot-notation */
+// @ts-nocheck
 import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
 import process from 'node:process';

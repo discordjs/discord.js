@@ -1,0 +1,48 @@
+name: 'yarn install'
+description: 'Run yarn install with node_modules linker and cache enabled'
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up swap space
+      if: runner.os == 'Linux'
+      uses: pierotofy/set-swap-space@v1.0
+      with:
+        swap-size-gb: 10
+
+    - name: Expose yarn config as "$GITHUB_OUTPUT"
+      id: yarn-config
+      shell: bash
+      env:
+        YARN_ENABLE_GLOBAL_CACHE: 'false'
+      run: |
+        echo "CACHE_FOLDER=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+        echo "CURRENT_NODE_VERSION="node-$(node --version)"" >> $GITHUB_OUTPUT
+        echo "CURRENT_BRANCH=$(echo ${GITHUB_REF#refs/heads/} | sed -r 's,/,-,g')" >> $GITHUB_OUTPUT
+        echo "NPM_GLOBAL_CACHE_FOLDER=$(npm config get cache)" >> $GITHUB_OUTPUT
+
+    - name: Restore yarn cache
+      uses: actions/cache@v4
+      id: yarn-download-cache
+      with:
+        path: ${{ steps.yarn-config.outputs.CACHE_FOLDER }}
+        key: yarn-download-cache-default-${{ hashFiles(yarn.lock, .yarnrc.yml) }}
+        restore-keys: |
+          yarn-download-cache-default-
+
+    - name: Restore global npm cache folder
+      id: npm-global-cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ steps.yarn-config.outputs.NPM_GLOBAL_CACHE_FOLDER }}
+        key: npm-global-cache-default-${{ runner.os }}-${{ steps.yarn-config.outputs.CURRENT_NODE_VERSION }}-${{ hashFiles(yarn.lock, .yarnrc.yml) }}
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        yarn install --immutable --inline-builds
+      env:
+        YARN_ENABLE_GLOBAL_CACHE: 'false'
+        YARN_ENABLE_MIRROR: 'false'
+        YARN_NM_MODE: 'hardlinks-local'
+        YARN_INSTALL_STATE_PATH: '.yarn/ci-cache/install-state.gz'
+        HUSKY: '0'

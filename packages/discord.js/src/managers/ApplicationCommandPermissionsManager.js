@@ -112,14 +112,14 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    * Options used to set permissions for one or more Application Commands in a guild
    * <warn>Omitting the `command` parameter edits the guild wide permissions
    * when the manager's `commandId` is `null`</warn>
-   * @typedef {BaseApplicationCommandPermissionsOptions} EditApplicationCommandPermissionsOptions
+   * @typedef {BaseApplicationCommandPermissionsOptions} ApplicationCommandPermissionsEditOptions
    * @property {ApplicationCommandPermissions[]} permissions The new permissions for the guild or overwrite
    * @property {string} token The bearer token to use that authorizes the permission edit
    */
 
   /**
    * Sets the permissions for the guild or a command overwrite.
-   * @param {EditApplicationCommandPermissionsOptions} options Options used to set permissions
+   * @param {ApplicationCommandPermissionsEditOptions} options Options used to set permissions
    * @returns {Promise<ApplicationCommandPermissions[]|Collection<Snowflake, ApplicationCommandPermissions[]>>}
    * @example
    * // Set a permission overwrite for a command
@@ -179,7 +179,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
 
   /**
    * Add permissions to a command.
-   * @param {EditApplicationCommandPermissionsOptions} options Options used to add permissions
+   * @param {ApplicationCommandPermissionsEditOptions} options Options used to add permissions
    * @returns {Promise<ApplicationCommandPermissions[]>}
    * @example
    * // Add a rule to block a role from using a command
@@ -210,17 +210,17 @@ class ApplicationCommandPermissionsManager extends BaseManager {
       );
     }
 
-    let existing = [];
+    let existingPermissions = [];
     try {
-      existing = await this.fetch({ guild: guildId, command: commandId });
+      existingPermissions = await this.fetch({ guild: guildId, command: commandId });
     } catch (error) {
       if (error.code !== RESTJSONErrorCodes.UnknownApplicationCommandPermissions) throw error;
     }
 
     const newPermissions = permissions.slice();
-    for (const perm of existing) {
-      if (!newPermissions.some(x => x.id === perm.id)) {
-        newPermissions.push(perm);
+    for (const existingPermission of existingPermissions) {
+      if (!newPermissions.some(newPermission => newPermission.id === existingPermission.id)) {
+        newPermissions.push(existingPermission);
       }
     }
 
@@ -356,7 +356,6 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    * @param {HasApplicationCommandPermissionsOptions} options Options used to check permissions
    * @returns {Promise<boolean>}
    * @example
-   * // Check whether a user has permission to use a command
    * guild.commands.permissions.has({ command: '123456789012345678', permissionId: '876543210123456789' })
    *  .then(console.log)
    *  .catch(console.error);
@@ -423,11 +422,6 @@ class ApplicationCommandPermissionsManager extends BaseManager {
 module.exports = ApplicationCommandPermissionsManager;
 
 /* eslint-disable max-len */
-/**
- * @external APIApplicationCommandPermissions
- * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-permissions-object-application-command-permissions-structure}
- */
-
 /**
  * Data that resolves to an id used for an application command permission
  * @typedef {UserResolvable|RoleResolvable|GuildChannelResolvable|RolePermissionConstant|ChannelPermissionConstant} ApplicationCommandPermissionIdResolvable

@@ -11,14 +11,14 @@ import {
 import { describe, test, expect } from 'vitest';
 import {
 	ActionRowBuilder,
-	ButtonBuilder,
 	createComponentBuilder,
-	SelectMenuBuilder,
+	CustomIdButtonBuilder,
+	StringSelectMenuBuilder,
 	TextInputBuilder,
 } from '../../src/index.js';
 
 describe('createComponentBuilder', () => {
-	test.each([ButtonBuilder, SelectMenuBuilder, TextInputBuilder])(
+	test.each([StringSelectMenuBuilder, TextInputBuilder])(
 		'passing an instance of %j should return itself',
 		(Builder) => {
 			const builder = new Builder();
@@ -42,17 +42,17 @@ describe('createComponentBuilder', () => {
 			type: ComponentType.Button,
 		};
 
-		expect(createComponentBuilder(button)).toBeInstanceOf(ButtonBuilder);
+		expect(createComponentBuilder(button)).toBeInstanceOf(CustomIdButtonBuilder);
 	});
 
-	test('GIVEN a select menu component THEN returns a SelectMenuBuilder', () => {
+	test('GIVEN a select menu component THEN returns a StringSelectMenuBuilder', () => {
 		const selectMenu: APISelectMenuComponent = {
 			custom_id: 'abc',
 			options: [],
-			type: ComponentType.SelectMenu,
+			type: ComponentType.StringSelect,
 		};
 
-		expect(createComponentBuilder(selectMenu)).toBeInstanceOf(SelectMenuBuilder);
+		expect(createComponentBuilder(selectMenu)).toBeInstanceOf(StringSelectMenuBuilder);
 	});
 
 	test('GIVEN a text input component THEN returns a TextInputBuilder', () => {

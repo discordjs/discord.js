@@ -1,19 +1,35 @@
 {
-	"eslint.workingDirectories": [{ "pattern": "./apps/*" }, { "pattern": "./packages/*" }],
-	"eslint.validate": ["javascript", "javascriptreact", "astro", "typescript", "typescriptreact"],
-	"prettier.documentSelectors": ["**/*.astro"],
+	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+	"eslint.experimental.useFlatConfig": true,
+	"eslint.workingDirectories": [
+		{ "directory": "${workspaceFolder}" },
+		{ "pattern": "./apps/*/" },
+		{ "pattern": "./packages/*/" }
+	],
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
-		"source.fixAll": true,
-		"source.organizeImports": false
+		"source.organizeImports": "never",
+		"source.fixAll.eslint": "explicit",
+		"source.fixAll": "explicit"
 	},
 	"editor.trimAutoWhitespace": false,
 	"files.associations": {
-		"*.mdx": "markdown"
+		"api-extractor.json": "jsonc",
+		"api-extractor-docs.json": "jsonc",
+		"tsconfig.json": "jsonc",
+		"tsconfig.eslint.json": "jsonc",
+		"tsconfig.docs.json": "jsonc"
 	},
 	"files.insertFinalNewline": true,
 	"files.eol": "\n",
-	"npm.packageManager": "yarn",
-	"typescript.tsdk": "node_modules/typescript/lib"
+	"npm.packageManager": "pnpm",
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"typescript.enablePromptUseWorkspaceTsdk": true,
+	"unocss.disable": true,
+	"deno.enable": false,
+	"deno.enablePaths": ["./packages/create-discord-bot/template/Deno"],
+	"deno.lint": false,
+	"deno.unstable": false,
+	"deno.config": "./packages/create-discord-bot/template/Deno/deno.jsonc"
 }

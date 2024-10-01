@@ -1,8 +1,10 @@
 'use strict';
 
-const { isJSONEncodable } = require('@discordjs/builders');
+const { deprecate } = require('node:util');
+const { isJSONEncodable } = require('@discordjs/util');
 const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../../errors');
+const MessageFlagsBitField = require('../../util/MessageFlagsBitField');
 const InteractionCollector = require('../InteractionCollector');
 const InteractionResponse = require('../InteractionResponse');
 const MessagePayload = require('../MessagePayload');
@@ -34,12 +36,13 @@ class InteractionResponses {
 
   /**
    * Options for a reply to a {@link BaseInteraction}.
-   * @typedef {BaseMessageOptions} InteractionReplyOptions
+   * @typedef {BaseMessageOptionsWithPoll} InteractionReplyOptions
    * @property {boolean} [tts=false] Whether the message should be spoken aloud
    * @property {boolean} [ephemeral] Whether the reply should be ephemeral
    * @property {boolean} [fetchReply] Whether to fetch the reply
    * @property {MessageFlags} [flags] Which flags to set for the message.
-   * <info>Only `MessageFlags.SuppressEmbeds` and `MessageFlags.Ephemeral` can be set.</info>
+   * <info>Only `MessageFlags.Ephemeral`, `MessageFlags.SuppressEmbeds`, and `MessageFlags.SuppressNotifications`
+   * can be set.</info>
    */
 
   /**
@@ -100,13 +103,14 @@ class InteractionResponses {
    */
   async reply(options) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
-    this.ephemeral = options.ephemeral ?? false;
 
     let messagePayload;
     if (options instanceof MessagePayload) messagePayload = options;
     else messagePayload = MessagePayload.create(this, options);
 
     const { body: data, files } = await messagePayload.resolveBody().resolveFiles();
+
+    this.ephemeral = new MessageFlagsBitField(data.flags).has(MessageFlags.Ephemeral);
 
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
@@ -122,50 +126,57 @@ class InteractionResponses {
   }
 
   /**
-   * Fetches the initial reply to this interaction.
+   * Fetches a reply to this interaction.
    * @see Webhook#fetchMessage
+   * @param {Snowflake|'@original'} [message='@original'] The response to fetch
    * @returns {Promise<Message>}
    * @example
-   * // Fetch the reply to this interaction
+   * // Fetch the initial reply to this interaction
    * interaction.fetchReply()
    *   .then(reply => console.log(`Replied with ${reply.content}`))
    *   .catch(console.error);
    */
-  fetchReply() {
-    return this.webhook.fetchMessage('@original');
+  fetchReply(message = '@original') {
+    return this.webhook.fetchMessage(message);
   }
 
   /**
-   * Edits the initial reply to this interaction.
+   * Options that can be passed into {@link InteractionResponses#editReply}.
+   * @typedef {WebhookMessageEditOptions} InteractionEditReplyOptions
+   * @property {MessageResolvable|'@original'} [message='@original'] The response to edit
+   */
+
+  /**
+   * Edits a reply to this interaction.
    * @see Webhook#editMessage
-   * @param {string|MessagePayload|WebhookEditMessageOptions} options The new options for the message
+   * @param {string|MessagePayload|InteractionEditReplyOptions} options The new options for the message
    * @returns {Promise<Message>}
    * @example
-   * // Edit the reply to this interaction
+   * // Edit the initial reply to this interaction
    * interaction.editReply('New content')
    *   .then(console.log)
    *   .catch(console.error);
    */
   async editReply(options) {
     if (!this.deferred && !this.replied) throw new DiscordjsError(ErrorCodes.InteractionNotReplied);
-    const message = await this.webhook.editMessage('@original', options);
+    const msg = await this.webhook.editMessage(options.message ?? '@original', options);
     this.replied = true;
-    return message;
+    return msg;
   }
 
   /**
-   * Deletes the initial reply to this interaction.
+   * Deletes a reply to this interaction.
    * @see Webhook#deleteMessage
+   * @param {MessageResolvable|'@original'} [message='@original'] The response to delete
    * @returns {Promise<void>}
    * @example
-   * // Delete the reply to this interaction
+   * // Delete the initial reply to this interaction
    * interaction.deleteReply()
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async deleteReply() {
-    if (this.ephemeral) throw new DiscordjsError(ErrorCodes.InteractionEphemeralReplied);
-    await this.webhook.deleteMessage('@original');
+  async deleteReply(message = '@original') {
+    await this.webhook.deleteMessage(message);
   }
 
   /**
@@ -238,7 +249,7 @@ class InteractionResponses {
 
   /**
    * Shows a modal component
-   * @param {APIModal|ModalData|Modal} modal The modal to show
+   * @param {ModalBuilder|ModalComponentData|APIModalInteractionResponseCallbackData} modal The modal to show
    * @returns {Promise<void>}
    */
   async showModal(modal) {
@@ -248,6 +259,24 @@ class InteractionResponses {
         type: InteractionResponseType.Modal,
         data: isJSONEncodable(modal) ? modal.toJSON() : this.client.options.jsonTransformer(modal),
       },
+      auth: false,
+    });
+    this.replied = true;
+  }
+
+  /**
+   * Responds to the interaction with an upgrade button.
+   * <info>Only available for applications with monetization enabled.</info>
+   * @deprecated Sending a premium-style button is the new Discord behaviour.
+   * @returns {Promise<void>}
+   */
+  async sendPremiumRequired() {
+    if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
+    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+      body: {
+        type: InteractionResponseType.PremiumRequired,
+      },
+      auth: false,
     });
     this.replied = true;
   }
@@ -295,6 +324,7 @@ class InteractionResponses {
       'deferUpdate',
       'update',
       'showModal',
+      'sendPremiumRequired',
       'awaitModalSubmit',
     ];
 
@@ -308,5 +338,11 @@ class InteractionResponses {
     }
   }
 }
+
+InteractionResponses.prototype.sendPremiumRequired = deprecate(
+  InteractionResponses.prototype.sendPremiumRequired,
+  // eslint-disable-next-line max-len
+  'InteractionResponses#sendPremiumRequired() is deprecated. Sending a premium-style button is the new Discord behaviour.',
+);
 
 module.exports = InteractionResponses;

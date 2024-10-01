@@ -52,6 +52,12 @@ class ApplicationCommand extends Base {
      */
     this.type = data.type;
 
+    /**
+     * Whether this command is age-restricted (18+)
+     * @type {boolean}
+     */
+    this.nsfw = data.nsfw ?? false;
+
     this._patch(data);
   }
 
@@ -117,7 +123,7 @@ class ApplicationCommand extends Base {
        * The options of this command
        * @type {ApplicationCommandOption[]}
        */
-      this.options = data.options.map(o => this.constructor.transformOption(o, true));
+      this.options = data.options.map(option => this.constructor.transformOption(option, true));
     } else {
       this.options ??= [];
     }
@@ -138,11 +144,34 @@ class ApplicationCommand extends Base {
       /**
        * Whether the command can be used in DMs
        * <info>This property is always `null` on guild commands</info>
-       * @type {boolean|null}
+       * @type {?boolean}
+       * @deprecated Use {@link ApplicationCommand#contexts} instead.
        */
       this.dmPermission = data.dm_permission;
     } else {
       this.dmPermission ??= null;
+    }
+
+    if ('integration_types' in data) {
+      /**
+       * Installation context(s) where the command is available
+       * <info>Only for globally-scoped commands</info>
+       * @type {?ApplicationIntegrationType[]}
+       */
+      this.integrationTypes = data.integration_types;
+    } else {
+      this.integrationTypes ??= null;
+    }
+
+    if ('contexts' in data) {
+      /**
+       * Interaction context(s) where the command can be used
+       * <info>Only for globally-scoped commands</info>
+       * @type {?InteractionContextType[]}
+       */
+      this.contexts = data.contexts;
+    } else {
+      this.contexts ??= null;
     }
 
     if ('version' in data) {
@@ -188,6 +217,7 @@ class ApplicationCommand extends Base {
    * {@link ApplicationCommandType.ChatInput}
    * @property {Object<Locale, string>} [nameLocalizations] The localizations for the command name
    * @property {string} description The description of the command, if type is {@link ApplicationCommandType.ChatInput}
+   * @property {boolean} [nsfw] Whether the command is age-restricted
    * @property {Object<Locale, string>} [descriptionLocalizations] The localizations for the command description,
    * if type is {@link ApplicationCommandType.ChatInput}
    * @property {ApplicationCommandType} [type=ApplicationCommandType.ChatInput] The type of the command
@@ -377,16 +407,19 @@ class ApplicationCommand extends Base {
       ('description' in command && command.description !== this.description) ||
       ('version' in command && command.version !== this.version) ||
       (command.type && command.type !== this.type) ||
+      ('nsfw' in command && command.nsfw !== this.nsfw) ||
       // Future proof for options being nullable
       // TODO: remove ?? 0 on each when nullable
       (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
       defaultMemberPermissions !== (this.defaultMemberPermissions?.bitfield ?? null) ||
-      (typeof dmPermission !== 'undefined' && dmPermission !== this.dmPermission) ||
+      (dmPermission !== undefined && dmPermission !== this.dmPermission) ||
       !isEqual(command.nameLocalizations ?? command.name_localizations ?? {}, this.nameLocalizations ?? {}) ||
       !isEqual(
         command.descriptionLocalizations ?? command.description_localizations ?? {},
         this.descriptionLocalizations ?? {},
-      )
+      ) ||
+      !isEqual(command.integrationTypes ?? command.integration_types ?? [], this.integrationTypes ?? []) ||
+      !isEqual(command.contexts ?? [], this.contexts ?? [])
     ) {
       return false;
     }
@@ -510,7 +543,7 @@ class ApplicationCommand extends Base {
    * {@link ApplicationCommandOptionType.Number} option
    * @property {ApplicationCommandOptionChoice[]} [choices] The choices of the option for the user to pick from
    * @property {ApplicationCommandOption[]} [options] Additional options if this option is a subcommand (group)
-   * @property {ChannelType[]} [channelTypes] When the option type is channel,
+   * @property {ApplicationCommandOptionAllowedChannelTypes[]} [channelTypes] When the option type is channel,
    * the allowed types of channels that can be selected
    * @property {number} [minValue] The minimum value for an {@link ApplicationCommandOptionType.Integer} or
    * {@link ApplicationCommandOptionType.Number} option
@@ -569,7 +602,7 @@ class ApplicationCommand extends Base {
         [nameLocalizationsKey]: choice.nameLocalizations ?? choice.name_localizations,
         value: choice.value,
       })),
-      options: option.options?.map(o => this.transformOption(o, received)),
+      options: option.options?.map(opt => this.transformOption(opt, received)),
       [channelTypesKey]: option.channelTypes ?? option.channel_types,
       [minValueKey]: option.minValue ?? option.min_value,
       [maxValueKey]: option.maxValue ?? option.max_value,
@@ -583,11 +616,6 @@ module.exports = ApplicationCommand;
 
 /* eslint-disable max-len */
 /**
- * @external APIApplicationCommand
- * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-structure}
- */
-
-/**
- * @external APIApplicationCommandOption
- * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure}
+ * @external ApplicationCommandOptionAllowedChannelTypes
+ * @see {@link https://discord.js.org/docs/packages/builders/stable/ApplicationCommandOptionAllowedChannelTypes:TypeAlias}
  */

@@ -81,7 +81,7 @@ class ReactionCollector extends Collector {
     this.on('collect', (reaction, user) => {
       /**
        * Emitted whenever a reaction is newly created on a message. Will emit only when a new reaction is
-       * added to the message, as opposed to {@link Collector#collect} which will
+       * added to the message, as opposed to {@link Collector#event:collect} which will
        * be emitted even when a reaction has already been added to the message.
        * @event ReactionCollector#create
        * @param {MessageReaction} reaction The reaction that was added
@@ -94,9 +94,9 @@ class ReactionCollector extends Collector {
       this.users.set(user.id, user);
     });
 
-    this.on('remove', (reaction, user) => {
+    this.on('remove', (_reaction, user) => {
       this.total--;
-      if (!this.collected.some(r => r.users.cache.has(user.id))) this.users.delete(user.id);
+      if (!this.collected.some(reaction => reaction.users.cache.has(user.id))) this.users.delete(user.id);
     });
   }
 

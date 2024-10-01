@@ -54,13 +54,13 @@ test('fetch gateway information', async () => {
 	expect(initial).toEqual(data);
 	expect(fetch).toHaveBeenCalledOnce();
 
-	fetch.mockRestore();
+	fetch.mockClear();
 
 	const cached = await manager.fetchGatewayInformation();
 	expect(cached).toEqual(data);
 	expect(fetch).not.toHaveBeenCalled();
 
-	fetch.mockRestore();
+	fetch.mockClear();
 	mockPool
 		.intercept({
 			path: '/api/v10/gateway/bot',
@@ -72,7 +72,7 @@ test('fetch gateway information', async () => {
 	expect(forced).toEqual(data);
 	expect(fetch).toHaveBeenCalledOnce();
 
-	fetch.mockRestore();
+	fetch.mockClear();
 	mockPool
 		.intercept({
 			path: '/api/v10/gateway/bot',
@@ -146,7 +146,7 @@ test('update shard count', async () => {
 	expect(await manager.getShardCount()).toBe(2);
 	expect(fetch).not.toHaveBeenCalled();
 
-	fetch.mockRestore();
+	fetch.mockClear();
 	mockPool
 		.intercept({
 			path: '/api/v10/gateway/bot',
@@ -177,14 +177,21 @@ test('strategies', async () => {
 		public destroy = vi.fn();
 
 		public send = vi.fn();
+
+		public fetchStatus = vi.fn();
 	}
+
+	const strategy = new MockStrategy();
 
 	const rest = new REST().setAgent(mockAgent).setToken('A-Very-Fake-Token');
 	const shardIds = [0, 1, 2];
-	const manager = new WebSocketManager({ token: 'A-Very-Fake-Token', intents: 0, rest, shardIds });
-
-	const strategy = new MockStrategy();
-	manager.setStrategy(strategy);
+	const manager = new WebSocketManager({
+		token: 'A-Very-Fake-Token',
+		intents: 0,
+		rest,
+		shardIds,
+		buildStrategy: () => strategy,
+	});
 
 	const data: APIGatewayBotInfo = {
 		shards: 1,
@@ -222,8 +229,11 @@ test('strategies', async () => {
 	await manager.destroy(destroyOptions);
 	expect(strategy.destroy).toHaveBeenCalledWith(destroyOptions);
 
-	// eslint-disable-next-line id-length
-	const send: GatewaySendPayload = { op: GatewayOpcodes.RequestGuildMembers, d: { guild_id: '1234', limit: 0 } };
+	const send: GatewaySendPayload = {
+		op: GatewayOpcodes.RequestGuildMembers,
+		// eslint-disable-next-line id-length
+		d: { guild_id: '1234', limit: 0, query: '' },
+	};
 	await manager.send(0, send);
 	expect(strategy.send).toHaveBeenCalledWith(0, send);
 });

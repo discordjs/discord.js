@@ -1,7 +1,7 @@
 'use strict';
 
 const { deprecate } = require('node:util');
-const { isJSONEncodable } = require('@discordjs/builders');
+const { isJSONEncodable } = require('@discordjs/util');
 const Component = require('./Component');
 const { createComponent } = require('../util/Components');
 
@@ -18,31 +18,29 @@ class ActionRow extends Component {
      * @type {Component[]}
      * @readonly
      */
-    this.components = components.map(c => createComponent(c));
+    this.components = components.map(component => createComponent(component));
   }
 
   /**
    * Creates a new action row builder from JSON data
-   * @param {JSONEncodable<APIActionRowComponent>|APIActionRowComponent} other The other data
+   * @method from
+   * @memberof ActionRow
+   * @param {ActionRowBuilder|ActionRow|APIActionRowComponent} other The other data
    * @returns {ActionRowBuilder}
-   * @deprecated Use {@link ActionRowBuilder.from()} instead.
+   * @deprecated Use {@link ActionRowBuilder.from | ActionRowBuilder#from} instead.
    */
-  static from(other) {
-    if (isJSONEncodable(other)) {
-      return new this(other.toJSON());
-    }
-    return new this(other);
-  }
+  static from = deprecate(
+    other => new this(isJSONEncodable(other) ? other.toJSON() : other),
+    'ActionRow.from() is deprecated. Use ActionRowBuilder.from() instead.',
+  );
 
   /**
    * Returns the API-compatible JSON for this component
    * @returns {APIActionRowComponent}
    */
   toJSON() {
-    return { ...this.data, components: this.components.map(c => c.toJSON()) };
+    return { ...this.data, components: this.components.map(component => component.toJSON()) };
   }
 }
-
-ActionRow.from = deprecate(ActionRow.from, 'ActionRow.from() is deprecated. Use ActionRowBuilder.from() instead.');
 
 module.exports = ActionRow;

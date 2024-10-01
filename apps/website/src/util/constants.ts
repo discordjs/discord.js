@@ -1,22 +1,17 @@
-export const PACKAGES = ['brokers', 'builders', 'collection', 'proxy', 'rest', 'util', 'voice', 'ws'];
+export const PACKAGES = [
+	{ name: 'discord.js' },
+	{ name: 'brokers' },
+	{ name: 'builders' },
+	{ name: 'collection' },
+	{ name: 'core' },
+	{ name: 'formatters' },
+	{ name: 'next' },
+	{ name: 'proxy' },
+	{ name: 'rest' },
+	{ name: 'util' },
+	{ name: 'voice' },
+	{ name: 'ws' },
+];
 
 export const DESCRIPTION =
-	"discord.js is a powerful node.js module that allows you to interact with the Discord API very easily. It takes a much more object-oriented approach than most other JS Discord libraries, making your bot's code significantly tidier and easier to comprehend.";
-
-export const CODE_EXAMPLE = `import { Client, GatewayIntentBits } from 'discord.js';
-
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-
-client.on('ready', () => {
-	console.log(\`Logged in as \${client.user.tag}!\`);
-});
-
-client.on('interactionCreate', async (interaction) => {
-	if (!interaction.isChatInputCommand()) return;
-
-	if (interaction.commandName === 'ping') {
-		await interaction.reply('Pong!');
-	}
-});
-
-await client.login(TOKEN);`;
+	"discord.js is a powerful Node.js module that allows you to interact with the Discord API very easily. It takes a much more object-oriented approach than most other JS Discord libraries, making your bot's code significantly tidier and easier to comprehend.";

@@ -22,6 +22,13 @@ class Invite extends Base {
 
   constructor(client, data) {
     super(client);
+
+    /**
+     * The type of this invite
+     * @type {InviteType}
+     */
+    this.type = data.type;
+
     this._patch(data);
   }
 

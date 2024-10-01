@@ -1,27 +1,15 @@
-import { s } from '@sapphire/shapeshift';
-import { TextInputStyle } from 'discord-api-types/v10';
-import { isValidationEnabled } from '../../util/validation.js';
-import { customIdValidator } from '../Assertions.js';
+import { ComponentType, TextInputStyle } from 'discord-api-types/v10';
+import { z } from 'zod';
+import { customIdPredicate } from '../../Assertions.js';
 
-export const textInputStyleValidator = s.nativeEnum(TextInputStyle);
-export const minLengthValidator = s.number.int
-	.greaterThanOrEqual(0)
-	.lessThanOrEqual(4_000)
-	.setValidationEnabled(isValidationEnabled);
-export const maxLengthValidator = s.number.int
-	.greaterThanOrEqual(1)
-	.lessThanOrEqual(4_000)
-	.setValidationEnabled(isValidationEnabled);
-export const requiredValidator = s.boolean;
-export const valueValidator = s.string.lengthLessThanOrEqual(4_000).setValidationEnabled(isValidationEnabled);
-export const placeholderValidator = s.string.lengthLessThanOrEqual(100).setValidationEnabled(isValidationEnabled);
-export const labelValidator = s.string
-	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(45)
-	.setValidationEnabled(isValidationEnabled);
-
-export function validateRequiredParameters(customId?: string, style?: TextInputStyle, label?: string) {
-	customIdValidator.parse(customId);
-	textInputStyleValidator.parse(style);
-	labelValidator.parse(label);
-}
+export const textInputPredicate = z.object({
+	type: z.literal(ComponentType.TextInput),
+	custom_id: customIdPredicate,
+	label: z.string().min(1).max(45),
+	style: z.nativeEnum(TextInputStyle),
+	min_length: z.number().min(0).max(4_000).optional(),
+	max_length: z.number().min(1).max(4_000).optional(),
+	placeholder: z.string().max(100).optional(),
+	value: z.string().max(4_000).optional(),
+	required: z.boolean().optional(),
+});

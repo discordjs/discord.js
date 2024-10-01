@@ -1,6 +1,7 @@
 import { MockAgent, setGlobalDispatcher, type Interceptable } from 'undici';
 import { beforeEach, afterEach, test, expect } from 'vitest';
 import { REST } from '../src/index.js';
+import { normalizeRateLimitOffset } from '../src/lib/utils/utils.js';
 import { genPath } from './util.js';
 
 const api = new REST();
@@ -36,5 +37,5 @@ test('no token', async () => {
 test('negative offset', () => {
 	const badREST = new REST({ offset: -5_000 });
 
-	expect(badREST.requestManager.options.offset).toEqual(0);
+	expect(normalizeRateLimitOffset(badREST.options.offset, 'hehe :3')).toEqual(0);
 });

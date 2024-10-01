@@ -1,13 +1,26 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/api-extractor-utils",
 	"version": "1.0.0",
 	"description": "Utilities for api-extractor",
 	"private": true,
 	"scripts": {
-		"build": "tsup",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --format=pretty",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src --ext .mjs,.js,.ts --fix --format=pretty",
-		"fmt": "yarn format"
+		"build": "tsc --noEmit && tsup",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
+		"fmt": "pnpm run format"
+	},
+	"exports": {
+		".": {
+			"require": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"import": {
+				"types": "./dist/index.d.mts",
+				"default": "./dist/index.mjs"
+			}
+		}
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
@@ -24,30 +37,30 @@
 	"license": "Apache-2.0",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/discordjs/discord.js.git"
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/api-extractor-utils"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
-		"@microsoft/api-extractor-model": "7.24.0",
-		"@microsoft/tsdoc": "0.14.1"
+		"@discordjs/api-extractor-model": "workspace:^",
+		"@microsoft/tsdoc": "0.14.2"
 	},
 	"devDependencies": {
-		"@types/node": "16.11.64",
+		"@types/node": "^18.19.45",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.25.0",
-		"eslint-config-neon": "^0.1.38",
-		"eslint-formatter-pretty": "^4.1.0",
-		"prettier": "^2.7.1",
-		"tsup": "^6.2.3",
-		"typescript": "^4.8.4"
+		"eslint": "^8.57.0",
+		"eslint-config-neon": "^0.1.62",
+		"eslint-formatter-pretty": "^6.0.1",
+		"prettier": "^3.3.3",
+		"tsup": "^8.2.4",
+		"turbo": "^2.0.14",
+		"typescript": "~5.5.4"
 	},
 	"engines": {
-		"node": ">=16.9.0"
-	},
-	"publishConfig": {
-		"access": "public"
+		"node": ">=18"
 	}
 }
