@@ -1,84 +1,70 @@
-import { s } from '@sapphire/shapeshift';
-import type { APIEmbedField } from 'discord-api-types/v10';
-import { isValidationEnabled } from '../../util/validation.js';
+import { z } from 'zod';
+import { refineURLPredicate } from '../../Assertions.js';
+import { embedLength } from '../../util/componentUtil.js';
 
-export const fieldNamePredicate = s.string
-	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(256)
-	.setValidationEnabled(isValidationEnabled);
+const namePredicate = z.string().min(1).max(256);
 
-export const fieldValuePredicate = s.string
-	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(1_024)
-	.setValidationEnabled(isValidationEnabled);
+const iconURLPredicate = z
+	.string()
+	.url()
+	.refine(refineURLPredicate(['http:', 'https:', 'attachment:']), {
+		message: 'Invalid protocol for icon URL. Must be http:, https:, or attachment:',
+	});
 
-export const fieldInlinePredicate = s.boolean.optional;
+const URLPredicate = z
+	.string()
+	.url()
+	.refine(refineURLPredicate(['http:', 'https:']), { message: 'Invalid protocol for URL. Must be http: or https:' });
 
-export const embedFieldPredicate = s
+export const embedFieldPredicate = z.object({
+	name: namePredicate,
+	value: z.string().min(1).max(1_024),
+	inline: z.boolean().optional(),
+});
+
+export const embedAuthorPredicate = z.object({
+	name: namePredicate,
+	icon_url: iconURLPredicate.optional(),
+	url: URLPredicate.optional(),
+});
+
+export const embedFooterPredicate = z.object({
+	text: z.string().min(1).max(2_048),
+	icon_url: iconURLPredicate.optional(),
+});
+
+export const embedPredicate = z
 	.object({
-		name: fieldNamePredicate,
-		value: fieldValuePredicate,
-		inline: fieldInlinePredicate,
+		title: namePredicate.optional(),
+		description: z.string().min(1).max(4_096).optional(),
+		url: URLPredicate.optional(),
+		timestamp: z.string().optional(),
+		color: z.number().int().min(0).max(0xffffff).optional(),
+		footer: embedFooterPredicate.optional(),
+		image: z.object({ url: URLPredicate }).optional(),
+		thumbnail: z.object({ url: URLPredicate }).optional(),
+		author: embedAuthorPredicate.optional(),
+		fields: z.array(embedFieldPredicate).max(25).optional(),
 	})
-	.setValidationEnabled(isValidationEnabled);
-
-export const embedFieldsArrayPredicate = embedFieldPredicate.array.setValidationEnabled(isValidationEnabled);
-
-export const fieldLengthPredicate = s.number.lessThanOrEqual(25).setValidationEnabled(isValidationEnabled);
-
-export function validateFieldLength(amountAdding: number, fields?: APIEmbedField[]): void {
-	fieldLengthPredicate.parse((fields?.length ?? 0) + amountAdding);
-}
-
-export const authorNamePredicate = fieldNamePredicate.nullable.setValidationEnabled(isValidationEnabled);
-
-export const imageURLPredicate = s.string
-	.url({
-		allowedProtocols: ['http:', 'https:', 'attachment:'],
-	})
-	.nullish.setValidationEnabled(isValidationEnabled);
-
-export const urlPredicate = s.string
-	.url({
-		allowedProtocols: ['http:', 'https:'],
-	})
-	.nullish.setValidationEnabled(isValidationEnabled);
-
-export const embedAuthorPredicate = s
-	.object({
-		name: authorNamePredicate,
-		iconURL: imageURLPredicate,
-		url: urlPredicate,
-	})
-	.setValidationEnabled(isValidationEnabled);
-
-export const RGBPredicate = s.number.int
-	.greaterThanOrEqual(0)
-	.lessThanOrEqual(255)
-	.setValidationEnabled(isValidationEnabled);
-export const colorPredicate = s.number.int
-	.greaterThanOrEqual(0)
-	.lessThanOrEqual(0xffffff)
-	.or(s.tuple([RGBPredicate, RGBPredicate, RGBPredicate]))
-	.nullable.setValidationEnabled(isValidationEnabled);
-
-export const descriptionPredicate = s.string
-	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(4_096)
-	.nullable.setValidationEnabled(isValidationEnabled);
-
-export const footerTextPredicate = s.string
-	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(2_048)
-	.nullable.setValidationEnabled(isValidationEnabled);
-
-export const embedFooterPredicate = s
-	.object({
-		text: footerTextPredicate,
-		iconURL: imageURLPredicate,
-	})
-	.setValidationEnabled(isValidationEnabled);
-
-export const timestampPredicate = s.union(s.number, s.date).nullable.setValidationEnabled(isValidationEnabled);
-
-export const titlePredicate = fieldNamePredicate.nullable.setValidationEnabled(isValidationEnabled);
+	.refine(
+		(embed) => {
+			return (
+				embed.title !== undefined ||
+				embed.description !== undefined ||
+				(embed.fields !== undefined && embed.fields.length > 0) ||
+				embed.footer !== undefined ||
+				embed.author !== undefined ||
+				embed.image !== undefined ||
+				embed.thumbnail !== undefined
+			);
+		},
+		{
+			message: 'Embed must have at least a title, description, a field, a footer, an author, an image, OR a thumbnail.',
+		},
+	)
+	.refine(
+		(embed) => {
+			return embedLength(embed) <= 6_000;
+		},
+		{ message: 'Embeds must not exceed 6000 characters in total.' },
+	);

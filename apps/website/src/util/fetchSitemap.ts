@@ -11,9 +11,10 @@ export async function fetchSitemap({
 }) {
 	if (ENV.IS_LOCAL_DEV) {
 		const fileContent = await readFile(
-			join(process.cwd(), `../../packages/${packageName}/docs/split/${version}.sitemap.api.json`),
+			join(process.cwd(), `../../packages/${packageName}/docs/${packageName}/split/${version}.sitemap.api.json`),
 			'utf8',
 		);
+
 		return JSON.parse(fileContent);
 	}
 
@@ -22,5 +23,6 @@ export async function fetchSitemap({
 		`${process.env.BLOB_STORAGE_URL}/rewrite/${packageName}/${version}.sitemap.api.json`,
 		{ next: isMainVersion ? { revalidate: 0 } : { revalidate: 604_800 } },
 	);
+
 	return fileContent.json();
 }

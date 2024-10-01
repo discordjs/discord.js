@@ -1,5 +1,6 @@
 'use strict';
 
+const { deprecate } = require('node:util');
 const { isJSONEncodable } = require('@discordjs/util');
 const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../../errors');
@@ -35,7 +36,7 @@ class InteractionResponses {
 
   /**
    * Options for a reply to a {@link BaseInteraction}.
-   * @typedef {BaseMessageOptions} InteractionReplyOptions
+   * @typedef {BaseMessageOptionsWithPoll} InteractionReplyOptions
    * @property {boolean} [tts=false] Whether the message should be spoken aloud
    * @property {boolean} [ephemeral] Whether the reply should be ephemeral
    * @property {boolean} [fetchReply] Whether to fetch the reply
@@ -266,6 +267,7 @@ class InteractionResponses {
   /**
    * Responds to the interaction with an upgrade button.
    * <info>Only available for applications with monetization enabled.</info>
+   * @deprecated Sending a premium-style button is the new Discord behaviour.
    * @returns {Promise<void>}
    */
   async sendPremiumRequired() {
@@ -336,5 +338,11 @@ class InteractionResponses {
     }
   }
 }
+
+InteractionResponses.prototype.sendPremiumRequired = deprecate(
+  InteractionResponses.prototype.sendPremiumRequired,
+  // eslint-disable-next-line max-len
+  'InteractionResponses#sendPremiumRequired() is deprecated. Sending a premium-style button is the new Discord behaviour.',
+);
 
 module.exports = InteractionResponses;

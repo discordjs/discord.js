@@ -2,12 +2,13 @@
 
 const { Buffer } = require('node:buffer');
 const { lazy, isJSONEncodable } = require('@discordjs/util');
+const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { MessageFlags } = require('discord-api-types/v10');
 const ActionRowBuilder = require('./ActionRowBuilder');
 const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors');
 const { resolveFile } = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
-const { basename, verifyString } = require('../util/Util');
+const { basename, verifyString, resolvePartialEmoji } = require('../util/Util');
 
 const getBaseInteraction = lazy(() => require('./BaseInteraction'));
 
@@ -133,9 +134,17 @@ class MessagePayload {
       }
     }
 
-    const enforce_nonce = Boolean(this.options.enforceNonce);
-    if (enforce_nonce && nonce === undefined) {
-      throw new DiscordjsError(ErrorCodes.MessageNonceRequired);
+    let enforce_nonce = Boolean(this.options.enforceNonce);
+
+    // If `nonce` isn't provided, generate one & set `enforceNonce`
+    // Unless `enforceNonce` is explicitly set to `false`(not just falsy)
+    if (nonce === undefined) {
+      if (this.options.enforceNonce !== false && this.target.client.options.enforceNonce) {
+        nonce = DiscordSnowflake.generate().toString();
+        enforce_nonce = true;
+      } else if (enforce_nonce) {
+        throw new DiscordjsError(ErrorCodes.MessageNonceRequired);
+      }
     }
 
     const components = this.options.components?.map(component =>
@@ -183,7 +192,7 @@ class MessagePayload {
     let message_reference;
     if (typeof this.options.reply === 'object') {
       const reference = this.options.reply.messageReference;
-      const message_id = this.isMessage ? reference.id ?? reference : this.target.messages.resolveId(reference);
+      const message_id = this.isMessage ? (reference.id ?? reference) : this.target.messages.resolveId(reference);
       if (message_id) {
         message_reference = {
           message_id,
@@ -200,6 +209,21 @@ class MessagePayload {
       this.options.attachments.push(...(attachments ?? []));
     } else {
       this.options.attachments = attachments;
+    }
+
+    let poll;
+    if (this.options.poll) {
+      poll = {
+        question: {
+          text: this.options.poll.question.text,
+        },
+        answers: this.options.poll.answers.map(answer => ({
+          poll_media: { text: answer.text, emoji: resolvePartialEmoji(answer.emoji) },
+        })),
+        duration: this.options.poll.duration,
+        allow_multiselect: this.options.poll.allowMultiselect,
+        layout_type: this.options.poll.layoutType,
+      };
     }
 
     this.body = {
@@ -220,6 +244,7 @@ class MessagePayload {
       sticker_ids: this.options.stickers?.map(sticker => sticker.id ?? sticker),
       thread_name: threadName,
       applied_tags: appliedTags,
+      poll,
     };
     return this;
   }

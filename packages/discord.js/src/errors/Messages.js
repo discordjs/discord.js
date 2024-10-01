@@ -95,7 +95,7 @@ const Messages = {
   [DjsErrorCodes.ChannelNotCached]: 'Could not find the channel where this message came from in the cache!',
   [DjsErrorCodes.StageChannelResolve]: 'Could not resolve channel to a stage channel.',
   [DjsErrorCodes.GuildScheduledEventResolve]: 'Could not resolve the guild scheduled event.',
-  [DjsErrorCodes.FetchOwnerId]: "Couldn't resolve the guild ownerId to fetch the member.",
+  [DjsErrorCodes.FetchOwnerId]: type => `Couldn't resolve the ${type} ownerId to fetch the ${type} member.`,
 
   [DjsErrorCodes.InvalidType]: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
   [DjsErrorCodes.InvalidElement]: (type, name, elem) => `Supplied ${type} ${name} includes an invalid element: ${elem}`,
@@ -169,6 +169,10 @@ const Messages = {
 
   [DjsErrorCodes.EntitlementCreateInvalidOwner]:
     'You must provide either a guild or a user to create an entitlement, but not both',
+
+  [DjsErrorCodes.BulkBanUsersOptionEmpty]: 'Option "users" array or collection is empty',
+
+  [DjsErrorCodes.PollAlreadyExpired]: 'This poll has already expired.',
 };
 
 module.exports = Messages;

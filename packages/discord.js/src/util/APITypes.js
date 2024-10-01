@@ -31,6 +31,16 @@
  */
 
 /**
+ * @external ApplicationIntegrationType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ApplicationIntegrationType}
+ */
+
+/**
+ * @external APIAuthorizingIntegrationOwnersMap
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIAuthorizingIntegrationOwnersMap}
+ */
+
+/**
  * @external APIAutoModerationAction
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIAutoModerationAction}
  */
@@ -91,6 +101,11 @@
  */
 
 /**
+ * @external APIGuildScheduledEventRecurrenceRule
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIGuildScheduledEventRecurrenceRule}
+ */
+
+/**
  * @external APIInteraction
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIInteraction}
  */
@@ -141,6 +156,11 @@
  */
 
 /**
+ * @external APIMessageInteractionMetadata
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIMessageInteractionMetadata}
+ */
+
+/**
  * @external APIModalInteractionResponse
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIModalInteractionResponse}
  */
@@ -158,6 +178,11 @@
 /**
  * @external APIModalSubmission
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIModalSubmission}
+ */
+
+/**
+ * @external APIOverwrite
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIOverwrite}
  */
 
 /**
@@ -371,6 +396,21 @@
  */
 
 /**
+ * @external GuildScheduledEventRecurrenceRuleFrequency
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildScheduledEventRecurrenceRuleFrequency}
+ */
+
+/**
+ * @external GuildScheduledEventRecurrenceRuleMonth
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildScheduledEventRecurrenceRuleMonth}
+ */
+
+/**
+ * @external GuildScheduledEventRecurrenceRuleWeekday
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildScheduledEventRecurrenceRuleWeekday}
+ */
+
+/**
  * @external GuildScheduledEventStatus
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildScheduledEventStatus}
  */
@@ -396,6 +436,11 @@
  */
 
 /**
+ * @external InteractionContextType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InteractionContextType}
+ */
+
+/**
  * @external InteractionType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InteractionType}
  */
@@ -403,6 +448,11 @@
 /**
  * @external InteractionResponseType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InteractionResponseType}
+ */
+
+/**
+ * @external InviteType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InviteType}
  */
 
 /**
@@ -423,6 +473,11 @@
 /**
  * @external MessageActivityType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/MessageActivityType}
+ */
+
+/**
+ * @external MessageReferenceType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/MessageReferenceType}
  */
 
 /**
@@ -448,6 +503,11 @@
 /**
  * @external PermissionFlagsBits
  * @see {@link https://discord-api-types.dev/api/discord-api-types-payloads/common#PermissionFlagsBits}
+ */
+
+/**
+ * @external PollLayoutType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/PollLayoutType}
  */
 
 /**

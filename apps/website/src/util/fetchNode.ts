@@ -15,9 +15,13 @@ export async function fetchNode({
 
 	if (ENV.IS_LOCAL_DEV) {
 		const fileContent = await readFile(
-			join(process.cwd(), `../../packages/${packageName}/docs/split/${version}.${normalizeItem}.api.json`),
+			join(
+				process.cwd(),
+				`../../packages/${packageName}/docs/${packageName}/split/${version}.${normalizeItem}.api.json`,
+			),
 			'utf8',
 		);
+
 		return JSON.parse(fileContent);
 	}
 
@@ -26,5 +30,10 @@ export async function fetchNode({
 		`${process.env.BLOB_STORAGE_URL}/rewrite/${packageName}/${version}.${normalizeItem}.api.json`,
 		{ next: isMainVersion ? { revalidate: 0 } : { revalidate: 604_800 } },
 	);
+
+	if (!fileContent.ok) {
+		return null;
+	}
+
 	return fileContent.json();
 }

@@ -97,7 +97,7 @@ class GuildManager extends CachedManager {
    */
 
   /**
-   * Resolves a GuildResolvable to a Guild object.
+   * Resolves a {@link GuildResolvable} to a {@link Guild} object.
    * @method resolve
    * @memberof GuildManager
    * @instance

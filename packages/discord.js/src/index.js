@@ -54,6 +54,7 @@ exports.version = require('../package.json').version;
 
 // Managers
 exports.ApplicationCommandManager = require('./managers/ApplicationCommandManager');
+exports.ApplicationEmojiManager = require('./managers/ApplicationEmojiManager');
 exports.ApplicationCommandPermissionsManager = require('./managers/ApplicationCommandPermissionsManager');
 exports.AutoModerationRuleManager = require('./managers/AutoModerationRuleManager');
 exports.BaseGuildEmojiManager = require('./managers/BaseGuildEmojiManager');
@@ -98,6 +99,7 @@ exports.Activity = require('./structures/Presence').Activity;
 exports.AnonymousGuild = require('./structures/AnonymousGuild');
 exports.Application = require('./structures/interfaces/Application');
 exports.ApplicationCommand = require('./structures/ApplicationCommand');
+exports.ApplicationEmoji = require('./structures/ApplicationEmoji');
 exports.ApplicationRoleConnectionMetadata =
   require('./structures/ApplicationRoleConnectionMetadata').ApplicationRoleConnectionMetadata;
 exports.AutocompleteInteraction = require('./structures/AutocompleteInteraction');
@@ -168,6 +170,8 @@ exports.NewsChannel = require('./structures/NewsChannel');
 exports.OAuth2Guild = require('./structures/OAuth2Guild');
 exports.PartialGroupDMChannel = require('./structures/PartialGroupDMChannel');
 exports.PermissionOverwrites = require('./structures/PermissionOverwrites');
+exports.Poll = require('./structures/Poll').Poll;
+exports.PollAnswer = require('./structures/PollAnswer').PollAnswer;
 exports.Presence = require('./structures/Presence').Presence;
 exports.ReactionCollector = require('./structures/ReactionCollector');
 exports.ReactionEmoji = require('./structures/ReactionEmoji');

@@ -39,6 +39,7 @@ import {
 } from '@discordjs/api-extractor-model';
 import { DocNodeKind, SelectorKind, StandardTags } from '@microsoft/tsdoc';
 import type {
+	DocEscapedText,
 	DocNode,
 	DocNodeContainer,
 	DocDeclarationReference,
@@ -99,7 +100,7 @@ export function resolveMembers<WantedItem extends ApiItem>(
 		.getMergedSiblings()
 		.filter((sibling) => sibling.containerKey !== parent.containerKey)
 		.flatMap((sibling) => (sibling as ApiItemContainerMixin).findMembersWithInheritance().items)
-		.filter((item) => predicate(item) && !seenItems.has(item.containerKey))
+		.filter((item) => predicate(item) && !seenItems.has(item.displayName))
 		.map((item) => ({
 			item: item as WantedItem,
 			inherited: item.parent ? (item.parent as ApiItemContainerMixin) : undefined,
@@ -240,7 +241,12 @@ function itemExcerptText(excerpt: Excerpt, apiPackage: ApiPackage) {
 				// dapi-types doesn't have routes for class members
 				// so we can assume this member is for an enum
 				if (meaning === 'member' && path && 'parent' in path) {
-					href += `/enum/${path.parent}#${path.component}`;
+					// unless it's a variable like FormattingPatterns.Role
+					if (path.parent.toString() === '__type') {
+						href += `#${token.text.split('.')[0]}`;
+					} else {
+						href += `/enum/${path.parent}#${path.component}`;
+					}
 				} else if (meaning === 'type' || meaning === 'var') {
 					href += `#${token.text}`;
 				} else {
@@ -253,26 +259,35 @@ function itemExcerptText(excerpt: Excerpt, apiPackage: ApiPackage) {
 				};
 			}
 
-			const resolved = token.canonicalReference
-				? resolveCanonicalReference(token.canonicalReference, apiPackage)
-				: null;
+			if (token.canonicalReference) {
+				const resolved = resolveCanonicalReference(token.canonicalReference, apiPackage);
 
-			if (!resolved) {
+				if (!resolved) {
+					return {
+						text: token.text,
+					};
+				}
+
+				const declarationReference = apiPackage
+					.getAssociatedModel()
+					?.resolveDeclarationReference(token.canonicalReference, apiPackage);
+				const foundItem = declarationReference?.resolvedApiItem ?? resolved.item;
+
 				return {
 					text: token.text,
+					resolvedItem: {
+						kind: foundItem.kind,
+						displayName: foundItem.displayName,
+						containerKey: foundItem.containerKey,
+						uri: resolveItemURI(foundItem),
+						packageName: resolved.package?.replace('@discordjs/', ''),
+						version: resolved.version,
+					},
 				};
 			}
 
 			return {
 				text: token.text,
-				resolvedItem: {
-					kind: resolved.item.kind,
-					displayName: resolved.item.displayName,
-					containerKey: resolved.item.containerKey,
-					uri: resolveItemURI(resolved.item),
-					packageName: resolved.package?.replace('@discordjs/', ''),
-					version: resolved.version,
-				},
 			};
 		}
 
@@ -292,6 +307,11 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 				return {
 					kind: DocNodeKind.PlainText,
 					text: (node as DocPlainText).text,
+				};
+			case DocNodeKind.EscapedText:
+				return {
+					kind: DocNodeKind.PlainText,
+					text: (node as DocEscapedText).decodedText,
 				};
 			case DocNodeKind.Section:
 			case DocNodeKind.Paragraph:
@@ -328,7 +348,7 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 					if (!foundItem && !resolved) {
 						return {
 							kind: DocNodeKind.LinkTag,
-							text: null,
+							text: codeDestination.memberReferences[0]?.memberIdentifier?.identifier ?? null,
 						};
 					}
 
@@ -362,7 +382,7 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 						resolvedPackage: {
 							packageName: resolved?.package ?? apiItem.getAssociatedPackage()?.displayName.replace('@discordjs/', ''),
 							version: resolved?.package
-								? apiItem.getAssociatedPackage()?.dependencies?.[resolved.package] ?? null
+								? (apiItem.getAssociatedPackage()?.dependencies?.[resolved.package] ?? null)
 								: null,
 						},
 					};
@@ -951,11 +971,16 @@ export async function generateSplitDocumentation({
 
 			const members = entry.members
 				.filter((item) => {
-					if (item.kind !== 'Function') {
-						return true;
+					switch (item.kind) {
+						case ApiItemKind.Function:
+							return (item as ApiFunction).overloadIndex === 1;
+						case ApiItemKind.Interface:
+							return !entry.members.some(
+								(innerItem) => innerItem.kind === ApiItemKind.Class && innerItem.displayName === item.displayName,
+							);
+						default:
+							return true;
 					}
-
-					return (item as ApiFunction).overloadIndex === 1;
 				})
 				.map((item) => ({
 					kind: item.kind,
@@ -980,7 +1005,7 @@ export async function generateSplitDocumentation({
 					containerKey = ApiFunction.getContainerKey(name, Number.parseInt(overloadIndex, 10));
 				}
 
-				const foundMember = memberName && containerKey ? findMemberByKey(model, pkgName, containerKey) ?? null : null;
+				const foundMember = memberName && containerKey ? (findMemberByKey(model, pkgName, containerKey) ?? null) : null;
 
 				const returnValue = memberKind(foundMember);
 

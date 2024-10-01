@@ -1,11 +1,7 @@
-import bundleAnalyzer from '@next/bundle-analyzer';
-import localesPlugin from '@react-aria/optimize-locales-plugin';
-
-const withBundleAnalyzer = bundleAnalyzer({
-	enabled: process.env.ANALYZE === 'true',
-});
-
-export default withBundleAnalyzer({
+/**
+ * @type {import('next').NextConfig}
+ */
+export default {
 	reactStrictMode: true,
 	images: {
 		dangerouslyAllowSVG: true,
@@ -18,15 +14,8 @@ export default withBundleAnalyzer({
 		},
 	},
 	experimental: {
-		ppr: false,
-	},
-	webpack(config, { isServer }) {
-		if (!isServer) {
-			// Don't include any locale strings in the client JS bundle.
-			config.plugins.push(localesPlugin.webpack({ locales: [] }));
-		}
-
-		return config;
+		ppr: true,
+		reactCompiler: true,
 	},
 	async redirects() {
 		return [
@@ -42,4 +31,4 @@ export default withBundleAnalyzer({
 			},
 		];
 	},
-});
+};

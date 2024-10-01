@@ -2,6 +2,59 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/ws@2.0.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@1.1.0...@discordjs/ws@2.0.0) - (2024-09-01)
+
+## Bug Fixes
+
+- **WebSocketShard:** Buffer native zlib decompression payload (#10416) ([defb083](https://github.com/discordjs/discord.js/commit/defb083528ef31383778187a04ced8b00d886242))
+- **WebSocketManager:** Heartbeat event had outdated types (#10417) ([5eabec1](https://github.com/discordjs/discord.js/commit/5eabec14d45ef7bdd7f610e84234eb63e726eacd))
+- Retry for EAI_AGAIN I/O error (#10383) ([be04acd](https://github.com/discordjs/discord.js/commit/be04acd534d7d0c3fb7f6bd174e4a6482aae0d73))
+- Consistent debug log spacing (#10349) ([38c699b](https://github.com/discordjs/discord.js/commit/38c699bc8a2ca40f37f70c93e08067e00f12ee81))
+
+## Features
+
+- **WebsocketManager:** Retroactive token setting (#10418) ([de94eaf](https://github.com/discordjs/discord.js/commit/de94eaf351a69fab57ec766bd9e90e8c05e8c3d1))
+- **WebSocketShard:** Explicit time out network error handling (#10375) ([093ac92](https://github.com/discordjs/discord.js/commit/093ac924aef1bf328feadb49876bfbe26052fe1a))
+
+## Refactor
+
+- **WebSocketShard:** Error event handling (#10436) ([a6de270](https://github.com/discordjs/discord.js/commit/a6de2707fc1107262b12491f73b5b6887df91c67))
+- **ws:** Event layout (#10376) ([bf6761a](https://github.com/discordjs/discord.js/commit/bf6761a44adec1fe5017f6bf5d8bc0734916961f))
+  - **BREAKING CHANGE:** All events now emit shard id as its own param
+- Native zlib support (#10316) ([94cc02a](https://github.com/discordjs/discord.js/commit/94cc02a2580496774d75673abc0caabc765d9ee0))
+
+# [@discordjs/ws@1.1.1](https://github.com/discordjs/discord.js/compare/@discordjs/ws@1.1.0...@discordjs/ws@1.1.1) - (2024-06-02)
+
+## Bug Fixes
+
+- Deno compat (#10271) ([616208b](https://github.com/discordjs/discord.js/commit/616208ba7766ac66a8969ffd2cb7b341fdc2c67b))
+
+# [@discordjs/ws@1.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@1.0.2...@discordjs/ws@1.1.0) - (2024-05-04)
+
+## Bug Fixes
+
+- Anchor link for events ([0efd1be](https://github.com/discordjs/discord.js/commit/0efd1bea46fa2fc8bcd3dcfd0ac5cd608a0a7df0))
+- Minify mainlib docs json (#9963) ([4b88306](https://github.com/discordjs/discord.js/commit/4b88306dcb2b16b840ec61e9e33047af3a31c45d))
+
+## Documentation
+
+- Remove duplicate word in comment (#10244) ([96169ad](https://github.com/discordjs/discord.js/commit/96169add6d2db37706629c0172692533948a9dca))
+- Split docs.api.json into multiple json files ([597340f](https://github.com/discordjs/discord.js/commit/597340f288437c35da8c703d9b621274de60d880))
+- Remove utf-8-validate (#10059) ([7e12bee](https://github.com/discordjs/discord.js/commit/7e12bee337af169bb131d34fa29ed090ebd26c71))
+
+## Features
+
+- **ws:** Support for custom worker messaging (#10241) ([728164e](https://github.com/discordjs/discord.js/commit/728164ed868167d43dec7b7e8d11052a37694968))
+- Local and preview detection ([79fbda3](https://github.com/discordjs/discord.js/commit/79fbda3aac6d4f0f8bfb193e797d09cbe331d315))
+- Add support for `using` keyword on discord.js `Client` and `WebSocketManager` (#10063) ([543d617](https://github.com/discordjs/discord.js/commit/543d61737e0709b9d88029d01156d48cfcaf3bcc))
+- Use globally available WebSocket client in runtimes that have it (#10042) ([319ef9a](https://github.com/discordjs/discord.js/commit/319ef9a70b92dbb11726b270ab84e73ca932850f))
+
+## Refactor
+
+- Docs (#10126) ([18cce83](https://github.com/discordjs/discord.js/commit/18cce83d80598c430218775c53441b6b2ecdc776))
+- **WebSocketShard:** Payload sending (#10098) ([c878b65](https://github.com/discordjs/discord.js/commit/c878b65ef586cd9b42f765515f87f43cb6165f61))
+- Use interfaces for AsyncEventEmitter event maps (#10044) ([adfd9cd](https://github.com/discordjs/discord.js/commit/adfd9cd3b32cfabdcc45ec90f535b2852a3ca4a6))
+
 # [@discordjs/ws@1.0.2](https://github.com/discordjs/discord.js/compare/@discordjs/ws@1.0.1...@discordjs/ws@1.0.2) - (2023-11-12)
 
 ## Bug Fixes
@@ -65,120 +118,6 @@ in non-node-like environments (CF Workers, etc.)
 ## Documentation
 
 - Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
-
-# [@discordjs/ws@0.8.1](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.8.0...@discordjs/ws@0.8.1) - (2023-04-16)
-
-## Bug Fixes
-
-- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
-
-## Refactor
-
-- Abstract identify throttling and correct max_concurrency handling (#9375) ([02dfaf1](https://github.com/discordjs/discord.js/commit/02dfaf1aa2c798315d0dd7f809cc469771b36ffc))
-- **WebSocketShard:** WaitForEvent and its error handling (#9282) ([dcf58d8](https://github.com/discordjs/discord.js/commit/dcf58d81401387a5e157b20829aa56638e106e9d))
-
-# [@discordjs/ws@1.0.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.8.3...@discordjs/ws@1.0.0) - (2023-07-31)
-
-## Bug Fixes
-
-- **WebSocketShard:** Close errors not being catchable (#9704) ([8c782bf](https://github.com/discordjs/discord.js/commit/8c782bfd52b1d7bbfbf1dfd39d0c45828298e285))
-- **WebSocketManager:** Always cache result of fetchGatewayInformation (#9611) ([df8b6e9](https://github.com/discordjs/discord.js/commit/df8b6e9934af5b21aa2701ce54244c38a5f133e0))
-- **WebSocketShard:** Handle initial connect being a resume (#9549) ([4dcc9c5](https://github.com/discordjs/discord.js/commit/4dcc9c50f83cd234cb2c2ede47fb505ffb75eef2))
-
-## Features
-
-- No-de-no-de, now with extra buns (#9683) ([386f206](https://github.com/discordjs/discord.js/commit/386f206caf74a04c426799af9796ca96dcb37056))
-  - **BREAKING CHANGE:** The REST and RequestManager classes now extend AsyncEventEmitter
-from `@vladfrangu/async_event_emitter`, which aids in cross-compatibility
-between Node, Deno, Bun, CF Workers, Vercel Functions, etc.
-  - **BREAKING CHANGE:** DefaultUserAgentAppendix has been adapted to support multiple
-different platforms (previously mentioned Deno, Bun, CF Workers, etc)
-  - **BREAKING CHANGE:** the entry point for `@discordjs/rest` will now differ
-in non-node-like environments (CF Workers, etc.)
-  - **Co-authored-by:** Suneet Tipirneni <77477100+suneettipirneni@users.noreply.github.com>
-  - **Co-authored-by:** Jiralite <33201955+Jiralite@users.noreply.github.com>
-  - **Co-authored-by:** suneettipirneni <suneettipirneni@icloud.com>
-
-## Refactor
-
-- **WebSocketShard:** Throttling error handling (#9701) ([ceab07b](https://github.com/discordjs/discord.js/commit/ceab07bec85c8d678958b8023a9c1902136f9f83))
-- **rest:** Switch api to fetch-like and provide strategies (#9416) ([cdaa0a3](https://github.com/discordjs/discord.js/commit/cdaa0a36f586459f1e5ede868c4250c7da90455c))
-  - **BREAKING CHANGE:** NodeJS v18+ is required when using node due to the use of global `fetch`
-  - **BREAKING CHANGE:** The raw method of REST now returns a web compatible `Respone` object.
-  - **BREAKING CHANGE:** The `parseResponse` utility method has been updated to operate on a web compatible `Response` object.
-  - **BREAKING CHANGE:** Many underlying internals have changed, some of which were exported.
-  - **BREAKING CHANGE:** `DefaultRestOptions` used to contain a default `agent`, which is now set to `null` instead.
-
-# [@discordjs/ws@0.8.3](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.8.2...@discordjs/ws@0.8.3) - (2023-05-06)
-
-## Bug Fixes
-
-- **WebSocketShard:** Wait a little before reconnecting (#9517) ([00da44a](https://github.com/discordjs/discord.js/commit/00da44a120fb0eeb2bdc3a03670836a544dc5418))
-
-## Testing
-
-- **ws:** Fix tests (#9520) ([3e80f0b](https://github.com/discordjs/discord.js/commit/3e80f0b384ea2dc14c1b60b5897e90040cab9a24))
-
-# [@discordjs/ws@0.8.2](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.8.1...@discordjs/ws@0.8.2) - (2023-05-01)
-
-## Documentation
-
-- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
-
-# [@discordjs/ws@0.8.1](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.8.0...@discordjs/ws@0.8.1) - (2023-04-16)
-
-## Bug Fixes
-
-- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
-
-## Refactor
-
-- Abstract identify throttling and correct max_concurrency handling (#9375) ([02dfaf1](https://github.com/discordjs/discord.js/commit/02dfaf1aa2c798315d0dd7f809cc469771b36ffc))
-- **WebSocketShard:** WaitForEvent and its error handling (#9282) ([dcf58d8](https://github.com/discordjs/discord.js/commit/dcf58d81401387a5e157b20829aa56638e106e9d))
-
-# [@discordjs/ws@0.8.3](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.8.2...@discordjs/ws@0.8.3) - (2023-05-06)
-
-## Bug Fixes
-
-- **WebSocketShard:** Wait a little before reconnecting (#9517) ([00da44a](https://github.com/discordjs/discord.js/commit/00da44a120fb0eeb2bdc3a03670836a544dc5418))
-
-## Testing
-
-- **ws:** Fix tests (#9520) ([3e80f0b](https://github.com/discordjs/discord.js/commit/3e80f0b384ea2dc14c1b60b5897e90040cab9a24))
-
-# [@discordjs/ws@0.8.2](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.8.1...@discordjs/ws@0.8.2) - (2023-05-01)
-
-## Documentation
-
-- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
-
-# [@discordjs/ws@0.8.1](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.8.0...@discordjs/ws@0.8.1) - (2023-04-16)
-
-## Bug Fixes
-
-- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
-
-## Refactor
-
-- Abstract identify throttling and correct max_concurrency handling (#9375) ([02dfaf1](https://github.com/discordjs/discord.js/commit/02dfaf1aa2c798315d0dd7f809cc469771b36ffc))
-- **WebSocketShard:** WaitForEvent and its error handling (#9282) ([dcf58d8](https://github.com/discordjs/discord.js/commit/dcf58d81401387a5e157b20829aa56638e106e9d))
-
-# [@discordjs/ws@0.8.2](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.8.1...@discordjs/ws@0.8.2) - (2023-05-01)
-
-## Documentation
-
-- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
-
-# [@discordjs/ws@0.8.1](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.8.0...@discordjs/ws@0.8.1) - (2023-04-16)
-
-## Bug Fixes
-
-- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
-
-## Refactor
-
-- Abstract identify throttling and correct max_concurrency handling (#9375) ([02dfaf1](https://github.com/discordjs/discord.js/commit/02dfaf1aa2c798315d0dd7f809cc469771b36ffc))
-- **WebSocketShard:** WaitForEvent and its error handling (#9282) ([dcf58d8](https://github.com/discordjs/discord.js/commit/dcf58d81401387a5e157b20829aa56638e106e9d))
 
 # [@discordjs/ws@0.8.1](https://github.com/discordjs/discord.js/compare/@discordjs/ws@0.8.0...@discordjs/ws@0.8.1) - (2023-04-16)
 

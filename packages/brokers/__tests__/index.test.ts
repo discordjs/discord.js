@@ -17,7 +17,7 @@ const mockRedisClient = {
 test('pubsub with custom encoding', async () => {
 	const encode = vi.fn((data) => data);
 
-	const broker = new PubSubRedisBroker({ redisClient: mockRedisClient, encode });
+	const broker = new PubSubRedisBroker(mockRedisClient, { encode });
 	await broker.publish('test', 'test');
 	expect(encode).toHaveBeenCalledWith('test');
 });

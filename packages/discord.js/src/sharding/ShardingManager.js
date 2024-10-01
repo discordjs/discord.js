@@ -23,7 +23,7 @@ class ShardingManager extends EventEmitter {
   /**
    * The mode to spawn shards with for a {@link ShardingManager}. Can be either one of:
    * * 'process' to use child processes
-   * * 'worker' to use [Worker threads](https://nodejs.org/api/worker_threads.html)
+   * * 'worker' to use {@link Worker} threads
    * @typedef {string} ShardingManagerMode
    */
 
@@ -37,9 +37,7 @@ class ShardingManager extends EventEmitter {
    * @property {boolean} [silent=false] Whether to pass the silent flag to child process
    * (only available when mode is set to 'process')
    * @property {string[]} [shardArgs=[]] Arguments to pass to the shard script when spawning
-   * (only available when mode is set to 'process')
    * @property {string[]} [execArgv=[]] Arguments to pass to the shard script executable when spawning
-   * (only available when mode is set to 'process')
    * @property {string} [token] Token to use for automatic shard count and passing to shards
    */
 

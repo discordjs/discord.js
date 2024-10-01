@@ -43,14 +43,14 @@ jobs:
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Install node.js v18
-        uses: actions/setup-node@v3
+      - name: Install Node.js v20
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
           registry-url: https://registry.npmjs.org/
 
       - name: Check the current development version
@@ -72,7 +72,7 @@ jobs:
       - name: Publish package
         if: steps.release-check.outputs.release == '1'
         run: |
-          pnpm --filter=${{ matrix.package }} run release --preid "dev.$(date +%s)-$(git rev-parse --short HEAD)"
+          pnpm --filter=${{ matrix.package }} run release --preid "dev.$(date +%s)-$(git rev-parse --short HEAD)" --skip-changelog
           pnpm --filter=${{ matrix.package }} publish --provenance --no-git-checks --tag dev || true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
