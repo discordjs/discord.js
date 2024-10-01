@@ -101,6 +101,11 @@
  */
 
 /**
+ * @external APIGuildScheduledEventRecurrenceRule
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIGuildScheduledEventRecurrenceRule}
+ */
+
+/**
  * @external APIInteraction
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIInteraction}
  */
@@ -391,6 +396,21 @@
  */
 
 /**
+ * @external GuildScheduledEventRecurrenceRuleFrequency
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildScheduledEventRecurrenceRuleFrequency}
+ */
+
+/**
+ * @external GuildScheduledEventRecurrenceRuleMonth
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildScheduledEventRecurrenceRuleMonth}
+ */
+
+/**
+ * @external GuildScheduledEventRecurrenceRuleWeekday
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildScheduledEventRecurrenceRuleWeekday}
+ */
+
+/**
  * @external GuildScheduledEventStatus
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildScheduledEventStatus}
  */
@@ -453,6 +473,11 @@
 /**
  * @external MessageActivityType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/MessageActivityType}
+ */
+
+/**
+ * @external MessageReferenceType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/MessageReferenceType}
  */
 
 /**
