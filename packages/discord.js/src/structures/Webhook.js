@@ -126,7 +126,7 @@ class Webhook {
 
   /**
    * Options that can be passed into send.
-   * @typedef {BaseMessageOptions} WebhookMessageCreateOptions
+   * @typedef {BaseMessageOptionsWithPoll} WebhookMessageCreateOptions
    * @property {boolean} [tts=false] Whether the message should be spoken aloud
    * @property {MessageFlags} [flags] Which flags to set for the message.
    * <info>Only the {@link MessageFlags.SuppressEmbeds} flag can be set.</info>

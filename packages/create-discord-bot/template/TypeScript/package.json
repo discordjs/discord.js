@@ -13,7 +13,7 @@
 	},
 	"dependencies": {
 		"@discordjs/core": "^1.2.0",
-		"discord.js": "^14.15.3",
+		"discord.js": "^14.16.0",
 		"dotenv": "^16.4.5"
 	},
 	"devDependencies": {

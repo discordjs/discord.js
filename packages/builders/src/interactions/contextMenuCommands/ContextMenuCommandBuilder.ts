@@ -67,6 +67,8 @@ export class ContextMenuCommandBuilder {
 	 *
 	 * @remarks
 	 * By default, commands are visible. This property is only for global commands.
+	 * @deprecated
+	 * Use {@link ContextMenuCommandBuilder.contexts} instead.
 	 */
 	public readonly dm_permission: boolean | undefined = undefined;
 
@@ -167,6 +169,7 @@ export class ContextMenuCommandBuilder {
 	 * By default, commands are visible. This method is only for global commands.
 	 * @param enabled - Whether the command should be enabled in direct messages
 	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#permissions}
+	 * @deprecated Use {@link ContextMenuCommandBuilder.setContexts} instead.
 	 */
 	public setDMPermission(enabled: boolean | null | undefined) {
 		// Assert the value matches the conditions

@@ -75,9 +75,9 @@ class BaseInteraction extends Base {
 
     /**
      * Set of permissions the application or bot has within the channel the interaction was sent from
-     * @type {?Readonly<PermissionsBitField>}
+     * @type {Readonly<PermissionsBitField>}
      */
-    this.appPermissions = data.app_permissions ? new PermissionsBitField(data.app_permissions).freeze() : null;
+    this.appPermissions = new PermissionsBitField(data.app_permissions).freeze();
 
     /**
      * The permissions of the member, if one exists, in the channel this interaction was executed in
@@ -107,6 +107,21 @@ class BaseInteraction extends Base {
       (coll, entitlement) => coll.set(entitlement.id, this.client.application.entitlements._add(entitlement)),
       new Collection(),
     );
+
+    /* eslint-disable max-len */
+    /**
+     * Mapping of installation contexts that the interaction was authorized for the related user or guild ids
+     * @type {APIAuthorizingIntegrationOwnersMap}
+     * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-authorizing-integration-owners-object}
+     */
+    this.authorizingIntegrationOwners = data.authorizing_integration_owners;
+    /* eslint-enable max-len */
+
+    /**
+     * Context where the interaction was triggered from
+     * @type {?InteractionContextType}
+     */
+    this.context = data.context ?? null;
   }
 
   /**

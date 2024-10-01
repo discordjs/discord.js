@@ -52,7 +52,7 @@
 	"devDependencies": {
 		"@commitlint/cli": "^19.4.0",
 		"@commitlint/config-angular": "^19.3.0",
-		"@favware/cliff-jumper": "^3.0.3",
+		"@favware/cliff-jumper": "^4.1.0",
 		"@favware/npm-deprecate": "^1.0.7",
 		"@types/lodash.merge": "^4.6.9",
 		"@unocss/eslint-plugin": "^0.59.4",

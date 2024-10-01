@@ -63,6 +63,8 @@ export class SlashCommandBuilder {
 	 *
 	 * @remarks
 	 * By default, commands are visible. This property is only for global commands.
+	 * @deprecated
+	 * Use {@link SlashCommandBuilder.contexts} instead.
 	 */
 	public readonly dm_permission: boolean | undefined = undefined;
 
