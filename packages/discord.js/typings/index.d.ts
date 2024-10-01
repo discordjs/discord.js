@@ -6519,12 +6519,22 @@ export interface MultipleShardSpawnOptions {
   timeout?: number;
 }
 
-export interface OverwriteData {
+export interface BaseOverwriteData {
   allow?: PermissionResolvable;
   deny?: PermissionResolvable;
   id: GuildMemberResolvable | RoleResolvable;
   type?: OverwriteType;
 }
+
+export interface OverwriteDataWithMandatoryType extends BaseOverwriteData {
+  type: OverwriteType;
+}
+
+export interface OverwriteDataWithOptionalType extends BaseOverwriteData {
+  id: Exclude<GuildMemberResolvable | RoleResolvable, Snowflake>;
+}
+
+export type OverwriteData = OverwriteDataWithMandatoryType | OverwriteDataWithOptionalType;
 
 export type OverwriteResolvable = PermissionOverwrites | OverwriteData;
 
