@@ -99,7 +99,7 @@ class GuildChannelManager extends CachedManager {
   }
 
   /**
-   * Data that can be resolved to a Announcement Channel object. This can be:
+   * Data that can be resolved to an Announcement Channel object. This can be:
    * * An Announcement Channel object
    * * A Snowflake
    * @typedef {AnnouncementChannel|Snowflake} AnnouncementChannelResolvable
