@@ -101,7 +101,7 @@ class BaseGuildTextChannel extends GuildChannel {
 
   /**
    * Sets the type of this channel.
-   * <info>Only conversion between {@link TextChannel} and {@link NewsChannel} is supported.</info>
+   * <info>Only conversion between {@link TextChannel} and {@link AnnouncementChannel} is supported.</info>
    * @param {ChannelType.GuildText|ChannelType.GuildAnnouncement} type The new channel type
    * @param {string} [reason] Reason for changing the channel's type
    * @returns {Promise<GuildChannel>}

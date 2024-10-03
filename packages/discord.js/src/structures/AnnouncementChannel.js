@@ -5,10 +5,10 @@ const BaseGuildTextChannel = require('./BaseGuildTextChannel');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 
 /**
- * Represents a guild news channel on Discord.
+ * Represents a guild announcement channel on Discord.
  * @extends {BaseGuildTextChannel}
  */
-class NewsChannel extends BaseGuildTextChannel {
+class AnnouncementChannel extends BaseGuildTextChannel {
   /**
    * Adds the target to this channel's followers.
    * @param {TextChannelResolvable} channel The channel where the webhook should be created
@@ -29,4 +29,4 @@ class NewsChannel extends BaseGuildTextChannel {
   }
 }
 
-module.exports = NewsChannel;
+module.exports = AnnouncementChannel;

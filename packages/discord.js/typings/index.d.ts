@@ -668,7 +668,7 @@ export class BaseGuildTextChannel extends GuildChannel {
   public defaultThreadRateLimitPerUser: number | null;
   public rateLimitPerUser: number | null;
   public nsfw: boolean;
-  public threads: GuildTextThreadManager<AllowedThreadTypeForTextChannel | AllowedThreadTypeForNewsChannel>;
+  public threads: GuildTextThreadManager<AllowedThreadTypeForTextChannel | AllowedThreadTypeForAnnouncementChannel>;
   public topic: string | null;
   public createInvite(options?: InviteCreateOptions): Promise<Invite>;
   public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
@@ -678,7 +678,7 @@ export class BaseGuildTextChannel extends GuildChannel {
   ): Promise<this>;
   public setTopic(topic: string | null, reason?: string): Promise<this>;
   public setType(type: ChannelType.GuildText, reason?: string): Promise<TextChannel>;
-  public setType(type: ChannelType.GuildAnnouncement, reason?: string): Promise<NewsChannel>;
+  public setType(type: ChannelType.GuildAnnouncement, reason?: string): Promise<AnnouncementChannel>;
 }
 
 // tslint:disable-next-line no-empty-interface
@@ -924,7 +924,7 @@ export class Embed {
 }
 
 export interface MappedChannelCategoryTypes {
-  [ChannelType.GuildAnnouncement]: NewsChannel;
+  [ChannelType.GuildAnnouncement]: AnnouncementChannel;
   [ChannelType.GuildVoice]: VoiceChannel;
   [ChannelType.GuildText]: TextChannel;
   [ChannelType.GuildStageVoice]: StageChannel;
@@ -1477,7 +1477,13 @@ export class Guild extends AnonymousGuild {
   public vanityURLUses: number | null;
   public get voiceAdapterCreator(): InternalDiscordGatewayAdapterCreator;
   public voiceStates: VoiceStateManager;
-  public get widgetChannel(): TextChannel | NewsChannel | VoiceBasedChannel | ForumChannel | MediaChannel | null;
+  public get widgetChannel():
+    | TextChannel
+    | AnnouncementChannel
+    | VoiceBasedChannel
+    | ForumChannel
+    | MediaChannel
+    | null;
   public widgetChannelId: Snowflake | null;
   public widgetEnabled: boolean | null;
   public get maximumBitrate(): number;
@@ -2567,13 +2573,13 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public isFromMessage(): this is ModalMessageModalSubmitInteraction<Cached>;
 }
 
-export class NewsChannel extends BaseGuildTextChannel {
-  public threads: GuildTextThreadManager<AllowedThreadTypeForNewsChannel>;
+export class AnnouncementChannel extends BaseGuildTextChannel {
+  public threads: GuildTextThreadManager<AllowedThreadTypeForAnnouncementChannel>;
   public type: ChannelType.GuildAnnouncement;
-  public addFollower(channel: TextChannelResolvable, reason?: string): Promise<NewsChannel>;
+  public addFollower(channel: TextChannelResolvable, reason?: string): Promise<AnnouncementChannel>;
 }
 
-export type NewsChannelResolvable = NewsChannel | Snowflake;
+export type AnnouncementChannelResolvable = AnnouncementChannel | Snowflake;
 
 export class OAuth2Guild extends BaseGuild {
   private constructor(client: Client<true>, data: RawOAuth2GuildData);
@@ -3356,7 +3362,7 @@ export class ThreadChannel<ThreadOnly extends boolean = boolean> extends BaseCha
   public members: ThreadMemberManager;
   public name: string;
   public ownerId: Snowflake | null;
-  public get parent(): If<ThreadOnly, ForumChannel | MediaChannel, TextChannel | NewsChannel> | null;
+  public get parent(): If<ThreadOnly, ForumChannel | MediaChannel, TextChannel | AnnouncementChannel> | null;
   public parentId: Snowflake | null;
   public rateLimitPerUser: number | null;
   public type: ThreadChannelType;
@@ -3415,7 +3421,7 @@ export class Typing extends Base {
   public get guild(): Guild | null;
   public get member(): GuildMember | null;
   public inGuild(): this is this & {
-    channel: TextChannel | NewsChannel | ThreadChannel;
+    channel: TextChannel | AnnouncementChannel | ThreadChannel;
     get guild(): Guild;
   };
 }
@@ -3700,7 +3706,7 @@ export class Webhook<Type extends WebhookType = WebhookType> {
   public name: string;
   public owner: Type extends WebhookType.Incoming ? User | APIUser | null : User | APIUser;
   public sourceGuild: Type extends WebhookType.ChannelFollower ? Guild | APIPartialGuild : null;
-  public sourceChannel: Type extends WebhookType.ChannelFollower ? NewsChannel | APIPartialChannel : null;
+  public sourceChannel: Type extends WebhookType.ChannelFollower ? AnnouncementChannel | APIPartialChannel : null;
   public token: Type extends WebhookType.Incoming
     ? string
     : Type extends WebhookType.ChannelFollower
@@ -3708,7 +3714,14 @@ export class Webhook<Type extends WebhookType = WebhookType> {
       : string | null;
   public type: Type;
   public applicationId: Type extends WebhookType.Application ? Snowflake : null;
-  public get channel(): TextChannel | VoiceChannel | NewsChannel | StageChannel | ForumChannel | MediaChannel | null;
+  public get channel():
+    | TextChannel
+    | VoiceChannel
+    | AnnouncementChannel
+    | StageChannel
+    | ForumChannel
+    | MediaChannel
+    | null;
   public isUserCreated(): this is Webhook<WebhookType.Incoming> & {
     owner: User | APIUser;
   };
@@ -3839,7 +3852,7 @@ export class WelcomeChannel extends Base {
   public channelId: Snowflake;
   public guild: Guild | InviteGuild;
   public description: string;
-  public get channel(): TextChannel | NewsChannel | ForumChannel | MediaChannel | null;
+  public get channel(): TextChannel | AnnouncementChannel | ForumChannel | MediaChannel | null;
   public get emoji(): GuildEmoji | Emoji;
 }
 
@@ -4338,7 +4351,7 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
   public guild: Guild;
 
   public addFollower(
-    channel: NewsChannelResolvable,
+    channel: AnnouncementChannelResolvable,
     targetChannel: TextChannelResolvable,
     reason?: string,
   ): Promise<Snowflake>;
@@ -4637,10 +4650,10 @@ export class ThreadManager<ThreadOnly extends boolean = boolean> extends CachedM
   ThreadChannelResolvable
 > {
   protected constructor(
-    channel: TextChannel | NewsChannel | ForumChannel | MediaChannel,
+    channel: TextChannel | AnnouncementChannel | ForumChannel | MediaChannel,
     iterable?: Iterable<RawThreadChannelData>,
   );
-  public channel: If<ThreadOnly, ForumChannel | MediaChannel, TextChannel | NewsChannel>;
+  public channel: If<ThreadOnly, ForumChannel | MediaChannel, TextChannel | AnnouncementChannel>;
   public fetch(
     options: ThreadChannelResolvable,
     cacheOptions?: BaseFetchOptions,
@@ -4797,7 +4810,7 @@ export type AllowedPartial =
   | GuildScheduledEvent
   | ThreadMember;
 
-export type AllowedThreadTypeForNewsChannel = ChannelType.AnnouncementThread;
+export type AllowedThreadTypeForAnnouncementChannel = ChannelType.AnnouncementThread;
 
 export type AllowedThreadTypeForTextChannel = ChannelType.PublicThread | ChannelType.PrivateThread;
 
@@ -5281,7 +5294,7 @@ export interface ChannelPosition {
   position?: number;
 }
 
-export type GuildTextChannelResolvable = TextChannel | NewsChannel | Snowflake;
+export type GuildTextChannelResolvable = TextChannel | AnnouncementChannel | Snowflake;
 export type ChannelResolvable = Channel | Snowflake;
 
 export interface ChannelWebhookCreateOptions {
@@ -5291,7 +5304,7 @@ export interface ChannelWebhookCreateOptions {
 }
 
 export interface WebhookCreateOptions extends ChannelWebhookCreateOptions {
-  channel: TextChannel | NewsChannel | VoiceChannel | StageChannel | ForumChannel | MediaChannel | Snowflake;
+  channel: TextChannel | AnnouncementChannel | VoiceChannel | StageChannel | ForumChannel | MediaChannel | Snowflake;
 }
 
 export interface GuildMembersChunk {
@@ -5392,7 +5405,7 @@ export interface ClientEvents {
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
   /** @deprecated Use {@link ClientEvents.webhooksUpdate} instead. */
   webhookUpdate: ClientEvents['webhooksUpdate'];
-  webhooksUpdate: [channel: TextChannel | NewsChannel | VoiceChannel | ForumChannel | MediaChannel];
+  webhooksUpdate: [channel: TextChannel | AnnouncementChannel | VoiceChannel | ForumChannel | MediaChannel];
   interactionCreate: [interaction: Interaction];
   shardDisconnect: [closeEvent: CloseEvent, shardId: number];
   shardError: [error: Error, shardId: number];
@@ -6087,7 +6100,7 @@ export interface GuildCreateOptions {
 
 export interface GuildWidgetSettings {
   enabled: boolean;
-  channel: TextChannel | NewsChannel | VoiceBasedChannel | ForumChannel | MediaChannel | null;
+  channel: TextChannel | AnnouncementChannel | VoiceBasedChannel | ForumChannel | MediaChannel | null;
 }
 
 export interface GuildEditOptions {
@@ -6167,7 +6180,7 @@ export interface GuildPruneMembersOptions {
 
 export interface GuildWidgetSettingsData {
   enabled: boolean;
-  channel: TextChannel | NewsChannel | VoiceBasedChannel | ForumChannel | MediaChannel | Snowflake | null;
+  channel: TextChannel | AnnouncementChannel | VoiceBasedChannel | ForumChannel | MediaChannel | Snowflake | null;
 }
 
 export interface GuildSearchMembersOptions {
@@ -6359,7 +6372,7 @@ export interface InviteGenerationOptions {
 export type GuildInvitableChannelResolvable =
   | TextChannel
   | VoiceChannel
-  | NewsChannel
+  | AnnouncementChannel
   | StageChannel
   | ForumChannel
   | MediaChannel
@@ -6938,7 +6951,7 @@ export type Channel =
   | DMChannel
   | PartialDMChannel
   | PartialGroupDMChannel
-  | NewsChannel
+  | AnnouncementChannel
   | StageChannel
   | TextChannel
   | PublicThreadChannel
@@ -7086,7 +7099,7 @@ export interface WidgetChannel {
 
 export interface WelcomeChannelData {
   description: string;
-  channel: TextChannel | NewsChannel | ForumChannel | MediaChannel | Snowflake;
+  channel: TextChannel | AnnouncementChannel | ForumChannel | MediaChannel | Snowflake;
   emoji?: EmojiIdentifierResolvable;
 }
 
