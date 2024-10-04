@@ -29,7 +29,7 @@ export class MonetizationAPI {
 	}
 
 	/**
-	 * Fetches the subscriptions for an SKU.
+	 * Fetches subscriptions for an SKU.
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/subscription#list-sku-subscriptions}
 	 * @param skuId - The SKU id to fetch subscriptions for
@@ -48,7 +48,7 @@ export class MonetizationAPI {
 	}
 
 	/**
-	 * Fetches the subscription for an SKU.
+	 * Fetches a subscription for an SKU.
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/subscription#get-sku-subscription}
 	 * @param skuId - The SKU id to fetch subscription for
