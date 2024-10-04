@@ -86,7 +86,7 @@
 		"tsup": "^8.2.4",
 		"turbo": "^2.0.14",
 		"tweetnacl": "^1.0.3",
-		"typescript": "^5.4.5",
+		"typescript": "~5.5.4",
 		"vitest": "^2.0.5",
 		"vitest-websocket-mock": "^0.3.0"
 	},
