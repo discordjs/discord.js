@@ -1643,9 +1643,6 @@ importers:
       eslint-formatter-pretty:
         specifier: ^6.0.1
         version: 6.0.1
-      mock-socket:
-        specifier: ^9.3.1
-        version: 9.3.1
       prettier:
         specifier: ^3.3.3
         version: 3.3.3
@@ -1659,7 +1656,7 @@ importers:
         specifier: ^1.0.3
         version: 1.0.3
       typescript:
-        specifier: ^5.4.5
+        specifier: ~5.5.4
         version: 5.5.4
       vitest:
         specifier: ^2.0.5
