@@ -16,7 +16,7 @@ import type {
 import { ComponentType } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../util/normalizeArray.js';
 import { resolveBuilder } from '../util/resolveBuilder.js';
-import { isValidationEnabled } from '../util/validation.js';
+import { validate } from '../util/validation.js';
 import { actionRowPredicate } from './Assertions.js';
 import { ComponentBuilder } from './Component.js';
 import type { AnyActionRowComponentBuilder } from './Components.js';
@@ -336,9 +336,7 @@ export class ActionRowBuilder extends ComponentBuilder<APIActionRowComponent<API
 			components: components.map((component) => component.toJSON(validationOverride)),
 		};
 
-		if (validationOverride ?? isValidationEnabled()) {
-			actionRowPredicate.parse(data);
-		}
+		validate(actionRowPredicate, data, validationOverride);
 
 		return data as APIActionRowComponent<APIActionRowComponentTypes>;
 	}

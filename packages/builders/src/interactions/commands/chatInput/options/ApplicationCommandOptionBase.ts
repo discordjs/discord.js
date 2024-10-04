@@ -5,7 +5,7 @@ import type {
 	ApplicationCommandOptionType,
 } from 'discord-api-types/v10';
 import type { z } from 'zod';
-import { isValidationEnabled } from '../../../../util/validation.js';
+import { validate } from '../../../../util/validation.js';
 import type { SharedNameAndDescriptionData } from '../../SharedNameAndDescription.js';
 import { SharedNameAndDescription } from '../../SharedNameAndDescription.js';
 import { basicOptionPredicate } from '../Assertions.js';
@@ -49,10 +49,7 @@ export abstract class ApplicationCommandOptionBase
 	 */
 	public toJSON(validationOverride?: boolean): APIApplicationCommandBasicOption {
 		const clone = structuredClone(this.data);
-
-		if (validationOverride ?? isValidationEnabled()) {
-			(this.constructor as typeof ApplicationCommandOptionBase).predicate.parse(clone);
-		}
+		validate((this.constructor as typeof ApplicationCommandOptionBase).predicate, clone, validationOverride);
 
 		return clone as APIApplicationCommandBasicOption;
 	}

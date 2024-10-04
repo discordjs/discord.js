@@ -1,5 +1,5 @@
 import type { APIEmbedFooter } from 'discord-api-types/v10';
-import { isValidationEnabled } from '../../util/validation.js';
+import { validate } from '../../util/validation.js';
 import { embedFooterPredicate } from './Assertions.js';
 
 /**
@@ -54,10 +54,7 @@ export class EmbedFooterBuilder {
 	 */
 	public toJSON(validationOverride?: boolean): APIEmbedFooter {
 		const clone = structuredClone(this.data);
-
-		if (validationOverride ?? isValidationEnabled()) {
-			embedFooterPredicate.parse(clone);
-		}
+		validate(embedFooterPredicate, clone, validationOverride);
 
 		return clone as APIEmbedFooter;
 	}

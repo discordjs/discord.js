@@ -7,7 +7,7 @@ import { ApplicationCommandOptionType } from 'discord-api-types/v10';
 import { Mixin } from 'ts-mixer';
 import { normalizeArray, type RestOrArray } from '../../../util/normalizeArray.js';
 import { resolveBuilder } from '../../../util/resolveBuilder.js';
-import { isValidationEnabled } from '../../../util/validation.js';
+import { validate } from '../../../util/validation.js';
 import type { SharedNameAndDescriptionData } from '../SharedNameAndDescription.js';
 import { SharedNameAndDescription } from '../SharedNameAndDescription.js';
 import { chatInputCommandSubcommandGroupPredicate, chatInputCommandSubcommandPredicate } from './Assertions.js';
@@ -69,9 +69,7 @@ export class ChatInputCommandSubcommandGroupBuilder
 			options: options?.map((option) => option.toJSON(validationOverride)) ?? [],
 		};
 
-		if (validationOverride ?? isValidationEnabled()) {
-			chatInputCommandSubcommandGroupPredicate.parse(data);
-		}
+		validate(chatInputCommandSubcommandGroupPredicate, data, validationOverride);
 
 		return data;
 	}
@@ -102,9 +100,7 @@ export class ChatInputCommandSubcommandBuilder
 			options: options?.map((option) => option.toJSON(validationOverride)) ?? [],
 		};
 
-		if (validationOverride ?? isValidationEnabled()) {
-			chatInputCommandSubcommandPredicate.parse(data);
-		}
+		validate(chatInputCommandSubcommandPredicate, data, validationOverride);
 
 		return data;
 	}

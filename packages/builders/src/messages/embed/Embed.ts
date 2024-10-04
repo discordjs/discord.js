@@ -3,7 +3,7 @@ import type { APIEmbed, APIEmbedAuthor, APIEmbedField, APIEmbedFooter } from 'di
 import type { RestOrArray } from '../../util/normalizeArray.js';
 import { normalizeArray } from '../../util/normalizeArray.js';
 import { resolveBuilder } from '../../util/resolveBuilder.js';
-import { isValidationEnabled } from '../../util/validation.js';
+import { validate } from '../../util/validation.js';
 import { embedPredicate } from './Assertions.js';
 import { EmbedAuthorBuilder } from './EmbedAuthor.js';
 import { EmbedFieldBuilder } from './EmbedField.js';
@@ -343,9 +343,7 @@ export class EmbedBuilder implements JSONEncodable<APIEmbed> {
 			footer: this.data.footer?.toJSON(false),
 		};
 
-		if (validationOverride ?? isValidationEnabled()) {
-			embedPredicate.parse(data);
-		}
+		validate(embedPredicate, data, validationOverride);
 
 		return data;
 	}

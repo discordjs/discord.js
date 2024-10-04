@@ -10,7 +10,7 @@ import { ActionRowBuilder } from '../../components/ActionRow.js';
 import { createComponentBuilder } from '../../components/Components.js';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { resolveBuilder } from '../../util/resolveBuilder.js';
-import { isValidationEnabled } from '../../util/validation.js';
+import { validate } from '../../util/validation.js';
 import { modalPredicate } from './Assertions.js';
 
 export interface ModalBuilderData extends Partial<Omit<APIModalInteractionResponseCallbackData, 'components'>> {
@@ -162,9 +162,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 			components: components.map((component) => component.toJSON(validationOverride)),
 		};
 
-		if (validationOverride ?? isValidationEnabled()) {
-			modalPredicate.parse(data);
-		}
+		validate(modalPredicate, data, validationOverride);
 
 		return data as APIModalInteractionResponseCallbackData;
 	}
