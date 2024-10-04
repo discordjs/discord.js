@@ -1,6 +1,5 @@
 'use strict';
 
-const { deprecate } = require('node:util');
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { InteractionType, ApplicationCommandType, ComponentType } = require('discord-api-types/v10');
@@ -260,15 +259,6 @@ class BaseInteraction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a {@link StringSelectMenuInteraction}.
-   * @returns {boolean}
-   * @deprecated Use {@link BaseInteraction#isStringSelectMenu} instead.
-   */
-  isSelectMenu() {
-    return this.isStringSelectMenu();
-  }
-
-  /**
    * Indicates whether this interaction is a select menu of any known type.
    * @returns {boolean}
    */
@@ -324,10 +314,5 @@ class BaseInteraction extends Base {
     return ![InteractionType.Ping, InteractionType.ApplicationCommandAutocomplete].includes(this.type);
   }
 }
-
-BaseInteraction.prototype.isSelectMenu = deprecate(
-  BaseInteraction.prototype.isSelectMenu,
-  'BaseInteraction#isSelectMenu() is deprecated. Use BaseInteraction#isStringSelectMenu() instead.',
-);
 
 module.exports = BaseInteraction;

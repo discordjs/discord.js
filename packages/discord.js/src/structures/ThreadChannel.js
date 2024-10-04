@@ -1,8 +1,7 @@
 'use strict';
 
-const { DiscordAPIError } = require('@discordjs/rest');
 const { lazy } = require('@discordjs/util');
-const { RESTJSONErrorCodes, ChannelFlags, ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
+const { ChannelFlags, ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
 const { BaseChannel } = require('./BaseChannel');
 const getThreadOnlyChannel = lazy(() => require('./ThreadOnlyChannel'));
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
@@ -299,15 +298,7 @@ class ThreadChannel extends BaseChannel {
       throw new DiscordjsError(ErrorCodes.FetchOwnerId, 'thread');
     }
 
-    // TODO: Remove that catch in the next major version
-    const member = await this.members._fetchSingle({ ...options, member: this.ownerId }).catch(error => {
-      if (error instanceof DiscordAPIError && error.code === RESTJSONErrorCodes.UnknownMember) {
-        return null;
-      }
-
-      throw error;
-    });
-
+    const member = await this.members._fetchSingle({ ...options, member: this.ownerId });
     return member;
   }
 
