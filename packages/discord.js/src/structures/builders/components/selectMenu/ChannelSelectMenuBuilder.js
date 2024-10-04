@@ -1,8 +1,7 @@
 'use strict';
 
 const { ChannelSelectMenuBuilder: BuildersChannelSelectMenu } = require('@discordjs/builders');
-const { isJSONEncodable } = require('@discordjs/util');
-const { toSnakeCase } = require('../util/Transformers');
+const { toSnakeCase } = require('../../../../util/Transformers');
 
 /**
  * Class used to build select menu components to be sent through the API
@@ -11,15 +10,6 @@ const { toSnakeCase } = require('../util/Transformers');
 class ChannelSelectMenuBuilder extends BuildersChannelSelectMenu {
   constructor(data = {}) {
     super(toSnakeCase(data));
-  }
-
-  /**
-   * Creates a new select menu builder from JSON data
-   * @param {ChannelSelectMenuBuilder|ChannelSelectMenuComponent|APIChannelSelectComponent} other The other data
-   * @returns {ChannelSelectMenuBuilder}
-   */
-  static from(other) {
-    return new this(isJSONEncodable(other) ? other.toJSON() : other);
   }
 }
 

@@ -135,7 +135,7 @@ module.exports = { createComponent, createComponentBuilder };
 
 const ActionRow = require('../structures/ActionRow');
 const ActionRowBuilder = require('../structures/ActionRowBuilder');
-const ButtonBuilder = require('../structures/ButtonBuilder');
+const ButtonBuilder = require('../structures/builders/ButtonBuilder');
 const ButtonComponent = require('../structures/ButtonComponent');
 const ChannelSelectMenuBuilder = require('../structures/ChannelSelectMenuBuilder');
 const ChannelSelectMenuComponent = require('../structures/ChannelSelectMenuComponent');

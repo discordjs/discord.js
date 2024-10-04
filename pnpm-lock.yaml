@@ -946,6 +946,9 @@ importers:
       lodash.snakecase:
         specifier: 4.1.1
         version: 4.1.1
+      ts-mixer:
+        specifier: ^6.0.4
+        version: 6.0.4
       tslib:
         specifier: ^2.6.3
         version: 2.6.3
