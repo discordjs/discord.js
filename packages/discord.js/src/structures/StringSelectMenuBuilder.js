@@ -24,8 +24,8 @@ class StringSelectMenuBuilder extends BuildersSelectMenu {
 
   /**
    * Normalizes a select menu option emoji
-   * @param {SelectMenuOptionData|APISelectMenuOption} selectMenuOption The option to normalize
-   * @returns {SelectMenuOptionBuilder|APISelectMenuOption}
+   * @param {SelectMenuComponentOptionData|APISelectMenuOption} selectMenuOption The option to normalize
+   * @returns {StringSelectMenuOptionBuilder|APISelectMenuOption}
    * @private
    */
   static normalizeEmoji(selectMenuOption) {
