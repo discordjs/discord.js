@@ -33,6 +33,8 @@ import {
 	type RESTPostAPIChannelThreadsResult,
 	type APIThreadChannel,
 	type RESTPostAPIGuildForumThreadsJSONBody,
+	type RESTPostAPISoundboardSendSoundJSONBody,
+	type RESTPostAPISendSoundboardSoundResult,
 } from 'discord-api-types/v10';
 
 export interface StartForumThreadOptions extends RESTPostAPIGuildForumThreadsJSONBody {
@@ -582,5 +584,24 @@ export class ChannelsAPI {
 			reason,
 			signal,
 		});
+	}
+
+	/**
+	 * Sends a soundboard sound in a channel
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/soundboard#send-soundboard-sound}
+	 * @param channelId - The id of the channel to send the soundboard sound in
+	 * @param body - The data for sending the soundboard sound
+	 * @param options - The options for sending the soundboard sound
+	 */
+	public async sendSoundboardSound(
+		channelId: Snowflake,
+		body: RESTPostAPISoundboardSendSoundJSONBody,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		return this.rest.post(Routes.sendSoundboardSound(channelId), {
+			body,
+			signal,
+		}) as Promise<RESTPostAPISendSoundboardSoundResult>;
 	}
 }
