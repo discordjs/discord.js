@@ -100,11 +100,11 @@ export class VoiceReceiver {
 		if ((first >> 4) & 0x01) headerSize += 4;
 
 		// The unencrypted RTP header contains 12 bytes, HEADER_EXTENSION and the extension size
-		const header = buffer.slice(0, headerSize);
+		const header = buffer.subarray(0, headerSize);
 
 		// Encrypted contains the extension, if any, the opus packet, and the auth tag
-		const encrypted = buffer.slice(headerSize, buffer.length - AUTH_TAG_LENGTH - UNPADDED_NONCE_LENGTH);
-		const authTag = buffer.slice(
+		const encrypted = buffer.subarray(headerSize, buffer.length - AUTH_TAG_LENGTH - UNPADDED_NONCE_LENGTH);
+		const authTag = buffer.subarray(
 			buffer.length - AUTH_TAG_LENGTH - UNPADDED_NONCE_LENGTH,
 			buffer.length - UNPADDED_NONCE_LENGTH,
 		);
@@ -150,8 +150,9 @@ export class VoiceReceiver {
 		if (!packet) return;
 
 		// Strip decrypted RTP Header Extension if present
-		if (buffer.slice(12, 14).compare(HEADER_EXTENSION_BYTE) === 0) {
-			const headerExtensionLength = buffer.slice(14).readUInt16BE();
+		// The header is only indicated in the original data, so compare with buffer first
+		if (buffer.subarray(12, 14).compare(HEADER_EXTENSION_BYTE) === 0) {
+			const headerExtensionLength = buffer.subarray(14).readUInt16BE();
 			packet = packet.subarray(4 * headerExtensionLength);
 		}
 
