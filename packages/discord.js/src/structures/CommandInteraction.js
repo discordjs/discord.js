@@ -153,7 +153,6 @@ class CommandInteraction extends BaseInteraction {
   deleteReply() {}
   followUp() {}
   showModal() {}
-  sendPremiumRequired() {}
   awaitModalSubmit() {}
 }
 

@@ -504,7 +504,7 @@ class GuildMemberManager extends CachedManager {
   /**
    * Bulk ban users from a guild, and optionally delete previous messages sent by them.
    * @param {Collection<Snowflake, UserResolvable>|UserResolvable[]} users The users to ban
-   * @param {BulkBanOptions} [options] The options for bulk banning users
+   * @param {BanOptions} [options] The options for bulk banning users
    * @returns {Promise<BulkBanResult>} Returns an object with `bannedUsers` key containing the IDs of the banned users
    * and the key `failedUsers` with the IDs that could not be banned or were already banned.
    * Internally calls the GuildBanManager#bulkCreate method.

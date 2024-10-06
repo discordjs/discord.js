@@ -1,6 +1,5 @@
 'use strict';
 
-const { deprecate } = require('node:util');
 const { isJSONEncodable } = require('@discordjs/util');
 const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../../errors');
@@ -265,23 +264,6 @@ class InteractionResponses {
   }
 
   /**
-   * Responds to the interaction with an upgrade button.
-   * <info>Only available for applications with monetization enabled.</info>
-   * @deprecated Sending a premium-style button is the new Discord behaviour.
-   * @returns {Promise<void>}
-   */
-  async sendPremiumRequired() {
-    if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
-    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
-      body: {
-        type: InteractionResponseType.PremiumRequired,
-      },
-      auth: false,
-    });
-    this.replied = true;
-  }
-
-  /**
    * An object containing the same properties as {@link CollectorOptions}, but a few less:
    * @typedef {Object} AwaitModalSubmitOptions
    * @property {CollectorFilter} [filter] The filter applied to this collector
@@ -324,7 +306,6 @@ class InteractionResponses {
       'deferUpdate',
       'update',
       'showModal',
-      'sendPremiumRequired',
       'awaitModalSubmit',
     ];
 
@@ -338,11 +319,5 @@ class InteractionResponses {
     }
   }
 }
-
-InteractionResponses.prototype.sendPremiumRequired = deprecate(
-  InteractionResponses.prototype.sendPremiumRequired,
-  // eslint-disable-next-line max-len
-  'InteractionResponses#sendPremiumRequired() is deprecated. Sending a premium-style button is the new Discord behaviour.',
-);
 
 module.exports = InteractionResponses;
