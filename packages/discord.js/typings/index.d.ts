@@ -164,6 +164,8 @@ import {
   GuildScheduledEventRecurrenceRuleWeekday,
   GuildScheduledEventRecurrenceRuleMonth,
   GuildScheduledEventRecurrenceRuleFrequency,
+  APISubscription,
+  SubscriptionStatus,
   GatewaySendPayload,
   GatewayDispatchPayload,
   VoiceChannelEffectSendAnimationType,
@@ -1053,6 +1055,7 @@ export class ClientApplication extends Application {
   public commands: ApplicationCommandManager;
   public emojis: ApplicationEmojiManager;
   public entitlements: EntitlementManager;
+  public subscriptions: SubscriptionManager;
   public guildId: Snowflake | null;
   public get guild(): Guild | null;
   public cover: string | null;
@@ -3078,6 +3081,19 @@ export class SKUFlagsBitField extends BitField<SKUFlagsString> {
   public static resolve(bit?: BitFieldResolvable<SKUFlagsString, number>): number;
 }
 
+export class Subscription extends Base {
+  private constructor(client: Client<true>, data: APISubscription);
+  public id: Snowflake;
+  public get canceledAt(): Date | null;
+  public canceledTimestamp: number | null;
+  public country?: string;
+  public currentPeriodStart: Date;
+  public currentPeriodEnd: Date;
+  public status: SubscriptionStatus;
+  public entitlementIds: Snowflake[];
+  public skuIds: Snowflake[];
+}
+
 export class StageChannel extends BaseGuildVoiceChannel {
   public get stageInstance(): StageInstance | null;
   public topic: string | null;
@@ -4069,6 +4085,7 @@ export class ChannelManager extends CachedManager<Snowflake, Channel, ChannelRes
 
 export type EntitlementResolvable = Snowflake | Entitlement;
 export type SKUResolvable = Snowflake | SKU;
+export type SubscriptionResolvable = Snowflake | Subscription;
 
 export interface GuildEntitlementCreateOptions {
   sku: SKUResolvable;
@@ -4097,6 +4114,24 @@ export class EntitlementManager extends CachedManager<Snowflake, Entitlement, En
   public createTest(options: GuildEntitlementCreateOptions | UserEntitlementCreateOptions): Promise<Entitlement>;
   public deleteTest(entitlement: EntitlementResolvable): Promise<void>;
   public consume(entitlementId: Snowflake): Promise<void>;
+}
+
+export interface FetchSubscriptionsOptions {
+  limit?: number;
+  sku: SKUResolvable;
+  subscriptionId?: undefined;
+  user: UserResolvable;
+  cache?: boolean;
+  before?: Snowflake;
+  after?: Snowflake;
+}
+
+export class SubscriptionManager extends CachedManager<Snowflake, Subscription, SubscriptionResolvable> {
+  private constructor(client: Client<true>, iterable?: Iterable<APISubscription>);
+  public fetch(options: FetchSubscriptionsOptions): Promise<Collection<Snowflake, Subscription>>;
+  public fetch(
+    options: Omit<FetchSubscriptionsOptions, 'subscriptionId'> & { subscriptionId: Snowflake },
+  ): Promise<Subscription>;
 }
 
 export interface FetchGuildApplicationCommandFetchOptions extends Omit<FetchApplicationCommandOptions, 'guildId'> {}
@@ -5193,6 +5228,9 @@ export interface ClientEvents {
   stickerCreate: [sticker: Sticker];
   stickerDelete: [sticker: Sticker];
   stickerUpdate: [oldSticker: Sticker, newSticker: Sticker];
+  subscriptionCreate: [subscription: Subscription];
+  subscriptionDelete: [subscription: Subscription];
+  subscriptionUpdate: [oldSubscription: Subscription | null, newSubscription: Subscription];
   guildScheduledEventCreate: [guildScheduledEvent: GuildScheduledEvent];
   guildScheduledEventUpdate: [
     oldGuildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent | null,
@@ -5392,6 +5430,9 @@ export enum Events {
   StageInstanceCreate = 'stageInstanceCreate',
   StageInstanceUpdate = 'stageInstanceUpdate',
   StageInstanceDelete = 'stageInstanceDelete',
+  SubscriptionCreate = 'subscriptionCreate',
+  SubscriptionUpdate = 'subscriptionUpdate',
+  SubscriptionDelete = 'subscriptionDelete',
   GuildStickerCreate = 'stickerCreate',
   GuildStickerDelete = 'stickerDelete',
   GuildStickerUpdate = 'stickerUpdate',
