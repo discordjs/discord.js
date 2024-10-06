@@ -111,6 +111,10 @@ class GenericAction {
   getThreadMember(id, manager) {
     return this.getPayload({ user_id: id }, manager, id, Partials.ThreadMember, false);
   }
+
+  spreadInjectedData(data) {
+    return Object.fromEntries(Object.getOwnPropertySymbols(data).map(symbol => [symbol, data[symbol]]));
+  }
 }
 
 module.exports = GenericAction;

@@ -20,7 +20,7 @@ export async function fetchDependencies({
 
 			return Object.entries<string>(parsedDependencies)
 				.filter(([key]) => key.startsWith('@discordjs/') && !key.includes('api-extractor'))
-				.map(([key, value]) => `${key.replace('@discordjs/', '').replaceAll('.', '-')}-${value.replaceAll('.', '-')}`);
+				.map(([key, value]) => `${key.replace('@discordjs/', '').replaceAll('.', '-')}-${sanitizeVersion(value)}`);
 		} catch {
 			return [];
 		}
@@ -36,8 +36,12 @@ export async function fetchDependencies({
 
 		return Object.entries<string>(parsedDependencies)
 			.filter(([key]) => key.startsWith('@discordjs/') && !key.includes('api-extractor'))
-			.map(([key, value]) => `${key.replace('@discordjs/', '').replaceAll('.', '-')}-${value.replaceAll('.', '-')}`);
+			.map(([key, value]) => `${key.replace('@discordjs/', '').replaceAll('.', '-')}-${sanitizeVersion(value)}`);
 	} catch {
 		return [];
 	}
+}
+
+function sanitizeVersion(version: string) {
+	return version.replaceAll('.', '-').replace(/^[\^~]/, '');
 }

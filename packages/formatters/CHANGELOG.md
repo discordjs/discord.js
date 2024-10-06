@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/formatters@0.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/formatters@0.4.0...@discordjs/formatters@0.5.0) - (2024-09-01)
+
+## Features
+
+- Add subtext formatter (#10400) ([fcd35ea](https://github.com/discordjs/discord.js/commit/fcd35ea2e72b3268729466e4cd85b2794bb3394b))
+- Premium buttons (#10353) ([4f59b74](https://github.com/discordjs/discord.js/commit/4f59b740d01b9ff2213949708a36e17da32b89c3))
+
 # [@discordjs/formatters@0.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/formatters@0.3.3...@discordjs/formatters@0.4.0) - (2024-05-04)
 
 ## Bug Fixes

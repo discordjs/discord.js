@@ -12,7 +12,7 @@
 	},
 	"dependencies": {
 		"@discordjs/core": "^1.2.0",
-		"discord.js": "^14.15.3"
+		"discord.js": "^14.16.0"
 	},
 	"devDependencies": {
 		"eslint": "^8.57.0",

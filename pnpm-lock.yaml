@@ -670,27 +670,21 @@ importers:
 
   packages/builders:
     dependencies:
-      '@discordjs/formatters':
-        specifier: workspace:^
-        version: link:../formatters
       '@discordjs/util':
         specifier: workspace:^
         version: link:../util
-      '@sapphire/shapeshift':
-        specifier: ^4.0.0
-        version: 4.0.0
       discord-api-types:
-        specifier: 0.37.97
-        version: 0.37.97
-      fast-deep-equal:
-        specifier: ^3.1.3
-        version: 3.1.3
+        specifier: ^0.37.101
+        version: 0.37.101
       ts-mixer:
         specifier: ^6.0.4
         version: 6.0.4
       tslib:
         specifier: ^2.6.3
         version: 2.6.3
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -702,11 +696,11 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0
       '@types/node':
-        specifier: ^16.18.105
-        version: 16.18.105
+        specifier: ^18.19.44
+        version: 18.19.45
       '@vitest/coverage-v8':
         specifier: ^2.0.5
-        version: 2.0.5(vitest@2.0.5(@edge-runtime/vm@3.2.0)(@types/node@16.18.105)(happy-dom@14.12.3)(terser@5.31.6))
+        version: 2.0.5(vitest@2.0.5(@edge-runtime/vm@3.2.0)(@types/node@18.19.45)(happy-dom@14.12.3)(terser@5.31.6))
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -727,7 +721,7 @@ importers:
         version: 3.3.3
       tsup:
         specifier: ^8.2.4
-        version: 8.2.4(@microsoft/api-extractor@7.43.0(@types/node@16.18.105))(jiti@1.21.6)(postcss@8.4.41)(typescript@5.5.4)(yaml@2.5.0)
+        version: 8.2.4(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.41)(typescript@5.5.4)(yaml@2.5.0)
       turbo:
         specifier: ^2.0.14
         version: 2.0.14
@@ -736,7 +730,7 @@ importers:
         version: 5.5.4
       vitest:
         specifier: ^2.0.5
-        version: 2.0.5(@edge-runtime/vm@3.2.0)(@types/node@16.18.105)(happy-dom@14.12.3)(terser@5.31.6)
+        version: 2.0.5(@edge-runtime/vm@3.2.0)(@types/node@18.19.45)(happy-dom@14.12.3)(terser@5.31.6)
 
   packages/collection:
     devDependencies:
@@ -804,8 +798,8 @@ importers:
         specifier: ^2.4.6
         version: 2.4.6
       discord-api-types:
-        specifier: 0.37.97
-        version: 0.37.97
+        specifier: ^0.37.101
+        version: 0.37.101
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -920,8 +914,8 @@ importers:
   packages/discord.js:
     dependencies:
       '@discordjs/builders':
-        specifier: workspace:^
-        version: link:../builders
+        specifier: ^1.9.0
+        version: 1.9.0
       '@discordjs/collection':
         specifier: 1.5.3
         version: 1.5.3
@@ -941,8 +935,8 @@ importers:
         specifier: 3.5.3
         version: 3.5.3
       discord-api-types:
-        specifier: 0.37.97
-        version: 0.37.97
+        specifier: ^0.37.101
+        version: 0.37.101
       fast-deep-equal:
         specifier: 3.1.3
         version: 3.1.3
@@ -1060,8 +1054,8 @@ importers:
   packages/formatters:
     dependencies:
       discord-api-types:
-        specifier: 0.37.97
-        version: 0.37.97
+        specifier: ^0.37.101
+        version: 0.37.101
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1133,8 +1127,8 @@ importers:
         specifier: workspace:^
         version: link:../ws
       discord-api-types:
-        specifier: 0.37.97
-        version: 0.37.97
+        specifier: ^0.37.101
+        version: 0.37.101
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1307,8 +1301,8 @@ importers:
         specifier: ^2.4.6
         version: 2.4.6
       discord-api-types:
-        specifier: 0.37.97
-        version: 0.37.97
+        specifier: ^0.37.101
+        version: 0.37.101
       magic-bytes.js:
         specifier: ^1.10.0
         version: 1.10.0
@@ -1604,8 +1598,8 @@ importers:
         specifier: ^8.5.12
         version: 8.5.12
       discord-api-types:
-        specifier: 0.37.97
-        version: 0.37.97
+        specifier: ^0.37.101
+        version: 0.37.101
       prism-media:
         specifier: ^1.3.5
         version: 1.3.5
@@ -1701,8 +1695,8 @@ importers:
         specifier: ^2.4.6
         version: 2.4.6
       discord-api-types:
-        specifier: 0.37.97
-        version: 0.37.97
+        specifier: ^0.37.101
+        version: 0.37.101
       tslib:
         specifier: ^2.6.3
         version: 2.6.3
@@ -2613,12 +2607,20 @@ packages:
     resolution: {integrity: sha512-t58AeNg6+mvyMnBHyPC6JQqWMW0Iwyb+vlpBz4V0d0iDY9H8gGCnLFg9vtN1nC+JXfTXBlf9efu9unMUeaPCiA==}
     engines: {node: '>=18.18.0'}
 
+  '@discordjs/builders@1.9.0':
+    resolution: {integrity: sha512-0zx8DePNVvQibh5ly5kCEei5wtPBIUbSoE9n+91Rlladz4tgtFbJ36PZMxxZrTEOQ7AHMZ/b0crT/0fCy6FTKg==}
+    engines: {node: '>=18'}
+
   '@discordjs/collection@1.5.3':
     resolution: {integrity: sha512-SVb428OMd3WO1paV3rm6tSjM4wC+Kecaa1EUGX7vc6/fddvw/6lg90z4QtCqm21zvVe92vMMDt9+DkIvjXImQQ==}
     engines: {node: '>=16.11.0'}
 
   '@discordjs/collection@2.1.0':
     resolution: {integrity: sha512-mLcTACtXUuVgutoznkh6hS3UFqYirDYAg5Dc1m8xn6OvPjetnUlf/xjtqnnc47OwWdaoCQnHmHh9KofhD6uRqw==}
+    engines: {node: '>=18'}
+
+  '@discordjs/formatters@0.5.0':
+    resolution: {integrity: sha512-98b3i+Y19RFq1Xke4NkVY46x8KjJQjldHUuEbCqMvp1F5Iq9HgnGpu91jOi/Ufazhty32eRsKnnzS8n4c+L93g==}
     engines: {node: '>=18'}
 
   '@discordjs/rest@2.3.0':
@@ -2628,6 +2630,10 @@ packages:
   '@discordjs/util@1.1.0':
     resolution: {integrity: sha512-IndcI5hzlNZ7GS96RV3Xw1R2kaDuXEp7tRIy/KlhidpN/BQ1qh1NZt3377dMLTa44xDUNKT7hnXkA/oUAzD/lg==}
     engines: {node: '>=16.11.0'}
+
+  '@discordjs/util@1.1.1':
+    resolution: {integrity: sha512-eddz6UnOBEB1oITPinyrB2Pttej49M9FZQY8NxgEvc3tq6ZICZ19m70RsmzRdDHk80O9NoYN/25AqJl8vPVf/g==}
+    engines: {node: '>=18'}
 
   '@discordjs/ws@1.1.1':
     resolution: {integrity: sha512-PZ+vLpxGCRtmr2RMkqh8Zp+BenUaJqlS6xhgWKEZcgC/vfHLEzpHtKkB0sl3nZWpwtcKk6YWy+pU3okL2I97FA==}
@@ -3143,11 +3149,6 @@ packages:
 
   '@favware/cliff-jumper@4.1.0':
     resolution: {integrity: sha512-z8U6XecZr3F7nkq2d+dg+QXaHcBh+DugUuVQGwIEo2vpAPOFkZ0Xnz3YbnTu0zPlr9lDEWL/rbnGEr0lwCaGOA==}
-    engines: {node: '>=v18'}
-    hasBin: true
-
-  '@favware/cliff-jumper@4.0.3':
-    resolution: {integrity: sha512-vRFP87hW/UM4ryVxKFlknV7ZeYwFCzMizjBBpIJ51WSLsmxehOKV365n79IY2r6lVmxMgDbOZ0AZkB8AfBzHPw==}
     engines: {node: '>=v18'}
     hasBin: true
 
@@ -7624,6 +7625,9 @@ packages:
   dir-glob@3.0.1:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
     engines: {node: '>=8'}
+
+  discord-api-types@0.37.101:
+    resolution: {integrity: sha512-2wizd94t7G3A8U5Phr3AiuL4gSvhqistDwWnlk1VLTit8BI1jWUncFqFQNdPbHqS3661+Nx/iEyIwtVjPuBP3w==}
 
   discord-api-types@0.37.83:
     resolution: {integrity: sha512-urGGYeWtWNYMKnYlZnOnDHm8fVRffQs3U0SpE8RHeiuLKb/u92APS8HoQnPTFbnXmY1vVnXjXO4dOxcAn3J+DA==}
@@ -14828,9 +14832,23 @@ snapshots:
       tar-stream: 3.1.7
       which: 4.0.0
 
+  '@discordjs/builders@1.9.0':
+    dependencies:
+      '@discordjs/formatters': 0.5.0
+      '@discordjs/util': 1.1.1
+      '@sapphire/shapeshift': 4.0.0
+      discord-api-types: 0.37.97
+      fast-deep-equal: 3.1.3
+      ts-mixer: 6.0.4
+      tslib: 2.6.3
+
   '@discordjs/collection@1.5.3': {}
 
   '@discordjs/collection@2.1.0': {}
+
+  '@discordjs/formatters@0.5.0':
+    dependencies:
+      discord-api-types: 0.37.97
 
   '@discordjs/rest@2.3.0':
     dependencies:
@@ -14845,6 +14863,8 @@ snapshots:
       undici: 6.13.0
 
   '@discordjs/util@1.1.0': {}
+
+  '@discordjs/util@1.1.1': {}
 
   '@discordjs/ws@1.1.1(bufferutil@4.0.8)(utf-8-validate@6.0.4)':
     dependencies:
@@ -15176,23 +15196,6 @@ snapshots:
       conventional-recommended-bump: 10.0.0
       execa: 9.3.1
       git-cliff: 2.5.0
-      js-yaml: 4.1.0
-      semver: 7.6.3
-      smol-toml: 1.3.0
-
-  '@favware/cliff-jumper@4.0.3':
-    dependencies:
-      '@favware/colorette-spinner': 1.0.1
-      '@octokit/auth-token': 5.1.1
-      '@octokit/core': 6.1.2
-      '@octokit/plugin-retry': 7.1.1(@octokit/core@6.1.2)
-      '@sapphire/result': 2.6.6
-      '@sapphire/utilities': 3.16.2
-      colorette: 2.0.20
-      commander: 12.1.0
-      conventional-recommended-bump: 10.0.0
-      execa: 9.3.1
-      git-cliff: 2.4.0
       js-yaml: 4.1.0
       semver: 7.6.3
       smol-toml: 1.3.0
@@ -19148,7 +19151,7 @@ snapshots:
 
   '@types/ws@8.5.12':
     dependencies:
-      '@types/node': 16.18.105
+      '@types/node': 18.19.45
 
   '@types/yargs-parser@21.0.3': {}
 
@@ -21476,6 +21479,8 @@ snapshots:
   dir-glob@3.0.1:
     dependencies:
       path-type: 4.0.0
+
+  discord-api-types@0.37.101: {}
 
   discord-api-types@0.37.83: {}
 

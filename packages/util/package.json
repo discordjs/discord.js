@@ -1,7 +1,7 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/util",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"description": "Utilities shared across Discord.js packages",
 	"scripts": {
 		"build": "tsc --noEmit && tsup",
@@ -80,7 +80,7 @@
 		"vitest": "^2.0.5"
 	},
 	"engines": {
-		"node": ">=16.11.0"
+		"node": ">=18"
 	},
 	"publishConfig": {
 		"access": "public",

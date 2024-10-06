@@ -1,7 +1,7 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/ws",
-	"version": "1.1.1",
+	"version": "2.0.0",
 	"description": "Wrapper around Discord's gateway",
 	"scripts": {
 		"test": "vitest run",
@@ -79,7 +79,7 @@
 		"@sapphire/async-queue": "^1.5.3",
 		"@types/ws": "^8.5.12",
 		"@vladfrangu/async_event_emitter": "^2.4.6",
-		"discord-api-types": "0.37.97",
+		"discord-api-types": "^0.37.101",
 		"tslib": "^2.6.3",
 		"ws": "^8.18.0"
 	},
@@ -105,7 +105,7 @@
 		"zlib-sync": "^0.1.9"
 	},
 	"engines": {
-		"node": ">=16.11.0"
+		"node": ">=20"
 	},
 	"publishConfig": {
 		"access": "public",

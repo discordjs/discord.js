@@ -1,7 +1,7 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/core",
-	"version": "1.2.0",
+	"version": "2.0.0",
 	"description": "A thinly abstracted wrapper around the rest API, and gateway.",
 	"scripts": {
 		"test": "vitest run",
@@ -70,7 +70,7 @@
 		"@discordjs/ws": "workspace:^",
 		"@sapphire/snowflake": "^3.5.3",
 		"@vladfrangu/async_event_emitter": "^2.4.6",
-		"discord-api-types": "0.37.97"
+		"discord-api-types": "^0.37.101"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
@@ -90,7 +90,7 @@
 		"vitest": "^2.0.5"
 	},
 	"engines": {
-		"node": ">=18"
+		"node": ">=20"
 	},
 	"publishConfig": {
 		"access": "public",

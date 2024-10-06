@@ -108,7 +108,7 @@ import {
   StageInstance,
   ActionRowBuilder,
   ButtonComponent,
-  SelectMenuComponent,
+  StringSelectMenuComponent,
   RepliableInteraction,
   ThreadChannelType,
   Events,
@@ -152,9 +152,8 @@ import {
   ChannelFlagsBitField,
   GuildForumThreadManager,
   GuildTextThreadManager,
-  AnySelectMenuInteraction,
+  SelectMenuInteraction,
   StringSelectMenuInteraction,
-  StringSelectMenuComponent,
   UserSelectMenuInteraction,
   RoleSelectMenuInteraction,
   ChannelSelectMenuInteraction,
@@ -209,8 +208,11 @@ import {
   ApplicationEmoji,
   ApplicationEmojiManager,
   StickerPack,
+  GuildScheduledEventManager,
+  SendableChannels,
+  PollData,
 } from '.';
-import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
+import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
 import { ReadonlyCollection } from '@discordjs/collection';
 
@@ -452,7 +454,7 @@ client.on('messageCreate', async message => {
     expectType<Collection<Snowflake, GuildMember>>(message.mentions.members);
   }
 
-  expectType<TextBasedChannel>(message.channel);
+  expectType<Exclude<TextBasedChannel, PartialGroupDMChannel>>(message.channel);
   expectNotType<GuildTextBasedChannel>(message.channel);
 
   // @ts-expect-error
@@ -1624,7 +1626,7 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<Promise<Collection<Snowflake, Message>>>(messages.fetchPinned());
   expectType<Guild | null>(message.guild);
   expectType<Snowflake | null>(message.guildId);
-  expectType<DMChannel | GuildTextBasedChannel>(message.channel.messages.channel);
+  expectType<DMChannel | PartialGroupDMChannel | GuildTextBasedChannel>(message.channel.messages.channel);
   expectType<MessageMentions>(message.mentions);
   expectType<Guild | null>(message.mentions.guild);
   expectType<Collection<Snowflake, GuildMember> | null>(message.mentions.members);
@@ -1777,10 +1779,9 @@ if (interaction.inGuild()) {
 
 client.on('interactionCreate', async interaction => {
   if (interaction.type === InteractionType.MessageComponent) {
-    expectType<AnySelectMenuInteraction | ButtonInteraction>(interaction);
+    expectType<SelectMenuInteraction | ButtonInteraction>(interaction);
     expectType<MessageActionRowComponent | APIButtonComponent | APISelectMenuComponent>(interaction.component);
     expectType<Message>(interaction.message);
-    expectDeprecated(interaction.sendPremiumRequired());
     if (interaction.inCachedGuild()) {
       expectAssignable<MessageComponentInteraction>(interaction);
       expectType<MessageActionRowComponent>(interaction.component);
@@ -1945,7 +1946,7 @@ client.on('interactionCreate', async interaction => {
     expectType<Message>(interaction.message);
     if (interaction.inCachedGuild()) {
       expectAssignable<StringSelectMenuInteraction>(interaction);
-      expectType<SelectMenuComponent>(interaction.component);
+      expectType<StringSelectMenuComponent>(interaction.component);
       expectType<Message<true>>(interaction.message);
       expectType<Guild>(interaction.guild);
       expectType<Promise<Message<true>>>(interaction.reply({ fetchReply: true }));
@@ -1957,7 +1958,7 @@ client.on('interactionCreate', async interaction => {
       expectType<Promise<Message<false>>>(interaction.reply({ fetchReply: true }));
     } else if (interaction.inGuild()) {
       expectAssignable<StringSelectMenuInteraction>(interaction);
-      expectType<SelectMenuComponent | APIStringSelectComponent>(interaction.component);
+      expectType<StringSelectMenuComponent | APIStringSelectComponent>(interaction.component);
       expectType<Message>(interaction.message);
       expectType<Guild | null>(interaction.guild);
       expectType<Promise<Message>>(interaction.reply({ fetchReply: true }));
@@ -1968,7 +1969,6 @@ client.on('interactionCreate', async interaction => {
     interaction.type === InteractionType.ApplicationCommand &&
     interaction.commandType === ApplicationCommandType.ChatInput
   ) {
-    expectDeprecated(interaction.sendPremiumRequired());
     if (interaction.inRawGuild()) {
       expectNotAssignable<Interaction<'cached'>>(interaction);
       expectAssignable<ChatInputCommandInteraction>(interaction);
@@ -2092,10 +2092,6 @@ client.on('interactionCreate', async interaction => {
       expectType<Promise<Message>>(interaction.followUp({ content: 'a' }));
     }
   }
-
-  if (interaction.isModalSubmit()) {
-    expectDeprecated(interaction.sendPremiumRequired());
-  }
 });
 
 declare const shard: Shard;
@@ -2209,6 +2205,7 @@ expectType<TextBasedChannel>(TextBasedChannel);
 expectType<
   | ChannelType.GuildText
   | ChannelType.DM
+  | ChannelType.GroupDM
   | ChannelType.GuildAnnouncement
   | ChannelType.GuildVoice
   | ChannelType.GuildStageVoice
@@ -2418,10 +2415,10 @@ expectType<null>(partialGroupDMChannel.flags);
 
 // Select menu type narrowing
 if (interaction.isAnySelectMenu()) {
-  expectType<AnySelectMenuInteraction>(interaction);
+  expectType<SelectMenuInteraction>(interaction);
 }
 
-declare const anySelectMenu: AnySelectMenuInteraction;
+declare const anySelectMenu: SelectMenuInteraction;
 
 if (anySelectMenu.isStringSelectMenu()) {
   expectType<StringSelectMenuInteraction>(anySelectMenu);
@@ -2555,10 +2552,6 @@ declare const sku: SKU;
 
   client.on(Events.InteractionCreate, async interaction => {
     expectType<Collection<Snowflake, Entitlement>>(interaction.entitlements);
-
-    if (interaction.isRepliable()) {
-      await interaction.sendPremiumRequired();
-    }
   });
 }
 
@@ -2574,6 +2567,8 @@ await textChannel.send({
 });
 
 declare const poll: Poll;
+declare const message: Message;
+declare const pollData: PollData;
 {
   expectType<Message>(await poll.end());
 
@@ -2587,8 +2582,32 @@ declare const poll: Poll;
     messageId: snowflake,
     answerId: 1,
   });
+
+  await message.edit({
+    // @ts-expect-error
+    poll: pollData,
+  });
+
+  await chatInputInteraction.editReply({ poll: pollData });
 }
 
 expectType<Collection<Snowflake, StickerPack>>(await client.fetchStickerPacks());
 expectType<Collection<Snowflake, StickerPack>>(await client.fetchStickerPacks({}));
 expectType<StickerPack>(await client.fetchStickerPacks({ packId: snowflake }));
+
+client.on('interactionCreate', interaction => {
+  if (!interaction.channel) {
+    return;
+  }
+
+  // @ts-expect-error
+  interaction.channel.send();
+
+  if (interaction.channel.isSendable()) {
+    expectType<SendableChannels>(interaction.channel);
+    interaction.channel.send({ embeds: [] });
+  }
+});
+
+declare const guildScheduledEventManager: GuildScheduledEventManager;
+await guildScheduledEventManager.edit(snowflake, { recurrenceRule: null });

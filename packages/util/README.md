@@ -20,7 +20,7 @@
 
 ## Installation
 
-**Node.js 16.11.0 or newer is required.**
+**Node.js 18 or newer is required.**
 
 ```sh
 npm install @discordjs/util
