@@ -706,8 +706,7 @@ class Guild extends AnonymousGuild {
    * @typedef {Object} GuildWidgetSettingsData
    * @property {boolean} enabled Whether the widget is enabled
    * @property {?(TextChannel|AnnouncementChannel|VoiceChannel|StageChannel|ForumChannel|
-   * MediaChannel|Snowflake)} channel
-   * The widget invite channel
+   * MediaChannel|Snowflake)} channel The widget invite channel
    */
 
   /**
