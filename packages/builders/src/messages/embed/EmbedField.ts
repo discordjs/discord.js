@@ -1,5 +1,5 @@
 import type { APIEmbedField } from 'discord-api-types/v10';
-import { isValidationEnabled } from '../../util/validation.js';
+import { validate } from '../../util/validation.js';
 import { embedFieldPredicate } from './Assertions.js';
 
 /**
@@ -56,10 +56,7 @@ export class EmbedFieldBuilder {
 	 */
 	public toJSON(validationOverride?: boolean): APIEmbedField {
 		const clone = structuredClone(this.data);
-
-		if (validationOverride ?? isValidationEnabled()) {
-			embedFieldPredicate.parse(clone);
-		}
+		validate(embedFieldPredicate, clone, validationOverride);
 
 		return clone as APIEmbedField;
 	}
