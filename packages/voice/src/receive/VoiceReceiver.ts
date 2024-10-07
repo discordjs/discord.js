@@ -119,6 +119,7 @@ export class VoiceReceiver {
 				decrypted = Buffer.concat([decipheriv.update(encrypted), decipheriv.final()]);
 				return decrypted;
 			}
+
 			case 'aead_xchacha20_poly1305_rtpsize': {
 				// Combined mode expects authtag in the encrypted message
 				decrypted = methods.crypto_aead_xchacha20poly1305_ietf_decrypt(
@@ -130,6 +131,7 @@ export class VoiceReceiver {
 
 				return Buffer.from(decrypted);
 			}
+
 			default: {
 				throw new RangeError(`Unsupported decryption method: ${mode}`);
 			}

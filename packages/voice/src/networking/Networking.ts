@@ -585,7 +585,7 @@ export class Networking extends EventEmitter {
 		connectionData.nonceBuffer.writeUInt32BE(connectionData.nonce, 0);
 
 		// 4 extra bytes of padding on the end of the encrypted packet
-		const noncePadding = connectionData.nonceBuffer.slice(0, 4);
+		const noncePadding = connectionData.nonceBuffer.subarray(0, 4);
 
 		let encrypted;
 		switch (encryptionMode) {
@@ -597,6 +597,7 @@ export class Networking extends EventEmitter {
 
 				return [encrypted, noncePadding];
 			}
+
 			case 'aead_xchacha20_poly1305_rtpsize': {
 				encrypted = secretbox.methods.crypto_aead_xchacha20poly1305_ietf_encrypt(
 					opusPacket,
@@ -607,6 +608,7 @@ export class Networking extends EventEmitter {
 
 				return [encrypted, noncePadding];
 			}
+
 			default: {
 				// This should never happen. Our encryption mode is chosen from a list given to us by the gateway and checked with the ones we support.
 				throw new RangeError(`Unsupported encryption method: ${encryptionMode}`);
