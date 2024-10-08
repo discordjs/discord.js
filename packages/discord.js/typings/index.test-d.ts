@@ -49,7 +49,6 @@ import {
   Client,
   ClientApplication,
   ClientUser,
-  CloseEvent,
   Collection,
   ChatInputCommandInteraction,
   CommandInteractionOption,
@@ -100,7 +99,6 @@ import {
   User,
   VoiceChannel,
   Shard,
-  WebSocketShard,
   Collector,
   GuildAuditLogsEntry,
   GuildAuditLogs,
@@ -112,7 +110,6 @@ import {
   RepliableInteraction,
   ThreadChannelType,
   Events,
-  WebSocketShardEvents,
   Status,
   CategoryChannelChildManager,
   ActionRowData,
@@ -677,7 +674,7 @@ client.on('presenceUpdate', (oldPresence, { client }) => {
 declare const slashCommandBuilder: SlashCommandBuilder;
 declare const contextMenuCommandBuilder: ContextMenuCommandBuilder;
 
-client.on('ready', async client => {
+client.on('clientReady', async client => {
   expectType<Client<true>>(client);
   console.log(`Client is logged in as ${client.user.tag} and ready!`);
 
@@ -1305,8 +1302,8 @@ client.on('guildCreate', async g => {
 });
 
 // EventEmitter static method overrides
-expectType<Promise<[Client<true>]>>(Client.once(client, 'ready'));
-expectType<AsyncIterableIterator<[Client<true>]>>(Client.on(client, 'ready'));
+expectType<Promise<[Client<true>]>>(Client.once(client, 'clientReady'));
+expectType<AsyncIterableIterator<[Client<true>]>>(Client.on(client, 'clientReady'));
 
 client.login('absolutely-valid-token');
 
@@ -1426,7 +1423,6 @@ reactionCollector.on('dispose', (...args) => {
 // Make sure the properties are typed correctly, and that no backwards properties
 // (K -> V and V -> K) exist:
 expectAssignable<'messageCreate'>(Events.MessageCreate);
-expectAssignable<'close'>(WebSocketShardEvents.Close);
 expectAssignable<'death'>(ShardEvents.Death);
 expectAssignable<1>(Status.Connecting);
 
@@ -2098,12 +2094,6 @@ declare const shard: Shard;
 
 shard.on('death', process => {
   expectType<ChildProcess | Worker>(process);
-});
-
-declare const webSocketShard: WebSocketShard;
-
-webSocketShard.on('close', event => {
-  expectType<CloseEvent>(event);
 });
 
 declare const collector: Collector<string, Interaction, string[]>;
