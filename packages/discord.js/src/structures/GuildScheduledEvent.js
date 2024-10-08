@@ -213,7 +213,7 @@ class GuildScheduledEvent extends Base {
      * @property {GuildScheduledEventRecurrenceRuleWeekday} day The day within the week to recur on
      */
 
-    if ('recurrence_rule' in data) {
+    if ('recurrence_rule' in data && data.recurrence_rule) {
       /**
        * The recurrence rule for this scheduled event
        * @type {?GuildScheduledEventRecurrenceRule}
