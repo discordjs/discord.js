@@ -347,12 +347,12 @@ class Client extends BaseClient {
 
   /**
    * Processes a packet and queues it if this WebSocketManager is not ready.
-   * @param {Object} [packet] The packet to be handled
-   * @param {number} [shardId] The shardId that received this packet
+   * @param {GatewayDispatchPayload} packet The packet to be handled
+   * @param {number} shardId The shardId that received this packet
    * @private
    */
   _handlePacket(packet, shardId) {
-    if (packet && this.status !== Status.Ready && !BeforeReadyWhitelist.includes(packet.t)) {
+    if (this.status !== Status.Ready && !BeforeReadyWhitelist.includes(packet.t)) {
       this.incomingPacketQueue.push({ packet, shardId });
     } else {
       if (this.incomingPacketQueue.length) {
@@ -362,7 +362,7 @@ class Client extends BaseClient {
         }).unref();
       }
 
-      if (packet && PacketHandlers[packet.t]) {
+      if (PacketHandlers[packet.t]) {
         PacketHandlers[packet.t](this, packet, shardId);
       }
 
