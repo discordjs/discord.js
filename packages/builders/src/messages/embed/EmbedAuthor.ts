@@ -1,5 +1,5 @@
 import type { APIEmbedAuthor } from 'discord-api-types/v10';
-import { isValidationEnabled } from '../../util/validation.js';
+import { validate } from '../../util/validation.js';
 import { embedAuthorPredicate } from './Assertions.js';
 
 /**
@@ -72,10 +72,7 @@ export class EmbedAuthorBuilder {
 	 */
 	public toJSON(validationOverride?: boolean): APIEmbedAuthor {
 		const clone = structuredClone(this.data);
-
-		if (validationOverride ?? isValidationEnabled()) {
-			embedAuthorPredicate.parse(clone);
-		}
+		validate(embedAuthorPredicate, clone, validationOverride);
 
 		return clone as APIEmbedAuthor;
 	}

@@ -1,5 +1,5 @@
 import { ComponentType, type TextInputStyle, type APITextInputComponent } from 'discord-api-types/v10';
-import { isValidationEnabled } from '../../util/validation.js';
+import { validate } from '../../util/validation.js';
 import { ComponentBuilder } from '../Component.js';
 import { textInputPredicate } from './Assertions.js';
 
@@ -154,10 +154,7 @@ export class TextInputBuilder extends ComponentBuilder<APITextInputComponent> {
 	 */
 	public toJSON(validationOverride?: boolean): APITextInputComponent {
 		const clone = structuredClone(this.data);
-
-		if (validationOverride ?? isValidationEnabled()) {
-			textInputPredicate.parse(clone);
-		}
+		validate(textInputPredicate, clone, validationOverride);
 
 		return clone as APITextInputComponent;
 	}

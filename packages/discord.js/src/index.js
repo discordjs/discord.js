@@ -48,7 +48,6 @@ exports.SystemChannelFlagsBitField = require('./util/SystemChannelFlagsBitField'
 exports.ThreadMemberFlagsBitField = require('./util/ThreadMemberFlagsBitField');
 exports.UserFlagsBitField = require('./util/UserFlagsBitField');
 __exportStar(require('./util/Util.js'), exports);
-exports.WebSocketShardEvents = require('./util/WebSocketShardEvents');
 exports.version = require('../package.json').version;
 
 // Managers
@@ -88,8 +87,6 @@ exports.ThreadManager = require('./managers/ThreadManager');
 exports.ThreadMemberManager = require('./managers/ThreadMemberManager');
 exports.UserManager = require('./managers/UserManager');
 exports.VoiceStateManager = require('./managers/VoiceStateManager');
-exports.WebSocketManager = require('./client/websocket/WebSocketManager');
-exports.WebSocketShard = require('./client/websocket/WebSocketShard');
 
 // Structures
 exports.ActionRow = require('./structures/ActionRow');

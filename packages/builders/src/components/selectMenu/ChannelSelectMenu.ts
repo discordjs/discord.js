@@ -6,7 +6,7 @@ import {
 	SelectMenuDefaultValueType,
 } from 'discord-api-types/v10';
 import { type RestOrArray, normalizeArray } from '../../util/normalizeArray.js';
-import { isValidationEnabled } from '../../util/validation.js';
+import { validate } from '../../util/validation.js';
 import { selectMenuChannelPredicate } from '../Assertions.js';
 import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 
@@ -108,10 +108,7 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSe
 	 */
 	public override toJSON(validationOverride?: boolean): APIChannelSelectComponent {
 		const clone = structuredClone(this.data);
-
-		if (validationOverride ?? isValidationEnabled()) {
-			selectMenuChannelPredicate.parse(clone);
-		}
+		validate(selectMenuChannelPredicate, clone, validationOverride);
 
 		return clone as APIChannelSelectComponent;
 	}

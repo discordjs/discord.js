@@ -6,7 +6,7 @@ import {
 	SelectMenuDefaultValueType,
 } from 'discord-api-types/v10';
 import { type RestOrArray, normalizeArray } from '../../util/normalizeArray.js';
-import { isValidationEnabled } from '../../util/validation.js';
+import { validate } from '../../util/validation.js';
 import { selectMenuMentionablePredicate } from '../Assertions.js';
 import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 
@@ -119,10 +119,7 @@ export class MentionableSelectMenuBuilder extends BaseSelectMenuBuilder<APIMenti
 	 */
 	public override toJSON(validationOverride?: boolean): APIMentionableSelectComponent {
 		const clone = structuredClone(this.data);
-
-		if (validationOverride ?? isValidationEnabled()) {
-			selectMenuMentionablePredicate.parse(clone);
-		}
+		validate(selectMenuMentionablePredicate, clone, validationOverride);
 
 		return clone as APIMentionableSelectComponent;
 	}
