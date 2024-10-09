@@ -258,7 +258,7 @@ class Client extends BaseClient {
    */
   async login(token = this.token) {
     if (!token || typeof token !== 'string') throw new DiscordjsError(ErrorCodes.TokenInvalid);
-    this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
+    this.token = token.replace(/^(Bot|Bearer)\s*/i, '');
 
     this.rest.setToken(this.token);
 
