@@ -72,7 +72,7 @@ import {
   MessageComponentInteraction,
   MessageReaction,
   ModalBuilder,
-  NewsChannel,
+  AnnouncementChannel,
   Options,
   PartialTextBasedChannelFields,
   PartialUser,
@@ -546,7 +546,7 @@ client.on('messageCreate', async message => {
 
   if (webhook.isChannelFollower()) {
     expectAssignable<Guild | APIPartialGuild>(webhook.sourceGuild);
-    expectAssignable<NewsChannel | APIPartialChannel>(webhook.sourceChannel);
+    expectAssignable<AnnouncementChannel | APIPartialChannel>(webhook.sourceChannel);
     expectType<Webhook<WebhookType.ChannelFollower>>(webhook);
   } else if (webhook.isIncoming()) {
     expectType<string>(webhook.token);
@@ -554,7 +554,7 @@ client.on('messageCreate', async message => {
   }
 
   expectNotType<Guild | APIPartialGuild>(webhook.sourceGuild);
-  expectNotType<NewsChannel | APIPartialChannel>(webhook.sourceChannel);
+  expectNotType<AnnouncementChannel | APIPartialChannel>(webhook.sourceChannel);
   expectNotType<string>(webhook.token);
 
   channel.awaitMessageComponent({
@@ -1362,7 +1362,7 @@ declare const dmChannel: DMChannel;
 declare const threadChannel: ThreadChannel;
 declare const threadChannelFromForum: ThreadChannel<true>;
 declare const threadChannelNotFromForum: ThreadChannel<false>;
-declare const newsChannel: NewsChannel;
+declare const announcementChannel: AnnouncementChannel;
 declare const textChannel: TextChannel;
 declare const voiceChannel: VoiceChannel;
 declare const guild: Guild;
@@ -1370,25 +1370,25 @@ declare const user: User;
 declare const guildMember: GuildMember;
 
 // Test thread channels' parent inference
-expectType<TextChannel | NewsChannel | ForumChannel | MediaChannel | null>(threadChannel.parent);
+expectType<TextChannel | AnnouncementChannel | ForumChannel | MediaChannel | null>(threadChannel.parent);
 expectType<ForumChannel | MediaChannel | null>(threadChannelFromForum.parent);
-expectType<TextChannel | NewsChannel | null>(threadChannelNotFromForum.parent);
+expectType<TextChannel | AnnouncementChannel | null>(threadChannelNotFromForum.parent);
 
 // Test whether the structures implement send
 expectType<TextBasedChannelFields<false>['send']>(dmChannel.send);
 expectType<TextBasedChannelFields<true>['send']>(threadChannel.send);
-expectType<TextBasedChannelFields<true>['send']>(newsChannel.send);
+expectType<TextBasedChannelFields<true>['send']>(announcementChannel.send);
 expectType<TextBasedChannelFields<true>['send']>(textChannel.send);
 expectType<TextBasedChannelFields<true>['send']>(voiceChannel.send);
 expectAssignable<PartialTextBasedChannelFields>(user);
 expectAssignable<PartialTextBasedChannelFields>(guildMember);
 
-expectType<Promise<NewsChannel>>(textChannel.setType(ChannelType.GuildAnnouncement));
-expectType<Promise<TextChannel>>(newsChannel.setType(ChannelType.GuildText));
+expectType<Promise<AnnouncementChannel>>(textChannel.setType(ChannelType.GuildAnnouncement));
+expectType<Promise<TextChannel>>(announcementChannel.setType(ChannelType.GuildText));
 
 expectType<Message | null>(dmChannel.lastMessage);
 expectType<Message | null>(threadChannel.lastMessage);
-expectType<Message | null>(newsChannel.lastMessage);
+expectType<Message | null>(announcementChannel.lastMessage);
 expectType<Message | null>(textChannel.lastMessage);
 expectType<Message | null>(voiceChannel.lastMessage);
 
@@ -1569,7 +1569,7 @@ declare const categoryChannelChildManager: CategoryChannelChildManager;
 {
   expectType<Promise<VoiceChannel>>(categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildVoice }));
   expectType<Promise<TextChannel>>(categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildText }));
-  expectType<Promise<NewsChannel>>(
+  expectType<Promise<AnnouncementChannel>>(
     categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildAnnouncement }),
   );
   expectType<Promise<StageChannel>>(
@@ -1586,7 +1586,9 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<Promise<VoiceChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildVoice }));
   expectType<Promise<CategoryChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildCategory }));
   expectType<Promise<TextChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildText }));
-  expectType<Promise<NewsChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildAnnouncement }));
+  expectType<Promise<AnnouncementChannel>>(
+    guildChannelManager.create({ name: 'name', type: ChannelType.GuildAnnouncement }),
+  );
   expectType<Promise<StageChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildStageVoice }));
   expectType<Promise<ForumChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildForum }));
   expectType<Promise<MediaChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildMedia }));
@@ -1654,7 +1656,7 @@ expectType<ForumChannel | MediaChannel>(guildForumThreadManager.channel);
 declare const guildTextThreadManager: GuildTextThreadManager<
   ChannelType.PublicThread | ChannelType.PrivateThread | ChannelType.AnnouncementThread
 >;
-expectType<TextChannel | NewsChannel>(guildTextThreadManager.channel);
+expectType<TextChannel | AnnouncementChannel>(guildTextThreadManager.channel);
 
 declare const guildMemberManager: GuildMemberManager;
 {
@@ -2203,9 +2205,9 @@ expectType<
 >(TextBasedChannelTypes);
 expectType<StageChannel | VoiceChannel>(VoiceBasedChannel);
 expectType<GuildBasedChannel>(GuildBasedChannel);
-expectType<CategoryChannel | NewsChannel | StageChannel | TextChannel | VoiceChannel | ForumChannel | MediaChannel>(
-  NonThreadGuildBasedChannel,
-);
+expectType<
+  CategoryChannel | AnnouncementChannel | StageChannel | TextChannel | VoiceChannel | ForumChannel | MediaChannel
+>(NonThreadGuildBasedChannel);
 expectType<GuildTextBasedChannel>(GuildTextBasedChannel);
 
 const button = new ButtonBuilder({
@@ -2397,7 +2399,7 @@ expectType<Readonly<ChannelFlagsBitField>>(stageChannel.flags);
 expectType<Readonly<ChannelFlagsBitField>>(forumChannel.flags);
 expectType<Readonly<ChannelFlagsBitField>>(dmChannel.flags);
 expectType<Readonly<ChannelFlagsBitField>>(categoryChannel.flags);
-expectType<Readonly<ChannelFlagsBitField>>(newsChannel.flags);
+expectType<Readonly<ChannelFlagsBitField>>(announcementChannel.flags);
 expectType<Readonly<ChannelFlagsBitField>>(categoryChannel.flags);
 expectType<Readonly<ChannelFlagsBitField>>(threadChannel.flags);
 
