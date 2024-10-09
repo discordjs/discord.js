@@ -160,7 +160,8 @@ class Client extends BaseClient {
       ...this.options.ws,
       intents: this.options.intents.bitfield,
       rest: this.rest,
-      token: this.token,
+      // Explicitly nulled to always be set using `setToken` in `login`
+      token: null,
     };
 
     /**
@@ -257,8 +258,10 @@ class Client extends BaseClient {
    */
   async login(token = this.token) {
     if (!token || typeof token !== 'string') throw new DiscordjsError(ErrorCodes.TokenInvalid);
-    this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
-    this.rest.setToken(token);
+    this.token = token.replace(/^(Bot|Bearer)\s*/i, '');
+
+    this.rest.setToken(this.token);
+
     this.emit(Events.Debug, `Provided token: ${this._censoredToken}`);
     this.emit(Events.Debug, 'Preparing to connect to the gateway...');
 
