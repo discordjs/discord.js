@@ -213,12 +213,12 @@ class GuildScheduledEvent extends Base {
      * @property {GuildScheduledEventRecurrenceRuleWeekday} day The day within the week to recur on
      */
 
-    if (data.recurrence_rule) {
+    if ('recurrence_rule' in data) {
       /**
        * The recurrence rule for this scheduled event
        * @type {?GuildScheduledEventRecurrenceRule}
        */
-      this.recurrenceRule = {
+      this.recurrenceRule = data.recurrenceRule && {
         startTimestamp: Date.parse(data.recurrence_rule.start),
         get startAt() {
           return new Date(this.startTimestamp);
