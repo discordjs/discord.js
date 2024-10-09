@@ -167,6 +167,7 @@ import {
   GatewaySendPayload,
   GatewayDispatchPayload,
   VoiceChannelEffectSendAnimationType,
+  GatewayVoiceChannelEffectSendDispatchData,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -3557,8 +3558,7 @@ export class VoiceChannel extends BaseGuildVoiceChannel {
 }
 
 export class VoiceChannelEffect {
-  // TODO: Revise after discord-api-types.
-  private constructor(data: unknown, guild: Guild);
+  private constructor(data: GatewayVoiceChannelEffectSendDispatchData, guild: Guild);
   public guild: Guild;
   public channelId: Snowflake;
   public userId: Snowflake;
