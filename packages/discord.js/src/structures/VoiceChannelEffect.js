@@ -62,7 +62,7 @@ class VoiceChannelEffect {
    * @readonly
    */
   get channel() {
-    return this.guild.channels.cahe.get(this.channelId) ?? null;
+    return this.guild.channels.cache.get(this.channelId) ?? null;
   }
 }
 
