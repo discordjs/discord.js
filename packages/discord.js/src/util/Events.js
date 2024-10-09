@@ -61,11 +61,6 @@
  * @property {string} MessageReactionRemoveEmoji messageReactionRemoveEmoji
  * @property {string} MessageUpdate messageUpdate
  * @property {string} PresenceUpdate presenceUpdate
- * @property {string} ShardDisconnect shardDisconnect
- * @property {string} ShardError shardError
- * @property {string} ShardReady shardReady
- * @property {string} ShardReconnecting shardReconnecting
- * @property {string} ShardResume shardResume
  * @property {string} StageInstanceCreate stageInstanceCreate
  * @property {string} StageInstanceDelete stageInstanceDelete
  * @property {string} StageInstanceUpdate stageInstanceUpdate
@@ -99,7 +94,7 @@ module.exports = {
   ChannelDelete: 'channelDelete',
   ChannelPinsUpdate: 'channelPinsUpdate',
   ChannelUpdate: 'channelUpdate',
-  ClientReady: 'ready',
+  ClientReady: 'clientReady',
   Debug: 'debug',
   EntitlementCreate: 'entitlementCreate',
   EntitlementUpdate: 'entitlementUpdate',
@@ -148,12 +143,6 @@ module.exports = {
   MessageReactionRemoveEmoji: 'messageReactionRemoveEmoji',
   MessageUpdate: 'messageUpdate',
   PresenceUpdate: 'presenceUpdate',
-  Raw: 'raw',
-  ShardDisconnect: 'shardDisconnect',
-  ShardError: 'shardError',
-  ShardReady: 'shardReady',
-  ShardReconnecting: 'shardReconnecting',
-  ShardResume: 'shardResume',
   StageInstanceCreate: 'stageInstanceCreate',
   StageInstanceDelete: 'stageInstanceDelete',
   StageInstanceUpdate: 'stageInstanceUpdate',
