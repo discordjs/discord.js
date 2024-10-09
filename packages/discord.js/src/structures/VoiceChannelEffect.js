@@ -31,10 +31,9 @@ class VoiceChannelEffect {
      */
     this.emoji = data.emoji ? new Emoji(guild.client, data.emoji) : null;
 
-    // TODO: Revise after discord-api-types.
     /**
      * The animation type of the effect.
-     * @type {?number}
+     * @type {?VoiceChannelEffectSendAnimationType}
      */
     this.animationType = data.animation_type ?? null;
 

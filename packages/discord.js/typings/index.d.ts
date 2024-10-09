@@ -166,6 +166,7 @@ import {
   GuildScheduledEventRecurrenceRuleFrequency,
   GatewaySendPayload,
   GatewayDispatchPayload,
+  VoiceChannelEffectSendAnimationType,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -3562,8 +3563,7 @@ export class VoiceChannelEffect {
   public channelId: Snowflake;
   public userId: Snowflake;
   public emoji: Emoji | null;
-  // TODO: Revise after discord-api-types.
-  public animationType: 0 | 1 | null;
+  public animationType: VoiceChannelEffectSendAnimationType | null;
   public animationId: number | null;
   public soundId: Snowflake | number | null;
   public soundVolume: number | null;
