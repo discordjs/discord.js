@@ -50,7 +50,7 @@ class VoiceChannelEffect {
     this.soundId = data.sound_id ?? null;
 
     /**
-     * The volume of the soundboard sound (0-1) for soundboard effects.
+     * The volume of the soundboard sound [0-1] for soundboard effects.
      * @type {?number}
      */
     this.soundVolume = data.sound_volume ?? null;
