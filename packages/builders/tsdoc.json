@@ -1,0 +1,9 @@
+{
+	"$schema": "https://developer.microsoft.com/json-schemas/tsdoc/v0/tsdoc.schema.json",
+	"tagDefinitions": [
+		{
+			"tagName": "@mixes",
+			"syntaxKind": "block"
+		}
+	]
+}
