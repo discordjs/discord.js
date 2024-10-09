@@ -1438,6 +1438,61 @@ importers:
         specifier: ^2.0.5
         version: 2.0.5(@edge-runtime/vm@3.2.0)(@types/node@18.19.45)(happy-dom@14.12.3)(terser@5.31.6)
 
+  packages/structures:
+    dependencies:
+      '@sapphire/snowflake':
+        specifier: ^3.5.3
+        version: 3.5.3
+      discord-api-types:
+        specifier: 0.37.97
+        version: 0.37.97
+    devDependencies:
+      '@discordjs/api-extractor':
+        specifier: workspace:^
+        version: link:../api-extractor
+      '@discordjs/scripts':
+        specifier: workspace:^
+        version: link:../scripts
+      '@favware/cliff-jumper':
+        specifier: ^4.1.0
+        version: 4.1.0
+      '@types/node':
+        specifier: 18.19.45
+        version: 18.19.45
+      '@vitest/coverage-v8':
+        specifier: ^2.0.5
+        version: 2.0.5(vitest@2.0.5(@edge-runtime/vm@3.2.0)(@types/node@18.19.45)(happy-dom@14.12.3)(terser@5.31.6))
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      esbuild-plugin-version-injector:
+        specifier: ^1.2.1
+        version: 1.2.1
+      eslint:
+        specifier: ^8.57.0
+        version: 8.57.0
+      eslint-config-neon:
+        specifier: ^0.1.62
+        version: 0.1.62(eslint@8.57.0)(typescript@5.5.4)
+      eslint-formatter-pretty:
+        specifier: ^6.0.1
+        version: 6.0.1
+      prettier:
+        specifier: ^3.3.3
+        version: 3.3.3
+      tsd:
+        specifier: ^0.31.1
+        version: 0.31.1
+      tsup:
+        specifier: ^8.2.4
+        version: 8.2.4(@microsoft/api-extractor@7.43.0(@types/node@18.19.45))(jiti@1.21.6)(postcss@8.4.41)(typescript@5.5.4)(yaml@2.5.0)
+      typescript:
+        specifier: ~5.5.4
+        version: 5.5.4
+      vitest:
+        specifier: ^2.0.5
+        version: 2.0.5(@edge-runtime/vm@3.2.0)(@types/node@18.19.45)(happy-dom@14.12.3)(terser@5.31.6)
+
   packages/ui:
     dependencies:
       '@react-icons/all-files':
