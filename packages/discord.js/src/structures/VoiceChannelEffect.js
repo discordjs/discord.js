@@ -43,6 +43,18 @@ class VoiceChannelEffect {
      * @type {?number}
      */
     this.animationId = data.animation_id ?? null;
+
+    /**
+     * The id of the soundboard sound for soundboard effects.
+     * @type {?(Snowflake|number)}
+     */
+    this.soundId = data.sound_id ?? null;
+
+    /**
+     * The volume of the soundboard sound (0-1) for soundboard effects.
+     * @type {?number}
+     */
+    this.soundVolume = data.sound_volume ?? null;
   }
 
   /**

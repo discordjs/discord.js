@@ -3565,6 +3565,8 @@ export class VoiceChannelEffect {
   // TODO: Revise after discord-api-types.
   public animationType: 0 | 1 | null;
   public animationId: number | null;
+  public soundId: Snowflake | number | null;
+  public soundVolume: number | null;
   public get channel(): VoiceChannel | null;
 }
 
