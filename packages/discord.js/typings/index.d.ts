@@ -5382,7 +5382,6 @@ export enum ShardEvents {
   Error = 'error',
   Message = 'message',
   Ready = 'ready',
-  Reconnecting = 'reconnecting',
   Resume = 'resume',
   Spawn = 'spawn',
 }
