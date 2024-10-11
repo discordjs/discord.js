@@ -154,10 +154,19 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	 *
 	 * @param index - The index of the element to obtain
 	 */
-	public at(index: number) {
-		index = Math.floor(index);
-		const arr = [...this.values()];
-		return arr.at(index);
+	public at(index: number): Value | undefined {
+		index = Math.trunc(index);
+		if (index >= 0) {
+			if (index >= this.size) return undefined;
+		} else {
+			if (index < this.size * -1) return undefined;
+			index += this.size;
+		}
+		const iter = this.values();
+		for (let skip = 0; skip < index; skip++) {
+			iter.next();
+		}
+		return iter.next().value!;
 	}
 
 	/**
@@ -167,10 +176,19 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	 *
 	 * @param index - The index of the key to obtain
 	 */
-	public keyAt(index: number) {
-		index = Math.floor(index);
-		const arr = [...this.keys()];
-		return arr.at(index);
+	public keyAt(index: number): Key | undefined {
+		index = Math.trunc(index);
+		if (index >= 0) {
+			if (index >= this.size) return undefined;
+		} else {
+			if (index < this.size * -1) return undefined;
+			index += this.size;
+		}
+		const iter = this.keys();
+		for (let skip = 0; skip < index; skip++) {
+			iter.next();
+		}
+		return iter.next().value!;
 	}
 
 	/**
