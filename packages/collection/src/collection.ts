@@ -553,10 +553,14 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
 		const iter = this.entries();
-		return Array.from({ length: this.size }, (): NewValue => {
+		// eslint-disable-next-line unicorn/no-new-array
+		const results: NewValue[] = new Array(this.size);
+		for (let index = 0; index < this.size; index++) {
 			const [key, value] = iter.next().value!;
-			return fn(value, key, this);
-		});
+			results[index] = fn(value, key, this);
+		}
+
+		return results;
 	}
 
 	/**
