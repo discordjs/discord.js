@@ -102,6 +102,7 @@ class ThreadMember extends Base {
   /**
    * Removes this member from the thread.
    * @param {string} [reason] Reason for removing the member
+   * <warn>This parameter is **deprecated**. Reasons cannot be used.</warn>
    * @returns {Promise<ThreadMember>}
    */
   async remove(reason) {

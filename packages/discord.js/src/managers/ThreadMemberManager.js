@@ -1,11 +1,15 @@
 'use strict';
 
+const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const ThreadMember = require('../structures/ThreadMember');
+
+let deprecationEmittedForAdd = false;
+let deprecationEmittedForRemove = false;
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
@@ -92,9 +96,20 @@ class ThreadMemberManager extends CachedManager {
    * Adds a member to the thread.
    * @param {UserResolvable|'@me'} member The member to add
    * @param {string} [reason] The reason for adding this member
+   * <warn>This parameter is **deprecated**. Reasons cannot be used.</warn>
    * @returns {Promise<Snowflake>}
    */
   async add(member, reason) {
+    if (reason !== undefined && !deprecationEmittedForAdd) {
+      process.emitWarning(
+        // eslint-disable-next-line max-len
+        'The reason parameter of ThreadMemberManager#add() is deprecated as Discord does not parse them. It will be removed in the next major version.',
+        'DeprecationWarning',
+      );
+
+      deprecationEmittedForAdd = true;
+    }
+
     const id = member === '@me' ? member : this.client.users.resolveId(member);
     if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'member', 'UserResolvable');
     await this.client.rest.put(Routes.threadMembers(this.thread.id, id), { reason });
@@ -105,9 +120,20 @@ class ThreadMemberManager extends CachedManager {
    * Remove a user from the thread.
    * @param {UserResolvable|'@me'} member The member to remove
    * @param {string} [reason] The reason for removing this member from the thread
+   * <warn>This parameter is **deprecated**. Reasons cannot be used.</warn>
    * @returns {Promise<Snowflake>}
    */
   async remove(member, reason) {
+    if (reason !== undefined && !deprecationEmittedForRemove) {
+      process.emitWarning(
+        // eslint-disable-next-line max-len
+        'The reason parameter of ThreadMemberManager#remove() is deprecated as Discord does not parse them. It will be removed in the next major version.',
+        'DeprecationWarning',
+      );
+
+      deprecationEmittedForRemove = true;
+    }
+
     const id = member === '@me' ? member : this.client.users.resolveId(member);
     if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'member', 'UserResolvable');
     await this.client.rest.delete(Routes.threadMembers(this.thread.id, id), { reason });
