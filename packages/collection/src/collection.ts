@@ -117,11 +117,14 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public last(): Value | undefined;
 	public last(amount: number): Value[];
 	public last(amount?: number): Value | Value[] | undefined {
-		const arr = [...this.values()];
-		if (amount === undefined) return arr[arr.length - 1];
-		if (amount < 0) return this.first(amount * -1);
+		if (amount === undefined) {
+			const arr = [...this.values()];
+			return arr[arr.length - 1];
+		}
 		if (!amount) return [];
-		return arr.slice(-amount);
+		if (amount < 0) return this.first(amount * -1);
+		const arr = [...this.values()];
+		return arr.slice(amount * -1);
 	}
 
 	/**
@@ -134,11 +137,14 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public lastKey(): Key | undefined;
 	public lastKey(amount: number): Key[];
 	public lastKey(amount?: number): Key | Key[] | undefined {
-		const arr = [...this.keys()];
-		if (amount === undefined) return arr[arr.length - 1];
-		if (amount < 0) return this.firstKey(amount * -1);
+		if (amount === undefined) {
+			const arr = [...this.keys()];
+			return arr[arr.length - 1];
+		}
 		if (!amount) return [];
-		return arr.slice(-amount);
+		if (amount < 0) return this.firstKey(amount * -1);
+		const arr = [...this.keys()];
+		return arr.slice(amount * -1);
 	}
 
 	/**
