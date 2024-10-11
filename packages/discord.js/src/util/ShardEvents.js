@@ -7,7 +7,6 @@
  * @property {string} Error error
  * @property {string} Message message
  * @property {string} Ready ready
- * @property {string} Reconnecting reconnecting
  * @property {string} Resume resume
  * @property {string} Spawn spawn
  */
@@ -23,7 +22,6 @@ module.exports = {
   Error: 'error',
   Message: 'message',
   Ready: 'ready',
-  Reconnecting: 'reconnecting',
   Resume: 'resume',
   Spawn: 'spawn',
 };

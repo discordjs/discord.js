@@ -48,7 +48,6 @@ exports.SystemChannelFlagsBitField = require('./util/SystemChannelFlagsBitField'
 exports.ThreadMemberFlagsBitField = require('./util/ThreadMemberFlagsBitField');
 exports.UserFlagsBitField = require('./util/UserFlagsBitField');
 __exportStar(require('./util/Util.js'), exports);
-exports.WebSocketShardEvents = require('./util/WebSocketShardEvents');
 exports.version = require('../package.json').version;
 
 // Managers
@@ -88,8 +87,6 @@ exports.ThreadManager = require('./managers/ThreadManager');
 exports.ThreadMemberManager = require('./managers/ThreadMemberManager');
 exports.UserManager = require('./managers/UserManager');
 exports.VoiceStateManager = require('./managers/VoiceStateManager');
-exports.WebSocketManager = require('./client/websocket/WebSocketManager');
-exports.WebSocketShard = require('./client/websocket/WebSocketShard');
 
 // Structures
 exports.ActionRow = require('./structures/ActionRow');
@@ -164,7 +161,7 @@ exports.MessagePayload = require('./structures/MessagePayload');
 exports.MessageReaction = require('./structures/MessageReaction');
 exports.ModalSubmitInteraction = require('./structures/ModalSubmitInteraction');
 exports.ModalSubmitFields = require('./structures/ModalSubmitFields');
-exports.NewsChannel = require('./structures/NewsChannel');
+exports.AnnouncementChannel = require('./structures/AnnouncementChannel.js');
 exports.OAuth2Guild = require('./structures/OAuth2Guild');
 exports.PartialGroupDMChannel = require('./structures/PartialGroupDMChannel');
 exports.PermissionOverwrites = require('./structures/PermissionOverwrites');
