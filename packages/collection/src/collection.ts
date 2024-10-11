@@ -87,7 +87,13 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (amount < 0) return this.last(amount * -1);
 		amount = Math.min(this.size, amount);
 		const iter = this.values();
-		return Array.from({ length: amount }, (): Value => iter.next().value!);
+		// eslint-disable-next-line unicorn/no-new-array
+		const results: Value[] = new Array(amount);
+		for (let index = 0; index < amount; index++) {
+			results[index] = iter.next().value!;
+		}
+
+		return results;
 	}
 
 	/**
@@ -104,7 +110,13 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (amount < 0) return this.lastKey(amount * -1);
 		amount = Math.min(this.size, amount);
 		const iter = this.keys();
-		return Array.from({ length: amount }, (): Key => iter.next().value!);
+		// eslint-disable-next-line unicorn/no-new-array
+		const results: Key[] = new Array(amount);
+		for (let index = 0; index < amount; index++) {
+			results[index] = iter.next().value!;
+		}
+
+		return results;
 	}
 
 	/**
@@ -121,6 +133,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 			const arr = [...this.values()];
 			return arr[arr.length - 1];
 		}
+
 		if (!amount) return [];
 		if (amount < 0) return this.first(amount * -1);
 		const arr = [...this.values()];
@@ -141,6 +154,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 			const arr = [...this.keys()];
 			return arr[arr.length - 1];
 		}
+
 		if (!amount) return [];
 		if (amount < 0) return this.firstKey(amount * -1);
 		const arr = [...this.keys()];
@@ -162,10 +176,12 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 			if (index < this.size * -1) return undefined;
 			index += this.size;
 		}
+
 		const iter = this.values();
 		for (let skip = 0; skip < index; skip++) {
 			iter.next();
 		}
+
 		return iter.next().value!;
 	}
 
@@ -184,10 +200,12 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 			if (index < this.size * -1) return undefined;
 			index += this.size;
 		}
+
 		const iter = this.keys();
 		for (let skip = 0; skip < index; skip++) {
 			iter.next();
 		}
+
 		return iter.next().value!;
 	}
 
