@@ -7,6 +7,7 @@ const { GuildMember } = require('../structures/GuildMember');
 const { Message } = require('../structures/Message');
 const ThreadMember = require('../structures/ThreadMember');
 const User = require('../structures/User');
+const { emitDeprecationWarningForUserFetchFlags } = require('../util/Util');
 
 /**
  * Manages API methods for users and stores their cache.
@@ -100,8 +101,11 @@ class UserManager extends CachedManager {
    * @param {UserResolvable} user The UserResolvable to identify
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<UserFlagsBitField>}
+   * @deprecated <warn>This method is deprecated and will be removed in the next major version.
+   * Flags may still be retrieved via {@link UserManager#fetch}.</warn>
    */
   async fetchFlags(user, options) {
+    emitDeprecationWarningForUserFetchFlags(this.constructor.name);
     return (await this.fetch(user, options)).flags;
   }
 
