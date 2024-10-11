@@ -3397,7 +3397,11 @@ export class ThreadMember<HasMemberData extends boolean = boolean> extends Base 
   public thread: AnyThreadChannel;
   public get user(): User | null;
   public get partial(): false;
+  /* tslint:disable:unified-signatures */
+  public remove(): Promise<ThreadMember>;
+  /** @deprecated The `reason` parameter is deprecated as Discord does not parse them. */
   public remove(reason?: string): Promise<ThreadMember>;
+  /* tslint:enable:unified-signatures */
 }
 
 export type ThreadMemberFlagsString = keyof typeof ThreadMemberFlags;
@@ -4671,7 +4675,12 @@ export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, 
   private constructor(thread: ThreadChannel, iterable?: Iterable<RawThreadMemberData>);
   public thread: AnyThreadChannel;
   public get me(): ThreadMember | null;
+
+  /* tslint:disable:unified-signatures */
+  public add(member: UserResolvable | '@me'): Promise<Snowflake>;
+  /** @deprecated The `reason` parameter is deprecated as Discord does not parse them. */
   public add(member: UserResolvable | '@me', reason?: string): Promise<Snowflake>;
+  /* tslint:enable:unified-signatures */
 
   public fetch(
     options: ThreadMember<true> | ((FetchThreadMemberOptions & { withMember: true }) | { member: ThreadMember<true> }),
@@ -4685,7 +4694,12 @@ export class ThreadMemberManager extends CachedManager<Snowflake, ThreadMember, 
 
   public fetch(options?: FetchThreadMembersWithoutGuildMemberDataOptions): Promise<Collection<Snowflake, ThreadMember>>;
   public fetchMe(options?: BaseFetchOptions): Promise<ThreadMember>;
+
+  /* tslint:disable:unified-signatures */
+  public remove(member: UserResolvable | '@me'): Promise<Snowflake>;
+  /** @deprecated The `reason` parameter is deprecated as Discord does not parse them. */
   public remove(member: UserResolvable | '@me', reason?: string): Promise<Snowflake>;
+  /* tslint:enable:unified-signatures */
 }
 
 export class UserManager extends CachedManager<Snowflake, User, UserResolvable> {

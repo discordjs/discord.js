@@ -214,7 +214,14 @@ import {
   PollData,
   UserManager,
 } from '.';
-import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
+import {
+  expectAssignable,
+  expectDeprecated,
+  expectNotAssignable,
+  expectNotDeprecated,
+  expectNotType,
+  expectType,
+} from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
 import { ReadonlyCollection } from '@discordjs/collection';
 
@@ -1752,6 +1759,13 @@ declare const threadMemberManager: ThreadMemberManager;
   threadMemberManager.fetch({ cache: true, force: false });
   // @ts-expect-error `withMember` needs to be `true` to receive paginated results.
   threadMemberManager.fetch({ withMember: false, limit: 5, after: '12345678901234567' });
+
+  expectNotDeprecated(threadMemberManager.add('1234678'));
+  expectDeprecated(threadMemberManager.add('1234678', 'reason'));
+  expectNotDeprecated(threadMemberManager.remove('1234678'));
+  expectDeprecated(threadMemberManager.remove('1234678', 'reason'));
+  expectNotDeprecated(threadMemberWithGuildMember.remove());
+  expectDeprecated(threadMemberWithGuildMember.remove('reason'));
 }
 
 declare const userManager: UserManager;

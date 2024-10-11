@@ -10,6 +10,7 @@ const { DiscordjsError, DiscordjsRangeError, DiscordjsTypeError, ErrorCodes } = 
 const isObject = d => typeof d === 'object' && d !== null;
 
 let deprecationEmittedForUserFetchFlags = false;
+let deprecationEmittedForRemoveThreadMember = false;
 
 /**
  * Flatten an object. Any properties that are collections will get converted to an array of keys.
@@ -513,6 +514,21 @@ function emitDeprecationWarningForUserFetchFlags(name) {
   deprecationEmittedForUserFetchFlags = true;
 }
 
+/**
+ * Deprecation function for the reason parameter of removing thread members.
+ * @param {string} name Name of the class
+ * @private
+ */
+function emitDeprecationWarningForRemoveThreadMember(name) {
+  if (deprecationEmittedForRemoveThreadMember) return;
+
+  process.emitWarning(
+    `The reason parameter of ${name}#remove() is deprecated as Discord does not parse them. It will be removed in the next major version.`,
+  );
+
+  deprecationEmittedForRemoveThreadMember = true;
+}
+
 module.exports = {
   flatten,
   fetchRecommendedShardCount,
@@ -533,6 +549,7 @@ module.exports = {
   transformResolved,
   resolveSKUId,
   emitDeprecationWarningForUserFetchFlags,
+  emitDeprecationWarningForRemoveThreadMember,
 };
 
 // Fixes Circular
