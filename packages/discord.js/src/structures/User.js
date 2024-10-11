@@ -351,7 +351,7 @@ class User extends Base {
    * Flags may still be retrieved via {@link User#fetch}.</warn>
    */
   fetchFlags(force = false) {
-    emitDeprecationWarningForUserFetchFlags(false);
+    emitDeprecationWarningForUserFetchFlags(this.constructor.name);
     return this.client.users.fetchFlags(this.id, { force });
   }
 

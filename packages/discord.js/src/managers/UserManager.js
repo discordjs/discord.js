@@ -105,7 +105,7 @@ class UserManager extends CachedManager {
    * Flags may still be retrieved via {@link UserManager#fetch}.</warn>
    */
   async fetchFlags(user, options) {
-    emitDeprecationWarningForUserFetchFlags(true);
+    emitDeprecationWarningForUserFetchFlags(this.constructor.name);
     return (await this.fetch(user, options)).flags;
   }
 

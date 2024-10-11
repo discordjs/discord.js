@@ -504,12 +504,11 @@ function resolveSKUId(resolvable) {
 
 /**
  * Deprecation function for fetching user flags.
- * @param {boolean} userManager Whether the class name is the user manager
+ * @param {string} name Name of the class
  * @private
  */
-function emitDeprecationWarningForUserFetchFlags(userManager) {
+function emitDeprecationWarningForUserFetchFlags(name) {
   if (deprecationEmittedForUserFetchFlags) return;
-  const name = userManager ? 'UserManager' : 'User';
   process.emitWarning(`${name}#fetchFlags() is deprecated. Use ${name}#fetch() instead.`);
   deprecationEmittedForUserFetchFlags = true;
 }
