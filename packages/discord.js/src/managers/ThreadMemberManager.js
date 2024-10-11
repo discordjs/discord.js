@@ -7,9 +7,9 @@ const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const ThreadMember = require('../structures/ThreadMember');
+const { emitDeprecationWarningForRemoveThreadMember } = require('../util/Util');
 
 let deprecationEmittedForAdd = false;
-let deprecationEmittedForRemove = false;
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
@@ -124,14 +124,8 @@ class ThreadMemberManager extends CachedManager {
    * @returns {Promise<Snowflake>}
    */
   async remove(member, reason) {
-    if (reason !== undefined && !deprecationEmittedForRemove) {
-      process.emitWarning(
-        // eslint-disable-next-line max-len
-        'The reason parameter of ThreadMemberManager#remove() is deprecated as Discord does not parse them. It will be removed in the next major version.',
-        'DeprecationWarning',
-      );
-
-      deprecationEmittedForRemove = true;
+    if (reason !== undefined) {
+      emitDeprecationWarningForRemoveThreadMember(this.constructor.name);
     }
 
     const id = member === '@me' ? member : this.client.users.resolveId(member);

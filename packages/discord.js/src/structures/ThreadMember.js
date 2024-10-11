@@ -2,6 +2,7 @@
 
 const Base = require('./Base');
 const ThreadMemberFlagsBitField = require('../util/ThreadMemberFlagsBitField');
+const { emitDeprecationWarningForRemoveThreadMember } = require('../util/Util');
 
 /**
  * Represents a Member for a Thread.
@@ -106,6 +107,10 @@ class ThreadMember extends Base {
    * @returns {Promise<ThreadMember>}
    */
   async remove(reason) {
+    if (reason !== undefined) {
+      emitDeprecationWarningForRemoveThreadMember(this.constructor.name);
+    }
+
     await this.thread.members.remove(this.id, reason);
     return this;
   }
