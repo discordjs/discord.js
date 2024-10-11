@@ -6,6 +6,7 @@ const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const UserFlagsBitField = require('../util/UserFlagsBitField');
+const { emitDeprecationWarningForUserFetchFlags } = require('../util/Util');
 
 /**
  * Represents a user on Discord.
@@ -350,6 +351,7 @@ class User extends Base {
    * Flags may still be retrieved via {@link User#fetch}.</warn>
    */
   fetchFlags(force = false) {
+    emitDeprecationWarningForUserFetchFlags(false);
     return this.client.users.fetchFlags(this.id, { force });
   }
 

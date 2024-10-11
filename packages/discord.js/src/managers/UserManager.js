@@ -1,6 +1,5 @@
 'use strict';
 
-const { deprecate } = require('node:util');
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { DiscordjsError, ErrorCodes } = require('../errors');
@@ -8,6 +7,7 @@ const { GuildMember } = require('../structures/GuildMember');
 const { Message } = require('../structures/Message');
 const ThreadMember = require('../structures/ThreadMember');
 const User = require('../structures/User');
+const { emitDeprecationWarningForUserFetchFlags } = require('../util/Util');
 
 /**
  * Manages API methods for users and stores their cache.
@@ -105,6 +105,7 @@ class UserManager extends CachedManager {
    * Flags may still be retrieved via {@link UserManager#fetch}.</warn>
    */
   async fetchFlags(user, options) {
+    emitDeprecationWarningForUserFetchFlags(true);
     return (await this.fetch(user, options)).flags;
   }
 
@@ -141,10 +142,5 @@ class UserManager extends CachedManager {
     return super.resolveId(user);
   }
 }
-
-UserManager.prototype.fetchFlags = deprecate(
-  UserManager.prototype.fetchFlags,
-  'UserManager#fetchFlags() is deprecated. Use UserManager#fetch() instead.',
-);
 
 module.exports = UserManager;

@@ -1,12 +1,15 @@
 'use strict';
 
 const { parse } = require('node:path');
+const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const { ChannelType, RouteBases, Routes } = require('discord-api-types/v10');
 const { fetch } = require('undici');
 const Colors = require('./Colors');
 const { DiscordjsError, DiscordjsRangeError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 const isObject = d => typeof d === 'object' && d !== null;
+
+let deprecationEmittedForUserFetchFlags = false;
 
 /**
  * Flatten an object. Any properties that are collections will get converted to an array of keys.
@@ -499,6 +502,18 @@ function resolveSKUId(resolvable) {
   return null;
 }
 
+/**
+ * Deprecation function for fetching user flags.
+ * @param {boolean} userManager Whether the class name is the user manager
+ * @private
+ */
+function emitDeprecationWarningForUserFetchFlags(userManager) {
+  if (deprecationEmittedForUserFetchFlags) return;
+  const name = userManager ? 'UserManager' : 'User';
+  process.emitWarning(`${name}#fetchFlags() is deprecated. Use ${name}#fetch() instead.`);
+  deprecationEmittedForUserFetchFlags = true;
+}
+
 module.exports = {
   flatten,
   fetchRecommendedShardCount,
@@ -518,6 +533,7 @@ module.exports = {
   parseWebhookURL,
   transformResolved,
   resolveSKUId,
+  emitDeprecationWarningForUserFetchFlags,
 };
 
 // Fixes Circular
