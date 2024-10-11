@@ -959,12 +959,14 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 			const hasInSelf = this.has(key);
 			const hasInOther = other.has(key);
 
-			if (hasInSelf && hasInOther) {
-				const result = whenInBoth(this.get(key)!, other.get(key)!, key);
-				if (result.keep) coll.set(key, result.value);
-			} else if (hasInSelf) {
-				const result = whenInSelf(this.get(key)!, key);
-				if (result.keep) coll.set(key, result.value);
+			if (hasInSelf) {
+				if (hasInOther) {
+					const result = whenInBoth(this.get(key)!, other.get(key)!, key);
+					if (result.keep) coll.set(key, result.value);
+				} else {
+					const result = whenInSelf(this.get(key)!, key);
+					if (result.keep) coll.set(key, result.value);
+				}
 			} else if (hasInOther) {
 				const result = whenInOther(other.get(key)!, key);
 				if (result.keep) coll.set(key, result.value);
