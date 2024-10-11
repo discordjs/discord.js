@@ -218,13 +218,17 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public random(): Value | undefined;
 	public random(amount: number): Value[];
 	public random(amount?: number): Value | Value[] | undefined {
+		if (amount === 0) return [];
 		const arr = [...this.values()];
 		if (amount === undefined) return arr[Math.floor(Math.random() * arr.length)];
-		if (!arr.length || !amount) return [];
-		return Array.from(
-			{ length: Math.min(amount, arr.length) },
-			(): Value => arr.splice(Math.floor(Math.random() * arr.length), 1)[0]!,
-		);
+		amount = Math.min(this.size, amount);
+		// eslint-disable-next-line unicorn/no-new-array
+		const results: Value[] = new Array(amount);
+		for (let index = 0; index < amount; index++) {
+			results[index] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0]!;
+		}
+
+		return results;
 	}
 
 	/**
@@ -236,13 +240,17 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public randomKey(): Key | undefined;
 	public randomKey(amount: number): Key[];
 	public randomKey(amount?: number): Key | Key[] | undefined {
+		if (amount === 0) return [];
 		const arr = [...this.keys()];
 		if (amount === undefined) return arr[Math.floor(Math.random() * arr.length)];
-		if (!arr.length || !amount) return [];
-		return Array.from(
-			{ length: Math.min(amount, arr.length) },
-			(): Key => arr.splice(Math.floor(Math.random() * arr.length), 1)[0]!,
-		);
+		amount = Math.min(this.size, amount);
+		// eslint-disable-next-line unicorn/no-new-array
+		const results: Key[] = new Array(amount);
+		for (let index = 0; index < amount; index++) {
+			results[index] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0]!;
+		}
+
+		return results;
 	}
 
 	/**
