@@ -218,7 +218,7 @@ class GuildScheduledEvent extends Base {
        * The recurrence rule for this scheduled event
        * @type {?GuildScheduledEventRecurrenceRule}
        */
-      this.recurrenceRule = {
+      this.recurrenceRule = data.recurrence_rule && {
         startTimestamp: Date.parse(data.recurrence_rule.start),
         get startAt() {
           return new Date(this.startTimestamp);
