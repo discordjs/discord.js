@@ -997,8 +997,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	 * collection.sorted((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
 	 * ```
 	 */
-	public toSorted(compareFunction: Comparator<Key, Value> = Collection.defaultSort) {
-		return new this.constructor[Symbol.species](this).sort((av, bv, ak, bk) => compareFunction(av, bv, ak, bk));
+	public toSorted(compareFunction: Comparator<Key, Value> = Collection.defaultSort): Collection<Key, Value> {
+		return new this.constructor[Symbol.species](this).sort(compareFunction);
 	}
 
 	public toJSON() {
