@@ -129,13 +129,10 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public last(): Value | undefined;
 	public last(amount: number): Value[];
 	public last(amount?: number): Value | Value[] | undefined {
-		if (amount === undefined) {
-			const arr = [...this.values()];
-			return arr[arr.length - 1];
-		}
-
+		if (amount === undefined) return this.at(-1);
 		if (!amount) return [];
 		if (amount < 0) return this.first(amount * -1);
+
 		const arr = [...this.values()];
 		return arr.slice(amount * -1);
 	}
@@ -150,13 +147,10 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public lastKey(): Key | undefined;
 	public lastKey(amount: number): Key[];
 	public lastKey(amount?: number): Key | Key[] | undefined {
-		if (amount === undefined) {
-			const arr = [...this.keys()];
-			return arr[arr.length - 1];
-		}
-
+		if (amount === undefined) return this.keyAt(-1);
 		if (!amount) return [];
 		if (amount < 0) return this.firstKey(amount * -1);
+
 		const arr = [...this.keys()];
 		return arr.slice(amount * -1);
 	}
