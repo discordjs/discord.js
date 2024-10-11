@@ -346,6 +346,8 @@ class User extends Base {
    * Fetches this user's flags.
    * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<UserFlagsBitField>}
+   * @deprecated <warn>This method is deprecated and will be removed in the next major version.
+   * Flags may still be retrieved via {@link User#fetch}.</warn>
    */
   fetchFlags(force = false) {
     return this.client.users.fetchFlags(this.id, { force });

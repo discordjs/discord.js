@@ -212,6 +212,7 @@ import {
   GuildScheduledEventManager,
   SendableChannels,
   PollData,
+  UserManager,
 } from '.';
 import { expectAssignable, expectDeprecated, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -1751,6 +1752,12 @@ declare const threadMemberManager: ThreadMemberManager;
   threadMemberManager.fetch({ cache: true, force: false });
   // @ts-expect-error `withMember` needs to be `true` to receive paginated results.
   threadMemberManager.fetch({ withMember: false, limit: 5, after: '12345678901234567' });
+}
+
+declare const userManager: UserManager;
+{
+  expectDeprecated(userManager.fetchFlags('1234567890'));
+  expectDeprecated(user.fetchFlags());
 }
 
 declare const typing: Typing;

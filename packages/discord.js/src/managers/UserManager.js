@@ -1,5 +1,6 @@
 'use strict';
 
+const { deprecate } = require('node:util');
 const { ChannelType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { DiscordjsError, ErrorCodes } = require('../errors');
@@ -100,6 +101,8 @@ class UserManager extends CachedManager {
    * @param {UserResolvable} user The UserResolvable to identify
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<UserFlagsBitField>}
+   * @deprecated <warn>This method is deprecated and will be removed in the next major version.
+   * Flags may still be retrieved via {@link UserManager#fetch}.</warn>
    */
   async fetchFlags(user, options) {
     return (await this.fetch(user, options)).flags;
@@ -138,5 +141,10 @@ class UserManager extends CachedManager {
     return super.resolveId(user);
   }
 }
+
+UserManager.prototype.fetchFlags = deprecate(
+  UserManager.prototype.fetchFlags,
+  'UserManager#fetchFlags() is deprecated. Use UserManager#fetch() instead.',
+);
 
 module.exports = UserManager;
