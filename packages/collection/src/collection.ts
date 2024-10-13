@@ -85,7 +85,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public first(amount?: number): Value | Value[] | undefined {
 		if (amount === undefined) return this.values().next().value;
 		if (amount < 0) return this.last(amount * -1);
-		amount = Math.min(this.size, amount);
+		if (amount >= this.size) return [...this.values()];
+
 		const iter = this.values();
 		// eslint-disable-next-line unicorn/no-new-array
 		const results: Value[] = new Array(amount);
@@ -108,7 +109,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public firstKey(amount?: number): Key | Key[] | undefined {
 		if (amount === undefined) return this.keys().next().value;
 		if (amount < 0) return this.lastKey(amount * -1);
-		amount = Math.min(this.size, amount);
+		if (amount >= this.size) return [...this.keys()];
+
 		const iter = this.keys();
 		// eslint-disable-next-line unicorn/no-new-array
 		const results: Key[] = new Array(amount);
