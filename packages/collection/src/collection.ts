@@ -214,14 +214,15 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public random(): Value | undefined;
 	public random(amount: number): Value[];
 	public random(amount?: number): Value | Value[] | undefined {
-		if (amount === 0) return [];
-		const arr = [...this.values()];
-		if (amount === undefined) return arr[Math.floor(Math.random() * arr.length)];
+		if (amount === undefined) return this.at(Math.floor(Math.random() * this.size));
 		amount = Math.min(this.size, amount);
+		if (!amount) return [];
+
+		const values = [...this.values()];
 		// eslint-disable-next-line unicorn/no-new-array
 		const results: Value[] = new Array(amount);
 		for (let index = 0; index < amount; index++) {
-			results[index] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0]!;
+			results[index] = values.splice(Math.floor(Math.random() * values.length), 1)[0]!;
 		}
 
 		return results;
@@ -236,14 +237,15 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public randomKey(): Key | undefined;
 	public randomKey(amount: number): Key[];
 	public randomKey(amount?: number): Key | Key[] | undefined {
-		if (amount === 0) return [];
-		const arr = [...this.keys()];
-		if (amount === undefined) return arr[Math.floor(Math.random() * arr.length)];
+		if (amount === undefined) return this.keyAt(Math.floor(Math.random() * this.size));
 		amount = Math.min(this.size, amount);
+		if (!amount) return [];
+
+		const keys = [...this.keys()];
 		// eslint-disable-next-line unicorn/no-new-array
 		const results: Key[] = new Array(amount);
 		for (let index = 0; index < amount; index++) {
-			results[index] = arr.splice(Math.floor(Math.random() * arr.length), 1)[0]!;
+			results[index] = keys.splice(Math.floor(Math.random() * keys.length), 1)[0]!;
 		}
 
 		return results;
