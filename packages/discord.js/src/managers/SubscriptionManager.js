@@ -24,27 +24,32 @@ class SubscriptionManager extends CachedManager {
    */
 
   /**
+   * Options used to fetch a subscription
+   * @typedef {BaseFetchOptions} FetchSubscriptionOptions
+   * @property {SKUResolvable} sku The SKU to fetch the subscription for
+   * @property {Snowflake} subscriptionId The id of the subscription to fetch
+   */
+
+  /**
    * Options used to fetch subscriptions
    * @typedef {Object} FetchSubscriptionsOptions
+   * @property {Snowflake} [after] Consider only subscriptions after this subscription id
+   * @property {Snowflake} [before] Consider only subscriptions before this subscription id
    * @property {number} [limit=50] The maximum number of subscriptions to fetch
    * @property {SKUResolvable} sku The SKU to fetch subscriptions for
-   * @property {Snowflake} [subscriptionId] The subscription id to fetch
    * @property {UserResolvable} user The user to fetch entitlements for
-   * @property {boolean} [cache=true] Whether to cache the fetched subscriptions
-   * @property {Snowflake} [before] Consider only subscriptions before this subscription id
-   * @property {Snowflake} [after] Consider only subscriptions after this subscription id
    * <warn>If both `before` and `after` are provided, only `before` is respected</warn>
    */
 
   /**
    * Fetches subscriptions for this application
-   * @param {FetchSubscriptionsOptions} [options={}] Options for fetching the subscriptions
+   * @param {FetchSubscriptionOptions|FetchSubscriptionsOptions} [options={}] Options for fetching the subscriptions
    * @returns {Promise<Collection<Snowflake, Subscription>>}
    */
   async fetch(options = {}) {
     if (typeof options !== 'object') throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
 
-    const { limit = 50, sku, subscriptionId, user, cache = true, before, after } = options;
+    const { after, before, cache = true, limit = 50, sku, subscriptionId, user } = options;
 
     const skuId = resolveSKUId(sku);
 

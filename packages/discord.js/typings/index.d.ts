@@ -4116,22 +4116,23 @@ export class EntitlementManager extends CachedManager<Snowflake, Entitlement, En
   public consume(entitlementId: Snowflake): Promise<void>;
 }
 
+export interface FetchSubscriptionOptions extends BaseFetchOptions {
+  sku: SKUResolvable;
+  subscriptionId: Snowflake;
+}
+
 export interface FetchSubscriptionsOptions {
+  after?: Snowflake;
+  before?: Snowflake;
   limit?: number;
   sku: SKUResolvable;
-  subscriptionId?: undefined;
   user: UserResolvable;
-  cache?: boolean;
-  before?: Snowflake;
-  after?: Snowflake;
 }
 
 export class SubscriptionManager extends CachedManager<Snowflake, Subscription, SubscriptionResolvable> {
   private constructor(client: Client<true>, iterable?: Iterable<APISubscription>);
+  public fetch(options: FetchSubscriptionOptions): Promise<Subscription>;
   public fetch(options: FetchSubscriptionsOptions): Promise<Collection<Snowflake, Subscription>>;
-  public fetch(
-    options: Omit<FetchSubscriptionsOptions, 'subscriptionId'> & { subscriptionId: Snowflake },
-  ): Promise<Subscription>;
 }
 
 export interface FetchGuildApplicationCommandFetchOptions extends Omit<FetchApplicationCommandOptions, 'guildId'> {}
