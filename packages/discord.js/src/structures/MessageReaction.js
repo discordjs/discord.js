@@ -1,6 +1,7 @@
 'use strict';
 
 const { Routes } = require('discord-api-types/v10');
+const ApplicationEmoji = require('./ApplicationEmoji');
 const GuildEmoji = require('./GuildEmoji');
 const ReactionEmoji = require('./ReactionEmoji');
 const ReactionUserManager = require('../managers/ReactionUserManager');
@@ -108,16 +109,24 @@ class MessageReaction {
   }
 
   /**
-   * The emoji of this reaction. Either a {@link GuildEmoji} object for known custom emojis, or a {@link ReactionEmoji}
-   * object which has fewer properties. Whatever the prototype of the emoji, it will still have
+   * The emoji of this reaction. Either a {@link GuildEmoji} object for known custom emojis,
+   * {@link ApplicationEmoji} for application emojis, or a {@link ReactionEmoji} object
+   * which has fewer properties. Whatever the prototype of the emoji, it will still have
    * `name`, `id`, `identifier` and `toString()`
-   * @type {GuildEmoji|ReactionEmoji}
+   * @type {GuildEmoji|ReactionEmoji|ApplicationEmoji}
    * @readonly
    */
   get emoji() {
     if (this._emoji instanceof GuildEmoji) return this._emoji;
+    if (this._emoji instanceof ApplicationEmoji) return this._emoji;
     // Check to see if the emoji has become known to the client
     if (this._emoji.id) {
+      const applicationEmojis = this.message.client.application.emojis.cache;
+      if (applicationEmojis.has(this._emoji.id)) {
+        const emoji = applicationEmojis.get(this._emoji.id);
+        this._emoji = emoji;
+        return emoji;
+      }
       const emojis = this.message.client.emojis.cache;
       if (emojis.has(this._emoji.id)) {
         const emoji = emojis.get(this._emoji.id);

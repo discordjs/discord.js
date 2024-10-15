@@ -54,4 +54,31 @@ function _transformAPIMessageInteractionMetadata(client, messageInteractionMetad
   };
 }
 
-module.exports = { toSnakeCase, _transformAPIAutoModerationAction, _transformAPIMessageInteractionMetadata };
+/**
+ * Transforms a guild scheduled event recurrence rule object to a snake-cased variant.
+ * @param {GuildScheduledEventRecurrenceRuleOptions} recurrenceRule The recurrence rule to transform
+ * @returns {APIGuildScheduledEventRecurrenceRule}
+ * @ignore
+ */
+function _transformGuildScheduledEventRecurrenceRule(recurrenceRule) {
+  return {
+    start: new Date(recurrenceRule.startAt).toISOString(),
+    // eslint-disable-next-line eqeqeq
+    end: recurrenceRule.endAt != null ? new Date(recurrenceRule.endAt).toISOString() : recurrenceRule.endAt,
+    frequency: recurrenceRule.frequency,
+    interval: recurrenceRule.interval,
+    by_weekday: recurrenceRule.byWeekday,
+    by_n_weekday: recurrenceRule.byNWeekday,
+    by_month: recurrenceRule.byMonth,
+    by_month_day: recurrenceRule.byMonthDay,
+    by_year_day: recurrenceRule.byYearDay,
+    count: recurrenceRule.count,
+  };
+}
+
+module.exports = {
+  toSnakeCase,
+  _transformAPIAutoModerationAction,
+  _transformAPIMessageInteractionMetadata,
+  _transformGuildScheduledEventRecurrenceRule,
+};
