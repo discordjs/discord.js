@@ -8,6 +8,7 @@ export const PACKAGES = [
 	{ name: 'next' },
 	{ name: 'proxy' },
 	{ name: 'rest' },
+	{ name: 'structures' },
 	{ name: 'util' },
 	{ name: 'voice' },
 	{ name: 'ws' },
