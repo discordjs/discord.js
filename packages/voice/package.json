@@ -74,6 +74,7 @@
 		"@discordjs/opus": "^0.9.0",
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^4.1.0",
+		"@stablelib/xchacha20poly1305": "^2.0.0",
 		"@types/node": "18.19.45",
 		"@vitest/coverage-v8": "2.0.5",
 		"cross-env": "^7.0.3",
