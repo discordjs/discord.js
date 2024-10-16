@@ -9,6 +9,7 @@ const Application = require('./interfaces/Application');
 const ApplicationCommandManager = require('../managers/ApplicationCommandManager');
 const ApplicationEmojiManager = require('../managers/ApplicationEmojiManager');
 const { EntitlementManager } = require('../managers/EntitlementManager');
+const { SubscriptionManager } = require('../managers/SubscriptionManager');
 const ApplicationFlagsBitField = require('../util/ApplicationFlagsBitField');
 const { resolveImage } = require('../util/DataResolver');
 const PermissionsBitField = require('../util/PermissionsBitField');
@@ -44,6 +45,12 @@ class ClientApplication extends Application {
      * @type {EntitlementManager}
      */
     this.entitlements = new EntitlementManager(this.client);
+
+    /**
+     * The subscription manager for this application
+     * @type {SubscriptionManager}
+     */
+    this.subscriptions = new SubscriptionManager(this.client);
   }
 
   _patch(data) {
