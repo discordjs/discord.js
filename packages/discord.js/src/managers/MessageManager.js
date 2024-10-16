@@ -2,9 +2,9 @@
 
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v10');
+const { MessageReferenceType, Routes } = require('discord-api-types/v10');
 const { CachedManager } = require('./CachedManager.js');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 const { Message } = require('../structures/Message.js');
 const { MessagePayload } = require('../structures/MessagePayload.js');
 const { MakeCacheOverrideSymbol } = require('../util/Symbols.js');
@@ -194,6 +194,46 @@ class MessageManager extends CachedManager {
       return clone;
     }
     return this._add(d);
+  }
+
+  /**
+   * Publishes a message in an announcement channel to all channels following it, even if it's not cached.
+   * @param {MessageResolvable} message The message to publish
+   * @returns {Promise<Message>}
+   */
+  async crosspost(message) {
+    message = this.resolveId(message);
+    if (!message) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+
+    const data = await this.client.rest.post(Routes.channelMessageCrosspost(this.channel.id, message));
+    return this.cache.get(data.id) ?? this._add(data);
+  }
+
+  /**
+   * Forwards a message to this manager's channel.
+   * @param {Message|MessageReference} reference The message to forward
+   * @returns {Promise<Message>}
+   */
+  async forward(reference) {
+    if (!reference) throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
+    const message_id = this.resolveId(reference.messageId);
+    if (!message_id) throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
+    const channel_id = this.client.channels.resolveId(reference.channelId);
+    if (!channel_id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'ChannelResolvable');
+    const guild_id = this.client.guilds.resolveId(reference.guildId);
+
+    const data = await this.client.rest.post(Routes.channelMessages(this.channel.id), {
+      body: {
+        message_reference: {
+          message_id,
+          channel_id,
+          guild_id,
+          type: MessageReferenceType.Forward,
+        },
+      },
+    });
+
+    return this.cache.get(data.id) ?? this._add(data);
   }
 
   /**
