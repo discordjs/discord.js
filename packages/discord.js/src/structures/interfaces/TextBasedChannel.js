@@ -113,7 +113,7 @@ class TextBasedChannel {
   /**
    * The options for sending a message.
    * @typedef {BaseMessageCreateOptions} MessageCreateOptions
-   * @property {ReplyOptions} [reply] The options for replying to a message
+   * @property {MessageReference|MessageResolvable} [messageReference] The options for a reference to a message
    */
 
   /**
