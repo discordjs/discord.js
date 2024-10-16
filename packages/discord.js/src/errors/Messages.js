@@ -78,6 +78,7 @@ const Messages = {
   [DjsErrorCodes.MessageThreadParent]: 'The message was not sent in a guild text or announcement channel',
   [DjsErrorCodes.MessageExistingThread]: 'The message already has a thread',
   [DjsErrorCodes.ThreadInvitableType]: type => `Invitable cannot be edited on ${type}`,
+  [DjsErrorCodes.NotAThreadOfParent]: 'Provided ThreadChannelResolvable is not a thread of the parent channel.',
 
   [DjsErrorCodes.WebhookMessage]: 'The message was not sent by a webhook.',
   [DjsErrorCodes.WebhookTokenUnavailable]: 'This action requires a webhook token, but none is available.',
