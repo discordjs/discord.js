@@ -2,9 +2,9 @@
 
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v10');
+const { MessageReferenceType, Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
+const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 const { Message } = require('../structures/Message');
 const MessagePayload = require('../structures/MessagePayload');
 const { MakeCacheOverrideSymbol } = require('../util/Symbols');
@@ -206,6 +206,33 @@ class MessageManager extends CachedManager {
     if (!message) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
     const data = await this.client.rest.post(Routes.channelMessageCrosspost(this.channel.id, message));
+    return this.cache.get(data.id) ?? this._add(data);
+  }
+
+  /**
+   * Forwards a message to this manager's channel.
+   * @param {Message|MessageReference} reference The message to forward
+   * @returns {Promise<Message>}
+   */
+  async forward(reference) {
+    if (!reference) throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
+    const message_id = this.resolveId(reference.messageId);
+    if (!message_id) throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
+    const channel_id = this.client.channels.resolveId(reference.channelId);
+    if (!channel_id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'ChannelResolvable');
+    const guild_id = this.client.guilds.resolveId(reference.guildId);
+
+    const data = await this.client.rest.post(Routes.channelMessages(this.channel.id), {
+      body: {
+        message_reference: {
+          message_id,
+          channel_id,
+          guild_id,
+          type: MessageReferenceType.Forward,
+        },
+      },
+    });
+
     return this.cache.get(data.id) ?? this._add(data);
   }
 

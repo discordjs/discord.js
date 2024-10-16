@@ -201,6 +201,23 @@ class MessagePayload {
       }
     }
 
+    if (this.options.messageReference) {
+      const reference = this.options.messageReference;
+      const message_id = this.target.messages.resolveId(reference.messageId);
+      const channel_id = this.target.client.channels.resolveId(reference.channelId);
+      const guild_id = this.target.client.guilds.resolveId(reference.guildId);
+
+      if (message_id) {
+        message_reference = {
+          message_id,
+          channel_id,
+          guild_id,
+          type: reference.type,
+          fail_if_not_exists: reference.failIfNotExists ?? this.target.client.options.failIfNotExists,
+        };
+      }
+    }
+
     const attachments = this.options.files?.map((file, index) => ({
       id: index.toString(),
       description: file.description,
