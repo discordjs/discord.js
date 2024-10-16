@@ -2,7 +2,7 @@ version = 1
 
 [merge]
 require_automerge_label = false
-blocking_labels = ['blocked', 'in review']
+blocking_labels = ['blocked', 'in review', 'semver:major']
 method = 'squash'
 
 [merge.message]
