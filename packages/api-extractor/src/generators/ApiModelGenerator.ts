@@ -843,6 +843,7 @@ export class ApiModelGenerator {
 			const parameters: IApiParameterOptions[] = this._captureParameters(
 				nodesToCapture,
 				functionDeclaration.parameters,
+				jsDoc?.params,
 			);
 
 			const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodesToCapture);
@@ -1043,6 +1044,7 @@ export class ApiModelGenerator {
 				const parameters: IApiParameterOptions[] = this._captureParameters(
 					nodesToCapture,
 					methodDeclaration.parameters,
+					jsDoc?.params,
 				);
 
 				const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodesToCapture);
@@ -1137,7 +1139,11 @@ export class ApiModelGenerator {
 					methodSignature.typeParameters,
 				);
 
-				const parameters: IApiParameterOptions[] = this._captureParameters(nodesToCapture, methodSignature.parameters);
+				const parameters: IApiParameterOptions[] = this._captureParameters(
+					nodesToCapture,
+					methodSignature.parameters,
+					jsDoc?.params,
+				);
 
 				const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodesToCapture);
 				const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
@@ -1342,7 +1348,7 @@ export class ApiModelGenerator {
 				const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 				const docComment: tsdoc.DocComment | undefined = jsDoc
 					? this._tsDocParser.parseString(
-							`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}${jsDoc.default ? ` (default: ${this._escapeSpecialChars(jsDoc.default)})` : ''}\n${
+							`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}${jsDoc.default ? `\n * @defaultValue ${this._escapeSpecialChars(jsDoc.default)}` : ''}\n${
 								'see' in jsDoc ? jsDoc.see.map((see) => ` * @see ${see}\n`).join('') : ''
 							}${'readonly' in jsDoc && jsDoc.readonly ? ' * @readonly\n' : ''}${
 								'deprecated' in jsDoc && jsDoc.deprecated
@@ -1529,6 +1535,7 @@ export class ApiModelGenerator {
 					},
 					isOptional: Boolean(parameter.optional),
 					isRest: parameter.name.startsWith('...'),
+					defaultValue: parameter.default?.toString(),
 				});
 				excerptTokens.push(...newTokens);
 				excerptTokens.push({
@@ -1548,6 +1555,7 @@ export class ApiModelGenerator {
 					},
 					isOptional: Boolean(parameter.optional),
 					isRest: parameter.name.startsWith('...'),
+					defaultValue: parameter.default?.toString(),
 				});
 				excerptTokens.push(...newTokens);
 				excerptTokens.push({
@@ -1640,6 +1648,7 @@ export class ApiModelGenerator {
 	private _captureParameters(
 		nodesToCapture: IExcerptBuilderNodeToCapture[],
 		parameterNodes: ts.NodeArray<ts.ParameterDeclaration>,
+		jsDoc?: DocgenParamJson[] | undefined,
 	): IApiParameterOptions[] {
 		const parameters: IApiParameterOptions[] = [];
 		for (const parameter of parameterNodes) {
@@ -1650,6 +1659,9 @@ export class ApiModelGenerator {
 				parameterTypeTokenRange,
 				isOptional: this._collector.typeChecker.isOptionalParameter(parameter),
 				isRest: Boolean(parameter.dotDotDotToken),
+				defaultValue:
+					parameter.initializer?.getText() ??
+					jsDoc?.find((param) => param.name === parameter.name.getText().trim())?.default?.toString(),
 			});
 		}
 
@@ -1753,7 +1765,7 @@ export class ApiModelGenerator {
 			return input;
 		}
 
-		return input.replaceAll(/(?<char>[{}])/g, '\\$<char>');
+		return input.replaceAll(/(?<char>[@{}])/g, '\\$<char>');
 	}
 
 	private _fixLinkTags(input?: string): string | undefined {
@@ -1848,7 +1860,7 @@ export class ApiModelGenerator {
 			isOptional: Boolean(prop.nullable),
 			isReadonly: Boolean(prop.readonly),
 			docComment: this._tsDocParser.parseString(
-				`/**\n * ${this._fixLinkTags(prop.description) ?? ''}${prop.default ? ` (default: ${this._escapeSpecialChars(prop.default)})` : ''}\n${
+				`/**\n * ${this._fixLinkTags(prop.description) ?? ''}\n${prop.default ? ` * @defaultValue ${this._escapeSpecialChars(prop.default)}\n` : ''}${
 					prop.see?.map((see) => ` * @see ${see}\n`).join('') ?? ''
 				}${prop.readonly ? ' * @readonly\n' : ''} */`,
 			).docComment,
@@ -1860,7 +1872,7 @@ export class ApiModelGenerator {
 					}${prop.name} :`,
 				},
 				...mappedVarType,
-				{ kind: ExcerptTokenKind.Content, text: ';' },
+				{ kind: ExcerptTokenKind.Content, text: `${prop.default ? ` = ${prop.default}` : ''};` },
 			],
 			propertyTypeTokenRange: { startIndex: 1, endIndex: 1 + mappedVarType.length },
 			releaseTag: prop.access === 'private' ? ReleaseTag.Internal : ReleaseTag.Public,
@@ -1883,6 +1895,7 @@ export class ApiModelGenerator {
 				startIndex: 1 + index + paramTokens.slice(0, index).reduce((akk, num) => akk + num, 0),
 				endIndex: 1 + index + paramTokens.slice(0, index + 1).reduce((akk, num) => akk + num, 0),
 			},
+			defaultValue: param.default?.toString(),
 		};
 	}
 
@@ -1907,7 +1920,7 @@ export class ApiModelGenerator {
 			excerptTokens.push(...newTokens);
 			excerptTokens.push({
 				kind: ExcerptTokenKind.Content,
-				text: `, ${method.params![index + 1]!.name}${
+				text: `${method.params![index]!.default ? ` = ${method.params![index]!.default}` : ''}, ${method.params![index + 1]!.name}${
 					method.params![index + 1]!.nullable || method.params![index + 1]!.optional ? '?' : ''
 				}: `,
 			});
@@ -1917,7 +1930,10 @@ export class ApiModelGenerator {
 			const newTokens = this._mapVarType(method.params[method.params.length - 1]!.type);
 			paramTokens.push(newTokens.length);
 			excerptTokens.push(...newTokens);
-			excerptTokens.push({ kind: ExcerptTokenKind.Content, text: `): ` });
+			excerptTokens.push({
+				kind: ExcerptTokenKind.Content,
+				text: `${method.params![method.params.length - 1]!.default ? ` = ${method.params![method.params.length - 1]!.default}` : ''}): `,
+			});
 		}
 
 		const returnTokens = this._mapVarType(method.returns?.[0] ?? []);

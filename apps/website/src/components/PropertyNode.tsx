@@ -51,7 +51,13 @@ export async function PropertyNode({
 													<LinkIcon aria-hidden size={16} />
 												</Link>
 												{property.displayName}
-												{property.isOptional ? '?' : ''} : <ExcerptNode node={property.typeExcerpt} version={version} />
+												{property.isOptional ? '?' : ''} : <ExcerptNode node={property.typeExcerpt} version={version} />{' '}
+												{property.summary?.defaultValueBlock.length
+													? `= ${property.summary.defaultValueBlock.reduce(
+															(acc: string, def: { kind: string; text: string }) => `${acc}${def.text}`,
+															'',
+														)}`
+													: ''}
 											</span>
 										</h3>
 
