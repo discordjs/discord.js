@@ -8,6 +8,7 @@ const {
   ChannelType,
   MessageType,
   MessageFlags,
+  MessageReferenceType,
   PermissionFlagsBits,
 } = require('discord-api-types/v10');
 const Attachment = require('./Attachment');
@@ -20,7 +21,7 @@ const MessagePayload = require('./MessagePayload');
 const { Poll } = require('./Poll.js');
 const ReactionCollector = require('./ReactionCollector');
 const { Sticker } = require('./Sticker');
-const { DiscordjsError, ErrorCodes } = require('../errors');
+const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const { createComponent } = require('../util/Components');
 const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, UndeletableMessageTypes } = require('../util/Constants');
@@ -795,6 +796,20 @@ class Message extends Base {
   }
 
   /**
+   * Forwards this message.
+   * @param {ChannelResolvable} channel The channel to forward this message to
+   * @returns {Promise<Message>}
+   */
+  async forward(channel) {
+    const resolvedChannel = this.client.channels.resolve(channel);
+
+    if (!resolvedChannel) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'ChannelResolvable');
+
+    const message = await resolvedChannel.messages.forward(this);
+    return message;
+  }
+
+  /**
    * Whether the message is crosspostable by the client user
    * @type {boolean}
    * @readonly
@@ -947,8 +962,11 @@ class Message extends Base {
       data = options;
     } else {
       data = MessagePayload.create(this, options, {
-        reply: {
-          messageReference: this,
+        messageReference: {
+          messageId: this.id,
+          channelId: this.channelId,
+          guildId: this.guildId,
+          type: MessageReferenceType.Default,
           failIfNotExists: options?.failIfNotExists ?? this.client.options.failIfNotExists,
         },
       });

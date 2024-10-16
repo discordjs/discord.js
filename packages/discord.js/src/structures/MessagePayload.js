@@ -171,13 +171,19 @@ class MessagePayload {
     }
 
     let message_reference;
-    if (typeof this.options.reply === 'object') {
-      const reference = this.options.reply.messageReference;
-      const message_id = this.isMessage ? (reference.id ?? reference) : this.target.messages.resolveId(reference);
+    if (this.options.messageReference) {
+      const reference = this.options.messageReference;
+      const message_id = this.target.messages.resolveId(reference.messageId);
+      const channel_id = this.target.client.channels.resolveId(reference.channelId);
+      const guild_id = this.target.client.guilds.resolveId(reference.guildId);
+
       if (message_id) {
         message_reference = {
           message_id,
-          fail_if_not_exists: this.options.reply.failIfNotExists ?? this.target.client.options.failIfNotExists,
+          channel_id,
+          guild_id,
+          type: reference.type,
+          fail_if_not_exists: reference.failIfNotExists ?? this.target.client.options.failIfNotExists,
         };
       }
     }
