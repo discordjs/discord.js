@@ -985,7 +985,7 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public guilds: GuildManager;
   public lastPingTimestamp: number;
   public options: Omit<ClientOptions, 'intents'> & { intents: IntentsBitField };
-  public get ping(): number;
+  public get ping(): number | null;
   public get readyAt(): If<Ready, Date>;
   public readyTimestamp: If<Ready, number>;
   public sweepers: Sweepers;
