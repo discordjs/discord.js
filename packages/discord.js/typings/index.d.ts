@@ -2398,7 +2398,6 @@ export class MessagePayload {
   public get isWebhook(): boolean;
   public get isMessage(): boolean;
   public get isMessageManager(): boolean;
-  public get isInteraction(): boolean;
   public files: RawFile[] | null;
   public options: MessagePayloadOption;
   public target: MessageTarget;
@@ -6066,15 +6065,19 @@ export interface InteractionCollectorOptions<
 }
 
 export interface InteractionDeferReplyOptions {
-  ephemeral?: boolean;
+  flags?: BitFieldResolvable<
+    Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds' | 'SuppressNotifications'>,
+    MessageFlags.Ephemeral | MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
+  >;
   fetchReply?: boolean;
 }
 
-export interface InteractionDeferUpdateOptions extends Omit<InteractionDeferReplyOptions, 'ephemeral'> {}
+export interface InteractionDeferUpdateOptions {
+  fetchReply?: boolean;
+}
 
 export interface InteractionReplyOptions extends BaseMessageOptionsWithPoll {
   tts?: boolean;
-  ephemeral?: boolean;
   fetchReply?: boolean;
   flags?: BitFieldResolvable<
     Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds' | 'SuppressNotifications'>,
