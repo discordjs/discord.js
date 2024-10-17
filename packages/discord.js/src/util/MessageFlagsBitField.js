@@ -24,6 +24,15 @@ class MessageFlagsBitField extends BitField {
  */
 
 /**
+ * Data that can be resolved to give a message flags bit field. This can be:
+ * * A string (see {@link MessageFlagsBitField.Flags})
+ * * A message flag
+ * * An instance of {@link MessageFlagsBitField}
+ * * An array of `MessageFlagsResolvable`
+ * @typedef {string|number|MessageFlagsBitField|MessageFlagsResolvable[]} MessageFlagsResolvable
+ */
+
+/**
  * Bitfield of the packed bits
  * @type {number}
  * @name MessageFlagsBitField#bitfield
