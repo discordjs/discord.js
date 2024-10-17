@@ -2191,6 +2191,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public equals(message: Message, rawData: unknown): boolean;
   public fetchReference(): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public fetchWebhook(): Promise<Webhook>;
+  public forward(channel: TextBasedChannelResolvable): Promise<Message>;
   public crosspost(): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public fetch(force?: boolean): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public pin(reason?: string): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
@@ -4310,6 +4311,7 @@ export abstract class MessageManager<InGuild extends boolean = boolean> extends 
   public fetch(options: MessageResolvable | FetchMessageOptions): Promise<Message<InGuild>>;
   public fetch(options?: FetchMessagesOptions): Promise<Collection<Snowflake, Message<InGuild>>>;
   public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, Message<InGuild>>>;
+  public forward(reference: Omit<MessageReference, 'type'>): Promise<Message<InGuild>>;
   public react(message: MessageResolvable, emoji: EmojiIdentifierResolvable): Promise<void>;
   public pin(message: MessageResolvable, reason?: string): Promise<void>;
   public unpin(message: MessageResolvable, reason?: string): Promise<void>;
@@ -6270,7 +6272,9 @@ export interface MessageCreateOptions extends BaseMessageOptionsWithPoll {
   tts?: boolean;
   nonce?: string | number;
   enforceNonce?: boolean;
+  /** @deprecated Use {@link MessageCreateOptions.messageReference} instead */
   reply?: ReplyOptions;
+  messageReference?: MessageReference & { failIfNotExists?: boolean };
   stickers?: readonly StickerResolvable[];
   flags?: BitFieldResolvable<
     Extract<MessageFlagsString, 'SuppressEmbeds' | 'SuppressNotifications'>,
@@ -6516,6 +6520,7 @@ export interface ReactionCollectorOptions extends CollectorOptions<[MessageReact
   maxUsers?: number;
 }
 
+/** @deprecated Use {@link MessageReference} instead. */
 export interface ReplyOptions {
   messageReference: MessageResolvable;
   failIfNotExists?: boolean;
