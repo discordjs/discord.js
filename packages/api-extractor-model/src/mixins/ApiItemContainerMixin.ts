@@ -2,7 +2,15 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
-import { TSDocConfiguration } from '@microsoft/tsdoc';
+import {
+	type DocNode,
+	type DocPlainText,
+	DocDeclarationReference,
+	DocNodeKind,
+	TSDocConfiguration,
+	DocMemberReference,
+	DocMemberIdentifier,
+} from '@microsoft/tsdoc';
 import type { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { InternalError } from '@rushstack/node-core-library';
 import type { IExcerptToken, IExcerptTokenRange } from '../index.js';
@@ -40,6 +48,11 @@ export interface IApiItemContainerMixinOptions extends IApiItemOptions {
 export interface IApiItemContainerJson extends IApiItemJson {
 	members: IApiItemJson[];
 	preserveMemberOrder?: boolean;
+}
+
+interface Mixin {
+	declarationReference: DocDeclarationReference;
+	typeParameters: IExcerptTokenRange[];
 }
 
 interface ExcerptTokenRangeInDeclaredItem {
@@ -393,14 +406,52 @@ export function ApiItemContainerMixin<TBaseClass extends IApiItemConstructor>(
 					}
 				}
 
+				const findPlainTextNode = (node: DocNode): DocPlainText | undefined => {
+					switch (node.kind) {
+						case DocNodeKind.PlainText:
+							return node as DocPlainText;
+						default:
+							for (const child of node.getChildNodes()) {
+								const result = findPlainTextNode(child);
+								if (result) return result;
+							}
+					}
+
+					return undefined;
+				};
+
 				// Interfaces can extend multiple interfaces, so iterate through all of them.
+				// Also Classes can have multiple mixins
 				const extendedItems: IMappedTypeParameters[] = [];
-				let extendsTypes: readonly HeritageType[] | undefined;
+				let extendsTypes: readonly (HeritageType | Mixin)[] | undefined;
 
 				switch (next.item.kind) {
 					case ApiItemKind.Class: {
 						const apiClass: ApiClass = next.item as ApiClass;
-						extendsTypes = apiClass.extendsType ? [apiClass.extendsType] : [];
+						const configuration = apiClass.tsdocComment?.configuration ?? new TSDocConfiguration();
+						const mixins =
+							apiClass.tsdocComment?.customBlocks
+								.filter(
+									(block) => block.blockTag.tagName === '@mixes', // &&
+									// block.getChildNodes().some((node) => node.kind === DocNodeKind.PlainText),
+								)
+								.map(findPlainTextNode)
+								.filter((block) => block !== undefined)
+								.map((block) => ({
+									declarationReference: new DocDeclarationReference({
+										configuration,
+										memberReferences: block.text.split('.').map(
+											(part, index) =>
+												new DocMemberReference({
+													configuration,
+													hasDot: index > 0,
+													memberIdentifier: new DocMemberIdentifier({ configuration, identifier: part }),
+												}),
+										),
+									}),
+									typeParameters: [] as IExcerptTokenRange[],
+								})) ?? [];
+						extendsTypes = apiClass.extendsType ? [apiClass.extendsType, ...mixins] : [...mixins];
 						break;
 					}
 
@@ -425,30 +476,38 @@ export function ApiItemContainerMixin<TBaseClass extends IApiItemConstructor>(
 				}
 
 				for (const extendsType of extendsTypes) {
-					// We want to find the reference token associated with the actual inherited declaration.
-					// In every case we support, this is the first reference token. For example:
-					//
-					// ```
-					// export class A extends B {}
-					//                        ^
-					// export class A extends B<C> {}
-					//                        ^
-					// export class A extends B.C {}
-					//                        ^^^
-					// ```
-					const firstReferenceToken: ExcerptToken | undefined = extendsType.excerpt.spannedTokens.find(
-						(token: ExcerptToken) => {
-							return token.kind === ExcerptTokenKind.Reference && token.canonicalReference;
-						},
-					);
+					let canonicalReference: DeclarationReference | DocDeclarationReference;
+					if ('excerpt' in extendsType) {
+						// We want to find the reference token associated with the actual inherited declaration.
+						// In every case we support, this is the first reference token. For example:
+						//
+						// ```
+						// export class A extends B {}
+						//                        ^
+						// export class A extends B<C> {}
+						//                        ^
+						// export class A extends B.C {}
+						//                        ^^^
+						// ```
+						const firstReferenceToken: ExcerptToken | undefined = extendsType.excerpt.spannedTokens.find(
+							(token: ExcerptToken) => {
+								return token.kind === ExcerptTokenKind.Reference && token.canonicalReference;
+							},
+						);
 
-					if (!firstReferenceToken) {
-						messages.push({
-							messageId: FindApiItemsMessageId.ExtendsClauseMissingReference,
-							text: `Unable to analyze extends clause ${extendsType.excerpt.text} of API item ${next.item.displayName} because no canonical reference was found`,
-						});
-						maybeIncompleteResult = true;
-						continue;
+						if (!firstReferenceToken) {
+							messages.push({
+								messageId: FindApiItemsMessageId.ExtendsClauseMissingReference,
+								text: `Unable to analyze extends clause ${extendsType.excerpt.text} of API item ${next.item.displayName} because no canonical reference was found`,
+							});
+							maybeIncompleteResult = true;
+							continue;
+						}
+
+						canonicalReference = firstReferenceToken.canonicalReference!;
+					} else {
+						// extendsType is a Mixin
+						canonicalReference = extendsType.declarationReference;
 					}
 
 					const apiModel: ApiModel | undefined = this.getAssociatedModel();
@@ -461,10 +520,9 @@ export function ApiItemContainerMixin<TBaseClass extends IApiItemConstructor>(
 						continue;
 					}
 
-					const canonicalReference: DeclarationReference = firstReferenceToken.canonicalReference!;
 					const apiItemResult: IResolveDeclarationReferenceResult = apiModel.resolveDeclarationReference(
 						canonicalReference,
-						undefined,
+						this,
 					);
 
 					const apiItem: ApiItem | undefined = apiItemResult.resolvedApiItem;

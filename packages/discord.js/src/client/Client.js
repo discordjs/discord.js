@@ -114,21 +114,21 @@ class Client extends BaseClient {
       : null;
 
     /**
-     * All of the {@link User} objects that have been cached at any point, mapped by their ids
+     * The user manager of this client
      * @type {UserManager}
      */
     this.users = new UserManager(this);
 
     /**
-     * All of the guilds the client is currently handling, mapped by their ids -
+     * A manager of all the guilds the client is currently handling -
      * as long as sharding isn't being used, this will be *every* guild the bot is a member of
      * @type {GuildManager}
      */
     this.guilds = new GuildManager(this);
 
     /**
-     * All of the {@link BaseChannel}s that the client is currently handling, mapped by their ids -
-     * as long as no sharding manager is being used, this will be *every* channel in *every* guild the bot
+     * All of the {@link BaseChannel}s that the client is currently handling -
+     * as long as sharding isn't being used, this will be *every* channel in *every* guild the bot
      * is a member of. Note that DM channels will not be initially cached, and thus not be present
      * in the Manager without their explicit fetching or use.
      * @type {ChannelManager}
@@ -218,7 +218,7 @@ class Client extends BaseClient {
   }
 
   /**
-   * All custom emojis that the client has access to, mapped by their ids
+   * A manager of all the custom emojis that the client has access to
    * @type {BaseGuildEmojiManager}
    * @readonly
    */
