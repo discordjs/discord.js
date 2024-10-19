@@ -70,12 +70,20 @@ describe('at() tests', () => {
 		expect(coll.at(0)).toStrictEqual(1);
 	});
 
+	test('positive non-integer index', () => {
+		expect(coll.at(1.5)).toStrictEqual(2);
+	});
+
 	test('negative index', () => {
 		expect(coll.at(-1)).toStrictEqual(3);
 	});
 
+	test('negative non-integer index', () => {
+		expect(coll.at(-2.5)).toStrictEqual(2);
+	});
+
 	test('invalid positive index', () => {
-		expect(coll.at(4)).toBeUndefined();
+		expect(coll.at(3)).toBeUndefined();
 	});
 
 	test('invalid negative index', () => {
@@ -432,12 +440,20 @@ describe('keyAt() tests', () => {
 		expect(coll.keyAt(0)).toStrictEqual('a');
 	});
 
+	test('positive non-integer index', () => {
+		expect(coll.keyAt(1.5)).toStrictEqual('b');
+	});
+
 	test('negative index', () => {
 		expect(coll.keyAt(-1)).toStrictEqual('c');
 	});
 
+	test('negative non-integer index', () => {
+		expect(coll.keyAt(-2.5)).toStrictEqual('b');
+	});
+
 	test('invalid positive index', () => {
-		expect(coll.keyAt(4)).toBeUndefined();
+		expect(coll.keyAt(3)).toBeUndefined();
 	});
 
 	test('invalid negative index', () => {
