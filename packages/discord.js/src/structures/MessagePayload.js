@@ -1,16 +1,13 @@
 'use strict';
 
 const { Buffer } = require('node:buffer');
-const { lazy, isJSONEncodable } = require('@discordjs/util');
+const { isJSONEncodable } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { MessageFlags } = require('discord-api-types/v10');
 const ActionRowBuilder = require('./ActionRowBuilder');
 const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors');
 const { resolveFile } = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const { basename, verifyString, resolvePartialEmoji } = require('../util/Util');
-
-const getBaseInteraction = lazy(() => require('./BaseInteraction'));
 
 /**
  * Represents a message to be sent to the API.
@@ -89,17 +86,6 @@ class MessagePayload {
   }
 
   /**
-   * Whether or not the target is an {@link BaseInteraction} or an {@link InteractionWebhook}
-   * @type {boolean}
-   * @readonly
-   */
-  get isInteraction() {
-    const BaseInteraction = getBaseInteraction();
-    const InteractionWebhook = require('./InteractionWebhook');
-    return this.target instanceof BaseInteraction || this.target instanceof InteractionWebhook;
-  }
-
-  /**
    * Makes the content of this message.
    * @returns {?string}
    */
@@ -120,7 +106,6 @@ class MessagePayload {
    */
   resolveBody() {
     if (this.body) return this;
-    const isInteraction = this.isInteraction;
     const isWebhook = this.isWebhook;
 
     const content = this.makeContent();
@@ -173,10 +158,6 @@ class MessagePayload {
         this.options.flags != null
           ? new MessageFlagsBitField(this.options.flags).bitfield
           : this.target.flags?.bitfield;
-    }
-
-    if (isInteraction && this.options.ephemeral) {
-      flags |= MessageFlags.Ephemeral;
     }
 
     let allowedMentions =
