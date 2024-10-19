@@ -66,7 +66,10 @@ export default makeSource({
 	contentDirPath: 'src/content',
 	documentTypes: [Content],
 	mdx: {
-		remarkPlugins: [remarkGfm, [remarkCodeHike, { theme: codeHikeThemeDarkPlus, lineNumbers: true }]],
+		remarkPlugins: [
+			remarkGfm,
+			[remarkCodeHike, { theme: codeHikeThemeDarkPlus, lineNumbers: true, showCopyButton: true }],
+		],
 		rehypePlugins: [
 			rehypeSlug,
 			[
