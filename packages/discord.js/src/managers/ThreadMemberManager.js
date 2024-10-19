@@ -91,26 +91,24 @@ class ThreadMemberManager extends CachedManager {
   /**
    * Adds a member to the thread.
    * @param {UserResolvable|'@me'} member The member to add
-   * @param {string} [reason] The reason for adding this member
    * @returns {Promise<Snowflake>}
    */
-  async add(member, reason) {
+  async add(member) {
     const id = member === '@me' ? member : this.client.users.resolveId(member);
     if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'member', 'UserResolvable');
-    await this.client.rest.put(Routes.threadMembers(this.thread.id, id), { reason });
+    await this.client.rest.put(Routes.threadMembers(this.thread.id, id));
     return id;
   }
 
   /**
    * Remove a user from the thread.
    * @param {UserResolvable|'@me'} member The member to remove
-   * @param {string} [reason] The reason for removing this member from the thread
    * @returns {Promise<Snowflake>}
    */
-  async remove(member, reason) {
+  async remove(member) {
     const id = member === '@me' ? member : this.client.users.resolveId(member);
     if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'member', 'UserResolvable');
-    await this.client.rest.delete(Routes.threadMembers(this.thread.id, id), { reason });
+    await this.client.rest.delete(Routes.threadMembers(this.thread.id, id));
     return id;
   }
 

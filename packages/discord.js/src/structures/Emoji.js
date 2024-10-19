@@ -1,14 +1,11 @@
 'use strict';
 
-const process = require('node:process');
 const { formatEmoji } = require('@discordjs/formatters');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const Base = require('./Base');
 
-let deprecationEmittedForURL = false;
-
 /**
- * Represents an emoji, see {@link GuildEmoji} and {@link ReactionEmoji}.
+ * Represents an emoji, see {@link ApplicationEmoji}, {@link GuildEmoji} and {@link ReactionEmoji}.
  * @extends {Base}
  */
 class Emoji extends Base {
@@ -50,21 +47,6 @@ class Emoji extends Base {
    */
   imageURL(options) {
     return this.id && this.client.rest.cdn.emoji(this.id, options);
-  }
-
-  /**
-   * Returns a URL for the emoji or `null` if this is not a custom emoji.
-   * @type {?string}
-   * @readonly
-   * @deprecated Use {@link Emoji#imageURL} instead.
-   */
-  get url() {
-    if (!deprecationEmittedForURL) {
-      process.emitWarning('The Emoji#url getter is deprecated. Use Emoji#imageURL() instead.', 'DeprecationWarning');
-      deprecationEmittedForURL = true;
-    }
-
-    return this.imageURL({ extension: this.animated ? 'gif' : 'png' });
   }
 
   /**

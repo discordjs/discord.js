@@ -7,6 +7,7 @@ const { SKU } = require('./SKU');
 const Team = require('./Team');
 const Application = require('./interfaces/Application');
 const ApplicationCommandManager = require('../managers/ApplicationCommandManager');
+const ApplicationEmojiManager = require('../managers/ApplicationEmojiManager');
 const { EntitlementManager } = require('../managers/EntitlementManager');
 const ApplicationFlagsBitField = require('../util/ApplicationFlagsBitField');
 const { resolveImage } = require('../util/DataResolver');
@@ -14,8 +15,8 @@ const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
  * @typedef {Object} ClientApplicationInstallParams
- * @property {OAuth2Scopes[]} scopes The scopes to add the application to the server with
- * @property {Readonly<PermissionsBitField>} permissions The permissions this bot will request upon joining
+ * @property {OAuth2Scopes[]} scopes Scopes that will be set upon adding this application
+ * @property {Readonly<PermissionsBitField>} permissions Permissions that will be requested for the integrated role
  */
 
 /**
@@ -31,6 +32,12 @@ class ClientApplication extends Application {
      * @type {ApplicationCommandManager}
      */
     this.commands = new ApplicationCommandManager(this.client);
+
+    /**
+     * The application emoji manager for this application
+     * @type {ApplicationEmojiManager}
+     */
+    this.emojis = new ApplicationEmojiManager(this);
 
     /**
      * The entitlement manager for this application
@@ -61,6 +68,56 @@ class ClientApplication extends Application {
       this.installParams ??= null;
     }
 
+    /**
+     * OAuth2 installation parameters.
+     * @typedef {Object} IntegrationTypesConfigurationParameters
+     * @property {OAuth2Scopes[]} scopes Scopes that will be set upon adding this application
+     * @property {Readonly<PermissionsBitField>} permissions Permissions that will be requested for the integrated role
+     */
+
+    /**
+     * The application's supported installation context data.
+     * @typedef {Object} IntegrationTypesConfigurationContext
+     * @property {?IntegrationTypesConfigurationParameters} oauth2InstallParams
+     * Scopes and permissions regarding the installation context
+     */
+
+    /**
+     * The application's supported installation context data.
+     * @typedef {Object} IntegrationTypesConfiguration
+     * @property {IntegrationTypesConfigurationContext} [0] Scopes and permissions
+     * regarding the guild-installation context
+     * @property {IntegrationTypesConfigurationContext} [1] Scopes and permissions
+     * regarding the user-installation context
+     */
+
+    if ('integration_types_config' in data) {
+      /**
+       * Default scopes and permissions for each supported installation context.
+       * The keys are stringified variants of {@link ApplicationIntegrationType}.
+       * @type {?IntegrationTypesConfiguration}
+       */
+      this.integrationTypesConfig = Object.fromEntries(
+        Object.entries(data.integration_types_config).map(([key, config]) => {
+          let oauth2InstallParams = null;
+          if (config.oauth2_install_params) {
+            oauth2InstallParams = {
+              scopes: config.oauth2_install_params.scopes,
+              permissions: new PermissionsBitField(config.oauth2_install_params.permissions).freeze(),
+            };
+          }
+
+          const context = {
+            oauth2InstallParams,
+          };
+
+          return [key, context];
+        }),
+      );
+    } else {
+      this.integrationTypesConfig ??= null;
+    }
+
     if ('custom_install_url' in data) {
       /**
        * This application's custom installation URL
@@ -87,6 +144,16 @@ class ClientApplication extends Application {
       this.approximateGuildCount = data.approximate_guild_count;
     } else {
       this.approximateGuildCount ??= null;
+    }
+
+    if ('approximate_user_install_count' in data) {
+      /**
+       * An approximate amount of users that have installed this application.
+       * @type {?number}
+       */
+      this.approximateUserInstallCount = data.approximate_user_install_count;
+    } else {
+      this.approximateUserInstallCount ??= null;
     }
 
     if ('guild_id' in data) {
@@ -177,7 +244,7 @@ class ClientApplication extends Application {
       ? new Team(this.client, data.team)
       : data.owner
         ? this.client.users._add(data.owner)
-        : this.owner ?? null;
+        : (this.owner ?? null);
   }
 
   /**

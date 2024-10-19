@@ -189,6 +189,56 @@ class GuildScheduledEvent extends Base {
     } else {
       this.image ??= null;
     }
+
+    /**
+     * Represents the recurrence rule for a {@link GuildScheduledEvent}.
+     * @typedef {Object} GuildScheduledEventRecurrenceRule
+     * @property {number} startTimestamp The timestamp the recurrence rule interval starts at
+     * @property {Date} startAt The time the recurrence rule interval starts at
+     * @property {?number} endTimestamp The timestamp the recurrence rule interval ends at
+     * @property {?Date} endAt The time the recurrence rule interval ends at
+     * @property {GuildScheduledEventRecurrenceRuleFrequency} frequency How often the event occurs
+     * @property {number} interval The spacing between the events
+     * @property {?GuildScheduledEventRecurrenceRuleWeekday[]} byWeekday The days within a week to recur on
+     * @property {?GuildScheduledEventRecurrenceRuleNWeekday[]} byNWeekday The days within a week to recur on
+     * @property {?GuildScheduledEventRecurrenceRuleMonth[]} byMonth The months to recur on
+     * @property {?number[]} byMonthDay The days within a month to recur on
+     * @property {?number[]} byYearDay The days within a year to recur on
+     * @property {?number} count The total amount of times the event is allowed to recur before stopping
+     */
+
+    /**
+     * @typedef {Object} GuildScheduledEventRecurrenceRuleNWeekday
+     * @property {number} n The week to recur on
+     * @property {GuildScheduledEventRecurrenceRuleWeekday} day The day within the week to recur on
+     */
+
+    if ('recurrence_rule' in data) {
+      /**
+       * The recurrence rule for this scheduled event
+       * @type {?GuildScheduledEventRecurrenceRule}
+       */
+      this.recurrenceRule = data.recurrence_rule && {
+        startTimestamp: Date.parse(data.recurrence_rule.start),
+        get startAt() {
+          return new Date(this.startTimestamp);
+        },
+        endTimestamp: data.recurrence_rule.end && Date.parse(data.recurrence_rule.end),
+        get endAt() {
+          return this.endTimestamp && new Date(this.endTimestamp);
+        },
+        frequency: data.recurrence_rule.frequency,
+        interval: data.recurrence_rule.interval,
+        byWeekday: data.recurrence_rule.by_weekday,
+        byNWeekday: data.recurrence_rule.by_n_weekday,
+        byMonth: data.recurrence_rule.by_month,
+        byMonthDay: data.recurrence_rule.by_month_day,
+        byYearDay: data.recurrence_rule.by_year_day,
+        count: data.recurrence_rule.count,
+      };
+    } else {
+      this.recurrenceRule ??= null;
+    }
   }
 
   /**

@@ -3,6 +3,7 @@ import { describe, test, expect } from 'vitest';
 import { StringSelectMenuBuilder, StringSelectMenuOptionBuilder } from '../../src/index.js';
 
 const selectMenu = () => new StringSelectMenuBuilder();
+const selectMenuWithId = () => new StringSelectMenuBuilder({ custom_id: 'hi' });
 const selectMenuOption = () => new StringSelectMenuOptionBuilder();
 
 const longStr = 'a'.repeat(256);
@@ -16,10 +17,10 @@ const selectMenuOptionData: APISelectMenuOption = {
 };
 
 const selectMenuDataWithoutOptions = {
-	type: ComponentType.SelectMenu,
+	type: ComponentType.StringSelect,
 	custom_id: 'test',
-	max_values: 10,
-	min_values: 3,
+	max_values: 1,
+	min_values: 1,
 	disabled: true,
 	placeholder: 'test',
 } as const;
@@ -109,49 +110,87 @@ describe('Select Menu Components', () => {
 		});
 
 		test('GIVEN invalid inputs THEN Select Menu does throw', () => {
-			expect(() => selectMenu().setCustomId(longStr)).toThrowError();
-			expect(() => selectMenu().setMaxValues(30)).toThrowError();
-			expect(() => selectMenu().setMinValues(-20)).toThrowError();
+			expect(() => selectMenu().setCustomId(longStr).toJSON()).toThrowError();
+			expect(() => selectMenuWithId().setMaxValues(30).toJSON()).toThrowError();
+			expect(() => selectMenuWithId().setMinValues(-20).toJSON()).toThrowError();
 			// @ts-expect-error: Invalid disabled value
-			expect(() => selectMenu().setDisabled(0)).toThrowError();
-			expect(() => selectMenu().setPlaceholder(longStr)).toThrowError();
+			expect(() => selectMenuWithId().setDisabled(0).toJSON()).toThrowError();
+			expect(() => selectMenuWithId().setPlaceholder(longStr).toJSON()).toThrowError();
 			// @ts-expect-error: Invalid option
-			expect(() => selectMenu().addOptions({ label: 'test' })).toThrowError();
-			expect(() => selectMenu().addOptions({ label: longStr, value: 'test' })).toThrowError();
-			expect(() => selectMenu().addOptions({ value: longStr, label: 'test' })).toThrowError();
-			expect(() => selectMenu().addOptions({ label: 'test', value: 'test', description: longStr })).toThrowError();
+			expect(() => selectMenuWithId().addOptions({ label: 'test' }).toJSON()).toThrowError();
+			expect(() => selectMenuWithId().addOptions({ label: longStr, value: 'test' }).toJSON()).toThrowError();
+			expect(() => selectMenuWithId().addOptions({ value: longStr, label: 'test' }).toJSON()).toThrowError();
+			expect(() =>
+				selectMenuWithId().addOptions({ label: 'test', value: 'test', description: longStr }).toJSON(),
+			).toThrowError();
+			expect(() =>
+				// @ts-expect-error: Invalid option
+				selectMenuWithId().addOptions({ label: 'test', value: 'test', default: 100 }).toJSON(),
+			).toThrowError();
 			// @ts-expect-error: Invalid option
-			expect(() => selectMenu().addOptions({ label: 'test', value: 'test', default: 100 })).toThrowError();
+			expect(() => selectMenuWithId().addOptions({ value: 'test' }).toJSON()).toThrowError();
 			// @ts-expect-error: Invalid option
-			expect(() => selectMenu().addOptions({ value: 'test' })).toThrowError();
-			// @ts-expect-error: Invalid option
-			expect(() => selectMenu().addOptions({ default: true })).toThrowError();
-			// @ts-expect-error: Invalid option
-			expect(() => selectMenu().addOptions([{ label: 'test' }])).toThrowError();
-			expect(() => selectMenu().addOptions([{ label: longStr, value: 'test' }])).toThrowError();
-			expect(() => selectMenu().addOptions([{ value: longStr, label: 'test' }])).toThrowError();
-			expect(() => selectMenu().addOptions([{ label: 'test', value: 'test', description: longStr }])).toThrowError();
-			// @ts-expect-error: Invalid option
-			expect(() => selectMenu().addOptions([{ label: 'test', value: 'test', default: 100 }])).toThrowError();
-			// @ts-expect-error: Invalid option
-			expect(() => selectMenu().addOptions([{ value: 'test' }])).toThrowError();
-			// @ts-expect-error: Invalid option
-			expect(() => selectMenu().addOptions([{ default: true }])).toThrowError();
+			expect(() => selectMenuWithId().addOptions({ default: true }).toJSON()).toThrowError();
+			expect(() =>
+				selectMenuWithId()
+					// @ts-expect-error: Invalid option
+					.addOptions([{ label: 'test' }])
+					.toJSON(),
+			).toThrowError();
+			expect(() =>
+				selectMenuWithId()
+					.addOptions([{ label: longStr, value: 'test' }])
+					.toJSON(),
+			).toThrowError();
+			expect(() =>
+				selectMenuWithId()
+					.addOptions([{ value: longStr, label: 'test' }])
+					.toJSON(),
+			).toThrowError();
+			expect(() =>
+				selectMenuWithId()
+					.addOptions([{ label: 'test', value: 'test', description: longStr }])
+					.toJSON(),
+			).toThrowError();
+			expect(() =>
+				selectMenuWithId()
+					// @ts-expect-error: Invalid option
+					.addOptions([{ label: 'test', value: 'test', default: 100 }])
+					.toJSON(),
+			).toThrowError();
+			expect(() =>
+				selectMenuWithId()
+					// @ts-expect-error: Invalid option
+					.addOptions([{ value: 'test' }])
+					.toJSON(),
+			).toThrowError();
+			expect(() =>
+				selectMenuWithId()
+					// @ts-expect-error: Invalid option
+					.addOptions([{ default: true }])
+					.toJSON(),
+			).toThrowError();
 
 			const tooManyOptions = Array.from<APISelectMenuOption>({ length: 26 }).fill({ label: 'test', value: 'test' });
 
-			expect(() => selectMenu().setOptions(...tooManyOptions)).toThrowError();
-			expect(() => selectMenu().setOptions(tooManyOptions)).toThrowError();
+			expect(() =>
+				selectMenu()
+					.setOptions(...tooManyOptions)
+					.toJSON(),
+			).toThrowError();
+			expect(() => selectMenu().setOptions(tooManyOptions).toJSON()).toThrowError();
 
 			expect(() =>
 				selectMenu()
 					.addOptions({ label: 'test', value: 'test' })
-					.addOptions(...tooManyOptions),
+					.addOptions(...tooManyOptions)
+					.toJSON(),
 			).toThrowError();
 			expect(() =>
 				selectMenu()
 					.addOptions([{ label: 'test', value: 'test' }])
-					.addOptions(tooManyOptions),
+					.addOptions(tooManyOptions)
+					.toJSON(),
 			).toThrowError();
 
 			expect(() => {
@@ -162,7 +201,8 @@ describe('Select Menu Components', () => {
 					.setDefault(-1)
 					// @ts-expect-error: Invalid emoji
 					.setEmoji({ name: 1 })
-					.setDescription(longStr);
+					.setDescription(longStr)
+					.toJSON();
 			}).toThrowError();
 		});
 
@@ -212,17 +252,16 @@ describe('Select Menu Components', () => {
 			).toStrictEqual([selectMenuOptionData]);
 
 			expect(() =>
-				makeStringSelectMenuWithOptions().spliceOptions(
-					0,
-					0,
-					...Array.from({ length: 26 }, () => selectMenuOptionData),
-				),
+				makeStringSelectMenuWithOptions()
+					.spliceOptions(0, 0, ...Array.from({ length: 26 }, () => selectMenuOptionData))
+					.toJSON(),
 			).toThrowError();
 
 			expect(() =>
 				makeStringSelectMenuWithOptions()
 					.setOptions(Array.from({ length: 25 }, () => selectMenuOptionData))
-					.spliceOptions(-1, 2, selectMenuOptionData, selectMenuOptionData),
+					.spliceOptions(-1, 2, selectMenuOptionData, selectMenuOptionData)
+					.toJSON(),
 			).toThrowError();
 		});
 	});

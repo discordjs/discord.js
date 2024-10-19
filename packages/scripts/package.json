@@ -59,32 +59,32 @@
 	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
-		"@actions/glob": "^0.4.0",
+		"@actions/glob": "^0.5.0",
 		"@discordjs/api-extractor-model": "workspace:^",
 		"@discordjs/api-extractor-utils": "workspace:^",
 		"@microsoft/tsdoc": "0.14.2",
 		"@microsoft/tsdoc-config": "0.16.2",
-		"@vercel/blob": "^0.22.3",
-		"@vercel/postgres": "^0.8.0",
+		"@vercel/blob": "^0.23.4",
+		"@vercel/postgres": "^0.9.0",
 		"commander": "^12.1.0",
-		"tslib": "^2.6.2",
-		"undici": "6.18.2",
-		"yaml": "2.4.3"
+		"tslib": "^2.6.3",
+		"undici": "6.19.8",
+		"yaml": "^2.5.0"
 	},
 	"devDependencies": {
-		"@turbo/gen": "^1.13.3",
-		"@types/node": "18.18.8",
-		"@vitest/coverage-v8": "^1.6.0",
+		"@turbo/gen": "^2.0.14",
+		"@types/node": "^18.19.45",
+		"@vitest/coverage-v8": "^2.0.5",
 		"cross-env": "^7.0.3",
 		"env-cmd": "^10.1.0",
 		"eslint": "^8.57.0",
 		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.3.0",
-		"tsup": "^8.1.0",
-		"turbo": "^1.13.3",
-		"typescript": "^5.4.5",
-		"vitest": "^1.6.0"
+		"prettier": "^3.3.3",
+		"tsup": "^8.2.4",
+		"turbo": "^2.0.14",
+		"typescript": "~5.5.4",
+		"vitest": "^2.0.5"
 	},
 	"engines": {
 		"node": ">=18"

@@ -1,8 +1,7 @@
 'use strict';
 
-const { DiscordAPIError } = require('@discordjs/rest');
 const { lazy } = require('@discordjs/util');
-const { RESTJSONErrorCodes, ChannelFlags, ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
+const { ChannelFlags, ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
 const { BaseChannel } = require('./BaseChannel');
 const getThreadOnlyChannel = lazy(() => require('./ThreadOnlyChannel'));
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
@@ -86,7 +85,7 @@ class ThreadChannel extends BaseChannel {
        * <info>This property is always `null` in public threads.</info>
        * @type {?boolean}
        */
-      this.invitable = this.type === ChannelType.PrivateThread ? data.thread_metadata.invitable ?? false : null;
+      this.invitable = this.type === ChannelType.PrivateThread ? (data.thread_metadata.invitable ?? false) : null;
 
       /**
        * Whether the thread is archived
@@ -251,7 +250,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * The parent channel of this thread
-   * @type {?(NewsChannel|TextChannel|ForumChannel|MediaChannel)}
+   * @type {?(AnnouncementChannel|TextChannel|ForumChannel|MediaChannel)}
    * @readonly
    */
   get parent() {
@@ -299,15 +298,7 @@ class ThreadChannel extends BaseChannel {
       throw new DiscordjsError(ErrorCodes.FetchOwnerId, 'thread');
     }
 
-    // TODO: Remove that catch in the next major version
-    const member = await this.members._fetchSingle({ ...options, member: this.ownerId }).catch(error => {
-      if (error instanceof DiscordAPIError && error.code === RESTJSONErrorCodes.UnknownMember) {
-        return null;
-      }
-
-      throw error;
-    });
-
+    const member = await this.members._fetchSingle({ ...options, member: this.ownerId });
     return member;
   }
 

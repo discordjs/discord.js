@@ -2,7 +2,7 @@
 
 'use strict';
 
-const { token } = require('./auth.js');
+const { token, owner } = require('./auth.js');
 const { Client } = require('../src');
 const { ChannelType, GatewayIntentBits } = require('discord-api-types/v10');
 
@@ -14,6 +14,7 @@ const client = new Client({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.MessageContent,
   ],
 });
 
@@ -186,7 +187,7 @@ client.on('messageCreate', msg => {
     msg.channel.send(`\`\`\`${msg.content}\`\`\``);
   }
 
-  if (msg.content.startsWith('#eval') && msg.author.id === '66564597481480192') {
+  if (msg.content.startsWith('#eval') && msg.author.id === owner) {
     try {
       const com = eval(msg.content.split(' ').slice(1).join(' '));
       msg.channel.send(`\`\`\`\n${com}\`\`\``);

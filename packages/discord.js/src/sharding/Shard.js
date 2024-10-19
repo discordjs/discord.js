@@ -5,9 +5,11 @@ const path = require('node:path');
 const process = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { setTimeout: sleep } = require('node:timers/promises');
+const { SHARE_ENV } = require('node:worker_threads');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const ShardEvents = require('../util/ShardEvents');
 const { makeError, makePlainError } = require('../util/Util');
+
 let childProcess = null;
 let Worker = null;
 
@@ -49,13 +51,13 @@ class Shard extends EventEmitter {
     this.silent = manager.silent;
 
     /**
-     * Arguments for the shard's process (only when {@link ShardingManager#mode} is `process`)
+     * Arguments for the shard's process/worker
      * @type {string[]}
      */
     this.args = manager.shardArgs ?? [];
 
     /**
-     * Arguments for the shard's process executable (only when {@link ShardingManager#mode} is `process`)
+     * Arguments for the shard's process/worker executable
      * @type {string[]}
      */
     this.execArgv = manager.execArgv;
@@ -136,7 +138,12 @@ class Shard extends EventEmitter {
           .on('exit', this._exitListener);
         break;
       case 'worker':
-        this.worker = new Worker(path.resolve(this.manager.file), { workerData: this.env })
+        this.worker = new Worker(path.resolve(this.manager.file), {
+          workerData: this.env,
+          env: SHARE_ENV,
+          execArgv: this.execArgv,
+          argv: this.args,
+        })
           .on('message', this._handleMessage.bind(this))
           .on('exit', this._exitListener);
         break;
@@ -345,7 +352,7 @@ class Shard extends EventEmitter {
       if (message._ready) {
         this.ready = true;
         /**
-         * Emitted upon the shard's {@link Client#event:shardReady} event.
+         * Emitted upon the shard's {@link Client#event:clientReady} event.
          * @event Shard#ready
          */
         this.emit(ShardEvents.Ready);
@@ -356,21 +363,10 @@ class Shard extends EventEmitter {
       if (message._disconnect) {
         this.ready = false;
         /**
-         * Emitted upon the shard's {@link Client#event:shardDisconnect} event.
+         * Emitted upon the shard's {@link WebSocketShardEvents#Closed} event.
          * @event Shard#disconnect
          */
         this.emit(ShardEvents.Disconnect);
-        return;
-      }
-
-      // Shard is attempting to reconnect
-      if (message._reconnecting) {
-        this.ready = false;
-        /**
-         * Emitted upon the shard's {@link Client#event:shardReconnecting} event.
-         * @event Shard#reconnecting
-         */
-        this.emit(ShardEvents.Reconnecting);
         return;
       }
 
@@ -378,7 +374,7 @@ class Shard extends EventEmitter {
       if (message._resume) {
         this.ready = true;
         /**
-         * Emitted upon the shard's {@link Client#event:shardResume} event.
+         * Emitted upon the shard's {@link WebSocketShardEvents#Resumed} event.
          * @event Shard#resume
          */
         this.emit(ShardEvents.Resume);

@@ -196,7 +196,6 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 		this.api = new API(rest);
 
 		this.gateway.on(WebSocketShardEvents.Dispatch, (dispatch, shardId) => {
-			// @ts-expect-error event props can't be resolved properly, but they are correct
 			this.emit(dispatch.t, this.toEventProps(dispatch.d, shardId));
 		});
 	}
@@ -238,11 +237,9 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 		});
 
 		try {
-			const iterator = AsyncEventEmitter.on<
-				typeof this,
-				ManagerShardEventsMap,
-				GatewayDispatchEvents.GuildMembersChunk
-			>(this, GatewayDispatchEvents.GuildMembersChunk, { signal: controller.signal });
+			const iterator = AsyncEventEmitter.on(this, GatewayDispatchEvents.GuildMembersChunk, {
+				signal: controller.signal,
+			});
 
 			for await (const [{ data }] of iterator) {
 				if (data.nonce !== nonce) continue;

@@ -1,6 +1,6 @@
 import 'https://deno.land/std@0.199.0/dotenv/load.ts';
 import { URL } from 'node:url';
-import { Client, GatewayIntentBits } from 'npm:discord.js@^14.15.0';
+import { Client, GatewayIntentBits } from 'npm:discord.js@^14.16.0';
 import { loadCommands, loadEvents } from './util/loaders.ts';
 import { registerEvents } from './util/registerEvents.ts';
 

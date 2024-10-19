@@ -4,7 +4,6 @@ const { RouteBases, Routes, PermissionFlagsBits } = require('discord-api-types/v
 const Base = require('./Base');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent');
 const IntegrationApplication = require('./IntegrationApplication');
-const InviteStageInstance = require('./InviteStageInstance');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 
 /**
@@ -200,17 +199,6 @@ class Invite extends Base {
       this._expiresTimestamp = data.expires_at && Date.parse(data.expires_at);
     } else {
       this._expiresTimestamp ??= null;
-    }
-
-    if ('stage_instance' in data) {
-      /**
-       * The stage instance data if there is a public {@link StageInstance} in the stage channel this invite is for
-       * @type {?InviteStageInstance}
-       * @deprecated
-       */
-      this.stageInstance = new InviteStageInstance(this.client, data.stage_instance, this.channel.id, this.guild.id);
-    } else {
-      this.stageInstance ??= null;
     }
 
     if ('guild_scheduled_event' in data) {

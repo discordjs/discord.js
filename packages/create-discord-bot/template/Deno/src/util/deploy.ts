@@ -1,7 +1,7 @@
-import 'https://deno.land/std@0.199.0/dotenv/load.ts';
+import 'https://deno.land/std@0.223.0/dotenv/load.ts';
 import { URL } from 'node:url';
-import { API } from 'npm:@discordjs/core@^1.1.1/http-only';
-import { REST } from 'npm:discord.js@^14.14.1';
+import { API } from 'npm:@discordjs/core@^1.2.0/http-only';
+import { REST } from 'npm:discord.js@^14.16.0';
 import { loadCommands } from './loaders.ts';
 
 const commands = await loadCommands(new URL('../commands/', import.meta.url));
