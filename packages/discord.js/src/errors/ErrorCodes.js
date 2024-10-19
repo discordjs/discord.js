@@ -73,6 +73,7 @@
  * @property {'MessageThreadParent'} MessageThreadParent
  * @property {'MessageExistingThread'} MessageExistingThread
  * @property {'ThreadInvitableType'} ThreadInvitableType
+ * @property {'NotAThreadOfParent'} NotAThreadOfParent
 
  * @property {'WebhookMessage'} WebhookMessage
  * @property {'WebhookTokenUnavailable'} WebhookTokenUnavailable
@@ -201,6 +202,7 @@ const keys = [
   'MessageThreadParent',
   'MessageExistingThread',
   'ThreadInvitableType',
+  'NotAThreadOfParent',
 
   'WebhookMessage',
   'WebhookTokenUnavailable',
