@@ -6,6 +6,9 @@ import {
 	type RESTGetAPIEntitlementsQuery,
 	type RESTGetAPIEntitlementsResult,
 	type RESTGetAPISKUsResult,
+	type RESTGetAPISKUSubscriptionResult,
+	type RESTGetAPISKUSubscriptionsQuery,
+	type RESTGetAPISKUSubscriptionsResult,
 	type RESTPostAPIEntitlementJSONBody,
 	type RESTPostAPIEntitlementResult,
 	type Snowflake,
@@ -17,7 +20,8 @@ export class MonetizationAPI {
 	/**
 	 * Fetches the SKUs for an application.
 	 *
-	 * @see {@link https://discord.com/developers/docs/monetization/skus#list-skus}
+	 * @see {@link https://discord.com/developers/docs/resources/sku#list-skus}
+	 * @param applicationId - The application id to fetch SKUs for
 	 * @param options - The options for fetching the SKUs.
 	 */
 	public async getSKUs(applicationId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
@@ -25,9 +29,46 @@ export class MonetizationAPI {
 	}
 
 	/**
+	 * Fetches subscriptions for an SKU.
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/subscription#list-sku-subscriptions}
+	 * @param skuId - The SKU id to fetch subscriptions for
+	 * @param query - The query options for fetching subscriptions
+	 * @param options - The options for fetching subscriptions
+	 */
+	public async getSKUSubscriptions(
+		skuId: Snowflake,
+		query: RESTGetAPISKUSubscriptionsQuery,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		return this.rest.get(Routes.skuSubscriptions(skuId), {
+			signal,
+			query: makeURLSearchParams(query),
+		}) as Promise<RESTGetAPISKUSubscriptionsResult>;
+	}
+
+	/**
+	 * Fetches a subscription for an SKU.
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/subscription#get-sku-subscription}
+	 * @param skuId - The SKU id to fetch subscription for
+	 * @param subscriptionId - The subscription id to fetch
+	 * @param options - The options for fetching the subscription
+	 */
+	public async getSKUSubscription(
+		skuId: Snowflake,
+		subscriptionId: Snowflake,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		return this.rest.get(Routes.skuSubscription(skuId, subscriptionId), {
+			signal,
+		}) as Promise<RESTGetAPISKUSubscriptionResult>;
+	}
+
+	/**
 	 * Fetches the entitlements for an application.
 	 *
-	 * @see {@link https://discord.com/developers/docs/monetization/entitlements#list-entitlements}
+	 * @see {@link https://discord.com/developers/docs/resources/entitlement#list-entitlements}
 	 * @param applicationId - The application id to fetch entitlements for
 	 * @param query - The query options for fetching entitlements
 	 * @param options - The options for fetching entitlements
@@ -46,7 +87,7 @@ export class MonetizationAPI {
 	/**
 	 * Creates a test entitlement for an application's SKU.
 	 *
-	 * @see {@link https://discord.com/developers/docs/monetization/entitlements#create-test-entitlement}
+	 * @see {@link https://discord.com/developers/docs/resources/entitlement#create-test-entitlement}
 	 * @param applicationId - The application id to create the entitlement for
 	 * @param body - The data for creating the entitlement
 	 * @param options - The options for creating the entitlement
@@ -65,7 +106,7 @@ export class MonetizationAPI {
 	/**
 	 * Deletes a test entitlement for an application's SKU.
 	 *
-	 * @see {@link https://discord.com/developers/docs/monetization/entitlements#delete-test-entitlement}
+	 * @see {@link https://discord.com/developers/docs/resources/entitlement#delete-test-entitlement}
 	 * @param applicationId - The application id to delete the entitlement for
 	 * @param entitlementId - The entitlement id to delete
 	 * @param options - The options for deleting the entitlement
@@ -81,7 +122,7 @@ export class MonetizationAPI {
 	/**
 	 * Marks a given entitlement for the user as consumed. Only available for One-Time Purchase consumable SKUs.
 	 *
-	 * @see {@link https://discord.com/developers/docs/monetization/entitlements#consume-an-entitlement}
+	 * @see {@link https://discord.com/developers/docs/resources/entitlement#consume-an-entitlement}
 	 * @param applicationId - The application id to consume the entitlement for
 	 * @param entitlementId - The entitlement id to consume
 	 * @param options - The options for consuming the entitlement
