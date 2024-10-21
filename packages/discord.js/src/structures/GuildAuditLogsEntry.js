@@ -29,6 +29,7 @@ const Targets = {
   Sticker: 'Sticker',
   Thread: 'Thread',
   ApplicationCommand: 'ApplicationCommand',
+  Sounboard: 'Sounboard',
   AutoModeration: 'AutoModeration',
   GuildOnboarding: 'GuildOnboarding',
   GuildOnboardingPrompt: 'GuildOnboardingPrompt',
@@ -51,6 +52,7 @@ const Targets = {
  * * A guild scheduled event
  * * A thread
  * * An application command
+ * * A soundboard sound
  * * An auto moderation rule
  * * A guild onboarding prompt
  * * An object with an id key if target was deleted or fake entity
@@ -84,6 +86,7 @@ const Targets = {
  * * Thread
  * * GuildScheduledEvent
  * * ApplicationCommandPermission
+ * * Sounboard
  * * GuildOnboarding
  * * GuildOnboardingPrompt
  * * Unknown
@@ -392,7 +395,8 @@ class GuildAuditLogsEntry {
     if (target < 110) return Targets.GuildScheduledEvent;
     if (target < 120) return Targets.Thread;
     if (target < 130) return Targets.ApplicationCommand;
-    if (target >= 140 && target < 150) return Targets.AutoModeration;
+    if (target < 140) return Targets.Sounboard;
+    if (target < 150) return Targets.AutoModeration;
     if (target >= 163 && target <= 165) return Targets.GuildOnboardingPrompt;
     if (target >= 160 && target < 170) return Targets.GuildOnboarding;
     return Targets.Unknown;
@@ -420,6 +424,7 @@ class GuildAuditLogsEntry {
         AuditLogEvent.StickerCreate,
         AuditLogEvent.GuildScheduledEventCreate,
         AuditLogEvent.ThreadCreate,
+        AuditLogEvent.SoundboardSoundCreate,
         AuditLogEvent.AutoModerationRuleCreate,
         AuditLogEvent.AutoModerationBlockMessage,
         AuditLogEvent.OnboardingPromptCreate,
@@ -449,6 +454,7 @@ class GuildAuditLogsEntry {
         AuditLogEvent.StickerDelete,
         AuditLogEvent.GuildScheduledEventDelete,
         AuditLogEvent.ThreadDelete,
+        AuditLogEvent.SoundboardSoundDelete,
         AuditLogEvent.AutoModerationRuleDelete,
         AuditLogEvent.OnboardingPromptDelete,
       ].includes(action)
@@ -474,6 +480,7 @@ class GuildAuditLogsEntry {
         AuditLogEvent.GuildScheduledEventUpdate,
         AuditLogEvent.ThreadUpdate,
         AuditLogEvent.ApplicationCommandPermissionUpdate,
+        AuditLogEvent.SoundboardSoundUpdate,
         AuditLogEvent.AutoModerationRuleUpdate,
         AuditLogEvent.OnboardingPromptUpdate,
         AuditLogEvent.OnboardingUpdate,
