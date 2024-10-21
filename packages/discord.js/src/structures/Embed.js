@@ -193,7 +193,7 @@ class Embed {
   get hexColor() {
     return typeof this.data.color === 'number'
       ? `#${this.data.color.toString(16).padStart(6, '0')}`
-      : this.data.color ?? null;
+      : (this.data.color ?? null);
   }
 
   /**

@@ -1,23 +1,21 @@
-import { s } from '@sapphire/shapeshift';
-import { ActionRowBuilder, type ModalActionRowComponentBuilder } from '../../components/ActionRow.js';
-import { customIdValidator } from '../../components/Assertions.js';
-import { isValidationEnabled } from '../../util/validation.js';
+import { ComponentType } from 'discord-api-types/v10';
+import { z } from 'zod';
+import { customIdPredicate } from '../../Assertions.js';
 
-export const titleValidator = s.string
-	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(45)
-	.setValidationEnabled(isValidationEnabled);
-export const componentsValidator = s
-	.instance(ActionRowBuilder)
-	.array.lengthGreaterThanOrEqual(1)
-	.setValidationEnabled(isValidationEnabled);
+const titlePredicate = z.string().min(1).max(45);
 
-export function validateRequiredParameters(
-	customId?: string,
-	title?: string,
-	components?: ActionRowBuilder<ModalActionRowComponentBuilder>[],
-) {
-	customIdValidator.parse(customId);
-	titleValidator.parse(title);
-	componentsValidator.parse(components);
-}
+export const modalPredicate = z.object({
+	title: titlePredicate,
+	custom_id: customIdPredicate,
+	components: z
+		.object({
+			type: z.literal(ComponentType.ActionRow),
+			components: z
+				.object({ type: z.literal(ComponentType.TextInput) })
+				.array()
+				.length(1),
+		})
+		.array()
+		.min(1)
+		.max(5),
+});

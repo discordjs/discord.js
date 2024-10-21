@@ -1,14 +1,16 @@
 'use strict';
 
 const process = require('node:process');
+const { clearTimeout, setImmediate, setTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
-const { OAuth2Scopes, Routes } = require('discord-api-types/v10');
+const { WebSocketManager, WebSocketShardEvents, WebSocketShardStatus } = require('@discordjs/ws');
+const { GatewayDispatchEvents, GatewayIntentBits, OAuth2Scopes, Routes } = require('discord-api-types/v10');
 const BaseClient = require('./BaseClient');
 const ActionsManager = require('./actions/ActionsManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
-const WebSocketManager = require('./websocket/WebSocketManager');
-const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors');
+const PacketHandlers = require('./websocket/handlers');
+const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 const BaseGuildEmojiManager = require('../managers/BaseGuildEmojiManager');
 const ChannelManager = require('../managers/ChannelManager');
 const GuildManager = require('../managers/GuildManager');
@@ -31,7 +33,16 @@ const PermissionsBitField = require('../util/PermissionsBitField');
 const Status = require('../util/Status');
 const Sweepers = require('../util/Sweepers');
 
-let deprecationEmittedForPremiumStickerPacks = false;
+const WaitingForGuildEvents = [GatewayDispatchEvents.GuildCreate, GatewayDispatchEvents.GuildDelete];
+const BeforeReadyWhitelist = [
+  GatewayDispatchEvents.Ready,
+  GatewayDispatchEvents.Resumed,
+  GatewayDispatchEvents.GuildCreate,
+  GatewayDispatchEvents.GuildDelete,
+  GatewayDispatchEvents.GuildMembersChunk,
+  GatewayDispatchEvents.GuildMemberAdd,
+  GatewayDispatchEvents.GuildMemberRemove,
+];
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -47,43 +58,45 @@ class Client extends BaseClient {
     const data = require('node:worker_threads').workerData ?? process.env;
     const defaults = Options.createDefault();
 
-    if (this.options.shards === defaults.shards) {
-      if ('SHARDS' in data) {
-        this.options.shards = JSON.parse(data.SHARDS);
-      }
+    if (this.options.ws.shardIds === defaults.ws.shardIds && 'SHARDS' in data) {
+      this.options.ws.shardIds = JSON.parse(data.SHARDS);
     }
 
-    if (this.options.shardCount === defaults.shardCount) {
-      if ('SHARD_COUNT' in data) {
-        this.options.shardCount = Number(data.SHARD_COUNT);
-      } else if (Array.isArray(this.options.shards)) {
-        this.options.shardCount = this.options.shards.length;
-      }
+    if (this.options.ws.shardCount === defaults.ws.shardCount && 'SHARD_COUNT' in data) {
+      this.options.ws.shardCount = Number(data.SHARD_COUNT);
     }
 
-    const typeofShards = typeof this.options.shards;
-
-    if (typeofShards === 'undefined' && typeof this.options.shardCount === 'number') {
-      this.options.shards = Array.from({ length: this.options.shardCount }, (_, i) => i);
-    }
-
-    if (typeofShards === 'number') this.options.shards = [this.options.shards];
-
-    if (Array.isArray(this.options.shards)) {
-      this.options.shards = [
-        ...new Set(
-          this.options.shards.filter(item => !isNaN(item) && item >= 0 && item < Infinity && item === (item | 0)),
-        ),
-      ];
-    }
+    /**
+     * The presence of the Client
+     * @private
+     * @type {ClientPresence}
+     */
+    this.presence = new ClientPresence(this, this.options.ws.initialPresence ?? this.options.presence);
 
     this._validateOptions();
 
     /**
-     * The WebSocket manager of the client
-     * @type {WebSocketManager}
+     * The current status of this Client
+     * @type {Status}
+     * @private
      */
-    this.ws = new WebSocketManager(this);
+    this.status = Status.Idle;
+
+    /**
+     * A set of guild ids this Client expects to receive
+     * @name Client#expectedGuilds
+     * @type {Set<string>}
+     * @private
+     */
+    Object.defineProperty(this, 'expectedGuilds', { value: new Set(), writable: true });
+
+    /**
+     * The ready timeout
+     * @name Client#readyTimeout
+     * @type {?NodeJS.Timeout}
+     * @private
+     */
+    Object.defineProperty(this, 'readyTimeout', { value: null, writable: true });
 
     /**
      * The action manager of the client
@@ -93,34 +106,20 @@ class Client extends BaseClient {
     this.actions = new ActionsManager(this);
 
     /**
-     * The voice manager of the client
-     * @type {ClientVoiceManager}
-     */
-    this.voice = new ClientVoiceManager(this);
-
-    /**
-     * Shard helpers for the client (only if the process was spawned from a {@link ShardingManager})
-     * @type {?ShardClientUtil}
-     */
-    this.shard = process.env.SHARDING_MANAGER
-      ? ShardClientUtil.singleton(this, process.env.SHARDING_MANAGER_MODE)
-      : null;
-
-    /**
-     * All of the {@link User} objects that have been cached at any point, mapped by their ids
+     * The user manager of this client
      * @type {UserManager}
      */
     this.users = new UserManager(this);
 
     /**
-     * All of the guilds the client is currently handling, mapped by their ids -
+     * A manager of all the guilds the client is currently handling -
      * as long as sharding isn't being used, this will be *every* guild the bot is a member of
      * @type {GuildManager}
      */
     this.guilds = new GuildManager(this);
 
     /**
-     * All of the {@link BaseChannel}s that the client is currently handling, mapped by their ids -
+     * All of the {@link BaseChannel}s that the client is currently handling -
      * as long as sharding isn't being used, this will be *every* channel in *every* guild the bot
      * is a member of. Note that DM channels will not be initially cached, and thus not be present
      * in the Manager without their explicit fetching or use.
@@ -134,13 +133,6 @@ class Client extends BaseClient {
      */
     this.sweepers = new Sweepers(this, this.options.sweepers);
 
-    /**
-     * The presence of the Client
-     * @private
-     * @type {ClientPresence}
-     */
-    this.presence = new ClientPresence(this, this.options.presence);
-
     Object.defineProperty(this, 'token', { writable: true });
     if (!this.token && 'DISCORD_TOKEN' in process.env) {
       /**
@@ -150,9 +142,39 @@ class Client extends BaseClient {
        * @type {?string}
        */
       this.token = process.env.DISCORD_TOKEN;
+    } else if (this.options.ws.token) {
+      this.token = this.options.ws.token;
     } else {
       this.token = null;
     }
+
+    const wsOptions = {
+      ...this.options.ws,
+      intents: this.options.intents.bitfield,
+      rest: this.rest,
+      // Explicitly nulled to always be set using `setToken` in `login`
+      token: null,
+    };
+
+    /**
+     * The WebSocket manager of the client
+     * @type {WebSocketManager}
+     */
+    this.ws = new WebSocketManager(wsOptions);
+
+    /**
+     * Shard helpers for the client (only if the process was spawned from a {@link ShardingManager})
+     * @type {?ShardClientUtil}
+     */
+    this.shard = process.env.SHARDING_MANAGER
+      ? ShardClientUtil.singleton(this, process.env.SHARDING_MANAGER_MODE)
+      : null;
+
+    /**
+     * The voice manager of the client
+     * @type {ClientVoiceManager}
+     */
+    this.voice = new ClientVoiceManager(this);
 
     /**
      * User that the client is logged in as
@@ -167,14 +189,36 @@ class Client extends BaseClient {
     this.application = null;
 
     /**
+     * The latencies of the WebSocketShard connections
+     * @type {Collection<number, number>}
+     */
+    this.pings = new Collection();
+
+    /**
+     * The last time a ping was sent (a timestamp) for each WebSocketShard connection
+     * @type {Collection<number,number>}
+     */
+    this.lastPingTimestamps = new Collection();
+
+    /**
      * Timestamp of the time the client was last {@link Status.Ready} at
      * @type {?number}
      */
     this.readyTimestamp = null;
+
+    /**
+     * An array of queued events before this Client became ready
+     * @type {Object[]}
+     * @private
+     * @name Client#incomingPacketQueue
+     */
+    Object.defineProperty(this, 'incomingPacketQueue', { value: [] });
+
+    this._attachEvents();
   }
 
   /**
-   * All custom emojis that the client has access to, mapped by their ids
+   * A manager of all the custom emojis that the client has access to
    * @type {BaseGuildEmojiManager}
    * @readonly
    */
@@ -214,15 +258,14 @@ class Client extends BaseClient {
    */
   async login(token = this.token) {
     if (!token || typeof token !== 'string') throw new DiscordjsError(ErrorCodes.TokenInvalid);
-    this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
-    this.rest.setToken(token);
+    this.token = token.replace(/^(Bot|Bearer)\s*/i, '');
+
+    this.rest.setToken(this.token);
+
     this.emit(Events.Debug, `Provided token: ${this._censoredToken}`);
-
-    if (this.options.presence) {
-      this.options.ws.presence = this.presence._parse(this.options.presence);
-    }
-
     this.emit(Events.Debug, 'Preparing to connect to the gateway...');
+
+    this.ws.setToken(this.token);
 
     try {
       await this.ws.connect();
@@ -234,12 +277,148 @@ class Client extends BaseClient {
   }
 
   /**
+   * Checks if the client can be marked as ready
+   * @private
+   */
+  async _checkReady() {
+    // Step 0. Clear the ready timeout, if it exists
+    if (this.readyTimeout) {
+      clearTimeout(this.readyTimeout);
+      this.readyTimeout = null;
+    }
+    // Step 1. If we don't have any other guilds pending, we are ready
+    if (
+      !this.expectedGuilds.size &&
+      (await this.ws.fetchStatus()).every(status => status === WebSocketShardStatus.Ready)
+    ) {
+      this.emit(Events.Debug, 'Client received all its guilds. Marking as fully ready.');
+      this.status = Status.Ready;
+
+      this._triggerClientReady();
+      return;
+    }
+    const hasGuildsIntent = this.options.intents.has(GatewayIntentBits.Guilds);
+    // Step 2. Create a timeout that will mark the client as ready if there are still unavailable guilds
+    // * The timeout is 15 seconds by default
+    // * This can be optionally changed in the client options via the `waitGuildTimeout` option
+    // * a timeout time of zero will skip this timeout, which potentially could cause the Client to miss guilds.
+
+    this.readyTimeout = setTimeout(
+      () => {
+        this.emit(
+          Events.Debug,
+          `${
+            hasGuildsIntent
+              ? `Client did not receive any guild packets in ${this.options.waitGuildTimeout} ms.`
+              : 'Client will not receive anymore guild packets.'
+          }\nUnavailable guild count: ${this.expectedGuilds.size}`,
+        );
+
+        this.readyTimeout = null;
+        this.status = Status.Ready;
+
+        this._triggerClientReady();
+      },
+      hasGuildsIntent ? this.options.waitGuildTimeout : 0,
+    ).unref();
+  }
+
+  /**
+   * Attaches event handlers to the WebSocketShardManager from `@discordjs/ws`.
+   * @private
+   */
+  _attachEvents() {
+    this.ws.on(WebSocketShardEvents.Debug, (message, shardId) =>
+      this.emit(Events.Debug, `[WS => ${typeof shardId === 'number' ? `Shard ${shardId}` : 'Manager'}] ${message}`),
+    );
+    this.ws.on(WebSocketShardEvents.Dispatch, this._handlePacket.bind(this));
+
+    this.ws.on(WebSocketShardEvents.Ready, data => {
+      for (const guild of data.guilds) {
+        this.expectedGuilds.add(guild.id);
+      }
+      this.status = Status.WaitingForGuilds;
+      this._checkReady();
+    });
+
+    this.ws.on(WebSocketShardEvents.HeartbeatComplete, ({ heartbeatAt, latency }, shardId) => {
+      this.emit(Events.Debug, `[WS => Shard ${shardId}] Heartbeat acknowledged, latency of ${latency}ms.`);
+      this.lastPingTimestamps.set(shardId, heartbeatAt);
+      this.pings.set(shardId, latency);
+    });
+  }
+
+  /**
+   * Processes a packet and queues it if this WebSocketManager is not ready.
+   * @param {GatewayDispatchPayload} packet The packet to be handled
+   * @param {number} shardId The shardId that received this packet
+   * @private
+   */
+  _handlePacket(packet, shardId) {
+    if (this.status !== Status.Ready && !BeforeReadyWhitelist.includes(packet.t)) {
+      this.incomingPacketQueue.push({ packet, shardId });
+    } else {
+      if (this.incomingPacketQueue.length) {
+        const item = this.incomingPacketQueue.shift();
+        setImmediate(() => {
+          this._handlePacket(item.packet, item.shardId);
+        }).unref();
+      }
+
+      if (PacketHandlers[packet.t]) {
+        PacketHandlers[packet.t](this, packet, shardId);
+      }
+
+      if (this.status === Status.WaitingForGuilds && WaitingForGuildEvents.includes(packet.t)) {
+        this.expectedGuilds.delete(packet.d.id);
+        this._checkReady();
+      }
+    }
+  }
+
+  /**
+   * Broadcasts a packet to every shard of this client handles.
+   * @param {Object} packet The packet to send
+   * @private
+   */
+  async _broadcast(packet) {
+    const shardIds = await this.ws.getShardIds();
+    return Promise.all(shardIds.map(shardId => this.ws.send(shardId, packet)));
+  }
+
+  /**
+   * Causes the client to be marked as ready and emits the ready event.
+   * @private
+   */
+  _triggerClientReady() {
+    this.status = Status.Ready;
+
+    this.readyTimestamp = Date.now();
+
+    /**
+     * Emitted when the client becomes ready to start working.
+     * @event Client#clientReady
+     * @param {Client} client The client
+     */
+    this.emit(Events.ClientReady, this);
+  }
+
+  /**
    * Returns whether the client has logged in, indicative of being able to access
    * properties such as `user` and `application`.
    * @returns {boolean}
    */
   isReady() {
-    return !this.ws.destroyed && this.ws.status === Status.Ready;
+    return this.status === Status.Ready;
+  }
+
+  /**
+   * The average ping of all WebSocketShards
+   * @type {?number}
+   * @readonly
+   */
+  get ping() {
+    return this.pings.size ? this.pings.reduce((a, b) => a + b, 0) / this.pings.size : null;
   }
 
   /**
@@ -343,34 +522,33 @@ class Client extends BaseClient {
   }
 
   /**
+   * Options for fetching sticker packs.
+   * @typedef {Object} StickerPackFetchOptions
+   * @property {Snowflake} [packId] The id of the sticker pack to fetch
+   */
+
+  /**
    * Obtains the list of available sticker packs.
-   * @returns {Promise<Collection<Snowflake, StickerPack>>}
+   * @param {StickerPackFetchOptions} [options={}] Options for fetching sticker packs
+   * @returns {Promise<Collection<Snowflake, StickerPack>|StickerPack>}
+   * A collection of sticker packs, or a single sticker pack if a packId was provided
    * @example
    * client.fetchStickerPacks()
    *   .then(packs => console.log(`Available sticker packs are: ${packs.map(pack => pack.name).join(', ')}`))
    *   .catch(console.error);
+   * @example
+   * client.fetchStickerPacks({ packId: '751604115435421716' })
+   *   .then(pack => console.log(`Sticker pack name: ${pack.name}`))
+   *   .catch(console.error);
    */
-  async fetchStickerPacks() {
-    const data = await this.rest.get(Routes.stickerPacks());
-    return new Collection(data.sticker_packs.map(stickerPack => [stickerPack.id, new StickerPack(this, stickerPack)]));
-  }
-
-  /**
-   * Obtains the list of available sticker packs.
-   * @returns {Promise<Collection<Snowflake, StickerPack>>}
-   * @deprecated Use {@link Client#fetchStickerPacks} instead.
-   */
-  fetchPremiumStickerPacks() {
-    if (!deprecationEmittedForPremiumStickerPacks) {
-      process.emitWarning(
-        'The Client#fetchPremiumStickerPacks() method is deprecated. Use Client#fetchStickerPacks() instead.',
-        'DeprecationWarning',
-      );
-
-      deprecationEmittedForPremiumStickerPacks = true;
+  async fetchStickerPacks({ packId } = {}) {
+    if (packId) {
+      const data = await this.rest.get(Routes.stickerPack(packId));
+      return new StickerPack(this, data);
     }
 
-    return this.fetchStickerPacks();
+    const data = await this.rest.get(Routes.stickerPacks());
+    return new Collection(data.sticker_packs.map(stickerPack => [stickerPack.id, new StickerPack(this, stickerPack)]));
   }
 
   /**
@@ -508,20 +686,10 @@ class Client extends BaseClient {
    * @private
    */
   _validateOptions(options = this.options) {
-    if (options.intents === undefined) {
+    if (options.intents === undefined && options.ws?.intents === undefined) {
       throw new DiscordjsTypeError(ErrorCodes.ClientMissingIntents);
     } else {
-      options.intents = new IntentsBitField(options.intents).freeze();
-    }
-    if (typeof options.shardCount !== 'number' || isNaN(options.shardCount) || options.shardCount < 1) {
-      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'shardCount', 'a number greater than or equal to 1');
-    }
-    if (options.shards && !(options.shards === 'auto' || Array.isArray(options.shards))) {
-      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'shards', "'auto', a number or array of numbers");
-    }
-    if (options.shards && !options.shards.length) throw new DiscordjsRangeError(ErrorCodes.ClientInvalidProvidedShards);
-    if (typeof options.makeCache !== 'function') {
-      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'makeCache', 'a function');
+      options.intents = new IntentsBitField(options.intents ?? options.ws.intents).freeze();
     }
     if (typeof options.sweepers !== 'object' || options.sweepers === null) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'sweepers', 'an object');
@@ -535,17 +703,25 @@ class Client extends BaseClient {
     if (typeof options.failIfNotExists !== 'boolean') {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'failIfNotExists', 'a boolean');
     }
+    if (typeof options.enforceNonce !== 'boolean') {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'enforceNonce', 'a boolean');
+    }
     if (
       (typeof options.allowedMentions !== 'object' && options.allowedMentions !== undefined) ||
       options.allowedMentions === null
     ) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'allowedMentions', 'an object');
     }
-    if (typeof options.presence !== 'object' || options.presence === null) {
-      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'presence', 'an object');
-    }
     if (typeof options.ws !== 'object' || options.ws === null) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'ws', 'an object');
+    }
+    if (
+      (typeof options.presence !== 'object' || options.presence === null) &&
+      options.ws.initialPresence === undefined
+    ) {
+      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'presence', 'an object');
+    } else {
+      options.ws.initialPresence = options.ws.initialPresence ?? this.presence._parse(this.options.presence);
     }
     if (typeof options.rest !== 'object' || options.rest === null) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'rest', 'an object');

@@ -4,7 +4,7 @@ export function formatTag(tag: string) {
 
 	if (parsed?.groups) {
 		const isSubpackage = typeof parsed.groups.package === 'string';
-		const pkg = isSubpackage ? parsed.groups.package : parsedPackage?.groups?.package ?? 'discord.js';
+		const pkg = isSubpackage ? parsed.groups.package : (parsedPackage?.groups?.package ?? 'discord.js');
 		const semver = parsed.groups.semver;
 
 		return {

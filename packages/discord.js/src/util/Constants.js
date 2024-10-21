@@ -65,11 +65,11 @@ exports.NonSystemMessageTypes = [
 /**
  * The guild channels that are text-based.
  * * TextChannel
- * * NewsChannel
+ * * AnnouncementChannel
  * * ThreadChannel
  * * VoiceChannel
  * * StageChannel
- * @typedef {TextChannel|NewsChannel|ThreadChannel|VoiceChannel|StageChannel} GuildTextBasedChannel
+ * @typedef {TextChannel|AnnouncementChannel|ThreadChannel|VoiceChannel|StageChannel} GuildTextBasedChannel
  */
 
 /**
@@ -117,9 +117,24 @@ exports.GuildTextBasedChannelTypes = [
  * * {@link ChannelType.PrivateThread}
  * * {@link ChannelType.GuildVoice}
  * * {@link ChannelType.GuildStageVoice}
+ * * {@link ChannelType.GroupDM}
  * @typedef {ChannelType[]} TextBasedChannelTypes
  */
-exports.TextBasedChannelTypes = [...exports.GuildTextBasedChannelTypes, ChannelType.DM];
+exports.TextBasedChannelTypes = [...exports.GuildTextBasedChannelTypes, ChannelType.DM, ChannelType.GroupDM];
+
+/**
+ * The types of channels that are text-based and can have messages sent into. The available types are:
+ * * {@link ChannelType.DM}
+ * * {@link ChannelType.GuildText}
+ * * {@link ChannelType.GuildAnnouncement}
+ * * {@link ChannelType.AnnouncementThread}
+ * * {@link ChannelType.PublicThread}
+ * * {@link ChannelType.PrivateThread}
+ * * {@link ChannelType.GuildVoice}
+ * * {@link ChannelType.GuildStageVoice}
+ * @typedef {ChannelType[]} SendableChannels
+ */
+exports.SendableChannels = [...exports.GuildTextBasedChannelTypes, ChannelType.DM];
 
 /**
  * The types of channels that are threads. The available types are:
@@ -172,56 +187,6 @@ exports.UndeletableMessageTypes = [
   MessageType.ChannelNameChange,
   MessageType.ChannelIconChange,
   MessageType.ThreadStarterMessage,
-];
-
-/**
- * The types of messages that can be deleted. The available types are:
- * * {@link MessageType.AutoModerationAction}
- * * {@link MessageType.ChannelFollowAdd}
- * * {@link MessageType.ChannelPinnedMessage}
- * * {@link MessageType.ChatInputCommand}
- * * {@link MessageType.ContextMenuCommand}
- * * {@link MessageType.Default}
- * * {@link MessageType.GuildBoost}
- * * {@link MessageType.GuildBoostTier1}
- * * {@link MessageType.GuildBoostTier2}
- * * {@link MessageType.GuildBoostTier3}
- * * {@link MessageType.GuildInviteReminder}
- * * {@link MessageType.InteractionPremiumUpsell}
- * * {@link MessageType.Reply}
- * * {@link MessageType.RoleSubscriptionPurchase}
- * * {@link MessageType.StageEnd}
- * * {@link MessageType.StageRaiseHand}
- * * {@link MessageType.StageSpeaker}
- * * {@link MessageType.StageStart}
- * * {@link MessageType.StageTopic}
- * * {@link MessageType.ThreadCreated}
- * * {@link MessageType.UserJoin}
- * @typedef {MessageType[]} DeletableMessageTypes
- * @deprecated This list will no longer be updated. Use {@link UndeletableMessageTypes} instead.
- */
-exports.DeletableMessageTypes = [
-  MessageType.AutoModerationAction,
-  MessageType.ChannelFollowAdd,
-  MessageType.ChannelPinnedMessage,
-  MessageType.ChatInputCommand,
-  MessageType.ContextMenuCommand,
-  MessageType.Default,
-  MessageType.GuildBoost,
-  MessageType.GuildBoostTier1,
-  MessageType.GuildBoostTier2,
-  MessageType.GuildBoostTier3,
-  MessageType.GuildInviteReminder,
-  MessageType.InteractionPremiumUpsell,
-  MessageType.Reply,
-  MessageType.RoleSubscriptionPurchase,
-  MessageType.StageEnd,
-  MessageType.StageRaiseHand,
-  MessageType.StageSpeaker,
-  MessageType.StageStart,
-  MessageType.StageTopic,
-  MessageType.ThreadCreated,
-  MessageType.UserJoin,
 ];
 
 /**

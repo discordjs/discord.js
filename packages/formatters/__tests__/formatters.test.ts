@@ -17,12 +17,14 @@ import {
 	hyperlink,
 	inlineCode,
 	italic,
+	linkedRoleMention,
 	messageLink,
 	orderedList,
 	quote,
 	roleMention,
 	spoiler,
 	strikethrough,
+	subtext,
 	time,
 	TimestampStyles,
 	underline,
@@ -141,6 +143,12 @@ describe('Message formatters', () => {
 		describe('roleMention', () => {
 			test('GIVEN roleId THEN returns "<&[roleId]>"', () => {
 				expect(roleMention('815434166602170409')).toEqual('<@&815434166602170409>');
+			});
+		});
+
+		describe('linkedRoleMention', () => {
+			test('GIVEN roleId THEN returns "<id:linked-roles:[roleId]>"', () => {
+				expect(linkedRoleMention('815434166602170409')).toEqual('<id:linked-roles:815434166602170409>');
 			});
 		});
 
@@ -274,6 +282,12 @@ describe('Message formatters', () => {
 			expect(unorderedList(['discord.js', 'discord.js 2', ['discord.js 3']])).toEqual(
 				'- discord.js\n- discord.js 2\n  - discord.js 3',
 			);
+		});
+	});
+
+	describe('subtext', () => {
+		test('GIVEN "discord.js" THEN returns "-# discord.js"', () => {
+			expect<'-# discord.js'>(subtext('discord.js')).toEqual('-# discord.js');
 		});
 	});
 

@@ -1,7 +1,7 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/core",
-	"version": "1.2.0",
+	"version": "2.0.0",
 	"description": "A thinly abstracted wrapper around the rest API, and gateway.",
 	"scripts": {
 		"test": "vitest run",
@@ -48,7 +48,7 @@
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>",
 		"SpaceEEC <spaceeec@yahoo.com>",
-		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Vlad Frangu <me@vladfrangu.dev>",
 		"Aura Román <kyradiscord@gmail.com>",
 		"Suneet Tipirneni <suneettipirneni@icloud.com>"
 	],
@@ -69,28 +69,28 @@
 		"@discordjs/util": "workspace:^",
 		"@discordjs/ws": "workspace:^",
 		"@sapphire/snowflake": "^3.5.3",
-		"@vladfrangu/async_event_emitter": "^2.2.4",
-		"discord-api-types": "0.37.90"
+		"@vladfrangu/async_event_emitter": "^2.4.6",
+		"discord-api-types": "^0.37.101"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
-		"@favware/cliff-jumper": "^3.0.3",
-		"@types/node": "18.18.8",
-		"@vitest/coverage-v8": "^1.6.0",
+		"@favware/cliff-jumper": "^4.1.0",
+		"@types/node": "^18.19.45",
+		"@vitest/coverage-v8": "^2.0.5",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.2.1",
 		"eslint": "^8.57.0",
 		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.3.0",
-		"tsup": "^8.1.0",
-		"turbo": "^1.13.3",
-		"typescript": "^5.4.5",
-		"vitest": "^1.6.0"
+		"prettier": "^3.3.3",
+		"tsup": "^8.2.4",
+		"turbo": "^2.0.14",
+		"typescript": "~5.5.4",
+		"vitest": "^2.0.5"
 	},
 	"engines": {
-		"node": ">=18"
+		"node": ">=20"
 	},
 	"publishConfig": {
 		"access": "public",

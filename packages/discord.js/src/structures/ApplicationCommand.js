@@ -145,10 +145,33 @@ class ApplicationCommand extends Base {
        * Whether the command can be used in DMs
        * <info>This property is always `null` on guild commands</info>
        * @type {?boolean}
+       * @deprecated Use {@link ApplicationCommand#contexts} instead.
        */
       this.dmPermission = data.dm_permission;
     } else {
       this.dmPermission ??= null;
+    }
+
+    if ('integration_types' in data) {
+      /**
+       * Installation context(s) where the command is available
+       * <info>Only for globally-scoped commands</info>
+       * @type {?ApplicationIntegrationType[]}
+       */
+      this.integrationTypes = data.integration_types;
+    } else {
+      this.integrationTypes ??= null;
+    }
+
+    if ('contexts' in data) {
+      /**
+       * Interaction context(s) where the command can be used
+       * <info>Only for globally-scoped commands</info>
+       * @type {?InteractionContextType[]}
+       */
+      this.contexts = data.contexts;
+    } else {
+      this.contexts ??= null;
     }
 
     if ('version' in data) {
@@ -394,7 +417,9 @@ class ApplicationCommand extends Base {
       !isEqual(
         command.descriptionLocalizations ?? command.description_localizations ?? {},
         this.descriptionLocalizations ?? {},
-      )
+      ) ||
+      !isEqual(command.integrationTypes ?? command.integration_types ?? [], this.integrationTypes ?? []) ||
+      !isEqual(command.contexts ?? [], this.contexts ?? [])
     ) {
       return false;
     }

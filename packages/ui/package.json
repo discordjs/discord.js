@@ -36,7 +36,7 @@
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>",
 		"SpaceEEC <spaceeec@yahoo.com>",
-		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Vlad Frangu <me@vladfrangu.dev>",
 		"Aura Román <kyradiscord@gmail.com>"
 	],
 	"license": "Apache-2.0",
@@ -58,7 +58,7 @@
 		"react-dom": "^18.3.1"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^3.0.3",
+		"@favware/cliff-jumper": "^4.1.0",
 		"@react-icons/all-files": "^4.1.0",
 		"@storybook/addon-essentials": "^8.1.5",
 		"@storybook/addon-interactions": "^8.1.5",
@@ -68,27 +68,27 @@
 		"@storybook/react": "^8.1.5",
 		"@storybook/react-vite": "^8.1.5",
 		"@storybook/testing-library": "^0.2.2",
-		"@types/node": "18.18.8",
+		"@types/node": "^18.19.45",
 		"@types/react": "^18.3.3",
 		"@types/react-dom": "^18.3.0",
 		"@unocss/eslint-plugin": "^0.60.4",
 		"@unocss/reset": "^0.60.4",
 		"@vitejs/plugin-react": "^4.3.0",
-		"@vitest/coverage-v8": "^1.6.0",
+		"@vitest/coverage-v8": "^2.0.5",
 		"chromatic": "^11.5.0",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.57.0",
 		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.3.0",
+		"prettier": "^3.3.3",
 		"prop-types": "^15.8.1",
 		"storybook": "^8.1.5",
-		"turbo": "^1.13.3",
-		"typescript": "^5.4.5",
+		"turbo": "^2.0.14",
+		"typescript": "~5.5.4",
 		"unocss": "^0.60.4",
 		"vite": "^5.2.12",
 		"vite-plugin-dts": "^3.9.1",
-		"vitest": "^1.6.0"
+		"vitest": "^2.0.5"
 	},
 	"engines": {
 		"node": ">=18"

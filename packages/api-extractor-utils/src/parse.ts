@@ -199,7 +199,7 @@ export function genToken(model: ApiModel, token: ExcerptToken, version: string) 
 	}
 
 	const item = token.canonicalReference
-		? model.resolveDeclarationReference(token.canonicalReference, undefined).resolvedApiItem ?? null
+		? (model.resolveDeclarationReference(token.canonicalReference, undefined).resolvedApiItem ?? null)
 		: null;
 
 	return {

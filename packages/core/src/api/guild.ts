@@ -28,6 +28,7 @@ import {
 	type RESTGetAPIGuildPruneCountResult,
 	type RESTGetAPIGuildQuery,
 	type RESTGetAPIGuildResult,
+	type RESTGetAPIGuildRoleResult,
 	type RESTGetAPIGuildRolesResult,
 	type RESTGetAPIGuildScheduledEventQuery,
 	type RESTGetAPIGuildScheduledEventResult,
@@ -67,7 +68,6 @@ import {
 	type RESTPatchAPIGuildTemplateJSONBody,
 	type RESTPatchAPIGuildTemplateResult,
 	type RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
-	type RESTPatchAPIGuildVoiceStateCurrentMemberResult,
 	type RESTPatchAPIGuildVoiceStateUserJSONBody,
 	type RESTPatchAPIGuildWelcomeScreenJSONBody,
 	type RESTPatchAPIGuildWelcomeScreenResult,
@@ -102,6 +102,7 @@ import {
 	type RESTPutAPIGuildTemplateSyncResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
+import { VoiceAPI } from './voice';
 
 export class GuildsAPI {
 	public constructor(private readonly rest: REST) {}
@@ -398,6 +399,18 @@ export class GuildsAPI {
 	}
 
 	/**
+	 * Get a role in a guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild-role}
+	 * @param guildId - The id of the guild to fetch the role from
+	 * @param roleId - The id of the role to fetch
+	 * @param options - The options for fetching the guild role
+	 */
+	public async getRole(guildId: Snowflake, roleId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+		return this.rest.get(Routes.guildRole(guildId, roleId), { signal }) as Promise<RESTGetAPIGuildRoleResult>;
+	}
+
+	/**
 	 * Creates a guild role
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/guild#create-guild-role}
@@ -687,11 +700,12 @@ export class GuildsAPI {
 	/**
 	 * Edits a user's voice state in a guild
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-user-voice-state}
+	 * @see {@link https://discord.com/developers/docs/resources/voice#modify-user-voice-state}
 	 * @param guildId - The id of the guild to edit the current user's voice state in
 	 * @param userId - The id of the user to edit the voice state for
 	 * @param body - The data for editing the voice state
 	 * @param options - The options for editing the voice state
+	 * @deprecated Use {@link VoiceAPI.editUserVoiceState} instead
 	 */
 	public async editUserVoiceState(
 		guildId: Snowflake,
@@ -699,7 +713,7 @@ export class GuildsAPI {
 		body: RESTPatchAPIGuildVoiceStateUserJSONBody,
 		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
-		await this.rest.patch(Routes.guildVoiceState(guildId, userId), { reason, body, signal });
+		return new VoiceAPI(this.rest).editUserVoiceState(guildId, userId, body, { reason, signal });
 	}
 
 	/**
@@ -1298,14 +1312,18 @@ export class GuildsAPI {
 	/**
 	 * Sets the voice state for the current user
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-current-user-voice-state}
+	 * @see {@link https://discord.com/developers/docs/resources/voice#modify-current-user-voice-state}
 	 * @param guildId - The id of the guild
-	 * @param body - The options for setting the voice state
+	 * @param body - The data for setting the voice state
+	 * @param options - The options for setting the voice state
+	 * @deprecated Use {@link VoiceAPI.editVoiceState} instead
 	 */
-	public async setVoiceState(guildId: Snowflake, body: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {}) {
-		return this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
-			body,
-		}) as Promise<RESTPatchAPIGuildVoiceStateCurrentMemberResult>;
+	public async setVoiceState(
+		guildId: Snowflake,
+		body: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		return new VoiceAPI(this.rest).editVoiceState(guildId, body, { signal });
 	}
 
 	/**

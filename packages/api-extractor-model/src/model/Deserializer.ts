@@ -182,7 +182,9 @@ export interface DocgenJson {
 }
 
 function formatVarType(type: DocgenVarTypeJson): string {
-	return (Array.isArray(type) ? type : type.types ?? []).map((t1) => t1.map((t2) => t2.join('')).join('')).join(' | ');
+	return (Array.isArray(type) ? type : (type.types ?? []))
+		.map((t1) => t1.map((t2) => t2.join('')).join(''))
+		.join(' | ');
 }
 
 function getFirstType(type: DocgenVarTypeJson): string {
@@ -192,7 +194,7 @@ function getFirstType(type: DocgenVarTypeJson): string {
 // function mapEvent(_event: DocgenEventJson, _package: string, _parent: DocgenClassJson): void {}
 
 function mapVarType(type: DocgenVarTypeJson, _package: string): IExcerptToken[] {
-	const mapper = Array.isArray(type) ? type : type.types ?? [];
+	const mapper = Array.isArray(type) ? type : (type.types ?? []);
 	return mapper.flatMap((typ) =>
 		typ.reduce<IExcerptToken[]>(
 			(arr, [_class, symbol]) => [
@@ -260,6 +262,7 @@ function mapParam(
 			startIndex: 1 + index + paramTokens.slice(0, index).reduce((akk, num) => akk + num, 0),
 			endIndex: 1 + index + paramTokens.slice(0, index + 1).reduce((akk, num) => akk + num, 0),
 		},
+		defaultValue: param.default,
 	};
 }
 

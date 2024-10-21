@@ -23,9 +23,7 @@
 
 ## Installation
 
-**Node.js 16.11.0 or newer is required.**
-
-Note: native fetch (not recommended) is unavailable in this node version, either use a newer node version or use the more performant `undiciRequest` strategy (default)
+**Node.js 18 or newer is required.**
 
 ```sh
 npm install @discordjs/rest

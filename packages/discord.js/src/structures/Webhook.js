@@ -116,7 +116,7 @@ class Webhook {
     if ('source_channel' in data) {
       /**
        * The source channel of the webhook
-       * @type {?(NewsChannel|APIChannel)}
+       * @type {?(AnnouncementChannel|APIChannel)}
        */
       this.sourceChannel = this.client.channels?.resolve(data.source_channel?.id) ?? data.source_channel;
     } else {
@@ -126,7 +126,7 @@ class Webhook {
 
   /**
    * Options that can be passed into send.
-   * @typedef {BaseMessageOptions} WebhookMessageCreateOptions
+   * @typedef {BaseMessageOptionsWithPoll} WebhookMessageCreateOptions
    * @property {boolean} [tts=false] Whether the message should be spoken aloud
    * @property {MessageFlags} [flags] Which flags to set for the message.
    * <info>Only the {@link MessageFlags.SuppressEmbeds} flag can be set.</info>
@@ -149,7 +149,7 @@ class Webhook {
 
   /**
    * The channel the webhook belongs to
-   * @type {?(TextChannel|VoiceChannel|StageChannel|NewsChannel|ForumChannel|MediaChannel)}
+   * @type {?(TextChannel|VoiceChannel|StageChannel|AnnouncementChannel|ForumChannel|MediaChannel)}
    * @readonly
    */
   get channel() {

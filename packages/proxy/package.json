@@ -1,7 +1,7 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/proxy",
-	"version": "2.1.0",
+	"version": "2.1.1",
 	"description": "Tools for running an HTTP proxy for Discord's API",
 	"scripts": {
 		"test": "vitest run",
@@ -41,7 +41,7 @@
 		"Crawl <icrawltogo@gmail.com>",
 		"Amish Shah <amishshah.2k@gmail.com>",
 		"SpaceEEC <spaceeec@yahoo.com>",
-		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Vlad Frangu <me@vladfrangu.dev>",
 		"Aura Román <kyradiscord@gmail.com>",
 		"DD <didinele.dev@gmail.com>"
 	],
@@ -67,27 +67,27 @@
 	"dependencies": {
 		"@discordjs/rest": "workspace:^",
 		"@discordjs/util": "workspace:^",
-		"tslib": "^2.6.2",
-		"undici": "6.18.2"
+		"tslib": "^2.6.3",
+		"undici": "6.19.8"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
-		"@favware/cliff-jumper": "^3.0.3",
-		"@types/node": "18.18.8",
+		"@favware/cliff-jumper": "^4.1.0",
+		"@types/node": "^18.19.45",
 		"@types/supertest": "^6.0.2",
-		"@vitest/coverage-v8": "^1.6.0",
+		"@vitest/coverage-v8": "^2.0.5",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.2.1",
 		"eslint": "^8.57.0",
 		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.3.0",
+		"prettier": "^3.3.3",
 		"supertest": "^7.0.0",
-		"tsup": "^8.1.0",
-		"turbo": "^1.13.3",
-		"typescript": "^5.4.5",
-		"vitest": "^1.6.0"
+		"tsup": "^8.2.4",
+		"turbo": "^2.0.14",
+		"typescript": "~5.5.4",
+		"vitest": "^2.0.5"
 	},
 	"engines": {
 		"node": ">=18"

@@ -123,17 +123,6 @@ class User extends Base {
       this.flags = new UserFlagsBitField(data.public_flags);
     }
 
-    if ('avatar_decoration' in data) {
-      /**
-       * The user avatar decoration's hash
-       * @type {?string}
-       * @deprecated Use `avatarDecorationData` instead
-       */
-      this.avatarDecoration = data.avatar_decoration;
-    } else {
-      this.avatarDecoration ??= null;
-    }
-
     /**
      * @typedef {Object} AvatarDecorationData
      * @property {string} asset The avatar decoration hash
@@ -192,15 +181,10 @@ class User extends Base {
 
   /**
    * A link to the user's avatar decoration.
-   * @param {BaseImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  avatarDecorationURL(options = {}) {
-    if (this.avatarDecorationData) {
-      return this.client.rest.cdn.avatarDecoration(this.avatarDecorationData.asset);
-    }
-
-    return this.avatarDecoration && this.client.rest.cdn.avatarDecoration(this.id, this.avatarDecoration, options);
+  avatarDecorationURL() {
+    return this.avatarDecorationData ? this.client.rest.cdn.avatarDecoration(this.avatarDecorationData.asset) : null;
   }
 
   /**
@@ -216,7 +200,7 @@ class User extends Base {
   /**
    * A link to the user's avatar if they have one.
    * Otherwise a link to their default avatar will be returned.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {string}
    */
   displayAvatarURL(options) {
@@ -311,7 +295,6 @@ class User extends Base {
       this.flags?.bitfield === user.flags?.bitfield &&
       this.banner === user.banner &&
       this.accentColor === user.accentColor &&
-      this.avatarDecoration === user.avatarDecoration &&
       this.avatarDecorationData?.asset === user.avatarDecorationData?.asset &&
       this.avatarDecorationData?.skuId === user.avatarDecorationData?.skuId
     );
@@ -334,21 +317,11 @@ class User extends Base {
       this.flags?.bitfield === user.public_flags &&
       ('banner' in user ? this.banner === user.banner : true) &&
       ('accent_color' in user ? this.accentColor === user.accent_color : true) &&
-      ('avatar_decoration' in user ? this.avatarDecoration === user.avatar_decoration : true) &&
       ('avatar_decoration_data' in user
         ? this.avatarDecorationData?.asset === user.avatar_decoration_data?.asset &&
           this.avatarDecorationData?.skuId === user.avatar_decoration_data?.sku_id
         : true)
     );
-  }
-
-  /**
-   * Fetches this user's flags.
-   * @param {boolean} [force=false] Whether to skip the cache check and request the API
-   * @returns {Promise<UserFlagsBitField>}
-   */
-  fetchFlags(force = false) {
-    return this.client.users.fetchFlags(this.id, { force });
   }
 
   /**

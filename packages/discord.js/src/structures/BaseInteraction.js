@@ -1,6 +1,5 @@
 'use strict';
 
-const { deprecate } = require('node:util');
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { InteractionType, ApplicationCommandType, ComponentType } = require('discord-api-types/v10');
@@ -65,7 +64,7 @@ class BaseInteraction extends Base {
      * If this interaction was sent in a guild, the member which sent it
      * @type {?(GuildMember|APIInteractionGuildMember)}
      */
-    this.member = data.member ? this.guild?.members._add(data.member) ?? data.member : null;
+    this.member = data.member ? (this.guild?.members._add(data.member) ?? data.member) : null;
 
     /**
      * The version
@@ -75,9 +74,9 @@ class BaseInteraction extends Base {
 
     /**
      * Set of permissions the application or bot has within the channel the interaction was sent from
-     * @type {?Readonly<PermissionsBitField>}
+     * @type {Readonly<PermissionsBitField>}
      */
-    this.appPermissions = data.app_permissions ? new PermissionsBitField(data.app_permissions).freeze() : null;
+    this.appPermissions = new PermissionsBitField(data.app_permissions).freeze();
 
     /**
      * The permissions of the member, if one exists, in the channel this interaction was executed in
@@ -107,6 +106,21 @@ class BaseInteraction extends Base {
       (coll, entitlement) => coll.set(entitlement.id, this.client.application.entitlements._add(entitlement)),
       new Collection(),
     );
+
+    /* eslint-disable max-len */
+    /**
+     * Mapping of installation contexts that the interaction was authorized for the related user or guild ids
+     * @type {APIAuthorizingIntegrationOwnersMap}
+     * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-authorizing-integration-owners-object}
+     */
+    this.authorizingIntegrationOwners = data.authorizing_integration_owners;
+    /* eslint-enable max-len */
+
+    /**
+     * Context where the interaction was triggered from
+     * @type {?InteractionContextType}
+     */
+    this.context = data.context ?? null;
   }
 
   /**
@@ -154,7 +168,7 @@ class BaseInteraction extends Base {
   }
 
   /**
-   * Indicates whether or not this interaction is both cached and received from a guild.
+   * Indicates whether this interaction is received from a cached guild.
    * @returns {boolean}
    */
   inCachedGuild() {
@@ -245,15 +259,6 @@ class BaseInteraction extends Base {
   }
 
   /**
-   * Indicates whether this interaction is a {@link StringSelectMenuInteraction}.
-   * @returns {boolean}
-   * @deprecated Use {@link BaseInteraction#isStringSelectMenu} instead.
-   */
-  isSelectMenu() {
-    return this.isStringSelectMenu();
-  }
-
-  /**
    * Indicates whether this interaction is a select menu of any known type.
    * @returns {boolean}
    */
@@ -309,10 +314,5 @@ class BaseInteraction extends Base {
     return ![InteractionType.Ping, InteractionType.ApplicationCommandAutocomplete].includes(this.type);
   }
 }
-
-BaseInteraction.prototype.isSelectMenu = deprecate(
-  BaseInteraction.prototype.isSelectMenu,
-  'BaseInteraction#isSelectMenu() is deprecated. Use BaseInteraction#isStringSelectMenu() instead.',
-);
 
 module.exports = BaseInteraction;

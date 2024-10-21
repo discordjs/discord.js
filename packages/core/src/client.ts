@@ -89,87 +89,83 @@ export interface IntrinsicProps {
 	shardId: number;
 }
 
-export interface WithIntrinsicProps<Data> extends IntrinsicProps {
+export interface ToEventProps<Data> extends IntrinsicProps {
 	data: Data;
 }
 
 export interface MappedEvents {
 	[GatewayDispatchEvents.ApplicationCommandPermissionsUpdate]: [
-		WithIntrinsicProps<GatewayApplicationCommandPermissionsUpdateDispatchData>,
+		ToEventProps<GatewayApplicationCommandPermissionsUpdateDispatchData>,
 	];
 	[GatewayDispatchEvents.AutoModerationActionExecution]: [
-		WithIntrinsicProps<GatewayAutoModerationActionExecutionDispatchData>,
+		ToEventProps<GatewayAutoModerationActionExecutionDispatchData>,
 	];
-	[GatewayDispatchEvents.AutoModerationRuleCreate]: [WithIntrinsicProps<GatewayAutoModerationRuleCreateDispatchData>];
-	[GatewayDispatchEvents.AutoModerationRuleDelete]: [WithIntrinsicProps<GatewayAutoModerationRuleDeleteDispatchData>];
-	[GatewayDispatchEvents.AutoModerationRuleUpdate]: [WithIntrinsicProps<GatewayAutoModerationRuleUpdateDispatchData>];
-	[GatewayDispatchEvents.ChannelCreate]: [WithIntrinsicProps<GatewayChannelCreateDispatchData>];
-	[GatewayDispatchEvents.ChannelDelete]: [WithIntrinsicProps<GatewayChannelDeleteDispatchData>];
-	[GatewayDispatchEvents.ChannelPinsUpdate]: [WithIntrinsicProps<GatewayChannelPinsUpdateDispatchData>];
-	[GatewayDispatchEvents.ChannelUpdate]: [WithIntrinsicProps<GatewayChannelUpdateDispatchData>];
-	[GatewayDispatchEvents.EntitlementCreate]: [WithIntrinsicProps<GatewayEntitlementCreateDispatchData>];
-	[GatewayDispatchEvents.EntitlementDelete]: [WithIntrinsicProps<GatewayEntitlementDeleteDispatchData>];
-	[GatewayDispatchEvents.EntitlementUpdate]: [WithIntrinsicProps<GatewayEntitlementUpdateDispatchData>];
-	[GatewayDispatchEvents.GuildAuditLogEntryCreate]: [WithIntrinsicProps<GatewayGuildAuditLogEntryCreateDispatchData>];
-	[GatewayDispatchEvents.GuildBanAdd]: [WithIntrinsicProps<GatewayGuildBanAddDispatchData>];
-	[GatewayDispatchEvents.GuildBanRemove]: [WithIntrinsicProps<GatewayGuildBanRemoveDispatchData>];
-	[GatewayDispatchEvents.GuildCreate]: [WithIntrinsicProps<GatewayGuildCreateDispatchData>];
-	[GatewayDispatchEvents.GuildDelete]: [WithIntrinsicProps<GatewayGuildDeleteDispatchData>];
-	[GatewayDispatchEvents.GuildEmojisUpdate]: [WithIntrinsicProps<GatewayGuildEmojisUpdateDispatchData>];
-	[GatewayDispatchEvents.GuildIntegrationsUpdate]: [WithIntrinsicProps<GatewayGuildIntegrationsUpdateDispatchData>];
-	[GatewayDispatchEvents.GuildMemberAdd]: [WithIntrinsicProps<GatewayGuildMemberAddDispatchData>];
-	[GatewayDispatchEvents.GuildMemberRemove]: [WithIntrinsicProps<GatewayGuildMemberRemoveDispatchData>];
-	[GatewayDispatchEvents.GuildMemberUpdate]: [WithIntrinsicProps<GatewayGuildMemberUpdateDispatchData>];
-	[GatewayDispatchEvents.GuildMembersChunk]: [WithIntrinsicProps<GatewayGuildMembersChunkDispatchData>];
-	[GatewayDispatchEvents.GuildRoleCreate]: [WithIntrinsicProps<GatewayGuildRoleCreateDispatchData>];
-	[GatewayDispatchEvents.GuildRoleDelete]: [WithIntrinsicProps<GatewayGuildRoleDeleteDispatchData>];
-	[GatewayDispatchEvents.GuildRoleUpdate]: [WithIntrinsicProps<GatewayGuildRoleUpdateDispatchData>];
-	[GatewayDispatchEvents.GuildScheduledEventCreate]: [WithIntrinsicProps<GatewayGuildScheduledEventCreateDispatchData>];
-	[GatewayDispatchEvents.GuildScheduledEventDelete]: [WithIntrinsicProps<GatewayGuildScheduledEventDeleteDispatchData>];
-	[GatewayDispatchEvents.GuildScheduledEventUpdate]: [WithIntrinsicProps<GatewayGuildScheduledEventUpdateDispatchData>];
-	[GatewayDispatchEvents.GuildScheduledEventUserAdd]: [
-		WithIntrinsicProps<GatewayGuildScheduledEventUserAddDispatchData>,
-	];
+	[GatewayDispatchEvents.AutoModerationRuleCreate]: [ToEventProps<GatewayAutoModerationRuleCreateDispatchData>];
+	[GatewayDispatchEvents.AutoModerationRuleDelete]: [ToEventProps<GatewayAutoModerationRuleDeleteDispatchData>];
+	[GatewayDispatchEvents.AutoModerationRuleUpdate]: [ToEventProps<GatewayAutoModerationRuleUpdateDispatchData>];
+	[GatewayDispatchEvents.ChannelCreate]: [ToEventProps<GatewayChannelCreateDispatchData>];
+	[GatewayDispatchEvents.ChannelDelete]: [ToEventProps<GatewayChannelDeleteDispatchData>];
+	[GatewayDispatchEvents.ChannelPinsUpdate]: [ToEventProps<GatewayChannelPinsUpdateDispatchData>];
+	[GatewayDispatchEvents.ChannelUpdate]: [ToEventProps<GatewayChannelUpdateDispatchData>];
+	[GatewayDispatchEvents.EntitlementCreate]: [ToEventProps<GatewayEntitlementCreateDispatchData>];
+	[GatewayDispatchEvents.EntitlementDelete]: [ToEventProps<GatewayEntitlementDeleteDispatchData>];
+	[GatewayDispatchEvents.EntitlementUpdate]: [ToEventProps<GatewayEntitlementUpdateDispatchData>];
+	[GatewayDispatchEvents.GuildAuditLogEntryCreate]: [ToEventProps<GatewayGuildAuditLogEntryCreateDispatchData>];
+	[GatewayDispatchEvents.GuildBanAdd]: [ToEventProps<GatewayGuildBanAddDispatchData>];
+	[GatewayDispatchEvents.GuildBanRemove]: [ToEventProps<GatewayGuildBanRemoveDispatchData>];
+	[GatewayDispatchEvents.GuildCreate]: [ToEventProps<GatewayGuildCreateDispatchData>];
+	[GatewayDispatchEvents.GuildDelete]: [ToEventProps<GatewayGuildDeleteDispatchData>];
+	[GatewayDispatchEvents.GuildEmojisUpdate]: [ToEventProps<GatewayGuildEmojisUpdateDispatchData>];
+	[GatewayDispatchEvents.GuildIntegrationsUpdate]: [ToEventProps<GatewayGuildIntegrationsUpdateDispatchData>];
+	[GatewayDispatchEvents.GuildMemberAdd]: [ToEventProps<GatewayGuildMemberAddDispatchData>];
+	[GatewayDispatchEvents.GuildMemberRemove]: [ToEventProps<GatewayGuildMemberRemoveDispatchData>];
+	[GatewayDispatchEvents.GuildMemberUpdate]: [ToEventProps<GatewayGuildMemberUpdateDispatchData>];
+	[GatewayDispatchEvents.GuildMembersChunk]: [ToEventProps<GatewayGuildMembersChunkDispatchData>];
+	[GatewayDispatchEvents.GuildRoleCreate]: [ToEventProps<GatewayGuildRoleCreateDispatchData>];
+	[GatewayDispatchEvents.GuildRoleDelete]: [ToEventProps<GatewayGuildRoleDeleteDispatchData>];
+	[GatewayDispatchEvents.GuildRoleUpdate]: [ToEventProps<GatewayGuildRoleUpdateDispatchData>];
+	[GatewayDispatchEvents.GuildScheduledEventCreate]: [ToEventProps<GatewayGuildScheduledEventCreateDispatchData>];
+	[GatewayDispatchEvents.GuildScheduledEventDelete]: [ToEventProps<GatewayGuildScheduledEventDeleteDispatchData>];
+	[GatewayDispatchEvents.GuildScheduledEventUpdate]: [ToEventProps<GatewayGuildScheduledEventUpdateDispatchData>];
+	[GatewayDispatchEvents.GuildScheduledEventUserAdd]: [ToEventProps<GatewayGuildScheduledEventUserAddDispatchData>];
 	[GatewayDispatchEvents.GuildScheduledEventUserRemove]: [
-		WithIntrinsicProps<GatewayGuildScheduledEventUserRemoveDispatchData>,
+		ToEventProps<GatewayGuildScheduledEventUserRemoveDispatchData>,
 	];
-	[GatewayDispatchEvents.GuildStickersUpdate]: [WithIntrinsicProps<GatewayGuildStickersUpdateDispatchData>];
-	[GatewayDispatchEvents.GuildUpdate]: [WithIntrinsicProps<GatewayGuildUpdateDispatchData>];
-	[GatewayDispatchEvents.IntegrationCreate]: [WithIntrinsicProps<GatewayIntegrationCreateDispatchData>];
-	[GatewayDispatchEvents.IntegrationDelete]: [WithIntrinsicProps<GatewayIntegrationDeleteDispatchData>];
-	[GatewayDispatchEvents.IntegrationUpdate]: [WithIntrinsicProps<GatewayIntegrationUpdateDispatchData>];
-	[GatewayDispatchEvents.InteractionCreate]: [WithIntrinsicProps<GatewayInteractionCreateDispatchData>];
-	[GatewayDispatchEvents.InviteCreate]: [WithIntrinsicProps<GatewayInviteCreateDispatchData>];
-	[GatewayDispatchEvents.InviteDelete]: [WithIntrinsicProps<GatewayInviteDeleteDispatchData>];
-	[GatewayDispatchEvents.MessageCreate]: [WithIntrinsicProps<GatewayMessageCreateDispatchData>];
-	[GatewayDispatchEvents.MessageDelete]: [WithIntrinsicProps<GatewayMessageDeleteDispatchData>];
-	[GatewayDispatchEvents.MessageDeleteBulk]: [WithIntrinsicProps<GatewayMessageDeleteBulkDispatchData>];
-	[GatewayDispatchEvents.MessagePollVoteAdd]: [WithIntrinsicProps<GatewayMessagePollVoteDispatchData>];
-	[GatewayDispatchEvents.MessagePollVoteRemove]: [WithIntrinsicProps<GatewayMessagePollVoteDispatchData>];
-	[GatewayDispatchEvents.MessageReactionAdd]: [WithIntrinsicProps<GatewayMessageReactionAddDispatchData>];
-	[GatewayDispatchEvents.MessageReactionRemove]: [WithIntrinsicProps<GatewayMessageReactionRemoveDispatchData>];
-	[GatewayDispatchEvents.MessageReactionRemoveAll]: [WithIntrinsicProps<GatewayMessageReactionRemoveAllDispatchData>];
-	[GatewayDispatchEvents.MessageReactionRemoveEmoji]: [
-		WithIntrinsicProps<GatewayMessageReactionRemoveEmojiDispatchData>,
-	];
-	[GatewayDispatchEvents.MessageUpdate]: [WithIntrinsicProps<GatewayMessageUpdateDispatchData>];
-	[GatewayDispatchEvents.PresenceUpdate]: [WithIntrinsicProps<GatewayPresenceUpdateDispatchData>];
-	[GatewayDispatchEvents.Ready]: [WithIntrinsicProps<GatewayReadyDispatchData>];
-	[GatewayDispatchEvents.Resumed]: [WithIntrinsicProps<never>];
-	[GatewayDispatchEvents.StageInstanceCreate]: [WithIntrinsicProps<GatewayStageInstanceCreateDispatchData>];
-	[GatewayDispatchEvents.StageInstanceDelete]: [WithIntrinsicProps<GatewayStageInstanceDeleteDispatchData>];
-	[GatewayDispatchEvents.StageInstanceUpdate]: [WithIntrinsicProps<GatewayStageInstanceUpdateDispatchData>];
-	[GatewayDispatchEvents.ThreadCreate]: [WithIntrinsicProps<GatewayThreadCreateDispatchData>];
-	[GatewayDispatchEvents.ThreadDelete]: [WithIntrinsicProps<GatewayThreadDeleteDispatchData>];
-	[GatewayDispatchEvents.ThreadListSync]: [WithIntrinsicProps<GatewayThreadListSyncDispatchData>];
-	[GatewayDispatchEvents.ThreadMemberUpdate]: [WithIntrinsicProps<GatewayThreadMemberUpdateDispatchData>];
-	[GatewayDispatchEvents.ThreadMembersUpdate]: [WithIntrinsicProps<GatewayThreadMembersUpdateDispatchData>];
-	[GatewayDispatchEvents.ThreadUpdate]: [WithIntrinsicProps<GatewayThreadUpdateDispatchData>];
-	[GatewayDispatchEvents.TypingStart]: [WithIntrinsicProps<GatewayTypingStartDispatchData>];
-	[GatewayDispatchEvents.UserUpdate]: [WithIntrinsicProps<GatewayUserUpdateDispatchData>];
-	[GatewayDispatchEvents.VoiceServerUpdate]: [WithIntrinsicProps<GatewayVoiceServerUpdateDispatchData>];
-	[GatewayDispatchEvents.VoiceStateUpdate]: [WithIntrinsicProps<GatewayVoiceStateUpdateDispatchData>];
-	[GatewayDispatchEvents.WebhooksUpdate]: [WithIntrinsicProps<GatewayWebhooksUpdateDispatchData>];
+	[GatewayDispatchEvents.GuildStickersUpdate]: [ToEventProps<GatewayGuildStickersUpdateDispatchData>];
+	[GatewayDispatchEvents.GuildUpdate]: [ToEventProps<GatewayGuildUpdateDispatchData>];
+	[GatewayDispatchEvents.IntegrationCreate]: [ToEventProps<GatewayIntegrationCreateDispatchData>];
+	[GatewayDispatchEvents.IntegrationDelete]: [ToEventProps<GatewayIntegrationDeleteDispatchData>];
+	[GatewayDispatchEvents.IntegrationUpdate]: [ToEventProps<GatewayIntegrationUpdateDispatchData>];
+	[GatewayDispatchEvents.InteractionCreate]: [ToEventProps<GatewayInteractionCreateDispatchData>];
+	[GatewayDispatchEvents.InviteCreate]: [ToEventProps<GatewayInviteCreateDispatchData>];
+	[GatewayDispatchEvents.InviteDelete]: [ToEventProps<GatewayInviteDeleteDispatchData>];
+	[GatewayDispatchEvents.MessageCreate]: [ToEventProps<GatewayMessageCreateDispatchData>];
+	[GatewayDispatchEvents.MessageDelete]: [ToEventProps<GatewayMessageDeleteDispatchData>];
+	[GatewayDispatchEvents.MessageDeleteBulk]: [ToEventProps<GatewayMessageDeleteBulkDispatchData>];
+	[GatewayDispatchEvents.MessagePollVoteAdd]: [ToEventProps<GatewayMessagePollVoteDispatchData>];
+	[GatewayDispatchEvents.MessagePollVoteRemove]: [ToEventProps<GatewayMessagePollVoteDispatchData>];
+	[GatewayDispatchEvents.MessageReactionAdd]: [ToEventProps<GatewayMessageReactionAddDispatchData>];
+	[GatewayDispatchEvents.MessageReactionRemove]: [ToEventProps<GatewayMessageReactionRemoveDispatchData>];
+	[GatewayDispatchEvents.MessageReactionRemoveAll]: [ToEventProps<GatewayMessageReactionRemoveAllDispatchData>];
+	[GatewayDispatchEvents.MessageReactionRemoveEmoji]: [ToEventProps<GatewayMessageReactionRemoveEmojiDispatchData>];
+	[GatewayDispatchEvents.MessageUpdate]: [ToEventProps<GatewayMessageUpdateDispatchData>];
+	[GatewayDispatchEvents.PresenceUpdate]: [ToEventProps<GatewayPresenceUpdateDispatchData>];
+	[GatewayDispatchEvents.Ready]: [ToEventProps<GatewayReadyDispatchData>];
+	[GatewayDispatchEvents.Resumed]: [ToEventProps<never>];
+	[GatewayDispatchEvents.StageInstanceCreate]: [ToEventProps<GatewayStageInstanceCreateDispatchData>];
+	[GatewayDispatchEvents.StageInstanceDelete]: [ToEventProps<GatewayStageInstanceDeleteDispatchData>];
+	[GatewayDispatchEvents.StageInstanceUpdate]: [ToEventProps<GatewayStageInstanceUpdateDispatchData>];
+	[GatewayDispatchEvents.ThreadCreate]: [ToEventProps<GatewayThreadCreateDispatchData>];
+	[GatewayDispatchEvents.ThreadDelete]: [ToEventProps<GatewayThreadDeleteDispatchData>];
+	[GatewayDispatchEvents.ThreadListSync]: [ToEventProps<GatewayThreadListSyncDispatchData>];
+	[GatewayDispatchEvents.ThreadMemberUpdate]: [ToEventProps<GatewayThreadMemberUpdateDispatchData>];
+	[GatewayDispatchEvents.ThreadMembersUpdate]: [ToEventProps<GatewayThreadMembersUpdateDispatchData>];
+	[GatewayDispatchEvents.ThreadUpdate]: [ToEventProps<GatewayThreadUpdateDispatchData>];
+	[GatewayDispatchEvents.TypingStart]: [ToEventProps<GatewayTypingStartDispatchData>];
+	[GatewayDispatchEvents.UserUpdate]: [ToEventProps<GatewayUserUpdateDispatchData>];
+	[GatewayDispatchEvents.VoiceServerUpdate]: [ToEventProps<GatewayVoiceServerUpdateDispatchData>];
+	[GatewayDispatchEvents.VoiceStateUpdate]: [ToEventProps<GatewayVoiceStateUpdateDispatchData>];
+	[GatewayDispatchEvents.WebhooksUpdate]: [ToEventProps<GatewayWebhooksUpdateDispatchData>];
 }
 
 export interface ManagerShardEventsMap extends MappedEvents {}
@@ -199,12 +195,8 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 		this.gateway = gateway;
 		this.api = new API(rest);
 
-		this.gateway.on(WebSocketShardEvents.Dispatch, ({ data: dispatch, shardId }) => {
-			this.emit(
-				dispatch.t,
-				// @ts-expect-error event props can't be resolved properly, but they are correct
-				this.wrapIntrinsicProps(dispatch.d, shardId),
-			);
+		this.gateway.on(WebSocketShardEvents.Dispatch, (dispatch, shardId) => {
+			this.emit(dispatch.t, this.toEventProps(dispatch.d, shardId));
 		});
 	}
 
@@ -245,11 +237,9 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 		});
 
 		try {
-			const iterator = AsyncEventEmitter.on<
-				typeof this,
-				ManagerShardEventsMap,
-				GatewayDispatchEvents.GuildMembersChunk
-			>(this, GatewayDispatchEvents.GuildMembersChunk, { signal: controller.signal });
+			const iterator = AsyncEventEmitter.on(this, GatewayDispatchEvents.GuildMembersChunk, {
+				signal: controller.signal,
+			});
 
 			for await (const [{ data }] of iterator) {
 				if (data.nonce !== nonce) continue;
@@ -342,7 +332,7 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 		});
 	}
 
-	private wrapIntrinsicProps<ObjectType>(obj: ObjectType, shardId: number): WithIntrinsicProps<ObjectType> {
+	private toEventProps<ObjectType>(obj: ObjectType, shardId: number): ToEventProps<ObjectType> {
 		return {
 			api: this.api,
 			shardId,

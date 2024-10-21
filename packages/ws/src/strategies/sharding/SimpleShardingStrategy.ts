@@ -27,9 +27,10 @@ export class SimpleShardingStrategy implements IShardingStrategy {
 		for (const shardId of shardIds) {
 			const strategy = new SimpleContextFetchingStrategy(this.manager, strategyOptions);
 			const shard = new WebSocketShard(strategy, shardId);
+
 			for (const event of Object.values(WebSocketShardEvents)) {
-				// @ts-expect-error: Intentional
-				shard.on(event, (payload) => this.manager.emit(event, { ...payload, shardId }));
+				// @ts-expect-error Ugly casts are needed because when we try to collect all args, TS doesn't handle that nicely due to the strictness + lack of context
+				shard.on(event, (...args) => this.manager.emit(event, ...args, shardId));
 			}
 
 			this.shards.set(shardId, shard);

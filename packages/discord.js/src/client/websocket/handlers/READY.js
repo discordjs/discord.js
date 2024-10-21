@@ -3,7 +3,7 @@
 const ClientApplication = require('../../../structures/ClientApplication');
 let ClientUser;
 
-module.exports = (client, { d: data }, shard) => {
+module.exports = (client, { d: data }, shardId) => {
   if (client.user) {
     client.user._patch(data.user);
   } else {
@@ -13,7 +13,7 @@ module.exports = (client, { d: data }, shard) => {
   }
 
   for (const guild of data.guilds) {
-    guild.shardId = shard.id;
+    guild.shardId = shardId;
     client.guilds._add(guild);
   }
 
@@ -22,6 +22,4 @@ module.exports = (client, { d: data }, shard) => {
   } else {
     client.application = new ClientApplication(client, data.application);
   }
-
-  shard.checkReady();
 };
