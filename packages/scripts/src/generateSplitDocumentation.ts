@@ -514,6 +514,7 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 
 function itemInfo(item: ApiDeclaredItem) {
 	const sourceExcerpt = item.excerpt.text.trim();
+	const { sourceURL, sourceLine } = resolveFileUrl(item);
 
 	const isStatic = ApiStaticMixin.isBaseClassOf(item) && item.isStatic;
 	const isProtected = ApiProtectedMixin.isBaseClassOf(item) && item.isProtected;
@@ -521,14 +522,15 @@ function itemInfo(item: ApiDeclaredItem) {
 	const isAbstract = ApiAbstractMixin.isBaseClassOf(item) && item.isAbstract;
 	const isOptional = ApiOptionalMixin.isBaseClassOf(item) && item.isOptional;
 	const isDeprecated = Boolean(item.tsdocComment?.deprecatedBlock);
+	const isExternal = Boolean(item.sourceLocation.fileUrl?.includes('node_modules'));
 
 	const hasSummary = Boolean(item.tsdocComment?.summarySection);
 
 	return {
 		kind: item.kind,
 		displayName: item.displayName,
-		sourceURL: item.sourceLocation.fileUrl,
-		sourceLine: item.sourceLocation.fileLine,
+		sourceURL,
+		sourceLine,
 		sourceExcerpt,
 		summary: hasSummary ? itemTsDoc(item.tsdocComment!, item) : null,
 		isStatic,
@@ -537,6 +539,59 @@ function itemInfo(item: ApiDeclaredItem) {
 		isAbstract,
 		isDeprecated,
 		isOptional,
+		isExternal,
+	};
+}
+
+function resolveFileUrl(item: ApiDeclaredItem) {
+	const {
+		displayName,
+		kind,
+		sourceLocation: { fileUrl, fileLine },
+	} = item;
+	if (fileUrl?.includes('/node_modules/')) {
+		const [, pkg] = fileUrl.split('/node_modules/');
+		const parts = pkg?.split('/')[1]?.split('@');
+		const unscoped = parts?.[0]?.length;
+		if (!unscoped) parts?.shift();
+		const pkgName = parts?.shift();
+		const version = parts?.shift()?.split('_')?.[0];
+
+		// https://github.com/discordjs/discord.js/tree/main/node_modules/.pnpm/@discordjs+builders@1.9.0/node_modules/@discordjs/builders/dist/index.d.ts#L1764
+		// https://github.com/discordjs/discord.js/tree/main/node_modules/.pnpm/@discordjs+ws@1.1.1_bufferutil@4.0.8_utf-8-validate@6.0.4/node_modules/@discordjs/ws/dist/index.d.ts#L...
+		if (!unscoped && pkgName?.startsWith('discordjs+')) {
+			let currentItem = item;
+			while (currentItem.parent && currentItem.parent.kind !== ApiItemKind.EntryPoint)
+				currentItem = currentItem.parent as ApiDeclaredItem;
+
+			return {
+				sourceURL: `/docs/packages/${pkgName.replace('discordjs+', '')}/${version}/${currentItem.displayName}:${currentItem.kind}`,
+			};
+		}
+
+		// https://github.com/discordjs/discord.js/tree/main/node_modules/.pnpm/discord-api-types@0.37.97/node_modules/discord-api-types/payloads/v10/gateway.d.ts#L240
+		if (pkgName === 'discord-api-types') {
+			const DISCORD_API_TYPES_VERSION = 'v10';
+			const DISCORD_API_TYPES_DOCS_URL = `https://discord-api-types.dev/api/discord-api-types-${DISCORD_API_TYPES_VERSION}`;
+			let href = DISCORD_API_TYPES_DOCS_URL;
+
+			if (kind === ApiItemKind.EnumMember) {
+				href += `/enum/${item.parent!.displayName}#${displayName}`;
+			} else if (kind === ApiItemKind.TypeAlias || kind === ApiItemKind.Variable) {
+				href += `#${displayName}`;
+			} else {
+				href += `/${kindToMeaning.get(kind)}/${displayName}`;
+			}
+
+			return {
+				sourceURL: href,
+			};
+		}
+	}
+
+	return {
+		sourceURL: fileUrl,
+		sourceLine: fileLine,
 	};
 }
 
