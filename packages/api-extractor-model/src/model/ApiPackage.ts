@@ -41,6 +41,7 @@ const MinifyJSONMapping = {
 	constraintTokenRange: 'ctr',
 	dependencies: 'dp',
 	defaultTypeTokenRange: 'dtr',
+	defaultValue: 'dv',
 	docComment: 'd',
 	endIndex: 'en',
 	excerptTokens: 'ex',
@@ -293,7 +294,11 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 
 		const tsdocConfiguration: TSDocConfiguration = new TSDocConfiguration();
 
-		if (versionToDeserialize >= ApiJsonSchemaVersion.V_1004 && 'tsdocConfig' in jsonObject.metadata) {
+		if (
+			versionToDeserialize >= ApiJsonSchemaVersion.V_1004 &&
+			'tsdocConfig' in jsonObject.metadata &&
+			'$schema' in jsonObject.metadata.tsdocConfig
+		) {
 			const tsdocConfigFile: TSDocConfigFile = TSDocConfigFile.loadFromObject(jsonObject.metadata.tsdocConfig);
 			if (tsdocConfigFile.hasErrors) {
 				throw new Error(`Error loading ${apiJsonFilename}:\n` + tsdocConfigFile.getErrorSummary());
