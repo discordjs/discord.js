@@ -4,7 +4,6 @@ const { deprecate } = require('node:util');
 const { isJSONEncodable } = require('@discordjs/util');
 const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../../errors');
-const MessageFlagsBitField = require('../../util/MessageFlagsBitField');
 const InteractionCollector = require('../InteractionCollector');
 const InteractionResponse = require('../InteractionResponse');
 const MessagePayload = require('../MessagePayload');
@@ -24,7 +23,10 @@ class InteractionResponses {
   /**
    * Options for deferring the reply to an {@link BaseInteraction}.
    * @typedef {Object} InteractionDeferReplyOptions
-   * @property {boolean} [ephemeral] Whether the reply should be ephemeral
+   * @property {boolean} [ephemeral] Whether the reply should be ephemeral.
+   * <warn>This option is deprecated. Use `flags` instead.</warn>
+   * @property {MessageFlagsResolvable} [flags] Flags for the reply.
+   * <info>Only `MessageFlags.Ephemeral` can be set.</info>
    * @property {boolean} [fetchReply] Whether to fetch the reply
    */
 
@@ -37,10 +39,11 @@ class InteractionResponses {
   /**
    * Options for a reply to a {@link BaseInteraction}.
    * @typedef {BaseMessageOptionsWithPoll} InteractionReplyOptions
+   * @property {boolean} [ephemeral] Whether the reply should be ephemeral.
+   * <warn>This option is deprecated. Use `flags` instead.</warn>
    * @property {boolean} [tts=false] Whether the message should be spoken aloud
-   * @property {boolean} [ephemeral] Whether the reply should be ephemeral
    * @property {boolean} [fetchReply] Whether to fetch the reply
-   * @property {MessageFlags} [flags] Which flags to set for the message.
+   * @property {MessageFlagsResolvable} [flags] Which flags to set for the message.
    * <info>Only `MessageFlags.Ephemeral`, `MessageFlags.SuppressEmbeds`, and `MessageFlags.SuppressNotifications`
    * can be set.</info>
    */
@@ -62,24 +65,30 @@ class InteractionResponses {
    *   .catch(console.error)
    * @example
    * // Defer to send an ephemeral reply later
-   * interaction.deferReply({ ephemeral: true })
+   * interaction.deferReply({ flags: MessageFlags.Ephemeral })
    *   .then(console.log)
    *   .catch(console.error);
    */
   async deferReply(options = {}) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
-    this.ephemeral = options.ephemeral ?? false;
+    let { flags } = options;
+
+    if (options.ephemeral) {
+      flags |= MessageFlags.Ephemeral;
+    }
+
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
         type: InteractionResponseType.DeferredChannelMessageWithSource,
         data: {
-          flags: options.ephemeral ? MessageFlags.Ephemeral : undefined,
+          flags,
         },
       },
       auth: false,
     });
-    this.deferred = true;
 
+    this.deferred = true;
+    this.ephemeral = Boolean(flags & MessageFlags.Ephemeral);
     return options.fetchReply ? this.fetchReply() : new InteractionResponse(this);
   }
 
@@ -97,7 +106,7 @@ class InteractionResponses {
    * // Create an ephemeral reply with an embed
    * const embed = new EmbedBuilder().setDescription('Pong!');
    *
-   * interaction.reply({ embeds: [embed], ephemeral: true })
+   * interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral })
    *   .then(() => console.log('Reply sent.'))
    *   .catch(console.error);
    */
@@ -110,8 +119,6 @@ class InteractionResponses {
 
     const { body: data, files } = await messagePayload.resolveBody().resolveFiles();
 
-    this.ephemeral = new MessageFlagsBitField(data.flags).has(MessageFlags.Ephemeral);
-
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
         type: InteractionResponseType.ChannelMessageWithSource,
@@ -120,8 +127,9 @@ class InteractionResponses {
       files,
       auth: false,
     });
-    this.replied = true;
 
+    this.ephemeral = Boolean(data.flags & MessageFlags.Ephemeral);
+    this.replied = true;
     return options.fetchReply ? this.fetchReply() : new InteractionResponse(this);
   }
 
