@@ -14,6 +14,7 @@ const Partials = require('../util/Partials');
 const { flatten } = require('../util/Util');
 
 const Targets = {
+  /** @deprecated this was never used or a possible value to begin with */
   All: 'All',
   Guild: 'Guild',
   GuildScheduledEvent: 'GuildScheduledEvent',
@@ -501,6 +502,15 @@ class GuildAuditLogsEntry {
    */
   get createdAt() {
     return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * Checks whether this GuildAuditLogsEntry is of the specified {@link AuditLogEvent} type.
+   * @param {AuditLogEvent} action The type to check for
+   * @returns {boolean}
+   */
+  isAction(action) {
+    return this.action === action;
   }
 
   toJSON() {
