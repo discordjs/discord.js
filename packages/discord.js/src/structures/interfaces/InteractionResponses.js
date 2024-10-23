@@ -1,5 +1,6 @@
 'use strict';
 
+const process = require('node:process');
 const { deprecate } = require('node:util');
 const { isJSONEncodable } = require('@discordjs/util');
 const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
@@ -7,6 +8,8 @@ const { DiscordjsError, ErrorCodes } = require('../../errors');
 const InteractionCollector = require('../InteractionCollector');
 const InteractionResponse = require('../InteractionResponse');
 const MessagePayload = require('../MessagePayload');
+
+let deprecationEmittedForEphemeralOption = false;
 
 /**
  * @typedef {Object} ModalComponentData
@@ -71,6 +74,17 @@ class InteractionResponses {
    */
   async deferReply(options = {}) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
+
+    if ('ephemeral' in options) {
+      if (!deprecationEmittedForEphemeralOption) {
+        process.emitWarning(
+          `Supplying "ephemeral" for interaction response options is deprecated. Utilize flags instead.`,
+        );
+
+        deprecationEmittedForEphemeralOption = true;
+      }
+    }
+
     let { flags } = options;
 
     if (options.ephemeral) {
@@ -112,6 +126,16 @@ class InteractionResponses {
    */
   async reply(options) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
+
+    if ('ephemeral' in options) {
+      if (!deprecationEmittedForEphemeralOption) {
+        process.emitWarning(
+          `Supplying "ephemeral" for interaction response options is deprecated. Utilize flags instead.`,
+        );
+
+        deprecationEmittedForEphemeralOption = true;
+      }
+    }
 
     let messagePayload;
     if (options instanceof MessagePayload) messagePayload = options;
