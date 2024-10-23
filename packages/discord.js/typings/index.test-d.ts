@@ -33,6 +33,7 @@ import {
   APIMentionableSelectComponent,
   APIModalInteractionResponseCallbackData,
   WebhookType,
+  RESTAPIPoll,
 } from 'discord-api-types/v10';
 import {
   ApplicationCommand,
@@ -208,6 +209,7 @@ import {
   GuildScheduledEventManager,
   SendableChannels,
   PollData,
+  PollBuilder,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -2574,6 +2576,20 @@ declare const pollData: PollData;
     messageId: snowflake,
     answerId: 1,
   });
+
+  await textChannel.send({ poll: new PollBuilder(poll) });
+
+  // @ts-expect-error Incompatible parameter
+  PollBuilder.from(poll);
+
+  // @ts-expect-error Invalid emoji
+  new PollBuilder().addAnswers({ text: '.', emoji: 1 });
+
+  new PollBuilder().addAnswers({ text: '.', emoji: guild.emojis.cache.get('874989932983238726')! });
+
+  new PollBuilder().addAnswers({ text: '.', emoji: '874989932983238726' });
+
+  expectType<RESTAPIPoll>(PollBuilder.from(new PollBuilder()).toJSON());
 
   await message.edit({
     // @ts-expect-error

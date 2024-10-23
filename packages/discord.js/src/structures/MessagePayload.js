@@ -194,17 +194,19 @@ class MessagePayload {
 
     let poll;
     if (this.options.poll) {
-      poll = {
-        question: {
-          text: this.options.poll.question.text,
-        },
-        answers: this.options.poll.answers.map(answer => ({
-          poll_media: { text: answer.text, emoji: resolvePartialEmoji(answer.emoji) },
-        })),
-        duration: this.options.poll.duration,
-        allow_multiselect: this.options.poll.allowMultiselect,
-        layout_type: this.options.poll.layoutType,
-      };
+      poll = isJSONEncodable(this.options.poll)
+        ? this.options.poll.toJSON()
+        : {
+            question: {
+              text: this.options.poll.question.text,
+            },
+            answers: this.options.poll.answers.map(answer => ({
+              poll_media: { text: answer.text, emoji: resolvePartialEmoji(answer.emoji) },
+            })),
+            duration: this.options.poll.duration,
+            allow_multiselect: this.options.poll.allowMultiselect,
+            layout_type: this.options.poll.layoutType,
+          };
     }
 
     this.body = {
