@@ -2389,8 +2389,10 @@ export type MessageFlagsString = keyof typeof MessageFlags;
 
 export class MessageFlagsBitField extends BitField<MessageFlagsString> {
   public static Flags: typeof MessageFlags;
-  public static resolve(bit?: BitFieldResolvable<MessageFlagsString, number>): number;
+  public static resolve(bit?: MessageFlagsResolvable): number;
 }
+
+export type MessageFlagsResolvable = BitFieldResolvable<MessageFlagsString, number>;
 
 export class MessageMentions<InGuild extends boolean = boolean> {
   private constructor(
