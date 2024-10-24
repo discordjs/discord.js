@@ -6366,7 +6366,7 @@ export interface InteractionDeferUpdateOptions {
 }
 
 export interface InteractionReplyOptions extends BaseMessageOptionsWithPoll {
-  /** @deprecated Use {@link InteractionDeferReplyOptions.flags} instead. */
+  /** @deprecated Use {@link InteractionReplyOptions.flags} instead. */
   ephemeral?: boolean;
   tts?: boolean;
   fetchReply?: boolean;
