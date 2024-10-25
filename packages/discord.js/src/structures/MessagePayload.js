@@ -92,6 +92,7 @@ class MessagePayload {
    * Whether or not the target is an {@link BaseInteraction} or an {@link InteractionWebhook}
    * @type {boolean}
    * @readonly
+   * @deprecated This will no longer serve a purpose in the next major version.
    */
   get isInteraction() {
     const BaseInteraction = getBaseInteraction();

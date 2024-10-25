@@ -2389,8 +2389,10 @@ export type MessageFlagsString = keyof typeof MessageFlags;
 
 export class MessageFlagsBitField extends BitField<MessageFlagsString> {
   public static Flags: typeof MessageFlags;
-  public static resolve(bit?: BitFieldResolvable<MessageFlagsString, number>): number;
+  public static resolve(bit?: MessageFlagsResolvable): number;
 }
+
+export type MessageFlagsResolvable = BitFieldResolvable<MessageFlagsString, number>;
 
 export class MessageMentions<InGuild extends boolean = boolean> {
   private constructor(
@@ -2441,6 +2443,7 @@ export class MessagePayload {
   public get isWebhook(): boolean;
   public get isMessage(): boolean;
   public get isMessageManager(): boolean;
+  /** @deprecated This will no longer serve a purpose in the next major version. */
   public get isInteraction(): boolean;
   public files: RawFile[] | null;
   public options: MessagePayloadOption;
@@ -6351,15 +6354,23 @@ export interface InteractionCollectorOptions<
 }
 
 export interface InteractionDeferReplyOptions {
+  /** @deprecated Use {@link InteractionDeferReplyOptions.flags} instead. */
   ephemeral?: boolean;
+  flags?: BitFieldResolvable<
+    Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds' | 'SuppressNotifications'>,
+    MessageFlags.Ephemeral | MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
+  >;
   fetchReply?: boolean;
 }
 
-export interface InteractionDeferUpdateOptions extends Omit<InteractionDeferReplyOptions, 'ephemeral'> {}
+export interface InteractionDeferUpdateOptions {
+  fetchReply?: boolean;
+}
 
 export interface InteractionReplyOptions extends BaseMessageOptionsWithPoll {
-  tts?: boolean;
+  /** @deprecated Use {@link InteractionReplyOptions.flags} instead. */
   ephemeral?: boolean;
+  tts?: boolean;
   fetchReply?: boolean;
   flags?: BitFieldResolvable<
     Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds' | 'SuppressNotifications'>,
