@@ -2,6 +2,82 @@
 
 All notable changes to this project will be documented in this file.
 
+# [15.0.0](https://github.com/discordjs/discord.js/compare/14.16.3...15.0.0) - (2024-10-25)
+
+## Bug Fixes
+
+- **GuildScheduledEvent:** Handle null recurrence_rule (#10543) ([1925c11](https://github.com/discordjs/discord.js/commit/1925c11a4869a436a77c7e14bfd7af3a4070c95f)) by @Eejit43
+- **Client:** Never pass token in ws constructor (#10544) ([c36728a](https://github.com/discordjs/discord.js/commit/c36728a8144a7522da950b6436d33aa305281a73)) by @didinele
+- **ThreadMember:** Remove audit log reason parameter (#10023) ([b339a7c](https://github.com/discordjs/discord.js/commit/b339a7cb086f22734a27fefd242d7c786fed1fa4)) by @Renegade334
+- **User:** Remove `fetchFlags()` (#8755) ([05541d8](https://github.com/discordjs/discord.js/commit/05541d8288435cd7d5777c54649dd74db2df488c)) by @MrMythicalYT
+
+## Deprecation
+
+- Remove all deprecated features/props (#10421) ([12e5106](https://github.com/discordjs/discord.js/commit/12e510671b67c11e1a659d344bb3f4c939e2d44c)) by @didinele
+  - **BREAKING CHANGE:** Removed `Client#fetchPremiumStickerPacks` method
+  - **BREAKING CHANGE:** Removed `Client#webhookUpdate` event
+  - **BREAKING CHANGE:** Removed various error codes
+  - **BREAKING CHANGE:** Removed `Formatters` namespace
+  - **BREAKING CHANGE:** Removed `InviteStageInstance` class
+  - **BREAKING CHANGE:** Removed `Invite#stageInstance` property
+  - **BREAKING CHANGE:** Removed `StageInstance#discoverable_disabled` property
+  - **BREAKING CHANGE:** Removed `SelectMenuBuilder` alias
+  - **BREAKING CHANGE:** Removed `SelectMenuComponent` alias
+  - **BREAKING CHANGE:** Removed `SelectMenuInteraction` alias
+  - **BREAKING CHANGE:** Removed `SelectMenuOptionBuilder` alias
+  - **BREAKING CHANGE:** Removed `BaseInteraction#isSelectMenu` alias
+  - **BREAKING CHANGE:** Removed `deleteMessageDays` option from `GuildBanManager#create`
+  - **BREAKING CHANGE:** Removed `ActionRow#from` method
+  - **BREAKING CHANGE:** Removed `Emoji#url` getter
+  - **BREAKING CHANGE:** Removed `TeamMember#permissions` property
+  - **BREAKING CHANGE:** Removed `User#avatarDecoration` property
+  - **BREAKING CHANGE:** Removed `InteractionResponses#sendPremiumRequired` method
+  - **BREAKING CHANGE:** Removed `DeletableMessageTypes` constant
+
+## Documentation
+
+- **Client:** Fix incorrect managers descriptions ([960a80d](https://github.com/discordjs/discord.js/commit/960a80dbaeac1d900e82d86539bab3a1fff9b8cd)) by @almeidx
+- **Client:** Fix incorrect managers descriptions (#10519) ([eded459](https://github.com/discordjs/discord.js/commit/eded459335700cd74fba148847d02ec8288427d4)) by @Wolvinny
+- **discord.js:** Remove `utf-8-validate` (#10531) ([c1b849f](https://github.com/discordjs/discord.js/commit/c1b849fa5a6c7b541c4f1a196bca08aae353e867)) by @SuperchupuDev
+
+## Features
+
+- **website:** Type parameters links, builtin doc links, default values (#10515) ([3540c31](https://github.com/discordjs/discord.js/commit/3540c3176caf41c0ee12ac03fb15d1769f146a1c)) by @Qjuh
+- Add ApplicationEmoji to EmojiResolvable and MessageReaction#emoji (#10477) ([c633d5c](https://github.com/discordjs/discord.js/commit/c633d5c7f69a4c4cff98669c596d64bef7a74900)) by @Moebits
+- Recurring scheduled events (#10447) ([9aa3b63](https://github.com/discordjs/discord.js/commit/9aa3b635ef2ed6d6bb17af2422ef1cf7bbe16ab5)) by @almeidx
+- Message forwarding (#10464) ([e1012cc](https://github.com/discordjs/discord.js/commit/e1012cc54a7b28a99c10d11d5ae899bdc7f6b9e9)) by @TAEMBO
+
+## Refactor
+
+- **InteractionResponses:** Remove `ephemeral` response option (#10564) ([48a9c66](https://github.com/discordjs/discord.js/commit/48a9c665dedf9f5085a7992df3a87de3bca2301a)) by @Jiralite
+  - **BREAKING CHANGE:** MessagePayload#isInteraction no longer serves a purpose and has been removed.
+  - **BREAKING CHANGE:** InteractionDeferReplyOptions no longer accepts ephemeral. Use flags instead.
+  - **BREAKING CHANGE:** InteractionReplyOptions no longer accepts ephemeral. Use flags instead.
+- Fix several issues with /ws incorporation (#10556) ([93b84ae](https://github.com/discordjs/discord.js/commit/93b84ae7a6bf2b5521daa8d38998db3fa1eb8aff)) by @Qjuh
+  - **BREAKING CHANGE:** `Client#ping` is nullable now
+- Exclude removed events from their enum (#10547) ([79423c8](https://github.com/discordjs/discord.js/commit/79423c80b41a4e857e9239889e8cfeb7a7fb90cb)) by @imnaiyar
+  - **BREAKING CHANGE:** Removed the following members from `Events` enum: `Raw`, `ShardResume`, `ShardError`, `ShardReady`, `ShardReconnecting`, `ShardResume`, `ShardDisconnect`
+  - **BREAKING CHANGE:** Removed `Reconnecting` from `ShardEvents` enum
+- **NewsChannel:** Rename NewsChannel to AnnouncementChannel (#10532) ([c8ef899](https://github.com/discordjs/discord.js/commit/c8ef899a68d0746709c15d944e4758393e2b3019)) by @imnaiyar
+  - **BREAKING CHANGE:** The `NewsChannel` class was renamed to `AnnouncementChannel`, in line with the type name change
+- Fully integrate /ws into mainlib (#10420) ([a65c762](https://github.com/discordjs/discord.js/commit/a65c76295065df303f42b90d874630248a91cb2a)) by @Qjuh
+  - **BREAKING CHANGE:** `Client#ws` is now a `@discordjs/ws#WebSocketManager`
+  - **BREAKING CHANGE:** `WebSocketManager` and `WebSocketShard` are now re-exports from `@discordjs/ws`
+  - **BREAKING CHANGE:** Removed the `WebSocketShardEvents` enum
+  - **BREAKING CHANGE:** Renamed the `Client#ready` event to `Client#clientReady` event to not confuse it with the gateway `READY` event
+  - **BREAKING CHANGE:** Added `Client#ping` to replace the old `WebSocketManager#ping`
+  - **BREAKING CHANGE:** Removed the `Shard#reconnecting` event which wasn’t emitted anymore since 14.8.0 anyway
+  - **BREAKING CHANGE:** Removed `ShardClientUtil#ids` and `ShardClientUtil#count` in favor of `Client#ws#getShardIds()` and `Client#ws#getShardCount()`
+  - **BREAKING CHANGE:** `ClientUser#setPresence()` and `ClientPresence#set()` now return a Promise which resolves when the gateway call was sent successfully
+  - **BREAKING CHANGE:** Removed `Guild#shard` as `WebSocketShard`s are now handled by `@discordjs/ws`
+  - **BREAKING CHANGE:** Removed the following deprecated `Client` events: `raw`, `shardDisconnect`, `shardError`, `shardReady`, `shardReconnecting`, `shardResume` in favor of events from `@discordjs/ws#WebSocketManager`
+  - **BREAKING CHANGE:** Removed `ClientOptions#shards` and `ClientOptions#shardCount` in favor of `ClientOptions#ws#shardIds` and `ClientOptions#ws#shardCount`
+- **CommandInteractionOptionResolver:** Remove getFull from getFocused() (#9789) ([493a079](https://github.com/discordjs/discord.js/commit/493a079fdf5864ce7e2965025ebe840e61fc988d)) by @ImRodry
+
+## Typings
+
+- Remove newMessage partial on messageUpdate event typing (#10526) ([bb04e09](https://github.com/discordjs/discord.js/commit/bb04e09f8b478bf95d56ed04a7e495bc887ed5f3)) by @Amgelo563
+
 # [14.16.3](https://github.com/discordjs/discord.js/compare/14.16.2...14.16.3) - (2024-09-29)
 
 ## Bug Fixes
