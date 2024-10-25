@@ -168,7 +168,7 @@ import {
   GatewayDispatchPayload,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
-import { EventEmitter } from 'node:events';
+import { Abortable, EventEmitter } from 'node:events';
 import { Stream } from 'node:stream';
 import { MessagePort, Worker } from 'node:worker_threads';
 import {
@@ -512,6 +512,8 @@ export class BaseClient extends EventEmitter implements AsyncDisposable {
   public options: ClientOptions | WebhookClientOptions;
   public rest: REST;
   public destroy(): void;
+  public eventIterator(eventName: string | symbol, options?: Abortable): AsyncIterableIterator<any[]>;
+  public awaitEvent(eventName: string | symbol, options?: Abortable): Promise<any[]>;
   public toJSON(...props: Record<string, boolean | string>[]): unknown;
   public [Symbol.asyncDispose](): Promise<void>;
 }
@@ -967,17 +969,17 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   // This a technique used to brand the ready state. Or else we'll get `never` errors on typeguard checks.
   private readonly _ready: Ready;
 
-  // Override inherited static EventEmitter methods, with added type checks for Client events.
-  public static once<Emitter extends EventEmitter, Event extends keyof ClientEvents>(
-    eventEmitter: Emitter,
-    eventName: Emitter extends Client ? Event : string | symbol,
-    options?: { signal?: AbortSignal | undefined },
-  ): Promise<Emitter extends Client ? ClientEvents[Event] : any[]>;
-  public static on<Emitter extends EventEmitter, Event extends keyof ClientEvents>(
-    eventEmitter: Emitter,
-    eventName: Emitter extends Client ? Event : string | symbol,
-    options?: { signal?: AbortSignal | undefined },
-  ): AsyncIterableIterator<Emitter extends Client ? ClientEvents[Event] : any[]>;
+  // Overloads for BaseClient's EventEmitter static method wrappers, with ClientEvents-aware typings.
+  public eventIterator<Event extends keyof ClientEvents>(
+    eventName: Event,
+    options?: Abortable,
+  ): AsyncIterableIterator<ClientEvents[Event]>;
+  public eventIterator(eventName: string | symbol, options?: Abortable): AsyncIterableIterator<any[]>;
+  public awaitEvent<Event extends keyof ClientEvents>(
+    eventName: Event,
+    options?: Abortable,
+  ): Promise<ClientEvents[Event]>;
+  public awaitEvent(eventName: string | symbol, options?: Abortable): Promise<any[]>;
 
   public application: If<Ready, ClientApplication>;
   public channels: ChannelManager;
