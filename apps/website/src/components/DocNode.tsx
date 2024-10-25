@@ -1,6 +1,8 @@
 import Link from 'next/link';
+import React from 'react';
 import { BuiltinDocumentationLinks } from '~/util/builtinDocumentationLinks';
 import { OverlayScrollbarsComponent } from './OverlayScrollbars';
+import { ParsedText } from './ParsedText';
 import { SyntaxHighlighter } from './SyntaxHighlighter';
 
 export async function DocNode({ node, version }: { readonly node?: any; readonly version: string }) {
@@ -8,6 +10,7 @@ export async function DocNode({ node, version }: { readonly node?: any; readonly
 		switch (node.kind) {
 			case 'PlainText':
 				return <span key={`${node.text}-${idx}`}>{node.text}</span>;
+
 			case 'LinkTag': {
 				if (node.resolvedPackage) {
 					return (
@@ -62,7 +65,6 @@ export async function DocNode({ node, version }: { readonly node?: any; readonly
 
 			case 'FencedCode': {
 				const { language, text } = node;
-
 				return (
 					<OverlayScrollbarsComponent
 						defer
@@ -72,13 +74,17 @@ export async function DocNode({ node, version }: { readonly node?: any; readonly
 						}}
 						className="my-4 rounded-md border border-neutral-300 bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900"
 					>
-						<SyntaxHighlighter className="py-4 text-sm " lang={language} code={text} />
+						<SyntaxHighlighter className="py-4 text-sm" lang={language} code={text} />
 					</OverlayScrollbarsComponent>
 				);
 			}
 
 			case 'SoftBreak':
 				return null;
+
+			case 'BoldText':
+				return <ParsedText key={`${node.text}-${idx}`} text={node.text} />;
+
 			default:
 				return null;
 		}
