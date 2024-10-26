@@ -2165,7 +2165,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public position: number | null;
   public roleSubscriptionData: RoleSubscriptionData | null;
   public resolved: CommandInteractionResolvedData | null;
-  public system: boolean;
+  public system: boolean | null;
   public get thread(): AnyThreadChannel | null;
   public tts: boolean;
   public poll: Poll | null;
