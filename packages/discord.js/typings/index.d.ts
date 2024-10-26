@@ -3084,14 +3084,15 @@ export class SKUFlagsBitField extends BitField<SKUFlagsString> {
 export class Subscription extends Base {
   private constructor(client: Client<true>, data: APISubscription);
   public id: Snowflake;
-  public get canceledAt(): Date | null;
-  public canceledTimestamp: number | null;
-  public country?: string;
+  public userId: Snowflake;
+  public skuIds: Snowflake[];
+  public entitlementIds: Snowflake[];
   public currentPeriodStart: Date;
   public currentPeriodEnd: Date;
   public status: SubscriptionStatus;
-  public entitlementIds: Snowflake[];
-  public skuIds: Snowflake[];
+  public canceledTimestamp: number | null;
+  public country: string | null;
+  public get canceledAt(): Date | null;
 }
 
 export class StageChannel extends BaseGuildVoiceChannel {
