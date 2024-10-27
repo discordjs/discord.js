@@ -35,7 +35,7 @@ class SubscriptionManager extends CachedManager {
    * @typedef {Object} FetchSubscriptionsOptions
    * @property {Snowflake} [after] Consider only subscriptions after this subscription id
    * @property {Snowflake} [before] Consider only subscriptions before this subscription id
-   * @property {number} [limit=50] The maximum number of subscriptions to fetch
+   * @property {number} [limit] The maximum number of subscriptions to fetch
    * @property {SKUResolvable} sku The SKU to fetch subscriptions for
    * @property {UserResolvable} user The user to fetch entitlements for
    * <warn>If both `before` and `after` are provided, only `before` is respected</warn>
@@ -49,7 +49,7 @@ class SubscriptionManager extends CachedManager {
   async fetch(options = {}) {
     if (typeof options !== 'object') throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
 
-    const { after, before, cache = true, limit = 50, sku, subscriptionId, user } = options;
+    const { after, before, cache = true, limit, sku, subscriptionId, user } = options;
 
     const skuId = resolveSKUId(sku);
 

@@ -68,7 +68,7 @@ class Subscription extends Base {
 
     if ('country' in data) {
       /**
-       * ISO3166-1 alpha-2 country code of the payment source used to purchase the subscription.
+       * ISO 3166-1 alpha-2 country code of the payment source used to purchase the subscription.
        * Missing unless queried with a private OAuth scope.
        * @type {?string}
        */
