@@ -73,7 +73,7 @@
 	},
 	"devDependencies": {
 		"@turbo/gen": "^2.0.14",
-		"@types/node": "^18.19.45",
+		"@types/node": "^18.19.62",
 		"@vitest/coverage-v8": "^2.0.5",
 		"cross-env": "^7.0.3",
 		"env-cmd": "^10.1.0",

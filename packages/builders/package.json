@@ -76,7 +76,7 @@
 		"@discordjs/api-extractor": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^4.1.0",
-		"@types/node": "^18.19.44",
+		"@types/node": "^18.19.62",
 		"@vitest/coverage-v8": "^2.0.5",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.2.1",

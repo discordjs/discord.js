@@ -1303,7 +1303,7 @@ client.on('guildCreate', async g => {
 
 // EventEmitter static method overrides
 expectType<Promise<[Client<true>]>>(Client.once(client, 'clientReady'));
-expectType<AsyncIterableIterator<[Client<true>]>>(Client.on(client, 'clientReady'));
+expectType<NodeJS.AsyncIterator<[client: Client<true>]>>(Client.on(client, 'clientReady'));
 
 client.login('absolutely-valid-token');
 

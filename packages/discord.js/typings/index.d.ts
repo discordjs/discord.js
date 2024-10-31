@@ -504,7 +504,10 @@ export abstract class Base {
   public valueOf(): string;
 }
 
-export class BaseClient extends EventEmitter implements AsyncDisposable {
+export class BaseClient<ClientEventMap extends Record<keyof ClientEventMap, unknown[]> = {}>
+  extends EventEmitter<ClientEventMap>
+  implements AsyncDisposable
+{
   public constructor(options?: ClientOptions | WebhookClientOptions);
   private decrementMaxListeners(): void;
   private incrementMaxListeners(): void;
@@ -949,7 +952,7 @@ export type If<Value extends boolean, TrueResult, FalseResult = null> = Value ex
     ? FalseResult
     : TrueResult | FalseResult;
 
-export class Client<Ready extends boolean = boolean> extends BaseClient {
+export class Client<Ready extends boolean = boolean> extends BaseClient<ClientEvents> {
   public constructor(options: ClientOptions);
   private actions: unknown;
   private expectedGuilds: Set<Snowflake>;
@@ -966,18 +969,6 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   private get _censoredToken(): string | null;
   // This a technique used to brand the ready state. Or else we'll get `never` errors on typeguard checks.
   private readonly _ready: Ready;
-
-  // Override inherited static EventEmitter methods, with added type checks for Client events.
-  public static once<Emitter extends EventEmitter, Event extends keyof ClientEvents>(
-    eventEmitter: Emitter,
-    eventName: Emitter extends Client ? Event : string | symbol,
-    options?: { signal?: AbortSignal | undefined },
-  ): Promise<Emitter extends Client ? ClientEvents[Event] : any[]>;
-  public static on<Emitter extends EventEmitter, Event extends keyof ClientEvents>(
-    eventEmitter: Emitter,
-    eventName: Emitter extends Client ? Event : string | symbol,
-    options?: { signal?: AbortSignal | undefined },
-  ): AsyncIterableIterator<Emitter extends Client ? ClientEvents[Event] : any[]>;
 
   public application: If<Ready, ClientApplication>;
   public channels: ChannelManager;
@@ -1013,30 +1004,6 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public login(token?: string): Promise<string>;
   public isReady(): this is Client<true>;
   public toJSON(): unknown;
-
-  public on<Event extends keyof ClientEvents>(event: Event, listener: (...args: ClientEvents[Event]) => void): this;
-  public on<Event extends string | symbol>(
-    event: Exclude<Event, keyof ClientEvents>,
-    listener: (...args: any[]) => void,
-  ): this;
-
-  public once<Event extends keyof ClientEvents>(event: Event, listener: (...args: ClientEvents[Event]) => void): this;
-  public once<Event extends string | symbol>(
-    event: Exclude<Event, keyof ClientEvents>,
-    listener: (...args: any[]) => void,
-  ): this;
-
-  public emit<Event extends keyof ClientEvents>(event: Event, ...args: ClientEvents[Event]): boolean;
-  public emit<Event extends string | symbol>(event: Exclude<Event, keyof ClientEvents>, ...args: unknown[]): boolean;
-
-  public off<Event extends keyof ClientEvents>(event: Event, listener: (...args: ClientEvents[Event]) => void): this;
-  public off<Event extends string | symbol>(
-    event: Exclude<Event, keyof ClientEvents>,
-    listener: (...args: any[]) => void,
-  ): this;
-
-  public removeAllListeners<Event extends keyof ClientEvents>(event?: Event): this;
-  public removeAllListeners<Event extends string | symbol>(event?: Exclude<Event, keyof ClientEvents>): this;
 }
 
 export interface StickerPackFetchOptions {
@@ -1122,7 +1089,9 @@ export interface CollectorEventTypes<Key, Value, Extras extends unknown[] = []> 
   end: [collected: ReadonlyCollection<Key, Value>, reason: string];
 }
 
-export abstract class Collector<Key, Value, Extras extends unknown[] = []> extends EventEmitter {
+export abstract class Collector<Key, Value, Extras extends unknown[] = []> extends EventEmitter<
+  CollectorEventTypes<Key, Value, Extras>
+> {
   protected constructor(client: Client<true>, options?: CollectorOptions<[Value, ...Extras]>);
   private _timeout: NodeJS.Timeout | null;
   private _idletimeout: NodeJS.Timeout | null;
@@ -1148,16 +1117,6 @@ export abstract class Collector<Key, Value, Extras extends unknown[] = []> exten
   protected listener: (...args: any[]) => void;
   public abstract collect(...args: unknown[]): Awaitable<Key | null>;
   public abstract dispose(...args: unknown[]): Key | null;
-
-  public on<EventKey extends keyof CollectorEventTypes<Key, Value, Extras>>(
-    event: EventKey,
-    listener: (...args: CollectorEventTypes<Key, Value, Extras>[EventKey]) => void,
-  ): this;
-
-  public once<EventKey extends keyof CollectorEventTypes<Key, Value, Extras>>(
-    event: EventKey,
-    listener: (...args: CollectorEventTypes<Key, Value, Extras>[EventKey]) => void,
-  ): this;
 }
 
 export class ChatInputCommandInteraction<Cached extends CacheType = CacheType> extends CommandInteraction<Cached> {
@@ -1993,19 +1952,6 @@ export class InteractionCollector<Interaction extends CollectedInteraction> exte
   public collect(interaction: Interaction): Snowflake;
   public empty(): void;
   public dispose(interaction: Interaction): Snowflake;
-  public on(event: 'collect' | 'dispose' | 'ignore', listener: (interaction: Interaction) => void): this;
-  public on(
-    event: 'end',
-    listener: (collected: ReadonlyCollection<Snowflake, Interaction>, reason: string) => void,
-  ): this;
-  public on(event: string, listener: (...args: any[]) => void): this;
-
-  public once(event: 'collect' | 'dispose' | 'ignore', listener: (interaction: Interaction) => void): this;
-  public once(
-    event: 'end',
-    listener: (collected: ReadonlyCollection<Snowflake, Interaction>, reason: string) => void,
-  ): this;
-  public once(event: string, listener: (...args: any[]) => void): this;
 }
 
 // tslint:disable-next-line no-empty-interface
@@ -2926,7 +2872,7 @@ export interface ShardEventTypes {
   spawn: [process: ChildProcess | Worker];
 }
 
-export class Shard extends EventEmitter {
+export class Shard extends EventEmitter<ShardEventTypes> {
   private constructor(manager: ShardingManager, id: number);
   private _evals: Map<string, Promise<unknown>>;
   private _exitListener: (...args: any[]) => void;
@@ -2956,16 +2902,6 @@ export class Shard extends EventEmitter {
   public respawn(options?: { delay?: number; timeout?: number }): Promise<ChildProcess>;
   public send(message: unknown): Promise<Shard>;
   public spawn(timeout?: number): Promise<ChildProcess>;
-
-  public on<Event extends keyof ShardEventTypes>(
-    event: Event,
-    listener: (...args: ShardEventTypes[Event]) => void,
-  ): this;
-
-  public once<Event extends keyof ShardEventTypes>(
-    event: Event,
-    listener: (...args: ShardEventTypes[Event]) => void,
-  ): this;
 }
 
 export class ShardClientUtil {
@@ -3002,7 +2938,11 @@ export class ShardClientUtil {
   public static shardIdForGuildId(guildId: Snowflake, shardCount: number): number;
 }
 
-export class ShardingManager extends EventEmitter {
+export interface ShardingManagerEventTypes {
+  shardCreate: [shard: Shard];
+}
+
+export class ShardingManager extends EventEmitter<ShardingManagerEventTypes> {
   public constructor(file: string, options?: ShardingManagerOptions);
   private _performOnShards(method: string, args: readonly unknown[]): Promise<unknown[]>;
   private _performOnShards(method: string, args: readonly unknown[], shard: number): Promise<unknown>;
@@ -3034,10 +2974,6 @@ export class ShardingManager extends EventEmitter {
   public fetchClientValues(prop: string, shard: number): Promise<unknown>;
   public respawnAll(options?: MultipleShardRespawnOptions): Promise<Collection<number, Shard>>;
   public spawn(options?: MultipleShardSpawnOptions): Promise<Collection<number, Shard>>;
-
-  public on(event: 'shardCreate', listener: (shard: Shard) => void): this;
-
-  public once(event: 'shardCreate', listener: (shard: Shard) => void): this;
 }
 
 export interface FetchRecommendedShardCountOptions {
