@@ -219,13 +219,12 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (!amount) return [];
 
 		const values = [...this.values()];
-		// eslint-disable-next-line unicorn/no-new-array
-		const results: Value[] = new Array(amount);
-		for (let index = 0; index < amount; index++) {
-			results[index] = values.splice(Math.floor(Math.random() * values.length), 1)[0]!;
+		for (let sourceIndex = 0; sourceIndex < amount; sourceIndex++) {
+			const targetIndex = sourceIndex + Math.floor(Math.random() * (values.length - sourceIndex));
+			[values[sourceIndex], values[targetIndex]] = [values[targetIndex]!, values[sourceIndex]!];
 		}
 
-		return results;
+		return values.slice(0, amount);
 	}
 
 	/**
@@ -242,13 +241,12 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (!amount) return [];
 
 		const keys = [...this.keys()];
-		// eslint-disable-next-line unicorn/no-new-array
-		const results: Key[] = new Array(amount);
-		for (let index = 0; index < amount; index++) {
-			results[index] = keys.splice(Math.floor(Math.random() * keys.length), 1)[0]!;
+		for (let sourceIndex = 0; sourceIndex < amount; sourceIndex++) {
+			const targetIndex = sourceIndex + Math.floor(Math.random() * (keys.length - sourceIndex));
+			[keys[sourceIndex], keys[targetIndex]] = [keys[targetIndex]!, keys[sourceIndex]!];
 		}
 
-		return results;
+		return keys.slice(0, amount);
 	}
 
 	/**
