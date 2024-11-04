@@ -66,6 +66,9 @@ import {
 	type GatewayStageInstanceCreateDispatchData,
 	type GatewayStageInstanceDeleteDispatchData,
 	type GatewayStageInstanceUpdateDispatchData,
+	type GatewaySubscriptionCreateDispatchData,
+	type GatewaySubscriptionDeleteDispatchData,
+	type GatewaySubscriptionUpdateDispatchData,
 	type GatewayThreadCreateDispatchData,
 	type GatewayThreadDeleteDispatchData,
 	type GatewayThreadListSyncDispatchData,
@@ -163,6 +166,9 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.StageInstanceCreate]: [ToEventProps<GatewayStageInstanceCreateDispatchData>];
 	[GatewayDispatchEvents.StageInstanceDelete]: [ToEventProps<GatewayStageInstanceDeleteDispatchData>];
 	[GatewayDispatchEvents.StageInstanceUpdate]: [ToEventProps<GatewayStageInstanceUpdateDispatchData>];
+	[GatewayDispatchEvents.SubscriptionCreate]: [ToEventProps<GatewaySubscriptionCreateDispatchData>];
+	[GatewayDispatchEvents.SubscriptionDelete]: [ToEventProps<GatewaySubscriptionDeleteDispatchData>];
+	[GatewayDispatchEvents.SubscriptionUpdate]: [ToEventProps<GatewaySubscriptionUpdateDispatchData>];
 	[GatewayDispatchEvents.ThreadCreate]: [ToEventProps<GatewayThreadCreateDispatchData>];
 	[GatewayDispatchEvents.ThreadDelete]: [ToEventProps<GatewayThreadDeleteDispatchData>];
 	[GatewayDispatchEvents.ThreadListSync]: [ToEventProps<GatewayThreadListSyncDispatchData>];
