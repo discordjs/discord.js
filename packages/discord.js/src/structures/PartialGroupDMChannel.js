@@ -72,7 +72,7 @@ class PartialGroupDMChannel extends BaseChannel {
        * The timestamp when the last pinned message was pinned, if there was one
        * @type {?number}
        */
-      this.lastPinTimestamp = Date.parse(data.last_pin_timestamp);
+      this.lastPinTimestamp = data.last_pin_timestamp ? Date.parse(data.last_pin_timestamp) : null;
     } else {
       this.lastPinTimestamp ??= null;
     }
