@@ -4,7 +4,7 @@ import { ComponentType } from 'discord-api-types/v10';
 import type { APIStringSelectComponent, APISelectMenuOption } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { resolveBuilder } from '../../util/resolveBuilder.js';
-import { isValidationEnabled } from '../../util/validation.js';
+import { validate } from '../../util/validation.js';
 import { selectMenuStringPredicate } from '../Assertions.js';
 import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 import { StringSelectMenuOptionBuilder } from './StringSelectMenuOption.js';
@@ -156,9 +156,7 @@ export class StringSelectMenuBuilder extends BaseSelectMenuBuilder<APIStringSele
 			options: options.map((option) => option.toJSON(false)),
 		};
 
-		if (validationOverride ?? isValidationEnabled()) {
-			selectMenuStringPredicate.parse(data);
-		}
+		validate(selectMenuStringPredicate, data, validationOverride);
 
 		return data as APIStringSelectComponent;
 	}

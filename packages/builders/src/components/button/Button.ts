@@ -1,5 +1,5 @@
 import type { APIButtonComponent } from 'discord-api-types/v10';
-import { isValidationEnabled } from '../../util/validation.js';
+import { validate } from '../../util/validation.js';
 import { buttonPredicate } from '../Assertions.js';
 import { ComponentBuilder } from '../Component.js';
 
@@ -24,10 +24,7 @@ export abstract class BaseButtonBuilder<ButtonData extends APIButtonComponent> e
 	 */
 	public override toJSON(validationOverride?: boolean): ButtonData {
 		const clone = structuredClone(this.data);
-
-		if (validationOverride ?? isValidationEnabled()) {
-			buttonPredicate.parse(clone);
-		}
+		validate(buttonPredicate, clone, validationOverride);
 
 		return clone as ButtonData;
 	}

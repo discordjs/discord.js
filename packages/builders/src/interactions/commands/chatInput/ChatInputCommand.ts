@@ -1,6 +1,6 @@
 import { ApplicationCommandType, type RESTPostAPIChatInputApplicationCommandsJSONBody } from 'discord-api-types/v10';
 import { Mixin } from 'ts-mixer';
-import { isValidationEnabled } from '../../../util/validation.js';
+import { validate } from '../../../util/validation.js';
 import { CommandBuilder } from '../Command.js';
 import { SharedNameAndDescription } from '../SharedNameAndDescription.js';
 import { chatInputCommandPredicate } from './Assertions.js';
@@ -9,6 +9,11 @@ import { SharedChatInputCommandSubcommands } from './mixins/SharedSubcommands.js
 
 /**
  * A builder that creates API-compatible JSON data for chat input commands.
+ *
+ * @mixes CommandBuilder<RESTPostAPIChatInputApplicationCommandsJSONBody>
+ * @mixes SharedChatInputCommandOptions
+ * @mixes SharedNameAndDescription
+ * @mixes SharedChatInputCommandSubcommands
  */
 export class ChatInputCommandBuilder extends Mixin(
 	CommandBuilder<RESTPostAPIChatInputApplicationCommandsJSONBody>,
@@ -28,9 +33,7 @@ export class ChatInputCommandBuilder extends Mixin(
 			options: options?.map((option) => option.toJSON(validationOverride)),
 		};
 
-		if (validationOverride ?? isValidationEnabled()) {
-			chatInputCommandPredicate.parse(data);
-		}
+		validate(chatInputCommandPredicate, data, validationOverride);
 
 		return data;
 	}

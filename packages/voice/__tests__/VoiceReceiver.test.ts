@@ -5,19 +5,26 @@ import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
 import process from 'node:process';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
+import { describe, test, expect, vitest, beforeEach } from 'vitest';
 import { RTP_PACKET_DESKTOP, RTP_PACKET_CHROME, RTP_PACKET_ANDROID } from '../__mocks__/rtp';
-import { VoiceConnection as _VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
+import { VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
 import { VoiceReceiver } from '../src/receive/VoiceReceiver';
 import { methods } from '../src/util/Secretbox';
 
-jest.mock('../src/VoiceConnection');
-jest.mock('../src/receive/SSRCMap');
+vitest.mock('../src/VoiceConnection', async (importOriginal) => {
+	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+	const actual = await importOriginal<typeof import('../src/VoiceConnection')>();
+	return {
+		...actual,
+		VoiceConnection: vitest.fn(),
+	};
+});
 
-const openSpy = jest.spyOn(methods, 'open');
+vitest.mock('../src/receive/SSRCMap');
+
+const openSpy = vitest.spyOn(methods, 'open');
 
 openSpy.mockImplementation((buffer) => buffer);
-
-const VoiceConnection = _VoiceConnection as unknown as jest.Mocked<typeof _VoiceConnection>;
 
 async function nextTick() {
 	// eslint-disable-next-line no-promise-executor-return
@@ -56,9 +63,9 @@ describe('VoiceReceiver', () => {
 		['RTP Packet Chrome', RTP_PACKET_CHROME],
 		['RTP Packet Android', RTP_PACKET_ANDROID],
 	])('onUdpMessage: %s', async (testName, RTP_PACKET) => {
-		receiver['decrypt'] = jest.fn().mockImplementationOnce(() => RTP_PACKET.decrypted);
+		receiver['decrypt'] = vitest.fn().mockImplementationOnce(() => RTP_PACKET.decrypted);
 
-		const spy = jest.spyOn(receiver.ssrcMap, 'get');
+		const spy = vitest.spyOn(receiver.ssrcMap, 'get');
 		spy.mockImplementation(() => ({
 			audioSSRC: RTP_PACKET.ssrc,
 			userId: '123',
@@ -76,9 +83,9 @@ describe('VoiceReceiver', () => {
 	});
 
 	test('onUdpMessage: destroys stream on decrypt failure', async () => {
-		receiver['decrypt'] = jest.fn().mockImplementationOnce(() => null);
+		receiver['decrypt'] = vitest.fn().mockImplementationOnce(() => null);
 
-		const spy = jest.spyOn(receiver.ssrcMap, 'get');
+		const spy = vitest.spyOn(receiver.ssrcMap, 'get');
 		spy.mockImplementation(() => ({
 			audioSSRC: RTP_PACKET_DESKTOP.ssrc,
 			userId: '123',
@@ -95,7 +102,7 @@ describe('VoiceReceiver', () => {
 	});
 
 	test('subscribe: only allows one subscribe stream per SSRC', () => {
-		const spy = jest.spyOn(receiver.ssrcMap, 'get');
+		const spy = vitest.spyOn(receiver.ssrcMap, 'get');
 		spy.mockImplementation(() => ({
 			audioSSRC: RTP_PACKET_DESKTOP.ssrc,
 			userId: '123',
@@ -107,7 +114,7 @@ describe('VoiceReceiver', () => {
 
 	describe('onWsPacket', () => {
 		test('CLIENT_DISCONNECT packet', () => {
-			const spy = jest.spyOn(receiver.ssrcMap, 'delete');
+			const spy = vitest.spyOn(receiver.ssrcMap, 'delete');
 			receiver['onWsPacket']({
 				op: VoiceOpcodes.ClientDisconnect,
 				d: {
@@ -118,7 +125,7 @@ describe('VoiceReceiver', () => {
 		});
 
 		test('SPEAKING packet', () => {
-			const spy = jest.spyOn(receiver.ssrcMap, 'update');
+			const spy = vitest.spyOn(receiver.ssrcMap, 'update');
 			receiver['onWsPacket']({
 				op: VoiceOpcodes.Speaking,
 				d: {
@@ -134,7 +141,7 @@ describe('VoiceReceiver', () => {
 		});
 
 		test('CLIENT_CONNECT packet', () => {
-			const spy = jest.spyOn(receiver.ssrcMap, 'update');
+			const spy = vitest.spyOn(receiver.ssrcMap, 'update');
 			receiver['onWsPacket']({
 				op: VoiceOpcodes.ClientConnect,
 				d: {

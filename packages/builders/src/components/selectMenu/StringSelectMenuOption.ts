@@ -1,6 +1,6 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { APIMessageComponentEmoji, APISelectMenuOption } from 'discord-api-types/v10';
-import { isValidationEnabled } from '../../util/validation.js';
+import { validate } from '../../util/validation.js';
 import { selectMenuStringOptionPredicate } from '../Assertions.js';
 
 /**
@@ -106,10 +106,7 @@ export class StringSelectMenuOptionBuilder implements JSONEncodable<APISelectMen
 	 */
 	public toJSON(validationOverride?: boolean): APISelectMenuOption {
 		const clone = structuredClone(this.data);
-
-		if (validationOverride ?? isValidationEnabled()) {
-			selectMenuStringOptionPredicate.parse(clone);
-		}
+		validate(selectMenuStringOptionPredicate, clone, validationOverride);
 
 		return clone as APISelectMenuOption;
 	}

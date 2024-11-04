@@ -66,10 +66,11 @@
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@discordjs/util": "workspace:^",
-		"discord-api-types": "^0.37.101",
+		"discord-api-types": "^0.37.103",
 		"ts-mixer": "^6.0.4",
 		"tslib": "^2.6.3",
-		"zod": "^3.23.8"
+		"zod": "^3.23.8",
+		"zod-validation-error": "^3.4.0"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",

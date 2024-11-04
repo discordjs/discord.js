@@ -5,7 +5,7 @@ import {
 	SelectMenuDefaultValueType,
 } from 'discord-api-types/v10';
 import { type RestOrArray, normalizeArray } from '../../util/normalizeArray.js';
-import { isValidationEnabled } from '../../util/validation.js';
+import { validate } from '../../util/validation.js';
 import { selectMenuRolePredicate } from '../Assertions.js';
 import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 
@@ -82,10 +82,7 @@ export class RoleSelectMenuBuilder extends BaseSelectMenuBuilder<APIRoleSelectCo
 	 */
 	public override toJSON(validationOverride?: boolean): APIRoleSelectComponent {
 		const clone = structuredClone(this.data);
-
-		if (validationOverride ?? isValidationEnabled()) {
-			selectMenuRolePredicate.parse(clone);
-		}
+		validate(selectMenuRolePredicate, clone, validationOverride);
 
 		return clone as APIRoleSelectComponent;
 	}

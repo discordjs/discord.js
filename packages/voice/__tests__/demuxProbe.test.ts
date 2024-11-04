@@ -4,13 +4,14 @@ import EventEmitter, { once } from 'node:events';
 import process from 'node:process';
 import { Readable } from 'node:stream';
 import { opus as _opus } from 'prism-media';
+import { describe, test, expect, vitest, type Mock, beforeAll, beforeEach } from 'vitest';
 import { StreamType } from '../src/audio/index';
 import { demuxProbe } from '../src/util/demuxProbe';
 
-jest.mock('prism-media');
+vitest.mock('prism-media');
 
-const WebmDemuxer = _opus.WebmDemuxer as unknown as jest.Mock<_opus.WebmDemuxer>;
-const OggDemuxer = _opus.OggDemuxer as unknown as jest.Mock<_opus.OggDemuxer>;
+const WebmDemuxer = _opus.WebmDemuxer as unknown as Mock<_opus.WebmDemuxer>;
+const OggDemuxer = _opus.OggDemuxer as unknown as Mock<_opus.OggDemuxer>;
 
 async function nextTick() {
 	// eslint-disable-next-line no-promise-executor-return
@@ -47,8 +48,8 @@ async function collectStream(stream: Readable): Promise<Buffer> {
 }
 
 describe('demuxProbe', () => {
-	const webmWrite: jest.Mock<(buffer: Buffer) => void> = jest.fn();
-	const oggWrite: jest.Mock<(buffer: Buffer) => void> = jest.fn();
+	const webmWrite: Mock<(buffer: Buffer) => void> = vitest.fn();
+	const oggWrite: Mock<(buffer: Buffer) => void> = vitest.fn();
 
 	beforeAll(() => {
 		WebmDemuxer.prototype = {

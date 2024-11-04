@@ -13,17 +13,8 @@ const Messages = {
   [DjsErrorCodes.ApplicationCommandPermissionsTokenMissing]:
     'Editing application command permissions requires an OAuth2 bearer token, but none was provided.',
 
-  [DjsErrorCodes.WSCloseRequested]: 'WebSocket closed due to user request.',
-  [DjsErrorCodes.WSConnectionExists]: 'There is already an existing WebSocket connection.',
-  [DjsErrorCodes.WSNotOpen]: (data = 'data') => `WebSocket not open to send ${data}`,
-  [DjsErrorCodes.ManagerDestroyed]: 'Manager was destroyed.',
-
   [DjsErrorCodes.BitFieldInvalid]: bit => `Invalid bitfield flag or number: ${bit}.`,
 
-  [DjsErrorCodes.ShardingInvalid]: 'Invalid shard settings were provided.',
-  [DjsErrorCodes.ShardingRequired]: 'This session would have handled too many guilds - Sharding is required.',
-  [DjsErrorCodes.InvalidIntents]: 'Invalid intent provided for WebSocket intents.',
-  [DjsErrorCodes.DisallowedIntents]: 'Privileged intent provided is not enabled or whitelisted.',
   [DjsErrorCodes.ShardingNoShards]: 'No shards have been spawned.',
   [DjsErrorCodes.ShardingInProcess]: 'Shards are still being spawned.',
   [DjsErrorCodes.ShardingInvalidEvalBroadcast]: 'Script to evaluate must be a function',
@@ -44,22 +35,11 @@ const Messages = {
   [DjsErrorCodes.InviteOptionsMissingChannel]:
     'A valid guild channel must be provided when GuildScheduledEvent is EXTERNAL.',
 
-  [DjsErrorCodes.ButtonLabel]: 'MessageButton label must be a string',
-  [DjsErrorCodes.ButtonURL]: 'MessageButton URL must be a string',
-  [DjsErrorCodes.ButtonCustomId]: 'MessageButton customId must be a string',
-
-  [DjsErrorCodes.SelectMenuCustomId]: 'MessageSelectMenu customId must be a string',
-  [DjsErrorCodes.SelectMenuPlaceholder]: 'MessageSelectMenu placeholder must be a string',
-  [DjsErrorCodes.SelectOptionLabel]: 'MessageSelectOption label must be a string',
-  [DjsErrorCodes.SelectOptionValue]: 'MessageSelectOption value must be a string',
-  [DjsErrorCodes.SelectOptionDescription]: 'MessageSelectOption description must be a string',
-
   [DjsErrorCodes.InteractionCollectorError]: reason =>
     `Collector received no interactions before ending with reason: ${reason}`,
 
   [DjsErrorCodes.FileNotFound]: file => `File could not be found: ${file}`,
 
-  [DjsErrorCodes.UserBannerNotFetched]: "You must fetch this user's banner before trying to generate its URL!",
   [DjsErrorCodes.UserNoDMChannel]: 'No DM Channel exists!',
 
   [DjsErrorCodes.VoiceNotStageChannel]: 'You are only allowed to do this in stage channels.',
@@ -70,15 +50,10 @@ const Messages = {
 
   [DjsErrorCodes.ReqResourceType]: 'The resource must be a string, Buffer or a valid file stream.',
 
-  [DjsErrorCodes.ImageFormat]: format => `Invalid image format: ${format}`,
-  [DjsErrorCodes.ImageSize]: size => `Invalid image size: ${size}`,
-
   [DjsErrorCodes.MessageBulkDeleteType]: 'The messages must be an Array, Collection, or number.',
   [DjsErrorCodes.MessageContentType]: 'Message content must be a string.',
   [DjsErrorCodes.MessageNonceRequired]: 'Message nonce is required when enforceNonce is true.',
   [DjsErrorCodes.MessageNonceType]: 'Message nonce must be an integer or a string.',
-
-  [DjsErrorCodes.SplitMaxLen]: 'Chunk exceeds the max length and contains no split characters.',
 
   [DjsErrorCodes.BanResolveId]: (ban = false) => `Couldn't resolve the user id to ${ban ? 'ban' : 'unban'}.`,
   [DjsErrorCodes.FetchBanResolveId]: "Couldn't resolve the user id to fetch the ban.",
@@ -100,7 +75,7 @@ const Messages = {
   [DjsErrorCodes.InvalidType]: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
   [DjsErrorCodes.InvalidElement]: (type, name, elem) => `Supplied ${type} ${name} includes an invalid element: ${elem}`,
 
-  [DjsErrorCodes.MessageThreadParent]: 'The message was not sent in a guild text or news channel',
+  [DjsErrorCodes.MessageThreadParent]: 'The message was not sent in a guild text or announcement channel',
   [DjsErrorCodes.MessageExistingThread]: 'The message already has a thread',
   [DjsErrorCodes.ThreadInvitableType]: type => `Invitable cannot be edited on ${type}`,
 
@@ -114,14 +89,10 @@ const Messages = {
   [DjsErrorCodes.EmojiManaged]: 'Emoji is managed and has no Author.',
   [DjsErrorCodes.MissingManageGuildExpressionsPermission]: guild =>
     `Client must have Manage Guild Expressions permission in guild ${guild} to see emoji authors.`,
-  [DjsErrorCodes.MissingManageEmojisAndStickersPermission]: guild =>
-    `Client must have Manage Emojis and Stickers permission in guild ${guild} to see emoji authors.`,
 
   [DjsErrorCodes.NotGuildSticker]: 'Sticker is a standard (non-guild) sticker and has no author.',
 
   [DjsErrorCodes.ReactionResolveUser]: "Couldn't resolve the user id to remove from the reaction.",
-
-  [DjsErrorCodes.VanityURL]: 'This guild does not have the vanity URL feature enabled.',
 
   [DjsErrorCodes.InviteResolveCode]: 'Could not resolve the code to fetch the invite.',
 
@@ -140,7 +111,6 @@ const Messages = {
 
   [DjsErrorCodes.InteractionAlreadyReplied]: 'The reply to this interaction has already been sent or deferred.',
   [DjsErrorCodes.InteractionNotReplied]: 'The reply to this interaction has not been sent or deferred.',
-  [DjsErrorCodes.InteractionEphemeralReplied]: 'Ephemeral responses cannot be deleted.',
 
   [DjsErrorCodes.CommandInteractionOptionNotFound]: name => `Required option "${name}" not found.`,
   [DjsErrorCodes.CommandInteractionOptionType]: (name, type, expected) =>

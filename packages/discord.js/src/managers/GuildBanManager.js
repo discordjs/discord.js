@@ -1,6 +1,5 @@
 'use strict';
 
-const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
@@ -8,8 +7,6 @@ const CachedManager = require('./CachedManager');
 const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../errors');
 const GuildBan = require('../structures/GuildBan');
 const { GuildMember } = require('../structures/GuildMember');
-
-let deprecationEmittedForDeleteMessageDays = false;
 
 /**
  * Manages API methods for guild bans and stores their cache.
@@ -131,8 +128,6 @@ class GuildBanManager extends CachedManager {
   /**
    * Options used to ban a user from a guild.
    * @typedef {Object} BanOptions
-   * @property {number} [deleteMessageDays] Number of days of messages to delete, must be between 0 and 7, inclusive
-   * <warn>This property is deprecated. Use `deleteMessageSeconds` instead.</warn>
    * @property {number} [deleteMessageSeconds] Number of seconds of messages to delete,
    * must be between 0 and 604800 (7 days), inclusive
    * @property {string} [reason] The reason for the ban
@@ -156,21 +151,9 @@ class GuildBanManager extends CachedManager {
     const id = this.client.users.resolveId(user);
     if (!id) throw new DiscordjsError(ErrorCodes.BanResolveId, true);
 
-    if (options.deleteMessageDays !== undefined && !deprecationEmittedForDeleteMessageDays) {
-      process.emitWarning(
-        // eslint-disable-next-line max-len
-        'The deleteMessageDays option for GuildBanManager#create() is deprecated. Use the deleteMessageSeconds option instead.',
-        'DeprecationWarning',
-      );
-
-      deprecationEmittedForDeleteMessageDays = true;
-    }
-
     await this.client.rest.put(Routes.guildBan(this.guild.id, id), {
       body: {
-        delete_message_seconds:
-          options.deleteMessageSeconds ??
-          (options.deleteMessageDays ? options.deleteMessageDays * 24 * 60 * 60 : undefined),
+        delete_message_seconds: options.deleteMessageSeconds,
       },
       reason: options.reason,
     });
@@ -201,14 +184,6 @@ class GuildBanManager extends CachedManager {
   }
 
   /**
-   * Options used for bulk banning users from a guild.
-   * @typedef {Object} BulkBanOptions
-   * @property {number} [deleteMessageSeconds] Number of seconds of messages to delete,
-   * must be between 0 and 604800 (7 days), inclusive
-   * @property {string} [reason] The reason for the bans
-   */
-
-  /**
    * Result of bulk banning users from a guild.
    * @typedef {Object} BulkBanResult
    * @property {Snowflake[]} bannedUsers IDs of the banned users
@@ -218,7 +193,7 @@ class GuildBanManager extends CachedManager {
   /**
    * Bulk ban users from a guild, and optionally delete previous messages sent by them.
    * @param {Collection<Snowflake, UserResolvable>|UserResolvable[]} users The users to ban
-   * @param {BulkBanOptions} [options] The options for bulk banning users
+   * @param {BanOptions} [options] The options for bulk banning users
    * @returns {Promise<BulkBanResult>} Returns an object with `bannedUsers` key containing the IDs of the banned users
    * and the key `failedUsers` with the IDs that could not be banned or were already banned.
    * @example
