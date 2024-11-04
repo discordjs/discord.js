@@ -38,6 +38,10 @@ import {
 	type GatewayGuildScheduledEventUpdateDispatchData,
 	type GatewayGuildScheduledEventUserAddDispatchData,
 	type GatewayGuildScheduledEventUserRemoveDispatchData,
+	type GatewayGuildSoundboardSoundCreateDispatch,
+	type GatewayGuildSoundboardSoundDeleteDispatch,
+	type GatewayGuildSoundboardSoundUpdateDispatch,
+	type GatewayGuildSoundboardSoundsUpdateDispatch,
 	type GatewayGuildStickersUpdateDispatchData,
 	type GatewayGuildUpdateDispatchData,
 	type GatewayIntegrationCreateDispatchData,
@@ -135,6 +139,10 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.GuildScheduledEventUserRemove]: [
 		ToEventProps<GatewayGuildScheduledEventUserRemoveDispatchData>,
 	];
+	[GatewayDispatchEvents.GuildSoundboardSoundCreate]: [ToEventProps<GatewayGuildSoundboardSoundCreateDispatch>];
+	[GatewayDispatchEvents.GuildSoundboardSoundDelete]: [ToEventProps<GatewayGuildSoundboardSoundDeleteDispatch>];
+	[GatewayDispatchEvents.GuildSoundboardSoundUpdate]: [ToEventProps<GatewayGuildSoundboardSoundUpdateDispatch>];
+	[GatewayDispatchEvents.GuildSoundboardSoundsUpdate]: [ToEventProps<GatewayGuildSoundboardSoundsUpdateDispatch>];
 	[GatewayDispatchEvents.GuildStickersUpdate]: [ToEventProps<GatewayGuildStickersUpdateDispatchData>];
 	[GatewayDispatchEvents.GuildUpdate]: [ToEventProps<GatewayGuildUpdateDispatchData>];
 	[GatewayDispatchEvents.IntegrationCreate]: [ToEventProps<GatewayIntegrationCreateDispatchData>];
