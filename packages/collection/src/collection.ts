@@ -169,8 +169,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (index >= 0) {
 			if (index >= this.size) return undefined;
 		} else {
-			if (index < this.size * -1) return undefined;
 			index += this.size;
+			if (index < 0) return undefined;
 		}
 
 		const iter = this.values();
@@ -193,8 +193,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (index >= 0) {
 			if (index >= this.size) return undefined;
 		} else {
-			if (index < this.size * -1) return undefined;
 			index += this.size;
+			if (index < 0) return undefined;
 		}
 
 		const iter = this.keys();
