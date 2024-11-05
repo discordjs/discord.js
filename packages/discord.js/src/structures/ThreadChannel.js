@@ -288,7 +288,7 @@ class ThreadChannel extends BaseChannel {
   }
 
   /**
-   * Options used to fetch a thread member owner.
+   * Options used to fetch a thread owner.
    * @typedef {BaseFetchOptions} FetchThreadOwnerOptions
    * @property {boolean} [withMember] Whether to also return the guild member associated with this thread member
    */
