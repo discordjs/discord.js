@@ -38,6 +38,10 @@ import {
 	type GatewayGuildScheduledEventUpdateDispatchData,
 	type GatewayGuildScheduledEventUserAddDispatchData,
 	type GatewayGuildScheduledEventUserRemoveDispatchData,
+	type GatewayGuildSoundboardSoundCreateDispatch,
+	type GatewayGuildSoundboardSoundDeleteDispatch,
+	type GatewayGuildSoundboardSoundUpdateDispatch,
+	type GatewayGuildSoundboardSoundsUpdateDispatch,
 	type GatewayGuildStickersUpdateDispatchData,
 	type GatewayGuildUpdateDispatchData,
 	type GatewayIntegrationCreateDispatchData,
@@ -62,6 +66,9 @@ import {
 	type GatewayStageInstanceCreateDispatchData,
 	type GatewayStageInstanceDeleteDispatchData,
 	type GatewayStageInstanceUpdateDispatchData,
+	type GatewaySubscriptionCreateDispatchData,
+	type GatewaySubscriptionDeleteDispatchData,
+	type GatewaySubscriptionUpdateDispatchData,
 	type GatewayThreadCreateDispatchData,
 	type GatewayThreadDeleteDispatchData,
 	type GatewayThreadListSyncDispatchData,
@@ -131,6 +138,10 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.GuildScheduledEventUserRemove]: [
 		ToEventProps<GatewayGuildScheduledEventUserRemoveDispatchData>,
 	];
+	[GatewayDispatchEvents.GuildSoundboardSoundCreate]: [ToEventProps<GatewayGuildSoundboardSoundCreateDispatch>];
+	[GatewayDispatchEvents.GuildSoundboardSoundDelete]: [ToEventProps<GatewayGuildSoundboardSoundDeleteDispatch>];
+	[GatewayDispatchEvents.GuildSoundboardSoundUpdate]: [ToEventProps<GatewayGuildSoundboardSoundUpdateDispatch>];
+	[GatewayDispatchEvents.GuildSoundboardSoundsUpdate]: [ToEventProps<GatewayGuildSoundboardSoundsUpdateDispatch>];
 	[GatewayDispatchEvents.GuildStickersUpdate]: [ToEventProps<GatewayGuildStickersUpdateDispatchData>];
 	[GatewayDispatchEvents.GuildUpdate]: [ToEventProps<GatewayGuildUpdateDispatchData>];
 	[GatewayDispatchEvents.IntegrationCreate]: [ToEventProps<GatewayIntegrationCreateDispatchData>];
@@ -155,6 +166,9 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.StageInstanceCreate]: [ToEventProps<GatewayStageInstanceCreateDispatchData>];
 	[GatewayDispatchEvents.StageInstanceDelete]: [ToEventProps<GatewayStageInstanceDeleteDispatchData>];
 	[GatewayDispatchEvents.StageInstanceUpdate]: [ToEventProps<GatewayStageInstanceUpdateDispatchData>];
+	[GatewayDispatchEvents.SubscriptionCreate]: [ToEventProps<GatewaySubscriptionCreateDispatchData>];
+	[GatewayDispatchEvents.SubscriptionDelete]: [ToEventProps<GatewaySubscriptionDeleteDispatchData>];
+	[GatewayDispatchEvents.SubscriptionUpdate]: [ToEventProps<GatewaySubscriptionUpdateDispatchData>];
 	[GatewayDispatchEvents.ThreadCreate]: [ToEventProps<GatewayThreadCreateDispatchData>];
 	[GatewayDispatchEvents.ThreadDelete]: [ToEventProps<GatewayThreadDeleteDispatchData>];
 	[GatewayDispatchEvents.ThreadListSync]: [ToEventProps<GatewayThreadListSyncDispatchData>];
