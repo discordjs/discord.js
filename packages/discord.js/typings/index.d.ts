@@ -4961,18 +4961,20 @@ export type BitFieldResolvable<Flags extends string, Type extends number | bigin
 export type BufferResolvable = Buffer | string;
 
 export interface Caches {
-  AutoModerationRuleManager: [manager: typeof AutoModerationRuleManager, holds: typeof AutoModerationRule];
   ApplicationCommandManager: [manager: typeof ApplicationCommandManager, holds: typeof ApplicationCommand];
+  ApplicationEmojiManager: [manager: typeof ApplicationEmojiManager, holds: typeof ApplicationEmoji];
+  AutoModerationRuleManager: [manager: typeof AutoModerationRuleManager, holds: typeof AutoModerationRule];
   BaseGuildEmojiManager: [manager: typeof BaseGuildEmojiManager, holds: typeof GuildEmoji];
-  DMMessageManager: [manager: typeof MessageManager, holds: typeof Message<false>];
-  GuildEmojiManager: [manager: typeof GuildEmojiManager, holds: typeof GuildEmoji];
   // TODO: ChannelManager: [manager: typeof ChannelManager, holds: typeof Channel];
-  // TODO: GuildChannelManager: [manager: typeof GuildChannelManager, holds: typeof GuildChannel];
-  // TODO: GuildManager: [manager: typeof GuildManager, holds: typeof Guild];
-  GuildMemberManager: [manager: typeof GuildMemberManager, holds: typeof GuildMember];
+  DMMessageManager: [manager: typeof MessageManager, holds: typeof Message<false>];
+  EntitlementManager: [manager: typeof EntitlementManager, holds: typeof Entitlement];
   GuildBanManager: [manager: typeof GuildBanManager, holds: typeof GuildBan];
+  // TODO: GuildChannelManager: [manager: typeof GuildChannelManager, holds: typeof GuildChannel];
+  GuildEmojiManager: [manager: typeof GuildEmojiManager, holds: typeof GuildEmoji];
   GuildForumThreadManager: [manager: typeof GuildForumThreadManager, holds: typeof ThreadChannel<true>];
   GuildInviteManager: [manager: typeof GuildInviteManager, holds: typeof Invite];
+  // TODO: GuildManager: [manager: typeof GuildManager, holds: typeof Guild];
+  GuildMemberManager: [manager: typeof GuildMemberManager, holds: typeof GuildMember];
   GuildMessageManager: [manager: typeof GuildMessageManager, holds: typeof Message<true>];
   GuildScheduledEventManager: [manager: typeof GuildScheduledEventManager, holds: typeof GuildScheduledEvent];
   GuildStickerManager: [manager: typeof GuildStickerManager, holds: typeof Sticker];
