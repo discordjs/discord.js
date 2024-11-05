@@ -5741,7 +5741,7 @@ export type GuildAuditLogsResolvable = AuditLogEvent | null;
 export type GuildAuditLogsTargetType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][0] | 'Unknown';
 
 export type GuildAuditLogsTargets = {
-  [key in GuildAuditLogsTargetType]: key;
+  [Key in GuildAuditLogsTargetType]: Key;
 };
 
 export type GuildBanResolvable = GuildBan | UserResolvable;
