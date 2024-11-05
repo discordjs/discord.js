@@ -235,7 +235,7 @@ class GuildMemberManager extends CachedManager {
 
     return new Promise((resolve, reject) => {
       if (!query && !users) query = '';
-      this.guild.shard.send({
+      this.guild.client.ws.send(this.guild.shardId, {
         op: GatewayOpcodes.RequestGuildMembers,
         d: {
           guild_id: this.guild.id,
@@ -535,7 +535,7 @@ class GuildMemberManager extends CachedManager {
    */
   async addRole(options) {
     const { user, role, reason } = options;
-    const userId = this.guild.members.resolveId(user);
+    const userId = this.resolveId(user);
     const roleId = this.guild.roles.resolveId(role);
     await this.client.rest.put(Routes.guildMemberRole(this.guild.id, userId, roleId), { reason });
 
@@ -549,7 +549,7 @@ class GuildMemberManager extends CachedManager {
    */
   async removeRole(options) {
     const { user, role, reason } = options;
-    const userId = this.guild.members.resolveId(user);
+    const userId = this.resolveId(user);
     const roleId = this.guild.roles.resolveId(role);
     await this.client.rest.delete(Routes.guildMemberRole(this.guild.id, userId, roleId), { reason });
 

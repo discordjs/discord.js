@@ -116,7 +116,7 @@ class Webhook {
     if ('source_channel' in data) {
       /**
        * The source channel of the webhook
-       * @type {?(NewsChannel|APIChannel)}
+       * @type {?(AnnouncementChannel|APIChannel)}
        */
       this.sourceChannel = this.client.channels?.resolve(data.source_channel?.id) ?? data.source_channel;
     } else {
@@ -149,7 +149,7 @@ class Webhook {
 
   /**
    * The channel the webhook belongs to
-   * @type {?(TextChannel|VoiceChannel|StageChannel|NewsChannel|ForumChannel|MediaChannel)}
+   * @type {?(TextChannel|VoiceChannel|StageChannel|AnnouncementChannel|ForumChannel|MediaChannel)}
    * @readonly
    */
   get channel() {

@@ -75,7 +75,7 @@ const Messages = {
   [DjsErrorCodes.InvalidType]: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
   [DjsErrorCodes.InvalidElement]: (type, name, elem) => `Supplied ${type} ${name} includes an invalid element: ${elem}`,
 
-  [DjsErrorCodes.MessageThreadParent]: 'The message was not sent in a guild text or news channel',
+  [DjsErrorCodes.MessageThreadParent]: 'The message was not sent in a guild text or announcement channel',
   [DjsErrorCodes.MessageExistingThread]: 'The message already has a thread',
   [DjsErrorCodes.ThreadInvitableType]: type => `Invitable cannot be edited on ${type}`,
 
