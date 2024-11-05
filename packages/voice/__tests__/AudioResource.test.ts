@@ -2,12 +2,12 @@ import { Buffer } from 'node:buffer';
 import process from 'node:process';
 import { PassThrough, Readable } from 'node:stream';
 import { opus, VolumeTransformer } from 'prism-media';
+import { describe, test, expect, vitest, type MockedFunction, beforeAll, beforeEach } from 'vitest';
 import { SILENCE_FRAME } from '../src/audio/AudioPlayer';
 import { AudioResource, createAudioResource, NO_CONSTRAINT, VOLUME_CONSTRAINT } from '../src/audio/AudioResource';
 import { findPipeline as _findPipeline, StreamType, TransformerType, type Edge } from '../src/audio/TransformerGraph';
 
-jest.mock('prism-media');
-jest.mock('../src/audio/TransformerGraph');
+vitest.mock('../src/audio/TransformerGraph');
 
 async function wait() {
 	// eslint-disable-next-line no-promise-executor-return
@@ -22,7 +22,7 @@ async function started(resource: AudioResource) {
 	return resource;
 }
 
-const findPipeline = _findPipeline as unknown as jest.MockedFunction<typeof _findPipeline>;
+const findPipeline = _findPipeline as unknown as MockedFunction<typeof _findPipeline>;
 
 beforeAll(() => {
 	// @ts-expect-error: No type
@@ -37,7 +37,8 @@ beforeAll(() => {
 		if (constraint === VOLUME_CONSTRAINT) {
 			base.push({
 				cost: 1,
-				transformer: () => new VolumeTransformer({} as any),
+				// Transformer type shouldn't matter: we are not testing prism-media, but rather the expectation that the stream is VolumeTransformer
+				transformer: () => new VolumeTransformer({ type: 's16le' } as any),
 				type: TransformerType.InlineVolume,
 			});
 		}
@@ -96,7 +97,8 @@ describe('createAudioResource', () => {
 	});
 
 	test('Infers from VolumeTransformer', () => {
-		const stream = new VolumeTransformer({} as any);
+		// Transformer type shouldn't matter: we are not testing prism-media, but rather the expectation that the stream is VolumeTransformer
+		const stream = new VolumeTransformer({ type: 's16le' } as any);
 		const resource = createAudioResource(stream, { inlineVolume: true });
 		expect(findPipeline).toHaveBeenCalledWith(StreamType.Raw, NO_CONSTRAINT);
 		expect(resource.volume).toEqual(stream);

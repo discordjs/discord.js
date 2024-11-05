@@ -43,12 +43,12 @@ class GuildInviteManager extends CachedManager {
    * Data that can be resolved to a channel that an invite can be created on. This can be:
    * * TextChannel
    * * VoiceChannel
-   * * NewsChannel
+   * * AnnouncementChannel
    * * StageChannel
    * * ForumChannel
    * * MediaChannel
    * * Snowflake
-   * @typedef {TextChannel|VoiceChannel|NewsChannel|StageChannel|ForumChannel|MediaChannel|Snowflake}
+   * @typedef {TextChannel|VoiceChannel|AnnouncementChannel|StageChannel|ForumChannel|MediaChannel|Snowflake}
    * GuildInvitableChannelResolvable
    */
 

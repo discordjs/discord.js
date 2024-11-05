@@ -2,8 +2,7 @@
 
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
-const { DiscordAPIError } = require('@discordjs/rest');
-const { RESTJSONErrorCodes, Routes } = require('discord-api-types/v10');
+const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const { Role } = require('../structures/Role');
@@ -74,17 +73,8 @@ class RoleManager extends CachedManager {
       if (existing) return existing;
     }
 
-    try {
-      const data = await this.client.rest.get(Routes.guildRole(this.guild.id, id));
-      return this._add(data, cache);
-    } catch (error) {
-      // TODO: Remove this catch in the next major version
-      if (error instanceof DiscordAPIError && error.code === RESTJSONErrorCodes.UnknownRole) {
-        return null;
-      }
-
-      throw error;
-    }
+    const data = await this.client.rest.get(Routes.guildRole(this.guild.id, id));
+    return this._add(data, cache);
   }
 
   /**
