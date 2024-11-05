@@ -2166,13 +2166,13 @@ expectType<Promise<{ channel: GuildTextBasedChannel | { id: Snowflake }; count: 
   guild.fetchAuditLogs({ type: AuditLogEvent.MessageDelete }).then(al => al.entries.first()?.extra),
 );
 
-expectType<Promise<User | null | undefined>>(
+expectType<Promise<User | PartialUser | null | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()?.target),
 );
 expectType<Promise<StageInstance | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.StageInstanceCreate }).then(al => al.entries.first()?.target),
 );
-expectType<Promise<User | undefined>>(
+expectType<Promise<User | null | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MessageDelete }).then(al => al.entries.first()?.target),
 );
 
