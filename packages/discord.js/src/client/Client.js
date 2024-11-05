@@ -106,14 +106,6 @@ class Client extends BaseClient {
     this.actions = new ActionsManager(this);
 
     /**
-     * Shard helpers for the client (only if the process was spawned from a {@link ShardingManager})
-     * @type {?ShardClientUtil}
-     */
-    this.shard = process.env.SHARDING_MANAGER
-      ? ShardClientUtil.singleton(this, process.env.SHARDING_MANAGER_MODE)
-      : null;
-
-    /**
      * The user manager of this client
      * @type {UserManager}
      */
@@ -169,6 +161,14 @@ class Client extends BaseClient {
      * @type {WebSocketManager}
      */
     this.ws = new WebSocketManager(wsOptions);
+
+    /**
+     * Shard helpers for the client (only if the process was spawned from a {@link ShardingManager})
+     * @type {?ShardClientUtil}
+     */
+    this.shard = process.env.SHARDING_MANAGER
+      ? ShardClientUtil.singleton(this, process.env.SHARDING_MANAGER_MODE)
+      : null;
 
     /**
      * The voice manager of the client
@@ -414,12 +414,11 @@ class Client extends BaseClient {
 
   /**
    * The average ping of all WebSocketShards
-   * @type {number}
+   * @type {?number}
    * @readonly
    */
   get ping() {
-    const sum = this.pings.reduce((a, b) => a + b, 0);
-    return sum / this.pings.size;
+    return this.pings.size ? this.pings.reduce((a, b) => a + b, 0) / this.pings.size : null;
   }
 
   /**

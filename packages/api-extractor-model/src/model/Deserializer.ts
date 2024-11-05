@@ -262,6 +262,7 @@ function mapParam(
 			startIndex: 1 + index + paramTokens.slice(0, index).reduce((akk, num) => akk + num, 0),
 			endIndex: 1 + index + paramTokens.slice(0, index + 1).reduce((akk, num) => akk + num, 0),
 		},
+		defaultValue: param.default,
 	};
 }
 
