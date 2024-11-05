@@ -369,9 +369,9 @@ class GuildAuditLogsEntry {
       this.target = guild.roles.cache.get(data.target_id) ?? { id: data.target_id };
     } else if (targetType === Targets.Emoji) {
       this.target = guild.emojis.cache.get(data.target_id) ?? { id: data.target_id };
-    // TODO: Uncomment after https://github.com/discordjs/discord.js/pull/10590 is merged
-    // } else if (targetType === Targets.SoundboardSound) {
-    //   this.target = guild.soundboardSounds.cache.get(data.target_id) ?? { id: data.target_id };
+      // TODO: Uncomment after https://github.com/discordjs/discord.js/pull/10590 is merged
+      // } else if (targetType === Targets.SoundboardSound) {
+      //   this.target = guild.soundboardSounds.cache.get(data.target_id) ?? { id: data.target_id };
     } else if (data.target_id) {
       this.target = { id: data.target_id };
     }
