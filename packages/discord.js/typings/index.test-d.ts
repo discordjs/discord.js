@@ -2172,7 +2172,7 @@ expectType<Promise<User | PartialUser | null | undefined>>(
 expectType<Promise<StageInstance | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.StageInstanceCreate }).then(al => al.entries.first()?.target),
 );
-expectType<Promise<User | null | undefined>>(
+expectType<Promise<GuildTextBasedChannel | { id: Snowflake } | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MessageDelete }).then(al => al.entries.first()?.target),
 );
 
