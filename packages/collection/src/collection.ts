@@ -1,14 +1,4 @@
 /* eslint-disable no-param-reassign */
-/**
- * @internal
- */
-export interface CollectionConstructor {
-	new (): Collection<unknown, unknown>;
-	new <Key, Value>(entries?: readonly (readonly [Key, Value])[] | null): Collection<Key, Value>;
-	new <Key, Value>(iterable: Iterable<readonly [Key, Value]>): Collection<Key, Value>;
-	readonly prototype: Collection<unknown, unknown>;
-	readonly [Symbol.species]: CollectionConstructor;
-}
 
 /**
  * Represents an immutable version of a collection
@@ -19,13 +9,13 @@ export type ReadonlyCollection<Key, Value> = Omit<
 > &
 	ReadonlyMap<Key, Value>;
 
-/**
- * Separate interface for the constructor so that emitted js does not have a constructor that overwrites itself
- *
- * @internal
- */
-export interface Collection<Key, Value> extends Map<Key, Value> {
-	constructor: CollectionConstructor;
+export interface Collection<Key, Value> {
+	/**
+	 * Ambient declaration to allow `this.constructor[@@species]` in class methods.
+	 *
+	 * @internal
+	 */
+	constructor: typeof Collection & { readonly [Symbol.species]: typeof Collection };
 }
 
 /**
