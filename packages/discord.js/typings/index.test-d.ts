@@ -2172,8 +2172,11 @@ expectType<Promise<User | PartialUser | null | undefined>>(
 expectType<Promise<StageInstance | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.StageInstanceCreate }).then(al => al.entries.first()?.target),
 );
-expectType<Promise<GuildTextBasedChannel | { id: Snowflake } | undefined>>(
+expectType<Promise<User | null | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MessageDelete }).then(al => al.entries.first()?.target),
+);
+expectType<Promise<Guild | { id: string } | undefined>>(
+  guild.fetchAuditLogs({ type: AuditLogEvent.MessageBulkDelete }).then(al => al.entries.first()?.target),
 );
 
 declare const AuditLogChange: AuditLogChange;
