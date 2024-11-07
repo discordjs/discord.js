@@ -85,9 +85,16 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public first(amount?: number): Value | Value[] | undefined {
 		if (amount === undefined) return this.values().next().value;
 		if (amount < 0) return this.last(amount * -1);
-		amount = Math.min(this.size, amount);
+		if (amount >= this.size) return [...this.values()];
+
 		const iter = this.values();
-		return Array.from({ length: amount }, (): Value => iter.next().value!);
+		// eslint-disable-next-line unicorn/no-new-array
+		const results: Value[] = new Array(amount);
+		for (let index = 0; index < amount; index++) {
+			results[index] = iter.next().value!;
+		}
+
+		return results;
 	}
 
 	/**
@@ -102,9 +109,16 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public firstKey(amount?: number): Key | Key[] | undefined {
 		if (amount === undefined) return this.keys().next().value;
 		if (amount < 0) return this.lastKey(amount * -1);
-		amount = Math.min(this.size, amount);
+		if (amount >= this.size) return [...this.keys()];
+
 		const iter = this.keys();
-		return Array.from({ length: amount }, (): Key => iter.next().value!);
+		// eslint-disable-next-line unicorn/no-new-array
+		const results: Key[] = new Array(amount);
+		for (let index = 0; index < amount; index++) {
+			results[index] = iter.next().value!;
+		}
+
+		return results;
 	}
 
 	/**
@@ -117,11 +131,12 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public last(): Value | undefined;
 	public last(amount: number): Value[];
 	public last(amount?: number): Value | Value[] | undefined {
-		const arr = [...this.values()];
-		if (amount === undefined) return arr[arr.length - 1];
-		if (amount < 0) return this.first(amount * -1);
+		if (amount === undefined) return this.at(-1);
 		if (!amount) return [];
-		return arr.slice(-amount);
+		if (amount < 0) return this.first(amount * -1);
+
+		const arr = [...this.values()];
+		return arr.slice(amount * -1);
 	}
 
 	/**
@@ -134,11 +149,12 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public lastKey(): Key | undefined;
 	public lastKey(amount: number): Key[];
 	public lastKey(amount?: number): Key | Key[] | undefined {
-		const arr = [...this.keys()];
-		if (amount === undefined) return arr[arr.length - 1];
-		if (amount < 0) return this.firstKey(amount * -1);
+		if (amount === undefined) return this.keyAt(-1);
 		if (!amount) return [];
-		return arr.slice(-amount);
+		if (amount < 0) return this.firstKey(amount * -1);
+
+		const arr = [...this.keys()];
+		return arr.slice(amount * -1);
 	}
 
 	/**
@@ -148,10 +164,21 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	 *
 	 * @param index - The index of the element to obtain
 	 */
-	public at(index: number) {
-		index = Math.floor(index);
-		const arr = [...this.values()];
-		return arr.at(index);
+	public at(index: number): Value | undefined {
+		index = Math.trunc(index);
+		if (index >= 0) {
+			if (index >= this.size) return undefined;
+		} else {
+			index += this.size;
+			if (index < 0) return undefined;
+		}
+
+		const iter = this.values();
+		for (let skip = 0; skip < index; skip++) {
+			iter.next();
+		}
+
+		return iter.next().value!;
 	}
 
 	/**
@@ -161,10 +188,21 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	 *
 	 * @param index - The index of the key to obtain
 	 */
-	public keyAt(index: number) {
-		index = Math.floor(index);
-		const arr = [...this.keys()];
-		return arr.at(index);
+	public keyAt(index: number): Key | undefined {
+		index = Math.trunc(index);
+		if (index >= 0) {
+			if (index >= this.size) return undefined;
+		} else {
+			index += this.size;
+			if (index < 0) return undefined;
+		}
+
+		const iter = this.keys();
+		for (let skip = 0; skip < index; skip++) {
+			iter.next();
+		}
+
+		return iter.next().value!;
 	}
 
 	/**
@@ -176,13 +214,17 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public random(): Value | undefined;
 	public random(amount: number): Value[];
 	public random(amount?: number): Value | Value[] | undefined {
-		const arr = [...this.values()];
-		if (amount === undefined) return arr[Math.floor(Math.random() * arr.length)];
-		if (!arr.length || !amount) return [];
-		return Array.from(
-			{ length: Math.min(amount, arr.length) },
-			(): Value => arr.splice(Math.floor(Math.random() * arr.length), 1)[0]!,
-		);
+		if (amount === undefined) return this.at(Math.floor(Math.random() * this.size));
+		amount = Math.min(this.size, amount);
+		if (!amount) return [];
+
+		const values = [...this.values()];
+		for (let sourceIndex = 0; sourceIndex < amount; sourceIndex++) {
+			const targetIndex = sourceIndex + Math.floor(Math.random() * (values.length - sourceIndex));
+			[values[sourceIndex], values[targetIndex]] = [values[targetIndex]!, values[sourceIndex]!];
+		}
+
+		return values.slice(0, amount);
 	}
 
 	/**
@@ -194,13 +236,17 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public randomKey(): Key | undefined;
 	public randomKey(amount: number): Key[];
 	public randomKey(amount?: number): Key | Key[] | undefined {
-		const arr = [...this.keys()];
-		if (amount === undefined) return arr[Math.floor(Math.random() * arr.length)];
-		if (!arr.length || !amount) return [];
-		return Array.from(
-			{ length: Math.min(amount, arr.length) },
-			(): Key => arr.splice(Math.floor(Math.random() * arr.length), 1)[0]!,
-		);
+		if (amount === undefined) return this.keyAt(Math.floor(Math.random() * this.size));
+		amount = Math.min(this.size, amount);
+		if (!amount) return [];
+
+		const keys = [...this.keys()];
+		for (let sourceIndex = 0; sourceIndex < amount; sourceIndex++) {
+			const targetIndex = sourceIndex + Math.floor(Math.random() * (keys.length - sourceIndex));
+			[keys[sourceIndex], keys[targetIndex]] = [keys[targetIndex]!, keys[sourceIndex]!];
+		}
+
+		return keys.slice(0, amount);
 	}
 
 	/**
@@ -511,10 +557,14 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
 		const iter = this.entries();
-		return Array.from({ length: this.size }, (): NewValue => {
+		// eslint-disable-next-line unicorn/no-new-array
+		const results: NewValue[] = new Array(this.size);
+		for (let index = 0; index < this.size; index++) {
 			const [key, value] = iter.next().value!;
-			return fn(value, key, this);
-		});
+			results[index] = fn(value, key, this);
+		}
+
+		return results;
 	}
 
 	/**
@@ -959,12 +1009,14 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 			const hasInSelf = this.has(key);
 			const hasInOther = other.has(key);
 
-			if (hasInSelf && hasInOther) {
-				const result = whenInBoth(this.get(key)!, other.get(key)!, key);
-				if (result.keep) coll.set(key, result.value);
-			} else if (hasInSelf) {
-				const result = whenInSelf(this.get(key)!, key);
-				if (result.keep) coll.set(key, result.value);
+			if (hasInSelf) {
+				if (hasInOther) {
+					const result = whenInBoth(this.get(key)!, other.get(key)!, key);
+					if (result.keep) coll.set(key, result.value);
+				} else {
+					const result = whenInSelf(this.get(key)!, key);
+					if (result.keep) coll.set(key, result.value);
+				}
 			} else if (hasInOther) {
 				const result = whenInOther(other.get(key)!, key);
 				if (result.keep) coll.set(key, result.value);
@@ -995,8 +1047,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	 * collection.sorted((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
 	 * ```
 	 */
-	public toSorted(compareFunction: Comparator<Key, Value> = Collection.defaultSort) {
-		return new this.constructor[Symbol.species](this).sort((av, bv, ak, bk) => compareFunction(av, bv, ak, bk));
+	public toSorted(compareFunction: Comparator<Key, Value> = Collection.defaultSort): Collection<Key, Value> {
+		return new this.constructor[Symbol.species](this).sort(compareFunction);
 	}
 
 	public toJSON() {
