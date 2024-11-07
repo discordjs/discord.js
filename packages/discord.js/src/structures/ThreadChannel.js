@@ -288,10 +288,16 @@ class ThreadChannel extends BaseChannel {
   }
 
   /**
+   * Options used to fetch a thread owner.
+   * @typedef {BaseFetchOptions} FetchThreadOwnerOptions
+   * @property {boolean} [withMember] Whether to also return the guild member associated with this thread member
+   */
+
+  /**
    * Fetches the owner of this thread. If the thread member object isn't needed,
    * use {@link ThreadChannel#ownerId} instead.
-   * @param {BaseFetchOptions} [options] The options for fetching the member
-   * @returns {Promise<?ThreadMember>}
+   * @param {FetchThreadOwnerOptions} [options] Options for fetching the owner
+   * @returns {Promise<ThreadMember>}
    */
   async fetchOwner(options) {
     if (!this.ownerId) {

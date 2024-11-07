@@ -3318,7 +3318,7 @@ export class ThreadChannel<ThreadOnly extends boolean = boolean> extends BaseCha
     memberOrRole: GuildMemberResolvable | RoleResolvable,
     checkAdmin?: boolean,
   ): Readonly<PermissionsBitField> | null;
-  public fetchOwner(options?: BaseFetchOptions): Promise<ThreadMember | null>;
+  public fetchOwner(options?: FetchThreadOwnerOptions): Promise<ThreadMember>;
   public fetchStarterMessage(options?: BaseFetchOptions): Promise<Message<true> | null>;
   public setArchived(archived?: boolean, reason?: string): Promise<this>;
   public setAutoArchiveDuration(autoArchiveDuration: ThreadAutoArchiveDuration, reason?: string): Promise<this>;
@@ -5562,6 +5562,10 @@ export interface FetchReactionUsersOptions {
 
 export interface FetchThreadMemberOptions extends BaseFetchOptions {
   member: ThreadMemberResolvable;
+  withMember?: boolean;
+}
+
+export interface FetchThreadOwnerOptions extends BaseFetchOptions {
   withMember?: boolean;
 }
 
