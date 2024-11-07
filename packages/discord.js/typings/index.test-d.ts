@@ -2175,7 +2175,7 @@ expectType<Promise<StageInstance | undefined>>(
 expectType<Promise<User | null | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MessageDelete }).then(al => al.entries.first()?.target),
 );
-expectType<Promise<Guild | { id: string } | undefined>>(
+expectType<Promise<GuildTextBasedChannel | { id: string } | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MessageBulkDelete }).then(al => al.entries.first()?.target),
 );
 
