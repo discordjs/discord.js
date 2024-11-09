@@ -75,16 +75,18 @@ export class InteractionsAPI {
 		}: APIInteractionResponseCallbackData & RESTPostAPIInteractionCallbackQuery & { files?: RawFile[] },
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
-		return this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
-			query: makeURLSearchParams({ with_response }),
-			files,
-			auth: false,
-			body: {
-				type: InteractionResponseType.ChannelMessageWithSource,
-				data,
-			},
-			signal,
-		});
+		return with_response
+			? this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+					query: makeURLSearchParams({ with_response }),
+					files,
+					auth: false,
+					body: {
+						type: InteractionResponseType.ChannelMessageWithSource,
+						data,
+					},
+					signal,
+				})
+			: undefined;
 	}
 
 	/**
@@ -139,15 +141,17 @@ export class InteractionsAPI {
 		}: APIInteractionResponseDeferredChannelMessageWithSource['data'] & RESTPostAPIInteractionCallbackQuery = {},
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
-		return this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
-			query: makeURLSearchParams({ with_response }),
-			auth: false,
-			body: {
-				type: InteractionResponseType.DeferredChannelMessageWithSource,
-				data,
-			},
-			signal,
-		});
+		return with_response
+			? this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+					query: makeURLSearchParams({ with_response }),
+					auth: false,
+					body: {
+						type: InteractionResponseType.DeferredChannelMessageWithSource,
+						data,
+					},
+					signal,
+				})
+			: undefined;
 	}
 
 	/**
@@ -197,14 +201,16 @@ export class InteractionsAPI {
 		{ with_response }: RESTPostAPIInteractionCallbackQuery = {},
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
-		return this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
-			query: makeURLSearchParams({ with_response }),
-			auth: false,
-			body: {
-				type: InteractionResponseType.DeferredMessageUpdate,
-			},
-			signal,
-		});
+		return with_response
+			? this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+					query: makeURLSearchParams({ with_response }),
+					auth: false,
+					body: {
+						type: InteractionResponseType.DeferredMessageUpdate,
+					},
+					signal,
+				})
+			: undefined;
 	}
 
 	/**
@@ -342,15 +348,17 @@ export class InteractionsAPI {
 		}: APIInteractionResponseCallbackData & RESTPostAPIInteractionCallbackQuery & { files?: RawFile[] },
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
-		return this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
-			files,
-			auth: false,
-			body: {
-				type: InteractionResponseType.UpdateMessage,
-				data,
-			},
-			signal,
-		});
+		return with_response
+			? this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+					files,
+					auth: false,
+					body: {
+						type: InteractionResponseType.UpdateMessage,
+						data,
+					},
+					signal,
+				})
+			: undefined;
 	}
 
 	/**
@@ -383,7 +391,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		callbackData: APICommandAutocompleteInteractionResponseCallbackData &
-			RESTPostAPIInteractionCallbackQuery & { we_response?: false },
+			RESTPostAPIInteractionCallbackQuery & { with_response?: false },
 		options: Pick<RequestData, 'signal'>,
 	): Promise<void>;
 
@@ -405,14 +413,16 @@ export class InteractionsAPI {
 		}: APICommandAutocompleteInteractionResponseCallbackData & RESTPostAPIInteractionCallbackQuery,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
-		return this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
-			auth: false,
-			body: {
-				type: InteractionResponseType.ApplicationCommandAutocompleteResult,
-				data,
-			},
-			signal,
-		});
+		return with_response
+			? this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+					auth: false,
+					body: {
+						type: InteractionResponseType.ApplicationCommandAutocompleteResult,
+						data,
+					},
+					signal,
+				})
+			: undefined;
 	}
 
 	/**
@@ -444,7 +454,8 @@ export class InteractionsAPI {
 	public async createModal(
 		interactionId: Snowflake,
 		interactionToken: string,
-		body: APIModalInteractionResponseCallbackData & RESTPostAPIInteractionCallbackQuery & { with_response?: false },
+		callbackData: APIModalInteractionResponseCallbackData &
+			RESTPostAPIInteractionCallbackQuery & { with_response?: false },
 		options?: Pick<RequestData, 'signal'>,
 	): Promise<void>;
 	/**
@@ -462,14 +473,16 @@ export class InteractionsAPI {
 		{ with_response, ...data }: APIModalInteractionResponseCallbackData & RESTPostAPIInteractionCallbackQuery,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
-		return this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
-			auth: false,
-			body: {
-				type: InteractionResponseType.Modal,
-				data,
-			},
-			signal,
-		});
+		return with_response
+			? this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+					auth: false,
+					body: {
+						type: InteractionResponseType.Modal,
+						data,
+					},
+					signal,
+				})
+			: undefined;
 	}
 
 	/**
