@@ -169,31 +169,37 @@ describe('Message formatters', () => {
 	});
 
 	describe('formatEmoji', () => {
-		test('GIVEN static emojiId THEN returns "<:_:${emojiId}>"', () => {
-			expect<`<:_:851461487498493952>`>(formatEmoji('851461487498493952')).toEqual('<:_:851461487498493952>');
+		test('GIVEN static emojiId THEN returns "<:emoji:${emojiId}>"', () => {
+			expect<`<:emoji:851461487498493952>`>(formatEmoji('851461487498493952')).toEqual('<:emoji:851461487498493952>');
 		});
 
-		test('GIVEN static emojiId WITH animated explicitly false THEN returns "<:_:[emojiId]>"', () => {
-			expect<`<:_:851461487498493952>`>(formatEmoji('851461487498493952', false)).toEqual('<:_:851461487498493952>');
-		});
-
-		test('GIVEN animated emojiId THEN returns "<a:_:${emojiId}>"', () => {
-			expect<`<a:_:827220205352255549>`>(formatEmoji('827220205352255549', true)).toEqual('<a:_:827220205352255549>');
-		});
-
-		test('GIVEN static id in options object THEN returns "<:_:${id}>"', () => {
-			expect<`<:_:851461487498493952>`>(formatEmoji({ id: '851461487498493952' })).toEqual('<:_:851461487498493952>');
-		});
-
-		test('GIVEN static id in options object WITH animated explicitly false THEN returns "<:_:${id}>"', () => {
-			expect<`<:_:851461487498493952>`>(formatEmoji({ animated: false, id: '851461487498493952' })).toEqual(
-				'<:_:851461487498493952>',
+		test('GIVEN static emojiId WITH animated explicitly false THEN returns "<:emoji:[emojiId]>"', () => {
+			expect<`<:emoji:851461487498493952>`>(formatEmoji('851461487498493952', false)).toEqual(
+				'<:emoji:851461487498493952>',
 			);
 		});
 
-		test('GIVEN animated id in options object THEN returns "<a:_:${id}>"', () => {
-			expect<`<a:_:827220205352255549>`>(formatEmoji({ animated: true, id: '827220205352255549' })).toEqual(
-				'<a:_:827220205352255549>',
+		test('GIVEN animated emojiId THEN returns "<a:emoji:${emojiId}>"', () => {
+			expect<`<a:emoji:827220205352255549>`>(formatEmoji('827220205352255549', true)).toEqual(
+				'<a:emoji:827220205352255549>',
+			);
+		});
+
+		test('GIVEN static id in options object THEN returns "<:emoji:${id}>"', () => {
+			expect<`<:emoji:851461487498493952>`>(formatEmoji({ id: '851461487498493952' })).toEqual(
+				'<:emoji:851461487498493952>',
+			);
+		});
+
+		test('GIVEN static id in options object WITH animated explicitly false THEN returns "<:emoji:${id}>"', () => {
+			expect<`<:emoji:851461487498493952>`>(formatEmoji({ animated: false, id: '851461487498493952' })).toEqual(
+				'<:emoji:851461487498493952>',
+			);
+		});
+
+		test('GIVEN animated id in options object THEN returns "<a:emoji:${id}>"', () => {
+			expect<`<a:emoji:827220205352255549>`>(formatEmoji({ animated: true, id: '827220205352255549' })).toEqual(
+				'<a:emoji:827220205352255549>',
 			);
 		});
 
