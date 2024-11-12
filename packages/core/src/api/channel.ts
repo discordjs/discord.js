@@ -92,7 +92,7 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/message#get-reactions}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to get the reactions for
-	 * @param emoji - The emoji to get the reactions for. Encoding happens internally
+	 * @param emoji - The emoji to get the reactions for. URL encoding happens internally
 	 * @param query - The query options for fetching the reactions
 	 * @param options - The options for fetching the message reactions
 	 * @example
@@ -123,7 +123,7 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/message#delete-own-reaction}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reaction for
-	 * @param emoji - The emoji to delete the reaction for. Encoding happens internally
+	 * @param emoji - The emoji to delete the reaction for. URL encoding happens internally
 	 * @param options - The options for deleting the reaction
 	 * @example
 	 * ```ts
@@ -151,7 +151,7 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/message#delete-user-reaction}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reaction for
-	 * @param emoji - The emoji to delete the reaction for. Encoding happens internally
+	 * @param emoji - The emoji to delete the reaction for. URL encoding happens internally
 	 * @param userId - The id of the user to delete the reaction for
 	 * @param options - The options for deleting the reaction
 	 * @example
@@ -197,7 +197,7 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/message#delete-all-reactions-for-emoji}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reactions for
-	 * @param emoji - The emoji to delete the reactions for. Encoding happens internally
+	 * @param emoji - The emoji to delete the reactions for. URL encoding happens internally
 	 * @param options - The options for deleting the reactions
 	 * @example
 	 * ```ts
@@ -223,7 +223,7 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/message#create-reaction}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to add the reaction to
-	 * @param emoji - The emoji to add the reaction with. Encoding happens internally
+	 * @param emoji - The emoji to add the reaction with. URL encoding happens internally
 	 * @param options - The options for adding the reaction
 	 * @example
 	 * ```ts
