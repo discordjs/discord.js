@@ -92,9 +92,16 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/message#get-reactions}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to get the reactions for
-	 * @param emoji - The emoji to get the reactions for
+	 * @param emoji - The emoji to get the reactions for. Encoding happens internally
 	 * @param query - The query options for fetching the reactions
 	 * @param options - The options for fetching the message reactions
+	 * ```ts
+	 * // Unicode.
+	 * await api.channels.getMessageReactions('1234567890', '1234567890', '👍');
+	 *
+	 * // Custom emoji.
+	 * await api.channels.getMessageReactions('1234567890', '1234567890', 'emoji_name:1234567890');
+	 * ```
 	 */
 	public async getMessageReactions(
 		channelId: Snowflake,
@@ -115,8 +122,15 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/message#delete-own-reaction}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reaction for
-	 * @param emoji - The emoji to delete the reaction for
+	 * @param emoji - The emoji to delete the reaction for. Encoding happens internally
 	 * @param options - The options for deleting the reaction
+	 * ```ts
+	 * // Unicode.
+	 * await api.channels.deleteOwnMessageReaction('1234567890', '1234567890', '👍');
+	 *
+	 * // Custom emoji.
+	 * await api.channels.deleteOwnMessageReaction('1234567890', '1234567890', 'emoji_name:1234567890');
+	 * ```
 	 */
 	public async deleteOwnMessageReaction(
 		channelId: Snowflake,
@@ -135,9 +149,16 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/message#delete-user-reaction}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reaction for
-	 * @param emoji - The emoji to delete the reaction for
+	 * @param emoji - The emoji to delete the reaction for. Encoding happens internally
 	 * @param userId - The id of the user to delete the reaction for
 	 * @param options - The options for deleting the reaction
+	 * ```ts
+	 * // Unicode.
+	 * await api.channels.deleteUserMessageReaction('1234567890', '1234567890', '👍', '1234567890');
+	 *
+	 * // Custom emoji.
+	 * await api.channels.deleteUserMessageReaction('1234567890', '1234567890', 'emoji_name:1234567890', '1234567890');
+	 * ```
 	 */
 	public async deleteUserMessageReaction(
 		channelId: Snowflake,
@@ -173,8 +194,15 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/message#delete-all-reactions-for-emoji}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reactions for
-	 * @param emoji - The emoji to delete the reactions for
+	 * @param emoji - The emoji to delete the reactions for. Encoding happens internally
 	 * @param options - The options for deleting the reactions
+	 * ```ts
+	 * // Unicode.
+	 * await api.channels.deleteAllMessageReactionsForEmoji('1234567890', '1234567890', '👍');
+	 *
+	 * // Custom emoji.
+	 * await api.channels.deleteAllMessageReactionsForEmoji('1234567890', '1234567890', 'emoji_name:1234567890');
+	 * ```
 	 */
 	public async deleteAllMessageReactionsForEmoji(
 		channelId: Snowflake,
@@ -191,8 +219,16 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/message#create-reaction}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to add the reaction to
-	 * @param emoji - The emoji to add the reaction with
+	 * @param emoji - The emoji to add the reaction with. Encoding happens internally
 	 * @param options - The options for adding the reaction
+	 * @example
+	 * ```ts
+	 * // Unicode.
+	 * await api.channels.addMessageReaction('1234567890', '1234567890', '👍');
+	 *
+	 * // Custom emoji.
+	 * await api.channels.addMessageReaction('1234567890', '1234567890', 'emoji_name:1234567890');
+	 * ```
 	 */
 	public async addMessageReaction(
 		channelId: Snowflake,
