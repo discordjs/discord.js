@@ -95,6 +95,7 @@ export class ChannelsAPI {
 	 * @param emoji - The emoji to get the reactions for. Encoding happens internally
 	 * @param query - The query options for fetching the reactions
 	 * @param options - The options for fetching the message reactions
+	 * @example
 	 * ```ts
 	 * // Unicode.
 	 * await api.channels.getMessageReactions('1234567890', '1234567890', '👍');
@@ -124,6 +125,7 @@ export class ChannelsAPI {
 	 * @param messageId - The id of the message to delete the reaction for
 	 * @param emoji - The emoji to delete the reaction for. Encoding happens internally
 	 * @param options - The options for deleting the reaction
+	 * @example
 	 * ```ts
 	 * // Unicode.
 	 * await api.channels.deleteOwnMessageReaction('1234567890', '1234567890', '👍');
@@ -152,6 +154,7 @@ export class ChannelsAPI {
 	 * @param emoji - The emoji to delete the reaction for. Encoding happens internally
 	 * @param userId - The id of the user to delete the reaction for
 	 * @param options - The options for deleting the reaction
+	 * @example
 	 * ```ts
 	 * // Unicode.
 	 * await api.channels.deleteUserMessageReaction('1234567890', '1234567890', '👍', '1234567890');
@@ -196,6 +199,7 @@ export class ChannelsAPI {
 	 * @param messageId - The id of the message to delete the reactions for
 	 * @param emoji - The emoji to delete the reactions for. Encoding happens internally
 	 * @param options - The options for deleting the reactions
+	 * @example
 	 * ```ts
 	 * // Unicode.
 	 * await api.channels.deleteAllMessageReactionsForEmoji('1234567890', '1234567890', '👍');
