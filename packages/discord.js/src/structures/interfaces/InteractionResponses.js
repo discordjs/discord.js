@@ -98,6 +98,7 @@ class InteractionResponses {
     if (options.withResponse) {
       return new InteractionCallbackResponse(this.client, response);
     }
+
     return options.fetchReply ? this.fetchReply() : new InteractionResponse(this);
   }
 
@@ -237,9 +238,9 @@ class InteractionResponses {
 
     if (options.withResponse) {
       return new InteractionCallbackResponse(this.client, response);
-    } else {
-      return options.fetchReply ? this.fetchReply() : new InteractionResponse(this, this.message?.interaction?.id);
     }
+
+    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this, this.message?.interaction?.id);
   }
 
   /**
@@ -277,9 +278,9 @@ class InteractionResponses {
 
     if (options.withResponse) {
       return new InteractionCallbackResponse(this.client, response);
-    } else {
-      return options.fetchReply ? this.fetchReply() : new InteractionResponse(this, this.message.interaction?.id);
     }
+
+    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this, this.message.interaction?.id);
   }
 
   /**

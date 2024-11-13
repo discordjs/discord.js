@@ -2,6 +2,7 @@
 
 const InteractionCallback = require('./InteractionCallback');
 const InteractionCallbackResource = require('./InteractionCallbackResource');
+
 /**
  * Represents an interaction's response
  */
@@ -22,7 +23,7 @@ class InteractionCallbackResponse {
     this.interaction = new InteractionCallback(client, data.interaction);
 
     /**
-     * 	The resource that was created by the interaction response
+     * The resource that was created by the interaction response
      * @type {?InteractionCallbackResource}
      */
     this.resource = data.resource ? new InteractionCallbackResource(client, data.resource) : null;

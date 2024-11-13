@@ -28,38 +28,26 @@ class InteractionCallback {
     this.type = data.type;
 
     /**
-     * The id of the channel the original interaction was sent in
-     * @type {?Snowflake}
-     */
-    this.channelId = data.channel_id ?? null;
-
-    /**
-     * The id of the guild the original interaction was sent in
-     * @type {Snowflake}
-     */
-    this.guildId = data.guild_id ?? null;
-
-    /**
      * The instance id of the Activity if one was launched or joined
-     * @type {string}
+     * @type {?string}
      */
     this.activityInstanceId = data.activity_instance_id ?? null;
 
     /**
      * The id of the message that was created by the interaction
-     * @type {Snowflake}
+     * @type {?Snowflake}
      */
     this.responseMessageId = data.response_message_id ?? null;
 
     /**
      * Whether the message is in a loading state
-     * @type {boolean}
+     * @type {?boolean}
      */
     this.responseMessageLoading = data.response_message_loading ?? null;
 
     /**
      * Whether the response message was ephemeral
-     * @type {boolean}
+     * @type {?boolean}
      */
     this.responseMessageEphemeral = data.response_message_ephemeral ?? null;
   }
