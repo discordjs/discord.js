@@ -84,10 +84,9 @@ class Entitlement extends Base {
     if ('ends_at' in data) {
       /**
        * The timestamp at which this entitlement is no longer valid
-       * <info>This is only `null` for test entitlements</info>
        * @type {?number}
        */
-      this.endsTimestamp = Date.parse(data.ends_at);
+      this.endsTimestamp = data.ends_at ? Date.parse(data.ends_at) : null;
     } else {
       this.endsTimestamp ??= null;
     }
@@ -123,7 +122,6 @@ class Entitlement extends Base {
 
   /**
    * The end date at which this entitlement is no longer valid
-   * <info>This is only `null` for test entitlements</info>
    * @type {?Date}
    */
   get endsAt() {
