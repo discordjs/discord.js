@@ -4,7 +4,6 @@ const { makeURLSearchParams } = require('@discordjs/rest');
 const { isJSONEncodable } = require('@discordjs/util');
 const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../../errors');
-const MessageFlagsBitField = require('../../util/MessageFlagsBitField');
 const InteractionCallbackResponse = require('../InteractionCallbackResponse');
 const InteractionCollector = require('../InteractionCollector');
 const InteractionResponse = require('../InteractionResponse');
