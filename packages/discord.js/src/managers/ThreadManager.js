@@ -83,10 +83,15 @@ class ThreadManager extends CachedManager {
    *   .then(channel => console.log(channel.name))
    *   .catch(console.error);
    */
-  fetch(options, { cache, force } = {}) {
+  async fetch(options, { cache, force } = {}) {
     if (!options) return this.fetchActive(cache);
     const channel = this.client.channels.resolveId(options);
-    if (channel) return this.client.channels.fetch(channel, { cache, force });
+    if (channel) {
+      const threadChannel = await this.client.channels.fetch(channel, { cache, force });
+      if (threadChannel.parentId !== this.channel.id) throw new DiscordjsTypeError(ErrorCodes.NotAThreadOfParent);
+      return threadChannel;
+    }
+
     if (options.archived) {
       return this.fetchArchived(options.archived, cache);
     }

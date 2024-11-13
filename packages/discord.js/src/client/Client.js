@@ -106,29 +106,21 @@ class Client extends BaseClient {
     this.actions = new ActionsManager(this);
 
     /**
-     * Shard helpers for the client (only if the process was spawned from a {@link ShardingManager})
-     * @type {?ShardClientUtil}
-     */
-    this.shard = process.env.SHARDING_MANAGER
-      ? ShardClientUtil.singleton(this, process.env.SHARDING_MANAGER_MODE)
-      : null;
-
-    /**
-     * All of the {@link User} objects that have been cached at any point, mapped by their ids
+     * The user manager of this client
      * @type {UserManager}
      */
     this.users = new UserManager(this);
 
     /**
-     * All of the guilds the client is currently handling, mapped by their ids -
+     * A manager of all the guilds the client is currently handling -
      * as long as sharding isn't being used, this will be *every* guild the bot is a member of
      * @type {GuildManager}
      */
     this.guilds = new GuildManager(this);
 
     /**
-     * All of the {@link BaseChannel}s that the client is currently handling, mapped by their ids -
-     * as long as no sharding manager is being used, this will be *every* channel in *every* guild the bot
+     * All of the {@link BaseChannel}s that the client is currently handling -
+     * as long as sharding isn't being used, this will be *every* channel in *every* guild the bot
      * is a member of. Note that DM channels will not be initially cached, and thus not be present
      * in the Manager without their explicit fetching or use.
      * @type {ChannelManager}
@@ -169,6 +161,14 @@ class Client extends BaseClient {
      * @type {WebSocketManager}
      */
     this.ws = new WebSocketManager(wsOptions);
+
+    /**
+     * Shard helpers for the client (only if the process was spawned from a {@link ShardingManager})
+     * @type {?ShardClientUtil}
+     */
+    this.shard = process.env.SHARDING_MANAGER
+      ? ShardClientUtil.singleton(this, process.env.SHARDING_MANAGER_MODE)
+      : null;
 
     /**
      * The voice manager of the client
@@ -218,7 +218,7 @@ class Client extends BaseClient {
   }
 
   /**
-   * All custom emojis that the client has access to, mapped by their ids
+   * A manager of all the custom emojis that the client has access to
    * @type {BaseGuildEmojiManager}
    * @readonly
    */
@@ -414,12 +414,11 @@ class Client extends BaseClient {
 
   /**
    * The average ping of all WebSocketShards
-   * @type {number}
+   * @type {?number}
    * @readonly
    */
   get ping() {
-    const sum = this.pings.reduce((a, b) => a + b, 0);
-    return sum / this.pings.size;
+    return this.pings.size ? this.pings.reduce((a, b) => a + b, 0) / this.pings.size : null;
   }
 
   /**
