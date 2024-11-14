@@ -174,6 +174,8 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async deleteReply(message = '@original') {
+    if (!this.deferred && !this.replied) throw new DiscordjsError(ErrorCodes.InteractionNotReplied);
+
     await this.webhook.deleteMessage(message);
   }
 
