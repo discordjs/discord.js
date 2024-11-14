@@ -286,7 +286,7 @@ class InteractionResponses {
    * Shows a modal component
    * @param {ModalBuilder|ModalComponentData|APIModalInteractionResponseCallbackData} modal The modal to show
    * @param {ShowModalOptions} options The options for sending this interaction response
-   * @returns {Promise<InteractionCallbackResponse|void>}
+   * @returns {Promise<InteractionCallbackResponse|undefined>}
    */
   async showModal(modal, options = {}) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);

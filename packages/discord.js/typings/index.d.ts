@@ -2002,14 +2002,14 @@ export class InteractionCallback {
 }
 
 export class InteractionCallbackResponse {
-  public constructor(client: Client<true>, data: RESTPostAPIInteractionCallbackWithResponseResult);
+  private constructor(client: Client<true>, data: RESTPostAPIInteractionCallbackWithResponseResult);
   public readonly client: Client<true>;
   public interaction: InteractionCallback;
   public resource: InteractionCallbackResource | null;
 }
 
 export class InteractionCallbackResource {
-  public constructor(client: Client<true>, data: RESTAPIInteractionCallbackResourceObject);
+  private constructor(client: Client<true>, data: RESTAPIInteractionCallbackResourceObject);
   public activityInstance: ActivityInstance | null;
   public message: Message | null;
   public type: InteractionResponseType;
@@ -6652,6 +6652,7 @@ export interface SharedInteractionResponseOptions {
   withResponse?: boolean;
 }
 
+// tslint:disable-next-line no-empty-interface
 export interface ShowModalOptions extends SharedInteractionResponseOptions {}
 
 export { Snowflake };
