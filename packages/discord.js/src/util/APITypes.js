@@ -590,6 +590,11 @@
  */
 
 /**
+ * @external VoiceChannelEffectSendAnimationType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/VoiceChannelEffectSendAnimationType}
+ */
+
+/**
  * @external WebhookType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/WebhookType}
  */
