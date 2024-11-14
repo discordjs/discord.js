@@ -189,6 +189,8 @@ import {
   GuildScheduledEventRecurrenceRuleWeekday,
   GuildScheduledEventRecurrenceRuleMonth,
   GuildScheduledEventRecurrenceRuleFrequency,
+  VoiceChannelEffectSendAnimationType,
+  GatewayVoiceChannelEffectSendDispatchData,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -3662,6 +3664,19 @@ export class VoiceChannel extends BaseGuildVoiceChannel {
   public type: ChannelType.GuildVoice;
 }
 
+export class VoiceChannelEffect {
+  private constructor(data: GatewayVoiceChannelEffectSendDispatchData, guild: Guild);
+  public guild: Guild;
+  public channelId: Snowflake;
+  public userId: Snowflake;
+  public emoji: Emoji | null;
+  public animationType: VoiceChannelEffectSendAnimationType | null;
+  public animationId: number | null;
+  public soundId: Snowflake | number | null;
+  public soundVolume: number | null;
+  public get channel(): VoiceChannel | null;
+}
+
 export class VoiceRegion {
   private constructor(data: RawVoiceRegionData);
   public custom: boolean;
@@ -5419,6 +5434,7 @@ export interface ClientEvents {
   threadUpdate: [oldThread: AnyThreadChannel, newThread: AnyThreadChannel];
   typingStart: [typing: Typing];
   userUpdate: [oldUser: User | PartialUser, newUser: User];
+  voiceChannelEffectSend: [voiceChannelEffect: VoiceChannelEffect];
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
   /** @deprecated Use {@link ClientEvents.webhooksUpdate} instead. */
   webhookUpdate: ClientEvents['webhooksUpdate'];
@@ -5630,6 +5646,7 @@ export enum Events {
   ThreadMembersUpdate = 'threadMembersUpdate',
   UserUpdate = 'userUpdate',
   PresenceUpdate = 'presenceUpdate',
+  VoiceChannelEffectSend = 'voiceChannelEffectSend',
   VoiceServerUpdate = 'voiceServerUpdate',
   VoiceStateUpdate = 'voiceStateUpdate',
   TypingStart = 'typingStart',
