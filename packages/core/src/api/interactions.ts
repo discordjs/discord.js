@@ -54,7 +54,7 @@ export class InteractionsAPI {
 		body: APIInteractionResponseCallbackData &
 			RESTPostAPIInteractionCallbackQuery & { files?: RawFile[]; with_response?: false },
 		options?: Pick<RequestData, 'signal'>,
-	): Promise<void>;
+	): Promise<undefined>;
 
 	public async reply(
 		interactionId: Snowflake,
@@ -66,18 +66,18 @@ export class InteractionsAPI {
 		}: APIInteractionResponseCallbackData & RESTPostAPIInteractionCallbackQuery & { files?: RawFile[] },
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
-		return with_response
-			? this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
-					query: makeURLSearchParams({ with_response }),
-					files,
-					auth: false,
-					body: {
-						type: InteractionResponseType.ChannelMessageWithSource,
-						data,
-					},
-					signal,
-				})
-			: undefined;
+		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			query: makeURLSearchParams({ with_response }),
+			files,
+			auth: false,
+			body: {
+				type: InteractionResponseType.ChannelMessageWithSource,
+				data,
+			},
+			signal,
+		});
+
+		return with_response ? response : undefined;
 	}
 
 	/**
@@ -112,7 +112,7 @@ export class InteractionsAPI {
 		body?: APIInteractionResponseDeferredChannelMessageWithSource['data'] &
 			RESTPostAPIInteractionCallbackQuery & { with_response?: false },
 		options?: Pick<RequestData, 'signal'>,
-	): Promise<void>;
+	): Promise<undefined>;
 
 	public async defer(
 		interactionId: Snowflake,
@@ -123,17 +123,17 @@ export class InteractionsAPI {
 		}: APIInteractionResponseDeferredChannelMessageWithSource['data'] & RESTPostAPIInteractionCallbackQuery = {},
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
-		return with_response
-			? this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
-					query: makeURLSearchParams({ with_response }),
-					auth: false,
-					body: {
-						type: InteractionResponseType.DeferredChannelMessageWithSource,
-						data,
-					},
-					signal,
-				})
-			: undefined;
+		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			query: makeURLSearchParams({ with_response }),
+			auth: false,
+			body: {
+				type: InteractionResponseType.DeferredChannelMessageWithSource,
+				data,
+			},
+			signal,
+		});
+
+		return with_response ? response : undefined;
 	}
 
 	/**
@@ -150,7 +150,7 @@ export class InteractionsAPI {
 		interactionToken: string,
 		body: RESTPostAPIInteractionCallbackQuery & { with_response: true },
 		options?: Pick<RequestData, 'signal'>,
-	): Promise<void>;
+	): Promise<undefined>;
 
 	/**
 	 * Defers an update from a message component interaction
@@ -174,16 +174,16 @@ export class InteractionsAPI {
 		{ with_response }: RESTPostAPIInteractionCallbackQuery = {},
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
-		return with_response
-			? this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
-					query: makeURLSearchParams({ with_response }),
-					auth: false,
-					body: {
-						type: InteractionResponseType.DeferredMessageUpdate,
-					},
-					signal,
-				})
-			: undefined;
+		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			query: makeURLSearchParams({ with_response }),
+			auth: false,
+			body: {
+				type: InteractionResponseType.DeferredMessageUpdate,
+			},
+			signal,
+		});
+
+		return with_response ? response : undefined;
 	}
 
 	/**
@@ -300,7 +300,7 @@ export class InteractionsAPI {
 		callbackData: APIInteractionResponseCallbackData &
 			RESTPostAPIInteractionCallbackQuery & { files?: RawFile[]; with_response?: false },
 		options: Pick<RequestData, 'signal'>,
-	): Promise<void>;
+	): Promise<undefined>;
 
 	public async updateMessage(
 		interactionId: Snowflake,
@@ -312,17 +312,17 @@ export class InteractionsAPI {
 		}: APIInteractionResponseCallbackData & RESTPostAPIInteractionCallbackQuery & { files?: RawFile[] },
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
-		return with_response
-			? this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
-					files,
-					auth: false,
-					body: {
-						type: InteractionResponseType.UpdateMessage,
-						data,
-					},
-					signal,
-				})
-			: undefined;
+		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			files,
+			auth: false,
+			body: {
+				type: InteractionResponseType.UpdateMessage,
+				data,
+			},
+			signal,
+		});
+
+		return with_response ? response : undefined;
 	}
 
 	/**
@@ -357,7 +357,7 @@ export class InteractionsAPI {
 		callbackData: APICommandAutocompleteInteractionResponseCallbackData &
 			RESTPostAPIInteractionCallbackQuery & { with_response?: false },
 		options: Pick<RequestData, 'signal'>,
-	): Promise<void>;
+	): Promise<undefined>;
 
 	public async createAutocompleteResponse(
 		interactionId: Snowflake,
@@ -368,16 +368,16 @@ export class InteractionsAPI {
 		}: APICommandAutocompleteInteractionResponseCallbackData & RESTPostAPIInteractionCallbackQuery,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
-		return with_response
-			? this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
-					auth: false,
-					body: {
-						type: InteractionResponseType.ApplicationCommandAutocompleteResult,
-						data,
-					},
-					signal,
-				})
-			: undefined;
+		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			auth: false,
+			body: {
+				type: InteractionResponseType.ApplicationCommandAutocompleteResult,
+				data,
+			},
+			signal,
+		});
+
+		return with_response ? response : undefined;
 	}
 
 	/**
@@ -412,7 +412,7 @@ export class InteractionsAPI {
 		callbackData: APIModalInteractionResponseCallbackData &
 			RESTPostAPIInteractionCallbackQuery & { with_response?: false },
 		options?: Pick<RequestData, 'signal'>,
-	): Promise<void>;
+	): Promise<undefined>;
 
 	public async createModal(
 		interactionId: Snowflake,
@@ -420,16 +420,16 @@ export class InteractionsAPI {
 		{ with_response, ...data }: APIModalInteractionResponseCallbackData & RESTPostAPIInteractionCallbackQuery,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
-		return with_response
-			? this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
-					auth: false,
-					body: {
-						type: InteractionResponseType.Modal,
-						data,
-					},
-					signal,
-				})
-			: undefined;
+		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			auth: false,
+			body: {
+				type: InteractionResponseType.Modal,
+				data,
+			},
+			signal,
+		});
+
+		return with_response ? response : undefined;
 	}
 
 	/**
