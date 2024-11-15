@@ -26,7 +26,6 @@ class SubscriptionManager extends CachedManager {
   /**
    * Options used to fetch a subscription
    * @typedef {BaseFetchOptions} FetchSubscriptionOptions
-   * @property {boolean} [cache=true] Whether to cache the fetched subscriptions
    * @property {SKUResolvable} sku The SKU to fetch the subscription for
    * @property {Snowflake} subscriptionId The id of the subscription to fetch
    */
