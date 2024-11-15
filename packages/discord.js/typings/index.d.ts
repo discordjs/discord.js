@@ -4118,6 +4118,7 @@ export class EntitlementManager extends CachedManager<Snowflake, Entitlement, En
 }
 
 export interface FetchSubscriptionOptions extends BaseFetchOptions {
+  cache?: boolean;
   sku: SKUResolvable;
   subscriptionId: Snowflake;
 }
