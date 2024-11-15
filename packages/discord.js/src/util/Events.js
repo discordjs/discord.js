@@ -61,11 +61,6 @@
  * @property {string} MessageReactionRemoveEmoji messageReactionRemoveEmoji
  * @property {string} MessageUpdate messageUpdate
  * @property {string} PresenceUpdate presenceUpdate
- * @property {string} ShardDisconnect shardDisconnect
- * @property {string} ShardError shardError
- * @property {string} ShardReady shardReady
- * @property {string} ShardReconnecting shardReconnecting
- * @property {string} ShardResume shardResume
  * @property {string} StageInstanceCreate stageInstanceCreate
  * @property {string} StageInstanceDelete stageInstanceDelete
  * @property {string} StageInstanceUpdate stageInstanceUpdate
@@ -77,10 +72,11 @@
  * @property {string} ThreadUpdate threadUpdate
  * @property {string} TypingStart typingStart
  * @property {string} UserUpdate userUpdate
+ * @property {string} VoiceChannelEffectSend voiceChannelEffectSend
  * @property {string} VoiceServerUpdate voiceServerUpdate
  * @property {string} VoiceStateUpdate voiceStateUpdate
  * @property {string} Warn warn
- * @property {string} WebhooksUpdate webhookUpdate
+ * @property {string} WebhooksUpdate webhooksUpdate
  */
 
 // JSDoc for IntelliSense purposes
@@ -99,7 +95,7 @@ module.exports = {
   ChannelDelete: 'channelDelete',
   ChannelPinsUpdate: 'channelPinsUpdate',
   ChannelUpdate: 'channelUpdate',
-  ClientReady: 'ready',
+  ClientReady: 'clientReady',
   Debug: 'debug',
   EntitlementCreate: 'entitlementCreate',
   EntitlementUpdate: 'entitlementUpdate',
@@ -148,12 +144,6 @@ module.exports = {
   MessageReactionRemoveEmoji: 'messageReactionRemoveEmoji',
   MessageUpdate: 'messageUpdate',
   PresenceUpdate: 'presenceUpdate',
-  Raw: 'raw',
-  ShardDisconnect: 'shardDisconnect',
-  ShardError: 'shardError',
-  ShardReady: 'shardReady',
-  ShardReconnecting: 'shardReconnecting',
-  ShardResume: 'shardResume',
   StageInstanceCreate: 'stageInstanceCreate',
   StageInstanceDelete: 'stageInstanceDelete',
   StageInstanceUpdate: 'stageInstanceUpdate',
@@ -165,8 +155,9 @@ module.exports = {
   ThreadUpdate: 'threadUpdate',
   TypingStart: 'typingStart',
   UserUpdate: 'userUpdate',
+  VoiceChannelEffectSend: 'voiceChannelEffectSend',
   VoiceServerUpdate: 'voiceServerUpdate',
   VoiceStateUpdate: 'voiceStateUpdate',
   Warn: 'warn',
-  WebhooksUpdate: 'webhookUpdate',
+  WebhooksUpdate: 'webhooksUpdate',
 };

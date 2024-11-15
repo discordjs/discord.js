@@ -1,10 +1,8 @@
 'use strict';
 
-const { deprecate } = require('node:util');
 const { isJSONEncodable } = require('@discordjs/util');
 const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../../errors');
-const MessageFlagsBitField = require('../../util/MessageFlagsBitField');
 const InteractionCollector = require('../InteractionCollector');
 const InteractionResponse = require('../InteractionResponse');
 const MessagePayload = require('../MessagePayload');
@@ -24,7 +22,8 @@ class InteractionResponses {
   /**
    * Options for deferring the reply to an {@link BaseInteraction}.
    * @typedef {Object} InteractionDeferReplyOptions
-   * @property {boolean} [ephemeral] Whether the reply should be ephemeral
+   * @property {MessageFlagsResolvable} [flags] Flags for the reply.
+   * <info>Only `MessageFlags.Ephemeral` can be set.</info>
    * @property {boolean} [fetchReply] Whether to fetch the reply
    */
 
@@ -38,9 +37,8 @@ class InteractionResponses {
    * Options for a reply to a {@link BaseInteraction}.
    * @typedef {BaseMessageOptionsWithPoll} InteractionReplyOptions
    * @property {boolean} [tts=false] Whether the message should be spoken aloud
-   * @property {boolean} [ephemeral] Whether the reply should be ephemeral
    * @property {boolean} [fetchReply] Whether to fetch the reply
-   * @property {MessageFlags} [flags] Which flags to set for the message.
+   * @property {MessageFlagsResolvable} [flags] Which flags to set for the message.
    * <info>Only `MessageFlags.Ephemeral`, `MessageFlags.SuppressEmbeds`, and `MessageFlags.SuppressNotifications`
    * can be set.</info>
    */
@@ -62,24 +60,25 @@ class InteractionResponses {
    *   .catch(console.error)
    * @example
    * // Defer to send an ephemeral reply later
-   * interaction.deferReply({ ephemeral: true })
+   * interaction.deferReply({ flags: MessageFlags.Ephemeral })
    *   .then(console.log)
    *   .catch(console.error);
    */
   async deferReply(options = {}) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
-    this.ephemeral = options.ephemeral ?? false;
+
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
         type: InteractionResponseType.DeferredChannelMessageWithSource,
         data: {
-          flags: options.ephemeral ? MessageFlags.Ephemeral : undefined,
+          flags: options.flags,
         },
       },
       auth: false,
     });
-    this.deferred = true;
 
+    this.deferred = true;
+    this.ephemeral = Boolean(options.flags & MessageFlags.Ephemeral);
     return options.fetchReply ? this.fetchReply() : new InteractionResponse(this);
   }
 
@@ -97,7 +96,7 @@ class InteractionResponses {
    * // Create an ephemeral reply with an embed
    * const embed = new EmbedBuilder().setDescription('Pong!');
    *
-   * interaction.reply({ embeds: [embed], ephemeral: true })
+   * interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral })
    *   .then(() => console.log('Reply sent.'))
    *   .catch(console.error);
    */
@@ -110,8 +109,6 @@ class InteractionResponses {
 
     const { body: data, files } = await messagePayload.resolveBody().resolveFiles();
 
-    this.ephemeral = new MessageFlagsBitField(data.flags).has(MessageFlags.Ephemeral);
-
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
         type: InteractionResponseType.ChannelMessageWithSource,
@@ -120,8 +117,9 @@ class InteractionResponses {
       files,
       auth: false,
     });
-    this.replied = true;
 
+    this.ephemeral = Boolean(options.flags & MessageFlags.Ephemeral);
+    this.replied = true;
     return options.fetchReply ? this.fetchReply() : new InteractionResponse(this);
   }
 
@@ -176,6 +174,8 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async deleteReply(message = '@original') {
+    if (!this.deferred && !this.replied) throw new DiscordjsError(ErrorCodes.InteractionNotReplied);
+
     await this.webhook.deleteMessage(message);
   }
 
@@ -265,23 +265,6 @@ class InteractionResponses {
   }
 
   /**
-   * Responds to the interaction with an upgrade button.
-   * <info>Only available for applications with monetization enabled.</info>
-   * @deprecated Sending a premium-style button is the new Discord behaviour.
-   * @returns {Promise<void>}
-   */
-  async sendPremiumRequired() {
-    if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
-    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
-      body: {
-        type: InteractionResponseType.PremiumRequired,
-      },
-      auth: false,
-    });
-    this.replied = true;
-  }
-
-  /**
    * An object containing the same properties as {@link CollectorOptions}, but a few less:
    * @typedef {Object} AwaitModalSubmitOptions
    * @property {CollectorFilter} [filter] The filter applied to this collector
@@ -324,7 +307,6 @@ class InteractionResponses {
       'deferUpdate',
       'update',
       'showModal',
-      'sendPremiumRequired',
       'awaitModalSubmit',
     ];
 
@@ -338,11 +320,5 @@ class InteractionResponses {
     }
   }
 }
-
-InteractionResponses.prototype.sendPremiumRequired = deprecate(
-  InteractionResponses.prototype.sendPremiumRequired,
-  // eslint-disable-next-line max-len
-  'InteractionResponses#sendPremiumRequired() is deprecated. Sending a premium-style button is the new Discord behaviour.',
-);
 
 module.exports = InteractionResponses;
