@@ -2,7 +2,7 @@
 
 const { Routes } = require('discord-api-types/v10');
 const User = require('./User');
-const DataResolver = require('../util/DataResolver');
+const { resolveImage } = require('../util/DataResolver');
 
 /**
  * Represents the logged in client's Discord user.
@@ -47,6 +47,7 @@ class ClientUser extends User {
    * @typedef {Object} ClientUserEditOptions
    * @property {string} [username] The new username
    * @property {?(BufferResolvable|Base64Resolvable)} [avatar] The new avatar
+   * @property {?(BufferResolvable|Base64Resolvable)} [banner] The new banner
    */
 
   /**
@@ -54,12 +55,18 @@ class ClientUser extends User {
    * @param {ClientUserEditOptions} options The options to provide
    * @returns {Promise<ClientUser>}
    */
-  async edit(options) {
-    if (typeof options.avatar !== 'undefined') options.avatar = await DataResolver.resolveImage(options.avatar);
-    const newData = await this.client.rest.patch(Routes.user(), { body: options });
-    this.client.token = newData.token;
-    this.client.rest.setToken(newData.token);
-    const { updated } = this.client.actions.UserUpdate.handle(newData);
+  async edit({ username, avatar, banner }) {
+    const data = await this.client.rest.patch(Routes.user(), {
+      body: {
+        username,
+        avatar: avatar && (await resolveImage(avatar)),
+        banner: banner && (await resolveImage(banner)),
+      },
+    });
+
+    this.client.token = data.token;
+    this.client.rest.setToken(data.token);
+    const { updated } = this.client.actions.UserUpdate.handle(data);
     return updated ?? this;
   }
 
@@ -94,9 +101,24 @@ class ClientUser extends User {
   }
 
   /**
+   * Sets the banner of the logged in client.
+   * @param {?(BufferResolvable|Base64Resolvable)} banner The new banner
+   * @returns {Promise<ClientUser>}
+   * @example
+   * // Set banner
+   * client.user.setBanner('./banner.png')
+   *   .then(user => console.log(`New banner set!`))
+   *   .catch(console.error);
+   */
+  setBanner(banner) {
+    return this.edit({ banner });
+  }
+
+  /**
    * Options for setting activities
    * @typedef {Object} ActivitiesOptions
-   * @property {string} [name] Name of the activity
+   * @property {string} name Name of the activity
+   * @property {string} [state] State of the activity
    * @property {ActivityType} [type] Type of the activity
    * @property {string} [url] Twitch / YouTube stream URL
    */
@@ -113,7 +135,7 @@ class ClientUser extends User {
   /**
    * Sets the full presence of the client user.
    * @param {PresenceData} data Data for the presence
-   * @returns {ClientPresence}
+   * @returns {Promise<ClientPresence>}
    * @example
    * // Set the client user's presence
    * client.user.setPresence({ activities: [{ name: 'with discord.js' }], status: 'idle' });
@@ -135,7 +157,7 @@ class ClientUser extends User {
    * Sets the status of the client user.
    * @param {PresenceStatusData} status Status to change to
    * @param {number|number[]} [shardId] Shard id(s) to have the activity set on
-   * @returns {ClientPresence}
+   * @returns {Promise<ClientPresence>}
    * @example
    * // Set the client user's status
    * client.user.setStatus('idle');
@@ -147,7 +169,8 @@ class ClientUser extends User {
   /**
    * Options for setting an activity.
    * @typedef {Object} ActivityOptions
-   * @property {string} [name] Name of the activity
+   * @property {string} name Name of the activity
+   * @property {string} [state] State of the activity
    * @property {string} [url] Twitch / YouTube stream URL
    * @property {ActivityType} [type] Type of the activity
    * @property {number|number[]} [shardId] Shard Id(s) to have the activity set on
@@ -155,9 +178,9 @@ class ClientUser extends User {
 
   /**
    * Sets the activity the client user is playing.
-   * @param {string|ActivityOptions} [name] Activity being played, or options for setting the activity
+   * @param {string|ActivityOptions} name Activity being played, or options for setting the activity
    * @param {ActivityOptions} [options] Options for setting the activity
-   * @returns {ClientPresence}
+   * @returns {Promise<ClientPresence>}
    * @example
    * // Set the client user's activity
    * client.user.setActivity('discord.js', { type: ActivityType.Watching });
@@ -173,7 +196,7 @@ class ClientUser extends User {
    * Sets/removes the AFK flag for the client user.
    * @param {boolean} [afk=true] Whether or not the user is AFK
    * @param {number|number[]} [shardId] Shard Id(s) to have the AFK flag set on
-   * @returns {ClientPresence}
+   * @returns {Promise<ClientPresence>}
    */
   setAFK(afk = true, shardId) {
     return this.setPresence({ afk, shardId });

@@ -1,6 +1,13 @@
 'use strict';
 
 class ActionsManager {
+  // These symbols represent fully built data that we inject at times when calling actions manually.
+  // Action#getUser, for example, will return the injected data (which is assumed to be a built structure)
+  // instead of trying to make it from provided data
+  injectedUser = Symbol('djs.actions.injectedUser');
+  injectedChannel = Symbol('djs.actions.injectedChannel');
+  injectedMessage = Symbol('djs.actions.injectedMessage');
+
   constructor(client) {
     this.client = client;
 
@@ -12,6 +19,10 @@ class ActionsManager {
     this.register(require('./ChannelCreate'));
     this.register(require('./ChannelDelete'));
     this.register(require('./ChannelUpdate'));
+    this.register(require('./EntitlementCreate'));
+    this.register(require('./EntitlementDelete'));
+    this.register(require('./EntitlementUpdate'));
+    this.register(require('./GuildAuditLogEntryCreate'));
     this.register(require('./GuildBanAdd'));
     this.register(require('./GuildBanRemove'));
     this.register(require('./GuildChannelsPositionUpdate'));
@@ -43,6 +54,8 @@ class ActionsManager {
     this.register(require('./MessageCreate'));
     this.register(require('./MessageDelete'));
     this.register(require('./MessageDeleteBulk'));
+    this.register(require('./MessagePollVoteAdd'));
+    this.register(require('./MessagePollVoteRemove'));
     this.register(require('./MessageReactionAdd'));
     this.register(require('./MessageReactionRemove'));
     this.register(require('./MessageReactionRemoveAll'));

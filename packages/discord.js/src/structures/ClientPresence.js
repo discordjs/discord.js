@@ -1,6 +1,6 @@
 'use strict';
 
-const { GatewayOpcodes } = require('discord-api-types/v10');
+const { GatewayOpcodes, ActivityType } = require('discord-api-types/v10');
 const { Presence } = require('./Presence');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 
@@ -16,19 +16,19 @@ class ClientPresence extends Presence {
   /**
    * Sets the client's presence
    * @param {PresenceData} presence The data to set the presence to
-   * @returns {ClientPresence}
+   * @returns {Promise<ClientPresence>}
    */
-  set(presence) {
+  async set(presence) {
     const packet = this._parse(presence);
     this._patch(packet);
-    if (typeof presence.shardId === 'undefined') {
-      this.client.ws.broadcast({ op: GatewayOpcodes.PresenceUpdate, d: packet });
+    if (presence.shardId === undefined) {
+      await this.client._broadcast({ op: GatewayOpcodes.PresenceUpdate, d: packet });
     } else if (Array.isArray(presence.shardId)) {
-      for (const shardId of presence.shardId) {
-        this.client.ws.shards.get(shardId).send({ op: GatewayOpcodes.PresenceUpdate, d: packet });
-      }
+      await Promise.all(
+        presence.shardId.map(shardId => this.client.ws.send(shardId, { op: GatewayOpcodes.PresenceUpdate, d: packet })),
+      );
     } else {
-      this.client.ws.shards.get(presence.shardId).send({ op: GatewayOpcodes.PresenceUpdate, d: packet });
+      await this.client.ws.send(presence.shardId, { op: GatewayOpcodes.PresenceUpdate, d: packet });
     }
     return this;
   }
@@ -36,7 +36,7 @@ class ClientPresence extends Presence {
   /**
    * Parses presence data into a packet ready to be sent to Discord
    * @param {PresenceData} presence The data to parse
-   * @returns {APIPresence}
+   * @returns {GatewayPresenceUpdateData}
    * @private
    */
   _parse({ status, since, afk, activities }) {
@@ -51,20 +51,28 @@ class ClientPresence extends Presence {
         if (typeof activity.name !== 'string') {
           throw new DiscordjsTypeError(ErrorCodes.InvalidType, `activities[${i}].name`, 'string');
         }
-        activity.type ??= 0;
+
+        activity.type ??= ActivityType.Playing;
+
+        if (activity.type === ActivityType.Custom && !activity.state) {
+          activity.state = activity.name;
+          activity.name = 'Custom Status';
+        }
 
         data.activities.push({
           type: activity.type,
           name: activity.name,
+          state: activity.state,
           url: activity.url,
         });
       }
     } else if (!activities && (status || afk || since) && this.activities.length) {
       data.activities.push(
-        ...this.activities.map(a => ({
-          name: a.name,
-          type: a.type,
-          url: a.url ?? undefined,
+        ...this.activities.map(activity => ({
+          name: activity.name,
+          state: activity.state ?? undefined,
+          type: activity.type,
+          url: activity.url ?? undefined,
         })),
       );
     }
@@ -74,9 +82,3 @@ class ClientPresence extends Presence {
 }
 
 module.exports = ClientPresence;
-
-/* eslint-disable max-len */
-/**
- * @external APIPresence
- * @see {@link https://discord.com/developers/docs/rich-presence/how-to#updating-presence-update-presence-payload-fields}
- */

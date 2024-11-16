@@ -36,11 +36,11 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 						? 'private'
 						: undefined,
 				deprecated: signature.comment?.blockTags?.some((block) => block.tag === '@deprecated')
-					? signature.comment.blockTags
+					? (signature.comment.blockTags
 							.find((block) => block.tag === '@deprecated')
 							// eslint-disable-next-line no-param-reassign
 							?.content.reduce((prev, curr) => (prev += curr.text), '')
-							.trim() ?? true
+							.trim() ?? true)
 					: undefined,
 				type: signature.type
 					? new DocumentedVarType({ names: [parseType(signature.type)] }, this.config).serialize()
@@ -66,7 +66,7 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 										// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 										.trim() || undefined,
 								type: [[[(child.type as LiteralType | undefined)?.value]]],
-						  }))
+							}))
 						: undefined,
 				};
 			}
@@ -86,7 +86,7 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 							// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
 							child.signatures?.[0]?.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() ||
 							undefined,
-						optional: child.flags.isOptional || typeof child.defaultValue !== 'undefined',
+						optional: child.flags.isOptional || child.defaultValue !== undefined,
 						default:
 							(child.defaultValue === '...' ? undefined : child.defaultValue) ??
 							(child.comment?.blockTags
@@ -99,23 +99,23 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 						type: child.type
 							? new DocumentedVarType({ names: [parseType(child.type)] }, this.config).serialize()
 							: child.kindString === 'Method'
-							? new DocumentedVarType(
-									{
-										names: [
-											parseType({
-												type: 'reflection',
-												declaration: child,
-											}),
-										],
-										description: child.signatures?.[0]?.comment?.blockTags
-											?.find((block) => block.tag === '@returns')
-											// eslint-disable-next-line no-param-reassign
-											?.content.reduce((prev, curr) => (prev += curr.text), '')
-											.trim(),
-									},
-									this.config,
-							  ).serialize()
-							: undefined,
+								? new DocumentedVarType(
+										{
+											names: [
+												parseType({
+													type: 'reflection',
+													declaration: child,
+												}),
+											],
+											description: child.signatures?.[0]?.comment?.blockTags
+												?.find((block) => block.tag === '@returns')
+												// eslint-disable-next-line no-param-reassign
+												?.content.reduce((prev, curr) => (prev += curr.text), '')
+												.trim(),
+										},
+										this.config,
+									).serialize()
+								: undefined,
 					}));
 
 					return {
@@ -131,7 +131,7 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 						name: param.name,
 						// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, no-param-reassign
 						description: param.comment?.summary?.reduce((prev, curr) => (prev += curr.text), '').trim() || undefined,
-						optional: param.flags.isOptional || typeof param.defaultValue !== 'undefined',
+						optional: param.flags.isOptional || param.defaultValue !== undefined,
 						default:
 							(param.defaultValue === '...' ? undefined : param.defaultValue) ??
 							(param.comment?.blockTags
@@ -163,11 +163,11 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 								? 'private'
 								: undefined,
 						deprecated: sig?.comment?.blockTags?.some((block) => block.tag === '@deprecated')
-							? sig.comment.blockTags
+							? (sig.comment.blockTags
 									.find((block) => block.tag === '@deprecated')
 									// eslint-disable-next-line no-param-reassign
 									?.content.reduce((prev, curr) => (prev += curr.text), '')
-									.trim() ?? true
+									.trim() ?? true)
 							: undefined,
 						params,
 						returns: sig?.type
@@ -185,7 +185,7 @@ export class DocumentedTypeDef extends DocumentedItem<DeclarationReflection | Ty
 										},
 										this.config,
 									).serialize(),
-							  ]
+								]
 							: undefined,
 						returnsDescription:
 							sig?.comment?.blockTags

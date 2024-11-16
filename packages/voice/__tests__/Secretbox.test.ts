@@ -1,8 +1,9 @@
+import { test, expect, vitest } from 'vitest';
 import { methods } from '../src/util/Secretbox';
 
-jest.mock('tweetnacl');
+vitest.mock('tweetnacl');
 
 test('Does not throw error with a package installed', () => {
-	// @ts-expect-error: Unknown type
-	expect(() => methods.open()).not.toThrowError();
+	// @ts-expect-error We are testing
+	expect(() => methods.open()).toThrow(TypeError);
 });

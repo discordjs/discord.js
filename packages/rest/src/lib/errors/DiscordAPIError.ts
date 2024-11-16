@@ -1,4 +1,4 @@
-import type { InternalRequest, RawFile } from '../RequestManager.js';
+import type { InternalRequest, RawFile } from '../utils/types.js';
 
 interface DiscordErrorFieldInformation {
 	code: string;
@@ -93,10 +93,10 @@ export class DiscordAPIError extends Error {
 			const nextKey = otherKey.startsWith('_')
 				? key
 				: key
-				? Number.isNaN(Number(otherKey))
-					? `${key}.${otherKey}`
-					: `${key}[${otherKey}]`
-				: otherKey;
+					? Number.isNaN(Number(otherKey))
+						? `${key}.${otherKey}`
+						: `${key}[${otherKey}]`
+					: otherKey;
 
 			if (typeof val === 'string') {
 				yield val;

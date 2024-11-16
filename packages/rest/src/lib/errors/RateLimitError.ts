@@ -1,4 +1,4 @@
-import type { RateLimitData } from '../REST';
+import type { RateLimitData } from '../utils/types.js';
 
 export class RateLimitError extends Error implements RateLimitData {
 	public timeToReset: number;
@@ -17,7 +17,25 @@ export class RateLimitError extends Error implements RateLimitData {
 
 	public global: boolean;
 
-	public constructor({ timeToReset, limit, method, hash, url, route, majorParameter, global }: RateLimitData) {
+	public retryAfter: number;
+
+	public sublimitTimeout: number;
+
+	public scope: RateLimitData['scope'];
+
+	public constructor({
+		timeToReset,
+		limit,
+		method,
+		hash,
+		url,
+		route,
+		majorParameter,
+		global,
+		retryAfter,
+		sublimitTimeout,
+		scope,
+	}: RateLimitData) {
 		super();
 		this.timeToReset = timeToReset;
 		this.limit = limit;
@@ -27,6 +45,9 @@ export class RateLimitError extends Error implements RateLimitData {
 		this.route = route;
 		this.majorParameter = majorParameter;
 		this.global = global;
+		this.retryAfter = retryAfter;
+		this.sublimitTimeout = sublimitTimeout;
+		this.scope = scope;
 	}
 
 	/**

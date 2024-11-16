@@ -1,12 +1,14 @@
 {
+	"$schema": "https://json.schemastore.org/tsconfig.json",
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
 		"lib": ["ESNext", "DOM", "DOM.Iterable"],
-		"isolatedModules": true,
 		"jsx": "preserve",
 		"baseUrl": ".",
+		"outDir": "dist",
 		"noEmit": true,
-		"allowJs": false,
+		"esModuleInterop": true,
+		"allowJs": true,
 		"incremental": true,
 		"skipLibCheck": true,
 		"plugins": [
@@ -18,6 +20,15 @@
 			"~/*": ["./src/*"]
 		}
 	},
-	"include": ["src/**/*.ts", "src/**/*.tsx", "next-env.d.ts", "types.d.ts", ".next/types/**/*.ts"],
+	"include": [
+		"src/**/*.ts",
+		"src/**/*.tsx",
+		"src/**/*.js",
+		"src/**/*.jsx",
+		"src/**/*.cjs",
+		"src/**/*.mjs",
+		"next-env.d.ts",
+		".next/types/**/*.ts"
+	],
 	"exclude": ["node_modules"]
 }

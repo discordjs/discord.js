@@ -3,6 +3,10 @@
 /**
  * @typedef {Object} Events
  * @property {string} ApplicationCommandPermissionsUpdate applicationCommandPermissionsUpdate
+ * @property {string} AutoModerationActionExecution autoModerationActionExecution
+ * @property {string} AutoModerationRuleCreate autoModerationRuleCreate
+ * @property {string} AutoModerationRuleDelete autoModerationRuleDelete
+ * @property {string} AutoModerationRuleUpdate autoModerationRuleUpdate
  * @property {string} CacheSweep cacheSweep
  * @property {string} ChannelCreate channelCreate
  * @property {string} ChannelDelete channelDelete
@@ -10,7 +14,12 @@
  * @property {string} ChannelUpdate channelUpdate
  * @property {string} ClientReady ready
  * @property {string} Debug debug
+ * @property {string} EntitlementCreate entitlementCreate
+ * @property {string} EntitlementUpdate entitlementUpdate
+ * @property {string} EntitlementDelete entitlementDelete
  * @property {string} Error error
+ * @property {string} GuildAuditLogEntryCreate guildAuditLogEntryCreate
+ * @property {string} GuildAvailable guildAvailable
  * @property {string} GuildBanAdd guildBanAdd
  * @property {string} GuildBanRemove guildBanRemove
  * @property {string} GuildCreate guildCreate
@@ -44,17 +53,14 @@
  * @property {string} MessageBulkDelete messageDeleteBulk
  * @property {string} MessageCreate messageCreate
  * @property {string} MessageDelete messageDelete
+ * @property {string} MessagePollVoteAdd messagePollVoteAdd
+ * @property {string} MessagePollVoteRemove messagePollVoteRemove
  * @property {string} MessageReactionAdd messageReactionAdd
  * @property {string} MessageReactionRemove messageReactionRemove
  * @property {string} MessageReactionRemoveAll messageReactionRemoveAll
  * @property {string} MessageReactionRemoveEmoji messageReactionRemoveEmoji
  * @property {string} MessageUpdate messageUpdate
  * @property {string} PresenceUpdate presenceUpdate
- * @property {string} ShardDisconnect shardDisconnect
- * @property {string} ShardError shardError
- * @property {string} ShardReady shardReady
- * @property {string} ShardReconnecting shardReconnecting
- * @property {string} ShardResume shardResume
  * @property {string} StageInstanceCreate stageInstanceCreate
  * @property {string} StageInstanceDelete stageInstanceDelete
  * @property {string} StageInstanceUpdate stageInstanceUpdate
@@ -66,10 +72,11 @@
  * @property {string} ThreadUpdate threadUpdate
  * @property {string} TypingStart typingStart
  * @property {string} UserUpdate userUpdate
+ * @property {string} VoiceChannelEffectSend voiceChannelEffectSend
  * @property {string} VoiceServerUpdate voiceServerUpdate
  * @property {string} VoiceStateUpdate voiceStateUpdate
  * @property {string} Warn warn
- * @property {string} WebhooksUpdate webhookUpdate
+ * @property {string} WebhooksUpdate webhooksUpdate
  */
 
 // JSDoc for IntelliSense purposes
@@ -88,9 +95,14 @@ module.exports = {
   ChannelDelete: 'channelDelete',
   ChannelPinsUpdate: 'channelPinsUpdate',
   ChannelUpdate: 'channelUpdate',
-  ClientReady: 'ready',
+  ClientReady: 'clientReady',
   Debug: 'debug',
+  EntitlementCreate: 'entitlementCreate',
+  EntitlementUpdate: 'entitlementUpdate',
+  EntitlementDelete: 'entitlementDelete',
   Error: 'error',
+  GuildAuditLogEntryCreate: 'guildAuditLogEntryCreate',
+  GuildAvailable: 'guildAvailable',
   GuildBanAdd: 'guildBanAdd',
   GuildBanRemove: 'guildBanRemove',
   GuildCreate: 'guildCreate',
@@ -124,18 +136,14 @@ module.exports = {
   MessageBulkDelete: 'messageDeleteBulk',
   MessageCreate: 'messageCreate',
   MessageDelete: 'messageDelete',
+  MessagePollVoteAdd: 'messagePollVoteAdd',
+  MessagePollVoteRemove: 'messagePollVoteRemove',
   MessageReactionAdd: 'messageReactionAdd',
   MessageReactionRemove: 'messageReactionRemove',
   MessageReactionRemoveAll: 'messageReactionRemoveAll',
   MessageReactionRemoveEmoji: 'messageReactionRemoveEmoji',
   MessageUpdate: 'messageUpdate',
   PresenceUpdate: 'presenceUpdate',
-  Raw: 'raw',
-  ShardDisconnect: 'shardDisconnect',
-  ShardError: 'shardError',
-  ShardReady: 'shardReady',
-  ShardReconnecting: 'shardReconnecting',
-  ShardResume: 'shardResume',
   StageInstanceCreate: 'stageInstanceCreate',
   StageInstanceDelete: 'stageInstanceDelete',
   StageInstanceUpdate: 'stageInstanceUpdate',
@@ -147,8 +155,9 @@ module.exports = {
   ThreadUpdate: 'threadUpdate',
   TypingStart: 'typingStart',
   UserUpdate: 'userUpdate',
+  VoiceChannelEffectSend: 'voiceChannelEffectSend',
   VoiceServerUpdate: 'voiceServerUpdate',
   VoiceStateUpdate: 'voiceStateUpdate',
   Warn: 'warn',
-  WebhooksUpdate: 'webhookUpdate',
+  WebhooksUpdate: 'webhooksUpdate',
 };

@@ -1,8 +1,8 @@
 # Packages
-node_modules/
+node_modules
 
 # Log files
-logs/
+logs
 *.log
 npm-debug.log*
 
@@ -15,13 +15,10 @@ pids
 .env
 
 # Dist
-dist/
-typings/
-docs/**/*
-!docs/index.json
-!docs/README.md
+dist
+storybook-static
 
 # Miscellaneous
-.tmp/
-coverage/
-tsconfig.tsbuildinfo
+.turbo
+.tmp
+coverage

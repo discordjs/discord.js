@@ -28,9 +28,9 @@ process.send(123);
 client.on('ready', () => {
   console.log('Ready', client.options.shards);
   if (client.options.shards === 0) {
-    setTimeout(() => {
+    setTimeout(async () => {
       console.log('kek dying');
-      client.destroy();
+      await client.destroy();
     }, 5_000);
   }
 });

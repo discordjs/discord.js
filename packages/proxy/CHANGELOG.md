@@ -2,6 +2,95 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/proxy@2.1.1](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@2.1.0...@discordjs/proxy@2.1.1) - (2024-09-01)
+
+# [@discordjs/proxy@2.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@2.0.2...@discordjs/proxy@2.1.0) - (2024-05-04)
+
+## Bug Fixes
+
+- Anchor link for events ([0efd1be](https://github.com/discordjs/discord.js/commit/0efd1bea46fa2fc8bcd3dcfd0ac5cd608a0a7df0))
+- Minify mainlib docs json (#9963) ([4b88306](https://github.com/discordjs/discord.js/commit/4b88306dcb2b16b840ec61e9e33047af3a31c45d))
+
+## Documentation
+
+- Split docs.api.json into multiple json files ([597340f](https://github.com/discordjs/discord.js/commit/597340f288437c35da8c703d9b621274de60d880))
+- Remove hyphen after `@returns` (#9989) ([e9ff991](https://github.com/discordjs/discord.js/commit/e9ff99101b9800f36839e6158d544c8ef5938d22))
+
+## Features
+
+- Local and preview detection ([79fbda3](https://github.com/discordjs/discord.js/commit/79fbda3aac6d4f0f8bfb193e797d09cbe331d315))
+
+## Refactor
+
+- Docs (#10126) ([18cce83](https://github.com/discordjs/discord.js/commit/18cce83d80598c430218775c53441b6b2ecdc776))
+
+# [@discordjs/proxy@2.0.2](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@2.0.1...@discordjs/proxy@2.0.2) - (2023-11-12)
+
+## Bug Fixes
+
+- Forward x-audit-log-reason header (#9889) ([6a63c44](https://github.com/discordjs/discord.js/commit/6a63c441fe378ca6dd630ad05e29647903f898bc))
+
+## Documentation
+
+- **create-discord-bot:** Support bun in create-discord-bot (#9798) ([7157748](https://github.com/discordjs/discord.js/commit/7157748fe3a69265896adf0450cd3f37acbcf97b))
+
+# [@discordjs/proxy@2.0.1](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@2.0.0...@discordjs/proxy@2.0.1) - (2023-08-17)
+
+## Documentation
+
+- Update Node.js requirement to 16.11.0 (#9764) ([188877c](https://github.com/discordjs/discord.js/commit/188877c50af70f0d5cffb246620fa277435c6ce6))
+
+# [@discordjs/proxy@2.0.0](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@1.4.1...@discordjs/proxy@2.0.0) - (2023-07-31)
+
+## Refactor
+
+- **REST:** Remove double classing (#9722) ([8f4256d](https://github.com/discordjs/discord.js/commit/8f4256db8a52ac08359d0b3436f41b641ac4e382))
+  - **BREAKING CHANGE:** `REST` and `RequestManager` have been combined, most of the properties, methods, and events from both classes can now be found on `REST`
+  - **BREAKING CHANGE:** `REST#raw` has been removed in favor of `REST#queueRequest`
+  - **BREAKING CHANGE:** `REST#getAgent` has been removed in favor of `REST#agent`
+
+* chore: update for /rest changes
+- **rest:** Switch api to fetch-like and provide strategies (#9416) ([cdaa0a3](https://github.com/discordjs/discord.js/commit/cdaa0a36f586459f1e5ede868c4250c7da90455c))
+  - **BREAKING CHANGE:** NodeJS v18+ is required when using node due to the use of global `fetch`
+  - **BREAKING CHANGE:** The raw method of REST now returns a web compatible `Respone` object.
+  - **BREAKING CHANGE:** The `parseResponse` utility method has been updated to operate on a web compatible `Response` object.
+  - **BREAKING CHANGE:** Many underlying internals have changed, some of which were exported.
+  - **BREAKING CHANGE:** `DefaultRestOptions` used to contain a default `agent`, which is now set to `null` instead.
+
+# [@discordjs/proxy@1.4.1](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@1.4.0...@discordjs/proxy@1.4.1) - (2023-05-01)
+
+## Bug Fixes
+
+- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
+
+## Documentation
+
+- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
+
+## Refactor
+
+- **proxy:** Rely on auth header instead (#9422) ([a49ed0a](https://github.com/discordjs/discord.js/commit/a49ed0a2d5934ad7af2e9cfbf7c5ccf171599591))
+
+# [@discordjs/proxy@1.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@1.3.0...@discordjs/proxy@1.4.0) - (2023-04-01)
+
+## Bug Fixes
+
+- **scripts:** Accessing tsComment ([d8d5f31](https://github.com/discordjs/discord.js/commit/d8d5f31d3927fd1de62f1fa3a1a6e454243ad87b))
+
+## Features
+
+- **website:** Render syntax and mdx on the server (#9086) ([ee5169e](https://github.com/discordjs/discord.js/commit/ee5169e0aadd7bbfcd752aae614ec0f69602b68b))
+
+# [@discordjs/proxy@1.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@1.2.1...@discordjs/proxy@1.3.0) - (2023-03-12)
+
+## Documentation
+
+- Fix typos (#9127) ([1ba1f23](https://github.com/discordjs/discord.js/commit/1ba1f238f04221ec890fc921678909b5b7d92c26))
+
+## Features
+
+- **website:** Add support for source file links (#9048) ([f6506e9](https://github.com/discordjs/discord.js/commit/f6506e99c496683ee0ab67db0726b105b929af38))
+
 # [@discordjs/proxy@1.2.1](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@1.2.0...@discordjs/proxy@1.2.1) - (2022-11-25)
 
 ## Bug Fixes

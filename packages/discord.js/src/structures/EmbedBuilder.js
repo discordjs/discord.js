@@ -1,6 +1,7 @@
 'use strict';
 
-const { EmbedBuilder: BuildersEmbed, isJSONEncodable } = require('@discordjs/builders');
+const { EmbedBuilder: BuildersEmbed, embedLength } = require('@discordjs/builders');
+const { isJSONEncodable } = require('@discordjs/util');
 const { toSnakeCase } = require('../util/Transformers');
 const { resolveColor } = require('../util/Util');
 
@@ -24,14 +25,20 @@ class EmbedBuilder extends BuildersEmbed {
 
   /**
    * Creates a new embed builder from JSON data
-   * @param {JSONEncodable<APIEmbed>|APIEmbed} other The other data
+   * @param {EmbedBuilder|Embed|APIEmbed} other The other data
    * @returns {EmbedBuilder}
    */
   static from(other) {
-    if (isJSONEncodable(other)) {
-      return new this(other.toJSON());
-    }
-    return new this(other);
+    return new this(isJSONEncodable(other) ? other.toJSON() : other);
+  }
+
+  /**
+   * The accumulated length for the embed title, description, fields, footer text, and author name.
+   * @type {number}
+   * @readonly
+   */
+  get length() {
+    return embedLength(this.data);
   }
 }
 
@@ -39,5 +46,5 @@ module.exports = EmbedBuilder;
 
 /**
  * @external BuildersEmbed
- * @see {@link https://discord.js.org/#/docs/builders/main/class/EmbedBuilder}
+ * @see {@link https://discord.js.org/docs/packages/builders/stable/EmbedBuilder:Class}
  */

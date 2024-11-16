@@ -1,6 +1,6 @@
 'use strict';
 
-const Events = require('../../util/Events');
+const { WebSocketShardEvents, CloseCodes } = require('@discordjs/ws');
 
 /**
  * Manages voice connections for the client
@@ -16,15 +16,17 @@ class ClientVoiceManager {
     Object.defineProperty(this, 'client', { value: client });
 
     /**
-     * Maps guild ids to voice adapters created for use with @discordjs/voice.
+     * Maps guild ids to voice adapters created for use with `@discordjs/voice`.
      * @type {Map<Snowflake, Object>}
      */
     this.adapters = new Map();
 
-    client.on(Events.ShardDisconnect, (_, shardId) => {
-      for (const [guildId, adapter] of this.adapters.entries()) {
-        if (client.guilds.cache.get(guildId)?.shardId === shardId) {
-          adapter.destroy();
+    client.ws.on(WebSocketShardEvents.Closed, (code, shardId) => {
+      if (code === CloseCodes.Normal) {
+        for (const [guildId, adapter] of this.adapters.entries()) {
+          if (client.guilds.cache.get(guildId)?.shardId === shardId) {
+            adapter.destroy();
+          }
         }
       }
     });

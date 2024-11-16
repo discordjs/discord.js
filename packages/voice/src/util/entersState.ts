@@ -36,8 +36,8 @@ export function entersState(
  * @param status - The status that the target should be in
  * @param timeoutOrSignal - The maximum time we are allowing for this to occur, or a signal that will abort the operation
  */
-export async function entersState<T extends AudioPlayer | VoiceConnection>(
-	target: T,
+export async function entersState<Target extends AudioPlayer | VoiceConnection>(
+	target: Target,
 	status: AudioPlayerStatus | VoiceConnectionStatus,
 	timeoutOrSignal: AbortSignal | number,
 ) {

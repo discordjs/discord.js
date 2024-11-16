@@ -2,6 +2,141 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.9.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.8.2...@discordjs/builders@1.9.0) - (2024-09-01)
+
+## Features
+
+- User-installable apps (#10227) ([fc0b6f7](https://github.com/discordjs/discord.js/commit/fc0b6f7f8ebd94a4a05fac0c76e49b23752a8e65))
+- **builders:** Update to @sapphire/shapeshift v4 (#10291) ([2d5531f](https://github.com/discordjs/discord.js/commit/2d5531f35c6b4d70f83e46b99c284030108dcf5c))
+- **SlashCommandBuilder:** Add explicit command type when building (#10395) ([b2970bb](https://github.com/discordjs/discord.js/commit/b2970bb2dddf70d2d918fda825059315f35d23f3))
+- Premium buttons (#10353) ([4f59b74](https://github.com/discordjs/discord.js/commit/4f59b740d01b9ff2213949708a36e17da32b89c3))
+- Add user-installable apps support  (#10348) ([9c76bbe](https://github.com/discordjs/discord.js/commit/9c76bbea172d49320f7fdac19ec1a43a49d05116))
+
+# [@discordjs/builders@1.8.2](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.8.1...@discordjs/builders@1.8.2) - (2024-06-02)
+
+## Bug Fixes
+
+- **SlashCommandBuilder:** Add missing shared properties (#10255) ([29fd89f](https://github.com/discordjs/discord.js/commit/29fd89f23c22ac5b4ce0a3ed34f5d27e28b1a0b8))
+
+## Documentation
+
+- **SelectMenuBuilder:** Correct grammatical errors  (#10309) ([aae2faf](https://github.com/discordjs/discord.js/commit/aae2faf9e923a268f84c8b7fb3283aea09dca586))
+- **TextInputBuilder:** Correct constructor documentation (#10308) ([c1e6890](https://github.com/discordjs/discord.js/commit/c1e6890132d5597a6ebd9d79383ec572582c0601))
+- **MappedComponentTypes:** Fix "inpiut" typo (#10306) ([29a50bb](https://github.com/discordjs/discord.js/commit/29a50bb476e8e84896dbaec96c6009589afaafbf))
+
+# [@discordjs/builders@1.8.1](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.8.0...@discordjs/builders@1.8.1) - (2024-05-05)
+
+## Bug Fixes
+
+- Slashcommand builder type split (#10253) ([07c1210](https://github.com/discordjs/discord.js/commit/07c12101e534fdce836a94bc571b53f75979ea86))
+- Don't mutate user provided array (#10014) ([7ea3638](https://github.com/discordjs/discord.js/commit/7ea3638dbcf38926596fb5da8b85040e70f1b98b))
+- Minify mainlib docs json (#9963) ([4b88306](https://github.com/discordjs/discord.js/commit/4b88306dcb2b16b840ec61e9e33047af3a31c45d))
+
+## Documentation
+
+- Split docs.api.json into multiple json files ([597340f](https://github.com/discordjs/discord.js/commit/597340f288437c35da8c703d9b621274de60d880))
+
+## Features
+
+- **api-extractor:** Support `export * as ___` syntax (#10173) ([1c5de21](https://github.com/discordjs/discord.js/commit/1c5de21a2905fe21b54dea805013f089ed9000d0))
+- Allow RestOrArray for command option builders (#10175) ([a1a3a95](https://github.com/discordjs/discord.js/commit/a1a3a95c94194a8ab789d567a778b376e13ea973))
+- Local and preview detection ([79fbda3](https://github.com/discordjs/discord.js/commit/79fbda3aac6d4f0f8bfb193e797d09cbe331d315))
+
+## Refactor
+
+- Docs (#10126) ([18cce83](https://github.com/discordjs/discord.js/commit/18cce83d80598c430218775c53441b6b2ecdc776))
+- Make builders types great again (#10026) ([a0c83a2](https://github.com/discordjs/discord.js/commit/a0c83a254c21dad5ac14b649a95ded57d6678d95))
+
+# [@discordjs/builders@1.8.1](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.8.0...@discordjs/builders@1.8.1) - (2024-05-05)
+
+## Bug Fixes
+
+- Slashcommand builder type split (#10253) ([07c1210](https://github.com/discordjs/discord.js/commit/07c12101e534fdce836a94bc571b53f75979ea86))
+
+# [@discordjs/builders@1.8.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.7.0...@discordjs/builders@1.8.0) - (2024-05-04)
+
+## Bug Fixes
+
+- Don't mutate user provided array (#10014) ([7ea3638](https://github.com/discordjs/discord.js/commit/7ea3638dbcf38926596fb5da8b85040e70f1b98b))
+- Minify mainlib docs json (#9963) ([4b88306](https://github.com/discordjs/discord.js/commit/4b88306dcb2b16b840ec61e9e33047af3a31c45d))
+
+## Documentation
+
+- Split docs.api.json into multiple json files ([597340f](https://github.com/discordjs/discord.js/commit/597340f288437c35da8c703d9b621274de60d880))
+
+## Features
+
+- **api-extractor:** Support `export * as ___` syntax (#10173) ([1c5de21](https://github.com/discordjs/discord.js/commit/1c5de21a2905fe21b54dea805013f089ed9000d0))
+- Allow RestOrArray for command option builders (#10175) ([a1a3a95](https://github.com/discordjs/discord.js/commit/a1a3a95c94194a8ab789d567a778b376e13ea973))
+- Local and preview detection ([79fbda3](https://github.com/discordjs/discord.js/commit/79fbda3aac6d4f0f8bfb193e797d09cbe331d315))
+
+## Refactor
+
+- Docs (#10126) ([18cce83](https://github.com/discordjs/discord.js/commit/18cce83d80598c430218775c53441b6b2ecdc776))
+- Make builders types great again (#10026) ([a0c83a2](https://github.com/discordjs/discord.js/commit/a0c83a254c21dad5ac14b649a95ded57d6678d95))
+
+# [@discordjs/builders@1.7.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.6.5...@discordjs/builders@1.7.0) - (2023-11-12)
+
+## Features
+
+- Default select menu values (#9867) ([4ff3ea4](https://github.com/discordjs/discord.js/commit/4ff3ea4a1bcb708973fbbbc84aaede1f7643e630))
+- Add media channels (#9662) ([571aedd](https://github.com/discordjs/discord.js/commit/571aedd58aeb5ac677f2a94a4a2851c4378a70b0))
+
+# [@discordjs/builders@1.6.5](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.6.4...@discordjs/builders@1.6.5) - (2023-08-17)
+
+## Documentation
+
+- Update Node.js requirement to 16.11.0 (#9764) ([188877c](https://github.com/discordjs/discord.js/commit/188877c50af70f0d5cffb246620fa277435c6ce6))
+
+# [@discordjs/builders@1.6.3](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.6.2...@discordjs/builders@1.6.3) - (2023-05-01)
+
+## Refactor
+
+- Remove `@discordjs/util` re-export (#9488) ([54ceedf](https://github.com/discordjs/discord.js/commit/54ceedf6c535d4641643d4106b6286cbef09de4a))
+
+# [@discordjs/builders@1.6.2](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.6.1...@discordjs/builders@1.6.2) - (2023-05-01)
+
+## Bug Fixes
+
+- **BaseSelectMenuBuilder:** Modify class to be `abstract` (#9358) ([ca4de2d](https://github.com/discordjs/discord.js/commit/ca4de2d9c6bc204e85d1b7eae7eabd23dbeb4475))
+- Correct `@link` tags that involve parents (#9351) ([fbbce3e](https://github.com/discordjs/discord.js/commit/fbbce3eb4ba20bc0c4806ca2259d1f86001594be))
+- Fix external links (#9313) ([a7425c2](https://github.com/discordjs/discord.js/commit/a7425c29c4f23f1b31f4c6a463107ca9eb7fd7e2))
+
+## Documentation
+
+- Reference package names properly (#9426) ([d6bca9b](https://github.com/discordjs/discord.js/commit/d6bca9bb4d976dc069a5039250db7d5b3e9142ef))
+- Generate static imports for types with api-extractor ([98a76db](https://github.com/discordjs/discord.js/commit/98a76db482879f79d6bb2fb2e5fc65ac2c34e2d9))
+- **builders:** Add some basic documentation (#9359) ([8073561](https://github.com/discordjs/discord.js/commit/8073561824f911d1a18d0b4f1de39f452bc69fa9))
+- Use `@link` in `@see` (#9348) ([d66d113](https://github.com/discordjs/discord.js/commit/d66d1133331b81563588db4500c63a18c3c3dfae))
+
+# [@discordjs/builders@1.6.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.5.0...@discordjs/builders@1.6.0) - (2023-04-01)
+
+## Bug Fixes
+
+- **scripts:** Accessing tsComment ([d8d5f31](https://github.com/discordjs/discord.js/commit/d8d5f31d3927fd1de62f1fa3a1a6e454243ad87b))
+
+## Features
+
+- **website:** Render syntax and mdx on the server (#9086) ([ee5169e](https://github.com/discordjs/discord.js/commit/ee5169e0aadd7bbfcd752aae614ec0f69602b68b))
+
+# [@discordjs/builders@1.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.4.0...@discordjs/builders@1.5.0) - (2023-03-12)
+
+## Documentation
+
+- **EmbedBuilder#spliceFields:** Fix a typo (#9159) ([4367ab9](https://github.com/discordjs/discord.js/commit/4367ab930227048868db3ed8437f6c4507ff32e1))
+- Fix version export (#9049) ([8b70f49](https://github.com/discordjs/discord.js/commit/8b70f497a1207e30edebdecd12b926c981c13d28))
+
+## Features
+
+- **website:** Add support for source file links (#9048) ([f6506e9](https://github.com/discordjs/discord.js/commit/f6506e99c496683ee0ab67db0726b105b929af38))
+- **StringSelectMenu:** Add `spliceOptions()` (#8937) ([a6941d5](https://github.com/discordjs/discord.js/commit/a6941d536ce24ed2b5446a154cbc886b2b97c63a))
+- Add support for nsfw commands (#7976) ([7a51344](https://github.com/discordjs/discord.js/commit/7a5134459c5f06864bf74631d83b96d9c21b72d8))
+- Add `@discordjs/formatters` (#8889) ([3fca638](https://github.com/discordjs/discord.js/commit/3fca638a8470dcea2f79ddb9f18526dbc0017c88))
+
+## Styling
+
+- Run prettier (#9041) ([2798ba1](https://github.com/discordjs/discord.js/commit/2798ba1eb3d734f0cf2eeccd2e16cfba6804873b))
+
 # [@discordjs/builders@1.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.3.0...@discordjs/builders@1.4.0) - (2022-11-28)
 
 ## Bug Fixes
@@ -123,7 +258,7 @@ All notable changes to this project will be documented in this file.
 - Use vitest instead of jest for more speed ([8d8e6c0](https://github.com/discordjs/discord.js/commit/8d8e6c03decd7352a2aa180f6e5bc1a13602539b))
 - Add scripts package for locally used scripts ([f2ae1f9](https://github.com/discordjs/discord.js/commit/f2ae1f9348bfd893332a9060f71a8a5f272a1b8b))
 
-# [@discordjs/builders@0.14.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@0.13.0...@discordjs/builders@0.14.0) - (2022-06-04)
+# [@discordjs/builders@0.14.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.7.0...@discordjs/builders@0.14.0) - (2022-06-04)
 
 ## Bug Fixes
 

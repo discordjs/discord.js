@@ -7,8 +7,8 @@ import {
 import { describe, test, expect } from 'vitest';
 import {
 	ActionRowBuilder,
-	ButtonBuilder,
 	createComponentBuilder,
+	PrimaryButtonBuilder,
 	StringSelectMenuBuilder,
 	StringSelectMenuOptionBuilder,
 } from '../../src/index.js';
@@ -41,21 +41,14 @@ const rowWithSelectMenuData: APIActionRowComponent<APIMessageActionRowComponent>
 					value: 'two',
 				},
 			],
-			max_values: 10,
-			min_values: 12,
+			max_values: 2,
+			min_values: 2,
 		},
 	],
 };
 
 describe('Action Row Components', () => {
 	describe('Assertion Tests', () => {
-		test('GIVEN valid components THEN do not throw', () => {
-			expect(() => new ActionRowBuilder().addComponents(new ButtonBuilder())).not.toThrowError();
-			expect(() => new ActionRowBuilder().setComponents(new ButtonBuilder())).not.toThrowError();
-			expect(() => new ActionRowBuilder().addComponents([new ButtonBuilder()])).not.toThrowError();
-			expect(() => new ActionRowBuilder().setComponents([new ButtonBuilder()])).not.toThrowError();
-		});
-
 		test('GIVEN valid JSON input THEN valid JSON output is given', () => {
 			const actionRowData: APIActionRowComponent<APIMessageActionRowComponent> = {
 				type: ComponentType.ActionRow,
@@ -72,22 +65,10 @@ describe('Action Row Components', () => {
 						style: ButtonStyle.Link,
 						url: 'https://google.com',
 					},
-					{
-						type: ComponentType.StringSelect,
-						placeholder: 'test',
-						custom_id: 'test',
-						options: [
-							{
-								label: 'option',
-								value: 'option',
-							},
-						],
-					},
 				],
 			};
 
 			expect(new ActionRowBuilder(actionRowData).toJSON()).toEqual(actionRowData);
-			expect(new ActionRowBuilder().toJSON()).toEqual({ type: ComponentType.ActionRow, components: [] });
 			expect(() => createComponentBuilder({ type: ComponentType.ActionRow, components: [] })).not.toThrowError();
 		});
 
@@ -120,24 +101,23 @@ describe('Action Row Components', () => {
 								value: 'two',
 							},
 						],
-						max_values: 10,
-						min_values: 12,
+						max_values: 1,
+						min_values: 1,
 					},
 				],
 			};
 
 			expect(new ActionRowBuilder(rowWithButtonData).toJSON()).toEqual(rowWithButtonData);
 			expect(new ActionRowBuilder(rowWithSelectMenuData).toJSON()).toEqual(rowWithSelectMenuData);
-			expect(new ActionRowBuilder().toJSON()).toEqual({ type: ComponentType.ActionRow, components: [] });
 			expect(() => createComponentBuilder({ type: ComponentType.ActionRow, components: [] })).not.toThrowError();
 		});
 
 		test('GIVEN valid builder options THEN valid JSON output is given 2', () => {
-			const button = new ButtonBuilder().setLabel('test').setStyle(ButtonStyle.Primary).setCustomId('123');
+			const button = new PrimaryButtonBuilder().setLabel('test').setCustomId('123');
 			const selectMenu = new StringSelectMenuBuilder()
 				.setCustomId('1234')
-				.setMaxValues(10)
-				.setMinValues(12)
+				.setMaxValues(2)
+				.setMinValues(2)
 				.setOptions(
 					new StringSelectMenuOptionBuilder().setLabel('one').setValue('one'),
 					new StringSelectMenuOptionBuilder().setLabel('two').setValue('two'),
@@ -147,10 +127,39 @@ describe('Action Row Components', () => {
 					new StringSelectMenuOptionBuilder().setLabel('two').setValue('two'),
 				]);
 
-			expect(new ActionRowBuilder().addComponents(button).toJSON()).toEqual(rowWithButtonData);
-			expect(new ActionRowBuilder().addComponents(selectMenu).toJSON()).toEqual(rowWithSelectMenuData);
-			expect(new ActionRowBuilder().addComponents([button]).toJSON()).toEqual(rowWithButtonData);
-			expect(new ActionRowBuilder().addComponents([selectMenu]).toJSON()).toEqual(rowWithSelectMenuData);
+			expect(new ActionRowBuilder().addPrimaryButtonComponents(button).toJSON()).toEqual(rowWithButtonData);
+			expect(new ActionRowBuilder().addStringSelectMenuComponent(selectMenu).toJSON()).toEqual(rowWithSelectMenuData);
+			expect(new ActionRowBuilder().addPrimaryButtonComponents([button]).toJSON()).toEqual(rowWithButtonData);
+		});
+
+		test('GIVEN 2 select menus THEN it throws', () => {
+			const selectMenu = new StringSelectMenuBuilder()
+				.setCustomId('1234')
+				.setOptions(
+					new StringSelectMenuOptionBuilder().setLabel('one').setValue('one'),
+					new StringSelectMenuOptionBuilder().setLabel('two').setValue('two'),
+				);
+
+			expect(() =>
+				new ActionRowBuilder()
+					.addStringSelectMenuComponent(selectMenu)
+					.addStringSelectMenuComponent(selectMenu)
+					.toJSON(),
+			).toThrowError();
+		});
+
+		test('GIVEN a button and a select menu THEN it throws', () => {
+			const button = new PrimaryButtonBuilder().setLabel('test').setCustomId('123');
+			const selectMenu = new StringSelectMenuBuilder()
+				.setCustomId('1234')
+				.setOptions(
+					new StringSelectMenuOptionBuilder().setLabel('one').setValue('one'),
+					new StringSelectMenuOptionBuilder().setLabel('two').setValue('two'),
+				);
+
+			expect(() =>
+				new ActionRowBuilder().addStringSelectMenuComponent(selectMenu).addPrimaryButtonComponents(button).toJSON(),
+			).toThrowError();
 		});
 	});
 });

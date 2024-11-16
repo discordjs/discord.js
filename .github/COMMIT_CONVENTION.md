@@ -7,7 +7,7 @@
 Messages must be matched by the following regex:
 
 ```js
-/^(revert: )?(feat|fix|docs|style|refactor|perf|test|workflow|build|ci|chore|types|wip)(\(.+\))?: .{1,72}/;
+/^(revert: )?(feat|fix|docs|style|refactor|perf|test|build|ci|chore|types)(\(.+\))?!?: .{1,72}/;
 ```
 
 #### Examples
@@ -55,6 +55,7 @@ A commit message consists of a **header**, **body** and **footer**. The header h
 ```
 
 The **header** is mandatory and the **scope** of the header is optional.
+If the commit contains **Breaking Changes**, a `!` can be added before the `:` as an indicator.
 
 ### Revert
 

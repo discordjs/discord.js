@@ -8,9 +8,9 @@ import { findPipeline, StreamType, TransformerType, type Edge } from './Transfor
 /**
  * Options that are set when creating a new audio resource.
  *
- * @typeParam T - the type for the metadata (if any) of the audio resource
+ * @typeParam Metadata - the type for the metadata (if any) of the audio resource
  */
-export interface CreateAudioResourceOptions<T> {
+export interface CreateAudioResourceOptions<Metadata> {
 	/**
 	 * Whether or not inline volume should be enabled. If enabled, you will be able to change the volume
 	 * of the stream on-the-fly. However, this also increases the performance cost of playback. Defaults to `false`.
@@ -27,7 +27,7 @@ export interface CreateAudioResourceOptions<T> {
 	 * This is useful for identification purposes when the resource is passed around in events.
 	 * See {@link AudioResource.metadata}
 	 */
-	metadata?: T;
+	metadata?: Metadata;
 
 	/**
 	 * The number of silence frames to append to the end of the resource's audio stream, to prevent interpolation glitches.
@@ -39,9 +39,9 @@ export interface CreateAudioResourceOptions<T> {
 /**
  * Represents an audio resource that can be played by an audio player.
  *
- * @typeParam T - the type for the metadata (if any) of the audio resource
+ * @typeParam Metadata - the type for the metadata (if any) of the audio resource
  */
-export class AudioResource<T = unknown> {
+export class AudioResource<Metadata = unknown> {
 	/**
 	 * An object-mode Readable stream that emits Opus packets. This is what is played by audio players.
 	 */
@@ -57,7 +57,7 @@ export class AudioResource<T = unknown> {
 	/**
 	 * Optional metadata that can be used to identify the resource.
 	 */
-	public metadata: T;
+	public metadata: Metadata;
 
 	/**
 	 * If the resource was created with inline volume transformation enabled, then this will be a
@@ -96,7 +96,12 @@ export class AudioResource<T = unknown> {
 	 */
 	public silenceRemaining = -1;
 
-	public constructor(edges: readonly Edge[], streams: readonly Readable[], metadata: T, silencePaddingFrames: number) {
+	public constructor(
+		edges: readonly Edge[],
+		streams: readonly Readable[],
+		metadata: Metadata,
+		silencePaddingFrames: number,
+	) {
 		this.edges = edges;
 		this.playStream = streams.length > 1 ? (pipeline(streams, noop) as any as Readable) : streams[0]!;
 		this.metadata = metadata;
@@ -206,16 +211,18 @@ export function inferStreamType(stream: Readable): {
  * Opus transcoders, and Ogg/WebM demuxers.
  * @param input - The resource to play
  * @param options - Configurable options for creating the resource
- * @typeParam T - the type for the metadata (if any) of the audio resource
+ * @typeParam Metadata - the type for the metadata (if any) of the audio resource
  */
-export function createAudioResource<T>(
+export function createAudioResource<Metadata>(
 	input: Readable | string,
-	options: CreateAudioResourceOptions<T> &
+	options: CreateAudioResourceOptions<Metadata> &
 		Pick<
-			T extends null | undefined ? CreateAudioResourceOptions<T> : Required<CreateAudioResourceOptions<T>>,
+			Metadata extends null | undefined
+				? CreateAudioResourceOptions<Metadata>
+				: Required<CreateAudioResourceOptions<Metadata>>,
 			'metadata'
 		>,
-): AudioResource<T extends null | undefined ? null : T>;
+): AudioResource<Metadata extends null | undefined ? null : Metadata>;
 
 /**
  * Creates an audio resource that can be played by audio players.
@@ -228,11 +235,11 @@ export function createAudioResource<T>(
  * Opus transcoders, and Ogg/WebM demuxers.
  * @param input - The resource to play
  * @param options - Configurable options for creating the resource
- * @typeParam T - the type for the metadata (if any) of the audio resource
+ * @typeParam Metadata - the type for the metadata (if any) of the audio resource
  */
-export function createAudioResource<T extends null | undefined>(
+export function createAudioResource<Metadata extends null | undefined>(
 	input: Readable | string,
-	options?: Omit<CreateAudioResourceOptions<T>, 'metadata'>,
+	options?: Omit<CreateAudioResourceOptions<Metadata>, 'metadata'>,
 ): AudioResource<null>;
 
 /**
@@ -246,19 +253,19 @@ export function createAudioResource<T extends null | undefined>(
  * Opus transcoders, and Ogg/WebM demuxers.
  * @param input - The resource to play
  * @param options - Configurable options for creating the resource
- * @typeParam T - the type for the metadata (if any) of the audio resource
+ * @typeParam Metadata - the type for the metadata (if any) of the audio resource
  */
-export function createAudioResource<T>(
+export function createAudioResource<Metadata>(
 	input: Readable | string,
-	options: CreateAudioResourceOptions<T> = {},
-): AudioResource<T> {
+	options: CreateAudioResourceOptions<Metadata> = {},
+): AudioResource<Metadata> {
 	let inputType = options.inputType;
 	let needsInlineVolume = Boolean(options.inlineVolume);
 
 	// string inputs can only be used with FFmpeg
 	if (typeof input === 'string') {
 		inputType = StreamType.Arbitrary;
-	} else if (typeof inputType === 'undefined') {
+	} else if (inputType === undefined) {
 		const analysis = inferStreamType(input);
 		inputType = analysis.streamType;
 		needsInlineVolume = needsInlineVolume && !analysis.hasVolume;
@@ -269,16 +276,21 @@ export function createAudioResource<T>(
 	if (transformerPipeline.length === 0) {
 		if (typeof input === 'string') throw new Error(`Invalid pipeline constructed for string resource '${input}'`);
 		// No adjustments required
-		return new AudioResource<T>([], [input], (options.metadata ?? null) as T, options.silencePaddingFrames ?? 5);
+		return new AudioResource<Metadata>(
+			[],
+			[input],
+			(options.metadata ?? null) as Metadata,
+			options.silencePaddingFrames ?? 5,
+		);
 	}
 
 	const streams = transformerPipeline.map((edge) => edge.transformer(input));
 	if (typeof input !== 'string') streams.unshift(input);
 
-	return new AudioResource<T>(
+	return new AudioResource<Metadata>(
 		transformerPipeline,
 		streams,
-		(options.metadata ?? null) as T,
+		(options.metadata ?? null) as Metadata,
 		options.silencePaddingFrames ?? 5,
 	);
 }

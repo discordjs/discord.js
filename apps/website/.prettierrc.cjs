@@ -1,7 +1,5 @@
+/** @type {import('prettier').Config} */
 module.exports = {
 	...require('../../.prettierrc.json'),
-	plugins: [
-		'prettier-plugin-tailwindcss', // MUST come last
-	],
-	pluginSearchDirs: false,
+	plugins: ['prettier-plugin-tailwindcss'],
 };

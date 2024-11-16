@@ -12,17 +12,8 @@
  * @property {'TokenMissing'} TokenMissing
  * @property {'ApplicationCommandPermissionsTokenMissing'} ApplicationCommandPermissionsTokenMissing
 
- * @property {'WSCloseRequested'} WSCloseRequested
- * @property {'WSConnectionExists'} WSConnectionExists
- * @property {'WSNotOpen'} WSNotOpen
- * @property {'ManagerDestroyed'} ManagerDestroyed
-
  * @property {'BitFieldInvalid'} BitFieldInvalid
 
- * @property {'ShardingInvalid'} ShardingInvalid
- * @property {'ShardingRequired'} ShardingRequired
- * @property {'InvalidIntents'} InvalidIntents
- * @property {'DisallowedIntents'} DisallowedIntents
  * @property {'ShardingNoShards'} ShardingNoShards
  * @property {'ShardingInProcess'} ShardingInProcess
  * @property {'ShardingInvalidEvalBroadcast'} ShardingInvalidEvalBroadcast
@@ -41,21 +32,10 @@
 
  * @property {'InviteOptionsMissingChannel'} InviteOptionsMissingChannel
 
- * @property {'ButtonLabel'} ButtonLabel
- * @property {'ButtonURL'} ButtonURL
- * @property {'ButtonCustomId'} ButtonCustomId
-
- * @property {'SelectMenuCustomId'} SelectMenuCustomId
- * @property {'SelectMenuPlaceholder'} SelectMenuPlaceholder
- * @property {'SelectOptionLabel'} SelectOptionLabel
- * @property {'SelectOptionValue'} SelectOptionValue
- * @property {'SelectOptionDescription'} SelectOptionDescription
-
  * @property {'InteractionCollectorError'} InteractionCollectorError
 
  * @property {'FileNotFound'} FileNotFound
 
- * @property {'UserBannerNotFetched'} UserBannerNotFetched
  * @property {'UserNoDMChannel'} UserNoDMChannel
 
  * @property {'VoiceNotStageChannel'} VoiceNotStageChannel
@@ -65,14 +45,10 @@
 
  * @property {'ReqResourceType'} ReqResourceType
 
- * @property {'ImageFormat'} ImageFormat
- * @property {'ImageSize'} ImageSize
-
  * @property {'MessageBulkDeleteType'} MessageBulkDeleteType
- * @property {'MessageNonceType'} MessageNonceType
  * @property {'MessageContentType'} MessageContentType
-
- * @property {'SplitMaxLen'} SplitMaxLen
+ * @property {'MessageNonceRequired'} MessageNonceRequired
+ * @property {'MessageNonceType'} MessageNonceType
 
  * @property {'BanResolveId'} BanResolveId
  * @property {'FetchBanResolveId'} FetchBanResolveId
@@ -97,6 +73,7 @@
  * @property {'MessageThreadParent'} MessageThreadParent
  * @property {'MessageExistingThread'} MessageExistingThread
  * @property {'ThreadInvitableType'} ThreadInvitableType
+ * @property {'NotAThreadOfParent'} NotAThreadOfParent
 
  * @property {'WebhookMessage'} WebhookMessage
  * @property {'WebhookTokenUnavailable'} WebhookTokenUnavailable
@@ -106,12 +83,11 @@
 
  * @property {'EmojiType'} EmojiType
  * @property {'EmojiManaged'} EmojiManaged
- * @property {'MissingManageEmojisAndStickersPermission'} MissingManageEmojisAndStickersPermission
+ * @property {'MissingManageGuildExpressionsPermission'} MissingManageGuildExpressionsPermission
+ *
  * @property {'NotGuildSticker'} NotGuildSticker
 
  * @property {'ReactionResolveUser'} ReactionResolveUser
-
- * @property {'VanityURL'} VanityURL
 
  * @property {'InviteResolveCode'} InviteResolveCode
 
@@ -127,8 +103,6 @@
 
  * @property {'InteractionAlreadyReplied'} InteractionAlreadyReplied
  * @property {'InteractionNotReplied'} InteractionNotReplied
- * @property {'InteractionEphemeralReplied'} InteractionEphemeralReplied
- * <warn>This property is deprecated.</warn>
 
  * @property {'CommandInteractionOptionNotFound'} CommandInteractionOptionNotFound
  * @property {'CommandInteractionOptionType'} CommandInteractionOptionType
@@ -142,12 +116,19 @@
  * @property {'ModalSubmitInteractionFieldType'} ModalSubmitInteractionFieldType
 
  * @property {'InvalidMissingScopes'} InvalidMissingScopes
+ * @property {'InvalidScopesWithPermissions'} InvalidScopesWithPermissions
 
  * @property {'NotImplemented'} NotImplemented
 
  * @property {'GuildForumMessageRequired'} GuildForumMessageRequired
 
  * @property {'SweepFilterReturn'} SweepFilterReturn
+
+ * @property {'EntitlementCreateInvalidOwner'} EntitlementCreateInvalidOwner
+
+ * @property {'BulkBanUsersOptionEmpty'} BulkBanUsersOptionEmpty
+
+ * @property {'PollAlreadyExpired'} PollAlreadyExpired
  */
 
 const keys = [
@@ -160,17 +141,8 @@ const keys = [
   'TokenMissing',
   'ApplicationCommandPermissionsTokenMissing',
 
-  'WSCloseRequested',
-  'WSConnectionExists',
-  'WSNotOpen',
-  'ManagerDestroyed',
-
   'BitFieldInvalid',
 
-  'ShardingInvalid',
-  'ShardingRequired',
-  'InvalidIntents',
-  'DisallowedIntents',
   'ShardingNoShards',
   'ShardingInProcess',
   'ShardingInvalidEvalBroadcast',
@@ -189,21 +161,10 @@ const keys = [
 
   'InviteOptionsMissingChannel',
 
-  'ButtonLabel',
-  'ButtonURL',
-  'ButtonCustomId',
-
-  'SelectMenuCustomId',
-  'SelectMenuPlaceholder',
-  'SelectOptionLabel',
-  'SelectOptionValue',
-  'SelectOptionDescription',
-
   'InteractionCollectorError',
 
   'FileNotFound',
 
-  'UserBannerNotFetched',
   'UserNoDMChannel',
 
   'VoiceNotStageChannel',
@@ -213,14 +174,10 @@ const keys = [
 
   'ReqResourceType',
 
-  'ImageFormat',
-  'ImageSize',
-
   'MessageBulkDeleteType',
-  'MessageNonceType',
   'MessageContentType',
-
-  'SplitMaxLen',
+  'MessageNonceRequired',
+  'MessageNonceType',
 
   'BanResolveId',
   'FetchBanResolveId',
@@ -245,6 +202,7 @@ const keys = [
   'MessageThreadParent',
   'MessageExistingThread',
   'ThreadInvitableType',
+  'NotAThreadOfParent',
 
   'WebhookMessage',
   'WebhookTokenUnavailable',
@@ -254,12 +212,11 @@ const keys = [
 
   'EmojiType',
   'EmojiManaged',
-  'MissingManageEmojisAndStickersPermission',
+  'MissingManageGuildExpressionsPermission',
+
   'NotGuildSticker',
 
   'ReactionResolveUser',
-
-  'VanityURL',
 
   'InviteResolveCode',
 
@@ -275,7 +232,6 @@ const keys = [
 
   'InteractionAlreadyReplied',
   'InteractionNotReplied',
-  'InteractionEphemeralReplied',
 
   'CommandInteractionOptionNotFound',
   'CommandInteractionOptionType',
@@ -289,12 +245,19 @@ const keys = [
   'ModalSubmitInteractionFieldType',
 
   'InvalidMissingScopes',
+  'InvalidScopesWithPermissions',
 
   'NotImplemented',
 
   'SweepFilterReturn',
 
   'GuildForumMessageRequired',
+
+  'EntitlementCreateInvalidOwner',
+
+  'BulkBanUsersOptionEmpty',
+
+  'PollAlreadyExpired',
 ];
 
 // JSDoc for IntelliSense purposes

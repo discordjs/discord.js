@@ -1,19 +1,20 @@
 import { type EventEmitter, once } from 'node:events';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
-import WS from 'jest-websocket-mock';
+import { describe, test, expect, beforeEach } from 'vitest';
+import WS from 'vitest-websocket-mock';
 import { VoiceWebSocket } from '../src/networking/VoiceWebSocket';
 
 beforeEach(() => {
 	WS.clean();
 });
 
-async function onceIgnoreError<T extends EventEmitter>(target: T, event: string) {
+async function onceIgnoreError<Emitter extends EventEmitter>(target: Emitter, event: string) {
 	return new Promise((resolve) => {
 		target.on(event, resolve);
 	});
 }
 
-async function onceOrThrow<T extends EventEmitter>(target: T, event: string, after: number) {
+async function onceOrThrow<Emitter extends EventEmitter>(target: Emitter, event: string, after: number) {
 	return new Promise((resolve, reject) => {
 		target.on(event, resolve);
 		setTimeout(() => reject(new Error('Time up')), after);

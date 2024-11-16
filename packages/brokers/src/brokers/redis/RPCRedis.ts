@@ -1,9 +1,9 @@
 import type { Buffer } from 'node:buffer';
 import { clearTimeout, setTimeout } from 'node:timers';
+import type Redis from 'ioredis/built/Redis.js';
 import type { IRPCBroker } from '../Broker.js';
-import { DefaultBrokerOptions } from '../Broker.js';
 import type { RedisBrokerOptions } from './BaseRedis.js';
-import { BaseRedisBroker } from './BaseRedis.js';
+import { BaseRedisBroker, DefaultRedisBrokerOptions } from './BaseRedis.js';
 
 interface InternalPromise {
 	reject(error: any): void;
@@ -22,9 +22,9 @@ export interface RPCRedisBrokerOptions extends RedisBrokerOptions {
  * Default values used for the {@link RPCRedisBrokerOptions}
  */
 export const DefaultRPCRedisBrokerOptions = {
-	...DefaultBrokerOptions,
+	...DefaultRedisBrokerOptions,
 	timeout: 5_000,
-} as const satisfies Required<Omit<RPCRedisBrokerOptions, 'redisClient'>>;
+} as const satisfies Required<Omit<RPCRedisBrokerOptions, 'group'>>;
 
 /**
  * RPC broker powered by Redis
@@ -35,7 +35,7 @@ export const DefaultRPCRedisBrokerOptions = {
  * import { RPCRedisBroker } from '@discordjs/brokers';
  * import Redis from 'ioredis';
  *
- * const broker = new RPCRedisBroker({ redisClient: new Redis() });
+ * const broker = new RPCRedisBroker(new Redis());
  *
  * console.log(await broker.call('testcall', 'Hello World!'));
  * await broker.destroy();
@@ -44,7 +44,7 @@ export const DefaultRPCRedisBrokerOptions = {
  * import { RPCRedisBroker } from '@discordjs/brokers';
  * import Redis from 'ioredis';
  *
- * const broker = new RPCRedisBroker({ redisClient: new Redis() });
+ * const broker = new RPCRedisBroker(new Redis());
  * broker.on('testcall', ({ data, ack, reply }) => {
  * 	console.log('responder', data);
  * 	void ack();
@@ -54,8 +54,8 @@ export const DefaultRPCRedisBrokerOptions = {
  * await broker.subscribe('responders', ['testcall']);
  * ```
  */
-export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses extends Record<keyof TEvents, any>>
-	extends BaseRedisBroker<TEvents>
+export class RPCRedisBroker<TEvents extends Record<string, any[]>, TResponses extends Record<keyof TEvents, any>>
+	extends BaseRedisBroker<TEvents, TResponses>
 	implements IRPCBroker<TEvents, TResponses>
 {
 	/**
@@ -65,8 +65,8 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 
 	protected readonly promises = new Map<string, InternalPromise>();
 
-	public constructor(options: RPCRedisBrokerOptions) {
-		super(options);
+	public constructor(redisClient: Redis, options: RPCRedisBrokerOptions) {
+		super(redisClient, options);
 		this.options = { ...DefaultRPCRedisBrokerOptions, ...options };
 
 		this.streamReadClient.on('messageBuffer', (channel: Buffer, message: Buffer) => {
@@ -83,12 +83,12 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 	/**
 	 * {@inheritDoc IRPCBroker.call}
 	 */
-	public async call<T extends keyof TEvents>(
-		event: T,
-		data: TEvents[T],
+	public async call<Event extends keyof TEvents>(
+		event: Event,
+		data: TEvents[Event],
 		timeoutDuration: number = this.options.timeout,
-	): Promise<TResponses[T]> {
-		const id = await this.options.redisClient.xadd(
+	): Promise<TResponses[Event]> {
+		const id = await this.redisClient.xadd(
 			event as string,
 			'*',
 			BaseRedisBroker.STREAM_DATA_KEY,
@@ -103,7 +103,7 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 		const timedOut = new Error(`timed out after ${timeoutDuration}ms`);
 
 		await this.streamReadClient.subscribe(rpcChannel);
-		return new Promise<TResponses[T]>((resolve, reject) => {
+		return new Promise<TResponses[Event]>((resolve, reject) => {
 			const timeout = setTimeout(() => reject(timedOut), timeoutDuration).unref();
 
 			this.promises.set(id!, { resolve, reject, timeout });
@@ -114,17 +114,18 @@ export class RPCRedisBroker<TEvents extends Record<string, any>, TResponses exte
 		});
 	}
 
-	protected emitEvent(id: Buffer, group: string, event: string, data: unknown) {
+	protected emitEvent(id: Buffer, event: string, data: unknown) {
 		const payload: { ack(): Promise<void>; data: unknown; reply(data: unknown): Promise<void> } = {
 			data,
 			ack: async () => {
-				await this.options.redisClient.xack(event, group, id);
+				await this.redisClient.xack(event, this.options.group, id);
 			},
 			reply: async (data) => {
-				await this.options.redisClient.publish(`${event}:${id.toString()}`, this.options.encode(data));
+				await this.redisClient.publish(`${event}:${id.toString()}`, this.options.encode(data));
 			},
 		};
 
+		// @ts-expect-error: Intended
 		this.emit(event, payload);
 	}
 }

@@ -7,19 +7,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Install Node.js v20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        uses: ./packages/actions/src/pnpmCache
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to DockerHub
         run: echo ${{ secrets.DOCKER_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
-      - name: Build docker image
-        run: docker build -t discordjs/proxy:latest -f packages/proxy-container/Dockerfile .
-
-      - name: Tag image with major
-        run: docker tag discordjs/proxy discordjs/proxy:$(cut -d '.' -f1 <<< $(jq --raw-output '.version' packages/proxy-container/package.json))
-
-      - name: Push image to DockerHub
-        run: docker push --all-tags discordjs/proxy
+      - name: Build & push docker image
+        run: docker build -f packages/proxy-container/Dockerfile -t discordjs/proxy:$(cut -d '.' -f1 <<< $(jq --raw-output '.version' packages/proxy-container/package.json)) --push .

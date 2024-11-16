@@ -11,22 +11,20 @@ is a great boon to your development process.
 To get ready to work on the codebase, please do the following:
 
 1. Fork & clone the repository, and make sure you're on the **main** branch
-2. Run `yarn --immutable` ([install](https://yarnpkg.com/getting-started/install))
-3. Run `yarn build` to build local packages
+2. Run `pnpm install --frozen-lockfile` ([install](https://pnpm.io/installation))
+3. Run `pnpm run build` to build local packages
 4. Code your heart out!
-5. Run `yarn test` to run ESLint and ensure any JSDoc changes are valid
+5. Run `pnpm run test` to run ESLint and ensure any JSDoc changes are valid
 6. [Submit a pull request](https://github.com/discordjs/discord.js/compare) (Make sure you follow the [conventional commit format](https://github.com/discordjs/discord.js/blob/main/.github/COMMIT_CONVENTION.md))
 
 ## Testing changes locally
 
-If you want to test changes you've made locally, you can do so by using `yarn link`. This will create a symlink to your local copy of the discord.js libraries.
+If you want to test changes you've made locally, you can do so by using `pnpm link <package-you-want-to-link-to-your-current-package>`. This will create a symlink to your local copy of the discord.js libraries.
 
 1. Create a new directory `mkdir discordjs-test` and move into it `cd discordjs-test`
-2. Initialize a new yarn 3 project `yarn init -2`
-3. Disable pnp `yarn config set nodeLinker node-modules`
-4. Now link the local discord.js project you cloned earlier `yarn link -A {PATH_TO_DISCORDJS_REPO}`
-5. Install packages you'd like to test locally `yarn add discord.js@latest`, `yarn add @discordjs/rest@latest`, etc. **Note: Make sure you use `latest` tag or else yarn will try to install the remote package from npm**
-6. Import the package in your source code and test them out!
+2. Initialize a new pnpm project `pnpm init`
+3. Now link the discord.js package from the directory you cloned earlier `pnpm link {PATH_TO_DISCORDJS_REPO}/packages/<package>`. (e.g. `pnpm link ~/discord.js/packages/rest`)
+4. Import the package in your source code and test them out!
 
 ### Working with TypeScript packages
 
@@ -34,15 +32,18 @@ When testing local changes, you may notice you need to manually recompile TypeSc
 
 To avoid this you can use the `--watch` parameter in the package build script to automatically recompile the project when changes are detected.
 
-For example, to automatically recompile the `@discordjs/rest` project when changes are detected, run `yarn turbo run build --filter=@discordjs/rest -- --watch` in the root folder of where you cloned the discord.js repo.
+For example, to automatically recompile the `@discordjs/rest` project when changes are detected, run `pnpm turbo run build --filter='@discordjs/rest' -- --watch` in the root folder of where you cloned the discord.js repo.
 
 ## Adding new packages
 
 If you'd like to create another package under the `@discordjs` organization run the following command:
 
-```bash
-yarn create-package <package-name> [package-description]
+```sh
+pnpm run create-package <package-name> [package-description]
 ```
 
-This will create new package directory under `packages/` with the required configuration files. You can
-begin to make changes within the `src/` directory.
+This will create new package directory under `packages/` with the required configuration files. You may begin
+to make changes within the `src/` directory. You may also need to:
+
+- Update workflows that utilize packages
+- Update the CODEOWNERS file
