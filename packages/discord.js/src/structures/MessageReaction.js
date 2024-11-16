@@ -52,7 +52,7 @@ class MessageReaction {
   }
 
   _patch(data) {
-    if ('burst_colors' in data && Array.isArray(data.burst_colors)) {
+    if (data.burst_colors) {
       /**
        * Hexadecimal colors used for this super reaction
        * @type {?string[]}
