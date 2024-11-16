@@ -22,30 +22,23 @@ const MessagePayload = require('../MessagePayload');
  */
 class InteractionResponses {
   /**
-   * Shared options for responses to a {@link BaseInteraction}.
-   * @typedef {Object} SharedInteractionResponseOptions
-   * @property {boolean} [withResponse] Whether to include an {@link InteractionCallbackResponse} as the response
-   */
-
-  /**
    * Options for deferring the reply to an {@link BaseInteraction}.
-   * @typedef {SharedInteractionResponseOptions} InteractionDeferReplyOptions
+   * @typedef {Object} InteractionDeferReplyOptions
    * @property {MessageFlagsResolvable} [flags] Flags for the reply.
    * <info>Only `MessageFlags.Ephemeral` can be set.</info>
-   * @property {boolean} [fetchReply] Whether to fetch the reply
    */
 
   /**
    * Options for deferring and updating the reply to a {@link MessageComponentInteraction}.
-   * @typedef {SharedInteractionResponseOptions} InteractionDeferUpdateOptions
-   * @property {boolean} [fetchReply] Whether to fetch the reply
+   * @typedef {Object} InteractionDeferUpdateOptions
+   * @property {boolean} [withResponse] Whether to return an {@link InteractionCallbackResponse} as the response
    */
 
   /**
    * Options for a reply to a {@link BaseInteraction}.
-   * @typedef {BaseMessageOptionsWithPoll|SharedInteractionResponseOptions} InteractionReplyOptions
+   * @typedef {BaseMessageOptionsWithPoll} InteractionReplyOptions
    * @property {boolean} [tts=false] Whether the message should be spoken aloud
-   * @property {boolean} [fetchReply] Whether to fetch the reply
+   * @property {boolean} [withResponse] Whether to return an {@link InteractionCallbackResponse} as the response
    * @property {MessageFlagsResolvable} [flags] Which flags to set for the message.
    * <info>Only `MessageFlags.Ephemeral`, `MessageFlags.SuppressEmbeds`, and `MessageFlags.SuppressNotifications`
    * can be set.</info>
@@ -53,19 +46,20 @@ class InteractionResponses {
 
   /**
    * Options for updating the message received from a {@link MessageComponentInteraction}.
-   * @typedef {MessageEditOptions|SharedInteractionResponseOptions} InteractionUpdateOptions
-   * @property {boolean} [fetchReply] Whether to fetch the reply
+   * @typedef {MessageEditOptions} InteractionUpdateOptions
+   * @property {boolean} [withResponse] Whether to return an {@link InteractionCallbackResponse} as the response
    */
 
   /**
    * Options for showing a modal in response to a {@link BaseInteraction}
-   * @typedef {SharedInteractionResponseOptions} ShowModalOptions
+   * @typedef {Object} ShowModalOptions
+   * @property {boolean} [withResponse] Whether to return an {@link InteractionCallbackResponse} as the response
    */
 
   /**
    * Defers the reply to this interaction.
    * @param {InteractionDeferReplyOptions} [options] Options for deferring the reply to this interaction
-   * @returns {Promise<Message|InteractionResponse|InteractionCallbackResponse>}
+   * @returns {Promise<InteractionResponse|InteractionCallbackResponse>}
    * @example
    * // Defer the reply to this interaction
    * interaction.deferReply()
@@ -94,22 +88,20 @@ class InteractionResponses {
     this.deferred = true;
     this.ephemeral = Boolean(options.flags & MessageFlags.Ephemeral);
 
-    if (options.withResponse) {
-      return new InteractionCallbackResponse(this.client, response);
-    }
-
-    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this);
+    return options.withResponse
+      ? new InteractionCallbackResponse(this.client, response)
+      : new InteractionResponse(this);
   }
 
   /**
    * Creates a reply to this interaction.
-   * <info>Use the `fetchReply` option to get the bot's reply message.</info>
+   * <info>Use the `withResponse` option to get the interaction callback response.</info>
    * @param {string|MessagePayload|InteractionReplyOptions} options The options for the reply
-   * @returns {Promise<Message|InteractionResponse|InteractionCallbackResponse>}
+   * @returns {Promise<InteractionResponse|InteractionCallbackResponse>}
    * @example
    * // Reply to the interaction and fetch the response
-   * interaction.reply({ content: 'Pong!', fetchReply: true })
-   *   .then((message) => console.log(`Reply sent with content ${message.content}`))
+   * interaction.reply({ content: 'Pong!', withResponse: true })
+   *   .then((response) => console.log(`Reply sent with content ${response.resource.message.content}`))
    *   .catch(console.error);
    * @example
    * // Create an ephemeral reply with an embed
@@ -141,11 +133,9 @@ class InteractionResponses {
     this.ephemeral = Boolean(options.flags & MessageFlags.Ephemeral);
     this.replied = true;
 
-    if (options.withResponse) {
-      return new InteractionCallbackResponse(this.client, response);
-    }
-
-    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this);
+    return options.withResponse
+      ? new InteractionCallbackResponse(this.client, response)
+      : new InteractionResponse(this);
   }
 
   /**
@@ -217,7 +207,7 @@ class InteractionResponses {
   /**
    * Defers an update to the message to which the component was attached.
    * @param {InteractionDeferUpdateOptions} [options] Options for deferring the update to this interaction
-   * @returns {Promise<Message|InteractionResponse|InteractionCallbackResponse>}
+   * @returns {Promise<InteractionResponse|InteractionCallbackResponse>}
    * @example
    * // Defer updating and reset the component's loading state
    * interaction.deferUpdate()
@@ -235,17 +225,15 @@ class InteractionResponses {
     });
     this.deferred = true;
 
-    if (options.withResponse) {
-      return new InteractionCallbackResponse(this.client, response);
-    }
-
-    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this, this.message?.interaction?.id);
+    return options.withResponse
+      ? new InteractionCallbackResponse(this.client, response)
+      : new InteractionResponse(this, this.message?.interaction?.id);
   }
 
   /**
    * Updates the original message of the component on which the interaction was received on.
    * @param {string|MessagePayload|InteractionUpdateOptions} options The options for the updated message
-   * @returns {Promise<Message|InteractionResponse|InteractionCallbackResponse>}
+   * @returns {Promise<InteractionResponse|InteractionCallbackResponse>}
    * @example
    * // Remove the components from the message
    * interaction.update({
@@ -275,17 +263,15 @@ class InteractionResponses {
     });
     this.replied = true;
 
-    if (options.withResponse) {
-      return new InteractionCallbackResponse(this.client, response);
-    }
-
-    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this, this.message.interaction?.id);
+    return options.withResponse
+      ? new InteractionCallbackResponse(this.client, response)
+      : new InteractionResponse(this, this.message.interaction?.id);
   }
 
   /**
    * Shows a modal component
    * @param {ModalBuilder|ModalComponentData|APIModalInteractionResponseCallbackData} modal The modal to show
-   * @param {ShowModalOptions} options The options for sending this interaction response
+   * @param {ShowModalOptions} [options={}] The options for sending this interaction response
    * @returns {Promise<InteractionCallbackResponse|undefined>}
    */
   async showModal(modal, options = {}) {
