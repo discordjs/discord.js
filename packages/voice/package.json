@@ -74,6 +74,7 @@
 		"@discordjs/opus": "^0.9.0",
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^4.1.0",
+		"@noble/ciphers": "^1.0.0",
 		"@types/node": "18.19.45",
 		"@vitest/coverage-v8": "2.0.5",
 		"cross-env": "^7.0.3",
@@ -84,7 +85,6 @@
 		"prettier": "^3.3.3",
 		"tsup": "^8.2.4",
 		"turbo": "^2.0.14",
-		"tweetnacl": "^1.0.3",
 		"typescript": "~5.5.4",
 		"vitest": "^2.0.5",
 		"vitest-websocket-mock": "^0.3.0"
