@@ -120,15 +120,14 @@ export class VoiceReceiver {
 
 			case 'aead_xchacha20_poly1305_rtpsize': {
 				// Combined mode expects authtag in the encrypted message
-				return methods.crypto_aead_xchacha20poly1305_ietf_decrypt(
-					Buffer.concat([encrypted, authTag]),
-					header,
-					nonce,
-					secretKey,
+				return Buffer.from(
+					methods.crypto_aead_xchacha20poly1305_ietf_decrypt(
+						Buffer.concat([encrypted, authTag]),
+						header,
+						nonce,
+						secretKey,
+					),
 				);
-
-				// TODO: the secretbox method says it always returns a buffer, so why was this needed?
-				// return Buffer.from(decrypted);
 			}
 
 			default: {
