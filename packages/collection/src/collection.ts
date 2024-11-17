@@ -831,7 +831,6 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * The sort method sorts the items of a collection in place and returns it.
-	 * The sort is not necessarily stable in Node 10 or older.
 	 * The default sort order is according to string Unicode code points.
 	 *
 	 * @param compareFunction - Specifies a function that defines the sort order.
@@ -1026,7 +1025,6 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * The sorted method sorts the items of a collection and returns it.
-	 * The sort is not necessarily stable in Node 10 or older.
 	 * The default sort order is according to string Unicode code points.
 	 *
 	 * @param compareFunction - Specifies a function that defines the sort order.
