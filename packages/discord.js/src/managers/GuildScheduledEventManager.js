@@ -173,10 +173,7 @@ class GuildScheduledEventManager extends CachedManager {
 
     return data.reduce(
       (coll, rawGuildScheduledEventData) =>
-        coll.set(
-          rawGuildScheduledEventData.id,
-          this.guild.scheduledEvents._add(rawGuildScheduledEventData, options.cache),
-        ),
+        coll.set(rawGuildScheduledEventData.id, this._add(rawGuildScheduledEventData, options.cache)),
       new Collection(),
     );
   }
