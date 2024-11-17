@@ -6152,7 +6152,6 @@ export interface InteractionDeferReplyOptions {
 }
 
 export interface InteractionDeferUpdateOptions {
-  /** @deprecated Use {@link SharedInteractionResponseOptions.withResponse} instead */
   withResponse?: boolean;
 }
 
@@ -6677,7 +6676,6 @@ export interface ShardingManagerOptions {
   execArgv?: readonly string[];
 }
 
-// tslint:disable-next-line no-empty-interface
 export interface ShowModalOptions {
   withResponse?: boolean;
 }
