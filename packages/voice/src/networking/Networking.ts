@@ -16,7 +16,12 @@ const CHANNELS = 2;
 const TIMESTAMP_INC = (48_000 / 100) * CHANNELS;
 const MAX_NONCE_SIZE = 2 ** 32 - 1;
 
-export const SUPPORTED_ENCRYPTION_MODES = ['aead_aes256_gcm_rtpsize', 'aead_xchacha20_poly1305_rtpsize'];
+export const SUPPORTED_ENCRYPTION_MODES = ['aead_xchacha20_poly1305_rtpsize'];
+
+// Just in case there's some system that doesn't come with aes-256-gcm, conditionally add it as supported
+if (crypto.getCiphers().includes('aes-256-gcm')) {
+	SUPPORTED_ENCRYPTION_MODES.unshift('aead_aes256_gcm_rtpsize');
+}
 
 /**
  * The different statuses that a networking instance can hold. The order
