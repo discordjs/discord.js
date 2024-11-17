@@ -1467,9 +1467,9 @@ export class Guild extends AnonymousGuild {
   public editOnboarding(options: GuildOnboardingEditOptions): Promise<GuildOnboarding>;
   public editWelcomeScreen(options: WelcomeScreenEditOptions): Promise<WelcomeScreen>;
   public equals(guild: Guild): boolean;
-  public fetchAuditLogs<Event extends GuildAuditLogsResolvable = null>(
+  public fetchAuditLogs<Event extends GuildAuditLogsResolvable = AuditLogEvent>(
     options?: GuildAuditLogsFetchOptions<Event>,
-  ): Promise<GuildAuditLogs<Event>>;
+  ): Promise<GuildAuditLogs<Event extends null ? AuditLogEvent : Event>>;
   public fetchIntegrations(): Promise<Collection<Snowflake | string, Integration>>;
   public fetchOnboarding(): Promise<GuildOnboarding>;
   public fetchOwner(options?: BaseFetchOptions): Promise<GuildMember>;
@@ -1515,7 +1515,7 @@ export class Guild extends AnonymousGuild {
   public toJSON(): unknown;
 }
 
-export class GuildAuditLogs<Event extends GuildAuditLogsResolvable = AuditLogEvent> {
+export class GuildAuditLogs<Event extends AuditLogEvent = AuditLogEvent> {
   private constructor(guild: Guild, data: RawGuildAuditLogData);
   private applicationCommands: Collection<Snowflake, ApplicationCommand>;
   private webhooks: Collection<Snowflake, Webhook<WebhookType.ChannelFollower | WebhookType.Incoming>>;
@@ -1527,36 +1527,40 @@ export class GuildAuditLogs<Event extends GuildAuditLogsResolvable = AuditLogEve
 }
 
 export class GuildAuditLogsEntry<
-  TAction extends GuildAuditLogsResolvable = AuditLogEvent,
+  TAction extends AuditLogEvent = AuditLogEvent,
   TActionType extends GuildAuditLogsActionType = TAction extends keyof GuildAuditLogsTypes
     ? GuildAuditLogsTypes[TAction][1]
-    : GuildAuditLogsActionType,
+    : 'All',
   TTargetType extends GuildAuditLogsTargetType = TAction extends keyof GuildAuditLogsTypes
     ? GuildAuditLogsTypes[TAction][0]
-    : GuildAuditLogsTargetType,
-  TResolvedType = TAction extends null ? AuditLogEvent : TAction,
+    : 'Unknown',
 > {
   private constructor(guild: Guild, data: RawGuildAuditLogEntryData, logs?: GuildAuditLogs);
   public static Targets: GuildAuditLogsTargets;
-  public action: TResolvedType;
+  public action: TAction;
   public actionType: TActionType;
   public changes: AuditLogChange[];
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public executorId: Snowflake | null;
   public executor: User | null;
-  public extra: TResolvedType extends keyof GuildAuditLogsEntryExtraField
-    ? GuildAuditLogsEntryExtraField[TResolvedType]
-    : null;
+  public extra: TAction extends keyof GuildAuditLogsEntryExtraField ? GuildAuditLogsEntryExtraField[TAction] : null;
   public id: Snowflake;
   public reason: string | null;
   public targetId: Snowflake | null;
-  public target: TTargetType extends keyof GuildAuditLogsEntryTargetField<TActionType>
-    ? GuildAuditLogsEntryTargetField<TActionType>[TTargetType]
+  public target: TTargetType extends keyof GuildAuditLogsEntryTargetField<TAction>
+    ? GuildAuditLogsEntryTargetField<TAction>[TTargetType]
     : Role | GuildEmoji | { id: Snowflake } | null;
   public targetType: TTargetType;
   public static actionType(action: AuditLogEvent): GuildAuditLogsActionType;
   public static targetType(target: AuditLogEvent): GuildAuditLogsTargetType;
+  public isAction<TCheckAction extends TAction>(
+    action: TCheckAction,
+  ): this is GuildAuditLogsEntry<
+    TCheckAction,
+    TCheckAction extends keyof GuildAuditLogsTypes ? GuildAuditLogsTypes[TCheckAction][1] : 'All',
+    TCheckAction extends keyof GuildAuditLogsTypes ? GuildAuditLogsTypes[TCheckAction][0] : 'Unknown'
+  >;
   public toJSON(): unknown;
 }
 
@@ -5726,12 +5730,14 @@ export interface GuildAuditLogsEntryExtraField {
   };
 }
 
-export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLogsActionType> {
+export interface GuildAuditLogsEntryTargetField<TAction extends AuditLogEvent> {
   User: User | null;
   Guild: Guild;
   Webhook: Webhook<WebhookType.ChannelFollower | WebhookType.Incoming>;
   Invite: Invite;
-  Message: TActionType extends AuditLogEvent.MessageBulkDelete ? Guild | { id: Snowflake } : User;
+  Emoji: GuildEmoji;
+  Role: Role;
+  Message: TAction extends AuditLogEvent.MessageBulkDelete ? Guild | { id: Snowflake } : User;
   Integration: Integration;
   Channel: NonThreadGuildBasedChannel | { id: Snowflake; [x: string]: unknown };
   Thread: AnyThreadChannel | { id: Snowflake; [x: string]: unknown };
@@ -5753,7 +5759,7 @@ export interface GuildAuditLogsFetchOptions<Event extends GuildAuditLogsResolvab
 
 export type GuildAuditLogsResolvable = AuditLogEvent | null;
 
-export type GuildAuditLogsTargetType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][0] | 'All' | 'Unknown';
+export type GuildAuditLogsTargetType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][0] | 'Unknown';
 
 export type GuildAuditLogsTargets = {
   [Key in GuildAuditLogsTargetType]: GuildAuditLogsTargetType;
