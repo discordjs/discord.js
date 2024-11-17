@@ -84,12 +84,26 @@ const libs = {
 			return crypto.seal(nonce, cipherText, additionalData);
 		},
 	}),
+	'@noble/ciphers/chacha': (noble: any): Methods => ({
+		crypto_aead_xchacha20poly1305_ietf_decrypt(cipherText, additionalData, nonce, key) {
+			const chacha = noble.xchacha20poly1305(key, nonce, additionalData);
+			return chacha.decrypt(cipherText);
+		},
+		crypto_aead_xchacha20poly1305_ietf_encrypt(plaintext, additionalData, nonce, key) {
+			const chacha = noble.xchacha20poly1305(key, nonce, additionalData);
+			return chacha.encrypt(plaintext);
+		},
+	}),
 } as const;
 
 const fallbackError = () => {
 	throw new Error(
 		`Cannot play audio as no valid encryption package is installed.
-- Install sodium, libsodium-wrappers, or @stablelib/xchacha20poly1305.
+- Install one of:
+  - sodium
+  - libsodium-wrappers
+  - @stablelib/xchacha20poly1305
+  - @noble/ciphers.
 - Use the generateDependencyReport() function for more information.\n`,
 	);
 };
@@ -99,15 +113,23 @@ const methods: Methods = {
 	crypto_aead_xchacha20poly1305_ietf_decrypt: fallbackError,
 };
 
-void (async () => {
+// eslint-disable-next-line no-async-promise-executor
+export const secretboxLoadPromise = new Promise<void>(async (resolve) => {
 	for (const libName of Object.keys(libs) as (keyof typeof libs)[]) {
 		try {
 			const lib = await import(libName);
-			if (libName === 'libsodium-wrappers' && lib.ready) await lib.ready;
+
+			if (libName === 'libsodium-wrappers' && lib.ready) {
+				await lib.ready;
+			}
+
 			Object.assign(methods, libs[libName](lib));
+
 			break;
 		} catch {}
 	}
-})();
+
+	resolve();
+});
 
 export { methods };

@@ -54,6 +54,7 @@ try installing another.
 - `sodium-native`: ^3.3.0
 - `sodium`: ^3.0.2
 - `@stablelib/xchacha20poly1305`: ^2.0.0
+- `@noble/ciphers`: ^1.0.0
 - `libsodium-wrappers`: ^0.7.9
 
 **Opus Libraries (npm install):**
