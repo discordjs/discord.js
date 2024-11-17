@@ -109,27 +109,26 @@ export class VoiceReceiver {
 			buffer.length - UNPADDED_NONCE_LENGTH,
 		);
 
-		let decrypted;
 		switch (mode) {
 			case 'aead_aes256_gcm_rtpsize': {
 				const decipheriv = crypto.createDecipheriv('aes-256-gcm', secretKey, nonce);
 				decipheriv.setAAD(header);
 				decipheriv.setAuthTag(authTag);
 
-				decrypted = Buffer.concat([decipheriv.update(encrypted), decipheriv.final()]);
-				return decrypted;
+				return Buffer.concat([decipheriv.update(encrypted), decipheriv.final()]);
 			}
 
 			case 'aead_xchacha20_poly1305_rtpsize': {
 				// Combined mode expects authtag in the encrypted message
-				decrypted = methods.crypto_aead_xchacha20poly1305_ietf_decrypt(
+				return methods.crypto_aead_xchacha20poly1305_ietf_decrypt(
 					Buffer.concat([encrypted, authTag]),
 					header,
 					nonce,
 					secretKey,
 				);
 
-				return Buffer.from(decrypted);
+				// TODO: the secretbox method says it always returns a buffer, so why was this needed?
+				// return Buffer.from(decrypted);
 			}
 
 			default: {
