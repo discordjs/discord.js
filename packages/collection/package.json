@@ -64,18 +64,18 @@
 		"@discordjs/api-extractor": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^4.1.0",
-		"@types/node": "^18.19.45",
-		"@vitest/coverage-v8": "^2.0.5",
+		"@types/node": "^18.19.64",
+		"@vitest/coverage-v8": "^2.1.5",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.2.1",
-		"eslint": "^8.57.0",
+		"eslint": "^8.57.1",
 		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
 		"prettier": "^3.3.3",
-		"tsup": "^8.2.4",
-		"turbo": "^2.0.14",
+		"tsup": "^8.3.5",
+		"turbo": "^2.3.0",
 		"typescript": "~5.5.4",
-		"vitest": "^2.0.5"
+		"vitest": "^2.1.5"
 	},
 	"engines": {
 		"node": ">=18"
