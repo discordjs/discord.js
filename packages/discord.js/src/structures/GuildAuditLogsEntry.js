@@ -14,6 +14,7 @@ const Partials = require('../util/Partials');
 const { flatten } = require('../util/Util');
 
 const Targets = {
+  All: 'All',
   Guild: 'Guild',
   GuildScheduledEvent: 'GuildScheduledEvent',
   Channel: 'Channel',

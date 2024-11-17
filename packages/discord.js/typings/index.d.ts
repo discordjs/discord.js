@@ -5711,11 +5711,13 @@ export interface GuildAuditLogsEntryExtraField {
   };
 }
 
-export interface GuildAuditLogsEntryTargetField<TAction extends GuildAuditLogsResolvable> {
+export interface GuildAuditLogsEntryTargetField<TAction extends AuditLogEvent> {
   User: User | PartialUser | null;
   Guild: Guild;
   Webhook: Webhook<WebhookType.ChannelFollower | WebhookType.Incoming>;
   Invite: Invite;
+  Emoji: GuildEmoji | { id: Snowflake };
+  Role: Role | { id: Snowflake };
   Message: TAction extends AuditLogEvent.MessageBulkDelete ? GuildTextBasedChannel | { id: Snowflake } : User | null;
   Integration: Integration;
   Channel: NonThreadGuildBasedChannel | { id: Snowflake; [x: string]: unknown };
@@ -5726,8 +5728,6 @@ export interface GuildAuditLogsEntryTargetField<TAction extends GuildAuditLogsRe
   ApplicationCommand: ApplicationCommand | { id: Snowflake };
   AutoModeration: AutoModerationRule;
   GuildOnboardingPrompt: GuildOnboardingPrompt | { id: Snowflake; [x: string]: unknown };
-  Role: Role | { id: Snowflake };
-  Emoji: GuildEmoji | { id: Snowflake };
   // TODO: Update when https://github.com/discordjs/discord.js/pull/10590 is merged
   SoundboardSound: { id: Snowflake };
 }
@@ -5742,7 +5742,7 @@ export interface GuildAuditLogsFetchOptions<Event extends GuildAuditLogsResolvab
 
 export type GuildAuditLogsResolvable = AuditLogEvent | null;
 
-export type GuildAuditLogsTargetType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][0] | 'Unknown';
+export type GuildAuditLogsTargetType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][0] | 'All' | 'Unknown';
 
 export type GuildAuditLogsTargets = {
   [Key in GuildAuditLogsTargetType]: Key;
