@@ -51,7 +51,8 @@ try installing another.
 
 **Encryption Libraries (npm install):**
 
-> note: You only need to install one of these libraries if your system does not support `aes-256-gcm` (verify by running `require('node:crypto').getCiphers().includes('aes-256-gcm')`).
+> [!NOTE]
+>  You only need to install one of these libraries if your system does not support `aes-256-gcm` (verify by running `require('node:crypto').getCiphers().includes('aes-256-gcm')`).
 
 - `sodium-native`: ^3.3.0
 - `sodium`: ^3.0.2
