@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/voice@0.18.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.17.0...@discordjs/voice@0.18.0) - (2024-11-17)
+
+## Features
+
+- **voice:** Add new encryption methods, remove old methods (#10451) ([9f8b9b1](https://github.com/discordjs/discord.js/commit/9f8b9b1d66edcc84ecf396d807dee7cf39f760c8)) by @nyapat
+  - **BREAKING CHANGE:** This library no longer supports using `tweetnacl` as an encryption library due to Discord deprecating the algorithms that `tweetnacl` helped us support (read more [here](https://discord.com/developers/docs/change-log#voice-encryption-modes)). Please migrate to one of: `sodium-native`, `sodium`, `@stablelib/xchacha20poly1305`, `@noble/ciphers` or `libsodium-wrappers` unless your system supports `aes-256-gcm` (verify by running `require('node:crypto').getCiphers().includes('aes-256-gcm')`).
+
+## Testing
+
+- Replace jest with vitest (#10472) ([24128a3](https://github.com/discordjs/discord.js/commit/24128a3c459ed0c3eb0932308f03ecc55e3c60f1)) by @nyapat
+
+### New Contributors
+
+* @Yareaj made their first contribution in #10575
+
 # [@discordjs/voice@0.17.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.16.0...@discordjs/voice@0.17.0) - (2024-05-04)
 
 ## Bug Fixes
