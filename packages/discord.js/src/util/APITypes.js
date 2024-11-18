@@ -511,6 +511,11 @@
  */
 
 /**
+ * @external ReactionType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ReactionType}
+ */
+
+/**
  * @external RoleFlags
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/RoleFlags}
  */

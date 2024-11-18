@@ -2490,6 +2490,7 @@ export class MessageReaction {
 }
 
 export interface MessageReactionEventDetails {
+  type: ReactionType;
   burst: boolean;
 }
 

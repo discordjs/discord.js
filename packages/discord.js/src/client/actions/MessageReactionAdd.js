@@ -51,6 +51,7 @@ class MessageReactionAdd extends Action {
     /**
      * Provides additional information about altered reaction
      * @typedef {Object} MessageReactionEventDetails
+     * @property {ReactionType} type The type of the reaction
      * @property {boolean} burst Determines whether a super reaction was used
      */
     /**
@@ -60,7 +61,7 @@ class MessageReactionAdd extends Action {
      * @param {User} user The user that applied the guild or reaction emoji
      * @param {MessageReactionEventDetails} details Details of adding the reaction
      */
-    this.client.emit(Events.MessageReactionAdd, reaction, user, { burst: data.burst });
+    this.client.emit(Events.MessageReactionAdd, reaction, user, { type: data.type, burst: data.burst });
 
     return { message, reaction, user };
   }
