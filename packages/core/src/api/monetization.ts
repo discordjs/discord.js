@@ -4,6 +4,7 @@ import { makeURLSearchParams, type RequestData, type REST } from '@discordjs/res
 import {
 	Routes,
 	type RESTGetAPIEntitlementsQuery,
+	type RESTGetAPIEntitlementResult,
 	type RESTGetAPIEntitlementsResult,
 	type RESTGetAPISKUsResult,
 	type RESTGetAPISKUSubscriptionResult,
@@ -82,6 +83,24 @@ export class MonetizationAPI {
 			signal,
 			query: makeURLSearchParams(query),
 		}) as Promise<RESTGetAPIEntitlementsResult>;
+	}
+
+	/**
+	 * Fetches an entitlement for an application.
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/entitlement#get-entitlement}
+	 * @param applicationId - The application id to fetch the entitlement for
+	 * @param entitlementId - The entitlement id to fetch
+	 * @param options - The options for fetching the entitlement
+	 */
+	public async getEntitlement(
+		applicationId: Snowflake,
+		entitlementId: Snowflake,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		return this.rest.get(Routes.entitlement(applicationId, entitlementId), {
+			signal,
+		}) as Promise<RESTGetAPIEntitlementResult>;
 	}
 
 	/**
