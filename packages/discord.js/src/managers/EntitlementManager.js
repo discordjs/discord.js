@@ -62,7 +62,7 @@ class EntitlementManager extends CachedManager {
    * Fetches entitlements for this application
    * @param {EntitlementResolvable|FetchEntitlementOptions|FetchEntitlementsOptions} [options]
    * Options for fetching the entitlements
-   * @returns {Promise<Collection<Snowflake, Entitlement>>}
+   * @returns {Promise<Entitlement|Collection<Snowflake, Entitlement>>}
    */
   async fetch(options) {
     if (!options) return this._fetchMany(options);
