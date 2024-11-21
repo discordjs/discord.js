@@ -73,10 +73,9 @@ class Entitlement extends Base {
     if ('starts_at' in data) {
       /**
        * The timestamp at which this entitlement is valid
-       * <info>This is only `null` for test entitlements</info>
        * @type {?number}
        */
-      this.startsTimestamp = Date.parse(data.starts_at);
+      this.startsTimestamp = data.starts_at ? Date.parse(data.starts_at) : null;
     } else {
       this.startsTimestamp ??= null;
     }
@@ -113,7 +112,6 @@ class Entitlement extends Base {
 
   /**
    * The start date at which this entitlement is valid
-   * <info>This is only `null` for test entitlements</info>
    * @type {?Date}
    */
   get startsAt() {
