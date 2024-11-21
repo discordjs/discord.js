@@ -166,8 +166,8 @@ import {
   GuildScheduledEventRecurrenceRuleFrequency,
   GatewaySendPayload,
   GatewayDispatchPayload,
-  ApplicationEventWebhookStatus,
-  WebhookEventType,
+  ApplicationWebhookEventStatus,
+  ApplicationWebhookEventType,
   VoiceChannelEffectSendAnimationType,
   GatewayVoiceChannelEffectSendDispatchData,
 } from 'discord-api-types/v10';
@@ -1069,8 +1069,8 @@ export class ClientApplication extends Application {
   public get partial(): boolean;
   public interactionsEndpointURL: string | null;
   public eventWebhookURL: string | null;
-  public eventWebhooksStatus: ApplicationEventWebhookStatus | null;
-  public eventWebhooksTypes: WebhookEventType[] | null;
+  public eventWebhooksStatus: ApplicationWebhookEventStatus | null;
+  public eventWebhooksTypes: ApplicationWebhookEventType[] | null;
   public roleConnectionsVerificationURL: string | null;
   public rpcOrigins: string[];
   public edit(options: ClientApplicationEditOptions): Promise<ClientApplication>;
@@ -6877,8 +6877,8 @@ export interface ClientApplicationEditOptions {
   coverImage?: BufferResolvable | Base64Resolvable | null;
   interactionsEndpointURL?: string;
   eventWebhooksURL?: string;
-  eventWebhooksStatus?: ApplicationEventWebhookStatus;
-  eventWebhooksTypes?: WebhookEventType[];
+  eventWebhooksStatus?: ApplicationWebhookEventStatus;
+  eventWebhooksTypes?: readonly ApplicationWebhookEventType[];
   tags?: readonly string[];
 }
 

@@ -249,7 +249,7 @@ class ClientApplication extends Application {
     if ('event_webhooks_status' in data) {
       /**
        * This application's event webhooks status
-       * @type {?ApplicationEventWebhookStatus}
+       * @type {?ApplicationWebhookEventStatus}
        */
       this.eventWebhooksStatus = data.event_webhooks_status;
     } else {
@@ -259,7 +259,7 @@ class ClientApplication extends Application {
     if ('event_webhooks_types' in data) {
       /**
        * This application's event webhooks types
-       * @type {?WebhookEventType[]}
+       * @type {?ApplicationWebhookEventType[]}
        */
       this.eventWebhooksTypes = data.event_webhooks_types;
     } else {
@@ -308,8 +308,8 @@ class ClientApplication extends Application {
    * @property {?(BufferResolvable|Base64Resolvable)} [coverImage] The application's cover image
    * @property {string} [interactionsEndpointURL] The application's interaction endpoint URL
    * @property {string} [eventWebhooksURL] The application's event webhooks URL
-   * @property {ApplicationEventWebhookStatus} [eventWebhooksStatus] The application's event webhooks status
-   * @property {WebhookEventType[]} [eventWebhooksTypes] The application's event webhooks types
+   * @property {ApplicationWebhookEventStatus} [eventWebhooksStatus] The application's event webhooks status
+   * @property {ApplicationWebhookEventType[]} [eventWebhooksTypes] The application's event webhooks types
    * @property {string[]} [tags] The application's tags
    */
 
