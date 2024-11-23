@@ -55,7 +55,7 @@
 	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
-		"discord-api-types": "^0.37.105"
+		"discord-api-types": "^0.37.107"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
