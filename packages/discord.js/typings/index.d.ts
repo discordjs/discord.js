@@ -568,9 +568,6 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   public deferReply(
     options: InteractionDeferReplyOptions & { withResponse: true },
   ): Promise<InteractionCallbackResponse>;
-  public deferReply(
-    options: InteractionDeferReplyOptions & { withResponse: true },
-  ): Promise<InteractionCallbackResponse>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
   public editReply(
@@ -1988,15 +1985,11 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
 }
 
 export class InteractionCallback {
-  public constructor(client: Client<true>, data: RESTAPIInteractionCallbackObject);
+  private constructor(client: Client<true>, data: RESTAPIInteractionCallbackObject);
   public activityInstanceId: string | null;
   public readonly client: Client<true>;
-  public get channel(): TextBasedChannel | null;
-  public channelId: Snowflake | null;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
-  public get guild(): Guild | null;
-  public guildId: Snowflake | null;
   public id: Snowflake;
   public responseMessageEphemeral: boolean | null;
   public responseMessageId: Snowflake | null;
@@ -6164,7 +6157,6 @@ export interface InteractionReplyOptions extends BaseMessageOptionsWithPoll {
 }
 
 export interface InteractionUpdateOptions extends MessageEditOptions {
-  /** @deprecated Use {@link SharedInteractionResponseOptions.withResponse} instead */
   withResponse?: boolean;
 }
 

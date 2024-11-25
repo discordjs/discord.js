@@ -69,24 +69,6 @@ class InteractionCallback {
   get createdAt() {
     return new Date(this.createdTimestamp);
   }
-
-  /**
-   * The channel the original interaction was sent in
-   * @type {?TextBasedChannels}
-   * @readonly
-   */
-  get channel() {
-    return this.client.channels.cache.get(this.channelId) ?? null;
-  }
-
-  /**
-   * The guild the original interaction was sent in
-   * @type {?Guild}
-   * @readonly
-   */
-  get guild() {
-    return this.client.guilds.cache.get(this.guildId) ?? null;
-  }
 }
 
 module.exports = InteractionCallback;
