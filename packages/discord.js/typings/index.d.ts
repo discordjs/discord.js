@@ -584,7 +584,15 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
       | JSONEncodable<APIModalInteractionResponseCallbackData>
       | ModalComponentData
       | APIModalInteractionResponseCallbackData,
+    options?: ShowModalOptions,
   ): Promise<undefined>;
+  public showModal(
+    modal:
+      | JSONEncodable<APIModalInteractionResponseCallbackData>
+      | ModalComponentData
+      | APIModalInteractionResponseCallbackData,
+    options: ShowModalOptions & { withResponse: true },
+  ): Promise<InteractionCallbackResponse>;
   public awaitModalSubmit(
     options: AwaitModalSubmitOptions<ModalSubmitInteraction>,
   ): Promise<ModalSubmitInteraction<Cached>>;
