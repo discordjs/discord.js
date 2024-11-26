@@ -3087,12 +3087,14 @@ export class Subscription extends Base {
   public userId: Snowflake;
   public skuIds: Snowflake[];
   public entitlementIds: Snowflake[];
-  public currentPeriodStart: Date;
-  public currentPeriodEnd: Date;
+  public currentPeriodStartTimestamp: number;
+  public currentPeriodEndTimestamp: number;
   public status: SubscriptionStatus;
   public canceledTimestamp: number | null;
   public country: string | null;
   public get canceledAt(): Date | null;
+  public get currentPeriodStartAt(): Date;
+  public get currentPeriodEndAt(): Date;
 }
 
 export class StageChannel extends BaseGuildVoiceChannel {

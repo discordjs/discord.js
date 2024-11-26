@@ -3,7 +3,7 @@
 const Events = require('../../../util/Events');
 
 module.exports = (client, { d: data }) => {
-  const subscription = client.application.subscriptions.cache._add(data, false);
+  const subscription = client.application.subscriptions._add(data, false);
 
   client.application.subscriptions.cache.delete(subscription.id);
 

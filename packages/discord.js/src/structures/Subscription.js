@@ -39,16 +39,16 @@ class Subscription extends Base {
     this.entitlementIds = data.entitlement_ids;
 
     /**
-     * The start of the current subscription period
-     * @type {Date}
+     * The timestamp the current subscription period will start at
+     * @type {number}
      */
-    this.currentPeriodStart = new Date(data.current_period_start);
+    this.currentPeriodStartTimestamp = Date.parse(data.current_period_start);
 
     /**
-     * The end of the current subscription period
-     * @type {Date}
+     * The timestamp the current subscription period will end at
+     * @type {number}
      */
-    this.currentPeriodEnd = new Date(data.current_period_end);
+    this.currentPeriodEndTimestamp = Date.parse(data.current_period_end);
 
     /**
      * The current status of the subscription
@@ -79,12 +79,30 @@ class Subscription extends Base {
   }
 
   /**
-   * The date at which this subscription was canceled
+   * The time the subscription was canceled
    * @type {?Date}
    * @readonly
    */
   get canceledAt() {
     return this.canceledTimestamp && new Date(this.canceledTimestamp);
+  }
+
+  /**
+   * The time the current subscription period will start at
+   * @type {Date}
+   * @readonly
+   */
+  get currentPeriodStartAt() {
+    return new Date(this.currentPeriodStartTimestamp);
+  }
+
+  /**
+   * The time the current subscription period will end at
+   * @type {Date}
+   * @readonly
+   */
+  get currentPeriodEndAt() {
+    return new Date(this.currentPeriodEndTimestamp);
   }
 }
 
