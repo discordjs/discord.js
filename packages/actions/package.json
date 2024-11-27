@@ -52,7 +52,7 @@
 		"undici": "6.21.0"
 	},
 	"devDependencies": {
-		"@types/node": "^18.19.64",
+		"@types/node": "^20.17.8",
 		"@vitest/coverage-v8": "^2.1.5",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.57.1",
@@ -65,6 +65,6 @@
 		"vitest": "^2.1.5"
 	},
 	"engines": {
-		"node": ">=18"
+		"node": ">=20"
 	}
 }
