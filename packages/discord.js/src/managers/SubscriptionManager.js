@@ -4,7 +4,7 @@ const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
-const { ErrorCodes, DiscordjsTypeError } = require('../errors/index');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index');
 const { Subscription } = require('../structures/Subscription');
 const { resolveSKUId } = require('../util/Util');
 
@@ -44,12 +44,12 @@ class SubscriptionManager extends CachedManager {
   /**
    * Fetches subscriptions for this application
    * @param {FetchSubscriptionOptions|FetchSubscriptionsOptions} [options={}] Options for fetching the subscriptions
-   * @returns {Promise<Collection<Snowflake, Subscription>>}
+   * @returns {Promise<Subscription|Collection<Snowflake, Subscription>>}
    */
   async fetch(options = {}) {
     if (typeof options !== 'object') throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
 
-    const { after, before, cache = true, limit, sku, subscriptionId, user } = options;
+    const { after, before, cache, limit, sku, subscriptionId, user } = options;
 
     const skuId = resolveSKUId(sku);
 
