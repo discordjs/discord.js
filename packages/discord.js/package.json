@@ -83,7 +83,7 @@
     "@discordjs/docgen": "workspace:^",
     "@discordjs/scripts": "workspace:^",
     "@favware/cliff-jumper": "^4.1.0",
-    "@types/node": "^16.18.119",
+    "@types/node": "^20.17.8",
     "@typescript-eslint/eslint-plugin": "^8.14.0",
     "@typescript-eslint/parser": "^8.14.0",
     "cross-env": "^7.0.3",
@@ -98,7 +98,7 @@
     "typescript": "~5.5.4"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "publishConfig": {
     "provenance": true
