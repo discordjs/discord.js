@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import { makeURLSearchParams, type REST, type RawFile, type RequestData } from '@discordjs/rest';
+import { makeURLSearchParams, type RawFile, type REST, type RequestData } from '@discordjs/rest';
 import {
 	Routes,
 	type GuildMFALevel,
@@ -109,6 +109,10 @@ import {
 	type Snowflake,
 } from 'discord-api-types/v10';
 import { VoiceAPI } from './voice';
+
+export interface CreateStickerOptions extends Omit<RESTPostAPIGuildStickerFormDataBody, 'file'> {
+	file: RawFile;
+}
 
 export class GuildsAPI {
 	public constructor(private readonly rest: REST) {}
@@ -1013,7 +1017,7 @@ export class GuildsAPI {
 	 */
 	public async createSticker(
 		guildId: Snowflake,
-		{ file, ...body }: Omit<RESTPostAPIGuildStickerFormDataBody, 'file'> & { file: RawFile },
+		{ file, ...body }: CreateStickerOptions,
 		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
 		const fileData = { ...file, key: 'file' };
