@@ -75,7 +75,7 @@ export class MonetizationAPI {
 	 */
 	public async getEntitlements(
 		applicationId: Snowflake,
-		query: RESTGetAPIEntitlementsQuery,
+		query: RESTGetAPIEntitlementsQuery = {},
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.get(Routes.entitlements(applicationId), {
