@@ -64,7 +64,7 @@
 		"@discordjs/api-extractor": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^4.1.0",
-		"@types/node": "^18.19.64",
+		"@types/node": "^20.17.8",
 		"@vitest/coverage-v8": "^2.1.5",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.2.1",
@@ -78,7 +78,7 @@
 		"vitest": "^2.1.5"
 	},
 	"engines": {
-		"node": ">=18"
+		"node": ">=20"
 	},
 	"publishConfig": {
 		"access": "public",
