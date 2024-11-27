@@ -584,15 +584,15 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
       | JSONEncodable<APIModalInteractionResponseCallbackData>
       | ModalComponentData
       | APIModalInteractionResponseCallbackData,
-    options?: ShowModalOptions,
-  ): Promise<undefined>;
+    options: ShowModalOptions & { withResponse: true },
+  ): Promise<InteractionCallbackResponse>;
   public showModal(
     modal:
       | JSONEncodable<APIModalInteractionResponseCallbackData>
       | ModalComponentData
       | APIModalInteractionResponseCallbackData,
-    options: ShowModalOptions & { withResponse: true },
-  ): Promise<InteractionCallbackResponse>;
+    options?: ShowModalOptions,
+  ): Promise<undefined>;
   public awaitModalSubmit(
     options: AwaitModalSubmitOptions<ModalSubmitInteraction>,
   ): Promise<ModalSubmitInteraction<Cached>>;
@@ -2360,15 +2360,15 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
       | JSONEncodable<APIModalInteractionResponseCallbackData>
       | ModalComponentData
       | APIModalInteractionResponseCallbackData,
-    options?: ShowModalOptions,
-  ): Promise<undefined>;
+    options: ShowModalOptions & { withResponse: true },
+  ): Promise<InteractionCallbackResponse>;
   public showModal(
     modal:
       | JSONEncodable<APIModalInteractionResponseCallbackData>
       | ModalComponentData
       | APIModalInteractionResponseCallbackData,
-    options: ShowModalOptions & { withResponse: true },
-  ): Promise<InteractionCallbackResponse>;
+    options?: ShowModalOptions,
+  ): Promise<undefined>;
   public awaitModalSubmit(
     options: AwaitModalSubmitOptions<ModalSubmitInteraction>,
   ): Promise<ModalSubmitInteraction<Cached>>;
