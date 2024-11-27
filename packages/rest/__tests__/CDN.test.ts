@@ -59,7 +59,7 @@ test('emoji default', () => {
 });
 
 test('emoji gif', () => {
-	expect(cdn.emoji(id, 'gif')).toEqual(`${baseCDN}/emojis/${id}.gif`);
+	expect(cdn.emoji(id, { extension: 'gif' })).toEqual(`${baseCDN}/emojis/${id}.gif`);
 });
 
 test('guildMemberAvatar default', () => {
