@@ -412,6 +412,11 @@ export abstract class Application extends Base {
   public icon: string | null;
   public id: Snowflake;
   public name: string | null;
+  public termsOfServiceURL: string | null;
+  public privacyPolicyURL: string | null;
+  public rpcOrigins: string[];
+  public cover: string | null;
+  public verifyKey: string | null;
   public coverURL(options?: ImageURLOptions): string | null;
   public iconURL(options?: ImageURLOptions): string | null;
   public toJSON(): unknown;
@@ -1899,12 +1904,7 @@ export class Integration extends Base {
 export class IntegrationApplication extends Application {
   private constructor(client: Client<true>, data: RawIntegrationApplicationData);
   public bot: User | null;
-  public termsOfServiceURL: string | null;
-  public privacyPolicyURL: string | null;
-  public rpcOrigins: string[];
   public hook: boolean | null;
-  public cover: string | null;
-  public verifyKey: string | null;
 }
 
 export type GatewayIntentsString = keyof typeof GatewayIntentBits;
