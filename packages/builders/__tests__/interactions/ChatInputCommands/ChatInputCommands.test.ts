@@ -3,6 +3,7 @@ import {
 	ApplicationIntegrationType,
 	ChannelType,
 	InteractionContextType,
+	Locale,
 	PermissionFlagsBits,
 } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
@@ -376,15 +377,15 @@ describe('ChatInput Commands', () => {
 		});
 
 		describe('ChatInput command localizations', () => {
-			const expectedSingleLocale = { 'en-US': 'foobar' };
+			const expectedSingleLocale = { [Locale.EnglishUS]: 'foobar' };
 			const expectedMultipleLocales = {
 				...expectedSingleLocale,
 				bg: 'test',
 			};
 
 			test('GIVEN valid name localizations THEN does not throw error', () => {
-				expect(() => getBuilder().setNameLocalization('en-US', 'foobar')).not.toThrowError();
-				expect(() => getBuilder().setNameLocalizations({ 'en-US': 'foobar' })).not.toThrowError();
+				expect(() => getBuilder().setNameLocalization(Locale.EnglishUS, 'foobar')).not.toThrowError();
+				expect(() => getBuilder().setNameLocalizations({ [Locale.EnglishUS]: 'foobar' })).not.toThrowError();
 			});
 
 			test('GIVEN invalid name localizations THEN does throw error', () => {
@@ -395,21 +396,29 @@ describe('ChatInput Commands', () => {
 			});
 
 			test('GIVEN valid name localizations THEN valid data is stored', () => {
-				expect(getNamedBuilder().setNameLocalization('en-US', 'foobar').toJSON().name_localizations).toEqual(
+				expect(getNamedBuilder().setNameLocalization(Locale.EnglishUS, 'foobar').toJSON().name_localizations).toEqual(
 					expectedSingleLocale,
 				);
 				expect(
-					getNamedBuilder().setNameLocalizations({ 'en-US': 'foobar', bg: 'test' }).toJSON().name_localizations,
+					getNamedBuilder()
+						.setNameLocalizations({ [Locale.EnglishUS]: 'foobar', bg: 'test' })
+						.toJSON().name_localizations,
 				).toEqual(expectedMultipleLocales);
 				expect(getNamedBuilder().clearNameLocalizations().toJSON().name_localizations).toBeUndefined();
-				expect(getNamedBuilder().clearNameLocalization('en-US').toJSON().name_localizations).toEqual({
-					'en-US': undefined,
+				expect(getNamedBuilder().clearNameLocalization(Locale.EnglishUS).toJSON().name_localizations).toEqual({
+					[Locale.EnglishUS]: undefined,
 				});
 			});
 
 			test('GIVEN valid description localizations THEN does not throw error', () => {
-				expect(() => getNamedBuilder().setDescriptionLocalization('en-US', 'foobar').toJSON()).not.toThrowError();
-				expect(() => getNamedBuilder().setDescriptionLocalizations({ 'en-US': 'foobar' }).toJSON()).not.toThrowError();
+				expect(() =>
+					getNamedBuilder().setDescriptionLocalization(Locale.EnglishUS, 'foobar').toJSON(),
+				).not.toThrowError();
+				expect(() =>
+					getNamedBuilder()
+						.setDescriptionLocalizations({ [Locale.EnglishUS]: 'foobar' })
+						.toJSON(),
+				).not.toThrowError();
 			});
 
 			test('GIVEN invalid description localizations THEN does throw error', () => {
@@ -421,20 +430,22 @@ describe('ChatInput Commands', () => {
 
 			test('GIVEN valid description localizations THEN valid data is stored', () => {
 				expect(
-					getNamedBuilder().setDescriptionLocalization('en-US', 'foobar').toJSON(false).description_localizations,
+					getNamedBuilder().setDescriptionLocalization(Locale.EnglishUS, 'foobar').toJSON(false)
+						.description_localizations,
 				).toEqual(expectedSingleLocale);
 				expect(
-					getNamedBuilder().setDescriptionLocalizations({ 'en-US': 'foobar', bg: 'test' }).toJSON(false)
-						.description_localizations,
+					getNamedBuilder()
+						.setDescriptionLocalizations({ [Locale.EnglishUS]: 'foobar', bg: 'test' })
+						.toJSON(false).description_localizations,
 				).toEqual(expectedMultipleLocales);
 				expect(
 					getNamedBuilder().clearDescriptionLocalizations().toJSON(false).description_localizations,
 				).toBeUndefined();
-				expect(getNamedBuilder().clearDescriptionLocalization('en-US').toJSON(false).description_localizations).toEqual(
-					{
-						'en-US': undefined,
-					},
-				);
+				expect(
+					getNamedBuilder().clearDescriptionLocalization(Locale.EnglishUS).toJSON(false).description_localizations,
+				).toEqual({
+					[Locale.EnglishUS]: undefined,
+				});
 			});
 		});
 
