@@ -38,7 +38,7 @@ export class MonetizationAPI {
 	 */
 	public async getSKUSubscriptions(
 		skuId: Snowflake,
-		query: RESTGetAPISKUSubscriptionsQuery,
+		query: RESTGetAPISKUSubscriptionsQuery = {},
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.get(Routes.skuSubscriptions(skuId), {
@@ -75,7 +75,7 @@ export class MonetizationAPI {
 	 */
 	public async getEntitlements(
 		applicationId: Snowflake,
-		query: RESTGetAPIEntitlementsQuery,
+		query: RESTGetAPIEntitlementsQuery = {},
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.get(Routes.entitlements(applicationId), {
