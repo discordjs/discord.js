@@ -1076,7 +1076,6 @@ export class ClientApplication extends Application {
   public subscriptions: SubscriptionManager;
   public guildId: Snowflake | null;
   public get guild(): Guild | null;
-  public cover: string | null;
   public flags: Readonly<ApplicationFlagsBitField>;
   public approximateGuildCount: number | null;
   public approximateUserInstallCount: number | null;
@@ -1088,7 +1087,6 @@ export class ClientApplication extends Application {
   public get partial(): boolean;
   public interactionsEndpointURL: string | null;
   public roleConnectionsVerificationURL: string | null;
-  public rpcOrigins: string[];
   public edit(options: ClientApplicationEditOptions): Promise<ClientApplication>;
   public fetch(): Promise<ClientApplication>;
   public fetchRoleConnectionMetadataRecords(): Promise<ApplicationRoleConnectionMetadata[]>;
