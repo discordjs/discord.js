@@ -87,7 +87,7 @@ class ThreadMember extends Base {
    * @readonly
    */
   get user() {
-    return this.client.users.cache.get(this.id);
+    return this.client.users.cache.get(this.id) ?? null;
   }
 
   /**

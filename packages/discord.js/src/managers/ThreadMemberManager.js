@@ -71,8 +71,8 @@ class ThreadMemberManager extends CachedManager {
   resolve(member) {
     const memberResolvable = super.resolve(member);
     if (memberResolvable) return memberResolvable;
-    const userResolvable = this.client.users.resolveId(member);
-    if (userResolvable) return super.cache.get(userResolvable);
+    const userId = this.client.users.resolveId(member);
+    if (userId) return super.cache.get(userId) ?? null;
     return null;
   }
 
