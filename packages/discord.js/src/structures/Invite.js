@@ -40,7 +40,7 @@ class Invite extends Base {
      */
     this.guild ??= null;
     if (data.guild) {
-      this.guild = this.client.guilds.resolve(data.guild.id) ?? new InviteGuild(this.client, data.guild);
+      this.guild = this.client.guilds.cache.get(data.guild.id) ?? new InviteGuild(this.client, data.guild);
     }
 
     if ('code' in data) {

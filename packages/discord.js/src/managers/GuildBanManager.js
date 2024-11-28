@@ -175,7 +175,7 @@ class GuildBanManager extends CachedManager {
       reason: options.reason,
     });
     if (user instanceof GuildMember) return user;
-    const _user = this.client.users.resolve(id);
+    const _user = this.client.users.cache.get(id);
     if (_user) {
       return this.guild.members.resolve(_user) ?? _user;
     }
