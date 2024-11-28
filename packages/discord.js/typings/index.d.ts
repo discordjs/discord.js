@@ -168,6 +168,11 @@ import {
   SubscriptionStatus,
   GatewaySendPayload,
   GatewayDispatchPayload,
+  RESTPostAPIInteractionCallbackWithResponseResult,
+  RESTAPIInteractionCallbackObject,
+  RESTAPIInteractionCallbackResourceObject,
+  InteractionResponseType,
+  RESTAPIInteractionCallbackActivityInstanceResource,
   VoiceChannelEffectSendAnimationType,
   GatewayVoiceChannelEffectSendDispatchData,
 } from 'discord-api-types/v10';
@@ -563,8 +568,8 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   public inCachedGuild(): this is CommandInteraction<'cached'>;
   public inRawGuild(): this is CommandInteraction<'raw'>;
   public deferReply(
-    options: InteractionDeferReplyOptions & { fetchReply: true },
-  ): Promise<Message<BooleanCache<Cached>>>;
+    options: InteractionDeferReplyOptions & { withResponse: true },
+  ): Promise<InteractionCallbackResponse>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
   public editReply(
@@ -572,7 +577,7 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   ): Promise<Message<BooleanCache<Cached>>>;
   public fetchReply(message?: Snowflake | '@original'): Promise<Message<BooleanCache<Cached>>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message<BooleanCache<Cached>>>;
-  public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message<BooleanCache<Cached>>>;
+  public reply(options: InteractionReplyOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
   public reply(
     options: string | MessagePayload | InteractionReplyOptions,
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
@@ -581,7 +586,15 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
       | JSONEncodable<APIModalInteractionResponseCallbackData>
       | ModalComponentData
       | APIModalInteractionResponseCallbackData,
-  ): Promise<void>;
+    options: ShowModalOptions & { withResponse: true },
+  ): Promise<InteractionCallbackResponse>;
+  public showModal(
+    modal:
+      | JSONEncodable<APIModalInteractionResponseCallbackData>
+      | ModalComponentData
+      | APIModalInteractionResponseCallbackData,
+    options?: ShowModalOptions,
+  ): Promise<undefined>;
   public awaitModalSubmit(
     options: AwaitModalSubmitOptions<ModalSubmitInteraction>,
   ): Promise<ModalSubmitInteraction<Cached>>;
@@ -1982,6 +1995,33 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public isRepliable(): this is RepliableInteraction<Cached>;
 }
 
+export class InteractionCallback {
+  private constructor(client: Client<true>, data: RESTAPIInteractionCallbackObject);
+  public activityInstanceId: string | null;
+  public readonly client: Client<true>;
+  public get createdAt(): Date;
+  public get createdTimestamp(): number;
+  public id: Snowflake;
+  public responseMessageEphemeral: boolean | null;
+  public responseMessageId: Snowflake | null;
+  public responseMessageLoading: boolean | null;
+  public type: InteractionType;
+}
+
+export class InteractionCallbackResponse {
+  private constructor(client: Client<true>, data: RESTPostAPIInteractionCallbackWithResponseResult);
+  public readonly client: Client<true>;
+  public interaction: InteractionCallback;
+  public resource: InteractionCallbackResource | null;
+}
+
+export class InteractionCallbackResource {
+  private constructor(client: Client<true>, data: RESTAPIInteractionCallbackResourceObject);
+  public activityInstance: RESTAPIInteractionCallbackActivityInstanceResource | null;
+  public message: Message | null;
+  public type: InteractionResponseType;
+}
+
 export class InteractionCollector<Interaction extends CollectedInteraction> extends Collector<
   Snowflake,
   Interaction,
@@ -2297,12 +2337,12 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public inCachedGuild(): this is MessageComponentInteraction<'cached'>;
   public inRawGuild(): this is MessageComponentInteraction<'raw'>;
   public deferReply(
-    options: InteractionDeferReplyOptions & { fetchReply: true },
-  ): Promise<Message<BooleanCache<Cached>>>;
+    options: InteractionDeferReplyOptions & { withResponse: true },
+  ): Promise<InteractionCallbackResponse>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public deferUpdate(
-    options: InteractionDeferUpdateOptions & { fetchReply: true },
-  ): Promise<Message<BooleanCache<Cached>>>;
+    options: InteractionDeferUpdateOptions & { withResponse: true },
+  ): Promise<InteractionCallbackResponse>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
   public editReply(
@@ -2310,11 +2350,11 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   ): Promise<Message<BooleanCache<Cached>>>;
   public fetchReply(message?: Snowflake | '@original'): Promise<Message<BooleanCache<Cached>>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message<BooleanCache<Cached>>>;
-  public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message<BooleanCache<Cached>>>;
+  public reply(options: InteractionReplyOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
   public reply(
     options: string | MessagePayload | InteractionReplyOptions,
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
-  public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<Message<BooleanCache<Cached>>>;
+  public update(options: InteractionUpdateOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
   public update(
     options: string | MessagePayload | InteractionUpdateOptions,
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
@@ -2323,7 +2363,15 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
       | JSONEncodable<APIModalInteractionResponseCallbackData>
       | ModalComponentData
       | APIModalInteractionResponseCallbackData,
-  ): Promise<void>;
+    options: ShowModalOptions & { withResponse: true },
+  ): Promise<InteractionCallbackResponse>;
+  public showModal(
+    modal:
+      | JSONEncodable<APIModalInteractionResponseCallbackData>
+      | ModalComponentData
+      | APIModalInteractionResponseCallbackData,
+    options?: ShowModalOptions,
+  ): Promise<undefined>;
   public awaitModalSubmit(
     options: AwaitModalSubmitOptions<ModalSubmitInteraction>,
   ): Promise<ModalSubmitInteraction<Cached>>;
@@ -2491,7 +2539,7 @@ export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = C
   extends ModalSubmitInteraction<Cached> {
   message: Message<BooleanCache<Cached>>;
   channelId: Snowflake;
-  update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<Message>;
+  update(options: InteractionUpdateOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
   update(
     options: string | MessagePayload | InteractionUpdateOptions,
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
@@ -2511,7 +2559,7 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public message: Message<BooleanCache<Cached>> | null;
   public replied: boolean;
   public readonly webhook: InteractionWebhook;
-  public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message<BooleanCache<Cached>>>;
+  public reply(options: InteractionReplyOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
   public reply(
     options: string | MessagePayload | InteractionReplyOptions,
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
@@ -2520,14 +2568,14 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
     options: string | MessagePayload | InteractionEditReplyOptions,
   ): Promise<Message<BooleanCache<Cached>>>;
   public deferReply(
-    options: InteractionDeferReplyOptions & { fetchReply: true },
-  ): Promise<Message<BooleanCache<Cached>>>;
+    options: InteractionDeferReplyOptions & { withResponse: true },
+  ): Promise<InteractionCallbackResponse>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public fetchReply(message?: Snowflake | '@original'): Promise<Message<BooleanCache<Cached>>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message<BooleanCache<Cached>>>;
   public deferUpdate(
-    options: InteractionDeferUpdateOptions & { fetchReply: true },
-  ): Promise<Message<BooleanCache<Cached>>>;
+    options: InteractionDeferUpdateOptions & { withResponse: true },
+  ): Promise<InteractionCallbackResponse>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public inGuild(): this is ModalSubmitInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ModalSubmitInteraction<'cached'>;
@@ -6147,16 +6195,15 @@ export interface InteractionDeferReplyOptions {
     Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds' | 'SuppressNotifications'>,
     MessageFlags.Ephemeral | MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
   >;
-  fetchReply?: boolean;
+  withResponse?: boolean;
 }
 
 export interface InteractionDeferUpdateOptions {
-  fetchReply?: boolean;
+  withResponse?: boolean;
 }
 
 export interface InteractionReplyOptions extends BaseMessageOptionsWithPoll {
   tts?: boolean;
-  fetchReply?: boolean;
   flags?: BitFieldResolvable<
     Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds' | 'SuppressNotifications'>,
     MessageFlags.Ephemeral | MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
@@ -6164,7 +6211,7 @@ export interface InteractionReplyOptions extends BaseMessageOptionsWithPoll {
 }
 
 export interface InteractionUpdateOptions extends MessageEditOptions {
-  fetchReply?: boolean;
+  withResponse?: boolean;
 }
 
 export interface InviteGenerationOptions {
@@ -6673,6 +6720,10 @@ export interface ShardingManagerOptions {
   shardArgs?: readonly string[];
   token?: string;
   execArgv?: readonly string[];
+}
+
+export interface ShowModalOptions {
+  withResponse?: boolean;
 }
 
 export { Snowflake };
