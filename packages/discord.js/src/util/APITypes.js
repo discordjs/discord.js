@@ -466,12 +466,12 @@
 
 /**
  * @external Locale
- * @see {@link https://discord-api-types.dev/api/discord-api-types-rest/common/enum/Locale}
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/Locale}
  */
 
 /**
  * @external LocaleString
- * @see {@link https://discord-api-types.dev/api/discord-api-types-rest/common#LocaleString}
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#LocaleString}
  */
 
 /**
@@ -506,7 +506,7 @@
 
 /**
  * @external PermissionFlagsBits
- * @see {@link https://discord-api-types.dev/api/discord-api-types-payloads/common#PermissionFlagsBits}
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#PermissionFlagsBits}
  */
 
 /**
@@ -531,7 +531,7 @@
 
 /**
  * @external RESTJSONErrorCodes
- * @see {@link https://discord-api-types.dev/api/discord-api-types-rest/common/enum/RESTJSONErrorCodes}
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/RESTJSONErrorCodes}
  */
 
 /**
