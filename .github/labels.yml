@@ -122,3 +122,5 @@
   color: 80c042
 - name: wontfix
   color: ffffff
+- name: backport-candidate
+  color: 0075ca
