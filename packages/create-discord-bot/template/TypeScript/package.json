@@ -12,14 +12,14 @@
 		"start": "node --require dotenv/config dist/index.js"
 	},
 	"dependencies": {
-		"@discordjs/core": "^1.2.0",
-		"discord.js": "^14.16.0",
+		"@discordjs/core": "^2.0.0",
+		"discord.js": "^14.16.3",
 		"dotenv": "^16.4.5"
 	},
 	"devDependencies": {
 		"@sapphire/ts-config": "^5.0.1",
-		"@types/node": "^18.19.45",
-		"eslint": "^8.57.0",
+		"@types/node": "^20.17.8",
+		"eslint": "^8.57.1",
 		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
 		"prettier": "^3.3.3",

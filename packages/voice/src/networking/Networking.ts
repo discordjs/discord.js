@@ -2,6 +2,7 @@
 /* eslint-disable id-length */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Buffer } from 'node:buffer';
+import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
 import type { CloseEvent } from 'ws';
@@ -15,7 +16,12 @@ const CHANNELS = 2;
 const TIMESTAMP_INC = (48_000 / 100) * CHANNELS;
 const MAX_NONCE_SIZE = 2 ** 32 - 1;
 
-export const SUPPORTED_ENCRYPTION_MODES = ['xsalsa20_poly1305_lite', 'xsalsa20_poly1305_suffix', 'xsalsa20_poly1305'];
+export const SUPPORTED_ENCRYPTION_MODES = ['aead_xchacha20_poly1305_rtpsize'];
+
+// Just in case there's some system that doesn't come with aes-256-gcm, conditionally add it as supported
+if (crypto.getCiphers().includes('aes-256-gcm')) {
+	SUPPORTED_ENCRYPTION_MODES.unshift('aead_aes256_gcm_rtpsize');
+}
 
 /**
  * The different statuses that a networking instance can hold. The order
@@ -187,6 +193,7 @@ function stringifyState(state: NetworkingState) {
 function chooseEncryptionMode(options: string[]): string {
 	const option = options.find((option) => SUPPORTED_ENCRYPTION_MODES.includes(option));
 	if (!option) {
+		// This should only ever happen if the gateway does not give us any encryption modes we support.
 		throw new Error(`No compatible encryption modes. Available include: ${options.join(', ')}`);
 	}
 
@@ -442,7 +449,7 @@ export class Networking extends EventEmitter {
 					sequence: randomNBit(16),
 					timestamp: randomNBit(32),
 					nonce: 0,
-					nonceBuffer: Buffer.alloc(24),
+					nonceBuffer: encryptionMode === 'aead_aes256_gcm_rtpsize' ? Buffer.alloc(12) : Buffer.alloc(24),
 					speaking: false,
 					packetsPlayed: 0,
 				},
@@ -554,18 +561,18 @@ export class Networking extends EventEmitter {
 	 * @param connectionData - The current connection data of the instance
 	 */
 	private createAudioPacket(opusPacket: Buffer, connectionData: ConnectionData) {
-		const packetBuffer = Buffer.alloc(12);
-		packetBuffer[0] = 0x80;
-		packetBuffer[1] = 0x78;
+		const rtpHeader = Buffer.alloc(12);
+		rtpHeader[0] = 0x80;
+		rtpHeader[1] = 0x78;
 
 		const { sequence, timestamp, ssrc } = connectionData;
 
-		packetBuffer.writeUIntBE(sequence, 2, 2);
-		packetBuffer.writeUIntBE(timestamp, 4, 4);
-		packetBuffer.writeUIntBE(ssrc, 8, 4);
+		rtpHeader.writeUIntBE(sequence, 2, 2);
+		rtpHeader.writeUIntBE(timestamp, 4, 4);
+		rtpHeader.writeUIntBE(ssrc, 8, 4);
 
-		packetBuffer.copy(nonce, 0, 0, 12);
-		return Buffer.concat([packetBuffer, ...this.encryptOpusPacket(opusPacket, connectionData)]);
+		rtpHeader.copy(nonce, 0, 0, 12);
+		return Buffer.concat([rtpHeader, ...this.encryptOpusPacket(opusPacket, connectionData, rtpHeader)]);
 	}
 
 	/**
@@ -574,22 +581,43 @@ export class Networking extends EventEmitter {
 	 * @param opusPacket - The Opus packet to encrypt
 	 * @param connectionData - The current connection data of the instance
 	 */
-	private encryptOpusPacket(opusPacket: Buffer, connectionData: ConnectionData) {
+	private encryptOpusPacket(opusPacket: Buffer, connectionData: ConnectionData, additionalData: Buffer) {
 		const { secretKey, encryptionMode } = connectionData;
 
-		if (encryptionMode === 'xsalsa20_poly1305_lite') {
-			connectionData.nonce++;
-			if (connectionData.nonce > MAX_NONCE_SIZE) connectionData.nonce = 0;
-			connectionData.nonceBuffer.writeUInt32BE(connectionData.nonce, 0);
-			return [
-				secretbox.methods.close(opusPacket, connectionData.nonceBuffer, secretKey),
-				connectionData.nonceBuffer.slice(0, 4),
-			];
-		} else if (encryptionMode === 'xsalsa20_poly1305_suffix') {
-			const random = secretbox.methods.random(24, connectionData.nonceBuffer);
-			return [secretbox.methods.close(opusPacket, random, secretKey), random];
-		}
+		// Both supported encryption methods want the nonce to be an incremental integer
+		connectionData.nonce++;
+		if (connectionData.nonce > MAX_NONCE_SIZE) connectionData.nonce = 0;
+		connectionData.nonceBuffer.writeUInt32BE(connectionData.nonce, 0);
 
-		return [secretbox.methods.close(opusPacket, nonce, secretKey)];
+		// 4 extra bytes of padding on the end of the encrypted packet
+		const noncePadding = connectionData.nonceBuffer.subarray(0, 4);
+
+		let encrypted;
+		switch (encryptionMode) {
+			case 'aead_aes256_gcm_rtpsize': {
+				const cipher = crypto.createCipheriv('aes-256-gcm', secretKey, connectionData.nonceBuffer);
+				cipher.setAAD(additionalData);
+
+				encrypted = Buffer.concat([cipher.update(opusPacket), cipher.final(), cipher.getAuthTag()]);
+
+				return [encrypted, noncePadding];
+			}
+
+			case 'aead_xchacha20_poly1305_rtpsize': {
+				encrypted = secretbox.methods.crypto_aead_xchacha20poly1305_ietf_encrypt(
+					opusPacket,
+					additionalData,
+					connectionData.nonceBuffer,
+					secretKey,
+				);
+
+				return [encrypted, noncePadding];
+			}
+
+			default: {
+				// This should never happen. Our encryption mode is chosen from a list given to us by the gateway and checked with the ones we support.
+				throw new RangeError(`Unsupported encryption method: ${encryptionMode}`);
+			}
+		}
 	}
 }

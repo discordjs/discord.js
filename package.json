@@ -50,28 +50,28 @@
 	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"devDependencies": {
-		"@commitlint/cli": "^19.4.0",
-		"@commitlint/config-angular": "^19.3.0",
+		"@commitlint/cli": "^19.5.0",
+		"@commitlint/config-angular": "^19.5.0",
 		"@favware/cliff-jumper": "^4.1.0",
 		"@favware/npm-deprecate": "^1.0.7",
 		"@types/lodash.merge": "^4.6.9",
 		"@unocss/eslint-plugin": "^0.59.4",
-		"@vitest/coverage-v8": "^2.0.5",
+		"@vitest/coverage-v8": "^2.1.5",
 		"conventional-changelog-cli": "^4.1.0",
-		"eslint": "^8.57.0",
+		"eslint": "^8.57.1",
 		"eslint-config-neon": "^0.1.62",
-		"husky": "^9.1.5",
+		"husky": "^9.1.6",
 		"is-ci": "^3.0.1",
-		"lint-staged": "^15.2.9",
+		"lint-staged": "^15.2.10",
 		"lodash.merge": "^4.6.2",
 		"prettier": "^3.3.3",
-		"tsup": "^8.2.4",
-		"turbo": "^2.0.14",
+		"tsup": "^8.3.5",
+		"turbo": "^2.3.0",
 		"typescript": "~5.5.4",
-		"typescript-eslint": "^8.2.0",
+		"typescript-eslint": "^8.14.0",
 		"unocss": "^0.60.4",
-		"vercel": "^37.0.0",
-		"vitest": "^2.0.5"
+		"vercel": "^37.14.0",
+		"vitest": "^2.1.5"
 	},
 	"pnpm": {
 		"peerDependencyRules": {
@@ -95,7 +95,7 @@
 		}
 	},
 	"engines": {
-		"node": ">=18"
+		"node": ">=20"
 	},
-	"packageManager": "pnpm@9.8.0"
+	"packageManager": "pnpm@9.13.2"
 }
