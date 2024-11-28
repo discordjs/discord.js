@@ -13,7 +13,7 @@ class ThreadListSyncAction extends Action {
 
     if (data.channel_ids) {
       for (const id of data.channel_ids) {
-        const channel = client.channels.resolve(id);
+        const channel = client.channels.cache.get(id);
         if (channel) this.removeStale(channel);
       }
     } else {

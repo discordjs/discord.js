@@ -38,8 +38,8 @@ class PresenceManager extends CachedManager {
   resolve(presence) {
     const presenceResolvable = super.resolve(presence);
     if (presenceResolvable) return presenceResolvable;
-    const UserResolvable = this.client.users.resolveId(presence);
-    return super.resolve(UserResolvable);
+    const userResolvable = this.client.users.resolveId(presence);
+    return super.cache.get(userResolvable) ?? null;
   }
 
   /**
