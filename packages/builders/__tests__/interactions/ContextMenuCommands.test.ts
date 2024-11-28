@@ -2,6 +2,7 @@ import {
 	ApplicationCommandType,
 	ApplicationIntegrationType,
 	InteractionContextType,
+	Locale,
 	PermissionFlagsBits,
 } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
@@ -36,15 +37,15 @@ describe('Context Menu Commands', () => {
 		});
 
 		describe('Context menu command localizations', () => {
-			const expectedSingleLocale = { 'en-US': 'foobar' };
+			const expectedSingleLocale = { [Locale.EnglishUS]: 'foobar' };
 			const expectedMultipleLocales = {
 				...expectedSingleLocale,
 				bg: 'test',
 			};
 
 			test('GIVEN valid name localizations THEN does not throw error', () => {
-				expect(() => getBuilder().setNameLocalization('en-US', 'foobar')).not.toThrowError();
-				expect(() => getBuilder().setNameLocalizations({ 'en-US': 'foobar' })).not.toThrowError();
+				expect(() => getBuilder().setNameLocalization(Locale.EnglishUS, 'foobar')).not.toThrowError();
+				expect(() => getBuilder().setNameLocalizations({ [Locale.EnglishUS]: 'foobar' })).not.toThrowError();
 			});
 
 			test('GIVEN invalid name localizations THEN does throw error', () => {
@@ -55,16 +56,18 @@ describe('Context Menu Commands', () => {
 			});
 
 			test('GIVEN valid name localizations THEN valid data is stored', () => {
-				expect(getBuilder().setName('hi').setNameLocalization('en-US', 'foobar').toJSON().name_localizations).toEqual(
-					expectedSingleLocale,
-				);
 				expect(
-					getBuilder().setName('hi').setNameLocalizations({ 'en-US': 'foobar', bg: 'test' }).toJSON()
-						.name_localizations,
+					getBuilder().setName('hi').setNameLocalization(Locale.EnglishUS, 'foobar').toJSON().name_localizations,
+				).toEqual(expectedSingleLocale);
+				expect(
+					getBuilder()
+						.setName('hi')
+						.setNameLocalizations({ [Locale.EnglishUS]: 'foobar', bg: 'test' })
+						.toJSON().name_localizations,
 				).toEqual(expectedMultipleLocales);
 				expect(getBuilder().setName('hi').clearNameLocalizations().toJSON().name_localizations).toBeUndefined();
-				expect(getBuilder().setName('hi').clearNameLocalization('en-US').toJSON().name_localizations).toEqual({
-					'en-US': undefined,
+				expect(getBuilder().setName('hi').clearNameLocalization(Locale.EnglishUS).toJSON().name_localizations).toEqual({
+					[Locale.EnglishUS]: undefined,
 				});
 			});
 		});
