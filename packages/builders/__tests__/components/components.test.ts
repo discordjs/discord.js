@@ -11,14 +11,14 @@ import {
 import { describe, test, expect } from 'vitest';
 import {
 	ActionRowBuilder,
-	ButtonBuilder,
 	createComponentBuilder,
+	CustomIdButtonBuilder,
 	StringSelectMenuBuilder,
 	TextInputBuilder,
 } from '../../src/index.js';
 
 describe('createComponentBuilder', () => {
-	test.each([ButtonBuilder, StringSelectMenuBuilder, TextInputBuilder])(
+	test.each([StringSelectMenuBuilder, TextInputBuilder])(
 		'passing an instance of %j should return itself',
 		(Builder) => {
 			const builder = new Builder();
@@ -42,7 +42,7 @@ describe('createComponentBuilder', () => {
 			type: ComponentType.Button,
 		};
 
-		expect(createComponentBuilder(button)).toBeInstanceOf(ButtonBuilder);
+		expect(createComponentBuilder(button)).toBeInstanceOf(CustomIdButtonBuilder);
 	});
 
 	test('GIVEN a select menu component THEN returns a StringSelectMenuBuilder', () => {

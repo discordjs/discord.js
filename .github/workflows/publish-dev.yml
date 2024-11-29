@@ -35,29 +35,50 @@ jobs:
           - package: '@discordjs/ws'
             folder: 'ws'
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Install node.js v16
-        uses: actions/setup-node@v3
+        uses: actions/checkout@v4
         with:
-          node-version: 16
+          fetch-depth: 0
+
+      - name: Install Node.js v20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
           registry-url: https://registry.npmjs.org/
 
+      - name: Check the current development version
+        id: release-check
+        run: |
+          if [[ $(npm view ${{ matrix.package }}@dev version | grep -e "$(git rev-parse --short HEAD)") ]]; \
+            then echo "RELEASE=0" >> "$GITHUB_OUTPUT"; \
+            else echo "RELEASE=1" >> "$GITHUB_OUTPUT"; \
+          fi
+
       - name: Install dependencies
-        uses: ./packages/actions/src/yarnCache
+        if: steps.release-check.outputs.release == '1'
+        uses: ./packages/actions/src/pnpmCache
 
       - name: Build dependencies
-        run: yarn build
+        if: steps.release-check.outputs.release == '1'
+        run: pnpm run build
 
       - name: Publish package
+        if: steps.release-check.outputs.release == '1'
         run: |
-          yarn workspace ${{ matrix.package }} release --preid "dev.$(date +%s)-$(git rev-parse --short HEAD)"
-          yarn workspace ${{ matrix.package }} npm publish --tag dev || true
+          pnpm --filter=${{ matrix.package }} run release --preid "dev.$(date +%s)-$(git rev-parse --short HEAD)" --skip-changelog
+          pnpm --filter=${{ matrix.package }} publish --provenance --no-git-checks --tag dev || true
         env:
-          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+
+      - name: Deprecate prior development releases
+        if: steps.release-check.outputs.release == '1'
+        run: pnpm exec npm-deprecate --name "*dev*" --message "This version is deprecated. Please use a newer version." --package ${{ matrix.package }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

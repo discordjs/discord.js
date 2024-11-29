@@ -13,6 +13,7 @@
 	</p>
 	<p>
 		<a href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-vercel.svg" alt="Vercel" /></a>
+		<a href="https://www.cloudflare.com"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-workers.png" alt="Cloudflare Workers" height="44" /></a>
 	</p>
 </div>
 
@@ -22,7 +23,7 @@
 
 ## Installation
 
-**Node.js 16.9.0 or newer is required.**
+**Node.js 20 or newer is required.**
 
 ```sh
 npm install @discordjs/brokers
@@ -39,7 +40,7 @@ pnpm add @discordjs/brokers
 import { PubSubRedisBroker } from '@discordjs/brokers';
 import Redis from 'ioredis';
 
-const broker = new PubSubRedisBroker({ redisClient: new Redis() });
+const broker = new PubSubRedisBroker(new Redis());
 
 await broker.publish('test', 'Hello World!');
 await broker.destroy();
@@ -48,7 +49,7 @@ await broker.destroy();
 import { PubSubRedisBroker } from '@discordjs/brokers';
 import Redis from 'ioredis';
 
-const broker = new PubSubRedisBroker({ redisClient: new Redis() });
+const broker = new PubSubRedisBroker(new Redis());
 broker.on('test', ({ data, ack }) => {
 	console.log(data);
 	void ack();
@@ -64,7 +65,7 @@ await broker.subscribe('subscribers', ['test']);
 import { RPCRedisBroker } from '@discordjs/brokers';
 import Redis from 'ioredis';
 
-const broker = new RPCRedisBroker({ redisClient: new Redis() });
+const broker = new RPCRedisBroker(new Redis());
 
 console.log(await broker.call('testcall', 'Hello World!'));
 await broker.destroy();
@@ -73,7 +74,7 @@ await broker.destroy();
 import { RPCRedisBroker } from '@discordjs/brokers';
 import Redis from 'ioredis';
 
-const broker = new RPCRedisBroker({ redisClient: new Redis() });
+const broker = new RPCRedisBroker(new Redis());
 broker.on('testcall', ({ data, ack, reply }) => {
 	console.log('responder', data);
 	void ack();

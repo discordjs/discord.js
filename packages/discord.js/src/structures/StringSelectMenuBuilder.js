@@ -1,6 +1,7 @@
 'use strict';
 
-const { SelectMenuBuilder: BuildersSelectMenu, isJSONEncodable, normalizeArray } = require('@discordjs/builders');
+const { SelectMenuBuilder: BuildersSelectMenu, normalizeArray } = require('@discordjs/builders');
+const { isJSONEncodable } = require('@discordjs/util');
 const { toSnakeCase } = require('../util/Transformers');
 const { resolvePartialEmoji } = require('../util/Util');
 
@@ -23,8 +24,8 @@ class StringSelectMenuBuilder extends BuildersSelectMenu {
 
   /**
    * Normalizes a select menu option emoji
-   * @param {SelectMenuOptionData|APISelectMenuOption} selectMenuOption The option to normalize
-   * @returns {SelectMenuOptionBuilder|APISelectMenuOption}
+   * @param {SelectMenuComponentOptionData|APISelectMenuOption} selectMenuOption The option to normalize
+   * @returns {StringSelectMenuOptionBuilder|APISelectMenuOption}
    * @private
    */
   static normalizeEmoji(selectMenuOption) {

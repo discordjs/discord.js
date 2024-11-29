@@ -1,6 +1,6 @@
 import type { Awaitable } from '@discordjs/util';
 import type { APIGatewayBotInfo } from 'discord-api-types/v10';
-import type { SessionInfo, WebSocketManager, WebSocketManagerOptions } from '../../ws/WebSocketManager';
+import type { SessionInfo, WebSocketManager, WebSocketManagerOptions } from '../../ws/WebSocketManager.js';
 
 export interface FetchingStrategyOptions
 	extends Omit<
@@ -25,13 +25,14 @@ export interface IContextFetchingStrategy {
 	retrieveSessionInfo(shardId: number): Awaitable<SessionInfo | null>;
 	updateSessionInfo(shardId: number, sessionInfo: SessionInfo | null): Awaitable<void>;
 	/**
-	 * Resolves once the given shard should be allowed to identify, or rejects if the operation was aborted
+	 * Resolves once the given shard should be allowed to identify
+	 * This should correctly handle the signal and reject with an abort error if the operation is aborted.
+	 * Other errors will cause the shard to reconnect.
 	 */
 	waitForIdentify(shardId: number, signal: AbortSignal): Promise<void>;
 }
 
 export async function managerToFetchingStrategyOptions(manager: WebSocketManager): Promise<FetchingStrategyOptions> {
-	/* eslint-disable @typescript-eslint/unbound-method */
 	const {
 		buildIdentifyThrottler,
 		buildStrategy,
@@ -42,10 +43,10 @@ export async function managerToFetchingStrategyOptions(manager: WebSocketManager
 		rest,
 		...managerOptions
 	} = manager.options;
-	/* eslint-enable @typescript-eslint/unbound-method */
 
 	return {
 		...managerOptions,
+		token: manager.token,
 		gatewayInformation: await manager.fetchGatewayInformation(),
 		shardCount: await manager.getShardCount(),
 	};

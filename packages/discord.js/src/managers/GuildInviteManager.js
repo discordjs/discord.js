@@ -5,7 +5,7 @@ const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const Invite = require('../structures/Invite');
-const DataResolver = require('../util/DataResolver');
+const { resolveInviteCode } = require('../util/DataResolver');
 
 /**
  * Manages API methods for GuildInvites and stores their cache.
@@ -43,10 +43,12 @@ class GuildInviteManager extends CachedManager {
    * Data that can be resolved to a channel that an invite can be created on. This can be:
    * * TextChannel
    * * VoiceChannel
-   * * NewsChannel
+   * * AnnouncementChannel
    * * StageChannel
+   * * ForumChannel
+   * * MediaChannel
    * * Snowflake
-   * @typedef {TextChannel|VoiceChannel|NewsChannel|StageChannel|Snowflake}
+   * @typedef {TextChannel|VoiceChannel|AnnouncementChannel|StageChannel|ForumChannel|MediaChannel|Snowflake}
    * GuildInvitableChannelResolvable
    */
 
@@ -122,7 +124,7 @@ class GuildInviteManager extends CachedManager {
   fetch(options) {
     if (!options) return this._fetchMany();
     if (typeof options === 'string') {
-      const code = DataResolver.resolveInviteCode(options);
+      const code = resolveInviteCode(options);
       if (!code) return Promise.reject(new DiscordjsError(ErrorCodes.InviteResolveCode));
       return this._fetchSingle({ code, cache: true });
     }
@@ -138,7 +140,7 @@ class GuildInviteManager extends CachedManager {
     }
     return this._fetchSingle({
       ...options,
-      code: DataResolver.resolveInviteCode(options.code),
+      code: resolveInviteCode(options.code),
     });
   }
 
@@ -204,7 +206,7 @@ class GuildInviteManager extends CachedManager {
    * @returns {Promise<void>}
    */
   async delete(invite, reason) {
-    const code = DataResolver.resolveInviteCode(invite);
+    const code = resolveInviteCode(invite);
 
     await this.client.rest.delete(Routes.invite(code), { reason });
   }

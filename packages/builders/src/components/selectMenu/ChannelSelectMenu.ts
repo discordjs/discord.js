@@ -1,13 +1,21 @@
-import type { APIChannelSelectComponent, ChannelType } from 'discord-api-types/v10';
-import { ComponentType } from 'discord-api-types/v10';
-import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
-import { channelTypesValidator, customIdValidator } from '../Assertions.js';
+import {
+	type APIChannelSelectComponent,
+	type ChannelType,
+	type Snowflake,
+	ComponentType,
+	SelectMenuDefaultValueType,
+} from 'discord-api-types/v10';
+import { type RestOrArray, normalizeArray } from '../../util/normalizeArray.js';
+import { validate } from '../../util/validation.js';
+import { selectMenuChannelPredicate } from '../Assertions.js';
 import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 
 /**
  * A builder that creates API-compatible JSON data for channel select menus.
  */
 export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSelectComponent> {
+	protected override readonly data: Partial<APIChannelSelectComponent>;
+
 	/**
 	 * Creates a new select menu from API data.
 	 *
@@ -31,8 +39,9 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSe
 	 * 	.setMinValues(2);
 	 * ```
 	 */
-	public constructor(data?: Partial<APIChannelSelectComponent>) {
-		super({ ...data, type: ComponentType.ChannelSelect });
+	public constructor(data: Partial<APIChannelSelectComponent> = {}) {
+		super();
+		this.data = { ...structuredClone(data), type: ComponentType.ChannelSelect };
 	}
 
 	/**
@@ -43,7 +52,7 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSe
 	public addChannelTypes(...types: RestOrArray<ChannelType>) {
 		const normalizedTypes = normalizeArray(types);
 		this.data.channel_types ??= [];
-		this.data.channel_types.push(...channelTypesValidator.parse(normalizedTypes));
+		this.data.channel_types.push(...normalizedTypes);
 		return this;
 	}
 
@@ -55,18 +64,52 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSe
 	public setChannelTypes(...types: RestOrArray<ChannelType>) {
 		const normalizedTypes = normalizeArray(types);
 		this.data.channel_types ??= [];
-		this.data.channel_types.splice(0, this.data.channel_types.length, ...channelTypesValidator.parse(normalizedTypes));
+		this.data.channel_types.splice(0, this.data.channel_types.length, ...normalizedTypes);
 		return this;
 	}
 
 	/**
-	 * {@inheritDoc BaseSelectMenuBuilder.toJSON}
+	 * Adds default channels to this auto populated select menu.
+	 *
+	 * @param channels - The channels to add
 	 */
-	public override toJSON(): APIChannelSelectComponent {
-		customIdValidator.parse(this.data.custom_id);
+	public addDefaultChannels(...channels: RestOrArray<Snowflake>) {
+		const normalizedValues = normalizeArray(channels);
+		this.data.default_values ??= [];
 
-		return {
-			...this.data,
-		} as APIChannelSelectComponent;
+		this.data.default_values.push(
+			...normalizedValues.map((id) => ({
+				id,
+				type: SelectMenuDefaultValueType.Channel as const,
+			})),
+		);
+
+		return this;
+	}
+
+	/**
+	 * Sets default channels for this auto populated select menu.
+	 *
+	 * @param channels - The channels to set
+	 */
+	public setDefaultChannels(...channels: RestOrArray<Snowflake>) {
+		const normalizedValues = normalizeArray(channels);
+
+		this.data.default_values = normalizedValues.map((id) => ({
+			id,
+			type: SelectMenuDefaultValueType.Channel as const,
+		}));
+
+		return this;
+	}
+
+	/**
+	 * {@inheritDoc ComponentBuilder.toJSON}
+	 */
+	public override toJSON(validationOverride?: boolean): APIChannelSelectComponent {
+		const clone = structuredClone(this.data);
+		validate(selectMenuChannelPredicate, clone, validationOverride);
+
+		return clone as APIChannelSelectComponent;
 	}
 }

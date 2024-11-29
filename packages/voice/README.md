@@ -13,6 +13,7 @@
 	</p>
 	<p>
 		<a href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-vercel.svg" alt="Vercel" /></a>
+		<a href="https://www.cloudflare.com"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-workers.png" alt="Cloudflare Workers" height="44" /></a>
 	</p>
 </div>
 
@@ -31,12 +32,13 @@
 
 ## Installation
 
-**Node.js 16.9.0 or newer is required.**
+**Node.js 20 or newer is required.**
 
 ```sh
 npm install @discordjs/voice
 yarn add @discordjs/voice
 pnpm add @discordjs/voice
+bun add @discordjs/voice
 ```
 
 ## Dependencies
@@ -49,9 +51,13 @@ try installing another.
 
 **Encryption Libraries (npm install):**
 
+> [!NOTE]
+> You only need to install one of these libraries if your system does not support `aes-256-gcm` (verify by running `require('node:crypto').getCiphers().includes('aes-256-gcm')`).
+
 - `sodium-native`: ^3.3.0
 - `sodium`: ^3.0.2
-- `tweetnacl`: ^1.0.3
+- `@stablelib/xchacha20poly1305`: ^2.0.0
+- `@noble/ciphers`: ^1.0.0
 - `libsodium-wrappers`: ^0.7.9
 
 **Opus Libraries (npm install):**

@@ -6,7 +6,7 @@ const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes, WebhookType } = require('discord-api-types/v10');
 const MessagePayload = require('./MessagePayload');
 const { DiscordjsError, ErrorCodes } = require('../errors');
-const DataResolver = require('../util/DataResolver');
+const { resolveImage } = require('../util/DataResolver');
 
 const getMessage = lazy(() => require('./Message').Message);
 
@@ -108,7 +108,7 @@ class Webhook {
        * The source guild of the webhook
        * @type {?(Guild|APIGuild)}
        */
-      this.sourceGuild = this.client.guilds?.resolve(data.source_guild.id) ?? data.source_guild;
+      this.sourceGuild = this.client.guilds?.cache.get(data.source_guild.id) ?? data.source_guild;
     } else {
       this.sourceGuild ??= null;
     }
@@ -116,9 +116,9 @@ class Webhook {
     if ('source_channel' in data) {
       /**
        * The source channel of the webhook
-       * @type {?(NewsChannel|APIChannel)}
+       * @type {?(AnnouncementChannel|APIChannel)}
        */
-      this.sourceChannel = this.client.channels?.resolve(data.source_channel?.id) ?? data.source_channel;
+      this.sourceChannel = this.client.channels?.cache.get(data.source_channel?.id) ?? data.source_channel;
     } else {
       this.sourceChannel ??= null;
     }
@@ -126,7 +126,7 @@ class Webhook {
 
   /**
    * Options that can be passed into send.
-   * @typedef {BaseMessageOptions} WebhookMessageCreateOptions
+   * @typedef {BaseMessageOptionsWithPoll} WebhookMessageCreateOptions
    * @property {boolean} [tts=false] Whether the message should be spoken aloud
    * @property {MessageFlags} [flags] Which flags to set for the message.
    * <info>Only the {@link MessageFlags.SuppressEmbeds} flag can be set.</info>
@@ -134,7 +134,9 @@ class Webhook {
    * @property {string} [avatarURL] Avatar URL override for the message
    * @property {Snowflake} [threadId] The id of the thread in the channel to send to.
    * <info>For interaction webhooks, this property is ignored</info>
-   * @property {string} [threadName] Name of the thread to create (only available if webhook is in a forum channel)
+   * @property {string} [threadName] Name of the thread to create (only available if the webhook is in a forum channel)
+   * @property {Snowflake[]} [appliedTags]
+   * The tags to apply to the created thread (only available if the webhook is in a forum channel)
    */
 
   /**
@@ -147,7 +149,7 @@ class Webhook {
 
   /**
    * The channel the webhook belongs to
-   * @type {?(TextChannel|VoiceChannel|StageChannel|NewsChannel|ForumChannel)}
+   * @type {?(TextChannel|VoiceChannel|StageChannel|AnnouncementChannel|ForumChannel|MediaChannel)}
    * @readonly
    */
   get channel() {
@@ -264,7 +266,8 @@ class Webhook {
    * @typedef {Object} WebhookEditOptions
    * @property {string} [name=this.name] The new name for the webhook
    * @property {?(BufferResolvable)} [avatar] The new avatar for the webhook
-   * @property {GuildTextChannelResolvable} [channel] The new channel for the webhook
+   * @property {GuildTextChannelResolvable|VoiceChannel|StageChannel|ForumChannel|MediaChannel} [channel]
+   * The new channel for the webhook
    * @property {string} [reason] Reason for editing the webhook
    */
 
@@ -275,7 +278,7 @@ class Webhook {
    */
   async edit({ name = this.name, avatar, channel, reason }) {
     if (avatar && !(typeof avatar === 'string' && avatar.startsWith('data:'))) {
-      avatar = await DataResolver.resolveImage(avatar);
+      avatar = await resolveImage(avatar);
     }
     channel &&= channel.id ?? channel;
     const data = await this.client.rest.patch(Routes.webhook(this.id, channel ? undefined : this.token), {
@@ -366,11 +369,8 @@ class Webhook {
    * @param {string} [reason] Reason for deleting this webhook
    * @returns {Promise<void>}
    */
-  async delete(reason) {
-    await this.client.rest.delete(Routes.webhook(this.id, this.token), {
-      reason,
-      auth: !this.token,
-    });
+  delete(reason) {
+    return this.client.deleteWebhook(this.id, { token: this.token, reason });
   }
 
   /**

@@ -1,6 +1,7 @@
 'use strict';
 
-const { UserSelectMenuBuilder: BuildersUserSelectMenu, isJSONEncodable } = require('@discordjs/builders');
+const { UserSelectMenuBuilder: BuildersUserSelectMenu } = require('@discordjs/builders');
+const { isJSONEncodable } = require('@discordjs/util');
 const { toSnakeCase } = require('../util/Transformers');
 
 /**
@@ -26,5 +27,5 @@ module.exports = UserSelectMenuBuilder;
 
 /**
  * @external BuildersUserSelectMenu
- * @see {@link https://discord.js.org/docs/packages/rest/stable/UserSelectMenuBuilder:Class}
+ * @see {@link https://discord.js.org/docs/packages/builders/stable/UserSelectMenuBuilder:Class}
  */

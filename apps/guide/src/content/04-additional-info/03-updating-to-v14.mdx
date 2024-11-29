@@ -7,7 +7,7 @@ category: Additional info
 
 ## Before you start
 
-v14 requires Node 16.9 or higher to use, so make sure you're up to date. To check your Node.js version, use _`node --version`_ in your terminal or command prompt, and if it's not high enough, update it! There are many resources online to help you with this step based on your host system.
+v14 requires Node 16.11 or higher to use, so make sure you're up to date. To check your Node.js version, use _`node --version`_ in your terminal or command prompt, and if it's not high enough, update it! There are many resources online to help you with this step based on your host system.
 
 ### Various packages are now included in v14
 
@@ -27,6 +27,10 @@ yarn remove @discordjs/builders @discordjs/formatters @discordjs/rest discord-ap
 pnpm remove @discordjs/builders @discordjs/formatters @discordjs/rest discord-api-types
 ```
 
+```sh bun
+bun remove @discordjs/builders @discordjs/formatters @discordjs/rest discord-api-types
+```
+
 </CH.Code>
 
 ## Breaking Changes
@@ -41,7 +45,7 @@ discord.js v14 makes the switch to Discord API v10!
 
 Any areas that used to accept a _`string`_ or _`number`_ type for an enum parameter will now only accept a _`number`_.
 
-In addition, the old enums exported by discord.js v13 and lower are replaced with new enums from [discord-api-types](https://discord-api-types.dev/api/discord-api-types-v10).
+In addition, the old enums exported by discord.js v13 and lower are replaced with new enums from <DiscordAPITypesLink />.
 
 #### New enum differences
 
@@ -121,7 +125,7 @@ Areas like _`Client`_ initialization, JSON slash commands and JSON message compo
 
 #### Channels
 
-Some channel type guard methods that narrowed to one channel type have been removed. Instead compare the _`type`_ property against a [ChannelType](https://discord-api-types.dev/api/discord-api-types-v10/enum/ChannelType) enum member to narrow channels.
+Some channel type guard methods that narrowed to one channel type have been removed. Instead compare the _`type`_ property against a <DiscordAPITypesLink type="enum" parent="ChannelType" /> enum member to narrow channels.
 
 <CH.Code>
 
@@ -154,21 +158,25 @@ Various _`create()`_ and _`edit()`_ methods on managers and objects have had the
 - <DocsLink type="class" parent="Role" symbol="edit" brackets /> now takes _`reason`_ in the _`data`_ parameter
 - <DocsLink type="class" parent="Sticker" symbol="edit" brackets /> now takes _`reason`_ in the _`data`_ parameter
 - <DocsLink type="class" parent="ThreadChannel" symbol="edit" brackets /> now takes _`reason`_ in the _`data`_ parameter
-- <DocsLink type="class" parent="GuildChannelManager" symbol="create" brackets /> now takes _`name`_ in the _`options`_ parameter
+- <DocsLink type="class" parent="GuildChannelManager" symbol="create" brackets /> now takes _`name`_ in the _`options`_
+  parameter
 - <DocsLink type="class" parent="GuildChannelManager" symbol="createWebhook" brackets /> (and other text-based channels)
   now takes _`channel`_ and _`name`_ in the _`options`_ parameter
-- <DocsLink type="class" parent="GuildChannelManager" symbol="edit" brackets /> now takes _`reason`_ as a part of _`data`_
+- <DocsLink type="class" parent="GuildChannelManager" symbol="edit" brackets /> now takes _`reason`_ as a part of
+  _`data`_
 - <DocsLink type="class" parent="GuildEmojiManager" symbol="edit" brackets /> now takes _`reason`_ as a part of _`data`_
 - <DocsLink type="class" parent="GuildManager" symbol="create" brackets /> now takes _`name`_ as a part of _`options`_
-- <DocsLink type="class" parent="GuildMemberManager" symbol="edit" brackets /> now takes _`reason`_ as a part of _`data`_
+- <DocsLink type="class" parent="GuildMemberManager" symbol="edit" brackets /> now takes _`reason`_ as a part of
+  _`data`_
 - <DocsLink type="class" parent="GuildMember" symbol="edit" brackets /> now takes _`reason`_ as a part of _`data`_
-- <DocsLink type="class" parent="GuildStickerManager" symbol="edit" brackets /> now takes _`reason`_ as a part of _`data`_
+- <DocsLink type="class" parent="GuildStickerManager" symbol="edit" brackets /> now takes _`reason`_ as a part of
+  _`data`_
 - <DocsLink type="class" parent="RoleManager" symbol="edit" brackets /> now takes _`reason`_ as a part of _`options`_
 - <DocsLink type="class" parent="Webhook" symbol="edit" brackets /> now takes _`reason`_ as a part of _`options`_
 - <DocsLink type="class" parent="GuildEmojiManager" symbol="create" brackets /> now takes _`attachment`_ and _`name`_ as
   a part of _`options`_
-- <DocsLink type="class" parent="GuildStickerManager" symbol="create" brackets /> now takes _`file`_, _`name`_, and _`tags`_
-  as a part of _`options`_
+- <DocsLink type="class" parent="GuildStickerManager" symbol="create" brackets /> now takes _`file`_, _`name`_, and
+  _`tags`_ as a part of _`options`_
 
 ### Activity
 
@@ -232,9 +240,10 @@ Dynamic URLs use <DocsLink package="rest" type="Interface" parent="ImageURLOptio
 
 ### CategoryChannel
 
-<DocsLink type="class" parent="CategoryChannel" symbol="children" /> is no longer a _`Collection`_ of channels the category
-contains. It is now a <DocsLink type="class" parent="CategoryChannelChildManager" />. This also means
-_`CategoryChannel#createChannel()`_ has been moved to the <DocsLink type="class" parent="CategoryChannelChildManager" />.
+<DocsLink type="class" parent="CategoryChannel" symbol="children" /> is no longer a _`Collection`_ of channels the
+category contains. It is now a <DocsLink type="class" parent="CategoryChannelChildManager" />. This also means
+_`CategoryChannel#createChannel()`_ has been moved to the <DocsLink type="class" parent="CategoryChannelChildManager" />
+.
 
 ### Channel
 
@@ -258,8 +267,8 @@ The _`restWsBridgeTimeout`_ client option has been removed.
 
 ### CommandInteractionOptionResolver
 
-<DocsLink type="class" parent="CommandInteractionOptionResolver" symbol="getMember" brackets /> no longer has a parameter
-for _`required`_.[^1]
+<DocsLink type="class" parent="CommandInteractionOptionResolver" symbol="getMember" brackets /> no longer has a
+parameter for _`required`_.[^1]
 
 ### Constants
 
@@ -353,7 +362,8 @@ The following properties & methods have been moved to the <DocsLink type="class"
 
 ### GuildMember
 
-<DocsLink type="class" parent="GuildMember" symbol="pending" /> is now nullable to account for partial guild members.[^4]
+<DocsLink type="class" parent="GuildMember" symbol="pending" /> is now nullable to account for partial guild
+members.[^4]
 
 ### IntegrationApplication
 
@@ -361,7 +371,7 @@ _`IntegrationApplication#summary`_ has been removed as it is no longer supported
 
 ### Interaction
 
-Whenever an interaction is replied to and one fetches the reply, it could possibly give an [APIMessage](https://discord-api-types.dev/api/discord-api-types-v10/interface/APIMessage) if the guild was not cached. However, interaction replies now always return a discord.js <DocsLink type="class" parent="Message"/> object with _`fetchReply`_ as _`true`_.
+Whenever an interaction is replied to and one fetches the reply, it could possibly give an <DiscordAPITypesLink type="interface" parent="APIMessage" /> if the guild was not cached. However, interaction replies now always return a discord.js <DocsLink type="class" parent="Message"/> object with _`fetchReply`_ as _`true`_.
 
 The base interaction class is now <DocsLink type="class" parent="BaseInteraction"/>.
 
@@ -419,7 +429,7 @@ The base interaction class is now <DocsLink type="class" parent="BaseInteraction
 
 ### MessageManager
 
-The second parameter of <DocsLink type="class" parent="MessageManager" symbol="fetch" brackets /> has been removed. The <DocsLink type="class" parent="BaseFetchOptions" /> the second parameter once was is now merged into the first parameter.
+The second parameter of <DocsLink type="class" parent="MessageManager" symbol="fetch" brackets /> has been removed. The <DocsLink type="typedef" parent="BaseFetchOptions" /> the second parameter once was is now merged into the first parameter.
 
 <CH.Code>
 
@@ -489,6 +499,8 @@ In addition to this, there is now a new partial: _`Partials.ThreadMember`_.
 ### Permissions
 
 The thread permissions _`USE_PUBLIC_THREADS`_ and _`USE_PRIVATE_THREADS`_ have been removed as they are deprecated in the API. Use _`CREATE_PUBLIC_THREADS`_ and _`CREATE_PRIVATE_THREADS`_ respectively.
+
+_`ManageEmojisAndStickers`_ has been deprecated due to API changes. Its replacement is _`ManageGuildExpressions`_.[^7]
 
 ### PermissionOverwritesManager
 
@@ -576,8 +588,8 @@ _`Role.comparePositions()`_ has been removed. Use <DocsLink type="class" parent=
 
 ### Sticker
 
-<DocsLink type="class" parent="Sticker" symbol="tags" /> is now a nullable string (_`string | null`_). Previously, it was
-a nullable array of strings (_`string[] | null`_).[^5]
+<DocsLink type="class" parent="Sticker" symbol="tags" /> is now a nullable string (_`string | null`_). Previously, it
+was a nullable array of strings (_`string[] | null`_).[^5]
 
 ### ThreadChannel
 
@@ -647,6 +659,10 @@ The second parameter of <DocsLink type="class" parent="Webhook" symbol="fetchMes
 
 NFSW commands are supported.
 
+### Attachment
+
+Added support for voice message metadata fields.
+
 ### AutocompleteInteraction
 
 <DocsLink type="class" parent="AutocompleteInteraction" symbol="commandGuildId" /> has been added which is the id of the
@@ -658,8 +674,8 @@ Added support for <DocsLink type="class" parent="BaseChannel" symbol="flags" />.
 
 Store channels have been removed as they are no longer part of the API.
 
-<DocsLink type="class" parent="BaseChannel" symbol="url" /> has been added which is a link to a channel, just like in the
-client.
+<DocsLink type="class" parent="BaseChannel" symbol="url" /> has been added which is a link to a channel, just like in
+the client.
 
 Additionally, new typeguards have been added:
 
@@ -684,7 +700,7 @@ Added support for role connection metadata.
 
 A new <DocsLink type="class" parent="Collector" symbol="e-ignore"/> event has been added which is emitted whenever an element is not collected by the collector.
 
-Component collector options now use the [ComponentType](https://discord-api-types.dev/api/discord-api-types-v10/enum/ComponentType) enum values:
+Component collector options now use the <DiscordAPITypesLink type="enum" parent="ComponentType" /> enum values:
 
 <CH.Code>
 
@@ -703,13 +719,13 @@ Component collector options now use the [ComponentType](https://discord-api-type
 
 ### CommandInteraction
 
-<DocsLink type="class" parent="CommandInteraction" symbol="commandGuildId" /> has been added which is the id of the guild
-the invoked application command is registered to.
+<DocsLink type="class" parent="CommandInteraction" symbol="commandGuildId" /> has been added which is the id of the
+guild the invoked application command is registered to.
 
 ### CommandInteractionOptionResolver
 
-<DocsLink type="class" parent="CommandInteractionOptionResolver" symbol="getChannel" brackets /> now has a third parameter
-which narrows the channel type.
+<DocsLink type="class" parent="CommandInteractionOptionResolver" symbol="getChannel" brackets /> now has a third
+parameter which narrows the channel type.
 
 ### Events
 
@@ -777,6 +793,8 @@ Added <DocsLink type="class" parent="MessageReaction" symbol="react" brackets />
 
 Added support for role subscriptions.
 
+Added support for _`Role#tags#guildConnections`_.
+
 ### StageChannel
 
 Stage channels now allow messages to be sent in them, much like voice channels.
@@ -797,9 +815,20 @@ Added <DocsLink type="class" parent="Webhook" symbol="applicationId" />.
 
 Added the _`threadName`_ property in <DocsLink type="typedef" parent="WebhookMessageCreateOptions"/> which allows a webhook to create a post in a forum channel.
 
+### WebSocketManager
+
+discord.js uses <DocsLink package="ws" /> internally.
+
 [^1]: https://github.com/discordjs/discord.js/pull/7188
+
 [^2]: https://github.com/discordjs/discord.js/pull/6492
+
 [^3]: https://github.com/discordjs/discord.js/pull/7669
+
 [^4]: https://github.com/discordjs/discord.js/issues/6546
+
 [^5]: https://github.com/discordjs/discord.js/pull/8010
+
 [^6]: https://github.com/discordjs/discord.js/issues/7091
+
+[^7]: https://github.com/discord/discord-api-docs/pull/6017

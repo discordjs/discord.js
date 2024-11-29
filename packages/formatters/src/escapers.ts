@@ -217,7 +217,7 @@ export function escapeItalic(text: string): string {
 		return `\\*${match}`;
 	});
 	idx = 0;
-	return newText.replaceAll(/(?<=^|[^_])(?<!<a?:.+)_(?!:\d+>)([^_]|__|$)/g, (_, match) => {
+	return newText.replaceAll(/(?<=^|[^_])(?<!<a?:.+|https?:\/\/\S+)_(?!:\d+>)([^_]|__|$)/g, (_, match) => {
 		if (match === '__') return ++idx % 2 ? `\\_${match}` : `${match}\\_`;
 		return `\\_${match}`;
 	});
@@ -243,7 +243,7 @@ export function escapeBold(text: string): string {
  */
 export function escapeUnderline(text: string): string {
 	let idx = 0;
-	return text.replaceAll(/(?<!<a?:.+)__(_)?(?!:\d+>)/g, (_, match) => {
+	return text.replaceAll(/(?<!<a?:.+|https?:\/\/\S+)__(_)?(?!:\d+>)/g, (_, match) => {
 		if (match) return ++idx % 2 ? `${match}\\_\\_` : `\\_\\_${match}`;
 		return '\\_\\_';
 	});

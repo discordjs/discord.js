@@ -17,6 +17,13 @@ import {
 const testString = "`_Behold!_`\n||___~~***```js\n`use strict`;\nrequire('discord.js');```***~~___||";
 const testStringForums =
 	'# Title\n## Subtitle\n### Subsubtitle\n- Bullet list\n - # Title with bullet\n * Subbullet\n1. Number list\n 1. Sub number list';
+const testURLs = [
+	'https://example.com/name_wow',
+	'https://example.com/name__wow',
+	'https://example.com/name_with_underscores',
+	'https://example.com/name__with__underscores',
+	'https://example.com/name_with_underscores_and__double__underscores',
+];
 
 describe('Markdown escapers', () => {
 	describe('escapeCodeblock', () => {
@@ -76,6 +83,10 @@ describe('Markdown escapers', () => {
 				'This is a test with \\_emojis\\_ <:Frost_ed_Wreath:1053399941210443826> and **bold text**.',
 			);
 		});
+
+		test('url', () => {
+			for (const url of testURLs) expect(escapeItalic(url)).toBe(url);
+		});
 	});
 
 	describe('escapeUnderline', () => {
@@ -94,6 +105,10 @@ describe('Markdown escapers', () => {
 			expect(escapeUnderline(testTwo)).toBe(
 				'This is a test with \\_\\_emojis\\_\\_ <:Frost__ed__Wreath:1053399939654352978> and **bold text**.',
 			);
+		});
+
+		test('url', () => {
+			for (const url of testURLs) expect(escapeUnderline(url)).toBe(url);
 		});
 	});
 
@@ -226,11 +241,9 @@ describe('Markdown escapers', () => {
 			});
 
 			test('neither inline code or code block content', () => {
-				expect(escapeMarkdown(testString, { inlineCodeContent: false, codeBlockContent: false }))
-					// eslint-disable-next-line max-len
-					.toEqual(
-						"\\`_Behold!_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
-					);
+				expect(escapeMarkdown(testString, { inlineCodeContent: false, codeBlockContent: false })).toEqual(
+					"\\`_Behold!_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
+				);
 			});
 
 			test('neither code blocks or code block content', () => {

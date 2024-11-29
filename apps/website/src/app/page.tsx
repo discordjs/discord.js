@@ -1,58 +1,51 @@
-import { FiExternalLink } from '@react-icons/all-files/fi/FiExternalLink';
+import { ExternalLink } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import vercelLogo from '~/assets/powered-by-vercel.svg';
-import { Banner } from '~/components/Banner';
-import { InstallButton } from '~/components/InstallButton';
+import workersLogo from '~/assets/powered-by-workers.png';
+import { InstallButton } from '~/components/ui/InstallButton';
 import { DESCRIPTION } from '~/util/constants';
 
-export default function Page() {
+export default async function Page() {
 	return (
-		<div className="min-h-screen">
-			<Banner />
-			<div className="mx-auto max-w-6xl flex flex-col place-items-center gap-24 px-8 pb-16 pt-12 lg:min-h-[calc(100vh_-_40px)] lg:place-content-center lg:py-10">
-				<div className="flex flex-col place-items-center gap-10 lg:flex-row lg:gap-6">
-					<div className="flex flex-col place-items-center gap-8 text-center">
-						<h1 className="text-3xl font-black leading-tight sm:text-7xl sm:leading-tight">
-							The <span className="relative rounded bg-blurple px-3 py-1 text-white">most popular</span> way to build
-							Discord bots.
-						</h1>
-						<p className="my-6 leading-normal text-neutral-700 dark:text-neutral-300">{DESCRIPTION}</p>
-						<div className="flex flex-row gap-4">
-							<Link
-								className="h-11 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center border-0 rounded bg-blurple px-6 text-base font-semibold leading-none text-white no-underline outline-none active:translate-y-px focus:ring focus:ring-width-2 focus:ring-white"
-								href="/docs"
-							>
-								Docs
-							</Link>
-							{/* <Link
-								className="h-11 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center border-0 rounded bg-blurple px-6 text-base font-semibold leading-none text-white no-underline outline-none active:translate-y-px focus:ring focus:ring-width-2 focus:ring-white"
-								href="/guide"
-							>
-								Guide
-							</Link> */}
-							<a
-								className="h-11 flex flex-row transform-gpu cursor-pointer select-none appearance-none place-items-center gap-2 border border-light-900 rounded bg-white px-4 text-base font-semibold leading-none text-black no-underline outline-none transition duration-200 active:translate-y-px dark:border-dark-100 hover:border-black active:bg-light-300 dark:bg-dark-400 hover:bg-light-200 dark:text-white focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300"
-								href="https://discordjs.guide"
-								rel="noopener noreferrer"
-								target="_blank"
-							>
-								Guide <FiExternalLink />
-							</a>
-							<a
-								className="h-11 flex flex-row transform-gpu cursor-pointer select-none appearance-none appearance-none place-items-center gap-2 border border-light-900 rounded bg-white px-4 text-base font-semibold leading-none text-black no-underline outline-none transition duration-200 active:translate-y-px dark:border-dark-100 hover:border-black active:bg-light-300 dark:bg-dark-400 hover:bg-light-200 dark:text-white focus:ring focus:ring-width-2 focus:ring-blurple dark:active:bg-dark-200 dark:hover:bg-dark-300"
-								href="https://github.com/discordjs/discord.js"
-								rel="external noopener noreferrer"
-								target="_blank"
-							>
-								GitHub <FiExternalLink />
-							</a>
-						</div>
-						<InstallButton />
-					</div>
+		<div className="mx-auto flex min-h-screen w-full max-w-screen-lg flex-col place-content-center place-items-center gap-24 px-8 pb-16 pt-12">
+			<div className="flex flex-col gap-10 text-center">
+				<h1 className="z-10 text-3xl font-black leading-tight sm:text-7xl sm:leading-tight">
+					The <span className="relative rounded bg-blurple px-3 py-1 text-white">most popular</span> way to build
+					Discord bots.
+				</h1>
+				<p className="z-10 leading-normal text-neutral-700 dark:text-neutral-300 md:my-6">{DESCRIPTION}</p>
+
+				<div className="flex flex-wrap place-content-center gap-4 sm:flex-wrap md:flex-row">
+					<Link
+						className="inline-flex rounded-md border border-transparent bg-blurple px-6 py-2 font-medium text-white"
+						href="/docs"
+					>
+						Docs
+					</Link>
+					<a
+						className="inline-flex gap-2 rounded-md border border-neutral-300 bg-white px-6 py-2 font-medium hover:bg-neutral-200 dark:border-neutral-700 dark:bg-transparent dark:hover:bg-neutral-800"
+						href="https://discordjs.guide"
+						rel="noopener noreferrer"
+						target="_blank"
+					>
+						Guide <ExternalLink aria-hidden size={20} />
+					</a>
+					<a
+						className="inline-flex gap-2 rounded-md border border-neutral-300 bg-white px-6 py-2 font-medium hover:bg-neutral-200 dark:border-neutral-700 dark:bg-transparent dark:hover:bg-neutral-800"
+						href="https://github.com/discordjs/discord.js"
+						rel="external noopener noreferrer"
+						target="_blank"
+					>
+						GitHub <ExternalLink aria-hidden size={20} />
+					</a>
 				</div>
+
+				<InstallButton className="place-self-center" />
+			</div>
+
+			<div className="flex flex-col gap-4 md:flex-row">
 				<a
-					className="rounded outline-none focus:ring focus:ring-width-2 focus:ring-blurple"
 					href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"
 					rel="external noopener noreferrer"
 					target="_blank"
@@ -66,6 +59,21 @@ export default function Page() {
 						priority
 						src={vercelLogo}
 						width={212}
+					/>
+				</a>
+				<a
+					href="https://www.cloudflare.com"
+					rel="external noopener noreferrer"
+					target="_blank"
+					title="Cloudflare Workers"
+				>
+					<Image
+						alt="Cloudflare"
+						blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAABLCAQAAAA1k5H2AAAAi0lEQVR42u3SMQEAAAgDoC251a3gL2SgmfBYBRAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARAAARCAgwWEOSWBnYbKggAAAABJRU5ErkJggg=="
+						height={44}
+						placeholder="blur"
+						priority
+						src={workersLogo}
 					/>
 				</a>
 			</div>

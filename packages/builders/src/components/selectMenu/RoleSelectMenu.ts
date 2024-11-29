@@ -1,11 +1,20 @@
-import type { APIRoleSelectComponent } from 'discord-api-types/v10';
-import { ComponentType } from 'discord-api-types/v10';
+import {
+	type APIRoleSelectComponent,
+	type Snowflake,
+	ComponentType,
+	SelectMenuDefaultValueType,
+} from 'discord-api-types/v10';
+import { type RestOrArray, normalizeArray } from '../../util/normalizeArray.js';
+import { validate } from '../../util/validation.js';
+import { selectMenuRolePredicate } from '../Assertions.js';
 import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 
 /**
  * A builder that creates API-compatible JSON data for role select menus.
  */
 export class RoleSelectMenuBuilder extends BaseSelectMenuBuilder<APIRoleSelectComponent> {
+	protected override readonly data: Partial<APIRoleSelectComponent>;
+
 	/**
 	 * Creates a new select menu from API data.
 	 *
@@ -28,7 +37,53 @@ export class RoleSelectMenuBuilder extends BaseSelectMenuBuilder<APIRoleSelectCo
 	 * 	.setMinValues(1);
 	 * ```
 	 */
-	public constructor(data?: Partial<APIRoleSelectComponent>) {
-		super({ ...data, type: ComponentType.RoleSelect });
+	public constructor(data: Partial<APIRoleSelectComponent> = {}) {
+		super();
+		this.data = { ...structuredClone(data), type: ComponentType.RoleSelect };
+	}
+
+	/**
+	 * Adds default roles to this auto populated select menu.
+	 *
+	 * @param roles - The roles to add
+	 */
+	public addDefaultRoles(...roles: RestOrArray<Snowflake>) {
+		const normalizedValues = normalizeArray(roles);
+		this.data.default_values ??= [];
+
+		this.data.default_values.push(
+			...normalizedValues.map((id) => ({
+				id,
+				type: SelectMenuDefaultValueType.Role as const,
+			})),
+		);
+
+		return this;
+	}
+
+	/**
+	 * Sets default roles for this auto populated select menu.
+	 *
+	 * @param roles - The roles to set
+	 */
+	public setDefaultRoles(...roles: RestOrArray<Snowflake>) {
+		const normalizedValues = normalizeArray(roles);
+
+		this.data.default_values = normalizedValues.map((id) => ({
+			id,
+			type: SelectMenuDefaultValueType.Role as const,
+		}));
+
+		return this;
+	}
+
+	/**
+	 * {@inheritDoc ComponentBuilder.toJSON}
+	 */
+	public override toJSON(validationOverride?: boolean): APIRoleSelectComponent {
+		const clone = structuredClone(this.data);
+		validate(selectMenuRolePredicate, clone, validationOverride);
+
+		return clone as APIRoleSelectComponent;
 	}
 }

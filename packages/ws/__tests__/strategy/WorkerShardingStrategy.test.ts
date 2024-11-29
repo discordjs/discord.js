@@ -91,7 +91,7 @@ vi.mock('node:worker_threads', async () => {
 							op: WorkerReceivePayloadOp.Event,
 							shardId: message.shardId,
 							event: WebSocketShardEvents.Dispatch,
-							data: memberChunkData,
+							data: [memberChunkData],
 						};
 						this.emit('message', response);
 
@@ -146,9 +146,9 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-	mockConstructor.mockRestore();
-	mockSend.mockRestore();
-	mockTerminate.mockRestore();
+	mockConstructor.mockClear();
+	mockSend.mockClear();
+	mockTerminate.mockClear();
 });
 
 test('spawn, connect, send a message, session info, and destroy', async () => {
@@ -204,10 +204,13 @@ test('spawn, connect, send a message, session info, and destroy', async () => {
 	};
 	await manager.send(0, payload);
 	expect(mockSend).toHaveBeenCalledWith(0, payload);
-	expect(managerEmitSpy).toHaveBeenCalledWith(WebSocketShardEvents.Dispatch, {
-		...memberChunkData,
-		shardId: 0,
-	});
+	expect(managerEmitSpy).toHaveBeenCalledWith(
+		WebSocketShardEvents.Dispatch,
+		{
+			...memberChunkData,
+		},
+		0,
+	);
 	expect(mockRetrieveSessionInfo).toHaveBeenCalledWith(0);
 	expect(mockUpdateSessionInfo).toHaveBeenCalledWith(0, { ...sessionInfo, sequence: sessionInfo.sequence + 1 });
 

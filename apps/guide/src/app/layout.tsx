@@ -1,25 +1,29 @@
 import { Analytics } from '@vercel/analytics/react';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import type { PropsWithChildren } from 'react';
-import { Providers } from './providers';
 import { DESCRIPTION } from '~/util/constants';
 import { inter, jetBrainsMono } from '~/util/fonts';
+import { Providers } from './providers';
 
-import '@unocss/reset/tailwind-compat.css';
-import '~/styles/unocss.css';
 import '~/styles/cmdk.css';
 import '@code-hike/mdx/styles.css';
 import '~/styles/ch.css';
 import '~/styles/main.css';
 
+export const viewport: Viewport = {
+	themeColor: [
+		{ media: '(prefers-color-scheme: light)', color: '#f1f3f5' },
+		{ media: '(prefers-color-scheme: dark)', color: '#181818' },
+	],
+	colorScheme: 'light dark',
+};
+
 export const metadata: Metadata = {
+	metadataBase: new URL(
+		process.env.METADATA_BASE_URL ? process.env.METADATA_BASE_URL : `http://localhost:${process.env.PORT ?? 3_000}`,
+	),
 	title: 'discord.js',
 	description: DESCRIPTION,
-	viewport: {
-		minimumScale: 1,
-		initialScale: 1,
-		width: 'device-width',
-	},
 	icons: {
 		other: [
 			{
@@ -43,12 +47,6 @@ export const metadata: Metadata = {
 	},
 
 	manifest: '/site.webmanifest',
-
-	themeColor: [
-		{ media: '(prefers-color-scheme: light)', color: '#f1f3f5' },
-		{ media: '(prefers-color-scheme: dark)', color: '#181818' },
-	],
-	colorScheme: 'light dark',
 
 	appleWebApp: {
 		title: 'discord.js',

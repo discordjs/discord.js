@@ -1,5 +1,6 @@
 import type { REST } from '@discordjs/rest';
 import { range, type Awaitable } from '@discordjs/util';
+import { polyfillDispose } from '@discordjs/util';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
 	Routes,
@@ -9,11 +10,16 @@ import {
 	type RESTGetAPIGatewayBotResult,
 	type GatewayIntentBits,
 	type GatewaySendPayload,
+	type GatewayDispatchPayload,
+	type GatewayReadyDispatchData,
 } from 'discord-api-types/v10';
-import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy';
-import type { IIdentifyThrottler } from '../throttling/IIdentifyThrottler';
+import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy.js';
+import type { IIdentifyThrottler } from '../throttling/IIdentifyThrottler.js';
 import { DefaultWebSocketManagerOptions, type CompressionMethod, type Encoding } from '../utils/constants.js';
-import type { WebSocketShardDestroyOptions, WebSocketShardEventsMap } from './WebSocketShard.js';
+import type { WebSocketShardDestroyOptions, WebSocketShardEvents } from './WebSocketShard.js';
+
+// We put this here because in index.ts WebSocketManager seems to be outputted before polyfillDispose() is called from tsup.
+polyfillDispose();
 
 /**
  * Represents a range of shard ids
@@ -61,10 +67,6 @@ export interface RequiredWebSocketManagerOptions {
 	 * The REST instance to use for fetching gateway information
 	 */
 	rest: REST;
-	/**
-	 * The token to use for identifying with the gateway
-	 */
-	token: string;
 }
 
 /**
@@ -90,9 +92,9 @@ export interface OptionalWebSocketManagerOptions {
 	 */
 	buildStrategy(manager: WebSocketManager): IShardingStrategy;
 	/**
-	 * The compression method to use
+	 * The transport compression method to use - mutually exclusive with `useIdentifyCompression`
 	 *
-	 * @defaultValue `null` (no compression)
+	 * @defaultValue `null` (no transport compression)
 	 */
 	compression: CompressionMethod | null;
 	/**
@@ -167,9 +169,21 @@ export interface OptionalWebSocketManagerOptions {
 	 */
 	shardIds: number[] | ShardRange | null;
 	/**
+	 * The token to use for identifying with the gateway
+	 *
+	 * If not provided, the token must be set using {@link WebSocketManager.setToken}
+	 */
+	token: string;
+	/**
 	 * Function used to store session information for a given shard
 	 */
 	updateSessionInfo(shardId: number, sessionInfo: SessionInfo | null): Awaitable<void>;
+	/**
+	 * Whether to use the `compress` option when identifying
+	 *
+	 * @defaultValue `false`
+	 */
+	useIdentifyCompression: boolean;
 	/**
 	 * The gateway version to use
 	 *
@@ -178,19 +192,34 @@ export interface OptionalWebSocketManagerOptions {
 	version: string;
 }
 
-export type WebSocketManagerOptions = OptionalWebSocketManagerOptions & RequiredWebSocketManagerOptions;
+export interface WebSocketManagerOptions extends OptionalWebSocketManagerOptions, RequiredWebSocketManagerOptions {}
 
-export type ManagerShardEventsMap = {
-	[K in keyof WebSocketShardEventsMap]: [
-		WebSocketShardEventsMap[K] extends [] ? { shardId: number } : WebSocketShardEventsMap[K][0] & { shardId: number },
+export interface CreateWebSocketManagerOptions
+	extends Partial<OptionalWebSocketManagerOptions>,
+		RequiredWebSocketManagerOptions {}
+
+export interface ManagerShardEventsMap {
+	[WebSocketShardEvents.Closed]: [code: number, shardId: number];
+	[WebSocketShardEvents.Debug]: [message: string, shardId: number];
+	[WebSocketShardEvents.Dispatch]: [payload: GatewayDispatchPayload, shardId: number];
+	[WebSocketShardEvents.Error]: [error: Error, shardId: number];
+	[WebSocketShardEvents.Hello]: [shardId: number];
+	[WebSocketShardEvents.Ready]: [data: GatewayReadyDispatchData, shardId: number];
+	[WebSocketShardEvents.Resumed]: [shardId: number];
+	[WebSocketShardEvents.HeartbeatComplete]: [
+		stats: { ackAt: number; heartbeatAt: number; latency: number },
+		shardId: number,
 	];
-};
+	[WebSocketShardEvents.SocketError]: [error: Error, shardId: number];
+}
 
-export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
+export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> implements AsyncDisposable {
+	#token: string | null = null;
+
 	/**
 	 * The options being used by this manager
 	 */
-	public readonly options: WebSocketManagerOptions;
+	public readonly options: Omit<WebSocketManagerOptions, 'token'>;
 
 	/**
 	 * Internal cache for a GET /gateway/bot result
@@ -212,10 +241,26 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 	 */
 	private readonly strategy: IShardingStrategy;
 
-	public constructor(options: Partial<OptionalWebSocketManagerOptions> & RequiredWebSocketManagerOptions) {
+	/**
+	 * Gets the token set for this manager. If no token is set, an error is thrown.
+	 * To set the token, use {@link WebSocketManager.setToken} or pass it in the options.
+	 *
+	 * @remarks
+	 * This getter is mostly used to pass the token to the sharding strategy internally, there's not much reason to use it.
+	 */
+	public get token(): string {
+		if (!this.#token) {
+			throw new Error('Token has not been set');
+		}
+
+		return this.#token;
+	}
+
+	public constructor(options: CreateWebSocketManagerOptions) {
 		super();
 		this.options = { ...DefaultWebSocketManagerOptions, ...options };
 		this.strategy = this.options.buildStrategy(this);
+		this.#token = options.token ?? null;
 	}
 
 	/**
@@ -234,7 +279,8 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 		const data = (await this.options.rest.get(Routes.gatewayBot())) as RESTGetAPIGatewayBotResult;
 
-		this.gatewayInformation = { data, expiresAt: Date.now() + data.session_start_limit.reset_after };
+		// For single sharded bots session_start_limit.reset_after will be 0, use 5 seconds as a minimum expiration time
+		this.gatewayInformation = { data, expiresAt: Date.now() + (data.session_start_limit.reset_after || 5_000) };
 		return this.gatewayInformation.data;
 	}
 
@@ -292,19 +338,29 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 	public async connect() {
 		const shardCount = await this.getShardCount();
+		// Spawn shards and adjust internal state
+		await this.updateShardCount(shardCount);
 
+		const shardIds = await this.getShardIds();
 		const data = await this.fetchGatewayInformation();
-		if (data.session_start_limit.remaining < shardCount) {
+
+		if (data.session_start_limit.remaining < shardIds.length) {
 			throw new Error(
-				`Not enough sessions remaining to spawn ${shardCount} shards; only ${
+				`Not enough sessions remaining to spawn ${shardIds.length} shards; only ${
 					data.session_start_limit.remaining
 				} remaining; resets at ${new Date(Date.now() + data.session_start_limit.reset_after).toISOString()}`,
 			);
 		}
 
-		// First, make sure all our shards are spawned
-		await this.updateShardCount(shardCount);
 		await this.strategy.connect();
+	}
+
+	public setToken(token: string): void {
+		if (this.#token) {
+			throw new Error('Token has already been set');
+		}
+
+		this.#token = token;
 	}
 
 	public destroy(options?: Omit<WebSocketShardDestroyOptions, 'recover'>) {
@@ -317,5 +373,9 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> {
 
 	public fetchStatus() {
 		return this.strategy.fetchStatus();
+	}
+
+	public async [Symbol.asyncDispose]() {
+		await this.destroy();
 	}
 }

@@ -123,7 +123,7 @@ class ApplicationCommand extends Base {
        * The options of this command
        * @type {ApplicationCommandOption[]}
        */
-      this.options = data.options.map(o => this.constructor.transformOption(o, true));
+      this.options = data.options.map(option => this.constructor.transformOption(option, true));
     } else {
       this.options ??= [];
     }
@@ -144,11 +144,34 @@ class ApplicationCommand extends Base {
       /**
        * Whether the command can be used in DMs
        * <info>This property is always `null` on guild commands</info>
-       * @type {boolean|null}
+       * @type {?boolean}
+       * @deprecated Use {@link ApplicationCommand#contexts} instead.
        */
       this.dmPermission = data.dm_permission;
     } else {
       this.dmPermission ??= null;
+    }
+
+    if ('integration_types' in data) {
+      /**
+       * Installation context(s) where the command is available
+       * <info>Only for globally-scoped commands</info>
+       * @type {?ApplicationIntegrationType[]}
+       */
+      this.integrationTypes = data.integration_types;
+    } else {
+      this.integrationTypes ??= null;
+    }
+
+    if ('contexts' in data) {
+      /**
+       * Interaction context(s) where the command can be used
+       * <info>Only for globally-scoped commands</info>
+       * @type {?InteractionContextType[]}
+       */
+      this.contexts = data.contexts;
+    } else {
+      this.contexts ??= null;
     }
 
     if ('version' in data) {
@@ -394,7 +417,9 @@ class ApplicationCommand extends Base {
       !isEqual(
         command.descriptionLocalizations ?? command.description_localizations ?? {},
         this.descriptionLocalizations ?? {},
-      )
+      ) ||
+      !isEqual(command.integrationTypes ?? command.integration_types ?? [], this.integrationTypes ?? []) ||
+      !isEqual(command.contexts ?? [], this.contexts ?? [])
     ) {
       return false;
     }
@@ -577,7 +602,7 @@ class ApplicationCommand extends Base {
         [nameLocalizationsKey]: choice.nameLocalizations ?? choice.name_localizations,
         value: choice.value,
       })),
-      options: option.options?.map(o => this.transformOption(o, received)),
+      options: option.options?.map(opt => this.transformOption(opt, received)),
       [channelTypesKey]: option.channelTypes ?? option.channel_types,
       [minValueKey]: option.minValue ?? option.min_value,
       [maxValueKey]: option.maxValue ?? option.max_value,
@@ -590,16 +615,6 @@ class ApplicationCommand extends Base {
 module.exports = ApplicationCommand;
 
 /* eslint-disable max-len */
-/**
- * @external APIApplicationCommand
- * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-structure}
- */
-
-/**
- * @external APIApplicationCommandOption
- * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure}
- */
-
 /**
  * @external ApplicationCommandOptionAllowedChannelTypes
  * @see {@link https://discord.js.org/docs/packages/builders/stable/ApplicationCommandOptionAllowedChannelTypes:TypeAlias}

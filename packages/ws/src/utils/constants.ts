@@ -18,12 +18,18 @@ export enum Encoding {
  * Valid compression methods
  */
 export enum CompressionMethod {
-	ZlibStream = 'zlib-stream',
+	ZlibNative,
+	ZlibSync,
 }
 
 export const DefaultDeviceProperty = `@discordjs/ws [VI]{{inject}}[/VI]` as `@discordjs/ws ${string}`;
 
 const getDefaultSessionStore = lazy(() => new Collection<number, SessionInfo | null>());
+
+export const CompressionParameterMap = {
+	[CompressionMethod.ZlibNative]: 'zlib-stream',
+	[CompressionMethod.ZlibSync]: 'zlib-stream',
+} as const satisfies Record<CompressionMethod, string>;
 
 /**
  * Default options used by the manager
@@ -46,6 +52,7 @@ export const DefaultWebSocketManagerOptions = {
 	version: APIVersion,
 	encoding: Encoding.JSON,
 	compression: null,
+	useIdentifyCompression: false,
 	retrieveSessionInfo(shardId) {
 		const store = getDefaultSessionStore();
 		return store.get(shardId) ?? null;
@@ -61,7 +68,7 @@ export const DefaultWebSocketManagerOptions = {
 	handshakeTimeout: 30_000,
 	helloTimeout: 60_000,
 	readyTimeout: 15_000,
-} as const satisfies OptionalWebSocketManagerOptions;
+} as const satisfies Omit<OptionalWebSocketManagerOptions, 'token'>;
 
 export const ImportantGatewayOpcodes = new Set([
 	GatewayOpcodes.Heartbeat,
@@ -71,7 +78,7 @@ export const ImportantGatewayOpcodes = new Set([
 
 export function getInitialSendRateLimitState(): SendRateLimitState {
 	return {
-		remaining: 120,
+		sent: 0,
 		resetAt: Date.now() + 60_000,
 	};
 }

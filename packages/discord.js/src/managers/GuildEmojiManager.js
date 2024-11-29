@@ -4,7 +4,7 @@ const { Collection } = require('@discordjs/collection');
 const { Routes, PermissionFlagsBits } = require('discord-api-types/v10');
 const BaseGuildEmojiManager = require('./BaseGuildEmojiManager');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
-const DataResolver = require('../util/DataResolver');
+const { resolveImage } = require('../util/DataResolver');
 
 /**
  * Manages API methods for GuildEmojis and stores their cache.
@@ -50,7 +50,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
    *   .catch(console.error);
    */
   async create({ attachment, name, roles, reason }) {
-    attachment = await DataResolver.resolveImage(attachment);
+    attachment = await resolveImage(attachment);
     if (!attachment) throw new DiscordjsTypeError(ErrorCodes.ReqResourceType);
 
     const body = { image: attachment, name };
@@ -130,7 +130,7 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
   async edit(emoji, options) {
     const id = this.resolveId(emoji);
     if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
-    const roles = options.roles?.map(r => this.guild.roles.resolveId(r));
+    const roles = options.roles?.map(role => this.guild.roles.resolveId(role));
     const newData = await this.client.rest.patch(Routes.guildEmoji(this.guild.id, id), {
       body: {
         name: options.name,

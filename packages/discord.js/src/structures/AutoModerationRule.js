@@ -66,8 +66,11 @@ class AutoModerationRule extends Base {
        * @property {AutoModerationRuleKeywordPresetType[]} presets
        * The internally pre-defined wordsets which will be searched for in the content
        * @property {string[]} allowList The substrings that will be exempt from triggering
-       * {@link AutoModerationRuleTriggerType.Keyword} and {@link AutoModerationRuleTriggerType.KeywordPreset}
+       * {@link AutoModerationRuleTriggerType.Keyword},
+       * {@link AutoModerationRuleTriggerType.KeywordPreset},
+       * and {@link AutoModerationRuleTriggerType.MemberProfile}
        * @property {?number} mentionTotalLimit The total number of role & user mentions allowed per message
+       * @property {boolean} mentionRaidProtectionEnabled Whether mention raid protection is enabled
        */
 
       /**
@@ -80,6 +83,7 @@ class AutoModerationRule extends Base {
         presets: data.trigger_metadata.presets ?? [],
         allowList: data.trigger_metadata.allow_list ?? [],
         mentionTotalLimit: data.trigger_metadata.mention_total_limit ?? null,
+        mentionRaidProtectionEnabled: data.trigger_metadata.mention_raid_protection_enabled ?? false,
       };
     }
 
@@ -206,7 +210,10 @@ class AutoModerationRule extends Base {
 
   /**
    * Sets the allow list for this auto moderation rule.
-   * @param {string[]} allowList The allow list of this auto moderation rule
+   * @param {string[]} allowList The substrings that will be exempt from triggering
+   * {@link AutoModerationRuleTriggerType.Keyword},
+   * {@link AutoModerationRuleTriggerType.KeywordPreset},
+   * and {@link AutoModerationRuleTriggerType.MemberProfile}
    * @param {string} [reason] The reason for changing the allow list of this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */
@@ -216,12 +223,23 @@ class AutoModerationRule extends Base {
 
   /**
    * Sets the mention total limit for this auto moderation rule.
-   * @param {number} mentionTotalLimit The mention total limit of this auto moderation rule
+   * @param {number} mentionTotalLimit The total number of unique role and user mentions allowed per message
    * @param {string} [reason] The reason for changing the mention total limit of this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */
   setMentionTotalLimit(mentionTotalLimit, reason) {
     return this.edit({ triggerMetadata: { ...this.triggerMetadata, mentionTotalLimit }, reason });
+  }
+
+  /**
+   * Sets whether to enable mention raid protection for this auto moderation rule.
+   * @param {boolean} mentionRaidProtectionEnabled
+   * Whether to enable mention raid protection for this auto moderation rule
+   * @param {string} [reason] The reason for changing the mention raid protection of this auto moderation rule
+   * @returns {Promise<AutoModerationRule>}
+   */
+  setMentionRaidProtectionEnabled(mentionRaidProtectionEnabled, reason) {
+    return this.edit({ triggerMetadata: { ...this.triggerMetadata, mentionRaidProtectionEnabled }, reason });
   }
 
   /**
@@ -246,7 +264,8 @@ class AutoModerationRule extends Base {
 
   /**
    * Sets the exempt roles for this auto moderation rule.
-   * @param {Collection<Snowflake, Role>|RoleResolvable[]} [exemptRoles] The exempt roles of this auto moderation rule
+   * @param {Collection<Snowflake, Role>|RoleResolvable[]} [exemptRoles]
+   * The roles that should not be affected by the auto moderation rule
    * @param {string} [reason] The reason for changing the exempt roles of this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */
@@ -257,7 +276,7 @@ class AutoModerationRule extends Base {
   /**
    * Sets the exempt channels for this auto moderation rule.
    * @param {Collection<Snowflake, GuildChannel|ThreadChannel>|GuildChannelResolvable[]} [exemptChannels]
-   * The exempt channels of this auto moderation rule
+   * The channels that should not be affected by the auto moderation rule
    * @param {string} [reason] The reason for changing the exempt channels of this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */

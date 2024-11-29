@@ -1,5 +1,7 @@
 /* eslint-disable jsdoc/check-param-names */
+
 import { Buffer } from 'node:buffer';
+import crypto from 'node:crypto';
 import { VoiceOpcodes } from 'discord-api-types/voice/v4';
 import type { VoiceConnection } from '../VoiceConnection';
 import type { ConnectionData } from '../networking/Networking';
@@ -11,6 +13,10 @@ import {
 } from './AudioReceiveStream';
 import { SSRCMap } from './SSRCMap';
 import { SpeakingMap } from './SpeakingMap';
+
+const HEADER_EXTENSION_BYTE = Buffer.from([0xbe, 0xde]);
+const UNPADDED_NONCE_LENGTH = 4;
+const AUTH_TAG_LENGTH = 16;
 
 /**
  * Attaches to a VoiceConnection, allowing you to receive audio packets from other
@@ -86,22 +92,48 @@ export class VoiceReceiver {
 	}
 
 	private decrypt(buffer: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array) {
-		// Choose correct nonce depending on encryption
-		let end;
-		if (mode === 'xsalsa20_poly1305_lite') {
-			buffer.copy(nonce, 0, buffer.length - 4);
-			end = buffer.length - 4;
-		} else if (mode === 'xsalsa20_poly1305_suffix') {
-			buffer.copy(nonce, 0, buffer.length - 24);
-			end = buffer.length - 24;
-		} else {
-			buffer.copy(nonce, 0, 0, 12);
-		}
+		// Copy the last 4 bytes of unpadded nonce to the padding of (12 - 4) or (24 - 4) bytes
+		buffer.copy(nonce, 0, buffer.length - UNPADDED_NONCE_LENGTH);
 
-		// Open packet
-		const decrypted = methods.open(buffer.slice(12, end), nonce, secretKey);
-		if (!decrypted) return;
-		return Buffer.from(decrypted);
+		let headerSize = 12;
+		const first = buffer.readUint8();
+		if ((first >> 4) & 0x01) headerSize += 4;
+
+		// The unencrypted RTP header contains 12 bytes, HEADER_EXTENSION and the extension size
+		const header = buffer.subarray(0, headerSize);
+
+		// Encrypted contains the extension, if any, the opus packet, and the auth tag
+		const encrypted = buffer.subarray(headerSize, buffer.length - AUTH_TAG_LENGTH - UNPADDED_NONCE_LENGTH);
+		const authTag = buffer.subarray(
+			buffer.length - AUTH_TAG_LENGTH - UNPADDED_NONCE_LENGTH,
+			buffer.length - UNPADDED_NONCE_LENGTH,
+		);
+
+		switch (mode) {
+			case 'aead_aes256_gcm_rtpsize': {
+				const decipheriv = crypto.createDecipheriv('aes-256-gcm', secretKey, nonce);
+				decipheriv.setAAD(header);
+				decipheriv.setAuthTag(authTag);
+
+				return Buffer.concat([decipheriv.update(encrypted), decipheriv.final()]);
+			}
+
+			case 'aead_xchacha20_poly1305_rtpsize': {
+				// Combined mode expects authtag in the encrypted message
+				return Buffer.from(
+					methods.crypto_aead_xchacha20poly1305_ietf_decrypt(
+						Buffer.concat([encrypted, authTag]),
+						header,
+						nonce,
+						secretKey,
+					),
+				);
+			}
+
+			default: {
+				throw new RangeError(`Unsupported decryption method: ${mode}`);
+			}
+		}
 	}
 
 	/**
@@ -117,10 +149,11 @@ export class VoiceReceiver {
 		let packet = this.decrypt(buffer, mode, nonce, secretKey);
 		if (!packet) return;
 
-		// Strip RTP Header Extensions (one-byte only)
-		if (packet[0] === 0xbe && packet[1] === 0xde) {
-			const headerExtensionLength = packet.readUInt16BE(2);
-			packet = packet.subarray(4 + 4 * headerExtensionLength);
+		// Strip decrypted RTP Header Extension if present
+		// The header is only indicated in the original data, so compare with buffer first
+		if (buffer.subarray(12, 14).compare(HEADER_EXTENSION_BYTE) === 0) {
+			const headerExtensionLength = buffer.subarray(14).readUInt16BE();
+			packet = packet.subarray(4 * headerExtensionLength);
 		}
 
 		return packet;

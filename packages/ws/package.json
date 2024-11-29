@@ -1,32 +1,44 @@
 {
+	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/ws",
-	"version": "0.8.1",
+	"version": "2.0.0",
 	"description": "Wrapper around Discord's gateway",
 	"scripts": {
 		"test": "vitest run",
-		"build": "tsup",
+		"build": "tsc --noEmit && tsup",
 		"build:docs": "tsc -p tsconfig.docs.json",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --format=pretty",
-		"format": "prettier --write . && cross-env TIMING=1 eslint src __tests__ --ext .mjs,.js,.ts --fix --format=pretty",
-		"docs": "yarn build:docs && api-extractor run --local && api-extractor run --local --config ./api-extractor-docs.json",
-		"prepack": "yarn build && yarn lint",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
+		"docs": "pnpm run build:docs && api-extractor run --local --minify && generate-split-documentation",
+		"prepack": "pnpm run build && pnpm run lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/ws/*'",
 		"release": "cliff-jumper"
 	},
-	"main": "./dist/index.js",
-	"module": "./dist/index.mjs",
-	"typings": "./dist/index.d.ts",
 	"exports": {
 		".": {
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.js",
-			"types": "./dist/index.d.ts"
+			"require": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"import": {
+				"types": "./dist/index.d.mts",
+				"default": "./dist/index.mjs"
+			}
 		},
 		"./defaultWorker": {
-			"import": "./dist/defaultWorker.mjs",
-			"require": "./dist/defaultWorker.js"
+			"require": {
+				"types": null,
+				"default": "./dist/defaultWorker.js"
+			},
+			"import": {
+				"types": null,
+				"default": "./dist/defaultWorker.mjs"
+			}
 		}
 	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
 	"directories": {
 		"lib": "src",
 		"test": "__tests__"
@@ -38,7 +50,7 @@
 		"Crawl <icrawltogo@gmail.com>",
 		"Amish Shah <amishshah.2k@gmail.com>",
 		"SpaceEEC <spaceeec@yahoo.com>",
-		"Vlad Frangu <kingdgrizzle@gmail.com>",
+		"Vlad Frangu <me@vladfrangu.dev>",
 		"Aura Román <kyradiscord@gmail.com>",
 		"DD <didinele.dev@gmail.com>"
 	],
@@ -52,45 +64,51 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/discordjs/discord.js.git"
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/ws"
 	},
 	"bugs": {
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@discordjs/collection": "workspace:^",
 		"@discordjs/rest": "workspace:^",
 		"@discordjs/util": "workspace:^",
-		"@sapphire/async-queue": "^1.5.0",
-		"@types/ws": "^8.5.4",
-		"@vladfrangu/async_event_emitter": "^2.2.1",
-		"discord-api-types": "^0.37.39",
-		"tslib": "^2.5.0",
-		"ws": "^8.13.0"
+		"@sapphire/async-queue": "^1.5.5",
+		"@types/ws": "^8.5.13",
+		"@vladfrangu/async_event_emitter": "^2.4.6",
+		"discord-api-types": "^0.37.109",
+		"tslib": "^2.8.1",
+		"ws": "^8.18.0"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^2.0.0",
-		"@microsoft/api-extractor": "^7.34.4",
-		"@types/node": "16.18.23",
-		"@vitest/coverage-c8": "^0.30.1",
+		"@discordjs/api-extractor": "workspace:^",
+		"@discordjs/scripts": "workspace:^",
+		"@favware/cliff-jumper": "^4.1.0",
+		"@types/node": "^20.17.8",
+		"@vitest/coverage-v8": "^2.1.5",
 		"cross-env": "^7.0.3",
-		"esbuild-plugin-version-injector": "^1.1.0",
-		"eslint": "^8.38.0",
-		"eslint-config-neon": "^0.1.42",
-		"eslint-formatter-pretty": "^5.0.0",
-		"mock-socket": "^9.2.1",
-		"prettier": "^2.8.7",
-		"tsup": "^6.7.0",
-		"typescript": "^5.0.4",
-		"undici": "^5.21.2",
-		"vitest": "^0.29.8",
-		"zlib-sync": "^0.1.8"
+		"esbuild-plugin-version-injector": "^1.2.1",
+		"eslint": "^8.57.1",
+		"eslint-config-neon": "^0.1.62",
+		"eslint-formatter-pretty": "^6.0.1",
+		"mock-socket": "^9.3.1",
+		"prettier": "^3.3.3",
+		"tsd": "^0.31.2",
+		"tsup": "^8.3.5",
+		"turbo": "^2.3.0",
+		"typescript": "~5.5.4",
+		"undici": "6.21.0",
+		"vitest": "^2.1.5",
+		"zlib-sync": "^0.1.9"
 	},
 	"engines": {
-		"node": ">=16.9.0"
+		"node": ">=20"
 	},
 	"publishConfig": {
-		"access": "public"
+		"access": "public",
+		"provenance": true
 	}
 }

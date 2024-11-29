@@ -2,8 +2,8 @@
 
 const GuildChannel = require('./GuildChannel');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
+const GuildMessageManager = require('../managers/GuildMessageManager');
 const GuildTextThreadManager = require('../managers/GuildTextThreadManager');
-const MessageManager = require('../managers/MessageManager');
 
 /**
  * Represents a text-based guild channel on Discord.
@@ -16,9 +16,9 @@ class BaseGuildTextChannel extends GuildChannel {
 
     /**
      * A manager of the messages sent to this channel
-     * @type {MessageManager}
+     * @type {GuildMessageManager}
      */
-    this.messages = new MessageManager(this);
+    this.messages = new GuildMessageManager(this);
 
     /**
      * A manager of the threads belonging to this channel
@@ -74,6 +74,16 @@ class BaseGuildTextChannel extends GuildChannel {
       this.defaultAutoArchiveDuration = data.default_auto_archive_duration;
     }
 
+    if ('default_thread_rate_limit_per_user' in data) {
+      /**
+       * The initial rate limit per user (slowmode) to set on newly created threads in a channel.
+       * @type {?number}
+       */
+      this.defaultThreadRateLimitPerUser = data.default_thread_rate_limit_per_user;
+    } else {
+      this.defaultThreadRateLimitPerUser ??= null;
+    }
+
     if ('messages' in data) {
       for (const message of data.messages) this.messages._add(message);
     }
@@ -91,7 +101,7 @@ class BaseGuildTextChannel extends GuildChannel {
 
   /**
    * Sets the type of this channel.
-   * <info>Only conversion between {@link TextChannel} and {@link NewsChannel} is supported.</info>
+   * <info>Only conversion between {@link TextChannel} and {@link AnnouncementChannel} is supported.</info>
    * @param {ChannelType.GuildText|ChannelType.GuildAnnouncement} type The new channel type
    * @param {string} [reason] Reason for changing the channel's type
    * @returns {Promise<GuildChannel>}

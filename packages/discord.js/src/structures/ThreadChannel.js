@@ -1,10 +1,12 @@
 'use strict';
 
-const { ChannelType, PermissionFlagsBits, Routes, ChannelFlags } = require('discord-api-types/v10');
+const { lazy } = require('@discordjs/util');
+const { ChannelFlags, ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
 const { BaseChannel } = require('./BaseChannel');
+const getThreadOnlyChannel = lazy(() => require('./ThreadOnlyChannel'));
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const { DiscordjsRangeError, ErrorCodes } = require('../errors');
-const MessageManager = require('../managers/MessageManager');
+const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors');
+const GuildMessageManager = require('../managers/GuildMessageManager');
 const ThreadMemberManager = require('../managers/ThreadMemberManager');
 const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
 
@@ -31,9 +33,9 @@ class ThreadChannel extends BaseChannel {
 
     /**
      * A manager of the messages sent to this thread
-     * @type {MessageManager}
+     * @type {GuildMessageManager}
      */
-    this.messages = new MessageManager(this);
+    this.messages = new GuildMessageManager(this);
 
     /**
      * A manager of the members that are part of this thread
@@ -83,7 +85,7 @@ class ThreadChannel extends BaseChannel {
        * <info>This property is always `null` in public threads.</info>
        * @type {?boolean}
        */
-      this.invitable = this.type === ChannelType.PrivateThread ? data.thread_metadata.invitable ?? false : null;
+      this.invitable = this.type === ChannelType.PrivateThread ? (data.thread_metadata.invitable ?? false) : null;
 
       /**
        * Whether the thread is archived
@@ -248,7 +250,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * The parent channel of this thread
-   * @type {?(NewsChannel|TextChannel|ForumChannel)}
+   * @type {?(AnnouncementChannel|TextChannel|ForumChannel|MediaChannel)}
    * @readonly
    */
   get parent() {
@@ -286,33 +288,37 @@ class ThreadChannel extends BaseChannel {
   }
 
   /**
+   * Options used to fetch a thread owner.
+   * @typedef {BaseFetchOptions} FetchThreadOwnerOptions
+   * @property {boolean} [withMember] Whether to also return the guild member associated with this thread member
+   */
+
+  /**
    * Fetches the owner of this thread. If the thread member object isn't needed,
    * use {@link ThreadChannel#ownerId} instead.
-   * @param {BaseFetchOptions} [options] The options for fetching the member
-   * @returns {Promise<?ThreadMember>}
+   * @param {FetchThreadOwnerOptions} [options] Options for fetching the owner
+   * @returns {Promise<ThreadMember>}
    */
-  async fetchOwner({ cache = true, force = false } = {}) {
-    if (!force) {
-      const existing = this.members.cache.get(this.ownerId);
-      if (existing) return existing;
+  async fetchOwner(options) {
+    if (!this.ownerId) {
+      throw new DiscordjsError(ErrorCodes.FetchOwnerId, 'thread');
     }
 
-    // We cannot fetch a single thread member, as of this commit's date, Discord API responds with 405
-    const members = await this.members.fetch({ cache });
-    return members.get(this.ownerId) ?? null;
+    const member = await this.members._fetchSingle({ ...options, member: this.ownerId });
+    return member;
   }
 
   /**
    * Fetches the message that started this thread, if any.
    * <info>The `Promise` will reject if the original message in a forum post is deleted
    * or when the original message in the parent channel is deleted.
-   * If you just need the id of that message, use {@link ThreadChannel#id} instead.</info>
+   * If you just need the id of that message, use {@link BaseChannel#id} instead.</info>
    * @param {BaseFetchOptions} [options] Additional options for this fetch
-   * @returns {Promise<Message<true>|null>}
+   * @returns {Promise<?Message<true>>}
    */
   // eslint-disable-next-line require-await
   async fetchStarterMessage(options) {
-    const channel = this.parent?.type === ChannelType.GuildForum ? this : this.parent;
+    const channel = this.parent instanceof getThreadOnlyChannel() ? this : this.parent;
     return channel?.messages.fetch({ message: this.id, ...options }) ?? null;
   }
 

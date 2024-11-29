@@ -2,6 +2,7 @@
 import { URL } from 'node:url';
 import { describe, test, expect, vitest } from 'vitest';
 import {
+	applicationDirectory,
 	chatInputApplicationCommandMention,
 	blockQuote,
 	bold,
@@ -10,18 +11,24 @@ import {
 	codeBlock,
 	Faces,
 	formatEmoji,
+	heading,
+	HeadingLevel,
 	hideLinkEmbed,
 	hyperlink,
 	inlineCode,
 	italic,
+	linkedRoleMention,
 	messageLink,
+	orderedList,
 	quote,
 	roleMention,
 	spoiler,
 	strikethrough,
+	subtext,
 	time,
 	TimestampStyles,
-	underscore,
+	underline,
+	unorderedList,
 	userMention,
 } from '../src/index.js';
 
@@ -54,9 +61,9 @@ describe('Message formatters', () => {
 		});
 	});
 
-	describe('underscore', () => {
+	describe('underline', () => {
 		test('GIVEN "discord.js" THEN returns "__discord.js__"', () => {
-			expect<'__discord.js__'>(underscore('discord.js')).toEqual('__discord.js__');
+			expect<'__discord.js__'>(underline('discord.js')).toEqual('__discord.js__');
 		});
 	});
 
@@ -139,6 +146,12 @@ describe('Message formatters', () => {
 			});
 		});
 
+		describe('linkedRoleMention', () => {
+			test('GIVEN roleId THEN returns "<id:linked-roles:[roleId]>"', () => {
+				expect(linkedRoleMention('815434166602170409')).toEqual('<id:linked-roles:815434166602170409>');
+			});
+		});
+
 		describe('chatInputApplicationCommandMention', () => {
 			test('GIVEN commandName and commandId THEN returns "</[commandName]:[commandId]>"', () => {
 				expect(chatInputApplicationCommandMention('airhorn', '815434166602170409')).toEqual(
@@ -161,16 +174,56 @@ describe('Message formatters', () => {
 	});
 
 	describe('formatEmoji', () => {
-		test('GIVEN static emojiId THEN returns "<:_:${emojiId}>"', () => {
-			expect<`<:_:851461487498493952>`>(formatEmoji('851461487498493952')).toEqual('<:_:851461487498493952>');
+		test('GIVEN static emojiId THEN returns "<:emoji:${emojiId}>"', () => {
+			expect<`<:emoji:851461487498493952>`>(formatEmoji('851461487498493952')).toEqual('<:emoji:851461487498493952>');
 		});
 
-		test('GIVEN static emojiId WITH animated explicitly false THEN returns "<:_:[emojiId]>"', () => {
-			expect<`<:_:851461487498493952>`>(formatEmoji('851461487498493952', false)).toEqual('<:_:851461487498493952>');
+		test('GIVEN static emojiId WITH animated explicitly false THEN returns "<:emoji:[emojiId]>"', () => {
+			expect<`<:emoji:851461487498493952>`>(formatEmoji('851461487498493952', false)).toEqual(
+				'<:emoji:851461487498493952>',
+			);
 		});
 
-		test('GIVEN animated emojiId THEN returns "<a:_:${emojiId}>"', () => {
-			expect<`<a:_:827220205352255549>`>(formatEmoji('827220205352255549', true)).toEqual('<a:_:827220205352255549>');
+		test('GIVEN animated emojiId THEN returns "<a:emoji:${emojiId}>"', () => {
+			expect<`<a:emoji:827220205352255549>`>(formatEmoji('827220205352255549', true)).toEqual(
+				'<a:emoji:827220205352255549>',
+			);
+		});
+
+		test('GIVEN static id in options object THEN returns "<:emoji:${id}>"', () => {
+			expect<`<:emoji:851461487498493952>`>(formatEmoji({ id: '851461487498493952' })).toEqual(
+				'<:emoji:851461487498493952>',
+			);
+		});
+
+		test('GIVEN static id in options object WITH animated explicitly false THEN returns "<:emoji:${id}>"', () => {
+			expect<`<:emoji:851461487498493952>`>(formatEmoji({ animated: false, id: '851461487498493952' })).toEqual(
+				'<:emoji:851461487498493952>',
+			);
+		});
+
+		test('GIVEN animated id in options object THEN returns "<a:emoji:${id}>"', () => {
+			expect<`<a:emoji:827220205352255549>`>(formatEmoji({ animated: true, id: '827220205352255549' })).toEqual(
+				'<a:emoji:827220205352255549>',
+			);
+		});
+
+		test('GIVEN static id and name in options object THEN returns "<:${name}:${id}>"', () => {
+			expect<`<:test:851461487498493952>`>(formatEmoji({ id: '851461487498493952', name: 'test' })).toEqual(
+				'<:test:851461487498493952>',
+			);
+		});
+
+		test('GIVEN static id and name WITH animated explicitly false THEN returns "<:${name}:${id}>"', () => {
+			expect<`<:test:851461487498493952>`>(
+				formatEmoji({ animated: false, id: '851461487498493952', name: 'test' }),
+			).toEqual('<:test:851461487498493952>');
+		});
+
+		test('GIVEN animated id and name THEN returns "<a:${name}:${id}>"', () => {
+			expect<`<a:test:827220205352255549>`>(
+				formatEmoji({ id: '827220205352255549', name: 'test', animated: true }),
+			).toEqual('<a:test:827220205352255549>');
 		});
 	});
 
@@ -199,6 +252,48 @@ describe('Message formatters', () => {
 			expect<'https://discord.com/channels/987654321987654/123456789012345678/102938475657483'>(
 				messageLink('123456789012345678', '102938475657483', '987654321987654'),
 			).toEqual('https://discord.com/channels/987654321987654/123456789012345678/102938475657483');
+		});
+	});
+
+	describe('heading', () => {
+		test('GIVEN "discord.js" THEN returns "# discord.js"', () => {
+			expect<'# discord.js'>(heading('discord.js')).toEqual('# discord.js');
+		});
+
+		test('GIVEN "discord.js" AND a heading level 2 from number THEN returns "## discord.js"', () => {
+			expect<'## discord.js'>(heading('discord.js', 2)).toEqual('## discord.js');
+		});
+
+		test('GIVEN "discord.js" AND a heading level 3 from enum THEN returns "### discord.js"', () => {
+			expect<'### discord.js'>(heading('discord.js', HeadingLevel.Three)).toEqual('### discord.js');
+		});
+	});
+
+	describe('orderedList', () => {
+		test('GIVEN ["discord.js", "discord.js 2", ["discord.js 3"]] THEN returns "1. discord.js\n1. discord.js 2\n  1. discord.js"', () => {
+			expect(orderedList(['discord.js', 'discord.js 2', ['discord.js 3']])).toEqual(
+				'1. discord.js\n1. discord.js 2\n  1. discord.js 3',
+			);
+		});
+
+		test('GIVEN ["discord.js", "discord.js 2", ["discord.js 3"]] AND a startNumber THEN returns "${startNumber}. discord.js\n${startNumber}. discord.js 2\n  ${startNumber}. discord.js"', () => {
+			expect(orderedList(['discord.js', 'discord.js 2', ['discord.js 3']], 50)).toEqual(
+				'50. discord.js\n50. discord.js 2\n  50. discord.js 3',
+			);
+		});
+	});
+
+	describe('unorderedList', () => {
+		test('GIVEN ["discord.js", "discord.js 2", ["discord.js 3"]] THEN returns "- discord.js\n- discord.js 2\n  - discord.js"', () => {
+			expect(unorderedList(['discord.js', 'discord.js 2', ['discord.js 3']])).toEqual(
+				'- discord.js\n- discord.js 2\n  - discord.js 3',
+			);
+		});
+	});
+
+	describe('subtext', () => {
+		test('GIVEN "discord.js" THEN returns "-# discord.js"', () => {
+			expect<'-# discord.js'>(subtext('discord.js')).toEqual('-# discord.js');
 		});
 	});
 
@@ -239,13 +334,24 @@ describe('Message formatters', () => {
 		});
 	});
 
-	describe('Faces', () => {
-		// prettier-ignore
-		/* eslint-disable no-useless-escape */
-		test('GIVEN Faces.Shrug THEN returns "¯\_(ツ)_/¯"', () => {
-			expect<'¯\_(ツ)_/¯'>(Faces.Shrug).toEqual('¯\_(ツ)_/¯');
+	describe('applicationDirectory', () => {
+		test('GIVEN application id THEN returns application directory store', () => {
+			expect(applicationDirectory('123456789012345678')).toEqual(
+				'https://discord.com/application-directory/123456789012345678/store',
+			);
 		});
-		/* eslint-enable no-useless-escape */
+
+		test('GIVEN application id AND SKU id THEN returns SKU within the application directory store', () => {
+			expect(applicationDirectory('123456789012345678', '123456789012345678')).toEqual(
+				'https://discord.com/application-directory/123456789012345678/store/123456789012345678',
+			);
+		});
+	});
+
+	describe('Faces', () => {
+		test('GIVEN Faces.Shrug THEN returns "¯\\_(ツ)_/¯"', () => {
+			expect<'¯\\_(ツ)_/¯'>(Faces.Shrug).toEqual('¯\\_(ツ)_/¯');
+		});
 
 		test('GIVEN Faces.Tableflip THEN returns "(╯°□°)╯︵ ┻━┻"', () => {
 			expect<'(╯°□°)╯︵ ┻━┻'>(Faces.Tableflip).toEqual('(╯°□°)╯︵ ┻━┻');

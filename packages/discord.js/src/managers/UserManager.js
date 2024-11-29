@@ -40,7 +40,10 @@ class UserManager extends CachedManager {
    * @private
    */
   dmChannel(userId) {
-    return this.client.channels.cache.find(c => c.type === ChannelType.DM && c.recipientId === userId) ?? null;
+    return (
+      this.client.channels.cache.find(channel => channel.type === ChannelType.DM && channel.recipientId === userId) ??
+      null
+    );
   }
 
   /**
@@ -90,16 +93,6 @@ class UserManager extends CachedManager {
 
     const data = await this.client.rest.get(Routes.user(id));
     return this._add(data, cache);
-  }
-
-  /**
-   * Fetches a user's flags.
-   * @param {UserResolvable} user The UserResolvable to identify
-   * @param {BaseFetchOptions} [options] Additional options for this fetch
-   * @returns {Promise<UserFlagsBitField>}
-   */
-  async fetchFlags(user, options) {
-    return (await this.fetch(user, options)).flags;
   }
 
   /**
