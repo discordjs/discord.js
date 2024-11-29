@@ -439,7 +439,7 @@ export class InteractionsAPI {
 	 * @param interactionId - The id of the interaction
 	 * @param interactionToken - The token of the interaction
 	 * @param options - The options for sending the premium required response
-	 * @deprecated Sending a premium-style button is the new Discord behaviour.
+	 * @deprecated Sending a premium-style button is the new Discord behavior.
 	 */
 	public async sendPremiumRequired(
 		interactionId: Snowflake,

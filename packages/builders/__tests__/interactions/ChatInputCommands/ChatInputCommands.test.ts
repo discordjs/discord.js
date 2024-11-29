@@ -501,7 +501,7 @@ describe('ChatInput Commands', () => {
 		});
 
 		describe('integration types', () => {
-			test('GIVEN a builder with valid integraton types THEN does not throw an error', () => {
+			test('GIVEN a builder with valid integration types THEN does not throw an error', () => {
 				expect(() =>
 					getNamedBuilder()
 						.setIntegrationTypes([ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall])
