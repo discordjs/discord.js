@@ -470,11 +470,6 @@
  */
 
 /**
- * @external LocaleString
- * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#LocaleString}
- */
-
-/**
  * @external MessageActivityType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/MessageActivityType}
  */
