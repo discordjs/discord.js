@@ -8,7 +8,7 @@ const { makeError, makePlainError } = require('../util/Util');
 
 /**
  * Helper class for sharded clients spawned as a child process/worker, such as from a {@link ShardingManager}.
- * Utilises IPC to send and receive data to/from the master process and other shards.
+ * Utilizes IPC to send and receive data to/from the master process and other shards.
  */
 class ShardClientUtil {
   constructor(client, mode) {
