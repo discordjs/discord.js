@@ -101,7 +101,6 @@ import {
   APIEmbedImage,
   VideoQualityMode,
   LocalizationMap,
-  LocaleString,
   MessageActivityType,
   APIAttachment,
   APIChannel,
@@ -5566,7 +5565,7 @@ export type EmojiResolvable = Snowflake | GuildEmoji | ReactionEmoji | Applicati
 
 export interface FetchApplicationCommandOptions extends BaseFetchOptions {
   guildId?: Snowflake;
-  locale?: LocaleString;
+  locale?: Locale;
   withLocalizations?: boolean;
 }
 
