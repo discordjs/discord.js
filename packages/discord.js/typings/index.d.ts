@@ -4491,7 +4491,7 @@ export class RoleManager extends CachedManager<Snowflake, Role, RoleResolvable> 
   public guild: Guild;
   public get premiumSubscriberRole(): Role | null;
   public botRoleFor(user: UserResolvable): Role | null;
-  public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Role | null>;
+  public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Role>;
   public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, Role>>;
   public create(options?: RoleCreateOptions): Promise<Role>;
   public edit(role: RoleResolvable, options: RoleEditOptions): Promise<Role>;
