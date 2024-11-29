@@ -180,7 +180,7 @@ class PermissionOverwrites extends Base {
       };
     }
 
-    const userOrRole = guild.roles.resolve(overwrite.id) ?? guild.client.users.resolve(overwrite.id);
+    const userOrRole = guild.roles.cache.get(overwrite.id) ?? guild.client.users.cache.get(overwrite.id);
     if (!userOrRole) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'parameter', 'User nor a Role');
     const type = userOrRole instanceof Role ? OverwriteType.Role : OverwriteType.Member;
 
