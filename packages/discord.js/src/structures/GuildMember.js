@@ -228,7 +228,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get presence() {
-    return this.guild.presences.resolve(this.id);
+    return this.guild.presences.cache.get(this.id) ?? null;
   }
 
   /**
