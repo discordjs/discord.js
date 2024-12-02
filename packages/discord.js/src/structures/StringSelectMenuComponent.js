@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseSelectMenuComponent = require('./BaseSelectMenuComponent');
+const { BaseSelectMenuComponent } = require('./BaseSelectMenuComponent');
 
 /**
  * Represents a string select menu component
@@ -17,4 +17,4 @@ class StringSelectMenuComponent extends BaseSelectMenuComponent {
   }
 }
 
-module.exports = StringSelectMenuComponent;
+exports.StringSelectMenuComponent = StringSelectMenuComponent;

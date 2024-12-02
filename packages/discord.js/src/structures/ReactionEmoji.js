@@ -28,4 +28,4 @@ class ReactionEmoji extends Emoji {
   }
 }
 
-module.exports = ReactionEmoji;
+exports.ReactionEmoji = ReactionEmoji;

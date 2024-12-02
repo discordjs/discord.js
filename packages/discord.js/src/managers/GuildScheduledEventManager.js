@@ -3,7 +3,7 @@
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { GuildScheduledEventEntityType, Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
+const { CachedManager } = require('./CachedManager');
 const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../errors');
 const { GuildScheduledEvent } = require('../structures/GuildScheduledEvent');
 const { resolveImage } = require('../util/DataResolver');
@@ -315,4 +315,4 @@ class GuildScheduledEventManager extends CachedManager {
   }
 }
 
-module.exports = GuildScheduledEventManager;
+exports.GuildScheduledEventManager = GuildScheduledEventManager;

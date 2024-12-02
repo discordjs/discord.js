@@ -3,9 +3,9 @@
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
+const { CachedManager } = require('./CachedManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const ThreadChannel = require('../structures/ThreadChannel');
+const { ThreadChannel } = require('../structures/ThreadChannel');
 const { MakeCacheOverrideSymbol } = require('../util/Symbols');
 
 /**
@@ -195,4 +195,4 @@ class ThreadManager extends CachedManager {
   }
 }
 
-module.exports = ThreadManager;
+exports.ThreadManager = ThreadManager;

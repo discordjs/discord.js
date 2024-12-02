@@ -39,7 +39,7 @@
  * @type {Colors}
  * @ignore
  */
-module.exports = {
+const Colors = {
   Default: 0x000000,
   White: 0xffffff,
   Aqua: 0x1abc9c,
@@ -71,3 +71,5 @@ module.exports = {
   DarkButNotBlack: 0x2c2f33,
   NotQuiteBlack: 0x23272a,
 };
+
+exports.Colors = Colors;

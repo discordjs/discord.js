@@ -1,8 +1,8 @@
 'use strict';
 
-const Base = require('./Base');
+const { Base } = require('./Base');
 const { Emoji } = require('./Emoji');
-const ActivityFlagsBitField = require('../util/ActivityFlagsBitField');
+const { ActivityFlagsBitField } = require('../util/ActivityFlagsBitField');
 const { flatten } = require('../util/Util');
 
 /**

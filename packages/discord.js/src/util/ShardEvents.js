@@ -16,7 +16,7 @@
  * @type {ShardEvents}
  * @ignore
  */
-module.exports = {
+const ShardEvents = {
   Death: 'death',
   Disconnect: 'disconnect',
   Error: 'error',
@@ -25,3 +25,5 @@ module.exports = {
   Resume: 'resume',
   Spawn: 'spawn',
 };
+
+exports.ShardEvents = ShardEvents;

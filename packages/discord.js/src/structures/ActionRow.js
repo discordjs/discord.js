@@ -1,6 +1,6 @@
 'use strict';
 
-const Component = require('./Component');
+const { Component } = require('./Component');
 const { createComponent } = require('../util/Components');
 
 /**
@@ -28,4 +28,4 @@ class ActionRow extends Component {
   }
 }
 
-module.exports = ActionRow;
+exports.ActionRow = ActionRow;

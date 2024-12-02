@@ -1,8 +1,8 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const Collector = require('./interfaces/Collector');
-const Events = require('../util/Events');
+const { Collector } = require('./interfaces/Collector');
+const { Events } = require('../util/Events');
 
 /**
  * @typedef {CollectorOptions} InteractionCollectorOptions
@@ -236,4 +236,4 @@ class InteractionCollector extends Collector {
   }
 }
 
-module.exports = InteractionCollector;
+exports.InteractionCollector = InteractionCollector;

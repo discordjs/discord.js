@@ -10,22 +10,22 @@ const {
   MessageFlags,
   PermissionFlagsBits,
 } = require('discord-api-types/v10');
-const Attachment = require('./Attachment');
-const Base = require('./Base');
-const ClientApplication = require('./ClientApplication');
-const Embed = require('./Embed');
-const InteractionCollector = require('./InteractionCollector');
-const Mentions = require('./MessageMentions');
-const MessagePayload = require('./MessagePayload');
+const { Attachment } = require('./Attachment');
+const { Base } = require('./Base');
+const { ClientApplication } = require('./ClientApplication');
+const { Embed } = require('./Embed');
+const { InteractionCollector } = require('./InteractionCollector');
+const { Mentions } = require('./MessageMentions');
+const { MessagePayload } = require('./MessagePayload');
 const { Poll } = require('./Poll.js');
-const ReactionCollector = require('./ReactionCollector');
+const { ReactionCollector } = require('./ReactionCollector');
 const { Sticker } = require('./Sticker');
 const { DiscordjsError, ErrorCodes } = require('../errors');
-const ReactionManager = require('../managers/ReactionManager');
+const { ReactionManager } = require('../managers/ReactionManager');
 const { createComponent } = require('../util/Components');
 const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, UndeletableMessageTypes } = require('../util/Constants');
-const MessageFlagsBitField = require('../util/MessageFlagsBitField');
-const PermissionsBitField = require('../util/PermissionsBitField');
+const { MessageFlagsBitField } = require('../util/MessageFlagsBitField');
+const { PermissionsBitField } = require('../util/PermissionsBitField');
 const { _transformAPIMessageInteractionMetadata } = require('../util/Transformers.js');
 const { cleanContent, resolvePartialEmoji, transformResolved } = require('../util/Util');
 

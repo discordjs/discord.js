@@ -3,7 +3,7 @@
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes, GuildFeature } = require('discord-api-types/v10');
-const Base = require('./Base');
+const { Base } = require('./Base');
 
 /**
  * The base class for {@link Guild}, {@link OAuth2Guild} and {@link InviteGuild}.
@@ -116,4 +116,4 @@ class BaseGuild extends Base {
   }
 }
 
-module.exports = BaseGuild;
+exports.BaseGuild = BaseGuild;
