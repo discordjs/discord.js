@@ -294,4 +294,4 @@ class MessageMentions {
   }
 }
 
-module.exports = MessageMentions;
+exports.MessageMentions = MessageMentions;

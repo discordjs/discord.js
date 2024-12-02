@@ -3,11 +3,11 @@
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
+const { CachedManager } = require('./CachedManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const { Role } = require('../structures/Role');
 const { resolveImage } = require('../util/DataResolver');
-const PermissionsBitField = require('../util/PermissionsBitField');
+const { PermissionsBitField } = require('../util/PermissionsBitField');
 const { setPosition, resolveColor } = require('../util/Util');
 
 let cacheWarningEmitted = false;
@@ -361,4 +361,4 @@ class RoleManager extends CachedManager {
   }
 }
 
-module.exports = RoleManager;
+exports.RoleManager = RoleManager;

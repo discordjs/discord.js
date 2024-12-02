@@ -1,7 +1,7 @@
 'use strict';
 
 const { GuildMemberFlags } = require('discord-api-types/v10');
-const BitField = require('./BitField');
+const { BitField } = require('./BitField');
 
 /**
  * Data structure that makes it easy to interact with a {@link GuildMember#flags} bitfield.

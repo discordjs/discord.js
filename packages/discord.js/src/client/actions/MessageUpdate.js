@@ -1,6 +1,6 @@
 'use strict';
 
-const Action = require('./Action');
+const { Action } = require('./Action');
 
 class MessageUpdateAction extends Action {
   handle(data) {
@@ -23,4 +23,4 @@ class MessageUpdateAction extends Action {
   }
 }
 
-module.exports = MessageUpdateAction;
+exports.MessageUpdateAction = MessageUpdateAction;

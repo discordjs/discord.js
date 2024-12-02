@@ -6,7 +6,7 @@ const path = require('node:path');
 const process = require('node:process');
 const { setTimeout: sleep } = require('node:timers/promises');
 const { Collection } = require('@discordjs/collection');
-const Shard = require('./Shard');
+const { Shard } = require('./Shard');
 const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors');
 const { fetchRecommendedShardCount } = require('../util/Util');
 
@@ -328,4 +328,4 @@ class ShardingManager extends EventEmitter {
   }
 }
 
-module.exports = ShardingManager;
+exports.ShardingManager = ShardingManager;

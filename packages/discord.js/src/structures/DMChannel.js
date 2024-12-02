@@ -3,9 +3,9 @@
 const { userMention } = require('@discordjs/formatters');
 const { ChannelType } = require('discord-api-types/v10');
 const { BaseChannel } = require('./BaseChannel');
-const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const DMMessageManager = require('../managers/DMMessageManager');
-const Partials = require('../util/Partials');
+const { TextBasedChannel } = require('./interfaces/TextBasedChannel');
+const { DMMessageManager } = require('../managers/DMMessageManager');
+const { Partials } = require('../util/Partials');
 
 /**
  * Represents a direct message channel between two users.
@@ -126,4 +126,4 @@ TextBasedChannel.applyToClass(DMChannel, true, [
   'setNSFW',
 ]);
 
-module.exports = DMChannel;
+exports.DMChannel = DMChannel;

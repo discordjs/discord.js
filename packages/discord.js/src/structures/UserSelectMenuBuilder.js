@@ -23,7 +23,7 @@ class UserSelectMenuBuilder extends BuildersUserSelectMenu {
   }
 }
 
-module.exports = UserSelectMenuBuilder;
+exports.UserSelectMenuBuilder = UserSelectMenuBuilder;
 
 /**
  * @external BuildersUserSelectMenu

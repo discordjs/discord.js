@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const MessageComponentInteraction = require('./MessageComponentInteraction');
+const { MessageComponentInteraction } = require('./MessageComponentInteraction');
 
 /**
  * Represents a {@link ComponentType.RoleSelect} select menu interaction.
@@ -30,4 +30,4 @@ class RoleSelectMenuInteraction extends MessageComponentInteraction {
   }
 }
 
-module.exports = RoleSelectMenuInteraction;
+exports.RoleSelectMenuInteraction = RoleSelectMenuInteraction;

@@ -1,7 +1,7 @@
 'use strict';
 
 const { GuildSystemChannelFlags } = require('discord-api-types/v10');
-const BitField = require('./BitField');
+const { BitField } = require('./BitField');
 
 /**
  * Data structure that makes it easy to interact with a {@link Guild#systemChannelFlags} bitfield.
@@ -40,4 +40,4 @@ class SystemChannelFlagsBitField extends BitField {
  * @typedef {string|number|SystemChannelFlagsBitField|SystemChannelFlagsResolvable[]} SystemChannelFlagsResolvable
  */
 
-module.exports = SystemChannelFlagsBitField;
+exports.SystemChannelFlagsBitField = SystemChannelFlagsBitField;
