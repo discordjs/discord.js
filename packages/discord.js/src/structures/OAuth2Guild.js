@@ -1,7 +1,7 @@
 'use strict';
 
-const BaseGuild = require('./BaseGuild');
-const PermissionsBitField = require('../util/PermissionsBitField');
+const { BaseGuild } = require('./BaseGuild');
+const { PermissionsBitField } = require('../util/PermissionsBitField');
 
 /**
  * A partial guild received when using {@link GuildManager#fetch} to fetch multiple guilds.
@@ -25,4 +25,4 @@ class OAuth2Guild extends BaseGuild {
   }
 }
 
-module.exports = OAuth2Guild;
+exports.OAuth2Guild = OAuth2Guild;

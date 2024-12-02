@@ -1,6 +1,6 @@
 'use strict';
 
-const Events = require('../../../util/Events');
+const { Events } = require('../../../util/Events');
 
 module.exports = (client, { d: data }) => {
   const channel = client.channels.cache.get(data.channel_id);

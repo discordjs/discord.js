@@ -7,7 +7,7 @@ const { setTimeout, clearTimeout } = require('node:timers');
 const { setTimeout: sleep } = require('node:timers/promises');
 const { SHARE_ENV } = require('node:worker_threads');
 const { DiscordjsError, ErrorCodes } = require('../errors');
-const ShardEvents = require('../util/ShardEvents');
+const { ShardEvents } = require('../util/ShardEvents');
 const { makeError, makePlainError } = require('../util/Util');
 
 let childProcess = null;
@@ -468,4 +468,4 @@ class Shard extends EventEmitter {
   }
 }
 
-module.exports = Shard;
+exports.Shard = Shard;

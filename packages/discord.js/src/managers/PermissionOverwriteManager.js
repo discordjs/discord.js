@@ -3,9 +3,9 @@
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const { OverwriteType, Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
+const { CachedManager } = require('./CachedManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const PermissionOverwrites = require('../structures/PermissionOverwrites');
+const { PermissionOverwrites } = require('../structures/PermissionOverwrites');
 const { Role } = require('../structures/Role');
 
 let cacheWarningEmitted = false;
@@ -165,4 +165,4 @@ class PermissionOverwriteManager extends CachedManager {
   }
 }
 
-module.exports = PermissionOverwriteManager;
+exports.PermissionOverwriteManager = PermissionOverwriteManager;

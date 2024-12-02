@@ -27,7 +27,7 @@ class ActionRowBuilder extends BuildersActionRow {
   }
 }
 
-module.exports = ActionRowBuilder;
+exports.ActionRowBuilder = ActionRowBuilder;
 
 /**
  * @external BuildersActionRow

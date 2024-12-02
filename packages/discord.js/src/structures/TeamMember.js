@@ -1,6 +1,6 @@
 'use strict';
 
-const Base = require('./Base');
+const { Base } = require('./Base');
 
 /**
  * Represents a Client OAuth2 Application Team Member.
@@ -67,4 +67,4 @@ class TeamMember extends Base {
   }
 }
 
-module.exports = TeamMember;
+exports.TeamMember = TeamMember;

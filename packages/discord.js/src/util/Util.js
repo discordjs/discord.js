@@ -4,7 +4,7 @@ const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
 const { ChannelType, RouteBases, Routes } = require('discord-api-types/v10');
 const { fetch } = require('undici');
-const Colors = require('./Colors');
+const { Colors } = require('./Colors');
 const { DiscordjsError, DiscordjsRangeError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 const isObject = d => typeof d === 'object' && d !== null;
 
@@ -521,6 +521,6 @@ module.exports = {
 };
 
 // Fixes Circular
-const Attachment = require('../structures/Attachment');
-const GuildChannel = require('../structures/GuildChannel');
+const { Attachment } = require('../structures/Attachment');
+const { GuildChannel } = require('../structures/GuildChannel');
 const { SKU } = require('../structures/SKU.js');

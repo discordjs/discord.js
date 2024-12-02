@@ -23,7 +23,7 @@ class ChannelSelectMenuBuilder extends BuildersChannelSelectMenu {
   }
 }
 
-module.exports = ChannelSelectMenuBuilder;
+exports.ChannelSelectMenuBuilder = ChannelSelectMenuBuilder;
 
 /**
  * @external BuildersChannelSelectMenu
