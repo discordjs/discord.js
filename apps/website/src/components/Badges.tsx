@@ -18,8 +18,9 @@ export async function Badges({ node }: { readonly node: any }) {
 	const isAbstract = node.isAbstract;
 	const isReadonly = node.isReadonly;
 	const isOptional = node.isOptional;
+	const isExternal = node.isExternal;
 
-	const isAny = isDeprecated || isProtected || isStatic || isAbstract || isReadonly || isOptional;
+	const isAny = isDeprecated || isProtected || isStatic || isAbstract || isReadonly || isOptional || isExternal;
 
 	return isAny ? (
 		<div className="mb-1 flex gap-3">
@@ -33,6 +34,7 @@ export async function Badges({ node }: { readonly node: any }) {
 			{isAbstract ? <Badge className="bg-cyan-500/20 text-cyan-500">abstract</Badge> : null}
 			{isReadonly ? <Badge className="bg-purple-500/20 text-purple-500">readonly</Badge> : null}
 			{isOptional ? <Badge className="bg-cyan-500/20 text-cyan-500">optional</Badge> : null}
+			{isExternal ? <Badge className="bg-purple-500/20 text-purple-500">external</Badge> : null}
 		</div>
 	) : null;
 }
