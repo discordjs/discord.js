@@ -16,7 +16,7 @@
  * @type {ShardEvents}
  * @ignore
  */
-const ShardEvents = {
+exports.ShardEvents = {
   Death: 'death',
   Disconnect: 'disconnect',
   Error: 'error',
@@ -25,5 +25,3 @@ const ShardEvents = {
   Resume: 'resume',
   Spawn: 'spawn',
 };
-
-exports.ShardEvents = ShardEvents;
