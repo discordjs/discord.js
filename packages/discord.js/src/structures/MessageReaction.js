@@ -1,6 +1,7 @@
 'use strict';
 
 const { Routes } = require('discord-api-types/v10');
+const ApplicationEmoji = require('./ApplicationEmoji');
 const GuildEmoji = require('./GuildEmoji');
 const ReactionEmoji = require('./ReactionEmoji');
 const ReactionUserManager = require('../managers/ReactionUserManager');
@@ -35,7 +36,7 @@ class MessageReaction {
      * Whether the client has super-reacted using this emoji
      * @type {boolean}
      */
-    this.meBurst = data.me_burst;
+    this.meBurst = Boolean(data.me_burst);
 
     /**
      * A manager of the users that have given this reaction
@@ -51,7 +52,7 @@ class MessageReaction {
   }
 
   _patch(data) {
-    if ('burst_colors' in data) {
+    if (data.burst_colors) {
       /**
        * Hexadecimal colors used for this super reaction
        * @type {?string[]}
@@ -108,16 +109,24 @@ class MessageReaction {
   }
 
   /**
-   * The emoji of this reaction. Either a {@link GuildEmoji} object for known custom emojis, or a {@link ReactionEmoji}
-   * object which has fewer properties. Whatever the prototype of the emoji, it will still have
+   * The emoji of this reaction. Either a {@link GuildEmoji} object for known custom emojis,
+   * {@link ApplicationEmoji} for application emojis, or a {@link ReactionEmoji} object
+   * which has fewer properties. Whatever the prototype of the emoji, it will still have
    * `name`, `id`, `identifier` and `toString()`
-   * @type {GuildEmoji|ReactionEmoji}
+   * @type {GuildEmoji|ReactionEmoji|ApplicationEmoji}
    * @readonly
    */
   get emoji() {
     if (this._emoji instanceof GuildEmoji) return this._emoji;
+    if (this._emoji instanceof ApplicationEmoji) return this._emoji;
     // Check to see if the emoji has become known to the client
     if (this._emoji.id) {
+      const applicationEmojis = this.message.client.application.emojis.cache;
+      if (applicationEmojis.has(this._emoji.id)) {
+        const emoji = applicationEmojis.get(this._emoji.id);
+        this._emoji = emoji;
+        return emoji;
+      }
       const emojis = this.message.client.emojis.cache;
       if (emojis.has(this._emoji.id)) {
         const emoji = emojis.get(this._emoji.id);

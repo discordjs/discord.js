@@ -2,8 +2,7 @@
 
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
-const { DiscordAPIError } = require('@discordjs/rest');
-const { RESTJSONErrorCodes, Routes } = require('discord-api-types/v10');
+const { Routes } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const { Role } = require('../structures/Role');
@@ -49,7 +48,7 @@ class RoleManager extends CachedManager {
    * Obtains a role from Discord, or the role cache if they're already available.
    * @param {Snowflake} [id] The role's id
    * @param {BaseFetchOptions} [options] Additional options for this fetch
-   * @returns {Promise<?Role|Collection<Snowflake, Role>>}
+   * @returns {Promise<Role|Collection<Snowflake, Role>>}
    * @example
    * // Fetch all roles from the guild
    * message.guild.roles.fetch()
@@ -74,17 +73,8 @@ class RoleManager extends CachedManager {
       if (existing) return existing;
     }
 
-    try {
-      const data = await this.client.rest.get(Routes.guildRole(this.guild.id, id));
-      return this._add(data, cache);
-    } catch (error) {
-      // TODO: Remove this catch in the next major version
-      if (error instanceof DiscordAPIError && error.code === RESTJSONErrorCodes.UnknownRole) {
-        return null;
-      }
-
-      throw error;
-    }
+    const data = await this.client.rest.get(Routes.guildRole(this.guild.id, id));
+    return this._add(data, cache);
   }
 
   /**

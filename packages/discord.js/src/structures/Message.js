@@ -364,6 +364,7 @@ class Message extends Base {
      * @property {Snowflake} channelId The channel id that was referenced
      * @property {Snowflake|undefined} guildId The guild id that was referenced
      * @property {Snowflake|undefined} messageId The message id that was referenced
+     * @property {MessageReferenceType} type The type of message reference
      */
 
     if ('message_reference' in data) {
@@ -375,6 +376,7 @@ class Message extends Base {
         channelId: data.message_reference.channel_id,
         guildId: data.message_reference.guild_id,
         messageId: data.message_reference.message_id,
+        type: data.message_reference.type,
       };
     } else {
       this.reference ??= null;
@@ -446,6 +448,29 @@ class Message extends Base {
       this.poll = new Poll(this.client, data.poll, this);
     } else {
       this.poll ??= null;
+    }
+
+    if (data.message_snapshots) {
+      /**
+       * The message associated with the message reference
+       * @type {Collection<Snowflake, Message>}
+       */
+      this.messageSnapshots = data.message_snapshots.reduce((coll, snapshot) => {
+        const channel = this.client.channels.resolve(this.reference.channelId);
+        const snapshotData = {
+          ...snapshot.message,
+          id: this.reference.messageId,
+          channel_id: this.reference.channelId,
+          guild_id: this.reference.guildId,
+        };
+
+        return coll.set(
+          this.reference.messageId,
+          channel ? channel.messages._add(snapshotData) : new this.constructor(this.client, snapshotData),
+        );
+      }, new Collection());
+    } else {
+      this.messageSnapshots ??= new Collection();
     }
 
     /**
@@ -545,7 +570,7 @@ class Message extends Base {
    * @readonly
    */
   get thread() {
-    return this.channel?.threads?.resolve(this.id) ?? null;
+    return this.channel?.threads?.cache.get(this.id) ?? null;
   }
 
   /**

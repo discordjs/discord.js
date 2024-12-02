@@ -33,6 +33,8 @@ import {
 	type RESTPostAPIChannelThreadsResult,
 	type APIThreadChannel,
 	type RESTPostAPIGuildForumThreadsJSONBody,
+	type RESTPostAPISoundboardSendSoundJSONBody,
+	type RESTPostAPISendSoundboardSoundResult,
 } from 'discord-api-types/v10';
 
 export interface StartForumThreadOptions extends RESTPostAPIGuildForumThreadsJSONBody {
@@ -90,9 +92,17 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/message#get-reactions}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to get the reactions for
-	 * @param emoji - The emoji to get the reactions for
+	 * @param emoji - The emoji to get the reactions for. URL encoding happens internally
 	 * @param query - The query options for fetching the reactions
 	 * @param options - The options for fetching the message reactions
+	 * @example
+	 * ```ts
+	 * // Unicode.
+	 * await api.channels.getMessageReactions('1234567890', '1234567890', '👍');
+	 *
+	 * // Custom emoji.
+	 * await api.channels.getMessageReactions('1234567890', '1234567890', 'emoji_name:1234567890');
+	 * ```
 	 */
 	public async getMessageReactions(
 		channelId: Snowflake,
@@ -113,8 +123,16 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/message#delete-own-reaction}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reaction for
-	 * @param emoji - The emoji to delete the reaction for
+	 * @param emoji - The emoji to delete the reaction for. URL encoding happens internally
 	 * @param options - The options for deleting the reaction
+	 * @example
+	 * ```ts
+	 * // Unicode.
+	 * await api.channels.deleteOwnMessageReaction('1234567890', '1234567890', '👍');
+	 *
+	 * // Custom emoji.
+	 * await api.channels.deleteOwnMessageReaction('1234567890', '1234567890', 'emoji_name:1234567890');
+	 * ```
 	 */
 	public async deleteOwnMessageReaction(
 		channelId: Snowflake,
@@ -133,9 +151,17 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/message#delete-user-reaction}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reaction for
-	 * @param emoji - The emoji to delete the reaction for
+	 * @param emoji - The emoji to delete the reaction for. URL encoding happens internally
 	 * @param userId - The id of the user to delete the reaction for
 	 * @param options - The options for deleting the reaction
+	 * @example
+	 * ```ts
+	 * // Unicode.
+	 * await api.channels.deleteUserMessageReaction('1234567890', '1234567890', '👍', '1234567890');
+	 *
+	 * // Custom emoji.
+	 * await api.channels.deleteUserMessageReaction('1234567890', '1234567890', 'emoji_name:1234567890', '1234567890');
+	 * ```
 	 */
 	public async deleteUserMessageReaction(
 		channelId: Snowflake,
@@ -171,8 +197,16 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/message#delete-all-reactions-for-emoji}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reactions for
-	 * @param emoji - The emoji to delete the reactions for
+	 * @param emoji - The emoji to delete the reactions for. URL encoding happens internally
 	 * @param options - The options for deleting the reactions
+	 * @example
+	 * ```ts
+	 * // Unicode.
+	 * await api.channels.deleteAllMessageReactionsForEmoji('1234567890', '1234567890', '👍');
+	 *
+	 * // Custom emoji.
+	 * await api.channels.deleteAllMessageReactionsForEmoji('1234567890', '1234567890', 'emoji_name:1234567890');
+	 * ```
 	 */
 	public async deleteAllMessageReactionsForEmoji(
 		channelId: Snowflake,
@@ -189,8 +223,16 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/message#create-reaction}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to add the reaction to
-	 * @param emoji - The emoji to add the reaction with
+	 * @param emoji - The emoji to add the reaction with. URL encoding happens internally
 	 * @param options - The options for adding the reaction
+	 * @example
+	 * ```ts
+	 * // Unicode.
+	 * await api.channels.addMessageReaction('1234567890', '1234567890', '👍');
+	 *
+	 * // Custom emoji.
+	 * await api.channels.addMessageReaction('1234567890', '1234567890', 'emoji_name:1234567890');
+	 * ```
 	 */
 	public async addMessageReaction(
 		channelId: Snowflake,
@@ -582,5 +624,24 @@ export class ChannelsAPI {
 			reason,
 			signal,
 		});
+	}
+
+	/**
+	 * Sends a soundboard sound in a channel
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/soundboard#send-soundboard-sound}
+	 * @param channelId - The id of the channel to send the soundboard sound in
+	 * @param body - The data for sending the soundboard sound
+	 * @param options - The options for sending the soundboard sound
+	 */
+	public async sendSoundboardSound(
+		channelId: Snowflake,
+		body: RESTPostAPISoundboardSendSoundJSONBody,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		return this.rest.post(Routes.sendSoundboardSound(channelId), {
+			body,
+			signal,
+		}) as Promise<RESTPostAPISendSoundboardSoundResult>;
 	}
 }

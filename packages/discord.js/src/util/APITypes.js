@@ -101,6 +101,11 @@
  */
 
 /**
+ * @external APIGuildScheduledEventRecurrenceRule
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIGuildScheduledEventRecurrenceRule}
+ */
+
+/**
  * @external APIInteraction
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIInteraction}
  */
@@ -321,6 +326,10 @@
  */
 
 /**
+ * @external GatewayDispatchPayload
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#GatewayDispatchPayload}
+ */
+/**
  * @external GatewayIntentBits
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GatewayIntentBits}
  */
@@ -391,6 +400,21 @@
  */
 
 /**
+ * @external GuildScheduledEventRecurrenceRuleFrequency
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildScheduledEventRecurrenceRuleFrequency}
+ */
+
+/**
+ * @external GuildScheduledEventRecurrenceRuleMonth
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildScheduledEventRecurrenceRuleMonth}
+ */
+
+/**
+ * @external GuildScheduledEventRecurrenceRuleWeekday
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildScheduledEventRecurrenceRuleWeekday}
+ */
+
+/**
  * @external GuildScheduledEventStatus
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/GuildScheduledEventStatus}
  */
@@ -442,17 +466,17 @@
 
 /**
  * @external Locale
- * @see {@link https://discord-api-types.dev/api/discord-api-types-rest/common/enum/Locale}
- */
-
-/**
- * @external LocaleString
- * @see {@link https://discord-api-types.dev/api/discord-api-types-rest/common#LocaleString}
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/Locale}
  */
 
 /**
  * @external MessageActivityType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/MessageActivityType}
+ */
+
+/**
+ * @external MessageReferenceType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/MessageReferenceType}
  */
 
 /**
@@ -477,12 +501,17 @@
 
 /**
  * @external PermissionFlagsBits
- * @see {@link https://discord-api-types.dev/api/discord-api-types-payloads/common#PermissionFlagsBits}
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#PermissionFlagsBits}
  */
 
 /**
  * @external PollLayoutType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/PollLayoutType}
+ */
+
+/**
+ * @external ReactionType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ReactionType}
  */
 
 /**
@@ -497,7 +526,7 @@
 
 /**
  * @external RESTJSONErrorCodes
- * @see {@link https://discord-api-types.dev/api/discord-api-types-rest/common/enum/RESTJSONErrorCodes}
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/RESTJSONErrorCodes}
  */
 
 /**
@@ -558,6 +587,11 @@
 /**
  * @external VideoQualityMode
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/VideoQualityMode}
+ */
+
+/**
+ * @external VoiceChannelEffectSendAnimationType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/VoiceChannelEffectSendAnimationType}
  */
 
 /**
