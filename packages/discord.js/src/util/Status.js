@@ -14,6 +14,4 @@ const { createEnum } = require('./Enums');
  * @type {Status}
  * @ignore
  */
-const Status = createEnum(['Ready', 'Idle', 'WaitingForGuilds']);
-
-exports.Status = Status;
+exports.Status = createEnum(['Ready', 'Idle', 'WaitingForGuilds']);

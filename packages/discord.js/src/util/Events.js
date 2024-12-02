@@ -87,7 +87,7 @@
  * @type {Events}
  * @ignore
  */
-const Events = {
+exports.Events = {
   ApplicationCommandPermissionsUpdate: 'applicationCommandPermissionsUpdate',
   AutoModerationActionExecution: 'autoModerationActionExecution',
   AutoModerationRuleCreate: 'autoModerationRuleCreate',
@@ -101,8 +101,8 @@ const Events = {
   ClientReady: 'clientReady',
   Debug: 'debug',
   EntitlementCreate: 'entitlementCreate',
-  EntitlementUpdate: 'entitlementUpdate',
   EntitlementDelete: 'entitlementDelete',
+  EntitlementUpdate: 'entitlementUpdate',
   Error: 'error',
   GuildAuditLogEntryCreate: 'guildAuditLogEntryCreate',
   GuildAvailable: 'guildAvailable',
@@ -151,8 +151,8 @@ const Events = {
   StageInstanceDelete: 'stageInstanceDelete',
   StageInstanceUpdate: 'stageInstanceUpdate',
   SubscriptionCreate: 'subscriptionCreate',
-  SubscriptionUpdate: 'subscriptionUpdate',
   SubscriptionDelete: 'subscriptionDelete',
+  SubscriptionUpdate: 'subscriptionUpdate',
   ThreadCreate: 'threadCreate',
   ThreadDelete: 'threadDelete',
   ThreadListSync: 'threadListSync',
@@ -167,5 +167,3 @@ const Events = {
   Warn: 'warn',
   WebhooksUpdate: 'webhooksUpdate',
 };
-
-exports.Events = Events;
