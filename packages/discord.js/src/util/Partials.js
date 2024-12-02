@@ -33,7 +33,7 @@ const { createEnum } = require('./Enums');
  * @type {Partials}
  * @ignore
  */
-const Partials = createEnum([
+exports.Partials = createEnum([
   'User',
   'Channel',
   'GuildMember',
@@ -42,5 +42,3 @@ const Partials = createEnum([
   'GuildScheduledEvent',
   'ThreadMember',
 ]);
-
-exports.Partials = Partials;
