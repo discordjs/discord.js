@@ -1,8 +1,8 @@
 'use strict';
 
-const Action = require('./Action');
-const Invite = require('../../structures/Invite');
-const Events = require('../../util/Events');
+const { Action } = require('./Action');
+const { Invite } = require('../../structures/Invite');
+const { Events } = require('../../util/Events');
 
 class InviteDeleteAction extends Action {
   handle(data) {
@@ -26,4 +26,4 @@ class InviteDeleteAction extends Action {
   }
 }
 
-module.exports = InviteDeleteAction;
+exports.InviteDeleteAction = InviteDeleteAction;

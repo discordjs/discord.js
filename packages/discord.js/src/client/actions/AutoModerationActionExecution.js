@@ -1,8 +1,8 @@
 'use strict';
 
-const Action = require('./Action');
-const AutoModerationActionExecution = require('../../structures/AutoModerationActionExecution');
-const Events = require('../../util/Events');
+const { Action } = require('./Action');
+const { AutoModerationActionExecution } = require('../../structures/AutoModerationActionExecution');
+const { Events } = require('../../util/Events');
 
 class AutoModerationActionExecutionAction extends Action {
   handle(data) {
@@ -23,4 +23,4 @@ class AutoModerationActionExecutionAction extends Action {
   }
 }
 
-module.exports = AutoModerationActionExecutionAction;
+exports.AutoModerationActionExecutionAction = AutoModerationActionExecutionAction;

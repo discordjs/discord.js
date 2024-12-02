@@ -1,7 +1,7 @@
 'use strict';
 
-const ApplicationCommandManager = require('./ApplicationCommandManager');
-const ApplicationCommandPermissionsManager = require('./ApplicationCommandPermissionsManager');
+const { ApplicationCommandManager } = require('./ApplicationCommandManager');
+const { ApplicationCommandPermissionsManager } = require('./ApplicationCommandPermissionsManager');
 
 /**
  * An extension for guild-specific application commands.
@@ -25,4 +25,4 @@ class GuildApplicationCommandManager extends ApplicationCommandManager {
   }
 }
 
-module.exports = GuildApplicationCommandManager;
+exports.GuildApplicationCommandManager = GuildApplicationCommandManager;

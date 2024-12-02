@@ -1,6 +1,6 @@
 'use strict';
 
-const Base = require('./Base');
+const { Base } = require('./Base');
 const { Emoji } = require('./Emoji');
 
 /**
@@ -57,4 +57,4 @@ class WelcomeChannel extends Base {
   }
 }
 
-module.exports = WelcomeChannel;
+exports.WelcomeChannel = WelcomeChannel;

@@ -1,7 +1,7 @@
 'use strict';
 
-const CommandInteraction = require('./CommandInteraction');
-const CommandInteractionOptionResolver = require('./CommandInteractionOptionResolver');
+const { CommandInteraction } = require('./CommandInteraction');
+const { CommandInteractionOptionResolver } = require('./CommandInteractionOptionResolver');
 const { transformResolved } = require('../util/Util');
 
 /**
@@ -39,4 +39,4 @@ class ChatInputCommandInteraction extends CommandInteraction {
   }
 }
 
-module.exports = ChatInputCommandInteraction;
+exports.ChatInputCommandInteraction = ChatInputCommandInteraction;

@@ -1,9 +1,9 @@
 'use strict';
 
-const Action = require('./Action');
-const Events = require('../../util/Events');
+const { Action } = require('./Action');
+const { Events } = require('../../util/Events');
 
-class GuildIntegrationsUpdate extends Action {
+class GuildIntegrationsUpdateAction extends Action {
   handle(data) {
     const client = this.client;
     const guild = client.guilds.cache.get(data.guild_id);
@@ -16,4 +16,4 @@ class GuildIntegrationsUpdate extends Action {
   }
 }
 
-module.exports = GuildIntegrationsUpdate;
+exports.GuildIntegrationsUpdateAction = GuildIntegrationsUpdateAction;

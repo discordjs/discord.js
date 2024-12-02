@@ -3,10 +3,10 @@
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
+const { CachedManager } = require('./CachedManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const { Message } = require('../structures/Message');
-const MessagePayload = require('../structures/MessagePayload');
+const { MessagePayload } = require('../structures/MessagePayload');
 const { MakeCacheOverrideSymbol } = require('../util/Symbols');
 const { resolvePartialEmoji } = require('../util/Util');
 
@@ -298,4 +298,4 @@ class MessageManager extends CachedManager {
   }
 }
 
-module.exports = MessageManager;
+exports.MessageManager = MessageManager;

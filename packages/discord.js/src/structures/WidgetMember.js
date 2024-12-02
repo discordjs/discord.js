@@ -1,6 +1,6 @@
 'use strict';
 
-const Base = require('./Base');
+const { Base } = require('./Base');
 
 /**
  * Represents a WidgetMember.
@@ -96,4 +96,4 @@ class WidgetMember extends Base {
   }
 }
 
-module.exports = WidgetMember;
+exports.WidgetMember = WidgetMember;

@@ -98,5 +98,5 @@ class InteractionResponse {
 }
 
 // eslint-disable-next-line import/order
-const InteractionCollector = require('./InteractionCollector');
-module.exports = InteractionResponse;
+const { InteractionCollector } = require('./InteractionCollector');
+exports.InteractionResponse = InteractionResponse;

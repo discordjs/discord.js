@@ -1,7 +1,7 @@
 'use strict';
 
 const { MessageFlags } = require('discord-api-types/v10');
-const BitField = require('./BitField');
+const { BitField } = require('./BitField');
 
 /**
  * Data structure that makes it easy to interact with a {@link Message#flags} bitfield.
@@ -38,4 +38,4 @@ class MessageFlagsBitField extends BitField {
  * @name MessageFlagsBitField#bitfield
  */
 
-module.exports = MessageFlagsBitField;
+exports.MessageFlagsBitField = MessageFlagsBitField;
