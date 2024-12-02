@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseGuildEmoji = require('./BaseGuildEmoji');
+const { BaseGuildEmoji } = require('./BaseGuildEmoji');
 
 /**
  * Represents an instance of an emoji belonging to a public guild obtained through Discord's preview endpoint.
@@ -24,4 +24,4 @@ class GuildPreviewEmoji extends BaseGuildEmoji {
   }
 }
 
-module.exports = GuildPreviewEmoji;
+exports.GuildPreviewEmoji = GuildPreviewEmoji;

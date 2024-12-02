@@ -3,7 +3,7 @@
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
+const { CachedManager } = require('./CachedManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors/index');
 const { Subscription } = require('../structures/Subscription');
 const { resolveSKUId } = require('../util/Util');

@@ -2,9 +2,9 @@
 
 const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
+const { CachedManager } = require('./CachedManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const ApplicationEmoji = require('../structures/ApplicationEmoji');
+const { ApplicationEmoji } = require('../structures/ApplicationEmoji');
 const { resolveImage } = require('../util/DataResolver');
 
 /**
@@ -139,4 +139,4 @@ class ApplicationEmojiManager extends CachedManager {
   }
 }
 
-module.exports = ApplicationEmojiManager;
+exports.ApplicationEmojiManager = ApplicationEmojiManager;

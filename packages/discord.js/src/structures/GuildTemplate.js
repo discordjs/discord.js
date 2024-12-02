@@ -2,9 +2,9 @@
 
 const { setTimeout, clearTimeout } = require('node:timers');
 const { RouteBases, Routes } = require('discord-api-types/v10');
-const Base = require('./Base');
+const { Base } = require('./Base');
 const { resolveImage } = require('../util/DataResolver');
-const Events = require('../util/Events');
+const { Events } = require('../util/Events');
 
 /**
  * Represents the template for a guild.
@@ -238,4 +238,4 @@ class GuildTemplate extends Base {
   }
 }
 
-module.exports = GuildTemplate;
+exports.GuildTemplate = GuildTemplate;

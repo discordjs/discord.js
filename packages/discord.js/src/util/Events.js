@@ -87,7 +87,7 @@
  * @type {Events}
  * @ignore
  */
-module.exports = {
+const Events = {
   ApplicationCommandPermissionsUpdate: 'applicationCommandPermissionsUpdate',
   AutoModerationActionExecution: 'autoModerationActionExecution',
   AutoModerationRuleCreate: 'autoModerationRuleCreate',
@@ -167,3 +167,5 @@ module.exports = {
   Warn: 'warn',
   WebhooksUpdate: 'webhooksUpdate',
 };
+
+exports.Events = Events;

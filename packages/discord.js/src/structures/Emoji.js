@@ -2,7 +2,7 @@
 
 const { formatEmoji } = require('@discordjs/formatters');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const Base = require('./Base');
+const { Base } = require('./Base');
 
 /**
  * Represents an emoji, see {@link ApplicationEmoji}, {@link GuildEmoji} and {@link ReactionEmoji}.

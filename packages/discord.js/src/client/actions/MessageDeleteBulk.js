@@ -1,8 +1,8 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const Action = require('./Action');
-const Events = require('../../util/Events');
+const { Action } = require('./Action');
+const { Events } = require('../../util/Events');
 
 class MessageDeleteBulkAction extends Action {
   handle(data) {
@@ -44,4 +44,4 @@ class MessageDeleteBulkAction extends Action {
   }
 }
 
-module.exports = MessageDeleteBulkAction;
+exports.MessageDeleteBulkAction = MessageDeleteBulkAction;

@@ -115,4 +115,4 @@ class ApplicationEmoji extends Emoji {
   }
 }
 
-module.exports = ApplicationEmoji;
+exports.ApplicationEmoji = ApplicationEmoji;

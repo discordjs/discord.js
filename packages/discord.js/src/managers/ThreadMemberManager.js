@@ -3,9 +3,9 @@
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
+const { CachedManager } = require('./CachedManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const ThreadMember = require('../structures/ThreadMember');
+const { ThreadMember } = require('../structures/ThreadMember');
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
@@ -179,4 +179,4 @@ class ThreadMemberManager extends CachedManager {
   }
 }
 
-module.exports = ThreadMemberManager;
+exports.ThreadMemberManager = ThreadMemberManager;

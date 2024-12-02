@@ -1,8 +1,8 @@
 'use strict';
 
-const Action = require('./Action');
-const GuildAuditLogsEntry = require('../../structures/GuildAuditLogsEntry');
-const Events = require('../../util/Events');
+const { Action } = require('./Action');
+const { GuildAuditLogsEntry } = require('../../structures/GuildAuditLogsEntry');
+const { Events } = require('../../util/Events');
 
 class GuildAuditLogEntryCreateAction extends Action {
   handle(data) {
@@ -26,4 +26,4 @@ class GuildAuditLogEntryCreateAction extends Action {
   }
 }
 
-module.exports = GuildAuditLogEntryCreateAction;
+exports.GuildAuditLogEntryCreateAction = GuildAuditLogEntryCreateAction;
