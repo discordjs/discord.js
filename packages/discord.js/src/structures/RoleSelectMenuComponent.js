@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseSelectMenuComponent = require('./BaseSelectMenuComponent');
+const { BaseSelectMenuComponent } = require('./BaseSelectMenuComponent');
 
 /**
  * Represents a role select menu component
@@ -8,4 +8,4 @@ const BaseSelectMenuComponent = require('./BaseSelectMenuComponent');
  */
 class RoleSelectMenuComponent extends BaseSelectMenuComponent {}
 
-module.exports = RoleSelectMenuComponent;
+exports.RoleSelectMenuComponent = RoleSelectMenuComponent;

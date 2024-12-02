@@ -1,6 +1,6 @@
 'use strict';
 
-const MessageManager = require('./MessageManager');
+const { MessageManager } = require('./MessageManager');
 
 /**
  * Manages API methods for messages in a guild and holds their cache.
@@ -14,4 +14,4 @@ class GuildMessageManager extends MessageManager {
    */
 }
 
-module.exports = GuildMessageManager;
+exports.GuildMessageManager = GuildMessageManager;

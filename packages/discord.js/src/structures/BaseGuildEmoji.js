@@ -62,4 +62,4 @@ class BaseGuildEmoji extends Emoji {
  * @returns {string}
  */
 
-module.exports = BaseGuildEmoji;
+exports.BaseGuildEmoji = BaseGuildEmoji;

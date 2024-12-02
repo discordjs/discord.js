@@ -44,4 +44,4 @@ class Component {
   }
 }
 
-module.exports = Component;
+exports.Component = Component;

@@ -1,7 +1,7 @@
 'use strict';
 
-const Action = require('./Action');
-const Events = require('../../util/Events');
+const { Action } = require('./Action');
+const { Events } = require('../../util/Events');
 
 /**
  * The data received in the {@link Client#event:applicationCommandPermissionsUpdate} event
@@ -31,4 +31,4 @@ class ApplicationCommandPermissionsUpdateAction extends Action {
   }
 }
 
-module.exports = ApplicationCommandPermissionsUpdateAction;
+exports.ApplicationCommandPermissionsUpdateAction = ApplicationCommandPermissionsUpdateAction;

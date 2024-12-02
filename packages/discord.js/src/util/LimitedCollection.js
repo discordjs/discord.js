@@ -65,4 +65,4 @@ class LimitedCollection extends Collection {
   }
 }
 
-module.exports = LimitedCollection;
+exports.LimitedCollection = LimitedCollection;

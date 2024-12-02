@@ -41,7 +41,7 @@ class StringSelectMenuOptionBuilder extends BuildersSelectMenuOption {
   }
 }
 
-module.exports = StringSelectMenuOptionBuilder;
+exports.StringSelectMenuOptionBuilder = StringSelectMenuOptionBuilder;
 
 /**
  * @external BuildersSelectMenuOption

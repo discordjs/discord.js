@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseGuild = require('./BaseGuild');
+const { BaseGuild } = require('./BaseGuild');
 
 /**
  * Bundles common attributes and methods between {@link Guild} and {@link InviteGuild}
@@ -94,4 +94,4 @@ class AnonymousGuild extends BaseGuild {
   }
 }
 
-module.exports = AnonymousGuild;
+exports.AnonymousGuild = AnonymousGuild;
