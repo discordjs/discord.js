@@ -6,7 +6,7 @@ const CachedManager = require('./CachedManager');
 const { BaseChannel } = require('../structures/BaseChannel');
 const { createChannel } = require('../util/Channels');
 const { ThreadChannelTypes } = require('../util/Constants');
-const { extractProperties } = require('../util/deleteProperties');
+const { delteProperties } = require('../util/deleteProperties');
 const Events = require('../util/Events');
 
 let cacheWarningEmitted = false;
@@ -56,7 +56,7 @@ class ChannelManager extends CachedManager {
     }
 
     if (this.client?.undesiredProperties?.ChannelManager)
-      channel = extractProperties(channel, this.client.undesiredProperties.ChannelManager);
+      channel = delteProperties(channel, this.client.undesiredProperties.ChannelManager);
 
     if (cache && !allowUnknownGuild) this.cache.set(channel.id, channel);
 
