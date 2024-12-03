@@ -36,7 +36,9 @@ async function writeClientActionImports() {
   for (const file of (await readdir(actionsDirectory)).sort()) {
     if (file === 'Action.js' || file === 'ActionsManager.js') continue;
 
-    lines.push(`    this.register(require('./${file.slice(0, -3)}'));`);
+    const actionName = file.slice(0, -3);
+
+    lines.push(`    this.register(require('./${actionName}').${actionName}Action);`);
   }
 
   lines.push('  }\n');
