@@ -18,6 +18,7 @@ class ActionsManager {
     this.register(require('./GuildEmojiCreate').GuildEmojiCreateAction);
     this.register(require('./GuildEmojiDelete').GuildEmojiDeleteAction);
     this.register(require('./GuildEmojiUpdate').GuildEmojiUpdateAction);
+    this.register(require('./GuildEmojiUpdate').GuildEmojiUpdateAction);
     this.register(require('./GuildEmojisUpdate').GuildEmojisUpdateAction);
     this.register(require('./GuildMemberRemove').GuildMemberRemoveAction);
     this.register(require('./GuildMemberUpdate').GuildMemberUpdateAction);
@@ -29,6 +30,7 @@ class ActionsManager {
     this.register(require('./GuildScheduledEventUserRemove').GuildScheduledEventUserRemoveAction);
     this.register(require('./GuildStickerCreate').GuildStickerCreateAction);
     this.register(require('./GuildStickerDelete').GuildStickerDeleteAction);
+    this.register(require('./GuildStickerUpdate').GuildStickerUpdateAction);
     this.register(require('./GuildStickerUpdate').GuildStickerUpdateAction);
     this.register(require('./GuildStickersUpdate').GuildStickersUpdateAction);
     this.register(require('./GuildUpdate').GuildUpdateAction);
