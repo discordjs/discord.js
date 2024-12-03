@@ -29,15 +29,15 @@ class ActionsManager {
     this.register(require('./GuildDelete').GuildDeleteAction);
     this.register(require('./GuildEmojiCreate').GuildEmojiCreateAction);
     this.register(require('./GuildEmojiDelete').GuildEmojiDeleteAction);
-    this.register(require('./GuildEmojisUpdate').GuildEmojisUpdateAction);
     this.register(require('./GuildEmojiUpdate').GuildEmojiUpdateAction);
+    this.register(require('./GuildEmojisUpdate').GuildEmojisUpdateAction);
     this.register(require('./GuildIntegrationsUpdate').GuildIntegrationsUpdateAction);
     this.register(require('./GuildMemberRemove').GuildMemberRemoveAction);
     this.register(require('./GuildMemberUpdate').GuildMemberUpdateAction);
     this.register(require('./GuildRoleCreate').GuildRoleCreateAction);
     this.register(require('./GuildRoleDelete').GuildRoleDeleteAction);
-    this.register(require('./GuildRolesPositionUpdate').GuildRolesPositionUpdateAction);
     this.register(require('./GuildRoleUpdate').GuildRoleUpdateAction);
+    this.register(require('./GuildRolesPositionUpdate').GuildRolesPositionUpdateAction);
     this.register(require('./GuildScheduledEventCreate').GuildScheduledEventCreateAction);
     this.register(require('./GuildScheduledEventDelete').GuildScheduledEventDeleteAction);
     this.register(require('./GuildScheduledEventUpdate').GuildScheduledEventUpdateAction);
@@ -45,8 +45,8 @@ class ActionsManager {
     this.register(require('./GuildScheduledEventUserRemove').GuildScheduledEventUserRemoveAction);
     this.register(require('./GuildStickerCreate').GuildStickerCreateAction);
     this.register(require('./GuildStickerDelete').GuildStickerDeleteAction);
-    this.register(require('./GuildStickersUpdate').GuildStickersUpdateAction);
     this.register(require('./GuildStickerUpdate').GuildStickerUpdateAction);
+    this.register(require('./GuildStickersUpdate').GuildStickersUpdateAction);
     this.register(require('./GuildUpdate').GuildUpdateAction);
     this.register(require('./InteractionCreate').InteractionCreateAction);
     this.register(require('./InviteCreate').InviteCreateAction);
@@ -68,8 +68,8 @@ class ActionsManager {
     this.register(require('./ThreadCreate').ThreadCreateAction);
     this.register(require('./ThreadDelete').ThreadDeleteAction);
     this.register(require('./ThreadListSync').ThreadListSyncAction);
-    this.register(require('./ThreadMembersUpdate').ThreadMembersUpdateAction);
     this.register(require('./ThreadMemberUpdate').ThreadMemberUpdateAction);
+    this.register(require('./ThreadMembersUpdate').ThreadMembersUpdateAction);
     this.register(require('./TypingStart').TypingStartAction);
     this.register(require('./UserUpdate').UserUpdateAction);
     this.register(require('./VoiceStateUpdate').VoiceStateUpdateAction);
