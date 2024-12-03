@@ -6,6 +6,7 @@ const CachedManager = require('./CachedManager');
 const { BaseChannel } = require('../structures/BaseChannel');
 const { createChannel } = require('../util/Channels');
 const { ThreadChannelTypes } = require('../util/Constants');
+const { extractProperties } = require('../util/deleteProperties');
 const Events = require('../util/Events');
 
 let cacheWarningEmitted = false;
@@ -47,12 +48,15 @@ class ChannelManager extends CachedManager {
       return existing;
     }
 
-    const channel = createChannel(this.client, data, guild, { allowUnknownGuild });
+    let channel = createChannel(this.client, data, guild, { allowUnknownGuild });
 
     if (!channel) {
       this.client.emit(Events.Debug, `Failed to find guild, or unknown type for channel ${data.id} ${data.type}`);
       return null;
     }
+
+    if (this.client?.undesiredProperties?.ChannelManager)
+      channel = extractProperties(channel, this.client.undesiredProperties.ChannelManager);
 
     if (cache && !allowUnknownGuild) this.cache.set(channel.id, channel);
 
