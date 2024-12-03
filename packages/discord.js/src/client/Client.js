@@ -77,6 +77,8 @@ class Client extends BaseClient {
       ];
     }
 
+    this.undesiredProperties = this.options.undesiredProperties;
+
     this._validateOptions();
 
     /**
