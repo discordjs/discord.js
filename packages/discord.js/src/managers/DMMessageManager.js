@@ -1,6 +1,6 @@
 'use strict';
 
-const MessageManager = require('./MessageManager');
+const { MessageManager } = require('./MessageManager');
 
 /**
  * Manages API methods for messages in direct message channels and holds their cache.
@@ -14,4 +14,4 @@ class DMMessageManager extends MessageManager {
    */
 }
 
-module.exports = DMMessageManager;
+exports.DMMessageManager = DMMessageManager;

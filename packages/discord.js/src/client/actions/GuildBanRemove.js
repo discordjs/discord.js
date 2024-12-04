@@ -1,10 +1,10 @@
 'use strict';
 
-const Action = require('./Action');
-const GuildBan = require('../../structures/GuildBan');
-const Events = require('../../util/Events');
+const { Action } = require('./Action');
+const { GuildBan } = require('../../structures/GuildBan');
+const { Events } = require('../../util/Events');
 
-class GuildBanRemove extends Action {
+class GuildBanRemoveAction extends Action {
   handle(data) {
     const client = this.client;
     const guild = client.guilds.cache.get(data.guild_id);
@@ -22,4 +22,4 @@ class GuildBanRemove extends Action {
   }
 }
 
-module.exports = GuildBanRemove;
+exports.GuildBanRemoveAction = GuildBanRemoveAction;

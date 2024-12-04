@@ -1,6 +1,6 @@
 'use strict';
 
-const ThreadOnlyChannel = require('./ThreadOnlyChannel');
+const { ThreadOnlyChannel } = require('./ThreadOnlyChannel');
 
 /**
  * Represents a forum channel.
@@ -28,4 +28,4 @@ class ForumChannel extends ThreadOnlyChannel {
   }
 }
 
-module.exports = ForumChannel;
+exports.ForumChannel = ForumChannel;

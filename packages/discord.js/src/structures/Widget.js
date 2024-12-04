@@ -2,8 +2,8 @@
 
 const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
-const Base = require('./Base');
-const WidgetMember = require('./WidgetMember');
+const { Base } = require('./Base');
+const { WidgetMember } = require('./WidgetMember');
 
 /**
  * Represents a Widget.
@@ -94,4 +94,4 @@ class Widget extends Base {
   }
 }
 
-module.exports = Widget;
+exports.Widget = Widget;

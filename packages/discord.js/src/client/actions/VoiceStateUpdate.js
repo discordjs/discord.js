@@ -1,10 +1,10 @@
 'use strict';
 
-const Action = require('./Action');
-const VoiceState = require('../../structures/VoiceState');
-const Events = require('../../util/Events');
+const { Action } = require('./Action');
+const { VoiceState } = require('../../structures/VoiceState');
+const { Events } = require('../../util/Events');
 
-class VoiceStateUpdate extends Action {
+class VoiceStateUpdateAction extends Action {
   handle(data) {
     const client = this.client;
     const guild = client.guilds.cache.get(data.guild_id);
@@ -40,4 +40,4 @@ class VoiceStateUpdate extends Action {
   }
 }
 
-module.exports = VoiceStateUpdate;
+exports.VoiceStateUpdateAction = VoiceStateUpdateAction;

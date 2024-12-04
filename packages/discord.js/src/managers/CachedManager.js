@@ -1,6 +1,6 @@
 'use strict';
 
-const DataManager = require('./DataManager');
+const { DataManager } = require('./DataManager');
 const { MakeCacheOverrideSymbol } = require('../util/Symbols');
 
 /**
@@ -61,4 +61,4 @@ class CachedManager extends DataManager {
   }
 }
 
-module.exports = CachedManager;
+exports.CachedManager = CachedManager;

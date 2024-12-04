@@ -16,4 +16,4 @@ class BaseManager {
   }
 }
 
-module.exports = BaseManager;
+exports.BaseManager = BaseManager;

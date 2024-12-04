@@ -1,6 +1,6 @@
 'use strict';
 
-const Component = require('./Component');
+const { Component } = require('./Component');
 
 /**
  * Represents a button component
@@ -62,4 +62,4 @@ class ButtonComponent extends Component {
   }
 }
 
-module.exports = ButtonComponent;
+exports.ButtonComponent = ButtonComponent;

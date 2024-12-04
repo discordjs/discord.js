@@ -1,9 +1,9 @@
 'use strict';
 
-const CachedManager = require('./CachedManager');
-const ApplicationEmoji = require('../structures/ApplicationEmoji');
-const GuildEmoji = require('../structures/GuildEmoji');
-const ReactionEmoji = require('../structures/ReactionEmoji');
+const { CachedManager } = require('./CachedManager');
+const { ApplicationEmoji } = require('../structures/ApplicationEmoji');
+const { GuildEmoji } = require('../structures/GuildEmoji');
+const { ReactionEmoji } = require('../structures/ReactionEmoji');
 const { parseEmoji } = require('../util/Util');
 
 /**
@@ -82,4 +82,4 @@ class BaseGuildEmojiManager extends CachedManager {
   }
 }
 
-module.exports = BaseGuildEmojiManager;
+exports.BaseGuildEmojiManager = BaseGuildEmojiManager;
