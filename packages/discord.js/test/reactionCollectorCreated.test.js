@@ -2,14 +2,14 @@
 
 const { GatewayIntentBits } = require('discord-api-types/v10');
 const { token, guildId, channelId, messageId } = require('./auth.js');
-const { Client, ReactionCollector } = require('../src');
+const { Client, Events, ReactionCollector } = require('../src');
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],
 });
 
-client.on('ready', async () => {
-  const guild = client.guilds.cache.get(guildId);
+client.on(Events.ClientReady, async readyClient => {
+  const guild = readyClient.guilds.cache.get(guildId);
 
   const channel = guild.channels.cache.get(channelId);
 
