@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import { makeURLSearchParams, type REST, type RawFile, type RequestData } from '@discordjs/rest';
+import { makeURLSearchParams, type RawFile, type REST, type RequestData } from '@discordjs/rest';
 import {
 	Routes,
 	type GuildMFALevel,
@@ -28,6 +28,7 @@ import {
 	type RESTGetAPIGuildPruneCountResult,
 	type RESTGetAPIGuildQuery,
 	type RESTGetAPIGuildResult,
+	type RESTGetAPIGuildRoleResult,
 	type RESTGetAPIGuildRolesResult,
 	type RESTGetAPIGuildScheduledEventQuery,
 	type RESTGetAPIGuildScheduledEventResult,
@@ -67,7 +68,6 @@ import {
 	type RESTPatchAPIGuildTemplateJSONBody,
 	type RESTPatchAPIGuildTemplateResult,
 	type RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
-	type RESTPatchAPIGuildVoiceStateCurrentMemberResult,
 	type RESTPatchAPIGuildVoiceStateUserJSONBody,
 	type RESTPatchAPIGuildWelcomeScreenJSONBody,
 	type RESTPatchAPIGuildWelcomeScreenResult,
@@ -75,6 +75,8 @@ import {
 	type RESTPatchAPIGuildWidgetSettingsResult,
 	type RESTPostAPIAutoModerationRuleJSONBody,
 	type RESTPostAPIAutoModerationRuleResult,
+	type RESTPostAPIGuildBulkBanJSONBody,
+	type RESTPostAPIGuildBulkBanResult,
 	type RESTPostAPIGuildChannelJSONBody,
 	type RESTPostAPIGuildChannelResult,
 	type RESTPostAPIGuildEmojiJSONBody,
@@ -98,8 +100,19 @@ import {
 	type RESTPutAPIGuildOnboardingJSONBody,
 	type RESTPutAPIGuildOnboardingResult,
 	type RESTPutAPIGuildTemplateSyncResult,
+	type RESTGetAPIGuildSoundboardSoundResult,
+	type RESTGetAPIGuildSoundboardSoundsResult,
+	type RESTPatchAPIGuildSoundboardSoundJSONBody,
+	type RESTPatchAPIGuildSoundboardSoundResult,
+	type RESTPostAPIGuildSoundboardSoundJSONBody,
+	type RESTPostAPIGuildSoundboardSoundResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
+import { VoiceAPI } from './voice';
+
+export interface CreateStickerOptions extends Omit<RESTPostAPIGuildStickerFormDataBody, 'file'> {
+	file: RawFile;
+}
 
 export class GuildsAPI {
 	public constructor(private readonly rest: REST) {}
@@ -340,6 +353,26 @@ export class GuildsAPI {
 	}
 
 	/**
+	 * Bulk ban users from a guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#bulk-guild-ban}
+	 * @param guildId - The id of the guild to bulk ban users in
+	 * @param body - The data for bulk banning users
+	 * @param options - The options for bulk banning users
+	 */
+	public async bulkBanUsers(
+		guildId: Snowflake,
+		body: RESTPostAPIGuildBulkBanJSONBody,
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+	) {
+		return this.rest.post(Routes.guildBulkBan(guildId), {
+			reason,
+			body,
+			signal,
+		}) as Promise<RESTPostAPIGuildBulkBanResult>;
+	}
+
+	/**
 	 * Gets all the roles in a guild
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild-roles}
@@ -348,6 +381,18 @@ export class GuildsAPI {
 	 */
 	public async getRoles(guildId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.get(Routes.guildRoles(guildId), { signal }) as Promise<RESTGetAPIGuildRolesResult>;
+	}
+
+	/**
+	 * Get a role in a guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild-role}
+	 * @param guildId - The id of the guild to fetch the role from
+	 * @param roleId - The id of the role to fetch
+	 * @param options - The options for fetching the guild role
+	 */
+	public async getRole(guildId: Snowflake, roleId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+		return this.rest.get(Routes.guildRole(guildId, roleId), { signal }) as Promise<RESTGetAPIGuildRoleResult>;
 	}
 
 	/**
@@ -640,11 +685,12 @@ export class GuildsAPI {
 	/**
 	 * Edits a user's voice state in a guild
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-user-voice-state}
+	 * @see {@link https://discord.com/developers/docs/resources/voice#modify-user-voice-state}
 	 * @param guildId - The id of the guild to edit the current user's voice state in
 	 * @param userId - The id of the user to edit the voice state for
 	 * @param body - The data for editing the voice state
 	 * @param options - The options for editing the voice state
+	 * @deprecated Use {@link VoiceAPI.editUserVoiceState} instead
 	 */
 	public async editUserVoiceState(
 		guildId: Snowflake,
@@ -652,7 +698,7 @@ export class GuildsAPI {
 		body: RESTPatchAPIGuildVoiceStateUserJSONBody,
 		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
-		await this.rest.patch(Routes.guildVoiceState(guildId, userId), { reason, body, signal });
+		return new VoiceAPI(this.rest).editUserVoiceState(guildId, userId, body, { reason, signal });
 	}
 
 	/**
@@ -946,7 +992,7 @@ export class GuildsAPI {
 	 */
 	public async createSticker(
 		guildId: Snowflake,
-		{ file, ...body }: Omit<RESTPostAPIGuildStickerFormDataBody, 'file'> & { file: RawFile },
+		{ file, ...body }: CreateStickerOptions,
 		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
 		const fileData = { ...file, key: 'file' };
@@ -1251,14 +1297,18 @@ export class GuildsAPI {
 	/**
 	 * Sets the voice state for the current user
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-current-user-voice-state}
+	 * @see {@link https://discord.com/developers/docs/resources/voice#modify-current-user-voice-state}
 	 * @param guildId - The id of the guild
-	 * @param body - The options for setting the voice state
+	 * @param body - The data for setting the voice state
+	 * @param options - The options for setting the voice state
+	 * @deprecated Use {@link VoiceAPI.editVoiceState} instead
 	 */
-	public async setVoiceState(guildId: Snowflake, body: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {}) {
-		return this.rest.patch(Routes.guildVoiceState(guildId, '@me'), {
-			body,
-		}) as Promise<RESTPatchAPIGuildVoiceStateCurrentMemberResult>;
+	public async setVoiceState(
+		guildId: Snowflake,
+		body: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		return new VoiceAPI(this.rest).editVoiceState(guildId, body, { signal });
 	}
 
 	/**
@@ -1290,5 +1340,94 @@ export class GuildsAPI {
 			body,
 			signal,
 		}) as Promise<RESTPutAPIGuildOnboardingResult>;
+	}
+
+	/**
+	 * Fetches all the soundboard sounds for a guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/soundboard#list-guild-soundboard-sounds}
+	 * @param guildId - The id of the guild to fetch the soundboard sounds for
+	 * @param options - The options for fetching the soundboard sounds
+	 */
+	public async getSoundboardSounds(guildId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+		return this.rest.get(Routes.guildSoundboardSounds(guildId), {
+			signal,
+		}) as Promise<RESTGetAPIGuildSoundboardSoundsResult>;
+	}
+
+	/**
+	 * Fetches a soundboard sound for a guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/soundboard#get-guild-soundboard-sound}
+	 * @param guildId - The id of the guild to fetch the soundboard sound for
+	 * @param soundId - The id of the soundboard sound to fetch
+	 * @param options - The options for fetching the soundboard sound
+	 */
+	public async getSoundboardSound(
+		guildId: Snowflake,
+		soundId: Snowflake,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		return this.rest.get(Routes.guildSoundboardSound(guildId, soundId), {
+			signal,
+		}) as Promise<RESTGetAPIGuildSoundboardSoundResult>;
+	}
+
+	/**
+	 * Creates a new soundboard sound for a guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/soundboard#create-guild-soundboard-sound}
+	 * @param guildId - The id of the guild to create the soundboard sound for
+	 * @param body - The data for creating the soundboard sound
+	 * @param options - The options for creating the soundboard sound
+	 */
+	public async createSoundboardSound(
+		guildId: Snowflake,
+		body: RESTPostAPIGuildSoundboardSoundJSONBody,
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+	) {
+		return this.rest.post(Routes.guildSoundboardSounds(guildId), {
+			body,
+			reason,
+			signal,
+		}) as Promise<RESTPostAPIGuildSoundboardSoundResult>;
+	}
+
+	/**
+	 * Edits a soundboard sound for a guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/soundboard#modify-guild-soundboard-sound}
+	 * @param guildId - The id of the guild to edit the soundboard sound for
+	 * @param soundId - The id of the soundboard sound to edit
+	 * @param body - The data for editing the soundboard sound
+	 * @param options - The options for editing the soundboard sound
+	 */
+	public async editSoundboardSound(
+		guildId: Snowflake,
+		soundId: Snowflake,
+		body: RESTPatchAPIGuildSoundboardSoundJSONBody,
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+	) {
+		return this.rest.patch(Routes.guildSoundboardSound(guildId, soundId), {
+			body,
+			reason,
+			signal,
+		}) as Promise<RESTPatchAPIGuildSoundboardSoundResult>;
+	}
+
+	/**
+	 * Deletes a soundboard sound for a guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/soundboard#delete-guild-soundboard-sound}
+	 * @param guildId - The id of the guild to delete the soundboard sound for
+	 * @param soundId - The id of the soundboard sound to delete
+	 * @param options - The options for deleting the soundboard sound
+	 */
+	public async deleteSoundboardSound(
+		guildId: Snowflake,
+		soundId: Snowflake,
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+	) {
+		await this.rest.delete(Routes.guildSoundboardSound(guildId, soundId), { reason, signal });
 	}
 }

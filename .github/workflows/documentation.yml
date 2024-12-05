@@ -36,14 +36,14 @@ jobs:
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref || '' }}
 
-      - name: Install node.js v18
-        uses: actions/setup-node@v3
+      - name: Install Node.js v20
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Install dependencies
         uses: ./packages/actions/src/pnpmCache
@@ -53,7 +53,7 @@ jobs:
 
       - name: Checkout main repository
         if: ${{ inputs.ref && inputs.ref != 'main' }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: 'main'
 
@@ -66,6 +66,17 @@ jobs:
           pnpm run build
           cd ..
 
+      - name: Extract package and semver from tag
+        if: ${{ env.REF_TYPE == 'tag' }}
+        id: extract-tag
+        uses: ./packages/actions/src/formatTag
+        with:
+          tag: ${{ inputs.ref || github.ref_name }}
+
+      - name: Apply tag to api-extractor config
+        if: ${{ env.REF_TYPE == 'tag' && !inputs.ref }}
+        run: sed -i 's!https://github.com/discordjs/discord.js/tree/main!https://github.com/discordjs/discord.js/tree/${{ github.ref_name }}!' "packages/${{ steps.extract-tag.outputs.package}}/api-extractor.json"
+
       - name: Build docs
         run: pnpm run docs
 
@@ -75,23 +86,18 @@ jobs:
           declare -a PACKAGES=("brokers" "builders" "collection" "core" "discord.js" "formatters" "next" "proxy" "rest" "util" "voice" "ws")
           for PACKAGE in "${PACKAGES[@]}"; do
             cd "packages/${PACKAGE}"
+            sed -i 's!https://github.com/discordjs/discord.js/tree/main!https://github.com/discordjs/discord.js/tree/${{ inputs.ref }}!' api-extractor.json
             ../../main/packages/api-extractor/bin/api-extractor run --local --minify
+            ../../main/packages/scripts/bin/generateSplitDocumentation.js
             cd ../..
           done
 
       - name: Checkout docs repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: 'discordjs/docs'
           token: ${{ secrets.DJS_DOCS }}
           path: 'out'
-
-      - name: Extract package and semver from tag
-        if: ${{ env.REF_TYPE == 'tag' }}
-        id: extract-tag
-        uses: ./packages/actions/src/formatTag
-        with:
-          tag: ${{ inputs.ref || github.ref_name }}
 
       - name: Upload documentation to database
         if: ${{ env.REF_TYPE == 'tag' && (!inputs.ref || inputs.ref == 'main') }}
@@ -109,6 +115,24 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
         uses: ./main/packages/actions/src/uploadDocumentation
+        with:
+          package: ${{ steps.extract-tag.outputs.package }}
+          version: ${{ steps.extract-tag.outputs.semver }}
+
+      - name: Upload split documentation to blob storage
+        if: ${{ env.REF_TYPE == 'tag' && (!inputs.ref || inputs.ref == 'main') }}
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+        uses: ./packages/actions/src/uploadSplitDocumentation
+        with:
+          package: ${{ steps.extract-tag.outputs.package }}
+          version: ${{ steps.extract-tag.outputs.semver }}
+
+      - name: Upload split documentation to blob storage
+        if: ${{ env.REF_TYPE == 'tag' && inputs.ref && inputs.ref != 'main' }}
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+        uses: ./main/packages/actions/src/uploadSplitDocumentation
         with:
           package: ${{ steps.extract-tag.outputs.package }}
           version: ${{ steps.extract-tag.outputs.semver }}
@@ -140,6 +164,18 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
         uses: ./main/packages/actions/src/uploadDocumentation
+
+      - name: Upload split documentation to blob storage
+        if: ${{ env.REF_TYPE == 'branch' && (!inputs.ref || inputs.ref == 'main') }}
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+        uses: ./packages/actions/src/uploadSplitDocumentation
+
+      - name: Upload split documentation to blob storage
+        if: ${{ env.REF_TYPE == 'branch' && inputs.ref && inputs.ref != 'main' }}
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+        uses: ./main/packages/actions/src/uploadSplitDocumentation
 
       - name: Move docs to correct directory
         if: ${{ env.REF_TYPE == 'branch' }}
@@ -175,12 +211,12 @@ jobs:
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Install node.js v18
-        uses: actions/setup-node@v3
+      - name: Install Node.js v20
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Install dependencies
         uses: ./packages/actions/src/pnpmCache

@@ -58,29 +58,31 @@
 		"url": "https://github.com/discordjs/discord.js/issues"
 	},
 	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
-		"commander": "^11.1.0",
+		"commander": "^12.1.0",
 		"jsdoc-to-markdown": "^8.0.1",
-		"tslib": "^2.6.2",
-		"typedoc": "^0.25.7"
+		"tslib": "^2.8.1",
+		"typedoc": "^0.25.13"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^2.2.3",
+		"@favware/cliff-jumper": "^4.1.0",
 		"@types/jsdoc-to-markdown": "^7.0.6",
-		"@types/node": "18.18.8",
+		"@types/node": "^20.17.8",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.56.0",
-		"eslint-config-neon": "^0.1.58",
+		"eslint": "^8.57.1",
+		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.2.5",
-		"tsup": "^8.0.1",
-		"turbo": "^1.12.2",
-		"typescript": "^5.3.3"
+		"prettier": "^3.3.3",
+		"tsup": "^8.3.5",
+		"turbo": "^2.3.0",
+		"typescript": "~5.5.4"
 	},
 	"engines": {
-		"node": ">=18"
+		"node": ">=20"
 	},
 	"publishConfig": {
-		"access": "public"
+		"access": "public",
+		"provenance": true
 	}
 }

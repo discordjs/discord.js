@@ -17,6 +17,7 @@ const Embed = require('./Embed');
 const InteractionCollector = require('./InteractionCollector');
 const Mentions = require('./MessageMentions');
 const MessagePayload = require('./MessagePayload');
+const { Poll } = require('./Poll.js');
 const ReactionCollector = require('./ReactionCollector');
 const { Sticker } = require('./Sticker');
 const { DiscordjsError, ErrorCodes } = require('../errors');
@@ -25,6 +26,7 @@ const { createComponent } = require('../util/Components');
 const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, UndeletableMessageTypes } = require('../util/Constants');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
+const { _transformAPIMessageInteractionMetadata } = require('../util/Transformers.js');
 const { cleanContent, resolvePartialEmoji, transformResolved } = require('../util/Util');
 
 /**
@@ -353,15 +355,16 @@ class Message extends Base {
      * Reference data sent in a message that contains ids identifying the referenced message.
      * This can be present in the following types of message:
      * * Crossposted messages (`MessageFlags.Crossposted`)
-     * * {@link MessageType.ChannelFollowAdd}
      * * {@link MessageType.ChannelPinnedMessage}
+     * * {@link MessageType.ChannelFollowAdd}
      * * {@link MessageType.Reply}
      * * {@link MessageType.ThreadStarterMessage}
-     * @see {@link https://discord.com/developers/docs/resources/channel#message-types}
+     * @see {@link https://discord.com/developers/docs/resources/message#message-object-message-types}
      * @typedef {Object} MessageReference
-     * @property {Snowflake} channelId The channel's id the message was referenced
-     * @property {?Snowflake} guildId The guild's id the message was referenced
-     * @property {?Snowflake} messageId The message's id that was referenced
+     * @property {Snowflake} channelId The channel id that was referenced
+     * @property {Snowflake|undefined} guildId The guild id that was referenced
+     * @property {Snowflake|undefined} messageId The message id that was referenced
+     * @property {MessageReferenceType} type The type of message reference
      */
 
     if ('message_reference' in data) {
@@ -373,6 +376,7 @@ class Message extends Base {
         channelId: data.message_reference.channel_id,
         guildId: data.message_reference.guild_id,
         messageId: data.message_reference.message_id,
+        type: data.message_reference.type,
       };
     } else {
       this.reference ??= null;
@@ -380,6 +384,33 @@ class Message extends Base {
 
     if (data.referenced_message) {
       this.channel?.messages._add({ guild_id: data.message_reference?.guild_id, ...data.referenced_message });
+    }
+
+    if (data.interaction_metadata) {
+      /**
+       * Partial data of the interaction that a message is a result of
+       * @typedef {Object} MessageInteractionMetadata
+       * @property {Snowflake} id The interaction's id
+       * @property {InteractionType} type The type of the interaction
+       * @property {User} user The user that invoked the interaction
+       * @property {APIAuthorizingIntegrationOwnersMap} authorizingIntegrationOwners
+       * Ids for installation context(s) related to an interaction
+       * @property {?Snowflake} originalResponseMessageId
+       * Id of the original response message. Present only on follow-up messages
+       * @property {?Snowflake} interactedMessageId
+       * Id of the message that contained interactive component.
+       * Present only on messages created from component interactions
+       * @property {?MessageInteractionMetadata} triggeringInteractionMetadata
+       * Metadata for the interaction that was used to open the modal. Present only on modal submit interactions
+       */
+
+      /**
+       * Partial data of the interaction that this message is a result of
+       * @type {?MessageInteractionMetadata}
+       */
+      this.interactionMetadata = _transformAPIMessageInteractionMetadata(this.client, data.interaction_metadata);
+    } else {
+      this.interactionMetadata ??= null;
     }
 
     /**
@@ -390,12 +421,14 @@ class Message extends Base {
      * @property {string} commandName The name of the interaction's application command,
      * as well as the subcommand and subcommand group, where applicable
      * @property {User} user The user that invoked the interaction
+     * @deprecated Use {@link Message#interactionMetadata} instead.
      */
 
     if (data.interaction) {
       /**
        * Partial data of the interaction that this message is a reply to
        * @type {?MessageInteraction}
+       * @deprecated Use {@link Message#interactionMetadata} instead.
        */
       this.interaction = {
         id: data.interaction.id,
@@ -405,6 +438,63 @@ class Message extends Base {
       };
     } else {
       this.interaction ??= null;
+    }
+
+    if (data.poll) {
+      /**
+       * The poll that was sent with the message
+       * @type {?Poll}
+       */
+      this.poll = new Poll(this.client, data.poll, this);
+    } else {
+      this.poll ??= null;
+    }
+
+    if (data.message_snapshots) {
+      /**
+       * The message associated with the message reference
+       * @type {Collection<Snowflake, Message>}
+       */
+      this.messageSnapshots = data.message_snapshots.reduce((coll, snapshot) => {
+        const channel = this.client.channels.resolve(this.reference.channelId);
+        const snapshotData = {
+          ...snapshot.message,
+          id: this.reference.messageId,
+          channel_id: this.reference.channelId,
+          guild_id: this.reference.guildId,
+        };
+
+        return coll.set(
+          this.reference.messageId,
+          channel ? channel.messages._add(snapshotData) : new this.constructor(this.client, snapshotData),
+        );
+      }, new Collection());
+    } else {
+      this.messageSnapshots ??= new Collection();
+    }
+
+    /**
+     * A call associated with a message
+     * @typedef {Object} MessageCall
+     * @property {Readonly<?Date>} endedAt The time the call ended
+     * @property {?number} endedTimestamp The timestamp the call ended
+     * @property {Snowflake[]} participants The ids of the users that participated in the call
+     */
+
+    if (data.call) {
+      /**
+       * The call associated with the message
+       * @type {?MessageCall}
+       */
+      this.call = {
+        endedTimestamp: data.call.ended_timestamp ? Date.parse(data.call.ended_timestamp) : null,
+        participants: data.call.participants,
+        get endedAt() {
+          return this.endedTimestamp && new Date(this.endedTimestamp);
+        },
+      };
+    } else {
+      this.call ??= null;
     }
   }
 
@@ -480,7 +570,7 @@ class Message extends Base {
    * @readonly
    */
   get thread() {
-    return this.channel?.threads?.resolve(this.id) ?? null;
+    return this.channel?.threads?.cache.get(this.id) ?? null;
   }
 
   /**
@@ -697,6 +787,7 @@ class Message extends Base {
   async fetchReference() {
     if (!this.reference) throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
     const { channelId, messageId } = this.reference;
+    if (!messageId) throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
     const channel = this.client.channels.resolve(channelId);
     if (!channel) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
     const message = await channel.messages.fetch(messageId);
@@ -717,6 +808,7 @@ class Message extends Base {
       channel?.type === ChannelType.GuildAnnouncement &&
         !this.flags.has(MessageFlags.Crossposted) &&
         this.type === MessageType.Default &&
+        !this.poll &&
         channel.viewable &&
         channel.permissionsFor(this.client.user)?.has(bitfield, false),
     );
@@ -960,10 +1052,12 @@ class Message extends Base {
       this.id === message.id &&
       this.author.id === message.author.id &&
       this.content === message.content &&
-      this.tts === message.tts &&
       this.nonce === message.nonce &&
+      this.tts === message.tts &&
+      this.attachments.size === message.attachments.size &&
       this.embeds.length === message.embeds.length &&
-      this.attachments.length === message.attachments.length;
+      this.attachments.every(attachment => message.attachments.has(attachment.id)) &&
+      this.embeds.every((embed, index) => embed.equals(message.embeds[index]));
 
     if (equal && rawData) {
       equal =

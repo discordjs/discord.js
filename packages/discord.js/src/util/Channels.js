@@ -5,7 +5,7 @@ const { ChannelType } = require('discord-api-types/v10');
 
 const getCategoryChannel = lazy(() => require('../structures/CategoryChannel'));
 const getDMChannel = lazy(() => require('../structures/DMChannel'));
-const getNewsChannel = lazy(() => require('../structures/NewsChannel'));
+const getAnnouncementChannel = lazy(() => require('../structures/AnnouncementChannel'));
 const getStageChannel = lazy(() => require('../structures/StageChannel'));
 const getTextChannel = lazy(() => require('../structures/TextChannel'));
 const getThreadChannel = lazy(() => require('../structures/ThreadChannel'));
@@ -57,7 +57,7 @@ function createChannel(client, data, guild, { allowUnknownGuild } = {}) {
           break;
         }
         case ChannelType.GuildAnnouncement: {
-          channel = new (getNewsChannel())(guild, data, client);
+          channel = new (getAnnouncementChannel())(guild, data, client);
           break;
         }
         case ChannelType.GuildStageVoice: {
@@ -99,7 +99,7 @@ function transformAPIGuildForumTag(tag) {
     name: tag.name,
     moderated: tag.moderated,
     emoji:
-      tag.emoji_id ?? tag.emoji_name
+      (tag.emoji_id ?? tag.emoji_name)
         ? {
             id: tag.emoji_id,
             name: tag.emoji_name,

@@ -12,25 +12,8 @@
  * @property {'TokenMissing'} TokenMissing
  * @property {'ApplicationCommandPermissionsTokenMissing'} ApplicationCommandPermissionsTokenMissing
 
- * @property {'WSCloseRequested'} WSCloseRequested
- * <warn>This property is deprecated.</warn>
- * @property {'WSConnectionExists'} WSConnectionExists
- * <warn>This property is deprecated.</warn>
- * @property {'WSNotOpen'} WSNotOpen
- * <warn>This property is deprecated.</warn>
- * @property {'ManagerDestroyed'} ManagerDestroyed
- * <warn>This property is deprecated.</warn>
-
  * @property {'BitFieldInvalid'} BitFieldInvalid
 
- * @property {'ShardingInvalid'} ShardingInvalid
- * <warn>This property is deprecated.</warn>
- * @property {'ShardingRequired'} ShardingRequired
- * <warn>This property is deprecated.</warn>
- * @property {'InvalidIntents'} InvalidIntents
- * <warn>This property is deprecated.</warn>
- * @property {'DisallowedIntents'} DisallowedIntents
- * <warn>This property is deprecated.</warn>
  * @property {'ShardingNoShards'} ShardingNoShards
  * @property {'ShardingInProcess'} ShardingInProcess
  * @property {'ShardingInvalidEvalBroadcast'} ShardingInvalidEvalBroadcast
@@ -49,30 +32,10 @@
 
  * @property {'InviteOptionsMissingChannel'} InviteOptionsMissingChannel
 
- * @property {'ButtonLabel'} ButtonLabel
- * <warn>This property is deprecated.</warn>
- * @property {'ButtonURL'} ButtonURL
- * <warn>This property is deprecated.</warn>
- * @property {'ButtonCustomId'} ButtonCustomId
- * <warn>This property is deprecated.</warn>
-
- * @property {'SelectMenuCustomId'} SelectMenuCustomId
- * <warn>This property is deprecated.</warn>
- * @property {'SelectMenuPlaceholder'} SelectMenuPlaceholder
- * <warn>This property is deprecated.</warn>
- * @property {'SelectOptionLabel'} SelectOptionLabel
- * <warn>This property is deprecated.</warn>
- * @property {'SelectOptionValue'} SelectOptionValue
- * <warn>This property is deprecated.</warn>
- * @property {'SelectOptionDescription'} SelectOptionDescription
- * <warn>This property is deprecated.</warn>
-
  * @property {'InteractionCollectorError'} InteractionCollectorError
 
  * @property {'FileNotFound'} FileNotFound
 
- * @property {'UserBannerNotFetched'} UserBannerNotFetched
- * <warn>This property is deprecated.</warn>
  * @property {'UserNoDMChannel'} UserNoDMChannel
 
  * @property {'VoiceNotStageChannel'} VoiceNotStageChannel
@@ -82,18 +45,10 @@
 
  * @property {'ReqResourceType'} ReqResourceType
 
- * @property {'ImageFormat'} ImageFormat
- * <warn>This property is deprecated.</warn>
- * @property {'ImageSize'} ImageSize
- * <warn>This property is deprecated.</warn>
-
  * @property {'MessageBulkDeleteType'} MessageBulkDeleteType
  * @property {'MessageContentType'} MessageContentType
  * @property {'MessageNonceRequired'} MessageNonceRequired
  * @property {'MessageNonceType'} MessageNonceType
-
- * @property {'SplitMaxLen'} SplitMaxLen
- * <warn>This property is deprecated.</warn>
 
  * @property {'BanResolveId'} BanResolveId
  * @property {'FetchBanResolveId'} FetchBanResolveId
@@ -118,6 +73,7 @@
  * @property {'MessageThreadParent'} MessageThreadParent
  * @property {'MessageExistingThread'} MessageExistingThread
  * @property {'ThreadInvitableType'} ThreadInvitableType
+ * @property {'NotAThreadOfParent'} NotAThreadOfParent
 
  * @property {'WebhookMessage'} WebhookMessage
  * @property {'WebhookTokenUnavailable'} WebhookTokenUnavailable
@@ -128,15 +84,10 @@
  * @property {'EmojiType'} EmojiType
  * @property {'EmojiManaged'} EmojiManaged
  * @property {'MissingManageGuildExpressionsPermission'} MissingManageGuildExpressionsPermission
- * @property {'MissingManageEmojisAndStickersPermission'} MissingManageEmojisAndStickersPermission
- * <warn>This property is deprecated. Use `MissingManageGuildExpressionsPermission` instead.</warn>
  *
  * @property {'NotGuildSticker'} NotGuildSticker
 
  * @property {'ReactionResolveUser'} ReactionResolveUser
-
- * @property {'VanityURL'} VanityURL
- * <warn>This property is deprecated.</warn>
 
  * @property {'InviteResolveCode'} InviteResolveCode
 
@@ -152,8 +103,6 @@
 
  * @property {'InteractionAlreadyReplied'} InteractionAlreadyReplied
  * @property {'InteractionNotReplied'} InteractionNotReplied
- * @property {'InteractionEphemeralReplied'} InteractionEphemeralReplied
- * <warn>This property is deprecated.</warn>
 
  * @property {'CommandInteractionOptionNotFound'} CommandInteractionOptionNotFound
  * @property {'CommandInteractionOptionType'} CommandInteractionOptionType
@@ -176,6 +125,10 @@
  * @property {'SweepFilterReturn'} SweepFilterReturn
 
  * @property {'EntitlementCreateInvalidOwner'} EntitlementCreateInvalidOwner
+
+ * @property {'BulkBanUsersOptionEmpty'} BulkBanUsersOptionEmpty
+
+ * @property {'PollAlreadyExpired'} PollAlreadyExpired
  */
 
 const keys = [
@@ -188,17 +141,8 @@ const keys = [
   'TokenMissing',
   'ApplicationCommandPermissionsTokenMissing',
 
-  'WSCloseRequested',
-  'WSConnectionExists',
-  'WSNotOpen',
-  'ManagerDestroyed',
-
   'BitFieldInvalid',
 
-  'ShardingInvalid',
-  'ShardingRequired',
-  'InvalidIntents',
-  'DisallowedIntents',
   'ShardingNoShards',
   'ShardingInProcess',
   'ShardingInvalidEvalBroadcast',
@@ -217,21 +161,10 @@ const keys = [
 
   'InviteOptionsMissingChannel',
 
-  'ButtonLabel',
-  'ButtonURL',
-  'ButtonCustomId',
-
-  'SelectMenuCustomId',
-  'SelectMenuPlaceholder',
-  'SelectOptionLabel',
-  'SelectOptionValue',
-  'SelectOptionDescription',
-
   'InteractionCollectorError',
 
   'FileNotFound',
 
-  'UserBannerNotFetched',
   'UserNoDMChannel',
 
   'VoiceNotStageChannel',
@@ -241,15 +174,10 @@ const keys = [
 
   'ReqResourceType',
 
-  'ImageFormat',
-  'ImageSize',
-
   'MessageBulkDeleteType',
   'MessageContentType',
   'MessageNonceRequired',
   'MessageNonceType',
-
-  'SplitMaxLen',
 
   'BanResolveId',
   'FetchBanResolveId',
@@ -274,6 +202,7 @@ const keys = [
   'MessageThreadParent',
   'MessageExistingThread',
   'ThreadInvitableType',
+  'NotAThreadOfParent',
 
   'WebhookMessage',
   'WebhookTokenUnavailable',
@@ -284,13 +213,10 @@ const keys = [
   'EmojiType',
   'EmojiManaged',
   'MissingManageGuildExpressionsPermission',
-  'MissingManageEmojisAndStickersPermission',
 
   'NotGuildSticker',
 
   'ReactionResolveUser',
-
-  'VanityURL',
 
   'InviteResolveCode',
 
@@ -306,7 +232,6 @@ const keys = [
 
   'InteractionAlreadyReplied',
   'InteractionNotReplied',
-  'InteractionEphemeralReplied',
 
   'CommandInteractionOptionNotFound',
   'CommandInteractionOptionType',
@@ -329,6 +254,10 @@ const keys = [
   'GuildForumMessageRequired',
 
   'EntitlementCreateInvalidOwner',
+
+  'BulkBanUsersOptionEmpty',
+
+  'PollAlreadyExpired',
 ];
 
 // JSDoc for IntelliSense purposes

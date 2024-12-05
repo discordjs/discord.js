@@ -158,21 +158,25 @@ Various _`create()`_ and _`edit()`_ methods on managers and objects have had the
 - <DocsLink type="class" parent="Role" symbol="edit" brackets /> now takes _`reason`_ in the _`data`_ parameter
 - <DocsLink type="class" parent="Sticker" symbol="edit" brackets /> now takes _`reason`_ in the _`data`_ parameter
 - <DocsLink type="class" parent="ThreadChannel" symbol="edit" brackets /> now takes _`reason`_ in the _`data`_ parameter
-- <DocsLink type="class" parent="GuildChannelManager" symbol="create" brackets /> now takes _`name`_ in the _`options`_ parameter
+- <DocsLink type="class" parent="GuildChannelManager" symbol="create" brackets /> now takes _`name`_ in the _`options`_
+  parameter
 - <DocsLink type="class" parent="GuildChannelManager" symbol="createWebhook" brackets /> (and other text-based channels)
   now takes _`channel`_ and _`name`_ in the _`options`_ parameter
-- <DocsLink type="class" parent="GuildChannelManager" symbol="edit" brackets /> now takes _`reason`_ as a part of _`data`_
+- <DocsLink type="class" parent="GuildChannelManager" symbol="edit" brackets /> now takes _`reason`_ as a part of
+  _`data`_
 - <DocsLink type="class" parent="GuildEmojiManager" symbol="edit" brackets /> now takes _`reason`_ as a part of _`data`_
 - <DocsLink type="class" parent="GuildManager" symbol="create" brackets /> now takes _`name`_ as a part of _`options`_
-- <DocsLink type="class" parent="GuildMemberManager" symbol="edit" brackets /> now takes _`reason`_ as a part of _`data`_
+- <DocsLink type="class" parent="GuildMemberManager" symbol="edit" brackets /> now takes _`reason`_ as a part of
+  _`data`_
 - <DocsLink type="class" parent="GuildMember" symbol="edit" brackets /> now takes _`reason`_ as a part of _`data`_
-- <DocsLink type="class" parent="GuildStickerManager" symbol="edit" brackets /> now takes _`reason`_ as a part of _`data`_
+- <DocsLink type="class" parent="GuildStickerManager" symbol="edit" brackets /> now takes _`reason`_ as a part of
+  _`data`_
 - <DocsLink type="class" parent="RoleManager" symbol="edit" brackets /> now takes _`reason`_ as a part of _`options`_
 - <DocsLink type="class" parent="Webhook" symbol="edit" brackets /> now takes _`reason`_ as a part of _`options`_
 - <DocsLink type="class" parent="GuildEmojiManager" symbol="create" brackets /> now takes _`attachment`_ and _`name`_ as
   a part of _`options`_
-- <DocsLink type="class" parent="GuildStickerManager" symbol="create" brackets /> now takes _`file`_, _`name`_, and _`tags`_
-  as a part of _`options`_
+- <DocsLink type="class" parent="GuildStickerManager" symbol="create" brackets /> now takes _`file`_, _`name`_, and
+  _`tags`_ as a part of _`options`_
 
 ### Activity
 
@@ -236,9 +240,10 @@ Dynamic URLs use <DocsLink package="rest" type="Interface" parent="ImageURLOptio
 
 ### CategoryChannel
 
-<DocsLink type="class" parent="CategoryChannel" symbol="children" /> is no longer a _`Collection`_ of channels the category
-contains. It is now a <DocsLink type="class" parent="CategoryChannelChildManager" />. This also means
-_`CategoryChannel#createChannel()`_ has been moved to the <DocsLink type="class" parent="CategoryChannelChildManager" />.
+<DocsLink type="class" parent="CategoryChannel" symbol="children" /> is no longer a _`Collection`_ of channels the
+category contains. It is now a <DocsLink type="class" parent="CategoryChannelChildManager" />. This also means
+_`CategoryChannel#createChannel()`_ has been moved to the <DocsLink type="class" parent="CategoryChannelChildManager" />
+.
 
 ### Channel
 
@@ -262,8 +267,8 @@ The _`restWsBridgeTimeout`_ client option has been removed.
 
 ### CommandInteractionOptionResolver
 
-<DocsLink type="class" parent="CommandInteractionOptionResolver" symbol="getMember" brackets /> no longer has a parameter
-for _`required`_.[^1]
+<DocsLink type="class" parent="CommandInteractionOptionResolver" symbol="getMember" brackets /> no longer has a
+parameter for _`required`_.[^1]
 
 ### Constants
 
@@ -357,7 +362,8 @@ The following properties & methods have been moved to the <DocsLink type="class"
 
 ### GuildMember
 
-<DocsLink type="class" parent="GuildMember" symbol="pending" /> is now nullable to account for partial guild members.[^4]
+<DocsLink type="class" parent="GuildMember" symbol="pending" /> is now nullable to account for partial guild
+members.[^4]
 
 ### IntegrationApplication
 
@@ -582,8 +588,8 @@ _`Role.comparePositions()`_ has been removed. Use <DocsLink type="class" parent=
 
 ### Sticker
 
-<DocsLink type="class" parent="Sticker" symbol="tags" /> is now a nullable string (_`string | null`_). Previously, it was
-a nullable array of strings (_`string[] | null`_).[^5]
+<DocsLink type="class" parent="Sticker" symbol="tags" /> is now a nullable string (_`string | null`_). Previously, it
+was a nullable array of strings (_`string[] | null`_).[^5]
 
 ### ThreadChannel
 
@@ -668,8 +674,8 @@ Added support for <DocsLink type="class" parent="BaseChannel" symbol="flags" />.
 
 Store channels have been removed as they are no longer part of the API.
 
-<DocsLink type="class" parent="BaseChannel" symbol="url" /> has been added which is a link to a channel, just like in the
-client.
+<DocsLink type="class" parent="BaseChannel" symbol="url" /> has been added which is a link to a channel, just like in
+the client.
 
 Additionally, new typeguards have been added:
 
@@ -713,13 +719,13 @@ Component collector options now use the <DiscordAPITypesLink type="enum" parent=
 
 ### CommandInteraction
 
-<DocsLink type="class" parent="CommandInteraction" symbol="commandGuildId" /> has been added which is the id of the guild
-the invoked application command is registered to.
+<DocsLink type="class" parent="CommandInteraction" symbol="commandGuildId" /> has been added which is the id of the
+guild the invoked application command is registered to.
 
 ### CommandInteractionOptionResolver
 
-<DocsLink type="class" parent="CommandInteractionOptionResolver" symbol="getChannel" brackets /> now has a third parameter
-which narrows the channel type.
+<DocsLink type="class" parent="CommandInteractionOptionResolver" symbol="getChannel" brackets /> now has a third
+parameter which narrows the channel type.
 
 ### Events
 
@@ -814,9 +820,15 @@ Added the _`threadName`_ property in <DocsLink type="typedef" parent="WebhookMes
 discord.js uses <DocsLink package="ws" /> internally.
 
 [^1]: https://github.com/discordjs/discord.js/pull/7188
+
 [^2]: https://github.com/discordjs/discord.js/pull/6492
+
 [^3]: https://github.com/discordjs/discord.js/pull/7669
+
 [^4]: https://github.com/discordjs/discord.js/issues/6546
+
 [^5]: https://github.com/discordjs/discord.js/pull/8010
+
 [^6]: https://github.com/discordjs/discord.js/issues/7091
+
 [^7]: https://github.com/discord/discord-api-docs/pull/6017

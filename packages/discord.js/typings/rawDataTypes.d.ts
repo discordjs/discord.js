@@ -25,7 +25,6 @@ import {
   APIInteractionDataResolvedGuildMember,
   APIInteractionGuildMember,
   APIInvite,
-  APIInviteStageInstance,
   APIMessage,
   APIMessageButtonInteractionData,
   APIMessageComponentInteraction,
@@ -47,6 +46,7 @@ import {
   APIUnavailableGuild,
   APIUser,
   APIVoiceRegion,
+  APIVoiceState,
   APIWebhook,
   GatewayActivity,
   GatewayActivityAssets,
@@ -62,7 +62,6 @@ import {
   GatewayPresenceUpdate,
   GatewayReadyDispatchData,
   GatewayTypingStartDispatchData,
-  GatewayVoiceState,
   RESTAPIPartialCurrentUserGuild,
   RESTGetAPIWebhookWithTokenResult,
   RESTPatchAPIChannelMessageJSONBody,
@@ -102,6 +101,7 @@ export type RawEmojiData =
   | RawReactionEmojiData
   | GatewayActivityEmoji
   | Omit<Partial<APIPartialEmoji>, 'animated'>;
+export type RawApplicationEmojiData = APIEmoji;
 export type RawGuildEmojiData = APIEmoji;
 export type RawReactionEmojiData = APIEmoji | APIPartialEmoji;
 
@@ -146,8 +146,6 @@ export type RawInviteData =
   | APIInvite
   | (GatewayInviteCreateDispatchData & { channel: GuildChannel; guild: Guild })
   | (GatewayInviteDeleteDispatchData & { channel: GuildChannel; guild: Guild });
-
-export type RawInviteStageInstance = APIInviteStageInstance;
 
 export type RawMessageData = APIMessage;
 export type RawPartialMessageData = GatewayMessageUpdateDispatchData;
@@ -194,7 +192,7 @@ export type RawUserData =
 
 export type RawVoiceRegionData = APIVoiceRegion;
 
-export type RawVoiceStateData = GatewayVoiceState | Omit<GatewayVoiceState, 'guild_id'>;
+export type RawVoiceStateData = APIVoiceState | Omit<APIVoiceState, 'guild_id'>;
 
 export type RawWebhookData =
   | APIWebhook
