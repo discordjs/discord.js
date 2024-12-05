@@ -12,7 +12,7 @@
  * @property {string} ChannelDelete channelDelete
  * @property {string} ChannelPinsUpdate channelPinsUpdate
  * @property {string} ChannelUpdate channelUpdate
- * @property {string} ClientReady ready
+ * @property {string} ClientReady clientReady
  * @property {string} Debug debug
  * @property {string} EntitlementCreate entitlementCreate
  * @property {string} EntitlementUpdate entitlementUpdate
@@ -64,6 +64,9 @@
  * @property {string} StageInstanceCreate stageInstanceCreate
  * @property {string} StageInstanceDelete stageInstanceDelete
  * @property {string} StageInstanceUpdate stageInstanceUpdate
+ * @property {string} SubscriptionCreate subscriptionCreate
+ * @property {string} SubscriptionUpdate subscriptionUpdate
+ * @property {string} SubscriptionDelete subscriptionDelete
  * @property {string} ThreadCreate threadCreate
  * @property {string} ThreadDelete threadDelete
  * @property {string} ThreadListSync threadListSync
@@ -147,6 +150,9 @@ module.exports = {
   StageInstanceCreate: 'stageInstanceCreate',
   StageInstanceDelete: 'stageInstanceDelete',
   StageInstanceUpdate: 'stageInstanceUpdate',
+  SubscriptionCreate: 'subscriptionCreate',
+  SubscriptionUpdate: 'subscriptionUpdate',
+  SubscriptionDelete: 'subscriptionDelete',
   ThreadCreate: 'threadCreate',
   ThreadDelete: 'threadDelete',
   ThreadListSync: 'threadListSync',
