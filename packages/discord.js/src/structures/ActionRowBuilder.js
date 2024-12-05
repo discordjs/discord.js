@@ -2,8 +2,6 @@
 
 const { ActionRowBuilder: BuildersActionRow } = require('@discordjs/builders');
 const { isJSONEncodable } = require('@discordjs/util');
-const { createComponentBuilder } = require('../util/Components');
-const { toSnakeCase } = require('../util/Transformers');
 
 /**
  * Represents an action row builder.
@@ -28,6 +26,9 @@ class ActionRowBuilder extends BuildersActionRow {
 }
 
 exports.ActionRowBuilder = ActionRowBuilder;
+
+const { createComponentBuilder } = require('../util/Components');
+const { toSnakeCase } = require('../util/Transformers');
 
 /**
  * @external BuildersActionRow
