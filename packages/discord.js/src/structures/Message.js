@@ -21,7 +21,7 @@ const { MessagePayload } = require('./MessagePayload.js');
 const { Poll } = require('./Poll.js');
 const { ReactionCollector } = require('./ReactionCollector.js');
 const { Sticker } = require('./Sticker.js');
-const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { ReactionManager } = require('../managers/ReactionManager.js');
 const { createComponent } = require('../util/Components.js');
 const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, UndeletableMessageTypes } = require('../util/Constants.js');
@@ -677,7 +677,11 @@ class Message extends Base {
    * @readonly
    */
   get editable() {
-    const precheck = Boolean(this.author.id === this.client.user.id && (!this.guild || this.channel?.viewable));
+    const precheck = Boolean(
+      this.author.id === this.client.user.id &&
+        (!this.guild || this.channel?.viewable) &&
+        this.reference?.type !== MessageReferenceType.Forward,
+    );
 
     // Regardless of permissions thread messages cannot be edited if
     // the thread is archived or the thread is locked and the bot does not have permission to manage threads.
@@ -764,20 +768,6 @@ class Message extends Base {
     const channel = this.client.channels.resolve(channelId);
     if (!channel) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
     const message = await channel.messages.fetch(messageId);
-    return message;
-  }
-
-  /**
-   * Forwards this message.
-   * @param {ChannelResolvable} channel The channel to forward this message to
-   * @returns {Promise<Message>}
-   */
-  async forward(channel) {
-    const resolvedChannel = this.client.channels.resolve(channel);
-
-    if (!resolvedChannel) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'ChannelResolvable');
-
-    const message = await resolvedChannel.messages.forward(this);
     return message;
   }
 
@@ -926,8 +916,7 @@ class Message extends Base {
    *   .then(() => console.log(`Replied to message "${message.content}"`))
    *   .catch(console.error);
    */
-  async reply(options) {
-    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
+  reply(options) {
     let data;
 
     if (options instanceof MessagePayload) {
@@ -943,7 +932,23 @@ class Message extends Base {
         },
       });
     }
-    return this.channel.send(data);
+    return this.client.channels.createMessage(this.channelId, data);
+  }
+
+  /**
+   * Forwards this message.
+   * @param {TextChannelResolvable} channel The channel to forward this message to.
+   * @returns {Promise<Message>}
+   */
+  forward(channel) {
+    return this.client.channels.createMessage(channel, {
+      messageReference: {
+        messageId: this.id,
+        channelId: this.channelId,
+        guildId: this.guildId,
+        type: MessageReferenceType.Forward,
+      },
+    });
   }
 
   /**
