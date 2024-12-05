@@ -2,14 +2,17 @@
 
 const process = require('node:process');
 const { deprecate } = require('node:util');
+const { makeURLSearchParams } = require('@discordjs/rest');
 const { isJSONEncodable } = require('@discordjs/util');
 const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../../errors');
+const InteractionCallbackResponse = require('../InteractionCallbackResponse');
 const InteractionCollector = require('../InteractionCollector');
 const InteractionResponse = require('../InteractionResponse');
 const MessagePayload = require('../MessagePayload');
 
 let deprecationEmittedForEphemeralOption = false;
+let deprecationEmittedForFetchReplyOption = false;
 
 /**
  * @typedef {Object} ModalComponentData
@@ -30,13 +33,17 @@ class InteractionResponses {
    * <warn>This option is deprecated. Use `flags` instead.</warn>
    * @property {MessageFlagsResolvable} [flags] Flags for the reply.
    * <info>Only `MessageFlags.Ephemeral` can be set.</info>
+   * @property {boolean} [withResponse] Whether to return an {@link InteractionCallbackResponse} as the response
    * @property {boolean} [fetchReply] Whether to fetch the reply
+   * <warn>This option is deprecated. Use `withResponse` or fetch the response instead.</warn>
    */
 
   /**
    * Options for deferring and updating the reply to a {@link MessageComponentInteraction}.
    * @typedef {Object} InteractionDeferUpdateOptions
+   * @property {boolean} [withResponse] Whether to return an {@link InteractionCallbackResponse} as the response
    * @property {boolean} [fetchReply] Whether to fetch the reply
+   * <warn>This option is deprecated. Use `withResponse` or fetch the response instead.</warn>
    */
 
   /**
@@ -45,7 +52,9 @@ class InteractionResponses {
    * @property {boolean} [ephemeral] Whether the reply should be ephemeral.
    * <warn>This option is deprecated. Use `flags` instead.</warn>
    * @property {boolean} [tts=false] Whether the message should be spoken aloud
+   * @property {boolean} [withResponse] Whether to return an {@link InteractionCallbackResponse} as the response
    * @property {boolean} [fetchReply] Whether to fetch the reply
+   * <warn>This option is deprecated. Use `withResponse` or fetch the response instead.</warn>
    * @property {MessageFlagsResolvable} [flags] Which flags to set for the message.
    * <info>Only `MessageFlags.Ephemeral`, `MessageFlags.SuppressEmbeds`, and `MessageFlags.SuppressNotifications`
    * can be set.</info>
@@ -54,13 +63,21 @@ class InteractionResponses {
   /**
    * Options for updating the message received from a {@link MessageComponentInteraction}.
    * @typedef {MessageEditOptions} InteractionUpdateOptions
+   * @property {boolean} [withResponse] Whether to return an {@link InteractionCallbackResponse} as the response
    * @property {boolean} [fetchReply] Whether to fetch the reply
+   * <warn>This option is deprecated. Use `withResponse` or fetch the response instead.</warn>
+   */
+
+  /**
+   * Options for showing a modal in response to a {@link BaseInteraction}
+   * @typedef {Object} ShowModalOptions
+   * @property {boolean} [withResponse] Whether to return an {@link InteractionCallbackResponse} as the response
    */
 
   /**
    * Defers the reply to this interaction.
    * @param {InteractionDeferReplyOptions} [options] Options for deferring the reply to this interaction
-   * @returns {Promise<Message|InteractionResponse>}
+   * @returns {Promise<InteractionCallbackResponse|Message|InteractionResponse>}
    * @example
    * // Defer the reply to this interaction
    * interaction.deferReply()
@@ -85,13 +102,24 @@ class InteractionResponses {
       }
     }
 
+    if ('fetchReply' in options) {
+      if (!deprecationEmittedForFetchReplyOption) {
+        process.emitWarning(
+          // eslint-disable-next-line max-len
+          `Supplying "fetchReply" for interaction response options is deprecated. Utilize "withResponse" instead or fetch the response after using the method.`,
+        );
+
+        deprecationEmittedForFetchReplyOption = true;
+      }
+    }
+
     let { flags } = options;
 
     if (options.ephemeral) {
       flags |= MessageFlags.Ephemeral;
     }
 
-    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+    const response = await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
         type: InteractionResponseType.DeferredChannelMessageWithSource,
         data: {
@@ -99,22 +127,28 @@ class InteractionResponses {
         },
       },
       auth: false,
+      query: makeURLSearchParams({ with_response: options.withResponse ?? false }),
     });
 
     this.deferred = true;
     this.ephemeral = Boolean(flags & MessageFlags.Ephemeral);
-    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this);
+
+    return options.withResponse
+      ? new InteractionCallbackResponse(this.client, response)
+      : options.fetchReply
+        ? this.fetchReply()
+        : new InteractionResponse(this);
   }
 
   /**
    * Creates a reply to this interaction.
-   * <info>Use the `fetchReply` option to get the bot's reply message.</info>
+   * <info>Use the `withResponse` option to get the interaction callback response.</info>
    * @param {string|MessagePayload|InteractionReplyOptions} options The options for the reply
-   * @returns {Promise<Message|InteractionResponse>}
+   * @returns {Promise<InteractionCallbackResponse|Message|InteractionResponse>}
    * @example
    * // Reply to the interaction and fetch the response
-   * interaction.reply({ content: 'Pong!', fetchReply: true })
-   *   .then((message) => console.log(`Reply sent with content ${message.content}`))
+   * interaction.reply({ content: 'Pong!', withResponse: true })
+   *   .then((response) => console.log(`Reply sent with content ${response.resource.message.content}`))
    *   .catch(console.error);
    * @example
    * // Create an ephemeral reply with an embed
@@ -137,24 +171,40 @@ class InteractionResponses {
       }
     }
 
+    if ('fetchReply' in options) {
+      if (!deprecationEmittedForFetchReplyOption) {
+        process.emitWarning(
+          // eslint-disable-next-line max-len
+          `Supplying "fetchReply" for interaction response options is deprecated. Utilize "withResponse" instead or fetch the response after using the method.`,
+        );
+
+        deprecationEmittedForFetchReplyOption = true;
+      }
+    }
+
     let messagePayload;
     if (options instanceof MessagePayload) messagePayload = options;
     else messagePayload = MessagePayload.create(this, options);
 
     const { body: data, files } = await messagePayload.resolveBody().resolveFiles();
 
-    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+    const response = await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
         type: InteractionResponseType.ChannelMessageWithSource,
         data,
       },
       files,
       auth: false,
+      query: makeURLSearchParams({ with_response: options.withResponse ?? false }),
     });
 
     this.ephemeral = Boolean(data.flags & MessageFlags.Ephemeral);
     this.replied = true;
-    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this);
+    return options.withResponse
+      ? new InteractionCallbackResponse(this.client, response)
+      : options.fetchReply
+        ? this.fetchReply()
+        : new InteractionResponse(this);
   }
 
   /**
@@ -226,7 +276,7 @@ class InteractionResponses {
   /**
    * Defers an update to the message to which the component was attached.
    * @param {InteractionDeferUpdateOptions} [options] Options for deferring the update to this interaction
-   * @returns {Promise<Message|InteractionResponse>}
+   * @returns {Promise<InteractionCallbackResponse|Message|InteractionResponse>}
    * @example
    * // Defer updating and reset the component's loading state
    * interaction.deferUpdate()
@@ -235,21 +285,38 @@ class InteractionResponses {
    */
   async deferUpdate(options = {}) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
-    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+
+    if ('fetchReply' in options) {
+      if (!deprecationEmittedForFetchReplyOption) {
+        process.emitWarning(
+          // eslint-disable-next-line max-len
+          `Supplying "fetchReply" for interaction response options is deprecated. Utilize "withResponse" instead or fetch the response after using the method.`,
+        );
+
+        deprecationEmittedForFetchReplyOption = true;
+      }
+    }
+
+    const response = await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
         type: InteractionResponseType.DeferredMessageUpdate,
       },
       auth: false,
+      query: makeURLSearchParams({ with_response: options.withResponse ?? false }),
     });
     this.deferred = true;
 
-    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this, this.message?.interaction?.id);
+    return options.withResponse
+      ? new InteractionCallbackResponse(this.client, response)
+      : options.fetchReply
+        ? this.fetchReply()
+        : new InteractionResponse(this, this.message?.interaction?.id);
   }
 
   /**
    * Updates the original message of the component on which the interaction was received on.
    * @param {string|MessagePayload|InteractionUpdateOptions} options The options for the updated message
-   * @returns {Promise<Message|void>}
+   * @returns {Promise<InteractionCallbackResponse|Message|void>}
    * @example
    * // Remove the components from the message
    * interaction.update({
@@ -262,40 +329,60 @@ class InteractionResponses {
   async update(options) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
 
+    if ('fetchReply' in options) {
+      if (!deprecationEmittedForFetchReplyOption) {
+        process.emitWarning(
+          // eslint-disable-next-line max-len
+          `Supplying "fetchReply" for interaction response options is deprecated. Utilize "withResponse" instead or fetch the response after using the method.`,
+        );
+
+        deprecationEmittedForFetchReplyOption = true;
+      }
+    }
+
     let messagePayload;
     if (options instanceof MessagePayload) messagePayload = options;
     else messagePayload = MessagePayload.create(this, options);
 
     const { body: data, files } = await messagePayload.resolveBody().resolveFiles();
 
-    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+    const response = await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
         type: InteractionResponseType.UpdateMessage,
         data,
       },
       files,
       auth: false,
+      query: makeURLSearchParams({ with_response: options.withResponse ?? false }),
     });
     this.replied = true;
 
-    return options.fetchReply ? this.fetchReply() : new InteractionResponse(this, this.message.interaction?.id);
+    return options.withResponse
+      ? new InteractionCallbackResponse(this.client, response)
+      : options.fetchReply
+        ? this.fetchReply()
+        : new InteractionResponse(this, this.message.interaction?.id);
   }
 
   /**
    * Shows a modal component
    * @param {ModalBuilder|ModalComponentData|APIModalInteractionResponseCallbackData} modal The modal to show
-   * @returns {Promise<void>}
+   * @param {ShowModalOptions} [options={}] The options for sending this interaction response
+   * @returns {Promise<InteractionCallbackResponse|undefined>}
    */
-  async showModal(modal) {
+  async showModal(modal, options = {}) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
-    await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+    const response = await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
         type: InteractionResponseType.Modal,
         data: isJSONEncodable(modal) ? modal.toJSON() : this.client.options.jsonTransformer(modal),
       },
       auth: false,
+      query: makeURLSearchParams({ with_response: options.withResponse ?? false }),
     });
     this.replied = true;
+
+    return options.withResponse ? new InteractionCallbackResponse(this.client, response) : undefined;
   }
 
   /**
