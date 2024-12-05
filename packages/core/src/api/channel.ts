@@ -41,6 +41,14 @@ export interface StartForumThreadOptions extends RESTPostAPIGuildForumThreadsJSO
 	message: RESTPostAPIGuildForumThreadsJSONBody['message'] & { files?: RawFile[] };
 }
 
+export interface CreateMessageOptions extends RESTPostAPIChannelMessageJSONBody {
+	files?: RawFile[];
+}
+
+export interface EditMessageOptions extends RESTPatchAPIChannelMessageJSONBody {
+	files?: RawFile[];
+}
+
 export class ChannelsAPI {
 	public constructor(private readonly rest: REST) {}
 
@@ -54,7 +62,7 @@ export class ChannelsAPI {
 	 */
 	public async createMessage(
 		channelId: Snowflake,
-		{ files, ...body }: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] },
+		{ files, ...body }: CreateMessageOptions,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.channelMessages(channelId), {
@@ -76,7 +84,7 @@ export class ChannelsAPI {
 	public async editMessage(
 		channelId: Snowflake,
 		messageId: Snowflake,
-		{ files, ...body }: RESTPatchAPIChannelMessageJSONBody & { files?: RawFile[] },
+		{ files, ...body }: EditMessageOptions,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.patch(Routes.channelMessage(channelId, messageId), {
