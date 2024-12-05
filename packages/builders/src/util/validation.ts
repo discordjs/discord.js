@@ -29,7 +29,7 @@ export function isValidationEnabled() {
 }
 
 /**
- * Parses a value with a given validator, accounting for wether validation is enabled.
+ * Parses a value with a given validator, accounting for whether validation is enabled.
  *
  * @param validator - The zod validator to use
  * @param value - The value to parse
