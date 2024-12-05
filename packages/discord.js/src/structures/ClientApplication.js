@@ -79,7 +79,7 @@ class ClientApplication extends Application {
      * OAuth2 installation parameters.
      * @typedef {Object} IntegrationTypesConfigurationParameters
      * @property {OAuth2Scopes[]} scopes Scopes that will be set upon adding this application
-     * @property {Readonly<PermissionsBitField>} permissions Permissions that will be requested for the integrated role
+     * @property {Read<PermissionsBitField>} permissions Permissions that will be requested for the integrated role
      */
 
     /**
@@ -287,7 +287,7 @@ class ClientApplication extends Application {
   /**
    * The guild associated with this application.
    * @type {?Guild}
-   * @readonly
+   * @read
    */
   get guild() {
     return this.client.guilds.cache.get(this.guildId) ?? null;
@@ -296,7 +296,7 @@ class ClientApplication extends Application {
   /**
    * Whether this application is partial
    * @type {boolean}
-   * @readonly
+   * @read
    */
   get partial() {
     return !this.name;
@@ -317,7 +317,6 @@ class ClientApplication extends Application {
    * @property {string} [eventWebhooksURL] The application's event webhooks URL
    * @property {ApplicationWebhookEventStatus.Enabled|ApplicationWebhookEventStatus.Disabled} [eventWebhooksStatus]
    * The application's event webhooks status.
-   * Only {@link ApplicationWebhookEventStatus.Enabled} and {@link ApplicationWebhookEventStatus.Disabled} can be set.
    * @property {ApplicationWebhookEventType[]} [eventWebhooksTypes] The application's event webhooks types
    * @property {string[]} [tags] The application's tags
    */
