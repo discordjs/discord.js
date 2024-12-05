@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import { makeURLSearchParams, type REST, type RawFile, type RequestData } from '@discordjs/rest';
+import { makeURLSearchParams, type RawFile, type REST, type RequestData } from '@discordjs/rest';
 import {
 	Routes,
 	type GuildMFALevel,
@@ -110,18 +110,12 @@ import {
 } from 'discord-api-types/v10';
 import { VoiceAPI } from './voice';
 
+export interface CreateStickerOptions extends Omit<RESTPostAPIGuildStickerFormDataBody, 'file'> {
+	file: RawFile;
+}
+
 export class GuildsAPI {
 	public constructor(private readonly rest: REST) {}
-
-	/**
-	 * Fetches a guild
-	 *
-	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild}
-	 * @param guildId - The id of the guild
-	 * @param options - The options for fetching the guild
-	 * @deprecated Use the overload with a query instead.
-	 */
-	public async get(guildId: Snowflake, { signal }?: Pick<RequestData, 'signal'>): Promise<RESTGetAPIGuildResult>;
 
 	/**
 	 * Fetches a guild
@@ -131,26 +125,11 @@ export class GuildsAPI {
 	 * @param query - The query options for fetching the guild
 	 * @param options - The options for fetching the guild
 	 */
-	public async get(
-		guildId: Snowflake,
-		query?: RESTGetAPIGuildQuery,
-		options?: Pick<RequestData, 'signal'>,
-	): Promise<RESTGetAPIGuildResult>;
-
-	public async get(
-		guildId: Snowflake,
-		queryOrOptions: Pick<RequestData, 'signal'> | RESTGetAPIGuildQuery = {},
-		options: Pick<RequestData, 'signal'> = {},
-	) {
-		const requestData: RequestData = {
-			signal: ('signal' in queryOrOptions ? queryOrOptions : options).signal,
-		};
-
-		if ('with_counts' in queryOrOptions) {
-			requestData.query = makeURLSearchParams(queryOrOptions);
-		}
-
-		return this.rest.get(Routes.guild(guildId), requestData) as Promise<RESTGetAPIGuildResult>;
+	public async get(guildId: Snowflake, query: RESTGetAPIGuildQuery = {}, { signal }: Pick<RequestData, 'signal'> = {}) {
+		return this.rest.get(Routes.guild(guildId), {
+			query: makeURLSearchParams(query),
+			signal,
+		}) as Promise<RESTGetAPIGuildResult>;
 	}
 
 	/**
@@ -1013,7 +992,7 @@ export class GuildsAPI {
 	 */
 	public async createSticker(
 		guildId: Snowflake,
-		{ file, ...body }: Omit<RESTPostAPIGuildStickerFormDataBody, 'file'> & { file: RawFile },
+		{ file, ...body }: CreateStickerOptions,
 		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
 		const fileData = { ...file, key: 'file' };

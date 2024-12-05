@@ -1,6 +1,14 @@
 {
   "extends": "../../api-extractor.json",
   "mainEntryPointFilePath": "<projectFolder>/typings/index.d.ts",
+  "bundledPackages": [
+    "discord-api-types",
+    "@discordjs/builders",
+    "@discordjs/formatters",
+    "@discordjs/rest",
+    "@discordjs/util",
+    "@discordjs/ws"
+  ],
   "docModel": {
     "projectFolderUrl": "https://github.com/discordjs/discord.js/tree/main/packages/discord.js"
   }
