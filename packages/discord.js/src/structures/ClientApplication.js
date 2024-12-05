@@ -79,7 +79,7 @@ class ClientApplication extends Application {
      * OAuth2 installation parameters.
      * @typedef {Object} IntegrationTypesConfigurationParameters
      * @property {OAuth2Scopes[]} scopes Scopes that will be set upon adding this application
-     * @property {Read<PermissionsBitField>} permissions Permissions that will be requested for the integrated role
+     * @property {Readonly<PermissionsBitField>} permissions Permissions that will be requested for the integrated role
      */
 
     /**
@@ -287,7 +287,7 @@ class ClientApplication extends Application {
   /**
    * The guild associated with this application.
    * @type {?Guild}
-   * @read
+   * @readonly
    */
   get guild() {
     return this.client.guilds.cache.get(this.guildId) ?? null;
@@ -296,7 +296,7 @@ class ClientApplication extends Application {
   /**
    * Whether this application is partial
    * @type {boolean}
-   * @read
+   * @readonly
    */
   get partial() {
     return !this.name;
