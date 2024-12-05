@@ -155,14 +155,6 @@ class BaseChannel extends Base {
     return 'availableTags' in this;
   }
 
-  /**
-   * Indicates whether this channel is sendable.
-   * @returns {boolean}
-   */
-  isSendable() {
-    return 'send' in this;
-  }
-
   toJSON(...props) {
     return super.toJSON({ createdTimestamp: true }, ...props);
   }

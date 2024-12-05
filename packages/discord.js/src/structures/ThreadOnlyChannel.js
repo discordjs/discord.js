@@ -234,8 +234,7 @@ class ThreadOnlyChannel extends GuildChannel {
   setRateLimitPerUser() {}
 }
 
-TextBasedChannel.applyToClass(ThreadOnlyChannel, true, [
-  'send',
+TextBasedChannel.applyToClass(ThreadOnlyChannel, [
   'lastMessage',
   'lastPinAt',
   'bulkDelete',

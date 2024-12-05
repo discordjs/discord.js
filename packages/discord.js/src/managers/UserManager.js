@@ -102,7 +102,9 @@ class UserManager extends CachedManager {
    * @returns {Promise<Message>}
    */
   async send(user, options) {
-    return (await this.createDM(user)).send(options);
+    const dmChannel = await this.createDM(user);
+
+    return this.client.channels.createMessage(dmChannel, options);
   }
 
   /**

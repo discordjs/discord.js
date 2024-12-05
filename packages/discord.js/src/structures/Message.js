@@ -16,7 +16,6 @@ const ClientApplication = require('./ClientApplication');
 const Embed = require('./Embed');
 const InteractionCollector = require('./InteractionCollector');
 const Mentions = require('./MessageMentions');
-const MessagePayload = require('./MessagePayload');
 const { Poll } = require('./Poll.js');
 const ReactionCollector = require('./ReactionCollector');
 const { Sticker } = require('./Sticker');
@@ -920,40 +919,6 @@ class Message extends Base {
     if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
     await this.channel.messages.delete(this.id);
     return this;
-  }
-
-  /**
-   * Options provided when sending a message as an inline reply.
-   * @typedef {BaseMessageCreateOptions} MessageReplyOptions
-   * @property {boolean} [failIfNotExists=this.client.options.failIfNotExists] Whether to error if the referenced
-   * message does not exist (creates a standard message in this case when false)
-   */
-
-  /**
-   * Send an inline reply to this message.
-   * @param {string|MessagePayload|MessageReplyOptions} options The options to provide
-   * @returns {Promise<Message>}
-   * @example
-   * // Reply to a message
-   * message.reply('This is a reply!')
-   *   .then(() => console.log(`Replied to message "${message.content}"`))
-   *   .catch(console.error);
-   */
-  reply(options) {
-    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
-    let data;
-
-    if (options instanceof MessagePayload) {
-      data = options;
-    } else {
-      data = MessagePayload.create(this, options, {
-        reply: {
-          messageReference: this,
-          failIfNotExists: options?.failIfNotExists ?? this.client.options.failIfNotExists,
-        },
-      });
-    }
-    return this.channel.send(data);
   }
 
   /**
