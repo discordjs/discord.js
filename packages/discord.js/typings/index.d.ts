@@ -2167,7 +2167,6 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public equals(message: Message, rawData: unknown): boolean;
   public fetchReference(): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public fetchWebhook(): Promise<Webhook>;
-  public forward(channel: TextBasedChannelResolvable): Promise<Message>;
   public crosspost(): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public fetch(force?: boolean): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public pin(reason?: string): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
@@ -2176,6 +2175,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public reply(
     options: string | MessagePayload | MessageReplyOptions,
   ): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
+  public forward(channel: TextBasedChannelResolvable): Promise<OmitPartialGroupDMChannel<Message>>;
   public resolveComponent(customId: string): MessageActionRowComponent | null;
   public startThread(options: StartThreadOptions): Promise<PublicThreadChannel<false>>;
   public suppressEmbeds(suppress?: boolean): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
@@ -4027,6 +4027,10 @@ export class CategoryChannelChildManager extends DataManager<Snowflake, Category
 
 export class ChannelManager extends CachedManager<Snowflake, Channel, ChannelResolvable> {
   private constructor(client: Client<true>, iterable: Iterable<RawChannelData>);
+  public createMessage(
+    channel: Omit<TextBasedChannelResolvable, 'PartialGroupDMChannel'>,
+    options: string | MessagePayload | MessageCreateOptions,
+  ): Promise<Message>;
   public fetch(id: Snowflake, options?: FetchChannelOptions): Promise<Channel | null>;
 }
 
@@ -4331,7 +4335,6 @@ export abstract class MessageManager<InGuild extends boolean = boolean> extends 
   public fetch(options: MessageResolvable | FetchMessageOptions): Promise<Message<InGuild>>;
   public fetch(options?: FetchMessagesOptions): Promise<Collection<Snowflake, Message<InGuild>>>;
   public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, Message<InGuild>>>;
-  public forward(reference: Omit<MessageReference, 'type'>): Promise<Message<InGuild>>;
   public react(message: MessageResolvable, emoji: EmojiIdentifierResolvable): Promise<void>;
   public pin(message: MessageResolvable, reason?: string): Promise<void>;
   public unpin(message: MessageResolvable, reason?: string): Promise<void>;
@@ -6439,15 +6442,14 @@ export interface TextInputComponentData extends BaseComponentData {
 }
 
 export type MessageTarget =
+  | ChannelManager
   | Interaction
   | InteractionWebhook
-  | TextBasedChannel
-  | User
-  | GuildMember
-  | Webhook<WebhookType.Incoming>
-  | WebhookClient
   | Message
-  | MessageManager;
+  | MessageManager
+  | TextBasedChannel
+  | Webhook<WebhookType.Incoming>
+  | WebhookClient;
 
 export interface MultipleShardRespawnOptions {
   shardDelay?: number;
@@ -6780,25 +6782,25 @@ export type Channel =
 
 export type TextBasedChannel = Exclude<Extract<Channel, { type: TextChannelType }>, ForumChannel | MediaChannel>;
 
-export type SendableChannels = Extract<Channel, { send: (...args: any[]) => any }>;
-
 export type TextBasedChannels = TextBasedChannel;
 
 export type TextBasedChannelTypes = TextBasedChannel['type'];
 
 export type GuildTextBasedChannelTypes = Exclude<TextBasedChannelTypes, ChannelType.DM | ChannelType.GroupDM>;
 
-export type SendableChannelTypes = SendableChannels['type'];
-
 export type VoiceBasedChannel = Extract<Channel, { bitrate: number }>;
 
 export type GuildBasedChannel = Extract<Channel, { guild: Guild }>;
+
+export type SendableChannels = Extract<Channel, { send: (...args: any[]) => any }>;
 
 export type CategoryChildChannel = Exclude<Extract<Channel, { parent: CategoryChannel | null }>, CategoryChannel>;
 
 export type NonThreadGuildBasedChannel = Exclude<GuildBasedChannel, AnyThreadChannel>;
 
 export type GuildTextBasedChannel = Extract<GuildBasedChannel, TextBasedChannel>;
+
+export type SendableChannelTypes = SendableChannels['type'];
 
 export type TextChannelResolvable = Snowflake | TextChannel;
 
