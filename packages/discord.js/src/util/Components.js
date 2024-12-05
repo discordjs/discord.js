@@ -131,7 +131,8 @@ function createComponentBuilder(data) {
   }
 }
 
-module.exports = { createComponent, createComponentBuilder };
+exports.createComponent = createComponent;
+exports.createComponentBuilder = createComponentBuilder;
 
 const { ActionRow } = require('../structures/ActionRow');
 const { ActionRowBuilder } = require('../structures/ActionRowBuilder');

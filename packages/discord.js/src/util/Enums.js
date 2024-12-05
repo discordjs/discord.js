@@ -10,4 +10,4 @@ function createEnum(keys) {
   return obj;
 }
 
-module.exports = { createEnum };
+exports.createEnum = createEnum;
