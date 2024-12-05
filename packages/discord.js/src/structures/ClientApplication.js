@@ -245,7 +245,7 @@ class ClientApplication extends Application {
 
     if ('event_webhooks_url' in data) {
       /**
-       * This application's event webhooks URL
+       * This application's URL to receive event webhooks
        * @type {?string}
        */
       this.eventWebhooksURL = data.event_webhooks_url;
@@ -265,7 +265,7 @@ class ClientApplication extends Application {
 
     if ('event_webhooks_types' in data) {
       /**
-       * This application's event webhooks types
+       * List of event webhooks types this application subscribes to
        * @type {?ApplicationWebhookEventType[]}
        */
       this.eventWebhooksTypes = data.event_webhooks_types;
@@ -315,7 +315,8 @@ class ClientApplication extends Application {
    * @property {?(BufferResolvable|Base64Resolvable)} [coverImage] The application's cover image
    * @property {string} [interactionsEndpointURL] The application's interaction endpoint URL
    * @property {string} [eventWebhooksURL] The application's event webhooks URL
-   * @property {ApplicationWebhookEventStatus} [eventWebhooksStatus] The application's event webhooks status
+   * @property {ApplicationWebhookEventStatus} [eventWebhooksStatus] The application's event webhooks status.
+   * Only {@link ApplicationWebhookEventStatus.Enabled} and {@link ApplicationWebhookEventStatus.Disabled} can be set.
    * @property {ApplicationWebhookEventType[]} [eventWebhooksTypes] The application's event webhooks types
    * @property {string[]} [tags] The application's tags
    */
