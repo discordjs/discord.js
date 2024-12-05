@@ -103,6 +103,26 @@ class BaseClient extends EventEmitter {
     }
   }
 
+  /**
+   * Shorthand for `EventEmitter.on(client, ...)`
+   * @param {string} eventName The name of the client event to listen for
+   * @param {Object} [options] Passed as the `options` argument to `EventEmitter.on()`
+   * @returns {AsyncIterator} An async iterator that yields on each emitted event
+   */
+  eventIterator(eventName, options = {}) {
+    return super.constructor.on(this, eventName, options);
+  }
+
+  /**
+   * Shorthand for `EventEmitter.once(client, ...)`
+   * @param {string} eventName The name of the client event to listen for
+   * @param {Object} [options] Passed as the `options` argument to `EventEmitter.once()`
+   * @returns {Promise<Array<*>>} A promise that resolves to the next emitted event
+   */
+  awaitEvent(eventName, options = {}) {
+    return super.constructor.once(this, eventName, options);
+  }
+
   toJSON(...props) {
     return flatten(this, ...props);
   }
