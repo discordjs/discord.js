@@ -89,7 +89,7 @@ class EntitlementManager extends CachedManager {
     return this._add(data, cache);
   }
 
-  async _fetchMany({ limit, guild, user, skus, excludeEnded, excludeDelete, cache, before, after } = {}) {
+  async _fetchMany({ limit, guild, user, skus, excludeEnded, excludeDeleted, cache, before, after } = {}) {
     const query = makeURLSearchParams({
       limit,
       guild_id: guild && this.client.guilds.resolveId(guild),
