@@ -170,15 +170,12 @@ class MessagePayload {
     let message_reference;
     if (this.options.messageReference) {
       const reference = this.options.messageReference;
-      const message_id = this.target.messages.resolveId(reference.messageId);
-      const channel_id = this.target.client.channels.resolveId(reference.channelId);
-      const guild_id = this.target.client.guilds.resolveId(reference.guildId);
 
-      if (message_id) {
+      if (reference.messageId) {
         message_reference = {
-          message_id,
-          channel_id,
-          guild_id,
+          message_id: reference.messageId,
+          channel_id: reference.channelId,
+          guild_id: reference.guildId,
           type: reference.type,
           fail_if_not_exists: reference.failIfNotExists ?? this.target.client.options.failIfNotExists,
         };
@@ -298,7 +295,7 @@ module.exports = MessagePayload;
 
 /**
  * A target for a message.
- * @typedef {TextBasedChannels|User|GuildMember|Webhook|WebhookClient|BaseInteraction|InteractionWebhook|
+ * @typedef {TextBasedChannels|ChannelManager|Webhook|WebhookClient|BaseInteraction|InteractionWebhook|
  * Message|MessageManager} MessageTarget
  */
 
