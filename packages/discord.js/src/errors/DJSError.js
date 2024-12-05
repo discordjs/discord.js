@@ -41,8 +41,6 @@ function message(code, args) {
   return String(...args);
 }
 
-module.exports = {
-  DiscordjsError: makeDiscordjsError(Error),
-  DiscordjsTypeError: makeDiscordjsError(TypeError),
-  DiscordjsRangeError: makeDiscordjsError(RangeError),
-};
+exports.DiscordjsError = makeDiscordjsError(Error);
+exports.DiscordjsTypeError = makeDiscordjsError(TypeError);
+exports.DiscordjsRangeError = makeDiscordjsError(RangeError);

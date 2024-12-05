@@ -138,4 +138,9 @@ async function resolveImage(image) {
   return resolveBase64(file.data);
 }
 
-module.exports = { resolveCode, resolveInviteCode, resolveGuildTemplateCode, resolveImage, resolveBase64, resolveFile };
+exports.resolveCode = resolveCode;
+exports.resolveInviteCode = resolveInviteCode;
+exports.resolveGuildTemplateCode = resolveGuildTemplateCode;
+exports.resolveImage = resolveImage;
+exports.resolveBase64 = resolveBase64;
+exports.resolveFile = resolveFile;

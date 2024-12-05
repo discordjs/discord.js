@@ -152,10 +152,8 @@ function transformGuildDefaultReaction(defaultReaction) {
   };
 }
 
-module.exports = {
-  createChannel,
-  transformAPIGuildForumTag,
-  transformGuildForumTag,
-  transformAPIGuildDefaultReaction,
-  transformGuildDefaultReaction,
-};
+exports.createChannel = createChannel;
+exports.transformAPIGuildForumTag = transformAPIGuildForumTag;
+exports.transformGuildForumTag = transformGuildForumTag;
+exports.transformAPIGuildDefaultReaction = transformAPIGuildDefaultReaction;
+exports.transformGuildDefaultReaction = transformGuildDefaultReaction;
