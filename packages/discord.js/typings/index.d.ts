@@ -3384,7 +3384,7 @@ export class ThreadChannel<ThreadOnly extends boolean = boolean> extends BaseCha
   public totalMessageSent: number | null;
   public members: ThreadMemberManager;
   public name: string;
-  public ownerId: Snowflake | null;
+  public ownerId: Snowflake;
   public get parent(): If<ThreadOnly, ForumChannel | MediaChannel, TextChannel | NewsChannel> | null;
   public parentId: Snowflake | null;
   public rateLimitPerUser: number | null;

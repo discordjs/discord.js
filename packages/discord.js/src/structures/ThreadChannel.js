@@ -6,7 +6,7 @@ const { RESTJSONErrorCodes, ChannelFlags, ChannelType, PermissionFlagsBits, Rout
 const { BaseChannel } = require('./BaseChannel');
 const getThreadOnlyChannel = lazy(() => require('./ThreadOnlyChannel'));
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors');
+const { DiscordjsRangeError, ErrorCodes } = require('../errors');
 const GuildMessageManager = require('../managers/GuildMessageManager');
 const ThreadMemberManager = require('../managers/ThreadMemberManager');
 const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
@@ -31,6 +31,12 @@ class ThreadChannel extends BaseChannel {
      * @type {Snowflake}
      */
     this.guildId = guild?.id ?? data.guild_id;
+
+    /**
+     * The id of the member who created this thread
+     * @type {Snowflake}
+     */
+    this.ownerId = data.owner_id;
 
     /**
      * A manager of the messages sent to this thread
@@ -121,16 +127,6 @@ class ThreadChannel extends BaseChannel {
     }
 
     this._createdTimestamp ??= this.type === ChannelType.PrivateThread ? super.createdTimestamp : null;
-
-    if ('owner_id' in data) {
-      /**
-       * The id of the member who created this thread
-       * @type {?Snowflake}
-       */
-      this.ownerId = data.owner_id;
-    } else {
-      this.ownerId ??= null;
-    }
 
     if ('last_message_id' in data) {
       /**
@@ -301,10 +297,6 @@ class ThreadChannel extends BaseChannel {
    * @returns {Promise<?ThreadMember>}
    */
   async fetchOwner(options) {
-    if (!this.ownerId) {
-      throw new DiscordjsError(ErrorCodes.FetchOwnerId, 'thread');
-    }
-
     // TODO: Remove that catch in the next major version
     const member = await this.members._fetchSingle({ ...options, member: this.ownerId }).catch(error => {
       if (error instanceof DiscordAPIError && error.code === RESTJSONErrorCodes.UnknownMember) {
