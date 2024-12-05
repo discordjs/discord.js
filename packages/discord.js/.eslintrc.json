@@ -198,7 +198,21 @@
             "name": "clearInterval",
             "message": "Import clearInterval from `node:timers` instead"
           }
+        ],
+
+        "no-restricted-syntax": [
+          "error",
+          {
+            "selector": "AssignmentExpression[left.object.name='module'][left.property.name='exports']",
+            "message": "Use named exports instead of module.exports"
+          }
         ]
+      }
+    },
+    {
+      "files": ["src/client/websocket/handlers/*.js"],
+      "rules": {
+        "no-restricted-syntax": "off"
       }
     },
     {
