@@ -15,7 +15,7 @@ const { Base } = require('./Base');
 const { ClientApplication } = require('./ClientApplication');
 const { Embed } = require('./Embed');
 const { InteractionCollector } = require('./InteractionCollector');
-const { Mentions } = require('./MessageMentions');
+const { MessageMentions } = require('./MessageMentions');
 const { MessagePayload } = require('./MessagePayload');
 const { Poll } = require('./Poll.js');
 const { ReactionCollector } = require('./ReactionCollector');
@@ -269,7 +269,7 @@ class Message extends Base {
        * All valid mentions that the message contains
        * @type {MessageMentions}
        */
-      this.mentions = new Mentions(
+      this.mentions = new MessageMentions(
         this,
         data.mentions,
         data.mention_roles,
@@ -278,7 +278,7 @@ class Message extends Base {
         data.referenced_message?.author,
       );
     } else {
-      this.mentions = new Mentions(
+      this.mentions = new MessageMentions(
         this,
         data.mentions ?? this.mentions.users,
         data.mention_roles ?? this.mentions.roles,

@@ -38,7 +38,7 @@ exports.Options = require('./util/Options').Options;
 exports.Partials = require('./util/Partials').Partials;
 exports.PermissionsBitField = require('./util/PermissionsBitField').PermissionsBitField;
 exports.RoleFlagsBitField = require('./util/RoleFlagsBitField').RoleFlagsBitField;
-exports.ShardEvents = require('./util/ShardEvents');
+exports.ShardEvents = require('./util/ShardEvents').ShardEvents;
 exports.SKUFlagsBitField = require('./util/SKUFlagsBitField').SKUFlagsBitField;
 exports.SnowflakeUtil = require('@sapphire/snowflake').DiscordSnowflake;
 exports.Status = require('./util/Status').Status;
@@ -58,7 +58,7 @@ exports.ApplicationCommandPermissionsManager =
   require('./managers/ApplicationCommandPermissionsManager').ApplicationCommandPermissionsManager;
 exports.ApplicationEmojiManager = require('./managers/ApplicationEmojiManager').ApplicationEmojiManager;
 exports.AutoModerationRuleManager = require('./managers/AutoModerationRuleManager').AutoModerationRuleManager;
-exports.BaseGuildEmojiManager = require('./managers/BaseGuildEmojiManager');
+exports.BaseGuildEmojiManager = require('./managers/BaseGuildEmojiManager').BaseGuildEmojiManager;
 exports.CachedManager = require('./managers/CachedManager').CachedManager;
 exports.ChannelManager = require('./managers/ChannelManager').ChannelManager;
 exports.ClientVoiceManager = require('./client/voice/ClientVoiceManager').ClientVoiceManager;
