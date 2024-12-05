@@ -24,7 +24,7 @@
 **Features:**
 
 - Send and receive\* audio in Discord voice-based channels
-- A strong focus on reliability and predictable behaviour
+- A strong focus on reliability and predictable behavior
 - Horizontal scalability and libraries other than [discord.js](https://discord.js.org/) are supported with custom adapters
 - A robust audio processing system that can handle a wide range of audio sources
 
