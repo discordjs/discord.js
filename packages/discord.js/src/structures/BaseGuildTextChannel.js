@@ -178,7 +178,6 @@ class BaseGuildTextChannel extends GuildChannel {
   /* eslint-disable no-empty-function */
   get lastMessage() {}
   get lastPinAt() {}
-  send() {}
   sendTyping() {}
   createMessageCollector() {}
   awaitMessages() {}
@@ -191,6 +190,6 @@ class BaseGuildTextChannel extends GuildChannel {
   setNSFW() {}
 }
 
-TextBasedChannel.applyToClass(BaseGuildTextChannel, true);
+TextBasedChannel.applyToClass(BaseGuildTextChannel);
 
 module.exports = BaseGuildTextChannel;

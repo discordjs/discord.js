@@ -957,7 +957,6 @@ export abstract class BaseChannel extends Base {
   public isDMBased(): this is PartialGroupDMChannel | DMChannel | PartialDMChannel;
   public isVoiceBased(): this is VoiceBasedChannel;
   public isThreadOnly(): this is ThreadOnlyChannel;
-  public isSendable(): this is SendableChannels;
   public toString(): ChannelMention | UserMention;
 }
 
@@ -1655,7 +1654,6 @@ export class GuildMemberFlagsBitField extends BitField<GuildMemberFlagsString> {
   public static resolve(bit?: BitFieldResolvable<GuildMemberFlagsString, GuildMemberFlags>): number;
 }
 
-export interface GuildMember extends PartialTextBasedChannelFields<false> {}
 export class GuildMember extends Base {
   private constructor(client: Client<true>, data: RawGuildMemberData, guild: Guild);
   private _roles: Snowflake[];
@@ -1697,6 +1695,7 @@ export class GuildMember extends Base {
   public displayAvatarURL(options?: ImageURLOptions): string;
   public displayBannerURL(options?: ImageURLOptions): string | null;
   public edit(options: GuildMemberEditOptions): Promise<GuildMember>;
+  public send(options: string | MessagePayload | MessageCreateOptions): Promise<Message<false>>;
   public isCommunicationDisabled(): this is GuildMember & {
     communicationDisabledUntilTimestamp: number;
     readonly communicationDisabledUntil: Date;
@@ -2247,7 +2246,6 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public equals(message: Message, rawData: unknown): boolean;
   public fetchReference(): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public fetchWebhook(): Promise<Webhook>;
-  public forward(channel: TextBasedChannelResolvable): Promise<Message>;
   public crosspost(): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public fetch(force?: boolean): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public pin(reason?: string): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
@@ -2638,7 +2636,6 @@ export interface DefaultReactionEmoji {
 export interface ThreadOnlyChannel
   extends Omit<
     TextBasedChannelFields,
-    | 'send'
     | 'lastMessage'
     | 'lastPinAt'
     | 'bulkDelete'
@@ -3452,8 +3449,6 @@ export interface AvatarDecorationData {
   skuId: Snowflake;
 }
 
-// tslint:disable-next-line no-empty-interface
-export interface User extends PartialTextBasedChannelFields<false> {}
 export class User extends Base {
   protected constructor(client: Client<true>, data: RawUserData);
   private _equals(user: APIUser): boolean;
@@ -3486,6 +3481,7 @@ export class User extends Base {
   public equals(user: User): boolean;
   public fetch(force?: boolean): Promise<User>;
   public toString(): UserMention;
+  public send(options: string | MessagePayload | MessageCreateOptions): Promise<Message<false>>;
 }
 
 export class UserContextMenuCommandInteraction<
@@ -3817,7 +3813,6 @@ export const Constants: {
   SweeperKeys: SweeperKey[];
   NonSystemMessageTypes: NonSystemMessageType[];
   TextBasedChannelTypes: TextBasedChannelTypes[];
-  SendableChannels: SendableChannelTypes[];
   GuildTextBasedChannelTypes: GuildTextBasedChannelTypes[];
   ThreadChannelTypes: ThreadChannelType[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
@@ -4136,6 +4131,10 @@ export class CategoryChannelChildManager extends DataManager<Snowflake, Category
 
 export class ChannelManager extends CachedManager<Snowflake, Channel, ChannelResolvable> {
   private constructor(client: Client<true>, iterable: Iterable<RawChannelData>);
+  public createMessage(
+    channel: Omit<TextBasedChannelResolvable, 'PartialGroupDMChannel'>,
+    options: string | MessagePayload | MessageCreateOptions,
+  ): Promise<Message>;
   public fetch(id: Snowflake, options?: FetchChannelOptions): Promise<Channel | null>;
 }
 
@@ -4430,7 +4429,6 @@ export abstract class MessageManager<InGuild extends boolean = boolean> extends 
   public fetch(options: MessageResolvable | FetchMessageOptions): Promise<Message<InGuild>>;
   public fetch(options?: FetchMessagesOptions): Promise<Collection<Snowflake, Message<InGuild>>>;
   public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, Message<InGuild>>>;
-  public forward(reference: Omit<MessageReference, 'type'>): Promise<Message<InGuild>>;
   public react(message: MessageResolvable, emoji: EmojiIdentifierResolvable): Promise<void>;
   public pin(message: MessageResolvable, reason?: string): Promise<void>;
   public unpin(message: MessageResolvable, reason?: string): Promise<void>;
@@ -4602,12 +4600,7 @@ export class VoiceStateManager extends CachedManager<Snowflake, VoiceState, type
 
 export type Constructable<Entity> = abstract new (...args: any[]) => Entity;
 
-export interface PartialTextBasedChannelFields<InGuild extends boolean = boolean> {
-  send(options: string | MessagePayload | MessageCreateOptions): Promise<Message<InGuild>>;
-}
-
-export interface TextBasedChannelFields<InGuild extends boolean = boolean>
-  extends PartialTextBasedChannelFields<InGuild> {
+export interface TextBasedChannelFields<InGuild extends boolean = boolean> {
   lastMessageId: Snowflake | null;
   get lastMessage(): Message | null;
   lastPinTimestamp: number | null;
@@ -6513,15 +6506,11 @@ export interface TextInputComponentData extends BaseComponentData {
 }
 
 export type MessageTarget =
+  | ChannelManager
   | Interaction
   | InteractionWebhook
-  | TextBasedChannel
-  | User
-  | GuildMember
   | Webhook<WebhookType.Incoming>
-  | WebhookClient
-  | Message
-  | MessageManager;
+  | WebhookClient;
 
 export interface MultipleShardRespawnOptions {
   shardDelay?: number;
@@ -6825,15 +6814,11 @@ export type Channel =
 
 export type TextBasedChannel = Exclude<Extract<Channel, { type: TextChannelType }>, ForumChannel | MediaChannel>;
 
-export type SendableChannels = Extract<Channel, { send: (...args: any[]) => any }>;
-
 export type TextBasedChannels = TextBasedChannel;
 
 export type TextBasedChannelTypes = TextBasedChannel['type'];
 
 export type GuildTextBasedChannelTypes = Exclude<TextBasedChannelTypes, ChannelType.DM | ChannelType.GroupDM>;
-
-export type SendableChannelTypes = SendableChannels['type'];
 
 export type VoiceBasedChannel = Extract<Channel, { bitrate: number }>;
 
