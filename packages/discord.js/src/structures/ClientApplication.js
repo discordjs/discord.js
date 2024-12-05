@@ -315,7 +315,8 @@ class ClientApplication extends Application {
    * @property {?(BufferResolvable|Base64Resolvable)} [coverImage] The application's cover image
    * @property {string} [interactionsEndpointURL] The application's interaction endpoint URL
    * @property {string} [eventWebhooksURL] The application's event webhooks URL
-   * @property {ApplicationWebhookEventStatus} [eventWebhooksStatus] The application's event webhooks status.
+   * @property {ApplicationWebhookEventStatus.Enabled|ApplicationWebhookEventStatus.Disabled} [eventWebhooksStatus]
+   * The application's event webhooks status.
    * Only {@link ApplicationWebhookEventStatus.Enabled} and {@link ApplicationWebhookEventStatus.Disabled} can be set.
    * @property {ApplicationWebhookEventType[]} [eventWebhooksTypes] The application's event webhooks types
    * @property {string[]} [tags] The application's tags

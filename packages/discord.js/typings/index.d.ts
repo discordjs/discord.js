@@ -6978,7 +6978,7 @@ export interface ClientApplicationEditOptions {
   coverImage?: BufferResolvable | Base64Resolvable | null;
   interactionsEndpointURL?: string;
   eventWebhooksURL?: string;
-  eventWebhooksStatus?: ApplicationWebhookEventStatus;
+  eventWebhooksStatus?: ApplicationWebhookEventStatus.Enabled | ApplicationWebhookEventStatus.Disabled;
   eventWebhooksTypes?: readonly ApplicationWebhookEventType[];
   tags?: readonly string[];
 }
