@@ -21,7 +21,7 @@ const MessagePayload = require('./MessagePayload');
 const { Poll } = require('./Poll.js');
 const ReactionCollector = require('./ReactionCollector');
 const { Sticker } = require('./Sticker');
-const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
+const { DiscordjsError, ErrorCodes } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const { createComponent } = require('../util/Components');
 const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, UndeletableMessageTypes } = require('../util/Constants');
@@ -769,20 +769,6 @@ class Message extends Base {
   }
 
   /**
-   * Forwards this message.
-   * @param {ChannelResolvable} channel The channel to forward this message to
-   * @returns {Promise<Message>}
-   */
-  async forward(channel) {
-    const resolvedChannel = this.client.channels.resolve(channel);
-
-    if (!resolvedChannel) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'ChannelResolvable');
-
-    const message = await resolvedChannel.messages.forward(this);
-    return message;
-  }
-
-  /**
    * Whether the message is crosspostable by the client user
    * @type {boolean}
    * @readonly
@@ -928,7 +914,6 @@ class Message extends Base {
    *   .catch(console.error);
    */
   reply(options) {
-    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
     let data;
 
     if (options instanceof MessagePayload) {
@@ -944,7 +929,7 @@ class Message extends Base {
         },
       });
     }
-    return this.channel.send(data);
+    return this.client.channels.createMessage(this.channelId, data);
   }
 
   /**
