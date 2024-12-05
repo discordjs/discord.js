@@ -96,7 +96,7 @@ class EntitlementManager extends CachedManager {
       user_id: user && this.client.users.resolveId(user),
       sku_ids: skus?.map(sku => resolveSKUId(sku)).join(','),
       exclude_ended: excludeEnded,
-      exclude_deleted: excludeDelete,
+      exclude_deleted: excludeDeleted,
       before,
       after,
     });
