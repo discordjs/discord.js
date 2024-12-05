@@ -1700,7 +1700,7 @@ declare const messageManager: MessageManager;
 declare const roleManager: RoleManager;
 expectType<Promise<Collection<Snowflake, Role>>>(roleManager.fetch());
 expectType<Promise<Collection<Snowflake, Role>>>(roleManager.fetch(undefined, {}));
-expectType<Promise<Role | null>>(roleManager.fetch('0'));
+expectType<Promise<Role>>(roleManager.fetch('0'));
 
 declare const guildEmojiManager: GuildEmojiManager;
 expectType<Promise<Collection<Snowflake, GuildEmoji>>>(guildEmojiManager.fetch());

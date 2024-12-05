@@ -101,7 +101,6 @@ import {
   APIEmbedImage,
   VideoQualityMode,
   LocalizationMap,
-  LocaleString,
   MessageActivityType,
   APIAttachment,
   APIChannel,
@@ -168,6 +167,8 @@ import {
   SubscriptionStatus,
   GatewaySendPayload,
   GatewayDispatchPayload,
+  ApplicationWebhookEventStatus,
+  ApplicationWebhookEventType,
   RESTPostAPIInteractionCallbackWithResponseResult,
   RESTAPIInteractionCallbackObject,
   RESTAPIInteractionCallbackResourceObject,
@@ -1005,7 +1006,7 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
   public channels: ChannelManager;
   public get emojis(): BaseGuildEmojiManager;
   public guilds: GuildManager;
-  public lastPingTimestamp: number;
+  public lastPingTimestamps: ReadonlyCollection<number, number>;
   public options: Omit<ClientOptions, 'intents'> & { intents: IntentsBitField };
   public get ping(): number | null;
   public get readyAt(): If<Ready, Date>;
@@ -1086,6 +1087,9 @@ export class ClientApplication extends Application {
   public owner: User | Team | null;
   public get partial(): boolean;
   public interactionsEndpointURL: string | null;
+  public eventWebhooksURL: string | null;
+  public eventWebhooksStatus: ApplicationWebhookEventStatus | null;
+  public eventWebhooksTypes: ApplicationWebhookEventType[] | null;
   public roleConnectionsVerificationURL: string | null;
   public edit(options: ClientApplicationEditOptions): Promise<ClientApplication>;
   public fetch(): Promise<ClientApplication>;
@@ -3375,7 +3379,7 @@ export class ThreadChannel<ThreadOnly extends boolean = boolean> extends BaseCha
   public totalMessageSent: number | null;
   public members: ThreadMemberManager;
   public name: string;
-  public ownerId: Snowflake | null;
+  public ownerId: Snowflake;
   public get parent(): If<ThreadOnly, ForumChannel | MediaChannel, TextChannel | AnnouncementChannel> | null;
   public parentId: Snowflake | null;
   public rateLimitPerUser: number | null;
@@ -4146,12 +4150,17 @@ export interface UserEntitlementCreateOptions {
   user: UserResolvable;
 }
 
+export interface FetchEntitlementOptions extends BaseFetchOptions {
+  entitlement: EntitlementResolvable;
+}
+
 export interface FetchEntitlementsOptions {
   limit?: number;
   guild?: GuildResolvable;
   user?: UserResolvable;
   skus?: readonly SKUResolvable[];
   excludeEnded?: boolean;
+  excludeDeleted?: boolean;
   cache?: boolean;
   before?: Snowflake;
   after?: Snowflake;
@@ -4159,6 +4168,7 @@ export interface FetchEntitlementsOptions {
 
 export class EntitlementManager extends CachedManager<Snowflake, Entitlement, EntitlementResolvable> {
   private constructor(client: Client<true>, iterable: Iterable<APIEntitlement>);
+  public fetch(options: EntitlementResolvable | FetchEntitlementOptions): Promise<Entitlement>;
   public fetch(options?: FetchEntitlementsOptions): Promise<Collection<Snowflake, Entitlement>>;
   public createTest(options: GuildEntitlementCreateOptions | UserEntitlementCreateOptions): Promise<Entitlement>;
   public deleteTest(entitlement: EntitlementResolvable): Promise<void>;
@@ -4490,7 +4500,7 @@ export class RoleManager extends CachedManager<Snowflake, Role, RoleResolvable> 
   public guild: Guild;
   public get premiumSubscriberRole(): Role | null;
   public botRoleFor(user: UserResolvable): Role | null;
-  public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Role | null>;
+  public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<Role>;
   public fetch(id?: undefined, options?: BaseFetchOptions): Promise<Collection<Snowflake, Role>>;
   public create(options?: RoleCreateOptions): Promise<Role>;
   public edit(role: RoleResolvable, options: RoleEditOptions): Promise<Role>;
@@ -5564,7 +5574,7 @@ export type EmojiResolvable = Snowflake | GuildEmoji | ReactionEmoji | Applicati
 
 export interface FetchApplicationCommandOptions extends BaseFetchOptions {
   guildId?: Snowflake;
-  locale?: LocaleString;
+  locale?: Locale;
   withLocalizations?: boolean;
 }
 
@@ -6965,6 +6975,9 @@ export interface ClientApplicationEditOptions {
   icon?: BufferResolvable | Base64Resolvable | null;
   coverImage?: BufferResolvable | Base64Resolvable | null;
   interactionsEndpointURL?: string;
+  eventWebhooksURL?: string;
+  eventWebhooksStatus?: ApplicationWebhookEventStatus.Enabled | ApplicationWebhookEventStatus.Disabled;
+  eventWebhooksTypes?: readonly ApplicationWebhookEventType[];
   tags?: readonly string[];
 }
 
