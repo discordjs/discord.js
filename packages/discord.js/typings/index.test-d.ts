@@ -2043,6 +2043,7 @@ client.on('interactionCreate', async interaction => {
   if (interaction.isRepliable()) {
     expectAssignable<RepliableInteraction>(interaction);
     interaction.reply('test');
+    interaction.reply({ withResponse: false });
   }
 
   if (
