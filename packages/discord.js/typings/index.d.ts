@@ -176,6 +176,7 @@ import {
   RESTAPIInteractionCallbackActivityInstanceResource,
   VoiceChannelEffectSendAnimationType,
   GatewayVoiceChannelEffectSendDispatchData,
+  EntryPointCommandHandlerType,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -436,6 +437,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public get manager(): ApplicationCommandManager;
   public id: Snowflake;
   public integrationTypes: ApplicationIntegrationType[] | null;
+  public handler: EntryPointCommandHandlerType | null;
   public name: string;
   public nameLocalizations: LocalizationMap | null;
   public nameLocalized: string | null;
@@ -4754,10 +4756,18 @@ export interface ChatInputApplicationCommandData extends BaseApplicationCommandD
   options?: readonly ApplicationCommandOptionData[];
 }
 
+export interface PrimaryEntryPointCommandData extends BaseApplicationCommandData {
+  description?: string;
+  descriptionLocalizations?: LocalizationMap;
+  type: ApplicationCommandType.PrimaryEntryPoint;
+  handler?: EntryPointCommandHandlerType;
+}
+
 export type ApplicationCommandData =
   | UserApplicationCommandData
   | MessageApplicationCommandData
-  | ChatInputApplicationCommandData;
+  | ChatInputApplicationCommandData
+  | PrimaryEntryPointCommandData;
 
 export interface ApplicationCommandChannelOptionData extends BaseApplicationCommandOptionsData {
   type: CommandOptionChannelResolvableType;

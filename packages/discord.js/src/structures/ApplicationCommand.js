@@ -174,6 +174,19 @@ class ApplicationCommand extends Base {
       this.contexts ??= null;
     }
 
+    if ('handler' in data) {
+      /**
+       * Determines whether the interaction is handled by the app's interactions handler or by Discord.
+       * <info>Only available for {@link ApplicationCommandType.PrimaryEntryPoint} command
+       * and for apps with `EMBEDDED` flag (i.e, applications that have an Activity)
+       * </info>
+       * @type {?EntryPointCommandHandlerType}
+       */
+      this.handler = data.handler;
+    } else {
+      this.handler ??= null;
+    }
+
     if ('version' in data) {
       /**
        * Autoincrementing version identifier updated during substantial record changes
@@ -419,7 +432,8 @@ class ApplicationCommand extends Base {
         this.descriptionLocalizations ?? {},
       ) ||
       !isEqual(command.integrationTypes ?? command.integration_types ?? [], this.integrationTypes ?? []) ||
-      !isEqual(command.contexts ?? [], this.contexts ?? [])
+      !isEqual(command.contexts ?? [], this.contexts ?? []) ||
+      ('handler' in command && command.handler !== this.handler)
     ) {
       return false;
     }
