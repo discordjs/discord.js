@@ -582,6 +582,7 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   public reply(
     options: string | MessagePayload | InteractionReplyOptions,
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
+  public launchActivity(): Promise<InteractionCallbackResponse>;
   public showModal(
     modal:
       | JSONEncodable<APIModalInteractionResponseCallbackData>
@@ -2362,6 +2363,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public update(
     options: string | MessagePayload | InteractionUpdateOptions,
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
+  public launchActivity(): Promise<InteractionCallbackResponse>;
   public showModal(
     modal:
       | JSONEncodable<APIModalInteractionResponseCallbackData>
@@ -2581,6 +2583,7 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
     options: InteractionDeferUpdateOptions & { withResponse: true },
   ): Promise<InteractionCallbackResponse>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
+  public launchActivity(): Promise<InteractionCallbackResponse>;
   public inGuild(): this is ModalSubmitInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ModalSubmitInteraction<'cached'>;
   public inRawGuild(): this is ModalSubmitInteraction<'raw'>;
