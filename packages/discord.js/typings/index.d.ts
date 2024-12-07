@@ -1326,9 +1326,9 @@ export class PrimaryEntryPointCommandInteraction<
   Cached extends CacheType = CacheType,
 > extends CommandInteraction<Cached> {
   public commandType: ApplicationCommandType.PrimaryEntryPoint;
-  public inGuild(): this is ContextMenuCommandInteraction<'raw' | 'cached'>;
-  public inCachedGuild(): this is ContextMenuCommandInteraction<'cached'>;
-  public inRawGuild(): this is ContextMenuCommandInteraction<'raw'>;
+  public inGuild(): this is PrimaryEntryPointCommandInteraction<'raw' | 'cached'>;
+  public inCachedGuild(): this is PrimaryEntryPointCommandInteraction<'cached'>;
+  public inRawGuild(): this is PrimaryEntryPointCommandInteraction<'raw'>;
 }
 
 /** @internal */
