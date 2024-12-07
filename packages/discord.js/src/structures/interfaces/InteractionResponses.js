@@ -270,6 +270,24 @@ class InteractionResponses {
   }
 
   /**
+   * Launches activity, if enabled
+   * @returns {Promise<InteractionCallbackResponse>}
+   */
+  async launchActivity() {
+    if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
+    const response = await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+      body: {
+        type: InteractionResponseType.LaunchActivity,
+      },
+      auth: false,
+      query: makeURLSearchParams({ with_response: true }),
+    });
+    this.replied = true;
+
+    return new InteractionCallbackResponse(this.client, response);
+  }
+
+  /**
    * Shows a modal component
    * @param {ModalBuilder|ModalComponentData|APIModalInteractionResponseCallbackData} modal The modal to show
    * @param {ShowModalOptions} [options={}] The options for sending this interaction response
@@ -332,6 +350,7 @@ class InteractionResponses {
       'followUp',
       'deferUpdate',
       'update',
+      'launchActivity',
       'showModal',
       'awaitModalSubmit',
     ];
