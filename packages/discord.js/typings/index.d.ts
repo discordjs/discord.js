@@ -542,23 +542,6 @@ export type BooleanCache<Cached extends CacheType> = Cached extends 'cached' ? t
 export abstract class CommandInteraction<Cached extends CacheType = CacheType> extends BaseInteraction<Cached> {
   public type: InteractionType.ApplicationCommand;
   public get command(): ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
-  public options: Omit<
-    CommandInteractionOptionResolver<Cached>,
-    | 'getMessage'
-    | 'getFocused'
-    | 'getMentionable'
-    | 'getRole'
-    | 'getUser'
-    | 'getMember'
-    | 'getAttachment'
-    | 'getNumber'
-    | 'getInteger'
-    | 'getString'
-    | 'getChannel'
-    | 'getBoolean'
-    | 'getSubcommandGroup'
-    | 'getSubcommand'
-  >;
   public channelId: Snowflake;
   public commandId: Snowflake;
   public commandName: string;
@@ -1314,6 +1297,23 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
 }
 
 export class ContextMenuCommandInteraction<Cached extends CacheType = CacheType> extends CommandInteraction<Cached> {
+  public options: Omit<
+    CommandInteractionOptionResolver<Cached>,
+    | 'getMessage'
+    | 'getFocused'
+    | 'getMentionable'
+    | 'getRole'
+    | 'getUser'
+    | 'getMember'
+    | 'getAttachment'
+    | 'getNumber'
+    | 'getInteger'
+    | 'getString'
+    | 'getChannel'
+    | 'getBoolean'
+    | 'getSubcommandGroup'
+    | 'getSubcommand'
+  >;
   public commandType: ApplicationCommandType.Message | ApplicationCommandType.User;
   public targetId: Snowflake;
   public inGuild(): this is ContextMenuCommandInteraction<'raw' | 'cached'>;
