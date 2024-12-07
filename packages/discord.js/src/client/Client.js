@@ -196,7 +196,7 @@ class Client extends BaseClient {
 
     /**
      * The last time a ping was sent (a timestamp) for each WebSocketShard connection
-     * @type {Collection<number,number>}
+     * @type {Collection<number, number>}
      */
     this.lastPingTimestamps = new Collection();
 

@@ -256,6 +256,16 @@
  */
 
 /**
+ * @external ApplicationWebhookEventStatus
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ApplicationWebhookEventStatus}
+ */
+
+/**
+ * @external ApplicationWebhookEventType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ApplicationWebhookEventType}
+ */
+
+/**
  * @external AttachmentFlags
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AttachmentFlags}
  */

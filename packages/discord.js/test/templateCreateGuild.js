@@ -1,12 +1,13 @@
 'use strict';
 
 const { token } = require('./auth');
-const { Client, GatewayIntentBits } = require('../src');
+const { Client, Events, GatewayIntentBits } = require('../src');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
+
 client
-  .on('ready', () => console.log('ready'))
-  .on('messageCreate', async message => {
+  .on(Events.ClientReady, () => console.log('ready'))
+  .on(Events.MessageCreate, async message => {
     try {
       const templates = await message.guild.fetchTemplates();
       if (!templates.size) {
