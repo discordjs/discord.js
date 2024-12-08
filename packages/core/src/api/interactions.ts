@@ -159,7 +159,7 @@ export class InteractionsAPI {
 		interactionToken: string,
 		body: RESTPostAPIInteractionCallbackQuery & { with_response: true },
 		options?: Pick<RequestData, 'signal'>,
-	): Promise<undefined>;
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
 	 * Defers an update from a message component interaction
@@ -175,7 +175,7 @@ export class InteractionsAPI {
 		interactionToken: string,
 		body?: RESTPostAPIInteractionCallbackQuery & { with_response?: false },
 		options?: Pick<RequestData, 'signal'>,
-	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
+	): Promise<undefined>;
 
 	public async deferMessageUpdate(
 		interactionId: Snowflake,
