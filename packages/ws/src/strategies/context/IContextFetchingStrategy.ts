@@ -7,6 +7,7 @@ export interface FetchingStrategyOptions
 		WebSocketManagerOptions,
 		| 'buildIdentifyThrottler'
 		| 'buildStrategy'
+		| 'fetchGatewayInformation'
 		| 'rest'
 		| 'retrieveSessionInfo'
 		| 'shardCount'
@@ -41,6 +42,7 @@ export async function managerToFetchingStrategyOptions(manager: WebSocketManager
 		shardCount,
 		shardIds,
 		rest,
+		fetchGatewayInformation,
 		...managerOptions
 	} = manager.options;
 
