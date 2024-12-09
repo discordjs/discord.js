@@ -413,33 +413,6 @@ class Message extends Base {
       this.interactionMetadata ??= null;
     }
 
-    /**
-     * Partial data of the interaction that a message is a reply to
-     * @typedef {Object} MessageInteraction
-     * @property {Snowflake} id The interaction's id
-     * @property {InteractionType} type The type of the interaction
-     * @property {string} commandName The name of the interaction's application command,
-     * as well as the subcommand and subcommand group, where applicable
-     * @property {User} user The user that invoked the interaction
-     * @deprecated Use {@link Message#interactionMetadata} instead.
-     */
-
-    if (data.interaction) {
-      /**
-       * Partial data of the interaction that this message is a reply to
-       * @type {?MessageInteraction}
-       * @deprecated Use {@link Message#interactionMetadata} instead.
-       */
-      this.interaction = {
-        id: data.interaction.id,
-        type: data.interaction.type,
-        commandName: data.interaction.name,
-        user: this.client.users._add(data.interaction.user),
-      };
-    } else {
-      this.interaction ??= null;
-    }
-
     if (data.poll) {
       /**
        * The poll that was sent with the message

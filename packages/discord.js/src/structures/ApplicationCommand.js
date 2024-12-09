@@ -140,18 +140,6 @@ class ApplicationCommand extends Base {
       this.defaultMemberPermissions ??= null;
     }
 
-    if ('dm_permission' in data) {
-      /**
-       * Whether the command can be used in DMs
-       * <info>This property is always `null` on guild commands</info>
-       * @type {?boolean}
-       * @deprecated Use {@link ApplicationCommand#contexts} instead.
-       */
-      this.dmPermission = data.dm_permission;
-    } else {
-      this.dmPermission ??= null;
-    }
-
     if ('integration_types' in data) {
       /**
        * Installation context(s) where the command is available
@@ -238,8 +226,6 @@ class ApplicationCommand extends Base {
    * @property {ApplicationCommandOptionData[]} [options] Options for the command
    * @property {?PermissionResolvable} [defaultMemberPermissions] The bitfield used to determine the default permissions
    * a member needs in order to run the command
-   * @property {boolean} [dmPermission] Whether the command is enabled in DMs.
-   * Deprecated, use {@link ApplicationCommandData#contexts} instead.
    * @property {ApplicationIntegrationType[]} [integrationTypes] Installation context(s) where the command is available
    * @property {InteractionContextType[]} [contexts] Interaction context(s) where the command can be used
    * @property {EntryPointCommandHandlerType} [handler] Determines whether the interaction is handled by the app's
@@ -360,15 +346,6 @@ class ApplicationCommand extends Base {
   }
 
   /**
-   * Edits the DM permission of this ApplicationCommand
-   * @param {boolean} [dmPermission=true] Whether the command can be used in DMs
-   * @returns {Promise<ApplicationCommand>}
-   */
-  setDMPermission(dmPermission = true) {
-    return this.edit({ dmPermission });
-  }
-
-  /**
    * Edits the options of this ApplicationCommand
    * @param {ApplicationCommandOptionData[]} options The options to set for this command
    * @returns {Promise<ApplicationCommand>}
@@ -404,7 +381,6 @@ class ApplicationCommand extends Base {
     if (command.id && this.id !== command.id) return false;
 
     let defaultMemberPermissions = null;
-    let dmPermission = command.dmPermission ?? command.dm_permission;
 
     if ('default_member_permissions' in command) {
       defaultMemberPermissions = command.default_member_permissions
@@ -430,7 +406,6 @@ class ApplicationCommand extends Base {
       // TODO: remove ?? 0 on each when nullable
       (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
       defaultMemberPermissions !== (this.defaultMemberPermissions?.bitfield ?? null) ||
-      (dmPermission !== undefined && dmPermission !== this.dmPermission) ||
       !isEqual(command.nameLocalizations ?? command.name_localizations ?? {}, this.nameLocalizations ?? {}) ||
       !isEqual(
         command.descriptionLocalizations ?? command.description_localizations ?? {},

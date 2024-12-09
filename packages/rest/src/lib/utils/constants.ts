@@ -60,10 +60,3 @@ export const OverwrittenMimeTypes = {
 } as const satisfies Readonly<Record<string, string>>;
 
 export const BurstHandlerMajorIdKey = 'burst';
-
-/**
- * Prefix for deprecation warnings.
- *
- * @internal
- */
-export const DEPRECATION_WARNING_PREFIX = 'DeprecationWarning' as const;
