@@ -52,6 +52,12 @@ class InteractionResponses {
    */
 
   /**
+   * Options for launching activity in response to a {@link BaseInteraction}
+   * @typedef {Object} LaunchActivityOptions
+   * @property {boolean} [withResponse] Whether to return an {@link InteractionCallbackResponse} as the response
+   */
+
+  /**
    * Options for showing a modal in response to a {@link BaseInteraction}
    * @typedef {Object} ShowModalOptions
    * @property {boolean} [withResponse] Whether to return an {@link InteractionCallbackResponse} as the response
@@ -271,20 +277,21 @@ class InteractionResponses {
 
   /**
    * Launches activity, if enabled
-   * @returns {Promise<InteractionCallbackResponse>}
+   * @param {LaunchActivityOptions} [options={}] Options for launching the activity
+   * @returns {Promise<InteractionCallbackResponse|undefined>}
    */
-  async launchActivity() {
+  async launchActivity({ withResponse } = {}) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
     const response = await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+      query: makeURLSearchParams({ with_response: withResponse ?? false }),
       body: {
         type: InteractionResponseType.LaunchActivity,
       },
       auth: false,
-      query: makeURLSearchParams({ with_response: true }),
     });
     this.replied = true;
 
-    return new InteractionCallbackResponse(this.client, response);
+    return withResponse ? new InteractionCallbackResponse(this.client, response) : undefined;
   }
 
   /**
