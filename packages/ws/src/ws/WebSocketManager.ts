@@ -104,6 +104,21 @@ export interface OptionalWebSocketManagerOptions {
 	 */
 	encoding: Encoding;
 	/**
+	 * Fetches the initial gateway URL used to connect to Discord. When missing, this will default to the gateway URL
+	 * that Discord returns from the `/gateway/bot` route.
+	 *
+	 * @example
+	 * ```ts
+	 * const manager = new WebSocketManager({
+	 *  token: process.env.DISCORD_TOKEN,
+	 *  fetchInitialGatewayURL() {
+	 *    return 'wss://gateway.discord.gg';
+	 *  },
+	 * })
+	 * ```
+	 */
+	fetchInitialGatewayURL?(rest: REST): Awaitable<string>;
+	/**
 	 * How long to wait for a shard to connect before giving up
 	 */
 	handshakeTimeout: number | null;
@@ -278,6 +293,9 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 		}
 
 		const data = (await this.options.rest.get(Routes.gatewayBot())) as RESTGetAPIGatewayBotResult;
+
+		// Override the gateway URL if user provides a custom function for it
+		data.url = (await this.options.fetchInitialGatewayURL?.(this.options.rest)) ?? data.url;
 
 		// For single sharded bots session_start_limit.reset_after will be 0, use 5 seconds as a minimum expiration time
 		this.gatewayInformation = { data, expiresAt: Date.now() + (data.session_start_limit.reset_after || 5_000) };
