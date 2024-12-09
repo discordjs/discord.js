@@ -429,8 +429,6 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public description: string;
   public descriptionLocalizations: LocalizationMap | null;
   public descriptionLocalized: string | null;
-  /** @deprecated Use {@link ApplicationCommand.contexts} instead */
-  public dmPermission: boolean | null;
   public guild: Guild | null;
   public guildId: Snowflake | null;
   public get manager(): ApplicationCommandManager;
@@ -460,7 +458,6 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public setDefaultMemberPermissions(
     defaultMemberPermissions: PermissionResolvable | null,
   ): Promise<ApplicationCommand<PermissionsFetchType>>;
-  public setDMPermission(dmPermission?: boolean): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setOptions(
     options: readonly ApplicationCommandOptionData[],
   ): Promise<ApplicationCommand<PermissionsFetchType>>;
@@ -2207,8 +2204,6 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public get guild(): If<InGuild, Guild>;
   public get hasThread(): boolean;
   public id: Snowflake;
-  /** @deprecated Use {@link Message.interactionMetadata} instead. */
-  public interaction: MessageInteraction | null;
   public interactionMetadata: MessageInteractionMetadata | null;
   public get member(): GuildMember | null;
   public mentions: MessageMentions<InGuild>;
@@ -4694,7 +4689,6 @@ export type AllowedThreadTypeForTextChannel = ChannelType.PublicThread | Channel
 export interface BaseApplicationCommandData {
   name: string;
   nameLocalizations?: LocalizationMap;
-  dmPermission?: boolean;
   defaultMemberPermissions?: PermissionResolvable | null;
   nsfw?: boolean;
   contexts?: readonly InteractionContextType[];
@@ -6336,14 +6330,6 @@ export interface MessageInteractionMetadata {
   originalResponseMessageId: Snowflake | null;
   interactedMessageId: Snowflake | null;
   triggeringInteractionMetadata: MessageInteractionMetadata | null;
-}
-
-/** @deprecated Use {@link MessageInteractionMetadata} instead. */
-export interface MessageInteraction {
-  id: Snowflake;
-  type: InteractionType;
-  commandName: string;
-  user: User;
 }
 
 export interface MessageMentionsHasOptions {
