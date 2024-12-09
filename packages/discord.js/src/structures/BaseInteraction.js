@@ -220,7 +220,7 @@ class BaseInteraction extends Base {
 
   /**
    * Indicates whether this interaction is a {@link PrimaryEntryPointCommandInteraction}
-   * @returns{boolean}
+   * @returns {boolean}
    */
   isPrimaryEntryPointCommand() {
     return (
