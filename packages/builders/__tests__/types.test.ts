@@ -16,6 +16,6 @@ type BuilderPropsOnly<Type = ChatInputCommandBuilder> = Pick<
 	}
 >;
 
-expectTypeOf(getBuilder().addStringOption(getStringOption())).toMatchTypeOf<BuilderPropsOnly>();
+expectTypeOf(getBuilder().addStringOptions(getStringOption())).toMatchTypeOf<BuilderPropsOnly>();
 
-expectTypeOf(getBuilder().addSubcommand(getSubcommand())).toMatchTypeOf<BuilderPropsOnly>();
+expectTypeOf(getBuilder().addSubcommands(getSubcommand())).toMatchTypeOf<BuilderPropsOnly>();

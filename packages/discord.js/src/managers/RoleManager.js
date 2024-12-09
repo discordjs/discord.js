@@ -48,7 +48,7 @@ class RoleManager extends CachedManager {
    * Obtains a role from Discord, or the role cache if they're already available.
    * @param {Snowflake} [id] The role's id
    * @param {BaseFetchOptions} [options] Additional options for this fetch
-   * @returns {Promise<?Role|Collection<Snowflake, Role>>}
+   * @returns {Promise<Role|Collection<Snowflake, Role>>}
    * @example
    * // Fetch all roles from the guild
    * message.guild.roles.fetch()

@@ -3,7 +3,7 @@
   "root": true,
   "overrides": [
     {
-      "files": ["src/**/*.js"],
+      "files": ["src/**/*.js", "test/**/*.js"],
       "extends": ["eslint:recommended"],
       "plugins": ["import"],
       "parserOptions": {

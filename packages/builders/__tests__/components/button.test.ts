@@ -5,7 +5,6 @@ import {
 	type APIButtonComponentWithURL,
 } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
-import { ButtonBuilder } from '../../src/components/button/Button.js';
 import { PrimaryButtonBuilder, PremiumButtonBuilder, LinkButtonBuilder } from '../../src/index.js';
 
 const longStr =

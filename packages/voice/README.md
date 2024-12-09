@@ -24,7 +24,7 @@
 **Features:**
 
 - Send and receive\* audio in Discord voice-based channels
-- A strong focus on reliability and predictable behaviour
+- A strong focus on reliability and predictable behavior
 - Horizontal scalability and libraries other than [discord.js](https://discord.js.org/) are supported with custom adapters
 - A robust audio processing system that can handle a wide range of audio sources
 
@@ -32,7 +32,7 @@
 
 ## Installation
 
-**Node.js 18 or newer is required.**
+**Node.js 20 or newer is required.**
 
 ```sh
 npm install @discordjs/voice
@@ -51,9 +51,13 @@ try installing another.
 
 **Encryption Libraries (npm install):**
 
+> [!NOTE]
+> You only need to install one of these libraries if your system does not support `aes-256-gcm` (verify by running `require('node:crypto').getCiphers().includes('aes-256-gcm')`).
+
 - `sodium-native`: ^3.3.0
 - `sodium`: ^3.0.2
-- `tweetnacl`: ^1.0.3
+- `@stablelib/xchacha20poly1305`: ^2.0.0
+- `@noble/ciphers`: ^1.0.0
 - `libsodium-wrappers`: ^0.7.9
 
 **Opus Libraries (npm install):**

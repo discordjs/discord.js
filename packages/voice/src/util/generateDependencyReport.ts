@@ -68,7 +68,8 @@ export function generateDependencyReport() {
 	addVersion('sodium-native');
 	addVersion('sodium');
 	addVersion('libsodium-wrappers');
-	addVersion('tweetnacl');
+	addVersion('@stablelib/xchacha20poly1305');
+	addVersion('@noble/ciphers');
 	report.push('');
 
 	// ffmpeg
