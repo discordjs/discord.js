@@ -24,8 +24,8 @@ class InteractionResponses {
   /**
    * Options for deferring the reply to an {@link BaseInteraction}.
    * @typedef {Object} InteractionDeferReplyOptions
-   * @property {MessageFlagsResolvable} [flags] Flags for the reply.
    * @property {boolean} [withResponse] Whether to return an {@link InteractionCallbackResponse} as the response
+   * @property {MessageFlagsResolvable} [flags] Flags for the reply.
    * <info>Only `MessageFlags.Ephemeral` can be set.</info>
    */
 
