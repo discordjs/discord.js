@@ -159,7 +159,7 @@ export class InteractionsAPI {
 		interactionToken: string,
 		body: RESTPostAPIInteractionCallbackQuery & { with_response: true },
 		options?: Pick<RequestData, 'signal'>,
-	): Promise<undefined>;
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
 	 * Defers an update from a message component interaction
@@ -175,7 +175,7 @@ export class InteractionsAPI {
 		interactionToken: string,
 		body?: RESTPostAPIInteractionCallbackQuery & { with_response?: false },
 		options?: Pick<RequestData, 'signal'>,
-	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
+	): Promise<undefined>;
 
 	public async deferMessageUpdate(
 		interactionId: Snowflake,
@@ -316,6 +316,7 @@ export class InteractionsAPI {
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			query: makeURLSearchParams({ with_response }),
 			files,
 			auth: false,
 			body: {
@@ -342,7 +343,7 @@ export class InteractionsAPI {
 		interactionToken: string,
 		callbackData: CreateAutocompleteResponseOptions & { with_response: true },
 		options?: Pick<RequestData, 'signal'>,
-	): Promise<APICommandAutocompleteInteractionResponseCallbackData>;
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
 	 * Sends an autocomplete response to an interaction
@@ -367,6 +368,7 @@ export class InteractionsAPI {
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			query: makeURLSearchParams({ with_response }),
 			auth: false,
 			body: {
 				type: InteractionResponseType.ApplicationCommandAutocompleteResult,
@@ -417,6 +419,7 @@ export class InteractionsAPI {
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			query: makeURLSearchParams({ with_response }),
 			auth: false,
 			body: {
 				type: InteractionResponseType.Modal,
