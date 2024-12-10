@@ -123,20 +123,6 @@ exports.GuildTextBasedChannelTypes = [
 exports.TextBasedChannelTypes = [...exports.GuildTextBasedChannelTypes, ChannelType.DM, ChannelType.GroupDM];
 
 /**
- * The types of channels that are text-based and can have messages sent into. The available types are:
- * * {@link ChannelType.DM}
- * * {@link ChannelType.GuildText}
- * * {@link ChannelType.GuildAnnouncement}
- * * {@link ChannelType.AnnouncementThread}
- * * {@link ChannelType.PublicThread}
- * * {@link ChannelType.PrivateThread}
- * * {@link ChannelType.GuildVoice}
- * * {@link ChannelType.GuildStageVoice}
- * @typedef {ChannelType[]} SendableChannels
- */
-exports.SendableChannels = [...exports.GuildTextBasedChannelTypes, ChannelType.DM];
-
-/**
  * The types of channels that are threads. The available types are:
  * * {@link ChannelType.AnnouncementThread}
  * * {@link ChannelType.PublicThread}

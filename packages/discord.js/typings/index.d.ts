@@ -954,7 +954,6 @@ export abstract class BaseChannel extends Base {
   public isDMBased(): this is PartialGroupDMChannel | DMChannel | PartialDMChannel;
   public isVoiceBased(): this is VoiceBasedChannel;
   public isThreadOnly(): this is ThreadOnlyChannel;
-  public isSendable(): this is SendableChannels;
   public toString(): ChannelMention | UserMention;
 }
 
@@ -1652,7 +1651,6 @@ export class GuildMemberFlagsBitField extends BitField<GuildMemberFlagsString> {
   public static resolve(bit?: BitFieldResolvable<GuildMemberFlagsString, GuildMemberFlags>): number;
 }
 
-export interface GuildMember extends PartialTextBasedChannelFields<false> {}
 export class GuildMember extends Base {
   private constructor(client: Client<true>, data: RawGuildMemberData, guild: Guild);
   private _roles: Snowflake[];
@@ -1694,6 +1692,7 @@ export class GuildMember extends Base {
   public displayAvatarURL(options?: ImageURLOptions): string;
   public displayBannerURL(options?: ImageURLOptions): string | null;
   public edit(options: GuildMemberEditOptions): Promise<GuildMember>;
+  public send(options: string | MessagePayload | MessageCreateOptions): Promise<Message<false>>;
   public isCommunicationDisabled(): this is GuildMember & {
     communicationDisabledUntilTimestamp: number;
     readonly communicationDisabledUntil: Date;
@@ -2632,7 +2631,6 @@ export interface DefaultReactionEmoji {
 export interface ThreadOnlyChannel
   extends Omit<
     TextBasedChannelFields,
-    | 'send'
     | 'lastMessage'
     | 'lastPinAt'
     | 'bulkDelete'
@@ -3446,8 +3444,6 @@ export interface AvatarDecorationData {
   skuId: Snowflake;
 }
 
-// tslint:disable-next-line no-empty-interface
-export interface User extends PartialTextBasedChannelFields<false> {}
 export class User extends Base {
   protected constructor(client: Client<true>, data: RawUserData);
   private _equals(user: APIUser): boolean;
@@ -3480,6 +3476,7 @@ export class User extends Base {
   public equals(user: User): boolean;
   public fetch(force?: boolean): Promise<User>;
   public toString(): UserMention;
+  public send(options: string | MessagePayload | MessageCreateOptions): Promise<Message<false>>;
 }
 
 export class UserContextMenuCommandInteraction<
@@ -3811,7 +3808,6 @@ export const Constants: {
   SweeperKeys: SweeperKey[];
   NonSystemMessageTypes: NonSystemMessageType[];
   TextBasedChannelTypes: TextBasedChannelTypes[];
-  SendableChannels: SendableChannelTypes[];
   GuildTextBasedChannelTypes: GuildTextBasedChannelTypes[];
   ThreadChannelTypes: ThreadChannelType[];
   VoiceBasedChannelTypes: VoiceBasedChannelTypes[];
@@ -4130,6 +4126,10 @@ export class CategoryChannelChildManager extends DataManager<Snowflake, Category
 
 export class ChannelManager extends CachedManager<Snowflake, Channel, ChannelResolvable> {
   private constructor(client: Client<true>, iterable: Iterable<RawChannelData>);
+  public createMessage(
+    channel: Omit<TextBasedChannelResolvable, 'PartialGroupDMChannel'>,
+    options: string | MessagePayload | MessageCreateOptions,
+  ): Promise<Message>;
   public fetch(id: Snowflake, options?: FetchChannelOptions): Promise<Channel | null>;
 }
 
@@ -4595,12 +4595,7 @@ export class VoiceStateManager extends CachedManager<Snowflake, VoiceState, type
 
 export type Constructable<Entity> = abstract new (...args: any[]) => Entity;
 
-export interface PartialTextBasedChannelFields<InGuild extends boolean = boolean> {
-  send(options: string | MessagePayload | MessageCreateOptions): Promise<Message<InGuild>>;
-}
-
-export interface TextBasedChannelFields<InGuild extends boolean = boolean>
-  extends PartialTextBasedChannelFields<InGuild> {
+export interface TextBasedChannelFields<InGuild extends boolean = boolean> {
   lastMessageId: Snowflake | null;
   get lastMessage(): Message | null;
   lastPinTimestamp: number | null;
@@ -6395,7 +6390,7 @@ export interface MessageCreateOptions extends BaseMessageOptionsWithPoll {
   tts?: boolean;
   nonce?: string | number;
   enforceNonce?: boolean;
-  reply?: ReplyOptions;
+  messageReference?: MessageReference & { failIfNotExists?: boolean };
   stickers?: readonly StickerResolvable[];
   flags?: BitFieldResolvable<
     Extract<MessageFlagsString, 'SuppressEmbeds' | 'SuppressNotifications'>,
@@ -6498,15 +6493,11 @@ export interface TextInputComponentData extends BaseComponentData {
 }
 
 export type MessageTarget =
+  | ChannelManager
   | Interaction
   | InteractionWebhook
-  | TextBasedChannel
-  | User
-  | GuildMember
   | Webhook<WebhookType.Incoming>
-  | WebhookClient
-  | Message
-  | MessageManager;
+  | WebhookClient;
 
 export interface MultipleShardRespawnOptions {
   shardDelay?: number;
@@ -6641,12 +6632,7 @@ export interface ReactionCollectorOptions extends CollectorOptions<[MessageReact
   maxUsers?: number;
 }
 
-export interface ReplyOptions {
-  messageReference: MessageResolvable;
-  failIfNotExists?: boolean;
-}
-
-export interface MessageReplyOptions extends Omit<MessageCreateOptions, 'reply'> {
+export interface MessageReplyOptions extends Omit<MessageCreateOptions, 'messageReference'> {
   failIfNotExists?: boolean;
 }
 
@@ -6815,15 +6801,11 @@ export type Channel =
 
 export type TextBasedChannel = Exclude<Extract<Channel, { type: TextChannelType }>, ForumChannel | MediaChannel>;
 
-export type SendableChannels = Extract<Channel, { send: (...args: any[]) => any }>;
-
 export type TextBasedChannels = TextBasedChannel;
 
 export type TextBasedChannelTypes = TextBasedChannel['type'];
 
 export type GuildTextBasedChannelTypes = Exclude<TextBasedChannelTypes, ChannelType.DM | ChannelType.GroupDM>;
-
-export type SendableChannelTypes = SendableChannels['type'];
 
 export type VoiceBasedChannel = Extract<Channel, { bitrate: number }>;
 
@@ -6925,7 +6907,8 @@ export interface WebhookFetchMessageOptions {
   threadId?: Snowflake;
 }
 
-export interface WebhookMessageCreateOptions extends Omit<MessageCreateOptions, 'nonce' | 'reply' | 'stickers'> {
+export interface WebhookMessageCreateOptions
+  extends Omit<MessageCreateOptions, 'nonce' | 'messageReference' | 'stickers'> {
   username?: string;
   avatarURL?: string;
   threadId?: Snowflake;
