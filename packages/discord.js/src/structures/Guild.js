@@ -29,6 +29,8 @@ const VoiceStateManager = require('../managers/VoiceStateManager');
 const { resolveImage } = require('../util/DataResolver');
 const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
 const { discordSort, getSortableGroupTypes, resolvePartialEmoji } = require('../util/Util');
+// TODO: Uncomment this after finishing the manager
+// const { GuildSoundboardSoundManager } = require('../managers/GuildSoundboardSoundManager');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -105,6 +107,13 @@ class Guild extends AnonymousGuild {
      * @type {AutoModerationRuleManager}
      */
     this.autoModerationRules = new AutoModerationRuleManager(this);
+
+    // TODO: Remove this after finishing the manager
+    // /**
+    //  * A manager of the soundboard sounds of this guild.
+    //  * @type {GuildSoundboardSoundManager}
+    //  */
+    // this.soundboardSounds = new GuildSoundboardSoundManager(this);
 
     if (!data) return;
     if (data.unavailable) {
