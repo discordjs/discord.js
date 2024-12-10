@@ -29,11 +29,12 @@ const Targets = {
   Thread: 'Thread',
   ApplicationCommand: 'ApplicationCommand',
   AutoModeration: 'AutoModeration',
-  GuildOnboarding: 'GuildOnboarding',
   GuildOnboardingPrompt: 'GuildOnboardingPrompt',
+  SoundboardSound: 'SoundboardSound',
   Unknown: 'Unknown',
 };
 
+// TODO: Add soundboard sounds when https://github.com/discordjs/discord.js/pull/10590 is merged
 /**
  * The target of a guild audit log entry. It can be one of:
  * * A guild
@@ -42,8 +43,7 @@ const Targets = {
  * * A role
  * * An invite
  * * A webhook
- * * An emoji
- * * A message
+ * * A guild emoji
  * * An integration
  * * A stage instance
  * * A sticker
@@ -54,7 +54,7 @@ const Targets = {
  * * A guild onboarding prompt
  * * An object with an id key if target was deleted or fake entity
  * * An object where the keys represent either the new value or the old value
- * @typedef {?(Object|Guild|BaseChannel|User|Role|Invite|Webhook|GuildEmoji|Message|Integration|StageInstance|Sticker|
+ * @typedef {?(Object|Guild|BaseChannel|User|Role|Invite|Webhook|GuildEmoji|Integration|StageInstance|Sticker|
  * GuildScheduledEvent|ApplicationCommand|AutoModerationRule|GuildOnboardingPrompt)} AuditLogEntryTarget
  */
 
@@ -82,9 +82,10 @@ const Targets = {
  * * Sticker
  * * Thread
  * * GuildScheduledEvent
- * * ApplicationCommandPermission
- * * GuildOnboarding
+ * * ApplicationCommand
  * * GuildOnboardingPrompt
+ * * SoundboardSound
+ * * AutoModeration
  * * Unknown
  * @typedef {string} AuditLogTargetType
  */
@@ -198,7 +199,6 @@ class GuildAuditLogsEntry {
 
       case AuditLogEvent.MemberMove:
       case AuditLogEvent.MessageDelete:
-      case AuditLogEvent.MessageBulkDelete:
         this.extra = {
           channel: guild.channels.cache.get(data.options.channel_id) ?? { id: data.options.channel_id },
           count: Number(data.options.count),
@@ -213,6 +213,7 @@ class GuildAuditLogsEntry {
         };
         break;
 
+      case AuditLogEvent.MessageBulkDelete:
       case AuditLogEvent.MemberDisconnect:
         this.extra = {
           count: Number(data.options.count),
@@ -364,10 +365,15 @@ class GuildAuditLogsEntry {
         data.action_type === AuditLogEvent.OnboardingPromptCreate
           ? new GuildOnboardingPrompt(guild.client, changesReduce(this.changes, { id: data.target_id }), guild.id)
           : changesReduce(this.changes, { id: data.target_id });
-    } else if (targetType === Targets.GuildOnboarding) {
-      this.target = changesReduce(this.changes, { id: data.target_id });
+    } else if (targetType === Targets.Role) {
+      this.target = guild.roles.cache.get(data.target_id) ?? { id: data.target_id };
+    } else if (targetType === Targets.Emoji) {
+      this.target = guild.emojis.cache.get(data.target_id) ?? { id: data.target_id };
+      // TODO: Uncomment after https://github.com/discordjs/discord.js/pull/10590 is merged
+      // } else if (targetType === Targets.SoundboardSound) {
+      //   this.target = guild.soundboardSounds.cache.get(data.target_id) ?? { id: data.target_id };
     } else if (data.target_id) {
-      this.target = guild[`${targetType.toLowerCase()}s`]?.cache.get(data.target_id) ?? { id: data.target_id };
+      this.target = { id: data.target_id };
     }
   }
 
@@ -391,9 +397,10 @@ class GuildAuditLogsEntry {
     if (target < 110) return Targets.GuildScheduledEvent;
     if (target < 120) return Targets.Thread;
     if (target < 130) return Targets.ApplicationCommand;
-    if (target >= 140 && target < 150) return Targets.AutoModeration;
+    if (target < 140) return Targets.SoundboardSound;
+    if (target >= 140 && target <= 142) return Targets.AutoModeration;
+    if (target >= 143 && target <= 145) return Targets.User;
     if (target >= 163 && target <= 165) return Targets.GuildOnboardingPrompt;
-    if (target >= 160 && target < 170) return Targets.GuildOnboarding;
     return Targets.Unknown;
   }
 
@@ -419,10 +426,9 @@ class GuildAuditLogsEntry {
         AuditLogEvent.StickerCreate,
         AuditLogEvent.GuildScheduledEventCreate,
         AuditLogEvent.ThreadCreate,
+        AuditLogEvent.SoundboardSoundCreate,
         AuditLogEvent.AutoModerationRuleCreate,
-        AuditLogEvent.AutoModerationBlockMessage,
         AuditLogEvent.OnboardingPromptCreate,
-        AuditLogEvent.OnboardingCreate,
       ].includes(action)
     ) {
       return 'Create';
@@ -448,6 +454,7 @@ class GuildAuditLogsEntry {
         AuditLogEvent.StickerDelete,
         AuditLogEvent.GuildScheduledEventDelete,
         AuditLogEvent.ThreadDelete,
+        AuditLogEvent.SoundboardSoundDelete,
         AuditLogEvent.AutoModerationRuleDelete,
         AuditLogEvent.OnboardingPromptDelete,
       ].includes(action)
@@ -473,9 +480,12 @@ class GuildAuditLogsEntry {
         AuditLogEvent.GuildScheduledEventUpdate,
         AuditLogEvent.ThreadUpdate,
         AuditLogEvent.ApplicationCommandPermissionUpdate,
+        AuditLogEvent.SoundboardSoundUpdate,
         AuditLogEvent.AutoModerationRuleUpdate,
+        AuditLogEvent.AutoModerationBlockMessage,
+        AuditLogEvent.AutoModerationFlagToChannel,
+        AuditLogEvent.AutoModerationUserCommunicationDisabled,
         AuditLogEvent.OnboardingPromptUpdate,
-        AuditLogEvent.OnboardingUpdate,
       ].includes(action)
     ) {
       return 'Update';
