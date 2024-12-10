@@ -3,9 +3,9 @@
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ApplicationCommandOptionType } = require('discord-api-types/v10');
 const isEqual = require('fast-deep-equal');
-const Base = require('./Base');
-const ApplicationCommandPermissionsManager = require('../managers/ApplicationCommandPermissionsManager');
-const PermissionsBitField = require('../util/PermissionsBitField');
+const { Base } = require('./Base');
+const { ApplicationCommandPermissionsManager } = require('../managers/ApplicationCommandPermissionsManager');
+const { PermissionsBitField } = require('../util/PermissionsBitField');
 
 /**
  * Represents an application command.
@@ -588,7 +588,7 @@ class ApplicationCommand extends Base {
   }
 }
 
-module.exports = ApplicationCommand;
+exports.ApplicationCommand = ApplicationCommand;
 
 /* eslint-disable max-len */
 /**

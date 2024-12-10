@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { Routes, PermissionFlagsBits } = require('discord-api-types/v10');
-const BaseGuildEmojiManager = require('./BaseGuildEmojiManager');
+const { BaseGuildEmojiManager } = require('./BaseGuildEmojiManager');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 const { resolveImage } = require('../util/DataResolver');
 
@@ -171,4 +171,4 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
   }
 }
 
-module.exports = GuildEmojiManager;
+exports.GuildEmojiManager = GuildEmojiManager;

@@ -1,7 +1,7 @@
 'use strict';
 
 const { PermissionFlagsBits } = require('discord-api-types/v10');
-const BaseGuildVoiceChannel = require('./BaseGuildVoiceChannel');
+const { BaseGuildVoiceChannel } = require('./BaseGuildVoiceChannel');
 
 /**
  * Represents a guild voice channel on Discord.
@@ -93,4 +93,4 @@ class VoiceChannel extends BaseGuildVoiceChannel {
  * @returns {Promise<VoiceChannel>}
  */
 
-module.exports = VoiceChannel;
+exports.VoiceChannel = VoiceChannel;

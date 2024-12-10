@@ -175,4 +175,4 @@ class BitField {
   }
 }
 
-module.exports = BitField;
+exports.BitField = BitField;
