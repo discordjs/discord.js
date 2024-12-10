@@ -46,7 +46,7 @@ class Emoji extends Base {
    * @returns {?string}
    */
   imageURL(options) {
-    return this.id && this.client.rest.cdn.emoji(this.id, options);
+    return this.id && this.client.rest.cdn.emoji(this.id, this.animated ? { ...options, extension: 'gif' } : options);
   }
 
   /**
