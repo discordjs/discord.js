@@ -7,6 +7,7 @@ const CachedManager = require('./CachedManager');
 const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../errors');
 const { GuildScheduledEvent } = require('../structures/GuildScheduledEvent');
 const { resolveImage } = require('../util/DataResolver');
+const { _transformGuildScheduledEventRecurrenceRule } = require('../util/Transformers');
 
 /**
  * Manages API methods for GuildScheduledEvents and stores their cache.
@@ -37,6 +38,21 @@ class GuildScheduledEventManager extends CachedManager {
    */
 
   /**
+   * Options for setting a recurrence rule for a guild scheduled event.
+   * @typedef {Object} GuildScheduledEventRecurrenceRuleOptions
+   * @property {DateResolvable} startAt The time the recurrence rule interval starts at
+   * @property {?DateResolvable} endAt The time the recurrence rule interval ends at
+   * @property {GuildScheduledEventRecurrenceRuleFrequency} frequency How often the event occurs
+   * @property {number} interval The spacing between the events
+   * @property {?GuildScheduledEventRecurrenceRuleWeekday[]} byWeekday The days within a week to recur on
+   * @property {?GuildScheduledEventRecurrenceRuleNWeekday[]} byNWeekday The days within a week to recur on
+   * @property {?GuildScheduledEventRecurrenceRuleMonth[]} byMonth The months to recur on
+   * @property {?number[]} byMonthDay The days within a month to recur on
+   * @property {?number[]} byYearDay The days within a year to recur on
+   * @property {?number} count The total amount of times the event is allowed to recur before stopping
+   */
+
+  /**
    * Options used to create a guild scheduled event.
    * @typedef {Object} GuildScheduledEventCreateOptions
    * @property {string} name The name of the guild scheduled event
@@ -54,6 +70,8 @@ class GuildScheduledEventManager extends CachedManager {
    * <warn>This is required if `entityType` is {@link GuildScheduledEventEntityType.External}</warn>
    * @property {?(BufferResolvable|Base64Resolvable)} [image] The cover image of the guild scheduled event
    * @property {string} [reason] The reason for creating the guild scheduled event
+   * @property {GuildScheduledEventRecurrenceRuleOptions} [recurrenceRule]
+   * The recurrence rule of the guild scheduled event
    */
 
   /**
@@ -81,6 +99,7 @@ class GuildScheduledEventManager extends CachedManager {
       entityMetadata,
       reason,
       image,
+      recurrenceRule,
     } = options;
 
     let entity_metadata, channel_id;
@@ -104,6 +123,7 @@ class GuildScheduledEventManager extends CachedManager {
         entity_type: entityType,
         entity_metadata,
         image: image && (await resolveImage(image)),
+        recurrence_rule: recurrenceRule && _transformGuildScheduledEventRecurrenceRule(recurrenceRule),
       },
       reason,
     });
@@ -153,10 +173,7 @@ class GuildScheduledEventManager extends CachedManager {
 
     return data.reduce(
       (coll, rawGuildScheduledEventData) =>
-        coll.set(
-          rawGuildScheduledEventData.id,
-          this.guild.scheduledEvents._add(rawGuildScheduledEventData, options.cache),
-        ),
+        coll.set(rawGuildScheduledEventData.id, this._add(rawGuildScheduledEventData, options.cache)),
       new Collection(),
     );
   }
@@ -178,6 +195,8 @@ class GuildScheduledEventManager extends CachedManager {
    * {@link GuildScheduledEventEntityType.External}</warn>
    * @property {?(BufferResolvable|Base64Resolvable)} [image] The cover image of the guild scheduled event
    * @property {string} [reason] The reason for editing the guild scheduled event
+   * @property {?GuildScheduledEventRecurrenceRuleOptions} [recurrenceRule]
+   * The recurrence rule of the guild scheduled event
    */
 
   /**
@@ -203,6 +222,7 @@ class GuildScheduledEventManager extends CachedManager {
       entityMetadata,
       reason,
       image,
+      recurrenceRule,
     } = options;
 
     let entity_metadata;
@@ -224,6 +244,7 @@ class GuildScheduledEventManager extends CachedManager {
         status,
         image: image && (await resolveImage(image)),
         entity_metadata,
+        recurrence_rule: recurrenceRule && _transformGuildScheduledEventRecurrenceRule(recurrenceRule),
       },
       reason,
     });

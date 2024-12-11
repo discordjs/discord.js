@@ -4,7 +4,7 @@ const Action = require('./Action');
 
 class MessageUpdateAction extends Action {
   handle(data) {
-    const channel = this.getChannel({ id: data.channel_id, guild_id: data.guild_id });
+    const channel = this.getChannel({ id: data.channel_id, ...('guild_id' in data && { guild_id: data.guild_id }) });
     if (channel) {
       if (!channel.isTextBased()) return {};
 

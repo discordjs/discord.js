@@ -70,12 +70,20 @@ describe('at() tests', () => {
 		expect(coll.at(0)).toStrictEqual(1);
 	});
 
+	test('positive non-integer index', () => {
+		expect(coll.at(1.5)).toStrictEqual(2);
+	});
+
 	test('negative index', () => {
 		expect(coll.at(-1)).toStrictEqual(3);
 	});
 
+	test('negative non-integer index', () => {
+		expect(coll.at(-2.5)).toStrictEqual(2);
+	});
+
 	test('invalid positive index', () => {
-		expect(coll.at(4)).toBeUndefined();
+		expect(coll.at(3)).toBeUndefined();
 	});
 
 	test('invalid negative index', () => {
@@ -432,12 +440,20 @@ describe('keyAt() tests', () => {
 		expect(coll.keyAt(0)).toStrictEqual('a');
 	});
 
+	test('positive non-integer index', () => {
+		expect(coll.keyAt(1.5)).toStrictEqual('b');
+	});
+
 	test('negative index', () => {
 		expect(coll.keyAt(-1)).toStrictEqual('c');
 	});
 
+	test('negative non-integer index', () => {
+		expect(coll.keyAt(-2.5)).toStrictEqual('b');
+	});
+
 	test('invalid positive index', () => {
-		expect(coll.keyAt(4)).toBeUndefined();
+		expect(coll.keyAt(3)).toBeUndefined();
 	});
 
 	test('invalid negative index', () => {
@@ -812,6 +828,33 @@ describe('sort() tests', () => {
 		test('stays the same if it is already sorted', () => {
 			const coll = createCollectionFrom(['a', 5], ['b', 3], ['c', 1]);
 			expect(coll.sort()).toStrictEqual(createCollectionFrom(['c', 1], ['b', 3], ['a', 5]));
+		});
+
+		describe('returns correct sort order for test values', () => {
+			const defaultSort = Collection['defaultSort']; // eslint-disable-line @typescript-eslint/dot-notation
+			const testDefaultSortOrder = (firstValue: any, secondValue: any, result: number) => {
+				expect(defaultSort(firstValue, secondValue)).toStrictEqual(result);
+				expect(defaultSort(secondValue, firstValue)).toStrictEqual(result ? result * -1 : 0);
+			};
+
+			test('correctly evaluates sort order of undefined', () => {
+				testDefaultSortOrder(undefined, undefined, 0);
+				testDefaultSortOrder(0, undefined, -1);
+			});
+
+			test('correctly evaluates numeric values stringwise', () => {
+				testDefaultSortOrder(-1, -2, -1); // "-1" before "-2"
+				testDefaultSortOrder(1, '1', 0); // "1" equal to "1"
+				testDefaultSortOrder(1, '1.0', -1); // "1" before "1.0"
+				testDefaultSortOrder(1.1, '1.1', 0); // "1.1" equal to "1.1"
+				testDefaultSortOrder('01', 1, -1); // "01" before "1"
+				testDefaultSortOrder(1, 1n, 0); // "1" equal to "1"
+				testDefaultSortOrder(Number.NaN, 'NaN', 0); // "NaN" equal to "NaN"
+			});
+
+			test('evaluates object literals as equal', () => {
+				testDefaultSortOrder({ a: 1 }, { b: 2 }, 0);
+			});
 		});
 	});
 });

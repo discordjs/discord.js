@@ -1,12 +1,11 @@
 'use strict';
 
-const { DiscordAPIError } = require('@discordjs/rest');
 const { lazy } = require('@discordjs/util');
-const { RESTJSONErrorCodes, ChannelFlags, ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
+const { ChannelFlags, ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
 const { BaseChannel } = require('./BaseChannel');
 const getThreadOnlyChannel = lazy(() => require('./ThreadOnlyChannel'));
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors');
+const { DiscordjsRangeError, ErrorCodes } = require('../errors');
 const GuildMessageManager = require('../managers/GuildMessageManager');
 const ThreadMemberManager = require('../managers/ThreadMemberManager');
 const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
@@ -31,6 +30,12 @@ class ThreadChannel extends BaseChannel {
      * @type {Snowflake}
      */
     this.guildId = guild?.id ?? data.guild_id;
+
+    /**
+     * The id of the member who created this thread
+     * @type {Snowflake}
+     */
+    this.ownerId = data.owner_id;
 
     /**
      * A manager of the messages sent to this thread
@@ -121,16 +126,6 @@ class ThreadChannel extends BaseChannel {
     }
 
     this._createdTimestamp ??= this.type === ChannelType.PrivateThread ? super.createdTimestamp : null;
-
-    if ('owner_id' in data) {
-      /**
-       * The id of the member who created this thread
-       * @type {?Snowflake}
-       */
-      this.ownerId = data.owner_id;
-    } else {
-      this.ownerId ??= null;
-    }
 
     if ('last_message_id' in data) {
       /**
@@ -251,7 +246,7 @@ class ThreadChannel extends BaseChannel {
 
   /**
    * The parent channel of this thread
-   * @type {?(NewsChannel|TextChannel|ForumChannel|MediaChannel)}
+   * @type {?(AnnouncementChannel|TextChannel|ForumChannel|MediaChannel)}
    * @readonly
    */
   get parent() {
@@ -289,25 +284,19 @@ class ThreadChannel extends BaseChannel {
   }
 
   /**
+   * Options used to fetch a thread owner.
+   * @typedef {BaseFetchOptions} FetchThreadOwnerOptions
+   * @property {boolean} [withMember] Whether to also return the guild member associated with this thread member
+   */
+
+  /**
    * Fetches the owner of this thread. If the thread member object isn't needed,
    * use {@link ThreadChannel#ownerId} instead.
-   * @param {BaseFetchOptions} [options] The options for fetching the member
-   * @returns {Promise<?ThreadMember>}
+   * @param {FetchThreadOwnerOptions} [options] Options for fetching the owner
+   * @returns {Promise<ThreadMember>}
    */
   async fetchOwner(options) {
-    if (!this.ownerId) {
-      throw new DiscordjsError(ErrorCodes.FetchOwnerId, 'thread');
-    }
-
-    // TODO: Remove that catch in the next major version
-    const member = await this.members._fetchSingle({ ...options, member: this.ownerId }).catch(error => {
-      if (error instanceof DiscordAPIError && error.code === RESTJSONErrorCodes.UnknownMember) {
-        return null;
-      }
-
-      throw error;
-    });
-
+    const member = await this.members._fetchSingle({ ...options, member: this.ownerId });
     return member;
   }
 

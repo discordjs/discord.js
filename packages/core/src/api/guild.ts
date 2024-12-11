@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import { makeURLSearchParams, type REST, type RawFile, type RequestData } from '@discordjs/rest';
+import { makeURLSearchParams, type RawFile, type REST, type RequestData } from '@discordjs/rest';
 import {
 	Routes,
 	type GuildMFALevel,
@@ -100,9 +100,19 @@ import {
 	type RESTPutAPIGuildOnboardingJSONBody,
 	type RESTPutAPIGuildOnboardingResult,
 	type RESTPutAPIGuildTemplateSyncResult,
+	type RESTGetAPIGuildSoundboardSoundResult,
+	type RESTGetAPIGuildSoundboardSoundsResult,
+	type RESTPatchAPIGuildSoundboardSoundJSONBody,
+	type RESTPatchAPIGuildSoundboardSoundResult,
+	type RESTPostAPIGuildSoundboardSoundJSONBody,
+	type RESTPostAPIGuildSoundboardSoundResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
 import { VoiceAPI } from './voice';
+
+export interface CreateStickerOptions extends Omit<RESTPostAPIGuildStickerFormDataBody, 'file'> {
+	file: RawFile;
+}
 
 export class GuildsAPI {
 	public constructor(private readonly rest: REST) {}
@@ -112,39 +122,14 @@ export class GuildsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild}
 	 * @param guildId - The id of the guild
-	 * @param options - The options for fetching the guild
-	 * @deprecated Use the overload with a query instead.
-	 */
-	public async get(guildId: Snowflake, { signal }?: Pick<RequestData, 'signal'>): Promise<RESTGetAPIGuildResult>;
-
-	/**
-	 * Fetches a guild
-	 *
-	 * @see {@link https://discord.com/developers/docs/resources/guild#get-guild}
-	 * @param guildId - The id of the guild
 	 * @param query - The query options for fetching the guild
 	 * @param options - The options for fetching the guild
 	 */
-	public async get(
-		guildId: Snowflake,
-		query?: RESTGetAPIGuildQuery,
-		options?: Pick<RequestData, 'signal'>,
-	): Promise<RESTGetAPIGuildResult>;
-
-	public async get(
-		guildId: Snowflake,
-		queryOrOptions: Pick<RequestData, 'signal'> | RESTGetAPIGuildQuery = {},
-		options: Pick<RequestData, 'signal'> = {},
-	) {
-		const requestData: RequestData = {
-			signal: ('signal' in queryOrOptions ? queryOrOptions : options).signal,
-		};
-
-		if ('with_counts' in queryOrOptions) {
-			requestData.query = makeURLSearchParams(queryOrOptions);
-		}
-
-		return this.rest.get(Routes.guild(guildId), requestData) as Promise<RESTGetAPIGuildResult>;
+	public async get(guildId: Snowflake, query: RESTGetAPIGuildQuery = {}, { signal }: Pick<RequestData, 'signal'> = {}) {
+		return this.rest.get(Routes.guild(guildId), {
+			query: makeURLSearchParams(query),
+			signal,
+		}) as Promise<RESTGetAPIGuildResult>;
 	}
 
 	/**
@@ -1007,7 +992,7 @@ export class GuildsAPI {
 	 */
 	public async createSticker(
 		guildId: Snowflake,
-		{ file, ...body }: Omit<RESTPostAPIGuildStickerFormDataBody, 'file'> & { file: RawFile },
+		{ file, ...body }: CreateStickerOptions,
 		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
 		const fileData = { ...file, key: 'file' };
@@ -1355,5 +1340,94 @@ export class GuildsAPI {
 			body,
 			signal,
 		}) as Promise<RESTPutAPIGuildOnboardingResult>;
+	}
+
+	/**
+	 * Fetches all the soundboard sounds for a guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/soundboard#list-guild-soundboard-sounds}
+	 * @param guildId - The id of the guild to fetch the soundboard sounds for
+	 * @param options - The options for fetching the soundboard sounds
+	 */
+	public async getSoundboardSounds(guildId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+		return this.rest.get(Routes.guildSoundboardSounds(guildId), {
+			signal,
+		}) as Promise<RESTGetAPIGuildSoundboardSoundsResult>;
+	}
+
+	/**
+	 * Fetches a soundboard sound for a guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/soundboard#get-guild-soundboard-sound}
+	 * @param guildId - The id of the guild to fetch the soundboard sound for
+	 * @param soundId - The id of the soundboard sound to fetch
+	 * @param options - The options for fetching the soundboard sound
+	 */
+	public async getSoundboardSound(
+		guildId: Snowflake,
+		soundId: Snowflake,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		return this.rest.get(Routes.guildSoundboardSound(guildId, soundId), {
+			signal,
+		}) as Promise<RESTGetAPIGuildSoundboardSoundResult>;
+	}
+
+	/**
+	 * Creates a new soundboard sound for a guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/soundboard#create-guild-soundboard-sound}
+	 * @param guildId - The id of the guild to create the soundboard sound for
+	 * @param body - The data for creating the soundboard sound
+	 * @param options - The options for creating the soundboard sound
+	 */
+	public async createSoundboardSound(
+		guildId: Snowflake,
+		body: RESTPostAPIGuildSoundboardSoundJSONBody,
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+	) {
+		return this.rest.post(Routes.guildSoundboardSounds(guildId), {
+			body,
+			reason,
+			signal,
+		}) as Promise<RESTPostAPIGuildSoundboardSoundResult>;
+	}
+
+	/**
+	 * Edits a soundboard sound for a guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/soundboard#modify-guild-soundboard-sound}
+	 * @param guildId - The id of the guild to edit the soundboard sound for
+	 * @param soundId - The id of the soundboard sound to edit
+	 * @param body - The data for editing the soundboard sound
+	 * @param options - The options for editing the soundboard sound
+	 */
+	public async editSoundboardSound(
+		guildId: Snowflake,
+		soundId: Snowflake,
+		body: RESTPatchAPIGuildSoundboardSoundJSONBody,
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+	) {
+		return this.rest.patch(Routes.guildSoundboardSound(guildId, soundId), {
+			body,
+			reason,
+			signal,
+		}) as Promise<RESTPatchAPIGuildSoundboardSoundResult>;
+	}
+
+	/**
+	 * Deletes a soundboard sound for a guild
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/soundboard#delete-guild-soundboard-sound}
+	 * @param guildId - The id of the guild to delete the soundboard sound for
+	 * @param soundId - The id of the soundboard sound to delete
+	 * @param options - The options for deleting the soundboard sound
+	 */
+	public async deleteSoundboardSound(
+		guildId: Snowflake,
+		soundId: Snowflake,
+		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+	) {
+		await this.rest.delete(Routes.guildSoundboardSound(guildId, soundId), { reason, signal });
 	}
 }

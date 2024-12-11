@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/proxy@2.1.1](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@2.1.0...@discordjs/proxy@2.1.1) - (2024-09-01)
+
 # [@discordjs/proxy@2.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/proxy@2.0.2...@discordjs/proxy@2.1.0) - (2024-05-04)
 
 ## Bug Fixes

@@ -33,10 +33,20 @@ import {
 	type RESTPostAPIChannelThreadsResult,
 	type APIThreadChannel,
 	type RESTPostAPIGuildForumThreadsJSONBody,
+	type RESTPostAPISoundboardSendSoundJSONBody,
+	type RESTPostAPISendSoundboardSoundResult,
 } from 'discord-api-types/v10';
 
 export interface StartForumThreadOptions extends RESTPostAPIGuildForumThreadsJSONBody {
 	message: RESTPostAPIGuildForumThreadsJSONBody['message'] & { files?: RawFile[] };
+}
+
+export interface CreateMessageOptions extends RESTPostAPIChannelMessageJSONBody {
+	files?: RawFile[];
+}
+
+export interface EditMessageOptions extends RESTPatchAPIChannelMessageJSONBody {
+	files?: RawFile[];
 }
 
 export class ChannelsAPI {
@@ -45,14 +55,14 @@ export class ChannelsAPI {
 	/**
 	 * Sends a message in a channel
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/channel#create-message}
+	 * @see {@link https://discord.com/developers/docs/resources/message#create-message}
 	 * @param channelId - The id of the channel to send the message in
 	 * @param body - The data for sending the message
 	 * @param options - The options for sending the message
 	 */
 	public async createMessage(
 		channelId: Snowflake,
-		{ files, ...body }: RESTPostAPIChannelMessageJSONBody & { files?: RawFile[] },
+		{ files, ...body }: CreateMessageOptions,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.channelMessages(channelId), {
@@ -65,7 +75,7 @@ export class ChannelsAPI {
 	/**
 	 * Edits a message
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/channel#edit-message}
+	 * @see {@link https://discord.com/developers/docs/resources/message#edit-message}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to edit
 	 * @param body - The data for editing the message
@@ -74,7 +84,7 @@ export class ChannelsAPI {
 	public async editMessage(
 		channelId: Snowflake,
 		messageId: Snowflake,
-		{ files, ...body }: RESTPatchAPIChannelMessageJSONBody & { files?: RawFile[] },
+		{ files, ...body }: EditMessageOptions,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.patch(Routes.channelMessage(channelId, messageId), {
@@ -87,12 +97,20 @@ export class ChannelsAPI {
 	/**
 	 * Fetches the reactions for a message
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/channel#get-reactions}
+	 * @see {@link https://discord.com/developers/docs/resources/message#get-reactions}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to get the reactions for
-	 * @param emoji - The emoji to get the reactions for
+	 * @param emoji - The emoji to get the reactions for. URL encoding happens internally
 	 * @param query - The query options for fetching the reactions
 	 * @param options - The options for fetching the message reactions
+	 * @example
+	 * ```ts
+	 * // Unicode.
+	 * await api.channels.getMessageReactions('1234567890', '1234567890', '👍');
+	 *
+	 * // Custom emoji.
+	 * await api.channels.getMessageReactions('1234567890', '1234567890', 'emoji_name:1234567890');
+	 * ```
 	 */
 	public async getMessageReactions(
 		channelId: Snowflake,
@@ -110,11 +128,19 @@ export class ChannelsAPI {
 	/**
 	 * Deletes a reaction for the current user
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/channel#delete-own-reaction}
+	 * @see {@link https://discord.com/developers/docs/resources/message#delete-own-reaction}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reaction for
-	 * @param emoji - The emoji to delete the reaction for
+	 * @param emoji - The emoji to delete the reaction for. URL encoding happens internally
 	 * @param options - The options for deleting the reaction
+	 * @example
+	 * ```ts
+	 * // Unicode.
+	 * await api.channels.deleteOwnMessageReaction('1234567890', '1234567890', '👍');
+	 *
+	 * // Custom emoji.
+	 * await api.channels.deleteOwnMessageReaction('1234567890', '1234567890', 'emoji_name:1234567890');
+	 * ```
 	 */
 	public async deleteOwnMessageReaction(
 		channelId: Snowflake,
@@ -130,12 +156,20 @@ export class ChannelsAPI {
 	/**
 	 * Deletes a reaction for a user
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/channel#delete-user-reaction}
+	 * @see {@link https://discord.com/developers/docs/resources/message#delete-user-reaction}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reaction for
-	 * @param emoji - The emoji to delete the reaction for
+	 * @param emoji - The emoji to delete the reaction for. URL encoding happens internally
 	 * @param userId - The id of the user to delete the reaction for
 	 * @param options - The options for deleting the reaction
+	 * @example
+	 * ```ts
+	 * // Unicode.
+	 * await api.channels.deleteUserMessageReaction('1234567890', '1234567890', '👍', '1234567890');
+	 *
+	 * // Custom emoji.
+	 * await api.channels.deleteUserMessageReaction('1234567890', '1234567890', 'emoji_name:1234567890', '1234567890');
+	 * ```
 	 */
 	public async deleteUserMessageReaction(
 		channelId: Snowflake,
@@ -152,7 +186,7 @@ export class ChannelsAPI {
 	/**
 	 * Deletes all reactions for a message
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/channel#delete-all-reactions}
+	 * @see {@link https://discord.com/developers/docs/resources/message#delete-all-reactions}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reactions for
 	 * @param options - The options for deleting the reactions
@@ -168,11 +202,19 @@ export class ChannelsAPI {
 	/**
 	 * Deletes all reactions of an emoji for a message
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/channel#delete-all-reactions-for-emoji}
+	 * @see {@link https://discord.com/developers/docs/resources/message#delete-all-reactions-for-emoji}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete the reactions for
-	 * @param emoji - The emoji to delete the reactions for
+	 * @param emoji - The emoji to delete the reactions for. URL encoding happens internally
 	 * @param options - The options for deleting the reactions
+	 * @example
+	 * ```ts
+	 * // Unicode.
+	 * await api.channels.deleteAllMessageReactionsForEmoji('1234567890', '1234567890', '👍');
+	 *
+	 * // Custom emoji.
+	 * await api.channels.deleteAllMessageReactionsForEmoji('1234567890', '1234567890', 'emoji_name:1234567890');
+	 * ```
 	 */
 	public async deleteAllMessageReactionsForEmoji(
 		channelId: Snowflake,
@@ -186,11 +228,19 @@ export class ChannelsAPI {
 	/**
 	 * Adds a reaction to a message
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/channel#create-reaction}
+	 * @see {@link https://discord.com/developers/docs/resources/message#create-reaction}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to add the reaction to
-	 * @param emoji - The emoji to add the reaction with
+	 * @param emoji - The emoji to add the reaction with. URL encoding happens internally
 	 * @param options - The options for adding the reaction
+	 * @example
+	 * ```ts
+	 * // Unicode.
+	 * await api.channels.addMessageReaction('1234567890', '1234567890', '👍');
+	 *
+	 * // Custom emoji.
+	 * await api.channels.addMessageReaction('1234567890', '1234567890', 'emoji_name:1234567890');
+	 * ```
 	 */
 	public async addMessageReaction(
 		channelId: Snowflake,
@@ -242,7 +292,7 @@ export class ChannelsAPI {
 	/**
 	 * Fetches the messages of a channel
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/channel#get-channel-messages}
+	 * @see {@link https://discord.com/developers/docs/resources/message#get-channel-messages}
 	 * @param channelId - The id of the channel to fetch messages from
 	 * @param query - The query options for fetching messages
 	 * @param options - The options for fetching the messages
@@ -299,7 +349,7 @@ export class ChannelsAPI {
 	/**
 	 * Deletes a message
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/channel#delete-message}
+	 * @see {@link https://discord.com/developers/docs/resources/message#delete-message}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to delete
 	 * @param options - The options for deleting the message
@@ -315,7 +365,7 @@ export class ChannelsAPI {
 	/**
 	 * Bulk deletes messages
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/channel#bulk-delete-messages}
+	 * @see {@link https://discord.com/developers/docs/resources/message#bulk-delete-messages}
 	 * @param channelId - The id of the channel the messages are in
 	 * @param messageIds - The ids of the messages to delete
 	 * @param options - The options for deleting the messages
@@ -331,7 +381,7 @@ export class ChannelsAPI {
 	/**
 	 * Fetches a message
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/channel#get-channel-message}
+	 * @see {@link https://discord.com/developers/docs/resources/message#get-channel-message}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to fetch
 	 * @param options - The options for fetching the message
@@ -345,7 +395,7 @@ export class ChannelsAPI {
 	/**
 	 * Crossposts a message
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/channel#crosspost-message}
+	 * @see {@link https://discord.com/developers/docs/resources/message#crosspost-message}
 	 * @param channelId - The id of the channel the message is in
 	 * @param messageId - The id of the message to crosspost
 	 * @param options - The options for crossposting the message
@@ -452,7 +502,7 @@ export class ChannelsAPI {
 	/**
 	 * Creates a new forum post
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/channel#start-thread-in-forum-channel}
+	 * @see {@link https://discord.com/developers/docs/resources/channel#start-thread-in-forum-or-media-channel}
 	 * @param channelId - The id of the forum channel to start the thread in
 	 * @param body - The data for starting the thread
 	 * @param options - The options for starting the thread
@@ -582,5 +632,24 @@ export class ChannelsAPI {
 			reason,
 			signal,
 		});
+	}
+
+	/**
+	 * Sends a soundboard sound in a channel
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/soundboard#send-soundboard-sound}
+	 * @param channelId - The id of the channel to send the soundboard sound in
+	 * @param body - The data for sending the soundboard sound
+	 * @param options - The options for sending the soundboard sound
+	 */
+	public async sendSoundboardSound(
+		channelId: Snowflake,
+		body: RESTPostAPISoundboardSendSoundJSONBody,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		return this.rest.post(Routes.sendSoundboardSound(channelId), {
+			body,
+			signal,
+		}) as Promise<RESTPostAPISendSoundboardSoundResult>;
 	}
 }

@@ -20,15 +20,6 @@ class TeamMember extends Base {
   }
 
   _patch(data) {
-    if ('permissions' in data) {
-      /**
-       * The permissions this Team Member has with regard to the team
-       * @type {string[]}
-       * @deprecated Use {@link TeamMember#role} instead.
-       */
-      this.permissions = data.permissions;
-    }
-
     if ('membership_state' in data) {
       /**
        * The permissions this Team Member has with regard to the team

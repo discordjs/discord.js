@@ -23,7 +23,13 @@ class MessageReactionAdd extends Action {
     if (!user) return false;
 
     // Verify channel
-    const channel = this.getChannel({ id: data.channel_id, guild_id: data.guild_id, user_id: data.user_id });
+    const channel = this.getChannel({
+      id: data.channel_id,
+      ...('guild_id' in data && { guild_id: data.guild_id }),
+      user_id: data.user_id,
+      ...this.spreadInjectedData(data),
+    });
+
     if (!channel?.isTextBased()) return false;
 
     // Verify message
@@ -45,6 +51,7 @@ class MessageReactionAdd extends Action {
     /**
      * Provides additional information about altered reaction
      * @typedef {Object} MessageReactionEventDetails
+     * @property {ReactionType} type The type of the reaction
      * @property {boolean} burst Determines whether a super reaction was used
      */
     /**
@@ -54,7 +61,7 @@ class MessageReactionAdd extends Action {
      * @param {User} user The user that applied the guild or reaction emoji
      * @param {MessageReactionEventDetails} details Details of adding the reaction
      */
-    this.client.emit(Events.MessageReactionAdd, reaction, user, { burst: data.burst });
+    this.client.emit(Events.MessageReactionAdd, reaction, user, { type: data.type, burst: data.burst });
 
     return { message, reaction, user };
   }

@@ -57,17 +57,6 @@ export function bold<Content extends string>(content: Content): `**${Content}**`
 }
 
 /**
- * Formats the content into underscored text.
- *
- * @typeParam Content - This is inferred by the supplied content
- * @param content - The content to wrap
- * @deprecated Use {@link underline} instead.
- */
-export function underscore<Content extends string>(content: Content): `__${Content}__` {
-	return underline(content);
-}
-
-/**
  * Formats the content into underlined text.
  *
  * @typeParam Content - This is inferred by the supplied content
@@ -226,6 +215,16 @@ export function roleMention<RoleId extends Snowflake>(roleId: RoleId): `<@&${Rol
 }
 
 /**
+ * Formats a role id into a linked role mention.
+ *
+ * @typeParam RoleId - This is inferred by the supplied role id
+ * @param roleId - The role id to format
+ */
+export function linkedRoleMention<RoleId extends Snowflake>(roleId: RoleId): `<id:linked-roles:${RoleId}>` {
+	return `<id:linked-roles:${roleId}>`;
+}
+
+/**
  * Formats an application command name, subcommand group name, subcommand name, and id into an application command mention.
  *
  * @typeParam CommandName - This is inferred by the supplied command name
@@ -313,7 +312,7 @@ export function chatInputApplicationCommandMention<
  * @typeParam EmojiId - This is inferred by the supplied emoji id
  * @param emojiId - The emoji id to format
  */
-export function formatEmoji<EmojiId extends Snowflake>(emojiId: EmojiId, animated?: false): `<:_:${EmojiId}>`;
+export function formatEmoji<EmojiId extends Snowflake>(emojiId: EmojiId, animated?: false): `<:emoji:${EmojiId}>`;
 
 /**
  * Formats an animated emoji id into a fully qualified emoji identifier.
@@ -322,7 +321,7 @@ export function formatEmoji<EmojiId extends Snowflake>(emojiId: EmojiId, animate
  * @param emojiId - The emoji id to format
  * @param animated - Whether the emoji is animated
  */
-export function formatEmoji<EmojiId extends Snowflake>(emojiId: EmojiId, animated?: true): `<a:_:${EmojiId}>`;
+export function formatEmoji<EmojiId extends Snowflake>(emojiId: EmojiId, animated?: true): `<a:emoji:${EmojiId}>`;
 
 /**
  * Formats an emoji id into a fully qualified emoji identifier.
@@ -334,7 +333,7 @@ export function formatEmoji<EmojiId extends Snowflake>(emojiId: EmojiId, animate
 export function formatEmoji<EmojiId extends Snowflake>(
 	emojiId: EmojiId,
 	animated?: boolean,
-): `<:_:${EmojiId}>` | `<a:_:${EmojiId}>`;
+): `<:emoji:${EmojiId}>` | `<a:emoji:${EmojiId}>`;
 
 /**
  * Formats a non-animated emoji id and name into a fully qualified emoji identifier.
@@ -383,7 +382,7 @@ export function formatEmoji<EmojiId extends Snowflake, EmojiName extends string>
 
 	const { id, animated: isAnimated, name: emojiName } = options;
 
-	return `<${isAnimated ? 'a' : ''}:${emojiName ?? '_'}:${id}>`;
+	return `<${isAnimated ? 'a' : ''}:${emojiName ?? 'emoji'}:${id}>`;
 }
 
 /**
@@ -754,4 +753,8 @@ export enum GuildNavigationMentions {
 	 * {@link https://support.discord.com/hc/articles/13497665141655 | Server Guide} tab.
 	 */
 	Guide = '<id:guide>',
+	/**
+	 * {@link https://support.discord.com/hc/articles/10388356626711 | Linked Roles} tab.
+	 */
+	LinkedRoles = '<id:linked-roles>',
 }
