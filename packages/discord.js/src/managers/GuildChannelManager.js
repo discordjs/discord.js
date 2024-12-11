@@ -99,13 +99,6 @@ class GuildChannelManager extends CachedManager {
   }
 
   /**
-   * Represents the followed channel data.
-   * @typedef {Object} FollowedChannel
-   * @property {Snowflake} channelId Source channel id
-   * @property {Snowflake} webhookId Created webhook id in the target channel
-   */
-
-  /**
    * Data that can be resolved to a News Channel object. This can be:
    * * A NewsChannel object
    * * A Snowflake
