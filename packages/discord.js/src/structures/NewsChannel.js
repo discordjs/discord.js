@@ -8,6 +8,13 @@ const BaseGuildTextChannel = require('./BaseGuildTextChannel');
  */
 class NewsChannel extends BaseGuildTextChannel {
   /**
+   * Represents the followed channel data.
+   * @typedef {Object} FollowedChannel
+   * @property {Snowflake} channelId Source channel id
+   * @property {Snowflake} webhookId Created webhook id in the target channel
+   */
+
+  /**
    * Adds the target to this channel's followers.
    * @param {TextChannelResolvable} channel The channel where the webhook should be created
    * @param {string} [reason] Reason for creating the webhook
