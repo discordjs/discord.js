@@ -2535,11 +2535,6 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public isFromMessage(): this is ModalMessageModalSubmitInteraction<Cached>;
 }
 
-export interface FollowedChannel {
-  channelId: Snowflake;
-  webhookId: Snowflake;
-}
-
 export class NewsChannel extends BaseGuildTextChannel {
   public threads: GuildTextThreadManager<AllowedThreadTypeForNewsChannel>;
   public type: ChannelType.GuildAnnouncement;

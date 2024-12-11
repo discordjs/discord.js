@@ -113,6 +113,13 @@ class GuildChannelManager extends CachedManager {
    */
 
   /**
+   * Represents the followed channel data.
+   * @typedef {Object} FollowedChannel
+   * @property {Snowflake} channelId Source channel id
+   * @property {Snowflake} webhookId Created webhook id in the target channel
+   */
+
+  /**
    * Adds the target channel to a channel's followers.
    * @param {NewsChannelResolvable} channel The channel to follow
    * @param {TextChannelResolvable} targetChannel The channel where published announcements will be posted at
