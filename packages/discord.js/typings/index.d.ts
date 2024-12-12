@@ -1987,7 +1987,7 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public isMessageContextMenuCommand(): this is MessageContextMenuCommandInteraction<Cached>;
   public isModalSubmit(): this is ModalSubmitInteraction<Cached>;
   public isUserContextMenuCommand(): this is UserContextMenuCommandInteraction<Cached>;
-  public isAnySelectMenu(): this is SelectMenuInteraction<Cached>;
+  public isSelectMenu(): this is SelectMenuInteraction<Cached>;
   public isStringSelectMenu(): this is StringSelectMenuInteraction<Cached>;
   public isUserSelectMenu(): this is UserSelectMenuInteraction<Cached>;
   public isRoleSelectMenu(): this is RoleSelectMenuInteraction<Cached>;
