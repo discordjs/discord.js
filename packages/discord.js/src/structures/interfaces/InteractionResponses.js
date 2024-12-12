@@ -312,7 +312,7 @@ class InteractionResponses {
       ? new InteractionCallbackResponse(this.client, response)
       : options.fetchReply
         ? this.fetchReply()
-        : new InteractionResponse(this, this.message?.interaction?.id);
+        : new InteractionResponse(this, this.message?.interactionMetadata?.id);
   }
 
   /**
@@ -363,7 +363,7 @@ class InteractionResponses {
       ? new InteractionCallbackResponse(this.client, response)
       : options.fetchReply
         ? this.fetchReply()
-        : new InteractionResponse(this, this.message.interaction?.id);
+        : new InteractionResponse(this, this.message.interactionMetadata?.id);
   }
 
   /**
