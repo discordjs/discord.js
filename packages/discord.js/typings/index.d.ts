@@ -2964,8 +2964,6 @@ export class ChannelSelectMenuInteraction<
   public inRawGuild(): this is ChannelSelectMenuInteraction<'raw'>;
 }
 
-// Ideally this should be named SelectMenuInteraction, but that's the name of the "old" StringSelectMenuInteraction, meaning
-// the type name is reserved as a re-export to prevent a breaking change from being made, as such:
 export type SelectMenuInteraction<Cached extends CacheType = CacheType> =
   | StringSelectMenuInteraction<Cached>
   | UserSelectMenuInteraction<Cached>
