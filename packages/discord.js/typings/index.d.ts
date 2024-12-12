@@ -1987,7 +1987,7 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public isMessageContextMenuCommand(): this is MessageContextMenuCommandInteraction<Cached>;
   public isModalSubmit(): this is ModalSubmitInteraction<Cached>;
   public isUserContextMenuCommand(): this is UserContextMenuCommandInteraction<Cached>;
-  public isAnySelectMenu(): this is SelectMenuInteraction<Cached>;
+  public isSelectMenu(): this is SelectMenuInteraction<Cached>;
   public isStringSelectMenu(): this is StringSelectMenuInteraction<Cached>;
   public isUserSelectMenu(): this is UserSelectMenuInteraction<Cached>;
   public isRoleSelectMenu(): this is RoleSelectMenuInteraction<Cached>;
@@ -2964,8 +2964,6 @@ export class ChannelSelectMenuInteraction<
   public inRawGuild(): this is ChannelSelectMenuInteraction<'raw'>;
 }
 
-// Ideally this should be named SelectMenuInteraction, but that's the name of the "old" StringSelectMenuInteraction, meaning
-// the type name is reserved as a re-export to prevent a breaking change from being made, as such:
 export type SelectMenuInteraction<Cached extends CacheType = CacheType> =
   | StringSelectMenuInteraction<Cached>
   | UserSelectMenuInteraction<Cached>
