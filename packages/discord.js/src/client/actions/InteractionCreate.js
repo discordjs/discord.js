@@ -9,6 +9,7 @@ const ChatInputCommandInteraction = require('../../structures/ChatInputCommandIn
 const MentionableSelectMenuInteraction = require('../../structures/MentionableSelectMenuInteraction');
 const MessageContextMenuCommandInteraction = require('../../structures/MessageContextMenuCommandInteraction');
 const ModalSubmitInteraction = require('../../structures/ModalSubmitInteraction');
+const PrimaryEntryPointCommandInteraction = require('../../structures/PrimaryEntryPointCommandInteraction');
 const RoleSelectMenuInteraction = require('../../structures/RoleSelectMenuInteraction');
 const StringSelectMenuInteraction = require('../../structures/StringSelectMenuInteraction');
 const UserContextMenuCommandInteraction = require('../../structures/UserContextMenuCommandInteraction');
@@ -37,6 +38,9 @@ class InteractionCreateAction extends Action {
           case ApplicationCommandType.Message:
             if (channel && !channel.isTextBased()) return;
             InteractionClass = MessageContextMenuCommandInteraction;
+            break;
+          case ApplicationCommandType.PrimaryEntryPoint:
+            InteractionClass = PrimaryEntryPointCommandInteraction;
             break;
           default:
             client.emit(
