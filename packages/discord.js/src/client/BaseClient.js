@@ -4,7 +4,7 @@ const EventEmitter = require('node:events');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const Options = require('../util/Options');
+const { Options } = require('../util/Options');
 const { flatten } = require('../util/Util');
 
 /**
@@ -112,7 +112,7 @@ class BaseClient extends EventEmitter {
   }
 }
 
-module.exports = BaseClient;
+exports.BaseClient = BaseClient;
 
 /**
  * @external REST

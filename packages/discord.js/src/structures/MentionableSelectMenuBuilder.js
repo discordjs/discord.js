@@ -24,7 +24,7 @@ class MentionableSelectMenuBuilder extends BuildersMentionableSelectMenu {
   }
 }
 
-module.exports = MentionableSelectMenuBuilder;
+exports.MentionableSelectMenuBuilder = MentionableSelectMenuBuilder;
 
 /**
  * @external BuildersMentionableSelectMenu

@@ -1,7 +1,7 @@
 'use strict';
 
 const { Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
+const { CachedManager } = require('./CachedManager');
 const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../errors');
 const { StageInstance } = require('../structures/StageInstance');
 
@@ -156,4 +156,4 @@ class StageInstanceManager extends CachedManager {
   }
 }
 
-module.exports = StageInstanceManager;
+exports.StageInstanceManager = StageInstanceManager;

@@ -1,6 +1,6 @@
 'use strict';
 
-const Action = require('./Action');
+const { Action } = require('./Action');
 const { createChannel } = require('../../util/Channels');
 
 class ChannelUpdateAction extends Action {
@@ -39,4 +39,4 @@ class ChannelUpdateAction extends Action {
   }
 }
 
-module.exports = ChannelUpdateAction;
+exports.ChannelUpdateAction = ChannelUpdateAction;

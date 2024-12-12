@@ -1,7 +1,7 @@
 'use strict';
 
-const Action = require('./Action');
-const Events = require('../../util/Events');
+const { Action } = require('./Action');
+const { Events } = require('../../util/Events');
 
 class AutoModerationRuleCreateAction extends Action {
   handle(data) {
@@ -24,4 +24,4 @@ class AutoModerationRuleCreateAction extends Action {
   }
 }
 
-module.exports = AutoModerationRuleCreateAction;
+exports.AutoModerationRuleCreateAction = AutoModerationRuleCreateAction;

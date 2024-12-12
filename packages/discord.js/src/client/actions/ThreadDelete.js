@@ -1,7 +1,7 @@
 'use strict';
 
-const Action = require('./Action');
-const Events = require('../../util/Events');
+const { Action } = require('./Action');
+const { Events } = require('../../util/Events');
 
 class ThreadDeleteAction extends Action {
   handle(data) {
@@ -23,4 +23,4 @@ class ThreadDeleteAction extends Action {
   }
 }
 
-module.exports = ThreadDeleteAction;
+exports.ThreadDeleteAction = ThreadDeleteAction;
