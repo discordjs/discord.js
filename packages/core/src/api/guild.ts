@@ -67,8 +67,6 @@ import {
 	type RESTPatchAPIGuildStickerResult,
 	type RESTPatchAPIGuildTemplateJSONBody,
 	type RESTPatchAPIGuildTemplateResult,
-	type RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
-	type RESTPatchAPIGuildVoiceStateUserJSONBody,
 	type RESTPatchAPIGuildWelcomeScreenJSONBody,
 	type RESTPatchAPIGuildWelcomeScreenResult,
 	type RESTPatchAPIGuildWidgetSettingsJSONBody,
@@ -108,7 +106,6 @@ import {
 	type RESTPostAPIGuildSoundboardSoundResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
-import { VoiceAPI } from './voice';
 
 export interface CreateStickerOptions extends Omit<RESTPostAPIGuildStickerFormDataBody, 'file'> {
 	file: RawFile;
@@ -680,25 +677,6 @@ export class GuildsAPI {
 			body,
 			signal,
 		}) as Promise<RESTPatchAPIGuildWelcomeScreenResult>;
-	}
-
-	/**
-	 * Edits a user's voice state in a guild
-	 *
-	 * @see {@link https://discord.com/developers/docs/resources/voice#modify-user-voice-state}
-	 * @param guildId - The id of the guild to edit the current user's voice state in
-	 * @param userId - The id of the user to edit the voice state for
-	 * @param body - The data for editing the voice state
-	 * @param options - The options for editing the voice state
-	 * @deprecated Use {@link VoiceAPI.editUserVoiceState} instead
-	 */
-	public async editUserVoiceState(
-		guildId: Snowflake,
-		userId: Snowflake,
-		body: RESTPatchAPIGuildVoiceStateUserJSONBody,
-		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
-	) {
-		return new VoiceAPI(this.rest).editUserVoiceState(guildId, userId, body, { reason, signal });
 	}
 
 	/**
@@ -1292,23 +1270,6 @@ export class GuildsAPI {
 	 */
 	public async getWebhooks(id: Snowflake) {
 		return this.rest.get(Routes.guildWebhooks(id)) as Promise<RESTGetAPIGuildWebhooksResult>;
-	}
-
-	/**
-	 * Sets the voice state for the current user
-	 *
-	 * @see {@link https://discord.com/developers/docs/resources/voice#modify-current-user-voice-state}
-	 * @param guildId - The id of the guild
-	 * @param body - The data for setting the voice state
-	 * @param options - The options for setting the voice state
-	 * @deprecated Use {@link VoiceAPI.editVoiceState} instead
-	 */
-	public async setVoiceState(
-		guildId: Snowflake,
-		body: RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody = {},
-		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
-		return new VoiceAPI(this.rest).editVoiceState(guildId, body, { signal });
 	}
 
 	/**
