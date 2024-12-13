@@ -228,7 +228,7 @@ class InteractionResponses {
 
     return options.withResponse
       ? new InteractionCallbackResponse(this.client, response)
-      : new InteractionResponse(this, this.message?.interaction?.id);
+      : new InteractionResponse(this, this.message?.interactionMetadata?.id);
   }
 
   /**
@@ -266,7 +266,7 @@ class InteractionResponses {
 
     return options.withResponse
       ? new InteractionCallbackResponse(this.client, response)
-      : new InteractionResponse(this, this.message.interaction?.id);
+      : new InteractionResponse(this, this.message.interactionMetadata?.id);
   }
 
   /**
