@@ -63,12 +63,6 @@ export interface RequiredWebSocketManagerOptions {
 	 * The intents to request
 	 */
 	intents: GatewayIntentBits | 0;
-	/**
-	 * The REST instance to use for fetching gateway information
-	 *
-	 * @deprecated In the future, providing a rest instance will not be required. Provide the `fetchGatewayInformation` function instead.
-	 */
-	rest: REST;
 }
 
 /**
@@ -105,7 +99,6 @@ export interface OptionalWebSocketManagerOptions {
 	 * @defaultValue `'json'`
 	 */
 	encoding: Encoding;
-	// TODO: Move this to required in the next major version
 	/**
 	 * Fetches the initial gateway URL used to connect to Discord. When missing, this will default to the gateway URL
 	 * that Discord returns from the `/gateway/bot` route.
@@ -145,6 +138,10 @@ export interface OptionalWebSocketManagerOptions {
 	 * How long to wait for a shard's READY packet before giving up
 	 */
 	readyTimeout: number | null;
+	/**
+	 * The REST instance to use for fetching gateway information
+	 */
+	rest?: REST;
 	/**
 	 * Function used to retrieve session information (and attempt to resume) for a given shard
 	 *
@@ -275,12 +272,22 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 	}
 
 	public constructor(options: CreateWebSocketManagerOptions) {
+		if (!options.rest && !options.fetchGatewayInformation) {
+			throw new RangeError('Either a REST instance or a fetchGatewayInformation function must be provided');
+		}
+
 		super();
 		this.options = {
 			...DefaultWebSocketManagerOptions,
-			async fetchGatewayInformation() {
-				return options.rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
-			},
+			fetchGatewayInformation:
+				options.fetchGatewayInformation ??
+				(async () => {
+					if (!options.rest) {
+						throw new RangeError('A REST instance must be provided if no fetchGatewayInformation function is provided');
+					}
+
+					return options.rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
+				}),
 			...options,
 		};
 		this.strategy = this.options.buildStrategy(this);
