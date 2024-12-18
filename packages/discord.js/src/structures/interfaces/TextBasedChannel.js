@@ -7,7 +7,6 @@ const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../../errors
 const { MaxBulkDeletableMessageAge } = require('../../util/Constants');
 const InteractionCollector = require('../InteractionCollector');
 const MessageCollector = require('../MessageCollector');
-const MessagePayload = require('../MessagePayload');
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -113,7 +112,7 @@ class TextBasedChannel {
   /**
    * The options for sending a message.
    * @typedef {BaseMessageCreateOptions} MessageCreateOptions
-   * @property {ReplyOptions} [reply] The options for replying to a message
+   * @property {MessageReference|MessageResolvable} [messageReference] The options for a reference to a message
    */
 
   /**
@@ -132,57 +131,6 @@ class TextBasedChannel {
    * - `everyone`
    * @typedef {string} MessageMentionTypes
    */
-
-  /**
-   * Sends a message to this channel.
-   * @param {string|MessagePayload|MessageCreateOptions} options The options to provide
-   * @returns {Promise<Message>}
-   * @example
-   * // Send a basic message
-   * channel.send('hello!')
-   *   .then(message => console.log(`Sent message: ${message.content}`))
-   *   .catch(console.error);
-   * @example
-   * // Send a remote file
-   * channel.send({
-   *   files: ['https://cdn.discordapp.com/icons/222078108977594368/6e1019b3179d71046e463a75915e7244.png?size=2048']
-   * })
-   *   .then(console.log)
-   *   .catch(console.error);
-   * @example
-   * // Send a local file
-   * channel.send({
-   *   files: [{
-   *     attachment: 'entire/path/to/file.jpg',
-   *     name: 'file.jpg',
-   *     description: 'A description of the file'
-   *   }]
-   * })
-   *   .then(console.log)
-   *   .catch(console.error);
-   */
-  async send(options) {
-    const User = require('../User');
-    const { GuildMember } = require('../GuildMember');
-
-    if (this instanceof User || this instanceof GuildMember) {
-      const dm = await this.createDM();
-      return dm.send(options);
-    }
-
-    let messagePayload;
-
-    if (options instanceof MessagePayload) {
-      messagePayload = options.resolveBody();
-    } else {
-      messagePayload = MessagePayload.create(this, options).resolveBody();
-    }
-
-    const { body, files } = await messagePayload.resolveFiles();
-    const d = await this.client.rest.post(Routes.channelMessages(this.id), { body, files });
-
-    return this.messages.cache.get(d.id) ?? this.messages._add(d);
-  }
 
   /**
    * Sends a typing indicator in the channel.
@@ -398,24 +346,22 @@ class TextBasedChannel {
     return this.edit({ nsfw, reason });
   }
 
-  static applyToClass(structure, full = false, ignore = []) {
-    const props = ['send'];
-    if (full) {
-      props.push(
-        'lastMessage',
-        'lastPinAt',
-        'bulkDelete',
-        'sendTyping',
-        'createMessageCollector',
-        'awaitMessages',
-        'createMessageComponentCollector',
-        'awaitMessageComponent',
-        'fetchWebhooks',
-        'createWebhook',
-        'setRateLimitPerUser',
-        'setNSFW',
-      );
-    }
+  static applyToClass(structure, ignore = []) {
+    const props = [
+      'lastMessage',
+      'lastPinAt',
+      'bulkDelete',
+      'sendTyping',
+      'createMessageCollector',
+      'awaitMessages',
+      'createMessageComponentCollector',
+      'awaitMessageComponent',
+      'fetchWebhooks',
+      'createWebhook',
+      'setRateLimitPerUser',
+      'setNSFW',
+    ];
+
     for (const prop of props) {
       if (ignore.includes(prop)) continue;
       Object.defineProperty(

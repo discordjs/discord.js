@@ -105,7 +105,6 @@ class DMChannel extends BaseChannel {
   /* eslint-disable no-empty-function */
   get lastMessage() {}
   get lastPinAt() {}
-  send() {}
   sendTyping() {}
   createMessageCollector() {}
   awaitMessages() {}
@@ -118,7 +117,7 @@ class DMChannel extends BaseChannel {
   // Doesn't work on DM channels; setNSFW() {}
 }
 
-TextBasedChannel.applyToClass(DMChannel, true, [
+TextBasedChannel.applyToClass(DMChannel, [
   'bulkDelete',
   'fetchWebhooks',
   'createWebhook',

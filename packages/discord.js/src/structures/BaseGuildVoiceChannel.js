@@ -216,7 +216,6 @@ class BaseGuildVoiceChannel extends GuildChannel {
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
   /* eslint-disable no-empty-function */
   get lastMessage() {}
-  send() {}
   sendTyping() {}
   createMessageCollector() {}
   awaitMessages() {}
@@ -229,6 +228,6 @@ class BaseGuildVoiceChannel extends GuildChannel {
   setNSFW() {}
 }
 
-TextBasedChannel.applyToClass(BaseGuildVoiceChannel, true, ['lastPinAt']);
+TextBasedChannel.applyToClass(BaseGuildVoiceChannel, ['lastPinAt']);
 
 module.exports = BaseGuildVoiceChannel;
