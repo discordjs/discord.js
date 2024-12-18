@@ -1,5 +1,6 @@
 import { REST } from '@discordjs/rest';
-import { GatewayOpcodes, type APIGatewayBotInfo, type GatewaySendPayload } from 'discord-api-types/v10';
+import type { RESTGetAPIGatewayBotResult, APIGatewayBotInfo, GatewaySendPayload } from 'discord-api-types/v10';
+import { GatewayOpcodes, Routes } from 'discord-api-types/v10';
 import { MockAgent, type Interceptable } from 'undici';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { WebSocketManager, type IShardingStrategy } from '../../src/index.js';
@@ -20,7 +21,13 @@ global.Date.now = NOW;
 
 test('fetch gateway information', async () => {
 	const rest = new REST().setAgent(mockAgent).setToken('A-Very-Fake-Token');
-	const manager = new WebSocketManager({ token: 'A-Very-Fake-Token', intents: 0, rest });
+	const manager = new WebSocketManager({
+		token: 'A-Very-Fake-Token',
+		intents: 0,
+		async fetchGatewayInformation() {
+			return rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
+		},
+	});
 
 	const data: APIGatewayBotInfo = {
 		shards: 1,
@@ -89,7 +96,14 @@ test('fetch gateway information', async () => {
 describe('get shard count', () => {
 	test('with shard count', async () => {
 		const rest = new REST().setAgent(mockAgent).setToken('A-Very-Fake-Token');
-		const manager = new WebSocketManager({ token: 'A-Very-Fake-Token', intents: 0, rest, shardCount: 2 });
+		const manager = new WebSocketManager({
+			token: 'A-Very-Fake-Token',
+			intents: 0,
+			shardCount: 2,
+			async fetchGatewayInformation() {
+				return rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
+			},
+		});
 
 		expect(await manager.getShardCount()).toBe(2);
 	});
@@ -97,7 +111,14 @@ describe('get shard count', () => {
 	test('with shard ids array', async () => {
 		const rest = new REST().setAgent(mockAgent).setToken('A-Very-Fake-Token');
 		const shardIds = [5, 9];
-		const manager = new WebSocketManager({ token: 'A-Very-Fake-Token', intents: 0, rest, shardIds });
+		const manager = new WebSocketManager({
+			token: 'A-Very-Fake-Token',
+			intents: 0,
+			shardIds,
+			async fetchGatewayInformation() {
+				return rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
+			},
+		});
 
 		expect(await manager.getShardCount()).toBe(shardIds.at(-1)! + 1);
 	});
@@ -105,7 +126,14 @@ describe('get shard count', () => {
 	test('with shard id range', async () => {
 		const rest = new REST().setAgent(mockAgent).setToken('A-Very-Fake-Token');
 		const shardIds = { start: 5, end: 9 };
-		const manager = new WebSocketManager({ token: 'A-Very-Fake-Token', intents: 0, rest, shardIds });
+		const manager = new WebSocketManager({
+			token: 'A-Very-Fake-Token',
+			intents: 0,
+			shardIds,
+			async fetchGatewayInformation() {
+				return rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
+			},
+		});
 
 		expect(await manager.getShardCount()).toBe(shardIds.end + 1);
 	});
@@ -113,7 +141,14 @@ describe('get shard count', () => {
 
 test('update shard count', async () => {
 	const rest = new REST().setAgent(mockAgent).setToken('A-Very-Fake-Token');
-	const manager = new WebSocketManager({ token: 'A-Very-Fake-Token', intents: 0, rest, shardCount: 2 });
+	const manager = new WebSocketManager({
+		token: 'A-Very-Fake-Token',
+		intents: 0,
+		shardCount: 2,
+		async fetchGatewayInformation() {
+			return rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
+		},
+	});
 
 	const data: APIGatewayBotInfo = {
 		shards: 1,
@@ -162,7 +197,15 @@ test('update shard count', async () => {
 test('it handles passing in both shardIds and shardCount', async () => {
 	const rest = new REST().setAgent(mockAgent).setToken('A-Very-Fake-Token');
 	const shardIds = { start: 2, end: 3 };
-	const manager = new WebSocketManager({ token: 'A-Very-Fake-Token', intents: 0, rest, shardIds, shardCount: 4 });
+	const manager = new WebSocketManager({
+		token: 'A-Very-Fake-Token',
+		intents: 0,
+		shardIds,
+		shardCount: 4,
+		async fetchGatewayInformation() {
+			return rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
+		},
+	});
 
 	expect(await manager.getShardCount()).toBe(4);
 	expect(await manager.getShardIds()).toStrictEqual([2, 3]);
