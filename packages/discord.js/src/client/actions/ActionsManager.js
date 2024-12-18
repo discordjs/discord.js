@@ -43,6 +43,9 @@ class ActionsManager {
     this.register(require('./GuildScheduledEventUpdate'));
     this.register(require('./GuildScheduledEventUserAdd'));
     this.register(require('./GuildScheduledEventUserRemove'));
+    this.register(require('./GuildSoundboardSoundCreate'));
+    this.register(require('./GuildSoundboardSoundDelete'));
+    this.register(require('./GuildSoundboardSoundUpdate'));
     this.register(require('./GuildStickerCreate'));
     this.register(require('./GuildStickerDelete'));
     this.register(require('./GuildStickerUpdate'));
