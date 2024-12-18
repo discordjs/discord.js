@@ -3132,6 +3132,7 @@ export class Subscription extends Base {
   public userId: Snowflake;
   public skuIds: Snowflake[];
   public entitlementIds: Snowflake[];
+  public renewalSkuIds: Snowflake[] | null;
   public currentPeriodStartTimestamp: number;
   public currentPeriodEndTimestamp: number;
   public status: SubscriptionStatus;
