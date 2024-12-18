@@ -5,6 +5,7 @@ const { deprecate } = require('node:util');
 const { isJSONEncodable } = require('@discordjs/util');
 const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../../errors');
+const MessageFlagsBitField = require('../../util/MessageFlagsBitField');
 const InteractionCollector = require('../InteractionCollector');
 const InteractionResponse = require('../InteractionResponse');
 const MessagePayload = require('../MessagePayload');
@@ -85,24 +86,25 @@ class InteractionResponses {
       }
     }
 
-    let { flags } = options;
+    const flags = new MessageFlagsBitField(options.flags);
 
     if (options.ephemeral) {
-      flags |= MessageFlags.Ephemeral;
+      flags.add(MessageFlags.Ephemeral);
     }
 
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
         type: InteractionResponseType.DeferredChannelMessageWithSource,
         data: {
-          flags,
+          flags: flags.bitfield,
         },
       },
       auth: false,
     });
 
     this.deferred = true;
-    this.ephemeral = Boolean(flags & MessageFlags.Ephemeral);
+    this.ephemeral = flags.has(MessageFlags.Ephemeral);
+
     return options.fetchReply ? this.fetchReply() : new InteractionResponse(this);
   }
 
@@ -154,6 +156,7 @@ class InteractionResponses {
 
     this.ephemeral = Boolean(data.flags & MessageFlags.Ephemeral);
     this.replied = true;
+
     return options.fetchReply ? this.fetchReply() : new InteractionResponse(this);
   }
 
