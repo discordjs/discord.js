@@ -6,7 +6,7 @@
 	<br />
 	<p>
 		<a href="https://discord.gg/djs"><img src="https://img.shields.io/discord/222078108977594368?color=5865F2&logo=discord&logoColor=white" alt="Discord server" /></a>
-		<a href="https://www.npmjs.com/package/@discordjs/builders"><img src="https://img.shields.io/npm/v/@discordjs/builders.svg?maxAge=3600" alt="npm version" /></a>
+		<a href="https://www.npmjs.com/package/@discordjs/builders"><img src="https://img.shields.io/npm/v/@discordjs/builders.svg?maxAge=3600&logo=npm&logoColor=fff&color=ff3b30" alt="npm version" /></a>
 		<a href="https://www.npmjs.com/package/@discordjs/builders"><img src="https://img.shields.io/npm/dt/@discordjs/builders.svg?maxAge=3600" alt="npm downloads" /></a>
 		<a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/discordjs/discord.js/actions/workflows/test.yml/badge.svg" alt="Build status" /></a>
 		<a href="https://codecov.io/gh/discordjs/discord.js" ><img src="https://codecov.io/gh/discordjs/discord.js/branch/main/graph/badge.svg?precision=2&flag=builders" alt="Code coverage" /></a>
