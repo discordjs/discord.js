@@ -194,8 +194,6 @@ import {
   ApplicationWebhookEventType,
   GatewaySendPayload,
   GatewayDispatchPayload,
-  ApplicationWebhookEventStatus,
-  ApplicationWebhookEventType,
   RESTPostAPIInteractionCallbackWithResponseResult,
   RESTAPIInteractionCallbackObject,
   RESTAPIInteractionCallbackResourceObject,
