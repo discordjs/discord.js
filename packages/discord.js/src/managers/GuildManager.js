@@ -5,19 +5,19 @@ const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes, RouteBases } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
-const ShardClientUtil = require('../sharding/ShardClientUtil');
+const { CachedManager } = require('./CachedManager');
+const { ShardClientUtil } = require('../sharding/ShardClientUtil');
 const { Guild } = require('../structures/Guild');
-const GuildChannel = require('../structures/GuildChannel');
-const GuildEmoji = require('../structures/GuildEmoji');
+const { GuildChannel } = require('../structures/GuildChannel');
+const { GuildEmoji } = require('../structures/GuildEmoji');
 const { GuildMember } = require('../structures/GuildMember');
-const Invite = require('../structures/Invite');
-const OAuth2Guild = require('../structures/OAuth2Guild');
+const { Invite } = require('../structures/Invite');
+const { OAuth2Guild } = require('../structures/OAuth2Guild');
 const { Role } = require('../structures/Role');
 const { resolveImage } = require('../util/DataResolver');
-const Events = require('../util/Events');
-const PermissionsBitField = require('../util/PermissionsBitField');
-const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
+const { Events } = require('../util/Events');
+const { PermissionsBitField } = require('../util/PermissionsBitField');
+const { SystemChannelFlagsBitField } = require('../util/SystemChannelFlagsBitField');
 const { resolveColor } = require('../util/Util');
 
 let cacheWarningEmitted = false;
@@ -296,4 +296,4 @@ class GuildManager extends CachedManager {
   }
 }
 
-module.exports = GuildManager;
+exports.GuildManager = GuildManager;

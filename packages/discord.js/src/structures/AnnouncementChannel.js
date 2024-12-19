@@ -1,7 +1,7 @@
 'use strict';
 
 const { Routes } = require('discord-api-types/v10');
-const BaseGuildTextChannel = require('./BaseGuildTextChannel');
+const { BaseGuildTextChannel } = require('./BaseGuildTextChannel');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 
 /**
@@ -29,4 +29,4 @@ class AnnouncementChannel extends BaseGuildTextChannel {
   }
 }
 
-module.exports = AnnouncementChannel;
+exports.AnnouncementChannel = AnnouncementChannel;

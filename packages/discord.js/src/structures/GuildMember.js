@@ -1,13 +1,13 @@
 'use strict';
 
 const { PermissionFlagsBits } = require('discord-api-types/v10');
-const Base = require('./Base');
-const VoiceState = require('./VoiceState');
-const TextBasedChannel = require('./interfaces/TextBasedChannel');
+const { Base } = require('./Base');
+const { VoiceState } = require('./VoiceState');
+const { TextBasedChannel } = require('./interfaces/TextBasedChannel');
 const { DiscordjsError, ErrorCodes } = require('../errors');
-const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
+const { GuildMemberRoleManager } = require('../managers/GuildMemberRoleManager');
 const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField');
-const PermissionsBitField = require('../util/PermissionsBitField');
+const { PermissionsBitField } = require('../util/PermissionsBitField');
 
 /**
  * Represents a member of a guild on Discord.

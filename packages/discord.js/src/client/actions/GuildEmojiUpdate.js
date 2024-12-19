@@ -1,7 +1,7 @@
 'use strict';
 
-const Action = require('./Action');
-const Events = require('../../util/Events');
+const { Action } = require('./Action');
+const { Events } = require('../../util/Events');
 
 class GuildEmojiUpdateAction extends Action {
   handle(current, data) {
@@ -17,4 +17,4 @@ class GuildEmojiUpdateAction extends Action {
   }
 }
 
-module.exports = GuildEmojiUpdateAction;
+exports.GuildEmojiUpdateAction = GuildEmojiUpdateAction;

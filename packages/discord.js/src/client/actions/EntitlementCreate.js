@@ -1,7 +1,7 @@
 'use strict';
 
-const Action = require('./Action');
-const Events = require('../../util/Events');
+const { Action } = require('./Action');
+const { Events } = require('../../util/Events');
 
 class EntitlementCreateAction extends Action {
   handle(data) {
@@ -20,4 +20,4 @@ class EntitlementCreateAction extends Action {
   }
 }
 
-module.exports = EntitlementCreateAction;
+exports.EntitlementCreateAction = EntitlementCreateAction;

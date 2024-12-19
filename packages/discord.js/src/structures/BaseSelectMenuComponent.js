@@ -1,6 +1,6 @@
 'use strict';
 
-const Component = require('./Component');
+const { Component } = require('./Component');
 
 /**
  * Represents a select menu component
@@ -53,4 +53,4 @@ class BaseSelectMenuComponent extends Component {
   }
 }
 
-module.exports = BaseSelectMenuComponent;
+exports.BaseSelectMenuComponent = BaseSelectMenuComponent;

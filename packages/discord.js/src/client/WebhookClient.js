@@ -1,8 +1,8 @@
 'use strict';
 
-const BaseClient = require('./BaseClient');
+const { BaseClient } = require('./BaseClient');
 const { DiscordjsError, ErrorCodes } = require('../errors');
-const Webhook = require('../structures/Webhook');
+const { Webhook } = require('../structures/Webhook');
 const { parseWebhookURL } = require('../util/Util');
 
 /**
@@ -100,4 +100,4 @@ class WebhookClient extends BaseClient {
 
 Webhook.applyToClass(WebhookClient);
 
-module.exports = WebhookClient;
+exports.WebhookClient = WebhookClient;

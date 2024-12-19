@@ -1,7 +1,7 @@
 'use strict';
 
-const Action = require('./Action');
-const Events = require('../../util/Events');
+const { Action } = require('./Action');
+const { Events } = require('../../util/Events');
 
 class InviteCreateAction extends Action {
   handle(data) {
@@ -24,4 +24,4 @@ class InviteCreateAction extends Action {
   }
 }
 
-module.exports = InviteCreateAction;
+exports.InviteCreateAction = InviteCreateAction;

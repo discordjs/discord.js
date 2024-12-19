@@ -1,6 +1,6 @@
 'use strict';
 
-const AttachmentFlagsBitField = require('../util/AttachmentFlagsBitField.js');
+const { AttachmentFlagsBitField } = require('../util/AttachmentFlagsBitField.js');
 const { basename, flatten } = require('../util/Util');
 
 /**
@@ -160,4 +160,4 @@ class Attachment {
   }
 }
 
-module.exports = Attachment;
+exports.Attachment = Attachment;

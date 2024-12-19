@@ -33,4 +33,4 @@ class DirectoryChannel extends BaseChannel {
   }
 }
 
-module.exports = DirectoryChannel;
+exports.DirectoryChannel = DirectoryChannel;
