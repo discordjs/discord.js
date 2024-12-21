@@ -262,7 +262,7 @@ class BaseInteraction extends Base {
    * Indicates whether this interaction is a select menu of any known type.
    * @returns {boolean}
    */
-  isAnySelectMenu() {
+  isSelectMenu() {
     return this.type === InteractionType.MessageComponent && SelectMenuTypes.includes(this.componentType);
   }
 

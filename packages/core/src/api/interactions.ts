@@ -8,13 +8,32 @@ import {
 	type APIInteractionResponseCallbackData,
 	type APIInteractionResponseDeferredChannelMessageWithSource,
 	type APIModalInteractionResponseCallbackData,
-	type APIPremiumRequiredInteractionResponse,
 	type RESTGetAPIWebhookWithTokenMessageResult,
 	type RESTPostAPIInteractionCallbackQuery,
 	type RESTPostAPIInteractionCallbackWithResponseResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
 import type { WebhooksAPI } from './webhook.js';
+
+export interface CreateInteractionResponseOptions
+	extends APIInteractionResponseCallbackData,
+		RESTPostAPIInteractionCallbackQuery {
+	files?: RawFile[];
+}
+
+export type CreateInteractionDeferResponseOptions = APIInteractionResponseDeferredChannelMessageWithSource['data'] &
+	RESTPostAPIInteractionCallbackQuery;
+
+export type CreateInteractionFollowUpResponseOptions = APIInteractionResponseCallbackData & { files?: RawFile[] };
+export type EditInteractionResponseOptions = APIInteractionResponseCallbackData & { files?: RawFile[] };
+
+export type CreateInteractionUpdateMessageResponseOptions = APIInteractionResponseCallbackData &
+	RESTPostAPIInteractionCallbackQuery & { files?: RawFile[] };
+
+export type CreateAutocompleteResponseOptions = APICommandAutocompleteInteractionResponseCallbackData &
+	RESTPostAPIInteractionCallbackQuery;
+
+export type CreateModalResponseOptions = APIModalInteractionResponseCallbackData & RESTPostAPIInteractionCallbackQuery;
 
 export class InteractionsAPI {
 	public constructor(
@@ -34,8 +53,7 @@ export class InteractionsAPI {
 	public async reply(
 		interactionId: Snowflake,
 		interactionToken: string,
-		body: APIInteractionResponseCallbackData &
-			RESTPostAPIInteractionCallbackQuery & { files?: RawFile[]; with_response: true },
+		body: CreateInteractionResponseOptions & { with_response: true },
 		options?: Pick<RequestData, 'signal'>,
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
@@ -51,19 +69,14 @@ export class InteractionsAPI {
 	public async reply(
 		interactionId: Snowflake,
 		interactionToken: string,
-		body: APIInteractionResponseCallbackData &
-			RESTPostAPIInteractionCallbackQuery & { files?: RawFile[]; with_response?: false },
+		body: CreateInteractionResponseOptions & { with_response?: false },
 		options?: Pick<RequestData, 'signal'>,
 	): Promise<undefined>;
 
 	public async reply(
 		interactionId: Snowflake,
 		interactionToken: string,
-		{
-			files,
-			with_response,
-			...data
-		}: APIInteractionResponseCallbackData & RESTPostAPIInteractionCallbackQuery & { files?: RawFile[] },
+		{ files, with_response, ...data }: CreateInteractionResponseOptions,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
@@ -92,8 +105,7 @@ export class InteractionsAPI {
 	public async defer(
 		interactionId: Snowflake,
 		interactionToken: string,
-		body: APIInteractionResponseDeferredChannelMessageWithSource['data'] &
-			RESTPostAPIInteractionCallbackQuery & { with_response: true },
+		body: CreateInteractionDeferResponseOptions & { with_response: true },
 		options?: Pick<RequestData, 'signal'>,
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
@@ -109,18 +121,14 @@ export class InteractionsAPI {
 	public async defer(
 		interactionId: Snowflake,
 		interactionToken: string,
-		body?: APIInteractionResponseDeferredChannelMessageWithSource['data'] &
-			RESTPostAPIInteractionCallbackQuery & { with_response?: false },
+		body?: CreateInteractionDeferResponseOptions & { with_response?: false },
 		options?: Pick<RequestData, 'signal'>,
 	): Promise<undefined>;
 
 	public async defer(
 		interactionId: Snowflake,
 		interactionToken: string,
-		{
-			with_response,
-			...data
-		}: APIInteractionResponseDeferredChannelMessageWithSource['data'] & RESTPostAPIInteractionCallbackQuery = {},
+		{ with_response, ...data }: CreateInteractionDeferResponseOptions = {},
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
@@ -150,7 +158,7 @@ export class InteractionsAPI {
 		interactionToken: string,
 		body: RESTPostAPIInteractionCallbackQuery & { with_response: true },
 		options?: Pick<RequestData, 'signal'>,
-	): Promise<undefined>;
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
 	 * Defers an update from a message component interaction
@@ -166,7 +174,7 @@ export class InteractionsAPI {
 		interactionToken: string,
 		body?: RESTPostAPIInteractionCallbackQuery & { with_response?: false },
 		options?: Pick<RequestData, 'signal'>,
-	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
+	): Promise<undefined>;
 
 	public async deferMessageUpdate(
 		interactionId: Snowflake,
@@ -198,7 +206,7 @@ export class InteractionsAPI {
 	public async followUp(
 		applicationId: Snowflake,
 		interactionToken: string,
-		body: APIInteractionResponseCallbackData & { files?: RawFile[] },
+		body: CreateInteractionFollowUpResponseOptions,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.webhooks.execute(applicationId, interactionToken, { ...body, wait: true }, { signal });
@@ -218,7 +226,7 @@ export class InteractionsAPI {
 	public async editReply(
 		applicationId: Snowflake,
 		interactionToken: string,
-		callbackData: APIInteractionResponseCallbackData & { files?: RawFile[] },
+		callbackData: EditInteractionResponseOptions,
 		messageId?: Snowflake | '@original',
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
@@ -280,8 +288,7 @@ export class InteractionsAPI {
 	public async updateMessage(
 		interactionId: Snowflake,
 		interactionToken: string,
-		callbackData: APIInteractionResponseCallbackData &
-			RESTPostAPIInteractionCallbackQuery & { files?: RawFile[]; with_response: true },
+		callbackData: CreateInteractionUpdateMessageResponseOptions & { with_response: true },
 		options: Pick<RequestData, 'signal'>,
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
@@ -297,22 +304,18 @@ export class InteractionsAPI {
 	public async updateMessage(
 		interactionId: Snowflake,
 		interactionToken: string,
-		callbackData: APIInteractionResponseCallbackData &
-			RESTPostAPIInteractionCallbackQuery & { files?: RawFile[]; with_response?: false },
+		callbackData: CreateInteractionUpdateMessageResponseOptions & { with_response?: false },
 		options: Pick<RequestData, 'signal'>,
 	): Promise<undefined>;
 
 	public async updateMessage(
 		interactionId: Snowflake,
 		interactionToken: string,
-		{
-			files,
-			with_response,
-			...data
-		}: APIInteractionResponseCallbackData & RESTPostAPIInteractionCallbackQuery & { files?: RawFile[] },
+		{ files, with_response, ...data }: CreateInteractionUpdateMessageResponseOptions,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			query: makeURLSearchParams({ with_response }),
 			files,
 			auth: false,
 			body: {
@@ -337,10 +340,9 @@ export class InteractionsAPI {
 	public async createAutocompleteResponse(
 		interactionId: Snowflake,
 		interactionToken: string,
-		callbackData: APICommandAutocompleteInteractionResponseCallbackData &
-			RESTPostAPIInteractionCallbackQuery & { with_response: true },
+		callbackData: CreateAutocompleteResponseOptions & { with_response: true },
 		options?: Pick<RequestData, 'signal'>,
-	): Promise<APICommandAutocompleteInteractionResponseCallbackData>;
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
 	 * Sends an autocomplete response to an interaction
@@ -354,21 +356,18 @@ export class InteractionsAPI {
 	public async createAutocompleteResponse(
 		interactionId: Snowflake,
 		interactionToken: string,
-		callbackData: APICommandAutocompleteInteractionResponseCallbackData &
-			RESTPostAPIInteractionCallbackQuery & { with_response?: false },
+		callbackData: CreateAutocompleteResponseOptions & { with_response?: false },
 		options: Pick<RequestData, 'signal'>,
 	): Promise<undefined>;
 
 	public async createAutocompleteResponse(
 		interactionId: Snowflake,
 		interactionToken: string,
-		{
-			with_response,
-			...data
-		}: APICommandAutocompleteInteractionResponseCallbackData & RESTPostAPIInteractionCallbackQuery,
+		{ with_response, ...data }: CreateAutocompleteResponseOptions,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			query: makeURLSearchParams({ with_response }),
 			auth: false,
 			body: {
 				type: InteractionResponseType.ApplicationCommandAutocompleteResult,
@@ -392,8 +391,7 @@ export class InteractionsAPI {
 	public async createModal(
 		interactionId: Snowflake,
 		interactionToken: string,
-		callbackData: APIModalInteractionResponseCallbackData &
-			RESTPostAPIInteractionCallbackQuery & { with_response: true },
+		callbackData: CreateModalResponseOptions & { with_response: true },
 		options?: Pick<RequestData, 'signal'>,
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
@@ -409,18 +407,18 @@ export class InteractionsAPI {
 	public async createModal(
 		interactionId: Snowflake,
 		interactionToken: string,
-		callbackData: APIModalInteractionResponseCallbackData &
-			RESTPostAPIInteractionCallbackQuery & { with_response?: false },
+		callbackData: CreateModalResponseOptions & { with_response?: false },
 		options?: Pick<RequestData, 'signal'>,
 	): Promise<undefined>;
 
 	public async createModal(
 		interactionId: Snowflake,
 		interactionToken: string,
-		{ with_response, ...data }: APIModalInteractionResponseCallbackData & RESTPostAPIInteractionCallbackQuery,
+		{ with_response, ...data }: CreateModalResponseOptions,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			query: makeURLSearchParams({ with_response }),
 			auth: false,
 			body: {
 				type: InteractionResponseType.Modal,
@@ -430,28 +428,5 @@ export class InteractionsAPI {
 		});
 
 		return with_response ? response : undefined;
-	}
-
-	/**
-	 * Sends a premium required response to an interaction
-	 *
-	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
-	 * @param interactionId - The id of the interaction
-	 * @param interactionToken - The token of the interaction
-	 * @param options - The options for sending the premium required response
-	 * @deprecated Sending a premium-style button is the new Discord behaviour.
-	 */
-	public async sendPremiumRequired(
-		interactionId: Snowflake,
-		interactionToken: string,
-		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
-		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
-			auth: false,
-			body: {
-				type: InteractionResponseType.PremiumRequired,
-			} satisfies APIPremiumRequiredInteractionResponse,
-			signal,
-		});
 	}
 }

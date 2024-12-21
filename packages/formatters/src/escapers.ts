@@ -14,7 +14,7 @@ export interface EscapeMarkdownOptions {
 	/**
 	 * Whether to escape bulleted lists.
 	 *
-	 * @defaultValue `false`
+	 * @defaultValue `true`
 	 */
 	bulletedList?: boolean;
 
@@ -42,7 +42,7 @@ export interface EscapeMarkdownOptions {
 	/**
 	 * Whether to escape headings.
 	 *
-	 * @defaultValue `false`
+	 * @defaultValue `true`
 	 */
 	heading?: boolean;
 
@@ -69,14 +69,14 @@ export interface EscapeMarkdownOptions {
 	/**
 	 * Whether to escape masked links.
 	 *
-	 * @defaultValue `false`
+	 * @defaultValue `true`
 	 */
 	maskedLink?: boolean;
 
 	/**
 	 * Whether to escape numbered lists.
 	 *
-	 * @defaultValue `false`
+	 * @defaultValue `true`
 	 */
 	numberedList?: boolean;
 
@@ -120,10 +120,10 @@ export function escapeMarkdown(text: string, options: EscapeMarkdownOptions = {}
 		codeBlockContent = true,
 		inlineCodeContent = true,
 		escape = true,
-		heading = false,
-		bulletedList = false,
-		numberedList = false,
-		maskedLink = false,
+		heading = true,
+		bulletedList = true,
+		numberedList = true,
+		maskedLink = true,
 	} = options;
 
 	if (!codeBlockContent) {
