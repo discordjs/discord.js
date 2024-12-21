@@ -364,6 +364,7 @@ class Message extends Base {
      * @property {Snowflake} channelId The channel id that was referenced
      * @property {Snowflake|undefined} guildId The guild id that was referenced
      * @property {Snowflake|undefined} messageId The message id that was referenced
+     * @property {MessageReferenceType} type The type of message reference
      */
 
     if ('message_reference' in data) {
@@ -375,6 +376,7 @@ class Message extends Base {
         channelId: data.message_reference.channel_id,
         guildId: data.message_reference.guild_id,
         messageId: data.message_reference.message_id,
+        type: data.message_reference.type,
       };
     } else {
       this.reference ??= null;
@@ -411,33 +413,6 @@ class Message extends Base {
       this.interactionMetadata ??= null;
     }
 
-    /**
-     * Partial data of the interaction that a message is a reply to
-     * @typedef {Object} MessageInteraction
-     * @property {Snowflake} id The interaction's id
-     * @property {InteractionType} type The type of the interaction
-     * @property {string} commandName The name of the interaction's application command,
-     * as well as the subcommand and subcommand group, where applicable
-     * @property {User} user The user that invoked the interaction
-     * @deprecated Use {@link Message#interactionMetadata} instead.
-     */
-
-    if (data.interaction) {
-      /**
-       * Partial data of the interaction that this message is a reply to
-       * @type {?MessageInteraction}
-       * @deprecated Use {@link Message#interactionMetadata} instead.
-       */
-      this.interaction = {
-        id: data.interaction.id,
-        type: data.interaction.type,
-        commandName: data.interaction.name,
-        user: this.client.users._add(data.interaction.user),
-      };
-    } else {
-      this.interaction ??= null;
-    }
-
     if (data.poll) {
       if (this.poll) {
         this.poll._patch(data.poll);
@@ -450,6 +425,29 @@ class Message extends Base {
       }
     } else {
       this.poll ??= null;
+    }
+
+    if (data.message_snapshots) {
+      /**
+       * The message associated with the message reference
+       * @type {Collection<Snowflake, Message>}
+       */
+      this.messageSnapshots = data.message_snapshots.reduce((coll, snapshot) => {
+        const channel = this.client.channels.resolve(this.reference.channelId);
+        const snapshotData = {
+          ...snapshot.message,
+          id: this.reference.messageId,
+          channel_id: this.reference.channelId,
+          guild_id: this.reference.guildId,
+        };
+
+        return coll.set(
+          this.reference.messageId,
+          channel ? channel.messages._add(snapshotData) : new this.constructor(this.client, snapshotData),
+        );
+      }, new Collection());
+    } else {
+      this.messageSnapshots ??= new Collection();
     }
 
     /**
@@ -549,7 +547,7 @@ class Message extends Base {
    * @readonly
    */
   get thread() {
-    return this.channel?.threads?.resolve(this.id) ?? null;
+    return this.channel?.threads?.cache.get(this.id) ?? null;
   }
 
   /**

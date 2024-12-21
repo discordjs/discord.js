@@ -6,13 +6,16 @@ import {
 	SelectMenuDefaultValueType,
 } from 'discord-api-types/v10';
 import { type RestOrArray, normalizeArray } from '../../util/normalizeArray.js';
-import { optionsLengthValidator } from '../Assertions.js';
+import { validate } from '../../util/validation.js';
+import { selectMenuMentionablePredicate } from '../Assertions.js';
 import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 
 /**
  * A builder that creates API-compatible JSON data for mentionable select menus.
  */
 export class MentionableSelectMenuBuilder extends BaseSelectMenuBuilder<APIMentionableSelectComponent> {
+	protected override readonly data: Partial<APIMentionableSelectComponent>;
+
 	/**
 	 * Creates a new select menu from API data.
 	 *
@@ -35,8 +38,9 @@ export class MentionableSelectMenuBuilder extends BaseSelectMenuBuilder<APIMenti
 	 * 	.setMinValues(1);
 	 * ```
 	 */
-	public constructor(data?: Partial<APIMentionableSelectComponent>) {
-		super({ ...data, type: ComponentType.MentionableSelect });
+	public constructor(data: Partial<APIMentionableSelectComponent> = {}) {
+		super();
+		this.data = { ...structuredClone(data), type: ComponentType.MentionableSelect };
 	}
 
 	/**
@@ -46,7 +50,6 @@ export class MentionableSelectMenuBuilder extends BaseSelectMenuBuilder<APIMenti
 	 */
 	public addDefaultRoles(...roles: RestOrArray<Snowflake>) {
 		const normalizedValues = normalizeArray(roles);
-		optionsLengthValidator.parse((this.data.default_values?.length ?? 0) + normalizedValues.length);
 		this.data.default_values ??= [];
 
 		this.data.default_values.push(
@@ -66,7 +69,6 @@ export class MentionableSelectMenuBuilder extends BaseSelectMenuBuilder<APIMenti
 	 */
 	public addDefaultUsers(...users: RestOrArray<Snowflake>) {
 		const normalizedValues = normalizeArray(users);
-		optionsLengthValidator.parse((this.data.default_values?.length ?? 0) + normalizedValues.length);
 		this.data.default_values ??= [];
 
 		this.data.default_values.push(
@@ -91,7 +93,6 @@ export class MentionableSelectMenuBuilder extends BaseSelectMenuBuilder<APIMenti
 		>
 	) {
 		const normalizedValues = normalizeArray(values);
-		optionsLengthValidator.parse((this.data.default_values?.length ?? 0) + normalizedValues.length);
 		this.data.default_values ??= [];
 		this.data.default_values.push(...normalizedValues);
 		return this;
@@ -109,8 +110,17 @@ export class MentionableSelectMenuBuilder extends BaseSelectMenuBuilder<APIMenti
 		>
 	) {
 		const normalizedValues = normalizeArray(values);
-		optionsLengthValidator.parse(normalizedValues.length);
 		this.data.default_values = normalizedValues;
 		return this;
+	}
+
+	/**
+	 * {@inheritDoc ComponentBuilder.toJSON}
+	 */
+	public override toJSON(validationOverride?: boolean): APIMentionableSelectComponent {
+		const clone = structuredClone(this.data);
+		validate(selectMenuMentionablePredicate, clone, validationOverride);
+
+		return clone as APIMentionableSelectComponent;
 	}
 }

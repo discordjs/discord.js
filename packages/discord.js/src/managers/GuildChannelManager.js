@@ -84,7 +84,7 @@ class GuildChannelManager extends CachedManager {
    * @returns {?(GuildChannel|ThreadChannel)}
    */
   resolve(channel) {
-    if (channel instanceof ThreadChannel) return super.resolve(channel.id);
+    if (channel instanceof ThreadChannel) return super.cache.get(channel.id) ?? null;
     return super.resolve(channel);
   }
 
@@ -99,15 +99,15 @@ class GuildChannelManager extends CachedManager {
   }
 
   /**
-   * Data that can be resolved to a News Channel object. This can be:
-   * * A NewsChannel object
+   * Data that can be resolved to an Announcement Channel object. This can be:
+   * * An Announcement Channel object
    * * A Snowflake
-   * @typedef {NewsChannel|Snowflake} NewsChannelResolvable
+   * @typedef {AnnouncementChannel|Snowflake} AnnouncementChannelResolvable
    */
 
   /**
    * Adds the target channel to a channel's followers.
-   * @param {NewsChannelResolvable} channel The channel to follow
+   * @param {AnnouncementChannelResolvable} channel The channel to follow
    * @param {TextChannelResolvable} targetChannel The channel where published announcements will be posted at
    * @param {string} [reason] Reason for creating the webhook
    * @returns {Promise<Snowflake>} Returns created target webhook id.
@@ -115,7 +115,7 @@ class GuildChannelManager extends CachedManager {
   async addFollower(channel, targetChannel, reason) {
     const channelId = this.resolveId(channel);
     if (!channelId) {
-      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'NewsChannelResolvable');
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'AnnouncementChannelResolvable');
     }
     const targetChannelId = this.resolveId(targetChannel);
     if (!targetChannelId) {
@@ -208,7 +208,7 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * @typedef {ChannelWebhookCreateOptions} WebhookCreateOptions
-   * @property {TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel|MediaChannel|Snowflake} channel
+   * @property {TextChannel|AnnouncementChannel|VoiceChannel|StageChannel|ForumChannel|MediaChannel|Snowflake} channel
    * The channel to create the webhook for
    */
 
@@ -247,7 +247,7 @@ class GuildChannelManager extends CachedManager {
    * Options used to edit a guild channel.
    * @typedef {Object} GuildChannelEditOptions
    * @property {string} [name] The name of the channel
-   * @property {ChannelType} [type] The type of the channel (only conversion between text and news is supported)
+   * @property {ChannelType} [type] The type of the channel (only conversion between text and announcement is supported)
    * @property {number} [position] The position of the channel
    * @property {?string} [topic] The topic of the text channel
    * @property {boolean} [nsfw] Whether the channel is NSFW
@@ -287,7 +287,7 @@ class GuildChannelManager extends CachedManager {
     const resolvedChannel = this.resolve(channel);
     if (!resolvedChannel) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
 
-    const parent = options.parent && this.client.channels.resolveId(options.parent);
+    const parentId = options.parent && this.client.channels.resolveId(options.parent);
 
     if (options.position !== undefined) {
       await this.setPosition(resolvedChannel, options.position, { position: options.position, reason: options.reason });
@@ -298,8 +298,8 @@ class GuildChannelManager extends CachedManager {
     );
 
     if (options.lockPermissions) {
-      if (parent) {
-        const newParent = this.guild.channels.resolve(parent);
+      if (parentId) {
+        const newParent = this.cache.get(parentId);
         if (newParent?.type === ChannelType.GuildCategory) {
           permission_overwrites = newParent.permissionOverwrites.cache.map(overwrite =>
             PermissionOverwrites.resolve(overwrite, this.guild),
@@ -322,7 +322,7 @@ class GuildChannelManager extends CachedManager {
         user_limit: options.userLimit,
         rtc_region: options.rtcRegion,
         video_quality_mode: options.videoQualityMode,
-        parent_id: parent,
+        parent_id: parentId,
         lock_permissions: options.lockPermissions,
         rate_limit_per_user: options.rateLimitPerUser,
         default_auto_archive_duration: options.defaultAutoArchiveDuration,

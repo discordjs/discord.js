@@ -11,16 +11,16 @@
 		"start": "bun run src/index.[REPLACE_IMPORT_EXT]"
 	},
 	"dependencies": {
-		"@discordjs/core": "^1.2.0",
-		"discord.js": "^14.16.0"
+		"@discordjs/core": "^2.0.0",
+		"discord.js": "^14.16.3"
 	},
 	"devDependencies": {
 		"@sapphire/ts-config": "^5.0.1",
-		"@types/bun": "^1.1.6",
-		"eslint": "^8.57.0",
+		"@types/bun": "^1.1.13",
+		"eslint": "^8.57.1",
 		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.1.0",
+		"prettier": "^3.3.3",
 		"typescript": "~5.5.4",
 		"zod": "^3.23.8"
 	}

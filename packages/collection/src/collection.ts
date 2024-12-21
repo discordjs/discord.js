@@ -1,14 +1,4 @@
 /* eslint-disable no-param-reassign */
-/**
- * @internal
- */
-export interface CollectionConstructor {
-	new (): Collection<unknown, unknown>;
-	new <Key, Value>(entries?: readonly (readonly [Key, Value])[] | null): Collection<Key, Value>;
-	new <Key, Value>(iterable: Iterable<readonly [Key, Value]>): Collection<Key, Value>;
-	readonly prototype: Collection<unknown, unknown>;
-	readonly [Symbol.species]: CollectionConstructor;
-}
 
 /**
  * Represents an immutable version of a collection
@@ -19,13 +9,13 @@ export type ReadonlyCollection<Key, Value> = Omit<
 > &
 	ReadonlyMap<Key, Value>;
 
-/**
- * Separate interface for the constructor so that emitted js does not have a constructor that overwrites itself
- *
- * @internal
- */
-export interface Collection<Key, Value> extends Map<Key, Value> {
-	constructor: CollectionConstructor;
+export interface Collection<Key, Value> {
+	/**
+	 * Ambient declaration to allow `this.constructor[@@species]` in class methods.
+	 *
+	 * @internal
+	 */
+	constructor: typeof Collection & { readonly [Symbol.species]: typeof Collection };
 }
 
 /**
@@ -85,9 +75,16 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public first(amount?: number): Value | Value[] | undefined {
 		if (amount === undefined) return this.values().next().value;
 		if (amount < 0) return this.last(amount * -1);
-		amount = Math.min(this.size, amount);
+		if (amount >= this.size) return [...this.values()];
+
 		const iter = this.values();
-		return Array.from({ length: amount }, (): Value => iter.next().value!);
+		// eslint-disable-next-line unicorn/no-new-array
+		const results: Value[] = new Array(amount);
+		for (let index = 0; index < amount; index++) {
+			results[index] = iter.next().value!;
+		}
+
+		return results;
 	}
 
 	/**
@@ -102,9 +99,16 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public firstKey(amount?: number): Key | Key[] | undefined {
 		if (amount === undefined) return this.keys().next().value;
 		if (amount < 0) return this.lastKey(amount * -1);
-		amount = Math.min(this.size, amount);
+		if (amount >= this.size) return [...this.keys()];
+
 		const iter = this.keys();
-		return Array.from({ length: amount }, (): Key => iter.next().value!);
+		// eslint-disable-next-line unicorn/no-new-array
+		const results: Key[] = new Array(amount);
+		for (let index = 0; index < amount; index++) {
+			results[index] = iter.next().value!;
+		}
+
+		return results;
 	}
 
 	/**
@@ -117,11 +121,12 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public last(): Value | undefined;
 	public last(amount: number): Value[];
 	public last(amount?: number): Value | Value[] | undefined {
-		const arr = [...this.values()];
-		if (amount === undefined) return arr[arr.length - 1];
-		if (amount < 0) return this.first(amount * -1);
+		if (amount === undefined) return this.at(-1);
 		if (!amount) return [];
-		return arr.slice(-amount);
+		if (amount < 0) return this.first(amount * -1);
+
+		const arr = [...this.values()];
+		return arr.slice(amount * -1);
 	}
 
 	/**
@@ -134,11 +139,12 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public lastKey(): Key | undefined;
 	public lastKey(amount: number): Key[];
 	public lastKey(amount?: number): Key | Key[] | undefined {
-		const arr = [...this.keys()];
-		if (amount === undefined) return arr[arr.length - 1];
-		if (amount < 0) return this.firstKey(amount * -1);
+		if (amount === undefined) return this.keyAt(-1);
 		if (!amount) return [];
-		return arr.slice(-amount);
+		if (amount < 0) return this.firstKey(amount * -1);
+
+		const arr = [...this.keys()];
+		return arr.slice(amount * -1);
 	}
 
 	/**
@@ -148,10 +154,21 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	 *
 	 * @param index - The index of the element to obtain
 	 */
-	public at(index: number) {
-		index = Math.floor(index);
-		const arr = [...this.values()];
-		return arr.at(index);
+	public at(index: number): Value | undefined {
+		index = Math.trunc(index);
+		if (index >= 0) {
+			if (index >= this.size) return undefined;
+		} else {
+			index += this.size;
+			if (index < 0) return undefined;
+		}
+
+		const iter = this.values();
+		for (let skip = 0; skip < index; skip++) {
+			iter.next();
+		}
+
+		return iter.next().value!;
 	}
 
 	/**
@@ -161,10 +178,21 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	 *
 	 * @param index - The index of the key to obtain
 	 */
-	public keyAt(index: number) {
-		index = Math.floor(index);
-		const arr = [...this.keys()];
-		return arr.at(index);
+	public keyAt(index: number): Key | undefined {
+		index = Math.trunc(index);
+		if (index >= 0) {
+			if (index >= this.size) return undefined;
+		} else {
+			index += this.size;
+			if (index < 0) return undefined;
+		}
+
+		const iter = this.keys();
+		for (let skip = 0; skip < index; skip++) {
+			iter.next();
+		}
+
+		return iter.next().value!;
 	}
 
 	/**
@@ -176,13 +204,17 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public random(): Value | undefined;
 	public random(amount: number): Value[];
 	public random(amount?: number): Value | Value[] | undefined {
-		const arr = [...this.values()];
-		if (amount === undefined) return arr[Math.floor(Math.random() * arr.length)];
-		if (!arr.length || !amount) return [];
-		return Array.from(
-			{ length: Math.min(amount, arr.length) },
-			(): Value => arr.splice(Math.floor(Math.random() * arr.length), 1)[0]!,
-		);
+		if (amount === undefined) return this.at(Math.floor(Math.random() * this.size));
+		amount = Math.min(this.size, amount);
+		if (!amount) return [];
+
+		const values = [...this.values()];
+		for (let sourceIndex = 0; sourceIndex < amount; sourceIndex++) {
+			const targetIndex = sourceIndex + Math.floor(Math.random() * (values.length - sourceIndex));
+			[values[sourceIndex], values[targetIndex]] = [values[targetIndex]!, values[sourceIndex]!];
+		}
+
+		return values.slice(0, amount);
 	}
 
 	/**
@@ -194,13 +226,17 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public randomKey(): Key | undefined;
 	public randomKey(amount: number): Key[];
 	public randomKey(amount?: number): Key | Key[] | undefined {
-		const arr = [...this.keys()];
-		if (amount === undefined) return arr[Math.floor(Math.random() * arr.length)];
-		if (!arr.length || !amount) return [];
-		return Array.from(
-			{ length: Math.min(amount, arr.length) },
-			(): Key => arr.splice(Math.floor(Math.random() * arr.length), 1)[0]!,
-		);
+		if (amount === undefined) return this.keyAt(Math.floor(Math.random() * this.size));
+		amount = Math.min(this.size, amount);
+		if (!amount) return [];
+
+		const keys = [...this.keys()];
+		for (let sourceIndex = 0; sourceIndex < amount; sourceIndex++) {
+			const targetIndex = sourceIndex + Math.floor(Math.random() * (keys.length - sourceIndex));
+			[keys[sourceIndex], keys[targetIndex]] = [keys[targetIndex]!, keys[sourceIndex]!];
+		}
+
+		return keys.slice(0, amount);
 	}
 
 	/**
@@ -511,10 +547,14 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
 		const iter = this.entries();
-		return Array.from({ length: this.size }, (): NewValue => {
+		// eslint-disable-next-line unicorn/no-new-array
+		const results: NewValue[] = new Array(this.size);
+		for (let index = 0; index < this.size; index++) {
 			const [key, value] = iter.next().value!;
-			return fn(value, key, this);
-		});
+			results[index] = fn(value, key, this);
+		}
+
+		return results;
 	}
 
 	/**
@@ -791,11 +831,11 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * The sort method sorts the items of a collection in place and returns it.
-	 * The sort is not necessarily stable in Node 10 or older.
-	 * The default sort order is according to string Unicode code points.
+	 * If a comparison function is not provided, the function sorts by element values, using the same stringwise comparison algorithm as
+	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort | Array.sort()}.
 	 *
-	 * @param compareFunction - Specifies a function that defines the sort order.
-	 * If omitted, the collection is sorted according to each character's Unicode code point value, according to the string conversion of each element.
+	 * @param compareFunction - Specifies a function that defines the sort order. The return value of this function should be negative if
+	 * `a` comes before `b`, positive if `b` comes before `a`, or zero if `a` and `b` are considered equal.
 	 * @example
 	 * ```ts
 	 * collection.sort((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
@@ -959,12 +999,14 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 			const hasInSelf = this.has(key);
 			const hasInOther = other.has(key);
 
-			if (hasInSelf && hasInOther) {
-				const result = whenInBoth(this.get(key)!, other.get(key)!, key);
-				if (result.keep) coll.set(key, result.value);
-			} else if (hasInSelf) {
-				const result = whenInSelf(this.get(key)!, key);
-				if (result.keep) coll.set(key, result.value);
+			if (hasInSelf) {
+				if (hasInOther) {
+					const result = whenInBoth(this.get(key)!, other.get(key)!, key);
+					if (result.keep) coll.set(key, result.value);
+				} else {
+					const result = whenInSelf(this.get(key)!, key);
+					if (result.keep) coll.set(key, result.value);
+				}
 			} else if (hasInOther) {
 				const result = whenInOther(other.get(key)!, key);
 				if (result.keep) coll.set(key, result.value);
@@ -983,20 +1025,19 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	}
 
 	/**
-	 * The sorted method sorts the items of a collection and returns it.
-	 * The sort is not necessarily stable in Node 10 or older.
-	 * The default sort order is according to string Unicode code points.
+	 * The toSorted method returns a shallow copy of the collection with the items sorted.
+	 * If a comparison function is not provided, the function sorts by element values, using the same stringwise comparison algorithm as
+	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort | Array.sort()}.
 	 *
-	 * @param compareFunction - Specifies a function that defines the sort order.
-	 * If omitted, the collection is sorted according to each character's Unicode code point value,
-	 * according to the string conversion of each element.
+	 * @param compareFunction - Specifies a function that defines the sort order. The return value of this function should be negative if
+	 * `a` comes before `b`, positive if `b` comes before `a`, or zero if `a` and `b` are considered equal.
 	 * @example
 	 * ```ts
-	 * collection.sorted((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
+	 * const sortedCollection = collection.toSorted((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
 	 * ```
 	 */
-	public toSorted(compareFunction: Comparator<Key, Value> = Collection.defaultSort) {
-		return new this.constructor[Symbol.species](this).sort((av, bv, ak, bk) => compareFunction(av, bv, ak, bk));
+	public toSorted(compareFunction: Comparator<Key, Value> = Collection.defaultSort): Collection<Key, Value> {
+		return new this.constructor[Symbol.species](this).sort(compareFunction);
 	}
 
 	public toJSON() {
@@ -1004,8 +1045,20 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		return [...this.entries()];
 	}
 
+	/**
+	 * Emulates the default sort comparison algorithm used in ECMAScript. Equivalent to calling the
+	 * {@link https://tc39.es/ecma262/multipage/indexed-collections.html#sec-comparearrayelements | CompareArrayElements}
+	 * operation with arguments `firstValue`, `secondValue` and `undefined`.
+	 */
 	private static defaultSort<Value>(firstValue: Value, secondValue: Value): number {
-		return Number(firstValue > secondValue) || Number(firstValue === secondValue) - 1;
+		if (firstValue === undefined) return secondValue === undefined ? 0 : 1;
+		if (secondValue === undefined) return -1;
+
+		const x = String(firstValue);
+		const y = String(secondValue);
+		if (x < y) return -1;
+		if (y < x) return 1;
+		return 0;
 	}
 
 	/**
