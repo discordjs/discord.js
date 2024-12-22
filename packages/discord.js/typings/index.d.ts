@@ -611,6 +611,7 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   ): Promise<ModalSubmitInteraction<Cached>>;
   private transformOption(
     option: APIApplicationCommandOption,
+    // @ts-expect-error ws/1.x.
     resolved: APIApplicationCommandInteractionData['resolved'],
   ): CommandInteractionOption<Cached>;
 }
@@ -3442,6 +3443,7 @@ export function parseWebhookURL(url: string): WebhookClientDataIdWithToken | nul
 /** @internal */
 export function transformResolved<Cached extends CacheType>(
   supportingData: SupportingInteractionResolvedData,
+  // @ts-expect-error ws/1.x.
   data?: APIApplicationCommandInteractionData['resolved'],
 ): CommandInteractionResolvedData<Cached>;
 export function resolveSKUId(resolvable: SKUResolvable): Snowflake | null;
