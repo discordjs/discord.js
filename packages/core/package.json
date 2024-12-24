@@ -70,7 +70,7 @@
 		"@discordjs/ws": "workspace:^",
 		"@sapphire/snowflake": "^3.5.3",
 		"@vladfrangu/async_event_emitter": "^2.2.4",
-		"discord-api-types": "^0.37.113"
+		"discord-api-types": "^0.37.114"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
