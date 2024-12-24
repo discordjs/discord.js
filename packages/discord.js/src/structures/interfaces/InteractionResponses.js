@@ -162,24 +162,26 @@ class InteractionResponses {
   async reply(options) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
 
-    if ('ephemeral' in options) {
-      if (!deprecationEmittedForEphemeralOption) {
-        process.emitWarning(
-          `Supplying "ephemeral" for interaction response options is deprecated. Utilize flags instead.`,
-        );
+    if (typeof options !== 'string') {
+      if ('fetchReply' in options) {
+        if (!deprecationEmittedForEphemeralOption) {
+          process.emitWarning(
+            `Supplying "ephemeral" for interaction response options is deprecated. Utilize flags instead.`,
+          );
 
-        deprecationEmittedForEphemeralOption = true;
+          deprecationEmittedForEphemeralOption = true;
+        }
       }
-    }
 
-    if ('fetchReply' in options) {
-      if (!deprecationEmittedForFetchReplyOption) {
-        process.emitWarning(
-          // eslint-disable-next-line max-len
-          `Supplying "fetchReply" for interaction response options is deprecated. Utilize "withResponse" instead or fetch the response after using the method.`,
-        );
+      if ('fetchReply' in options) {
+        if (!deprecationEmittedForFetchReplyOption) {
+          process.emitWarning(
+            // eslint-disable-next-line max-len
+            `Supplying "fetchReply" for interaction response options is deprecated. Utilize "withResponse" instead or fetch the response after using the method.`,
+          );
 
-        deprecationEmittedForFetchReplyOption = true;
+          deprecationEmittedForFetchReplyOption = true;
+        }
       }
     }
 
@@ -331,7 +333,7 @@ class InteractionResponses {
   async update(options) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
 
-    if ('fetchReply' in options) {
+    if (typeof options !== 'string' && 'fetchReply' in options) {
       if (!deprecationEmittedForFetchReplyOption) {
         process.emitWarning(
           // eslint-disable-next-line max-len
