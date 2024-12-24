@@ -201,7 +201,6 @@ import {
   RoleSelectMenuComponent,
   ChannelSelectMenuComponent,
   MentionableSelectMenuComponent,
-  PartialPoll,
   Poll,
   ApplicationEmoji,
   ApplicationEmojiManager,
@@ -210,6 +209,10 @@ import {
   SendableChannels,
   PollData,
   InteractionCallbackResponse,
+  PartialPoll,
+  PartialPollAnswer,
+  PollAnswer,
+  PollAnswerVoterManager,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
