@@ -8,7 +8,6 @@ import {
 	type APIInteractionResponseCallbackData,
 	type APIInteractionResponseDeferredChannelMessageWithSource,
 	type APIModalInteractionResponseCallbackData,
-	type APIPremiumRequiredInteractionResponse,
 	type RESTGetAPIWebhookWithTokenMessageResult,
 	type RESTPostAPIInteractionCallbackQuery,
 	type RESTPostAPIInteractionCallbackWithResponseResult,
@@ -159,7 +158,7 @@ export class InteractionsAPI {
 		interactionToken: string,
 		body: RESTPostAPIInteractionCallbackQuery & { with_response: true },
 		options?: Pick<RequestData, 'signal'>,
-	): Promise<undefined>;
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
 	 * Defers an update from a message component interaction
@@ -175,7 +174,7 @@ export class InteractionsAPI {
 		interactionToken: string,
 		body?: RESTPostAPIInteractionCallbackQuery & { with_response?: false },
 		options?: Pick<RequestData, 'signal'>,
-	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
+	): Promise<undefined>;
 
 	public async deferMessageUpdate(
 		interactionId: Snowflake,
@@ -316,6 +315,7 @@ export class InteractionsAPI {
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			query: makeURLSearchParams({ with_response }),
 			files,
 			auth: false,
 			body: {
@@ -342,7 +342,7 @@ export class InteractionsAPI {
 		interactionToken: string,
 		callbackData: CreateAutocompleteResponseOptions & { with_response: true },
 		options?: Pick<RequestData, 'signal'>,
-	): Promise<APICommandAutocompleteInteractionResponseCallbackData>;
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
 	 * Sends an autocomplete response to an interaction
@@ -367,6 +367,7 @@ export class InteractionsAPI {
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			query: makeURLSearchParams({ with_response }),
 			auth: false,
 			body: {
 				type: InteractionResponseType.ApplicationCommandAutocompleteResult,
@@ -417,6 +418,7 @@ export class InteractionsAPI {
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			query: makeURLSearchParams({ with_response }),
 			auth: false,
 			body: {
 				type: InteractionResponseType.Modal,
@@ -426,28 +428,5 @@ export class InteractionsAPI {
 		});
 
 		return with_response ? response : undefined;
-	}
-
-	/**
-	 * Sends a premium required response to an interaction
-	 *
-	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
-	 * @param interactionId - The id of the interaction
-	 * @param interactionToken - The token of the interaction
-	 * @param options - The options for sending the premium required response
-	 * @deprecated Sending a premium-style button is the new Discord behavior.
-	 */
-	public async sendPremiumRequired(
-		interactionId: Snowflake,
-		interactionToken: string,
-		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
-		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
-			auth: false,
-			body: {
-				type: InteractionResponseType.PremiumRequired,
-			} satisfies APIPremiumRequiredInteractionResponse,
-			signal,
-		});
 	}
 }

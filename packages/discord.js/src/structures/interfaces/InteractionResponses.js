@@ -4,6 +4,7 @@ const { makeURLSearchParams } = require('@discordjs/rest');
 const { isJSONEncodable } = require('@discordjs/util');
 const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../../errors');
+const MessageFlagsBitField = require('../../util/MessageFlagsBitField');
 const InteractionCallbackResponse = require('../InteractionCallbackResponse');
 const InteractionCollector = require('../InteractionCollector');
 const InteractionResponse = require('../InteractionResponse');
@@ -24,8 +25,8 @@ class InteractionResponses {
   /**
    * Options for deferring the reply to an {@link BaseInteraction}.
    * @typedef {Object} InteractionDeferReplyOptions
-   * @property {MessageFlagsResolvable} [flags] Flags for the reply.
    * @property {boolean} [withResponse] Whether to return an {@link InteractionCallbackResponse} as the response
+   * @property {MessageFlagsResolvable} [flags] Flags for the reply.
    * <info>Only `MessageFlags.Ephemeral` can be set.</info>
    */
 
@@ -75,11 +76,13 @@ class InteractionResponses {
   async deferReply(options = {}) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
 
+    const resolvedFlags = new MessageFlagsBitField(options.flags);
+
     const response = await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
         type: InteractionResponseType.DeferredChannelMessageWithSource,
         data: {
-          flags: options.flags,
+          flags: resolvedFlags.bitfield,
         },
       },
       auth: false,
@@ -87,7 +90,7 @@ class InteractionResponses {
     });
 
     this.deferred = true;
-    this.ephemeral = Boolean(options.flags & MessageFlags.Ephemeral);
+    this.ephemeral = resolvedFlags.has(MessageFlags.Ephemeral);
 
     return options.withResponse
       ? new InteractionCallbackResponse(this.client, response)
@@ -131,7 +134,7 @@ class InteractionResponses {
       query: makeURLSearchParams({ with_response: options.withResponse ?? false }),
     });
 
-    this.ephemeral = Boolean(options.flags & MessageFlags.Ephemeral);
+    this.ephemeral = Boolean(data.flags & MessageFlags.Ephemeral);
     this.replied = true;
 
     return options.withResponse
@@ -228,7 +231,7 @@ class InteractionResponses {
 
     return options.withResponse
       ? new InteractionCallbackResponse(this.client, response)
-      : new InteractionResponse(this, this.message?.interaction?.id);
+      : new InteractionResponse(this, this.message?.interactionMetadata?.id);
   }
 
   /**
@@ -266,7 +269,7 @@ class InteractionResponses {
 
     return options.withResponse
       ? new InteractionCallbackResponse(this.client, response)
-      : new InteractionResponse(this, this.message.interaction?.id);
+      : new InteractionResponse(this, this.message.interactionMetadata?.id);
   }
 
   /**

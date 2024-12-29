@@ -429,8 +429,6 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public description: string;
   public descriptionLocalizations: LocalizationMap | null;
   public descriptionLocalized: string | null;
-  /** @deprecated Use {@link ApplicationCommand.contexts} instead */
-  public dmPermission: boolean | null;
   public guild: Guild | null;
   public guildId: Snowflake | null;
   public get manager(): ApplicationCommandManager;
@@ -460,7 +458,6 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public setDefaultMemberPermissions(
     defaultMemberPermissions: PermissionResolvable | null,
   ): Promise<ApplicationCommand<PermissionsFetchType>>;
-  public setDMPermission(dmPermission?: boolean): Promise<ApplicationCommand<PermissionsFetchType>>;
   public setOptions(
     options: readonly ApplicationCommandOptionData[],
   ): Promise<ApplicationCommand<PermissionsFetchType>>;
@@ -1990,7 +1987,7 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public isMessageContextMenuCommand(): this is MessageContextMenuCommandInteraction<Cached>;
   public isModalSubmit(): this is ModalSubmitInteraction<Cached>;
   public isUserContextMenuCommand(): this is UserContextMenuCommandInteraction<Cached>;
-  public isAnySelectMenu(): this is SelectMenuInteraction<Cached>;
+  public isSelectMenu(): this is SelectMenuInteraction<Cached>;
   public isStringSelectMenu(): this is StringSelectMenuInteraction<Cached>;
   public isUserSelectMenu(): this is UserSelectMenuInteraction<Cached>;
   public isRoleSelectMenu(): this is RoleSelectMenuInteraction<Cached>;
@@ -2207,8 +2204,6 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public get guild(): If<InGuild, Guild>;
   public get hasThread(): boolean;
   public id: Snowflake;
-  /** @deprecated Use {@link Message.interactionMetadata} instead. */
-  public interaction: MessageInteraction | null;
   public interactionMetadata: MessageInteractionMetadata | null;
   public get member(): GuildMember | null;
   public mentions: MessageMentions<InGuild>;
@@ -2983,8 +2978,6 @@ export class ChannelSelectMenuInteraction<
   public inRawGuild(): this is ChannelSelectMenuInteraction<'raw'>;
 }
 
-// Ideally this should be named SelectMenuInteraction, but that's the name of the "old" StringSelectMenuInteraction, meaning
-// the type name is reserved as a re-export to prevent a breaking change from being made, as such:
 export type SelectMenuInteraction<Cached extends CacheType = CacheType> =
   | StringSelectMenuInteraction<Cached>
   | UserSelectMenuInteraction<Cached>
@@ -3153,6 +3146,7 @@ export class Subscription extends Base {
   public userId: Snowflake;
   public skuIds: Snowflake[];
   public entitlementIds: Snowflake[];
+  public renewalSkuIds: Snowflake[] | null;
   public currentPeriodStartTimestamp: number;
   public currentPeriodEndTimestamp: number;
   public status: SubscriptionStatus;
@@ -4708,7 +4702,6 @@ export type AllowedThreadTypeForTextChannel = ChannelType.PublicThread | Channel
 export interface BaseApplicationCommandData {
   name: string;
   nameLocalizations?: LocalizationMap;
-  dmPermission?: boolean;
   defaultMemberPermissions?: PermissionResolvable | null;
   nsfw?: boolean;
   contexts?: readonly InteractionContextType[];
@@ -6228,6 +6221,7 @@ export interface InteractionDeferUpdateOptions {
 
 export interface InteractionReplyOptions extends BaseMessageOptionsWithPoll {
   tts?: boolean;
+  withResponse?: boolean;
   flags?: BitFieldResolvable<
     Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds' | 'SuppressNotifications'>,
     MessageFlags.Ephemeral | MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
@@ -6349,14 +6343,6 @@ export interface MessageInteractionMetadata {
   originalResponseMessageId: Snowflake | null;
   interactedMessageId: Snowflake | null;
   triggeringInteractionMetadata: MessageInteractionMetadata | null;
-}
-
-/** @deprecated Use {@link MessageInteractionMetadata} instead. */
-export interface MessageInteraction {
-  id: Snowflake;
-  type: InteractionType;
-  commandName: string;
-  user: User;
 }
 
 export interface MessageMentionsHasOptions {
