@@ -11,7 +11,8 @@ const throttler = new SimpleIdentifyThrottler(2);
 
 vi.useFakeTimers();
 
-const NOW = vi.fn().mockReturnValue(Date.now());
+const TIME = Date.now();
+const NOW = vi.fn().mockReturnValue(TIME);
 global.Date.now = NOW;
 
 test('basic case', async () => {
@@ -30,4 +31,17 @@ test('basic case', async () => {
 
 	await throttler.waitForIdentify(3);
 	expect(sleep).toHaveBeenCalledTimes(2);
+});
+
+test('does not call sleep with a negative time', async () => {
+	await throttler.waitForIdentify(0);
+	expect(sleep).not.toHaveBeenCalled();
+
+	// By overshooting, we're simulating a bug that existed prior to this test, where-in by enough time
+	// passing before the shard tried to identify for a subseuent time, the passed value would end up being negative
+	// (and this was unchecked). Node simply treats that as 1ms, so it wasn't particularly harmful, but they
+	// recently introduced a warning for it, so we want to avoid that.
+	NOW.mockReturnValueOnce(TIME + 10_000);
+	await throttler.waitForIdentify(0);
+	expect(sleep).not.toHaveBeenCalled(1);
 });
