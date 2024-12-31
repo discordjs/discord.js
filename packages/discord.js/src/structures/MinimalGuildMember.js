@@ -10,7 +10,7 @@ const PermissionsBitField = require('../util/PermissionsBitField');
  * @implements {TextBasedChannel}
  * @extends {Base}
  */
-class UncachedGuildMember extends Base {
+class MinimalGuildMember extends Base {
   constructor(client, data, guildId) {
     super(client);
 
@@ -40,7 +40,7 @@ class UncachedGuildMember extends Base {
 
     /**
      * The role ids of the member
-     * @name UncachedGuildMember#roleIds
+     * @name MinimalGuildMember#roleIds
      * @type {Snowflake[]}
      */
     this.roleIds = data.roles;
@@ -95,7 +95,7 @@ class UncachedGuildMember extends Base {
       data.communication_disabled_until && Date.parse(data.communication_disabled_until);
 
     /**
-     * Whether this UncachedGuildMember is a partial (always true, as it is a partial GuildMember)
+     * Whether this MinimalGuildMember is a partial (always true, as it is a partial GuildMember)
      * @type {boolean}
      * @readonly
      */
@@ -204,7 +204,7 @@ class UncachedGuildMember extends Base {
    * Whether this guild member equals another guild member. It compares all properties, so for most
    * comparison it is advisable to just compare `member.id === member2.id` as it is significantly faster
    * and is often what most users need.
-   * @param {UncachedGuildMember} member The member to compare with
+   * @param {MinimalGuildMember} member The member to compare with
    * @returns {boolean}
    */
   equals(member) {
@@ -226,7 +226,7 @@ class UncachedGuildMember extends Base {
 
   /**
    * When concatenated with a string, this automatically returns the user's mention
-   * instead of the UncachedGuildMember object.
+   * instead of the MinimalGuildMember object.
    * @returns {string}
    * @example
    * // Logs: Hello from <@123456789012345678>!
@@ -252,17 +252,17 @@ class UncachedGuildMember extends Base {
 /**
  * Sends a message to this user.
  * @method send
- * @memberof UncachedGuildMember
+ * @memberof MinimalGuildMember
  * @instance
  * @param {string|MessagePayload|MessageCreateOptions} options The options to provide
  * @returns {Promise<Message>}
  * @example
  * // Send a direct message
- * UncachedGuildMember.send('Hello!')
+ * MinimalGuildMember.send('Hello!')
  *   .then(message => console.log(`Sent message: ${message.content} to ${guildMember.displayName}`))
  *   .catch(console.error);
  */
 
-TextBasedChannel.applyToClass(UncachedGuildMember);
+TextBasedChannel.applyToClass(MinimalGuildMember);
 
-module.exports = UncachedGuildMember;
+module.exports = MinimalGuildMember;

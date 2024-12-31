@@ -1707,8 +1707,8 @@ export class GuildMember extends Base {
   public valueOf(): string;
 }
 
-export interface UncachedGuildMember extends PartialTextBasedChannelFields<false> {}
-export class UncachedGuildMember extends Base {
+export interface MinimalGuildMember extends PartialTextBasedChannelFields<false> {}
+export class MinimalGuildMember extends Base {
   private constructor(
     client: Client<true>,
     data: APIInteractionGuildMember | APIInteractionDataResolvedGuildMember,
