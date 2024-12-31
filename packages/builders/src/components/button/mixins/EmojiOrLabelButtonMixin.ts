@@ -4,7 +4,7 @@ export interface EmojiOrLabelButtonData
 	extends Pick<Exclude<APIButtonComponent, APIButtonComponentWithSKUId>, 'emoji' | 'label'> {}
 
 export class EmojiOrLabelButtonMixin {
-	protected declare readonly data: EmojiOrLabelButtonData;
+	declare protected readonly data: EmojiOrLabelButtonData;
 
 	/**
 	 * Sets the emoji to display on this button.
