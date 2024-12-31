@@ -1722,14 +1722,14 @@ export class UncachedGuildMember extends Base {
   public pending: boolean;
   public get communicationDisabledUntil(): Date | null;
   public communicationDisabledUntilTimestamp: number | null;
-  public parsedFlags: Readonly<GuildMemberFlagsBitField>;
+  public flags: Readonly<GuildMemberFlagsBitField>;
   public get joinedAt(): Date | null;
   public joinedTimestamp: number | null;
   public nickname: string | null;
   public mute?: boolean;
   public deaf?: boolean;
   public partial: true;
-  public parsedPermissions: Readonly<PermissionsBitField>;
+  public permissions: Readonly<PermissionsBitField>;
   public get premiumSince(): Date | null;
   public premiumSinceTimestamp: number | null;
   public roleIds: Snowflake[];

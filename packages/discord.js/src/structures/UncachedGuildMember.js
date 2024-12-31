@@ -7,7 +7,6 @@ const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
  * Represents a member of a guild on Discord. Used in interactions from guilds that aren't cached.
- * Backwards compatible with {@link APIGuildMember}.
  * @implements {TextBasedChannel}
  * @extends {Base}
  */
@@ -53,25 +52,10 @@ class UncachedGuildMember extends Base {
     this.joinedTimestamp = Date.parse(data.joined_at);
 
     /**
-     * The timestamp the member joined the guild at, as an ISO8601 timestamp
-     * @type {string}
-     * @deprecated Use {@link UncachedGuildMember#joinedTimestamp} or {@link UncachedGuildMember#joinedAt} instead
-     */
-    this.joined_at = data.joined_at;
-
-    /**
      * The last timestamp this member started boosting the guild
      * @type {?number}
      */
     this.premiumSinceTimestamp = data.premium_since ? Date.parse(data.premium_since) : null;
-
-    /**
-     * The last timestamp this member started boosting the guild, as an ISO8601 timestamp
-     * @type {?string}
-     * @deprecated Use {@link UncachedGuildMember#premiumSinceTimestamp}
-     * or {@link UncachedGuildMember#premiumSince} instead
-     */
-    this.premium_since = data.premium_since;
 
     /**
      * Whether the user is deafened in voice channels
@@ -89,15 +73,7 @@ class UncachedGuildMember extends Base {
      * The flags of this member
      * @type {Readonly<GuildMemberFlagsBitField>}
      */
-    this.parsedFlags = new GuildMemberFlagsBitField(data.flags).freeze();
-
-    /**
-     * The raw flags of this member
-     * @type {number}
-     * @deprecated Use {@link UncachedGuildMember#parsedFlags} instead.
-     * This field will be replaced with parsedFlags in the future.
-     */
-    this.flags = data.flags;
+    this.flags = new GuildMemberFlagsBitField(data.flags).freeze();
 
     /**
      * Whether this member has yet to pass the guild's membership gate
@@ -109,15 +85,7 @@ class UncachedGuildMember extends Base {
      * The total permissions of the member in this channel, including overwrites
      * @type {Readonly<PermissionsBitField>}
      */
-    this.parsedPermissions = new PermissionsBitField(data.permissions).freeze();
-
-    /**
-     * Raw total permissions of the member in this channel, including overwrites
-     * @type {?string}
-     * @deprecated Use {@link UncachedGuildMember#parsedPermissions} instead.
-     * This field will be replaced with parsedPermissions in the future.
-     */
-    this.permissions = data.permissions;
+    this.permissions = new PermissionsBitField(data.permissions).freeze();
 
     /**
      * The timestamp this member's timeout will be removed
@@ -125,14 +93,6 @@ class UncachedGuildMember extends Base {
      */
     this.communicationDisabledUntilTimestamp =
       data.communication_disabled_until && Date.parse(data.communication_disabled_until);
-
-    /**
-     * The timestamp this member's timeout will be removed, as an ISO8601 timestamp
-     * @type {?string}
-     * @deprecated Use {@link UncachedGuildMember#communicationDisabledUntilTimestamp}
-     * or {@link UncachedGuildMember#communicationDisabledUntil} instead
-     */
-    this.communication_disabled_until = data.communication_disabled_until;
 
     /**
      * Whether this UncachedGuildMember is a partial (always true, as it is a partial GuildMember)
@@ -216,26 +176,6 @@ class UncachedGuildMember extends Base {
   }
 
   /**
-   * The nickname of the member
-   * @name UncachedGuildMember#nick
-   * @type {?string}
-   * @deprecated Use {@link UncachedGuildMember#nickname} instead
-   */
-  get nick() {
-    return this.nickname;
-  }
-
-  /**
-   * The role ids of the member
-   * @name UncachedGuildMember#roles
-   * @type {Snowflake[]}
-   * @deprecated Use {@link UncachedGuildMember#roleIds} instead
-   */
-  get roles() {
-    return this.roleIds;
-  }
-
-  /**
    * Whether this member is currently timed out
    * @returns {boolean}
    */
@@ -278,7 +218,7 @@ class UncachedGuildMember extends Base {
       this.avatar === member.avatar &&
       this.pending === member.pending &&
       this.communicationDisabledUntilTimestamp === member.communicationDisabledUntilTimestamp &&
-      this.parsedFlags.bitfield === member.parsedFlags.bitfield &&
+      this.flags.bitfield === member.flags.bitfield &&
       (this.roleIds === member.roleIds ||
         (this.roleIds.length === member.roleIds.length && this.roleIds.every((role, i) => role === member.roleIds[i])))
     );
