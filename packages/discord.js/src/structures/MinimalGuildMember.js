@@ -3,7 +3,6 @@
 const Base = require('./Base');
 const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField');
-const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
  * Represents a member of a guild on Discord. Used in interactions from guilds that aren't cached.
@@ -21,85 +20,111 @@ class MinimalGuildMember extends Base {
     this.guildId = guildId;
 
     /**
-     * The user that this guild member instance represents
-     * @type {User}
-     */
-    this.user = this.client.users._add(data.user, true);
-
-    /**
      * The nickname of this member, if they have one
      * @type {?string}
      */
-    this.nickname = data.nick;
+    this.nickname = null;
 
     /**
      * The guild member's avatar hash
      * @type {?string}
      */
-    this.avatar = data.avatar;
+    this.avatar = null;
 
     /**
-     * The role ids of the member
-     * @name MinimalGuildMember#roleIds
-     * @type {Snowflake[]}
+     * The guild member's banner hash
+     * @type {?string}
      */
-    this.roleIds = data.roles;
+    this.banner = null;
 
     /**
      * The timestamp the member joined the guild at
-     * @type {number}
+     * @type {?number}
      */
-    this.joinedTimestamp = Date.parse(data.joined_at);
+    this.joinedTimestamp = null;
 
     /**
      * The last timestamp this member started boosting the guild
      * @type {?number}
      */
-    this.premiumSinceTimestamp = data.premium_since ? Date.parse(data.premium_since) : null;
-
-    /**
-     * Whether the user is deafened in voice channels
-     * @type {boolean | undefined}
-     */
-    this.deaf = data.deaf;
-
-    /**
-     * Whether the user is muted in voice channels
-     * @type {boolean | undefined}
-     */
-    this.mute = data.mute;
+    this.premiumSinceTimestamp = null;
 
     /**
      * The flags of this member
      * @type {Readonly<GuildMemberFlagsBitField>}
      */
-    this.flags = new GuildMemberFlagsBitField(data.flags).freeze();
+    this.flags = new GuildMemberFlagsBitField().freeze();
 
     /**
      * Whether this member has yet to pass the guild's membership gate
      * @type {?boolean}
      */
-    this.pending = data.pending;
-
-    /**
-     * The total permissions of the member in this channel, including overwrites
-     * @type {Readonly<PermissionsBitField>}
-     */
-    this.permissions = new PermissionsBitField(data.permissions).freeze();
+    this.pending = null;
 
     /**
      * The timestamp this member's timeout will be removed
      * @type {?number}
      */
-    this.communicationDisabledUntilTimestamp =
-      data.communication_disabled_until && Date.parse(data.communication_disabled_until);
+    this.communicationDisabledUntilTimestamp = null;
 
-    /**
-     * Whether this MinimalGuildMember is a partial (always true, as it is a partial GuildMember)
-     * @type {boolean}
-     * @readonly
-     */
-    this.partial = true;
+    if (data) this._patch(data);
+  }
+
+  _patch(data) {
+    if ('user' in data) {
+      /**
+       * The user that this guild member instance represents
+       * @type {User}
+       */
+      this.user = this.client.users._add(data.user, true);
+    }
+
+    if ('nick' in data) this.nickname = data.nick;
+
+    if ('avatar' in data) this.avatar = data.avatar;
+
+    if ('banner' in data) this.banner = data.banner;
+
+    if ('roles' in data) {
+      /**
+       * The role ids of the member
+       * @type {Snowflake[]}
+       */
+      this.roleIds = data.roles;
+    }
+
+    if ('joined_at' in data) this.joinedTimestamp = data.joined_at && Date.parse(data.joined_at);
+
+    if ('premium_since' in data) this.premiumSinceTimestamp = data.premium_since && Date.parse(data.premium_since);
+
+    if ('flags' in data) this.flags = new GuildMemberFlagsBitField(data.flags).freeze();
+
+    if ('pending' in data) {
+      this.pending = data.pending;
+    } else if (!this.partial) {
+      // See https://github.com/discordjs/discord.js/issues/6546 for more info.
+      this.pending ??= false;
+    }
+
+    if ('communication_disabled_until' in data) {
+      this.communicationDisabledUntilTimestamp =
+        data.communication_disabled_until && Date.parse(data.communication_disabled_until);
+    }
+  }
+
+  _clone() {
+    const clone = super._clone();
+    clone.roleIds = this.roleIds.slice();
+    return clone;
+  }
+
+  /**
+   * Whether this MinimalGuildMember is a partial (always true, as it is a partial GuildMember)
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return true;
   }
 
   /**
@@ -112,13 +137,32 @@ class MinimalGuildMember extends Base {
   }
 
   /**
+   * A link to the member's banner.
+   * @param {ImageURLOptions} [options={}] Options for the banner URL
+   * @returns {?string}
+   */
+  bannerURL(options = {}) {
+    return this.banner && this.client.rest.cdn.guildMemberBanner(this.guildId, this.id, this.banner, options);
+  }
+
+  /**
    * A link to the member's guild avatar if they have one.
    * Otherwise, a link to their {@link User#displayAvatarURL} will be returned.
-   * @param {ImageURLOptions} [options={}] Options for the Image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {string}
    */
   displayAvatarURL(options) {
     return this.avatarURL(options) ?? this.user.displayAvatarURL(options);
+  }
+
+  /**
+   * A link to the member's guild banner if they have one.
+   * Otherwise, a link to their {@link User#bannerURL} will be returned.
+   * @param {ImageURLOptions} [options={}] Options for the image URL
+   * @returns {?string}
+   */
+  displayBannerURL(options) {
+    return this.bannerURL(options) ?? this.user.bannerURL(options);
   }
 
   /**
@@ -168,7 +212,7 @@ class MinimalGuildMember extends Base {
 
   /**
    * The nickname of this member, or their user display name if they don't have one
-   * @type {?string}
+   * @type {string}
    * @readonly
    */
   get displayName() {
@@ -225,8 +269,7 @@ class MinimalGuildMember extends Base {
   }
 
   /**
-   * When concatenated with a string, this automatically returns the user's mention
-   * instead of the MinimalGuildMember object.
+   * When concatenated with a string, this automatically returns the user's mention instead of the GuildMember object.
    * @returns {string}
    * @example
    * // Logs: Hello from <@123456789012345678>!
@@ -244,7 +287,9 @@ class MinimalGuildMember extends Base {
       roles: true,
     });
     json.avatarURL = this.avatarURL();
+    json.bannerURL = this.bannerURL();
     json.displayAvatarURL = this.displayAvatarURL();
+    json.displayBannerURL = this.displayBannerURL();
     return json;
   }
 }
@@ -258,7 +303,7 @@ class MinimalGuildMember extends Base {
  * @returns {Promise<Message>}
  * @example
  * // Send a direct message
- * MinimalGuildMember.send('Hello!')
+ * guildMember.send('Hello!')
  *   .then(message => console.log(`Sent message: ${message.content} to ${guildMember.displayName}`))
  *   .catch(console.error);
  */

@@ -1653,68 +1653,40 @@ export class GuildMemberFlagsBitField extends BitField<GuildMemberFlagsString> {
 }
 
 export interface GuildMember extends PartialTextBasedChannelFields<false> {}
-export class GuildMember extends Base {
+export class GuildMember extends MinimalGuildMember {
   private constructor(client: Client<true>, data: RawGuildMemberData, guild: Guild);
-  private _roles: Snowflake[];
-  public avatar: string | null;
-  public banner: string | null;
   public get bannable(): boolean;
-  public get dmChannel(): DMChannel | null;
   public get displayColor(): number;
   public get displayHexColor(): HexColorString;
-  public get displayName(): string;
   public guild: Guild;
-  public get id(): Snowflake;
-  public pending: boolean;
-  public get communicationDisabledUntil(): Date | null;
-  public communicationDisabledUntilTimestamp: number | null;
-  public flags: Readonly<GuildMemberFlagsBitField>;
-  public get joinedAt(): Date | null;
-  public joinedTimestamp: number | null;
   public get kickable(): boolean;
   public get manageable(): boolean;
   public get moderatable(): boolean;
-  public nickname: string | null;
   public get partial(): false;
   public get permissions(): Readonly<PermissionsBitField>;
-  public get premiumSince(): Date | null;
-  public premiumSinceTimestamp: number | null;
   public get presence(): Presence | null;
   public get roles(): GuildMemberRoleManager;
-  public user: User;
   public get voice(): VoiceState;
-  public avatarURL(options?: ImageURLOptions): string | null;
-  public bannerURL(options?: ImageURLOptions): string | null;
   public ban(options?: BanOptions): Promise<GuildMember>;
   public disableCommunicationUntil(timeout: DateResolvable | null, reason?: string): Promise<GuildMember>;
   public timeout(timeout: number | null, reason?: string): Promise<GuildMember>;
   public fetch(force?: boolean): Promise<GuildMember>;
-  public createDM(force?: boolean): Promise<DMChannel>;
-  public deleteDM(): Promise<DMChannel>;
-  public displayAvatarURL(options?: ImageURLOptions): string;
-  public displayBannerURL(options?: ImageURLOptions): string | null;
   public edit(options: GuildMemberEditOptions): Promise<GuildMember>;
-  public isCommunicationDisabled(): this is GuildMember & {
-    communicationDisabledUntilTimestamp: number;
-    readonly communicationDisabledUntil: Date;
-  };
   public kick(reason?: string): Promise<GuildMember>;
   public permissionsIn(channel: GuildChannelResolvable): Readonly<PermissionsBitField>;
   public setFlags(flags: GuildMemberFlagsResolvable, reason?: string): Promise<GuildMember>;
   public setNickname(nickname: string | null, reason?: string): Promise<GuildMember>;
-  public toJSON(): unknown;
-  public toString(): UserMention;
-  public valueOf(): string;
 }
 
 export interface MinimalGuildMember extends PartialTextBasedChannelFields<false> {}
 export class MinimalGuildMember extends Base {
-  private constructor(
+  protected constructor(
     client: Client<true>,
     data: APIInteractionGuildMember | APIInteractionDataResolvedGuildMember,
     guildId: Snowflake,
   );
   public avatar: string | null;
+  public banner: string | null;
   public get dmChannel(): DMChannel | null;
   public get displayName(): string;
   public guildId: string;
@@ -1726,18 +1698,17 @@ export class MinimalGuildMember extends Base {
   public get joinedAt(): Date | null;
   public joinedTimestamp: number | null;
   public nickname: string | null;
-  public mute?: boolean;
-  public deaf?: boolean;
-  public partial: true;
-  public permissions: Readonly<PermissionsBitField>;
+  public get partial(): boolean;
   public get premiumSince(): Date | null;
   public premiumSinceTimestamp: number | null;
   public roleIds: Snowflake[];
   public user: User;
   public avatarURL(options?: ImageURLOptions): string | null;
+  public bannerURL(options?: ImageURLOptions): string | null;
   public createDM(force?: boolean): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;
   public displayAvatarURL(options?: ImageURLOptions): string;
+  public displayBannerURL(options?: ImageURLOptions): string | null;
   public isCommunicationDisabled(): this is GuildMember & {
     communicationDisabledUntilTimestamp: number;
     readonly communicationDisabledUntil: Date;
