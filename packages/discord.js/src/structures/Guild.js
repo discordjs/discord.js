@@ -27,7 +27,6 @@ const RoleManager = require('../managers/RoleManager');
 const StageInstanceManager = require('../managers/StageInstanceManager');
 const VoiceStateManager = require('../managers/VoiceStateManager');
 const { resolveImage } = require('../util/DataResolver');
-const Status = require('../util/Status');
 const SystemChannelFlagsBitField = require('../util/SystemChannelFlagsBitField');
 const { discordSort, getSortableGroupTypes, resolvePartialEmoji } = require('../util/Util');
 
@@ -126,15 +125,6 @@ class Guild extends AnonymousGuild {
     this.shardId = data.shardId;
   }
 
-  /**
-   * The Shard this Guild belongs to.
-   * @type {WebSocketShard}
-   * @readonly
-   */
-  get shard() {
-    return this.client.ws.shards.get(this.shardId);
-  }
-
   _patch(data) {
     super._patch(data);
     this.id = data.id;
@@ -164,7 +154,7 @@ class Guild extends AnonymousGuild {
 
     if ('large' in data) {
       /**
-       * Whether the guild is "large" (has more than {@link WebsocketOptions large_threshold} members, 50 by default)
+       * Whether the guild is "large" (has more than {@link WebSocketOptions large_threshold} members, 50 by default)
        * @type {boolean}
        */
       this.large = Boolean(data.large);
@@ -291,7 +281,8 @@ class Guild extends AnonymousGuild {
     if ('max_presences' in data) {
       /**
        * The maximum amount of presences the guild can have (this is `null` for all but the largest of guilds)
-       * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+       * <info>You will need to fetch the guild using {@link BaseGuild#fetch} if you want to receive
+       * this parameter</info>
        * @type {?number}
        */
       this.maximumPresences = data.max_presences;
@@ -322,7 +313,8 @@ class Guild extends AnonymousGuild {
     if ('approximate_member_count' in data) {
       /**
        * The approximate amount of members the guild has
-       * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+       * <info>You will need to fetch the guild using {@link BaseGuild#fetch} if you want to receive
+       * this parameter</info>
        * @type {?number}
        */
       this.approximateMemberCount = data.approximate_member_count;
@@ -333,7 +325,8 @@ class Guild extends AnonymousGuild {
     if ('approximate_presence_count' in data) {
       /**
        * The approximate amount of presences the guild has
-       * <info>You will need to fetch the guild using {@link Guild#fetch} if you want to receive this parameter</info>
+       * <info>You will need to fetch the guild using {@link BaseGuild#fetch} if you want to receive
+       * this parameter</info>
        * @type {?number}
        */
       this.approximatePresenceCount = data.approximate_presence_count;
@@ -521,7 +514,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Widget channel for this guild
-   * @type {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel|MediaChannel)}
+   * @type {?(TextChannel|AnnouncementChannel|VoiceChannel|StageChannel|ForumChannel|MediaChannel)}
    * @readonly
    */
   get widgetChannel() {
@@ -694,7 +687,7 @@ class Guild extends AnonymousGuild {
    * Data for the Guild Widget Settings object
    * @typedef {Object} GuildWidgetSettings
    * @property {boolean} enabled Whether the widget is enabled
-   * @property {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel|MediaChannel)} channel
+   * @property {?(TextChannel|AnnouncementChannel|VoiceChannel|StageChannel|ForumChannel|MediaChannel)} channel
    * The widget invite channel
    */
 
@@ -702,8 +695,8 @@ class Guild extends AnonymousGuild {
    * The Guild Widget Settings object
    * @typedef {Object} GuildWidgetSettingsData
    * @property {boolean} enabled Whether the widget is enabled
-   * @property {?(TextChannel|NewsChannel|VoiceChannel|StageChannel|ForumChannel|MediaChannel|Snowflake)} channel
-   * The widget invite channel
+   * @property {?(TextChannel|AnnouncementChannel|VoiceChannel|StageChannel|ForumChannel|
+   * MediaChannel|Snowflake)} channel The widget invite channel
    */
 
   /**
@@ -965,7 +958,7 @@ class Guild extends AnonymousGuild {
    * Welcome channel data
    * @typedef {Object} WelcomeChannelData
    * @property {string} description The description to show for this welcome channel
-   * @property {TextChannel|NewsChannel|ForumChannel|MediaChannel|Snowflake} channel
+   * @property {TextChannel|AnnouncementChannel|ForumChannel|MediaChannel|Snowflake} channel
    * The channel to link for this welcome channel
    * @property {EmojiIdentifierResolvable} [emoji] The emoji to display for this welcome channel
    */
@@ -981,9 +974,9 @@ class Guild extends AnonymousGuild {
   /**
    * Data that can be resolved to a GuildTextChannel object. This can be:
    * * A TextChannel
-   * * A NewsChannel
+   * * A AnnouncementChannel
    * * A Snowflake
-   * @typedef {TextChannel|NewsChannel|Snowflake} GuildTextChannelResolvable
+   * @typedef {TextChannel|AnnouncementChannel|Snowflake} GuildTextChannelResolvable
    */
 
   /**
@@ -1415,8 +1408,7 @@ class Guild extends AnonymousGuild {
       this.client.voice.adapters.set(this.id, methods);
       return {
         sendPayload: data => {
-          if (this.shard.status !== Status.Ready) return false;
-          this.shard.send(data);
+          this.client.ws.send(this.shardId, data);
           return true;
         },
         destroy: () => {

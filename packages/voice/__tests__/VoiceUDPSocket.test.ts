@@ -2,12 +2,13 @@
 import { Buffer } from 'node:buffer';
 import { createSocket as _createSocket } from 'node:dgram';
 import { EventEmitter } from 'node:events';
+import { describe, test, expect, vitest, beforeEach, afterEach } from 'vitest';
 import { VoiceUDPSocket } from '../src/networking/VoiceUDPSocket';
 
-jest.mock('node:dgram');
-jest.useFakeTimers();
+vitest.mock('node:dgram');
+vitest.useFakeTimers();
 
-const createSocket = _createSocket as unknown as jest.Mock<typeof _createSocket>;
+const createSocket = _createSocket as unknown as vitest.Mock<typeof _createSocket>;
 
 beforeEach(() => {
 	createSocket.mockReset();
@@ -32,7 +33,7 @@ const VALID_RESPONSE = Buffer.from([
 async function wait() {
 	return new Promise((resolve) => {
 		setImmediate(resolve);
-		jest.advanceTimersToNextTimer();
+		vitest.advanceTimersToNextTimer();
 	});
 }
 
@@ -48,7 +49,7 @@ describe('VoiceUDPSocket#performIPDiscovery', () => {
 	*/
 	test('Resolves and cleans up with a successful flow', async () => {
 		const fake = new FakeSocket();
-		fake.send = jest.fn().mockImplementation((buffer: Buffer, port: number, address: string) => {
+		fake.send = vitest.fn().mockImplementation((buffer: Buffer, port: number, address: string) => {
 			fake.emit('message', VALID_RESPONSE);
 		});
 		createSocket.mockImplementation((type) => fake as any);
@@ -71,7 +72,7 @@ describe('VoiceUDPSocket#performIPDiscovery', () => {
 	test('Waits for a valid response in an unexpected flow', async () => {
 		const fake = new FakeSocket();
 		const fakeResponse = Buffer.from([1, 2, 3, 4, 5]);
-		fake.send = jest.fn().mockImplementation(async (buffer: Buffer, port: number, address: string) => {
+		fake.send = vitest.fn().mockImplementation(async (buffer: Buffer, port: number, address: string) => {
 			fake.emit('message', fakeResponse);
 			await wait();
 			fake.emit('message', VALID_RESPONSE);
@@ -91,7 +92,7 @@ describe('VoiceUDPSocket#performIPDiscovery', () => {
 
 	test('Rejects if socket closes before IP discovery can be completed', async () => {
 		const fake = new FakeSocket();
-		fake.send = jest.fn().mockImplementation(async (buffer: Buffer, port: number, address: string) => {
+		fake.send = vitest.fn().mockImplementation(async (buffer: Buffer, port: number, address: string) => {
 			await wait();
 			fake.close();
 		});
@@ -104,7 +105,7 @@ describe('VoiceUDPSocket#performIPDiscovery', () => {
 
 	test('Stays alive when messages are echoed back', async () => {
 		const fake = new FakeSocket();
-		fake.send = jest.fn().mockImplementation(async (buffer: Buffer) => {
+		fake.send = vitest.fn().mockImplementation(async (buffer: Buffer) => {
 			await wait();
 			fake.emit('message', buffer);
 		});
@@ -115,7 +116,7 @@ describe('VoiceUDPSocket#performIPDiscovery', () => {
 		socket.on('close', () => (closed = true));
 
 		for (let index = 0; index < 30; index++) {
-			jest.advanceTimersToNextTimer();
+			vitest.advanceTimersToNextTimer();
 			await wait();
 		}
 
@@ -124,7 +125,7 @@ describe('VoiceUDPSocket#performIPDiscovery', () => {
 
 	test('Recovers from intermittent responses', async () => {
 		const fake = new FakeSocket();
-		const fakeSend = jest.fn();
+		const fakeSend = vitest.fn();
 		fake.send = fakeSend;
 		createSocket.mockImplementation(() => fake as any);
 		socket = new VoiceUDPSocket({ ip: '1.2.3.4', port: 25_565 });
@@ -134,7 +135,7 @@ describe('VoiceUDPSocket#performIPDiscovery', () => {
 		socket.on('close', () => (closed = true));
 
 		for (let index = 0; index < 10; index++) {
-			jest.advanceTimersToNextTimer();
+			vitest.advanceTimersToNextTimer();
 			await wait();
 		}
 
@@ -144,7 +145,7 @@ describe('VoiceUDPSocket#performIPDiscovery', () => {
 		});
 		expect(closed).toEqual(false);
 		for (let index = 0; index < 30; index++) {
-			jest.advanceTimersToNextTimer();
+			vitest.advanceTimersToNextTimer();
 			await wait();
 		}
 

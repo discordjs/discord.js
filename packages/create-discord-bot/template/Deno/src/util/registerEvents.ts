@@ -1,4 +1,4 @@
-import { Events, type Client } from 'npm:discord.js@^14.14.1';
+import { Events, type Client } from 'npm:discord.js@^14.16.0';
 import type { Command } from '../commands/index.ts';
 import type { Event } from '../events/index.ts';
 

@@ -69,7 +69,7 @@ class ThreadMember extends Base {
    * @readonly
    */
   get guildMember() {
-    return this.member ?? this.thread.guild.members.resolve(this.id);
+    return this.member ?? this.thread.guild.members.cache.get(this.id) ?? null;
   }
 
   /**
@@ -87,7 +87,7 @@ class ThreadMember extends Base {
    * @readonly
    */
   get user() {
-    return this.client.users.resolve(this.id);
+    return this.client.users.cache.get(this.id) ?? null;
   }
 
   /**
@@ -101,11 +101,10 @@ class ThreadMember extends Base {
 
   /**
    * Removes this member from the thread.
-   * @param {string} [reason] Reason for removing the member
    * @returns {Promise<ThreadMember>}
    */
-  async remove(reason) {
-    await this.thread.members.remove(this.id, reason);
+  async remove() {
+    await this.thread.members.remove(this.id);
     return this;
   }
 }

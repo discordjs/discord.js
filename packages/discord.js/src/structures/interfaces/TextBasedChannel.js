@@ -53,16 +53,39 @@ class TextBasedChannel {
   }
 
   /**
+   * Represents the data for a poll answer.
+   * @typedef {Object} PollAnswerData
+   * @property {string} text The text for the poll answer
+   * @property {EmojiIdentifierResolvable} [emoji] The emoji for the poll answer
+   */
+
+  /**
+   * Represents the data for a poll.
+   * @typedef {Object} PollData
+   * @property {PollQuestionMedia} question The question for the poll
+   * @property {PollAnswerData[]} answers The answers for the poll
+   * @property {number} duration The duration in hours for the poll
+   * @property {boolean} allowMultiselect Whether the poll allows multiple answers
+   * @property {PollLayoutType} [layoutType] The layout type for the poll
+   */
+
+  /**
    * The base message options for messages.
    * @typedef {Object} BaseMessageOptions
    * @property {?string} [content=''] The content for the message. This can only be `null` when editing a message.
    * @property {Array<(EmbedBuilder|Embed|APIEmbed)>} [embeds] The embeds for the message
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
-   * (see [here](https://discord.com/developers/docs/resources/channel#allowed-mentions-object) for more details)
+   * (see [here](https://discord.com/developers/docs/resources/message#allowed-mentions-object) for more details)
    * @property {Array<(AttachmentBuilder|Attachment|AttachmentPayload|BufferResolvable)>} [files]
    * The files to send with the message.
    * @property {Array<(ActionRowBuilder|ActionRow|APIActionRowComponent)>} [components]
    * Action rows containing interactive components for the message (buttons, select menus)
+   */
+
+  /**
+   * The base message options for messages including a poll.
+   * @typedef {BaseMessageOptions} BaseMessageOptionsWithPoll
+   * @property {PollData} [poll] The poll to send with the message
    */
 
   /**
@@ -75,7 +98,7 @@ class TextBasedChannel {
 
   /**
    * The options for sending a message.
-   * @typedef {BaseMessageOptions} BaseMessageCreateOptions
+   * @typedef {BaseMessageOptionsWithPoll} BaseMessageCreateOptions
    * @property {boolean} [tts=false] Whether the message should be spoken aloud
    * @property {string} [nonce] The nonce for the message
    * <info>This property is required if `enforceNonce` set to `true`.</info>

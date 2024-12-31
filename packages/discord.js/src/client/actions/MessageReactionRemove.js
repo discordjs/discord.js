@@ -19,7 +19,11 @@ class MessageReactionRemove extends Action {
     if (!user) return false;
 
     // Verify channel
-    const channel = this.getChannel(data);
+    const channel = this.getChannel({
+      id: data.channel_id,
+      ...('guild_id' in data && { guild_id: data.guild_id }),
+      user_id: data.user_id,
+    });
     if (!channel?.isTextBased()) return false;
 
     // Verify message
@@ -29,14 +33,15 @@ class MessageReactionRemove extends Action {
     // Verify reaction
     const reaction = this.getReaction(data, message, user);
     if (!reaction) return false;
-    reaction._remove(user);
+    reaction._remove(user, data.burst);
     /**
      * Emitted whenever a reaction is removed from a cached message.
      * @event Client#messageReactionRemove
      * @param {MessageReaction} messageReaction The reaction object
      * @param {User} user The user whose emoji or reaction emoji was removed
+     * @param {MessageReactionEventDetails} details Details of removing the reaction
      */
-    this.client.emit(Events.MessageReactionRemove, reaction, user);
+    this.client.emit(Events.MessageReactionRemove, reaction, user, { type: data.type, burst: data.burst });
 
     return { message, reaction, user };
   }

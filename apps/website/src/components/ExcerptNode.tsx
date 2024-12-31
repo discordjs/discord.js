@@ -4,7 +4,7 @@ import { BuiltinDocumentationLinks } from '~/util/builtinDocumentationLinks';
 
 export async function ExcerptNode({ node, version }: { readonly node?: any; readonly version: string }) {
 	const createExcerpt = (excerpts: any) => {
-		const excerpt = Array.isArray(excerpts) ? excerpts : excerpts.excerpts ?? [excerpts];
+		const excerpt = Array.isArray(excerpts) ? excerpts : (excerpts.excerpts ?? [excerpts]);
 
 		return (
 			<span
@@ -20,7 +20,7 @@ export async function ExcerptNode({ node, version }: { readonly node?: any; read
 							<Link
 								key={`${excerpt.resolvedItem.displayName}-${idx}`}
 								className="text-blurple hover:text-blurple-500 dark:hover:text-blurple-300"
-								href={`/docs/packages/${excerpt.resolvedItem.packageName}/${version}/${excerpt.resolvedItem.uri}`}
+								href={`/docs/packages/${excerpt.resolvedItem.packageName}/${excerpt.resolvedItem.version ?? version}/${excerpt.resolvedItem.uri}`}
 							>
 								{excerpt.text}
 							</Link>

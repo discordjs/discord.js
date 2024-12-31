@@ -48,7 +48,7 @@ class RoleManager extends CachedManager {
    * Obtains a role from Discord, or the role cache if they're already available.
    * @param {Snowflake} [id] The role's id
    * @param {BaseFetchOptions} [options] Additional options for this fetch
-   * @returns {Promise<?Role|Collection<Snowflake, Role>>}
+   * @returns {Promise<Role|Collection<Snowflake, Role>>}
    * @example
    * // Fetch all roles from the guild
    * message.guild.roles.fetch()
@@ -61,16 +61,20 @@ class RoleManager extends CachedManager {
    *   .catch(console.error);
    */
   async fetch(id, { cache = true, force = false } = {}) {
-    if (id && !force) {
+    if (!id) {
+      const data = await this.client.rest.get(Routes.guildRoles(this.guild.id));
+      const roles = new Collection();
+      for (const role of data) roles.set(role.id, this._add(role, cache));
+      return roles;
+    }
+
+    if (!force) {
       const existing = this.cache.get(id);
       if (existing) return existing;
     }
 
-    // We cannot fetch a single role, as of this commit's date, Discord API throws with 405
-    const data = await this.client.rest.get(Routes.guildRoles(this.guild.id));
-    const roles = new Collection();
-    for (const role of data) roles.set(role.id, this._add(role, cache));
-    return id ? roles.get(id) ?? null : roles;
+    const data = await this.client.rest.get(Routes.guildRole(this.guild.id, id));
+    return this._add(data, cache);
   }
 
   /**

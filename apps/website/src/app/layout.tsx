@@ -20,11 +20,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-	metadataBase: new URL(
-		process.env.NEXT_PUBLIC_LOCAL_DEV === 'true'
-			? `http://localhost:${process.env.PORT ?? 3_000}`
-			: 'https://discord.js.org',
-	),
+	metadataBase: new URL(ENV.IS_LOCAL_DEV ? `http://localhost:${ENV.PORT}` : 'https://discord.js.org'),
 	title: {
 		template: '%s | discord.js',
 		default: 'discord.js',
@@ -85,13 +81,13 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 				<LocalizedStringProvider locale="en-US" />
 				<Providers>
 					{ENV.IS_LOCAL_DEV ? (
-						<div className="sticky top-0 z-10 flex h-10 place-content-center place-items-center bg-red-500 text-lg text-white">
+						<div className="fixed left-1/2 top-2 z-10 flex -translate-x-1/2 place-content-center place-items-center rounded-md border border-red-400/35 bg-red-500/65 p-2 px-4 text-center text-base text-white shadow-md backdrop-blur">
 							Local test environment
 						</div>
 					) : null}
 					{ENV.IS_PREVIEW ? (
-						<div className="sticky top-0 z-10 flex h-10 place-content-center place-items-center bg-red-500 text-lg text-white">
-							Preview deployment
+						<div className="fixed left-1/2 top-2 z-10 flex -translate-x-1/2 place-content-center place-items-center rounded-md border border-red-400/35 bg-red-500/65 p-2 px-4 text-center text-base text-white shadow-md backdrop-blur">
+							Preview environment
 						</div>
 					) : null}
 					{children}

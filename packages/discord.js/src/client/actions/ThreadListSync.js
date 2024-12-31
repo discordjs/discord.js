@@ -13,7 +13,7 @@ class ThreadListSyncAction extends Action {
 
     if (data.channel_ids) {
       for (const id of data.channel_ids) {
-        const channel = client.channels.resolve(id);
+        const channel = client.channels.cache.get(id);
         if (channel) this.removeStale(channel);
       }
     } else {
@@ -36,7 +36,7 @@ class ThreadListSyncAction extends Action {
     }
 
     /**
-     * Emitted whenever the client user gains access to a text or news channel that contains threads
+     * Emitted whenever the client user gains access to a text or announcement channel that contains threads
      * @event Client#threadListSync
      * @param {Collection<Snowflake, ThreadChannel>} threads The threads that were synced
      * @param {Guild} guild The guild that the threads were synced in

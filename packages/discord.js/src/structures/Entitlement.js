@@ -73,10 +73,9 @@ class Entitlement extends Base {
     if ('starts_at' in data) {
       /**
        * The timestamp at which this entitlement is valid
-       * <info>This is only `null` for test entitlements</info>
        * @type {?number}
        */
-      this.startsTimestamp = Date.parse(data.starts_at);
+      this.startsTimestamp = data.starts_at ? Date.parse(data.starts_at) : null;
     } else {
       this.startsTimestamp ??= null;
     }
@@ -84,12 +83,21 @@ class Entitlement extends Base {
     if ('ends_at' in data) {
       /**
        * The timestamp at which this entitlement is no longer valid
-       * <info>This is only `null` for test entitlements</info>
        * @type {?number}
        */
-      this.endsTimestamp = Date.parse(data.ends_at);
+      this.endsTimestamp = data.ends_at ? Date.parse(data.ends_at) : null;
     } else {
       this.endsTimestamp ??= null;
+    }
+
+    if ('consumed' in data) {
+      /**
+       * Whether this entitlement has been consumed
+       * @type {boolean}
+       */
+      this.consumed = data.consumed;
+    } else {
+      this.consumed ??= false;
     }
   }
 
@@ -104,7 +112,6 @@ class Entitlement extends Base {
 
   /**
    * The start date at which this entitlement is valid
-   * <info>This is only `null` for test entitlements</info>
    * @type {?Date}
    */
   get startsAt() {
@@ -113,7 +120,6 @@ class Entitlement extends Base {
 
   /**
    * The end date at which this entitlement is no longer valid
-   * <info>This is only `null` for test entitlements</info>
    * @type {?Date}
    */
   get endsAt() {
@@ -158,6 +164,15 @@ class Entitlement extends Base {
    */
   fetchUser() {
     return this.client.users.fetch(this.userId);
+  }
+
+  /**
+   * Marks this entitlement as consumed
+   * <info>Only available for One-Time Purchase consumable SKUs.</info>
+   * @returns {Promise<void>}
+   */
+  async consume() {
+    await this.client.application.entitlements.consume(this.id);
   }
 }
 

@@ -1,7 +1,8 @@
 'use strict';
 
-const { token, owner } = require('./auth.js');
-const { Client, Events, codeBlock, GatewayIntentBits } = require('../src');
+const { ButtonStyle } = require('discord-api-types/v10');
+const { token, owner, skuId } = require('./auth.js');
+const { Client, Events, codeBlock, GatewayIntentBits, ActionRowBuilder, ButtonBuilder } = require('../src');
 
 const client = new Client({ intents: GatewayIntentBits.Guilds | GatewayIntentBits.GuildMessages });
 
@@ -35,7 +36,16 @@ client.on(Events.InteractionCreate, async interaction => {
   console.log('interaction.entitlements', interaction.entitlements);
 
   if (interaction.commandName === 'test') {
-    await interaction.sendPremiumRequired();
+    await interaction.reply({
+      content: ':3:3:3',
+      components: [
+        new ActionRowBuilder().setComponents(
+          new ButtonBuilder().setCustomId('test').setLabel('test')
+.setStyle(ButtonStyle.Premium)
+.setSKUId(skuId),
+        ),
+      ],
+    });
   }
 });
 
