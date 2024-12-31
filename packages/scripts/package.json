@@ -69,22 +69,22 @@
 		"commander": "^12.1.0",
 		"tslib": "^2.8.1",
 		"undici": "6.21.0",
-		"yaml": "^2.6.0"
+		"yaml": "^2.7.0"
 	},
 	"devDependencies": {
-		"@turbo/gen": "^2.3.0",
-		"@types/node": "^20.17.8",
-		"@vitest/coverage-v8": "^2.1.5",
+		"@turbo/gen": "^2.3.3",
+		"@types/node": "^20.17.10",
+		"@vitest/coverage-v8": "^2.1.8",
 		"cross-env": "^7.0.3",
 		"env-cmd": "^10.1.0",
 		"eslint": "^8.57.1",
 		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.3.3",
+		"prettier": "^3.4.2",
 		"tsup": "^8.3.5",
-		"turbo": "^2.3.0",
+		"turbo": "^2.3.3",
 		"typescript": "~5.5.4",
-		"vitest": "^2.1.5"
+		"vitest": "^2.1.8"
 	},
 	"engines": {
 		"node": ">=20"
