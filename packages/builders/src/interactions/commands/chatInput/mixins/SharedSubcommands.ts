@@ -16,7 +16,7 @@ export interface SharedChatInputCommandSubcommandsData {
  * @typeParam TypeAfterAddingSubcommands - The type this class should return after adding a subcommand or subcommand group.
  */
 export class SharedChatInputCommandSubcommands {
-	protected declare readonly data: SharedChatInputCommandSubcommandsData;
+	declare protected readonly data: SharedChatInputCommandSubcommandsData;
 
 	/**
 	 * Adds subcommand groups to this command.
