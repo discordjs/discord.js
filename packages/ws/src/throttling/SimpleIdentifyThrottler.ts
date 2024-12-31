@@ -36,7 +36,7 @@ export class SimpleIdentifyThrottler implements IIdentifyThrottler {
 
 		try {
 			const diff = state.resetsAt - Date.now();
-			if (diff <= 5_000) {
+			if (diff > 0 && diff <= 5_000) {
 				// To account for the latency the IDENTIFY payload goes through, we add a bit more wait time
 				const time = diff + Math.random() * 1_500;
 				await sleep(time);
