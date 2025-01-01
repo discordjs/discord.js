@@ -23,13 +23,7 @@ import {
 import { WebSocket, type Data } from 'ws';
 import type * as ZlibSync from 'zlib-sync';
 import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
-import {
-	CompressionMethod,
-	CompressionParameterMap,
-	ImportantGatewayOpcodes,
-	KnownNetworkErrorCodes,
-	getInitialSendRateLimitState,
-} from '../utils/constants.js';
+import { ImportantGatewayOpcodes, KnownNetworkErrorCodes, getInitialSendRateLimitState } from '../utils/constants.js';
 import type { SessionInfo } from './WebSocketManager.js';
 
 // eslint-disable-next-line promise/prefer-await-to-then
@@ -94,7 +88,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private useIdentifyCompress = false;
 
-	private inflate: Inflate | null = null;
+	private inflate: ZlibSync.Inflate | null = null;
 
 	private readonly textDecoder = new TextDecoder();
 
