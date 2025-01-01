@@ -2,6 +2,76 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/ws@1.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@1.1.1...@discordjs/ws@1.2.0) - (2025-01-01)
+
+## Bug Fixes
+
+- **SimpleIdentifyThrottler:** Don't sleep negative amounts ([a589c6d](https://github.com/discordjs/discord.js/commit/a589c6d49265d24cf202e8f68c6b2ad4fafd398c))
+- Retry for EAI_AGAIN I/O error (#10383) ([5b8a08e](https://github.com/discordjs/discord.js/commit/5b8a08ebb66276320a5095630ecee403783afec0))
+- Consistent debug log spacing (#10349) ([c6710e5](https://github.com/discordjs/discord.js/commit/c6710e56cc634ecb2b922d777fe715c49fa91baa))
+
+## Features
+
+- **WebSocketShard:** Explicit time out network error handling (#10375) ([a5437a4](https://github.com/discordjs/discord.js/commit/a5437a41f31bf47e9a6f8dc4452086c614d71d1c))
+
+# [@discordjs/ws@1.1.1](https://github.com/discordjs/discord.js/compare/@discordjs/ws@1.1.0...@discordjs/ws@1.1.1) - (2024-06-02)
+
+## Bug Fixes
+
+- Deno compat (#10271) ([616208b](https://github.com/discordjs/discord.js/commit/616208ba7766ac66a8969ffd2cb7b341fdc2c67b))
+- Anchor link for events ([0efd1be](https://github.com/discordjs/discord.js/commit/0efd1bea46fa2fc8bcd3dcfd0ac5cd608a0a7df0))
+- Minify mainlib docs json (#9963) ([4b88306](https://github.com/discordjs/discord.js/commit/4b88306dcb2b16b840ec61e9e33047af3a31c45d))
+
+## Documentation
+
+- Remove duplicate word in comment (#10244) ([96169ad](https://github.com/discordjs/discord.js/commit/96169add6d2db37706629c0172692533948a9dca))
+- Split docs.api.json into multiple json files ([597340f](https://github.com/discordjs/discord.js/commit/597340f288437c35da8c703d9b621274de60d880))
+- Remove utf-8-validate (#10059) ([7e12bee](https://github.com/discordjs/discord.js/commit/7e12bee337af169bb131d34fa29ed090ebd26c71))
+
+## Features
+
+- **ws:** Support for custom worker messaging (#10241) ([728164e](https://github.com/discordjs/discord.js/commit/728164ed868167d43dec7b7e8d11052a37694968))
+- Local and preview detection ([79fbda3](https://github.com/discordjs/discord.js/commit/79fbda3aac6d4f0f8bfb193e797d09cbe331d315))
+- Add support for `using` keyword on discord.js `Client` and `WebSocketManager` (#10063) ([543d617](https://github.com/discordjs/discord.js/commit/543d61737e0709b9d88029d01156d48cfcaf3bcc))
+- Use globally available WebSocket client in runtimes that have it (#10042) ([319ef9a](https://github.com/discordjs/discord.js/commit/319ef9a70b92dbb11726b270ab84e73ca932850f))
+
+## Refactor
+
+- Native zlib support (#10243) ([20258f9](https://github.com/discordjs/discord.js/commit/20258f94bf1a62ec1989ef04d839e2800f6e6d28))
+  - **BREAKING CHANGE:** renamed compression related options
+
+* chore: fix doc comment
+
+* chore: update debug messages
+
+* chore: better wording
+  - **Co-authored-by:** Jiralite <33201955+Jiralite@users.noreply.github.com>
+
+* chore: suggested changes
+
+* chore: better naming
+
+* refactor: lazy node:zlib import and lib detection
+
+* chore: zlib capitalization
+
+* fix: use proper var
+
+* refactor: better inflate check
+  - **Co-authored-by:** Aura <kyradiscord@gmail.com>
+
+* chore: debug label
+  - **Co-authored-by:** Superchupu <53496941+SuperchupuDev@users.noreply.github.com>
+
+---------
+  - **Co-authored-by:** Jiralite <33201955+Jiralite@users.noreply.github.com>
+  - **Co-authored-by:** Aura <kyradiscord@gmail.com>
+  - **Co-authored-by:** Superchupu <53496941+SuperchupuDev@users.noreply.github.com>
+  - **Co-authored-by:** kodiakhq[bot] <49736102+kodiakhq[bot]@users.noreply.github.com>
+- Docs (#10126) ([18cce83](https://github.com/discordjs/discord.js/commit/18cce83d80598c430218775c53441b6b2ecdc776))
+- **WebSocketShard:** Payload sending (#10098) ([c878b65](https://github.com/discordjs/discord.js/commit/c878b65ef586cd9b42f765515f87f43cb6165f61))
+- Use interfaces for AsyncEventEmitter event maps (#10044) ([adfd9cd](https://github.com/discordjs/discord.js/commit/adfd9cd3b32cfabdcc45ec90f535b2852a3ca4a6))
+
 # [@discordjs/ws@1.1.1](https://github.com/discordjs/discord.js/compare/@discordjs/ws@1.1.0...@discordjs/ws@1.1.1) - (2024-06-02)
 
 ## Bug Fixes
