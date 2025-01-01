@@ -166,7 +166,7 @@ class ApplicationCommand extends Base {
       /**
        * Determines whether the interaction is handled by the app's interactions handler or by Discord.
        * <info>Only available for {@link ApplicationCommandType.PrimaryEntryPoint} command
-       * and for apps with `EMBEDDED` flag (i.e, applications that have an Activity)
+       * and for apps with {@link ApplicationFlags.Embedded} flag (i.e, applications that have an Activity)
        * </info>
        * @type {?EntryPointCommandHandlerType}
        */
@@ -612,4 +612,9 @@ module.exports = ApplicationCommand;
 /**
  * @external ApplicationCommandOptionAllowedChannelTypes
  * @see {@link https://discord.js.org/docs/packages/builders/stable/ApplicationCommandOptionAllowedChannelTypes:TypeAlias}
+ */
+
+/**
+ * @external EntryPointCommandHandlerType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/EntryPointCommandHandlerType}
  */
