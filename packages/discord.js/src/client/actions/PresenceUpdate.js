@@ -6,7 +6,7 @@ const Events = require('../../util/Events');
 class PresenceUpdateAction extends Action {
   handle(data) {
     let user = this.client.users.cache.get(data.user.id);
-    if (!user && data.user.username) user = this.client.users._add(data.user);
+    if (!user && data.user) user = this.client.users._add(data.user);
     if (!user) return;
 
     if (data.user.username) {
