@@ -38,6 +38,12 @@ class MinimalGuildMember extends Base {
     this.banner = null;
 
     /**
+     * The role ids of the member
+     * @type {Snowflake[]}
+     */
+    this.roleIds = [];
+
+    /**
      * The timestamp the member joined the guild at
      * @type {?number}
      */
@@ -85,13 +91,7 @@ class MinimalGuildMember extends Base {
 
     if ('banner' in data) this.banner = data.banner;
 
-    if ('roles' in data) {
-      /**
-       * The role ids of the member
-       * @type {Snowflake[]}
-       */
-      this.roleIds = data.roles;
-    }
+    if ('roles' in data) this.roleIds = data.roles;
 
     if ('joined_at' in data) this.joinedTimestamp = data.joined_at && Date.parse(data.joined_at);
 
