@@ -2,6 +2,59 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.17.0](https://github.com/discordjs/discord.js/compare/14.16.3...14.17.0) - (2025-01-01)
+
+## Bug Fixes
+
+- **InteractionResponses:** Do not use `in` if a string is passed ([ff42d7a](https://github.com/discordjs/discord.js/commit/ff42d7af72e940ae72c61d2c5164ae68f2708b96))
+- Use Message#interactionMetadata (#10654) ([6087088](https://github.com/discordjs/discord.js/commit/60870885790eb1857ed4c2969c9c404e356a1299))
+- **InteractionResponses:** Properly resolve message flags (#10661) ([b2754d4](https://github.com/discordjs/discord.js/commit/b2754d4a0ec250ae84057d0f07c078376f54829c))
+- **ThreadChannel:** Make `ownerId` always present (#10618) ([7678f11](https://github.com/discordjs/discord.js/commit/7678f1176a645878261361faef0429f9cf7f4810))
+- **MessageReaction:** Address `undefined` burst properties (#10597) ([76968b4](https://github.com/discordjs/discord.js/commit/76968b4bc14b8a66825f9140d130b1e04c11855a))
+- **ThreadChannel:** Address parameter type on fetchOwner() (#10592) ([56c9396](https://github.com/discordjs/discord.js/commit/56c9396b717d4dec2410ca13938ce238ec21215d))
+- **InteractionResponses:** Throw error on deleting response of unacknowledged interaction (#10587) ([21c283f](https://github.com/discordjs/discord.js/commit/21c283f964ab9e331db53cc0c21ca64980372488))
+- **GuildScheduledEvent:** Handle null recurrence_rule (#10543) ([831aafa](https://github.com/discordjs/discord.js/commit/831aafa733e8eea55534c4c39b87775d2e2f56c4))
+
+## Documentation
+
+- Correct discord-api-types URLs (#10622) ([76042f0](https://github.com/discordjs/discord.js/commit/76042f05386edcbadc5ad4ded22e8b15c7b6f8ec))
+- Typos (#10628) ([388783d](https://github.com/discordjs/discord.js/commit/388783d7dd718aae519801b90aa781d07b7fb64e))
+- Add note about idempotence to role add/remove routes (#10586) ([565fc01](https://github.com/discordjs/discord.js/commit/565fc0192a5ed2642ff1bd615c59678b5c3cd24b))
+- **Client:** Fix incorrect managers descriptions ([f79ba52](https://github.com/discordjs/discord.js/commit/f79ba52c7a1334d987e9873a8a411e92d5140116))
+- **discord.js:** Remove `utf-8-validate` (#10531) ([297e959](https://github.com/discordjs/discord.js/commit/297e959f48abbfd3af58cc29cdcef139d3579821))
+
+## Features
+
+- **ClientApplication:** Add webhook events (#10588) ([7b2a2e3](https://github.com/discordjs/discord.js/commit/7b2a2e3a154afd69ff892da615ea75c46730f226))
+- **InteractionResponses:** Support `with_response` query parameter (#10636) ([622acbc](https://github.com/discordjs/discord.js/commit/622acbcbf02c3b8e0eae4296964c3e745e19378d))
+- **ClientApplication:** Add webhook events (#10588) ([ae1deac](https://github.com/discordjs/discord.js/commit/ae1deac2bf37aecda4c044bf5c28d03930bd763b))
+- **EntitlementManager:** Support get entitlement (#10606) ([a367e2c](https://github.com/discordjs/discord.js/commit/a367e2c8c99ab3bfb83cdbfb65e7a5020b50b7f7))
+- Add subscriptions (#10541) ([4cca33d](https://github.com/discordjs/discord.js/commit/4cca33d9b0759294c9a2dfec39d80a24a2cc1595))
+- Emit reaction type on gateway events (#10598) ([bda3128](https://github.com/discordjs/discord.js/commit/bda31284bf46515747e002e86ea35d0b6910e269))
+- Voice Channel Effect Send (#10318) ([34343c6](https://github.com/discordjs/discord.js/commit/34343c6afae65205d3b17b60fdd202d0937d6a46))
+- **GuildMember:** Banners (#10384) ([b1ded63](https://github.com/discordjs/discord.js/commit/b1ded63e42e7349f535df4680509b9393dd8f288))
+- Add ApplicationEmoji to EmojiResolvable and MessageReaction#emoji (#10477) ([1fc87a9](https://github.com/discordjs/discord.js/commit/1fc87a96987fe69722502d7574500926a4e0bfde))
+- Recurring scheduled events (#10447) ([97c3237](https://github.com/discordjs/discord.js/commit/97c3237a70027f71bb3f046357a55bb730daca14))
+- Message forwarding (#10464) ([c122178](https://github.com/discordjs/discord.js/commit/c12217829b46f7a60266f65af4af19cdbfcd7906))
+
+## Refactor
+
+- **FetchApplicationCommandOptions:** Use `Locale` over `LocaleString` (#10625) ([7ce6f2f](https://github.com/discordjs/discord.js/commit/7ce6f2fc8a8756532d71a542186d10a0aa951471))
+- Use `cache.get()` for snowflakes, `resolve()` otherwise (#10626) ([dedaa5d](https://github.com/discordjs/discord.js/commit/dedaa5d657f15491910ec05102ce72affc822b97))
+- Remove extra traversing (#10580) ([33533b7](https://github.com/discordjs/discord.js/commit/33533b72849d9741dae8c979734b45abbf3657a7))
+- **InteractionResponses:** Deprecate ephemeral response option (#10574) ([be38f57](https://github.com/discordjs/discord.js/commit/be38f5792602ed1a79a9638aa8e629e7ad6bdd0d))
+- Deprecate `reason` parameter on adding and removing thread members (#10551) ([72e0c99](https://github.com/discordjs/discord.js/commit/72e0c994547f2a9c99b320870e14d7f1643f3851))
+- Deprecate fetching user flags (#10550) ([3d06c9d](https://github.com/discordjs/discord.js/commit/3d06c9d872b2e79356f1239f7d0eb0577a4bcedf))
+
+## Testing
+
+- Remove unused test (#10638) ([53cbb0e](https://github.com/discordjs/discord.js/commit/53cbb0e36d4ab191cbc15a022d752da14c2e0ace))
+
+## Typings
+
+- Add missing `Caches` managers (#10540) ([13471fa](https://github.com/discordjs/discord.js/commit/13471fa1b7c44b236db9fe9b1a64dacd41b14b76))
+- Remove newMessage partial on messageUpdate event typing (#10526) ([5faf074](https://github.com/discordjs/discord.js/commit/5faf074c145044f0edefafab97fd07a8dfb8bc30))
+
 # [14.16.3](https://github.com/discordjs/discord.js/compare/14.16.2...14.16.3) - (2024-09-29)
 
 ## Bug Fixes
