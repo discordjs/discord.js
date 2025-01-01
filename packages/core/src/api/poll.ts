@@ -26,7 +26,7 @@ export class PollAPI {
 		channelId: Snowflake,
 		messageId: Snowflake,
 		answerId: number,
-		query: RESTGetAPIPollAnswerVotersQuery,
+		query: RESTGetAPIPollAnswerVotersQuery = {},
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.get(Routes.pollAnswerVoters(channelId, messageId, answerId), {

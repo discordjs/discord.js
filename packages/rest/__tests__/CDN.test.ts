@@ -30,10 +30,6 @@ test('avatar dynamic-not-animated', () => {
 	expect(cdn.avatar(id, hash)).toEqual(`${baseCDN}/avatars/${id}/${hash}.webp`);
 });
 
-test('avatar decoration default', () => {
-	expect(cdn.avatarDecoration(id, hash)).toEqual(`${baseCDN}/avatar-decorations/${id}/${hash}.webp`);
-});
-
 test('avatar decoration preset', () => {
 	expect(cdn.avatarDecoration(hash)).toEqual(`${baseCDN}/avatar-decoration-presets/${hash}.png`);
 });
@@ -59,7 +55,7 @@ test('emoji default', () => {
 });
 
 test('emoji gif', () => {
-	expect(cdn.emoji(id, 'gif')).toEqual(`${baseCDN}/emojis/${id}.gif`);
+	expect(cdn.emoji(id, { extension: 'gif' })).toEqual(`${baseCDN}/emojis/${id}.gif`);
 });
 
 test('guildMemberAvatar default', () => {

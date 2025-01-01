@@ -84,7 +84,7 @@ class GuildChannelManager extends CachedManager {
    * @returns {?(GuildChannel|ThreadChannel)}
    */
   resolve(channel) {
-    if (channel instanceof ThreadChannel) return super.resolve(channel.id);
+    if (channel instanceof ThreadChannel) return super.cache.get(channel.id) ?? null;
     return super.resolve(channel);
   }
 
@@ -287,7 +287,7 @@ class GuildChannelManager extends CachedManager {
     const resolvedChannel = this.resolve(channel);
     if (!resolvedChannel) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
 
-    const parent = options.parent && this.client.channels.resolveId(options.parent);
+    const parentId = options.parent && this.client.channels.resolveId(options.parent);
 
     if (options.position !== undefined) {
       await this.setPosition(resolvedChannel, options.position, { position: options.position, reason: options.reason });
@@ -298,8 +298,8 @@ class GuildChannelManager extends CachedManager {
     );
 
     if (options.lockPermissions) {
-      if (parent) {
-        const newParent = this.resolve(parent);
+      if (parentId) {
+        const newParent = this.cache.get(parentId);
         if (newParent?.type === ChannelType.GuildCategory) {
           permission_overwrites = newParent.permissionOverwrites.cache.map(overwrite =>
             PermissionOverwrites.resolve(overwrite, this.guild),
@@ -322,7 +322,7 @@ class GuildChannelManager extends CachedManager {
         user_limit: options.userLimit,
         rtc_region: options.rtcRegion,
         video_quality_mode: options.videoQualityMode,
-        parent_id: parent,
+        parent_id: parentId,
         lock_permissions: options.lockPermissions,
         rate_limit_per_user: options.rateLimitPerUser,
         default_auto_archive_duration: options.defaultAutoArchiveDuration,

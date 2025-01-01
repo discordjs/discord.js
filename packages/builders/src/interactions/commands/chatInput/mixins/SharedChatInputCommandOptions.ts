@@ -21,7 +21,7 @@ export interface SharedChatInputCommandOptionsData {
  * @typeParam TypeAfterAddingOptions - The type this class should return after adding an option.
  */
 export class SharedChatInputCommandOptions {
-	protected declare readonly data: SharedChatInputCommandOptionsData;
+	declare protected readonly data: SharedChatInputCommandOptionsData;
 
 	public get options(): readonly ApplicationCommandOptionBase[] {
 		return (this.data.options ??= []);

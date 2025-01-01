@@ -1,4 +1,4 @@
-import type { LocaleString, RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v10';
+import type { Locale, RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v10';
 
 export interface SharedNameData
 	extends Partial<Pick<RESTPostAPIApplicationCommandsJSONBody, 'name_localizations' | 'name'>> {}
@@ -25,7 +25,7 @@ export class SharedName {
 	 * @param locale - The locale to set
 	 * @param localizedName - The localized name for the given `locale`
 	 */
-	public setNameLocalization(locale: LocaleString, localizedName: string) {
+	public setNameLocalization(locale: Locale, localizedName: string) {
 		this.data.name_localizations ??= {};
 		this.data.name_localizations[locale] = localizedName;
 
@@ -37,7 +37,7 @@ export class SharedName {
 	 *
 	 * @param locale - The locale to clear
 	 */
-	public clearNameLocalization(locale: LocaleString) {
+	public clearNameLocalization(locale: Locale) {
 		this.data.name_localizations ??= {};
 		this.data.name_localizations[locale] = undefined;
 
@@ -49,7 +49,7 @@ export class SharedName {
 	 *
 	 * @param localizedNames - The object of localized names to set
 	 */
-	public setNameLocalizations(localizedNames: Partial<Record<LocaleString, string>>) {
+	public setNameLocalizations(localizedNames: Partial<Record<Locale, string>>) {
 		this.data.name_localizations = structuredClone(localizedNames);
 		return this;
 	}

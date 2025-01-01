@@ -29,7 +29,7 @@ discord.js is a powerful [Node.js](https://nodejs.org) module that allows you to
 
 ## Installation
 
-**Node.js 18 or newer is required.**
+**Node.js 20 or newer is required.**
 
 ```sh
 npm install discord.js
@@ -83,14 +83,15 @@ try {
 Afterwards we can create a quite simple example bot:
 
 ```js
-import { Client, GatewayIntentBits } from 'discord.js';
+import { Client, Events, GatewayIntentBits } from 'discord.js';
+
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
+client.on(Events.ClientReady, readyClient => {
+  console.log(`Logged in as ${readyClient.user.tag}!`);
 });
 
-client.on('interactionCreate', async interaction => {
+client.on(Events.InteractionCreate, async interaction => {
   if (!interaction.isChatInputCommand()) return;
 
   if (interaction.commandName === 'ping') {

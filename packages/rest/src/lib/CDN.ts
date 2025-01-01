@@ -8,9 +8,6 @@ import {
 	type ImageSize,
 	type StickerExtension,
 } from './utils/constants.js';
-import { deprecationWarning } from './utils/utils.js';
-
-let deprecationEmittedForEmoji = false;
 
 /**
  * The options used for image URLs
@@ -111,33 +108,8 @@ export class CDN {
 	 *
 	 * @param asset - The avatar decoration hash
 	 */
-	public avatarDecoration(asset: string): string;
-
-	/**
-	 * Generates a user avatar decoration URL.
-	 *
-	 * @deprecated This overload is deprecated. Pass a hash instead.
-	 * @param userId - The id of the user
-	 * @param userAvatarDecoration - The hash provided by Discord for this avatar decoration
-	 * @param options - Optional options for the avatar decoration
-	 */
-	public avatarDecoration(
-		userId: string,
-		userAvatarDecoration: string,
-		// eslint-disable-next-line @typescript-eslint/unified-signatures
-		options?: Readonly<BaseImageURLOptions>,
-	): string;
-
-	public avatarDecoration(
-		userIdOrAsset: string,
-		userAvatarDecoration?: string,
-		options?: Readonly<BaseImageURLOptions>,
-	): string {
-		if (userAvatarDecoration) {
-			return this.makeURL(`/avatar-decorations/${userIdOrAsset}/${userAvatarDecoration}`, options);
-		}
-
-		return this.makeURL(`/avatar-decoration-presets/${userIdOrAsset}`, { extension: 'png' });
+	public avatarDecoration(asset: string): string {
+		return this.makeURL(`/avatar-decoration-presets/${asset}`, { extension: 'png' });
 	}
 
 	/**
@@ -186,41 +158,13 @@ export class CDN {
 	}
 
 	/**
-	 * Generates an emoji's URL for an emoji.
+	 * Generates an emoji's URL.
 	 *
 	 * @param emojiId - The emoji id
 	 * @param options - Optional options for the emoji
 	 */
-	public emoji(emojiId: string, options?: Readonly<BaseImageURLOptions>): string;
-
-	/**
-	 * Generates an emoji's URL for an emoji.
-	 *
-	 * @param emojiId - The emoji id
-	 * @param extension - The extension of the emoji
-	 * @deprecated This overload is deprecated. Pass an object containing the extension instead.
-	 */
-	// eslint-disable-next-line @typescript-eslint/unified-signatures
-	public emoji(emojiId: string, extension?: ImageExtension): string;
-
-	public emoji(emojiId: string, options?: ImageExtension | Readonly<BaseImageURLOptions>): string {
-		let resolvedOptions;
-
-		if (typeof options === 'string') {
-			if (!deprecationEmittedForEmoji) {
-				deprecationWarning(
-					'Passing a string for the second parameter of CDN#emoji() is deprecated. Use an object instead.',
-				);
-
-				deprecationEmittedForEmoji = true;
-			}
-
-			resolvedOptions = { extension: options };
-		} else {
-			resolvedOptions = options;
-		}
-
-		return this.makeURL(`/emojis/${emojiId}`, resolvedOptions);
+	public emoji(emojiId: string, options?: Readonly<BaseImageURLOptions>): string {
+		return this.makeURL(`/emojis/${emojiId}`, options);
 	}
 
 	/**

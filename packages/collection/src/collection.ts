@@ -831,10 +831,11 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * The sort method sorts the items of a collection in place and returns it.
-	 * The default sort order is according to string Unicode code points.
+	 * If a comparison function is not provided, the function sorts by element values, using the same stringwise comparison algorithm as
+	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort | Array.sort()}.
 	 *
-	 * @param compareFunction - Specifies a function that defines the sort order.
-	 * If omitted, the collection is sorted according to each character's Unicode code point value, according to the string conversion of each element.
+	 * @param compareFunction - Specifies a function that defines the sort order. The return value of this function should be negative if
+	 * `a` comes before `b`, positive if `b` comes before `a`, or zero if `a` and `b` are considered equal.
 	 * @example
 	 * ```ts
 	 * collection.sort((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
@@ -1024,15 +1025,15 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	}
 
 	/**
-	 * The sorted method sorts the items of a collection and returns it.
-	 * The default sort order is according to string Unicode code points.
+	 * The toSorted method returns a shallow copy of the collection with the items sorted.
+	 * If a comparison function is not provided, the function sorts by element values, using the same stringwise comparison algorithm as
+	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort | Array.sort()}.
 	 *
-	 * @param compareFunction - Specifies a function that defines the sort order.
-	 * If omitted, the collection is sorted according to each character's Unicode code point value,
-	 * according to the string conversion of each element.
+	 * @param compareFunction - Specifies a function that defines the sort order. The return value of this function should be negative if
+	 * `a` comes before `b`, positive if `b` comes before `a`, or zero if `a` and `b` are considered equal.
 	 * @example
 	 * ```ts
-	 * collection.sorted((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
+	 * const sortedCollection = collection.toSorted((userA, userB) => userA.createdTimestamp - userB.createdTimestamp);
 	 * ```
 	 */
 	public toSorted(compareFunction: Comparator<Key, Value> = Collection.defaultSort): Collection<Key, Value> {
@@ -1044,8 +1045,20 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		return [...this.entries()];
 	}
 
+	/**
+	 * Emulates the default sort comparison algorithm used in ECMAScript. Equivalent to calling the
+	 * {@link https://tc39.es/ecma262/multipage/indexed-collections.html#sec-comparearrayelements | CompareArrayElements}
+	 * operation with arguments `firstValue`, `secondValue` and `undefined`.
+	 */
 	private static defaultSort<Value>(firstValue: Value, secondValue: Value): number {
-		return Number(firstValue > secondValue) || Number(firstValue === secondValue) - 1;
+		if (firstValue === undefined) return secondValue === undefined ? 0 : 1;
+		if (secondValue === undefined) return -1;
+
+		const x = String(firstValue);
+		const y = String(secondValue);
+		if (x < y) return -1;
+		if (y < x) return 1;
+		return 0;
 	}
 
 	/**

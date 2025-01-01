@@ -23,7 +23,7 @@ export abstract class ApplicationCommandOptionBase
 {
 	protected static readonly predicate: z.ZodTypeAny = basicOptionPredicate;
 
-	protected declare readonly data: ApplicationCommandOptionBaseData & SharedNameAndDescriptionData;
+	declare protected readonly data: ApplicationCommandOptionBaseData & SharedNameAndDescriptionData;
 
 	public constructor(type: ApplicationCommandOptionType) {
 		super();

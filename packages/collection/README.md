@@ -23,7 +23,7 @@
 
 ## Installation
 
-**Node.js 18 or newer is required.**
+**Node.js 20 or newer is required.**
 
 ```sh
 npm install @discordjs/collection

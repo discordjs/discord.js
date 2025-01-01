@@ -18,7 +18,7 @@ export class ChatInputCommandStringOption extends Mixin(
 ) {
 	protected static override readonly predicate = stringOptionPredicate;
 
-	protected declare readonly data: ApplicationCommandOptionBaseData &
+	declare protected readonly data: ApplicationCommandOptionBaseData &
 		ApplicationCommandOptionWithAutocompleteData &
 		ApplicationCommandOptionWithChoicesData &
 		Partial<Pick<APIApplicationCommandStringOption, 'max_length' | 'min_length'>>;

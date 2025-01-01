@@ -1,4 +1,4 @@
-import type { APIApplicationCommand, LocaleString } from 'discord-api-types/v10';
+import type { APIApplicationCommand, Locale } from 'discord-api-types/v10';
 import type { SharedNameData } from './SharedName.js';
 import { SharedName } from './SharedName.js';
 
@@ -28,7 +28,7 @@ export class SharedNameAndDescription extends SharedName {
 	 * @param locale - The locale to set
 	 * @param localizedDescription - The localized description for the given `locale`
 	 */
-	public setDescriptionLocalization(locale: LocaleString, localizedDescription: string) {
+	public setDescriptionLocalization(locale: Locale, localizedDescription: string) {
 		this.data.description_localizations ??= {};
 		this.data.description_localizations[locale] = localizedDescription;
 
@@ -40,7 +40,7 @@ export class SharedNameAndDescription extends SharedName {
 	 *
 	 * @param locale - The locale to clear
 	 */
-	public clearDescriptionLocalization(locale: LocaleString) {
+	public clearDescriptionLocalization(locale: Locale) {
 		this.data.description_localizations ??= {};
 		this.data.description_localizations[locale] = undefined;
 
@@ -52,7 +52,7 @@ export class SharedNameAndDescription extends SharedName {
 	 *
 	 * @param localizedDescriptions - The object of localized descriptions to set
 	 */
-	public setDescriptionLocalizations(localizedDescriptions: Partial<Record<LocaleString, string>>) {
+	public setDescriptionLocalizations(localizedDescriptions: Partial<Record<Locale, string>>) {
 		this.data.description_localizations = structuredClone(localizedDescriptions);
 		return this;
 	}

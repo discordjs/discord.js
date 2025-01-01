@@ -14,7 +14,7 @@ const { fetchRecommendedShardCount } = require('../util/Util');
  * This is a utility class that makes multi-process sharding of a bot an easy and painless experience.
  * It works by spawning a self-contained {@link ChildProcess} or {@link Worker} for each individual shard, each
  * containing its own instance of your bot's {@link Client}. They all have a line of communication with the master
- * process, and there are several useful methods that utilise it in order to simplify tasks that are normally difficult
+ * process, and there are several useful methods that utilize it in order to simplify tasks that are normally difficult
  * with sharding. It can spawn a specific number of shards or the amount that Discord suggests for the bot, and takes a
  * path to your main bot script to launch for each one.
  * @extends {EventEmitter}

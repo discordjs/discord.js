@@ -38,6 +38,12 @@ class EntitlementManager extends CachedManager {
    */
 
   /**
+   * Options used to fetch an entitlement
+   * @typedef {BaseFetchOptions} FetchEntitlementOptions
+   * @property {EntitlementResolvable} entitlement The entitlement to fetch
+   */
+
+  /**
    * Options used to fetch entitlements
    * @typedef {Object} FetchEntitlementsOptions
    * @property {number} [limit] The maximum number of entitlements to fetch
@@ -45,6 +51,7 @@ class EntitlementManager extends CachedManager {
    * @property {UserResolvable} [user] The user to fetch entitlements for
    * @property {SKUResolvable[]} [skus] The SKUs to fetch entitlements for
    * @property {boolean} [excludeEnded] Whether to exclude ended entitlements
+   * @property {boolean} [excludeDeleted] Whether to exclude deleted entitlements
    * @property {boolean} [cache=true] Whether to cache the fetched entitlements
    * @property {Snowflake} [before] Consider only entitlements before this entitlement id
    * @property {Snowflake} [after] Consider only entitlements after this entitlement id
@@ -53,21 +60,49 @@ class EntitlementManager extends CachedManager {
 
   /**
    * Fetches entitlements for this application
-   * @param {FetchEntitlementsOptions} [options={}] Options for fetching the entitlements
-   * @returns {Promise<Collection<Snowflake, Entitlement>>}
+   * @param {EntitlementResolvable|FetchEntitlementOptions|FetchEntitlementsOptions} [options]
+   * Options for fetching the entitlements
+   * @returns {Promise<Entitlement|Collection<Snowflake, Entitlement>>}
    */
-  async fetch({ limit, guild, user, skus, excludeEnded, cache = true, before, after } = {}) {
+  async fetch(options) {
+    if (!options) return this._fetchMany(options);
+    const { entitlement, cache, force } = options;
+    const resolvedEntitlement = this.resolveId(entitlement ?? options);
+
+    if (resolvedEntitlement) {
+      return this._fetchSingle({ entitlement: resolvedEntitlement, cache, force });
+    }
+
+    return this._fetchMany(options);
+  }
+
+  async _fetchSingle({ entitlement, cache, force = false }) {
+    if (!force) {
+      const existing = this.cache.get(entitlement);
+
+      if (existing) {
+        return existing;
+      }
+    }
+
+    const data = await this.client.rest.get(Routes.entitlement(this.client.application.id, entitlement));
+    return this._add(data, cache);
+  }
+
+  async _fetchMany({ limit, guild, user, skus, excludeEnded, excludeDeleted, cache, before, after } = {}) {
     const query = makeURLSearchParams({
       limit,
       guild_id: guild && this.client.guilds.resolveId(guild),
       user_id: user && this.client.users.resolveId(user),
       sku_ids: skus?.map(sku => resolveSKUId(sku)).join(','),
       exclude_ended: excludeEnded,
+      exclude_deleted: excludeDeleted,
       before,
       after,
     });
 
     const entitlements = await this.client.rest.get(Routes.entitlements(this.client.application.id), { query });
+
     return entitlements.reduce(
       (coll, entitlement) => coll.set(entitlement.id, this._add(entitlement, cache)),
       new Collection(),

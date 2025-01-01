@@ -91,7 +91,7 @@ describe('State transitions', () => {
 	});
 
 	test('Playing resource with pausing and resuming', async () => {
-		// Call AudioResource constructor directly to avoid analysing pipeline for stream
+		// Call AudioResource constructor directly to avoid analyzing pipeline for stream
 		const resource = await started(new AudioResource([], [Readable.from(silence())], null, 5));
 		player = createAudioPlayer();
 		expect(player.state.status).toEqual(AudioPlayerStatus.Idle);

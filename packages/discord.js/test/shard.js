@@ -4,7 +4,7 @@ const process = require('node:process');
 const { setTimeout } = require('node:timers');
 const { GatewayIntentBits } = require('discord-api-types/v10');
 const { token } = require('./auth.json');
-const { Client } = require('../src');
+const { Client, Events } = require('../src');
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages],
@@ -12,7 +12,7 @@ const client = new Client({
   shardCount: process.argv[3],
 });
 
-client.on('messageCreate', msg => {
+client.on(Events.ClientReady, msg => {
   if (msg.content.startsWith('?eval') && msg.author.id === '66564597481480192') {
     try {
       const com = eval(msg.content.split(' ').slice(1).join(' '));
@@ -25,9 +25,9 @@ client.on('messageCreate', msg => {
 
 process.send(123);
 
-client.on('ready', () => {
-  console.log('Ready', client.options.shards);
-  if (client.options.shards === 0) {
+client.on(Events.ClientReady, readyClient => {
+  console.log('Ready', readyClient.options.shards);
+  if (readyClient.options.shards === 0) {
     setTimeout(async () => {
       console.log('kek dying');
       await client.destroy();
