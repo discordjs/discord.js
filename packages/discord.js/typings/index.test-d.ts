@@ -2448,7 +2448,7 @@ expectType<Readonly<ChannelFlagsBitField>>(threadChannel.flags);
 expectType<null>(partialGroupDMChannel.flags);
 
 // Select menu type narrowing
-if (interaction.isAnySelectMenu()) {
+if (interaction.isSelectMenu()) {
   expectType<SelectMenuInteraction>(interaction);
 }
 

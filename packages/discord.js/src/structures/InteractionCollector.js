@@ -153,8 +153,8 @@ class InteractionCollector extends Collector {
     if (this.messageId && interaction.message?.id !== this.messageId) return null;
     if (
       this.messageInteractionId &&
-      interaction.message?.interaction?.id &&
-      interaction.message.interaction.id !== this.messageInteractionId
+      interaction.message?.interactionMetadata?.id &&
+      interaction.message.interactionMetadata.id !== this.messageInteractionId
     ) {
       return null;
     }
@@ -180,8 +180,8 @@ class InteractionCollector extends Collector {
     if (this.messageId && interaction.message?.id !== this.messageId) return null;
     if (
       this.messageInteractionId &&
-      interaction.message?.interaction?.id &&
-      interaction.message.interaction.id !== this.messageInteractionId
+      interaction.message?.interactionMetadata?.id &&
+      interaction.message.interactionMetadata.id !== this.messageInteractionId
     ) {
       return null;
     }
@@ -224,7 +224,7 @@ class InteractionCollector extends Collector {
       this.stop('messageDelete');
     }
 
-    if (message.interaction?.id === this.messageInteractionId) {
+    if (message.interactionMetadata?.id === this.messageInteractionId) {
       this.stop('messageDelete');
     }
   }

@@ -14,16 +14,16 @@
 	"dependencies": {
 		"@discordjs/core": "^2.0.0",
 		"discord.js": "^14.16.3",
-		"dotenv": "^16.4.5"
+		"dotenv": "^16.4.7"
 	},
 	"devDependencies": {
 		"@sapphire/ts-config": "^5.0.1",
-		"@types/node": "^20.17.8",
+		"@types/node": "^20.17.10",
 		"eslint": "^8.57.1",
 		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.3.3",
+		"prettier": "^3.4.2",
 		"typescript": "~5.5.4",
-		"zod": "^3.23.8"
+		"zod": "^3.24.1"
 	}
 }

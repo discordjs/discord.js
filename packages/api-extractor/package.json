@@ -57,8 +57,8 @@
 		"@rushstack/rig-package": "0.5.1",
 		"@rushstack/ts-command-line": "4.17.1",
 		"colors": "~1.4.0",
-		"lodash": "~4.17.15",
-		"resolve": "~1.22.1",
+		"lodash": "~4.17.21",
+		"resolve": "~1.22.10",
 		"semver": "~7.6.3",
 		"source-map": "0.6.1",
 		"typescript": "~5.5.4"
@@ -66,7 +66,7 @@
 	"devDependencies": {
 		"@types/jest": "^29.5.14",
 		"@types/lodash": "^4.17.13",
-		"@types/node": "^20.17.8",
+		"@types/node": "^20.17.10",
 		"@types/resolve": "^1.20.6",
 		"@types/semver": "^7.5.8",
 		"cpy-cli": "^5.0.0",
@@ -75,8 +75,8 @@
 		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
 		"jest": "^29.7.0",
-		"prettier": "^3.3.3",
+		"prettier": "^3.4.2",
 		"tsup": "^8.3.5",
-		"turbo": "^2.3.0"
+		"turbo": "^2.3.3"
 	}
 }

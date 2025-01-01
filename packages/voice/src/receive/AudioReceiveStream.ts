@@ -1,4 +1,5 @@
 import type { Buffer } from 'node:buffer';
+import { nextTick } from 'node:process';
 import { Readable, type ReadableOptions } from 'node:stream';
 import { SILENCE_FRAME } from '../audio/AudioPlayer';
 
@@ -72,6 +73,11 @@ export class AudioReceiveStream extends Readable {
 					(buffer.compare(SILENCE_FRAME) !== 0 || this.endTimeout === undefined)))
 		) {
 			this.renewEndTimeout(this.end);
+		}
+
+		if (buffer === null) {
+			// null marks EOF for stream
+			nextTick(() => this.destroy());
 		}
 
 		return super.push(buffer);
