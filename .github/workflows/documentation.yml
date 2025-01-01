@@ -60,6 +60,8 @@ jobs:
       - name: Build main
         if: ${{ inputs.ref && inputs.ref != 'main' }}
         shell: bash
+        env:
+          COREPACK_ENABLE_STRICT: 0
         run: |
           cd main
           pnpm install --frozen-lockfile --prefer-offline --loglevel error

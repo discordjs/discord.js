@@ -598,7 +598,7 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   ): Promise<ModalSubmitInteraction<Cached>>;
   private transformOption(
     option: APIApplicationCommandOption,
-    resolved: APIApplicationCommandInteractionData['resolved'],
+    resolved: Extract<APIApplicationCommandInteractionData, { resolved: any }>['resolved'],
   ): CommandInteractionOption<Cached>;
 }
 
@@ -3132,6 +3132,7 @@ export class Subscription extends Base {
   public userId: Snowflake;
   public skuIds: Snowflake[];
   public entitlementIds: Snowflake[];
+  public renewalSkuIds: Snowflake[] | null;
   public currentPeriodStartTimestamp: number;
   public currentPeriodEndTimestamp: number;
   public status: SubscriptionStatus;
@@ -3555,7 +3556,7 @@ export function parseWebhookURL(url: string): WebhookClientDataIdWithToken | nul
 /** @internal */
 export function transformResolved<Cached extends CacheType>(
   supportingData: SupportingInteractionResolvedData,
-  data?: APIApplicationCommandInteractionData['resolved'],
+  data?: Extract<APIApplicationCommandInteractionData, { resolved: any }>['resolved'],
 ): CommandInteractionResolvedData<Cached>;
 export function resolveSKUId(resolvable: SKUResolvable): Snowflake | null;
 
