@@ -63,7 +63,7 @@ class BaseInteraction extends Base {
 
     /**
      * If this interaction was sent in a guild, the member which sent it
-     * @type {?(GuildMember|APIInteractionGuildMember)}
+     * @type {?(GuildMember|MinimalGuildMember)}
      */
     this.member = data.member
       ? (this.guild?.members._add(data.member) ?? new MinimalGuildMember(this.client, data.member, this.guildId))

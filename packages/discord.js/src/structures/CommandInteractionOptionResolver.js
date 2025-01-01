@@ -214,7 +214,7 @@ class CommandInteractionOptionResolver {
   /**
    * Gets a member option.
    * @param {string} name The name of the option.
-   * @returns {?(GuildMember|APIGuildMember)}
+   * @returns {?(GuildMember|MinimalGuildMember)}
    * The value of the option, or null if the user is not present in the guild or the option is not set.
    */
   getMember(name) {
@@ -258,7 +258,7 @@ class CommandInteractionOptionResolver {
    * Gets a mentionable option.
    * @param {string} name The name of the option.
    * @param {boolean} [required=false] Whether to throw an error if the option is not found.
-   * @returns {?(User|GuildMember|APIGuildMember|Role|APIRole)}
+   * @returns {?(User|GuildMember|MinimalGuildMember|Role|APIRole)}
    * The value of the option, or null if not set and not required.
    */
   getMentionable(name, required = false) {
