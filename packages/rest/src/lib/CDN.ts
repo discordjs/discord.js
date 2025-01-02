@@ -163,8 +163,8 @@ export class CDN {
 	 * @param emojiId - The emoji id
 	 * @param options - Optional options for the emoji
 	 */
-	public emoji(emojiId: string, options?: Readonly<BaseImageURLOptions>): string {
-		return this.makeURL(`/emojis/${emojiId}`, options);
+	public emoji(emojiId: string, animated: boolean, options?: Readonly<ImageURLOptions>): string {
+		return this.dynamicMakeURL(`/emojis/${emojiId}`, animated ? 'a_' : '', options);
 	}
 
 	/**
