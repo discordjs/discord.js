@@ -62,6 +62,7 @@ commit_parsers = [
 	{ body = ".*security", group = "Security"},
 ]
 filter_commits = true
+protect_breaking_commits = true
 tag_pattern = "@discordjs/ui-components@[0-9]*"
 ignore_tags = ""
 topo_order = false
