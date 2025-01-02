@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const DataManager = require('./DataManager');
+const { DataManager } = require('./DataManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const { Role } = require('../structures/Role');
 
@@ -115,4 +115,4 @@ class GuildEmojiRoleManager extends DataManager {
   }
 }
 
-module.exports = GuildEmojiRoleManager;
+exports.GuildEmojiRoleManager = GuildEmojiRoleManager;

@@ -43,4 +43,4 @@ class ClientVoiceManager {
   }
 }
 
-module.exports = ClientVoiceManager;
+exports.ClientVoiceManager = ClientVoiceManager;

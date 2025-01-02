@@ -1,6 +1,6 @@
 'use strict';
 
-const Events = require('../../../util/Events');
+const { Events } = require('../../../util/Events');
 
 module.exports = (client, { d: data }) => {
   const oldSubscription = client.application.subscriptions.cache.get(data.id)?._clone() ?? null;

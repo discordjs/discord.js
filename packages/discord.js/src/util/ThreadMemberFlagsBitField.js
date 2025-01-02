@@ -1,6 +1,6 @@
 'use strict';
 
-const BitField = require('./BitField');
+const { BitField } = require('./BitField');
 
 /**
  * Data structure that makes it easy to interact with a {@link ThreadMember#flags} bitfield.
@@ -28,4 +28,4 @@ class ThreadMemberFlagsBitField extends BitField {
  * @name ThreadMemberFlagsBitField#bitfield
  */
 
-module.exports = ThreadMemberFlagsBitField;
+exports.ThreadMemberFlagsBitField = ThreadMemberFlagsBitField;

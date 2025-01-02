@@ -4,7 +4,7 @@ const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
 const { ChannelType, RouteBases, Routes } = require('discord-api-types/v10');
 const { fetch } = require('undici');
-const Colors = require('./Colors');
+const { Colors } = require('./Colors');
 const { DiscordjsError, DiscordjsRangeError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 const isObject = d => typeof d === 'object' && d !== null;
 
@@ -499,28 +499,26 @@ function resolveSKUId(resolvable) {
   return null;
 }
 
-module.exports = {
-  flatten,
-  fetchRecommendedShardCount,
-  parseEmoji,
-  resolvePartialEmoji,
-  makeError,
-  makePlainError,
-  getSortableGroupTypes,
-  moveElementInArray,
-  verifyString,
-  resolveColor,
-  discordSort,
-  setPosition,
-  basename,
-  cleanContent,
-  cleanCodeBlockContent,
-  parseWebhookURL,
-  transformResolved,
-  resolveSKUId,
-};
+exports.flatten = flatten;
+exports.fetchRecommendedShardCount = fetchRecommendedShardCount;
+exports.parseEmoji = parseEmoji;
+exports.resolvePartialEmoji = resolvePartialEmoji;
+exports.makeError = makeError;
+exports.makePlainError = makePlainError;
+exports.getSortableGroupTypes = getSortableGroupTypes;
+exports.moveElementInArray = moveElementInArray;
+exports.verifyString = verifyString;
+exports.resolveColor = resolveColor;
+exports.discordSort = discordSort;
+exports.setPosition = setPosition;
+exports.basename = basename;
+exports.cleanContent = cleanContent;
+exports.cleanCodeBlockContent = cleanCodeBlockContent;
+exports.parseWebhookURL = parseWebhookURL;
+exports.transformResolved = transformResolved;
+exports.resolveSKUId = resolveSKUId;
 
 // Fixes Circular
-const Attachment = require('../structures/Attachment');
-const GuildChannel = require('../structures/GuildChannel');
+const { Attachment } = require('../structures/Attachment');
+const { GuildChannel } = require('../structures/GuildChannel');
 const { SKU } = require('../structures/SKU.js');

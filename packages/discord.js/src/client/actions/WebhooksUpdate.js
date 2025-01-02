@@ -1,9 +1,9 @@
 'use strict';
 
-const Action = require('./Action');
-const Events = require('../../util/Events');
+const { Action } = require('./Action');
+const { Events } = require('../../util/Events');
 
-class WebhooksUpdate extends Action {
+class WebhooksUpdateAction extends Action {
   handle(data) {
     const client = this.client;
     const channel = client.channels.cache.get(data.channel_id);
@@ -19,4 +19,4 @@ class WebhooksUpdate extends Action {
   }
 }
 
-module.exports = WebhooksUpdate;
+exports.WebhooksUpdateAction = WebhooksUpdateAction;
