@@ -1333,7 +1333,7 @@ export class Emoji extends Base {
   public id: Snowflake | null;
   public name: string | null;
   public get identifier(): string;
-  public imageURL(options?: BaseImageURLOptions): string | null;
+  public imageURL(options?: ImageURLOptions): string | null;
   public get url(): string | null;
   public toJSON(): unknown;
   public toString(): string;
