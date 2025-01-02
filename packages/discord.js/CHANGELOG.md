@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.17.2](https://github.com/discordjs/discord.js/compare/14.17.1...14.17.2) - (2025-01-02)
+
+## Bug Fixes
+
+- **InteractionResponses:** Check correct property for deprecation ([77804cf](https://github.com/discordjs/discord.js/commit/77804cfd559691d9b8c85aec8c494cd6c14c4ea7))
+
 # [14.17.0](https://github.com/discordjs/discord.js/compare/14.16.3...14.17.0) - (2025-01-01)
 
 ## Bug Fixes
