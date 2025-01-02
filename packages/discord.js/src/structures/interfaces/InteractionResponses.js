@@ -163,7 +163,7 @@ class InteractionResponses {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
 
     if (typeof options !== 'string') {
-      if ('fetchReply' in options) {
+      if ('ephemeral' in options) {
         if (!deprecationEmittedForEphemeralOption) {
           process.emitWarning(
             `Supplying "ephemeral" for interaction response options is deprecated. Utilize flags instead.`,
