@@ -18,7 +18,7 @@ class UserContextMenuCommandInteraction extends ContextMenuCommandInteraction {
 
   /**
    * The target member from this interaction
-   * @type {?(GuildMember|APIGuildMember)}
+   * @type {?(GuildMember|MinimalGuildMember)}
    * @readonly
    */
   get targetMember() {

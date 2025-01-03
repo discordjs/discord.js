@@ -3,6 +3,7 @@
 const Attachment = require('./Attachment');
 const BaseInteraction = require('./BaseInteraction');
 const InteractionWebhook = require('./InteractionWebhook');
+const MinimalGuildMember = require('./MinimalGuildMember');
 const InteractionResponses = require('./interfaces/InteractionResponses');
 
 /**
@@ -83,7 +84,7 @@ class CommandInteraction extends BaseInteraction {
    * Represents the resolved data of a received command interaction.
    * @typedef {Object} CommandInteractionResolvedData
    * @property {Collection<Snowflake, User>} [users] The resolved users
-   * @property {Collection<Snowflake, GuildMember|APIGuildMember>} [members] The resolved guild members
+   * @property {Collection<Snowflake, GuildMember|MinimalGuildMember>} [members] The resolved guild members
    * @property {Collection<Snowflake, Role|APIRole>} [roles] The resolved roles
    * @property {Collection<Snowflake, BaseChannel|APIChannel>} [channels] The resolved channels
    * @property {Collection<Snowflake, Message|APIMessage>} [messages] The resolved messages
@@ -102,7 +103,7 @@ class CommandInteraction extends BaseInteraction {
    * @property {CommandInteractionOption[]} [options] Additional options if this option is a
    * subcommand (group)
    * @property {User} [user] The resolved user
-   * @property {GuildMember|APIGuildMember} [member] The resolved member
+   * @property {GuildMember|MinimalGuildMember} [member] The resolved member
    * @property {GuildChannel|ThreadChannel|APIChannel} [channel] The resolved channel
    * @property {Role|APIRole} [role] The resolved role
    * @property {Attachment} [attachment] The resolved attachment
@@ -129,7 +130,11 @@ class CommandInteraction extends BaseInteraction {
       if (user) result.user = this.client.users._add(user);
 
       const member = resolved.members?.[option.value];
-      if (member) result.member = this.guild?.members._add({ user, ...member }) ?? member;
+      if (member) {
+        result.member =
+          this.guild?.members._add({ user, ...member }) ??
+          new MinimalGuildMember(this.client, { user, ...member }, this.guildId);
+      }
 
       const channel = resolved.channels?.[option.value];
       if (channel) result.channel = this.client.channels._add(channel, this.guild) ?? channel;
