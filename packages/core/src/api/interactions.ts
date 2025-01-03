@@ -447,7 +447,7 @@ export class InteractionsAPI {
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
-	 * Launches activity
+	 * Launches an activity
 	 *
 	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
 	 * @param interactionId - The id of the interaction
