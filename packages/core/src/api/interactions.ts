@@ -431,7 +431,7 @@ export class InteractionsAPI {
 	}
 
 	/**
-	 * Launches activity and returns an interaction callback object
+	 * Launches an activity and returns an interaction callback object
 	 *
 	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
 	 * @param interactionId - The id of the interaction
