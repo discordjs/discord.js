@@ -119,7 +119,15 @@ class MinimalGuildMember extends Base {
   }
 
   /**
-   * Whether this MinimalGuildMember is a partial (always true, as it is a partial GuildMember)
+   * Whether this member is in a cached guild (true for GuildMembers, false for MinimalGuildMembers)
+   * @returns {boolean}
+   */
+  isInCachedGuild() {
+    return false;
+  }
+
+  /**
+   * Whether this member is a partial (always true for MinimalGuildMembers, as they are partial GuildMembers)
    * @type {boolean}
    * @readonly
    */

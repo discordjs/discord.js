@@ -22,6 +22,10 @@ class GuildMember extends MinimalGuildMember {
     this.guild = guild;
   }
 
+  isInCachedGuild() {
+    return true;
+  }
+
   /**
    * Whether this GuildMember is a partial
    * @type {boolean}

@@ -1680,6 +1680,7 @@ export class MinimalGuildMember extends Base {
     communicationDisabledUntilTimestamp: number;
     readonly communicationDisabledUntil: Date;
   };
+  public isInCachedGuild(): this is GuildMember;
   public toJSON(): unknown;
   public toString(): UserMention;
   public valueOf(): string;
