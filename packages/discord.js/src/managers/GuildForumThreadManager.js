@@ -1,6 +1,6 @@
 'use strict';
 
-const { Routes } = require('discord-api-types/v10');
+const { Routes, ChannelFlags } = require('discord-api-types/v10');
 const ThreadManager = require('./ThreadManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const MessagePayload = require('../structures/MessagePayload');
@@ -77,6 +77,14 @@ class GuildForumThreadManager extends ThreadManager {
     });
 
     return this.client.actions.ThreadCreate.handle(data).thread;
+  }
+
+  /**
+   * Returns the pinned thread in the channel if it exists. Otherwise, returns `undefined`.
+   * @returns {ForumThreadChannel|undefined}
+   */
+  get pinned() {
+    return this.cache.find(thread => thread.flags.has(ChannelFlags.Pinned));
   }
 }
 
