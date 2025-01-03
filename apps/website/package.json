@@ -68,7 +68,7 @@
 		"react-dom": "19.0.0-rc-f994737d14-20240522",
 		"sharp": "^0.33.5",
 		"usehooks-ts": "^3.1.0",
-		"vaul": "^0.9.9"
+		"vaul": "^1.1.2"
 	},
 	"devDependencies": {
 		"@shikijs/rehype": "^1.24.4",
