@@ -5,13 +5,14 @@
 	"description": "A set of scripts that we use for our workflows",
 	"private": true,
 	"scripts": {
-		"build": "tsc --noEmit --lib ESNext,DOM  && tsup",
+		"build": "tsc --noEmit --lib ESNext,DOM && tsup",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src turbo/generators/config.ts",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src turbo/generators/config.ts",
 		"fmt": "pnpm run format"
 	},
 	"bin": {
-		"generate-split-documentation": "./bin/generateSplitDocumentation.js"
+		"generate-split-documentation": "./bin/generateSplitDocumentation.js",
+		"sort-labels": "./bin/sortLabels.js"
 	},
 	"exports": {
 		".": {
