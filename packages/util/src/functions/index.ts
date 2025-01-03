@@ -4,3 +4,4 @@ export * from './calculateShardId.js';
 export * from './runtime.js';
 export * from './userAgentAppendix.js';
 export * from './polyfillDispose.js';
+export * from './groupBy.js';
