@@ -269,6 +269,19 @@ export interface RawFile {
 	name: string;
 }
 
+export interface AuthData {
+	/**
+	 * The authorization prefix to use for this request, useful if you use this with bearer tokens
+	 *
+	 * @defaultValue `REST.options.authPrefix`
+	 */
+	prefix?: 'Bearer' | 'Bot';
+	/**
+	 * The authorization token to use for this request
+	 */
+	token: string;
+}
+
 /**
  * Represents possible data to be given to an endpoint
  */
@@ -278,17 +291,11 @@ export interface RequestData {
 	 */
 	appendToFormData?: boolean;
 	/**
-	 * If this request needs the `Authorization` header
+	 * Alternate authorization data to use for this request only, or `false` to disable the Authorization header
 	 *
 	 * @defaultValue `true`
 	 */
-	auth?: boolean;
-	/**
-	 * The authorization prefix to use for this request, useful if you use this with bearer tokens
-	 *
-	 * @defaultValue `'Bot'`
-	 */
-	authPrefix?: 'Bearer' | 'Bot';
+	auth?: AuthData | boolean;
 	/**
 	 * The body to send to this request.
 	 * If providing as BodyInit, set `passThroughBody: true`
@@ -363,7 +370,9 @@ export interface InternalRequest extends RequestData {
 	method: RequestMethod;
 }
 
-export type HandlerRequestData = Pick<InternalRequest, 'auth' | 'body' | 'files' | 'signal'>;
+export interface HandlerRequestData extends Pick<InternalRequest, 'body' | 'files' | 'signal'> {
+	auth: boolean | string;
+}
 
 /**
  * Parsed route data for an endpoint
