@@ -4378,6 +4378,12 @@ export class GuildStickerManager extends CachedManager<Snowflake, Sticker, Stick
   public fetchUser(sticker: StickerResolvable): Promise<User | null>;
 }
 
+export interface ModifyGuildMemberRolesOptions {
+  rolesToAdd?: readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>;
+  rolesToRemove?: readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>;
+  reason?: string;
+}
+
 export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleResolvable> {
   private constructor(member: GuildMember);
   public get hoist(): Role | null;
@@ -4393,6 +4399,7 @@ export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleRes
     roleOrRoles: RoleResolvable | readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>,
     reason?: string,
   ): Promise<GuildMember>;
+  public modify(options: ModifyGuildMemberRolesOptions): GuildMember;
   public set(
     roles: readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>,
     reason?: string,
@@ -4401,6 +4408,7 @@ export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleRes
     roleOrRoles: RoleResolvable | readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>,
     reason?: string,
   ): Promise<GuildMember>;
+  private resolveRoles(rolesToResolve: readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>): Role[];
 }
 
 export interface FetchPollAnswerVotersOptions extends BaseFetchPollAnswerVotersOptions {
