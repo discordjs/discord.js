@@ -181,7 +181,15 @@ class PermissionOverwrites extends Base {
     }
 
     const userOrRole = guild.roles.cache.get(overwrite.id) ?? guild.client.users.cache.get(overwrite.id);
-    if (!userOrRole) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'parameter', 'User nor a Role');
+
+    if (!userOrRole) {
+      throw new DiscordjsTypeError(
+        ErrorCodes.InvalidType,
+        'parameter',
+        'could not be resolved to a cached User or Role',
+      );
+    }
+
     const type = userOrRole instanceof Role ? OverwriteType.Role : OverwriteType.Member;
 
     return {
