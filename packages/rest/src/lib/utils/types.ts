@@ -291,7 +291,7 @@ export interface RequestData {
 	 */
 	appendToFormData?: boolean;
 	/**
-	 * Alternate authorization data to use for this request only, or `null` to disable the Authorization header
+	 * Alternate authorization data to use for this request only, or `false` to disable the Authorization header
 	 *
 	 * @defaultValue `true`
 	 */
