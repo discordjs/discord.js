@@ -290,7 +290,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		callbackData: CreateInteractionUpdateMessageResponseOptions & { with_response: true },
-		options: Pick<RequestData, 'signal'>,
+		options?: Pick<RequestData, 'signal'>,
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
@@ -306,7 +306,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		callbackData: CreateInteractionUpdateMessageResponseOptions & { with_response?: false },
-		options: Pick<RequestData, 'signal'>,
+		options?: Pick<RequestData, 'signal'>,
 	): Promise<undefined>;
 
 	public async updateMessage(
@@ -358,7 +358,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		callbackData: CreateAutocompleteResponseOptions & { with_response?: false },
-		options: Pick<RequestData, 'signal'>,
+		options?: Pick<RequestData, 'signal'>,
 	): Promise<undefined>;
 
 	public async createAutocompleteResponse(
