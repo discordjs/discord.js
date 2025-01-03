@@ -11,6 +11,8 @@ const ActionsManager = require('./actions/ActionsManager');
 const ClientVoiceManager = require('./voice/ClientVoiceManager');
 const PacketHandlers = require('./websocket/handlers');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
+// TODO: Uncomment after finishing the manager
+// const { BaseSoundboardSoundManager } = require('../managers/BaseSoundboardSoundManager');
 const BaseGuildEmojiManager = require('../managers/BaseGuildEmojiManager');
 const ChannelManager = require('../managers/ChannelManager');
 const GuildManager = require('../managers/GuildManager');
@@ -175,6 +177,13 @@ class Client extends BaseClient {
      * @type {ClientVoiceManager}
      */
     this.voice = new ClientVoiceManager(this);
+
+    // TODO: Uncomment after finishing the manager
+    // /**
+    //  * The soundboard sound manager of the client
+    //  * @type {BaseSoundboardSoundManager}
+    //  */
+    // this.soundboardSounds = new BaseSoundboardSoundManager(this);
 
     /**
      * User that the client is logged in as

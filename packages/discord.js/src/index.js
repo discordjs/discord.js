@@ -56,6 +56,8 @@ exports.ApplicationEmojiManager = require('./managers/ApplicationEmojiManager');
 exports.ApplicationCommandPermissionsManager = require('./managers/ApplicationCommandPermissionsManager');
 exports.AutoModerationRuleManager = require('./managers/AutoModerationRuleManager');
 exports.BaseGuildEmojiManager = require('./managers/BaseGuildEmojiManager');
+// TODO: Uncomment after finishing the manager
+// exports.BaseSoundboardSoundManager = require('./managers/BaseSoundboardSoundManager').BaseSoundboardSoundManager;
 exports.CachedManager = require('./managers/CachedManager');
 exports.ChannelManager = require('./managers/ChannelManager');
 exports.ClientVoiceManager = require('./client/voice/ClientVoiceManager');
@@ -73,6 +75,8 @@ exports.GuildManager = require('./managers/GuildManager');
 exports.GuildMemberManager = require('./managers/GuildMemberManager');
 exports.GuildMemberRoleManager = require('./managers/GuildMemberRoleManager');
 exports.GuildMessageManager = require('./managers/GuildMessageManager');
+// Uncomment after finishing the manager
+// exports.GuildSoundboardSoundManager = require('./managers/GuildSoundboardSoundManager').GuildSoundboardSoundManager;
 exports.GuildScheduledEventManager = require('./managers/GuildScheduledEventManager');
 exports.GuildStickerManager = require('./managers/GuildStickerManager');
 exports.GuildTextThreadManager = require('./managers/GuildTextThreadManager');
@@ -194,6 +198,7 @@ exports.RoleSelectMenuInteraction = require('./structures/RoleSelectMenuInteract
 exports.StringSelectMenuInteraction = require('./structures/StringSelectMenuInteraction');
 exports.UserSelectMenuInteraction = require('./structures/UserSelectMenuInteraction');
 exports.SKU = require('./structures/SKU').SKU;
+exports.SoundboardSound = require('./structures/SoundboardSound').SoundboardSound;
 exports.StringSelectMenuOptionBuilder = require('./structures/StringSelectMenuOptionBuilder');
 exports.StageChannel = require('./structures/StageChannel');
 exports.StageInstance = require('./structures/StageInstance').StageInstance;
