@@ -8,6 +8,7 @@ const {
   ChannelType,
   MessageType,
   MessageFlags,
+  MessageReferenceType,
   PermissionFlagsBits,
 } = require('discord-api-types/v10');
 const Attachment = require('./Attachment');
@@ -913,20 +914,22 @@ class Message extends Base {
    *   .catch(console.error);
    */
   reply(options) {
-    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
     let data;
 
     if (options instanceof MessagePayload) {
       data = options;
     } else {
       data = MessagePayload.create(this, options, {
-        reply: {
-          messageReference: this,
+        messageReference: {
+          messageId: this.id,
+          channelId: this.channelId,
+          guildId: this.guildId,
+          type: MessageReferenceType.Default,
           failIfNotExists: options?.failIfNotExists ?? this.client.options.failIfNotExists,
         },
       });
     }
-    return this.channel.send(data);
+    return this.client.channels.createMessage(this.channelId, data);
   }
 
   /**
