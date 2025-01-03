@@ -72,6 +72,13 @@ class Client extends BaseClient {
      * @type {ClientPresence}
      */
     this.presence = new ClientPresence(this, this.options.ws.initialPresence ?? this.options.presence);
+    
+    /**
+     * The presence of the Client
+     * @private
+     * @type {Object}
+     */
+    this.undesiredProperties = this.options.undesiredProperties;
 
     this._validateOptions();
 
