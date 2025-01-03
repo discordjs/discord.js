@@ -1315,6 +1315,9 @@ importers:
       undici:
         specifier: 6.21.0
         version: 6.21.0
+      uuid:
+        specifier: ^11.0.3
+        version: 11.0.3
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -12838,6 +12841,10 @@ packages:
 
   util@0.12.5:
     resolution: {integrity: sha512-kZf/K6hEIrWHI6XqOFUiiMa+79wE/D8Q+NCNAWclkyg3b4d2k7s0QGepNjiABc+aR3N1PAyHL7p6UcLY6LmrnA==}
+
+  uuid@11.0.3:
+    resolution: {integrity: sha512-d0z310fCWv5dJwnX1Y/MncBAqGMKEzlBb1AOf7z9K8ALnd0utBX/msg/fA0+sbyN1ihbMsLhrBlnl1ak7Wa0rg==}
+    hasBin: true
 
   uuid@3.3.2:
     resolution: {integrity: sha512-yXJmeNaw3DnnKAOKJE51sL/ZaYfWJRl1pK9dr19YFCu0ObS231AB1/LbqTKRAQ5kw8A90rA6fr4riOUpTZvQZA==}
@@ -25551,7 +25558,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 18.19.68
+      '@types/node': 20.17.10
       long: 5.2.3
 
   proxy-agent@6.5.0:
@@ -27829,6 +27836,8 @@ snapshots:
       is-generator-function: 1.0.10
       is-typed-array: 1.1.15
       which-typed-array: 1.1.18
+
+  uuid@11.0.3: {}
 
   uuid@3.3.2: {}
 
