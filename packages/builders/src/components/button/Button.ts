@@ -7,7 +7,7 @@ import { ComponentBuilder } from '../Component.js';
  * A builder that creates API-compatible JSON data for buttons.
  */
 export abstract class BaseButtonBuilder<ButtonData extends APIButtonComponent> extends ComponentBuilder<ButtonData> {
-	protected declare readonly data: Partial<ButtonData>;
+	declare protected readonly data: Partial<ButtonData>;
 
 	/**
 	 * Sets whether this button is disabled.

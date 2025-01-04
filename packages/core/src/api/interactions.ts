@@ -8,7 +8,6 @@ import {
 	type APIInteractionResponseCallbackData,
 	type APIInteractionResponseDeferredChannelMessageWithSource,
 	type APIModalInteractionResponseCallbackData,
-	type APIPremiumRequiredInteractionResponse,
 	type RESTGetAPIWebhookWithTokenMessageResult,
 	type RESTPostAPIInteractionCallbackQuery,
 	type RESTPostAPIInteractionCallbackWithResponseResult,
@@ -290,7 +289,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		callbackData: CreateInteractionUpdateMessageResponseOptions & { with_response: true },
-		options: Pick<RequestData, 'signal'>,
+		options?: Pick<RequestData, 'signal'>,
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
 	/**
@@ -306,7 +305,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		callbackData: CreateInteractionUpdateMessageResponseOptions & { with_response?: false },
-		options: Pick<RequestData, 'signal'>,
+		options?: Pick<RequestData, 'signal'>,
 	): Promise<undefined>;
 
 	public async updateMessage(
@@ -358,7 +357,7 @@ export class InteractionsAPI {
 		interactionId: Snowflake,
 		interactionToken: string,
 		callbackData: CreateAutocompleteResponseOptions & { with_response?: false },
-		options: Pick<RequestData, 'signal'>,
+		options?: Pick<RequestData, 'signal'>,
 	): Promise<undefined>;
 
 	public async createAutocompleteResponse(
@@ -429,28 +428,5 @@ export class InteractionsAPI {
 		});
 
 		return with_response ? response : undefined;
-	}
-
-	/**
-	 * Sends a premium required response to an interaction
-	 *
-	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
-	 * @param interactionId - The id of the interaction
-	 * @param interactionToken - The token of the interaction
-	 * @param options - The options for sending the premium required response
-	 * @deprecated Sending a premium-style button is the new Discord behavior.
-	 */
-	public async sendPremiumRequired(
-		interactionId: Snowflake,
-		interactionToken: string,
-		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
-		await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
-			auth: false,
-			body: {
-				type: InteractionResponseType.PremiumRequired,
-			} satisfies APIPremiumRequiredInteractionResponse,
-			signal,
-		});
 	}
 }
