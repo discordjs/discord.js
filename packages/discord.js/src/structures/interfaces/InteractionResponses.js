@@ -7,7 +7,6 @@ const { DiscordjsError, ErrorCodes } = require('../../errors');
 const MessageFlagsBitField = require('../../util/MessageFlagsBitField');
 const InteractionCallbackResponse = require('../InteractionCallbackResponse');
 const InteractionCollector = require('../InteractionCollector');
-const InteractionResponse = require('../InteractionResponse');
 const MessagePayload = require('../MessagePayload');
 
 /**
@@ -61,7 +60,7 @@ class InteractionResponses {
   /**
    * Defers the reply to this interaction.
    * @param {InteractionDeferReplyOptions} [options] Options for deferring the reply to this interaction
-   * @returns {Promise<InteractionResponse|InteractionCallbackResponse>}
+   * @returns {Promise<InteractionCallbackResponse|undefined>}
    * @example
    * // Defer the reply to this interaction
    * interaction.deferReply()
@@ -92,16 +91,14 @@ class InteractionResponses {
     this.deferred = true;
     this.ephemeral = resolvedFlags.has(MessageFlags.Ephemeral);
 
-    return options.withResponse
-      ? new InteractionCallbackResponse(this.client, response)
-      : new InteractionResponse(this);
+    return options.withResponse ? new InteractionCallbackResponse(this.client, response) : undefined;
   }
 
   /**
    * Creates a reply to this interaction.
    * <info>Use the `withResponse` option to get the interaction callback response.</info>
    * @param {string|MessagePayload|InteractionReplyOptions} options The options for the reply
-   * @returns {Promise<InteractionResponse|InteractionCallbackResponse>}
+   * @returns {Promise<InteractionCallbackResponse|undefined>}
    * @example
    * // Reply to the interaction and fetch the response
    * interaction.reply({ content: 'Pong!', withResponse: true })
@@ -137,9 +134,7 @@ class InteractionResponses {
     this.ephemeral = Boolean(data.flags & MessageFlags.Ephemeral);
     this.replied = true;
 
-    return options.withResponse
-      ? new InteractionCallbackResponse(this.client, response)
-      : new InteractionResponse(this);
+    return options.withResponse ? new InteractionCallbackResponse(this.client, response) : undefined;
   }
 
   /**
@@ -211,7 +206,7 @@ class InteractionResponses {
   /**
    * Defers an update to the message to which the component was attached.
    * @param {InteractionDeferUpdateOptions} [options] Options for deferring the update to this interaction
-   * @returns {Promise<InteractionResponse|InteractionCallbackResponse>}
+   * @returns {Promise<InteractionCallbackResponse|undefined>}
    * @example
    * // Defer updating and reset the component's loading state
    * interaction.deferUpdate()
@@ -229,15 +224,13 @@ class InteractionResponses {
     });
     this.deferred = true;
 
-    return options.withResponse
-      ? new InteractionCallbackResponse(this.client, response)
-      : new InteractionResponse(this, this.message?.interactionMetadata?.id);
+    return options.withResponse ? new InteractionCallbackResponse(this.client, response) : undefined;
   }
 
   /**
    * Updates the original message of the component on which the interaction was received on.
    * @param {string|MessagePayload|InteractionUpdateOptions} options The options for the updated message
-   * @returns {Promise<InteractionResponse|InteractionCallbackResponse>}
+   * @returns {Promise<InteractionCallbackResponse|undefined>}
    * @example
    * // Remove the components from the message
    * interaction.update({
@@ -267,9 +260,7 @@ class InteractionResponses {
     });
     this.replied = true;
 
-    return options.withResponse
-      ? new InteractionCallbackResponse(this.client, response)
-      : new InteractionResponse(this, this.message.interactionMetadata?.id);
+    return options.withResponse ? new InteractionCallbackResponse(this.client, response) : undefined;
   }
 
   /**
