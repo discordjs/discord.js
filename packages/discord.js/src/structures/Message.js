@@ -590,7 +590,7 @@ class Message extends Base {
    */
   get cleanContent() {
     // eslint-disable-next-line eqeqeq
-    return this.content != null ? cleanContent(this.content, this.channel) : null;
+    return this.content != null && this.channel ? cleanContent(this.content, this.channel) : null;
   }
 
   /**
