@@ -54,8 +54,8 @@ class GuildMemberManager extends CachedManager {
   resolve(member) {
     const memberResolvable = super.resolve(member);
     if (memberResolvable) return memberResolvable;
-    const userResolvable = this.client.users.resolveId(member);
-    if (userResolvable) return super.cache.get(userResolvable) ?? null;
+    const userId = this.client.users.resolveId(member);
+    if (userId) return this.cache.get(userId) ?? null;
     return null;
   }
 
@@ -67,8 +67,8 @@ class GuildMemberManager extends CachedManager {
   resolveId(member) {
     const memberResolvable = super.resolveId(member);
     if (memberResolvable) return memberResolvable;
-    const userResolvable = this.client.users.resolveId(member);
-    return this.cache.has(userResolvable) ? userResolvable : null;
+    const userId = this.client.users.resolveId(member);
+    return this.cache.has(userId) ? userId : null;
   }
 
   /**
