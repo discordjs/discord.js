@@ -84,7 +84,7 @@ class GuildChannelManager extends CachedManager {
    * @returns {?(GuildChannel|ThreadChannel)}
    */
   resolve(channel) {
-    if (channel instanceof ThreadChannel) return super.cache.get(channel.id) ?? null;
+    if (channel instanceof ThreadChannel) return this.cache.get(channel.id) ?? null;
     return super.resolve(channel);
   }
 
