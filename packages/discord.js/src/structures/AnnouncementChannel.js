@@ -11,7 +11,7 @@ class AnnouncementChannel extends BaseGuildTextChannel {
    * Adds the target to this channel's followers.
    * @param {TextChannelResolvable} channel The channel where the webhook should be created
    * @param {string} [reason] Reason for creating the webhook
-   * @returns {Promise<FollowedChannel>} Returns a followed channel object.
+   * @returns {Promise<FollowedChannelData>} Returns the data for the followed channel
    * @example
    * if (channel.type === ChannelType.GuildAnnouncement) {
    *   channel.addFollower('222197033908436994', 'Important announcements')

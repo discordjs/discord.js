@@ -2585,7 +2585,7 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
 export class AnnouncementChannel extends BaseGuildTextChannel {
   public threads: GuildTextThreadManager<AllowedThreadTypeForAnnouncementChannel>;
   public type: ChannelType.GuildAnnouncement;
-  public addFollower(channel: TextChannelResolvable, reason?: string): Promise<FollowedChannel>;
+  public addFollower(channel: TextChannelResolvable, reason?: string): Promise<FollowedChannelData>;
 }
 
 export type AnnouncementChannelResolvable = AnnouncementChannel | Snowflake;
@@ -4211,7 +4211,7 @@ export class GuildApplicationCommandManager extends ApplicationCommandManager<Ap
   public set(commands: readonly ApplicationCommandDataResolvable[]): Promise<Collection<Snowflake, ApplicationCommand>>;
 }
 
-export interface FollowedChannel {
+export interface FollowedChannelData {
   channelId: Snowflake;
   webhookId: Snowflake;
 }
@@ -4231,7 +4231,7 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
     channel: AnnouncementChannelResolvable,
     targetChannel: TextChannelResolvable,
     reason?: string,
-  ): Promise<FollowedChannel>;
+  ): Promise<FollowedChannelData>;
   public create<Type extends GuildChannelTypes>(
     options: GuildChannelCreateOptions & { type: Type },
   ): Promise<MappedGuildChannelTypes[Type]>;
