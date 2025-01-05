@@ -2,6 +2,7 @@
 
 const { lazy } = require('@discordjs/util');
 const { ChannelType } = require('discord-api-types/v10');
+const Events = require('./Events');
 
 const getCategoryChannel = lazy(() => require('../structures/CategoryChannel'));
 const getDMChannel = lazy(() => require('../structures/DMChannel'));
@@ -68,6 +69,12 @@ function createChannel(client, data, guild, { allowUnknownGuild } = {}) {
         case ChannelType.PublicThread:
         case ChannelType.PrivateThread: {
           channel = new (getThreadChannel())(guild, data, client);
+
+          client.emit(
+            Events.Debug,
+            `[14.7.2 DEBUG] ${JSON.stringify({ data, guild, allowUnknownGuild, channel, parent: channel.parent })}`,
+          );
+
           if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);
           break;
         }

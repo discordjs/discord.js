@@ -4,6 +4,7 @@ const Events = require('../../../util/Events');
 const Status = require('../../../util/Status');
 
 module.exports = (client, { d: data }, shard) => {
+  client.emit(Events.Debug, `[14.7.2 DEBUG] ${JSON.stringify({ data })}`);
   let guild = client.guilds.cache.get(data.id);
   if (guild) {
     if (!guild.available && !data.unavailable) {
