@@ -19,7 +19,8 @@ describe('Interaction with_response overloads.', () => {
 			api.interactions.reply(SNOWFLAKE, TOKEN, { with_response: true }),
 		));
 
-	test('Replying returns undefined.', () => assertType<Promise<undefined>>(api.interactions.reply(SNOWFLAKE, TOKEN, {})));
+	test('Replying returns undefined.', () =>
+		assertType<Promise<undefined>>(api.interactions.reply(SNOWFLAKE, TOKEN, {})));
 
 	test('Defer returns RESTPostAPIInteractionCallbackWithResponseResult.', () =>
 		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult>>(
@@ -33,21 +34,24 @@ describe('Interaction with_response overloads.', () => {
 			api.interactions.deferMessageUpdate(SNOWFLAKE, TOKEN, { with_response: true }),
 		));
 
-	test('Defer message update returns undefined.', () => assertType<Promise<undefined>>(api.interactions.deferMessageUpdate(SNOWFLAKE, TOKEN, {})));
+	test('Defer message update returns undefined.', () =>
+		assertType<Promise<undefined>>(api.interactions.deferMessageUpdate(SNOWFLAKE, TOKEN, {})));
 
 	test('Update message returns RESTPostAPIInteractionCallbackWithResponseResult.', () =>
 		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult>>(
 			api.interactions.updateMessage(SNOWFLAKE, TOKEN, { with_response: true }),
 		));
 
-	test('Update message returns undefined.', () => assertType<Promise<undefined>>(api.interactions.updateMessage(SNOWFLAKE, TOKEN, {})));
+	test('Update message returns undefined.', () =>
+		assertType<Promise<undefined>>(api.interactions.updateMessage(SNOWFLAKE, TOKEN, {})));
 
 	test('Create autocomplete response returns RESTPostAPIInteractionCallbackWithResponseResult.', () =>
 		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult>>(
 			api.interactions.createAutocompleteResponse(SNOWFLAKE, TOKEN, { with_response: true }),
 		));
 
-	test('Create autocomplete response returns undefined.', () => assertType<Promise<undefined>>(api.interactions.createAutocompleteResponse(SNOWFLAKE, TOKEN, {})));
+	test('Create autocomplete response returns undefined.', () =>
+		assertType<Promise<undefined>>(api.interactions.createAutocompleteResponse(SNOWFLAKE, TOKEN, {})));
 
 	test('Create modal returns RESTPostAPIInteractionCallbackWithResponseResult.', () =>
 		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult>>(
