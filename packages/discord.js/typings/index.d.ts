@@ -6093,7 +6093,7 @@ type BaseGuildScheduledEventRecurrenceRuleOptions<
   Extra extends {},
 > = {
   startAt: DateResolvable;
-  endsAt?: DateResolvable;
+  endAt?: DateResolvable;
   count?: number;
   interval: number;
   frequency: Frequency;
