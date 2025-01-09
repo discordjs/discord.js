@@ -2585,7 +2585,7 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
 export class AnnouncementChannel extends BaseGuildTextChannel {
   public threads: GuildTextThreadManager<AllowedThreadTypeForAnnouncementChannel>;
   public type: ChannelType.GuildAnnouncement;
-  public addFollower(channel: TextChannelResolvable, reason?: string): Promise<AnnouncementChannel>;
+  public addFollower(channel: TextChannelResolvable, reason?: string): Promise<FollowedChannelData>;
 }
 
 export type AnnouncementChannelResolvable = AnnouncementChannel | Snowflake;
@@ -4210,6 +4210,11 @@ export class GuildApplicationCommandManager extends ApplicationCommandManager<Ap
   public set(commands: readonly ApplicationCommandDataResolvable[]): Promise<Collection<Snowflake, ApplicationCommand>>;
 }
 
+export interface FollowedChannelData {
+  channelId: Snowflake;
+  webhookId: Snowflake;
+}
+
 export type MappedGuildChannelTypes = {
   [ChannelType.GuildCategory]: CategoryChannel;
 } & MappedChannelCategoryTypes;
@@ -4225,7 +4230,7 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
     channel: AnnouncementChannelResolvable,
     targetChannel: TextChannelResolvable,
     reason?: string,
-  ): Promise<Snowflake>;
+  ): Promise<FollowedChannelData>;
   public create<Type extends GuildChannelTypes>(
     options: GuildChannelCreateOptions & { type: Type },
   ): Promise<MappedGuildChannelTypes[Type]>;
@@ -6519,12 +6524,22 @@ export interface MultipleShardSpawnOptions {
   timeout?: number;
 }
 
-export interface OverwriteData {
+export interface BaseOverwriteData {
   allow?: PermissionResolvable;
   deny?: PermissionResolvable;
   id: GuildMemberResolvable | RoleResolvable;
   type?: OverwriteType;
 }
+
+export interface OverwriteDataWithMandatoryType extends BaseOverwriteData {
+  type: OverwriteType;
+}
+
+export interface OverwriteDataWithOptionalType extends BaseOverwriteData {
+  id: Exclude<GuildMemberResolvable | RoleResolvable, Snowflake>;
+}
+
+export type OverwriteData = OverwriteDataWithMandatoryType | OverwriteDataWithOptionalType;
 
 export type OverwriteResolvable = PermissionOverwrites | OverwriteData;
 

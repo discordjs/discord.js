@@ -1,10 +1,4 @@
-import {
-	ApplicationCommandType,
-	ApplicationIntegrationType,
-	InteractionContextType,
-	Locale,
-	PermissionFlagsBits,
-} from 'discord-api-types/v10';
+import { ApplicationIntegrationType, InteractionContextType, Locale, PermissionFlagsBits } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import { MessageContextCommandBuilder } from '../../src/index.js';
 

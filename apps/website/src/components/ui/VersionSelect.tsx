@@ -59,7 +59,7 @@ export function VersionSelect({
 				</Popover>
 			</Select>
 
-			<Vaul.NestedRoot open={open} onOpenChange={setOpen} dismissible={false}>
+			<Vaul.NestedRoot open={open} onOpenChange={setOpen}>
 				<Vaul.Trigger
 					aria-label="Open version select"
 					className="flex w-full place-content-between place-items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-800 md:hidden"

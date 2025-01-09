@@ -106,11 +106,18 @@ class GuildChannelManager extends CachedManager {
    */
 
   /**
+   * Represents the followed channel data.
+   * @typedef {Object} FollowedChannelData
+   * @property {Snowflake} channelId Source channel id
+   * @property {Snowflake} webhookId Created webhook id in the target channel
+   */
+
+  /**
    * Adds the target channel to a channel's followers.
    * @param {AnnouncementChannelResolvable} channel The channel to follow
    * @param {TextChannelResolvable} targetChannel The channel where published announcements will be posted at
    * @param {string} [reason] Reason for creating the webhook
-   * @returns {Promise<Snowflake>} Returns created target webhook id.
+   * @returns {Promise<FollowedChannelData>} Returns the data for the followed channel
    */
   async addFollower(channel, targetChannel, reason) {
     const channelId = this.resolveId(channel);
@@ -121,11 +128,11 @@ class GuildChannelManager extends CachedManager {
     if (!targetChannelId) {
       throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'targetChannel', 'TextChannelResolvable');
     }
-    const { webhook_id } = await this.client.rest.post(Routes.channelFollowers(channelId), {
+    const data = await this.client.rest.post(Routes.channelFollowers(channelId), {
       body: { webhook_channel_id: targetChannelId },
       reason,
     });
-    return webhook_id;
+    return { channelId: data.channel_id, webhookId: data.webhook_id };
   }
 
   /**
