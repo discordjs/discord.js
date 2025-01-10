@@ -144,6 +144,7 @@ class Webhook {
    * @typedef {BaseMessageOptions} WebhookMessageEditOptions
    * @property {Attachment[]} [attachments] Attachments to send with the message
    * @property {Snowflake} [threadId] The id of the thread this message belongs to
+   * @property {MessageFlags} [flags] Which flags to set for the message
    * <info>For interaction webhooks, this property is ignored</info>
    */
 
