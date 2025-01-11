@@ -161,6 +161,7 @@ export class CDN {
 	 * Generates an emoji's URL.
 	 *
 	 * @param emojiId - The emoji id
+  	 * @param animated - Indicates whether the emoji is animated or not
 	 * @param options - Optional options for the emoji
 	 */
 	public emoji(emojiId: string, animated: boolean, options?: Readonly<ImageURLOptions>): string {
