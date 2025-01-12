@@ -198,9 +198,11 @@ class InteractionResponses {
    * @param {string|MessagePayload|InteractionReplyOptions} options The options for the reply
    * @returns {Promise<Message>}
    */
-  followUp(options) {
+  async followUp(options) {
     if (!this.deferred && !this.replied) return Promise.reject(new DiscordjsError(ErrorCodes.InteractionNotReplied));
-    return this.webhook.send(options);
+    const msg = await this.webhook.send(options);
+    this.replied = true;
+    return msg;
   }
 
   /**
