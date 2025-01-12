@@ -30,10 +30,6 @@ test('avatar dynamic-not-animated', () => {
 	expect(cdn.avatar(id, hash)).toEqual(`${baseCDN}/avatars/${id}/${hash}.webp`);
 });
 
-test('avatar decoration default', () => {
-	expect(cdn.avatarDecoration(id, hash)).toEqual(`${baseCDN}/avatar-decorations/${id}/${hash}.webp`);
-});
-
 test('avatar decoration preset', () => {
 	expect(cdn.avatarDecoration(hash)).toEqual(`${baseCDN}/avatar-decoration-presets/${hash}.png`);
 });
@@ -74,6 +70,20 @@ test('guildMemberAvatar dynamic-animated', () => {
 
 test('guildMemberAvatar dynamic-not-animated', () => {
 	expect(cdn.guildMemberAvatar(id, id, hash)).toEqual(`${baseCDN}/guilds/${id}/users/${id}/avatars/${hash}.webp`);
+});
+
+test('guildMemberBanner default', () => {
+	expect(cdn.guildMemberBanner(id, id, hash)).toEqual(`${baseCDN}/guilds/${id}/users/${id}/banners/${hash}.webp`);
+});
+
+test('guildMemberBanner dynamic-animated', () => {
+	expect(cdn.guildMemberBanner(id, id, animatedHash)).toEqual(
+		`${baseCDN}/guilds/${id}/users/${id}/banners/${animatedHash}.gif`,
+	);
+});
+
+test('guildMemberBanner dynamic-not-animated', () => {
+	expect(cdn.guildMemberBanner(id, id, hash)).toEqual(`${baseCDN}/guilds/${id}/users/${id}/banners/${hash}.webp`);
 });
 
 test('guildScheduledEventCover default', () => {

@@ -160,7 +160,7 @@ class PermissionOverwrites extends Base {
    * @property {GuildMemberResolvable|RoleResolvable} id Member or role this overwrite is for
    * @property {PermissionResolvable} [allow] The permissions to allow
    * @property {PermissionResolvable} [deny] The permissions to deny
-   * @property {OverwriteType} [type] The type of this OverwriteData
+   * @property {OverwriteType} [type] The type of this OverwriteData (mandatory if `id` is a Snowflake)
    */
 
   /**
@@ -171,21 +171,31 @@ class PermissionOverwrites extends Base {
    */
   static resolve(overwrite, guild) {
     if (overwrite instanceof this) return overwrite.toJSON();
-    if (typeof overwrite.id === 'string' && overwrite.type in OverwriteType) {
-      return {
-        id: overwrite.id,
-        type: overwrite.type,
-        allow: PermissionsBitField.resolve(overwrite.allow ?? PermissionsBitField.DefaultBit).toString(),
-        deny: PermissionsBitField.resolve(overwrite.deny ?? PermissionsBitField.DefaultBit).toString(),
-      };
+
+    const id = guild.roles.resolveId(overwrite.id) ?? guild.client.users.resolveId(overwrite.id);
+    if (!id) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'overwrite.id', 'GuildMemberResolvable or RoleResolvable');
     }
 
-    const userOrRole = guild.roles.cache.get(overwrite.id) ?? guild.client.users.cache.get(overwrite.id);
-    if (!userOrRole) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'parameter', 'User nor a Role');
-    const type = userOrRole instanceof Role ? OverwriteType.Role : OverwriteType.Member;
+    if (overwrite.type !== undefined && (typeof overwrite.type !== 'number' || !(overwrite.type in OverwriteType))) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'overwrite.type', 'OverwriteType', true);
+    }
+
+    let type;
+    if (typeof overwrite.id === 'string') {
+      if (overwrite.type === undefined) {
+        throw new DiscordjsTypeError(ErrorCodes.PermissionOverwritesTypeMandatory);
+      }
+      type = overwrite.type;
+    } else {
+      type = overwrite.id instanceof Role ? OverwriteType.Role : OverwriteType.Member;
+      if (overwrite.type !== undefined && type !== overwrite.type) {
+        throw new DiscordjsTypeError(ErrorCodes.PermissionOverwritesTypeMismatch, OverwriteType[type]);
+      }
+    }
 
     return {
-      id: userOrRole.id,
+      id,
       type,
       allow: PermissionsBitField.resolve(overwrite.allow ?? PermissionsBitField.DefaultBit).toString(),
       deny: PermissionsBitField.resolve(overwrite.deny ?? PermissionsBitField.DefaultBit).toString(),
