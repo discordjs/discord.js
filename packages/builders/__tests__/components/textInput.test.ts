@@ -2,8 +2,6 @@ import { ComponentType, TextInputStyle, type APITextInputComponent } from 'disco
 import { describe, test, expect } from 'vitest';
 import { TextInputBuilder } from '../../src/components/textInput/TextInput.js';
 
-const superLongStr = 'a'.repeat(5_000);
-
 const textInputComponent = () => new TextInputBuilder();
 
 describe('Text Input Components', () => {
