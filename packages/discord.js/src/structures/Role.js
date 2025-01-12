@@ -181,7 +181,7 @@ class Role extends Base {
   get members() {
     return this.id === this.guild.id
       ? this.guild.members.cache.clone()
-      : this.guild.members.cache.filter(member => member._roles.includes(this.id));
+      : this.guild.members.cache.filter(member => member.roleIds.includes(this.id));
   }
 
   /**

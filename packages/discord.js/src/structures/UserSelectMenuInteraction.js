@@ -2,6 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const MessageComponentInteraction = require('./MessageComponentInteraction');
+const MinimalGuildMember = require('./MinimalGuildMember');
 const Events = require('../util/Events');
 
 /**
@@ -27,7 +28,7 @@ class UserSelectMenuInteraction extends MessageComponentInteraction {
 
     /**
      * Collection of the selected members
-     * @type {Collection<Snowflake, GuildMember|APIGuildMember>}
+     * @type {Collection<Snowflake, GuildMember|MinimalGuildMember>}
      */
     this.members = new Collection();
 
@@ -43,7 +44,11 @@ class UserSelectMenuInteraction extends MessageComponentInteraction {
         continue;
       }
 
-      this.members.set(id, this.guild?.members._add({ user, ...member }) ?? { user, ...member });
+      this.members.set(
+        id,
+        this.guild?.members._add({ user, ...member }) ??
+          new MinimalGuildMember(this.client, { user, ...member }, this.guildId),
+      );
     }
   }
 }
