@@ -568,7 +568,8 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   public deferReply(
     options: InteractionDeferReplyOptions & { withResponse: true },
   ): Promise<InteractionCallbackResponse>;
-  public deferReply(options?: InteractionDeferReplyOptions): Promise<undefined>;
+  public deferReply(options: InteractionDeferReplyOptions & { withResponse: false }): Promise<undefined>;
+  public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionCallbackResponse | undefined>;
   public deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
   public editReply(
     options: string | MessagePayload | InteractionEditReplyOptions,
@@ -576,7 +577,10 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   public fetchReply(message?: Snowflake | '@original'): Promise<Message<BooleanCache<Cached>>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message<BooleanCache<Cached>>>;
   public reply(options: InteractionReplyOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
-  public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<undefined>;
+  public reply(options: InteractionReplyOptions & { withResponse: false }): Promise<undefined>;
+  public reply(
+    options: string | MessagePayload | InteractionReplyOptions,
+  ): Promise<InteractionCallbackResponse | undefined>;
   public showModal(
     modal:
       | JSONEncodable<APIModalInteractionResponseCallbackData>
@@ -589,8 +593,15 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
       | JSONEncodable<APIModalInteractionResponseCallbackData>
       | ModalComponentData
       | APIModalInteractionResponseCallbackData,
-    options?: ShowModalOptions,
+    options: ShowModalOptions & { withResponse: false },
   ): Promise<undefined>;
+  public showModal(
+    modal:
+      | JSONEncodable<APIModalInteractionResponseCallbackData>
+      | ModalComponentData
+      | APIModalInteractionResponseCallbackData,
+    options?: ShowModalOptions,
+  ): Promise<InteractionCallbackResponse | undefined>;
   public awaitModalSubmit(
     options: AwaitModalSubmitOptions<ModalSubmitInteraction>,
   ): Promise<ModalSubmitInteraction<Cached>>;
@@ -2317,11 +2328,13 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public deferReply(
     options: InteractionDeferReplyOptions & { withResponse: true },
   ): Promise<InteractionCallbackResponse>;
-  public deferReply(options?: InteractionDeferReplyOptions): Promise<undefined>;
+  public deferReply(options: InteractionDeferReplyOptions & { withResponse: false }): Promise<undefined>;
+  public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionCallbackResponse | undefined>;
   public deferUpdate(
     options: InteractionDeferUpdateOptions & { withResponse: true },
   ): Promise<InteractionCallbackResponse>;
-  public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<undefined>;
+  public deferUpdate(options: InteractionDeferUpdateOptions & { withResponse: false }): Promise<undefined>;
+  public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionCallbackResponse | undefined>;
   public deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
   public editReply(
     options: string | MessagePayload | InteractionEditReplyOptions,
@@ -2329,9 +2342,15 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public fetchReply(message?: Snowflake | '@original'): Promise<Message<BooleanCache<Cached>>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message<BooleanCache<Cached>>>;
   public reply(options: InteractionReplyOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
-  public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<undefined>;
+  public reply(options: InteractionReplyOptions & { withResponse: false }): Promise<undefined>;
+  public reply(
+    options: string | MessagePayload | InteractionReplyOptions,
+  ): Promise<InteractionCallbackResponse | undefined>;
   public update(options: InteractionUpdateOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
-  public update(options: string | MessagePayload | InteractionUpdateOptions): Promise<undefined>;
+  public update(options: InteractionUpdateOptions & { withResponse: false }): Promise<undefined>;
+  public update(
+    options: string | MessagePayload | InteractionUpdateOptions,
+  ): Promise<InteractionCallbackResponse | undefined>;
   public showModal(
     modal:
       | JSONEncodable<APIModalInteractionResponseCallbackData>
@@ -2344,8 +2363,15 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
       | JSONEncodable<APIModalInteractionResponseCallbackData>
       | ModalComponentData
       | APIModalInteractionResponseCallbackData,
-    options?: ShowModalOptions,
+    options: ShowModalOptions & { withResponse: false },
   ): Promise<undefined>;
+  public showModal(
+    modal:
+      | JSONEncodable<APIModalInteractionResponseCallbackData>
+      | ModalComponentData
+      | APIModalInteractionResponseCallbackData,
+    options?: ShowModalOptions,
+  ): Promise<InteractionCallbackResponse | undefined>;
   public awaitModalSubmit(
     options: AwaitModalSubmitOptions<ModalSubmitInteraction>,
   ): Promise<ModalSubmitInteraction<Cached>>;
@@ -2514,7 +2540,8 @@ export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = C
   message: Message<BooleanCache<Cached>>;
   channelId: Snowflake;
   update(options: InteractionUpdateOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
-  update(options: string | MessagePayload | InteractionUpdateOptions): Promise<undefined>;
+  update(options: InteractionUpdateOptions & { withResponse: false }): Promise<undefined>;
+  update(options: string | MessagePayload | InteractionUpdateOptions): Promise<InteractionCallbackResponse | undefined>;
   inGuild(): this is ModalMessageModalSubmitInteraction<'raw' | 'cached'>;
   inCachedGuild(): this is ModalMessageModalSubmitInteraction<'cached'>;
   inRawGuild(): this is ModalMessageModalSubmitInteraction<'raw'>;
@@ -2532,7 +2559,10 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public replied: boolean;
   public readonly webhook: InteractionWebhook;
   public reply(options: InteractionReplyOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
-  public reply(options: string | MessagePayload | InteractionReplyOptions): Promise<undefined>;
+  public reply(options: InteractionReplyOptions & { withResponse: false }): Promise<undefined>;
+  public reply(
+    options: string | MessagePayload | InteractionReplyOptions,
+  ): Promise<InteractionCallbackResponse | undefined>;
   public deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
   public editReply(
     options: string | MessagePayload | InteractionEditReplyOptions,
@@ -2540,13 +2570,15 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public deferReply(
     options: InteractionDeferReplyOptions & { withResponse: true },
   ): Promise<InteractionCallbackResponse>;
-  public deferReply(options?: InteractionDeferReplyOptions): Promise<undefined>;
+  public deferReply(options: InteractionDeferReplyOptions & { withResponse: false }): Promise<undefined>;
+  public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionCallbackResponse | undefined>;
   public fetchReply(message?: Snowflake | '@original'): Promise<Message<BooleanCache<Cached>>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message<BooleanCache<Cached>>>;
   public deferUpdate(
     options: InteractionDeferUpdateOptions & { withResponse: true },
   ): Promise<InteractionCallbackResponse>;
-  public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<undefined>;
+  public deferUpdate(options: InteractionDeferUpdateOptions & { withResponse: false }): Promise<undefined>;
+  public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionCallbackResponse | undefined>;
   public inGuild(): this is ModalSubmitInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ModalSubmitInteraction<'cached'>;
   public inRawGuild(): this is ModalSubmitInteraction<'raw'>;
