@@ -1,5 +1,6 @@
 /* eslint-disable no-promise-executor-return */
 import { Buffer } from 'node:buffer';
+import { describe, test, expect } from 'vitest';
 import { SILENCE_FRAME } from '../src/audio/AudioPlayer';
 import { AudioReceiveStream, EndBehaviorType } from '../src/receive/AudioReceiveStream';
 
@@ -23,29 +24,27 @@ describe('AudioReceiveStream', () => {
 		await wait(200);
 		stream.push(DUMMY_BUFFER);
 		expect(stream.readable).toEqual(true);
+		stream.push(null);
+		await wait(200);
+		expect(stream.readable).toEqual(false);
 	});
 
-	// TODO: Fix this test
-	// test('AfterSilence end behavior', async () => {
-	// 	const duration = 100;
-	// 	const increment = 20;
+	test('AfterSilence end behavior', async () => {
+		const duration = 100;
+		const increment = 20;
 
-	// 	const stream = new AudioReceiveStream({ end: { behavior: EndBehaviorType.AfterSilence, duration: 100 } });
-	// 	stream.resume();
+		const stream = new AudioReceiveStream({ end: { behavior: EndBehaviorType.AfterSilence, duration } });
+		stream.resume();
 
-	// 	for (let i = increment; i < duration / 2; i += increment) {
-	// 		await stepSilence(stream, increment);
-	// 	}
+		for (let step = increment; step < duration / 2; step += increment) {
+			await stepSilence(stream, increment);
+		}
 
-	// 	stream.push(DUMMY_BUFFER);
+		stream.push(DUMMY_BUFFER);
 
-	// 	for (let i = increment; i < duration; i += increment) {
-	// 		await stepSilence(stream, increment);
-	// 	}
-
-	// 	await wait(increment);
-	// 	expect(stream.readableEnded).toEqual(true);
-	// });
+		await wait(duration);
+		expect(stream.readableEnded).toEqual(true);
+	});
 
 	test('AfterInactivity end behavior', async () => {
 		const duration = 100;
@@ -70,5 +69,23 @@ describe('AudioReceiveStream', () => {
 		await wait(duration - increment);
 
 		expect(stream.readableEnded).toEqual(true);
+	});
+
+	test('Stream ends after pushing null', async () => {
+		const stream = new AudioReceiveStream({ end: { behavior: EndBehaviorType.AfterInactivity, duration: 100 } });
+		stream.resume();
+
+		stream.push(DUMMY_BUFFER);
+
+		expect(stream.readable).toEqual(true);
+		expect(stream.readableEnded).toEqual(false);
+		expect(stream.destroyed).toEqual(false);
+
+		stream.push(null);
+		await wait(50);
+
+		expect(stream.readable).toEqual(false);
+		expect(stream.readableEnded).toEqual(true);
+		expect(stream.destroyed).toEqual(true);
 	});
 });

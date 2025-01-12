@@ -5,13 +5,16 @@ import {
 	SelectMenuDefaultValueType,
 } from 'discord-api-types/v10';
 import { type RestOrArray, normalizeArray } from '../../util/normalizeArray.js';
-import { optionsLengthValidator } from '../Assertions.js';
+import { validate } from '../../util/validation.js';
+import { selectMenuUserPredicate } from '../Assertions.js';
 import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 
 /**
  * A builder that creates API-compatible JSON data for user select menus.
  */
 export class UserSelectMenuBuilder extends BaseSelectMenuBuilder<APIUserSelectComponent> {
+	protected override readonly data: Partial<APIUserSelectComponent>;
+
 	/**
 	 * Creates a new select menu from API data.
 	 *
@@ -34,8 +37,9 @@ export class UserSelectMenuBuilder extends BaseSelectMenuBuilder<APIUserSelectCo
 	 * 	.setMinValues(1);
 	 * ```
 	 */
-	public constructor(data?: Partial<APIUserSelectComponent>) {
-		super({ ...data, type: ComponentType.UserSelect });
+	public constructor(data: Partial<APIUserSelectComponent> = {}) {
+		super();
+		this.data = { ...structuredClone(data), type: ComponentType.UserSelect };
 	}
 
 	/**
@@ -45,9 +49,8 @@ export class UserSelectMenuBuilder extends BaseSelectMenuBuilder<APIUserSelectCo
 	 */
 	public addDefaultUsers(...users: RestOrArray<Snowflake>) {
 		const normalizedValues = normalizeArray(users);
-		optionsLengthValidator.parse((this.data.default_values?.length ?? 0) + normalizedValues.length);
-		this.data.default_values ??= [];
 
+		this.data.default_values ??= [];
 		this.data.default_values.push(
 			...normalizedValues.map((id) => ({
 				id,
@@ -65,7 +68,6 @@ export class UserSelectMenuBuilder extends BaseSelectMenuBuilder<APIUserSelectCo
 	 */
 	public setDefaultUsers(...users: RestOrArray<Snowflake>) {
 		const normalizedValues = normalizeArray(users);
-		optionsLengthValidator.parse(normalizedValues.length);
 
 		this.data.default_values = normalizedValues.map((id) => ({
 			id,
@@ -73,5 +75,15 @@ export class UserSelectMenuBuilder extends BaseSelectMenuBuilder<APIUserSelectCo
 		}));
 
 		return this;
+	}
+
+	/**
+	 * {@inheritDoc ComponentBuilder.toJSON}
+	 */
+	public override toJSON(validationOverride?: boolean): APIUserSelectComponent {
+		const clone = structuredClone(this.data);
+		validate(selectMenuUserPredicate, clone, validationOverride);
+
+		return clone as APIUserSelectComponent;
 	}
 }

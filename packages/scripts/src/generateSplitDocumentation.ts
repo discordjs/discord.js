@@ -18,10 +18,10 @@ import type {
 	ApiProperty,
 	ApiPropertySignature,
 	ApiTypeAlias,
-	ApiTypeParameterListMixin,
 	ApiVariable,
 } from '@discordjs/api-extractor-model';
 import {
+	ApiTypeParameterListMixin,
 	Excerpt,
 	Meaning,
 	ApiAbstractMixin,
@@ -49,6 +49,7 @@ import type {
 	DocComment,
 } from '@microsoft/tsdoc';
 import type { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
+import { BuiltinDocumentationLinks } from './builtinDocumentationLinks.js';
 import { PACKAGES, fetchVersionDocs, fetchVersions } from './shared.js';
 
 function resolvePackageName(packageName: string) {
@@ -225,7 +226,7 @@ function resolveItemURI(item: ApiItemLike): string {
 		: `${item.parent.displayName}:${item.parent.kind}#${item.displayName}`;
 }
 
-function itemExcerptText(excerpt: Excerpt, apiPackage: ApiPackage) {
+function itemExcerptText(excerpt: Excerpt, apiPackage: ApiPackage, parent?: ApiTypeParameterListMixin) {
 	const DISCORD_API_TYPES_VERSION = 'v10';
 	const DISCORD_API_TYPES_DOCS_URL = `https://discord-api-types.dev/api/discord-api-types-${DISCORD_API_TYPES_VERSION}`;
 
@@ -282,6 +283,27 @@ function itemExcerptText(excerpt: Excerpt, apiPackage: ApiPackage) {
 						uri: resolveItemURI(foundItem),
 						packageName: resolved.package?.replace('@discordjs/', ''),
 						version: resolved.version,
+					},
+				};
+			}
+
+			if (token.text in BuiltinDocumentationLinks) {
+				return {
+					text: token.text,
+					href: BuiltinDocumentationLinks[token.text as keyof typeof BuiltinDocumentationLinks],
+				};
+			}
+
+			if (parent?.typeParameters.some((type) => type.name === token.text)) {
+				const [packageName, parentItem] = parent.canonicalReference.toString().split('!');
+				return {
+					text: token.text,
+					resolvedItem: {
+						kind: 'TypeParameter',
+						displayName: token.text,
+						containerKey: `${parent.containerKey}|${token.text}`,
+						uri: `${parentItem}#${token.text}`,
+						packageName: packageName?.replace('@discordjs/', ''),
 					},
 				};
 			}
@@ -346,9 +368,19 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 					const resolved = resolveCanonicalReference(codeDestination, apiItem.getAssociatedPackage());
 
 					if (!foundItem && !resolved) {
+						const itemName = codeDestination.memberReferences[0]?.memberIdentifier?.identifier;
+
+						if (itemName && itemName in BuiltinDocumentationLinks) {
+							return {
+								kind: DocNodeKind.LinkTag,
+								text: itemName,
+								uri: BuiltinDocumentationLinks[itemName as keyof typeof BuiltinDocumentationLinks],
+							};
+						}
+
 						return {
 							kind: DocNodeKind.LinkTag,
-							text: codeDestination.memberReferences[0]?.memberIdentifier?.identifier ?? null,
+							text: itemName ?? null,
 						};
 					}
 
@@ -482,6 +514,7 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 
 function itemInfo(item: ApiDeclaredItem) {
 	const sourceExcerpt = item.excerpt.text.trim();
+	const { sourceURL, sourceLine } = resolveFileUrl(item);
 
 	const isStatic = ApiStaticMixin.isBaseClassOf(item) && item.isStatic;
 	const isProtected = ApiProtectedMixin.isBaseClassOf(item) && item.isProtected;
@@ -489,14 +522,15 @@ function itemInfo(item: ApiDeclaredItem) {
 	const isAbstract = ApiAbstractMixin.isBaseClassOf(item) && item.isAbstract;
 	const isOptional = ApiOptionalMixin.isBaseClassOf(item) && item.isOptional;
 	const isDeprecated = Boolean(item.tsdocComment?.deprecatedBlock);
+	const isExternal = Boolean(item.sourceLocation.fileUrl?.includes('node_modules'));
 
 	const hasSummary = Boolean(item.tsdocComment?.summarySection);
 
 	return {
 		kind: item.kind,
 		displayName: item.displayName,
-		sourceURL: item.sourceLocation.fileUrl,
-		sourceLine: item.sourceLocation.fileLine,
+		sourceURL,
+		sourceLine,
 		sourceExcerpt,
 		summary: hasSummary ? itemTsDoc(item.tsdocComment!, item) : null,
 		isStatic,
@@ -505,6 +539,59 @@ function itemInfo(item: ApiDeclaredItem) {
 		isAbstract,
 		isDeprecated,
 		isOptional,
+		isExternal,
+	};
+}
+
+function resolveFileUrl(item: ApiDeclaredItem) {
+	const {
+		displayName,
+		kind,
+		sourceLocation: { fileUrl, fileLine },
+	} = item;
+	if (fileUrl?.includes('/node_modules/')) {
+		const [, pkg] = fileUrl.split('/node_modules/');
+		const parts = pkg?.split('/')[1]?.split('@');
+		const unscoped = parts?.[0]?.length;
+		if (!unscoped) parts?.shift();
+		const pkgName = parts?.shift();
+		const version = parts?.shift()?.split('_')?.[0];
+
+		// https://github.com/discordjs/discord.js/tree/main/node_modules/.pnpm/@discordjs+builders@1.9.0/node_modules/@discordjs/builders/dist/index.d.ts#L1764
+		// https://github.com/discordjs/discord.js/tree/main/node_modules/.pnpm/@discordjs+ws@1.1.1_bufferutil@4.0.8_utf-8-validate@6.0.4/node_modules/@discordjs/ws/dist/index.d.ts#L...
+		if (!unscoped && pkgName?.startsWith('discordjs+')) {
+			let currentItem = item;
+			while (currentItem.parent && currentItem.parent.kind !== ApiItemKind.EntryPoint)
+				currentItem = currentItem.parent as ApiDeclaredItem;
+
+			return {
+				sourceURL: `/docs/packages/${pkgName.replace('discordjs+', '')}/${version}/${currentItem.displayName}:${currentItem.kind}`,
+			};
+		}
+
+		// https://github.com/discordjs/discord.js/tree/main/node_modules/.pnpm/discord-api-types@0.37.97/node_modules/discord-api-types/payloads/v10/gateway.d.ts#L240
+		if (pkgName === 'discord-api-types') {
+			const DISCORD_API_TYPES_VERSION = 'v10';
+			const DISCORD_API_TYPES_DOCS_URL = `https://discord-api-types.dev/api/discord-api-types-${DISCORD_API_TYPES_VERSION}`;
+			let href = DISCORD_API_TYPES_DOCS_URL;
+
+			if (kind === ApiItemKind.EnumMember) {
+				href += `/enum/${item.parent!.displayName}#${displayName}`;
+			} else if (kind === ApiItemKind.TypeAlias || kind === ApiItemKind.Variable) {
+				href += `#${displayName}`;
+			} else {
+				href += `/${kindToMeaning.get(kind)}/${displayName}`;
+			}
+
+			return {
+				sourceURL: href,
+			};
+		}
+	}
+
+	return {
+		sourceURL: fileUrl,
+		sourceLine: fileLine,
 	};
 }
 
@@ -534,6 +621,7 @@ function resolveParameters(item: ApiDocumentedItem & ApiParameterListMixin) {
 			isOptional: param.isOptional,
 			isRest: param.isRest,
 			parameterTypeExcerpt: param.parameterTypeExcerpt,
+			defaultValue: param.defaultValue,
 		};
 	});
 }
@@ -553,9 +641,9 @@ function itemTypeParameters(item: ApiTypeParameterListMixin) {
 
 	return item.typeParameters.map((typeParam) => ({
 		name: typeParam.name,
-		constraintsExcerpt: itemExcerptText(typeParam.constraintExcerpt, item.getAssociatedPackage()!),
+		constraintsExcerpt: itemExcerptText(typeParam.constraintExcerpt, item.getAssociatedPackage()!, item),
 		isOptional: typeParam.isOptional,
-		defaultExcerpt: itemExcerptText(typeParam.defaultTypeExcerpt, item.getAssociatedPackage()!),
+		defaultExcerpt: itemExcerptText(typeParam.defaultTypeExcerpt, item.getAssociatedPackage()!, item),
 		description: typeParam.tsdocTypeParamBlock ? itemTsDoc(typeParam.tsdocTypeParamBlock.content, item) : null,
 	}));
 }
@@ -572,9 +660,14 @@ function itemParameters(item: ApiDocumentedItem & ApiParameterListMixin) {
 
 	return params.map((param) => ({
 		name: param.isRest ? `...${param.name}` : param.name,
-		typeExcerpt: itemExcerptText(param.parameterTypeExcerpt, item.getAssociatedPackage()!),
+		typeExcerpt: itemExcerptText(
+			param.parameterTypeExcerpt,
+			item.getAssociatedPackage()!,
+			item.getHierarchy().find(ApiTypeParameterListMixin.isBaseClassOf),
+		),
 		isOptional: param.isOptional,
 		description: param.description ? itemTsDoc(param.description, item) : null,
+		defaultValue: param.defaultValue,
 	}));
 }
 
@@ -622,7 +715,11 @@ function itemProperty(item: ApiItemContainerMixin) {
 		return {
 			...itemInfo(property.item),
 			inheritedFrom: property.inherited ? resolveItemURI(property.inherited) : null,
-			typeExcerpt: itemExcerptText(property.item.propertyTypeExcerpt, property.item.getAssociatedPackage()!),
+			typeExcerpt: itemExcerptText(
+				property.item.propertyTypeExcerpt,
+				property.item.getAssociatedPackage()!,
+				property.item.getHierarchy().find(ApiTypeParameterListMixin.isBaseClassOf),
+			),
 			summary: hasSummary ? itemTsDoc(property.item.tsdocComment!, property.item) : null,
 		};
 	});
@@ -658,7 +755,11 @@ function itemMethod(item: ApiItemContainerMixin) {
 			...itemInfo(method.item),
 			overloadIndex: method.item.overloadIndex,
 			parametersString: parametersString(method.item),
-			returnTypeExcerpt: itemExcerptText(method.item.returnTypeExcerpt, method.item.getAssociatedPackage()!),
+			returnTypeExcerpt: itemExcerptText(
+				method.item.returnTypeExcerpt,
+				method.item.getAssociatedPackage()!,
+				method.item.getHierarchy().find(ApiTypeParameterListMixin.isBaseClassOf),
+			),
 			inheritedFrom: method.inherited ? resolveItemURI(method.inherited) : null,
 			typeParameters: itemTypeParameters(method.item),
 			parameters: itemParameters(method.item),
@@ -754,7 +855,11 @@ export function itemHierarchyText({
 	return excerpts.map((excerpt) => {
 		return {
 			type,
-			excerpts: itemExcerptText(excerpt, item.getAssociatedPackage()!),
+			excerpts: itemExcerptText(
+				excerpt,
+				item.getAssociatedPackage()!,
+				item.getHierarchy().find(ApiTypeParameterListMixin.isBaseClassOf),
+			),
 		};
 	});
 }
@@ -848,7 +953,11 @@ function itemTypeAlias(item: ApiTypeAlias) {
 		...itemInfo(item),
 		typeParameters: itemTypeParameters(item),
 		unionMembers: itemUnion(item).map((member) =>
-			itemExcerptText(new Excerpt(member, { startIndex: 0, endIndex: member.length }), item.getAssociatedPackage()!),
+			itemExcerptText(
+				new Excerpt(member, { startIndex: 0, endIndex: member.length }),
+				item.getAssociatedPackage()!,
+				item.getHierarchy().find(ApiTypeParameterListMixin.isBaseClassOf),
+			),
 		),
 	};
 }
