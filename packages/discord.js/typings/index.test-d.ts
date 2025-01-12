@@ -1787,6 +1787,7 @@ client.on('interactionCreate', async interaction => {
       expectType<Guild>(interaction.guild);
       expectType<Promise<InteractionCallbackResponse>>(interaction.reply({ content: 'a', withResponse: true }));
       expectType<Promise<InteractionCallbackResponse>>(interaction.deferReply({ withResponse: true }));
+      expectType<Promise<undefined>>(interaction.deferReply());
       expectType<Promise<undefined>>(interaction.reply({ content: 'a', withResponse: false }));
       expectType<Promise<undefined>>(interaction.deferReply({ withResponse: false }));
       expectType<Promise<InteractionCallbackResponse | undefined>>(
@@ -1799,6 +1800,7 @@ client.on('interactionCreate', async interaction => {
       expectType<Promise<Message<true>>>(interaction.fetchReply());
       expectType<Promise<InteractionCallbackResponse>>(interaction.update({ content: 'a', withResponse: true }));
       expectType<Promise<InteractionCallbackResponse>>(interaction.deferUpdate({ withResponse: true }));
+      expectType<Promise<undefined>>(interaction.deferUpdate());
       expectType<Promise<Message<true>>>(interaction.followUp({ content: 'a' }));
     } else if (interaction.inRawGuild()) {
       expectAssignable<MessageComponentInteraction>(interaction);
@@ -1809,6 +1811,7 @@ client.on('interactionCreate', async interaction => {
       expectType<Promise<InteractionCallbackResponse>>(interaction.deferReply({ withResponse: true }));
       expectType<Promise<undefined>>(interaction.reply({ content: 'a', withResponse: false }));
       expectType<Promise<undefined>>(interaction.deferReply({ withResponse: false }));
+      expectType<Promise<undefined>>(interaction.deferReply());
       expectType<Promise<InteractionCallbackResponse | undefined>>(
         interaction.reply({ content: 'a', withResponse: booleanValue }),
       );
@@ -1823,6 +1826,7 @@ client.on('interactionCreate', async interaction => {
         interaction.update({ content: 'a', withResponse: booleanValue }),
       );
       expectType<Promise<InteractionCallbackResponse>>(interaction.deferUpdate({ withResponse: true }));
+      expectType<Promise<undefined>>(interaction.deferUpdate());
       expectType<Promise<Message<false>>>(interaction.followUp({ content: 'a' }));
     } else if (interaction.inGuild()) {
       expectAssignable<MessageComponentInteraction>(interaction);
@@ -1833,6 +1837,7 @@ client.on('interactionCreate', async interaction => {
       expectType<Promise<InteractionCallbackResponse>>(interaction.deferReply({ withResponse: true }));
       expectType<Promise<undefined>>(interaction.reply({ content: 'a', withResponse: false }));
       expectType<Promise<undefined>>(interaction.deferReply({ withResponse: false }));
+      expectType<Promise<undefined>>(interaction.deferReply());
       expectType<Promise<InteractionCallbackResponse | undefined>>(
         interaction.reply({ content: 'a', withResponse: booleanValue }),
       );
@@ -1847,6 +1852,7 @@ client.on('interactionCreate', async interaction => {
         interaction.update({ content: 'a', withResponse: booleanValue }),
       );
       expectType<Promise<InteractionCallbackResponse>>(interaction.deferUpdate({ withResponse: true }));
+      expectType<Promise<undefined>>(interaction.deferUpdate());
       expectType<Promise<Message>>(interaction.followUp({ content: 'a' }));
     }
   }
@@ -1882,6 +1888,7 @@ client.on('interactionCreate', async interaction => {
       expectAssignable<CommandInteraction<'cached'>>(interaction);
       expectType<Promise<InteractionCallbackResponse>>(interaction.reply({ content: 'a', withResponse: true }));
       expectType<Promise<InteractionCallbackResponse>>(interaction.deferReply({ withResponse: true }));
+      expectType<Promise<undefined>>(interaction.deferReply());
       expectType<Promise<undefined>>(interaction.reply({ content: 'a', withResponse: false }));
       expectType<Promise<undefined>>(interaction.deferReply({ withResponse: false }));
       expectType<Promise<InteractionCallbackResponse | undefined>>(
@@ -1898,6 +1905,7 @@ client.on('interactionCreate', async interaction => {
       expectType<null>(interaction.guild);
       expectType<Promise<InteractionCallbackResponse>>(interaction.reply({ content: 'a', withResponse: true }));
       expectType<Promise<InteractionCallbackResponse>>(interaction.deferReply({ withResponse: true }));
+      expectType<Promise<undefined>>(interaction.deferReply());
       expectType<Promise<undefined>>(interaction.reply({ content: 'a', withResponse: false }));
       expectType<Promise<undefined>>(interaction.deferReply({ withResponse: false }));
       expectType<Promise<InteractionCallbackResponse | undefined>>(
@@ -1914,6 +1922,7 @@ client.on('interactionCreate', async interaction => {
       expectType<Guild | null>(interaction.guild);
       expectType<Promise<InteractionCallbackResponse>>(interaction.reply({ content: 'a', withResponse: true }));
       expectType<Promise<InteractionCallbackResponse>>(interaction.deferReply({ withResponse: true }));
+      expectType<Promise<undefined>>(interaction.deferReply());
       expectType<Promise<undefined>>(interaction.reply({ content: 'a', withResponse: false }));
       expectType<Promise<undefined>>(interaction.deferReply({ withResponse: false }));
       expectType<Promise<InteractionCallbackResponse | undefined>>(
@@ -2115,27 +2124,33 @@ client.on('interactionCreate', async interaction => {
       expectType<Guild>(interaction.guild);
       expectType<Promise<InteractionCallbackResponse>>(interaction.reply({ content: 'a', withResponse: true }));
       expectType<Promise<InteractionCallbackResponse>>(interaction.deferReply({ withResponse: true }));
+      expectType<Promise<undefined>>(interaction.deferReply());
       expectType<Promise<Message<true>>>(interaction.editReply({ content: 'a' }));
       expectType<Promise<Message<true>>>(interaction.fetchReply());
       expectType<Promise<InteractionCallbackResponse>>(interaction.deferUpdate({ withResponse: true }));
+      expectType<Promise<undefined>>(interaction.deferUpdate());
       expectType<Promise<Message<true>>>(interaction.followUp({ content: 'a' }));
     } else if (interaction.inRawGuild()) {
       expectAssignable<ModalSubmitInteraction>(interaction);
       expectType<null>(interaction.guild);
       expectType<Promise<InteractionCallbackResponse>>(interaction.reply({ content: 'a', withResponse: true }));
       expectType<Promise<InteractionCallbackResponse>>(interaction.deferReply({ withResponse: true }));
+      expectType<Promise<undefined>>(interaction.deferReply());
       expectType<Promise<Message<false>>>(interaction.editReply({ content: 'a' }));
       expectType<Promise<Message<false>>>(interaction.fetchReply());
       expectType<Promise<InteractionCallbackResponse>>(interaction.deferUpdate({ withResponse: true }));
+      expectType<Promise<undefined>>(interaction.deferUpdate());
       expectType<Promise<Message<false>>>(interaction.followUp({ content: 'a' }));
     } else if (interaction.inGuild()) {
       expectAssignable<ModalSubmitInteraction>(interaction);
       expectType<Guild | null>(interaction.guild);
       expectType<Promise<InteractionCallbackResponse>>(interaction.reply({ content: 'a', withResponse: true }));
       expectType<Promise<InteractionCallbackResponse>>(interaction.deferReply({ withResponse: true }));
+      expectType<Promise<undefined>>(interaction.deferReply());
       expectType<Promise<Message>>(interaction.editReply({ content: 'a' }));
       expectType<Promise<Message>>(interaction.fetchReply());
       expectType<Promise<InteractionCallbackResponse>>(interaction.deferUpdate({ withResponse: true }));
+      expectType<Promise<undefined>>(interaction.deferUpdate());
       expectType<Promise<Message>>(interaction.followUp({ content: 'a' }));
     }
   }
