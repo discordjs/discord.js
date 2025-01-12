@@ -568,7 +568,7 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   public deferReply(
     options: InteractionDeferReplyOptions & { withResponse: true },
   ): Promise<InteractionCallbackResponse>;
-  public deferReply(options: InteractionDeferReplyOptions & { withResponse: false }): Promise<undefined>;
+  public deferReply(options?: InteractionDeferReplyOptions & { withResponse: false }): Promise<undefined>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionCallbackResponse | undefined>;
   public deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
   public editReply(
@@ -593,7 +593,7 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
       | JSONEncodable<APIModalInteractionResponseCallbackData>
       | ModalComponentData
       | APIModalInteractionResponseCallbackData,
-    options: ShowModalOptions & { withResponse: false },
+    options?: ShowModalOptions & { withResponse: false },
   ): Promise<undefined>;
   public showModal(
     modal:
@@ -2328,12 +2328,12 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public deferReply(
     options: InteractionDeferReplyOptions & { withResponse: true },
   ): Promise<InteractionCallbackResponse>;
-  public deferReply(options: InteractionDeferReplyOptions & { withResponse: false }): Promise<undefined>;
+  public deferReply(options?: InteractionDeferReplyOptions & { withResponse: false }): Promise<undefined>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionCallbackResponse | undefined>;
   public deferUpdate(
     options: InteractionDeferUpdateOptions & { withResponse: true },
   ): Promise<InteractionCallbackResponse>;
-  public deferUpdate(options: InteractionDeferUpdateOptions & { withResponse: false }): Promise<undefined>;
+  public deferUpdate(options?: InteractionDeferUpdateOptions & { withResponse: false }): Promise<undefined>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionCallbackResponse | undefined>;
   public deleteReply(message?: MessageResolvable | '@original'): Promise<void>;
   public editReply(
@@ -2363,7 +2363,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
       | JSONEncodable<APIModalInteractionResponseCallbackData>
       | ModalComponentData
       | APIModalInteractionResponseCallbackData,
-    options: ShowModalOptions & { withResponse: false },
+    options?: ShowModalOptions & { withResponse: false },
   ): Promise<undefined>;
   public showModal(
     modal:
@@ -2570,14 +2570,14 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public deferReply(
     options: InteractionDeferReplyOptions & { withResponse: true },
   ): Promise<InteractionCallbackResponse>;
-  public deferReply(options: InteractionDeferReplyOptions & { withResponse: false }): Promise<undefined>;
+  public deferReply(options?: InteractionDeferReplyOptions & { withResponse: false }): Promise<undefined>;
   public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionCallbackResponse | undefined>;
   public fetchReply(message?: Snowflake | '@original'): Promise<Message<BooleanCache<Cached>>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message<BooleanCache<Cached>>>;
   public deferUpdate(
     options: InteractionDeferUpdateOptions & { withResponse: true },
   ): Promise<InteractionCallbackResponse>;
-  public deferUpdate(options: InteractionDeferUpdateOptions & { withResponse: false }): Promise<undefined>;
+  public deferUpdate(options?: InteractionDeferUpdateOptions & { withResponse: false }): Promise<undefined>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionCallbackResponse | undefined>;
   public inGuild(): this is ModalSubmitInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ModalSubmitInteraction<'cached'>;
