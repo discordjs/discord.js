@@ -1903,7 +1903,6 @@ export class IntegrationApplication extends Application {
   public termsOfServiceURL: string | null;
   public privacyPolicyURL: string | null;
   public rpcOrigins: string[];
-  public hook: boolean | null;
   public cover: string | null;
   public verifyKey: string | null;
 }
@@ -6067,18 +6066,37 @@ export interface GuildScheduledEventCreateOptions {
   recurrenceRule?: GuildScheduledEventRecurrenceRuleOptions;
 }
 
-export interface GuildScheduledEventRecurrenceRuleOptions {
+export type GuildScheduledEventRecurrenceRuleOptions =
+  | BaseGuildScheduledEventRecurrenceRuleOptions<
+      GuildScheduledEventRecurrenceRuleFrequency.Yearly,
+      {
+        byMonth: readonly GuildScheduledEventRecurrenceRuleMonth[];
+        byMonthDay: readonly number[];
+      }
+    >
+  | BaseGuildScheduledEventRecurrenceRuleOptions<
+      GuildScheduledEventRecurrenceRuleFrequency.Monthly,
+      {
+        byNWeekday: readonly GuildScheduledEventRecurrenceRuleNWeekday[];
+      }
+    >
+  | BaseGuildScheduledEventRecurrenceRuleOptions<
+      GuildScheduledEventRecurrenceRuleFrequency.Weekly | GuildScheduledEventRecurrenceRuleFrequency.Daily,
+      {
+        byWeekday: readonly GuildScheduledEventRecurrenceRuleWeekday[];
+      }
+    >;
+
+type BaseGuildScheduledEventRecurrenceRuleOptions<
+  Frequency extends GuildScheduledEventRecurrenceRuleFrequency,
+  Extra extends {},
+> = {
   startAt: DateResolvable;
-  endAt: DateResolvable;
-  frequency: GuildScheduledEventRecurrenceRuleFrequency;
+  endAt?: DateResolvable;
+  count?: number;
   interval: number;
-  byWeekday: readonly GuildScheduledEventRecurrenceRuleWeekday[];
-  byNWeekday: readonly GuildScheduledEventRecurrenceRuleNWeekday[];
-  byMonth: readonly GuildScheduledEventRecurrenceRuleMonth[];
-  byMonthDay: readonly number[];
-  byYearDay: readonly number[];
-  count: number;
-}
+  frequency: Frequency;
+} & Extra;
 
 export interface GuildScheduledEventEditOptions<
   Status extends GuildScheduledEventStatus,
