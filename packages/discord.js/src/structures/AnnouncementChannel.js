@@ -1,8 +1,6 @@
 'use strict';
 
-const { Routes } = require('discord-api-types/v10');
 const { BaseGuildTextChannel } = require('./BaseGuildTextChannel');
-const { DiscordjsError, ErrorCodes } = require('../errors');
 
 /**
  * Represents a guild announcement channel on Discord.
