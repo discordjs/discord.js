@@ -1903,7 +1903,6 @@ export class IntegrationApplication extends Application {
   public termsOfServiceURL: string | null;
   public privacyPolicyURL: string | null;
   public rpcOrigins: string[];
-  public hook: boolean | null;
   public cover: string | null;
   public verifyKey: string | null;
 }
