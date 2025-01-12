@@ -198,7 +198,7 @@ export class CDN {
 		bannerHash: string,
 		options?: Readonly<ImageURLOptions>,
 	): string {
-		return this.dynamicMakeURL(`/guilds/${guildId}/users/${userId}/banner`, bannerHash, options);
+		return this.dynamicMakeURL(`/guilds/${guildId}/users/${userId}/banners/${bannerHash}`, bannerHash, options);
 	}
 
 	/**

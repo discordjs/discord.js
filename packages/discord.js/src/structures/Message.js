@@ -567,7 +567,7 @@ class Message extends Base {
    */
   get cleanContent() {
     // eslint-disable-next-line eqeqeq
-    return this.content != null ? cleanContent(this.content, this.channel) : null;
+    return this.content != null && this.channel ? cleanContent(this.content, this.channel) : null;
   }
 
   /**
@@ -648,7 +648,6 @@ class Message extends Base {
    * @property {ComponentType} [componentType] The type of component interaction to collect
    * @property {number} [idle] Time to wait without another message component interaction before ending the collector
    * @property {boolean} [dispose] Whether to remove the message component interaction after collecting
-   * @property {InteractionResponse} [interactionResponse] The interaction response to collect interactions from
    */
 
   /**
