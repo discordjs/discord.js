@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.17.3](https://github.com/discordjs/discord.js/compare/14.17.2...14.17.3) - (2025-01-08)
+
+## Bug Fixes
+
+- **Message:** Ensure channel is defined for clean content (#10681) ([46bf8f0](https://github.com/discordjs/discord.js/commit/46bf8f0146b67d7c480a3512ade1edbfb16e7a26))
+- Use `resolve()` for `PermissionOverwrites` (#10686) ([7280d4e](https://github.com/discordjs/discord.js/commit/7280d4e82eb47ce7cb3964057d7d56a62179cf18))
+
 # [14.17.2](https://github.com/discordjs/discord.js/compare/14.17.1...14.17.2) - (2025-01-02)
 
 ## Bug Fixes
