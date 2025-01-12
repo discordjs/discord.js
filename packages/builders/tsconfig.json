@@ -5,6 +5,6 @@
 		"emitDecoratorMetadata": true,
 		"exactOptionalPropertyTypes": false
 	},
-	"include": ["src/**/*.ts", "src/**/*.js", "src/**/*.cjs", "src/**/*.mjs", "bin"],
+	"include": ["src/**/*.ts", "src/**/*.js", "src/**/*.cjs", "src/**/*.mjs", "bin", "__tests__", "../../vitest.d.ts"],
 	"exclude": ["node_modules"]
 }
