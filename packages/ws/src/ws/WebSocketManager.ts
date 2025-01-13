@@ -140,7 +140,8 @@ export interface OptionalWebSocketManagerOptions {
 	readyTimeout: number | null;
 	/**
 	 * The REST instance to use for fetching gateway information
-	 * @deprecated Providing a REST instance is deprecated. Provide the `fetchGatewayInformation` function instead. 
+	 *
+	 * @deprecated Providing a REST instance is deprecated. Provide the `fetchGatewayInformation` function instead.
 	 */
 	rest?: REST;
 	/**
