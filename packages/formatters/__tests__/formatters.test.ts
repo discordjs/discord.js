@@ -153,20 +153,20 @@ describe('Message formatters', () => {
 		});
 
 		describe('chatInputApplicationCommandMention', () => {
-			test('GIVEN commandName and commandId THEN returns "</[commandName]:[commandId]>"', () => {
-				expect(chatInputApplicationCommandMention('airhorn', '815434166602170409')).toEqual(
+			test('GIVEN commandId and commandName THEN returns "</[commandName]:[commandId]>"', () => {
+				expect(chatInputApplicationCommandMention('815434166602170409', 'airhorn')).toEqual(
 					'</airhorn:815434166602170409>',
 				);
 			});
 
-			test('GIVEN commandName, subcommandName, and commandId THEN returns "</[commandName] [subcommandName]:[commandId]>"', () => {
-				expect(chatInputApplicationCommandMention('airhorn', 'sub', '815434166602170409')).toEqual(
+			test('GIVEN commandId, commandName, subcommandName  THEN returns "</[commandName] [subcommandName]:[commandId]>"', () => {
+				expect(chatInputApplicationCommandMention('815434166602170409', 'airhorn', 'sub')).toEqual(
 					'</airhorn sub:815434166602170409>',
 				);
 			});
 
-			test('GIVEN commandName, subcommandGroupName, subcommandName, and commandId THEN returns "</[commandName] [subcommandGroupName] [subcommandName]:[commandId]>"', () => {
-				expect(chatInputApplicationCommandMention('airhorn', 'group', 'sub', '815434166602170409')).toEqual(
+			test('GIVEN commandId, commandName, subcommandName, and subcommandGroupName, THEN returns "</[commandName] [subcommandGroupName] [subcommandName]:[commandId]>"', () => {
+				expect(chatInputApplicationCommandMention('815434166602170409', 'airhorn', 'sub', 'group')).toEqual(
 					'</airhorn group sub:815434166602170409>',
 				);
 			});

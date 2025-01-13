@@ -225,85 +225,85 @@ export function linkedRoleMention<RoleId extends Snowflake>(roleId: RoleId): `<i
 }
 
 /**
- * Formats an application command name, subcommand group name, subcommand name, and id into an application command mention.
+ * Formats an application command name and id into an application command mention.
  *
- * @typeParam CommandName - This is inferred by the supplied command name
- * @typeParam SubcommandGroupName - This is inferred by the supplied subcommand group name
- * @typeParam SubcommandName - This is inferred by the supplied subcommand name
  * @typeParam CommandId - This is inferred by the supplied command id
- * @param commandName - The application command name to format
- * @param subcommandGroupName - The subcommand group name to format
- * @param subcommandName - The subcommand name to format
+ * @typeParam CommandName - This is inferred by the supplied command name
  * @param commandId - The application command id to format
+ * @param commandName - The application command name to format
  */
-export function chatInputApplicationCommandMention<
-	CommandName extends string,
-	SubcommandGroupName extends string,
-	SubcommandName extends string,
-	CommandId extends Snowflake,
->(
-	commandName: CommandName,
-	subcommandGroupName: SubcommandGroupName,
-	subcommandName: SubcommandName,
+export function chatInputApplicationCommandMention<CommandId extends Snowflake, CommandName extends string>(
 	commandId: CommandId,
-): `</${CommandName} ${SubcommandGroupName} ${SubcommandName}:${CommandId}>`;
+	commandName: CommandName,
+): `</${CommandName}:${CommandId}>`;
 
 /**
  * Formats an application command name, subcommand name, and id into an application command mention.
  *
+ * @typeParam CommandId - This is inferred by the supplied command id
  * @typeParam CommandName - This is inferred by the supplied command name
  * @typeParam SubcommandName - This is inferred by the supplied subcommand name
- * @typeParam CommandId - This is inferred by the supplied command id
+ * @param commandId - The application command id to format
  * @param commandName - The application command name to format
  * @param subcommandName - The subcommand name to format
- * @param commandId - The application command id to format
  */
 export function chatInputApplicationCommandMention<
+	CommandId extends Snowflake,
 	CommandName extends string,
 	SubcommandName extends string,
-	CommandId extends Snowflake,
 >(
+	commandId: CommandId,
 	commandName: CommandName,
 	subcommandName: SubcommandName,
-	commandId: CommandId,
 ): `</${CommandName} ${SubcommandName}:${CommandId}>`;
 
 /**
- * Formats an application command name and id into an application command mention.
+ * Formats an application command name, subcommand group name, subcommand name, and id into an application command mention.
  *
- * @typeParam CommandName - This is inferred by the supplied command name
  * @typeParam CommandId - This is inferred by the supplied command id
- * @param commandName - The application command name to format
+ * @typeParam CommandName - This is inferred by the supplied command name
+ * @typeParam SubcommandName - This is inferred by the supplied subcommand name
+ * @typeParam SubcommandGroupName - This is inferred by the supplied subcommand group name
  * @param commandId - The application command id to format
+ * @param commandName - The application command name to format
+ * @param subcommandName - The subcommand name to format
+ * @param subcommandGroupName - The subcommand group name to format
  */
-export function chatInputApplicationCommandMention<CommandName extends string, CommandId extends Snowflake>(
-	commandName: CommandName,
+export function chatInputApplicationCommandMention<
+	CommandId extends Snowflake,
+	CommandName extends string,
+	SubcommandName extends string,
+	SubcommandGroupName extends string,
+>(
 	commandId: CommandId,
-): `</${CommandName}:${CommandId}>`;
+	commandName: CommandName,
+	subcommandName: SubcommandName,
+	subcommandGroupName: SubcommandGroupName,
+): `</${CommandName} ${SubcommandGroupName} ${SubcommandName}:${CommandId}>`;
 
 export function chatInputApplicationCommandMention<
-	CommandName extends string,
-	SubcommandGroupName extends Snowflake | string,
-	SubcommandName extends Snowflake | string,
 	CommandId extends Snowflake,
+	CommandName extends string,
+	SubcommandName extends string,
+	SubcommandGroupName extends string,
 >(
+	commandId: CommandId,
 	commandName: CommandName,
-	subcommandGroupName: SubcommandGroupName,
-	subcommandName?: SubcommandName,
-	commandId?: CommandId,
+	subcommandName?: SubcommandName | undefined,
+	subcommandGroupName?: SubcommandGroupName | undefined,
 ):
 	| `</${CommandName} ${SubcommandGroupName} ${SubcommandName}:${CommandId}>`
-	| `</${CommandName} ${SubcommandGroupName}:${SubcommandName}>`
-	| `</${CommandName}:${SubcommandGroupName}>` {
-	if (commandId !== undefined) {
-		return `</${commandName} ${subcommandGroupName} ${subcommandName!}:${commandId}>`;
+	| `</${CommandName} ${SubcommandName}:${CommandId}>`
+	| `</${CommandName}:${CommandId}>` {
+	if (subcommandGroupName !== undefined && subcommandName !== undefined) {
+		return `</${commandName} ${subcommandGroupName} ${subcommandName}:${commandId}>`;
 	}
 
 	if (subcommandName !== undefined) {
-		return `</${commandName} ${subcommandGroupName}:${subcommandName}>`;
+		return `</${commandName} ${subcommandName}:${commandId}>`;
 	}
 
-	return `</${commandName}:${subcommandGroupName}>`;
+	return `</${commandName}:${commandId}>`;
 }
 
 /**
