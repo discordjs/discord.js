@@ -79,7 +79,7 @@ describe('Interaction with_response overloads.', () => {
 			api.interactions.launchActivity(SNOWFLAKE, TOKEN, { with_response: true }),
 		));
 
-	test('Launch activity returns either RESTPostAPIInteractionCallbackWithResponseResult and undefined.', () =>
+	test('Launch activity returns either RESTPostAPIInteractionCallbackWithResponseResult or undefined.', () =>
 		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>>(
 			api.interactions.launchActivity(SNOWFLAKE, TOKEN, { with_response: boolValue }),
 		));
