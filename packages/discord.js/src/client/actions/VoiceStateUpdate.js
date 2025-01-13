@@ -9,12 +9,6 @@ class VoiceStateUpdate extends Action {
     const client = this.client;
     const guild = client.guilds.cache.get(data.guild_id);
     if (guild) {
-      // Update the state
-      const oldState =
-        guild.voiceStates.cache.get(data.user_id)?._clone() ?? new VoiceState(guild, { user_id: data.user_id });
-
-      const newState = guild.voiceStates._add(data);
-
       // Get the member
       let member = guild.members.cache.get(data.user_id);
       if (member && data.member) {
@@ -22,6 +16,15 @@ class VoiceStateUpdate extends Action {
       } else if (data.member?.user && data.member.joined_at) {
         member = guild.members._add(data.member);
       }
+
+      // Update the state
+      const oldState = guild.voiceStates.cache.get(data.user_id)?._clone() ?? new VoiceState(guild, {
+        user_id: data.user_id,
+        mute: member._serverMute,
+        deaf: member._serverDeaf,
+      });
+
+      const newState = guild.voiceStates._add(data);
 
       // Emit event
       if (member?.user.id === client.user.id) {
