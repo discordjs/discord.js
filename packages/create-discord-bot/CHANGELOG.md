@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+# [create-discord-bot@1.0.0](https://github.com/discordjs/discord.js/compare/create-discord-bot@0.3.1...create-discord-bot@1.0.0) - (2025-01-01)
+
+## Features
+
+- Upgrade create-discord-bot dependencies (#10673) ([a111cdd](https://github.com/discordjs/discord.js/commit/a111cddcea13afa24cde7fc39f60a62abec539cf)) by @Jiralite
+
+### New Contributors
+
+* @Jiralite made their first contribution in #10673
+* @almeidx made their first contribution in #10671
+* @ckohen made their first contribution in #10471
+
 # [create-discord-bot@0.3.1](https://github.com/discordjs/discord.js/compare/create-discord-bot@0.3.0...create-discord-bot@0.3.1) - (2024-09-01)
 
 ## Bug Fixes
