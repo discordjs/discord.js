@@ -1309,12 +1309,6 @@ export class ContextMenuCommandInteraction<Cached extends CacheType = CacheType>
   private resolveContextMenuOptions(data: APIApplicationCommandInteractionData): CommandInteractionOption<Cached>[];
 }
 
-/** @internal */
-export interface ResolvedFile {
-  data: Buffer;
-  contentType?: string;
-}
-
 // tslint:disable-next-line no-empty-interface
 export interface DMChannel
   extends Omit<
@@ -3577,19 +3571,6 @@ export function createChannel(
   guild?: Guild,
   extras?: CreateChannelOptions,
 ): Channel;
-
-/** @internal */
-export function resolveBase64(data: Base64Resolvable): string;
-/** @internal */
-export function resolveCode(data: string, regex: RegExp): string;
-/** @internal */
-export function resolveFile(resource: BufferResolvable | Stream): Promise<ResolvedFile>;
-/** @internal */
-export function resolveImage(resource: BufferResolvable | Base64Resolvable): Promise<string | null>;
-/** @internal */
-export function resolveInviteCode(data: InviteResolvable): string;
-/** @internal */
-export function resolveGuildTemplateCode(data: GuildTemplateResolvable): string;
 
 export type ComponentData =
   | MessageActionRowComponentData
