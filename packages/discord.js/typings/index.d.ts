@@ -2363,7 +2363,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public update(
     options: string | MessagePayload | InteractionUpdateOptions,
   ): Promise<InteractionCallbackResponse | undefined>;
-   public launchActivity(options: LaunchActivityOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
+  public launchActivity(options: LaunchActivityOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
   public launchActivity(options?: LaunchActivityOptions): Promise<undefined>;
   public showModal(
     modal:
