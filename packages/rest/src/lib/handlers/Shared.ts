@@ -138,7 +138,7 @@ export async function handleErrors(
 		// Handle possible malformed requests
 		if (status >= 400 && status < 500) {
 			// If we receive this status code, it means the token we had is no longer valid.
-			if (status === 401 && requestData.auth) {
+			if (status === 401 && requestData.auth === true) {
 				manager.setToken(null!);
 			}
 

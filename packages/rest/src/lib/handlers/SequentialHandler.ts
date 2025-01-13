@@ -304,11 +304,16 @@ export class SequentialHandler implements IHandler {
 			// Let library users know when rate limit buckets have been updated
 			this.debug(['Received bucket hash update', `  Old Hash  : ${this.hash}`, `  New Hash  : ${hash}`].join('\n'));
 			// This queue will eventually be eliminated via attrition
-			this.manager.hashes.set(`${method}:${routeId.bucketRoute}`, { value: hash, lastAccess: Date.now() });
+			this.manager.hashes.set(
+				`${method}:${routeId.bucketRoute}${typeof requestData.auth === 'string' ? `:${requestData.auth}` : ''}`,
+				{ value: hash, lastAccess: Date.now() },
+			);
 		} else if (hash) {
 			// Handle the case where hash value doesn't change
 			// Fetch the hash data from the manager
-			const hashData = this.manager.hashes.get(`${method}:${routeId.bucketRoute}`);
+			const hashData = this.manager.hashes.get(
+				`${method}:${routeId.bucketRoute}${typeof requestData.auth === 'string' ? `:${requestData.auth}` : ''}`,
+			);
 
 			// When fetched, update the last access of the hash
 			if (hashData) {
