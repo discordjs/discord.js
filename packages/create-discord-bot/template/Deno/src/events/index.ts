@@ -1,5 +1,5 @@
-import type { ClientEvents } from 'npm:discord.js@^14.16.0';
-import { z } from 'npm:zod@^3.23.8';
+import type { ClientEvents } from 'npm:discord.js@^14.17.0';
+import { z } from 'npm:zod@^3.24.1';
 import type { StructurePredicate } from '../util/loaders.ts';
 
 /**

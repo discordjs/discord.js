@@ -60,3 +60,5 @@ export const OverwrittenMimeTypes = {
 } as const satisfies Readonly<Record<string, string>>;
 
 export const BurstHandlerMajorIdKey = 'burst';
+
+export const AUTH_UUID_NAMESPACE = 'acc82a4c-f887-417b-a69c-f74096ff7e59';
