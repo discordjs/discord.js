@@ -144,6 +144,11 @@ const Messages = {
   [DjsErrorCodes.BulkBanUsersOptionEmpty]: 'Option "users" array or collection is empty',
 
   [DjsErrorCodes.PollAlreadyExpired]: 'This poll has already expired.',
+
+  [DjsErrorCodes.PermissionOverwritesTypeMandatory]: '"overwrite.type" is mandatory if "overwrite.id" is a Snowflake',
+  [DjsErrorCodes.PermissionOverwritesTypeMismatch]: expected =>
+    `"overwrite.id" is a ${expected.toLowerCase()} object, ` +
+    `but "overwrite.type" is defined and not equal to OverwriteType.${expected}`,
 };
 
 module.exports = Messages;

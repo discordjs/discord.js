@@ -184,7 +184,7 @@ test('getAuth', async () => {
 			(from) => ({ auth: (from.headers as unknown as Record<string, string | undefined>).Authorization ?? null }),
 			responseOptions,
 		)
-		.times(3);
+		.times(5);
 
 	// default
 	expect(await api.get('/getAuth')).toStrictEqual({ auth: 'Bot A-Very-Fake-Token' });
@@ -202,6 +202,20 @@ test('getAuth', async () => {
 			auth: true,
 		}),
 	).toStrictEqual({ auth: 'Bot A-Very-Fake-Token' });
+
+	// Custom Bot Auth
+	expect(
+		await api.get('/getAuth', {
+			auth: { token: 'A-Very-Different-Fake-Token' },
+		}),
+	).toStrictEqual({ auth: 'Bot A-Very-Different-Fake-Token' });
+
+	// Custom Bearer Auth
+	expect(
+		await api.get('/getAuth', {
+			auth: { token: 'A-Bearer-Fake-Token', prefix: 'Bearer' },
+		}),
+	).toStrictEqual({ auth: 'Bearer A-Bearer-Fake-Token' });
 });
 
 test('getReason', async () => {

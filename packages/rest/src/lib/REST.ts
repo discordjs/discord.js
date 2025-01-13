@@ -3,11 +3,13 @@ import { DiscordSnowflake } from '@sapphire/snowflake';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import { filetypeinfo } from 'magic-bytes.js';
 import type { RequestInit, BodyInit, Dispatcher } from 'undici';
+import { v5 as uuidV5 } from 'uuid';
 import { CDN } from './CDN.js';
 import { BurstHandler } from './handlers/BurstHandler.js';
 import { SequentialHandler } from './handlers/SequentialHandler.js';
 import type { IHandler } from './interfaces/Handler.js';
 import {
+	AUTH_UUID_NAMESPACE,
 	BurstHandlerMajorIdKey,
 	DefaultRestOptions,
 	DefaultUserAgent,
@@ -25,6 +27,7 @@ import type {
 	RequestHeaders,
 	RouteData,
 	RequestData,
+	AuthData,
 } from './utils/types.js';
 import { isBufferLike, parseResponse } from './utils/utils.js';
 
@@ -240,9 +243,11 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 	public async queueRequest(request: InternalRequest): Promise<ResponseLike> {
 		// Generalize the endpoint to its route data
 		const routeId = REST.generateRouteData(request.fullRoute, request.method);
+		const customAuth = typeof request.auth === 'object' && request.auth.token !== this.#token;
+		const auth = customAuth ? uuidV5((request.auth as AuthData).token, AUTH_UUID_NAMESPACE) : request.auth !== false;
 		// Get the bucket hash for the generic route, or point to a global route otherwise
-		const hash = this.hashes.get(`${request.method}:${routeId.bucketRoute}`) ?? {
-			value: `Global(${request.method}:${routeId.bucketRoute})`,
+		const hash = this.hashes.get(`${request.method}:${routeId.bucketRoute}${customAuth ? `:${auth}` : ''}`) ?? {
+			value: `Global(${request.method}:${routeId.bucketRoute}${customAuth ? `:${auth}` : ''})`,
 			lastAccess: -1,
 		};
 
@@ -258,7 +263,7 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 		return handler.queueRequest(routeId, url, fetchOptions, {
 			body: request.body,
 			files: request.files,
-			auth: request.auth !== false,
+			auth,
 			signal: request.signal,
 		});
 	}
@@ -308,12 +313,16 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 
 		// If this request requires authorization (allowing non-"authorized" requests for webhooks)
 		if (request.auth !== false) {
-			// If we haven't received a token, throw an error
-			if (!this.#token) {
-				throw new Error('Expected token to be set for this request, but none was present');
-			}
+			if (typeof request.auth === 'object') {
+				headers.Authorization = `${request.auth.prefix ?? this.options.authPrefix} ${request.auth.token}`;
+			} else {
+				// If we haven't received a token, throw an error
+				if (!this.#token) {
+					throw new Error('Expected token to be set for this request, but none was present');
+				}
 
-			headers.Authorization = `${request.authPrefix ?? this.options.authPrefix} ${this.#token}`;
+				headers.Authorization = `${this.options.authPrefix} ${this.#token}`;
+			}
 		}
 
 		// If a reason was set, set its appropriate header

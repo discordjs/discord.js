@@ -9,9 +9,12 @@ async function fetchLatestVersion(packageName: string): Promise<string> {
 	}
 
 	try {
-		const { rows } = await sql`select version from documentation where name = ${packageName} order by version desc`;
+		const { rows } = await sql<{ version: string }>`with ordered_versions as (
+			select version from documentation where name = ${packageName} and version != 'main' order by string_to_array(version, '.')::int[] desc
+		)
+		select version from ordered_versions limit 1`;
 
-		return rows.map((row) => row.version).at(1) ?? 'main';
+		return rows[0]?.version ?? 'main';
 	} catch {
 		return '';
 	}

@@ -11,7 +11,7 @@
 		"deploy": "node --require dotenv/config src/util/deploy.js"
 	},
 	"dependencies": {
-		"@discordjs/core": "^2.0.0",
+		"@discordjs/core": "^2.0.1",
 		"discord.js": "^14.16.3",
 		"dotenv": "^16.4.5"
 	},

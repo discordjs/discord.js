@@ -52,7 +52,7 @@ export function PackageSelect({ packageName }: { readonly packageName: string })
 				</Popover>
 			</Select>
 
-			<Vaul.NestedRoot open={open} onOpenChange={setOpen} dismissible={false}>
+			<Vaul.NestedRoot open={open} onOpenChange={setOpen}>
 				<Vaul.Trigger
 					aria-label="Open package select"
 					className="flex w-full place-content-between place-items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-800 md:hidden"
