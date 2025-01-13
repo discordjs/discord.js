@@ -573,7 +573,8 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
     options: string | MessagePayload | InteractionReplyOptions,
   ): Promise<InteractionCallbackResponse | undefined>;
   public launchActivity(options: LaunchActivityOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
-  public launchActivity(options?: LaunchActivityOptions): Promise<undefined>;
+  public launchActivity(options: LaunchActivityOptions & { withResponse?: false }): Promise<undefined>;
+  public launchActivity(options?: LaunchActivityOptions): Promise<InteractionCallbackResponse | undefined>;
   public showModal(
     modal:
       | JSONEncodable<APIModalInteractionResponseCallbackData>
@@ -2364,7 +2365,8 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
     options: string | MessagePayload | InteractionUpdateOptions,
   ): Promise<InteractionCallbackResponse | undefined>;
   public launchActivity(options: LaunchActivityOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
-  public launchActivity(options?: LaunchActivityOptions): Promise<undefined>;
+  public launchActivity(options: LaunchActivityOptions & { withResponse?: false }): Promise<undefined>;
+  public launchActivity(options?: LaunchActivityOptions): Promise<InteractionCallbackResponse | undefined>;
   public showModal(
     modal:
       | JSONEncodable<APIModalInteractionResponseCallbackData>
@@ -2594,7 +2596,8 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public deferUpdate(options?: InteractionDeferUpdateOptions & { withResponse: false }): Promise<undefined>;
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionCallbackResponse | undefined>;
   public launchActivity(options: LaunchActivityOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
-  public launchActivity(options?: LaunchActivityOptions): Promise<undefined>;
+  public launchActivity(options: LaunchActivityOptions & { withResponse?: false }): Promise<undefined>;
+  public launchActivity(options?: LaunchActivityOptions): Promise<InteractionCallbackResponse | undefined>;
   public inGuild(): this is ModalSubmitInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ModalSubmitInteraction<'cached'>;
   public inRawGuild(): this is ModalSubmitInteraction<'raw'>;
