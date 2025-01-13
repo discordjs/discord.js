@@ -141,12 +141,9 @@ class Webhook {
 
   /**
    * Options that can be passed into editMessage.
-   * @typedef {BaseMessageOptions} WebhookMessageEditOptions
-   * @property {Attachment[]} [attachments] Attachments to send with the message
+   * @typedef {MessageEditOptions} WebhookMessageEditOptions
    * @property {Snowflake} [threadId] The id of the thread this message belongs to
    * <info>For interaction webhooks, this property is ignored</info>
-   * @property {MessageFlags} [flags] Which flags to set for the message
-   * <info>Only the {@link MessageFlags.SuppressEmbeds} flag can be modified.</info>
    */
 
   /**
