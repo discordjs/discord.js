@@ -413,6 +413,11 @@ export abstract class Application extends Base {
   public icon: string | null;
   public id: Snowflake;
   public name: string | null;
+  public termsOfServiceURL: string | null;
+  public privacyPolicyURL: string | null;
+  public rpcOrigins: string[];
+  public cover: string | null;
+  public verifyKey: string | null;
   public coverURL(options?: ImageURLOptions): string | null;
   public iconURL(options?: ImageURLOptions): string | null;
   public toJSON(): unknown;
@@ -1060,7 +1065,6 @@ export class ClientApplication extends Application {
   public subscriptions: SubscriptionManager;
   public guildId: Snowflake | null;
   public get guild(): Guild | null;
-  public cover: string | null;
   public flags: Readonly<ApplicationFlagsBitField>;
   public approximateGuildCount: number | null;
   public approximateUserInstallCount: number | null;
@@ -1075,7 +1079,6 @@ export class ClientApplication extends Application {
   public eventWebhooksStatus: ApplicationWebhookEventStatus | null;
   public eventWebhooksTypes: ApplicationWebhookEventType[] | null;
   public roleConnectionsVerificationURL: string | null;
-  public rpcOrigins: string[];
   public edit(options: ClientApplicationEditOptions): Promise<ClientApplication>;
   public fetch(): Promise<ClientApplication>;
   public fetchRoleConnectionMetadataRecords(): Promise<ApplicationRoleConnectionMetadata[]>;
@@ -3556,28 +3559,6 @@ export function transformResolved<Cached extends CacheType>(
 ): CommandInteractionResolvedData<Cached>;
 export function resolveSKUId(resolvable: SKUResolvable): Snowflake | null;
 
-export interface MappedComponentBuilderTypes {
-  [ComponentType.Button]: ButtonBuilder;
-  [ComponentType.StringSelect]: StringSelectMenuBuilder;
-  [ComponentType.UserSelect]: UserSelectMenuBuilder;
-  [ComponentType.RoleSelect]: RoleSelectMenuBuilder;
-  [ComponentType.MentionableSelect]: MentionableSelectMenuBuilder;
-  [ComponentType.ChannelSelect]: ChannelSelectMenuBuilder;
-  [ComponentType.ActionRow]: ActionRowBuilder;
-  [ComponentType.TextInput]: TextInputBuilder;
-}
-
-export interface MappedComponentTypes {
-  [ComponentType.Button]: ButtonComponent;
-  [ComponentType.StringSelect]: StringSelectMenuComponent;
-  [ComponentType.UserSelect]: UserSelectMenuComponent;
-  [ComponentType.RoleSelect]: RoleSelectMenuComponent;
-  [ComponentType.MentionableSelect]: MentionableSelectMenuComponent;
-  [ComponentType.ChannelSelect]: ChannelSelectMenuComponent;
-  [ComponentType.ActionRow]: ActionRowComponent;
-  [ComponentType.TextInput]: TextInputComponent;
-}
-
 /** @internal */
 export interface CreateChannelOptions {
   allowFromUnknownGuild?: boolean;
@@ -3590,17 +3571,6 @@ export function createChannel(
   guild?: Guild,
   extras?: CreateChannelOptions,
 ): Channel;
-
-export function createComponent<Type extends keyof MappedComponentTypes>(
-  data: APIMessageComponent & { type: Type },
-): MappedComponentTypes[Type];
-export function createComponent<Data extends Component>(data: Data): Data;
-export function createComponent(data: APIMessageComponent | Component): Component;
-export function createComponentBuilder<Type extends keyof MappedComponentBuilderTypes>(
-  data: APIMessageComponent & { type: Type },
-): MappedComponentBuilderTypes[Type];
-export function createComponentBuilder<Data extends ComponentBuilder>(data: Data): Data;
-export function createComponentBuilder(data: APIMessageComponent | ComponentBuilder): ComponentBuilder;
 
 export type ComponentData =
   | MessageActionRowComponentData

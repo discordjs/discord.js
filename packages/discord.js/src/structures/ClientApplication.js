@@ -173,26 +173,6 @@ class ClientApplication extends Application {
       this.guildId ??= null;
     }
 
-    if ('cover_image' in data) {
-      /**
-       * The hash of the application's cover image
-       * @type {?string}
-       */
-      this.cover = data.cover_image;
-    } else {
-      this.cover ??= null;
-    }
-
-    if ('rpc_origins' in data) {
-      /**
-       * The application's RPC origins, if enabled
-       * @type {string[]}
-       */
-      this.rpcOrigins = data.rpc_origins;
-    } else {
-      this.rpcOrigins ??= [];
-    }
-
     if ('bot_require_code_grant' in data) {
       /**
        * If this application's bot requires a code grant when using the OAuth2 flow
