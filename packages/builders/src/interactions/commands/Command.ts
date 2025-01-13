@@ -19,7 +19,7 @@ export interface CommandData
 export abstract class CommandBuilder<Command extends RESTPostAPIApplicationCommandsJSONBody>
 	implements JSONEncodable<Command>
 {
-	protected declare readonly data: CommandData;
+	declare protected readonly data: CommandData;
 
 	/**
 	 * Sets the contexts of this command.
