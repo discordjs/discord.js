@@ -50,16 +50,6 @@ class IntegrationApplication extends Application {
       this.rpcOrigins ??= [];
     }
 
-    if ('hook' in data) {
-      /**
-       * Whether the application can be default hooked by the client
-       * @type {?boolean}
-       */
-      this.hook = data.hook;
-    } else {
-      this.hook ??= null;
-    }
-
     if ('cover_image' in data) {
       /**
        * The hash of the application's cover image
