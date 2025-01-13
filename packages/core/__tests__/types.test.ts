@@ -12,6 +12,7 @@ const api = new API(rest);
 const SNOWFLAKE = '123456789012345678' as const;
 const TOKEN = 'token' as const;
 const MODAL_COMPONENTS: APIActionRowComponent<APIModalActionRowComponent>[] = [] as const;
+const boolValue = true as boolean;
 
 describe('Interaction with_response overloads.', () => {
 	test('Replying returns RESTPostAPIInteractionCallbackWithResponseResult.', () =>
@@ -66,5 +67,20 @@ describe('Interaction with_response overloads.', () => {
 	test('Create modal returns undefined.', () =>
 		assertType<Promise<undefined>>(
 			api.interactions.createModal(SNOWFLAKE, TOKEN, { title: '', custom_id: '', components: MODAL_COMPONENTS }),
+		));
+
+	test('Launch activity returns undefined.', () => {
+		assertType<Promise<undefined>>(api.interactions.launchActivity(SNOWFLAKE, TOKEN, { with_response: false }));
+		assertType<Promise<undefined>>(api.interactions.launchActivity(SNOWFLAKE, TOKEN));
+	});
+
+	test('Launch activity returns RESTPostAPIInteractionCallbackWithResponseResult.', () =>
+		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult>>(
+			api.interactions.launchActivity(SNOWFLAKE, TOKEN, { with_response: true }),
+		));
+
+	test('Launch activity returns both RESTPostAPIInteractionCallbackWithResponseResult and undefined.', () =>
+		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>>(
+			api.interactions.launchActivity(SNOWFLAKE, TOKEN, { with_response: boolValue }),
 		));
 });

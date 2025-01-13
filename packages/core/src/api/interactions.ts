@@ -442,7 +442,7 @@ export class InteractionsAPI {
 	public async launchActivity(
 		interactionId: Snowflake,
 		interactionToken: string,
-		body?: RESTPostAPIInteractionCallbackQuery & { with_response: true },
+		body: RESTPostAPIInteractionCallbackQuery & { with_response: true },
 		options?: Pick<RequestData, 'signal'>,
 	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
 
@@ -461,6 +461,22 @@ export class InteractionsAPI {
 		body?: RESTPostAPIInteractionCallbackQuery & { with_response?: false },
 		options?: Pick<RequestData, 'signal'>,
 	): Promise<undefined>;
+
+	/**
+	 * Launches an activity
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param body - The callback data for launching the activity
+	 * @param options - The options for launching the activity
+	 */
+	public async launchActivity(
+		interactionId: Snowflake,
+		interactionToken: string,
+		body?: RESTPostAPIInteractionCallbackQuery,
+		options?: Pick<RequestData, 'signal'>,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
 
 	public async launchActivity(
 		interactionId: Snowflake,
