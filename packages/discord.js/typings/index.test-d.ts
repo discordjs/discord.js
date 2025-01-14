@@ -33,6 +33,9 @@ import {
   APIMentionableSelectComponent,
   APIModalInteractionResponseCallbackData,
   WebhookType,
+  GuildScheduledEventRecurrenceRuleFrequency,
+  GuildScheduledEventRecurrenceRuleMonth,
+  GuildScheduledEventRecurrenceRuleWeekday,
 } from 'discord-api-types/v10';
 import {
   ApplicationCommand,
@@ -214,6 +217,7 @@ import {
   PollData,
   UserManager,
   InteractionCallbackResponse,
+  GuildScheduledEventRecurrenceRuleOptions,
 } from '.';
 import {
   expectAssignable,
@@ -2679,3 +2683,89 @@ client.on('interactionCreate', interaction => {
 
 declare const guildScheduledEventManager: GuildScheduledEventManager;
 await guildScheduledEventManager.edit(snowflake, { recurrenceRule: null });
+
+{
+  expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({
+    startAt: new Date(),
+    frequency: GuildScheduledEventRecurrenceRuleFrequency.Yearly,
+    interval: 1,
+    byMonth: [GuildScheduledEventRecurrenceRuleMonth.May],
+    byMonthDay: [4],
+    // Invalid property
+    byWeekday: [GuildScheduledEventRecurrenceRuleWeekday.Monday],
+  });
+
+  expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({
+    startAt: new Date(),
+    frequency: GuildScheduledEventRecurrenceRuleFrequency.Yearly,
+    interval: 1,
+    byMonth: [GuildScheduledEventRecurrenceRuleMonth.May],
+    byMonthDay: [4],
+    // Invalid property
+    byNWeekday: [{ n: 1, day: GuildScheduledEventRecurrenceRuleWeekday.Monday }],
+  });
+
+  expectAssignable<GuildScheduledEventRecurrenceRuleOptions>({
+    startAt: new Date(),
+    frequency: GuildScheduledEventRecurrenceRuleFrequency.Yearly,
+    interval: 1,
+    byMonth: [GuildScheduledEventRecurrenceRuleMonth.May],
+    byMonthDay: [4],
+  });
+}
+
+{
+  expectAssignable<GuildScheduledEventRecurrenceRuleOptions>({
+    startAt: new Date(),
+    frequency: GuildScheduledEventRecurrenceRuleFrequency.Monthly,
+    interval: 1,
+    byNWeekday: [{ n: 1, day: GuildScheduledEventRecurrenceRuleWeekday.Monday }],
+  });
+
+  expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({
+    startAt: new Date(),
+    frequency: GuildScheduledEventRecurrenceRuleFrequency.Monthly,
+    interval: 1,
+    byNWeekday: [{ n: 1, day: GuildScheduledEventRecurrenceRuleWeekday.Monday }],
+    // Invalid property
+    byWeekday: [GuildScheduledEventRecurrenceRuleWeekday.Monday],
+  });
+}
+
+{
+  expectAssignable<GuildScheduledEventRecurrenceRuleOptions>({
+    startAt: new Date(),
+    frequency: GuildScheduledEventRecurrenceRuleFrequency.Weekly,
+    interval: 1,
+    byWeekday: [GuildScheduledEventRecurrenceRuleWeekday.Monday],
+  });
+
+  expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({
+    startAt: new Date(),
+    frequency: GuildScheduledEventRecurrenceRuleFrequency.Weekly,
+    interval: 1,
+    byWeekday: [GuildScheduledEventRecurrenceRuleWeekday.Monday],
+    // Invalid property
+    byNWeekday: [{ n: 1, day: GuildScheduledEventRecurrenceRuleWeekday.Monday }],
+  });
+}
+
+{
+  expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({
+    startAt: new Date(),
+    frequency: GuildScheduledEventRecurrenceRuleFrequency.Daily,
+    interval: 1,
+    byWeekday: [GuildScheduledEventRecurrenceRuleWeekday.Monday],
+    // Invalid property
+    byNWeekday: [{ n: 1, day: GuildScheduledEventRecurrenceRuleWeekday.Monday }],
+  });
+
+  expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({
+    startAt: new Date(),
+    frequency: GuildScheduledEventRecurrenceRuleFrequency.Daily,
+    interval: 1,
+    byWeekday: [GuildScheduledEventRecurrenceRuleWeekday.Monday],
+    // Invalid property
+    byMonth: [GuildScheduledEventRecurrenceRuleMonth.May],
+  });
+}
