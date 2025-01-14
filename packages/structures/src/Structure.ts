@@ -10,7 +10,7 @@ import type { ReplaceOmittedWithUnknown } from './utils/types.js';
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface StructureExtraOptions {}
 
-export const DataTemplatePropetyName = 'DataTemplate';
+export const DataTemplatePropertyName = 'DataTemplate';
 export const OptimizeDataPropertyName = '_optimizeData';
 
 /**
@@ -33,9 +33,7 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 * A construct function used when mixing to allow mixins to set optimized property defaults
 	 *
 	 * @remarks This should only be used to set defaults, setting optimized values should be done
-	 * in the mixins `_optimizeData` method, which is automatically called and should not be called here.
-	 * @remarks Furthermore, this function will be called before the constructor in the mixed class, and can therefore
-	 * never override defaults of the base class.
+	 * in the mixins `_optimizeData` method, which will be called automatically.
 	 * @param data - The full API data received by the Structure
 	 */
 	protected [kMixinConstruct]?(data: Partial<DataType>): void;
@@ -46,7 +44,7 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 * @remarks This template should be overriden in all subclasses to provide more accurate type information.
 	 * The template in the base {@link Structure} class will have no effect on most subclasses for this reason.
 	 */
-	protected static [DataTemplatePropetyName]: Record<string, unknown> = {};
+	protected static DataTemplate: Record<string, unknown> = {};
 
 	/**
 	 * @returns A cloned version of the data template, ready to create a new data object.
@@ -96,11 +94,16 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 *
 	 * @example created_timestamp is an ISO string, this can be stored in optimized form as a number
 	 * @param _data - the raw data received from the API to optimize
-	 * @remarks Implementation to be done in subclasses where needed
+	 * @remarks Implementation to be done in subclasses and mixins where needed.
+	 * For typescript users, mixins must use the closest ancestors access modifier.
+	 * @remarks Automatically called when patching and constructing. This is called in the constructor of
+	 * {@link Structure}, so when assigning defaults in the constructor, ensure the data has not already been set,
+	 * e.g. using the nullish assignment operator. Additionally, you cannot use class fields as they will overide
+	 * the value set by this function. For Typescript users, use interface merging to make the property available.
 	 * @virtual
 	 * @internal
 	 */
-	protected [OptimizeDataPropertyName](_data: Partial<DataType>) {}
+	protected _optimizeData(_data: Partial<DataType>) {}
 
 	/**
 	 * Transforms this object to its JSON format with raw API data (or close to it),
