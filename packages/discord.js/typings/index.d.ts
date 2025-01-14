@@ -6184,10 +6184,7 @@ export interface InteractionCollectorOptions<
 }
 
 export interface InteractionDeferReplyOptions {
-  flags?: BitFieldResolvable<
-    Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds' | 'SuppressNotifications'>,
-    MessageFlags.Ephemeral | MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
-  >;
+  flags?: BitFieldResolvable<Extract<MessageFlagsString, 'Ephemeral'>, MessageFlags.Ephemeral>;
   withResponse?: boolean;
 }
 
@@ -6910,7 +6907,7 @@ export interface WebhookEditOptions {
   reason?: string;
 }
 
-export interface WebhookMessageEditOptions extends Omit<MessageEditOptions, 'flags'> {
+export interface WebhookMessageEditOptions extends MessageEditOptions {
   threadId?: Snowflake;
 }
 
