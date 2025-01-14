@@ -1312,7 +1312,7 @@ export class ContextMenuCommandInteraction<Cached extends CacheType = CacheType>
 // tslint:disable-next-line no-empty-interface
 export interface DMChannel
   extends Omit<
-    TextBasedChannelFields<false>,
+    TextBasedChannelFields<false, true>,
     'bulkDelete' | 'fetchWebhooks' | 'createWebhook' | 'setRateLimitPerUser' | 'setNSFW'
   > {}
 export class DMChannel extends BaseChannel {
@@ -2595,6 +2595,19 @@ export class OAuth2Guild extends BaseGuild {
   public permissions: Readonly<PermissionsBitField>;
 }
 
+export interface PartialGroupDMChannel
+  extends Omit<
+    TextBasedChannelFields<false, false>,
+    | 'bulkDelete'
+    | 'send'
+    | 'sendTyping'
+    | 'createMessageCollector'
+    | 'awaitMessages'
+    | 'fetchWebhooks'
+    | 'createWebhook'
+    | 'setRateLimitPerUser'
+    | 'setNSFW'
+  > {}
 export class PartialGroupDMChannel extends BaseChannel {
   private constructor(client: Client<true>, data: RawPartialGroupDMChannelData);
   public type: ChannelType.GroupDM;
@@ -2602,8 +2615,9 @@ export class PartialGroupDMChannel extends BaseChannel {
   public name: string | null;
   public icon: string | null;
   public recipients: PartialRecipient[];
-  public messages: PartialGroupDMMessageManager;
+  public ownerId: Snowflake | null;
   public iconURL(options?: ImageURLOptions): string | null;
+  public fetchOwner(options?: BaseFetchOptions): Promise<User>;
   public toString(): ChannelMention;
 }
 
@@ -4556,13 +4570,13 @@ export interface PartialTextBasedChannelFields<InGuild extends boolean = boolean
   send(options: string | MessagePayload | MessageCreateOptions): Promise<Message<InGuild>>;
 }
 
-export interface TextBasedChannelFields<InGuild extends boolean = boolean>
+export interface TextBasedChannelFields<InGuild extends boolean = boolean, InDM extends boolean = boolean>
   extends PartialTextBasedChannelFields<InGuild> {
   lastMessageId: Snowflake | null;
   get lastMessage(): Message | null;
   lastPinTimestamp: number | null;
   get lastPinAt(): Date | null;
-  messages: If<InGuild, GuildMessageManager, DMMessageManager>;
+  messages: If<InGuild, GuildMessageManager, If<InDM, DMMessageManager, PartialGroupDMMessageManager>>;
   awaitMessageComponent<ComponentType extends MessageComponentType>(
     options?: AwaitMessageCollectorOptionsParams<ComponentType, true>,
   ): Promise<MappedInteractionTypes[ComponentType]>;
