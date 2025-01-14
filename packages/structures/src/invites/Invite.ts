@@ -37,14 +37,14 @@ export class Invite<
 	 *
 	 * @internal
 	 */
-	protected [kExpiresTimestamp]: number | null = null;
+	protected [kExpiresTimestamp]: number | null;
 
 	/**
 	 * Optimized storage of {@link APIExtendedInvite.created_at}
 	 *
 	 * @internal
 	 */
-	protected [kCreatedTimestamp]: number | null = null;
+	protected [kCreatedTimestamp]: number | null;
 
 	public constructor(
 		/**
@@ -53,6 +53,8 @@ export class Invite<
 		data: Omit<APIExtendedInvite, Omitted>,
 	) {
 		super(data);
+		this[kExpiresTimestamp] ??= null;
+		this[kCreatedTimestamp] ??= null;
 	}
 
 	/**
@@ -67,8 +69,8 @@ export class Invite<
 	 * {@inheritDoc Structure._optimizeData}
 	 */
 	protected override _optimizeData(data: Partial<APIExtendedInvite>) {
-		this[kExpiresTimestamp] = data.expires_at ? Date.parse(data.expires_at) : this[kExpiresTimestamp] ?? null;
-		this[kCreatedTimestamp] = data.created_at ? Date.parse(data.created_at) : this[kCreatedTimestamp] ?? null;
+		this[kExpiresTimestamp] = data.expires_at ? Date.parse(data.expires_at) : (this[kExpiresTimestamp] ?? null);
+		this[kCreatedTimestamp] = data.created_at ? Date.parse(data.created_at) : (this[kCreatedTimestamp] ?? null);
 	}
 
 	/**

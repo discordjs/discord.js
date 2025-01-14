@@ -1,4 +1,4 @@
-import { DataTemplatePropetyName, OptimizeDataPropertyName, type Structure } from './Structure.js';
+import { DataTemplatePropertyName, OptimizeDataPropertyName, type Structure } from './Structure.js';
 import type { kData } from './utils/symbols.js';
 import { kMixinConstruct } from './utils/symbols.js';
 import type { CollapseUnion, MergePrototypes } from './utils/types.js';
@@ -48,7 +48,7 @@ export function Mixin<DestinationClass extends typeof Structure<unknown>>(
 		let extendedClass = mixin;
 		while (extendedClass.prototype !== undefined) {
 			if (
-				DataTemplatePropetyName in extendedClass &&
+				DataTemplatePropertyName in extendedClass &&
 				typeof extendedClass.DataTemplate === 'object' &&
 				// eslint-disable-next-line no-eq-null, eqeqeq
 				extendedClass.DataTemplate != null
@@ -94,48 +94,60 @@ export function Mixin<DestinationClass extends typeof Structure<unknown>>(
 
 			Object.defineProperties(destination.prototype, usingDescriptors);
 		}
+	}
 
-		// Set the function to call any mixed constructors
-		if (constructors.length > 0) {
-			Object.defineProperty(destination.prototype, kMixinConstruct, {
-				writable: true,
-				enumerable: false,
-				configurable: true,
-				// eslint-disable-next-line func-name-matching
-				value: function _mixinConstructors(data: Partial<unknown>) {
-					for (const construct of constructors) {
-						construct.call(this, data);
-					}
-				},
-			});
-		}
+	// Set the function to call any mixed constructors
+	if (constructors.length > 0) {
+		Object.defineProperty(destination.prototype, kMixinConstruct, {
+			writable: true,
+			enumerable: false,
+			configurable: true,
+			// eslint-disable-next-line func-name-matching
+			value: function _mixinConstructors(data: Partial<unknown>) {
+				for (const construct of constructors) {
+					construct.call(this, data);
+				}
+			},
+		});
+	}
 
-		// Combine all optimizations into a single function
-		if (dataOptimizations.length > 0) {
-			const baseOptimize = Object.getOwnPropertyDescriptor(destination, OptimizeDataPropertyName);
-			if (baseOptimize && typeof baseOptimize.value === 'function') {
-				dataOptimizations.unshift(baseOptimize.value);
-			}
+	// Combine all optimizations into a single function
+	const baseOptimize = Object.getOwnPropertyDescriptor(destination, OptimizeDataPropertyName);
+	if (baseOptimize && typeof baseOptimize.value === 'function') {
+		// call base last (mimick constructor behavior)
+		dataOptimizations.push(baseOptimize.value);
+	}
 
-			Object.defineProperty(destination.prototype, OptimizeDataPropertyName, {
-				writable: true,
-				enumerable: false,
-				configurable: true,
-				// eslint-disable-next-line func-name-matching
-				value: function _optimizeData(data: unknown) {
-					for (const optimization of dataOptimizations) {
-						optimization.call(this, data);
-					}
-				},
-			});
-		}
+	// Cache so it's not recalculated every time we construct / patch
+	const superOptimize = Object.getOwnPropertyDescriptor(
+		Object.getPrototypeOf(destination).prototype,
+		OptimizeDataPropertyName,
+	);
+	if (superOptimize && typeof superOptimize.value === 'function') {
+		// call super first (mimick constructor behavior)
+		dataOptimizations.unshift(superOptimize.value);
+	}
 
-		// Copy the properties (setters) of each mixins template to the destinations template
-		if (dataTemplates.length > 0) {
-			destination[DataTemplatePropetyName] ??= {};
-			for (const template of dataTemplates) {
-				Object.defineProperties(destination[DataTemplatePropetyName], Object.getOwnPropertyDescriptors(template));
-			}
+	// If there's more than one optimization or if there's an optimization that isn't on the destination (base)
+	if (dataOptimizations.length > 1 || (dataOptimizations.length === 1 && !baseOptimize)) {
+		Object.defineProperty(destination.prototype, OptimizeDataPropertyName, {
+			writable: true,
+			enumerable: false,
+			configurable: true,
+			// eslint-disable-next-line func-name-matching
+			value: function _mixinOptimizeData(data: unknown) {
+				for (const optimization of dataOptimizations) {
+					optimization.call(this, data);
+				}
+			},
+		});
+	}
+
+	// Copy the properties (setters) of each mixins template to the destinations template
+	if (dataTemplates.length > 0) {
+		destination[DataTemplatePropertyName] ??= {};
+		for (const template of dataTemplates) {
+			Object.defineProperties(destination[DataTemplatePropertyName], Object.getOwnPropertyDescriptors(template));
 		}
 	}
 }

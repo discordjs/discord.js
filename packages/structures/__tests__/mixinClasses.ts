@@ -4,14 +4,35 @@ import { Structure } from '../src/Structure.js';
 import { kData, kMixinConstruct } from '../src/utils/symbols.js';
 
 export interface APIData {
+	baseOptimize?: string;
 	id: string;
+	mixinOptimize?: string;
 	property1?: number;
 	property2?: boolean;
 }
 
+export interface Base {
+	baseOptimize: boolean | null;
+}
 export class Base<Omitted extends keyof APIData | '' = ''> extends Structure<APIData, Omitted> {
+	public static override DataTemplate = {
+		set baseOptimize(_: unknown) {},
+	};
+
 	public constructor(data: APIData) {
 		super(data);
+		this.baseOptimize ??= null;
+	}
+
+	public override _patch(data: Partial<APIData>) {
+		super._patch(data);
+		return this;
+	}
+
+	public override _optimizeData(data: Partial<APIData>) {
+		if ('baseOptimize' in data) {
+			this.baseOptimize = Boolean(data.baseOptimize);
+		}
 	}
 
 	public get id() {
@@ -23,8 +44,24 @@ export class Base<Omitted extends keyof APIData | '' = ''> extends Structure<API
 	}
 }
 
-export interface MixinProperty1<Omitted extends keyof APIData | '' = ''> extends Base<Omitted> {}
+export interface MixinProperty1<Omitted extends keyof APIData | '' = ''> extends Base<Omitted> {
+	mixinOptimize: boolean | null;
+}
 export class MixinProperty1 {
+	public static DataTemplate = {
+		set mixinOptimize(_: unknown) {},
+	};
+
+	public [kMixinConstruct]() {
+		this.mixinOptimize = null;
+	}
+
+	public _optimizeData(data: Partial<APIData>) {
+		if ('mixinOptimize' in data) {
+			this.mixinOptimize = Boolean(data.mixinOptimize);
+		}
+	}
+
 	public get property1() {
 		return this[kData].property1;
 	}
@@ -50,6 +87,7 @@ export class MixinProperty2 {
 		return this.property2;
 	}
 }
+
 export class ExtendedMixinProperty2 extends MixinProperty2 {
 	// eslint-disable-next-line @typescript-eslint/class-literal-property-style
 	public get isExtended() {

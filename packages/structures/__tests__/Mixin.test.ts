@@ -1,4 +1,5 @@
 import { describe, test, expect } from 'vitest';
+import { kData } from '../src/utils/symbols.js';
 import type { APIData } from './mixinClasses.js';
 import { Mixed, MixedWithExtended } from './mixinClasses.js';
 
@@ -50,5 +51,37 @@ describe('Mixin function', () => {
 		const instance2 = new MixedWithExtended(data);
 		expect(instance1.constructCalled).toBe(true);
 		expect(instance2.constructCalled).toBe(true);
+	});
+
+	test('Mixed class respects mixin data optimizations', () => {
+		expect(typeof Object.getOwnPropertyDescriptor(Mixed.DataTemplate, 'mixinOptimize')?.set).toBe('function');
+		const missingOptimizedInstance = new Mixed(data);
+		const alreadyOptimizedInstance = new Mixed({ ...data, mixinOptimize: 'true', baseOptimize: 'true' });
+
+		expect(missingOptimizedInstance.baseOptimize).toBe(null);
+		expect(missingOptimizedInstance.mixinOptimize).toBe(null);
+		// Setters pass this
+		expect('baseOptimize' in missingOptimizedInstance[kData]).toBe(true);
+		expect('mixinOptimize' in missingOptimizedInstance[kData]).toBe(true);
+		expect(missingOptimizedInstance[kData].baseOptimize).toBeUndefined();
+		expect(missingOptimizedInstance[kData].mixinOptimize).toBeUndefined();
+
+		expect(alreadyOptimizedInstance.baseOptimize).toBe(true);
+		expect(alreadyOptimizedInstance.mixinOptimize).toBe(true);
+		// Setters pass this
+		expect('baseOptimize' in alreadyOptimizedInstance[kData]).toBe(true);
+		expect('mixinOptimize' in alreadyOptimizedInstance[kData]).toBe(true);
+		expect(alreadyOptimizedInstance[kData].baseOptimize).toBeUndefined();
+		expect(alreadyOptimizedInstance[kData].mixinOptimize).toBeUndefined();
+
+		alreadyOptimizedInstance._patch({ mixinOptimize: '', baseOptimize: '' });
+
+		expect(alreadyOptimizedInstance.baseOptimize).toBe(false);
+		expect(alreadyOptimizedInstance.mixinOptimize).toBe(false);
+		// Setters pass this
+		expect('baseOptimize' in alreadyOptimizedInstance[kData]).toBe(true);
+		expect('mixinOptimize' in alreadyOptimizedInstance[kData]).toBe(true);
+		expect(alreadyOptimizedInstance[kData].baseOptimize).toBeUndefined();
+		expect(alreadyOptimizedInstance[kData].mixinOptimize).toBeUndefined();
 	});
 });
