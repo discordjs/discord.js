@@ -26,6 +26,8 @@ const { createEnum } = require('./Enums');
  * @property {number} Reaction The partial to receive uncached reactions.
  * @property {number} GuildScheduledEvent The partial to receive uncached guild scheduled events.
  * @property {number} ThreadMember The partial to receive uncached thread members.
+ * @property {number} Poll The partial to receive uncached polls.
+ * @property {number} PollAnswer The partial to receive uncached poll answers.
  */
 
 // JSDoc for IntelliSense purposes
@@ -41,4 +43,6 @@ module.exports = createEnum([
   'Reaction',
   'GuildScheduledEvent',
   'ThreadMember',
+  'Poll',
+  'PollAnswer',
 ]);
