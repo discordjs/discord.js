@@ -176,6 +176,7 @@ import {
   RESTAPIInteractionCallbackActivityInstanceResource,
   VoiceChannelEffectSendAnimationType,
   GatewayVoiceChannelEffectSendDispatchData,
+  APISoundboardSound,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -3736,6 +3737,30 @@ export class WidgetMember extends Base {
   public activity: WidgetActivity | null;
 }
 
+export interface SoundboardSoundEditOptions {
+  name?: string;
+  volume?: number | null;
+  emojiId?: Snowflake | null;
+  emojiName?: string | null;
+}
+
+export class SoundboardSound extends Base {
+  private constructor(client: Client<true>, data: APISoundboardSound);
+  public name: string;
+  public id: Snowflake | string | number;
+  public volume: number;
+  public emojiId: Snowflake | null;
+  public emojiName: string | null;
+  public guildId: Snowflake | null;
+  public get guild(): Guild | null;
+  public available: boolean;
+  public user: User | null;
+  public fetch(): Promise<SoundboardSound>;
+  public edit(options?: SoundboardSoundEditOptions): Promise<SoundboardSound>;
+  public delete(reason?: string): Promise<SoundboardSound>;
+  public equals(other: SoundboardSound | APISoundboardSound): boolean;
+}
+
 export class WelcomeChannel extends Base {
   private constructor(guild: Guild, data: RawWelcomeChannelData);
   private _emoji: Omit<APIEmoji, 'animated'>;
@@ -5199,6 +5224,9 @@ export interface ClientEvents {
   guildMembersChunk: [members: ReadonlyCollection<Snowflake, GuildMember>, guild: Guild, data: GuildMembersChunk];
   guildMemberUpdate: [oldMember: GuildMember | PartialGuildMember, newMember: GuildMember];
   guildUpdate: [oldGuild: Guild, newGuild: Guild];
+  guildSoundboardSoundCreate: [soundboardSound: SoundboardSound];
+  guildSoundboardSoundDelete: [soundboardSound: SoundboardSound];
+  guildSoundboardSoundUpdate: [oldSoundboardSound: SoundboardSound | null, newSoundboardSound: SoundboardSound];
   inviteCreate: [invite: Invite];
   inviteDelete: [invite: Invite];
   messageCreate: [message: OmitPartialGroupDMChannel<Message>];
@@ -5266,6 +5294,7 @@ export interface ClientEvents {
   guildScheduledEventDelete: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent];
   guildScheduledEventUserAdd: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent, user: User];
   guildScheduledEventUserRemove: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent, user: User];
+  soundboardSounds: [soundboardSounds: ReadonlyCollection<Snowflake, SoundboardSound>, guild: Guild];
 }
 
 export interface ClientFetchInviteOptions {
@@ -5468,6 +5497,9 @@ export enum Events {
   GuildScheduledEventDelete = 'guildScheduledEventDelete',
   GuildScheduledEventUserAdd = 'guildScheduledEventUserAdd',
   GuildScheduledEventUserRemove = 'guildScheduledEventUserRemove',
+  guildSoundboardSoundCreate = 'guildSoundboardSoundCreate',
+  guildSoundboardSoundDelete = 'guildSoundboardSoundDelete',
+  guildSoundboardSoundUpdate = 'guildSoundboardSoundUpdate',
 }
 
 export enum ShardEvents {
