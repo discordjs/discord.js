@@ -294,7 +294,7 @@ class TextBasedChannel {
    * @example
    * // Bulk delete messages
    * channel.bulkDelete(5)
-   *   .then(messages => console.log(`Bulk deleted ${messages.size} messages`))
+   *   .then(messages => console.log(`Bulk deleted ${messages.length} messages`))
    *   .catch(console.error);
    */
   async bulkDelete(messages, filterOld = false) {
