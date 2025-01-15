@@ -163,7 +163,6 @@ exports.InteractionCallback = require('./structures/InteractionCallback').Intera
 exports.InteractionCallbackResource = require('./structures/InteractionCallbackResource').InteractionCallbackResource;
 exports.InteractionCallbackResponse = require('./structures/InteractionCallbackResponse').InteractionCallbackResponse;
 exports.InteractionCollector = require('./structures/InteractionCollector').InteractionCollector;
-exports.InteractionResponse = require('./structures/InteractionResponse').InteractionResponse;
 exports.InteractionWebhook = require('./structures/InteractionWebhook').InteractionWebhook;
 exports.Invite = require('./structures/Invite').Invite;
 exports.InviteGuild = require('./structures/InviteGuild').InviteGuild;
