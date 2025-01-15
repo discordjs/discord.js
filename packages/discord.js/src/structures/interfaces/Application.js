@@ -1,7 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const Base = require('../Base');
+const { Base } = require('../Base');
 
 /**
  * Represents an OAuth2 Application.
@@ -155,4 +155,4 @@ class Application extends Base {
   }
 }
 
-module.exports = Application;
+exports.Application = Application;

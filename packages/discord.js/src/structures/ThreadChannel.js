@@ -4,11 +4,11 @@ const { lazy } = require('@discordjs/util');
 const { ChannelFlags, ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
 const { BaseChannel } = require('./BaseChannel');
 const getThreadOnlyChannel = lazy(() => require('./ThreadOnlyChannel'));
-const TextBasedChannel = require('./interfaces/TextBasedChannel');
+const { TextBasedChannel } = require('./interfaces/TextBasedChannel');
 const { DiscordjsRangeError, ErrorCodes } = require('../errors');
-const GuildMessageManager = require('../managers/GuildMessageManager');
-const ThreadMemberManager = require('../managers/ThreadMemberManager');
-const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
+const { GuildMessageManager } = require('../managers/GuildMessageManager');
+const { ThreadMemberManager } = require('../managers/ThreadMemberManager');
+const { ChannelFlagsBitField } = require('../util/ChannelFlagsBitField');
 
 /**
  * Represents a thread channel on Discord.
@@ -601,4 +601,4 @@ class ThreadChannel extends BaseChannel {
 
 TextBasedChannel.applyToClass(ThreadChannel, true, ['fetchWebhooks', 'setRateLimitPerUser', 'setNSFW']);
 
-module.exports = ThreadChannel;
+exports.ThreadChannel = ThreadChannel;

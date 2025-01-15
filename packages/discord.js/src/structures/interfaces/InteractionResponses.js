@@ -4,10 +4,10 @@ const { makeURLSearchParams } = require('@discordjs/rest');
 const { isJSONEncodable } = require('@discordjs/util');
 const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../../errors');
-const MessageFlagsBitField = require('../../util/MessageFlagsBitField');
-const InteractionCallbackResponse = require('../InteractionCallbackResponse');
-const InteractionCollector = require('../InteractionCollector');
-const MessagePayload = require('../MessagePayload');
+const { MessageFlagsBitField } = require('../../util/MessageFlagsBitField');
+const { InteractionCallbackResponse } = require('../InteractionCallbackResponse');
+const { InteractionCollector } = require('../InteractionCollector');
+const { MessagePayload } = require('../MessagePayload');
 
 /**
  * @typedef {Object} ModalComponentData
@@ -343,4 +343,4 @@ class InteractionResponses {
   }
 }
 
-module.exports = InteractionResponses;
+exports.InteractionResponses = InteractionResponses;

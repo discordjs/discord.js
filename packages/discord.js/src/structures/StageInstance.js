@@ -1,7 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const Base = require('./Base');
+const { Base } = require('./Base');
 
 /**
  * Represents a stage instance.

@@ -4,9 +4,9 @@ const { Snowflake } = require('@sapphire/snowflake');
 const { PermissionFlagsBits, ChannelType } = require('discord-api-types/v10');
 const { BaseChannel } = require('./BaseChannel');
 const { DiscordjsError, ErrorCodes } = require('../errors');
-const PermissionOverwriteManager = require('../managers/PermissionOverwriteManager');
+const { PermissionOverwriteManager } = require('../managers/PermissionOverwriteManager');
 const { VoiceBasedChannelTypes } = require('../util/Constants');
-const PermissionsBitField = require('../util/PermissionsBitField');
+const { PermissionsBitField } = require('../util/PermissionsBitField');
 const { getSortableGroupTypes } = require('../util/Util');
 
 /**
@@ -477,4 +477,4 @@ class GuildChannel extends BaseChannel {
   }
 }
 
-module.exports = GuildChannel;
+exports.GuildChannel = GuildChannel;

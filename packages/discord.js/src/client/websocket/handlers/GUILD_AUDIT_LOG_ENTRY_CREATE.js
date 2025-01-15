@@ -1,7 +1,7 @@
 'use strict';
 
-const GuildAuditLogsEntry = require('../../../structures/GuildAuditLogsEntry.js');
-const Events = require('../../../util/Events.js');
+const { GuildAuditLogsEntry } = require('../../../structures/GuildAuditLogsEntry.js');
+const { Events } = require('../../../util/Events.js');
 
 module.exports = (client, { d: data }) => {
   const guild = client.guilds.cache.get(data.guild_id);

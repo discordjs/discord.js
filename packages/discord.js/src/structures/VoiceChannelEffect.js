@@ -66,4 +66,4 @@ class VoiceChannelEffect {
   }
 }
 
-module.exports = VoiceChannelEffect;
+exports.VoiceChannelEffect = VoiceChannelEffect;

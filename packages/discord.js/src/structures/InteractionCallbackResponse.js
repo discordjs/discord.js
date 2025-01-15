@@ -1,7 +1,7 @@
 'use strict';
 
-const InteractionCallback = require('./InteractionCallback');
-const InteractionCallbackResource = require('./InteractionCallbackResource');
+const { InteractionCallback } = require('./InteractionCallback');
+const { InteractionCallbackResource } = require('./InteractionCallbackResource');
 
 /**
  * Represents an interaction's response
@@ -30,4 +30,4 @@ class InteractionCallbackResponse {
   }
 }
 
-module.exports = InteractionCallbackResponse;
+exports.InteractionCallbackResponse = InteractionCallbackResponse;

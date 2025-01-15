@@ -3,14 +3,14 @@
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const { ChannelType, Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
-const GuildTextThreadManager = require('./GuildTextThreadManager');
+const { CachedManager } = require('./CachedManager');
+const { GuildTextThreadManager } = require('./GuildTextThreadManager');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
-const GuildChannel = require('../structures/GuildChannel');
-const PermissionOverwrites = require('../structures/PermissionOverwrites');
-const ThreadChannel = require('../structures/ThreadChannel');
-const Webhook = require('../structures/Webhook');
-const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
+const { GuildChannel } = require('../structures/GuildChannel');
+const { PermissionOverwrites } = require('../structures/PermissionOverwrites');
+const { ThreadChannel } = require('../structures/ThreadChannel');
+const { Webhook } = require('../structures/Webhook');
+const { ChannelFlagsBitField } = require('../util/ChannelFlagsBitField');
 const { transformGuildForumTag, transformGuildDefaultReaction } = require('../util/Channels');
 const { ThreadChannelTypes } = require('../util/Constants');
 const { resolveImage } = require('../util/DataResolver');
@@ -523,4 +523,4 @@ class GuildChannelManager extends CachedManager {
   }
 }
 
-module.exports = GuildChannelManager;
+exports.GuildChannelManager = GuildChannelManager;

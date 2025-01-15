@@ -1,10 +1,10 @@
 'use strict';
 
 const { lazy } = require('@discordjs/util');
-const BaseInteraction = require('./BaseInteraction');
-const InteractionWebhook = require('./InteractionWebhook');
-const ModalSubmitFields = require('./ModalSubmitFields');
-const InteractionResponses = require('./interfaces/InteractionResponses');
+const { BaseInteraction } = require('./BaseInteraction');
+const { InteractionWebhook } = require('./InteractionWebhook');
+const { ModalSubmitFields } = require('./ModalSubmitFields');
+const { InteractionResponses } = require('./interfaces/InteractionResponses');
 
 const getMessage = lazy(() => require('./Message').Message);
 
@@ -122,4 +122,4 @@ class ModalSubmitInteraction extends BaseInteraction {
 
 InteractionResponses.applyToClass(ModalSubmitInteraction, 'showModal');
 
-module.exports = ModalSubmitInteraction;
+exports.ModalSubmitInteraction = ModalSubmitInteraction;

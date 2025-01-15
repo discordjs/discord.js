@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
-const DataManager = require('./DataManager');
+const { DataManager } = require('./DataManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 const { Role } = require('../structures/Role');
 
@@ -205,4 +205,4 @@ class GuildMemberRoleManager extends DataManager {
   }
 }
 
-module.exports = GuildMemberRoleManager;
+exports.GuildMemberRoleManager = GuildMemberRoleManager;

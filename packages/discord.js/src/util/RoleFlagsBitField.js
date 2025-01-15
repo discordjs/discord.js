@@ -1,7 +1,7 @@
 'use strict';
 
 const { RoleFlags } = require('discord-api-types/v10');
-const BitField = require('./BitField');
+const { BitField } = require('./BitField');
 
 /**
  * Data structure that makes it easy to interact with a {@link Role#flags} bitfield.
@@ -23,4 +23,4 @@ class RoleFlagsBitField extends BitField {
  * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
  */
 
-module.exports = RoleFlagsBitField;
+exports.RoleFlagsBitField = RoleFlagsBitField;

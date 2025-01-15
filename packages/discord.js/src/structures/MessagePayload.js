@@ -3,10 +3,10 @@
 const { Buffer } = require('node:buffer');
 const { isJSONEncodable } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const ActionRowBuilder = require('./ActionRowBuilder');
+const { ActionRowBuilder } = require('./ActionRowBuilder');
 const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors');
 const { resolveFile } = require('../util/DataResolver');
-const MessageFlagsBitField = require('../util/MessageFlagsBitField');
+const { MessageFlagsBitField } = require('../util/MessageFlagsBitField');
 const { basename, verifyString, resolvePartialEmoji } = require('../util/Util');
 
 /**
@@ -49,8 +49,8 @@ class MessagePayload {
    * @readonly
    */
   get isWebhook() {
-    const Webhook = require('./Webhook');
-    const WebhookClient = require('../client/WebhookClient');
+    const { Webhook } = require('./Webhook');
+    const { WebhookClient } = require('../client/WebhookClient');
     return this.target instanceof Webhook || this.target instanceof WebhookClient;
   }
 
@@ -60,7 +60,7 @@ class MessagePayload {
    * @readonly
    */
   get isUser() {
-    const User = require('./User');
+    const { User } = require('./User');
     const { GuildMember } = require('./GuildMember');
     return this.target instanceof User || this.target instanceof GuildMember;
   }
@@ -81,7 +81,7 @@ class MessagePayload {
    * @readonly
    */
   get isMessageManager() {
-    const MessageManager = require('../managers/MessageManager');
+    const { MessageManager } = require('../managers/MessageManager');
     return this.target instanceof MessageManager;
   }
 
@@ -288,7 +288,7 @@ class MessagePayload {
   }
 }
 
-module.exports = MessagePayload;
+exports.MessagePayload = MessagePayload;
 
 /**
  * A target for a message.

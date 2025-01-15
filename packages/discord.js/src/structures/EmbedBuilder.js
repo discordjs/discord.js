@@ -42,7 +42,7 @@ class EmbedBuilder extends BuildersEmbed {
   }
 }
 
-module.exports = EmbedBuilder;
+exports.EmbedBuilder = EmbedBuilder;
 
 /**
  * @external BuildersEmbed
