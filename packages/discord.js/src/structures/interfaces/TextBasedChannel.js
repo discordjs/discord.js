@@ -308,7 +308,7 @@ class TextBasedChannel {
         );
       }
 
-      if (messageIds.length === 0) return new Collection();
+      if (messageIds.length === 0) return [];
 
       if (messageIds.length === 1) {
         await this.client.rest.delete(Routes.channelMessage(this.id, messageIds[0]));
