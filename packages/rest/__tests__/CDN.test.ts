@@ -51,11 +51,11 @@ test('discoverySplash default', () => {
 });
 
 test('emoji default', () => {
-	expect(cdn.emoji(id)).toEqual(`${baseCDN}/emojis/${id}.webp`);
+	expect(cdn.emoji(id, false)).toEqual(`${baseCDN}/emojis/${id}.webp`);
 });
 
 test('emoji gif', () => {
-	expect(cdn.emoji(id, { extension: 'gif' })).toEqual(`${baseCDN}/emojis/${id}.gif`);
+	expect(cdn.emoji(id, true)).toEqual(`${baseCDN}/emojis/${id}.gif`);
 });
 
 test('guildMemberAvatar default', () => {
