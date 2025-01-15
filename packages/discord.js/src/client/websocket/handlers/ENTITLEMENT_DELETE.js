@@ -1,6 +1,6 @@
 'use strict';
 
-const Events = require('../../../util/Events.js');
+const { Events } = require('../../../util/Events.js');
 
 module.exports = (client, { d: data }) => {
   const entitlement = client.application.entitlements._add(data, false);

@@ -1,7 +1,7 @@
 'use strict';
 
 const { BaseChannel } = require('./BaseChannel');
-const TextBasedChannel = require('./interfaces/TextBasedChannel');
+const { TextBasedChannel } = require('./interfaces/TextBasedChannel');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const { PartialGroupDMMessageManager } = require('../managers/PartialGroupDMMessageManager');
 
