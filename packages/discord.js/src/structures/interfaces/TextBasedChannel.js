@@ -319,7 +319,7 @@ class TextBasedChannel {
       return messageIds;
     }
 
-    if (!isNaN(messages)) {
+    if (!Number.isNaN(messages)) {
       const msgs = await this.messages.fetch({ limit: messages });
       return this.bulkDelete(msgs, filterOld);
     }
