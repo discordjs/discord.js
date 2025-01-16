@@ -4584,7 +4584,7 @@ export interface TextBasedChannelFields<InGuild extends boolean = boolean, InDM 
   bulkDelete(
     messages: Collection<Snowflake, Message> | readonly MessageResolvable[] | number,
     filterOld?: boolean,
-  ): Promise<Collection<Snowflake, Message | PartialMessage | undefined>>;
+  ): Promise<Snowflake[]>;
   createMessageComponentCollector<ComponentType extends MessageComponentType>(
     options?: MessageChannelCollectorOptionsParams<ComponentType, true>,
   ): InteractionCollector<MappedInteractionTypes[ComponentType]>;
