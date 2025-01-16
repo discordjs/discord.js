@@ -13,7 +13,6 @@ import {
   ModalActionRowComponentBuilder,
   ModalBuilder as BuildersModal,
   AnyComponentBuilder,
-  ComponentBuilder,
   type RestOrArray,
   ApplicationCommandOptionAllowedChannelTypes,
 } from '@discordjs/builders';
@@ -6184,7 +6183,7 @@ export interface InteractionCollectorOptions<
 }
 
 export interface InteractionDeferReplyOptions {
-  flags?: BitFieldResolvable<Extract<MessageFlagsString, 'Ephemeral'>, MessageFlags.Ephemeral>;
+  flags?: BitFieldResolvable<Extract<MessageFlagsString, 'Ephemeral'>, MessageFlags.Ephemeral> | undefined;
   withResponse?: boolean;
 }
 
@@ -6195,10 +6194,12 @@ export interface InteractionDeferUpdateOptions {
 export interface InteractionReplyOptions extends BaseMessageOptionsWithPoll {
   tts?: boolean;
   withResponse?: boolean;
-  flags?: BitFieldResolvable<
-    Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds' | 'SuppressNotifications'>,
-    MessageFlags.Ephemeral | MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
-  >;
+  flags?:
+    | BitFieldResolvable<
+        Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds' | 'SuppressNotifications'>,
+        MessageFlags.Ephemeral | MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
+      >
+    | undefined;
 }
 
 export interface InteractionUpdateOptions extends MessageEditOptions {
@@ -6383,10 +6384,12 @@ export interface MessageCreateOptions extends BaseMessageOptionsWithPoll {
   enforceNonce?: boolean;
   reply?: ReplyOptions;
   stickers?: readonly StickerResolvable[];
-  flags?: BitFieldResolvable<
-    Extract<MessageFlagsString, 'SuppressEmbeds' | 'SuppressNotifications'>,
-    MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
-  >;
+  flags?:
+    | BitFieldResolvable<
+        Extract<MessageFlagsString, 'SuppressEmbeds' | 'SuppressNotifications'>,
+        MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
+      >
+    | undefined;
 }
 
 export interface GuildForumThreadMessageCreateOptions
@@ -6400,7 +6403,7 @@ export interface MessageEditAttachmentData {
 export interface MessageEditOptions extends Omit<BaseMessageOptions, 'content'> {
   content?: string | null;
   attachments?: readonly (Attachment | MessageEditAttachmentData)[];
-  flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds'>, MessageFlags.SuppressEmbeds>;
+  flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds'>, MessageFlags.SuppressEmbeds> | undefined;
 }
 
 export type MessageReactionResolvable = MessageReaction | Snowflake | string;
