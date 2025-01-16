@@ -213,6 +213,7 @@ import {
   PollData,
   InteractionCallbackResponse,
   GuildScheduledEventRecurrenceRuleOptions,
+  ThreadOnlyChannel,
 } from '.';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -2453,6 +2454,17 @@ declare const partialGroupDMChannel: PartialGroupDMChannel;
 declare const categoryChannel: CategoryChannel;
 declare const stageChannel: StageChannel;
 declare const forumChannel: ForumChannel;
+declare const mediaChannel: MediaChannel;
+declare const threadOnlyChannel: ThreadOnlyChannel;
+
+// @ts-expect-error
+forumChannel.messages;
+
+// @ts-expect-error
+mediaChannel.messages;
+
+// @ts-expect-error
+threadOnlyChannel.messages;
 
 await forumChannel.edit({
   availableTags: [...forumChannel.availableTags, { name: 'tag' }],
