@@ -1,7 +1,7 @@
 'use strict';
 
 const { isJSONEncodable } = require('@discordjs/util');
-const { snakeCase } = require('lodash.snakecase');
+const snakeCase = require('lodash.snakecase');
 
 /**
  * Transforms camel-cased keys into snake cased keys
