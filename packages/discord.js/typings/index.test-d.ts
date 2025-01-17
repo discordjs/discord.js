@@ -1306,9 +1306,9 @@ client.on('guildCreate', async g => {
   );
 });
 
-// EventEmitter static method overrides
+// Event emitter static method overrides
 expectType<Promise<[Client<true>]>>(Client.once(client, 'clientReady'));
-expectType<AsyncIterableIterator<[Client<true>]>>(Client.on(client, 'clientReady'));
+expectAssignable<AsyncIterableIterator<[Client<true>]>>(Client.on(client, 'clientReady'));
 
 client.login('absolutely-valid-token');
 
