@@ -71,7 +71,6 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	protected constructor(data: Readonly<Partial<DataType>>) {
 		this[kData] = Object.assign(this._getDataTemplate(), data);
 		this[kMixinConstruct]?.(data);
-		this._optimizeData(data);
 	}
 
 	/**
@@ -96,10 +95,10 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 * @param _data - the raw data received from the API to optimize
 	 * @remarks Implementation to be done in subclasses and mixins where needed.
 	 * For typescript users, mixins must use the closest ancestors access modifier.
-	 * @remarks Automatically called when patching and constructing. This is called in the constructor of
-	 * {@link Structure}, so when assigning defaults in the constructor, ensure the data has not already been set,
-	 * e.g. using the nullish assignment operator. Additionally, you cannot use class fields as they will overide
-	 * the value set by this function. For Typescript users, use interface merging to make the property available.
+	 * @remarks Automatically called in {@link Structure#_patch} but must be called manually in the constructor
+	 * of any class implementing this method.
+	 * @remarks Additionally, when implementing, ensure to call `super._optimzeData` if any class in the super chain aside from Structure
+	 * contains an implementation. Note: mixins do not need to call super ever as the process of mixing walks the prototype chain.
 	 * @virtual
 	 * @internal
 	 */

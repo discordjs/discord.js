@@ -118,12 +118,12 @@ export function Mixin<DestinationClass extends typeof Structure<unknown>>(
 		dataOptimizations.push(baseOptimize.value);
 	}
 
-	// Cache so it's not recalculated every time we construct / patch
 	const superOptimize = Object.getOwnPropertyDescriptor(
 		Object.getPrototypeOf(destination).prototype,
 		OptimizeDataPropertyName,
 	);
-	if (superOptimize && typeof superOptimize.value === 'function') {
+	// the mixin base optimize should call super, so we can ignore the super in that case
+	if (!baseOptimize && superOptimize && typeof superOptimize.value === 'function') {
 		// call super first (mimick constructor behavior)
 		dataOptimizations.unshift(superOptimize.value);
 	}
@@ -145,7 +145,15 @@ export function Mixin<DestinationClass extends typeof Structure<unknown>>(
 
 	// Copy the properties (setters) of each mixins template to the destinations template
 	if (dataTemplates.length > 0) {
-		destination[DataTemplatePropertyName] ??= {};
+		if (!Object.getOwnPropertyDescriptor(destination, DataTemplatePropertyName)) {
+			Object.defineProperty(destination, DataTemplatePropertyName, {
+				value: Object.defineProperties({}, Object.getOwnPropertyDescriptors(destination[DataTemplatePropertyName])),
+				writable: true,
+				enumerable: true,
+				configurable: true,
+			});
+		}
+
 		for (const template of dataTemplates) {
 			Object.defineProperties(destination[DataTemplatePropertyName], Object.getOwnPropertyDescriptors(template));
 		}

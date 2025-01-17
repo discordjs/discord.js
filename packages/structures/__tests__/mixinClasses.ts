@@ -11,17 +11,16 @@ export interface APIData {
 	property2?: boolean;
 }
 
-export interface Base {
-	baseOptimize: boolean | null;
-}
 export class Base<Omitted extends keyof APIData | '' = ''> extends Structure<APIData, Omitted> {
 	public static override DataTemplate = {
 		set baseOptimize(_: unknown) {},
 	};
 
+	public baseOptimize: boolean | null = null;
+
 	public constructor(data: APIData) {
 		super(data);
-		this.baseOptimize ??= null;
+		this._optimizeData(data);
 	}
 
 	public override _patch(data: Partial<APIData>) {

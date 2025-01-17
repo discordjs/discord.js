@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest';
 import { kData } from '../src/utils/symbols.js';
 import type { APIData } from './mixinClasses.js';
-import { Mixed, MixedWithExtended } from './mixinClasses.js';
+import { Base, Mixed, MixedWithExtended } from './mixinClasses.js';
 
 describe('Mixin function', () => {
 	const data: APIData = {
@@ -57,6 +57,7 @@ describe('Mixin function', () => {
 		expect(typeof Object.getOwnPropertyDescriptor(Mixed.DataTemplate, 'mixinOptimize')?.set).toBe('function');
 		const missingOptimizedInstance = new Mixed(data);
 		const alreadyOptimizedInstance = new Mixed({ ...data, mixinOptimize: 'true', baseOptimize: 'true' });
+		const baseOptimizedInstance = new Base({ ...data, mixinOptimize: 'true', baseOptimize: 'true' });
 
 		expect(missingOptimizedInstance.baseOptimize).toBe(null);
 		expect(missingOptimizedInstance.mixinOptimize).toBe(null);
@@ -83,5 +84,14 @@ describe('Mixin function', () => {
 		expect('mixinOptimize' in alreadyOptimizedInstance[kData]).toBe(true);
 		expect(alreadyOptimizedInstance[kData].baseOptimize).toBeUndefined();
 		expect(alreadyOptimizedInstance[kData].mixinOptimize).toBeUndefined();
+
+		// Ensure mixin optimizations don't happen on base (ie overwritten DataTemplate)
+		expect(baseOptimizedInstance.baseOptimize).toBe(true);
+		expect('mixinOptimize' in baseOptimizedInstance).toBe(false);
+		// Setters pass this
+		expect('baseOptimize' in baseOptimizedInstance[kData]).toBe(true);
+		expect('mixinOptimize' in baseOptimizedInstance[kData]).toBe(true);
+		expect(baseOptimizedInstance[kData].baseOptimize).toBeUndefined();
+		expect(baseOptimizedInstance[kData].mixinOptimize).toBe('true');
 	});
 });
