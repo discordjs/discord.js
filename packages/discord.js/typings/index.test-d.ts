@@ -214,6 +214,7 @@ import {
   PollData,
   UserManager,
   InteractionCallbackResponse,
+  ThreadOnlyChannel,
 } from '.';
 import {
   expectAssignable,
@@ -2457,6 +2458,16 @@ declare const partialGroupDMChannel: PartialGroupDMChannel;
 declare const categoryChannel: CategoryChannel;
 declare const stageChannel: StageChannel;
 declare const forumChannel: ForumChannel;
+declare const mediaChannel: MediaChannel;
+declare const threadOnlyChannel: ThreadOnlyChannel;
+
+// Threads have messages.
+expectType<GuildMessageManager>(threadChannel.messages);
+
+// Thread-only channels have threads—not messages.
+notPropertyOf(threadOnlyChannel, 'messages');
+notPropertyOf(forumChannel, 'messages');
+notPropertyOf(mediaChannel, 'messages');
 
 await forumChannel.edit({
   availableTags: [...forumChannel.availableTags, { name: 'tag' }],
