@@ -1,6 +1,6 @@
 'use strict';
 
-const MessageManager = require('./MessageManager');
+const { MessageManager } = require('./MessageManager');
 
 /**
  * Manages API methods for messages in group direct message channels and holds their cache.
@@ -14,4 +14,4 @@ class PartialGroupDMMessageManager extends MessageManager {
    */
 }
 
-module.exports = PartialGroupDMMessageManager;
+exports.PartialGroupDMMessageManager = PartialGroupDMMessageManager;

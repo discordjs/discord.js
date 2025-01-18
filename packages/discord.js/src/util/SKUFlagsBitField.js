@@ -1,7 +1,7 @@
 'use strict';
 
 const { SKUFlags } = require('discord-api-types/v10');
-const BitField = require('./BitField');
+const { BitField } = require('./BitField');
 
 /**
  * Data structure that makes it easy to interact with an {@link SKU#flags} bitfield.

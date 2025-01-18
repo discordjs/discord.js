@@ -113,4 +113,4 @@ class AutoModerationActionExecution {
   }
 }
 
-module.exports = AutoModerationActionExecution;
+exports.AutoModerationActionExecution = AutoModerationActionExecution;

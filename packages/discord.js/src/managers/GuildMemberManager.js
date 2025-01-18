@@ -5,14 +5,14 @@ const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes, GatewayOpcodes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
+const { CachedManager } = require('./CachedManager');
 const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors');
-const BaseGuildVoiceChannel = require('../structures/BaseGuildVoiceChannel');
+const { BaseGuildVoiceChannel } = require('../structures/BaseGuildVoiceChannel');
 const { GuildMember } = require('../structures/GuildMember');
 const { Role } = require('../structures/Role');
-const Events = require('../util/Events');
+const { Events } = require('../util/Events');
 const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField');
-const Partials = require('../util/Partials');
+const { Partials } = require('../util/Partials');
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
@@ -557,4 +557,4 @@ class GuildMemberManager extends CachedManager {
   }
 }
 
-module.exports = GuildMemberManager;
+exports.GuildMemberManager = GuildMemberManager;

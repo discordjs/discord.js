@@ -87,7 +87,7 @@
  * @type {Events}
  * @ignore
  */
-module.exports = {
+exports.Events = {
   ApplicationCommandPermissionsUpdate: 'applicationCommandPermissionsUpdate',
   AutoModerationActionExecution: 'autoModerationActionExecution',
   AutoModerationRuleCreate: 'autoModerationRuleCreate',
@@ -101,8 +101,8 @@ module.exports = {
   ClientReady: 'clientReady',
   Debug: 'debug',
   EntitlementCreate: 'entitlementCreate',
-  EntitlementUpdate: 'entitlementUpdate',
   EntitlementDelete: 'entitlementDelete',
+  EntitlementUpdate: 'entitlementUpdate',
   Error: 'error',
   GuildAuditLogEntryCreate: 'guildAuditLogEntryCreate',
   GuildAvailable: 'guildAvailable',
@@ -151,8 +151,8 @@ module.exports = {
   StageInstanceDelete: 'stageInstanceDelete',
   StageInstanceUpdate: 'stageInstanceUpdate',
   SubscriptionCreate: 'subscriptionCreate',
-  SubscriptionUpdate: 'subscriptionUpdate',
   SubscriptionDelete: 'subscriptionDelete',
+  SubscriptionUpdate: 'subscriptionUpdate',
   ThreadCreate: 'threadCreate',
   ThreadDelete: 'threadDelete',
   ThreadListSync: 'threadListSync',

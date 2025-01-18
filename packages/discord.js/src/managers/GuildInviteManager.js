@@ -2,9 +2,9 @@
 
 const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
+const { CachedManager } = require('./CachedManager');
 const { DiscordjsError, ErrorCodes } = require('../errors');
-const Invite = require('../structures/Invite');
+const { Invite } = require('../structures/Invite');
 const { resolveInviteCode } = require('../util/DataResolver');
 
 /**
@@ -212,4 +212,4 @@ class GuildInviteManager extends CachedManager {
   }
 }
 
-module.exports = GuildInviteManager;
+exports.GuildInviteManager = GuildInviteManager;

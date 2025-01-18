@@ -28,7 +28,7 @@ class ModalBuilder extends BuildersModal {
   }
 }
 
-module.exports = ModalBuilder;
+exports.ModalBuilder = ModalBuilder;
 
 /**
  * @external BuildersModal

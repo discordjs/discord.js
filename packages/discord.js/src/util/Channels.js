@@ -3,17 +3,17 @@
 const { lazy } = require('@discordjs/util');
 const { ChannelType } = require('discord-api-types/v10');
 
-const getCategoryChannel = lazy(() => require('../structures/CategoryChannel'));
-const getDMChannel = lazy(() => require('../structures/DMChannel'));
-const getAnnouncementChannel = lazy(() => require('../structures/AnnouncementChannel'));
-const getStageChannel = lazy(() => require('../structures/StageChannel'));
-const getTextChannel = lazy(() => require('../structures/TextChannel'));
-const getThreadChannel = lazy(() => require('../structures/ThreadChannel'));
-const getVoiceChannel = lazy(() => require('../structures/VoiceChannel'));
-const getDirectoryChannel = lazy(() => require('../structures/DirectoryChannel'));
-const getPartialGroupDMChannel = lazy(() => require('../structures/PartialGroupDMChannel'));
-const getForumChannel = lazy(() => require('../structures/ForumChannel'));
-const getMediaChannel = lazy(() => require('../structures/MediaChannel'));
+const getCategoryChannel = lazy(() => require('../structures/CategoryChannel').CategoryChannel);
+const getDMChannel = lazy(() => require('../structures/DMChannel').DMChannel);
+const getAnnouncementChannel = lazy(() => require('../structures/AnnouncementChannel').AnnouncementChannel);
+const getStageChannel = lazy(() => require('../structures/StageChannel').StageChannel);
+const getTextChannel = lazy(() => require('../structures/TextChannel').TextChannel);
+const getThreadChannel = lazy(() => require('../structures/ThreadChannel').ThreadChannel);
+const getVoiceChannel = lazy(() => require('../structures/VoiceChannel').VoiceChannel);
+const getDirectoryChannel = lazy(() => require('../structures/DirectoryChannel').DirectoryChannel);
+const getPartialGroupDMChannel = lazy(() => require('../structures/PartialGroupDMChannel').PartialGroupDMChannel);
+const getForumChannel = lazy(() => require('../structures/ForumChannel').ForumChannel);
+const getMediaChannel = lazy(() => require('../structures/MediaChannel').MediaChannel);
 
 /**
  * Extra options for creating a channel.
@@ -152,10 +152,8 @@ function transformGuildDefaultReaction(defaultReaction) {
   };
 }
 
-module.exports = {
-  createChannel,
-  transformAPIGuildForumTag,
-  transformGuildForumTag,
-  transformAPIGuildDefaultReaction,
-  transformGuildDefaultReaction,
-};
+exports.createChannel = createChannel;
+exports.transformAPIGuildForumTag = transformAPIGuildForumTag;
+exports.transformGuildForumTag = transformGuildForumTag;
+exports.transformAPIGuildDefaultReaction = transformAPIGuildDefaultReaction;
+exports.transformGuildDefaultReaction = transformGuildDefaultReaction;

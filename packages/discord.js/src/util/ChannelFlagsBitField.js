@@ -1,7 +1,7 @@
 'use strict';
 
 const { ChannelFlags } = require('discord-api-types/v10');
-const BitField = require('./BitField');
+const { BitField } = require('./BitField');
 
 /**
  * Data structure that makes it easy to interact with a {@link BaseChannel#flags} bitfield.
@@ -38,4 +38,4 @@ class ChannelFlagsBitField extends BitField {
  * @typedef {string|number|ChannelFlagsBitField|ChannelFlagsResolvable[]} ChannelFlagsResolvable
  */
 
-module.exports = ChannelFlagsBitField;
+exports.ChannelFlagsBitField = ChannelFlagsBitField;

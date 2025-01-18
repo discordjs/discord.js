@@ -1,7 +1,7 @@
 'use strict';
 
 const { ChannelType, Routes } = require('discord-api-types/v10');
-const ThreadManager = require('./ThreadManager');
+const { ThreadManager } = require('./ThreadManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 
 /**
@@ -88,4 +88,4 @@ class GuildTextThreadManager extends ThreadManager {
   }
 }
 
-module.exports = GuildTextThreadManager;
+exports.GuildTextThreadManager = GuildTextThreadManager;

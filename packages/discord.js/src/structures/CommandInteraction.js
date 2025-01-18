@@ -1,9 +1,9 @@
 'use strict';
 
-const Attachment = require('./Attachment');
-const BaseInteraction = require('./BaseInteraction');
-const InteractionWebhook = require('./InteractionWebhook');
-const InteractionResponses = require('./interfaces/InteractionResponses');
+const { Attachment } = require('./Attachment');
+const { BaseInteraction } = require('./BaseInteraction');
+const { InteractionWebhook } = require('./InteractionWebhook');
+const { InteractionResponses } = require('./interfaces/InteractionResponses');
 
 /**
  * Represents a command interaction.
@@ -158,4 +158,4 @@ class CommandInteraction extends BaseInteraction {
 
 InteractionResponses.applyToClass(CommandInteraction, ['deferUpdate', 'update']);
 
-module.exports = CommandInteraction;
+exports.CommandInteraction = CommandInteraction;

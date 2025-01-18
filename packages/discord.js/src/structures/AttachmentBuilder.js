@@ -102,7 +102,7 @@ class AttachmentBuilder {
   }
 }
 
-module.exports = AttachmentBuilder;
+exports.AttachmentBuilder = AttachmentBuilder;
 
 /**
  * @typedef {Object} AttachmentData

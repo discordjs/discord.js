@@ -1,10 +1,10 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const ApplicationCommand = require('./ApplicationCommand');
-const GuildAuditLogsEntry = require('./GuildAuditLogsEntry');
-const Integration = require('./Integration');
-const Webhook = require('./Webhook');
+const { ApplicationCommand } = require('./ApplicationCommand');
+const { GuildAuditLogsEntry } = require('./GuildAuditLogsEntry');
+const { Integration } = require('./Integration');
+const { Webhook } = require('./Webhook');
 const { flatten } = require('../util/Util');
 
 /**
@@ -88,4 +88,4 @@ class GuildAuditLogs {
   }
 }
 
-module.exports = GuildAuditLogs;
+exports.GuildAuditLogs = GuildAuditLogs;

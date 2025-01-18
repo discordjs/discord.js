@@ -76,9 +76,7 @@ function _transformGuildScheduledEventRecurrenceRule(recurrenceRule) {
   };
 }
 
-module.exports = {
-  toSnakeCase,
-  _transformAPIAutoModerationAction,
-  _transformAPIMessageInteractionMetadata,
-  _transformGuildScheduledEventRecurrenceRule,
-};
+exports.toSnakeCase = toSnakeCase;
+exports._transformAPIAutoModerationAction = _transformAPIAutoModerationAction;
+exports._transformAPIMessageInteractionMetadata = _transformAPIMessageInteractionMetadata;
+exports._transformGuildScheduledEventRecurrenceRule = _transformGuildScheduledEventRecurrenceRule;

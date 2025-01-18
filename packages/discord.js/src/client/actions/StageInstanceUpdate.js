@@ -1,7 +1,7 @@
 'use strict';
 
-const Action = require('./Action');
-const Events = require('../../util/Events');
+const { Action } = require('./Action');
+const { Events } = require('../../util/Events');
 
 class StageInstanceUpdateAction extends Action {
   handle(data) {
@@ -27,4 +27,4 @@ class StageInstanceUpdateAction extends Action {
   }
 }
 
-module.exports = StageInstanceUpdateAction;
+exports.StageInstanceUpdateAction = StageInstanceUpdateAction;
