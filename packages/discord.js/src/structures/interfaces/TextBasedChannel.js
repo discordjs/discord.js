@@ -286,56 +286,44 @@ class TextBasedChannel {
   }
 
   /**
-   * Bulk deletes given messages that are newer than two weeks.
+   * Bulk deletes given messages up to 2 weeks old.
    * @param {Collection<Snowflake, Message>|MessageResolvable[]|number} messages
    * Messages or number of messages to delete
    * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
-   * @returns {Promise<Collection<Snowflake, Message|undefined>>} Returns the deleted messages
+   * @returns {Promise<Snowflake[]>} Returns the deleted messages ids
    * @example
    * // Bulk delete messages
    * channel.bulkDelete(5)
-   *   .then(messages => console.log(`Bulk deleted ${messages.size} messages`))
+   *   .then(messages => console.log(`Bulk deleted ${messages.length} messages`))
    *   .catch(console.error);
    */
   async bulkDelete(messages, filterOld = false) {
     if (Array.isArray(messages) || messages instanceof Collection) {
       let messageIds =
         messages instanceof Collection ? [...messages.keys()] : messages.map(message => message.id ?? message);
+
       if (filterOld) {
         messageIds = messageIds.filter(
           id => Date.now() - DiscordSnowflake.timestampFrom(id) < MaxBulkDeletableMessageAge,
         );
       }
-      if (messageIds.length === 0) return new Collection();
+
+      if (messageIds.length === 0) return [];
+
       if (messageIds.length === 1) {
-        const message = this.client.actions.MessageDelete.getMessage(
-          {
-            message_id: messageIds[0],
-          },
-          this,
-        );
         await this.client.rest.delete(Routes.channelMessage(this.id, messageIds[0]));
-        return message ? new Collection([[message.id, message]]) : new Collection();
+        return messageIds;
       }
+
       await this.client.rest.post(Routes.channelBulkDelete(this.id), { body: { messages: messageIds } });
-      return messageIds.reduce(
-        (col, id) =>
-          col.set(
-            id,
-            this.client.actions.MessageDeleteBulk.getMessage(
-              {
-                message_id: id,
-              },
-              this,
-            ),
-          ),
-        new Collection(),
-      );
+      return messageIds;
     }
-    if (!isNaN(messages)) {
+
+    if (!Number.isNaN(messages)) {
       const msgs = await this.messages.fetch({ limit: messages });
       return this.bulkDelete(msgs, filterOld);
     }
+
     throw new DiscordjsTypeError(ErrorCodes.MessageBulkDeleteType);
   }
 

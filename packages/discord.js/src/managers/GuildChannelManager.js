@@ -84,7 +84,7 @@ class GuildChannelManager extends CachedManager {
    * @returns {?(GuildChannel|ThreadChannel)}
    */
   resolve(channel) {
-    if (channel instanceof ThreadChannel) return super.resolve(channel.id);
+    if (channel instanceof ThreadChannel) return super.cache.get(channel.id) ?? null;
     return super.resolve(channel);
   }
 
@@ -106,11 +106,18 @@ class GuildChannelManager extends CachedManager {
    */
 
   /**
+   * Represents the followed channel data.
+   * @typedef {Object} FollowedChannelData
+   * @property {Snowflake} channelId Source channel id
+   * @property {Snowflake} webhookId Created webhook id in the target channel
+   */
+
+  /**
    * Adds the target channel to a channel's followers.
    * @param {AnnouncementChannelResolvable} channel The channel to follow
    * @param {TextChannelResolvable} targetChannel The channel where published announcements will be posted at
    * @param {string} [reason] Reason for creating the webhook
-   * @returns {Promise<Snowflake>} Returns created target webhook id.
+   * @returns {Promise<FollowedChannelData>} Returns the data for the followed channel
    */
   async addFollower(channel, targetChannel, reason) {
     const channelId = this.resolveId(channel);
@@ -121,11 +128,11 @@ class GuildChannelManager extends CachedManager {
     if (!targetChannelId) {
       throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'targetChannel', 'TextChannelResolvable');
     }
-    const { webhook_id } = await this.client.rest.post(Routes.channelFollowers(channelId), {
+    const data = await this.client.rest.post(Routes.channelFollowers(channelId), {
       body: { webhook_channel_id: targetChannelId },
       reason,
     });
-    return webhook_id;
+    return { channelId: data.channel_id, webhookId: data.webhook_id };
   }
 
   /**
@@ -287,7 +294,7 @@ class GuildChannelManager extends CachedManager {
     const resolvedChannel = this.resolve(channel);
     if (!resolvedChannel) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
 
-    const parent = options.parent && this.client.channels.resolveId(options.parent);
+    const parentId = options.parent && this.client.channels.resolveId(options.parent);
 
     if (options.position !== undefined) {
       await this.setPosition(resolvedChannel, options.position, { position: options.position, reason: options.reason });
@@ -298,8 +305,8 @@ class GuildChannelManager extends CachedManager {
     );
 
     if (options.lockPermissions) {
-      if (parent) {
-        const newParent = this.resolve(parent);
+      if (parentId) {
+        const newParent = this.cache.get(parentId);
         if (newParent?.type === ChannelType.GuildCategory) {
           permission_overwrites = newParent.permissionOverwrites.cache.map(overwrite =>
             PermissionOverwrites.resolve(overwrite, this.guild),
@@ -322,7 +329,7 @@ class GuildChannelManager extends CachedManager {
         user_limit: options.userLimit,
         rtc_region: options.rtcRegion,
         video_quality_mode: options.videoQualityMode,
-        parent_id: parent,
+        parent_id: parentId,
         lock_permissions: options.lockPermissions,
         rate_limit_per_user: options.rateLimitPerUser,
         default_auto_archive_duration: options.defaultAutoArchiveDuration,

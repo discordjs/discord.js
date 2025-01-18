@@ -26,7 +26,7 @@ export class ChatInputCommandSubcommandGroupBuilder
 	extends SharedNameAndDescription
 	implements JSONEncodable<APIApplicationCommandSubcommandGroupOption>
 {
-	protected declare readonly data: ChatInputCommandSubcommandGroupData & SharedNameAndDescriptionData;
+	declare protected readonly data: ChatInputCommandSubcommandGroupData & SharedNameAndDescriptionData;
 
 	public get options(): readonly ChatInputCommandSubcommandBuilder[] {
 		return (this.data.options ??= []);

@@ -108,7 +108,7 @@ class Webhook {
        * The source guild of the webhook
        * @type {?(Guild|APIGuild)}
        */
-      this.sourceGuild = this.client.guilds?.resolve(data.source_guild.id) ?? data.source_guild;
+      this.sourceGuild = this.client.guilds?.cache.get(data.source_guild.id) ?? data.source_guild;
     } else {
       this.sourceGuild ??= null;
     }
@@ -118,7 +118,7 @@ class Webhook {
        * The source channel of the webhook
        * @type {?(AnnouncementChannel|APIChannel)}
        */
-      this.sourceChannel = this.client.channels?.resolve(data.source_channel?.id) ?? data.source_channel;
+      this.sourceChannel = this.client.channels?.cache.get(data.source_channel?.id) ?? data.source_channel;
     } else {
       this.sourceChannel ??= null;
     }
@@ -141,8 +141,7 @@ class Webhook {
 
   /**
    * Options that can be passed into editMessage.
-   * @typedef {BaseMessageOptions} WebhookMessageEditOptions
-   * @property {Attachment[]} [attachments] Attachments to send with the message
+   * @typedef {MessageEditOptions} WebhookMessageEditOptions
    * @property {Snowflake} [threadId] The id of the thread this message belongs to
    * <info>For interaction webhooks, this property is ignored</info>
    */

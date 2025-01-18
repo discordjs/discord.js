@@ -12,7 +12,7 @@
  * @property {string} ChannelDelete channelDelete
  * @property {string} ChannelPinsUpdate channelPinsUpdate
  * @property {string} ChannelUpdate channelUpdate
- * @property {string} ClientReady ready
+ * @property {string} ClientReady clientReady
  * @property {string} Debug debug
  * @property {string} EntitlementCreate entitlementCreate
  * @property {string} EntitlementUpdate entitlementUpdate
