@@ -2653,6 +2653,7 @@ export interface ThreadOnlyChannel
     | 'awaitMessages'
     | 'createMessageComponentCollector'
     | 'awaitMessageComponent'
+    | 'messages'
   > {}
 export abstract class ThreadOnlyChannel extends GuildChannel {
   public type: ChannelType.GuildForum | ChannelType.GuildMedia;
