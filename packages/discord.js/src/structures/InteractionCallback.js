@@ -71,4 +71,4 @@ class InteractionCallback {
   }
 }
 
-module.exports = InteractionCallback;
+exports.InteractionCallback = InteractionCallback;

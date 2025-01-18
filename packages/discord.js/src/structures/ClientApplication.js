@@ -4,15 +4,15 @@ const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
 const { ApplicationRoleConnectionMetadata } = require('./ApplicationRoleConnectionMetadata');
 const { SKU } = require('./SKU');
-const Team = require('./Team');
-const Application = require('./interfaces/Application');
-const ApplicationCommandManager = require('../managers/ApplicationCommandManager');
-const ApplicationEmojiManager = require('../managers/ApplicationEmojiManager');
+const { Team } = require('./Team');
+const { Application } = require('./interfaces/Application');
+const { ApplicationCommandManager } = require('../managers/ApplicationCommandManager');
+const { ApplicationEmojiManager } = require('../managers/ApplicationEmojiManager');
 const { EntitlementManager } = require('../managers/EntitlementManager');
 const { SubscriptionManager } = require('../managers/SubscriptionManager');
-const ApplicationFlagsBitField = require('../util/ApplicationFlagsBitField');
+const { ApplicationFlagsBitField } = require('../util/ApplicationFlagsBitField');
 const { resolveImage } = require('../util/DataResolver');
-const PermissionsBitField = require('../util/PermissionsBitField');
+const { PermissionsBitField } = require('../util/PermissionsBitField');
 
 /**
  * @typedef {Object} ClientApplicationInstallParams
@@ -401,4 +401,4 @@ class ClientApplication extends Application {
   }
 }
 
-module.exports = ClientApplication;
+exports.ClientApplication = ClientApplication;

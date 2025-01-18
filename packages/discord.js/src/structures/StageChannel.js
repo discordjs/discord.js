@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseGuildVoiceChannel = require('./BaseGuildVoiceChannel');
+const { BaseGuildVoiceChannel } = require('./BaseGuildVoiceChannel');
 
 /**
  * Represents a guild stage channel on Discord.
@@ -109,4 +109,4 @@ class StageChannel extends BaseGuildVoiceChannel {
  * @returns {Promise<StageChannel>}
  */
 
-module.exports = StageChannel;
+exports.StageChannel = StageChannel;

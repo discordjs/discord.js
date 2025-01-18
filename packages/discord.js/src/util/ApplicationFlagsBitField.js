@@ -1,7 +1,7 @@
 'use strict';
 
 const { ApplicationFlags } = require('discord-api-types/v10');
-const BitField = require('./BitField');
+const { BitField } = require('./BitField');
 
 /**
  * Data structure that makes it easy to interact with a {@link ClientApplication#flags} bitfield.
@@ -38,4 +38,4 @@ class ApplicationFlagsBitField extends BitField {
  * @typedef {string|number|ApplicationFlagsBitField|ApplicationFlagsResolvable[]} ApplicationFlagsResolvable
  */
 
-module.exports = ApplicationFlagsBitField;
+exports.ApplicationFlagsBitField = ApplicationFlagsBitField;

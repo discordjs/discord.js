@@ -1,7 +1,7 @@
 'use strict';
 
-const Action = require('./Action');
-const Events = require('../../util/Events');
+const { Action } = require('./Action');
+const { Events } = require('../../util/Events');
 
 class MessagePollVoteRemoveAction extends Action {
   handle(data) {
@@ -30,4 +30,4 @@ class MessagePollVoteRemoveAction extends Action {
   }
 }
 
-module.exports = MessagePollVoteRemoveAction;
+exports.MessagePollVoteRemoveAction = MessagePollVoteRemoveAction;

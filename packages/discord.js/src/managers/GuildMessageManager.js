@@ -1,7 +1,7 @@
 'use strict';
 
 const { Routes } = require('discord-api-types/v10');
-const MessageManager = require('./MessageManager');
+const { MessageManager } = require('./MessageManager');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 
 /**
@@ -29,4 +29,4 @@ class GuildMessageManager extends MessageManager {
   }
 }
 
-module.exports = GuildMessageManager;
+exports.GuildMessageManager = GuildMessageManager;

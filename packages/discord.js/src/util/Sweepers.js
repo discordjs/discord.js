@@ -2,7 +2,7 @@
 
 const { setInterval, clearInterval } = require('node:timers');
 const { ThreadChannelTypes, SweeperKeys } = require('./Constants');
-const Events = require('./Events');
+const { Events } = require('./Events');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors');
 
 /**
@@ -484,4 +484,4 @@ class Sweepers {
   }
 }
 
-module.exports = Sweepers;
+exports.Sweepers = Sweepers;

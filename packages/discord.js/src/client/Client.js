@@ -6,32 +6,32 @@ const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { WebSocketManager, WebSocketShardEvents, WebSocketShardStatus } = require('@discordjs/ws');
 const { GatewayDispatchEvents, GatewayIntentBits, OAuth2Scopes, Routes } = require('discord-api-types/v10');
-const BaseClient = require('./BaseClient');
-const ActionsManager = require('./actions/ActionsManager');
-const ClientVoiceManager = require('./voice/ClientVoiceManager');
-const PacketHandlers = require('./websocket/handlers');
+const { BaseClient } = require('./BaseClient');
+const { ActionsManager } = require('./actions/ActionsManager');
+const { ClientVoiceManager } = require('./voice/ClientVoiceManager');
+const { PacketHandlers } = require('./websocket/handlers');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
-const BaseGuildEmojiManager = require('../managers/BaseGuildEmojiManager');
-const ChannelManager = require('../managers/ChannelManager');
-const GuildManager = require('../managers/GuildManager');
-const UserManager = require('../managers/UserManager');
-const ShardClientUtil = require('../sharding/ShardClientUtil');
-const ClientPresence = require('../structures/ClientPresence');
-const GuildPreview = require('../structures/GuildPreview');
-const GuildTemplate = require('../structures/GuildTemplate');
-const Invite = require('../structures/Invite');
+const { BaseGuildEmojiManager } = require('../managers/BaseGuildEmojiManager');
+const { ChannelManager } = require('../managers/ChannelManager');
+const { GuildManager } = require('../managers/GuildManager');
+const { UserManager } = require('../managers/UserManager');
+const { ShardClientUtil } = require('../sharding/ShardClientUtil');
+const { ClientPresence } = require('../structures/ClientPresence');
+const { GuildPreview } = require('../structures/GuildPreview');
+const { GuildTemplate } = require('../structures/GuildTemplate');
+const { Invite } = require('../structures/Invite');
 const { Sticker } = require('../structures/Sticker');
-const StickerPack = require('../structures/StickerPack');
-const VoiceRegion = require('../structures/VoiceRegion');
-const Webhook = require('../structures/Webhook');
-const Widget = require('../structures/Widget');
+const { StickerPack } = require('../structures/StickerPack');
+const { VoiceRegion } = require('../structures/VoiceRegion');
+const { Webhook } = require('../structures/Webhook');
+const { Widget } = require('../structures/Widget');
 const { resolveInviteCode, resolveGuildTemplateCode } = require('../util/DataResolver');
-const Events = require('../util/Events');
-const IntentsBitField = require('../util/IntentsBitField');
-const Options = require('../util/Options');
-const PermissionsBitField = require('../util/PermissionsBitField');
-const Status = require('../util/Status');
-const Sweepers = require('../util/Sweepers');
+const { Events } = require('../util/Events');
+const { IntentsBitField } = require('../util/IntentsBitField');
+const { Options } = require('../util/Options');
+const { PermissionsBitField } = require('../util/PermissionsBitField');
+const { Status } = require('../util/Status');
+const { Sweepers } = require('../util/Sweepers');
 
 const WaitingForGuildEvents = [GatewayDispatchEvents.GuildCreate, GatewayDispatchEvents.GuildDelete];
 const BeforeReadyWhitelist = [
@@ -732,7 +732,7 @@ class Client extends BaseClient {
   }
 }
 
-module.exports = Client;
+exports.Client = Client;
 
 /**
  * @class SnowflakeUtil

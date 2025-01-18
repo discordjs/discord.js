@@ -5,9 +5,9 @@ const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { InteractionType, Routes } = require('discord-api-types/v10');
 const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../../errors');
 const { MaxBulkDeletableMessageAge } = require('../../util/Constants');
-const InteractionCollector = require('../InteractionCollector');
-const MessageCollector = require('../MessageCollector');
-const MessagePayload = require('../MessagePayload');
+const { InteractionCollector } = require('../InteractionCollector');
+const { MessageCollector } = require('../MessageCollector');
+const { MessagePayload } = require('../MessagePayload');
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -162,7 +162,7 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   async send(options) {
-    const User = require('../User');
+    const { User } = require('../User');
     const { GuildMember } = require('../GuildMember');
 
     if (this instanceof User || this instanceof GuildMember) {
@@ -415,8 +415,8 @@ class TextBasedChannel {
   }
 }
 
-module.exports = TextBasedChannel;
+exports.TextBasedChannel = TextBasedChannel;
 
 // Fixes Circular
 // eslint-disable-next-line import/order
-const GuildMessageManager = require('../../managers/GuildMessageManager');
+const { GuildMessageManager } = require('../../managers/GuildMessageManager');

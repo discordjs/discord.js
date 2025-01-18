@@ -81,4 +81,4 @@ class ClientPresence extends Presence {
   }
 }
 
-module.exports = ClientPresence;
+exports.ClientPresence = ClientPresence;

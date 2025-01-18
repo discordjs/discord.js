@@ -332,4 +332,4 @@ class Collector extends EventEmitter {
   /* eslint-enable no-empty-function */
 }
 
-module.exports = Collector;
+exports.Collector = Collector;

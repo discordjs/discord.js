@@ -1,7 +1,7 @@
 'use strict';
 
-const Action = require('./Action');
-const Events = require('../../util/Events');
+const { Action } = require('./Action');
+const { Events } = require('../../util/Events');
 
 class MessageDeleteAction extends Action {
   handle(data) {
@@ -29,4 +29,4 @@ class MessageDeleteAction extends Action {
   }
 }
 
-module.exports = MessageDeleteAction;
+exports.MessageDeleteAction = MessageDeleteAction;
