@@ -2457,14 +2457,13 @@ declare const forumChannel: ForumChannel;
 declare const mediaChannel: MediaChannel;
 declare const threadOnlyChannel: ThreadOnlyChannel;
 
-// @ts-expect-error
-forumChannel.messages;
+// Threads have messages.
+expectType<GuildMessageManager>(threadChannel.messages);
 
-// @ts-expect-error
-mediaChannel.messages;
-
-// @ts-expect-error
-threadOnlyChannel.messages;
+// Thread-only channels have threads—not messages.
+notPropertyOf(threadOnlyChannel, 'messages');
+notPropertyOf(forumChannel, 'messages');
+notPropertyOf(mediaChannel, 'messages');
 
 await forumChannel.edit({
   availableTags: [...forumChannel.availableTags, { name: 'tag' }],
