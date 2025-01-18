@@ -8,6 +8,7 @@ const {
   ChannelType,
   MessageType,
   MessageFlags,
+  MessageReferenceType,
   PermissionFlagsBits,
 } = require('discord-api-types/v10');
 const Attachment = require('./Attachment');
@@ -676,7 +677,11 @@ class Message extends Base {
    * @readonly
    */
   get editable() {
-    const precheck = Boolean(this.author.id === this.client.user.id && (!this.guild || this.channel?.viewable));
+    const precheck = Boolean(
+      this.author.id === this.client.user.id &&
+        (!this.guild || this.channel?.viewable) &&
+        this.reference?.type !== MessageReferenceType.Forward,
+    );
 
     // Regardless of permissions thread messages cannot be edited if
     // the thread is archived or the thread is locked and the bot does not have permission to manage threads.
@@ -912,20 +917,38 @@ class Message extends Base {
    *   .catch(console.error);
    */
   reply(options) {
-    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
     let data;
 
     if (options instanceof MessagePayload) {
       data = options;
     } else {
       data = MessagePayload.create(this, options, {
-        reply: {
-          messageReference: this,
+        messageReference: {
+          messageId: this.id,
+          channelId: this.channelId,
+          guildId: this.guildId,
+          type: MessageReferenceType.Default,
           failIfNotExists: options?.failIfNotExists ?? this.client.options.failIfNotExists,
         },
       });
     }
-    return this.channel.send(data);
+    return this.client.channels.createMessage(this.channelId, data);
+  }
+
+  /**
+   * Forwards this message.
+   * @param {TextChannelResolvable} channel The channel to forward this message to.
+   * @returns {Promise<Message>}
+   */
+  forward(channel) {
+    return this.client.channels.createMessage(channel, {
+      messageReference: {
+        messageId: this.id,
+        channelId: this.channelId,
+        guildId: this.guildId,
+        type: MessageReferenceType.Forward,
+      },
+    });
   }
 
   /**

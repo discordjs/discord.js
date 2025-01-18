@@ -7,7 +7,6 @@ const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../../errors
 const { MaxBulkDeletableMessageAge } = require('../../util/Constants');
 const InteractionCollector = require('../InteractionCollector');
 const MessageCollector = require('../MessageCollector');
-const MessagePayload = require('../MessagePayload');
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -113,7 +112,7 @@ class TextBasedChannel {
   /**
    * The options for sending a message.
    * @typedef {BaseMessageCreateOptions} MessageCreateOptions
-   * @property {ReplyOptions} [reply] The options for replying to a message
+   * @property {MessageReference|MessageResolvable} [messageReference] The options for a reference to a message
    */
 
   /**
@@ -161,27 +160,8 @@ class TextBasedChannel {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async send(options) {
-    const User = require('../User');
-    const { GuildMember } = require('../GuildMember');
-
-    if (this instanceof User || this instanceof GuildMember) {
-      const dm = await this.createDM();
-      return dm.send(options);
-    }
-
-    let messagePayload;
-
-    if (options instanceof MessagePayload) {
-      messagePayload = options.resolveBody();
-    } else {
-      messagePayload = MessagePayload.create(this, options).resolveBody();
-    }
-
-    const { body, files } = await messagePayload.resolveFiles();
-    const d = await this.client.rest.post(Routes.channelMessages(this.id), { body, files });
-
-    return this.messages.cache.get(d.id) ?? this.messages._add(d);
+  send(options) {
+    return this.client.channels.createMessage(this, options);
   }
 
   /**
@@ -404,6 +384,7 @@ class TextBasedChannel {
         'setNSFW',
       );
     }
+
     for (const prop of props) {
       if (ignore.includes(prop)) continue;
       Object.defineProperty(
