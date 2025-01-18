@@ -95,7 +95,8 @@ const Messages = {
   [DjsErrorCodes.ChannelNotCached]: 'Could not find the channel where this message came from in the cache!',
   [DjsErrorCodes.StageChannelResolve]: 'Could not resolve channel to a stage channel.',
   [DjsErrorCodes.GuildScheduledEventResolve]: 'Could not resolve the guild scheduled event.',
-  [DjsErrorCodes.FetchOwnerId]: type => `Couldn't resolve the ${type} ownerId to fetch the ${type} member.`,
+  [DjsErrorCodes.FetchOwnerId]: type =>
+    `Couldn't resolve the ${type} ownerId to fetch the ${type} ${type === 'group DM' ? 'owner' : 'member'}.`,
 
   [DjsErrorCodes.InvalidType]: (name, expected, an = false) => `Supplied ${name} is not a${an ? 'n' : ''} ${expected}.`,
   [DjsErrorCodes.InvalidElement]: (type, name, elem) => `Supplied ${type} ${name} includes an invalid element: ${elem}`,
