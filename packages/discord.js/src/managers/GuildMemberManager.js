@@ -40,15 +40,8 @@ class GuildMemberManager extends CachedManager {
   }
 
   /**
-   * Data that resolves to give a GuildMember object. This can be:
-   * * A GuildMember object
-   * * A User resolvable
-   * @typedef {GuildMember|UserResolvable} GuildMemberResolvable
-   */
-
-  /**
-   * Resolves a {@link GuildMemberResolvable} to a {@link GuildMember} object.
-   * @param {GuildMemberResolvable} member The user that is part of the guild
+   * Resolves a {@link UserResolvable} to a {@link GuildMember} object.
+   * @param {UserResolvable} member The user that is part of the guild
    * @returns {?GuildMember}
    */
   resolve(member) {
@@ -60,8 +53,8 @@ class GuildMemberManager extends CachedManager {
   }
 
   /**
-   * Resolves a {@link GuildMemberResolvable} to a member id.
-   * @param {GuildMemberResolvable} member The user that is part of the guild
+   * Resolves a {@link UserResolvable} to a member id.
+   * @param {UserResolvable} member The user that is part of the guild
    * @returns {?Snowflake}
    */
   resolveId(member) {
@@ -523,7 +516,7 @@ class GuildMemberManager extends CachedManager {
   /**
    * Options used for adding or removing a role from a member.
    * @typedef {Object} AddOrRemoveGuildMemberRoleOptions
-   * @property {GuildMemberResolvable} user The user to add/remove the role from
+   * @property {UserResolvable} user The user to add/remove the role from
    * @property {RoleResolvable} role The role to add/remove
    * @property {string} [reason] Reason for adding/removing the role
    */

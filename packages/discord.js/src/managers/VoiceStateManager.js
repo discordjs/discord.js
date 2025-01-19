@@ -36,7 +36,7 @@ class VoiceStateManager extends CachedManager {
 
   /**
    * Obtains a user's voice state from discord or from the cache if it's already available.
-   * @param {GuildMemberResolvable|'@me'} member The member whose voice state is to be fetched
+   * @param {UserResolvable|'@me'} member The member whose voice state is to be fetched
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<VoiceState>}
    * @example
