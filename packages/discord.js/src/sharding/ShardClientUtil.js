@@ -134,10 +134,10 @@ class ShardClientUtil {
         reject(new DiscordjsTypeError(ErrorCodes.ShardingInvalidEvalBroadcast));
         return;
       }
-      script = `(${script})(this, ${JSON.stringify(options.context)})`;
+      const evalScript = `(${script})(this, ${JSON.stringify(options.context)})`;
 
       const listener = message => {
-        if (message?._sEval !== script || message._sEvalShard !== options.shard) return;
+        if (message?._sEval !== evalScript || message._sEvalShard !== options.shard) return;
         parent.removeListener('message', listener);
         this.decrementMaxListeners(parent);
         if (!message._error) resolve(message._result);
@@ -145,7 +145,7 @@ class ShardClientUtil {
       };
       this.incrementMaxListeners(parent);
       parent.on('message', listener);
-      this.send({ _sEval: script, _sEvalShard: options.shard }).catch(err => {
+      this.send({ _sEval: evalScript, _sEvalShard: options.shard }).catch(err => {
         parent.removeListener('message', listener);
         this.decrementMaxListeners(parent);
         reject(err);

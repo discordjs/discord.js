@@ -223,18 +223,21 @@ class GuildMemberManager extends CachedManager {
     return this._add(data, cache);
   }
 
-  _fetchMany({
-    limit = 0,
-    withPresences: presences,
-    users,
-    query,
-    time = 120e3,
-    nonce = DiscordSnowflake.generate().toString(),
-  } = {}) {
+  _fetchMany(options = {}) {
+    const {
+      limit = 0,
+      withPresences: presences,
+      users,
+      query: initialQuery,
+      time = 120e3,
+      nonce = DiscordSnowflake.generate().toString(),
+    } = options;
+
     if (nonce.length > 32) return Promise.reject(new DiscordjsRangeError(ErrorCodes.MemberFetchNonceLength));
 
+    const query = initialQuery || (!users ? '' : undefined);
+
     return new Promise((resolve, reject) => {
-      if (!query && !users) query = '';
       this.guild.client.ws.send(this.guild.shardId, {
         op: GatewayOpcodes.RequestGuildMembers,
         d: {
