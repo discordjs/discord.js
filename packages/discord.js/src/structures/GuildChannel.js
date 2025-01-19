@@ -265,8 +265,8 @@ class GuildChannel extends BaseChannel {
    * Locks in the permission overwrites from the parent channel.
    * @returns {Promise<GuildChannel>}
    */
-  lockPermissions() {
-    if (!this.parent) return Promise.reject(new DiscordjsError(ErrorCodes.GuildChannelOrphan));
+  async lockPermissions() {
+    if (!this.parent) throw new DiscordjsError(ErrorCodes.GuildChannelOrphan);
     const permissionOverwrites = this.parent.permissionOverwrites.cache.map(overwrite => overwrite.toJSON());
     return this.edit({ permissionOverwrites });
   }
