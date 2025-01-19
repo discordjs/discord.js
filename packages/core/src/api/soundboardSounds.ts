@@ -12,8 +12,9 @@ export class SoundboardSoundsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/soundboard#list-default-soundboard-sounds}
 	 * @param options - The options for fetching the soundboard default sounds.
 	 */
-	public async getSoundboardDefaultSounds({ signal }: Pick<RequestData, 'signal'> = {}) {
+	public async getSoundboardDefaultSounds({ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
 		return this.rest.get(Routes.soundboardDefaultSounds(), {
+			auth,
 			signal,
 		}) as Promise<RESTGetAPISoundboardDefaultSoundsResult>;
 	}
