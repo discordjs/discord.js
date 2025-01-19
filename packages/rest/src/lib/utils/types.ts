@@ -295,7 +295,7 @@ export interface RequestData {
 	 *
 	 * @defaultValue `true`
 	 */
-	auth?: AuthData | boolean;
+	auth?: AuthData | boolean | undefined;
 	/**
 	 * The body to send to this request.
 	 * If providing as BodyInit, set `passThroughBody: true`

@@ -63,9 +63,10 @@ export class ChannelsAPI {
 	public async createMessage(
 		channelId: Snowflake,
 		{ files, ...body }: CreateMessageOptions,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
 		return this.rest.post(Routes.channelMessages(channelId), {
+			auth,
 			files,
 			body,
 			signal,
@@ -85,9 +86,10 @@ export class ChannelsAPI {
 		channelId: Snowflake,
 		messageId: Snowflake,
 		{ files, ...body }: EditMessageOptions,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
 		return this.rest.patch(Routes.channelMessage(channelId, messageId), {
+			auth,
 			files,
 			body,
 			signal,
@@ -117,9 +119,10 @@ export class ChannelsAPI {
 		messageId: Snowflake,
 		emoji: string,
 		query: RESTGetAPIChannelMessageReactionUsersQuery = {},
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
 		return this.rest.get(Routes.channelMessageReaction(channelId, messageId, encodeURIComponent(emoji)), {
+			auth,
 			query: makeURLSearchParams(query),
 			signal,
 		}) as Promise<RESTGetAPIChannelMessageReactionUsersResult>;
@@ -146,9 +149,10 @@ export class ChannelsAPI {
 		channelId: Snowflake,
 		messageId: Snowflake,
 		emoji: string,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
 		await this.rest.delete(Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(emoji)), {
+			auth,
 			signal,
 		});
 	}
@@ -176,9 +180,10 @@ export class ChannelsAPI {
 		messageId: Snowflake,
 		emoji: string,
 		userId: Snowflake,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
 		await this.rest.delete(Routes.channelMessageUserReaction(channelId, messageId, encodeURIComponent(emoji), userId), {
+			auth,
 			signal,
 		});
 	}
@@ -194,9 +199,9 @@ export class ChannelsAPI {
 	public async deleteAllMessageReactions(
 		channelId: Snowflake,
 		messageId: Snowflake,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
-		await this.rest.delete(Routes.channelMessageAllReactions(channelId, messageId), { signal });
+		await this.rest.delete(Routes.channelMessageAllReactions(channelId, messageId), { auth, signal });
 	}
 
 	/**
@@ -220,9 +225,12 @@ export class ChannelsAPI {
 		channelId: Snowflake,
 		messageId: Snowflake,
 		emoji: string,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
-		await this.rest.delete(Routes.channelMessageReaction(channelId, messageId, encodeURIComponent(emoji)), { signal });
+		await this.rest.delete(Routes.channelMessageReaction(channelId, messageId, encodeURIComponent(emoji)), {
+			auth,
+			signal,
+		});
 	}
 
 	/**
@@ -246,9 +254,12 @@ export class ChannelsAPI {
 		channelId: Snowflake,
 		messageId: Snowflake,
 		emoji: string,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
-		await this.rest.put(Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(emoji)), { signal });
+		await this.rest.put(Routes.channelMessageOwnReaction(channelId, messageId, encodeURIComponent(emoji)), {
+			auth,
+			signal,
+		});
 	}
 
 	/**
@@ -258,8 +269,8 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel
 	 * @param options - The options for fetching the channel
 	 */
-	public async get(channelId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
-		return this.rest.get(Routes.channel(channelId), { signal }) as Promise<RESTGetAPIChannelResult>;
+	public async get(channelId: Snowflake, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
+		return this.rest.get(Routes.channel(channelId), { auth, signal }) as Promise<RESTGetAPIChannelResult>;
 	}
 
 	/**
@@ -273,9 +284,9 @@ export class ChannelsAPI {
 	public async edit(
 		channelId: Snowflake,
 		body: RESTPatchAPIChannelJSONBody,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
-		return this.rest.patch(Routes.channel(channelId), { body, signal }) as Promise<RESTPatchAPIChannelResult>;
+		return this.rest.patch(Routes.channel(channelId), { auth, body, signal }) as Promise<RESTPatchAPIChannelResult>;
 	}
 
 	/**
@@ -285,8 +296,8 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel to delete
 	 * @param options - The options for deleting the channel
 	 */
-	public async delete(channelId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
-		return this.rest.delete(Routes.channel(channelId), { signal }) as Promise<RESTDeleteAPIChannelResult>;
+	public async delete(channelId: Snowflake, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
+		return this.rest.delete(Routes.channel(channelId), { auth, signal }) as Promise<RESTDeleteAPIChannelResult>;
 	}
 
 	/**
@@ -300,9 +311,10 @@ export class ChannelsAPI {
 	public async getMessages(
 		channelId: Snowflake,
 		query: RESTGetAPIChannelMessagesQuery = {},
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
 		return this.rest.get(Routes.channelMessages(channelId), {
+			auth,
 			query: makeURLSearchParams(query),
 			signal,
 		}) as Promise<RESTGetAPIChannelMessagesResult>;
@@ -315,8 +327,8 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel to show the typing indicator in
 	 * @param options - The options for showing the typing indicator
 	 */
-	public async showTyping(channelId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
-		await this.rest.post(Routes.channelTyping(channelId), { signal });
+	public async showTyping(channelId: Snowflake, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
+		await this.rest.post(Routes.channelTyping(channelId), { auth, signal });
 	}
 
 	/**
@@ -326,8 +338,8 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel to fetch pinned messages from
 	 * @param options - The options for fetching the pinned messages
 	 */
-	public async getPins(channelId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
-		return this.rest.get(Routes.channelPins(channelId), { signal }) as Promise<RESTGetAPIChannelPinsResult>;
+	public async getPins(channelId: Snowflake, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
+		return this.rest.get(Routes.channelPins(channelId), { auth, signal }) as Promise<RESTGetAPIChannelPinsResult>;
 	}
 
 	/**
@@ -341,9 +353,9 @@ export class ChannelsAPI {
 	public async pinMessage(
 		channelId: Snowflake,
 		messageId: Snowflake,
-		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
-		await this.rest.put(Routes.channelPin(channelId, messageId), { reason, signal });
+		await this.rest.put(Routes.channelPin(channelId, messageId), { auth, reason, signal });
 	}
 
 	/**
@@ -357,9 +369,9 @@ export class ChannelsAPI {
 	public async deleteMessage(
 		channelId: Snowflake,
 		messageId: Snowflake,
-		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
-		await this.rest.delete(Routes.channelMessage(channelId, messageId), { reason, signal });
+		await this.rest.delete(Routes.channelMessage(channelId, messageId), { auth, reason, signal });
 	}
 
 	/**
@@ -373,9 +385,9 @@ export class ChannelsAPI {
 	public async bulkDeleteMessages(
 		channelId: Snowflake,
 		messageIds: Snowflake[],
-		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	): Promise<void> {
-		await this.rest.post(Routes.channelBulkDelete(channelId), { reason, body: { messages: messageIds }, signal });
+		await this.rest.post(Routes.channelBulkDelete(channelId), { auth, reason, body: { messages: messageIds }, signal });
 	}
 
 	/**
@@ -386,8 +398,13 @@ export class ChannelsAPI {
 	 * @param messageId - The id of the message to fetch
 	 * @param options - The options for fetching the message
 	 */
-	public async getMessage(channelId: Snowflake, messageId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async getMessage(
+		channelId: Snowflake,
+		messageId: Snowflake,
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+	) {
 		return this.rest.get(Routes.channelMessage(channelId, messageId), {
+			auth,
 			signal,
 		}) as Promise<RESTGetAPIChannelMessageResult>;
 	}
@@ -403,9 +420,10 @@ export class ChannelsAPI {
 	public async crosspostMessage(
 		channelId: Snowflake,
 		messageId: Snowflake,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
 		return this.rest.post(Routes.channelMessageCrosspost(channelId, messageId), {
+			auth,
 			signal,
 		}) as Promise<RESTPostAPIChannelMessageCrosspostResult>;
 	}
@@ -421,9 +439,9 @@ export class ChannelsAPI {
 	public async unpinMessage(
 		channelId: Snowflake,
 		messageId: Snowflake,
-		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
-		await this.rest.delete(Routes.channelPin(channelId, messageId), { reason, signal });
+		await this.rest.delete(Routes.channelPin(channelId, messageId), { auth, reason, signal });
 	}
 
 	/**
@@ -437,9 +455,10 @@ export class ChannelsAPI {
 	public async followAnnouncements(
 		channelId: Snowflake,
 		webhookChannelId: Snowflake,
-		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
 		return this.rest.post(Routes.channelFollowers(channelId), {
+			auth,
 			body: { webhook_channel_id: webhookChannelId },
 			reason,
 			signal,
@@ -457,9 +476,10 @@ export class ChannelsAPI {
 	public async createInvite(
 		channelId: Snowflake,
 		body: RESTPostAPIChannelInviteJSONBody,
-		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
 		return this.rest.post(Routes.channelInvites(channelId), {
+			auth,
 			reason,
 			body,
 			signal,
@@ -473,8 +493,8 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel to fetch invites from
 	 * @param options - The options for fetching the invites
 	 */
-	public async getInvites(channelId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
-		return this.rest.get(Routes.channelInvites(channelId), { signal }) as Promise<RESTGetAPIChannelInvitesResult>;
+	public async getInvites(channelId: Snowflake, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
+		return this.rest.get(Routes.channelInvites(channelId), { auth, signal }) as Promise<RESTGetAPIChannelInvitesResult>;
 	}
 
 	/**
@@ -491,9 +511,10 @@ export class ChannelsAPI {
 		channelId: Snowflake,
 		body: RESTPostAPIChannelThreadsJSONBody,
 		messageId?: Snowflake,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
 		return this.rest.post(Routes.threads(channelId, messageId), {
+			auth,
 			body,
 			signal,
 		}) as Promise<RESTPostAPIChannelThreadsResult>;
@@ -510,7 +531,7 @@ export class ChannelsAPI {
 	public async createForumThread(
 		channelId: Snowflake,
 		{ message, ...optionsBody }: StartForumThreadOptions,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
 		const { files, ...messageBody } = message;
 
@@ -519,7 +540,7 @@ export class ChannelsAPI {
 			message: messageBody,
 		};
 
-		return this.rest.post(Routes.threads(channelId), { files, body, signal }) as Promise<APIThreadChannel>;
+		return this.rest.post(Routes.threads(channelId), { auth, files, body, signal }) as Promise<APIThreadChannel>;
 	}
 
 	/**
@@ -536,9 +557,10 @@ export class ChannelsAPI {
 		channelId: Snowflake,
 		archivedStatus: 'private' | 'public',
 		query: RESTGetAPIChannelThreadsArchivedQuery = {},
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
 		return this.rest.get(Routes.channelThreads(channelId, archivedStatus), {
+			auth,
 			query: makeURLSearchParams(query),
 			signal,
 		}) as Promise<RESTGetAPIChannelUsersThreadsArchivedResult>;
@@ -555,9 +577,10 @@ export class ChannelsAPI {
 	public async getJoinedPrivateArchivedThreads(
 		channelId: Snowflake,
 		query: RESTGetAPIChannelThreadsArchivedQuery = {},
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
 		return this.rest.get(Routes.channelJoinedArchivedThreads(channelId), {
+			auth,
 			query: makeURLSearchParams(query),
 			signal,
 		}) as Promise<RESTGetAPIChannelUsersThreadsArchivedResult>;
@@ -574,9 +597,10 @@ export class ChannelsAPI {
 	public async createWebhook(
 		channelId: Snowflake,
 		body: RESTPostAPIChannelWebhookJSONBody,
-		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
 		return this.rest.post(Routes.channelWebhooks(channelId), {
+			auth,
 			reason,
 			body,
 			signal,
@@ -588,9 +612,13 @@ export class ChannelsAPI {
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/webhook#get-channel-webhooks}
 	 * @param channelId - The id of the channel
+	 * @param options - The options for fetching the webhooks
 	 */
-	public async getWebhooks(channelId: Snowflake) {
-		return this.rest.get(Routes.channelWebhooks(channelId)) as Promise<RESTGetAPIChannelWebhooksResult>;
+	public async getWebhooks(channelId: Snowflake, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
+		return this.rest.get(Routes.channelWebhooks(channelId), {
+			auth,
+			signal,
+		}) as Promise<RESTGetAPIChannelWebhooksResult>;
 	}
 
 	/**
@@ -606,9 +634,10 @@ export class ChannelsAPI {
 		channelId: Snowflake,
 		overwriteId: Snowflake,
 		body: RESTPutAPIChannelPermissionJSONBody,
-		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
 		await this.rest.put(Routes.channelPermission(channelId, overwriteId), {
+			auth,
 			reason,
 			body,
 			signal,
@@ -626,9 +655,10 @@ export class ChannelsAPI {
 	public async deletePermissionOverwrite(
 		channelId: Snowflake,
 		overwriteId: Snowflake,
-		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
+		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
 		await this.rest.delete(Routes.channelPermission(channelId, overwriteId), {
+			auth,
 			reason,
 			signal,
 		});
@@ -645,9 +675,10 @@ export class ChannelsAPI {
 	public async sendSoundboardSound(
 		channelId: Snowflake,
 		body: RESTPostAPISoundboardSendSoundJSONBody,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
 		return this.rest.post(Routes.sendSoundboardSound(channelId), {
+			auth,
 			body,
 			signal,
 		}) as Promise<RESTPostAPISendSoundboardSoundResult>;
