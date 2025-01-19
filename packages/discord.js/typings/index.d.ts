@@ -1672,7 +1672,7 @@ export class GuildMember extends Base {
   public get voice(): VoiceState;
   public avatarURL(options?: ImageURLOptions): string | null;
   public bannerURL(options?: ImageURLOptions): string | null;
-  public ban(options?: BanOptions): Promise<GuildMember>;
+  public ban(options?: BanOptions): Promise<void>;
   public disableCommunicationUntil(timeout: DateResolvable | null, reason?: string): Promise<GuildMember>;
   public timeout(timeout: number | null, reason?: string): Promise<GuildMember>;
   public fetch(force?: boolean): Promise<GuildMember>;
@@ -1685,7 +1685,7 @@ export class GuildMember extends Base {
     communicationDisabledUntilTimestamp: number;
     readonly communicationDisabledUntil: Date;
   };
-  public kick(reason?: string): Promise<GuildMember>;
+  public kick(reason?: string): Promise<void>;
   public permissionsIn(channel: GuildChannelResolvable): Readonly<PermissionsBitField>;
   public setFlags(flags: GuildMemberFlagsResolvable, reason?: string): Promise<GuildMember>;
   public setNickname(nickname: string | null, reason?: string): Promise<GuildMember>;
@@ -4270,7 +4270,7 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Gu
     options: AddGuildMemberOptions & { fetchWhenExisting: false },
   ): Promise<GuildMember | null>;
   public add(user: UserResolvable, options: AddGuildMemberOptions): Promise<GuildMember>;
-  public ban(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
+  public ban(user: UserResolvable, options?: BanOptions): Promise<void>;
   public bulkBan(
     users: ReadonlyCollection<Snowflake, UserResolvable> | readonly UserResolvable[],
     options?: BanOptions,
@@ -4281,23 +4281,23 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Gu
   ): Promise<GuildMember>;
   public fetch(options?: FetchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
   public fetchMe(options?: BaseFetchOptions): Promise<GuildMember>;
-  public kick(user: UserResolvable, reason?: string): Promise<GuildMember | User | Snowflake>;
+  public kick(user: UserResolvable, reason?: string): Promise<void>;
   public list(options?: GuildListMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
   public prune(options: GuildPruneMembersOptions & { dry?: false; count: false }): Promise<null>;
   public prune(options?: GuildPruneMembersOptions): Promise<number>;
   public search(options: GuildSearchMembersOptions): Promise<Collection<Snowflake, GuildMember>>;
-  public unban(user: UserResolvable, reason?: string): Promise<User | null>;
-  public addRole(options: AddOrRemoveGuildMemberRoleOptions): Promise<GuildMember | User | Snowflake>;
-  public removeRole(options: AddOrRemoveGuildMemberRoleOptions): Promise<GuildMember | User | Snowflake>;
+  public unban(user: UserResolvable, reason?: string): Promise<void>;
+  public addRole(options: AddOrRemoveGuildMemberRoleOptions): Promise<void>;
+  public removeRole(options: AddOrRemoveGuildMemberRoleOptions): Promise<void>;
 }
 
 export class GuildBanManager extends CachedManager<Snowflake, GuildBan, GuildBanResolvable> {
   private constructor(guild: Guild, iterable?: Iterable<RawGuildBanData>);
   public guild: Guild;
-  public create(user: UserResolvable, options?: BanOptions): Promise<GuildMember | User | Snowflake>;
+  public create(user: UserResolvable, options?: BanOptions): Promise<void>;
   public fetch(options: UserResolvable | FetchBanOptions): Promise<GuildBan>;
   public fetch(options?: FetchBansOptions): Promise<Collection<Snowflake, GuildBan>>;
-  public remove(user: UserResolvable, reason?: string): Promise<User | null>;
+  public remove(user: UserResolvable, reason?: string): Promise<void>;
   public bulkCreate(
     users: ReadonlyCollection<Snowflake, UserResolvable> | readonly UserResolvable[],
     options?: BanOptions,

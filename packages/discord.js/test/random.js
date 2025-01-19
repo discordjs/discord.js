@@ -139,12 +139,13 @@ client.on(Events.MessageCreate, message => {
     }
 
     if (message.content.startsWith('kick')) {
+      const user = message.mentions.users.first();
       message.guild.members
-        .resolve(message.mentions.users.first())
+        .resolve(user)
         .kick()
-        .then(member => {
-          console.log(member);
-          message.channel.send(`Kicked!${member.user.username}`);
+        .then(() => {
+          console.log(user.id);
+          message.channel.send(`Kicked ${user.username}!`);
         })
         .catch(console.error);
     }
