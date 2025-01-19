@@ -959,7 +959,7 @@ export type If<Value extends boolean, TrueResult, FalseResult = null> = Value ex
     ? FalseResult
     : TrueResult | FalseResult;
 
-export class Client<Ready extends boolean = boolean> extends BaseClient<ClientEvents> {
+export class Client<Ready extends boolean = boolean> extends BaseClient<ClientEventTypes> {
   public constructor(options: ClientOptions);
   private actions: unknown;
   private expectedGuilds: Set<Snowflake>;
@@ -1098,9 +1098,12 @@ export interface CollectorEventTypes<Key, Value, Extras extends unknown[] = []> 
   end: [collected: ReadonlyCollection<Key, Value>, reason: string];
 }
 
-export abstract class Collector<Key, Value, Extras extends unknown[] = []> extends AsyncEventEmitter<
-  CollectorEventTypes<Key, Value, Extras>
-> {
+export abstract class Collector<
+  Key,
+  Value,
+  Extras extends unknown[] = [],
+  EventTypes extends {} = CollectorEventTypes<Key, Value, Extras>,
+> extends AsyncEventEmitter<EventTypes> {
   protected constructor(client: Client<true>, options?: CollectorOptions<[Value, ...Extras]>);
   private _timeout: NodeJS.Timeout | null;
   private _idletimeout: NodeJS.Timeout | null;
@@ -1965,11 +1968,7 @@ export class InteractionCallbackResource {
   public type: InteractionResponseType;
 }
 
-export class InteractionCollector<Interaction extends CollectedInteraction> extends Collector<
-  Snowflake,
-  Interaction,
-  [Collection<Snowflake, Interaction>]
-> {
+export class InteractionCollector<Interaction extends CollectedInteraction> extends Collector<Snowflake, Interaction> {
   public constructor(client: Client<true>, options?: InteractionCollectorOptions<Interaction>);
   private _handleMessageDeletion(message: Message): void;
   private _handleChannelDeletion(channel: NonThreadGuildBasedChannel): void;
@@ -2710,7 +2709,16 @@ export class PollAnswer extends Base {
   public fetchVoters(options?: BaseFetchPollAnswerVotersOptions): Promise<Collection<Snowflake, User>>;
 }
 
-export class ReactionCollector extends Collector<Snowflake | string, MessageReaction, [User]> {
+export interface ReactionCollectorEventTypes extends CollectorEventTypes<Snowflake | string, MessageReaction, [User]> {
+  remove: [reaction: MessageReaction, user: User];
+}
+
+export class ReactionCollector extends Collector<
+  Snowflake | string,
+  MessageReaction,
+  [User],
+  ReactionCollectorEventTypes
+> {
   public constructor(message: Message, options?: ReactionCollectorOptions);
   private _handleChannelDeletion(channel: NonThreadGuildBasedChannel): void;
   private _handleGuildDeletion(guild: Guild): void;
@@ -2986,11 +2994,11 @@ export class ShardClientUtil {
   public static shardIdForGuildId(guildId: Snowflake, shardCount: number): number;
 }
 
-export interface ShardingManagerEvents {
+export interface ShardingManagerEventTypes {
   shardCreate: [shard: Shard];
 }
 
-export class ShardingManager extends AsyncEventEmitter<ShardingManagerEvents> {
+export class ShardingManager extends AsyncEventEmitter<ShardingManagerEventTypes> {
   public constructor(file: string, options?: ShardingManagerOptions);
   private _performOnShards(method: string, args: readonly unknown[]): Promise<unknown[]>;
   private _performOnShards(method: string, args: readonly unknown[], shard: number): Promise<unknown>;
@@ -5071,7 +5079,7 @@ export type OmitPartialGroupDMChannel<Structure extends { channel: Channel }> = 
   channel: Exclude<Structure['channel'], PartialGroupDMChannel>;
 };
 
-export interface ClientEvents {
+export interface ClientEventTypes {
   applicationCommandPermissionsUpdate: [data: ApplicationCommandPermissionsUpdateData];
   autoModerationActionExecution: [autoModerationActionExecution: AutoModerationActionExecution];
   autoModerationRuleCreate: [autoModerationRule: AutoModerationRule];
@@ -6085,7 +6093,7 @@ export type CollectedInteraction<Cached extends CacheType = CacheType> =
 export interface InteractionCollectorOptions<
   Interaction extends CollectedInteraction,
   Cached extends CacheType = CacheType,
-> extends CollectorOptions<[Interaction, Collection<Snowflake, Interaction>]> {
+> extends CollectorOptions<[Interaction]> {
   channel?: TextBasedChannelResolvable;
   componentType?: ComponentType;
   guild?: GuildResolvable;
