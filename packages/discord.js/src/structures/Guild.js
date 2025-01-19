@@ -785,7 +785,7 @@ class Guild extends AnonymousGuild {
    * @property {?VoiceChannelResolvable} [afkChannel] The AFK channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [icon] The icon of the guild
-   * @property {GuildMemberResolvable} [owner] The owner of the guild
+   * @property {UserResolvable} [owner] The owner of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [splash] The invite splash image of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [discoverySplash] The discovery splash image of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [banner] The banner of the guild
@@ -1148,7 +1148,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Sets a new owner of the guild.
-   * @param {GuildMemberResolvable} owner The new owner of the guild
+   * @param {UserResolvable} owner The new owner of the guild
    * @param {string} [reason] Reason for setting the new owner
    * @returns {Promise<Guild>}
    * @example

@@ -157,7 +157,7 @@ class PermissionOverwrites extends Base {
   /**
    * Data that can be used for a permission overwrite
    * @typedef {Object} OverwriteData
-   * @property {GuildMemberResolvable|RoleResolvable} id Member or role this overwrite is for
+   * @property {UserResolvable|RoleResolvable} id Member or role this overwrite is for
    * @property {PermissionResolvable} [allow] The permissions to allow
    * @property {PermissionResolvable} [deny] The permissions to deny
    * @property {OverwriteType} [type] The type of this OverwriteData (mandatory if `id` is a Snowflake)
@@ -174,7 +174,7 @@ class PermissionOverwrites extends Base {
 
     const id = guild.roles.resolveId(overwrite.id) ?? guild.client.users.resolveId(overwrite.id);
     if (!id) {
-      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'overwrite.id', 'GuildMemberResolvable or RoleResolvable');
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'overwrite.id', 'UserResolvable or RoleResolvable');
     }
 
     if (overwrite.type !== undefined && (typeof overwrite.type !== 'number' || !(overwrite.type in OverwriteType))) {
