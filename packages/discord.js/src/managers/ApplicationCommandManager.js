@@ -81,6 +81,7 @@ class ApplicationCommandManager extends CachedManager {
   /**
    * Options used to fetch Application Commands from Discord
    * @typedef {BaseFetchOptions} FetchApplicationCommandOptions
+   * @property {Snowflake} [id] The command's id to fetch
    * @property {Snowflake} [guildId] The guild's id to fetch commands for, for when the guild is not cached
    * @property {Locale} [locale] The locale to use when fetching this command
    * @property {boolean} [withLocalizations] Whether to fetch all localization data
@@ -88,12 +89,11 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Obtains one or multiple application commands from Discord, or the cache if it's already available.
-   * @param {Snowflake|FetchApplicationCommandOptions} [id] Options for fetching application command(s)
-   * @param {FetchApplicationCommandOptions} [options] Additional options for this fetch
+   * @param {FetchApplicationCommandOptions} [options] Options for fetching application command(s)
    * @returns {Promise<ApplicationCommand|Collection<Snowflake, ApplicationCommand>>}
    * @example
    * // Fetch a single command
-   * client.application.commands.fetch('123456789012345678')
+   * client.application.commands.fetch({ id: '123456789012345678' })
    *   .then(command => console.log(`Fetched command ${command.name}`))
    *   .catch(console.error);
    * @example
@@ -102,10 +102,12 @@ class ApplicationCommandManager extends CachedManager {
    *   .then(commands => console.log(`Fetched ${commands.size} commands`))
    *   .catch(console.error);
    */
-  async fetch(id, { guildId, cache = true, force = false, locale, withLocalizations } = {}) {
-    if (typeof id === 'object') {
-      ({ guildId, cache = true, locale, withLocalizations } = id);
-    } else if (id) {
+  async fetch(options = {}) {
+    if (typeof options !== 'object') throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
+
+    const { cache = true, force = false, guildId, id, locale, withLocalizations } = options;
+
+    if (id) {
       if (!force) {
         const existing = this.cache.get(id);
         if (existing) return existing;

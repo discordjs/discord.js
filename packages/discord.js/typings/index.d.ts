@@ -3913,14 +3913,16 @@ export class ApplicationCommandManager<
     guildId: Snowflake,
   ): Promise<ApplicationCommand>;
   public fetch(
-    id: Snowflake,
-    options: FetchApplicationCommandOptions & { guildId: Snowflake },
-  ): Promise<ApplicationCommand>;
-  public fetch(options: FetchApplicationCommandOptions): Promise<Collection<Snowflake, ApplicationCommandScope>>;
-  public fetch(id: Snowflake, options?: FetchApplicationCommandOptions): Promise<ApplicationCommandScope>;
+    options: Omit<FetchApplicationCommandOptions, 'guildId'> & { id: Snowflake },
+  ): Promise<ApplicationCommandScope>;
   public fetch(
-    id?: Snowflake,
-    options?: FetchApplicationCommandOptions,
+    options: FetchApplicationCommandOptions & { id: Snowflake; guildId: Snowflake },
+  ): Promise<ApplicationCommand>;
+  public fetch(
+    options: Omit<FetchApplicationCommandOptions, 'id'> & { guildId: Snowflake },
+  ): Promise<Collection<Snowflake, ApplicationCommandScope>>;
+  public fetch(
+    options?: Omit<FetchApplicationCommandOptions, 'id' | 'guildId'>,
   ): Promise<Collection<Snowflake, ApplicationCommandScope>>;
   public set(
     commands: readonly ApplicationCommandDataResolvable[],
@@ -4089,11 +4091,9 @@ export class GuildApplicationCommandManager extends ApplicationCommandManager<Ap
     command: ApplicationCommandResolvable,
     data: Partial<ApplicationCommandDataResolvable>,
   ): Promise<ApplicationCommand>;
-  public fetch(id: Snowflake, options?: FetchGuildApplicationCommandFetchOptions): Promise<ApplicationCommand>;
-  public fetch(options: FetchGuildApplicationCommandFetchOptions): Promise<Collection<Snowflake, ApplicationCommand>>;
+  public fetch(options: FetchGuildApplicationCommandFetchOptions & { id: Snowflake }): Promise<ApplicationCommand>;
   public fetch(
-    id?: undefined,
-    options?: FetchGuildApplicationCommandFetchOptions,
+    options?: Omit<FetchGuildApplicationCommandFetchOptions, 'id'>,
   ): Promise<Collection<Snowflake, ApplicationCommand>>;
   public set(commands: readonly ApplicationCommandDataResolvable[]): Promise<Collection<Snowflake, ApplicationCommand>>;
 }
@@ -5461,6 +5461,7 @@ export type EmojiIdentifierResolvable =
 export type EmojiResolvable = Snowflake | GuildEmoji | ReactionEmoji | ApplicationEmoji;
 
 export interface FetchApplicationCommandOptions extends BaseFetchOptions {
+  id?: Snowflake;
   guildId?: Snowflake;
   locale?: Locale;
   withLocalizations?: boolean;
