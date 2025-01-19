@@ -1,7 +1,7 @@
 'use strict';
 
-const Base = require('./Base');
-const ThreadMemberFlagsBitField = require('../util/ThreadMemberFlagsBitField');
+const { Base } = require('./Base');
+const { ThreadMemberFlagsBitField } = require('../util/ThreadMemberFlagsBitField');
 
 /**
  * Represents a Member for a Thread.
@@ -109,4 +109,4 @@ class ThreadMember extends Base {
   }
 }
 
-module.exports = ThreadMember;
+exports.ThreadMember = ThreadMember;

@@ -234,4 +234,4 @@ class Embed {
   }
 }
 
-module.exports = Embed;
+exports.Embed = Embed;

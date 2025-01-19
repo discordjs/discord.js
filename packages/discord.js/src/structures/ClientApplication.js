@@ -4,15 +4,15 @@ const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
 const { ApplicationRoleConnectionMetadata } = require('./ApplicationRoleConnectionMetadata');
 const { SKU } = require('./SKU');
-const Team = require('./Team');
-const Application = require('./interfaces/Application');
-const ApplicationCommandManager = require('../managers/ApplicationCommandManager');
-const ApplicationEmojiManager = require('../managers/ApplicationEmojiManager');
+const { Team } = require('./Team');
+const { Application } = require('./interfaces/Application');
+const { ApplicationCommandManager } = require('../managers/ApplicationCommandManager');
+const { ApplicationEmojiManager } = require('../managers/ApplicationEmojiManager');
 const { EntitlementManager } = require('../managers/EntitlementManager');
 const { SubscriptionManager } = require('../managers/SubscriptionManager');
-const ApplicationFlagsBitField = require('../util/ApplicationFlagsBitField');
+const { ApplicationFlagsBitField } = require('../util/ApplicationFlagsBitField');
 const { resolveImage } = require('../util/DataResolver');
-const PermissionsBitField = require('../util/PermissionsBitField');
+const { PermissionsBitField } = require('../util/PermissionsBitField');
 
 /**
  * @typedef {Object} ClientApplicationInstallParams
@@ -171,26 +171,6 @@ class ClientApplication extends Application {
       this.guildId = data.guild_id;
     } else {
       this.guildId ??= null;
-    }
-
-    if ('cover_image' in data) {
-      /**
-       * The hash of the application's cover image
-       * @type {?string}
-       */
-      this.cover = data.cover_image;
-    } else {
-      this.cover ??= null;
-    }
-
-    if ('rpc_origins' in data) {
-      /**
-       * The application's RPC origins, if enabled
-       * @type {string[]}
-       */
-      this.rpcOrigins = data.rpc_origins;
-    } else {
-      this.rpcOrigins ??= [];
     }
 
     if ('bot_require_code_grant' in data) {
@@ -421,4 +401,4 @@ class ClientApplication extends Application {
   }
 }
 
-module.exports = ClientApplication;
+exports.ClientApplication = ClientApplication;

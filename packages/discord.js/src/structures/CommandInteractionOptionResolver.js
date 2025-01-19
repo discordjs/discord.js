@@ -304,4 +304,4 @@ class CommandInteractionOptionResolver {
   }
 }
 
-module.exports = CommandInteractionOptionResolver;
+exports.CommandInteractionOptionResolver = CommandInteractionOptionResolver;

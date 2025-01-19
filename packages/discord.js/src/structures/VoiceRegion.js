@@ -43,4 +43,4 @@ class VoiceRegion {
   }
 }
 
-module.exports = VoiceRegion;
+exports.VoiceRegion = VoiceRegion;

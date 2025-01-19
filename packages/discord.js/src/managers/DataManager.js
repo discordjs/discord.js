@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseManager = require('./BaseManager');
+const { BaseManager } = require('./BaseManager');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 
 /**
@@ -58,4 +58,4 @@ class DataManager extends BaseManager {
   }
 }
 
-module.exports = DataManager;
+exports.DataManager = DataManager;

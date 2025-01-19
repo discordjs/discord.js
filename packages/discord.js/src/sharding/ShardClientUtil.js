@@ -4,7 +4,7 @@ const process = require('node:process');
 const { calculateShardId } = require('@discordjs/util');
 const { WebSocketShardEvents } = require('@discordjs/ws');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
-const Events = require('../util/Events');
+const { Events } = require('../util/Events');
 const { makeError, makePlainError } = require('../util/Util');
 
 /**
@@ -265,4 +265,4 @@ class ShardClientUtil {
   }
 }
 
-module.exports = ShardClientUtil;
+exports.ShardClientUtil = ShardClientUtil;

@@ -1,6 +1,6 @@
 'use strict';
 
-const handlers = Object.fromEntries([
+const PacketHandlers = Object.fromEntries([
   ['APPLICATION_COMMAND_PERMISSIONS_UPDATE', require('./APPLICATION_COMMAND_PERMISSIONS_UPDATE')],
   ['AUTO_MODERATION_ACTION_EXECUTION', require('./AUTO_MODERATION_ACTION_EXECUTION')],
   ['AUTO_MODERATION_RULE_CREATE', require('./AUTO_MODERATION_RULE_CREATE')],
@@ -69,4 +69,4 @@ const handlers = Object.fromEntries([
   ['WEBHOOKS_UPDATE', require('./WEBHOOKS_UPDATE')],
 ]);
 
-module.exports = handlers;
+exports.PacketHandlers = PacketHandlers;

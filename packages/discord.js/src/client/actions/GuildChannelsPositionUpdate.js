@@ -1,8 +1,8 @@
 'use strict';
 
-const Action = require('./Action');
+const { Action } = require('./Action');
 
-class GuildChannelsPositionUpdate extends Action {
+class GuildChannelsPositionUpdateAction extends Action {
   handle(data) {
     const client = this.client;
 
@@ -18,4 +18,4 @@ class GuildChannelsPositionUpdate extends Action {
   }
 }
 
-module.exports = GuildChannelsPositionUpdate;
+exports.GuildChannelsPositionUpdateAction = GuildChannelsPositionUpdateAction;

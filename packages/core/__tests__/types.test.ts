@@ -20,39 +20,82 @@ describe('Interaction with_response overloads.', () => {
 			api.interactions.reply(SNOWFLAKE, TOKEN, { with_response: true }),
 		));
 
-	test('Replying returns undefined.', () =>
-		assertType<Promise<undefined>>(api.interactions.reply(SNOWFLAKE, TOKEN, {})));
+	test('Replying returns undefined.', () => {
+		assertType<Promise<undefined>>(api.interactions.reply(SNOWFLAKE, TOKEN, {}));
+		assertType<Promise<undefined>>(api.interactions.reply(SNOWFLAKE, TOKEN, { with_response: false }));
+	});
+
+	test('Replying returns either RESTPostAPIInteractionCallbackWithResponseResult or undefined.', () => {
+		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>>(
+			api.interactions.reply(SNOWFLAKE, TOKEN, { with_response: boolValue }),
+		);
+	});
 
 	test('Defer returns RESTPostAPIInteractionCallbackWithResponseResult.', () =>
 		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult>>(
 			api.interactions.defer(SNOWFLAKE, TOKEN, { with_response: true }),
 		));
 
-	test('Defer returns undefined.', () => assertType<Promise<undefined>>(api.interactions.defer(SNOWFLAKE, TOKEN, {})));
+	test('Defer returns undefined.', () => {
+		assertType<Promise<undefined>>(api.interactions.defer(SNOWFLAKE, TOKEN));
+		assertType<Promise<undefined>>(api.interactions.defer(SNOWFLAKE, TOKEN, { with_response: false }));
+	});
+
+	test('Defer returns either RESTPostAPIInteractionCallbackWithResponseResult or undefined.', () => {
+		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>>(
+			api.interactions.defer(SNOWFLAKE, TOKEN, { with_response: boolValue }),
+		);
+	});
 
 	test('Defer message update returns RESTPostAPIInteractionCallbackWithResponseResult.', () =>
 		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult>>(
 			api.interactions.deferMessageUpdate(SNOWFLAKE, TOKEN, { with_response: true }),
 		));
 
-	test('Defer message update returns undefined.', () =>
-		assertType<Promise<undefined>>(api.interactions.deferMessageUpdate(SNOWFLAKE, TOKEN, {})));
+	test('Defer message update returns undefined.', () => {
+		assertType<Promise<undefined>>(api.interactions.deferMessageUpdate(SNOWFLAKE, TOKEN));
+		assertType<Promise<undefined>>(api.interactions.deferMessageUpdate(SNOWFLAKE, TOKEN, { with_response: false }));
+	});
+
+	test('Defer message update returns either RESTPostAPIInteractionCallbackWithResponseResult or undefined.', () => {
+		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>>(
+			api.interactions.deferMessageUpdate(SNOWFLAKE, TOKEN, { with_response: boolValue }),
+		);
+	});
 
 	test('Update message returns RESTPostAPIInteractionCallbackWithResponseResult.', () =>
 		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult>>(
 			api.interactions.updateMessage(SNOWFLAKE, TOKEN, { with_response: true }),
 		));
 
-	test('Update message returns undefined.', () =>
-		assertType<Promise<undefined>>(api.interactions.updateMessage(SNOWFLAKE, TOKEN, {})));
+	test('Update message returns undefined.', () => {
+		assertType<Promise<undefined>>(api.interactions.updateMessage(SNOWFLAKE, TOKEN, {}));
+		assertType<Promise<undefined>>(api.interactions.updateMessage(SNOWFLAKE, TOKEN, { with_response: false }));
+	});
+
+	test('Update message returns either RESTPostAPIInteractionCallbackWithResponseResult or undefined.', () => {
+		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>>(
+			api.interactions.updateMessage(SNOWFLAKE, TOKEN, { with_response: boolValue }),
+		);
+	});
 
 	test('Create autocomplete response returns RESTPostAPIInteractionCallbackWithResponseResult.', () =>
 		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult>>(
 			api.interactions.createAutocompleteResponse(SNOWFLAKE, TOKEN, { with_response: true }),
 		));
 
-	test('Create autocomplete response returns undefined.', () =>
-		assertType<Promise<undefined>>(api.interactions.createAutocompleteResponse(SNOWFLAKE, TOKEN, {})));
+	test('Create autocomplete response returns undefined.', () => {
+		assertType<Promise<undefined>>(api.interactions.createAutocompleteResponse(SNOWFLAKE, TOKEN, {}));
+		assertType<Promise<undefined>>(
+			api.interactions.createAutocompleteResponse(SNOWFLAKE, TOKEN, { with_response: false }),
+		);
+	});
+
+	test('Create autocomplete response returns either RESTPostAPIInteractionCallbackWithResponseResult or undefined.', () => {
+		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>>(
+			api.interactions.createAutocompleteResponse(SNOWFLAKE, TOKEN, { with_response: boolValue }),
+		);
+	});
 
 	test('Create modal returns RESTPostAPIInteractionCallbackWithResponseResult.', () =>
 		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult>>(
@@ -64,12 +107,32 @@ describe('Interaction with_response overloads.', () => {
 			}),
 		));
 
-	test('Create modal returns undefined.', () =>
+	test('Create modal returns undefined.', () => {
 		assertType<Promise<undefined>>(
 			api.interactions.createModal(SNOWFLAKE, TOKEN, { title: '', custom_id: '', components: MODAL_COMPONENTS }),
-		));
+		);
+		assertType<Promise<undefined>>(
+			api.interactions.createModal(SNOWFLAKE, TOKEN, {
+				title: '',
+				custom_id: '',
+				components: MODAL_COMPONENTS,
+				with_response: false,
+			}),
+		);
+	});
 
-	test('Launch activity returns undefined.', () => {
+	test('Create modal returns either RESTPostAPIInteractionCallbackWithResponseResult or undefined.', () => {
+		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>>(
+			api.interactions.createModal(SNOWFLAKE, TOKEN, {
+				title: '',
+				custom_id: '',
+				components: MODAL_COMPONENTS,
+				with_response: boolValue,
+			}),
+		);
+	});
+  
+  test('Launch activity returns undefined.', () => {
 		assertType<Promise<undefined>>(api.interactions.launchActivity(SNOWFLAKE, TOKEN, { with_response: false }));
 		assertType<Promise<undefined>>(api.interactions.launchActivity(SNOWFLAKE, TOKEN));
 	});

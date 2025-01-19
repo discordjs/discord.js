@@ -1,7 +1,7 @@
 'use strict';
 
-const Action = require('./Action');
-const Events = require('../../util/Events');
+const { Action } = require('./Action');
+const { Events } = require('../../util/Events');
 
 class GuildScheduledEventDeleteAction extends Action {
   handle(data) {
@@ -28,4 +28,4 @@ class GuildScheduledEventDeleteAction extends Action {
   }
 }
 
-module.exports = GuildScheduledEventDeleteAction;
+exports.GuildScheduledEventDeleteAction = GuildScheduledEventDeleteAction;

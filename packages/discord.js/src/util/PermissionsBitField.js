@@ -1,7 +1,7 @@
 'use strict';
 
 const { PermissionFlagsBits } = require('discord-api-types/v10');
-const BitField = require('./BitField');
+const { BitField } = require('./BitField');
 
 /**
  * Data structure that makes it easy to interact with a permission bitfield. All {@link GuildMember}s have a set of
@@ -101,4 +101,4 @@ class PermissionsBitField extends BitField {
   }
 }
 
-module.exports = PermissionsBitField;
+exports.PermissionsBitField = PermissionsBitField;
