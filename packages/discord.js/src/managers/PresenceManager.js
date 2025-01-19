@@ -1,6 +1,6 @@
 'use strict';
 
-const CachedManager = require('./CachedManager');
+const { CachedManager } = require('./CachedManager');
 const { Presence } = require('../structures/Presence');
 
 /**
@@ -55,4 +55,4 @@ class PresenceManager extends CachedManager {
   }
 }
 
-module.exports = PresenceManager;
+exports.PresenceManager = PresenceManager;

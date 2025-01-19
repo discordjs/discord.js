@@ -1,7 +1,7 @@
 'use strict';
 
-const Events = require('../../../util/Events.js');
-const Partials = require('../../../util/Partials.js');
+const { Events } = require('../../../util/Events.js');
+const { Partials } = require('../../../util/Partials.js');
 
 module.exports = (client, { d: data }) => {
   let user = client.users.cache.get(data.user.id);

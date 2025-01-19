@@ -1,6 +1,6 @@
 'use strict';
 
-const Application = require('./interfaces/Application');
+const { Application } = require('./interfaces/Application');
 
 /**
  * Represents an Integration's OAuth2 Application.
@@ -72,4 +72,4 @@ class IntegrationApplication extends Application {
   }
 }
 
-module.exports = IntegrationApplication;
+exports.IntegrationApplication = IntegrationApplication;

@@ -73,6 +73,22 @@ export class InteractionsAPI {
 		options?: Pick<RequestData, 'signal'>,
 	): Promise<undefined>;
 
+	/**
+	 * Replies to an interaction
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param body - The callback data for replying
+	 * @param options - The options for replying
+	 */
+	public async reply(
+		interactionId: Snowflake,
+		interactionToken: string,
+		body: CreateInteractionResponseOptions,
+		options?: Pick<RequestData, 'signal'>,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
+
 	public async reply(
 		interactionId: Snowflake,
 		interactionToken: string,
@@ -125,6 +141,22 @@ export class InteractionsAPI {
 		options?: Pick<RequestData, 'signal'>,
 	): Promise<undefined>;
 
+	/**
+	 * Defers the reply to an interaction
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param body - The callback data for deferring the reply
+	 * @param options - The options for deferring
+	 */
+	public async defer(
+		interactionId: Snowflake,
+		interactionToken: string,
+		body?: CreateInteractionDeferResponseOptions,
+		options?: Pick<RequestData, 'signal'>,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
+
 	public async defer(
 		interactionId: Snowflake,
 		interactionToken: string,
@@ -175,6 +207,22 @@ export class InteractionsAPI {
 		body?: RESTPostAPIInteractionCallbackQuery & { with_response?: false },
 		options?: Pick<RequestData, 'signal'>,
 	): Promise<undefined>;
+
+	/**
+	 * Defers an update from a message component interaction
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param body - The callback data for deferring the update
+	 * @param options - The options for deferring
+	 */
+	public async deferMessageUpdate(
+		interactionId: Snowflake,
+		interactionToken: string,
+		body?: RESTPostAPIInteractionCallbackQuery,
+		options?: Pick<RequestData, 'signal'>,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
 
 	public async deferMessageUpdate(
 		interactionId: Snowflake,
@@ -308,6 +356,22 @@ export class InteractionsAPI {
 		options?: Pick<RequestData, 'signal'>,
 	): Promise<undefined>;
 
+	/**
+	 * Updates the message the component interaction was triggered on
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param callbackData - The callback data for updating the interaction
+	 * @param options - The options for updating the interaction
+	 */
+	public async updateMessage(
+		interactionId: Snowflake,
+		interactionToken: string,
+		callbackData: CreateInteractionUpdateMessageResponseOptions,
+		options?: Pick<RequestData, 'signal'>,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
+
 	public async updateMessage(
 		interactionId: Snowflake,
 		interactionToken: string,
@@ -360,6 +424,22 @@ export class InteractionsAPI {
 		options?: Pick<RequestData, 'signal'>,
 	): Promise<undefined>;
 
+	/**
+	 * Sends an autocomplete response to an interaction
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param callbackData - The callback data for the autocomplete response
+	 * @param options - The options for sending the autocomplete response
+	 */
+	public async createAutocompleteResponse(
+		interactionId: Snowflake,
+		interactionToken: string,
+		callbackData: CreateAutocompleteResponseOptions,
+		options?: Pick<RequestData, 'signal'>,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
+
 	public async createAutocompleteResponse(
 		interactionId: Snowflake,
 		interactionToken: string,
@@ -410,6 +490,22 @@ export class InteractionsAPI {
 		callbackData: CreateModalResponseOptions & { with_response?: false },
 		options?: Pick<RequestData, 'signal'>,
 	): Promise<undefined>;
+
+	/**
+	 * Sends a modal response to an interaction
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param callbackData - The modal callback data to send
+	 * @param options - The options for sending the modal
+	 */
+	public async createModal(
+		interactionId: Snowflake,
+		interactionToken: string,
+		callbackData: CreateModalResponseOptions,
+		options?: Pick<RequestData, 'signal'>,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
 
 	public async createModal(
 		interactionId: Snowflake,

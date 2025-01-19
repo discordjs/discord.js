@@ -1,8 +1,8 @@
 'use strict';
 
 const { Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
-const MessageReaction = require('../structures/MessageReaction');
+const { CachedManager } = require('./CachedManager');
+const { MessageReaction } = require('../structures/MessageReaction');
 
 /**
  * Manages API methods for reactions and holds their cache.
@@ -65,4 +65,4 @@ class ReactionManager extends CachedManager {
   }
 }
 
-module.exports = ReactionManager;
+exports.ReactionManager = ReactionManager;
