@@ -39,14 +39,14 @@ class GuildEmojiRoleManager extends DataManager {
    * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} roleOrRoles The role or roles to add
    * @returns {Promise<GuildEmoji>}
    */
-  add(roleOrRoles) {
+  async add(roleOrRoles) {
     if (!Array.isArray(roleOrRoles) && !(roleOrRoles instanceof Collection)) roleOrRoles = [roleOrRoles];
 
     const resolvedRoles = [];
     for (const role of roleOrRoles.values()) {
       const resolvedRole = this.guild.roles.resolveId(role);
       if (!resolvedRole) {
-        return Promise.reject(new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array or Collection', 'roles', role));
+        throw new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array or Collection', 'roles', role);
       }
       resolvedRoles.push(resolvedRole);
     }
@@ -60,14 +60,14 @@ class GuildEmojiRoleManager extends DataManager {
    * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} roleOrRoles The role or roles to remove
    * @returns {Promise<GuildEmoji>}
    */
-  remove(roleOrRoles) {
+  async remove(roleOrRoles) {
     if (!Array.isArray(roleOrRoles) && !(roleOrRoles instanceof Collection)) roleOrRoles = [roleOrRoles];
 
     const resolvedRoleIds = [];
     for (const role of roleOrRoles.values()) {
       const roleId = this.guild.roles.resolveId(role);
       if (!roleId) {
-        return Promise.reject(new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array or Collection', 'roles', role));
+        throw new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array or Collection', 'roles', role);
       }
       resolvedRoleIds.push(roleId);
     }

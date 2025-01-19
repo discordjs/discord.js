@@ -97,9 +97,9 @@ class Poll extends Base {
    * Ends this poll.
    * @returns {Promise<Message>}
    */
-  end() {
+  async end() {
     if (Date.now() > this.expiresTimestamp) {
-      return Promise.reject(new DiscordjsError(ErrorCodes.PollAlreadyExpired));
+      throw new DiscordjsError(ErrorCodes.PollAlreadyExpired);
     }
 
     return this.message.channel.messages.endPoll(this.message.id);

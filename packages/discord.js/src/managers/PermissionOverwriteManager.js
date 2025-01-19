@@ -62,15 +62,13 @@ class PermissionOverwriteManager extends CachedManager {
    *   },
    * ], 'Needed to change permissions');
    */
-  set(overwrites, reason) {
+  async set(overwrites, reason) {
     if (!Array.isArray(overwrites) && !(overwrites instanceof Collection)) {
-      return Promise.reject(
-        new DiscordjsTypeError(
-          ErrorCodes.InvalidType,
-          'overwrites',
-          'Array or Collection of Permission Overwrites',
-          true,
-        ),
+      throw new DiscordjsTypeError(
+        ErrorCodes.InvalidType,
+        'overwrites',
+        'Array or Collection of Permission Overwrites',
+        true,
       );
     }
     return this.channel.edit({ permissionOverwrites: overwrites, reason });
