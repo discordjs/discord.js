@@ -52,4 +52,4 @@ class ModalSubmitFields {
   }
 }
 
-module.exports = ModalSubmitFields;
+exports.ModalSubmitFields = ModalSubmitFields;

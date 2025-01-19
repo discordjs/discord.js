@@ -1,6 +1,6 @@
 'use strict';
 
-const Component = require('./Component');
+const { Component } = require('./Component');
 
 /**
  * Represents a text input component.
@@ -26,4 +26,4 @@ class TextInputComponent extends Component {
   }
 }
 
-module.exports = TextInputComponent;
+exports.TextInputComponent = TextInputComponent;

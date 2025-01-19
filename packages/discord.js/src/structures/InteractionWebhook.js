@@ -1,6 +1,6 @@
 'use strict';
 
-const Webhook = require('./Webhook');
+const { Webhook } = require('./Webhook');
 
 /**
  * Represents a webhook for an Interaction
@@ -56,4 +56,4 @@ class InteractionWebhook {
 
 Webhook.applyToClass(InteractionWebhook, ['sendSlackMessage', 'edit', 'delete', 'createdTimestamp', 'createdAt']);
 
-module.exports = InteractionWebhook;
+exports.InteractionWebhook = InteractionWebhook;

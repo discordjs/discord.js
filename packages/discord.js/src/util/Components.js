@@ -133,22 +133,23 @@ function createComponentBuilder(data) {
   }
 }
 
-module.exports = { createComponent, createComponentBuilder };
+exports.createComponent = createComponent;
+exports.createComponentBuilder = createComponentBuilder;
 
-const ActionRow = require('../structures/ActionRow');
-const ActionRowBuilder = require('../structures/ActionRowBuilder');
-const ButtonBuilder = require('../structures/ButtonBuilder');
-const ButtonComponent = require('../structures/ButtonComponent');
-const ChannelSelectMenuBuilder = require('../structures/ChannelSelectMenuBuilder');
-const ChannelSelectMenuComponent = require('../structures/ChannelSelectMenuComponent');
-const Component = require('../structures/Component');
-const MentionableSelectMenuBuilder = require('../structures/MentionableSelectMenuBuilder');
-const MentionableSelectMenuComponent = require('../structures/MentionableSelectMenuComponent');
-const RoleSelectMenuBuilder = require('../structures/RoleSelectMenuBuilder');
-const RoleSelectMenuComponent = require('../structures/RoleSelectMenuComponent');
-const StringSelectMenuBuilder = require('../structures/StringSelectMenuBuilder');
-const StringSelectMenuComponent = require('../structures/StringSelectMenuComponent');
-const TextInputBuilder = require('../structures/TextInputBuilder');
-const TextInputComponent = require('../structures/TextInputComponent');
-const UserSelectMenuBuilder = require('../structures/UserSelectMenuBuilder');
-const UserSelectMenuComponent = require('../structures/UserSelectMenuComponent');
+const { ActionRow } = require('../structures/ActionRow');
+const { ActionRowBuilder } = require('../structures/ActionRowBuilder');
+const { ButtonBuilder } = require('../structures/ButtonBuilder');
+const { ButtonComponent } = require('../structures/ButtonComponent');
+const { ChannelSelectMenuBuilder } = require('../structures/ChannelSelectMenuBuilder');
+const { ChannelSelectMenuComponent } = require('../structures/ChannelSelectMenuComponent');
+const { Component } = require('../structures/Component');
+const { MentionableSelectMenuBuilder } = require('../structures/MentionableSelectMenuBuilder');
+const { MentionableSelectMenuComponent } = require('../structures/MentionableSelectMenuComponent');
+const { RoleSelectMenuBuilder } = require('../structures/RoleSelectMenuBuilder');
+const { RoleSelectMenuComponent } = require('../structures/RoleSelectMenuComponent');
+const { StringSelectMenuBuilder } = require('../structures/StringSelectMenuBuilder');
+const { StringSelectMenuComponent } = require('../structures/StringSelectMenuComponent');
+const { TextInputBuilder } = require('../structures/TextInputBuilder');
+const { TextInputComponent } = require('../structures/TextInputComponent');
+const { UserSelectMenuBuilder } = require('../structures/UserSelectMenuBuilder');
+const { UserSelectMenuComponent } = require('../structures/UserSelectMenuComponent');

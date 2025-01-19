@@ -1,8 +1,8 @@
 'use strict';
 
-const Action = require('./Action');
-const Events = require('../../util/Events');
-const Partials = require('../../util/Partials');
+const { Action } = require('./Action');
+const { Events } = require('../../util/Events');
+const { Partials } = require('../../util/Partials');
 
 /*
 { user_id: 'id',
@@ -15,7 +15,7 @@ const Partials = require('../../util/Partials');
      member: { ..., user: { ... } } }
 */
 
-class MessageReactionAdd extends Action {
+class MessageReactionAddAction extends Action {
   handle(data, fromStructure = false) {
     if (!data.emoji) return false;
 
@@ -67,4 +67,4 @@ class MessageReactionAdd extends Action {
   }
 }
 
-module.exports = MessageReactionAdd;
+exports.MessageReactionAddAction = MessageReactionAddAction;

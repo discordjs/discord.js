@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const MessageComponentInteraction = require('./MessageComponentInteraction');
+const { MessageComponentInteraction } = require('./MessageComponentInteraction');
 
 /**
  * Represents a {@link ComponentType.ChannelSelect} select menu interaction.
@@ -30,4 +30,4 @@ class ChannelSelectMenuInteraction extends MessageComponentInteraction {
   }
 }
 
-module.exports = ChannelSelectMenuInteraction;
+exports.ChannelSelectMenuInteraction = ChannelSelectMenuInteraction;

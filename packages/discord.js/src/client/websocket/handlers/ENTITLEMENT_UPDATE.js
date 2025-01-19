@@ -1,6 +1,6 @@
 'use strict';
 
-const Events = require('../../../util/Events.js');
+const { Events } = require('../../../util/Events.js');
 
 module.exports = (client, { d: data }) => {
   const oldEntitlement = client.application.entitlements.cache.get(data.id)?._clone() ?? null;

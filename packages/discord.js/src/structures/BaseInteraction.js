@@ -3,9 +3,9 @@
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { InteractionType, ApplicationCommandType, ComponentType } = require('discord-api-types/v10');
-const Base = require('./Base');
+const { Base } = require('./Base');
 const { SelectMenuTypes } = require('../util/Constants');
-const PermissionsBitField = require('../util/PermissionsBitField');
+const { PermissionsBitField } = require('../util/PermissionsBitField');
 
 /**
  * Represents an interaction.
@@ -315,4 +315,4 @@ class BaseInteraction extends Base {
   }
 }
 
-module.exports = BaseInteraction;
+exports.BaseInteraction = BaseInteraction;

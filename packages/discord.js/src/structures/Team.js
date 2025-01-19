@@ -2,8 +2,8 @@
 
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const Base = require('./Base');
-const TeamMember = require('./TeamMember');
+const { Base } = require('./Base');
+const { TeamMember } = require('./TeamMember');
 
 /**
  * Represents a Client OAuth2 Application Team.
@@ -114,4 +114,4 @@ class Team extends Base {
   }
 }
 
-module.exports = Team;
+exports.Team = Team;

@@ -1,9 +1,9 @@
 'use strict';
 
 const { PermissionFlagsBits } = require('discord-api-types/v10');
-const BaseGuildEmoji = require('./BaseGuildEmoji');
+const { BaseGuildEmoji } = require('./BaseGuildEmoji');
 const { DiscordjsError, ErrorCodes } = require('../errors');
-const GuildEmojiRoleManager = require('../managers/GuildEmojiRoleManager');
+const { GuildEmojiRoleManager } = require('../managers/GuildEmojiRoleManager');
 
 /**
  * Represents a custom emoji.
@@ -145,4 +145,4 @@ class GuildEmoji extends BaseGuildEmoji {
   }
 }
 
-module.exports = GuildEmoji;
+exports.GuildEmoji = GuildEmoji;

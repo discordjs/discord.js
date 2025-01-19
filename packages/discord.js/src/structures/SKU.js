@@ -1,6 +1,6 @@
 'use strict';
 
-const Base = require('./Base');
+const { Base } = require('./Base');
 const { SKUFlagsBitField } = require('../util/SKUFlagsBitField');
 
 /**

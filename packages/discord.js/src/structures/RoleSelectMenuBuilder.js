@@ -23,7 +23,7 @@ class RoleSelectMenuBuilder extends BuildersRoleSelectMenu {
   }
 }
 
-module.exports = RoleSelectMenuBuilder;
+exports.RoleSelectMenuBuilder = RoleSelectMenuBuilder;
 
 /**
  * @external BuildersRoleSelectMenu

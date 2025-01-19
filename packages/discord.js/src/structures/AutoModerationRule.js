@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const Base = require('./Base');
+const { Base } = require('./Base');
 const { _transformAPIAutoModerationAction } = require('../util/Transformers');
 
 /**
@@ -285,4 +285,4 @@ class AutoModerationRule extends Base {
   }
 }
 
-module.exports = AutoModerationRule;
+exports.AutoModerationRule = AutoModerationRule;

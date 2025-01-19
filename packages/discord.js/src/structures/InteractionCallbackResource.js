@@ -49,4 +49,4 @@ class InteractionCallbackResource {
   }
 }
 
-module.exports = InteractionCallbackResource;
+exports.InteractionCallbackResource = InteractionCallbackResource;
