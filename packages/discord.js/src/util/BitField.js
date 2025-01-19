@@ -57,8 +57,8 @@ class BitField {
    * @returns {boolean}
    */
   has(bit) {
-    bit = this.constructor.resolve(bit);
-    return (this.bitfield & bit) === bit;
+    const resolvedBit = this.constructor.resolve(bit);
+    return (this.bitfield & resolvedBit) === resolvedBit;
   }
 
   /**

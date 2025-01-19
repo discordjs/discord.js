@@ -72,11 +72,12 @@ class BaseGuildEmojiManager extends CachedManager {
     if (emoji instanceof ApplicationEmoji) return emoji.identifier;
     if (typeof emoji === 'string') {
       const res = parseEmoji(emoji);
+      let identifier = emoji;
       if (res?.name.length) {
-        emoji = `${res.animated ? 'a:' : ''}${res.name}${res.id ? `:${res.id}` : ''}`;
+        identifier = `${res.animated ? 'a:' : ''}${res.name}${res.id ? `:${res.id}` : ''}`;
       }
-      if (!emoji.includes('%')) return encodeURIComponent(emoji);
-      return emoji;
+      if (!identifier.includes('%')) return encodeURIComponent(identifier);
+      return identifier;
     }
     return null;
   }
