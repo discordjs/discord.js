@@ -131,8 +131,8 @@ describe('Interaction with_response overloads.', () => {
 			}),
 		);
 	});
-  
-  test('Launch activity returns undefined.', () => {
+
+	test('Launch activity returns undefined.', () => {
 		assertType<Promise<undefined>>(api.interactions.launchActivity(SNOWFLAKE, TOKEN, { with_response: false }));
 		assertType<Promise<undefined>>(api.interactions.launchActivity(SNOWFLAKE, TOKEN));
 	});
