@@ -98,6 +98,7 @@ class MessageComponentInteraction extends BaseInteraction {
   followUp() {}
   deferUpdate() {}
   update() {}
+  launchActivity() {}
   showModal() {}
   awaitModalSubmit() {}
 }
