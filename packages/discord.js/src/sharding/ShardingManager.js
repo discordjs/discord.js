@@ -1,11 +1,11 @@
 'use strict';
 
-const EventEmitter = require('node:events');
 const fs = require('node:fs');
 const path = require('node:path');
 const process = require('node:process');
 const { setTimeout: sleep } = require('node:timers/promises');
 const { Collection } = require('@discordjs/collection');
+const { AsyncEventEmitter } = require('@vladfrangu/async_event_emitter');
 const { Shard } = require('./Shard');
 const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors');
 const { fetchRecommendedShardCount } = require('../util/Util');
@@ -17,9 +17,9 @@ const { fetchRecommendedShardCount } = require('../util/Util');
  * process, and there are several useful methods that utilize it in order to simplify tasks that are normally difficult
  * with sharding. It can spawn a specific number of shards or the amount that Discord suggests for the bot, and takes a
  * path to your main bot script to launch for each one.
- * @extends {EventEmitter}
+ * @extends {AsyncEventEmitter}
  */
-class ShardingManager extends EventEmitter {
+class ShardingManager extends AsyncEventEmitter {
   /**
    * The mode to spawn shards with for a {@link ShardingManager}. Can be either one of:
    * * 'process' to use child processes

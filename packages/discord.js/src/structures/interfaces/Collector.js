@@ -1,8 +1,8 @@
 'use strict';
 
-const EventEmitter = require('node:events');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
+const { AsyncEventEmitter } = require('@vladfrangu/async_event_emitter');
 const { DiscordjsTypeError, ErrorCodes } = require('../../errors');
 const { flatten } = require('../../util/Util');
 
@@ -25,10 +25,10 @@ const { flatten } = require('../../util/Util');
 
 /**
  * Abstract class for defining a new Collector.
- * @extends {EventEmitter}
+ * @extends {AsyncEventEmitter}
  * @abstract
  */
-class Collector extends EventEmitter {
+class Collector extends AsyncEventEmitter {
   constructor(client, options = {}) {
     super();
 
