@@ -1,6 +1,6 @@
 'use strict';
 
-const { Base } = require('./Base');
+const { Base } = require('./Base.js');
 
 /**
  * Represents a Client OAuth2 Application Team Member.

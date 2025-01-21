@@ -1,6 +1,6 @@
 'use strict';
 
-const { Action } = require('./Action');
+const { Action } = require('./Action.js');
 
 class GuildChannelsPositionUpdateAction extends Action {
   handle(data) {

@@ -1,6 +1,6 @@
 'use strict';
 
-const { Partials } = require('../../util/Partials');
+const { Partials } = require('../../util/Partials.js');
 
 /*
 

@@ -214,7 +214,7 @@ import {
   InteractionCallbackResponse,
   GuildScheduledEventRecurrenceRuleOptions,
   ThreadOnlyChannel,
-} from '.';
+} from './index.js';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
 import { ReadonlyCollection } from '@discordjs/collection';

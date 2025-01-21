@@ -6,9 +6,9 @@ const process = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { setTimeout: sleep } = require('node:timers/promises');
 const { SHARE_ENV } = require('node:worker_threads');
-const { DiscordjsError, ErrorCodes } = require('../errors');
-const { ShardEvents } = require('../util/ShardEvents');
-const { makeError, makePlainError } = require('../util/Util');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
+const { ShardEvents } = require('../util/ShardEvents.js');
+const { makeError, makePlainError } = require('../util/Util.js');
 
 let childProcess = null;
 let Worker = null;

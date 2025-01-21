@@ -3,9 +3,9 @@
 const { userMention } = require('@discordjs/formatters');
 const { calculateUserDefaultAvatarIndex } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Base } = require('./Base');
-const { TextBasedChannel } = require('./interfaces/TextBasedChannel');
-const { UserFlagsBitField } = require('../util/UserFlagsBitField');
+const { Base } = require('./Base.js');
+const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
+const { UserFlagsBitField } = require('../util/UserFlagsBitField.js');
 
 /**
  * Represents a user on Discord.

@@ -2,13 +2,13 @@
 
 const { lazy } = require('@discordjs/util');
 const { ChannelFlags, ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
-const { BaseChannel } = require('./BaseChannel');
-const getThreadOnlyChannel = lazy(() => require('./ThreadOnlyChannel'));
-const { TextBasedChannel } = require('./interfaces/TextBasedChannel');
-const { DiscordjsRangeError, ErrorCodes } = require('../errors');
-const { GuildMessageManager } = require('../managers/GuildMessageManager');
-const { ThreadMemberManager } = require('../managers/ThreadMemberManager');
-const { ChannelFlagsBitField } = require('../util/ChannelFlagsBitField');
+const { BaseChannel } = require('./BaseChannel.js');
+const getThreadOnlyChannel = lazy(() => require('./ThreadOnlyChannel.js'));
+const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
+const { DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
+const { GuildMessageManager } = require('../managers/GuildMessageManager.js');
+const { ThreadMemberManager } = require('../managers/ThreadMemberManager.js');
+const { ChannelFlagsBitField } = require('../util/ChannelFlagsBitField.js');
 
 /**
  * Represents a thread channel on Discord.

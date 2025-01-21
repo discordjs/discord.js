@@ -3,10 +3,10 @@
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager');
-const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../errors');
-const { GuildBan } = require('../structures/GuildBan');
-const { GuildMember } = require('../structures/GuildMember');
+const { CachedManager } = require('./CachedManager.js');
+const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../errors/index.js');
+const { GuildBan } = require('../structures/GuildBan.js');
+const { GuildMember } = require('../structures/GuildMember.js');
 
 /**
  * Manages API methods for guild bans and stores their cache.

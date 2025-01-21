@@ -6,9 +6,9 @@ const path = require('node:path');
 const process = require('node:process');
 const { setTimeout: sleep } = require('node:timers/promises');
 const { Collection } = require('@discordjs/collection');
-const { Shard } = require('./Shard');
-const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors');
-const { fetchRecommendedShardCount } = require('../util/Util');
+const { Shard } = require('./Shard.js');
+const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
+const { fetchRecommendedShardCount } = require('../util/Util.js');
 
 /**
  * This is a utility class that makes multi-process sharding of a bot an easy and painless experience.

@@ -3,7 +3,7 @@
 'use strict';
 
 const { token, owner } = require('./auth.js');
-const { Client, Events } = require('../src');
+const { Client, Events } = require('../src/index.js');
 const { ChannelType, GatewayIntentBits } = require('discord-api-types/v10');
 
 console.time('magic');

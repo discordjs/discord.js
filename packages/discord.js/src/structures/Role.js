@@ -3,10 +3,10 @@
 const { roleMention } = require('@discordjs/formatters');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { PermissionFlagsBits } = require('discord-api-types/v10');
-const { Base } = require('./Base');
-const { DiscordjsError, ErrorCodes } = require('../errors');
-const { PermissionsBitField } = require('../util/PermissionsBitField');
-const { RoleFlagsBitField } = require('../util/RoleFlagsBitField');
+const { Base } = require('./Base.js');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
+const { PermissionsBitField } = require('../util/PermissionsBitField.js');
+const { RoleFlagsBitField } = require('../util/RoleFlagsBitField.js');
 
 /**
  * Represents a role on Discord.

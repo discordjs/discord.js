@@ -4,11 +4,11 @@ const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { isJSONEncodable } = require('@discordjs/util');
 const { Routes } = require('discord-api-types/v10');
-const { ApplicationCommandPermissionsManager } = require('./ApplicationCommandPermissionsManager');
-const { CachedManager } = require('./CachedManager');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const { ApplicationCommand } = require('../structures/ApplicationCommand');
-const { PermissionsBitField } = require('../util/PermissionsBitField');
+const { ApplicationCommandPermissionsManager } = require('./ApplicationCommandPermissionsManager.js');
+const { CachedManager } = require('./CachedManager.js');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { ApplicationCommand } = require('../structures/ApplicationCommand.js');
+const { PermissionsBitField } = require('../util/PermissionsBitField.js');
 
 /**
  * Manages API methods for application commands and stores their cache.

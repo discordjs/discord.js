@@ -3,11 +3,11 @@
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { isJSONEncodable } = require('@discordjs/util');
 const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../../errors');
-const { MessageFlagsBitField } = require('../../util/MessageFlagsBitField');
-const { InteractionCallbackResponse } = require('../InteractionCallbackResponse');
-const { InteractionCollector } = require('../InteractionCollector');
-const { MessagePayload } = require('../MessagePayload');
+const { DiscordjsError, ErrorCodes } = require('../../errors/index.js');
+const { MessageFlagsBitField } = require('../../util/MessageFlagsBitField.js');
+const { InteractionCallbackResponse } = require('../InteractionCallbackResponse.js');
+const { InteractionCollector } = require('../InteractionCollector.js');
+const { MessagePayload } = require('../MessagePayload.js');
 
 /**
  * @typedef {Object} ModalComponentData
