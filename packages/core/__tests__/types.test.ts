@@ -4,7 +4,7 @@ import type {
 	APIModalActionRowComponent,
 	RESTPostAPIInteractionCallbackWithResponseResult,
 } from 'discord-api-types/v10';
-import { assertType, describe, test } from 'vitest';
+import { expectTypeOf, describe, test } from 'vitest';
 import { API } from '../src/index.js';
 
 const rest = new REST();
@@ -16,120 +16,129 @@ const boolValue = true as boolean;
 
 describe('Interaction with_response overloads.', () => {
 	test('Replying returns RESTPostAPIInteractionCallbackWithResponseResult.', () =>
-		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult>>(
-			api.interactions.reply(SNOWFLAKE, TOKEN, { with_response: true }),
-		));
+		expectTypeOf(api.interactions.reply(SNOWFLAKE, TOKEN, { with_response: true })).toEqualTypeOf<
+			Promise<RESTPostAPIInteractionCallbackWithResponseResult>
+		>());
 
 	test('Replying returns undefined.', () => {
-		assertType<Promise<undefined>>(api.interactions.reply(SNOWFLAKE, TOKEN, {}));
-		assertType<Promise<undefined>>(api.interactions.reply(SNOWFLAKE, TOKEN, { with_response: false }));
+		expectTypeOf(api.interactions.reply(SNOWFLAKE, TOKEN, {})).toEqualTypeOf<Promise<undefined>>();
+		expectTypeOf(api.interactions.reply(SNOWFLAKE, TOKEN, { with_response: false })).toEqualTypeOf<
+			Promise<undefined>
+		>();
 	});
 
 	test('Replying returns either RESTPostAPIInteractionCallbackWithResponseResult or undefined.', () => {
-		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>>(
-			api.interactions.reply(SNOWFLAKE, TOKEN, { with_response: boolValue }),
-		);
+		expectTypeOf(api.interactions.reply(SNOWFLAKE, TOKEN, { with_response: boolValue })).toEqualTypeOf<
+			Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>
+		>();
 	});
 
 	test('Defer returns RESTPostAPIInteractionCallbackWithResponseResult.', () =>
-		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult>>(
-			api.interactions.defer(SNOWFLAKE, TOKEN, { with_response: true }),
-		));
+		expectTypeOf(api.interactions.defer(SNOWFLAKE, TOKEN, { with_response: true })).toEqualTypeOf<
+			Promise<RESTPostAPIInteractionCallbackWithResponseResult>
+		>());
 
 	test('Defer returns undefined.', () => {
-		assertType<Promise<undefined>>(api.interactions.defer(SNOWFLAKE, TOKEN));
-		assertType<Promise<undefined>>(api.interactions.defer(SNOWFLAKE, TOKEN, { with_response: false }));
+		expectTypeOf(api.interactions.defer(SNOWFLAKE, TOKEN)).toEqualTypeOf<Promise<undefined>>();
+		expectTypeOf(api.interactions.defer(SNOWFLAKE, TOKEN, { with_response: false })).toEqualTypeOf<
+			Promise<undefined>
+		>();
 	});
 
 	test('Defer returns either RESTPostAPIInteractionCallbackWithResponseResult or undefined.', () => {
-		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>>(
-			api.interactions.defer(SNOWFLAKE, TOKEN, { with_response: boolValue }),
-		);
+		expectTypeOf(api.interactions.defer(SNOWFLAKE, TOKEN, { with_response: boolValue })).toEqualTypeOf<
+			Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>
+		>();
 	});
 
 	test('Defer message update returns RESTPostAPIInteractionCallbackWithResponseResult.', () =>
-		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult>>(
-			api.interactions.deferMessageUpdate(SNOWFLAKE, TOKEN, { with_response: true }),
-		));
+		expectTypeOf(api.interactions.deferMessageUpdate(SNOWFLAKE, TOKEN, { with_response: true })).toEqualTypeOf<
+			Promise<RESTPostAPIInteractionCallbackWithResponseResult>
+		>());
 
 	test('Defer message update returns undefined.', () => {
-		assertType<Promise<undefined>>(api.interactions.deferMessageUpdate(SNOWFLAKE, TOKEN));
-		assertType<Promise<undefined>>(api.interactions.deferMessageUpdate(SNOWFLAKE, TOKEN, { with_response: false }));
+		expectTypeOf(api.interactions.deferMessageUpdate(SNOWFLAKE, TOKEN)).toEqualTypeOf<Promise<undefined>>();
+		expectTypeOf(api.interactions.deferMessageUpdate(SNOWFLAKE, TOKEN, { with_response: false })).toEqualTypeOf<
+			Promise<undefined>
+		>();
 	});
 
 	test('Defer message update returns either RESTPostAPIInteractionCallbackWithResponseResult or undefined.', () => {
-		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>>(
-			api.interactions.deferMessageUpdate(SNOWFLAKE, TOKEN, { with_response: boolValue }),
-		);
+		expectTypeOf(api.interactions.deferMessageUpdate(SNOWFLAKE, TOKEN, { with_response: boolValue })).toEqualTypeOf<
+			Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>
+		>();
 	});
 
 	test('Update message returns RESTPostAPIInteractionCallbackWithResponseResult.', () =>
-		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult>>(
-			api.interactions.updateMessage(SNOWFLAKE, TOKEN, { with_response: true }),
-		));
+		expectTypeOf(api.interactions.updateMessage(SNOWFLAKE, TOKEN, { with_response: true })).toEqualTypeOf<
+			Promise<RESTPostAPIInteractionCallbackWithResponseResult>
+		>());
 
 	test('Update message returns undefined.', () => {
-		assertType<Promise<undefined>>(api.interactions.updateMessage(SNOWFLAKE, TOKEN, {}));
-		assertType<Promise<undefined>>(api.interactions.updateMessage(SNOWFLAKE, TOKEN, { with_response: false }));
+		expectTypeOf(api.interactions.updateMessage(SNOWFLAKE, TOKEN, {})).toEqualTypeOf<Promise<undefined>>();
+		expectTypeOf(api.interactions.updateMessage(SNOWFLAKE, TOKEN, { with_response: false })).toEqualTypeOf<
+			Promise<undefined>
+		>();
 	});
 
 	test('Update message returns either RESTPostAPIInteractionCallbackWithResponseResult or undefined.', () => {
-		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>>(
-			api.interactions.updateMessage(SNOWFLAKE, TOKEN, { with_response: boolValue }),
-		);
+		expectTypeOf(api.interactions.updateMessage(SNOWFLAKE, TOKEN, { with_response: boolValue })).toEqualTypeOf<
+			Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>
+		>();
 	});
 
 	test('Create autocomplete response returns RESTPostAPIInteractionCallbackWithResponseResult.', () =>
-		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult>>(
-			api.interactions.createAutocompleteResponse(SNOWFLAKE, TOKEN, { with_response: true }),
-		));
+		expectTypeOf(api.interactions.createAutocompleteResponse(SNOWFLAKE, TOKEN, { with_response: true })).toEqualTypeOf<
+			Promise<RESTPostAPIInteractionCallbackWithResponseResult>
+		>());
 
 	test('Create autocomplete response returns undefined.', () => {
-		assertType<Promise<undefined>>(api.interactions.createAutocompleteResponse(SNOWFLAKE, TOKEN, {}));
-		assertType<Promise<undefined>>(
-			api.interactions.createAutocompleteResponse(SNOWFLAKE, TOKEN, { with_response: false }),
-		);
+		expectTypeOf(api.interactions.createAutocompleteResponse(SNOWFLAKE, TOKEN, {})).toEqualTypeOf<Promise<undefined>>();
+		expectTypeOf(api.interactions.createAutocompleteResponse(SNOWFLAKE, TOKEN, { with_response: false })).toEqualTypeOf<
+			Promise<undefined>
+		>();
 	});
 
 	test('Create autocomplete response returns either RESTPostAPIInteractionCallbackWithResponseResult or undefined.', () => {
-		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>>(
+		expectTypeOf(
 			api.interactions.createAutocompleteResponse(SNOWFLAKE, TOKEN, { with_response: boolValue }),
-		);
+		).toEqualTypeOf<Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>>();
 	});
 
 	test('Create modal returns RESTPostAPIInteractionCallbackWithResponseResult.', () =>
-		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult>>(
+		expectTypeOf(
 			api.interactions.createModal(SNOWFLAKE, TOKEN, {
 				title: '',
 				custom_id: '',
 				components: MODAL_COMPONENTS,
 				with_response: true,
 			}),
-		));
+		).toEqualTypeOf<Promise<RESTPostAPIInteractionCallbackWithResponseResult>>());
 
 	test('Create modal returns undefined.', () => {
-		assertType<Promise<undefined>>(
+		expectTypeOf(
 			api.interactions.createModal(SNOWFLAKE, TOKEN, { title: '', custom_id: '', components: MODAL_COMPONENTS }),
-		);
-		assertType<Promise<undefined>>(
+		).toEqualTypeOf<Promise<undefined>>();
+
+		expectTypeOf(
 			api.interactions.createModal(SNOWFLAKE, TOKEN, {
 				title: '',
 				custom_id: '',
 				components: MODAL_COMPONENTS,
 				with_response: false,
 			}),
-		);
+		).toEqualTypeOf<Promise<undefined>>();
 	});
 
 	test('Create modal returns either RESTPostAPIInteractionCallbackWithResponseResult or undefined.', () => {
-		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>>(
+		expectTypeOf(
 			api.interactions.createModal(SNOWFLAKE, TOKEN, {
 				title: '',
 				custom_id: '',
 				components: MODAL_COMPONENTS,
 				with_response: boolValue,
 			}),
-		);
+		).toEqualTypeOf<Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>>();
 	});
 
 	test('Launch activity returns undefined.', () => {
