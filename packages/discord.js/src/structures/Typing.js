@@ -1,6 +1,6 @@
 'use strict';
 
-const Base = require('./Base');
+const { Base } = require('./Base');
 
 /**
  * Represents a typing state for a user in a channel.
@@ -71,4 +71,4 @@ class Typing extends Base {
   }
 }
 
-module.exports = Typing;
+exports.Typing = Typing;

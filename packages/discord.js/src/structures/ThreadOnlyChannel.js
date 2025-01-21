@@ -1,8 +1,8 @@
 'use strict';
 
-const GuildChannel = require('./GuildChannel');
-const TextBasedChannel = require('./interfaces/TextBasedChannel');
-const GuildForumThreadManager = require('../managers/GuildForumThreadManager');
+const { GuildChannel } = require('./GuildChannel');
+const { TextBasedChannel } = require('./interfaces/TextBasedChannel');
+const { GuildForumThreadManager } = require('../managers/GuildForumThreadManager');
 const { transformAPIGuildForumTag, transformAPIGuildDefaultReaction } = require('../util/Channels');
 
 /**
@@ -246,4 +246,4 @@ TextBasedChannel.applyToClass(ThreadOnlyChannel, true, [
   'awaitMessageComponent',
 ]);
 
-module.exports = ThreadOnlyChannel;
+exports.ThreadOnlyChannel = ThreadOnlyChannel;

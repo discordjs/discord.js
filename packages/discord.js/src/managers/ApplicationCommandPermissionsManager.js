@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { ApplicationCommandPermissionType, RESTJSONErrorCodes, Routes } = require('discord-api-types/v10');
-const BaseManager = require('./BaseManager');
+const { BaseManager } = require('./BaseManager');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 
 /**
@@ -419,7 +419,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
   }
 }
 
-module.exports = ApplicationCommandPermissionsManager;
+exports.ApplicationCommandPermissionsManager = ApplicationCommandPermissionsManager;
 
 /* eslint-disable max-len */
 /**

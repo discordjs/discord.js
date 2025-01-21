@@ -2,7 +2,7 @@
 
 const { formatEmoji } = require('@discordjs/formatters');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const Base = require('./Base');
+const { Base } = require('./Base');
 
 /**
  * Represents an emoji, see {@link ApplicationEmoji}, {@link GuildEmoji} and {@link ReactionEmoji}.
@@ -42,11 +42,11 @@ class Emoji extends Base {
 
   /**
    * Returns a URL for the emoji or `null` if this is not a custom emoji.
-   * @param {BaseImageURLOptions} [options] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
-  imageURL(options) {
-    return this.id && this.client.rest.cdn.emoji(this.id, options);
+  imageURL(options = {}) {
+    return this.id && this.client.rest.cdn.emoji(this.id, this.animated, options);
   }
 
   /**

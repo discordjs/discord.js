@@ -3,9 +3,9 @@
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
+const { CachedManager } = require('./CachedManager');
 const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../errors');
-const GuildBan = require('../structures/GuildBan');
+const { GuildBan } = require('../structures/GuildBan');
 const { GuildMember } = require('../structures/GuildMember');
 
 /**
@@ -221,4 +221,4 @@ class GuildBanManager extends CachedManager {
   }
 }
 
-module.exports = GuildBanManager;
+exports.GuildBanManager = GuildBanManager;

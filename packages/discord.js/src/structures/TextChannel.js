@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseGuildTextChannel = require('./BaseGuildTextChannel');
+const { BaseGuildTextChannel } = require('./BaseGuildTextChannel');
 
 /**
  * Represents a guild text channel on Discord.
@@ -30,4 +30,4 @@ class TextChannel extends BaseGuildTextChannel {
   }
 }
 
-module.exports = TextChannel;
+exports.TextChannel = TextChannel;

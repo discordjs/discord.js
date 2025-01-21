@@ -23,7 +23,7 @@ class TextInputBuilder extends BuildersTextInput {
   }
 }
 
-module.exports = TextInputBuilder;
+exports.TextInputBuilder = TextInputBuilder;
 
 /**
  * @external BuildersTextInput

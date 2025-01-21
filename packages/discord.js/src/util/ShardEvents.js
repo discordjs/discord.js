@@ -16,7 +16,7 @@
  * @type {ShardEvents}
  * @ignore
  */
-module.exports = {
+exports.ShardEvents = {
   Death: 'death',
   Disconnect: 'disconnect',
   Error: 'error',

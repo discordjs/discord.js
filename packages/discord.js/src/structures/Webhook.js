@@ -4,7 +4,7 @@ const { makeURLSearchParams } = require('@discordjs/rest');
 const { lazy } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes, WebhookType } = require('discord-api-types/v10');
-const MessagePayload = require('./MessagePayload');
+const { MessagePayload } = require('./MessagePayload');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const { resolveImage } = require('../util/DataResolver');
 
@@ -141,8 +141,7 @@ class Webhook {
 
   /**
    * Options that can be passed into editMessage.
-   * @typedef {BaseMessageOptions} WebhookMessageEditOptions
-   * @property {Attachment[]} [attachments] Attachments to send with the message
+   * @typedef {MessageEditOptions} WebhookMessageEditOptions
    * @property {Snowflake} [threadId] The id of the thread this message belongs to
    * <info>For interaction webhooks, this property is ignored</info>
    */
@@ -478,4 +477,4 @@ class Webhook {
   }
 }
 
-module.exports = Webhook;
+exports.Webhook = Webhook;

@@ -2,7 +2,7 @@
 
 const { Poll } = require('../../structures/Poll');
 const { PollAnswer } = require('../../structures/PollAnswer');
-const Partials = require('../../util/Partials');
+const { Partials } = require('../../util/Partials');
 
 /*
 
@@ -16,7 +16,7 @@ that WebSocket events don't clash with REST methods.
 
 */
 
-class GenericAction {
+class Action {
   constructor(client) {
     this.client = client;
   }
@@ -136,4 +136,4 @@ class GenericAction {
   }
 }
 
-module.exports = GenericAction;
+exports.Action = Action;

@@ -2,15 +2,15 @@
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { AuditLogOptionsType, AuditLogEvent } = require('discord-api-types/v10');
-const AutoModerationRule = require('./AutoModerationRule');
+const { AutoModerationRule } = require('./AutoModerationRule');
 const { GuildOnboardingPrompt } = require('./GuildOnboardingPrompt');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent');
-const Integration = require('./Integration');
-const Invite = require('./Invite');
+const { Integration } = require('./Integration');
+const { Invite } = require('./Invite');
 const { StageInstance } = require('./StageInstance');
 const { Sticker } = require('./Sticker');
-const Webhook = require('./Webhook');
-const Partials = require('../util/Partials');
+const { Webhook } = require('./Webhook');
+const { Partials } = require('../util/Partials');
 const { flatten } = require('../util/Util');
 
 const Targets = {
@@ -516,4 +516,4 @@ class GuildAuditLogsEntry {
   }
 }
 
-module.exports = GuildAuditLogsEntry;
+exports.GuildAuditLogsEntry = GuildAuditLogsEntry;

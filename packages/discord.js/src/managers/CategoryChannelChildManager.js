@@ -1,7 +1,7 @@
 'use strict';
 
-const DataManager = require('./DataManager');
-const GuildChannel = require('../structures/GuildChannel');
+const { DataManager } = require('./DataManager');
+const { GuildChannel } = require('../structures/GuildChannel');
 
 /**
  * Manages API methods for CategoryChannels' children.
@@ -76,4 +76,4 @@ class CategoryChannelChildManager extends DataManager {
   }
 }
 
-module.exports = CategoryChannelChildManager;
+exports.CategoryChannelChildManager = CategoryChannelChildManager;

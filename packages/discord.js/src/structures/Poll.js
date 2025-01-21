@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const Base = require('./Base');
+const { Base } = require('./Base');
 const { PollAnswer } = require('./PollAnswer');
 const { DiscordjsError } = require('../errors/DJSError');
 const { ErrorCodes } = require('../errors/index');

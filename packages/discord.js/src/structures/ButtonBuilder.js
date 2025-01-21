@@ -36,7 +36,7 @@ class ButtonBuilder extends BuildersButton {
   }
 }
 
-module.exports = ButtonBuilder;
+exports.ButtonBuilder = ButtonBuilder;
 
 /**
  * @external BuildersButton

@@ -1,7 +1,7 @@
 'use strict';
 
-const Action = require('./Action');
-const Events = require('../../util/Events');
+const { Action } = require('./Action');
+const { Events } = require('../../util/Events');
 
 class ChannelDeleteAction extends Action {
   handle(data) {
@@ -20,4 +20,4 @@ class ChannelDeleteAction extends Action {
   }
 }
 
-module.exports = ChannelDeleteAction;
+exports.ChannelDeleteAction = ChannelDeleteAction;
