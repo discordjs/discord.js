@@ -2,7 +2,7 @@
 
 const { Base } = require('./Base');
 const { Emoji } = require('./Emoji');
-const PollAnswerVoterManager = require('../managers/PollAnswerVoterManager');
+const { PollAnswerVoterManager } = require('../managers/PollAnswerVoterManager');
 
 /**
  * Represents an answer to a {@link Poll}
