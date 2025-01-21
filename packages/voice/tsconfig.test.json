@@ -2,7 +2,8 @@
 	"$schema": "https://json.schemastore.org/tsconfig.json",
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
-		"noEmit": true
+		"noEmit": true,
+		"lib": ["ESNext", "DOM"]
 	},
 	"include": ["__tests__/**/*.ts", "../../vitest.d.ts"],
 	"exclude": ["node_modules"]
