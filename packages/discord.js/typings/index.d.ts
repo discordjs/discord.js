@@ -3913,7 +3913,7 @@ export class ApplicationCommandManager<
     guildId: Snowflake,
   ): Promise<ApplicationCommand>;
   public fetch(
-    options: Omit<FetchApplicationCommandOptions, 'guildId'> & { id: Snowflake },
+    options: Snowflake | (Omit<FetchApplicationCommandOptions, 'guildId'> & { id: Snowflake }),
   ): Promise<ApplicationCommandScope>;
   public fetch(
     options: FetchApplicationCommandOptions & { id: Snowflake; guildId: Snowflake },
@@ -4091,7 +4091,9 @@ export class GuildApplicationCommandManager extends ApplicationCommandManager<Ap
     command: ApplicationCommandResolvable,
     data: Partial<ApplicationCommandDataResolvable>,
   ): Promise<ApplicationCommand>;
-  public fetch(options: FetchGuildApplicationCommandFetchOptions & { id: Snowflake }): Promise<ApplicationCommand>;
+  public fetch(
+    options: Snowflake | (FetchGuildApplicationCommandFetchOptions & { id: Snowflake }),
+  ): Promise<ApplicationCommand>;
   public fetch(
     options?: Omit<FetchGuildApplicationCommandFetchOptions, 'id'>,
   ): Promise<Collection<Snowflake, ApplicationCommand>>;

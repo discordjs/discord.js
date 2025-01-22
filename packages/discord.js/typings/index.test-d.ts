@@ -711,7 +711,7 @@ client.on('clientReady', async client => {
   );
 
   // Test command manager methods
-  const globalCommand = await client.application?.commands.fetch({ id: globalCommandId });
+  const globalCommand = await client.application?.commands.fetch(globalCommandId);
   const guildCommandFromGlobal = await client.application?.commands.fetch({ id: guildCommandId, guildId: testGuildId });
   const guildCommandFromGuild = await client.guilds.cache.get(testGuildId)?.commands.fetch({ id: guildCommandId });
 
@@ -1589,6 +1589,7 @@ declare const autoModerationRuleManager: AutoModerationRuleManager;
 }
 
 declare const guildApplicationCommandManager: GuildApplicationCommandManager;
+expectType<Promise<ApplicationCommand>>(guildApplicationCommandManager.fetch('0'));
 expectType<Promise<ApplicationCommand>>(guildApplicationCommandManager.fetch({ id: '0' }));
 expectType<Promise<Collection<Snowflake, ApplicationCommand>>>(guildApplicationCommandManager.fetch());
 
