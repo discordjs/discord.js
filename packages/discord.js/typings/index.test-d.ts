@@ -473,6 +473,10 @@ client.on('messageCreate', async message => {
   expectAssignable<Promise<ButtonInteraction>>(channel.awaitMessageComponent({ componentType: ComponentType.Button }));
   expectAssignable<InteractionCollector<ButtonInteraction>>(buttonCollector);
 
+  buttonCollector.on('collect', (...args) => expectType<[ButtonInteraction]>(args));
+  buttonCollector.on('dispose', (...args) => expectType<[ButtonInteraction]>(args));
+  buttonCollector.on('end', (...args) => expectType<[ReadonlyCollection<Snowflake, ButtonInteraction>, string]>(args));
+
   // Verify that select menus interaction are inferred.
   const selectMenuCollector = message.createMessageComponentCollector({ componentType: ComponentType.StringSelect });
   expectAssignable<Promise<StringSelectMenuInteraction>>(
@@ -483,11 +487,23 @@ client.on('messageCreate', async message => {
   );
   expectAssignable<InteractionCollector<StringSelectMenuInteraction>>(selectMenuCollector);
 
+  selectMenuCollector.on('collect', (...args) => expectType<[SelectMenuInteraction]>(args));
+  selectMenuCollector.on('dispose', (...args) => expectType<[SelectMenuInteraction]>(args));
+  selectMenuCollector.on('end', (...args) =>
+    expectType<[ReadonlyCollection<Snowflake, SelectMenuInteraction>, string]>(args),
+  );
+
   // Verify that message component interactions are default collected types.
   const defaultCollector = message.createMessageComponentCollector();
   expectAssignable<Promise<MessageComponentInteraction>>(message.awaitMessageComponent());
   expectAssignable<Promise<MessageComponentInteraction>>(channel.awaitMessageComponent());
   expectAssignable<InteractionCollector<CollectedMessageInteraction>>(defaultCollector);
+
+  defaultCollector.on('collect', (...args) => expectType<[MessageComponentInteraction]>(args));
+  defaultCollector.on('dispose', (...args) => expectType<[MessageComponentInteraction]>(args));
+  defaultCollector.on('end', (...args) =>
+    expectType<[ReadonlyCollection<Snowflake, MessageComponentInteraction>, string]>(args),
+  );
 
   // Verify that additional options don't affect default collector types.
   const semiDefaultCollector = message.createMessageComponentCollector({ time: 10000 });
@@ -1306,9 +1322,9 @@ client.on('guildCreate', async g => {
   );
 });
 
-// EventEmitter static method overrides
+// Event emitter static method overrides
 expectType<Promise<[Client<true>]>>(Client.once(client, 'clientReady'));
-expectType<AsyncIterableIterator<[Client<true>]>>(Client.on(client, 'clientReady'));
+expectAssignable<AsyncIterableIterator<[Client<true>]>>(Client.on(client, 'clientReady'));
 
 client.login('absolutely-valid-token');
 
@@ -1418,6 +1434,11 @@ declare const reactionCollector: ReactionCollector;
 reactionCollector.on('dispose', (...args) => {
   expectType<[MessageReaction, User]>(args);
 });
+
+reactionCollector.on('collect', (...args) => expectType<[MessageReaction, User]>(args));
+reactionCollector.on('dispose', (...args) => expectType<[MessageReaction, User]>(args));
+reactionCollector.on('remove', (...args) => expectType<[MessageReaction, User]>(args));
+reactionCollector.on('end', (...args) => expectType<[ReadonlyCollection<string, MessageReaction>, string]>(args));
 
 (async () => {
   for await (const value of reactionCollector) {

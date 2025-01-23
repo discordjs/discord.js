@@ -940,6 +940,9 @@ importers:
       '@sapphire/snowflake':
         specifier: 3.5.5
         version: 3.5.5
+      '@vladfrangu/async_event_emitter':
+        specifier: ^2.4.6
+        version: 2.4.6
       discord-api-types:
         specifier: ^0.37.114
         version: 0.37.114
