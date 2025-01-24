@@ -3,12 +3,12 @@
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const { Role } = require('../structures/Role');
-const { resolveImage } = require('../util/DataResolver');
-const { PermissionsBitField } = require('../util/PermissionsBitField');
-const { setPosition, resolveColor } = require('../util/Util');
+const { CachedManager } = require('./CachedManager.js');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { Role } = require('../structures/Role.js');
+const { resolveImage } = require('../util/DataResolver.js');
+const { PermissionsBitField } = require('../util/PermissionsBitField.js');
+const { setPosition, resolveColor } = require('../util/Util.js');
 
 let cacheWarningEmitted = false;
 

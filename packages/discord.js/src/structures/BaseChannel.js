@@ -3,9 +3,9 @@
 const { channelLink, channelMention } = require('@discordjs/formatters');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ChannelType, Routes } = require('discord-api-types/v10');
-const { Base } = require('./Base');
-const { ChannelFlagsBitField } = require('../util/ChannelFlagsBitField');
-const { ThreadChannelTypes } = require('../util/Constants');
+const { Base } = require('./Base.js');
+const { ChannelFlagsBitField } = require('../util/ChannelFlagsBitField.js');
+const { ThreadChannelTypes } = require('../util/Constants.js');
 
 /**
  * Represents any channel on Discord.

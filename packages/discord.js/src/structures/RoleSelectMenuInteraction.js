@@ -1,7 +1,7 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { MessageComponentInteraction } = require('./MessageComponentInteraction');
+const { MessageComponentInteraction } = require('./MessageComponentInteraction.js');
 
 /**
  * Represents a {@link ComponentType.RoleSelect} select menu interaction.

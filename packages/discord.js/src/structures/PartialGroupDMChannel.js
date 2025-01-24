@@ -1,9 +1,9 @@
 'use strict';
 
-const { BaseChannel } = require('./BaseChannel');
-const { TextBasedChannel } = require('./interfaces/TextBasedChannel');
-const { DiscordjsError, ErrorCodes } = require('../errors');
-const { PartialGroupDMMessageManager } = require('../managers/PartialGroupDMMessageManager');
+const { BaseChannel } = require('./BaseChannel.js');
+const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
+const { PartialGroupDMMessageManager } = require('../managers/PartialGroupDMMessageManager.js');
 
 /**
  * Represents a Partial Group DM Channel on Discord.

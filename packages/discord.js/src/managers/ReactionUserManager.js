@@ -3,9 +3,9 @@
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { ReactionType, Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager');
-const { DiscordjsError, ErrorCodes } = require('../errors');
-const { User } = require('../structures/User');
+const { CachedManager } = require('./CachedManager.js');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
+const { User } = require('../structures/User.js');
 
 /**
  * Manages API methods for users who reacted to a reaction and stores their cache.

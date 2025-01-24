@@ -3,18 +3,18 @@
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const { ChannelType, Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager');
-const { GuildTextThreadManager } = require('./GuildTextThreadManager');
-const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
-const { GuildChannel } = require('../structures/GuildChannel');
-const { PermissionOverwrites } = require('../structures/PermissionOverwrites');
-const { ThreadChannel } = require('../structures/ThreadChannel');
-const { Webhook } = require('../structures/Webhook');
-const { ChannelFlagsBitField } = require('../util/ChannelFlagsBitField');
-const { transformGuildForumTag, transformGuildDefaultReaction } = require('../util/Channels');
-const { ThreadChannelTypes } = require('../util/Constants');
-const { resolveImage } = require('../util/DataResolver');
-const { setPosition } = require('../util/Util');
+const { CachedManager } = require('./CachedManager.js');
+const { GuildTextThreadManager } = require('./GuildTextThreadManager.js');
+const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { GuildChannel } = require('../structures/GuildChannel.js');
+const { PermissionOverwrites } = require('../structures/PermissionOverwrites.js');
+const { ThreadChannel } = require('../structures/ThreadChannel.js');
+const { Webhook } = require('../structures/Webhook.js');
+const { ChannelFlagsBitField } = require('../util/ChannelFlagsBitField.js');
+const { transformGuildForumTag, transformGuildDefaultReaction } = require('../util/Channels.js');
+const { ThreadChannelTypes } = require('../util/Constants.js');
+const { resolveImage } = require('../util/DataResolver.js');
+const { setPosition } = require('../util/Util.js');
 
 let cacheWarningEmitted = false;
 

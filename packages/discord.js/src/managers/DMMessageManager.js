@@ -1,6 +1,6 @@
 'use strict';
 
-const { MessageManager } = require('./MessageManager');
+const { MessageManager } = require('./MessageManager.js');
 
 /**
  * Manages API methods for messages in direct message channels and holds their cache.

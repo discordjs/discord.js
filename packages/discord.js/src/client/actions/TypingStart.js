@@ -1,8 +1,8 @@
 'use strict';
 
-const { Action } = require('./Action');
-const { Typing } = require('../../structures/Typing');
-const { Events } = require('../../util/Events');
+const { Action } = require('./Action.js');
+const { Typing } = require('../../structures/Typing.js');
+const { Events } = require('../../util/Events.js');
 
 class TypingStartAction extends Action {
   handle(data) {

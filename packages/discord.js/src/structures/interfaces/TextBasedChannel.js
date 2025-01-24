@@ -3,11 +3,11 @@
 const { Collection } = require('@discordjs/collection');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { InteractionType, Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../../errors');
-const { MaxBulkDeletableMessageAge } = require('../../util/Constants');
-const { InteractionCollector } = require('../InteractionCollector');
-const { MessageCollector } = require('../MessageCollector');
-const { MessagePayload } = require('../MessagePayload');
+const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../../errors/index.js');
+const { MaxBulkDeletableMessageAge } = require('../../util/Constants.js');
+const { InteractionCollector } = require('../InteractionCollector.js');
+const { MessageCollector } = require('../MessageCollector.js');
+const { MessagePayload } = require('../MessagePayload.js');
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -162,8 +162,8 @@ class TextBasedChannel {
    *   .catch(console.error);
    */
   async send(options) {
-    const { User } = require('../User');
-    const { GuildMember } = require('../GuildMember');
+    const { User } = require('../User.js');
+    const { GuildMember } = require('../GuildMember.js');
 
     if (this instanceof User || this instanceof GuildMember) {
       const dm = await this.createDM();
@@ -419,4 +419,4 @@ exports.TextBasedChannel = TextBasedChannel;
 
 // Fixes Circular
 // eslint-disable-next-line import/order
-const { GuildMessageManager } = require('../../managers/GuildMessageManager');
+const { GuildMessageManager } = require('../../managers/GuildMessageManager.js');

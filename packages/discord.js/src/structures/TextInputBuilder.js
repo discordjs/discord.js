@@ -2,7 +2,7 @@
 
 const { TextInputBuilder: BuildersTextInput } = require('@discordjs/builders');
 const { isJSONEncodable } = require('@discordjs/util');
-const { toSnakeCase } = require('../util/Transformers');
+const { toSnakeCase } = require('../util/Transformers.js');
 
 /**
  * Represents a text input builder.

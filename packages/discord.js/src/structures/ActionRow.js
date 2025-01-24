@@ -1,7 +1,7 @@
 'use strict';
 
-const { Component } = require('./Component');
-const { createComponent } = require('../util/Components');
+const { Component } = require('./Component.js');
+const { createComponent } = require('../util/Components.js');
 
 /**
  * Represents an action row

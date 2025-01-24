@@ -2,9 +2,9 @@
 
 const { Collection } = require('@discordjs/collection');
 const { Routes, PermissionFlagsBits } = require('discord-api-types/v10');
-const { BaseGuildEmojiManager } = require('./BaseGuildEmojiManager');
-const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
-const { resolveImage } = require('../util/DataResolver');
+const { BaseGuildEmojiManager } = require('./BaseGuildEmojiManager.js');
+const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { resolveImage } = require('../util/DataResolver.js');
 
 /**
  * Manages API methods for GuildEmojis and stores their cache.

@@ -3,9 +3,9 @@
 const { REST } = require('@discordjs/rest');
 const { AsyncEventEmitter } = require('@vladfrangu/async_event_emitter');
 const { Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const { Options } = require('../util/Options');
-const { flatten } = require('../util/Util');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { Options } = require('../util/Options.js');
+const { flatten } = require('../util/Util.js');
 
 /**
  * The base class for all clients.

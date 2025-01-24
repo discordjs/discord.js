@@ -5,14 +5,14 @@ const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes, GatewayOpcodes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager');
-const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors');
-const { BaseGuildVoiceChannel } = require('../structures/BaseGuildVoiceChannel');
-const { GuildMember } = require('../structures/GuildMember');
-const { Role } = require('../structures/Role');
-const { Events } = require('../util/Events');
-const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField');
-const { Partials } = require('../util/Partials');
+const { CachedManager } = require('./CachedManager.js');
+const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
+const { BaseGuildVoiceChannel } = require('../structures/BaseGuildVoiceChannel.js');
+const { GuildMember } = require('../structures/GuildMember.js');
+const { Role } = require('../structures/Role.js');
+const { Events } = require('../util/Events.js');
+const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField.js');
+const { Partials } = require('../util/Partials.js');
 
 /**
  * Manages API methods for GuildMembers and stores their cache.

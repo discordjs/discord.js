@@ -1,7 +1,7 @@
 'use strict';
 
-const { Base } = require('./Base');
-const { ThreadMemberFlagsBitField } = require('../util/ThreadMemberFlagsBitField');
+const { Base } = require('./Base.js');
+const { ThreadMemberFlagsBitField } = require('../util/ThreadMemberFlagsBitField.js');
 
 /**
  * Represents a Member for a Thread.

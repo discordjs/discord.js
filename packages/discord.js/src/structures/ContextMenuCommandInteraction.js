@@ -2,11 +2,11 @@
 
 const { lazy } = require('@discordjs/util');
 const { ApplicationCommandOptionType } = require('discord-api-types/v10');
-const { CommandInteraction } = require('./CommandInteraction');
-const { CommandInteractionOptionResolver } = require('./CommandInteractionOptionResolver');
-const { transformResolved } = require('../util/Util');
+const { CommandInteraction } = require('./CommandInteraction.js');
+const { CommandInteractionOptionResolver } = require('./CommandInteractionOptionResolver.js');
+const { transformResolved } = require('../util/Util.js');
 
-const getMessage = lazy(() => require('./Message').Message);
+const getMessage = lazy(() => require('./Message.js').Message);
 
 /**
  * Represents a context menu interaction.

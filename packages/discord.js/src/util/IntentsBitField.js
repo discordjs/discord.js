@@ -1,6 +1,6 @@
 'use strict';
 const { GatewayIntentBits } = require('discord-api-types/v10');
-const { BitField } = require('./BitField');
+const { BitField } = require('./BitField.js');
 
 /**
  * Data structure that makes it easy to calculate intents.

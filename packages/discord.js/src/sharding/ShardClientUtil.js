@@ -3,9 +3,9 @@
 const process = require('node:process');
 const { calculateShardId } = require('@discordjs/util');
 const { WebSocketShardEvents } = require('@discordjs/ws');
-const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
-const { Events } = require('../util/Events');
-const { makeError, makePlainError } = require('../util/Util');
+const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { Events } = require('../util/Events.js');
+const { makeError, makePlainError } = require('../util/Util.js');
 
 /**
  * Helper class for sharded clients spawned as a child process/worker, such as from a {@link ShardingManager}.

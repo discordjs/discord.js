@@ -3,7 +3,7 @@
 const process = require('node:process');
 const { GatewayIntentBits } = require('discord-api-types/v10');
 const { token, prefix, owner } = require('./auth.js');
-const { Client, Events, Options, RESTEvents, codeBlock } = require('../src');
+const { Client, Events, Options, RESTEvents, codeBlock } = require('../src/index.js');
 
 // eslint-disable-next-line no-console
 const log = (...args) => console.log(process.uptime().toFixed(3), ...args);

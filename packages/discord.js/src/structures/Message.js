@@ -10,24 +10,24 @@ const {
   MessageFlags,
   PermissionFlagsBits,
 } = require('discord-api-types/v10');
-const { Attachment } = require('./Attachment');
-const { Base } = require('./Base');
-const { ClientApplication } = require('./ClientApplication');
-const { Embed } = require('./Embed');
-const { InteractionCollector } = require('./InteractionCollector');
-const { MessageMentions } = require('./MessageMentions');
-const { MessagePayload } = require('./MessagePayload');
+const { Attachment } = require('./Attachment.js');
+const { Base } = require('./Base.js');
+const { ClientApplication } = require('./ClientApplication.js');
+const { Embed } = require('./Embed.js');
+const { InteractionCollector } = require('./InteractionCollector.js');
+const { MessageMentions } = require('./MessageMentions.js');
+const { MessagePayload } = require('./MessagePayload.js');
 const { Poll } = require('./Poll.js');
-const { ReactionCollector } = require('./ReactionCollector');
-const { Sticker } = require('./Sticker');
-const { DiscordjsError, ErrorCodes } = require('../errors');
-const { ReactionManager } = require('../managers/ReactionManager');
-const { createComponent } = require('../util/Components');
-const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, UndeletableMessageTypes } = require('../util/Constants');
-const { MessageFlagsBitField } = require('../util/MessageFlagsBitField');
-const { PermissionsBitField } = require('../util/PermissionsBitField');
+const { ReactionCollector } = require('./ReactionCollector.js');
+const { Sticker } = require('./Sticker.js');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
+const { ReactionManager } = require('../managers/ReactionManager.js');
+const { createComponent } = require('../util/Components.js');
+const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, UndeletableMessageTypes } = require('../util/Constants.js');
+const { MessageFlagsBitField } = require('../util/MessageFlagsBitField.js');
+const { PermissionsBitField } = require('../util/PermissionsBitField.js');
 const { _transformAPIMessageInteractionMetadata } = require('../util/Transformers.js');
-const { cleanContent, resolvePartialEmoji, transformResolved } = require('../util/Util');
+const { cleanContent, resolvePartialEmoji, transformResolved } = require('../util/Util.js');
 
 /**
  * Represents a message on Discord.
