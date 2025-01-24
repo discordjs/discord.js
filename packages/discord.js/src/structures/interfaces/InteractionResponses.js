@@ -3,11 +3,11 @@
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { isJSONEncodable } = require('@discordjs/util');
 const { InteractionResponseType, MessageFlags, Routes, InteractionType } = require('discord-api-types/v10');
-const { DiscordjsError, ErrorCodes } = require('../../errors');
-const { MessageFlagsBitField } = require('../../util/MessageFlagsBitField');
-const { InteractionCallbackResponse } = require('../InteractionCallbackResponse');
-const { InteractionCollector } = require('../InteractionCollector');
-const { MessagePayload } = require('../MessagePayload');
+const { DiscordjsError, ErrorCodes } = require('../../errors/index.js');
+const { MessageFlagsBitField } = require('../../util/MessageFlagsBitField.js');
+const { InteractionCallbackResponse } = require('../InteractionCallbackResponse.js');
+const { InteractionCollector } = require('../InteractionCollector.js');
+const { MessagePayload } = require('../MessagePayload.js');
 
 /**
  * @typedef {Object} ModalComponentData
@@ -199,7 +199,7 @@ class InteractionResponses {
    * @returns {Promise<Message>}
    */
   async followUp(options) {
-    if (!this.deferred && !this.replied) return Promise.reject(new DiscordjsError(ErrorCodes.InteractionNotReplied));
+    if (!this.deferred && !this.replied) throw new DiscordjsError(ErrorCodes.InteractionNotReplied);
     const msg = await this.webhook.send(options);
     this.replied = true;
     return msg;
@@ -305,7 +305,7 @@ class InteractionResponses {
    *   .then(interaction => console.log(`${interaction.customId} was submitted!`))
    *   .catch(console.error);
    */
-  awaitModalSubmit(options) {
+  async awaitModalSubmit(options) {
     if (typeof options.time !== 'number') throw new DiscordjsError(ErrorCodes.InvalidType, 'time', 'number');
     const _options = { ...options, max: 1, interactionType: InteractionType.ModalSubmit };
     return new Promise((resolve, reject) => {

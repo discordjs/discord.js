@@ -1,7 +1,7 @@
 'use strict';
 
-const { Events } = require('../../../util/Events');
-const { Status } = require('../../../util/Status');
+const { Events } = require('../../../util/Events.js');
+const { Status } = require('../../../util/Status.js');
 
 module.exports = (client, { d: data }, shardId) => {
   let guild = client.guilds.cache.get(data.id);

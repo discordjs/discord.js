@@ -1,10 +1,9 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { Base } = require('./Base');
-const { PollAnswer } = require('./PollAnswer');
-const { DiscordjsError } = require('../errors/DJSError');
-const { ErrorCodes } = require('../errors/index');
+const { Base } = require('./Base.js');
+const { PollAnswer } = require('./PollAnswer.js');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 
 /**
  * Represents a Poll
@@ -97,9 +96,9 @@ class Poll extends Base {
    * Ends this poll.
    * @returns {Promise<Message>}
    */
-  end() {
+  async end() {
     if (Date.now() > this.expiresTimestamp) {
-      return Promise.reject(new DiscordjsError(ErrorCodes.PollAlreadyExpired));
+      throw new DiscordjsError(ErrorCodes.PollAlreadyExpired);
     }
 
     return this.message.channel.messages.endPoll(this.message.id);

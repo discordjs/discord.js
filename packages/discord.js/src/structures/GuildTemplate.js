@@ -2,9 +2,9 @@
 
 const { setTimeout, clearTimeout } = require('node:timers');
 const { RouteBases, Routes } = require('discord-api-types/v10');
-const { Base } = require('./Base');
-const { resolveImage } = require('../util/DataResolver');
-const { Events } = require('../util/Events');
+const { Base } = require('./Base.js');
+const { resolveImage } = require('../util/DataResolver.js');
+const { Events } = require('../util/Events.js');
 
 /**
  * Represents the template for a guild.

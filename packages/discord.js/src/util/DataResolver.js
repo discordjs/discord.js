@@ -4,8 +4,8 @@ const { Buffer } = require('node:buffer');
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const { fetch } = require('undici');
-const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
-const { Invite } = require('../structures/Invite');
+const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { Invite } = require('../structures/Invite.js');
 
 /**
  * Data that can be resolved to give an invite code. This can be:
@@ -49,7 +49,7 @@ function resolveInviteCode(data) {
  * @private
  */
 function resolveGuildTemplateCode(data) {
-  const { GuildTemplate } = require('../structures/GuildTemplate');
+  const { GuildTemplate } = require('../structures/GuildTemplate.js');
   return resolveCode(data, GuildTemplate.GuildTemplatesPattern);
 }
 

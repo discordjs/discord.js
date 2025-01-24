@@ -5,14 +5,14 @@ const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes, GatewayOpcodes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager');
-const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors');
-const { BaseGuildVoiceChannel } = require('../structures/BaseGuildVoiceChannel');
-const { GuildMember } = require('../structures/GuildMember');
-const { Role } = require('../structures/Role');
-const { Events } = require('../util/Events');
-const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField');
-const { Partials } = require('../util/Partials');
+const { CachedManager } = require('./CachedManager.js');
+const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
+const { BaseGuildVoiceChannel } = require('../structures/BaseGuildVoiceChannel.js');
+const { GuildMember } = require('../structures/GuildMember.js');
+const { Role } = require('../structures/Role.js');
+const { Events } = require('../util/Events.js');
+const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField.js');
+const { Partials } = require('../util/Partials.js');
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
@@ -223,7 +223,7 @@ class GuildMemberManager extends CachedManager {
     return this._add(data, cache);
   }
 
-  _fetchMany({
+  async _fetchMany({
     limit = 0,
     withPresences: presences,
     users,
@@ -231,7 +231,7 @@ class GuildMemberManager extends CachedManager {
     time = 120e3,
     nonce = DiscordSnowflake.generate().toString(),
   } = {}) {
-    if (nonce.length > 32) return Promise.reject(new DiscordjsRangeError(ErrorCodes.MemberFetchNonceLength));
+    if (nonce.length > 32) throw new DiscordjsRangeError(ErrorCodes.MemberFetchNonceLength);
 
     return new Promise((resolve, reject) => {
       if (!query && !users) query = '';
@@ -458,7 +458,7 @@ class GuildMemberManager extends CachedManager {
    */
   async kick(user, reason) {
     const id = this.client.users.resolveId(user);
-    if (!id) return Promise.reject(new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable'));
+    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
 
     await this.client.rest.delete(Routes.guildMember(this.guild.id, id), { reason });
   }

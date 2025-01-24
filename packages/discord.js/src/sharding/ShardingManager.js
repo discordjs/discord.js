@@ -6,9 +6,9 @@ const process = require('node:process');
 const { setTimeout: sleep } = require('node:timers/promises');
 const { Collection } = require('@discordjs/collection');
 const { AsyncEventEmitter } = require('@vladfrangu/async_event_emitter');
-const { Shard } = require('./Shard');
-const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors');
-const { fetchRecommendedShardCount } = require('../util/Util');
+const { Shard } = require('./Shard.js');
+const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
+const { fetchRecommendedShardCount } = require('../util/Util.js');
 
 /**
  * This is a utility class that makes multi-process sharding of a bot an easy and painless experience.
@@ -256,9 +256,9 @@ class ShardingManager extends AsyncEventEmitter {
    * @param {BroadcastEvalOptions} [options={}] The options for the broadcast
    * @returns {Promise<*|Array<*>>} Results of the script execution
    */
-  broadcastEval(script, options = {}) {
+  async broadcastEval(script, options = {}) {
     if (typeof script !== 'function') {
-      return Promise.reject(new DiscordjsTypeError(ErrorCodes.ShardingInvalidEvalBroadcast));
+      throw new DiscordjsTypeError(ErrorCodes.ShardingInvalidEvalBroadcast);
     }
     return this._performOnShards('eval', [`(${script})(this, ${JSON.stringify(options.context)})`], options.shard);
   }
@@ -285,16 +285,16 @@ class ShardingManager extends AsyncEventEmitter {
    * @returns {Promise<*|Array<*>>} Results of the method execution
    * @private
    */
-  _performOnShards(method, args, shard) {
-    if (this.shards.size === 0) return Promise.reject(new DiscordjsError(ErrorCodes.ShardingNoShards));
+  async _performOnShards(method, args, shard) {
+    if (this.shards.size === 0) throw new DiscordjsError(ErrorCodes.ShardingNoShards);
 
     if (typeof shard === 'number') {
       if (this.shards.has(shard)) return this.shards.get(shard)[method](...args);
-      return Promise.reject(new DiscordjsError(ErrorCodes.ShardingShardNotFound, shard));
+      throw new DiscordjsError(ErrorCodes.ShardingShardNotFound, shard);
     }
 
     if (this.shards.size !== this.shardList.length) {
-      return Promise.reject(new DiscordjsError(ErrorCodes.ShardingInProcess));
+      throw new DiscordjsError(ErrorCodes.ShardingInProcess);
     }
 
     const promises = [];

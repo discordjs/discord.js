@@ -3,17 +3,17 @@
 const { lazy } = require('@discordjs/util');
 const { ChannelType } = require('discord-api-types/v10');
 
-const getCategoryChannel = lazy(() => require('../structures/CategoryChannel').CategoryChannel);
-const getDMChannel = lazy(() => require('../structures/DMChannel').DMChannel);
-const getAnnouncementChannel = lazy(() => require('../structures/AnnouncementChannel').AnnouncementChannel);
-const getStageChannel = lazy(() => require('../structures/StageChannel').StageChannel);
-const getTextChannel = lazy(() => require('../structures/TextChannel').TextChannel);
-const getThreadChannel = lazy(() => require('../structures/ThreadChannel').ThreadChannel);
-const getVoiceChannel = lazy(() => require('../structures/VoiceChannel').VoiceChannel);
-const getDirectoryChannel = lazy(() => require('../structures/DirectoryChannel').DirectoryChannel);
-const getPartialGroupDMChannel = lazy(() => require('../structures/PartialGroupDMChannel').PartialGroupDMChannel);
-const getForumChannel = lazy(() => require('../structures/ForumChannel').ForumChannel);
-const getMediaChannel = lazy(() => require('../structures/MediaChannel').MediaChannel);
+const getCategoryChannel = lazy(() => require('../structures/CategoryChannel.js').CategoryChannel);
+const getDMChannel = lazy(() => require('../structures/DMChannel.js').DMChannel);
+const getAnnouncementChannel = lazy(() => require('../structures/AnnouncementChannel.js').AnnouncementChannel);
+const getStageChannel = lazy(() => require('../structures/StageChannel.js').StageChannel);
+const getTextChannel = lazy(() => require('../structures/TextChannel.js').TextChannel);
+const getThreadChannel = lazy(() => require('../structures/ThreadChannel.js').ThreadChannel);
+const getVoiceChannel = lazy(() => require('../structures/VoiceChannel.js').VoiceChannel);
+const getDirectoryChannel = lazy(() => require('../structures/DirectoryChannel.js').DirectoryChannel);
+const getPartialGroupDMChannel = lazy(() => require('../structures/PartialGroupDMChannel.js').PartialGroupDMChannel);
+const getForumChannel = lazy(() => require('../structures/ForumChannel.js').ForumChannel);
+const getMediaChannel = lazy(() => require('../structures/MediaChannel.js').MediaChannel);
 
 /**
  * Extra options for creating a channel.

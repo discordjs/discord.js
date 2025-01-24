@@ -2,16 +2,16 @@
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { AuditLogOptionsType, AuditLogEvent } = require('discord-api-types/v10');
-const { AutoModerationRule } = require('./AutoModerationRule');
-const { GuildOnboardingPrompt } = require('./GuildOnboardingPrompt');
-const { GuildScheduledEvent } = require('./GuildScheduledEvent');
-const { Integration } = require('./Integration');
-const { Invite } = require('./Invite');
-const { StageInstance } = require('./StageInstance');
-const { Sticker } = require('./Sticker');
-const { Webhook } = require('./Webhook');
-const { Partials } = require('../util/Partials');
-const { flatten } = require('../util/Util');
+const { AutoModerationRule } = require('./AutoModerationRule.js');
+const { GuildOnboardingPrompt } = require('./GuildOnboardingPrompt.js');
+const { GuildScheduledEvent } = require('./GuildScheduledEvent.js');
+const { Integration } = require('./Integration.js');
+const { Invite } = require('./Invite.js');
+const { StageInstance } = require('./StageInstance.js');
+const { Sticker } = require('./Sticker.js');
+const { Webhook } = require('./Webhook.js');
+const { Partials } = require('../util/Partials.js');
+const { flatten } = require('../util/Util.js');
 
 const Targets = {
   Guild: 'Guild',

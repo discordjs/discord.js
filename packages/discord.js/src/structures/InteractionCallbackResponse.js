@@ -1,7 +1,7 @@
 'use strict';
 
-const { InteractionCallback } = require('./InteractionCallback');
-const { InteractionCallbackResource } = require('./InteractionCallbackResource');
+const { InteractionCallback } = require('./InteractionCallback.js');
+const { InteractionCallbackResource } = require('./InteractionCallbackResource.js');
 
 /**
  * Represents an interaction's response

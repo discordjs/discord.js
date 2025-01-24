@@ -3,10 +3,10 @@
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const { OverwriteType, Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const { PermissionOverwrites } = require('../structures/PermissionOverwrites');
-const { Role } = require('../structures/Role');
+const { CachedManager } = require('./CachedManager.js');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { PermissionOverwrites } = require('../structures/PermissionOverwrites.js');
+const { Role } = require('../structures/Role.js');
 
 let cacheWarningEmitted = false;
 
@@ -62,15 +62,13 @@ class PermissionOverwriteManager extends CachedManager {
    *   },
    * ], 'Needed to change permissions');
    */
-  set(overwrites, reason) {
+  async set(overwrites, reason) {
     if (!Array.isArray(overwrites) && !(overwrites instanceof Collection)) {
-      return Promise.reject(
-        new DiscordjsTypeError(
-          ErrorCodes.InvalidType,
-          'overwrites',
-          'Array or Collection of Permission Overwrites',
-          true,
-        ),
+      throw new DiscordjsTypeError(
+        ErrorCodes.InvalidType,
+        'overwrites',
+        'Array or Collection of Permission Overwrites',
+        true,
       );
     }
     return this.channel.edit({ permissionOverwrites: overwrites, reason });

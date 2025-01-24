@@ -1,8 +1,8 @@
 'use strict';
 
 const { Routes } = require('discord-api-types/v10');
-const { Base } = require('./Base');
-const { IntegrationApplication } = require('./IntegrationApplication');
+const { Base } = require('./Base.js');
+const { IntegrationApplication } = require('./IntegrationApplication.js');
 
 /**
  * The information account for an integration

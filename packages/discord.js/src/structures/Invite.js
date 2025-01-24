@@ -1,10 +1,10 @@
 'use strict';
 
 const { RouteBases, Routes, PermissionFlagsBits } = require('discord-api-types/v10');
-const { Base } = require('./Base');
-const { GuildScheduledEvent } = require('./GuildScheduledEvent');
-const { IntegrationApplication } = require('./IntegrationApplication');
-const { DiscordjsError, ErrorCodes } = require('../errors');
+const { Base } = require('./Base.js');
+const { GuildScheduledEvent } = require('./GuildScheduledEvent.js');
+const { IntegrationApplication } = require('./IntegrationApplication.js');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 
 /**
  * Represents an invitation to a guild channel.
@@ -32,7 +32,7 @@ class Invite extends Base {
   }
 
   _patch(data) {
-    const { InviteGuild } = require('./InviteGuild');
+    const { InviteGuild } = require('./InviteGuild.js');
     /**
      * The guild the invite is for including welcome screen data if present
      * @type {?(Guild|InviteGuild)}

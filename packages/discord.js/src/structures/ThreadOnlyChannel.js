@@ -1,9 +1,9 @@
 'use strict';
 
-const { GuildChannel } = require('./GuildChannel');
-const { TextBasedChannel } = require('./interfaces/TextBasedChannel');
-const { GuildForumThreadManager } = require('../managers/GuildForumThreadManager');
-const { transformAPIGuildForumTag, transformAPIGuildDefaultReaction } = require('../util/Channels');
+const { GuildChannel } = require('./GuildChannel.js');
+const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
+const { GuildForumThreadManager } = require('../managers/GuildForumThreadManager.js');
+const { transformAPIGuildForumTag, transformAPIGuildDefaultReaction } = require('../util/Channels.js');
 
 /**
  * @typedef {Object} GuildForumTagEmoji

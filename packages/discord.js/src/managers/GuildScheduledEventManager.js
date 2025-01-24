@@ -3,11 +3,11 @@
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { GuildScheduledEventEntityType, Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager');
-const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../errors');
-const { GuildScheduledEvent } = require('../structures/GuildScheduledEvent');
-const { resolveImage } = require('../util/DataResolver');
-const { _transformGuildScheduledEventRecurrenceRule } = require('../util/Transformers');
+const { CachedManager } = require('./CachedManager.js');
+const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../errors/index.js');
+const { GuildScheduledEvent } = require('../structures/GuildScheduledEvent.js');
+const { resolveImage } = require('../util/DataResolver.js');
+const { _transformGuildScheduledEventRecurrenceRule } = require('../util/Transformers.js');
 
 /**
  * Manages API methods for GuildScheduledEvents and stores their cache.

@@ -1,7 +1,7 @@
 'use strict';
 
-const { Base } = require('./Base');
-const { Emoji } = require('./Emoji');
+const { Base } = require('./Base.js');
+const { Emoji } = require('./Emoji.js');
 
 /**
  * Represents an answer to a {@link Poll}

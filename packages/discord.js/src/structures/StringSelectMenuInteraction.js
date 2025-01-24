@@ -1,6 +1,6 @@
 'use strict';
 
-const { MessageComponentInteraction } = require('./MessageComponentInteraction');
+const { MessageComponentInteraction } = require('./MessageComponentInteraction.js');
 
 /**
  * Represents a {@link ComponentType.StringSelect} select menu interaction.

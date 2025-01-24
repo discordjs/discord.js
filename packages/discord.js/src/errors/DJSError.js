@@ -1,8 +1,8 @@
 'use strict';
 
 // Heavily inspired by node's `internal/errors` module
-const { ErrorCodes } = require('./ErrorCodes');
-const { Messages } = require('./Messages');
+const { ErrorCodes } = require('./ErrorCodes.js');
+const { Messages } = require('./Messages.js');
 
 /**
  * Extend an error of some sort into a DiscordjsError.

@@ -1,7 +1,7 @@
 'use strict';
 
 const { token, owner } = require('./auth.js');
-const { Client, Events, codeBlock, GatewayIntentBits } = require('../src');
+const { Client, Events, codeBlock, GatewayIntentBits } = require('../src/index.js');
 
 const client = new Client({
   intents: GatewayIntentBits.Guilds | GatewayIntentBits.GuildMessages | GatewayIntentBits.GuildMessagePolls,
