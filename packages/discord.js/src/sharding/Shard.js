@@ -1,11 +1,11 @@
 'use strict';
 
-const EventEmitter = require('node:events');
 const path = require('node:path');
 const process = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { setTimeout: sleep } = require('node:timers/promises');
 const { SHARE_ENV } = require('node:worker_threads');
+const { AsyncEventEmitter } = require('@vladfrangu/async_event_emitter');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const { ShardEvents } = require('../util/ShardEvents');
 const { makeError, makePlainError } = require('../util/Util');
@@ -17,9 +17,9 @@ let Worker = null;
  * A self-contained shard created by the {@link ShardingManager}. Each one has a {@link ChildProcess} that contains
  * an instance of the bot and its {@link Client}. When its child process/worker exits for any reason, the shard will
  * spawn a new one to replace it as necessary.
- * @extends {EventEmitter}
+ * @extends {AsyncEventEmitter}
  */
-class Shard extends EventEmitter {
+class Shard extends AsyncEventEmitter {
   constructor(manager, id) {
     super();
 
@@ -445,7 +445,7 @@ class Shard extends EventEmitter {
 
   /**
    * Increments max listeners by one for a given emitter, if they are not zero.
-   * @param {EventEmitter|process} emitter The emitter that emits the events.
+   * @param {Worker|ChildProcess} emitter The emitter that emits the events.
    * @private
    */
   incrementMaxListeners(emitter) {
@@ -457,7 +457,7 @@ class Shard extends EventEmitter {
 
   /**
    * Decrements max listeners by one for a given emitter, if they are not zero.
-   * @param {EventEmitter|process} emitter The emitter that emits the events.
+   * @param {Worker|ChildProcess} emitter The emitter that emits the events.
    * @private
    */
   decrementMaxListeners(emitter) {
