@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { FormattingPatterns } = require('discord-api-types/v10');
-const { flatten } = require('../util/Util');
+const { flatten } = require('../util/Util.js');
 
 /**
  * Keeps track of mentions in a {@link Message}.

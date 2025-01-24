@@ -1,7 +1,7 @@
 'use strict';
 
 const { AttachmentFlags } = require('discord-api-types/v10');
-const { BitField } = require('./BitField');
+const { BitField } = require('./BitField.js');
 
 /**
  * Data structure that makes it easy to interact with an {@link Attachment#flags} bitfield.

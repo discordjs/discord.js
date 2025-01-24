@@ -1,6 +1,6 @@
 'use strict';
 
-const { BitField } = require('./BitField');
+const { BitField } = require('./BitField.js');
 
 /**
  * Data structure that makes it easy to interact with a {@link ThreadMember#flags} bitfield.

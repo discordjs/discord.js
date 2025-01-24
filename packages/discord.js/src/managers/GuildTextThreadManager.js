@@ -1,8 +1,8 @@
 'use strict';
 
 const { ChannelType, Routes } = require('discord-api-types/v10');
-const { ThreadManager } = require('./ThreadManager');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
+const { ThreadManager } = require('./ThreadManager.js');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 
 /**
  * Manages API methods for {@link ThreadChannel} objects and stores their cache.

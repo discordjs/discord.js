@@ -3,10 +3,10 @@
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors/index');
-const { Subscription } = require('../structures/Subscription');
-const { resolveSKUId } = require('../util/Util');
+const { CachedManager } = require('./CachedManager.js');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { Subscription } = require('../structures/Subscription.js');
+const { resolveSKUId } = require('../util/Util.js');
 
 /**
  * Manages API methods for subscriptions and stores their cache.

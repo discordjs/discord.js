@@ -4,11 +4,11 @@ const { makeURLSearchParams } = require('@discordjs/rest');
 const { lazy } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes, WebhookType } = require('discord-api-types/v10');
-const { MessagePayload } = require('./MessagePayload');
-const { DiscordjsError, ErrorCodes } = require('../errors');
-const { resolveImage } = require('../util/DataResolver');
+const { MessagePayload } = require('./MessagePayload.js');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
+const { resolveImage } = require('../util/DataResolver.js');
 
-const getMessage = lazy(() => require('./Message').Message);
+const getMessage = lazy(() => require('./Message.js').Message);
 
 /**
  * Represents a webhook.

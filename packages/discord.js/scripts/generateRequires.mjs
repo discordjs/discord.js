@@ -8,7 +8,7 @@ async function writeWebsocketHandlerImports() {
   for (const file of (await readdir(handlersDirectory)).sort()) {
     if (file === 'index.js') continue;
 
-    lines.push(`  ['${file.slice(0, -3)}', require('./${file.slice(0, -3)}')],`);
+    lines.push(`  ['${file.slice(0, -3)}', require('./${file}')],`);
   }
 
   lines.push(']);\n\nexports.PacketHandlers = PacketHandlers;\n');
@@ -38,7 +38,7 @@ async function writeClientActionImports() {
 
     const actionName = file.slice(0, -3);
 
-    lines.push(`    this.register(require('./${actionName}').${actionName}Action);`);
+    lines.push(`    this.register(require('./${file}').${actionName}Action);`);
   }
 
   lines.push('  }\n');

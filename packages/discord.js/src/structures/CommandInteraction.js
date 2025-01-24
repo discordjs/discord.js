@@ -1,9 +1,9 @@
 'use strict';
 
-const { Attachment } = require('./Attachment');
-const { BaseInteraction } = require('./BaseInteraction');
-const { InteractionWebhook } = require('./InteractionWebhook');
-const { InteractionResponses } = require('./interfaces/InteractionResponses');
+const { Attachment } = require('./Attachment.js');
+const { BaseInteraction } = require('./BaseInteraction.js');
+const { InteractionWebhook } = require('./InteractionWebhook.js');
+const { InteractionResponses } = require('./interfaces/InteractionResponses.js');
 
 /**
  * Represents a command interaction.

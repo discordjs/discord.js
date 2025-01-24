@@ -1,7 +1,7 @@
 'use strict';
 
-exports.DiscordjsError = require('./DJSError').DiscordjsError;
-exports.DiscordjsTypeError = require('./DJSError').DiscordjsTypeError;
-exports.DiscordjsRangeError = require('./DJSError').DiscordjsRangeError;
-exports.ErrorCodes = require('./ErrorCodes').ErrorCodes;
-exports.Messages = require('./Messages').Messages;
+exports.DiscordjsError = require('./DJSError.js').DiscordjsError;
+exports.DiscordjsTypeError = require('./DJSError.js').DiscordjsTypeError;
+exports.DiscordjsRangeError = require('./DJSError.js').DiscordjsRangeError;
+exports.ErrorCodes = require('./ErrorCodes.js').ErrorCodes;
+exports.Messages = require('./Messages.js').Messages;

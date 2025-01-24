@@ -2,8 +2,8 @@
 
 const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager');
-const { AutoModerationRule } = require('../structures/AutoModerationRule');
+const { CachedManager } = require('./CachedManager.js');
+const { AutoModerationRule } = require('../structures/AutoModerationRule.js');
 
 /**
  * Manages API methods for auto moderation rules and stores their cache.

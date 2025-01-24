@@ -1,6 +1,6 @@
 'use strict';
 
-const { ErrorCodes } = require('./ErrorCodes');
+const { ErrorCodes } = require('./ErrorCodes.js');
 
 const Messages = {
   [ErrorCodes.ClientInvalidOption]: (prop, must) => `The ${prop} option must be ${must}`,

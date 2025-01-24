@@ -131,4 +131,19 @@ describe('Interaction with_response overloads.', () => {
 			}),
 		);
 	});
+
+	test('Launch activity returns undefined.', () => {
+		assertType<Promise<undefined>>(api.interactions.launchActivity(SNOWFLAKE, TOKEN, { with_response: false }));
+		assertType<Promise<undefined>>(api.interactions.launchActivity(SNOWFLAKE, TOKEN));
+	});
+
+	test('Launch activity returns RESTPostAPIInteractionCallbackWithResponseResult.', () =>
+		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult>>(
+			api.interactions.launchActivity(SNOWFLAKE, TOKEN, { with_response: true }),
+		));
+
+	test('Launch activity returns either RESTPostAPIInteractionCallbackWithResponseResult or undefined.', () =>
+		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>>(
+			api.interactions.launchActivity(SNOWFLAKE, TOKEN, { with_response: boolValue }),
+		));
 });

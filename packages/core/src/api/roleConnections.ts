@@ -19,8 +19,12 @@ export class RoleConnectionsAPI {
 	 * @param applicationId - The id of the application to get role connection metadata records for
 	 * @param options - The options for fetching the role connection metadata records
 	 */
-	public async getMetadataRecords(applicationId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async getMetadataRecords(
+		applicationId: Snowflake,
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+	) {
 		return this.rest.get(Routes.applicationRoleConnectionMetadata(applicationId), {
+			auth,
 			signal,
 		}) as Promise<RESTGetAPIApplicationRoleConnectionMetadataResult>;
 	}
@@ -36,9 +40,10 @@ export class RoleConnectionsAPI {
 	public async updateMetadataRecords(
 		applicationId: Snowflake,
 		body: RESTPutAPIApplicationRoleConnectionMetadataJSONBody,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
 		return this.rest.put(Routes.applicationRoleConnectionMetadata(applicationId), {
+			auth,
 			body,
 			signal,
 		}) as Promise<RESTPutAPIApplicationRoleConnectionMetadataResult>;

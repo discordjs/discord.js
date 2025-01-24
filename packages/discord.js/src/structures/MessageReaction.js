@@ -1,11 +1,11 @@
 'use strict';
 
 const { Routes } = require('discord-api-types/v10');
-const { ApplicationEmoji } = require('./ApplicationEmoji');
-const { GuildEmoji } = require('./GuildEmoji');
-const { ReactionEmoji } = require('./ReactionEmoji');
-const { ReactionUserManager } = require('../managers/ReactionUserManager');
-const { flatten } = require('../util/Util');
+const { ApplicationEmoji } = require('./ApplicationEmoji.js');
+const { GuildEmoji } = require('./GuildEmoji.js');
+const { ReactionEmoji } = require('./ReactionEmoji.js');
+const { ReactionUserManager } = require('../managers/ReactionUserManager.js');
+const { flatten } = require('../util/Util.js');
 
 /**
  * Represents a reaction to a message.

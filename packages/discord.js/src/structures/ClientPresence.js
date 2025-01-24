@@ -1,8 +1,8 @@
 'use strict';
 
 const { GatewayOpcodes, ActivityType } = require('discord-api-types/v10');
-const { Presence } = require('./Presence');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
+const { Presence } = require('./Presence.js');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 
 /**
  * Represents the client's presence.
