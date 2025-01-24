@@ -325,11 +325,11 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 	 * @example
 	 * Requesting soundboard sounds for specific guilds
 	 * ```ts
-	 * for await (const { soundboardSounds } of this.requestSoundboardSoundsIterator({
+	 * for await (const { guildId, soundboardSounds } of this.requestSoundboardSoundsIterator({
 	 *	guild_ids: ['1234567890', '9876543210'],
-	 * 	})) {
-	 *	console.log(soundboardSounds);
-	 *}
+	 * })) {
+	 *	console.log(`Soundboard sounds for guild ${guildId}:`, soundboardSounds);
+	 * }
 	 * ```
 	 */
 	public async *requestSoundboardSoundsIterator(options: GatewayRequestSoundboardSoundsData, timeout = 10_000) {
