@@ -6,7 +6,6 @@ const { Routes } = require('discord-api-types/v10');
 const { CachedManager } = require('./CachedManager.js');
 const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { GuildBan } = require('../structures/GuildBan.js');
-const { GuildMember } = require('../structures/GuildMember.js');
 
 /**
  * Manages API methods for guild bans and stores their cache.
@@ -136,15 +135,11 @@ class GuildBanManager extends CachedManager {
   /**
    * Bans a user from the guild.
    * @param {UserResolvable} user The user to ban
-   * @param {BanOptions} [options] Options for the ban
-   * @returns {Promise<GuildMember|User|Snowflake>} Result object will be resolved as specifically as possible.
-   * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
-   * be resolved, the user id will be the result.
+   * @param {BanOptions} [options={}] Options for the ban
+   * @returns {Promise<void>}
    * @example
    * // Ban a user by id (or with a user/guild member object)
-   * guild.bans.create('84484653687267328')
-   *   .then(banInfo => console.log(`Banned ${banInfo.user?.tag ?? banInfo.tag ?? banInfo}`))
-   *   .catch(console.error);
+   * await guild.bans.create('84484653687267328');
    */
   async create(user, options = {}) {
     if (typeof options !== 'object') throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
@@ -157,30 +152,21 @@ class GuildBanManager extends CachedManager {
       },
       reason: options.reason,
     });
-    if (user instanceof GuildMember) return user;
-    const _user = this.client.users.cache.get(id);
-    if (_user) {
-      return this.guild.members.resolve(_user) ?? _user;
-    }
-    return id;
   }
 
   /**
    * Unbans a user from the guild.
    * @param {UserResolvable} user The user to unban
    * @param {string} [reason] Reason for unbanning user
-   * @returns {Promise<?User>}
+   * @returns {Promise<void>}
    * @example
    * // Unban a user by id (or with a user/guild member object)
-   * guild.bans.remove('84484653687267328')
-   *   .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
-   *   .catch(console.error);
+   * await guild.bans.remove('84484653687267328');
    */
   async remove(user, reason) {
     const id = this.client.users.resolveId(user);
     if (!id) throw new DiscordjsError(ErrorCodes.BanResolveId);
     await this.client.rest.delete(Routes.guildBan(this.guild.id, id), { reason });
-    return this.client.users.resolve(user);
   }
 
   /**
