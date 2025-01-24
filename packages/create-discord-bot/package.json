@@ -58,7 +58,7 @@
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
 		"@favware/cliff-jumper": "^4.1.0",
-		"@types/node": "^20.17.10",
+		"@types/node": "^22.10.10",
 		"@types/prompts": "^2.4.9",
 		"@types/validate-npm-package-name": "^4.0.2",
 		"cross-env": "^7.0.3",
@@ -71,7 +71,7 @@
 		"typescript": "~5.5.4"
 	},
 	"engines": {
-		"node": ">=20"
+		"node": ">=22.12.0"
 	},
 	"publishConfig": {
 		"access": "public",

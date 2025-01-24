@@ -47,10 +47,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install Node.js v20
+      - name: Install Node.js v22
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           registry-url: https://registry.npmjs.org/
 
       - name: Check the current development version

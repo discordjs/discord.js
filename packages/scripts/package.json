@@ -74,7 +74,8 @@
 	},
 	"devDependencies": {
 		"@turbo/gen": "^2.3.3",
-		"@types/node": "^20.17.10",
+		"@types/node": "^22.10.10",
+		"@vitest/coverage-v8": "^2.1.8",
 		"cross-env": "^7.0.3",
 		"env-cmd": "^10.1.0",
 		"eslint": "^8.57.1",
@@ -86,6 +87,6 @@
 		"typescript": "~5.5.4"
 	},
 	"engines": {
-		"node": ">=20"
+		"node": ">=22.12.0"
 	}
 }
