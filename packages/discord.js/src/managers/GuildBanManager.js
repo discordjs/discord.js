@@ -97,14 +97,14 @@ class GuildBanManager extends CachedManager {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  fetch(options) {
+  async fetch(options) {
     if (!options) return this._fetchMany();
     const { user, cache, force, limit, before, after } = options;
     const resolvedUser = this.client.users.resolveId(user ?? options);
     if (resolvedUser) return this._fetchSingle({ user: resolvedUser, cache, force });
 
     if (!before && !after && !limit && cache === undefined) {
-      return Promise.reject(new DiscordjsError(ErrorCodes.FetchBanResolveId));
+      throw new DiscordjsError(ErrorCodes.FetchBanResolveId);
     }
 
     return this._fetchMany(options);

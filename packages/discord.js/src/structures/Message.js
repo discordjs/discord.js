@@ -824,8 +824,8 @@ class Message extends Base {
    *   .then(msg => console.log(`Updated the content of a message to ${msg.content}`))
    *   .catch(console.error);
    */
-  edit(options) {
-    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
+  async edit(options) {
+    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
     return this.channel.messages.edit(this, options);
   }
 
@@ -840,8 +840,8 @@ class Message extends Base {
    *     .catch(console.error);
    * }
    */
-  crosspost() {
-    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
+  async crosspost() {
+    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
     return this.channel.messages.crosspost(this.id);
   }
 
@@ -939,8 +939,8 @@ class Message extends Base {
    *   .then(() => console.log(`Replied to message "${message.content}"`))
    *   .catch(console.error);
    */
-  reply(options) {
-    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
+  async reply(options) {
+    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
     let data;
 
     if (options instanceof MessagePayload) {
@@ -972,12 +972,12 @@ class Message extends Base {
    * @param {StartThreadOptions} [options] Options for starting a thread on this message
    * @returns {Promise<ThreadChannel>}
    */
-  startThread(options = {}) {
-    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
+  async startThread(options = {}) {
+    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
     if (![ChannelType.GuildText, ChannelType.GuildAnnouncement].includes(this.channel.type)) {
-      return Promise.reject(new DiscordjsError(ErrorCodes.MessageThreadParent));
+      throw new DiscordjsError(ErrorCodes.MessageThreadParent);
     }
-    if (this.hasThread) return Promise.reject(new DiscordjsError(ErrorCodes.MessageExistingThread));
+    if (this.hasThread) throw new DiscordjsError(ErrorCodes.MessageExistingThread);
     return this.channel.threads.create({ ...options, startMessage: this });
   }
 
@@ -986,8 +986,8 @@ class Message extends Base {
    * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<Message>}
    */
-  fetch(force = true) {
-    if (!this.channel) return Promise.reject(new DiscordjsError(ErrorCodes.ChannelNotCached));
+  async fetch(force = true) {
+    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
     return this.channel.messages.fetch({ message: this.id, force });
   }
 
@@ -995,9 +995,9 @@ class Message extends Base {
    * Fetches the webhook used to create this message.
    * @returns {Promise<?Webhook>}
    */
-  fetchWebhook() {
-    if (!this.webhookId) return Promise.reject(new DiscordjsError(ErrorCodes.WebhookMessage));
-    if (this.webhookId === this.applicationId) return Promise.reject(new DiscordjsError(ErrorCodes.WebhookApplication));
+  async fetchWebhook() {
+    if (!this.webhookId) throw new DiscordjsError(ErrorCodes.WebhookMessage);
+    if (this.webhookId === this.applicationId) throw new DiscordjsError(ErrorCodes.WebhookApplication);
     return this.client.fetchWebhook(this.webhookId);
   }
 
