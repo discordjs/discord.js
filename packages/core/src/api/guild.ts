@@ -238,7 +238,7 @@ export class GuildsAPI {
 	}
 
 	/**
-	 * Fetches all the members of a guild
+	 * Fetches members of a guild.
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/guild#list-guild-members}
 	 * @param guildId - The id of the guild
