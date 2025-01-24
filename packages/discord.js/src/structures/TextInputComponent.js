@@ -1,6 +1,6 @@
 'use strict';
 
-const { Component } = require('./Component');
+const { Component } = require('./Component.js');
 
 /**
  * Represents a text input component.

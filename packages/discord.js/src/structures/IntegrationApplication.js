@@ -1,6 +1,6 @@
 'use strict';
 
-const { Application } = require('./interfaces/Application');
+const { Application } = require('./interfaces/Application.js');
 
 /**
  * Represents an Integration's OAuth2 Application.

@@ -1,8 +1,8 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { Base } = require('./Base');
-const { _transformAPIAutoModerationAction } = require('../util/Transformers');
+const { Base } = require('./Base.js');
+const { _transformAPIAutoModerationAction } = require('../util/Transformers.js');
 
 /**
  * Represents an auto moderation rule.

@@ -1,7 +1,7 @@
 'use strict';
 
-const { Base } = require('./Base');
-const { SKUFlagsBitField } = require('../util/SKUFlagsBitField');
+const { Base } = require('./Base.js');
+const { SKUFlagsBitField } = require('../util/SKUFlagsBitField.js');
 
 /**
  * Represents a premium application SKU.

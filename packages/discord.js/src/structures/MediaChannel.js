@@ -1,6 +1,6 @@
 'use strict';
 
-const { ThreadOnlyChannel } = require('./ThreadOnlyChannel');
+const { ThreadOnlyChannel } = require('./ThreadOnlyChannel.js');
 
 /**
  * Represents a media channel.

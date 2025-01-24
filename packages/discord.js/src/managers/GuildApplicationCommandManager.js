@@ -1,7 +1,7 @@
 'use strict';
 
-const { ApplicationCommandManager } = require('./ApplicationCommandManager');
-const { ApplicationCommandPermissionsManager } = require('./ApplicationCommandPermissionsManager');
+const { ApplicationCommandManager } = require('./ApplicationCommandManager.js');
+const { ApplicationCommandPermissionsManager } = require('./ApplicationCommandPermissionsManager.js');
 
 /**
  * An extension for guild-specific application commands.

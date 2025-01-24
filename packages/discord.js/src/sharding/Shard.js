@@ -6,9 +6,9 @@ const { setTimeout, clearTimeout } = require('node:timers');
 const { setTimeout: sleep } = require('node:timers/promises');
 const { SHARE_ENV } = require('node:worker_threads');
 const { AsyncEventEmitter } = require('@vladfrangu/async_event_emitter');
-const { DiscordjsError, ErrorCodes } = require('../errors');
-const { ShardEvents } = require('../util/ShardEvents');
-const { makeError, makePlainError } = require('../util/Util');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
+const { ShardEvents } = require('../util/ShardEvents.js');
+const { makeError, makePlainError } = require('../util/Util.js');
 
 let childProcess = null;
 let Worker = null;
@@ -120,7 +120,7 @@ class Shard extends AsyncEventEmitter {
    * before resolving (`-1` or `Infinity` for no wait)
    * @returns {Promise<ChildProcess>}
    */
-  spawn(timeout = 30_000) {
+  async spawn(timeout = 30_000) {
     if (this.process) throw new DiscordjsError(ErrorCodes.ShardingProcessExists, this.id);
     if (this.worker) throw new DiscordjsError(ErrorCodes.ShardingWorkerExists, this.id);
 
@@ -161,7 +161,7 @@ class Shard extends AsyncEventEmitter {
      */
     this.emit(ShardEvents.Spawn, child);
 
-    if (timeout === -1 || timeout === Infinity) return Promise.resolve(child);
+    if (timeout === -1 || timeout === Infinity) return child;
     return new Promise((resolve, reject) => {
       const cleanup = () => {
         clearTimeout(spawnTimeoutTimer);
@@ -260,10 +260,10 @@ class Shard extends AsyncEventEmitter {
    *   .then(count => console.log(`${count} guilds in shard ${shard.id}`))
    *   .catch(console.error);
    */
-  fetchClientValue(prop) {
+  async fetchClientValue(prop) {
     // Shard is dead (maybe respawning), don't cache anything and error immediately
     if (!this.process && !this.worker) {
-      return Promise.reject(new DiscordjsError(ErrorCodes.ShardingNoChildExists, this.id));
+      throw new DiscordjsError(ErrorCodes.ShardingNoChildExists, this.id);
     }
 
     // Cached promise from previous call
@@ -302,13 +302,13 @@ class Shard extends AsyncEventEmitter {
    * @param {*} [context] The context for the eval
    * @returns {Promise<*>} Result of the script execution
    */
-  eval(script, context) {
+  async eval(script, context) {
     // Stringify the script if it's a Function
     const _eval = typeof script === 'function' ? `(${script})(this, ${JSON.stringify(context)})` : script;
 
     // Shard is dead (maybe respawning), don't cache anything and error immediately
     if (!this.process && !this.worker) {
-      return Promise.reject(new DiscordjsError(ErrorCodes.ShardingNoChildExists, this.id));
+      throw new DiscordjsError(ErrorCodes.ShardingNoChildExists, this.id);
     }
 
     // Cached promise from previous call

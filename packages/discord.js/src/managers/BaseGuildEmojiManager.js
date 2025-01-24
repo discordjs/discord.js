@@ -1,10 +1,10 @@
 'use strict';
 
-const { CachedManager } = require('./CachedManager');
-const { ApplicationEmoji } = require('../structures/ApplicationEmoji');
-const { GuildEmoji } = require('../structures/GuildEmoji');
-const { ReactionEmoji } = require('../structures/ReactionEmoji');
-const { parseEmoji } = require('../util/Util');
+const { CachedManager } = require('./CachedManager.js');
+const { ApplicationEmoji } = require('../structures/ApplicationEmoji.js');
+const { GuildEmoji } = require('../structures/GuildEmoji.js');
+const { ReactionEmoji } = require('../structures/ReactionEmoji.js');
+const { parseEmoji } = require('../util/Util.js');
 
 /**
  * Holds methods to resolve GuildEmojis and stores their cache.

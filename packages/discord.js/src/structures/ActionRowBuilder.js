@@ -27,8 +27,8 @@ class ActionRowBuilder extends BuildersActionRow {
 
 exports.ActionRowBuilder = ActionRowBuilder;
 
-const { createComponentBuilder } = require('../util/Components');
-const { toSnakeCase } = require('../util/Transformers');
+const { createComponentBuilder } = require('../util/Components.js');
+const { toSnakeCase } = require('../util/Transformers.js');
 
 /**
  * @external BuildersActionRow

@@ -1,7 +1,7 @@
 'use strict';
 
 const { ApplicationCommandOptionType } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 
 /**
  * A resolver for command interaction options.

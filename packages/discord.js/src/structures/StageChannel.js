@@ -1,6 +1,6 @@
 'use strict';
 
-const { BaseGuildVoiceChannel } = require('./BaseGuildVoiceChannel');
+const { BaseGuildVoiceChannel } = require('./BaseGuildVoiceChannel.js');
 
 /**
  * Represents a guild stage channel on Discord.

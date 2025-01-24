@@ -3,12 +3,12 @@
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const { Message } = require('../structures/Message');
-const { MessagePayload } = require('../structures/MessagePayload');
-const { MakeCacheOverrideSymbol } = require('../util/Symbols');
-const { resolvePartialEmoji } = require('../util/Util');
+const { CachedManager } = require('./CachedManager.js');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { Message } = require('../structures/Message.js');
+const { MessagePayload } = require('../structures/MessagePayload.js');
+const { MakeCacheOverrideSymbol } = require('../util/Symbols.js');
+const { resolvePartialEmoji } = require('../util/Util.js');
 
 /**
  * Manages API methods for Messages and holds their cache.

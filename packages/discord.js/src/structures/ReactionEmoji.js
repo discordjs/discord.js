@@ -1,7 +1,7 @@
 'use strict';
 
-const { Emoji } = require('./Emoji');
-const { flatten } = require('../util/Util');
+const { Emoji } = require('./Emoji.js');
+const { flatten } = require('../util/Util.js');
 
 /**
  * Represents a limited emoji set used for both custom and unicode emojis. Custom emojis
