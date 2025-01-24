@@ -47,7 +47,6 @@ class GuildScheduledEventManager extends CachedManager {
    * @property {?GuildScheduledEventRecurrenceRuleNWeekday[]} byNWeekday The days within a week to recur on
    * @property {?GuildScheduledEventRecurrenceRuleMonth[]} byMonth The months to recur on
    * @property {?number[]} byMonthDay The days within a month to recur on
-   * @property {?number[]} byYearDay The days within a year to recur on
    */
 
   /**
