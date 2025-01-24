@@ -1463,7 +1463,7 @@ export class Guild extends AnonymousGuild {
   ): Promise<Guild>;
   public setIcon(icon: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
   public setName(name: string, reason?: string): Promise<Guild>;
-  public setOwner(owner: GuildMemberResolvable, reason?: string): Promise<Guild>;
+  public setOwner(owner: UserResolvable, reason?: string): Promise<Guild>;
   public setPreferredLocale(preferredLocale: Locale | null, reason?: string): Promise<Guild>;
   public setPublicUpdatesChannel(publicUpdatesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setRulesChannel(rulesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
@@ -1564,7 +1564,7 @@ export abstract class GuildChannel extends BaseChannel {
   public lockPermissions(): Promise<this>;
   public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<PermissionsBitField>;
   public permissionsFor(
-    memberOrRole: GuildMemberResolvable | RoleResolvable,
+    memberOrRole: UserResolvable | RoleResolvable,
     checkAdmin?: boolean,
   ): Readonly<PermissionsBitField> | null;
   public setName(name: string, reason?: string): Promise<this>;
@@ -3321,7 +3321,7 @@ export class ThreadChannel<ThreadOnly extends boolean = boolean> extends BaseCha
   public leave(): Promise<this>;
   public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<PermissionsBitField>;
   public permissionsFor(
-    memberOrRole: GuildMemberResolvable | RoleResolvable,
+    memberOrRole: UserResolvable | RoleResolvable,
     checkAdmin?: boolean,
   ): Readonly<PermissionsBitField> | null;
   public fetchOwner(options?: FetchThreadOwnerOptions): Promise<ThreadMember>;
@@ -4177,12 +4177,12 @@ export class GuildManager extends CachedManager<Snowflake, Guild, GuildResolvabl
 }
 
 export interface AddOrRemoveGuildMemberRoleOptions {
-  user: GuildMemberResolvable;
+  user: UserResolvable;
   role: RoleResolvable;
   reason?: string;
 }
 
-export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, GuildMemberResolvable> {
+export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, UserResolvable> {
   private constructor(guild: Guild, iterable?: Iterable<RawGuildMemberData>);
   public guild: Guild;
   public get me(): GuildMember | null;
@@ -4474,7 +4474,7 @@ export class UserManager extends CachedManager<Snowflake, User, UserResolvable> 
 export class VoiceStateManager extends CachedManager<Snowflake, VoiceState, typeof VoiceState> {
   private constructor(guild: Guild, iterable?: Iterable<RawVoiceStateData>);
   public guild: Guild;
-  public fetch(member: GuildMemberResolvable | '@me', options?: BaseFetchOptions): Promise<VoiceState>;
+  public fetch(member: UserResolvable | '@me', options?: BaseFetchOptions): Promise<VoiceState>;
 }
 
 //#endregion
@@ -5856,7 +5856,7 @@ export interface GuildEditOptions {
   afkTimeout?: number;
   afkChannel?: VoiceChannelResolvable | null;
   icon?: BufferResolvable | Base64Resolvable | null;
-  owner?: GuildMemberResolvable;
+  owner?: UserResolvable;
   splash?: BufferResolvable | Base64Resolvable | null;
   discoverySplash?: BufferResolvable | Base64Resolvable | null;
   banner?: BufferResolvable | Base64Resolvable | null;
@@ -5910,8 +5910,6 @@ export interface GuildMemberEditOptions {
   flags?: GuildMemberFlagsResolvable;
   reason?: string;
 }
-
-export type GuildMemberResolvable = GuildMember | UserResolvable;
 
 export type GuildResolvable = Guild | NonThreadGuildBasedChannel | GuildMember | GuildEmoji | Invite | Role | Snowflake;
 
@@ -6434,7 +6432,7 @@ export interface MultipleShardSpawnOptions {
 export interface BaseOverwriteData {
   allow?: PermissionResolvable;
   deny?: PermissionResolvable;
-  id: GuildMemberResolvable | RoleResolvable;
+  id: UserResolvable | RoleResolvable;
   type?: OverwriteType;
 }
 
@@ -6443,7 +6441,7 @@ export interface OverwriteDataWithMandatoryType extends BaseOverwriteData {
 }
 
 export interface OverwriteDataWithOptionalType extends BaseOverwriteData {
-  id: Exclude<GuildMemberResolvable | RoleResolvable, Snowflake>;
+  id: Exclude<UserResolvable | RoleResolvable, Snowflake>;
 }
 
 export type OverwriteData = OverwriteDataWithMandatoryType | OverwriteDataWithOptionalType;
