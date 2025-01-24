@@ -5,7 +5,7 @@
 	"description": "A set of actions that we use for our workflows",
 	"private": true,
 	"scripts": {
-		"test": "vitest run && tsc --project ./tsconfig.test.json",
+		"test": "vitest run --config ../../vitest.config.ts",
 		"build": "tsc --noEmit --lib ESNext,DOM && tsup",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",

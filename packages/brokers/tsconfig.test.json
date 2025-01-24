@@ -3,8 +3,8 @@
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
 		"noEmit": true,
-		"lib": ["ESNext", "DOM"]
+		"skipLibCheck": true
 	},
-	"include": ["__tests__/**/*.ts", "../../vitest.d.ts"],
+	"include": ["__tests__/**/*.ts"],
 	"exclude": ["node_modules"]
 }

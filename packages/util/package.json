@@ -6,7 +6,7 @@
 	"scripts": {
 		"build": "tsc --noEmit && tsup",
 		"build:docs": "tsc -p tsconfig.docs.json",
-		"test": "vitest run && tsc --project ./tsconfig.test.json",
+		"test": "vitest run --config ../../vitest.config.ts",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
 		"fmt": "pnpm run format",

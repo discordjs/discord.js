@@ -6,9 +6,7 @@ declare const manager: WebSocketManager;
 declare const eventMap: ManagerShardEventsMap;
 
 type AugmentedShardEventsMap = {
-	[K in keyof WebSocketShardEventsMap]: [
-		WebSocketShardEventsMap[K] extends [] ? { shardId: number } : WebSocketShardEventsMap[K][0] & { shardId: number },
-	];
+	[K in keyof WebSocketShardEventsMap]: [...WebSocketShardEventsMap[K], shardId: number];
 };
 
 expectType<AugmentedShardEventsMap>(eventMap);

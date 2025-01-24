@@ -4,7 +4,7 @@
 	"version": "2.0.0",
 	"description": "A thinly abstracted wrapper around the rest API, and gateway.",
 	"scripts": {
-		"test": "vitest run && tsc --project ./tsconfig.test.json",
+		"test": "vitest run --config ../../vitest.config.ts",
 		"build": "tsc --noEmit && tsup",
 		"build:docs": "tsc -p tsconfig.docs.json",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",

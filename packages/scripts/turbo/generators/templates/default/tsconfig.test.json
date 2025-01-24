@@ -2,8 +2,8 @@
 	"$schema": "https://json.schemastore.org/tsconfig.json",
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
-			"noEmit": true
+		"noEmit": true
 	},
-	"include": ["__tests__/**/*.ts", "../../vitest.d.ts"],
+	"include": ["__tests__/**/*.ts"],
 	"exclude": ["node_modules"]
 }
