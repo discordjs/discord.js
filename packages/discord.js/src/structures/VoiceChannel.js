@@ -1,7 +1,7 @@
 'use strict';
 
 const { PermissionFlagsBits } = require('discord-api-types/v10');
-const { BaseGuildVoiceChannel } = require('./BaseGuildVoiceChannel');
+const { BaseGuildVoiceChannel } = require('./BaseGuildVoiceChannel.js');
 
 /**
  * Represents a guild voice channel on Discord.

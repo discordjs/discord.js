@@ -2,7 +2,7 @@
 
 const { lazy } = require('@discordjs/util');
 
-const getMessage = lazy(() => require('./Message').Message);
+const getMessage = lazy(() => require('./Message.js').Message);
 
 /**
  * Represents the resource that was created by the interaction response.

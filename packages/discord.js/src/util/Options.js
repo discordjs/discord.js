@@ -2,7 +2,7 @@
 
 const { DefaultRestOptions, DefaultUserAgentAppendix } = require('@discordjs/rest');
 const { DefaultWebSocketManagerOptions } = require('@discordjs/ws');
-const { toSnakeCase } = require('./Transformers');
+const { toSnakeCase } = require('./Transformers.js');
 const { version } = require('../../package.json');
 
 // TODO(ckohen): switch order of params so full manager is first and "type" is optional
@@ -113,7 +113,7 @@ class Options extends null {
    */
   static cacheWithLimits(settings = {}) {
     const { Collection } = require('@discordjs/collection');
-    const { LimitedCollection } = require('./LimitedCollection');
+    const { LimitedCollection } = require('./LimitedCollection.js');
 
     return (managerType, _, manager) => {
       const setting = settings[manager.name] ?? settings[managerType.name];

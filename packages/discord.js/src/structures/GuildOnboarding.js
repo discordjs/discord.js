@@ -1,8 +1,8 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { Base } = require('./Base');
-const { GuildOnboardingPrompt } = require('./GuildOnboardingPrompt');
+const { Base } = require('./Base.js');
+const { GuildOnboardingPrompt } = require('./GuildOnboardingPrompt.js');
 
 /**
  * Represents the onboarding data of a guild.

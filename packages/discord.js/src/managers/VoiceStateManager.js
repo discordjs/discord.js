@@ -1,8 +1,8 @@
 'use strict';
 
 const { Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager');
-const { VoiceState } = require('../structures/VoiceState');
+const { CachedManager } = require('./CachedManager.js');
+const { VoiceState } = require('../structures/VoiceState.js');
 
 /**
  * Manages API methods for VoiceStates and stores their cache.

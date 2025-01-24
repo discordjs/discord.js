@@ -1,6 +1,6 @@
 'use strict';
 
-const { Webhook } = require('./Webhook');
+const { Webhook } = require('./Webhook.js');
 
 /**
  * Represents a webhook for an Interaction

@@ -2,8 +2,8 @@
 
 const { EmbedBuilder: BuildersEmbed, embedLength } = require('@discordjs/builders');
 const { isJSONEncodable } = require('@discordjs/util');
-const { toSnakeCase } = require('../util/Transformers');
-const { resolveColor } = require('../util/Util');
+const { toSnakeCase } = require('../util/Transformers.js');
+const { resolveColor } = require('../util/Util.js');
 
 /**
  * Represents an embed builder.

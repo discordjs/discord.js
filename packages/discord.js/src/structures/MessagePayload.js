@@ -3,11 +3,11 @@
 const { Buffer } = require('node:buffer');
 const { isJSONEncodable } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ActionRowBuilder } = require('./ActionRowBuilder');
-const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors');
-const { resolveFile } = require('../util/DataResolver');
-const { MessageFlagsBitField } = require('../util/MessageFlagsBitField');
-const { basename, verifyString, resolvePartialEmoji } = require('../util/Util');
+const { ActionRowBuilder } = require('./ActionRowBuilder.js');
+const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
+const { resolveFile } = require('../util/DataResolver.js');
+const { MessageFlagsBitField } = require('../util/MessageFlagsBitField.js');
+const { basename, verifyString, resolvePartialEmoji } = require('../util/Util.js');
 
 /**
  * Represents a message to be sent to the API.
@@ -49,8 +49,8 @@ class MessagePayload {
    * @readonly
    */
   get isWebhook() {
-    const { Webhook } = require('./Webhook');
-    const { WebhookClient } = require('../client/WebhookClient');
+    const { Webhook } = require('./Webhook.js');
+    const { WebhookClient } = require('../client/WebhookClient.js');
     return this.target instanceof Webhook || this.target instanceof WebhookClient;
   }
 
@@ -60,8 +60,8 @@ class MessagePayload {
    * @readonly
    */
   get isUser() {
-    const { User } = require('./User');
-    const { GuildMember } = require('./GuildMember');
+    const { User } = require('./User.js');
+    const { GuildMember } = require('./GuildMember.js');
     return this.target instanceof User || this.target instanceof GuildMember;
   }
 
@@ -71,7 +71,7 @@ class MessagePayload {
    * @readonly
    */
   get isMessage() {
-    const { Message } = require('./Message');
+    const { Message } = require('./Message.js');
     return this.target instanceof Message;
   }
 
@@ -81,7 +81,7 @@ class MessagePayload {
    * @readonly
    */
   get isMessageManager() {
-    const { MessageManager } = require('../managers/MessageManager');
+    const { MessageManager } = require('../managers/MessageManager.js');
     return this.target instanceof MessageManager;
   }
 

@@ -1,7 +1,7 @@
 'use strict';
 
-const { BaseGuild } = require('./BaseGuild');
-const { PermissionsBitField } = require('../util/PermissionsBitField');
+const { BaseGuild } = require('./BaseGuild.js');
+const { PermissionsBitField } = require('../util/PermissionsBitField.js');
 
 /**
  * A partial guild received when using {@link GuildManager#fetch} to fetch multiple guilds.

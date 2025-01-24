@@ -1,6 +1,6 @@
 'use strict';
 
-const { BaseGuild } = require('./BaseGuild');
+const { BaseGuild } = require('./BaseGuild.js');
 
 /**
  * Bundles common attributes and methods between {@link Guild} and {@link InviteGuild}

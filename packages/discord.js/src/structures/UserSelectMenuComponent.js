@@ -1,6 +1,6 @@
 'use strict';
 
-const { BaseSelectMenuComponent } = require('./BaseSelectMenuComponent');
+const { BaseSelectMenuComponent } = require('./BaseSelectMenuComponent.js');
 
 /**
  * Represents a user select menu component
