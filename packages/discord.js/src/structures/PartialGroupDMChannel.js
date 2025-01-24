@@ -100,12 +100,12 @@ class PartialGroupDMChannel extends BaseChannel {
     return this.client.users.fetch(this.ownerId, options);
   }
 
-  delete() {
-    return Promise.reject(new DiscordjsError(ErrorCodes.DeleteGroupDMChannel));
+  async delete() {
+    throw new DiscordjsError(ErrorCodes.DeleteGroupDMChannel);
   }
 
-  fetch() {
-    return Promise.reject(new DiscordjsError(ErrorCodes.FetchGroupDMChannel));
+  async fetch() {
+    throw new DiscordjsError(ErrorCodes.FetchGroupDMChannel);
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
