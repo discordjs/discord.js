@@ -478,19 +478,21 @@ client.on('messageCreate', async message => {
   buttonCollector.on('end', (...args) => expectType<[ReadonlyCollection<Snowflake, ButtonInteraction>, string]>(args));
 
   // Verify that select menus interaction are inferred.
-  const selectMenuCollector = message.createMessageComponentCollector({ componentType: ComponentType.StringSelect });
+  const stringSelectMenuCollector = message.createMessageComponentCollector({
+    componentType: ComponentType.StringSelect,
+  });
   expectAssignable<Promise<StringSelectMenuInteraction>>(
     message.awaitMessageComponent({ componentType: ComponentType.StringSelect }),
   );
   expectAssignable<Promise<StringSelectMenuInteraction>>(
     channel.awaitMessageComponent({ componentType: ComponentType.StringSelect }),
   );
-  expectAssignable<InteractionCollector<StringSelectMenuInteraction>>(selectMenuCollector);
+  expectAssignable<InteractionCollector<StringSelectMenuInteraction>>(stringSelectMenuCollector);
 
-  selectMenuCollector.on('collect', (...args) => expectType<[SelectMenuInteraction]>(args));
-  selectMenuCollector.on('dispose', (...args) => expectType<[SelectMenuInteraction]>(args));
-  selectMenuCollector.on('end', (...args) =>
-    expectType<[ReadonlyCollection<Snowflake, SelectMenuInteraction>, string]>(args),
+  stringSelectMenuCollector.on('collect', (...args) => expectType<[StringSelectMenuInteraction]>(args));
+  stringSelectMenuCollector.on('dispose', (...args) => expectType<[StringSelectMenuInteraction]>(args));
+  stringSelectMenuCollector.on('end', (...args) =>
+    expectType<[ReadonlyCollection<Snowflake, StringSelectMenuInteraction>, string]>(args),
   );
 
   // Verify that message component interactions are default collected types.
@@ -499,10 +501,10 @@ client.on('messageCreate', async message => {
   expectAssignable<Promise<MessageComponentInteraction>>(channel.awaitMessageComponent());
   expectAssignable<InteractionCollector<CollectedMessageInteraction>>(defaultCollector);
 
-  defaultCollector.on('collect', (...args) => expectType<[MessageComponentInteraction]>(args));
-  defaultCollector.on('dispose', (...args) => expectType<[MessageComponentInteraction]>(args));
+  defaultCollector.on('collect', (...args) => expectType<[SelectMenuInteraction | ButtonInteraction]>(args));
+  defaultCollector.on('dispose', (...args) => expectType<[SelectMenuInteraction | ButtonInteraction]>(args));
   defaultCollector.on('end', (...args) =>
-    expectType<[ReadonlyCollection<Snowflake, MessageComponentInteraction>, string]>(args),
+    expectType<[ReadonlyCollection<Snowflake, SelectMenuInteraction | ButtonInteraction>, string]>(args),
   );
 
   // Verify that additional options don't affect default collector types.
