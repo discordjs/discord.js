@@ -1,8 +1,8 @@
 'use strict';
 
 const { Routes } = require('discord-api-types/v10');
-const User = require('./User');
-const { resolveImage } = require('../util/DataResolver');
+const { User } = require('./User.js');
+const { resolveImage } = require('../util/DataResolver.js');
 
 /**
  * Represents the logged in client's Discord user.
@@ -203,4 +203,4 @@ class ClientUser extends User {
   }
 }
 
-module.exports = ClientUser;
+exports.ClientUser = ClientUser;

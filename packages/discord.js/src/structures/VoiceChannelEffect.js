@@ -1,6 +1,6 @@
 'use strict';
 
-const { Emoji } = require('./Emoji');
+const { Emoji } = require('./Emoji.js');
 
 /**
  * Represents an effect used in a {@link VoiceChannel}.
@@ -66,4 +66,4 @@ class VoiceChannelEffect {
   }
 }
 
-module.exports = VoiceChannelEffect;
+exports.VoiceChannelEffect = VoiceChannelEffect;

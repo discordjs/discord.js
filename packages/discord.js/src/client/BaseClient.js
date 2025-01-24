@@ -1,19 +1,19 @@
 'use strict';
 
-const EventEmitter = require('node:events');
 const { REST } = require('@discordjs/rest');
+const { AsyncEventEmitter } = require('@vladfrangu/async_event_emitter');
 const { Routes } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const Options = require('../util/Options');
-const { flatten } = require('../util/Util');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { Options } = require('../util/Options.js');
+const { flatten } = require('../util/Util.js');
 
 /**
  * The base class for all clients.
- * @extends {EventEmitter}
+ * @extends {AsyncEventEmitter}
  */
-class BaseClient extends EventEmitter {
+class BaseClient extends AsyncEventEmitter {
   constructor(options = {}) {
-    super({ captureRejections: true });
+    super();
 
     if (typeof options !== 'object' || options === null) {
       throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
@@ -112,7 +112,7 @@ class BaseClient extends EventEmitter {
   }
 }
 
-module.exports = BaseClient;
+exports.BaseClient = BaseClient;
 
 /**
  * @external REST

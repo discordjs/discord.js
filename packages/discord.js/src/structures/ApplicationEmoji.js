@@ -1,6 +1,6 @@
 'use strict';
 
-const { Emoji } = require('./Emoji');
+const { Emoji } = require('./Emoji.js');
 
 /**
  * Represents a custom emoji.
@@ -115,4 +115,4 @@ class ApplicationEmoji extends Emoji {
   }
 }
 
-module.exports = ApplicationEmoji;
+exports.ApplicationEmoji = ApplicationEmoji;

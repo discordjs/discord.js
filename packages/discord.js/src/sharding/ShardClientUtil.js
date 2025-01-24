@@ -3,9 +3,9 @@
 const process = require('node:process');
 const { calculateShardId } = require('@discordjs/util');
 const { WebSocketShardEvents } = require('@discordjs/ws');
-const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
-const Events = require('../util/Events');
-const { makeError, makePlainError } = require('../util/Util');
+const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { Events } = require('../util/Events.js');
+const { makeError, makePlainError } = require('../util/Util.js');
 
 /**
  * Helper class for sharded clients spawned as a child process/worker, such as from a {@link ShardingManager}.
@@ -242,7 +242,7 @@ class ShardClientUtil {
 
   /**
    * Increments max listeners by one for a given emitter, if they are not zero.
-   * @param {EventEmitter|process} emitter The emitter that emits the events.
+   * @param {Worker|ChildProcess} emitter The emitter that emits the events.
    * @private
    */
   incrementMaxListeners(emitter) {
@@ -254,7 +254,7 @@ class ShardClientUtil {
 
   /**
    * Decrements max listeners by one for a given emitter, if they are not zero.
-   * @param {EventEmitter|process} emitter The emitter that emits the events.
+   * @param {Worker|ChildProcess} emitter The emitter that emits the events.
    * @private
    */
   decrementMaxListeners(emitter) {
@@ -265,4 +265,4 @@ class ShardClientUtil {
   }
 }
 
-module.exports = ShardClientUtil;
+exports.ShardClientUtil = ShardClientUtil;

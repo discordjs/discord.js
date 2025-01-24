@@ -2,11 +2,11 @@
 
 const process = require('node:process');
 const { Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
-const { BaseChannel } = require('../structures/BaseChannel');
-const { createChannel } = require('../util/Channels');
-const { ThreadChannelTypes } = require('../util/Constants');
-const Events = require('../util/Events');
+const { CachedManager } = require('./CachedManager.js');
+const { BaseChannel } = require('../structures/BaseChannel.js');
+const { createChannel } = require('../util/Channels.js');
+const { ThreadChannelTypes } = require('../util/Constants.js');
+const { Events } = require('../util/Events.js');
 
 let cacheWarningEmitted = false;
 
@@ -125,4 +125,4 @@ class ChannelManager extends CachedManager {
   }
 }
 
-module.exports = ChannelManager;
+exports.ChannelManager = ChannelManager;

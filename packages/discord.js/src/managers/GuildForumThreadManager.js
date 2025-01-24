@@ -1,9 +1,9 @@
 'use strict';
 
 const { Routes } = require('discord-api-types/v10');
-const ThreadManager = require('./ThreadManager');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const MessagePayload = require('../structures/MessagePayload');
+const { ThreadManager } = require('./ThreadManager.js');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { MessagePayload } = require('../structures/MessagePayload.js');
 
 /**
  * Manages API methods for threads in forum channels and stores their cache.
@@ -80,4 +80,4 @@ class GuildForumThreadManager extends ThreadManager {
   }
 }
 
-module.exports = GuildForumThreadManager;
+exports.GuildForumThreadManager = GuildForumThreadManager;

@@ -1,11 +1,11 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const ApplicationCommand = require('./ApplicationCommand');
-const GuildAuditLogsEntry = require('./GuildAuditLogsEntry');
-const Integration = require('./Integration');
-const Webhook = require('./Webhook');
-const { flatten } = require('../util/Util');
+const { ApplicationCommand } = require('./ApplicationCommand.js');
+const { GuildAuditLogsEntry } = require('./GuildAuditLogsEntry.js');
+const { Integration } = require('./Integration.js');
+const { Webhook } = require('./Webhook.js');
+const { flatten } = require('../util/Util.js');
 
 /**
  * Audit logs entries are held in this class.
@@ -88,4 +88,4 @@ class GuildAuditLogs {
   }
 }
 
-module.exports = GuildAuditLogs;
+exports.GuildAuditLogs = GuildAuditLogs;

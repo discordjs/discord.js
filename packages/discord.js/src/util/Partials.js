@@ -1,6 +1,6 @@
 'use strict';
 
-const { createEnum } = require('./Enums');
+const { createEnum } = require('./Enums.js');
 
 /**
  * The enumeration for partials.
@@ -33,7 +33,7 @@ const { createEnum } = require('./Enums');
  * @type {Partials}
  * @ignore
  */
-module.exports = createEnum([
+exports.Partials = createEnum([
   'User',
   'Channel',
   'GuildMember',

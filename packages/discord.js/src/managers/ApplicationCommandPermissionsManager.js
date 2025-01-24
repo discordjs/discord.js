@@ -2,8 +2,8 @@
 
 const { Collection } = require('@discordjs/collection');
 const { ApplicationCommandPermissionType, RESTJSONErrorCodes, Routes } = require('discord-api-types/v10');
-const BaseManager = require('./BaseManager');
-const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
+const { BaseManager } = require('./BaseManager.js');
+const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 
 /**
  * Manages API methods for permissions of Application Commands.
@@ -419,7 +419,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
   }
 }
 
-module.exports = ApplicationCommandPermissionsManager;
+exports.ApplicationCommandPermissionsManager = ApplicationCommandPermissionsManager;
 
 /* eslint-disable max-len */
 /**

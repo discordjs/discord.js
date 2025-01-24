@@ -11,45 +11,45 @@ class ActionsManager {
   constructor(client) {
     this.client = client;
 
-    this.register(require('./ChannelCreate'));
-    this.register(require('./ChannelDelete'));
-    this.register(require('./ChannelUpdate'));
-    this.register(require('./GuildChannelsPositionUpdate'));
-    this.register(require('./GuildEmojiCreate'));
-    this.register(require('./GuildEmojiDelete'));
-    this.register(require('./GuildEmojiUpdate'));
-    this.register(require('./GuildEmojisUpdate'));
-    this.register(require('./GuildMemberRemove'));
-    this.register(require('./GuildMemberUpdate'));
-    this.register(require('./GuildRoleCreate'));
-    this.register(require('./GuildRoleDelete'));
-    this.register(require('./GuildRolesPositionUpdate'));
-    this.register(require('./GuildScheduledEventDelete'));
-    this.register(require('./GuildScheduledEventUserAdd'));
-    this.register(require('./GuildScheduledEventUserRemove'));
-    this.register(require('./GuildStickerCreate'));
-    this.register(require('./GuildStickerDelete'));
-    this.register(require('./GuildStickerUpdate'));
-    this.register(require('./GuildStickersUpdate'));
-    this.register(require('./GuildUpdate'));
-    this.register(require('./InteractionCreate'));
-    this.register(require('./MessageCreate'));
-    this.register(require('./MessageDelete'));
-    this.register(require('./MessageDeleteBulk'));
-    this.register(require('./MessagePollVoteAdd'));
-    this.register(require('./MessagePollVoteRemove'));
-    this.register(require('./MessageReactionAdd'));
-    this.register(require('./MessageReactionRemove'));
-    this.register(require('./MessageReactionRemoveAll'));
-    this.register(require('./MessageReactionRemoveEmoji'));
-    this.register(require('./MessageUpdate'));
-    this.register(require('./StageInstanceCreate'));
-    this.register(require('./StageInstanceDelete'));
-    this.register(require('./StageInstanceUpdate'));
-    this.register(require('./ThreadCreate'));
-    this.register(require('./ThreadMembersUpdate'));
-    this.register(require('./TypingStart'));
-    this.register(require('./UserUpdate'));
+    this.register(require('./ChannelCreate.js').ChannelCreateAction);
+    this.register(require('./ChannelDelete.js').ChannelDeleteAction);
+    this.register(require('./ChannelUpdate.js').ChannelUpdateAction);
+    this.register(require('./GuildChannelsPositionUpdate.js').GuildChannelsPositionUpdateAction);
+    this.register(require('./GuildEmojiCreate.js').GuildEmojiCreateAction);
+    this.register(require('./GuildEmojiDelete.js').GuildEmojiDeleteAction);
+    this.register(require('./GuildEmojiUpdate.js').GuildEmojiUpdateAction);
+    this.register(require('./GuildEmojisUpdate.js').GuildEmojisUpdateAction);
+    this.register(require('./GuildMemberRemove.js').GuildMemberRemoveAction);
+    this.register(require('./GuildMemberUpdate.js').GuildMemberUpdateAction);
+    this.register(require('./GuildRoleCreate.js').GuildRoleCreateAction);
+    this.register(require('./GuildRoleDelete.js').GuildRoleDeleteAction);
+    this.register(require('./GuildRolesPositionUpdate.js').GuildRolesPositionUpdateAction);
+    this.register(require('./GuildScheduledEventDelete.js').GuildScheduledEventDeleteAction);
+    this.register(require('./GuildScheduledEventUserAdd.js').GuildScheduledEventUserAddAction);
+    this.register(require('./GuildScheduledEventUserRemove.js').GuildScheduledEventUserRemoveAction);
+    this.register(require('./GuildStickerCreate.js').GuildStickerCreateAction);
+    this.register(require('./GuildStickerDelete.js').GuildStickerDeleteAction);
+    this.register(require('./GuildStickerUpdate.js').GuildStickerUpdateAction);
+    this.register(require('./GuildStickersUpdate.js').GuildStickersUpdateAction);
+    this.register(require('./GuildUpdate.js').GuildUpdateAction);
+    this.register(require('./InteractionCreate.js').InteractionCreateAction);
+    this.register(require('./MessageCreate.js').MessageCreateAction);
+    this.register(require('./MessageDelete.js').MessageDeleteAction);
+    this.register(require('./MessageDeleteBulk.js').MessageDeleteBulkAction);
+    this.register(require('./MessagePollVoteAdd.js').MessagePollVoteAddAction);
+    this.register(require('./MessagePollVoteRemove.js').MessagePollVoteRemoveAction);
+    this.register(require('./MessageReactionAdd.js').MessageReactionAddAction);
+    this.register(require('./MessageReactionRemove.js').MessageReactionRemoveAction);
+    this.register(require('./MessageReactionRemoveAll.js').MessageReactionRemoveAllAction);
+    this.register(require('./MessageReactionRemoveEmoji.js').MessageReactionRemoveEmojiAction);
+    this.register(require('./MessageUpdate.js').MessageUpdateAction);
+    this.register(require('./StageInstanceCreate.js').StageInstanceCreateAction);
+    this.register(require('./StageInstanceDelete.js').StageInstanceDeleteAction);
+    this.register(require('./StageInstanceUpdate.js').StageInstanceUpdateAction);
+    this.register(require('./ThreadCreate.js').ThreadCreateAction);
+    this.register(require('./ThreadMembersUpdate.js').ThreadMembersUpdateAction);
+    this.register(require('./TypingStart.js').TypingStartAction);
+    this.register(require('./UserUpdate.js').UserUpdateAction);
   }
 
   register(Action) {
@@ -57,4 +57,4 @@ class ActionsManager {
   }
 }
 
-module.exports = ActionsManager;
+exports.ActionsManager = ActionsManager;

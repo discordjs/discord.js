@@ -1,11 +1,11 @@
 'use strict';
 
 const { lazy } = require('@discordjs/util');
-const BaseInteraction = require('./BaseInteraction');
-const InteractionWebhook = require('./InteractionWebhook');
-const InteractionResponses = require('./interfaces/InteractionResponses');
+const { BaseInteraction } = require('./BaseInteraction.js');
+const { InteractionWebhook } = require('./InteractionWebhook.js');
+const { InteractionResponses } = require('./interfaces/InteractionResponses.js');
 
-const getMessage = lazy(() => require('./Message').Message);
+const getMessage = lazy(() => require('./Message.js').Message);
 
 /**
  * Represents a message component interaction.
@@ -104,4 +104,4 @@ class MessageComponentInteraction extends BaseInteraction {
 
 InteractionResponses.applyToClass(MessageComponentInteraction);
 
-module.exports = MessageComponentInteraction;
+exports.MessageComponentInteraction = MessageComponentInteraction;

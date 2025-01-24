@@ -1,7 +1,7 @@
 'use strict';
 
-const Base = require('./Base');
-const { Emoji } = require('./Emoji');
+const { Base } = require('./Base.js');
+const { Emoji } = require('./Emoji.js');
 
 /**
  * Represents a channel link in a guild's welcome screen.
@@ -57,4 +57,4 @@ class WelcomeChannel extends Base {
   }
 }
 
-module.exports = WelcomeChannel;
+exports.WelcomeChannel = WelcomeChannel;

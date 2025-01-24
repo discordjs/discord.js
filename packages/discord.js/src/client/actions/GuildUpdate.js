@@ -1,7 +1,7 @@
 'use strict';
 
-const Action = require('./Action');
-const Events = require('../../util/Events');
+const { Action } = require('./Action.js');
+const { Events } = require('../../util/Events.js');
 
 class GuildUpdateAction extends Action {
   handle(data) {
@@ -30,4 +30,4 @@ class GuildUpdateAction extends Action {
   }
 }
 
-module.exports = GuildUpdateAction;
+exports.GuildUpdateAction = GuildUpdateAction;

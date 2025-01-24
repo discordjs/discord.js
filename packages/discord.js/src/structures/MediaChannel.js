@@ -1,6 +1,6 @@
 'use strict';
 
-const ThreadOnlyChannel = require('./ThreadOnlyChannel');
+const { ThreadOnlyChannel } = require('./ThreadOnlyChannel.js');
 
 /**
  * Represents a media channel.
@@ -8,4 +8,4 @@ const ThreadOnlyChannel = require('./ThreadOnlyChannel');
  */
 class MediaChannel extends ThreadOnlyChannel {}
 
-module.exports = MediaChannel;
+exports.MediaChannel = MediaChannel;

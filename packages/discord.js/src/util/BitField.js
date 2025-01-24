@@ -1,6 +1,6 @@
 'use strict';
 
-const { DiscordjsRangeError, ErrorCodes } = require('../errors');
+const { DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
 
 /**
  * Data structure that makes it easy to interact with a bitfield.
@@ -175,4 +175,4 @@ class BitField {
   }
 }
 
-module.exports = BitField;
+exports.BitField = BitField;

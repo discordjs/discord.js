@@ -1,9 +1,9 @@
 'use strict';
 
 const { setInterval, clearInterval } = require('node:timers');
-const { ThreadChannelTypes, SweeperKeys } = require('./Constants');
-const Events = require('./Events');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
+const { ThreadChannelTypes, SweeperKeys } = require('./Constants.js');
+const { Events } = require('./Events.js');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 
 /**
  * @typedef {Function} GlobalSweepFilter
@@ -484,4 +484,4 @@ class Sweepers {
   }
 }
 
-module.exports = Sweepers;
+exports.Sweepers = Sweepers;

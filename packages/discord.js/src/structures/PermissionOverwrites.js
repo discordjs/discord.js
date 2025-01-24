@@ -1,10 +1,10 @@
 'use strict';
 
 const { OverwriteType } = require('discord-api-types/v10');
-const Base = require('./Base');
-const { Role } = require('./Role');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const PermissionsBitField = require('../util/PermissionsBitField');
+const { Base } = require('./Base.js');
+const { Role } = require('./Role.js');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { PermissionsBitField } = require('../util/PermissionsBitField.js');
 
 /**
  * Represents a permission overwrite for a role or member in a guild channel.
@@ -203,4 +203,4 @@ class PermissionOverwrites extends Base {
   }
 }
 
-module.exports = PermissionOverwrites;
+exports.PermissionOverwrites = PermissionOverwrites;

@@ -1,5 +1,6 @@
 'use strict';
 
+const { Buffer } = require('node:buffer');
 const fs = require('node:fs');
 const path = require('node:path');
 const { setTimeout: sleep } = require('node:timers/promises');
@@ -7,7 +8,7 @@ const util = require('node:util');
 const { GatewayIntentBits } = require('discord-api-types/v10');
 const { fetch } = require('undici');
 const { owner, token, webhookChannel, webhookToken } = require('./auth.js');
-const { Client, MessageAttachment, Embed, WebhookClient } = require('../src');
+const { Client, MessageAttachment, Embed, WebhookClient } = require('../src/index.js');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 

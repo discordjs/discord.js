@@ -1,8 +1,8 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const Action = require('./Action');
-const Events = require('../../util/Events');
+const { Action } = require('./Action.js');
+const { Events } = require('../../util/Events.js');
 
 class ThreadMembersUpdateAction extends Action {
   handle(data) {
@@ -44,4 +44,4 @@ class ThreadMembersUpdateAction extends Action {
   }
 }
 
-module.exports = ThreadMembersUpdateAction;
+exports.ThreadMembersUpdateAction = ThreadMembersUpdateAction;

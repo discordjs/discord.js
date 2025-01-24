@@ -2,8 +2,8 @@
 
 const { SelectMenuBuilder: BuildersSelectMenu, normalizeArray } = require('@discordjs/builders');
 const { isJSONEncodable } = require('@discordjs/util');
-const { toSnakeCase } = require('../util/Transformers');
-const { resolvePartialEmoji } = require('../util/Util');
+const { toSnakeCase } = require('../util/Transformers.js');
+const { resolvePartialEmoji } = require('../util/Util.js');
 
 /**
  * Class used to build select menu components to be sent through the API
@@ -71,7 +71,7 @@ class StringSelectMenuBuilder extends BuildersSelectMenu {
   }
 }
 
-module.exports = StringSelectMenuBuilder;
+exports.StringSelectMenuBuilder = StringSelectMenuBuilder;
 
 /**
  * @external BuildersSelectMenu

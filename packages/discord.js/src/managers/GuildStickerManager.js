@@ -2,10 +2,10 @@
 
 const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const MessagePayload = require('../structures/MessagePayload');
-const { Sticker } = require('../structures/Sticker');
+const { CachedManager } = require('./CachedManager.js');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { MessagePayload } = require('../structures/MessagePayload.js');
+const { Sticker } = require('../structures/Sticker.js');
 
 /**
  * Manages API methods for Guild Stickers and stores their cache.
@@ -179,4 +179,4 @@ class GuildStickerManager extends CachedManager {
   }
 }
 
-module.exports = GuildStickerManager;
+exports.GuildStickerManager = GuildStickerManager;

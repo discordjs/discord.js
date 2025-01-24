@@ -2,8 +2,8 @@
 
 const { Collection } = require('@discordjs/collection');
 const { GuildFeature } = require('discord-api-types/v10');
-const Base = require('./Base');
-const WelcomeChannel = require('./WelcomeChannel');
+const { Base } = require('./Base.js');
+const { WelcomeChannel } = require('./WelcomeChannel.js');
 
 /**
  * Represents a welcome screen.
@@ -46,4 +46,4 @@ class WelcomeScreen extends Base {
   }
 }
 
-module.exports = WelcomeScreen;
+exports.WelcomeScreen = WelcomeScreen;

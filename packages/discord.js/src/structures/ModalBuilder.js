@@ -2,7 +2,7 @@
 
 const { ModalBuilder: BuildersModal, ComponentBuilder } = require('@discordjs/builders');
 const { isJSONEncodable } = require('@discordjs/util');
-const { toSnakeCase } = require('../util/Transformers');
+const { toSnakeCase } = require('../util/Transformers.js');
 
 /**
  * Represents a modal builder.
@@ -28,7 +28,7 @@ class ModalBuilder extends BuildersModal {
   }
 }
 
-module.exports = ModalBuilder;
+exports.ModalBuilder = ModalBuilder;
 
 /**
  * @external BuildersModal

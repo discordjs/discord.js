@@ -1,6 +1,6 @@
 'use strict';
 
-const { basename, flatten } = require('../util/Util');
+const { basename, flatten } = require('../util/Util.js');
 
 /**
  * Represents an attachment builder
@@ -102,7 +102,7 @@ class AttachmentBuilder {
   }
 }
 
-module.exports = AttachmentBuilder;
+exports.AttachmentBuilder = AttachmentBuilder;
 
 /**
  * @typedef {Object} AttachmentData

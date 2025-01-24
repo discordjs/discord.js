@@ -3,17 +3,17 @@
 const { lazy } = require('@discordjs/util');
 const { ChannelType } = require('discord-api-types/v10');
 
-const getCategoryChannel = lazy(() => require('../structures/CategoryChannel'));
-const getDMChannel = lazy(() => require('../structures/DMChannel'));
-const getAnnouncementChannel = lazy(() => require('../structures/AnnouncementChannel'));
-const getStageChannel = lazy(() => require('../structures/StageChannel'));
-const getTextChannel = lazy(() => require('../structures/TextChannel'));
-const getThreadChannel = lazy(() => require('../structures/ThreadChannel'));
-const getVoiceChannel = lazy(() => require('../structures/VoiceChannel'));
-const getDirectoryChannel = lazy(() => require('../structures/DirectoryChannel'));
-const getPartialGroupDMChannel = lazy(() => require('../structures/PartialGroupDMChannel'));
-const getForumChannel = lazy(() => require('../structures/ForumChannel'));
-const getMediaChannel = lazy(() => require('../structures/MediaChannel'));
+const getCategoryChannel = lazy(() => require('../structures/CategoryChannel.js').CategoryChannel);
+const getDMChannel = lazy(() => require('../structures/DMChannel.js').DMChannel);
+const getAnnouncementChannel = lazy(() => require('../structures/AnnouncementChannel.js').AnnouncementChannel);
+const getStageChannel = lazy(() => require('../structures/StageChannel.js').StageChannel);
+const getTextChannel = lazy(() => require('../structures/TextChannel.js').TextChannel);
+const getThreadChannel = lazy(() => require('../structures/ThreadChannel.js').ThreadChannel);
+const getVoiceChannel = lazy(() => require('../structures/VoiceChannel.js').VoiceChannel);
+const getDirectoryChannel = lazy(() => require('../structures/DirectoryChannel.js').DirectoryChannel);
+const getPartialGroupDMChannel = lazy(() => require('../structures/PartialGroupDMChannel.js').PartialGroupDMChannel);
+const getForumChannel = lazy(() => require('../structures/ForumChannel.js').ForumChannel);
+const getMediaChannel = lazy(() => require('../structures/MediaChannel.js').MediaChannel);
 
 /**
  * Extra options for creating a channel.
@@ -152,10 +152,8 @@ function transformGuildDefaultReaction(defaultReaction) {
   };
 }
 
-module.exports = {
-  createChannel,
-  transformAPIGuildForumTag,
-  transformGuildForumTag,
-  transformAPIGuildDefaultReaction,
-  transformGuildDefaultReaction,
-};
+exports.createChannel = createChannel;
+exports.transformAPIGuildForumTag = transformAPIGuildForumTag;
+exports.transformGuildForumTag = transformGuildForumTag;
+exports.transformAPIGuildDefaultReaction = transformAPIGuildDefaultReaction;
+exports.transformGuildDefaultReaction = transformGuildDefaultReaction;

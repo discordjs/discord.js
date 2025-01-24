@@ -1,9 +1,9 @@
 'use strict';
 
 const { Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
-const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../errors');
-const { StageInstance } = require('../structures/StageInstance');
+const { CachedManager } = require('./CachedManager.js');
+const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../errors/index.js');
+const { StageInstance } = require('../structures/StageInstance.js');
 
 /**
  * Manages API methods for {@link StageInstance} objects and holds their cache.
@@ -156,4 +156,4 @@ class StageInstanceManager extends CachedManager {
   }
 }
 
-module.exports = StageInstanceManager;
+exports.StageInstanceManager = StageInstanceManager;

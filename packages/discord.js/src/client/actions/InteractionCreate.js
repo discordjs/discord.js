@@ -1,19 +1,19 @@
 'use strict';
 
 const { InteractionType, ComponentType, ApplicationCommandType } = require('discord-api-types/v10');
-const Action = require('./Action');
-const AutocompleteInteraction = require('../../structures/AutocompleteInteraction');
-const ButtonInteraction = require('../../structures/ButtonInteraction');
-const ChannelSelectMenuInteraction = require('../../structures/ChannelSelectMenuInteraction');
-const ChatInputCommandInteraction = require('../../structures/ChatInputCommandInteraction');
-const MentionableSelectMenuInteraction = require('../../structures/MentionableSelectMenuInteraction');
-const MessageContextMenuCommandInteraction = require('../../structures/MessageContextMenuCommandInteraction');
-const ModalSubmitInteraction = require('../../structures/ModalSubmitInteraction');
-const RoleSelectMenuInteraction = require('../../structures/RoleSelectMenuInteraction');
-const StringSelectMenuInteraction = require('../../structures/StringSelectMenuInteraction');
-const UserContextMenuCommandInteraction = require('../../structures/UserContextMenuCommandInteraction');
-const UserSelectMenuInteraction = require('../../structures/UserSelectMenuInteraction');
-const Events = require('../../util/Events');
+const { Action } = require('./Action.js');
+const { AutocompleteInteraction } = require('../../structures/AutocompleteInteraction.js');
+const { ButtonInteraction } = require('../../structures/ButtonInteraction.js');
+const { ChannelSelectMenuInteraction } = require('../../structures/ChannelSelectMenuInteraction.js');
+const { ChatInputCommandInteraction } = require('../../structures/ChatInputCommandInteraction.js');
+const { MentionableSelectMenuInteraction } = require('../../structures/MentionableSelectMenuInteraction.js');
+const { MessageContextMenuCommandInteraction } = require('../../structures/MessageContextMenuCommandInteraction.js');
+const { ModalSubmitInteraction } = require('../../structures/ModalSubmitInteraction.js');
+const { RoleSelectMenuInteraction } = require('../../structures/RoleSelectMenuInteraction.js');
+const { StringSelectMenuInteraction } = require('../../structures/StringSelectMenuInteraction.js');
+const { UserContextMenuCommandInteraction } = require('../../structures/UserContextMenuCommandInteraction.js');
+const { UserSelectMenuInteraction } = require('../../structures/UserSelectMenuInteraction.js');
+const { Events } = require('../../util/Events.js');
 
 class InteractionCreateAction extends Action {
   handle(data) {
@@ -98,4 +98,4 @@ class InteractionCreateAction extends Action {
   }
 }
 
-module.exports = InteractionCreateAction;
+exports.InteractionCreateAction = InteractionCreateAction;

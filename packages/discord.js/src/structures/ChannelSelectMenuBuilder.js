@@ -2,7 +2,7 @@
 
 const { ChannelSelectMenuBuilder: BuildersChannelSelectMenu } = require('@discordjs/builders');
 const { isJSONEncodable } = require('@discordjs/util');
-const { toSnakeCase } = require('../util/Transformers');
+const { toSnakeCase } = require('../util/Transformers.js');
 
 /**
  * Class used to build select menu components to be sent through the API
@@ -23,7 +23,7 @@ class ChannelSelectMenuBuilder extends BuildersChannelSelectMenu {
   }
 }
 
-module.exports = ChannelSelectMenuBuilder;
+exports.ChannelSelectMenuBuilder = ChannelSelectMenuBuilder;
 
 /**
  * @external BuildersChannelSelectMenu

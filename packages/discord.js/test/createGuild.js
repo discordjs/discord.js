@@ -2,8 +2,8 @@
 
 const assert = require('node:assert');
 const { ChannelType, GatewayIntentBits } = require('discord-api-types/v10');
-const { token } = require('./auth');
-const { Client, Events } = require('../src');
+const { token } = require('./auth.js');
+const { Client, Events } = require('../src/index.js');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 

@@ -1,7 +1,7 @@
 'use strict';
 
-const Collector = require('./interfaces/Collector');
-const Events = require('../util/Events');
+const { Collector } = require('./interfaces/Collector.js');
+const { Events } = require('../util/Events.js');
 
 /**
  * @typedef {CollectorOptions} MessageCollectorOptions
@@ -143,4 +143,4 @@ class MessageCollector extends Collector {
   }
 }
 
-module.exports = MessageCollector;
+exports.MessageCollector = MessageCollector;

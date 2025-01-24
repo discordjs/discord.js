@@ -2,7 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { ComponentType } = require('discord-api-types/v10');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 
 /**
  * Represents the serialized fields from a modal submit interaction
@@ -52,4 +52,4 @@ class ModalSubmitFields {
   }
 }
 
-module.exports = ModalSubmitFields;
+exports.ModalSubmitFields = ModalSubmitFields;
