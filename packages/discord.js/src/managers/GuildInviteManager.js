@@ -121,22 +121,22 @@ class GuildInviteManager extends CachedManager {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  fetch(options) {
+  async fetch(options) {
     if (!options) return this._fetchMany();
     if (typeof options === 'string') {
       const code = resolveInviteCode(options);
-      if (!code) return Promise.reject(new DiscordjsError(ErrorCodes.InviteResolveCode));
+      if (!code) throw new DiscordjsError(ErrorCodes.InviteResolveCode);
       return this._fetchSingle({ code, cache: true });
     }
     if (!options.code) {
       if (options.channelId) {
         const id = this.guild.channels.resolveId(options.channelId);
-        if (!id) return Promise.reject(new DiscordjsError(ErrorCodes.GuildChannelResolve));
+        if (!id) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
         return this._fetchChannelMany(id, options.cache);
       }
 
       if ('cache' in options) return this._fetchMany(options.cache);
-      return Promise.reject(new DiscordjsError(ErrorCodes.InviteResolveCode));
+      throw new DiscordjsError(ErrorCodes.InviteResolveCode);
     }
     return this._fetchSingle({
       ...options,
