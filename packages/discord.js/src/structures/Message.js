@@ -425,7 +425,7 @@ class Message extends Base {
 
     if (data.message_snapshots) {
       /**
-       * The message associated with the message reference
+       * The message snapshots associated with the message reference
        * @type {Collection<Snowflake, Message>}
        */
       this.messageSnapshots = data.message_snapshots.reduce((coll, snapshot) => {
