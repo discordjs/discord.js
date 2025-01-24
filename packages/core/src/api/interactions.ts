@@ -528,7 +528,7 @@ export class InteractionsAPI {
 	}
 
 	/**
-	 * Sends a premium required response to an interaction
+	 * Launches an activity and returns an interaction callback object
 	 *
 	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
 	 * @param interactionId - The id of the interaction
@@ -548,5 +548,71 @@ export class InteractionsAPI {
 			} satisfies APIPremiumRequiredInteractionResponse,
 			signal,
 		});
+	}
+
+	/**
+	 * Launches an activity and returns an interaction callback object
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param body - The callback data for launching the activity
+	 * @param options - The options for launching the activity
+	 */
+	public async launchActivity(
+		interactionId: Snowflake,
+		interactionToken: string,
+		body: RESTPostAPIInteractionCallbackQuery & { with_response: true },
+		options?: Pick<RequestData, 'signal'>,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult>;
+
+	/**
+	 * Launches an activity
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param body - The callback data for launching the activity
+	 * @param options - The options for launching the activity
+	 */
+	public async launchActivity(
+		interactionId: Snowflake,
+		interactionToken: string,
+		body?: RESTPostAPIInteractionCallbackQuery & { with_response?: false },
+		options?: Pick<RequestData, 'signal'>,
+	): Promise<undefined>;
+
+	/**
+	 * Launches an activity
+	 *
+	 * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#create-interaction-response}
+	 * @param interactionId - The id of the interaction
+	 * @param interactionToken - The token of the interaction
+	 * @param body - The callback data for launching the activity
+	 * @param options - The options for launching the activity
+	 */
+	public async launchActivity(
+		interactionId: Snowflake,
+		interactionToken: string,
+		body?: RESTPostAPIInteractionCallbackQuery,
+		options?: Pick<RequestData, 'signal'>,
+	): Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>;
+
+	public async launchActivity(
+		interactionId: Snowflake,
+		interactionToken: string,
+		{ with_response }: RESTPostAPIInteractionCallbackQuery = {},
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		const response = await this.rest.post(Routes.interactionCallback(interactionId, interactionToken), {
+			query: makeURLSearchParams({ with_response }),
+			auth: false,
+			body: {
+				type: InteractionResponseType.LaunchActivity,
+			},
+			signal,
+		});
+
+		return with_response ? response : undefined;
 	}
 }
