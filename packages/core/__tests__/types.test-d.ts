@@ -142,17 +142,19 @@ describe('Interaction with_response overloads.', () => {
 	});
 
 	test('Launch activity returns undefined.', () => {
-		assertType<Promise<undefined>>(api.interactions.launchActivity(SNOWFLAKE, TOKEN, { with_response: false }));
-		assertType<Promise<undefined>>(api.interactions.launchActivity(SNOWFLAKE, TOKEN));
+		expectTypeOf(api.interactions.launchActivity(SNOWFLAKE, TOKEN, { with_response: false })).toEqualTypeOf<
+			Promise<undefined>
+		>();
+		expectTypeOf(api.interactions.launchActivity(SNOWFLAKE, TOKEN)).toEqualTypeOf<Promise<undefined>>();
 	});
 
 	test('Launch activity returns RESTPostAPIInteractionCallbackWithResponseResult.', () =>
-		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult>>(
-			api.interactions.launchActivity(SNOWFLAKE, TOKEN, { with_response: true }),
-		));
+		expectTypeOf(api.interactions.launchActivity(SNOWFLAKE, TOKEN, { with_response: true })).toEqualTypeOf<
+			Promise<RESTPostAPIInteractionCallbackWithResponseResult>
+		>());
 
 	test('Launch activity returns either RESTPostAPIInteractionCallbackWithResponseResult or undefined.', () =>
-		assertType<Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>>(
-			api.interactions.launchActivity(SNOWFLAKE, TOKEN, { with_response: boolValue }),
-		));
+		expectTypeOf(api.interactions.launchActivity(SNOWFLAKE, TOKEN, { with_response: boolValue })).toEqualTypeOf<
+			Promise<RESTPostAPIInteractionCallbackWithResponseResult | undefined>
+		>());
 });

@@ -73,7 +73,6 @@
 		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
 		"prettier": "^3.4.2",
-		"tsd": "^0.31.2",
 		"tsup": "^8.3.5",
 		"turbo": "^2.3.3",
 		"typescript": "~5.5.4",
@@ -85,8 +84,5 @@
 	"publishConfig": {
 		"access": "public",
 		"provenance": true
-	},
-	"tsd": {
-		"directory": "__tests__/types"
 	}
 }
