@@ -478,17 +478,17 @@ class Guild extends AnonymousGuild {
       this.incidentsData = data.incidents_data
         ? {
             invitesDisabledUntil: data.incidents_data.invites_disabled_until
-              ? Date.parse(data.incidents_data.invites_disabled_until)
+              ? new Date(data.incidents_data.invites_disabled_until)
               : data.incidents_data.invites_disabled_until,
             dmsDisabledUntil: data.incidents_data.dms_disabled_until
-              ? Date.parse(data.incidents_data.invites_disabled_until)
-              : data.incidents_data.invites_disabled_until,
+              ? new Date(data.incidents_data.dms_disabled_until)
+              : data.incidents_data.dms_disabled_until,
             dmSpamDetectedAt: data.incidents_data.dm_spam_detected_at
-              ? Date.parse(data.incidents_data.dm_spam_detected_at)
-              : data.incidents_data.dm_spam_detected_at,
+              ? new Date(data.incidents_data.dm_spam_detected_at)
+              : (data.incidents_data.dm_spam_detected_at ?? null),
             raidDetectedAt: data.incidents_data.raid_detected_at
-              ? Date.parse(data.incidents_data.raid_detected_at)
-              : data.incidents_data.raid_detected_at,
+              ? new Date(data.incidents_data.raid_detected_at)
+              : (data.incidents_data.raid_detected_at ?? null),
           }
         : null;
     } else {
