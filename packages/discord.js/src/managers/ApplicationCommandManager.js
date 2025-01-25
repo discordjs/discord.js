@@ -115,11 +115,11 @@ class ApplicationCommandManager extends CachedManager {
   async fetch(options) {
     if (!options) return this._fetchMany();
 
+    if (typeof options === 'string') return this._fetchSingle({ id: options });
+
     const { cache, force, guildId, id, locale, withLocalizations } = options;
 
-    if (typeof options === 'string' || typeof id === 'string') {
-      return this._fetchSingle({ cache, force, guildId, id: id ?? options });
-    }
+    if (id) return this._fetchSingle({ cache, force, guildId, id });
 
     return this._fetchMany({ cache, guildId, locale, withLocalizations });
   }
