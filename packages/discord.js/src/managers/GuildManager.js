@@ -294,7 +294,7 @@ class GuildManager extends CachedManager {
    * @param {IncidentsActionsEditOptions} incidentActions The incidents actions to set
    * @returns {Promise<IncidentActions>}
    */
-  async setIndicentActions(guild, { invitesDisabledUntil, dmsDisabledUntil }) {
+  async setIncidentActions(guild, { invitesDisabledUntil, dmsDisabledUntil }) {
     const guildId = this.resolveId(guild);
 
     // TODO: discord-api-types route.

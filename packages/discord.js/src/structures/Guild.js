@@ -1394,7 +1394,7 @@ class Guild extends AnonymousGuild {
    * @param {IncidentsActionsEditOptions} incidentActions The incidents actions to set
    * @returns {Promise<IncidentActions>}
    */
-  async setIndicentActions(incidentActions) {
+  async setIncidentActions(incidentActions) {
     return this.client.guilds.setIncidentActions(this.id, incidentActions);
   }
 
