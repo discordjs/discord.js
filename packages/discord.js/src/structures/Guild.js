@@ -1379,6 +1379,15 @@ class Guild extends AnonymousGuild {
   }
 
   /**
+   * Sets the incidents actions for a guild.
+   * @param {IncidentsActionsEditOptions} incidentActions The incidents actions to set
+   * @returns {Promise<IncidentActions>}
+   */
+  async setIndicentActions(incidentActions) {
+    return this.client.guilds.setIncidentActions(this.id, incidentActions);
+  }
+
+  /**
    * Whether this guild equals another guild. It compares all properties, so for most operations
    * it is advisable to just compare `guild.id === guild2.id` as it is much faster and is often
    * what most users need.
