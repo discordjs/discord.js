@@ -18,6 +18,7 @@ const { resolveImage } = require('../util/DataResolver.js');
 const { Events } = require('../util/Events.js');
 const { PermissionsBitField } = require('../util/PermissionsBitField.js');
 const { SystemChannelFlagsBitField } = require('../util/SystemChannelFlagsBitField.js');
+const { _transformAPIIncidentsData } = require('../util/Transformers.js');
 const { resolveColor } = require('../util/Util.js');
 
 let cacheWarningEmitted = false;
@@ -308,16 +309,14 @@ class GuildManager extends CachedManager {
       },
     });
 
-    return {
-      invitesDisabledUntil: data.invites_disabled_until
-        ? new Date(data.invites_disabled_until)
-        : data.invites_disabled_until,
-      dmsDisabledUntil: data.dms_disabled_until ? new Date(data.dms_disabled_until) : data.dms_disabled_until,
-      dmSpamDetectedAt: data.dm_spam_detected_at
-        ? new Date(data.dm_spam_detected_at)
-        : (data.dm_spam_detected_at ?? null),
-      raidDetectedAt: data.raid_detected_at ? new Date(data.raid_detected_at) : (data.raid_detected_at ?? null),
-    };
+    const parsedData = _transformAPIIncidentsData(data);
+    const resolvedGuild = this.resolve(guild);
+
+    if (resolvedGuild) {
+      resolvedGuild.incidentsData = parsedData;
+    }
+
+    return parsedData;
   }
 
   /**

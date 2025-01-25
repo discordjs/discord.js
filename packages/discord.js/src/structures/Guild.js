@@ -28,6 +28,7 @@ const { StageInstanceManager } = require('../managers/StageInstanceManager.js');
 const { VoiceStateManager } = require('../managers/VoiceStateManager.js');
 const { resolveImage } = require('../util/DataResolver.js');
 const { SystemChannelFlagsBitField } = require('../util/SystemChannelFlagsBitField.js');
+const { _transformAPIIncidentsData } = require('../util/Transformers.js');
 const { discordSort, getSortableGroupTypes, resolvePartialEmoji } = require('../util/Util.js');
 
 /**
@@ -477,22 +478,7 @@ class Guild extends AnonymousGuild {
        * this property.</info>
        * @type {?IncidentActions}
        */
-      this.incidentsData = data.incidents_data
-        ? {
-            invitesDisabledUntil: data.incidents_data.invites_disabled_until
-              ? new Date(data.incidents_data.invites_disabled_until)
-              : data.incidents_data.invites_disabled_until,
-            dmsDisabledUntil: data.incidents_data.dms_disabled_until
-              ? new Date(data.incidents_data.dms_disabled_until)
-              : data.incidents_data.dms_disabled_until,
-            dmSpamDetectedAt: data.incidents_data.dm_spam_detected_at
-              ? new Date(data.incidents_data.dm_spam_detected_at)
-              : (data.incidents_data.dm_spam_detected_at ?? null),
-            raidDetectedAt: data.incidents_data.raid_detected_at
-              ? new Date(data.incidents_data.raid_detected_at)
-              : (data.incidents_data.raid_detected_at ?? null),
-          }
-        : null;
+      this.incidentsData = data.incidents_data ? _transformAPIIncidentsData(data.incidents_data) : null;
     } else {
       this.incidentsData ??= null;
     }
