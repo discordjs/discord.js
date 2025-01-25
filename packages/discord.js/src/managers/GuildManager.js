@@ -313,8 +313,10 @@ class GuildManager extends CachedManager {
         ? Date.parse(data.invites_disabled_until)
         : data.invites_disabled_until,
       dmsDisabledUntil: data.dms_disabled_until ? Date.parse(data.invites_disabled_until) : data.invites_disabled_until,
-      dmSpamDetectedAt: data.dm_spam_detected_at ? Date.parse(data.dm_spam_detected_at) : data.dm_spam_detected_at,
-      raidDetectedAt: data.raid_detected_at ? Date.parse(data.raid_detected_at) : data.raid_detected_at,
+      dmSpamDetectedAt: data.dm_spam_detected_at
+        ? Date.parse(data.dm_spam_detected_at)
+        : (data.dm_spam_detected_at ?? null),
+      raidDetectedAt: data.raid_detected_at ? Date.parse(data.raid_detected_at) : (data.raid_detected_at ?? null),
     };
   }
 
