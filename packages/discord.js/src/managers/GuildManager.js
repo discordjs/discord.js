@@ -289,15 +289,6 @@ class GuildManager extends CachedManager {
    */
 
   /**
-   * Incident actions of a guild.
-   * @typedef {Object} IncidentActions
-   * @property {?Date} invitesDisabledUntil When invites would be enabled again
-   * @property {?Date} dmsDisabledUntil When direct messages would be enabled again
-   * @property {?Date} dmSpamDetectedAt When direct message spam was detected
-   * @property {?Date} raidDetectedAt When a raid was detected
-   */
-
-  /**
    * Sets the incidents actions for a guild.
    * @param {GuildResolvable} guild The guild
    * @param {IncidentsActionsEditOptions} incidentActions The incidents actions to set
