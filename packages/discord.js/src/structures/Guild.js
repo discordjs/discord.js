@@ -472,7 +472,9 @@ class Guild extends AnonymousGuild {
        */
 
       /**
-       * The incidents data of this guild
+       * The incidents data of this guild.
+       * <info>You will need to fetch the guild using {@link BaseGuild#fetch} if you want to receive
+       * this property.</info>
        * @type {?IncidentActions}
        */
       this.incidentsData = data.incidents_data
