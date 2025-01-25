@@ -473,22 +473,24 @@ class Guild extends AnonymousGuild {
 
       /**
        * The incidents data of this guild
-       * @type {IncidentActions}
+       * @type {?IncidentActions}
        */
-      this.incidentsData = {
-        invitesDisabledUntil: data.incidents_data.invites_disabled_until
-          ? Date.parse(data.incidents_data.invites_disabled_until)
-          : data.incidents_data.invites_disabled_until,
-        dmsDisabledUntil: data.incidents_data.dms_disabled_until
-          ? Date.parse(data.incidents_data.invites_disabled_until)
-          : data.incidents_data.invites_disabled_until,
-        dmSpamDetectedAt: data.incidents_data.dm_spam_detected_at
-          ? Date.parse(data.incidents_data.dm_spam_detected_at)
-          : data.incidents_data.dm_spam_detected_at,
-        raidDetectedAt: data.incidents_data.raid_detected_at
-          ? Date.parse(data.incidents_data.raid_detected_at)
-          : data.incidents_data.raid_detected_at,
-      };
+      this.incidentsData = data.incidents_data
+        ? {
+            invitesDisabledUntil: data.incidents_data.invites_disabled_until
+              ? Date.parse(data.incidents_data.invites_disabled_until)
+              : data.incidents_data.invites_disabled_until,
+            dmsDisabledUntil: data.incidents_data.dms_disabled_until
+              ? Date.parse(data.incidents_data.invites_disabled_until)
+              : data.incidents_data.invites_disabled_until,
+            dmSpamDetectedAt: data.incidents_data.dm_spam_detected_at
+              ? Date.parse(data.incidents_data.dm_spam_detected_at)
+              : data.incidents_data.dm_spam_detected_at,
+            raidDetectedAt: data.incidents_data.raid_detected_at
+              ? Date.parse(data.incidents_data.raid_detected_at)
+              : data.incidents_data.raid_detected_at,
+          }
+        : null;
     } else {
       this.incidentsData ??= null;
     }
