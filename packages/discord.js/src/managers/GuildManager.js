@@ -299,7 +299,7 @@ class GuildManager extends CachedManager {
 
   /**
    * Sets the incidents actions for a guild.
-   * @param {GuildResolvable} [guild] The guild
+   * @param {GuildResolvable} guild The guild
    * @param {IncidentsActionsEditOptions} incidentActions The incidents actions to set
    * @returns {Promise<IncidentActions>}
    */
