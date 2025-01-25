@@ -282,6 +282,52 @@ class GuildManager extends CachedManager {
   }
 
   /**
+   * Options used to set incident actions. Suppling `null` to any option will disable the action.
+   * @typedef {Object} IncidentsActionsEditOptions
+   * @property {?DateResolvable} [invitesDisabledUntil] When invites should be enabled again
+   * @property {?DateResolvable} [dmsDisabledUntil] When direct messages should be enabled again
+   */
+
+  /**
+   * Incident actions of a guild.
+   * @typedef {Object} IncidentActions
+   * @property {?Date} invitesDisabledUntil When invites would be enabled again
+   * @property {?Date} dmsDisabledUntil When direct messages would be enabled again
+   * @property {?Date} dmSpamDetectedAt When direct message spam was detected
+   * @property {?Date} raidDetectedAt When a raid was detected
+   */
+
+  /**
+   * Sets the incidents actions for a guild.
+   * @param {GuildResolvable} [guild] The guild
+   * @param {IncidentsActionsEditOptions} incidentActions The incidents actions to set
+   * @returns {Promise<IncidentActions>}
+   */
+  async setIndicentActions(guild, { invitesDisabledUntil, dmsDisabledUntil }) {
+    const guildId = this.resolveId(guild);
+
+    // TODO: discord-api-types route.
+    const data = await this.client.rest.put(`/guilds/${guildId}/incident-actions`, {
+      body: {
+        /* eslint-disable eqeqeq */
+        invites_disabled_until:
+          invitesDisabledUntil != null ? new Date(invitesDisabledUntil).toISOString() : invitesDisabledUntil,
+        dms_disabled_until: dmsDisabledUntil != null ? new Date(dmsDisabledUntil).toISOString() : dmsDisabledUntil,
+        /* eslint-enable eqeqeq */
+      },
+    });
+
+    return {
+      invitesDisabledUntil: data.invites_disabled_until
+        ? Date.parse(data.invites_disabled_until)
+        : data.invites_disabled_until,
+      dmsDisabledUntil: data.dms_disabled_until ? Date.parse(data.invites_disabled_until) : data.invites_disabled_until,
+      dmSpamDetectedAt: data.dm_spam_detected_at ? Date.parse(data.dm_spam_detected_at) : data.dm_spam_detected_at,
+      raidDetectedAt: data.raid_detected_at ? Date.parse(data.raid_detected_at) : data.raid_detected_at,
+    };
+  }
+
+  /**
    * Returns a URL for the PNG widget of a guild.
    * @param {GuildResolvable} guild The guild of the widget image
    * @param {GuildWidgetStyle} [style] The style for the widget image
