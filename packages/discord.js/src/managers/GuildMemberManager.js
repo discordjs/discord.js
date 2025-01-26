@@ -5,14 +5,14 @@ const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes, GatewayOpcodes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager');
-const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors');
-const { BaseGuildVoiceChannel } = require('../structures/BaseGuildVoiceChannel');
-const { GuildMember } = require('../structures/GuildMember');
-const { Role } = require('../structures/Role');
-const { Events } = require('../util/Events');
-const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField');
-const { Partials } = require('../util/Partials');
+const { CachedManager } = require('./CachedManager.js');
+const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
+const { BaseGuildVoiceChannel } = require('../structures/BaseGuildVoiceChannel.js');
+const { GuildMember } = require('../structures/GuildMember.js');
+const { Role } = require('../structures/Role.js');
+const { Events } = require('../util/Events.js');
+const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField.js');
+const { Partials } = require('../util/Partials.js');
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
@@ -40,15 +40,8 @@ class GuildMemberManager extends CachedManager {
   }
 
   /**
-   * Data that resolves to give a GuildMember object. This can be:
-   * * A GuildMember object
-   * * A User resolvable
-   * @typedef {GuildMember|UserResolvable} GuildMemberResolvable
-   */
-
-  /**
-   * Resolves a {@link GuildMemberResolvable} to a {@link GuildMember} object.
-   * @param {GuildMemberResolvable} member The user that is part of the guild
+   * Resolves a {@link UserResolvable} to a {@link GuildMember} object.
+   * @param {UserResolvable} member The user that is part of the guild
    * @returns {?GuildMember}
    */
   resolve(member) {
@@ -60,8 +53,8 @@ class GuildMemberManager extends CachedManager {
   }
 
   /**
-   * Resolves a {@link GuildMemberResolvable} to a member id.
-   * @param {GuildMemberResolvable} member The user that is part of the guild
+   * Resolves a {@link UserResolvable} to a member id.
+   * @param {UserResolvable} member The user that is part of the guild
    * @returns {?Snowflake}
    */
   resolveId(member) {
@@ -223,7 +216,7 @@ class GuildMemberManager extends CachedManager {
     return this._add(data, cache);
   }
 
-  _fetchMany({
+  async _fetchMany({
     limit = 0,
     withPresences: presences,
     users,
@@ -231,7 +224,7 @@ class GuildMemberManager extends CachedManager {
     time = 120e3,
     nonce = DiscordSnowflake.generate().toString(),
   } = {}) {
-    if (nonce.length > 32) return Promise.reject(new DiscordjsRangeError(ErrorCodes.MemberFetchNonceLength));
+    if (nonce.length > 32) throw new DiscordjsRangeError(ErrorCodes.MemberFetchNonceLength);
 
     return new Promise((resolve, reject) => {
       if (!query && !users) query = '';
@@ -445,60 +438,49 @@ class GuildMemberManager extends CachedManager {
     return pruned;
   }
 
+  /* eslint-disable consistent-return */
   /**
    * Kicks a user from the guild.
    * <info>The user must be a member of the guild</info>
    * @param {UserResolvable} user The member to kick
    * @param {string} [reason] Reason for kicking
-   * @returns {Promise<GuildMember|User|Snowflake>} Result object will be resolved as specifically as possible.
-   * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
-   * be resolved, the user's id will be the result.
+   * @returns {Promise<void>}
    * @example
    * // Kick a user by id (or with a user/guild member object)
-   * guild.members.kick('84484653687267328')
-   *   .then(kickInfo => console.log(`Kicked ${kickInfo.user?.tag ?? kickInfo.tag ?? kickInfo}`))
-   *   .catch(console.error);
+   * await guild.members.kick('84484653687267328');
    */
   async kick(user, reason) {
     const id = this.client.users.resolveId(user);
-    if (!id) return Promise.reject(new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable'));
+    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
 
     await this.client.rest.delete(Routes.guildMember(this.guild.id, id), { reason });
-
-    return this.resolve(user) ?? this.client.users.resolve(user) ?? id;
   }
+  /* eslint-enable consistent-return */
 
   /**
-   * Bans a user from the guild.
+   * Bans a user from the guild. Internally calls the {@link GuildBanManager#create} method.
    * @param {UserResolvable} user The user to ban
    * @param {BanOptions} [options] Options for the ban
-   * @returns {Promise<GuildMember|User|Snowflake>} Result object will be resolved as specifically as possible.
-   * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
-   * be resolved, the user id will be the result.
-   * Internally calls the GuildBanManager#create method.
+   * @returns {Promise<void>}
    * @example
    * // Ban a user by id (or with a user/guild member object)
-   * guild.members.ban('84484653687267328')
-   *   .then(banInfo => console.log(`Banned ${banInfo.user?.tag ?? banInfo.tag ?? banInfo}`))
-   *   .catch(console.error);
+   * await guild.members.ban('84484653687267328');
    */
-  ban(user, options) {
-    return this.guild.bans.create(user, options);
+  async ban(user, options) {
+    await this.guild.bans.create(user, options);
   }
 
   /**
    * Unbans a user from the guild. Internally calls the {@link GuildBanManager#remove} method.
    * @param {UserResolvable} user The user to unban
    * @param {string} [reason] Reason for unbanning user
-   * @returns {Promise<?User>} The user that was unbanned
+   * @returns {Promise<void>}
    * @example
    * // Unban a user by id (or with a user/guild member object)
-   * guild.members.unban('84484653687267328')
-   *   .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
-   *   .catch(console.error);
+   * await guild.members.unban('84484653687267328');
    */
-  unban(user, reason) {
-    return this.guild.bans.remove(user, reason);
+  async unban(user, reason) {
+    await this.guild.bans.remove(user, reason);
   }
 
   /**
@@ -523,7 +505,7 @@ class GuildMemberManager extends CachedManager {
   /**
    * Options used for adding or removing a role from a member.
    * @typedef {Object} AddOrRemoveGuildMemberRoleOptions
-   * @property {GuildMemberResolvable} user The user to add/remove the role from
+   * @property {UserResolvable} user The user to add/remove the role from
    * @property {RoleResolvable} role The role to add/remove
    * @property {string} [reason] Reason for adding/removing the role
    */
@@ -531,29 +513,25 @@ class GuildMemberManager extends CachedManager {
   /**
    * Adds a role to a member.
    * @param {AddOrRemoveGuildMemberRoleOptions} options Options for adding the role
-   * @returns {Promise<GuildMember|User|Snowflake>}
+   * @returns {Promise<void>}
    */
   async addRole(options) {
     const { user, role, reason } = options;
     const userId = this.resolveId(user);
     const roleId = this.guild.roles.resolveId(role);
     await this.client.rest.put(Routes.guildMemberRole(this.guild.id, userId, roleId), { reason });
-
-    return this.resolve(user) ?? this.client.users.resolve(user) ?? userId;
   }
 
   /**
    * Removes a role from a member.
    * @param {AddOrRemoveGuildMemberRoleOptions} options Options for removing the role
-   * @returns {Promise<GuildMember|User|Snowflake>}
+   * @returns {Promise<void>}
    */
   async removeRole(options) {
     const { user, role, reason } = options;
     const userId = this.resolveId(user);
     const roleId = this.guild.roles.resolveId(role);
     await this.client.rest.delete(Routes.guildMemberRole(this.guild.id, userId, roleId), { reason });
-
-    return this.resolve(user) ?? this.client.users.resolve(user) ?? userId;
   }
 }
 

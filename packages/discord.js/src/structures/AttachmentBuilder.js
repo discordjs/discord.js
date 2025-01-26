@@ -1,6 +1,6 @@
 'use strict';
 
-const { basename, flatten } = require('../util/Util');
+const { basename, flatten } = require('../util/Util.js');
 
 /**
  * Represents an attachment builder

@@ -23,6 +23,7 @@
             }
           }
         ],
+        "import/extensions": ["error", "ignorePackages"],
         "strict": ["error", "global"],
         "no-await-in-loop": "warn",
         "no-compare-neg-zero": "error",
@@ -83,7 +84,7 @@
         "no-void": "error",
         "no-warning-comments": "warn",
         "prefer-promise-reject-errors": "error",
-        "require-await": "warn",
+        "require-await": "off",
         "wrap-iife": "error",
         "yoda": "error",
 

@@ -1,8 +1,8 @@
 'use strict';
 
-const { CommandInteraction } = require('./CommandInteraction');
-const { CommandInteractionOptionResolver } = require('./CommandInteractionOptionResolver');
-const { transformResolved } = require('../util/Util');
+const { CommandInteraction } = require('./CommandInteraction.js');
+const { CommandInteractionOptionResolver } = require('./CommandInteractionOptionResolver.js');
+const { transformResolved } = require('../util/Util.js');
 
 /**
  * Represents a command interaction.

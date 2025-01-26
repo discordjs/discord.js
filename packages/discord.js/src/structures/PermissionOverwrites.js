@@ -1,10 +1,10 @@
 'use strict';
 
 const { OverwriteType } = require('discord-api-types/v10');
-const { Base } = require('./Base');
-const { Role } = require('./Role');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const { PermissionsBitField } = require('../util/PermissionsBitField');
+const { Base } = require('./Base.js');
+const { Role } = require('./Role.js');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { PermissionsBitField } = require('../util/PermissionsBitField.js');
 
 /**
  * Represents a permission overwrite for a role or member in a guild channel.
@@ -157,7 +157,7 @@ class PermissionOverwrites extends Base {
   /**
    * Data that can be used for a permission overwrite
    * @typedef {Object} OverwriteData
-   * @property {GuildMemberResolvable|RoleResolvable} id Member or role this overwrite is for
+   * @property {UserResolvable|RoleResolvable} id Member or role this overwrite is for
    * @property {PermissionResolvable} [allow] The permissions to allow
    * @property {PermissionResolvable} [deny] The permissions to deny
    * @property {OverwriteType} [type] The type of this OverwriteData (mandatory if `id` is a Snowflake)
@@ -174,7 +174,7 @@ class PermissionOverwrites extends Base {
 
     const id = guild.roles.resolveId(overwrite.id) ?? guild.client.users.resolveId(overwrite.id);
     if (!id) {
-      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'overwrite.id', 'GuildMemberResolvable or RoleResolvable');
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'overwrite.id', 'UserResolvable or RoleResolvable');
     }
 
     if (overwrite.type !== undefined && (typeof overwrite.type !== 'number' || !(overwrite.type in OverwriteType))) {

@@ -1,8 +1,8 @@
 'use strict';
 
 const { Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager');
-const { VoiceState } = require('../structures/VoiceState');
+const { CachedManager } = require('./CachedManager.js');
+const { VoiceState } = require('../structures/VoiceState.js');
 
 /**
  * Manages API methods for VoiceStates and stores their cache.
@@ -36,7 +36,7 @@ class VoiceStateManager extends CachedManager {
 
   /**
    * Obtains a user's voice state from discord or from the cache if it's already available.
-   * @param {GuildMemberResolvable|'@me'} member The member whose voice state is to be fetched
+   * @param {UserResolvable|'@me'} member The member whose voice state is to be fetched
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<VoiceState>}
    * @example

@@ -2,10 +2,10 @@
 
 const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const { ApplicationEmoji } = require('../structures/ApplicationEmoji');
-const { resolveImage } = require('../util/DataResolver');
+const { CachedManager } = require('./CachedManager.js');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { ApplicationEmoji } = require('../structures/ApplicationEmoji.js');
+const { resolveImage } = require('../util/DataResolver.js');
 
 /**
  * Manages API methods for ApplicationEmojis and stores their cache.

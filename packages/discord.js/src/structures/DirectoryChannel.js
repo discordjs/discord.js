@@ -1,6 +1,6 @@
 'use strict';
 
-const { BaseChannel } = require('./BaseChannel');
+const { BaseChannel } = require('./BaseChannel.js');
 
 /**
  * Represents a channel that displays a directory of guilds.

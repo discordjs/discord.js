@@ -2,17 +2,17 @@
 
 const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
-const { ApplicationRoleConnectionMetadata } = require('./ApplicationRoleConnectionMetadata');
-const { SKU } = require('./SKU');
-const { Team } = require('./Team');
-const { Application } = require('./interfaces/Application');
-const { ApplicationCommandManager } = require('../managers/ApplicationCommandManager');
-const { ApplicationEmojiManager } = require('../managers/ApplicationEmojiManager');
-const { EntitlementManager } = require('../managers/EntitlementManager');
-const { SubscriptionManager } = require('../managers/SubscriptionManager');
-const { ApplicationFlagsBitField } = require('../util/ApplicationFlagsBitField');
-const { resolveImage } = require('../util/DataResolver');
-const { PermissionsBitField } = require('../util/PermissionsBitField');
+const { ApplicationRoleConnectionMetadata } = require('./ApplicationRoleConnectionMetadata.js');
+const { SKU } = require('./SKU.js');
+const { Team } = require('./Team.js');
+const { Application } = require('./interfaces/Application.js');
+const { ApplicationCommandManager } = require('../managers/ApplicationCommandManager.js');
+const { ApplicationEmojiManager } = require('../managers/ApplicationEmojiManager.js');
+const { EntitlementManager } = require('../managers/EntitlementManager.js');
+const { SubscriptionManager } = require('../managers/SubscriptionManager.js');
+const { ApplicationFlagsBitField } = require('../util/ApplicationFlagsBitField.js');
+const { resolveImage } = require('../util/DataResolver.js');
+const { PermissionsBitField } = require('../util/PermissionsBitField.js');
 
 /**
  * @typedef {Object} ClientApplicationInstallParams
