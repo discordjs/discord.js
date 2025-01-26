@@ -1506,14 +1506,14 @@ export class GuildAuditLogsEntry<
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public executorId: Snowflake | null;
-  public executor: User | null;
+  public executor: User | PartialUser | null;
   public extra: TAction extends keyof GuildAuditLogsEntryExtraField ? GuildAuditLogsEntryExtraField[TAction] : null;
   public id: Snowflake;
   public reason: string | null;
   public targetId: Snowflake | null;
   public target: TTargetType extends keyof GuildAuditLogsEntryTargetField<TAction>
     ? GuildAuditLogsEntryTargetField<TAction>[TTargetType]
-    : Role | GuildEmoji | { id: Snowflake } | null;
+    : { id: Snowflake | undefined; [x: string]: unknown } | null;
   public targetType: TTargetType;
   public static actionType(action: AuditLogEvent): GuildAuditLogsActionType;
   public static targetType(target: AuditLogEvent): GuildAuditLogsTargetType;
@@ -5659,17 +5659,19 @@ interface GuildAuditLogsTypes {
   [AuditLogEvent.ThreadUpdate]: ['Thread', 'Update'];
   [AuditLogEvent.ThreadDelete]: ['Thread', 'Delete'];
   [AuditLogEvent.ApplicationCommandPermissionUpdate]: ['ApplicationCommand', 'Update'];
+  [AuditLogEvent.SoundboardSoundCreate]: ['SoundboardSound', 'Create'];
+  [AuditLogEvent.SoundboardSoundUpdate]: ['SoundboardSound', 'Update'];
+  [AuditLogEvent.SoundboardSoundDelete]: ['SoundboardSound', 'Delete'];
   [AuditLogEvent.AutoModerationRuleCreate]: ['AutoModeration', 'Create'];
   [AuditLogEvent.AutoModerationRuleUpdate]: ['AutoModeration', 'Update'];
   [AuditLogEvent.AutoModerationRuleDelete]: ['AutoModeration', 'Delete'];
-  [AuditLogEvent.AutoModerationBlockMessage]: ['AutoModeration', 'Create'];
-  [AuditLogEvent.AutoModerationFlagToChannel]: ['AutoModeration', 'Create'];
-  [AuditLogEvent.AutoModerationUserCommunicationDisabled]: ['AutoModeration', 'Create'];
+  [AuditLogEvent.AutoModerationBlockMessage]: ['User', 'Update'];
+  [AuditLogEvent.AutoModerationFlagToChannel]: ['User', 'Update'];
+  [AuditLogEvent.AutoModerationUserCommunicationDisabled]: ['User', 'Update'];
   [AuditLogEvent.OnboardingPromptCreate]: ['GuildOnboardingPrompt', 'Create'];
   [AuditLogEvent.OnboardingPromptUpdate]: ['GuildOnboardingPrompt', 'Update'];
   [AuditLogEvent.OnboardingPromptDelete]: ['GuildOnboardingPrompt', 'Delete'];
-  [AuditLogEvent.OnboardingCreate]: ['GuildOnboarding', 'Create'];
-  [AuditLogEvent.OnboardingUpdate]: ['GuildOnboarding', 'Update'];
+  // Never have a target: CreatorMonetizationRequestCreated, CreatorMonetizationTermsAccepted, OnboardingCreate, OnboardingUpdate, HomeSettingsCreate, HomeSettingsUpdate
 }
 
 export type GuildAuditLogsActionType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][1] | 'All';
@@ -5680,7 +5682,7 @@ export interface GuildAuditLogsEntryExtraField {
   [AuditLogEvent.MemberPrune]: { removed: number; days: number };
   [AuditLogEvent.MemberMove]: { channel: VoiceBasedChannel | { id: Snowflake }; count: number };
   [AuditLogEvent.MessageDelete]: { channel: GuildTextBasedChannel | { id: Snowflake }; count: number };
-  [AuditLogEvent.MessageBulkDelete]: { channel: GuildTextBasedChannel | { id: Snowflake }; count: number };
+  [AuditLogEvent.MessageBulkDelete]: { count: number };
   [AuditLogEvent.MessagePin]: { channel: GuildTextBasedChannel | { id: Snowflake }; messageId: Snowflake };
   [AuditLogEvent.MessageUnpin]: { channel: GuildTextBasedChannel | { id: Snowflake }; messageId: Snowflake };
   [AuditLogEvent.MemberDisconnect]: { count: number };
@@ -5721,13 +5723,13 @@ export interface GuildAuditLogsEntryExtraField {
 }
 
 export interface GuildAuditLogsEntryTargetField<TAction extends AuditLogEvent> {
-  User: User | null;
+  User: User | PartialUser | null;
   Guild: Guild;
   Webhook: Webhook<WebhookType.ChannelFollower | WebhookType.Incoming>;
   Invite: Invite;
-  Emoji: GuildEmoji;
-  Role: Role;
-  Message: TAction extends AuditLogEvent.MessageBulkDelete ? Guild | { id: Snowflake } : User;
+  Emoji: GuildEmoji | { id: Snowflake };
+  Role: Role | { id: Snowflake };
+  Message: TAction extends AuditLogEvent.MessageBulkDelete ? GuildTextBasedChannel | { id: Snowflake } : User | null;
   Integration: Integration;
   Channel: NonThreadGuildBasedChannel | { id: Snowflake; [x: string]: unknown };
   Thread: AnyThreadChannel | { id: Snowflake; [x: string]: unknown };
@@ -5735,8 +5737,10 @@ export interface GuildAuditLogsEntryTargetField<TAction extends AuditLogEvent> {
   Sticker: Sticker;
   GuildScheduledEvent: GuildScheduledEvent;
   ApplicationCommand: ApplicationCommand | { id: Snowflake };
-  AutoModerationRule: AutoModerationRule;
-  GuildOnboardingPrompt: GuildOnboardingPrompt;
+  AutoModeration: AutoModerationRule;
+  GuildOnboardingPrompt: GuildOnboardingPrompt | { id: Snowflake; [x: string]: unknown };
+  // TODO: Update when https://github.com/discordjs/discord.js/pull/10590 is merged
+  SoundboardSound: { id: Snowflake };
 }
 
 export interface GuildAuditLogsFetchOptions<Event extends GuildAuditLogsResolvable> {
@@ -5752,7 +5756,7 @@ export type GuildAuditLogsResolvable = AuditLogEvent | null;
 export type GuildAuditLogsTargetType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][0] | 'Unknown';
 
 export type GuildAuditLogsTargets = {
-  [Key in GuildAuditLogsTargetType]: GuildAuditLogsTargetType;
+  [Key in GuildAuditLogsTargetType]: Key;
 };
 
 export type GuildBanResolvable = GuildBan | UserResolvable;
