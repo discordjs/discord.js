@@ -1,6 +1,6 @@
 import { clearTimeout, setTimeout } from 'node:timers';
 import type { REST } from '@discordjs/rest';
-import { calculateShardId, groupBy } from '@discordjs/util';
+import { calculateShardId } from '@discordjs/util';
 import { WebSocketShardEvents } from '@discordjs/ws';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
@@ -334,7 +334,7 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 	 */
 	public async *requestSoundboardSoundsIterator(options: GatewayRequestSoundboardSoundsData, timeout = 10_000) {
 		const shardCount = await this.gateway.getShardCount();
-		const shardIds = groupBy(options.guild_ids, (guildId) => calculateShardId(guildId, shardCount));
+		const shardIds = Map.groupBy(options.guild_ids, (guildId) => calculateShardId(guildId, shardCount));
 
 		const controller = new AbortController();
 
