@@ -712,8 +712,8 @@ client.on('clientReady', async client => {
 
   // Test command manager methods
   const globalCommand = await client.application?.commands.fetch(globalCommandId);
-  const guildCommandFromGlobal = await client.application?.commands.fetch(guildCommandId, { guildId: testGuildId });
-  const guildCommandFromGuild = await client.guilds.cache.get(testGuildId)?.commands.fetch(guildCommandId);
+  const guildCommandFromGlobal = await client.application?.commands.fetch({ id: guildCommandId, guildId: testGuildId });
+  const guildCommandFromGuild = await client.guilds.cache.get(testGuildId)?.commands.fetch({ id: guildCommandId });
 
   await client.application?.commands.create(slashCommandBuilder);
   await client.application?.commands.create(contextMenuCommandBuilder);
@@ -1589,9 +1589,9 @@ declare const autoModerationRuleManager: AutoModerationRuleManager;
 }
 
 declare const guildApplicationCommandManager: GuildApplicationCommandManager;
-expectType<Promise<Collection<Snowflake, ApplicationCommand>>>(guildApplicationCommandManager.fetch());
-expectType<Promise<Collection<Snowflake, ApplicationCommand>>>(guildApplicationCommandManager.fetch(undefined, {}));
 expectType<Promise<ApplicationCommand>>(guildApplicationCommandManager.fetch('0'));
+expectType<Promise<ApplicationCommand>>(guildApplicationCommandManager.fetch({ id: '0' }));
+expectType<Promise<Collection<Snowflake, ApplicationCommand>>>(guildApplicationCommandManager.fetch());
 
 declare const categoryChannelChildManager: CategoryChannelChildManager;
 {
