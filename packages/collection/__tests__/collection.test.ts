@@ -1099,3 +1099,58 @@ describe('findLastKey() tests', () => {
 		}, null);
 	});
 });
+
+describe('subclassing tests', () => {
+	class DerivedCollection<Key, Value> extends Collection<Key, Value> {}
+
+	test('constructor[Symbol.species]', () => {
+		expect(DerivedCollection[Symbol.species]).toStrictEqual(DerivedCollection);
+	});
+
+	describe('methods that construct new collections return subclassed objects', () => {
+		const coll = new DerivedCollection();
+
+		test('filter()', () => {
+			expect(coll.filter(Boolean)).toBeInstanceOf(DerivedCollection);
+		});
+		test('partition()', () => {
+			for (const partition of coll.partition(Boolean)) {
+				expect(partition).toBeInstanceOf(DerivedCollection);
+			}
+		});
+		test('flatMap()', () => {
+			expect(coll.flatMap(() => new Collection())).toBeInstanceOf(DerivedCollection);
+		});
+		test('mapValues()', () => {
+			expect(coll.mapValues(Object)).toBeInstanceOf(DerivedCollection);
+		});
+		test('clone()', () => {
+			expect(coll.clone()).toBeInstanceOf(DerivedCollection);
+		});
+		test('intersection()', () => {
+			expect(coll.intersection(new Collection())).toBeInstanceOf(DerivedCollection);
+		});
+		test('union()', () => {
+			expect(coll.union(new Collection())).toBeInstanceOf(DerivedCollection);
+		});
+		test('difference()', () => {
+			expect(coll.difference(new Collection())).toBeInstanceOf(DerivedCollection);
+		});
+		test('symmetricDifference()', () => {
+			expect(coll.symmetricDifference(new Collection())).toBeInstanceOf(DerivedCollection);
+		});
+		test('merge()', () => {
+			const fn = () => ({ keep: false }) as const; // eslint-disable-line unicorn/consistent-function-scoping
+			expect(coll.merge(new Collection(), fn, fn, fn)).toBeInstanceOf(DerivedCollection);
+		});
+		test('toReversed()', () => {
+			expect(coll.toReversed()).toBeInstanceOf(DerivedCollection);
+		});
+		test('toSorted()', () => {
+			expect(coll.toSorted()).toBeInstanceOf(DerivedCollection);
+		});
+		test('Collection.combineEntries()', () => {
+			expect(DerivedCollection.combineEntries([], Object)).toBeInstanceOf(DerivedCollection);
+		});
+	});
+});
