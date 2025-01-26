@@ -41,15 +41,12 @@ class GuildScheduledEventManager extends CachedManager {
    * Options for setting a recurrence rule for a guild scheduled event.
    * @typedef {Object} GuildScheduledEventRecurrenceRuleOptions
    * @property {DateResolvable} startAt The time the recurrence rule interval starts at
-   * @property {?DateResolvable} endAt The time the recurrence rule interval ends at
    * @property {GuildScheduledEventRecurrenceRuleFrequency} frequency How often the event occurs
    * @property {number} interval The spacing between the events
    * @property {?GuildScheduledEventRecurrenceRuleWeekday[]} byWeekday The days within a week to recur on
    * @property {?GuildScheduledEventRecurrenceRuleNWeekday[]} byNWeekday The days within a week to recur on
    * @property {?GuildScheduledEventRecurrenceRuleMonth[]} byMonth The months to recur on
    * @property {?number[]} byMonthDay The days within a month to recur on
-   * @property {?number[]} byYearDay The days within a year to recur on
-   * @property {?number} count The total amount of times the event is allowed to recur before stopping
    */
 
   /**
