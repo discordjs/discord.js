@@ -21,5 +21,8 @@
 		"eslint-formatter-pretty": "^6.0.1",
 		"prettier": "^3.4.2",
 		"zod": "^3.24.1"
+	},
+	"engines": {
+		"node": ">=22.12.0"
 	}
 }
