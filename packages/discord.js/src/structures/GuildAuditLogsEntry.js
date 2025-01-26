@@ -398,8 +398,8 @@ class GuildAuditLogsEntry {
     if (target < 120) return Targets.Thread;
     if (target < 130) return Targets.ApplicationCommand;
     if (target < 140) return Targets.SoundboardSound;
-    if (target >= 140 && target <= 142) return Targets.AutoModeration;
-    if (target >= 143 && target <= 145) return Targets.User;
+    if (target < 143) return Targets.AutoModeration;
+    if (target < 146) return Targets.User;
     if (target >= 163 && target <= 165) return Targets.GuildOnboardingPrompt;
     return Targets.Unknown;
   }
