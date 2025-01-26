@@ -11,11 +11,11 @@ export type ReadonlyCollection<Key, Value> = Omit<
 
 export interface Collection<Key, Value> {
 	/**
-	 * Ambient declaration to allow `this.constructor[@@species]` in class methods.
+	 * Ambient declaration to allow references to `this.constructor` in class methods.
 	 *
 	 * @internal
 	 */
-	constructor: typeof Collection & { readonly [Symbol.species]: typeof Collection };
+	constructor: typeof Collection;
 }
 
 /**
@@ -1076,7 +1076,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		entries: Iterable<[Key, Value]>,
 		combine: (firstValue: Value, secondValue: Value, key: Key) => Value,
 	): Collection<Key, Value> {
-		const coll = new Collection<Key, Value>();
+		const coll = new this[Symbol.species]<Key, Value>();
 		for (const [key, value] of entries) {
 			if (coll.has(key)) {
 				coll.set(key, combine(coll.get(key)!, value, key));
@@ -1087,6 +1087,11 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 		return coll;
 	}
+
+	/**
+	 * @internal
+	 */
+	declare public static readonly [Symbol.species]: typeof Collection;
 }
 
 /**
