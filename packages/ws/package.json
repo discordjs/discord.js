@@ -4,7 +4,7 @@
 	"version": "2.0.0",
 	"description": "Wrapper around Discord's gateway",
 	"scripts": {
-		"test": "vitest run",
+		"test": "vitest run --config ../../vitest.config.ts",
 		"build": "tsc --noEmit && tsup",
 		"build:docs": "tsc -p tsconfig.docs.json",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
@@ -96,7 +96,6 @@
 		"eslint-formatter-pretty": "^6.0.1",
 		"mock-socket": "^9.3.1",
 		"prettier": "^3.4.2",
-		"tsd": "^0.31.2",
 		"tsup": "^8.3.5",
 		"turbo": "^2.3.3",
 		"typescript": "~5.5.4",

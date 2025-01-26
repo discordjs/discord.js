@@ -4,7 +4,7 @@
 	"version": "1.0.0",
 	"description": "Powerful set of message brokers",
 	"scripts": {
-		"test": "vitest run",
+		"test": "vitest run --config ../../vitest.config.ts",
 		"build": "tsc --noEmit --lib ESNext,DOM && tsup",
 		"build:docs": "tsc -p tsconfig.docs.json --lib ESNext,DOM",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",

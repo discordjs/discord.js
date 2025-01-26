@@ -6,7 +6,7 @@
 	"scripts": {
 		"build": "tsc --noEmit && tsup",
 		"build:docs": "tsc -p tsconfig.docs.json",
-		"test": "vitest run && tsd",
+		"test": "vitest run --config ../../vitest.config.ts",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
 		"fmt": "pnpm run format",
@@ -73,7 +73,6 @@
 		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
 		"prettier": "^3.4.2",
-		"tsd": "^0.31.2",
 		"tsup": "^8.3.5",
 		"turbo": "^2.3.3",
 		"typescript": "~5.5.4",
@@ -85,8 +84,5 @@
 	"publishConfig": {
 		"access": "public",
 		"provenance": true
-	},
-	"tsd": {
-		"directory": "__tests__/types"
 	}
 }
