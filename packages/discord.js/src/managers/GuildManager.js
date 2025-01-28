@@ -283,7 +283,7 @@ class GuildManager extends CachedManager {
   }
 
   /**
-   * Options used to set incident actions. Suppling `null` to any option will disable the action.
+   * Options used to set incident actions. Supplying `null` to any option will disable the action.
    * @typedef {Object} IncidentsActionsEditOptions
    * @property {?DateResolvable} [invitesDisabledUntil] When invites should be enabled again
    * @property {?DateResolvable} [dmsDisabledUntil] When direct messages should be enabled again
