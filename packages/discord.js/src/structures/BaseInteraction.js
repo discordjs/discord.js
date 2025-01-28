@@ -219,6 +219,16 @@ class BaseInteraction extends Base {
   }
 
   /**
+   * Indicates whether this interaction is a {@link PrimaryEntryPointCommandInteraction}
+   * @returns {boolean}
+   */
+  isPrimaryEntryPointCommand() {
+    return (
+      this.type === InteractionType.ApplicationCommand && this.commandType === ApplicationCommandType.PrimaryEntryPoint
+    );
+  }
+
+  /**
    * Indicates whether this interaction is a {@link MessageComponentInteraction}
    * @returns {boolean}
    */
