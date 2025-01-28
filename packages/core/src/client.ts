@@ -82,6 +82,8 @@ import {
 	type GatewayVoiceStateUpdateData,
 	type GatewayVoiceStateUpdateDispatchData,
 	type GatewayWebhooksUpdateDispatchData,
+	type GatewayRequestSoundboardSoundsData,
+	type GatewaySoundboardSoundsDispatchData,
 } from 'discord-api-types/v10';
 import type { Gateway } from './Gateway.js';
 import { API } from './api/index.js';
@@ -143,6 +145,7 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.GuildSoundboardSoundDelete]: [ToEventProps<GatewayGuildSoundboardSoundDeleteDispatch>];
 	[GatewayDispatchEvents.GuildSoundboardSoundUpdate]: [ToEventProps<GatewayGuildSoundboardSoundUpdateDispatch>];
 	[GatewayDispatchEvents.GuildSoundboardSoundsUpdate]: [ToEventProps<GatewayGuildSoundboardSoundsUpdateDispatch>];
+	[GatewayDispatchEvents.SoundboardSounds]: [ToEventProps<GatewaySoundboardSoundsDispatchData>];
 	[GatewayDispatchEvents.GuildStickersUpdate]: [ToEventProps<GatewayGuildStickersUpdateDispatchData>];
 	[GatewayDispatchEvents.GuildUpdate]: [ToEventProps<GatewayGuildUpdateDispatchData>];
 	[GatewayDispatchEvents.IntegrationCreate]: [ToEventProps<GatewayIntegrationCreateDispatchData>];
@@ -332,6 +335,105 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 		}
 
 		return { members, nonce, notFound, presences };
+	}
+
+	/**
+	 * Requests soundboard sounds from the gateway and returns an async iterator that yields the data from each soundboard sounds event.
+	 *
+	 * @see {@link https://discord.com/developers/docs/topics/gateway-events#request-soundboard-sounds}
+	 * @param options - The options for the request
+	 * @param timeout - The timeout for waiting for each soundboard sounds
+	 * @example
+	 * Requesting soundboard sounds for specific guilds
+	 * ```ts
+	 * for await (const { guildId, soundboardSounds } of this.requestSoundboardSoundsIterator({
+	 *	guild_ids: ['1234567890', '9876543210'],
+	 * })) {
+	 *	console.log(`Soundboard sounds for guild ${guildId}:`, soundboardSounds);
+	 * }
+	 * ```
+	 */
+	public async *requestSoundboardSoundsIterator(options: GatewayRequestSoundboardSoundsData, timeout = 10_000) {
+		const shardCount = await this.gateway.getShardCount();
+		const shardIds = Map.groupBy(options.guild_ids, (guildId) => calculateShardId(guildId, shardCount));
+
+		const controller = new AbortController();
+
+		let timer: NodeJS.Timeout | undefined = createTimer(controller, timeout);
+
+		for (const [shardId, guildIds] of shardIds) {
+			await this.gateway.send(shardId, {
+				op: GatewayOpcodes.RequestSoundboardSounds,
+				// eslint-disable-next-line id-length
+				d: {
+					...options,
+					guild_ids: guildIds,
+				},
+			});
+		}
+
+		try {
+			const iterator = AsyncEventEmitter.on(this, GatewayDispatchEvents.SoundboardSounds, {
+				signal: controller.signal,
+			});
+
+			const guildIds = new Set(options.guild_ids);
+
+			for await (const [{ data }] of iterator) {
+				if (!guildIds.has(data.guild_id)) continue;
+
+				clearTimeout(timer);
+				timer = undefined;
+
+				yield {
+					guildId: data.guild_id,
+					soundboardSounds: data.soundboard_sounds,
+				};
+
+				guildIds.delete(data.guild_id);
+
+				if (guildIds.size === 0) break;
+
+				timer = createTimer(controller, timeout);
+			}
+		} catch (error) {
+			if (error instanceof Error && error.name === 'AbortError') {
+				throw new Error('Request timed out');
+			}
+
+			throw error;
+		} finally {
+			if (timer) {
+				clearTimeout(timer);
+			}
+		}
+	}
+
+	/**
+	 * Requests soundboard sounds from the gateway.
+	 *
+	 * @see {@link https://discord.com/developers/docs/topics/gateway-events#request-soundboard-sounds}
+	 * @param options - The options for the request
+	 * @param timeout - The timeout for waiting for each soundboard sounds event
+	 * @example
+	 * Requesting soundboard sounds for specific guilds
+	 * ```ts
+	 * const soundboardSounds = await client.requestSoundboardSounds({ guild_ids: ['1234567890', '9876543210'], });
+	 *
+	 * console.log(soundboardSounds.get('1234567890'));
+	 * ```
+	 */
+	public async requestSoundboardSounds(options: GatewayRequestSoundboardSoundsData, timeout = 10_000) {
+		const soundboardSounds = new Map<
+			GatewaySoundboardSoundsDispatchData['guild_id'],
+			GatewaySoundboardSoundsDispatchData['soundboard_sounds']
+		>();
+
+		for await (const data of this.requestSoundboardSoundsIterator(options, timeout)) {
+			soundboardSounds.set(data.guildId, data.soundboardSounds);
+		}
+
+		return soundboardSounds;
 	}
 
 	/**
