@@ -478,7 +478,7 @@ class Guild extends AnonymousGuild {
        * this property.</info>
        * @type {?IncidentActions}
        */
-      this.incidentsData = data.incidents_data ? _transformAPIIncidentsData(data.incidents_data) : null;
+      this.incidentsData = data.incidents_data && _transformAPIIncidentsData(data.incidents_data);
     } else {
       this.incidentsData ??= null;
     }

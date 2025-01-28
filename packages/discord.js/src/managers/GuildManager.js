@@ -300,11 +300,8 @@ class GuildManager extends CachedManager {
 
     const data = await this.client.rest.put(Routes.guildIncidentActions(guildId), {
       body: {
-        /* eslint-disable eqeqeq */
-        invites_disabled_until:
-          invitesDisabledUntil != null ? new Date(invitesDisabledUntil).toISOString() : invitesDisabledUntil,
-        dms_disabled_until: dmsDisabledUntil != null ? new Date(dmsDisabledUntil).toISOString() : dmsDisabledUntil,
-        /* eslint-enable eqeqeq */
+        invites_disabled_until: invitesDisabledUntil && new Date(invitesDisabledUntil).toISOString(),
+        dms_disabled_until: dmsDisabledUntil && new Date(dmsDisabledUntil).toISOString(),
       },
     });
 

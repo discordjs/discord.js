@@ -80,14 +80,10 @@ function _transformGuildScheduledEventRecurrenceRule(recurrenceRule) {
  */
 function _transformAPIIncidentsData(data) {
   return {
-    invitesDisabledUntil: data.invites_disabled_until
-      ? new Date(data.invites_disabled_until)
-      : data.invites_disabled_until,
-    dmsDisabledUntil: data.dms_disabled_until ? new Date(data.dms_disabled_until) : data.dms_disabled_until,
-    dmSpamDetectedAt: data.dm_spam_detected_at
-      ? new Date(data.dm_spam_detected_at)
-      : (data.dm_spam_detected_at ?? null),
-    raidDetectedAt: data.raid_detected_at ? new Date(data.raid_detected_at) : (data.raid_detected_at ?? null),
+    invitesDisabledUntil: data.invites_disabled_until ? new Date(data.invites_disabled_until) : null,
+    dmsDisabledUntil: data.dms_disabled_until ? new Date(data.dms_disabled_until) : null,
+    dmSpamDetectedAt: data.dm_spam_detected_at ? new Date(data.dm_spam_detected_at) : null,
+    raidDetectedAt: data.raid_detected_at ? new Date(data.raid_detected_at) : null,
   };
 }
 
