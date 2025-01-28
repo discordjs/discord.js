@@ -298,8 +298,7 @@ class GuildManager extends CachedManager {
   async setIncidentActions(guild, { invitesDisabledUntil, dmsDisabledUntil }) {
     const guildId = this.resolveId(guild);
 
-    // TODO: discord-api-types route.
-    const data = await this.client.rest.put(`/guilds/${guildId}/incident-actions`, {
+    const data = await this.client.rest.put(Routes.guildIncidentActions(guildId), {
       body: {
         /* eslint-disable eqeqeq */
         invites_disabled_until:
