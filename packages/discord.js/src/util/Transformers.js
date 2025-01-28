@@ -76,9 +76,25 @@ function _transformGuildScheduledEventRecurrenceRule(recurrenceRule) {
   };
 }
 
+/**
+ * Transforms API incidents data to a camel-cased variant.
+ * @param {APIIncidentsData} data The incidents data to transform
+ * @returns {IncidentActions}
+ * @ignore
+ */
+function _transformAPIIncidentsData(data) {
+  return {
+    invitesDisabledUntil: data.invites_disabled_until ? new Date(data.invites_disabled_until) : null,
+    dmsDisabledUntil: data.dms_disabled_until ? new Date(data.dms_disabled_until) : null,
+    dmSpamDetectedAt: data.dm_spam_detected_at ? new Date(data.dm_spam_detected_at) : null,
+    raidDetectedAt: data.raid_detected_at ? new Date(data.raid_detected_at) : null,
+  };
+}
+
 module.exports = {
   toSnakeCase,
   _transformAPIAutoModerationAction,
   _transformAPIMessageInteractionMetadata,
   _transformGuildScheduledEventRecurrenceRule,
+  _transformAPIIncidentsData
 };
