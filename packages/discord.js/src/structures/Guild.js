@@ -1378,8 +1378,8 @@ class Guild extends AnonymousGuild {
   }
 
   /**
-   * Sets the incidents actions for a guild.
-   * @param {IncidentsActionsEditOptions} incidentActions The incidents actions to set
+   * Sets the incident actions for a guild.
+   * @param {IncidentActionsEditOptions} incidentActions The incident actions to set
    * @returns {Promise<IncidentActions>}
    */
   async setIncidentActions(incidentActions) {

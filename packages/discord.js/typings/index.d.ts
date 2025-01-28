@@ -1447,7 +1447,7 @@ export class Guild extends AnonymousGuild {
   public widgetImageURL(style?: GuildWidgetStyle): string;
   public leave(): Promise<Guild>;
   public disableInvites(disabled?: boolean): Promise<Guild>;
-  public setIncidentActions(incidentActions: IncidentsActionsEditOptions): Promise<IncidentActions>;
+  public setIncidentActions(incidentActions: IncidentActionsEditOptions): Promise<IncidentActions>;
   public setAFKChannel(afkChannel: VoiceChannelResolvable | null, reason?: string): Promise<Guild>;
   public setAFKTimeout(afkTimeout: number, reason?: string): Promise<Guild>;
   public setBanner(banner: BufferResolvable | Base64Resolvable | null, reason?: string): Promise<Guild>;
@@ -4176,7 +4176,7 @@ export class GuildManager extends CachedManager<Snowflake, Guild, GuildResolvabl
   public fetch(options?: FetchGuildsOptions): Promise<Collection<Snowflake, OAuth2Guild>>;
   public setIncidentActions(
     guild: GuildResolvable,
-    incidentActions: IncidentsActionsEditOptions,
+    incidentActions: IncidentActionsEditOptions,
   ): Promise<IncidentActions>;
   public widgetImageURL(guild: GuildResolvable, style?: GuildWidgetStyle): string;
 }
@@ -6077,7 +6077,7 @@ export interface IncidentActions {
   raidDetectedAt: Date | null;
 }
 
-export interface IncidentsActionsEditOptions {
+export interface IncidentActionsEditOptions {
   invitesDisabledUntil?: DateResolvable | null | undefined;
   dmsDisabledUntil?: DateResolvable | null | undefined;
 }
