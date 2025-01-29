@@ -317,7 +317,6 @@ class ThreadChannel extends BaseChannel {
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<?Message<true>>}
    */
-  // eslint-disable-next-line require-await
   async fetchStarterMessage(options) {
     const channel = this.parent instanceof getThreadOnlyChannel() ? this : this.parent;
     return channel?.messages.fetch({ message: this.id, ...options }) ?? null;
@@ -407,9 +406,9 @@ class ThreadChannel extends BaseChannel {
    * @param {string} [reason] Reason for changing invite
    * @returns {Promise<ThreadChannel>}
    */
-  setInvitable(invitable = true, reason) {
+  async setInvitable(invitable = true, reason) {
     if (this.type !== ChannelType.PrivateThread) {
-      return Promise.reject(new DiscordjsRangeError(ErrorCodes.ThreadInvitableType, this.type));
+      throw new DiscordjsRangeError(ErrorCodes.ThreadInvitableType, this.type);
     }
     return this.edit({ invitable, reason });
   }

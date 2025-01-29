@@ -29,6 +29,7 @@ export async function ParameterNode({
 								{description ? <Badges node={parameter} /> : null}
 								{parameter.name}
 								{parameter.isOptional ? '?' : ''}: <ExcerptNode node={parameter.typeExcerpt} version={version} />
+								{parameter.defaultValue ? ` = ${parameter.defaultValue}` : ''}
 							</span>
 							{description && parameter.description?.length ? (
 								<div className="mt-4 pl-4">

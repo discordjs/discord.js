@@ -12,6 +12,7 @@ import type { Excerpt } from '../mixins/Excerpt.js';
  * @public
  */
 export interface IParameterOptions {
+	defaultValue: string | undefined;
 	isOptional: boolean;
 	isRest: boolean;
 	name: string;
@@ -56,6 +57,11 @@ export class Parameter {
 	 */
 	public isRest: boolean;
 
+	/**
+	 * The default value for this parameter if optional
+	 */
+	public defaultValue: string | undefined;
+
 	private readonly _parent: ApiParameterListMixin;
 
 	public constructor(options: IParameterOptions) {
@@ -64,6 +70,7 @@ export class Parameter {
 		this.isOptional = options.isOptional;
 		this.isRest = options.isRest;
 		this._parent = options.parent;
+		this.defaultValue = options.defaultValue;
 	}
 
 	/**
