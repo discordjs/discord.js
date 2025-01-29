@@ -28,6 +28,7 @@ const { StageInstanceManager } = require('../managers/StageInstanceManager.js');
 const { VoiceStateManager } = require('../managers/VoiceStateManager.js');
 const { resolveImage } = require('../util/DataResolver.js');
 const { SystemChannelFlagsBitField } = require('../util/SystemChannelFlagsBitField.js');
+const { _transformAPIIncidentsData } = require('../util/Transformers.js');
 const { discordSort, getSortableGroupTypes, resolvePartialEmoji } = require('../util/Util.js');
 
 /**
@@ -459,6 +460,27 @@ class Guild extends AnonymousGuild {
         guild_id: this.id,
         stickers: data.stickers,
       });
+    }
+
+    if ('incidents_data' in data) {
+      /**
+       * Incident actions of a guild.
+       * @typedef {Object} IncidentActions
+       * @property {?Date} invitesDisabledUntil When invites would be enabled again
+       * @property {?Date} dmsDisabledUntil When direct messages would be enabled again
+       * @property {?Date} dmSpamDetectedAt When direct message spam was detected
+       * @property {?Date} raidDetectedAt When a raid was detected
+       */
+
+      /**
+       * The incidents data of this guild.
+       * <info>You will need to fetch the guild using {@link BaseGuild#fetch} if you want to receive
+       * this property.</info>
+       * @type {?IncidentActions}
+       */
+      this.incidentsData = data.incidents_data && _transformAPIIncidentsData(data.incidents_data);
+    } else {
+      this.incidentsData ??= null;
     }
   }
 
@@ -1353,6 +1375,15 @@ class Guild extends AnonymousGuild {
     const features = this.features.filter(feature => feature !== GuildFeature.InvitesDisabled);
     if (disabled) features.push(GuildFeature.InvitesDisabled);
     return this.edit({ features });
+  }
+
+  /**
+   * Sets the incident actions for a guild.
+   * @param {IncidentActionsEditOptions} incidentActions The incident actions to set
+   * @returns {Promise<IncidentActions>}
+   */
+  async setIncidentActions(incidentActions) {
+    return this.client.guilds.setIncidentActions(this.id, incidentActions);
   }
 
   /**
