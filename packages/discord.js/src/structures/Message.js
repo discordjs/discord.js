@@ -957,6 +957,23 @@ class Message extends Base {
   }
 
   /**
+   * Forwards this message
+   *
+   * @param {TextBasedChannelResolvable} channel The channel to forward this message to.
+   * @returns {Promise<Message>}
+   */
+  forward(channel) {
+    const resolvedChannel = this.client.channels.resolve(channel);
+    if (!resolvedChannel) throw new DiscordjsError(ErrorCodes.InvalidType, 'channel', 'TextChannelResolvable');
+    return resolvedChannel.send({
+      forward: {
+        messageId: this.id,
+        channelId: this.channelId,
+      },
+    });
+  }
+
+  /**
    * Options for starting a thread on a message.
    * @typedef {Object} StartThreadOptions
    * @property {string} name The name of the new thread
