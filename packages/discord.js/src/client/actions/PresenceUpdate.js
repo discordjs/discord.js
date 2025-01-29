@@ -2,7 +2,7 @@
 
 const Action = require('./Action');
 const Events = require('../../util/Events');
-const Partials = require('../util/Partials');
+const Partials = require('../../util/Partials');
 
 class PresenceUpdateAction extends Action {
   handle(data) {

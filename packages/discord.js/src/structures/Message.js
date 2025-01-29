@@ -964,7 +964,7 @@ class Message extends Base {
    */
   forward(channel) {
     const resolvedChannel = this.client.channels.resolve(channel);
-    if (!resolvedChannel) throw new DiscordjsError(ErrorCodes.InvalidType, 'channel', 'TextChannelResolvable');
+    if (!resolvedChannel) throw new DiscordjsError(ErrorCodes.InvalidType, 'channel', 'TextBasedChannelResolvable');
     return resolvedChannel.send({
       forward: {
         messageId: this.id,

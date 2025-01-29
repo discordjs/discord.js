@@ -204,7 +204,7 @@ class MessagePayload {
       const channel_id = reference.channelId ?? this.target.client.channels.resolveId(this.options.forward.channelId);
       const message_id = this.target.messages.resolveId(reference);
       if (message_id) {
-        if (!channel_id) throw new DiscordjsError(ErrorCodes.InvalidType, 'channelId', 'TextChannelResolvable');
+        if (!channel_id) throw new DiscordjsError(ErrorCodes.InvalidType, 'channelId', 'TextBasedChannelResolvable');
         message_reference = {
           type: MessageReferenceType.Forward,
           message_id,
