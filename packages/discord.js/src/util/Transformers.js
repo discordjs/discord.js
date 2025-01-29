@@ -96,5 +96,5 @@ module.exports = {
   _transformAPIAutoModerationAction,
   _transformAPIMessageInteractionMetadata,
   _transformGuildScheduledEventRecurrenceRule,
-  _transformAPIIncidentsData
+  _transformAPIIncidentsData,
 };
