@@ -111,9 +111,16 @@ class TextBasedChannel {
    */
 
   /**
+   * @typedef {Object} ForwardOptions
+   * @property {MessageResolvable} messageId The message to forward to
+   * @property {TextBasedChannelResolvable} [channelId] The channel of the originating message
+   */
+
+  /**
    * The options for sending a message.
    * @typedef {BaseMessageCreateOptions} MessageCreateOptions
    * @property {ReplyOptions} [reply] The options for replying to a message
+   * @property {ForwardOptions} [forward] The options for forwarding a message
    */
 
   /**
