@@ -48,8 +48,8 @@ class ApplicationEmojiManager extends CachedManager {
    *   .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
    *   .catch(console.error);
    */
-  async create({ attachment, name }) {
-    attachment = await resolveImage(attachment);
+  async create({ attachment: rawAttachment, name }) {
+    const attachment = await resolveImage(rawAttachment);
     if (!attachment) throw new DiscordjsTypeError(ErrorCodes.ReqResourceType);
 
     const body = { image: attachment, name };
