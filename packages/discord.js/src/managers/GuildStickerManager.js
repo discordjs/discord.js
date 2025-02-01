@@ -58,16 +58,14 @@ class GuildStickerManager extends CachedManager {
    *   .catch(console.error);
    */
   async create({ file, name, tags, description, reason } = {}) {
-    const resolvedFile = await MessagePayload.resolveFile(file);
-    if (!resolvedFile) throw new DiscordjsTypeError(ErrorCodes.ReqResourceType);
-    file = { ...resolvedFile, key: 'file' };
+    const resolvedFile = { ...(await MessagePayload.resolveFile(file)), key: 'file' };
 
     const body = { name, tags, description: description ?? '' };
 
     const sticker = await this.client.rest.post(Routes.guildStickers(this.guild.id), {
       appendToFormData: true,
       body,
-      files: [file],
+      files: [resolvedFile],
       reason,
     });
     return this.client.actions.GuildStickerCreate.handle(this.guild, sticker).sticker;
