@@ -91,6 +91,8 @@ const Messages = {
   [ErrorCodes.MissingManageGuildExpressionsPermission]: guild =>
     `Client must have Manage Guild Expressions permission in guild ${guild} to see emoji authors.`,
 
+  [ErrorCodes.NotGuildSoundboardSound]: action =>
+    `Soundboard sound is a default (non-guild) soundboard sound and can't be ${action}.`,
   [ErrorCodes.NotGuildSticker]: 'Sticker is a standard (non-guild) sticker and has no author.',
 
   [ErrorCodes.ReactionResolveUser]: "Couldn't resolve the user id to remove from the reaction.",
