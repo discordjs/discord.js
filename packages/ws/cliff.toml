@@ -57,7 +57,6 @@ commit_parsers = [
 	{ message = "^docs", group = "Documentation"},
 	{ message = "^perf", group = "Performance"},
 	{ message = "^refactor", group = "Refactor"},
-	{ message = "^typings", group = "Typings"},
 	{ message = "^types", group = "Typings"},
 	{ message = ".*deprecated", body = ".*deprecated", group = "Deprecation"},
 	{ message = "^revert", skip = true},
