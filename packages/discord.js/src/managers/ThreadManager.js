@@ -97,7 +97,7 @@ class ThreadManager extends CachedManager {
    * Data that can be resolved to a Date object. This can be:
    * * A Date object
    * * A number representing a timestamp
-   * * An [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) string
+   * * An {@link https://en.wikipedia.org/wiki/ISO_8601 ISO 8601} string
    * @typedef {Date|number|string} DateResolvable
    */
 

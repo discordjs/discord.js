@@ -41,6 +41,7 @@ const MinifyJSONMapping = {
 	constraintTokenRange: 'ctr',
 	dependencies: 'dp',
 	defaultTypeTokenRange: 'dtr',
+	defaultValue: 'dv',
 	docComment: 'd',
 	endIndex: 'en',
 	excerptTokens: 'ex',
