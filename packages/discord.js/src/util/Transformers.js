@@ -69,7 +69,6 @@ function _transformGuildScheduledEventRecurrenceRule(recurrenceRule) {
     by_n_weekday: recurrenceRule.byNWeekday,
     by_month: recurrenceRule.byMonth,
     by_month_day: recurrenceRule.byMonthDay,
-    by_year_day: recurrenceRule.byYearDay,
   };
 }
 
