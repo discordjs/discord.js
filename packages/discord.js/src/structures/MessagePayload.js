@@ -3,7 +3,7 @@
 const { Buffer } = require('node:buffer');
 const { lazy, isJSONEncodable } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { MessageFlags } = require('discord-api-types/v10');
+const { MessageFlags, MessageReferenceType } = require('discord-api-types/v10');
 const ActionRowBuilder = require('./ActionRowBuilder');
 const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors');
 const { resolveFile } = require('../util/DataResolver');
@@ -195,6 +195,20 @@ class MessagePayload {
         message_reference = {
           message_id,
           fail_if_not_exists: this.options.reply.failIfNotExists ?? this.target.client.options.failIfNotExists,
+        };
+      }
+    }
+
+    if (typeof this.options.forward === 'object') {
+      const reference = this.options.forward.messageId;
+      const channel_id = reference.channelId ?? this.target.client.channels.resolveId(this.options.forward.channelId);
+      const message_id = this.target.messages.resolveId(reference);
+      if (message_id) {
+        if (!channel_id) throw new DiscordjsError(ErrorCodes.InvalidType, 'channelId', 'TextBasedChannelResolvable');
+        message_reference = {
+          type: MessageReferenceType.Forward,
+          message_id,
+          channel_id,
         };
       }
     }
