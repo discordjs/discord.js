@@ -186,7 +186,7 @@ class PermissionOverwrites extends Base {
       throw new DiscordjsTypeError(
         ErrorCodes.InvalidType,
         'parameter',
-        'could not be resolved to a cached User or Role',
+        'cached User or Role',
       );
     }
 
