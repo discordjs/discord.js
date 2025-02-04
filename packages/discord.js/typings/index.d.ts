@@ -7001,7 +7001,7 @@ export interface BaseForwardOptions {
   channelId?: TextBasedChannelResolvable;
 }
 
-export interface ForwardOptionsWithMandaatoryChannel extends BaseForwardOptions {
+export interface ForwardOptionsWithMandatoryChannel extends BaseForwardOptions {
   channelId: TextBasedChannelResolvable;
 }
 
@@ -7009,7 +7009,7 @@ export interface ForwardOptionsWithOptionalChannel extends BaseForwardOptions {
   messageId: Exclude<MessageResolvable, Snowflake>;
 }
 
-export type ForwardOptions = ForwardOptionsWithMandaatoryChannel | ForwardOptionsWithOptionalChannel;
+export type ForwardOptions = ForwardOptionsWithMandatoryChannel | ForwardOptionsWithOptionalChannel;
 
 export interface MessageReplyOptions extends Omit<MessageCreateOptions, 'reply' | 'forward'> {
   failIfNotExists?: boolean;
