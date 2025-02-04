@@ -3,8 +3,8 @@
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager');
-const { User } = require('../structures/User');
+const { CachedManager } = require('./CachedManager.js');
+const { User } = require('../structures/User.js');
 
 /**
  * Manages API methods for users who voted on a poll and stores their cache.
