@@ -5,7 +5,6 @@
 	"description": "Imagine a guide... that explores the many possibilities for your discord.js bot",
 	"private": true,
 	"scripts": {
-		"test": "vitest run",
 		"build:check": "tsc --noEmit",
 		"build:local": "pnpm run build:prod",
 		"build:prod": "next build",
@@ -66,8 +65,6 @@
 		"sharp": "^0.33.5"
 	},
 	"devDependencies": {
-		"@testing-library/react": "^15.0.7",
-		"@testing-library/user-event": "^14.5.2",
 		"@types/html-escaper": "^3.0.2",
 		"@types/node": "^18.19.68",
 		"@types/react": "^18.3.18",
@@ -76,7 +73,6 @@
 		"@unocss/postcss": "^0.60.4",
 		"@unocss/reset": "^0.60.4",
 		"@vitejs/plugin-react": "^4.3.4",
-		"@vitest/coverage-v8": "^2.1.8",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.57.1",
 		"eslint-config-neon": "^0.1.62",
@@ -90,8 +86,7 @@
 		"turbo": "^2.3.3",
 		"typescript": "~5.5.4",
 		"unocss": "^0.60.4",
-		"vercel": "^37.14.0",
-		"vitest": "^2.1.8"
+		"vercel": "^37.14.0"
 	},
 	"engines": {
 		"node": ">=18"

@@ -5,7 +5,6 @@
 	"description": "Imagine a bot... the most popular way to build discord bots",
 	"private": true,
 	"scripts": {
-		"test": "vitest run",
 		"build:copy_readme": "cpy \"../../packages/(discord.js|brokers|builders|collection|core|formatters|next|proxy|rest|util|voice|ws)/README.md\" \"src/assets/readme\" --rename='home-{{basename}}'",
 		"build:check": "tsc --noEmit",
 		"build:local": "cross-env NEXT_PUBLIC_LOCAL_DEV=true pnpm run build:prod",
@@ -75,11 +74,10 @@
 		"@tailwindcss/typography": "^0.5.15",
 		"@testing-library/react": "^15.0.7",
 		"@testing-library/user-event": "^14.5.2",
-		"@types/node": "^20.17.10",
+		"@types/node": "^22.10.10",
 		"@types/react": "^18.3.18",
 		"@types/react-dom": "^18.3.5",
 		"@vitejs/plugin-react": "^4.3.4",
-		"@vitest/coverage-v8": "^2.1.8",
 		"autoprefixer": "^10.4.20",
 		"babel-plugin-react-compiler": "0.0.0-experimental-592953e-20240517",
 		"cpy-cli": "^5.0.0",
@@ -97,10 +95,9 @@
 		"tailwindcss": "^3.4.17",
 		"turbo": "^2.3.3",
 		"typescript": "~5.5.4",
-		"vercel": "^37.14.0",
-		"vitest": "^2.1.8"
+		"vercel": "^37.14.0"
 	},
 	"engines": {
-		"node": ">=20"
+		"node": ">=22.12.0"
 	}
 }

@@ -218,7 +218,7 @@ import {
   PartialPollAnswer,
   PollAnswer,
   PollAnswerVoterManager,
-} from '.';
+} from './index.js';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
 import { ReadonlyCollection } from '@discordjs/collection';
@@ -477,21 +477,39 @@ client.on('messageCreate', async message => {
   expectAssignable<Promise<ButtonInteraction>>(channel.awaitMessageComponent({ componentType: ComponentType.Button }));
   expectAssignable<InteractionCollector<ButtonInteraction>>(buttonCollector);
 
+  buttonCollector.on('collect', (...args) => expectType<[ButtonInteraction]>(args));
+  buttonCollector.on('dispose', (...args) => expectType<[ButtonInteraction]>(args));
+  buttonCollector.on('end', (...args) => expectType<[ReadonlyCollection<Snowflake, ButtonInteraction>, string]>(args));
+
   // Verify that select menus interaction are inferred.
-  const selectMenuCollector = message.createMessageComponentCollector({ componentType: ComponentType.StringSelect });
+  const stringSelectMenuCollector = message.createMessageComponentCollector({
+    componentType: ComponentType.StringSelect,
+  });
   expectAssignable<Promise<StringSelectMenuInteraction>>(
     message.awaitMessageComponent({ componentType: ComponentType.StringSelect }),
   );
   expectAssignable<Promise<StringSelectMenuInteraction>>(
     channel.awaitMessageComponent({ componentType: ComponentType.StringSelect }),
   );
-  expectAssignable<InteractionCollector<StringSelectMenuInteraction>>(selectMenuCollector);
+  expectAssignable<InteractionCollector<StringSelectMenuInteraction>>(stringSelectMenuCollector);
+
+  stringSelectMenuCollector.on('collect', (...args) => expectType<[StringSelectMenuInteraction]>(args));
+  stringSelectMenuCollector.on('dispose', (...args) => expectType<[StringSelectMenuInteraction]>(args));
+  stringSelectMenuCollector.on('end', (...args) =>
+    expectType<[ReadonlyCollection<Snowflake, StringSelectMenuInteraction>, string]>(args),
+  );
 
   // Verify that message component interactions are default collected types.
   const defaultCollector = message.createMessageComponentCollector();
   expectAssignable<Promise<MessageComponentInteraction>>(message.awaitMessageComponent());
   expectAssignable<Promise<MessageComponentInteraction>>(channel.awaitMessageComponent());
   expectAssignable<InteractionCollector<CollectedMessageInteraction>>(defaultCollector);
+
+  defaultCollector.on('collect', (...args) => expectType<[SelectMenuInteraction | ButtonInteraction]>(args));
+  defaultCollector.on('dispose', (...args) => expectType<[SelectMenuInteraction | ButtonInteraction]>(args));
+  defaultCollector.on('end', (...args) =>
+    expectType<[ReadonlyCollection<Snowflake, SelectMenuInteraction | ButtonInteraction>, string]>(args),
+  );
 
   // Verify that additional options don't affect default collector types.
   const semiDefaultCollector = message.createMessageComponentCollector({ time: 10000 });
@@ -740,8 +758,8 @@ client.on('clientReady', async client => {
 
   // Test command manager methods
   const globalCommand = await client.application?.commands.fetch(globalCommandId);
-  const guildCommandFromGlobal = await client.application?.commands.fetch(guildCommandId, { guildId: testGuildId });
-  const guildCommandFromGuild = await client.guilds.cache.get(testGuildId)?.commands.fetch(guildCommandId);
+  const guildCommandFromGlobal = await client.application?.commands.fetch({ id: guildCommandId, guildId: testGuildId });
+  const guildCommandFromGuild = await client.guilds.cache.get(testGuildId)?.commands.fetch({ id: guildCommandId });
 
   await client.application?.commands.create(slashCommandBuilder);
   await client.application?.commands.create(contextMenuCommandBuilder);
@@ -1352,9 +1370,9 @@ client.on('guildCreate', async g => {
   );
 });
 
-// EventEmitter static method overrides
+// Event emitter static method overrides
 expectType<Promise<[Client<true>]>>(Client.once(client, 'clientReady'));
-expectType<AsyncIterableIterator<[Client<true>]>>(Client.on(client, 'clientReady'));
+expectAssignable<AsyncIterableIterator<[Client<true>]>>(Client.on(client, 'clientReady'));
 
 client.login('absolutely-valid-token');
 
@@ -1464,6 +1482,11 @@ declare const reactionCollector: ReactionCollector;
 reactionCollector.on('dispose', (...args) => {
   expectType<[MessageReaction, User]>(args);
 });
+
+reactionCollector.on('collect', (...args) => expectType<[MessageReaction, User]>(args));
+reactionCollector.on('dispose', (...args) => expectType<[MessageReaction, User]>(args));
+reactionCollector.on('remove', (...args) => expectType<[MessageReaction, User]>(args));
+reactionCollector.on('end', (...args) => expectType<[ReadonlyCollection<string, MessageReaction>, string]>(args));
 
 (async () => {
   for await (const value of reactionCollector) {
@@ -1612,9 +1635,9 @@ declare const autoModerationRuleManager: AutoModerationRuleManager;
 }
 
 declare const guildApplicationCommandManager: GuildApplicationCommandManager;
-expectType<Promise<Collection<Snowflake, ApplicationCommand>>>(guildApplicationCommandManager.fetch());
-expectType<Promise<Collection<Snowflake, ApplicationCommand>>>(guildApplicationCommandManager.fetch(undefined, {}));
 expectType<Promise<ApplicationCommand>>(guildApplicationCommandManager.fetch('0'));
+expectType<Promise<ApplicationCommand>>(guildApplicationCommandManager.fetch({ id: '0' }));
+expectType<Promise<Collection<Snowflake, ApplicationCommand>>>(guildApplicationCommandManager.fetch());
 
 declare const categoryChannelChildManager: CategoryChannelChildManager;
 {
@@ -2287,14 +2310,17 @@ expectType<Promise<{ channel: GuildTextBasedChannel | { id: Snowflake }; count: 
   guild.fetchAuditLogs({ type: AuditLogEvent.MessageDelete }).then(al => al.entries.first()?.extra),
 );
 
-expectType<Promise<User | null | undefined>>(
+expectType<Promise<User | PartialUser | null | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()?.target),
 );
 expectType<Promise<StageInstance | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.StageInstanceCreate }).then(al => al.entries.first()?.target),
 );
-expectType<Promise<User | undefined>>(
+expectType<Promise<User | null | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MessageDelete }).then(al => al.entries.first()?.target),
+);
+expectType<Promise<GuildTextBasedChannel | { id: string } | undefined>>(
+  guild.fetchAuditLogs({ type: AuditLogEvent.MessageBulkDelete }).then(al => al.entries.first()?.target),
 );
 
 declare const AuditLogChange: AuditLogChange;

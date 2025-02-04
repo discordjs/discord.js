@@ -37,7 +37,7 @@
 	},
 	"devDependencies": {
 		"@types/jest": "^29.5.14",
-		"@types/node": "^20.17.10",
+		"@types/node": "^22.10.10",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.57.1",
 		"eslint-config-neon": "^0.1.62",

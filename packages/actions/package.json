@@ -5,7 +5,7 @@
 	"description": "A set of actions that we use for our workflows",
 	"private": true,
 	"scripts": {
-		"test": "vitest run",
+		"test": "vitest run --config ../../vitest.config.ts",
 		"build": "tsc --noEmit --lib ESNext,DOM && tsup",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
@@ -53,7 +53,7 @@
 		"undici": "6.21.0"
 	},
 	"devDependencies": {
-		"@types/node": "^20.17.10",
+		"@types/node": "^22.10.10",
 		"@vitest/coverage-v8": "^2.1.8",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.57.1",
@@ -66,6 +66,6 @@
 		"vitest": "^2.1.8"
 	},
 	"engines": {
-		"node": ">=20"
+		"node": ">=22.12.0"
 	}
 }

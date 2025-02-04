@@ -1,9 +1,9 @@
 'use strict';
 
-const { BaseChannel } = require('./BaseChannel');
-const { TextBasedChannel } = require('./interfaces/TextBasedChannel');
-const { DiscordjsError, ErrorCodes } = require('../errors');
-const { PartialGroupDMMessageManager } = require('../managers/PartialGroupDMMessageManager');
+const { BaseChannel } = require('./BaseChannel.js');
+const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
+const { PartialGroupDMMessageManager } = require('../managers/PartialGroupDMMessageManager.js');
 
 /**
  * Represents a Partial Group DM Channel on Discord.
@@ -100,12 +100,12 @@ class PartialGroupDMChannel extends BaseChannel {
     return this.client.users.fetch(this.ownerId, options);
   }
 
-  delete() {
-    return Promise.reject(new DiscordjsError(ErrorCodes.DeleteGroupDMChannel));
+  async delete() {
+    throw new DiscordjsError(ErrorCodes.DeleteGroupDMChannel);
   }
 
-  fetch() {
-    return Promise.reject(new DiscordjsError(ErrorCodes.FetchGroupDMChannel));
+  async fetch() {
+    throw new DiscordjsError(ErrorCodes.FetchGroupDMChannel);
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel

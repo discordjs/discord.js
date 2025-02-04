@@ -2,9 +2,9 @@
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes } = require('discord-api-types/v10');
-const { Base } = require('./Base');
-const { DiscordjsError, ErrorCodes } = require('../errors');
-const { StickerFormatExtensionMap } = require('../util/Constants');
+const { Base } = require('./Base.js');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
+const { StickerFormatExtensionMap } = require('../util/Constants.js');
 
 /**
  * Represents a Sticker.
@@ -182,8 +182,8 @@ class Sticker extends Base {
    * Fetches the pack that contains this sticker.
    * @returns {Promise<?StickerPack>} The sticker pack or `null` if this sticker does not belong to one.
    */
-  fetchPack() {
-    if (!this.packId) return Promise.resolve(null);
+  async fetchPack() {
+    if (!this.packId) return null;
     return this.client.fetchStickerPacks({ packId: this.packId });
   }
 

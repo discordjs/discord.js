@@ -2,12 +2,12 @@
 
 const { Snowflake } = require('@sapphire/snowflake');
 const { PermissionFlagsBits, ChannelType } = require('discord-api-types/v10');
-const { BaseChannel } = require('./BaseChannel');
-const { DiscordjsError, ErrorCodes } = require('../errors');
-const { PermissionOverwriteManager } = require('../managers/PermissionOverwriteManager');
-const { VoiceBasedChannelTypes } = require('../util/Constants');
-const { PermissionsBitField } = require('../util/PermissionsBitField');
-const { getSortableGroupTypes } = require('../util/Util');
+const { BaseChannel } = require('./BaseChannel.js');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
+const { PermissionOverwriteManager } = require('../managers/PermissionOverwriteManager.js');
+const { VoiceBasedChannelTypes } = require('../util/Constants.js');
+const { PermissionsBitField } = require('../util/PermissionsBitField.js');
+const { getSortableGroupTypes } = require('../util/Util.js');
 
 /**
  * Represents a guild channel from any of the following:
@@ -167,7 +167,7 @@ class GuildChannel extends BaseChannel {
 
   /**
    * Gets the overall set of permissions for a member or role in this channel, taking into account channel overwrites.
-   * @param {GuildMemberResolvable|RoleResolvable} memberOrRole The member or role to obtain the overall permissions for
+   * @param {UserResolvable|RoleResolvable} memberOrRole The member or role to obtain the overall permissions for
    * @param {boolean} [checkAdmin=true] Whether having the {@link PermissionFlagsBits.Administrator} permission
    * will return all permissions
    * @returns {?Readonly<PermissionsBitField>}
@@ -265,8 +265,8 @@ class GuildChannel extends BaseChannel {
    * Locks in the permission overwrites from the parent channel.
    * @returns {Promise<GuildChannel>}
    */
-  lockPermissions() {
-    if (!this.parent) return Promise.reject(new DiscordjsError(ErrorCodes.GuildChannelOrphan));
+  async lockPermissions() {
+    if (!this.parent) throw new DiscordjsError(ErrorCodes.GuildChannelOrphan);
     const permissionOverwrites = this.parent.permissionOverwrites.cache.map(overwrite => overwrite.toJSON());
     return this.edit({ permissionOverwrites });
   }

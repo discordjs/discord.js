@@ -4,31 +4,32 @@ const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ChannelType, GuildPremiumTier, Routes, GuildFeature } = require('discord-api-types/v10');
-const { AnonymousGuild } = require('./AnonymousGuild');
-const { GuildAuditLogs } = require('./GuildAuditLogs');
-const { GuildOnboarding } = require('./GuildOnboarding');
-const { GuildPreview } = require('./GuildPreview');
-const { GuildTemplate } = require('./GuildTemplate');
-const { Integration } = require('./Integration');
-const { Webhook } = require('./Webhook');
-const { WelcomeScreen } = require('./WelcomeScreen');
-const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
-const { AutoModerationRuleManager } = require('../managers/AutoModerationRuleManager');
-const { GuildApplicationCommandManager } = require('../managers/GuildApplicationCommandManager');
-const { GuildBanManager } = require('../managers/GuildBanManager');
-const { GuildChannelManager } = require('../managers/GuildChannelManager');
-const { GuildEmojiManager } = require('../managers/GuildEmojiManager');
-const { GuildInviteManager } = require('../managers/GuildInviteManager');
-const { GuildMemberManager } = require('../managers/GuildMemberManager');
-const { GuildScheduledEventManager } = require('../managers/GuildScheduledEventManager');
-const { GuildStickerManager } = require('../managers/GuildStickerManager');
-const { PresenceManager } = require('../managers/PresenceManager');
-const { RoleManager } = require('../managers/RoleManager');
-const { StageInstanceManager } = require('../managers/StageInstanceManager');
-const { VoiceStateManager } = require('../managers/VoiceStateManager');
-const { resolveImage } = require('../util/DataResolver');
-const { SystemChannelFlagsBitField } = require('../util/SystemChannelFlagsBitField');
-const { discordSort, getSortableGroupTypes, resolvePartialEmoji } = require('../util/Util');
+const { AnonymousGuild } = require('./AnonymousGuild.js');
+const { GuildAuditLogs } = require('./GuildAuditLogs.js');
+const { GuildOnboarding } = require('./GuildOnboarding.js');
+const { GuildPreview } = require('./GuildPreview.js');
+const { GuildTemplate } = require('./GuildTemplate.js');
+const { Integration } = require('./Integration.js');
+const { Webhook } = require('./Webhook.js');
+const { WelcomeScreen } = require('./WelcomeScreen.js');
+const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { AutoModerationRuleManager } = require('../managers/AutoModerationRuleManager.js');
+const { GuildApplicationCommandManager } = require('../managers/GuildApplicationCommandManager.js');
+const { GuildBanManager } = require('../managers/GuildBanManager.js');
+const { GuildChannelManager } = require('../managers/GuildChannelManager.js');
+const { GuildEmojiManager } = require('../managers/GuildEmojiManager.js');
+const { GuildInviteManager } = require('../managers/GuildInviteManager.js');
+const { GuildMemberManager } = require('../managers/GuildMemberManager.js');
+const { GuildScheduledEventManager } = require('../managers/GuildScheduledEventManager.js');
+const { GuildStickerManager } = require('../managers/GuildStickerManager.js');
+const { PresenceManager } = require('../managers/PresenceManager.js');
+const { RoleManager } = require('../managers/RoleManager.js');
+const { StageInstanceManager } = require('../managers/StageInstanceManager.js');
+const { VoiceStateManager } = require('../managers/VoiceStateManager.js');
+const { resolveImage } = require('../util/DataResolver.js');
+const { SystemChannelFlagsBitField } = require('../util/SystemChannelFlagsBitField.js');
+const { _transformAPIIncidentsData } = require('../util/Transformers.js');
+const { discordSort, getSortableGroupTypes, resolvePartialEmoji } = require('../util/Util.js');
 
 /**
  * Represents a guild (or a server) on Discord.
@@ -460,6 +461,27 @@ class Guild extends AnonymousGuild {
         stickers: data.stickers,
       });
     }
+
+    if ('incidents_data' in data) {
+      /**
+       * Incident actions of a guild.
+       * @typedef {Object} IncidentActions
+       * @property {?Date} invitesDisabledUntil When invites would be enabled again
+       * @property {?Date} dmsDisabledUntil When direct messages would be enabled again
+       * @property {?Date} dmSpamDetectedAt When direct message spam was detected
+       * @property {?Date} raidDetectedAt When a raid was detected
+       */
+
+      /**
+       * The incidents data of this guild.
+       * <info>You will need to fetch the guild using {@link BaseGuild#fetch} if you want to receive
+       * this property.</info>
+       * @type {?IncidentActions}
+       */
+      this.incidentsData = data.incidents_data && _transformAPIIncidentsData(data.incidents_data);
+    } else {
+      this.incidentsData ??= null;
+    }
   }
 
   /**
@@ -785,7 +807,7 @@ class Guild extends AnonymousGuild {
    * @property {?VoiceChannelResolvable} [afkChannel] The AFK channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [icon] The icon of the guild
-   * @property {GuildMemberResolvable} [owner] The owner of the guild
+   * @property {UserResolvable} [owner] The owner of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [splash] The invite splash image of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [discoverySplash] The discovery splash image of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [banner] The banner of the guild
@@ -1148,7 +1170,7 @@ class Guild extends AnonymousGuild {
 
   /**
    * Sets a new owner of the guild.
-   * @param {GuildMemberResolvable} owner The new owner of the guild
+   * @param {UserResolvable} owner The new owner of the guild
    * @param {string} [reason] Reason for setting the new owner
    * @returns {Promise<Guild>}
    * @example
@@ -1353,6 +1375,15 @@ class Guild extends AnonymousGuild {
     const features = this.features.filter(feature => feature !== GuildFeature.InvitesDisabled);
     if (disabled) features.push(GuildFeature.InvitesDisabled);
     return this.edit({ features });
+  }
+
+  /**
+   * Sets the incident actions for a guild.
+   * @param {IncidentActionsEditOptions} incidentActions The incident actions to set
+   * @returns {Promise<IncidentActions>}
+   */
+  async setIncidentActions(incidentActions) {
+    return this.client.guilds.setIncidentActions(this.id, incidentActions);
   }
 
   /**

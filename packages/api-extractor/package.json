@@ -54,7 +54,7 @@
 		"@microsoft/tsdoc": "0.14.2",
 		"@microsoft/tsdoc-config": "0.16.2",
 		"@rushstack/node-core-library": "4.1.0",
-		"@rushstack/rig-package": "0.5.1",
+		"@rushstack/rig-package": "0.5.3",
 		"@rushstack/ts-command-line": "4.17.1",
 		"colors": "~1.4.0",
 		"lodash": "~4.17.21",
@@ -66,7 +66,7 @@
 	"devDependencies": {
 		"@types/jest": "^29.5.14",
 		"@types/lodash": "^4.17.13",
-		"@types/node": "^20.17.10",
+		"@types/node": "^22.10.10",
 		"@types/resolve": "^1.20.6",
 		"@types/semver": "^7.5.8",
 		"cpy-cli": "^5.0.0",

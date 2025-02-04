@@ -24,8 +24,8 @@ export class ApplicationsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/application#get-current-application}
 	 * @param options - The options for fetching the application
 	 */
-	public async getCurrent({ signal }: Pick<RequestData, 'signal'> = {}) {
-		return this.rest.get(Routes.currentApplication(), { signal }) as Promise<RESTGetCurrentApplicationResult>;
+	public async getCurrent({ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
+		return this.rest.get(Routes.currentApplication(), { auth, signal }) as Promise<RESTGetCurrentApplicationResult>;
 	}
 
 	/**
@@ -35,8 +35,12 @@ export class ApplicationsAPI {
 	 * @param body - The new application data
 	 * @param options - The options for editing the application
 	 */
-	public async editCurrent(body: RESTPatchCurrentApplicationJSONBody, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async editCurrent(
+		body: RESTPatchCurrentApplicationJSONBody,
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+	) {
 		return this.rest.patch(Routes.currentApplication(), {
+			auth,
 			body,
 			signal,
 		}) as Promise<RESTPatchCurrentApplicationResult>;
@@ -49,8 +53,9 @@ export class ApplicationsAPI {
 	 * @param applicationId - The id of the application to fetch the emojis of
 	 * @param options - The options for fetching the emojis
 	 */
-	public async getEmojis(applicationId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async getEmojis(applicationId: Snowflake, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
 		return this.rest.get(Routes.applicationEmojis(applicationId), {
+			auth,
 			signal,
 		}) as Promise<RESTGetAPIApplicationEmojisResult>;
 	}
@@ -63,8 +68,13 @@ export class ApplicationsAPI {
 	 * @param emojiId - The id of the emoji to fetch
 	 * @param options - The options for fetching the emoji
 	 */
-	public async getEmoji(applicationId: Snowflake, emojiId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async getEmoji(
+		applicationId: Snowflake,
+		emojiId: Snowflake,
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+	) {
 		return this.rest.get(Routes.applicationEmoji(applicationId, emojiId), {
+			auth,
 			signal,
 		}) as Promise<RESTGetAPIApplicationEmojiResult>;
 	}
@@ -80,9 +90,10 @@ export class ApplicationsAPI {
 	public async createEmoji(
 		applicationId: Snowflake,
 		body: RESTPostAPIApplicationEmojiJSONBody,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
 		return this.rest.post(Routes.applicationEmojis(applicationId), {
+			auth,
 			body,
 			signal,
 		}) as Promise<RESTPostAPIApplicationEmojiResult>;
@@ -101,9 +112,10 @@ export class ApplicationsAPI {
 		applicationId: Snowflake,
 		emojiId: Snowflake,
 		body: RESTPatchAPIApplicationEmojiJSONBody,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
 		return this.rest.patch(Routes.applicationEmoji(applicationId, emojiId), {
+			auth,
 			body,
 			signal,
 		}) as Promise<RESTPatchAPIApplicationEmojiResult>;
@@ -117,7 +129,11 @@ export class ApplicationsAPI {
 	 * @param emojiId - The id of the emoji to delete
 	 * @param options - The options for deleting the emoji
 	 */
-	public async deleteEmoji(applicationId: Snowflake, emojiId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
-		await this.rest.delete(Routes.applicationEmoji(applicationId, emojiId), { signal });
+	public async deleteEmoji(
+		applicationId: Snowflake,
+		emojiId: Snowflake,
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+	) {
+		await this.rest.delete(Routes.applicationEmoji(applicationId, emojiId), { auth, signal });
 	}
 }

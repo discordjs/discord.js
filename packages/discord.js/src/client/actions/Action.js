@@ -1,8 +1,8 @@
 'use strict';
 
-const { Poll } = require('../../structures/Poll');
-const { PollAnswer } = require('../../structures/PollAnswer');
-const { Partials } = require('../../util/Partials');
+const { Poll } = require('../../structures/Poll.js');
+const { PollAnswer } = require('../../structures/PollAnswer.js');
+const { Partials } = require('../../util/Partials.js');
 
 /*
 

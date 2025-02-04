@@ -4,7 +4,6 @@
 	"version": "0.1.0",
 	"description": "",
 	"scripts": {
-		"test": "vitest run --config ../../vitest.config.ts",
 		"build": "tsc --noEmit && vite build",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
@@ -68,13 +67,12 @@
 		"@storybook/react": "^8.4.7",
 		"@storybook/react-vite": "^8.4.7",
 		"@storybook/testing-library": "^0.2.2",
-		"@types/node": "^20.17.10",
+		"@types/node": "^22.10.10",
 		"@types/react": "^18.3.18",
 		"@types/react-dom": "^18.3.5",
 		"@unocss/eslint-plugin": "^0.60.4",
 		"@unocss/reset": "^0.60.4",
 		"@vitejs/plugin-react": "^4.3.4",
-		"@vitest/coverage-v8": "^2.1.8",
 		"chromatic": "^11.20.2",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.57.1",
@@ -87,11 +85,10 @@
 		"typescript": "~5.5.4",
 		"unocss": "^0.60.4",
 		"vite": "^5.4.11",
-		"vite-plugin-dts": "^3.9.1",
-		"vitest": "^2.1.8"
+		"vite-plugin-dts": "^3.9.1"
 	},
 	"engines": {
-		"node": ">=20"
+		"node": ">=22.12.0"
 	},
 	"publishConfig": {
 		"access": "public",

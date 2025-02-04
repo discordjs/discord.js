@@ -1,8 +1,8 @@
 'use strict';
 
 const { Routes } = require('discord-api-types/v10');
-const { MessageManager } = require('./MessageManager');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
+const { MessageManager } = require('./MessageManager.js');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 
 /**
  * Manages API methods for messages in a guild and holds their cache.

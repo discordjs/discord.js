@@ -4,7 +4,7 @@
 	"version": "0.5.0",
 	"description": "A set of functions to format strings for Discord.",
 	"scripts": {
-		"test": "vitest run",
+		"test": "vitest run --config ../../vitest.config.ts",
 		"build": "tsc --noEmit && tsup",
 		"build:docs": "tsc -p tsconfig.docs.json",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
@@ -55,13 +55,13 @@
 	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
-		"discord-api-types": "^0.37.114"
+		"discord-api-types": "^0.37.118"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^4.1.0",
-		"@types/node": "^20.17.10",
+		"@types/node": "^22.10.10",
 		"@vitest/coverage-v8": "^2.1.8",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.2.1",
@@ -75,7 +75,7 @@
 		"vitest": "^2.1.8"
 	},
 	"engines": {
-		"node": ">=20"
+		"node": ">=22.12.0"
 	},
 	"publishConfig": {
 		"access": "public",

@@ -3,10 +3,10 @@
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes, EntitlementOwnerType } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager');
-const { ErrorCodes, DiscordjsTypeError } = require('../errors/index');
-const { Entitlement } = require('../structures/Entitlement');
-const { resolveSKUId } = require('../util/Util');
+const { CachedManager } = require('./CachedManager.js');
+const { ErrorCodes, DiscordjsTypeError } = require('../errors/index.js');
+const { Entitlement } = require('../structures/Entitlement.js');
+const { resolveSKUId } = require('../util/Util.js');
 
 /**
  * Manages API methods for entitlements and stores their cache.

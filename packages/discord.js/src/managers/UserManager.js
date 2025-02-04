@@ -1,12 +1,12 @@
 'use strict';
 
 const { ChannelType, Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager');
-const { DiscordjsError, ErrorCodes } = require('../errors');
-const { GuildMember } = require('../structures/GuildMember');
-const { Message } = require('../structures/Message');
-const { ThreadMember } = require('../structures/ThreadMember');
-const { User } = require('../structures/User');
+const { CachedManager } = require('./CachedManager.js');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
+const { GuildMember } = require('../structures/GuildMember.js');
+const { Message } = require('../structures/Message.js');
+const { ThreadMember } = require('../structures/ThreadMember.js');
+const { User } = require('../structures/User.js');
 
 /**
  * Manages API methods for users and stores their cache.

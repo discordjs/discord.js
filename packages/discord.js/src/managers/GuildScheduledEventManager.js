@@ -3,11 +3,11 @@
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { GuildScheduledEventEntityType, Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager');
-const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../errors');
-const { GuildScheduledEvent } = require('../structures/GuildScheduledEvent');
-const { resolveImage } = require('../util/DataResolver');
-const { _transformGuildScheduledEventRecurrenceRule } = require('../util/Transformers');
+const { CachedManager } = require('./CachedManager.js');
+const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../errors/index.js');
+const { GuildScheduledEvent } = require('../structures/GuildScheduledEvent.js');
+const { resolveImage } = require('../util/DataResolver.js');
+const { _transformGuildScheduledEventRecurrenceRule } = require('../util/Transformers.js');
 
 /**
  * Manages API methods for GuildScheduledEvents and stores their cache.
@@ -41,15 +41,12 @@ class GuildScheduledEventManager extends CachedManager {
    * Options for setting a recurrence rule for a guild scheduled event.
    * @typedef {Object} GuildScheduledEventRecurrenceRuleOptions
    * @property {DateResolvable} startAt The time the recurrence rule interval starts at
-   * @property {?DateResolvable} endAt The time the recurrence rule interval ends at
    * @property {GuildScheduledEventRecurrenceRuleFrequency} frequency How often the event occurs
    * @property {number} interval The spacing between the events
    * @property {?GuildScheduledEventRecurrenceRuleWeekday[]} byWeekday The days within a week to recur on
    * @property {?GuildScheduledEventRecurrenceRuleNWeekday[]} byNWeekday The days within a week to recur on
    * @property {?GuildScheduledEventRecurrenceRuleMonth[]} byMonth The months to recur on
    * @property {?number[]} byMonthDay The days within a month to recur on
-   * @property {?number[]} byYearDay The days within a year to recur on
-   * @property {?number} count The total amount of times the event is allowed to recur before stopping
    */
 
   /**

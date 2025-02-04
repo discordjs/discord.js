@@ -58,10 +58,9 @@
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
 		"@favware/cliff-jumper": "^4.1.0",
-		"@types/node": "^20.17.10",
+		"@types/node": "^22.10.10",
 		"@types/prompts": "^2.4.9",
 		"@types/validate-npm-package-name": "^4.0.2",
-		"@vitest/coverage-v8": "^2.1.8",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.57.1",
 		"eslint-config-neon": "^0.1.62",
@@ -69,11 +68,10 @@
 		"prettier": "^3.4.2",
 		"terser": "^5.37.0",
 		"tsup": "^8.3.5",
-		"typescript": "~5.5.4",
-		"vitest": "^2.1.8"
+		"typescript": "~5.5.4"
 	},
 	"engines": {
-		"node": ">=20"
+		"node": ">=22.12.0"
 	},
 	"publishConfig": {
 		"access": "public",

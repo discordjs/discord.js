@@ -1,6 +1,6 @@
 'use strict';
 
-const { flatten } = require('../util/Util');
+const { flatten } = require('../util/Util.js');
 
 /**
  * Represents a Discord voice region for guilds.

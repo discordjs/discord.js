@@ -3,10 +3,10 @@
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const { ThreadChannel } = require('../structures/ThreadChannel');
-const { MakeCacheOverrideSymbol } = require('../util/Symbols');
+const { CachedManager } = require('./CachedManager.js');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { ThreadChannel } = require('../structures/ThreadChannel.js');
+const { MakeCacheOverrideSymbol } = require('../util/Symbols.js');
 
 /**
  * Manages API methods for thread-based channels and stores their cache.
@@ -102,7 +102,7 @@ class ThreadManager extends CachedManager {
    * Data that can be resolved to a Date object. This can be:
    * * A Date object
    * * A number representing a timestamp
-   * * An [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) string
+   * * An {@link https://en.wikipedia.org/wiki/ISO_8601 ISO 8601} string
    * @typedef {Date|number|string} DateResolvable
    */
 

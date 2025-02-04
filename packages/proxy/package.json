@@ -4,7 +4,7 @@
 	"version": "2.1.1",
 	"description": "Tools for running an HTTP proxy for Discord's API",
 	"scripts": {
-		"test": "vitest run",
+		"test": "vitest run --config ../../vitest.config.ts",
 		"build": "tsc --noEmit && tsup",
 		"build:docs": "tsc -p tsconfig.docs.json",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
@@ -74,7 +74,7 @@
 		"@discordjs/api-extractor": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^4.1.0",
-		"@types/node": "^20.17.10",
+		"@types/node": "^22.10.10",
 		"@types/supertest": "^6.0.2",
 		"@vitest/coverage-v8": "^2.1.8",
 		"cross-env": "^7.0.3",
@@ -90,7 +90,7 @@
 		"vitest": "^2.1.8"
 	},
 	"engines": {
-		"node": ">=20"
+		"node": ">=22.12.0"
 	},
 	"publishConfig": {
 		"access": "public",

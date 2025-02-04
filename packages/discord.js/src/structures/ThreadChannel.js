@@ -2,13 +2,13 @@
 
 const { lazy } = require('@discordjs/util');
 const { ChannelFlags, ChannelType, PermissionFlagsBits, Routes } = require('discord-api-types/v10');
-const { BaseChannel } = require('./BaseChannel');
-const getThreadOnlyChannel = lazy(() => require('./ThreadOnlyChannel'));
-const { TextBasedChannel } = require('./interfaces/TextBasedChannel');
-const { DiscordjsRangeError, ErrorCodes } = require('../errors');
-const { GuildMessageManager } = require('../managers/GuildMessageManager');
-const { ThreadMemberManager } = require('../managers/ThreadMemberManager');
-const { ChannelFlagsBitField } = require('../util/ChannelFlagsBitField');
+const { BaseChannel } = require('./BaseChannel.js');
+const getThreadOnlyChannel = lazy(() => require('./ThreadOnlyChannel.js'));
+const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
+const { DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
+const { GuildMessageManager } = require('../managers/GuildMessageManager.js');
+const { ThreadMemberManager } = require('../managers/ThreadMemberManager.js');
+const { ChannelFlagsBitField } = require('../util/ChannelFlagsBitField.js');
 
 /**
  * Represents a thread channel on Discord.
@@ -274,7 +274,7 @@ class ThreadChannel extends BaseChannel {
   /**
    * Gets the overall set of permissions for a member or role in this thread's parent channel, taking overwrites into
    * account.
-   * @param {GuildMemberResolvable|RoleResolvable} memberOrRole The member or role to obtain the overall permissions for
+   * @param {UserResolvable|RoleResolvable} memberOrRole The member or role to obtain the overall permissions for
    * @param {boolean} [checkAdmin=true] Whether having the {@link PermissionFlagsBits.Administrator} permission
    * will return all permissions
    * @returns {?Readonly<PermissionsBitField>}
@@ -308,7 +308,6 @@ class ThreadChannel extends BaseChannel {
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<?Message<true>>}
    */
-  // eslint-disable-next-line require-await
   async fetchStarterMessage(options) {
     const channel = this.parent instanceof getThreadOnlyChannel() ? this : this.parent;
     return channel?.messages.fetch({ message: this.id, ...options }) ?? null;
@@ -398,9 +397,9 @@ class ThreadChannel extends BaseChannel {
    * @param {string} [reason] Reason for changing invite
    * @returns {Promise<ThreadChannel>}
    */
-  setInvitable(invitable = true, reason) {
+  async setInvitable(invitable = true, reason) {
     if (this.type !== ChannelType.PrivateThread) {
-      return Promise.reject(new DiscordjsRangeError(ErrorCodes.ThreadInvitableType, this.type));
+      throw new DiscordjsRangeError(ErrorCodes.ThreadInvitableType, this.type);
     }
     return this.edit({ invitable, reason });
   }
