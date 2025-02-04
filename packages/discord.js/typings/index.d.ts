@@ -2310,7 +2310,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public reply(
     options: string | MessagePayload | MessageReplyOptions,
   ): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
-  public forward(channel: TextBasedChannelResolvable): Promise<Message>;
+  public forward(channel: Exclude<TextBasedChannelResolvable, PartialGroupDMChannel>): Promise<Message>;
   public resolveComponent(customId: string): MessageActionRowComponent | null;
   public startThread(options: StartThreadOptions): Promise<PublicThreadChannel<false>>;
   public suppressEmbeds(suppress?: boolean): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
@@ -6998,11 +6998,12 @@ export interface ReplyOptions {
 
 export interface BaseForwardOptions {
   messageId: MessageResolvable;
-  channelId?: TextBasedChannelResolvable;
+  channelId?: Exclude<TextBasedChannelResolvable, PartialGroupDMChannel>;
+  guildId?: GuildResolvable;
 }
 
 export interface ForwardOptionsWithMandatoryChannel extends BaseForwardOptions {
-  channelId: TextBasedChannelResolvable;
+  channelId: Exclude<TextBasedChannelResolvable, PartialGroupDMChannel>;
 }
 
 export interface ForwardOptionsWithOptionalChannel extends BaseForwardOptions {

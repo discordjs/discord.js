@@ -974,6 +974,7 @@ class Message extends Base {
       forward: {
         messageId: this.id,
         channelId: this.channelId,
+        guildId: this.guildId,
       },
     });
   }
