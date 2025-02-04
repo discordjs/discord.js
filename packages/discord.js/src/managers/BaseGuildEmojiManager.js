@@ -36,8 +36,8 @@ class BaseGuildEmojiManager extends CachedManager {
    * @returns {?GuildEmoji}
    */
   resolve(emoji) {
-    if (emoji instanceof ReactionEmoji) return super.cache.get(emoji.id) ?? null;
-    if (emoji instanceof ApplicationEmoji) return super.cache.get(emoji.id) ?? null;
+    if (emoji instanceof ReactionEmoji) return this.cache.get(emoji.id) ?? null;
+    if (emoji instanceof ApplicationEmoji) return this.cache.get(emoji.id) ?? null;
     return super.resolve(emoji);
   }
 

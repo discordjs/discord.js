@@ -54,8 +54,8 @@ class GuildMemberManager extends CachedManager {
   resolve(member) {
     const memberResolvable = super.resolve(member);
     if (memberResolvable) return memberResolvable;
-    const userResolvable = this.client.users.resolveId(member);
-    if (userResolvable) return super.cache.get(userResolvable) ?? null;
+    const userId = this.client.users.resolveId(member);
+    if (userId) return this.cache.get(userId) ?? null;
     return null;
   }
 
@@ -67,8 +67,8 @@ class GuildMemberManager extends CachedManager {
   resolveId(member) {
     const memberResolvable = super.resolveId(member);
     if (memberResolvable) return memberResolvable;
-    const userResolvable = this.client.users.resolveId(member);
-    return this.cache.has(userResolvable) ? userResolvable : null;
+    const userId = this.client.users.resolveId(member);
+    return this.cache.has(userId) ? userId : null;
   }
 
   /**
@@ -223,7 +223,7 @@ class GuildMemberManager extends CachedManager {
     return this._add(data, cache);
   }
 
-  _fetchMany({
+  async _fetchMany({
     limit = 0,
     withPresences: presences,
     users,
@@ -231,7 +231,7 @@ class GuildMemberManager extends CachedManager {
     time = 120e3,
     nonce = DiscordSnowflake.generate().toString(),
   } = {}) {
-    if (nonce.length > 32) return Promise.reject(new DiscordjsRangeError(ErrorCodes.MemberFetchNonceLength));
+    if (nonce.length > 32) throw new DiscordjsRangeError(ErrorCodes.MemberFetchNonceLength);
 
     return new Promise((resolve, reject) => {
       if (!query && !users) query = '';
@@ -461,7 +461,7 @@ class GuildMemberManager extends CachedManager {
    */
   async kick(user, reason) {
     const id = this.client.users.resolveId(user);
-    if (!id) return Promise.reject(new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable'));
+    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
 
     await this.client.rest.delete(Routes.guildMember(this.guild.id, id), { reason });
 

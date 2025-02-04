@@ -56,6 +56,14 @@ class Subscription extends Base {
      */
     this.status = data.status;
 
+    if ('renewal_sku_ids' in data) {
+      /**
+       * The SKU ids that this user will be subscribed to at renewal
+       * @type {?Snowflake[]}
+       */
+      this.renewalSkuIds = data.renewal_sku_ids;
+    }
+
     if ('canceled_at' in data) {
       /**
        * The timestamp of when the subscription was canceled

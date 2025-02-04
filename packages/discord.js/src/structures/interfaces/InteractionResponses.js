@@ -272,9 +272,11 @@ class InteractionResponses {
    * @param {string|MessagePayload|InteractionReplyOptions} options The options for the reply
    * @returns {Promise<Message>}
    */
-  followUp(options) {
-    if (!this.deferred && !this.replied) return Promise.reject(new DiscordjsError(ErrorCodes.InteractionNotReplied));
-    return this.webhook.send(options);
+  async followUp(options) {
+    if (!this.deferred && !this.replied) throw new DiscordjsError(ErrorCodes.InteractionNotReplied);
+    const msg = await this.webhook.send(options);
+    this.replied = true;
+    return msg;
   }
 
   /**
@@ -425,7 +427,7 @@ class InteractionResponses {
    *   .then(interaction => console.log(`${interaction.customId} was submitted!`))
    *   .catch(console.error);
    */
-  awaitModalSubmit(options) {
+  async awaitModalSubmit(options) {
     if (typeof options.time !== 'number') throw new DiscordjsError(ErrorCodes.InvalidType, 'time', 'number');
     const _options = { ...options, max: 1, interactionType: InteractionType.ModalSubmit };
     return new Promise((resolve, reject) => {

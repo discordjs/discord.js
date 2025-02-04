@@ -29,7 +29,6 @@ exports.ChannelFlagsBitField = require('./util/ChannelFlagsBitField');
 exports.Collection = require('@discordjs/collection').Collection;
 exports.Constants = require('./util/Constants');
 exports.Colors = require('./util/Colors');
-__exportStar(require('./util/DataResolver.js'), exports);
 exports.Events = require('./util/Events');
 exports.Formatters = require('./util/Formatters');
 exports.GuildMemberFlagsBitField = require('./util/GuildMemberFlagsBitField').GuildMemberFlagsBitField;
