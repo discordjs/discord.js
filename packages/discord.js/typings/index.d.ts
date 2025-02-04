@@ -7002,9 +7002,7 @@ export interface BaseForwardOptions {
   guildId?: GuildResolvable;
 }
 
-export interface ForwardOptionsWithMandatoryChannel extends BaseForwardOptions {
-  channelId: Exclude<TextBasedChannelResolvable, PartialGroupDMChannel>;
-}
+export type ForwardOptionsWithMandatoryChannel = BaseForwardOptions & Required<Pick<BaseForwardOptions, 'channelId'>>;
 
 export interface ForwardOptionsWithOptionalChannel extends BaseForwardOptions {
   messageId: Exclude<MessageResolvable, Snowflake>;
