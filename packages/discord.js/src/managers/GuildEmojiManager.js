@@ -49,11 +49,11 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
    *   .then(emoji => console.log(`Created new emoji with name ${emoji.name}!`))
    *   .catch(console.error);
    */
-  async create({ attachment: rawAttachment, name, roles, reason }) {
-    const attachment = await resolveImage(rawAttachment);
-    if (!attachment) throw new DiscordjsTypeError(ErrorCodes.ReqResourceType);
+  async create({ attachment, name, roles, reason }) {
+    const image = await resolveImage(attachment);
+    if (!image) throw new DiscordjsTypeError(ErrorCodes.ReqResourceType);
 
-    const body = { image: attachment, name };
+    const body = { image, name };
     if (roles) {
       if (!Array.isArray(roles) && !(roles instanceof Collection)) {
         throw new DiscordjsTypeError(
