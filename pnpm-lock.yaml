@@ -680,8 +680,8 @@ importers:
         specifier: ^3.9.7
         version: 3.9.7
       discord-api-types:
-        specifier: ^0.37.118
-        version: 0.37.118
+        specifier: ^0.37.119
+        version: 0.37.119
       fast-deep-equal:
         specifier: ^3.1.3
         version: 3.1.3
@@ -804,8 +804,8 @@ importers:
         specifier: ^2.2.4
         version: 2.2.4
       discord-api-types:
-        specifier: ^0.37.118
-        version: 0.37.118
+        specifier: ^0.37.119
+        version: 0.37.119
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -941,8 +941,8 @@ importers:
         specifier: 3.5.3
         version: 3.5.3
       discord-api-types:
-        specifier: ^0.37.118
-        version: 0.37.118
+        specifier: ^0.37.119
+        version: 0.37.119
       fast-deep-equal:
         specifier: 3.1.3
         version: 3.1.3
@@ -1060,8 +1060,8 @@ importers:
   packages/formatters:
     dependencies:
       discord-api-types:
-        specifier: ^0.37.118
-        version: 0.37.118
+        specifier: ^0.37.119
+        version: 0.37.119
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1133,8 +1133,8 @@ importers:
         specifier: workspace:^
         version: link:../ws
       discord-api-types:
-        specifier: ^0.37.118
-        version: 0.37.118
+        specifier: ^0.37.119
+        version: 0.37.119
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1307,8 +1307,8 @@ importers:
         specifier: ^2.2.4
         version: 2.2.4
       discord-api-types:
-        specifier: ^0.37.118
-        version: 0.37.118
+        specifier: ^0.37.119
+        version: 0.37.119
       magic-bytes.js:
         specifier: ^1.10.0
         version: 1.10.0
@@ -1604,8 +1604,8 @@ importers:
         specifier: ^8.5.10
         version: 8.5.10
       discord-api-types:
-        specifier: ^0.37.118
-        version: 0.37.118
+        specifier: ^0.37.119
+        version: 0.37.119
       prism-media:
         specifier: ^1.3.5
         version: 1.3.5
@@ -1701,8 +1701,8 @@ importers:
         specifier: ^2.2.4
         version: 2.2.4
       discord-api-types:
-        specifier: ^0.37.118
-        version: 0.37.118
+        specifier: ^0.37.119
+        version: 0.37.119
       tslib:
         specifier: ^2.6.2
         version: 2.6.2
@@ -7773,8 +7773,8 @@ packages:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
     engines: {node: '>=8'}
 
-  discord-api-types@0.37.118:
-    resolution: {integrity: sha512-MQkHHZcytmNQ3nQOBj6a0z38swsmHiROX7hdayfd0eWVrLxaQp/6tWBZ7FO2MCKKsc+W3QWnnfOJTbtyk8C4TQ==}
+  discord-api-types@0.37.119:
+    resolution: {integrity: sha512-WasbGFXEB+VQWXlo6IpW3oUv73Yuau1Ig4AZF/m13tXcTKnMpc/mHjpztIlz4+BM9FG9BHQkEXiPto3bKduQUg==}
 
   dlv@1.1.3:
     resolution: {integrity: sha512-+HlytyjlPKnIG8XuRG8WvmBP8xs8P71y+SKKS6ZXWoEgLuePxtDoUEiH7WkdePWrQ5JBpE6aoVqfZfJUQkjXwA==}
@@ -15241,7 +15241,7 @@ snapshots:
       '@sapphire/async-queue': 1.5.5
       '@sapphire/snowflake': 3.5.3
       '@vladfrangu/async_event_emitter': 2.4.6
-      discord-api-types: 0.37.118
+      discord-api-types: 0.37.119
       magic-bytes.js: 1.10.0
       tslib: 2.8.1
       undici: 6.19.8
@@ -16122,7 +16122,7 @@ snapshots:
       nopt: 5.0.0
       npmlog: 5.0.1
       rimraf: 3.0.2
-      semver: 7.6.3
+      semver: 7.5.4
       tar: 6.2.1
     transitivePeerDependencies:
       - encoding
@@ -16613,7 +16613,7 @@ snapshots:
       request: 2.88.2
       retry: 0.12.0
       safe-buffer: 5.2.1
-      semver: 7.6.3
+      semver: 7.5.4
       slide: 1.1.6
       ssri: 8.0.1
     optionalDependencies:
@@ -22167,7 +22167,7 @@ snapshots:
     dependencies:
       path-type: 4.0.0
 
-  discord-api-types@0.37.118: {}
+  discord-api-types@0.37.119: {}
 
   dlv@1.1.3: {}
 
@@ -22831,7 +22831,7 @@ snapshots:
       get-tsconfig: 4.10.0
       is-glob: 4.0.3
       minimatch: 3.1.2
-      semver: 7.6.3
+      semver: 7.5.4
     transitivePeerDependencies:
       - '@typescript-eslint/parser'
       - eslint-import-resolver-typescript
@@ -26950,7 +26950,7 @@ snapshots:
   npm-package-arg@8.1.5:
     dependencies:
       hosted-git-info: 4.1.0
-      semver: 7.6.3
+      semver: 7.5.4
       validate-npm-package-name: 3.0.0
 
   npm-registry-fetch@14.0.5:
