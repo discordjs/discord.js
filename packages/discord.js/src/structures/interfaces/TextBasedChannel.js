@@ -112,7 +112,7 @@ class TextBasedChannel {
 
   /**
    * @typedef {Object} ForwardOptions
-   * @property {MessageResolvable} message The message to forward to
+   * @property {MessageResolvable} message The originating message
    * @property {TextBasedChannelResolvable} [channel] The channel of the originating message
    * @property {GuildResolvable} [guild] The guild of the originating message
    */
