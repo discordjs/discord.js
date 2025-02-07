@@ -972,9 +972,9 @@ class Message extends Base {
     if (!resolvedChannel) throw new DiscordjsError(ErrorCodes.InvalidType, 'channel', 'TextBasedChannelResolvable');
     return resolvedChannel.send({
       forward: {
-        messageId: this.id,
-        channelId: this.channelId,
-        guildId: this.guildId,
+        message: this.id,
+        channel: this.channelId,
+        guild: this.guildId,
       },
     });
   }

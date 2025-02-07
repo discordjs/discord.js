@@ -200,9 +200,9 @@ class MessagePayload {
     }
 
     if (typeof this.options.forward === 'object') {
-      const reference = this.options.forward.messageId;
-      const channel_id = reference.channelId ?? this.target.client.channels.resolveId(this.options.forward.channelId);
-      const guild_id = reference.guildId ?? this.target.client.guilds.resolveId(this.options.forward.guildId);
+      const reference = this.options.forward.message;
+      const channel_id = reference.channelId ?? this.target.client.channels.resolveId(this.options.forward.channel);
+      const guild_id = reference.guildId ?? this.target.client.guilds.resolveId(this.options.forward.guild);
       const message_id = this.target.messages.resolveId(reference);
       if (message_id) {
         if (!channel_id) throw new DiscordjsError(ErrorCodes.InvalidType, 'channelId', 'TextBasedChannelResolvable');

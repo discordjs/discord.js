@@ -6997,15 +6997,15 @@ export interface ReplyOptions {
 }
 
 export interface BaseForwardOptions {
-  messageId: MessageResolvable;
-  channelId?: Exclude<TextBasedChannelResolvable, PartialGroupDMChannel>;
-  guildId?: GuildResolvable;
+  message: MessageResolvable;
+  channel?: Exclude<TextBasedChannelResolvable, PartialGroupDMChannel>;
+  guild?: GuildResolvable;
 }
 
-export type ForwardOptionsWithMandatoryChannel = BaseForwardOptions & Required<Pick<BaseForwardOptions, 'channelId'>>;
+export type ForwardOptionsWithMandatoryChannel = BaseForwardOptions & Required<Pick<BaseForwardOptions, 'channel'>>;
 
 export interface ForwardOptionsWithOptionalChannel extends BaseForwardOptions {
-  messageId: Exclude<MessageResolvable, Snowflake>;
+  message: Exclude<MessageResolvable, Snowflake>;
 }
 
 export type ForwardOptions = ForwardOptionsWithMandatoryChannel | ForwardOptionsWithOptionalChannel;
