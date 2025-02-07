@@ -680,8 +680,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       discord-api-types:
-        specifier: ^0.37.118
-        version: 0.37.118
+        specifier: ^0.37.119
+        version: 0.37.119
       fast-deep-equal:
         specifier: ^3.1.3
         version: 3.1.3
@@ -804,8 +804,8 @@ importers:
         specifier: ^2.4.6
         version: 2.4.6
       discord-api-types:
-        specifier: ^0.37.118
-        version: 0.37.118
+        specifier: ^0.37.119
+        version: 0.37.119
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -941,8 +941,8 @@ importers:
         specifier: 3.5.3
         version: 3.5.3
       discord-api-types:
-        specifier: ^0.37.118
-        version: 0.37.118
+        specifier: ^0.37.119
+        version: 0.37.119
       fast-deep-equal:
         specifier: 3.1.3
         version: 3.1.3
@@ -1060,8 +1060,8 @@ importers:
   packages/formatters:
     dependencies:
       discord-api-types:
-        specifier: ^0.37.118
-        version: 0.37.118
+        specifier: ^0.37.119
+        version: 0.37.119
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1133,8 +1133,8 @@ importers:
         specifier: workspace:^
         version: link:../ws
       discord-api-types:
-        specifier: ^0.37.118
-        version: 0.37.118
+        specifier: ^0.37.119
+        version: 0.37.119
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1307,8 +1307,8 @@ importers:
         specifier: ^2.4.6
         version: 2.4.6
       discord-api-types:
-        specifier: ^0.37.118
-        version: 0.37.118
+        specifier: ^0.37.119
+        version: 0.37.119
       magic-bytes.js:
         specifier: ^1.10.0
         version: 1.10.0
@@ -1604,8 +1604,8 @@ importers:
         specifier: ^8.5.12
         version: 8.5.12
       discord-api-types:
-        specifier: ^0.37.118
-        version: 0.37.118
+        specifier: ^0.37.119
+        version: 0.37.119
       prism-media:
         specifier: ^1.3.5
         version: 1.3.5
@@ -1701,8 +1701,8 @@ importers:
         specifier: ^2.4.6
         version: 2.4.6
       discord-api-types:
-        specifier: ^0.37.118
-        version: 0.37.118
+        specifier: ^0.37.119
+        version: 0.37.119
       tslib:
         specifier: ^2.6.3
         version: 2.6.3
@@ -7644,8 +7644,8 @@ packages:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
     engines: {node: '>=8'}
 
-  discord-api-types@0.37.118:
-    resolution: {integrity: sha512-MQkHHZcytmNQ3nQOBj6a0z38swsmHiROX7hdayfd0eWVrLxaQp/6tWBZ7FO2MCKKsc+W3QWnnfOJTbtyk8C4TQ==}
+  discord-api-types@0.37.119:
+    resolution: {integrity: sha512-WasbGFXEB+VQWXlo6IpW3oUv73Yuau1Ig4AZF/m13tXcTKnMpc/mHjpztIlz4+BM9FG9BHQkEXiPto3bKduQUg==}
 
   dlv@1.1.3:
     resolution: {integrity: sha512-+HlytyjlPKnIG8XuRG8WvmBP8xs8P71y+SKKS6ZXWoEgLuePxtDoUEiH7WkdePWrQ5JBpE6aoVqfZfJUQkjXwA==}
@@ -14842,7 +14842,7 @@ snapshots:
   '@conventional-changelog/git-client@1.0.1(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.0.0)':
     dependencies:
       '@types/semver': 7.5.8
-      semver: 7.6.3
+      semver: 7.5.4
     optionalDependencies:
       conventional-commits-filter: 5.0.0
       conventional-commits-parser: 6.0.0
@@ -14875,7 +14875,7 @@ snapshots:
       '@discordjs/formatters': 0.6.0
       '@discordjs/util': 1.1.1
       '@sapphire/shapeshift': 4.0.0
-      discord-api-types: 0.37.118
+      discord-api-types: 0.37.119
       fast-deep-equal: 3.1.3
       ts-mixer: 6.0.4
       tslib: 2.6.3
@@ -14888,7 +14888,7 @@ snapshots:
 
   '@discordjs/formatters@0.6.0':
     dependencies:
-      discord-api-types: 0.37.118
+      discord-api-types: 0.37.119
 
   '@discordjs/rest@2.4.1':
     dependencies:
@@ -14897,7 +14897,7 @@ snapshots:
       '@sapphire/async-queue': 1.5.3
       '@sapphire/snowflake': 3.5.3
       '@vladfrangu/async_event_emitter': 2.4.6
-      discord-api-types: 0.37.118
+      discord-api-types: 0.37.119
       magic-bytes.js: 1.10.0
       tslib: 2.6.3
       undici: 6.19.8
@@ -14912,7 +14912,7 @@ snapshots:
       '@sapphire/async-queue': 1.5.3
       '@types/ws': 8.5.12
       '@vladfrangu/async_event_emitter': 2.4.6
-      discord-api-types: 0.37.118
+      discord-api-types: 0.37.119
       tslib: 2.6.3
       ws: 8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)
     transitivePeerDependencies:
@@ -15712,7 +15712,7 @@ snapshots:
       nopt: 5.0.0
       npmlog: 5.0.1
       rimraf: 3.0.2
-      semver: 7.6.3
+      semver: 7.5.4
       tar: 6.2.1
     transitivePeerDependencies:
       - encoding
@@ -15996,14 +15996,14 @@ snapshots:
       ini: 4.1.3
       nopt: 7.2.1
       proc-log: 4.2.0
-      semver: 7.6.3
+      semver: 7.5.4
       walk-up-path: 3.0.1
     transitivePeerDependencies:
       - bluebird
 
   '@npmcli/fs@3.1.1':
     dependencies:
-      semver: 7.6.3
+      semver: 7.5.4
 
   '@npmcli/git@5.0.8':
     dependencies:
@@ -16014,7 +16014,7 @@ snapshots:
       proc-log: 4.2.0
       promise-inflight: 1.0.1
       promise-retry: 2.0.1
-      semver: 7.6.3
+      semver: 7.5.4
       which: 4.0.0
     transitivePeerDependencies:
       - bluebird
@@ -16036,7 +16036,7 @@ snapshots:
       json-parse-even-better-errors: 3.0.2
       normalize-package-data: 6.0.2
       proc-log: 4.2.0
-      semver: 7.6.3
+      semver: 7.5.4
     transitivePeerDependencies:
       - bluebird
 
@@ -16248,7 +16248,7 @@ snapshots:
       request: 2.88.2
       retry: 0.12.0
       safe-buffer: 5.2.1
-      semver: 7.6.3
+      semver: 7.5.4
       slide: 1.1.6
       ssri: 8.0.1
     optionalDependencies:
@@ -19346,7 +19346,7 @@ snapshots:
       debug: 4.4.0
       globby: 11.1.0
       is-glob: 4.0.3
-      semver: 7.6.3
+      semver: 7.5.4
       tsutils: 3.21.0(typescript@5.5.4)
     optionalDependencies:
       typescript: 5.5.4
@@ -19408,7 +19408,7 @@ snapshots:
       '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.5.4)
       eslint: 8.57.0
       eslint-scope: 5.1.1
-      semver: 7.6.3
+      semver: 7.5.4
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -20108,7 +20108,7 @@ snapshots:
 
   agent-base@7.1.1:
     dependencies:
-      debug: 4.3.6
+      debug: 4.4.0
     transitivePeerDependencies:
       - supports-color
 
@@ -21143,7 +21143,7 @@ snapshots:
       handlebars: 4.7.8
       json-stringify-safe: 5.0.1
       meow: 12.1.1
-      semver: 7.6.3
+      semver: 7.5.4
       split2: 4.2.0
 
   conventional-changelog@5.1.0:
@@ -21526,7 +21526,7 @@ snapshots:
     dependencies:
       path-type: 4.0.0
 
-  discord-api-types@0.37.118: {}
+  discord-api-types@0.37.119: {}
 
   dlv@1.1.3: {}
 
@@ -22178,7 +22178,7 @@ snapshots:
       get-tsconfig: 4.10.0
       is-glob: 4.0.3
       minimatch: 3.1.2
-      semver: 7.6.3
+      semver: 7.5.4
     transitivePeerDependencies:
       - '@typescript-eslint/parser'
       - eslint-import-resolver-typescript
@@ -22983,7 +22983,7 @@ snapshots:
     dependencies:
       basic-ftp: 5.0.5
       data-uri-to-buffer: 6.0.2
-      debug: 4.3.6
+      debug: 4.4.0
       fs-extra: 11.2.0
     transitivePeerDependencies:
       - supports-color
@@ -23041,7 +23041,7 @@ snapshots:
   git-semver-tags@7.0.1:
     dependencies:
       meow: 12.1.1
-      semver: 7.6.3
+      semver: 7.5.4
 
   github-slugger@2.0.0: {}
 
@@ -23450,7 +23450,7 @@ snapshots:
   http-proxy-agent@7.0.2:
     dependencies:
       agent-base: 7.1.1
-      debug: 4.3.6
+      debug: 4.4.0
     transitivePeerDependencies:
       - supports-color
 
@@ -23470,7 +23470,7 @@ snapshots:
   https-proxy-agent@7.0.5:
     dependencies:
       agent-base: 7.1.1
-      debug: 4.3.6
+      debug: 4.4.0
     transitivePeerDependencies:
       - supports-color
 
@@ -26085,13 +26085,13 @@ snapshots:
     dependencies:
       hosted-git-info: 4.1.0
       is-core-module: 2.16.1
-      semver: 7.6.3
+      semver: 7.5.4
       validate-npm-package-license: 3.0.4
 
   normalize-package-data@6.0.2:
     dependencies:
       hosted-git-info: 7.0.2
-      semver: 7.6.3
+      semver: 7.5.4
       validate-npm-package-license: 3.0.4
 
   normalize-path@3.0.0: {}
@@ -26100,7 +26100,7 @@ snapshots:
 
   npm-install-checks@6.3.0:
     dependencies:
-      semver: 7.6.3
+      semver: 7.5.4
 
   npm-normalize-package-bin@3.0.1: {}
 
@@ -26115,13 +26115,13 @@ snapshots:
     dependencies:
       hosted-git-info: 7.0.2
       proc-log: 4.2.0
-      semver: 7.6.3
+      semver: 7.5.4
       validate-npm-package-name: 5.0.1
 
   npm-package-arg@8.1.5:
     dependencies:
       hosted-git-info: 4.1.0
-      semver: 7.6.3
+      semver: 7.5.4
       validate-npm-package-name: 3.0.0
 
   npm-pick-manifest@9.1.0:
@@ -26129,7 +26129,7 @@ snapshots:
       npm-install-checks: 6.3.0
       npm-normalize-package-bin: 3.0.1
       npm-package-arg: 11.0.3
-      semver: 7.6.3
+      semver: 7.5.4
 
   npm-registry-fetch@14.0.5:
     dependencies:
@@ -26370,7 +26370,7 @@ snapshots:
     dependencies:
       '@tootallnate/quickjs-emscripten': 0.23.0
       agent-base: 7.1.1
-      debug: 4.3.6
+      debug: 4.4.0
       get-uri: 6.0.3
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.5
@@ -27772,7 +27772,7 @@ snapshots:
   socks-proxy-agent@8.0.4:
     dependencies:
       agent-base: 7.1.1
-      debug: 4.3.6
+      debug: 4.4.0
       socks: 2.8.3
     transitivePeerDependencies:
       - supports-color
