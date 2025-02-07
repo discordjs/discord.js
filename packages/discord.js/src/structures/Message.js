@@ -9,6 +9,7 @@ const {
   MessageType,
   MessageFlags,
   PermissionFlagsBits,
+  MessageReferenceType,
 } = require('discord-api-types/v10');
 const Attachment = require('./Attachment');
 const Base = require('./Base');
@@ -704,7 +705,11 @@ class Message extends Base {
    * @readonly
    */
   get editable() {
-    const precheck = Boolean(this.author.id === this.client.user.id && (!this.guild || this.channel?.viewable));
+    const precheck = Boolean(
+      this.author.id === this.client.user.id &&
+        (!this.guild || this.channel?.viewable) &&
+        this.reference?.type !== MessageReferenceType.Forward,
+    );
 
     // Regardless of permissions thread messages cannot be edited if
     // the thread is archived or the thread is locked and the bot does not have permission to manage threads.
@@ -954,6 +959,24 @@ class Message extends Base {
       });
     }
     return this.channel.send(data);
+  }
+
+  /**
+   * Forwards this message
+   *
+   * @param {TextBasedChannelResolvable} channel The channel to forward this message to.
+   * @returns {Promise<Message>}
+   */
+  forward(channel) {
+    const resolvedChannel = this.client.channels.resolve(channel);
+    if (!resolvedChannel) throw new DiscordjsError(ErrorCodes.InvalidType, 'channel', 'TextBasedChannelResolvable');
+    return resolvedChannel.send({
+      forward: {
+        message: this.id,
+        channel: this.channelId,
+        guild: this.guildId,
+      },
+    });
   }
 
   /**

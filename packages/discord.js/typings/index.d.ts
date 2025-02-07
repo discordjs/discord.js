@@ -2310,6 +2310,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public reply(
     options: string | MessagePayload | MessageReplyOptions,
   ): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
+  public forward(channel: Exclude<TextBasedChannelResolvable, PartialGroupDMChannel>): Promise<Message>;
   public resolveComponent(customId: string): MessageActionRowComponent | null;
   public startThread(options: StartThreadOptions): Promise<PublicThreadChannel<false>>;
   public suppressEmbeds(suppress?: boolean): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
@@ -6759,6 +6760,7 @@ export interface MessageCreateOptions extends BaseMessageOptionsWithPoll {
   nonce?: string | number;
   enforceNonce?: boolean;
   reply?: ReplyOptions;
+  forward?: ForwardOptions;
   stickers?: readonly StickerResolvable[];
   flags?:
     | BitFieldResolvable<
@@ -7011,7 +7013,21 @@ export interface ReplyOptions {
   failIfNotExists?: boolean;
 }
 
-export interface MessageReplyOptions extends Omit<MessageCreateOptions, 'reply'> {
+export interface BaseForwardOptions {
+  message: MessageResolvable;
+  channel?: Exclude<TextBasedChannelResolvable, PartialGroupDMChannel>;
+  guild?: GuildResolvable;
+}
+
+export type ForwardOptionsWithMandatoryChannel = BaseForwardOptions & Required<Pick<BaseForwardOptions, 'channel'>>;
+
+export interface ForwardOptionsWithOptionalChannel extends BaseForwardOptions {
+  message: Exclude<MessageResolvable, Snowflake>;
+}
+
+export type ForwardOptions = ForwardOptionsWithMandatoryChannel | ForwardOptionsWithOptionalChannel;
+
+export interface MessageReplyOptions extends Omit<MessageCreateOptions, 'reply' | 'forward'> {
   failIfNotExists?: boolean;
 }
 
@@ -7290,7 +7306,8 @@ export interface WebhookFetchMessageOptions {
   threadId?: Snowflake;
 }
 
-export interface WebhookMessageCreateOptions extends Omit<MessageCreateOptions, 'nonce' | 'reply' | 'stickers'> {
+export interface WebhookMessageCreateOptions
+  extends Omit<MessageCreateOptions, 'nonce' | 'reply' | 'stickers' | 'forward'> {
   username?: string;
   avatarURL?: string;
   threadId?: Snowflake;
