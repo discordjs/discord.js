@@ -63,16 +63,12 @@ function _transformAPIMessageInteractionMetadata(client, messageInteractionMetad
 function _transformGuildScheduledEventRecurrenceRule(recurrenceRule) {
   return {
     start: new Date(recurrenceRule.startAt).toISOString(),
-    // eslint-disable-next-line eqeqeq
-    end: recurrenceRule.endAt != null ? new Date(recurrenceRule.endAt).toISOString() : recurrenceRule.endAt,
     frequency: recurrenceRule.frequency,
     interval: recurrenceRule.interval,
     by_weekday: recurrenceRule.byWeekday,
     by_n_weekday: recurrenceRule.byNWeekday,
     by_month: recurrenceRule.byMonth,
     by_month_day: recurrenceRule.byMonthDay,
-    by_year_day: recurrenceRule.byYearDay,
-    count: recurrenceRule.count,
   };
 }
 
