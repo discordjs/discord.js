@@ -68,7 +68,7 @@
 		"@vercel/postgres": "^0.8.0",
 		"commander": "^12.1.0",
 		"tslib": "^2.6.2",
-		"undici": "6.18.2",
+		"undici": "6.21.1",
 		"yaml": "2.4.3"
 	},
 	"devDependencies": {
