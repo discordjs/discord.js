@@ -904,16 +904,13 @@ export interface MappedChannelCategoryTypes {
   [ChannelType.GuildMedia]: MediaChannel;
 }
 
-export type CategoryChannelType = Exclude<
-  ChannelType,
-  | ChannelType.DM
-  | ChannelType.GroupDM
-  | ChannelType.PublicThread
-  | ChannelType.AnnouncementThread
-  | ChannelType.PrivateThread
-  | ChannelType.GuildCategory
-  | ChannelType.GuildDirectory
->;
+export type CategoryChannelChildTypes =
+  | ChannelType.GuildAnnouncement
+  | ChannelType.GuildVoice
+  | ChannelType.GuildText
+  | ChannelType.GuildStageVoice
+  | ChannelType.GuildForum
+  | ChannelType.GuildMedia;
 
 export class CategoryChannel extends GuildChannel {
   public get children(): CategoryChannelChildManager;
@@ -4010,7 +4007,7 @@ export class CategoryChannelChildManager extends DataManager<Snowflake, Category
 
   public channel: CategoryChannel;
   public get guild(): Guild;
-  public create<Type extends CategoryChannelType>(
+  public create<Type extends CategoryChannelChildTypes>(
     options: CategoryCreateChannelOptions & { type: Type },
   ): Promise<MappedChannelCategoryTypes[Type]>;
   public create(options: CategoryCreateChannelOptions): Promise<TextChannel>;
@@ -4108,7 +4105,7 @@ export type MappedGuildChannelTypes = {
   [ChannelType.GuildCategory]: CategoryChannel;
 } & MappedChannelCategoryTypes;
 
-export type GuildChannelTypes = CategoryChannelType | ChannelType.GuildCategory;
+export type GuildChannelTypes = CategoryChannelChildTypes | ChannelType.GuildCategory;
 
 export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChannel, GuildChannelResolvable> {
   private constructor(guild: Guild, iterable?: Iterable<RawGuildChannelData>);
@@ -5028,7 +5025,7 @@ export interface CategoryCreateChannelOptions {
   name: string;
   permissionOverwrites?: readonly OverwriteResolvable[] | ReadonlyCollection<Snowflake, OverwriteResolvable>;
   topic?: string;
-  type?: CategoryChannelType;
+  type?: CategoryChannelChildTypes;
   nsfw?: boolean;
   bitrate?: number;
   userLimit?: number;
