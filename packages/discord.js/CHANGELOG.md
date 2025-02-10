@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.18.0](https://github.com/discordjs/discord.js/compare/14.17.3...14.18.0) - (2025-02-10)
+
+## Bug Fixes
+
+- **Guild:** Type error with permissionOverwrites (#10527) ([8e1e1be](https://github.com/discordjs/discord.js/commit/8e1e1be0c23a0a063a6b530ac8cee30cf7629644))
+- Incorrect relative path (#10734) ([b7f1ebc](https://github.com/discordjs/discord.js/commit/b7f1ebc334e110be3208c476b61b82a69386fd84))
+- **PresenceUpdate:** Correctly add user regardless of their properties (#10672) ([7c1b73c](https://github.com/discordjs/discord.js/commit/7c1b73cc697fd3b85011bdb2c098ca3a3f863b1f))
+- **InteractionResponses:** Mark replied true for followUps (#10688) ([32dff01](https://github.com/discordjs/discord.js/commit/32dff01f291271bde3cfb354964ed140a6fa82d7))
+
+## Documentation
+
+- Use link tags to render links on the documentation (#10731) ([66b9718](https://github.com/discordjs/discord.js/commit/66b971899ab702240642e3ae2d189fd9e7efc701))
+- **Message:** Improve message snapshots description (#10709) ([31df3d2](https://github.com/discordjs/discord.js/commit/31df3d21cdc53400672924bc7c5dc7fd3053630b))
+
+## Features
+
+- Message forwards (#10733) ([89c076c](https://github.com/discordjs/discord.js/commit/89c076c89e90e8f5912786e8899ced9e8eea6003))
+- Incident Actions (#10727) ([41dee51](https://github.com/discordjs/discord.js/commit/41dee5177d9cb15f667e60a34619882222bf249c))
+- **website:** Type parameters links, builtin doc links, default values (#10515) ([43235d4](https://github.com/discordjs/discord.js/commit/43235d43fe76e26805c52dcff13519652bcb6a4a))
+- **PartialGroupDMChannel:** Add missing properties (#10502) ([5e66f85](https://github.com/discordjs/discord.js/commit/5e66f85f55724a583921252b035eb2097345fec8))
+- **Subscription:** Add `renewalSkuIds` (#10662) ([efa50fc](https://github.com/discordjs/discord.js/commit/efa50fc3fa463b09bde11c1640daa2abb8c22686))
+- **website:** Include reexported members in docs (#10518) ([aa61c20](https://github.com/discordjs/discord.js/commit/aa61c20ffdac3f3a0dca224f9e48e614309ecb2e))
+
+## Refactor
+
+- Use throw instead of Promise.reject (#10712) ([2663d76](https://github.com/discordjs/discord.js/commit/2663d767099f2e14a23f9cbfb868f279ffb253d1))
+- Remove data resolver exports (#10701) ([4606041](https://github.com/discordjs/discord.js/commit/46060419a9593dc5132ba6f13b58d0c18613679b))
+- **IntegrationApplication:** Move common properties to Application (#10627) ([95db597](https://github.com/discordjs/discord.js/commit/95db597fc844e7951b07cfb5741e27086ac7451a))
+
+## Styling
+
+- Prettier ([92aea94](https://github.com/discordjs/discord.js/commit/92aea944119638b12c03be0f627f20fe5fe5145e))
+
+## Typings
+
+- Fix recurrence rule types (#10694) ([193a5e9](https://github.com/discordjs/discord.js/commit/193a5e9e20fc4832592b2a3b6f142752121f43d5))
+- **ThreadOnlyChannel:** Remove incorrect `messages` property (#10708) ([44a1e85](https://github.com/discordjs/discord.js/commit/44a1e858473a51809cb1e6114d6a659fe28587f0))
+- Add `undefined` to `flags` for `exactOptionalPropertyTypes` (#10707) ([d2e1924](https://github.com/discordjs/discord.js/commit/d2e1924fa6a06120879a1158d501a899db3d6d96))
+- Allow only ephemeral for defer reply (#10696) ([68dd260](https://github.com/discordjs/discord.js/commit/68dd260dee1a7b0bbd4fcdff1b39283ea8dcedec))
+- Remove createComponent and createComponentBuilder (#10687) ([0047a49](https://github.com/discordjs/discord.js/commit/0047a49b7395acf0936702f233e7fb89e9f352fe))
+
 # [14.17.3](https://github.com/discordjs/discord.js/compare/14.17.2...14.17.3) - (2025-01-08)
 
 ## Bug Fixes
