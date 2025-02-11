@@ -979,7 +979,6 @@ export class Client<Ready extends boolean = boolean> extends BaseClient<ClientEv
 
   public application: If<Ready, ClientApplication>;
   public channels: ChannelManager;
-  public get emojis(): BaseGuildEmojiManager;
   public guilds: GuildManager;
   public lastPingTimestamps: ReadonlyCollection<number, number>;
   public options: Omit<ClientOptions, 'intents'> & { intents: IntentsBitField };
