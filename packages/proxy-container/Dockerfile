@@ -1,16 +1,14 @@
-FROM node:18-alpine AS base
+FROM node:22-alpine AS base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
-RUN apk update
-RUN apk add --no-cache libc6-compat
-
-RUN corepack enable
-RUN corepack prepare pnpm@latest --activate
-
 COPY . /usr/proxy-container
 WORKDIR /usr/proxy-container
+
+RUN npm --global install corepack@latest
+RUN corepack enable
+RUN corepack install
 
 FROM base AS builder
 
@@ -21,7 +19,7 @@ FROM builder AS pruned
 
 RUN pnpm --filter='@discordjs/proxy-container' --prod deploy pruned
 
-FROM node:18-alpine AS proxy
+FROM node:22-alpine AS proxy
 
 WORKDIR /usr/proxy-container
 
