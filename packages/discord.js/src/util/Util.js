@@ -129,7 +129,7 @@ function resolvePartialEmoji(emoji) {
  * @returns {?GuildEmoji}
  * @private
  */
-export function resolveGuildEmoji(client, emojiId) {
+function resolveGuildEmoji(client, emojiId) {
   for (const guild of client.guilds.cache.values()) {
     if (!guild.available) {
       continue;
