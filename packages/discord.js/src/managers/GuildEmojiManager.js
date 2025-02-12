@@ -1,11 +1,11 @@
 'use strict';
-const { CachedManager } = require('./CachedManager.js');
 const { Collection } = require('@discordjs/collection');
 const { Routes, PermissionFlagsBits } = require('discord-api-types/v10');
+const { CachedManager } = require('./CachedManager.js');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 const { ApplicationEmoji } = require('../structures/ApplicationEmoji.js');
-const { ReactionEmoji } = require('../structures/ReactionEmoji.js');
 const { GuildEmoji } = require('../structures/GuildEmoji.js');
+const { ReactionEmoji } = require('../structures/ReactionEmoji.js');
 const { resolveImage } = require('../util/DataResolver.js');
 const { parseEmoji } = require('../util/Util.js');
 
