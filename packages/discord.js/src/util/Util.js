@@ -123,6 +123,29 @@ function resolvePartialEmoji(emoji) {
 }
 
 /**
+ * Resolve an emoji object from a Guild
+ * @param {Client} client The Client
+ * @param {string} emojiId The id of the emoji
+ * @returns {GuildEmoji | undefined}
+ *
+ */
+export function resolveGuildEmoji(client, emojiId) {
+  for (const guild of client.guilds.cache.values()) {
+      if (!guild.available) {
+          continue;
+      }
+
+      const emoji = guild.emojis.cache.get(emojiId);
+
+      if (emoji) {
+          return emoji;
+      }
+  }
+
+  return null;
+}
+
+/**
  * Options used to make an error object.
  * @typedef {Object} MakeErrorOptions
  * @property {string} name Error type
@@ -503,6 +526,7 @@ exports.flatten = flatten;
 exports.fetchRecommendedShardCount = fetchRecommendedShardCount;
 exports.parseEmoji = parseEmoji;
 exports.resolvePartialEmoji = resolvePartialEmoji;
+exports.resolveGuildEmoji = resolveGuildEmoji;
 exports.makeError = makeError;
 exports.makePlainError = makePlainError;
 exports.getSortableGroupTypes = getSortableGroupTypes;
@@ -518,7 +542,9 @@ exports.parseWebhookURL = parseWebhookURL;
 exports.transformResolved = transformResolved;
 exports.resolveSKUId = resolveSKUId;
 
+
 // Fixes Circular
 const { Attachment } = require('../structures/Attachment.js');
 const { GuildChannel } = require('../structures/GuildChannel.js');
-const { SKU } = require('../structures/SKU.js');
+const { SKU } = require('../structures/SKU.js');const { GuildEmoji } = require('../structures/GuildEmoji.js');
+

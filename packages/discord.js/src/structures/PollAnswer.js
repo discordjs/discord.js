@@ -1,5 +1,6 @@
 'use strict';
 
+const { resolveGuildEmoji } = require('../util/Util.js');
 const { Base } = require('./Base.js');
 const { Emoji } = require('./Emoji.js');
 
@@ -61,7 +62,7 @@ class PollAnswer extends Base {
    */
   get emoji() {
     if (!this._emoji || (!this._emoji.id && !this._emoji.name)) return null;
-    return this.client.emojis.cache.get(this._emoji.id) ?? new Emoji(this.client, this._emoji);
+    return resolveGuildEmoji(this.client, this._emoji.id) ?? new Emoji(this.client, this._emoji);
   }
 
   /**
