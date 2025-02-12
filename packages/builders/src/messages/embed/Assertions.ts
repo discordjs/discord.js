@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { refineURLPredicate } from '../../Assertions.js';
 import { embedLength } from '../../util/componentUtil.js';
 
-const namePredicate = z.string().min(1).max(256);
+const namePredicate = z.string().max(256);
 
 const iconURLPredicate = z
 	.string()
@@ -18,12 +18,12 @@ const URLPredicate = z
 
 export const embedFieldPredicate = z.object({
 	name: namePredicate,
-	value: z.string().min(1).max(1_024),
+	value: z.string().max(1_024),
 	inline: z.boolean().optional(),
 });
 
 export const embedAuthorPredicate = z.object({
-	name: namePredicate,
+	name: namePredicate.min(1),
 	icon_url: iconURLPredicate.optional(),
 	url: URLPredicate.optional(),
 });
@@ -35,7 +35,7 @@ export const embedFooterPredicate = z.object({
 
 export const embedPredicate = z
 	.object({
-		title: namePredicate.optional(),
+		title: namePredicate.min(1).optional(),
 		description: z.string().min(1).max(4_096).optional(),
 		url: URLPredicate.optional(),
 		timestamp: z.string().optional(),
