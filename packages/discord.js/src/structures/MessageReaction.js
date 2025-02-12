@@ -128,7 +128,7 @@ class MessageReaction {
         return emoji;
       }
     }
-    const emoji = resolveGuildEmoji(this.client, this._emoji.id)
+    const emoji = resolveGuildEmoji(this.client, this._emoji.id);
     return emoji ?? this._emoji;
   }
 
