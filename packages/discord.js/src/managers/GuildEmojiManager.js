@@ -50,10 +50,10 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
    *   .catch(console.error);
    */
   async create({ attachment, name, roles, reason }) {
-    attachment = await resolveImage(attachment);
-    if (!attachment) throw new DiscordjsTypeError(ErrorCodes.ReqResourceType);
+    const image = await resolveImage(attachment);
+    if (!image) throw new DiscordjsTypeError(ErrorCodes.ReqResourceType);
 
-    const body = { image: attachment, name };
+    const body = { image, name };
     if (roles) {
       if (!Array.isArray(roles) && !(roles instanceof Collection)) {
         throw new DiscordjsTypeError(
@@ -153,9 +153,9 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
    * @returns {Promise<User>}
    */
   async fetchAuthor(emoji) {
-    emoji = this.resolve(emoji);
-    if (!emoji) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
-    if (emoji.managed) {
+    const resolvedEmoji = this.resolve(emoji);
+    if (!resolvedEmoji) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
+    if (resolvedEmoji.managed) {
       throw new DiscordjsError(ErrorCodes.EmojiManaged);
     }
 
@@ -165,9 +165,9 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
       throw new DiscordjsError(ErrorCodes.MissingManageGuildExpressionsPermission, this.guild);
     }
 
-    const data = await this.client.rest.get(Routes.guildEmoji(this.guild.id, emoji.id));
-    emoji._patch(data);
-    return emoji.author;
+    const data = await this.client.rest.get(Routes.guildEmoji(this.guild.id, resolvedEmoji.id));
+    resolvedEmoji._patch(data);
+    return resolvedEmoji.author;
   }
 }
 
