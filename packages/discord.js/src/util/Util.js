@@ -127,7 +127,7 @@ function resolvePartialEmoji(emoji) {
  * @param {Client} client The Client
  * @param {string} emojiId The id of the emoji
  * @returns {GuildEmoji | undefined}
- *
+ * @private
  */
 export function resolveGuildEmoji(client, emojiId) {
   for (const guild of client.guilds.cache.values()) {
