@@ -1,8 +1,8 @@
 'use strict';
 
-const { resolveGuildEmoji } = require('../util/Util.js');
 const { Base } = require('./Base.js');
 const { Emoji } = require('./Emoji.js');
+const { resolveGuildEmoji } = require('../util/Util.js');
 
 /**
  * Represents an answer to a {@link Poll}

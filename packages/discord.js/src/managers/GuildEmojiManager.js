@@ -1,19 +1,17 @@
 'use strict';
-
+const { CachedManager } = require('./CachedManager.js');
 const { Collection } = require('@discordjs/collection');
 const { Routes, PermissionFlagsBits } = require('discord-api-types/v10');
-const { BaseGuildEmojiManager } = require('./BaseGuildEmojiManager.js');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { resolveImage } = require('../util/DataResolver.js');
-const { CachedManager } = require('./CachedManager.js');
-const { GuildEmoji } = require('../structures/GuildEmoji.js');
-const { parseEmoji } = require('../util/Util.js');
 const { ApplicationEmoji } = require('../structures/ApplicationEmoji.js');
 const { ReactionEmoji } = require('../structures/ReactionEmoji.js');
+const { GuildEmoji } = require('../structures/GuildEmoji.js');
+const { resolveImage } = require('../util/DataResolver.js');
+const { parseEmoji } = require('../util/Util.js');
 
 /**
  * Manages API methods for GuildEmojis and stores their cache.
- * @extends {BaseGuildEmojiManager}
+ * @extends {CachedManager}
  */
 class GuildEmojiManager extends CachedManager {
   constructor(guild, iterable) {

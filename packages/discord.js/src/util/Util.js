@@ -546,4 +546,3 @@ exports.resolveSKUId = resolveSKUId;
 const { Attachment } = require('../structures/Attachment.js');
 const { GuildChannel } = require('../structures/GuildChannel.js');
 const { SKU } = require('../structures/SKU.js');
-const { GuildEmoji } = require('../structures/GuildEmoji.js');

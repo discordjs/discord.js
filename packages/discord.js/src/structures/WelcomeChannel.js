@@ -1,6 +1,5 @@
 'use strict';
 
-const { resolveGuildEmoji } = require('../util/Util.js');
 const { Base } = require('./Base.js');
 const { Emoji } = require('./Emoji.js');
 
