@@ -1270,7 +1270,7 @@ export class ApiModelGenerator {
 				const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 				const docComment: tsdoc.DocComment | undefined = jsDoc
 					? this._tsDocParser.parseString(
-							`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}${jsDoc.default ? ` (default: ${this._escapeSpecialChars(jsDoc.default)})` : ''}\n${
+							`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}${jsDoc.default === undefined ? '' : ` (default: ${this._escapeSpecialChars(jsDoc.default)})`}\n${
 								'see' in jsDoc ? jsDoc.see.map((see) => ` * @see ${see}\n`).join('') : ''
 							}${'readonly' in jsDoc && jsDoc.readonly ? ' * @readonly\n' : ''}${
 								'deprecated' in jsDoc && jsDoc.deprecated
@@ -1348,7 +1348,7 @@ export class ApiModelGenerator {
 				const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 				const docComment: tsdoc.DocComment | undefined = jsDoc
 					? this._tsDocParser.parseString(
-							`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}${jsDoc.default ? `\n * @defaultValue ${this._escapeSpecialChars(jsDoc.default)}` : ''}\n${
+							`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}${jsDoc.default === undefined ? '' : `\n * @defaultValue ${this._escapeSpecialChars(jsDoc.default)}`}\n${
 								'see' in jsDoc ? jsDoc.see.map((see) => ` * @see ${see}\n`).join('') : ''
 							}${'readonly' in jsDoc && jsDoc.readonly ? ' * @readonly\n' : ''}${
 								'deprecated' in jsDoc && jsDoc.deprecated
