@@ -3477,6 +3477,7 @@ export function resolveColor(color: ColorResolvable): number;
 export function resolvePartialEmoji(emoji: Snowflake): PartialEmojiOnlyId;
 /** @internal */
 export function resolvePartialEmoji(emoji: Emoji | EmojiIdentifierResolvable): PartialEmoji | null;
+/** @internal */
 export function resolveGuildEmoji(client: Client, emojiId: string): GuildEmoji | null;
 export function verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
 /** @internal */
