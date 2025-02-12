@@ -123,10 +123,10 @@ function resolvePartialEmoji(emoji) {
 }
 
 /**
- * Resolve an emoji object from a Guild
- * @param {Client} client The Client
- * @param {string} emojiId The id of the emoji
- * @returns {GuildEmoji | undefined}
+ * Resolves a {@link GuildEmoji} from an emoji id.
+ * @param {Client} client The client to use to resolve the emoji
+ * @param {Snowflake} emojiId The emoji id to resolve
+ * @returns {?GuildEmoji}
  * @private
  */
 export function resolveGuildEmoji(client, emojiId) {
