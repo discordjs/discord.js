@@ -131,15 +131,15 @@ function resolvePartialEmoji(emoji) {
  */
 export function resolveGuildEmoji(client, emojiId) {
   for (const guild of client.guilds.cache.values()) {
-      if (!guild.available) {
-          continue;
-      }
+    if (!guild.available) {
+      continue;
+    }
 
-      const emoji = guild.emojis.cache.get(emojiId);
+    const emoji = guild.emojis.cache.get(emojiId);
 
-      if (emoji) {
-          return emoji;
-      }
+    if (emoji) {
+      return emoji;
+    }
   }
 
   return null;
@@ -542,10 +542,8 @@ exports.parseWebhookURL = parseWebhookURL;
 exports.transformResolved = transformResolved;
 exports.resolveSKUId = resolveSKUId;
 
-
 // Fixes Circular
 const { Attachment } = require('../structures/Attachment.js');
 const { GuildChannel } = require('../structures/GuildChannel.js');
 const { SKU } = require('../structures/SKU.js');
 const { GuildEmoji } = require('../structures/GuildEmoji.js');
-
