@@ -2176,6 +2176,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public reply(
     options: string | MessagePayload | MessageReplyOptions,
   ): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
+  public forward(channel: TextBasedChannelResolvable): Promise<OmitPartialGroupDMChannel<Message>>;
   public resolveComponent(customId: string): MessageActionRowComponent | null;
   public startThread(options: StartThreadOptions): Promise<PublicThreadChannel<false>>;
   public suppressEmbeds(suppress?: boolean): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
@@ -4015,6 +4016,10 @@ export class CategoryChannelChildManager extends DataManager<Snowflake, Category
 
 export class ChannelManager extends CachedManager<Snowflake, Channel, ChannelResolvable> {
   private constructor(client: Client<true>, iterable: Iterable<RawChannelData>);
+  public createMessage(
+    channel: Omit<TextBasedChannelResolvable, 'PartialGroupDMChannel'>,
+    options: string | MessagePayload | MessageCreateOptions,
+  ): Promise<Message>;
   public fetch(id: Snowflake, options?: FetchChannelOptions): Promise<Channel | null>;
 }
 
@@ -6319,7 +6324,7 @@ export interface MessageCreateOptions extends BaseMessageOptionsWithPoll {
   tts?: boolean;
   nonce?: string | number;
   enforceNonce?: boolean;
-  reply?: ReplyOptions;
+  messageReference?: MessageReference & { failIfNotExists?: boolean };
   stickers?: readonly StickerResolvable[];
   flags?:
     | BitFieldResolvable<
@@ -6424,15 +6429,14 @@ export interface TextInputComponentData extends BaseComponentData {
 }
 
 export type MessageTarget =
+  | ChannelManager
   | Interaction
   | InteractionWebhook
-  | TextBasedChannel
-  | User
-  | GuildMember
-  | Webhook<WebhookType.Incoming>
-  | WebhookClient
   | Message
-  | MessageManager;
+  | MessageManager
+  | TextBasedChannel
+  | Webhook<WebhookType.Incoming>
+  | WebhookClient;
 
 export interface MultipleShardRespawnOptions {
   shardDelay?: number;
@@ -6577,12 +6581,7 @@ export interface ReactionCollectorOptions extends CollectorOptions<[MessageReact
   maxUsers?: number;
 }
 
-export interface ReplyOptions {
-  messageReference: MessageResolvable;
-  failIfNotExists?: boolean;
-}
-
-export interface MessageReplyOptions extends Omit<MessageCreateOptions, 'reply'> {
+export interface MessageReplyOptions extends Omit<MessageCreateOptions, 'messageReference'> {
   failIfNotExists?: boolean;
 }
 
@@ -6751,25 +6750,25 @@ export type Channel =
 
 export type TextBasedChannel = Exclude<Extract<Channel, { type: TextChannelType }>, ForumChannel | MediaChannel>;
 
-export type SendableChannels = Extract<Channel, { send: (...args: any[]) => any }>;
-
 export type TextBasedChannels = TextBasedChannel;
 
 export type TextBasedChannelTypes = TextBasedChannel['type'];
 
 export type GuildTextBasedChannelTypes = Exclude<TextBasedChannelTypes, ChannelType.DM | ChannelType.GroupDM>;
 
-export type SendableChannelTypes = SendableChannels['type'];
-
 export type VoiceBasedChannel = Extract<Channel, { bitrate: number }>;
 
 export type GuildBasedChannel = Extract<Channel, { guild: Guild }>;
+
+export type SendableChannels = Extract<Channel, { send: (...args: any[]) => any }>;
 
 export type CategoryChildChannel = Exclude<Extract<Channel, { parent: CategoryChannel | null }>, CategoryChannel>;
 
 export type NonThreadGuildBasedChannel = Exclude<GuildBasedChannel, AnyThreadChannel>;
 
 export type GuildTextBasedChannel = Extract<GuildBasedChannel, TextBasedChannel>;
+
+export type SendableChannelTypes = SendableChannels['type'];
 
 export type TextChannelResolvable = Snowflake | TextChannel;
 
@@ -6861,7 +6860,8 @@ export interface WebhookFetchMessageOptions {
   threadId?: Snowflake;
 }
 
-export interface WebhookMessageCreateOptions extends Omit<MessageCreateOptions, 'nonce' | 'reply' | 'stickers'> {
+export interface WebhookMessageCreateOptions
+  extends Omit<MessageCreateOptions, 'nonce' | 'messageReference' | 'stickers'> {
   username?: string;
   avatarURL?: string;
   threadId?: Snowflake;
