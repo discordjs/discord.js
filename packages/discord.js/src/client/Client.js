@@ -11,7 +11,6 @@ const { ActionsManager } = require('./actions/ActionsManager.js');
 const { ClientVoiceManager } = require('./voice/ClientVoiceManager.js');
 const { PacketHandlers } = require('./websocket/handlers/index.js');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { BaseGuildEmojiManager } = require('../managers/BaseGuildEmojiManager.js');
 const { ChannelManager } = require('../managers/ChannelManager.js');
 const { GuildManager } = require('../managers/GuildManager.js');
 const { UserManager } = require('../managers/UserManager.js');
@@ -215,19 +214,6 @@ class Client extends BaseClient {
     Object.defineProperty(this, 'incomingPacketQueue', { value: [] });
 
     this._attachEvents();
-  }
-
-  /**
-   * A manager of all the custom emojis that the client has access to
-   * @type {BaseGuildEmojiManager}
-   * @readonly
-   */
-  get emojis() {
-    const emojis = new BaseGuildEmojiManager(this);
-    for (const guild of this.guilds.cache.values()) {
-      if (guild.available) for (const emoji of guild.emojis.cache.values()) emojis.cache.set(emoji.id, emoji);
-    }
-    return emojis;
   }
 
   /**

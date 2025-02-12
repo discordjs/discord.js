@@ -1,18 +1,21 @@
 'use strict';
-
 const { Collection } = require('@discordjs/collection');
 const { Routes, PermissionFlagsBits } = require('discord-api-types/v10');
-const { BaseGuildEmojiManager } = require('./BaseGuildEmojiManager.js');
+const { CachedManager } = require('./CachedManager.js');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { ApplicationEmoji } = require('../structures/ApplicationEmoji.js');
+const { GuildEmoji } = require('../structures/GuildEmoji.js');
+const { ReactionEmoji } = require('../structures/ReactionEmoji.js');
 const { resolveImage } = require('../util/DataResolver.js');
+const { parseEmoji } = require('../util/Util.js');
 
 /**
  * Manages API methods for GuildEmojis and stores their cache.
- * @extends {BaseGuildEmojiManager}
+ * @extends {CachedManager}
  */
-class GuildEmojiManager extends BaseGuildEmojiManager {
+class GuildEmojiManager extends CachedManager {
   constructor(guild, iterable) {
-    super(guild.client, iterable);
+    super(guild.client, GuildEmoji, iterable);
 
     /**
      * The guild this manager belongs to
@@ -23,6 +26,72 @@ class GuildEmojiManager extends BaseGuildEmojiManager {
 
   _add(data, cache) {
     return super._add(data, cache, { extras: [this.guild] });
+  }
+
+  /**
+   * The cache of GuildEmojis
+   * @type {Collection<Snowflake, GuildEmoji>}
+   * @name GuildEmojiManager#cache
+   */
+
+  /**
+   * Data that can be resolved into a GuildEmoji object. This can be:
+   * * A Snowflake
+   * * A GuildEmoji object
+   * * A ReactionEmoji object
+   * * An ApplicationEmoji object
+   * @typedef {Snowflake|GuildEmoji|ReactionEmoji|ApplicationEmoji} EmojiResolvable
+   */
+
+  /**
+   * Resolves an EmojiResolvable to an Emoji object.
+   * @param {EmojiResolvable} emoji The Emoji resolvable to identify
+   * @returns {?GuildEmoji}
+   */
+  resolve(emoji) {
+    if (emoji instanceof ReactionEmoji) return super.cache.get(emoji.id) ?? null;
+    if (emoji instanceof ApplicationEmoji) return super.cache.get(emoji.id) ?? null;
+    return super.resolve(emoji);
+  }
+
+  /**
+   * Resolves an EmojiResolvable to an Emoji id string.
+   * @param {EmojiResolvable} emoji The Emoji resolvable to identify
+   * @returns {?Snowflake}
+   */
+  resolveId(emoji) {
+    if (emoji instanceof ReactionEmoji) return emoji.id;
+    if (emoji instanceof ApplicationEmoji) return emoji.id;
+    return super.resolveId(emoji);
+  }
+
+  /**
+   * Data that can be resolved to give an emoji identifier. This can be:
+   * * An EmojiResolvable
+   * * The `<a:name:id>`, `<:name:id>`, `a:name:id` or `name:id` emoji identifier string of an emoji
+   * * The Unicode representation of an emoji
+   * @typedef {string|EmojiResolvable} EmojiIdentifierResolvable
+   */
+
+  /**
+   * Resolves an EmojiResolvable to an emoji identifier.
+   * @param {EmojiIdentifierResolvable} emoji The emoji resolvable to resolve
+   * @returns {?string}
+   */
+  resolveIdentifier(emoji) {
+    const emojiResolvable = this.resolve(emoji);
+    if (emojiResolvable) return emojiResolvable.identifier;
+    if (emoji instanceof ReactionEmoji) return emoji.identifier;
+    if (emoji instanceof ApplicationEmoji) return emoji.identifier;
+    if (typeof emoji === 'string') {
+      const res = parseEmoji(emoji);
+      if (res?.name.length) {
+        emoji = `${res.animated ? 'a:' : ''}${res.name}${res.id ? `:${res.id}` : ''}`;
+      }
+      if (!emoji.includes('%')) return encodeURIComponent(emoji);
+      return emoji;
+    }
+    return null;
   }
 
   /**

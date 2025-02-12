@@ -976,7 +976,6 @@ export class Client<Ready extends boolean = boolean> extends BaseClient<ClientEv
 
   public application: If<Ready, ClientApplication>;
   public channels: ChannelManager;
-  public get emojis(): BaseGuildEmojiManager;
   public guilds: GuildManager;
   public lastPingTimestamps: ReadonlyCollection<number, number>;
   public options: Omit<ClientOptions, 'intents'> & { intents: IntentsBitField };
@@ -3456,6 +3455,7 @@ export function discordSort<Key, Value extends { rawPosition: number; id: Snowfl
 export function cleanCodeBlockContent(text: string): string;
 export function fetchRecommendedShardCount(token: string, options?: FetchRecommendedShardCountOptions): Promise<number>;
 export function flatten(obj: unknown, ...props: Record<string, boolean | string>[]): unknown;
+
 /** @internal */
 export function makeError(obj: MakeErrorOptions): Error;
 /** @internal */
@@ -3474,6 +3474,8 @@ export function resolveColor(color: ColorResolvable): number;
 export function resolvePartialEmoji(emoji: Snowflake): PartialEmojiOnlyId;
 /** @internal */
 export function resolvePartialEmoji(emoji: Emoji | EmojiIdentifierResolvable): PartialEmoji | null;
+/** @internal */
+export function resolveGuildEmoji(client: Client, emojiId: Snowflake): GuildEmoji | null;
 export function verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
 /** @internal */
 export function setPosition<Item extends Channel | Role>(
@@ -3997,11 +3999,6 @@ export class AutoModerationRuleManager extends CachedManager<
   public delete(autoModerationRule: AutoModerationRuleResolvable, reason?: string): Promise<void>;
 }
 
-export class BaseGuildEmojiManager extends CachedManager<Snowflake, GuildEmoji, EmojiResolvable> {
-  protected constructor(client: Client<true>, iterable?: Iterable<RawGuildEmojiData>);
-  public resolveIdentifier(emoji: EmojiIdentifierResolvable): string | null;
-}
-
 export class CategoryChannelChildManager extends DataManager<Snowflake, CategoryChildChannel, GuildChannelResolvable> {
   private constructor(channel: CategoryChannel);
 
@@ -4142,7 +4139,7 @@ export class GuildChannelManager extends CachedManager<Snowflake, GuildBasedChan
   public delete(channel: GuildChannelResolvable, reason?: string): Promise<void>;
 }
 
-export class GuildEmojiManager extends BaseGuildEmojiManager {
+export class GuildEmojiManager extends CachedManager<Snowflake, GuildEmoji, EmojiResolvable> {
   private constructor(guild: Guild, iterable?: Iterable<RawGuildEmojiData>);
   public guild: Guild;
   public create(options: GuildEmojiCreateOptions): Promise<GuildEmoji>;
@@ -4151,6 +4148,7 @@ export class GuildEmojiManager extends BaseGuildEmojiManager {
   public fetchAuthor(emoji: EmojiResolvable): Promise<User>;
   public delete(emoji: EmojiResolvable, reason?: string): Promise<void>;
   public edit(emoji: EmojiResolvable, options: GuildEmojiEditOptions): Promise<GuildEmoji>;
+  public resolveIdentifier(emoji: EmojiIdentifierResolvable): string | null;
 }
 
 export class GuildEmojiRoleManager extends DataManager<Snowflake, Role, RoleResolvable> {
@@ -4969,7 +4967,6 @@ export interface Caches {
   ApplicationCommandManager: [manager: typeof ApplicationCommandManager, holds: typeof ApplicationCommand];
   ApplicationEmojiManager: [manager: typeof ApplicationEmojiManager, holds: typeof ApplicationEmoji];
   AutoModerationRuleManager: [manager: typeof AutoModerationRuleManager, holds: typeof AutoModerationRule];
-  BaseGuildEmojiManager: [manager: typeof BaseGuildEmojiManager, holds: typeof GuildEmoji];
   // TODO: ChannelManager: [manager: typeof ChannelManager, holds: typeof Channel];
   DMMessageManager: [manager: typeof MessageManager, holds: typeof Message<false>];
   EntitlementManager: [manager: typeof EntitlementManager, holds: typeof Entitlement];

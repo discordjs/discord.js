@@ -5,7 +5,7 @@ const { ApplicationEmoji } = require('./ApplicationEmoji.js');
 const { GuildEmoji } = require('./GuildEmoji.js');
 const { ReactionEmoji } = require('./ReactionEmoji.js');
 const { ReactionUserManager } = require('../managers/ReactionUserManager.js');
-const { flatten } = require('../util/Util.js');
+const { flatten, resolveGuildEmoji } = require('../util/Util.js');
 
 /**
  * Represents a reaction to a message.
@@ -127,14 +127,9 @@ class MessageReaction {
         this._emoji = emoji;
         return emoji;
       }
-      const emojis = this.message.client.emojis.cache;
-      if (emojis.has(this._emoji.id)) {
-        const emoji = emojis.get(this._emoji.id);
-        this._emoji = emoji;
-        return emoji;
-      }
     }
-    return this._emoji;
+    const emoji = resolveGuildEmoji(this.client, this._emoji.id);
+    return emoji ?? this._emoji;
   }
 
   /**
