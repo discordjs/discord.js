@@ -2175,7 +2175,9 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public reply(
     options: string | MessagePayload | MessageReplyOptions,
   ): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
-  public forward(channel: TextBasedChannelResolvable): Promise<OmitPartialGroupDMChannel<Message>>;
+  public forward(
+    channel: Exclude<TextBasedChannelResolvable, PartialGroupDMChannel>,
+  ): Promise<OmitPartialGroupDMChannel<Message>>;
   public resolveComponent(customId: string): MessageActionRowComponent | null;
   public startThread(options: StartThreadOptions): Promise<PublicThreadChannel<false>>;
   public suppressEmbeds(suppress?: boolean): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
@@ -4028,9 +4030,9 @@ export class CategoryChannelChildManager extends DataManager<Snowflake, Category
 export class ChannelManager extends CachedManager<Snowflake, Channel, ChannelResolvable> {
   private constructor(client: Client<true>, iterable: Iterable<RawChannelData>);
   public createMessage(
-    channel: Omit<TextBasedChannelResolvable, 'PartialGroupDMChannel'>,
+    channel: Exclude<TextBasedChannelResolvable, PartialGroupDMChannel>,
     options: string | MessagePayload | MessageCreateOptions,
-  ): Promise<Message>;
+  ): Promise<OmitPartialGroupDMChannel<Message>>;
   public fetch(id: Snowflake, options?: FetchChannelOptions): Promise<Channel | null>;
 }
 
@@ -6337,7 +6339,7 @@ export interface MessageCreateOptions extends BaseMessageOptionsWithPoll {
   tts?: boolean;
   nonce?: string | number;
   enforceNonce?: boolean;
-  messageReference?: MessageReference & { failIfNotExists?: boolean };
+  messageReference?: MessageReferenceOptions;
   stickers?: readonly StickerResolvable[];
   flags?:
     | BitFieldResolvable<
@@ -6368,6 +6370,10 @@ export interface MessageReference {
   guildId: Snowflake | undefined;
   messageId: Snowflake | undefined;
   type: MessageReferenceType;
+}
+
+export interface MessageReferenceOptions extends MessageReference {
+  failIfNotExists?: boolean;
 }
 
 export type MessageResolvable = Message | Snowflake;

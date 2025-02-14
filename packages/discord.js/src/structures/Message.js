@@ -930,7 +930,7 @@ class Message extends Base {
         messageReference: {
           messageId: this.id,
           channelId: this.channelId,
-          guildId: this.guildId,
+          guildId: this.guildId ?? undefined,
           type: MessageReferenceType.Default,
           failIfNotExists: options?.failIfNotExists ?? this.client.options.failIfNotExists,
         },
@@ -949,7 +949,7 @@ class Message extends Base {
       messageReference: {
         messageId: this.id,
         channelId: this.channelId,
-        guildId: this.guildId,
+        guildId: this.guildId ?? undefined,
         type: MessageReferenceType.Forward,
       },
     });

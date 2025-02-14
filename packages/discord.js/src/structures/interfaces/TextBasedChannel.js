@@ -88,14 +88,6 @@ class TextBasedChannel {
    */
 
   /**
-   * Options for sending a message with a reply.
-   * @typedef {Object} ReplyOptions
-   * @property {MessageResolvable} messageReference The message to reply to (must be in the same channel and not system)
-   * @property {boolean} [failIfNotExists=this.client.options.failIfNotExists] Whether to error if the referenced
-   * message does not exist (creates a standard message in this case when false)
-   */
-
-  /**
    * The options for sending a message.
    * @typedef {BaseMessageOptionsWithPoll} BaseMessageCreateOptions
    * @property {boolean} [tts=false] Whether the message should be spoken aloud
@@ -110,9 +102,15 @@ class TextBasedChannel {
    */
 
   /**
+   * @typedef {MessageReference} MessageReferenceOptions
+   * @property {boolean} [failIfNotExists=this.client.options.failIfNotExists] Whether to error if the
+   * referenced message doesn't exist instead of sending as a normal (non-reply) message
+   */
+
+  /**
    * The options for sending a message.
    * @typedef {BaseMessageCreateOptions} MessageCreateOptions
-   * @property {MessageReference|MessageResolvable} [messageReference] The options for a reference to a message
+   * @property {MessageReferenceOptions} [messageReference] The options for a reference to a message
    */
 
   /**
@@ -144,7 +142,7 @@ class TextBasedChannel {
    * @example
    * // Send a remote file
    * channel.send({
-   *   files: ['https://cdn.discordapp.com/icons/222078108977594368/6e1019b3179d71046e463a75915e7244.png?size=2048']
+   *   files: ['https://github.com/discordjs.png']
    * })
    *   .then(console.log)
    *   .catch(console.error);
@@ -366,24 +364,22 @@ class TextBasedChannel {
     return this.edit({ nsfw, reason });
   }
 
-  static applyToClass(structure, full = false, ignore = []) {
-    const props = ['send'];
-    if (full) {
-      props.push(
-        'lastMessage',
-        'lastPinAt',
-        'bulkDelete',
-        'sendTyping',
-        'createMessageCollector',
-        'awaitMessages',
-        'createMessageComponentCollector',
-        'awaitMessageComponent',
-        'fetchWebhooks',
-        'createWebhook',
-        'setRateLimitPerUser',
-        'setNSFW',
-      );
-    }
+  static applyToClass(structure, ignore = []) {
+    const props = [
+      'lastMessage',
+      'lastPinAt',
+      'bulkDelete',
+      'sendTyping',
+      'createMessageCollector',
+      'awaitMessages',
+      'createMessageComponentCollector',
+      'awaitMessageComponent',
+      'fetchWebhooks',
+      'createWebhook',
+      'setRateLimitPerUser',
+      'setNSFW',
+      'send',
+    ];
 
     for (const prop of props) {
       if (ignore.includes(prop)) continue;
