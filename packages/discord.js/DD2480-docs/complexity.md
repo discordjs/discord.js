@@ -33,4 +33,6 @@ third member if the two counts differ.
 
 ### \src\sharding\ShardingManager.js: constructor - Phoebe
 
+Result of complexity measurement:
+
 ### \src\managers\ApplicationCommandPermissionsManager.js: remove - Samuel
