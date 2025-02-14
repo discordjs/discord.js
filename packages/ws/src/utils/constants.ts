@@ -20,6 +20,7 @@ export enum Encoding {
 export enum CompressionMethod {
 	ZlibNative,
 	ZlibSync,
+	ZstdStream,
 }
 
 export const DefaultDeviceProperty = `@discordjs/ws [VI]{{inject}}[/VI]` as `@discordjs/ws ${string}`;
@@ -29,6 +30,7 @@ const getDefaultSessionStore = lazy(() => new Collection<number, SessionInfo | n
 export const CompressionParameterMap = {
 	[CompressionMethod.ZlibNative]: 'zlib-stream',
 	[CompressionMethod.ZlibSync]: 'zlib-stream',
+	[CompressionMethod.ZstdStream]: 'zstd-stream',
 } as const satisfies Record<CompressionMethod, string>;
 
 /**
