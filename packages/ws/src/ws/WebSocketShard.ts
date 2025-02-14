@@ -244,7 +244,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 					break;
 				}
 
-				case CompressionMethod.ZstdStream: {
+				case CompressionMethod.ZstdNative: {
 					const zlib = await getNativeZlib();
 					if (zlib && 'createZstdDecompress' in zlib) {
 						this.inflateBuffer = [];
@@ -663,7 +663,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		if (this.transportCompressionEnabled) {
 			// Each WS message received is a full gateway message for zstd streaming, but for zlib it's chunked
 			const flush =
-				this.strategy.options.compression === CompressionMethod.ZstdStream ||
+				this.strategy.options.compression === CompressionMethod.ZstdNative ||
 				(decompressable.length >= 4 &&
 					decompressable.at(-4) === 0x00 &&
 					decompressable.at(-3) === 0x00 &&
