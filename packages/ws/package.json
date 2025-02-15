@@ -99,7 +99,7 @@
 		"tsup": "^8.3.5",
 		"turbo": "^2.3.3",
 		"typescript": "~5.5.4",
-		"undici": "6.21.0",
+		"undici": "6.21.1",
 		"vitest": "^2.1.8",
 		"zlib-sync": "^0.1.9"
 	},

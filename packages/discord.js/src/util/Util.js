@@ -123,6 +123,29 @@ function resolvePartialEmoji(emoji) {
 }
 
 /**
+ * Resolves a {@link GuildEmoji} from an emoji id.
+ * @param {Client} client The client to use to resolve the emoji
+ * @param {Snowflake} emojiId The emoji id to resolve
+ * @returns {?GuildEmoji}
+ * @private
+ */
+function resolveGuildEmoji(client, emojiId) {
+  for (const guild of client.guilds.cache.values()) {
+    if (!guild.available) {
+      continue;
+    }
+
+    const emoji = guild.emojis.cache.get(emojiId);
+
+    if (emoji) {
+      return emoji;
+    }
+  }
+
+  return null;
+}
+
+/**
  * Options used to make an error object.
  * @typedef {Object} MakeErrorOptions
  * @property {string} name Error type
@@ -503,6 +526,7 @@ exports.flatten = flatten;
 exports.fetchRecommendedShardCount = fetchRecommendedShardCount;
 exports.parseEmoji = parseEmoji;
 exports.resolvePartialEmoji = resolvePartialEmoji;
+exports.resolveGuildEmoji = resolveGuildEmoji;
 exports.makeError = makeError;
 exports.makePlainError = makePlainError;
 exports.getSortableGroupTypes = getSortableGroupTypes;

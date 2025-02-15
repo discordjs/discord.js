@@ -107,7 +107,7 @@ body:
         - Guilds
         - GuildMembers
         - GuildModeration
-        - GuildEmojisAndStickers
+        - GuildExpressions
         - GuildIntegrations
         - GuildWebhooks
         - GuildInvites

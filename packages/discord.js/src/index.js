@@ -58,7 +58,6 @@ exports.ApplicationCommandPermissionsManager =
   require('./managers/ApplicationCommandPermissionsManager.js').ApplicationCommandPermissionsManager;
 exports.ApplicationEmojiManager = require('./managers/ApplicationEmojiManager.js').ApplicationEmojiManager;
 exports.AutoModerationRuleManager = require('./managers/AutoModerationRuleManager.js').AutoModerationRuleManager;
-exports.BaseGuildEmojiManager = require('./managers/BaseGuildEmojiManager.js').BaseGuildEmojiManager;
 exports.CachedManager = require('./managers/CachedManager.js').CachedManager;
 exports.ChannelManager = require('./managers/ChannelManager.js').ChannelManager;
 exports.ClientVoiceManager = require('./client/voice/ClientVoiceManager.js').ClientVoiceManager;
