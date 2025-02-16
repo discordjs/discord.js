@@ -35,3 +35,7 @@ export const separatorPredicate = z.object({
 	divider: z.boolean().optional(),
 	spacing: z.nativeEnum(SeparatorSpacingSize).optional(),
 });
+
+export const textDisplayPredicate = z.object({
+	content: z.string().min(1).max(4_000),
+});
