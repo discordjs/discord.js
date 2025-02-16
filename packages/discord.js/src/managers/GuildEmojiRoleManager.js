@@ -64,8 +64,8 @@ class GuildEmojiRoleManager extends DataManager {
    */
   async remove(roleOrRoles) {
     let roles;
-    if (!Array.isArray(roleOrRoles) && !(roleOrRoles instanceof Collection)) roles = [roleOrRoles];
-    else roles = roleOrRoles;
+    if (Array.isArray(roleOrRoles) || roleOrRoles instanceof Collection) roles = roleOrRoles;
+    else roles = [roleOrRoles];
 
     const resolvedRoleIds = [];
     for (const role of roles.values()) {

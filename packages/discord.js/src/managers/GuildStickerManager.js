@@ -58,9 +58,8 @@ class GuildStickerManager extends CachedManager {
    *   .catch(console.error);
    */
   async create({ file, name, tags, description, reason } = {}) {
-    let resolvedFile = await MessagePayload.resolveFile(file);
-    if (!resolvedFile) throw new DiscordjsTypeError(ErrorCodes.ReqResourceType);
-    resolvedFile = { ...resolvedFile, key: 'file' };
+    const resolvedFile = await MessagePayload.resolveFile(file);
+    resolvedFile.key = 'file';
 
     const body = { name, tags, description: description ?? '' };
 

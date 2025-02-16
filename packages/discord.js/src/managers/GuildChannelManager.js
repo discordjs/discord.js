@@ -51,7 +51,10 @@ class GuildChannelManager extends CachedManager {
    * @readonly
    */
   get channelCountWithoutThreads() {
-    return this.cache.filter(channel => !ThreadChannelTypes.includes(channel.type)).size;
+    return this.cache.reduce((acc, channel) => {
+      if (ThreadChannelTypes.includes(channel.type)) return acc;
+      return acc + 1;
+    }, 0);
   }
 
   /**

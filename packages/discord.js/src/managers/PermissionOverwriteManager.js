@@ -105,7 +105,7 @@ class PermissionOverwriteManager extends CachedManager {
     const { allow, deny } = PermissionOverwrites.resolveOverwriteOptions(options, existing);
 
     await this.client.rest.put(Routes.channelPermission(this.channel.id, userOrRoleId), {
-      body: { id: userOrRoleId, type, allow, deny },
+      body: { id: userOrRoleId, type: resolvedType, allow, deny },
       reason,
     });
     return this.channel;
