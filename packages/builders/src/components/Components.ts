@@ -1,7 +1,7 @@
 import type { APIButtonComponent, APIMessageComponent, APIModalComponent } from 'discord-api-types/v10';
 import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
 import { ActionRowBuilder } from './ActionRow.js';
-import type { AnyAPIActionRowComponent } from './Component.js';
+import type { AnyMessageComponent } from './Component.js';
 import { ComponentBuilder } from './Component.js';
 import type { BaseButtonBuilder } from './button/Button.js';
 import {
@@ -18,11 +18,12 @@ import { RoleSelectMenuBuilder } from './selectMenu/RoleSelectMenu.js';
 import { StringSelectMenuBuilder } from './selectMenu/StringSelectMenu.js';
 import { UserSelectMenuBuilder } from './selectMenu/UserSelectMenu.js';
 import { TextInputBuilder } from './textInput/TextInput.js';
+import { ThumbnailBuilder } from './v2/Thumbnail.js';
 
 /**
  * The builders that may be used for messages.
  */
-export type MessageComponentBuilder = ActionRowBuilder | MessageActionRowComponentBuilder;
+export type MessageComponentBuilder = ActionRowBuilder | MessageActionRowComponentBuilder | ThumbnailBuilder;
 
 /**
  * The builders that may be used for modals.
@@ -97,6 +98,10 @@ export interface MappedComponentTypes {
 	 * The channel select component type is associated with a {@link ChannelSelectMenuBuilder}.
 	 */
 	[ComponentType.ChannelSelect]: ChannelSelectMenuBuilder;
+	/**
+	 * The thumbnail component type is associated with a {@link ThumbnailBuilder}.
+	 */
+	[ComponentType.Thumbnail]: ThumbnailBuilder;
 }
 
 /**
@@ -122,7 +127,7 @@ export function createComponentBuilder<ComponentBuilder extends MessageComponent
 
 export function createComponentBuilder(
 	data: APIMessageComponent | APIModalComponent | MessageComponentBuilder,
-): ComponentBuilder<AnyAPIActionRowComponent> {
+): ComponentBuilder<AnyMessageComponent> {
 	if (data instanceof ComponentBuilder) {
 		return data;
 	}
@@ -144,6 +149,8 @@ export function createComponentBuilder(
 			return new MentionableSelectMenuBuilder(data);
 		case ComponentType.ChannelSelect:
 			return new ChannelSelectMenuBuilder(data);
+		case ComponentType.Thumbnail:
+			return new ThumbnailBuilder(data);
 		default:
 			// @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);
