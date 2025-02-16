@@ -237,7 +237,7 @@ class GuildChannelManager extends CachedManager {
     const channelId = this.resolveId(channel);
     if (!channelId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
 
-    let resolvedAvatar;
+    let resolvedAvatar = avatar;
     if (typeof avatar === 'string' && !avatar.startsWith('data:')) {
       resolvedAvatar = await resolveImage(avatar);
     }
@@ -245,7 +245,7 @@ class GuildChannelManager extends CachedManager {
     const data = await this.client.rest.post(Routes.channelWebhooks(channelId), {
       body: {
         name,
-        avatar: resolvedAvatar ?? avatar,
+        avatar: resolvedAvatar,
       },
       reason,
     });

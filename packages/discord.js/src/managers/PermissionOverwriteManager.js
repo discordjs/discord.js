@@ -92,12 +92,12 @@ class PermissionOverwriteManager extends CachedManager {
    * @private
    */
   async upsert(userOrRole, options, overwriteOptions = {}, existing) {
-    const resolvedUserOrRole = this.channel.guild.roles.resolve(userOrRole) ?? this.client.users.resolve(userOrRole);
     const userOrRoleId = this.channel.guild.roles.resolveId(userOrRole) ?? this.client.users.resolveId(userOrRole);
     const { reason, type } = overwriteOptions;
     let resolvedType = type;
 
     if (typeof resolvedType !== 'number') {
+      const resolvedUserOrRole = this.channel.guild.roles.resolve(userOrRole) ?? this.client.users.resolve(userOrRole);
       if (!resolvedUserOrRole) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'parameter', 'User nor a Role');
       resolvedType = resolvedUserOrRole instanceof Role ? OverwriteType.Role : OverwriteType.Member;
     }
