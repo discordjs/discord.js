@@ -1,6 +1,5 @@
 Remaining
 
-- APIFileComponent
 - APIMediaGalleryComponent
 - APISectionComponent
 - APISeparatorComponent
