@@ -19,6 +19,7 @@ import { StringSelectMenuBuilder } from './selectMenu/StringSelectMenu.js';
 import { UserSelectMenuBuilder } from './selectMenu/UserSelectMenu.js';
 import { TextInputBuilder } from './textInput/TextInput.js';
 import { FileBuilder } from './v2/File.js';
+import { SeparatorBuilder } from './v2/Separator.js';
 import { ThumbnailBuilder } from './v2/Thumbnail.js';
 
 /**
@@ -28,6 +29,7 @@ export type MessageComponentBuilder =
 	| ActionRowBuilder
 	| FileBuilder
 	| MessageActionRowComponentBuilder
+	| SeparatorBuilder
 	| ThumbnailBuilder;
 
 /**
@@ -111,6 +113,10 @@ export interface MappedComponentTypes {
 	 * The file component type is associated with a {@link FileBuilder}.
 	 */
 	[ComponentType.File]: FileBuilder;
+	/**
+	 * The separator component type is associated with a {@link SeparatorBuilder}.
+	 */
+	[ComponentType.Separator]: SeparatorBuilder;
 }
 
 /**
@@ -162,6 +168,8 @@ export function createComponentBuilder(
 			return new ThumbnailBuilder(data);
 		case ComponentType.File:
 			return new FileBuilder(data);
+		case ComponentType.Separator:
+			return new SeparatorBuilder(data);
 		default:
 			// @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);
