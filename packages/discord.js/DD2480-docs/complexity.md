@@ -5,11 +5,12 @@
 The top 5 cyclomatic complex functions were:
 
     NLOC    CCN   token  PARAM  length  location
-    54      21    448    5      71      remove@273-343@.\src\managers\ApplicationCommandPermissionsManager.js
-    59      20    478    2      111     constructor@48-158@.\src\sharding\ShardingManager.js
-    35      16    307    3      42      spawn@192-233@.\src\sharding\ShardingManager.js
-    43      25    230    1      87      _patch@17-103@.\src\structures\interfaces\Application.js
-    53      29    293    1      109     _patch@64-172@.\src\structures\ApplicationCommand.js
+     176     81   1120      1     357 _patch@129-485@.\packages\discord.js\src\structures\Guild.js
+      69     55    521      1     154 _patch@54-207@.\packages\discord.js\src\structures\ThreadChannel.js
+      37     51    319      2      46 equals@362-407@.\packages\discord.js\src\structures\ApplicationCommand.js
+      53     34    290      1     105 _patch@27-131@.\packages\discord.js\src\structures\VoiceState.js
+      53     30    303      1     121 _patch@27-147@.\packages\discord.js\src\structures\Attachment.js
+
 
 ## Cyclomatic complexity
 
@@ -25,12 +26,12 @@ third member if the two counts differ.
 - If your programming language uses exceptions: Are they taken into account by the tool? If you think of an exception as another possible branch (to the catch block or the end of the function), how is the CC affected?
 - Is the documentation of the function clear about the different possible outcomes induced by different branches taken?
 
-### \src\structures\ApplicationCommand.js: \_patch - Carl
+### \src\structures\Attachment.js: \_patch - Carl
 
-### \src\structures\interfaces\Application.js: \_patch - Klara
+### \src\structures\VoiceState.js: \_patch - Klara
 
-### \src\sharding\ShardingManager.js: spawn - Jacob
+### \src\structures\ApplicationCommand.js: equals - Jacob
 
-### \src\sharding\ShardingManager.js: constructor - Phoebe
+### \src\structures\ThreadChannel.jsL \_patch - Phoebe
 
-### \src\managers\ApplicationCommandPermissionsManager.js: remove - Samuel
+### \src\structures\Guild.js: \_patch - Samuel
