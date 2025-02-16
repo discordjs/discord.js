@@ -35,3 +35,4 @@ third member if the two counts differ.
 ### \src\structures\ThreadChannel.jsL \_patch - Phoebe
 
 ### \src\structures\Guild.js: \_patch - Samuel
+
