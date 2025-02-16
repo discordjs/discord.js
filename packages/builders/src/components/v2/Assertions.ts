@@ -1,3 +1,4 @@
+import { SeparatorSpacingSize } from 'discord-api-types/v10';
 import { z } from 'zod';
 import { refineURLPredicate } from '../../Assertions';
 
@@ -28,4 +29,9 @@ const unfurledMediaItemAttachmentOnlyPredicate = z.object({
 export const filePredicate = z.object({
 	file: unfurledMediaItemAttachmentOnlyPredicate,
 	spoiler: z.boolean().optional(),
+});
+
+export const separatorPredicate = z.object({
+	divider: z.boolean().optional(),
+	spacing: z.nativeEnum(SeparatorSpacingSize).optional(),
 });

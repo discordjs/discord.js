@@ -1,0 +1,55 @@
+import type { SeparatorSpacingSize, APISeparatorComponent } from 'discord-api-types/v10';
+import { ComponentType } from 'discord-api-types/v10';
+import { validate } from '../../util/validation';
+import { ComponentBuilder } from '../Component';
+import { separatorPredicate } from './Assertions';
+
+export class SeparatorBuilder extends ComponentBuilder<APISeparatorComponent> {
+	private readonly data: Partial<APISeparatorComponent>;
+
+	public constructor(data: Partial<APISeparatorComponent> = {}) {
+		super();
+		this.data = {
+			...structuredClone(data),
+			type: ComponentType.Separator,
+		};
+	}
+
+	/**
+	 * Sets whether this separator should show a divider line.
+	 *
+	 * @param divider - Whether to show a divider line
+	 */
+	public setDivider(divider: boolean) {
+		this.data.divider = divider;
+		return this;
+	}
+
+	/**
+	 * Sets the spacing of this separator.
+	 *
+	 * @param spacing - The spacing to use
+	 */
+	public setSpacing(spacing: SeparatorSpacingSize) {
+		this.data.spacing = spacing;
+		return this;
+	}
+
+	/**
+	 * Clears the spacing of this separator.
+	 */
+	public clearSpacing() {
+		this.data.spacing = undefined;
+		return this;
+	}
+
+	/**
+	 * {@inheritDoc ComponentBuilder.toJSON}
+	 */
+	public override toJSON(validationOverride?: boolean): APISeparatorComponent {
+		const clone = structuredClone(this.data);
+		validate(separatorPredicate, clone, validationOverride);
+
+		return clone as APISeparatorComponent;
+	}
+}
