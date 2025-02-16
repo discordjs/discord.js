@@ -18,12 +18,17 @@ import { RoleSelectMenuBuilder } from './selectMenu/RoleSelectMenu.js';
 import { StringSelectMenuBuilder } from './selectMenu/StringSelectMenu.js';
 import { UserSelectMenuBuilder } from './selectMenu/UserSelectMenu.js';
 import { TextInputBuilder } from './textInput/TextInput.js';
+import { FileBuilder } from './v2/File.js';
 import { ThumbnailBuilder } from './v2/Thumbnail.js';
 
 /**
  * The builders that may be used for messages.
  */
-export type MessageComponentBuilder = ActionRowBuilder | MessageActionRowComponentBuilder | ThumbnailBuilder;
+export type MessageComponentBuilder =
+	| ActionRowBuilder
+	| FileBuilder
+	| MessageActionRowComponentBuilder
+	| ThumbnailBuilder;
 
 /**
  * The builders that may be used for modals.
@@ -102,6 +107,10 @@ export interface MappedComponentTypes {
 	 * The thumbnail component type is associated with a {@link ThumbnailBuilder}.
 	 */
 	[ComponentType.Thumbnail]: ThumbnailBuilder;
+	/**
+	 * The file component type is associated with a {@link FileBuilder}.
+	 */
+	[ComponentType.File]: FileBuilder;
 }
 
 /**
@@ -151,6 +160,8 @@ export function createComponentBuilder(
 			return new ChannelSelectMenuBuilder(data);
 		case ComponentType.Thumbnail:
 			return new ThumbnailBuilder(data);
+		case ComponentType.File:
+			return new FileBuilder(data);
 		default:
 			// @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);
