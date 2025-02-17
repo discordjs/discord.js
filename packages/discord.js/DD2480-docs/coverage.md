@@ -4,11 +4,17 @@
 
 Manual instrumentation of the cyclomatic complexity for each function, answer these questions.
 
-- What is the quality of your own coverage measurement? Does it take into account ternary operators
-  (condition ? yes : no) and exceptions, if available in your language?
-- What are the limitations of your tool? How would the instrumentation change if you modify the
-  program?
+- What is the quality of your own coverage measurement? Does it take into account ternary operators(condition ? yes : no) and exceptions, if available in your language?
+
+The quality of our coverage measurement seems to be accurate. It takes in to account all of the branches available in the code, only counting the if statements. The ternary operators in JavaScript were also split into if/else statements in order to properly count the branches. We had no exceptions in any of your 5 functions so we did not need to meausre how the coverage would be affected by an exception.
+
+- What are the limitations of your tool? How would the instrumentation change if you modify the program?
+
+Our tools are made specifically for the functions we chose. The decision points are manually calculated and markers are put there to count the branches. If we were to modify the program, we would also need to modify our branch coverage checker to ensure that we are correctly counting the branch coverage.
+
 - If you have an automated tool, are your results consistent with the ones produced by existing tool(s)?
+
+We don't have an automated tool. ...?
 
 ### \src\structures\Attachment.js: \_patch - Carl
 
