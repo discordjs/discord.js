@@ -22,7 +22,7 @@ We don't have an automated tool. ...?
 
 ### \src\structures\ApplicationCommand.js: equals - Jacob
 
-### \src\structures\ThreadChannel.jsL \_patch - Phoebe
+### \src\structures\ThreadChannel.js: \_patch - Phoebe
 
 ### \src\structures\Guild.js: \_patch - Samuel
 
@@ -40,7 +40,7 @@ Keep a copy of your original coverage, try to improve coverage with additional t
 
 ### \src\structures\ApplicationCommand.js: equals - Jacob
 
-### \src\structures\ThreadChannel.jsL \_patch - Phoebe
+### \src\structures\ThreadChannel.js: \_patch - Phoebe
 
 ### \src\structures\Guild.js: \_patch - Samuel
 
@@ -54,6 +54,6 @@ Is the high complexity you identified really necessary? Is it possible to split 
 
 ### \src\structures\ApplicationCommand.js: equals - Jacob
 
-### \src\structures\ThreadChannel.jsL \_patch - Phoebe
+### \src\structures\ThreadChannel.js: \_patch - Phoebe
 
 ### \src\structures\Guild.js: \_patch - Samuel
