@@ -10,15 +10,15 @@ Manual instrumentation of the cyclomatic complexity for each function, answer th
   program?
 - If you have an automated tool, are your results consistent with the ones produced by existing tool(s)?
 
-### \src\structures\ApplicationCommand.js: \_patch - Carl
+### \src\structures\Attachment.js: \_patch - Carl
 
-### \src\structures\interfaces\Application.js: \_patch - Klara
+### \src\structures\VoiceState.js: \_patch - Klara
 
-### \src\sharding\ShardingManager.js: spawn - Jacob
+### \src\structures\ApplicationCommand.js: equals - Jacob
 
-### \src\sharding\ShardingManager.js: constructor - Phoebe
+### \src\structures\ThreadChannel.jsL \_patch - Phoebe
 
-### \src\managers\ApplicationCommandPermissionsManager.js: remove - Samuel
+### \src\structures\Guild.js: \_patch - Samuel
 
 ## Task 2: Coverage improvement
 
@@ -28,26 +28,26 @@ Keep a copy of your original coverage, try to improve coverage with additional t
 - Document the requirements (as comments), and use them later as assertions.
 - Create new test cases as needed to improve branch coverage in the given functions. Can you call the function directly? Can you expand on existing tests? Do you have to add additional interfaces to the system (as public methods) to make it possible to set up test data structures?
 
-### \src\structures\ApplicationCommand.js: \_patch - Carl
+### \src\structures\Attachment.js: \_patch - Carl
 
-### \src\structures\interfaces\Application.js: \_patch - Klara
+### \src\structures\VoiceState.js: \_patch - Klara
 
-### \src\sharding\ShardingManager.js: spawn - Jacob
+### \src\structures\ApplicationCommand.js: equals - Jacob
 
-### \src\sharding\ShardingManager.js: constructor - Phoebe
+### \src\structures\ThreadChannel.jsL \_patch - Phoebe
 
-### \src\managers\ApplicationCommandPermissionsManager.js: remove - Samuel
+### \src\structures\Guild.js: \_patch - Samuel
 
 # Task 3: Refactoring Plan
 
 Is the high complexity you identified really necessary? Is it possible to split up the code (in the five complex functions you have identified) into smaller units to reduce complexity? If so, how would you go about this? Document your plan.
 
-### \src\structures\ApplicationCommand.js: \_patch - Carl
+### \src\structures\Attachment.js: \_patch - Carl
 
-### \src\structures\interfaces\Application.js: \_patch - Klara
+### \src\structures\VoiceState.js: \_patch - Klara
 
-### \src\sharding\ShardingManager.js: spawn - Jacob
+### \src\structures\ApplicationCommand.js: equals - Jacob
 
-### \src\sharding\ShardingManager.js: constructor - Phoebe
+### \src\structures\ThreadChannel.jsL \_patch - Phoebe
 
-### \src\managers\ApplicationCommandPermissionsManager.js: remove - Samuel
+### \src\structures\Guild.js: \_patch - Samuel
