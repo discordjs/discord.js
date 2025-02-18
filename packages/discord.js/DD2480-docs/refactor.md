@@ -17,6 +17,6 @@ Below we will need to show how we might make these changes (and how we implement
 
 ### \src\structures\ThreadChannel.js: \_patch - Phoebe
 
-My \_patch function in ThreadChannel.js had an original CCN of 55. There were many different conditional checks for what data was contained in the metadata. In order to reduce this number, I ended up splitting each of these conditional checks into their own functions. I made these changes and you can see them in this [file](../DD2480-files/thread-patch-refactor.js). By separating out each of the data checks into their own functions, I was able to reduce the CCN from 55 to 8! This created 13 new functions that all have a cyclomatic complexity of less than 11. You can run lizard on this file by running `lizard .\packages\discord.js\DD2480-files\thread-patch-refactor.js`.
+My \_patch function in ThreadChannel.js had an original CCN of 55. There were many different conditional checks for what data was contained in the metadata. In order to reduce this number, I ended up splitting each of these conditional checks into their own functions. I made these changes and you can see them in this [file](../DD2480-docs/functions/thread-patch-refactor.js). By separating out each of the data checks into their own functions, I was able to reduce the CCN from 55 to 8! This created 13 new functions that all have a cyclomatic complexity of less than 11. You can run lizard on this file by running `lizard .\packages\discord.js\DD2480-docs\functions\thread-patch-refactor.js`.
 
 ### \src\structures\Guild.js: \_patch - Samuel
