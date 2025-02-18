@@ -425,5 +425,6 @@ class Guild {
 }
 
 const guild = new Guild(null, {});
+bc.setTotal(54);
 guild._patch({});
 bc.report();

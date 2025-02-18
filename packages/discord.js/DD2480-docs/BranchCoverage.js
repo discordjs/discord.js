@@ -1,20 +1,23 @@
 export class BranchCoverage {
   constructor(fnId) {
-    this.branches = Array(100).fill(false);
+    this.branches = [];
     this.fnId = fnId;
+    this.totalBranches = 0;
   }
 
   cover(branch) {
-    this.branches[branch] = true;
+    this.branches.push(branch);
+  }
+
+  setTotal(totalBranches) {
+    this.totalBranches = totalBranches;
   }
 
   report() {
     console.log(`Branch coverage for ${this.fnId}:`);
     for (let i = 0; i < this.branches.length; i++) {
-      if (this.branches[i] !== false) {
-        console.log(`Branch ${i}: ${this.branches[i] ? 'covered' : 'not covered'}`);
-      }
+      console.log(`Branch ${i}: covered`);
     }
-    console.log(`Branch coverage: ${this.branches.filter(Boolean).length / this.branches.length}`);
+    console.log(`Branch coverage: ${this.branches.length / this.totalBranches}`);
   }
 }
