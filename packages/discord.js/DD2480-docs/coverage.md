@@ -2,7 +2,20 @@
 
 ## Task 1: DIY
 
-Manual instrumentation of the cyclomatic complexity for each function, answer these questions.
+Implement branch coverage by manual instrumentation of the source code for five functions
+with high cyclomatic complexity. Use a separate development branch or repo for this, as this code is
+not permanent. The simplest method for this is as follows:
+
+1. Identify all branches in the given functions; assign a unique number (ID) to each one.
+2. Before the program starts (before the first instruction in “main” or as the first step in the unit test
+   harness), create data structures that hold coverage information about specific branches.
+3. Before the first statement of each branch outcome (including to-be-added “else” clauses if none exist),
+   add a line that sets a flag if the branch is reached.
+4. At the end of the program (as the last instruction in “main” or at the end of all unit tests), write all
+   information about the taken branches taken to a file or console.
+   Note: It is perfectly fine if your coverage tool is inefficient (memory-wise or time-wise) and its output may
+   be hard to read. For example, you may allocate 100 coverage measurement points to each function, so
+   you can easily divide the entries into a fixed-size array.
 
 - What is the quality of your own coverage measurement? Does it take into account ternary operators
   (condition ? yes : no) and exceptions, if available in your language?
