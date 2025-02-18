@@ -1,4 +1,4 @@
-import { BranchCoverage } from '../BranchCoverage.js';
+import { BranchCoverage } from '../../BranchCoverage.js';
 const bc = new BranchCoverage('guild.js:patch');
 
 class Guild {
