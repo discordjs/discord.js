@@ -1,23 +1,38 @@
 export class BranchCoverage {
   constructor(fnId) {
-    this.branches = [];
+    this.coveredBranches = new Set();
     this.fnId = fnId;
     this.totalBranches = 0;
   }
 
   cover(branch) {
-    this.branches.push(branch);
+    this.coveredBranches.add(branch);
   }
 
   setTotal(totalBranches) {
     this.totalBranches = totalBranches;
   }
 
-  report() {
-    console.log(`Branch coverage for ${this.fnId}:`);
-    for (let i = 0; i < this.branches.length; i++) {
-      console.log(`Branch ${i}: covered`);
+  getCoveredBranches() {
+    return Array.from(this.coveredBranches).sort((a, b) => a - b);
+  }
+
+  getUncoveredBranches() {
+    const uncovered = [];
+    for (let i = 1; i <= this.totalBranches; i++) {
+      if (!this.coveredBranches.has(i)) {
+        uncovered.push(i);
+      }
     }
-    console.log(`Branch coverage: ${this.branches.length / this.totalBranches}`);
+    return uncovered;
+  }
+
+  report() {
+    console.log(`\nBranch coverage report for ${this.fnId}:`);
+    console.log('----------------------------------------');
+    console.log(`Covered branches: ${this.getCoveredBranches().join(', ')}`);
+    console.log(`Uncovered branches: ${this.getUncoveredBranches().join(', ')}`);
+    const coverage = (this.coveredBranches.size / this.totalBranches) * 100;
+    console.log(`Coverage: ${coverage.toFixed(2)}% (${this.coveredBranches.size}/${this.totalBranches} branches)\n`);
   }
 }

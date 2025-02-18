@@ -1,7 +1,6 @@
-import { BranchCoverage } from '../../BranchCoverage.js';
-const bc = new BranchCoverage('guild.js:patch');
+import { bc } from './patch.test.js';
 
-class Guild {
+export class Guild {
   constructor() {}
 
   _patch(data) {
@@ -371,7 +370,7 @@ class Guild {
        * A manager of the emojis belonging to this guild
        * @type {GuildEmojiManager}
        */
-      // this.emojis = new GuildEmojiManager(this);
+      this.emojis = new GuildEmojiManager(this);
       this.emojis = [];
       if (data.emojis) for (const emoji of data.emojis) this.emojis._add(emoji);
     } else if (data.emojis) {
@@ -388,7 +387,7 @@ class Guild {
        * A manager of the stickers belonging to this guild
        * @type {GuildStickerManager}
        */
-      // this.stickers = new GuildStickerManager(this);
+      this.stickers = new GuildStickerManager(this);
       this.stickers = [];
       if (data.stickers) for (const sticker of data.stickers) this.stickers._add(sticker);
     } else if (data.stickers) {
@@ -423,8 +422,3 @@ class Guild {
     }
   }
 }
-
-const guild = new Guild(null, {});
-bc.setTotal(54);
-guild._patch({});
-bc.report();

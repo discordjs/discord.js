@@ -1,5 +1,4 @@
-import { BranchCoverage } from '../../BranchCoverage.js';
-const bc = new BranchCoverage('guild.js:patch');
+import { bc_refactored } from './patch.test.js';
 
 const updateName = (obj, data) => {
   if ('name' in data) {
@@ -235,8 +234,9 @@ const updateOwnerId = (obj, data) => {
 
 const updatePresences = (obj, data) => {
   if (data.presences) {
-    obj.presences.cache.clear();
-    for (const presence of data.presences) obj.presences._add(presence);
+    for (const presence of data.presences) {
+      obj.presences._add(Object.assign(presence, { guild: obj }));
+    }
   }
 };
 
@@ -261,6 +261,40 @@ const updateVoiceStates = (obj, data) => {
   }
 };
 
+const updateEmojis = (obj, data) => {
+  if (!obj.emojis) {
+    /**
+     * A manager of the emojis belonging to this guild
+     * @type {GuildEmojiManager}
+     */
+    obj.emojis = new GuildEmojiManager(obj);
+    obj.emojis = [];
+    if (data.emojis) for (const emoji of data.emojis) obj.emojis._add(emoji);
+  } else if (data.emojis) {
+    obj.client.actions.GuildEmojisUpdate.handle({
+      guild_id: obj.id,
+      emojis: data.emojis,
+    });
+  }
+};
+
+const updateStickers = (obj, data) => {
+  if (!obj.stickers) {
+    /**
+     * A manager of the stickers belonging to this guild
+     * @type {GuildStickerManager}
+     */
+    obj.stickers = new GuildStickerManager(obj);
+    obj.stickers = [];
+    if (data.stickers) for (const sticker of data.stickers) obj.stickers._add(sticker);
+  } else if (data.stickers) {
+    obj.client.actions.GuildStickersUpdate.handle({
+      guild_id: obj.id,
+      stickers: data.stickers,
+    });
+  }
+};
+
 const updateIncidentsData = (obj, data) => {
   if ('incidents_data' in data) {
     obj.incidentsData = _transformAPIIncidentsData(data.incidents_data);
@@ -269,11 +303,11 @@ const updateIncidentsData = (obj, data) => {
   }
 };
 
-class Guild {
+export class Guild {
   constructor() {}
 
   _patch(data) {
-    bc.cover(1);
+    bc_refactored.cover(1);
     //   super._patch(data);
     this.id = data.id;
     updateName(this, data);
@@ -322,46 +356,8 @@ class Guild {
     updateStageInstances(this, data);
     updateScheduledEvents(this, data);
     updateVoiceStates(this, data);
-
-    if (!this.emojis) {
-      bc.cover(49);
-      /**
-       * A manager of the emojis belonging to this guild
-       * @type {GuildEmojiManager}
-       */
-      // this.emojis = new GuildEmojiManager(this);
-      this.emojis = [];
-      if (data.emojis) for (const emoji of data.emojis) this.emojis._add(emoji);
-    } else if (data.emojis) {
-      bc.cover(50);
-      this.client.actions.GuildEmojisUpdate.handle({
-        guild_id: this.id,
-        emojis: data.emojis,
-      });
-    }
-
-    if (!this.stickers) {
-      bc.cover(51);
-      /**
-       * A manager of the stickers belonging to this guild
-       * @type {GuildStickerManager}
-       */
-      // this.stickers = new GuildStickerManager(this);
-      this.stickers = [];
-      if (data.stickers) for (const sticker of data.stickers) this.stickers._add(sticker);
-    } else if (data.stickers) {
-      bc.cover(52);
-      this.client.actions.GuildStickersUpdate.handle({
-        guild_id: this.id,
-        stickers: data.stickers,
-      });
-    }
-
+    updateEmojis(this, data);
+    updateStickers(this, data);
     updateIncidentsData(this, data);
   }
 }
-
-const guild = new Guild(null, {});
-bc.setTotal(54);
-guild._patch({});
-bc.report();
