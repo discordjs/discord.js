@@ -3,8 +3,7 @@
 ## Task 1: DIY
 
 Implement branch coverage by manual instrumentation of the source code for five functions
-with high cyclomatic complexity. Use a separate development branch or repo for this, as this code is
-not permanent. The simplest method for this is as follows:
+with high cyclomatic complexity. Use a separate development branch or repo for this, as this code is not permanent. The simplest method for this is as follows:
 
 1. Identify all branches in the given functions; assign a unique number (ID) to each one.
 2. Before the program starts (before the first instruction in “main” or as the first step in the unit test

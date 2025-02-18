@@ -22,10 +22,10 @@ Functions assigned to each group member:
 
 ### \src\structures\VoiceState.js: \_patch - Klara
   - Carl's count: 23
-  - Klara's count: 29
+  - Klara's count: 34
 
 ### \src\structures\ApplicationCommand.js: equals - Jacob
-  - Klara's count: 34
+  - Klara's count: 29
   - Jacob's count: 39
 
 ### \src\structures\ThreadChannel.jsL \_patch - Phoebe
