@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-require-imports */
+import { getCiphers } from 'node:crypto';
 import { resolve, dirname } from 'node:path';
 import prism from 'prism-media';
 
@@ -65,6 +66,7 @@ export function generateDependencyReport() {
 
 	// encryption
 	report.push('Encryption Libraries');
+	report.push(`- native crypto support for aes-256-gcm: ${getCiphers().includes('aes-256-gcm') ? 'yes' : 'no'}`);
 	addVersion('sodium-native');
 	addVersion('sodium');
 	addVersion('libsodium-wrappers');
