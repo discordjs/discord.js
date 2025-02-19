@@ -24,15 +24,36 @@ class SystemChannelFlagsBitField {
 
 // Base mock setup for both Guild versions
 const createMockSetup = () => ({
-  channels: { cache: { clear: () => {} } },
-  roles: { cache: { clear: () => {} }, _add: () => {} },
-  members: { cache: { clear: () => {} }, _add: () => {} },
-  presences: { _add: () => {} },
-  stageInstances: { cache: { clear: () => {} }, _add: () => {} },
-  scheduledEvents: { cache: { clear: () => {} }, _add: () => {} },
-  voiceStates: { cache: { clear: () => {} }, _add: () => {} },
-  emojis: { _add: () => {} },
-  stickers: { _add: () => {} },
+  channels: {
+    cache: { clear: () => {} },
+  },
+  roles: {
+    cache: { clear: () => {} },
+    _add: () => {},
+  },
+  members: {
+    cache: { clear: () => {} },
+    _add: () => {},
+  },
+  presences: {
+    _add: () => {},
+  },
+  stageInstances: {
+    cache: { clear: () => {} },
+    _add: () => {},
+  },
+  scheduledEvents: {
+    cache: { clear: () => {} },
+    _add: () => {},
+  },
+  voiceStates: {
+    cache: { clear: () => {} },
+    _add: () => {},
+  },
+  // Initialize emojis and stickers as arrays
+  emojis: [],
+  stickers: [],
+
   client: {
     channels: { _add: () => {} },
     actions: {
@@ -46,14 +67,26 @@ const createMockSetup = () => ({
 class MockGuild extends Guild {
   constructor() {
     super();
-    Object.assign(this, createMockSetup());
+    const setup = createMockSetup();
+    Object.assign(this, setup);
+
+    // Add _add methods to emojis and stickers arrays
+    this.emojis._add = emoji => this.emojis.push(emoji);
+    this.stickers._add = sticker => this.stickers.push(sticker);
+
   }
 }
 
 class MockGuildRefactored extends GuildRefactored {
   constructor() {
     super();
-    Object.assign(this, createMockSetup());
+    const setup = createMockSetup();
+    Object.assign(this, setup);
+
+    // Add _add methods to emojis and stickers arrays
+    this.emojis._add = emoji => this.emojis.push(emoji);
+    this.stickers._add = sticker => this.stickers.push(sticker);
+
   }
 }
 
@@ -78,6 +111,80 @@ function runTest(name, data) {
   console.log(
     `${BLUE}Refactored - ${name}: ${bc_refactored.coveredBranches.size - beforeCoverageRefactored} new branches covered${RESET}`,
   );
+
+  // Assert that both implementations produce the same result
+  for (const key in data) {
+    if (key === 'incidents_data') {
+      // Special handling for incidents_data due to date transformation
+      const originalData = guild.incidentsData;
+      const refactoredData = guildRefactored.incidentsData;
+
+      if (originalData && refactoredData) {
+        console.assert(
+          originalData.invitesDisabledUntil?.getTime() === refactoredData.invitesDisabledUntil?.getTime() &&
+            originalData.dmsDisabledUntil?.getTime() === refactoredData.dmsDisabledUntil?.getTime(),
+          `${name}: Mismatch in incidents_data`,
+        );
+      } else {
+        console.assert(originalData === refactoredData, `${name}: Mismatch in incidents_data`);
+      }
+      continue;
+    }
+
+    if (key === 'system_channel_flags') {
+      // Special handling for SystemChannelFlagsBitField
+      console.assert(
+        guild.systemChannelFlags?.flags === guildRefactored.systemChannelFlags?.flags,
+        `${name}: Mismatch in system_channel_flags`,
+      );
+      continue;
+    }
+
+    if (['channels', 'roles', 'members', 'presences'].includes(key)) {
+      // Skip cache-related assertions for these properties
+      continue;
+    } else if (key === 'stage_instances' || key === 'voice_states' || key === 'emojis' || key === 'stickers') {
+      // For array-like properties, compare lengths and contents
+      const originalArray = guild[key === 'stage_instances' ? 'stageInstances' : key];
+      const refactoredArray = guildRefactored[key === 'stage_instances' ? 'stageInstances' : key];
+
+      console.assert(
+        Array.isArray(originalArray) === Array.isArray(refactoredArray),
+        `${name}: Type mismatch in ${key}`,
+      );
+
+      if (Array.isArray(originalArray) && Array.isArray(refactoredArray)) {
+        console.assert(originalArray.length === refactoredArray.length, `${name}: Length mismatch in ${key}`);
+
+        // Compare each item in the arrays
+        for (let i = 0; i < originalArray.length; i++) {
+          console.assert(
+            JSON.stringify(originalArray[i]) === JSON.stringify(refactoredArray[i]),
+            `${name}: Content mismatch in ${key} at index ${i}`,
+          );
+        }
+      }
+      continue;
+    }
+
+    // For boolean values, ensure they're properly converted
+    if (typeof data[key] === 'boolean') {
+      console.assert(
+        Boolean(guild[toCamelCase(key)]) === Boolean(guildRefactored[toCamelCase(key)]),
+        `${name}: Mismatch in ${key}`,
+      );
+      continue;
+    }
+
+    // For all other values, direct comparison
+    console.assert(guild[toCamelCase(key)] === guildRefactored[toCamelCase(key)], `${name}: Mismatch in ${key}`);
+  }
+}
+
+// Helper function to convert snake_case to camelCase
+function toCamelCase(str) {
+  return str.replace(/_([a-z])/g, g => g[1].toUpperCase());
+
 }
 
 const tests = [
