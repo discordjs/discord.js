@@ -149,15 +149,10 @@ class MessagePayload {
 
     let flags;
     if (
-      this.options.flags !== undefined ||
-      (this.isMessage && this.options.reply === undefined) ||
-      this.isMessageManager
+      // eslint-disable-next-line eqeqeq
+      this.options.flags != null
     ) {
-      flags =
-        // eslint-disable-next-line eqeqeq
-        this.options.flags != null
-          ? new MessageFlagsBitField(this.options.flags).bitfield
-          : this.target.flags?.bitfield;
+      flags = new MessageFlagsBitField(this.options.flags);
     }
 
     let allowedMentions =
