@@ -28,7 +28,6 @@ not permanent. The simplest method for this is as follows:
 
 There is an automated testing suite for discordjs, but it doesn't cover any of the functions that we are analysing. Therefore, we can't compare the results, and have decided to create our own mini-suite to test the functions.
 
-
 ### \src\structures\Attachment.js: \_patch - Carl
 
 ### \src\structures\VoiceState.js: \_patch - Klara
@@ -60,6 +59,9 @@ Having identified “weak spots” in coverage, try to improve coverage with add
    the existing tests by hand and check how they cover the branches (in which combinations)
 
 ### \src\structures\Attachment.js: \_patch - Carl
+
+By introducing new tests for the \_patch function in Attachment.js,
+I managed to achieve 100% coverage.
 
 ### \src\structures\VoiceState.js: \_patch - Klara
 

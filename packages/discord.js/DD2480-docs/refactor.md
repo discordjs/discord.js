@@ -11,6 +11,9 @@ Below we will need to show how we might make these changes (and how we implement
 
 ### \src\structures\Attachment.js: \_patch - Carl
 
+My \_patch function in Attachment.js had an original CCN of 34. The purpose of the function was to update a bunch of
+instances of an object, which made it logical to split these actions into several smaller function. The refactored version of the \_patch function got a CCN of 3, while the smaller functions got a CCN of between 2 and 4. Lizard can be runned through `lizard .\packages\discord.js\DD2480-docs\functions\Attachment.js\patch_refactored.js`.
+
 ### \src\structures\VoiceState.js: \_patch - Klara
 
 ### \src\structures\ApplicationCommand.js: equals - Jacob
