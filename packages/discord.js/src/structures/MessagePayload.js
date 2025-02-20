@@ -152,7 +152,7 @@ class MessagePayload {
       // eslint-disable-next-line eqeqeq
       this.options.flags != null
     ) {
-      flags = new MessageFlagsBitField(this.options.flags);
+      flags = new MessageFlagsBitField(this.options.flags).bitfield;
     }
 
     let allowedMentions =
