@@ -166,9 +166,7 @@ class MessagePayload {
     let flags;
     if (
       // eslint-disable-next-line eqeqeq
-      this.options.flags != null ||
-      (this.isMessage && this.options.reply === undefined) ||
-      this.isMessageManager
+      this.options.flags != null
     ) {
       flags = new MessageFlagsBitField(this.options.flags).bitfield;
     }
