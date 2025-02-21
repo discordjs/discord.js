@@ -49,8 +49,8 @@ export async function loadStructures<T>(
 			continue;
 		}
 
-		// If the file is index.[REPLACE_IMPORT_EXT] or the file does not end with .[REPLACE_IMPORT_EXT], skip the file
-		if (file === 'index.[REPLACE_IMPORT_EXT]' || !file.endsWith('.[REPLACE_IMPORT_EXT]')) {
+		// If the file is index.ts or the file does not end with .ts, skip the file
+		if (file === 'index.ts' || !file.endsWith('.ts')) {
 			continue;
 		}
 
