@@ -116,7 +116,7 @@ class PartialGroupDMChannel extends BaseChannel {
   awaitMessageComponent() {}
 }
 
-TextBasedChannel.applyToClass(PartialGroupDMChannel, true, [
+TextBasedChannel.applyToClass(PartialGroupDMChannel, [
   'bulkDelete',
   'send',
   'sendTyping',
