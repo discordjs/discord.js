@@ -3,7 +3,6 @@
 const { PermissionFlagsBits } = require('discord-api-types/v10');
 const { Base } = require('./Base.js');
 const { VoiceState } = require('./VoiceState.js');
-const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
 const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { GuildMemberRoleManager } = require('../managers/GuildMemberRoleManager.js');
 const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField.js');
@@ -11,7 +10,6 @@ const { PermissionsBitField } = require('../util/PermissionsBitField.js');
 
 /**
  * Represents a member of a guild on Discord.
- * @implements {TextBasedChannel}
  * @extends {Base}
  */
 class GuildMember extends Base {
@@ -477,6 +475,22 @@ class GuildMember extends Base {
   }
 
   /**
+   * Sends a message to this user.
+   * @param {string|MessagePayload|MessageCreateOptions} options The options to provide
+   * @returns {Promise<Message>}
+   * @example
+   * // Send a direct message
+   * guildMember.send('Hello!')
+   *   .then(message => console.log(`Sent message: ${message.content} to ${guildMember.displayName}`))
+   *   .catch(console.error);
+   */
+  async send(options) {
+    const dmChannel = await this.createDM();
+
+    return this.client.channels.createMessage(dmChannel, options);
+  }
+
+  /**
    * Whether this guild member equals another guild member. It compares all properties, so for most
    * comparison it is advisable to just compare `member.id === member2.id` as it is significantly faster
    * and is often what most users need.
@@ -526,21 +540,5 @@ class GuildMember extends Base {
     return json;
   }
 }
-
-/**
- * Sends a message to this user.
- * @method send
- * @memberof GuildMember
- * @instance
- * @param {string|MessagePayload|MessageCreateOptions} options The options to provide
- * @returns {Promise<Message>}
- * @example
- * // Send a direct message
- * guildMember.send('Hello!')
- *   .then(message => console.log(`Sent message: ${message.content} to ${guildMember.displayName}`))
- *   .catch(console.error);
- */
-
-TextBasedChannel.applyToClass(GuildMember);
 
 exports.GuildMember = GuildMember;

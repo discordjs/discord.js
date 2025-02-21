@@ -432,11 +432,19 @@ client.on('messageCreate', async message => {
   assertIsMessage(channel.send({}));
   assertIsMessage(channel.send({ embeds: [] }));
 
+  assertIsMessage(client.channels.createMessage(channel, 'string'));
+  assertIsMessage(client.channels.createMessage(channel, {}));
+  assertIsMessage(client.channels.createMessage(channel, { embeds: [] }));
+
   const attachment = new AttachmentBuilder('file.png');
   const embed = new EmbedBuilder();
   assertIsMessage(channel.send({ files: [attachment] }));
   assertIsMessage(channel.send({ embeds: [embed] }));
   assertIsMessage(channel.send({ embeds: [embed], files: [attachment] }));
+
+  assertIsMessage(client.channels.createMessage(channel, { files: [attachment] }));
+  assertIsMessage(client.channels.createMessage(channel, { embeds: [embed] }));
+  assertIsMessage(client.channels.createMessage(channel, { embeds: [embed], files: [attachment] }));
 
   if (message.inGuild()) {
     expectAssignable<Message<true>>(message);
@@ -467,8 +475,13 @@ client.on('messageCreate', async message => {
   // @ts-expect-error
   channel.send();
   // @ts-expect-error
+  client.channels.createMessage();
+  // @ts-expect-error
   channel.send({ another: 'property' });
-
+  // @ts-expect-error
+  client.channels.createMessage({ another: 'property' });
+  // @ts-expect-error
+  client.channels.createMessage('string');
   // Check collector creations.
 
   // Verify that buttons interactions are inferred.
@@ -647,7 +660,7 @@ client.on('messageCreate', async message => {
 
   const embedData = { description: 'test', color: 0xff0000 };
 
-  channel.send({
+  client.channels.createMessage(channel, {
     components: [row, rawButtonsRow, buttonsRow, rawStringSelectMenuRow, stringSelectRow],
     embeds: [embed, embedData],
   });
@@ -1334,7 +1347,7 @@ client.on('guildCreate', async g => {
       ],
     });
 
-    channel.send({ components: [row, row2] });
+    client.channels.createMessage(channel, { components: [row, row2] });
   }
 
   channel.setName('foo').then(updatedChannel => {
@@ -2704,7 +2717,7 @@ declare const sku: SKU;
   });
 }
 
-await textChannel.send({
+await client.channels.createMessage('123', {
   poll: {
     question: {
       text: 'Question',
