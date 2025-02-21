@@ -230,13 +230,13 @@ class GuildChannelManager extends CachedManager {
   async createWebhook({ channel, name, avatar, reason }) {
     const id = this.resolveId(channel);
     if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
-    if (typeof avatar === 'string' && !avatar.startsWith('data:')) {
-      avatar = await resolveImage(avatar);
-    }
+
+    const resolvedImage = await resolveImage(avatar);
+
     const data = await this.client.rest.post(Routes.channelWebhooks(id), {
       body: {
         name,
-        avatar,
+        avatar: resolvedImage,
       },
       reason,
     });
