@@ -151,7 +151,7 @@ class MessagePayload {
     if (
       // eslint-disable-next-line eqeqeq
       this.options.flags != null ||
-      (this.isMessage && this.options.reply === undefined) ||
+      (this.isMessage && this.options.messageReference === undefined) ||
       this.isMessageManager
     ) {
       flags = new MessageFlagsBitField(this.options.flags).bitfield;
@@ -168,13 +168,16 @@ class MessagePayload {
     }
 
     let message_reference;
-    if (typeof this.options.reply === 'object') {
-      const reference = this.options.reply.messageReference;
-      const message_id = this.isMessage ? (reference.id ?? reference) : this.target.messages.resolveId(reference);
-      if (message_id) {
+    if (this.options.messageReference) {
+      const reference = this.options.messageReference;
+
+      if (reference.messageId) {
         message_reference = {
-          message_id,
-          fail_if_not_exists: this.options.reply.failIfNotExists ?? this.target.client.options.failIfNotExists,
+          message_id: reference.messageId,
+          channel_id: reference.channelId,
+          guild_id: reference.guildId,
+          type: reference.type,
+          fail_if_not_exists: reference.failIfNotExists ?? this.target.client.options.failIfNotExists,
         };
       }
     }
@@ -292,7 +295,7 @@ exports.MessagePayload = MessagePayload;
 
 /**
  * A target for a message.
- * @typedef {TextBasedChannels|User|GuildMember|Webhook|WebhookClient|BaseInteraction|InteractionWebhook|
+ * @typedef {TextBasedChannels|ChannelManager|Webhook|WebhookClient|BaseInteraction|InteractionWebhook|
  * Message|MessageManager} MessageTarget
  */
 

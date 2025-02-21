@@ -2,6 +2,7 @@
 
 const { Base } = require('./Base.js');
 const { Emoji } = require('./Emoji.js');
+const { PollAnswerVoterManager } = require('../managers/PollAnswerVoterManager.js');
 const { resolveGuildEmoji } = require('../util/Util.js');
 
 /**
@@ -15,7 +16,7 @@ class PollAnswer extends Base {
     /**
      * The {@link Poll} this answer is part of
      * @name PollAnswer#poll
-     * @type {Poll}
+     * @type {Poll|PartialPoll}
      * @readonly
      */
     Object.defineProperty(this, 'poll', { value: poll });
@@ -27,10 +28,10 @@ class PollAnswer extends Base {
     this.id = data.answer_id;
 
     /**
-     * The text of this answer
-     * @type {?string}
+     * The manager of the voters for this answer
+     * @type {PollAnswerVoterManager}
      */
-    this.text = data.poll_media.text ?? null;
+    this.voters = new PollAnswerVoterManager(this);
 
     /**
      * The raw emoji of this answer
@@ -38,7 +39,7 @@ class PollAnswer extends Base {
      * @type {?APIPartialEmoji}
      * @private
      */
-    Object.defineProperty(this, '_emoji', { value: data.poll_media.emoji ?? null });
+    Object.defineProperty(this, '_emoji', { value: null });
 
     this._patch(data);
   }
@@ -52,7 +53,17 @@ class PollAnswer extends Base {
        */
       this.voteCount = data.count;
     } else {
-      this.voteCount ??= 0;
+      this.voteCount ??= this.voters.cache.size;
+    }
+
+    /**
+     * The text of this answer
+     * @type {?string}
+     */
+    this.text ??= data.poll_media?.text ?? null;
+
+    if (data.poll_media?.emoji) {
+      Object.defineProperty(this, '_emoji', { value: data.poll_media.emoji });
     }
   }
 
@@ -66,6 +77,15 @@ class PollAnswer extends Base {
   }
 
   /**
+   * Whether this poll answer is a partial.
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return this.poll.partial || (this.text === null && this.emoji === null);
+  }
+
+  /**
    * Options used for fetching voters of a poll answer.
    * @typedef {Object} BaseFetchPollAnswerVotersOptions
    * @property {number} [limit] The maximum number of voters to fetch
@@ -76,14 +96,10 @@ class PollAnswer extends Base {
    * Fetches the users that voted for this answer.
    * @param {BaseFetchPollAnswerVotersOptions} [options={}] The options for fetching voters
    * @returns {Promise<Collection<Snowflake, User>>}
+   * @deprecated Use {@link PollAnswerVoterManager#fetch} instead
    */
   fetchVoters({ after, limit } = {}) {
-    return this.poll.message.channel.messages.fetchPollAnswerVoters({
-      messageId: this.poll.message.id,
-      answerId: this.id,
-      after,
-      limit,
-    });
+    return this.voters.fetch({ after, limit });
   }
 }
 

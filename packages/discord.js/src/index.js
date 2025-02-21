@@ -81,6 +81,7 @@ exports.GuildStickerManager = require('./managers/GuildStickerManager.js').Guild
 exports.GuildTextThreadManager = require('./managers/GuildTextThreadManager.js').GuildTextThreadManager;
 exports.MessageManager = require('./managers/MessageManager.js').MessageManager;
 exports.PermissionOverwriteManager = require('./managers/PermissionOverwriteManager.js').PermissionOverwriteManager;
+exports.PollAnswerVoterManager = require('./managers/PollAnswerVoterManager.js').PollAnswerVoterManager;
 exports.PresenceManager = require('./managers/PresenceManager.js').PresenceManager;
 exports.ReactionManager = require('./managers/ReactionManager.js').ReactionManager;
 exports.ReactionUserManager = require('./managers/ReactionUserManager.js').ReactionUserManager;

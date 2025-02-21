@@ -214,6 +214,10 @@ import {
   InteractionCallbackResponse,
   GuildScheduledEventRecurrenceRuleOptions,
   ThreadOnlyChannel,
+  PartialPoll,
+  PartialPollAnswer,
+  PollAnswer,
+  PollAnswerVoterManager,
 } from './index.js';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
@@ -428,11 +432,19 @@ client.on('messageCreate', async message => {
   assertIsMessage(channel.send({}));
   assertIsMessage(channel.send({ embeds: [] }));
 
+  assertIsMessage(client.channels.createMessage(channel, 'string'));
+  assertIsMessage(client.channels.createMessage(channel, {}));
+  assertIsMessage(client.channels.createMessage(channel, { embeds: [] }));
+
   const attachment = new AttachmentBuilder('file.png');
   const embed = new EmbedBuilder();
   assertIsMessage(channel.send({ files: [attachment] }));
   assertIsMessage(channel.send({ embeds: [embed] }));
   assertIsMessage(channel.send({ embeds: [embed], files: [attachment] }));
+
+  assertIsMessage(client.channels.createMessage(channel, { files: [attachment] }));
+  assertIsMessage(client.channels.createMessage(channel, { embeds: [embed] }));
+  assertIsMessage(client.channels.createMessage(channel, { embeds: [embed], files: [attachment] }));
 
   if (message.inGuild()) {
     expectAssignable<Message<true>>(message);
@@ -463,8 +475,13 @@ client.on('messageCreate', async message => {
   // @ts-expect-error
   channel.send();
   // @ts-expect-error
+  client.channels.createMessage();
+  // @ts-expect-error
   channel.send({ another: 'property' });
-
+  // @ts-expect-error
+  client.channels.createMessage({ another: 'property' });
+  // @ts-expect-error
+  client.channels.createMessage('string');
   // Check collector creations.
 
   // Verify that buttons interactions are inferred.
@@ -643,7 +660,7 @@ client.on('messageCreate', async message => {
 
   const embedData = { description: 'test', color: 0xff0000 };
 
-  channel.send({
+  client.channels.createMessage(channel, {
     components: [row, rawButtonsRow, buttonsRow, rawStringSelectMenuRow, stringSelectRow],
     embeds: [embed, embedData],
   });
@@ -654,6 +671,48 @@ client.on('messageDelete', ({ client }) => expectType<Client<true>>(client));
 client.on('messageDeleteBulk', (messages, { client }) => {
   expectType<Client<true>>(messages.first()!.client);
   expectType<Client<true>>(client);
+});
+
+client.on('messagePollVoteAdd', async (answer, userId) => {
+  expectType<Client<true>>(answer.client);
+  expectType<Snowflake>(userId);
+
+  if (answer.partial) {
+    expectType<null>(answer.emoji);
+    expectType<null>(answer.text);
+    expectNotType<null>(answer.id);
+    expectNotType<null>(answer.poll);
+
+    await answer.poll.fetch();
+    answer = answer.poll.answers?.get(answer.id) ?? answer;
+
+    expectType<User>(answer.voters.cache.get(userId)!);
+  }
+
+  expectType<string | null>(answer.text);
+  expectType<GuildEmoji | Emoji | null>(answer.emoji);
+  expectType<number>(answer.id);
+  expectType<number>(answer.voteCount!);
+});
+
+client.on('messagePollVoteRemove', async (answer, userId) => {
+  expectType<Client<true>>(answer.client);
+  expectType<Snowflake>(userId);
+
+  if (answer.partial) {
+    expectType<null>(answer.emoji);
+    expectType<null>(answer.text);
+    expectNotType<null>(answer.id);
+    expectNotType<null>(answer.poll);
+
+    await answer.poll.fetch();
+    answer = answer.poll.answers?.get(answer.id) ?? answer;
+  }
+
+  expectType<string | null>(answer.text);
+  expectType<GuildEmoji | Emoji | null>(answer.emoji);
+  expectType<number>(answer.id);
+  expectType<number>(answer.voteCount!);
 });
 
 client.on('messageReactionAdd', async (reaction, { client }) => {
@@ -1288,7 +1347,7 @@ client.on('guildCreate', async g => {
       ],
     });
 
-    channel.send({ components: [row, row2] });
+    client.channels.createMessage(channel, { components: [row, row2] });
   }
 
   channel.setName('foo').then(updatedChannel => {
@@ -1722,6 +1781,12 @@ declare const messageManager: MessageManager;
   messageManager.fetch({ cache: true, force: false });
   // @ts-expect-error
   messageManager.fetch({ message: '1234567890', after: '1234567890', cache: true, force: false });
+}
+
+declare const pollAnswerVoterManager: PollAnswerVoterManager;
+{
+  expectType<Promise<Collection<Snowflake, User>>>(pollAnswerVoterManager.fetch());
+  expectType<PollAnswer>(pollAnswerVoterManager.answer);
 }
 
 declare const roleManager: RoleManager;
@@ -2652,7 +2717,7 @@ declare const sku: SKU;
   });
 }
 
-await textChannel.send({
+await client.channels.createMessage('123', {
   poll: {
     question: {
       text: 'Question',
@@ -2663,16 +2728,42 @@ await textChannel.send({
   },
 });
 
+declare const partialPoll: PartialPoll;
+{
+  if (partialPoll.partial) {
+    expectType<null>(partialPoll.question.text);
+    expectType<PartialMessage>(partialPoll.message);
+    expectType<null>(partialPoll.allowMultiselect);
+    expectType<null>(partialPoll.layoutType);
+    expectType<null>(partialPoll.expiresTimestamp);
+    expectType<Collection<number, PartialPollAnswer>>(partialPoll.answers);
+  }
+}
+
+declare const partialPollAnswer: PartialPollAnswer;
+{
+  if (partialPollAnswer.partial) {
+    expectType<PartialPoll>(partialPollAnswer.poll);
+    expectType<null>(partialPollAnswer.emoji);
+    expectType<null>(partialPollAnswer.text);
+  }
+}
 declare const poll: Poll;
 declare const message: Message;
 declare const pollData: PollData;
 {
   expectType<Message>(await poll.end());
+  expectType<false>(poll.partial);
+  expectNotType<Collection<number, PartialPollAnswer>>(poll.answers);
 
   const answer = poll.answers.first()!;
-  expectType<number>(answer.voteCount);
 
-  expectType<Collection<Snowflake, User>>(await answer.fetchVoters({ after: snowflake, limit: 10 }));
+  if (!answer.partial) {
+    expectType<number>(answer.voteCount);
+    expectType<number>(answer.id);
+    expectType<PollAnswerVoterManager>(answer.voters);
+    expectType<Collection<Snowflake, User>>(await answer.voters.fetch({ after: snowflake, limit: 10 }));
+  }
 
   await messageManager.endPoll(snowflake);
   await messageManager.fetchPollAnswerVoters({
