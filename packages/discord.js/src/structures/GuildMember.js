@@ -346,9 +346,9 @@ class GuildMember extends Base {
    * @returns {Readonly<PermissionsBitField>}
    */
   permissionsIn(channel) {
-    channel = this.guild.channels.resolve(channel);
-    if (!channel) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
-    return channel.permissionsFor(this);
+    const resolvedChannel = this.guild.channels.resolve(channel);
+    if (!resolvedChannel) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
+    return resolvedChannel.permissionsFor(this);
   }
 
   /**

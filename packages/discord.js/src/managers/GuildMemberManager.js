@@ -220,14 +220,15 @@ class GuildMemberManager extends CachedManager {
     limit = 0,
     withPresences: presences,
     users,
-    query,
+    query: initialQuery,
     time = 120e3,
     nonce = DiscordSnowflake.generate().toString(),
-  } = {}) {
+  }) {
     if (nonce.length > 32) throw new DiscordjsRangeError(ErrorCodes.MemberFetchNonceLength);
 
+    const query = initialQuery || (!users ? '' : undefined);
+
     return new Promise((resolve, reject) => {
-      if (!query && !users) query = '';
       this.guild.client.ws.send(this.guild.shardId, {
         op: GatewayOpcodes.RequestGuildMembers,
         d: {
