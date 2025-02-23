@@ -1,7 +1,11 @@
-import type { APIButtonComponent, APIMessageComponent, APIModalComponent } from 'discord-api-types/v10';
+import type {
+	APIBaseComponent,
+	APIButtonComponent,
+	APIMessageComponent,
+	APIModalComponent,
+} from 'discord-api-types/v10';
 import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
 import { ActionRowBuilder } from './ActionRow.js';
-import type { AnyMessageComponent } from './Component.js';
 import { ComponentBuilder } from './Component.js';
 import type { BaseButtonBuilder } from './button/Button.js';
 import {
@@ -148,7 +152,7 @@ export function createComponentBuilder<ComponentBuilder extends MessageComponent
 
 export function createComponentBuilder(
 	data: APIMessageComponent | APIModalComponent | MessageComponentBuilder,
-): ComponentBuilder<AnyMessageComponent> {
+): ComponentBuilder<APIBaseComponent<ComponentType>> {
 	if (data instanceof ComponentBuilder) {
 		return data;
 	}
