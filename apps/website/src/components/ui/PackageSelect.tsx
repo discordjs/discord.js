@@ -42,7 +42,7 @@ export function PackageSelect({ packageName }: { readonly packageName: string })
 							<ListBoxItem
 								id={item.name}
 								textValue={item.name}
-								href={`/docs/packages/${item.name}/main`}
+								href={`/docs/packages/${item.name}/stable`}
 								className="flex p-2 outline-none data-[focus-visible]:bg-neutral-300 data-[hovered]:bg-neutral-300 data-[selected]:bg-blurple data-[selected]:data-[focus-visible]:bg-blurple-500 data-[selected]:data-[hovered]:bg-blurple-500 data-[selected]:text-white dark:data-[focus-visible]:bg-neutral-700 dark:data-[hovered]:bg-neutral-700 dark:data-[selected]:data-[focus-visible]:bg-blurple-500 dark:data-[selected]:data-[hovered]:bg-blurple-500"
 							>
 								{item.name}
@@ -80,7 +80,7 @@ export function PackageSelect({ packageName }: { readonly packageName: string })
 								<ListBoxItem
 									id={item.name}
 									textValue={item.name}
-									href={`/docs/packages/${item.name}/main`}
+									href={`/docs/packages/${item.name}/stable`}
 									className="rounded-md p-2 outline-none data-[focus-visible]:bg-neutral-300 data-[hovered]:bg-neutral-300 data-[selected]:bg-blurple data-[selected]:data-[focus-visible]:bg-blurple-500 data-[selected]:data-[hovered]:bg-blurple-500 data-[selected]:text-white dark:data-[focus-visible]:bg-neutral-700 dark:data-[hovered]:bg-neutral-700 dark:data-[selected]:data-[focus-visible]:bg-blurple-500 dark:data-[selected]:data-[hovered]:bg-blurple-500"
 								>
 									{item.name}
