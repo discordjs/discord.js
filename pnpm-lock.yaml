@@ -659,8 +659,8 @@ importers:
         specifier: workspace:^
         version: link:../util
       discord-api-types:
-        specifier: 0.38.0-next-1739718635626
-        version: 0.38.0-next-1739718635626
+        specifier: 0.38.0-next-1740095508888
+        version: 0.38.0-next-1740095508888
       ts-mixer:
         specifier: ^6.0.4
         version: 6.0.4
@@ -7309,6 +7309,9 @@ packages:
 
   discord-api-types@0.37.118:
     resolution: {integrity: sha512-MQkHHZcytmNQ3nQOBj6a0z38swsmHiROX7hdayfd0eWVrLxaQp/6tWBZ7FO2MCKKsc+W3QWnnfOJTbtyk8C4TQ==}
+
+  discord-api-types@0.37.97:
+    resolution: {integrity: sha512-No1BXPcVkyVD4ZVmbNgDKaBoqgeQ+FJpzZ8wqHkfmBnTZig1FcH3iPPersiK1TUIAzgClh2IvOuVUYfcWLQAOA==}
 
   discord-api-types@0.38.0-next-1739718635626:
     resolution: {integrity: sha512-ypUbZYP+uglWOwwzQl3Akhz9pzGf6gNB4qxPqPDFBFApdJQtKpkW1dmXytiBUtbslSRjsudPEaRk1y0/gS0psw==}
@@ -20320,7 +20323,7 @@ snapshots:
 
   discord-api-types@0.37.118: {}
 
-  discord-api-types@0.38.0-next-1739718635626: {}
+  discord-api-types@0.38.0-next-1740095508888: {}
 
   dlv@1.1.3: {}
 

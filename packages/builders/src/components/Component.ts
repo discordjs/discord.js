@@ -1,12 +1,12 @@
 import type { JSONEncodable } from '@discordjs/util';
-import type { APIActionRowComponent, APIActionRowComponentTypes, APIMessageComponent } from 'discord-api-types/v10';
+import type { APIActionRowComponent, APIComponentInActionRow, APIMessageComponent } from 'discord-api-types/v10';
 
 /**
  * Any action row component data represented as an object.
  */
 export type AnyMessageComponent =
 	// this action row type represents modals as wel
-	APIActionRowComponent<APIActionRowComponentTypes> | APIActionRowComponentTypes | APIMessageComponent;
+	APIActionRowComponent<APIComponentInActionRow> | APIComponentInActionRow | APIMessageComponent;
 
 /**
  * The base component builder that contains common symbols for all sorts of components.
