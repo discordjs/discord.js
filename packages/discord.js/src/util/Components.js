@@ -68,6 +68,11 @@ const { ComponentType } = require('discord-api-types/v10');
  */
 
 /**
+ * @typedef {ActionRow|ContainerComponent|FileComponent|MediaGalleryComponent|
+ * SectionComponent|SeparatorComponent|TextDisplayComponent} MessageTopLevelComponent
+ */
+
+/**
  * Transforms API data into a component
  * @param {APIMessageComponent|Component} data The data to create the component from
  * @returns {Component}
@@ -95,6 +100,20 @@ function createComponent(data) {
       return new MentionableSelectMenuComponent(data);
     case ComponentType.ChannelSelect:
       return new ChannelSelectMenuComponent(data);
+    case ComponentType.Container:
+      return new ContainerComponent(data);
+    case ComponentType.TextDisplay:
+      return new TextDisplayComponent(data);
+    case ComponentType.File:
+      return new FileComponent(data);
+    case ComponentType.MediaGallery:
+      return new MediaGalleryComponent(data);
+    case ComponentType.Section:
+      return new SectionComponent(data);
+    case ComponentType.Separator:
+      return new SeparatorComponent(data);
+    case ComponentType.Thumbnail:
+      return new ThumbnailComponent(data);
     default:
       return new Component(data);
   }
@@ -142,13 +161,20 @@ const ButtonComponent = require('../structures/ButtonComponent');
 const ChannelSelectMenuBuilder = require('../structures/ChannelSelectMenuBuilder');
 const ChannelSelectMenuComponent = require('../structures/ChannelSelectMenuComponent');
 const Component = require('../structures/Component');
+const ContainerComponent = require('../structures/ContainerComponent');
+const FileComponent = require('../structures/FileComponent');
+const MediaGalleryComponent = require('../structures/MediaGalleryComponent');
 const MentionableSelectMenuBuilder = require('../structures/MentionableSelectMenuBuilder');
 const MentionableSelectMenuComponent = require('../structures/MentionableSelectMenuComponent');
 const RoleSelectMenuBuilder = require('../structures/RoleSelectMenuBuilder');
 const RoleSelectMenuComponent = require('../structures/RoleSelectMenuComponent');
+const SectionComponent = require('../structures/SectionComponent');
+const SeparatorComponent = require('../structures/SeparatorComponent');
 const StringSelectMenuBuilder = require('../structures/StringSelectMenuBuilder');
 const StringSelectMenuComponent = require('../structures/StringSelectMenuComponent');
+const TextDisplayComponent = require('../structures/TextDisplayComponent');
 const TextInputBuilder = require('../structures/TextInputBuilder');
 const TextInputComponent = require('../structures/TextInputComponent');
+const ThumbnailComponent = require('../structures/ThumbnailComponent');
 const UserSelectMenuBuilder = require('../structures/UserSelectMenuBuilder');
 const UserSelectMenuComponent = require('../structures/UserSelectMenuComponent');
