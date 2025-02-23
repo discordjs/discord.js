@@ -3005,8 +3005,6 @@ export class ShardClientUtil {
   private decrementMaxListeners(emitter: Worker | ChildProcess): void;
 
   public client: Client;
-  public get count(): number;
-  public get ids(): number[];
   public mode: ShardingManagerMode;
   public parentPort: MessagePort | null;
   public broadcastEval<Result>(fn: (client: Client) => Awaitable<Result>): Promise<Serialized<Result>[]>;
