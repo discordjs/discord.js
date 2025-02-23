@@ -6,7 +6,7 @@ import type { APIActionRowComponent, APIComponentInActionRow, APIMessageComponen
  */
 export type AnyMessageComponent =
 	// this action row type represents modals as wel
-	APIActionRowComponent<APIActionRowComponentTypes> | APIActionRowComponentTypes | APIMessageComponent;
+	APIActionRowComponent<APIComponentInActionRow> | APIComponentInActionRow | APIMessageComponent;
 
 /**
  * The base component builder that contains common symbols for all sorts of components.
