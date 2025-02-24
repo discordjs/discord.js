@@ -10,6 +10,7 @@ const {
   MessageFlags,
   PermissionFlagsBits,
   MessageReferenceType,
+  ComponentType,
 } = require('discord-api-types/v10');
 const Attachment = require('./Attachment');
 const Base = require('./Base');
@@ -151,10 +152,10 @@ class Message extends Base {
 
     if ('components' in data) {
       /**
-       * An array of action rows in the message.
+       * An array of components in the message.
        * <info>This property requires the {@link GatewayIntentBits.MessageContent} privileged intent
        * in a guild for messages that do not mention the client.</info>
-       * @type {ActionRow[]}
+       * @type {Component[]}
        */
       this.components = data.components.map(component => createComponent(component));
     } else {
@@ -1055,7 +1056,20 @@ class Message extends Base {
    * @returns {?MessageActionRowComponent}
    */
   resolveComponent(customId) {
-    return this.components.flatMap(row => row.components).find(component => component.customId === customId) ?? null;
+    return (
+      this.components
+        .flatMap(component => {
+          switch (component.type) {
+            case ComponentType.ActionRow:
+              return component.components;
+            case ComponentType.Section:
+              return [component.accessory];
+            default:
+              return [component];
+          }
+        })
+        .find(component => component.customId === customId) ?? null
+    );
   }
 
   /**

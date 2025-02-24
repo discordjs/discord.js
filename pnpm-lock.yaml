@@ -941,8 +941,8 @@ importers:
         specifier: 3.5.3
         version: 3.5.3
       discord-api-types:
-        specifier: ^0.37.119
-        version: 0.37.119
+        specifier: 0.38.0-next-1740095508888
+        version: 0.38.0-next-1740095508888
       fast-deep-equal:
         specifier: 3.1.3
         version: 3.1.3
@@ -2601,12 +2601,12 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@definitelytyped/header-parser@0.2.16':
-    resolution: {integrity: sha512-UFsgPft5bhZn07UNGz/9ck4AhdKgLFEOmi2DNr7gXcGL89zbe3u5oVafKUT8j1HOtSBjT8ZEQsXHKlbq+wwF/Q==}
+  '@definitelytyped/header-parser@0.2.17':
+    resolution: {integrity: sha512-U0juKFkTOcbkSfO83WSzMEJHYDwoBFiq0tf/JszulL3+7UoSiqunpGmxXS54bm3eGqy7GWjV8AqPQHdeoEaWBQ==}
     engines: {node: '>=18.18.0'}
 
-  '@definitelytyped/typescript-versions@0.1.6':
-    resolution: {integrity: sha512-gQpXFteIKrOw4ldmBZQfBrD3WobaIG1SwOr/3alXWkcYbkOWa2NRxQbiaYQ2IvYTGaZK26miJw0UOAFiuIs4gA==}
+  '@definitelytyped/typescript-versions@0.1.7':
+    resolution: {integrity: sha512-sBzBi1SBn79OkSr8V0H+FzR7QumHk23syPyRxod/VRBrSkgN9rCliIe+nqLoWRAKN8EeKbp00ketnJNLZhucdA==}
     engines: {node: '>=18.18.0'}
 
   '@definitelytyped/utils@0.1.8':
@@ -7643,6 +7643,9 @@ packages:
   discord-api-types@0.37.119:
     resolution: {integrity: sha512-WasbGFXEB+VQWXlo6IpW3oUv73Yuau1Ig4AZF/m13tXcTKnMpc/mHjpztIlz4+BM9FG9BHQkEXiPto3bKduQUg==}
 
+  discord-api-types@0.38.0-next-1740095508888:
+    resolution: {integrity: sha512-J9ZpbCe8sO/TJIhjUdrfZmR+VPqD/x0WzkiAv4u6H/4Cazo0nE3lYU31wRFbaiXDKcw6+hUjkVVfp5dWLrGdNA==}
+
   dlv@1.1.3:
     resolution: {integrity: sha512-+HlytyjlPKnIG8XuRG8WvmBP8xs8P71y+SKKS6ZXWoEgLuePxtDoUEiH7WkdePWrQ5JBpE6aoVqfZfJUQkjXwA==}
 
@@ -8231,6 +8234,7 @@ packages:
   eslint@8.57.0:
     resolution: {integrity: sha512-dZ6+mexnaTIbSBZWgou51U6OmzIhYM2VcNdtiTtI7qPNZm35Akpr0f6vtw3w1Kmn5PYo+tZVfh13WrhpS6oLqQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
 
   espree@10.1.0:
@@ -12318,6 +12322,7 @@ packages:
   stream-connect@1.0.2:
     resolution: {integrity: sha512-68Kl+79cE0RGKemKkhxTSg8+6AGrqBt+cbZAXevg2iJ6Y3zX4JhA/sZeGzLpxW9cXhmqAcE7KnJCisUmIUfnFQ==}
     engines: {node: '>=0.10.0'}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   stream-to-array@2.3.0:
     resolution: {integrity: sha512-UsZtOYEn4tWU2RGLOXr/o/xjRBftZRlG3dEWoaHr8j4GuypJ3isitGbVyjQKAuMu+xbiop8q224TjiZWc4XTZA==}
@@ -14847,13 +14852,13 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@definitelytyped/header-parser@0.2.16':
+  '@definitelytyped/header-parser@0.2.17':
     dependencies:
-      '@definitelytyped/typescript-versions': 0.1.6
+      '@definitelytyped/typescript-versions': 0.1.7
       '@definitelytyped/utils': 0.1.8
       semver: 7.6.3
 
-  '@definitelytyped/typescript-versions@0.1.6': {}
+  '@definitelytyped/typescript-versions@0.1.7': {}
 
   '@definitelytyped/utils@0.1.8':
     dependencies:
@@ -15527,7 +15532,7 @@ snapshots:
     dependencies:
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
       jest-mock: 29.7.0
 
   '@jest/expect-utils@29.7.0':
@@ -15545,7 +15550,7 @@ snapshots:
     dependencies:
       '@jest/types': 29.6.3
       '@sinonjs/fake-timers': 10.3.0
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
       jest-message-util: 29.7.0
       jest-mock: 29.7.0
       jest-util: 29.7.0
@@ -18934,7 +18939,7 @@ snapshots:
   '@types/body-parser@1.19.5':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
 
   '@types/concat-stream@2.0.3':
     dependencies:
@@ -18942,7 +18947,7 @@ snapshots:
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
 
   '@types/conventional-commits-parser@5.0.0':
     dependencies:
@@ -18984,7 +18989,7 @@ snapshots:
 
   '@types/express-serve-static-core@4.19.5':
     dependencies:
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
       '@types/qs': 6.9.15
       '@types/range-parser': 1.2.7
       '@types/send': 0.17.4
@@ -19001,11 +19006,11 @@ snapshots:
   '@types/glob@7.2.0':
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
 
   '@types/graceful-fs@4.1.9':
     dependencies:
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
 
   '@types/hast@2.3.10':
     dependencies:
@@ -19147,12 +19152,12 @@ snapshots:
   '@types/send@0.17.4':
     dependencies:
       '@types/mime': 1.3.5
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
 
   '@types/serve-static@1.15.7':
     dependencies:
       '@types/http-errors': 2.0.4
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
       '@types/send': 0.17.4
 
   '@types/stack-utils@2.0.3': {}
@@ -19173,7 +19178,7 @@ snapshots:
 
   '@types/through@0.0.33':
     dependencies:
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
 
   '@types/tinycolor2@1.4.6': {}
 
@@ -21522,6 +21527,8 @@ snapshots:
 
   discord-api-types@0.37.119: {}
 
+  discord-api-types@0.38.0-next-1740095508888: {}
+
   dlv@1.1.3: {}
 
   dmd@6.2.3:
@@ -21571,7 +21578,7 @@ snapshots:
 
   dts-critic@3.3.11(typescript@5.5.4):
     dependencies:
-      '@definitelytyped/header-parser': 0.2.16
+      '@definitelytyped/header-parser': 0.2.17
       command-exists: 1.2.9
       rimraf: 3.0.2
       semver: 6.3.1
@@ -21581,8 +21588,8 @@ snapshots:
 
   dtslint@4.2.1(typescript@5.5.4):
     dependencies:
-      '@definitelytyped/header-parser': 0.2.16
-      '@definitelytyped/typescript-versions': 0.1.6
+      '@definitelytyped/header-parser': 0.2.17
+      '@definitelytyped/typescript-versions': 0.1.7
       '@definitelytyped/utils': 0.1.8
       dts-critic: 3.3.11(typescript@5.5.4)
       fs-extra: 6.0.1
@@ -23926,7 +23933,7 @@ snapshots:
       '@jest/expect': 29.7.0
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
       chalk: 4.1.2
       co: 4.6.0
       dedent: 1.5.3
@@ -24101,7 +24108,7 @@ snapshots:
       '@jest/environment': 29.7.0
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
       jest-mock: 29.7.0
       jest-util: 29.7.0
 
@@ -24150,7 +24157,7 @@ snapshots:
   jest-mock@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
       jest-util: 29.7.0
 
   jest-pnp-resolver@1.2.3(jest-resolve@29.7.0):
@@ -24292,7 +24299,7 @@ snapshots:
 
   jest-worker@29.7.0:
     dependencies:
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
@@ -26766,7 +26773,7 @@ snapshots:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
       long: 5.2.3
 
   proxy-addr@2.0.7:

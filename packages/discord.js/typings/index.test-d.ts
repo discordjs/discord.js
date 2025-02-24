@@ -24,8 +24,8 @@ import {
   APIEmbed,
   ApplicationCommandType,
   APIMessage,
-  APIActionRowComponent,
-  APIActionRowComponentTypes,
+  // APIActionRowComponent,
+  // APIComponentInActionRow,
   APIStringSelectComponent,
   APIUserSelectComponent,
   APIRoleSelectComponent,
@@ -36,6 +36,7 @@ import {
   GuildScheduledEventRecurrenceRuleFrequency,
   GuildScheduledEventRecurrenceRuleMonth,
   GuildScheduledEventRecurrenceRuleWeekday,
+  MessageFlags,
 } from 'discord-api-types/v10';
 import {
   ApplicationCommand,
@@ -146,8 +147,8 @@ import {
   Webhook,
   WebhookClient,
   InteractionWebhook,
-  ActionRowComponent,
-  ActionRow,
+  // ActionRowComponent,
+  // ActionRow,
   GuildAuditLogsActionType,
   GuildAuditLogsTargetType,
   ModalSubmitInteraction,
@@ -219,6 +220,15 @@ import {
   InteractionCallbackResponse,
   GuildScheduledEventRecurrenceRuleOptions,
   ThreadOnlyChannel,
+  SectionComponentData,
+  TextDisplayComponentData,
+  ThumbnailComponentData,
+  UnfurledMediaItemData,
+  MediaGalleryComponentData,
+  MediaGalleryItemData,
+  SeparatorComponentData,
+  FileComponentData,
+  ContainerComponentData,
 } from '.';
 import {
   expectAssignable,
@@ -642,6 +652,57 @@ client.on('messageCreate', async message => {
     components: [row, rawButtonsRow, buttonsRow, rawStringSelectMenuRow, stringSelectRow],
     embeds: [embed, embedData],
   });
+
+  const rawTextDisplay: TextDisplayComponentData = {
+    type: ComponentType.TextDisplay,
+    content: 'test',
+  };
+
+  const rawMedia: UnfurledMediaItemData = { url: 'https://discord.js.org' };
+
+  const rawThumbnail: ThumbnailComponentData = {
+    type: ComponentType.Thumbnail,
+    media: rawMedia,
+    spoiler: true,
+    description: 'test',
+  };
+
+  const rawSection: SectionComponentData = {
+    type: ComponentType.Section,
+    components: [rawTextDisplay],
+    accessory: rawThumbnail,
+  };
+
+  const rawMediaGalleryItem: MediaGalleryItemData = {
+    media: rawMedia,
+    description: 'test',
+    spoiler: false,
+  };
+
+  const rawMediaGallery: MediaGalleryComponentData = {
+    type: ComponentType.MediaGallery,
+    items: [rawMediaGalleryItem, rawMediaGalleryItem, rawMediaGalleryItem],
+  };
+
+  const rawSeparator: SeparatorComponentData = {
+    type: ComponentType.Separator,
+    spacing: 1,
+    dividier: false,
+  };
+
+  const rawFile: FileComponentData = {
+    type: ComponentType.File,
+    file: rawMedia,
+  };
+
+  const rawContainer: ContainerComponentData = {
+    type: ComponentType.Container,
+    components: [rawSection, rawSeparator, rawMediaGallery, rawFile],
+    accentColor: 0xff00ff,
+    spoiler: true,
+  };
+
+  channel.send({ flags: MessageFlags.IsComponentsV2, components: [rawContainer] });
 });
 
 client.on('messageDelete', ({ client }) => expectType<Client<true>>(client));
@@ -2412,23 +2473,24 @@ EmbedBuilder.from(embedData);
 declare const embedComp: Embed;
 EmbedBuilder.from(embedComp);
 
-declare const actionRowData: APIActionRowComponent<APIActionRowComponentTypes>;
-ActionRowBuilder.from(actionRowData);
+// TODO: these currently don't work, since the pinned version @discordjs/builders uses another version of discord-api-types
+// declare const actionRowData: APIActionRowComponent<APIComponentInActionRow>;
+// ActionRowBuilder.from(actionRowData);
 
-declare const actionRowComp: ActionRow<ActionRowComponent>;
-ActionRowBuilder.from(actionRowComp);
+// declare const actionRowComp: ActionRow<ActionRowComponent>;
+// ActionRowBuilder.from(actionRowComp);
 
-declare const buttonsActionRowData: APIActionRowComponent<APIButtonComponent>;
-declare const buttonsActionRowComp: ActionRow<ButtonComponent>;
+// declare const buttonsActionRowData: APIActionRowComponent<APIButtonComponent>;
+// declare const buttonsActionRowComp: ActionRow<ButtonComponent>;
 
-expectType<ActionRowBuilder<ButtonBuilder>>(ActionRowBuilder.from<ButtonBuilder>(buttonsActionRowData));
-expectType<ActionRowBuilder<ButtonBuilder>>(ActionRowBuilder.from<ButtonBuilder>(buttonsActionRowComp));
+// expectType<ActionRowBuilder<ButtonBuilder>>(ActionRowBuilder.from<ButtonBuilder>(buttonsActionRowData));
+// expectType<ActionRowBuilder<ButtonBuilder>>(ActionRowBuilder.from<ButtonBuilder>(buttonsActionRowComp));
 
-declare const anyComponentsActionRowData: APIActionRowComponent<APIActionRowComponentTypes>;
-declare const anyComponentsActionRowComp: ActionRow<ActionRowComponent>;
+// declare const anyComponentsActionRowData: APIActionRowComponent<APIActionRowComponentTypes>;
+// declare const anyComponentsActionRowComp: ActionRow<ActionRowComponent>;
 
-expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowData));
-expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowComp));
+// expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowData));
+// expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowComp));
 
 type UserMentionChannels = DMChannel | PartialDMChannel;
 declare const channelMentionChannels: Exclude<Channel | DirectoryChannel, UserMentionChannels>;
