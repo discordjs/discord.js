@@ -2360,7 +2360,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public get channel(): If<InGuild, GuildTextBasedChannel, TextBasedChannel>;
   public channelId: Snowflake;
   public get cleanContent(): string;
-  public components: readonly TopLevelComponent[];
+  public components: TopLevelComponent[];
   public content: string;
   public get createdAt(): Date;
   public createdTimestamp: number;
