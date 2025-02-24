@@ -5,6 +5,7 @@ const { ComponentType } = require('discord-api-types/v10');
 
 /**
  * @typedef {Object} BaseComponentData
+ * @property {?number} id the id of this component
  * @property {ComponentType} type The type of component
  */
 
@@ -59,7 +60,68 @@ const { ComponentType } = require('discord-api-types/v10');
  */
 
 /**
- * @typedef {ActionRowData|ButtonComponentData|SelectMenuComponentData|TextInputComponentData} ComponentData
+ * @typedef {Object} UnfurledMediaItemData
+ * @property {string} url The url of this media item. Accepts either http:, https: or attachment: protocol
+ */
+
+/**
+ * @typedef {BaseComponentData} ThumbnailComponentData
+ * @property {UnfurledMediaItemData} media The media for the thumbnail
+ * @property {?string} description The description of the thumbnail
+ * @property {?boolean} spoiler Whether the thumbnail should be spoilered
+ */
+
+/**
+ * @typedef {BaseComponentData} FileComponentData
+ * @property {UnfurledMediaItemData} file The file media in this component
+ * @property {?boolean} spoiler Whether the file should be spoilered
+ */
+
+/**
+ * @typedef {Object} MediaGalleryItemData
+ * @property {UnfurledMediaItemData} media The media for the media gallery item
+ * @property {?string} description The description of the media gallery item
+ * @property {?boolean} spoiler Whether the media gallery item should be spoilered
+ */
+
+/**
+ * @typedef {BaseComponentData} MediaGalleryComponentData
+ * @property {MediaGalleryItemData[]} items The media gallery items in this media gallery component
+ */
+
+/**
+ * @typedef {BaseComponentData} SeparatorComponentData
+ * @property {?SeparatorSpacingSize} spacing The spacing size of this component
+ * @property {?boolean} divider Whether the separator shows as a divider
+ */
+
+/**
+ * @typedef {BaseComponentData} SectionComponentData
+ * @property {Components[]} components The components in this section
+ * @property {ButtonComponentData|ThumbnailComponentData} accessory The accessory shown next to this section
+ */
+
+/**
+ * @typedef {BaseComponentData} TextDisplayComponentData
+ * @property {string} content The content displayed in this component
+ */
+
+/**
+ * @typedef {ActionRowData|FileComponentData|MediaGalleryComponentData|SectionComponentData|
+ * SeparatorComponentData|TextDisplayComponentData} ComponentInContainerData
+ */
+
+/**
+ * @typedef {BaseComponentData} ContainerComponentData
+ * @property {ComponentInContainerData} components The components in this container
+ * @property {?number} accentColor The accent color of this container
+ * @property {?boolean} spoiler Whether the container should be spoilered
+ */
+
+/**
+ * @typedef {ActionRowData|ButtonComponentData|SelectMenuComponentData|TextInputComponentData|
+ * ThumbnailComponentData|FileComponentData|MediaGalleryComponentData|SeparatorComponentData|
+ * SectionComponentData|TextDisplayComponentData|ContainerComponentData} ComponentData
  */
 
 /**

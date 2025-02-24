@@ -1,13 +1,13 @@
 'use strict';
 
-const BaseComponent = require('./BaseComponent');
+const Component = require('./Component');
 const MediaGalleryItem = require('./MediaGalleryItem');
 
 /**
  * Represents a media gallery component
- * @extends {BaseComponent}
+ * @extends {Component}
  */
-class MediaGalleryComponent extends BaseComponent {
+class MediaGalleryComponent extends Component {
   constructor({ items, ...data }) {
     super(data);
 

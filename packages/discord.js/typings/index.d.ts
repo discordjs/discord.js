@@ -310,6 +310,7 @@ export class Activity {
 export type ActivityFlagsString = keyof typeof ActivityFlags;
 
 export interface BaseComponentData {
+  id?: number;
   type: ComponentType;
 }
 
@@ -796,16 +797,17 @@ export type AnyComponent =
   | APIMessageComponent
   | APIModalComponent
   | APIActionRowComponent<APIComponentInMessageActionRow | APIComponentInModalActionRow>
-  | AnyBaseComponent;
+  | AnyComponentV2;
 
 export class Component<RawComponentData extends AnyComponent = AnyComponent> {
   public readonly data: Readonly<RawComponentData>;
+  public get id(): RawComponentData['id'];
   public get type(): RawComponentData['type'];
   public toJSON(): RawComponentData;
   public equals(other: this | RawComponentData): boolean;
 }
 
-export type AnyBaseComponent = APIComponentInContainer | APIContainerComponent | APIThumbnailComponent;
+export type AnyComponentV2 = APIComponentInContainer | APIContainerComponent | APIThumbnailComponent;
 
 export type TopLevelComponent =
   | ActionRow<MessageActionRowComponent>
@@ -824,11 +826,6 @@ export type TopLevelComponentData =
   | SectionComponentData
   | SeparatorComponentData
   | TextDisplayComponentData;
-export class BaseComponent<
-  RawComponentData extends AnyBaseComponent = AnyBaseComponent,
-> extends Component<RawComponentData> {
-  public get id(): RawComponentData['id'];
-}
 
 export class ButtonComponent extends Component<APIButtonComponent> {
   private constructor(data: APIButtonComponent);
@@ -1233,7 +1230,7 @@ export class ClientVoiceManager {
   public adapters: Map<Snowflake, InternalDiscordGatewayAdapterLibraryMethods>;
 }
 
-export type InnerContainerComponent =
+export type ComponentInContainer =
   | ActionRow<MessageActionRowComponent>
   | FileComponent
   | MediaGalleryComponent
@@ -1241,7 +1238,7 @@ export type InnerContainerComponent =
   | SeparatorComponent
   | TextDisplayComponent;
 
-export type InnerContainerComponentData =
+export type ComponentInContainerData =
   | ActionRowData<ActionRowComponentData>
   | FileComponentData
   | MediaGalleryComponentData
@@ -1250,21 +1247,21 @@ export type InnerContainerComponentData =
   | TextDisplayComponentData;
 
 export interface ContainerComponentData<
-  ComponentType extends JSONEncodable<APIComponentInContainer> | InnerContainerComponentData =
+  ComponentType extends JSONEncodable<APIComponentInContainer> | ComponentInContainerData =
     | JSONEncodable<APIComponentInContainer>
-    | InnerContainerComponentData,
+    | ComponentInContainerData,
 > extends BaseComponentData {
   components: readonly ComponentType[];
   accentColor?: number;
   spoiler?: boolean;
 }
 
-export class ContainerComponent extends BaseComponent<APIContainerComponent> {
+export class ContainerComponent extends Component<APIContainerComponent> {
   private constructor(data: APIContainerComponent);
   public get accentColor(): number;
   public get hexAccentColor(): HexColorString;
   public get spoiler(): boolean;
-  public readonly components: InnerContainerComponent[];
+  public readonly components: ComponentInContainer[];
 }
 
 export { Collection, ReadonlyCollection } from '@discordjs/collection';
@@ -1663,7 +1660,7 @@ export interface FileComponentData extends BaseComponentData {
   file: UnfurledMediaItemData;
   spoiler?: boolean;
 }
-export class FileComponent extends BaseComponent<APIFileComponent> {
+export class FileComponent extends Component<APIFileComponent> {
   private constructor(data: APIFileComponent);
   public readonly file: UnfurledMediaItem;
   public get spoiler(): boolean;
@@ -2270,7 +2267,7 @@ export class LimitedCollection<Key, Value> extends Collection<Key, Value> {
 export interface MediaGalleryComponentData extends BaseComponentData {
   items: readonly MediaGalleryItemData[];
 }
-export class MediaGalleryComponent extends BaseComponent<APIMediaGalleryComponent> {
+export class MediaGalleryComponent extends Component<APIMediaGalleryComponent> {
   private constructor(data: APIMediaGalleryComponent);
   public readonly items: MediaGalleryItem[];
 }
@@ -3093,7 +3090,7 @@ export interface SectionComponentData extends BaseComponentData {
 
 export class SectionComponent<
   AccessoryType extends ButtonComponent | ThumbnailComponent = ButtonComponent | ThumbnailComponent,
-> extends BaseComponent<APISectionComponent> {
+> extends Component<APISectionComponent> {
   private constructor(data: APISectionComponent);
   public readonly accessory: AccessoryType;
   public readonly components: TextDisplayComponent[];
@@ -3227,7 +3224,7 @@ export interface SeparatorComponentData extends BaseComponentData {
   spacing?: SeparatorSpacingSize;
   dividier?: boolean;
 }
-export class SeparatorComponent extends BaseComponent<APISeparatorComponent> {
+export class SeparatorComponent extends Component<APISeparatorComponent> {
   private constructor(data: APISeparatorComponent);
   public get spacing(): SeparatorSpacingSize;
   public get divider(): boolean;
@@ -3599,7 +3596,7 @@ export interface TextDisplayComponentData extends BaseComponentData {
   content: string;
 }
 
-export class TextDisplayComponent extends BaseComponent<APITextDisplayComponent> {
+export class TextDisplayComponent extends Component<APITextDisplayComponent> {
   private constructor(data: APITextDisplayComponent);
   public readonly content: string;
 }
@@ -3709,7 +3706,7 @@ export interface ThumbnailComponentData extends BaseComponentData {
   spoiler?: boolean;
 }
 
-export class ThumbnailComponent extends BaseComponent<APIThumbnailComponent> {
+export class ThumbnailComponent extends Component<APIThumbnailComponent> {
   private constructor(data: APIThumbnailComponent);
   public readonly media: UnfurledMediaItem;
   public get description(): string | null;
@@ -3921,7 +3918,9 @@ export class Formatters extends null {
 export type ComponentData =
   | MessageActionRowComponentData
   | ModalActionRowComponentData
-  | ActionRowData<MessageActionRowComponentData | ModalActionRowComponentData>;
+  | ComponentInContainerData
+  | ContainerComponentData
+  | ThumbnailComponentData;
 
 export class VoiceChannel extends BaseGuildVoiceChannel {
   public get speakable(): boolean;

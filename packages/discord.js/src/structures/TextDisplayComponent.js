@@ -1,12 +1,12 @@
 'use strict';
 
-const BaseComponent = require('./BaseComponent');
+const Component = require('./Component');
 
 /**
  * Represents a text display component
- * @extends {BaseComponent}
+ * @extends {Component}
  */
-class TextDisplayComponent extends BaseComponent {
+class TextDisplayComponent extends Component {
   /**
    * The content of this text display
    * @type {string}

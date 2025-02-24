@@ -1,13 +1,13 @@
 'use strict';
 
-const BaseComponent = require('./BaseComponent');
+const Component = require('./Component');
 const { createComponent } = require('../util/Components');
 
 /**
  * Represents a container component
- * @extends {BaseComponent}
+ * @extends {Component}
  */
-class ContainerComponent extends BaseComponent {
+class ContainerComponent extends Component {
   constructor({ components, ...data }) {
     super(data);
 

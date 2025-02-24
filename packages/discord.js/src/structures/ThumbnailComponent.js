@@ -1,13 +1,13 @@
 'use strict';
 
-const BaseComponent = require('./BaseComponent');
+const Component = require('./Component');
 const UnfurledMediaItem = require('./UnfurledMediaItem');
 
 /**
  * Represents a thumbnail component
- * @extends {BaseComponent}
+ * @extends {Component}
  */
-class ThumbnailComponent extends BaseComponent {
+class ThumbnailComponent extends Component {
   constructor({ media, ...data }) {
     super(data);
 
