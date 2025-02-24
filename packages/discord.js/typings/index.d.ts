@@ -1029,6 +1029,16 @@ export type If<Value extends boolean, TrueResult, FalseResult = null> = Value ex
     ? FalseResult
     : TrueResult | FalseResult;
 
+/** @internal */
+type AsyncEventIteratorDisposability =
+  ReturnType<typeof EventEmitter.on> extends AsyncDisposable ? AsyncDisposable : {};
+/** @internal */
+interface AsyncEventIterator<Params extends any[]>
+  extends AsyncIterableIterator<Params>,
+    AsyncEventIteratorDisposability {
+  [Symbol.asyncIterator](): AsyncEventIterator<Params>;
+}
+
 export class Client<Ready extends boolean = boolean> extends BaseClient {
   public constructor(options: ClientOptions);
   private actions: unknown;
@@ -1049,7 +1059,7 @@ export class Client<Ready extends boolean = boolean> extends BaseClient {
     eventEmitter: Emitter,
     eventName: Emitter extends Client ? Event : string | symbol,
     options?: { signal?: AbortSignal | undefined },
-  ): AsyncIterableIterator<Emitter extends Client ? ClientEvents[Event] : any[]>;
+  ): AsyncEventIterator<Emitter extends Client ? ClientEvents[Event] : any[]>;
 
   public application: If<Ready, ClientApplication>;
   public channels: ChannelManager;
