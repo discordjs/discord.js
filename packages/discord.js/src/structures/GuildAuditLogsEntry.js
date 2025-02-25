@@ -34,7 +34,6 @@ const Targets = {
   Unknown: 'Unknown',
 };
 
-// TODO: Add soundboard sounds when https://github.com/discordjs/discord.js/pull/10590 is merged
 /**
  * The target of a guild audit log entry. It can be one of:
  * * A guild
@@ -52,10 +51,11 @@ const Targets = {
  * * An application command
  * * An auto moderation rule
  * * A guild onboarding prompt
+ * * A soundboard sound
  * * An object with an id key if target was deleted or fake entity
  * * An object where the keys represent either the new value or the old value
  * @typedef {?(Object|Guild|BaseChannel|User|Role|Invite|Webhook|GuildEmoji|Integration|StageInstance|Sticker|
- * GuildScheduledEvent|ApplicationCommand|AutoModerationRule|GuildOnboardingPrompt)} AuditLogEntryTarget
+ * GuildScheduledEvent|ApplicationCommand|AutoModerationRule|GuildOnboardingPrompt|SoundboardSound)} AuditLogEntryTarget
  */
 
 /**
@@ -369,9 +369,8 @@ class GuildAuditLogsEntry {
       this.target = guild.roles.cache.get(data.target_id) ?? { id: data.target_id };
     } else if (targetType === Targets.Emoji) {
       this.target = guild.emojis.cache.get(data.target_id) ?? { id: data.target_id };
-      // TODO: Uncomment after https://github.com/discordjs/discord.js/pull/10590 is merged
-      // } else if (targetType === Targets.SoundboardSound) {
-      //   this.target = guild.soundboardSounds.cache.get(data.target_id) ?? { id: data.target_id };
+    } else if (targetType === Targets.SoundboardSound) {
+      this.target = guild.soundboardSounds.cache.get(data.target_id) ?? { id: data.target_id };
     } else if (data.target_id) {
       this.target = { id: data.target_id };
     }
