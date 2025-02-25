@@ -275,11 +275,12 @@ class Webhook {
    * @param {WebhookEditOptions} options Options for editing the webhook
    * @returns {Promise<Webhook>}
    */
-  async edit({ name = this.name, avatar, channel, reason }) {
+  async edit({ name = this.name, avatar: newAvatar, channel: newChannel, reason }) {
+    let avatar = newAvatar;
     if (avatar && !(typeof avatar === 'string' && avatar.startsWith('data:'))) {
       avatar = await resolveImage(avatar);
     }
-    channel &&= channel.id ?? channel;
+    const channel = newChannel?.id ?? newChannel;
     const data = await this.client.rest.patch(Routes.webhook(this.id, channel ? undefined : this.token), {
       body: { name, avatar, channel_id: channel },
       reason,

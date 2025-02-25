@@ -203,10 +203,10 @@ class MessageManager extends CachedManager {
    * @returns {Promise<void>}
    */
   async pin(message, reason) {
-    message = this.resolveId(message);
-    if (!message) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    const messageId = this.resolveId(message);
+    if (!messageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
-    await this.client.rest.put(Routes.channelPin(this.channel.id, message), { reason });
+    await this.client.rest.put(Routes.channelPin(this.channel.id, messageId), { reason });
   }
 
   /**
@@ -216,10 +216,10 @@ class MessageManager extends CachedManager {
    * @returns {Promise<void>}
    */
   async unpin(message, reason) {
-    message = this.resolveId(message);
-    if (!message) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    const messageId = this.resolveId(message);
+    if (!messageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
-    await this.client.rest.delete(Routes.channelPin(this.channel.id, message), { reason });
+    await this.client.rest.delete(Routes.channelPin(this.channel.id, messageId), { reason });
   }
 
   /**
@@ -229,17 +229,17 @@ class MessageManager extends CachedManager {
    * @returns {Promise<void>}
    */
   async react(message, emoji) {
-    message = this.resolveId(message);
-    if (!message) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    const messageId = this.resolveId(message);
+    if (!messageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
-    emoji = resolvePartialEmoji(emoji);
-    if (!emoji) throw new DiscordjsTypeError(ErrorCodes.EmojiType, 'emoji', 'EmojiIdentifierResolvable');
+    const resolvedEmoji = resolvePartialEmoji(emoji);
+    if (!resolvedEmoji) throw new DiscordjsTypeError(ErrorCodes.EmojiType, 'emoji', 'EmojiIdentifierResolvable');
 
-    const emojiId = emoji.id
-      ? `${emoji.animated ? 'a:' : ''}${emoji.name}:${emoji.id}`
-      : encodeURIComponent(emoji.name);
+    const emojiId = resolvedEmoji.id
+      ? `${resolvedEmoji.animated ? 'a:' : ''}${resolvedEmoji.name}:${resolvedEmoji.id}`
+      : encodeURIComponent(resolvedEmoji.name);
 
-    await this.client.rest.put(Routes.channelMessageOwnReaction(this.channel.id, message, emojiId));
+    await this.client.rest.put(Routes.channelMessageOwnReaction(this.channel.id, messageId, emojiId));
   }
 
   /**
@@ -248,10 +248,10 @@ class MessageManager extends CachedManager {
    * @returns {Promise<void>}
    */
   async delete(message) {
-    message = this.resolveId(message);
-    if (!message) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    const messageId = this.resolveId(message);
+    if (!messageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
-    await this.client.rest.delete(Routes.channelMessage(this.channel.id, message));
+    await this.client.rest.delete(Routes.channelMessage(this.channel.id, messageId));
   }
 
   /**

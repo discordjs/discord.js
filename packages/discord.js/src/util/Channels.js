@@ -33,56 +33,54 @@ const getMediaChannel = lazy(() => require('../structures/MediaChannel.js').Medi
  */
 function createChannel(client, data, guild, { allowUnknownGuild } = {}) {
   let channel;
-  if (!data.guild_id && !guild) {
+  let resolvedGuild = guild || client.guilds.cache.get(data.guild_id);
+
+  if (!data.guild_id && !resolvedGuild) {
     if ((data.recipients && data.type !== ChannelType.GroupDM) || data.type === ChannelType.DM) {
       channel = new (getDMChannel())(client, data);
     } else if (data.type === ChannelType.GroupDM) {
       channel = new (getPartialGroupDMChannel())(client, data);
     }
-  } else {
-    guild ??= client.guilds.cache.get(data.guild_id);
-
-    if (guild || allowUnknownGuild) {
-      switch (data.type) {
-        case ChannelType.GuildText: {
-          channel = new (getTextChannel())(guild, data, client);
-          break;
-        }
-        case ChannelType.GuildVoice: {
-          channel = new (getVoiceChannel())(guild, data, client);
-          break;
-        }
-        case ChannelType.GuildCategory: {
-          channel = new (getCategoryChannel())(guild, data, client);
-          break;
-        }
-        case ChannelType.GuildAnnouncement: {
-          channel = new (getAnnouncementChannel())(guild, data, client);
-          break;
-        }
-        case ChannelType.GuildStageVoice: {
-          channel = new (getStageChannel())(guild, data, client);
-          break;
-        }
-        case ChannelType.AnnouncementThread:
-        case ChannelType.PublicThread:
-        case ChannelType.PrivateThread: {
-          channel = new (getThreadChannel())(guild, data, client);
-          if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);
-          break;
-        }
-        case ChannelType.GuildDirectory:
-          channel = new (getDirectoryChannel())(guild, data, client);
-          break;
-        case ChannelType.GuildForum:
-          channel = new (getForumChannel())(guild, data, client);
-          break;
-        case ChannelType.GuildMedia:
-          channel = new (getMediaChannel())(guild, data, client);
-          break;
+  } else if (resolvedGuild || allowUnknownGuild) {
+    switch (data.type) {
+      case ChannelType.GuildText: {
+        channel = new (getTextChannel())(resolvedGuild, data, client);
+        break;
       }
-      if (channel && !allowUnknownGuild) guild.channels?.cache.set(channel.id, channel);
+      case ChannelType.GuildVoice: {
+        channel = new (getVoiceChannel())(resolvedGuild, data, client);
+        break;
+      }
+      case ChannelType.GuildCategory: {
+        channel = new (getCategoryChannel())(resolvedGuild, data, client);
+        break;
+      }
+      case ChannelType.GuildAnnouncement: {
+        channel = new (getAnnouncementChannel())(resolvedGuild, data, client);
+        break;
+      }
+      case ChannelType.GuildStageVoice: {
+        channel = new (getStageChannel())(resolvedGuild, data, client);
+        break;
+      }
+      case ChannelType.AnnouncementThread:
+      case ChannelType.PublicThread:
+      case ChannelType.PrivateThread: {
+        channel = new (getThreadChannel())(resolvedGuild, data, client);
+        if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);
+        break;
+      }
+      case ChannelType.GuildDirectory:
+        channel = new (getDirectoryChannel())(resolvedGuild, data, client);
+        break;
+      case ChannelType.GuildForum:
+        channel = new (getForumChannel())(resolvedGuild, data, client);
+        break;
+      case ChannelType.GuildMedia:
+        channel = new (getMediaChannel())(resolvedGuild, data, client);
+        break;
     }
+    if (channel && !allowUnknownGuild) resolvedGuild.channels?.cache.set(channel.id, channel);
   }
   return channel;
 }
