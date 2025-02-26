@@ -6677,7 +6677,7 @@ export interface PartialGuildScheduledEvent
 
 export interface PartialThreadMember extends Partialize<ThreadMember, 'flags' | 'joinedAt' | 'joinedTimestamp'> {}
 
-export interface PartialSoundboardSound extends Partialize<SoundboardSound, 'name' | 'volume'> {}
+export interface PartialSoundboardSound extends Partialize<SoundboardSound, 'available' | 'name' | 'volume'> {}
 
 export interface PartialOverwriteData {
   id: Snowflake | number;
