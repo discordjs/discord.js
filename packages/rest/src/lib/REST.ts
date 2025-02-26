@@ -115,7 +115,7 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 						sweptHashes.set(key, val);
 
 						// Emit debug information
-						this.emit(RESTEvents.Debug, `Hash ${val.value} for ${key} swept due to lifetime being exceeded`);
+						this.emit(RESTEvents.Debug, `[REST] Hash ${val.value} for ${key} swept due to lifetime being exceeded`);
 					}
 
 					return shouldSweep;
@@ -140,7 +140,7 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 					// Collect inactive handlers
 					if (inactive) {
 						sweptHandlers.set(key, val);
-						this.emit(RESTEvents.Debug, `Handler ${val.id} for ${key} swept due to being inactive`);
+						this.emit(RESTEvents.Debug, `[REST] Handler ${val.id} for ${key} swept due to being inactive`);
 					}
 
 					return inactive;
