@@ -53,7 +53,7 @@ class GuildChannelManager extends CachedManager {
   get channelCountWithoutThreads() {
     return this.cache.reduce((acc, channel) => {
       if (ThreadChannelTypes.includes(channel.type)) return acc;
-      return ++acc;
+      return acc + 1;
     }, 0);
   }
 
@@ -184,9 +184,6 @@ class GuildChannelManager extends CachedManager {
     defaultForumLayout,
     reason,
   }) {
-    parent &&= this.client.channels.resolveId(parent);
-    permissionOverwrites &&= permissionOverwrites.map(overwrite => PermissionOverwrites.resolve(overwrite, this.guild));
-
     const data = await this.client.rest.post(Routes.guildChannels(this.guild.id), {
       body: {
         name,
@@ -195,9 +192,11 @@ class GuildChannelManager extends CachedManager {
         nsfw,
         bitrate,
         user_limit: userLimit,
-        parent_id: parent,
+        parent_id: parent && this.client.channels.resolveId(parent),
         position,
-        permission_overwrites: permissionOverwrites,
+        permission_overwrites: permissionOverwrites?.map(overwrite =>
+          PermissionOverwrites.resolve(overwrite, this.guild),
+        ),
         rate_limit_per_user: rateLimitPerUser,
         rtc_region: rtcRegion,
         video_quality_mode: videoQualityMode,
@@ -235,18 +234,19 @@ class GuildChannelManager extends CachedManager {
    *   .catch(console.error)
    */
   async createWebhook({ channel, name, avatar, reason }) {
-    const id = this.resolveId(channel);
-    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
+    const channelId = this.resolveId(channel);
+    if (!channelId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
 
-    const resolvedImage = await resolveImage(avatar);
+    const resolvedAvatar = await resolveImage(avatar);
 
-    const data = await this.client.rest.post(Routes.channelWebhooks(id), {
+    const data = await this.client.rest.post(Routes.channelWebhooks(channelId), {
       body: {
         name,
-        avatar: resolvedImage,
+        avatar: resolvedAvatar,
       },
       reason,
     });
+
     return new Webhook(this.client, data);
   }
 
@@ -361,13 +361,14 @@ class GuildChannelManager extends CachedManager {
    *   .catch(console.error);
    */
   async setPosition(channel, position, { relative, reason } = {}) {
-    channel = this.resolve(channel);
-    if (!channel) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
+    const resolvedChannel = this.resolve(channel);
+    if (!resolvedChannel) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
+
     const updatedChannels = await setPosition(
-      channel,
+      resolvedChannel,
       position,
       relative,
-      this.guild._sortedChannels(channel),
+      this.guild._sortedChannels(resolvedChannel),
       this.client,
       Routes.guildChannels(this.guild.id),
       reason,
@@ -377,7 +378,8 @@ class GuildChannelManager extends CachedManager {
       guild_id: this.guild.id,
       channels: updatedChannels,
     });
-    return channel;
+
+    return resolvedChannel;
   }
 
   /**
@@ -459,17 +461,18 @@ class GuildChannelManager extends CachedManager {
    *   .catch(console.error);
    */
   async setPositions(channelPositions) {
-    channelPositions = channelPositions.map(channelPosition => ({
+    const resolvedChannelPositions = channelPositions.map(channelPosition => ({
       id: this.client.channels.resolveId(channelPosition.channel),
       position: channelPosition.position,
       lock_permissions: channelPosition.lockPermissions,
       parent_id: channelPosition.parent !== undefined ? this.resolveId(channelPosition.parent) : undefined,
     }));
 
-    await this.client.rest.patch(Routes.guildChannels(this.guild.id), { body: channelPositions });
+    await this.client.rest.patch(Routes.guildChannels(this.guild.id), { body: resolvedChannelPositions });
+
     return this.client.actions.GuildChannelsPositionUpdate.handle({
       guild_id: this.guild.id,
-      channels: channelPositions,
+      channels: resolvedChannelPositions,
     }).guild;
   }
 

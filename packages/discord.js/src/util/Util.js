@@ -21,11 +21,11 @@ function flatten(obj, ...props) {
     .filter(key => !key.startsWith('_'))
     .map(key => ({ [key]: true }));
 
-  props = objProps.length ? Object.assign(...objProps, ...props) : Object.assign({}, ...props);
+  const mergedProps = objProps.length ? Object.assign(...objProps, ...props) : Object.assign({}, ...props);
 
   const out = {};
 
-  for (let [prop, newProp] of Object.entries(props)) {
+  for (let [prop, newProp] of Object.entries(mergedProps)) {
     if (!newProp) continue;
     newProp = newProp === true ? prop : newProp;
 
@@ -96,9 +96,9 @@ async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multi
  * @returns {?PartialEmoji}
  */
 function parseEmoji(text) {
-  if (text.includes('%')) text = decodeURIComponent(text);
-  if (!text.includes(':')) return { animated: false, name: text, id: undefined };
-  const match = text.match(/<?(?:(a):)?(\w{2,32}):(\d{17,19})?>?/);
+  const decodedText = text.includes('%') ? decodeURIComponent(text) : text;
+  if (!decodedText.includes(':')) return { animated: false, name: decodedText, id: undefined };
+  const match = decodedText.match(/<?(?:(a):)?(\w{2,32}):(\d{17,19})?>?/);
   return match && { animated: Boolean(match[1]), name: match[2], id: match[3] };
 }
 
@@ -228,10 +228,10 @@ function getSortableGroupTypes(type) {
  */
 function moveElementInArray(array, element, newIndex, offset = false) {
   const index = array.indexOf(element);
-  newIndex = (offset ? index : 0) + newIndex;
-  if (newIndex > -1 && newIndex < array.length) {
+  const targetIndex = (offset ? index : 0) + newIndex;
+  if (targetIndex > -1 && targetIndex < array.length) {
     const removedElement = array.splice(index, 1)[0];
-    array.splice(newIndex, 0, removedElement);
+    array.splice(targetIndex, 0, removedElement);
   }
   return array.indexOf(element);
 }

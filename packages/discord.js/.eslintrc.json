@@ -168,6 +168,7 @@
         "rest-spread-spacing": "error",
         "template-curly-spacing": "error",
         "yield-star-spacing": "error",
+        "no-param-reassign": "error",
 
         "no-restricted-globals": [
           "error",

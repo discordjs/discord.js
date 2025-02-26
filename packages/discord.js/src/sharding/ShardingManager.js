@@ -191,28 +191,31 @@ class ShardingManager extends AsyncEventEmitter {
    */
   async spawn({ amount = this.totalShards, delay = 5500, timeout = 30_000 } = {}) {
     // Obtain/verify the number of shards to spawn
-    if (amount === 'auto') {
-      amount = await fetchRecommendedShardCount(this.token);
+    let shardAmount = amount;
+    if (shardAmount === 'auto') {
+      shardAmount = await fetchRecommendedShardCount(this.token);
     } else {
-      if (typeof amount !== 'number' || isNaN(amount)) {
+      if (typeof shardAmount !== 'number' || isNaN(shardAmount)) {
         throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'a number.');
       }
-      if (amount < 1) throw new DiscordjsRangeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'at least 1.');
-      if (!Number.isInteger(amount)) {
+      if (shardAmount < 1) {
+        throw new DiscordjsRangeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'at least 1.');
+      }
+      if (!Number.isInteger(shardAmount)) {
         throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'an integer.');
       }
     }
 
     // Make sure this many shards haven't already been spawned
-    if (this.shards.size >= amount) throw new DiscordjsError(ErrorCodes.ShardingAlreadySpawned, this.shards.size);
-    if (this.shardList === 'auto' || this.totalShards === 'auto' || this.totalShards !== amount) {
-      this.shardList = [...Array(amount).keys()];
+    if (this.shards.size >= shardAmount) throw new DiscordjsError(ErrorCodes.ShardingAlreadySpawned, this.shards.size);
+    if (this.shardList === 'auto' || this.totalShards === 'auto' || this.totalShards !== shardAmount) {
+      this.shardList = [...Array(shardAmount).keys()];
     }
-    if (this.totalShards === 'auto' || this.totalShards !== amount) {
-      this.totalShards = amount;
+    if (this.totalShards === 'auto' || this.totalShards !== shardAmount) {
+      this.totalShards = shardAmount;
     }
 
-    if (this.shardList.some(shardId => shardId >= amount)) {
+    if (this.shardList.some(shardId => shardId >= shardAmount)) {
       throw new DiscordjsRangeError(
         ErrorCodes.ClientInvalidOption,
         'Amount of shards',
