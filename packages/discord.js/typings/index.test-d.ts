@@ -36,6 +36,7 @@ import {
   GuildScheduledEventRecurrenceRuleFrequency,
   GuildScheduledEventRecurrenceRuleMonth,
   GuildScheduledEventRecurrenceRuleWeekday,
+  APIButtonComponentWithCustomId,
 } from 'discord-api-types/v10';
 import {
   ApplicationCommand,
@@ -218,9 +219,12 @@ import {
   PartialPollAnswer,
   PollAnswer,
   PollAnswerVoterManager,
+  PrimaryButtonBuilder,
+  resolveColor,
+  createComponentBuilder,
 } from './index.js';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
-import type { ContextMenuCommandBuilder, SlashCommandBuilder } from '@discordjs/builders';
+import type { ContextMenuCommandBuilder, ChatInputCommandBuilder } from '@discordjs/builders';
 import { ReadonlyCollection } from '@discordjs/collection';
 
 // Test type transformation:
@@ -347,11 +351,9 @@ client.on('interactionCreate', async interaction => {
 
   if (interaction.type !== InteractionType.ApplicationCommand) return;
 
-  void new ActionRowBuilder<MessageActionRowComponentBuilder>();
+  const button = new PrimaryButtonBuilder();
 
-  const button = new ButtonBuilder();
-
-  const actionRow = new ActionRowBuilder<MessageActionRowComponentBuilder>({
+  const actionRow = new ActionRowBuilder({
     type: ComponentType.ActionRow,
     components: [button.toJSON()],
   });
@@ -622,7 +624,7 @@ client.on('messageCreate', async message => {
   });
 
   // Check that both builders and builder data can be sent in messages
-  const row = new ActionRowBuilder<MessageActionRowComponentBuilder>();
+  const row = new ActionRowBuilder();
 
   const rawButtonsRow: ActionRowData<ButtonComponentData> = {
     type: ComponentType.ActionRow,
@@ -639,7 +641,7 @@ client.on('messageCreate', async message => {
 
   const buttonsRow: ActionRowData<ButtonBuilder> = {
     type: ComponentType.ActionRow,
-    components: [new ButtonBuilder()],
+    components: [new PrimaryButtonBuilder()],
   };
 
   const rawStringSelectMenuRow: ActionRowData<StringSelectMenuComponentData> = {
@@ -754,7 +756,7 @@ client.on('presenceUpdate', (oldPresence, { client }) => {
   expectType<Client<true>>(client);
 });
 
-declare const slashCommandBuilder: SlashCommandBuilder;
+declare const slashCommandBuilder: ChatInputCommandBuilder;
 declare const contextMenuCommandBuilder: ContextMenuCommandBuilder;
 
 client.on('clientReady', async client => {
@@ -1326,7 +1328,7 @@ client.on('guildCreate', async g => {
     const row: ActionRowData<MessageActionRowComponentData> = {
       type: ComponentType.ActionRow,
       components: [
-        new ButtonBuilder(),
+        new PrimaryButtonBuilder(),
         { type: ComponentType.Button, style: ButtonStyle.Primary, label: 'string', customId: 'foo' },
         { type: ComponentType.Button, style: ButtonStyle.Link, label: 'test', url: 'test' },
         { type: ComponentType.StringSelect, customId: 'foo', options: [{ label: 'label', value: 'value' }] },
@@ -1338,12 +1340,12 @@ client.on('guildCreate', async g => {
       ],
     };
 
-    const row2 = new ActionRowBuilder<MessageActionRowComponentBuilder>({
+    const row2 = new ActionRowBuilder({
       type: ComponentType.ActionRow,
       components: [
-        { type: ComponentType.Button, style: ButtonStyle.Primary, label: 'string', customId: 'foo' },
+        { type: ComponentType.Button, style: ButtonStyle.Primary, label: 'string', custom_id: 'foo' },
         { type: ComponentType.Button, style: ButtonStyle.Link, label: 'test', url: 'test' },
-        { type: ComponentType.StringSelect, customId: 'foo', options: [{ label: 'label', value: 'value' }] },
+        { type: ComponentType.StringSelect, custom_id: 'foo', options: [{ label: 'label', value: 'value' }] },
       ],
     });
 
@@ -2370,16 +2372,16 @@ expectType<
 >(NonThreadGuildBasedChannel);
 expectType<GuildTextBasedChannel>(GuildTextBasedChannel);
 
-const button = new ButtonBuilder({
+const button = new PrimaryButtonBuilder({
   label: 'test',
   style: ButtonStyle.Primary,
-  customId: 'test',
+  custom_id: 'test',
 });
 
 const selectMenu = new StringSelectMenuBuilder({
-  maxValues: 10,
-  minValues: 2,
-  customId: 'test',
+  max_values: 10,
+  min_values: 2,
+  custom_id: 'test',
 });
 
 new ActionRowBuilder({
@@ -2387,16 +2389,16 @@ new ActionRowBuilder({
 });
 
 new StringSelectMenuBuilder({
-  customId: 'foo',
+  custom_id: 'foo',
 });
 
-new ButtonBuilder({
+new PrimaryButtonBuilder({
   style: ButtonStyle.Danger,
 })
-  .setEmoji('<a:foo:123>')
-  .setEmoji('<:foo:123>')
-  .setEmoji('foobar:123')
-  .setEmoji('😏')
+  .setEmoji(resolvePartialEmoji('<a:foo:123>'))
+  .setEmoji(resolvePartialEmoji('<:foo:123>'))
+  .setEmoji(resolvePartialEmoji('foobar:123'))
+  .setEmoji(resolvePartialEmoji('😏'))
   .setEmoji({
     name: 'test',
     id: '123',
@@ -2406,7 +2408,7 @@ new ButtonBuilder({
 // @ts-expect-error
 new EmbedBuilder().setColor('abc');
 
-new EmbedBuilder().setColor('#ffffff');
+new EmbedBuilder().setColor(resolveColor('#ffffff'));
 
 expectNotAssignable<ActionRowData<MessageActionRowComponentData>>({
   type: ComponentType.ActionRow,
@@ -2445,73 +2447,61 @@ chatInputInteraction.showModal({
 });
 
 declare const stringSelectMenuData: APIStringSelectComponent;
-StringSelectMenuBuilder.from(stringSelectMenuData);
+new StringSelectMenuBuilder(stringSelectMenuData);
 
 declare const userSelectMenuData: APIUserSelectComponent;
-UserSelectMenuBuilder.from(userSelectMenuData);
+new UserSelectMenuBuilder(userSelectMenuData);
 
 declare const roleSelectMenuData: APIRoleSelectComponent;
-RoleSelectMenuBuilder.from(roleSelectMenuData);
+new RoleSelectMenuBuilder(roleSelectMenuData);
 
 declare const channelSelectMenuData: APIChannelSelectComponent;
-ChannelSelectMenuBuilder.from(channelSelectMenuData);
+new ChannelSelectMenuBuilder(channelSelectMenuData);
 
 declare const mentionableSelectMenuData: APIMentionableSelectComponent;
-MentionableSelectMenuBuilder.from(mentionableSelectMenuData);
+new MentionableSelectMenuBuilder(mentionableSelectMenuData);
 
 declare const stringSelectMenuComp: StringSelectMenuComponent;
-StringSelectMenuBuilder.from(stringSelectMenuComp);
+new StringSelectMenuBuilder(stringSelectMenuComp.toJSON());
 
 declare const userSelectMenuComp: UserSelectMenuComponent;
-UserSelectMenuBuilder.from(userSelectMenuComp);
+new UserSelectMenuBuilder(userSelectMenuComp.toJSON());
 
 declare const roleSelectMenuComp: RoleSelectMenuComponent;
-RoleSelectMenuBuilder.from(roleSelectMenuComp);
+new RoleSelectMenuBuilder(roleSelectMenuComp.toJSON());
 
 declare const channelSelectMenuComp: ChannelSelectMenuComponent;
-ChannelSelectMenuBuilder.from(channelSelectMenuComp);
+new ChannelSelectMenuBuilder(channelSelectMenuComp.toJSON());
 
 declare const mentionableSelectMenuComp: MentionableSelectMenuComponent;
-MentionableSelectMenuBuilder.from(mentionableSelectMenuComp);
+new MentionableSelectMenuBuilder(mentionableSelectMenuComp.toJSON());
 
-declare const buttonData: APIButtonComponent;
-ButtonBuilder.from(buttonData);
+declare const buttonData: APIButtonComponentWithCustomId;
+new PrimaryButtonBuilder(buttonData);
 
 declare const buttonComp: ButtonComponent;
-ButtonBuilder.from(buttonComp);
+createComponentBuilder(buttonComp.toJSON());
 
 declare const modalData: APIModalInteractionResponseCallbackData;
-ModalBuilder.from(modalData);
+new ModalBuilder(modalData);
 
 declare const textInputData: APITextInputComponent;
-TextInputBuilder.from(textInputData);
+new TextInputBuilder(textInputData);
 
 declare const textInputComp: TextInputComponent;
-TextInputBuilder.from(textInputComp);
+new TextInputBuilder(textInputComp);
 
 declare const embedData: APIEmbed;
-EmbedBuilder.from(embedData);
+new EmbedBuilder(embedData);
 
 declare const embedComp: Embed;
-EmbedBuilder.from(embedComp);
+new EmbedBuilder(embedComp.toJSON());
 
 declare const actionRowData: APIActionRowComponent<APIActionRowComponentTypes>;
-ActionRowBuilder.from(actionRowData);
+new ActionRowBuilder(actionRowData);
 
 declare const actionRowComp: ActionRow<ActionRowComponent>;
-ActionRowBuilder.from(actionRowComp);
-
-declare const buttonsActionRowData: APIActionRowComponent<APIButtonComponent>;
-declare const buttonsActionRowComp: ActionRow<ButtonComponent>;
-
-expectType<ActionRowBuilder<ButtonBuilder>>(ActionRowBuilder.from<ButtonBuilder>(buttonsActionRowData));
-expectType<ActionRowBuilder<ButtonBuilder>>(ActionRowBuilder.from<ButtonBuilder>(buttonsActionRowComp));
-
-declare const anyComponentsActionRowData: APIActionRowComponent<APIActionRowComponentTypes>;
-declare const anyComponentsActionRowComp: ActionRow<ActionRowComponent>;
-
-expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowData));
-expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowComp));
+new ActionRowBuilder(actionRowComp.toJSON());
 
 type UserMentionChannels = DMChannel | PartialDMChannel;
 declare const channelMentionChannels: Exclude<Channel | DirectoryChannel, UserMentionChannels>;
