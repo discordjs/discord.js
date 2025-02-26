@@ -66,6 +66,7 @@ const Messages = {
   [ErrorCodes.GuildChannelUnowned]: "The fetched channel does not belong to this manager's guild.",
   [ErrorCodes.GuildOwned]: 'Guild is owned by the client.',
   [ErrorCodes.GuildMembersTimeout]: "Members didn't arrive in time.",
+  [ErrorCodes.GuildSoundboardSoundsTimeout]: "Soundboard sounds didn't arrive in time.",
   [ErrorCodes.GuildUncachedMe]: 'The client user as a member of this guild is uncached.',
   [ErrorCodes.ChannelNotCached]: 'Could not find the channel where this message came from in the cache!',
   [ErrorCodes.StageChannelResolve]: 'Could not resolve channel to a stage channel.',
@@ -91,6 +92,8 @@ const Messages = {
   [ErrorCodes.MissingManageGuildExpressionsPermission]: guild =>
     `Client must have Manage Guild Expressions permission in guild ${guild} to see emoji authors.`,
 
+  [ErrorCodes.NotGuildSoundboardSound]: action =>
+    `Soundboard sound is a default (non-guild) soundboard sound and can't be ${action}.`,
   [ErrorCodes.NotGuildSticker]: 'Sticker is a standard (non-guild) sticker and has no author.',
 
   [ErrorCodes.ReactionResolveUser]: "Couldn't resolve the user id to remove from the reaction.",
