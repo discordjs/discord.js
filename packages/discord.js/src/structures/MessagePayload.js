@@ -1,9 +1,9 @@
 'use strict';
 
 const { Buffer } = require('node:buffer');
+const { ActionRowBuilder } = require('@discordjs/builders');
 const { isJSONEncodable } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ActionRowBuilder } = require('./ActionRowBuilder.js');
 const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
 const { resolveFile } = require('../util/DataResolver.js');
 const { MessageFlagsBitField } = require('../util/MessageFlagsBitField.js');
