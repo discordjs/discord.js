@@ -1,9 +1,10 @@
 'use strict';
 
-const { REST } = require('@discordjs/rest');
+const { REST, RESTEvents } = require('@discordjs/rest');
 const { AsyncEventEmitter } = require('@vladfrangu/async_event_emitter');
 const { Routes } = require('discord-api-types/v10');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { Events } = require('../util/Events.js');
 const { Options } = require('../util/Options.js');
 const { flatten } = require('../util/Util.js');
 
@@ -53,6 +54,8 @@ class BaseClient extends AsyncEventEmitter {
      * @type {REST}
      */
     this.rest = new REST(this.options.rest);
+
+    this.rest.on(RESTEvents.Debug, message => this.emit(Events.Debug, message));
   }
 
   /**

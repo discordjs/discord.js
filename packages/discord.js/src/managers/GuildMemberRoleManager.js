@@ -121,8 +121,8 @@ class GuildMemberRoleManager extends DataManager {
       const newRoles = [...new Set(resolvedRoles.concat(...this.cache.keys()))];
       return this.set(newRoles, reason);
     } else {
-      roleOrRoles = this.guild.roles.resolveId(roleOrRoles);
-      if (roleOrRoles === null) {
+      const resolvedRoleId = this.guild.roles.resolveId(roleOrRoles);
+      if (resolvedRoleId === null) {
         throw new DiscordjsTypeError(
           ErrorCodes.InvalidType,
           'roles',
@@ -130,10 +130,10 @@ class GuildMemberRoleManager extends DataManager {
         );
       }
 
-      await this.client.rest.put(Routes.guildMemberRole(this.guild.id, this.member.id, roleOrRoles), { reason });
+      await this.client.rest.put(Routes.guildMemberRole(this.guild.id, this.member.id, resolvedRoleId), { reason });
 
       const clone = this.member._clone();
-      clone._roles = [...this.cache.keys(), roleOrRoles];
+      clone._roles = [...this.cache.keys(), resolvedRoleId];
       return clone;
     }
   }
@@ -160,8 +160,8 @@ class GuildMemberRoleManager extends DataManager {
       const newRoles = this.cache.filter(role => !resolvedRoles.includes(role.id));
       return this.set(newRoles, reason);
     } else {
-      roleOrRoles = this.guild.roles.resolveId(roleOrRoles);
-      if (roleOrRoles === null) {
+      const resolvedRoleId = this.guild.roles.resolveId(roleOrRoles);
+      if (resolvedRoleId === null) {
         throw new DiscordjsTypeError(
           ErrorCodes.InvalidType,
           'roles',
@@ -169,10 +169,10 @@ class GuildMemberRoleManager extends DataManager {
         );
       }
 
-      await this.client.rest.delete(Routes.guildMemberRole(this.guild.id, this.member.id, roleOrRoles), { reason });
+      await this.client.rest.delete(Routes.guildMemberRole(this.guild.id, this.member.id, resolvedRoleId), { reason });
 
       const clone = this.member._clone();
-      const newRoles = this.cache.filter(role => role.id !== roleOrRoles);
+      const newRoles = this.cache.filter(role => role.id !== resolvedRoleId);
       clone._roles = [...newRoles.keys()];
       return clone;
     }
