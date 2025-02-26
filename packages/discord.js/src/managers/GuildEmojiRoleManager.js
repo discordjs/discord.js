@@ -40,20 +40,18 @@ class GuildEmojiRoleManager extends DataManager {
    * @returns {Promise<GuildEmoji>}
    */
   async add(roleOrRoles) {
-    let roles;
-    if (!Array.isArray(roleOrRoles) && !(roleOrRoles instanceof Collection)) roles = [roleOrRoles];
-    else roles = roleOrRoles;
+    const roles = Array.isArray(roleOrRoles) || roleOrRoles instanceof Collection ? roleOrRoles : [roleOrRoles];
 
-    const resolvedRoles = [];
+    const resolvedRoleIds = [];
     for (const role of roles.values()) {
-      const resolvedRole = this.guild.roles.resolveId(role);
-      if (!resolvedRole) {
+      const roleId = this.guild.roles.resolveId(role);
+      if (!roleId) {
         throw new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array or Collection', 'roles', role);
       }
-      resolvedRoles.push(resolvedRole);
+      resolvedRoleIds.push(roleId);
     }
 
-    const newRoles = [...new Set(resolvedRoles.concat(...this.cache.keys()))];
+    const newRoles = [...new Set(resolvedRoleIds.concat(...this.cache.keys()))];
     return this.set(newRoles);
   }
 
@@ -63,9 +61,7 @@ class GuildEmojiRoleManager extends DataManager {
    * @returns {Promise<GuildEmoji>}
    */
   async remove(roleOrRoles) {
-    let roles;
-    if (Array.isArray(roleOrRoles) || roleOrRoles instanceof Collection) roles = roleOrRoles;
-    else roles = [roleOrRoles];
+    const roles = Array.isArray(roleOrRoles) || roleOrRoles instanceof Collection ? roleOrRoles : [roleOrRoles];
 
     const resolvedRoleIds = [];
     for (const role of roles.values()) {
