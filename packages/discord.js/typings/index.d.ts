@@ -3403,9 +3403,7 @@ export function moveElementInArray(
 ): number;
 export function parseEmoji(text: string): PartialEmoji | null;
 export function resolveColor(color: ColorResolvable): number;
-/** @internal */
 export function resolvePartialEmoji(emoji: Snowflake): PartialEmojiOnlyId;
-/** @internal */
 export function resolvePartialEmoji(emoji: Emoji | EmojiIdentifierResolvable): PartialEmoji | null;
 /** @internal */
 export function resolveGuildEmoji(client: Client, emojiId: Snowflake): GuildEmoji | null;
