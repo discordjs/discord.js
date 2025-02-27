@@ -27,11 +27,6 @@ import {
   APIActionRowComponent,
   APIActionRowComponentTypes,
   APIStringSelectComponent,
-  APIUserSelectComponent,
-  APIRoleSelectComponent,
-  APIChannelSelectComponent,
-  APIMentionableSelectComponent,
-  APIModalInteractionResponseCallbackData,
   WebhookType,
   GuildScheduledEventRecurrenceRuleFrequency,
   GuildScheduledEventRecurrenceRuleMonth,
@@ -350,11 +345,9 @@ client.on('interactionCreate', async interaction => {
 
   if (interaction.type !== InteractionType.ApplicationCommand) return;
 
-  const button = new PrimaryButtonBuilder();
-
   const actionRow = new ActionRowBuilder({
     type: ComponentType.ActionRow,
-    components: [button.toJSON()],
+    components: [{ custom_id: '123', label: 'test', style: ButtonStyle.Primary, type: ComponentType.Button }],
   });
 
   actionRow.toJSON();
@@ -2371,42 +2364,6 @@ expectType<
 >(NonThreadGuildBasedChannel);
 expectType<GuildTextBasedChannel>(GuildTextBasedChannel);
 
-const button = new PrimaryButtonBuilder({
-  label: 'test',
-  style: ButtonStyle.Primary,
-  custom_id: 'test',
-});
-
-const selectMenu = new StringSelectMenuBuilder({
-  max_values: 10,
-  min_values: 2,
-  custom_id: 'test',
-});
-
-new ActionRowBuilder({
-  components: [selectMenu.toJSON(), button.toJSON()],
-});
-
-new StringSelectMenuBuilder({
-  custom_id: 'foo',
-});
-
-new PrimaryButtonBuilder({
-  style: ButtonStyle.Danger,
-})
-  .setEmoji(resolvePartialEmoji('<a:foo:123>'))
-  .setEmoji(resolvePartialEmoji('<:foo:123>'))
-  .setEmoji(resolvePartialEmoji('foobar:123'))
-  .setEmoji(resolvePartialEmoji('😏'))
-  .setEmoji({
-    name: 'test',
-    id: '123',
-    animated: false,
-  });
-
-// @ts-expect-error
-new EmbedBuilder().setColor('abc');
-
 new EmbedBuilder().setColor(resolveColor('#ffffff'));
 
 expectNotAssignable<ActionRowData<MessageActionRowComponentData>>({
@@ -2445,21 +2402,6 @@ chatInputInteraction.showModal({
   ],
 });
 
-declare const stringSelectMenuData: APIStringSelectComponent;
-new StringSelectMenuBuilder(stringSelectMenuData);
-
-declare const userSelectMenuData: APIUserSelectComponent;
-new UserSelectMenuBuilder(userSelectMenuData);
-
-declare const roleSelectMenuData: APIRoleSelectComponent;
-new RoleSelectMenuBuilder(roleSelectMenuData);
-
-declare const channelSelectMenuData: APIChannelSelectComponent;
-new ChannelSelectMenuBuilder(channelSelectMenuData);
-
-declare const mentionableSelectMenuData: APIMentionableSelectComponent;
-new MentionableSelectMenuBuilder(mentionableSelectMenuData);
-
 declare const stringSelectMenuComp: StringSelectMenuComponent;
 new StringSelectMenuBuilder(stringSelectMenuComp.toJSON());
 
@@ -2481,12 +2423,6 @@ new PrimaryButtonBuilder(buttonData);
 declare const buttonComp: ButtonComponent;
 createComponentBuilder(buttonComp.toJSON());
 
-declare const modalData: APIModalInteractionResponseCallbackData;
-new ModalBuilder(modalData);
-
-declare const textInputData: APITextInputComponent;
-new TextInputBuilder(textInputData);
-
 declare const textInputComp: TextInputComponent;
 new TextInputBuilder(textInputComp);
 
@@ -2495,9 +2431,6 @@ new EmbedBuilder(embedData);
 
 declare const embedComp: Embed;
 new EmbedBuilder(embedComp.toJSON());
-
-declare const actionRowData: APIActionRowComponent<APIActionRowComponentTypes>;
-new ActionRowBuilder(actionRowData);
 
 declare const actionRowComp: ActionRow<ActionRowComponent>;
 new ActionRowBuilder(actionRowComp.toJSON());

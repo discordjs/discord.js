@@ -1,7 +1,6 @@
 'use strict';
 
 const { Buffer } = require('node:buffer');
-const { ActionRowBuilder } = require('@discordjs/builders');
 const { isJSONEncodable } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
@@ -132,10 +131,6 @@ class MessagePayload {
       }
     }
 
-    const components = this.options.components?.map(component =>
-      (isJSONEncodable(component) ? component : new ActionRowBuilder(component)).toJSON(),
-    );
-
     let username;
     let avatarURL;
     let threadName;
@@ -215,7 +210,7 @@ class MessagePayload {
       embeds: this.options.embeds?.map(embed =>
         isJSONEncodable(embed) ? embed.toJSON() : this.target.client.options.jsonTransformer(embed),
       ),
-      components,
+      components: this.options.components,
       username,
       avatar_url: avatarURL,
       allowed_mentions: content === undefined && message_reference === undefined ? undefined : allowedMentions,
