@@ -131,6 +131,10 @@ class MessagePayload {
       }
     }
 
+    const components = this.options.components?.map(component =>
+      isJSONEncodable(component) ? component.toJSON() : this.target.client.options.jsonTransformer(component),
+    );
+
     let username;
     let avatarURL;
     let threadName;
@@ -210,7 +214,7 @@ class MessagePayload {
       embeds: this.options.embeds?.map(embed =>
         isJSONEncodable(embed) ? embed.toJSON() : this.target.client.options.jsonTransformer(embed),
       ),
-      components: this.options.components,
+      components,
       username,
       avatar_url: avatarURL,
       allowed_mentions: content === undefined && message_reference === undefined ? undefined : allowedMentions,
