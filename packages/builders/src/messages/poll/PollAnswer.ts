@@ -9,8 +9,16 @@ export interface PollAnswerData extends Omit<APIPollAnswer, 'answer_id' | 'poll_
 }
 
 export class PollAnswerBuilder {
+	/**
+	 * The API data associated with this poll answer.
+	 */
 	protected readonly data: PollAnswerData;
 
+	/**
+	 * Creates a new poll answer from API data.
+	 *
+	 * @param data - The API data to create this poll answer with
+	 */
 	public constructor(data: Partial<Omit<APIPollAnswer, 'answer_id'>> = {}) {
 		this.data = {
 			...structuredClone(data),
@@ -35,8 +43,9 @@ export class PollAnswerBuilder {
 	 *
 	 * @param updater - The function to update the media with
 	 */
-	public updateMedia(updater: (builder: PollAnswerMediaBuilder) => void) {
-		updater((this.data.poll_media ??= new PollAnswerMediaBuilder()));
+	public updateMedia(updater: (builder: PollAnswerMediaBuilder) => void): this {
+		updater(this.data.poll_media);
+		return this;
 	}
 
 	/**
@@ -47,10 +56,12 @@ export class PollAnswerBuilder {
 	 * @param validationOverride - Force validation to run/not run regardless of your global preference
 	 */
 	public toJSON(validationOverride?: boolean): Omit<APIPollAnswer, 'answer_id'> {
+		const { poll_media, ...rest } = this.data;
+
 		const data = {
-			...structuredClone(this.data),
+			...structuredClone(rest),
 			// Disable validation because the pollAnswerPredicate below will validate this as well
-			poll_media: this.data.poll_media?.toJSON(false),
+			poll_media: poll_media.toJSON(false),
 		};
 
 		validate(pollAnswerPredicate, data, validationOverride);
