@@ -1,16 +1,13 @@
 'use strict';
 
 const { ComponentType } = require('discord-api-types/v10');
-const { ActionRow } = require('../structures/ActionRow.js');
-const { ButtonComponent } = require('../structures/ButtonComponent.js');
-const { ChannelSelectMenuComponent } = require('../structures/ChannelSelectMenuComponent.js');
-const { Component } = require('../structures/Component.js');
-const { MentionableSelectMenuComponent } = require('../structures/MentionableSelectMenuComponent.js');
-const { RoleSelectMenuComponent } = require('../structures/RoleSelectMenuComponent.js');
-const { StringSelectMenuComponent } = require('../structures/StringSelectMenuComponent.js');
-const { TextInputComponent } = require('../structures/TextInputComponent.js');
-const { UserSelectMenuComponent } = require('../structures/UserSelectMenuComponent.js');
 
+/**
+ * Transforms API data into a component
+ * @param {APIMessageComponent|Component} data The data to create the component from
+ * @returns {Component}
+ * @ignore
+ */
 function createComponent(data) {
   if (data instanceof Component) {
     return data;
@@ -39,3 +36,13 @@ function createComponent(data) {
 }
 
 exports.createComponent = createComponent;
+
+const { ActionRow } = require('../structures/ActionRow.js');
+const { ButtonComponent } = require('../structures/ButtonComponent.js');
+const { ChannelSelectMenuComponent } = require('../structures/ChannelSelectMenuComponent.js');
+const { Component } = require('../structures/Component.js');
+const { MentionableSelectMenuComponent } = require('../structures/MentionableSelectMenuComponent.js');
+const { RoleSelectMenuComponent } = require('../structures/RoleSelectMenuComponent.js');
+const { StringSelectMenuComponent } = require('../structures/StringSelectMenuComponent.js');
+const { TextInputComponent } = require('../structures/TextInputComponent.js');
+const { UserSelectMenuComponent } = require('../structures/UserSelectMenuComponent.js');
