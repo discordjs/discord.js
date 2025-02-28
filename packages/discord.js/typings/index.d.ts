@@ -1616,8 +1616,8 @@ export class GuildMember extends Base {
   public get communicationDisabledUntil(): Date | null;
   public communicationDisabledUntilTimestamp: number | null;
   public flags: Readonly<GuildMemberFlagsBitField>;
-  public get joinedAt(): Date | null;
-  public joinedTimestamp: number | null;
+  public get joinedAt(): Date;
+  public joinedTimestamp: number;
   public get kickable(): boolean;
   public get manageable(): boolean;
   public get moderatable(): boolean;
