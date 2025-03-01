@@ -3440,6 +3440,11 @@ export function createChannel(
   extras?: CreateChannelOptions,
 ): Channel;
 
+export type ComponentData =
+  | MessageActionRowComponentData
+  | ModalActionRowComponentData
+  | ActionRowData<MessageActionRowComponentData | ModalActionRowComponentData>;
+
 export class VoiceChannel extends BaseGuildVoiceChannel {
   public get speakable(): boolean;
   public type: ChannelType.GuildVoice;
