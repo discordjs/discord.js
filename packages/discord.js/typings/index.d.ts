@@ -1622,7 +1622,10 @@ export class GuildMember extends Base {
   public get manageable(): boolean;
   public get moderatable(): boolean;
   public nickname: string | null;
-  public get partial(): false;
+  public get partial(): this is GuildMember & {
+    joinedTimestamp: null;
+    readonly joinedAt: null;
+  };
   public get permissions(): Readonly<PermissionsBitField>;
   public get premiumSince(): Date | null;
   public premiumSinceTimestamp: number | null;
