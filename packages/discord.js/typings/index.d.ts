@@ -677,7 +677,7 @@ export class BaseGuildVoiceChannel extends GuildChannel {
   public bitrate: number;
   public get full(): boolean;
   public get joinable(): boolean;
-  public get members(): Collection<Snowflake, GuildMember>;
+  public get members(): Collection<Snowflake, GuildMember | PartialGuildMember>;
   public nsfw: boolean;
   public rateLimitPerUser: number | null;
   public rtcRegion: string | null;
@@ -1541,7 +1541,10 @@ export class GuildBan extends Base {
 
 export abstract class GuildChannel extends BaseChannel {
   public constructor(guild: Guild, data?: RawGuildChannelData, client?: Client<true>, immediatePatch?: boolean);
-  private memberPermissions(member: GuildMember, checkAdmin: boolean): Readonly<PermissionsBitField>;
+  private memberPermissions(
+    member: GuildMember | PartialGuildMember,
+    checkAdmin: boolean,
+  ): Readonly<PermissionsBitField>;
   private rolePermissions(role: Role, checkAdmin: boolean): Readonly<PermissionsBitField>;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
@@ -1550,7 +1553,7 @@ export abstract class GuildChannel extends BaseChannel {
   public guild: Guild;
   public guildId: Snowflake;
   public get manageable(): boolean;
-  public get members(): Collection<Snowflake, GuildMember>;
+  public get members(): Collection<Snowflake, GuildMember | PartialGuildMember>;
   public name: string;
   public get parent(): CategoryChannel | null;
   public parentId: Snowflake | null;
@@ -1565,7 +1568,10 @@ export abstract class GuildChannel extends BaseChannel {
   public edit(options: GuildChannelEditOptions): Promise<this>;
   public equals(channel: GuildChannel): boolean;
   public lockPermissions(): Promise<this>;
-  public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<PermissionsBitField>;
+  public permissionsFor(
+    memberOrRole: GuildMember | PartialGuildMember | Role,
+    checkAdmin?: boolean,
+  ): Readonly<PermissionsBitField>;
   public permissionsFor(
     memberOrRole: UserResolvable | RoleResolvable,
     checkAdmin?: boolean,
@@ -1618,8 +1624,8 @@ export class GuildMember extends Base {
   public get communicationDisabledUntil(): Date | null;
   public communicationDisabledUntilTimestamp: number | null;
   public flags: Readonly<GuildMemberFlagsBitField>;
-  public get joinedAt(): Date | null;
-  public joinedTimestamp: number | null;
+  public get joinedAt(): Date;
+  public joinedTimestamp: number;
   public get kickable(): boolean;
   public get manageable(): boolean;
   public get moderatable(): boolean;
@@ -2135,7 +2141,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public get hasThread(): boolean;
   public id: Snowflake;
   public interactionMetadata: MessageInteractionMetadata | null;
-  public get member(): GuildMember | null;
+  public get member(): GuildMember | PartialGuildMember | null;
   public mentions: MessageMentions<InGuild>;
   public nonce: string | number | null;
   public get partial(): false;
@@ -2370,7 +2376,7 @@ export class MessageMentions<InGuild extends boolean = boolean> {
   );
   private _channels: Collection<Snowflake, Channel> | null;
   private readonly _content: string;
-  private _members: Collection<Snowflake, GuildMember> | null;
+  private _members: Collection<Snowflake, GuildMember | PartialGuildMember> | null;
   private _parsedUsers: Collection<Snowflake, User> | null;
 
   public get channels(): Collection<Snowflake, Channel>;
@@ -2378,7 +2384,7 @@ export class MessageMentions<InGuild extends boolean = boolean> {
   public everyone: boolean;
   public readonly guild: If<InGuild, Guild>;
   public has(data: UserResolvable | RoleResolvable | ChannelResolvable, options?: MessageMentionsHasOptions): boolean;
-  public get members(): If<InGuild, Collection<Snowflake, GuildMember>>;
+  public get members(): If<InGuild, Collection<Snowflake, GuildMember | PartialGuildMember>>;
   public get parsedUsers(): Collection<Snowflake, User>;
   public repliedUser: User | null;
   public roles: Collection<Snowflake, Role>;
@@ -2693,7 +2699,7 @@ export class Presence extends Base {
   public activities: Activity[];
   public clientStatus: ClientPresenceStatusData | null;
   public guild: Guild | null;
-  public get member(): GuildMember | null;
+  public get member(): GuildMember | PartialGuildMember | null;
   public status: PresenceStatus;
   public get user(): User | null;
   public userId: Snowflake;
@@ -2803,7 +2809,7 @@ export class Role extends Base {
   public hoist: boolean;
   public id: Snowflake;
   public managed: boolean;
-  public get members(): Collection<Snowflake, GuildMember>;
+  public get members(): Collection<Snowflake, GuildMember | PartialGuildMember>;
   public mentionable: boolean;
   public name: string;
   public permissions: Readonly<PermissionsBitField>;
@@ -3355,7 +3361,10 @@ export class ThreadChannel<ThreadOnly extends boolean = boolean> extends BaseCha
   public edit(options: ThreadEditOptions): Promise<this>;
   public join(): Promise<this>;
   public leave(): Promise<this>;
-  public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<PermissionsBitField>;
+  public permissionsFor(
+    memberOrRole: GuildMember | PartialGuildMember | Role,
+    checkAdmin?: boolean,
+  ): Readonly<PermissionsBitField>;
   public permissionsFor(
     memberOrRole: UserResolvable | RoleResolvable,
     checkAdmin?: boolean,
@@ -3403,7 +3412,7 @@ export class Typing extends Base {
   public startedTimestamp: number;
   public get startedAt(): Date;
   public get guild(): Guild | null;
-  public get member(): GuildMember | null;
+  public get member(): GuildMember | PartialGuildMember | null;
   public inGuild(): this is this & {
     channel: TextChannel | AnnouncementChannel | ThreadChannel;
     get guild(): Guild;
@@ -3586,7 +3595,7 @@ export class VoiceState extends Base {
   public get deaf(): boolean | null;
   public guild: Guild;
   public id: Snowflake;
-  public get member(): GuildMember | null;
+  public get member(): GuildMember | PartialGuildMember | null;
   public get mute(): boolean | null;
   public selfDeaf: boolean | null;
   public selfMute: boolean | null;
@@ -4224,10 +4233,10 @@ export interface AddOrRemoveGuildMemberRoleOptions {
   reason?: string;
 }
 
-export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, UserResolvable> {
+export class GuildMemberManager extends CachedManager<Snowflake, GuildMember | PartialGuildMember, UserResolvable> {
   private constructor(guild: Guild, iterable?: Iterable<RawGuildMemberData>);
   public guild: Guild;
-  public get me(): GuildMember | null;
+  public get me(): GuildMember | PartialGuildMember | null;
   public add(
     user: UserResolvable,
     options: AddGuildMemberOptions & { fetchWhenExisting: false },
@@ -4314,14 +4323,14 @@ export class GuildStickerManager extends CachedManager<Snowflake, Sticker, Stick
 }
 
 export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleResolvable> {
-  private constructor(member: GuildMember);
+  private constructor(member: GuildMember | PartialGuildMember);
   public get hoist(): Role | null;
   public get icon(): Role | null;
   public get color(): Role | null;
   public get highest(): Role;
   public get premiumSubscriberRole(): Role | null;
   public get botRole(): Role | null;
-  public member: GuildMember;
+  public member: GuildMember | PartialGuildMember;
   public guild: Guild;
 
   public add(
@@ -5959,7 +5968,15 @@ export interface GuildMemberEditOptions {
   reason?: string;
 }
 
-export type GuildResolvable = Guild | NonThreadGuildBasedChannel | GuildMember | GuildEmoji | Invite | Role | Snowflake;
+export type GuildResolvable =
+  | Guild
+  | NonThreadGuildBasedChannel
+  | GuildMember
+  | PartialGuildMember
+  | GuildEmoji
+  | Invite
+  | Role
+  | Snowflake;
 
 export interface GuildPruneMembersOptions {
   count?: boolean;
@@ -6864,7 +6881,7 @@ export type ThreadMemberResolvable = ThreadMember | UserResolvable;
 
 export type UserMention = `<@${Snowflake}>`;
 
-export type UserResolvable = User | Snowflake | Message | GuildMember | ThreadMember;
+export type UserResolvable = User | Snowflake | Message | GuildMember | PartialGuildMember | ThreadMember;
 
 export interface Vanity {
   code: string | null;
