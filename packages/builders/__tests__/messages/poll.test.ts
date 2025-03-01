@@ -110,6 +110,12 @@ describe('Poll', () => {
 	});
 
 	describe('Poll answers', () => {
+		test('GIVEN a poll without answers THEN throws error', () => {
+			const poll = new PollBuilder(dummyData);
+
+			expect(() => poll.toJSON()).toThrowError();
+		});
+
 		test('GIVEN a poll with pre-defined answer THEN returns valid toJSON data', () => {
 			const poll = new PollBuilder({
 				...dummyData,
