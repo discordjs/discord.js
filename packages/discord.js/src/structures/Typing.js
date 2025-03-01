@@ -34,13 +34,11 @@ class Typing extends Base {
       this.startedTimestamp = data.timestamp * 1_000;
     }
 
-    if ('member' in data) {
-      /**
-       * The member that this guild typing instance represents
-       * @type {?GuildMember}
-       */
-      this.member = this.channel.guild.members._add(data.member, true);
-    }
+    /**
+     * The member that this guild typing instance represents
+     * @type {?GuildMember}
+     */
+    this.member = data.member ? this.channel.guild.members._add(data.member, true) : null;
   }
 
   /**
