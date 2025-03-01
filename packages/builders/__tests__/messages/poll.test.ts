@@ -1,4 +1,4 @@
-import { PollLayoutType } from 'discord-api-types/v10';
+import { PollLayoutType, type RESTAPIPoll } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import { PollAnswerMediaBuilder, PollBuilder, PollQuestionBuilder } from '../../src/index.js';
 
@@ -7,22 +7,33 @@ const dummyData = {
 		text: '.',
 	},
 	answers: [],
-};
+} satisfies RESTAPIPoll;
+
+const dummyDataWithAnswer = {
+	...dummyData,
+	answers: [
+		{
+			poll_media: {
+				text: '.',
+			},
+		},
+	],
+} satisfies RESTAPIPoll;
 
 describe('Poll', () => {
 	describe('Poll question', () => {
 		test('GIVEN a poll with pre-defined question text THEN return valid toJSON data', () => {
-			const poll = new PollBuilder({ question: { text: 'foo' } });
+			const poll = new PollBuilder({ ...dummyDataWithAnswer, question: { text: 'foo' } });
 
-			expect(poll.toJSON()).toStrictEqual({ ...dummyData, question: { text: 'foo' } });
+			expect(poll.toJSON()).toStrictEqual({ ...dummyDataWithAnswer, question: { text: 'foo' } });
 		});
 
 		test('GIVEN a poll with question text THEN return valid toJSON data', () => {
-			const poll = new PollBuilder();
+			const poll = new PollBuilder(dummyDataWithAnswer);
 
 			poll.setQuestion({ text: 'foo' });
 
-			expect(poll.toJSON()).toStrictEqual({ ...dummyData, question: { text: 'foo' } });
+			expect(poll.toJSON()).toStrictEqual({ ...dummyDataWithAnswer, question: { text: 'foo' } });
 		});
 
 		test('GIVEN a poll with invalid question THEN throws error', () => {
@@ -32,21 +43,21 @@ describe('Poll', () => {
 
 	describe('Poll duration', () => {
 		test('GIVEN a poll with pre-defined duration THEN return valid toJSON data', () => {
-			const poll = new PollBuilder({ duration: 1, ...dummyData });
+			const poll = new PollBuilder({ duration: 1, ...dummyDataWithAnswer });
 
-			expect(poll.toJSON()).toStrictEqual({ duration: 1, ...dummyData });
+			expect(poll.toJSON()).toStrictEqual({ duration: 1, ...dummyDataWithAnswer });
 		});
 
 		test('GIVEN a poll with duration THEN return valid toJSON data', () => {
-			const poll = new PollBuilder(dummyData);
+			const poll = new PollBuilder(dummyDataWithAnswer);
 
 			poll.setDuration(1);
 
-			expect(poll.toJSON()).toStrictEqual({ duration: 1, ...dummyData });
+			expect(poll.toJSON()).toStrictEqual({ duration: 1, ...dummyDataWithAnswer });
 		});
 
 		test('GIVEN a poll with invalid duration THEN throws error', () => {
-			const poll = new PollBuilder(dummyData);
+			const poll = new PollBuilder(dummyDataWithAnswer);
 
 			expect(() => poll.setDuration(999).toJSON()).toThrowError();
 		});
@@ -54,21 +65,21 @@ describe('Poll', () => {
 
 	describe('Poll layout type', () => {
 		test('GIVEN a poll with pre-defined layout type THEN return valid toJSON data', () => {
-			const poll = new PollBuilder({ layout_type: PollLayoutType.Default, ...dummyData });
+			const poll = new PollBuilder({ ...dummyDataWithAnswer, layout_type: PollLayoutType.Default });
 
-			expect(poll.toJSON()).toStrictEqual({ layout_type: PollLayoutType.Default, ...dummyData });
+			expect(poll.toJSON()).toStrictEqual({ layout_type: PollLayoutType.Default, ...dummyDataWithAnswer });
 		});
 
 		test('GIVEN a poll with layout type THEN return valid toJSON data', () => {
-			const poll = new PollBuilder(dummyData);
+			const poll = new PollBuilder(dummyDataWithAnswer);
 
 			poll.setLayoutType(PollLayoutType.Default);
 
-			expect(poll.toJSON()).toStrictEqual({ layout_type: PollLayoutType.Default, ...dummyData });
+			expect(poll.toJSON()).toStrictEqual({ layout_type: PollLayoutType.Default, ...dummyDataWithAnswer });
 		});
 
 		test('GIVEN a poll with invalid layout type THEN throws error', () => {
-			const poll = new PollBuilder(dummyData);
+			const poll = new PollBuilder(dummyDataWithAnswer);
 
 			// @ts-expect-error Invalid layout type
 			expect(() => poll.setLayoutType(-1).toJSON()).toThrowError();
@@ -77,21 +88,21 @@ describe('Poll', () => {
 
 	describe('Poll multi select', () => {
 		test('GIVEN a poll with pre-defined multi select enabled THEN return valid toJSON data', () => {
-			const poll = new PollBuilder({ allow_multiselect: true, ...dummyData });
+			const poll = new PollBuilder({ allow_multiselect: true, ...dummyDataWithAnswer });
 
-			expect(poll.toJSON()).toStrictEqual({ allow_multiselect: true, ...dummyData });
+			expect(poll.toJSON()).toStrictEqual({ allow_multiselect: true, ...dummyDataWithAnswer });
 		});
 
 		test('GIVEN a poll with multi select enabled THEN return valid toJSON data', () => {
-			const poll = new PollBuilder(dummyData);
+			const poll = new PollBuilder(dummyDataWithAnswer);
 
 			poll.setMultiSelect();
 
-			expect(poll.toJSON()).toStrictEqual({ allow_multiselect: true, ...dummyData });
+			expect(poll.toJSON()).toStrictEqual({ allow_multiselect: true, ...dummyDataWithAnswer });
 		});
 
 		test('GIVEN a poll with invalid multi select value THEN throws error', () => {
-			const poll = new PollBuilder(dummyData);
+			const poll = new PollBuilder(dummyDataWithAnswer);
 
 			// @ts-expect-error Invalid multi-select value
 			expect(() => poll.setMultiSelect('string').toJSON()).toThrowError();
@@ -99,6 +110,12 @@ describe('Poll', () => {
 	});
 
 	describe('Poll answers', () => {
+		test('GIVEN a poll without answers THEN throws error', () => {
+			const poll = new PollBuilder(dummyData);
+
+			expect(() => poll.toJSON()).toThrowError();
+		});
+
 		test('GIVEN a poll with pre-defined answer THEN returns valid toJSON data', () => {
 			const poll = new PollBuilder({
 				...dummyData,

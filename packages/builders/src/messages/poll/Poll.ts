@@ -161,7 +161,7 @@ export class PollBuilder implements JSONEncodable<RESTAPIPoll> {
 	 * @param updater - The function to update the question with
 	 */
 	public updateQuestion(updater: (builder: PollQuestionBuilder) => void): this {
-		updater((this.data.question ??= new PollQuestionBuilder()));
+		updater(this.data.question);
 		return this;
 	}
 

@@ -1,6 +1,12 @@
 import type { APIPollMedia } from 'discord-api-types/v10';
 
+/**
+ * The base poll media builder that contains common symbols for poll media builders.
+ */
 export abstract class PollMediaBuilder {
+	/**
+	 * The API data associated with this poll media.
+	 */
 	protected readonly data: Partial<APIPollMedia>;
 
 	/**
