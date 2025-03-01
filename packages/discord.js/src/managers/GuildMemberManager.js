@@ -31,7 +31,7 @@ class GuildMemberManager extends CachedManager {
 
   /**
    * The cache of this Manager
-   * @type {Collection<Snowflake, GuildMember>}
+   * @type {Collection<Snowflake, GuildMember | PartialGuildMember>}
    * @name GuildMemberManager#cache
    */
 
@@ -42,7 +42,7 @@ class GuildMemberManager extends CachedManager {
   /**
    * Resolves a {@link UserResolvable} to a {@link GuildMember} object.
    * @param {UserResolvable} member The user that is part of the guild
-   * @returns {?GuildMember}
+   * @returns {?(GuildMember | PartialGuildMember)}
    */
   resolve(member) {
     const memberResolvable = super.resolve(member);
@@ -132,7 +132,7 @@ class GuildMemberManager extends CachedManager {
 
   /**
    * The client user as a GuildMember of this guild
-   * @type {?GuildMember}
+   * @type {?(GuildMember | PartialGuildMember)}
    * @readonly
    */
   get me() {

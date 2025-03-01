@@ -93,7 +93,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
 
   /**
    * The members in this voice-based channel
-   * @type {Collection<Snowflake, GuildMember>}
+   * @type {Collection<Snowflake, GuildMember | PartialGuildMember>}
    * @readonly
    */
   get members() {
