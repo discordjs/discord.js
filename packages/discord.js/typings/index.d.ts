@@ -3403,7 +3403,7 @@ export class Typing extends Base {
   public startedTimestamp: number;
   public get startedAt(): Date;
   public get guild(): Guild | null;
-  public get member(): GuildMember | null;
+  public member: GuildMember | null;
   public inGuild(): this is this & {
     channel: TextChannel | AnnouncementChannel | ThreadChannel;
     get guild(): Guild;
