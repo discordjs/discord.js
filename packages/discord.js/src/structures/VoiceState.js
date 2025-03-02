@@ -132,7 +132,7 @@ class VoiceState extends Base {
 
   /**
    * The member that this voice state belongs to
-   * @type {?(GuildMember | PartialGuildMember)}
+   * @type {?GuildMember}
    * @readonly
    */
   get member() {

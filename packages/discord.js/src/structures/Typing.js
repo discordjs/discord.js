@@ -63,7 +63,7 @@ class Typing extends Base {
 
   /**
    * The member who is typing
-   * @type {?(GuildMember | PartialGuildMember)}
+   * @type {?GuildMember}
    * @readonly
    */
   get member() {

@@ -677,7 +677,7 @@ export class BaseGuildVoiceChannel extends GuildChannel {
   public bitrate: number;
   public get full(): boolean;
   public get joinable(): boolean;
-  public get members(): Collection<Snowflake, GuildMember | PartialGuildMember>;
+  public get members(): Collection<Snowflake, GuildMember>;
   public nsfw: boolean;
   public rateLimitPerUser: number | null;
   public rtcRegion: string | null;
@@ -1541,10 +1541,7 @@ export class GuildBan extends Base {
 
 export abstract class GuildChannel extends BaseChannel {
   public constructor(guild: Guild, data?: RawGuildChannelData, client?: Client<true>, immediatePatch?: boolean);
-  private memberPermissions(
-    member: GuildMember | PartialGuildMember,
-    checkAdmin: boolean,
-  ): Readonly<PermissionsBitField>;
+  private memberPermissions(member: GuildMember, checkAdmin: boolean): Readonly<PermissionsBitField>;
   private rolePermissions(role: Role, checkAdmin: boolean): Readonly<PermissionsBitField>;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
@@ -1553,7 +1550,7 @@ export abstract class GuildChannel extends BaseChannel {
   public guild: Guild;
   public guildId: Snowflake;
   public get manageable(): boolean;
-  public get members(): Collection<Snowflake, GuildMember | PartialGuildMember>;
+  public get members(): Collection<Snowflake, GuildMember>;
   public name: string;
   public get parent(): CategoryChannel | null;
   public parentId: Snowflake | null;
@@ -1568,10 +1565,7 @@ export abstract class GuildChannel extends BaseChannel {
   public edit(options: GuildChannelEditOptions): Promise<this>;
   public equals(channel: GuildChannel): boolean;
   public lockPermissions(): Promise<this>;
-  public permissionsFor(
-    memberOrRole: GuildMember | PartialGuildMember | Role,
-    checkAdmin?: boolean,
-  ): Readonly<PermissionsBitField>;
+  public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<PermissionsBitField>;
   public permissionsFor(
     memberOrRole: UserResolvable | RoleResolvable,
     checkAdmin?: boolean,
@@ -2141,7 +2135,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public get hasThread(): boolean;
   public id: Snowflake;
   public interactionMetadata: MessageInteractionMetadata | null;
-  public get member(): GuildMember | PartialGuildMember | null;
+  public get member(): GuildMember | null;
   public mentions: MessageMentions<InGuild>;
   public nonce: string | number | null;
   public get partial(): false;
@@ -2376,7 +2370,7 @@ export class MessageMentions<InGuild extends boolean = boolean> {
   );
   private _channels: Collection<Snowflake, Channel> | null;
   private readonly _content: string;
-  private _members: Collection<Snowflake, GuildMember | PartialGuildMember> | null;
+  private _members: Collection<Snowflake, GuildMember> | null;
   private _parsedUsers: Collection<Snowflake, User> | null;
 
   public get channels(): Collection<Snowflake, Channel>;
@@ -2384,7 +2378,7 @@ export class MessageMentions<InGuild extends boolean = boolean> {
   public everyone: boolean;
   public readonly guild: If<InGuild, Guild>;
   public has(data: UserResolvable | RoleResolvable | ChannelResolvable, options?: MessageMentionsHasOptions): boolean;
-  public get members(): If<InGuild, Collection<Snowflake, GuildMember | PartialGuildMember>>;
+  public get members(): If<InGuild, Collection<Snowflake, GuildMember>>;
   public get parsedUsers(): Collection<Snowflake, User>;
   public repliedUser: User | null;
   public roles: Collection<Snowflake, Role>;
@@ -2809,7 +2803,7 @@ export class Role extends Base {
   public hoist: boolean;
   public id: Snowflake;
   public managed: boolean;
-  public get members(): Collection<Snowflake, GuildMember | PartialGuildMember>;
+  public get members(): Collection<Snowflake, GuildMember>;
   public mentionable: boolean;
   public name: string;
   public permissions: Readonly<PermissionsBitField>;
@@ -3361,10 +3355,7 @@ export class ThreadChannel<ThreadOnly extends boolean = boolean> extends BaseCha
   public edit(options: ThreadEditOptions): Promise<this>;
   public join(): Promise<this>;
   public leave(): Promise<this>;
-  public permissionsFor(
-    memberOrRole: GuildMember | PartialGuildMember | Role,
-    checkAdmin?: boolean,
-  ): Readonly<PermissionsBitField>;
+  public permissionsFor(memberOrRole: GuildMember | Role, checkAdmin?: boolean): Readonly<PermissionsBitField>;
   public permissionsFor(
     memberOrRole: UserResolvable | RoleResolvable,
     checkAdmin?: boolean,
@@ -3412,7 +3403,7 @@ export class Typing extends Base {
   public startedTimestamp: number;
   public get startedAt(): Date;
   public get guild(): Guild | null;
-  public get member(): GuildMember | PartialGuildMember | null;
+  public get member(): GuildMember | null;
   public inGuild(): this is this & {
     channel: TextChannel | AnnouncementChannel | ThreadChannel;
     get guild(): Guild;
@@ -3595,7 +3586,7 @@ export class VoiceState extends Base {
   public get deaf(): boolean | null;
   public guild: Guild;
   public id: Snowflake;
-  public get member(): GuildMember | PartialGuildMember | null;
+  public get member(): GuildMember | null;
   public get mute(): boolean | null;
   public selfDeaf: boolean | null;
   public selfMute: boolean | null;
@@ -4233,7 +4224,7 @@ export interface AddOrRemoveGuildMemberRoleOptions {
   reason?: string;
 }
 
-export class GuildMemberManager extends CachedManager<Snowflake, GuildMember | PartialGuildMember, UserResolvable> {
+export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, UserResolvable> {
   private constructor(guild: Guild, iterable?: Iterable<RawGuildMemberData>);
   public guild: Guild;
   public get me(): GuildMember | PartialGuildMember | null;
