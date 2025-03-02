@@ -19,11 +19,10 @@ describe('Thumbnail', () => {
 			expect(thumbnail.toJSON()).toEqual({ type: ComponentType.Thumbnail, media: { url: 'https://google.com' } });
 		});
 
-		test.each(['owo', 'discord://user'])('GIVEN an embed with an invalid URL (%s) THEN throws error', (input) => {
+		test.each(['owo', 'discord://user'])('GIVEN a thumbnail with an invalid URL (%s) THEN throws error', (input) => {
 			const thumbnail = new ThumbnailBuilder();
 
-			thumbnail.setURL(input);
-			expect(() => thumbnail.toJSON()).toThrowError();
+			expect(() => thumbnail.setURL(input)).toThrowError();
 		});
 	});
 
@@ -50,8 +49,7 @@ describe('Thumbnail', () => {
 		test('GIVEN a thumbnail with an invalid description THEN throws error', () => {
 			const thumbnail = new ThumbnailBuilder();
 
-			thumbnail.setDescription('a'.repeat(1_025));
-			expect(() => thumbnail.toJSON()).toThrowError();
+			expect(() => thumbnail.setDescription('a'.repeat(1_025))).toThrowError();
 		});
 	});
 

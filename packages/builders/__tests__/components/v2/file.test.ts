@@ -23,9 +23,8 @@ describe('File', () => {
 
 		test('GIVEN a file with an invalid url THEN throws error', () => {
 			const file = new FileBuilder();
-			file.setURL('https://google.com');
 
-			expect(() => file.toJSON()).toThrowError();
+			expect(() => file.setURL('https://google.com')).toThrowError();
 		});
 	});
 
