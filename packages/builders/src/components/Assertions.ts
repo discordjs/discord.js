@@ -3,6 +3,14 @@ import { ButtonStyle, ChannelType, type APIMessageComponentEmoji } from 'discord
 import { isValidationEnabled } from '../util/validation.js';
 import { StringSelectMenuOptionBuilder } from './selectMenu/StringSelectMenuOption.js';
 
+export const idValidator = s
+	.number()
+	.int()
+	.greaterThanOrEqual(1)
+	.lessThan(1 << 32)
+	.optional()
+	.setValidationEnabled(isValidationEnabled);
+
 export const customIdValidator = s
 	.string()
 	.lengthGreaterThanOrEqual(1)

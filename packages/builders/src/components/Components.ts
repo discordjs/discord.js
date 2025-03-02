@@ -13,6 +13,7 @@ import { RoleSelectMenuBuilder } from './selectMenu/RoleSelectMenu.js';
 import { StringSelectMenuBuilder } from './selectMenu/StringSelectMenu.js';
 import { UserSelectMenuBuilder } from './selectMenu/UserSelectMenu.js';
 import { TextInputBuilder } from './textInput/TextInput.js';
+import { FileBuilder } from './v2/File.js';
 
 /**
  * Components here are mapped to their respective builder.
@@ -97,6 +98,8 @@ export function createComponentBuilder(
 			return new MentionableSelectMenuBuilder(data);
 		case ComponentType.ChannelSelect:
 			return new ChannelSelectMenuBuilder(data);
+		case ComponentType.File:
+			return new FileBuilder(data);
 		default:
 			// TODO: add again when components v2 gets implemented @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);

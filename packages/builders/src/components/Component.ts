@@ -4,12 +4,17 @@ import type {
 	APIComponentInActionRow,
 	APIBaseComponent,
 	ComponentType,
+	APIMessageComponent,
 } from 'discord-api-types/v10';
+import { idValidator } from './Assertions';
 
 /**
  * Any action row component data represented as an object.
  */
-export type AnyAPIActionRowComponent = APIActionRowComponent<APIComponentInActionRow> | APIComponentInActionRow;
+export type AnyAPIActionRowComponent =
+	| APIActionRowComponent<APIComponentInActionRow>
+	| APIComponentInActionRow
+	| APIMessageComponent;
 
 /**
  * The base component builder that contains common symbols for all sorts of components.
@@ -41,5 +46,15 @@ export abstract class ComponentBuilder<
 	 */
 	public constructor(data: Partial<DataType>) {
 		this.data = data;
+	}
+
+	/**
+	 * Sets the id (not the custom id) for this component.
+	 *
+	 * @param id - The id for this component
+	 */
+	public setId(id?: number | undefined) {
+		this.data.id = idValidator.parse(id);
+		return this;
 	}
 }
