@@ -941,8 +941,8 @@ importers:
         specifier: 3.5.3
         version: 3.5.3
       discord-api-types:
-        specifier: ^0.37.119
-        version: 0.37.119
+        specifier: 0.38.0-next-1740095508888
+        version: 0.38.0-next-1740095508888
       fast-deep-equal:
         specifier: 3.1.3
         version: 3.1.3
