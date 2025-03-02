@@ -1,6 +1,13 @@
-import type { APIButtonComponent, APIMessageComponent, APIModalComponent } from 'discord-api-types/v10';
+import type {
+	APIActionRowComponent,
+	APIButtonComponent,
+	APIMessageActionRowComponent,
+	APIMessageComponent,
+	APIModalComponent,
+	APITextInputComponent,
+} from 'discord-api-types/v10';
 import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
-import { ActionRowBuilder } from './ActionRow.js';
+import { MessageActionRowBuilder, ModalActionRowBuilder } from './ActionRow.js';
 import type { AnyAPIActionRowComponent } from './Component.js';
 import { ComponentBuilder } from './Component.js';
 import type { BaseButtonBuilder } from './button/Button.js';
@@ -22,12 +29,17 @@ import { TextInputBuilder } from './textInput/TextInput.js';
 /**
  * The builders that may be used for messages.
  */
-export type MessageComponentBuilder = ActionRowBuilder | MessageActionRowComponentBuilder;
+export type MessageComponentBuilder = MessageActionRowBuilder | MessageActionRowComponentBuilder;
 
 /**
  * The builders that may be used for modals.
  */
-export type ModalComponentBuilder = ActionRowBuilder | ModalActionRowComponentBuilder;
+export type ModalComponentBuilder = ModalActionRowBuilder | ModalActionRowComponentBuilder;
+
+/**
+ * Any action row builder
+ */
+export type ActionRowBuilder = MessageActionRowBuilder | ModalActionRowBuilder;
 
 /**
  * Any button builder
@@ -129,7 +141,12 @@ export function createComponentBuilder(
 
 	switch (data.type) {
 		case ComponentType.ActionRow:
-			return new ActionRowBuilder(data);
+			if (data.components[0]?.type === ComponentType.TextInput) {
+				return new ModalActionRowBuilder(data as APIActionRowComponent<APITextInputComponent>);
+			} else {
+				return new MessageActionRowBuilder(data as APIActionRowComponent<APIMessageActionRowComponent>);
+			}
+
 		case ComponentType.Button:
 			return createButtonBuilder(data);
 		case ComponentType.StringSelect:

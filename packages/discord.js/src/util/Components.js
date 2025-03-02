@@ -1,6 +1,5 @@
 'use strict';
 
-const { ComponentBuilder } = require('@discordjs/builders');
 const { ComponentType } = require('discord-api-types/v10');
 
 /**
@@ -63,11 +62,6 @@ const { ComponentType } = require('discord-api-types/v10');
  */
 
 /**
- * Any emoji data that can be used within a button
- * @typedef {APIMessageComponentEmoji|string} ComponentEmojiResolvable
- */
-
-/**
  * Transforms API data into a component
  * @param {APIMessageComponent|Component} data The data to create the component from
  * @returns {Component}
@@ -100,56 +94,14 @@ function createComponent(data) {
   }
 }
 
-/**
- * Transforms API data into a component builder
- * @param {APIMessageComponent|ComponentBuilder} data The data to create the component from
- * @returns {ComponentBuilder}
- * @ignore
- */
-function createComponentBuilder(data) {
-  if (data instanceof ComponentBuilder) {
-    return data;
-  }
-
-  switch (data.type) {
-    case ComponentType.ActionRow:
-      return new ActionRowBuilder(data);
-    case ComponentType.Button:
-      return new ButtonBuilder(data);
-    case ComponentType.StringSelect:
-      return new StringSelectMenuBuilder(data);
-    case ComponentType.TextInput:
-      return new TextInputBuilder(data);
-    case ComponentType.UserSelect:
-      return new UserSelectMenuBuilder(data);
-    case ComponentType.RoleSelect:
-      return new RoleSelectMenuBuilder(data);
-    case ComponentType.MentionableSelect:
-      return new MentionableSelectMenuBuilder(data);
-    case ComponentType.ChannelSelect:
-      return new ChannelSelectMenuBuilder(data);
-    default:
-      return new ComponentBuilder(data);
-  }
-}
-
 exports.createComponent = createComponent;
-exports.createComponentBuilder = createComponentBuilder;
 
 const { ActionRow } = require('../structures/ActionRow.js');
-const { ActionRowBuilder } = require('../structures/ActionRowBuilder.js');
-const { ButtonBuilder } = require('../structures/ButtonBuilder.js');
 const { ButtonComponent } = require('../structures/ButtonComponent.js');
-const { ChannelSelectMenuBuilder } = require('../structures/ChannelSelectMenuBuilder.js');
 const { ChannelSelectMenuComponent } = require('../structures/ChannelSelectMenuComponent.js');
 const { Component } = require('../structures/Component.js');
-const { MentionableSelectMenuBuilder } = require('../structures/MentionableSelectMenuBuilder.js');
 const { MentionableSelectMenuComponent } = require('../structures/MentionableSelectMenuComponent.js');
-const { RoleSelectMenuBuilder } = require('../structures/RoleSelectMenuBuilder.js');
 const { RoleSelectMenuComponent } = require('../structures/RoleSelectMenuComponent.js');
-const { StringSelectMenuBuilder } = require('../structures/StringSelectMenuBuilder.js');
 const { StringSelectMenuComponent } = require('../structures/StringSelectMenuComponent.js');
-const { TextInputBuilder } = require('../structures/TextInputBuilder.js');
 const { TextInputComponent } = require('../structures/TextInputComponent.js');
-const { UserSelectMenuBuilder } = require('../structures/UserSelectMenuBuilder.js');
 const { UserSelectMenuComponent } = require('../structures/UserSelectMenuComponent.js');
