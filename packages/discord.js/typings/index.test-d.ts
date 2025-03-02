@@ -100,7 +100,6 @@ import {
   GuildAuditLogs,
   type AuditLogChange,
   StageInstance,
-  ActionRowBuilder,
   ButtonComponent,
   StringSelectMenuComponent,
   RepliableInteraction,
@@ -213,6 +212,7 @@ import {
   PrimaryButtonBuilder,
   resolveColor,
   createComponentBuilder,
+  MessageActionRowBuilder,
 } from './index.js';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
 import type { ContextMenuCommandBuilder, ChatInputCommandBuilder } from '@discordjs/builders';
@@ -342,7 +342,7 @@ client.on('interactionCreate', async interaction => {
 
   if (interaction.type !== InteractionType.ApplicationCommand) return;
 
-  const actionRow = new ActionRowBuilder({
+  const actionRow = new MessageActionRowBuilder({
     type: ComponentType.ActionRow,
     components: [{ custom_id: '123', label: 'test', style: ButtonStyle.Primary, type: ComponentType.Button }],
   });
@@ -354,7 +354,7 @@ client.on('interactionCreate', async interaction => {
   // @ts-expect-error
   interaction.reply({ content: 'Hi!', components: [[button]] });
 
-  void new ActionRowBuilder({});
+  void new MessageActionRowBuilder({});
 
   // @ts-expect-error
   await interaction.reply({ content: 'Hi!', components: [button] });
@@ -613,7 +613,7 @@ client.on('messageCreate', async message => {
   });
 
   // Check that both builders and builder data can be sent in messages
-  const row = new ActionRowBuilder();
+  const row = new MessageActionRowBuilder();
 
   const rawButtonsRow: ActionRowData<ButtonComponentData> = {
     type: ComponentType.ActionRow,
@@ -1329,7 +1329,7 @@ client.on('guildCreate', async g => {
       ],
     };
 
-    const row2 = new ActionRowBuilder({
+    const row2 = new MessageActionRowBuilder({
       type: ComponentType.ActionRow,
       components: [
         { type: ComponentType.Button, style: ButtonStyle.Primary, label: 'string', custom_id: 'foo' },
@@ -2429,8 +2429,8 @@ new EmbedBuilder(embedData);
 declare const embedComp: Embed;
 new EmbedBuilder(embedComp.toJSON());
 
-declare const actionRowComp: ActionRow<ActionRowComponent>;
-new ActionRowBuilder(actionRowComp.toJSON());
+declare const actionRowComp: ActionRow<MessageActionRowComponent>;
+new MessageActionRowBuilder(actionRowComp.toJSON());
 
 type UserMentionChannels = DMChannel | PartialDMChannel;
 declare const channelMentionChannels: Exclude<Channel | DirectoryChannel, UserMentionChannels>;

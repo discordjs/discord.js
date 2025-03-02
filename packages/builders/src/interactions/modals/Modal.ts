@@ -6,7 +6,7 @@ import type {
 	APIModalActionRowComponent,
 	APIModalInteractionResponseCallbackData,
 } from 'discord-api-types/v10';
-import { ActionRowBuilder } from '../../components/ActionRow.js';
+import { ModalActionRowBuilder } from '../../components/ActionRow.js';
 import { createComponentBuilder } from '../../components/Components.js';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { resolveBuilder } from '../../util/resolveBuilder.js';
@@ -14,7 +14,7 @@ import { validate } from '../../util/validation.js';
 import { modalPredicate } from './Assertions.js';
 
 export interface ModalBuilderData extends Partial<Omit<APIModalInteractionResponseCallbackData, 'components'>> {
-	components: ActionRowBuilder[];
+	components: ModalActionRowBuilder[];
 }
 
 /**
@@ -29,7 +29,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	/**
 	 * The components within this modal.
 	 */
-	public get components(): readonly ActionRowBuilder[] {
+	public get components(): readonly ModalActionRowBuilder[] {
 		return this.data.components;
 	}
 
@@ -41,7 +41,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	public constructor({ components = [], ...data }: Partial<APIModalInteractionResponseCallbackData> = {}) {
 		this.data = {
 			...structuredClone(data),
-			components: components.map((component) => createComponentBuilder(component)),
+			components: components.map((component) => createComponentBuilder(component)) as ModalActionRowBuilder[],
 		};
 	}
 
@@ -72,13 +72,13 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	 */
 	public addActionRows(
 		...components: RestOrArray<
-			| ActionRowBuilder
 			| APIActionRowComponent<APIModalActionRowComponent>
-			| ((builder: ActionRowBuilder) => ActionRowBuilder)
+			| ModalActionRowBuilder
+			| ((builder: ModalActionRowBuilder) => ModalActionRowBuilder)
 		>
 	) {
 		const normalized = normalizeArray(components);
-		const resolved = normalized.map((row) => resolveBuilder(row, ActionRowBuilder));
+		const resolved = normalized.map((row) => resolveBuilder(row, ModalActionRowBuilder));
 
 		this.data.components.push(...resolved);
 
@@ -92,9 +92,9 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	 */
 	public setActionRows(
 		...components: RestOrArray<
-			| ActionRowBuilder
 			| APIActionRowComponent<APIModalActionRowComponent>
-			| ((builder: ActionRowBuilder) => ActionRowBuilder)
+			| ModalActionRowBuilder
+			| ((builder: ModalActionRowBuilder) => ModalActionRowBuilder)
 		>
 	) {
 		const normalized = normalizeArray(components);
@@ -136,12 +136,12 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 		index: number,
 		deleteCount: number,
 		...rows: (
-			| ActionRowBuilder
 			| APIActionRowComponent<APIModalActionRowComponent>
-			| ((builder: ActionRowBuilder) => ActionRowBuilder)
+			| ModalActionRowBuilder
+			| ((builder: ModalActionRowBuilder) => ModalActionRowBuilder)
 		)[]
 	): this {
-		const resolved = rows.map((row) => resolveBuilder(row, ActionRowBuilder));
+		const resolved = rows.map((row) => resolveBuilder(row, ModalActionRowBuilder));
 		this.data.components.splice(index, deleteCount, ...resolved);
 
 		return this;
