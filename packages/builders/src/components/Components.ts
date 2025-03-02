@@ -1,8 +1,8 @@
 import { ComponentType, type APIMessageComponent, type APIModalComponent } from 'discord-api-types/v10';
 import {
 	ActionRowBuilder,
+	type MessageActionRowComponentBuilder,
 	type AnyComponentBuilder,
-	type MessageComponentBuilder,
 	type ModalComponentBuilder,
 } from './ActionRow.js';
 import { ComponentBuilder } from './Component.js';
@@ -13,7 +13,25 @@ import { RoleSelectMenuBuilder } from './selectMenu/RoleSelectMenu.js';
 import { StringSelectMenuBuilder } from './selectMenu/StringSelectMenu.js';
 import { UserSelectMenuBuilder } from './selectMenu/UserSelectMenu.js';
 import { TextInputBuilder } from './textInput/TextInput.js';
+import { ContainerBuilder } from './v2/Container.js';
 import { FileBuilder } from './v2/File.js';
+import { MediaGalleryBuilder } from './v2/MediaGallery.js';
+import { SectionBuilder } from './v2/Section.js';
+import { SeparatorBuilder } from './v2/Separator.js';
+import { TextDisplayBuilder } from './v2/TextDisplay.js';
+import { ThumbnailBuilder } from './v2/Thumbnail.js';
+
+/**
+ * The builders that may be used for messages.
+ */
+export type MessageComponentBuilder =
+	| ActionRowBuilder<MessageActionRowComponentBuilder>
+	| ContainerBuilder
+	| FileBuilder
+	| MessageActionRowComponentBuilder
+	| SeparatorBuilder
+	| TextDisplayBuilder
+	| ThumbnailBuilder;
 
 /**
  * Components here are mapped to their respective builder.
@@ -51,6 +69,34 @@ export interface MappedComponentTypes {
 	 * The channel select component type is associated with a {@link ChannelSelectMenuBuilder}.
 	 */
 	[ComponentType.ChannelSelect]: ChannelSelectMenuBuilder;
+	/**
+	 * The file component type is associated with a {@link FileBuilder}.
+	 */
+	[ComponentType.File]: FileBuilder;
+	/**
+	 * The separator component type is associated with a {@link SeparatorBuilder}.
+	 */
+	[ComponentType.Separator]: SeparatorBuilder;
+	/**
+	 * The container component type is associated with a {@link ContainerBuilder}.
+	 */
+	[ComponentType.Container]: ContainerBuilder;
+	/**
+	 * The text display component type is associated with a {@link TextDisplayBuilder}.
+	 */
+	[ComponentType.TextDisplay]: TextDisplayBuilder;
+	/**
+	 * The thumbnail component type is associated with a {@link ThumbnailBuilder}.
+	 */
+	[ComponentType.Thumbnail]: ThumbnailBuilder;
+	/**
+	 * The section component type is associated with a {@link SectionBuilder}.
+	 */
+	[ComponentType.Section]: SectionBuilder;
+	/**
+	 * The media gallery component type is associated with a {@link MediaGalleryBuilder}.
+	 */
+	[ComponentType.MediaGallery]: MediaGalleryBuilder;
 }
 
 /**
@@ -100,8 +146,20 @@ export function createComponentBuilder(
 			return new ChannelSelectMenuBuilder(data);
 		case ComponentType.File:
 			return new FileBuilder(data);
+		case ComponentType.Container:
+			return new ContainerBuilder(data);
+		case ComponentType.Section:
+			return new SectionBuilder(data);
+		case ComponentType.Separator:
+			return new SeparatorBuilder(data);
+		case ComponentType.TextDisplay:
+			return new TextDisplayBuilder(data);
+		case ComponentType.Thumbnail:
+			return new ThumbnailBuilder(data);
+		case ComponentType.MediaGallery:
+			return new MediaGalleryBuilder(data);
 		default:
-			// TODO: add again when components v2 gets implemented @ts-expect-error This case can still occur if we get a newer unsupported component type
+			// @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);
 	}
 }

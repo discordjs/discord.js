@@ -19,13 +19,6 @@ import type { UserSelectMenuBuilder } from './selectMenu/UserSelectMenu.js';
 import type { TextInputBuilder } from './textInput/TextInput.js';
 
 /**
- * The builders that may be used for messages.
- */
-export type MessageComponentBuilder =
-	| ActionRowBuilder<MessageActionRowComponentBuilder>
-	| MessageActionRowComponentBuilder;
-
-/**
  * The builders that may be used for modals.
  */
 export type ModalComponentBuilder = ActionRowBuilder<ModalActionRowComponentBuilder> | ModalActionRowComponentBuilder;

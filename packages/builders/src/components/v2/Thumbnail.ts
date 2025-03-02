@@ -1,7 +1,7 @@
 import type { APIThumbnailComponent } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
 import { ComponentBuilder } from '../Component';
-import { thumbnailDescriptionPredicate, spoilerPredicate, unfurledMediaItemPredicate } from './Assertions';
+import { descriptionPredicate, spoilerPredicate, unfurledMediaItemPredicate } from './Assertions';
 
 export class ThumbnailBuilder extends ComponentBuilder<APIThumbnailComponent> {
 	public constructor(data: Partial<APIThumbnailComponent> = {}) {
@@ -18,7 +18,7 @@ export class ThumbnailBuilder extends ComponentBuilder<APIThumbnailComponent> {
 	 * @param description - The description to use
 	 */
 	public setDescription(description?: string | undefined) {
-		this.data.description = thumbnailDescriptionPredicate.parse(description);
+		this.data.description = descriptionPredicate.parse(description);
 		return this;
 	}
 

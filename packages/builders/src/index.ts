@@ -35,7 +35,11 @@ export * from './components/selectMenu/StringSelectMenuOption.js';
 export * from './components/selectMenu/UserSelectMenu.js';
 
 export * as ComponentsV2Assertions from './components/v2/Assertions.js';
+export * from './components/v2/Container.js';
 export * from './components/v2/File.js';
+export * from './components/v2/MediaGallery.js';
+export * from './components/v2/MediaGalleryItem.js';
+export * from './components/v2/Section.js';
 export * from './components/v2/Separator.js';
 export * from './components/v2/TextDisplay.js';
 export * from './components/v2/Thumbnail.js';

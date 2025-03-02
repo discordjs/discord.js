@@ -5,9 +5,9 @@ import { StringSelectMenuOptionBuilder } from './selectMenu/StringSelectMenuOpti
 
 export const idValidator = s
 	.number()
-	.int()
+	.safeInt()
 	.greaterThanOrEqual(1)
-	.lessThan(1 << 32)
+	.lessThan(4_294_967_296)
 	.optional()
 	.setValidationEnabled(isValidationEnabled);
 

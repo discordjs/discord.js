@@ -1,6 +1,9 @@
 import { s } from '@sapphire/shapeshift';
 import { SeparatorSpacingSize } from 'discord-api-types/v10';
+import { colorPredicate } from '../../messages/embed/Assertions';
 import { isValidationEnabled } from '../../util/validation';
+import { ButtonBuilder } from '../button/Button';
+import { ThumbnailBuilder } from './Thumbnail';
 
 export const unfurledMediaItemPredicate = s
 	.object({
@@ -13,11 +16,11 @@ export const unfurledMediaItemPredicate = s
 	})
 	.setValidationEnabled(isValidationEnabled);
 
-export const thumbnailDescriptionPredicate = s
+export const descriptionPredicate = s
 	.string()
 	.lengthGreaterThanOrEqual(1)
 	.lengthLessThanOrEqual(1_024)
-	.optional()
+	.nullish()
 	.setValidationEnabled(isValidationEnabled);
 
 export const filePredicate = s
@@ -34,8 +37,15 @@ export const dividerPredicate = s.boolean();
 
 export const spacingPredicate = s.nativeEnum(SeparatorSpacingSize);
 
+export const containerColorPredicate = colorPredicate.nullish();
+
 export const textDisplayContentPredicate = s
 	.string()
 	.lengthGreaterThanOrEqual(1)
 	.lengthLessThanOrEqual(4_000)
+	.setValidationEnabled(isValidationEnabled);
+
+export const accessoryPredicate = s
+	.instance(ButtonBuilder)
+	.or(s.instance(ThumbnailBuilder))
 	.setValidationEnabled(isValidationEnabled);
