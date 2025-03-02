@@ -98,7 +98,7 @@ export function createComponentBuilder(
 		case ComponentType.ChannelSelect:
 			return new ChannelSelectMenuBuilder(data);
 		default:
-			// @ts-expect-error This case can still occur if we get a newer unsupported component type
+			// TODO: add again when components v2 gets implemented @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);
 	}
 }

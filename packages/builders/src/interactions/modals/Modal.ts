@@ -3,7 +3,7 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type {
 	APIActionRowComponent,
-	APIModalActionRowComponent,
+	APIComponentInModalActionRow,
 	APIModalInteractionResponseCallbackData,
 } from 'discord-api-types/v10';
 import { ActionRowBuilder, type ModalActionRowComponentBuilder } from '../../components/ActionRow.js';
@@ -64,7 +64,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	 */
 	public addComponents(
 		...components: RestOrArray<
-			ActionRowBuilder<ModalActionRowComponentBuilder> | APIActionRowComponent<APIModalActionRowComponent>
+			ActionRowBuilder<ModalActionRowComponentBuilder> | APIActionRowComponent<APIComponentInModalActionRow>
 		>
 	) {
 		this.components.push(

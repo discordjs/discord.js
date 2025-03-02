@@ -3,9 +3,9 @@
 import {
 	type APIActionRowComponent,
 	ComponentType,
-	type APIMessageActionRowComponent,
-	type APIModalActionRowComponent,
-	type APIActionRowComponentTypes,
+	type APIComponentInMessageActionRow,
+	type APIComponentInModalActionRow,
+	type APIComponentInActionRow,
 } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../util/normalizeArray.js';
 import { ComponentBuilder } from './Component.js';
@@ -57,7 +57,7 @@ export type AnyComponentBuilder = MessageActionRowComponentBuilder | ModalAction
  * @typeParam ComponentType - The types of components this action row holds
  */
 export class ActionRowBuilder<ComponentType extends AnyComponentBuilder> extends ComponentBuilder<
-	APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>
+	APIActionRowComponent<APIComponentInMessageActionRow | APIComponentInModalActionRow>
 > {
 	/**
 	 * The components within this action row.
@@ -98,7 +98,7 @@ export class ActionRowBuilder<ComponentType extends AnyComponentBuilder> extends
 	 * 	.addComponents(button2, button3);
 	 * ```
 	 */
-	public constructor({ components, ...data }: Partial<APIActionRowComponent<APIActionRowComponentTypes>> = {}) {
+	public constructor({ components, ...data }: Partial<APIActionRowComponent<APIComponentInActionRow>> = {}) {
 		super({ type: ComponentType.ActionRow, ...data });
 		this.components = (components?.map((component) => createComponentBuilder(component)) ?? []) as ComponentType[];
 	}
