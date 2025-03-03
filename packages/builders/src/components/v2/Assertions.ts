@@ -2,7 +2,9 @@ import { s } from '@sapphire/shapeshift';
 import { SeparatorSpacingSize } from 'discord-api-types/v10';
 import { colorPredicate } from '../../messages/embed/Assertions';
 import { isValidationEnabled } from '../../util/validation';
+import { ComponentBuilder } from '../Component';
 import { ButtonBuilder } from '../button/Button';
+import type { ContainerComponentBuilder } from './Container';
 import type { MediaGalleryItemBuilder } from './MediaGalleryItem';
 import type { TextDisplayBuilder } from './TextDisplay';
 import { ThumbnailBuilder } from './Thumbnail';
@@ -57,4 +59,14 @@ export function assertReturnOfBuilder<ReturnType extends MediaGalleryItemBuilder
 	ExpectedInstanceOf: new () => ReturnType,
 ): asserts input is ReturnType {
 	s.instance(ExpectedInstanceOf).parse(input);
+}
+
+export function validateComponentArray<
+	ReturnType extends ContainerComponentBuilder | MediaGalleryItemBuilder = ContainerComponentBuilder,
+>(input: unknown, min: number, max: number, ExpectedInstanceOf?: new () => ReturnType): asserts input is ReturnType[] {
+	(ExpectedInstanceOf ? s.instance(ExpectedInstanceOf) : s.instance(ComponentBuilder))
+		.array()
+		.lengthGreaterThanOrEqual(min)
+		.lengthLessThanOrEqual(max)
+		.parse(input);
 }

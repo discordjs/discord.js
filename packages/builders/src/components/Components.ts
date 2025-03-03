@@ -1,3 +1,4 @@
+import type { JSONEncodable } from '@discordjs/util';
 import { ComponentType, type APIMessageComponent, type APIModalComponent } from 'discord-api-types/v10';
 import {
 	ActionRowBuilder,
@@ -162,4 +163,26 @@ export function createComponentBuilder(
 			// @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);
 	}
+}
+
+function isBuilder<Builder extends JSONEncodable<any>>(
+	builder: unknown,
+	Constructor: new () => Builder,
+): builder is Builder {
+	return builder instanceof Constructor;
+}
+
+export function resolveBuilder<ComponentType extends Record<PropertyKey, any>, Builder extends JSONEncodable<any>>(
+	builder: Builder | ComponentType | ((builder: Builder) => Builder),
+	Constructor: new (data?: ComponentType) => Builder,
+) {
+	if (isBuilder(builder, Constructor)) {
+		return builder;
+	}
+
+	if (typeof builder === 'function') {
+		return builder(new Constructor());
+	}
+
+	return new Constructor(builder);
 }

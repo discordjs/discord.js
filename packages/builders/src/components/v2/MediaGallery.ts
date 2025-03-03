@@ -4,7 +4,8 @@ import type { APIMediaGalleryComponent } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { ComponentBuilder } from '../Component.js';
-import { assertReturnOfBuilder } from './Assertions.js';
+import { resolveBuilder } from '../Components.js';
+import { assertReturnOfBuilder, validateComponentArray } from './Assertions.js';
 import { MediaGalleryItemBuilder } from './MediaGalleryItem.js';
 
 /**
@@ -19,7 +20,7 @@ export class MediaGalleryBuilder extends ComponentBuilder<APIMediaGalleryCompone
 	/**
 	 * Creates a new media gallery from API data.
 	 *
-	 * @param data - The API data to create this container with
+	 * @param data - The API data to create this media gallery with
 	 * @example
 	 * Creating a media gallery from an API data object:
 	 * ```ts
@@ -65,7 +66,7 @@ export class MediaGalleryBuilder extends ComponentBuilder<APIMediaGalleryCompone
 	) {
 		this.items.push(
 			...normalizeArray(items).map((input) => {
-				const result = typeof input === 'function' ? input(new MediaGalleryItemBuilder()) : input;
+				const result = resolveBuilder(input, MediaGalleryItemBuilder);
 
 				assertReturnOfBuilder(result, MediaGalleryItemBuilder);
 				return result;
@@ -75,18 +76,22 @@ export class MediaGalleryBuilder extends ComponentBuilder<APIMediaGalleryCompone
 	}
 
 	/**
-	 * Sets items for this media gallery.
+	 * Removes, replaces, or inserts media gallery items for this media gallery.
 	 *
-	 * @param items - The items to set
+	 * @param index - The index to start removing, replacing or inserting items
+	 * @param deleteCount - The amount of items to remove
+	 * @param items - The items to insert
 	 */
-	public setItems(
+	public spliceItems(
+		index: number,
+		deleteCount: number,
 		...items: RestOrArray<MediaGalleryItemBuilder | ((builder: MediaGalleryItemBuilder) => MediaGalleryItemBuilder)>
 	) {
 		this.items.splice(
-			0,
-			this.items.length,
+			index,
+			deleteCount,
 			...normalizeArray(items).map((input) => {
-				const result = typeof input === 'function' ? input(new MediaGalleryItemBuilder()) : input;
+				const result = resolveBuilder(input, MediaGalleryItemBuilder);
 
 				assertReturnOfBuilder(result, MediaGalleryItemBuilder);
 				return result;
@@ -99,6 +104,7 @@ export class MediaGalleryBuilder extends ComponentBuilder<APIMediaGalleryCompone
 	 * {@inheritDoc ComponentBuilder.toJSON}
 	 */
 	public toJSON(): APIMediaGalleryComponent {
+		validateComponentArray(this.items, 1, 10, MediaGalleryItemBuilder);
 		return {
 			...this.data,
 			items: this.items.map((item) => item.toJSON()),

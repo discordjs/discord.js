@@ -27,11 +27,16 @@ const galleryAttachmentData: APIMediaGalleryComponent = {
 
 describe('Media Gallery Components', () => {
 	describe('Assertion Tests', () => {
+		test('GIVEN an empty media gallery THEN throws error', () => {
+			const gallery = new MediaGalleryBuilder();
+			expect(() => gallery.toJSON()).toThrow();
+		});
+
 		test('GIVEN valid items THEN do not throw', () => {
 			expect(() => new MediaGalleryBuilder().addItems(new MediaGalleryItemBuilder())).not.toThrowError();
-			expect(() => new MediaGalleryBuilder().setItems(new MediaGalleryItemBuilder())).not.toThrowError();
+			expect(() => new MediaGalleryBuilder().spliceItems(0, 0, new MediaGalleryItemBuilder())).not.toThrowError();
 			expect(() => new MediaGalleryBuilder().addItems([new MediaGalleryItemBuilder()])).not.toThrowError();
-			expect(() => new MediaGalleryBuilder().setItems([new MediaGalleryItemBuilder()])).not.toThrowError();
+			expect(() => new MediaGalleryBuilder().spliceItems(0, 0, [new MediaGalleryItemBuilder()])).not.toThrowError();
 		});
 
 		test('GIVEN valid JSON input THEN valid JSON output is given', () => {
@@ -52,7 +57,6 @@ describe('Media Gallery Components', () => {
 			};
 
 			expect(new MediaGalleryBuilder(mediaGalleryData).toJSON()).toEqual(mediaGalleryData);
-			expect(new MediaGalleryBuilder().toJSON()).toEqual({ type: ComponentType.MediaGallery, items: [] });
 			expect(() => createComponentBuilder({ type: ComponentType.MediaGallery, items: [] })).not.toThrowError();
 		});
 
@@ -80,7 +84,6 @@ describe('Media Gallery Components', () => {
 
 			expect(new MediaGalleryBuilder(galleryHttpsDisplay).toJSON()).toEqual(galleryHttpsDisplay);
 			expect(new MediaGalleryBuilder(galleryAttachmentData).toJSON()).toEqual(galleryAttachmentData);
-			expect(new MediaGalleryBuilder().toJSON()).toEqual({ type: ComponentType.MediaGallery, items: [] });
 			expect(() => createComponentBuilder({ type: ComponentType.MediaGallery, items: [] })).not.toThrowError();
 		});
 
@@ -111,7 +114,7 @@ describe('Media Gallery Components', () => {
 			).toEqual(galleryHttpsDisplay);
 			expect(
 				new MediaGalleryBuilder()
-					.setItems((item) => item.setURL('attachment://file.png'))
+					.spliceItems(0, 0, (item) => item.setURL('attachment://file.png'))
 					.setId(123)
 					.toJSON(),
 			).toEqual(galleryAttachmentData);
@@ -122,7 +125,7 @@ describe('Media Gallery Components', () => {
 			).toEqual(galleryHttpsDisplay);
 			expect(
 				new MediaGalleryBuilder()
-					.setItems([(item) => item.setURL('attachment://file.png')])
+					.spliceItems(0, 0, [(item) => item.setDescription('test').clearDescription().setURL('attachment://file.png')])
 					.setId(123)
 					.toJSON(),
 			).toEqual(galleryAttachmentData);

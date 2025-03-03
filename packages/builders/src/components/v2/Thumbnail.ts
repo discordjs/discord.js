@@ -4,6 +4,31 @@ import { ComponentBuilder } from '../Component';
 import { descriptionPredicate, spoilerPredicate, unfurledMediaItemPredicate } from './Assertions';
 
 export class ThumbnailBuilder extends ComponentBuilder<APIThumbnailComponent> {
+	/**
+	 * Creates a new thumbnail from API data.
+	 *
+	 * @param data - The API data to create this thumbnail with
+	 * @example
+	 * Creating a thumbnail from an API data object:
+	 * ```ts
+	 * const thumbnaik = new ThumbnailBuilder({
+	 * 	description: 'some text',
+	 *  media: {
+	 *      url: 'https://cdn.discordapp.com/embed/assets/4.png',
+	 *  },
+	 * });
+	 * ```
+	 * @example
+	 * Creating a thumbnail using setters and API data:
+	 * ```ts
+	 * const thumbnail = new ThumbnailBuilder({
+	 * 	media: {
+	 *      url: 'attachment://image.png',
+	 *  },
+	 * })
+	 * 	.setDescription('alt text');
+	 * ```
+	 */
 	public constructor(data: Partial<APIThumbnailComponent> = {}) {
 		super({
 			type: ComponentType.Thumbnail,
@@ -17,8 +42,16 @@ export class ThumbnailBuilder extends ComponentBuilder<APIThumbnailComponent> {
 	 *
 	 * @param description - The description to use
 	 */
-	public setDescription(description?: string | undefined) {
+	public setDescription(description: string) {
 		this.data.description = descriptionPredicate.parse(description);
+		return this;
+	}
+
+	/**
+	 * Clears the description of this thumbnail.
+	 */
+	public clearDescription() {
+		this.data.description = undefined;
 		return this;
 	}
 

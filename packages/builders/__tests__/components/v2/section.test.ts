@@ -41,10 +41,12 @@ const sectionWithThumbnailData: APISectionComponent = {
 describe('Section Components', () => {
 	describe('Assertion Tests', () => {
 		test('GIVEN valid components THEN do not throw', () => {
-			expect(() => new SectionBuilder().addComponents(new TextDisplayBuilder())).not.toThrowError();
-			expect(() => new SectionBuilder().setComponents(new TextDisplayBuilder())).not.toThrowError();
-			expect(() => new SectionBuilder().addComponents([new TextDisplayBuilder()])).not.toThrowError();
-			expect(() => new SectionBuilder().setComponents([new TextDisplayBuilder()])).not.toThrowError();
+			expect(() => new SectionBuilder().addTextDisplayComponents(new TextDisplayBuilder())).not.toThrowError();
+			expect(() => new SectionBuilder().spliceTextDisplayComponents(0, 0, new TextDisplayBuilder())).not.toThrowError();
+			expect(() => new SectionBuilder().addTextDisplayComponents([new TextDisplayBuilder()])).not.toThrowError();
+			expect(() =>
+				new SectionBuilder().spliceTextDisplayComponents(0, 0, [new TextDisplayBuilder()]),
+			).not.toThrowError();
 		});
 
 		test('GIVEN valid JSON input THEN valid JSON output is given', () => {
@@ -135,16 +137,16 @@ describe('Section Components', () => {
 			const thumbnail = new ThumbnailBuilder().setDescription('test').setSpoiler().setURL('attachment://file.png');
 			const textDisplay = new TextDisplayBuilder().setContent('test');
 
-			expect(new SectionBuilder().addComponents(textDisplay).setAccessory(button).toJSON()).toEqual(
+			expect(new SectionBuilder().addTextDisplayComponents(textDisplay).setAccessory(button).toJSON()).toEqual(
 				sectionWithButtonData,
 			);
-			expect(new SectionBuilder().addComponents(textDisplay).setAccessory(thumbnail).toJSON()).toEqual(
+			expect(new SectionBuilder().addTextDisplayComponents(textDisplay).setAccessory(thumbnail).toJSON()).toEqual(
 				sectionWithThumbnailData,
 			);
-			expect(new SectionBuilder().addComponents([textDisplay]).setAccessory(button).toJSON()).toEqual(
+			expect(new SectionBuilder().addTextDisplayComponents([textDisplay]).setAccessory(button).toJSON()).toEqual(
 				sectionWithButtonData,
 			);
-			expect(new SectionBuilder().addComponents([textDisplay]).setAccessory(thumbnail).toJSON()).toEqual(
+			expect(new SectionBuilder().addTextDisplayComponents([textDisplay]).setAccessory(thumbnail).toJSON()).toEqual(
 				sectionWithThumbnailData,
 			);
 		});
@@ -154,25 +156,25 @@ describe('Section Components', () => {
 
 			expect(
 				new SectionBuilder()
-					.addComponents((textDisplay) => textDisplay.setContent('test'))
+					.addTextDisplayComponents((textDisplay) => textDisplay.setContent('test'))
 					.setAccessory(button)
 					.toJSON(),
 			).toEqual(sectionWithButtonData);
 			expect(
 				new SectionBuilder()
-					.setComponents((textDisplay) => textDisplay.setContent('test'))
+					.spliceTextDisplayComponents(0, 0, (textDisplay) => textDisplay.setContent('test'))
 					.setAccessory(button)
 					.toJSON(),
 			).toEqual(sectionWithButtonData);
 			expect(
 				new SectionBuilder()
-					.addComponents([(textDisplay) => textDisplay.setContent('test')])
+					.addTextDisplayComponents([(textDisplay) => textDisplay.setContent('test')])
 					.setAccessory(button)
 					.toJSON(),
 			).toEqual(sectionWithButtonData);
 			expect(
 				new SectionBuilder()
-					.setComponents([(textDisplay) => textDisplay.setContent('test')])
+					.spliceTextDisplayComponents(0, 0, [(textDisplay) => textDisplay.setContent('test')])
 					.setAccessory(button)
 					.toJSON(),
 			).toEqual(sectionWithButtonData);

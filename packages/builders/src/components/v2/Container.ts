@@ -1,13 +1,13 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import type { APIContainerComponent } from 'discord-api-types/v10';
+import type { APIComponentInContainer, APIContainerComponent } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
-import type { RGBTuple } from '../../index.js';
+import type { MediaGalleryBuilder, RGBTuple, SectionBuilder } from '../../index.js';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import type { ActionRowBuilder, AnyComponentBuilder } from '../ActionRow.js';
 import { ComponentBuilder } from '../Component.js';
 import { createComponentBuilder } from '../Components.js';
-import { containerColorPredicate, spoilerPredicate } from './Assertions.js';
+import { containerColorPredicate, spoilerPredicate, validateComponentArray } from './Assertions.js';
 import type { FileBuilder } from './File.js';
 import type { SeparatorBuilder } from './Separator.js';
 import type { TextDisplayBuilder } from './TextDisplay.js';
@@ -18,6 +18,8 @@ import type { TextDisplayBuilder } from './TextDisplay.js';
 export type ContainerComponentBuilder =
 	| ActionRowBuilder<AnyComponentBuilder>
 	| FileBuilder
+	| MediaGalleryBuilder
+	| SectionBuilder
 	| SeparatorBuilder
 	| TextDisplayBuilder;
 
@@ -90,18 +92,34 @@ export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
 	 *
 	 * @param components - The components to add
 	 */
-	public addComponents(...components: RestOrArray<ContainerComponentBuilder>) {
-		this.components.push(...normalizeArray(components));
+	public addComponents(...components: RestOrArray<APIComponentInContainer | ContainerComponentBuilder>) {
+		this.components.push(
+			...normalizeArray(components).map((component) =>
+				component instanceof ComponentBuilder ? component : createComponentBuilder(component),
+			),
+		);
 		return this;
 	}
 
 	/**
-	 * Sets components for this container.
+	 * Removes, replaces, or inserts components for this container.
 	 *
+	 * @param index - The index to start removing, replacing or inserting components
+	 * @param deleteCount - The amount of components to remove
 	 * @param components - The components to set
 	 */
-	public setComponents(...components: RestOrArray<ContainerComponentBuilder>) {
-		this.components.splice(0, this.components.length, ...normalizeArray(components));
+	public spliceComponents(
+		index: number,
+		deleteCount: number,
+		...components: RestOrArray<APIComponentInContainer | ContainerComponentBuilder>
+	) {
+		this.components.splice(
+			index,
+			deleteCount,
+			...normalizeArray(components).map((component) =>
+				component instanceof ComponentBuilder ? component : createComponentBuilder(component),
+			),
+		);
 		return this;
 	}
 
@@ -119,6 +137,7 @@ export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
 	 * {@inheritDoc ComponentBuilder.toJSON}
 	 */
 	public toJSON(): APIContainerComponent {
+		validateComponentArray(this.components, 1, 10);
 		return {
 			...this.data,
 			components: this.components.map((component) => component.toJSON()),

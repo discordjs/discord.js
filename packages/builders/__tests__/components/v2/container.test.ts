@@ -45,9 +45,11 @@ describe('Container Components', () => {
 	describe('Assertion Tests', () => {
 		test('GIVEN valid components THEN do not throw', () => {
 			expect(() => new ContainerBuilder().addComponents(new SeparatorBuilder())).not.toThrowError();
-			expect(() => new ContainerBuilder().setComponents(new SeparatorBuilder())).not.toThrowError();
+			expect(() => new ContainerBuilder().spliceComponents(0, 0, new SeparatorBuilder())).not.toThrowError();
 			expect(() => new ContainerBuilder().addComponents([new SeparatorBuilder()])).not.toThrowError();
-			expect(() => new ContainerBuilder().setComponents([new SeparatorBuilder()])).not.toThrowError();
+			expect(() =>
+				new ContainerBuilder().spliceComponents(0, 0, [{ type: ComponentType.Separator }]),
+			).not.toThrowError();
 		});
 
 		test('GIVEN valid JSON input THEN valid JSON output is given', () => {
@@ -78,7 +80,6 @@ describe('Container Components', () => {
 			};
 
 			expect(new ContainerBuilder(containerData).toJSON()).toEqual(containerData);
-			expect(new ContainerBuilder().toJSON()).toEqual({ type: ComponentType.Container, components: [] });
 			expect(() => createComponentBuilder({ type: ComponentType.Container, components: [] })).not.toThrowError();
 		});
 
@@ -109,7 +110,6 @@ describe('Container Components', () => {
 
 			expect(new ContainerBuilder(containerWithTextDisplay).toJSON()).toEqual(containerWithTextDisplay);
 			expect(new ContainerBuilder(containerWithSeparatorData).toJSON()).toEqual(containerWithSeparatorData);
-			expect(new ContainerBuilder().toJSON()).toEqual({ type: ComponentType.Container, components: [] });
 			expect(() => createComponentBuilder({ type: ComponentType.Container, components: [] })).not.toThrowError();
 		});
 
@@ -124,19 +124,68 @@ describe('Container Components', () => {
 		});
 
 		test('GIVEN valid accent color THEN valid JSON output is given', () => {
-			expect(new ContainerBuilder().setAccentColor([255, 0, 255]).toJSON()).toEqual({
+			expect(
+				new ContainerBuilder({
+					components: [
+						{
+							type: ComponentType.TextDisplay,
+							content: 'test',
+						},
+					],
+				})
+					.setAccentColor([255, 0, 255])
+					.toJSON(),
+			).toEqual({
 				type: ComponentType.Container,
-				components: [],
+				components: [
+					{
+						type: ComponentType.TextDisplay,
+						content: 'test',
+					},
+				],
 				accent_color: 0xff00ff,
 			});
-			expect(new ContainerBuilder().setAccentColor(0xff00ff).toJSON()).toEqual({
+			expect(
+				new ContainerBuilder({
+					components: [
+						{
+							type: ComponentType.TextDisplay,
+							content: 'test',
+						},
+					],
+				})
+					.setAccentColor(0xff00ff)
+					.toJSON(),
+			).toEqual({
 				type: ComponentType.Container,
-				components: [],
+				components: [
+					{
+						type: ComponentType.TextDisplay,
+						content: 'test',
+					},
+				],
 				accent_color: 0xff00ff,
 			});
-			expect(new ContainerBuilder().setAccentColor([255, 0, 255]).setAccentColor(null).toJSON()).toEqual({
+			expect(
+				new ContainerBuilder({
+					components: [
+						{
+							type: ComponentType.TextDisplay,
+							content: 'test',
+						},
+					],
+				})
+					.setAccentColor([255, 0, 255])
+					.setAccentColor(null)
+					.toJSON(),
+			).toEqual({
 				type: ComponentType.Container,
-				components: [],
+				components: [
+					{
+						type: ComponentType.TextDisplay,
+						content: 'test',
+					},
+				],
 			});
 			expect(new ContainerBuilder(containerWithSeparatorData).setAccentColor(null).toJSON()).toEqual(
 				containerWithSeparatorDataNoColor,
@@ -144,14 +193,32 @@ describe('Container Components', () => {
 		});
 
 		test('GIVEN valid method parameters THEN valid JSON is given', () => {
-			expect(new ContainerBuilder().setSpoiler().toJSON()).toEqual({
+			expect(
+				new ContainerBuilder().addComponents(new TextDisplayBuilder().setContent('test')).setSpoiler().toJSON(),
+			).toEqual({
 				type: ComponentType.Container,
-				components: [],
+				components: [
+					{
+						type: ComponentType.TextDisplay,
+						content: 'test',
+					},
+				],
 				spoiler: true,
 			});
-			expect(new ContainerBuilder().setSpoiler(false).setId(5).toJSON()).toEqual({
+			expect(
+				new ContainerBuilder()
+					.addComponents({ type: ComponentType.TextDisplay, content: 'test' })
+					.setSpoiler(false)
+					.setId(5)
+					.toJSON(),
+			).toEqual({
 				type: ComponentType.Container,
-				components: [],
+				components: [
+					{
+						type: ComponentType.TextDisplay,
+						content: 'test',
+					},
+				],
 				spoiler: false,
 				id: 5,
 			});

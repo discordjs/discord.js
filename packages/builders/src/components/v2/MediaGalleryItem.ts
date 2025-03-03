@@ -4,14 +4,34 @@ import { descriptionPredicate, spoilerPredicate, unfurledMediaItemPredicate } fr
 
 export class MediaGalleryItemBuilder implements JSONEncodable<APIMediaGalleryItem> {
 	/**
-	 * The API data associated with this component.
+	 * The API data associated with this media gallery item.
 	 */
 	public readonly data: Partial<APIMediaGalleryItem>;
 
 	/**
-	 * Constructs a new kind of component.
+	 * Creates a new media gallery item from API data.
 	 *
-	 * @param data - The data to construct a component out of
+	 * @param data - The API data to create this media gallery item with
+	 * @example
+	 * Creating a media gallery item from an API data object:
+	 * ```ts
+	 * const item = new MediaGalleryItemBuilder({
+	 * 	description: "Some text here",
+	 * 	media: {
+	 * 		url: 'https://cdn.discordapp.com/embed/avatars/2.png',
+	 * 	},
+	 * });
+	 * ```
+	 * @example
+	 * Creating a media gallery item using setters and API data:
+	 * ```ts
+	 * const item = new MediaGalleryItemBuilder({
+	 * 	media: {
+	 * 		url: 'https://cdn.discordapp.com/embed/avatars/5.png',
+	 * 	},
+	 * })
+	 * 	.setDescription("alt text");
+	 * ```
 	 */
 	public constructor(data: Partial<APIMediaGalleryItem> = {}) {
 		this.data = data;
@@ -22,8 +42,16 @@ export class MediaGalleryItemBuilder implements JSONEncodable<APIMediaGalleryIte
 	 *
 	 * @param description - The description to use
 	 */
-	public setDescription(description?: string | undefined) {
+	public setDescription(description: string) {
 		this.data.description = descriptionPredicate.parse(description);
+		return this;
+	}
+
+	/**
+	 * Clears the description of this media gallery item.
+	 */
+	public clearDescription() {
+		this.data.description = undefined;
 		return this;
 	}
 

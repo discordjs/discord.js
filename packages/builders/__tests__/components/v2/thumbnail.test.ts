@@ -41,7 +41,7 @@ describe('Thumbnail', () => {
 
 		test('GIVEN a thumbnail with a pre-defined description THEN unset description THEN return valid toJSON data', () => {
 			const thumbnail = new ThumbnailBuilder({ description: 'foo', ...dummy });
-			thumbnail.setDescription();
+			thumbnail.clearDescription();
 
 			expect(thumbnail.toJSON()).toEqual({ ...dummy });
 		});

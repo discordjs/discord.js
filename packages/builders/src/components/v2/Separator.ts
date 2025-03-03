@@ -4,6 +4,27 @@ import { ComponentBuilder } from '../Component';
 import { dividerPredicate, spacingPredicate } from './Assertions';
 
 export class SeparatorBuilder extends ComponentBuilder<APISeparatorComponent> {
+	/**
+	 * Creates a new separator from API data.
+	 *
+	 * @param data - The API data to create this separator with
+	 * @example
+	 * Creating a separator from an API data object:
+	 * ```ts
+	 * const separator = new SeparatorBuilder({
+	 * 	spacing: SeparatorSpacingSize.Small,
+	 *  divider: true,
+	 * });
+	 * ```
+	 * @example
+	 * Creating a separator using setters and API data:
+	 * ```ts
+	 * const separator = new SeparatorBuilder({
+	 * 	spacing: SeparatorSpacingSize.Large,
+	 * })
+	 * 	.setDivider(false);
+	 * ```
+	 */
 	public constructor(data: Partial<APISeparatorComponent> = {}) {
 		super({
 			type: ComponentType.Separator,
