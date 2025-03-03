@@ -1,8 +1,13 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import type { APISectionComponent, APITextDisplayComponent } from 'discord-api-types/v10';
+import type {
+	APIButtonComponent,
+	APISectionComponent,
+	APITextDisplayComponent,
+	APIThumbnailComponent,
+} from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
-import type { ButtonBuilder, ThumbnailBuilder } from '../../index.js';
+import { ButtonBuilder, ThumbnailBuilder } from '../../index.js';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { ComponentBuilder } from '../Component.js';
 import { createComponentBuilder, resolveBuilder } from '../Components.js';
@@ -65,12 +70,26 @@ export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
 	}
 
 	/**
-	 * Sets the accessory of this section.
+	 * Sets the accessory of this section to a button.
 	 *
 	 * @param accessory - The accessory to use
 	 */
-	public setAccessory(accessory: ButtonBuilder | ThumbnailBuilder): this {
-		Reflect.set(this, 'accessory', accessoryPredicate.parse(accessory));
+	public setButtonAccessory(
+		accessory: APIButtonComponent | ButtonBuilder | ((builder: ButtonBuilder) => ButtonBuilder),
+	): this {
+		Reflect.set(this, 'accessory', accessoryPredicate.parse(resolveBuilder(accessory, ButtonBuilder)));
+		return this;
+	}
+
+	/**
+	 * Sets the accessory of this section to a thumbnail.
+	 *
+	 * @param accessory - The accessory to use
+	 */
+	public setThumbnailAccessory(
+		accessory: APIThumbnailComponent | ThumbnailBuilder | ((builder: ThumbnailBuilder) => ThumbnailBuilder),
+	): this {
+		Reflect.set(this, 'accessory', accessoryPredicate.parse(resolveBuilder(accessory, ThumbnailBuilder)));
 		return this;
 	}
 
