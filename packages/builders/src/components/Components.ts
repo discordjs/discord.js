@@ -29,7 +29,9 @@ export type MessageComponentBuilder =
 	| ActionRowBuilder<MessageActionRowComponentBuilder>
 	| ContainerBuilder
 	| FileBuilder
+	| MediaGalleryBuilder
 	| MessageActionRowComponentBuilder
+	| SectionBuilder
 	| SeparatorBuilder
 	| TextDisplayBuilder
 	| ThumbnailBuilder;
