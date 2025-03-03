@@ -6,8 +6,8 @@ import type { ButtonBuilder, ThumbnailBuilder } from '../../index.js';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { ComponentBuilder } from '../Component.js';
 import { createComponentBuilder } from '../Components.js';
-import { accessoryPredicate } from './Assertions.js';
-import type { TextDisplayBuilder } from './TextDisplay.js';
+import { accessoryPredicate, assertReturnOfBuilder } from './Assertions.js';
+import { TextDisplayBuilder } from './TextDisplay.js';
 
 /**
  * A builder that creates API-compatible JSON data for a section.
@@ -74,8 +74,17 @@ export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
 	 *
 	 * @param components - The components to add
 	 */
-	public addComponents(...components: RestOrArray<TextDisplayBuilder>) {
-		this.components.push(...normalizeArray(components));
+	public addComponents(
+		...components: RestOrArray<TextDisplayBuilder | ((component: TextDisplayBuilder) => TextDisplayBuilder)>
+	) {
+		this.components.push(
+			...normalizeArray(components).map((input) => {
+				const result = typeof input === 'function' ? input(new TextDisplayBuilder()) : input;
+
+				assertReturnOfBuilder(result, TextDisplayBuilder);
+				return result;
+			}),
+		);
 		return this;
 	}
 
@@ -84,8 +93,19 @@ export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
 	 *
 	 * @param components - The components to set
 	 */
-	public setComponents(...components: RestOrArray<TextDisplayBuilder>) {
-		this.components.splice(0, this.components.length, ...normalizeArray(components));
+	public setComponents(
+		...components: RestOrArray<TextDisplayBuilder | ((component: TextDisplayBuilder) => TextDisplayBuilder)>
+	) {
+		this.components.splice(
+			0,
+			this.components.length,
+			...normalizeArray(components).map((input) => {
+				const result = typeof input === 'function' ? input(new TextDisplayBuilder()) : input;
+
+				assertReturnOfBuilder(result, TextDisplayBuilder);
+				return result;
+			}),
+		);
 		return this;
 	}
 

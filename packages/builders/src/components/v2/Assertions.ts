@@ -4,6 +4,7 @@ import { colorPredicate } from '../../messages/embed/Assertions';
 import { isValidationEnabled } from '../../util/validation';
 import { ButtonBuilder } from '../button/Button';
 import type { MediaGalleryItemBuilder } from './MediaGalleryItem';
+import type { TextDisplayBuilder } from './TextDisplay';
 import { ThumbnailBuilder } from './Thumbnail';
 
 export const unfurledMediaItemPredicate = s
@@ -51,7 +52,7 @@ export const accessoryPredicate = s
 	.or(s.instance(ThumbnailBuilder))
 	.setValidationEnabled(isValidationEnabled);
 
-export function assertReturnOfBuilder<ReturnType extends MediaGalleryItemBuilder>(
+export function assertReturnOfBuilder<ReturnType extends MediaGalleryItemBuilder | TextDisplayBuilder>(
 	input: unknown,
 	ExpectedInstanceOf: new () => ReturnType,
 ): asserts input is ReturnType {

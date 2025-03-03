@@ -148,5 +148,34 @@ describe('Section Components', () => {
 				sectionWithThumbnailData,
 			);
 		});
+
+		test('GIVEN valid builder callback THEN valid JSON output is given', () => {
+			const button = new ButtonBuilder().setLabel('test').setStyle(ButtonStyle.Primary).setCustomId('123');
+
+			expect(
+				new SectionBuilder()
+					.addComponents((textDisplay) => textDisplay.setContent('test'))
+					.setAccessory(button)
+					.toJSON(),
+			).toEqual(sectionWithButtonData);
+			expect(
+				new SectionBuilder()
+					.setComponents((textDisplay) => textDisplay.setContent('test'))
+					.setAccessory(button)
+					.toJSON(),
+			).toEqual(sectionWithButtonData);
+			expect(
+				new SectionBuilder()
+					.addComponents([(textDisplay) => textDisplay.setContent('test')])
+					.setAccessory(button)
+					.toJSON(),
+			).toEqual(sectionWithButtonData);
+			expect(
+				new SectionBuilder()
+					.setComponents([(textDisplay) => textDisplay.setContent('test')])
+					.setAccessory(button)
+					.toJSON(),
+			).toEqual(sectionWithButtonData);
+		});
 	});
 });
