@@ -39,3 +39,13 @@ export const separatorPredicate = z.object({
 export const textDisplayPredicate = z.object({
 	content: z.string().min(1).max(4_000),
 });
+
+export const mediaGalleryItemPredicate = z.object({
+	media: unfurledMediaItemPredicate,
+	description: z.string().min(1).max(1_024).nullish(),
+	spoiler: z.boolean().optional(),
+});
+
+export const mediaGalleryPredicate = z.object({
+	items: z.array(mediaGalleryItemPredicate).min(1).max(10),
+});
