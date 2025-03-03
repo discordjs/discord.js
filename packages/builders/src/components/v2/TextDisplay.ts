@@ -1,8 +1,8 @@
 import type { APITextDisplayComponent } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
-import { validate } from '../../util/validation';
-import { ComponentBuilder } from '../Component';
-import { textDisplayPredicate } from './Assertions';
+import { validate } from '../../util/validation.js';
+import { ComponentBuilder } from '../Component.js';
+import { textDisplayPredicate } from './Assertions.js';
 
 export class TextDisplayBuilder extends ComponentBuilder<APITextDisplayComponent> {
 	private readonly data: Partial<APITextDisplayComponent>;

@@ -1,8 +1,8 @@
 import type { APIThumbnailComponent } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
-import { validate } from '../../util/validation';
-import { ComponentBuilder } from '../Component';
-import { thumbnailPredicate } from './Assertions';
+import { validate } from '../../util/validation.js';
+import { ComponentBuilder } from '../Component.js';
+import { thumbnailPredicate } from './Assertions.js';
 
 export class ThumbnailBuilder extends ComponentBuilder<APIThumbnailComponent> {
 	private readonly data: Partial<APIThumbnailComponent>;

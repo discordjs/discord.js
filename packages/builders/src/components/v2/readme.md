@@ -1,4 +1,3 @@
 Remaining
 
-- APISectionComponent
 - APIContainerComponent
