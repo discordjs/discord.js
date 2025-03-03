@@ -21,7 +21,7 @@ export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
 	/**
 	 * The accessory of this section.
 	 */
-	public readonly accessory: ButtonBuilder | ThumbnailBuilder;
+	public readonly accessory?: ButtonBuilder | ThumbnailBuilder;
 
 	/**
 	 * Creates a new container from API data.
@@ -56,7 +56,7 @@ export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
 	public constructor({ components, accessory, ...data }: Partial<APISectionComponent> = {}) {
 		super({ type: ComponentType.Section, ...data });
 		this.components = (components?.map((component) => createComponentBuilder(component)) ?? []) as ComponentBuilder[];
-		this.accessory = accessory ? createComponentBuilder(accessory) : undefined!;
+		this.accessory = accessory ? createComponentBuilder(accessory) : undefined;
 	}
 
 	/**

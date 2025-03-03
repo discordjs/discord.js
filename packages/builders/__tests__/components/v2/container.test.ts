@@ -144,7 +144,7 @@ describe('Container Components', () => {
 		});
 
 		test('GIVEN valid method parameters THEN valid JSON is given', () => {
-			expect(new ContainerBuilder().setSpoiler(true).toJSON()).toEqual({
+			expect(new ContainerBuilder().setSpoiler().toJSON()).toEqual({
 				type: ComponentType.Container,
 				components: [],
 				spoiler: true,

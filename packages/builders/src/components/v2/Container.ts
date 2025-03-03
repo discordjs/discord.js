@@ -110,7 +110,7 @@ export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
 	 *
 	 * @param spoiler - The spoiler status to use
 	 */
-	public setSpoiler(spoiler: boolean) {
+	public setSpoiler(spoiler = true) {
 		this.data.spoiler = spoilerPredicate.parse(spoiler);
 		return this;
 	}

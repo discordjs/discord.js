@@ -132,7 +132,7 @@ describe('Section Components', () => {
 
 		test('GIVEN valid builder options THEN valid JSON output is given 2', () => {
 			const button = new ButtonBuilder().setLabel('test').setStyle(ButtonStyle.Primary).setCustomId('123');
-			const thumbnail = new ThumbnailBuilder().setDescription('test').setSpoiler(true).setURL('attachment://file.png');
+			const thumbnail = new ThumbnailBuilder().setDescription('test').setSpoiler().setURL('attachment://file.png');
 			const textDisplay = new TextDisplayBuilder().setContent('test');
 
 			expect(new SectionBuilder().addComponents(textDisplay).setAccessory(button).toJSON()).toEqual(

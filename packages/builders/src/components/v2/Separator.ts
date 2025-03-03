@@ -16,7 +16,7 @@ export class SeparatorBuilder extends ComponentBuilder<APISeparatorComponent> {
 	 *
 	 * @param divider - Whether to show a divider line
 	 */
-	public setDivider(divider: boolean) {
+	public setDivider(divider = true) {
 		this.data.divider = dividerPredicate.parse(divider);
 		return this;
 	}
