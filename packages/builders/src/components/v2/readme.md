@@ -1,5 +1,4 @@
 Remaining
 
-- APIMediaGalleryComponent
 - APISectionComponent
 - APIContainerComponent
