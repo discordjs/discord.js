@@ -21,7 +21,7 @@ export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
 	/**
 	 * The accessory of this section.
 	 */
-	private accessory: ButtonBuilder | ThumbnailBuilder | null;
+	public readonly accessory: ButtonBuilder | ThumbnailBuilder;
 
 	/**
 	 * Creates a new container from API data.
@@ -56,7 +56,7 @@ export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
 	public constructor({ components, accessory, ...data }: Partial<APISectionComponent> = {}) {
 		super({ type: ComponentType.Section, ...data });
 		this.components = (components?.map((component) => createComponentBuilder(component)) ?? []) as ComponentBuilder[];
-		this.accessory = accessory ? createComponentBuilder(accessory) : null;
+		this.accessory = accessory ? createComponentBuilder(accessory) : undefined!;
 	}
 
 	/**
@@ -65,7 +65,7 @@ export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
 	 * @param accessory - The accessory to use
 	 */
 	public setAccessory(accessory: ButtonBuilder | ThumbnailBuilder): this {
-		this.accessory = accessory;
+		Reflect.set(this, 'accessory', accessoryPredicate.parse(accessory));
 		return this;
 	}
 
