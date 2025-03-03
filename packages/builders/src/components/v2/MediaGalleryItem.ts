@@ -6,6 +6,31 @@ import { mediaGalleryItemPredicate } from './Assertions.js';
 export class MediaGalleryItemBuilder implements JSONEncodable<APIMediaGalleryItem> {
 	private readonly data: Partial<APIMediaGalleryItem>;
 
+	/**
+	 * Creates a new media gallery item from API data.
+	 *
+	 * @param data - The API data to create this media gallery item with
+	 * @example
+	 * Creating a media gallery item from an API data object:
+	 * ```ts
+	 * const item = new MediaGalleryItemBuilder({
+	 * 	description: "Some text here",
+	 * 	media: {
+	 * 		url: 'https://cdn.discordapp.com/embed/avatars/2.png',
+	 * 	},
+	 * });
+	 * ```
+	 * @example
+	 * Creating a media gallery item using setters and API data:
+	 * ```ts
+	 * const item = new MediaGalleryItemBuilder({
+	 * 	media: {
+	 * 		url: 'https://cdn.discordapp.com/embed/avatars/5.png',
+	 * 	},
+	 * })
+	 * 	.setDescription("alt text");
+	 * ```
+	 */
 	public constructor(data: Partial<APIMediaGalleryItem> = {}) {
 		this.data = {
 			...structuredClone(data),

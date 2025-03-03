@@ -7,6 +7,27 @@ import { separatorPredicate } from './Assertions.js';
 export class SeparatorBuilder extends ComponentBuilder<APISeparatorComponent> {
 	private readonly data: Partial<APISeparatorComponent>;
 
+	/**
+	 * Creates a new separator from API data.
+	 *
+	 * @param data - The API data to create this separator with
+	 * @example
+	 * Creating a separator from an API data object:
+	 * ```ts
+	 * const separator = new SeparatorBuilder({
+	 * 	spacing: SeparatorSpacingSize.Small,
+	 *  divider: true,
+	 * });
+	 * ```
+	 * @example
+	 * Creating a separator using setters and API data:
+	 * ```ts
+	 * const separator = new SeparatorBuilder({
+	 * 	spacing: SeparatorSpacingSize.Large,
+	 * })
+	 * 	.setDivider(false);
+	 * ```
+	 */
 	public constructor(data: Partial<APISeparatorComponent> = {}) {
 		super();
 		this.data = {
