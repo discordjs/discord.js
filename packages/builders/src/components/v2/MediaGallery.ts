@@ -4,6 +4,7 @@ import type { APIMediaGalleryComponent } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { ComponentBuilder } from '../Component.js';
+import { assertReturnOfBuilder } from './Assertions.js';
 import { MediaGalleryItemBuilder } from './MediaGalleryItem.js';
 
 /**
@@ -59,8 +60,17 @@ export class MediaGalleryBuilder extends ComponentBuilder<APIMediaGalleryCompone
 	 *
 	 * @param items - The items to add
 	 */
-	public addItems(...items: RestOrArray<MediaGalleryItemBuilder>) {
-		this.items.push(...normalizeArray(items));
+	public addItems(
+		...items: RestOrArray<MediaGalleryItemBuilder | ((builder: MediaGalleryItemBuilder) => MediaGalleryItemBuilder)>
+	) {
+		this.items.push(
+			...normalizeArray(items).map((input) => {
+				const result = typeof input === 'function' ? input(new MediaGalleryItemBuilder()) : input;
+
+				assertReturnOfBuilder(result, MediaGalleryItemBuilder);
+				return result;
+			}),
+		);
 		return this;
 	}
 
@@ -69,8 +79,19 @@ export class MediaGalleryBuilder extends ComponentBuilder<APIMediaGalleryCompone
 	 *
 	 * @param items - The items to set
 	 */
-	public setItems(...items: RestOrArray<MediaGalleryItemBuilder>) {
-		this.items.splice(0, this.items.length, ...normalizeArray(items));
+	public setItems(
+		...items: RestOrArray<MediaGalleryItemBuilder | ((builder: MediaGalleryItemBuilder) => MediaGalleryItemBuilder)>
+	) {
+		this.items.splice(
+			0,
+			this.items.length,
+			...normalizeArray(items).map((input) => {
+				const result = typeof input === 'function' ? input(new MediaGalleryItemBuilder()) : input;
+
+				assertReturnOfBuilder(result, MediaGalleryItemBuilder);
+				return result;
+			}),
+		);
 		return this;
 	}
 

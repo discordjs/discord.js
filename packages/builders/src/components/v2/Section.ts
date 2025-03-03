@@ -56,7 +56,7 @@ export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
 	public constructor({ components, accessory, ...data }: Partial<APISectionComponent> = {}) {
 		super({ type: ComponentType.Section, ...data });
 		this.components = (components?.map((component) => createComponentBuilder(component)) ?? []) as ComponentBuilder[];
-		this.accessory = accessory ? (createComponentBuilder(accessory) ?? null) : null;
+		this.accessory = accessory ? createComponentBuilder(accessory) : null;
 	}
 
 	/**

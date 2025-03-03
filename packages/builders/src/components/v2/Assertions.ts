@@ -3,6 +3,7 @@ import { SeparatorSpacingSize } from 'discord-api-types/v10';
 import { colorPredicate } from '../../messages/embed/Assertions';
 import { isValidationEnabled } from '../../util/validation';
 import { ButtonBuilder } from '../button/Button';
+import type { MediaGalleryItemBuilder } from './MediaGalleryItem';
 import { ThumbnailBuilder } from './Thumbnail';
 
 export const unfurledMediaItemPredicate = s
@@ -49,3 +50,10 @@ export const accessoryPredicate = s
 	.instance(ButtonBuilder)
 	.or(s.instance(ThumbnailBuilder))
 	.setValidationEnabled(isValidationEnabled);
+
+export function assertReturnOfBuilder<ReturnType extends MediaGalleryItemBuilder>(
+	input: unknown,
+	ExpectedInstanceOf: new () => ReturnType,
+): asserts input is ReturnType {
+	s.instance(ExpectedInstanceOf).parse(input);
+}

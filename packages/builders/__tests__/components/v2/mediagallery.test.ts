@@ -96,5 +96,36 @@ describe('Media Gallery Components', () => {
 			expect(new MediaGalleryBuilder().addItems([item1]).toJSON()).toEqual(galleryHttpsDisplay);
 			expect(new MediaGalleryBuilder().addItems([item2]).setId(123).toJSON()).toEqual(galleryAttachmentData);
 		});
+
+		test('GIVEN valid builder callback THEN valid JSON output is given', () => {
+			const item1 = new MediaGalleryItemBuilder()
+				.setDescription('test')
+				.setSpoiler(false)
+				.setURL('https://discord.com/logo.png');
+			const item2 = new MediaGalleryItemBuilder().setURL('attachment://file.png');
+
+			expect(
+				new MediaGalleryBuilder()
+					.addItems((item) => item.setDescription('test').setSpoiler(false).setURL('https://discord.com/logo.png'))
+					.toJSON(),
+			).toEqual(galleryHttpsDisplay);
+			expect(
+				new MediaGalleryBuilder()
+					.setItems((item) => item.setURL('attachment://file.png'))
+					.setId(123)
+					.toJSON(),
+			).toEqual(galleryAttachmentData);
+			expect(
+				new MediaGalleryBuilder()
+					.addItems([(item) => item.setDescription('test').setSpoiler(false).setURL('https://discord.com/logo.png')])
+					.toJSON(),
+			).toEqual(galleryHttpsDisplay);
+			expect(
+				new MediaGalleryBuilder()
+					.setItems([(item) => item.setURL('attachment://file.png')])
+					.setId(123)
+					.toJSON(),
+			).toEqual(galleryAttachmentData);
+		});
 	});
 });
