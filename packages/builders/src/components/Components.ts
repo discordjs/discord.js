@@ -23,6 +23,7 @@ import { StringSelectMenuBuilder } from './selectMenu/StringSelectMenu.js';
 import { UserSelectMenuBuilder } from './selectMenu/UserSelectMenu.js';
 import { TextInputBuilder } from './textInput/TextInput.js';
 import { FileBuilder } from './v2/File.js';
+import { MediaGalleryBuilder } from './v2/MediaGallery.js';
 import { SeparatorBuilder } from './v2/Separator.js';
 import { TextDisplayBuilder } from './v2/TextDisplay.js';
 import { ThumbnailBuilder } from './v2/Thumbnail.js';
@@ -33,6 +34,7 @@ import { ThumbnailBuilder } from './v2/Thumbnail.js';
 export type MessageComponentBuilder =
 	| ActionRowBuilder
 	| FileBuilder
+	| MediaGalleryBuilder
 	| MessageActionRowComponentBuilder
 	| SeparatorBuilder
 	| TextDisplayBuilder
@@ -127,6 +129,10 @@ export interface MappedComponentTypes {
 	 * The text display component type is associated with a {@link TextDisplayBuilder}.
 	 */
 	[ComponentType.TextDisplay]: TextDisplayBuilder;
+	/**
+	 * The media gallery component type is associated with a {@link MediaGalleryBuilder}.
+	 */
+	[ComponentType.MediaGallery]: MediaGalleryBuilder;
 }
 
 /**
@@ -182,6 +188,8 @@ export function createComponentBuilder(
 			return new SeparatorBuilder(data);
 		case ComponentType.TextDisplay:
 			return new TextDisplayBuilder(data);
+		case ComponentType.MediaGallery:
+			return new MediaGalleryBuilder(data);
 		default:
 			// @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);
