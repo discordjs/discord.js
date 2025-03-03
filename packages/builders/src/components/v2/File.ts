@@ -1,7 +1,7 @@
 import { ComponentType, type APIFileComponent } from 'discord-api-types/v10';
-import { validate } from '../../util/validation';
-import { ComponentBuilder } from '../Component';
-import { filePredicate } from './Assertions';
+import { validate } from '../../util/validation.js';
+import { ComponentBuilder } from '../Component.js';
+import { filePredicate } from './Assertions.js';
 
 export class FileBuilder extends ComponentBuilder<APIFileComponent> {
 	private readonly data: Partial<APIFileComponent>;

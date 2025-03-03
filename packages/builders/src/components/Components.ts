@@ -3,6 +3,7 @@ import type {
 	APIButtonComponent,
 	APIMessageComponent,
 	APIModalComponent,
+	APISectionAccessoryComponent,
 } from 'discord-api-types/v10';
 import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
 import { ActionRowBuilder } from './ActionRow.js';
@@ -213,5 +214,17 @@ function createButtonBuilder(data: APIButtonComponent): ButtonBuilder {
 		default:
 			// @ts-expect-error This case can still occur if we get a newer unsupported button style
 			throw new Error(`Cannot properly serialize button with style: ${data.style}`);
+	}
+}
+
+export function resolveAccessoryComponent(component: APISectionAccessoryComponent) {
+	switch (component.type) {
+		case ComponentType.Button:
+			return createButtonBuilder(component);
+		case ComponentType.Thumbnail:
+			return new ThumbnailBuilder(component);
+		default:
+			// @ts-expect-error This case can still occur if we get a newer unsupported component type
+			throw new Error(`Cannot properly serialize section accessory component: ${component.type}`);
 	}
 }
