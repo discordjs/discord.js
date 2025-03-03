@@ -38,6 +38,41 @@ export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
 		return this.data.components;
 	}
 
+	/**
+	 * Creates a new section from API data.
+	 *
+	 * @param data - The API data to create this section with
+	 * @example
+	 * Creating a section from an API data object:
+	 * ```ts
+	 * const section = new SectionBuilder({
+	 * 	components: [
+	 * 		{
+	 * 			content: "Some text here",
+	 * 			type: ComponentType.TextDisplay,
+	 * 		},
+	 * 	],
+	 *  accessory: {
+	 *      media: {
+	 *          url: 'https://cdn.discordapp.com/embed/avatars/3.png',
+	 *      },
+	 *  }
+	 * });
+	 * ```
+	 * @example
+	 * Creating a section using setters and API data:
+	 * ```ts
+	 * const section = new SectionBuilder({
+	 * 	components: [
+	 * 		{
+	 * 			content: "# Heading",
+	 * 			type: ComponentType.TextDisplay,
+	 * 		},
+	 * 	],
+	 * })
+	 * 	.setPrimaryButtonAccessory(button);
+	 * ```
+	 */
 	public constructor({ components = [], accessory, ...rest }: Partial<APISectionComponent> = {}) {
 		super();
 		this.data = {
@@ -181,6 +216,10 @@ export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
 
 	/**
 	 * Removes, replaces, or inserts text display components for this section.
+	 *
+	 * @param index - The index to start removing, replacing or inserting text display components
+	 * @param deleteCount - The amount of text display components to remove
+	 * @param components - The text display components to insert
 	 */
 	public spliceTextDisplayComponents(index: number, deleteCount: number, ...components: TextDisplayBuilder[]): this {
 		this.data.components.splice(index, deleteCount, ...components);
