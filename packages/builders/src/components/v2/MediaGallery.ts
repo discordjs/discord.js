@@ -92,7 +92,7 @@ export class MediaGalleryBuilder extends ComponentBuilder<APIMediaGalleryCompone
 		const normalized = normalizeArray(items);
 		const resolved = normalized.map((item) => resolveBuilder(item, MediaGalleryItemBuilder));
 
-		this.data.items.splice(index, deleteCount, resolved);
+		this.data.items.splice(index, deleteCount, ...resolved);
 		return this;
 	}
 
