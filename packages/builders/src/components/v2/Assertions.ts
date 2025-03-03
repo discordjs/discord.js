@@ -1,6 +1,6 @@
-import { SeparatorSpacingSize } from 'discord-api-types/v10';
+import { ComponentType, SeparatorSpacingSize } from 'discord-api-types/v10';
 import { z } from 'zod';
-import { refineURLPredicate } from '../../Assertions';
+import { refineURLPredicate } from '../../Assertions.js';
 
 const unfurledMediaItemPredicate = z.object({
 	url: z
@@ -48,4 +48,12 @@ export const mediaGalleryItemPredicate = z.object({
 
 export const mediaGalleryPredicate = z.object({
 	items: z.array(mediaGalleryItemPredicate).min(1).max(10),
+});
+
+export const sectionPredicate = z.object({
+	components: z.array(textDisplayPredicate).min(1).max(3),
+	accessory: z.union([
+		z.object({ type: z.literal(ComponentType.Button) }),
+		z.object({ type: z.literal(ComponentType.Thumbnail) }),
+	]),
 });

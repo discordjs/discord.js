@@ -1,7 +1,7 @@
+import type { JSONEncodable } from '@discordjs/util';
 import type { APIMediaGalleryItem } from 'discord-api-types/v10';
-import type { JSONEncodable } from '../../../../util/dist';
-import { validate } from '../../util/validation';
-import { mediaGalleryItemPredicate } from './Assertions';
+import { validate } from '../../util/validation.js';
+import { mediaGalleryItemPredicate } from './Assertions.js';
 
 export class MediaGalleryItemBuilder implements JSONEncodable<APIMediaGalleryItem> {
 	private readonly data: Partial<APIMediaGalleryItem>;

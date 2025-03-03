@@ -1,10 +1,10 @@
 import { type APIMediaGalleryItem, type APIMediaGalleryComponent, ComponentType } from 'discord-api-types/v10';
-import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
-import { resolveBuilder } from '../../util/resolveBuilder';
-import { validate } from '../../util/validation';
-import { ComponentBuilder } from '../Component';
-import { mediaGalleryPredicate } from './Assertions';
-import { MediaGalleryItemBuilder } from './MediaGalleryItem';
+import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
+import { resolveBuilder } from '../../util/resolveBuilder.js';
+import { validate } from '../../util/validation.js';
+import { ComponentBuilder } from '../Component.js';
+import { mediaGalleryPredicate } from './Assertions.js';
+import { MediaGalleryItemBuilder } from './MediaGalleryItem.js';
 
 export interface MediaGalleryBuilderData extends Partial<Omit<APIMediaGalleryComponent, 'items'>> {
 	items: MediaGalleryItemBuilder[];
