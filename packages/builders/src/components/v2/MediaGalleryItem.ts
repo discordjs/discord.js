@@ -1,7 +1,8 @@
+import type { JSONEncodable } from '@discordjs/util';
 import type { APIMediaGalleryItem } from 'discord-api-types/v10';
 import { descriptionPredicate, spoilerPredicate, unfurledMediaItemPredicate } from './Assertions';
 
-export class MediaGalleryItemBuilder {
+export class MediaGalleryItemBuilder implements JSONEncodable<APIMediaGalleryItem> {
 	/**
 	 * The API data associated with this component.
 	 */
