@@ -6,7 +6,7 @@ import { embedAuthorPredicate } from './Assertions.js';
  * A builder that creates API-compatible JSON data for the embed author.
  */
 export class EmbedAuthorBuilder {
-	private readonly data: Partial<APIEmbedAuthor>;
+	protected readonly data: Partial<APIEmbedAuthor>;
 
 	/**
 	 * Creates a new embed author from API data.

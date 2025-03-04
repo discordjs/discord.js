@@ -32,7 +32,7 @@ export interface ContainerBuilderData extends Partial<Omit<APIContainerComponent
 }
 
 export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
-	private readonly data: ContainerBuilderData;
+	protected readonly data: ContainerBuilderData;
 
 	public constructor({ components = [], ...rest }: Partial<APIContainerComponent> = {}) {
 		super();

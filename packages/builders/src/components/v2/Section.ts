@@ -33,7 +33,7 @@ export interface SectionBuilderData extends Partial<Omit<APISectionComponent, 'a
 }
 
 export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
-	private readonly data: SectionBuilderData;
+	protected readonly data: SectionBuilderData;
 
 	public get components(): readonly TextDisplayBuilder[] {
 		return this.data.components;
