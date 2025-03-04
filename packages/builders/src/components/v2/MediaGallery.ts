@@ -68,7 +68,9 @@ export class MediaGalleryBuilder extends ComponentBuilder<APIMediaGalleryCompone
 	 * @param input - The items to add
 	 */
 	public addItems(
-		...input: RestOrArray<APIMediaGalleryItem | MediaGalleryItemBuilder | (() => MediaGalleryItemBuilder)>
+		...input: RestOrArray<
+			APIMediaGalleryItem | MediaGalleryItemBuilder | ((builder: MediaGalleryItemBuilder) => MediaGalleryItemBuilder)
+		>
 	): this {
 		const normalized = normalizeArray(input);
 		const resolved = normalized.map((item) => resolveBuilder(item, MediaGalleryItemBuilder));
