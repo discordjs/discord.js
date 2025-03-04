@@ -25,7 +25,7 @@ import {
   ApplicationCommandType,
   APIMessage,
   APIActionRowComponent,
-  APIActionRowComponentTypes,
+  APIComponentInActionRow,
   APIStringSelectComponent,
   APIUserSelectComponent,
   APIRoleSelectComponent,
@@ -2347,7 +2347,7 @@ EmbedBuilder.from(embedData);
 declare const embedComp: Embed;
 EmbedBuilder.from(embedComp);
 
-declare const actionRowData: APIActionRowComponent<APIActionRowComponentTypes>;
+declare const actionRowData: APIActionRowComponent<APIComponentInActionRow>;
 ActionRowBuilder.from(actionRowData);
 
 declare const actionRowComp: ActionRow<ActionRowComponent>;
@@ -2359,7 +2359,7 @@ declare const buttonsActionRowComp: ActionRow<ButtonComponent>;
 expectType<ActionRowBuilder<ButtonBuilder>>(ActionRowBuilder.from<ButtonBuilder>(buttonsActionRowData));
 expectType<ActionRowBuilder<ButtonBuilder>>(ActionRowBuilder.from<ButtonBuilder>(buttonsActionRowComp));
 
-declare const anyComponentsActionRowData: APIActionRowComponent<APIActionRowComponentTypes>;
+declare const anyComponentsActionRowData: APIActionRowComponent<APIComponentInActionRow>;
 declare const anyComponentsActionRowComp: ActionRow<ActionRowComponent>;
 
 expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowData));
