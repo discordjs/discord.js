@@ -70,7 +70,7 @@ export class MediaGalleryItemBuilder implements JSONEncodable<APIMediaGalleryIte
 	 *
 	 * @param spoiler - The spoiler status to use
 	 */
-	public setSpoiler(spoiler: boolean) {
+	public setSpoiler(spoiler = true) {
 		this.data.spoiler = spoiler;
 		return this;
 	}

@@ -17,12 +17,15 @@ describe('MediaGalleryItem', () => {
 			expect(item.toJSON()).toEqual({ media: { url: 'https://google.com' } });
 		});
 
-		test.each(['owo', 'discord://user'])('GIVEN a media gallery item with an invalid URL (%s) THEN throws error', (input) => {
-			const item = new MediaGalleryItemBuilder();
+		test.each(['owo', 'discord://user'])(
+			'GIVEN a media gallery item with an invalid URL (%s) THEN throws error',
+			(input) => {
+				const item = new MediaGalleryItemBuilder();
 
-			item.setURL(input);
-			expect(() => item.toJSON()).toThrowError();
-		});
+				item.setURL(input);
+				expect(() => item.toJSON()).toThrowError();
+			},
+		);
 	});
 
 	describe('MediaGalleryItem description', () => {
