@@ -7,6 +7,7 @@ import type {
 	APIButtonComponentWithURL,
 } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
+import type { ButtonStyle } from 'discord-api-types/v8';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { resolveBuilder } from '../../util/resolveBuilder.js';
 import { validate } from '../../util/validation.js';
@@ -27,7 +28,7 @@ import { ThumbnailBuilder } from './Thumbnail.js';
 export type SectionBuilderAccessory = ButtonBuilder | ThumbnailBuilder;
 
 export interface SectionBuilderData extends Partial<Omit<APISectionComponent, 'accessory' | 'components'>> {
-	accessory: SectionBuilderAccessory;
+	accessory?: SectionBuilderAccessory;
 	components: TextDisplayBuilder[];
 }
 
@@ -73,12 +74,14 @@ export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
 	 * 	.setPrimaryButtonAccessory(button);
 	 * ```
 	 */
-	public constructor({ components = [], accessory, ...rest }: Partial<APISectionComponent> = {}) {
+	public constructor(data: Partial<APISectionComponent> = {}) {
 		super();
+
+		const { components = [], accessory, ...rest } = data;
+
 		this.data = {
 			...structuredClone(rest),
-			// Nasty use of `!` here, but we will validate this in toJSON anyways
-			accessory: accessory ? resolveAccessoryComponent(accessory) : undefined!,
+			accessory: accessory ? resolveAccessoryComponent(accessory) : undefined,
 			components: components.map((component) => new TextDisplayBuilder(component)),
 			type: ComponentType.Section,
 		};
@@ -108,9 +111,9 @@ export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
 	 */
 	public setPrimaryButtonAccessory(
 		input:
-			| APIButtonComponentWithCustomId
 			| PrimaryButtonBuilder
-			| ((builder: PrimaryButtonBuilder) => PrimaryButtonBuilder),
+			| ((builder: PrimaryButtonBuilder) => PrimaryButtonBuilder)
+			| (APIButtonComponentWithCustomId & { style: ButtonStyle.Primary }),
 	): this {
 		const builder = resolveBuilder(input, PrimaryButtonBuilder);
 
@@ -125,9 +128,9 @@ export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
 	 */
 	public setSecondaryButtonAccessory(
 		input:
-			| APIButtonComponentWithCustomId
 			| SecondaryButtonBuilder
-			| ((builder: SecondaryButtonBuilder) => SecondaryButtonBuilder),
+			| ((builder: SecondaryButtonBuilder) => SecondaryButtonBuilder)
+			| (APIButtonComponentWithCustomId & { style: ButtonStyle.Secondary }),
 	): this {
 		const builder = resolveBuilder(input, SecondaryButtonBuilder);
 
@@ -142,9 +145,9 @@ export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
 	 */
 	public setSuccessButtonAccessory(
 		input:
-			| APIButtonComponentWithCustomId
 			| SuccessButtonBuilder
-			| ((builder: SuccessButtonBuilder) => SuccessButtonBuilder),
+			| ((builder: SuccessButtonBuilder) => SuccessButtonBuilder)
+			| (APIButtonComponentWithCustomId & { style: ButtonStyle.Success }),
 	): this {
 		const builder = resolveBuilder(input, SuccessButtonBuilder);
 
@@ -159,9 +162,9 @@ export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
 	 */
 	public setDangerButtonAccessory(
 		input:
-			| APIButtonComponentWithCustomId
 			| DangerButtonBuilder
-			| ((builder: DangerButtonBuilder) => DangerButtonBuilder),
+			| ((builder: DangerButtonBuilder) => DangerButtonBuilder)
+			| (APIButtonComponentWithCustomId & { style: ButtonStyle.Danger }),
 	): this {
 		const builder = resolveBuilder(input, DangerButtonBuilder);
 
@@ -221,8 +224,17 @@ export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
 	 * @param deleteCount - The amount of text display components to remove
 	 * @param components - The text display components to insert
 	 */
-	public spliceTextDisplayComponents(index: number, deleteCount: number, ...components: TextDisplayBuilder[]): this {
-		this.data.components.splice(index, deleteCount, ...components);
+	public spliceTextDisplayComponents(
+		index: number,
+		deleteCount: number,
+		...components: RestOrArray<
+			APITextDisplayComponent | TextDisplayBuilder | ((builder: TextDisplayBuilder) => TextDisplayBuilder)
+		>
+	): this {
+		const normalized = normalizeArray(components);
+		const resolved = normalized.map((component) => resolveBuilder(component, TextDisplayBuilder));
+
+		this.data.components.splice(index, deleteCount, ...resolved);
 		return this;
 	}
 
