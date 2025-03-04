@@ -5,7 +5,7 @@ import { ComponentBuilder } from '../Component.js';
 import { thumbnailPredicate } from './Assertions.js';
 
 export class ThumbnailBuilder extends ComponentBuilder<APIThumbnailComponent> {
-	private readonly data: Partial<APIThumbnailComponent>;
+	protected readonly data: Partial<APIThumbnailComponent>;
 
 	/**
 	 * Creates a new thumbnail from API data.

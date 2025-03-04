@@ -47,7 +47,7 @@ export interface ActionRowBuilderData
  * @typeParam ComponentType - The types of components this action row holds
  */
 export class ActionRowBuilder extends ComponentBuilder<APIActionRowComponent<APIComponentInActionRow>> {
-	private readonly data: ActionRowBuilderData;
+	protected readonly data: ActionRowBuilderData;
 
 	/**
 	 * The components within this action row.
