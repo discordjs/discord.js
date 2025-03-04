@@ -29,7 +29,9 @@ describe('Context Menu Commands', () => {
 				expect(() => getBuilder().setName('どうも')).not.toThrowError();
 
 				expect(() => getBuilder().setName('🎉').toJSON()).not.toThrowError();
+				expect(() => getBuilder().setName('🫆').toJSON()).not.toThrowError();
 				expect(() => getBuilder().setName('🎉 abc').toJSON()).not.toThrowError();
+				expect(() => getBuilder().setName('🫆 abc').toJSON()).not.toThrowError();
 			});
 		});
 
