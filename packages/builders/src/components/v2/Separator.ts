@@ -5,7 +5,7 @@ import { ComponentBuilder } from '../Component.js';
 import { separatorPredicate } from './Assertions.js';
 
 export class SeparatorBuilder extends ComponentBuilder<APISeparatorComponent> {
-	private readonly data: Partial<APISeparatorComponent>;
+	protected readonly data: Partial<APISeparatorComponent>;
 
 	/**
 	 * Creates a new separator from API data.

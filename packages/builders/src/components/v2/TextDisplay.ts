@@ -5,7 +5,7 @@ import { ComponentBuilder } from '../Component.js';
 import { textDisplayPredicate } from './Assertions.js';
 
 export class TextDisplayBuilder extends ComponentBuilder<APITextDisplayComponent> {
-	private readonly data: Partial<APITextDisplayComponent>;
+	protected readonly data: Partial<APITextDisplayComponent>;
 
 	/**
 	 * Creates a new text display from API data.
