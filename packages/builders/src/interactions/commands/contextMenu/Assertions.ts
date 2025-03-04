@@ -7,8 +7,7 @@ const namePredicate = z
 	.min(1)
 	.max(32)
 	.regex(
-		// eslint-disable-next-line prefer-named-capture-group
-		/^((( *[\p{P}\p{L}\p{N}\p{sc=Devanagari}\p{sc=Thai}])|((\p{Extended_Pictographic}|\p{Emoji_Component})+))+ *)+$/u,
+		/^(?:(?:(?: *[\p{P}\p{L}\p{N}\p{sc=Devanagari}\p{sc=Thai}])|(?:(?:\p{Extended_Pictographic}|\p{Emoji_Component})+))+ *)+$/u,
 	);
 
 const contextsPredicate = z.array(z.nativeEnum(InteractionContextType));
