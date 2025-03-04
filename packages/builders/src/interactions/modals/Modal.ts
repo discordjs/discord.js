@@ -3,7 +3,7 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type {
 	APIActionRowComponent,
-	APIModalActionRowComponent,
+	APIComponentInModalActionRow,
 	APIModalInteractionResponseCallbackData,
 } from 'discord-api-types/v10';
 import { ActionRowBuilder } from '../../components/ActionRow.js';
@@ -24,7 +24,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	/**
 	 * The API data associated with this modal.
 	 */
-	private readonly data: ModalBuilderData;
+	protected readonly data: ModalBuilderData;
 
 	/**
 	 * The components within this modal.
@@ -73,7 +73,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	public addActionRows(
 		...components: RestOrArray<
 			| ActionRowBuilder
-			| APIActionRowComponent<APIModalActionRowComponent>
+			| APIActionRowComponent<APIComponentInModalActionRow>
 			| ((builder: ActionRowBuilder) => ActionRowBuilder)
 		>
 	) {
@@ -93,7 +93,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	public setActionRows(
 		...components: RestOrArray<
 			| ActionRowBuilder
-			| APIActionRowComponent<APIModalActionRowComponent>
+			| APIActionRowComponent<APIComponentInModalActionRow>
 			| ((builder: ActionRowBuilder) => ActionRowBuilder)
 		>
 	) {
@@ -137,7 +137,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 		deleteCount: number,
 		...rows: (
 			| ActionRowBuilder
-			| APIActionRowComponent<APIModalActionRowComponent>
+			| APIActionRowComponent<APIComponentInModalActionRow>
 			| ((builder: ActionRowBuilder) => ActionRowBuilder)
 		)[]
 	): this {

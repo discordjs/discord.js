@@ -6,7 +6,7 @@ import { embedFooterPredicate } from './Assertions.js';
  * A builder that creates API-compatible JSON data for the embed footer.
  */
 export class EmbedFooterBuilder {
-	private readonly data: Partial<APIEmbedFooter>;
+	protected readonly data: Partial<APIEmbedFooter>;
 
 	/**
 	 * Creates a new embed footer from API data.

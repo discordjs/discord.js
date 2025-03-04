@@ -11,9 +11,10 @@ export abstract class BaseSelectMenuBuilder<Data extends APISelectMenuComponent>
 	extends ComponentBuilder<Data>
 	implements JSONEncodable<APISelectMenuComponent>
 {
-	protected abstract readonly data: Partial<
+	protected abstract override readonly data: Partial<
 		Pick<Data, 'custom_id' | 'disabled' | 'max_values' | 'min_values' | 'placeholder'>
-	>;
+	> &
+		Pick<Data, 'id'>;
 
 	/**
 	 * Sets the placeholder for this select menu.
