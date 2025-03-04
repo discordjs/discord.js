@@ -14,7 +14,7 @@ export class ThumbnailBuilder extends ComponentBuilder<APIThumbnailComponent> {
 	 * @example
 	 * Creating a thumbnail from an API data object:
 	 * ```ts
-	 * const thumbnaik = new ThumbnailBuilder({
+	 * const thumbnail = new ThumbnailBuilder({
 	 * 	description: 'some text',
 	 *  media: {
 	 *      url: 'https://cdn.discordapp.com/embed/assets/4.png',
@@ -64,7 +64,7 @@ export class ThumbnailBuilder extends ComponentBuilder<APIThumbnailComponent> {
 	 *
 	 * @param spoiler - The spoiler status to use
 	 */
-	public setSpoiler(spoiler: boolean) {
+	public setSpoiler(spoiler = true) {
 		this.data.spoiler = spoiler;
 		return this;
 	}
