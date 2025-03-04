@@ -25,7 +25,7 @@ export class EmbedBuilder implements JSONEncodable<APIEmbed> {
 	/**
 	 * The API data associated with this embed.
 	 */
-	private readonly data: EmbedBuilderData;
+	protected readonly data: EmbedBuilderData;
 
 	/**
 	 * Gets the fields of this embed.

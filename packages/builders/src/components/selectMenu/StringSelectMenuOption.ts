@@ -7,7 +7,7 @@ import { selectMenuStringOptionPredicate } from '../Assertions.js';
  * A builder that creates API-compatible JSON data for string select menu options.
  */
 export class StringSelectMenuOptionBuilder implements JSONEncodable<APISelectMenuOption> {
-	private readonly data: Partial<APISelectMenuOption>;
+	protected readonly data: Partial<APISelectMenuOption>;
 
 	/**
 	 * Creates a new string select menu option from API data.

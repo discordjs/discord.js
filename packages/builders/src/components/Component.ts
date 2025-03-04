@@ -9,6 +9,24 @@ import type { APIBaseComponent, ComponentType } from 'discord-api-types/v10';
 export abstract class ComponentBuilder<Component extends APIBaseComponent<ComponentType>>
 	implements JSONEncodable<Component>
 {
+	protected abstract readonly data: { id?: number | undefined };
+
+	/**
+	 * Sets the id of this component.
+	 *
+	 * @param id - The id to use
+	 */
+	public setId(id: number) {
+		this.data.id = id;
+	}
+
+	/**
+	 * Clears the id of this component, defaulting to a default incremented id.
+	 */
+	public clearId() {
+		this.data.id = undefined;
+	}
+
 	/**
 	 * Serializes this builder to API-compatible JSON data.
 	 *

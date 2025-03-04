@@ -4,7 +4,7 @@ import { ComponentBuilder } from '../Component.js';
 import { filePredicate } from './Assertions.js';
 
 export class FileBuilder extends ComponentBuilder<APIFileComponent> {
-	private readonly data: Partial<APIFileComponent>;
+	protected readonly data: Partial<APIFileComponent>;
 
 	/**
 	 * Creates a new file from API data.

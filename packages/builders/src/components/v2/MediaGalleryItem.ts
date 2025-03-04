@@ -4,7 +4,7 @@ import { validate } from '../../util/validation.js';
 import { mediaGalleryItemPredicate } from './Assertions.js';
 
 export class MediaGalleryItemBuilder implements JSONEncodable<APIMediaGalleryItem> {
-	private readonly data: Partial<APIMediaGalleryItem>;
+	protected readonly data: Partial<APIMediaGalleryItem>;
 
 	/**
 	 * Creates a new media gallery item from API data.

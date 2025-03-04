@@ -11,7 +11,7 @@ export interface MediaGalleryBuilderData extends Partial<Omit<APIMediaGalleryCom
 }
 
 export class MediaGalleryBuilder extends ComponentBuilder<APIMediaGalleryComponent> {
-	private readonly data: MediaGalleryBuilderData;
+	protected readonly data: MediaGalleryBuilderData;
 
 	/**
 	 * Creates a new media gallery from API data.
