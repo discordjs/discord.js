@@ -191,6 +191,6 @@ class BaseGuildTextChannel extends GuildChannel {
   setNSFW() {}
 }
 
-TextBasedChannel.applyToClass(BaseGuildTextChannel, true);
+TextBasedChannel.applyToClass(BaseGuildTextChannel);
 
 exports.BaseGuildTextChannel = BaseGuildTextChannel;

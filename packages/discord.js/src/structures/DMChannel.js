@@ -118,7 +118,7 @@ class DMChannel extends BaseChannel {
   // Doesn't work on DM channels; setNSFW() {}
 }
 
-TextBasedChannel.applyToClass(DMChannel, true, [
+TextBasedChannel.applyToClass(DMChannel, [
   'bulkDelete',
   'fetchWebhooks',
   'createWebhook',

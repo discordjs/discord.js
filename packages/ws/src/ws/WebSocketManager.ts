@@ -1,6 +1,5 @@
 import type { REST } from '@discordjs/rest';
 import { range, type Awaitable } from '@discordjs/util';
-import { polyfillDispose } from '@discordjs/util';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
 	Routes,
@@ -17,9 +16,6 @@ import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy
 import type { IIdentifyThrottler } from '../throttling/IIdentifyThrottler.js';
 import { DefaultWebSocketManagerOptions, type CompressionMethod, type Encoding } from '../utils/constants.js';
 import type { WebSocketShardDestroyOptions, WebSocketShardEvents } from './WebSocketShard.js';
-
-// We put this here because in index.ts WebSocketManager seems to be outputted before polyfillDispose() is called from tsup.
-polyfillDispose();
 
 /**
  * Represents a range of shard ids
