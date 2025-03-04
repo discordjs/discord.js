@@ -23,6 +23,7 @@ import { RoleSelectMenuBuilder } from './selectMenu/RoleSelectMenu.js';
 import { StringSelectMenuBuilder } from './selectMenu/StringSelectMenu.js';
 import { UserSelectMenuBuilder } from './selectMenu/UserSelectMenu.js';
 import { TextInputBuilder } from './textInput/TextInput.js';
+import { ContainerBuilder } from './v2/Container.js';
 import { FileBuilder } from './v2/File.js';
 import { MediaGalleryBuilder } from './v2/MediaGallery.js';
 import { SectionBuilder } from './v2/Section.js';
@@ -35,6 +36,7 @@ import { ThumbnailBuilder } from './v2/Thumbnail.js';
  */
 export type MessageComponentBuilder =
 	| ActionRowBuilder
+	| ContainerBuilder
 	| FileBuilder
 	| MediaGalleryBuilder
 	| MessageActionRowComponentBuilder
@@ -140,6 +142,10 @@ export interface MappedComponentTypes {
 	 * The section component type is associated with a {@link SectionBuilder}.
 	 */
 	[ComponentType.Section]: SectionBuilder;
+	/**
+	 * The container component type is associated with a {@link ContainerBuilder}.
+	 */
+	[ComponentType.Container]: ContainerBuilder;
 }
 
 /**
@@ -199,6 +205,8 @@ export function createComponentBuilder(
 			return new MediaGalleryBuilder(data);
 		case ComponentType.Section:
 			return new SectionBuilder(data);
+		case ComponentType.Container:
+			return new ContainerBuilder(data);
 		default:
 			// @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);
