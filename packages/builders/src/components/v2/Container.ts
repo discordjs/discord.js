@@ -73,7 +73,7 @@ export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
 	 *
 	 * @param color - The color to use
 	 */
-	public setAccentColor(color?: RGBTuple | number | null | undefined): this {
+	public setAccentColor(color?: RGBTuple | number): this {
 		// Data assertions
 		containerColorPredicate.parse(color);
 
@@ -83,7 +83,15 @@ export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
 			return this;
 		}
 
-		this.data.accent_color = color ?? undefined;
+		this.data.accent_color = color;
+		return this;
+	}
+
+	/**
+	 * Clears the accent color of this container.
+	 */
+	public clearAccentColor() {
+		this.data.accent_color = undefined;
 		return this;
 	}
 

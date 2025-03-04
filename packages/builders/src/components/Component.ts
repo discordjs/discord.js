@@ -53,8 +53,15 @@ export abstract class ComponentBuilder<
 	 *
 	 * @param id - The id for this component
 	 */
-	public setId(id?: number | undefined) {
+	public setId(id: number) {
 		this.data.id = idValidator.parse(id);
 		return this;
+	}
+
+	/**
+	 * Clears the id of this component, defaulting to a default incremented id.
+	 */
+	public clearId() {
+		this.data.id = undefined;
 	}
 }

@@ -176,7 +176,7 @@ describe('Container Components', () => {
 					],
 				})
 					.setAccentColor([255, 0, 255])
-					.setAccentColor(null)
+					.clearAccentColor()
 					.toJSON(),
 			).toEqual({
 				type: ComponentType.Container,
@@ -187,7 +187,7 @@ describe('Container Components', () => {
 					},
 				],
 			});
-			expect(new ContainerBuilder(containerWithSeparatorData).setAccentColor(null).toJSON()).toEqual(
+			expect(new ContainerBuilder(containerWithSeparatorData).clearAccentColor().toJSON()).toEqual(
 				containerWithSeparatorDataNoColor,
 			);
 		});

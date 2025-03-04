@@ -1,6 +1,5 @@
 import { s } from '@sapphire/shapeshift';
 import { SeparatorSpacingSize } from 'discord-api-types/v10';
-import { colorPredicate } from '../../messages/embed/Assertions';
 import { isValidationEnabled } from '../../util/validation';
 import { ComponentBuilder } from '../Component';
 import { ButtonBuilder } from '../button/Button';
@@ -24,7 +23,6 @@ export const descriptionPredicate = s
 	.string()
 	.lengthGreaterThanOrEqual(1)
 	.lengthLessThanOrEqual(1_024)
-	.nullish()
 	.setValidationEnabled(isValidationEnabled);
 
 export const filePredicate = s
@@ -40,8 +38,6 @@ export const spoilerPredicate = s.boolean();
 export const dividerPredicate = s.boolean();
 
 export const spacingPredicate = s.nativeEnum(SeparatorSpacingSize);
-
-export const containerColorPredicate = colorPredicate.nullish();
 
 export const textDisplayContentPredicate = s
 	.string()
@@ -70,3 +66,5 @@ export function validateComponentArray<
 		.lengthLessThanOrEqual(max)
 		.parse(input);
 }
+
+export { colorPredicate as containerColorPredicate } from '../../messages/embed/Assertions';

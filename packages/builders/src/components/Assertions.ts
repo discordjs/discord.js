@@ -8,7 +8,6 @@ export const idValidator = s
 	.safeInt()
 	.greaterThanOrEqual(1)
 	.lessThan(4_294_967_296)
-	.optional()
 	.setValidationEnabled(isValidationEnabled);
 
 export const customIdValidator = s
