@@ -345,9 +345,9 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 			for (const [index, file] of request.files.entries()) {
 				const fileKey = file.key ?? `files[${index}]`;
 
-				// https://developer.mozilla.org/en-US/docs/Web/API/FormData/append#parameters
+				// https://developer.mozilla.org/docs/Web/API/FormData/append#parameters
 				// FormData.append only accepts a string or Blob.
-				// https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob#parameters
+				// https://developer.mozilla.org/docs/Web/API/Blob/Blob#parameters
 				// The Blob constructor accepts TypedArray/ArrayBuffer, strings, and Blobs.
 				if (isBufferLike(file.data)) {
 					// Try to infer the content type from the buffer if one isn't passed

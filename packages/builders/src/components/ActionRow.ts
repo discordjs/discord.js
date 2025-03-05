@@ -297,7 +297,7 @@ export class ActionRowBuilder extends ComponentBuilder<APIActionRowComponent<API
 	 *
 	 * @remarks
 	 * This method behaves similarly
-	 * to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
+	 * to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
 	 *
 	 * It's useful for modifying and adjusting order of the already-existing components of an action row.
 	 * @example
