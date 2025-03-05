@@ -1,11 +1,14 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { lazy } = require('@discordjs/util');
 const { Routes } = require('discord-api-types/v10');
 const { CachedManager } = require('./CachedManager.js');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 const { SoundboardSound } = require('../structures/SoundboardSound.js');
 const { resolveBase64, resolveFile } = require('../util/DataResolver.js');
+
+const fileTypeMime = lazy(() => require('magic-bytes.js').filetypemime);
 
 /**
  * Manages API methods for Soundboard Sounds and stores their cache.
@@ -64,6 +67,7 @@ class GuildSoundboardSoundManager extends CachedManager {
    * @typedef {Object} GuildSoundboardSoundCreateOptions
    * @property {BufferResolvable|Stream} file The file for the soundboard sound
    * @property {string} name The name for the soundboard sound
+   * @property {string} [contentType] The content type for the soundboard sound file
    * @property {number} [volume] The volume for the soundboard sound, from 0 to 1. Defaults to 1
    * @property {Snowflake} [emojiId] The emoji id for the soundboard sound
    * @property {string} [emojiName] The emoji name for the soundboard sound
@@ -80,10 +84,12 @@ class GuildSoundboardSoundManager extends CachedManager {
    *   .then(sound => console.log(`Created new soundboard sound with name ${sound.name}!`))
    *   .catch(console.error);
    */
-  async create({ emojiId, emojiName, file, name, reason, volume }) {
+  async create({ contentType, emojiId, emojiName, file, name, reason, volume }) {
     const resolvedFile = await resolveFile(file);
 
-    const sound = resolveBase64(resolvedFile.data, 'audio/mp3');
+    const resolvedContentType = contentType ?? resolvedFile.contentType ?? fileTypeMime()(resolvedFile.data)[0];
+
+    const sound = resolveBase64(resolvedFile.data, resolvedContentType);
 
     const body = { emoji_id: emojiId, emoji_name: emojiName, name, sound, volume };
 
