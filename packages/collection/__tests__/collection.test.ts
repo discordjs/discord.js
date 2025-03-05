@@ -944,6 +944,29 @@ describe('union() tests', () => {
 	});
 });
 
+describe('groupBy() tests', () => {
+	test('returns a collection of grouped items', () => {
+		const items = [
+			{ name: 'Alice', age: 20 },
+			{ name: 'Bob', age: 20 },
+			{ name: 'Charlie', age: 30 },
+		];
+
+		expect<Collection<number, typeof items>>(Collection.groupBy(items, (item) => item.age)).toStrictEqual(
+			new Collection<number, typeof items>([
+				[
+					20,
+					[
+						{ name: 'Alice', age: 20 },
+						{ name: 'Bob', age: 20 },
+					],
+				],
+				[30, [{ name: 'Charlie', age: 30 }]],
+			]),
+		);
+	});
+});
+
 describe('toReversed() tests', () => {
 	test('reverses a collection', () => {
 		const coll = createTestCollection();
@@ -1151,6 +1174,9 @@ describe('subclassing tests', () => {
 		});
 		test('Collection.combineEntries()', () => {
 			expect(DerivedCollection.combineEntries([], Object)).toBeInstanceOf(DerivedCollection);
+		});
+		test('Collection.groupBy()', () => {
+			expect(DerivedCollection.groupBy([], Object)).toBeInstanceOf(DerivedCollection);
 		});
 	});
 });

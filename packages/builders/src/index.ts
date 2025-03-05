@@ -60,8 +60,16 @@ export * from './messages/embed/EmbedAuthor.js';
 export * from './messages/embed/EmbedField.js';
 export * from './messages/embed/EmbedFooter.js';
 
+export * from './messages/poll/Assertions.js';
+export * from './messages/poll/Poll.js';
+export * from './messages/poll/PollAnswer.js';
+export * from './messages/poll/PollAnswerMedia.js';
+export * from './messages/poll/PollMedia.js';
+export * from './messages/poll/PollQuestion.js';
+
 export * from './util/componentUtil.js';
 export * from './util/normalizeArray.js';
+export * from './util/resolveBuilder.js';
 export * from './util/validation.js';
 
 export * from './Assertions.js';

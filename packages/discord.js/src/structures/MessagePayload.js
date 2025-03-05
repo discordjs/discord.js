@@ -3,7 +3,6 @@
 const { Buffer } = require('node:buffer');
 const { isJSONEncodable } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ActionRowBuilder } = require('./ActionRowBuilder.js');
 const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
 const { resolveFile } = require('../util/DataResolver.js');
 const { MessageFlagsBitField } = require('../util/MessageFlagsBitField.js');
@@ -133,7 +132,7 @@ class MessagePayload {
     }
 
     const components = this.options.components?.map(component =>
-      (isJSONEncodable(component) ? component : new ActionRowBuilder(component)).toJSON(),
+      isJSONEncodable(component) ? component.toJSON() : this.target.client.options.jsonTransformer(component),
     );
 
     let username;
@@ -192,17 +191,19 @@ class MessagePayload {
 
     let poll;
     if (this.options.poll) {
-      poll = {
-        question: {
-          text: this.options.poll.question.text,
-        },
-        answers: this.options.poll.answers.map(answer => ({
-          poll_media: { text: answer.text, emoji: resolvePartialEmoji(answer.emoji) },
-        })),
-        duration: this.options.poll.duration,
-        allow_multiselect: this.options.poll.allowMultiselect,
-        layout_type: this.options.poll.layoutType,
-      };
+      poll = isJSONEncodable(this.options.poll)
+        ? this.options.poll.toJSON()
+        : {
+            question: {
+              text: this.options.poll.question.text,
+            },
+            answers: this.options.poll.answers.map(answer => ({
+              poll_media: { text: answer.text, emoji: resolvePartialEmoji(answer.emoji) },
+            })),
+            duration: this.options.poll.duration,
+            allow_multiselect: this.options.poll.allowMultiselect,
+            layout_type: this.options.poll.layoutType,
+          };
     }
 
     this.body = {
