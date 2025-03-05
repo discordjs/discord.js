@@ -169,6 +169,42 @@ export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
 		return this;
 	}
 
+	/**
+	 * Removes, replaces, or inserts components for this container
+	 *
+	 * @remarks
+	 * This method behaves similarly
+	 * to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
+	 *
+	 * It's useful for modifying and adjusting order of the already-existing components of a container.
+	 * @example
+	 * Remove the first component:
+	 * ```ts
+	 * container.spliceComponents(0, 1);
+	 * ```
+	 * @example
+	 * Remove the first n components:
+	 * ```ts
+	 * const n = 4;
+	 * container.spliceComponents(0, n);
+	 * ```
+	 * @example
+	 * Remove the last component:
+	 * ```ts
+	 * container.spliceComponents(-1, 1);
+	 * ```
+	 * @param index - The index to start at
+	 * @param deleteCount - The number of components to remove
+	 * @param components - The replacing component objects
+	 */
+	public spliceComponents(index: number, deleteCount: number, ...components: ContainerComponentBuilders[]): this {
+		this.data.components.splice(index, deleteCount, ...components);
+		return this;
+	}
+
+	/**
+	 * {@inheritDoc ComponentBuilder.toJSON}
+	 */
 	public override toJSON(validationOverride?: boolean): APIContainerComponent {
 		const { components, ...rest } = this.data;
 
