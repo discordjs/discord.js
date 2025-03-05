@@ -1,21 +1,3 @@
-import {
-  ActionRowBuilder as BuilderActionRow,
-  MessageActionRowComponentBuilder,
-  ButtonBuilder as BuilderButtonComponent,
-  EmbedBuilder as BuildersEmbed,
-  ChannelSelectMenuBuilder as BuilderChannelSelectMenuComponent,
-  MentionableSelectMenuBuilder as BuilderMentionableSelectMenuComponent,
-  RoleSelectMenuBuilder as BuilderRoleSelectMenuComponent,
-  StringSelectMenuBuilder as BuilderStringSelectMenuComponent,
-  UserSelectMenuBuilder as BuilderUserSelectMenuComponent,
-  TextInputBuilder as BuilderTextInputComponent,
-  SelectMenuOptionBuilder as BuildersSelectMenuOption,
-  ModalActionRowComponentBuilder,
-  ModalBuilder as BuildersModal,
-  AnyComponentBuilder,
-  type RestOrArray,
-  ApplicationCommandOptionAllowedChannelTypes,
-} from '@discordjs/builders';
 import { Awaitable, JSONEncodable } from '@discordjs/util';
 import { Collection, ReadonlyCollection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
@@ -237,6 +219,7 @@ import {
   RawWidgetData,
   RawWidgetMemberData,
 } from './rawDataTypes.js';
+import { ApplicationCommandOptionAllowedChannelTypes, MessageActionRowComponentBuilder } from '@discordjs/builders';
 
 //#region Classes
 
@@ -292,22 +275,6 @@ export type ActionRowComponent = MessageActionRowComponent | ModalActionRowCompo
 export interface ActionRowData<ComponentType extends JSONEncodable<APIActionRowComponentTypes> | ActionRowComponentData>
   extends BaseComponentData {
   components: readonly ComponentType[];
-}
-
-export class ActionRowBuilder<
-  ComponentType extends AnyComponentBuilder = AnyComponentBuilder,
-> extends BuilderActionRow<ComponentType> {
-  public constructor(
-    data?: Partial<
-      | ActionRowData<ActionRowComponentData | JSONEncodable<APIActionRowComponentTypes>>
-      | APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>
-    >,
-  );
-  public static from<ComponentType extends AnyComponentBuilder = AnyComponentBuilder>(
-    other:
-      | JSONEncodable<APIActionRowComponent<ReturnType<ComponentType['toJSON']>>>
-      | APIActionRowComponent<ReturnType<ComponentType['toJSON']>>,
-  ): ActionRowBuilder<ComponentType>;
 }
 
 export type MessageActionRowComponent =
@@ -751,70 +718,6 @@ export class ButtonComponent extends Component<APIButtonComponent> {
 
 export type ComponentEmojiResolvable = APIMessageComponentEmoji | string;
 
-export class ButtonBuilder extends BuilderButtonComponent {
-  public constructor(data?: Partial<ButtonComponentData> | Partial<APIButtonComponent>);
-  public static from(other: JSONEncodable<APIButtonComponent> | APIButtonComponent): ButtonBuilder;
-  public override setEmoji(emoji: ComponentEmojiResolvable): this;
-}
-
-export class StringSelectMenuBuilder extends BuilderStringSelectMenuComponent {
-  public constructor(data?: Partial<StringSelectMenuComponentData | APIStringSelectComponent>);
-  private static normalizeEmoji(
-    selectMenuOption: JSONEncodable<APISelectMenuOption> | SelectMenuComponentOptionData,
-  ): (APISelectMenuOption | StringSelectMenuOptionBuilder)[];
-  public override addOptions(
-    ...options: RestOrArray<BuildersSelectMenuOption | SelectMenuComponentOptionData | APISelectMenuOption>
-  ): this;
-  public override setOptions(
-    ...options: RestOrArray<BuildersSelectMenuOption | SelectMenuComponentOptionData | APISelectMenuOption>
-  ): this;
-  public static from(
-    other: JSONEncodable<APIStringSelectComponent> | APIStringSelectComponent,
-  ): StringSelectMenuBuilder;
-}
-
-export class UserSelectMenuBuilder extends BuilderUserSelectMenuComponent {
-  public constructor(data?: Partial<UserSelectMenuComponentData | APIUserSelectComponent>);
-  public static from(other: JSONEncodable<APIUserSelectComponent> | APIUserSelectComponent): UserSelectMenuBuilder;
-}
-
-export class RoleSelectMenuBuilder extends BuilderRoleSelectMenuComponent {
-  public constructor(data?: Partial<RoleSelectMenuComponentData | APIRoleSelectComponent>);
-  public static from(other: JSONEncodable<APIRoleSelectComponent> | APIRoleSelectComponent): RoleSelectMenuBuilder;
-}
-
-export class MentionableSelectMenuBuilder extends BuilderMentionableSelectMenuComponent {
-  public constructor(data?: Partial<MentionableSelectMenuComponentData | APIMentionableSelectComponent>);
-  public static from(
-    other: JSONEncodable<APIMentionableSelectComponent> | APIMentionableSelectComponent,
-  ): MentionableSelectMenuBuilder;
-}
-
-export class ChannelSelectMenuBuilder extends BuilderChannelSelectMenuComponent {
-  public constructor(data?: Partial<ChannelSelectMenuComponentData | APIChannelSelectComponent>);
-  public static from(
-    other: JSONEncodable<APIChannelSelectComponent> | APIChannelSelectComponent,
-  ): ChannelSelectMenuBuilder;
-}
-
-export class StringSelectMenuOptionBuilder extends BuildersSelectMenuOption {
-  public constructor(data?: SelectMenuComponentOptionData | APISelectMenuOption);
-  public override setEmoji(emoji: ComponentEmojiResolvable): this;
-  public static from(other: JSONEncodable<APISelectMenuOption> | APISelectMenuOption): StringSelectMenuOptionBuilder;
-}
-
-export class ModalBuilder extends BuildersModal {
-  public constructor(data?: Partial<ModalComponentData> | Partial<APIModalInteractionResponseCallbackData>);
-  public static from(
-    other: JSONEncodable<APIModalInteractionResponseCallbackData> | APIModalInteractionResponseCallbackData,
-  ): ModalBuilder;
-}
-
-export class TextInputBuilder extends BuilderTextInputComponent {
-  public constructor(data?: Partial<TextInputComponentData | APITextInputComponent>);
-  public static from(other: JSONEncodable<APITextInputComponent> | APITextInputComponent): TextInputBuilder;
-}
-
 export class TextInputComponent extends Component<APITextInputComponent> {
   public get customId(): string;
   public get value(): string;
@@ -870,13 +773,6 @@ export interface EmbedFooterData extends Omit<APIEmbedFooter, 'icon_url' | 'prox
 
 export interface EmbedAssetData extends Omit<APIEmbedImage, 'proxy_url'> {
   proxyURL?: string;
-}
-
-export class EmbedBuilder extends BuildersEmbed {
-  public constructor(data?: EmbedData | APIEmbed);
-  public override setColor(color: ColorResolvable | null): this;
-  public static from(other: JSONEncodable<APIEmbed> | APIEmbed): EmbedBuilder;
-  public get length(): number;
 }
 
 export class Embed {
@@ -3508,9 +3404,7 @@ export function moveElementInArray(
 ): number;
 export function parseEmoji(text: string): PartialEmoji | null;
 export function resolveColor(color: ColorResolvable): number;
-/** @internal */
 export function resolvePartialEmoji(emoji: Snowflake): PartialEmojiOnlyId;
-/** @internal */
 export function resolvePartialEmoji(emoji: Emoji | EmojiIdentifierResolvable): PartialEmoji | null;
 /** @internal */
 export function resolveGuildEmoji(client: Client, emojiId: Snowflake): GuildEmoji | null;
@@ -6266,16 +6160,6 @@ export interface MessageCollectorOptions extends CollectorOptions<[Message, Coll
   maxProcessed?: number;
 }
 
-export type MessageComponent =
-  | Component
-  | ActionRowBuilder<MessageActionRowComponentBuilder | ModalActionRowComponentBuilder>
-  | ButtonComponent
-  | StringSelectMenuComponent
-  | UserSelectMenuComponent
-  | RoleSelectMenuComponent
-  | MentionableSelectMenuComponent
-  | ChannelSelectMenuComponent;
-
 export type CollectedMessageInteraction<Cached extends CacheType = CacheType> = Exclude<
   CollectedInteraction<Cached>,
   ModalSubmitInteraction
@@ -6346,9 +6230,9 @@ export interface BaseMessageOptions {
     | AttachmentPayload
   )[];
   components?: readonly (
-    | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
+    | JSONEncodable<APIActionRowComponent<APIActionRowComponentTypes>>
     | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>
-    | APIActionRowComponent<APIMessageActionRowComponent>
+    | APIActionRowComponent<APIActionRowComponentTypes>
   )[];
 }
 
