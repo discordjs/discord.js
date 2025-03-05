@@ -347,8 +347,6 @@ client.on('interactionCreate', async interaction => {
     components: [{ custom_id: '123', label: 'test', style: ButtonStyle.Primary, type: ComponentType.Button }],
   });
 
-  actionRow.toJSON();
-
   await interaction.reply({ content: 'Hi!', components: [actionRow] });
 
   // @ts-expect-error
