@@ -44,7 +44,7 @@ class SoundboardSound extends Base {
 
     if ('volume' in data) {
       /**
-       * The volume of the soundboard sound
+       * The volume of the soundboard sound, from 0 to 1
        * @type {?number}
        */
       this.volume = data.volume;

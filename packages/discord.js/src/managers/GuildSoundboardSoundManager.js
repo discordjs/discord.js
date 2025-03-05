@@ -99,9 +99,9 @@ class GuildSoundboardSoundManager extends CachedManager {
    * Data for editing a soundboard sound.
    * @typedef {Object} GuildSoundboardSoundEditOptions
    * @property {string} [name] The name of the soundboard sound
-   * @property {number} [volume] The volume of the soundboard sound, from 0 to 1.
-   * @property {Snowflake} [emojiId] The emoji id of the soundboard sound
-   * @property {string} [emojiName] The emoji name of the soundboard sound
+   * @property {?number} [volume] The volume of the soundboard sound, from 0 to 1
+   * @property {?Snowflake} [emojiId] The emoji id of the soundboard sound
+   * @property {?string} [emojiName] The emoji name of the soundboard sound
    * @property {string} [reason] The reason for editing the soundboard sound
    */
 

@@ -292,14 +292,14 @@ class GuildManager extends CachedManager {
   /**
    * Fetches soundboard sounds for the specified guilds.
    * @param {FetchSoundboardSoundsOptions} options The options for fetching soundboard sounds
-   * @returns {Promise<Collection<Snowflake, Collection<string, SoundboardSound>>>}
+   * @returns {Promise<Collection<Snowflake, Collection<Snowflake, SoundboardSound>>>}
    * @example
    * // Fetch soundboard sounds for multiple guilds
    * const soundboardSounds = await client.guilds.fetchSoundboardSounds({
-   *  guildIds: ['1234567890', '9876543210'],
+   *  guildIds: ['123456789012345678', '987654321098765432'],
    * })
    *
-   * console.log(soundboardSounds.get('1234567890'));
+   * console.log(soundboardSounds.get('123456789012345678'));
    */
   async fetchSoundboardSounds({ guildIds, time = 10_000 }) {
     const shardCount = await this.client.ws.getShardCount();
