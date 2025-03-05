@@ -1089,6 +1089,17 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	}
 
 	/**
+	 * Identical to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/groupBy | Map.groupBy()}
+	 * but returns a Collection instead of a Map.
+	 */
+	public static override groupBy<Key, Item>(
+		items: Iterable<Item>,
+		keySelector: (item: Item, index: number) => Key,
+	): Collection<Key, Item[]> {
+		return new this[Symbol.species]<Key, Item[]>(Map.groupBy(items, keySelector));
+	}
+
+	/**
 	 * @internal
 	 */
 	declare public static readonly [Symbol.species]: typeof Collection;
