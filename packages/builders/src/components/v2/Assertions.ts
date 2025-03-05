@@ -1,5 +1,6 @@
 import { s } from '@sapphire/shapeshift';
 import { SeparatorSpacingSize } from 'discord-api-types/v10';
+import { colorPredicate } from '../../messages/embed/Assertions';
 import { isValidationEnabled } from '../../util/validation';
 import { ComponentBuilder } from '../Component';
 import { ButtonBuilder } from '../button/Button';
@@ -50,6 +51,8 @@ export const accessoryPredicate = s
 	.or(s.instance(ThumbnailBuilder))
 	.setValidationEnabled(isValidationEnabled);
 
+export const containerColorPredicate = colorPredicate.nullish();
+
 export function assertReturnOfBuilder<ReturnType extends MediaGalleryItemBuilder | TextDisplayBuilder>(
 	input: unknown,
 	ExpectedInstanceOf: new () => ReturnType,
@@ -66,5 +69,3 @@ export function validateComponentArray<
 		.lengthLessThanOrEqual(max)
 		.parse(input);
 }
-
-export { colorPredicate as containerColorPredicate } from '../../messages/embed/Assertions';
