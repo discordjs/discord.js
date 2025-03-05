@@ -1,6 +1,10 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { APIBaseComponent, ComponentType } from 'discord-api-types/v10';
 
+export interface ComponentBuilderBaseData {
+	id?: number | undefined;
+}
+
 /**
  * The base component builder that contains common symbols for all sorts of components.
  *
@@ -9,7 +13,7 @@ import type { APIBaseComponent, ComponentType } from 'discord-api-types/v10';
 export abstract class ComponentBuilder<Component extends APIBaseComponent<ComponentType>>
 	implements JSONEncodable<Component>
 {
-	protected abstract readonly data: { id?: number | undefined };
+	protected abstract readonly data: ComponentBuilderBaseData;
 
 	/**
 	 * Sets the id of this component.
