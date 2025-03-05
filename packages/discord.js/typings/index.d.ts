@@ -3464,6 +3464,9 @@ export class VoiceChannelEffect {
   public soundId: Snowflake | number | null;
   public soundVolume: number | null;
   public get channel(): VoiceChannel | null;
+  public get soundboardSound():
+    | (SoundboardSound & { get guild(): Guild; guildId: Snowflake; soundId: Snowflake })
+    | null;
 }
 
 export class VoiceRegion {
