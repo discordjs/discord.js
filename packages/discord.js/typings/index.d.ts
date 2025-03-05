@@ -4247,6 +4247,7 @@ export class GuildScheduledEventManager extends CachedManager<
 export interface GuildSoundboardSoundCreateOptions {
   file: BufferResolvable | Stream;
   name: string;
+  contentType?: string;
   volume?: number;
   emojiId?: Snowflake;
   emojiName?: string;
