@@ -137,7 +137,7 @@ class Webhook {
    * @property {string} [threadName] Name of the thread to create (only available if the webhook is in a forum channel)
    * @property {Snowflake[]} [appliedTags]
    * The tags to apply to the created thread (only available if the webhook is in a forum channel)
-   * @property {boolean} [withComponents] Whether to allow sending (non-interactive) components in the message.
+   * @property {boolean} [withComponents] Whether to allow sending non-interactive components in the message.
    * <info>For application-owned webhooks, this property is ignored</info>
    */
 
@@ -146,7 +146,7 @@ class Webhook {
    * @typedef {MessageEditOptions} WebhookMessageEditOptions
    * @property {Snowflake} [threadId] The id of the thread this message belongs to
    * <info>For interaction webhooks, this property is ignored</info>
-   * @property {boolean} [withComponents] Whether to allow sending (non-interactive) components in the message.
+   * @property {boolean} [withComponents] Whether to allow sending non-interactive components in the message.
    * <info>For application-owned webhooks, this property is ignored</info>
    */
 
