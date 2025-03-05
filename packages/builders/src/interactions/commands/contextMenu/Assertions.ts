@@ -6,9 +6,7 @@ const namePredicate = z
 	.string()
 	.min(1)
 	.max(32)
-	.regex(
-		/^(?:(?: *[\p{P}\p{L}\p{N}\p{sc=Devanagari}\p{sc=Thai}\p{Extended_Pictographic}\p{Emoji_Component}]) *)+$/u,
-	);
+	.regex(/^(?:(?: *[\p{P}\p{L}\p{N}\p{sc=Devanagari}\p{sc=Thai}\p{Extended_Pictographic}\p{Emoji_Component}]) *)+$/u);
 
 const contextsPredicate = z.array(z.nativeEnum(InteractionContextType));
 const integrationTypesPredicate = z.array(z.nativeEnum(ApplicationIntegrationType));
