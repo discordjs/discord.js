@@ -4,17 +4,17 @@ import { embedLength } from '../../util/componentUtil.js';
 
 const namePredicate = z.string().max(256);
 
-const iconURLPredicate = z
-	.string()
-	.url()
-	.refine(refineURLPredicate(['http:', 'https:', 'attachment:']), {
-		message: 'Invalid protocol for icon URL. Must be http:, https:, or attachment:',
-	});
-
 const URLPredicate = z
 	.string()
 	.url()
 	.refine(refineURLPredicate(['http:', 'https:']), { message: 'Invalid protocol for URL. Must be http: or https:' });
+
+const URLWithAttachmentProtocolPredicate = z
+	.string()
+	.url()
+	.refine(refineURLPredicate(['http:', 'https:', 'attachment:']), {
+		message: 'Invalid protocol for URL. Must be http:, https:, or attachment:',
+	});
 
 export const embedFieldPredicate = z.object({
 	name: namePredicate,
@@ -24,13 +24,13 @@ export const embedFieldPredicate = z.object({
 
 export const embedAuthorPredicate = z.object({
 	name: namePredicate.min(1),
-	icon_url: iconURLPredicate.optional(),
+	icon_url: URLWithAttachmentProtocolPredicate.optional(),
 	url: URLPredicate.optional(),
 });
 
 export const embedFooterPredicate = z.object({
 	text: z.string().min(1).max(2_048),
-	icon_url: iconURLPredicate.optional(),
+	icon_url: URLWithAttachmentProtocolPredicate.optional(),
 });
 
 export const embedPredicate = z
@@ -41,8 +41,8 @@ export const embedPredicate = z
 		timestamp: z.string().optional(),
 		color: z.number().int().min(0).max(0xffffff).optional(),
 		footer: embedFooterPredicate.optional(),
-		image: z.object({ url: URLPredicate }).optional(),
-		thumbnail: z.object({ url: URLPredicate }).optional(),
+		image: z.object({ url: URLWithAttachmentProtocolPredicate }).optional(),
+		thumbnail: z.object({ url: URLWithAttachmentProtocolPredicate }).optional(),
 		author: embedAuthorPredicate.optional(),
 		fields: z.array(embedFieldPredicate).max(25).optional(),
 	})
