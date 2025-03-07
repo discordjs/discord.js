@@ -37,9 +37,9 @@ export class MessageReferenceBuilder implements JSONEncodable<APIMessageReferenc
 	}
 
 	/**
-	 * Sets the ID of the message being referenced
+	 * Sets the id of the message being referenced
 	 *
-	 * @param messageId - The ID of the message being referenced
+	 * @param messageId - The id of the message being referenced
 	 */
 	public setMessageId(messageId: Snowflake): this {
 		this.data.message_id = messageId;
@@ -47,7 +47,7 @@ export class MessageReferenceBuilder implements JSONEncodable<APIMessageReferenc
 	}
 
 	/**
-	 * Clear the ID of the message being referenced
+	 * Clear the id of the message being referenced
 	 */
 	public clearMessageId(): this {
 		this.data.message_id = undefined;
@@ -55,9 +55,9 @@ export class MessageReferenceBuilder implements JSONEncodable<APIMessageReferenc
 	}
 
 	/**
-	 * Sets the ID of the channel being referenced
+	 * Sets the id of the channel being referenced
 	 *
-	 * @param channelId - The ID of the channel being referenced
+	 * @param channelId - The id of the channel being referenced
 	 */
 	public setChannelId(channelId: Snowflake): this {
 		this.data.channel_id = channelId;
@@ -65,7 +65,7 @@ export class MessageReferenceBuilder implements JSONEncodable<APIMessageReferenc
 	}
 
 	/**
-	 * Clear the ID of the channel being referenced
+	 * Clear the id of the channel being referenced
 	 */
 	public clearChannelId(): this {
 		this.data.channel_id = undefined;
@@ -73,9 +73,9 @@ export class MessageReferenceBuilder implements JSONEncodable<APIMessageReferenc
 	}
 
 	/**
-	 * Sets the ID of the guild being referenced
+	 * Sets the id of the guild being referenced
 	 *
-	 * @param guildId - The ID of the guild being referenced
+	 * @param guildId - The id of the guild being referenced
 	 */
 	public setGuildId(guildId: Snowflake): this {
 		this.data.guild_id = guildId;

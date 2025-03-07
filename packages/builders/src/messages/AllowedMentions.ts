@@ -64,7 +64,7 @@ export class AllowedMentionsBuilder implements JSONEncodable<APIAllowedMentions>
 	 *
 	 * @remarks
 	 * This method behaves similarly
-	 * to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
+	 * to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
 	 *
 	 * It's useful for modifying and adjusting order of the already-existing roles.
 	 * @example
@@ -85,7 +85,7 @@ export class AllowedMentionsBuilder implements JSONEncodable<APIAllowedMentions>
 	 * ```
 	 * @param index - The index to start at
 	 * @param deleteCount - The number of roles to remove
-	 * @param roles - The replacing role IDs
+	 * @param roles - The replacing role ids
 	 */
 	public spliceRoles(index: number, deleteCount: number, ...roles: RestOrArray<Snowflake>): this {
 		this.data.roles ??= [];
@@ -119,7 +119,7 @@ export class AllowedMentionsBuilder implements JSONEncodable<APIAllowedMentions>
 	 *
 	 * @remarks
 	 * This method behaves similarly
-	 * to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
+	 * to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
 	 *
 	 * It's useful for modifying and adjusting order of the already-existing users.
 	 * @example
@@ -140,7 +140,7 @@ export class AllowedMentionsBuilder implements JSONEncodable<APIAllowedMentions>
 	 * ```
 	 * @param index - The index to start at
 	 * @param deleteCount - The number of users to remove
-	 * @param users - The replacing user IDs
+	 * @param users - The replacing user ids
 	 */
 	public spliceUsers(index: number, deleteCount: number, ...users: RestOrArray<Snowflake>): this {
 		this.data.users ??= [];
