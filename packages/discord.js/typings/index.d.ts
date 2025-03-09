@@ -903,9 +903,7 @@ export class Client<Ready extends boolean = boolean> extends BaseClient<ClientEv
   public fetchSticker(id: Snowflake): Promise<Sticker>;
   public fetchStickerPacks(options: { packId: Snowflake }): Promise<StickerPack>;
   public fetchStickerPacks(options?: StickerPackFetchOptions): Promise<Collection<Snowflake, StickerPack>>;
-  public fetchDefaultSoundboardSounds(): Promise<
-    Collection<string, SoundboardSound & { get guild(): null; guildId: null; soundId: string }>
-  >;
+  public fetchDefaultSoundboardSounds(): Promise<Collection<string, DefaultSoundboardSound>>;
   public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
   public fetchGuildWidget(guild: GuildResolvable): Promise<Widget>;
   public generateInvite(options?: InviteGenerationOptions): string;
@@ -3466,9 +3464,7 @@ export class VoiceChannelEffect {
   public soundId: Snowflake | number | null;
   public soundVolume: number | null;
   public get channel(): VoiceChannel | null;
-  public get soundboardSound():
-    | (SoundboardSound & { get guild(): Guild; guildId: Snowflake; soundId: Snowflake })
-    | null;
+  public get soundboardSound(): GuildSoundboardSound | null;
 }
 
 export class VoiceRegion {
@@ -3614,14 +3610,13 @@ export class SoundboardSound extends Base {
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public get url(): string;
-  public edit(
-    options?: GuildSoundboardSoundEditOptions,
-  ): Promise<SoundboardSound & { get guild(): Guild; guildId: Snowflake; soundId: Snowflake }>;
-  public delete(
-    reason?: string,
-  ): Promise<SoundboardSound & { get guild(): Guild; guildId: Snowflake; soundId: Snowflake }>;
+  public edit(options?: GuildSoundboardSoundEditOptions): Promise<GuildSoundboardSound>;
+  public delete(reason?: string): Promise<GuildSoundboardSound>;
   public equals(other: SoundboardSound | APISoundboardSound): boolean;
 }
+
+export type DefaultSoundboardSound = SoundboardSound & { get guild(): null; guildId: null; soundId: string };
+export type GuildSoundboardSound = SoundboardSound & { get guild(): Guild; guildId: Snowflake; soundId: Snowflake };
 
 export class WelcomeChannel extends Base {
   private constructor(guild: Guild, data: RawWelcomeChannelData);
@@ -4147,12 +4142,7 @@ export class GuildManager extends CachedManager<Snowflake, Guild, GuildResolvabl
   public fetch(options?: FetchGuildsOptions): Promise<Collection<Snowflake, OAuth2Guild>>;
   public fetchSoundboardSounds(
     options: FetchSoundboardSoundsOptions,
-  ): Promise<
-    Collection<
-      Snowflake,
-      Collection<Snowflake, SoundboardSound & { get guild(): Guild; guildId: Snowflake; soundId: Snowflake }>
-    >
-  >;
+  ): Promise<Collection<Snowflake, Collection<Snowflake, GuildSoundboardSound>>>;
   public setIncidentActions(
     guild: GuildResolvable,
     incidentActions: IncidentActionsEditOptions,
@@ -4264,21 +4254,14 @@ export interface GuildSoundboardSoundEditOptions {
 export class GuildSoundboardSoundManager extends CachedManager<Snowflake, SoundboardSound, SoundboardSoundResolvable> {
   private constructor(guild: Guild, iterable?: Iterable<APISoundboardSound>);
   public guild: Guild;
-  public create(
-    options: GuildSoundboardSoundCreateOptions,
-  ): Promise<SoundboardSound & { get guild(): Guild; guildId: Snowflake; soundId: Snowflake }>;
+  public create(options: GuildSoundboardSoundCreateOptions): Promise<GuildSoundboardSound>;
   public edit(
     soundboardSound: SoundboardSoundResolvable,
     options: GuildSoundboardSoundEditOptions,
-  ): Promise<SoundboardSound & { get guild(): Guild; guildId: Snowflake; soundId: Snowflake }>;
+  ): Promise<GuildSoundboardSound>;
   public delete(soundboardSound: SoundboardSoundResolvable): Promise<void>;
-  public fetch(
-    id: Snowflake,
-    options?: BaseFetchOptions,
-  ): Promise<SoundboardSound & { get guild(): Guild; guildId: Snowflake; soundId: Snowflake }>;
-  public fetch(
-    options?: BaseFetchOptions,
-  ): Promise<Collection<Snowflake, SoundboardSound & { get guild(): Guild; guildId: Snowflake; soundId: Snowflake }>>;
+  public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<GuildSoundboardSound>;
+  public fetch(options?: BaseFetchOptions): Promise<Collection<Snowflake, GuildSoundboardSound>>;
 }
 
 export class GuildStickerManager extends CachedManager<Snowflake, Sticker, StickerResolvable> {
