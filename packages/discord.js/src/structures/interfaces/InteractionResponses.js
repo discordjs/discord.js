@@ -242,7 +242,7 @@ class InteractionResponses {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async update(options) {
+  async update(options = {}) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
 
     let messagePayload;
