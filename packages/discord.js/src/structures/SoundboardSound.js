@@ -139,7 +139,7 @@ class SoundboardSound extends Base {
    *   .then(sound => console.log(`Updated the name of the soundboard sound to ${sound.name}`))
    *   .catch(console.error);
    */
-  edit(options) {
+  async edit(options) {
     if (!this.guild) throw new DiscordjsError(ErrorCodes.NotGuildSoundboardSound, 'edited');
 
     return this.guild.soundboardSounds.edit(this, options);

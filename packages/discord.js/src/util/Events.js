@@ -135,7 +135,7 @@ exports.Events = {
   GuildSoundboardSoundCreate: 'guildSoundboardSoundCreate',
   GuildSoundboardSoundDelete: 'guildSoundboardSoundDelete',
   GuildSoundboardSoundsUpdate: 'guildSoundboardSoundsUpdate',
-  GuildSoundboardSoundUpdate: 'guildSoundboardSound',
+  GuildSoundboardSoundUpdate: 'guildSoundboardSoundUpdate',
   GuildStickerCreate: 'stickerCreate',
   GuildStickerDelete: 'stickerDelete',
   GuildStickerUpdate: 'stickerUpdate',
