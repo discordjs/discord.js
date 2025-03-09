@@ -231,7 +231,7 @@ class InteractionResponses {
 
   /**
    * Updates the original message of the component on which the interaction was received on.
-   * @param {string|MessagePayload|InteractionUpdateOptions} options The options for the updated message
+   * @param {string|MessagePayload|InteractionUpdateOptions} [options] The options for the updated message
    * @returns {Promise<InteractionCallbackResponse|undefined>}
    * @example
    * // Remove the components from the message
