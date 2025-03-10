@@ -30,7 +30,7 @@ export const messageReferencePredicate = z.object({
 export const messagePredicate = z
 	.object({
 		content: z.string().optional(),
-		nonce: z.union([z.string(), z.number()]).optional(),
+		nonce: z.union([z.string().max(25), z.number()]).optional(),
 		tts: z.boolean().optional(),
 		embeds: embedPredicate.array().max(10).optional(),
 		allowed_mentions: allowedMentionPredicate.optional(),
@@ -73,5 +73,5 @@ export const messagePredicate = z
 				(data.sticker_ids !== undefined && data.sticker_ids.length > 0)
 			);
 		},
-		{ message: 'Messages just have at least one field set' },
+		{ message: 'Messages must have content, embeds, a poll, attachments, components, or stickers' },
 	);
