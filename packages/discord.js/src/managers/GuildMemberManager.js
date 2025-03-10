@@ -223,7 +223,7 @@ class GuildMemberManager extends CachedManager {
     query: initialQuery,
     time = 120e3,
     nonce = DiscordSnowflake.generate().toString(),
-  }) {
+  } = {}) {
     if (nonce.length > 32) throw new DiscordjsRangeError(ErrorCodes.MemberFetchNonceLength);
 
     const query = initialQuery || (!users ? '' : undefined);

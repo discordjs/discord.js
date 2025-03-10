@@ -207,6 +207,12 @@ describe('Embed', () => {
 			expect(embed.toJSON()).toStrictEqual({ ...base, thumbnail: { url: 'https://discord.js.org/static/logo.svg' } });
 		});
 
+		test('GIVEN an embed using Embed#setThumbnail with attachment protocol THEN returns valid toJSON data', () => {
+			const embed = new EmbedBuilder();
+			embed.setThumbnail('attachment://discordjs.webp');
+			expect(embed.toJSON()).toStrictEqual({ ...base, thumbnail: { url: 'attachment://discordjs.webp' } });
+		});
+
 		test('GIVEN an embed with a pre-defined thumbnail THEN unset thumbnail THEN return valid toJSON data', () => {
 			const embed = new EmbedBuilder({ thumbnail: { url: 'https://discord.js.org/static/logo.svg' }, ...dummy });
 			embed.clearThumbnail();
@@ -226,6 +232,12 @@ describe('Embed', () => {
 		test('GIVEN an embed with a pre-defined image THEN returns valid toJSON data', () => {
 			const embed = new EmbedBuilder({ image: { url: 'https://discord.js.org/static/logo.svg' } });
 			expect(embed.toJSON()).toStrictEqual({ ...base, image: { url: 'https://discord.js.org/static/logo.svg' } });
+		});
+
+		test('GIVEN an embed using Embed#setImage with attachment protocol THEN returns valid toJSON data', () => {
+			const embed = new EmbedBuilder();
+			embed.setImage('attachment://discordjs.webp');
+			expect(embed.toJSON()).toStrictEqual({ ...base, image: { url: 'attachment://discordjs.webp' } });
 		});
 
 		test('GIVEN an embed using Embed#setImage THEN returns valid toJSON data', () => {
