@@ -140,9 +140,10 @@ export async function handleErrors(
 			// The request will not succeed for some reason, parse the error returned from the api
 			const data = (await parseResponse(res)) as DiscordErrorData | OAuthErrorData;
 			const isDiscordError = 'code' in data;
+			const isOauthError = 'error' in data;
 
 			// If we receive the 401 status with 0 code, it means the token we had is no longer valid.
-			if (status === 401 && requestData.auth === true && isDiscordError && data.code === 0) {
+			if (status === 401 && requestData.auth === true && (isOauthError || isDiscordError && data.code === 0)) {
 				manager.setToken(null!);
 			}
 
