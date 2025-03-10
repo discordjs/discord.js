@@ -137,15 +137,17 @@ export async function handleErrors(
 	} else {
 		// Handle possible malformed requests
 		if (status >= 400 && status < 500) {
-			// If we receive this status code, it means the token we had is no longer valid.
-			if (status === 401 && requestData.auth === true) {
+			// The request will not succeed for some reason, parse the error returned from the api
+			const data = (await parseResponse(res)) as DiscordErrorData | OAuthErrorData;
+			const isDiscordError = 'code' in data;
+
+			// If we receive the 401 status with 0 code, it means the token we had is no longer valid.
+			if (status === 401 && requestData.auth === true && isDiscordError && data.code === 0) {
 				manager.setToken(null!);
 			}
 
-			// The request will not succeed for some reason, parse the error returned from the api
-			const data = (await parseResponse(res)) as DiscordErrorData | OAuthErrorData;
 			// throw the API error
-			throw new DiscordAPIError(data, 'code' in data ? data.code : data.error, status, method, url, requestData);
+			throw new DiscordAPIError(data, isDiscordError ? data.code : data.error, status, method, url, requestData);
 		}
 
 		return res;
