@@ -5,9 +5,9 @@ import type {
 	APIThumbnailComponent,
 	APIButtonComponentWithSKUId,
 	APIButtonComponentWithURL,
+	ButtonStyle,
 } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
-import type { ButtonStyle } from 'discord-api-types/v8';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { resolveBuilder } from '../../util/resolveBuilder.js';
 import { validate } from '../../util/validation.js';
