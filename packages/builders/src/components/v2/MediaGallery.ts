@@ -1,6 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import type { APIMediaGalleryComponent } from 'discord-api-types/v10';
+import type { APIMediaGalleryComponent, APIMediaGalleryItem } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { ComponentBuilder } from '../Component.js';
@@ -62,7 +62,9 @@ export class MediaGalleryBuilder extends ComponentBuilder<APIMediaGalleryCompone
 	 * @param items - The items to add
 	 */
 	public addItems(
-		...items: RestOrArray<MediaGalleryItemBuilder | ((builder: MediaGalleryItemBuilder) => MediaGalleryItemBuilder)>
+		...items: RestOrArray<
+			APIMediaGalleryItem | MediaGalleryItemBuilder | ((builder: MediaGalleryItemBuilder) => MediaGalleryItemBuilder)
+		>
 	) {
 		this.items.push(
 			...normalizeArray(items).map((input) => {
@@ -85,7 +87,9 @@ export class MediaGalleryBuilder extends ComponentBuilder<APIMediaGalleryCompone
 	public spliceItems(
 		index: number,
 		deleteCount: number,
-		...items: RestOrArray<MediaGalleryItemBuilder | ((builder: MediaGalleryItemBuilder) => MediaGalleryItemBuilder)>
+		...items: RestOrArray<
+			APIMediaGalleryItem | MediaGalleryItemBuilder | ((builder: MediaGalleryItemBuilder) => MediaGalleryItemBuilder)
+		>
 	) {
 		this.items.splice(
 			index,
