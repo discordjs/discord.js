@@ -3,6 +3,7 @@ import type {
 	APIFileComponent,
 	APITextDisplayComponent,
 	APIContainerComponent,
+	APIComponentInContainer,
 } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
 import type { APIComponentInMessageActionRow, APISeparatorComponent } from 'discord-api-types/v9';
@@ -197,8 +198,17 @@ export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
 	 * @param deleteCount - The number of components to remove
 	 * @param components - The replacing component objects
 	 */
-	public spliceComponents(index: number, deleteCount: number, ...components: ContainerComponentBuilders[]): this {
-		this.data.components.splice(index, deleteCount, ...components);
+	public spliceComponents(
+		index: number,
+		deleteCount: number,
+		...components: RestOrArray<APIComponentInContainer | ContainerComponentBuilders>
+	): this {
+		const normalized = normalizeArray(components);
+		const resolved = normalized.map((component) =>
+			component instanceof ComponentBuilder ? component : createComponentBuilder(component),
+		);
+
+		this.data.components.splice(index, deleteCount, ...resolved);
 		return this;
 	}
 

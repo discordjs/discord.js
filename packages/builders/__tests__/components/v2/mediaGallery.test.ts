@@ -64,8 +64,8 @@ describe('MediaGallery', () => {
 			const gallery = new MediaGalleryBuilder();
 
 			gallery.addItems(
-				() => new MediaGalleryItemBuilder().setURL('https://google.com'),
-				() => new MediaGalleryItemBuilder().setURL('https://discord.com').setDescription('Discord'),
+				(builder) => builder.setURL('https://google.com'),
+				(builder) => builder.setURL('https://discord.com').setDescription('Discord'),
 			);
 
 			expect(gallery.toJSON()).toEqual({
@@ -91,6 +91,25 @@ describe('MediaGallery', () => {
 				items: [
 					{ media: { url: 'https://google.com' } },
 					{ media: { url: 'https://discord.com' }, description: 'Discord' },
+				],
+			});
+		});
+
+		test('GIVEN a media gallery with items added via addItems with builder functions THEN return valid toJSON data', () => {
+			const gallery = new MediaGalleryBuilder();
+
+			gallery
+				.addItems(
+					new MediaGalleryItemBuilder().setURL('https://google.com'),
+					new MediaGalleryItemBuilder().setURL('https://discord.com').setDescription('Discord'),
+				)
+				.spliceItems(1, 1, new MediaGalleryItemBuilder().setURL('https://discord.js.org').setDescription('Discord.JS'));
+
+			expect(gallery.toJSON()).toEqual({
+				type: ComponentType.MediaGallery,
+				items: [
+					{ media: { url: 'https://google.com' } },
+					{ media: { url: 'https://discord.js.org' }, description: 'Discord.JS' },
 				],
 			});
 		});

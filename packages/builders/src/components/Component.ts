@@ -22,6 +22,7 @@ export abstract class ComponentBuilder<Component extends APIBaseComponent<Compon
 	 */
 	public setId(id: number) {
 		this.data.id = id;
+		return this;
 	}
 
 	/**
@@ -29,6 +30,7 @@ export abstract class ComponentBuilder<Component extends APIBaseComponent<Compon
 	 */
 	public clearId() {
 		this.data.id = undefined;
+		return this;
 	}
 
 	/**
