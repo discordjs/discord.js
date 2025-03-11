@@ -127,10 +127,10 @@ describe('Section', () => {
 			const section = new SectionBuilder()
 				.addTextDisplayComponents(new TextDisplayBuilder().setContent('Hello world'))
 				.setPrimaryButtonAccessory({
-					type: ComponentType.Button as const,
-					style: ButtonStyle.Primary as const,
+					type: ComponentType.Button,
+					style: ButtonStyle.Primary,
 					custom_id: 'click_me',
-					lLabel: 'Click me',
+					label: 'Click me',
 				});
 
 			expect(section.toJSON()).toEqual({
