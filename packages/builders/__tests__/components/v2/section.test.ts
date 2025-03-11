@@ -1,4 +1,4 @@
-import { ComponentType } from 'discord-api-types/v10';
+import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
 import { describe, expect, test } from 'vitest';
 import { PrimaryButtonBuilder } from '../../../src/components/button/CustomIdButton';
 import { SectionBuilder } from '../../../src/components/v2/Section';
@@ -110,6 +110,28 @@ describe('Section', () => {
 			const section = new SectionBuilder()
 				.addTextDisplayComponents(new TextDisplayBuilder().setContent('Hello world'))
 				.setPrimaryButtonAccessory(new PrimaryButtonBuilder().setCustomId('click_me').setLabel('Click me'));
+
+			expect(section.toJSON()).toEqual({
+				type: ComponentType.Section,
+				components: [{ type: ComponentType.TextDisplay, content: 'Hello world' }],
+				accessory: {
+					type: ComponentType.Button,
+					style: 1,
+					custom_id: 'click_me',
+					label: 'Click me',
+				},
+			});
+		});
+
+		test('GIVEN section with primary button accessory JSON THEN returns valid toJSON data', () => {
+			const section = new SectionBuilder()
+				.addTextDisplayComponents(new TextDisplayBuilder().setContent('Hello world'))
+				.setPrimaryButtonAccessory({
+					type: ComponentType.Button as const,
+					style: ButtonStyle.Primary as const,
+					custom_id: 'click_me',
+					lLabel: 'Click me',
+				});
 
 			expect(section.toJSON()).toEqual({
 				type: ComponentType.Section,

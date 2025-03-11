@@ -24,9 +24,9 @@ const containerWithTextDisplay: APIContainerComponent = {
 	],
 };
 
-const button: APIButtonComponent = {
-	type: ComponentType.Button,
-	style: ButtonStyle.Primary,
+const button = {
+	type: ComponentType.Button as const,
+	style: ButtonStyle.Primary as const,
 	custom_id: 'test',
 	label: 'test',
 };
@@ -200,7 +200,7 @@ describe('Container Components', () => {
 					.addSectionComponents(
 						new SectionBuilder()
 							.addTextDisplayComponents({ type: ComponentType.TextDisplay, content: 'test' })
-							.setPrimaryButtonAccessory(new PrimaryButtonBuilder(button)),
+							.setPrimaryButtonAccessory(button),
 					)
 					.addFileComponents({ type: ComponentType.File, file: { url: 'attachment://discord.png' } })
 					.setSpoiler(false)
