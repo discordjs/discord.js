@@ -9,6 +9,7 @@ import type {
 	APIPoll,
 	RESTPostAPIChannelMessageJSONBody,
 	Snowflake,
+	MessageFlags,
 } from 'discord-api-types/v10';
 import { ActionRowBuilder } from '../components/ActionRow.js';
 import { normalizeArray, type RestOrArray } from '../util/normalizeArray.js';
@@ -30,7 +31,7 @@ export interface MessageBuilderData
 	> {
 	allowed_mentions?: AllowedMentionsBuilder;
 	attachments: AttachmentBuilder[];
-	components?: ActionRowBuilder[];
+	components: ActionRowBuilder[];
 	embeds: EmbedBuilder[];
 	message_reference?: MessageReferenceBuilder;
 	poll?: PollBuilder;
@@ -53,7 +54,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	 * Gets the components of this message.
 	 */
 	public get components(): readonly ActionRowBuilder[] {
-		return this.data.components ?? [];
+		return this.data.components;
 	}
 
 	/**
@@ -117,7 +118,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	}
 
 	/**
-	 * Sets weather the message is TTS.
+	 * Sets whether the message is TTS.
 	 */
 	public setTTS(tts = true): this {
 		this.data.tts = tts;
@@ -467,7 +468,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	/**
 	 * Sets the flags for this message.
 	 */
-	public setFlags(flags: number): this {
+	public setFlags(flags: MessageFlags): this {
 		this.data.flags = flags;
 		return this;
 	}
@@ -528,11 +529,12 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 
 		const data = {
 			...structuredClone(rest),
-			// Covered by the messagePredicate
+			// Wherever we pass false, it's covered by the messagePredicate already
 			poll: this.data.poll?.toJSON(false),
 			allowed_mentions: allowed_mentions?.toJSON(false),
 			attachments: attachments.map((attachment) => attachment.toJSON(false)),
 			embeds: this.data.embeds.map((embed) => embed.toJSON(false)),
+			// Here, the messagePredicate does specific constraints rather than using the componentPredicate
 			components: this.data.components?.map((component) => component.toJSON(validationOverride)),
 			message_reference: message_reference?.toJSON(false),
 		};

@@ -83,6 +83,14 @@ export class MessageReferenceBuilder implements JSONEncodable<APIMessageReferenc
 	}
 
 	/**
+	 * Clear the id of the guild being referenced
+	 */
+	public clearGuildId(): this {
+		this.data.guild_id = undefined;
+		return this;
+	}
+
+	/**
 	 * Serializes this builder to API-compatible JSON data.
 	 *
 	 * Note that by disabling validation, there is no guarantee that the resulting object will be valid.
