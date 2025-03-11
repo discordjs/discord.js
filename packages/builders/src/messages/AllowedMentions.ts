@@ -30,14 +30,6 @@ export class AllowedMentionsBuilder implements JSONEncodable<APIAllowedMentions>
 	}
 
 	/**
-	 * Clear the types of mentions to parse from the content.
-	 */
-	public clearParse(): this {
-		this.data.parse = [];
-		return this;
-	}
-
-	/**
 	 * Sets the roles to mention.
 	 *
 	 * @param roles - The roles to mention
