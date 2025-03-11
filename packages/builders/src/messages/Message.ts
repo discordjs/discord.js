@@ -133,7 +133,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	 * Using an array:
 	 * ```ts
 	 * const embeds: APIEmbed[] = ...;
-	 * const messsage = new MessageBuilder()
+	 * const message = new MessageBuilder()
 	 * 	.addEmbeds(embeds);
 	 * ```
 	 * @example
