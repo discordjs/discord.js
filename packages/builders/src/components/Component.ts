@@ -63,5 +63,6 @@ export abstract class ComponentBuilder<
 	 */
 	public clearId() {
 		this.data.id = undefined;
+		return this;
 	}
 }

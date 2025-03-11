@@ -194,7 +194,10 @@ describe('Container Components', () => {
 
 		test('GIVEN valid method parameters THEN valid JSON is given', () => {
 			expect(
-				new ContainerBuilder().addComponents(new TextDisplayBuilder().setContent('test')).setSpoiler().toJSON(),
+				new ContainerBuilder()
+					.addComponents(new TextDisplayBuilder().setId(3).clearId().setContent('test'))
+					.setSpoiler()
+					.toJSON(),
 			).toEqual({
 				type: ComponentType.Container,
 				components: [

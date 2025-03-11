@@ -1,4 +1,4 @@
-import { type APIMediaGalleryComponent, ComponentType } from 'discord-api-types/v10';
+import { type APIMediaGalleryItem, type APIMediaGalleryComponent, ComponentType } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import { createComponentBuilder } from '../../../src/components/Components.js';
 import { MediaGalleryBuilder } from '../../../src/components/v2/MediaGallery.js';
@@ -93,6 +93,22 @@ describe('Media Gallery Components', () => {
 				.setSpoiler(false)
 				.setURL('https://discord.com/logo.png');
 			const item2 = new MediaGalleryItemBuilder().setURL('attachment://file.png');
+
+			expect(new MediaGalleryBuilder().addItems(item1).toJSON()).toEqual(galleryHttpsDisplay);
+			expect(new MediaGalleryBuilder().addItems(item2).setId(123).toJSON()).toEqual(galleryAttachmentData);
+			expect(new MediaGalleryBuilder().addItems([item1]).toJSON()).toEqual(galleryHttpsDisplay);
+			expect(new MediaGalleryBuilder().addItems([item2]).setId(123).toJSON()).toEqual(galleryAttachmentData);
+		});
+
+		test('GIVEN valid JSON options THEN valid JSON output is given 2', () => {
+			const item1: APIMediaGalleryItem = {
+				description: 'test',
+				spoiler: false,
+				media: { url: 'https://discord.com/logo.png' },
+			};
+			const item2 = {
+				media: { url: 'attachment://file.png' },
+			};
 
 			expect(new MediaGalleryBuilder().addItems(item1).toJSON()).toEqual(galleryHttpsDisplay);
 			expect(new MediaGalleryBuilder().addItems(item2).setId(123).toJSON()).toEqual(galleryAttachmentData);
