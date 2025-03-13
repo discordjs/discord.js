@@ -3,18 +3,22 @@ import type { APIMessageReference, MessageReferenceType, Snowflake } from 'disco
 import { validate } from '../util/validation.js';
 import { messageReferencePredicate } from './Assertions.js';
 
+export interface MessageReferenceBuilderData extends Omit<APIMessageReference, 'message_id'> {
+	message_id: Snowflake;
+}
+
 /**
  * A builder that creates API-compatible JSON data for message references.
  */
-export class MessageReferenceBuilder implements JSONEncodable<APIMessageReference> {
-	private readonly data: Partial<APIMessageReference>;
+export class MessageReferenceBuilder implements JSONEncodable<MessageReferenceBuilderData> {
+	private readonly data: Partial<MessageReferenceBuilderData>;
 
 	/**
 	 * Creates new allowed mention builder from API data.
 	 *
 	 * @param data - The API data to create this attachment with
 	 */
-	public constructor(data: Partial<APIMessageReference> = {}) {
+	public constructor(data: Partial<MessageReferenceBuilderData> = {}) {
 		this.data = structuredClone(data);
 	}
 
@@ -43,14 +47,6 @@ export class MessageReferenceBuilder implements JSONEncodable<APIMessageReferenc
 	 */
 	public setMessageId(messageId: Snowflake): this {
 		this.data.message_id = messageId;
-		return this;
-	}
-
-	/**
-	 * Clear the id of the message being referenced
-	 */
-	public clearMessageId(): this {
-		this.data.message_id = undefined;
 		return this;
 	}
 
@@ -97,10 +93,10 @@ export class MessageReferenceBuilder implements JSONEncodable<APIMessageReferenc
 	 *
 	 * @param validationOverride - Force validation to run/not run regardless of your global preference
 	 */
-	public toJSON(validationOverride?: boolean): APIMessageReference {
+	public toJSON(validationOverride?: boolean): MessageReferenceBuilderData {
 		const clone = structuredClone(this.data);
 		validate(messageReferencePredicate, clone, validationOverride);
 
-		return clone as APIMessageReference;
+		return clone as MessageReferenceBuilderData;
 	}
 }
