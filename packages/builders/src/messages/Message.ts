@@ -5,6 +5,7 @@ import type {
 	APIAttachment,
 	APIEmbed,
 	APIComponentInMessageActionRow,
+	APIComponentInMessageActionRow,
 	APIMessageReference,
 	APIPoll,
 	RESTPostAPIChannelMessageJSONBody,
@@ -13,6 +14,8 @@ import type {
 	APIComponentInActionRow,
 } from 'discord-api-types/v10';
 import { ActionRowBuilder } from '../components/ActionRow.js';
+import type { MessageComponentBuilder } from '../components/Components.js';
+import { createComponentBuilder } from '../components/Components.js';
 import { normalizeArray, type RestOrArray } from '../util/normalizeArray.js';
 import { resolveBuilder } from '../util/resolveBuilder.js';
 import { validate } from '../util/validation.js';
@@ -32,7 +35,7 @@ export interface MessageBuilderData
 	> {
 	allowed_mentions?: AllowedMentionsBuilder;
 	attachments: AttachmentBuilder[];
-	components: ActionRowBuilder[];
+	components: MessageComponentBuilder[];
 	embeds: EmbedBuilder[];
 	message_reference?: MessageReferenceBuilder;
 	poll?: PollBuilder;
@@ -54,7 +57,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	/**
 	 * Gets the components of this message.
 	 */
-	public get components(): readonly ActionRowBuilder[] {
+	public get components(): readonly MessageComponentBuilder[] {
 		return this.data.components;
 	}
 
@@ -77,10 +80,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 			attachments: data.attachments?.map((attachment) => new AttachmentBuilder(attachment)) ?? [],
 			embeds: data.embeds?.map((embed) => new EmbedBuilder(embed)) ?? [],
 			poll: data.poll ? new PollBuilder(data.poll) : undefined,
-			components:
-				data.components?.map(
-					(component) => new ActionRowBuilder(component as unknown as APIActionRowComponent<APIComponentInActionRow>),
-				) ?? [],
+			components: data.components?.map((component) => createComponentBuilder(component)) ?? [],
 			message_reference: data.message_reference ? new MessageReferenceBuilder(data.message_reference) : undefined,
 		};
 	}
