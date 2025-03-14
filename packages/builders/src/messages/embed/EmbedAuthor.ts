@@ -1,3 +1,4 @@
+import type { JSONEncodable } from '@discordjs/util';
 import type { APIEmbedAuthor } from 'discord-api-types/v10';
 import { validate } from '../../util/validation.js';
 import { embedAuthorPredicate } from './Assertions.js';
@@ -5,8 +6,8 @@ import { embedAuthorPredicate } from './Assertions.js';
 /**
  * A builder that creates API-compatible JSON data for the embed author.
  */
-export class EmbedAuthorBuilder {
-	protected readonly data: Partial<APIEmbedAuthor>;
+export class EmbedAuthorBuilder implements JSONEncodable<APIEmbedAuthor> {
+	private readonly data: Partial<APIEmbedAuthor>;
 
 	/**
 	 * Creates a new embed author from API data.

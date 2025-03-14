@@ -24,7 +24,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	/**
 	 * The API data associated with this modal.
 	 */
-	protected readonly data: ModalBuilderData;
+	private readonly data: ModalBuilderData;
 
 	/**
 	 * The components within this modal.
