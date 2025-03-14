@@ -11,7 +11,7 @@ import { createComponentBuilder } from '../../../src/components/Components.js';
 import { ContainerBuilder } from '../../../src/components/v2/Container.js';
 import { SeparatorBuilder } from '../../../src/components/v2/Separator.js';
 import { TextDisplayBuilder } from '../../../src/components/v2/TextDisplay.js';
-import { MediaGalleryBuilder, PrimaryButtonBuilder, SectionBuilder } from '../../../src/index.js';
+import { MediaGalleryBuilder, SectionBuilder } from '../../../src/index.js';
 
 const containerWithTextDisplay: APIContainerComponent = {
 	type: ComponentType.Container,
