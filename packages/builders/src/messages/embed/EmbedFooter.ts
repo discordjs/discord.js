@@ -1,3 +1,4 @@
+import type { JSONEncodable } from '@discordjs/util';
 import type { APIEmbedFooter } from 'discord-api-types/v10';
 import { validate } from '../../util/validation.js';
 import { embedFooterPredicate } from './Assertions.js';
@@ -5,8 +6,8 @@ import { embedFooterPredicate } from './Assertions.js';
 /**
  * A builder that creates API-compatible JSON data for the embed footer.
  */
-export class EmbedFooterBuilder {
-	protected readonly data: Partial<APIEmbedFooter>;
+export class EmbedFooterBuilder implements JSONEncodable<APIEmbedFooter> {
+	private readonly data: Partial<APIEmbedFooter>;
 
 	/**
 	 * Creates a new embed footer from API data.
