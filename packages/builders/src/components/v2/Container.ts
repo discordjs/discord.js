@@ -1,16 +1,28 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import type { APIComponentInContainer, APIContainerComponent } from 'discord-api-types/v10';
+import type {
+	APIActionRowComponent,
+	APIComponentInContainer,
+	APIComponentInMessageActionRow,
+	APIContainerComponent,
+	APIFileComponent,
+	APIMediaGalleryComponent,
+	APISectionComponent,
+	APISeparatorComponent,
+	APITextDisplayComponent,
+} from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
-import type { MediaGalleryBuilder, RGBTuple, SectionBuilder } from '../../index.js';
+import type { RGBTuple } from '../../index.js';
+import { MediaGalleryBuilder, SectionBuilder } from '../../index.js';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
-import type { ActionRowBuilder, AnyComponentBuilder } from '../ActionRow.js';
+import type { AnyComponentBuilder, MessageActionRowComponentBuilder } from '../ActionRow.js';
+import { ActionRowBuilder } from '../ActionRow.js';
 import { ComponentBuilder } from '../Component.js';
-import { createComponentBuilder } from '../Components.js';
+import { createComponentBuilder, resolveBuilder } from '../Components.js';
 import { containerColorPredicate, spoilerPredicate, validateComponentArray } from './Assertions.js';
-import type { FileBuilder } from './File.js';
-import type { SeparatorBuilder } from './Separator.js';
-import type { TextDisplayBuilder } from './TextDisplay.js';
+import { FileBuilder } from './File.js';
+import { SeparatorBuilder } from './Separator.js';
+import { TextDisplayBuilder } from './TextDisplay.js';
 
 /**
  * The builders that may be used within a container.
@@ -96,15 +108,89 @@ export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
 	}
 
 	/**
-	 * Adds components to this container.
+	 * Adds action row components to this container.
 	 *
-	 * @param components - The components to add
+	 * @param components - The action row components to add
 	 */
-	public addComponents(...components: RestOrArray<APIComponentInContainer | ContainerComponentBuilder>) {
+	public addActionRowComponents<ComponentType extends MessageActionRowComponentBuilder>(
+		...components: RestOrArray<
+			| ActionRowBuilder<ComponentType>
+			| APIActionRowComponent<APIComponentInMessageActionRow>
+			| ((builder: ActionRowBuilder<ComponentType>) => ActionRowBuilder<ComponentType>)
+		>
+	) {
 		this.components.push(
-			...normalizeArray(components).map((component) =>
-				component instanceof ComponentBuilder ? component : createComponentBuilder(component),
-			),
+			...normalizeArray(components).map((component) => resolveBuilder(component, ActionRowBuilder<ComponentType>)),
+		);
+		return this;
+	}
+
+	/**
+	 * Adds file components to this container.
+	 *
+	 * @param components - The file components to add
+	 */
+	public addFileComponents(
+		...components: RestOrArray<APIFileComponent | FileBuilder | ((builder: FileBuilder) => FileBuilder)>
+	) {
+		this.components.push(...normalizeArray(components).map((component) => resolveBuilder(component, FileBuilder)));
+		return this;
+	}
+
+	/**
+	 * Adds media gallery components to this container.
+	 *
+	 * @param components - The media gallery components to add
+	 */
+	public addMediaGalleryComponents(
+		...components: RestOrArray<
+			APIMediaGalleryComponent | MediaGalleryBuilder | ((builder: MediaGalleryBuilder) => MediaGalleryBuilder)
+		>
+	) {
+		this.components.push(
+			...normalizeArray(components).map((component) => resolveBuilder(component, MediaGalleryBuilder)),
+		);
+		return this;
+	}
+
+	/**
+	 * Adds section components to this container.
+	 *
+	 * @param components - The section components to add
+	 */
+	public addSectionComponents(
+		...components: RestOrArray<APISectionComponent | SectionBuilder | ((builder: SectionBuilder) => SectionBuilder)>
+	) {
+		this.components.push(...normalizeArray(components).map((component) => resolveBuilder(component, SectionBuilder)));
+		return this;
+	}
+
+	/**
+	 * Adds separator components to this container.
+	 *
+	 * @param components - The separator components to add
+	 */
+	public addSeparatorComponents(
+		...components: RestOrArray<
+			APISeparatorComponent | SeparatorBuilder | ((builder: SeparatorBuilder) => SeparatorBuilder)
+		>
+	) {
+		this.components.push(...normalizeArray(components).map((component) => resolveBuilder(component, SeparatorBuilder)));
+		return this;
+	}
+
+	/**
+	 * Adds text display components to this container.
+	 *
+	 * @param components - The text display components to add
+	 */
+	public addTextDisplayComponents(
+		...components: RestOrArray<
+			APITextDisplayComponent | TextDisplayBuilder | ((builder: TextDisplayBuilder) => TextDisplayBuilder)
+		>
+	) {
+		this.components.push(
+			...normalizeArray(components).map((component) => resolveBuilder(component, TextDisplayBuilder)),
 		);
 		return this;
 	}

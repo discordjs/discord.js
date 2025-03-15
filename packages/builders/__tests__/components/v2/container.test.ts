@@ -1,7 +1,12 @@
 import { type APIContainerComponent, ComponentType, SeparatorSpacingSize } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
+import { ButtonBuilder } from '../../../dist/index.mjs';
+import { ActionRowBuilder } from '../../../src/components/ActionRow.js';
 import { createComponentBuilder } from '../../../src/components/Components.js';
 import { ContainerBuilder } from '../../../src/components/v2/Container.js';
+import { FileBuilder } from '../../../src/components/v2/File.js';
+import { MediaGalleryBuilder } from '../../../src/components/v2/MediaGallery.js';
+import { SectionBuilder } from '../../../src/components/v2/Section.js';
 import { SeparatorBuilder } from '../../../src/components/v2/Separator.js';
 import { TextDisplayBuilder } from '../../../src/components/v2/TextDisplay.js';
 
@@ -44,9 +49,18 @@ const containerWithSeparatorDataNoColor: APIContainerComponent = {
 describe('Container Components', () => {
 	describe('Assertion Tests', () => {
 		test('GIVEN valid components THEN do not throw', () => {
-			expect(() => new ContainerBuilder().addComponents(new SeparatorBuilder())).not.toThrowError();
+			expect(() =>
+				new ContainerBuilder().addActionRowComponents(
+					new ActionRowBuilder<ButtonBuilder>().addComponents(new ButtonBuilder()),
+				),
+			).not.toThrowError();
+			expect(() => new ContainerBuilder().addFileComponents(new FileBuilder())).not.toThrowError();
+			expect(() => new ContainerBuilder().addMediaGalleryComponents(new MediaGalleryBuilder())).not.toThrowError();
+			expect(() => new ContainerBuilder().addSectionComponents(new SectionBuilder())).not.toThrowError();
+			expect(() => new ContainerBuilder().addSeparatorComponents(new SeparatorBuilder())).not.toThrowError();
+			expect(() => new ContainerBuilder().addTextDisplayComponents(new TextDisplayBuilder())).not.toThrowError();
 			expect(() => new ContainerBuilder().spliceComponents(0, 0, new SeparatorBuilder())).not.toThrowError();
-			expect(() => new ContainerBuilder().addComponents([new SeparatorBuilder()])).not.toThrowError();
+			expect(() => new ContainerBuilder().addSeparatorComponents([new SeparatorBuilder()])).not.toThrowError();
 			expect(() =>
 				new ContainerBuilder().spliceComponents(0, 0, [{ type: ComponentType.Separator }]),
 			).not.toThrowError();
@@ -117,10 +131,14 @@ describe('Container Components', () => {
 			const textDisplay = new TextDisplayBuilder().setContent('test').setId(123);
 			const separator = new SeparatorBuilder().setId(1_234).setSpacing(SeparatorSpacingSize.Small).setDivider(false);
 
-			expect(new ContainerBuilder().addComponents(textDisplay).toJSON()).toEqual(containerWithTextDisplay);
-			expect(new ContainerBuilder().addComponents(separator).toJSON()).toEqual(containerWithSeparatorDataNoColor);
-			expect(new ContainerBuilder().addComponents([textDisplay]).toJSON()).toEqual(containerWithTextDisplay);
-			expect(new ContainerBuilder().addComponents([separator]).toJSON()).toEqual(containerWithSeparatorDataNoColor);
+			expect(new ContainerBuilder().addTextDisplayComponents(textDisplay).toJSON()).toEqual(containerWithTextDisplay);
+			expect(new ContainerBuilder().addSeparatorComponents(separator).toJSON()).toEqual(
+				containerWithSeparatorDataNoColor,
+			);
+			expect(new ContainerBuilder().addTextDisplayComponents([textDisplay]).toJSON()).toEqual(containerWithTextDisplay);
+			expect(new ContainerBuilder().addSeparatorComponents([separator]).toJSON()).toEqual(
+				containerWithSeparatorDataNoColor,
+			);
 		});
 
 		test('GIVEN valid accent color THEN valid JSON output is given', () => {
@@ -195,7 +213,7 @@ describe('Container Components', () => {
 		test('GIVEN valid method parameters THEN valid JSON is given', () => {
 			expect(
 				new ContainerBuilder()
-					.addComponents(new TextDisplayBuilder().setId(3).clearId().setContent('test'))
+					.addTextDisplayComponents(new TextDisplayBuilder().setId(3).clearId().setContent('test'))
 					.setSpoiler()
 					.toJSON(),
 			).toEqual({
@@ -210,7 +228,7 @@ describe('Container Components', () => {
 			});
 			expect(
 				new ContainerBuilder()
-					.addComponents({ type: ComponentType.TextDisplay, content: 'test' })
+					.addTextDisplayComponents({ type: ComponentType.TextDisplay, content: 'test' })
 					.setSpoiler(false)
 					.setId(5)
 					.toJSON(),
