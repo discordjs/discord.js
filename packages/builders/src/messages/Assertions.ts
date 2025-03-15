@@ -5,19 +5,34 @@ import { pollPredicate } from './poll/Assertions.js';
 
 export const attachmentPredicate = z.object({
 	id: z.union([z.string(), z.number()]),
-	description: z.string().optional(),
-	duration_secs: z.number().optional(),
-	filename: z.string().optional(),
-	title: z.string().optional(),
-	waveform: z.string().optional(),
+	description: z.string().max(1_024).optional(),
+	duration_secs: z
+		.number()
+		.max(2 ** 31 - 1)
+		.optional(),
+	filename: z.string().max(1_024).optional(),
+	title: z.string().max(1_024).optional(),
+	waveform: z.string().max(400).optional(),
 });
 
-export const allowedMentionPredicate = z.object({
-	parse: z.nativeEnum(AllowedMentionsTypes).array().optional(),
-	roles: z.string().array().optional(),
-	users: z.string().array().optional(),
-	replied_user: z.boolean().optional(),
-});
+export const allowedMentionPredicate = z
+	.object({
+		parse: z.nativeEnum(AllowedMentionsTypes).array().optional(),
+		roles: z.string().array().max(100).optional(),
+		users: z.string().array().max(100).optional(),
+		replied_user: z.boolean().optional(),
+	})
+	.refine(
+		(data) =>
+			!(
+				(data.parse?.includes(AllowedMentionsTypes.User) && data.users?.length) ||
+				(data.parse?.includes(AllowedMentionsTypes.Role) && data.roles?.length)
+			),
+		{
+			message:
+				'Cannot specify both parse: ["users"] and non-empty users array, or parse: ["roles"] and non-empty roles array. These are mutually exclusive',
+		},
+	);
 
 export const messageReferencePredicate = z.object({
 	channel_id: z.string().optional(),
@@ -29,7 +44,7 @@ export const messageReferencePredicate = z.object({
 
 export const messagePredicate = z
 	.object({
-		content: z.string().optional(),
+		content: z.string().max(2_000).optional(),
 		nonce: z.union([z.string().max(25), z.number()]).optional(),
 		tts: z.boolean().optional(),
 		embeds: embedPredicate.array().max(10).optional(),
@@ -56,7 +71,7 @@ export const messagePredicate = z
 			.array()
 			.max(5)
 			.optional(),
-		sticker_ids: z.array(z.string()).min(0).max(3).optional(),
+		sticker_ids: z.array(z.string()).max(3).optional(),
 		attachments: attachmentPredicate.array().max(10).optional(),
 		flags: z.number().optional(),
 		enforce_nonce: z.boolean().optional(),
