@@ -656,7 +656,7 @@ class Client extends BaseClient {
   }
 
   /**
-   * Calls {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval} on a script
+   * Calls {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/eval} on a script
    * with the client as `this`.
    * @param {string} script Script to eval
    * @returns {*}
@@ -733,7 +733,7 @@ exports.Client = Client;
  */
 
 /**
- * A {@link https://developer.twitter.com/en/docs/twitter-ids Twitter snowflake},
+ * A {@link https://docs.x.com/resources/fundamentals/x-ids Twitter snowflake},
  * except the epoch is 2015-01-01T00:00:00.000Z.
  *
  * If we have a snowflake '266241948824764416' we can represent it as binary:

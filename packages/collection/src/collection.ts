@@ -148,7 +148,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	}
 
 	/**
-	 * Identical to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/at | Array.at()}.
+	 * Identical to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/at | Array.at()}.
 	 * Returns the item at a given index, allowing for positive and negative integers.
 	 * Negative integers count back from the last item in the collection.
 	 *
@@ -172,7 +172,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	}
 
 	/**
-	 * Identical to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/at | Array.at()}.
+	 * Identical to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/at | Array.at()}.
 	 * Returns the key at a given index, allowing for positive and negative integers.
 	 * Negative integers count back from the last item in the collection.
 	 *
@@ -240,7 +240,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	}
 
 	/**
-	 * Identical to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse | Array.reverse()}
+	 * Identical to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse | Array.reverse()}
 	 * but returns a Collection instead of an Array.
 	 */
 	public reverse() {
@@ -252,10 +252,10 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Searches for a single item where the given function returns a truthy value. This behaves like
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find | Array.find()}.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/find | Array.find()}.
 	 * All collections used in Discord.js are mapped using their `id` property, and if you want to find by id you
 	 * should use the `get` method. See
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get | MDN} for details.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/get | MDN} for details.
 	 *
 	 * @param fn - The function to test with (should return a boolean)
 	 * @param thisArg - Value to use as `this` when executing the function
@@ -288,7 +288,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Searches for the key of a single item where the given function returns a truthy value. This behaves like
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex | Array.findIndex()},
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex | Array.findIndex()},
 	 * but returns the key rather than the positional index.
 	 *
 	 * @param fn - The function to test with (should return a boolean)
@@ -322,7 +322,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Searches for a last item where the given function returns a truthy value. This behaves like
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast | Array.findLast()}.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLast | Array.findLast()}.
 	 *
 	 * @param fn - The function to test with (should return a boolean)
 	 * @param thisArg - Value to use as `this` when executing the function
@@ -354,7 +354,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Searches for the key of a last item where the given function returns a truthy value. This behaves like
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findLastIndex | Array.findLastIndex()},
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/findLastIndex | Array.findLastIndex()},
 	 * but returns the key rather than the positional index.
 	 *
 	 * @param fn - The function to test with (should return a boolean)
@@ -407,7 +407,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Identical to
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter | Array.filter()},
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/filter | Array.filter()},
 	 * but returns a Collection instead of an Array.
 	 *
 	 * @param fn - The function to test with (should return a boolean)
@@ -502,7 +502,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Maps each item into a Collection, then joins the results into a single Collection. Identical in behavior to
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap | Array.flatMap()}.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap | Array.flatMap()}.
 	 *
 	 * @param fn - Function that produces a new Collection
 	 * @param thisArg - Value to use as `this` when executing the function
@@ -529,7 +529,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Maps each item to another value into an array. Identical in behavior to
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map | Array.map()}.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/map | Array.map()}.
 	 *
 	 * @param fn - Function that produces an element of the new array, taking three arguments
 	 * @param thisArg - Value to use as `this` when executing the function
@@ -559,7 +559,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Maps each item to another value into a collection. Identical in behavior to
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map | Array.map()}.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/map | Array.map()}.
 	 *
 	 * @param fn - Function that produces an element of the new collection, taking three arguments
 	 * @param thisArg - Value to use as `this` when executing the function
@@ -586,7 +586,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Checks if there exists an item that passes a test. Identical in behavior to
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some | Array.some()}.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/some | Array.some()}.
 	 *
 	 * @param fn - Function used to test (should return a boolean)
 	 * @param thisArg - Value to use as `this` when executing the function
@@ -609,7 +609,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Checks if all items passes a test. Identical in behavior to
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every | Array.every()}.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/every | Array.every()}.
 	 *
 	 * @param fn - Function used to test (should return a boolean)
 	 * @param thisArg - Value to use as `this` when executing the function
@@ -646,7 +646,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Applies a function to produce a single value. Identical in behavior to
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce | Array.reduce()}.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce | Array.reduce()}.
 	 *
 	 * @param fn - Function used to reduce, taking four arguments; `accumulator`, `currentValue`, `currentKey`,
 	 * and `collection`
@@ -688,7 +688,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Applies a function to produce a single value. Identical in behavior to
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight | Array.reduceRight()}.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight | Array.reduceRight()}.
 	 *
 	 * @param fn - Function used to reduce, taking four arguments; `accumulator`, `value`, `key`, and `collection`
 	 * @param initialValue - Starting value for the accumulator
@@ -730,7 +730,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 
 	/**
 	 * Identical to
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach | Map.forEach()},
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach | Map.forEach()},
 	 * but returns the collection instead of undefined.
 	 *
 	 * @param fn - Function to execute for each element
@@ -832,7 +832,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	/**
 	 * The sort method sorts the items of a collection in place and returns it.
 	 * If a comparison function is not provided, the function sorts by element values, using the same stringwise comparison algorithm as
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort | Array.sort()}.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/sort | Array.sort()}.
 	 *
 	 * @param compareFunction - Specifies a function that defines the sort order. The return value of this function should be negative if
 	 * `a` comes before `b`, positive if `b` comes before `a`, or zero if `a` and `b` are considered equal.
@@ -1017,7 +1017,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	}
 
 	/**
-	 * Identical to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toReversed | Array.toReversed()}
+	 * Identical to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/toReversed | Array.toReversed()}
 	 * but returns a Collection instead of an Array.
 	 */
 	public toReversed() {
@@ -1027,7 +1027,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	/**
 	 * The toSorted method returns a shallow copy of the collection with the items sorted.
 	 * If a comparison function is not provided, the function sorts by element values, using the same stringwise comparison algorithm as
-	 * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort | Array.sort()}.
+	 * {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/sort | Array.sort()}.
 	 *
 	 * @param compareFunction - Specifies a function that defines the sort order. The return value of this function should be negative if
 	 * `a` comes before `b`, positive if `b` comes before `a`, or zero if `a` and `b` are considered equal.
@@ -1086,6 +1086,17 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		}
 
 		return coll;
+	}
+
+	/**
+	 * Identical to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map/groupBy | Map.groupBy()}
+	 * but returns a Collection instead of a Map.
+	 */
+	public static override groupBy<Key, Item>(
+		items: Iterable<Item>,
+		keySelector: (item: Item, index: number) => Key,
+	): Collection<Key, Item[]> {
+		return new this[Symbol.species]<Key, Item[]>(Map.groupBy(items, keySelector));
 	}
 
 	/**

@@ -6837,6 +6837,7 @@ export interface WebhookEditOptions {
 
 export interface WebhookMessageEditOptions extends MessageEditOptions {
   threadId?: Snowflake;
+  withComponents?: boolean;
 }
 
 export interface InteractionEditReplyOptions
@@ -6856,6 +6857,7 @@ export interface WebhookMessageCreateOptions
   threadId?: Snowflake;
   threadName?: string;
   appliedTags?: readonly Snowflake[];
+  withComponents?: boolean;
 }
 
 export interface WidgetActivity {
