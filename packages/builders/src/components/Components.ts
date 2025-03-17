@@ -32,17 +32,23 @@ import { TextDisplayBuilder } from './v2/TextDisplay.js';
 import { ThumbnailBuilder } from './v2/Thumbnail.js';
 
 /**
- * The builders that may be used for messages.
+ * The builders that may be used as top-level components on messages
  */
-export type MessageComponentBuilder =
+export type MessageTopLevelComponentBuilder =
 	| ActionRowBuilder
 	| ContainerBuilder
 	| FileBuilder
 	| MediaGalleryBuilder
-	| MessageActionRowComponentBuilder
 	| SectionBuilder
 	| SeparatorBuilder
-	| TextDisplayBuilder
+	| TextDisplayBuilder;
+
+/**
+ * The builders that may be used for messages.
+ */
+export type MessageComponentBuilder =
+	| MessageActionRowComponentBuilder
+	| MessageTopLevelComponentBuilder
 	| ThumbnailBuilder;
 
 /**

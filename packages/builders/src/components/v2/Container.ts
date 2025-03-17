@@ -4,6 +4,8 @@ import type {
 	APITextDisplayComponent,
 	APIContainerComponent,
 	APIComponentInContainer,
+	APIMediaGalleryComponent,
+	APISectionComponent,
 } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
 import type { APIComponentInMessageActionRow, APISeparatorComponent } from 'discord-api-types/v9';
@@ -72,8 +74,6 @@ export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
 		return this;
 	}
 
-	// TODO: basic implementation of components in containers while we discuss other methods to add/remove
-
 	/**
 	 * Adds action row components to this container.
 	 *
@@ -114,7 +114,9 @@ export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
 	 * @param input - The media gallery components to add
 	 */
 	public addMediaGalleryComponents(
-		...input: RestOrArray<MediaGalleryBuilder | ((builder: MediaGalleryBuilder) => MediaGalleryBuilder)>
+		...input: RestOrArray<
+			APIMediaGalleryComponent | MediaGalleryBuilder | ((builder: MediaGalleryBuilder) => MediaGalleryBuilder)
+		>
 	): this {
 		const normalized = normalizeArray(input);
 		const resolved = normalized.map((component) => resolveBuilder(component, MediaGalleryBuilder));
@@ -129,7 +131,7 @@ export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
 	 * @param input - The section components to add
 	 */
 	public addSectionComponents(
-		...input: RestOrArray<SectionBuilder | ((builder: SectionBuilder) => SectionBuilder)>
+		...input: RestOrArray<APISectionComponent | SectionBuilder | ((builder: SectionBuilder) => SectionBuilder)>
 	): this {
 		const normalized = normalizeArray(input);
 		const resolved = normalized.map((component) => resolveBuilder(component, SectionBuilder));
