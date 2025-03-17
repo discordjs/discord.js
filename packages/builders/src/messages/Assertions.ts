@@ -87,14 +87,6 @@ const allTopLevelComponentsPredicate = z
 		basicActionRowPredicate,
 		z.object({
 			type: z.union([
-				// Components v1
-				z.literal(ComponentType.Button),
-				z.literal(ComponentType.ChannelSelect),
-				z.literal(ComponentType.MentionableSelect),
-				z.literal(ComponentType.RoleSelect),
-				z.literal(ComponentType.StringSelect),
-				z.literal(ComponentType.UserSelect),
-
 				// Components v2
 				z.literal(ComponentType.Container),
 				z.literal(ComponentType.File),
@@ -117,8 +109,8 @@ const messageComponentsV2Predicate = baseMessagePredicate.extend({
 	}),
 	// These fields cannot be set
 	content: z.string().length(0).nullish(),
-	embeds: z.array(embedPredicate).max(0).nullish(),
-	sticker_ids: z.array(z.string()).max(0).nullish(),
+	embeds: z.array(z.never()).nullish(),
+	sticker_ids: z.array(z.never()).nullish(),
 	poll: z.null().optional(),
 });
 
