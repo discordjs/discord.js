@@ -613,8 +613,3 @@ exports.ApplicationCommand = ApplicationCommand;
  * @external ApplicationCommandOptionAllowedChannelTypes
  * @see {@link https://discord.js.org/docs/packages/builders/stable/ApplicationCommandOptionAllowedChannelTypes:TypeAlias}
  */
-
-/**
- * @external EntryPointCommandHandlerType
- * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/EntryPointCommandHandlerType}
- */
