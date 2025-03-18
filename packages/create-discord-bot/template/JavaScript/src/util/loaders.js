@@ -1,5 +1,5 @@
 import { readdir, stat } from 'node:fs/promises';
-import { URL } from 'node:url';
+import { fileURLToPath, URL } from 'node:url';
 import { predicate as commandPredicate } from '../commands/index.js';
 import { predicate as eventPredicate } from '../events/index.js';
 
@@ -37,22 +37,24 @@ export async function loadStructures(dir, predicate, recursive = true) {
 
 	// Loop through all the files in the directory
 	for (const file of files) {
+		const fileUrl = new URL(`${dir}/${file}`, import.meta.url);
+
+		// Get the stats of the file
+		const statFile = await stat(fileUrl);
+
+		// If the file is a directory and recursive is true, recursively load the structures in the directory
+		if (statFile.isDirectory() && recursive) {
+			structures.push(...(await loadStructures(fileUrl, predicate, recursive)));
+			continue;
+		}
+
 		// If the file is index.js or the file does not end with .js, skip the file
 		if (file === 'index.js' || !file.endsWith('.js')) {
 			continue;
 		}
 
-		// Get the stats of the file
-		const statFile = await stat(new URL(`${dir}/${file}`));
-
-		// If the file is a directory and recursive is true, recursively load the structures in the directory
-		if (statFile.isDirectory() && recursive) {
-			structures.push(...(await loadStructures(`${dir}/${file}`, predicate, recursive)));
-			continue;
-		}
-
 		// Import the structure dynamically from the file
-		const structure = (await import(`${dir}/${file}`)).default;
+		const structure = (await import(fileURLToPath(fileUrl))).default;
 
 		// If the structure is a valid structure, add it
 		if (predicate(structure)) {
