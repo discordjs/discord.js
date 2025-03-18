@@ -59,6 +59,17 @@ export enum WebSocketShardDestroyRecovery {
 	Resume,
 }
 
+enum ZlibErrorCodes {
+	Z_NEED_DICT = 2,
+	Z_STREAM_END = 1,
+	Z_ERRNO = -1,
+	Z_STREAM_ERROR = -2,
+	Z_DATA_ERROR = -3,
+	Z_MEM_ERROR = -4,
+	Z_BUF_ERROR = -5,
+	Z_VERSION_ERROR = -6,
+}
+
 export interface WebSocketShardEventsMap {
 	[WebSocketShardEvents.Closed]: [code: number];
 	[WebSocketShardEvents.Debug]: [message: string];
@@ -667,10 +678,11 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				this.zLibSyncInflate.push(Buffer.from(decompressable), flush ? zLibSync.Z_SYNC_FLUSH : zLibSync.Z_NO_FLUSH);
 
 				if (this.zLibSyncInflate.err) {
-					this.emit(
-						WebSocketShardEvents.Error,
-						new Error(`${this.zLibSyncInflate.err}${this.zLibSyncInflate.msg ? `: ${this.zLibSyncInflate.msg}` : ''}`),
-					);
+					// Try to match nodejs zlib errors as much as possible
+					const error: NodeJS.ErrnoException = new Error(this.zLibSyncInflate.msg ?? undefined);
+					error.errno = this.zLibSyncInflate.err;
+					error.code = ZlibErrorCodes[this.zLibSyncInflate.err];
+					this.emit(WebSocketShardEvents.Error, error);
 				}
 
 				if (!flush) {
