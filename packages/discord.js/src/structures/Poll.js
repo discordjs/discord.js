@@ -47,6 +47,12 @@ class Poll extends Base {
   }
 
   _patch(data) {
+    /**
+     * The answers of this poll
+     * @type {Collection<number, PollAnswer|PartialPollAnswer>}
+     */
+    this.answers ??= new Collection();
+
     if (data.results) {
       /**
        * Whether this poll's results have been precisely counted
@@ -111,12 +117,6 @@ class Poll extends Base {
         text: null,
       };
     }
-
-    /**
-     * The answers of this poll
-     * @type {Collection<number, PollAnswer|PartialPollAnswer>}
-     */
-    this.answers ??= new Collection();
 
     if (data.answers) {
       for (const answer of data.answers) {
