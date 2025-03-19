@@ -53,6 +53,17 @@ class Poll extends Base {
      */
     this.answers ??= new Collection();
 
+    if (data.answers) {
+      for (const answer of data.answers) {
+        const existing = this.answers.get(answer.answer_id);
+        if (existing) {
+          existing._patch(answer);
+        } else {
+          this.answers.set(answer.answer_id, new PollAnswer(this.client, answer, this));
+        }
+      }
+    }
+
     if (data.results) {
       /**
        * Whether this poll's results have been precisely counted
@@ -116,17 +127,6 @@ class Poll extends Base {
       this.question ??= {
         text: null,
       };
-    }
-
-    if (data.answers) {
-      for (const answer of data.answers) {
-        const existing = this.answers.get(answer.answer_id);
-        if (existing) {
-          existing._patch(answer);
-        } else {
-          this.answers.set(answer.answer_id, new PollAnswer(this.client, answer, this));
-        }
-      }
     }
   }
 
