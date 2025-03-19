@@ -43,16 +43,16 @@ class Poll extends Base {
 
     Object.defineProperty(this, 'message', { value: message });
 
-    this._patch(data);
-  }
-
-  _patch(data) {
     /**
      * The answers of this poll
      * @type {Collection<number, PollAnswer|PartialPollAnswer>}
      */
-    this.answers ??= new Collection();
+    this.answers = new Collection();
 
+    this._patch(data);
+  }
+
+  _patch(data) {
     if (data.answers) {
       for (const answer of data.answers) {
         const existing = this.answers.get(answer.answer_id);
