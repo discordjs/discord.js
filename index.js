@@ -350,35 +350,6 @@ const {
     });
   }
   
-  // 募集確定処理
-  async function finalizeRecruitment(interaction, recruitmentId) {
-    const recruitment = activeRecruitments.get(recruitmentId);
-    if (!recruitment) {
-      return await interaction.update({
-        content: 'エラー: 募集データが見つかりません。',
-        embeds: [],
-        components: []
-      });
-    }
-    
-    recruitment.status = 'active';
-    
-    const formattedDate = new Date(recruitment.date).toLocaleDateString('ja-JP', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-    
-    const embed = new EmbedBuilder()
-      .setTitle(`📢 【募集】${recruitment.type} - ${formattedDate} ${recruitment.time}`)
-      .setDescription(`募集者: <@${recruitment.creator}>\n\n参加希望の方は下のボタンから申し込んでください。`)
-      .setColor('#0099ff')
-      .addFields(
-        ...attributes.map(attr => {
-          return { name: `【${attr}】`, value: '未定', inline: true };
-        })
-      )
-      .setFooter({ text: `募集ID: ${recruitmentId} | 開催日の朝
         // 募集確定処理（続き）
 async function finalizeRecruitment(interaction, recruitmentId) {
   const recruitment = activeRecruitments.get(recruitmentId);
