@@ -1,14 +1,36 @@
 // Discord.jsの必要なクラスをインポート
-const { 
-    Client, 
-    GatewayIntentBits, 
+const { Client,             GatewayIntentBits } = require('discord.js');
     Partials, 
     EmbedBuilder, 
     ActionRowBuilder, 
     ButtonBuilder, 
     StringSelectMenuBuilder, 
     ButtonStyle, 
-    ModalBuilder, 
+    GatewayIntentBits.MessageContent,
+  // Importing necessary modules
+import { GatewayIntentBits } from 'discord.js'; 
+// Ensure to replace 'your-library' with the actual library name
+import 'web-streams-polyfill/es2022'; 
+// If you need the polyfill, keep this line
+
+// Your existing code follows...npm install web-streams-polyfillGatewayIntentBitsnpm install web-streams-polyfill.MessageContent,// Import web-streams-polyfill, if needed
+import 'web-streams-polyfill/es2022';
+
+// Import GatewayIntentBits from the appropriate library
+import { GatewayIntentBits } from 'discord.js'; // Replace 'your-library' with the actual library name
+
+// Your existing code continues here...// 必要なモジュールをインポート
+
+import * as dotenv from 'dotenv';
+import { Client, GatewayIntentBits } from 'discord.js';
+// 環境変数をロード
+dotenv.config();
+
+import 'web-streams-polyfill/es2022'; // 必要に応じてポリフィルを追加
+import { GatewayIntentBits } from 'discord.js'; 
+// 'your-library' を実際のライブラリ名に置き換えてください
+
+// 既存のコードが続きます...ModalBuilder, 
     TextInputBuilder, 
     TextInputStyle,
     AttachmentBuilder
@@ -1128,4 +1150,8 @@ process.on('unhandledRejection', error => {
 });
 
 // Botログイン
-client.login(process.env.TOKEN).catch(console.error);
+client.login(process.env.BOTTOKEN).catch(console.error// Include the polyfill at the beginning of index.js
+import 'web-streams-polyfill/es2022';
+
+import { fetch } from 'undici';
+// Your existing code follows…);

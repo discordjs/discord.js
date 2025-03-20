@@ -9,19 +9,22 @@
 	},
 	"dependencies": {
 		"@unocss/eslint-plugin": "^66.1.0-beta.6",
-		"discord.js": "^14.13.0",
+		"discord.js": "^14.18.0",
 		"dotenv": "^16.3.1",
 		"eslint-config-neon": "^0.2.7",
 		"lodash.merge": "^4.6.2",
 		"tsup": "^8.4.0",
 		"typescript-eslint": "^8.27.0",
+		"undici": "^7.5.0",
 		"unocss": "^66.1.0-beta.6",
-		"vitest": "^3.0.9"
+		"vitest": "^3.0.9",
+		"web-streams-polyfill": "^4.1.0"
 	},
 	"devDependencies": {
 		"nodemon": "^2.0.22"
 	},
 	"engines": {
 		"node": ">=16.9.0"
-	}
+	},
+	"type": "module"
 }
