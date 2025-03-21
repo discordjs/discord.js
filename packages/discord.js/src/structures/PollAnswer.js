@@ -39,7 +39,7 @@ class PollAnswer extends Base {
      * @type {?APIPartialEmoji}
      * @private
      */
-    Object.defineProperty(this, '_emoji', { value: null });
+    Object.defineProperty(this, '_emoji', { value: null, writable: true });
 
     this._patch(data);
   }
@@ -63,7 +63,7 @@ class PollAnswer extends Base {
     this.text ??= data.poll_media?.text ?? null;
 
     if (data.poll_media?.emoji) {
-      Object.defineProperty(this, '_emoji', { value: data.poll_media.emoji });
+      this._emoji = data.poll_media.emoji;
     }
   }
 
