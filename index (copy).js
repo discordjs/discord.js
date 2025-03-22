@@ -17,11 +17,6 @@ const {
   AttachmentBuilder
 } = require('discord.js');
 
-// グローバルなエラーハンドリングを追加（ファイルの先頭付近）
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('未処理のPromise拒否:');
-  console.error(reason);
-});
 
 // web-streams-polyfillのインポート（必要な場合）
 require('web-streams-polyfill');
@@ -44,9 +39,8 @@ const client = new Client({
 // 起動時に保存データを読み込む
 client.once('ready', () => {
   console.log(`${client.user.tag} でログインしました！`);
-  
-  // Discord.jsのバージョン確認（どこか安全な場所、例えばready イベント内に追加）
-  console.log('Discord.js バージョン:', require('discord.js').version);
+  loadRecruitmentData();
+
   // 定期的に保存する（5分ごと）
   setInterval(saveRecruitmentData, 5 * 60 * 1000);
 });
@@ -74,219 +68,7 @@ client.once('ready', () => {
 });
 
 // 残りのコードは変更なし
-// 既存のコード...
-// カスタムIDの構造を調査
-client.on('messageCreate', async message => {
-  if (message.author.bot) return;
 
-  if (message.content === '!idcheck') {
-    try {
-      // 様々な長さのIDで試す
-      const shortId = 'test123';
-      const mediumId = '1234567890abcdef';
-      const longId = 'verylongidtestthatmightcauseissues12345678901234567890';
-
-      const components = [
-        new ActionRowBuilder().addComponents(
-          new ButtonBuilder()
-            .setCustomId(`short_${shortId}`)
-            .setLabel('短いID')
-            .setStyle(ButtonStyle.Primary)
-        ),
-        new ActionRowBuilder().addComponents(
-          new ButtonBuilder()
-            .setCustomId(`medium_${mediumId}`)
-            .setLabel('中程度のID')
-            .setStyle(ButtonStyle.Primary)
-        ),
-        new ActionRowBuilder().addComponents(
-          new ButtonBuilder()
-            .setCustomId(`long_${longId}`)
-            .setLabel('長いID')
-            .setStyle(ButtonStyle.Primary)
-        )
-      ];
-
-      await message.reply({
-        content: 'カスタムIDテスト - 各ボタンをクリックしてIDの処理をテスト',
-        components: components
-      });
-    } catch (error) {
-      console.error('IDチェックエラー:', error);
-      message.reply('IDチェックエラー: ' + error.message);
-    }
-  }
-});
-
-// IDチェック用ボタン処理
-client.on('interactionCreate', async interaction => {
-  if (!interaction.isButton()) return;
-
-  const customId = interaction.customId;
-
-  if (customId.startsWith('short_') || customId.startsWith('medium_') || customId.startsWith('long_')) {
-    const parts = customId.split('_');
-    const type = parts[0];
-    const id = parts.slice(1).join('_'); // 残りの部分をすべて結合
-
-    console.log(`IDチェック - タイプ: ${type}, ID: ${id}, 長さ: ${id.length}`);
-
-    await interaction.reply({
-      content: `IDチェック結果:\nタイプ: ${type}\nID: ${id}\nID長さ: ${id.length}文字`,
-      ephemeral: true
-    });
-  }
-});
-// 新しいデバッグ用コマンド
-client.on('messageCreate', async message => {
-  if (message.author.bot) return;
-
-  if (message.content === '!timeflow') {
-    try {
-      console.log('時間フローテスト開始');
-
-      // 単純なIDと時間選択
-      const testId = Date.now().toString();
-
-      // 時間選択メニュー
-      const timeMenu = new ActionRowBuilder()
-        .addComponents(
-          new StringSelectMenuBuilder()
-            .setCustomId(`timeflow_${testId}`)
-            .setPlaceholder('テスト用時間選択')
-            .addOptions([
-              { label: '19:00', value: '19:00', description: 'テスト19時' },
-              { label: '20:00', value: '20:00', description: 'テスト20時' }
-            ])
-        );
-
-      // メッセージを送信
-      await message.reply({
-        content: '⚠ デバッグ専用：時間選択→確認ボタン のフローをテスト',
-        components: [timeMenu]
-      });
-
-      console.log(`timeflowテスト送信: ID=${testId}`);
-    } catch (error) {
-      console.error('timeflowテストエラー:', error);
-      message.reply('テスト開始時にエラーが発生しました');
-    }
-  }
-});
-
-// 新しいタイムテストコマンド
-client.on('messageCreate', async message => {
-  if (message.author.bot) return;
-
-  if (message.content === '!timetest') {
-    try {
-      // 時間選択メニュー作成
-      const testTimeMenu = new ActionRowBuilder()
-        .addComponents(
-          new StringSelectMenuBuilder()
-            .setCustomId('timetest_select')
-            .setPlaceholder('時間を選択してください')
-            .addOptions([
-              { label: '12:00', value: '12:00' },
-              { label: '13:00', value: '13:00' },
-              { label: '14:00', value: '14:00' }
-            ])
-        );
-
-      await message.reply({
-        content: 'テスト用時間選択メニュー',
-        components: [testTimeMenu]
-      });
-    } catch (error) {
-      console.error('テストコマンドエラー:', error);
-    }
-  }
-});
-
-// インタラクションハンドラに追加
-client.on('interactionCreate', async interaction => {
-  // 既存のコード...
-
-  // テスト用時間選択メニュー処理
-  if (interaction.isStringSelectMenu() && interaction.customId === 'timetest_select') {
-    try {
-      await interaction.deferUpdate();
-      console.log('テスト時間選択:', interaction.values[0]);
-
-      const testButton = new ActionRowBuilder()
-        .addComponents(
-          new ButtonBuilder()
-            .setCustomId('timetest_confirm')
-            .setLabel('確認テスト')
-            .setStyle(ButtonStyle.Success)
-        );
-
-      await interaction.editReply({
-        content: `テスト: 「${interaction.values[0]}」を選択しました`,
-        components: [testButton]
-      });
-    } catch (error) {
-      console.error('テスト時間選択エラー:', error);
-    }
-  }
-
-  // テスト用確認ボタン処理
-  if (interaction.isButton() && interaction.customId === 'timetest_confirm') {
-    try {
-      await interaction.reply({
-        content: 'テスト確認完了！',
-        ephemeral: true
-      });
-    } catch (error) {
-      console.error('テスト確認エラー:', error);
-    }
-  }
-});
-// ここに新しいイベントハンドラとして追加
-client.on('messageCreate', async message => {
-  if (message.author.bot) return;
-
-  if (message.content === '!v14test') {
-    try {
-      console.log('テストコマンドを受信');
-
-      // V14でのボタン作成
-      const row = new ActionRowBuilder()
-        .addComponents(
-          new ButtonBuilder()
-            .setCustomId('simple_test')
-            .setLabel('テストボタン')
-            .setStyle(ButtonStyle.Primary)
-        );
-
-      await message.reply({
-        content: 'Discord.js v14テスト - このボタンをクリックしてください',
-        components: [row]
-      });
-
-      console.log('テストメッセージを送信しました');
-    } catch (error) {
-      console.error('テストコマンドエラー:', error);
-      await message.reply(`エラーが発生しました: ${error.message}`);
-    }
-  }
-});
-
-// 既存のインタラクションハンドラの中に以下を追加
-client.on('interactionCreate', async interaction => {
-  // 既存のコード...
-
-  // ここに追加（既存の条件分岐と同じレベルで）
-  if (interaction.isButton() && interaction.customId === 'simple_test') {
-    await interaction.reply({
-      content: 'テストボタンが正常に動作しています！',
-      ephemeral: true
-    });
-    return; // 処理を終了
-  }
-
-  // 残りの既存コード...
-});
 // メッセージコマンドハンドラ
 client.on('messageCreate', async message => {
   if (message.author.bot) return;
@@ -295,284 +77,31 @@ client.on('messageCreate', async message => {
   if (message.content === '!募集') {
     await startRecruitment(message);
   }
-  
 });
-　//ぼしゆうてすと
-// デバッグログ出力
-function debugLog(tag, message, data = null) {
-  const timestamp = new Date().toISOString();
-  console.log(`[${timestamp}] [${tag}] ${message}`);
-  if (data) console.log(JSON.stringify(data, null, 2));
-}
 
-// セレクトメニュー処理の監視
-client.on('interactionCreate', interaction => {
-  if (!interaction.isStringSelectMenu()) return;
-
-  debugLog('MONITOR', `セレクトメニュー検出: ${interaction.customId}`, {
-    guildId: interaction.guildId,
-    channelId: interaction.channelId,
-    userId: interaction.user.id,
-    values: interaction.values
-  });
-});
-// インタラクションハンドラに追加するコード
+// インタラクションハンドラ
 client.on('interactionCreate', async interaction => {
   try {
-    // timeflowテスト用時間選択の処理
-    if (interaction.isStringSelectMenu() && interaction.customId.startsWith('timeflow_')) {
-      console.log('timeflow時間選択を検出');
-
-      try {
-        // まずdeferUpdate
-        await interaction.deferUpdate();
-        console.log('timeflow deferUpdate成功');
-
-        // 選択された時間
-        const selectedTime = interaction.values[0];
-        console.log(`timeflow選択時間: ${selectedTime}`);
-
-        // IDを抽出
-        const testId = interaction.customId.split('_')[1];
-        console.log(`timeflow ID: ${testId}`);
-
-        // 確認ボタン
-        const confirmRow = new ActionRowBuilder()
-          .addComponents(
-            new ButtonBuilder()
-              .setCustomId(`timeflow_confirm_${testId}`)
-              .setLabel('確認テスト')
-              .setStyle(ButtonStyle.Success)
-          );
-
-        // 応答
-        await interaction.editReply({
-          content: `⚠ デバッグ：「${selectedTime}」を選択しました。確認ボタンをテスト`,
-          components: [confirmRow]
-        });
-
-        console.log('timeflow確認ボタン表示成功');
-      } catch (error) {
-        console.error('timeflow選択処理エラー:', error);
-        console.error('エラー詳細:', error.message);
-        console.error('スタックトレース:', error.stack);
-      }
-    }
-
-    // timeflowテスト用確認ボタンの処理
-    if (interaction.isButton() && interaction.customId.startsWith('timeflow_confirm_')) {
-      console.log('timeflow確認ボタンを検出');
-
-      try {
-        // 応答
-        await interaction.reply({
-          content: 'デバッグテスト成功！全フローが正常に完了しました',
-          ephemeral: true
-        });
-
-        console.log('timeflowテスト完了');
-      } catch (error) {
-        console.error('timeflow確認エラー:', error);
-      }
-    }
-  } catch (generalError) {
-    console.error('timeflowテスト全体エラー:', generalError);
-  }
-});// インタラクションハンドラに時間選択処理を追加
-    client.on('interactionCreate', async interaction => {
-      try {
-        // timemenuの処理（本番用・timeflowと同じパターン）
-        if (interaction.isStringSelectMenu() && interaction.customId.startsWith('timemenu_')) {
-          console.log('本番時間選択を検出: ' + interaction.customId);
-
-          try {
-            // deferUpdateで応答の時間を確保
-            await interaction.deferUpdate();
-            console.log('本番時間選択 deferUpdate成功');
-
-            // 選択された時間
-            const selectedTime = interaction.values[0];
-            console.log(`本番選択時間: ${selectedTime}`);
-
-            // recruitmentIdを抽出
-            const recruitmentId = interaction.customId.split('_')[1];
-            console.log(`本番recruitmentId: ${recruitmentId}`);
-
-            // 確認ボタン
-            const confirmRow = new ActionRowBuilder()
-              .addComponents(
-                new ButtonBuilder()
-                  .setCustomId(`confirm_${recruitmentId}`)
-                  .setLabel('参加を確定する')
-                  .setStyle(ButtonStyle.Success)
-              );
-
-            // 応答
-            await interaction.editReply({
-              content: `時間「${selectedTime}」を選択しました。参加を確定しますか？`,
-              components: [confirmRow],
-              embeds: []
-            });
-
-            console.log('本番時間選択 確認ボタン表示成功');
-          } catch (error) {
-            console.error('本番時間選択エラー:', error);
-            console.error('エラー詳細:', error.message);
-            console.error('スタックトレース:', error.stack);
-
-            try {
-              if (interaction.deferred) {
-                await interaction.editReply({ 
-                  content: 'エラーが発生しました。もう一度お試しください。' 
-                });
-              } else {
-                await interaction.reply({ 
-                  content: 'エラーが発生しました。', 
-                  ephemeral: true 
-                });
-              }
-            } catch (replyErr) {
-              console.error('エラー応答失敗:', replyErr);
-            }
-          }
-        }
-    
-    // ボタンインタラクション
     if (interaction.isButton()) {
       await handleButtonInteraction(interaction);
-    }
-    // セレクトメニューインタラクション（ドロップダウン）
-    else if (interaction.isStringSelectMenu()) {
+    } else if (interaction.isStringSelectMenu()) {
       await handleSelectMenuInteraction(interaction);
     }
-    // その他のインタラクション
-    else {
-      console.log(`未サポートのインタラクションタイプ: ${interaction.type}`);
-    }
   } catch (error) {
-    console.error('インタラクションエラー:', error);
-    console.error('スタックトレース:', error.stack);
-
-    // インタラクションに応答（可能であれば）
+    console.error('インタラクション処理エラー:', error);
     try {
-      if (!interaction.replied && !interaction.deferred) {
-        await interaction.reply({
-          content: 'エラーが発生しました。もう一度操作をやり直してください。',
-          ephemeral: true
-        });
+      const errorMsg = 'エラーが発生しました。しばらく経ってからやり直してください。';
+      if (interaction.replied || interaction.deferred) {
+        await interaction.followUp({ content: errorMsg, ephemeral: true });
+      } else {
+        await interaction.reply({ content: errorMsg, ephemeral: true });
       }
-    } catch (replyError) {
-      console.error('エラー応答失敗:', replyError);
+    } catch (e) {
+      console.error('エラーレスポンス送信失敗:', e);
     }
   }
 });
 
-// ボタンインタラクション処理関数
-async function handleButtonInteraction(interaction) {
-  const customId = interaction.customId;
-  console.log(`ボタン処理: ${customId}`);
-
-  // ここに既存のボタン処理コードを移動
-  // 例: 参加ボタン
-  if (customId.startsWith('join_')) {
-    // 既存の参加処理...
-    console.log('参加ボタンが押されました');
-    // 仮の応答
-    await interaction.reply({ content: 'ボタン処理中...', ephemeral: true });
-  }
-  // その他のボタン
-  else {
-    console.log(`未処理のボタンID: ${customId}`);
-    await interaction.reply({ content: 'このボタンは現在サポートされていません', ephemeral: true });
-  }
-}
-
-        // セレクトメニュー処理関数
-        async function handleSelectMenuInteraction(interaction) {
-          const customId = interaction.customId;
-          console.log(`セレクトメニュー処理: ${customId}`);
-
-          // 時間選択メニュー処理
-          if (customId.startsWith('time_')) {
-            try {
-              console.log('時間選択処理を開始');
-
-              // まずdeferUpdateで応答の時間を確保
-              await interaction.deferUpdate();
-              console.log('deferUpdate成功');
-
-              // 選択された時間を取得
-              const selectedTime = interaction.values[0];
-              console.log(`選択された時間: ${selectedTime}`);
-
-              // 募集IDの取得（time_の後の部分）
-              const recruitmentId = customId.split('_')[1] || '';
-              console.log(`募集ID: ${recruitmentId}`);
-
-              // 確認ボタン作成
-              const confirmButton = new ActionRowBuilder()
-                .addComponents(
-                  new ButtonBuilder()
-                    .setCustomId(`confirm_${recruitmentId}`)
-                    .setLabel('参加を確定する')
-                    .setStyle(ButtonStyle.Success)
-                );
-
-              // 応答を編集
-              await interaction.editReply({
-                content: `時間「${selectedTime}」を選択しました。参加を確定しますか？`,
-                components: [confirmButton],
-                embeds: [] // 明示的に空にする
-              });
-
-              console.log('参加確認UI表示完了');
-            } catch (error) {
-              console.error('時間選択処理エラー:', error);
-              console.error('エラー詳細:', error.message);
-              console.error('スタックトレース:', error.stack);
-
-              try {
-                if (interaction.deferred) {
-                  await interaction.editReply({ 
-                    content: 'エラーが発生しました。もう一度お試しください。'
-                  });
-                } else {
-                  await interaction.reply({ 
-                    content: 'エラーが発生しました。', 
-                    ephemeral: true 
-                  });
-                }
-              } catch (replyErr) {
-                console.error('エラー応答失敗:', replyErr);
-              }
-            }
-          }
-
-          // 他のセレクトメニュー処理（省略）
-        
-  // 属性選択メニュー
-  else if (customId.startsWith('attr_')) {
-    console.log('属性選択処理');
-
-    // 選択値の取得
-    const selectedAttributes = interaction.values;
-    console.log(`選択された属性: ${selectedAttributes.join(', ')}`);
-
-    // 仮の応答
-    await interaction.update({
-      content: `属性「${selectedAttributes.join(', ')}」が選択されました`,
-      components: []
-    });
-  }
-  // その他のセレクトメニュー
-  else {
-    console.log(`未処理のセレクトメニューID: ${customId}`);
-    await interaction.update({
-      content: 'このメニューは現在サポートされていません',
-      components: []
-    });
-  }
-}
 // 募集開始処理
 async function startRecruitment(message) {
   // レイドタイプ選択ボタン
@@ -1029,26 +558,24 @@ async function showAttributeSelection(interaction, recruitmentId, joinType) {
   });
 }
 
-// 時間選択UI表示（成功したtimeflowパターンに合わせて修正）
+// 時間選択UI表示（シンプル化）
 async function showTimeAvailabilitySelection(interaction, recruitmentId, joinType, selectedAttributes) {
   console.log('=== 時間選択UI表示が呼び出されました ===');
-  console.log(`recruitmentId: ${recruitmentId}, joinType: ${joinType}`);
+
+  // 固定の時間選択肢
+  const timeOptions = [
+    { label: '19:00', value: '19:00', description: '19:00から参加可能' },
+    { label: '20:00', value: '20:00', description: '20:00から参加可能' },
+    { label: '21:00', value: '21:00', description: '21:00から参加可能' },
+    { label: '22:00', value: '22:00', description: '22:00から参加可能' },
+    { label: '23:00', value: '23:00', description: '23:00から参加可能' },
+    { label: '今すぐ', value: 'now', description: '今すぐ参加可能' }
+  ];
+
+  // カスタムID（シンプルに）
+  const customId = `time_${recruitmentId}`;
 
   try {
-    // 時間選択肢
-    const timeOptions = [
-      { label: '19:00', value: '19:00', description: '19:00から参加可能' },
-      { label: '20:00', value: '20:00', description: '20:00から参加可能' },
-      { label: '21:00', value: '21:00', description: '21:00から参加可能' },
-      { label: '22:00', value: '22:00', description: '22:00から参加可能' },
-      { label: '23:00', value: '23:00', description: '23:00から参加可能' },
-      { label: '今すぐ', value: 'now', description: '今すぐ参加可能' }
-    ];
-
-    // timeflowと同じパターンのカスタムID
-    const customId = `timemenu_${recruitmentId}`;
-    console.log(`使用するカスタムID: ${customId}`);
-
     // UIコンポーネント
     const row = new ActionRowBuilder()
       .addComponents(
@@ -1072,7 +599,6 @@ async function showTimeAvailabilitySelection(interaction, recruitmentId, joinTyp
     console.log('時間選択UI表示成功');
   } catch (error) {
     console.error('時間選択UI表示エラー:', error);
-    console.error('エラースタック:', error.stack);
 
     // エラー表示
     await interaction.update({
@@ -1650,18 +1176,6 @@ async function showHelp(message) {
 // エラーハンドリング
 process.on('unhandledRejection', error => {
   console.error('未処理の Promise rejection:', error);
-});
-
-
-// 未処理のエラーをキャッチ
-process.on('unhandledRejection', error => {
-  console.error('未処理のPromise拒否:', error);
-});
-
-// クライアント準備完了時のログ
-client.once('ready', () => {
-  console.log(`${client.user.tag} として準備完了!`);
-  console.log('デバッグモード: 有効');
 });
 
 // Botログイン
