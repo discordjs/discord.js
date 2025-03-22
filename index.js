@@ -436,7 +436,50 @@ client.on('interactionCreate', async interaction => {
             }
           }
         }
+// 確認ボタンの処理
+if (interaction.isButton() && interaction.customId.startsWith('confirm_')) {
+  console.log('確認ボタンを検出: ' + interaction.customId);
+  
+  try {
+    // deferReplyで応答の時間を確保
+    await interaction.deferReply({ ephemeral: true });
+    console.log('確認ボタン deferReply成功');
     
+    // recruitmentIdを抽出
+    const recruitmentId = interaction.customId.split('_')[1];
+    console.log(`確認ボタン recruitmentId: ${recruitmentId}`);
+    
+    // 確認メッセージ
+    await interaction.editReply({
+      content: '参加が確認されました。ありがとうございます！',
+    });
+    
+    console.log('確認メッセージ送信成功');
+  } catch (error) {
+    console.error('確認ボタン処理エラー:', error);
+    console.error('エラー詳細:', error.message);
+    console.error('スタックトレース:', error.stack);
+    
+    try {
+      if (interaction.deferred) {
+        await interaction.editReply({ 
+          content: 'エラーが発生しました。もう一度お試しください。' 
+        });
+      } else {
+        await interaction.reply({ 
+          content: 'エラーが発生しました。', 
+          ephemeral: true 
+        });
+      }
+    } catch (replyErr) {
+      console.error('エラー応答失敗:', replyErr);
+    }
+  }
+}
+
+// 他の既存のインタラクション処理...
+
+        
     // ボタンインタラクション
     if (interaction.isButton()) {
       await handleButtonInteraction(interaction);
