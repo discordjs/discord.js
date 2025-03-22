@@ -438,6 +438,10 @@ client.on('interactionCreate', async interaction => {
         }
 // 確認ボタンの処理
 if (interaction.isButton() && interaction.customId.startsWith('confirm_')) {
+　// confirm_recruitment_ で始まる場合は処理をスキップ（下の関数に任せる）
+　if (interaction.customId.startsWith('confirm_recruitment_')) {
+  return; // 下のhandleButtonInteractionに処理を任せる
+}
   console.log('確認ボタンを検出: ' + interaction.customId);
   
   try {
