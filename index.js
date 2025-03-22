@@ -316,68 +316,7 @@ client.on('interactionCreate', interaction => {
   });
 });
 // インタラクションハンドラに追加するコード
-client.on('interactionCreate', async interaction => {
-  try {
-    // timeflowテスト用時間選択の処理
-    if (interaction.isStringSelectMenu() && interaction.customId.startsWith('timeflow_')) {
-      console.log('timeflow時間選択を検出');
-
-      try {
-        // まずdeferUpdate
-        await interaction.deferUpdate();
-        console.log('timeflow deferUpdate成功');
-
-        // 選択された時間
-        const selectedTime = interaction.values[0];
-        console.log(`timeflow選択時間: ${selectedTime}`);
-
-        // IDを抽出
-        const testId = interaction.customId.split('_')[1];
-        console.log(`timeflow ID: ${testId}`);
-
-        // 確認ボタン
-        const confirmRow = new ActionRowBuilder()
-          .addComponents(
-            new ButtonBuilder()
-              .setCustomId(`timeflow_confirm_${testId}`)
-              .setLabel('確認テスト')
-              .setStyle(ButtonStyle.Success)
-          );
-
-        // 応答
-        await interaction.editReply({
-          content: `⚠ デバッグ：「${selectedTime}」を選択しました。確認ボタンをテスト`,
-          components: [confirmRow]
-        });
-
-        console.log('timeflow確認ボタン表示成功');
-      } catch (error) {
-        console.error('timeflow選択処理エラー:', error);
-        console.error('エラー詳細:', error.message);
-        console.error('スタックトレース:', error.stack);
-      }
-    }
-
-    // timeflowテスト用確認ボタンの処理
-    if (interaction.isButton() && interaction.customId.startsWith('timeflow_confirm_')) {
-      console.log('timeflow確認ボタンを検出');
-
-      try {
-        // 応答
-        await interaction.reply({
-          content: 'デバッグテスト成功！全フローが正常に完了しました',
-          ephemeral: true
-        });
-
-        console.log('timeflowテスト完了');
-      } catch (error) {
-        console.error('timeflow確認エラー:', error);
-      }
-    }
-  } catch (generalError) {
-    console.error('timeflowテスト全体エラー:', generalError);
-  }
-});// インタラクションハンドラに時間選択処理を追加
+  // インタラクションハンドラに時間選択処理を追加
     client.on('interactionCreate', async interaction => {
       try {
         // timemenuの処理（本番用・timeflowと同じパターン）
@@ -434,11 +373,11 @@ client.on('interactionCreate', async interaction => {
               console.error('エラー応答失敗:', replyErr);
             }
           }
-        }
+        });
 // 確認ボタンの処理
 if (interaction.isButton() && interaction.customId.startsWith('confirm_')) {
-　// confirm_recruitment_ で始まる場合は処理をスキップ（下の関数に任せる）
-　if (interaction.customId.startsWith('confirm_recruitment_')) {
+// confirm_recruitment_ で始まる場合は処理をスキップ（下の関数に任せる）
+ if (interaction.customId.startsWith('confirm_recruitment_')) {
   return; // 下のhandleButtonInteractionに処理を任せる
 }
   console.log('確認ボタンを検出: ' + interaction.customId);
@@ -483,35 +422,6 @@ if (interaction.isButton() && interaction.customId.startsWith('confirm_')) {
 // 他の既存のインタラクション処理...
 
         
-    // ボタンインタラクション
-    if (interaction.isButton()) {
-      await handleButtonInteraction(interaction);
-    }
-    // セレクトメニューインタラクション（ドロップダウン）
-    else if (interaction.isStringSelectMenu()) {
-      await handleSelectMenuInteraction(interaction);
-    }
-    // その他のインタラクション
-    else {
-      console.log(`未サポートのインタラクションタイプ: ${interaction.type}`);
-    }
-  } catch (error) {
-    console.error('インタラクションエラー:', error);
-    console.error('スタックトレース:', error.stack);
-
-    // インタラクションに応答（可能であれば）
-    try {
-      if (!interaction.replied && !interaction.deferred) {
-        await interaction.reply({
-          content: 'エラーが発生しました。もう一度操作をやり直してください。',
-          ephemeral: true
-        });
-      }
-    } catch (replyError) {
-      console.error('エラー応答失敗:', replyError);
-    }
-  }
-});
 
 // ボタンインタラクション処理関数
 async function handleButtonInteraction(interaction) {
