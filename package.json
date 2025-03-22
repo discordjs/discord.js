@@ -2,6 +2,7 @@
 	"name": "gbf-raid-bot",
 	"version": "1.0.0",
 	"description": "グランブルーファンタジー高難易度募集ボット",
+	"type": "module",
 	"main": "index.js",
 	"scripts": {
 	  "start": "node index.js",
