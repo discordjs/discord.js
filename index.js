@@ -41,14 +41,18 @@ const client = new Client({
   partials: [Partials.Channel, Partials.Message, Partials.Reaction]
 });
 
-// 起動時に保存データを読み込む
+
+// ファイルの適切な場所（例：他のイベント定義の近く）に以下のコードを配置
+
+// ボットの準備完了時に実行（既存の3箇所のready処理を統合）
 client.once('ready', () => {
   console.log(`${client.user.tag} でログインしました！`);
-  
-  // Discord.jsのバージョン確認（どこか安全な場所、例えばready イベント内に追加）
   console.log('Discord.js バージョン:', require('discord.js').version);
-  // 定期的に保存する（5分ごと）
-  setInterval(saveRecruitmentData, 5 * 60 * 1000);
+  console.log('デバッグモード: 有効');
+  
+  // 定期的な処理の開始
+  setInterval(saveRecruitmentData, 5 * 60 * 1000); // 5分ごとにデータ保存
+  setInterval(checkAutomaticClosing, 60 * 1000); // 1分ごとに自動締め切りチェック
 });
 
 // グローバル変数
@@ -66,12 +70,7 @@ for (let i = 0; i < 24; i++) {
   });
 }
 
-// ボットの準備完了時に実行
-client.once('ready', () => {
-  console.log(`${client.user.tag} でログインしました！`);
-  // 毎日の自動締め切りチェッカーを開始
-  setInterval(checkAutomaticClosing, 60 * 1000); // 1分ごとにチェック
-});
+
 
 // 残りのコードは変更なし
 // 既存のコード...
@@ -955,7 +954,7 @@ async function finalizeRecruitment(interaction, recruitmentId) {
   console.log('募集確定情報:');
   console.log(`- 募集ID: ${recruitmentId}`);
   console.log(`- メッセージID: ${recruitment.messageId}`);
-  console.log(`- チャンネルID: わ{recruitment.channel}`);
+  console.log(`- チャンネルID: ${recruitment.channel}`);
 
   // 更新された募集データを保存
   activeRecruitments.set(recruitmentId, recruitment);
@@ -1705,11 +1704,7 @@ process.on('unhandledRejection', error => {
   console.error('未処理のPromise拒否:', error);
 });
 
-// クライアント準備完了時のログ
-client.once('ready', () => {
-  console.log(`${client.user.tag} として準備完了!`);
-  console.log('デバッグモード: 有効');
-});
+
 
 // Botログイン
 client.login(process.env.TOKEN).catch(console.error);
