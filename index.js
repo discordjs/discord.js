@@ -1559,7 +1559,7 @@ function checkAutomaticClosing() {
 
 // Botログイン
 // 環境変数からトークンを取得してボットにログイン
-client.login(process.env.TOKEN).catch(console.error);
+
 
 // 募集管理機能（続き）
 
