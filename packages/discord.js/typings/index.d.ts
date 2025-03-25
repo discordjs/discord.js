@@ -2376,7 +2376,7 @@ export interface ActionRowModalData {
 export class ModalSubmitFields {
   private constructor(components: readonly (readonly ModalActionRowComponent[])[]);
   public components: ActionRowModalData[];
-  public fields: Collection<string, ModalActionRowComponent>;
+  public fields: Collection<string, TextInputModalData>;
   public getField<Type extends ComponentType>(customId: string, type: Type): { type: Type } & TextInputModalData;
   public getField(customId: string, type?: ComponentType): TextInputModalData;
   public getTextInputValue(customId: string): string;
