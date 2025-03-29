@@ -1,3 +1,4 @@
+import type { JSONEncodable } from '@discordjs/util';
 import type { APIPollAnswer, APIPollMedia } from 'discord-api-types/v10';
 import { resolveBuilder } from '../../util/resolveBuilder';
 import { validate } from '../../util/validation';
@@ -8,11 +9,11 @@ export interface PollAnswerData extends Omit<APIPollAnswer, 'answer_id' | 'poll_
 	poll_media: PollAnswerMediaBuilder;
 }
 
-export class PollAnswerBuilder {
+export class PollAnswerBuilder implements JSONEncodable<Omit<APIPollAnswer, 'answer_id'>> {
 	/**
 	 * The API data associated with this poll answer.
 	 */
-	protected readonly data: PollAnswerData;
+	private readonly data: PollAnswerData;
 
 	/**
 	 * Creates a new poll answer from API data.
