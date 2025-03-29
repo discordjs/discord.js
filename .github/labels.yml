@@ -40,8 +40,6 @@
   color: 80c042
 - name: good first issue
   color: 7057ff
-- name: has PR
-  color: 4b1f8e
 - name: help wanted
   color: '008672'
 - name: in progress
