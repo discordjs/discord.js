@@ -186,6 +186,8 @@ exports.PartialGroupDMChannel = require('./structures/PartialGroupDMChannel.js')
 exports.PermissionOverwrites = require('./structures/PermissionOverwrites.js').PermissionOverwrites;
 exports.Poll = require('./structures/Poll.js').Poll;
 exports.PollAnswer = require('./structures/PollAnswer.js').PollAnswer;
+exports.PrimaryEntryPointCommandInteraction =
+  require('./structures/PrimaryEntryPointCommandInteraction.js').PrimaryEntryPointCommandInteraction;
 exports.Presence = require('./structures/Presence.js').Presence;
 exports.ReactionCollector = require('./structures/ReactionCollector.js').ReactionCollector;
 exports.ReactionEmoji = require('./structures/ReactionEmoji.js').ReactionEmoji;
