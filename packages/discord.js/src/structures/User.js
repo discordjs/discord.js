@@ -365,6 +365,7 @@ class User extends Base {
         defaultAvatarURL: true,
         hexAccentColor: true,
         tag: true,
+        displayName: true,
       },
       ...props,
     );
