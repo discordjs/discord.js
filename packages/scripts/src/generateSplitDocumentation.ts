@@ -295,15 +295,15 @@ function itemExcerptText(excerpt: Excerpt, apiPackage: ApiPackage, parent?: ApiT
 			}
 
 			if (parent?.typeParameters.some((type) => type.name === token.text)) {
-				const [packageName, parentItem] = parent.canonicalReference.toString().split('!');
+				const resolvedParent = resolveCanonicalReference(parent.canonicalReference, apiPackage);
 				return {
 					text: token.text,
 					resolvedItem: {
 						kind: 'TypeParameter',
 						displayName: token.text,
 						containerKey: `${parent.containerKey}|${token.text}`,
-						uri: `${parentItem}#${token.text}`,
-						packageName: packageName?.replace('@discordjs/', ''),
+						uri: `${resolveItemURI(parent)}#${token.text}`,
+						packageName: resolvedParent?.package?.replace('@discordjs/', ''),
 					},
 				};
 			}
