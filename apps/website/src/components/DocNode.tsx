@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { BuiltinDocumentationLinks } from '~/util/builtinDocumentationLinks';
-import { OverlayScrollbarsComponent } from './OverlayScrollbars';
+import { BuiltinDocumentationLinks } from '@/util/builtinDocumentationLinks';
+import { Scrollbars } from './OverlayScrollbars';
 import { SyntaxHighlighter } from './SyntaxHighlighter';
 
 export async function DocNode({ node, version }: { readonly node?: any; readonly version: string }) {
@@ -12,9 +12,11 @@ export async function DocNode({ node, version }: { readonly node?: any; readonly
 				if (node.resolvedPackage) {
 					return (
 						<Link
-							className="font-mono text-blurple hover:text-blurple-500 dark:hover:text-blurple-300"
+							className="text-base-blurple-400 hover:text-base-blurple-500 dark:hover:text-base-blurple-300 font-mono"
 							href={`/docs/packages/${node.resolvedPackage.packageName}/${node.resolvedPackage.version ?? version}/${node.uri}`}
-							key={`${node.text}-${idx}`}
+							key={`${node.uri}-${idx}`}
+							// @ts-expect-error - unstable_dynamicOnHover is not part of the public types
+							unstable_dynamicOnHover
 						>
 							{node.text}
 						</Link>
@@ -24,7 +26,7 @@ export async function DocNode({ node, version }: { readonly node?: any; readonly
 				if (node.uri) {
 					return (
 						<a
-							className="text-blurple hover:text-blurple-500 dark:hover:text-blurple-300"
+							className="text-base-blurple-400 hover:text-base-blurple-500 dark:hover:text-base-blurple-300"
 							href={node.uri}
 							key={`${node.text}-${idx}`}
 							rel="external noreferrer noopener"
@@ -39,7 +41,7 @@ export async function DocNode({ node, version }: { readonly node?: any; readonly
 					const href = BuiltinDocumentationLinks[node.text as keyof typeof BuiltinDocumentationLinks];
 					return (
 						<a
-							className="text-blurple hover:text-blurple-500 dark:hover:text-blurple-300"
+							className="text-base-blurple-400 hover:text-base-blurple-500 dark:hover:text-base-blurple-300"
 							href={href}
 							key={`${node.text}-${idx}`}
 							rel="external noreferrer noopener"
@@ -64,16 +66,13 @@ export async function DocNode({ node, version }: { readonly node?: any; readonly
 				const { language, text } = node;
 
 				return (
-					<OverlayScrollbarsComponent
-						className="my-4 rounded-md border border-neutral-300 bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900"
+					<Scrollbars
+						className="border-base-neutral-200 dark:border-base-neutral-600 bg-base-neutral-100 dark:bg-base-neutral-900 my-4 rounded-sm border"
 						defer
-						options={{
-							overflow: { y: 'hidden' },
-							scrollbars: { autoHide: 'scroll', autoHideDelay: 500, autoHideSuspend: true, clickScroll: true },
-						}}
+						key={`${language}-${text}-${idx}`}
 					>
-						<SyntaxHighlighter className="py-4 text-sm " code={text} lang={language} />
-					</OverlayScrollbarsComponent>
+						<SyntaxHighlighter className="bg-[#f3f3f4] py-4 text-sm dark:bg-[#121214]" code={text} lang={language} />
+					</Scrollbars>
 				);
 			}
 

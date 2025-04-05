@@ -5,10 +5,10 @@ import { InheritanceNode } from './InheritanceNode';
 
 export async function InformationNode({ node, version }: { readonly node: any; readonly version: string }) {
 	return (
-		<div className="flex place-content-between place-items-center">
+		<div className="flex place-content-between place-items-center gap-1">
 			<div className="flex flex-col gap-1">
 				<h1 className="text-xl">
-					<DocKind node={node} /> <span className="break-words font-bold">{node.displayName}</span>
+					<DocKind node={node} /> <span className="font-bold break-all">{node.displayName}</span>
 				</h1>
 				{node.implements ? <InheritanceNode node={node.implements} text="implements" version={version} /> : null}
 				{node.extends ? <InheritanceNode node={node.extends} text="extends" version={version} /> : null}

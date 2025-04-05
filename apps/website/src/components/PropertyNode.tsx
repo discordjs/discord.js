@@ -2,7 +2,7 @@ import { VscSymbolProperty } from '@react-icons/all-files/vsc/VscSymbolProperty'
 import { ChevronDown, ChevronUp, Code2, LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Fragment } from 'react';
-import { ENV } from '~/util/env';
+import { ENV } from '@/util/env';
 import { Badges } from './Badges';
 import { DeprecatedNode } from './DeprecatedNode';
 import { ExcerptNode } from './ExcerptNode';
@@ -21,8 +21,8 @@ export async function PropertyNode({
 	readonly version: string;
 }) {
 	return (
-		<Collapsible className="flex flex-col gap-8" defaultOpen>
-			<CollapsibleTrigger className="group flex place-content-between place-items-center rounded-md p-2 hover:bg-neutral-200 dark:hover:bg-neutral-800">
+		<Collapsible className="flex flex-col gap-4" defaultOpen>
+			<CollapsibleTrigger className="group flex place-content-between place-items-center rounded-md p-2 hover:bg-[#e7e7e9] dark:hover:bg-[#242428]">
 				<h2 className="flex place-items-center gap-2 text-xl font-bold">
 					<VscSymbolProperty aria-hidden className="flex-shrink-0" size={24} />
 					Properties
@@ -32,19 +32,19 @@ export async function PropertyNode({
 			</CollapsibleTrigger>
 
 			<CollapsibleContent>
-				<div className="flex flex-col gap-8">
+				<div className="flex flex-col gap-4">
 					{node.map((property: any, idx: number) => (
 						<Fragment key={`${property.displayName}-${idx}`}>
 							<div className="flex flex-col gap-4">
-								<div className="flex place-content-between place-items-center">
+								<div className="flex place-content-between place-items-center gap-1">
 									<h3
-										className={`${ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group flex flex-col gap-2 break-words font-mono font-semibold`}
+										className={`${ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group flex flex-col gap-2 px-2 font-mono font-semibold break-words`}
 										id={property.displayName}
 									>
 										<Badges node={property} />
 										<span>
 											<Link
-												className="float-left -ml-6 hidden pb-2 pr-2 group-hover:block"
+												className="float-left -ml-6 hidden pr-2 pb-2 group-hover:block"
 												href={`#${property.displayName}`}
 											>
 												<LinkIcon aria-hidden size={16} />
@@ -91,7 +91,7 @@ export async function PropertyNode({
 									<SeeNode node={property.summary.seeBlocks} padding version={version} />
 								) : null}
 							</div>
-							<div aria-hidden className="px-4">
+							<div aria-hidden className="p-4">
 								<div className="h-[2px] bg-neutral-300 dark:bg-neutral-700" role="separator" />
 							</div>
 						</Fragment>

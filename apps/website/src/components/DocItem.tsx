@@ -6,7 +6,7 @@ import { EventNode } from './EventNode';
 import { InformationNode } from './InformationNode';
 import { MethodNode } from './MethodNode';
 import { Outline } from './Outline';
-import { OverlayScrollbarsComponent } from './OverlayScrollbars';
+import { Scrollbars } from './OverlayScrollbars';
 import { ParameterNode } from './ParameterNode';
 import { PropertyNode } from './PropertyNode';
 import { ReturnNode } from './ReturnNode';
@@ -26,12 +26,14 @@ async function OverloadNode({
 	readonly packageName: string;
 	readonly version: string;
 }) {
+	'use cache';
+
 	return (
 		<Tabs className="flex flex-col gap-4">
 			<TabList className="flex gap-2">
 				{node.overloads.map((overload: any) => (
 					<Tab
-						className="cursor-pointer rounded-full bg-neutral-800/10 px-2 py-1 font-sans text-sm font-normal leading-none text-neutral-800 hover:bg-neutral-800/20 data-[selected]:bg-neutral-500 data-[selected]:text-neutral-100 dark:bg-neutral-200/10 dark:text-neutral-200 dark:hover:bg-neutral-200/20 dark:data-[selected]:bg-neutral-500/70"
+						className="cursor-pointer rounded-full bg-neutral-800/10 px-2 py-1 font-sans text-sm leading-none font-normal text-neutral-800 hover:bg-neutral-800/20 data-[selected]:bg-neutral-500 data-[selected]:text-neutral-100 dark:bg-neutral-200/10 dark:text-neutral-200 dark:hover:bg-neutral-200/20 dark:data-[selected]:bg-neutral-500/70"
 						id={`overload-${overload.displayName}-${overload.overloadIndex}`}
 						key={`overload-tab-${overload.displayName}-${overload.overloadIndex}`}
 					>
@@ -41,7 +43,7 @@ async function OverloadNode({
 			</TabList>
 			{node.overloads.map((overload: any) => (
 				<TabPanel
-					className="flex flex-col gap-8"
+					className="flex flex-col gap-4"
 					id={`overload-${overload.displayName}-${overload.overloadIndex}`}
 					key={`overload-tab-panel-${overload.displayName}-${overload.overloadIndex}`}
 				>
@@ -52,7 +54,7 @@ async function OverloadNode({
 	);
 }
 
-export function DocItem({
+export async function DocItem({
 	node,
 	packageName,
 	version,
@@ -61,6 +63,8 @@ export function DocItem({
 	readonly packageName: string;
 	readonly version: string;
 }) {
+	'use cache';
+
 	if (node.overloads?.length) {
 		return <OverloadNode node={node} packageName={packageName} version={version} />;
 	}
@@ -69,16 +73,13 @@ export function DocItem({
 		<>
 			<InformationNode node={node} version={version} />
 
-			<OverlayScrollbarsComponent
-				className="rounded-md border border-neutral-300 bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900"
-				defer
-				options={{
-					overflow: { y: 'hidden' },
-					scrollbars: { autoHide: 'scroll', autoHideDelay: 500, autoHideSuspend: true, clickScroll: true },
-				}}
-			>
-				<SyntaxHighlighter className="py-4 text-sm" code={node.sourceExcerpt} lang="typescript" />
-			</OverlayScrollbarsComponent>
+			<Scrollbars className="border-base-neutral-200 dark:border-base-neutral-600 bg-base-neutral-100 dark:bg-base-neutral-900 rounded-sm border">
+				<SyntaxHighlighter
+					className="bg-[#f3f3f4] py-4 text-sm dark:bg-[#121214]"
+					code={node.sourceExcerpt}
+					lang="typescript"
+				/>
+			</Scrollbars>
 
 			{node.summary?.deprecatedBlock.length ? (
 				<DeprecatedNode deprecatedBlock={node.summary.deprecatedBlock} version={version} />
@@ -95,7 +96,7 @@ export function DocItem({
 			{node.constructor?.parametersString ? <ConstructorNode node={node.constructor} version={version} /> : null}
 
 			{node.typeParameters?.length ? (
-				<div className="flex flex-col gap-8">
+				<div className="flex flex-col gap-4">
 					<h2 className="flex place-items-center gap-2 p-2 text-xl font-bold">
 						<VscSymbolParameter aria-hidden className="flex-shrink-0" size={24} />
 						Type Parameters
@@ -105,7 +106,7 @@ export function DocItem({
 			) : null}
 
 			{node.parameters?.length ? (
-				<div className="flex flex-col gap-8">
+				<div className="flex flex-col gap-4">
 					<h2 className="flex place-items-center gap-2 p-2 text-xl font-bold">
 						<VscSymbolParameter aria-hidden className="flex-shrink-0" size={24} />
 						Parameters
