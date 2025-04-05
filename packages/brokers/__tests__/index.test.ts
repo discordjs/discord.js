@@ -2,11 +2,9 @@ import type Redis from 'ioredis';
 import { test, expect, vi } from 'vitest';
 import { PubSubRedisBroker } from '../src/index.js';
 
-vi.mock('node:fs', () => {
-	return {
-		readFileSync: vi.fn(),
-	};
-});
+vi.mock('node:fs', () => ({
+	readFileSync: vi.fn(),
+}));
 
 const mockRedisClient = {
 	defineCommand: vi.fn(),

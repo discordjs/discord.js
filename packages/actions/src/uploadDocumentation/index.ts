@@ -26,7 +26,6 @@ for await (const file of globber.globGenerator()) {
 	const data = await readFile(file, 'utf8');
 	try {
 		promises.push(
-			// eslint-disable-next-line @typescript-eslint/no-loop-func
 			limit(async () => {
 				console.log(`Uploading ${file} with ${version}...`);
 				const json = JSON.parse(data);

@@ -76,7 +76,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} antialiased`} suppressHydrationWarning>
+		<html className={`${GeistSans.variable} ${GeistMono.variable} antialiased`} lang="en" suppressHydrationWarning>
 			<body className="relative bg-white dark:bg-[#121212]">
 				<LocalizedStringProvider locale="en-US" />
 				<Providers>

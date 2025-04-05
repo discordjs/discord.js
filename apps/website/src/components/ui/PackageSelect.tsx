@@ -27,23 +27,23 @@ export function PackageSelect({ packageName }: { readonly packageName: string })
 			<Select
 				aria-label="Select a package"
 				className="hidden md:block"
-				selectedKey={selectedPackage}
 				onSelectionChange={(selected) => {
 					setSelectedPackage(selected);
 				}}
+				selectedKey={selectedPackage}
 			>
 				<Button className="flex w-full place-content-between place-items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-800">
 					<SelectValue className="font-medium" />
 					<ChevronsUpDown aria-hidden size={20} />
 				</Button>
 				<Popover className="max-h-60 w-[--trigger-width] overflow-auto rounded-md border border-neutral-300 bg-neutral-200 dark:border-neutral-700 dark:bg-neutral-800">
-					<ListBox shouldFocusWrap items={PACKAGES}>
+					<ListBox items={PACKAGES} shouldFocusWrap>
 						{(item) => (
 							<ListBoxItem
+								className="flex p-2 outline-none data-[focus-visible]:bg-neutral-300 data-[hovered]:bg-neutral-300 data-[selected]:bg-blurple data-[selected]:data-[focus-visible]:bg-blurple-500 data-[selected]:data-[hovered]:bg-blurple-500 data-[selected]:text-white dark:data-[focus-visible]:bg-neutral-700 dark:data-[hovered]:bg-neutral-700 dark:data-[selected]:data-[focus-visible]:bg-blurple-500 dark:data-[selected]:data-[hovered]:bg-blurple-500"
+								href={`/docs/packages/${item.name}/stable`}
 								id={item.name}
 								textValue={item.name}
-								href={`/docs/packages/${item.name}/stable`}
-								className="flex p-2 outline-none data-[focus-visible]:bg-neutral-300 data-[hovered]:bg-neutral-300 data-[selected]:bg-blurple data-[selected]:data-[focus-visible]:bg-blurple-500 data-[selected]:data-[hovered]:bg-blurple-500 data-[selected]:text-white dark:data-[focus-visible]:bg-neutral-700 dark:data-[hovered]:bg-neutral-700 dark:data-[selected]:data-[focus-visible]:bg-blurple-500 dark:data-[selected]:data-[hovered]:bg-blurple-500"
 							>
 								{item.name}
 							</ListBoxItem>
@@ -52,7 +52,7 @@ export function PackageSelect({ packageName }: { readonly packageName: string })
 				</Popover>
 			</Select>
 
-			<Vaul.NestedRoot open={open} onOpenChange={setOpen}>
+			<Vaul.NestedRoot onOpenChange={setOpen} open={open}>
 				<Vaul.Trigger
 					aria-label="Open package select"
 					className="flex w-full place-content-between place-items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-800 md:hidden"
@@ -67,21 +67,21 @@ export function PackageSelect({ packageName }: { readonly packageName: string })
 						<ListBox
 							aria-label="Select a package"
 							className="flex flex-col gap-2 overflow-auto"
-							shouldFocusWrap
 							items={PACKAGES}
-							selectionMode="single"
-							selectedKeys={[selectedPackage]}
 							onSelectionChange={(selected) => {
 								const [val] = selected;
 								setSelectedPackage(val as Key);
 							}}
+							selectedKeys={[selectedPackage]}
+							selectionMode="single"
+							shouldFocusWrap
 						>
 							{(item) => (
 								<ListBoxItem
+									className="rounded-md p-2 outline-none data-[focus-visible]:bg-neutral-300 data-[hovered]:bg-neutral-300 data-[selected]:bg-blurple data-[selected]:data-[focus-visible]:bg-blurple-500 data-[selected]:data-[hovered]:bg-blurple-500 data-[selected]:text-white dark:data-[focus-visible]:bg-neutral-700 dark:data-[hovered]:bg-neutral-700 dark:data-[selected]:data-[focus-visible]:bg-blurple-500 dark:data-[selected]:data-[hovered]:bg-blurple-500"
+									href={`/docs/packages/${item.name}/stable`}
 									id={item.name}
 									textValue={item.name}
-									href={`/docs/packages/${item.name}/stable`}
-									className="rounded-md p-2 outline-none data-[focus-visible]:bg-neutral-300 data-[hovered]:bg-neutral-300 data-[selected]:bg-blurple data-[selected]:data-[focus-visible]:bg-blurple-500 data-[selected]:data-[hovered]:bg-blurple-500 data-[selected]:text-white dark:data-[focus-visible]:bg-neutral-700 dark:data-[hovered]:bg-neutral-700 dark:data-[selected]:data-[focus-visible]:bg-blurple-500 dark:data-[selected]:data-[hovered]:bg-blurple-500"
 								>
 									{item.name}
 								</ListBoxItem>

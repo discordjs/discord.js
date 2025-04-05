@@ -20,6 +20,7 @@ export async function Badges({ node }: { readonly node: any }) {
 	const isOptional = node.isOptional;
 	const isExternal = node.isExternal;
 
+	// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 	const isAny = isDeprecated || isProtected || isStatic || isAbstract || isReadonly || isOptional || isExternal;
 
 	return isAny ? (

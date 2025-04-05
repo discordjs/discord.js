@@ -8,6 +8,7 @@ import { Fragment } from 'react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/Collapsible';
 
 export async function Outline({ node }: { readonly node: any }) {
+	// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 	const hasAny = node.members?.properties?.length || node.members?.events?.length || node.members?.methods?.length;
 
 	return hasAny ? (
@@ -16,8 +17,8 @@ export async function Outline({ node }: { readonly node: any }) {
 				<h2 className="flex place-items-center gap-2 text-xl font-bold">
 					<VscListSelection aria-hidden className="flex-shrink-0" size={24} /> Table of contents
 				</h2>
-				<ChevronDown className='group-data-[state="open"]:hidden' aria-hidden size={24} />
-				<ChevronUp className='group-data-[state="closed"]:hidden' aria-hidden size={24} />
+				<ChevronDown aria-hidden className='group-data-[state="open"]:hidden' size={24} />
+				<ChevronUp aria-hidden className='group-data-[state="closed"]:hidden' size={24} />
 			</CollapsibleTrigger>
 
 			<CollapsibleContent>
@@ -30,28 +31,26 @@ export async function Outline({ node }: { readonly node: any }) {
 										<VscSymbolProperty aria-hidden className="flex-shrink-0" size={24} />
 										Properties
 									</h2>
-									<ChevronDown className='group-data-[state="open"]:hidden' aria-hidden size={24} />
-									<ChevronUp className='group-data-[state="closed"]:hidden' aria-hidden size={24} />
+									<ChevronDown aria-hidden className='group-data-[state="open"]:hidden' size={24} />
+									<ChevronUp aria-hidden className='group-data-[state="closed"]:hidden' size={24} />
 								</CollapsibleTrigger>
 
 								<CollapsibleContent>
 									<div className="flex flex-col gap-2 px-4">
-										{node.members.properties.map((property: any, idx: number) => {
-											return (
-												<Fragment key={`${property.displayName}-${idx}`}>
-													<div className="flex flex-col gap-4">
-														<div className="flex place-content-between place-items-center">
-															<Link
-																href={`#${property.displayName}`}
-																className="grow truncate rounded-md p-2 font-mono transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800 md:px-1 md:py-1"
-															>
-																{property.displayName}
-															</Link>
-														</div>
+										{node.members.properties.map((property: any, idx: number) => (
+											<Fragment key={`${property.displayName}-${idx}`}>
+												<div className="flex flex-col gap-4">
+													<div className="flex place-content-between place-items-center">
+														<Link
+															className="grow truncate rounded-md p-2 font-mono transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800 md:px-1 md:py-1"
+															href={`#${property.displayName}`}
+														>
+															{property.displayName}
+														</Link>
 													</div>
-												</Fragment>
-											);
-										})}
+												</div>
+											</Fragment>
+										))}
 									</div>
 								</CollapsibleContent>
 							</Collapsible>
@@ -64,28 +63,26 @@ export async function Outline({ node }: { readonly node: any }) {
 										<VscSymbolMethod aria-hidden className="flex-shrink-0" size={24} />
 										Methods
 									</h2>
-									<ChevronDown className='group-data-[state="open"]:hidden' aria-hidden size={24} />
-									<ChevronUp className='group-data-[state="closed"]:hidden' aria-hidden size={24} />
+									<ChevronDown aria-hidden className='group-data-[state="open"]:hidden' size={24} />
+									<ChevronUp aria-hidden className='group-data-[state="closed"]:hidden' size={24} />
 								</CollapsibleTrigger>
 
 								<CollapsibleContent>
 									<div className="flex flex-col gap-2 px-4">
-										{node.members.methods.map((method: any, idx: number) => {
-											return (
-												<Fragment key={`${method.displayName}-${idx}`}>
-													<div className="flex flex-col gap-4">
-														<div className="flex place-content-between place-items-center">
-															<Link
-																href={`#${method.displayName}`}
-																className="grow truncate rounded-md p-2 font-mono transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800 md:px-1 md:py-1"
-															>
-																{method.displayName}
-															</Link>
-														</div>
+										{node.members.methods.map((method: any, idx: number) => (
+											<Fragment key={`${method.displayName}-${idx}`}>
+												<div className="flex flex-col gap-4">
+													<div className="flex place-content-between place-items-center">
+														<Link
+															className="grow truncate rounded-md p-2 font-mono transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800 md:px-1 md:py-1"
+															href={`#${method.displayName}`}
+														>
+															{method.displayName}
+														</Link>
 													</div>
-												</Fragment>
-											);
-										})}
+												</div>
+											</Fragment>
+										))}
 									</div>
 								</CollapsibleContent>
 							</Collapsible>
@@ -98,35 +95,33 @@ export async function Outline({ node }: { readonly node: any }) {
 										<VscSymbolEvent aria-hidden className="flex-shrink-0" size={24} />
 										Events
 									</h2>
-									<ChevronDown className='group-data-[state="open"]:hidden' aria-hidden size={24} />
-									<ChevronUp className='group-data-[state="closed"]:hidden' aria-hidden size={24} />
+									<ChevronDown aria-hidden className='group-data-[state="open"]:hidden' size={24} />
+									<ChevronUp aria-hidden className='group-data-[state="closed"]:hidden' size={24} />
 								</CollapsibleTrigger>
 
 								<CollapsibleContent>
 									<div className="flex flex-col gap-2 px-4">
-										{node.members.events.map((event: any, idx: number) => {
-											return (
-												<Fragment key={`${event.displayName}-${idx}`}>
-													<div className="flex flex-col gap-4">
-														<div className="flex place-content-between place-items-center">
-															<Link
-																href={`#${event.displayName}`}
-																className="grow truncate rounded-md p-2 font-mono transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800 md:px-1 md:py-1"
-															>
-																{event.displayName}
-															</Link>
-														</div>
+										{node.members.events.map((event: any, idx: number) => (
+											<Fragment key={`${event.displayName}-${idx}`}>
+												<div className="flex flex-col gap-4">
+													<div className="flex place-content-between place-items-center">
+														<Link
+															className="grow truncate rounded-md p-2 font-mono transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800 md:px-1 md:py-1"
+															href={`#${event.displayName}`}
+														>
+															{event.displayName}
+														</Link>
 													</div>
-												</Fragment>
-											);
-										})}
+												</div>
+											</Fragment>
+										))}
 									</div>
 								</CollapsibleContent>
 							</Collapsible>
 						) : null}
 					</div>
 					<div aria-hidden className="px-4">
-						<div role="separator" className="h-[2px] bg-neutral-300 dark:bg-neutral-700" />
+						<div className="h-[2px] bg-neutral-300 dark:bg-neutral-700" role="separator" />
 					</div>
 				</div>
 			</CollapsibleContent>

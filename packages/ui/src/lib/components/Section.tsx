@@ -2,7 +2,7 @@
 
 import { VscChevronDown } from '@react-icons/all-files/vsc/VscChevronDown';
 import { Disclosure, DisclosureContent, useDisclosureState } from 'ariakit/disclosure';
-import type { PropsWithChildren } from 'react';
+import type { JSX, PropsWithChildren } from 'react';
 
 export interface SectionOptions {
 	readonly background?: boolean | undefined;

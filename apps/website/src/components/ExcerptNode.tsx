@@ -18,9 +18,9 @@ export async function ExcerptNode({ node, version }: { readonly node?: any; read
 					if (excerpt.resolvedItem) {
 						return (
 							<Link
-								key={`${excerpt.resolvedItem.displayName}-${idx}`}
 								className="text-blurple hover:text-blurple-500 dark:hover:text-blurple-300"
 								href={`/docs/packages/${excerpt.resolvedItem.packageName}/${excerpt.resolvedItem.version ?? version}/${excerpt.resolvedItem.uri}`}
+								key={`${excerpt.resolvedItem.displayName}-${idx}`}
 							>
 								{excerpt.text}
 							</Link>
@@ -30,9 +30,9 @@ export async function ExcerptNode({ node, version }: { readonly node?: any; read
 					if (excerpt.href) {
 						return (
 							<a
-								key={`${excerpt.text}-${idx}`}
 								className="text-blurple hover:text-blurple-500 dark:hover:text-blurple-300"
 								href={excerpt.href}
+								key={`${excerpt.text}-${idx}`}
 								rel="external noreferrer noopener"
 								target="_blank"
 							>
@@ -45,9 +45,9 @@ export async function ExcerptNode({ node, version }: { readonly node?: any; read
 						const href = BuiltinDocumentationLinks[excerpt.text as keyof typeof BuiltinDocumentationLinks];
 						return (
 							<a
-								key={`${excerpt.text}-${idx}`}
 								className="text-blurple hover:text-blurple-500 dark:hover:text-blurple-300"
 								href={href}
+								key={`${excerpt.text}-${idx}`}
 								rel="external noreferrer noopener"
 								target="_blank"
 							>
