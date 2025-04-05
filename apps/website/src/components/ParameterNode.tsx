@@ -21,7 +21,7 @@ export async function ParameterNode({
 					<div className={description ? 'group' : 'inline after:content-[",_"] last-of-type:after:content-none'}>
 						<span className="font-mono font-semibold">
 							{description ? (
-								<Link className="float-left -ml-6 hidden pb-2 pr-2 group-hover:block" href={`#${parameter.name}`}>
+								<Link className="float-left -ml-6 hidden pr-2 pb-2 group-hover:block" href={`#${parameter.name}`}>
 									<LinkIcon aria-hidden size={16} />
 								</Link>
 							) : null}

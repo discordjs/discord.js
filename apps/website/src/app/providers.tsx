@@ -3,10 +3,12 @@
 import { Provider as JotaiProvider } from 'jotai';
 import { useRouter } from 'next/navigation';
 import { ThemeProvider } from 'next-themes';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import type { PropsWithChildren } from 'react';
 import { RouterProvider } from 'react-aria-components';
-import { useSystemThemeFallback } from '~/hooks/useSystemThemeFallback';
-import { useUnregisterServiceWorker } from '~/hooks/useUnregisterServiceWorker';
+import { SidebarProvider } from '@/components/ui/Sidebar';
+import { useSystemThemeFallback } from '@/hooks/useSystemThemeFallback';
+import { useUnregisterServiceWorker } from '@/hooks/useUnregisterServiceWorker';
 
 export function Providers({ children }: PropsWithChildren) {
 	const router = useRouter();
@@ -14,10 +16,14 @@ export function Providers({ children }: PropsWithChildren) {
 	useSystemThemeFallback();
 
 	return (
-		<RouterProvider navigate={router.push}>
-			<JotaiProvider>
-				<ThemeProvider attribute="class">{children}</ThemeProvider>
-			</JotaiProvider>
-		</RouterProvider>
+		<NuqsAdapter>
+			<ThemeProvider attribute="class">
+				<RouterProvider navigate={router.push}>
+					<JotaiProvider>
+						<SidebarProvider defaultOpen>{children}</SidebarProvider>
+					</JotaiProvider>
+				</RouterProvider>
+			</ThemeProvider>
+		</NuqsAdapter>
 	);
 }

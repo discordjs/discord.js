@@ -4,7 +4,8 @@ import { useSetAtom } from 'jotai';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { PropsWithChildren } from 'react';
-import { isDrawerOpenAtom } from '~/stores/drawer';
+import { isDrawerOpenAtom } from '@/stores/drawer';
+import { cx } from '@/styles/cva';
 
 export function NavigationItem({
 	node,
@@ -23,7 +24,11 @@ export function NavigationItem({
 
 	return (
 		<Link
-			className={`truncate rounded-md p-2 font-mono transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800 md:px-1 md:py-1 ${pathname === href ? 'bg-neutral-200 font-medium text-blurple dark:bg-neutral-800' : ''}`}
+			className={cx(
+				'dark:hover:text-base-neutral-40 truncate rounded-lg p-2 font-mono transition-colors hover:bg-neutral-200 md:py-1 dark:text-[#83838b] dark:hover:bg-[#1d1d1e] dark:active:bg-[#27272b]',
+				pathname === href &&
+					'dark:text-base-neutral-40 bg-neutral-200 font-medium dark:bg-[#323235] dark:hover:bg-[#323235]',
+			)}
 			href={href}
 			onClick={() => setDrawerOpen(false)}
 			title={node.name}

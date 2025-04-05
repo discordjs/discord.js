@@ -1,10 +1,10 @@
 import Image from 'next/image';
-import vercelLogo from '~/assets/powered-by-vercel.svg';
-import workersLogo from '~/assets/powered-by-workers.png';
+import vercelLogo from '@/assets/powered-by-vercel.svg';
+import workersLogo from '@/assets/powered-by-workers.png';
 
 export function Footer() {
 	return (
-		<footer className="md:pl-12 md:pr-12">
+		<footer className="md:pr-12 md:pl-12">
 			<div className="flex flex-col flex-wrap place-content-center gap-6 pt-12 sm:flex-row md:gap-12">
 				<div className="flex flex-wrap place-content-center place-items-center gap-4">
 					<a

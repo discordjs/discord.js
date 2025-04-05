@@ -1,10 +1,14 @@
-import { getHighlighterCore } from 'shiki/core';
-import getWasm from 'shiki/wasm';
+import { createHighlighterCore } from 'shiki/core';
+import { createOnigurumaEngine } from 'shiki/engine/oniguruma';
 
-const highlighter = await getHighlighterCore({
+const highlighter = await createHighlighterCore({
 	themes: [import('shiki/themes/github-light.mjs'), import('shiki/themes/github-dark-dimmed.mjs')],
-	langs: [import('shiki/langs/typescript.mjs'), import('shiki/langs/javascript.mjs')],
-	loadWasm: getWasm,
+	langs: [
+		import('shiki/langs/typescript.mjs'),
+		import('shiki/langs/javascript.mjs'),
+		import('shiki/langs/shellscript.mjs'),
+	],
+	engine: createOnigurumaEngine(async () => import('shiki/wasm')),
 });
 
 export async function SyntaxHighlighter({

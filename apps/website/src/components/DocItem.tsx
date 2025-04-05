@@ -6,7 +6,7 @@ import { EventNode } from './EventNode';
 import { InformationNode } from './InformationNode';
 import { MethodNode } from './MethodNode';
 import { Outline } from './Outline';
-import { OverlayScrollbarsComponent } from './OverlayScrollbars';
+import { Scrollbars } from './OverlayScrollbars';
 import { ParameterNode } from './ParameterNode';
 import { PropertyNode } from './PropertyNode';
 import { ReturnNode } from './ReturnNode';
@@ -31,7 +31,7 @@ async function OverloadNode({
 			<TabList className="flex gap-2">
 				{node.overloads.map((overload: any) => (
 					<Tab
-						className="cursor-pointer rounded-full bg-neutral-800/10 px-2 py-1 font-sans text-sm font-normal leading-none text-neutral-800 hover:bg-neutral-800/20 data-[selected]:bg-neutral-500 data-[selected]:text-neutral-100 dark:bg-neutral-200/10 dark:text-neutral-200 dark:hover:bg-neutral-200/20 dark:data-[selected]:bg-neutral-500/70"
+						className="cursor-pointer rounded-full bg-neutral-800/10 px-2 py-1 font-sans text-sm leading-none font-normal text-neutral-800 hover:bg-neutral-800/20 data-[selected]:bg-neutral-500 data-[selected]:text-neutral-100 dark:bg-neutral-200/10 dark:text-neutral-200 dark:hover:bg-neutral-200/20 dark:data-[selected]:bg-neutral-500/70"
 						id={`overload-${overload.displayName}-${overload.overloadIndex}`}
 						key={`overload-tab-${overload.displayName}-${overload.overloadIndex}`}
 					>
@@ -69,16 +69,9 @@ export function DocItem({
 		<>
 			<InformationNode node={node} version={version} />
 
-			<OverlayScrollbarsComponent
-				className="rounded-md border border-neutral-300 bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900"
-				defer
-				options={{
-					overflow: { y: 'hidden' },
-					scrollbars: { autoHide: 'scroll', autoHideDelay: 500, autoHideSuspend: true, clickScroll: true },
-				}}
-			>
+			<Scrollbars className="border-base-neutral-200 dark:border-base-neutral-600 rounded-sm border bg-neutral-100 dark:bg-neutral-900">
 				<SyntaxHighlighter className="py-4 text-sm" code={node.sourceExcerpt} lang="typescript" />
-			</OverlayScrollbarsComponent>
+			</Scrollbars>
 
 			{node.summary?.deprecatedBlock.length ? (
 				<DeprecatedNode deprecatedBlock={node.summary.deprecatedBlock} version={version} />

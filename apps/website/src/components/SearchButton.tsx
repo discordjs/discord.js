@@ -2,7 +2,7 @@
 
 import { useSetAtom } from 'jotai';
 import { Command, Search } from 'lucide-react';
-import { isCmdKOpenAtom } from '~/stores/cmdk';
+import { isCmdKOpenAtom } from '@/stores/cmdk';
 
 export function SearchButton() {
 	const setIsOpen = useSetAtom(isCmdKOpenAtom);

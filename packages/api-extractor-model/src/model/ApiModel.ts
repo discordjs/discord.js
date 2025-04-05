@@ -77,7 +77,6 @@ export class ApiModel extends ApiItemContainerMixin(ApiItem) {
 	/**
 	 * @override
 	 */
-
 	public override get containerKey(): string {
 		return '';
 	}

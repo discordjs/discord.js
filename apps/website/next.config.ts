@@ -1,13 +1,19 @@
-/**
- * @type {import('next').NextConfig}
- */
+import type { NextConfig } from 'next';
+
 export default {
 	reactStrictMode: true,
 	images: {
 		dangerouslyAllowSVG: true,
 		contentDispositionType: 'attachment',
 		contentSecurityPolicy: "default-src 'self'; frame-src 'none'; sandbox;",
+		remotePatterns: [
+			{
+				protocol: 'http',
+				hostname: 'localhost',
+			},
+		],
 	},
+	poweredByHeader: false,
 	logging: {
 		fetches: {
 			fullUrl: true,
@@ -37,4 +43,4 @@ export default {
 			},
 		];
 	},
-};
+} satisfies NextConfig;

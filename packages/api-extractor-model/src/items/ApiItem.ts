@@ -75,7 +75,6 @@ export enum Meaning {
  *
  * @public
  */
-
 export interface IApiItemOptions {}
 
 export interface IApiItemJson {
