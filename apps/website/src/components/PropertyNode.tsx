@@ -2,7 +2,7 @@ import { VscSymbolProperty } from '@react-icons/all-files/vsc/VscSymbolProperty'
 import { ChevronDown, ChevronUp, Code2, LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Fragment } from 'react';
-import { ENV } from '~/util/env';
+import { ENV } from '@/util/env';
 import { Badges } from './Badges';
 import { DeprecatedNode } from './DeprecatedNode';
 import { ExcerptNode } from './ExcerptNode';
@@ -36,15 +36,15 @@ export async function PropertyNode({
 					{node.map((property: any, idx: number) => (
 						<Fragment key={`${property.displayName}-${idx}`}>
 							<div className="flex flex-col gap-4">
-								<div className="flex place-content-between place-items-center">
+								<div className="flex place-content-between place-items-center gap-1">
 									<h3
-										className={`${ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group flex flex-col gap-2 break-words font-mono font-semibold`}
+										className={`${ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group flex flex-col gap-2 px-2 font-mono font-semibold break-words`}
 										id={property.displayName}
 									>
 										<Badges node={property} />
 										<span>
 											<Link
-												className="float-left -ml-6 hidden pb-2 pr-2 group-hover:block"
+												className="float-left -ml-6 hidden pr-2 pb-2 group-hover:block"
 												href={`#${property.displayName}`}
 											>
 												<LinkIcon aria-hidden size={16} />

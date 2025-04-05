@@ -5,7 +5,7 @@ import { ChevronUp } from 'lucide-react';
 import { useEffect, type PropsWithChildren } from 'react';
 import { useMediaQuery } from 'usehooks-ts';
 import { Drawer as Vaul } from 'vaul';
-import { isDrawerOpenAtom } from '~/stores/drawer';
+import { isDrawerOpenAtom } from '@/stores/drawer';
 
 export function Drawer({ children }: PropsWithChildren) {
 	const [open, setOpen] = useAtom(isDrawerOpenAtom);
@@ -27,7 +27,7 @@ export function Drawer({ children }: PropsWithChildren) {
 			</Vaul.Trigger>
 			<Vaul.Portal>
 				<Vaul.Overlay className="fixed inset-0 bg-black/40" />
-				<Vaul.Content className="fixed bottom-0 left-0 right-0 flex max-h-[86%] flex-col rounded-t-lg bg-neutral-100 p-4 dark:bg-neutral-900">
+				<Vaul.Content className="fixed right-0 bottom-0 left-0 flex max-h-[86%] flex-col rounded-t-lg bg-neutral-100 p-4 dark:bg-neutral-900">
 					<div className="mx-auto mb-8 h-1.5 w-12 flex-shrink-0 rounded-full bg-neutral-400" />
 					{children}
 				</Vaul.Content>

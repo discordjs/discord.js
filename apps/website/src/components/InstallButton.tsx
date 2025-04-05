@@ -15,14 +15,14 @@ export function InstallButton({ className = '' }: { readonly className?: string 
 
 	return (
 		<button
-			className={`cursor-copy rounded-md border border-neutral-300 bg-white px-4 py-2 font-mono hover:bg-neutral-200 dark:border-neutral-700 dark:bg-transparent dark:hover:bg-neutral-800 ${className}`}
+			className={`cursor-copy rounded-sm border border-neutral-300 bg-white px-4 py-2 font-mono hover:bg-neutral-200 dark:border-neutral-700 dark:bg-transparent dark:hover:bg-neutral-800 ${className}`}
 			onClick={async () => {
 				setInteracted(true);
 				await copyToClipboard('npm install discord.js');
 			}}
 			type="button"
 		>
-			<span className="font-semibold text-blurple">{'>'}</span> npm install discord.js{' '}
+			<span className="text-base-blurple-400 font-semibold">{'>'}</span> npm install discord.js{' '}
 			{copiedText && interacted ? (
 				<CopyCheck aria-hidden className="ml-1 inline-block text-green-500" size={20} />
 			) : (

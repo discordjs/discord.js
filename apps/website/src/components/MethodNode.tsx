@@ -1,7 +1,7 @@
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { ChevronDown, ChevronUp, Code2, LinkIcon } from 'lucide-react';
 import Link from 'next/link';
-import { ENV } from '~/util/env';
+import { ENV } from '@/util/env';
 import { Badges } from './Badges';
 import { DeprecatedNode } from './DeprecatedNode';
 import { ExampleNode } from './ExampleNode';
@@ -29,14 +29,14 @@ async function MethodBodyNode({
 	return (
 		<>
 			<div className="flex flex-col gap-4">
-				<div className="flex place-content-between place-items-center">
+				<div className="flex place-content-between place-items-center gap-1">
 					<h3
-						className={`${overload ? (ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-24' : 'scroll-mt-16') : ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group break-words font-mono font-semibold`}
+						className={`${overload ? (ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-24' : 'scroll-mt-16') : ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group px-2 font-mono font-semibold break-all`}
 						id={method.displayName}
 					>
 						<Badges node={method} /> {method.displayName}
 						<span>
-							<Link className="float-left -ml-6 hidden pb-2 pr-2 group-hover:block" href={`#${method.displayName}`}>
+							<Link className="float-left -ml-6 hidden pr-2 pb-2 group-hover:block" href={`#${method.displayName}`}>
 								<LinkIcon aria-hidden size={16} />
 							</Link>
 							{method.typeParameters?.length ? (
@@ -111,7 +111,7 @@ async function OverloadNode({
 			<TabList className="flex gap-2">
 				{method.overloads.map((overload: any) => (
 					<Tab
-						className="cursor-pointer rounded-full bg-neutral-800/10 px-2 py-1 font-sans text-sm font-normal leading-none text-neutral-800 hover:bg-neutral-800/20 data-[selected]:bg-neutral-500 data-[selected]:text-neutral-100 dark:bg-neutral-200/10 dark:text-neutral-200 dark:hover:bg-neutral-200/20 dark:data-[selected]:bg-neutral-500/70"
+						className="cursor-pointer rounded-full bg-neutral-800/10 px-2 py-1 font-sans text-sm leading-none font-normal text-neutral-800 hover:bg-neutral-800/20 data-[selected]:bg-neutral-500 data-[selected]:text-neutral-100 dark:bg-neutral-200/10 dark:text-neutral-200 dark:hover:bg-neutral-200/20 dark:data-[selected]:bg-neutral-500/70"
 						id={`overload-${overload.displayName}-${overload.overloadIndex}`}
 						key={`overload-tab-${overload.displayName}-${overload.overloadIndex}`}
 					>
