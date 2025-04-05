@@ -31,8 +31,8 @@ export function CmdK({ dependencies }: { readonly dependencies: string[] }) {
 	const searchResultItems =
 		searchResults?.map((item, idx) => (
 			<Command.Item
-				key={`${item.id}-${idx}`}
 				className="flex cursor-pointer place-items-center gap-2 rounded-md p-2 data-[selected='true']:bg-neutral-200 dark:data-[selected='true']:bg-neutral-800"
+				key={`${item.id}-${idx}`}
 				onSelect={() => {
 					router.push(item.path);
 					setOpen(false);
@@ -108,9 +108,9 @@ export function CmdK({ dependencies }: { readonly dependencies: string[] }) {
 	return (
 		<Command.Dialog
 			className="w-full rounded-md border border-neutral-300 bg-neutral-100 p-2 shadow-md dark:border-neutral-700 dark:bg-neutral-900"
-			open={open}
-			onOpenChange={setOpen}
 			label="Command Menu"
+			onOpenChange={setOpen}
+			open={open}
 			shouldFilter={false}
 		>
 			<Command.Input
@@ -135,7 +135,7 @@ export function CmdK({ dependencies }: { readonly dependencies: string[] }) {
 					{search && searchResultItems.length ? (
 						searchResultItems
 					) : (
-						<div role="presentation" className="flex h-12 place-content-center place-items-center text-sm">
+						<div className="flex h-12 place-content-center place-items-center text-sm" role="presentation">
 							No results found.
 						</div>
 					)}

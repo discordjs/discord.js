@@ -10,8 +10,8 @@ export async function InformationNode({ node, version }: { readonly node: any; r
 				<h1 className="text-xl">
 					<DocKind node={node} /> <span className="break-words font-bold">{node.displayName}</span>
 				</h1>
-				{node.implements ? <InheritanceNode text="implements" node={node.implements} version={version} /> : null}
-				{node.extends ? <InheritanceNode text="extends" node={node.extends} version={version} /> : null}
+				{node.implements ? <InheritanceNode node={node.implements} text="implements" version={version} /> : null}
+				{node.extends ? <InheritanceNode node={node.extends} text="extends" version={version} /> : null}
 				<Badges node={node} />
 			</div>
 
@@ -24,8 +24,8 @@ export async function InformationNode({ node, version }: { readonly node: any; r
 			>
 				<FileCode2
 					aria-hidden
-					size={20}
 					className="text-neutral-500 hover:text-neutral-600 dark:text-neutral-400 dark:hover:text-neutral-300"
+					size={20}
 				/>
 			</a>
 		</div>

@@ -34,23 +34,23 @@ export function VersionSelect({
 			<Select
 				aria-label="Select a version"
 				className="hidden md:block"
-				selectedKey={selectedVersion}
 				onSelectionChange={(selected) => {
 					setSelectedVersion(selected);
 				}}
+				selectedKey={selectedVersion}
 			>
 				<Button className="flex w-full place-content-between place-items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-800">
 					<SelectValue className="font-medium" />
 					<ChevronsUpDown aria-hidden size={20} />
 				</Button>
 				<Popover className="max-h-60 w-[--trigger-width] overflow-auto rounded-md border border-neutral-300 bg-neutral-200 dark:border-neutral-700 dark:bg-neutral-800">
-					<ListBox shouldFocusWrap items={versions}>
+					<ListBox items={versions} shouldFocusWrap>
 						{(item) => (
 							<ListBoxItem
+								className="flex p-2 outline-none data-[focus-visible]:bg-neutral-300 data-[hovered]:bg-neutral-300 data-[selected]:bg-blurple data-[selected]:data-[focus-visible]:bg-blurple-500 data-[selected]:data-[hovered]:bg-blurple-500 data-[selected]:text-white dark:data-[focus-visible]:bg-neutral-700 dark:data-[hovered]:bg-neutral-700 dark:data-[selected]:data-[focus-visible]:bg-blurple-500 dark:data-[selected]:data-[hovered]:bg-blurple-500"
+								href={`/docs/packages/${packageName}/${item.version}`}
 								id={item.version}
 								textValue={item.version}
-								href={`/docs/packages/${packageName}/${item.version}`}
-								className="flex p-2 outline-none data-[focus-visible]:bg-neutral-300 data-[hovered]:bg-neutral-300 data-[selected]:bg-blurple data-[selected]:data-[focus-visible]:bg-blurple-500 data-[selected]:data-[hovered]:bg-blurple-500 data-[selected]:text-white dark:data-[focus-visible]:bg-neutral-700 dark:data-[hovered]:bg-neutral-700 dark:data-[selected]:data-[focus-visible]:bg-blurple-500 dark:data-[selected]:data-[hovered]:bg-blurple-500"
 							>
 								{item.version}
 							</ListBoxItem>
@@ -59,7 +59,7 @@ export function VersionSelect({
 				</Popover>
 			</Select>
 
-			<Vaul.NestedRoot open={open} onOpenChange={setOpen}>
+			<Vaul.NestedRoot onOpenChange={setOpen} open={open}>
 				<Vaul.Trigger
 					aria-label="Open version select"
 					className="flex w-full place-content-between place-items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-800 md:hidden"
@@ -74,21 +74,21 @@ export function VersionSelect({
 						<ListBox
 							aria-label="Select a version"
 							className="flex flex-col gap-2 overflow-auto"
-							shouldFocusWrap
 							items={versions}
-							selectionMode="single"
-							selectedKeys={[selectedVersion]}
 							onSelectionChange={(selected) => {
 								const [val] = selected;
 								setSelectedVersion(val as Key);
 							}}
+							selectedKeys={[selectedVersion]}
+							selectionMode="single"
+							shouldFocusWrap
 						>
 							{(item) => (
 								<ListBoxItem
+									className="rounded-md p-2 outline-none data-[focus-visible]:bg-neutral-300 data-[hovered]:bg-neutral-300 data-[selected]:bg-blurple data-[selected]:data-[focus-visible]:bg-blurple-500 data-[selected]:data-[hovered]:bg-blurple-500 data-[selected]:text-white dark:data-[focus-visible]:bg-neutral-700 dark:data-[hovered]:bg-neutral-700 dark:data-[selected]:data-[focus-visible]:bg-blurple-500 dark:data-[selected]:data-[hovered]:bg-blurple-500"
+									href={`/docs/packages/${packageName}/${item.version}`}
 									id={item.version}
 									textValue={item.version}
-									href={`/docs/packages/${packageName}/${item.version}`}
-									className="rounded-md p-2 outline-none data-[focus-visible]:bg-neutral-300 data-[hovered]:bg-neutral-300 data-[selected]:bg-blurple data-[selected]:data-[focus-visible]:bg-blurple-500 data-[selected]:data-[hovered]:bg-blurple-500 data-[selected]:text-white dark:data-[focus-visible]:bg-neutral-700 dark:data-[hovered]:bg-neutral-700 dark:data-[selected]:data-[focus-visible]:bg-blurple-500 dark:data-[selected]:data-[hovered]:bg-blurple-500"
 								>
 									{item.version}
 								</ListBoxItem>

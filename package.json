@@ -50,28 +50,30 @@
 	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"devDependencies": {
-		"@commitlint/cli": "^19.6.1",
-		"@commitlint/config-angular": "^19.6.0",
+		"@commitlint/cli": "^19.8.0",
+		"@commitlint/config-angular": "^19.8.0",
 		"@favware/cliff-jumper": "^4.1.0",
 		"@favware/npm-deprecate": "^2.0.0",
 		"@types/lodash.merge": "^4.6.9",
 		"@unocss/eslint-plugin": "^0.65.3",
-		"@vitest/coverage-v8": "^2.1.8",
-		"conventional-changelog-cli": "^4.1.0",
-		"eslint": "^8.57.1",
-		"eslint-config-neon": "^0.1.62",
+		"@vitest/coverage-v8": "^3.1.1",
+		"conventional-changelog-cli": "^5.0.0",
+		"eslint": "^9.24.0",
+		"eslint-config-neon": "^0.2.7",
+		"eslint-import-resolver-typescript": "^4.3.1",
+		"eslint-plugin-react-compiler": "19.0.0-beta-e993439-20250328",
 		"husky": "^9.1.7",
 		"is-ci": "^4.1.0",
-		"lint-staged": "^15.3.0",
+		"lint-staged": "^15.5.0",
 		"lodash.merge": "^4.6.2",
-		"prettier": "^3.4.2",
-		"tsup": "^8.3.5",
-		"turbo": "^2.3.3",
-		"typescript": "~5.5.4",
-		"typescript-eslint": "^8.19.0",
+		"prettier": "^3.5.3",
+		"tsup": "^8.4.0",
+		"turbo": "^2.5.0",
+		"typescript": "~5.8.3",
+		"typescript-eslint": "^8.29.0",
 		"unocss": "^0.65.3",
-		"vercel": "^39.2.2",
-		"vitest": "^2.1.8"
+		"vercel": "^41.4.1",
+		"vitest": "^3.1.1"
 	},
 	"pnpm": {
 		"peerDependencyRules": {
@@ -91,11 +93,24 @@
 			"@contentlayer/utils>@opentelemetry/semantic-conventions": "^1.15.1"
 		},
 		"patchedDependencies": {
-			"@microsoft/tsdoc-config@0.16.2": "patches/@microsoft__tsdoc-config@0.16.2.patch"
-		}
+			"@microsoft/tsdoc-config": "patches/@microsoft__tsdoc-config.patch"
+		},
+		"ignoredBuiltDependencies": [
+			"core-js-pure"
+		],
+		"onlyBuiltDependencies": [
+			"@discordjs/opus",
+			"bufferutil",
+			"contentlayer",
+			"esbuild",
+			"protobufjs",
+			"sharp",
+			"utf-8-validate",
+			"zlib-sync"
+		]
 	},
 	"engines": {
 		"node": ">=22.12.0"
 	},
-	"packageManager": "pnpm@9.15.4"
+	"packageManager": "pnpm@10.7.1"
 }

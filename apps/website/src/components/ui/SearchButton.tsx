@@ -11,8 +11,8 @@ export function SearchButton() {
 		<button
 			aria-label="Open search"
 			className="flex place-content-between place-items-center rounded-md bg-neutral-200 p-2 dark:bg-neutral-800"
-			type="button"
 			onClick={() => setIsOpen(true)}
+			type="button"
 		>
 			<span className="flex place-items-center gap-2">
 				<Search aria-hidden size={20} />

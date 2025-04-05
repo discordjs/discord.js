@@ -15,11 +15,11 @@ export async function ConstructorNode({ node, version }: { readonly node: any; r
 
 			<div className="flex place-content-between place-items-center">
 				<h3
-					id="constructor"
 					className={`${ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group break-words font-mono font-semibold`}
+					id="constructor"
 				>
 					{/* constructor({parsedContent.constructor.parametersString}) */}
-					<Link href="#constructor" className="float-left -ml-6 hidden pb-2 pr-2 group-hover:block">
+					<Link className="float-left -ml-6 hidden pb-2 pr-2 group-hover:block" href="#constructor">
 						<LinkIcon aria-hidden size={16} />
 					</Link>
 					constructor({node.parameters?.length ? <ParameterNode node={node.parameters} version={version} /> : null})
@@ -34,18 +34,18 @@ export async function ConstructorNode({ node, version }: { readonly node: any; r
 				>
 					<Code2
 						aria-hidden
-						size={20}
 						className="text-neutral-500 hover:text-neutral-600 dark:text-neutral-400 dark:hover:text-neutral-300"
+						size={20}
 					/>
 				</a>
 			</div>
 
 			{node.summary?.summarySection.length ? (
-				<SummaryNode padding node={node.summary.summarySection} version={version} />
+				<SummaryNode node={node.summary.summarySection} padding version={version} />
 			) : null}
 
 			<div aria-hidden className="px-4">
-				<div role="separator" className="h-[2px] bg-neutral-300 dark:bg-neutral-700" />
+				<div className="h-[2px] bg-neutral-300 dark:bg-neutral-700" role="separator" />
 			</div>
 		</div>
 	);

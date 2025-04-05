@@ -17,11 +17,7 @@ describe(SyntaxHelpers.name, () => {
       '01234'
     ];
 
-		expect(
-			inputs.map((x) => {
-				return { input: x, output: SyntaxHelpers.makeCamelCaseIdentifier(x) };
-			}),
-		).toMatchInlineSnapshot(`
+		expect(inputs.map((x) => ({ input: x, output: SyntaxHelpers.makeCamelCaseIdentifier(x) }))).toMatchInlineSnapshot(`
 			Array [
 			  Object {
 			    "input": "",

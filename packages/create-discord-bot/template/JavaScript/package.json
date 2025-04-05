@@ -16,10 +16,11 @@
 		"dotenv": "^16.4.5"
 	},
 	"devDependencies": {
-		"eslint": "^8.57.1",
-		"eslint-config-neon": "^0.1.62",
+		"eslint": "^9.24.0",
+		"eslint-config-neon": "^0.2.7",
+		"eslint-formatter-compact": "^8.40.0",
 		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.4.2",
+		"prettier": "^3.5.3",
 		"zod": "^3.24.1"
 	},
 	"engines": {

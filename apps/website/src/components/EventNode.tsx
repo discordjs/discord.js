@@ -30,12 +30,12 @@ async function EventBodyNode({
 			<div className="flex flex-col gap-4">
 				<div className="flex place-content-between place-items-center">
 					<h3
-						id={event.displayName}
 						className={`${overload ? (ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-24' : 'scroll-mt-16') : ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group break-words font-mono font-semibold`}
+						id={event.displayName}
 					>
 						<Badges node={event} /> {event.displayName}
 						<span>
-							<Link href={`#${event.displayName}`} className="float-left -ml-6 hidden pb-2 pr-2 group-hover:block">
+							<Link className="float-left -ml-6 hidden pb-2 pr-2 group-hover:block" href={`#${event.displayName}`}>
 								<LinkIcon aria-hidden size={16} />
 							</Link>
 							{event.typeParameters?.length ? (
@@ -58,8 +58,8 @@ async function EventBodyNode({
 					>
 						<Code2
 							aria-hidden
-							size={20}
 							className="text-neutral-500 hover:text-neutral-600 dark:text-neutral-400 dark:hover:text-neutral-300"
+							size={20}
 						/>
 					</a>
 				</div>
@@ -69,7 +69,7 @@ async function EventBodyNode({
 				) : null}
 
 				{event.summary?.summarySection.length ? (
-					<SummaryNode padding node={event.summary.summarySection} version={version} />
+					<SummaryNode node={event.summary.summarySection} padding version={version} />
 				) : null}
 
 				{event.summary?.exampleBlocks.length ? (
@@ -77,17 +77,17 @@ async function EventBodyNode({
 				) : null}
 
 				{event.summary?.returnsBlock.length ? (
-					<ReturnNode padding node={event.summary.returnsBlock} version={version} />
+					<ReturnNode node={event.summary.returnsBlock} padding version={version} />
 				) : null}
 
 				{event.inheritedFrom ? (
 					<InheritedFromNode node={event.inheritedFrom} packageName={packageName} version={version} />
 				) : null}
 
-				{event.summary?.seeBlocks.length ? <SeeNode padding node={event.summary.seeBlocks} version={version} /> : null}
+				{event.summary?.seeBlocks.length ? <SeeNode node={event.summary.seeBlocks} padding version={version} /> : null}
 			</div>
 			<div aria-hidden className="px-4">
-				<div role="separator" className="h-[2px] bg-neutral-300 dark:bg-neutral-700" />
+				<div className="h-[2px] bg-neutral-300 dark:bg-neutral-700" role="separator" />
 			</div>
 		</>
 	);
@@ -105,29 +105,25 @@ async function OverloadNode({
 	return (
 		<Tabs className="flex flex-col gap-4">
 			<TabList className="flex gap-2">
-				{event.overloads.map((overload: any) => {
-					return (
-						<Tab
-							id={`overload-${overload.displayName}-${overload.overloadIndex}`}
-							key={`overload-tab-${overload.displayName}-${overload.overloadIndex}`}
-							className="cursor-pointer rounded-full bg-neutral-800/10 px-2 py-1 font-sans text-sm font-normal leading-none text-neutral-800 hover:bg-neutral-800/20 data-[selected]:bg-neutral-500 data-[selected]:text-neutral-100 dark:bg-neutral-200/10 dark:text-neutral-200 dark:hover:bg-neutral-200/20 dark:data-[selected]:bg-neutral-500/70"
-						>
-							<span>Overload {overload.overloadIndex}</span>
-						</Tab>
-					);
-				})}
-			</TabList>
-			{event.overloads.map((overload: any) => {
-				return (
-					<TabPanel
+				{event.overloads.map((overload: any) => (
+					<Tab
+						className="cursor-pointer rounded-full bg-neutral-800/10 px-2 py-1 font-sans text-sm font-normal leading-none text-neutral-800 hover:bg-neutral-800/20 data-[selected]:bg-neutral-500 data-[selected]:text-neutral-100 dark:bg-neutral-200/10 dark:text-neutral-200 dark:hover:bg-neutral-200/20 dark:data-[selected]:bg-neutral-500/70"
 						id={`overload-${overload.displayName}-${overload.overloadIndex}`}
-						key={`overload-tab-panel-${overload.displayName}-${overload.overloadIndex}`}
-						className="flex flex-col gap-8"
+						key={`overload-tab-${overload.displayName}-${overload.overloadIndex}`}
 					>
-						<EventBodyNode overload event={overload} packageName={packageName} version={version} />
-					</TabPanel>
-				);
-			})}
+						<span>Overload {overload.overloadIndex}</span>
+					</Tab>
+				))}
+			</TabList>
+			{event.overloads.map((overload: any) => (
+				<TabPanel
+					className="flex flex-col gap-8"
+					id={`overload-${overload.displayName}-${overload.overloadIndex}`}
+					key={`overload-tab-panel-${overload.displayName}-${overload.overloadIndex}`}
+				>
+					<EventBodyNode event={overload} overload packageName={packageName} version={version} />
+				</TabPanel>
+			))}
 		</Tabs>
 	);
 }
@@ -147,29 +143,29 @@ export async function EventNode({
 				<h2 className="flex place-items-center gap-2 text-xl font-bold">
 					<VscSymbolEvent aria-hidden className="flex-shrink-0" size={24} /> Events
 				</h2>
-				<ChevronDown className='group-data-[state="open"]:hidden' aria-hidden size={24} />
-				<ChevronUp className='group-data-[state="closed"]:hidden' aria-hidden size={24} />
+				<ChevronDown aria-hidden className='group-data-[state="open"]:hidden' size={24} />
+				<ChevronUp aria-hidden className='group-data-[state="closed"]:hidden' size={24} />
 			</CollapsibleTrigger>
 
 			<CollapsibleContent>
 				<div className="flex flex-col gap-8">
-					{node.map((event: any) => {
-						return event.overloads?.length ? (
+					{node.map((event: any) =>
+						event.overloads?.length ? (
 							<OverloadNode
-								key={`${event.displayName}-${event.overloadIndex}`}
 								event={event}
+								key={`${event.displayName}-${event.overloadIndex}`}
 								packageName={packageName}
 								version={version}
 							/>
 						) : (
 							<EventBodyNode
-								key={`${event.displayName}-${event.overloadIndex}`}
 								event={event}
+								key={`${event.displayName}-${event.overloadIndex}`}
 								packageName={packageName}
 								version={version}
 							/>
-						);
-					})}
+						),
+					)}
 				</div>
 			</CollapsibleContent>
 		</Collapsible>

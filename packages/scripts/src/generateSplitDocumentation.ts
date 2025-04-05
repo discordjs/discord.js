@@ -852,16 +852,14 @@ export function itemHierarchyText({
 	// 	</div>
 	// );
 
-	return excerpts.map((excerpt) => {
-		return {
-			type,
-			excerpts: itemExcerptText(
-				excerpt,
-				item.getAssociatedPackage()!,
-				item.getHierarchy().find(ApiTypeParameterListMixin.isBaseClassOf),
-			),
-		};
-	});
+	return excerpts.map((excerpt) => ({
+		type,
+		excerpts: itemExcerptText(
+			excerpt,
+			item.getAssociatedPackage()!,
+			item.getHierarchy().find(ApiTypeParameterListMixin.isBaseClassOf),
+		),
+	}));
 }
 
 function itemClass(item: ApiClass) {
@@ -880,14 +878,12 @@ function itemClass(item: ApiClass) {
 }
 
 function itemFunction(item: ApiFunction) {
-	const functionItem = (item: ApiFunction) => {
-		return {
-			...itemInfo(item),
-			overloadIndex: item.overloadIndex,
-			typeParameters: itemTypeParameters(item),
-			parameters: itemParameters(item),
-		};
-	};
+	const functionItem = (item: ApiFunction) => ({
+		...itemInfo(item),
+		overloadIndex: item.overloadIndex,
+		typeParameters: itemTypeParameters(item),
+		parameters: itemParameters(item),
+	});
 
 	const hasOverloads = item.getMergedSiblings().length > 1;
 	const overloads = item.getMergedSiblings().map((sibling) => functionItem(sibling as ApiFunction));
@@ -986,6 +982,7 @@ function itemEnum(item: ApiEnum) {
 }
 
 function memberKind(member: ApiItem | null) {
+	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 	switch (member?.kind) {
 		case 'Class': {
 			const classMember = member as ApiClass;
@@ -1080,6 +1077,7 @@ export async function generateSplitDocumentation({
 
 			const members = entry.members
 				.filter((item) => {
+					// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 					switch (item.kind) {
 						case ApiItemKind.Function:
 							return (item as ApiFunction).overloadIndex === 1;
