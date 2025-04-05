@@ -1,3 +1,5 @@
+/* eslint-disable jsdoc/check-param-names */
+
 import type { JSONEncodable } from '@discordjs/util';
 import type {
 	APIActionRowComponent,
@@ -37,6 +39,9 @@ export interface MessageBuilderData
 	poll?: PollBuilder;
 }
 
+/**
+ * A builder that creates API-compatible JSON data for messages.
+ */
 export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJSONBody> {
 	/**
 	 * The API data associated with this message.
@@ -65,19 +70,27 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	}
 
 	/**
-	 * Creates new attachment builder from API data.
+	 * Creates a new message builder from API data.
 	 *
-	 * @param data - The API data to create this attachment with
+	 * @param data - The API data to create this message builder with
 	 */
-	public constructor(data: Partial<RESTPostAPIChannelMessageJSONBody> = {}) {
+	public constructor({
+		attachments = [],
+		embeds = [],
+		components = [],
+		message_reference,
+		poll,
+		allowed_mentions,
+		...data
+	}: Partial<RESTPostAPIChannelMessageJSONBody> = {}) {
 		this.data = {
 			...structuredClone(data),
-			allowed_mentions: data.allowed_mentions ? new AllowedMentionsBuilder(data.allowed_mentions) : undefined,
-			attachments: data.attachments?.map((attachment) => new AttachmentBuilder(attachment)) ?? [],
-			embeds: data.embeds?.map((embed) => new EmbedBuilder(embed)) ?? [],
-			poll: data.poll ? new PollBuilder(data.poll) : undefined,
-			components: data.components?.map((component) => new ActionRowBuilder(component)) ?? [],
-			message_reference: data.message_reference ? new MessageReferenceBuilder(data.message_reference) : undefined,
+			allowed_mentions: allowed_mentions && new AllowedMentionsBuilder(allowed_mentions),
+			attachments: attachments.map((attachment) => new AttachmentBuilder(attachment)),
+			embeds: embeds.map((embed) => new EmbedBuilder(embed)),
+			poll: poll && new PollBuilder(poll),
+			components: components.map((component) => new ActionRowBuilder(component)),
+			message_reference: message_reference && new MessageReferenceBuilder(message_reference),
 		};
 	}
 
@@ -119,6 +132,8 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 
 	/**
 	 * Sets whether the message is TTS.
+	 *
+	 * @param tts - Whether the message is TTS
 	 */
 	public setTTS(tts = true): this {
 		this.data.tts = tts;
@@ -198,6 +213,15 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	}
 
 	/**
+	 * Sets the embeds for this message.
+	 *
+	 * @param embeds - The embeds to set
+	 */
+	public setEmbeds(...embeds: RestOrArray<APIEmbed | EmbedBuilder | ((builder: EmbedBuilder) => EmbedBuilder)>): this {
+		return this.spliceEmbeds(0, this.embeds.length, ...normalizeArray(embeds));
+	}
+
+	/**
 	 * Sets the allowed mentions for this message.
 	 *
 	 * @param allowedMentions - The allowed mentions to set
@@ -218,7 +242,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	 * @param updater - The function to update the allowed mentions with
 	 */
 	public updateAllowedMentions(updater: (builder: AllowedMentionsBuilder) => AllowedMentionsBuilder): this {
-		this.data.allowed_mentions = updater(this.data.allowed_mentions ?? new AllowedMentionsBuilder());
+		updater((this.data.allowed_mentions ??= new AllowedMentionsBuilder()));
 		return this;
 	}
 
@@ -251,7 +275,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	 * @param updater - The function to update the message reference with
 	 */
 	public updateMessageReference(updater: (builder: MessageReferenceBuilder) => MessageReferenceBuilder): this {
-		this.data.message_reference = updater(this.data.message_reference ?? new MessageReferenceBuilder());
+		updater((this.data.message_reference ??= new MessageReferenceBuilder()));
 		return this;
 	}
 
@@ -339,8 +363,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 			| ((builder: ActionRowBuilder) => ActionRowBuilder)
 		>
 	): this {
-		this.data.components = normalizeArray(components).map((component) => resolveBuilder(component, ActionRowBuilder));
-		return this;
+		return this.spliceComponents(0, this.components.length, ...normalizeArray(components));
 	}
 
 	/**
@@ -349,8 +372,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	 * @param stickerIds - The ids of the stickers to set
 	 */
 	public setStickerIds(...stickerIds: RestOrArray<Snowflake>): this {
-		this.data.sticker_ids = normalizeArray(stickerIds) as MessageBuilderData['sticker_ids'];
-		return this;
+		return this.spliceStickerIds(0, this.data.sticker_ids?.length ?? 0, ...normalizeArray(stickerIds));
 	}
 
 	/**
@@ -406,10 +428,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	public setAttachments(
 		...attachments: RestOrArray<APIAttachment | AttachmentBuilder | ((builder: AttachmentBuilder) => AttachmentBuilder)>
 	): this {
-		const resolved = normalizeArray(attachments).map((attachment) => resolveBuilder(attachment, AttachmentBuilder));
-		this.data.attachments = resolved;
-
-		return this;
+		return this.spliceAttachments(0, this.data.attachments.length, ...normalizeArray(attachments));
 	}
 
 	/**
@@ -467,6 +486,8 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 
 	/**
 	 * Sets the flags for this message.
+	 *
+	 * @param flags - The flags to set
 	 */
 	public setFlags(flags: MessageFlags): this {
 		this.data.flags = flags;
@@ -482,7 +503,9 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	}
 
 	/**
-	 * Sets `enforce_nonce` for this message.
+	 * Sets whether to enforce recent uniqueness of the nonce of this message.
+	 *
+	 * @param enforceNonce - Whether to enforce recent uniqueness of the nonce of this message
 	 */
 	public setEnforceNonce(enforceNonce = true): this {
 		this.data.enforce_nonce = enforceNonce;
@@ -505,7 +528,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	 * @param updater - The function to update the poll with
 	 */
 	public updatePoll(updater: (builder: PollBuilder) => PollBuilder): this {
-		this.data.poll = updater(this.data.poll ?? new PollBuilder());
+		updater((this.data.poll ??= new PollBuilder()));
 		return this;
 	}
 
@@ -530,12 +553,12 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 		const data = {
 			...structuredClone(rest),
 			// Wherever we pass false, it's covered by the messagePredicate already
-			poll: this.data.poll?.toJSON(false),
+			poll: poll?.toJSON(false),
 			allowed_mentions: allowed_mentions?.toJSON(false),
 			attachments: attachments.map((attachment) => attachment.toJSON(false)),
-			embeds: this.data.embeds.map((embed) => embed.toJSON(false)),
+			embeds: embeds.map((embed) => embed.toJSON(false)),
 			// Here, the messagePredicate does specific constraints rather than using the componentPredicate
-			components: this.data.components?.map((component) => component.toJSON(validationOverride)),
+			components: components.map((component) => component.toJSON(validationOverride)),
 			message_reference: message_reference?.toJSON(false),
 		};
 

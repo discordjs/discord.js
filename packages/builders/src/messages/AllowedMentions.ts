@@ -11,9 +11,9 @@ export class AllowedMentionsBuilder implements JSONEncodable<APIAllowedMentions>
 	private readonly data: Partial<APIAllowedMentions>;
 
 	/**
-	 * Creates new allowed mention builder from API data.
+	 * Creates a new allowed mentions builder from API data.
 	 *
-	 * @param data - The API data to create this attachment with
+	 * @param data - The API data to create this allowed mentions builder with
 	 */
 	public constructor(data: Partial<APIAllowedMentions> = {}) {
 		this.data = structuredClone(data);
@@ -26,6 +26,14 @@ export class AllowedMentionsBuilder implements JSONEncodable<APIAllowedMentions>
 	 */
 	public setParse(...parse: RestOrArray<AllowedMentionsTypes>): this {
 		this.data.parse = normalizeArray(parse);
+		return this;
+	}
+
+	/**
+	 * Clears the parse mention types.
+	 */
+	public clearParse(): this {
+		this.data.parse = undefined;
 		return this;
 	}
 
@@ -65,7 +73,7 @@ export class AllowedMentionsBuilder implements JSONEncodable<APIAllowedMentions>
 	 * allowedMentions.spliceRoles(0, 1);
 	 * ```
 	 * @example
-	 * Remove the first n role:
+	 * Remove the first n roles:
 	 * ```ts
 	 * const n = 4;
 	 * allowedMentions.spliceRoles(0, n);
@@ -82,6 +90,14 @@ export class AllowedMentionsBuilder implements JSONEncodable<APIAllowedMentions>
 	public spliceRoles(index: number, deleteCount: number, ...roles: RestOrArray<Snowflake>): this {
 		this.data.roles ??= [];
 		this.data.roles.splice(index, deleteCount, ...normalizeArray(roles));
+		return this;
+	}
+
+	/**
+	 * Clears the roles to mention.
+	 */
+	public clearRoles(): this {
+		this.data.roles = undefined;
 		return this;
 	}
 
@@ -120,7 +136,7 @@ export class AllowedMentionsBuilder implements JSONEncodable<APIAllowedMentions>
 	 * allowedMentions.spliceUsers(0, 1);
 	 * ```
 	 * @example
-	 * Remove the first n user:
+	 * Remove the first n users:
 	 * ```ts
 	 * const n = 4;
 	 * allowedMentions.spliceUsers(0, n);
@@ -141,7 +157,17 @@ export class AllowedMentionsBuilder implements JSONEncodable<APIAllowedMentions>
 	}
 
 	/**
-	 * For replies, sets whether to mention the author of the message being replied to
+	 * Clears the users to mention.
+	 */
+	public clearUsers(): this {
+		this.data.users = undefined;
+		return this;
+	}
+
+	/**
+	 * For replies, sets whether to mention the author of the message being replied to.
+	 *
+	 * @param repliedUser - Whether to mention the author of the message being replied to
 	 */
 	public setRepliedUser(repliedUser = true): this {
 		this.data.replied_user = repliedUser;

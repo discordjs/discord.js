@@ -1,29 +1,25 @@
 import type { JSONEncodable } from '@discordjs/util';
-import type { APIMessageReference, MessageReferenceType, Snowflake } from 'discord-api-types/v10';
+import type { MessageReferenceType, RESTAPIMessageReference, Snowflake } from 'discord-api-types/v10';
 import { validate } from '../util/validation.js';
 import { messageReferencePredicate } from './Assertions.js';
-
-export interface MessageReferenceBuilderData extends Omit<APIMessageReference, 'message_id'> {
-	message_id: Snowflake;
-}
 
 /**
  * A builder that creates API-compatible JSON data for message references.
  */
-export class MessageReferenceBuilder implements JSONEncodable<MessageReferenceBuilderData> {
-	private readonly data: Partial<MessageReferenceBuilderData>;
+export class MessageReferenceBuilder implements JSONEncodable<RESTAPIMessageReference> {
+	private readonly data: Partial<RESTAPIMessageReference>;
 
 	/**
-	 * Creates new allowed mention builder from API data.
+	 * Creates a new message reference builder from API data.
 	 *
-	 * @param data - The API data to create this attachment with
+	 * @param data - The API data to create this message reference builder with
 	 */
-	public constructor(data: Partial<MessageReferenceBuilderData> = {}) {
+	public constructor(data: Partial<RESTAPIMessageReference> = {}) {
 		this.data = structuredClone(data);
 	}
 
 	/**
-	 * Sets the types of message reference this represents
+	 * Sets the type of message reference this represents
 	 *
 	 * @param type - The type of message reference
 	 */
@@ -87,16 +83,26 @@ export class MessageReferenceBuilder implements JSONEncodable<MessageReferenceBu
 	}
 
 	/**
+	 * Sets whether to fail the message creation if the referenced message does not exist
+	 *
+	 * @param failIfNotExists - Whether to fail the message creation if the referenced message does not exist
+	 */
+	public setFailIfNotExists(failIfNotExists = true): this {
+		this.data.fail_if_not_exists = failIfNotExists;
+		return this;
+	}
+
+	/**
 	 * Serializes this builder to API-compatible JSON data.
 	 *
 	 * Note that by disabling validation, there is no guarantee that the resulting object will be valid.
 	 *
 	 * @param validationOverride - Force validation to run/not run regardless of your global preference
 	 */
-	public toJSON(validationOverride?: boolean): MessageReferenceBuilderData {
+	public toJSON(validationOverride?: boolean): RESTAPIMessageReference {
 		const clone = structuredClone(this.data);
 		validate(messageReferencePredicate, clone, validationOverride);
 
-		return clone as MessageReferenceBuilderData;
+		return clone as RESTAPIMessageReference;
 	}
 }
