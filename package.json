@@ -80,7 +80,7 @@
 			"ignoreMissing": [
 				"*"
 			],
-			"allowedAny": [
+			"allowAny": [
 				"*"
 			]
 		},
