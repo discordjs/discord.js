@@ -2,20 +2,29 @@
 	"$schema": "https://json.schemastore.org/tsconfig.json",
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
-		"lib": ["ESNext", "DOM", "DOM.Iterable"],
-		"jsx": "preserve",
+		// Modules
 		"baseUrl": ".",
-		"outDir": "dist",
+
+		// Emit
 		"noEmit": true,
+		"outDir": "dist",
+
+		// Interop Constraints
 		"esModuleInterop": true,
 		"allowJs": true,
 		"incremental": true,
 		"skipLibCheck": true,
+
+		// Language and Environment
+		"jsx": "preserve",
+		"lib": ["ESNext", "DOM", "DOM.Iterable"],
+
 		"plugins": [
 			{
 				"name": "next"
 			}
 		],
+
 		"paths": {
 			"~/*": ["./src/*"]
 		}
@@ -28,7 +37,10 @@
 		"src/**/*.cjs",
 		"src/**/*.mjs",
 		"next-env.d.ts",
-		".next/types/**/*.ts"
+		".next/types/**/*.ts",
+		"vitest.shims.d.ts",
+		"__tests__/**/*.ts",
+		"__tests__/**/*.tsx"
 	],
 	"exclude": ["node_modules"]
 }

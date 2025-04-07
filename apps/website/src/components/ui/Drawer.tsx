@@ -18,7 +18,7 @@ export function Drawer({ children }: PropsWithChildren) {
 	}, [isMedium, setOpen]);
 
 	return (
-		<Vaul.Root open={open} onOpenChange={setOpen}>
+		<Vaul.Root onOpenChange={setOpen} open={open}>
 			<Vaul.Trigger
 				aria-label="Open navigation"
 				className="flex h-12 w-full place-content-center place-items-center rounded-t-lg border-t border-neutral-300 bg-neutral-100 p-2 dark:border-neutral-700 dark:bg-neutral-900"

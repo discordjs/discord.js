@@ -14,12 +14,10 @@ import { AudioPlayerError } from '../src/audio/AudioPlayerError';
 import { AudioResource } from '../src/audio/AudioResource';
 import { NoSubscriberBehavior } from '../src/index';
 
-vitest.mock('../src/DataStore', () => {
-	return {
-		addAudioPlayer: vitest.fn(),
-		deleteAudioPlayer: vitest.fn(),
-	};
-});
+vitest.mock('../src/DataStore', () => ({
+	addAudioPlayer: vitest.fn(),
+	deleteAudioPlayer: vitest.fn(),
+}));
 
 vitest.mock('../src/VoiceConnection', async (importOriginal) => {
 	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
@@ -34,11 +32,9 @@ vitest.mock('../src/VoiceConnection', async (importOriginal) => {
 	};
 });
 
-vitest.mock('../src/audio/AudioPlayerError', () => {
-	return {
-		AudioPlayerError: vitest.fn(),
-	};
-});
+vitest.mock('../src/audio/AudioPlayerError', () => ({
+	AudioPlayerError: vitest.fn(),
+}));
 
 function* silence() {
 	while (true) {

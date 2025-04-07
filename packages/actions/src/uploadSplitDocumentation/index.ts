@@ -21,7 +21,6 @@ for await (const file of globber.globGenerator()) {
 	const pkgName = dirname(relative(cwd(), file)).split(sep)[1];
 	try {
 		promises.push(
-			// eslint-disable-next-line @typescript-eslint/no-loop-func
 			queue.add(async () => {
 				console.log(`Uploading ${file} with ${version} from ${pkgName}...`);
 				const name = basename(file).replace('main.', '');

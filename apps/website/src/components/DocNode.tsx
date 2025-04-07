@@ -12,9 +12,9 @@ export async function DocNode({ node, version }: { readonly node?: any; readonly
 				if (node.resolvedPackage) {
 					return (
 						<Link
-							key={`${node.text}-${idx}`}
 							className="font-mono text-blurple hover:text-blurple-500 dark:hover:text-blurple-300"
 							href={`/docs/packages/${node.resolvedPackage.packageName}/${node.resolvedPackage.version ?? version}/${node.uri}`}
+							key={`${node.text}-${idx}`}
 						>
 							{node.text}
 						</Link>
@@ -24,9 +24,9 @@ export async function DocNode({ node, version }: { readonly node?: any; readonly
 				if (node.uri) {
 					return (
 						<a
-							key={`${node.text}-${idx}`}
 							className="text-blurple hover:text-blurple-500 dark:hover:text-blurple-300"
 							href={node.uri}
+							key={`${node.text}-${idx}`}
 							rel="external noreferrer noopener"
 							target="_blank"
 						>
@@ -39,9 +39,9 @@ export async function DocNode({ node, version }: { readonly node?: any; readonly
 					const href = BuiltinDocumentationLinks[node.text as keyof typeof BuiltinDocumentationLinks];
 					return (
 						<a
-							key={`${node.text}-${idx}`}
 							className="text-blurple hover:text-blurple-500 dark:hover:text-blurple-300"
 							href={href}
+							key={`${node.text}-${idx}`}
 							rel="external noreferrer noopener"
 							target="_blank"
 						>
@@ -55,7 +55,7 @@ export async function DocNode({ node, version }: { readonly node?: any; readonly
 
 			case 'CodeSpan':
 				return (
-					<code key={`${node.text}-${idx}`} className="font-mono text-sm">
+					<code className="font-mono text-sm" key={`${node.text}-${idx}`}>
 						{node.text}
 					</code>
 				);
@@ -65,14 +65,14 @@ export async function DocNode({ node, version }: { readonly node?: any; readonly
 
 				return (
 					<OverlayScrollbarsComponent
+						className="my-4 rounded-md border border-neutral-300 bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900"
 						defer
 						options={{
 							overflow: { y: 'hidden' },
 							scrollbars: { autoHide: 'scroll', autoHideDelay: 500, autoHideSuspend: true, clickScroll: true },
 						}}
-						className="my-4 rounded-md border border-neutral-300 bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900"
 					>
-						<SyntaxHighlighter className="py-4 text-sm " lang={language} code={text} />
+						<SyntaxHighlighter className="py-4 text-sm " code={text} lang={language} />
 					</OverlayScrollbarsComponent>
 				);
 			}

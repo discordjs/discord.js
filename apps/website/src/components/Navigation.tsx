@@ -37,6 +37,7 @@ export async function Navigation({
 	const versions = await fetchVersions(packageName);
 
 	const groupedNodes = node.reduce((acc: any, node: any) => {
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		(acc[node.kind.toLowerCase()] ||= []).push(node);
 		return acc;
 	}, {});
@@ -48,7 +49,7 @@ export async function Navigation({
 			>
 				<div className="flex flex-col gap-2 pt-px">
 					<div className="flex place-content-between place-items-center p-1">
-						<Link href={`/docs/packages/${packageName}/${version}`} className="text-xl font-bold">
+						<Link className="text-xl font-bold" href={`/docs/packages/${packageName}/${version}`}>
 							{packageName}
 						</Link>
 						<div className="flex gap-2">
@@ -77,8 +78,8 @@ export async function Navigation({
 					<Collapsible className="flex flex-col gap-4" defaultOpen>
 						<CollapsibleTrigger className="group flex place-content-between place-items-center rounded-md p-2 hover:bg-neutral-200 dark:hover:bg-neutral-800">
 							<h4 className="font-semibold">Classes</h4>
-							<ChevronDown className='group-data-[state="open"]:hidden' aria-hidden size={24} />
-							<ChevronUp className='group-data-[state="closed"]:hidden' aria-hidden size={24} />
+							<ChevronDown aria-hidden className='group-data-[state="open"]:hidden' size={24} />
+							<ChevronUp aria-hidden className='group-data-[state="closed"]:hidden' size={24} />
 						</CollapsibleTrigger>
 						<CollapsibleContent>
 							<div className="flex flex-col gap-1.5">
@@ -102,8 +103,8 @@ export async function Navigation({
 					<Collapsible className="flex flex-col gap-4" defaultOpen>
 						<CollapsibleTrigger className="group flex place-content-between place-items-center rounded-md p-2 hover:bg-neutral-200 dark:hover:bg-neutral-800">
 							<h4 className="font-semibold">Functions</h4>
-							<ChevronDown className='group-data-[state="open"]:hidden' aria-hidden size={24} />
-							<ChevronUp className='group-data-[state="closed"]:hidden' aria-hidden size={24} />
+							<ChevronDown aria-hidden className='group-data-[state="open"]:hidden' size={24} />
+							<ChevronUp aria-hidden className='group-data-[state="closed"]:hidden' size={24} />
 						</CollapsibleTrigger>
 						<CollapsibleContent>
 							<div className="flex flex-col gap-1.5">
@@ -127,8 +128,8 @@ export async function Navigation({
 					<Collapsible className="flex flex-col gap-4" defaultOpen>
 						<CollapsibleTrigger className="group flex place-content-between place-items-center rounded-md p-2 hover:bg-neutral-200 dark:hover:bg-neutral-800">
 							<h4 className="font-semibold">Enums</h4>
-							<ChevronDown className='group-data-[state="open"]:hidden' aria-hidden size={24} />
-							<ChevronUp className='group-data-[state="closed"]:hidden' aria-hidden size={24} />
+							<ChevronDown aria-hidden className='group-data-[state="open"]:hidden' size={24} />
+							<ChevronUp aria-hidden className='group-data-[state="closed"]:hidden' size={24} />
 						</CollapsibleTrigger>
 						<CollapsibleContent>
 							<div className="flex flex-col gap-1.5">
@@ -152,8 +153,8 @@ export async function Navigation({
 					<Collapsible className="flex flex-col gap-4" defaultOpen>
 						<CollapsibleTrigger className="group flex place-content-between place-items-center rounded-md p-2 hover:bg-neutral-200 dark:hover:bg-neutral-800">
 							<h4 className="font-semibold">Interfaces</h4>
-							<ChevronDown className='group-data-[state="open"]:hidden' aria-hidden size={24} />
-							<ChevronUp className='group-data-[state="closed"]:hidden' aria-hidden size={24} />
+							<ChevronDown aria-hidden className='group-data-[state="open"]:hidden' size={24} />
+							<ChevronUp aria-hidden className='group-data-[state="closed"]:hidden' size={24} />
 						</CollapsibleTrigger>
 						<CollapsibleContent>
 							<div className="flex flex-col gap-1.5">
@@ -177,8 +178,8 @@ export async function Navigation({
 					<Collapsible className="flex flex-col gap-4" defaultOpen>
 						<CollapsibleTrigger className="group flex place-content-between place-items-center rounded-md p-2 hover:bg-neutral-200 dark:hover:bg-neutral-800">
 							<h4 className="font-semibold">Types</h4>
-							<ChevronDown className='group-data-[state="open"]:hidden' aria-hidden size={24} />
-							<ChevronUp className='group-data-[state="closed"]:hidden' aria-hidden size={24} />
+							<ChevronDown aria-hidden className='group-data-[state="open"]:hidden' size={24} />
+							<ChevronUp aria-hidden className='group-data-[state="closed"]:hidden' size={24} />
 						</CollapsibleTrigger>
 						<CollapsibleContent>
 							<div className="flex flex-col gap-1.5">
@@ -202,8 +203,8 @@ export async function Navigation({
 					<Collapsible className="flex flex-col gap-4" defaultOpen>
 						<CollapsibleTrigger className="group flex place-content-between place-items-center rounded-md p-2 hover:bg-neutral-200 dark:hover:bg-neutral-800">
 							<h4 className="font-semibold">Variables</h4>
-							<ChevronDown className='group-data-[state="open"]:hidden' aria-hidden size={24} />
-							<ChevronUp className='group-data-[state="closed"]:hidden' aria-hidden size={24} />
+							<ChevronDown aria-hidden className='group-data-[state="open"]:hidden' size={24} />
+							<ChevronUp aria-hidden className='group-data-[state="closed"]:hidden' size={24} />
 						</CollapsibleTrigger>
 						<CollapsibleContent>
 							<div className="flex flex-col gap-1.5">

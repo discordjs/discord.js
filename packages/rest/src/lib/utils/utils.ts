@@ -5,6 +5,7 @@ import { RequestMethod } from './types.js';
 import type { GetRateLimitOffsetFunction, RateLimitData, ResponseLike } from './types.js';
 
 function serializeSearchParam(value: unknown): string | null {
+	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 	switch (typeof value) {
 		case 'string':
 			return value;

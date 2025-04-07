@@ -29,29 +29,25 @@ async function OverloadNode({
 	return (
 		<Tabs className="flex flex-col gap-4">
 			<TabList className="flex gap-2">
-				{node.overloads.map((overload: any) => {
-					return (
-						<Tab
-							id={`overload-${overload.displayName}-${overload.overloadIndex}`}
-							key={`overload-tab-${overload.displayName}-${overload.overloadIndex}`}
-							className="cursor-pointer rounded-full bg-neutral-800/10 px-2 py-1 font-sans text-sm font-normal leading-none text-neutral-800 hover:bg-neutral-800/20 data-[selected]:bg-neutral-500 data-[selected]:text-neutral-100 dark:bg-neutral-200/10 dark:text-neutral-200 dark:hover:bg-neutral-200/20 dark:data-[selected]:bg-neutral-500/70"
-						>
-							<span>Overload {overload.overloadIndex}</span>
-						</Tab>
-					);
-				})}
-			</TabList>
-			{node.overloads.map((overload: any) => {
-				return (
-					<TabPanel
+				{node.overloads.map((overload: any) => (
+					<Tab
+						className="cursor-pointer rounded-full bg-neutral-800/10 px-2 py-1 font-sans text-sm font-normal leading-none text-neutral-800 hover:bg-neutral-800/20 data-[selected]:bg-neutral-500 data-[selected]:text-neutral-100 dark:bg-neutral-200/10 dark:text-neutral-200 dark:hover:bg-neutral-200/20 dark:data-[selected]:bg-neutral-500/70"
 						id={`overload-${overload.displayName}-${overload.overloadIndex}`}
-						key={`overload-tab-panel-${overload.displayName}-${overload.overloadIndex}`}
-						className="flex flex-col gap-8"
+						key={`overload-tab-${overload.displayName}-${overload.overloadIndex}`}
 					>
-						<DocItem node={overload} packageName={packageName} version={version} />
-					</TabPanel>
-				);
-			})}
+						<span>Overload {overload.overloadIndex}</span>
+					</Tab>
+				))}
+			</TabList>
+			{node.overloads.map((overload: any) => (
+				<TabPanel
+					className="flex flex-col gap-8"
+					id={`overload-${overload.displayName}-${overload.overloadIndex}`}
+					key={`overload-tab-panel-${overload.displayName}-${overload.overloadIndex}`}
+				>
+					<DocItem node={overload} packageName={packageName} version={version} />
+				</TabPanel>
+			))}
 		</Tabs>
 	);
 }
@@ -74,14 +70,14 @@ export function DocItem({
 			<InformationNode node={node} version={version} />
 
 			<OverlayScrollbarsComponent
+				className="rounded-md border border-neutral-300 bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900"
 				defer
 				options={{
 					overflow: { y: 'hidden' },
 					scrollbars: { autoHide: 'scroll', autoHideDelay: 500, autoHideSuspend: true, clickScroll: true },
 				}}
-				className="rounded-md border border-neutral-300 bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900"
 			>
-				<SyntaxHighlighter className="py-4 text-sm" lang="typescript" code={node.sourceExcerpt} />
+				<SyntaxHighlighter className="py-4 text-sm" code={node.sourceExcerpt} lang="typescript" />
 			</OverlayScrollbarsComponent>
 
 			{node.summary?.deprecatedBlock.length ? (

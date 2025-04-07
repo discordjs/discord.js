@@ -75,7 +75,7 @@ export enum Meaning {
  *
  * @public
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+
 export interface IApiItemOptions {}
 
 export interface IApiItemJson {

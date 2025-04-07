@@ -24,9 +24,9 @@ export function InstallButton({ className = '' }: { readonly className?: string 
 		>
 			<span className="font-semibold text-blurple">{'>'}</span> npm install discord.js{' '}
 			{copiedText && interacted ? (
-				<CopyCheck aria-hidden size={20} className="ml-1 inline-block text-green-500" />
+				<CopyCheck aria-hidden className="ml-1 inline-block text-green-500" size={20} />
 			) : (
-				<Copy aria-hidden size={20} className="ml-1 inline-block" />
+				<Copy aria-hidden className="ml-1 inline-block" size={20} />
 			)}
 		</button>
 	);

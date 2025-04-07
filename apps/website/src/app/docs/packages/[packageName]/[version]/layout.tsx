@@ -31,7 +31,7 @@ export default async function Layout({
 
 	return (
 		// eslint-disable-next-line react/no-unknown-property
-		<div vaul-drawer-wrapper="" className="mx-auto flex max-w-screen-2xl flex-col gap-12 p-6 md:flex-row">
+		<div className="mx-auto flex max-w-screen-2xl flex-col gap-12 p-6 md:flex-row" vaul-drawer-wrapper="">
 			<div className="sticky top-6 hidden flex-shrink-0 self-start md:block">
 				<OverlayScrollbarsComponent
 					className="max-h-[calc(100dvh-48px)]"
@@ -57,9 +57,9 @@ export default async function Layout({
 				<Drawer>
 					<Navigation
 						className="max-w-none overflow-auto p-0 lg:max-w-none"
+						drawer
 						packageName={params.packageName}
 						version={params.version}
-						drawer
 					/>
 				</Drawer>
 			</div>

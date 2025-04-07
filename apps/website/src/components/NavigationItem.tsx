@@ -25,8 +25,8 @@ export function NavigationItem({
 		<Link
 			className={`truncate rounded-md p-2 font-mono transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800 md:px-1 md:py-1 ${pathname === href ? 'bg-neutral-200 font-medium text-blurple dark:bg-neutral-800' : ''}`}
 			href={href}
-			title={node.name}
 			onClick={() => setDrawerOpen(false)}
+			title={node.name}
 		>
 			{children}
 		</Link>

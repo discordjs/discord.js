@@ -25,6 +25,7 @@ export interface Collection<Key, Value> {
  * @typeParam Key - The key type this collection holds
  * @typeParam Value - The value type this collection holds
  */
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class Collection<Key, Value> extends Map<Key, Value> {
 	/**
 	 * Obtains the value of the given key if it exists, otherwise sets and returns the value provided by the default value generator.

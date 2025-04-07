@@ -14,7 +14,6 @@ export function Providers({ children }: PropsWithChildren) {
 	useSystemThemeFallback();
 
 	return (
-		// eslint-disable-next-line @typescript-eslint/unbound-method
 		<RouterProvider navigate={router.push}>
 			<JotaiProvider>
 				<ThemeProvider attribute="class">{children}</ThemeProvider>
