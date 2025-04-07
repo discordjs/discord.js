@@ -588,7 +588,7 @@ function resolveFileUrl(item: ApiDeclaredItem) {
 		}
 	} else if (fileUrl?.includes('/dist/') && fileUrl.includes('/main/packages/')) {
 		const [, pkg] = fileUrl.split('/main/packages/');
-		const pkgName = pkg?.split('/')[0];
+		const pkgName = pkg!.split('/')[0];
 		const version = 'main';
 
 		// https://github.com/discordjs/discord.js/tree/main/packages/builders/dist/index.d.ts
