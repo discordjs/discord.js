@@ -58,7 +58,10 @@ function resolvePackageName(packageName: string) {
 
 function findMemberByKey(model: ApiModel, packageName: string, containerKey: string) {
 	const pkg = model.tryGetPackageByName(resolvePackageName(packageName))!;
-	return (pkg.members[0] as ApiEntryPoint).tryGetMemberByKey(containerKey);
+	return pkg.members.reduce<ApiItem | undefined>(
+		(found, entrypoint) => found ?? (entrypoint as ApiEntryPoint).tryGetMemberByKey(containerKey),
+		undefined,
+	);
 }
 
 function findMember(model: ApiModel, packageName: string, memberName: string | undefined) {
@@ -67,7 +70,10 @@ function findMember(model: ApiModel, packageName: string, memberName: string | u
 	}
 
 	const pkg = model.tryGetPackageByName(resolvePackageName(packageName))!;
-	return pkg.entryPoints[0]?.findMembersByName(memberName)[0];
+	return pkg.entryPoints.reduce<ApiItem | undefined>(
+		(found, entrypoint) => found ?? entrypoint.findMembersByName(memberName)[0],
+		undefined,
+	);
 }
 
 /**
@@ -1062,9 +1068,9 @@ export async function generateSplitDocumentation({
 			const model = new ApiModel();
 			model.addMember(ApiPackage.loadFromJson(data));
 			const pkg = model.tryGetPackageByName(pkgName);
-			const entry = pkg?.entryPoints[0];
+			const entries = pkg?.entryPoints;
 
-			if (!entry) {
+			if (!entries) {
 				continue;
 			}
 
@@ -1075,25 +1081,27 @@ export async function generateSplitDocumentation({
 				overrideName: 'dependencies',
 			});
 
-			const members = entry.members
-				.filter((item) => {
-					// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
-					switch (item.kind) {
-						case ApiItemKind.Function:
-							return (item as ApiFunction).overloadIndex === 1;
-						case ApiItemKind.Interface:
-							return !entry.members.some(
-								(innerItem) => innerItem.kind === ApiItemKind.Class && innerItem.displayName === item.displayName,
-							);
-						default:
-							return true;
-					}
-				})
-				.map((item) => ({
-					kind: item.kind,
-					name: item.displayName,
-					href: resolveItemURI(item),
-				}));
+			const members = entries.flatMap((entry) =>
+				entry.members
+					.filter((item) => {
+						// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
+						switch (item.kind) {
+							case ApiItemKind.Function:
+								return (item as ApiFunction).overloadIndex === 1;
+							case ApiItemKind.Interface:
+								return !entry.members.some(
+									(innerItem) => innerItem.kind === ApiItemKind.Class && innerItem.displayName === item.displayName,
+								);
+							default:
+								return true;
+						}
+					})
+					.map((item) => ({
+						kind: item.kind,
+						name: item.displayName,
+						href: resolveItemURI(item),
+					})),
+			);
 
 			await writeSplitDocsToFileSystem({
 				member: members,
