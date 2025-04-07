@@ -523,7 +523,6 @@ function itemInfo(item: ApiDeclaredItem) {
 	const isOptional = ApiOptionalMixin.isBaseClassOf(item) && item.isOptional;
 	const isDeprecated = Boolean(item.tsdocComment?.deprecatedBlock);
 	const isExternal = Boolean(sourceLine === undefined);
-	if (item.displayName === 'MessageActionRowComponentBuilder') console.log(sourceURL);
 	const hasSummary = Boolean(item.tsdocComment?.summarySection);
 
 	return {
