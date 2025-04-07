@@ -76,7 +76,7 @@
 			"ignoreMissing": [
 				"*"
 			],
-			"allowedAny": [
+			"allowAny": [
 				"*"
 			]
 		},
