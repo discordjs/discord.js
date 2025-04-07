@@ -270,20 +270,22 @@ export class ApiModelGenerator {
 		});
 		this._apiModel.addMember(apiPackage);
 
-		const apiEntryPoint: ApiEntryPoint = new ApiEntryPoint({ name: '' });
-		apiPackage.addMember(apiEntryPoint);
+		for (const [entryPoint, entities] of this._collector.entities.entries()) {
+			const apiEntryPoint: ApiEntryPoint = new ApiEntryPoint({ name: entryPoint.modulePath });
+			apiPackage.addMember(apiEntryPoint);
 
-		for (const entity of this._collector.entities) {
-			// Only process entities that are exported from the entry point. Entities that are exported from
-			// `AstNamespaceImport` entities will be processed by `_processAstNamespaceImport`. However, if
-			// we are including forgotten exports, then process everything.
-			if (entity.exportedFromEntryPoint || this._collector.extractorConfig.docModelIncludeForgottenExports) {
-				this._processAstEntity(entity.astEntity, {
-					name: entity.nameForEmit!,
-					isExported: entity.exportedFromEntryPoint,
-					parentApiItem: apiEntryPoint,
-					parentDocgenJson: this._jsDocJson,
-				});
+			for (const entity of entities) {
+				// Only process entities that are exported from the entry point. Entities that are exported from
+				// `AstNamespaceImport` entities will be processed by `_processAstNamespaceImport`. However, if
+				// we are including forgotten exports, then process everything.
+				if (entity.exportedFromEntryPoint || this._collector.extractorConfig.docModelIncludeForgottenExports) {
+					this._processAstEntity(entity.astEntity, {
+						name: entity.nameForEmit!,
+						isExported: entity.exportedFromEntryPoint,
+						parentApiItem: apiEntryPoint,
+						parentDocgenJson: this._jsDocJson,
+					});
+				}
 			}
 		}
 
@@ -1799,11 +1801,20 @@ export class ApiModelGenerator {
 			.flatMap((typ, index) => {
 				const result = typ.reduce<IExcerptToken[]>((arr, [type, symbol]) => {
 					const astEntity =
-						(this._collector.entities.find(
-							(entity) => entity.nameForEmit === type && 'astDeclarations' in entity.astEntity,
-						)?.astEntity as AstSymbol | undefined) ??
-						(this._collector.entities.find((entity) => entity.nameForEmit === type && 'astSymbol' in entity.astEntity)
-							?.astEntity as AstImport | undefined);
+						[...this._collector.entities.values()].reduce<AstSymbol | undefined>(
+							(found, entities) =>
+								found ??
+								(entities.find((entity) => entity.nameForEmit === type && 'astDeclarations' in entity.astEntity)
+									?.astEntity as AstSymbol | undefined),
+							undefined,
+						) ??
+						[...this._collector.entities.values()].reduce<AstImport | undefined>(
+							(found, entities) =>
+								found ??
+								(entities.find((entity) => entity.nameForEmit === type && 'astSymbol' in entity.astEntity)
+									?.astEntity as AstImport | undefined),
+							undefined,
+						);
 					const astSymbol = astEntity instanceof AstImport ? astEntity.astSymbol : astEntity;
 					const match = astEntity instanceof AstImport ? moduleNameRegEx.exec(astEntity.modulePath) : null;
 					const pkg = match?.groups!.package ?? this._apiModel.packages[0]!.name;

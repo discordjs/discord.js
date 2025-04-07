@@ -103,8 +103,10 @@ export class DtsRollupGenerator {
 
 		writer.ensureSkippedLine();
 
+		// dtsRollup doesn't support multiple entry points. We throw error if dtsRollup is enabled while more than one entry points are specified.
+		// So at this point, we can safely assume there is only one entry point in collector.entities
 		// Emit the imports
-		for (const entity of collector.entities) {
+		for (const entity of [...collector.entities.values()][0]!) {
 			if (entity.astEntity instanceof AstImport) {
 				const astImport: AstImport = entity.astEntity;
 
@@ -124,7 +126,7 @@ export class DtsRollupGenerator {
 		writer.ensureSkippedLine();
 
 		// Emit the regular declarations
-		for (const entity of collector.entities) {
+		for (const entity of [...collector.entities.values()][0]!) {
 			const astEntity: AstEntity = entity.astEntity;
 			const symbolMetadata: SymbolMetadata | undefined = collector.tryFetchMetadataForAstEntity(astEntity);
 			const maxEffectiveReleaseTag: ReleaseTag = symbolMetadata

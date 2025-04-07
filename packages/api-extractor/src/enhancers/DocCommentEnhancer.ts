@@ -25,16 +25,18 @@ export class DocCommentEnhancer {
 	}
 
 	public analyze(): void {
-		for (const entity of this._collector.entities) {
-			if (
-				entity.astEntity instanceof AstSymbol &&
-				(entity.consumable ||
-					this._collector.extractorConfig.apiReportIncludeForgottenExports ||
-					this._collector.extractorConfig.docModelIncludeForgottenExports)
-			) {
-				entity.astEntity.forEachDeclarationRecursive((astDeclaration: AstDeclaration) => {
-					this._analyzeApiItem(astDeclaration);
-				});
+		for (const entities of this._collector.entities.values()) {
+			for (const entity of entities) {
+				if (
+					entity.astEntity instanceof AstSymbol &&
+					(entity.consumable ||
+						this._collector.extractorConfig.apiReportIncludeForgottenExports ||
+						this._collector.extractorConfig.docModelIncludeForgottenExports)
+				) {
+					entity.astEntity.forEachDeclarationRecursive((astDeclaration: AstDeclaration) => {
+						this._analyzeApiItem(astDeclaration);
+					});
+				}
 			}
 		}
 	}
