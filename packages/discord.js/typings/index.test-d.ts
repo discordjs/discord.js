@@ -29,6 +29,7 @@ import {
   GuildScheduledEventRecurrenceRuleMonth,
   GuildScheduledEventRecurrenceRuleWeekday,
   APIButtonComponentWithCustomId,
+  ThreadChannelType,
 } from 'discord-api-types/v10';
 import {
   ApplicationCommand,
@@ -104,7 +105,6 @@ import {
   ButtonComponent,
   StringSelectMenuComponent,
   RepliableInteraction,
-  ThreadChannelType,
   Events,
   Status,
   CategoryChannelChildManager,
@@ -179,10 +179,7 @@ import {
   PartialGuildMember,
   PartialMessage,
   PartialMessageReaction,
-  resolvePartialEmoji,
-  PartialEmojiOnlyId,
   Emoji,
-  PartialEmoji,
   Awaitable,
   Channel,
   DirectoryChannel,
@@ -2689,12 +2686,6 @@ expectType<true>(partialUser.partial);
 expectType<null>(partialUser.username);
 expectType<null>(partialUser.tag);
 expectType<null>(partialUser.discriminator);
-
-declare const emoji: Emoji;
-{
-  expectType<PartialEmojiOnlyId>(resolvePartialEmoji('12345678901234567'));
-  expectType<PartialEmoji | null>(resolvePartialEmoji(emoji));
-}
 
 declare const application: ClientApplication;
 declare const entitlement: Entitlement;
