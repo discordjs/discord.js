@@ -159,6 +159,7 @@ import {
   VoiceChannelEffectSendAnimationType,
   GatewayVoiceChannelEffectSendDispatchData,
   RESTAPIPoll,
+  ThreadChannelType,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { Stream } from 'node:stream';
@@ -983,7 +984,7 @@ export class Options extends null {
 export class ClientVoiceManager {
   private constructor(client: Client);
   public readonly client: Client;
-  public adapters: Map<Snowflake, InternalDiscordGatewayAdapterLibraryMethods>;
+  public adapters: Map<Snowflake, _InternalDiscordGatewayAdapterLibraryMethods>;
 }
 
 export { Collection, ReadonlyCollection } from '@discordjs/collection';
@@ -1309,7 +1310,7 @@ export class Guild extends AnonymousGuild {
   public systemChannelFlags: Readonly<SystemChannelFlagsBitField>;
   public systemChannelId: Snowflake | null;
   public vanityURLUses: number | null;
-  public get voiceAdapterCreator(): InternalDiscordGatewayAdapterCreator;
+  public get voiceAdapterCreator(): _InternalDiscordGatewayAdapterCreator;
   public voiceStates: VoiceStateManager;
   public get widgetChannel():
     | TextChannel
@@ -1888,7 +1889,7 @@ export class InteractionCollector<Interaction extends CollectedInteraction> exte
 }
 
 // tslint:disable-next-line no-empty-interface
-export interface InteractionWebhook extends PartialWebhookFields {}
+export interface InteractionWebhook extends _PartialWebhookFields {}
 export class InteractionWebhook {
   public constructor(client: Client<true>, id: Snowflake, token: string);
   public readonly client: Client<true>;
@@ -3380,65 +3381,18 @@ export class UserFlagsBitField extends BitField<UserFlagsString> {
   public static resolve(bit?: BitFieldResolvable<UserFlagsString, number>): number;
 }
 
-/** @internal */
-export function basename(path: string, ext?: string): string;
+export function cleanCodeBlockContent(text: string): string;
 export function cleanContent(str: string, channel: TextBasedChannel): string;
 export function discordSort<Key, Value extends { rawPosition: number; id: Snowflake }>(
   collection: ReadonlyCollection<Key, Value>,
 ): Collection<Key, Value>;
-export function cleanCodeBlockContent(text: string): string;
 export function fetchRecommendedShardCount(token: string, options?: FetchRecommendedShardCountOptions): Promise<number>;
 export function flatten(obj: unknown, ...props: Record<string, boolean | string>[]): unknown;
-
-/** @internal */
-export function makeError(obj: MakeErrorOptions): Error;
-/** @internal */
-export function makePlainError(err: Error): MakeErrorOptions;
-/** @internal */
-export function moveElementInArray(
-  // eslint-disable-next-line no-restricted-syntax
-  array: unknown[],
-  element: unknown,
-  newIndex: number,
-  offset?: boolean,
-): number;
 export function parseEmoji(text: string): PartialEmoji | null;
-export function resolveColor(color: ColorResolvable): number;
-export function resolvePartialEmoji(emoji: Snowflake): PartialEmojiOnlyId;
-export function resolvePartialEmoji(emoji: Emoji | EmojiIdentifierResolvable): PartialEmoji | null;
-/** @internal */
-export function resolveGuildEmoji(client: Client, emojiId: Snowflake): GuildEmoji | null;
-export function verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
-/** @internal */
-export function setPosition<Item extends Channel | Role>(
-  item: Item,
-  position: number,
-  relative: boolean,
-  sorted: ReadonlyCollection<Snowflake, Item>,
-  client: Client<true>,
-  route: string,
-  reason?: string,
-): Promise<{ id: Snowflake; position: number }[]>;
 export function parseWebhookURL(url: string): WebhookClientDataIdWithToken | null;
-/** @internal */
-export function transformResolved<Cached extends CacheType>(
-  supportingData: SupportingInteractionResolvedData,
-  data?: Extract<APIApplicationCommandInteractionData, { resolved: any }>['resolved'],
-): CommandInteractionResolvedData<Cached>;
+export function resolveColor(color: ColorResolvable): number;
 export function resolveSKUId(resolvable: SKUResolvable): Snowflake | null;
-
-/** @internal */
-export interface CreateChannelOptions {
-  allowFromUnknownGuild?: boolean;
-}
-
-/** @internal */
-export function createChannel(
-  client: Client<true>,
-  data: APIChannel,
-  guild?: Guild,
-  extras?: CreateChannelOptions,
-): Channel;
+export function verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
 
 export type ComponentData =
   | MessageActionRowComponentData
@@ -3503,7 +3457,7 @@ export class VoiceState extends Base {
 }
 
 // tslint:disable-next-line no-empty-interface
-export interface Webhook<Type extends WebhookType = WebhookType> extends WebhookFields {}
+export interface Webhook<Type extends WebhookType = WebhookType> extends _WebhookFields {}
 export class Webhook<Type extends WebhookType = WebhookType> {
   private constructor(client: Client<true>, data?: RawWebhookData);
   public avatar: string | null;
@@ -3546,7 +3500,7 @@ export class Webhook<Type extends WebhookType = WebhookType> {
 }
 
 // tslint:disable-next-line no-empty-interface
-export interface WebhookClient extends WebhookFields, BaseClient<{}> {}
+export interface WebhookClient extends _WebhookFields, BaseClient<{}> {}
 export class WebhookClient extends BaseClient<{}> {
   public constructor(data: WebhookClientData, options?: WebhookClientOptions);
   public readonly client: this;
@@ -4453,8 +4407,7 @@ export interface TextBasedChannelFields<InGuild extends boolean = boolean, InDM 
   setNSFW(nsfw?: boolean, reason?: string): Promise<this>;
 }
 
-/** @internal */
-export interface PartialWebhookFields {
+export interface _PartialWebhookFields {
   id: Snowflake;
   get url(): string;
   deleteMessage(message: MessageResolvable | APIMessage | '@original', threadId?: Snowflake): Promise<void>;
@@ -4468,8 +4421,7 @@ export interface PartialWebhookFields {
   ): Promise<APIMessage | Message>;
 }
 
-/** @internal */
-export interface WebhookFields extends PartialWebhookFields {
+export interface _WebhookFields extends _PartialWebhookFields {
   get createdAt(): Date;
   get createdTimestamp(): number;
   delete(reason?: string): Promise<void>;
@@ -4936,7 +4888,7 @@ export type CacheConstructors = {
   [Cache in keyof Caches]: Caches[Cache][0] & { name: Cache };
 };
 
-type OverriddenCaches =
+export type OverriddenCaches =
   | 'DMMessageManager'
   | 'GuildForumThreadManager'
   | 'GuildMessageManager'
@@ -5548,7 +5500,7 @@ export type GlobalSweepFilter<Key, Value> = () =>
   | ((value: Value, key: Key, collection: Collection<Key, Value>) => boolean)
   | null;
 
-interface GuildAuditLogsTypes {
+export interface GuildAuditLogsTypes {
   [AuditLogEvent.GuildUpdate]: ['Guild', 'Update'];
   [AuditLogEvent.ChannelCreate]: ['Channel', 'Create'];
   [AuditLogEvent.ChannelUpdate]: ['Channel', 'Update'];
@@ -5896,27 +5848,27 @@ export interface GuildScheduledEventCreateOptions {
 }
 
 export type GuildScheduledEventRecurrenceRuleOptions =
-  | BaseGuildScheduledEventRecurrenceRuleOptions<
+  | _BaseGuildScheduledEventRecurrenceRuleOptions<
       GuildScheduledEventRecurrenceRuleFrequency.Yearly,
       {
         byMonth: readonly GuildScheduledEventRecurrenceRuleMonth[];
         byMonthDay: readonly number[];
       }
     >
-  | BaseGuildScheduledEventRecurrenceRuleOptions<
+  | _BaseGuildScheduledEventRecurrenceRuleOptions<
       GuildScheduledEventRecurrenceRuleFrequency.Monthly,
       {
         byNWeekday: readonly GuildScheduledEventRecurrenceRuleNWeekday[];
       }
     >
-  | BaseGuildScheduledEventRecurrenceRuleOptions<
+  | _BaseGuildScheduledEventRecurrenceRuleOptions<
       GuildScheduledEventRecurrenceRuleFrequency.Weekly | GuildScheduledEventRecurrenceRuleFrequency.Daily,
       {
         byWeekday: readonly GuildScheduledEventRecurrenceRuleWeekday[];
       }
     >;
 
-type BaseGuildScheduledEventRecurrenceRuleOptions<
+export type _BaseGuildScheduledEventRecurrenceRuleOptions<
   Frequency extends GuildScheduledEventRecurrenceRuleFrequency,
   Extra extends {},
 > = {
@@ -6111,13 +6063,6 @@ export interface LifetimeFilterOptions<Key, Value> {
   excludeFromSweep?: (value: Value, key: Key, collection: LimitedCollection<Key, Value>) => boolean;
   getComparisonTimestamp?: (value: Value, key: Key, collection: LimitedCollection<Key, Value>) => number;
   lifetime?: number;
-}
-
-/** @internal */
-export interface MakeErrorOptions {
-  name: string;
-  message: string;
-  stack: string;
 }
 
 export type ActionRowComponentOptions =
@@ -6625,13 +6570,6 @@ export interface StageInstanceEditOptions {
   privacyLevel?: StageInstancePrivacyLevel;
 }
 
-/** @internal */
-export interface SupportingInteractionResolvedData {
-  client: Client;
-  guild?: Guild;
-  channel?: GuildTextBasedChannel;
-}
-
 export type SweeperKey = keyof SweeperDefinitions;
 
 export type CollectionSweepFilter<Key, Value> = (value: Value, key: Key, collection: Collection<Key, Value>) => boolean;
@@ -6718,8 +6656,6 @@ export type TextChannelResolvable = Snowflake | TextChannel;
 export type TextBasedChannelResolvable = Snowflake | TextBasedChannel;
 
 export type ThreadChannelResolvable = Snowflake | ThreadChannel;
-
-export type ThreadChannelType = ChannelType.AnnouncementThread | ChannelType.PublicThread | ChannelType.PrivateThread;
 
 export interface GuildTextThreadCreateOptions<AllowedThreadType> extends StartThreadOptions {
   startMessage?: MessageResolvable;
@@ -6873,28 +6809,31 @@ export type Serialized<Value> = Value extends symbol | bigint | (() => any)
 //#region Voice
 
 /**
- * @internal Use `DiscordGatewayAdapterLibraryMethods` from `@discordjs/voice` instead.
+ * @remarks
+ * Use `DiscordGatewayAdapterLibraryMethods` from `@discordjs/voice` instead.
  */
-export interface InternalDiscordGatewayAdapterLibraryMethods {
+export interface _InternalDiscordGatewayAdapterLibraryMethods {
   onVoiceServerUpdate(data: GatewayVoiceServerUpdateDispatchData): void;
   onVoiceStateUpdate(data: GatewayVoiceStateUpdateDispatchData): void;
   destroy(): void;
 }
 
 /**
- * @internal Use `DiscordGatewayAdapterImplementerMethods` from `@discordjs/voice` instead.
+ * @remarks
+ * Use `DiscordGatewayAdapterImplementerMethods` from `@discordjs/voice` instead.
  */
-export interface InternalDiscordGatewayAdapterImplementerMethods {
+export interface _InternalDiscordGatewayAdapterImplementerMethods {
   sendPayload(payload: unknown): boolean;
   destroy(): void;
 }
 
 /**
- * @internal Use `DiscordGatewayAdapterCreator` from `@discordjs/voice` instead.
+ * @remarks
+ * Use `DiscordGatewayAdapterCreator` from `@discordjs/voice` instead.
  */
-export type InternalDiscordGatewayAdapterCreator = (
-  methods: InternalDiscordGatewayAdapterLibraryMethods,
-) => InternalDiscordGatewayAdapterImplementerMethods;
+export type _InternalDiscordGatewayAdapterCreator = (
+  methods: _InternalDiscordGatewayAdapterLibraryMethods,
+) => _InternalDiscordGatewayAdapterImplementerMethods;
 
 //#endregion
 
