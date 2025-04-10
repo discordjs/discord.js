@@ -457,12 +457,14 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 				const comment = node as DocComment;
 
 				const exampleBlocks = comment.customBlocks.filter(
-					(block) => block.blockTag.tagName.toUpperCase() === StandardTags.example.tagNameWithUpperCase,
+					(block) => block.blockTag.tagNameWithUpperCase === StandardTags.example.tagNameWithUpperCase,
 				);
 
 				const defaultValueBlock = comment.customBlocks.find(
-					(block) => block.blockTag.tagName.toUpperCase() === StandardTags.defaultValue.tagNameWithUpperCase,
+					(block) => block.blockTag.tagNameWithUpperCase === StandardTags.defaultValue.tagNameWithUpperCase,
 				);
+
+				const mixesBlocks = comment.customBlocks.filter((block) => block.blockTag.tagNameWithUpperCase === '@MIXES');
 
 				return {
 					kind: DocNodeKind.Comment,
@@ -495,6 +497,9 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 						.flatMap((block) => createNode(block.content).flat(1))
 						.filter((val: any) => val.kind !== DocNodeKind.SoftBreak),
 					seeBlocks: comment.seeBlocks
+						.flatMap((block) => createNode(block.content).flat(1))
+						.filter((val: any) => val.kind !== DocNodeKind.SoftBreak),
+					mixesBlocks: mixesBlocks
 						.flatMap((block) => createNode(block.content).flat(1))
 						.filter((val: any) => val.kind !== DocNodeKind.SoftBreak),
 				};
