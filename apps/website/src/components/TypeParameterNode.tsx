@@ -1,7 +1,8 @@
 import { LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Fragment } from 'react';
-import { ENV } from '~/util/env';
+import { cx } from '@/styles/cva';
+import { ENV } from '@/util/env';
 import { Badges } from './Badges';
 import { DocNode } from './DocNode';
 import { ExcerptNode } from './ExcerptNode';
@@ -16,18 +17,22 @@ export async function TypeParameterNode({
 	readonly version: string;
 }) {
 	return (
-		<div className={`${description ? 'flex flex-col gap-8' : 'inline-block'}`}>
+		<div className={`${description ? 'flex flex-col gap-4' : 'inline-block'}`}>
 			{node.map((typeParameter: any, idx: number) => (
 				<Fragment key={`${typeParameter.name}-${idx}`}>
 					<div className={description ? '' : 'inline after:content-[",_"] last-of-type:after:content-none'}>
 						<h3
-							className={`${ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group inline break-words font-mono font-semibold`}
+							className={cx(
+								ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8',
+								'group inline font-mono font-semibold break-words',
+								description ? 'inline-block px-2' : '',
+							)}
 							id={typeParameter.name}
 						>
 							{description ? <Badges node={typeParameter} /> : null}
 							<span>
 								{description ? (
-									<Link className="float-left -ml-6 hidden pb-2 pr-2 group-hover:block" href={`#${typeParameter.name}`}>
+									<Link className="float-left -ml-6 hidden pr-2 pb-2 group-hover:block" href={`#${typeParameter.name}`}>
 										<LinkIcon aria-hidden size={16} />
 									</Link>
 								) : null}
@@ -57,7 +62,7 @@ export async function TypeParameterNode({
 				</Fragment>
 			))}
 			{description ? (
-				<div aria-hidden className="px-4">
+				<div aria-hidden className="p-4">
 					<div className="h-[2px] bg-neutral-300 dark:bg-neutral-700" role="separator" />
 				</div>
 			) : null}

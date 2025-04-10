@@ -1,7 +1,7 @@
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { ChevronDown, ChevronUp, Code2, LinkIcon } from 'lucide-react';
 import Link from 'next/link';
-import { ENV } from '~/util/env';
+import { ENV } from '@/util/env';
 import { Badges } from './Badges';
 import { DeprecatedNode } from './DeprecatedNode';
 import { ExampleNode } from './ExampleNode';
@@ -29,14 +29,14 @@ async function MethodBodyNode({
 	return (
 		<>
 			<div className="flex flex-col gap-4">
-				<div className="flex place-content-between place-items-center">
+				<div className="flex place-content-between place-items-center gap-1">
 					<h3
-						className={`${overload ? (ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-24' : 'scroll-mt-16') : ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group break-words font-mono font-semibold`}
+						className={`${overload ? (ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-24' : 'scroll-mt-16') : ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group px-2 font-mono font-semibold break-all`}
 						id={method.displayName}
 					>
 						<Badges node={method} /> {method.displayName}
 						<span>
-							<Link className="float-left -ml-6 hidden pb-2 pr-2 group-hover:block" href={`#${method.displayName}`}>
+							<Link className="float-left -ml-6 hidden pr-2 pb-2 group-hover:block" href={`#${method.displayName}`}>
 								<LinkIcon aria-hidden size={16} />
 							</Link>
 							{method.typeParameters?.length ? (
@@ -90,7 +90,7 @@ async function MethodBodyNode({
 					<SeeNode node={method.summary.seeBlocks} padding version={version} />
 				) : null}
 			</div>
-			<div aria-hidden className="px-4">
+			<div aria-hidden className="p-4">
 				<div className="h-[2px] bg-neutral-300 dark:bg-neutral-700" role="separator" />
 			</div>
 		</>
@@ -111,7 +111,7 @@ async function OverloadNode({
 			<TabList className="flex gap-2">
 				{method.overloads.map((overload: any) => (
 					<Tab
-						className="cursor-pointer rounded-full bg-neutral-800/10 px-2 py-1 font-sans text-sm font-normal leading-none text-neutral-800 hover:bg-neutral-800/20 data-[selected]:bg-neutral-500 data-[selected]:text-neutral-100 dark:bg-neutral-200/10 dark:text-neutral-200 dark:hover:bg-neutral-200/20 dark:data-[selected]:bg-neutral-500/70"
+						className="cursor-pointer rounded-full bg-neutral-800/10 px-2 py-1 font-sans text-sm leading-none font-normal text-neutral-800 hover:bg-neutral-800/20 data-[selected]:bg-neutral-500 data-[selected]:text-neutral-100 dark:bg-neutral-200/10 dark:text-neutral-200 dark:hover:bg-neutral-200/20 dark:data-[selected]:bg-neutral-500/70"
 						id={`overload-${overload.displayName}-${overload.overloadIndex}`}
 						key={`overload-tab-${overload.displayName}-${overload.overloadIndex}`}
 					>
@@ -121,7 +121,7 @@ async function OverloadNode({
 			</TabList>
 			{method.overloads.map((overload: any) => (
 				<TabPanel
-					className="flex flex-col gap-8"
+					className="flex flex-col gap-4"
 					id={`overload-${overload.displayName}-${overload.overloadIndex}`}
 					key={`overload-tab-panel-${overload.displayName}-${overload.overloadIndex}`}
 				>
@@ -142,8 +142,8 @@ export async function MethodNode({
 	readonly version: string;
 }) {
 	return (
-		<Collapsible className="flex flex-col gap-8" defaultOpen>
-			<CollapsibleTrigger className="group flex place-content-between place-items-center rounded-md p-2 hover:bg-neutral-200 dark:hover:bg-neutral-800">
+		<Collapsible className="flex flex-col gap-4" defaultOpen>
+			<CollapsibleTrigger className="group flex place-content-between place-items-center rounded-md p-2 hover:bg-[#e7e7e9] dark:hover:bg-[#242428]">
 				<h2 className="flex place-items-center gap-2 text-xl font-bold">
 					<VscSymbolMethod aria-hidden className="flex-shrink-0" size={24} /> Methods
 				</h2>
@@ -152,7 +152,7 @@ export async function MethodNode({
 			</CollapsibleTrigger>
 
 			<CollapsibleContent>
-				<div className="flex flex-col gap-8">
+				<div className="flex flex-col gap-4">
 					{node.map((method: any) =>
 						method.overloads?.length ? (
 							<OverloadNode

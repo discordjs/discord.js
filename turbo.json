@@ -44,7 +44,22 @@
 			"outputLogs": "full"
 		},
 		"@discordjs/website#build:local": {
-			"env": ["VERCEL_ENV", "NEXT_PUBLIC_LOCAL_DEV"],
+			"env": [
+				"VERCEL_ENV",
+				"NEXT_PUBLIC_LOCAL_DEV",
+				"EDGE_CONFIG",
+				"DATABASE_URL",
+				"MAX_FETCH_SIZE",
+				"POSTGRES_URL",
+				"POSTGRES_URL_NON_POOLING",
+				"POSTGRES_PRISMA_URL",
+				"POSTGRES_USER",
+				"POSTGRES_PASSWORD",
+				"POSTGRES_HOST",
+				"POSTGRES_DATABASE",
+				"BLOB_READ_WRITE_TOKEN",
+				"BLOB_STORAGE_URL"
+			],
 			"dependsOn": ["^build", "^docs"],
 			"inputs": [
 				"../../packages/*/README.md",
@@ -61,7 +76,22 @@
 			"outputLogs": "full"
 		},
 		"@discordjs/website#build:prod": {
-			"env": ["VERCEL_ENV", "NEXT_PUBLIC_LOCAL_DEV"],
+			"env": [
+				"VERCEL_ENV",
+				"NEXT_PUBLIC_LOCAL_DEV",
+				"EDGE_CONFIG",
+				"DATABASE_URL",
+				"MAX_FETCH_SIZE",
+				"POSTGRES_URL",
+				"POSTGRES_URL_NON_POOLING",
+				"POSTGRES_PRISMA_URL",
+				"POSTGRES_USER",
+				"POSTGRES_PASSWORD",
+				"POSTGRES_HOST",
+				"POSTGRES_DATABASE",
+				"BLOB_READ_WRITE_TOKEN",
+				"BLOB_STORAGE_URL"
+			],
 			"dependsOn": ["^build"],
 			"inputs": [
 				"../../packages/*/README.md",
