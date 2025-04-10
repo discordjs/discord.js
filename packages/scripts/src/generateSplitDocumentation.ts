@@ -903,13 +903,13 @@ function itemInterface(item: ApiInterface) {
 	};
 }
 
-function itemUnion(item: ApiTypeAlias) {
+function itemUnion(item: Excerpt) {
 	const union: ExcerptToken[][] = [];
 	let currentUnionMember: ExcerptToken[] = [];
 	let depth = 0;
-	for (const token of item.typeExcerpt.spannedTokens) {
+	for (const token of item.spannedTokens) {
 		if (token.text.includes('?')) {
-			return [item.typeExcerpt.spannedTokens];
+			return [item.spannedTokens];
 		}
 
 		depth += token.text.split('<').length - token.text.split('>').length;
@@ -948,7 +948,7 @@ function itemTypeAlias(item: ApiTypeAlias) {
 	return {
 		...itemInfo(item),
 		typeParameters: itemTypeParameters(item),
-		unionMembers: itemUnion(item).map((member) =>
+		unionMembers: itemUnion(item.typeExcerpt).map((member) =>
 			itemExcerptText(
 				new Excerpt(member, { startIndex: 0, endIndex: member.length }),
 				item.getAssociatedPackage()!,
@@ -961,6 +961,13 @@ function itemTypeAlias(item: ApiTypeAlias) {
 function itemVariable(item: ApiVariable) {
 	return {
 		...itemInfo(item),
+		unionMembers: itemUnion(item.variableTypeExcerpt).map((member) =>
+			itemExcerptText(
+				new Excerpt(member, { startIndex: 0, endIndex: member.length }),
+				item.getAssociatedPackage()!,
+				item.getHierarchy().find(ApiTypeParameterListMixin.isBaseClassOf),
+			),
+		),
 	};
 }
 
