@@ -64,6 +64,7 @@ jobs:
           COREPACK_ENABLE_STRICT: 0
         run: |
           cd main
+          pnpm self-update 10
           pnpm install --frozen-lockfile --prefer-offline --loglevel error
           pnpm run build
           cd ..
