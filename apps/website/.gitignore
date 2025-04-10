@@ -16,7 +16,6 @@ pids
 .env*.local
 
 # Dist
-.contentlayer
 .next
 public/searchIndex
 src/assets/readme

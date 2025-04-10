@@ -23,12 +23,11 @@
 				"public/**",
 				"src/**",
 				"!src/styles/unocss.css",
-				"contentlayer.config.ts",
 				"next.config.js",
 				"package.json",
 				"tsconfig.json"
 			],
-			"outputs": [".next/**", ".next/cache/**", ".contentlayer/**"],
+			"outputs": [".next/**", ".next/cache/**"],
 			"outputLogs": "full"
 		},
 		"@discordjs/guide#build:prod": {
@@ -37,12 +36,11 @@
 				"public/**",
 				"src/**",
 				"!src/styles/unocss.css",
-				"contentlayer.config.ts",
 				"next.config.js",
 				"package.json",
 				"tsconfig.json"
 			],
-			"outputs": [".next/**", ".next/cache/**", ".contentlayer/**"],
+			"outputs": [".next/**", ".next/cache/**"],
 			"outputLogs": "full"
 		},
 		"@discordjs/website#build:local": {
@@ -79,11 +77,6 @@
 			"outputs": [".next/**", ".next/cache/**", "src/assets/readme/**"],
 			"outputLogs": "full"
 		},
-		"@discordjs/guide#generate:contentlayer": {
-			"inputs": ["src/**/*.mdx"],
-			"outputs": [".contentlayer/**"],
-			"outputLogs": "errors-only"
-		},
 		"test": {
 			"dependsOn": ["^build"],
 			"inputs": ["__mocks__/**", "__tests__/**", "src/**", "jest.config.js", "package.json", "tsconfig.json"],
@@ -107,7 +100,7 @@
 			"outputLogs": "errors-only"
 		},
 		"@discordjs/guide#lint": {
-			"dependsOn": ["^build", "build:local", "generate:contentlayer"],
+			"dependsOn": ["^build", "build:local"],
 			"inputs": [
 				"../../eslint.config.js",
 				"../../.prettierrc.json",
@@ -151,7 +144,7 @@
 			"outputLogs": "errors-only"
 		},
 		"@discordjs/guide#format": {
-			"dependsOn": ["^build", "generate:contentlayer"],
+			"dependsOn": ["^build"],
 			"inputs": [
 				"../../eslint.config.js",
 				"../../.prettierrc.json",
