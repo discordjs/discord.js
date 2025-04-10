@@ -4,13 +4,15 @@ import { Command } from 'cmdk';
 import { useAtom, useSetAtom } from 'jotai';
 import { ArrowRight } from 'lucide-react';
 import MeiliSearch from 'meilisearch';
+import dynamic from 'next/dynamic';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useDebounceValue } from 'usehooks-ts';
-import { isCmdKOpenAtom } from '~/stores/cmdk';
-import { isDrawerOpenAtom } from '~/stores/drawer';
-import { resolveKind } from '~/util/resolveNodeKind';
-import { OverlayScrollbarsComponent } from '../OverlayScrollbars';
+import { useDebounceValue, useMediaQuery } from 'usehooks-ts';
+import { Scrollbars } from '@/components/OverlayScrollbars';
+import { isCmdKOpenAtom } from '@/stores/cmdk';
+import { isDrawerOpenAtom } from '@/stores/drawer';
+import { cx } from '@/styles/cva';
+import { resolveKind } from '@/util/resolveNodeKind';
 
 const client = new MeiliSearch({
 	host: 'https://search.discordjs.dev',
@@ -24,6 +26,7 @@ export function CmdK({ dependencies }: { readonly dependencies: string[] }) {
 	const setDrawerOpen = useSetAtom(isDrawerOpenAtom);
 	const [search, setSearch] = useDebounceValue('', 250);
 	const [searchResults, setSearchResults] = useState<any[]>([]);
+	const isMobile = useMediaQuery('(max-width: 600px)');
 
 	const packageName = pathname?.split('/').slice(3, 4)[0];
 	const branchName = pathname?.split('/').slice(4, 5)[0];
@@ -41,9 +44,9 @@ export function CmdK({ dependencies }: { readonly dependencies: string[] }) {
 			>
 				{resolveKind(item.kind)}
 				<div className="flex flex-grow flex-col">
-					<span className="font-semibold">{item.name}</span>
-					<span className="line-clamp-1 text-sm">{item.summary}</span>
-					<span className="truncate text-xs">{item.path}</span>
+					<span className="font-semibold wrap-anywhere">{item.name}</span>
+					<span className={cx('truncate text-sm', isMobile ? 'max-w-[30ch]' : 'max-w-[40ch]')}>{item.summary}</span>
+					<span className={cx('truncate text-xs', isMobile ? 'max-w-[30ch]' : 'max-w-[40ch]')}>{item.path}</span>
 				</div>
 				<ArrowRight aria-hidden className="flex-shrink-0" />
 			</Command.Item>
@@ -114,11 +117,11 @@ export function CmdK({ dependencies }: { readonly dependencies: string[] }) {
 			shouldFilter={false}
 		>
 			<Command.Input
-				className="mb-4 w-full border-b border-neutral-300 bg-transparent px-2 pb-4 pt-2 outline-none dark:border-neutral-700"
+				className="mb-4 w-full border-b border-neutral-300 bg-transparent px-2 pt-2 pb-4 outline-none dark:border-neutral-700"
 				onValueChange={setSearch}
 				placeholder="Quick search..."
 			/>
-			<OverlayScrollbarsComponent
+			<Scrollbars
 				className="max-h-96 pr-3"
 				defer
 				options={{
@@ -140,7 +143,9 @@ export function CmdK({ dependencies }: { readonly dependencies: string[] }) {
 						</div>
 					)}
 				</Command.List>
-			</OverlayScrollbarsComponent>
+			</Scrollbars>
 		</Command.Dialog>
 	);
 }
+
+export const CmdKNoSRR = dynamic(async () => CmdK, { ssr: false });

@@ -18,10 +18,12 @@ export async function fetchSitemap({
 		return JSON.parse(fileContent);
 	}
 
-	const isMainVersion = version === 'main';
+	const isMain = version === 'main';
 	const fileContent = await fetch(
 		`${process.env.BLOB_STORAGE_URL}/rewrite/${packageName}/${version}.sitemap.api.json`,
-		{ next: isMainVersion ? { revalidate: 0 } : { revalidate: 604_800 } },
+		{
+			next: { revalidate: isMain ? 0 : 604_800 },
+		},
 	);
 
 	if (!fileContent.ok) {

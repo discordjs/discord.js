@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import { Fragment } from 'react';
-import { BuiltinDocumentationLinks } from '~/util/builtinDocumentationLinks';
+import { BuiltinDocumentationLinks } from '@/util/builtinDocumentationLinks';
 
 export async function ExcerptNode({ node, version }: { readonly node?: any; readonly version: string }) {
-	const createExcerpt = (excerpts: any) => {
+	const createExcerpt = (excerpts: any, idx: number) => {
 		const excerpt = Array.isArray(excerpts) ? excerpts : (excerpts.excerpts ?? [excerpts]);
 
 		return (
@@ -13,14 +13,17 @@ export async function ExcerptNode({ node, version }: { readonly node?: any; read
 						? 'after:content-[",_"] last-of-type:after:content-none'
 						: ''
 				}
+				key={`${excerpt.text}-${idx}`}
 			>
 				{excerpt.map((excerpt: any, idx: number) => {
 					if (excerpt.resolvedItem) {
 						return (
 							<Link
-								className="text-blurple hover:text-blurple-500 dark:hover:text-blurple-300"
+								className="text-base-blurple-400 hover:text-base-blurple-500 dark:hover:text-base-blurple-300"
 								href={`/docs/packages/${excerpt.resolvedItem.packageName}/${excerpt.resolvedItem.version ?? version}/${excerpt.resolvedItem.uri}`}
 								key={`${excerpt.resolvedItem.displayName}-${idx}`}
+								// @ts-expect-error - unstable_dynamicOnHover is not part of the public types
+								unstable_dynamicOnHover
 							>
 								{excerpt.text}
 							</Link>
@@ -30,7 +33,7 @@ export async function ExcerptNode({ node, version }: { readonly node?: any; read
 					if (excerpt.href) {
 						return (
 							<a
-								className="text-blurple hover:text-blurple-500 dark:hover:text-blurple-300"
+								className="text-base-blurple-400 hover:text-base-blurple-500 dark:hover:text-base-blurple-300"
 								href={excerpt.href}
 								key={`${excerpt.text}-${idx}`}
 								rel="external noreferrer noopener"
@@ -43,9 +46,10 @@ export async function ExcerptNode({ node, version }: { readonly node?: any; read
 
 					if (excerpt.text in BuiltinDocumentationLinks) {
 						const href = BuiltinDocumentationLinks[excerpt.text as keyof typeof BuiltinDocumentationLinks];
+
 						return (
 							<a
-								className="text-blurple hover:text-blurple-500 dark:hover:text-blurple-300"
+								className="text-base-blurple-400 hover:text-base-blurple-500 dark:hover:text-base-blurple-300"
 								href={href}
 								key={`${excerpt.text}-${idx}`}
 								rel="external noreferrer noopener"
