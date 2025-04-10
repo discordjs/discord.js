@@ -78,10 +78,8 @@ for await (const file of globber.globGenerator()) {
 				);
 				await client.d1.database.raw(process.env.CF_D1_DOCS_ID!, {
 					account_id: process.env.CF_ACCOUNT_ID!,
-					sql: `insert into documentation (name, version, url) values (${name.replace(
-						'@discordjs/',
-						'',
-					)}, ${version}, ${process.env.CF_R2_DOCS_BUCKET_URL + '/' + key}) on conflict (name, version) do update set url = excluded.url`,
+					sql: `insert into documentation (name, version, url) values (?, ?, ?) on conflict (name, version) do update set url = excluded.url;`,
+					params: [name.replace('@discordjs/', ''), version, process.env.CF_R2_DOCS_BUCKET_URL + '/' + key],
 				});
 			}),
 		);
