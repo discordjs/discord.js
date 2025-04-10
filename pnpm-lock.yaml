@@ -4,14 +4,6 @@ settings:
   autoInstallPeers: false
   excludeLinksFromLockfile: false
 
-overrides:
-  '@contentlayer/utils>@opentelemetry/core': ^1.15.1
-  '@contentlayer/utils>@opentelemetry/exporter-trace-otlp-grpc': ^0.41.1
-  '@contentlayer/utils>@opentelemetry/resources': ^1.15.1
-  '@contentlayer/utils>@opentelemetry/sdk-trace-base': ^1.15.1
-  '@contentlayer/utils>@opentelemetry/sdk-trace-node': ^1.15.1
-  '@contentlayer/utils>@opentelemetry/semantic-conventions': ^1.15.1
-
 patchedDependencies:
   '@microsoft/tsdoc-config':
     hash: 96d7f4c962bda3b7fefb9be332eb6b1de236ee66cf4d00de1441904355148331

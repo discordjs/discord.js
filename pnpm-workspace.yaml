@@ -6,20 +6,11 @@ ignoredBuiltDependencies:
 onlyBuiltDependencies:
   - '@discordjs/opus'
   - bufferutil
-  - contentlayer
   - esbuild
   - protobufjs
   - sharp
   - utf-8-validate
   - zlib-sync
-
-overrides:
-  '@contentlayer/utils>@opentelemetry/core': ^1.15.1
-  '@contentlayer/utils>@opentelemetry/exporter-trace-otlp-grpc': ^0.41.1
-  '@contentlayer/utils>@opentelemetry/resources': ^1.15.1
-  '@contentlayer/utils>@opentelemetry/sdk-trace-base': ^1.15.1
-  '@contentlayer/utils>@opentelemetry/sdk-trace-node': ^1.15.1
-  '@contentlayer/utils>@opentelemetry/semantic-conventions': ^1.15.1
 
 packages:
   - apps/*
