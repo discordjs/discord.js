@@ -5,6 +5,21 @@ import type { EnumMemberOrder } from '@discordjs/api-extractor-model';
 import type { ExtractorLogLevel } from './ExtractorLogLevel.js';
 
 /**
+ * Represents an entry point in the package
+ * Example:
+ * ```
+ * {
+ *   modulePath: 'Shape/Square',
+ *   filePath: './dist/Shape/Square/index.d.ts'
+ * }
+ * ```
+ */
+export interface IConfigEntryPoint {
+	filePath: string;
+	modulePath: string;
+}
+
+/**
  * Determines how the TypeScript compiler engine will be invoked by API Extractor.
  *
  * @remarks
@@ -322,6 +337,11 @@ export interface IExtractorMessagesConfig {
  * @public
  */
 export interface IConfigFile {
+	/**
+	 * support multiple entry points.
+	 */
+	additionalEntryPoints: IConfigEntryPoint[];
+
 	/**
 	 * {@inheritDoc IConfigApiReport}
 	 */
