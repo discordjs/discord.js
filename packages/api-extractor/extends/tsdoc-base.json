@@ -71,6 +71,7 @@
 
 		"@betaDocumentation": true,
 		"@internalRemarks": true,
+		"@mixes": true,
 		"@preapproved": true
 	}
 }
