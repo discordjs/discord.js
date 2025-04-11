@@ -16,7 +16,7 @@ class GuildMemberRoleManager extends DataManager {
 
     /**
      * The GuildMember this manager belongs to
-     * @type {GuildMember}
+     * @type {GuildMember | PartialGuildMember}
      */
     this.member = member;
 
