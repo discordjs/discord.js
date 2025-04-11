@@ -43,9 +43,11 @@
 	"dependencies": {
 		"@actions/core": "^1.11.1",
 		"@actions/glob": "^0.5.0",
+		"@aws-sdk/client-s3": "^3.787.0",
 		"@discordjs/scripts": "workspace:^",
 		"@vercel/blob": "^0.27.3",
 		"@vercel/postgres": "^0.9.0",
+		"cloudflare": "^4.2.0",
 		"meilisearch": "^0.38.0",
 		"p-limit": "^6.2.0",
 		"p-queue": "^8.1.0",
