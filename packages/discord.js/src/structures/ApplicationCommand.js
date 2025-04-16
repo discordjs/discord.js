@@ -312,7 +312,7 @@ class ApplicationCommand extends Base {
    * @returns {Promise<ApplicationCommand>}
    * @example
    * // Edit the name localizations of this command
-   * command.setLocalizedNames({
+   * command.setNameLocalizations({
    *   'en-GB': 'test',
    *   'pt-BR': 'teste',
    * })
