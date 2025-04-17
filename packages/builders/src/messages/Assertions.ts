@@ -65,7 +65,7 @@ const messageNoComponentsV2Predicate = baseMessagePredicate
 			.refine((flags) => {
 				// If we have flags, ensure we don't have the ComponentsV2 flag
 				if (flags) {
-					return (flags & MessageFlags.IsComponentsV2) !== MessageFlags.IsComponentsV2;
+					return (flags & MessageFlags.IsComponentsV2) === 0
 				}
 
 				return true;
