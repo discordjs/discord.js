@@ -9,6 +9,7 @@ import { Collection } from '@discordjs/collection';
 import { lazy, shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
+import { ZlibDecompressor } from '@vladfrangu-dev/compression';
 import {
 	GatewayCloseCodes,
 	GatewayDispatchEvents,
@@ -98,6 +99,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	private zLibSyncInflate: ZlibSync.Inflate | null = null;
 
+	private magicInflate: ZlibDecompressor | null = null;
+
 	/**
 	 * @privateRemarks
 	 *
@@ -144,7 +147,10 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	 * used, but rather the compression method that the user wants to use. This is because the libraries could just be missing.
 	 */
 	private get transportCompressionEnabled() {
-		return this.strategy.options.compression !== null && (this.nativeInflate ?? this.zLibSyncInflate) !== null;
+		return (
+			this.strategy.options.compression !== null &&
+			(this.nativeInflate ?? this.zLibSyncInflate ?? this.magicInflate) !== null
+		);
 	}
 
 	public get status(): WebSocketShardStatus {
@@ -241,6 +247,11 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 						params.delete('compress');
 					}
 
+					break;
+				}
+
+				case CompressionMethod.ZlibMagic: {
+					this.magicInflate = new ZlibDecompressor(65_535);
 					break;
 				}
 			}
@@ -680,6 +691,18 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 				const { result } = this.zLibSyncInflate;
 				return this.parseInflateResult(result);
+			} else if (this.magicInflate) {
+				const result = this.magicInflate.push(Buffer.from(decompressable));
+				if (!result.ok) {
+					this.emit(WebSocketShardEvents.Error, new Error(result.error));
+					return null;
+				}
+
+				if (!result.data) {
+					return null;
+				}
+
+				return this.parseInflateResult(result.data);
 			}
 		}
 
