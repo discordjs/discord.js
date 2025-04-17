@@ -63,15 +63,12 @@ export const messagePredicate = z
 		poll: pollPredicate.optional(),
 	})
 	.refine(
-		(data) => {
-			return (
-				data.content !== undefined ||
-				(data.embeds !== undefined && data.embeds.length > 0) ||
-				data.poll !== undefined ||
-				(data.attachments !== undefined && data.attachments.length > 0) ||
-				(data.components !== undefined && data.components.length > 0) ||
-				(data.sticker_ids !== undefined && data.sticker_ids.length > 0)
-			);
-		},
+		(data) =>
+			data.content !== undefined ||
+			(data.embeds !== undefined && data.embeds.length > 0) ||
+			data.poll !== undefined ||
+			(data.attachments !== undefined && data.attachments.length > 0) ||
+			(data.components !== undefined && data.components.length > 0) ||
+			(data.sticker_ids !== undefined && data.sticker_ids.length > 0),
 		{ message: 'Messages must have content, embeds, a poll, attachments, components, or stickers' },
 	);

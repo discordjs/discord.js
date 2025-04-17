@@ -1819,6 +1819,7 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public locale: Locale;
   public guildLocale: CacheTypeReducer<Cached, Locale>;
   public entitlements: Collection<Snowflake, Entitlement>;
+  public attachmentSizeLimit: number;
   public inGuild(): this is BaseInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is BaseInteraction<'cached'>;
   public inRawGuild(): this is BaseInteraction<'raw'>;
@@ -2376,7 +2377,7 @@ export interface ActionRowModalData {
 export class ModalSubmitFields {
   private constructor(components: readonly (readonly ModalActionRowComponent[])[]);
   public components: ActionRowModalData[];
-  public fields: Collection<string, ModalActionRowComponent>;
+  public fields: Collection<string, TextInputModalData>;
   public getField<Type extends ComponentType>(customId: string, type: Type): { type: Type } & TextInputModalData;
   public getField(customId: string, type?: ComponentType): TextInputModalData;
   public getTextInputValue(customId: string): string;

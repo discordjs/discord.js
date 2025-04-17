@@ -58,7 +58,8 @@ class Client extends BaseClient {
     const defaults = Options.createDefault();
 
     if (this.options.ws.shardIds === defaults.ws.shardIds && 'SHARDS' in data) {
-      this.options.ws.shardIds = JSON.parse(data.SHARDS);
+      const shards = JSON.parse(data.SHARDS);
+      this.options.ws.shardIds = Array.isArray(shards) ? shards : [shards];
     }
 
     if (this.options.ws.shardCount === defaults.ws.shardCount && 'SHARD_COUNT' in data) {

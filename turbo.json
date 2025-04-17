@@ -23,12 +23,11 @@
 				"public/**",
 				"src/**",
 				"!src/styles/unocss.css",
-				"contentlayer.config.ts",
 				"next.config.js",
 				"package.json",
 				"tsconfig.json"
 			],
-			"outputs": [".next/**", ".next/cache/**", ".contentlayer/**"],
+			"outputs": [".next/**", ".next/cache/**"],
 			"outputLogs": "full"
 		},
 		"@discordjs/guide#build:prod": {
@@ -37,16 +36,30 @@
 				"public/**",
 				"src/**",
 				"!src/styles/unocss.css",
-				"contentlayer.config.ts",
 				"next.config.js",
 				"package.json",
 				"tsconfig.json"
 			],
-			"outputs": [".next/**", ".next/cache/**", ".contentlayer/**"],
+			"outputs": [".next/**", ".next/cache/**"],
 			"outputLogs": "full"
 		},
 		"@discordjs/website#build:local": {
-			"env": ["VERCEL_ENV", "NEXT_PUBLIC_LOCAL_DEV"],
+			"env": [
+				"VERCEL_ENV",
+				"NEXT_PUBLIC_LOCAL_DEV",
+				"EDGE_CONFIG",
+				"DATABASE_URL",
+				"MAX_FETCH_SIZE",
+				"POSTGRES_URL",
+				"POSTGRES_URL_NON_POOLING",
+				"POSTGRES_PRISMA_URL",
+				"POSTGRES_USER",
+				"POSTGRES_PASSWORD",
+				"POSTGRES_HOST",
+				"POSTGRES_DATABASE",
+				"BLOB_READ_WRITE_TOKEN",
+				"BLOB_STORAGE_URL"
+			],
 			"dependsOn": ["^build", "^docs"],
 			"inputs": [
 				"../../packages/*/README.md",
@@ -63,7 +76,22 @@
 			"outputLogs": "full"
 		},
 		"@discordjs/website#build:prod": {
-			"env": ["VERCEL_ENV", "NEXT_PUBLIC_LOCAL_DEV"],
+			"env": [
+				"VERCEL_ENV",
+				"NEXT_PUBLIC_LOCAL_DEV",
+				"EDGE_CONFIG",
+				"DATABASE_URL",
+				"MAX_FETCH_SIZE",
+				"POSTGRES_URL",
+				"POSTGRES_URL_NON_POOLING",
+				"POSTGRES_PRISMA_URL",
+				"POSTGRES_USER",
+				"POSTGRES_PASSWORD",
+				"POSTGRES_HOST",
+				"POSTGRES_DATABASE",
+				"BLOB_READ_WRITE_TOKEN",
+				"BLOB_STORAGE_URL"
+			],
 			"dependsOn": ["^build"],
 			"inputs": [
 				"../../packages/*/README.md",
@@ -78,11 +106,6 @@
 			],
 			"outputs": [".next/**", ".next/cache/**", "src/assets/readme/**"],
 			"outputLogs": "full"
-		},
-		"@discordjs/guide#generate:contentlayer": {
-			"inputs": ["src/**/*.mdx"],
-			"outputs": [".contentlayer/**"],
-			"outputLogs": "errors-only"
 		},
 		"test": {
 			"dependsOn": ["^build"],
@@ -107,7 +130,7 @@
 			"outputLogs": "errors-only"
 		},
 		"@discordjs/guide#lint": {
-			"dependsOn": ["^build", "build:local", "generate:contentlayer"],
+			"dependsOn": ["^build", "build:local"],
 			"inputs": [
 				"../../eslint.config.js",
 				"../../.prettierrc.json",
@@ -151,7 +174,7 @@
 			"outputLogs": "errors-only"
 		},
 		"@discordjs/guide#format": {
-			"dependsOn": ["^build", "generate:contentlayer"],
+			"dependsOn": ["^build"],
 			"inputs": [
 				"../../eslint.config.js",
 				"../../.prettierrc.json",

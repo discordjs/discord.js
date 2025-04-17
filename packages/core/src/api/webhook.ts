@@ -141,7 +141,6 @@ export class WebhooksAPI {
 			body,
 			auth: false,
 			signal,
-			// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 		}) as Promise<RESTPostAPIWebhookWithTokenWaitResult | void>;
 	}
 

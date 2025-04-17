@@ -1,5 +1,5 @@
 diff --git a/lib/TSDocConfigFile.js b/lib/TSDocConfigFile.js
-index caf3515d60fd386c5909db5a0aa8b4180b10d602..f8a7ff05d972e8dca4c5a485feb6ef37388274ac 100644
+index caf3515d60fd386c5909db5a0aa8b4180b10d602..5f7cfed7611e3fe660b5265ff99c5da0beb7caec 100644
 --- a/lib/TSDocConfigFile.js
 +++ b/lib/TSDocConfigFile.js
 @@ -31,8 +31,7 @@ const ajv_1 = __importDefault(require("ajv"));

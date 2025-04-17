@@ -64,6 +64,7 @@ jobs:
           COREPACK_ENABLE_STRICT: 0
         run: |
           cd main
+          pnpm self-update 10
           pnpm install --frozen-lockfile --prefer-offline --loglevel error
           pnpm run build
           cd ..
@@ -105,7 +106,15 @@ jobs:
         if: ${{ env.REF_TYPE == 'tag' && (!inputs.ref || inputs.ref == 'main') }}
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CF_D1_DOCS_API_KEY: ${{ secrets.CF_D1_DOCS_API_KEY }}
+          CF_D1_DOCS_ID: ${{ secrets.CF_D1_DOCS_ID }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
+          CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
+          CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
+          CF_R2_DOCS_BUCKET: ${{ secrets.CF_R2_DOCS_BUCKET }}
+          CF_R2_DOCS_BUCKET_URL: ${{ secrets.CF_R2_DOCS_BUCKET_URL }}
         uses: ./packages/actions/src/uploadDocumentation
         with:
           package: ${{ steps.extract-tag.outputs.package }}
@@ -115,7 +124,15 @@ jobs:
         if: ${{ env.REF_TYPE == 'tag' && inputs.ref && inputs.ref != 'main' }}
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CF_D1_DOCS_API_KEY: ${{ secrets.CF_D1_DOCS_API_KEY }}
+          CF_D1_DOCS_ID: ${{ secrets.CF_D1_DOCS_ID }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
+          CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
+          CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
+          CF_R2_DOCS_BUCKET: ${{ secrets.CF_R2_DOCS_BUCKET }}
+          CF_R2_DOCS_BUCKET_URL: ${{ secrets.CF_R2_DOCS_BUCKET_URL }}
         uses: ./main/packages/actions/src/uploadDocumentation
         with:
           package: ${{ steps.extract-tag.outputs.package }}
@@ -125,6 +142,10 @@ jobs:
         if: ${{ env.REF_TYPE == 'tag' && (!inputs.ref || inputs.ref == 'main') }}
         env:
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
+          CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
+          CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
+          CF_R2_DOCS_BUCKET: ${{ secrets.CF_R2_DOCS_BUCKET }}
         uses: ./packages/actions/src/uploadSplitDocumentation
         with:
           package: ${{ steps.extract-tag.outputs.package }}
@@ -134,6 +155,10 @@ jobs:
         if: ${{ env.REF_TYPE == 'tag' && inputs.ref && inputs.ref != 'main' }}
         env:
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
+          CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
+          CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
+          CF_R2_DOCS_BUCKET: ${{ secrets.CF_R2_DOCS_BUCKET }}
         uses: ./main/packages/actions/src/uploadSplitDocumentation
         with:
           package: ${{ steps.extract-tag.outputs.package }}
@@ -157,26 +182,50 @@ jobs:
         if: ${{ env.REF_TYPE == 'branch' && (!inputs.ref || inputs.ref == 'main') }}
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CF_D1_DOCS_API_KEY: ${{ secrets.CF_D1_DOCS_API_KEY }}
+          CF_D1_DOCS_ID: ${{ secrets.CF_D1_DOCS_ID }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
+          CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
+          CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
+          CF_R2_DOCS_BUCKET: ${{ secrets.CF_R2_DOCS_BUCKET }}
+          CF_R2_DOCS_BUCKET_URL: ${{ secrets.CF_R2_DOCS_BUCKET_URL }}
         uses: ./packages/actions/src/uploadDocumentation
 
       - name: Upload documentation to database
         if: ${{ env.REF_TYPE == 'branch' && inputs.ref && inputs.ref != 'main' }}
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CF_D1_DOCS_API_KEY: ${{ secrets.CF_D1_DOCS_API_KEY }}
+          CF_D1_DOCS_ID: ${{ secrets.CF_D1_DOCS_ID }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
+          CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
+          CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
+          CF_R2_DOCS_BUCKET: ${{ secrets.CF_R2_DOCS_BUCKET }}
+          CF_R2_DOCS_BUCKET_URL: ${{ secrets.CF_R2_DOCS_BUCKET_URL }}
         uses: ./main/packages/actions/src/uploadDocumentation
 
       - name: Upload split documentation to blob storage
         if: ${{ env.REF_TYPE == 'branch' && (!inputs.ref || inputs.ref == 'main') }}
         env:
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
+          CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
+          CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
+          CF_R2_DOCS_BUCKET: ${{ secrets.CF_R2_DOCS_BUCKET }}
         uses: ./packages/actions/src/uploadSplitDocumentation
 
       - name: Upload split documentation to blob storage
         if: ${{ env.REF_TYPE == 'branch' && inputs.ref && inputs.ref != 'main' }}
         env:
           BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
+          CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
+          CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
+          CF_R2_DOCS_BUCKET: ${{ secrets.CF_R2_DOCS_BUCKET }}
         uses: ./main/packages/actions/src/uploadSplitDocumentation
 
       - name: Move docs to correct directory
