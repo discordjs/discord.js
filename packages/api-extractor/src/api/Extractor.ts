@@ -285,89 +285,101 @@ export class Extractor {
 		let apiReportChanged = false;
 
 		if (extractorConfig.apiReportEnabled) {
-			const actualApiReportPath: string = extractorConfig.reportTempFilePath;
-			const actualApiReportShortPath: string = extractorConfig._getShortFilePath(extractorConfig.reportTempFilePath);
+			const actualApiReportPathWithoutExtension: string = extractorConfig.reportTempFilePath.replace(/\.api\.md$/, '');
 
-			const expectedApiReportPath: string = extractorConfig.reportFilePath;
-			const expectedApiReportShortPath: string = extractorConfig._getShortFilePath(extractorConfig.reportFilePath);
+			const expectedApiReportPathWithoutExtension: string = extractorConfig.reportFilePath.replace(/\.api\.md$/, '');
 
-			const actualApiReportContent: string = ApiReportGenerator.generateReviewFileContent(collector);
+			const actualApiReportContentMap: Map<string, string> = ApiReportGenerator.generateReviewFileContent(collector);
 
-			// Write the actual file
-			FileSystem.writeFile(actualApiReportPath, actualApiReportContent, {
-				ensureFolderExists: true,
-				convertLineEndings: extractorConfig.newlineKind,
-			});
+			for (const [modulePath, actualApiReportContent] of actualApiReportContentMap) {
+				const actualEntryPointApiReportPath = `${actualApiReportPathWithoutExtension}${
+					modulePath ? '.' : ''
+				}${modulePath}.api.md`;
+				const actualEntryPointApiReportShortPath: string =
+					extractorConfig._getShortFilePath(actualEntryPointApiReportPath);
+				const expectedEntryPointApiReportPath = `${expectedApiReportPathWithoutExtension}${
+					modulePath ? '.' : ''
+				}${modulePath}.api.md`;
+				const expectedEntryPointApiReportShortPath: string = extractorConfig._getShortFilePath(
+					expectedEntryPointApiReportPath,
+				);
 
-			// Compare it against the expected file
-			if (FileSystem.exists(expectedApiReportPath)) {
-				const expectedApiReportContent: string = FileSystem.readFile(expectedApiReportPath);
+				// Write the actual file
+				FileSystem.writeFile(actualEntryPointApiReportPath, actualApiReportContent, {
+					ensureFolderExists: true,
+					convertLineEndings: extractorConfig.newlineKind,
+				});
 
-				if (ApiReportGenerator.areEquivalentApiFileContents(actualApiReportContent, expectedApiReportContent)) {
-					messageRouter.logVerbose(
-						ConsoleMessageId.ApiReportUnchanged,
-						`The API report is up to date: ${actualApiReportShortPath}`,
-					);
+				// Compare it against the expected file
+				if (FileSystem.exists(expectedEntryPointApiReportPath)) {
+					const expectedApiReportContent: string = FileSystem.readFile(expectedEntryPointApiReportPath);
+
+					if (ApiReportGenerator.areEquivalentApiFileContents(actualApiReportContent, expectedApiReportContent)) {
+						messageRouter.logVerbose(
+							ConsoleMessageId.ApiReportUnchanged,
+							`The API report is up to date: ${actualEntryPointApiReportShortPath}`,
+						);
+					} else {
+						apiReportChanged = true;
+
+						if (localBuild) {
+							// For a local build, just copy the file automatically.
+							messageRouter.logWarning(
+								ConsoleMessageId.ApiReportCopied,
+								`You have changed the public API signature for this project. Updating ${expectedEntryPointApiReportShortPath}`,
+							);
+
+							FileSystem.writeFile(expectedEntryPointApiReportPath, actualApiReportContent, {
+								ensureFolderExists: true,
+								convertLineEndings: extractorConfig.newlineKind,
+							});
+						} else {
+							// For a production build, issue a warning that will break the CI build.
+							messageRouter.logWarning(
+								ConsoleMessageId.ApiReportNotCopied,
+								'You have changed the public API signature for this project.' +
+									` Please copy the file "${actualEntryPointApiReportShortPath}" to "${expectedEntryPointApiReportShortPath}",` +
+									` or perform a local build (which does this automatically).` +
+									` See the Git repo documentation for more info.`,
+							);
+						}
+					}
 				} else {
+					// The target file does not exist, so we are setting up the API review file for the first time.
+					//
+					// NOTE: People sometimes make a mistake where they move a project and forget to update the "reportFolder"
+					// setting, which causes a new file to silently get written to the wrong place.  This can be confusing.
+					// Thus we treat the initial creation of the file specially.
 					apiReportChanged = true;
 
 					if (localBuild) {
-						// For a local build, just copy the file automatically.
-						messageRouter.logWarning(
-							ConsoleMessageId.ApiReportCopied,
-							`You have changed the public API signature for this project. Updating ${expectedApiReportShortPath}`,
-						);
-
-						FileSystem.writeFile(expectedApiReportPath, actualApiReportContent, {
-							ensureFolderExists: true,
-							convertLineEndings: extractorConfig.newlineKind,
-						});
+						const expectedApiReportFolder: string = path.dirname(expectedEntryPointApiReportPath);
+						if (FileSystem.exists(expectedApiReportFolder)) {
+							FileSystem.writeFile(expectedEntryPointApiReportPath, actualApiReportContent, {
+								convertLineEndings: extractorConfig.newlineKind,
+							});
+							messageRouter.logWarning(
+								ConsoleMessageId.ApiReportCreated,
+								'The API report file was missing, so a new file was created. Please add this file to Git:\n' +
+									expectedEntryPointApiReportPath,
+							);
+						} else {
+							messageRouter.logError(
+								ConsoleMessageId.ApiReportFolderMissing,
+								'Unable to create the API report file. Please make sure the target folder exists:\n' +
+									expectedApiReportFolder,
+							);
+						}
 					} else {
 						// For a production build, issue a warning that will break the CI build.
 						messageRouter.logWarning(
 							ConsoleMessageId.ApiReportNotCopied,
-							'You have changed the public API signature for this project.' +
-								` Please copy the file "${actualApiReportShortPath}" to "${expectedApiReportShortPath}",` +
+							'The API report file is missing.' +
+								` Please copy the file "${actualEntryPointApiReportShortPath}" to "${expectedEntryPointApiReportShortPath}",` +
 								` or perform a local build (which does this automatically).` +
 								` See the Git repo documentation for more info.`,
 						);
 					}
-				}
-			} else {
-				// The target file does not exist, so we are setting up the API review file for the first time.
-				//
-				// NOTE: People sometimes make a mistake where they move a project and forget to update the "reportFolder"
-				// setting, which causes a new file to silently get written to the wrong place.  This can be confusing.
-				// Thus we treat the initial creation of the file specially.
-				apiReportChanged = true;
-
-				if (localBuild) {
-					const expectedApiReportFolder: string = path.dirname(expectedApiReportPath);
-					if (FileSystem.exists(expectedApiReportFolder)) {
-						FileSystem.writeFile(expectedApiReportPath, actualApiReportContent, {
-							convertLineEndings: extractorConfig.newlineKind,
-						});
-						messageRouter.logWarning(
-							ConsoleMessageId.ApiReportCreated,
-							'The API report file was missing, so a new file was created. Please add this file to Git:\n' +
-								expectedApiReportPath,
-						);
-					} else {
-						messageRouter.logError(
-							ConsoleMessageId.ApiReportFolderMissing,
-							'Unable to create the API report file. Please make sure the target folder exists:\n' +
-								expectedApiReportFolder,
-						);
-					}
-				} else {
-					// For a production build, issue a warning that will break the CI build.
-					messageRouter.logWarning(
-						ConsoleMessageId.ApiReportNotCopied,
-						'The API report file is missing.' +
-							` Please copy the file "${actualApiReportShortPath}" to "${expectedApiReportShortPath}",` +
-							` or perform a local build (which does this automatically).` +
-							` See the Git repo documentation for more info.`,
-					);
 				}
 			}
 		}
