@@ -131,7 +131,7 @@ export type NetworkingState =
  * are first received on the main bot gateway, in the form of VOICE_SERVER_UPDATE
  * and VOICE_STATE_UPDATE packets.
  */
-interface ConnectionOptions {
+export interface ConnectionOptions {
 	endpoint: string;
 	serverId: string;
 	sessionId: string;
@@ -254,14 +254,14 @@ export class Networking extends EventEmitter {
 
 	/**
 	 * The current state of the networking instance.
+	 *
+	 * @remarks
+	 * The setter will perform clean-up operations where necessary.
 	 */
 	public get state(): NetworkingState {
 		return this._state;
 	}
 
-	/**
-	 * Sets a new state for the networking instance, performing clean-up operations where necessary.
-	 */
 	public set state(newState: NetworkingState) {
 		const oldWs = Reflect.get(this._state, 'ws') as VoiceWebSocket | undefined;
 		const newWs = Reflect.get(newState, 'ws') as VoiceWebSocket | undefined;
