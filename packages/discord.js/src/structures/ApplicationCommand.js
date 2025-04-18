@@ -1,7 +1,7 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ApplicationCommandOptionType } = require('discord-api-types/v10');
+const { ApplicationCommandOptionType, ApplicationIntegrationType } = require('discord-api-types/v10');
 const isEqual = require('fast-deep-equal');
 const { Base } = require('./Base.js');
 const { ApplicationCommandPermissionsManager } = require('../managers/ApplicationCommandPermissionsManager.js');
@@ -394,7 +394,18 @@ class ApplicationCommand extends Base {
         command.descriptionLocalizations ?? command.description_localizations ?? {},
         this.descriptionLocalizations ?? {},
       ) ||
-      !isEqual(command.integrationTypes ?? command.integration_types ?? [], this.integrationTypes ?? []) ||
+      // [0] is the default value sent by Discord
+      !isEqual(
+        command.integrationTypes ??
+          command.integration_types ??
+          (this.client.application.integrationTypesConfig
+            ? Object.keys(this.client.application.integrationTypesConfig)
+            : [ApplicationIntegrationType.GuildInstall]),
+        this.integrationTypes ??
+          (this.client.application.integrationTypesConfig
+            ? Object.keys(this.client.application.integrationTypesConfig)
+            : [ApplicationIntegrationType.GuildInstall]),
+      ) ||
       !isEqual(command.contexts ?? [], this.contexts ?? [])
     ) {
       return false;
