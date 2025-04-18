@@ -142,6 +142,10 @@ test('teamIcon default', () => {
 	expect(cdn.teamIcon(id, hash)).toEqual(`${baseCDN}/team-icons/${id}/${hash}.webp`);
 });
 
+test('soundboardSound', () => {
+	expect(cdn.soundboardSound(id)).toEqual(`${baseCDN}/soundboard-sounds/${id}`);
+});
+
 test('makeURL throws on invalid size', () => {
 	// @ts-expect-error: Invalid size
 	expect(() => cdn.avatar(id, animatedHash, { size: 5 })).toThrow(RangeError);
