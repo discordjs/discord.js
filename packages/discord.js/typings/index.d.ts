@@ -1822,6 +1822,7 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public locale: Locale;
   public guildLocale: CacheTypeReducer<Cached, Locale>;
   public entitlements: Collection<Snowflake, Entitlement>;
+  public attachmentSizeLimit: number;
   public inGuild(): this is BaseInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is BaseInteraction<'cached'>;
   public inRawGuild(): this is BaseInteraction<'raw'>;
@@ -6318,11 +6319,10 @@ export interface BaseMessageOptionsWithPoll extends BaseMessageOptions {
   poll?: JSONEncodable<RESTAPIPoll> | PollData;
 }
 
-export interface MessageCreateOptions extends BaseMessageOptionsWithPoll {
+export interface BaseMessageCreateOptions extends BaseMessageOptionsWithPoll {
   tts?: boolean;
   nonce?: string | number;
   enforceNonce?: boolean;
-  messageReference?: MessageReferenceOptions;
   stickers?: readonly StickerResolvable[];
   flags?:
     | BitFieldResolvable<
@@ -6332,9 +6332,13 @@ export interface MessageCreateOptions extends BaseMessageOptionsWithPoll {
     | undefined;
 }
 
+export interface MessageCreateOptions extends BaseMessageCreateOptions {
+  messageReference?: MessageReferenceOptions;
+}
+
 export interface GuildForumThreadMessageCreateOptions
   extends BaseMessageOptions,
-    Pick<MessageCreateOptions, 'flags' | 'stickers'> {}
+    Pick<BaseMessageCreateOptions, 'flags' | 'stickers'> {}
 
 export interface MessageEditAttachmentData {
   id: Snowflake;
@@ -6605,7 +6609,7 @@ export interface ReactionCollectorOptions extends CollectorOptions<[MessageReact
   maxUsers?: number;
 }
 
-export interface MessageReplyOptions extends Omit<MessageCreateOptions, 'messageReference'> {
+export interface MessageReplyOptions extends BaseMessageCreateOptions {
   failIfNotExists?: boolean;
 }
 
@@ -6885,8 +6889,7 @@ export interface WebhookFetchMessageOptions {
   threadId?: Snowflake;
 }
 
-export interface WebhookMessageCreateOptions
-  extends Omit<MessageCreateOptions, 'nonce' | 'messageReference' | 'stickers'> {
+export interface WebhookMessageCreateOptions extends Omit<BaseMessageCreateOptions, 'nonce' | 'stickers'> {
   username?: string;
   avatarURL?: string;
   threadId?: Snowflake;

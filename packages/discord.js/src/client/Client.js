@@ -280,7 +280,6 @@ class Client extends BaseClient {
       (await this.ws.fetchStatus()).every(status => status === WebSocketShardStatus.Ready)
     ) {
       this.emit(Events.Debug, 'Client received all its guilds. Marking as fully ready.');
-      this.status = Status.Ready;
 
       this._triggerClientReady();
       return;
@@ -303,7 +302,6 @@ class Client extends BaseClient {
         );
 
         this.readyTimeout = null;
-        this.status = Status.Ready;
 
         this._triggerClientReady();
       },

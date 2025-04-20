@@ -44,17 +44,13 @@ const libs = {
 			additionalData: Buffer,
 			nonce: Buffer,
 			key: ArrayBufferLike,
-		) => {
-			return sodium.api.crypto_aead_xchacha20poly1305_ietf_decrypt(cipherText, additionalData, null, nonce, key);
-		},
+		) => sodium.api.crypto_aead_xchacha20poly1305_ietf_decrypt(cipherText, additionalData, null, nonce, key),
 		crypto_aead_xchacha20poly1305_ietf_encrypt: (
 			plaintext: Buffer,
 			additionalData: Buffer,
 			nonce: Buffer,
 			key: ArrayBufferLike,
-		) => {
-			return sodium.api.crypto_aead_xchacha20poly1305_ietf_encrypt(plaintext, additionalData, null, nonce, key);
-		},
+		) => sodium.api.crypto_aead_xchacha20poly1305_ietf_encrypt(plaintext, additionalData, null, nonce, key),
 	}),
 	'libsodium-wrappers': (sodium: any): Methods => ({
 		crypto_aead_xchacha20poly1305_ietf_decrypt: (
@@ -62,17 +58,13 @@ const libs = {
 			additionalData: Buffer,
 			nonce: Buffer,
 			key: ArrayBufferLike,
-		) => {
-			return sodium.crypto_aead_xchacha20poly1305_ietf_decrypt(null, cipherText, additionalData, nonce, key);
-		},
+		) => sodium.crypto_aead_xchacha20poly1305_ietf_decrypt(null, cipherText, additionalData, nonce, key),
 		crypto_aead_xchacha20poly1305_ietf_encrypt: (
 			plaintext: Buffer,
 			additionalData: Buffer,
 			nonce: Buffer,
 			key: ArrayBufferLike,
-		) => {
-			return sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(plaintext, additionalData, null, nonce, key);
-		},
+		) => sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(plaintext, additionalData, null, nonce, key),
 	}),
 	'@stablelib/xchacha20poly1305': (stablelib: any): Methods => ({
 		crypto_aead_xchacha20poly1305_ietf_decrypt(plaintext, additionalData, nonce, key) {

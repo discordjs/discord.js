@@ -1,3 +1,33 @@
+autoInstallPeers: false
+
+ignoredBuiltDependencies:
+  - core-js-pure
+
+onlyBuiltDependencies:
+  - '@discordjs/opus'
+  - bufferutil
+  - esbuild
+  - msw
+  - protobufjs
+  - sharp
+  - utf-8-validate
+  - zlib-sync
+
 packages:
-  - 'apps/*'
-  - 'packages/*'
+  - apps/*
+  - packages/*
+
+peerDependencyRules:
+  ignoreMissing:
+    - '*'
+  allowAny:
+    - '*'
+
+publicHoistPattern:
+  - '*eslint*'
+  - '*prettier*'
+  - '*@rushstack/node-core-library*'
+  - '*jju*'
+
+patchedDependencies:
+  '@microsoft/tsdoc-config@0.16.2': patches/@microsoft__tsdoc-config@0.16.2.patch
