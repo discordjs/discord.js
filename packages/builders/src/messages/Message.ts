@@ -5,7 +5,6 @@ import type {
 	APIAttachment,
 	APIEmbed,
 	APIComponentInMessageActionRow,
-	APIComponentInMessageActionRow,
 	APIMessageReference,
 	APIPoll,
 	RESTPostAPIChannelMessageJSONBody,
@@ -18,7 +17,6 @@ import type {
 	APISeparatorComponent,
 	APITextDisplayComponent,
 	APIMessageTopLevelComponent,
-	APIComponentInActionRow,
 } from 'discord-api-types/v10';
 import { ActionRowBuilder } from '../components/ActionRow.js';
 import { ComponentBuilder } from '../components/Component.js';

@@ -65,7 +65,7 @@ const messageNoComponentsV2Predicate = baseMessagePredicate
 			.refine((flags) => {
 				// If we have flags, ensure we don't have the ComponentsV2 flag
 				if (flags) {
-					return (flags & MessageFlags.IsComponentsV2) === 0
+					return (flags & MessageFlags.IsComponentsV2) === 0;
 				}
 
 				return true;
@@ -104,9 +104,7 @@ const allTopLevelComponentsPredicate = z
 
 const messageComponentsV2Predicate = baseMessagePredicate.extend({
 	components: allTopLevelComponentsPredicate,
-	flags: z.number().refine((flags) => {
-		return (flags & MessageFlags.IsComponentsV2) === MessageFlags.IsComponentsV2;
-	}),
+	flags: z.number().refine((flags) => (flags & MessageFlags.IsComponentsV2) === MessageFlags.IsComponentsV2),
 	// These fields cannot be set
 	content: z.string().length(0).nullish(),
 	embeds: z.array(z.never()).nullish(),
