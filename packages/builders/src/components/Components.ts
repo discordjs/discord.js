@@ -144,6 +144,36 @@ export function createComponentBuilder(
 			return new MentionableSelectMenuBuilder(data);
 		case ComponentType.ChannelSelect:
 			return new ChannelSelectMenuBuilder(data);
+
+		// Will be handled later
+		case ComponentType.Section: {
+			throw new Error('Not implemented yet: ComponentType.Section case');
+		}
+
+		case ComponentType.TextDisplay: {
+			throw new Error('Not implemented yet: ComponentType.TextDisplay case');
+		}
+
+		case ComponentType.Thumbnail: {
+			throw new Error('Not implemented yet: ComponentType.Thumbnail case');
+		}
+
+		case ComponentType.MediaGallery: {
+			throw new Error('Not implemented yet: ComponentType.MediaGallery case');
+		}
+
+		case ComponentType.File: {
+			throw new Error('Not implemented yet: ComponentType.File case');
+		}
+
+		case ComponentType.Separator: {
+			throw new Error('Not implemented yet: ComponentType.Separator case');
+		}
+
+		case ComponentType.Container: {
+			throw new Error('Not implemented yet: ComponentType.Container case');
+		}
+
 		default:
 			// @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);

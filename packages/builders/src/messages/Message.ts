@@ -4,12 +4,13 @@ import type {
 	APIAllowedMentions,
 	APIAttachment,
 	APIEmbed,
-	APIMessageActionRowComponent,
+	APIComponentInMessageActionRow,
 	APIMessageReference,
 	APIPoll,
 	RESTPostAPIChannelMessageJSONBody,
 	Snowflake,
 	MessageFlags,
+	APIComponentInActionRow,
 } from 'discord-api-types/v10';
 import { ActionRowBuilder } from '../components/ActionRow.js';
 import { normalizeArray, type RestOrArray } from '../util/normalizeArray.js';
@@ -76,7 +77,10 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 			attachments: data.attachments?.map((attachment) => new AttachmentBuilder(attachment)) ?? [],
 			embeds: data.embeds?.map((embed) => new EmbedBuilder(embed)) ?? [],
 			poll: data.poll ? new PollBuilder(data.poll) : undefined,
-			components: data.components?.map((component) => new ActionRowBuilder(component)) ?? [],
+			components:
+				data.components?.map(
+					(component) => new ActionRowBuilder(component as unknown as APIActionRowComponent<APIComponentInActionRow>),
+				) ?? [],
 			message_reference: data.message_reference ? new MessageReferenceBuilder(data.message_reference) : undefined,
 		};
 	}
@@ -271,7 +275,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	public addComponents(
 		...components: RestOrArray<
 			| ActionRowBuilder
-			| APIActionRowComponent<APIMessageActionRowComponent>
+			| APIActionRowComponent<APIComponentInMessageActionRow>
 			| ((builder: ActionRowBuilder) => ActionRowBuilder)
 		>
 	): this {
@@ -316,7 +320,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 		deleteCount: number,
 		...components: RestOrArray<
 			| ActionRowBuilder
-			| APIActionRowComponent<APIMessageActionRowComponent>
+			| APIActionRowComponent<APIComponentInMessageActionRow>
 			| ((builder: ActionRowBuilder) => ActionRowBuilder)
 		>
 	): this {
@@ -335,7 +339,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	public setComponents(
 		...components: RestOrArray<
 			| ActionRowBuilder
-			| APIActionRowComponent<APIMessageActionRowComponent>
+			| APIActionRowComponent<APIComponentInMessageActionRow>
 			| ((builder: ActionRowBuilder) => ActionRowBuilder)
 		>
 	): this {
