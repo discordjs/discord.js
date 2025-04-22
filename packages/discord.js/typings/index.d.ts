@@ -6906,6 +6906,5 @@ export * from 'discord-api-types/v10';
 export * from '@discordjs/builders';
 export * from '@discordjs/formatters';
 export * from '@discordjs/rest';
-export { type ImageSize } from 'discord-api-types/v10';
 export * from '@discordjs/util';
 export * from '@discordjs/ws';
