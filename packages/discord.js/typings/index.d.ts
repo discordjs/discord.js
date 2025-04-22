@@ -68,13 +68,13 @@ import {
   AuditLogEvent,
   APIMessageComponentEmoji,
   EmbedType,
-  APIActionRowComponentTypes,
+  APIComponentInActionRow,
   APIModalInteractionResponseCallbackData,
   APIModalSubmitInteraction,
-  APIMessageActionRowComponent,
+  APIComponentInMessageActionRow,
   TextInputStyle,
   APITextInputComponent,
-  APIModalActionRowComponent,
+  APIComponentInModalActionRow,
   APIModalComponent,
   APISelectMenuOption,
   APIEmbedField,
@@ -258,7 +258,7 @@ export interface BaseComponentData {
 }
 
 export type MessageActionRowComponentData =
-  | JSONEncodable<APIMessageActionRowComponent>
+  | JSONEncodable<APIComponentInMessageActionRow>
   | ButtonComponentData
   | StringSelectMenuComponentData
   | UserSelectMenuComponentData
@@ -266,13 +266,13 @@ export type MessageActionRowComponentData =
   | MentionableSelectMenuComponentData
   | ChannelSelectMenuComponentData;
 
-export type ModalActionRowComponentData = JSONEncodable<APIModalActionRowComponent> | TextInputComponentData;
+export type ModalActionRowComponentData = JSONEncodable<APIComponentInModalActionRow> | TextInputComponentData;
 
 export type ActionRowComponentData = MessageActionRowComponentData | ModalActionRowComponentData;
 
 export type ActionRowComponent = MessageActionRowComponent | ModalActionRowComponent;
 
-export interface ActionRowData<ComponentType extends JSONEncodable<APIActionRowComponentTypes> | ActionRowComponentData>
+export interface ActionRowData<ComponentType extends JSONEncodable<APIComponentInActionRow> | ActionRowComponentData>
   extends BaseComponentData {
   components: readonly ComponentType[];
 }
@@ -287,9 +287,9 @@ export type MessageActionRowComponent =
 export type ModalActionRowComponent = TextInputComponent;
 
 export class ActionRow<ComponentType extends MessageActionRowComponent | ModalActionRowComponent> extends Component<
-  APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>
+  APIActionRowComponent<APIComponentInMessageActionRow | APIComponentInModalActionRow>
 > {
-  private constructor(data: APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>);
+  private constructor(data: APIActionRowComponent<APIComponentInMessageActionRow | APIComponentInModalActionRow>);
   public readonly components: ComponentType[];
   public toJSON(): APIActionRowComponent<ReturnType<ComponentType['toJSON']>>;
 }
@@ -697,7 +697,7 @@ export class ButtonInteraction<Cached extends CacheType = CacheType> extends Mes
 export type AnyComponent =
   | APIMessageComponent
   | APIModalComponent
-  | APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>;
+  | APIActionRowComponent<APIComponentInMessageActionRow | APIComponentInModalActionRow>;
 
 export class Component<RawComponentData extends AnyComponent = AnyComponent> {
   public readonly data: Readonly<RawComponentData>;
@@ -2150,9 +2150,9 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public get component(): CacheTypeReducer<
     Cached,
     MessageActionRowComponent,
-    APIMessageActionRowComponent,
-    MessageActionRowComponent | APIMessageActionRowComponent,
-    MessageActionRowComponent | APIMessageActionRowComponent
+    APIComponentInMessageActionRow,
+    MessageActionRowComponent | APIComponentInMessageActionRow,
+    MessageActionRowComponent | APIComponentInMessageActionRow
   >;
   public componentType: MessageComponentType;
   public customId: string;
@@ -2354,7 +2354,7 @@ export interface ModalComponentData {
   customId: string;
   title: string;
   components: readonly (
-    | JSONEncodable<APIActionRowComponent<APIModalActionRowComponent>>
+    | JSONEncodable<APIActionRowComponent<APIComponentInModalActionRow>>
     | ActionRowData<ModalActionRowComponentData>
   )[];
 }
@@ -6231,9 +6231,9 @@ export interface BaseMessageOptions {
     | AttachmentPayload
   )[];
   components?: readonly (
-    | JSONEncodable<APIActionRowComponent<APIActionRowComponentTypes>>
+    | JSONEncodable<APIActionRowComponent<APIComponentInActionRow>>
     | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>
-    | APIActionRowComponent<APIActionRowComponentTypes>
+    | APIActionRowComponent<APIComponentInActionRow>
   )[];
 }
 

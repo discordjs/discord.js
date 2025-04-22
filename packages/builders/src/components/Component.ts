@@ -1,10 +1,10 @@
 import type { JSONEncodable } from '@discordjs/util';
-import type { APIActionRowComponent, APIActionRowComponentTypes } from 'discord-api-types/v10';
+import type { APIActionRowComponent, APIComponentInActionRow } from 'discord-api-types/v10';
 
 /**
  * Any action row component data represented as an object.
  */
-export type AnyAPIActionRowComponent = APIActionRowComponent<APIActionRowComponentTypes> | APIActionRowComponentTypes;
+export type AnyAPIActionRowComponent = APIActionRowComponent<APIComponentInActionRow> | APIComponentInActionRow;
 
 /**
  * The base component builder that contains common symbols for all sorts of components.

@@ -3,7 +3,7 @@
 import type {
 	APITextInputComponent,
 	APIActionRowComponent,
-	APIActionRowComponentTypes,
+	APIComponentInActionRow,
 	APIChannelSelectComponent,
 	APIMentionableSelectComponent,
 	APIRoleSelectComponent,
@@ -37,7 +37,7 @@ import { UserSelectMenuBuilder } from './selectMenu/UserSelectMenu.js';
 import { TextInputBuilder } from './textInput/TextInput.js';
 
 export interface ActionRowBuilderData
-	extends Partial<Omit<APIActionRowComponent<APIActionRowComponentTypes>, 'components'>> {
+	extends Partial<Omit<APIActionRowComponent<APIComponentInActionRow>, 'components'>> {
 	components: AnyActionRowComponentBuilder[];
 }
 
@@ -46,7 +46,7 @@ export interface ActionRowBuilderData
  *
  * @typeParam ComponentType - The types of components this action row holds
  */
-export class ActionRowBuilder extends ComponentBuilder<APIActionRowComponent<APIActionRowComponentTypes>> {
+export class ActionRowBuilder extends ComponentBuilder<APIActionRowComponent<APIComponentInActionRow>> {
 	private readonly data: ActionRowBuilderData;
 
 	/**
@@ -90,7 +90,7 @@ export class ActionRowBuilder extends ComponentBuilder<APIActionRowComponent<API
 	 * 	.addComponents(button2, button3);
 	 * ```
 	 */
-	public constructor({ components = [], ...data }: Partial<APIActionRowComponent<APIActionRowComponentTypes>> = {}) {
+	public constructor({ components = [], ...data }: Partial<APIActionRowComponent<APIComponentInActionRow>> = {}) {
 		super();
 		this.data = {
 			...structuredClone(data),
@@ -328,7 +328,7 @@ export class ActionRowBuilder extends ComponentBuilder<APIActionRowComponent<API
 	/**
 	 * {@inheritDoc ComponentBuilder.toJSON}
 	 */
-	public override toJSON(validationOverride?: boolean): APIActionRowComponent<APIActionRowComponentTypes> {
+	public override toJSON(validationOverride?: boolean): APIActionRowComponent<APIComponentInActionRow> {
 		const { components, ...rest } = this.data;
 
 		const data = {
@@ -338,6 +338,6 @@ export class ActionRowBuilder extends ComponentBuilder<APIActionRowComponent<API
 
 		validate(actionRowPredicate, data, validationOverride);
 
-		return data as APIActionRowComponent<APIActionRowComponentTypes>;
+		return data as APIActionRowComponent<APIComponentInActionRow>;
 	}
 }
