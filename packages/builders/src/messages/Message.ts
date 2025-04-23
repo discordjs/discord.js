@@ -257,7 +257,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	 *
 	 * @param updater - The function to update the allowed mentions with
 	 */
-	public updateAllowedMentions(updater: (builder: AllowedMentionsBuilder) => AllowedMentionsBuilder): this {
+	public updateAllowedMentions(updater: (builder: AllowedMentionsBuilder) => void): this {
 		updater((this.data.allowed_mentions ??= new AllowedMentionsBuilder()));
 		return this;
 	}
@@ -290,7 +290,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	 *
 	 * @param updater - The function to update the message reference with
 	 */
-	public updateMessageReference(updater: (builder: MessageReferenceBuilder) => MessageReferenceBuilder): this {
+	public updateMessageReference(updater: (builder: MessageReferenceBuilder) => void): this {
 		updater((this.data.message_reference ??= new MessageReferenceBuilder()));
 		return this;
 	}
@@ -630,7 +630,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	 *
 	 * @param updater - The function to update the poll with
 	 */
-	public updatePoll(updater: (builder: PollBuilder) => PollBuilder): this {
+	public updatePoll(updater: (builder: PollBuilder) => void): this {
 		updater((this.data.poll ??= new PollBuilder()));
 		return this;
 	}
