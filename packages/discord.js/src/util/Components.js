@@ -5,7 +5,7 @@ const { ComponentType } = require('discord-api-types/v10');
 
 /**
  * @typedef {Object} BaseComponentData
- * @property {?number} id the id of this component
+ * @property {number} [id] the id of this component
  * @property {ComponentType} type The type of component
  */
 
@@ -17,30 +17,30 @@ const { ComponentType } = require('discord-api-types/v10');
 /**
  * @typedef {BaseComponentData} ButtonComponentData
  * @property {ButtonStyle} style The style of the button
- * @property {?boolean} disabled Whether this button is disabled
+ * @property {boolean} [disabled] Whether this button is disabled
  * @property {string} label The label of this button
- * @property {?APIMessageComponentEmoji} emoji The emoji on this button
- * @property {?string} customId The custom id of the button
- * @property {?string} url The URL of the button
+ * @property {APIMessageComponentEmoji} [emoji] The emoji on this button
+ * @property {string} [customId] The custom id of the button
+ * @property {string} [url] The URL of the button
  */
 
 /**
  * @typedef {object} SelectMenuComponentOptionData
  * @property {string} label The label of the option
  * @property {string} value The value of the option
- * @property {?string} description The description of the option
- * @property {?APIMessageComponentEmoji} emoji The emoji on the option
- * @property {?boolean} default Whether this option is selected by default
+ * @property {string} [description] The description of the option
+ * @property {APIMessageComponentEmoji} [emoji] The emoji on the option
+ * @property {boolean} [default] Whether this option is selected by default
  */
 
 /**
  * @typedef {BaseComponentData} SelectMenuComponentData
  * @property {string} customId The custom id of the select menu
- * @property {?boolean} disabled Whether the select menu is disabled or not
- * @property {?number} maxValues The maximum amount of options that can be selected
- * @property {?number} minValues The minimum amount of options that can be selected
- * @property {?SelectMenuComponentOptionData[]} options The options in this select menu
- * @property {?string} placeholder The placeholder of the select menu
+ * @property {boolean} [disabled] Whether the select menu is disabled or not
+ * @property {number} [maxValues] The maximum amount of options that can be selected
+ * @property {number} [minValues] The minimum amount of options that can be selected
+ * @property {SelectMenuComponentOptionData[]} [options] The options in this select menu
+ * @property {string} [placeholder] The placeholder of the select menu
  */
 
 /**
@@ -52,11 +52,11 @@ const { ComponentType } = require('discord-api-types/v10');
  * @property {string} customId The custom id of the text input
  * @property {TextInputStyle} style The style of the text input
  * @property {string} label The text that appears on top of the text input field
- * @property {?number} minLength The minimum number of characters that can be entered in the text input
- * @property {?number} maxLength The maximum number of characters that can be entered in the text input
- * @property {?boolean} required Whether or not the text input is required or not
- * @property {?string} value The pre-filled text in the text input
- * @property {?string} placeholder Placeholder for the text input
+ * @property {number} [minLength] The minimum number of characters that can be entered in the text input
+ * @property {number} [maxLength] The maximum number of characters that can be entered in the text input
+ * @property {boolean} [required] Whether or not the text input is required or not
+ * @property {string} [value] The pre-filled text in the text input
+ * @property {string} [placeholder] Placeholder for the text input
  */
 
 /**
@@ -67,21 +67,21 @@ const { ComponentType } = require('discord-api-types/v10');
 /**
  * @typedef {BaseComponentData} ThumbnailComponentData
  * @property {UnfurledMediaItemData} media The media for the thumbnail
- * @property {?string} description The description of the thumbnail
- * @property {?boolean} spoiler Whether the thumbnail should be spoilered
+ * @property {string} [description] The description of the thumbnail
+ * @property {boolean} [spoiler] Whether the thumbnail should be spoilered
  */
 
 /**
  * @typedef {BaseComponentData} FileComponentData
  * @property {UnfurledMediaItemData} file The file media in this component
- * @property {?boolean} spoiler Whether the file should be spoilered
+ * @property {boolean} [spoiler] Whether the file should be spoilered
  */
 
 /**
  * @typedef {Object} MediaGalleryItemData
  * @property {UnfurledMediaItemData} media The media for the media gallery item
- * @property {?string} description The description of the media gallery item
- * @property {?boolean} spoiler Whether the media gallery item should be spoilered
+ * @property {string} [description] The description of the media gallery item
+ * @property {boolean} [spoiler] Whether the media gallery item should be spoilered
  */
 
 /**
@@ -91,8 +91,8 @@ const { ComponentType } = require('discord-api-types/v10');
 
 /**
  * @typedef {BaseComponentData} SeparatorComponentData
- * @property {?SeparatorSpacingSize} spacing The spacing size of this component
- * @property {?boolean} divider Whether the separator shows as a divider
+ * @property {SeparatorSpacingSize} [spacing] The spacing size of this component
+ * @property {boolean} [divider] Whether the separator shows as a divider
  */
 
 /**
@@ -114,8 +114,8 @@ const { ComponentType } = require('discord-api-types/v10');
 /**
  * @typedef {BaseComponentData} ContainerComponentData
  * @property {ComponentInContainerData} components The components in this container
- * @property {?number} accentColor The accent color of this container
- * @property {?boolean} spoiler Whether the container should be spoilered
+ * @property {?number} [accentColor] The accent color of this container
+ * @property {boolean} [spoiler] Whether the container should be spoilered
  */
 
 /**
