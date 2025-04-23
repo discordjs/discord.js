@@ -1,17 +1,38 @@
 import type { JSONEncodable } from '@discordjs/util';
-import type { APIActionRowComponent, APIComponentInActionRow } from 'discord-api-types/v10';
+import type { APIBaseComponent, ComponentType } from 'discord-api-types/v10';
 
-/**
- * Any action row component data represented as an object.
- */
-export type AnyAPIActionRowComponent = APIActionRowComponent<APIComponentInActionRow> | APIComponentInActionRow;
+export interface ComponentBuilderBaseData {
+	id?: number | undefined;
+}
 
 /**
  * The base component builder that contains common symbols for all sorts of components.
  *
  * @typeParam Component - The type of API data that is stored within the builder
  */
-export abstract class ComponentBuilder<Component extends AnyAPIActionRowComponent> implements JSONEncodable<Component> {
+export abstract class ComponentBuilder<Component extends APIBaseComponent<ComponentType>>
+	implements JSONEncodable<Component>
+{
+	protected abstract readonly data: ComponentBuilderBaseData;
+
+	/**
+	 * Sets the id of this component.
+	 *
+	 * @param id - The id to use
+	 */
+	public setId(id: number) {
+		this.data.id = id;
+		return this;
+	}
+
+	/**
+	 * Clears the id of this component, defaulting to a default incremented id.
+	 */
+	public clearId() {
+		this.data.id = undefined;
+		return this;
+	}
+
 	/**
 	 * Serializes this builder to API-compatible JSON data.
 	 *

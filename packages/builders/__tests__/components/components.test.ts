@@ -3,10 +3,10 @@ import {
 	ComponentType,
 	TextInputStyle,
 	type APIButtonComponent,
-	type APIComponentInMessageActionRow,
 	type APISelectMenuComponent,
 	type APITextInputComponent,
 	type APIActionRowComponent,
+	type APIComponentInMessageActionRow,
 } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {

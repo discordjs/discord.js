@@ -10,9 +10,24 @@ import type {
 	RESTPostAPIChannelMessageJSONBody,
 	Snowflake,
 	MessageFlags,
-	APIComponentInActionRow,
+	APIContainerComponent,
+	APIFileComponent,
+	APIMediaGalleryComponent,
+	APISectionComponent,
+	APISeparatorComponent,
+	APITextDisplayComponent,
+	APIMessageTopLevelComponent,
 } from 'discord-api-types/v10';
 import { ActionRowBuilder } from '../components/ActionRow.js';
+import { ComponentBuilder } from '../components/Component.js';
+import type { MessageTopLevelComponentBuilder } from '../components/Components.js';
+import { createComponentBuilder } from '../components/Components.js';
+import { ContainerBuilder } from '../components/v2/Container.js';
+import { FileBuilder } from '../components/v2/File.js';
+import { MediaGalleryBuilder } from '../components/v2/MediaGallery.js';
+import { SectionBuilder } from '../components/v2/Section.js';
+import { SeparatorBuilder } from '../components/v2/Separator.js';
+import { TextDisplayBuilder } from '../components/v2/TextDisplay.js';
 import { normalizeArray, type RestOrArray } from '../util/normalizeArray.js';
 import { resolveBuilder } from '../util/resolveBuilder.js';
 import { validate } from '../util/validation.js';
@@ -32,7 +47,7 @@ export interface MessageBuilderData
 	> {
 	allowed_mentions?: AllowedMentionsBuilder;
 	attachments: AttachmentBuilder[];
-	components: ActionRowBuilder[];
+	components: MessageTopLevelComponentBuilder[];
 	embeds: EmbedBuilder[];
 	message_reference?: MessageReferenceBuilder;
 	poll?: PollBuilder;
@@ -54,7 +69,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	/**
 	 * Gets the components of this message.
 	 */
-	public get components(): readonly ActionRowBuilder[] {
+	public get components(): readonly MessageTopLevelComponentBuilder[] {
 		return this.data.components;
 	}
 
@@ -77,10 +92,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 			attachments: data.attachments?.map((attachment) => new AttachmentBuilder(attachment)) ?? [],
 			embeds: data.embeds?.map((embed) => new EmbedBuilder(embed)) ?? [],
 			poll: data.poll ? new PollBuilder(data.poll) : undefined,
-			components:
-				data.components?.map(
-					(component) => new ActionRowBuilder(component as unknown as APIActionRowComponent<APIComponentInActionRow>),
-				) ?? [],
+			components: data.components?.map((component) => createComponentBuilder(component)) ?? [],
 			message_reference: data.message_reference ? new MessageReferenceBuilder(data.message_reference) : undefined,
 		};
 	}
@@ -268,11 +280,11 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	}
 
 	/**
-	 * Adds components to this message.
+	 * Adds action row components to this message.
 	 *
-	 * @param components - The components to add
+	 * @param components - The action row components to add
 	 */
-	public addComponents(
+	public addActionRowComponents(
 		...components: RestOrArray<
 			| ActionRowBuilder
 			| APIActionRowComponent<APIComponentInMessageActionRow>
@@ -282,6 +294,110 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 		this.data.components ??= [];
 
 		const resolved = normalizeArray(components).map((component) => resolveBuilder(component, ActionRowBuilder));
+		this.data.components.push(...resolved);
+
+		return this;
+	}
+
+	/**
+	 * Adds container components to this message.
+	 *
+	 * @param components - The container components to add
+	 */
+	public addContainerComponents(
+		...components: RestOrArray<
+			APIContainerComponent | ContainerBuilder | ((builder: ContainerBuilder) => ContainerBuilder)
+		>
+	): this {
+		this.data.components ??= [];
+
+		const resolved = normalizeArray(components).map((component) => resolveBuilder(component, ContainerBuilder));
+		this.data.components.push(...resolved);
+
+		return this;
+	}
+
+	/**
+	 * Adds file components to this message.
+	 *
+	 * @param components - The file components to add
+	 */
+	public addFileComponents(
+		...components: RestOrArray<APIFileComponent | FileBuilder | ((builder: FileBuilder) => FileBuilder)>
+	): this {
+		this.data.components ??= [];
+
+		const resolved = normalizeArray(components).map((component) => resolveBuilder(component, FileBuilder));
+		this.data.components.push(...resolved);
+
+		return this;
+	}
+
+	/**
+	 * Adds media gallery components to this message.
+	 *
+	 * @param components - The media gallery components to add
+	 */
+	public addMediaGalleryComponents(
+		...components: RestOrArray<
+			APIMediaGalleryComponent | MediaGalleryBuilder | ((builder: MediaGalleryBuilder) => MediaGalleryBuilder)
+		>
+	): this {
+		this.data.components ??= [];
+
+		const resolved = normalizeArray(components).map((component) => resolveBuilder(component, MediaGalleryBuilder));
+		this.data.components.push(...resolved);
+
+		return this;
+	}
+
+	/**
+	 * Adds section components to this message.
+	 *
+	 * @param components - The section components to add
+	 */
+	public addSectionComponents(
+		...components: RestOrArray<APISectionComponent | SectionBuilder | ((builder: SectionBuilder) => SectionBuilder)>
+	): this {
+		this.data.components ??= [];
+
+		const resolved = normalizeArray(components).map((component) => resolveBuilder(component, SectionBuilder));
+		this.data.components.push(...resolved);
+
+		return this;
+	}
+
+	/**
+	 * Adds separator components to this message.
+	 *
+	 * @param components - The separator components to add
+	 */
+	public addSeparatorComponents(
+		...components: RestOrArray<
+			APISeparatorComponent | SeparatorBuilder | ((builder: SeparatorBuilder) => SeparatorBuilder)
+		>
+	): this {
+		this.data.components ??= [];
+
+		const resolved = normalizeArray(components).map((component) => resolveBuilder(component, SeparatorBuilder));
+		this.data.components.push(...resolved);
+
+		return this;
+	}
+
+	/**
+	 * Adds text display components to this message.
+	 *
+	 * @param components - The text display components to add
+	 */
+	public addTextDisplayComponents(
+		...components: RestOrArray<
+			APITextDisplayComponent | TextDisplayBuilder | ((builder: TextDisplayBuilder) => TextDisplayBuilder)
+		>
+	): this {
+		this.data.components ??= [];
+
+		const resolved = normalizeArray(components).map((component) => resolveBuilder(component, TextDisplayBuilder));
 		this.data.components.push(...resolved);
 
 		return this;
@@ -318,32 +434,14 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	public spliceComponents(
 		start: number,
 		deleteCount: number,
-		...components: RestOrArray<
-			| ActionRowBuilder
-			| APIActionRowComponent<APIComponentInMessageActionRow>
-			| ((builder: ActionRowBuilder) => ActionRowBuilder)
-		>
+		...components: RestOrArray<APIMessageTopLevelComponent | MessageTopLevelComponentBuilder>
 	): this {
 		this.data.components ??= [];
-		const resolved = normalizeArray(components).map((component) => resolveBuilder(component, ActionRowBuilder));
+		const resolved = normalizeArray(components).map((component) =>
+			component instanceof ComponentBuilder ? component : createComponentBuilder(component),
+		);
 
 		this.data.components.splice(start, deleteCount, ...resolved);
-		return this;
-	}
-
-	/**
-	 * Sets the components of this message.
-	 *
-	 * @param components - The components to set
-	 */
-	public setComponents(
-		...components: RestOrArray<
-			| ActionRowBuilder
-			| APIActionRowComponent<APIComponentInMessageActionRow>
-			| ((builder: ActionRowBuilder) => ActionRowBuilder)
-		>
-	): this {
-		this.data.components = normalizeArray(components).map((component) => resolveBuilder(component, ActionRowBuilder));
 		return this;
 	}
 
