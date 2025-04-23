@@ -222,7 +222,7 @@ export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
 
 		const data = {
 			...structuredClone(rest),
-			components: components.map((component) => component.toJSON(validationOverride)),
+			components: components.map((component) => component.toJSON(false)),
 		};
 
 		validate(containerPredicate, data, validationOverride);

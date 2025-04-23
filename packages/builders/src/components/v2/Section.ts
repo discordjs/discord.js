@@ -246,7 +246,7 @@ export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
 
 		const data = {
 			...structuredClone(rest),
-			components: components.map((component) => component.toJSON(validationOverride)),
+			components: components.map((component) => component.toJSON(false)),
 			accessory: accessory?.toJSON(validationOverride),
 		};
 

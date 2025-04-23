@@ -108,7 +108,7 @@ export class MediaGalleryBuilder extends ComponentBuilder<APIMediaGalleryCompone
 
 		const data = {
 			...structuredClone(rest),
-			items: items.map((item) => item.toJSON(validationOverride)),
+			items: items.map((item) => item.toJSON(false)),
 		};
 
 		validate(mediaGalleryPredicate, data, validationOverride);
