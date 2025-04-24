@@ -272,7 +272,7 @@ class InteractionResponses {
   }
 
   /**
-   * Launches activity, if enabled
+   * Launches this application's activity, if enabled
    * @param {LaunchActivityOptions} [options={}] Options for launching the activity
    * @returns {Promise<InteractionCallbackResponse|undefined>}
    */
