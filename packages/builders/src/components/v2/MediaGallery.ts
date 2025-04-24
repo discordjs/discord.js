@@ -10,8 +10,21 @@ export interface MediaGalleryBuilderData extends Partial<Omit<APIMediaGalleryCom
 	items: MediaGalleryItemBuilder[];
 }
 
+/**
+ * A builder that creates API-compatible JSON data for media galleries.
+ */
 export class MediaGalleryBuilder extends ComponentBuilder<APIMediaGalleryComponent> {
+	/**
+	 * @internal
+	 */
 	protected readonly data: MediaGalleryBuilderData;
+
+	/**
+	 * The items in this media gallery.
+	 */
+	public get items(): readonly MediaGalleryItemBuilder[] {
+		return this.data.items;
+	}
 
 	/**
 	 * Creates a new media gallery from API data.
@@ -49,17 +62,14 @@ export class MediaGalleryBuilder extends ComponentBuilder<APIMediaGalleryCompone
 	 */
 	public constructor(data: Partial<APIMediaGalleryComponent> = {}) {
 		super();
+
+		const { items = [], ...rest } = data;
+
 		this.data = {
-			items: data?.items?.map((item) => new MediaGalleryItemBuilder(item)) ?? [],
+			...structuredClone(rest),
+			items: items.map((item) => new MediaGalleryItemBuilder(item)),
 			type: ComponentType.MediaGallery,
 		};
-	}
-
-	/**
-	 * The items in this media gallery.
-	 */
-	public get items(): readonly MediaGalleryItemBuilder[] {
-		return this.data.items;
 	}
 
 	/**

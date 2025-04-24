@@ -4,7 +4,13 @@ import { validate } from '../../util/validation.js';
 import { ComponentBuilder } from '../Component.js';
 import { thumbnailPredicate } from './Assertions.js';
 
+/**
+ * A builder that creates API-compatible JSON data for thumbnails.
+ */
 export class ThumbnailBuilder extends ComponentBuilder<APIThumbnailComponent> {
+	/**
+	 * @internal
+	 */
 	protected readonly data: Partial<APIThumbnailComponent>;
 
 	/**
@@ -34,9 +40,12 @@ export class ThumbnailBuilder extends ComponentBuilder<APIThumbnailComponent> {
 	 */
 	public constructor(data: Partial<APIThumbnailComponent> = {}) {
 		super();
+
+		const { media, ...rest } = data;
+
 		this.data = {
-			...structuredClone(data),
-			media: data.media ? { url: data.media.url } : undefined,
+			...structuredClone(rest),
+			media: media && { url: media.url },
 			type: ComponentType.Thumbnail,
 		};
 	}

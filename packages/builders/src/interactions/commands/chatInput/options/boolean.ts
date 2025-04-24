@@ -5,6 +5,9 @@ import { ApplicationCommandOptionBase } from './ApplicationCommandOptionBase.js'
  * A chat input command boolean option.
  */
 export class ChatInputCommandBooleanOption extends ApplicationCommandOptionBase {
+	/**
+	 * Creates a new boolean option from API data.
+	 */
 	public constructor() {
 		super(ApplicationCommandOptionType.Boolean);
 	}

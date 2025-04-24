@@ -32,9 +32,7 @@ export class MediaGalleryItemBuilder implements JSONEncodable<APIMediaGalleryIte
 	 * ```
 	 */
 	public constructor(data: Partial<APIMediaGalleryItem> = {}) {
-		this.data = {
-			...structuredClone(data),
-		};
+		this.data = structuredClone(data);
 	}
 
 	/**

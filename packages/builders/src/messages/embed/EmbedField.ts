@@ -7,6 +7,9 @@ import { embedFieldPredicate } from './Assertions.js';
  * A builder that creates API-compatible JSON data for embed fields.
  */
 export class EmbedFieldBuilder implements JSONEncodable<APIEmbedField> {
+	/**
+	 * The API data associated with this embed field.
+	 */
 	private readonly data: Partial<APIEmbedField>;
 
 	/**
@@ -14,8 +17,8 @@ export class EmbedFieldBuilder implements JSONEncodable<APIEmbedField> {
 	 *
 	 * @param data - The API data to use
 	 */
-	public constructor(data?: Partial<APIEmbedField>) {
-		this.data = structuredClone(data) ?? {};
+	public constructor(data: Partial<APIEmbedField> = {}) {
+		this.data = structuredClone(data);
 	}
 
 	/**

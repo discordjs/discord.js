@@ -3,7 +3,13 @@ import { validate } from '../../util/validation.js';
 import { ComponentBuilder } from '../Component.js';
 import { filePredicate } from './Assertions.js';
 
+/**
+ * A builder that creates API-compatible JSON data for files.
+ */
 export class FileBuilder extends ComponentBuilder<APIFileComponent> {
+	/**
+	 * @internal
+	 */
 	protected readonly data: Partial<APIFileComponent>;
 
 	/**
@@ -33,9 +39,12 @@ export class FileBuilder extends ComponentBuilder<APIFileComponent> {
 	 */
 	public constructor(data: Partial<APIFileComponent> = {}) {
 		super();
+
+		const { file, ...rest } = data;
+
 		this.data = {
-			...structuredClone(data),
-			file: data.file ? { url: data.file.url } : undefined,
+			...structuredClone(rest),
+			file: file && { url: file.url },
 			type: ComponentType.File,
 		};
 	}

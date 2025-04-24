@@ -8,6 +8,11 @@ import { ApplicationCommandOptionBase } from './ApplicationCommandOptionBase.js'
 
 /**
  * A chat input command number option.
+ *
+ * @mixes ApplicationCommandOptionBase
+ * @mixes ApplicationCommandNumericOptionMinMaxValueMixin
+ * @mixes ApplicationCommandOptionWithAutocompleteMixin
+ * @mixes ApplicationCommandOptionWithChoicesMixin<number>
  */
 export class ChatInputCommandNumberOption extends Mixin(
 	ApplicationCommandOptionBase,
@@ -15,8 +20,14 @@ export class ChatInputCommandNumberOption extends Mixin(
 	ApplicationCommandOptionWithAutocompleteMixin,
 	ApplicationCommandOptionWithChoicesMixin<number>,
 ) {
+	/**
+	 * @internal
+	 */
 	protected static override readonly predicate = numberOptionPredicate;
 
+	/**
+	 * Creates a new number option from API data.
+	 */
 	public constructor() {
 		super(ApplicationCommandOptionType.Number);
 	}

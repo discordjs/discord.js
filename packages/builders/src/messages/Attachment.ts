@@ -7,6 +7,9 @@ import { attachmentPredicate } from './Assertions.js';
  * A builder that creates API-compatible JSON data for attachments.
  */
 export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
+	/**
+	 * The API data associated with this attachment.
+	 */
 	private readonly data: Partial<RESTAPIAttachment>;
 
 	/**

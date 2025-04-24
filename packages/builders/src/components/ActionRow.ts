@@ -1,5 +1,3 @@
-/* eslint-disable jsdoc/check-param-names */
-
 import type {
 	APITextInputComponent,
 	APIActionRowComponent,
@@ -43,10 +41,11 @@ export interface ActionRowBuilderData
 
 /**
  * A builder that creates API-compatible JSON data for action rows.
- *
- * @typeParam ComponentType - The types of components this action row holds
  */
 export class ActionRowBuilder extends ComponentBuilder<APIActionRowComponent<APIComponentInActionRow>> {
+	/**
+	 * @internal
+	 */
 	protected readonly data: ActionRowBuilderData;
 
 	/**
@@ -90,12 +89,15 @@ export class ActionRowBuilder extends ComponentBuilder<APIActionRowComponent<API
 	 * 	.addComponents(button2, button3);
 	 * ```
 	 */
-	public constructor({ components = [], ...data }: Partial<APIActionRowComponent<APIComponentInActionRow>> = {}) {
+	public constructor(data: Partial<APIActionRowComponent<APIComponentInActionRow>> = {}) {
 		super();
+
+		const { components = [], ...rest } = data;
+
 		this.data = {
-			...structuredClone(data),
-			type: ComponentType.ActionRow,
+			...structuredClone(rest),
 			components: components.map((component) => createComponentBuilder(component)),
+			type: ComponentType.ActionRow,
 		};
 	}
 

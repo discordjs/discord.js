@@ -7,6 +7,9 @@ import { embedFooterPredicate } from './Assertions.js';
  * A builder that creates API-compatible JSON data for the embed footer.
  */
 export class EmbedFooterBuilder implements JSONEncodable<APIEmbedFooter> {
+	/**
+	 * The API data associated with this embed footer.
+	 */
 	private readonly data: Partial<APIEmbedFooter>;
 
 	/**
@@ -14,8 +17,8 @@ export class EmbedFooterBuilder implements JSONEncodable<APIEmbedFooter> {
 	 *
 	 * @param data - The API data to use
 	 */
-	public constructor(data?: Partial<APIEmbedFooter>) {
-		this.data = structuredClone(data) ?? {};
+	public constructor(data: Partial<APIEmbedFooter> = {}) {
+		this.data = structuredClone(data);
 	}
 
 	/**

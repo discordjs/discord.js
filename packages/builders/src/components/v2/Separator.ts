@@ -4,7 +4,13 @@ import { validate } from '../../util/validation.js';
 import { ComponentBuilder } from '../Component.js';
 import { separatorPredicate } from './Assertions.js';
 
+/**
+ * A builder that creates API-compatible JSON data for separators.
+ */
 export class SeparatorBuilder extends ComponentBuilder<APISeparatorComponent> {
+	/**
+	 * @internal
+	 */
 	protected readonly data: Partial<APISeparatorComponent>;
 
 	/**

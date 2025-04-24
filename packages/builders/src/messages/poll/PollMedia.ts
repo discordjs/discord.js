@@ -6,6 +6,8 @@ import type { APIPollMedia } from 'discord-api-types/v10';
 export abstract class PollMediaBuilder {
 	/**
 	 * The API data associated with this poll media.
+	 *
+	 * @internal
 	 */
 	protected readonly data: Partial<APIPollMedia>;
 

@@ -1,5 +1,3 @@
-/* eslint-disable jsdoc/check-param-names */
-
 import { ComponentType } from 'discord-api-types/v10';
 import type { APIStringSelectComponent, APISelectMenuOption } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
@@ -57,10 +55,13 @@ export class StringSelectMenuBuilder extends BaseSelectMenuBuilder<APIStringSele
 	 * 	});
 	 * ```
 	 */
-	public constructor({ options = [], ...data }: Partial<APIStringSelectComponent> = {}) {
+	public constructor(data: Partial<APIStringSelectComponent> = {}) {
 		super();
+
+		const { options = [], ...rest } = data;
+
 		this.data = {
-			...structuredClone(data),
+			...structuredClone(rest),
 			options: options.map((option) => new StringSelectMenuOptionBuilder(option)),
 			type: ComponentType.StringSelect,
 		};

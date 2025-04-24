@@ -26,6 +26,9 @@ export interface ApplicationCommandOptionChannelTypesData
  * This mixin holds channel type symbols used for options.
  */
 export class ApplicationCommandOptionChannelTypesMixin {
+	/**
+	 * @internal
+	 */
 	declare protected readonly data: ApplicationCommandOptionChannelTypesData;
 
 	/**

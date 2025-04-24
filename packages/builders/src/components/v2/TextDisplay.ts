@@ -4,7 +4,13 @@ import { validate } from '../../util/validation.js';
 import { ComponentBuilder } from '../Component.js';
 import { textDisplayPredicate } from './Assertions.js';
 
+/**
+ * A builder that creates API-compatible JSON data for text displays.
+ */
 export class TextDisplayBuilder extends ComponentBuilder<APITextDisplayComponent> {
+	/**
+	 * @internal
+	 */
 	protected readonly data: Partial<APITextDisplayComponent>;
 
 	/**

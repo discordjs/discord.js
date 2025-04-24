@@ -7,6 +7,9 @@ export type CustomIdButtonStyle = APIButtonComponentWithCustomId['style'];
 
 /**
  * A builder that creates API-compatible JSON data for buttons with custom IDs.
+ *
+ * @mixes BaseButtonBuilder<APIButtonComponentWithCustomId>
+ * @mixes EmojiOrLabelButtonMixin
  */
 export abstract class CustomIdButtonBuilder extends Mixin(
 	BaseButtonBuilder<APIButtonComponentWithCustomId>,
