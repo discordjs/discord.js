@@ -228,7 +228,8 @@ class ApplicationCommand extends Base {
    * a member needs in order to run the command
    * @property {ApplicationIntegrationType[]} [integrationTypes] Installation contexts where the command is available
    * @property {InteractionContextType[]} [contexts] Interaction contexts where the command can be used
-   * @property {EntryPointCommandHandlerType} [handler] Determines whether the interaction is handled by the app's
+   * @property {EntryPointCommandHandlerType} [handler] Whether the interaction is handled by the app's
+   * interactions handler or by Discord.
    */
 
   /**
