@@ -58,7 +58,8 @@ class Client extends BaseClient {
     const defaults = Options.createDefault();
 
     if (this.options.ws.shardIds === defaults.ws.shardIds && 'SHARDS' in data) {
-      this.options.ws.shardIds = JSON.parse(data.SHARDS);
+      const shards = JSON.parse(data.SHARDS);
+      this.options.ws.shardIds = Array.isArray(shards) ? shards : [shards];
     }
 
     if (this.options.ws.shardCount === defaults.ws.shardCount && 'SHARD_COUNT' in data) {
@@ -278,7 +279,6 @@ class Client extends BaseClient {
       (await this.ws.fetchStatus()).every(status => status === WebSocketShardStatus.Ready)
     ) {
       this.emit(Events.Debug, 'Client received all its guilds. Marking as fully ready.');
-      this.status = Status.Ready;
 
       this._triggerClientReady();
       return;
@@ -301,7 +301,6 @@ class Client extends BaseClient {
         );
 
         this.readyTimeout = null;
-        this.status = Status.Ready;
 
         this._triggerClientReady();
       },

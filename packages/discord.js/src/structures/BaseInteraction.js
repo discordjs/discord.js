@@ -121,6 +121,12 @@ class BaseInteraction extends Base {
      * @type {?InteractionContextType}
      */
     this.context = data.context ?? null;
+
+    /**
+     * Attachment size limit in bytes
+     * @type {number}
+     */
+    this.attachmentSizeLimit = data.attachment_size_limit;
   }
 
   /**

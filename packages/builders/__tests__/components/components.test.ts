@@ -3,10 +3,10 @@ import {
 	ComponentType,
 	TextInputStyle,
 	type APIButtonComponent,
-	type APIMessageActionRowComponent,
 	type APISelectMenuComponent,
 	type APITextInputComponent,
 	type APIActionRowComponent,
+	type APIComponentInMessageActionRow,
 } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
@@ -27,7 +27,7 @@ describe('createComponentBuilder', () => {
 	);
 
 	test('GIVEN an action row component THEN returns a ActionRowBuilder', () => {
-		const actionRow: APIActionRowComponent<APIMessageActionRowComponent> = {
+		const actionRow: APIActionRowComponent<APIComponentInMessageActionRow> = {
 			components: [],
 			type: ComponentType.ActionRow,
 		};

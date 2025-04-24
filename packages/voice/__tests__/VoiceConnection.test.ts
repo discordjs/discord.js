@@ -37,9 +37,7 @@ const AudioPlayer = _AudioPlayer as unknown as vitest.Mocked<typeof _AudioPlayer
 const PlayerSubscription = _PlayerSubscription as unknown as vitest.Mock<_PlayerSubscription>;
 
 const _NetworkingClass = Networking.Networking;
-vitest.spyOn(Networking, 'Networking').mockImplementation((...args) => {
-	return new _NetworkingClass(...args);
-});
+vitest.spyOn(Networking, 'Networking').mockImplementation((...args) => new _NetworkingClass(...args));
 
 function createFakeAdapter() {
 	const sendPayload = vitest.fn();

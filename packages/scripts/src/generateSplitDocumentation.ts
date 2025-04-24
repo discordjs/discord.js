@@ -852,16 +852,14 @@ export function itemHierarchyText({
 	// 	</div>
 	// );
 
-	return excerpts.map((excerpt) => {
-		return {
-			type,
-			excerpts: itemExcerptText(
-				excerpt,
-				item.getAssociatedPackage()!,
-				item.getHierarchy().find(ApiTypeParameterListMixin.isBaseClassOf),
-			),
-		};
-	});
+	return excerpts.map((excerpt) => ({
+		type,
+		excerpts: itemExcerptText(
+			excerpt,
+			item.getAssociatedPackage()!,
+			item.getHierarchy().find(ApiTypeParameterListMixin.isBaseClassOf),
+		),
+	}));
 }
 
 function itemClass(item: ApiClass) {
@@ -880,14 +878,12 @@ function itemClass(item: ApiClass) {
 }
 
 function itemFunction(item: ApiFunction) {
-	const functionItem = (item: ApiFunction) => {
-		return {
-			...itemInfo(item),
-			overloadIndex: item.overloadIndex,
-			typeParameters: itemTypeParameters(item),
-			parameters: itemParameters(item),
-		};
-	};
+	const functionItem = (item: ApiFunction) => ({
+		...itemInfo(item),
+		overloadIndex: item.overloadIndex,
+		typeParameters: itemTypeParameters(item),
+		parameters: itemParameters(item),
+	});
 
 	const hasOverloads = item.getMergedSiblings().length > 1;
 	const overloads = item.getMergedSiblings().map((sibling) => functionItem(sibling as ApiFunction));
@@ -907,13 +903,13 @@ function itemInterface(item: ApiInterface) {
 	};
 }
 
-function itemUnion(item: ApiTypeAlias) {
+function itemUnion(item: Excerpt) {
 	const union: ExcerptToken[][] = [];
 	let currentUnionMember: ExcerptToken[] = [];
 	let depth = 0;
-	for (const token of item.typeExcerpt.spannedTokens) {
+	for (const token of item.spannedTokens) {
 		if (token.text.includes('?')) {
-			return [item.typeExcerpt.spannedTokens];
+			return [item.spannedTokens];
 		}
 
 		depth += token.text.split('<').length - token.text.split('>').length;
@@ -952,7 +948,7 @@ function itemTypeAlias(item: ApiTypeAlias) {
 	return {
 		...itemInfo(item),
 		typeParameters: itemTypeParameters(item),
-		unionMembers: itemUnion(item).map((member) =>
+		unionMembers: itemUnion(item.typeExcerpt).map((member) =>
 			itemExcerptText(
 				new Excerpt(member, { startIndex: 0, endIndex: member.length }),
 				item.getAssociatedPackage()!,
@@ -965,6 +961,13 @@ function itemTypeAlias(item: ApiTypeAlias) {
 function itemVariable(item: ApiVariable) {
 	return {
 		...itemInfo(item),
+		unionMembers: itemUnion(item.variableTypeExcerpt).map((member) =>
+			itemExcerptText(
+				new Excerpt(member, { startIndex: 0, endIndex: member.length }),
+				item.getAssociatedPackage()!,
+				item.getHierarchy().find(ApiTypeParameterListMixin.isBaseClassOf),
+			),
+		),
 	};
 }
 
@@ -986,6 +989,7 @@ function itemEnum(item: ApiEnum) {
 }
 
 function memberKind(member: ApiItem | null) {
+	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 	switch (member?.kind) {
 		case 'Class': {
 			const classMember = member as ApiClass;
@@ -1080,6 +1084,7 @@ export async function generateSplitDocumentation({
 
 			const members = entry.members
 				.filter((item) => {
+					// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 					switch (item.kind) {
 						case ApiItemKind.Function:
 							return (item as ApiFunction).overloadIndex === 1;

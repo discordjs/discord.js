@@ -1,32 +1,54 @@
 {
 	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
-	"eslint.experimental.useFlatConfig": true,
-	"eslint.workingDirectories": [
-		{ "directory": "${workspaceFolder}" },
-		{ "pattern": "./apps/*/" },
-		{ "pattern": "./packages/*/" }
-	],
+	"eslint.useESLintClass": true,
+	"eslint.useFlatConfig": true,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
 		"source.organizeImports": "never",
-		"source.fixAll.eslint": "explicit",
-		"source.fixAll": "explicit"
+		"source.fixAll.eslint": "always",
+		"source.fixAll": "always"
 	},
 	"editor.trimAutoWhitespace": false,
 	"files.associations": {
-		"api-extractor.json": "jsonc",
-		"api-extractor-docs.json": "jsonc",
 		"tsconfig.json": "jsonc",
-		"tsconfig.eslint.json": "jsonc",
-		"tsconfig.docs.json": "jsonc"
+		"tsconfig.eslint.json": "jsonc"
 	},
 	"files.insertFinalNewline": true,
 	"files.eol": "\n",
+	"search.exclude": {
+		"**/.yarn": true,
+		"**/.next": true,
+		"**/dist": true,
+		"**/coverage": true,
+		"**/test-results": true
+	},
+	"search.followSymlinks": false,
+	"search.useParentIgnoreFiles": true,
+	"files.watcherExclude": {
+		"**/.next/*/**": true,
+		"**/.yarn/*/**": true,
+		"**/coverage/*/**": true,
+		"**/dist/*/**": true,
+		"**/test-results/*/**": true
+	},
+	"unocss.disable": true,
 	"npm.packageManager": "pnpm",
 	"typescript.tsdk": "node_modules/typescript/lib",
 	"typescript.enablePromptUseWorkspaceTsdk": true,
-	"unocss.disable": true,
+	"tailwindCSS.experimental.classRegex": [
+		["cva\\(((?:[^()]|\\([^()]*\\))*)\\)", "[\"'`]?([^\"'`]+)[\"'`]?"],
+		["cx\\(((?:[^()]|\\([^()]*\\))*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+		["class:\\s*?[\"'`]([^\"'`]*).*?,"]
+	],
+	"workbench.editor.customLabels.patterns": {
+		"**/app/**/page.tsx": "${dirname} (${filename}.${extname}) - Page",
+		"**/app/**/layout.tsx": "${dirname} (${filename}.${extname}) - Layout",
+		"**/app/**/template.tsx": "${dirname} (${filename}.${extname}) - Template",
+		"**/app/**/error.tsx": "${dirname} (${filename}.${extname}) - Error",
+		"**/app/**/not-found.tsx": "${dirname} (${filename}.${extname}) - Not Found",
+		"**/components/**/page.tsx": "${dirname} (${filename}.${extname}) - Component"
+	},
 	"deno.enable": false,
 	"deno.enablePaths": ["./packages/create-discord-bot/template/Deno"],
 	"deno.lint": false,

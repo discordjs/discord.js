@@ -2,11 +2,11 @@ export * from './strategies/context/IContextFetchingStrategy.js';
 export * from './strategies/context/SimpleContextFetchingStrategy.js';
 export * from './strategies/context/WorkerContextFetchingStrategy.js';
 
-export * from './strategies/sharding/IShardingStrategy.js';
+export type * from './strategies/sharding/IShardingStrategy.js';
 export * from './strategies/sharding/SimpleShardingStrategy.js';
 export * from './strategies/sharding/WorkerShardingStrategy.js';
 
-export * from './throttling/IIdentifyThrottler.js';
+export type * from './throttling/IIdentifyThrottler.js';
 export * from './throttling/SimpleIdentifyThrottler.js';
 
 export * from './utils/constants.js';

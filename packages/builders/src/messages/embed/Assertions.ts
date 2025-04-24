@@ -47,24 +47,16 @@ export const embedPredicate = z
 		fields: z.array(embedFieldPredicate).max(25).optional(),
 	})
 	.refine(
-		(embed) => {
-			return (
-				embed.title !== undefined ||
-				embed.description !== undefined ||
-				(embed.fields !== undefined && embed.fields.length > 0) ||
-				embed.footer !== undefined ||
-				embed.author !== undefined ||
-				embed.image !== undefined ||
-				embed.thumbnail !== undefined
-			);
-		},
+		(embed) =>
+			embed.title !== undefined ||
+			embed.description !== undefined ||
+			(embed.fields !== undefined && embed.fields.length > 0) ||
+			embed.footer !== undefined ||
+			embed.author !== undefined ||
+			embed.image !== undefined ||
+			embed.thumbnail !== undefined,
 		{
 			message: 'Embed must have at least a title, description, a field, a footer, an author, an image, OR a thumbnail.',
 		},
 	)
-	.refine(
-		(embed) => {
-			return embedLength(embed) <= 6_000;
-		},
-		{ message: 'Embeds must not exceed 6000 characters in total.' },
-	);
+	.refine((embed) => embedLength(embed) <= 6_000, { message: 'Embeds must not exceed 6000 characters in total.' });

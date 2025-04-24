@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-interface,tsdoc/syntax */
+/* eslint-disable tsdoc/syntax */
 /**
  * @block
  * @inline test
