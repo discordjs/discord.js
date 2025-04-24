@@ -80,7 +80,7 @@ class TextBasedChannel {
    * The files to send with the message.
    * @property {Array<(ActionRowBuilder|MessageTopLevelComponent|APIMessageTopLevelComponent)>} [components]
    * Action rows containing interactive components for the message (buttons, select menus) and other
-   * top level components <info>When using components v2 the flag `MessageFlags.IsComponentsV2` needs to be set and
+   * top level components <info>When using components v2 the flag {@link MessageFlags.IsComponentsV2} needs to be set and
    * neither `embeds` nor `content` can be used</info>
    */
 
@@ -109,9 +109,9 @@ class TextBasedChannel {
    * that message will be returned and no new message will be created
    * @property {StickerResolvable[]} [stickers=[]] The stickers to send in the message
    * @property {MessageFlags} [flags] Which flags to set for the message.
-   * <info>Only `MessageFlags.SuppressEmbeds`, `MessageFlags.SuppressNotifications` and `MessageFlags.IsComponentsV2`
+   * <info>Only {@link MessageFlags.SuppressEmbeds}, {@link MessageFlags.SuppressNotifications} and {@link MessageFlags.IsComponentsV2}
    * can be set.</info>
-   * <info>`MessageFlags.IsComponentsV2` is required if passing components that aren't action rows</info>
+   * <info>{@link MessageFlags.IsComponentsV2} is required if passing components that aren't action rows</info>
    */
 
   /**
