@@ -226,8 +226,8 @@ class ApplicationCommand extends Base {
    * @property {ApplicationCommandOptionData[]} [options] Options for the command
    * @property {?PermissionResolvable} [defaultMemberPermissions] The bitfield used to determine the default permissions
    * a member needs in order to run the command
-   * @property {ApplicationIntegrationType[]} [integrationTypes] Installation context(s) where the command is available
-   * @property {InteractionContextType[]} [contexts] Interaction context(s) where the command can be used
+   * @property {ApplicationIntegrationType[]} [integrationTypes] Installation contexts where the command is available
+   * @property {InteractionContextType[]} [contexts] Interaction contexts where the command can be used
    * @property {EntryPointCommandHandlerType} [handler] Determines whether the interaction is handled by the app's
    */
 
