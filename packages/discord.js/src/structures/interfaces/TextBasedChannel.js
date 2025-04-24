@@ -80,8 +80,9 @@ class TextBasedChannel {
    * The files to send with the message.
    * @property {Array<(ActionRowBuilder|MessageTopLevelComponent|APIMessageTopLevelComponent)>} [components]
    * Action rows containing interactive components for the message (buttons, select menus) and other
-   * top level components <info>When using components v2 the flag {@link MessageFlags.IsComponentsV2} needs to be set
-   * and neither `embeds` nor `content` can be used</info>
+   * top-level components.
+   * <info>When using components v2, the flag {@link MessageFlags.IsComponentsV2} needs to be set
+   * and `content`, `embeds`, `stickers`, and `polls` cannot be used.</info>
    */
 
   /**
