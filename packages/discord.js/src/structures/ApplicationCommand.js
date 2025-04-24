@@ -165,8 +165,8 @@ class ApplicationCommand extends Base {
     if ('handler' in data) {
       /**
        * Determines whether the interaction is handled by the app's interactions handler or by Discord.
-       * <info>Only available for {@link ApplicationCommandType.PrimaryEntryPoint} command
-       * and for apps with {@link ApplicationFlags.Embedded} flag (i.e, applications that have an Activity)
+       * <info>Only available for {@link ApplicationCommandType.PrimaryEntryPoint} commands on
+       * applications with the {@link ApplicationFlags.Embedded} flag (i.e, those that have an Activity)</info>
        * </info>
        * @type {?EntryPointCommandHandlerType}
        */
