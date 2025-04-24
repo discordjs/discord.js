@@ -1,7 +1,10 @@
 import { getUserAgentAppendix } from '@discordjs/util';
+import type { ImageSize } from 'discord-api-types/v10';
 import { APIVersion } from 'discord-api-types/v10';
 import { getDefaultStrategy } from '../../environment.js';
 import type { RESTOptions, ResponseLike } from './types.js';
+
+export type { ImageSize } from 'discord-api-types/v10';
 
 export const DefaultUserAgent =
 	`DiscordBot (https://discord.js.org, [VI]{{inject}}[/VI])` as `DiscordBot (https://discord.js.org, ${string})`;
@@ -48,11 +51,12 @@ export enum RESTEvents {
 
 export const ALLOWED_EXTENSIONS = ['webp', 'png', 'jpg', 'jpeg', 'gif'] as const satisfies readonly string[];
 export const ALLOWED_STICKER_EXTENSIONS = ['png', 'json', 'gif'] as const satisfies readonly string[];
-export const ALLOWED_SIZES = [16, 32, 64, 128, 256, 512, 1_024, 2_048, 4_096] as const satisfies readonly number[];
+export const ALLOWED_SIZES: readonly number[] = [
+	16, 32, 64, 128, 256, 512, 1_024, 2_048, 4_096,
+] satisfies readonly ImageSize[];
 
 export type ImageExtension = (typeof ALLOWED_EXTENSIONS)[number];
 export type StickerExtension = (typeof ALLOWED_STICKER_EXTENSIONS)[number];
-export type ImageSize = (typeof ALLOWED_SIZES)[number];
 
 export const OverwrittenMimeTypes = {
 	// https://github.com/discordjs/discord.js/issues/8557

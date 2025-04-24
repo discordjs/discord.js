@@ -941,8 +941,8 @@ importers:
         specifier: 3.5.3
         version: 3.5.3
       discord-api-types:
-        specifier: 0.38.0-next-1740095508888
-        version: 0.38.0-next-1740095508888
+        specifier: ^0.38.1
+        version: 0.38.1
       fast-deep-equal:
         specifier: 3.1.3
         version: 3.1.3
@@ -1307,8 +1307,8 @@ importers:
         specifier: ^2.4.6
         version: 2.4.6
       discord-api-types:
-        specifier: ^0.37.119
-        version: 0.37.119
+        specifier: ^0.38.1
+        version: 0.38.1
       magic-bytes.js:
         specifier: ^1.10.0
         version: 1.10.0
@@ -2601,12 +2601,12 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@definitelytyped/header-parser@0.2.17':
-    resolution: {integrity: sha512-U0juKFkTOcbkSfO83WSzMEJHYDwoBFiq0tf/JszulL3+7UoSiqunpGmxXS54bm3eGqy7GWjV8AqPQHdeoEaWBQ==}
+  '@definitelytyped/header-parser@0.2.19':
+    resolution: {integrity: sha512-zu+RxQpUCgorYUQZoyyrRIn9CljL1CeM4qak3NDeMO1r7tjAkodfpAGnVzx/6JR2OUk0tAgwmZxNMSwd9LVgxw==}
     engines: {node: '>=18.18.0'}
 
-  '@definitelytyped/typescript-versions@0.1.7':
-    resolution: {integrity: sha512-sBzBi1SBn79OkSr8V0H+FzR7QumHk23syPyRxod/VRBrSkgN9rCliIe+nqLoWRAKN8EeKbp00ketnJNLZhucdA==}
+  '@definitelytyped/typescript-versions@0.1.8':
+    resolution: {integrity: sha512-iz6q9aTwWW7CzN2g8jFQfZ955D63LA+wdIAKz4+2pCc/7kokmEHie1/jVWSczqLFOlmH+69bWQxIurryBP/sig==}
     engines: {node: '>=18.18.0'}
 
   '@definitelytyped/utils@0.1.8':
@@ -7643,8 +7643,8 @@ packages:
   discord-api-types@0.37.119:
     resolution: {integrity: sha512-WasbGFXEB+VQWXlo6IpW3oUv73Yuau1Ig4AZF/m13tXcTKnMpc/mHjpztIlz4+BM9FG9BHQkEXiPto3bKduQUg==}
 
-  discord-api-types@0.38.0-next-1740095508888:
-    resolution: {integrity: sha512-J9ZpbCe8sO/TJIhjUdrfZmR+VPqD/x0WzkiAv4u6H/4Cazo0nE3lYU31wRFbaiXDKcw6+hUjkVVfp5dWLrGdNA==}
+  discord-api-types@0.38.1:
+    resolution: {integrity: sha512-vsjsqjAuxsPhiwbPjTBeGQaDPlizFmSkU0mTzFGMgRxqCDIRBR7iTY74HacpzrDV0QtERHRKQEk1tq7drZUtHg==}
 
   dlv@1.1.3:
     resolution: {integrity: sha512-+HlytyjlPKnIG8XuRG8WvmBP8xs8P71y+SKKS6ZXWoEgLuePxtDoUEiH7WkdePWrQ5JBpE6aoVqfZfJUQkjXwA==}
@@ -8110,6 +8110,7 @@ packages:
   eslint-plugin-i@2.29.1:
     resolution: {integrity: sha512-ORizX37MelIWLbMyqI7hi8VJMf7A0CskMmYkB+lkCX3aF4pkGV7kwx5bSEb4qx7Yce2rAf9s34HqDRPjGRZPNQ==}
     engines: {node: '>=12'}
+    deprecated: Please migrate to the brand new `eslint-plugin-import-x` instead
     peerDependencies:
       eslint: ^7.2.0 || ^8
 
@@ -14852,13 +14853,13 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@definitelytyped/header-parser@0.2.17':
+  '@definitelytyped/header-parser@0.2.19':
     dependencies:
-      '@definitelytyped/typescript-versions': 0.1.7
+      '@definitelytyped/typescript-versions': 0.1.8
       '@definitelytyped/utils': 0.1.8
       semver: 7.6.3
 
-  '@definitelytyped/typescript-versions@0.1.7': {}
+  '@definitelytyped/typescript-versions@0.1.8': {}
 
   '@definitelytyped/utils@0.1.8':
     dependencies:
@@ -15452,7 +15453,7 @@ snapshots:
   '@jest/console@29.7.0':
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
       chalk: 4.1.2
       jest-message-util: 29.7.0
       jest-util: 29.7.0
@@ -15572,7 +15573,7 @@ snapshots:
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
       '@jridgewell/trace-mapping': 0.3.25
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
       chalk: 4.1.2
       collect-v8-coverage: 1.0.2
       exit: 0.1.2
@@ -15834,7 +15835,7 @@ snapshots:
       '@rushstack/ts-command-line': 4.19.1(@types/node@16.18.105)
       lodash: 4.17.21
       minimatch: 3.0.8
-      resolve: 1.22.8
+      resolve: 1.22.10
       semver: 7.5.4
       source-map: 0.6.1
       typescript: 5.4.2
@@ -15853,7 +15854,7 @@ snapshots:
       '@rushstack/ts-command-line': 4.19.1(@types/node@18.17.9)
       lodash: 4.17.21
       minimatch: 3.0.8
-      resolve: 1.22.8
+      resolve: 1.22.10
       semver: 7.5.4
       source-map: 0.6.1
       typescript: 5.4.2
@@ -15872,7 +15873,7 @@ snapshots:
       '@rushstack/ts-command-line': 4.19.1(@types/node@18.19.45)
       lodash: 4.17.21
       minimatch: 3.0.8
-      resolve: 1.22.8
+      resolve: 1.22.10
       semver: 7.5.4
       source-map: 0.6.1
       typescript: 5.4.2
@@ -15890,7 +15891,7 @@ snapshots:
       '@rushstack/ts-command-line': 4.19.1(@types/node@20.16.1)
       lodash: 4.17.21
       minimatch: 3.0.8
-      resolve: 1.22.8
+      resolve: 1.22.10
       semver: 7.5.4
       source-map: 0.6.1
       typescript: 5.4.2
@@ -18943,7 +18944,7 @@ snapshots:
 
   '@types/concat-stream@2.0.3':
     dependencies:
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
 
   '@types/connect@3.4.38':
     dependencies:
@@ -18951,13 +18952,13 @@ snapshots:
 
   '@types/conventional-commits-parser@5.0.0':
     dependencies:
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
 
   '@types/cookiejar@2.1.5': {}
 
   '@types/cross-spawn@6.0.6':
     dependencies:
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
 
   '@types/debug@4.1.12':
     dependencies:
@@ -19092,7 +19093,7 @@ snapshots:
 
   '@types/node-fetch@2.6.11':
     dependencies:
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
       form-data: 4.0.0
 
   '@types/node@16.18.105': {}
@@ -19119,7 +19120,7 @@ snapshots:
 
   '@types/pg@8.11.6':
     dependencies:
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
       pg-protocol: 1.6.1
       pg-types: 4.0.2
 
@@ -19322,7 +19323,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/typescript-estree': 8.2.0(typescript@5.5.4)
       '@typescript-eslint/utils': 8.2.0(eslint@8.57.0)(typescript@5.5.4)
-      debug: 4.3.6
+      debug: 4.4.0
       ts-api-utils: 1.3.0(typescript@5.5.4)
     optionalDependencies:
       typescript: 5.5.4
@@ -19386,7 +19387,7 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.2.0
       '@typescript-eslint/visitor-keys': 8.2.0
-      debug: 4.3.6
+      debug: 4.4.0
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.5
@@ -21527,7 +21528,7 @@ snapshots:
 
   discord-api-types@0.37.119: {}
 
-  discord-api-types@0.38.0-next-1740095508888: {}
+  discord-api-types@0.38.1: {}
 
   dlv@1.1.3: {}
 
@@ -21578,7 +21579,7 @@ snapshots:
 
   dts-critic@3.3.11(typescript@5.5.4):
     dependencies:
-      '@definitelytyped/header-parser': 0.2.17
+      '@definitelytyped/header-parser': 0.2.19
       command-exists: 1.2.9
       rimraf: 3.0.2
       semver: 6.3.1
@@ -21588,8 +21589,8 @@ snapshots:
 
   dtslint@4.2.1(typescript@5.5.4):
     dependencies:
-      '@definitelytyped/header-parser': 0.2.17
-      '@definitelytyped/typescript-versions': 0.1.7
+      '@definitelytyped/header-parser': 0.2.19
+      '@definitelytyped/typescript-versions': 0.1.8
       '@definitelytyped/utils': 0.1.8
       dts-critic: 3.3.11(typescript@5.5.4)
       fs-extra: 6.0.1
@@ -24118,7 +24119,7 @@ snapshots:
     dependencies:
       '@jest/types': 29.6.3
       '@types/graceful-fs': 4.1.9
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -24192,7 +24193,7 @@ snapshots:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
       chalk: 4.1.2
       emittery: 0.13.1
       graceful-fs: 4.2.11
@@ -24220,7 +24221,7 @@ snapshots:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
       chalk: 4.1.2
       cjs-module-lexer: 1.3.1
       collect-v8-coverage: 1.0.2
@@ -24266,7 +24267,7 @@ snapshots:
   jest-util@29.7.0:
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -24285,7 +24286,7 @@ snapshots:
     dependencies:
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 18.19.45
+      '@types/node': 18.19.74
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.13.1
@@ -26063,7 +26064,7 @@ snapshots:
       isbinaryfile: 4.0.10
       lodash.get: 4.4.2
       mkdirp: 0.5.6
-      resolve: 1.22.8
+      resolve: 1.22.10
 
   node-releases@2.0.18: {}
 
@@ -26784,7 +26785,7 @@ snapshots:
   proxy-agent@6.4.0:
     dependencies:
       agent-base: 7.1.1
-      debug: 4.3.6
+      debug: 4.4.0
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.5
       lru-cache: 7.18.3
@@ -26956,7 +26957,7 @@ snapshots:
       '@types/doctrine': 0.0.9
       '@types/resolve': 1.20.6
       doctrine: 3.0.0
-      resolve: 1.22.8
+      resolve: 1.22.10
       strip-indent: 4.0.0
     transitivePeerDependencies:
       - supports-color
@@ -28108,7 +28109,7 @@ snapshots:
     dependencies:
       component-emitter: 1.3.1
       cookiejar: 2.1.4
-      debug: 4.3.6
+      debug: 4.4.0
       fast-safe-stringify: 2.1.1
       form-data: 4.0.0
       formidable: 3.5.1
