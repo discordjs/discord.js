@@ -1,5 +1,5 @@
 import { readdir, stat } from 'node:fs/promises';
-import { fileURLToPath, URL } from 'node:url';
+import { URL } from 'node:url';
 import { predicate as commandPredicate } from '../commands/index.js';
 import { predicate as eventPredicate } from '../events/index.js';
 
@@ -54,7 +54,7 @@ export async function loadStructures(dir, predicate, recursive = true) {
 		}
 
 		// Import the structure dynamically from the file
-		const structure = (await import(fileURLToPath(fileUrl))).default;
+		const structure = (await import(fileUrl.toString())).default;
 
 		// If the structure is a valid structure, add it
 		if (predicate(structure)) {
