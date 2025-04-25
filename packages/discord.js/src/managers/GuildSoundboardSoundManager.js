@@ -3,7 +3,7 @@
 const { Collection } = require('@discordjs/collection');
 const { lazy } = require('@discordjs/util');
 const { Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager.js');
+const CachedManager = require('./CachedManager.js');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 const { SoundboardSound } = require('../structures/SoundboardSound.js');
 const { resolveBase64, resolveFile } = require('../util/DataResolver.js');
