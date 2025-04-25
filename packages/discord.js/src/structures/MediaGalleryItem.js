@@ -6,46 +6,46 @@ const { UnfurledMediaItem } = require('./UnfurledMediaItem.js');
  * Represents an item in a media gallery
  */
 class MediaGalleryItem {
-    constructor({ media, ...data }) {
-        /**
-         * The API data associated with this component
-         * @type {APIMediaGalleryItem}
-         */
-        this.data = data;
-
-        /**
-         * The media associated with this media gallery item
-         * @type {UnfurledMediaItem}
-         * @readonly
-         */
-        this.media = new UnfurledMediaItem(media);
-    }
+  constructor({ media, ...data }) {
+    /**
+     * The API data associated with this component
+     * @type {APIMediaGalleryItem}
+     */
+    this.data = data;
 
     /**
-     * The description of this media gallery item
-     * @type {?string}
+     * The media associated with this media gallery item
+     * @type {UnfurledMediaItem}
      * @readonly
      */
-    get description() {
-        return this.data.description ?? null;
-    }
+    this.media = new UnfurledMediaItem(media);
+  }
 
-    /**
-     * Whether this media gallery item is spoilered
-     * @type {boolean}
-     * @readonly
-     */
-    get spoiler() {
-        return this.data.spoiler ?? false;
-    }
+  /**
+   * The description of this media gallery item
+   * @type {?string}
+   * @readonly
+   */
+  get description() {
+    return this.data.description ?? null;
+  }
 
-    /**
-     * Returns the API-compatible JSON for this component
-     * @returns {APIMediaGalleryItem}
-     */
-    toJSON() {
-        return { ...this.data, media: this.media.toJSON() };
-    }
+  /**
+   * Whether this media gallery item is spoilered
+   * @type {boolean}
+   * @readonly
+   */
+  get spoiler() {
+    return this.data.spoiler ?? false;
+  }
+
+  /**
+   * Returns the API-compatible JSON for this component
+   * @returns {APIMediaGalleryItem}
+   */
+  toJSON() {
+    return { ...this.data, media: this.media.toJSON() };
+  }
 }
 
 exports.MediaGalleryItem = MediaGalleryItem;

@@ -8,23 +8,23 @@ const { Component } = require('./Component.js');
  * @extends {Component}
  */
 class SeparatorComponent extends Component {
-    /**
-     * The spacing of this separator
-     * @type {SeparatorSpacingSize}
-     * @readonly
-     */
-    get spacing() {
-        return this.data.spacing ?? SeparatorSpacingSize.Small;
-    }
+  /**
+   * The spacing of this separator
+   * @type {SeparatorSpacingSize}
+   * @readonly
+   */
+  get spacing() {
+    return this.data.spacing ?? SeparatorSpacingSize.Small;
+  }
 
-    /**
-     * Whether this separator is a divider
-     * @type {boolean}
-     * @readonly
-     */
-    get divider() {
-        return this.data.divider ?? true;
-    }
+  /**
+   * Whether this separator is a divider
+   * @type {boolean}
+   * @readonly
+   */
+  get divider() {
+    return this.data.divider ?? true;
+  }
 }
 
 exports.SeparatorComponent = SeparatorComponent;

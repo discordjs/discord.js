@@ -8,42 +8,42 @@ const { UnfurledMediaItem } = require('./UnfurledMediaItem.js');
  * @extends {Component}
  */
 class ThumbnailComponent extends Component {
-    constructor({ media, ...data }) {
-        super(data);
-
-        /**
-         * The media associated with this thumbnail
-         * @type {UnfurledMediaItem}
-         * @readonly
-         */
-        this.media = new UnfurledMediaItem(media);
-    }
+  constructor({ media, ...data }) {
+    super(data);
 
     /**
-     * The description of this thumbnail
-     * @type {?string}
+     * The media associated with this thumbnail
+     * @type {UnfurledMediaItem}
      * @readonly
      */
-    get description() {
-        return this.data.description ?? null;
-    }
+    this.media = new UnfurledMediaItem(media);
+  }
 
-    /**
-     * Whether this thumbnail is spoilered
-     * @type {boolean}
-     * @readonly
-     */
-    get spoiler() {
-        return this.data.spoiler ?? false;
-    }
+  /**
+   * The description of this thumbnail
+   * @type {?string}
+   * @readonly
+   */
+  get description() {
+    return this.data.description ?? null;
+  }
 
-    /**
-     * Returns the API-compatible JSON for this component
-     * @returns {APIThumbnailComponent}
-     */
-    toJSON() {
-        return { ...this.data, media: this.media.toJSON() };
-    }
+  /**
+   * Whether this thumbnail is spoilered
+   * @type {boolean}
+   * @readonly
+   */
+  get spoiler() {
+    return this.data.spoiler ?? false;
+  }
+
+  /**
+   * Returns the API-compatible JSON for this component
+   * @returns {APIThumbnailComponent}
+   */
+  toJSON() {
+    return { ...this.data, media: this.media.toJSON() };
+  }
 }
 
 exports.ThumbnailComponent = ThumbnailComponent;

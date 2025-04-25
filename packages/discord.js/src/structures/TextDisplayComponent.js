@@ -7,14 +7,14 @@ const { Component } = require('./Component.js');
  * @extends {Component}
  */
 class TextDisplayComponent extends Component {
-    /**
-     * The content of this text display
-     * @type {string}
-     * @readonly
-     */
-    get content() {
-        return this.data.content;
-    }
+  /**
+   * The content of this text display
+   * @type {string}
+   * @readonly
+   */
+  get content() {
+    return this.data.content;
+  }
 }
 
 exports.TextDisplayComponent = TextDisplayComponent;

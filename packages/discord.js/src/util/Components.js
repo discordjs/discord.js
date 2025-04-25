@@ -108,25 +108,25 @@ const { ComponentType } = require('discord-api-types/v10');
 /**
  * @typedef {ActionRowData|FileComponentData|MediaGalleryComponentData|SectionComponentData|
  * SeparatorComponentData|TextDisplayComponentData} ComponentInContainerData
-*/
+ */
 
 /**
-* @typedef {BaseComponentData} ContainerComponentData
-* @property {ComponentInContainerData} components The components in this container
-* @property {?number} [accentColor] The accent color of this container
-* @property {boolean} [spoiler] Whether the container should be spoilered
-*/
+ * @typedef {BaseComponentData} ContainerComponentData
+ * @property {ComponentInContainerData} components The components in this container
+ * @property {?number} [accentColor] The accent color of this container
+ * @property {boolean} [spoiler] Whether the container should be spoilered
+ */
 
 /**
-* @typedef {ActionRowData|ButtonComponentData|SelectMenuComponentData|TextInputComponentData|
-* ThumbnailComponentData|FileComponentData|MediaGalleryComponentData|SeparatorComponentData|
-* SectionComponentData|TextDisplayComponentData|ContainerComponentData} ComponentData
+ * @typedef {ActionRowData|ButtonComponentData|SelectMenuComponentData|TextInputComponentData|
+ * ThumbnailComponentData|FileComponentData|MediaGalleryComponentData|SeparatorComponentData|
+ * SectionComponentData|TextDisplayComponentData|ContainerComponentData} ComponentData
  */
 
 /**
  * @typedef {ActionRow|ContainerComponent|FileComponent|MediaGalleryComponent|
  * SectionComponent|SeparatorComponent|TextDisplayComponent} MessageTopLevelComponent
-*/
+ */
 
 /**
  * Transforms API data into a component

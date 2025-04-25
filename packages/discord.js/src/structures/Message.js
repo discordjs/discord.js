@@ -14,7 +14,6 @@ const {
 const { Attachment } = require('./Attachment.js');
 const { Base } = require('./Base.js');
 const { ClientApplication } = require('./ClientApplication.js');
-const { Component } = require('./Component.js');
 const { Embed } = require('./Embed.js');
 const { InteractionCollector } = require('./InteractionCollector.js');
 const { MessageMentions } = require('./MessageMentions.js');
@@ -684,8 +683,8 @@ class Message extends Base {
   get editable() {
     const precheck = Boolean(
       this.author.id === this.client.user.id &&
-      (!this.guild || this.channel?.viewable) &&
-      this.reference?.type !== MessageReferenceType.Forward,
+        (!this.guild || this.channel?.viewable) &&
+        this.reference?.type !== MessageReferenceType.Forward,
     );
 
     // Regardless of permissions thread messages cannot be edited if
@@ -756,9 +755,9 @@ class Message extends Base {
     const { channel } = this;
     return Boolean(
       !this.system &&
-      (!this.guild ||
-        (channel?.viewable &&
-          channel?.permissionsFor(this.client.user)?.has(PermissionFlagsBits.ManageMessages, false))),
+        (!this.guild ||
+          (channel?.viewable &&
+            channel?.permissionsFor(this.client.user)?.has(PermissionFlagsBits.ManageMessages, false))),
     );
   }
 
@@ -788,12 +787,12 @@ class Message extends Base {
     const { channel } = this;
     return Boolean(
       channel?.type === ChannelType.GuildAnnouncement &&
-      !this.flags.has(MessageFlags.Crossposted) &&
-      this.reference?.type !== MessageReferenceType.Forward &&
-      this.type === MessageType.Default &&
-      !this.poll &&
-      channel.viewable &&
-      channel.permissionsFor(this.client.user)?.has(bitfield, false),
+        !this.flags.has(MessageFlags.Crossposted) &&
+        this.reference?.type !== MessageReferenceType.Forward &&
+        this.type === MessageType.Default &&
+        !this.poll &&
+        channel.viewable &&
+        channel.permissionsFor(this.client.user)?.has(bitfield, false),
     );
   }
 
