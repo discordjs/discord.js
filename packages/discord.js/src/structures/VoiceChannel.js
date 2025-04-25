@@ -38,8 +38,8 @@ class VoiceChannel extends BaseGuildVoiceChannel {
 
   /**
    * Send a soundboard sound to a voice channel the user is connected to.
-   * @param {SoundboardSound} sound the sound to send
-   * @returns {void}
+   * @param {SoundboardSound} sound The sound to send
+   * @returns {Promise<void>}
    */
   async sendSoundboardSound(sound) {
     await this.client.rest.post(Routes.sendSoundboardSound(this.id), {

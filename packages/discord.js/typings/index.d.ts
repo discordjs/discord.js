@@ -3452,6 +3452,7 @@ export type ComponentData =
 export class VoiceChannel extends BaseGuildVoiceChannel {
   public get speakable(): boolean;
   public type: ChannelType.GuildVoice;
+  public sendSoundboardSound(sound: SoundboardSound): Promise<void>;
 }
 
 export class VoiceChannelEffect {
@@ -3602,14 +3603,14 @@ export class SoundboardSound extends Base {
   public name: string;
   public soundId: Snowflake | string;
   public volume: number;
-  public emojiId: Snowflake | null;
-  public emojiName: string | null;
+  private _emoji: Omit<APIEmoji, 'animated'> | null;
   public guildId: Snowflake | null;
-  public get guild(): Guild | null;
   public available: boolean;
   public user: User | null;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
+  public get emoji(): Emoji | null;
+  public get guild(): Guild | null;
   public get url(): string;
   public edit(options?: GuildSoundboardSoundEditOptions): Promise<GuildSoundboardSound>;
   public delete(reason?: string): Promise<GuildSoundboardSound>;

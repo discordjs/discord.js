@@ -547,7 +547,6 @@ class Client extends BaseClient {
    */
   async fetchDefaultSoundboardSounds() {
     const data = await this.rest.get(Routes.soundboardDefaultSounds());
-
     return new Collection(data.map(sound => [sound.sound_id, new SoundboardSound(this, sound)]));
   }
 

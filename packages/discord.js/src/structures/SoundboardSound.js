@@ -2,6 +2,7 @@
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Base } = require('./Base.js');
+const { Emoji } = require('./Emoji.js');
 const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 
 /**
@@ -13,7 +14,7 @@ class SoundboardSound extends Base {
     super(client);
 
     /**
-     * The id of the soundboard sound
+     * The id of this soundboard sound
      * @type {Snowflake|string}
      */
     this.soundId = data.sound_id;
@@ -34,7 +35,7 @@ class SoundboardSound extends Base {
 
     if ('name' in data) {
       /**
-       * The name of the soundboard sound
+       * The name of this soundboard sound
        * @type {?string}
        */
       this.name = data.name;
@@ -44,7 +45,7 @@ class SoundboardSound extends Base {
 
     if ('volume' in data) {
       /**
-       * The volume of the soundboard sound, from 0 to 1
+       * The volume (a double) of this soundboard sound, from 0 to 1
        * @type {?number}
        */
       this.volume = data.volume;
@@ -54,27 +55,21 @@ class SoundboardSound extends Base {
 
     if ('emoji_id' in data) {
       /**
-       * The emoji id of the soundboard sound
-       * @type {?Snowflake}
+       * The raw emoji data of this soundboard sound
+       * @type {?Object}
+       * @private
        */
-      this.emojiId = data.emoji_id;
+      this._emoji = {
+        id: data.emoji_id,
+        name: data.emoji_name,
+      };
     } else {
-      this.emojiId ??= null;
-    }
-
-    if ('emoji_name' in data) {
-      /**
-       * The emoji name of the soundboard sound
-       * @type {?string}
-       */
-      this.emojiName = data.emoji_name;
-    } else {
-      this.emojiName ??= null;
+      this._emoji ??= null;
     }
 
     if ('guild_id' in data) {
       /**
-       * The guild id of the soundboard sound
+       * The guild id of this soundboard sound
        * @type {?Snowflake}
        */
       this.guildId = data.guild_id;
@@ -94,6 +89,35 @@ class SoundboardSound extends Base {
   }
 
   /**
+   * The timestamp this soundboard sound was created at
+   * @type {number}
+   * @readonly
+   */
+  get createdTimestamp() {
+    return DiscordSnowflake.timestampFrom(this.soundId);
+  }
+
+  /**
+   * The time this soundboard sound was created at
+   * @type {Date}
+   * @readonly
+   */
+  get createdAt() {
+    return new Date(this.createdTimestamp);
+  }
+
+  /**
+   * The emoji of this soundboard sound
+   * @type {?Emoji}
+   * @readonly
+   */
+  get emoji() {
+    if (!this._emoji) return null;
+
+    return this.guild?.emojis.cache.get(this._emoji.id) ?? new Emoji(this.client, this._emoji);
+  }
+
+  /**
    * The guild this soundboard sound is part of
    * @type {?Guild}
    * @readonly
@@ -103,25 +127,7 @@ class SoundboardSound extends Base {
   }
 
   /**
-   * The timestamp the soundboard sound was created at
-   * @type {number}
-   * @readonly
-   */
-  get createdTimestamp() {
-    return DiscordSnowflake.timestampFrom(this.soundId);
-  }
-
-  /**
-   * The time the sticker was created at
-   * @type {Date}
-   * @readonly
-   */
-  get createdAt() {
-    return new Date(this.createdTimestamp);
-  }
-
-  /**
-   * A link to the soundboard sound
+   * A link to this soundboard sound
    * @type {string}
    * @readonly
    */
@@ -130,7 +136,7 @@ class SoundboardSound extends Base {
   }
 
   /**
-   * Edits the soundboard sound.
+   * Edits this soundboard sound.
    * @param {GuildSoundboardSoundEditOptions} options The options to provide
    * @returns {Promise<SoundboardSound>}
    * @example
@@ -140,23 +146,23 @@ class SoundboardSound extends Base {
    *   .catch(console.error);
    */
   async edit(options) {
-    if (!this.guild) throw new DiscordjsError(ErrorCodes.NotGuildSoundboardSound, 'edited');
+    if (!this.guildId) throw new DiscordjsError(ErrorCodes.NotGuildSoundboardSound, 'edited');
 
     return this.guild.soundboardSounds.edit(this, options);
   }
 
   /**
-   * Deletes the soundboard sound.
+   * Deletes this soundboard sound.
    * @param {string} [reason] Reason for deleting this soundboard sound
    * @returns {Promise<SoundboardSound>}
    * @example
-   * // Delete a message
+   * // Delete a soundboard sound
    * soundboardSound.delete()
    *   .then(sound => console.log(`Deleted soundboard sound ${sound.name}`))
    *   .catch(console.error);
    */
   async delete(reason) {
-    if (!this.guild) throw new DiscordjsError(ErrorCodes.NotGuildSoundboardSound, 'deleted');
+    if (!this.guildId) throw new DiscordjsError(ErrorCodes.NotGuildSoundboardSound, 'deleted');
 
     await this.guild.soundboardSounds.delete(this, reason);
 

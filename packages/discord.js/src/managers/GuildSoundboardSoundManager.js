@@ -68,7 +68,7 @@ class GuildSoundboardSoundManager extends CachedManager {
    * @property {BufferResolvable|Stream} file The file for the soundboard sound
    * @property {string} name The name for the soundboard sound
    * @property {string} [contentType] The content type for the soundboard sound file
-   * @property {number} [volume] The volume for the soundboard sound, from 0 to 1. Defaults to 1
+   * @property {number} [volume] The volume (a double) for the soundboard sound, from 0 (inclusive) to 1. Defaults to 1
    * @property {Snowflake} [emojiId] The emoji id for the soundboard sound
    * @property {string} [emojiName] The emoji name for the soundboard sound
    * @property {string} [reason] The reason for creating the soundboard sound
