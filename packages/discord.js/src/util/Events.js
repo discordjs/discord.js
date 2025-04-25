@@ -41,6 +41,10 @@
  * @property {string} GuildScheduledEventUpdate guildScheduledEventUpdate
  * @property {string} GuildScheduledEventUserAdd guildScheduledEventUserAdd
  * @property {string} GuildScheduledEventUserRemove guildScheduledEventUserRemove
+ * @property {string} GuildSoundboardSoundCreate guildSoundboardSoundCreate
+ * @property {string} GuildSoundboardSoundDelete guildSoundboardSoundDelete
+ * @property {string} GuildSoundboardSoundsUpdate guildSoundboardSoundsUpdate
+ * @property {string} GuildSoundboardSoundUpdate guildSoundboardSoundUpdate
  * @property {string} GuildStickerCreate stickerCreate
  * @property {string} GuildStickerDelete stickerDelete
  * @property {string} GuildStickerUpdate stickerUpdate
@@ -61,6 +65,7 @@
  * @property {string} MessageReactionRemoveEmoji messageReactionRemoveEmoji
  * @property {string} MessageUpdate messageUpdate
  * @property {string} PresenceUpdate presenceUpdate
+ * @property {string} SoundboardSounds soundboardSounds
  * @property {string} ShardDisconnect shardDisconnect
  * @property {string} ShardError shardError
  * @property {string} ShardReady shardReady
@@ -132,6 +137,10 @@ module.exports = {
   GuildScheduledEventUpdate: 'guildScheduledEventUpdate',
   GuildScheduledEventUserAdd: 'guildScheduledEventUserAdd',
   GuildScheduledEventUserRemove: 'guildScheduledEventUserRemove',
+  GuildSoundboardSoundCreate: 'guildSoundboardSoundCreate',
+  GuildSoundboardSoundDelete: 'guildSoundboardSoundDelete',
+  GuildSoundboardSoundsUpdate: 'guildSoundboardSoundsUpdate',
+  GuildSoundboardSoundUpdate: 'guildSoundboardSoundUpdate',
   GuildStickerCreate: 'stickerCreate',
   GuildStickerDelete: 'stickerDelete',
   GuildStickerUpdate: 'stickerUpdate',
@@ -152,6 +161,7 @@ module.exports = {
   MessageReactionRemoveEmoji: 'messageReactionRemoveEmoji',
   MessageUpdate: 'messageUpdate',
   PresenceUpdate: 'presenceUpdate',
+  SoundboardSounds: 'soundboardSounds',
   Raw: 'raw',
   ShardDisconnect: 'shardDisconnect',
   ShardError: 'shardError',

@@ -53,10 +53,11 @@ const Targets = {
  * * An application command
  * * An auto moderation rule
  * * A guild onboarding prompt
+ * * A soundboard sound
  * * An object with an id key if target was deleted or fake entity
  * * An object where the keys represent either the new value or the old value
  * @typedef {?(Object|Guild|BaseChannel|User|Role|Invite|Webhook|GuildEmoji|Message|Integration|StageInstance|Sticker|
- * GuildScheduledEvent|ApplicationCommand|AutoModerationRule|GuildOnboardingPrompt)} AuditLogEntryTarget
+ * GuildScheduledEvent|ApplicationCommand|AutoModerationRule|GuildOnboardingPrompt|SoundboardSound)} AuditLogEntryTarget
  */
 
 /**
@@ -367,6 +368,8 @@ class GuildAuditLogsEntry {
           : changesReduce(this.changes, { id: data.target_id });
     } else if (targetType === Targets.GuildOnboarding) {
       this.target = changesReduce(this.changes, { id: data.target_id });
+    } else if (targetType === Targets.SoundboardSound) {
+      this.target = guild.soundboardSounds.cache.get(data.target_id) ?? { id: data.target_id };
     } else if (data.target_id) {
       this.target = guild[`${targetType.toLowerCase()}s`]?.cache.get(data.target_id) ?? { id: data.target_id };
     }

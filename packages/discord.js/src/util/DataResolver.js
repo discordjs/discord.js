@@ -113,13 +113,14 @@ async function resolveFile(resource) {
  */
 
 /**
- * Resolves a Base64Resolvable to a Base 64 image.
+ * Resolves a Base64Resolvable to a Base 64 string.
  * @param {Base64Resolvable} data The base 64 resolvable you want to resolve
+ * @param {string} [contentType='image/jpg'] The content type of the data
  * @returns {?string}
  * @private
  */
-function resolveBase64(data) {
-  if (Buffer.isBuffer(data)) return `data:image/jpg;base64,${data.toString('base64')}`;
+function resolveBase64(data, contentType = 'image/jpg') {
+  if (Buffer.isBuffer(data)) return `data:${contentType};base64,${data.toString('base64')}`;
   return data;
 }
 
