@@ -804,8 +804,8 @@ importers:
         specifier: ^2.4.6
         version: 2.4.6
       discord-api-types:
-        specifier: ^0.37.119
-        version: 0.37.119
+        specifier: ^0.38.1
+        version: 0.38.1
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1704,8 +1704,8 @@ importers:
         specifier: ^2.4.6
         version: 2.4.6
       discord-api-types:
-        specifier: ^0.37.119
-        version: 0.37.119
+        specifier: ^0.38.1
+        version: 0.38.1
       tslib:
         specifier: ^2.6.3
         version: 2.6.3
