@@ -302,7 +302,7 @@ class GuildManager extends CachedManager {
    * console.log(soundboardSounds.get('123456789012345678'));
    */
   async fetchSoundboardSounds({ guildIds, time = 10_000 }) {
-    const shardCount = await this.client.options.shardCount;
+    const shardCount = this.client.options.shardCount;
     const shardIds = new Map();
 
     for (const guildId of guildIds) {
