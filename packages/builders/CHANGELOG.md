@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.11.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.10.1...@discordjs/builders@1.11.0) - (2025-04-25)
+
+## Features
+
+- Components v2 in builders v1 (#10787) ([118e682](https://github.com/discordjs/discord.js/commit/118e6826821b3b90f5923e40f167747e0658cfd1))
+
 # [@discordjs/builders@1.10.1](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.10.0...@discordjs/builders@1.10.1) - (2025-02-10)
 
 ## Bug Fixes
