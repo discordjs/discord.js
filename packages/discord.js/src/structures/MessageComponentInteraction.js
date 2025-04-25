@@ -1,7 +1,6 @@
 'use strict';
 
 const { lazy } = require('@discordjs/util');
-const { ComponentType } = require('discord-api-types/v10');
 const BaseInteraction = require('./BaseInteraction');
 const InteractionWebhook = require('./InteractionWebhook');
 const InteractionResponses = require('./interfaces/InteractionResponses');
@@ -90,17 +89,17 @@ class MessageComponentInteraction extends BaseInteraction {
 
   // These are here only for documentation purposes - they are implemented by InteractionResponses
   /* eslint-disable no-empty-function */
-  deferReply() {}
-  reply() {}
-  fetchReply() {}
-  editReply() {}
-  deleteReply() {}
-  followUp() {}
-  deferUpdate() {}
-  update() {}
-  showModal() {}
-  sendPremiumRequired() {}
-  awaitModalSubmit() {}
+  deferReply() { }
+  reply() { }
+  fetchReply() { }
+  editReply() { }
+  deleteReply() { }
+  followUp() { }
+  deferUpdate() { }
+  update() { }
+  showModal() { }
+  sendPremiumRequired() { }
+  awaitModalSubmit() { }
 }
 
 InteractionResponses.applyToClass(MessageComponentInteraction);
