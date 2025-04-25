@@ -15,6 +15,15 @@ class Component {
   }
 
   /**
+   * The id of this component
+   * @type {number}
+   * @readonly
+   */
+  get id() {
+    return this.data.id;
+  }
+
+  /**
    * The type of the component
    * @type {ComponentType}
    * @readonly
