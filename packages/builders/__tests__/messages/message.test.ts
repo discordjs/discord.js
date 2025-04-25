@@ -18,7 +18,7 @@ describe('Message', () => {
 	});
 
 	test('GIVEN bad action row THEN it throws', () => {
-		const message = new MessageBuilder().setComponents((row) =>
+		const message = new MessageBuilder().addActionRowComponents((row) =>
 			row.addTextInputComponent((input) => input.setCustomId('abc').setLabel('def')),
 		);
 		expect(() => message.toJSON()).toThrow();
@@ -32,7 +32,9 @@ describe('Message', () => {
 			.addEmbeds(new EmbedBuilder().setTitle('foo').setDescription('bar'))
 			.setAllowedMentions({ parse: [AllowedMentionsTypes.Role], roles: ['123'] })
 			.setMessageReference({ channel_id: '123', message_id: '123' })
-			.setComponents((row) => row.addPrimaryButtonComponents((button) => button.setCustomId('abc').setLabel('def')))
+			.addActionRowComponents((row) =>
+				row.addPrimaryButtonComponents((button) => button.setCustomId('abc').setLabel('def')),
+			)
 			.setStickerIds('123', '456')
 			.addAttachments((attachment) => attachment.setId('hi!').setFilename('abc'))
 			.setFlags(MessageFlags.Ephemeral)

@@ -7,7 +7,7 @@ import { textInputPredicate } from './Assertions.js';
  * A builder that creates API-compatible JSON data for text inputs.
  */
 export class TextInputBuilder extends ComponentBuilder<APITextInputComponent> {
-	private readonly data: Partial<APITextInputComponent>;
+	protected readonly data: Partial<APITextInputComponent>;
 
 	/**
 	 * Creates a new text input from API data.

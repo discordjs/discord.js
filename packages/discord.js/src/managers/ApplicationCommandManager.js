@@ -282,6 +282,7 @@ class ApplicationCommandManager extends CachedManager {
       default_member_permissions,
       integration_types: command.integrationTypes ?? command.integration_types,
       contexts: command.contexts,
+      handler: command.handler,
     };
   }
 }
