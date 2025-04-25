@@ -21,6 +21,7 @@ export * from './components/Component.js';
 export * from './components/Components.js';
 
 export * from './components/v2/Assertions.js';
+export * from './components/v2/Container.js';
 export * from './components/v2/File.js';
 export * from './components/v2/MediaGallery.js';
 export * from './components/v2/MediaGalleryItem.js';
