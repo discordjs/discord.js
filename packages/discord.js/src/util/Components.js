@@ -189,7 +189,7 @@ function findComponentByCustomId(components, customId) {
           case ComponentType.ActionRow:
             return component.components;
           case ComponentType.Section:
-            return [component.accessory];
+            return [...component.components, component.accessory];
           default:
             return [component];
         }
