@@ -5,6 +5,7 @@ const { ComponentType } = require('discord-api-types/v10');
 const BaseInteraction = require('./BaseInteraction');
 const InteractionWebhook = require('./InteractionWebhook');
 const InteractionResponses = require('./interfaces/InteractionResponses');
+const { findComponentByCustomId } = require('../util/Components');
 
 const getMessage = lazy(() => require('./Message').Message);
 
@@ -84,33 +85,22 @@ class MessageComponentInteraction extends BaseInteraction {
    * @readonly
    */
   get component() {
-    return this.message.components
-      .flatMap(component => {
-        switch (component.type) {
-          case ComponentType.ActionRow:
-            return component.components;
-          case ComponentType.Section:
-            return [component.accessory];
-          default:
-            return [component];
-        }
-      })
-      .find(component => (component.customId ?? component.custom_id) === this.customId);
+    return findComponentByCustomId(this.message.components, this.customId);
   }
 
   // These are here only for documentation purposes - they are implemented by InteractionResponses
   /* eslint-disable no-empty-function */
-  deferReply() {}
-  reply() {}
-  fetchReply() {}
-  editReply() {}
-  deleteReply() {}
-  followUp() {}
-  deferUpdate() {}
-  update() {}
-  showModal() {}
-  sendPremiumRequired() {}
-  awaitModalSubmit() {}
+  deferReply() { }
+  reply() { }
+  fetchReply() { }
+  editReply() { }
+  deleteReply() { }
+  followUp() { }
+  deferUpdate() { }
+  update() { }
+  showModal() { }
+  sendPremiumRequired() { }
+  awaitModalSubmit() { }
 }
 
 InteractionResponses.applyToClass(MessageComponentInteraction);

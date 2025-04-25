@@ -214,7 +214,28 @@ function createComponentBuilder(data) {
   }
 }
 
-module.exports = { createComponent, createComponentBuilder };
+/**
+ * Finds a component by customId in nested components
+ * @param {(Component|APIMessageComponent)[]} components The components to search in
+ * @param {string} customId The customId to search for
+ * @returns 
+ */
+function findComponentByCustomId(components, customId) {
+  return components
+    .flatMap(component => {
+      switch (component.type) {
+        case ComponentType.ActionRow:
+          return component.components;
+        case ComponentType.Section:
+          return [component.accessory];
+        default:
+          return [component];
+      }
+    })
+    .find(component => (component.customId ?? component.custom_id) === customId) ?? null;
+}
+
+module.exports = { createComponent, createComponentBuilder, findComponentByCustomId };
 
 const ActionRow = require('../structures/ActionRow');
 const ActionRowBuilder = require('../structures/ActionRowBuilder');
