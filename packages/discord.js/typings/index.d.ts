@@ -4859,6 +4859,12 @@ export interface GuildSoundboardSoundEditOptions {
   emojiName?: string | null;
 }
 
+export interface FetchGuildSoundboardSoundOptions extends BaseFetchOptions {
+  soundboardSound: SoundboardSoundResolvable;
+}
+
+export interface FetchGuildSoundboardSoundsOptions extends Pick<BaseFetchOptions, 'cache'> {}
+
 export class GuildSoundboardSoundManager extends CachedManager<Snowflake, SoundboardSound, SoundboardSoundResolvable> {
   private constructor(guild: Guild, iterable?: Iterable<APISoundboardSound>);
   public guild: Guild;
@@ -4868,8 +4874,8 @@ export class GuildSoundboardSoundManager extends CachedManager<Snowflake, Soundb
     options: GuildSoundboardSoundEditOptions,
   ): Promise<GuildSoundboardSound>;
   public delete(soundboardSound: SoundboardSoundResolvable): Promise<void>;
-  public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<GuildSoundboardSound>;
-  public fetch(options?: BaseFetchOptions): Promise<Collection<Snowflake, GuildSoundboardSound>>;
+  public fetch(options: SoundboardSoundResolvable | FetchGuildSoundboardSoundOptions): Promise<GuildSoundboardSound>;
+  public fetch(options?: FetchGuildSoundboardSoundsOptions): Promise<Collection<Snowflake, GuildSoundboardSound>>;
 }
 
 export class GuildStickerManager extends CachedManager<Snowflake, Sticker, StickerResolvable> {

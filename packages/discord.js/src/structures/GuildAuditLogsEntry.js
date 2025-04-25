@@ -485,6 +485,7 @@ class GuildAuditLogsEntry {
         AuditLogEvent.StickerUpdate,
         AuditLogEvent.GuildScheduledEventUpdate,
         AuditLogEvent.ThreadUpdate,
+        AuditLogEvent.SoundboardSoundUpdate,
         AuditLogEvent.ApplicationCommandPermissionUpdate,
         AuditLogEvent.SoundboardSoundUpdate,
         AuditLogEvent.AutoModerationRuleUpdate,
