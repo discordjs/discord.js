@@ -3645,11 +3645,6 @@ export interface SendSoundboardSoundOptions {
   guildId?: Snowflake;
 }
 
-export interface SendSoundboardSoundOptions {
-  soundId: Snowflake;
-  guildId?: Snowflake;
-}
-
 export class VoiceChannel extends BaseGuildVoiceChannel {
   public get speakable(): boolean;
   public type: ChannelType.GuildVoice;
