@@ -6425,7 +6425,7 @@ export interface GuildAuditLogsFetchOptions<Event extends GuildAuditLogsResolvab
 
 export type GuildAuditLogsResolvable = AuditLogEvent | null;
 
-export type GuildAuditLogsTargetType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][0] | 'All' | 'Unknown';
+export type GuildAuditLogsTargetType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][0] | 'Unknown';
 
 export type GuildAuditLogsTargets = {
   [Key in GuildAuditLogsTargetType]: Key;
