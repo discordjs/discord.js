@@ -35,7 +35,8 @@ jobs:
           tag: ${{ github.ref_name }}
 
       - name: Publish package
+        if: ${{ steps.extract-tag.outputs.package == 'ws' }}
         run: |
-          pnpm --filter=${{ steps.extract-tag.outputs.subpackage == 'true' && '@discordjs/' || '' }}${{ steps.extract-tag.outputs.package }} publish --provenance --no-git-checks
+          pnpm --filter=${{ steps.extract-tag.outputs.subpackage == 'true' && '@discordjs/' || '' }}${{ steps.extract-tag.outputs.package }} publish --provenance --no-git-checks --tag v1-lts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
