@@ -1060,8 +1060,8 @@ importers:
   packages/formatters:
     dependencies:
       discord-api-types:
-        specifier: ^0.37.119
-        version: 0.37.119
+        specifier: ^0.38.1
+        version: 0.38.1
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
