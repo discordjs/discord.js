@@ -30,6 +30,7 @@ import {
   GuildScheduledEventRecurrenceRuleWeekday,
   APIButtonComponentWithCustomId,
   MessageFlags,
+  APITextInputComponent,
 } from 'discord-api-types/v10';
 import {
   ApplicationCommand,
@@ -362,8 +363,6 @@ client.on('interactionCreate', async interaction => {
 
   // @ts-expect-error
   interaction.reply({ content: 'Hi!', components: [[button]] });
-
-  void new ActionRowBuilder({});
 
   // @ts-expect-error
   await interaction.reply({ content: 'Hi!', components: [button] });
@@ -2591,8 +2590,11 @@ new PrimaryButtonBuilder(buttonData);
 declare const buttonComp: ButtonComponent;
 createComponentBuilder(buttonComp.toJSON());
 
+declare const textInputData: APITextInputComponent;
+new TextInputBuilder(textInputData);
+
 declare const textInputComp: TextInputComponent;
-new TextInputBuilder(textInputComp);
+new TextInputBuilder(textInputComp.toJSON());
 
 declare const embedData: APIEmbed;
 new EmbedBuilder(embedData);
