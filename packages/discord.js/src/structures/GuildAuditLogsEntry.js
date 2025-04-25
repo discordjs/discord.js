@@ -89,6 +89,7 @@ const Targets = {
  * * GuildOnboarding
  * * GuildOnboardingPrompt
  * * SoundboardSound
+ * * AutoModeration
  * * Unknown
  * @typedef {string} AuditLogTargetType
  */
@@ -202,7 +203,6 @@ class GuildAuditLogsEntry {
 
       case AuditLogEvent.MemberMove:
       case AuditLogEvent.MessageDelete:
-      case AuditLogEvent.MessageBulkDelete:
         this.extra = {
           channel: guild.channels.cache.get(data.options.channel_id) ?? { id: data.options.channel_id },
           count: Number(data.options.count),
@@ -217,6 +217,7 @@ class GuildAuditLogsEntry {
         };
         break;
 
+      case AuditLogEvent.MessageBulkDelete:
       case AuditLogEvent.MemberDisconnect:
         this.extra = {
           count: Number(data.options.count),
@@ -368,12 +369,14 @@ class GuildAuditLogsEntry {
         data.action_type === AuditLogEvent.OnboardingPromptCreate
           ? new GuildOnboardingPrompt(guild.client, changesReduce(this.changes, { id: data.target_id }), guild.id)
           : changesReduce(this.changes, { id: data.target_id });
-    } else if (targetType === Targets.GuildOnboarding) {
-      this.target = changesReduce(this.changes, { id: data.target_id });
+    } else if (targetType === Targets.Role) {
+      this.target = guild.roles.cache.get(data.target_id) ?? { id: data.target_id };
+    } else if (targetType === Targets.Emoji) {
+      this.target = guild.emojis.cache.get(data.target_id) ?? { id: data.target_id };
     } else if (targetType === Targets.SoundboardSound) {
       this.target = guild.soundboardSounds.cache.get(data.target_id) ?? { id: data.target_id };
     } else if (data.target_id) {
-      this.target = guild[`${targetType.toLowerCase()}s`]?.cache.get(data.target_id) ?? { id: data.target_id };
+      this.target = { id: data.target_id };
     }
   }
 
@@ -398,7 +401,8 @@ class GuildAuditLogsEntry {
     if (target < 120) return Targets.Thread;
     if (target < 130) return Targets.ApplicationCommand;
     if (target < 140) return Targets.SoundboardSound;
-    if (target >= 143 && target < 150) return Targets.AutoModeration;
+    if (target < 143) return Targets.AutoModeration;
+    if (target < 146) return Targets.User;
     if (target >= 163 && target <= 165) return Targets.GuildOnboardingPrompt;
     if (target >= 160 && target < 170) return Targets.GuildOnboarding;
     return Targets.Unknown;
@@ -483,7 +487,11 @@ class GuildAuditLogsEntry {
         AuditLogEvent.ThreadUpdate,
         AuditLogEvent.SoundboardSoundUpdate,
         AuditLogEvent.ApplicationCommandPermissionUpdate,
+        AuditLogEvent.SoundboardSoundUpdate,
         AuditLogEvent.AutoModerationRuleUpdate,
+        AuditLogEvent.AutoModerationBlockMessage,
+        AuditLogEvent.AutoModerationFlagToChannel,
+        AuditLogEvent.AutoModerationUserCommunicationDisabled,
         AuditLogEvent.OnboardingPromptUpdate,
         AuditLogEvent.OnboardingUpdate,
       ].includes(action)
