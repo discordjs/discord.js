@@ -236,6 +236,11 @@
  */
 
 /**
+ * @external APISeparatorComponent
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISeparatorComponent}
+ */
+
+/**
  * @external APISelectMenuOption
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISelectMenuOption}
  */
