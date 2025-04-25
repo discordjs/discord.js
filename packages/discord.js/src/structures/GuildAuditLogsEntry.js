@@ -32,6 +32,7 @@ const Targets = {
   AutoModeration: 'AutoModeration',
   GuildOnboarding: 'GuildOnboarding',
   GuildOnboardingPrompt: 'GuildOnboardingPrompt',
+  SoundboardSound: 'SoundboardSound',
   Unknown: 'Unknown',
 };
 
@@ -87,6 +88,7 @@ const Targets = {
  * * ApplicationCommandPermission
  * * GuildOnboarding
  * * GuildOnboardingPrompt
+ * * SoundboardSound
  * * Unknown
  * @typedef {string} AuditLogTargetType
  */
@@ -395,7 +397,8 @@ class GuildAuditLogsEntry {
     if (target < 110) return Targets.GuildScheduledEvent;
     if (target < 120) return Targets.Thread;
     if (target < 130) return Targets.ApplicationCommand;
-    if (target >= 140 && target < 150) return Targets.AutoModeration;
+    if (target < 140) return Targets.SoundboardSound;
+    if (target >= 143 && target < 150) return Targets.AutoModeration;
     if (target >= 163 && target <= 165) return Targets.GuildOnboardingPrompt;
     if (target >= 160 && target < 170) return Targets.GuildOnboarding;
     return Targets.Unknown;
@@ -423,6 +426,7 @@ class GuildAuditLogsEntry {
         AuditLogEvent.StickerCreate,
         AuditLogEvent.GuildScheduledEventCreate,
         AuditLogEvent.ThreadCreate,
+        AuditLogEvent.SoundboardSoundCreate,
         AuditLogEvent.AutoModerationRuleCreate,
         AuditLogEvent.AutoModerationBlockMessage,
         AuditLogEvent.OnboardingPromptCreate,
@@ -452,6 +456,7 @@ class GuildAuditLogsEntry {
         AuditLogEvent.StickerDelete,
         AuditLogEvent.GuildScheduledEventDelete,
         AuditLogEvent.ThreadDelete,
+        AuditLogEvent.SoundboardSoundDelete,
         AuditLogEvent.AutoModerationRuleDelete,
         AuditLogEvent.OnboardingPromptDelete,
       ].includes(action)
@@ -476,6 +481,7 @@ class GuildAuditLogsEntry {
         AuditLogEvent.StickerUpdate,
         AuditLogEvent.GuildScheduledEventUpdate,
         AuditLogEvent.ThreadUpdate,
+        AuditLogEvent.SoundboardSoundUpdate,
         AuditLogEvent.ApplicationCommandPermissionUpdate,
         AuditLogEvent.AutoModerationRuleUpdate,
         AuditLogEvent.OnboardingPromptUpdate,
