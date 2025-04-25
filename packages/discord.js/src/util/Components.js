@@ -216,9 +216,9 @@ function createComponentBuilder(data) {
 
 /**
  * Finds a component by customId in nested components
- * @param {(Component|APIMessageComponent)[]} components The components to search in
+ * @param {Array<Component|APIMessageComponent>} components The components to search in
  * @param {string} customId The customId to search for
- * @returns 
+ * @returns {Component|APIMessageComponent}
  */
 function findComponentByCustomId(components, customId) {
   return components
