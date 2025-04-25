@@ -4,8 +4,9 @@ const process = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
-const { Routes, RouteBases } = require('discord-api-types/v10');
+const { GatewayOpcodes, Routes, RouteBases } = require('discord-api-types/v10');
 const { CachedManager } = require('./CachedManager.js');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { ShardClientUtil } = require('../sharding/ShardClientUtil.js');
 const { Guild } = require('../structures/Guild.js');
 const { GuildChannel } = require('../structures/GuildChannel.js');
@@ -280,6 +281,71 @@ class GuildManager extends CachedManager {
 
     const data = await this.client.rest.get(Routes.userGuilds(), { query: makeURLSearchParams(options) });
     return data.reduce((coll, guild) => coll.set(guild.id, new OAuth2Guild(this.client, guild)), new Collection());
+  }
+
+  /**
+   * @typedef {Object} FetchSoundboardSoundsOptions
+   * @param {Snowflake[]} guildIds The ids of the guilds to fetch soundboard sounds for
+   * @param {number} [time=10_000] The timeout for receipt of the soundboard sounds
+   */
+
+  /**
+   * Fetches soundboard sounds for the specified guilds.
+   * @param {FetchSoundboardSoundsOptions} options The options for fetching soundboard sounds
+   * @returns {Promise<Collection<Snowflake, Collection<Snowflake, SoundboardSound>>>}
+   * @example
+   * // Fetch soundboard sounds for multiple guilds
+   * const soundboardSounds = await client.guilds.fetchSoundboardSounds({
+   *  guildIds: ['123456789012345678', '987654321098765432'],
+   * })
+   *
+   * console.log(soundboardSounds.get('123456789012345678'));
+   */
+  async fetchSoundboardSounds({ guildIds, time = 10_000 }) {
+    const shardCount = await this.client.ws.getShardCount();
+    const shardIds = Map.groupBy(guildIds, guildId => ShardClientUtil.shardIdForGuildId(guildId, shardCount));
+
+    for (const [shardId, shardGuildIds] of shardIds) {
+      this.client.ws.send(shardId, {
+        op: GatewayOpcodes.RequestSoundboardSounds,
+        d: {
+          guild_ids: shardGuildIds,
+        },
+      });
+    }
+
+    return new Promise((resolve, reject) => {
+      const remainingGuildIds = new Set(guildIds);
+
+      const fetchedSoundboardSounds = new Collection();
+
+      const handler = (soundboardSounds, guild) => {
+        timeout.refresh();
+
+        if (!remainingGuildIds.has(guild.id)) return;
+
+        fetchedSoundboardSounds.set(guild.id, soundboardSounds);
+
+        remainingGuildIds.delete(guild.id);
+
+        if (remainingGuildIds.size === 0) {
+          clearTimeout(timeout);
+          this.client.removeListener(Events.SoundboardSounds, handler);
+          this.client.decrementMaxListeners();
+
+          resolve(fetchedSoundboardSounds);
+        }
+      };
+
+      const timeout = setTimeout(() => {
+        this.client.removeListener(Events.SoundboardSounds, handler);
+        this.client.decrementMaxListeners();
+        reject(new DiscordjsError(ErrorCodes.GuildSoundboardSoundsTimeout));
+      }, time).unref();
+
+      this.client.incrementMaxListeners();
+      this.client.on(Events.SoundboardSounds, handler);
+    });
   }
 
   /**
