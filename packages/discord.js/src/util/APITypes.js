@@ -187,7 +187,7 @@
 
 /**
  * @external APIMessageTopLevelComponent
- * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIMessageTopLevelComponent}
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIMessageTopLevelComponent}
  */
 
 /**
