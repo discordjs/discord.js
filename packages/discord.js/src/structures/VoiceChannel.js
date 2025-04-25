@@ -37,8 +37,14 @@ class VoiceChannel extends BaseGuildVoiceChannel {
   }
 
   /**
+   * @typedef {Object} SendSoundboardSoundOptions
+   * @property {string} soundId The id of the soundboard sound to send
+   * @property {string} [guildId] The id of the guild the soundboard sound is a part of
+   */
+
+  /**
    * Send a soundboard sound to a voice channel the user is connected to.
-   * @param {SoundboardSound} sound The sound to send
+   * @param {SoundboardSound|SendSoundboardSoundOptions} sound The sound to send
    * @returns {Promise<void>}
    */
   async sendSoundboardSound(sound) {
