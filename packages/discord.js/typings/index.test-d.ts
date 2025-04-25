@@ -24,8 +24,8 @@ import {
   APIEmbed,
   ApplicationCommandType,
   APIMessage,
-  // APIActionRowComponent,
-  // APIComponentInActionRow,
+  APIActionRowComponent,
+  APIComponentInActionRow,
   APIStringSelectComponent,
   APIUserSelectComponent,
   APIRoleSelectComponent,
@@ -147,8 +147,8 @@ import {
   Webhook,
   WebhookClient,
   InteractionWebhook,
-  // ActionRowComponent,
-  // ActionRow,
+  ActionRowComponent,
+  ActionRow,
   GuildAuditLogsActionType,
   GuildAuditLogsTargetType,
   ModalSubmitInteraction,
@@ -2474,23 +2474,23 @@ declare const embedComp: Embed;
 EmbedBuilder.from(embedComp);
 
 // TODO: these currently don't work, since the pinned version @discordjs/builders uses another version of discord-api-types
-// declare const actionRowData: APIActionRowComponent<APIComponentInActionRow>;
-// ActionRowBuilder.from(actionRowData);
+declare const actionRowData: APIActionRowComponent<APIComponentInActionRow>;
+ActionRowBuilder.from(actionRowData);
 
-// declare const actionRowComp: ActionRow<ActionRowComponent>;
-// ActionRowBuilder.from(actionRowComp);
+declare const actionRowComp: ActionRow<ActionRowComponent>;
+ActionRowBuilder.from(actionRowComp);
 
-// declare const buttonsActionRowData: APIActionRowComponent<APIButtonComponent>;
-// declare const buttonsActionRowComp: ActionRow<ButtonComponent>;
+declare const buttonsActionRowData: APIActionRowComponent<APIButtonComponent>;
+declare const buttonsActionRowComp: ActionRow<ButtonComponent>;
 
-// expectType<ActionRowBuilder<ButtonBuilder>>(ActionRowBuilder.from<ButtonBuilder>(buttonsActionRowData));
-// expectType<ActionRowBuilder<ButtonBuilder>>(ActionRowBuilder.from<ButtonBuilder>(buttonsActionRowComp));
+expectType<ActionRowBuilder<ButtonBuilder>>(ActionRowBuilder.from<ButtonBuilder>(buttonsActionRowData));
+expectType<ActionRowBuilder<ButtonBuilder>>(ActionRowBuilder.from<ButtonBuilder>(buttonsActionRowComp));
 
-// declare const anyComponentsActionRowData: APIActionRowComponent<APIActionRowComponentTypes>;
-// declare const anyComponentsActionRowComp: ActionRow<ActionRowComponent>;
+declare const anyComponentsActionRowData: APIActionRowComponent<APIComponentInActionRow>;
+declare const anyComponentsActionRowComp: ActionRow<ActionRowComponent>;
 
-// expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowData));
-// expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowComp));
+expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowData));
+expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowComp));
 
 type UserMentionChannels = DMChannel | PartialDMChannel;
 declare const channelMentionChannels: Exclude<Channel | DirectoryChannel, UserMentionChannels>;

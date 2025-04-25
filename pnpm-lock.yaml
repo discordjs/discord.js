@@ -920,8 +920,8 @@ importers:
   packages/discord.js:
     dependencies:
       '@discordjs/builders':
-        specifier: ^1.10.1
-        version: 1.10.1
+        specifier: ^1.11.0
+        version: 1.11.0
       '@discordjs/collection':
         specifier: 1.5.3
         version: 1.5.3
@@ -2613,8 +2613,8 @@ packages:
     resolution: {integrity: sha512-4JINx4Rttha29f50PBsJo48xZXx/He5yaIWJRwVarhYAN947+S84YciHl+AIhQNRPAFkg8+5qFngEGtKxQDWXA==}
     engines: {node: '>=18.18.0'}
 
-  '@discordjs/builders@1.10.1':
-    resolution: {integrity: sha512-OWo1fY4ztL1/M/DUyRPShB4d/EzVfuUvPTRRHRIt/YxBrUYSz0a+JicD5F5zHFoNs2oTuWavxCOVFV1UljHTng==}
+  '@discordjs/builders@1.11.0':
+    resolution: {integrity: sha512-JL+mkXDoaOi1xPE9iUmloiWDBEneA+/U0oM4kKqnQJAr3Iz3Vk4Rd9SnfYKPJjRjGUDvV5RFpOBJJaYI6ii6fA==}
     engines: {node: '>=16.11.0'}
 
   '@discordjs/collection@1.5.3':
@@ -14872,12 +14872,12 @@ snapshots:
       tar-stream: 3.1.7
       which: 4.0.0
 
-  '@discordjs/builders@1.10.1':
+  '@discordjs/builders@1.11.0':
     dependencies:
       '@discordjs/formatters': 0.6.0
       '@discordjs/util': 1.1.1
       '@sapphire/shapeshift': 4.0.0
-      discord-api-types: 0.37.119
+      discord-api-types: 0.38.1
       fast-deep-equal: 3.1.3
       ts-mixer: 6.0.4
       tslib: 2.6.3
