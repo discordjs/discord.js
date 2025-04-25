@@ -2473,7 +2473,6 @@ EmbedBuilder.from(embedData);
 declare const embedComp: Embed;
 EmbedBuilder.from(embedComp);
 
-// TODO: these currently don't work, since the pinned version @discordjs/builders uses another version of discord-api-types
 declare const actionRowData: APIActionRowComponent<APIComponentInActionRow>;
 ActionRowBuilder.from(actionRowData);
 
