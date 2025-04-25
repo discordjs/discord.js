@@ -112,6 +112,10 @@ class GenericAction {
     return this.getPayload({ user_id: id }, manager, id, Partials.ThreadMember, false);
   }
 
+  getSoundboardSound(data, guild) {
+    return this.getPayload(data, guild.soundboardSounds, data.sound_id, Partials.SoundboardSound);
+  }
+
   spreadInjectedData(data) {
     return Object.fromEntries(Object.getOwnPropertySymbols(data).map(symbol => [symbol, data[symbol]]));
   }
