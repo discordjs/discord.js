@@ -82,7 +82,7 @@ class TextBasedChannel {
    * Action rows containing interactive components for the message (buttons, select menus) and other
    * top-level components.
    * <info>When using components v2, the flag {@link MessageFlags.IsComponentsV2} needs to be set
-   * and `content`, `embeds`, `stickers`, and `polls` cannot be used.</info>
+   * and `content`, `embeds`, `stickers`, and `poll` cannot be used.</info>
    */
 
   /**
