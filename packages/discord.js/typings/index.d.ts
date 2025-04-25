@@ -4862,6 +4862,12 @@ export interface GuildSoundboardSoundEditOptions {
   emojiName?: string | null;
 }
 
+export interface FetchGuildSoundboardSoundOptions extends BaseFetchOptions {
+  soundboardSound: SoundboardSoundResolvable;
+}
+
+export interface FetchGuildSoundboardSoundsOptions extends Pick<BaseFetchOptions, 'cache'> {}
+
 export class GuildSoundboardSoundManager extends CachedManager<Snowflake, SoundboardSound, SoundboardSoundResolvable> {
   private constructor(guild: Guild, iterable?: Iterable<APISoundboardSound>);
   public guild: Guild;
@@ -4871,8 +4877,8 @@ export class GuildSoundboardSoundManager extends CachedManager<Snowflake, Soundb
     options: GuildSoundboardSoundEditOptions,
   ): Promise<GuildSoundboardSound>;
   public delete(soundboardSound: SoundboardSoundResolvable): Promise<void>;
-  public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<GuildSoundboardSound>;
-  public fetch(options?: BaseFetchOptions): Promise<Collection<Snowflake, GuildSoundboardSound>>;
+  public fetch(options: SoundboardSoundResolvable | FetchGuildSoundboardSoundOptions): Promise<GuildSoundboardSound>;
+  public fetch(options?: FetchGuildSoundboardSoundsOptions): Promise<Collection<Snowflake, GuildSoundboardSound>>;
 }
 
 export class GuildStickerManager extends CachedManager<Snowflake, Sticker, StickerResolvable> {
@@ -6334,6 +6340,9 @@ interface GuildAuditLogsTypes {
   [AuditLogEvent.ThreadUpdate]: ['Thread', 'Update'];
   [AuditLogEvent.ThreadDelete]: ['Thread', 'Delete'];
   [AuditLogEvent.ApplicationCommandPermissionUpdate]: ['ApplicationCommand', 'Update'];
+  [AuditLogEvent.SoundboardSoundCreate]: ['SoundboardSound', 'Create'];
+  [AuditLogEvent.SoundboardSoundUpdate]: ['SoundboardSound', 'Update'];
+  [AuditLogEvent.SoundboardSoundDelete]: ['SoundboardSound', 'Delete'];
   [AuditLogEvent.AutoModerationRuleCreate]: ['AutoModeration', 'Create'];
   [AuditLogEvent.AutoModerationRuleUpdate]: ['AutoModeration', 'Update'];
   [AuditLogEvent.AutoModerationRuleDelete]: ['AutoModeration', 'Delete'];
@@ -6410,6 +6419,7 @@ export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLo
   ApplicationCommand: ApplicationCommand | { id: Snowflake };
   AutoModerationRule: AutoModerationRule;
   GuildOnboardingPrompt: GuildOnboardingPrompt;
+  SoundboardSound: { id: Snowflake };
 }
 
 export interface GuildAuditLogsFetchOptions<Event extends GuildAuditLogsResolvable> {
