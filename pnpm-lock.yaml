@@ -910,6 +910,9 @@ importers:
       lodash.snakecase:
         specifier: 4.1.1
         version: 4.1.1
+      magic-bytes.js:
+        specifier: ^1.10.0
+        version: 1.10.0
       tslib:
         specifier: ^2.8.1
         version: 2.8.1

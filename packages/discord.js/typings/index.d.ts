@@ -160,6 +160,7 @@ import {
   GatewayVoiceChannelEffectSendDispatchData,
   RESTAPIPoll,
   EntryPointCommandHandlerType,
+  APISoundboardSound,
   APIComponentInContainer,
   APIContainerComponent,
   APIThumbnailComponent,
@@ -928,6 +929,7 @@ export class Client<Ready extends boolean = boolean> extends BaseClient<ClientEv
   public fetchSticker(id: Snowflake): Promise<Sticker>;
   public fetchStickerPacks(options: { packId: Snowflake }): Promise<StickerPack>;
   public fetchStickerPacks(options?: StickerPackFetchOptions): Promise<Collection<Snowflake, StickerPack>>;
+  public fetchDefaultSoundboardSounds(): Promise<Collection<string, DefaultSoundboardSound>>;
   public fetchWebhook(id: Snowflake, token?: string): Promise<Webhook>;
   public fetchGuildWidget(guild: GuildResolvable): Promise<Widget>;
   public generateInvite(options?: InviteGenerationOptions): string;
@@ -1398,6 +1400,7 @@ export class Guild extends AnonymousGuild {
   public safetyAlertsChannelId: Snowflake | null;
   public scheduledEvents: GuildScheduledEventManager;
   public shardId: number;
+  public soundboardSounds: GuildSoundboardSoundManager;
   public stageInstances: StageInstanceManager;
   public stickers: GuildStickerManager;
   public incidentsData: IncidentActions | null;
@@ -3637,9 +3640,20 @@ export type ComponentData =
   | ContainerComponentData
   | ThumbnailComponentData;
 
+export interface SendSoundboardSoundOptions {
+  soundId: Snowflake;
+  guildId?: Snowflake;
+}
+
+export interface SendSoundboardSoundOptions {
+  soundId: Snowflake;
+  guildId?: Snowflake;
+}
+
 export class VoiceChannel extends BaseGuildVoiceChannel {
   public get speakable(): boolean;
   public type: ChannelType.GuildVoice;
+  public sendSoundboardSound(sound: SoundboardSound | SendSoundboardSoundOptions): Promise<void>;
 }
 
 export class VoiceChannelEffect {
@@ -3653,6 +3667,7 @@ export class VoiceChannelEffect {
   public soundId: Snowflake | number | null;
   public soundVolume: number | null;
   public get channel(): VoiceChannel | null;
+  public get soundboardSound(): GuildSoundboardSound | null;
 }
 
 export class VoiceRegion {
@@ -3782,6 +3797,30 @@ export class WidgetMember extends Base {
   public activity: WidgetActivity | null;
 }
 
+export type SoundboardSoundResolvable = SoundboardSound | Snowflake | string;
+
+export class SoundboardSound extends Base {
+  private constructor(client: Client<true>, data: APISoundboardSound);
+  public name: string;
+  public soundId: Snowflake | string;
+  public volume: number;
+  private _emoji: Omit<APIEmoji, 'animated'> | null;
+  public guildId: Snowflake | null;
+  public available: boolean;
+  public user: User | null;
+  public get createdAt(): Date;
+  public get createdTimestamp(): number;
+  public get emoji(): Emoji | null;
+  public get guild(): Guild | null;
+  public get url(): string;
+  public edit(options?: GuildSoundboardSoundEditOptions): Promise<GuildSoundboardSound>;
+  public delete(reason?: string): Promise<GuildSoundboardSound>;
+  public equals(other: SoundboardSound | APISoundboardSound): boolean;
+}
+
+export type DefaultSoundboardSound = SoundboardSound & { get guild(): null; guildId: null; soundId: string };
+export type GuildSoundboardSound = SoundboardSound & { get guild(): Guild; guildId: Snowflake; soundId: Snowflake };
+
 export class WelcomeChannel extends Base {
   private constructor(guild: Guild, data: RawWelcomeChannelData);
   private _emoji: Omit<APIEmoji, 'animated'>;
@@ -3896,6 +3935,7 @@ export enum DiscordjsErrorCodes {
   GuildChannelUnowned = 'GuildChannelUnowned',
   GuildOwned = 'GuildOwned',
   GuildMembersTimeout = 'GuildMembersTimeout',
+  GuildSoundboardSoundsTimeout = 'GuildSoundboardSoundsTimeout',
   GuildUncachedMe = 'GuildUncachedMe',
   ChannelNotCached = 'ChannelNotCached',
   StageChannelResolve = 'StageChannelResolve',
@@ -3919,6 +3959,7 @@ export enum DiscordjsErrorCodes {
   EmojiManaged = 'EmojiManaged',
   MissingManageGuildExpressionsPermission = 'MissingManageGuildExpressionsPermission',
 
+  NotGuildSoundboardSound = 'NotGuildSoundboardSound',
   NotGuildSticker = 'NotGuildSticker',
 
   ReactionResolveUser = 'ReactionResolveUser',
@@ -4292,11 +4333,19 @@ export class GuildEmojiRoleManager extends DataManager<Snowflake, Role, RoleReso
   ): Promise<GuildEmoji>;
 }
 
+export interface FetchSoundboardSoundsOptions {
+  guildIds: readonly Snowflake[];
+  time?: number;
+}
+
 export class GuildManager extends CachedManager<Snowflake, Guild, GuildResolvable> {
   private constructor(client: Client<true>, iterable?: Iterable<RawGuildData>);
   public create(options: GuildCreateOptions): Promise<Guild>;
   public fetch(options: Snowflake | FetchGuildOptions): Promise<Guild>;
   public fetch(options?: FetchGuildsOptions): Promise<Collection<Snowflake, OAuth2Guild>>;
+  public fetchSoundboardSounds(
+    options: FetchSoundboardSoundsOptions,
+  ): Promise<Collection<Snowflake, Collection<Snowflake, GuildSoundboardSound>>>;
   public setIncidentActions(
     guild: GuildResolvable,
     incidentActions: IncidentActionsEditOptions,
@@ -4386,6 +4435,36 @@ export class GuildScheduledEventManager extends CachedManager<
     guildScheduledEvent: GuildScheduledEventResolvable,
     options?: Options,
   ): Promise<GuildScheduledEventManagerFetchSubscribersResult<Options>>;
+}
+
+export interface GuildSoundboardSoundCreateOptions {
+  file: BufferResolvable | Stream;
+  name: string;
+  contentType?: string;
+  volume?: number;
+  emojiId?: Snowflake;
+  emojiName?: string;
+  reason?: string;
+}
+
+export interface GuildSoundboardSoundEditOptions {
+  name?: string;
+  volume?: number | null;
+  emojiId?: Snowflake | null;
+  emojiName?: string | null;
+}
+
+export class GuildSoundboardSoundManager extends CachedManager<Snowflake, SoundboardSound, SoundboardSoundResolvable> {
+  private constructor(guild: Guild, iterable?: Iterable<APISoundboardSound>);
+  public guild: Guild;
+  public create(options: GuildSoundboardSoundCreateOptions): Promise<GuildSoundboardSound>;
+  public edit(
+    soundboardSound: SoundboardSoundResolvable,
+    options: GuildSoundboardSoundEditOptions,
+  ): Promise<GuildSoundboardSound>;
+  public delete(soundboardSound: SoundboardSoundResolvable): Promise<void>;
+  public fetch(id: Snowflake, options?: BaseFetchOptions): Promise<GuildSoundboardSound>;
+  public fetch(options?: BaseFetchOptions): Promise<Collection<Snowflake, GuildSoundboardSound>>;
 }
 
 export class GuildStickerManager extends CachedManager<Snowflake, Sticker, StickerResolvable> {
@@ -4702,7 +4781,8 @@ export type AllowedPartial =
   | GuildScheduledEvent
   | ThreadMember
   | Poll
-  | PollAnswer;
+  | PollAnswer
+  | SoundboardSound;
 
 export type AllowedThreadTypeForAnnouncementChannel = ChannelType.AnnouncementThread;
 
@@ -5257,6 +5337,9 @@ export interface ClientEventTypes {
   guildMembersChunk: [members: ReadonlyCollection<Snowflake, GuildMember>, guild: Guild, data: GuildMembersChunk];
   guildMemberUpdate: [oldMember: GuildMember | PartialGuildMember, newMember: GuildMember];
   guildUpdate: [oldGuild: Guild, newGuild: Guild];
+  guildSoundboardSoundCreate: [soundboardSound: SoundboardSound];
+  guildSoundboardSoundDelete: [soundboardSound: SoundboardSound | PartialSoundboardSound];
+  guildSoundboardSoundUpdate: [oldSoundboardSound: SoundboardSound | null, newSoundboardSound: SoundboardSound];
   inviteCreate: [invite: Invite];
   inviteDelete: [invite: Invite];
   messageCreate: [message: OmitPartialGroupDMChannel<Message>];
@@ -5324,6 +5407,7 @@ export interface ClientEventTypes {
   guildScheduledEventDelete: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent];
   guildScheduledEventUserAdd: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent, user: User];
   guildScheduledEventUserRemove: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent, user: User];
+  soundboardSounds: [soundboardSounds: ReadonlyCollection<Snowflake, SoundboardSound>, guild: Guild];
 }
 
 export interface ClientFetchInviteOptions {
@@ -5526,6 +5610,11 @@ export enum Events {
   GuildScheduledEventDelete = 'guildScheduledEventDelete',
   GuildScheduledEventUserAdd = 'guildScheduledEventUserAdd',
   GuildScheduledEventUserRemove = 'guildScheduledEventUserRemove',
+  GuildSoundboardSoundCreate = 'guildSoundboardSoundCreate',
+  GuildSoundboardSoundDelete = 'guildSoundboardSoundDelete',
+  GuildSoundboardSoundUpdate = 'guildSoundboardSoundUpdate',
+  GuildSoundboardSoundsUpdate = 'guildSoundboardSoundsUpdate',
+  SoundboardSounds = 'soundboardSounds',
 }
 
 export enum ShardEvents {
@@ -6697,6 +6786,8 @@ export interface PartialGuildScheduledEvent
 
 export interface PartialThreadMember extends Partialize<ThreadMember, 'flags' | 'joinedAt' | 'joinedTimestamp'> {}
 
+export interface PartialSoundboardSound extends Partialize<SoundboardSound, 'available' | 'name' | 'volume'> {}
+
 export interface PartialOverwriteData {
   id: Snowflake | number;
   type?: OverwriteType;
@@ -6718,6 +6809,7 @@ export enum Partials {
   ThreadMember,
   Poll,
   PollAnswer,
+  SoundboardSound,
 }
 
 export interface PartialUser extends Partialize<User, 'username' | 'tag' | 'discriminator'> {}
