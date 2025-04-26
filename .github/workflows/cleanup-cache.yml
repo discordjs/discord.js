@@ -1,4 +1,4 @@
-# https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows#force-deleting-cache-entries
+# https://docs.github.com/actions/using-workflows/caching-dependencies-to-speed-up-workflows#force-deleting-cache-entries
 name: Cleanup caches
 on:
   pull_request:
