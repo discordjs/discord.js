@@ -1,5 +1,3 @@
-/* eslint-disable jsdoc/check-param-names */
-
 import type { JSONEncodable } from '@discordjs/util';
 import type {
 	APIActionRowComponent,
@@ -90,17 +88,11 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	 *
 	 * @param data - The API data to create this message builder with
 	 */
-	public constructor({
-		attachments = [],
-		embeds = [],
-		components = [],
-		message_reference,
-		poll,
-		allowed_mentions,
-		...data
-	}: Partial<RESTPostAPIChannelMessageJSONBody> = {}) {
+	public constructor(data: Partial<RESTPostAPIChannelMessageJSONBody> = {}) {
+		const { attachments = [], embeds = [], components = [], message_reference, poll, allowed_mentions, ...rest } = data;
+
 		this.data = {
-			...structuredClone(data),
+			...structuredClone(rest),
 			allowed_mentions: allowed_mentions && new AllowedMentionsBuilder(allowed_mentions),
 			attachments: attachments.map((attachment) => new AttachmentBuilder(attachment)),
 			embeds: embeds.map((embed) => new EmbedBuilder(embed)),
