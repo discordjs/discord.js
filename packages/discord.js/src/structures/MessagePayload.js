@@ -249,12 +249,7 @@ class MessagePayload {
       username,
       avatar_url: avatarURL,
       allowed_mentions:
-        content === undefined &&
-        message_reference === undefined &&
-        // Components V2 can mention, so need to check for them too
-        (!components?.length || flags & (MessageFlags.IsComponentsV2 === 0))
-          ? undefined
-          : allowedMentions,
+        this.isMessage() && this.target.author.id !== this.target.client.user.id ? undefined : allowedMentions,
       flags,
       message_reference,
       attachments: this.options.attachments,
