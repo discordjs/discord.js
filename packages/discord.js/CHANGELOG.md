@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.19.1](https://github.com/discordjs/discord.js/compare/14.19.0...14.19.1) - (2025-04-26)
+
+## Bug Fixes
+
+- Add in `withComponents` to Webhook ([481ccd2](https://github.com/discordjs/discord.js/commit/481ccd228bc240e32ac552475f8427a8042e1add))
+
 # [14.19.0](https://github.com/discordjs/discord.js/compare/14.18.0...14.19.0) - (2025-04-26)
 
 ## Bug Fixes
