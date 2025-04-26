@@ -214,12 +214,14 @@ class Webhook {
       messagePayload = MessagePayload.create(this, options).resolveBody();
     }
 
+    const { body, files } = await messagePayload.resolveFiles();
+
     const query = makeURLSearchParams({
       wait: true,
       thread_id: messagePayload.options.threadId,
+      with_components: body?.components?.length > 0,
     });
 
-    const { body, files } = await messagePayload.resolveFiles();
     const d = await this.client.rest.post(Routes.webhook(this.id, this.token), {
       body,
       files,
