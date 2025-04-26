@@ -968,7 +968,7 @@ export class Options extends null {
 export class ClientVoiceManager {
   private constructor(client: Client);
   public readonly client: Client;
-  public adapters: Map<Snowflake, _InternalDiscordGatewayAdapterLibraryMethods>;
+  public adapters: Map<Snowflake, InternalDiscordGatewayAdapterLibraryMethods>;
 }
 
 export { Collection, ReadonlyCollection } from '@discordjs/collection';
@@ -1321,7 +1321,7 @@ export class Guild extends AnonymousGuild {
   public systemChannelFlags: Readonly<SystemChannelFlagsBitField>;
   public systemChannelId: Snowflake | null;
   public vanityURLUses: number | null;
-  public get voiceAdapterCreator(): _InternalDiscordGatewayAdapterCreator;
+  public get voiceAdapterCreator(): InternalDiscordGatewayAdapterCreator;
   public voiceStates: VoiceStateManager;
   public get widgetChannel():
     | TextChannel
@@ -1903,7 +1903,7 @@ export class InteractionCollector<Interaction extends CollectedInteraction> exte
 }
 
 // tslint:disable-next-line no-empty-interface
-export interface InteractionWebhook extends _PartialWebhookFields {}
+export interface InteractionWebhook extends PartialWebhookFields {}
 export class InteractionWebhook {
   public constructor(client: Client<true>, id: Snowflake, token: string);
   public readonly client: Client<true>;
@@ -3011,7 +3011,7 @@ export interface FetchRecommendedShardCountOptions {
 export {
   DeconstructedSnowflake,
   SnowflakeGenerateOptions,
-  DiscordSnowflake as SnowflakeUtil
+  DiscordSnowflake as SnowflakeUtil,
 } from '@sapphire/snowflake';
 
 export class SKU extends Base {
@@ -3502,7 +3502,7 @@ export class VoiceState extends Base {
 }
 
 // tslint:disable-next-line no-empty-interface
-export interface Webhook<Type extends WebhookType = WebhookType> extends _WebhookFields {}
+export interface Webhook<Type extends WebhookType = WebhookType> extends WebhookFields {}
 export class Webhook<Type extends WebhookType = WebhookType> {
   private constructor(client: Client<true>, data?: unknown);
   public avatar: string | null;
@@ -3545,7 +3545,7 @@ export class Webhook<Type extends WebhookType = WebhookType> {
 }
 
 // tslint:disable-next-line no-empty-interface
-export interface WebhookClient extends _WebhookFields, BaseClient<{}> {}
+export interface WebhookClient extends WebhookFields, BaseClient<{}> {}
 export class WebhookClient extends BaseClient<{}> {
   public constructor(data: WebhookClientData, options?: WebhookClientOptions);
   public readonly client: this;
@@ -4516,7 +4516,7 @@ export interface TextBasedChannelFields<InGuild extends boolean = boolean, InDM 
   setNSFW(nsfw?: boolean, reason?: string): Promise<this>;
 }
 
-export interface _PartialWebhookFields {
+export interface PartialWebhookFields {
   id: Snowflake;
   get url(): string;
   deleteMessage(message: MessageResolvable | APIMessage | '@original', threadId?: Snowflake): Promise<void>;
@@ -4530,7 +4530,7 @@ export interface _PartialWebhookFields {
   ): Promise<APIMessage | Message>;
 }
 
-export interface _WebhookFields extends _PartialWebhookFields {
+export interface WebhookFields extends PartialWebhookFields {
   get createdAt(): Date;
   get createdTimestamp(): number;
   delete(reason?: string): Promise<void>;
@@ -5975,27 +5975,27 @@ export interface GuildScheduledEventCreateOptions {
 }
 
 export type GuildScheduledEventRecurrenceRuleOptions =
-  | _BaseGuildScheduledEventRecurrenceRuleOptions<
+  | BaseGuildScheduledEventRecurrenceRuleOptions<
       GuildScheduledEventRecurrenceRuleFrequency.Yearly,
       {
         byMonth: readonly GuildScheduledEventRecurrenceRuleMonth[];
         byMonthDay: readonly number[];
       }
     >
-  | _BaseGuildScheduledEventRecurrenceRuleOptions<
+  | BaseGuildScheduledEventRecurrenceRuleOptions<
       GuildScheduledEventRecurrenceRuleFrequency.Monthly,
       {
         byNWeekday: readonly GuildScheduledEventRecurrenceRuleNWeekday[];
       }
     >
-  | _BaseGuildScheduledEventRecurrenceRuleOptions<
+  | BaseGuildScheduledEventRecurrenceRuleOptions<
       GuildScheduledEventRecurrenceRuleFrequency.Weekly | GuildScheduledEventRecurrenceRuleFrequency.Daily,
       {
         byWeekday: readonly GuildScheduledEventRecurrenceRuleWeekday[];
       }
     >;
 
-export type _BaseGuildScheduledEventRecurrenceRuleOptions<
+export type BaseGuildScheduledEventRecurrenceRuleOptions<
   Frequency extends GuildScheduledEventRecurrenceRuleFrequency,
   Extra extends {},
 > = {
@@ -6948,7 +6948,7 @@ export type Serialized<Value> = Value extends symbol | bigint | (() => any)
  * @remarks
  * Use `DiscordGatewayAdapterLibraryMethods` from `@discordjs/voice` instead.
  */
-export interface _InternalDiscordGatewayAdapterLibraryMethods {
+export interface InternalDiscordGatewayAdapterLibraryMethods {
   onVoiceServerUpdate(data: GatewayVoiceServerUpdateDispatchData): void;
   onVoiceStateUpdate(data: GatewayVoiceStateUpdateDispatchData): void;
   destroy(): void;
@@ -6958,7 +6958,7 @@ export interface _InternalDiscordGatewayAdapterLibraryMethods {
  * @remarks
  * Use `DiscordGatewayAdapterImplementerMethods` from `@discordjs/voice` instead.
  */
-export interface _InternalDiscordGatewayAdapterImplementerMethods {
+export interface InternalDiscordGatewayAdapterImplementerMethods {
   sendPayload(payload: unknown): boolean;
   destroy(): void;
 }
@@ -6967,9 +6967,9 @@ export interface _InternalDiscordGatewayAdapterImplementerMethods {
  * @remarks
  * Use `DiscordGatewayAdapterCreator` from `@discordjs/voice` instead.
  */
-export type _InternalDiscordGatewayAdapterCreator = (
-  methods: _InternalDiscordGatewayAdapterLibraryMethods,
-) => _InternalDiscordGatewayAdapterImplementerMethods;
+export type InternalDiscordGatewayAdapterCreator = (
+  methods: InternalDiscordGatewayAdapterLibraryMethods,
+) => InternalDiscordGatewayAdapterImplementerMethods;
 
 //#endregion
 
@@ -6980,4 +6980,3 @@ export * from '@discordjs/rest';
 export * from '@discordjs/util';
 export * from '@discordjs/ws';
 export * from 'discord-api-types/v10';
-

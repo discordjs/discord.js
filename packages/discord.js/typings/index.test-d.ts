@@ -213,7 +213,7 @@ import {
   type NonThreadGuildBasedChannel,
   type TextBasedChannel,
   type TextBasedChannelTypes,
-  type VoiceBasedChannel
+  type VoiceBasedChannel,
 } from './index.js';
 
 // Test type transformation:
