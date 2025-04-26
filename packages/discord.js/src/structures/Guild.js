@@ -499,6 +499,13 @@ class Guild extends AnonymousGuild {
     } else {
       this.incidentsData ??= null;
     }
+
+    if (data.soundboard_sounds) {
+      this.soundboardSounds.cache.clear();
+      for (const soundboardSound of data.soundboard_sounds) {
+        this.soundboardSounds._add(soundboardSound);
+      }
+    }
   }
 
   /**
