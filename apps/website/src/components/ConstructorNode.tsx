@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { ENV } from '@/util/env';
 import { ParameterNode } from './ParameterNode';
 import { SummaryNode } from './SummaryNode';
+import { ExampleNode } from './ExampleNode';
+import { SeeNode } from './SeeNode';
 
 export async function ConstructorNode({ node, version }: { readonly node: any; readonly version: string }) {
 	return (
@@ -15,11 +17,11 @@ export async function ConstructorNode({ node, version }: { readonly node: any; r
 
 			<div className="flex place-content-between place-items-center gap-1">
 				<h3
-					className={`${ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group px-2 font-mono font-semibold break-all`}
+					className={`${ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group break-all px-2 font-mono font-semibold`}
 					id="constructor"
 				>
 					{/* constructor({parsedContent.constructor.parametersString}) */}
-					<Link className="float-left -ml-6 hidden pr-2 pb-2 group-hover:block" href="#constructor">
+					<Link className="float-left -ml-6 hidden pb-2 pr-2 group-hover:block" href="#constructor">
 						<LinkIcon aria-hidden size={16} />
 					</Link>
 					constructor({node.parameters?.length ? <ParameterNode node={node.parameters} version={version} /> : null})
@@ -43,6 +45,10 @@ export async function ConstructorNode({ node, version }: { readonly node: any; r
 			{node.summary?.summarySection.length ? (
 				<SummaryNode node={node.summary.summarySection} padding version={version} />
 			) : null}
+
+			{node.summary?.exampleBlocks.length ? <ExampleNode node={node.summary.exampleBlocks} version={version} /> : null}
+
+			{node.summary?.seeBlocks.length ? <SeeNode node={node.summary.seeBlocks} padding version={version} /> : null}
 
 			<div aria-hidden className="p-4">
 				<div className="h-[2px] bg-neutral-300 dark:bg-neutral-700" role="separator" />
