@@ -285,8 +285,8 @@ class GuildManager extends CachedManager {
 
   /**
    * @typedef {Object} FetchSoundboardSoundsOptions
-   * @param {Snowflake[]} guildIds The ids of the guilds to fetch soundboard sounds for
-   * @param {number} [time=10_000] The timeout for receipt of the soundboard sounds
+   * @property {Snowflake[]} guildIds The ids of the guilds to fetch soundboard sounds for
+   * @property {number} [time=10_000] The timeout for receipt of the soundboard sounds
    */
 
   /**
