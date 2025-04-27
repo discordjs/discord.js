@@ -238,6 +238,7 @@ function extractInteractiveComponents(component) {
  * @param {Array<Component|APIMessageComponent>} components The components to search in
  * @param {string} customId The customId to search for
  * @returns {Component|APIMessageComponent}
+ * @ignore
  */
 function findComponentByCustomId(components, customId) {
   return (
