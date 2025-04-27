@@ -7,7 +7,6 @@ onlyBuiltDependencies:
   - '@discordjs/opus'
   - bufferutil
   - esbuild
-  - msw
   - protobufjs
   - sharp
   - utf-8-validate
