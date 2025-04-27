@@ -5,13 +5,36 @@
     {
       "files": ["src/**/*.js", "test/**/*.js"],
       "extends": ["eslint:recommended"],
-      "plugins": ["import"],
+      "plugins": ["import", "jsdoc"],
       "parserOptions": {
         "ecmaVersion": 2022
       },
       "env": {
         "es2022": true,
         "node": true
+      },
+      "settings": {
+        "jsdoc": {
+          "tagNamePreference": {
+            "augments": "extends",
+            "return": "returns",
+            "arg": "param",
+            "fires": "emits",
+            "function": "method"
+          },
+          "preferredTypes": {
+            "String": "string",
+            "Number": "number",
+            "Boolean": "boolean",
+            "Symbol": "symbol",
+            "object": "Object",
+            "function": "Function",
+            "array": "Array",
+            "date": "Date",
+            "error": "Error",
+            "null": "void"
+          }
+        }
       },
       "rules": {
         "import/order": [
@@ -29,29 +52,10 @@
         "no-compare-neg-zero": "error",
         "no-template-curly-in-string": "error",
         "no-unsafe-negation": "error",
-        "valid-jsdoc": [
-          "error",
-          {
-            "requireReturn": false,
-            "requireReturnDescription": false,
-            "prefer": {
-              "return": "returns",
-              "arg": "param"
-            },
-            "preferType": {
-              "String": "string",
-              "Number": "number",
-              "Boolean": "boolean",
-              "Symbol": "symbol",
-              "object": "Object",
-              "function": "Function",
-              "array": "Array",
-              "date": "Date",
-              "error": "Error",
-              "null": "void"
-            }
-          }
-        ],
+        "jsdoc/require-returns": "off",
+        "jsdoc/require-returns-description": "off",
+        "jsdoc/check-tag-names": "error",
+        "jsdoc/check-types": "error",
 
         "accessor-pairs": "warn",
         "array-callback-return": "error",
