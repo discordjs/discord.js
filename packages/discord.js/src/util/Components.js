@@ -221,22 +221,21 @@ function createComponentBuilder(data) {
  * @returns {Component|APIMessageComponent}
  */
 function findComponentByCustomId(components, customId) {
-  return (
-    components
-      .flatMap(component => {
-        switch (component.type) {
-          case ComponentType.ActionRow:
-            return component.components;
-          case ComponentType.Section:
-            return [...component.components, component.accessory];
-          case ComponentType.Container:
-            return [findComponentByCustomId(component.components, customId)];
-          default:
-            return [component];
-        }
-      })
-      .find(component => (component.customId ?? component.custom_id) === customId) ?? null
-  );
+  const extractInteractiveComponents = component => {
+    switch (component.type) {
+      case ComponentType.ActionRow:
+        return component.components;
+      case ComponentType.Section:
+        return [...component.components, component.accessory];
+      case ComponentType.Container:
+        return component.components.flatMap(extractInteractiveComponents);
+      default:
+        return [component];
+    }
+  };
+  return components
+    .flatMap(extractInteractiveComponents)
+    .find(component => (component.customId ?? component.custom_id) === customId) ?? null;
 }
 
 module.exports = { createComponent, createComponentBuilder, findComponentByCustomId };
