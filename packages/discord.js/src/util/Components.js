@@ -233,9 +233,11 @@ function findComponentByCustomId(components, customId) {
         return [component];
     }
   };
-  return components
-    .flatMap(extractInteractiveComponents)
-    .find(component => (component.customId ?? component.custom_id) === customId) ?? null;
+  return (
+    components
+      .flatMap(extractInteractiveComponents)
+      .find(component => (component.customId ?? component.custom_id) === customId) ?? null
+  );
 }
 
 module.exports = { createComponent, createComponentBuilder, findComponentByCustomId };
