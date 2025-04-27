@@ -218,6 +218,7 @@ function createComponentBuilder(data) {
  * Extracts all interactive components from the component tree
  * @param {Component|APIMessageComponent} component The component to find all interactive components in
  * @returns {Array<Component|APIMessageComponent>}
+ * @ignore
  */
 function extractInteractiveComponents(component) {
   switch (component.type) {
