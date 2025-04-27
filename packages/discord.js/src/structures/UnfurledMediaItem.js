@@ -20,6 +20,14 @@ class UnfurledMediaItem {
   get url() {
     return this.data.url;
   }
+
+  /**
+   * Returns the API-compatible JSON for this media item
+   * @returns {APIUnfurledMediaItem}
+   */
+  toJSON() {
+    return { ...this.data };
+  }
 }
 
 module.exports = UnfurledMediaItem;

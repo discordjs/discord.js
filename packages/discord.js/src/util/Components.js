@@ -215,24 +215,35 @@ function createComponentBuilder(data) {
 }
 
 /**
+ * Extracts all interactive components from the component tree
+ * @param {Component|APIMessageComponent} component The component to find all interactive components in
+ * @returns {Array<Component|APIMessageComponent>}
+ * @ignore
+ */
+function extractInteractiveComponents(component) {
+  switch (component.type) {
+    case ComponentType.ActionRow:
+      return component.components;
+    case ComponentType.Section:
+      return [...component.components, component.accessory];
+    case ComponentType.Container:
+      return component.components.flatMap(extractInteractiveComponents);
+    default:
+      return [component];
+  }
+}
+
+/**
  * Finds a component by customId in nested components
  * @param {Array<Component|APIMessageComponent>} components The components to search in
  * @param {string} customId The customId to search for
  * @returns {Component|APIMessageComponent}
+ * @ignore
  */
 function findComponentByCustomId(components, customId) {
   return (
     components
-      .flatMap(component => {
-        switch (component.type) {
-          case ComponentType.ActionRow:
-            return component.components;
-          case ComponentType.Section:
-            return [...component.components, component.accessory];
-          default:
-            return [component];
-        }
-      })
+      .flatMap(extractInteractiveComponents)
       .find(component => (component.customId ?? component.custom_id) === customId) ?? null
   );
 }
