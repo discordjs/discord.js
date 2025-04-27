@@ -1,7 +1,7 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/ws",
-	"version": "2.0.0",
+	"version": "2.0.2",
 	"description": "Wrapper around Discord's gateway",
 	"scripts": {
 		"test": "vitest run --config ../../vitest.config.ts",
