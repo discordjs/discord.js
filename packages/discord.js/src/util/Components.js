@@ -229,6 +229,8 @@ function findComponentByCustomId(components, customId) {
             return component.components;
           case ComponentType.Section:
             return [...component.components, component.accessory];
+          case ComponentType.Container:
+            return [findComponentByCustomId(component.components, customId)];
           default:
             return [component];
         }
