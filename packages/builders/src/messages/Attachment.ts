@@ -10,15 +10,17 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 	private readonly data: Partial<RESTAPIAttachment>;
 
 	/**
-	 * Creates new attachment builder from API data.
+	 * Creates a new attachment builder from API data.
 	 *
-	 * @param data - The API data to create this attachment with
+	 * @param data - The API data to create this attachment builder with
 	 */
 	public constructor(data: Partial<RESTAPIAttachment> = {}) {
 		this.data = structuredClone(data);
 	}
 
 	/**
+	 * Sets the id of the attachment.
+	 *
 	 * @param id - The id of the attachment
 	 */
 	public setId(id: Snowflake): this {
@@ -27,15 +29,9 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 	}
 
 	/**
-	 * Clears the id of this attachment.
-	 */
-	public clearId(): this {
-		this.data.id = undefined;
-		return this;
-	}
-
-	/**
 	 * Sets the description of this attachment.
+	 *
+	 * @param description - The description of the attachment
 	 */
 	public setDescription(description: string): this {
 		this.data.description = description;
@@ -105,7 +101,7 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 	}
 
 	/**
-	 * Sets the waveform of this attachment.
+	 * Sets the waveform of this attachment (audio clips).
 	 *
 	 * @param waveform - The waveform of the attachment
 	 */
