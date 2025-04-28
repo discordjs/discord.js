@@ -36,10 +36,13 @@ const BeforeReadyWhitelist = [
 
 const WaitingForGuildEvents = [GatewayDispatchEvents.GuildCreate, GatewayDispatchEvents.GuildDelete];
 
-const UNRESUMABLE_CLOSE_CODES = [
-  CloseCodes.Normal,
-  GatewayCloseCodes.AlreadyAuthenticated,
-  GatewayCloseCodes.InvalidSeq,
+const UNRECOVERABLE_CLOSE_CODES = [
+  GatewayCloseCodes.AuthenticationFailed,
+  GatewayCloseCodes.InvalidShard,
+  GatewayCloseCodes.ShardingRequired,
+  GatewayCloseCodes.InvalidAPIVersion,
+  GatewayCloseCodes.InvalidIntents,
+  GatewayCloseCodes.DisallowedIntents,
 ];
 
 const reasonIsDeprecated = 'the reason property is deprecated, use the code property to determine the reason';
@@ -242,7 +245,7 @@ class WebSocketManager extends EventEmitter {
     this._ws.on(WSWebSocketShardEvents.Closed, ({ code, shardId }) => {
       const shard = this.shards.get(shardId);
       shard.emit(WebSocketShardEvents.Close, { code, reason: reasonIsDeprecated, wasClean: true });
-      if (UNRESUMABLE_CLOSE_CODES.includes(code) && this.destroyed) {
+      if (UNRECOVERABLE_CLOSE_CODES.includes(code)) {
         shard.status = Status.Disconnected;
         /**
          * Emitted when a shard's WebSocket disconnects and will no longer reconnect.
@@ -251,7 +254,7 @@ class WebSocketManager extends EventEmitter {
          * @param {number} id The shard id that disconnected
          */
         this.client.emit(Events.ShardDisconnect, { code, reason: reasonIsDeprecated, wasClean: true }, shardId);
-        this.debug([`Shard not resumable: ${code} (${GatewayCloseCodes[code] ?? CloseCodes[code]})`], shardId);
+        this.debug([`Shard not recoverable: ${code} (${GatewayCloseCodes[code] ?? CloseCodes[code]})`], shardId);
         return;
       }
 
