@@ -22,7 +22,7 @@ let zlib;
 
 try {
   zlib = require('zlib-sync');
-} catch { } // eslint-disable-line no-empty
+} catch {} // eslint-disable-line no-empty
 
 const BeforeReadyWhitelist = [
   GatewayDispatchEvents.Ready,
