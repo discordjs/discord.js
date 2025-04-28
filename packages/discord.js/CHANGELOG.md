@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.19.2](https://github.com/discordjs/discord.js/compare/14.19.1...14.19.2) - (2025-04-28)
+
+## Bug Fixes
+
+- **WebSocketManager:** Always emit shardDisconnect on unresumable close (#10826) ([37ef57b](https://github.com/discordjs/discord.js/commit/37ef57b88079db2f87036dfd9d57af9a2e5d1b9f))
+- **SoundboardSound:** Wrong emoji comparison in `equals` (#10861) ([5f3fc17](https://github.com/discordjs/discord.js/commit/5f3fc170fbfd49fa4f117901578c309f00f65d0b))
+- AllowedMentions, container, media item `toJSON()` for components v2 (#10852) ([20fade2](https://github.com/discordjs/discord.js/commit/20fade2a875695aa677e32b983320e746fd4d69c))
+- **Guild:** Cache soundboard sounds when patching (#10857) ([e827644](https://github.com/discordjs/discord.js/commit/e827644b5aecf05f7551e4e31a620894cc7aa71f))
+- **GuildSoundboardSoundManager:** Value "undefined" is not snowflake (#10854) ([6281592](https://github.com/discordjs/discord.js/commit/62815928aba0baa96b3422a4a7f1c4321c123dc7))
+
+## Typings
+
+- **GuildSoundboardSoundEditOptions:** Add missing `reason` (#10863) ([e3c247e](https://github.com/discordjs/discord.js/commit/e3c247e423c91b9d9e1d40d0521b6eddf0bc53c9))
+
 # [14.19.1](https://github.com/discordjs/discord.js/compare/14.19.0...14.19.1) - (2025-04-26)
 
 ## Bug Fixes
