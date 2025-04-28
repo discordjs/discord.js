@@ -4857,6 +4857,7 @@ export interface GuildSoundboardSoundEditOptions {
   volume?: number | null;
   emojiId?: Snowflake | null;
   emojiName?: string | null;
+  reason?: string;
 }
 
 export interface FetchGuildSoundboardSoundOptions extends BaseFetchOptions {
