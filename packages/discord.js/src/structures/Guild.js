@@ -21,6 +21,7 @@ const GuildEmojiManager = require('../managers/GuildEmojiManager');
 const GuildInviteManager = require('../managers/GuildInviteManager');
 const GuildMemberManager = require('../managers/GuildMemberManager');
 const GuildScheduledEventManager = require('../managers/GuildScheduledEventManager');
+const { GuildSoundboardSoundManager } = require('../managers/GuildSoundboardSoundManager');
 const GuildStickerManager = require('../managers/GuildStickerManager');
 const PresenceManager = require('../managers/PresenceManager');
 const RoleManager = require('../managers/RoleManager');
@@ -107,6 +108,12 @@ class Guild extends AnonymousGuild {
      * @type {AutoModerationRuleManager}
      */
     this.autoModerationRules = new AutoModerationRuleManager(this);
+
+    /**
+     * A manager of the soundboard sounds of this guild.
+     * @type {GuildSoundboardSoundManager}
+     */
+    this.soundboardSounds = new GuildSoundboardSoundManager(this);
 
     if (!data) return;
     if (data.unavailable) {
@@ -491,6 +498,13 @@ class Guild extends AnonymousGuild {
       this.incidentsData = data.incidents_data && _transformAPIIncidentsData(data.incidents_data);
     } else {
       this.incidentsData ??= null;
+    }
+
+    if (data.soundboard_sounds) {
+      this.soundboardSounds.cache.clear();
+      for (const soundboardSound of data.soundboard_sounds) {
+        this.soundboardSounds._add(soundboardSound);
+      }
     }
   }
 

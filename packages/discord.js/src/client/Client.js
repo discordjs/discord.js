@@ -18,6 +18,7 @@ const ClientPresence = require('../structures/ClientPresence');
 const GuildPreview = require('../structures/GuildPreview');
 const GuildTemplate = require('../structures/GuildTemplate');
 const Invite = require('../structures/Invite');
+const { SoundboardSound } = require('../structures/SoundboardSound');
 const { Sticker } = require('../structures/Sticker');
 const StickerPack = require('../structures/StickerPack');
 const VoiceRegion = require('../structures/VoiceRegion');
@@ -388,6 +389,19 @@ class Client extends BaseClient {
     }
 
     return this.fetchStickerPacks();
+  }
+
+  /**
+   * Obtains the list of default soundboard sounds.
+   * @returns {Promise<Collection<string, SoundboardSound>>}
+   * @example
+   * client.fetchDefaultSoundboardSounds()
+   *  .then(sounds => console.log(`Available soundboard sounds are: ${sounds.map(sound => sound.name).join(', ')}`))
+   *  .catch(console.error);
+   */
+  async fetchDefaultSoundboardSounds() {
+    const data = await this.rest.get(Routes.soundboardDefaultSounds());
+    return new Collection(data.map(sound => [sound.sound_id, new SoundboardSound(this, sound)]));
   }
 
   /**

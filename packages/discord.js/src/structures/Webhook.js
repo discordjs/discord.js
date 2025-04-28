@@ -137,6 +137,8 @@ class Webhook {
    * @property {string} [threadName] Name of the thread to create (only available if the webhook is in a forum channel)
    * @property {Snowflake[]} [appliedTags]
    * The tags to apply to the created thread (only available if the webhook is in a forum channel)
+   * @property {boolean} [withComponents] Whether to allow sending non-interactive components in the message.
+   * <info>For application-owned webhooks, this property is ignored</info>
    */
 
   /**
@@ -214,12 +216,14 @@ class Webhook {
       messagePayload = MessagePayload.create(this, options).resolveBody();
     }
 
+    const { body, files } = await messagePayload.resolveFiles();
+
     const query = makeURLSearchParams({
       wait: true,
       thread_id: messagePayload.options.threadId,
+      with_components: messagePayload.options.withComponents,
     });
 
-    const { body, files } = await messagePayload.resolveFiles();
     const d = await this.client.rest.post(Routes.webhook(this.id, this.token), {
       body,
       files,
@@ -298,6 +302,8 @@ class Webhook {
    * @property {boolean} [cache=true] Whether to cache the message.
    * @property {Snowflake} [threadId] The id of the thread this message belongs to.
    * <info>For interaction webhooks, this property is ignored</info>
+   * @property {boolean} [withComponents] Whether to allow sending non-interactive components in the message.
+   * <info>For application-owned webhooks, this property is ignored</info>
    */
 
   /**
@@ -337,14 +343,17 @@ class Webhook {
 
     const { body, files } = await messagePayload.resolveBody().resolveFiles();
 
+    const query = makeURLSearchParams({
+      thread_id: messagePayload.options.threadId,
+      with_components: messagePayload.options.withComponents,
+    });
+
     const d = await this.client.rest.patch(
       Routes.webhookMessage(this.id, this.token, typeof message === 'string' ? message : message.id),
       {
         body,
         files,
-        query: messagePayload.options.threadId
-          ? makeURLSearchParams({ thread_id: messagePayload.options.threadId })
-          : undefined,
+        query,
         auth: false,
       },
     );

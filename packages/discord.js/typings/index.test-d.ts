@@ -25,7 +25,7 @@ import {
   ApplicationCommandType,
   APIMessage,
   APIActionRowComponent,
-  APIActionRowComponentTypes,
+  APIComponentInActionRow,
   APIStringSelectComponent,
   APIUserSelectComponent,
   APIRoleSelectComponent,
@@ -36,6 +36,7 @@ import {
   GuildScheduledEventRecurrenceRuleFrequency,
   GuildScheduledEventRecurrenceRuleMonth,
   GuildScheduledEventRecurrenceRuleWeekday,
+  MessageFlags,
 } from 'discord-api-types/v10';
 import {
   ApplicationCommand,
@@ -219,6 +220,15 @@ import {
   InteractionCallbackResponse,
   GuildScheduledEventRecurrenceRuleOptions,
   ThreadOnlyChannel,
+  SectionComponentData,
+  TextDisplayComponentData,
+  ThumbnailComponentData,
+  UnfurledMediaItemData,
+  MediaGalleryComponentData,
+  MediaGalleryItemData,
+  SeparatorComponentData,
+  FileComponentData,
+  ContainerComponentData,
 } from '.';
 import {
   expectAssignable,
@@ -642,6 +652,57 @@ client.on('messageCreate', async message => {
     components: [row, rawButtonsRow, buttonsRow, rawStringSelectMenuRow, stringSelectRow],
     embeds: [embed, embedData],
   });
+
+  const rawTextDisplay: TextDisplayComponentData = {
+    type: ComponentType.TextDisplay,
+    content: 'test',
+  };
+
+  const rawMedia: UnfurledMediaItemData = { url: 'https://discord.js.org' };
+
+  const rawThumbnail: ThumbnailComponentData = {
+    type: ComponentType.Thumbnail,
+    media: rawMedia,
+    spoiler: true,
+    description: 'test',
+  };
+
+  const rawSection: SectionComponentData = {
+    type: ComponentType.Section,
+    components: [rawTextDisplay],
+    accessory: rawThumbnail,
+  };
+
+  const rawMediaGalleryItem: MediaGalleryItemData = {
+    media: rawMedia,
+    description: 'test',
+    spoiler: false,
+  };
+
+  const rawMediaGallery: MediaGalleryComponentData = {
+    type: ComponentType.MediaGallery,
+    items: [rawMediaGalleryItem, rawMediaGalleryItem, rawMediaGalleryItem],
+  };
+
+  const rawSeparator: SeparatorComponentData = {
+    type: ComponentType.Separator,
+    spacing: 1,
+    dividier: false,
+  };
+
+  const rawFile: FileComponentData = {
+    type: ComponentType.File,
+    file: rawMedia,
+  };
+
+  const rawContainer: ContainerComponentData = {
+    type: ComponentType.Container,
+    components: [rawSection, rawSeparator, rawMediaGallery, rawFile],
+    accentColor: 0xff00ff,
+    spoiler: true,
+  };
+
+  channel.send({ flags: MessageFlags.IsComponentsV2, components: [rawContainer] });
 });
 
 client.on('messageDelete', ({ client }) => expectType<Client<true>>(client));
@@ -2211,7 +2272,7 @@ expectType<Promise<GuildAuditLogs<AuditLogEvent.IntegrationUpdate>>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.IntegrationUpdate }),
 );
 
-expectType<Promise<GuildAuditLogs<null>>>(guild.fetchAuditLogs({ type: null }));
+expectType<Promise<GuildAuditLogs<AuditLogEvent>>>(guild.fetchAuditLogs({ type: null }));
 expectType<Promise<GuildAuditLogs<AuditLogEvent>>>(guild.fetchAuditLogs());
 
 expectType<Promise<GuildAuditLogsEntry<AuditLogEvent.MemberKick, 'Delete', 'User'> | undefined>>(
@@ -2221,10 +2282,10 @@ expectAssignable<Promise<GuildAuditLogsEntry<AuditLogEvent.MemberKick, 'Delete',
   guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()),
 );
 
-expectType<Promise<GuildAuditLogsEntry<null, GuildAuditLogsActionType, GuildAuditLogsTargetType> | undefined>>(
+expectType<Promise<GuildAuditLogsEntry<AuditLogEvent, GuildAuditLogsActionType, GuildAuditLogsTargetType> | undefined>>(
   guild.fetchAuditLogs({ type: null }).then(al => al.entries.first()),
 );
-expectType<Promise<GuildAuditLogsEntry<null, GuildAuditLogsActionType, GuildAuditLogsTargetType> | undefined>>(
+expectType<Promise<GuildAuditLogsEntry<AuditLogEvent, GuildAuditLogsActionType, GuildAuditLogsTargetType> | undefined>>(
   guild.fetchAuditLogs().then(al => al.entries.first()),
 );
 
@@ -2243,14 +2304,17 @@ expectType<Promise<{ channel: GuildTextBasedChannel | { id: Snowflake }; count: 
   guild.fetchAuditLogs({ type: AuditLogEvent.MessageDelete }).then(al => al.entries.first()?.extra),
 );
 
-expectType<Promise<User | null | undefined>>(
+expectType<Promise<User | PartialUser | null | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MemberKick }).then(al => al.entries.first()?.target),
 );
 expectType<Promise<StageInstance | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.StageInstanceCreate }).then(al => al.entries.first()?.target),
 );
-expectType<Promise<User | undefined>>(
+expectType<Promise<User | null | undefined>>(
   guild.fetchAuditLogs({ type: AuditLogEvent.MessageDelete }).then(al => al.entries.first()?.target),
+);
+expectType<Promise<GuildTextBasedChannel | { id: string } | undefined>>(
+  guild.fetchAuditLogs({ type: AuditLogEvent.MessageBulkDelete }).then(al => al.entries.first()?.target),
 );
 
 declare const AuditLogChange: AuditLogChange;
@@ -2412,7 +2476,7 @@ EmbedBuilder.from(embedData);
 declare const embedComp: Embed;
 EmbedBuilder.from(embedComp);
 
-declare const actionRowData: APIActionRowComponent<APIActionRowComponentTypes>;
+declare const actionRowData: APIActionRowComponent<APIComponentInActionRow>;
 ActionRowBuilder.from(actionRowData);
 
 declare const actionRowComp: ActionRow<ActionRowComponent>;
@@ -2424,7 +2488,7 @@ declare const buttonsActionRowComp: ActionRow<ButtonComponent>;
 expectType<ActionRowBuilder<ButtonBuilder>>(ActionRowBuilder.from<ButtonBuilder>(buttonsActionRowData));
 expectType<ActionRowBuilder<ButtonBuilder>>(ActionRowBuilder.from<ButtonBuilder>(buttonsActionRowComp));
 
-declare const anyComponentsActionRowData: APIActionRowComponent<APIActionRowComponentTypes>;
+declare const anyComponentsActionRowData: APIActionRowComponent<APIComponentInActionRow>;
 declare const anyComponentsActionRowComp: ActionRow<ActionRowComponent>;
 
 expectType<ActionRowBuilder>(ActionRowBuilder.from(anyComponentsActionRowData));

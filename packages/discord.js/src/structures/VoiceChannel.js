@@ -1,6 +1,6 @@
 'use strict';
 
-const { PermissionFlagsBits } = require('discord-api-types/v10');
+const { PermissionFlagsBits, Routes } = require('discord-api-types/v10');
 const BaseGuildVoiceChannel = require('./BaseGuildVoiceChannel');
 
 /**
@@ -34,6 +34,26 @@ class VoiceChannel extends BaseGuildVoiceChannel {
       this.guild.members.me.communicationDisabledUntilTimestamp < Date.now() &&
       permissions.has(PermissionFlagsBits.Speak, false)
     );
+  }
+
+  /**
+   * @typedef {Object} SendSoundboardSoundOptions
+   * @property {string} soundId The id of the soundboard sound to send
+   * @property {string} [guildId] The id of the guild the soundboard sound is a part of
+   */
+
+  /**
+   * Send a soundboard sound to a voice channel the user is connected to.
+   * @param {SoundboardSound|SendSoundboardSoundOptions} sound The sound to send
+   * @returns {Promise<void>}
+   */
+  async sendSoundboardSound(sound) {
+    await this.client.rest.post(Routes.sendSoundboardSound(this.id), {
+      body: {
+        sound_id: sound.soundId,
+        source_guild_id: sound.guildId ?? undefined,
+      },
+    });
   }
 }
 

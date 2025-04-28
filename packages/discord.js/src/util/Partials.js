@@ -26,6 +26,7 @@ const { createEnum } = require('./Enums');
  * @property {number} Reaction The partial to receive uncached reactions.
  * @property {number} GuildScheduledEvent The partial to receive uncached guild scheduled events.
  * @property {number} ThreadMember The partial to receive uncached thread members.
+ * @property {number} SoundboardSound The partial to receive uncached soundboard sounds.
  */
 
 // JSDoc for IntelliSense purposes
@@ -41,4 +42,5 @@ module.exports = createEnum([
   'Reaction',
   'GuildScheduledEvent',
   'ThreadMember',
+  'SoundboardSound',
 ]);

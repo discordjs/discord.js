@@ -110,13 +110,13 @@ import {
   AuditLogEvent,
   APIMessageComponentEmoji,
   EmbedType,
-  APIActionRowComponentTypes,
+  APIComponentInActionRow,
   APIModalInteractionResponseCallbackData,
   APIModalSubmitInteraction,
-  APIMessageActionRowComponent,
+  APIComponentInMessageActionRow,
   TextInputStyle,
   APITextInputComponent,
-  APIModalActionRowComponent,
+  APIComponentInModalActionRow,
   APIModalComponent,
   APISelectMenuOption,
   APIEmbedField,
@@ -191,8 +191,6 @@ import {
   SubscriptionStatus,
   ApplicationWebhookEventStatus,
   ApplicationWebhookEventType,
-  GatewaySendPayload,
-  GatewayDispatchPayload,
   RESTPostAPIInteractionCallbackWithResponseResult,
   RESTAPIInteractionCallbackObject,
   RESTAPIInteractionCallbackResourceObject,
@@ -202,6 +200,19 @@ import {
   GatewayVoiceChannelEffectSendDispatchData,
   APIChatInputApplicationCommandInteractionData,
   APIContextMenuInteractionData,
+  APISoundboardSound,
+  APIComponentInContainer,
+  APIContainerComponent,
+  APIThumbnailComponent,
+  APISectionComponent,
+  APITextDisplayComponent,
+  APIUnfurledMediaItem,
+  APIMediaGalleryItem,
+  APIMediaGalleryComponent,
+  APISeparatorComponent,
+  SeparatorSpacingSize,
+  APIFileComponent,
+  APIMessageTopLevelComponent,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -298,11 +309,12 @@ export class Activity {
 export type ActivityFlagsString = keyof typeof ActivityFlags;
 
 export interface BaseComponentData {
+  id?: number;
   type: ComponentType;
 }
 
 export type MessageActionRowComponentData =
-  | JSONEncodable<APIMessageActionRowComponent>
+  | JSONEncodable<APIComponentInMessageActionRow>
   | ButtonComponentData
   | StringSelectMenuComponentData
   | UserSelectMenuComponentData
@@ -310,13 +322,13 @@ export type MessageActionRowComponentData =
   | MentionableSelectMenuComponentData
   | ChannelSelectMenuComponentData;
 
-export type ModalActionRowComponentData = JSONEncodable<APIModalActionRowComponent> | TextInputComponentData;
+export type ModalActionRowComponentData = JSONEncodable<APIComponentInModalActionRow> | TextInputComponentData;
 
 export type ActionRowComponentData = MessageActionRowComponentData | ModalActionRowComponentData;
 
 export type ActionRowComponent = MessageActionRowComponent | ModalActionRowComponent;
 
-export interface ActionRowData<ComponentType extends JSONEncodable<APIActionRowComponentTypes> | ActionRowComponentData>
+export interface ActionRowData<ComponentType extends JSONEncodable<APIComponentInActionRow> | ActionRowComponentData>
   extends BaseComponentData {
   components: readonly ComponentType[];
 }
@@ -326,8 +338,8 @@ export class ActionRowBuilder<
 > extends BuilderActionRow<ComponentType> {
   public constructor(
     data?: Partial<
-      | ActionRowData<ActionRowComponentData | JSONEncodable<APIActionRowComponentTypes>>
-      | APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>
+      | ActionRowData<ActionRowComponentData | JSONEncodable<APIComponentInActionRow>>
+      | APIActionRowComponent<APIComponentInMessageActionRow | APIComponentInModalActionRow>
     >,
   );
   public static from<ComponentType extends AnyComponentBuilder = AnyComponentBuilder>(
@@ -347,9 +359,9 @@ export type MessageActionRowComponent =
 export type ModalActionRowComponent = TextInputComponent;
 
 export class ActionRow<ComponentType extends MessageActionRowComponent | ModalActionRowComponent> extends Component<
-  APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>
+  APIActionRowComponent<APIComponentInMessageActionRow | APIComponentInModalActionRow>
 > {
-  private constructor(data: APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>);
+  private constructor(data: APIActionRowComponent<APIComponentInMessageActionRow | APIComponentInModalActionRow>);
   public readonly components: ComponentType[];
   public toJSON(): APIActionRowComponent<ReturnType<ComponentType['toJSON']>>;
 }
@@ -783,14 +795,36 @@ export class ButtonInteraction<Cached extends CacheType = CacheType> extends Mes
 export type AnyComponent =
   | APIMessageComponent
   | APIModalComponent
-  | APIActionRowComponent<APIMessageActionRowComponent | APIModalActionRowComponent>;
+  | APIActionRowComponent<APIComponentInMessageActionRow | APIComponentInModalActionRow>
+  | AnyComponentV2;
 
 export class Component<RawComponentData extends AnyComponent = AnyComponent> {
   public readonly data: Readonly<RawComponentData>;
+  public get id(): RawComponentData['id'];
   public get type(): RawComponentData['type'];
   public toJSON(): RawComponentData;
   public equals(other: this | RawComponentData): boolean;
 }
+
+export type AnyComponentV2 = APIComponentInContainer | APIContainerComponent | APIThumbnailComponent;
+
+export type TopLevelComponent =
+  | ActionRow<MessageActionRowComponent>
+  | ContainerComponent
+  | FileComponent
+  | MediaGalleryComponent
+  | SectionComponent
+  | SeparatorComponent
+  | TextDisplayComponent;
+
+export type TopLevelComponentData =
+  | ActionRowData<MessageActionRowComponentData>
+  | ContainerComponentData
+  | FileComponentData
+  | MediaGalleryComponentData
+  | SectionComponentData
+  | SeparatorComponentData
+  | TextDisplayComponentData;
 
 export class ButtonComponent extends Component<APIButtonComponent> {
   private constructor(data: APIButtonComponent);
@@ -1195,6 +1229,40 @@ export class ClientVoiceManager {
   public adapters: Map<Snowflake, InternalDiscordGatewayAdapterLibraryMethods>;
 }
 
+export type ComponentInContainer =
+  | ActionRow<MessageActionRowComponent>
+  | FileComponent
+  | MediaGalleryComponent
+  | SectionComponent
+  | SeparatorComponent
+  | TextDisplayComponent;
+
+export type ComponentInContainerData =
+  | ActionRowData<ActionRowComponentData>
+  | FileComponentData
+  | MediaGalleryComponentData
+  | SectionComponentData
+  | SeparatorComponentData
+  | TextDisplayComponentData;
+
+export interface ContainerComponentData<
+  ComponentType extends JSONEncodable<APIComponentInContainer> | ComponentInContainerData =
+    | JSONEncodable<APIComponentInContainer>
+    | ComponentInContainerData,
+> extends BaseComponentData {
+  components: readonly ComponentType[];
+  accentColor?: number;
+  spoiler?: boolean;
+}
+
+export class ContainerComponent extends Component<APIContainerComponent> {
+  private constructor(data: APIContainerComponent);
+  public get accentColor(): number;
+  public get hexAccentColor(): HexColorString;
+  public get spoiler(): boolean;
+  public readonly components: ComponentInContainer[];
+}
+
 export { Collection, ReadonlyCollection } from '@discordjs/collection';
 
 export interface CollectorEventTypes<Key, Value, Extras extends unknown[] = []> {
@@ -1518,6 +1586,7 @@ export class Guild extends AnonymousGuild {
   public scheduledEvents: GuildScheduledEventManager;
   public get shard(): WebSocketShard;
   public shardId: number;
+  public soundboardSounds: GuildSoundboardSoundManager;
   public stageInstances: StageInstanceManager;
   public stickers: GuildStickerManager;
   public incidentsData: IncidentActions | null;
@@ -1538,9 +1607,9 @@ export class Guild extends AnonymousGuild {
   public editOnboarding(options: GuildOnboardingEditOptions): Promise<GuildOnboarding>;
   public editWelcomeScreen(options: WelcomeScreenEditOptions): Promise<WelcomeScreen>;
   public equals(guild: Guild): boolean;
-  public fetchAuditLogs<Event extends GuildAuditLogsResolvable = null>(
+  public fetchAuditLogs<Event extends GuildAuditLogsResolvable = AuditLogEvent>(
     options?: GuildAuditLogsFetchOptions<Event>,
-  ): Promise<GuildAuditLogs<Event>>;
+  ): Promise<GuildAuditLogs<Event extends null ? AuditLogEvent : Event>>;
   public fetchIntegrations(): Promise<Collection<Snowflake | string, Integration>>;
   public fetchOnboarding(): Promise<GuildOnboarding>;
   public fetchOwner(options?: BaseFetchOptions): Promise<GuildMember>;
@@ -1587,7 +1656,17 @@ export class Guild extends AnonymousGuild {
   public toJSON(): unknown;
 }
 
-export class GuildAuditLogs<Event extends GuildAuditLogsResolvable = AuditLogEvent> {
+export interface FileComponentData extends BaseComponentData {
+  file: UnfurledMediaItemData;
+  spoiler?: boolean;
+}
+export class FileComponent extends Component<APIFileComponent> {
+  private constructor(data: APIFileComponent);
+  public readonly file: UnfurledMediaItem;
+  public get spoiler(): boolean;
+}
+
+export class GuildAuditLogs<Event extends AuditLogEvent = AuditLogEvent> {
   private constructor(guild: Guild, data: RawGuildAuditLogData);
   private applicationCommands: Collection<Snowflake, ApplicationCommand>;
   private webhooks: Collection<Snowflake, Webhook<WebhookType.ChannelFollower | WebhookType.Incoming>>;
@@ -1599,33 +1678,30 @@ export class GuildAuditLogs<Event extends GuildAuditLogsResolvable = AuditLogEve
 }
 
 export class GuildAuditLogsEntry<
-  TAction extends GuildAuditLogsResolvable = AuditLogEvent,
+  TAction extends AuditLogEvent = AuditLogEvent,
   TActionType extends GuildAuditLogsActionType = TAction extends keyof GuildAuditLogsTypes
     ? GuildAuditLogsTypes[TAction][1]
-    : GuildAuditLogsActionType,
+    : 'All',
   TTargetType extends GuildAuditLogsTargetType = TAction extends keyof GuildAuditLogsTypes
     ? GuildAuditLogsTypes[TAction][0]
-    : GuildAuditLogsTargetType,
-  TResolvedType = TAction extends null ? AuditLogEvent : TAction,
+    : 'Unknown',
 > {
   private constructor(guild: Guild, data: RawGuildAuditLogEntryData, logs?: GuildAuditLogs);
   public static Targets: GuildAuditLogsTargets;
-  public action: TResolvedType;
+  public action: TAction;
   public actionType: TActionType;
   public changes: AuditLogChange[];
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public executorId: Snowflake | null;
-  public executor: User | null;
-  public extra: TResolvedType extends keyof GuildAuditLogsEntryExtraField
-    ? GuildAuditLogsEntryExtraField[TResolvedType]
-    : null;
+  public executor: User | PartialUser | null;
+  public extra: TAction extends keyof GuildAuditLogsEntryExtraField ? GuildAuditLogsEntryExtraField[TAction] : null;
   public id: Snowflake;
   public reason: string | null;
   public targetId: Snowflake | null;
-  public target: TTargetType extends keyof GuildAuditLogsEntryTargetField<TActionType>
-    ? GuildAuditLogsEntryTargetField<TActionType>[TTargetType]
-    : Role | GuildEmoji | { id: Snowflake } | null;
+  public target: TTargetType extends keyof GuildAuditLogsEntryTargetField<TAction>
+    ? GuildAuditLogsEntryTargetField<TAction>[TTargetType]
+    : { id: Snowflake | undefined; [x: string]: unknown } | null;
   public targetType: TTargetType;
   public static actionType(action: AuditLogEvent): GuildAuditLogsActionType;
   public static targetType(target: AuditLogEvent): GuildAuditLogsTargetType;
@@ -2185,6 +2261,27 @@ export class LimitedCollection<Key, Value> extends Collection<Key, Value> {
   public keepOverLimit: ((value: Value, key: Key, collection: this) => boolean) | null;
 }
 
+export interface MediaGalleryComponentData extends BaseComponentData {
+  items: readonly MediaGalleryItemData[];
+}
+export class MediaGalleryComponent extends Component<APIMediaGalleryComponent> {
+  private constructor(data: APIMediaGalleryComponent);
+  public readonly items: MediaGalleryItem[];
+}
+
+export interface MediaGalleryItemData {
+  media: UnfurledMediaItemData;
+  description?: string;
+  spoiler?: boolean;
+}
+export class MediaGalleryItem {
+  private constructor(data: APIMediaGalleryItem);
+  public readonly data: APIMediaGalleryItem;
+  public readonly media: UnfurledMediaItem;
+  public get description(): string | null;
+  public get spoiler(): boolean;
+}
+
 export interface MessageCall {
   get endedAt(): Date | null;
   endedTimestamp: number | null;
@@ -2257,7 +2354,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public get channel(): If<InGuild, GuildTextBasedChannel, TextBasedChannel>;
   public channelId: Snowflake;
   public get cleanContent(): string;
-  public components: ActionRow<MessageActionRowComponent>[];
+  public components: TopLevelComponent[];
   public content: string;
   public get createdAt(): Date;
   public createdTimestamp: number;
@@ -2391,9 +2488,9 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public get component(): CacheTypeReducer<
     Cached,
     MessageActionRowComponent,
-    APIMessageActionRowComponent,
-    MessageActionRowComponent | APIMessageActionRowComponent,
-    MessageActionRowComponent | APIMessageActionRowComponent
+    APIComponentInMessageActionRow,
+    MessageActionRowComponent | APIComponentInMessageActionRow,
+    MessageActionRowComponent | APIComponentInMessageActionRow
   >;
   public componentType: MessageComponentType;
   public customId: string;
@@ -2601,7 +2698,7 @@ export interface ModalComponentData {
   customId: string;
   title: string;
   components: readonly (
-    | JSONEncodable<APIActionRowComponent<APIModalActionRowComponent>>
+    | JSONEncodable<APIActionRowComponent<APIComponentInModalActionRow>>
     | ActionRowData<ModalActionRowComponentData>
   )[];
 }
@@ -2983,6 +3080,20 @@ export class RoleFlagsBitField extends BitField<RoleFlagsString> {
   public static resolve(bit?: BitFieldResolvable<RoleFlagsString, number>): number;
 }
 
+export interface SectionComponentData extends BaseComponentData {
+  accessory: ButtonComponentData | ThumbnailComponentData;
+  components: readonly TextDisplayComponentData[];
+}
+
+export class SectionComponent<
+  AccessoryType extends ButtonComponent | ThumbnailComponent = ButtonComponent | ThumbnailComponent,
+> extends Component<APISectionComponent> {
+  private constructor(data: APISectionComponent);
+  public readonly accessory: AccessoryType;
+  public readonly components: TextDisplayComponent[];
+  public toJSON(): APISectionComponent;
+}
+
 export class StringSelectMenuInteraction<
   Cached extends CacheType = CacheType,
 > extends MessageComponentInteraction<Cached> {
@@ -3105,6 +3216,16 @@ export type AnySelectMenuInteraction<Cached extends CacheType = CacheType> =
   | ChannelSelectMenuInteraction<Cached>;
 
 export type SelectMenuType = APISelectMenuComponent['type'];
+
+export interface SeparatorComponentData extends BaseComponentData {
+  spacing?: SeparatorSpacingSize;
+  dividier?: boolean;
+}
+export class SeparatorComponent extends Component<APISeparatorComponent> {
+  private constructor(data: APISeparatorComponent);
+  public get spacing(): SeparatorSpacingSize;
+  public get divider(): boolean;
+}
 
 export interface ShardEventTypes {
   death: [process: ChildProcess | Worker];
@@ -3468,6 +3589,15 @@ export class TextChannel extends BaseGuildTextChannel {
   public type: ChannelType.GuildText;
 }
 
+export interface TextDisplayComponentData extends BaseComponentData {
+  content: string;
+}
+
+export class TextDisplayComponent extends Component<APITextDisplayComponent> {
+  private constructor(data: APITextDisplayComponent);
+  public readonly content: string;
+}
+
 export type ForumThreadChannel = PublicThreadChannel<true>;
 export type TextThreadChannel = PublicThreadChannel<false> | PrivateThreadChannel;
 export type AnyThreadChannel = TextThreadChannel | ForumThreadChannel;
@@ -3567,6 +3697,19 @@ export class ThreadMemberFlagsBitField extends BitField<ThreadMemberFlagsString>
   public static resolve(bit?: BitFieldResolvable<ThreadMemberFlagsString, number>): number;
 }
 
+export interface ThumbnailComponentData extends BaseComponentData {
+  media: UnfurledMediaItemData;
+  description?: string;
+  spoiler?: boolean;
+}
+
+export class ThumbnailComponent extends Component<APIThumbnailComponent> {
+  private constructor(data: APIThumbnailComponent);
+  public readonly media: UnfurledMediaItem;
+  public get description(): string | null;
+  public get spoiler(): boolean;
+}
+
 export class Typing extends Base {
   private constructor(channel: TextBasedChannel, user: PartialUser, data?: RawTypingData);
   public channel: TextBasedChannel;
@@ -3584,6 +3727,16 @@ export class Typing extends Base {
 export interface AvatarDecorationData {
   asset: string;
   skuId: Snowflake;
+}
+
+export interface UnfurledMediaItemData {
+  url: string;
+}
+
+export class UnfurledMediaItem {
+  private constructor(data: APIUnfurledMediaItem);
+  public readonly data: APIUnfurledMediaItem;
+  public get url(): string;
 }
 
 // tslint:disable-next-line no-empty-interface
@@ -3762,11 +3915,19 @@ export class Formatters extends null {
 export type ComponentData =
   | MessageActionRowComponentData
   | ModalActionRowComponentData
-  | ActionRowData<MessageActionRowComponentData | ModalActionRowComponentData>;
+  | ComponentInContainerData
+  | ContainerComponentData
+  | ThumbnailComponentData;
+
+export interface SendSoundboardSoundOptions {
+  soundId: Snowflake;
+  guildId?: Snowflake;
+}
 
 export class VoiceChannel extends BaseGuildVoiceChannel {
   public get speakable(): boolean;
   public type: ChannelType.GuildVoice;
+  public sendSoundboardSound(sound: SoundboardSound | SendSoundboardSoundOptions): Promise<void>;
 }
 
 export class VoiceChannelEffect {
@@ -3780,6 +3941,7 @@ export class VoiceChannelEffect {
   public soundId: Snowflake | number | null;
   public soundVolume: number | null;
   public get channel(): VoiceChannel | null;
+  public get soundboardSound(): GuildSoundboardSound | null;
 }
 
 export class VoiceRegion {
@@ -3966,6 +4128,30 @@ export class WidgetMember extends Base {
   public activity: WidgetActivity | null;
 }
 
+export type SoundboardSoundResolvable = SoundboardSound | Snowflake | string;
+
+export class SoundboardSound extends Base {
+  private constructor(client: Client<true>, data: APISoundboardSound);
+  public name: string;
+  public soundId: Snowflake | string;
+  public volume: number;
+  private _emoji: Omit<APIEmoji, 'animated'> | null;
+  public guildId: Snowflake | null;
+  public available: boolean;
+  public user: User | null;
+  public get createdAt(): Date;
+  public get createdTimestamp(): number;
+  public get emoji(): Emoji | null;
+  public get guild(): Guild | null;
+  public get url(): string;
+  public edit(options?: GuildSoundboardSoundEditOptions): Promise<GuildSoundboardSound>;
+  public delete(reason?: string): Promise<GuildSoundboardSound>;
+  public equals(other: SoundboardSound | APISoundboardSound): boolean;
+}
+
+export type DefaultSoundboardSound = SoundboardSound & { get guild(): null; guildId: null; soundId: string };
+export type GuildSoundboardSound = SoundboardSound & { get guild(): Guild; guildId: Snowflake; soundId: Snowflake };
+
 export class WelcomeChannel extends Base {
   private constructor(guild: Guild, data: RawWelcomeChannelData);
   private _emoji: Omit<APIEmoji, 'animated'>;
@@ -4151,6 +4337,7 @@ export enum DiscordjsErrorCodes {
   GuildChannelUnowned = 'GuildChannelUnowned',
   GuildOwned = 'GuildOwned',
   GuildMembersTimeout = 'GuildMembersTimeout',
+  GuildSoundboardSoundsTimeout = 'GuildSoundboardSoundsTimeout',
   GuildUncachedMe = 'GuildUncachedMe',
   ChannelNotCached = 'ChannelNotCached',
   StageChannelResolve = 'StageChannelResolve',
@@ -4176,6 +4363,7 @@ export enum DiscordjsErrorCodes {
   /** @deprecated Use {@link DiscordjsErrorCodes.MissingManageGuildExpressionsPermission} instead. */
   MissingManageEmojisAndStickersPermission = 'MissingManageEmojisAndStickersPermission',
 
+  NotGuildSoundboardSound = 'NotGuildSoundboardSound',
   NotGuildSticker = 'NotGuildSticker',
 
   ReactionResolveUser = 'ReactionResolveUser',
@@ -4550,11 +4738,19 @@ export class GuildEmojiRoleManager extends DataManager<Snowflake, Role, RoleReso
   ): Promise<GuildEmoji>;
 }
 
+export interface FetchSoundboardSoundsOptions {
+  guildIds: readonly Snowflake[];
+  time?: number;
+}
+
 export class GuildManager extends CachedManager<Snowflake, Guild, GuildResolvable> {
   private constructor(client: Client<true>, iterable?: Iterable<RawGuildData>);
   public create(options: GuildCreateOptions): Promise<Guild>;
   public fetch(options: Snowflake | FetchGuildOptions): Promise<Guild>;
   public fetch(options?: FetchGuildsOptions): Promise<Collection<Snowflake, OAuth2Guild>>;
+  public fetchSoundboardSounds(
+    options: FetchSoundboardSoundsOptions,
+  ): Promise<Collection<Snowflake, Collection<Snowflake, GuildSoundboardSound>>>;
   public setIncidentActions(
     guild: GuildResolvable,
     incidentActions: IncidentActionsEditOptions,
@@ -4644,6 +4840,43 @@ export class GuildScheduledEventManager extends CachedManager<
     guildScheduledEvent: GuildScheduledEventResolvable,
     options?: Options,
   ): Promise<GuildScheduledEventManagerFetchSubscribersResult<Options>>;
+}
+
+export interface GuildSoundboardSoundCreateOptions {
+  file: BufferResolvable | Stream;
+  name: string;
+  contentType?: string;
+  volume?: number;
+  emojiId?: Snowflake;
+  emojiName?: string;
+  reason?: string;
+}
+
+export interface GuildSoundboardSoundEditOptions {
+  name?: string;
+  volume?: number | null;
+  emojiId?: Snowflake | null;
+  emojiName?: string | null;
+  reason?: string;
+}
+
+export interface FetchGuildSoundboardSoundOptions extends BaseFetchOptions {
+  soundboardSound: SoundboardSoundResolvable;
+}
+
+export interface FetchGuildSoundboardSoundsOptions extends Pick<BaseFetchOptions, 'cache'> {}
+
+export class GuildSoundboardSoundManager extends CachedManager<Snowflake, SoundboardSound, SoundboardSoundResolvable> {
+  private constructor(guild: Guild, iterable?: Iterable<APISoundboardSound>);
+  public guild: Guild;
+  public create(options: GuildSoundboardSoundCreateOptions): Promise<GuildSoundboardSound>;
+  public edit(
+    soundboardSound: SoundboardSoundResolvable,
+    options: GuildSoundboardSoundEditOptions,
+  ): Promise<GuildSoundboardSound>;
+  public delete(soundboardSound: SoundboardSoundResolvable): Promise<void>;
+  public fetch(options: SoundboardSoundResolvable | FetchGuildSoundboardSoundOptions): Promise<GuildSoundboardSound>;
+  public fetch(options?: FetchGuildSoundboardSoundsOptions): Promise<Collection<Snowflake, GuildSoundboardSound>>;
 }
 
 export class GuildStickerManager extends CachedManager<Snowflake, Sticker, StickerResolvable> {
@@ -4970,7 +5203,8 @@ export type AllowedPartial =
   | Message
   | MessageReaction
   | GuildScheduledEvent
-  | ThreadMember;
+  | ThreadMember
+  | SoundboardSound;
 
 export type AllowedThreadTypeForNewsChannel = ChannelType.AnnouncementThread;
 
@@ -5522,6 +5756,9 @@ export interface ClientEvents {
   guildMembersChunk: [members: ReadonlyCollection<Snowflake, GuildMember>, guild: Guild, data: GuildMembersChunk];
   guildMemberUpdate: [oldMember: GuildMember | PartialGuildMember, newMember: GuildMember];
   guildUpdate: [oldGuild: Guild, newGuild: Guild];
+  guildSoundboardSoundCreate: [soundboardSound: SoundboardSound];
+  guildSoundboardSoundDelete: [soundboardSound: SoundboardSound | PartialSoundboardSound];
+  guildSoundboardSoundUpdate: [oldSoundboardSound: SoundboardSound | null, newSoundboardSound: SoundboardSound];
   inviteCreate: [invite: Invite];
   inviteDelete: [invite: Invite];
   messageCreate: [message: OmitPartialGroupDMChannel<Message>];
@@ -5597,6 +5834,7 @@ export interface ClientEvents {
   guildScheduledEventDelete: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent];
   guildScheduledEventUserAdd: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent, user: User];
   guildScheduledEventUserRemove: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent, user: User];
+  soundboardSounds: [soundboardSounds: ReadonlyCollection<Snowflake, SoundboardSound>, guild: Guild];
 }
 
 export interface ClientFetchInviteOptions {
@@ -5815,6 +6053,11 @@ export enum Events {
   GuildScheduledEventDelete = 'guildScheduledEventDelete',
   GuildScheduledEventUserAdd = 'guildScheduledEventUserAdd',
   GuildScheduledEventUserRemove = 'guildScheduledEventUserRemove',
+  GuildSoundboardSoundCreate = 'guildSoundboardSoundCreate',
+  GuildSoundboardSoundDelete = 'guildSoundboardSoundDelete',
+  GuildSoundboardSoundUpdate = 'guildSoundboardSoundUpdate',
+  GuildSoundboardSoundsUpdate = 'guildSoundboardSoundsUpdate',
+  SoundboardSounds = 'soundboardSounds',
 }
 
 export enum ShardEvents {
@@ -6095,12 +6338,15 @@ interface GuildAuditLogsTypes {
   [AuditLogEvent.ThreadUpdate]: ['Thread', 'Update'];
   [AuditLogEvent.ThreadDelete]: ['Thread', 'Delete'];
   [AuditLogEvent.ApplicationCommandPermissionUpdate]: ['ApplicationCommand', 'Update'];
+  [AuditLogEvent.SoundboardSoundCreate]: ['SoundboardSound', 'Create'];
+  [AuditLogEvent.SoundboardSoundUpdate]: ['SoundboardSound', 'Update'];
+  [AuditLogEvent.SoundboardSoundDelete]: ['SoundboardSound', 'Delete'];
   [AuditLogEvent.AutoModerationRuleCreate]: ['AutoModeration', 'Create'];
   [AuditLogEvent.AutoModerationRuleUpdate]: ['AutoModeration', 'Update'];
   [AuditLogEvent.AutoModerationRuleDelete]: ['AutoModeration', 'Delete'];
-  [AuditLogEvent.AutoModerationBlockMessage]: ['AutoModeration', 'Create'];
-  [AuditLogEvent.AutoModerationFlagToChannel]: ['AutoModeration', 'Create'];
-  [AuditLogEvent.AutoModerationUserCommunicationDisabled]: ['AutoModeration', 'Create'];
+  [AuditLogEvent.AutoModerationBlockMessage]: ['User', 'Update'];
+  [AuditLogEvent.AutoModerationFlagToChannel]: ['User', 'Update'];
+  [AuditLogEvent.AutoModerationUserCommunicationDisabled]: ['User', 'Update'];
   [AuditLogEvent.OnboardingPromptCreate]: ['GuildOnboardingPrompt', 'Create'];
   [AuditLogEvent.OnboardingPromptUpdate]: ['GuildOnboardingPrompt', 'Update'];
   [AuditLogEvent.OnboardingPromptDelete]: ['GuildOnboardingPrompt', 'Delete'];
@@ -6116,7 +6362,7 @@ export interface GuildAuditLogsEntryExtraField {
   [AuditLogEvent.MemberPrune]: { removed: number; days: number };
   [AuditLogEvent.MemberMove]: { channel: VoiceBasedChannel | { id: Snowflake }; count: number };
   [AuditLogEvent.MessageDelete]: { channel: GuildTextBasedChannel | { id: Snowflake }; count: number };
-  [AuditLogEvent.MessageBulkDelete]: { channel: GuildTextBasedChannel | { id: Snowflake }; count: number };
+  [AuditLogEvent.MessageBulkDelete]: { count: number };
   [AuditLogEvent.MessagePin]: { channel: GuildTextBasedChannel | { id: Snowflake }; messageId: Snowflake };
   [AuditLogEvent.MessageUnpin]: { channel: GuildTextBasedChannel | { id: Snowflake }; messageId: Snowflake };
   [AuditLogEvent.MemberDisconnect]: { count: number };
@@ -6156,12 +6402,14 @@ export interface GuildAuditLogsEntryExtraField {
   };
 }
 
-export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLogsActionType> {
-  User: User | null;
+export interface GuildAuditLogsEntryTargetField<TAction extends AuditLogEvent> {
+  User: User | PartialUser | null;
   Guild: Guild;
   Webhook: Webhook<WebhookType.ChannelFollower | WebhookType.Incoming>;
   Invite: Invite;
-  Message: TActionType extends AuditLogEvent.MessageBulkDelete ? Guild | { id: Snowflake } : User;
+  Emoji: GuildEmoji | { id: Snowflake };
+  Role: Role | { id: Snowflake };
+  Message: TAction extends AuditLogEvent.MessageBulkDelete ? GuildTextBasedChannel | { id: Snowflake } : User | null;
   Integration: Integration;
   Channel: NonThreadGuildBasedChannel | { id: Snowflake; [x: string]: unknown };
   Thread: AnyThreadChannel | { id: Snowflake; [x: string]: unknown };
@@ -6170,7 +6418,8 @@ export interface GuildAuditLogsEntryTargetField<TActionType extends GuildAuditLo
   GuildScheduledEvent: GuildScheduledEvent;
   ApplicationCommand: ApplicationCommand | { id: Snowflake };
   AutoModerationRule: AutoModerationRule;
-  GuildOnboardingPrompt: GuildOnboardingPrompt;
+  GuildOnboardingPrompt: GuildOnboardingPrompt | { id: Snowflake; [x: string]: unknown };
+  SoundboardSound: SoundboardSound | { id: Snowflake };
 }
 
 export interface GuildAuditLogsFetchOptions<Event extends GuildAuditLogsResolvable> {
@@ -6183,10 +6432,10 @@ export interface GuildAuditLogsFetchOptions<Event extends GuildAuditLogsResolvab
 
 export type GuildAuditLogsResolvable = AuditLogEvent | null;
 
-export type GuildAuditLogsTargetType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][0] | 'All' | 'Unknown';
+export type GuildAuditLogsTargetType = GuildAuditLogsTypes[keyof GuildAuditLogsTypes][0] | 'Unknown';
 
 export type GuildAuditLogsTargets = {
-  [Key in GuildAuditLogsTargetType]: GuildAuditLogsTargetType;
+  [Key in GuildAuditLogsTargetType]: Key;
 };
 
 export type GuildBanResolvable = GuildBan | UserResolvable;
@@ -6573,8 +6822,11 @@ export interface InteractionReplyOptions extends BaseMessageOptionsWithPoll {
   fetchReply?: boolean;
   flags?:
     | BitFieldResolvable<
-        Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds' | 'SuppressNotifications'>,
-        MessageFlags.Ephemeral | MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
+        Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds' | 'SuppressNotifications' | 'IsComponentsV2'>,
+        | MessageFlags.Ephemeral
+        | MessageFlags.SuppressEmbeds
+        | MessageFlags.SuppressNotifications
+        | MessageFlags.IsComponentsV2
       >
     | undefined;
 }
@@ -6755,9 +7007,10 @@ export interface BaseMessageOptions {
     | AttachmentPayload
   )[];
   components?: readonly (
-    | JSONEncodable<APIActionRowComponent<APIMessageActionRowComponent>>
+    | JSONEncodable<APIMessageTopLevelComponent>
+    | TopLevelComponentData
     | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>
-    | APIActionRowComponent<APIMessageActionRowComponent>
+    | APIMessageTopLevelComponent
   )[];
 }
 
@@ -6774,8 +7027,8 @@ export interface MessageCreateOptions extends BaseMessageOptionsWithPoll {
   stickers?: readonly StickerResolvable[];
   flags?:
     | BitFieldResolvable<
-        Extract<MessageFlagsString, 'SuppressEmbeds' | 'SuppressNotifications'>,
-        MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
+        Extract<MessageFlagsString, 'SuppressEmbeds' | 'SuppressNotifications' | 'IsComponentsV2'>,
+        MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications | MessageFlags.IsComponentsV2
       >
     | undefined;
 }
@@ -6791,7 +7044,12 @@ export interface MessageEditAttachmentData {
 export interface MessageEditOptions extends Omit<BaseMessageOptions, 'content'> {
   content?: string | null;
   attachments?: readonly (Attachment | MessageEditAttachmentData)[];
-  flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds'>, MessageFlags.SuppressEmbeds> | undefined;
+  flags?:
+    | BitFieldResolvable<
+        Extract<MessageFlagsString, 'SuppressEmbeds' | 'IsComponentsV2'>,
+        MessageFlags.SuppressEmbeds | MessageFlags.IsComponentsV2
+      >
+    | undefined;
 }
 
 export type MessageReactionResolvable = MessageReaction | Snowflake | string;
@@ -6985,6 +7243,8 @@ export interface PartialGuildScheduledEvent
 
 export interface PartialThreadMember extends Partialize<ThreadMember, 'flags' | 'joinedAt' | 'joinedTimestamp'> {}
 
+export interface PartialSoundboardSound extends Partialize<SoundboardSound, 'available' | 'name' | 'volume'> {}
+
 export interface PartialOverwriteData {
   id: Snowflake | number;
   type?: OverwriteType;
@@ -7004,6 +7264,7 @@ export enum Partials {
   Reaction,
   GuildScheduledEvent,
   ThreadMember,
+  SoundboardSound,
 }
 
 export interface PartialUser extends Partialize<User, 'username' | 'tag' | 'discriminator'> {}
@@ -7304,6 +7565,7 @@ export interface WebhookEditOptions {
 
 export interface WebhookMessageEditOptions extends MessageEditOptions {
   threadId?: Snowflake;
+  withComponents?: boolean;
 }
 
 export interface InteractionEditReplyOptions
@@ -7323,6 +7585,7 @@ export interface WebhookMessageCreateOptions
   threadId?: Snowflake;
   threadName?: string;
   appliedTags?: readonly Snowflake[];
+  withComponents?: boolean;
 }
 
 export interface WebSocketOptions {

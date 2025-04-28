@@ -4,7 +4,6 @@ const { Buffer } = require('node:buffer');
 const { lazy, isJSONEncodable } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { MessageFlags, MessageReferenceType } = require('discord-api-types/v10');
-const ActionRowBuilder = require('./ActionRowBuilder');
 const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors');
 const { resolveFile } = require('../util/DataResolver');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
@@ -149,7 +148,7 @@ class MessagePayload {
     }
 
     const components = this.options.components?.map(component =>
-      (isJSONEncodable(component) ? component : new ActionRowBuilder(component)).toJSON(),
+      isJSONEncodable(component) ? component.toJSON() : this.target.client.options.jsonTransformer(component),
     );
 
     let username;
@@ -249,7 +248,8 @@ class MessagePayload {
       components,
       username,
       avatar_url: avatarURL,
-      allowed_mentions: content === undefined && message_reference === undefined ? undefined : allowedMentions,
+      allowed_mentions:
+        this.isMessage && this.target.author.id !== this.target.client.user.id ? undefined : allowedMentions,
       flags,
       message_reference,
       attachments: this.options.attachments,

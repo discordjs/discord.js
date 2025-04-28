@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/core@2.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@2.0.1...@discordjs/core@2.1.0) - (2025-04-25)
+
+## Features
+
+- **website:** Include reexported members in docs (#10518) ([aa61c20](https://github.com/discordjs/discord.js/commit/aa61c20ffdac3f3a0dca224f9e48e614309ecb2e))
+
 # [@discordjs/core@2.0.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@1.2.0...@discordjs/core@2.0.0) - (2024-09-01)
 
 ## Bug Fixes

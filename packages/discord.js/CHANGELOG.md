@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.19.1](https://github.com/discordjs/discord.js/compare/14.19.0...14.19.1) - (2025-04-26)
+
+## Bug Fixes
+
+- Add in `withComponents` to Webhook ([481ccd2](https://github.com/discordjs/discord.js/commit/481ccd228bc240e32ac552475f8427a8042e1add))
+
+# [14.19.0](https://github.com/discordjs/discord.js/compare/14.18.0...14.19.0) - (2025-04-26)
+
+## Bug Fixes
+
+- Set `with_components` when sending components through webhooks ([8cdbe23](https://github.com/discordjs/discord.js/commit/8cdbe23766c6e5fe1e0acc040120e839511fea2c))
+- **GuildAuditLogEntry:** Fix some incorrect types and runtime logic (#10849) ([d920933](https://github.com/discordjs/discord.js/commit/d920933dc5b3c518754f526a9864582fc2c92a43))
+- Spread out section components next to accessory ([1605a2c](https://github.com/discordjs/discord.js/commit/1605a2c2894c4bb834c604f13a5a91cdbffac3a8))
+- Correctly extend CachedManager in GuildSoundboardSoundManager ([532c384](https://github.com/discordjs/discord.js/commit/532c3842bc293c965dd9fee846257c9e0bbb450a))
+- **MessagePayload:** Preserve existing flags when editing (#10766) ([ebfd526](https://github.com/discordjs/discord.js/commit/ebfd52695e205bccda3ae6f4ec39d4e5e8891ab0))
+
+## Features
+
+- Soundboard missing things (#10850) ([2d817df](https://github.com/discordjs/discord.js/commit/2d817df3b5894da84a1990cb4e0cfded8a925e75))
+- Components v2 in v14 (#10781) ([edace17](https://github.com/discordjs/discord.js/commit/edace17a131f857547163a3acf4bb6fec0c1e415))
+- Add soundboard in v14 (#10843) ([d3154cf](https://github.com/discordjs/discord.js/commit/d3154cf8f1eb027b5b4921d4048a32f464a3cd85))
+
+## Typings
+
+- Make `Client.on()` compatible with esnext.disposable in TS5.6+ (#10773) ([45552fa](https://github.com/discordjs/discord.js/commit/45552faf02c67b5079f34567c0214203cd927d2e))
+
 # [14.18.0](https://github.com/discordjs/discord.js/compare/14.17.3...14.18.0) - (2025-02-10)
 
 ## Bug Fixes

@@ -64,6 +64,15 @@ class VoiceChannelEffect {
   get channel() {
     return this.guild.channels.cache.get(this.channelId) ?? null;
   }
+
+  /**
+   * The soundboard sound for soundboard effects.
+   * @type {?SoundboardSound}
+   * @readonly
+   */
+  get soundboardSound() {
+    return this.guild.soundboardSounds.cache.get(this.soundId) ?? null;
+  }
 }
 
 module.exports = VoiceChannelEffect;
