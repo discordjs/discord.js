@@ -23,7 +23,7 @@ const { ComponentType } = require('discord-api-types/v10');
  */
 
 /**
- * @typedef {object} SelectMenuComponentOptionData
+ * @typedef {Object} SelectMenuComponentOptionData
  * @property {string} label The label of the option
  * @property {string} value The value of the option
  * @property {?string} description The description of the option

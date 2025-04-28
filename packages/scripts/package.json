@@ -74,17 +74,17 @@
 	},
 	"devDependencies": {
 		"@turbo/gen": "^2.5.0",
-		"@types/node": "^22.14.0",
+		"@types/node": "^22.15.2",
 		"cross-env": "^7.0.3",
 		"env-cmd": "^10.1.0",
-		"eslint": "^9.24.0",
+		"eslint": "^9.25.1",
 		"eslint-config-neon": "^0.2.7",
 		"eslint-formatter-compact": "^8.40.0",
 		"eslint-formatter-pretty": "^6.0.1",
 		"prettier": "^3.5.3",
-		"terser": "^5.37.0",
+		"terser": "^5.39.0",
 		"tsup": "^8.4.0",
-		"turbo": "^2.5.0",
+		"turbo": "^2.5.2",
 		"typescript": "~5.8.3"
 	},
 	"engines": {
