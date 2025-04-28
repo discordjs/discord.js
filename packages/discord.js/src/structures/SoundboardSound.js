@@ -181,8 +181,8 @@ class SoundboardSound extends Base {
         this.available === other.available &&
         this.name === other.name &&
         this.volume === other.volume &&
-        this.emojiId === other.emojiId &&
-        this.emojiName === other.emojiName &&
+        this._emoji?.id === other._emoji?.id &&
+        this._emoji?.name === other._emoji?.name &&
         this.guildId === other.guildId &&
         this.user?.id === other.user?.id
       );
@@ -193,8 +193,8 @@ class SoundboardSound extends Base {
       this.available === other.available &&
       this.name === other.name &&
       this.volume === other.volume &&
-      this.emojiId === other.emoji_id &&
-      this.emojiName === other.emoji_name &&
+      (this._emoji?.id ?? null) === other.emoji_id &&
+      (this._emoji?.name ?? null) === other.emoji_name &&
       this.guildId === other.guild_id &&
       this.user?.id === other.user?.id
     );
