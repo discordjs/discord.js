@@ -11,7 +11,7 @@ export class ThumbnailBuilder extends ComponentBuilder<APIThumbnailComponent> {
 	 * @example
 	 * Creating a thumbnail from an API data object:
 	 * ```ts
-	 * const thumbnaik = new ThumbnailBuilder({
+	 * const thumbnail = new ThumbnailBuilder({
 	 * 	description: 'some text',
 	 *  media: {
 	 *      url: 'https://cdn.discordapp.com/embed/avatars/4.png',
