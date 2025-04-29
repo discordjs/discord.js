@@ -1,0 +1,20 @@
+diff --git a/deps/zlib/zutil.h b/deps/zlib/zutil.h
+index b079ea6a80..61484c819a 100644
+--- a/deps/zlib/zutil.h
++++ b/deps/zlib/zutil.h
+@@ -132,15 +132,6 @@ extern z_const char * const z_errmsg[10]; /* indexed by 2-zlib_error */
+ 
+ #if defined(MACOS) || defined(TARGET_OS_MAC)
+ #  define OS_CODE  7
+-#  ifndef Z_SOLO
+-#    if defined(__MWERKS__) && __dest_os != __be_os && __dest_os != __win32_os
+-#      include <unix.h> /* for fdopen */
+-#    else
+-#      ifndef fdopen
+-#        define fdopen(fd,mode) NULL /* No fdopen() */
+-#      endif
+-#    endif
+-#  endif
+ #endif
+ 
+ #ifdef __acorn
