@@ -19,28 +19,14 @@
 		},
 		"@discordjs/guide#build:local": {
 			"dependsOn": ["^build"],
-			"inputs": [
-				"public/**",
-				"src/**",
-				"!src/styles/unocss.css",
-				"next.config.js",
-				"package.json",
-				"tsconfig.json"
-			],
-			"outputs": [".next/**", ".next/cache/**"],
+			"inputs": ["public/**", "src/**", "next.config.ts", "package.json", "tsconfig.json"],
+			"outputs": [".next/**", ".next/cache/**", ".source/**"],
 			"outputLogs": "full"
 		},
 		"@discordjs/guide#build:prod": {
 			"dependsOn": ["^build"],
-			"inputs": [
-				"public/**",
-				"src/**",
-				"!src/styles/unocss.css",
-				"next.config.js",
-				"package.json",
-				"tsconfig.json"
-			],
-			"outputs": [".next/**", ".next/cache/**"],
+			"inputs": ["public/**", "src/**", "next.config.ts", "package.json", "tsconfig.json"],
+			"outputs": [".next/**", ".next/cache/**", ".source/**"],
 			"outputLogs": "full"
 		},
 		"@discordjs/website#build:local": {
@@ -68,7 +54,7 @@
 				"scripts/**",
 				"!src/assets/readme/**",
 				"scripts/**",
-				"next.config.mjs",
+				"next.config.ts",
 				"package.json",
 				"tsconfig.json"
 			],
@@ -100,7 +86,7 @@
 				"scripts/**",
 				"!src/assets/readme/**",
 				"scripts/**",
-				"next.config.mjs",
+				"next.config.ts",
 				"package.json",
 				"tsconfig.json"
 			],

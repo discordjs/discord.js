@@ -93,7 +93,7 @@ export async function DocItem({
 
 			<Outline node={node} />
 
-			{node.constructor?.parametersString ? <ConstructorNode node={node.constructor} version={version} /> : null}
+			{node.constructor ? <ConstructorNode node={node.constructor} version={version} /> : null}
 
 			{node.typeParameters?.length ? (
 				<div className="flex flex-col gap-4">

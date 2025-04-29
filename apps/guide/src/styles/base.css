@@ -1,0 +1,26 @@
+@import 'tailwindcss';
+@import 'fumadocs-ui/css/neutral.css';
+@import 'fumadocs-ui/css/preset.css';
+@import 'fumadocs-twoslash/twoslash.css';
+
+@import 'tw-animate-css';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+	--font-sans: var(--font-geist-sans);
+	--font-mono: var(--font-geist-mono);
+}
+
+@layer base {
+	* {
+		font-family: var(--font-roboto);
+		text-rendering: optimizeLegibility;
+
+		scrollbar-width: thin;
+	}
+}
+
+@utility scrollbar-hidden {
+	scrollbar-width: none;
+}
