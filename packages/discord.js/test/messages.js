@@ -1,13 +1,15 @@
 'use strict';
 
-const { setTimeout: sleep } = require('node:timers/promises');
 const fs = require('node:fs');
 const path = require('node:path');
+const { setTimeout: sleep } = require('node:timers/promises');
 const util = require('node:util');
 const { fetch } = require('undici');
 const { Client, GatewayIntentBits, AttachmentBuilder, EmbedBuilder, MessageFlags } = require('../src');
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
+});
 
 const buffer = l =>
   fetch(l)
@@ -81,14 +83,17 @@ const tests = [
   m => m.reply({ content: 'x', allowedMentions: { repliedUser: true } }),
   m => m.reply({ content: 'x' }),
   m => m.reply({ content: `${m.author}`, allowedMentions: { repliedUser: false } }),
-  m => m.reply({ content: `${m.author}`, allowedMentions: { parse: ["users"], repliedUser: false } }),
-  m => m.reply({ content: `${m.author}`, allowedMentions: { parse: ["users"], repliedUser: true } }),
+  m => m.reply({ content: `${m.author}`, allowedMentions: { parse: ['users'], repliedUser: false } }),
+  m => m.reply({ content: `${m.author}`, allowedMentions: { parse: ['users'], repliedUser: true } }),
   m => m.reply({ content: `${m.author}` }),
 
   m => m.edit({ flags: MessageFlags.SuppressEmbeds }),
   m => m.edit({ flags: MessageFlags.SuppressEmbeds, allowedMentions: { repliedUser: false } }),
 
-  m => m.reply({ content: 'x', allowedMentions: { repliedUser: false } }).then(msg => msg.edit({ content: 'a', allowedMentions: { repliedUser: true } })),
+  m =>
+    m
+      .reply({ content: 'x', allowedMentions: { repliedUser: false } })
+      .then(msg => msg.edit({ content: 'a', allowedMentions: { repliedUser: true } })),
 
   m => m.channel.send('Done!'),
 ];
