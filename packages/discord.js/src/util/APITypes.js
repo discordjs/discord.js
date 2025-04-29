@@ -152,7 +152,7 @@
 
 /**
  * @external APIMediaGalleryItem
- * @se {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIMediaGalleryItem}
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIMediaGalleryItem}
  */
 
 /**
