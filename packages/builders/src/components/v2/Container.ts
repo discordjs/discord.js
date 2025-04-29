@@ -19,7 +19,7 @@ import type { AnyComponentBuilder, MessageActionRowComponentBuilder } from '../A
 import { ActionRowBuilder } from '../ActionRow.js';
 import { ComponentBuilder } from '../Component.js';
 import { createComponentBuilder, resolveBuilder } from '../Components.js';
-import { containerColorPredicate, spoilerPredicate, validateComponentArray } from './Assertions.js';
+import { containerColorPredicate, spoilerPredicate } from './Assertions.js';
 import { FileBuilder } from './File.js';
 import { SeparatorBuilder } from './Separator.js';
 import { TextDisplayBuilder } from './TextDisplay.js';
@@ -231,7 +231,6 @@ export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
 	 * {@inheritDoc ComponentBuilder.toJSON}
 	 */
 	public toJSON(): APIContainerComponent {
-		validateComponentArray(this.components, 1, 10);
 		return {
 			...this.data,
 			components: this.components.map((component) => component.toJSON()),
