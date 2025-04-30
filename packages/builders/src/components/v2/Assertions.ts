@@ -57,7 +57,7 @@ export function assertReturnOfBuilder<ReturnType extends MediaGalleryItemBuilder
 	input: unknown,
 	ExpectedInstanceOf: new () => ReturnType,
 ): asserts input is ReturnType {
-	s.instance(ExpectedInstanceOf).parse(input);
+	s.instance(ExpectedInstanceOf).setValidationEnabled(isValidationEnabled).parse(input);
 }
 
 export function validateComponentArray<
@@ -67,5 +67,6 @@ export function validateComponentArray<
 		.array()
 		.lengthGreaterThanOrEqual(min)
 		.lengthLessThanOrEqual(max)
+		.setValidationEnabled(isValidationEnabled)
 		.parse(input);
 }
