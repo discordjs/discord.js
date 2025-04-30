@@ -1,11 +1,12 @@
 'use strict';
 
-const fs = require('node:fs/promises');
+const { readFile } = require('node:fs/promises');
+const { createReadStream } = require('node:fs');
 const path = require('node:path');
 const { setTimeout: sleep } = require('node:timers/promises');
 const util = require('node:util');
 const { fetch } = require('undici');
-const { Client, GatewayIntentBits, AttachmentBuilder, EmbedBuilder, MessageFlags } = require('../src');
+const { Client, GatewayIntentBits, AttachmentBuilder, EmbedBuilder, MessageFlags, ComponentType } = require('../src');
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
@@ -15,10 +16,8 @@ const buffer = l =>
   fetch(l)
     .then(res => res.arrayBuffer())
     .then(Buffer.from);
-const readStream = fs.createReadStream;
 
-const linkA = 'https://lolisafe.moe/iiDMtAXA.png';
-const linkB = 'https://lolisafe.moe/9hSpedPh.png';
+const linkA = 'https://discord.js.org/static/logo.svg';
 const fileA = path.join(__dirname, 'blobReach.png');
 
 const embed = () => new EmbedBuilder();
@@ -29,23 +28,23 @@ const tests = [
 
   m => m.channel.send({ content: 'x', embeds: [{ description: 'a' }] }),
   m => m.channel.send({ embeds: [{ description: 'a' }] }),
-  m => m.channel.send({ files: [{ attachment: linkA }] }),
+  m => m.channel.send({ files: [{ attachment: fileA }] }),
   m =>
     m.channel.send({
       embeds: [{ description: 'a' }],
-      files: [{ attachment: linkA, name: 'xyz.png' }],
+      files: [{ attachment: fileA, name: 'xyz.png' }],
     }),
 
   m => m.channel.send({ content: 'x', embeds: [embed().setDescription('a')] }),
   m => m.channel.send({ embeds: [embed().setDescription('a')] }),
   m => m.channel.send({ embeds: [embed().setDescription('a'), embed().setDescription('b')] }),
 
-  m => m.channel.send({ content: 'x', files: [attach(linkA)] }),
-  m => m.channel.send({ files: [linkA] }),
-  m => m.channel.send({ files: [attach(linkA)] }),
+  m => m.channel.send({ content: 'x', files: [attach(fileA)] }),
+  m => m.channel.send({ files: [fileA] }),
+  m => m.channel.send({ files: [attach(fileA)] }),
   async m => m.channel.send({ files: [await buffer(linkA)] }),
   async m => m.channel.send({ files: [{ attachment: await buffer(linkA) }] }),
-  m => m.channel.send({ files: [attach(linkA), attach(linkB)] }),
+  m => m.channel.send({ files: [attach(fileA), attach(fileA)] }),
 
   m => m.channel.send({ embeds: [{ description: 'a' }] }).then(m2 => m2.edit('x')),
   m => m.channel.send({ embeds: [embed().setDescription('a')] }).then(m2 => m2.edit('x')),
@@ -53,26 +52,26 @@ const tests = [
   m => m.channel.send('x').then(m2 => m2.edit({ embeds: [{ description: 'a' }] })),
   m => m.channel.send('x').then(m2 => m2.edit({ embeds: [embed().setDescription('a')] })),
 
-  m => m.channel.send({ embeds: [{ description: 'a' }] }).then(m2 => m2.edit({ embeds: [] })),
-  m => m.channel.send({ embeds: [embed().setDescription('a')] }).then(m2 => m2.edit({ embeds: [] })),
+  m => m.channel.send({ embeds: [{ description: 'a' }] }).then(m2 => m2.edit({ content: 'x', embeds: [] })),
+  m => m.channel.send({ embeds: [embed().setDescription('a')] }).then(m2 => m2.edit({ content: 'x', embeds: [] })),
 
-  m => m.channel.send({ content: 'x', embeds: [embed().setDescription('a')], files: [attach(linkB)] }),
-  m => m.channel.send({ content: 'x', files: [attach(linkA), attach(linkB)] }),
+  m => m.channel.send({ content: 'x', embeds: [embed().setDescription('a')], files: [attach(fileA)] }),
+  m => m.channel.send({ content: 'x', files: [attach(fileA), attach(fileA)] }),
 
-  m => m.channel.send({ embeds: [embed().setDescription('a')], files: [attach(linkB)] }),
+  m => m.channel.send({ embeds: [embed().setDescription('a')], files: [attach(fileA)] }),
   m =>
     m.channel.send({
       embeds: [embed().setImage('attachment://two.png')],
-      files: [attach(linkB, 'two.png')],
+      files: [attach(fileA, 'two.png')],
     }),
   m => m.channel.send({ content: 'x', files: [attach(fileA)] }),
   m => m.channel.send({ files: [fileA] }),
   m => m.channel.send({ files: [attach(fileA)] }),
-  async m => m.channel.send({ files: [await fs.readFile(fileA)] }),
+  async m => m.channel.send({ files: [await readFile(fileA)] }),
 
-  m => m.channel.send({ content: 'x', files: [attach(readStream(fileA))] }),
-  m => m.channel.send({ files: [readStream(fileA)] }),
-  m => m.channel.send({ files: [{ attachment: readStream(fileA) }] }),
+  m => m.channel.send({ content: 'x', files: [attach(createReadStream(fileA))] }),
+  m => m.channel.send({ files: [createReadStream(fileA)] }),
+  m => m.channel.send({ files: [{ attachment: createReadStream(fileA) }] }),
 
   m => m.reply({ content: 'x', allowedMentions: { repliedUser: false } }),
   m => m.reply({ content: 'x', allowedMentions: { repliedUser: true } }),
@@ -89,6 +88,36 @@ const tests = [
     m
       .reply({ content: 'x', allowedMentions: { repliedUser: false } })
       .then(msg => msg.edit({ content: 'a', allowedMentions: { repliedUser: true } })),
+
+  m =>
+    m.channel.send({
+      components: [{ type: ComponentType.TextDisplay, content: `${m.author}` }],
+      flags: MessageFlags.IsComponentsV2,
+    }),
+  m =>
+    m.channel.send({
+      components: [{ type: ComponentType.TextDisplay, content: `${m.author}` }],
+      flags: MessageFlags.IsComponentsV2,
+      allowedMentions: { parse: ['users'] },
+    }),
+  m =>
+    m.channel.send({
+      components: [{ type: ComponentType.TextDisplay, content: `${m.author}` }],
+      flags: MessageFlags.IsComponentsV2,
+      allowedMentions: { parse: [] },
+    }),
+  m =>
+    m.reply({
+      components: [{ type: ComponentType.TextDisplay, content: `${m.author}` }],
+      flags: MessageFlags.IsComponentsV2,
+      allowedMentions: { parse: [], repliedUser: true },
+    }),
+  m =>
+    m.reply({
+      components: [{ type: ComponentType.TextDisplay, content: `${m.author}` }],
+      flags: MessageFlags.IsComponentsV2,
+      allowedMentions: { parse: [], repliedUser: false },
+    }),
 
   m => m.channel.send('Done!'),
 ];
