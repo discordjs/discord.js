@@ -1,6 +1,6 @@
 'use strict';
 
-const fs = require('node:fs');
+const fs = require('node:fs/promises');
 const path = require('node:path');
 const { setTimeout: sleep } = require('node:timers/promises');
 const util = require('node:util');
@@ -15,7 +15,6 @@ const buffer = l =>
   fetch(l)
     .then(res => res.arrayBuffer())
     .then(Buffer.from);
-const read = util.promisify(fs.readFile);
 const readStream = fs.createReadStream;
 
 const linkA = 'https://lolisafe.moe/iiDMtAXA.png';
@@ -28,11 +27,7 @@ const attach = (attachment, name) => new AttachmentBuilder(attachment, { name })
 const tests = [
   m => m.channel.send('x'),
 
-  m => m.channel.send('x', { code: true }),
-  m => m.channel.send('1', { code: 'js' }),
-  m => m.channel.send('x', { code: '' }),
-
-  m => m.channel.send('x', { content: 'x', embeds: [{ description: 'a' }] }),
+  m => m.channel.send({ content: 'x', embeds: [{ description: 'a' }] }),
   m => m.channel.send({ embeds: [{ description: 'a' }] }),
   m => m.channel.send({ files: [{ attachment: linkA }] }),
   m =>
@@ -73,7 +68,7 @@ const tests = [
   m => m.channel.send({ content: 'x', files: [attach(fileA)] }),
   m => m.channel.send({ files: [fileA] }),
   m => m.channel.send({ files: [attach(fileA)] }),
-  async m => m.channel.send({ files: [await read(fileA)] }),
+  async m => m.channel.send({ files: [await fs.readFile(fileA)] }),
 
   m => m.channel.send({ content: 'x', files: [attach(readStream(fileA))] }),
   m => m.channel.send({ files: [readStream(fileA)] }),
