@@ -687,7 +687,7 @@ client.on('messageCreate', async message => {
   const rawSeparator: SeparatorComponentData = {
     type: ComponentType.Separator,
     spacing: 1,
-    dividier: false,
+    divider: false,
   };
 
   const rawFile: FileComponentData = {
