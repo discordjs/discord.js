@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.19.3](https://github.com/discordjs/discord.js/compare/14.19.2...14.19.3) - (2025-05-02)
+
+## Bug Fixes
+
+- Regression in allowedMentions when replying (#10866) ([2ebb5cb](https://github.com/discordjs/discord.js/commit/2ebb5cbd53d869a52cba4549e7acc417963741cd))
+
 # [14.19.2](https://github.com/discordjs/discord.js/compare/14.19.1...14.19.2) - (2025-04-28)
 
 ## Bug Fixes
