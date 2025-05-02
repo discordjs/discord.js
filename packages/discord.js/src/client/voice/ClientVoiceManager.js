@@ -9,6 +9,7 @@ class ClientVoiceManager {
   constructor(client) {
     /**
      * The client that instantiated this voice manager
+     *
      * @type {Client}
      * @readonly
      * @name ClientVoiceManager#client
@@ -17,7 +18,8 @@ class ClientVoiceManager {
 
     /**
      * Maps guild ids to voice adapters created for use with `@discordjs/voice`.
-     * @type {Map<Snowflake, Object>}
+     *
+     * @type {Map<Snowflake, object>}
      */
     this.adapters = new Map();
 

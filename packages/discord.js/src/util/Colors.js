@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @typedef {Object} Colors
+ * @typedef {object} Colors
  * @property {number} Aqua 0x1ABC9C | rgb(26,188,156)
  * @property {number} Blue 0x3498DB | rgb(52,152,219)
  * @property {number} Blurple 0x5865F2 | rgb(88,101,242)

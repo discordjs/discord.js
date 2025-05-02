@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { Collector } = require('./interfaces/Collector.js');
 const { Events } = require('../util/Events.js');
+const { Collector } = require('./interfaces/Collector.js');
 
 /**
  * @typedef {CollectorOptions} InteractionCollectorOptions
@@ -24,24 +25,27 @@ const { Events } = require('../util/Events.js');
  * guild ({@link Client#event:guildDelete guildDelete}) is deleted.
  * <info>Interaction collectors that do not specify `time` or `idle` may be prone to always running.
  * Ensure your interaction collectors end via either of these options or manual cancellation.</info>
+ *
  * @extends {Collector}
  */
 class InteractionCollector extends Collector {
   /**
    * @param {Client} client The client on which to collect interactions
-   * @param {InteractionCollectorOptions} [options={}] The options to apply to this collector
+   * @param {InteractionCollectorOptions} [options] The options to apply to this collector
    */
   constructor(client, options = {}) {
     super(client, options);
 
     /**
      * The message from which to collect interactions, if provided
+     *
      * @type {?Snowflake}
      */
     this.messageId = options.message?.id ?? null;
 
     /**
      * The channel from which to collect interactions, if provided
+     *
      * @type {?Snowflake}
      */
     this.channelId =
@@ -49,6 +53,7 @@ class InteractionCollector extends Collector {
 
     /**
      * The guild from which to collect interactions, if provided
+     *
      * @type {?Snowflake}
      */
     this.guildId =
@@ -59,24 +64,28 @@ class InteractionCollector extends Collector {
 
     /**
      * The type of interaction to collect
+     *
      * @type {?InteractionType}
      */
     this.interactionType = options.interactionType ?? null;
 
     /**
      * The type of component to collect
+     *
      * @type {?ComponentType}
      */
     this.componentType = options.componentType ?? null;
 
     /**
      * The users that have interacted with this collector
+     *
      * @type {Collection<Snowflake, User>}
      */
     this.users = new Collection();
 
     /**
      * The total number of interactions collected
+     *
      * @type {number}
      */
     this.total = 0;
@@ -125,6 +134,7 @@ class InteractionCollector extends Collector {
 
   /**
    * Handles an incoming interaction for possible collection.
+   *
    * @param {BaseInteraction} interaction The interaction to possibly collect
    * @returns {?Snowflake}
    * @private
@@ -132,6 +142,7 @@ class InteractionCollector extends Collector {
   collect(interaction) {
     /**
      * Emitted whenever an interaction is collected.
+     *
      * @event InteractionCollector#collect
      * @param {BaseInteraction} interaction The interaction that was collected
      */
@@ -147,12 +158,14 @@ class InteractionCollector extends Collector {
 
   /**
    * Handles an interaction for possible disposal.
+   *
    * @param {BaseInteraction} interaction The interaction that could be disposed of
    * @returns {?Snowflake}
    */
   dispose(interaction) {
     /**
      * Emitted whenever an interaction is disposed of.
+     *
      * @event InteractionCollector#dispose
      * @param {BaseInteraction} interaction The interaction that was disposed of
      */
@@ -177,6 +190,7 @@ class InteractionCollector extends Collector {
 
   /**
    * The reason this collector has ended with, or null if it hasn't ended yet
+   *
    * @type {?string}
    * @readonly
    */
@@ -189,6 +203,7 @@ class InteractionCollector extends Collector {
 
   /**
    * Handles checking if the message has been deleted, and if so, stops the collector with the reason 'messageDelete'.
+   *
    * @private
    * @param {Message} message The message that was deleted
    * @returns {void}
@@ -201,6 +216,7 @@ class InteractionCollector extends Collector {
 
   /**
    * Handles checking if the channel has been deleted, and if so, stops the collector with the reason 'channelDelete'.
+   *
    * @private
    * @param {GuildChannel} channel The channel that was deleted
    * @returns {void}
@@ -213,6 +229,7 @@ class InteractionCollector extends Collector {
 
   /**
    * Handles checking if the thread has been deleted, and if so, stops the collector with the reason 'threadDelete'.
+   *
    * @private
    * @param {ThreadChannel} thread The thread that was deleted
    * @returns {void}
@@ -225,6 +242,7 @@ class InteractionCollector extends Collector {
 
   /**
    * Handles checking if the guild has been deleted, and if so, stops the collector with the reason 'guildDelete'.
+   *
    * @private
    * @param {Guild} guild The guild that was deleted
    * @returns {void}

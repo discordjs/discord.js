@@ -1,7 +1,7 @@
 'use strict';
 
-const { Action } = require('./Action.js');
 const { Events } = require('../../util/Events.js');
+const { Action } = require('./Action.js');
 
 class MessageReactionRemoveEmojiAction extends Action {
   handle(data) {
@@ -17,6 +17,7 @@ class MessageReactionRemoveEmojiAction extends Action {
 
     /**
      * Emitted when a bot removes an emoji reaction from a cached message.
+     *
      * @event Client#messageReactionRemoveEmoji
      * @param {MessageReaction} reaction The reaction that was removed
      */

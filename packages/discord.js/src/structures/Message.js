@@ -11,6 +11,14 @@ const {
   MessageReferenceType,
   PermissionFlagsBits,
 } = require('discord-api-types/v10');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
+const { ReactionManager } = require('../managers/ReactionManager.js');
+const { createComponent } = require('../util/Components.js');
+const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, UndeletableMessageTypes } = require('../util/Constants.js');
+const { MessageFlagsBitField } = require('../util/MessageFlagsBitField.js');
+const { PermissionsBitField } = require('../util/PermissionsBitField.js');
+const { _transformAPIMessageInteractionMetadata } = require('../util/Transformers.js');
+const { cleanContent, resolvePartialEmoji, transformResolved } = require('../util/Util.js');
 const { Attachment } = require('./Attachment.js');
 const { Base } = require('./Base.js');
 const { ClientApplication } = require('./ClientApplication.js');
@@ -21,17 +29,10 @@ const { MessagePayload } = require('./MessagePayload.js');
 const { Poll } = require('./Poll.js');
 const { ReactionCollector } = require('./ReactionCollector.js');
 const { Sticker } = require('./Sticker.js');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { ReactionManager } = require('../managers/ReactionManager.js');
-const { createComponent } = require('../util/Components.js');
-const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, UndeletableMessageTypes } = require('../util/Constants.js');
-const { MessageFlagsBitField } = require('../util/MessageFlagsBitField.js');
-const { PermissionsBitField } = require('../util/PermissionsBitField.js');
-const { _transformAPIMessageInteractionMetadata } = require('../util/Transformers.js');
-const { cleanContent, resolvePartialEmoji, transformResolved } = require('../util/Util.js');
 
 /**
  * Represents a message on Discord.
+ *
  * @extends {Base}
  */
 class Message extends Base {
@@ -40,12 +41,14 @@ class Message extends Base {
 
     /**
      * The id of the channel the message was sent in
+     *
      * @type {Snowflake}
      */
     this.channelId = data.channel_id;
 
     /**
      * The id of the guild the message was sent in, if any
+     *
      * @type {?Snowflake}
      */
     this.guildId = data.guild_id ?? this.channel?.guild?.id ?? null;
@@ -56,12 +59,14 @@ class Message extends Base {
   _patch(data) {
     /**
      * The message's id
+     *
      * @type {Snowflake}
      */
     this.id = data.id;
 
     /**
      * The timestamp the message was sent at
+     *
      * @type {number}
      */
     this.createdTimestamp = DiscordSnowflake.timestampFrom(this.id);
@@ -69,12 +74,14 @@ class Message extends Base {
     if ('type' in data) {
       /**
        * The type of the message
+       *
        * @type {?MessageType}
        */
       this.type = data.type;
 
       /**
        * Whether or not this message was sent by Discord, not actually a user (e.g. pin notifications)
+       *
        * @type {?boolean}
        */
       this.system = !NonSystemMessageTypes.includes(this.type);
@@ -88,6 +95,7 @@ class Message extends Base {
        * The content of the message.
        * <info>This property requires the {@link GatewayIntentBits.MessageContent} privileged intent
        * in a guild for messages that do not mention the client.</info>
+       *
        * @type {?string}
        */
       this.content = data.content;
@@ -98,6 +106,7 @@ class Message extends Base {
     if ('author' in data) {
       /**
        * The author of the message
+       *
        * @type {?User}
        */
       this.author = this.client.users._add(data.author, !data.webhook_id);
@@ -108,6 +117,7 @@ class Message extends Base {
     if ('pinned' in data) {
       /**
        * Whether or not this message is pinned
+       *
        * @type {?boolean}
        */
       this.pinned = Boolean(data.pinned);
@@ -118,6 +128,7 @@ class Message extends Base {
     if ('tts' in data) {
       /**
        * Whether or not the message was Text-To-Speech
+       *
        * @type {?boolean}
        */
       this.tts = data.tts;
@@ -130,6 +141,7 @@ class Message extends Base {
        * A random number or string used for checking message delivery
        * <warn>This is only received after the message was sent successfully, and
        * lost if re-fetched</warn>
+       *
        * @type {?string}
        */
       this.nonce = data.nonce;
@@ -142,6 +154,7 @@ class Message extends Base {
        * An array of embeds in the message - e.g. YouTube Player.
        * <info>This property requires the {@link GatewayIntentBits.MessageContent} privileged intent
        * in a guild for messages that do not mention the client.</info>
+       *
        * @type {Embed[]}
        */
       this.embeds = data.embeds.map(embed => new Embed(embed));
@@ -154,6 +167,7 @@ class Message extends Base {
        * An array of action rows in the message.
        * <info>This property requires the {@link GatewayIntentBits.MessageContent} privileged intent
        * in a guild for messages that do not mention the client.</info>
+       *
        * @type {ActionRow[]}
        */
       this.components = data.components.map(component => createComponent(component));
@@ -166,6 +180,7 @@ class Message extends Base {
        * A collection of attachments in the message - e.g. Pictures - mapped by their ids.
        * <info>This property requires the {@link GatewayIntentBits.MessageContent} privileged intent
        * in a guild for messages that do not mention the client.</info>
+       *
        * @type {Collection<Snowflake, Attachment>}
        */
       this.attachments = new Collection();
@@ -181,6 +196,7 @@ class Message extends Base {
     if ('sticker_items' in data || 'stickers' in data) {
       /**
        * A collection of stickers in the message
+       *
        * @type {Collection<Snowflake, Sticker>}
        */
       this.stickers = new Collection(
@@ -194,6 +210,7 @@ class Message extends Base {
       /**
        * A generally increasing integer (there may be gaps or duplicates) that represents
        * the approximate position of the message in a thread.
+       *
        * @type {?number}
        */
       this.position = data.position;
@@ -204,7 +221,8 @@ class Message extends Base {
     if ('role_subscription_data' in data) {
       /**
        * Role subscription data found on {@link MessageType.RoleSubscriptionPurchase} messages.
-       * @typedef {Object} RoleSubscriptionData
+       *
+       * @typedef {object} RoleSubscriptionData
        * @property {Snowflake} roleSubscriptionListingId The id of the SKU and listing the user is subscribed to
        * @property {string} tierName The name of the tier the user is subscribed to
        * @property {number} totalMonthsSubscribed The total number of months the user has been subscribed for
@@ -214,6 +232,7 @@ class Message extends Base {
       /**
        * The data of the role subscription purchase or renewal.
        * <info>This is present on {@link MessageType.RoleSubscriptionPurchase} messages.</info>
+       *
        * @type {?RoleSubscriptionData}
        */
       this.roleSubscriptionData = {
@@ -229,7 +248,14 @@ class Message extends Base {
     if ('resolved' in data) {
       /**
        * Resolved data from auto-populated select menus.
-       * @typedef {Object} CommandInteractionResolvedData
+       *
+       * @typedef {object} CommandInteractionResolvedData
+       * @property {Collection} attachments attachments
+       * @property {Collection} channels channels
+       * @property {Collection} members members
+       * @property {Collection} messages messages
+       * @property {Collection} roles roles
+       * @property {Collection} users users
        */
       this.resolved = transformResolved(
         { client: this.client, guild: this.guild, channel: this.channel },
@@ -243,6 +269,7 @@ class Message extends Base {
     if (data.edited_timestamp) {
       /**
        * The timestamp the message was last edited at (if applicable)
+       *
        * @type {?number}
        */
       this.editedTimestamp = Date.parse(data.edited_timestamp);
@@ -253,6 +280,7 @@ class Message extends Base {
     if ('reactions' in data) {
       /**
        * A manager of the reactions belonging to this message
+       *
        * @type {ReactionManager}
        */
       this.reactions = new ReactionManager(this);
@@ -265,20 +293,12 @@ class Message extends Base {
       this.reactions ??= new ReactionManager(this);
     }
 
-    if (!this.mentions) {
+    if (this.mentions) {
       /**
        * All valid mentions that the message contains
+       *
        * @type {MessageMentions}
        */
-      this.mentions = new MessageMentions(
-        this,
-        data.mentions,
-        data.mention_roles,
-        data.mention_everyone,
-        data.mention_channels,
-        data.referenced_message?.author,
-      );
-    } else {
       this.mentions = new MessageMentions(
         this,
         data.mentions ?? this.mentions.users,
@@ -287,11 +307,21 @@ class Message extends Base {
         data.mention_channels ?? this.mentions.crosspostedChannels,
         data.referenced_message?.author ?? this.mentions.repliedUser,
       );
+    } else {
+      this.mentions = new MessageMentions(
+        this,
+        data.mentions,
+        data.mention_roles,
+        data.mention_everyone,
+        data.mention_channels,
+        data.referenced_message?.author,
+      );
     }
 
     if ('webhook_id' in data) {
       /**
        * The id of the webhook that sent the message, if applicable
+       *
        * @type {?Snowflake}
        */
       this.webhookId = data.webhook_id;
@@ -302,6 +332,7 @@ class Message extends Base {
     if ('application' in data) {
       /**
        * Supplemental application information for group activities
+       *
        * @type {?ClientApplication}
        */
       this.groupActivityApplication = new ClientApplication(this.client, data.application);
@@ -312,6 +343,7 @@ class Message extends Base {
     if ('application_id' in data) {
       /**
        * The id of the application of the interaction that sent this message, if any
+       *
        * @type {?Snowflake}
        */
       this.applicationId = data.application_id;
@@ -322,6 +354,7 @@ class Message extends Base {
     if ('activity' in data) {
       /**
        * Group activity
+       *
        * @type {?MessageActivity}
        */
       this.activity = {
@@ -345,6 +378,7 @@ class Message extends Base {
     if ('flags' in data) {
       /**
        * Flags that are applied to the message
+       *
        * @type {Readonly<MessageFlagsBitField>}
        */
       this.flags = new MessageFlagsBitField(data.flags).freeze();
@@ -355,13 +389,14 @@ class Message extends Base {
     /**
      * Reference data sent in a message that contains ids identifying the referenced message.
      * This can be present in the following types of message:
-     * * Crossposted messages (`MessageFlags.Crossposted`)
-     * * {@link MessageType.ChannelPinnedMessage}
-     * * {@link MessageType.ChannelFollowAdd}
-     * * {@link MessageType.Reply}
-     * * {@link MessageType.ThreadStarterMessage}
+     * Crossposted messages (`MessageFlags.Crossposted`)
+     * {@link MessageType.ChannelPinnedMessage}
+     * {@link MessageType.ChannelFollowAdd}
+     * {@link MessageType.Reply}
+     * {@link MessageType.ThreadStarterMessage}
+     *
      * @see {@link https://discord.com/developers/docs/resources/message#message-object-message-types}
-     * @typedef {Object} MessageReference
+     * @typedef {object} MessageReference
      * @property {Snowflake} channelId The channel id that was referenced
      * @property {Snowflake|undefined} guildId The guild id that was referenced
      * @property {Snowflake|undefined} messageId The message id that was referenced
@@ -371,6 +406,7 @@ class Message extends Base {
     if ('message_reference' in data) {
       /**
        * Message reference data
+       *
        * @type {?MessageReference}
        */
       this.reference = {
@@ -390,7 +426,8 @@ class Message extends Base {
     if (data.interaction_metadata) {
       /**
        * Partial data of the interaction that a message is a result of
-       * @typedef {Object} MessageInteractionMetadata
+       *
+       * @typedef {object} MessageInteractionMetadata
        * @property {Snowflake} id The interaction's id
        * @property {InteractionType} type The type of the interaction
        * @property {User} user The user that invoked the interaction
@@ -407,6 +444,7 @@ class Message extends Base {
 
       /**
        * Partial data of the interaction that this message is a result of
+       *
        * @type {?MessageInteractionMetadata}
        */
       this.interactionMetadata = _transformAPIMessageInteractionMetadata(this.client, data.interaction_metadata);
@@ -420,6 +458,7 @@ class Message extends Base {
       } else {
         /**
          * The poll that was sent with the message
+         *
          * @type {?Poll}
          */
         this.poll = new Poll(this.client, data.poll, this, this.channel);
@@ -431,6 +470,7 @@ class Message extends Base {
     if (data.message_snapshots) {
       /**
        * The message snapshots associated with the message reference
+       *
        * @type {Collection<Snowflake, Message>}
        */
       this.messageSnapshots = data.message_snapshots.reduce((coll, snapshot) => {
@@ -453,7 +493,8 @@ class Message extends Base {
 
     /**
      * A call associated with a message
-     * @typedef {Object} MessageCall
+     *
+     * @typedef {object} MessageCall
      * @property {Readonly<?Date>} endedAt The time the call ended
      * @property {?number} endedTimestamp The timestamp the call ended
      * @property {Snowflake[]} participants The ids of the users that participated in the call
@@ -462,6 +503,7 @@ class Message extends Base {
     if (data.call) {
       /**
        * The call associated with the message
+       *
        * @type {?MessageCall}
        */
       this.call = {
@@ -478,6 +520,7 @@ class Message extends Base {
 
   /**
    * The channel that the message was sent in
+   *
    * @type {TextBasedChannels}
    * @readonly
    */
@@ -487,6 +530,7 @@ class Message extends Base {
 
   /**
    * Whether or not this message is a partial
+   *
    * @type {boolean}
    * @readonly
    */
@@ -497,6 +541,7 @@ class Message extends Base {
   /**
    * Represents the author of the message as a guild member.
    * Only available if the message comes from a guild where the author is still a member
+   *
    * @type {?GuildMember}
    * @readonly
    */
@@ -506,6 +551,7 @@ class Message extends Base {
 
   /**
    * The time the message was sent at
+   *
    * @type {Date}
    * @readonly
    */
@@ -515,6 +561,7 @@ class Message extends Base {
 
   /**
    * The time the message was last edited at (if applicable)
+   *
    * @type {?Date}
    * @readonly
    */
@@ -524,6 +571,7 @@ class Message extends Base {
 
   /**
    * The guild the message was sent in (if in a guild channel)
+   *
    * @type {?Guild}
    * @readonly
    */
@@ -533,6 +581,7 @@ class Message extends Base {
 
   /**
    * Whether this message has a thread associated with it
+   *
    * @type {boolean}
    * @readonly
    */
@@ -544,6 +593,7 @@ class Message extends Base {
    * The thread started by this message
    * <info>This property is not suitable for checking whether a message has a thread,
    * use {@link Message#hasThread} instead.</info>
+   *
    * @type {?ThreadChannel}
    * @readonly
    */
@@ -553,6 +603,7 @@ class Message extends Base {
 
   /**
    * The URL to jump to this message
+   *
    * @type {string}
    * @readonly
    */
@@ -563,17 +614,19 @@ class Message extends Base {
   /**
    * The message contents with all mentions replaced by the equivalent text.
    * If mentions cannot be resolved to a name, the relevant mention in the message content will not be converted.
+   *
    * @type {?string}
    * @readonly
    */
   get cleanContent() {
-    // eslint-disable-next-line eqeqeq
+    // eslint-disable-next-line eqeqeq, no-eq-null
     return this.content != null && this.channel ? cleanContent(this.content, this.channel) : null;
   }
 
   /**
    * Creates a reaction collector.
-   * @param {ReactionCollectorOptions} [options={}] Options to send to the collector
+   *
+   * @param {ReactionCollectorOptions} [options] Options to send to the collector
    * @returns {ReactionCollector}
    * @example
    * // Create a reaction collector
@@ -588,6 +641,7 @@ class Message extends Base {
 
   /**
    * An object containing the same properties as CollectorOptions, but a few more:
+   *
    * @typedef {ReactionCollectorOptions} AwaitReactionsOptions
    * @property {string[]} [errors] Stop/end reasons that cause the promise to reject
    */
@@ -595,7 +649,8 @@ class Message extends Base {
   /**
    * Similar to createReactionCollector but in promise form.
    * Resolves with a collection of reactions that pass the specified filter.
-   * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
+   *
+   * @param {AwaitReactionsOptions} [options] Optional options to pass to the internal collector
    * @returns {Promise<Collection<string | Snowflake, MessageReaction>>}
    * @example
    * // Create a reaction collector
@@ -604,7 +659,7 @@ class Message extends Base {
    *   .then(collected => console.log(`Collected ${collected.size} reactions`))
    *   .catch(console.error);
    */
-  awaitReactions(options = {}) {
+  async awaitReactions(options = {}) {
     return new Promise((resolve, reject) => {
       const collector = this.createReactionCollector(options);
       collector.once('end', (reactions, reason) => {
@@ -624,7 +679,8 @@ class Message extends Base {
 
   /**
    * Creates a message component interaction collector.
-   * @param {MessageComponentCollectorOptions} [options={}] Options to send to the collector
+   *
+   * @param {MessageComponentCollectorOptions} [options] Options to send to the collector
    * @returns {InteractionCollector}
    * @example
    * // Create a message component interaction collector
@@ -643,7 +699,8 @@ class Message extends Base {
 
   /**
    * An object containing the same properties as CollectorOptions, but a few more:
-   * @typedef {Object} AwaitMessageComponentOptions
+   *
+   * @typedef {object} AwaitMessageComponentOptions
    * @property {CollectorFilter} [filter] The filter applied to this collector
    * @property {number} [time] Time to wait for an interaction before rejecting
    * @property {ComponentType} [componentType] The type of component interaction to collect
@@ -654,7 +711,8 @@ class Message extends Base {
   /**
    * Collects a single component interaction that passes the filter.
    * The Promise will reject if the time expires.
-   * @param {AwaitMessageComponentOptions} [options={}] Options to pass to the internal collector
+   *
+   * @param {AwaitMessageComponentOptions} [options] Options to pass to the internal collector
    * @returns {Promise<MessageComponentInteraction>}
    * @example
    * // Collect a message component interaction
@@ -663,7 +721,7 @@ class Message extends Base {
    *   .then(interaction => console.log(`${interaction.customId} was clicked!`))
    *   .catch(console.error);
    */
-  awaitMessageComponent(options = {}) {
+  async awaitMessageComponent(options = {}) {
     const _options = { ...options, max: 1 };
     return new Promise((resolve, reject) => {
       const collector = this.createMessageComponentCollector(_options);
@@ -677,6 +735,7 @@ class Message extends Base {
 
   /**
    * Whether the message is editable by the client user
+   *
    * @type {boolean}
    * @readonly
    */
@@ -702,6 +761,7 @@ class Message extends Base {
 
   /**
    * Whether the message is deletable by the client user
+   *
    * @type {boolean}
    * @readonly
    */
@@ -711,6 +771,7 @@ class Message extends Base {
     if (!this.guild) {
       return this.author.id === this.client.user.id;
     }
+
     // DMChannel does not have viewable property, so check viewable after proved that message is on a guild.
     if (!this.channel?.viewable) {
       return false;
@@ -730,6 +791,7 @@ class Message extends Base {
 
   /**
    * Whether the message is bulk deletable by the client user
+   *
    * @type {boolean}
    * @readonly
    * @example
@@ -748,6 +810,7 @@ class Message extends Base {
 
   /**
    * Whether the message is pinnable by the client user
+   *
    * @type {boolean}
    * @readonly
    */
@@ -763,6 +826,7 @@ class Message extends Base {
 
   /**
    * Fetches the Message this crosspost/reply/pin-add references, if available to the client
+   *
    * @returns {Promise<Message>}
    */
   async fetchReference() {
@@ -771,12 +835,12 @@ class Message extends Base {
     if (!messageId) throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
     const channel = this.client.channels.resolve(channelId);
     if (!channel) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
-    const message = await channel.messages.fetch(messageId);
-    return message;
+    return await channel.messages.fetch(messageId);
   }
 
   /**
    * Whether the message is crosspostable by the client user
+   *
    * @type {boolean}
    * @readonly
    */
@@ -798,6 +862,7 @@ class Message extends Base {
 
   /**
    * Edits the content of the message.
+   *
    * @param {string|MessagePayload|MessageEditOptions} options The options to provide
    * @returns {Promise<Message>}
    * @example
@@ -813,6 +878,7 @@ class Message extends Base {
 
   /**
    * Publishes a message in an announcement channel to all channels following it.
+   *
    * @returns {Promise<Message>}
    * @example
    * // Crosspost a message
@@ -829,6 +895,7 @@ class Message extends Base {
 
   /**
    * Pins this message to the channel's pinned messages.
+   *
    * @param {string} [reason] Reason for pinning
    * @returns {Promise<Message>}
    * @example
@@ -845,6 +912,7 @@ class Message extends Base {
 
   /**
    * Unpins this message from the channel's pinned messages.
+   *
    * @param {string} [reason] Reason for unpinning
    * @returns {Promise<Message>}
    * @example
@@ -861,6 +929,7 @@ class Message extends Base {
 
   /**
    * Adds a reaction to the message.
+   *
    * @param {EmojiIdentifierResolvable} emoji The emoji to react with
    * @returns {Promise<MessageReaction>}
    * @example
@@ -891,6 +960,7 @@ class Message extends Base {
 
   /**
    * Deletes the message.
+   *
    * @returns {Promise<Message>}
    * @example
    * // Delete a message
@@ -906,6 +976,7 @@ class Message extends Base {
 
   /**
    * Options provided when sending a message as an inline reply.
+   *
    * @typedef {BaseMessageCreateOptions} MessageReplyOptions
    * @property {boolean} [failIfNotExists=this.client.options.failIfNotExists] Whether to error if the referenced
    * message does not exist (creates a standard message in this case when false)
@@ -913,6 +984,7 @@ class Message extends Base {
 
   /**
    * Send an inline reply to this message.
+   *
    * @param {string|MessagePayload|MessageReplyOptions} options The options to provide
    * @returns {Promise<Message>}
    * @example
@@ -921,7 +993,7 @@ class Message extends Base {
    *   .then(() => console.log(`Replied to message "${message.content}"`))
    *   .catch(console.error);
    */
-  reply(options) {
+  async reply(options) {
     let data;
 
     if (options instanceof MessagePayload) {
@@ -937,15 +1009,17 @@ class Message extends Base {
         },
       });
     }
+
     return this.client.channels.createMessage(this.channelId, data);
   }
 
   /**
    * Forwards this message.
+   *
    * @param {TextChannelResolvable} channel The channel to forward this message to.
    * @returns {Promise<Message>}
    */
-  forward(channel) {
+  async forward(channel) {
     return this.client.channels.createMessage(channel, {
       messageReference: {
         messageId: this.id,
@@ -958,7 +1032,8 @@ class Message extends Base {
 
   /**
    * Options for starting a thread on a message.
-   * @typedef {Object} StartThreadOptions
+   *
+   * @typedef {object} StartThreadOptions
    * @property {string} name The name of the new thread
    * @property {ThreadAutoArchiveDuration} [autoArchiveDuration=this.channel.defaultAutoArchiveDuration] The amount of
    * time after which the thread should automatically archive in case of no recent activity
@@ -968,6 +1043,7 @@ class Message extends Base {
 
   /**
    * Create a new public thread from this message
+   *
    * @see GuildTextThreadManager#create
    * @param {StartThreadOptions} [options] Options for starting a thread on this message
    * @returns {Promise<ThreadChannel>}
@@ -977,13 +1053,15 @@ class Message extends Base {
     if (![ChannelType.GuildText, ChannelType.GuildAnnouncement].includes(this.channel.type)) {
       throw new DiscordjsError(ErrorCodes.MessageThreadParent);
     }
+
     if (this.hasThread) throw new DiscordjsError(ErrorCodes.MessageExistingThread);
     return this.channel.threads.create({ ...options, startMessage: this });
   }
 
   /**
    * Fetch this message.
-   * @param {boolean} [force=true] Whether to skip the cache check and request the API
+   *
+   * @param {boolean} [force] Whether to skip the cache check and request the API
    * @returns {Promise<Message>}
    */
   async fetch(force = true) {
@@ -993,6 +1071,7 @@ class Message extends Base {
 
   /**
    * Fetches the webhook used to create this message.
+   *
    * @returns {Promise<?Webhook>}
    */
   async fetchWebhook() {
@@ -1003,10 +1082,11 @@ class Message extends Base {
 
   /**
    * Suppresses or unsuppresses embeds on a message.
-   * @param {boolean} [suppress=true] If the embeds should be suppressed or not
+   *
+   * @param {boolean} [suppress] If the embeds should be suppressed or not
    * @returns {Promise<Message>}
    */
-  suppressEmbeds(suppress = true) {
+  async suppressEmbeds(suppress = true) {
     const flags = new MessageFlagsBitField(this.flags.bitfield);
 
     if (suppress) {
@@ -1020,14 +1100,16 @@ class Message extends Base {
 
   /**
    * Removes the attachments from this message.
+   *
    * @returns {Promise<Message>}
    */
-  removeAttachments() {
+  async removeAttachments() {
     return this.edit({ attachments: [] });
   }
 
   /**
    * Resolves a component by a custom id.
+   *
    * @param {string} customId The custom id to resolve against
    * @returns {?MessageActionRowComponent}
    */
@@ -1039,6 +1121,7 @@ class Message extends Base {
    * Used mainly internally. Whether two messages are identical in properties. If you want to compare messages
    * without checking all the properties, use `message.id === message2.id`, which is much more efficient. This
    * method allows you to see if there are differences in content, embeds, attachments, nonce and tts properties.
+   *
    * @param {Message} message The message to compare it to
    * @param {APIMessage} rawData Raw data passed through the WebSocket about this message
    * @returns {boolean}
@@ -1071,6 +1154,7 @@ class Message extends Base {
 
   /**
    * Whether this message is from a guild.
+   *
    * @returns {boolean}
    */
   inGuild() {
@@ -1079,6 +1163,7 @@ class Message extends Base {
 
   /**
    * When concatenated with a string, this automatically concatenates the message's content instead of the object.
+   *
    * @returns {string}
    * @example
    * // Logs: Message: This is a message!

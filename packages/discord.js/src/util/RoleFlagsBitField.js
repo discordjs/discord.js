@@ -5,11 +5,13 @@ const { BitField } = require('./BitField.js');
 
 /**
  * Data structure that makes it easy to interact with a {@link Role#flags} bitfield.
+ *
  * @extends {BitField}
  */
 class RoleFlagsBitField extends BitField {
   /**
    * Numeric role flags.
+   *
    * @type {RoleFlags}
    * @memberof RoleFlagsBitField
    */
@@ -18,7 +20,7 @@ class RoleFlagsBitField extends BitField {
 
 /**
  * @name RoleFlagsBitField
- * @kind constructor
+ * @constructor
  * @memberof RoleFlagsBitField
  * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
  */

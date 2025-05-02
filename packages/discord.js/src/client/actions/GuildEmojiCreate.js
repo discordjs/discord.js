@@ -1,7 +1,7 @@
 'use strict';
 
-const { Action } = require('./Action.js');
 const { Events } = require('../../util/Events.js');
+const { Action } = require('./Action.js');
 
 class GuildEmojiCreateAction extends Action {
   handle(guild, createdEmoji) {
@@ -9,6 +9,7 @@ class GuildEmojiCreateAction extends Action {
     const emoji = guild.emojis._add(createdEmoji);
     /**
      * Emitted whenever a custom emoji is created in a guild.
+     *
      * @event Client#emojiCreate
      * @param {GuildEmoji} emoji The emoji that was created
      */

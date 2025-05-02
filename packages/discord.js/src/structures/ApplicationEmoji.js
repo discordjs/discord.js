@@ -4,6 +4,7 @@ const { Emoji } = require('./Emoji.js');
 
 /**
  * Represents a custom emoji.
+ *
  * @extends {Emoji}
  */
 class ApplicationEmoji extends Emoji {
@@ -12,12 +13,14 @@ class ApplicationEmoji extends Emoji {
 
     /**
      * The application this emoji originates from
+     *
      * @type {ClientApplication}
      */
     this.application = application;
 
     /**
      * The user who created this emoji
+     *
      * @type {?User}
      */
     this.author = null;
@@ -35,6 +38,7 @@ class ApplicationEmoji extends Emoji {
     if ('managed' in data) {
       /**
        * Whether this emoji is managed by an external service
+       *
        * @type {?boolean}
        */
       this.managed = data.managed;
@@ -43,6 +47,7 @@ class ApplicationEmoji extends Emoji {
     if ('require_colons' in data) {
       /**
        * Whether or not this emoji requires colons surrounding it
+       *
        * @type {?boolean}
        */
       this.requiresColons = data.require_colons;
@@ -51,20 +56,23 @@ class ApplicationEmoji extends Emoji {
 
   /**
    * Fetches the author for this emoji
+   *
    * @returns {Promise<User>}
    */
-  fetchAuthor() {
+  async fetchAuthor() {
     return this.application.emojis.fetchAuthor(this);
   }
 
   /**
    * Data for editing an emoji.
-   * @typedef {Object} ApplicationEmojiEditOptions
+   *
+   * @typedef {object} ApplicationEmojiEditOptions
    * @property {string} [name] The name of the emoji
    */
 
   /**
    * Edits the emoji.
+   *
    * @param {ApplicationEmojiEditOptions} options The options to provide
    * @returns {Promise<ApplicationEmoji>}
    * @example
@@ -73,21 +81,23 @@ class ApplicationEmoji extends Emoji {
    *   .then(emoji => console.log(`Edited emoji ${emoji}`))
    *   .catch(console.error);
    */
-  edit(options) {
+  async edit(options) {
     return this.application.emojis.edit(this.id, options);
   }
 
   /**
    * Sets the name of the emoji.
+   *
    * @param {string} name The new name for the emoji
    * @returns {Promise<ApplicationEmoji>}
    */
-  setName(name) {
+  async setName(name) {
     return this.edit({ name });
   }
 
   /**
    * Deletes the emoji.
+   *
    * @returns {Promise<ApplicationEmoji>}
    */
   async delete() {
@@ -97,6 +107,7 @@ class ApplicationEmoji extends Emoji {
 
   /**
    * Whether this emoji is the same as another one.
+   *
    * @param {ApplicationEmoji|APIEmoji} other The emoji to compare it to
    * @returns {boolean}
    */

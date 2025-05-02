@@ -5,11 +5,13 @@ const { BitField } = require('./BitField.js');
 
 /**
  * Data structure that makes it easy to interact with a {@link ClientApplication#flags} bitfield.
+ *
  * @extends {BitField}
  */
 class ApplicationFlagsBitField extends BitField {
   /**
    * Numeric application flags. All available properties:
+   *
    * @type {ApplicationFlags}
    * @memberof ApplicationFlagsBitField
    */
@@ -18,23 +20,25 @@ class ApplicationFlagsBitField extends BitField {
 
 /**
  * @name ApplicationFlagsBitField
- * @kind constructor
+ * @constructor
  * @memberof ApplicationFlagsBitField
  * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
  */
 
 /**
  * Bitfield of the packed bits
+ *
  * @type {number}
  * @name ApplicationFlagsBitField#bitfield
  */
 
 /**
  * Data that can be resolved to give an application flag bit field. This can be:
- * * A string (see {@link ApplicationFlagsBitField.Flags})
- * * An application flag
- * * An instance of ApplicationFlagsBitField
- * * An Array of ApplicationFlagsResolvable
+ * A string (see {@link ApplicationFlagsBitField.Flags})
+ * An application flag
+ * An instance of ApplicationFlagsBitField
+ * An Array of ApplicationFlagsResolvable
+ *
  * @typedef {string|number|ApplicationFlagsBitField|ApplicationFlagsResolvable[]} ApplicationFlagsResolvable
  */
 

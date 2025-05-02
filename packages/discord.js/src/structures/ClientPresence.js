@@ -1,11 +1,13 @@
+/* eslint-disable id-length */
 'use strict';
 
 const { GatewayOpcodes, ActivityType } = require('discord-api-types/v10');
-const { Presence } = require('./Presence.js');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { Presence } = require('./Presence.js');
 
 /**
  * Represents the client's presence.
+ *
  * @extends {Presence}
  */
 class ClientPresence extends Presence {
@@ -15,6 +17,7 @@ class ClientPresence extends Presence {
 
   /**
    * Sets the client's presence
+   *
    * @param {PresenceData} presence The data to set the presence to
    * @returns {Promise<ClientPresence>}
    */
@@ -30,11 +33,13 @@ class ClientPresence extends Presence {
     } else {
       await this.client.ws.send(presence.shardId, { op: GatewayOpcodes.PresenceUpdate, d: packet });
     }
+
     return this;
   }
 
   /**
    * Parses presence data into a packet ready to be sent to Discord
+   *
    * @param {PresenceData} presence The data to parse
    * @returns {GatewayPresenceUpdateData}
    * @private

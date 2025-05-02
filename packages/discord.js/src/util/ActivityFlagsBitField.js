@@ -5,11 +5,13 @@ const { BitField } = require('./BitField.js');
 
 /**
  * Data structure that makes it easy to interact with an {@link Activity#flags} bitfield.
+ *
  * @extends {BitField}
  */
 class ActivityFlagsBitField extends BitField {
   /**
    * Numeric activity flags.
+   *
    * @type {ActivityFlags}
    * @memberof ActivityFlagsBitField
    */
@@ -18,7 +20,7 @@ class ActivityFlagsBitField extends BitField {
 
 /**
  * @name ActivityFlagsBitField
- * @kind constructor
+ * @constructor
  * @memberof ActivityFlagsBitField
  * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
  */

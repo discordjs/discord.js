@@ -5,11 +5,13 @@ const { BitField } = require('./BitField.js');
 
 /**
  * Data structure that makes it easy to interact with an {@link Attachment#flags} bitfield.
+ *
  * @extends {BitField}
  */
 class AttachmentFlagsBitField extends BitField {
   /**
    * Numeric attachment flags.
+   *
    * @type {AttachmentFlags}
    * @memberof AttachmentFlagsBitField
    */
@@ -18,7 +20,7 @@ class AttachmentFlagsBitField extends BitField {
 
 /**
  * @name AttachmentFlagsBitField
- * @kind constructor
+ * @constructor
  * @memberof AttachmentFlagsBitField
  * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
  */

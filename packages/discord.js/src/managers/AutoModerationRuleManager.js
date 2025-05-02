@@ -2,11 +2,12 @@
 
 const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager.js');
 const { AutoModerationRule } = require('../structures/AutoModerationRule.js');
+const { CachedManager } = require('./CachedManager.js');
 
 /**
  * Manages API methods for auto moderation rules and stores their cache.
+ *
  * @extends {CachedManager}
  */
 class AutoModerationRuleManager extends CachedManager {
@@ -15,6 +16,7 @@ class AutoModerationRuleManager extends CachedManager {
 
     /**
      * The guild this manager belongs to.
+     *
      * @type {Guild}
      */
     this.guild = guild;
@@ -22,12 +24,14 @@ class AutoModerationRuleManager extends CachedManager {
 
   /**
    * The cache of this manager
+   *
    * @type {Collection<Snowflake, AutoModerationRule>}
    * @name AutoModerationRuleManager#cache
    */
 
   /**
    * Resolves an {@link AutoModerationRuleResolvable} to an {@link AutoModerationRule} object.
+   *
    * @method resolve
    * @memberof AutoModerationRuleManager
    * @instance
@@ -37,6 +41,7 @@ class AutoModerationRuleManager extends CachedManager {
 
   /**
    * Resolves an {@link AutoModerationRuleResolvable} to a {@link AutoModerationRule} id.
+   *
    * @method resolveId
    * @memberof AutoModerationRuleManager
    * @instance
@@ -50,7 +55,8 @@ class AutoModerationRuleManager extends CachedManager {
 
   /**
    * Options used to set the trigger metadata of an auto moderation rule.
-   * @typedef {Object} AutoModerationTriggerMetadataOptions
+   *
+   * @typedef {object} AutoModerationTriggerMetadataOptions
    * @property {string[]} [keywordFilter] The substrings that will be searched for in the content
    * @property {string[]} [regexPatterns] The regular expression patterns which will be matched against the content
    * <info>Only Rust-flavored regular expressions are supported.</info>
@@ -66,7 +72,8 @@ class AutoModerationRuleManager extends CachedManager {
 
   /**
    * Options used to set the actions of an auto moderation rule.
-   * @typedef {Object} AutoModerationActionOptions
+   *
+   * @typedef {object} AutoModerationActionOptions
    * @property {AutoModerationActionType} type The type of this auto moderation rule action
    * @property {AutoModerationActionMetadataOptions} [metadata] Additional metadata needed during execution
    * <info>This property is required if using a `type` of
@@ -75,7 +82,8 @@ class AutoModerationRuleManager extends CachedManager {
 
   /**
    * Options used to set the metadata of an auto moderation rule action.
-   * @typedef {Object} AutoModerationActionMetadataOptions
+   *
+   * @typedef {object} AutoModerationActionMetadataOptions
    * @property {GuildTextChannelResolvable|ThreadChannel} [channel] The channel to which content will be logged
    * @property {number} [durationSeconds] The timeout duration in seconds
    * @property {string} [customMessage] The custom message that is shown whenever a message is blocked
@@ -83,7 +91,8 @@ class AutoModerationRuleManager extends CachedManager {
 
   /**
    * Options used to create an auto moderation rule.
-   * @typedef {Object} AutoModerationRuleCreateOptions
+   *
+   * @typedef {object} AutoModerationRuleCreateOptions
    * @property {string} name The name of the auto moderation rule
    * @property {AutoModerationRuleEventType} eventType The event type of the auto moderation rule
    * @property {AutoModerationRuleTriggerType} triggerType The trigger type of the auto moderation rule
@@ -105,6 +114,7 @@ class AutoModerationRuleManager extends CachedManager {
 
   /**
    * Creates a new auto moderation rule.
+   *
    * @param {AutoModerationRuleCreateOptions} options Options for creating the auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */
@@ -152,7 +162,8 @@ class AutoModerationRuleManager extends CachedManager {
 
   /**
    * Options used to edit an auto moderation rule.
-   * @typedef {Object} AutoModerationRuleEditOptions
+   *
+   * @typedef {object} AutoModerationRuleEditOptions
    * @property {string} [name] The name of the auto moderation rule
    * @property {AutoModerationRuleEventType} [eventType] The event type of the auto moderation rule
    * @property {AutoModerationTriggerMetadataOptions} [triggerMetadata] The trigger metadata of the auto moderation rule
@@ -168,6 +179,7 @@ class AutoModerationRuleManager extends CachedManager {
 
   /**
    * Edits an auto moderation rule.
+   *
    * @param {AutoModerationRuleResolvable} autoModerationRule The auto moderation rule to edit
    * @param {AutoModerationRuleEditOptions} options Options for editing the auto moderation rule
    * @returns {Promise<AutoModerationRule>}
@@ -210,25 +222,29 @@ class AutoModerationRuleManager extends CachedManager {
 
   /**
    * Data that can be resolved to give an AutoModerationRule object. This can be:
-   * * An AutoModerationRule
-   * * A Snowflake
+   * An AutoModerationRule
+   * A Snowflake
+   *
    * @typedef {AutoModerationRule|Snowflake} AutoModerationRuleResolvable
    */
 
   /**
    * Options used to fetch a single auto moderation rule from a guild.
+   *
    * @typedef {BaseFetchOptions} FetchAutoModerationRuleOptions
    * @property {AutoModerationRuleResolvable} autoModerationRule The auto moderation rule to fetch
    */
 
   /**
    * Options used to fetch all auto moderation rules from a guild.
-   * @typedef {Object} FetchAutoModerationRulesOptions
+   *
+   * @typedef {object} FetchAutoModerationRulesOptions
    * @property {boolean} [cache] Whether to cache the fetched auto moderation rules
    */
 
   /**
    * Fetches auto moderation rules from Discord.
+   *
    * @param {AutoModerationRuleResolvable|FetchAutoModerationRuleOptions|FetchAutoModerationRulesOptions} [options]
    * Options for fetching auto moderation rule(s)
    * @returns {Promise<AutoModerationRule|Collection<Snowflake, AutoModerationRule>>}
@@ -248,13 +264,14 @@ class AutoModerationRuleManager extends CachedManager {
    *   .then(console.log)
    *   .catch(console.error)
    */
-  fetch(options) {
+  async fetch(options) {
     if (!options) return this._fetchMany();
     const { autoModerationRule, cache, force } = options;
     const resolvedAutoModerationRule = this.resolveId(autoModerationRule ?? options);
     if (resolvedAutoModerationRule) {
       return this._fetchSingle({ autoModerationRule: resolvedAutoModerationRule, cache, force });
     }
+
     return this._fetchMany(options);
   }
 
@@ -279,6 +296,7 @@ class AutoModerationRuleManager extends CachedManager {
 
   /**
    * Deletes an auto moderation rule.
+   *
    * @param {AutoModerationRuleResolvable} autoModerationRule The auto moderation rule to delete
    * @param {string} [reason] The reason for deleting the auto moderation rule
    * @returns {Promise<void>}

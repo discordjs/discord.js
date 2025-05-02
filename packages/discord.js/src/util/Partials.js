@@ -8,16 +8,17 @@ const { createEnum } = require('./Enums.js');
  * import { Client, Partials } from 'discord.js';
  *
  * const client = new Client({
- *   intents: [
- *     // Intents...
- *   ],
- *   partials: [
- *     Partials.User, // We want to receive uncached users!
- *     Partials.Message // We want to receive uncached messages!
- *   ]
+ * intents: [
+ * // Intents...
+ * ],
+ * partials: [
+ * Partials.User, // We want to receive uncached users!
+ * Partials.Message // We want to receive uncached messages!
+ * ]
  * });
  * ```
- * @typedef {Object} Partials
+ *
+ * @typedef {object} Partials
  * @property {number} User The partial to receive uncached users.
  * @property {number} Channel The partial to receive uncached channels.
  * <info>This is required to receive direct messages!</info>

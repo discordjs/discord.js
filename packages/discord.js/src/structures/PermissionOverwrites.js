@@ -1,13 +1,14 @@
 'use strict';
 
 const { OverwriteType } = require('discord-api-types/v10');
-const { Base } = require('./Base.js');
-const { Role } = require('./Role.js');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 const { PermissionsBitField } = require('../util/PermissionsBitField.js');
+const { Base } = require('./Base.js');
+const { Role } = require('./Role.js');
 
 /**
  * Represents a permission overwrite for a role or member in a guild channel.
+ *
  * @extends {Base}
  */
 class PermissionOverwrites extends Base {
@@ -16,6 +17,7 @@ class PermissionOverwrites extends Base {
 
     /**
      * The GuildChannel this overwrite is for
+     *
      * @name PermissionOverwrites#channel
      * @type {GuildChannel}
      * @readonly
@@ -28,6 +30,7 @@ class PermissionOverwrites extends Base {
   _patch(data) {
     /**
      * The overwrite's id, either a {@link User} or a {@link Role} id
+     *
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -35,6 +38,7 @@ class PermissionOverwrites extends Base {
     if ('type' in data) {
       /**
        * The type of this overwrite
+       *
        * @type {OverwriteType}
        */
       this.type = data.type;
@@ -43,6 +47,7 @@ class PermissionOverwrites extends Base {
     if ('deny' in data) {
       /**
        * The permissions that are denied for the user or role.
+       *
        * @type {Readonly<PermissionsBitField>}
        */
       this.deny = new PermissionsBitField(BigInt(data.deny)).freeze();
@@ -51,6 +56,7 @@ class PermissionOverwrites extends Base {
     if ('allow' in data) {
       /**
        * The permissions that are allowed for the user or role.
+       *
        * @type {Readonly<PermissionsBitField>}
        */
       this.allow = new PermissionsBitField(BigInt(data.allow)).freeze();
@@ -59,6 +65,7 @@ class PermissionOverwrites extends Base {
 
   /**
    * Edits this Permission Overwrite.
+   *
    * @param {PermissionOverwriteOptions} options The options for the update
    * @param {string} [reason] Reason for creating/editing this overwrite
    * @returns {Promise<PermissionOverwrites>}
@@ -77,6 +84,7 @@ class PermissionOverwrites extends Base {
 
   /**
    * Deletes this Permission Overwrite.
+   *
    * @param {string} [reason] Reason for deleting this overwrite
    * @returns {Promise<PermissionOverwrites>}
    */
@@ -98,22 +106,24 @@ class PermissionOverwrites extends Base {
    * An object mapping permission flags to `true` (enabled), `null` (unset) or `false` (disabled).
    * ```js
    * {
-   *  'SendMessages': true,
-   *  'EmbedLinks': null,
-   *  'AttachFiles': false,
+   * 'SendMessages': true,
+   * 'EmbedLinks': null,
+   * 'AttachFiles': false,
    * }
    * ```
-   * @typedef {Object} PermissionOverwriteOptions
+   *
+   * @typedef {Record<string, boolean|null>} PermissionOverwriteOptions
    */
 
   /**
-   * @typedef {Object} ResolvedOverwriteOptions
+   * @typedef {object} ResolvedOverwriteOptions
    * @property {PermissionsBitField} allow The allowed permissions
    * @property {PermissionsBitField} deny The denied permissions
    */
 
   /**
    * Resolves bitfield permissions overwrites from an object.
+   *
    * @param {PermissionOverwriteOptions} options The options for the update
    * @param {ResolvedOverwriteOptions} initialPermissions The initial permissions
    * @returns {ResolvedOverwriteOptions}
@@ -140,7 +150,8 @@ class PermissionOverwrites extends Base {
 
   /**
    * The raw data for a permission overwrite
-   * @typedef {Object} RawOverwriteData
+   *
+   * @typedef {object} RawOverwriteData
    * @property {Snowflake} id The id of the {@link Role} or {@link User} this overwrite belongs to
    * @property {string} allow The permissions to allow
    * @property {string} deny The permissions to deny
@@ -149,14 +160,16 @@ class PermissionOverwrites extends Base {
 
   /**
    * Data that can be resolved into {@link APIOverwrite}. This can be:
-   * * PermissionOverwrites
-   * * OverwriteData
+   * PermissionOverwrites
+   * OverwriteData
+   *
    * @typedef {PermissionOverwrites|OverwriteData} OverwriteResolvable
    */
 
   /**
    * Data that can be used for a permission overwrite
-   * @typedef {Object} OverwriteData
+   *
+   * @typedef {object} OverwriteData
    * @property {UserResolvable|RoleResolvable} id Member or role this overwrite is for
    * @property {PermissionResolvable} [allow] The permissions to allow
    * @property {PermissionResolvable} [deny] The permissions to deny
@@ -165,6 +178,7 @@ class PermissionOverwrites extends Base {
 
   /**
    * Resolves an overwrite into {@link APIOverwrite}.
+   *
    * @param {OverwriteResolvable} overwrite The overwrite-like data to resolve
    * @param {Guild} [guild] The guild to resolve from
    * @returns {RawOverwriteData}
@@ -186,6 +200,7 @@ class PermissionOverwrites extends Base {
       if (overwrite.type === undefined) {
         throw new DiscordjsTypeError(ErrorCodes.PermissionOverwritesTypeMandatory);
       }
+
       type = overwrite.type;
     } else {
       type = overwrite.id instanceof Role ? OverwriteType.Role : OverwriteType.Member;

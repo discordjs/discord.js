@@ -19,24 +19,28 @@ class MessagePayload {
   constructor(target, options) {
     /**
      * The target for this message to be sent to
+     *
      * @type {MessageTarget}
      */
     this.target = target;
 
     /**
      * The payload of this message.
+     *
      * @type {MessagePayloadOption}
      */
     this.options = options;
 
     /**
      * Body sendable to the API
+     *
      * @type {?APIMessage}
      */
     this.body = null;
 
     /**
      * Files sendable to the API
+     *
      * @type {?RawFile[]}
      */
     this.files = null;
@@ -44,6 +48,7 @@ class MessagePayload {
 
   /**
    * Whether or not the target is a {@link Webhook} or a {@link WebhookClient}
+   *
    * @type {boolean}
    * @readonly
    */
@@ -55,6 +60,7 @@ class MessagePayload {
 
   /**
    * Whether or not the target is a {@link User}
+   *
    * @type {boolean}
    * @readonly
    */
@@ -66,6 +72,7 @@ class MessagePayload {
 
   /**
    * Whether or not the target is a {@link Message}
+   *
    * @type {boolean}
    * @readonly
    */
@@ -76,6 +83,7 @@ class MessagePayload {
 
   /**
    * Whether or not the target is a {@link MessageManager}
+   *
    * @type {boolean}
    * @readonly
    */
@@ -86,6 +94,7 @@ class MessagePayload {
 
   /**
    * Makes the content of this message.
+   *
    * @returns {?string}
    */
   makeContent() {
@@ -101,6 +110,7 @@ class MessagePayload {
 
   /**
    * Resolves the body.
+   *
    * @returns {MessagePayload}
    */
   resolveBody() {
@@ -148,7 +158,7 @@ class MessagePayload {
 
     let flags;
     if (
-      // eslint-disable-next-line eqeqeq
+      // eslint-disable-next-line eqeqeq, no-eq-null
       this.options.flags != null
     ) {
       flags = new MessageFlagsBitField(this.options.flags).bitfield;
@@ -231,6 +241,7 @@ class MessagePayload {
 
   /**
    * Resolves files.
+   *
    * @returns {Promise<MessagePayload>}
    */
   async resolveFiles() {
@@ -242,6 +253,7 @@ class MessagePayload {
 
   /**
    * Resolves a single file into an object sendable to the API.
+   *
    * @param {AttachmentPayload|BufferResolvable|Stream} fileLike Something that could be resolved to a file
    * @returns {Promise<RawFile>}
    */
@@ -277,9 +289,10 @@ class MessagePayload {
 
   /**
    * Creates a {@link MessagePayload} from user-level arguments.
+   *
    * @param {MessageTarget} target Target to send to
    * @param {string|MessagePayloadOption} options Options or content to use
-   * @param {MessagePayloadOption} [extra={}] Extra options to add onto specified options
+   * @param {MessagePayloadOption} [extra] Extra options to add onto specified options
    * @returns {MessagePayload}
    */
   static create(target, options, extra = {}) {
@@ -294,12 +307,14 @@ exports.MessagePayload = MessagePayload;
 
 /**
  * A target for a message.
+ *
  * @typedef {TextBasedChannels|ChannelManager|Webhook|WebhookClient|BaseInteraction|InteractionWebhook|
  * Message|MessageManager} MessageTarget
  */
 
 /**
  * A possible payload option.
+ *
  * @typedef {MessageCreateOptions|MessageEditOptions|WebhookMessageCreateOptions|WebhookMessageEditOptions|
  * InteractionReplyOptions|InteractionUpdateOptions} MessagePayloadOption
  */

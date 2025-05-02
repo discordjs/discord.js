@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
+/* eslint-disable import-x/order */
 'use strict';
 
 const { ComponentType } = require('discord-api-types/v10');
 
 /**
- * @typedef {Object} BaseComponentData
+ * @typedef {object} BaseComponentData
  * @property {ComponentType} type The type of component
  */
 
@@ -23,7 +25,7 @@ const { ComponentType } = require('discord-api-types/v10');
  */
 
 /**
- * @typedef {Object} SelectMenuComponentOptionData
+ * @typedef {object} SelectMenuComponentOptionData
  * @property {string} label The label of the option
  * @property {string} value The value of the option
  * @property {?string} description The description of the option
@@ -63,6 +65,7 @@ const { ComponentType } = require('discord-api-types/v10');
 
 /**
  * Transforms API data into a component
+ *
  * @param {APIMessageComponent|Component} data The data to create the component from
  * @returns {Component}
  * @ignore

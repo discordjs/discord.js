@@ -4,12 +4,14 @@ const { BitField } = require('./BitField.js');
 
 /**
  * Data structure that makes it easy to interact with a {@link ThreadMember#flags} bitfield.
+ *
  * @extends {BitField}
  */
 class ThreadMemberFlagsBitField extends BitField {
   /**
    * Numeric thread member flags. There are currently no bitflags relevant to bots for this.
-   * @type {Object<string, number>}
+   *
+   * @type {Record<string, number>}
    * @memberof ThreadMemberFlagsBitField
    */
   static Flags = {};
@@ -17,13 +19,14 @@ class ThreadMemberFlagsBitField extends BitField {
 
 /**
  * @name ThreadMemberFlagsBitField
- * @kind constructor
+ * @constructor
  * @memberof ThreadMemberFlagsBitField
  * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
  */
 
 /**
  * Bitfield of the packed bits
+ *
  * @type {number}
  * @name ThreadMemberFlagsBitField#bitfield
  */

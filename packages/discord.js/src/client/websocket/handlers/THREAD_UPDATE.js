@@ -7,6 +7,7 @@ module.exports = (client, packet) => {
   if (old && updated) {
     /**
      * Emitted whenever a thread is updated - e.g. name change, archive state change, locked state change.
+     *
      * @event Client#threadUpdate
      * @param {ThreadChannel} oldThread The thread before the update
      * @param {ThreadChannel} newThread The thread after the update

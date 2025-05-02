@@ -12,6 +12,7 @@ module.exports = (client, { d: data }, shardId) => {
 
       /**
        * Emitted whenever a guild becomes available.
+       *
        * @event Client#guildAvailable
        * @param {Guild} guild The guild that became available
        */
@@ -24,6 +25,7 @@ module.exports = (client, { d: data }, shardId) => {
     if (client.status === Status.Ready) {
       /**
        * Emitted whenever the client joins a guild.
+       *
        * @event Client#guildCreate
        * @param {Guild} guild The created guild
        */

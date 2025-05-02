@@ -88,7 +88,7 @@ export default tseslint.config(
 			'**/storybook-static/',
 			'**/.next/',
 			'**/shiki.bundle.ts',
-			'packages/discord.js/',
+			// 'packages/discord.js/',
 		],
 	},
 	commonRuleset,
@@ -135,6 +135,27 @@ export default tseslint.config(
 		files: [`packages/builders/**/*${commonFiles}`],
 		rules: {
 			'@typescript-eslint/no-empty-object-type': 0,
+		},
+	},
+	{
+		files: [`packages/discord.js/**/*${commonFiles}`],
+		languageOptions: {
+			sourceType: 'commonjs',
+			parserOptions: {
+				ecmaFeatures: {
+					impliedStrict: false,
+				},
+			},
+		},
+		rules: {
+			'@typescript-eslint/no-var-requires': 0,
+			'@typescript-eslint/no-require-imports': 0,
+			'jsdoc/no-undefined-types': 0,
+			'@typescript-eslint/explicit-member-accessibility': 0,
+			'@typescript-eslint/class-literal-property-style': 0,
+			'unicorn/no-array-for-each': 0,
+			strict: ['error', 'global'],
+			'unicorn/consistent-function-scoping': 0,
 		},
 	},
 	{

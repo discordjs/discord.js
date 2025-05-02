@@ -11,12 +11,14 @@ class ModalSubmitFields {
   constructor(components) {
     /**
      * The components within the modal
+     *
      * @type {ActionRowModalData[]}
      */
     this.components = components;
 
     /**
      * The extracted fields from the modal
+     *
      * @type {Collection<string, ModalData>}
      */
     this.fields = components.reduce((accumulator, next) => {
@@ -27,6 +29,7 @@ class ModalSubmitFields {
 
   /**
    * Gets a field given a custom id from a component
+   *
    * @param {string} customId The custom id of the component
    * @param {ComponentType} [type] The type of the component
    * @returns {ModalData}
@@ -44,6 +47,7 @@ class ModalSubmitFields {
 
   /**
    * Gets the value of a text input component given a custom id
+   *
    * @param {string} customId The custom id of the text input component
    * @returns {string}
    */

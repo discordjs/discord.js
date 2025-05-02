@@ -1,11 +1,11 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { flatten } = require('../util/Util.js');
 const { ApplicationCommand } = require('./ApplicationCommand.js');
 const { GuildAuditLogsEntry } = require('./GuildAuditLogsEntry.js');
 const { Integration } = require('./Integration.js');
 const { Webhook } = require('./Webhook.js');
-const { flatten } = require('../util/Util.js');
 
 /**
  * Audit logs entries are held in this class.
@@ -16,6 +16,7 @@ class GuildAuditLogs {
     if (data.threads) for (const thread of data.threads) guild.client.channels._add(thread, guild);
     /**
      * Cached webhooks
+     *
      * @type {Collection<Snowflake, Webhook>}
      * @private
      */
@@ -28,6 +29,7 @@ class GuildAuditLogs {
 
     /**
      * Cached integrations
+     *
      * @type {Collection<Snowflake|string, Integration>}
      * @private
      */
@@ -40,6 +42,7 @@ class GuildAuditLogs {
 
     /**
      * Cached {@link GuildScheduledEvent}s.
+     *
      * @type {Collection<Snowflake, GuildScheduledEvent>}
      * @private
      */
@@ -51,6 +54,7 @@ class GuildAuditLogs {
 
     /**
      * Cached application commands, includes application commands from other applications
+     *
      * @type {Collection<Snowflake, ApplicationCommand>}
      * @private
      */
@@ -63,6 +67,7 @@ class GuildAuditLogs {
 
     /**
      * Cached auto moderation rules.
+     *
      * @type {Collection<Snowflake, AutoModerationRule>}
      * @private
      */
@@ -74,6 +79,7 @@ class GuildAuditLogs {
 
     /**
      * The entries for this guild's audit logs
+     *
      * @type {Collection<Snowflake, GuildAuditLogsEntry>}
      */
     this.entries = new Collection();

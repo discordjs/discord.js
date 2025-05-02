@@ -5,11 +5,13 @@ const { BitField } = require('./BitField.js');
 
 /**
  * Data structure that makes it easy to interact with an {@link SKU#flags} bitfield.
+ *
  * @extends {BitField}
  */
 class SKUFlagsBitField extends BitField {
   /**
    * Numeric SKU flags.
+   *
    * @type {SKUFlags}
    * @memberof SKUFlagsBitField
    */
@@ -18,7 +20,7 @@ class SKUFlagsBitField extends BitField {
 
 /**
  * @name SKUFlagsBitField
- * @kind constructor
+ * @constructor
  * @memberof SKUFlagsBitField
  * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
  */

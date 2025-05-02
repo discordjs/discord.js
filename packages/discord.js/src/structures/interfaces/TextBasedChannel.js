@@ -6,28 +6,34 @@ const { InteractionType, Routes } = require('discord-api-types/v10');
 const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../../errors/index.js');
 const { MaxBulkDeletableMessageAge } = require('../../util/Constants.js');
 const { InteractionCollector } = require('../InteractionCollector.js');
+// eslint-disable-next-line import-x/order
 const { MessageCollector } = require('../MessageCollector.js');
 
 /**
  * Interface for classes that have text-channel-like features.
+ *
  * @interface
  */
 class TextBasedChannel {
   constructor() {
     /**
      * A manager of the messages sent to this channel
+     *
      * @type {GuildMessageManager}
      */
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     this.messages = new GuildMessageManager(this);
 
     /**
      * The channel's last message id, if one was sent
+     *
      * @type {?Snowflake}
      */
     this.lastMessageId = null;
 
     /**
      * The timestamp when the last pinned message was pinned, if there was one
+     *
      * @type {?number}
      */
     this.lastPinTimestamp = null;
@@ -35,6 +41,7 @@ class TextBasedChannel {
 
   /**
    * The Message object of the last message in the channel, if one was sent
+   *
    * @type {?Message}
    * @readonly
    */
@@ -44,6 +51,7 @@ class TextBasedChannel {
 
   /**
    * The date when the last pinned message was pinned, if there was one
+   *
    * @type {?Date}
    * @readonly
    */
@@ -53,14 +61,16 @@ class TextBasedChannel {
 
   /**
    * Represents the data for a poll answer.
-   * @typedef {Object} PollAnswerData
+   *
+   * @typedef {object} PollAnswerData
    * @property {string} text The text for the poll answer
    * @property {EmojiIdentifierResolvable} [emoji] The emoji for the poll answer
    */
 
   /**
    * Represents the data for a poll.
-   * @typedef {Object} PollData
+   *
+   * @typedef {object} PollData
    * @property {PollQuestionMedia} question The question for the poll
    * @property {PollAnswerData[]} answers The answers for the poll
    * @property {number} duration The duration in hours for the poll
@@ -70,7 +80,8 @@ class TextBasedChannel {
 
   /**
    * The base message options for messages.
-   * @typedef {Object} BaseMessageOptions
+   *
+   * @typedef {object} BaseMessageOptions
    * @property {?string} [content=''] The content for the message. This can only be `null` when editing a message.
    * @property {Array<(EmbedBuilder|Embed|APIEmbed)>} [embeds] The embeds for the message
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
@@ -83,12 +94,14 @@ class TextBasedChannel {
 
   /**
    * The base message options for messages including a poll.
+   *
    * @typedef {BaseMessageOptions} BaseMessageOptionsWithPoll
    * @property {PollData} [poll] The poll to send with the message
    */
 
   /**
    * The options for sending a message.
+   *
    * @typedef {BaseMessageOptionsWithPoll} BaseMessageCreateOptions
    * @property {boolean} [tts=false] Whether the message should be spoken aloud
    * @property {string} [nonce] The nonce for the message
@@ -109,13 +122,15 @@ class TextBasedChannel {
 
   /**
    * The options for sending a message.
+   *
    * @typedef {BaseMessageCreateOptions} MessageCreateOptions
    * @property {MessageReferenceOptions} [messageReference] The options for a reference to a message
    */
 
   /**
    * Options provided to control parsing of mentions by Discord
-   * @typedef {Object} MessageMentionOptions
+   *
+   * @typedef {object} MessageMentionOptions
    * @property {MessageMentionTypes[]} [parse] Types of mentions to be parsed
    * @property {Snowflake[]} [users] Snowflakes of Users to be parsed as mentions
    * @property {Snowflake[]} [roles] Snowflakes of Roles to be parsed as mentions
@@ -127,11 +142,13 @@ class TextBasedChannel {
    * - `roles`
    * - `users`
    * - `everyone`
+   *
    * @typedef {string} MessageMentionTypes
    */
 
   /**
    * Sends a message to this channel.
+   *
    * @param {string|MessagePayload|MessageCreateOptions} options The options to provide
    * @returns {Promise<Message>}
    * @example
@@ -158,12 +175,13 @@ class TextBasedChannel {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  send(options) {
+  async send(options) {
     return this.client.channels.createMessage(this, options);
   }
 
   /**
    * Sends a typing indicator in the channel.
+   *
    * @returns {Promise<void>} Resolves upon the typing status being sent
    * @example
    * // Start typing in a channel
@@ -175,7 +193,8 @@ class TextBasedChannel {
 
   /**
    * Creates a Message Collector.
-   * @param {MessageCollectorOptions} [options={}] The options to pass to the collector
+   *
+   * @param {MessageCollectorOptions} [options] The options to pass to the collector
    * @returns {MessageCollector}
    * @example
    * // Create a message collector
@@ -190,6 +209,7 @@ class TextBasedChannel {
 
   /**
    * An object containing the same properties as CollectorOptions, but a few more:
+   *
    * @typedef {MessageCollectorOptions} AwaitMessagesOptions
    * @property {string[]} [errors] Stop/end reasons that cause the promise to reject
    */
@@ -197,7 +217,8 @@ class TextBasedChannel {
   /**
    * Similar to createMessageCollector but in promise form.
    * Resolves with a collection of messages that pass the specified filter.
-   * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
+   *
+   * @param {AwaitMessagesOptions} [options] Optional options to pass to the internal collector
    * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // Await !vote messages
@@ -207,7 +228,7 @@ class TextBasedChannel {
    *   .then(collected => console.log(collected.size))
    *   .catch(collected => console.log(`After a minute, only ${collected.size} out of 4 voted.`));
    */
-  awaitMessages(options = {}) {
+  async awaitMessages(options = {}) {
     return new Promise((resolve, reject) => {
       const collector = this.createMessageCollector(options);
       collector.once('end', (collection, reason) => {
@@ -222,7 +243,8 @@ class TextBasedChannel {
 
   /**
    * Creates a component interaction collector.
-   * @param {MessageComponentCollectorOptions} [options={}] Options to send to the collector
+   *
+   * @param {MessageComponentCollectorOptions} [options] Options to send to the collector
    * @returns {InteractionCollector}
    * @example
    * // Create a button interaction collector
@@ -242,7 +264,8 @@ class TextBasedChannel {
   /**
    * Collects a single component interaction that passes the filter.
    * The Promise will reject if the time expires.
-   * @param {AwaitMessageComponentOptions} [options={}] Options to pass to the internal collector
+   *
+   * @param {AwaitMessageComponentOptions} [options] Options to pass to the internal collector
    * @returns {Promise<MessageComponentInteraction>}
    * @example
    * // Collect a message component interaction
@@ -251,7 +274,7 @@ class TextBasedChannel {
    *   .then(interaction => console.log(`${interaction.customId} was clicked!`))
    *   .catch(console.error);
    */
-  awaitMessageComponent(options = {}) {
+  async awaitMessageComponent(options = {}) {
     const _options = { ...options, max: 1 };
     return new Promise((resolve, reject) => {
       const collector = this.createMessageComponentCollector(_options);
@@ -265,9 +288,10 @@ class TextBasedChannel {
 
   /**
    * Bulk deletes given messages up to 2 weeks old.
+   *
    * @param {Collection<Snowflake, Message>|MessageResolvable[]|number} messages
    * Messages or number of messages to delete
-   * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
+   * @param {boolean} [filterOld] Filter messages to remove those which are older than two weeks automatically
    * @returns {Promise<Snowflake[]>} Returns the deleted messages ids
    * @example
    * // Bulk delete messages
@@ -307,6 +331,7 @@ class TextBasedChannel {
 
   /**
    * Fetches all webhooks for the channel.
+   *
    * @returns {Promise<Collection<Snowflake, Webhook>>}
    * @example
    * // Fetch webhooks
@@ -314,13 +339,14 @@ class TextBasedChannel {
    *   .then(hooks => console.log(`This channel has ${hooks.size} hooks`))
    *   .catch(console.error);
    */
-  fetchWebhooks() {
+  async fetchWebhooks() {
     return this.guild.channels.fetchWebhooks(this.id);
   }
 
   /**
    * Options used to create a {@link Webhook}.
-   * @typedef {Object} ChannelWebhookCreateOptions
+   *
+   * @typedef {object} ChannelWebhookCreateOptions
    * @property {string} name The name of the webhook
    * @property {?(BufferResolvable|Base64Resolvable)} [avatar] Avatar for the webhook
    * @property {string} [reason] Reason for creating the webhook
@@ -328,6 +354,7 @@ class TextBasedChannel {
 
   /**
    * Creates a webhook for the channel.
+   *
    * @param {ChannelWebhookCreateOptions} [options] Options for creating the webhook
    * @returns {Promise<Webhook>} Returns the created Webhook
    * @example
@@ -340,27 +367,29 @@ class TextBasedChannel {
    *   .then(console.log)
    *   .catch(console.error)
    */
-  createWebhook(options) {
+  async createWebhook(options) {
     return this.guild.channels.createWebhook({ channel: this.id, ...options });
   }
 
   /**
    * Sets the rate limit per user (slowmode) for this channel.
+   *
    * @param {number} rateLimitPerUser The new rate limit in seconds
    * @param {string} [reason] Reason for changing the channel's rate limit
    * @returns {Promise<this>}
    */
-  setRateLimitPerUser(rateLimitPerUser, reason) {
+  async setRateLimitPerUser(rateLimitPerUser, reason) {
     return this.edit({ rateLimitPerUser, reason });
   }
 
   /**
    * Sets whether this channel is flagged as NSFW.
-   * @param {boolean} [nsfw=true] Whether the channel should be considered NSFW
+   *
+   * @param {boolean} [nsfw] Whether the channel should be considered NSFW
    * @param {string} [reason] Reason for changing the channel's NSFW flag
    * @returns {Promise<this>}
    */
-  setNSFW(nsfw = true, reason) {
+  async setNSFW(nsfw = true, reason = undefined) {
     return this.edit({ nsfw, reason });
   }
 
@@ -395,5 +424,5 @@ class TextBasedChannel {
 exports.TextBasedChannel = TextBasedChannel;
 
 // Fixes Circular
-// eslint-disable-next-line import/order
+// eslint-disable-next-line import-x/order
 const { GuildMessageManager } = require('../../managers/GuildMessageManager.js');
