@@ -3004,7 +3004,7 @@ export type SelectMenuType = APISelectMenuComponent['type'];
 
 export interface SeparatorComponentData extends BaseComponentData {
   spacing?: SeparatorSpacingSize;
-  dividier?: boolean;
+  divider?: boolean;
 }
 export class SeparatorComponent extends Component<APISeparatorComponent> {
   private constructor(data: APISeparatorComponent);
