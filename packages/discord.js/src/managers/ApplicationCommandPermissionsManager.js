@@ -165,8 +165,8 @@ class ApplicationCommandPermissionsManager extends BaseManager {
       throw new DiscordjsError(ErrorCodes.ApplicationCommandPermissionsTokenMissing);
     }
 
-    // eslint-disable-next-line prefer-const
-    let { guildId, commandId } = this._validateOptions(guild, command);
+    const options = this._validateOptions(guild, command);
+    let { commandId } = options;
 
     if (!Array.isArray(permissions)) {
       throw new DiscordjsTypeError(
@@ -179,7 +179,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
 
     commandId ??= this.client.user.id;
 
-    const data = await this.client.rest.put(this.permissionsPath(guildId, commandId), {
+    const data = await this.client.rest.put(this.permissionsPath(options.guildId, commandId), {
       body: { permissions },
       auth: false,
       headers: { Authorization: `Bearer ${token}` },
@@ -209,8 +209,8 @@ class ApplicationCommandPermissionsManager extends BaseManager {
       throw new DiscordjsError(ErrorCodes.ApplicationCommandPermissionsTokenMissing);
     }
 
-    // eslint-disable-next-line prefer-const
-    let { guildId, commandId } = this._validateOptions(guild, command);
+    const options = this._validateOptions(guild, command);
+    let { commandId } = options;
     commandId ??= this.client.user.id;
 
     if (!Array.isArray(permissions)) {
@@ -224,7 +224,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
 
     let existingPermissions = [];
     try {
-      existingPermissions = await this.fetch({ guild: guildId, command: commandId });
+      existingPermissions = await this.fetch({ guild: options.guildId, command: commandId });
     } catch (error) {
       if (error.code !== RESTJSONErrorCodes.UnknownApplicationCommandPermissions) throw error;
     }
@@ -236,7 +236,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
       }
     }
 
-    return this.set({ guild: guildId, command: commandId, permissions: newPermissions, token });
+    return this.set({ guild: options.guildId, command: commandId, permissions: newPermissions, token });
   }
 
   /**
@@ -291,8 +291,8 @@ class ApplicationCommandPermissionsManager extends BaseManager {
       throw new DiscordjsError(ErrorCodes.ApplicationCommandPermissionsTokenMissing);
     }
 
-    // eslint-disable-next-line prefer-const
-    let { guildId, commandId } = this._validateOptions(guild, command);
+    const options = this._validateOptions(guild, command);
+    let { commandId } = options;
     commandId ??= this.client.user.id;
 
     if (!users && !roles && !channels) {
@@ -340,7 +340,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
 
     let existing = [];
     try {
-      existing = await this.fetch({ guild: guildId, command: commandId });
+      existing = await this.fetch({ guild: options.guildId, command: commandId });
     } catch (error) {
       if (error.code !== RESTJSONErrorCodes.UnknownApplicationCommandPermissions) throw error;
     }
@@ -358,7 +358,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
       return true;
     });
 
-    return this.set({ guild: guildId, command: commandId, permissions, token });
+    return this.set({ guild: options.guildId, command: commandId, permissions, token });
   }
 
   /**

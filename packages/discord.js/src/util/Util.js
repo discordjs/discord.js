@@ -108,8 +108,8 @@ async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multi
 function parseEmoji(text) {
   const decodedText = text.includes('%') ? decodeURIComponent(text) : text;
   if (!decodedText.includes(':')) return { animated: false, name: decodedText, id: undefined };
-  const match = /<?(?:(a):)?(\w{2,32}):(\d{17,19})?>?/.exec(decodedText);
-  return match && { animated: Boolean(match[1]), name: match[2], id: match[3] };
+  const match = /<?(?:(?<animated>a):)?(?<name>\w{2,32}):(?<id>\d{17,19})?>?/.exec(decodedText);
+  return match && { animated: Boolean(match.groups.animated), name: match.groups.name, id: match.groups.id };
 }
 
 /**
@@ -461,11 +461,13 @@ function cleanCodeBlockContent(text) {
  */
 function parseWebhookURL(url) {
   const matches =
-    /https?:\/\/(?:ptb\.|canary\.)?discord\.com\/api(?:\/v\d{1,2})?\/webhooks\/(\d{17,19})\/([\w-]{68})/i.exec(url);
+    /https?:\/\/(?:ptb\.|canary\.)?discord\.com\/api(?:\/v\d{1,2})?\/webhooks\/(?<id>\d{17,19})\/(?<token>[\w-]{68})/i.exec(
+      url,
+    );
 
-  if (!matches || matches.length <= 2) return null;
+  if (!matches?.groups) return null;
 
-  const [, id, token] = matches;
+  const { id, token } = matches.groups;
   return {
     id,
     token,

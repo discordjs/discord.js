@@ -88,7 +88,6 @@ export default tseslint.config(
 			'**/storybook-static/',
 			'**/.next/',
 			'**/shiki.bundle.ts',
-			// 'packages/discord.js/',
 		],
 	},
 	commonRuleset,
@@ -138,7 +137,7 @@ export default tseslint.config(
 		},
 	},
 	{
-		files: [`packages/discord.js/**/*${commonFiles}`],
+		files: [`packages/discord.js/**/*{js,mjs,cjs}`],
 		languageOptions: {
 			sourceType: 'commonjs',
 			parserOptions: {
