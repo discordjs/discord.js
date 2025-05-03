@@ -112,7 +112,7 @@ class PermissionOverwrites extends Base {
    * }
    * ```
    *
-   * @typedef {Object<string, boolean|null>} PermissionOverwriteOptions
+   * @typedef {Object<string, ?boolean>} PermissionOverwriteOptions
    */
 
   /**

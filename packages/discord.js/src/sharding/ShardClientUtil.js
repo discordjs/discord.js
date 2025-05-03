@@ -1,5 +1,4 @@
-/* eslint-disable promise/prefer-await-to-callbacks */
-/* eslint-disable promise/prefer-await-to-then */
+/* eslint-disable promise/prefer-await-to-callbacks, promise/prefer-await-to-then */
 'use strict';
 
 const process = require('node:process');

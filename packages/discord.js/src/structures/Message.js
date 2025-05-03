@@ -249,13 +249,7 @@ class Message extends Base {
       /**
        * Resolved data from auto-populated select menus.
        *
-       * @typedef {Object} CommandInteractionResolvedData
-       * @property {Collection} attachments attachments
-       * @property {Collection} channels channels
-       * @property {Collection} members members
-       * @property {Collection} messages messages
-       * @property {Collection} roles roles
-       * @property {Collection} users users
+       * @type {?CommandInteractionResolvedData}
        */
       this.resolved = transformResolved(
         { client: this.client, guild: this.guild, channel: this.channel },

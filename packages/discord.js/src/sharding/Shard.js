@@ -1,6 +1,4 @@
-/* eslint-disable promise/prefer-await-to-then */
-/* eslint-disable promise/prefer-await-to-callbacks */
-/* eslint-disable @typescript-eslint/no-use-before-define */
+/* eslint-disable promise/prefer-await-to-then, promise/prefer-await-to-callbacks, @typescript-eslint/no-use-before-define */
 'use strict';
 
 const path = require('node:path');
