@@ -158,6 +158,16 @@ export default tseslint.config(
 		},
 	},
 	{
+		files: [`packages/discord.js/**/*{ts,d.ts,mts,cts}`],
+		rules: {
+			'n/prefer-global/buffer': 0,
+			'no-restricted-globals': 0,
+			'@typescript-eslint/no-unsafe-declaration-merging': 0,
+			'@typescript-eslint/no-empty-object-type': 0,
+			'@typescript-eslint/no-use-before-define': 0,
+		},
+	},
+	{
 		files: [`packages/rest/**/*${commonFiles}`],
 		rules: {
 			'n/prefer-global/url': 0,

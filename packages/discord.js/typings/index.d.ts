@@ -1,8 +1,3 @@
-/* eslint-disable n/prefer-global/buffer */
-/* eslint-disable no-restricted-globals */
-/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-/* eslint-disable @typescript-eslint/no-use-before-define */
 import type { ChildProcess } from 'node:child_process';
 import type { Stream } from 'node:stream';
 import type { MessagePort, Worker } from 'node:worker_threads';
