@@ -108,7 +108,7 @@ class GuildEmojiManager extends CachedManager {
   /**
    * Options used for creating an emoji in a guild.
    *
-   * @typedef {object} GuildEmojiCreateOptions
+   * @typedef {Object} GuildEmojiCreateOptions
    * @property {BufferResolvable|Base64Resolvable} attachment The image for the emoji
    * @property {string} name The name for the emoji
    * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles to limit the emoji to

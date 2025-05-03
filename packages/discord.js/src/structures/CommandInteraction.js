@@ -93,7 +93,7 @@ class CommandInteraction extends BaseInteraction {
   /**
    * Represents the resolved data of a received command interaction.
    *
-   * @typedef {object} CommandInteractionResolvedData
+   * @typedef {Object} CommandInteractionResolvedData
    * @property {Collection<Snowflake, User>} [users] The resolved users
    * @property {Collection<Snowflake, GuildMember|APIGuildMember>} [members] The resolved guild members
    * @property {Collection<Snowflake, Role|APIRole>} [roles] The resolved roles
@@ -105,7 +105,7 @@ class CommandInteraction extends BaseInteraction {
   /**
    * Represents an option of a received command interaction.
    *
-   * @typedef {object} CommandInteractionOption
+   * @typedef {Object} CommandInteractionOption
    * @property {string} name The name of the option
    * @property {ApplicationCommandOptionType} type The type of the option
    * @property {boolean} [autocomplete] Whether the autocomplete interaction is enabled for a

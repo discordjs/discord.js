@@ -11,7 +11,7 @@ class ThreadMemberFlagsBitField extends BitField {
   /**
    * Numeric thread member flags. There are currently no bitflags relevant to bots for this.
    *
-   * @type {Record<string, number>}
+   * @type {Object<string, number>}
    * @memberof ThreadMemberFlagsBitField
    */
   static Flags = {};

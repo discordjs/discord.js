@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @typedef {object} ShardEvents
+ * @typedef {Object} ShardEvents
  * @property {string} Death death
  * @property {string} Disconnect disconnect
  * @property {string} Error error

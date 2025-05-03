@@ -62,7 +62,7 @@ class TextBasedChannel {
   /**
    * Represents the data for a poll answer.
    *
-   * @typedef {object} PollAnswerData
+   * @typedef {Object} PollAnswerData
    * @property {string} text The text for the poll answer
    * @property {EmojiIdentifierResolvable} [emoji] The emoji for the poll answer
    */
@@ -70,7 +70,7 @@ class TextBasedChannel {
   /**
    * Represents the data for a poll.
    *
-   * @typedef {object} PollData
+   * @typedef {Object} PollData
    * @property {PollQuestionMedia} question The question for the poll
    * @property {PollAnswerData[]} answers The answers for the poll
    * @property {number} duration The duration in hours for the poll
@@ -81,7 +81,7 @@ class TextBasedChannel {
   /**
    * The base message options for messages.
    *
-   * @typedef {object} BaseMessageOptions
+   * @typedef {Object} BaseMessageOptions
    * @property {?string} [content=''] The content for the message. This can only be `null` when editing a message.
    * @property {Array<(EmbedBuilder|Embed|APIEmbed)>} [embeds] The embeds for the message
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
@@ -130,7 +130,7 @@ class TextBasedChannel {
   /**
    * Options provided to control parsing of mentions by Discord
    *
-   * @typedef {object} MessageMentionOptions
+   * @typedef {Object} MessageMentionOptions
    * @property {MessageMentionTypes[]} [parse] Types of mentions to be parsed
    * @property {Snowflake[]} [users] Snowflakes of Users to be parsed as mentions
    * @property {Snowflake[]} [roles] Snowflakes of Roles to be parsed as mentions
@@ -346,7 +346,7 @@ class TextBasedChannel {
   /**
    * Options used to create a {@link Webhook}.
    *
-   * @typedef {object} ChannelWebhookCreateOptions
+   * @typedef {Object} ChannelWebhookCreateOptions
    * @property {string} name The name of the webhook
    * @property {?(BufferResolvable|Base64Resolvable)} [avatar] Avatar for the webhook
    * @property {string} [reason] Reason for creating the webhook

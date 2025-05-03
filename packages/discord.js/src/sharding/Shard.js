@@ -74,7 +74,7 @@ class Shard extends AsyncEventEmitter {
     /**
      * Environment variables for the shard's process, or workerData for the shard's worker
      *
-     * @type {object}
+     * @type {Object}
      */
     this.env = {
       ...process.env,
@@ -234,7 +234,7 @@ class Shard extends AsyncEventEmitter {
   /**
    * Options used to respawn a shard.
    *
-   * @typedef {object} ShardRespawnOptions
+   * @typedef {Object} ShardRespawnOptions
    * @property {number} [delay=500] How long to wait between killing the process/worker and
    * restarting it (in milliseconds)
    * @property {number} [timeout=30000] The amount in milliseconds to wait until the {@link Client}

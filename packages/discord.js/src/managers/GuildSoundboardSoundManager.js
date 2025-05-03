@@ -71,7 +71,7 @@ class GuildSoundboardSoundManager extends CachedManager {
   /**
    * Options used to create a soundboard sound in a guild.
    *
-   * @typedef {object} GuildSoundboardSoundCreateOptions
+   * @typedef {Object} GuildSoundboardSoundCreateOptions
    * @property {BufferResolvable|Stream} file The file for the soundboard sound
    * @property {string} name The name for the soundboard sound
    * @property {string} [contentType] The content type for the soundboard sound file
@@ -112,7 +112,7 @@ class GuildSoundboardSoundManager extends CachedManager {
   /**
    * Data for editing a soundboard sound.
    *
-   * @typedef {object} GuildSoundboardSoundEditOptions
+   * @typedef {Object} GuildSoundboardSoundEditOptions
    * @property {string} [name] The name of the soundboard sound
    * @property {?number} [volume] The volume of the soundboard sound, from 0 to 1
    * @property {?Snowflake} [emojiId] The emoji id of the soundboard sound

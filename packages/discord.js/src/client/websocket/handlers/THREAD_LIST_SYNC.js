@@ -42,9 +42,9 @@ module.exports = (client, { d: data }) => {
 };
 
 function removeStaleThreads(client, channel) {
-  channel.threads?.cache.forEach(thread => {
+  for (const thread of channel.threads?.cache ?? []) {
     if (!thread.archived) {
       client.channels._remove(thread.id);
     }
-  });
+  }
 }

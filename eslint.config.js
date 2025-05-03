@@ -146,19 +146,41 @@ export default tseslint.config(
 				},
 			},
 		},
+		settings: {
+			jsdoc: {
+				tagNamePreference: {
+					augments: 'extends',
+					return: 'returns',
+					arg: 'param',
+					fires: 'emits',
+					function: 'method',
+				},
+				preferredTypes: {
+					String: 'string',
+					Number: 'number',
+					Boolean: 'boolean',
+					Symbol: 'symbol',
+					object: 'Object',
+					function: 'Function',
+					array: 'Array',
+					date: 'Date',
+					error: 'Error',
+					null: 'void',
+				},
+			},
+		},
 		rules: {
 			'@typescript-eslint/no-var-requires': 0,
 			'@typescript-eslint/no-require-imports': 0,
 			'jsdoc/no-undefined-types': 0,
 			'@typescript-eslint/explicit-member-accessibility': 0,
 			'@typescript-eslint/class-literal-property-style': 0,
-			'unicorn/no-array-for-each': 0,
 			strict: ['error', 'global'],
 			'unicorn/consistent-function-scoping': 0,
 		},
 	},
 	{
-		files: [`packages/discord.js/**/*{ts,d.ts,mts,cts}`],
+		files: [`packages/discord.js/typings/*{d.ts,test-d.ts}`],
 		rules: {
 			'n/prefer-global/buffer': 0,
 			'no-restricted-globals': 0,

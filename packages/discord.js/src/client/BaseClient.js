@@ -74,7 +74,7 @@ class BaseClient extends AsyncEventEmitter {
   /**
    * Options used for deleting a webhook.
    *
-   * @typedef {object} WebhookDeleteOptions
+   * @typedef {Object} WebhookDeleteOptions
    * @property {string} [token] Token of the webhook
    * @property {string} [reason] The reason for deleting the webhook
    */

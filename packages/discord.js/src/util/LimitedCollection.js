@@ -6,7 +6,7 @@ const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 /**
  * Options for defining the behavior of a LimitedCollection
  *
- * @typedef {object} LimitedCollectionOptions
+ * @typedef {Object} LimitedCollectionOptions
  * @property {?number} [maxSize=Infinity] The maximum size of the Collection
  * @property {?Function} [keepOverLimit=null] A function, which is passed the value and key of an entry, ran to decide
  * to keep an entry past the maximum size

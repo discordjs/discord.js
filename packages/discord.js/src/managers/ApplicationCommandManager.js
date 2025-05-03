@@ -41,7 +41,7 @@ class ApplicationCommandManager extends CachedManager {
   /**
    * The APIRouter path to the commands
    *
-   * @param {object} [options] The options
+   * @param {Object} [options] The options
    * @param {Snowflake} [options.id] The application command's id
    * @param {Snowflake} [options.guildId] The guild's id to use in the path,
    * ignored when using a {@link GuildApplicationCommandManager}
@@ -81,7 +81,7 @@ class ApplicationCommandManager extends CachedManager {
   /**
    * Options used to fetch data from Discord
    *
-   * @typedef {object} BaseFetchOptions
+   * @typedef {Object} BaseFetchOptions
    * @property {boolean} [cache=true] Whether to cache the fetched data if it wasn't already
    * @property {boolean} [force=false] Whether to skip the cache check and request the API
    */

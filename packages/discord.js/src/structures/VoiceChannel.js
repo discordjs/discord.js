@@ -39,7 +39,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
   }
 
   /**
-   * @typedef {object} SendSoundboardSoundOptions
+   * @typedef {Object} SendSoundboardSoundOptions
    * @property {string} soundId The id of the soundboard sound to send
    * @property {string} [guildId] The id of the guild the soundboard sound is a part of
    */

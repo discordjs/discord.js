@@ -3,7 +3,7 @@
 const { createEnum } = require('./Enums.js');
 
 /**
- * @typedef {object} Status
+ * @typedef {Object} Status
  * @property {number} Ready ready
  * @property {number} Idle idle
  * @property {number} WaitingForGuilds waiting for guilds

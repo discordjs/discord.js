@@ -97,7 +97,7 @@ class PollAnswer extends Base {
   /**
    * Options used for fetching voters of a poll answer.
    *
-   * @typedef {object} BaseFetchPollAnswerVotersOptions
+   * @typedef {Object} BaseFetchPollAnswerVotersOptions
    * @property {number} [limit] The maximum number of voters to fetch
    * @property {Snowflake} [after] The user id to fetch voters after
    */

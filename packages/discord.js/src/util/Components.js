@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-/* eslint-disable import-x/order */
 'use strict';
 
+// eslint-disable-next-line import-x/order
 const { ComponentType } = require('discord-api-types/v10');
 
 /**
- * @typedef {object} BaseComponentData
+ * @typedef {Object} BaseComponentData
  * @property {ComponentType} type The type of component
  */
 
@@ -25,7 +25,7 @@ const { ComponentType } = require('discord-api-types/v10');
  */
 
 /**
- * @typedef {object} SelectMenuComponentOptionData
+ * @typedef {Object} SelectMenuComponentOptionData
  * @property {string} label The label of the option
  * @property {string} value The value of the option
  * @property {?string} description The description of the option

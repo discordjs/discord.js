@@ -97,8 +97,8 @@ const Targets = {
  * Constructs an object of known properties for a structure from an array of changes.
  *
  * @param {AuditLogChange[]} changes The array of changes
- * @param {object} [initialData] The initial data passed to the function
- * @returns {object}
+ * @param {Object} [initialData] The initial data passed to the function
+ * @returns {Object}
  * @ignore
  */
 function changesReduce(changes, initialData = {}) {
@@ -115,7 +115,7 @@ class GuildAuditLogsEntry {
   /**
    * Key mirror of all available audit log targets.
    *
-   * @type {Record<string, string>}
+   * @type {Object<string, string>}
    * @memberof GuildAuditLogsEntry
    */
   static Targets = Targets;
@@ -171,7 +171,7 @@ class GuildAuditLogsEntry {
     /**
      * An entry in the audit log representing a specific change.
      *
-     * @typedef {object} AuditLogChange
+     * @typedef {Object} AuditLogChange
      * @property {string} key The property that was changed, e.g. `nick` for nickname changes
      * <warn>For application command permissions updates the key is the id of the user, channel,
      * role, or a permission constant that was updated instead of an actual property name</warn>

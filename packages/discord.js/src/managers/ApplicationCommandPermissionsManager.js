@@ -63,7 +63,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
   /**
    * The object returned when fetching permissions for an application command.
    *
-   * @typedef {object} ApplicationCommandPermissions
+   * @typedef {Object} ApplicationCommandPermissions
    * @property {Snowflake} id The role, user, or channel's id. Can also be a
    * {@link https://discord.com/developers/docs/interactions/application-commands#application-command-permissions-object-application-command-permissions-constants permission constant}.
    * @property {ApplicationCommandPermissionType} type Whether this permission is for a role or a user
@@ -75,7 +75,7 @@ class ApplicationCommandPermissionsManager extends BaseManager {
    * <warn>When passing these options to a manager where `guildId` is `null`,
    * `guild` is a required parameter</warn>
    *
-   * @typedef {object} BaseApplicationCommandPermissionsOptions
+   * @typedef {Object} BaseApplicationCommandPermissionsOptions
    * @property {GuildResolvable} [guild] The guild to modify / check permissions for
    * <warn>Ignored when the manager has a non-null `guildId` property</warn>
    * @property {ApplicationCommandResolvable} [command] The command to modify / check permissions for

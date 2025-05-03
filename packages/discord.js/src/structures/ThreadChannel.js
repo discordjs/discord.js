@@ -347,7 +347,7 @@ class ThreadChannel extends BaseChannel {
   /**
    * The options used to edit a thread channel
    *
-   * @typedef {object} ThreadEditOptions
+   * @typedef {Object} ThreadEditOptions
    * @property {string} [name] The new name for the thread
    * @property {boolean} [archived] Whether the thread is archived
    * @property {ThreadAutoArchiveDuration} [autoArchiveDuration] The amount of time after which the thread

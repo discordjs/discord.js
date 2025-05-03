@@ -36,7 +36,7 @@ class SubscriptionManager extends CachedManager {
   /**
    * Options used to fetch subscriptions
    *
-   * @typedef {object} FetchSubscriptionsOptions
+   * @typedef {Object} FetchSubscriptionsOptions
    * @property {Snowflake} [after] Consider only subscriptions after this subscription id
    * @property {Snowflake} [before] Consider only subscriptions before this subscription id
    * @property {number} [limit] The maximum number of subscriptions to fetch

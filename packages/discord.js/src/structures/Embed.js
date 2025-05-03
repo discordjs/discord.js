@@ -78,7 +78,7 @@ class Embed {
   }
 
   /**
-   * @typedef {object} EmbedAssetData
+   * @typedef {Object} EmbedAssetData
    * @property {?string} url The URL of the image
    * @property {?string} proxyURL The proxy URL of the image
    * @property {?number} height The height of the image
@@ -134,7 +134,7 @@ class Embed {
   }
 
   /**
-   * @typedef {object} EmbedAuthorData
+   * @typedef {Object} EmbedAuthorData
    * @property {string} name The name of the author
    * @property {?string} url The URL of the author
    * @property {?string} iconURL The icon URL of the author
@@ -168,7 +168,7 @@ class Embed {
   }
 
   /**
-   * @typedef {object} EmbedFooterData
+   * @typedef {Object} EmbedFooterData
    * @property {string} text The text of the footer
    * @property {?string} iconURL The URL of the icon
    * @property {?string} proxyIconURL The proxy URL of the icon

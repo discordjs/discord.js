@@ -51,7 +51,7 @@ class EntitlementManager extends CachedManager {
   /**
    * Options used to fetch entitlements
    *
-   * @typedef {object} FetchEntitlementsOptions
+   * @typedef {Object} FetchEntitlementsOptions
    * @property {number} [limit] The maximum number of entitlements to fetch
    * @property {GuildResolvable} [guild] The guild to fetch entitlements for
    * @property {UserResolvable} [user] The user to fetch entitlements for
@@ -120,7 +120,7 @@ class EntitlementManager extends CachedManager {
    * Options used to create a test entitlement
    * <info>Either `guild` or `user` must be provided, but not both</info>
    *
-   * @typedef {object} EntitlementCreateOptions
+   * @typedef {Object} EntitlementCreateOptions
    * @property {SKUResolvable} sku The id of the SKU to create the entitlement for
    * @property {GuildResolvable} [guild] The guild to create the entitlement for
    * @property {UserResolvable} [user] The user to create the entitlement for

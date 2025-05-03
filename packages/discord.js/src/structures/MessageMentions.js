@@ -167,7 +167,7 @@ class MessageMentions {
     /**
      * Crossposted channel data.
      *
-     * @typedef {object} CrosspostedChannel
+     * @typedef {Object} CrosspostedChannel
      * @property {Snowflake} channelId The mentioned channel's id
      * @property {Snowflake} guildId The id of the guild that has the channel
      * @property {ChannelType} type The channel's type
@@ -217,10 +217,11 @@ class MessageMentions {
     if (this._members) return this._members;
     if (!this.guild) return null;
     this._members = new Collection();
-    this.users.forEach(user => {
+    for (const user of this.users) {
       const member = this.guild.members.resolve(user);
       if (member) this._members.set(member.user.id, member);
-    });
+    }
+
     return this._members;
   }
 
@@ -266,7 +267,7 @@ class MessageMentions {
   /**
    * Options used to check for a mention.
    *
-   * @typedef {object} MessageMentionsHasOptions
+   * @typedef {Object} MessageMentionsHasOptions
    * @property {boolean} [ignoreDirect=false] Whether to ignore direct mentions to the item
    * @property {boolean} [ignoreRoles=false] Whether to ignore role mentions to a guild member
    * @property {boolean} [ignoreRepliedUser=false] Whether to ignore replied user mention to an user

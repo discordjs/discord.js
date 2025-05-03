@@ -222,7 +222,7 @@ class Message extends Base {
       /**
        * Role subscription data found on {@link MessageType.RoleSubscriptionPurchase} messages.
        *
-       * @typedef {object} RoleSubscriptionData
+       * @typedef {Object} RoleSubscriptionData
        * @property {Snowflake} roleSubscriptionListingId The id of the SKU and listing the user is subscribed to
        * @property {string} tierName The name of the tier the user is subscribed to
        * @property {number} totalMonthsSubscribed The total number of months the user has been subscribed for
@@ -249,7 +249,7 @@ class Message extends Base {
       /**
        * Resolved data from auto-populated select menus.
        *
-       * @typedef {object} CommandInteractionResolvedData
+       * @typedef {Object} CommandInteractionResolvedData
        * @property {Collection} attachments attachments
        * @property {Collection} channels channels
        * @property {Collection} members members
@@ -396,7 +396,7 @@ class Message extends Base {
      * {@link MessageType.ThreadStarterMessage}
      *
      * @see {@link https://discord.com/developers/docs/resources/message#message-object-message-types}
-     * @typedef {object} MessageReference
+     * @typedef {Object} MessageReference
      * @property {Snowflake} channelId The channel id that was referenced
      * @property {Snowflake|undefined} guildId The guild id that was referenced
      * @property {Snowflake|undefined} messageId The message id that was referenced
@@ -427,7 +427,7 @@ class Message extends Base {
       /**
        * Partial data of the interaction that a message is a result of
        *
-       * @typedef {object} MessageInteractionMetadata
+       * @typedef {Object} MessageInteractionMetadata
        * @property {Snowflake} id The interaction's id
        * @property {InteractionType} type The type of the interaction
        * @property {User} user The user that invoked the interaction
@@ -494,7 +494,7 @@ class Message extends Base {
     /**
      * A call associated with a message
      *
-     * @typedef {object} MessageCall
+     * @typedef {Object} MessageCall
      * @property {Readonly<?Date>} endedAt The time the call ended
      * @property {?number} endedTimestamp The timestamp the call ended
      * @property {Snowflake[]} participants The ids of the users that participated in the call
@@ -700,7 +700,7 @@ class Message extends Base {
   /**
    * An object containing the same properties as CollectorOptions, but a few more:
    *
-   * @typedef {object} AwaitMessageComponentOptions
+   * @typedef {Object} AwaitMessageComponentOptions
    * @property {CollectorFilter} [filter] The filter applied to this collector
    * @property {number} [time] Time to wait for an interaction before rejecting
    * @property {ComponentType} [componentType] The type of component interaction to collect
@@ -1033,7 +1033,7 @@ class Message extends Base {
   /**
    * Options for starting a thread on a message.
    *
-   * @typedef {object} StartThreadOptions
+   * @typedef {Object} StartThreadOptions
    * @property {string} name The name of the new thread
    * @property {ThreadAutoArchiveDuration} [autoArchiveDuration=this.channel.defaultAutoArchiveDuration] The amount of
    * time after which the thread should automatically archive in case of no recent activity

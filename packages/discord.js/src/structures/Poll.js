@@ -123,7 +123,7 @@ class Poll extends Base {
       /**
        * The media for a poll's question
        *
-       * @typedef {object} PollQuestionMedia
+       * @typedef {Object} PollQuestionMedia
        * @property {?string} text The text of this question
        */
 

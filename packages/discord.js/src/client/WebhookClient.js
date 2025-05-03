@@ -15,7 +15,7 @@ class WebhookClient extends BaseClient {
   /**
    * Represents the credentials used for a webhook in the form of its id and token.
    *
-   * @typedef {object} WebhookClientDataIdWithToken
+   * @typedef {Object} WebhookClientDataIdWithToken
    * @property {Snowflake} id The webhook's id
    * @property {string} token The webhook's token
    */
@@ -23,7 +23,7 @@ class WebhookClient extends BaseClient {
   /**
    * Represents the credentials used for a webhook in the form of a URL.
    *
-   * @typedef {object} WebhookClientDataURL
+   * @typedef {Object} WebhookClientDataURL
    * @property {string} url The full URL for the webhook
    */
 
@@ -36,7 +36,7 @@ class WebhookClient extends BaseClient {
   /**
    * Options for a webhook client.
    *
-   * @typedef {object} WebhookClientOptions
+   * @typedef {Object} WebhookClientOptions
    * @property {MessageMentionOptions} [allowedMentions] Default value for {@link BaseMessageOptions#allowedMentions}
    * @property {RESTOptions} [rest] Options for the REST manager
    */

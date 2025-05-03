@@ -74,7 +74,7 @@ function resolveGuildTemplateCode(data) {
  */
 
 /**
- * @typedef {object} ResolvedFile
+ * @typedef {Object} ResolvedFile
  * @property {Buffer} data Buffer containing the file data
  * @property {string} [contentType] Content-Type of the file
  * @private

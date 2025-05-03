@@ -257,7 +257,7 @@ class Webhook {
   /**
    * Sends a raw slack message with this webhook.
    *
-   * @param {object} body The raw body to send
+   * @param {Object} body The raw body to send
    * @returns {Promise<boolean>}
    * @example
    * // Send a slack message
@@ -287,7 +287,7 @@ class Webhook {
   /**
    * Options used to edit a {@link Webhook}.
    *
-   * @typedef {object} WebhookEditOptions
+   * @typedef {Object} WebhookEditOptions
    * @property {string} [name=this.name] The new name for the webhook
    * @property {?(BufferResolvable)} [avatar] The new avatar for the webhook
    * @property {GuildTextChannelResolvable|VoiceChannel|StageChannel|ForumChannel|MediaChannel} [channel]

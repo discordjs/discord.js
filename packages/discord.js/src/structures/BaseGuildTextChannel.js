@@ -149,7 +149,7 @@ class BaseGuildTextChannel extends GuildChannel {
   /**
    * Options used to create an invite to a guild channel.
    *
-   * @typedef {object} InviteCreateOptions
+   * @typedef {Object} InviteCreateOptions
    * @property {boolean} [temporary] Whether members that joined via the invite should be automatically
    * kicked after 24 hours if they have not yet received a role
    * @property {number} [maxAge] How long the invite should last (in seconds, 0 for forever)

@@ -22,7 +22,7 @@ class ModalSubmitFields {
      * @type {Collection<string, ModalData>}
      */
     this.fields = components.reduce((accumulator, next) => {
-      next.components.forEach(component => accumulator.set(component.customId, component));
+      for (const component of next.components) accumulator.set(component.customId, component);
       return accumulator;
     }, new Collection());
   }

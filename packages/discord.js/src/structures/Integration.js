@@ -7,7 +7,7 @@ const { IntegrationApplication } = require('./IntegrationApplication.js');
 /**
  * The information account for an integration
  *
- * @typedef {object} IntegrationAccount
+ * @typedef {Object} IntegrationAccount
  * @property {Snowflake|string} id The id of the account
  * @property {string} name The name of the account
  */

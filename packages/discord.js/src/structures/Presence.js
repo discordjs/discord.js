@@ -9,7 +9,7 @@ const { Emoji } = require('./Emoji.js');
 /**
  * Activity sent in a message.
  *
- * @typedef {object} MessageActivity
+ * @typedef {Object} MessageActivity
  * @property {string} [partyId] Id of the party represented in activity
  * @property {MessageActivityType} type Type of activity sent
  */
@@ -208,7 +208,7 @@ class Activity {
     /**
      * Represents timestamps of an activity
      *
-     * @typedef {object} ActivityTimestamps
+     * @typedef {Object} ActivityTimestamps
      * @property {?Date} start When the activity started
      * @property {?Date} end When the activity will end
      */
@@ -228,7 +228,7 @@ class Activity {
     /**
      * Represents a party of an activity
      *
-     * @typedef {object} ActivityParty
+     * @typedef {Object} ActivityParty
      * @property {?string} id The party's id
      * @property {number[]} size Size of the party as `[current, max]`
      */

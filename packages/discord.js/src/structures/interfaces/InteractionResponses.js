@@ -10,7 +10,7 @@ const { InteractionCollector } = require('../InteractionCollector.js');
 const { MessagePayload } = require('../MessagePayload.js');
 
 /**
- * @typedef {object} ModalComponentData
+ * @typedef {Object} ModalComponentData
  * @property {string} title The title of the modal
  * @property {string} customId The custom id of the modal
  * @property {ActionRow[]} components The components within this modal
@@ -25,7 +25,7 @@ class InteractionResponses {
   /**
    * Options for deferring the reply to an {@link BaseInteraction}.
    *
-   * @typedef {object} InteractionDeferReplyOptions
+   * @typedef {Object} InteractionDeferReplyOptions
    * @property {boolean} [withResponse] Whether to return an {@link InteractionCallbackResponse} as the response
    * @property {MessageFlagsResolvable} [flags] Flags for the reply.
    * <info>Only `MessageFlags.Ephemeral` can be set.</info>
@@ -34,7 +34,7 @@ class InteractionResponses {
   /**
    * Options for deferring and updating the reply to a {@link MessageComponentInteraction}.
    *
-   * @typedef {object} InteractionDeferUpdateOptions
+   * @typedef {Object} InteractionDeferUpdateOptions
    * @property {boolean} [withResponse] Whether to return an {@link InteractionCallbackResponse} as the response
    */
 
@@ -59,14 +59,14 @@ class InteractionResponses {
   /**
    * Options for launching activity in response to a {@link BaseInteraction}
    *
-   * @typedef {object} LaunchActivityOptions
+   * @typedef {Object} LaunchActivityOptions
    * @property {boolean} [withResponse] Whether to return an {@link InteractionCallbackResponse} as the response
    */
 
   /**
    * Options for showing a modal in response to a {@link BaseInteraction}
    *
-   * @typedef {object} ShowModalOptions
+   * @typedef {Object} ShowModalOptions
    * @property {boolean} [withResponse] Whether to return an {@link InteractionCallbackResponse} as the response
    */
 
@@ -332,7 +332,7 @@ class InteractionResponses {
   /**
    * An object containing the same properties as {@link CollectorOptions}, but a few less:
    *
-   * @typedef {object} AwaitModalSubmitOptions
+   * @typedef {Object} AwaitModalSubmitOptions
    * @property {CollectorFilter} [filter] The filter applied to this collector
    * @property {number} time Time in milliseconds to wait for an interaction before rejecting
    */

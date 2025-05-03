@@ -31,7 +31,7 @@ class ApplicationEmojiManager extends CachedManager {
   /**
    * Options used for creating an emoji of the application
    *
-   * @typedef {object} ApplicationEmojiCreateOptions
+   * @typedef {Object} ApplicationEmojiCreateOptions
    * @property {BufferResolvable|Base64Resolvable} attachment The image for the emoji
    * @property {string} name The name for the emoji
    */

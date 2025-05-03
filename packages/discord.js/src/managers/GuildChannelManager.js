@@ -116,7 +116,7 @@ class GuildChannelManager extends CachedManager {
   /**
    * Represents the followed channel data.
    *
-   * @typedef {object} FollowedChannelData
+   * @typedef {Object} FollowedChannelData
    * @property {Snowflake} channelId Source channel id
    * @property {Snowflake} webhookId Created webhook id in the target channel
    */
@@ -268,7 +268,7 @@ class GuildChannelManager extends CachedManager {
   /**
    * Options used to edit a guild channel.
    *
-   * @typedef {object} GuildChannelEditOptions
+   * @typedef {Object} GuildChannelEditOptions
    * @property {string} [name] The name of the channel
    * @property {ChannelType} [type] The type of the channel (only conversion between text and announcement is supported)
    * @property {number} [position] The position of the channel
@@ -465,7 +465,7 @@ class GuildChannelManager extends CachedManager {
   /**
    * The data needed for updating a channel's position.
    *
-   * @typedef {object} ChannelPosition
+   * @typedef {Object} ChannelPosition
    * @property {GuildChannel|Snowflake} channel Channel to update
    * @property {number} [position] New position for the channel
    * @property {CategoryChannelResolvable} [parent] Parent channel for this channel
@@ -502,7 +502,7 @@ class GuildChannelManager extends CachedManager {
   /**
    * Data returned from fetching threads.
    *
-   * @typedef {object} FetchedThreads
+   * @typedef {Object} FetchedThreads
    * @property {Collection<Snowflake, ThreadChannel>} threads The threads that were fetched
    * @property {Collection<Snowflake, ThreadMember>} members The thread members in the received threads
    */

@@ -49,7 +49,7 @@ class ClientUser extends User {
   /**
    * Data used to edit the logged in client
    *
-   * @typedef {object} ClientUserEditOptions
+   * @typedef {Object} ClientUserEditOptions
    * @property {string} [username] The new username
    * @property {?(BufferResolvable|Base64Resolvable)} [avatar] The new avatar
    * @property {?(BufferResolvable|Base64Resolvable)} [banner] The new banner
@@ -126,7 +126,7 @@ class ClientUser extends User {
   /**
    * Options for setting activities
    *
-   * @typedef {object} ActivitiesOptions
+   * @typedef {Object} ActivitiesOptions
    * @property {string} name Name of the activity
    * @property {string} [state] State of the activity
    * @property {ActivityType} [type] Type of the activity
@@ -136,7 +136,7 @@ class ClientUser extends User {
   /**
    * Data resembling a raw Discord presence.
    *
-   * @typedef {object} PresenceData
+   * @typedef {Object} PresenceData
    * @property {PresenceStatusData} [status] Status of the user
    * @property {boolean} [afk] Whether the user is AFK
    * @property {ActivitiesOptions[]} [activities] Activity the user is playing
@@ -183,7 +183,7 @@ class ClientUser extends User {
   /**
    * Options for setting an activity.
    *
-   * @typedef {object} ActivityOptions
+   * @typedef {Object} ActivityOptions
    * @property {string} name Name of the activity
    * @property {string} [state] State of the activity
    * @property {string} [url] Twitch / YouTube stream URL

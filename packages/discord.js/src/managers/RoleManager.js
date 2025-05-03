@@ -112,7 +112,7 @@ class RoleManager extends CachedManager {
   /**
    * Options used to create a new role.
    *
-   * @typedef {object} RoleCreateOptions
+   * @typedef {Object} RoleCreateOptions
    * @property {string} [name] The name of the new role
    * @property {ColorResolvable} [color] The data to create the role with
    * @property {boolean} [hoist] Whether or not the new role should be hoisted
@@ -286,7 +286,7 @@ class RoleManager extends CachedManager {
   /**
    * The data needed for updating a guild role's position
    *
-   * @typedef {object} GuildRolePosition
+   * @typedef {Object} GuildRolePosition
    * @property {RoleResolvable} role The role's id
    * @property {number} position The position to update
    */

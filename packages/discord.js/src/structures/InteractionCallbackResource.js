@@ -28,7 +28,7 @@ class InteractionCallbackResource {
     /**
      * The Activity launched by an interaction
      *
-     * @typedef {object} ActivityInstance
+     * @typedef {Object} ActivityInstance
      * @property {string} id The instance id of the Activity
      */
 

@@ -134,7 +134,7 @@ class ThreadMemberManager extends CachedManager {
    * Options used to fetch multiple thread members with guild member data.
    * <info>With `withMember` set to `true`, pagination is enabled.</info>
    *
-   * @typedef {object} FetchThreadMembersWithGuildMemberDataOptions
+   * @typedef {Object} FetchThreadMembersWithGuildMemberDataOptions
    * @property {true} withMember Whether to also return the guild member data
    * @property {Snowflake} [after] Consider only thread members after this id
    * @property {number} [limit] The maximum number of thread members to return
@@ -144,7 +144,7 @@ class ThreadMemberManager extends CachedManager {
   /**
    * Options used to fetch multiple thread members without guild member data.
    *
-   * @typedef {object} FetchThreadMembersWithoutGuildMemberDataOptions
+   * @typedef {Object} FetchThreadMembersWithoutGuildMemberDataOptions
    * @property {false} [withMember] Whether to also return the guild member data
    * @property {boolean} [cache] Whether to cache the fetched thread members
    */

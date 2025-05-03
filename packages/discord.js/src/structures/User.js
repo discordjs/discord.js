@@ -133,7 +133,7 @@ class User extends Base {
     }
 
     /**
-     * @typedef {object} AvatarDecorationData
+     * @typedef {Object} AvatarDecorationData
      * @property {string} asset The avatar decoration hash
      * @property {Snowflake} skuId The id of the avatar decoration's SKU
      */

@@ -6,13 +6,13 @@ const { GuildChannel } = require('./GuildChannel.js');
 const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
 
 /**
- * @typedef {object} GuildForumTagEmoji
+ * @typedef {Object} GuildForumTagEmoji
  * @property {?Snowflake} id The id of a guild's custom emoji
  * @property {?string} name The unicode character of the emoji
  */
 
 /**
- * @typedef {object} GuildForumTag
+ * @typedef {Object} GuildForumTag
  * @property {Snowflake} id The id of the tag
  * @property {string} name The name of the tag
  * @property {boolean} moderated Whether this tag can only be added to or removed from threads
@@ -21,7 +21,7 @@ const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
  */
 
 /**
- * @typedef {object} GuildForumTagData
+ * @typedef {Object} GuildForumTagData
  * @property {Snowflake} [id] The id of the tag
  * @property {string} name The name of the tag
  * @property {boolean} [moderated] Whether this tag can only be added to or removed from threads
@@ -30,7 +30,7 @@ const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
  */
 
 /**
- * @typedef {object} DefaultReactionEmoji
+ * @typedef {Object} DefaultReactionEmoji
  * @property {?Snowflake} id The id of a guild's custom emoji
  * @property {?string} name The unicode character of the emoji
  */

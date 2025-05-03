@@ -82,7 +82,7 @@ class PermissionOverwriteManager extends CachedManager {
   /**
    * Extra information about the overwrite.
    *
-   * @typedef {object} GuildChannelOverwriteOptions
+   * @typedef {Object} GuildChannelOverwriteOptions
    * @property {string} [reason] The reason for creating/editing this overwrite
    * @property {OverwriteType} [type] The type of overwrite. Use this to bypass automatic resolution of `type`
    * that results in an error for an uncached structure

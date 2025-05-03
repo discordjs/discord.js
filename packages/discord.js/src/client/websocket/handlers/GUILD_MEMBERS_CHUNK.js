@@ -16,7 +16,7 @@ module.exports = (client, { d: data }) => {
   /**
    * Represents the properties of a guild members chunk
    *
-   * @typedef {object} GuildMembersChunk
+   * @typedef {Object} GuildMembersChunk
    * @property {number} index Index of the received chunk
    * @property {number} count Number of chunks the client should receive
    * @property {Array<*>} notFound An array of whatever could not be found

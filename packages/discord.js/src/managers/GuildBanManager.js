@@ -63,7 +63,7 @@ class GuildBanManager extends CachedManager {
   /**
    * Options used to fetch multiple bans from a guild.
    *
-   * @typedef {object} FetchBansOptions
+   * @typedef {Object} FetchBansOptions
    * @property {number} [limit] The maximum number of bans to return
    * @property {Snowflake} [before] Consider only bans before this id
    * @property {Snowflake} [after] Consider only bans after this id
@@ -135,7 +135,7 @@ class GuildBanManager extends CachedManager {
   /**
    * Options used to ban a user from a guild.
    *
-   * @typedef {object} BanOptions
+   * @typedef {Object} BanOptions
    * @property {number} [deleteMessageSeconds] Number of seconds of messages to delete,
    * must be between 0 and 604800 (7 days), inclusive
    * @property {string} [reason] The reason for the ban
@@ -183,7 +183,7 @@ class GuildBanManager extends CachedManager {
   /**
    * Result of bulk banning users from a guild.
    *
-   * @typedef {object} BulkBanResult
+   * @typedef {Object} BulkBanResult
    * @property {Snowflake[]} bannedUsers IDs of the banned users
    * @property {Snowflake[]} failedUsers IDs of the users that could not be banned or were already banned
    */

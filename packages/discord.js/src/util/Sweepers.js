@@ -35,7 +35,7 @@ class Sweepers {
     /**
      * A record of interval timeout that is used to sweep the indicated items, or null if not being swept
      *
-     * @type {Record<SweeperKey, ?Timeout>}
+     * @type {Object<SweeperKey, ?Timeout>}
      */
     this.intervals = Object.fromEntries(SweeperKeys.map(key => [key, null]));
 
@@ -347,7 +347,7 @@ class Sweepers {
   /**
    * Options for generating a filter function based on lifetime
    *
-   * @typedef {object} LifetimeFilterOptions
+   * @typedef {Object} LifetimeFilterOptions
    * @property {number} [lifetime=14400] How long, in seconds, an entry should stay in the collection
    * before it is considered sweepable.
    * @property {Function} [getComparisonTimestamp=e => e?.createdTimestamp] A function that takes an entry, key,
@@ -438,7 +438,7 @@ class Sweepers {
   /**
    * Configuration options for emitting the cache sweep client event
    *
-   * @typedef {object} SweepEventOptions
+   * @typedef {Object} SweepEventOptions
    * @property {boolean} [emit=true] Whether to emit the client event in this method
    * @property {string} [outputName] A name to output in the client event if it should differ from the key
    * @private
@@ -450,7 +450,7 @@ class Sweepers {
    * @param {string} key The name of the property
    * @param {Function} filter Filter function passed to sweep
    * @param {SweepEventOptions} [eventOptions] Options for the Client event emitted here
-   * @returns {object} Object containing the number of guilds swept and the number of items swept
+   * @returns {Object} Object containing the number of guilds swept and the number of items swept
    * @private
    */
   _sweepGuildDirectProp(key, filter, { emit = true, outputName } = {}) {
@@ -513,7 +513,7 @@ class Sweepers {
    *
    * @param {string} intervalKey The name of the property that stores the interval for this sweeper
    * @param {string} sweepKey The name of the function that sweeps the desired caches
-   * @param {object} opts Validated options for a sweep
+   * @param {Object} opts Validated options for a sweep
    * @private
    */
   _initInterval(intervalKey, sweepKey, opts) {

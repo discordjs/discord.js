@@ -32,7 +32,7 @@ class ShardingManager extends AsyncEventEmitter {
   /**
    * The options to spawn shards with for a {@link ShardingManager}.
    *
-   * @typedef {object} ShardingManagerOptions
+   * @typedef {Object} ShardingManagerOptions
    * @property {string|number} [totalShards='auto'] Number of total shards of all shard managers or "auto"
    * @property {string|number[]} [shardList='auto'] List of shards to spawn or "auto"
    * @property {ShardingManagerMode} [mode='process'] Which mode to use for shards
@@ -199,7 +199,7 @@ class ShardingManager extends AsyncEventEmitter {
   /**
    * Options used to spawn multiple shards.
    *
-   * @typedef {object} MultipleShardSpawnOptions
+   * @typedef {Object} MultipleShardSpawnOptions
    * @property {number|string} [amount=this.totalShards] Number of shards to spawn
    * @property {number} [delay=5500] How long to wait in between spawning each shard (in milliseconds)
    * @property {number} [timeout=30000] The amount in milliseconds to wait until the {@link Client} has become ready
@@ -276,7 +276,7 @@ class ShardingManager extends AsyncEventEmitter {
   /**
    * Options for {@link ShardingManager#broadcastEval} and {@link ShardClientUtil#broadcastEval}.
    *
-   * @typedef {object} BroadcastEvalOptions
+   * @typedef {Object} BroadcastEvalOptions
    * @property {number} [shard] Shard to run script on, all if undefined
    * @property {*} [context] The JSON-serializable values to call the script with
    */
@@ -340,7 +340,7 @@ class ShardingManager extends AsyncEventEmitter {
   /**
    * Options used to respawn all shards.
    *
-   * @typedef {object} MultipleShardRespawnOptions
+   * @typedef {Object} MultipleShardRespawnOptions
    * @property {number} [shardDelay=5000] How long to wait between shards (in milliseconds)
    * @property {number} [respawnDelay=500] How long to wait between killing a shard's process and restarting it
    * (in milliseconds)

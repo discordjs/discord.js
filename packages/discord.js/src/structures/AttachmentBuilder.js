@@ -116,7 +116,7 @@ class AttachmentBuilder {
 exports.AttachmentBuilder = AttachmentBuilder;
 
 /**
- * @typedef {object} AttachmentData
+ * @typedef {Object} AttachmentData
  * @property {string} [name] The name of the attachment
  * @property {string} [description] The description of the attachment
  */

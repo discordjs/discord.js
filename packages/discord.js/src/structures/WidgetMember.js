@@ -11,7 +11,7 @@ class WidgetMember extends Base {
   /**
    * Activity sent in a {@link WidgetMember}.
    *
-   * @typedef {object} WidgetActivity
+   * @typedef {Object} WidgetActivity
    * @property {string} name The name of the activity
    */
 

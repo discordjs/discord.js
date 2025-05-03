@@ -72,7 +72,7 @@ class GuildMemberManager extends CachedManager {
   /**
    * Options used to add a user to a guild using OAuth2.
    *
-   * @typedef {object} AddGuildMemberOptions
+   * @typedef {Object} AddGuildMemberOptions
    * @property {string} accessToken An OAuth2 access token for the user with the {@link OAuth2Scopes.GuildsJoin}
    * scope granted to the bot's application
    * @property {string} [nick] The nickname to give to the member
@@ -167,7 +167,7 @@ class GuildMemberManager extends CachedManager {
   /**
    * Options used to fetch multiple members from a guild.
    *
-   * @typedef {object} FetchMembersOptions
+   * @typedef {Object} FetchMembersOptions
    * @property {UserResolvable|UserResolvable[]} [user] The user(s) to fetch
    * @property {?string} [query] Limit fetch to members with similar usernames
    * @property {number} [limit=0] Maximum number of members to request
@@ -300,7 +300,7 @@ class GuildMemberManager extends CachedManager {
   /**
    * Options used for searching guild members.
    *
-   * @typedef {object} GuildSearchMembersOptions
+   * @typedef {Object} GuildSearchMembersOptions
    * @property {string} query Filter members whose username or nickname start with this query
    * @property {number} [limit] Maximum number of members to search
    * @property {boolean} [cache=true] Whether or not to cache the fetched member(s)
@@ -322,7 +322,7 @@ class GuildMemberManager extends CachedManager {
   /**
    * Options used for listing guild members.
    *
-   * @typedef {object} GuildListMembersOptions
+   * @typedef {Object} GuildListMembersOptions
    * @property {Snowflake} [after] Limit fetching members to those with an id greater than the supplied id
    * @property {number} [limit] Maximum number of members to list
    * @property {boolean} [cache=true] Whether or not to cache the fetched member(s)
@@ -343,7 +343,7 @@ class GuildMemberManager extends CachedManager {
   /**
    * The data for editing a guild member.
    *
-   * @typedef {object} GuildMemberEditOptions
+   * @typedef {Object} GuildMemberEditOptions
    * @property {?string} [nick] The nickname to set for the member
    * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles or role ids to apply
    * @property {boolean} [mute] Whether or not the member should be muted
@@ -416,7 +416,7 @@ class GuildMemberManager extends CachedManager {
    * <info>It's recommended to set {@link GuildPruneMembersOptions#count options.count}
    * to `false` for large guilds.</info>
    *
-   * @typedef {object} GuildPruneMembersOptions
+   * @typedef {Object} GuildPruneMembersOptions
    * @property {number} [days] Number of days of inactivity required to kick
    * @property {boolean} [dry=false] Get the number of users that will be kicked, without actually kicking them
    * @property {boolean} [count] Whether or not to return the number of users that have been kicked.
@@ -542,7 +542,7 @@ class GuildMemberManager extends CachedManager {
   /**
    * Options used for adding or removing a role from a member.
    *
-   * @typedef {object} AddOrRemoveGuildMemberRoleOptions
+   * @typedef {Object} AddOrRemoveGuildMemberRoleOptions
    * @property {UserResolvable} user The user to add/remove the role from
    * @property {RoleResolvable} role The role to add/remove
    * @property {string} [reason] Reason for adding/removing the role

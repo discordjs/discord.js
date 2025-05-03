@@ -18,7 +18,7 @@ const { createEnum } = require('./Enums.js');
  * });
  * ```
  *
- * @typedef {object} Partials
+ * @typedef {Object} Partials
  * @property {number} User The partial to receive uncached users.
  * @property {number} Channel The partial to receive uncached channels.
  * <info>This is required to receive direct messages!</info>

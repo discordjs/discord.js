@@ -44,7 +44,7 @@ class GuildScheduledEventManager extends CachedManager {
   /**
    * Options for setting a recurrence rule for a guild scheduled event.
    *
-   * @typedef {object} GuildScheduledEventRecurrenceRuleOptions
+   * @typedef {Object} GuildScheduledEventRecurrenceRuleOptions
    * @property {DateResolvable} startAt The time the recurrence rule interval starts at
    * @property {GuildScheduledEventRecurrenceRuleFrequency} frequency How often the event occurs
    * @property {number} interval The spacing between the events
@@ -57,7 +57,7 @@ class GuildScheduledEventManager extends CachedManager {
   /**
    * Options used to create a guild scheduled event.
    *
-   * @typedef {object} GuildScheduledEventCreateOptions
+   * @typedef {Object} GuildScheduledEventCreateOptions
    * @property {string} name The name of the guild scheduled event
    * @property {DateResolvable} scheduledStartTime The time to schedule the event at
    * @property {DateResolvable} [scheduledEndTime] The time to end the event at
@@ -80,7 +80,7 @@ class GuildScheduledEventManager extends CachedManager {
   /**
    * Options used to set entity metadata of a guild scheduled event.
    *
-   * @typedef {object} GuildScheduledEventEntityMetadataOptions
+   * @typedef {Object} GuildScheduledEventEntityMetadataOptions
    * @property {string} [location] The location of the guild scheduled event
    * <warn>This is required if `entityType` is {@link GuildScheduledEventEntityType.External}</warn>
    */
@@ -148,7 +148,7 @@ class GuildScheduledEventManager extends CachedManager {
   /**
    * Options used to fetch multiple guild scheduled events from a guild.
    *
-   * @typedef {object} FetchGuildScheduledEventsOptions
+   * @typedef {Object} FetchGuildScheduledEventsOptions
    * @property {boolean} [cache] Whether or not to cache the fetched guild scheduled events
    * @property {boolean} [withUserCount=true] Whether to fetch the number of users subscribed to each scheduled event
    * should be returned
@@ -190,7 +190,7 @@ class GuildScheduledEventManager extends CachedManager {
   /**
    * Options used to edit a guild scheduled event.
    *
-   * @typedef {object} GuildScheduledEventEditOptions
+   * @typedef {Object} GuildScheduledEventEditOptions
    * @property {string} [name] The name of the guild scheduled event
    * @property {DateResolvable} [scheduledStartTime] The time to schedule the event at
    * @property {DateResolvable} [scheduledEndTime] The time to end the event at
@@ -279,7 +279,7 @@ class GuildScheduledEventManager extends CachedManager {
   /**
    * Options used to fetch subscribers of a guild scheduled event
    *
-   * @typedef {object} FetchGuildScheduledEventSubscribersOptions
+   * @typedef {Object} FetchGuildScheduledEventSubscribersOptions
    * @property {number} [limit] The maximum numbers of users to fetch
    * @property {boolean} [withMember] Whether to fetch guild member data of the users
    * @property {Snowflake} [before] Consider only users before this user id
@@ -290,7 +290,7 @@ class GuildScheduledEventManager extends CachedManager {
   /**
    * Represents a subscriber of a {@link GuildScheduledEvent}
    *
-   * @typedef {object} GuildScheduledEventUser
+   * @typedef {Object} GuildScheduledEventUser
    * @property {Snowflake} guildScheduledEventId The id of the guild scheduled event which the user subscribed to
    * @property {User} user The user that subscribed to the guild scheduled event
    * @property {?GuildMember} member The guild member associated with the user, if any

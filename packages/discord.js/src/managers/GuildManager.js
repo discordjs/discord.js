@@ -63,7 +63,7 @@ class GuildManager extends CachedManager {
   /**
    * Partial data for a Role.
    *
-   * @typedef {object} PartialRoleData
+   * @typedef {Object} PartialRoleData
    * @property {Snowflake|number} [id] The role's id, used to set channel overrides.
    * This is a placeholder and will be replaced by the API after consumption
    * @property {string} [name] The name of the role
@@ -77,7 +77,7 @@ class GuildManager extends CachedManager {
   /**
    * Partial overwrite data.
    *
-   * @typedef {object} PartialOverwriteData
+   * @typedef {Object} PartialOverwriteData
    * @property {Snowflake|number} id The id of the {@link Role} or {@link User} this overwrite belongs to
    * @property {OverwriteType} [type] The type of this overwrite
    * @property {PermissionResolvable} [allow] The permissions to allow
@@ -87,7 +87,7 @@ class GuildManager extends CachedManager {
   /**
    * Partial data for a Channel.
    *
-   * @typedef {object} PartialChannelData
+   * @typedef {Object} PartialChannelData
    * @property {Snowflake|number} [id] The channel's id, used to set its parent.
    * This is a placeholder and will be replaced by the API after consumption
    * @property {Snowflake|number} [parentId] The parent id for this channel
@@ -153,7 +153,7 @@ class GuildManager extends CachedManager {
   /**
    * Options used to create a guild.
    *
-   * @typedef {object} GuildCreateOptions
+   * @typedef {Object} GuildCreateOptions
    * @property {string} name The name of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [icon=null] The icon for the guild
    * @property {GuildVerificationLevel} [verificationLevel] The verification level for the guild
@@ -267,7 +267,7 @@ class GuildManager extends CachedManager {
   /**
    * Options used to fetch multiple guilds.
    *
-   * @typedef {object} FetchGuildsOptions
+   * @typedef {Object} FetchGuildsOptions
    * @property {Snowflake} [before] Get guilds before this guild id
    * @property {Snowflake} [after] Get guilds after this guild id
    * @property {number} [limit] Maximum number of guilds to request (1-200)
@@ -300,7 +300,7 @@ class GuildManager extends CachedManager {
   }
 
   /**
-   * @typedef {object} FetchSoundboardSoundsOptions
+   * @typedef {Object} FetchSoundboardSoundsOptions
    * @property {Snowflake[]} guildIds The ids of the guilds to fetch soundboard sounds for
    * @property {number} [time=10_000] The timeout for receipt of the soundboard sounds
    */
@@ -371,7 +371,7 @@ class GuildManager extends CachedManager {
   /**
    * Options used to set incident actions. Supplying `null` to any option will disable the action.
    *
-   * @typedef {object} IncidentActionsEditOptions
+   * @typedef {Object} IncidentActionsEditOptions
    * @property {?DateResolvable} [invitesDisabledUntil] When invites should be enabled again
    * @property {?DateResolvable} [dmsDisabledUntil] When direct messages should be enabled again
    */

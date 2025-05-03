@@ -394,7 +394,7 @@ class Client extends BaseClient {
   /**
    * Broadcasts a packet to every shard of this client handles.
    *
-   * @param {object} packet The packet to send
+   * @param {Object} packet The packet to send
    * @private
    */
   async _broadcast(packet) {
@@ -458,7 +458,7 @@ class Client extends BaseClient {
   /**
    * Options used when fetching an invite from Discord.
    *
-   * @typedef {object} ClientFetchInviteOptions
+   * @typedef {Object} ClientFetchInviteOptions
    * @property {Snowflake} [guildScheduledEventId] The id of the guild scheduled event to include with
    * the invite
    */
@@ -551,7 +551,7 @@ class Client extends BaseClient {
   /**
    * Options for fetching sticker packs.
    *
-   * @typedef {object} StickerPackFetchOptions
+   * @typedef {Object} StickerPackFetchOptions
    * @property {Snowflake} [packId] The id of the sticker pack to fetch
    */
 
@@ -623,7 +623,7 @@ class Client extends BaseClient {
   /**
    * Options for {@link Client#generateInvite}.
    *
-   * @typedef {object} InviteGenerationOptions
+   * @typedef {Object} InviteGenerationOptions
    * @property {OAuth2Scopes[]} scopes Scopes that should be requested
    * @property {PermissionResolvable} [permissions] Permissions to request
    * @property {GuildResolvable} [guild] Guild to preselect

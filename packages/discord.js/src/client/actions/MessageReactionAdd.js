@@ -51,7 +51,7 @@ class MessageReactionAddAction extends Action {
     /**
      * Provides additional information about altered reaction
      *
-     * @typedef {object} MessageReactionEventDetails
+     * @typedef {Object} MessageReactionEventDetails
      * @property {ReactionType} type The type of the reaction
      * @property {boolean} burst Determines whether a super reaction was used
      */

@@ -15,7 +15,7 @@ const { Team } = require('./Team.js');
 const { Application } = require('./interfaces/Application.js');
 
 /**
- * @typedef {object} ClientApplicationInstallParams
+ * @typedef {Object} ClientApplicationInstallParams
  * @property {OAuth2Scopes[]} scopes Scopes that will be set upon adding this application
  * @property {Readonly<PermissionsBitField>} permissions Permissions that will be requested for the integrated role
  */
@@ -85,7 +85,7 @@ class ClientApplication extends Application {
     /**
      * OAuth2 installation parameters.
      *
-     * @typedef {object} IntegrationTypesConfigurationParameters
+     * @typedef {Object} IntegrationTypesConfigurationParameters
      * @property {OAuth2Scopes[]} scopes Scopes that will be set upon adding this application
      * @property {Readonly<PermissionsBitField>} permissions Permissions that will be requested for the integrated role
      */
@@ -93,7 +93,7 @@ class ClientApplication extends Application {
     /**
      * The application's supported installation context data.
      *
-     * @typedef {object} IntegrationTypesConfigurationContext
+     * @typedef {Object} IntegrationTypesConfigurationContext
      * @property {?IntegrationTypesConfigurationParameters} oauth2InstallParams
      * Scopes and permissions regarding the installation context
      */
@@ -101,7 +101,7 @@ class ClientApplication extends Application {
     /**
      * The application's supported installation context data.
      *
-     * @typedef {object} IntegrationTypesConfiguration
+     * @typedef {Object} IntegrationTypesConfiguration
      * @property {IntegrationTypesConfigurationContext} [0] Scopes and permissions
      * regarding the guild-installation context
      * @property {IntegrationTypesConfigurationContext} [1] Scopes and permissions
@@ -312,7 +312,7 @@ class ClientApplication extends Application {
   /**
    * Options used for editing an application.
    *
-   * @typedef {object} ClientApplicationEditOptions
+   * @typedef {Object} ClientApplicationEditOptions
    * @property {string} [customInstallURL] The application's custom installation URL
    * @property {string} [description] The application's description
    * @property {string} [roleConnectionsVerificationURL] The application's role connection verification URL
@@ -394,11 +394,11 @@ class ClientApplication extends Application {
   /**
    * Data for creating or editing an application role connection metadata.
    *
-   * @typedef {object} ApplicationRoleConnectionMetadataEditOptions
+   * @typedef {Object} ApplicationRoleConnectionMetadataEditOptions
    * @property {string} name The name of the metadata field
-   * @property {?Record<Locale, string>} [nameLocalizations] The name localizations for the metadata field
+   * @property {?Object<Locale, string>} [nameLocalizations] The name localizations for the metadata field
    * @property {string} description The description of the metadata field
-   * @property {?Record<Locale, string>} [descriptionLocalizations] The description localizations for the metadata field
+   * @property {?Object<Locale, string>} [descriptionLocalizations] The description localizations for the metadata field
    * @property {string} key The dictionary key of the metadata field
    * @property {ApplicationRoleConnectionMetadataType} type The type of the metadata field
    */

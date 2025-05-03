@@ -32,7 +32,7 @@ class StageInstanceManager extends CachedManager {
   /**
    * Options used to create a stage instance.
    *
-   * @typedef {object} StageInstanceCreateOptions
+   * @typedef {Object} StageInstanceCreateOptions
    * @property {string} topic The topic of the stage instance
    * @property {StageInstancePrivacyLevel} [privacyLevel] The privacy level of the stage instance
    * @property {boolean} [sendStartNotification] Whether to notify `@everyone` that the stage instance has started
@@ -112,7 +112,7 @@ class StageInstanceManager extends CachedManager {
   /**
    * Options used to edit an existing stage instance.
    *
-   * @typedef {object} StageInstanceEditOptions
+   * @typedef {Object} StageInstanceEditOptions
    * @property {string} [topic] The new topic of the stage instance
    * @property {StageInstancePrivacyLevel} [privacyLevel] The new privacy level of the stage instance
    */

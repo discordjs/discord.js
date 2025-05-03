@@ -333,7 +333,7 @@ class GuildChannel extends BaseChannel {
   /**
    * Options used to set the parent of a channel.
    *
-   * @typedef {object} SetParentOptions
+   * @typedef {Object} SetParentOptions
    * @property {boolean} [lockPermissions=false] Whether to lock the permissions to what the parent's permissions are
    * @property {string} [reason] The reason for modifying the parent of the channel
    */
@@ -366,7 +366,7 @@ class GuildChannel extends BaseChannel {
   /**
    * Options used to set the position of a channel.
    *
-   * @typedef {object} SetChannelPositionOptions
+   * @typedef {Object} SetChannelPositionOptions
    * @property {boolean} [relative=false] Whether or not to change the position relative to its current value
    * @property {string} [reason] The reason for changing the position
    */

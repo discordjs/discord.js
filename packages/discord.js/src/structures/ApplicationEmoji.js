@@ -66,7 +66,7 @@ class ApplicationEmoji extends Emoji {
   /**
    * Data for editing an emoji.
    *
-   * @typedef {object} ApplicationEmojiEditOptions
+   * @typedef {Object} ApplicationEmojiEditOptions
    * @property {string} [name] The name of the emoji
    */
 

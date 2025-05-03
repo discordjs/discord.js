@@ -79,7 +79,7 @@ class MessageReaction {
       /**
        * The reaction count details object contains information about super and normal reaction counts.
        *
-       * @typedef {object} ReactionCountDetailsData
+       * @typedef {Object} ReactionCountDetailsData
        * @property {number} burst Count of super reactions
        * @property {number} normal Count of normal reactions
        */

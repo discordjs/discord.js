@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @typedef {object} Events
+ * @typedef {Object} Events
  * @property {string} ApplicationCommandPermissionsUpdate applicationCommandPermissionsUpdate
  * @property {string} AutoModerationActionExecution autoModerationActionExecution
  * @property {string} AutoModerationRuleCreate autoModerationRuleCreate

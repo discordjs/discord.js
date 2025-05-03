@@ -174,7 +174,7 @@ class GuildScheduledEvent extends Base {
      * Represents the additional metadata for a {@link GuildScheduledEvent}
      *
      * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-guild-scheduled-event-entity-metadata}
-     * @typedef {object} GuildScheduledEventEntityMetadata
+     * @typedef {Object} GuildScheduledEventEntityMetadata
      * @property {?string} location The location of the guild scheduled event
      */
 
@@ -209,7 +209,7 @@ class GuildScheduledEvent extends Base {
     /**
      * Represents the recurrence rule for a {@link GuildScheduledEvent}.
      *
-     * @typedef {object} GuildScheduledEventRecurrenceRule
+     * @typedef {Object} GuildScheduledEventRecurrenceRule
      * @property {number} startTimestamp The timestamp the recurrence rule interval starts at
      * @property {Date} startAt The time the recurrence rule interval starts at
      * @property {?number} endTimestamp The timestamp the recurrence rule interval ends at
@@ -225,7 +225,7 @@ class GuildScheduledEvent extends Base {
      */
 
     /**
-     * @typedef {object} GuildScheduledEventRecurrenceRuleNWeekday
+     * @typedef {Object} GuildScheduledEventRecurrenceRuleNWeekday
      * @property {number} n The week to recur on
      * @property {GuildScheduledEventRecurrenceRuleWeekday} day The day within the week to recur on
      */

@@ -17,7 +17,7 @@ const { toSnakeCase } = require('./Transformers.js');
 /**
  * Options for a client.
  *
- * @typedef {object} ClientOptions
+ * @typedef {Object} ClientOptions
  * @property {number} [closeTimeout=5_000] The amount of time in milliseconds to wait for the close frame to be received
  * from the WebSocket. Don't have this too high/low. It's best to have it between 2_000-6_000 ms.
  * @property {CacheFactory} [makeCache] Function to create a cache.
@@ -44,13 +44,13 @@ const { toSnakeCase } = require('./Transformers.js');
 /**
  * Options for {@link Sweepers} defining the behavior of cache sweeping
  *
- * @typedef {Record<SweeperKey, SweepOptions>} SweeperOptions
+ * @typedef {Object<SweeperKey, SweepOptions>} SweeperOptions
  */
 
 /**
  * Options for sweeping a single type of item from cache
  *
- * @typedef {object} SweepOptions
+ * @typedef {Object} SweepOptions
  * @property {number} interval The interval (in seconds) at which to perform sweeping of the item
  * @property {number} [lifetime] How long an item should stay in cache until it is considered sweepable.
  * <warn>This property is only valid for the `invites`, `messages`, and `threads` keys. The `filter` property
@@ -102,7 +102,7 @@ class Options extends null {
   /**
    * Create a cache factory using predefined settings to sweep or limit.
    *
-   * @param {Record<string, LimitedCollectionOptions|number>} [settings] Settings passed to the relevant constructor.
+   * @param {Object<string, LimitedCollectionOptions|number>} [settings] Settings passed to the relevant constructor.
    * If no setting is provided for a manager, it uses Collection.
    * If a number is provided for a manager, it uses that number as the max size for a LimitedCollection.
    * If LimitedCollectionOptions are provided for a manager, it uses those settings to form a LimitedCollection.
@@ -163,7 +163,7 @@ class Options extends null {
    * <info>If you want to keep default behavior and add on top of it you can use this object and add on to it, e.g.
    * `makeCache: Options.cacheWithLimits({ ...Options.DefaultMakeCacheSettings, ReactionManager: 0 })`</info>
    *
-   * @type {Record<string, LimitedCollectionOptions|number>}
+   * @type {Object<string, LimitedCollectionOptions|number>}
    */
   static get DefaultMakeCacheSettings() {
     return {

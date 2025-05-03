@@ -1,4 +1,3 @@
-/* eslint-disable import-x/order */
 'use strict';
 
 // eslint-disable-next-line @typescript-eslint/unbound-method
@@ -6,7 +5,9 @@ const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
 const { ChannelType, RouteBases, Routes } = require('discord-api-types/v10');
 const { fetch } = require('undici');
+// eslint-disable-next-line import-x/order
 const { Colors } = require('./Colors.js');
+// eslint-disable-next-line import-x/order
 const { DiscordjsError, DiscordjsRangeError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 
 const isObject = data => typeof data === 'object' && data !== null;
@@ -14,9 +15,9 @@ const isObject = data => typeof data === 'object' && data !== null;
 /**
  * Flatten an object. Any properties that are collections will get converted to an array of keys.
  *
- * @param {object} obj The object to flatten.
- * @param {...Record<string, boolean|string>} [props] Specific properties to include/exclude.
- * @returns {object}
+ * @param {Object} obj The object to flatten.
+ * @param {...Object<string, boolean|string>} [props] Specific properties to include/exclude.
+ * @returns {Object}
  */
 function flatten(obj, ...props) {
   if (!isObject(obj)) return obj;
@@ -59,7 +60,7 @@ function flatten(obj, ...props) {
 }
 
 /**
- * @typedef {object} FetchRecommendedShardCountOptions
+ * @typedef {Object} FetchRecommendedShardCountOptions
  * @property {number} [guildsPerShard=1000] Number of guilds assigned per shard
  * @property {number} [multipleOf=1] The multiple the shard count should round up to. (16 for large bot sharding)
  */
@@ -90,7 +91,7 @@ async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multi
 /**
  * A partial emoji object.
  *
- * @typedef {object} PartialEmoji
+ * @typedef {Object} PartialEmoji
  * @property {boolean} animated Whether the emoji is animated
  * @property {Snowflake|undefined} id The id of the emoji
  * @property {string} name The name of the emoji
@@ -115,7 +116,7 @@ function parseEmoji(text) {
 /**
  * A partial emoji object with only an id.
  *
- * @typedef {object} PartialEmojiOnlyId
+ * @typedef {Object} PartialEmojiOnlyId
  * @property {Snowflake} id The id of the emoji
  */
 
@@ -160,7 +161,7 @@ function resolveGuildEmoji(client, emojiId) {
 /**
  * Options used to make an error object.
  *
- * @typedef {object} MakeErrorOptions
+ * @typedef {Object} MakeErrorOptions
  * @property {string} name Error type
  * @property {string} message Message for the error
  * @property {string} stack Stack for the error
@@ -477,7 +478,7 @@ function parseWebhookURL(url) {
 /**
  * Supportive data for interaction resolved data.
  *
- * @typedef {object} SupportingInteractionResolvedData
+ * @typedef {Object} SupportingInteractionResolvedData
  * @property {Client} client The client
  * @property {Guild} [guild] A guild
  * @property {GuildTextBasedChannel} [channel] A channel

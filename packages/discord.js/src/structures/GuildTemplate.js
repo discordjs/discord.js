@@ -172,7 +172,7 @@ class GuildTemplate extends Base {
   /**
    * Options used to edit a guild template.
    *
-   * @typedef {object} GuildTemplateEditOptions
+   * @typedef {Object} GuildTemplateEditOptions
    * @property {string} [name] The name of this template
    * @property {string} [description] The description of this template
    */

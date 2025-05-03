@@ -18,7 +18,7 @@ const getMediaChannel = lazy(() => require('../structures/MediaChannel.js').Medi
 /**
  * Extra options for creating a channel.
  *
- * @typedef {object} CreateChannelOptions
+ * @typedef {Object} CreateChannelOptions
  * @property {boolean} [allowFromUnknownGuild] Whether to allow creating a channel from an unknown guild
  * @private
  */
