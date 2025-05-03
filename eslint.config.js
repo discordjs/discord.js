@@ -162,6 +162,32 @@ export default tseslint.config(
 			'@typescript-eslint/class-literal-property-style': 0,
 			strict: ['error', 'global'],
 			'unicorn/consistent-function-scoping': 0,
+
+			'no-restricted-syntax': [
+				'error',
+				{
+					selector: "AssignmentExpression[left.object.name='module'][left.property.name='exports']",
+					message: 'Use named exports instead of module.exports',
+				},
+				{
+					selector:
+						"VariableDeclarator[init.callee.name='require'][init.arguments.0.value=/^\\./]:not([id.type='ObjectPattern'])",
+					message: 'Use object destructuring when requiring local modules',
+				},
+			],
+		},
+	},
+	{
+		files: [`packages/discord.js/src/client/websocket/handlers/*.js`],
+		rules: {
+			'no-restricted-syntax': [
+				'error',
+				{
+					selector:
+						"VariableDeclarator[init.callee.name='require'][init.arguments.0.value=/^\\./]:not([id.type='ObjectPattern'])",
+					message: 'Use object destructuring when requiring local modules',
+				},
+			],
 		},
 	},
 	{
