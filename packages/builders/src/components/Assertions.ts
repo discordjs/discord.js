@@ -122,6 +122,8 @@ export const selectMenuStringPredicate = selectMenuBasePredicate
 				minimum,
 				type: 'number',
 				path: ['options'],
+				origin: 'number',
+				input: minimum,
 			});
 
 		if (menu.max_values !== undefined && menu.options.length < menu.max_values) {

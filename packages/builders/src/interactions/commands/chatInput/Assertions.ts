@@ -24,13 +24,13 @@ const sharedNameAndDescriptionPredicate = z.object({
 });
 
 const numericMixinNumberOptionPredicate = z.object({
-	max_value: z.number().safe().optional(),
-	min_value: z.number().safe().optional(),
+	max_value: z.float32().optional(),
+	min_value: z.float32().optional(),
 });
 
 const numericMixinIntegerOptionPredicate = z.object({
-	max_value: z.number().safe().int().optional(),
-	min_value: z.number().safe().int().optional(),
+	max_value: z.int().optional(),
+	min_value: z.int().optional(),
 });
 
 const channelMixinOptionPredicate = z.object({
@@ -52,7 +52,7 @@ const autocompleteMixinOptionPredicate = z.object({
 });
 
 const choiceValueStringPredicate = z.string().min(1).max(100);
-const choiceValueNumberPredicate = z.number().safe();
+const choiceValueNumberPredicate = z.number();
 const choiceBasePredicate = z.object({
 	name: choiceValueStringPredicate,
 	name_localizations: localeMapPredicate.optional(),

@@ -74,5 +74,5 @@ export const containerPredicate = z.object({
 		.min(1)
 		.max(10),
 	spoiler: z.boolean().optional(),
-	accent_color: z.number().int().min(0).max(0xffffff).nullish(),
+	accent_color: z.int().min(0).max(0xffffff).nullish(),
 });

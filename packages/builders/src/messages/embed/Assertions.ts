@@ -39,7 +39,7 @@ export const embedPredicate = z
 		description: z.string().min(1).max(4_096).optional(),
 		url: URLPredicate.optional(),
 		timestamp: z.string().optional(),
-		color: z.number().int().min(0).max(0xffffff).optional(),
+		color: z.int().min(0).max(0xffffff).optional(),
 		footer: embedFooterPredicate.optional(),
 		image: z.object({ url: URLWithAttachmentProtocolPredicate }).optional(),
 		thumbnail: z.object({ url: URLWithAttachmentProtocolPredicate }).optional(),

@@ -1,5 +1,4 @@
-import type { z } from 'zod';
-import { fromZodError } from 'zod-validation-error';
+import { z } from 'zod';
 
 let validationEnabled = true;
 
@@ -49,7 +48,8 @@ export function validate<Validator extends z.ZodTypeAny>(
 	const result = validator.safeParse(value);
 
 	if (!result.success) {
-		throw fromZodError(result.error);
+		// eslint-disable-next-line @typescript-eslint/only-throw-error
+		throw z.prettifyError(result.error);
 	}
 
 	return result.data;
