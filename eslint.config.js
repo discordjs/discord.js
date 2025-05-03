@@ -148,23 +148,8 @@ export default tseslint.config(
 		},
 		settings: {
 			jsdoc: {
-				tagNamePreference: {
-					augments: 'extends',
-					return: 'returns',
-					arg: 'param',
-					fires: 'emits',
-					function: 'method',
-				},
 				preferredTypes: {
-					String: 'string',
-					Number: 'number',
-					Boolean: 'boolean',
-					Symbol: 'symbol',
 					object: 'Object',
-					function: 'Function',
-					array: 'Array',
-					date: 'Date',
-					error: 'Error',
 					null: 'void',
 				},
 			},
@@ -187,6 +172,35 @@ export default tseslint.config(
 			'@typescript-eslint/no-unsafe-declaration-merging': 0,
 			'@typescript-eslint/no-empty-object-type': 0,
 			'@typescript-eslint/no-use-before-define': 0,
+			'no-restricted-syntax': [
+				2,
+				{
+					selector:
+						'MethodDefinition[key.name!=on][key.name!=once][key.name!=off] > TSEmptyBodyFunctionExpression > Identifier :not(TSTypeOperator[operator=readonly]) > TSArrayType',
+					message: 'Array parameters on methods must be readonly',
+				},
+				{
+					selector:
+						'MethodDefinition > TSEmptyBodyFunctionExpression > Identifier TSTypeReference > Identifier[name=Collection]',
+					message: 'Parameters of type Collection on methods must use ReadonlyCollection',
+				},
+				{
+					selector: 'TSDeclareFunction > Identifier :not(TSTypeOperator[operator=readonly]) > TSArrayType',
+					message: 'Array parameters on functions must be readonly',
+				},
+				{
+					selector: 'TSDeclareFunction Identifier TSTypeReference > Identifier[name=Collection]',
+					message: 'Parameters of type Collection on functions must use ReadonlyCollection',
+				},
+				{
+					selector: 'TSInterfaceDeclaration TSPropertySignature :not(TSTypeOperator[operator=readonly]) > TSArrayType',
+					message: 'Array properties on interfaces must be readonly',
+				},
+				{
+					selector: 'TSInterfaceDeclaration TSPropertySignature TSTypeReference > Identifier[name=Collection]',
+					message: 'Interface properties of type Collection must use ReadonlyCollection',
+				},
+			],
 		},
 	},
 	{

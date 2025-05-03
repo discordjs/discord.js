@@ -4097,7 +4097,12 @@ export function makePlainError(err: Error): MakeErrorOptions;
 /**
  * @internal
  */
-export function moveElementInArray(array: unknown[], element: unknown, newIndex: number, offset?: boolean): number;
+export function moveElementInArray(
+  array: readonly unknown[],
+  element: unknown,
+  newIndex: number,
+  offset?: boolean,
+): number;
 export function parseEmoji(text: string): PartialEmoji | null;
 export function resolveColor(color: ColorResolvable): number;
 export function resolvePartialEmoji(emoji: Snowflake): PartialEmojiOnlyId;
@@ -7338,7 +7343,7 @@ export interface PartialPoll
     null,
     'answers' | 'message' | 'question'
   > {
-  answers: Collection<number, PartialPollAnswer>;
+  answers: ReadonlyCollection<number, PartialPollAnswer>;
   message: PartialMessage;
   question: { text: null };
 }
