@@ -262,7 +262,7 @@ class Client extends BaseClient {
   /**
    * Logs the client in, establishing a WebSocket connection to Discord.
    *
-   * @param {string} [token] Token of the account to log in with
+   * @param {string} [token=this.token] Token of the account to log in with
    * @returns {Promise<string>} Token of the account used
    * @example
    * client.login('my token');
@@ -558,7 +558,7 @@ class Client extends BaseClient {
   /**
    * Obtains the list of available sticker packs.
    *
-   * @param {StickerPackFetchOptions} [options] Options for fetching sticker packs
+   * @param {StickerPackFetchOptions} [options={}] Options for fetching sticker packs
    * @returns {Promise<Collection<Snowflake, StickerPack>|StickerPack>}
    * A collection of sticker packs, or a single sticker pack if a packId was provided
    * @example
@@ -633,7 +633,7 @@ class Client extends BaseClient {
   /**
    * Generates a link that can be used to invite the bot to a guild.
    *
-   * @param {InviteGenerationOptions} [options] Options for the invite
+   * @param {InviteGenerationOptions} [options={}] Options for the invite
    * @returns {string}
    * @example
    * const link = client.generateInvite({
@@ -737,7 +737,7 @@ class Client extends BaseClient {
   /**
    * Validates the client options.
    *
-   * @param {ClientOptions} [options] Options to validate
+   * @param {ClientOptions} [options=this.options] Options to validate
    * @private
    */
   _validateOptions(options = this.options) {
