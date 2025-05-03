@@ -20,7 +20,7 @@ export async function SyntaxHighlighter({
 	return (
 		<>
 			{/* eslint-disable-next-line react/no-danger */}
-			<div className={className} dangerouslySetInnerHTML={{ __html: codeHTML }} />
+			<span className={className} dangerouslySetInnerHTML={{ __html: codeHTML }} />
 		</>
 	);
 }
