@@ -251,10 +251,11 @@ class Invite extends Base {
     const guild = this.guild;
     if (!guild || !this.client.guilds.cache.has(guild.id)) return false;
     if (!guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
-    return Boolean(
+
+    return (
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       this.channel?.permissionsFor(this.client.user).has(PermissionFlagsBits.ManageChannels, false) ||
-        guild.members.me.permissions.has(PermissionFlagsBits.ManageGuild),
+      guild.members.me.permissions.has(PermissionFlagsBits.ManageGuild)
     );
   }
 

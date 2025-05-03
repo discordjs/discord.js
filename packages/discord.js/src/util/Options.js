@@ -123,7 +123,7 @@ class Options extends null {
 
     return (managerType, _, manager) => {
       const setting = settings[manager.name] ?? settings[managerType.name];
-      /* eslint-disable-next-line eqeqeq, no-eq-null */
+      /* eslint-disable-next-line eqeqeq */
       if (setting == null) {
         return new Collection();
       }
@@ -136,7 +136,7 @@ class Options extends null {
         return new LimitedCollection({ maxSize: setting });
       }
 
-      /* eslint-disable-next-line eqeqeq, no-eq-null */
+      /* eslint-disable-next-line eqeqeq */
       const noLimit = setting.maxSize == null || setting.maxSize === Infinity;
       if (noLimit) {
         return new Collection();
