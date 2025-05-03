@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prefer-number-properties */
 'use strict';
 
 const { DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
@@ -24,7 +25,7 @@ class BitField {
   static DefaultBit = 0;
 
   /**
-   * @param {BitFieldResolvable} [bits] Bit(s) to read from
+   * @param {BitFieldResolvable} [bits=this.constructor.DefaultBit] Bit(s) to read from
    */
   constructor(bits = this.constructor.DefaultBit) {
     /**
@@ -130,7 +131,7 @@ class BitField {
   serialize(...hasParams) {
     const serialized = {};
     for (const [flag, bit] of Object.entries(this.constructor.Flags)) {
-      if (Number.isNaN(flag)) serialized[flag] = this.has(bit, ...hasParams);
+      if (isNaN(flag)) serialized[flag] = this.has(bit, ...hasParams);
     }
 
     return serialized;
@@ -156,16 +157,16 @@ class BitField {
 
   *[Symbol.iterator](...hasParams) {
     for (const bitName of Object.keys(this.constructor.Flags)) {
-      if (Number.isNaN(bitName) && this.has(bitName, ...hasParams)) yield bitName;
+      if (isNaN(bitName) && this.has(bitName, ...hasParams)) yield bitName;
     }
   }
 
   /**
    * Data that can be resolved to give a bitfield. This can be:
-   * A bit number (this can be a number literal or a value taken from {@link BitField.Flags})
-   * A string bit number
-   * An instance of BitField
-   * An Array of BitFieldResolvable
+   * - A bit number (this can be a number literal or a value taken from {@link BitField.Flags})
+   * - A string bit number
+   * - An instance of BitField
+   * - An Array of BitFieldResolvable
    *
    * @typedef {number|string|bigint|BitField|BitFieldResolvable[]} BitFieldResolvable
    */
@@ -185,7 +186,7 @@ class BitField {
     }
 
     if (typeof bit === 'string') {
-      if (!Number.isNaN(bit)) return typeof DefaultBit === 'bigint' ? BigInt(bit) : Number(bit);
+      if (!isNaN(bit)) return typeof DefaultBit === 'bigint' ? BigInt(bit) : Number(bit);
       if (this.Flags[bit] !== undefined) return this.Flags[bit];
     }
 

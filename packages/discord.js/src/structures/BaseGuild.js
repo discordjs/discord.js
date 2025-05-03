@@ -100,7 +100,7 @@ class BaseGuild extends Base {
   /**
    * The URL to this guild's icon.
    *
-   * @param {ImageURLOptions} [options] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
   iconURL(options = {}) {

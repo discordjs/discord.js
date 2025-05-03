@@ -156,7 +156,7 @@ class InteractionResponses {
    * Fetches a reply to this interaction.
    *
    * @see Webhook#fetchMessage
-   * @param {Snowflake|'@original'} [message] The response to fetch
+   * @param {Snowflake|'@original'} [message='@original'] The response to fetch
    * @returns {Promise<Message>}
    * @example
    * // Fetch the initial reply to this interaction
@@ -198,7 +198,7 @@ class InteractionResponses {
    * Deletes a reply to this interaction.
    *
    * @see Webhook#deleteMessage
-   * @param {MessageResolvable|'@original'} [message] The response to delete
+   * @param {MessageResolvable|'@original'} [message='@original'] The response to delete
    * @returns {Promise<void>}
    * @example
    * // Delete the initial reply to this interaction
@@ -290,7 +290,7 @@ class InteractionResponses {
   /**
    * Launches this application's activity, if enabled
    *
-   * @param {LaunchActivityOptions} [options] Options for launching the activity
+   * @param {LaunchActivityOptions} [options={}] Options for launching the activity
    * @returns {Promise<InteractionCallbackResponse|undefined>}
    */
   async launchActivity({ withResponse } = {}) {
@@ -311,7 +311,7 @@ class InteractionResponses {
    * Shows a modal component
    *
    * @param {ModalBuilder|ModalComponentData|APIModalInteractionResponseCallbackData} modal The modal to show
-   * @param {ShowModalOptions} [options] The options for sending this interaction response
+   * @param {ShowModalOptions} [options={}] The options for sending this interaction response
    * @returns {Promise<InteractionCallbackResponse|undefined>}
    */
   async showModal(modal, options = {}) {

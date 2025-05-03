@@ -86,7 +86,7 @@ class AnonymousGuild extends BaseGuild {
   /**
    * The URL to this guild's banner.
    *
-   * @param {ImageURLOptions} [options] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
   bannerURL(options = {}) {
@@ -96,7 +96,7 @@ class AnonymousGuild extends BaseGuild {
   /**
    * The URL to this guild's invite splash image.
    *
-   * @param {ImageURLOptions} [options] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
   splashURL(options = {}) {

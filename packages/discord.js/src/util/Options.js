@@ -102,7 +102,7 @@ class Options extends null {
   /**
    * Create a cache factory using predefined settings to sweep or limit.
    *
-   * @param {Object<string, LimitedCollectionOptions|number>} [settings] Settings passed to the relevant constructor.
+   * @param {Object<string, LimitedCollectionOptions|number>} [settings={}] Settings passed to the relevant constructor.
    * If no setting is provided for a manager, it uses Collection.
    * If a number is provided for a manager, it uses that number as the max size for a LimitedCollection.
    * If LimitedCollectionOptions are provided for a manager, it uses those settings to form a LimitedCollection.
@@ -159,7 +159,7 @@ class Options extends null {
   /**
    * The default settings passed to {@link ClientOptions.makeCache}.
    * The caches that this changes are:
-   * `MessageManager` - Limit to 200 messages
+   * - `MessageManager` - Limit to 200 messages
    * <info>If you want to keep default behavior and add on top of it you can use this object and add on to it, e.g.
    * `makeCache: Options.cacheWithLimits({ ...Options.DefaultMakeCacheSettings, ReactionManager: 0 })`</info>
    *
@@ -174,7 +174,7 @@ class Options extends null {
   /**
    * The default settings passed to {@link ClientOptions.sweepers}.
    * The sweepers that this changes are:
-   * `threads` - Sweep archived threads every hour, removing those archived more than 4 hours ago
+   * - `threads` - Sweep archived threads every hour, removing those archived more than 4 hours ago
    * <info>If you want to keep default behavior and add on top of it you can use this object and add on to it, e.g.
    * `sweepers: { ...Options.DefaultSweeperSettings, messages: { interval: 300, lifetime: 600 } }`</info>
    *

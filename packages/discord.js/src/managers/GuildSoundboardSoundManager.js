@@ -40,8 +40,8 @@ class GuildSoundboardSoundManager extends CachedManager {
 
   /**
    * Data that resolves to give a SoundboardSound object. This can be:
-   * A SoundboardSound object
-   * A Snowflake
+   * - A SoundboardSound object
+   * - A Snowflake
    *
    * @typedef {SoundboardSound|Snowflake} SoundboardSoundResolvable
    */
@@ -124,7 +124,7 @@ class GuildSoundboardSoundManager extends CachedManager {
    * Edits a soundboard sound.
    *
    * @param {SoundboardSoundResolvable} soundboardSound The soundboard sound to edit
-   * @param {GuildSoundboardSoundEditOptions} [options] The new data for the soundboard sound
+   * @param {GuildSoundboardSoundEditOptions} [options={}] The new data for the soundboard sound
    * @returns {Promise<SoundboardSound>}
    */
   async edit(soundboardSound, options = {}) {

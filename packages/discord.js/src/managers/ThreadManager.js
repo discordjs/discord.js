@@ -29,8 +29,8 @@ class ThreadManager extends CachedManager {
 
   /**
    * Data that can be resolved to a Thread Channel object. This can be:
-   * A ThreadChannel object
-   * A Snowflake
+   * - A ThreadChannel object
+   * - A Snowflake
    *
    * @typedef {ThreadChannel|Snowflake} ThreadChannelResolvable
    */
@@ -109,9 +109,9 @@ class ThreadManager extends CachedManager {
 
   /**
    * Data that can be resolved to a Date object. This can be:
-   * A Date object
-   * A number representing a timestamp
-   * An {@link https://en.wikipedia.org/wiki/ISO_8601 ISO 8601} string
+   * - A Date object
+   * - A number representing a timestamp
+   * - An {@link https://en.wikipedia.org/wiki/ISO_8601 ISO 8601} string
    *
    * @typedef {Date|number|string} DateResolvable
    */
@@ -142,7 +142,7 @@ class ThreadManager extends CachedManager {
    * in the parent channel.</info>
    *
    * @param {FetchArchivedThreadOptions} [options] The options to fetch archived threads
-   * @param {boolean} [cache] Whether to cache the new thread objects if they aren't already
+   * @param {boolean} [cache=true] Whether to cache the new thread objects if they aren't already
    * @returns {Promise<FetchedThreadsMore>}
    */
   async fetchArchived({ type = 'public', fetchAll = false, before, limit } = {}, cache = true) {
@@ -181,7 +181,7 @@ class ThreadManager extends CachedManager {
   /**
    * Obtains all active threads in the channel.
    *
-   * @param {boolean} [cache] Whether to cache the fetched data
+   * @param {boolean} [cache=true] Whether to cache the fetched data
    * @returns {Promise<FetchedThreads>}
    */
   async fetchActive(cache = true) {

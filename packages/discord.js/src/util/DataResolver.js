@@ -9,16 +9,16 @@ const { Invite } = require('../structures/Invite.js');
 
 /**
  * Data that can be resolved to give an invite code. This can be:
- * An invite code
- * An invite URL
+ * - An invite code
+ * - An invite URL
  *
  * @typedef {string} InviteResolvable
  */
 
 /**
  * Data that can be resolved to give a template code. This can be:
- * A template code
- * A template URL
+ * - A template code
+ * - A template URL
  *
  * @typedef {string} GuildTemplateResolvable
  */
@@ -60,10 +60,10 @@ function resolveGuildTemplateCode(data) {
 
 /**
  * Data that can be resolved to give a Buffer. This can be:
- * A Buffer
- * The path to a local file
- * A URL <warn>When provided a URL, discord.js will fetch the URL internally in order to create a Buffer.
- * This can pose a security risk when the URL has not been sanitized</warn>
+ * - A Buffer
+ * - The path to a local file
+ * - A URL <warn>When provided a URL, discord.js will fetch the URL internally in order to create a Buffer.
+ * - This can pose a security risk when the URL has not been sanitized</warn>
  *
  * @typedef {string|Buffer} BufferResolvable
  */
@@ -114,8 +114,8 @@ async function resolveFile(resource) {
 
 /**
  * Data that resolves to give a Base64 string, typically for image uploading. This can be:
- * A Buffer
- * A base64 string
+ * - A Buffer
+ * - A base64 string
  *
  * @typedef {Buffer|string} Base64Resolvable
  */
@@ -124,7 +124,7 @@ async function resolveFile(resource) {
  * Resolves a Base64Resolvable to a Base 64 string.
  *
  * @param {Base64Resolvable} data The base 64 resolvable you want to resolve
- * @param {string} [contentType] The content type of the data
+ * @param {string} [contentType='image/jpg'] The content type of the data
  * @returns {string}
  * @private
  */

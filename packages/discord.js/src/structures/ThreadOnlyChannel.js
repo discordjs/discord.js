@@ -199,7 +199,7 @@ class ThreadOnlyChannel extends GuildChannel {
    * Fetches a collection of invites to this guild channel.
    * Resolves with a collection mapping invites by their codes.
    *
-   * @param {boolean} [cache] Whether to cache the fetched invites
+   * @param {boolean} [cache=true] Whether to cache the fetched invites
    * @returns {Promise<Collection<string, Invite>>}
    */
   async fetchInvites(cache) {

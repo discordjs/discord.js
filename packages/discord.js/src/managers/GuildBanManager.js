@@ -37,8 +37,8 @@ class GuildBanManager extends CachedManager {
 
   /**
    * Data that resolves to give a GuildBan object. This can be:
-   * A GuildBan object
-   * A User resolvable
+   * - A GuildBan object
+   * - A User resolvable
    *
    * @typedef {GuildBan|UserResolvable} GuildBanResolvable
    */
@@ -145,7 +145,7 @@ class GuildBanManager extends CachedManager {
    * Bans a user from the guild.
    *
    * @param {UserResolvable} user The user to ban
-   * @param {BanOptions} [options] Options for the ban
+   * @param {BanOptions} [options={}] Options for the ban
    * @returns {Promise<void>}
    * @example
    * // Ban a user by id (or with a user/guild member object)

@@ -134,7 +134,7 @@ class Shard extends AsyncEventEmitter {
    * Forks a child process or creates a worker thread for the shard.
    * <warn>You should not need to call this manually.</warn>
    *
-   * @param {number} [timeout] The amount in milliseconds to wait until the {@link Client} has become ready
+   * @param {number} [timeout=30000] The amount in milliseconds to wait until the {@link Client} has become ready
    * before resolving (`-1` or `Infinity` for no wait)
    * @returns {Promise<ChildProcess>}
    */
@@ -451,7 +451,7 @@ class Shard extends AsyncEventEmitter {
   /**
    * Handles the shard's process/worker exiting.
    *
-   * @param {boolean} [respawn] Whether to spawn the shard again
+   * @param {boolean} [respawn=this.manager.respawn] Whether to spawn the shard again
    * @param {number} [timeout] The amount in milliseconds to wait until the {@link Client}
    * has become ready (`-1` or `Infinity` for no wait)
    * @private

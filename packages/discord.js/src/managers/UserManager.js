@@ -27,11 +27,11 @@ class UserManager extends CachedManager {
 
   /**
    * Data that resolves to give a User object. This can be:
-   * A User object
-   * A Snowflake
-   * A Message object (resolves to the message author)
-   * A GuildMember object
-   * A ThreadMember object
+   * - A User object
+   * - A Snowflake
+   * - A Message object (resolves to the message author)
+   * - A GuildMember object
+   * - A ThreadMember object
    *
    * @typedef {User|Snowflake|Message|GuildMember|ThreadMember} UserResolvable
    */

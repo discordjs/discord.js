@@ -35,8 +35,8 @@ class GuildScheduledEventManager extends CachedManager {
 
   /**
    * Data that resolves to give a GuildScheduledEvent object. This can be:
-   * A Snowflake
-   * A GuildScheduledEvent object
+   * - A Snowflake
+   * - A GuildScheduledEvent object
    *
    * @typedef {Snowflake|GuildScheduledEvent} GuildScheduledEventResolvable
    */
@@ -300,7 +300,7 @@ class GuildScheduledEventManager extends CachedManager {
    * Fetches subscribers of a guild scheduled event.
    *
    * @param {GuildScheduledEventResolvable} guildScheduledEvent The guild scheduled event to fetch subscribers of
-   * @param {FetchGuildScheduledEventSubscribersOptions} [options] Options for fetching the subscribers
+   * @param {FetchGuildScheduledEventSubscribersOptions} [options={}] Options for fetching the subscribers
    * @returns {Promise<Collection<Snowflake, GuildScheduledEventUser>>}
    */
   async fetchSubscribers(guildScheduledEvent, options = {}) {

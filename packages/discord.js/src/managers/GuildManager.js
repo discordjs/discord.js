@@ -50,12 +50,12 @@ class GuildManager extends CachedManager {
 
   /**
    * Data that resolves to give a Guild object. This can be:
-   * A Guild object
-   * A GuildChannel object
-   * A GuildEmoji object
-   * A Role object
-   * A Snowflake
-   * An Invite object
+   * - A Guild object
+   * - A GuildChannel object
+   * - A GuildEmoji object
+   * - A Role object
+   * - A Snowflake
+   * - An Invite object
    *
    * @typedef {Guild|GuildChannel|GuildMember|GuildEmoji|Role|Snowflake|Invite} GuildResolvable
    */

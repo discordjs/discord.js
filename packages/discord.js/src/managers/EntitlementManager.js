@@ -27,16 +27,16 @@ class EntitlementManager extends CachedManager {
 
   /**
    * Data that resolves to give an Entitlement object. This can be:
-   * An Entitlement object
-   * A Snowflake
+   * - An Entitlement object
+   * - A Snowflake
    *
    * @typedef {Entitlement|Snowflake} EntitlementResolvable
    */
 
   /**
    * Data that resolves to give a SKU object. This can be:
-   * A SKU object
-   * A Snowflake
+   * - A SKU object
+   * - A Snowflake
    *
    * @typedef {SKU|Snowflake} SKUResolvable
    */

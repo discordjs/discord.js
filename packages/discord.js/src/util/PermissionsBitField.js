@@ -62,10 +62,10 @@ class PermissionsBitField extends BitField {
 
   /**
    * Data that can be resolved to give a permission number. This can be:
-   * A string (see {@link PermissionsBitField.Flags})
-   * A permission number
-   * An instance of {@link PermissionsBitField}
-   * An Array of PermissionResolvable
+   * - A string (see {@link PermissionsBitField.Flags})
+   * - A permission number
+   * - An instance of {@link PermissionsBitField}
+   * - An Array of PermissionResolvable
    *
    * @typedef {string|bigint|PermissionsBitField|PermissionResolvable[]} PermissionResolvable
    */
@@ -74,7 +74,7 @@ class PermissionsBitField extends BitField {
    * Gets all given bits that are missing from the bitfield.
    *
    * @param {BitFieldResolvable} bits Bit(s) to check for
-   * @param {boolean} [checkAdmin] Whether to allow the administrator permission to override
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {string[]}
    */
   missing(bits, checkAdmin = true) {
@@ -85,7 +85,7 @@ class PermissionsBitField extends BitField {
    * Checks whether the bitfield has a permission, or any of multiple permissions.
    *
    * @param {PermissionResolvable} permission Permission(s) to check for
-   * @param {boolean} [checkAdmin] Whether to allow the administrator permission to override
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {boolean}
    */
   any(permission, checkAdmin = true) {
@@ -96,7 +96,7 @@ class PermissionsBitField extends BitField {
    * Checks whether the bitfield has a permission, or multiple permissions.
    *
    * @param {PermissionResolvable} permission Permission(s) to check for
-   * @param {boolean} [checkAdmin] Whether to allow the administrator permission to override
+   * @param {boolean} [checkAdmin=true] Whether to allow the administrator permission to override
    * @returns {boolean}
    */
   has(permission, checkAdmin = true) {

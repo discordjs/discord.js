@@ -333,7 +333,7 @@ class Webhook {
    * Gets a message that was sent by this webhook.
    *
    * @param {Snowflake|'@original'} message The id of the message to fetch
-   * @param {WebhookFetchMessageOptions} [options] The options to provide to fetch the message.
+   * @param {WebhookFetchMessageOptions} [options={}] The options to provide to fetch the message.
    * @returns {Promise<Message>} Returns the message sent by this webhook
    */
   async fetchMessage(message, { threadId } = {}) {
@@ -459,7 +459,7 @@ class Webhook {
   /**
    * A link to the webhook's avatar.
    *
-   * @param {ImageURLOptions} [options] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
   avatarURL(options = {}) {

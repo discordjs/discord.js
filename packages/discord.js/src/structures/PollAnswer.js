@@ -105,7 +105,7 @@ class PollAnswer extends Base {
   /**
    * Fetches the users that voted for this answer.
    *
-   * @param {BaseFetchPollAnswerVotersOptions} [options] The options for fetching voters
+   * @param {BaseFetchPollAnswerVotersOptions} [options={}] The options for fetching voters
    * @returns {Promise<Collection<Snowflake, User>>}
    * @deprecated Use {@link PollAnswerVoterManager#fetch} instead
    */

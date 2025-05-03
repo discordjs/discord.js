@@ -1,3 +1,4 @@
+import type { Buffer } from 'node:buffer';
 import type { ChildProcess } from 'node:child_process';
 import type { Stream } from 'node:stream';
 import type { MessagePort, Worker } from 'node:worker_threads';

@@ -288,7 +288,7 @@ class Role extends Base {
    * taking into account permission overwrites.
    *
    * @param {GuildChannel|Snowflake} channel The guild channel to use as context
-   * @param {boolean} [checkAdmin] Whether having the {@link PermissionFlagsBits.Administrator} permission
+   * @param {boolean} [checkAdmin=true] Whether having the {@link PermissionFlagsBits.Administrator} permission
    * will return all permissions
    * @returns {Readonly<PermissionsBitField>}
    */
@@ -333,7 +333,7 @@ class Role extends Base {
   /**
    * Sets whether or not the role should be hoisted.
    *
-   * @param {boolean} [hoist] Whether or not to hoist the role
+   * @param {boolean} [hoist=true] Whether or not to hoist the role
    * @param {string} [reason] Reason for setting whether or not the role should be hoisted
    * @returns {Promise<Role>}
    * @example
@@ -370,7 +370,7 @@ class Role extends Base {
   /**
    * Sets whether this role is mentionable.
    *
-   * @param {boolean} [mentionable] Whether this role should be mentionable
+   * @param {boolean} [mentionable=true] Whether this role should be mentionable
    * @param {string} [reason] Reason for setting whether or not this role should be mentionable
    * @returns {Promise<Role>}
    * @example
@@ -455,7 +455,7 @@ class Role extends Base {
   /**
    * A link to the role's icon
    *
-   * @param {ImageURLOptions} [options] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
   iconURL(options = {}) {

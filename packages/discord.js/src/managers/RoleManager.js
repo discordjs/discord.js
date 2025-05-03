@@ -83,8 +83,8 @@ class RoleManager extends CachedManager {
 
   /**
    * Data that can be resolved to a Role object. This can be:
-   * A Role
-   * A Snowflake
+   * - A Role
+   * - A Snowflake
    *
    * @typedef {Role|Snowflake} RoleResolvable
    */

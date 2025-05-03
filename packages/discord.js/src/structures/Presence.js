@@ -16,19 +16,19 @@ const { Emoji } = require('./Emoji.js');
 
 /**
  * The status of this presence:
- * **`online`** - user is online
- * **`idle`** - user is AFK
- * **`offline`** - user is offline or invisible
- * **`dnd`** - user is in Do Not Disturb
+ * - __`online`__ - user is online
+ * - __`idle`__ - user is AFK
+ * - __`offline`__ - user is offline or invisible
+ * - __`dnd`__ - user is in Do Not Disturb
  *
  * @typedef {string} PresenceStatus
  */
 
 /**
  * The status of this presence:
- * **`online`** - user is online
- * **`idle`** - user is AFK
- * **`dnd`** - user is in Do Not Disturb
+ * - __`online`__ - user is online
+ * - __`idle`__ - user is AFK
+ * - __`dnd`__ - user is in Do Not Disturb
  *
  * @typedef {string} ClientPresenceStatus
  */
@@ -374,7 +374,7 @@ class RichPresenceAssets {
   /**
    * Gets the URL of the small image asset
    *
-   * @param {ImageURLOptions} [options] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
   smallImageURL(options = {}) {
@@ -395,7 +395,7 @@ class RichPresenceAssets {
   /**
    * Gets the URL of the large image asset
    *
-   * @param {ImageURLOptions} [options] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
   largeImageURL(options = {}) {

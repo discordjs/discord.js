@@ -66,8 +66,8 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Data that resolves to give an ApplicationCommand object. This can be:
-   * An ApplicationCommand object
-   * A Snowflake
+   * - An ApplicationCommand object
+   * - A Snowflake
    *
    * @typedef {ApplicationCommand|Snowflake} ApplicationCommandResolvable
    */

@@ -17,7 +17,7 @@ const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
  *
  * @extends {Collection}
  * @param {LimitedCollectionOptions} [options={}] Options for constructing the Collection.
- * @param {Iterable} [iterable] Optional entries passed to the Map constructor.
+ * @param {Iterable} [iterable=null] Optional entries passed to the Map constructor.
  */
 class LimitedCollection extends Collection {
   constructor(options = {}, iterable = undefined) {

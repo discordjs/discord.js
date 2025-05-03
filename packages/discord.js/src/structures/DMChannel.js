@@ -90,7 +90,7 @@ class DMChannel extends BaseChannel {
   /**
    * Fetch this DMChannel.
    *
-   * @param {boolean} [force] Whether to skip the cache check and request the API
+   * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<DMChannel>}
    */
   async fetch(force = true) {

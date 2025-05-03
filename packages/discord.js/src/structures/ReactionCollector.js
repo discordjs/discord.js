@@ -25,7 +25,7 @@ const { Collector } = require('./interfaces/Collector.js');
 class ReactionCollector extends Collector {
   /**
    * @param {Message} message The message upon which to collect reactions
-   * @param {ReactionCollectorOptions} [options] The options to apply to this collector
+   * @param {ReactionCollectorOptions} [options={}] The options to apply to this collector
    */
   constructor(message, options = {}) {
     super(message.client, options);

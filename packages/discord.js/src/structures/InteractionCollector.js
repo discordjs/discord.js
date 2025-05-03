@@ -31,7 +31,7 @@ const { Collector } = require('./interfaces/Collector.js');
 class InteractionCollector extends Collector {
   /**
    * @param {Client} client The client on which to collect interactions
-   * @param {InteractionCollectorOptions} [options] The options to apply to this collector
+   * @param {InteractionCollectorOptions} [options={}] The options to apply to this collector
    */
   constructor(client, options = {}) {
     super(client, options);

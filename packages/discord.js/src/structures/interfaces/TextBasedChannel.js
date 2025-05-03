@@ -194,7 +194,7 @@ class TextBasedChannel {
   /**
    * Creates a Message Collector.
    *
-   * @param {MessageCollectorOptions} [options] The options to pass to the collector
+   * @param {MessageCollectorOptions} [options={}] The options to pass to the collector
    * @returns {MessageCollector}
    * @example
    * // Create a message collector
@@ -218,7 +218,7 @@ class TextBasedChannel {
    * Similar to createMessageCollector but in promise form.
    * Resolves with a collection of messages that pass the specified filter.
    *
-   * @param {AwaitMessagesOptions} [options] Optional options to pass to the internal collector
+   * @param {AwaitMessagesOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // Await !vote messages
@@ -244,7 +244,7 @@ class TextBasedChannel {
   /**
    * Creates a component interaction collector.
    *
-   * @param {MessageComponentCollectorOptions} [options] Options to send to the collector
+   * @param {MessageComponentCollectorOptions} [options={}] Options to send to the collector
    * @returns {InteractionCollector}
    * @example
    * // Create a button interaction collector
@@ -265,7 +265,7 @@ class TextBasedChannel {
    * Collects a single component interaction that passes the filter.
    * The Promise will reject if the time expires.
    *
-   * @param {AwaitMessageComponentOptions} [options] Options to pass to the internal collector
+   * @param {AwaitMessageComponentOptions} [options={}] Options to pass to the internal collector
    * @returns {Promise<MessageComponentInteraction>}
    * @example
    * // Collect a message component interaction
@@ -291,7 +291,7 @@ class TextBasedChannel {
    *
    * @param {Collection<Snowflake, Message>|MessageResolvable[]|number} messages
    * Messages or number of messages to delete
-   * @param {boolean} [filterOld] Filter messages to remove those which are older than two weeks automatically
+   * @param {boolean} [filterOld=false] Filter messages to remove those which are older than two weeks automatically
    * @returns {Promise<Snowflake[]>} Returns the deleted messages ids
    * @example
    * // Bulk delete messages
@@ -385,7 +385,7 @@ class TextBasedChannel {
   /**
    * Sets whether this channel is flagged as NSFW.
    *
-   * @param {boolean} [nsfw] Whether the channel should be considered NSFW
+   * @param {boolean} [nsfw=true] Whether the channel should be considered NSFW
    * @param {string} [reason] Reason for changing the channel's NSFW flag
    * @returns {Promise<this>}
    */

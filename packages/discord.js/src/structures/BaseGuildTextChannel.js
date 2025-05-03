@@ -139,9 +139,9 @@ class BaseGuildTextChannel extends GuildChannel {
 
   /**
    * Data that can be resolved to an Application. This can be:
-   * An Application
-   * An Activity with associated Application
-   * A Snowflake
+   * - An Application
+   * - An Activity with associated Application
+   * - A Snowflake
    *
    * @typedef {Application|Snowflake} ApplicationResolvable
    */
@@ -183,7 +183,7 @@ class BaseGuildTextChannel extends GuildChannel {
    * Fetches a collection of invites to this guild channel.
    * Resolves with a collection mapping invites by their codes.
    *
-   * @param {boolean} [cache] Whether or not to cache the fetched invites
+   * @param {boolean} [cache=true] Whether or not to cache the fetched invites
    * @returns {Promise<Collection<string, Invite>>}
    */
   async fetchInvites(cache = true) {

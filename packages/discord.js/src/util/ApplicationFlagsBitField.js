@@ -34,10 +34,10 @@ class ApplicationFlagsBitField extends BitField {
 
 /**
  * Data that can be resolved to give an application flag bit field. This can be:
- * A string (see {@link ApplicationFlagsBitField.Flags})
- * An application flag
- * An instance of ApplicationFlagsBitField
- * An Array of ApplicationFlagsResolvable
+ * - A string (see {@link ApplicationFlagsBitField.Flags})
+ * - An application flag
+ * - An instance of ApplicationFlagsBitField
+ * - An Array of ApplicationFlagsResolvable
  *
  * @typedef {string|number|ApplicationFlagsBitField|ApplicationFlagsResolvable[]} ApplicationFlagsResolvable
  */

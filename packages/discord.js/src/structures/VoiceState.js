@@ -187,7 +187,7 @@ class VoiceState extends Base {
   /**
    * Mutes/unmutes the member of this voice state.
    *
-   * @param {boolean} [mute] Whether or not the member should be muted
+   * @param {boolean} [mute=true] Whether or not the member should be muted
    * @param {string} [reason] Reason for muting or unmuting
    * @returns {Promise<GuildMember>}
    */
@@ -198,7 +198,7 @@ class VoiceState extends Base {
   /**
    * Deafens/undeafens the member of this voice state.
    *
-   * @param {boolean} [deaf] Whether or not the member should be deafened
+   * @param {boolean} [deaf=true] Whether or not the member should be deafened
    * @param {string} [reason] Reason for deafening or undeafening
    * @returns {Promise<GuildMember>}
    */
@@ -277,7 +277,7 @@ class VoiceState extends Base {
   /**
    * Fetches this voice state.
    *
-   * @param {boolean} [force] Whether to skip the cache check and request the API
+   * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<VoiceState>}
    */
   async fetch(force = true) {
@@ -304,7 +304,7 @@ class VoiceState extends Base {
   /**
    * Suppress/unsuppress the user. Only applicable for stage channels.
    *
-   * @param {boolean} [suppressed] Whether or not the user should be suppressed.
+   * @param {boolean} [suppressed=true] Whether or not the user should be suppressed.
    * @example
    * // Making the client a speaker
    * guild.members.me.voice.setSuppressed(false);

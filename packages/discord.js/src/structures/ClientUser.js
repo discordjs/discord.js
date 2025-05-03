@@ -158,10 +158,10 @@ class ClientUser extends User {
 
   /**
    * A user's status. Must be one of:
-   * `online`
-   * `idle`
-   * `invisible`
-   * `dnd` (do not disturb)
+   * - `online`
+   * - `idle`
+   * - `invisible`
+   * - `dnd` (do not disturb)
    *
    * @typedef {string} PresenceStatusData
    */
@@ -211,7 +211,7 @@ class ClientUser extends User {
   /**
    * Sets/removes the AFK flag for the client user.
    *
-   * @param {boolean} [afk] Whether or not the user is AFK
+   * @param {boolean} [afk=true] Whether or not the user is AFK
    * @param {number|number[]} [shardId] Shard Id(s) to have the AFK flag set on
    * @returns {Promise<ClientPresence>}
    */

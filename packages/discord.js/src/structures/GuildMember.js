@@ -174,7 +174,7 @@ class GuildMember extends Base {
   /**
    * A link to the member's guild avatar.
    *
-   * @param {ImageURLOptions} [options] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
   avatarURL(options = {}) {
@@ -184,7 +184,7 @@ class GuildMember extends Base {
   /**
    * A link to the member's banner.
    *
-   * @param {ImageURLOptions} [options] Options for the banner URL
+   * @param {ImageURLOptions} [options={}] Options for the banner URL
    * @returns {?string}
    */
   bannerURL(options = {}) {
@@ -195,7 +195,7 @@ class GuildMember extends Base {
    * A link to the member's guild avatar if they have one.
    * Otherwise, a link to their {@link User#displayAvatarURL} will be returned.
    *
-   * @param {ImageURLOptions} [options] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {string}
    */
   displayAvatarURL(options) {
@@ -206,7 +206,7 @@ class GuildMember extends Base {
    * A link to the member's guild banner if they have one.
    * Otherwise, a link to their {@link User#bannerURL} will be returned.
    *
-   * @param {ImageURLOptions} [options] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
   displayBannerURL(options) {
@@ -432,7 +432,7 @@ class GuildMember extends Base {
   /**
    * Creates a DM channel between the client and this member.
    *
-   * @param {boolean} [force] Whether to skip the cache check and request the API
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<DMChannel>}
    */
   async createDM(force = false) {
@@ -513,7 +513,7 @@ class GuildMember extends Base {
   /**
    * Fetches this GuildMember.
    *
-   * @param {boolean} [force] Whether to skip the cache check and request the API
+   * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<GuildMember>}
    */
   async fetch(force = true) {

@@ -389,11 +389,11 @@ class Message extends Base {
     /**
      * Reference data sent in a message that contains ids identifying the referenced message.
      * This can be present in the following types of message:
-     * Crossposted messages (`MessageFlags.Crossposted`)
-     * {@link MessageType.ChannelPinnedMessage}
-     * {@link MessageType.ChannelFollowAdd}
-     * {@link MessageType.Reply}
-     * {@link MessageType.ThreadStarterMessage}
+     * - Crossposted messages ({@link MessageFlags.Crossposted})
+     * - {@link MessageType.ChannelPinnedMessage}
+     * - {@link MessageType.ChannelFollowAdd}
+     * - {@link MessageType.Reply}
+     * - {@link MessageType.ThreadStarterMessage}
      *
      * @see {@link https://discord.com/developers/docs/resources/message#message-object-message-types}
      * @typedef {Object} MessageReference
@@ -626,7 +626,7 @@ class Message extends Base {
   /**
    * Creates a reaction collector.
    *
-   * @param {ReactionCollectorOptions} [options] Options to send to the collector
+   * @param {ReactionCollectorOptions} [options={}] Options to send to the collector
    * @returns {ReactionCollector}
    * @example
    * // Create a reaction collector
@@ -650,7 +650,7 @@ class Message extends Base {
    * Similar to createReactionCollector but in promise form.
    * Resolves with a collection of reactions that pass the specified filter.
    *
-   * @param {AwaitReactionsOptions} [options] Optional options to pass to the internal collector
+   * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
    * @returns {Promise<Collection<string | Snowflake, MessageReaction>>}
    * @example
    * // Create a reaction collector
@@ -680,7 +680,7 @@ class Message extends Base {
   /**
    * Creates a message component interaction collector.
    *
-   * @param {MessageComponentCollectorOptions} [options] Options to send to the collector
+   * @param {MessageComponentCollectorOptions} [options={}] Options to send to the collector
    * @returns {InteractionCollector}
    * @example
    * // Create a message component interaction collector
@@ -712,7 +712,7 @@ class Message extends Base {
    * Collects a single component interaction that passes the filter.
    * The Promise will reject if the time expires.
    *
-   * @param {AwaitMessageComponentOptions} [options] Options to pass to the internal collector
+   * @param {AwaitMessageComponentOptions} [options={}] Options to pass to the internal collector
    * @returns {Promise<MessageComponentInteraction>}
    * @example
    * // Collect a message component interaction
@@ -1061,7 +1061,7 @@ class Message extends Base {
   /**
    * Fetch this message.
    *
-   * @param {boolean} [force] Whether to skip the cache check and request the API
+   * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<Message>}
    */
   async fetch(force = true) {
@@ -1083,7 +1083,7 @@ class Message extends Base {
   /**
    * Suppresses or unsuppresses embeds on a message.
    *
-   * @param {boolean} [suppress] If the embeds should be suppressed or not
+   * @param {boolean} [suppress=true] If the embeds should be suppressed or not
    * @returns {Promise<Message>}
    */
   async suppressEmbeds(suppress = true) {

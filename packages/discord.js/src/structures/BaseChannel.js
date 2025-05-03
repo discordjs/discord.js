@@ -119,7 +119,7 @@ class BaseChannel extends Base {
   /**
    * Fetches this channel.
    *
-   * @param {boolean} [force] Whether to skip the cache check and request the API
+   * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<BaseChannel>}
    */
   async fetch(force = true) {

@@ -272,7 +272,7 @@ class GuildScheduledEvent extends Base {
   /**
    * The URL of this scheduled event's cover image
    *
-   * @param {BaseImageURLOptions} [options] Options for image URL
+   * @param {BaseImageURLOptions} [options={}] Options for image URL
    * @returns {?string}
    */
   coverImageURL(options = {}) {
@@ -396,7 +396,7 @@ class GuildScheduledEvent extends Base {
   /**
    * Fetches this guild scheduled event.
    *
-   * @param {boolean} [force] Whether to skip the cache check and request the API
+   * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<GuildScheduledEvent>}
    */
   async fetch(force = true) {

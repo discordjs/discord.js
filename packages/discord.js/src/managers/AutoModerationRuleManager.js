@@ -222,8 +222,8 @@ class AutoModerationRuleManager extends CachedManager {
 
   /**
    * Data that can be resolved to give an AutoModerationRule object. This can be:
-   * An AutoModerationRule
-   * A Snowflake
+   * - An AutoModerationRule
+   * - A Snowflake
    *
    * @typedef {AutoModerationRule|Snowflake} AutoModerationRuleResolvable
    */

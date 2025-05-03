@@ -158,6 +158,7 @@ export default tseslint.config(
 			'@typescript-eslint/no-var-requires': 0,
 			'@typescript-eslint/no-require-imports': 0,
 			'jsdoc/no-undefined-types': 0,
+			'jsdoc/no-defaults': 0,
 			'@typescript-eslint/explicit-member-accessibility': 0,
 			'@typescript-eslint/class-literal-property-style': 0,
 			strict: ['error', 'global'],
@@ -193,8 +194,6 @@ export default tseslint.config(
 	{
 		files: [`packages/discord.js/typings/*{d.ts,test-d.ts}`],
 		rules: {
-			'n/prefer-global/buffer': 0,
-			'no-restricted-globals': 0,
 			'@typescript-eslint/no-unsafe-declaration-merging': 0,
 			'@typescript-eslint/no-empty-object-type': 0,
 			'@typescript-eslint/no-use-before-define': 0,

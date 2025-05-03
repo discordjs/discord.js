@@ -150,7 +150,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
   /**
    * Creates an invite to this guild channel.
    *
-   * @param {InviteCreateOptions} [options] The options for creating the invite
+   * @param {InviteCreateOptions} [options={}] The options for creating the invite
    * @returns {Promise<Invite>}
    * @example
    * // Create an invite to a channel
@@ -165,7 +165,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
   /**
    * Fetches a collection of invites to this guild channel.
    *
-   * @param {boolean} [cache] Whether to cache the fetched invites
+   * @param {boolean} [cache=true] Whether to cache the fetched invites
    * @returns {Promise<Collection<string, Invite>>}
    */
   async fetchInvites(cache = true) {

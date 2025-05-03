@@ -292,7 +292,7 @@ class MessagePayload {
    *
    * @param {MessageTarget} target Target to send to
    * @param {string|MessagePayloadOption} options Options or content to use
-   * @param {MessagePayloadOption} [extra] Extra options to add onto specified options
+   * @param {MessagePayloadOption} [extra={}] Extra options to add onto specified options
    * @returns {MessagePayload}
    */
   static create(target, options, extra = {}) {

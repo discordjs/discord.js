@@ -43,8 +43,8 @@ class MessageManager extends CachedManager {
 
   /**
    * Data that can be resolved to a Message object. This can be:
-   * A Message
-   * A Snowflake
+   * - A Message
+   * - A Snowflake
    *
    * @typedef {Message|Snowflake} MessageResolvable
    */
@@ -128,7 +128,7 @@ class MessageManager extends CachedManager {
    * <info>The returned Collection does not contain any reaction data of the messages.
    * Those need to be fetched separately.</info>
    *
-   * @param {boolean} [cache] Whether to cache the message(s)
+   * @param {boolean} [cache=true] Whether to cache the message(s)
    * @returns {Promise<Collection<Snowflake, Message>>}
    * @example
    * // Get pinned messages

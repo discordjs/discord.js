@@ -76,9 +76,9 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * Data that can be resolved to give a Guild Channel object. This can be:
-   * A GuildChannel object
-   * A ThreadChannel object
-   * A Snowflake
+   * - A GuildChannel object
+   * - A ThreadChannel object
+   * - A Snowflake
    *
    * @typedef {GuildChannel|ThreadChannel|Snowflake} GuildChannelResolvable
    */
@@ -107,8 +107,8 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * Data that can be resolved to an Announcement Channel object. This can be:
-   * An Announcement Channel object
-   * A Snowflake
+   * - An Announcement Channel object
+   * - A Snowflake
    *
    * @typedef {AnnouncementChannel|Snowflake} AnnouncementChannelResolvable
    */
@@ -456,8 +456,8 @@ class GuildChannelManager extends CachedManager {
 
   /**
    * Data that can be resolved to give a Category Channel object. This can be:
-   * A CategoryChannel object
-   * A Snowflake
+   * - A CategoryChannel object
+   * - A Snowflake
    *
    * @typedef {CategoryChannel|Snowflake} CategoryChannelResolvable
    */

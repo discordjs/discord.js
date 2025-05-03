@@ -281,7 +281,7 @@ class AutoModerationRule extends Base {
   /**
    * Sets whether this auto moderation rule should be enabled.
    *
-   * @param {boolean} [enabled] Whether to enable this auto moderation rule
+   * @param {boolean} [enabled=true] Whether to enable this auto moderation rule
    * @param {string} [reason] The reason for enabling or disabling this auto moderation rule
    * @returns {Promise<AutoModerationRule>}
    */

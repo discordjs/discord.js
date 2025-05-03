@@ -179,7 +179,7 @@ class GuildChannel extends BaseChannel {
    * Gets the overall set of permissions for a member or role in this channel, taking into account channel overwrites.
    *
    * @param {UserResolvable|RoleResolvable} memberOrRole The member or role to obtain the overall permissions for
-   * @param {boolean} [checkAdmin] Whether having the {@link PermissionFlagsBits.Administrator} permission
+   * @param {boolean} [checkAdmin=true] Whether having the {@link PermissionFlagsBits.Administrator} permission
    * will return all permissions
    * @returns {?Readonly<PermissionsBitField>}
    */

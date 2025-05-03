@@ -76,12 +76,12 @@ class MessageComponentInteraction extends BaseInteraction {
 
   /**
    * Components that can be placed in an action row for messages.
-   * ButtonComponent
-   * StringSelectMenuComponent
-   * UserSelectMenuComponent
-   * RoleSelectMenuComponent
-   * MentionableSelectMenuComponent
-   * ChannelSelectMenuComponent
+   * - ButtonComponent
+   * - StringSelectMenuComponent
+   * - UserSelectMenuComponent
+   * - RoleSelectMenuComponent
+   * - MentionableSelectMenuComponent
+   * - ChannelSelectMenuComponent
    *
    * @typedef {ButtonComponent|StringSelectMenuComponent|UserSelectMenuComponent|
    * RoleSelectMenuComponent|MentionableSelectMenuComponent|ChannelSelectMenuComponent} MessageActionRowComponent

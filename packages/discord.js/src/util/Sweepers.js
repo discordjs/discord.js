@@ -359,7 +359,7 @@ class Sweepers {
   /**
    * Create a sweepFilter function that uses a lifetime to determine sweepability.
    *
-   * @param {LifetimeFilterOptions} [options] The options used to generate the filter function
+   * @param {LifetimeFilterOptions} [options={}] The options used to generate the filter function
    * @returns {GlobalSweepFilter}
    */
   static filterByLifetime({
@@ -398,7 +398,7 @@ class Sweepers {
   /**
    * Creates a sweep filter that sweeps archived threads
    *
-   * @param {number} [lifetime] How long a thread has to be archived to be valid for sweeping
+   * @param {number} [lifetime=14400] How long a thread has to be archived to be valid for sweeping
    * @returns {GlobalSweepFilter}
    */
   static archivedThreadSweepFilter(lifetime = 14_400) {
@@ -412,7 +412,7 @@ class Sweepers {
   /**
    * Creates a sweep filter that sweeps expired invites
    *
-   * @param {number} [lifetime] How long ago an invite has to have expired to be valid for sweeping
+   * @param {number} [lifetime=14400] How long ago an invite has to have expired to be valid for sweeping
    * @returns {GlobalSweepFilter}
    */
   static expiredInviteSweepFilter(lifetime = 14_400) {
@@ -425,7 +425,7 @@ class Sweepers {
   /**
    * Creates a sweep filter that sweeps outdated messages (edits taken into account)
    *
-   * @param {number} [lifetime] How long ago a message has to have been sent or edited to be valid for sweeping
+   * @param {number} [lifetime=3600] How long ago a message has to have been sent or edited to be valid for sweeping
    * @returns {GlobalSweepFilter}
    */
   static outdatedMessageSweepFilter(lifetime = 3_600) {
@@ -449,7 +449,7 @@ class Sweepers {
    *
    * @param {string} key The name of the property
    * @param {Function} filter Filter function passed to sweep
-   * @param {SweepEventOptions} [eventOptions] Options for the Client event emitted here
+   * @param {SweepEventOptions} [eventOptions={}] Options for the Client event emitted here
    * @returns {Object} Object containing the number of guilds swept and the number of items swept
    * @private
    */

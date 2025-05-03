@@ -34,10 +34,10 @@ class GuildMemberFlagsBitField extends BitField {
 
 /**
  * Data that can be resolved to give a guild member flag bitfield. This can be:
- * A string (see {@link GuildMemberFlagsBitField.Flags})
- * A guild member flag
- * An instance of GuildMemberFlagsBitField
- * An Array of GuildMemberFlagsResolvable
+ * - A string (see {@link GuildMemberFlagsBitField.Flags})
+ * - A guild member flag
+ * - An instance of GuildMemberFlagsBitField
+ * - An Array of GuildMemberFlagsResolvable
  *
  * @typedef {string|number|GuildMemberFlagsBitField|GuildMemberFlagsResolvable[]} GuildMemberFlagsResolvable
  */

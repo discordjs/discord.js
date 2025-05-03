@@ -48,7 +48,7 @@ class Emoji extends Base {
   /**
    * Returns a URL for the emoji or `null` if this is not a custom emoji.
    *
-   * @param {ImageURLOptions} [options] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
   imageURL(options = {}) {

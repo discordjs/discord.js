@@ -63,8 +63,8 @@ class ThreadMemberManager extends CachedManager {
 
   /**
    * Data that resolves to give a ThreadMember object. This can be:
-   * A ThreadMember object
-   * A User resolvable
+   * - A ThreadMember object
+   * - A User resolvable
    *
    * @typedef {ThreadMember|UserResolvable} ThreadMemberResolvable
    */

@@ -229,7 +229,7 @@ class Collector extends AsyncEventEmitter {
   /**
    * Stops this collector and emits the `end` event.
    *
-   * @param {string} [reason] The reason this collector is ending
+   * @param {string} [reason='user'] The reason this collector is ending
    * @emits Collector#end
    */
   stop(reason = 'user') {

@@ -48,7 +48,7 @@ class SubscriptionManager extends CachedManager {
   /**
    * Fetches subscriptions for this application
    *
-   * @param {FetchSubscriptionOptions|FetchSubscriptionsOptions} [options] Options for fetching the subscriptions
+   * @param {FetchSubscriptionOptions|FetchSubscriptionsOptions} [options={}] Options for fetching the subscriptions
    * @returns {Promise<Subscription|Collection<Snowflake, Subscription>>}
    */
   async fetch(options = {}) {

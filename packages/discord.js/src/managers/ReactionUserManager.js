@@ -66,7 +66,7 @@ class ReactionUserManager extends CachedManager {
   /**
    * Removes a user from this reaction.
    *
-   * @param {UserResolvable} [user] The user to remove the reaction of
+   * @param {UserResolvable} [user=this.client.user] The user to remove the reaction of
    * @returns {Promise<MessageReaction>}
    */
   async remove(user = this.client.user) {

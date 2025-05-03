@@ -99,9 +99,9 @@ async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multi
 
 /**
  * Parses emoji info out of a string. The string must be one of:
- * A UTF-8 emoji (no id)
- * A URL-encoded UTF-8 emoji (no id)
- * A Discord custom emoji (`<:name:id>` or `<a:name:id>`)
+ * - A UTF-8 emoji (no id)
+ * - A URL-encoded UTF-8 emoji (no id)
+ * - A Discord custom emoji (`<:name:id>` or `<a:name:id>`)
  *
  * @param {string} text Emoji string to parse
  * @returns {?PartialEmoji}
@@ -241,7 +241,7 @@ function getSortableGroupTypes(type) {
  * @param {Array<*>} array Array to modify
  * @param {*} element Element to move
  * @param {number} newIndex Index or offset to move the element to
- * @param {boolean} [offset] Move the element by an offset amount rather than to a set index
+ * @param {boolean} [offset=false] Move the element by an offset amount rather than to a set index
  * @returns {number}
  * @private
  */
@@ -260,9 +260,9 @@ function moveElementInArray(array, element, newIndex, offset = false) {
  * Verifies the provided data is a string, otherwise throws provided error.
  *
  * @param {string} data The string resolvable to resolve
- * @param {Function} [error] The Error constructor to instantiate. Defaults to Error
- * @param {string} [errorMessage] The error message to throw with. Defaults to "Expected string, got <data> instead."
- * @param {boolean} [allowEmpty] Whether an empty string should be allowed
+ * @param {Function} [error=Error] The Error constructor to instantiate. Defaults to Error
+ * @param {string} [errorMessage="Expected string, got <data> instead."] The error message to throw with. Defaults to "Expected string, got <data> instead."
+ * @param {boolean} [allowEmpty=true] Whether an empty string should be allowed
  * @returns {string}
  */
 function verifyString(

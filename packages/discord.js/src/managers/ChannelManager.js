@@ -80,8 +80,8 @@ class ChannelManager extends CachedManager {
 
   /**
    * Data that can be resolved to give a Channel object. This can be:
-   * A Channel object
-   * A Snowflake
+   * - A Channel object
+   * - A Snowflake
    *
    * @typedef {BaseChannel|Snowflake} ChannelResolvable
    */

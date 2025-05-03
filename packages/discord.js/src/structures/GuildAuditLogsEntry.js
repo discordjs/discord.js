@@ -36,24 +36,24 @@ const Targets = {
 
 /**
  * The target of a guild audit log entry. It can be one of:
- * A guild
- * A channel
- * A user
- * A role
- * An invite
- * A webhook
- * A guild emoji
- * An integration
- * A stage instance
- * A sticker
- * A guild scheduled event
- * A thread
- * An application command
- * An auto moderation rule
- * A guild onboarding prompt
- * A soundboard sound
- * An object with an id key if target was deleted or fake entity
- * An object where the keys represent either the new value or the old value
+ * - A guild
+ * - A channel
+ * - A user
+ * - A role
+ * - An invite
+ * - A webhook
+ * - A guild emoji
+ * - An integration
+ * - A stage instance
+ * - A sticker
+ * - A guild scheduled event
+ * - A thread
+ * - An application command
+ * - An auto moderation rule
+ * - A guild onboarding prompt
+ * - A soundboard sound
+ * - An object with an id key if target was deleted or fake entity
+ * - An object where the keys represent either the new value or the old value
  *
  * @typedef {?(object|Guild|BaseChannel|User|Role|Invite|Webhook|GuildEmoji|Integration|StageInstance|Sticker|
  * GuildScheduledEvent|ApplicationCommand|AutoModerationRule|GuildOnboardingPrompt|SoundboardSound)} AuditLogEntryTarget
@@ -61,34 +61,34 @@ const Targets = {
 
 /**
  * The action type of an entry, e.g. `Create`. Here are the available types:
- * Create
- * Delete
- * Update
- * All
+ * - Create
+ * - Delete
+ * - Update
+ * - All
  *
  * @typedef {string} AuditLogActionType
  */
 
 /**
  * The target type of an entry. Here are the available types:
- * Guild
- * Channel
- * User
- * Role
- * Invite
- * Webhook
- * Emoji
- * Message
- * Integration
- * StageInstance
- * Sticker
- * Thread
- * GuildScheduledEvent
- * ApplicationCommand
- * GuildOnboardingPrompt
- * SoundboardSound
- * AutoModeration
- * Unknown
+ * - Guild
+ * - Channel
+ * - User
+ * - Role
+ * - Invite
+ * - Webhook
+ * - Emoji
+ * - Message
+ * - Integration
+ * - StageInstance
+ * - Sticker
+ * - Thread
+ * - GuildScheduledEvent
+ * - ApplicationCommand
+ * - GuildOnboardingPrompt
+ * - SoundboardSound
+ * - AutoModeration
+ * - Unknown
  *
  * @typedef {string} AuditLogTargetType
  */
@@ -97,7 +97,7 @@ const Targets = {
  * Constructs an object of known properties for a structure from an array of changes.
  *
  * @param {AuditLogChange[]} changes The array of changes
- * @param {Object} [initialData] The initial data passed to the function
+ * @param {Object} [initialData={}] The initial data passed to the function
  * @returns {Object}
  * @ignore
  */

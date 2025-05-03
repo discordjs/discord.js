@@ -406,7 +406,7 @@ class ApplicationCommand extends Base {
    * what most users need.
    *
    * @param {ApplicationCommand|ApplicationCommandData|APIApplicationCommand} command The command to compare with
-   * @param {boolean} [enforceOptionOrder] Whether to strictly check that options and choices are in the same
+   * @param {boolean} [enforceOptionOrder=false] Whether to strictly check that options and choices are in the same
    * order in the array <info>The client may not always respect this ordering!</info>
    * @returns {boolean}
    */
@@ -466,7 +466,7 @@ class ApplicationCommand extends Base {
    * @param {ApplicationCommandOptionData[]} existing The options on the existing command,
    * should be {@link ApplicationCommand#options}
    * @param {ApplicationCommandOptionData[]|APIApplicationCommandOption[]} options The options to compare against
-   * @param {boolean} [enforceOptionOrder] Whether to strictly check that options and choices are in the same
+   * @param {boolean} [enforceOptionOrder=false] Whether to strictly check that options and choices are in the same
    * order in the array <info>The client may not always respect this ordering!</info>
    * @returns {boolean}
    */
@@ -492,7 +492,7 @@ class ApplicationCommand extends Base {
    * @param {ApplicationCommandOptionData} existing The option on the existing command,
    * should be from {@link ApplicationCommand#options}
    * @param {ApplicationCommandOptionData|APIApplicationCommandOption} option The option to compare against
-   * @param {boolean} [enforceOptionOrder] Whether to strictly check that options or choices are in the same
+   * @param {boolean} [enforceOptionOrder=false] Whether to strictly check that options or choices are in the same
    * order in their array <info>The client may not always respect this ordering!</info>
    * @returns {boolean}
    * @private

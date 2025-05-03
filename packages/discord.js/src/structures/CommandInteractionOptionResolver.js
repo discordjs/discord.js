@@ -76,7 +76,7 @@ class CommandInteractionOptionResolver {
    * Gets an option by its name.
    *
    * @param {string} name The name of the option.
-   * @param {boolean} [required] Whether to throw an error if the option is not found.
+   * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?CommandInteractionOption} The option, if found.
    */
   get(name, required = false) {
@@ -118,7 +118,7 @@ class CommandInteractionOptionResolver {
   /**
    * Gets the selected subcommand.
    *
-   * @param {boolean} [required] Whether to throw an error if there is no subcommand.
+   * @param {boolean} [required=true] Whether to throw an error if there is no subcommand.
    * @returns {?string} The name of the selected subcommand, or null if not set and not required.
    */
   getSubcommand(required = true) {
@@ -132,7 +132,7 @@ class CommandInteractionOptionResolver {
   /**
    * Gets the selected subcommand group.
    *
-   * @param {boolean} [required] Whether to throw an error if there is no subcommand group.
+   * @param {boolean} [required=false] Whether to throw an error if there is no subcommand group.
    * @returns {?string} The name of the selected subcommand group, or null if not set and not required.
    */
   getSubcommandGroup(required = false) {
@@ -147,7 +147,7 @@ class CommandInteractionOptionResolver {
    * Gets a boolean option.
    *
    * @param {string} name The name of the option.
-   * @param {boolean} [required] Whether to throw an error if the option is not found.
+   * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?boolean} The value of the option, or null if not set and not required.
    */
   getBoolean(name, required = false) {
@@ -159,8 +159,8 @@ class CommandInteractionOptionResolver {
    * Gets a channel option.
    *
    * @param {string} name The name of the option.
-   * @param {boolean} [required] Whether to throw an error if the option is not found.
-   * @param {ChannelType[]} [channelTypes] The allowed types of channels. If empty, all channel types are allowed.
+   * @param {boolean} [required=false] Whether to throw an error if the option is not found.
+   * @param {ChannelType[]} [channelTypes=[]] The allowed types of channels. If empty, all channel types are allowed.
    * @returns {?(GuildChannel|ThreadChannel|APIChannel)}
    * The value of the option, or null if not set and not required.
    */
@@ -184,7 +184,7 @@ class CommandInteractionOptionResolver {
    * Gets a string option.
    *
    * @param {string} name The name of the option.
-   * @param {boolean} [required] Whether to throw an error if the option is not found.
+   * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?string} The value of the option, or null if not set and not required.
    */
   getString(name, required = false) {
@@ -196,7 +196,7 @@ class CommandInteractionOptionResolver {
    * Gets an integer option.
    *
    * @param {string} name The name of the option.
-   * @param {boolean} [required] Whether to throw an error if the option is not found.
+   * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?number} The value of the option, or null if not set and not required.
    */
   getInteger(name, required = false) {
@@ -208,7 +208,7 @@ class CommandInteractionOptionResolver {
    * Gets a number option.
    *
    * @param {string} name The name of the option.
-   * @param {boolean} [required] Whether to throw an error if the option is not found.
+   * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?number} The value of the option, or null if not set and not required.
    */
   getNumber(name, required = false) {
@@ -220,7 +220,7 @@ class CommandInteractionOptionResolver {
    * Gets a user option.
    *
    * @param {string} name The name of the option.
-   * @param {boolean} [required] Whether to throw an error if the option is not found.
+   * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?User} The value of the option, or null if not set and not required.
    */
   getUser(name, required = false) {
@@ -254,7 +254,7 @@ class CommandInteractionOptionResolver {
    * Gets a role option.
    *
    * @param {string} name The name of the option.
-   * @param {boolean} [required] Whether to throw an error if the option is not found.
+   * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?(Role|APIRole)} The value of the option, or null if not set and not required.
    */
   getRole(name, required = false) {
@@ -271,7 +271,7 @@ class CommandInteractionOptionResolver {
    * Gets an attachment option.
    *
    * @param {string} name The name of the option.
-   * @param {boolean} [required] Whether to throw an error if the option is not found.
+   * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?Attachment} The value of the option, or null if not set and not required.
    */
   getAttachment(name, required = false) {
@@ -283,7 +283,7 @@ class CommandInteractionOptionResolver {
    * Gets a mentionable option.
    *
    * @param {string} name The name of the option.
-   * @param {boolean} [required] Whether to throw an error if the option is not found.
+   * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?(User|GuildMember|APIGuildMember|Role|APIRole)}
    * The value of the option, or null if not set and not required.
    */
@@ -301,7 +301,7 @@ class CommandInteractionOptionResolver {
    * Gets a message option.
    *
    * @param {string} name The name of the option.
-   * @param {boolean} [required] Whether to throw an error if the option is not found.
+   * @param {boolean} [required=false] Whether to throw an error if the option is not found.
    * @returns {?Message}
    * The value of the option, or null if not set and not required.
    */

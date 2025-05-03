@@ -135,7 +135,7 @@ class Application extends Base {
   /**
    * A link to the application's icon.
    *
-   * @param {ImageURLOptions} [options] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
   iconURL(options = {}) {
@@ -145,7 +145,7 @@ class Application extends Base {
   /**
    * A link to this application's cover image.
    *
-   * @param {ImageURLOptions} [options] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
   coverURL(options = {}) {

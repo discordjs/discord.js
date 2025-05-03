@@ -551,7 +551,7 @@ class Guild extends AnonymousGuild {
   /**
    * The URL to this guild's discovery splash image.
    *
-   * @param {ImageURLOptions} [options] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
   discoverySplashURL(options = {}) {
@@ -841,7 +841,7 @@ class Guild extends AnonymousGuild {
   /**
    * Fetches audit logs for this guild.
    *
-   * @param {GuildAuditLogsFetchOptions} [options] Options for fetching audit logs
+   * @param {GuildAuditLogsFetchOptions} [options={}] Options for fetching audit logs
    * @returns {Promise<GuildAuditLogs>}
    * @example
    * // Output audit log entries
@@ -907,16 +907,16 @@ class Guild extends AnonymousGuild {
 
   /**
    * Data that can be resolved to a Text Channel object. This can be:
-   * A TextChannel
-   * A Snowflake
+   * - A TextChannel
+   * - A Snowflake
    *
    * @typedef {TextChannel|Snowflake} TextChannelResolvable
    */
 
   /**
    * Data that can be resolved to a Voice Channel object. This can be:
-   * A VoiceChannel
-   * A Snowflake
+   * - A VoiceChannel
+   * - A Snowflake
    *
    * @typedef {VoiceChannel|Snowflake} VoiceChannelResolvable
    */
@@ -1086,18 +1086,18 @@ class Guild extends AnonymousGuild {
 
   /**
    * Data that can be resolved to a GuildTextChannel object. This can be:
-   * A TextChannel
-   * A AnnouncementChannel
-   * A Snowflake
+   * - A TextChannel
+   * - A AnnouncementChannel
+   * - A Snowflake
    *
    * @typedef {TextChannel|AnnouncementChannel|Snowflake} GuildTextChannelResolvable
    */
 
   /**
    * Data that can be resolved to a GuildVoiceChannel object. This can be:
-   * A VoiceChannel
-   * A StageChannel
-   * A Snowflake
+   * - A VoiceChannel
+   * - A StageChannel
+   * - A Snowflake
    *
    * @typedef {VoiceChannel|StageChannel|Snowflake} GuildVoiceChannelResolvable
    */
@@ -1386,7 +1386,7 @@ class Guild extends AnonymousGuild {
   /**
    * Edits the enabled state of the guild's premium progress bar
    *
-   * @param {boolean} [enabled] The new enabled state of the guild's premium progress bar
+   * @param {boolean} [enabled=true] The new enabled state of the guild's premium progress bar
    * @param {string} [reason] Reason for changing the state of the guild's premium progress bar
    * @returns {Promise<Guild>}
    */
@@ -1485,7 +1485,7 @@ class Guild extends AnonymousGuild {
   /**
    * Sets whether this guild's invites are disabled.
    *
-   * @param {boolean} [disabled] Whether the invites are disabled
+   * @param {boolean} [disabled=true] Whether the invites are disabled
    * @returns {Promise<Guild>}
    */
   async disableInvites(disabled = true) {

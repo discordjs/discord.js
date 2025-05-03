@@ -34,10 +34,10 @@ class ChannelFlagsBitField extends BitField {
 
 /**
  * Data that can be resolved to give a channel flag bitfield. This can be:
- * A string (see {@link ChannelFlagsBitField.Flags})
- * A channel flag
- * An instance of ChannelFlagsBitField
- * An Array of ChannelFlagsResolvable
+ * - A string (see {@link ChannelFlagsBitField.Flags})
+ * - A channel flag
+ * - An instance of ChannelFlagsBitField
+ * - An Array of ChannelFlagsResolvable
  *
  * @typedef {string|number|ChannelFlagsBitField|ChannelFlagsResolvable[]} ChannelFlagsResolvable
  */

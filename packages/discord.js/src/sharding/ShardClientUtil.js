@@ -128,7 +128,7 @@ class ShardClientUtil {
    * Evaluates a script or function on all shards, or a given shard, in the context of the {@link Client}s.
    *
    * @param {Function} script JavaScript to run on each shard
-   * @param {BroadcastEvalOptions} [options] The options for the broadcast
+   * @param {BroadcastEvalOptions} [options={}] The options for the broadcast
    * @returns {Promise<*|Array<*>>} Results of the script execution
    * @example
    * client.shard.broadcastEval(client => client.guilds.cache.size)

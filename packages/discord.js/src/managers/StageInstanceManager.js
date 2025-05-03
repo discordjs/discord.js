@@ -42,8 +42,8 @@ class StageInstanceManager extends CachedManager {
 
   /**
    * Data that can be resolved to a Stage Channel object. This can be:
-   * A StageChannel
-   * A Snowflake
+   * - A StageChannel
+   * - A Snowflake
    *
    * @typedef {StageChannel|Snowflake} StageChannelResolvable
    */

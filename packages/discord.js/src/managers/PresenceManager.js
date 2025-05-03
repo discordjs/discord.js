@@ -26,9 +26,9 @@ class PresenceManager extends CachedManager {
 
   /**
    * Data that can be resolved to a Presence object. This can be:
-   * A Presence
-   * A UserResolvable
-   * A Snowflake
+   * - A Presence
+   * - A UserResolvable
+   * - A Snowflake
    *
    * @typedef {Presence|UserResolvable|Snowflake} PresenceResolvable
    */

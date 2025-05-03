@@ -23,8 +23,8 @@ const { Shard } = require('./Shard.js');
 class ShardingManager extends AsyncEventEmitter {
   /**
    * The mode to spawn shards with for a {@link ShardingManager}. Can be either one of:
-   * 'process' to use child processes
-   * 'worker' to use {@link Worker} threads
+   * - 'process' to use child processes
+   * - 'worker' to use {@link Worker} threads
    *
    * @typedef {string} ShardingManagerMode
    */
@@ -179,7 +179,7 @@ class ShardingManager extends AsyncEventEmitter {
    * Creates a single shard.
    * <warn>Using this method is usually not necessary if you use the spawn method.</warn>
    *
-   * @param {number} [id] Id of the shard to create
+   * @param {number} [id=this.shards.size] Id of the shard to create
    * <info>This is usually not necessary to manually specify.</info>
    * @returns {Shard} Note that the created shard needs to be explicitly spawned using its spawn method.
    */
@@ -285,7 +285,7 @@ class ShardingManager extends AsyncEventEmitter {
    * Evaluates a script on all shards, or a given shard, in the context of the {@link Client}s.
    *
    * @param {Function} script JavaScript to run on each shard
-   * @param {BroadcastEvalOptions} [options] The options for the broadcast
+   * @param {BroadcastEvalOptions} [options={}] The options for the broadcast
    * @returns {Promise<*|Array<*>>} Results of the script execution
    */
   async broadcastEval(script, options = {}) {

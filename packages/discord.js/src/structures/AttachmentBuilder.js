@@ -67,7 +67,7 @@ class AttachmentBuilder {
   /**
    * Sets whether this attachment is a spoiler
    *
-   * @param {boolean} [spoiler] Whether the attachment should be marked as a spoiler
+   * @param {boolean} [spoiler=true] Whether the attachment should be marked as a spoiler
    * @returns {AttachmentBuilder} This attachment
    */
   setSpoiler(spoiler = true) {

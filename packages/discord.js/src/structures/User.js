@@ -186,7 +186,7 @@ class User extends Base {
   /**
    * A link to the user's avatar.
    *
-   * @param {ImageURLOptions} [options] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
   avatarURL(options = {}) {
@@ -217,7 +217,7 @@ class User extends Base {
    * A link to the user's avatar if they have one.
    * Otherwise a link to their default avatar will be returned.
    *
-   * @param {ImageURLOptions} [options] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {string}
    */
   displayAvatarURL(options) {
@@ -239,7 +239,7 @@ class User extends Base {
   /**
    * A link to the user's banner. See {@link User#banner} for more info
    *
-   * @param {ImageURLOptions} [options] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
   bannerURL(options = {}) {
@@ -285,7 +285,7 @@ class User extends Base {
   /**
    * Creates a DM channel between the client and the user.
    *
-   * @param {boolean} [force] Whether to skip the cache check and request the API
+   * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<DMChannel>}
    */
   async createDM(force = false) {
@@ -370,7 +370,7 @@ class User extends Base {
   /**
    * Fetches this user.
    *
-   * @param {boolean} [force] Whether to skip the cache check and request the API
+   * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<User>}
    */
   async fetch(force = true) {

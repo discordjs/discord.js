@@ -37,21 +37,21 @@ class GuildInviteManager extends CachedManager {
 
   /**
    * Data that resolves to give an Invite object. This can be:
-   * An invite code
-   * An invite URL
+   * - An invite code
+   * - An invite URL
    *
    * @typedef {string} InviteResolvable
    */
 
   /**
    * Data that can be resolved to a channel that an invite can be created on. This can be:
-   * TextChannel
-   * VoiceChannel
-   * AnnouncementChannel
-   * StageChannel
-   * ForumChannel
-   * MediaChannel
-   * Snowflake
+   * - TextChannel
+   * - VoiceChannel
+   * - AnnouncementChannel
+   * - StageChannel
+   * - ForumChannel
+   * - MediaChannel
+   * - Snowflake
    *
    * @typedef {TextChannel|VoiceChannel|AnnouncementChannel|StageChannel|ForumChannel|MediaChannel|Snowflake}
    * GuildInvitableChannelResolvable
@@ -182,7 +182,7 @@ class GuildInviteManager extends CachedManager {
    * Create an invite to the guild from the provided channel.
    *
    * @param {GuildInvitableChannelResolvable} channel The options for creating the invite from a channel.
-   * @param {InviteCreateOptions} [options] The options for creating the invite from a channel.
+   * @param {InviteCreateOptions} [options={}] The options for creating the invite from a channel.
    * @returns {Promise<Invite>}
    * @example
    * // Create an invite to a selected channel

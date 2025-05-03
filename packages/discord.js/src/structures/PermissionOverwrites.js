@@ -160,8 +160,8 @@ class PermissionOverwrites extends Base {
 
   /**
    * Data that can be resolved into {@link APIOverwrite}. This can be:
-   * PermissionOverwrites
-   * OverwriteData
+   * - PermissionOverwrites
+   * - OverwriteData
    *
    * @typedef {PermissionOverwrites|OverwriteData} OverwriteResolvable
    */

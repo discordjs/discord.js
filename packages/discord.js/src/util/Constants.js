@@ -11,22 +11,22 @@ exports.MaxBulkDeletableMessageAge = 1_209_600_000;
 
 /**
  * The name of an item to be swept in Sweepers
- * `autoModerationRules`
- * `applicationCommands` - both global and guild commands
- * `bans`
- * `emojis`
- * `entitlements`
- * `invites` - accepts the `lifetime` property, using it will sweep based on expires timestamp
- * `guildMembers`
- * `messages` - accepts the `lifetime` property, using it will sweep based on edited or created timestamp
- * `presences`
- * `reactions`
- * `stageInstances`
- * `stickers`
- * `threadMembers`
- * `threads` - accepts the `lifetime` property, using it will sweep archived threads based on archived timestamp
- * `users`
- * `voiceStates`
+ * - `autoModerationRules`
+ * - `applicationCommands` - both global and guild commands
+ * - `bans`
+ * - `emojis`
+ * - `entitlements`
+ * - `invites` - accepts the `lifetime` property, using it will sweep based on expires timestamp
+ * - `guildMembers`
+ * - `messages` - accepts the `lifetime` property, using it will sweep based on edited or created timestamp
+ * - `presences`
+ * - `reactions`
+ * - `stageInstances`
+ * - `stickers`
+ * - `threadMembers`
+ * - `threads` - accepts the `lifetime` property, using it will sweep archived threads based on archived timestamp
+ * - `users`
+ * - `voiceStates`
  *
  * @typedef {string} SweeperKey
  */
@@ -67,24 +67,24 @@ exports.NonSystemMessageTypes = [
 
 /**
  * The guild channels that are text-based.
- * TextChannel
- * AnnouncementChannel
- * ThreadChannel
- * VoiceChannel
- * StageChannel
+ * - TextChannel
+ * - AnnouncementChannel
+ * - ThreadChannel
+ * - VoiceChannel
+ * - StageChannel
  *
  * @typedef {TextChannel|AnnouncementChannel|ThreadChannel|VoiceChannel|StageChannel} GuildTextBasedChannel
  */
 
 /**
  * The types of guild channels that are text-based. The available types are:
- * {@link ChannelType.GuildText}
- * {@link ChannelType.GuildAnnouncement}
- * {@link ChannelType.AnnouncementThread}
- * {@link ChannelType.PublicThread}
- * {@link ChannelType.PrivateThread}
- * {@link ChannelType.GuildVoice}
- * {@link ChannelType.GuildStageVoice}
+ * - {@link ChannelType.GuildText}
+ * - {@link ChannelType.GuildAnnouncement}
+ * - {@link ChannelType.AnnouncementThread}
+ * - {@link ChannelType.PublicThread}
+ * - {@link ChannelType.PrivateThread}
+ * - {@link ChannelType.GuildVoice}
+ * - {@link ChannelType.GuildStageVoice}
  *
  * @typedef {ChannelType[]} GuildTextBasedChannelTypes
  */
@@ -100,31 +100,31 @@ exports.GuildTextBasedChannelTypes = [
 
 /**
  * The channels that are text-based.
- * {@link DMChannel}
- * {@link GuildTextBasedChannel}
+ * - {@link DMChannel}
+ * - {@link GuildTextBasedChannel}
  *
  * @typedef {DMChannel|GuildTextBasedChannel} TextBasedChannels
  */
 
 /**
  * Data that resolves to give a text-based channel. This can be:
- * A {@link TextBasedChannel}
- * A {@link Snowflake}
+ * - A {@link TextBasedChannel}
+ * - A {@link Snowflake}
  *
  * @typedef {TextBasedChannels|Snowflake} TextBasedChannelsResolvable
  */
 
 /**
  * The types of channels that are text-based. The available types are:
- * {@link ChannelType.DM}
- * {@link ChannelType.GuildText}
- * {@link ChannelType.GuildAnnouncement}
- * {@link ChannelType.AnnouncementThread}
- * {@link ChannelType.PublicThread}
- * {@link ChannelType.PrivateThread}
- * {@link ChannelType.GuildVoice}
- * {@link ChannelType.GuildStageVoice}
- * {@link ChannelType.GroupDM}
+ * - {@link ChannelType.DM}
+ * - {@link ChannelType.GuildText}
+ * - {@link ChannelType.GuildAnnouncement}
+ * - {@link ChannelType.AnnouncementThread}
+ * - {@link ChannelType.PublicThread}
+ * - {@link ChannelType.PrivateThread}
+ * - {@link ChannelType.GuildVoice}
+ * - {@link ChannelType.GuildStageVoice}
+ * - {@link ChannelType.GroupDM}
  *
  * @typedef {ChannelType[]} TextBasedChannelTypes
  */
@@ -132,14 +132,14 @@ exports.TextBasedChannelTypes = [...exports.GuildTextBasedChannelTypes, ChannelT
 
 /**
  * The types of channels that are text-based and can have messages sent into. The available types are:
- * {@link ChannelType.DM}
- * {@link ChannelType.GuildText}
- * {@link ChannelType.GuildAnnouncement}
- * {@link ChannelType.AnnouncementThread}
- * {@link ChannelType.PublicThread}
- * {@link ChannelType.PrivateThread}
- * {@link ChannelType.GuildVoice}
- * {@link ChannelType.GuildStageVoice}
+ * - {@link ChannelType.DM}
+ * - {@link ChannelType.GuildText}
+ * - {@link ChannelType.GuildAnnouncement}
+ * - {@link ChannelType.AnnouncementThread}
+ * - {@link ChannelType.PublicThread}
+ * - {@link ChannelType.PrivateThread}
+ * - {@link ChannelType.GuildVoice}
+ * - {@link ChannelType.GuildStageVoice}
  *
  * @typedef {ChannelType[]} SendableChannels
  */
@@ -147,9 +147,9 @@ exports.SendableChannels = [...exports.GuildTextBasedChannelTypes, ChannelType.D
 
 /**
  * The types of channels that are threads. The available types are:
- * {@link ChannelType.AnnouncementThread}
- * {@link ChannelType.PublicThread}
- * {@link ChannelType.PrivateThread}
+ * - {@link ChannelType.AnnouncementThread}
+ * - {@link ChannelType.PublicThread}
+ * - {@link ChannelType.PrivateThread}
  *
  * @typedef {ChannelType[]} ThreadChannelTypes
  */
@@ -157,8 +157,8 @@ exports.ThreadChannelTypes = [ChannelType.AnnouncementThread, ChannelType.Public
 
 /**
  * The types of channels that are voice-based. The available types are:
- * {@link ChannelType.GuildVoice}
- * {@link ChannelType.GuildStageVoice}
+ * - {@link ChannelType.GuildVoice}
+ * - {@link ChannelType.GuildStageVoice}
  *
  * @typedef {ChannelType[]} VoiceBasedChannelTypes
  */
@@ -166,11 +166,11 @@ exports.VoiceBasedChannelTypes = [ChannelType.GuildVoice, ChannelType.GuildStage
 
 /**
  * The types of select menus. The available types are:
- * {@link ComponentType.StringSelect}
- * {@link ComponentType.UserSelect}
- * {@link ComponentType.RoleSelect}
- * {@link ComponentType.MentionableSelect}
- * {@link ComponentType.ChannelSelect}
+ * - {@link ComponentType.StringSelect}
+ * - {@link ComponentType.UserSelect}
+ * - {@link ComponentType.RoleSelect}
+ * - {@link ComponentType.MentionableSelect}
+ * - {@link ComponentType.ChannelSelect}
  *
  * @typedef {ComponentType[]} SelectMenuTypes
  */
@@ -184,12 +184,12 @@ exports.SelectMenuTypes = [
 
 /**
  * The types of messages that cannot be deleted. The available types are:
- * {@link MessageType.RecipientAdd}
- * {@link MessageType.RecipientRemove}
- * {@link MessageType.Call}
- * {@link MessageType.ChannelNameChange}
- * {@link MessageType.ChannelIconChange}
- * {@link MessageType.ThreadStarterMessage}
+ * - {@link MessageType.RecipientAdd}
+ * - {@link MessageType.RecipientRemove}
+ * - {@link MessageType.Call}
+ * - {@link MessageType.ChannelNameChange}
+ * - {@link MessageType.ChannelIconChange}
+ * - {@link MessageType.ThreadStarterMessage}
  *
  * @typedef {MessageType[]} UndeletableMessageTypes
  */
@@ -204,10 +204,10 @@ exports.UndeletableMessageTypes = [
 
 /**
  * A mapping between sticker formats and their respective image formats.
- * {@link StickerFormatType.PNG} -> {@link ImageFormat.PNG}
- * {@link StickerFormatType.APNG} -> {@link ImageFormat.PNG}
- * {@link StickerFormatType.Lottie} -> {@link ImageFormat.Lottie}
- * {@link StickerFormatType.GIF} -> {@link ImageFormat.GIF}
+ * - {@link StickerFormatType.PNG} -> {@link ImageFormat.PNG}
+ * - {@link StickerFormatType.APNG} -> {@link ImageFormat.PNG}
+ * - {@link StickerFormatType.Lottie} -> {@link ImageFormat.Lottie}
+ * - {@link StickerFormatType.GIF} -> {@link ImageFormat.GIF}
  *
  * @typedef {Object} StickerFormatExtensionMap
  * @property {"png"} 1 PNG

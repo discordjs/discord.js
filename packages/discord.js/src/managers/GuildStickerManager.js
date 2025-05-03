@@ -79,8 +79,8 @@ class GuildStickerManager extends CachedManager {
 
   /**
    * Data that resolves to give a Sticker object. This can be:
-   * A Sticker object
-   * A Snowflake
+   * - A Sticker object
+   * - A Snowflake
    *
    * @typedef {Sticker|Snowflake} StickerResolvable
    */
@@ -109,7 +109,7 @@ class GuildStickerManager extends CachedManager {
    * Edits a sticker.
    *
    * @param {StickerResolvable} sticker The sticker to edit
-   * @param {GuildStickerEditOptions} [options] The new data for the sticker
+   * @param {GuildStickerEditOptions} [options={}] The new data for the sticker
    * @returns {Promise<Sticker>}
    */
   async edit(sticker, options = {}) {

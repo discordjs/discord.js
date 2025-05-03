@@ -39,10 +39,10 @@ class GuildEmojiManager extends CachedManager {
 
   /**
    * Data that can be resolved into a GuildEmoji object. This can be:
-   * A Snowflake
-   * A GuildEmoji object
-   * A ReactionEmoji object
-   * An ApplicationEmoji object
+   * - A Snowflake
+   * - A GuildEmoji object
+   * - A ReactionEmoji object
+   * - An ApplicationEmoji object
    *
    * @typedef {Snowflake|GuildEmoji|ReactionEmoji|ApplicationEmoji} EmojiResolvable
    */
@@ -73,9 +73,9 @@ class GuildEmojiManager extends CachedManager {
 
   /**
    * Data that can be resolved to give an emoji identifier. This can be:
-   * An EmojiResolvable
-   * The `<a:name:id>`, `<:name:id>`, `a:name:id` or `name:id` emoji identifier string of an emoji
-   * The Unicode representation of an emoji
+   * - An EmojiResolvable
+   * - The `<a:name:id>`, `<:name:id>`, `a:name:id` or `name:id` emoji identifier string of an emoji
+   * - The Unicode representation of an emoji
    *
    * @typedef {string|EmojiResolvable} EmojiIdentifierResolvable
    */

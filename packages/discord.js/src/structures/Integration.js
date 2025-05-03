@@ -14,10 +14,10 @@ const { IntegrationApplication } = require('./IntegrationApplication.js');
 
 /**
  * The type of an {@link Integration}. This can be:
- * `twitch`
- * `youtube`
- * `discord`
- * `guild_subscription`
+ * - `twitch`
+ * - `youtube`
+ * - `discord`
+ * - `guild_subscription`
  *
  * @typedef {string} IntegrationType
  */

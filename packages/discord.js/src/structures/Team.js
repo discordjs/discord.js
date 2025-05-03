@@ -101,7 +101,7 @@ class Team extends Base {
   /**
    * A link to the team's icon.
    *
-   * @param {ImageURLOptions} [options] Options for the image URL
+   * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
   iconURL(options = {}) {

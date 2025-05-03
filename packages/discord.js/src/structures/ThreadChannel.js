@@ -304,7 +304,7 @@ class ThreadChannel extends BaseChannel {
    * account.
    *
    * @param {UserResolvable|RoleResolvable} memberOrRole The member or role to obtain the overall permissions for
-   * @param {boolean} [checkAdmin] Whether having the {@link PermissionFlagsBits.Administrator} permission
+   * @param {boolean} [checkAdmin=true] Whether having the {@link PermissionFlagsBits.Administrator} permission
    * will return all permissions
    * @returns {?Readonly<PermissionsBitField>}
    */
@@ -393,7 +393,7 @@ class ThreadChannel extends BaseChannel {
   /**
    * Sets whether the thread is archived.
    *
-   * @param {boolean} [archived] Whether the thread is archived
+   * @param {boolean} [archived=true] Whether the thread is archived
    * @param {string} [reason] Reason for archiving or unarchiving
    * @returns {Promise<ThreadChannel>}
    * @example
@@ -429,7 +429,7 @@ class ThreadChannel extends BaseChannel {
    * Sets whether members without the {@link PermissionFlagsBits.ManageThreads} permission
    * can invite other members to this thread.
    *
-   * @param {boolean} [invitable] Whether non-moderators can invite non-moderators to this thread
+   * @param {boolean} [invitable=true] Whether non-moderators can invite non-moderators to this thread
    * @param {string} [reason] Reason for changing invite
    * @returns {Promise<ThreadChannel>}
    */
@@ -446,7 +446,7 @@ class ThreadChannel extends BaseChannel {
    * {@link PermissionFlagsBits.SendMessages} permission. When a thread is locked, only members with the
    * {@link PermissionFlagsBits.ManageThreads} permission can unarchive it.
    *
-   * @param {boolean} [locked] Whether the thread is locked
+   * @param {boolean} [locked=true] Whether the thread is locked
    * @param {string} [reason] Reason for locking or unlocking the thread
    * @returns {Promise<ThreadChannel>}
    * @example
