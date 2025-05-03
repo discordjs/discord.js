@@ -51,10 +51,10 @@ exports.SweeperKeys = [
 
 /**
  * The types of messages that are not `System`. The available types are:
- * {@link MessageType.Default}
- * {@link MessageType.Reply}
- * {@link MessageType.ChatInputCommand}
- * {@link MessageType.ContextMenuCommand}
+ * - {@link MessageType.Default}
+ * - {@link MessageType.Reply}
+ * - {@link MessageType.ChatInputCommand}
+ * - {@link MessageType.ContextMenuCommand}
  *
  * @typedef {MessageType[]} NonSystemMessageTypes
  */

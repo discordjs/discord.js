@@ -183,7 +183,7 @@ class ThreadOnlyChannel extends GuildChannel {
   /**
    * Creates an invite to this guild channel.
    *
-   * @param {InviteCreateOptions} [options] The options for creating the invite
+   * @param {InviteCreateOptions} [options={}] The options for creating the invite
    * @returns {Promise<Invite>}
    * @example
    * // Create an invite to a channel

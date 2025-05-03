@@ -118,26 +118,6 @@ class ModalSubmitInteraction extends BaseInteraction {
   isFromMessage() {
     return Boolean(this.message);
   }
-
-  // These are here only for documentation purposes - they are implemented by InteractionResponses
-
-  deferReply() {}
-
-  reply() {}
-
-  fetchReply() {}
-
-  editReply() {}
-
-  deleteReply() {}
-
-  followUp() {}
-
-  deferUpdate() {}
-
-  update() {}
-
-  launchActivity() {}
 }
 
 InteractionResponses.applyToClass(ModalSubmitInteraction, 'showModal');

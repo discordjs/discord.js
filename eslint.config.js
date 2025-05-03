@@ -159,6 +159,7 @@ export default tseslint.config(
 			'@typescript-eslint/no-require-imports': 0,
 			'jsdoc/no-undefined-types': 0,
 			'jsdoc/no-defaults': 0,
+			'no-eq-null': 0,
 			'@typescript-eslint/explicit-member-accessibility': 0,
 			'@typescript-eslint/class-literal-property-style': 0,
 			strict: ['error', 'global'],

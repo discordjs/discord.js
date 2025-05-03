@@ -147,20 +147,19 @@ class GuildTemplate extends Base {
     if (client.guilds.cache.has(data.id)) return client.guilds.cache.get(data.id);
 
     return new Promise(resolve => {
-      const resolveGuild = guild => {
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      function resolveGuild(guild) {
         client.off(Events.GuildCreate, handleGuild);
         client.decrementMaxListeners();
         resolve(guild);
-      };
+      }
 
-      const handleGuild = guild => {
+      function handleGuild(guild) {
         if (guild.id === data.id) {
           // eslint-disable-next-line @typescript-eslint/no-use-before-define
           clearTimeout(timeout);
           resolveGuild(guild);
         }
-      };
+      }
 
       client.incrementMaxListeners();
       client.on(Events.GuildCreate, handleGuild);

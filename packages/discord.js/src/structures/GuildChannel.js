@@ -342,7 +342,7 @@ class GuildChannel extends BaseChannel {
    * Sets the parent of this channel.
    *
    * @param {?CategoryChannelResolvable} channel The category channel to set as the parent
-   * @param {SetParentOptions} [options] The options for setting the parent
+   * @param {SetParentOptions} [options={}] The options for setting the parent
    * @returns {Promise<GuildChannel>}
    * @example
    * // Add a parent to a channel

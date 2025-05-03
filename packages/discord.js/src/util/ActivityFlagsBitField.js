@@ -16,13 +16,13 @@ class ActivityFlagsBitField extends BitField {
    * @memberof ActivityFlagsBitField
    */
   static Flags = ActivityFlags;
-}
 
-/**
- * @name ActivityFlagsBitField
- * @constructor
- * @memberof ActivityFlagsBitField
- * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
- */
+  /**
+   * @method (constructor)
+   * @constructs
+   * @memberof ActivityFlagsBitField
+   * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
+   */
+}
 
 exports.ActivityFlagsBitField = ActivityFlagsBitField;

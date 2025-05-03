@@ -259,9 +259,16 @@ class GuildMemberManager extends CachedManager {
       });
       const fetchedMembers = new Collection();
       let index = 0;
-      const handler = (members, _, chunk) => {
+
+      const timeout = setTimeout(() => {
+        this.client.removeListener(Events.GuildMembersChunk, handler);
+        this.client.decrementMaxListeners();
+        reject(new DiscordjsError(ErrorCodes.GuildMembersTimeout));
+      }, time).unref();
+
+      function handler(members, _, chunk) {
         if (chunk.nonce !== nonce) return;
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+
         timeout.refresh();
         index++;
         for (const member of members.values()) {
@@ -269,19 +276,13 @@ class GuildMemberManager extends CachedManager {
         }
 
         if (members.size < 1_000 || (limit && fetchedMembers.size >= limit) || index === chunk.count) {
-          // eslint-disable-next-line @typescript-eslint/no-use-before-define
           clearTimeout(timeout);
           this.client.removeListener(Events.GuildMembersChunk, handler);
           this.client.decrementMaxListeners();
           resolve(users && !Array.isArray(users) && fetchedMembers.size ? fetchedMembers.first() : fetchedMembers);
         }
-      };
+      }
 
-      const timeout = setTimeout(() => {
-        this.client.removeListener(Events.GuildMembersChunk, handler);
-        this.client.decrementMaxListeners();
-        reject(new DiscordjsError(ErrorCodes.GuildMembersTimeout));
-      }, time).unref();
       this.client.incrementMaxListeners();
       this.client.on(Events.GuildMembersChunk, handler);
     });
@@ -385,7 +386,7 @@ class GuildMemberManager extends CachedManager {
 
     if (options.communicationDisabledUntil !== undefined) {
       options.communication_disabled_until =
-        // eslint-disable-next-line eqeqeq, no-eq-null
+        // eslint-disable-next-line eqeqeq
         options.communicationDisabledUntil == null
           ? options.communicationDisabledUntil
           : new Date(options.communicationDisabledUntil).toISOString();

@@ -250,7 +250,8 @@ class Webhook {
 
     if (!this.client.channels) return data;
     return (
-      this.client.channels.cache.get(data.channel_id)?.messages._add(data, false) ?? new (getMessage())(this.client, data)
+      this.client.channels.cache.get(data.channel_id)?.messages._add(data, false) ??
+      new (getMessage())(this.client, data)
     );
   }
 

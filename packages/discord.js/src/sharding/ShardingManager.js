@@ -5,6 +5,7 @@ const path = require('node:path');
 const process = require('node:process');
 const { setTimeout: sleep } = require('node:timers/promises');
 const { Collection } = require('@discordjs/collection');
+const { range } = require('@discordjs/util');
 const { AsyncEventEmitter } = require('@vladfrangu/async_event_emitter');
 const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
 const { fetchRecommendedShardCount } = require('../util/Util.js');
@@ -234,7 +235,7 @@ class ShardingManager extends AsyncEventEmitter {
     // Make sure this many shards haven't already been spawned
     if (this.shards.size >= shardAmount) throw new DiscordjsError(ErrorCodes.ShardingAlreadySpawned, this.shards.size);
     if (this.shardList === 'auto' || this.totalShards === 'auto' || this.totalShards !== shardAmount) {
-      this.shardList = [...Array.from({ length: shardAmount }).keys()];
+      this.shardList = [...range(shardAmount)];
     }
 
     if (this.totalShards === 'auto' || this.totalShards !== shardAmount) {

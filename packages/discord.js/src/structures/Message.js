@@ -613,7 +613,7 @@ class Message extends Base {
    * @readonly
    */
   get cleanContent() {
-    // eslint-disable-next-line eqeqeq, no-eq-null
+    // eslint-disable-next-line eqeqeq
     return this.content != null && this.channel ? cleanContent(this.content, this.channel) : null;
   }
 
@@ -829,7 +829,7 @@ class Message extends Base {
     if (!messageId) throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
     const channel = this.client.channels.resolve(channelId);
     if (!channel) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
-    return await channel.messages.fetch(messageId);
+    return channel.messages.fetch(messageId);
   }
 
   /**

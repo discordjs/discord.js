@@ -288,7 +288,7 @@ class VoiceState extends Base {
    * Toggles the request to speak in the channel.
    * Only applicable for stage channels and for the client's own voice state.
    *
-   * @param {boolean} [requestToSpeak] Whether or not the client is requesting to become a speaker.
+   * @param {boolean} [requestToSpeak=true] Whether or not the client is requesting to become a speaker.
    * @example
    * // Making the client request to speak in a stage channel (raise its hand)
    * guild.members.me.voice.setRequestToSpeak(true);

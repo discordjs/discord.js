@@ -106,9 +106,9 @@ class PermissionOverwrites extends Base {
    * An object mapping permission flags to `true` (enabled), `null` (unset) or `false` (disabled).
    * ```js
    * {
-   * 'SendMessages': true,
-   * 'EmbedLinks': null,
-   * 'AttachFiles': false,
+   *  'SendMessages': true,
+   *  'EmbedLinks': null,
+   *  'AttachFiles': false,
    * }
    * ```
    *

@@ -104,12 +104,16 @@ class Presence extends Base {
 
     if ('client_status' in data) {
       /**
-       * The devices this presence is on
-       *
-       * @type {?object}
+       * @typedef {Object} ClientPresenceStatusData
        * @property {?ClientPresenceStatus} web The current presence in the web application
        * @property {?ClientPresenceStatus} mobile The current presence in the mobile application
        * @property {?ClientPresenceStatus} desktop The current presence in the desktop application
+       */
+
+      /**
+       * The devices this presence is on
+       *
+       * @type {?ClientPresenceStatusData}
        */
       this.clientStatus = data.client_status;
     } else {

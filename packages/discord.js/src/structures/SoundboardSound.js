@@ -62,7 +62,7 @@ class SoundboardSound extends Base {
       /**
        * The raw emoji data of this soundboard sound
        *
-       * @type {?object}
+       * @type {?Object}
        * @private
        */
       this._emoji = {

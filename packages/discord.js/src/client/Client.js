@@ -229,7 +229,7 @@ class Client extends BaseClient {
     /**
      * An array of queued events before this Client became ready
      *
-     * @type {object[]}
+     * @type {Object[]}
      * @private
      * @name Client#incomingPacketQueue
      */

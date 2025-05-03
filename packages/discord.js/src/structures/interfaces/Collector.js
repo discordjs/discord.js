@@ -204,22 +204,20 @@ class Collector extends AsyncEventEmitter {
         return;
       }
 
-      const cleanup = () => {
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      function cleanup() {
         this.removeListener('collect', onCollect);
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         this.removeListener('end', onEnd);
-      };
+      }
 
-      const onCollect = item => {
+      function onCollect(item) {
         cleanup();
         resolve(item);
-      };
+      }
 
-      const onEnd = () => {
+      function onEnd() {
         cleanup();
         reject(this.collected);
-      };
+      }
 
       this.on('collect', onCollect);
       this.on('end', onEnd);

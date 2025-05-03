@@ -510,7 +510,7 @@ class GuildChannelManager extends CachedManager {
   /**
    * Obtains all active thread channels in the guild.
    *
-   * @param {boolean} [cache] Whether to cache the fetched data
+   * @param {boolean} [cache=true] Whether to cache the fetched data
    * @returns {Promise<FetchedThreads>}
    * @example
    * // Fetch all threads from the guild

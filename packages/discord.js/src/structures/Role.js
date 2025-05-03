@@ -129,7 +129,7 @@ class Role extends Base {
     /**
      * The tags this role has
      *
-     * @type {?object}
+     * @type {?Object}
      * @property {Snowflake} [botId] The id of the bot this role belongs to
      * @property {Snowflake|string} [integrationId] The id of the integration this role belongs to
      * @property {true} [premiumSubscriberRole] Whether this is the guild's premium subscription role

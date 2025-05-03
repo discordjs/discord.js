@@ -201,7 +201,7 @@ class GuildAuditLogsEntry {
     /**
      * Any extra data from the entry
      *
-     * @type {?(object | Role | GuildMember)}
+     * @type {?(Object | Role | GuildMember)}
      */
     this.extra = null;
     switch (data.action_type) {
