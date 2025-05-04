@@ -2777,7 +2777,7 @@ declare const partialPoll: PartialPoll;
     expectType<null>(partialPoll.allowMultiselect);
     expectType<null>(partialPoll.layoutType);
     expectType<null>(partialPoll.expiresTimestamp);
-    expectType<ReadonlyCollection<number, PartialPollAnswer>>(partialPoll.answers);
+    expectType<Collection<number, PartialPollAnswer>>(partialPoll.answers);
   }
 }
 
