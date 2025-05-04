@@ -3727,98 +3727,136 @@ export const version: string;
 // #endregion
 
 // #region Errors
+/* eslint-disable typescript-sort-keys/string-enum */
 export enum DiscordjsErrorCodes {
-  ApplicationCommandPermissionsTokenMissing = 'ApplicationCommandPermissionsTokenMissing',
-  AutocompleteInteractionOptionNoFocusedOption = 'AutocompleteInteractionOptionNoFocusedOption',
-  BanResolveId = 'BanResolveId',
-  BitFieldInvalid = 'BitFieldInvalid',
-  BulkBanUsersOptionEmpty = 'BulkBanUsersOptionEmpty',
-  ChannelNotCached = 'ChannelNotCached',
   ClientInvalidOption = 'ClientInvalidOption',
   ClientInvalidProvidedShards = 'ClientInvalidProvidedShards',
   ClientMissingIntents = 'ClientMissingIntents',
   ClientNotReady = 'ClientNotReady',
-  ColorConvert = 'ColorConvert',
-  ColorRange = 'ColorRange',
-  CommandInteractionOptionEmpty = 'CommandInteractionOptionEmpty',
-  CommandInteractionOptionNoSubcommand = 'CommandInteractionOptionNoSubcommand',
-  CommandInteractionOptionNoSubcommandGroup = 'CommandInteractionOptionNoSubcommandGroup',
-  CommandInteractionOptionNotFound = 'CommandInteractionOptionNotFound',
-  CommandInteractionOptionType = 'CommandInteractionOptionType',
-  DeleteGroupDMChannel = 'DeleteGroupDMChannel',
-  EmojiManaged = 'EmojiManaged',
-  EmojiType = 'EmojiType',
-  EntitlementCreateInvalidOwner = 'EntitlementCreateInvalidOwner',
-  FetchBanResolveId = 'FetchBanResolveId',
-  FetchGroupDMChannel = 'FetchGroupDMChannel',
-  FetchOwnerId = 'FetchOwnerId',
-  FileNotFound = 'FileNotFound',
-  GlobalCommandPermissions = 'GlobalCommandPermissions',
-  GuildChannelOrphan = 'GuildChannelOrphan',
-  GuildChannelResolve = 'GuildChannelResolve',
-  GuildChannelUnowned = 'GuildChannelUnowned',
-  GuildForumMessageRequired = 'GuildForumMessageRequired',
-  GuildMembersTimeout = 'GuildMembersTimeout',
-  GuildOwned = 'GuildOwned',
-  GuildScheduledEventResolve = 'GuildScheduledEventResolve',
-  GuildSoundboardSoundsTimeout = 'GuildSoundboardSoundsTimeout',
-  GuildUncachedEntityResolve = 'GuildUncachedEntityResolve',
-  GuildUncachedMe = 'GuildUncachedMe',
-  GuildVoiceChannelResolve = 'GuildVoiceChannelResolve',
-  InteractionAlreadyReplied = 'InteractionAlreadyReplied',
-  InteractionCollectorError = 'InteractionCollectorError',
-  InteractionNotReplied = 'InteractionNotReplied',
-  InvalidElement = 'InvalidElement',
-  InvalidMissingScopes = 'InvalidMissingScopes',
-  InvalidScopesWithPermissions = 'InvalidScopesWithPermissions',
-  InvalidType = 'InvalidType',
-  InviteNotFound = 'InviteNotFound',
-  InviteOptionsMissingChannel = 'InviteOptionsMissingChannel',
-  InviteResolveCode = 'InviteResolveCode',
-  MemberFetchNonceLength = 'MemberFetchNonceLength',
-  MessageBulkDeleteType = 'MessageBulkDeleteType',
-  MessageContentType = 'MessageContentType',
-  MessageExistingThread = 'MessageExistingThread',
-  MessageNonceRequired = 'MessageNonceRequired',
-  MessageNonceType = 'MessageNonceType',
-  MessageReferenceMissing = 'MessageReferenceMissing',
-  MessageThreadParent = 'MessageThreadParent',
-  MissingManageGuildExpressionsPermission = 'MissingManageGuildExpressionsPermission',
-  ModalSubmitInteractionFieldNotFound = 'ModalSubmitInteractionFieldNotFound',
-  ModalSubmitInteractionFieldType = 'ModalSubmitInteractionFieldType',
-  NotGuildSoundboardSound = 'NotGuildSoundboardSound',
-  NotGuildSticker = 'NotGuildSticker',
-  NotImplemented = 'NotImplemented',
-  PollAlreadyExpired = 'PollAlreadyExpired',
-  PruneDaysType = 'PruneDaysType',
-  ReactionResolveUser = 'ReactionResolveUser',
-  ReqResourceType = 'ReqResourceType',
-  ShardingAlreadySpawned = 'ShardingAlreadySpawned',
-  ShardingInProcess = 'ShardingInProcess',
-  ShardingInvalidEvalBroadcast = 'ShardingInvalidEvalBroadcast',
-  ShardingNoChildExists = 'ShardingNoChildExists',
-  ShardingNoShards = 'ShardingNoShards',
-  ShardingProcessExists = 'ShardingProcessExists',
-  ShardingReadyDied = 'ShardingReadyDied',
-  ShardingReadyDisconnected = 'ShardingReadyDisconnected',
-  ShardingReadyTimeout = 'ShardingReadyTimeout',
-  ShardingShardMiscalculation = 'ShardingShardMiscalculation',
-  ShardingShardNotFound = 'ShardingShardNotFound',
-  ShardingWorkerExists = 'ShardingWorkerExists',
-  StageChannelResolve = 'StageChannelResolve',
-  SweepFilterReturn = 'SweepFilterReturn',
-  ThreadInvitableType = 'ThreadInvitableType',
+
   TokenInvalid = 'TokenInvalid',
   TokenMissing = 'TokenMissing',
+  ApplicationCommandPermissionsTokenMissing = 'ApplicationCommandPermissionsTokenMissing',
+
+  BitFieldInvalid = 'BitFieldInvalid',
+
+  ShardingNoShards = 'ShardingNoShards',
+  ShardingInProcess = 'ShardingInProcess',
+  ShardingInvalidEvalBroadcast = 'ShardingInvalidEvalBroadcast',
+  ShardingShardNotFound = 'ShardingShardNotFound',
+  ShardingAlreadySpawned = 'ShardingAlreadySpawned',
+  ShardingProcessExists = 'ShardingProcessExists',
+  ShardingWorkerExists = 'ShardingWorkerExists',
+  ShardingReadyTimeout = 'ShardingReadyTimeout',
+  ShardingReadyDisconnected = 'ShardingReadyDisconnected',
+  ShardingReadyDied = 'ShardingReadyDied',
+  ShardingNoChildExists = 'ShardingNoChildExists',
+  ShardingShardMiscalculation = 'ShardingShardMiscalculation',
+
+  ColorRange = 'ColorRange',
+  ColorConvert = 'ColorConvert',
+
+  InviteOptionsMissingChannel = 'InviteOptionsMissingChannel',
+
+  InteractionCollectorError = 'InteractionCollectorError',
+
+  FileNotFound = 'FileNotFound',
+
   UserNoDMChannel = 'UserNoDMChannel',
+
   VoiceNotStageChannel = 'VoiceNotStageChannel',
-  VoiceStateInvalidType = 'VoiceStateInvalidType',
+
   VoiceStateNotOwn = 'VoiceStateNotOwn',
-  WebhookApplication = 'WebhookApplication',
+  VoiceStateInvalidType = 'VoiceStateInvalidType',
+
+  ReqResourceType = 'ReqResourceType',
+
+  MessageBulkDeleteType = 'MessageBulkDeleteType',
+  MessageContentType = 'MessageContentType',
+  MessageNonceRequired = 'MessageNonceRequired',
+  MessageNonceType = 'MessageNonceType',
+
+  BanResolveId = 'BanResolveId',
+  FetchBanResolveId = 'FetchBanResolveId',
+
+  PruneDaysType = 'PruneDaysType',
+
+  GuildChannelResolve = 'GuildChannelResolve',
+  GuildVoiceChannelResolve = 'GuildVoiceChannelResolve',
+  GuildChannelOrphan = 'GuildChannelOrphan',
+  GuildChannelUnowned = 'GuildChannelUnowned',
+  GuildOwned = 'GuildOwned',
+  GuildMembersTimeout = 'GuildMembersTimeout',
+  GuildSoundboardSoundsTimeout = 'GuildSoundboardSoundsTimeout',
+  GuildUncachedMe = 'GuildUncachedMe',
+  ChannelNotCached = 'ChannelNotCached',
+  StageChannelResolve = 'StageChannelResolve',
+  GuildScheduledEventResolve = 'GuildScheduledEventResolve',
+  FetchOwnerId = 'FetchOwnerId',
+
+  InvalidType = 'InvalidType',
+  InvalidElement = 'InvalidElement',
+
+  MessageThreadParent = 'MessageThreadParent',
+  MessageExistingThread = 'MessageExistingThread',
+  ThreadInvitableType = 'ThreadInvitableType',
+
   WebhookMessage = 'WebhookMessage',
   WebhookTokenUnavailable = 'WebhookTokenUnavailable',
   WebhookURLInvalid = 'WebhookURLInvalid',
+  WebhookApplication = 'WebhookApplication',
+
+  MessageReferenceMissing = 'MessageReferenceMissing',
+
+  EmojiType = 'EmojiType',
+  EmojiManaged = 'EmojiManaged',
+  MissingManageGuildExpressionsPermission = 'MissingManageGuildExpressionsPermission',
+
+  NotGuildSoundboardSound = 'NotGuildSoundboardSound',
+  NotGuildSticker = 'NotGuildSticker',
+
+  ReactionResolveUser = 'ReactionResolveUser',
+
+  InviteResolveCode = 'InviteResolveCode',
+  InviteNotFound = 'InviteNotFound',
+
+  DeleteGroupDMChannel = 'DeleteGroupDMChannel',
+  FetchGroupDMChannel = 'FetchGroupDMChannel',
+
+  MemberFetchNonceLength = 'MemberFetchNonceLength',
+
+  GlobalCommandPermissions = 'GlobalCommandPermissions',
+  GuildUncachedEntityResolve = 'GuildUncachedEntityResolve',
+
+  InteractionAlreadyReplied = 'InteractionAlreadyReplied',
+  InteractionNotReplied = 'InteractionNotReplied',
+
+  CommandInteractionOptionNotFound = 'CommandInteractionOptionNotFound',
+  CommandInteractionOptionType = 'CommandInteractionOptionType',
+  CommandInteractionOptionEmpty = 'CommandInteractionOptionEmpty',
+  CommandInteractionOptionNoSubcommand = 'CommandInteractionOptionNoSubcommand',
+  CommandInteractionOptionNoSubcommandGroup = 'CommandInteractionOptionNoSubcommandGroup',
+  AutocompleteInteractionOptionNoFocusedOption = 'AutocompleteInteractionOptionNoFocusedOption',
+
+  ModalSubmitInteractionFieldNotFound = 'ModalSubmitInteractionFieldNotFound',
+  ModalSubmitInteractionFieldType = 'ModalSubmitInteractionFieldType',
+
+  InvalidMissingScopes = 'InvalidMissingScopes',
+  InvalidScopesWithPermissions = 'InvalidScopesWithPermissions',
+
+  NotImplemented = 'NotImplemented',
+
+  SweepFilterReturn = 'SweepFilterReturn',
+
+  GuildForumMessageRequired = 'GuildForumMessageRequired',
+
+  EntitlementCreateInvalidOwner = 'EntitlementCreateInvalidOwner',
+
+  BulkBanUsersOptionEmpty = 'BulkBanUsersOptionEmpty',
+
+  PollAlreadyExpired = 'PollAlreadyExpired',
 }
+/* eslint-enable typescript-sort-keys/string-enum */
 
 export class DiscordjsError extends Error {
   private constructor(code: DiscordjsErrorCodes, ...args: unknown[]);
