@@ -383,7 +383,7 @@ class Message extends Base {
     /**
      * Reference data sent in a message that contains ids identifying the referenced message.
      * This can be present in the following types of message:
-     * - Crossposted messages ({@link MessageFlags.Crossposted})
+     * - {@link MessageFlags.Crossposted}
      * - {@link MessageType.ChannelPinnedMessage}
      * - {@link MessageType.ChannelFollowAdd}
      * - {@link MessageType.Reply}
