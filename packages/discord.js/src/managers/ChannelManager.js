@@ -73,6 +73,15 @@ class ChannelManager extends CachedManager {
 
     channel?.parent?.threads?.cache.delete(id);
     this.cache.delete(id);
+
+    if (channel?.threads) {
+      for (const cacheChannelId of this.cache.keys()) {
+        if (channel.threads.cache.has(cacheChannelId)) {
+          this.cache.delete(cacheChannelId);
+          channel.guild?.channels.cache.delete(cacheChannelId);
+        }
+      }
+    }
   }
 
   /**
