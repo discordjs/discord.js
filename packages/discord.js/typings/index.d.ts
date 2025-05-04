@@ -1,17 +1,14 @@
-import type { Buffer } from 'node:buffer';
-import type { ChildProcess } from 'node:child_process';
-import type { Stream } from 'node:stream';
-import type { MessagePort, Worker } from 'node:worker_threads';
-import type {
-  ApplicationCommandOptionAllowedChannelTypes,
-  MessageActionRowComponentBuilder,
-} from '@discordjs/builders';
-import type { Collection, ReadonlyCollection } from '@discordjs/collection';
-import type { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
-import type { Awaitable, JSONEncodable } from '@discordjs/util';
-import type { WebSocketManager, WebSocketManagerOptions } from '@discordjs/ws';
+import { Buffer } from 'node:buffer';
+import { ChildProcess } from 'node:child_process';
+import { Stream } from 'node:stream';
+import { MessagePort, Worker } from 'node:worker_threads';
+import { ApplicationCommandOptionAllowedChannelTypes, MessageActionRowComponentBuilder } from '@discordjs/builders';
+import { Collection, ReadonlyCollection } from '@discordjs/collection';
+import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
+import { Awaitable, JSONEncodable } from '@discordjs/util';
+import { WebSocketManager, WebSocketManagerOptions } from '@discordjs/ws';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
-import type {
+import {
   APIActionRowComponent,
   APIApplicationCommandInteractionData,
   APIApplicationCommandOption,
@@ -48,6 +45,7 @@ import type {
   MessageType,
   OAuth2Scopes,
   RESTPostAPIApplicationCommandsJSONBody,
+  Snowflake,
   StageInstancePrivacyLevel,
   StickerFormatType,
   StickerType,
@@ -168,9 +166,8 @@ import type {
   RESTAPIPoll,
   EntryPointCommandHandlerType,
   APISoundboardSound,
-  Snowflake,
 } from 'discord-api-types/v10';
-import type {
+import {
   RawActivityData,
   RawAnonymousGuildData,
   RawApplicationCommandData,
@@ -232,40 +229,26 @@ import type {
 export class Activity {
   private constructor(presence: Presence, data?: RawActivityData);
   public readonly presence: Presence;
-
   public applicationId: Snowflake | null;
-
   public assets: RichPresenceAssets | null;
-
   public buttons: string[];
-
   public get createdAt(): Date;
   public createdTimestamp: number;
-
   public details: string | null;
-
   public emoji: Emoji | null;
-
   public flags: Readonly<ActivityFlagsBitField>;
-
   public name: string;
-
   public party: {
     id: string | null;
     size: [number, number];
   } | null;
-
   public state: string | null;
-
   public syncId: string | null;
-
   public timestamps: {
     end: Date | null;
     start: Date | null;
   } | null;
-
   public type: ActivityType;
-
   public url: string | null;
   public equals(activity: Activity): boolean;
   public toString(): string;
@@ -322,17 +305,11 @@ export class ActivityFlagsBitField extends BitField<ActivityFlagsString> {
 export abstract class AnonymousGuild extends BaseGuild {
   protected constructor(client: Client<true>, data: RawAnonymousGuildData, immediatePatch?: boolean);
   public banner: string | null;
-
   public description: string | null;
-
   public nsfwLevel: GuildNSFWLevel;
-
   public premiumSubscriptionCount: number | null;
-
   public splash: string | null;
-
   public vanityURLCode: string | null;
-
   public verificationLevel: GuildVerificationLevel;
   public bannerURL(options?: ImageURLOptions): string | null;
   public splashURL(options?: ImageURLOptions): string | null;
@@ -341,28 +318,18 @@ export abstract class AnonymousGuild extends BaseGuild {
 export class AutoModerationActionExecution {
   private constructor(data: GatewayAutoModerationActionExecutionDispatchData, guild: Guild);
   public guild: Guild;
-
   public action: AutoModerationAction;
-
   public ruleId: Snowflake;
-
   public ruleTriggerType: AutoModerationRuleTriggerType;
-
   public get user(): User | null;
   public userId: Snowflake;
-
   public get channel(): ForumChannel | GuildTextBasedChannel | MediaChannel | null;
   public channelId: Snowflake | null;
-
   public get member(): GuildMember | null;
   public messageId: Snowflake | null;
-
   public alertSystemMessageId: Snowflake | null;
-
   public content: string;
-
   public matchedKeyword: string | null;
-
   public matchedContent: string | null;
   public get autoModerationRule(): AutoModerationRule | null;
 }
@@ -370,25 +337,15 @@ export class AutoModerationActionExecution {
 export class AutoModerationRule extends Base {
   private constructor(client: Client<true>, data: APIAutoModerationRule, guild: Guild);
   public id: Snowflake;
-
   public guild: Guild;
-
   public name: string;
-
   public creatorId: Snowflake;
-
   public eventType: AutoModerationRuleEventType;
-
   public triggerType: AutoModerationRuleTriggerType;
-
   public triggerMetadata: AutoModerationTriggerMetadata;
-
   public actions: AutoModerationAction[];
-
   public enabled: boolean;
-
   public exemptRoles: Collection<Snowflake, Role>;
-
   public exemptChannels: Collection<Snowflake, GuildBasedChannel>;
   public edit(options: AutoModerationRuleEditOptions): Promise<AutoModerationRule>;
   public delete(reason?: string): Promise<void>;
@@ -423,21 +380,13 @@ export abstract class Application extends Base {
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public description: string | null;
-
   public icon: string | null;
-
   public id: Snowflake;
-
   public name: string | null;
-
   public termsOfServiceURL: string | null;
-
   public privacyPolicyURL: string | null;
-
   public rpcOrigins: string[];
-
   public cover: string | null;
-
   public verifyKey: string | null;
   public coverURL(options?: ImageURLOptions): string | null;
   public iconURL(options?: ImageURLOptions): string | null;
@@ -448,49 +397,31 @@ export abstract class Application extends Base {
 export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   private constructor(client: Client<true>, data: RawApplicationCommandData, guild?: Guild, guildId?: Snowflake);
   public applicationId: Snowflake;
-
   public contexts: InteractionContextType[] | null;
-
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public defaultMemberPermissions: Readonly<PermissionsBitField> | null;
-
   public description: string;
-
   public descriptionLocalizations: LocalizationMap | null;
-
   public descriptionLocalized: string | null;
-
   public guild: Guild | null;
-
   public guildId: Snowflake | null;
-
   public get manager(): ApplicationCommandManager;
   public id: Snowflake;
-
   public integrationTypes: ApplicationIntegrationType[] | null;
-
   public handler: EntryPointCommandHandlerType | null;
-
   public name: string;
-
   public nameLocalizations: LocalizationMap | null;
-
   public nameLocalized: string | null;
-
   public options: (ApplicationCommandOption & { descriptionLocalized?: string; nameLocalized?: string })[];
-
   public permissions: ApplicationCommandPermissionsManager<
     PermissionsFetchType,
     PermissionsFetchType,
     Guild | null,
     Snowflake
   >;
-
   public type: ApplicationCommandType;
-
   public version: Snowflake;
-
   public nsfw: boolean;
   public delete(): Promise<ApplicationCommand<PermissionsFetchType>>;
   public edit(data: Partial<ApplicationCommandData>): Promise<ApplicationCommand<PermissionsFetchType>>;
@@ -531,15 +462,10 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
 export class ApplicationRoleConnectionMetadata {
   private constructor(data: APIApplicationRoleConnectionMetadata);
   public name: string;
-
   public nameLocalizations: LocalizationMap | null;
-
   public description: string;
-
   public descriptionLocalizations: LocalizationMap | null;
-
   public key: string;
-
   public type: ApplicationRoleConnectionMetadataType;
 }
 
@@ -567,7 +493,6 @@ export class BaseClient<Events extends {}> extends AsyncEventEmitter<Events> imp
   private incrementMaxListeners(): void;
 
   public options: ClientOptions | WebhookClientOptions;
-
   public rest: REST;
   public destroy(): void;
   public toJSON(...props: Record<string, boolean | string>[]): unknown;
@@ -586,24 +511,15 @@ export type BooleanCache<Cached extends CacheType> = Cached extends 'cached' ? t
 
 export abstract class CommandInteraction<Cached extends CacheType = CacheType> extends BaseInteraction<Cached> {
   public type: InteractionType.ApplicationCommand;
-
   public get command(): ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
   public channelId: Snowflake;
-
   public commandId: Snowflake;
-
   public commandName: string;
-
   public commandType: ApplicationCommandType;
-
   public commandGuildId: Snowflake | null;
-
   public deferred: boolean;
-
   public ephemeral: boolean | null;
-
   public replied: boolean;
-
   public webhook: InteractionWebhook;
   public inGuild(): this is CommandInteraction<'cached' | 'raw'>;
   public inCachedGuild(): this is CommandInteraction<'cached'>;
@@ -670,11 +586,8 @@ export abstract class BaseGuild extends Base {
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public features: `${GuildFeature}`[];
-
   public icon: string | null;
-
   public id: Snowflake;
-
   public name: string;
   public get nameAcronym(): string;
   public get partnered(): boolean;
@@ -689,15 +602,11 @@ export class BaseGuildEmoji extends Emoji {
   public imageURL(options?: ImageURLOptions): string;
   public get url(): string;
   public available: boolean | null;
-
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public guild: Guild | GuildPreview;
-
   public id: Snowflake;
-
   public managed: boolean | null;
-
   public requiresColons: boolean | null;
 }
 
@@ -705,15 +614,10 @@ export interface BaseGuildTextChannel extends TextBasedChannelFields<true> {}
 export class BaseGuildTextChannel extends GuildChannel {
   protected constructor(guild: Guild, data?: RawGuildChannelData, client?: Client<true>, immediatePatch?: boolean);
   public defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
-
   public defaultThreadRateLimitPerUser: number | null;
-
   public rateLimitPerUser: number | null;
-
   public nsfw: boolean;
-
   public threads: GuildTextThreadManager<AllowedThreadTypeForAnnouncementChannel | AllowedThreadTypeForTextChannel>;
-
   public topic: string | null;
   public createInvite(options?: InviteCreateOptions): Promise<Invite>;
   public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
@@ -730,18 +634,13 @@ export interface BaseGuildVoiceChannel extends Omit<TextBasedChannelFields<true>
 export class BaseGuildVoiceChannel extends GuildChannel {
   public constructor(guild: Guild, data?: RawGuildChannelData);
   public bitrate: number;
-
   public get full(): boolean;
   public get joinable(): boolean;
   public get members(): Collection<Snowflake, GuildMember>;
   public nsfw: boolean;
-
   public rateLimitPerUser: number | null;
-
   public rtcRegion: string | null;
-
   public userLimit: number;
-
   public videoQualityMode: VideoQualityMode | null;
   public createInvite(options?: InviteCreateOptions): Promise<Invite>;
   public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
@@ -756,7 +655,6 @@ export type EnumLike<Enum, Value> = Record<keyof Enum, Value>;
 export class BitField<Flags extends string, Type extends bigint | number = number> {
   public constructor(bits?: BitFieldResolvable<Flags, Type>);
   public bitfield: Type;
-
   public add(...bits: BitFieldResolvable<Flags, Type>[]): BitField<Flags, Type>;
   public any(bit: BitFieldResolvable<Flags, Type>): boolean;
   public equals(bit: BitFieldResolvable<Flags, Type>): boolean;
@@ -910,7 +808,6 @@ export type CategoryChannelChildTypes =
 export class CategoryChannel extends GuildChannel {
   public get children(): CategoryChannelChildManager;
   public type: ChannelType.GuildCategory;
-
   public get parent(): null;
   public parentId: null;
 }
@@ -931,9 +828,7 @@ export abstract class BaseChannel extends Base {
   public get createdAt(): Date | null;
   public get createdTimestamp(): number | null;
   public id: Snowflake;
-
   public flags: Readonly<ChannelFlagsBitField> | null;
-
   public get partial(): false;
   public type: ChannelType;
   public get url(): string;
@@ -957,17 +852,11 @@ export type If<Value extends boolean, TrueResult, FalseResult = null> = Value ex
 export class Client<Ready extends boolean = boolean> extends BaseClient<ClientEventTypes> {
   public constructor(options: ClientOptions);
   private readonly actions: unknown;
-
   private readonly expectedGuilds: Set<Snowflake>;
-
   private readonly packetQueue: unknown[];
-
   private readonly presence: ClientPresence;
-
   private readonly pings: Collection<number, number>;
-
   private readonly readyTimeout: NodeJS.Timeout | null;
-
   private _broadcast(packet: GatewaySendPayload): void;
   private _eval(script: string): unknown;
   private _handlePacket(packet?: GatewayDispatchPayload, shardId?: number): boolean;
@@ -979,34 +868,21 @@ export class Client<Ready extends boolean = boolean> extends BaseClient<ClientEv
   private readonly _ready: Ready;
 
   public application: If<Ready, ClientApplication>;
-
   public channels: ChannelManager;
-
   public guilds: GuildManager;
-
   public lastPingTimestamps: ReadonlyCollection<number, number>;
-
   public options: Omit<ClientOptions, 'intents'> & { intents: IntentsBitField };
-
   public get ping(): number | null;
   public get readyAt(): If<Ready, Date>;
   public readyTimestamp: If<Ready, number>;
-
   public sweepers: Sweepers;
-
   public shard: ShardClientUtil | null;
-
   public status: Status;
-
   public token: If<Ready, string, string | null>;
-
   public get uptime(): If<Ready, number>;
   public user: If<Ready, ClientUser>;
-
   public users: UserManager;
-
   public voice: ClientVoiceManager;
-
   public ws: WebSocketManager;
 
   public destroy(): Promise<void>;
@@ -1034,47 +910,27 @@ export interface StickerPackFetchOptions {
 export class ClientApplication extends Application {
   private constructor(client: Client<true>, data: RawClientApplicationData);
   public botPublic: boolean | null;
-
   public botRequireCodeGrant: boolean | null;
-
   public bot: User | null;
-
   public commands: ApplicationCommandManager;
-
   public emojis: ApplicationEmojiManager;
-
   public entitlements: EntitlementManager;
-
   public subscriptions: SubscriptionManager;
-
   public guildId: Snowflake | null;
-
   public get guild(): Guild | null;
   public flags: Readonly<ApplicationFlagsBitField>;
-
   public approximateGuildCount: number | null;
-
   public approximateUserInstallCount: number | null;
-
   public tags: string[];
-
   public installParams: ClientApplicationInstallParams | null;
-
   public integrationTypesConfig: IntegrationTypesConfiguration | null;
-
   public customInstallURL: string | null;
-
   public owner: Team | User | null;
-
   public get partial(): boolean;
   public interactionsEndpointURL: string | null;
-
   public eventWebhooksURL: string | null;
-
   public eventWebhooksStatus: ApplicationWebhookEventStatus | null;
-
   public eventWebhooksTypes: ApplicationWebhookEventType[] | null;
-
   public roleConnectionsVerificationURL: string | null;
   public edit(options: ClientApplicationEditOptions): Promise<ClientApplication>;
   public fetch(): Promise<ClientApplication>;
@@ -1094,7 +950,6 @@ export class ClientPresence extends Presence {
 
 export class ClientUser extends User {
   public mfaEnabled: boolean;
-
   public get presence(): ClientPresence;
   public verified: boolean;
   public edit(options: ClientUserEditOptions): Promise<this>;
@@ -1121,7 +976,6 @@ export class Options extends null {
 export class ClientVoiceManager {
   private constructor(client: Client);
   public readonly client: Client;
-
   public adapters: Map<Snowflake, InternalDiscordGatewayAdapterLibraryMethods>;
 }
 
@@ -1142,23 +996,16 @@ export abstract class Collector<
 > extends AsyncEventEmitter<EventTypes> {
   protected constructor(client: Client<true>, options?: CollectorOptions<[Value, ...Extras]>);
   private readonly _timeout: NodeJS.Timeout | null;
-
   private readonly _idletimeout: NodeJS.Timeout | null;
-
   private readonly _endReason: string | null;
 
   public readonly client: Client;
-
   public collected: Collection<Key, Value>;
-
   public lastCollectedTimestamp: number | null;
-
   public get lastCollectedAt(): Date | null;
   public ended: boolean;
-
   public get endReason(): string | null;
   public filter: CollectorFilter<[Value, ...Extras]>;
-
   public get next(): Promise<Value>;
   public options: CollectorOptions<[Value, ...Extras]>;
   public checkEnd(): boolean;
@@ -1176,7 +1023,6 @@ export abstract class Collector<
 
 export class ChatInputCommandInteraction<Cached extends CacheType = CacheType> extends CommandInteraction<Cached> {
   public commandType: ApplicationCommandType.ChatInput;
-
   public options: Omit<CommandInteractionOptionResolver<Cached>, 'getFocused' | 'getMessage'>;
   public inGuild(): this is ChatInputCommandInteraction<'cached' | 'raw'>;
   public inCachedGuild(): this is ChatInputCommandInteraction<'cached'>;
@@ -1186,20 +1032,13 @@ export class ChatInputCommandInteraction<Cached extends CacheType = CacheType> e
 
 export class AutocompleteInteraction<Cached extends CacheType = CacheType> extends BaseInteraction<Cached> {
   public type: InteractionType.ApplicationCommandAutocomplete;
-
   public get command(): ApplicationCommand | ApplicationCommand<{ guild: GuildResolvable }> | null;
   public channelId: Snowflake;
-
   public commandId: Snowflake;
-
   public commandName: string;
-
   public commandType: ApplicationCommandType.ChatInput;
-
   public commandGuildId: Snowflake | null;
-
   public responded: boolean;
-
   public options: Omit<
     CommandInteractionOptionResolver<Cached>,
     'getAttachment' | 'getChannel' | 'getMember' | 'getMentionable' | 'getMessage' | 'getRole' | 'getUser'
@@ -1217,15 +1056,10 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
     resolved: CommandInteractionResolvedData,
   );
   public readonly client: Client;
-
   public readonly data: readonly CommandInteractionOption<Cached>[];
-
   public readonly resolved: Readonly<CommandInteractionResolvedData<Cached>> | null;
-
   private readonly _group: string | null;
-
   private readonly _hoistedOptions: CommandInteractionOption<Cached>[];
-
   private readonly _subcommand: string | null;
   private _getTypedOption(
     name: string,
@@ -1332,9 +1166,7 @@ export class ContextMenuCommandInteraction<Cached extends CacheType = CacheType>
     | 'getSubcommandGroup'
     | 'getUser'
   >;
-
   public commandType: ApplicationCommandType.Message | ApplicationCommandType.User;
-
   public targetId: Snowflake;
   public inGuild(): this is ContextMenuCommandInteraction<'cached' | 'raw'>;
   public inCachedGuild(): this is ContextMenuCommandInteraction<'cached'>;
@@ -1359,9 +1191,7 @@ export interface DMChannel
 export class DMChannel extends BaseChannel {
   private constructor(client: Client<true>, data?: RawDMChannelData);
   public flags: Readonly<ChannelFlagsBitField>;
-
   public recipientId: Snowflake;
-
   public get recipient(): User | null;
   public type: ChannelType.DM;
   public fetch(force?: boolean): Promise<this>;
@@ -1371,11 +1201,9 @@ export class DMChannel extends BaseChannel {
 export class Emoji extends Base {
   protected constructor(client: Client<true>, emoji: RawEmojiData);
   public animated: boolean | null;
-
   public get createdAt(): Date | null;
   public get createdTimestamp(): number | null;
   public id: Snowflake | null;
-
   public name: string | null;
   public get identifier(): string;
   public imageURL(options?: ImageURLOptions): string | null;
@@ -1397,13 +1225,9 @@ export class ApplicationEmoji extends Emoji {
   private constructor(client: Client<true>, data: RawApplicationEmojiData, application: ClientApplication);
 
   public application: ClientApplication;
-
   public author: User | null;
-
   public id: Snowflake;
-
   public managed: boolean | null;
-
   public requiresColons: boolean | null;
   public delete(): Promise<ApplicationEmoji>;
   public edit(options: ApplicationEmojiEditOptions): Promise<ApplicationEmoji>;
@@ -1426,23 +1250,14 @@ export class ApplicationEmojiManager extends CachedManager<Snowflake, Applicatio
 export class Entitlement extends Base {
   private constructor(client: Client<true>, data: APIEntitlement);
   public id: Snowflake;
-
   public skuId: Snowflake;
-
   public userId: Snowflake;
-
   public guildId: Snowflake | null;
-
   public applicationId: Snowflake;
-
   public type: EntitlementType;
-
   public consumed: boolean;
-
   public deleted: boolean;
-
   public startsTimestamp: number | null;
-
   public endsTimestamp: number | null;
   public get guild(): Guild | null;
   public get startsAt(): Date | null;
@@ -1467,97 +1282,54 @@ export class Guild extends AnonymousGuild {
 
   public get afkChannel(): VoiceChannel | null;
   public afkChannelId: Snowflake | null;
-
   public afkTimeout: number;
-
   public applicationId: Snowflake | null;
-
   public maxVideoChannelUsers: number | null;
-
   public approximateMemberCount: number | null;
-
   public approximatePresenceCount: number | null;
-
   public autoModerationRules: AutoModerationRuleManager;
-
   public available: boolean;
-
   public bans: GuildBanManager;
-
   public channels: GuildChannelManager;
-
   public commands: GuildApplicationCommandManager;
-
   public defaultMessageNotifications: GuildDefaultMessageNotifications;
-
   public discoverySplash: string | null;
-
   public emojis: GuildEmojiManager;
-
   public explicitContentFilter: GuildExplicitContentFilter;
-
   public invites: GuildInviteManager;
-
   public get joinedAt(): Date;
   public joinedTimestamp: number;
-
   public large: boolean;
-
   public maximumMembers: number | null;
-
   public maximumPresences: number | null;
-
   public maxStageVideoChannelUsers: number | null;
-
   public memberCount: number;
-
   public members: GuildMemberManager;
-
   public mfaLevel: GuildMFALevel;
-
   public ownerId: Snowflake;
-
   public preferredLocale: Locale;
-
   public premiumProgressBarEnabled: boolean;
-
   public premiumTier: GuildPremiumTier;
-
   public presences: PresenceManager;
-
   public get publicUpdatesChannel(): TextChannel | null;
   public publicUpdatesChannelId: Snowflake | null;
-
   public roles: RoleManager;
-
   public get rulesChannel(): TextChannel | null;
   public rulesChannelId: Snowflake | null;
-
   public get safetyAlertsChannel(): TextChannel | null;
   public safetyAlertsChannelId: Snowflake | null;
-
   public scheduledEvents: GuildScheduledEventManager;
-
   public shardId: number;
-
   public soundboardSounds: GuildSoundboardSoundManager;
-
   public stageInstances: StageInstanceManager;
-
   public stickers: GuildStickerManager;
-
   public incidentsData: IncidentActions | null;
-
   public get systemChannel(): TextChannel | null;
   public systemChannelFlags: Readonly<SystemChannelFlagsBitField>;
-
   public systemChannelId: Snowflake | null;
-
   public vanityURLUses: number | null;
-
   public get voiceAdapterCreator(): InternalDiscordGatewayAdapterCreator;
   public voiceStates: VoiceStateManager;
-
   public get widgetChannel():
     | AnnouncementChannel
     | ForumChannel
@@ -1566,7 +1338,6 @@ export class Guild extends AnonymousGuild {
     | VoiceBasedChannel
     | null;
   public widgetChannelId: Snowflake | null;
-
   public widgetEnabled: boolean | null;
   public get maximumBitrate(): number;
   public createTemplate(name: string, description?: string): Promise<GuildTemplate>;
@@ -1628,15 +1399,10 @@ export class Guild extends AnonymousGuild {
 export class GuildAuditLogs<Event extends AuditLogEvent = AuditLogEvent> {
   private constructor(guild: Guild, data: RawGuildAuditLogData);
   private readonly applicationCommands: Collection<Snowflake, ApplicationCommand>;
-
   private readonly webhooks: Collection<Snowflake, Webhook<WebhookType.ChannelFollower | WebhookType.Incoming>>;
-
   private readonly integrations: Collection<Snowflake | string, Integration>;
-
   private readonly guildScheduledEvents: Collection<Snowflake, GuildScheduledEvent>;
-
   private readonly autoModerationRules: Collection<Snowflake, AutoModerationRule>;
-
   public entries: Collection<Snowflake, GuildAuditLogsEntry<Event>>;
   public toJSON(): unknown;
 }
@@ -1652,31 +1418,20 @@ export class GuildAuditLogsEntry<
 > {
   private constructor(guild: Guild, data: RawGuildAuditLogEntryData, logs?: GuildAuditLogs);
   public static Targets: GuildAuditLogsTargets;
-
   public action: TAction;
-
   public actionType: TActionType;
-
   public changes: AuditLogChange[];
-
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public executorId: Snowflake | null;
-
   public executor: PartialUser | User | null;
-
   public extra: TAction extends keyof GuildAuditLogsEntryExtraField ? GuildAuditLogsEntryExtraField[TAction] : null;
-
   public id: Snowflake;
-
   public reason: string | null;
-
   public targetId: Snowflake | null;
-
   public target: TTargetType extends keyof GuildAuditLogsEntryTargetField<TAction>
     ? GuildAuditLogsEntryTargetField<TAction>[TTargetType]
     : { [x: string]: unknown; id: Snowflake | undefined } | null;
-
   public targetType: TTargetType;
   public static actionType(action: AuditLogEvent): GuildAuditLogsActionType;
   public static targetType(target: AuditLogEvent): GuildAuditLogsTargetType;
@@ -1693,9 +1448,7 @@ export class GuildAuditLogsEntry<
 export class GuildBan extends Base {
   private constructor(client: Client<true>, data: RawGuildBanData, guild: Guild);
   public guild: Guild;
-
   public user: User;
-
   public get partial(): boolean;
   public reason?: string | null;
   public fetch(force?: boolean): Promise<GuildBan>;
@@ -1709,24 +1462,17 @@ export abstract class GuildChannel extends BaseChannel {
   public get createdTimestamp(): number;
   public get deletable(): boolean;
   public flags: Readonly<ChannelFlagsBitField>;
-
   public guild: Guild;
-
   public guildId: Snowflake;
-
   public get manageable(): boolean;
   public get members(): Collection<Snowflake, GuildMember>;
   public name: string;
-
   public get parent(): CategoryChannel | null;
   public parentId: Snowflake | null;
-
   public permissionOverwrites: PermissionOverwriteManager;
-
   public get permissionsLocked(): boolean | null;
   public get position(): number;
   public rawPosition: number;
-
   public type: GuildChannelTypes;
   public get viewable(): boolean;
   public clone(options?: GuildChannelCloneOptions): Promise<this>;
@@ -1752,7 +1498,6 @@ export class GuildEmoji extends BaseGuildEmoji {
 
   public get deletable(): boolean;
   public guild: Guild;
-
   public author: User | null;
   public get roles(): GuildEmojiRoleManager;
   public delete(reason?: string): Promise<GuildEmoji>;
@@ -1775,39 +1520,29 @@ export interface GuildMember extends PartialTextBasedChannelFields<false> {}
 export class GuildMember extends Base {
   private constructor(client: Client<true>, data: RawGuildMemberData, guild: Guild);
   private readonly _roles: Snowflake[];
-
   public avatar: string | null;
-
   public banner: string | null;
-
   public get bannable(): boolean;
   public get dmChannel(): DMChannel | null;
   public get displayColor(): number;
   public get displayHexColor(): HexColorString;
   public get displayName(): string;
   public guild: Guild;
-
   public get id(): Snowflake;
   public pending: boolean;
-
   public get communicationDisabledUntil(): Date | null;
   public communicationDisabledUntilTimestamp: number | null;
-
   public flags: Readonly<GuildMemberFlagsBitField>;
-
   public get joinedAt(): Date | null;
   public joinedTimestamp: number | null;
-
   public get kickable(): boolean;
   public get manageable(): boolean;
   public get moderatable(): boolean;
   public nickname: string | null;
-
   public get partial(): false;
   public get permissions(): Readonly<PermissionsBitField>;
   public get premiumSince(): Date | null;
   public premiumSinceTimestamp: number | null;
-
   public get presence(): Presence | null;
   public get roles(): GuildMemberRoleManager;
   public user: User;
@@ -1840,33 +1575,22 @@ export class GuildOnboarding extends Base {
   private constructor(client: Client, data: RESTGetAPIGuildOnboardingResult);
   public get guild(): Guild;
   public guildId: Snowflake;
-
   public prompts: Collection<Snowflake, GuildOnboardingPrompt>;
-
   public defaultChannels: Collection<Snowflake, GuildChannel>;
-
   public enabled: boolean;
-
   public mode: GuildOnboardingMode;
 }
 
 export class GuildOnboardingPrompt extends Base {
   private constructor(client: Client, data: APIGuildOnboardingPrompt, guildId: Snowflake);
   public id: Snowflake;
-
   public get guild(): Guild;
   public guildId: Snowflake;
-
   public options: Collection<Snowflake, GuildOnboardingPromptOption>;
-
   public title: string;
-
   public singleSelect: boolean;
-
   public required: boolean;
-
   public inOnboarding: boolean;
-
   public type: GuildOnboardingPromptType;
 }
 
@@ -1875,44 +1599,29 @@ export class GuildOnboardingPromptOption extends Base {
   private readonly _emoji: APIPartialEmoji;
 
   public id: Snowflake;
-
   public get emoji(): Emoji | GuildEmoji | null;
   public get guild(): Guild;
   public guildId: Snowflake;
-
   public channels: Collection<Snowflake, GuildChannel>;
-
   public roles: Collection<Snowflake, Role>;
-
   public title: string;
-
   public description: string | null;
 }
 
 export class GuildPreview extends Base {
   private constructor(client: Client<true>, data: RawGuildPreviewData);
   public approximateMemberCount: number;
-
   public approximatePresenceCount: number;
-
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public description: string | null;
-
   public discoverySplash: string | null;
-
   public emojis: Collection<Snowflake, GuildPreviewEmoji>;
-
   public stickers: Collection<Snowflake, Sticker>;
-
   public features: `${GuildFeature}`[];
-
   public icon: string | null;
-
   public id: Snowflake;
-
   public name: string;
-
   public splash: string | null;
   public discoverySplashURL(options?: ImageURLOptions): string | null;
   public iconURL(options?: ImageURLOptions): string | null;
@@ -1925,37 +1634,21 @@ export class GuildPreview extends Base {
 export class GuildScheduledEvent<Status extends GuildScheduledEventStatus = GuildScheduledEventStatus> extends Base {
   private constructor(client: Client<true>, data: RawGuildScheduledEventData);
   public id: Snowflake;
-
   public guildId: Snowflake;
-
   public channelId: Snowflake | null;
-
   public creatorId: Snowflake | null;
-
   public name: string;
-
   public description: string | null;
-
   public scheduledStartTimestamp: number | null;
-
   public scheduledEndTimestamp: number | null;
-
   public privacyLevel: GuildScheduledEventPrivacyLevel;
-
   public status: Status;
-
   public entityType: GuildScheduledEventEntityType;
-
   public entityId: Snowflake | null;
-
   public entityMetadata: GuildScheduledEventEntityMetadata | null;
-
   public userCount: number | null;
-
   public creator: User | null;
-
   public recurrenceRule: GuildScheduledEventRecurrenceRule | null;
-
   public get createdTimestamp(): number;
   public get createdAt(): Date;
   public get scheduledStartAt(): Date | null;
@@ -2017,31 +1710,20 @@ export interface GuildScheduledEventRecurrenceRuleNWeekday {
 export class GuildTemplate extends Base {
   private constructor(client: Client<true>, data: RawGuildTemplateData);
   public createdTimestamp: number;
-
   public updatedTimestamp: number;
-
   public get url(): string;
   public code: string;
-
   public name: string;
-
   public description: string | null;
-
   public usageCount: number;
-
   public creator: User;
-
   public creatorId: Snowflake;
-
   public get createdAt(): Date;
   public get updatedAt(): Date;
   public get guild(): Guild | null;
   public guildId: Snowflake;
-
   public serializedGuild: APITemplateSerializedSourceGuild;
-
   public unSynced: boolean | null;
-
   public createGuild(name: string, icon?: Base64Resolvable | BufferResolvable): Promise<Guild>;
   public delete(): Promise<GuildTemplate>;
   public edit(options?: GuildTemplateEditOptions): Promise<GuildTemplate>;
@@ -2052,46 +1734,29 @@ export class GuildTemplate extends Base {
 export class GuildPreviewEmoji extends BaseGuildEmoji {
   private constructor(client: Client<true>, data: RawGuildEmojiData, guild: GuildPreview);
   public guild: GuildPreview;
-
   public roles: Snowflake[];
 }
 
 export class Integration extends Base {
   private constructor(client: Client<true>, data: RawIntegrationData, guild: Guild);
   public account: IntegrationAccount;
-
   public application: IntegrationApplication | null;
-
   public enabled: boolean | null;
-
   public expireBehavior: IntegrationExpireBehavior | null;
-
   public expireGracePeriod: number | null;
-
   public guild: Guild;
-
   public id: Snowflake | string;
-
   public name: string;
-
   public role: Role | null;
-
   public enableEmoticons: boolean | null;
-
   public get roles(): Collection<Snowflake, Role>;
   public scopes: OAuth2Scopes[];
-
   public get syncedAt(): Date | null;
   public syncedTimestamp: number | null;
-
   public syncing: boolean | null;
-
   public type: IntegrationType;
-
   public user: User | null;
-
   public subscriberCount: number | null;
-
   public revoked: boolean | null;
   public delete(reason?: string): Promise<Integration>;
 }
@@ -2099,15 +1764,10 @@ export class Integration extends Base {
 export class IntegrationApplication extends Application {
   private constructor(client: Client<true>, data: RawIntegrationApplicationData);
   public bot: User | null;
-
   public termsOfServiceURL: string | null;
-
   public privacyPolicyURL: string | null;
-
   public rpcOrigins: string[];
-
   public cover: string | null;
-
   public verifyKey: string | null;
 }
 
@@ -2152,12 +1812,9 @@ export type RepliableInteraction<Cached extends CacheType = CacheType> = Exclude
 export class BaseInteraction<Cached extends CacheType = CacheType> extends Base {
   // This a technique used to brand different cached types. Or else we'll get `never` errors on typeguard checks.
   private readonly _cacheType: Cached;
-
   protected constructor(client: Client<true>, data: RawInteractionData);
   public applicationId: Snowflake;
-
   public authorizingIntegrationOwners: APIAuthorizingIntegrationOwnersMap;
-
   public get channel(): CacheTypeReducer<
     Cached,
     GuildTextBasedChannel | null,
@@ -2166,36 +1823,22 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
     TextBasedChannel | null
   >;
   public channelId: Snowflake | null;
-
   public context: InteractionContextType | null;
-
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public get guild(): CacheTypeReducer<Cached, Guild, null>;
   public guildId: CacheTypeReducer<Cached, Snowflake>;
-
   public id: Snowflake;
-
   public member: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
-
   public readonly token: string;
-
   public type: InteractionType;
-
   public user: User;
-
   public version: number;
-
   public appPermissions: Readonly<PermissionsBitField>;
-
   public memberPermissions: CacheTypeReducer<Cached, Readonly<PermissionsBitField>>;
-
   public locale: Locale;
-
   public guildLocale: CacheTypeReducer<Cached, Locale>;
-
   public entitlements: Collection<Snowflake, Entitlement>;
-
   public attachmentSizeLimit: number;
   public inGuild(): this is BaseInteraction<'cached' | 'raw'>;
   public inCachedGuild(): this is BaseInteraction<'cached'>;
@@ -2222,37 +1865,27 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
 export class InteractionCallback {
   private constructor(client: Client<true>, data: RESTAPIInteractionCallbackObject);
   public activityInstanceId: string | null;
-
   public readonly client: Client<true>;
-
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public id: Snowflake;
-
   public responseMessageEphemeral: boolean | null;
-
   public responseMessageId: Snowflake | null;
-
   public responseMessageLoading: boolean | null;
-
   public type: InteractionType;
 }
 
 export class InteractionCallbackResponse<InGuild extends boolean = boolean> {
   private constructor(client: Client<true>, data: RESTPostAPIInteractionCallbackWithResponseResult);
   public readonly client: Client<true>;
-
   public interaction: InteractionCallback;
-
   public resource: InteractionCallbackResource<InGuild> | null;
 }
 
 export class InteractionCallbackResource<InGuild extends boolean = boolean> {
   private constructor(client: Client<true>, data: RESTAPIInteractionCallbackResourceObject);
   public activityInstance: RESTAPIInteractionCallbackActivityInstanceResource | null;
-
   public message: Message<InGuild> | null;
-
   public type: InteractionResponseType;
 }
 
@@ -2263,19 +1896,12 @@ export class InteractionCollector<Interaction extends CollectedInteraction> exte
   private _handleGuildDeletion(guild: Guild): void;
 
   public channelId: Snowflake | null;
-
   public componentType: ComponentType | null;
-
   public guildId: Snowflake | null;
-
   public interactionType: InteractionType | null;
-
   public messageId: Snowflake | null;
-
   public options: InteractionCollectorOptions<Interaction>;
-
   public total: number;
-
   public users: Collection<Snowflake, User>;
 
   public collect(interaction: Interaction): Snowflake;
@@ -2287,7 +1913,6 @@ export interface InteractionWebhook extends PartialWebhookFields {}
 export class InteractionWebhook {
   public constructor(client: Client<true>, id: Snowflake, token: string);
   public readonly client: Client<true>;
-
   public token: string;
   public send(options: InteractionReplyOptions | MessagePayload | string): Promise<Message>;
   public editMessage(
@@ -2300,48 +1925,31 @@ export class InteractionWebhook {
 export class Invite extends Base {
   private constructor(client: Client<true>, data: RawInviteData);
   public channel: NonThreadGuildBasedChannel | PartialGroupDMChannel | null;
-
   public channelId: Snowflake | null;
-
   public code: string;
-
   public get deletable(): boolean;
   public get createdAt(): Date | null;
   public createdTimestamp: number | null;
-
   public get expiresAt(): Date | null;
   public get expiresTimestamp(): number | null;
   public guild: Guild | InviteGuild | null;
-
   public get inviter(): User | null;
   public inviterId: Snowflake | null;
-
   public maxAge: number | null;
-
   public maxUses: number | null;
-
   public memberCount: number;
-
   public presenceCount: number;
-
   public targetApplication: IntegrationApplication | null;
-
   public targetUser: User | null;
-
   public targetType: InviteTargetType | null;
-
   public temporary: boolean | null;
-
   public type: InviteType;
-
   public get url(): string;
   public uses: number | null;
-
   public delete(reason?: string): Promise<Invite>;
   public toJSON(): unknown;
   public toString(): string;
   public static InvitesPattern: RegExp;
-
   public guildScheduledEvent: GuildScheduledEvent | null;
 }
 
@@ -2353,7 +1961,6 @@ export class InviteGuild extends AnonymousGuild {
 export class LimitedCollection<Key, Value> extends Collection<Key, Value> {
   public constructor(options?: LimitedCollectionOptions<Key, Value>, iterable?: Iterable<readonly [Key, Value]>);
   public maxSize: number;
-
   public keepOverLimit: ((value: Value, key: Key, collection: this) => boolean) | null;
 }
 
@@ -2422,80 +2029,50 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   private _patch(data: RawMessageData | RawPartialMessageData): void;
 
   public activity: MessageActivity | null;
-
   public applicationId: Snowflake | null;
-
   public attachments: Collection<Snowflake, Attachment>;
-
   public author: User;
-
   public get bulkDeletable(): boolean;
   public get channel(): If<InGuild, GuildTextBasedChannel, TextBasedChannel>;
   public channelId: Snowflake;
-
   public get cleanContent(): string;
   public components: ActionRow<MessageActionRowComponent>[];
-
   public content: string;
-
   public get createdAt(): Date;
   public createdTimestamp: number;
-
   public get crosspostable(): boolean;
   public get deletable(): boolean;
   public get editable(): boolean;
   public get editedAt(): Date | null;
   public editedTimestamp: number | null;
-
   public embeds: Embed[];
-
   public groupActivityApplication: ClientApplication | null;
-
   public guildId: If<InGuild, Snowflake>;
-
   public get guild(): If<InGuild, Guild>;
   public get hasThread(): boolean;
   public id: Snowflake;
-
   public interactionMetadata: MessageInteractionMetadata | null;
-
   public get member(): GuildMember | null;
   public mentions: MessageMentions<InGuild>;
-
   public nonce: number | string | null;
-
   public get partial(): false;
   public get pinnable(): boolean;
   public pinned: boolean;
-
   public reactions: ReactionManager;
-
   public stickers: Collection<Snowflake, Sticker>;
-
   public position: number | null;
-
   public roleSubscriptionData: RoleSubscriptionData | null;
-
   public resolved: CommandInteractionResolvedData | null;
-
   public system: boolean;
-
   public get thread(): AnyThreadChannel | null;
   public tts: boolean;
-
   public poll: Poll | null;
-
   public call: MessageCall | null;
-
   public type: MessageType;
-
   public get url(): string;
   public webhookId: Snowflake | null;
-
   public flags: Readonly<MessageFlagsBitField>;
-
   public reference: MessageReference | null;
-
   public messageSnapshots: Collection<Snowflake, MessageSnapshot>;
   public awaitMessageComponent<ComponentType extends MessageComponentType>(
     options?: AwaitMessageCollectorOptionsParams<ComponentType, InGuild>,
@@ -2535,9 +2112,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
 export class AttachmentBuilder {
   public constructor(attachment: BufferResolvable | Stream, data?: AttachmentData);
   public attachment: BufferResolvable | Stream;
-
   public description: string | null;
-
   public name: string | null;
   public get spoiler(): boolean;
   public setDescription(description: string): this;
@@ -2551,34 +2126,20 @@ export class AttachmentBuilder {
 export class Attachment {
   private constructor(data: APIAttachment);
   private readonly attachment: BufferResolvable | Stream;
-
   public contentType: string | null;
-
   public description: string | null;
-
   public duration: number | null;
-
   public ephemeral: boolean;
-
   public flags: AttachmentFlagsBitField;
-
   public height: number | null;
-
   public id: Snowflake;
-
   public name: string;
-
   public proxyURL: string;
-
   public size: number;
-
   public get spoiler(): boolean;
   public title: string | null;
-
   public url: string;
-
   public waveform: string | null;
-
   public width: number | null;
   public toJSON(): unknown;
 }
@@ -2596,9 +2157,7 @@ export class MessageCollector extends Collector<Snowflake, Message, [Collection<
   private _handleGuildDeletion(guild: Guild): void;
 
   public channel: TextBasedChannel;
-
   public options: MessageCollectorOptions;
-
   public received: number;
 
   public collect(message: Message): Snowflake | null;
@@ -2608,7 +2167,6 @@ export class MessageCollector extends Collector<Snowflake, Message, [Collection<
 export class MessageComponentInteraction<Cached extends CacheType = CacheType> extends BaseInteraction<Cached> {
   protected constructor(client: Client<true>, data: RawMessageComponentInteractionData);
   public type: InteractionType.MessageComponent;
-
   public get component(): CacheTypeReducer<
     Cached,
     MessageActionRowComponent,
@@ -2617,19 +2175,12 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
     APIComponentInMessageActionRow | MessageActionRowComponent
   >;
   public componentType: MessageComponentType;
-
   public customId: string;
-
   public channelId: Snowflake;
-
   public deferred: boolean;
-
   public ephemeral: boolean | null;
-
   public message: Message<BooleanCache<Cached>>;
-
   public replied: boolean;
-
   public webhook: InteractionWebhook;
   public inGuild(): this is MessageComponentInteraction<'cached' | 'raw'>;
   public inCachedGuild(): this is MessageComponentInteraction<'cached'>;
@@ -2705,7 +2256,6 @@ export class MessageContextMenuCommandInteraction<
   Cached extends CacheType = CacheType,
 > extends ContextMenuCommandInteraction<Cached> {
   public commandType: ApplicationCommandType.Message;
-
   public options: Omit<
     CommandInteractionOptionResolver<Cached>,
     | 'getAttachment'
@@ -2743,42 +2293,28 @@ export class MessageMentions<InGuild extends boolean = boolean> {
     repliedUser?: APIUser | User,
   );
   private readonly _channels: Collection<Snowflake, Channel> | null;
-
   private readonly _content: string;
-
   private readonly _members: Collection<Snowflake, GuildMember> | null;
-
   private readonly _parsedUsers: Collection<Snowflake, User> | null;
 
   public get channels(): Collection<Snowflake, Channel>;
   public readonly client: Client;
-
   public everyone: boolean;
-
   public readonly guild: If<InGuild, Guild>;
-
   public has(data: ChannelResolvable | RoleResolvable | UserResolvable, options?: MessageMentionsHasOptions): boolean;
   public get members(): If<InGuild, Collection<Snowflake, GuildMember>>;
   public get parsedUsers(): Collection<Snowflake, User>;
   public repliedUser: User | null;
-
   public roles: Collection<Snowflake, Role>;
-
   public users: Collection<Snowflake, User>;
-
   public crosspostedChannels: Collection<Snowflake, CrosspostedChannel>;
   public toJSON(): unknown;
 
   private static readonly GlobalChannelsPattern: RegExp;
-
   private static readonly GlobalUsersPattern: RegExp;
-
   public static ChannelsPattern: typeof FormattingPatterns.Channel;
-
   public static EveryonePattern: RegExp;
-
   public static RolesPattern: typeof FormattingPatterns.Role;
-
   public static UsersPattern: typeof FormattingPatterns.User;
 }
 
@@ -2793,15 +2329,12 @@ export type MessagePayloadOption =
 export class MessagePayload {
   public constructor(target: MessageTarget, options: MessagePayloadOption);
   public body: RawMessagePayloadData | null;
-
   public get isUser(): boolean;
   public get isWebhook(): boolean;
   public get isMessage(): boolean;
   public get isMessageManager(): boolean;
   public files: RawFile[] | null;
-
   public options: MessagePayloadOption;
-
   public target: MessageTarget;
 
   public static create(
@@ -2823,20 +2356,13 @@ export class MessageReaction {
   private readonly _emoji: ApplicationEmoji | GuildEmoji | ReactionEmoji;
 
   public burstColors: string[] | null;
-
   public readonly client: Client<true>;
-
   public count: number;
-
   public countDetails: ReactionCountDetailsData;
-
   public get emoji(): ApplicationEmoji | GuildEmoji | ReactionEmoji;
   public me: boolean;
-
   public meBurst: boolean;
-
   public message: Message | PartialMessage;
-
   public get partial(): false;
   public users: ReactionUserManager;
   public react(): Promise<MessageReaction>;
@@ -2878,7 +2404,6 @@ export interface ActionRowModalData {
 export class ModalSubmitFields {
   private constructor(components: readonly (readonly ModalActionRowComponent[])[]);
   public components: ActionRowModalData[];
-
   public fields: Collection<string, TextInputModalData>;
   public getField<Type extends ComponentType>(customId: string, type: Type): TextInputModalData & { type: Type };
   public getField(customId: string, type?: ComponentType): TextInputModalData;
@@ -2904,21 +2429,13 @@ export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = C
 export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extends BaseInteraction<Cached> {
   private constructor(client: Client<true>, data: APIModalSubmitInteraction);
   public type: InteractionType.ModalSubmit;
-
   public readonly customId: string;
-
   public readonly components: ActionRowModalData[];
-
   public readonly fields: ModalSubmitFields;
-
   public deferred: boolean;
-
   public ephemeral: boolean | null;
-
   public message: Message<BooleanCache<Cached>> | null;
-
   public replied: boolean;
-
   public readonly webhook: InteractionWebhook;
   public reply(
     options: InteractionReplyOptions & { withResponse: true },
@@ -2962,7 +2479,6 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
 
 export class AnnouncementChannel extends BaseGuildTextChannel {
   public threads: GuildTextThreadManager<AllowedThreadTypeForAnnouncementChannel>;
-
   public type: ChannelType.GuildAnnouncement;
   public addFollower(channel: TextChannelResolvable, reason?: string): Promise<FollowedChannelData>;
 }
@@ -2972,7 +2488,6 @@ export type AnnouncementChannelResolvable = AnnouncementChannel | Snowflake;
 export class OAuth2Guild extends BaseGuild {
   private constructor(client: Client<true>, data: RawOAuth2GuildData);
   public owner: boolean;
-
   public permissions: Readonly<PermissionsBitField>;
 }
 
@@ -2992,15 +2507,10 @@ export interface PartialGroupDMChannel
 export class PartialGroupDMChannel extends BaseChannel {
   private constructor(client: Client<true>, data: RawPartialGroupDMChannelData);
   public type: ChannelType.GroupDM;
-
   public flags: null;
-
   public name: string | null;
-
   public icon: string | null;
-
   public recipients: PartialRecipient[];
-
   public ownerId: Snowflake | null;
   public iconURL(options?: ImageURLOptions): string | null;
   public fetchOwner(options?: BaseFetchOptions): Promise<User>;
@@ -3044,23 +2554,14 @@ export interface ThreadOnlyChannel
   > {}
 export abstract class ThreadOnlyChannel extends GuildChannel {
   public type: ChannelType.GuildForum | ChannelType.GuildMedia;
-
   public threads: GuildForumThreadManager;
-
   public availableTags: GuildForumTag[];
-
   public defaultReactionEmoji: DefaultReactionEmoji | null;
-
   public defaultThreadRateLimitPerUser: number | null;
-
   public rateLimitPerUser: number | null;
-
   public defaultAutoArchiveDuration: ThreadAutoArchiveDuration | null;
-
   public nsfw: boolean;
-
   public topic: string | null;
-
   public defaultSortOrder: SortOrderType | null;
   public setAvailableTags(tags: readonly GuildForumTagData[], reason?: string): Promise<this>;
   public setDefaultReactionEmoji(emojiId: DefaultReactionEmoji | null, reason?: string): Promise<this>;
@@ -3077,7 +2578,6 @@ export abstract class ThreadOnlyChannel extends GuildChannel {
 
 export class ForumChannel extends ThreadOnlyChannel {
   public type: ChannelType.GuildForum;
-
   public defaultForumLayout: ForumLayoutType;
   public setDefaultForumLayout(defaultForumLayout: ForumLayoutType, reason?: string): Promise<this>;
 }
@@ -3089,13 +2589,9 @@ export class MediaChannel extends ThreadOnlyChannel {
 export class PermissionOverwrites extends Base {
   private constructor(client: Client<true>, data: RawPermissionOverwriteData, channel: NonThreadGuildBasedChannel);
   public allow: Readonly<PermissionsBitField>;
-
   public readonly channel: NonThreadGuildBasedChannel;
-
   public deny: Readonly<PermissionsBitField>;
-
   public id: Snowflake;
-
   public type: OverwriteType;
   public edit(options: PermissionOverwriteOptions, reason?: string): Promise<PermissionOverwrites>;
   public delete(reason?: string): Promise<PermissionOverwrites>;
@@ -3117,11 +2613,8 @@ export class PermissionsBitField extends BitField<PermissionsString, bigint> {
   public toArray(): PermissionsString[];
 
   public static All: bigint;
-
   public static Default: bigint;
-
   public static StageModerator: bigint;
-
   public static Flags: typeof PermissionFlagsBits;
   public static resolve(permission?: PermissionResolvable): bigint;
 }
@@ -3129,14 +2622,10 @@ export class PermissionsBitField extends BitField<PermissionsString, bigint> {
 export class Presence extends Base {
   protected constructor(client: Client<true>, data?: RawPresenceData);
   public activities: Activity[];
-
   public clientStatus: ClientPresenceStatusData | null;
-
   public guild: Guild | null;
-
   public get member(): GuildMember | null;
   public status: PresenceStatus;
-
   public get user(): User | null;
   public userId: Snowflake;
   public equals(presence: Presence): boolean;
@@ -3155,24 +2644,15 @@ export class PollAnswerVoterManager extends CachedManager<Snowflake, User, UserR
 export class Poll extends Base {
   private constructor(client: Client<true>, data: APIPoll, message: Message, channel: TextBasedChannel);
   public readonly channel: TextBasedChannel;
-
   public channelId: Snowflake;
-
   public readonly message: Message;
-
   public messageId: Snowflake;
-
   public question: PollQuestionMedia;
-
   public answers: Collection<number, PartialPollAnswer | PollAnswer>;
-
   public expiresTimestamp: number | null;
-
   public get expiresAt(): Date | null;
   public allowMultiselect: boolean;
-
   public layoutType: PollLayoutType;
-
   public resultsFinalized: boolean;
   public get partial(): false;
   public fetch(): Promise<this>;
@@ -3187,15 +2667,10 @@ export interface BaseFetchPollAnswerVotersOptions {
 export class PollAnswer extends Base {
   private constructor(client: Client<true>, data: APIPollAnswer & { count?: number }, poll: Poll);
   private readonly _emoji: APIPartialEmoji | null;
-
   public readonly poll: PartialPoll | Poll;
-
   public id: number;
-
   public text: string | null;
-
   public voteCount: number;
-
   public voters: PollAnswerVoterManager;
   public get emoji(): Emoji | GuildEmoji | null;
   public get partial(): false;
@@ -3221,11 +2696,8 @@ export class ReactionCollector extends Collector<
   private _handleMessageDeletion(message: Message): void;
 
   public message: Message;
-
   public options: ReactionCollectorOptions;
-
   public total: number;
-
   public users: Collection<Snowflake, User>;
 
   public static key(reaction: MessageReaction): Snowflake | string;
@@ -3244,13 +2716,9 @@ export class ReactionEmoji extends Emoji {
 export class RichPresenceAssets {
   private constructor(activity: Activity, assets: RawRichPresenceAssets);
   public readonly activity: Activity;
-
   public largeImage: Snowflake | null;
-
   public largeText: string | null;
-
   public smallImage: Snowflake | null;
-
   public smallText: string | null;
   public largeImageURL(options?: ImageURLOptions): string | null;
   public smallImageURL(options?: ImageURLOptions): string | null;
@@ -3259,36 +2727,24 @@ export class RichPresenceAssets {
 export class Role extends Base {
   private constructor(client: Client<true>, data: RawRoleData, guild: Guild);
   public color: number;
-
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public get editable(): boolean;
   public flags: RoleFlagsBitField;
-
   public guild: Guild;
-
   public get hexColor(): HexColorString;
   public hoist: boolean;
-
   public id: Snowflake;
-
   public managed: boolean;
-
   public get members(): Collection<Snowflake, GuildMember>;
   public mentionable: boolean;
-
   public name: string;
-
   public permissions: Readonly<PermissionsBitField>;
-
   public get position(): number;
   public rawPosition: number;
-
   public tags: RoleTagData | null;
-
   public comparePositionTo(role: RoleResolvable): number;
   public icon: string | null;
-
   public unicodeEmoji: string | null;
   public delete(reason?: string): Promise<Role>;
   public edit(options: RoleEditOptions): Promise<Role>;
@@ -3329,7 +2785,6 @@ export class StringSelectMenuInteraction<
     APIStringSelectComponent | StringSelectMenuComponent
   >;
   public componentType: ComponentType.StringSelect;
-
   public values: string[];
   public inGuild(): this is StringSelectMenuInteraction<'cached' | 'raw'>;
   public inCachedGuild(): this is StringSelectMenuInteraction<'cached'>;
@@ -3348,11 +2803,8 @@ export class UserSelectMenuInteraction<
     APIUserSelectComponent | UserSelectMenuComponent
   >;
   public componentType: ComponentType.UserSelect;
-
   public values: Snowflake[];
-
   public users: Collection<Snowflake, User>;
-
   public members: Collection<
     Snowflake,
     CacheTypeReducer<Cached, GuildMember, APIGuildMember, APIGuildMember | GuildMember, APIGuildMember | GuildMember>
@@ -3374,9 +2826,7 @@ export class RoleSelectMenuInteraction<
     APIRoleSelectComponent | RoleSelectMenuComponent
   >;
   public componentType: ComponentType.RoleSelect;
-
   public values: Snowflake[];
-
   public roles: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole, APIRole | Role, APIRole | Role>>;
   public inGuild(): this is RoleSelectMenuInteraction<'cached' | 'raw'>;
   public inCachedGuild(): this is RoleSelectMenuInteraction<'cached'>;
@@ -3395,16 +2845,12 @@ export class MentionableSelectMenuInteraction<
     APIMentionableSelectComponent | MentionableSelectMenuComponent
   >;
   public componentType: ComponentType.MentionableSelect;
-
   public values: Snowflake[];
-
   public users: Collection<Snowflake, User>;
-
   public members: Collection<
     Snowflake,
     CacheTypeReducer<Cached, GuildMember, APIGuildMember, APIGuildMember | GuildMember, APIGuildMember | GuildMember>
   >;
-
   public roles: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole, APIRole | Role, APIRole | Role>>;
   public inGuild(): this is MentionableSelectMenuInteraction<'cached' | 'raw'>;
   public inCachedGuild(): this is MentionableSelectMenuInteraction<'cached'>;
@@ -3423,9 +2869,7 @@ export class ChannelSelectMenuInteraction<
     APIChannelSelectComponent | ChannelSelectMenuComponent
   >;
   public componentType: ComponentType.ChannelSelect;
-
   public values: Snowflake[];
-
   public channels: Collection<
     Snowflake,
     CacheTypeReducer<Cached, Channel, APIChannel, APIChannel | Channel, APIChannel | Channel>
@@ -3458,9 +2902,7 @@ export interface ShardEventTypes {
 export class Shard extends AsyncEventEmitter<ShardEventTypes> {
   private constructor(manager: ShardingManager, id: number);
   private readonly _evals: Map<string, Promise<unknown>>;
-
   private readonly _exitListener: (...args: any[]) => void;
-
   private readonly _fetches: Map<string, Promise<unknown>>;
   private _handleExit(respawn?: boolean, timeout?: number): void;
   private _handleMessage(message: unknown): void;
@@ -3468,21 +2910,13 @@ export class Shard extends AsyncEventEmitter<ShardEventTypes> {
   private decrementMaxListeners(emitter: ChildProcess | Worker): void;
 
   public args: string[];
-
   public execArgv: string[];
-
   public env: unknown;
-
   public id: number;
-
   public manager: ShardingManager;
-
   public process: ChildProcess | null;
-
   public ready: boolean;
-
   public silent: boolean;
-
   public worker: Worker | null;
   public eval(script: string): Promise<unknown>;
   public eval<Result>(fn: (client: Client) => Result): Promise<Result>;
@@ -3505,9 +2939,7 @@ export class ShardClientUtil {
   private decrementMaxListeners(emitter: ChildProcess | Worker): void;
 
   public client: Client;
-
   public mode: ShardingManagerMode;
-
   public parentPort: MessagePort | null;
   public broadcastEval<Result>(fn: (client: Client) => Awaitable<Result>): Promise<Serialized<Result>[]>;
   public broadcastEval<Result>(
@@ -3541,19 +2973,12 @@ export class ShardingManager extends AsyncEventEmitter<ShardingManagerEventTypes
   private _performOnShards(method: string, args: readonly unknown[], shard: number): Promise<unknown>;
 
   public file: string;
-
   public respawn: boolean;
-
   public silent: boolean;
-
   public shardArgs: string[];
-
   public shards: Collection<number, Shard>;
-
   public token: string | null;
-
   public totalShards: number | 'auto';
-
   public shardList: number[] | 'auto';
   public broadcast(message: unknown): Promise<Shard[]>;
   public broadcastEval<Result>(fn: (client: Client) => Awaitable<Result>): Promise<Serialized<Result>[]>;
@@ -3590,15 +3015,10 @@ export {
 export class SKU extends Base {
   private constructor(client: Client<true>, data: APISKU);
   public id: Snowflake;
-
   public type: SKUType;
-
   public applicationId: Snowflake;
-
   public name: string;
-
   public slug: string;
-
   public flags: Readonly<SKUFlagsBitField>;
 }
 
@@ -3612,23 +3032,14 @@ export class SKUFlagsBitField extends BitField<SKUFlagsString> {
 export class Subscription extends Base {
   private constructor(client: Client<true>, data: APISubscription);
   public id: Snowflake;
-
   public userId: Snowflake;
-
   public skuIds: Snowflake[];
-
   public entitlementIds: Snowflake[];
-
   public renewalSkuIds: Snowflake[] | null;
-
   public currentPeriodStartTimestamp: number;
-
   public currentPeriodEndTimestamp: number;
-
   public status: SubscriptionStatus;
-
   public canceledTimestamp: number | null;
-
   public country: string | null;
   public get canceledAt(): Date | null;
   public get currentPeriodStartAt(): Date;
@@ -3638,7 +3049,6 @@ export class Subscription extends Base {
 export class StageChannel extends BaseGuildVoiceChannel {
   public get stageInstance(): StageInstance | null;
   public topic: string | null;
-
   public type: ChannelType.GuildStageVoice;
   public createStageInstance(options: StageInstanceCreateOptions): Promise<StageInstance>;
   public setTopic(topic: string): Promise<StageChannel>;
@@ -3646,11 +3056,8 @@ export class StageChannel extends BaseGuildVoiceChannel {
 
 export class DirectoryChannel extends BaseChannel {
   public flags: Readonly<ChannelFlagsBitField>;
-
   public guild: InviteGuild;
-
   public guildId: Snowflake;
-
   public name: string;
   public toString(): ChannelMention;
 }
@@ -3658,15 +3065,10 @@ export class DirectoryChannel extends BaseChannel {
 export class StageInstance extends Base {
   private constructor(client: Client<true>, data: RawStageInstanceData, channel: StageChannel);
   public id: Snowflake;
-
   public guildId: Snowflake;
-
   public channelId: Snowflake;
-
   public topic: string;
-
   public privacyLevel: StageInstancePrivacyLevel;
-
   public guildScheduledEventId?: Snowflake;
   public get channel(): StageChannel | null;
   public get guild(): Guild | null;
@@ -3683,27 +3085,17 @@ export class Sticker extends Base {
   public get createdTimestamp(): number;
   public get createdAt(): Date;
   public available: boolean | null;
-
   public description: string | null;
-
   public format: StickerFormatType;
-
   public get guild(): Guild | null;
   public guildId: Snowflake | null;
-
   public id: Snowflake;
-
   public name: string;
-
   public packId: Snowflake | null;
-
   public get partial(): boolean;
   public sortValue: number | null;
-
   public tags: string | null;
-
   public type: StickerType | null;
-
   public user: User | null;
   public get url(): string;
   public fetch(): Promise<Sticker>;
@@ -3719,18 +3111,12 @@ export class StickerPack extends Base {
   public get createdTimestamp(): number;
   public get createdAt(): Date;
   public bannerId: Snowflake | null;
-
   public get coverSticker(): Sticker | null;
   public coverStickerId: Snowflake | null;
-
   public description: string;
-
   public id: Snowflake;
-
   public name: string;
-
   public skuId: Snowflake;
-
   public stickers: Collection<Snowflake, Sticker>;
   public bannerURL(options?: ImageURLOptions): string | null;
 }
@@ -3738,9 +3124,7 @@ export class StickerPack extends Base {
 export class Sweepers {
   public constructor(client: Client<true>, options: SweeperOptions);
   public readonly client: Client;
-
   public intervals: Record<SweeperKey, NodeJS.Timeout | null>;
-
   public options: SweeperOptions;
 
   public sweepApplicationCommands(
@@ -3820,13 +3204,9 @@ export class SystemChannelFlagsBitField extends BitField<SystemChannelFlagsStrin
 export class Team extends Base {
   private constructor(client: Client<true>, data: RawTeamData);
   public id: Snowflake;
-
   public name: string;
-
   public icon: string | null;
-
   public ownerId: Snowflake | null;
-
   public members: Collection<Snowflake, TeamMember>;
   public get owner(): TeamMember | null;
   public get createdAt(): Date;
@@ -3840,12 +3220,9 @@ export class Team extends Base {
 export class TeamMember extends Base {
   private constructor(team: Team, data: RawTeamMemberData);
   public team: Team;
-
   public get id(): Snowflake;
   public membershipState: TeamMemberMembershipState;
-
   public user: User;
-
   public role: TeamMemberRole;
 
   public toString(): UserMention;
@@ -3853,9 +3230,7 @@ export class TeamMember extends Base {
 
 export class TextChannel extends BaseGuildTextChannel {
   public rateLimitPerUser: number;
-
   public threads: GuildTextThreadManager<AllowedThreadTypeForTextChannel>;
-
   public type: ChannelType.GuildText;
 }
 
@@ -3878,52 +3253,34 @@ export interface ThreadChannel<ThreadOnly extends boolean = boolean>
 export class ThreadChannel<ThreadOnly extends boolean = boolean> extends BaseChannel {
   private constructor(guild: Guild, data?: RawThreadChannelData, client?: Client<true>);
   public archived: boolean | null;
-
   public get archivedAt(): Date | null;
   public archiveTimestamp: number | null;
-
   public get createdAt(): Date | null;
   private readonly _createdTimestamp: number | null;
-
   public get createdTimestamp(): number | null;
   public autoArchiveDuration: ThreadAutoArchiveDuration | null;
-
   public get editable(): boolean;
   public flags: Readonly<ChannelFlagsBitField>;
-
   public guild: Guild;
-
   public guildId: Snowflake;
-
   public get guildMembers(): Collection<Snowflake, GuildMember>;
   public invitable: boolean | null;
-
   public get joinable(): boolean;
   public get joined(): boolean;
   public locked: boolean | null;
-
   public get manageable(): boolean;
   public get viewable(): boolean;
   public get sendable(): boolean;
   public memberCount: number | null;
-
   public messageCount: number | null;
-
   public appliedTags: Snowflake[];
-
   public totalMessageSent: number | null;
-
   public members: ThreadMemberManager;
-
   public name: string;
-
   public ownerId: Snowflake;
-
   public get parent(): If<ThreadOnly, ForumChannel | MediaChannel, AnnouncementChannel | TextChannel> | null;
   public parentId: Snowflake | null;
-
   public rateLimitPerUser: number | null;
-
   public type: ThreadChannelType;
   public get unarchivable(): boolean;
   public delete(reason?: string): Promise<this>;
@@ -3952,15 +3309,11 @@ export class ThreadChannel<ThreadOnly extends boolean = boolean> extends BaseCha
 export class ThreadMember<HasMemberData extends boolean = boolean> extends Base {
   private constructor(thread: ThreadChannel, data: RawThreadMemberData, extra?: unknown);
   public flags: ThreadMemberFlagsBitField;
-
   private readonly member: If<HasMemberData, GuildMember>;
-
   public get guildMember(): HasMemberData extends true ? GuildMember : GuildMember | null;
   public id: Snowflake;
-
   public get joinedAt(): Date | null;
   public joinedTimestamp: number | null;
-
   public get manageable(): boolean;
   public thread: AnyThreadChannel;
   public get user(): User | null;
@@ -3978,9 +3331,7 @@ export class ThreadMemberFlagsBitField extends BitField<ThreadMemberFlagsString>
 export class Typing extends Base {
   private constructor(channel: TextBasedChannel, user: PartialUser, data?: RawTypingData);
   public channel: TextBasedChannel;
-
   public user: PartialUser | User;
-
   public startedTimestamp: number;
   public get startedAt(): Date;
   public get guild(): Guild | null;
@@ -4002,32 +3353,22 @@ export class User extends Base {
   private _equals(user: APIUser): boolean;
 
   public accentColor: number | null | undefined;
-
   public avatar: string | null;
-
   public avatarDecorationData: AvatarDecorationData | null;
-
   public banner: string | null | undefined;
-
   public bot: boolean;
-
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public discriminator: string;
-
   public get displayName(): string;
   public get defaultAvatarURL(): string;
   public get dmChannel(): DMChannel | null;
   public flags: Readonly<UserFlagsBitField> | null;
-
   public globalName: string | null;
-
   public get hexAccentColor(): HexColorString | null | undefined;
   public id: Snowflake;
-
   public get partial(): false;
   public system: boolean;
-
   public get tag(): string;
   public username: string;
   public avatarURL(options?: ImageURLOptions): string | null;
@@ -4045,7 +3386,6 @@ export class UserContextMenuCommandInteraction<
   Cached extends CacheType = CacheType,
 > extends ContextMenuCommandInteraction<Cached> {
   public commandType: ApplicationCommandType.User;
-
   public options: Omit<
     CommandInteractionOptionResolver<Cached>,
     | 'getAttachment'
@@ -4099,7 +3439,8 @@ export function makePlainError(err: Error): MakeErrorOptions;
  * @internal
  */
 export function moveElementInArray(
-  array: readonly unknown[],
+  // eslint-disable-next-line no-restricted-syntax
+  array: unknown[],
   element: unknown,
   newIndex: number,
   offset?: boolean,
@@ -4171,19 +3512,12 @@ export class VoiceChannel extends BaseGuildVoiceChannel {
 export class VoiceChannelEffect {
   private constructor(data: GatewayVoiceChannelEffectSendDispatchData, guild: Guild);
   public guild: Guild;
-
   public channelId: Snowflake;
-
   public userId: Snowflake;
-
   public emoji: Emoji | null;
-
   public animationType: VoiceChannelEffectSendAnimationType | null;
-
   public animationId: number | null;
-
   public soundId: Snowflake | number | null;
-
   public soundVolume: number | null;
   public get channel(): VoiceChannel | null;
   public get soundboardSound(): GuildSoundboardSound | null;
@@ -4192,13 +3526,9 @@ export class VoiceChannelEffect {
 export class VoiceRegion {
   private constructor(data: RawVoiceRegionData);
   public custom: boolean;
-
   public deprecated: boolean;
-
   public id: string;
-
   public name: string;
-
   public optimal: boolean;
   public toJSON(): unknown;
 }
@@ -4207,30 +3537,19 @@ export class VoiceState extends Base {
   private constructor(guild: Guild, data: RawVoiceStateData);
   public get channel(): VoiceBasedChannel | null;
   public channelId: Snowflake | null;
-
   public get deaf(): boolean | null;
   public guild: Guild;
-
   public id: Snowflake;
-
   public get member(): GuildMember | null;
   public get mute(): boolean | null;
   public selfDeaf: boolean | null;
-
   public selfMute: boolean | null;
-
   public serverDeaf: boolean | null;
-
   public serverMute: boolean | null;
-
   public sessionId: string | null;
-
   public streaming: boolean | null;
-
   public selfVideo: boolean | null;
-
   public suppress: boolean | null;
-
   public requestToSpeakTimestamp: number | null;
 
   public setDeaf(deaf?: boolean, reason?: string): Promise<GuildMember>;
@@ -4247,30 +3566,20 @@ export interface Webhook<Type extends WebhookType = WebhookType> extends Webhook
 export class Webhook<Type extends WebhookType = WebhookType> {
   private constructor(client: Client<true>, data?: RawWebhookData);
   public avatar: string | null;
-
   public avatarURL(options?: ImageURLOptions): string | null;
   public channelId: Snowflake;
-
   public readonly client: Client;
-
   public guildId: Snowflake;
-
   public name: string;
-
   public owner: Type extends WebhookType.Incoming ? APIUser | User | null : APIUser | User;
-
   public sourceGuild: Type extends WebhookType.ChannelFollower ? APIPartialGuild | Guild : null;
-
   public sourceChannel: Type extends WebhookType.ChannelFollower ? AnnouncementChannel | APIPartialChannel : null;
-
   public token: Type extends WebhookType.Incoming
     ? string
     : Type extends WebhookType.ChannelFollower
       ? null
       : string | null;
-
   public type: Type;
-
   public applicationId: Type extends WebhookType.Application ? Snowflake : null;
   public get channel():
     | AnnouncementChannel
@@ -4299,9 +3608,7 @@ export interface WebhookClient extends WebhookFields, BaseClient<{}> {}
 export class WebhookClient extends BaseClient<{}> {
   public constructor(data: WebhookClientData, options?: WebhookClientOptions);
   public readonly client: this;
-
   public options: WebhookClientOptions;
-
   public token: string;
   public editMessage(
     message: MessageResolvable,
@@ -4317,44 +3624,27 @@ export class Widget extends Base {
   public fetch(): Promise<Widget>;
   public imageURL(style?: GuildWidgetStyle): string;
   public id: Snowflake;
-
   public name: string;
-
   public instantInvite?: string;
-
   public channels: Collection<Snowflake, WidgetChannel>;
-
   public members: Collection<string, WidgetMember>;
-
   public presenceCount: number;
 }
 
 export class WidgetMember extends Base {
   private constructor(client: Client<true>, data: RawWidgetMemberData);
   public id: string;
-
   public username: string;
-
   public discriminator: string;
-
   public avatar: string | null;
-
   public status: PresenceStatus;
-
   public deaf: boolean | null;
-
   public mute: boolean | null;
-
   public selfDeaf: boolean | null;
-
   public selfMute: boolean | null;
-
   public suppress: boolean | null;
-
   public channelId: Snowflake | null;
-
   public avatarURL: string;
-
   public activity: WidgetActivity | null;
 }
 
@@ -4363,17 +3653,11 @@ export type SoundboardSoundResolvable = Snowflake | SoundboardSound | string;
 export class SoundboardSound extends Base {
   private constructor(client: Client<true>, data: APISoundboardSound);
   public name: string;
-
   public soundId: Snowflake | string;
-
   public volume: number;
-
   private readonly _emoji: Omit<APIEmoji, 'animated'> | null;
-
   public guildId: Snowflake | null;
-
   public available: boolean;
-
   public user: User | null;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
@@ -4391,11 +3675,8 @@ export type GuildSoundboardSound = SoundboardSound & { get guild(): Guild; guild
 export class WelcomeChannel extends Base {
   private constructor(guild: Guild, data: RawWelcomeChannelData);
   private readonly _emoji: Omit<APIEmoji, 'animated'>;
-
   public channelId: Snowflake;
-
   public guild: Guild | InviteGuild;
-
   public description: string;
   public get channel(): AnnouncementChannel | ForumChannel | MediaChannel | TextChannel | null;
   public get emoji(): Emoji | GuildEmoji;
@@ -4405,9 +3686,7 @@ export class WelcomeScreen extends Base {
   private constructor(guild: Guild, data: RawWelcomeScreenData);
   public get enabled(): boolean;
   public guild: Guild | InviteGuild;
-
   public description: string | null;
-
   public welcomeChannels: Collection<Snowflake, WelcomeChannel>;
 }
 
@@ -4477,6 +3756,7 @@ export enum DiscordjsErrorCodes {
   FetchBanResolveId = 'FetchBanResolveId',
 
   FetchGroupDMChannel = 'FetchGroupDMChannel',
+
   FetchOwnerId = 'FetchOwnerId',
 
   FileNotFound = 'FileNotFound',
@@ -4559,13 +3839,16 @@ export enum DiscordjsErrorCodes {
 
   TokenInvalid = 'TokenInvalid',
   TokenMissing = 'TokenMissing',
+
   UserNoDMChannel = 'UserNoDMChannel',
   VoiceNotStageChannel = 'VoiceNotStageChannel',
 
   VoiceStateInvalidType = 'VoiceStateInvalidType',
 
   VoiceStateNotOwn = 'VoiceStateNotOwn',
+
   WebhookApplication = 'WebhookApplication',
+
   WebhookMessage = 'WebhookMessage',
 
   WebhookTokenUnavailable = 'WebhookTokenUnavailable',
@@ -4675,9 +3958,7 @@ export class ApplicationCommandPermissionsManager<
   private readonly manager: ApplicationCommand | ApplicationCommandManager | GuildApplicationCommandManager;
 
   public commandId: CommandIdType;
-
   public guild: GuildType;
-
   public guildId: Snowflake | null;
   public add(
     options: EditApplicationCommandPermissionsMixin & FetchSingleOptions,
@@ -4893,7 +4174,6 @@ export class GuildEmojiManager extends CachedManager<Snowflake, GuildEmoji, Emoj
 export class GuildEmojiRoleManager extends DataManager<Snowflake, Role, RoleResolvable> {
   private constructor(emoji: GuildEmoji);
   public emoji: GuildEmoji;
-
   public guild: Guild;
   public add(
     roleOrRoles: ReadonlyCollection<Snowflake, Role> | RoleResolvable | readonly RoleResolvable[],
@@ -5058,7 +4338,6 @@ export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleRes
   public get premiumSubscriberRole(): Role | null;
   public get botRole(): Role | null;
   public member: GuildMember;
-
   public guild: Guild;
 
   public add(
@@ -7344,7 +6623,8 @@ export interface PartialPoll
     null,
     'answers' | 'message' | 'question'
   > {
-  answers: ReadonlyCollection<number, PartialPollAnswer>;
+  // eslint-disable-next-line no-restricted-syntax
+  answers: Collection<number, PartialPollAnswer>;
   message: PartialMessage;
   question: { text: null };
 }

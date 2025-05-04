@@ -199,6 +199,8 @@ export default tseslint.config(
 			'@typescript-eslint/no-unsafe-declaration-merging': 0,
 			'@typescript-eslint/no-empty-object-type': 0,
 			'@typescript-eslint/no-use-before-define': 0,
+			'@typescript-eslint/consistent-type-imports': 0,
+			'@stylistic/ts/lines-between-class-members': 0,
 			'no-restricted-syntax': [
 				2,
 				{
