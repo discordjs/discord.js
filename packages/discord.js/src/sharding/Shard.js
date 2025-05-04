@@ -33,7 +33,7 @@ class Shard extends AsyncEventEmitter {
         Worker = require('node:worker_threads').Worker;
         break;
       default:
-        break;
+        throw new Error(`Invalid sharding mode in Shard ${id}`);
     }
 
     /**
