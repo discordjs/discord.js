@@ -889,7 +889,7 @@ function itemClass(item: ApiClass) {
 		extends: itemHierarchyText({ item, type: 'Extends' }),
 		implements: itemHierarchyText({ item, type: 'Implements' }),
 		typeParameters: itemTypeParameters(item),
-		constructor: constructor ? itemConstructor(constructor) : null,
+		construct: constructor ? itemConstructor(constructor) : null,
 		members: itemMembers(item),
 	};
 }
