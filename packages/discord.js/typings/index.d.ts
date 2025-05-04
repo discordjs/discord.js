@@ -7030,6 +7030,8 @@ export type Serialized<Value> = Value extends bigint | symbol | (() => any)
 // #region Voice
 
 /**
+ * Use `DiscordGatewayAdapterLibraryMethods` from `@discordjs/voice` instead.
+ *
  * @internal
  */
 export interface InternalDiscordGatewayAdapterLibraryMethods {
@@ -7039,6 +7041,8 @@ export interface InternalDiscordGatewayAdapterLibraryMethods {
 }
 
 /**
+ * Use `DiscordGatewayAdapterImplementerMethods` from `@discordjs/voice` instead.
+ *
  * @internal
  */
 export interface InternalDiscordGatewayAdapterImplementerMethods {
@@ -7047,6 +7051,8 @@ export interface InternalDiscordGatewayAdapterImplementerMethods {
 }
 
 /**
+ * Use `DiscordGatewayAdapterCreator` from `@discordjs/voice` instead.
+ *
  * @internal
  */
 export type InternalDiscordGatewayAdapterCreator = (
