@@ -1,7 +1,4 @@
-/* eslint-disable @typescript-eslint/unbound-method */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable no-param-reassign */
-/* eslint-disable id-length */
+/* eslint-disable no-lone-blocks, @typescript-eslint/unbound-method, @typescript-eslint/ban-ts-comment, no-param-reassign, id-length */
 import type { ChildProcess } from 'node:child_process';
 import type { Worker } from 'node:worker_threads';
 import type { ContextMenuCommandBuilder, ChatInputCommandBuilder } from '@discordjs/builders';
@@ -412,14 +409,16 @@ client.on('messageCreate', async message => {
   const { client, channel } = message;
 
   // https://github.com/discordjs/discord.js/issues/8545
-  // These should not throw any errors when comparing messages from any source.
-  channel.messages.cache.filter(Boolean);
-  (await channel.messages.fetch()).filter(({ author }) => author.id === message.author.id);
+  {
+    // These should not throw any errors when comparing messages from any source.
+    channel.messages.cache.filter(Boolean);
+    (await channel.messages.fetch()).filter(({ author }) => author.id === message.author.id);
 
-  if (channel.isDMBased()) {
-    expectType<DMMessageManager>(channel.messages.channel.messages);
-  } else {
-    expectType<GuildMessageManager>(channel.messages.channel.messages);
+    if (channel.isDMBased()) {
+      expectType<DMMessageManager>(channel.messages.channel.messages);
+    } else {
+      expectType<GuildMessageManager>(channel.messages.channel.messages);
+    }
   }
 
   if (!message.inGuild() && message.partial) {
@@ -1521,39 +1520,40 @@ declare const applicationCommandData: ApplicationCommandData;
 declare const applicationCommandOptionData: ApplicationCommandOptionData;
 declare const applicationCommandResolvable: ApplicationCommandResolvable;
 declare const applicationCommandManager: ApplicationCommandManager;
+{
+  type ApplicationCommandScope = ApplicationCommand<{ guild: GuildResolvable }>;
 
-type ApplicationCommandScope = ApplicationCommand<{ guild: GuildResolvable }>;
+  expectType<Promise<ApplicationCommandScope>>(applicationCommandManager.create(applicationCommandData));
+  expectAssignable<Promise<ApplicationCommand>>(applicationCommandManager.create(applicationCommandData, '0'));
+  expectType<Promise<ApplicationCommandScope>>(
+    applicationCommandManager.edit(applicationCommandResolvable, applicationCommandData),
+  );
+  expectType<Promise<ApplicationCommand>>(
+    applicationCommandManager.edit(applicationCommandResolvable, applicationCommandData, '0'),
+  );
+  expectType<Promise<Collection<Snowflake, ApplicationCommandScope>>>(
+    applicationCommandManager.set([applicationCommandData]),
+  );
+  expectType<Promise<Collection<Snowflake, ApplicationCommand>>>(
+    applicationCommandManager.set([applicationCommandData] as const, '0'),
+  );
 
-expectType<Promise<ApplicationCommandScope>>(applicationCommandManager.create(applicationCommandData));
-expectAssignable<Promise<ApplicationCommand>>(applicationCommandManager.create(applicationCommandData, '0'));
-expectType<Promise<ApplicationCommandScope>>(
-  applicationCommandManager.edit(applicationCommandResolvable, applicationCommandData),
-);
-expectType<Promise<ApplicationCommand>>(
-  applicationCommandManager.edit(applicationCommandResolvable, applicationCommandData, '0'),
-);
-expectType<Promise<Collection<Snowflake, ApplicationCommandScope>>>(
-  applicationCommandManager.set([applicationCommandData]),
-);
-expectType<Promise<Collection<Snowflake, ApplicationCommand>>>(
-  applicationCommandManager.set([applicationCommandData] as const, '0'),
-);
+  // Test inference of choice values.
+  if ('choices' in applicationCommandOptionData) {
+    if (applicationCommandOptionData.type === ApplicationCommandOptionType.String) {
+      expectType<string>(applicationCommandOptionData.choices[0]!.value);
+      expectNotType<number>(applicationCommandOptionData.choices[0]!.value);
+    }
 
-// Test inference of choice values.
-if ('choices' in applicationCommandOptionData) {
-  if (applicationCommandOptionData.type === ApplicationCommandOptionType.String) {
-    expectType<string>(applicationCommandOptionData.choices[0]!.value);
-    expectNotType<number>(applicationCommandOptionData.choices[0]!.value);
-  }
+    if (applicationCommandOptionData.type === ApplicationCommandOptionType.Integer) {
+      expectType<number>(applicationCommandOptionData.choices[0]!.value);
+      expectNotType<string>(applicationCommandOptionData.choices[0]!.value);
+    }
 
-  if (applicationCommandOptionData.type === ApplicationCommandOptionType.Integer) {
-    expectType<number>(applicationCommandOptionData.choices[0]!.value);
-    expectNotType<string>(applicationCommandOptionData.choices[0]!.value);
-  }
-
-  if (applicationCommandOptionData.type === ApplicationCommandOptionType.Number) {
-    expectType<number>(applicationCommandOptionData.choices[0]!.value);
-    expectNotType<string>(applicationCommandOptionData.choices[0]!.value);
+    if (applicationCommandOptionData.type === ApplicationCommandOptionType.Number) {
+      expectType<number>(applicationCommandOptionData.choices[0]!.value);
+      expectNotType<string>(applicationCommandOptionData.choices[0]!.value);
+    }
   }
 }
 
@@ -1563,56 +1563,62 @@ declare const applicationCommandPermissionsManager: ApplicationCommandPermission
   Guild | null,
   Snowflake
 >;
+{
+  await applicationCommandPermissionsManager.add({ permissions: [], token: '' });
+  await applicationCommandPermissionsManager.add({ permissions: [] as const, token: '' });
+  await applicationCommandPermissionsManager.set({ permissions: [], token: '' });
+  await applicationCommandPermissionsManager.set({ permissions: [] as const, token: '' });
+  await applicationCommandPermissionsManager.remove({ channels: [], roles: [], users: [], token: '' });
 
-await applicationCommandPermissionsManager.add({ permissions: [], token: '' });
-await applicationCommandPermissionsManager.add({ permissions: [] as const, token: '' });
-await applicationCommandPermissionsManager.set({ permissions: [], token: '' });
-await applicationCommandPermissionsManager.set({ permissions: [] as const, token: '' });
-await applicationCommandPermissionsManager.remove({ channels: [], roles: [], users: [], token: '' });
-
-await applicationCommandPermissionsManager.remove({
-  channels: [] as const,
-  roles: [] as const,
-  users: [] as const,
-  token: '',
-});
+  await applicationCommandPermissionsManager.remove({
+    channels: [] as const,
+    roles: [] as const,
+    users: [] as const,
+    token: '',
+  });
+}
 
 declare const chatInputApplicationCommandData: ChatInputApplicationCommandData;
-
-chatInputApplicationCommandData.options = [];
-chatInputApplicationCommandData.options = [] as const;
+{
+  chatInputApplicationCommandData.options = [];
+  chatInputApplicationCommandData.options = [] as const;
+}
 
 declare const applicationCommandChannelOptionData: ApplicationCommandChannelOptionData;
 declare const applicationCommandChannelOption: ApplicationCommandChannelOption;
-
-applicationCommandChannelOptionData.channelTypes = [] as const;
-applicationCommandChannelOptionData.channel_types = [] as const;
-applicationCommandChannelOption.channelTypes = [] as const;
+{
+  applicationCommandChannelOptionData.channelTypes = [] as const;
+  applicationCommandChannelOptionData.channel_types = [] as const;
+  applicationCommandChannelOption.channelTypes = [] as const;
+}
 
 declare const applicationNonChoiceOptionData: ApplicationCommandOptionData & {
   type: CommandOptionNonChoiceResolvableType;
 };
+{
+  // Options aren't allowed on this command type.
 
-// Options aren't allowed on this command type.
-
-// @ts-expect-error
-applicationNonChoiceOptionData.choices = [];
+  // @ts-expect-error
+  applicationNonChoiceOptionData.choices = [];
+}
 
 declare const applicationCommandChoicesData: ApplicationCommandChoicesData;
 declare const applicationCommandChoicesOption: ApplicationCommandChoicesOption;
-
-applicationCommandChoicesData.choices = [];
-applicationCommandChoicesData.choices = [] as const;
-applicationCommandChoicesOption.choices = [];
-applicationCommandChoicesOption.choices = [] as const;
+{
+  applicationCommandChoicesData.choices = [];
+  applicationCommandChoicesData.choices = [] as const;
+  applicationCommandChoicesOption.choices = [];
+  applicationCommandChoicesOption.choices = [] as const;
+}
 
 declare const applicationCommandSubCommandData: ApplicationCommandSubCommandData;
 declare const applicationCommandSubCommand: ApplicationCommandSubCommand;
-
-applicationCommandSubCommandData.options = [];
-applicationCommandSubCommandData.options = [] as const;
-applicationCommandSubCommand.options = [];
-applicationCommandSubCommand.options = [] as const;
+{
+  applicationCommandSubCommandData.options = [];
+  applicationCommandSubCommandData.options = [] as const;
+  applicationCommandSubCommand.options = [];
+  applicationCommandSubCommand.options = [] as const;
+}
 
 declare const applicationSubGroupCommandData: ApplicationCommandSubGroupData;
 declare const applicationCommandSubGroup: ApplicationCommandSubGroup;
@@ -1624,23 +1630,24 @@ applicationCommandSubGroup.options = [];
 applicationCommandSubGroup.options = [] as const;
 
 declare const autoModerationRuleManager: AutoModerationRuleManager;
-
-expectType<Promise<AutoModerationRule>>(autoModerationRuleManager.fetch('1234567890'));
-expectType<Promise<AutoModerationRule>>(autoModerationRuleManager.fetch({ autoModerationRule: '1234567890' }));
-expectType<Promise<AutoModerationRule>>(
-  autoModerationRuleManager.fetch({ autoModerationRule: '1234567890', cache: false }),
-);
-expectType<Promise<AutoModerationRule>>(
-  autoModerationRuleManager.fetch({ autoModerationRule: '1234567890', force: true }),
-);
-expectType<Promise<AutoModerationRule>>(
-  autoModerationRuleManager.fetch({ autoModerationRule: '1234567890', cache: false, force: true }),
-);
-expectType<Promise<Collection<Snowflake, AutoModerationRule>>>(autoModerationRuleManager.fetch());
-expectType<Promise<Collection<Snowflake, AutoModerationRule>>>(autoModerationRuleManager.fetch({}));
-expectType<Promise<Collection<Snowflake, AutoModerationRule>>>(autoModerationRuleManager.fetch({ cache: false }));
-// @ts-expect-error The `force` option cannot be used alongside fetching all auto moderation rules.
-await autoModerationRuleManager.fetch({ force: false });
+{
+  expectType<Promise<AutoModerationRule>>(autoModerationRuleManager.fetch('1234567890'));
+  expectType<Promise<AutoModerationRule>>(autoModerationRuleManager.fetch({ autoModerationRule: '1234567890' }));
+  expectType<Promise<AutoModerationRule>>(
+    autoModerationRuleManager.fetch({ autoModerationRule: '1234567890', cache: false }),
+  );
+  expectType<Promise<AutoModerationRule>>(
+    autoModerationRuleManager.fetch({ autoModerationRule: '1234567890', force: true }),
+  );
+  expectType<Promise<AutoModerationRule>>(
+    autoModerationRuleManager.fetch({ autoModerationRule: '1234567890', cache: false, force: true }),
+  );
+  expectType<Promise<Collection<Snowflake, AutoModerationRule>>>(autoModerationRuleManager.fetch());
+  expectType<Promise<Collection<Snowflake, AutoModerationRule>>>(autoModerationRuleManager.fetch({}));
+  expectType<Promise<Collection<Snowflake, AutoModerationRule>>>(autoModerationRuleManager.fetch({ cache: false }));
+  // @ts-expect-error The `force` option cannot be used alongside fetching all auto moderation rules.
+  await autoModerationRuleManager.fetch({ force: false });
+}
 
 declare const guildApplicationCommandManager: GuildApplicationCommandManager;
 expectType<Promise<ApplicationCommand>>(guildApplicationCommandManager.fetch('0'));
@@ -1648,49 +1655,53 @@ expectType<Promise<ApplicationCommand>>(guildApplicationCommandManager.fetch({ i
 expectType<Promise<Collection<Snowflake, ApplicationCommand>>>(guildApplicationCommandManager.fetch());
 
 declare const categoryChannelChildManager: CategoryChannelChildManager;
-
-expectType<Promise<VoiceChannel>>(categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildVoice }));
-expectType<Promise<TextChannel>>(categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildText }));
-expectType<Promise<AnnouncementChannel>>(
-  categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildAnnouncement }),
-);
-expectType<Promise<StageChannel>>(
-  categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildStageVoice }),
-);
-expectType<Promise<TextChannel>>(categoryChannelChildManager.create({ name: 'name' }));
-expectType<Promise<TextChannel>>(categoryChannelChildManager.create({ name: 'name' }));
+{
+  expectType<Promise<VoiceChannel>>(categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildVoice }));
+  expectType<Promise<TextChannel>>(categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildText }));
+  expectType<Promise<AnnouncementChannel>>(
+    categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildAnnouncement }),
+  );
+  expectType<Promise<StageChannel>>(
+    categoryChannelChildManager.create({ name: 'name', type: ChannelType.GuildStageVoice }),
+  );
+  expectType<Promise<TextChannel>>(categoryChannelChildManager.create({ name: 'name' }));
+  expectType<Promise<TextChannel>>(categoryChannelChildManager.create({ name: 'name' }));
+}
 
 declare const guildChannelManager: GuildChannelManager;
+{
+  expectType<Promise<TextChannel>>(guildChannelManager.create({ name: 'name' }));
+  expectType<Promise<TextChannel>>(guildChannelManager.create({ name: 'name' }));
+  expectType<Promise<VoiceChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildVoice }));
+  expectType<Promise<CategoryChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildCategory }));
+  expectType<Promise<TextChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildText }));
+  expectType<Promise<AnnouncementChannel>>(
+    guildChannelManager.create({ name: 'name', type: ChannelType.GuildAnnouncement }),
+  );
+  expectType<Promise<StageChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildStageVoice }));
+  expectType<Promise<ForumChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildForum }));
+  expectType<Promise<MediaChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildMedia }));
 
-expectType<Promise<TextChannel>>(guildChannelManager.create({ name: 'name' }));
-expectType<Promise<TextChannel>>(guildChannelManager.create({ name: 'name' }));
-expectType<Promise<VoiceChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildVoice }));
-expectType<Promise<CategoryChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildCategory }));
-expectType<Promise<TextChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildText }));
-expectType<Promise<AnnouncementChannel>>(
-  guildChannelManager.create({ name: 'name', type: ChannelType.GuildAnnouncement }),
-);
-expectType<Promise<StageChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildStageVoice }));
-expectType<Promise<ForumChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildForum }));
-expectType<Promise<MediaChannel>>(guildChannelManager.create({ name: 'name', type: ChannelType.GuildMedia }));
+  expectType<Promise<Collection<Snowflake, NonThreadGuildBasedChannel | null>>>(guildChannelManager.fetch());
+  expectType<Promise<Collection<Snowflake, NonThreadGuildBasedChannel | null>>>(
+    guildChannelManager.fetch(undefined, {}),
+  );
+  expectType<Promise<GuildBasedChannel | null>>(guildChannelManager.fetch('0'));
 
-expectType<Promise<Collection<Snowflake, NonThreadGuildBasedChannel | null>>>(guildChannelManager.fetch());
-expectType<Promise<Collection<Snowflake, NonThreadGuildBasedChannel | null>>>(guildChannelManager.fetch(undefined, {}));
-expectType<Promise<GuildBasedChannel | null>>(guildChannelManager.fetch('0'));
+  const channel = guildChannelManager.cache.first()!;
 
-const channel = guildChannelManager.cache.first()!;
-
-if (channel.isTextBased()) {
-  const { messages } = channel;
-  const message = await messages.fetch('123');
-  expectType<GuildMessageManager>(messages);
-  expectType<Promise<Message<true>>>(messages.crosspost('1234567890'));
-  expectType<Promise<Message<true>>>(messages.edit('1234567890', 'text'));
-  expectType<Promise<Message<true>>>(messages.fetch('1234567890'));
-  expectType<Promise<Collection<Snowflake, Message<true>>>>(messages.fetchPinned());
-  expectType<Guild>(message.guild);
-  expectType<Snowflake>(message.guildId);
-  expectType<GuildTextBasedChannel>(message.channel.messages.channel);
+  if (channel.isTextBased()) {
+    const { messages } = channel;
+    const message = await messages.fetch('123');
+    expectType<GuildMessageManager>(messages);
+    expectType<Promise<Message<true>>>(messages.crosspost('1234567890'));
+    expectType<Promise<Message<true>>>(messages.edit('1234567890', 'text'));
+    expectType<Promise<Message<true>>>(messages.fetch('1234567890'));
+    expectType<Promise<Collection<Snowflake, Message<true>>>>(messages.fetchPinned());
+    expectType<Guild>(message.guild);
+    expectType<Snowflake>(message.guildId);
+    expectType<GuildTextBasedChannel>(message.channel.messages.channel);
+  }
 }
 
 {
@@ -1717,15 +1728,16 @@ if (channel.isTextBased()) {
 }
 
 declare const threadManager: ThreadManager;
+{
+  expectType<Promise<AnyThreadChannel | null>>(threadManager.fetch('12345678901234567'));
+  expectType<Promise<AnyThreadChannel | null>>(threadManager.fetch('12345678901234567', { cache: true, force: false }));
+  expectType<Promise<FetchedThreads>>(threadManager.fetch());
+  expectType<Promise<FetchedThreads>>(threadManager.fetch({}));
+  expectType<Promise<FetchedThreadsMore>>(threadManager.fetch({ archived: { limit: 4 } }));
 
-expectType<Promise<AnyThreadChannel | null>>(threadManager.fetch('12345678901234567'));
-expectType<Promise<AnyThreadChannel | null>>(threadManager.fetch('12345678901234567', { cache: true, force: false }));
-expectType<Promise<FetchedThreads>>(threadManager.fetch());
-expectType<Promise<FetchedThreads>>(threadManager.fetch({}));
-expectType<Promise<FetchedThreadsMore>>(threadManager.fetch({ archived: { limit: 4 } }));
-
-// @ts-expect-error The force option has no effect here.
-await threadManager.fetch({ archived: {} }, { force: true });
+  // @ts-expect-error The force option has no effect here.
+  await threadManager.fetch({ archived: {} }, { force: true });
+}
 
 declare const guildForumThreadManager: GuildForumThreadManager;
 expectType<ForumChannel | MediaChannel>(guildForumThreadManager.channel);
@@ -1736,45 +1748,48 @@ declare const guildTextThreadManager: GuildTextThreadManager<
 expectType<AnnouncementChannel | TextChannel>(guildTextThreadManager.channel);
 
 declare const guildMemberManager: GuildMemberManager;
+{
+  expectType<Promise<GuildMember>>(guildMemberManager.fetch('12345678901234567'));
+  expectType<Promise<GuildMember>>(guildMemberManager.fetch({ user: '12345678901234567' }));
+  expectType<Promise<GuildMember>>(guildMemberManager.fetch({ user: '12345678901234567', cache: true, force: false }));
+  expectType<Promise<GuildMember>>(guildMemberManager.fetch({ user: '12345678901234567', cache: true, force: false }));
+  expectType<Promise<Collection<Snowflake, GuildMember>>>(guildMemberManager.fetch());
+  expectType<Promise<Collection<Snowflake, GuildMember>>>(guildMemberManager.fetch({}));
+  expectType<Promise<Collection<Snowflake, GuildMember>>>(guildMemberManager.fetch({ user: ['12345678901234567'] }));
+  expectType<Promise<Collection<Snowflake, GuildMember>>>(guildMemberManager.fetch({ withPresences: false }));
+  expectType<Promise<GuildMember>>(guildMemberManager.fetch({ user: '12345678901234567', withPresences: true }));
 
-expectType<Promise<GuildMember>>(guildMemberManager.fetch('12345678901234567'));
-expectType<Promise<GuildMember>>(guildMemberManager.fetch({ user: '12345678901234567' }));
-expectType<Promise<GuildMember>>(guildMemberManager.fetch({ user: '12345678901234567', cache: true, force: false }));
-expectType<Promise<GuildMember>>(guildMemberManager.fetch({ user: '12345678901234567', cache: true, force: false }));
-expectType<Promise<Collection<Snowflake, GuildMember>>>(guildMemberManager.fetch());
-expectType<Promise<Collection<Snowflake, GuildMember>>>(guildMemberManager.fetch({}));
-expectType<Promise<Collection<Snowflake, GuildMember>>>(guildMemberManager.fetch({ user: ['12345678901234567'] }));
-expectType<Promise<Collection<Snowflake, GuildMember>>>(guildMemberManager.fetch({ withPresences: false }));
-expectType<Promise<GuildMember>>(guildMemberManager.fetch({ user: '12345678901234567', withPresences: true }));
+  expectType<Promise<Collection<Snowflake, GuildMember>>>(
+    guildMemberManager.fetch({ query: 'test', user: ['12345678901234567'], nonce: 'test' }),
+  );
 
-expectType<Promise<Collection<Snowflake, GuildMember>>>(
-  guildMemberManager.fetch({ query: 'test', user: ['12345678901234567'], nonce: 'test' }),
-);
-
-// @ts-expect-error The cache & force options have no effect here.
-await guildMemberManager.fetch({ cache: true, force: false });
-// @ts-expect-error The force option has no effect here.
-await guildMemberManager.fetch({ user: ['12345678901234567'], cache: true, force: false });
+  // @ts-expect-error The cache & force options have no effect here.
+  await guildMemberManager.fetch({ cache: true, force: false });
+  // @ts-expect-error The force option has no effect here.
+  await guildMemberManager.fetch({ user: ['12345678901234567'], cache: true, force: false });
+}
 
 declare const messageManager: MessageManager;
-
-expectType<Promise<Message>>(messageManager.fetch('1234567890'));
-expectType<Promise<Message>>(messageManager.fetch({ message: '1234567890' }));
-expectType<Promise<Message>>(messageManager.fetch({ message: '1234567890', cache: true, force: false }));
-expectType<Promise<Collection<Snowflake, Message>>>(messageManager.fetch());
-expectType<Promise<Collection<Snowflake, Message>>>(messageManager.fetch({}));
-expectType<Promise<Collection<Snowflake, Message>>>(
-  messageManager.fetch({ limit: 100, before: '1234567890', cache: false }),
-);
-// @ts-expect-error
-await messageManager.fetch({ cache: true, force: false });
-// @ts-expect-error
-await messageManager.fetch({ message: '1234567890', after: '1234567890', cache: true, force: false });
+{
+  expectType<Promise<Message>>(messageManager.fetch('1234567890'));
+  expectType<Promise<Message>>(messageManager.fetch({ message: '1234567890' }));
+  expectType<Promise<Message>>(messageManager.fetch({ message: '1234567890', cache: true, force: false }));
+  expectType<Promise<Collection<Snowflake, Message>>>(messageManager.fetch());
+  expectType<Promise<Collection<Snowflake, Message>>>(messageManager.fetch({}));
+  expectType<Promise<Collection<Snowflake, Message>>>(
+    messageManager.fetch({ limit: 100, before: '1234567890', cache: false }),
+  );
+  // @ts-expect-error
+  await messageManager.fetch({ cache: true, force: false });
+  // @ts-expect-error
+  await messageManager.fetch({ message: '1234567890', after: '1234567890', cache: true, force: false });
+}
 
 declare const pollAnswerVoterManager: PollAnswerVoterManager;
-
-expectType<Promise<Collection<Snowflake, User>>>(pollAnswerVoterManager.fetch());
-expectType<PollAnswer>(pollAnswerVoterManager.answer);
+{
+  expectType<Promise<Collection<Snowflake, User>>>(pollAnswerVoterManager.fetch());
+  expectType<PollAnswer>(pollAnswerVoterManager.answer);
+}
 
 declare const roleManager: RoleManager;
 expectType<Promise<Collection<Snowflake, Role>>>(roleManager.fetch());
@@ -1792,39 +1807,43 @@ expectType<Promise<Collection<Snowflake, ApplicationEmoji>>>(applicationEmojiMan
 expectType<Promise<ApplicationEmoji>>(applicationEmojiManager.fetch('0'));
 
 declare const guildBanManager: GuildBanManager;
-
-expectType<Promise<GuildBan>>(guildBanManager.fetch('1234567890'));
-expectType<Promise<GuildBan>>(guildBanManager.fetch({ user: '1234567890' }));
-expectType<Promise<GuildBan>>(guildBanManager.fetch({ user: '1234567890', cache: true, force: false }));
-expectType<Promise<Collection<Snowflake, GuildBan>>>(guildBanManager.fetch());
-expectType<Promise<Collection<Snowflake, GuildBan>>>(guildBanManager.fetch({}));
-expectType<Promise<Collection<Snowflake, GuildBan>>>(guildBanManager.fetch({ limit: 100, before: '1234567890' }));
-// @ts-expect-error
-await guildBanManager.fetch({ cache: true, force: false });
-// @ts-expect-error
-await guildBanManager.fetch({ user: '1234567890', after: '1234567890', cache: true, force: false });
+{
+  expectType<Promise<GuildBan>>(guildBanManager.fetch('1234567890'));
+  expectType<Promise<GuildBan>>(guildBanManager.fetch({ user: '1234567890' }));
+  expectType<Promise<GuildBan>>(guildBanManager.fetch({ user: '1234567890', cache: true, force: false }));
+  expectType<Promise<Collection<Snowflake, GuildBan>>>(guildBanManager.fetch());
+  expectType<Promise<Collection<Snowflake, GuildBan>>>(guildBanManager.fetch({}));
+  expectType<Promise<Collection<Snowflake, GuildBan>>>(guildBanManager.fetch({ limit: 100, before: '1234567890' }));
+  // @ts-expect-error
+  await guildBanManager.fetch({ cache: true, force: false });
+  // @ts-expect-error
+  await guildBanManager.fetch({ user: '1234567890', after: '1234567890', cache: true, force: false });
+}
 
 declare const threadMemberWithGuildMember: ThreadMember<true>;
 declare const threadMemberManager: ThreadMemberManager;
+{
+  expectType<Promise<ThreadMember>>(threadMemberManager.fetch('12345678'));
+  expectType<Promise<ThreadMember>>(threadMemberManager.fetch({ member: '12345678', cache: false }));
+  expectType<Promise<ThreadMember>>(threadMemberManager.fetch({ member: '12345678', force: true }));
+  expectType<Promise<ThreadMember<true>>>(threadMemberManager.fetch({ member: threadMemberWithGuildMember }));
+  expectType<Promise<ThreadMember<true>>>(threadMemberManager.fetch({ member: '12345678901234567', withMember: true }));
+  expectType<Promise<Collection<Snowflake, ThreadMember>>>(threadMemberManager.fetch());
+  expectType<Promise<Collection<Snowflake, ThreadMember>>>(threadMemberManager.fetch({}));
 
-expectType<Promise<ThreadMember>>(threadMemberManager.fetch('12345678'));
-expectType<Promise<ThreadMember>>(threadMemberManager.fetch({ member: '12345678', cache: false }));
-expectType<Promise<ThreadMember>>(threadMemberManager.fetch({ member: '12345678', force: true }));
-expectType<Promise<ThreadMember<true>>>(threadMemberManager.fetch({ member: threadMemberWithGuildMember }));
-expectType<Promise<ThreadMember<true>>>(threadMemberManager.fetch({ member: '12345678901234567', withMember: true }));
-expectType<Promise<Collection<Snowflake, ThreadMember>>>(threadMemberManager.fetch());
-expectType<Promise<Collection<Snowflake, ThreadMember>>>(threadMemberManager.fetch({}));
+  expectType<Promise<Collection<Snowflake, ThreadMember<true>>>>(
+    threadMemberManager.fetch({ cache: true, limit: 50, withMember: true, after: '12345678901234567' }),
+  );
 
-expectType<Promise<Collection<Snowflake, ThreadMember<true>>>>(
-  threadMemberManager.fetch({ cache: true, limit: 50, withMember: true, after: '12345678901234567' }),
-);
+  expectType<Promise<Collection<Snowflake, ThreadMember>>>(
+    threadMemberManager.fetch({ cache: true, withMember: false }),
+  );
 
-expectType<Promise<Collection<Snowflake, ThreadMember>>>(threadMemberManager.fetch({ cache: true, withMember: false }));
-
-// @ts-expect-error The `force` option cannot be used alongside fetching all thread members.
-await threadMemberManager.fetch({ cache: true, force: false });
-// @ts-expect-error `withMember` needs to be `true` to receive paginated results.
-await threadMemberManager.fetch({ withMember: false, limit: 5, after: '12345678901234567' });
+  // @ts-expect-error The `force` option cannot be used alongside fetching all thread members.
+  await threadMemberManager.fetch({ cache: true, force: false });
+  // @ts-expect-error `withMember` needs to be `true` to receive paginated results.
+  await threadMemberManager.fetch({ withMember: false, limit: 5, after: '12345678901234567' });
+}
 
 declare const typing: Typing;
 expectType<PartialUser | User>(typing.user);
@@ -2684,58 +2703,60 @@ expectType<null>(partialUser.tag);
 expectType<null>(partialUser.discriminator);
 
 declare const emoji: Emoji;
-
-expectType<PartialEmojiOnlyId>(resolvePartialEmoji('12345678901234567'));
-expectType<PartialEmoji | null>(resolvePartialEmoji(emoji));
+{
+  expectType<PartialEmojiOnlyId>(resolvePartialEmoji('12345678901234567'));
+  expectType<PartialEmoji | null>(resolvePartialEmoji(emoji));
+}
 
 declare const application: ClientApplication;
 declare const entitlement: Entitlement;
 declare const sku: SKU;
+{
+  expectType<Collection<Snowflake, SKU>>(await application.fetchSKUs());
+  expectType<Collection<Snowflake, Entitlement>>(await application.entitlements.fetch());
 
-expectType<Collection<Snowflake, SKU>>(await application.fetchSKUs());
-expectType<Collection<Snowflake, Entitlement>>(await application.entitlements.fetch());
+  await application.entitlements.fetch({
+    guild,
+    skus: ['12345678901234567', sku],
+    user,
+    excludeEnded: true,
+    limit: 10,
+  });
 
-await application.entitlements.fetch({
-  guild,
-  skus: ['12345678901234567', sku],
-  user,
-  excludeEnded: true,
-  limit: 10,
-});
-
-await application.entitlements.createTest({ sku: '12345678901234567', user });
-await application.entitlements.createTest({ sku, guild });
-
-await application.entitlements.deleteTest(entitlement);
-
-await application.entitlements.consume(snowflake);
-
-expectType<boolean>(entitlement.isActive());
-
-if (entitlement.isUserSubscription()) {
-  expectType<Snowflake>(entitlement.userId);
-  expectType<User>(await entitlement.fetchUser());
-  expectType<null>(entitlement.guildId);
-  expectType<null>(entitlement.guild);
+  await application.entitlements.createTest({ sku: '12345678901234567', user });
+  await application.entitlements.createTest({ sku, guild });
 
   await application.entitlements.deleteTest(entitlement);
-} else if (entitlement.isGuildSubscription()) {
-  expectType<Snowflake>(entitlement.guildId);
-  expectType<Guild>(entitlement.guild);
 
-  await application.entitlements.deleteTest(entitlement);
+  await application.entitlements.consume(snowflake);
+
+  expectType<boolean>(entitlement.isActive());
+
+  if (entitlement.isUserSubscription()) {
+    expectType<Snowflake>(entitlement.userId);
+    expectType<User>(await entitlement.fetchUser());
+    expectType<null>(entitlement.guildId);
+    expectType<null>(entitlement.guild);
+
+    await application.entitlements.deleteTest(entitlement);
+  } else if (entitlement.isGuildSubscription()) {
+    expectType<Snowflake>(entitlement.guildId);
+    expectType<Guild>(entitlement.guild);
+
+    await application.entitlements.deleteTest(entitlement);
+  }
+
+  if (entitlement.isTest()) {
+    expectType<null>(entitlement.startsTimestamp);
+    expectType<null>(entitlement.endsTimestamp);
+    expectType<null>(entitlement.startsAt);
+    expectType<null>(entitlement.endsAt);
+  }
+
+  client.on(Events.InteractionCreate, async interaction => {
+    expectType<Collection<Snowflake, Entitlement>>(interaction.entitlements);
+  });
 }
-
-if (entitlement.isTest()) {
-  expectType<null>(entitlement.startsTimestamp);
-  expectType<null>(entitlement.endsTimestamp);
-  expectType<null>(entitlement.startsAt);
-  expectType<null>(entitlement.endsAt);
-}
-
-client.on(Events.InteractionCreate, async interaction => {
-  expectType<Collection<Snowflake, Entitlement>>(interaction.entitlements);
-});
 
 await client.channels.createMessage('123', {
   poll: {
@@ -2749,22 +2770,24 @@ await client.channels.createMessage('123', {
 });
 
 declare const partialPoll: PartialPoll;
-
-if (partialPoll.partial) {
-  expectType<null>(partialPoll.question.text);
-  expectType<PartialMessage>(partialPoll.message);
-  expectType<null>(partialPoll.allowMultiselect);
-  expectType<null>(partialPoll.layoutType);
-  expectType<null>(partialPoll.expiresTimestamp);
-  expectType<ReadonlyCollection<number, PartialPollAnswer>>(partialPoll.answers);
+{
+  if (partialPoll.partial) {
+    expectType<null>(partialPoll.question.text);
+    expectType<PartialMessage>(partialPoll.message);
+    expectType<null>(partialPoll.allowMultiselect);
+    expectType<null>(partialPoll.layoutType);
+    expectType<null>(partialPoll.expiresTimestamp);
+    expectType<ReadonlyCollection<number, PartialPollAnswer>>(partialPoll.answers);
+  }
 }
 
 declare const partialPollAnswer: PartialPollAnswer;
-
-if (partialPollAnswer.partial) {
-  expectType<PartialPoll>(partialPollAnswer.poll);
-  expectType<null>(partialPollAnswer.emoji);
-  expectType<null>(partialPollAnswer.text);
+{
+  if (partialPollAnswer.partial) {
+    expectType<PartialPoll>(partialPollAnswer.poll);
+    expectType<null>(partialPollAnswer.emoji);
+    expectType<null>(partialPollAnswer.text);
+  }
 }
 
 declare const poll: Poll;
@@ -2819,80 +2842,88 @@ client.on('interactionCreate', async interaction => {
 declare const guildScheduledEventManager: GuildScheduledEventManager;
 await guildScheduledEventManager.edit(snowflake, { recurrenceRule: null });
 
-expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({
-  startAt: new Date(),
-  frequency: GuildScheduledEventRecurrenceRuleFrequency.Yearly,
-  interval: 1,
-  byMonth: [GuildScheduledEventRecurrenceRuleMonth.May],
-  byMonthDay: [4],
-  // Invalid property
-  byWeekday: [GuildScheduledEventRecurrenceRuleWeekday.Monday],
-});
+{
+  expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({
+    startAt: new Date(),
+    frequency: GuildScheduledEventRecurrenceRuleFrequency.Yearly,
+    interval: 1,
+    byMonth: [GuildScheduledEventRecurrenceRuleMonth.May],
+    byMonthDay: [4],
+    // Invalid property
+    byWeekday: [GuildScheduledEventRecurrenceRuleWeekday.Monday],
+  });
 
-expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({
-  startAt: new Date(),
-  frequency: GuildScheduledEventRecurrenceRuleFrequency.Yearly,
-  interval: 1,
-  byMonth: [GuildScheduledEventRecurrenceRuleMonth.May],
-  byMonthDay: [4],
-  // Invalid property
-  byNWeekday: [{ n: 1, day: GuildScheduledEventRecurrenceRuleWeekday.Monday }],
-});
+  expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({
+    startAt: new Date(),
+    frequency: GuildScheduledEventRecurrenceRuleFrequency.Yearly,
+    interval: 1,
+    byMonth: [GuildScheduledEventRecurrenceRuleMonth.May],
+    byMonthDay: [4],
+    // Invalid property
+    byNWeekday: [{ n: 1, day: GuildScheduledEventRecurrenceRuleWeekday.Monday }],
+  });
 
-expectAssignable<GuildScheduledEventRecurrenceRuleOptions>({
-  startAt: new Date(),
-  frequency: GuildScheduledEventRecurrenceRuleFrequency.Yearly,
-  interval: 1,
-  byMonth: [GuildScheduledEventRecurrenceRuleMonth.May],
-  byMonthDay: [4],
-});
+  expectAssignable<GuildScheduledEventRecurrenceRuleOptions>({
+    startAt: new Date(),
+    frequency: GuildScheduledEventRecurrenceRuleFrequency.Yearly,
+    interval: 1,
+    byMonth: [GuildScheduledEventRecurrenceRuleMonth.May],
+    byMonthDay: [4],
+  });
+}
 
-expectAssignable<GuildScheduledEventRecurrenceRuleOptions>({
-  startAt: new Date(),
-  frequency: GuildScheduledEventRecurrenceRuleFrequency.Monthly,
-  interval: 1,
-  byNWeekday: [{ n: 1, day: GuildScheduledEventRecurrenceRuleWeekday.Monday }],
-});
+{
+  expectAssignable<GuildScheduledEventRecurrenceRuleOptions>({
+    startAt: new Date(),
+    frequency: GuildScheduledEventRecurrenceRuleFrequency.Monthly,
+    interval: 1,
+    byNWeekday: [{ n: 1, day: GuildScheduledEventRecurrenceRuleWeekday.Monday }],
+  });
 
-expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({
-  startAt: new Date(),
-  frequency: GuildScheduledEventRecurrenceRuleFrequency.Monthly,
-  interval: 1,
-  byNWeekday: [{ n: 1, day: GuildScheduledEventRecurrenceRuleWeekday.Monday }],
-  // Invalid property
-  byWeekday: [GuildScheduledEventRecurrenceRuleWeekday.Monday],
-});
+  expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({
+    startAt: new Date(),
+    frequency: GuildScheduledEventRecurrenceRuleFrequency.Monthly,
+    interval: 1,
+    byNWeekday: [{ n: 1, day: GuildScheduledEventRecurrenceRuleWeekday.Monday }],
+    // Invalid property
+    byWeekday: [GuildScheduledEventRecurrenceRuleWeekday.Monday],
+  });
+}
 
-expectAssignable<GuildScheduledEventRecurrenceRuleOptions>({
-  startAt: new Date(),
-  frequency: GuildScheduledEventRecurrenceRuleFrequency.Weekly,
-  interval: 1,
-  byWeekday: [GuildScheduledEventRecurrenceRuleWeekday.Monday],
-});
+{
+  expectAssignable<GuildScheduledEventRecurrenceRuleOptions>({
+    startAt: new Date(),
+    frequency: GuildScheduledEventRecurrenceRuleFrequency.Weekly,
+    interval: 1,
+    byWeekday: [GuildScheduledEventRecurrenceRuleWeekday.Monday],
+  });
 
-expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({
-  startAt: new Date(),
-  frequency: GuildScheduledEventRecurrenceRuleFrequency.Weekly,
-  interval: 1,
-  byWeekday: [GuildScheduledEventRecurrenceRuleWeekday.Monday],
-  // Invalid property
-  byNWeekday: [{ n: 1, day: GuildScheduledEventRecurrenceRuleWeekday.Monday }],
-});
+  expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({
+    startAt: new Date(),
+    frequency: GuildScheduledEventRecurrenceRuleFrequency.Weekly,
+    interval: 1,
+    byWeekday: [GuildScheduledEventRecurrenceRuleWeekday.Monday],
+    // Invalid property
+    byNWeekday: [{ n: 1, day: GuildScheduledEventRecurrenceRuleWeekday.Monday }],
+  });
+}
 
-expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({
-  startAt: new Date(),
-  frequency: GuildScheduledEventRecurrenceRuleFrequency.Daily,
-  interval: 1,
-  byWeekday: [GuildScheduledEventRecurrenceRuleWeekday.Monday],
-  // Invalid property
-  byNWeekday: [{ n: 1, day: GuildScheduledEventRecurrenceRuleWeekday.Monday }],
-});
+{
+  expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({
+    startAt: new Date(),
+    frequency: GuildScheduledEventRecurrenceRuleFrequency.Daily,
+    interval: 1,
+    byWeekday: [GuildScheduledEventRecurrenceRuleWeekday.Monday],
+    // Invalid property
+    byNWeekday: [{ n: 1, day: GuildScheduledEventRecurrenceRuleWeekday.Monday }],
+  });
 
-expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({
-  startAt: new Date(),
-  frequency: GuildScheduledEventRecurrenceRuleFrequency.Daily,
-  interval: 1,
-  byWeekday: [GuildScheduledEventRecurrenceRuleWeekday.Monday],
-  // Invalid property
-  byMonth: [GuildScheduledEventRecurrenceRuleMonth.May],
-});
+  expectNotAssignable<GuildScheduledEventRecurrenceRuleOptions>({
+    startAt: new Date(),
+    frequency: GuildScheduledEventRecurrenceRuleFrequency.Daily,
+    interval: 1,
+    byWeekday: [GuildScheduledEventRecurrenceRuleWeekday.Monday],
+    // Invalid property
+    byMonth: [GuildScheduledEventRecurrenceRuleMonth.May],
+  });
+}

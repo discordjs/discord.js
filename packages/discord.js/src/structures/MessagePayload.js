@@ -6,7 +6,7 @@ const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
 const { resolveFile } = require('../util/DataResolver.js');
 const { MessageFlagsBitField } = require('../util/MessageFlagsBitField.js');
-const { basename, verifyString, resolvePartialEmoji } = require('../util/Util.js');
+const { findName, verifyString, resolvePartialEmoji } = require('../util/Util.js');
 
 /**
  * Represents a message to be sent to the API.
@@ -260,18 +260,6 @@ class MessagePayload {
   static async resolveFile(fileLike) {
     let attachment;
     let name;
-
-    const findName = thing => {
-      if (typeof thing === 'string') {
-        return basename(thing);
-      }
-
-      if (thing.path) {
-        return basename(thing.path);
-      }
-
-      return 'file.jpg';
-    };
 
     const ownAttachment =
       typeof fileLike === 'string' || fileLike instanceof Buffer || typeof fileLike.pipe === 'function';

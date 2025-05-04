@@ -161,15 +161,10 @@ export default tseslint.config(
 			},
 		},
 		rules: {
-			'@typescript-eslint/no-var-requires': 0,
-			'@typescript-eslint/no-require-imports': 0,
 			'jsdoc/no-undefined-types': 0,
 			'jsdoc/no-defaults': 0,
 			'no-eq-null': 0,
-			'@typescript-eslint/explicit-member-accessibility': 0,
-			'@typescript-eslint/class-literal-property-style': 0,
 			strict: ['error', 'global'],
-			'unicorn/consistent-function-scoping': 0,
 
 			'no-restricted-syntax': [
 				'error',
@@ -199,7 +194,7 @@ export default tseslint.config(
 		},
 	},
 	{
-		files: [`packages/discord.js/typings/*{d.ts,test-d.ts}`],
+		files: [`packages/discord.js/typings/*{d.ts,test-d.ts,d.mts,test-d.mts}`],
 		rules: {
 			'@typescript-eslint/no-unsafe-declaration-merging': 0,
 			'@typescript-eslint/no-empty-object-type': 0,

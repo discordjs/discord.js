@@ -396,6 +396,24 @@ function basename(path, ext) {
 }
 
 /**
+ * Find the filename to use for attachments.
+ *
+ * @param {BufferResolvable|Stream} thing The thing to attach as attachment
+ * @returns {string} filename to use
+ */
+function findName(thing) {
+  if (typeof thing === 'string') {
+    return basename(thing);
+  }
+
+  if (thing.path) {
+    return basename(thing.path);
+  }
+
+  return 'file.jpg';
+}
+
+/**
  * The content to have all mentions replaced by the equivalent text.
  *
  * @param {string} str The string to be converted
@@ -463,13 +481,7 @@ function parseWebhookURL(url) {
       url,
     );
 
-  if (!matches?.groups) return null;
-
-  const { id, token } = matches.groups;
-  return {
-    id,
-    token,
-  };
+  return matches && { id: matches.groups.id, token: matches.groups.token };
 }
 
 /**
@@ -571,6 +583,7 @@ exports.resolveColor = resolveColor;
 exports.discordSort = discordSort;
 exports.setPosition = setPosition;
 exports.basename = basename;
+exports.findName = findName;
 exports.cleanContent = cleanContent;
 exports.cleanCodeBlockContent = cleanCodeBlockContent;
 exports.parseWebhookURL = parseWebhookURL;
