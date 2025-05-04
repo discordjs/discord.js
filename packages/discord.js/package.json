@@ -37,8 +37,7 @@
   "files": [
     "src",
     "typings/*.d.ts",
-    "typings/*.d.mts",
-    "typings/tsdoc-metadata.json"
+    "typings/*.d.mts"
   ],
   "contributors": [
     "Crawl <icrawltogo@gmail.com>",
