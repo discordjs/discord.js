@@ -115,7 +115,7 @@ export class GuildsAPI {
 	 * @param options - The options for fetching the guild
 	 * @deprecated Use the overload with a query instead.
 	 */
-	public async get(guildId: Snowflake, { signal }?: Pick<RequestData, 'signal'>): Promise<RESTGetAPIGuildResult>;
+	public async get(guildId: Snowflake, { signal }: Pick<RequestData, 'signal'>): Promise<RESTGetAPIGuildResult>;
 
 	/**
 	 * Fetches a guild
