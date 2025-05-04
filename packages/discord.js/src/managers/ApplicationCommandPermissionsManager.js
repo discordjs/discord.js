@@ -107,8 +107,8 @@ class ApplicationCommandPermissionsManager extends BaseManager {
   async fetch({ guild, command } = {}) {
     const { guildId, commandId } = this._validateOptions(guild, command);
     if (commandId) {
-      const data = await this.client.rest.get(this.permissionsPath(guildId, commandId));
-      return data.permissions;
+      const innerData = await this.client.rest.get(this.permissionsPath(guildId, commandId));
+      return innerData.permissions;
     }
 
     const data = await this.client.rest.get(this.permissionsPath(guildId));
@@ -353,9 +353,9 @@ class ApplicationCommandPermissionsManager extends BaseManager {
           return !resolvedUserIds.includes(perm.id);
         case ApplicationCommandPermissionType.Channel:
           return !resolvedChannelIds.includes(perm.id);
+        default:
+          return true;
       }
-
-      return true;
     });
 
     return this.set({ guild: options.guildId, command: commandId, permissions, token });

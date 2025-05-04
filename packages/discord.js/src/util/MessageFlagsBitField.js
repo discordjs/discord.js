@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/check-values */
 'use strict';
 
 const { MessageFlags } = require('discord-api-types/v10');
@@ -20,7 +21,7 @@ class MessageFlagsBitField extends BitField {
 
 /**
  * @name MessageFlagsBitField
- * @constructor
+ * @kind constructor
  * @memberof MessageFlagsBitField
  * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
  */

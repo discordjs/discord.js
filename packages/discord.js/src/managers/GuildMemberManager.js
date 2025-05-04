@@ -409,7 +409,7 @@ class GuildMemberManager extends CachedManager {
 
     const clone = this.cache.get(id)?._clone();
     clone?._patch(data);
-    return clone ?? this._add(d, false);
+    return clone ?? this._add(data, false);
   }
 
   /**

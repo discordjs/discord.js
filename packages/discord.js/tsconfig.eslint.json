@@ -6,13 +6,7 @@
   },
   "include": [
     "*.ts",
-    "*.js",
-    "*.cjs",
-    "*.mjs",
     "src/**/*.ts",
-    "src/**/*.js",
-    "src/**/*.cjs",
-    "src/**/*.mjs",
     "typings/**/*.d.ts",
     "typings/**/*.test-d.ts",
     "bin",

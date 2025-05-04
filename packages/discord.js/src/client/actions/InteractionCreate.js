@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-nested-switch */
 'use strict';
 
 const { InteractionType, ComponentType, ApplicationCommandType } = require('discord-api-types/v10');

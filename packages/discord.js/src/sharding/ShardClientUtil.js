@@ -61,6 +61,8 @@ class ShardClientUtil {
           this.parentPort.postMessage({ _resume: true });
         });
         break;
+      default:
+        break;
     }
   }
 
@@ -83,6 +85,8 @@ class ShardClientUtil {
         case 'worker':
           this.parentPort.postMessage(message);
           resolve();
+          break;
+        default:
           break;
       }
     });

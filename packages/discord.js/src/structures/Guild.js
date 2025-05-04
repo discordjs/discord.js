@@ -644,7 +644,6 @@ class Guild extends AnonymousGuild {
       return 384_000;
     }
 
-    // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
     switch (this.premiumTier) {
       case GuildPremiumTier.Tier1:
         return 128_000;

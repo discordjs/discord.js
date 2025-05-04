@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/check-values */
 'use strict';
 
 const { ActivityFlags } = require('discord-api-types/v10');
@@ -16,13 +17,13 @@ class ActivityFlagsBitField extends BitField {
    * @memberof ActivityFlagsBitField
    */
   static Flags = ActivityFlags;
-
-  /**
-   * @method (constructor)
-   * @constructs
-   * @memberof ActivityFlagsBitField
-   * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
-   */
 }
+
+/**
+ * @name ActivityFlagsBitField
+ * @kind constructor
+ * @memberof ActivityFlagsBitField
+ * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
+ */
 
 exports.ActivityFlagsBitField = ActivityFlagsBitField;

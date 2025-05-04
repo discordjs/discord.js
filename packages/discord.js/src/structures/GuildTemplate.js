@@ -153,18 +153,17 @@ class GuildTemplate extends Base {
         resolve(guild);
       }
 
-      function handleGuild(guild) {
-        if (guild.id === data.id) {
-          // eslint-disable-next-line @typescript-eslint/no-use-before-define
-          clearTimeout(timeout);
-          resolveGuild(guild);
-        }
-      }
-
       client.incrementMaxListeners();
       client.on(Events.GuildCreate, handleGuild);
 
       const timeout = setTimeout(() => resolveGuild(client.guilds._add(data)), 10_000).unref();
+
+      function handleGuild(guild) {
+        if (guild.id === data.id) {
+          clearTimeout(timeout);
+          resolveGuild(guild);
+        }
+      }
     });
   }
 

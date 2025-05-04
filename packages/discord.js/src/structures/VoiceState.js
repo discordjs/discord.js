@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 'use strict';
 
 const { ChannelType, Routes } = require('discord-api-types/v10');

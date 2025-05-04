@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/check-values */
 'use strict';
 
 const { SKUFlags } = require('discord-api-types/v10');
@@ -20,7 +21,7 @@ class SKUFlagsBitField extends BitField {
 
 /**
  * @name SKUFlagsBitField
- * @constructor
+ * @kind constructor
  * @memberof SKUFlagsBitField
  * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
  */

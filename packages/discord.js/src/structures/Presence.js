@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
+/* eslint-disable no-use-before-define */
 'use strict';
 
 const { ActivityFlagsBitField } = require('../util/ActivityFlagsBitField.js');

@@ -135,9 +135,9 @@ class MessageReaction {
     if (this._emoji.id) {
       const applicationEmojis = this.message.client.application.emojis.cache;
       if (applicationEmojis.has(this._emoji.id)) {
-        const emoji = applicationEmojis.get(this._emoji.id);
-        this._emoji = emoji;
-        return emoji;
+        const innerEmoji = applicationEmojis.get(this._emoji.id);
+        this._emoji = innerEmoji;
+        return innerEmoji;
       }
     }
 

@@ -121,6 +121,7 @@ class PartialGroupDMChannel extends BaseChannel {
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
 
+  /* eslint-disable getter-return */
   get lastMessage() {}
 
   get lastPinAt() {}

@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/check-values */
 'use strict';
 
 const { UserFlags } = require('discord-api-types/v10');
@@ -20,7 +21,7 @@ class UserFlagsBitField extends BitField {
 
 /**
  * @name UserFlagsBitField
- * @constructor
+ * @kind constructor
  * @memberof UserFlagsBitField
  * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
  */

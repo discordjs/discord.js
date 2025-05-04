@@ -1,4 +1,4 @@
-/* eslint-disable promise/prefer-await-to-then, promise/prefer-await-to-callbacks, @typescript-eslint/no-use-before-define */
+/* eslint-disable promise/prefer-await-to-callbacks, promise/prefer-await-to-then, no-use-before-define */
 'use strict';
 
 const path = require('node:path');
@@ -31,6 +31,8 @@ class Shard extends AsyncEventEmitter {
         break;
       case 'worker':
         Worker = require('node:worker_threads').Worker;
+        break;
+      default:
         break;
     }
 
@@ -162,6 +164,8 @@ class Shard extends AsyncEventEmitter {
         })
           .on('message', this._handleMessage.bind(this))
           .on('exit', this._exitListener);
+        break;
+      default:
         break;
     }
 

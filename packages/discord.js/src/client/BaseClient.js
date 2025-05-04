@@ -119,7 +119,6 @@ class BaseClient extends AsyncEventEmitter {
   }
 
   async [Symbol.asyncDispose]() {
-    // eslint-disable-next-line @typescript-eslint/await-thenable, @typescript-eslint/no-confusing-void-expression
     await this.destroy();
   }
 }

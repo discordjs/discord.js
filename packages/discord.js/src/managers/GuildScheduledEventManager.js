@@ -170,10 +170,10 @@ class GuildScheduledEventManager extends CachedManager {
         if (existing) return existing;
       }
 
-      const data = await this.client.rest.get(Routes.guildScheduledEvent(this.guild.id, id), {
+      const innerData = await this.client.rest.get(Routes.guildScheduledEvent(this.guild.id, id), {
         query: makeURLSearchParams({ with_user_count: options.withUserCount ?? true }),
       });
-      return this._add(data, options.cache);
+      return this._add(innerData, options.cache);
     }
 
     const data = await this.client.rest.get(Routes.guildScheduledEvents(this.guild.id), {

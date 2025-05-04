@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
@@ -115,6 +114,7 @@ class ReactionCollector extends Collector {
    * @returns {?(Snowflake|string)}
    * @private
    */
+  // eslint-disable-next-line no-unused-vars
   collect(reaction, user) {
     /**
      * Emitted whenever a reaction is collected.

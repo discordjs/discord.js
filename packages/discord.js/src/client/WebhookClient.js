@@ -72,13 +72,14 @@ class WebhookClient extends BaseClient {
 
   // These are here only for documentation purposes - they are implemented by Webhook
 
+  /* eslint-disable jsdoc/check-param-names, getter-return */
   /**
    * Sends a message with this webhook.
    *
    * @param {string|MessagePayload|WebhookMessageCreateOptions} options The content for the reply
    * @returns {Promise<APIMessage>}
    */
-  async send(options) {}
+  async send() {}
 
   /**
    * Gets a message that was sent by this webhook.
@@ -87,7 +88,7 @@ class WebhookClient extends BaseClient {
    * @param {WebhookFetchMessageOptions} [options] The options to provide to fetch the message.
    * @returns {Promise<APIMessage>} Returns the message sent by this webhook
    */
-  async fetchMessage(message, options) {}
+  async fetchMessage() {}
 
   /**
    * Edits a message that was sent by this webhook.
@@ -96,7 +97,7 @@ class WebhookClient extends BaseClient {
    * @param {string|MessagePayload|WebhookMessageEditOptions} options The options to provide
    * @returns {Promise<APIMessage>} Returns the message edited by this webhook
    */
-  async editMessage(message, options) {}
+  async editMessage() {}
 
   sendSlackMessage() {}
 

@@ -66,9 +66,9 @@ class RoleManager extends CachedManager {
    */
   async fetch(id, { cache = true, force = false } = {}) {
     if (!id) {
-      const data = await this.client.rest.get(Routes.guildRoles(this.guild.id));
+      const innerData = await this.client.rest.get(Routes.guildRoles(this.guild.id));
       const roles = new Collection();
-      for (const role of data) roles.set(role.id, this._add(role, cache));
+      for (const role of innerData) roles.set(role.id, this._add(role, cache));
       return roles;
     }
 

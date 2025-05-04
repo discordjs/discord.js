@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 'use strict';
 
 const { Events } = require('../util/Events.js');

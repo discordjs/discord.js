@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/check-values */
 'use strict';
 
 const { AttachmentFlags } = require('discord-api-types/v10');
@@ -20,7 +21,7 @@ class AttachmentFlagsBitField extends BitField {
 
 /**
  * @name AttachmentFlagsBitField
- * @constructor
+ * @kind constructor
  * @memberof AttachmentFlagsBitField
  * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
  */

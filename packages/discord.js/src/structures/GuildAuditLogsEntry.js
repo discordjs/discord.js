@@ -238,7 +238,6 @@ class GuildAuditLogsEntry {
       case AuditLogEvent.ChannelOverwriteCreate:
       case AuditLogEvent.ChannelOverwriteUpdate:
       case AuditLogEvent.ChannelOverwriteDelete:
-        // eslint-disable-next-line sonarjs/no-nested-switch
         switch (data.options.type) {
           case AuditLogOptionsType.Role:
             this.extra = guild.roles.cache.get(data.options.id) ?? {

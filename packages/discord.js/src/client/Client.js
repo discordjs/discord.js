@@ -572,8 +572,8 @@ class Client extends BaseClient {
    */
   async fetchStickerPacks({ packId } = {}) {
     if (packId) {
-      const data = await this.rest.get(Routes.stickerPack(packId));
-      return new StickerPack(this, data);
+      const innerData = await this.rest.get(Routes.stickerPack(packId));
+      return new StickerPack(this, innerData);
     }
 
     const data = await this.rest.get(Routes.stickerPacks());

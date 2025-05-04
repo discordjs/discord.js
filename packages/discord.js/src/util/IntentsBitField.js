@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/check-values */
 'use strict';
 const { GatewayIntentBits } = require('discord-api-types/v10');
 const { BitField } = require('./BitField.js');
@@ -19,7 +20,7 @@ class IntentsBitField extends BitField {
 
 /**
  * @name IntentsBitField
- * @constructor
+ * @kind constructor
  * @memberof IntentsBitField
  * @param {IntentsResolvable} [bits=0] Bit(s) to read from
  */

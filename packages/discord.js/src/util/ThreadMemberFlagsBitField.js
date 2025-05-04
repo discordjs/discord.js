@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/check-values */
 'use strict';
 
 const { BitField } = require('./BitField.js');
@@ -19,7 +20,7 @@ class ThreadMemberFlagsBitField extends BitField {
 
 /**
  * @name ThreadMemberFlagsBitField
- * @constructor
+ * @kind constructor
  * @memberof ThreadMemberFlagsBitField
  * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
  */

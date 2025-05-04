@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/check-values */
 'use strict';
 
 const { GuildSystemChannelFlags } = require('discord-api-types/v10');
@@ -22,7 +23,7 @@ class SystemChannelFlagsBitField extends BitField {
 
 /**
  * @name SystemChannelFlagsBitField
- * @constructor
+ * @kind constructor
  * @memberof SystemChannelFlagsBitField
  * @param {SystemChannelFlagsResolvable} [bits=0] Bit(s) to read from
  */

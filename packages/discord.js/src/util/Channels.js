@@ -87,6 +87,8 @@ function createChannel(client, data, guild, { allowUnknownGuild } = {}) {
       case ChannelType.GuildMedia:
         channel = new (getMediaChannel())(resolvedGuild, data, client);
         break;
+      default:
+        break;
     }
 
     if (channel && !allowUnknownGuild) resolvedGuild.channels?.cache.set(channel.id, channel);

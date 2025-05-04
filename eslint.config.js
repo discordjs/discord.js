@@ -21,6 +21,7 @@ const nodeRuleset = merge(...node, { files: [`**/*${commonFiles}`] });
 
 const typeScriptRuleset = merge(...typescript, {
 	files: [`**/*${commonFiles}`],
+	ignores: [`packages/discord.js/**/*.{js,mjs,cjs}`],
 	languageOptions: {
 		parserOptions: {
 			warnOnUnsupportedTypeScriptVersion: false,
@@ -148,6 +149,11 @@ export default tseslint.config(
 		},
 		settings: {
 			jsdoc: {
+				tagNamePreference: {
+					augments: 'extends',
+					fires: 'emits',
+					function: 'method',
+				},
 				preferredTypes: {
 					object: 'Object',
 					null: 'void',

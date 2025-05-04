@@ -1,6 +1,5 @@
 'use strict';
 
-// eslint-disable-next-line @typescript-eslint/unbound-method
 const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
 const { ChannelType, RouteBases, Routes } = require('discord-api-types/v10');
@@ -80,7 +79,6 @@ async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multi
   });
   if (!response.ok) {
     if (response.status === 401) throw new DiscordjsError(ErrorCodes.TokenInvalid);
-    // eslint-disable-next-line @typescript-eslint/only-throw-error
     throw response;
   }
 
@@ -218,7 +216,6 @@ const CategorySortableGroupTypes = [ChannelType.GuildCategory];
  * @private
  */
 function getSortableGroupTypes(type) {
-  // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
   switch (type) {
     case ChannelType.GuildText:
     case ChannelType.GuildAnnouncement:
@@ -355,7 +352,7 @@ function resolveColor(color) {
  * @returns {Collection}
  */
 function discordSort(collection) {
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  // eslint-disable-next-line no-use-before-define
   const isGuildChannel = collection.first() instanceof GuildChannel;
   return collection.toSorted(
     isGuildChannel
@@ -380,7 +377,7 @@ function discordSort(collection) {
 async function setPosition(item, position, relative, sorted, client, route, reason) {
   let updatedItems = [...sorted.values()];
   moveElementInArray(updatedItems, item, position, relative);
-  updatedItems = updatedItems.map((item, index) => ({ id: item.id, position: index }));
+  updatedItems = updatedItems.map((innerItem, index) => ({ id: innerItem.id, position: index }));
   await client.rest.patch(route, { body: updatedItems, reason });
   return updatedItems;
 }
@@ -538,7 +535,7 @@ function transformResolved(
   if (attachments) {
     result.attachments = new Collection();
     for (const attachment of Object.values(attachments)) {
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      // eslint-disable-next-line no-use-before-define
       const patched = new Attachment(attachment);
       result.attachments.set(attachment.id, patched);
     }
@@ -555,7 +552,7 @@ function transformResolved(
  */
 function resolveSKUId(resolvable) {
   if (typeof resolvable === 'string') return resolvable;
-  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  // eslint-disable-next-line no-use-before-define
   if (resolvable instanceof SKU) return resolvable.id;
   return null;
 }

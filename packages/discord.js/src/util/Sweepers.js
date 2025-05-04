@@ -57,6 +57,9 @@ class Sweepers {
             break;
           case 'threads':
             clonedOptions.filter = this.constructor.archivedThreadSweepFilter(clonedOptions.lifetime);
+            break;
+          default:
+            break;
         }
       }
 
@@ -431,7 +434,7 @@ class Sweepers {
   static outdatedMessageSweepFilter(lifetime = 3_600) {
     return this.filterByLifetime({
       lifetime,
-      getComparisonTimestamp: message => message.editedTimestamp ?? mesage.createdTimestamp,
+      getComparisonTimestamp: message => message.editedTimestamp ?? message.createdTimestamp,
     });
   }
 

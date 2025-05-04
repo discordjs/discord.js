@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/check-values */
 'use strict';
 
 const { ChannelFlags } = require('discord-api-types/v10');
@@ -20,7 +21,7 @@ class ChannelFlagsBitField extends BitField {
 
 /**
  * @name ChannelFlagsBitField
- * @constructor
+ * @kind constructor
  * @memberof ChannelFlagsBitField
  * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
  */

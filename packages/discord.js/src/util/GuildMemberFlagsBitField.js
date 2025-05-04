@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/check-values */
 'use strict';
 
 const { GuildMemberFlags } = require('discord-api-types/v10');
@@ -20,7 +21,7 @@ class GuildMemberFlagsBitField extends BitField {
 
 /**
  * @name GuildMemberFlagsBitField
- * @constructor
+ * @kind constructor
  * @memberof GuildMemberFlagsBitField
  * @param {BitFieldResolvable} [bits=0] Bit(s) to read from
  */

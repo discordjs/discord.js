@@ -21,7 +21,7 @@ class TextBasedChannel {
      *
      * @type {GuildMessageManager}
      */
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    // eslint-disable-next-line no-use-before-define
     this.messages = new GuildMessageManager(this);
 
     /**

@@ -424,10 +424,10 @@ class GuildChannelManager extends CachedManager {
     }
 
     if (id) {
-      const data = await this.client.rest.get(Routes.channel(id));
+      const innerData = await this.client.rest.get(Routes.channel(id));
       // Since this is the guild manager, throw if on a different guild
-      if (this.guild.id !== data.guild_id) throw new DiscordjsError(ErrorCodes.GuildChannelUnowned);
-      return this.client.channels._add(data, this.guild, { cache });
+      if (this.guild.id !== innerData.guild_id) throw new DiscordjsError(ErrorCodes.GuildChannelUnowned);
+      return this.client.channels._add(innerData, this.guild, { cache });
     }
 
     const data = await this.client.rest.get(Routes.guildChannels(this.guild.id));
