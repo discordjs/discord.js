@@ -63,7 +63,7 @@ function resolveGuildTemplateCode(data) {
  * - A Buffer
  * - The path to a local file
  * - A URL <warn>When provided a URL, discord.js will fetch the URL internally in order to create a Buffer.
- * - This can pose a security risk when the URL has not been sanitized</warn>
+ *   This can pose a security risk when the URL has not been sanitized</warn>
  *
  * @typedef {string|Buffer} BufferResolvable
  */

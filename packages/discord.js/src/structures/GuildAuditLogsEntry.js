@@ -55,12 +55,12 @@ const Targets = {
  * - An object with an id key if target was deleted or fake entity
  * - An object where the keys represent either the new value or the old value
  *
- * @typedef {?(object|Guild|BaseChannel|User|Role|Invite|Webhook|GuildEmoji|Integration|StageInstance|Sticker|
+ * @typedef {?(Object|Guild|BaseChannel|User|Role|Invite|Webhook|GuildEmoji|Integration|StageInstance|Sticker|
  * GuildScheduledEvent|ApplicationCommand|AutoModerationRule|GuildOnboardingPrompt|SoundboardSound)} AuditLogEntryTarget
  */
 
 /**
- * The action type of an entry, e.g. `Create`. Here are the available types:
+ * The action type of an entry. Here are the available types:
  * - Create
  * - Delete
  * - Update
