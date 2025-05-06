@@ -277,7 +277,6 @@ class Client extends BaseClient {
     const code = resolveInviteCode(invite);
     const query = makeURLSearchParams({
       with_counts: true,
-      with_expiration: true,
       guild_scheduled_event_id: options?.guildScheduledEventId,
     });
     const data = await this.rest.get(Routes.invite(code), { query });
