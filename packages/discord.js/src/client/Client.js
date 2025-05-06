@@ -459,6 +459,7 @@ class Client extends BaseClient {
    * Options used when fetching an invite from Discord.
    *
    * @typedef {Object} ClientFetchInviteOptions
+   * @property {boolean} [withCounts] Whether to include approximate member counts
    * @property {Snowflake} [guildScheduledEventId] The id of the guild scheduled event to include with
    * the invite
    */
@@ -474,12 +475,14 @@ class Client extends BaseClient {
    *   .then(invite => console.log(`Obtained invite with code: ${invite.code}`))
    *   .catch(console.error);
    */
-  async fetchInvite(invite, options) {
+  async fetchInvite(invite, { withCounts, guildScheduledEventId } = {}) {
     const code = resolveInviteCode(invite);
+
     const query = makeURLSearchParams({
-      with_counts: true,
-      guild_scheduled_event_id: options?.guildScheduledEventId,
+      with_counts: withCounts,
+      guild_scheduled_event_id: guildScheduledEventId,
     });
+
     const data = await this.rest.get(Routes.invite(code), { query });
     return new Invite(this, data);
   }

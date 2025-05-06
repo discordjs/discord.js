@@ -5377,6 +5377,7 @@ export interface ClientEventTypes {
 }
 
 export interface ClientFetchInviteOptions {
+  withCounts?: boolean;
   guildScheduledEventId?: Snowflake;
 }
 
