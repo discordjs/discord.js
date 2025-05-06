@@ -27,10 +27,10 @@ export async function fetchDependencies({
 	}
 
 	try {
-		const isMainVersion = version === 'main';
+		const isMain = version === 'main';
 		const fileContent = await fetch(
 			`${process.env.BLOB_STORAGE_URL}/rewrite/${packageName}/${version}.dependencies.api.json`,
-			{ next: isMainVersion ? { revalidate: 0 } : { revalidate: 604_800 } },
+			{ next: { revalidate: isMain ? 0 : 604_800 } },
 		);
 		const parsedDependencies = await fileContent.json();
 

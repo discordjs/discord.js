@@ -19,6 +19,7 @@ const { ClientPresence } = require('../structures/ClientPresence.js');
 const { GuildPreview } = require('../structures/GuildPreview.js');
 const { GuildTemplate } = require('../structures/GuildTemplate.js');
 const { Invite } = require('../structures/Invite.js');
+const { SoundboardSound } = require('../structures/SoundboardSound.js');
 const { Sticker } = require('../structures/Sticker.js');
 const { StickerPack } = require('../structures/StickerPack.js');
 const { VoiceRegion } = require('../structures/VoiceRegion.js');
@@ -58,7 +59,8 @@ class Client extends BaseClient {
     const defaults = Options.createDefault();
 
     if (this.options.ws.shardIds === defaults.ws.shardIds && 'SHARDS' in data) {
-      this.options.ws.shardIds = JSON.parse(data.SHARDS);
+      const shards = JSON.parse(data.SHARDS);
+      this.options.ws.shardIds = Array.isArray(shards) ? shards : [shards];
     }
 
     if (this.options.ws.shardCount === defaults.ws.shardCount && 'SHARD_COUNT' in data) {
@@ -278,7 +280,6 @@ class Client extends BaseClient {
       (await this.ws.fetchStatus()).every(status => status === WebSocketShardStatus.Ready)
     ) {
       this.emit(Events.Debug, 'Client received all its guilds. Marking as fully ready.');
-      this.status = Status.Ready;
 
       this._triggerClientReady();
       return;
@@ -301,7 +302,6 @@ class Client extends BaseClient {
         );
 
         this.readyTimeout = null;
-        this.status = Status.Ready;
 
         this._triggerClientReady();
       },
@@ -534,6 +534,19 @@ class Client extends BaseClient {
 
     const data = await this.rest.get(Routes.stickerPacks());
     return new Collection(data.sticker_packs.map(stickerPack => [stickerPack.id, new StickerPack(this, stickerPack)]));
+  }
+
+  /**
+   * Obtains the list of default soundboard sounds.
+   * @returns {Promise<Collection<string, SoundboardSound>>}
+   * @example
+   * client.fetchDefaultSoundboardSounds()
+   *  .then(sounds => console.log(`Available soundboard sounds are: ${sounds.map(sound => sound.name).join(', ')}`))
+   *  .catch(console.error);
+   */
+  async fetchDefaultSoundboardSounds() {
+    const data = await this.rest.get(Routes.soundboardDefaultSounds());
+    return new Collection(data.map(sound => [sound.sound_id, new SoundboardSound(this, sound)]));
   }
 
   /**

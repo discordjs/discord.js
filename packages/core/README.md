@@ -71,6 +71,9 @@ gateway.connect();
 ## Independent REST API Usage
 
 ```ts
+import { API } from '@discordjs/core/http-only';
+import { REST } from '@discordjs/rest';
+
 // Create REST instance
 const rest = new REST({ version: '10' }).setToken(token);
 
