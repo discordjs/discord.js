@@ -75,7 +75,7 @@ export async function DocItem({
 
 			<Scrollbars className="border-base-neutral-200 dark:border-base-neutral-600 bg-base-neutral-100 dark:bg-base-neutral-900 rounded-sm border">
 				<SyntaxHighlighter
-					className="bg-[#f3f3f4] py-4 text-sm dark:bg-[#121214]"
+					className="w-min bg-[#f3f3f4] py-4 text-sm dark:bg-[#121214]"
 					code={node.sourceExcerpt}
 					lang="typescript"
 				/>
@@ -93,7 +93,7 @@ export async function DocItem({
 
 			<Outline node={node} />
 
-			{node.constructor ? <ConstructorNode node={node.constructor} version={version} /> : null}
+			{node.construct ? <ConstructorNode node={node.construct} version={version} /> : null}
 
 			{node.typeParameters?.length ? (
 				<div className="flex flex-col gap-4">

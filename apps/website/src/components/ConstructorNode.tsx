@@ -2,6 +2,7 @@ import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { Code2, LinkIcon } from 'lucide-react';
 import Link from 'next/link';
 import { ENV } from '@/util/env';
+import { Badges } from './Badges';
 import { ExampleNode } from './ExampleNode';
 import { ParameterNode } from './ParameterNode';
 import { SeeNode } from './SeeNode';
@@ -20,11 +21,14 @@ export async function ConstructorNode({ node, version }: { readonly node: any; r
 					className={`${ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group px-2 font-mono font-semibold break-all`}
 					id="constructor"
 				>
-					{/* constructor({parsedContent.constructor.parametersString}) */}
-					<Link className="float-left -ml-6 hidden pr-2 pb-2 group-hover:block" href="#constructor">
-						<LinkIcon aria-hidden size={16} />
-					</Link>
-					constructor({node.parameters?.length ? <ParameterNode node={node.parameters} version={version} /> : null})
+					<Badges node={node} />
+					<span>
+						{/* constructor({parsedContent.constructor.parametersString}) */}
+						<Link className="float-left -ml-6 hidden pr-2 pb-2 group-hover:block" href="#constructor">
+							<LinkIcon aria-hidden size={16} />
+						</Link>
+						constructor({node.parameters?.length ? <ParameterNode node={node.parameters} version={version} /> : null})
+					</span>
 				</h3>
 
 				<a
