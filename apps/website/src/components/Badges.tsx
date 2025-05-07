@@ -4,7 +4,7 @@ import type { PropsWithChildren } from 'react';
 export function Badge({ children, className = '' }: PropsWithChildren<{ readonly className?: string }>) {
 	return (
 		<span
-			className={`inline-flex place-items-center gap-1 rounded-full px-2 py-1 font-sans text-sm leading-none font-normal ${className}`}
+			className={`inline-flex place-items-center gap-1 rounded-full px-2 py-1 font-sans text-sm leading-none font-normal whitespace-nowrap ${className}`}
 		>
 			{children}
 		</span>
@@ -24,7 +24,7 @@ export async function Badges({ node }: { readonly node: any }) {
 	const isAny = isDeprecated || isProtected || isStatic || isAbstract || isReadonly || isOptional || isExternal;
 
 	return isAny ? (
-		<div className="mb-1 flex gap-3">
+		<div className="mb-1 flex flex-wrap gap-3">
 			{isDeprecated ? (
 				<Badge className="bg-red-500/20 text-red-500">
 					<AlertTriangle aria-hidden size={14} /> deprecated
