@@ -22,7 +22,10 @@ class GroupDMInvite extends BaseInvite {
        * The channel this invite is for.
        * @type {?BaseChannel}
        */
-      this.channel = this.client.channels._add(data.channel, null, { cache: false });
+      this.channel =
+        this.client.channels._add(data.channel, null, { cache: false }) ??
+        this.client.channels.cache.get(this.channelId);
+
       this.channelId ??= data.channel.id;
     }
   }
