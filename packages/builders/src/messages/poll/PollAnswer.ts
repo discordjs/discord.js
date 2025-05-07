@@ -19,7 +19,7 @@ export class PollAnswerBuilder implements JSONEncodable<Omit<APIPollAnswer, 'ans
 	private readonly data: PollAnswerData;
 
 	/**
-	 * Creates a new poll answer from API data.
+	 * Creates a new poll answer.
 	 *
 	 * @param data - The API data to create this poll answer with
 	 */

@@ -14,7 +14,7 @@ export class TextDisplayBuilder extends ComponentBuilder<APITextDisplayComponent
 	protected readonly data: Partial<APITextDisplayComponent>;
 
 	/**
-	 * Creates a new text display from API data.
+	 * Creates a new text display.
 	 *
 	 * @param data - The API data to create this text display with
 	 * @example

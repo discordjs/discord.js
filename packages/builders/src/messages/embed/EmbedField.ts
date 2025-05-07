@@ -13,9 +13,9 @@ export class EmbedFieldBuilder implements JSONEncodable<APIEmbedField> {
 	private readonly data: Partial<APIEmbedField>;
 
 	/**
-	 * Creates a new embed field from API data.
+	 * Creates a new embed field.
 	 *
-	 * @param data - The API data to use
+	 * @param data - The API data to create this embed field with
 	 */
 	public constructor(data: Partial<APIEmbedField> = {}) {
 		this.data = structuredClone(data);

@@ -35,7 +35,7 @@ export class EmbedBuilder implements JSONEncodable<APIEmbed> {
 	}
 
 	/**
-	 * Creates a new embed from API data.
+	 * Creates a new embed.
 	 *
 	 * @param data - The API data to create this embed with
 	 */

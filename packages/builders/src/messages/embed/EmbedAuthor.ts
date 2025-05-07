@@ -13,9 +13,9 @@ export class EmbedAuthorBuilder implements JSONEncodable<APIEmbedAuthor> {
 	private readonly data: Partial<APIEmbedAuthor>;
 
 	/**
-	 * Creates a new embed author from API data.
+	 * Creates a new embed author.
 	 *
-	 * @param data - The API data to use
+	 * @param data - The API data to create this embed author with
 	 */
 	public constructor(data: Partial<APIEmbedAuthor> = {}) {
 		this.data = structuredClone(data);

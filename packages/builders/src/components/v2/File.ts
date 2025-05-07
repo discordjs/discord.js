@@ -13,7 +13,7 @@ export class FileBuilder extends ComponentBuilder<APIFileComponent> {
 	protected readonly data: Partial<APIFileComponent>;
 
 	/**
-	 * Creates a new file from API data.
+	 * Creates a new file.
 	 *
 	 * @param data - The API data to create this file with
 	 * @example

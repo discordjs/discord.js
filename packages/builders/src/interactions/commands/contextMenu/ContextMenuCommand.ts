@@ -26,7 +26,7 @@ export abstract class ContextMenuCommandBuilder extends Mixin(
 	protected override readonly data: Partial<RESTPostAPIContextMenuApplicationCommandsJSONBody>;
 
 	/**
-	 * Creates a new context menu command from API data.
+	 * Creates a new context menu command.
 	 *
 	 * @param data - The API data to create this context menu command with
 	 */

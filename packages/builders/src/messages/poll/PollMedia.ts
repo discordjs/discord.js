@@ -12,9 +12,9 @@ export abstract class PollMediaBuilder {
 	protected readonly data: Partial<APIPollMedia>;
 
 	/**
-	 * Creates new poll media from API data.
+	 * Creates new poll media.
 	 *
-	 * @param data - The API data to use
+	 * @param data - The API data to create this poll media with
 	 */
 	public constructor(data: Partial<APIPollMedia> = {}) {
 		this.data = structuredClone(data);

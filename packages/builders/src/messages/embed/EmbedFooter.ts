@@ -13,9 +13,9 @@ export class EmbedFooterBuilder implements JSONEncodable<APIEmbedFooter> {
 	private readonly data: Partial<APIEmbedFooter>;
 
 	/**
-	 * Creates a new embed footer from API data.
+	 * Creates a new embed footer.
 	 *
-	 * @param data - The API data to use
+	 * @param data - The API data to create this embed footer with
 	 */
 	public constructor(data: Partial<APIEmbedFooter> = {}) {
 		this.data = structuredClone(data);

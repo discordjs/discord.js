@@ -26,7 +26,7 @@ export class ChatInputCommandIntegerOption extends Mixin(
 	protected static override readonly predicate = integerOptionPredicate;
 
 	/**
-	 * Creates a new integer option from API data.
+	 * Creates a new integer option.
 	 */
 	public constructor() {
 		super(ApplicationCommandOptionType.Integer);

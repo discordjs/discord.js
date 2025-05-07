@@ -32,7 +32,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	}
 
 	/**
-	 * Creates a new modal from API data.
+	 * Creates a new modal.
 	 *
 	 * @param data - The API data to create this modal with
 	 */

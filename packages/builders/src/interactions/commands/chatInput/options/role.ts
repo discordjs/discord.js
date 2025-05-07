@@ -6,7 +6,7 @@ import { ApplicationCommandOptionBase } from './ApplicationCommandOptionBase.js'
  */
 export class ChatInputCommandRoleOption extends ApplicationCommandOptionBase {
 	/**
-	 * Creates a new role option from API data.
+	 * Creates a new role option.
 	 */
 	public constructor() {
 		super(ApplicationCommandOptionType.Role);

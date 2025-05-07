@@ -34,7 +34,7 @@ export class ChatInputCommandStringOption extends Mixin(
 		Partial<Pick<APIApplicationCommandStringOption, 'max_length' | 'min_length'>>;
 
 	/**
-	 * Creates a new string option builder from API data.
+	 * Creates a new string option builder.
 	 */
 	public constructor() {
 		super(ApplicationCommandOptionType.String);

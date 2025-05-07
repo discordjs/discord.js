@@ -29,7 +29,7 @@ export class PollBuilder implements JSONEncodable<RESTAPIPoll> {
 	}
 
 	/**
-	 * Creates a new poll from API data.
+	 * Creates a new poll.
 	 *
 	 * @param data - The API data to create this poll with
 	 */

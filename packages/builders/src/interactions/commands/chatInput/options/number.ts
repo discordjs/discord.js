@@ -26,7 +26,7 @@ export class ChatInputCommandNumberOption extends Mixin(
 	protected static override readonly predicate = numberOptionPredicate;
 
 	/**
-	 * Creates a new number option from API data.
+	 * Creates a new number option.
 	 */
 	public constructor() {
 		super(ApplicationCommandOptionType.Number);

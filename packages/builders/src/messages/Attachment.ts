@@ -13,9 +13,9 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 	private readonly data: Partial<RESTAPIAttachment>;
 
 	/**
-	 * Creates a new attachment builder from API data.
+	 * Creates a new attachment builder.
 	 *
-	 * @param data - The API data to create this attachment builder with
+	 * @param data - The API data to create this attachment with
 	 */
 	public constructor(data: Partial<RESTAPIAttachment> = {}) {
 		this.data = structuredClone(data);

@@ -6,7 +6,7 @@ import { ApplicationCommandOptionBase } from './ApplicationCommandOptionBase.js'
  */
 export class ChatInputCommandUserOption extends ApplicationCommandOptionBase {
 	/**
-	 * Creates a new user option from API data.
+	 * Creates a new user option.
 	 */
 	public constructor() {
 		super(ApplicationCommandOptionType.User);

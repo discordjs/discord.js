@@ -14,9 +14,9 @@ export class AllowedMentionsBuilder implements JSONEncodable<APIAllowedMentions>
 	private readonly data: Partial<APIAllowedMentions>;
 
 	/**
-	 * Creates a new allowed mentions builder from API data.
+	 * Creates a new allowed mentions builder.
 	 *
-	 * @param data - The API data to create this allowed mentions builder with
+	 * @param data - The API data to create this allowed mentions with
 	 */
 	public constructor(data: Partial<APIAllowedMentions> = {}) {
 		this.data = structuredClone(data);

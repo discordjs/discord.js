@@ -14,7 +14,7 @@ export class SeparatorBuilder extends ComponentBuilder<APISeparatorComponent> {
 	protected readonly data: Partial<APISeparatorComponent>;
 
 	/**
-	 * Creates a new separator from API data.
+	 * Creates a new separator.
 	 *
 	 * @param data - The API data to create this separator with
 	 * @example

@@ -25,9 +25,9 @@ export class StringSelectMenuBuilder extends BaseSelectMenuBuilder<APIStringSele
 	}
 
 	/**
-	 * Creates a new select menu from API data.
+	 * Creates a new string select menu.
 	 *
-	 * @param data - The API data to create this select menu with
+	 * @param data - The API data to create this string select menu with
 	 * @example
 	 * Creating a select menu from an API data object:
 	 * ```ts

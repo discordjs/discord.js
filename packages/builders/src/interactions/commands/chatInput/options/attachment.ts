@@ -6,7 +6,7 @@ import { ApplicationCommandOptionBase } from './ApplicationCommandOptionBase.js'
  */
 export class ChatInputCommandAttachmentOption extends ApplicationCommandOptionBase {
 	/**
-	 * Creates a new attachment option from API data.
+	 * Creates a new attachment option.
 	 */
 	public constructor() {
 		super(ApplicationCommandOptionType.Attachment);

@@ -27,7 +27,7 @@ export class MediaGalleryBuilder extends ComponentBuilder<APIMediaGalleryCompone
 	}
 
 	/**
-	 * Creates a new media gallery from API data.
+	 * Creates a new media gallery.
 	 *
 	 * @param data - The API data to create this container with
 	 * @example

@@ -49,7 +49,7 @@ export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
 	}
 
 	/**
-	 * Creates a new section from API data.
+	 * Creates a new section.
 	 *
 	 * @param data - The API data to create this section with
 	 * @example

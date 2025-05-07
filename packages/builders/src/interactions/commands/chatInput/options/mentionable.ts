@@ -6,7 +6,7 @@ import { ApplicationCommandOptionBase } from './ApplicationCommandOptionBase.js'
  */
 export class ChatInputCommandMentionableOption extends ApplicationCommandOptionBase {
 	/**
-	 * Creates a new mentionable option from API data.
+	 * Creates a new mentionable option.
 	 */
 	public constructor() {
 		super(ApplicationCommandOptionType.Mentionable);

@@ -56,7 +56,7 @@ export class ActionRowBuilder extends ComponentBuilder<APIActionRowComponent<API
 	}
 
 	/**
-	 * Creates a new action row from API data.
+	 * Creates a new action row.
 	 *
 	 * @param data - The API data to create this action row with
 	 * @example

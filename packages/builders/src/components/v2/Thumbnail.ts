@@ -14,7 +14,7 @@ export class ThumbnailBuilder extends ComponentBuilder<APIThumbnailComponent> {
 	protected readonly data: Partial<APIThumbnailComponent>;
 
 	/**
-	 * Creates a new thumbnail from API data.
+	 * Creates a new thumbnail.
 	 *
 	 * @param data - The API data to create this thumbnail with
 	 * @example

@@ -84,9 +84,9 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	}
 
 	/**
-	 * Creates a new message builder from API data.
+	 * Creates a new message builder.
 	 *
-	 * @param data - The API data to create this message builder with
+	 * @param data - The API data to create this message with
 	 */
 	public constructor(data: Partial<RESTPostAPIChannelMessageJSONBody> = {}) {
 		const { attachments = [], embeds = [], components = [], message_reference, poll, allowed_mentions, ...rest } = data;

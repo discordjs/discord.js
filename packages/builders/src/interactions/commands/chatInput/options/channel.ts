@@ -20,7 +20,7 @@ export class ChatInputCommandChannelOption extends Mixin(
 	protected static override readonly predicate = channelOptionPredicate;
 
 	/**
-	 * Creates a new channel option from API data.
+	 * Creates a new channel option.
 	 */
 	public constructor() {
 		super(ApplicationCommandOptionType.Channel);
