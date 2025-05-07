@@ -690,12 +690,8 @@ function itemParameters(item: ApiDocumentedItem & ApiParameterListMixin) {
 
 function itemConstructor(item: ApiConstructor) {
 	return {
-		kind: item.kind,
-		name: item.displayName,
-		sourceURL: item.sourceLocation.fileUrl,
-		sourceLine: item.sourceLocation.fileLine,
+		...itemInfo(item),
 		parametersString: parametersString(item),
-		summary: item.tsdocComment ? itemTsDoc(item.tsdocComment, item) : null,
 		parameters: itemParameters(item),
 	};
 }
