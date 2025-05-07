@@ -36,7 +36,8 @@
   },
   "files": [
     "src",
-    "typings"
+    "typings/*.d.ts",
+    "typings/*.d.mts"
   ],
   "contributors": [
     "Crawl <icrawltogo@gmail.com>",
