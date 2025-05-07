@@ -71,7 +71,11 @@ export async function DocNode({ node, version }: { readonly node?: any; readonly
 						defer
 						key={`${language}-${text}-${idx}`}
 					>
-						<SyntaxHighlighter className="bg-[#f3f3f4] py-4 text-sm dark:bg-[#121214]" code={text} lang={language} />
+						<SyntaxHighlighter
+							className="w-min bg-[#f3f3f4] py-4 text-sm dark:bg-[#121214]"
+							code={text}
+							lang={language}
+						/>
 					</Scrollbars>
 				);
 			}
