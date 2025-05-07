@@ -37,11 +37,11 @@ class GuildInviteManager extends CachedManager {
 
   /**
    * Data that resolves to give a `GuildInvite`. This can be:
-   *
+   * 
    * - An invite code
    * - An invite URL
-   *
-   * @typedef {string} InviteResolvable
+   * 
+   * @typedef {string} GuildInviteResolvable
    */
 
   /**
@@ -59,13 +59,12 @@ class GuildInviteManager extends CachedManager {
    */
 
   /**
-   *
-   * Resolves an InviteResolvable to a `GuildInvite` object.
-   *
+   * Resolves an `GuildInviteResolvable` to a `GuildInvite` object.
+   * 
    * @method resolve
    * @memberof GuildInviteManager
    * @instance
-   * @param {InviteResolvable} invite The invite resolvable to resolve
+   * @param {GuildInviteResolvable} invite The invite resolvable to resolve
    * @returns {?GuildInvite}
    */
 
