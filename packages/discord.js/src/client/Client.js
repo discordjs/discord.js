@@ -14,7 +14,6 @@ const { ShardClientUtil } = require('../sharding/ShardClientUtil.js');
 const { ClientPresence } = require('../structures/ClientPresence.js');
 const { GuildPreview } = require('../structures/GuildPreview.js');
 const { GuildTemplate } = require('../structures/GuildTemplate.js');
-const { Invite } = require('../structures/Invite.js');
 const { SoundboardSound } = require('../structures/SoundboardSound.js');
 const { Sticker } = require('../structures/Sticker.js');
 const { StickerPack } = require('../structures/StickerPack.js');
@@ -24,6 +23,7 @@ const { Widget } = require('../structures/Widget.js');
 const { resolveInviteCode, resolveGuildTemplateCode } = require('../util/DataResolver.js');
 const { Events } = require('../util/Events.js');
 const { IntentsBitField } = require('../util/IntentsBitField.js');
+const { createInvite } = require('../util/Invites.js');
 const { Options } = require('../util/Options.js');
 const { PermissionsBitField } = require('../util/PermissionsBitField.js');
 const { Status } = require('../util/Status.js');
@@ -484,7 +484,7 @@ class Client extends BaseClient {
     });
 
     const data = await this.rest.get(Routes.invite(code), { query });
-    return new Invite(this, data);
+    return createInvite(this, data);
   }
 
   /**

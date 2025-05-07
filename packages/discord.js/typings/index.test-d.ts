@@ -199,6 +199,8 @@ import type {
   User,
   VoiceBasedChannel,
   VoiceChannel,
+  Invite,
+  GuildInvite,
 } from './index.js';
 import {
   ActionRowBuilder,
@@ -261,6 +263,10 @@ if (client.isReady()) {
 } else {
   expectType<Client>(client);
 }
+
+expectType<Promise<Invite>>(client.fetchInvite('https://discord.gg/djs'));
+expectType<Promise<Invite<true>>>(client.fetchInvite('https://discord.gg/djs', { withCounts: true }));
+expectNotType<Promise<Invite<true>>>(client.fetchInvite('https://discord.gg/djs', { withCounts: false }));
 
 const testGuildId = '222078108977594368'; // DJS
 const testUserId = '987654321098765432'; // example id
@@ -407,8 +413,15 @@ client.on('interactionCreate', async interaction => {
   }
 });
 
-client.on('inviteCreate', ({ client }) => expectType<Client<true>>(client));
-client.on('inviteDelete', ({ client }) => expectType<Client<true>>(client));
+client.on('inviteCreate', invite => {
+  expectType<GuildInvite>(invite);
+  expectType<Client<true>>(invite.client);
+});
+
+client.on('inviteDelete', invite => {
+  expectType<GuildInvite>(invite);
+  expectType<Client<true>>(invite.client);
+});
 
 // This is to check that stuff is the right type
 declare const assertIsMessage: (m: Promise<Message>) => void;

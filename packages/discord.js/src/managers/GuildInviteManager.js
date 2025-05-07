@@ -3,7 +3,7 @@
 const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
-const { Invite } = require('../structures/Invite.js');
+const { GuildInvite } = require('../structures/GuildInvite.js');
 const { resolveInviteCode } = require('../util/DataResolver.js');
 const { CachedManager } = require('./CachedManager.js');
 
@@ -14,7 +14,7 @@ const { CachedManager } = require('./CachedManager.js');
  */
 class GuildInviteManager extends CachedManager {
   constructor(guild, iterable) {
-    super(guild.client, Invite, iterable);
+    super(guild.client, GuildInvite, iterable);
 
     /**
      * The guild this Manager belongs to
@@ -27,7 +27,7 @@ class GuildInviteManager extends CachedManager {
   /**
    * The cache of this Manager
    *
-   * @type {Collection<string, Invite>}
+   * @type {Collection<string, GuildInvite>}
    * @name GuildInviteManager#cache
    */
 
@@ -36,7 +36,8 @@ class GuildInviteManager extends CachedManager {
   }
 
   /**
-   * Data that resolves to give an Invite object. This can be:
+   * Data that resolves to give a `GuildInvite`. This can be:
+   *
    * - An invite code
    * - An invite URL
    *
@@ -58,13 +59,14 @@ class GuildInviteManager extends CachedManager {
    */
 
   /**
-   * Resolves an InviteResolvable to an Invite object.
+   *
+   * Resolves an InviteResolvable to a `GuildInvite` object.
    *
    * @method resolve
    * @memberof GuildInviteManager
    * @instance
    * @param {InviteResolvable} invite The invite resolvable to resolve
-   * @returns {?Invite}
+   * @returns {?GuildInvite}
    */
 
   /**
@@ -99,7 +101,7 @@ class GuildInviteManager extends CachedManager {
    * Fetches invite(s) from Discord.
    *
    * @param {InviteResolvable|FetchInviteOptions|FetchInvitesOptions} [options] Options for fetching guild invite(s)
-   * @returns {Promise<Invite|Collection<string, Invite>>}
+   * @returns {Promise<GuildInvite|Collection<string, GuildInvite>>}
    * @example
    * // Fetch all invites from a guild
    * guild.invites.fetch()
@@ -183,7 +185,7 @@ class GuildInviteManager extends CachedManager {
    *
    * @param {GuildInvitableChannelResolvable} channel The options for creating the invite from a channel.
    * @param {InviteCreateOptions} [options={}] The options for creating the invite from a channel.
-   * @returns {Promise<Invite>}
+   * @returns {Promise<GuildInvite>}
    * @example
    * // Create an invite to a selected channel
    * guild.invites.create('599942732013764608')
@@ -209,7 +211,7 @@ class GuildInviteManager extends CachedManager {
       },
       reason,
     });
-    return new Invite(this.client, invite);
+    return new GuildInvite(this.client, invite);
   }
 
   /**
