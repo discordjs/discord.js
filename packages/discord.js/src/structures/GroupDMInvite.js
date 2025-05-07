@@ -13,6 +13,19 @@ class GroupDMInvite extends BaseInvite {
    * @name GroupDMInvite#approximateMemberCount
    * @type {?number}
    */
+
+  _patch(data) {
+    super._patch(data);
+
+    if ('channel' in data) {
+      /**
+       * The channel this invite is for.
+       * @type {?BaseChannel}
+       */
+      this.channel = this.client.channels._add(data.channel, null, { cache: false });
+      this.channelId ??= data.channel.id;
+    }
+  }
 }
 
 exports.GroupDMInvite = GroupDMInvite;

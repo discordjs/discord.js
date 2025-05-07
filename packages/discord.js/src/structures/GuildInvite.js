@@ -42,6 +42,8 @@ class GuildInvite extends BaseInvite {
   }
 
   _patch(data) {
+    super._patch(data);
+
     if ('guild' in data) {
       /**
        * The guild the invite is for. May include welcome screen data.
@@ -52,7 +54,14 @@ class GuildInvite extends BaseInvite {
       this.guild ??= null;
     }
 
-    super._patch(data, this.guild);
+    if ('channel' in data) {
+      /**
+       * The channel this invite is for.
+       * @type {?BaseChannel}
+       */
+      this.channel = this.client.channels._add(data.channel, this.guild, { cache: false });
+      this.channelId ??= data.channel.id;
+    }
 
     if ('target_type' in data) {
       /**

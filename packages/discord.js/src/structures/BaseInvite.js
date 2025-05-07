@@ -27,7 +27,7 @@ class BaseInvite extends Base {
     this._patch(data);
   }
 
-  _patch(data, guild) {
+  _patch(data) {
     if ('inviter_id' in data) {
       /**
        * The id of the user that created this invite.
@@ -75,15 +75,6 @@ class BaseInvite extends Base {
        * @type {?Snowflake}
        */
       this.channelId = data.channel_id;
-    }
-
-    if ('channel' in data) {
-      /**
-       * The channel this invite is for.
-       * @type {?BaseChannel}
-       */
-      this.channel = this.client.channels._add(data.channel, guild, { cache: false });
-      this.channelId ??= data.channel.id;
     }
 
     if ('approximate_member_count' in data) {

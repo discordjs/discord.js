@@ -2017,7 +2017,6 @@ export abstract class BaseInvite<WithCounts extends boolean = boolean> extends B
   public get expiresAt(): Date | null;
   public get expiresTimestamp(): number | null;
   public readonly channelId: Snowflake | null;
-  public channel: NonThreadGuildBasedChannel | PartialGroupDMChannel | null;
   public approximateMemberCount: WithCounts extends true ? number : number | null;
   public get url(): string;
   public static InvitesPattern: RegExp;
@@ -2029,6 +2028,7 @@ export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvit
   public readonly type: InviteType.Guild;
   public guild: InviteGuild | Guild | null;
   public readonly guildId: Snowflake;
+  public channel: NonThreadGuildBasedChannel | null;
   public targetType: InviteTargetType | null;
   public targetUser: User | null;
   public targetApplication: IntegrationApplication | null;
@@ -2043,6 +2043,7 @@ export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvit
 
 export class GroupDMInvite<WithCounts extends boolean = boolean> extends BaseInvite<WithCounts> {
   public readonly type: InviteType.GroupDM;
+  public channel: PartialGroupDMChannel | null;
 }
 
 export type Invite<WithCounts extends boolean = boolean> = GuildInvite<WithCounts> | GroupDMInvite<WithCounts>;
