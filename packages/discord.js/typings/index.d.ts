@@ -6926,7 +6926,7 @@ export interface SweeperDefinitions {
   emojis: [Snowflake, GuildEmoji];
   entitlements: [Snowflake, Entitlement];
   guildMembers: [Snowflake, GuildMember];
-  invites: [string, Invite, true];
+  invites: [string, GuildInvite, true];
   messages: [Snowflake, Message, true];
   presences: [Snowflake, Presence];
   reactions: [Snowflake | string, MessageReaction];
