@@ -2005,7 +2005,7 @@ export class InteractionWebhook {
   public fetchMessage(message: Snowflake | '@original'): Promise<Message>;
 }
 
-export abstract class BaseInvite<WithCounts extends boolean = boolean> extends Base {
+export class BaseInvite<WithCounts extends boolean = boolean> extends Base {
   protected constructor(client: Client<true>, data: unknown);
   public readonly type: InviteType;
   public readonly code: string;
@@ -6359,14 +6359,10 @@ export interface InviteGenerationOptions {
   scopes: readonly OAuth2Scopes[];
 }
 
-export type GuildInvitableChannelResolvable =
-  | AnnouncementChannel
-  | ForumChannel
-  | MediaChannel
-  | Snowflake
-  | StageChannel
-  | TextChannel
-  | VoiceChannel;
+export type GuildInvitableChannel =
+  AnnouncementChannel | ForumChannel | MediaChannel | TextChannel | VoiceChannel;
+
+export type GuildInvitableChannelResolvable = GuildInvitableChannel | Snowflake;
 
 export interface InviteCreateOptions {
   maxAge?: number;

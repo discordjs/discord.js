@@ -6,14 +6,13 @@ const { Base } = require('./Base.js');
 /**
  * The base invite class.
  * @extends {Base}
- * @abstract
  */
 class BaseInvite extends Base {
   constructor(client, data) {
     super(client);
 
     /**
-     * The type of this invite
+     * The type of this invite.
      * @type {InviteType}
      */
     this.type = data.type;

@@ -36,9 +36,9 @@ function resolveCode(data, regex) {
 }
 
 /**
- * Resolves GuildInviteResolvable to an invite code.
+ * Resolves InviteResolvable to an invite code.
  * 
- * @param {GuildInviteResolvable} data The invite resolvable to resolve
+ * @param {InviteResolvable} data The invite resolvable to resolve
  * @returns {string}
  * @private
  */
