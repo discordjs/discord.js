@@ -23,7 +23,7 @@ const { ReactionCollector } = require('./ReactionCollector.js');
 const { Sticker } = require('./Sticker.js');
 const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { ReactionManager } = require('../managers/ReactionManager.js');
-const { createComponent } = require('../util/Components.js');
+const { createComponent, findComponentByCustomId } = require('../util/Components.js');
 const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, UndeletableMessageTypes } = require('../util/Constants.js');
 const { MessageFlagsBitField } = require('../util/MessageFlagsBitField.js');
 const { PermissionsBitField } = require('../util/PermissionsBitField.js');
@@ -151,10 +151,10 @@ class Message extends Base {
 
     if ('components' in data) {
       /**
-       * An array of action rows in the message.
+       * An array of components in the message.
        * <info>This property requires the {@link GatewayIntentBits.MessageContent} privileged intent
        * in a guild for messages that do not mention the client.</info>
-       * @type {ActionRow[]}
+       * @type {Component[]}
        */
       this.components = data.components.map(component => createComponent(component));
     } else {
@@ -1032,7 +1032,7 @@ class Message extends Base {
    * @returns {?MessageActionRowComponent}
    */
   resolveComponent(customId) {
-    return this.components.flatMap(row => row.components).find(component => component.customId === customId) ?? null;
+    return findComponentByCustomId(this.components, customId);
   }
 
   /**
