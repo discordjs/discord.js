@@ -1,5 +1,7 @@
+/* eslint-disable no-use-before-define */
 'use strict';
 
+// eslint-disable-next-line import-x/order
 const { ComponentType } = require('discord-api-types/v10');
 
 /**
@@ -63,6 +65,7 @@ const { ComponentType } = require('discord-api-types/v10');
 
 /**
  * Transforms API data into a component
+ *
  * @param {APIMessageComponent|Component} data The data to create the component from
  * @returns {Component}
  * @ignore

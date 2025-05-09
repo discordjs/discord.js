@@ -13,6 +13,7 @@ module.exports = (client, { d: data }) => {
 
   /**
    * Emitted whenever a guild role is updated.
+   *
    * @event Client#roleUpdate
    * @param {Role} oldRole The role before the update
    * @param {Role} newRole The role after the update

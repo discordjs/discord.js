@@ -1,21 +1,24 @@
 'use strict';
 
-const { GuildChannel } = require('./GuildChannel.js');
 const { CategoryChannelChildManager } = require('../managers/CategoryChannelChildManager.js');
+const { GuildChannel } = require('./GuildChannel.js');
 
 /**
  * Represents a guild category channel on Discord.
+ *
  * @extends {GuildChannel}
  */
 class CategoryChannel extends GuildChannel {
   /**
    * The id of the parent of this channel.
+   *
    * @name CategoryChannel#parentId
    * @type {null}
    */
 
   /**
    * The parent of this channel.
+   *
    * @name CategoryChannel#parent
    * @type {null}
    * @readonly
@@ -24,6 +27,7 @@ class CategoryChannel extends GuildChannel {
   /**
    * Sets the category parent of this channel.
    * <warn>It is not possible to set the parent of a CategoryChannel.</warn>
+   *
    * @method setParent
    * @memberof CategoryChannel
    * @instance
@@ -34,6 +38,7 @@ class CategoryChannel extends GuildChannel {
 
   /**
    * A manager of the channels belonging to this category
+   *
    * @type {CategoryChannelChildManager}
    * @readonly
    */

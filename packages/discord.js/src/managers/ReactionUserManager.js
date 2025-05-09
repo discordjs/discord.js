@@ -3,12 +3,13 @@
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { ReactionType, Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager.js');
 const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { User } = require('../structures/User.js');
+const { CachedManager } = require('./CachedManager.js');
 
 /**
  * Manages API methods for users who reacted to a reaction and stores their cache.
+ *
  * @extends {CachedManager}
  */
 class ReactionUserManager extends CachedManager {
@@ -17,6 +18,7 @@ class ReactionUserManager extends CachedManager {
 
     /**
      * The reaction that this manager belongs to
+     *
      * @type {MessageReaction}
      */
     this.reaction = reaction;
@@ -24,12 +26,14 @@ class ReactionUserManager extends CachedManager {
 
   /**
    * The cache of this manager
+   *
    * @type {Collection<Snowflake, User>}
    * @name ReactionUserManager#cache
    */
 
   /**
    * Options used to fetch users who gave a reaction.
+   *
    * @typedef {Object} FetchReactionUsersOptions
    * @property {ReactionType} [type=ReactionType.Normal] The reaction type to fetch
    * @property {number} [limit=100] The maximum amount of users to fetch, defaults to `100`
@@ -38,6 +42,7 @@ class ReactionUserManager extends CachedManager {
 
   /**
    * Fetches all the users that gave this reaction. Resolves with a collection of users, mapped by their ids.
+   *
    * @param {FetchReactionUsersOptions} [options] Options for fetching the users
    * @returns {Promise<Collection<Snowflake, User>>}
    */
@@ -54,11 +59,13 @@ class ReactionUserManager extends CachedManager {
       this.cache.set(user.id, user);
       users.set(user.id, user);
     }
+
     return users;
   }
 
   /**
    * Removes a user from this reaction.
+   *
    * @param {UserResolvable} [user=this.client.user] The user to remove the reaction of
    * @returns {Promise<MessageReaction>}
    */

@@ -1,7 +1,7 @@
 'use strict';
 
-const { Action } = require('./Action.js');
 const { Events } = require('../../util/Events.js');
+const { Action } = require('./Action.js');
 
 class MessagePollVoteRemoveAction extends Action {
   handle(data) {
@@ -25,6 +25,7 @@ class MessagePollVoteRemoveAction extends Action {
 
     /**
      * Emitted whenever a user removes their vote in a poll.
+     *
      * @event Client#messagePollVoteRemove
      * @param {PollAnswer} pollAnswer The answer where the vote was removed
      * @param {Snowflake} userId The id of the user that removed their vote

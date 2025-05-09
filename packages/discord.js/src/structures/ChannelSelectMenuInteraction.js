@@ -5,6 +5,7 @@ const { MessageComponentInteraction } = require('./MessageComponentInteraction.j
 
 /**
  * Represents a {@link ComponentType.ChannelSelect} select menu interaction.
+ *
  * @extends {MessageComponentInteraction}
  */
 class ChannelSelectMenuInteraction extends MessageComponentInteraction {
@@ -14,12 +15,14 @@ class ChannelSelectMenuInteraction extends MessageComponentInteraction {
 
     /**
      * An array of the selected channel ids
+     *
      * @type {Snowflake[]}
      */
     this.values = values ?? [];
 
     /**
      * Collection of the selected channels
+     *
      * @type {Collection<Snowflake, BaseChannel|APIChannel>}
      */
     this.channels = new Collection();

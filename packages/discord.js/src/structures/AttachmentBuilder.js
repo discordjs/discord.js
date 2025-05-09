@@ -13,16 +13,19 @@ class AttachmentBuilder {
   constructor(attachment, data = {}) {
     /**
      * The file associated with this attachment.
+     *
      * @type {BufferResolvable|Stream}
      */
     this.attachment = attachment;
     /**
      * The name of this attachment
+     *
      * @type {?string}
      */
     this.name = data.name;
     /**
      * The description of the attachment
+     *
      * @type {?string}
      */
     this.description = data.description;
@@ -30,6 +33,7 @@ class AttachmentBuilder {
 
   /**
    * Sets the description of this attachment.
+   *
    * @param {string} description The description of the file
    * @returns {AttachmentBuilder} This attachment
    */
@@ -40,6 +44,7 @@ class AttachmentBuilder {
 
   /**
    * Sets the file of this attachment.
+   *
    * @param {BufferResolvable|Stream} attachment The file
    * @returns {AttachmentBuilder} This attachment
    */
@@ -50,6 +55,7 @@ class AttachmentBuilder {
 
   /**
    * Sets the name of this attachment.
+   *
    * @param {string} name The name of the file
    * @returns {AttachmentBuilder} This attachment
    */
@@ -60,6 +66,7 @@ class AttachmentBuilder {
 
   /**
    * Sets whether this attachment is a spoiler
+   *
    * @param {boolean} [spoiler=true] Whether the attachment should be marked as a spoiler
    * @returns {AttachmentBuilder} This attachment
    */
@@ -70,14 +77,17 @@ class AttachmentBuilder {
       while (this.spoiler) {
         this.name = this.name.slice('SPOILER_'.length);
       }
+
       return this;
     }
+
     this.name = `SPOILER_${this.name}`;
     return this;
   }
 
   /**
    * Whether or not this attachment has been marked as a spoiler
+   *
    * @type {boolean}
    * @readonly
    */
@@ -91,6 +101,7 @@ class AttachmentBuilder {
 
   /**
    * Makes a new builder instance from a preexisting attachment structure.
+   *
    * @param {AttachmentBuilder|Attachment|AttachmentPayload} other The builder to construct a new instance from
    * @returns {AttachmentBuilder}
    */
