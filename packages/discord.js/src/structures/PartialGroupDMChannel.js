@@ -27,7 +27,7 @@ class PartialGroupDMChannel extends BaseChannel {
      * The hash of the channel icon
      * @type {?string}
      */
-    this.icon = data.icon;
+    this.icon = data.icon ?? null;
 
     /**
      * Recipient data received in a {@link PartialGroupDMChannel}.
@@ -39,7 +39,7 @@ class PartialGroupDMChannel extends BaseChannel {
      * The recipients of this Group DM Channel.
      * @type {PartialRecipient[]}
      */
-    this.recipients = data.recipients;
+    this.recipients = data.recipients ?? [];
 
     /**
      * A manager of the messages belonging to this channel
@@ -116,7 +116,7 @@ class PartialGroupDMChannel extends BaseChannel {
   awaitMessageComponent() {}
 }
 
-TextBasedChannel.applyToClass(PartialGroupDMChannel, true, [
+TextBasedChannel.applyToClass(PartialGroupDMChannel, [
   'bulkDelete',
   'send',
   'sendTyping',

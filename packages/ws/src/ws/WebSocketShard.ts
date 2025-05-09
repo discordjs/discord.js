@@ -333,6 +333,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			return;
 		}
 
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		if (!options.code) {
 			options.code = options.recover === WebSocketShardDestroyRecovery.Resume ? CloseCodes.Resuming : CloseCodes.Normal;
 		}
@@ -735,7 +736,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 					this.replayedEvents++;
 				}
 
-				// eslint-disable-next-line sonarjs/no-nested-switch
+				// eslint-disable-next-line sonarjs/no-nested-switch, @typescript-eslint/switch-exhaustiveness-check
 				switch (payload.t) {
 					case GatewayDispatchEvents.Ready: {
 						this.#status = WebSocketShardStatus.Ready;

@@ -17,7 +17,7 @@ RUN pnpm exec turbo run build --filter='@discordjs/proxy-container...'
 
 FROM builder AS pruned
 
-RUN pnpm --filter='@discordjs/proxy-container' --prod deploy pruned
+RUN pnpm --filter='@discordjs/proxy-container' --prod deploy --legacy pruned
 
 FROM node:22-alpine AS proxy
 

@@ -225,7 +225,7 @@ class Sticker extends Base {
    * @returns {Promise<Sticker>}
    * @param {string} [reason] Reason for deleting this sticker
    * @example
-   * // Delete a message
+   * // Delete a sticker
    * sticker.delete()
    *   .then(sticker => console.log(`Deleted sticker ${sticker.name}`))
    *   .catch(console.error);

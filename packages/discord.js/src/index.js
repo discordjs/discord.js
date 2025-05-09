@@ -1,9 +1,6 @@
 'use strict';
 
-const { polyfillDispose } = require('@discordjs/util');
 const { __exportStar } = require('tslib');
-
-polyfillDispose();
 
 // "Root" classes (starting points)
 exports.BaseClient = require('./client/BaseClient.js').BaseClient;
@@ -58,7 +55,6 @@ exports.ApplicationCommandPermissionsManager =
   require('./managers/ApplicationCommandPermissionsManager.js').ApplicationCommandPermissionsManager;
 exports.ApplicationEmojiManager = require('./managers/ApplicationEmojiManager.js').ApplicationEmojiManager;
 exports.AutoModerationRuleManager = require('./managers/AutoModerationRuleManager.js').AutoModerationRuleManager;
-exports.BaseGuildEmojiManager = require('./managers/BaseGuildEmojiManager.js').BaseGuildEmojiManager;
 exports.CachedManager = require('./managers/CachedManager.js').CachedManager;
 exports.ChannelManager = require('./managers/ChannelManager.js').ChannelManager;
 exports.ClientVoiceManager = require('./client/voice/ClientVoiceManager.js').ClientVoiceManager;
@@ -78,10 +74,12 @@ exports.GuildMemberManager = require('./managers/GuildMemberManager.js').GuildMe
 exports.GuildMemberRoleManager = require('./managers/GuildMemberRoleManager.js').GuildMemberRoleManager;
 exports.GuildMessageManager = require('./managers/GuildMessageManager.js').GuildMessageManager;
 exports.GuildScheduledEventManager = require('./managers/GuildScheduledEventManager.js').GuildScheduledEventManager;
+exports.GuildSoundboardSoundManager = require('./managers/GuildSoundboardSoundManager.js').GuildSoundboardSoundManager;
 exports.GuildStickerManager = require('./managers/GuildStickerManager.js').GuildStickerManager;
 exports.GuildTextThreadManager = require('./managers/GuildTextThreadManager.js').GuildTextThreadManager;
 exports.MessageManager = require('./managers/MessageManager.js').MessageManager;
 exports.PermissionOverwriteManager = require('./managers/PermissionOverwriteManager.js').PermissionOverwriteManager;
+exports.PollAnswerVoterManager = require('./managers/PollAnswerVoterManager.js').PollAnswerVoterManager;
 exports.PresenceManager = require('./managers/PresenceManager.js').PresenceManager;
 exports.ReactionManager = require('./managers/ReactionManager.js').ReactionManager;
 exports.ReactionUserManager = require('./managers/ReactionUserManager.js').ReactionUserManager;
@@ -95,7 +93,6 @@ exports.VoiceStateManager = require('./managers/VoiceStateManager.js').VoiceStat
 
 // Structures
 exports.ActionRow = require('./structures/ActionRow.js').ActionRow;
-exports.ActionRowBuilder = require('./structures/ActionRowBuilder.js').ActionRowBuilder;
 exports.Activity = require('./structures/Presence.js').Activity;
 exports.AnnouncementChannel = require('./structures/AnnouncementChannel.js').AnnouncementChannel;
 exports.AnonymousGuild = require('./structures/AnonymousGuild.js').AnonymousGuild;
@@ -118,11 +115,9 @@ exports.BaseGuildTextChannel = require('./structures/BaseGuildTextChannel.js').B
 exports.BaseGuildVoiceChannel = require('./structures/BaseGuildVoiceChannel.js').BaseGuildVoiceChannel;
 exports.BaseInteraction = require('./structures/BaseInteraction.js').BaseInteraction;
 exports.BaseSelectMenuComponent = require('./structures/BaseSelectMenuComponent.js').BaseSelectMenuComponent;
-exports.ButtonBuilder = require('./structures/ButtonBuilder.js').ButtonBuilder;
 exports.ButtonComponent = require('./structures/ButtonComponent.js').ButtonComponent;
 exports.ButtonInteraction = require('./structures/ButtonInteraction.js').ButtonInteraction;
 exports.CategoryChannel = require('./structures/CategoryChannel.js').CategoryChannel;
-exports.ChannelSelectMenuBuilder = require('./structures/ChannelSelectMenuBuilder.js').ChannelSelectMenuBuilder;
 exports.ChannelSelectMenuComponent = require('./structures/ChannelSelectMenuComponent.js').ChannelSelectMenuComponent;
 exports.ChannelSelectMenuInteraction =
   require('./structures/ChannelSelectMenuInteraction.js').ChannelSelectMenuInteraction;
@@ -140,7 +135,6 @@ exports.ContextMenuCommandInteraction =
   require('./structures/ContextMenuCommandInteraction.js').ContextMenuCommandInteraction;
 exports.DMChannel = require('./structures/DMChannel.js').DMChannel;
 exports.Embed = require('./structures/Embed.js').Embed;
-exports.EmbedBuilder = require('./structures/EmbedBuilder.js').EmbedBuilder;
 exports.Emoji = require('./structures/Emoji.js').Emoji;
 exports.Entitlement = require('./structures/Entitlement.js').Entitlement;
 exports.ForumChannel = require('./structures/ForumChannel.js').ForumChannel;
@@ -171,8 +165,6 @@ exports.InteractionWebhook = require('./structures/InteractionWebhook.js').Inter
 exports.Invite = require('./structures/Invite.js').Invite;
 exports.InviteGuild = require('./structures/InviteGuild.js').InviteGuild;
 exports.MediaChannel = require('./structures/MediaChannel.js').MediaChannel;
-exports.MentionableSelectMenuBuilder =
-  require('./structures/MentionableSelectMenuBuilder.js').MentionableSelectMenuBuilder;
 exports.MentionableSelectMenuComponent =
   require('./structures/MentionableSelectMenuComponent.js').MentionableSelectMenuComponent;
 exports.MentionableSelectMenuInteraction =
@@ -188,7 +180,6 @@ exports.MessageContextMenuCommandInteraction =
 exports.MessageMentions = require('./structures/MessageMentions.js').MessageMentions;
 exports.MessagePayload = require('./structures/MessagePayload.js').MessagePayload;
 exports.MessageReaction = require('./structures/MessageReaction.js').MessageReaction;
-exports.ModalBuilder = require('./structures/ModalBuilder.js').ModalBuilder;
 exports.ModalSubmitFields = require('./structures/ModalSubmitFields.js').ModalSubmitFields;
 exports.ModalSubmitInteraction = require('./structures/ModalSubmitInteraction.js').ModalSubmitInteraction;
 exports.OAuth2Guild = require('./structures/OAuth2Guild.js').OAuth2Guild;
@@ -196,30 +187,28 @@ exports.PartialGroupDMChannel = require('./structures/PartialGroupDMChannel.js')
 exports.PermissionOverwrites = require('./structures/PermissionOverwrites.js').PermissionOverwrites;
 exports.Poll = require('./structures/Poll.js').Poll;
 exports.PollAnswer = require('./structures/PollAnswer.js').PollAnswer;
+exports.PrimaryEntryPointCommandInteraction =
+  require('./structures/PrimaryEntryPointCommandInteraction.js').PrimaryEntryPointCommandInteraction;
 exports.Presence = require('./structures/Presence.js').Presence;
 exports.ReactionCollector = require('./structures/ReactionCollector.js').ReactionCollector;
 exports.ReactionEmoji = require('./structures/ReactionEmoji.js').ReactionEmoji;
 exports.RichPresenceAssets = require('./structures/Presence.js').RichPresenceAssets;
 exports.Role = require('./structures/Role.js').Role;
-exports.RoleSelectMenuBuilder = require('./structures/RoleSelectMenuBuilder.js').RoleSelectMenuBuilder;
 exports.RoleSelectMenuComponent = require('./structures/RoleSelectMenuComponent.js').RoleSelectMenuComponent;
 exports.RoleSelectMenuInteraction = require('./structures/RoleSelectMenuInteraction.js').RoleSelectMenuInteraction;
 exports.SKU = require('./structures/SKU.js').SKU;
+exports.SoundboardSound = require('./structures/SoundboardSound.js').SoundboardSound;
 exports.StageChannel = require('./structures/StageChannel.js').StageChannel;
 exports.StageInstance = require('./structures/StageInstance.js').StageInstance;
 exports.Sticker = require('./structures/Sticker.js').Sticker;
 exports.StickerPack = require('./structures/StickerPack.js').StickerPack;
-exports.StringSelectMenuBuilder = require('./structures/StringSelectMenuBuilder.js').StringSelectMenuBuilder;
 exports.StringSelectMenuComponent = require('./structures/StringSelectMenuComponent.js').StringSelectMenuComponent;
 exports.StringSelectMenuInteraction =
   require('./structures/StringSelectMenuInteraction.js').StringSelectMenuInteraction;
-exports.StringSelectMenuOptionBuilder =
-  require('./structures/StringSelectMenuOptionBuilder.js').StringSelectMenuOptionBuilder;
 exports.Subscription = require('./structures/Subscription.js').Subscription;
 exports.Team = require('./structures/Team.js').Team;
 exports.TeamMember = require('./structures/TeamMember.js').TeamMember;
 exports.TextChannel = require('./structures/TextChannel.js').TextChannel;
-exports.TextInputBuilder = require('./structures/TextInputBuilder.js').TextInputBuilder;
 exports.TextInputComponent = require('./structures/TextInputComponent.js').TextInputComponent;
 exports.ThreadChannel = require('./structures/ThreadChannel.js').ThreadChannel;
 exports.ThreadMember = require('./structures/ThreadMember.js').ThreadMember;
@@ -228,7 +217,6 @@ exports.Typing = require('./structures/Typing.js').Typing;
 exports.User = require('./structures/User.js').User;
 exports.UserContextMenuCommandInteraction =
   require('./structures/UserContextMenuCommandInteraction.js').UserContextMenuCommandInteraction;
-exports.UserSelectMenuBuilder = require('./structures/UserSelectMenuBuilder.js').UserSelectMenuBuilder;
 exports.UserSelectMenuComponent = require('./structures/UserSelectMenuComponent.js').UserSelectMenuComponent;
 exports.UserSelectMenuInteraction = require('./structures/UserSelectMenuInteraction.js').UserSelectMenuInteraction;
 exports.VoiceChannel = require('./structures/VoiceChannel.js').VoiceChannel;

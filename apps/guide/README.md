@@ -14,10 +14,6 @@
 	</p>
 </div>
 
-## About
-
-The official guide for discord.js, made to help you get started easily with the library.
-
 ## Links
 
 - [Website][website] ([source][website-source])
@@ -47,6 +43,6 @@ If you don't understand something in the documentation, you are experiencing pro
 [guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
 [discord]: https://discord.gg/djs
 [discord-api]: https://discord.gg/discord-api
-[source]: https://github.com/discordjs/discord.js/tree/main/apps/guide
+[source]: https://github.com/discordjs/discord.js/tree/main/apps/website
 [related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
 [contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md

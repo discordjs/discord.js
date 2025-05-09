@@ -3,7 +3,6 @@
 const { Buffer } = require('node:buffer');
 const { isJSONEncodable } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ActionRowBuilder } = require('./ActionRowBuilder.js');
 const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
 const { resolveFile } = require('../util/DataResolver.js');
 const { MessageFlagsBitField } = require('../util/MessageFlagsBitField.js');
@@ -133,7 +132,7 @@ class MessagePayload {
     }
 
     const components = this.options.components?.map(component =>
-      (isJSONEncodable(component) ? component : new ActionRowBuilder(component)).toJSON(),
+      isJSONEncodable(component) ? component.toJSON() : this.target.client.options.jsonTransformer(component),
     );
 
     let username;
@@ -150,9 +149,7 @@ class MessagePayload {
     let flags;
     if (
       // eslint-disable-next-line eqeqeq
-      this.options.flags != null ||
-      (this.isMessage && this.options.reply === undefined) ||
-      this.isMessageManager
+      this.options.flags != null
     ) {
       flags = new MessageFlagsBitField(this.options.flags).bitfield;
     }
@@ -168,13 +165,16 @@ class MessagePayload {
     }
 
     let message_reference;
-    if (typeof this.options.reply === 'object') {
-      const reference = this.options.reply.messageReference;
-      const message_id = this.isMessage ? (reference.id ?? reference) : this.target.messages.resolveId(reference);
-      if (message_id) {
+    if (this.options.messageReference) {
+      const reference = this.options.messageReference;
+
+      if (reference.messageId) {
         message_reference = {
-          message_id,
-          fail_if_not_exists: this.options.reply.failIfNotExists ?? this.target.client.options.failIfNotExists,
+          message_id: reference.messageId,
+          channel_id: reference.channelId,
+          guild_id: reference.guildId,
+          type: reference.type,
+          fail_if_not_exists: reference.failIfNotExists ?? this.target.client.options.failIfNotExists,
         };
       }
     }
@@ -191,17 +191,19 @@ class MessagePayload {
 
     let poll;
     if (this.options.poll) {
-      poll = {
-        question: {
-          text: this.options.poll.question.text,
-        },
-        answers: this.options.poll.answers.map(answer => ({
-          poll_media: { text: answer.text, emoji: resolvePartialEmoji(answer.emoji) },
-        })),
-        duration: this.options.poll.duration,
-        allow_multiselect: this.options.poll.allowMultiselect,
-        layout_type: this.options.poll.layoutType,
-      };
+      poll = isJSONEncodable(this.options.poll)
+        ? this.options.poll.toJSON()
+        : {
+            question: {
+              text: this.options.poll.question.text,
+            },
+            answers: this.options.poll.answers.map(answer => ({
+              poll_media: { text: answer.text, emoji: resolvePartialEmoji(answer.emoji) },
+            })),
+            duration: this.options.poll.duration,
+            allow_multiselect: this.options.poll.allowMultiselect,
+            layout_type: this.options.poll.layoutType,
+          };
     }
 
     this.body = {
@@ -292,7 +294,7 @@ exports.MessagePayload = MessagePayload;
 
 /**
  * A target for a message.
- * @typedef {TextBasedChannels|User|GuildMember|Webhook|WebhookClient|BaseInteraction|InteractionWebhook|
+ * @typedef {TextBasedChannels|ChannelManager|Webhook|WebhookClient|BaseInteraction|InteractionWebhook|
  * Message|MessageManager} MessageTarget
  */
 

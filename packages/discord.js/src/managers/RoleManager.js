@@ -186,11 +186,11 @@ class RoleManager extends CachedManager {
    *   .catch(console.error);
    */
   async edit(role, options) {
-    role = this.resolve(role);
-    if (!role) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'role', 'RoleResolvable');
+    const resolvedRole = this.resolve(role);
+    if (!resolvedRole) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'role', 'RoleResolvable');
 
     if (typeof options.position === 'number') {
-      await this.setPosition(role, options.position, { reason: options.reason });
+      await this.setPosition(resolvedRole, options.position, { reason: options.reason });
     }
 
     let icon = options.icon;
@@ -210,9 +210,12 @@ class RoleManager extends CachedManager {
       unicode_emoji: options.unicodeEmoji,
     };
 
-    const d = await this.client.rest.patch(Routes.guildRole(this.guild.id, role.id), { body, reason: options.reason });
+    const d = await this.client.rest.patch(Routes.guildRole(this.guild.id, resolvedRole.id), {
+      body,
+      reason: options.reason,
+    });
 
-    const clone = role._clone();
+    const clone = resolvedRole._clone();
     clone._patch(d);
     return clone;
   }
@@ -247,10 +250,10 @@ class RoleManager extends CachedManager {
    *   .catch(console.error);
    */
   async setPosition(role, position, { relative, reason } = {}) {
-    role = this.resolve(role);
-    if (!role) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'role', 'RoleResolvable');
+    const resolvedRole = this.resolve(role);
+    if (!resolvedRole) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'role', 'RoleResolvable');
     const updatedRoles = await setPosition(
-      role,
+      resolvedRole,
       position,
       relative,
       this.guild._sortedRoles(),
@@ -263,7 +266,7 @@ class RoleManager extends CachedManager {
       guild_id: this.guild.id,
       roles: updatedRoles,
     });
-    return role;
+    return resolvedRole;
   }
 
   /**
@@ -284,16 +287,16 @@ class RoleManager extends CachedManager {
    */
   async setPositions(rolePositions) {
     // Make sure rolePositions are prepared for API
-    rolePositions = rolePositions.map(rolePosition => ({
+    const resolvedRolePositions = rolePositions.map(rolePosition => ({
       id: this.resolveId(rolePosition.role),
       position: rolePosition.position,
     }));
 
     // Call the API to update role positions
-    await this.client.rest.patch(Routes.guildRoles(this.guild.id), { body: rolePositions });
+    await this.client.rest.patch(Routes.guildRoles(this.guild.id), { body: resolvedRolePositions });
     return this.client.actions.GuildRolesPositionUpdate.handle({
       guild_id: this.guild.id,
-      roles: rolePositions,
+      roles: resolvedRolePositions,
     }).guild;
   }
 

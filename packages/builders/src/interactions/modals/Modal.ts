@@ -3,7 +3,7 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type {
 	APIActionRowComponent,
-	APIModalActionRowComponent,
+	APIComponentInModalActionRow,
 	APIModalInteractionResponseCallbackData,
 } from 'discord-api-types/v10';
 import { ActionRowBuilder } from '../../components/ActionRow.js';
@@ -73,7 +73,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	public addActionRows(
 		...components: RestOrArray<
 			| ActionRowBuilder
-			| APIActionRowComponent<APIModalActionRowComponent>
+			| APIActionRowComponent<APIComponentInModalActionRow>
 			| ((builder: ActionRowBuilder) => ActionRowBuilder)
 		>
 	) {
@@ -93,7 +93,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	public setActionRows(
 		...components: RestOrArray<
 			| ActionRowBuilder
-			| APIActionRowComponent<APIModalActionRowComponent>
+			| APIActionRowComponent<APIComponentInModalActionRow>
 			| ((builder: ActionRowBuilder) => ActionRowBuilder)
 		>
 	) {
@@ -108,7 +108,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	 *
 	 * @remarks
 	 * This method behaves similarly
-	 * to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
+	 * to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
 	 * The maximum amount of action rows that can be added is 5.
 	 *
 	 * It's useful for modifying and adjusting order of the already-existing action rows of a modal.
@@ -137,7 +137,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 		deleteCount: number,
 		...rows: (
 			| ActionRowBuilder
-			| APIActionRowComponent<APIModalActionRowComponent>
+			| APIActionRowComponent<APIComponentInModalActionRow>
 			| ((builder: ActionRowBuilder) => ActionRowBuilder)
 		)[]
 	): this {

@@ -21,4 +21,4 @@ export const NODE_PACKAGE_MANAGERS = ['npm', 'pnpm', 'yarn'] as const;
 /**
  * The URL to the guide.
  */
-export const GUIDE_URL = 'https://guide.discordjs.dev' as const;
+export const GUIDE_URL = 'https://discordjs.guide' as const;

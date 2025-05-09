@@ -1,7 +1,8 @@
-.contentlayer
 .next
 .turbo
 .vscode
 coverage
+src/assets/readme
 src/styles/unocss.css
 next-env.d.ts
+.source

@@ -1,43 +1,42 @@
 import { ExternalLink } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import vercelLogo from '~/assets/powered-by-vercel.svg';
-import workersLogo from '~/assets/powered-by-workers.png';
-import { InstallButton } from '~/components/ui/InstallButton';
-import { DESCRIPTION } from '~/util/constants';
+import vercelLogo from '@/assets/powered-by-vercel.svg';
+import workersLogo from '@/assets/powered-by-workers.png';
+import { InstallButton } from '@/components/InstallButton';
+import { buttonStyles } from '@/styles/ui/button';
+import { DESCRIPTION } from '@/util/constants';
 
 export default async function Page() {
 	return (
-		<div className="mx-auto flex min-h-screen w-full max-w-screen-lg flex-col place-content-center place-items-center gap-24 px-8 pb-16 pt-12">
+		<div className="mx-auto flex min-h-screen w-full max-w-screen-lg flex-col place-content-center place-items-center gap-24 px-8 pt-12 pb-16">
 			<div className="flex flex-col gap-10 text-center">
-				<h1 className="z-10 text-3xl font-black leading-tight sm:text-7xl sm:leading-tight">
-					The <span className="relative rounded bg-blurple px-3 py-1 text-white">most popular</span> way to build
-					Discord bots.
+				<h1 className="text-base-heading-xl font-black sm:text-7xl sm:leading-tight">
+					The{' '}
+					<span className="bg-base-blurple-400 text-base-neutral-0 relative rounded-sm px-3 py-2">most popular</span>{' '}
+					way to build Discord bots.
 				</h1>
-				<p className="z-10 leading-normal text-neutral-700 dark:text-neutral-300 md:my-6">{DESCRIPTION}</p>
+				<p className="text-base-neutral-600 dark:text-base-neutral-300 md:my-6">{DESCRIPTION}</p>
 
 				<div className="flex flex-wrap place-content-center gap-4 sm:flex-wrap md:flex-row">
-					<Link
-						className="inline-flex rounded-md border border-transparent bg-blurple px-6 py-2 font-medium text-white"
-						href="/docs"
-					>
+					<Link className={buttonStyles({ variant: 'filled' })} href="/docs">
 						Docs
 					</Link>
 					<a
-						className="inline-flex gap-2 rounded-md border border-neutral-300 bg-white px-6 py-2 font-medium hover:bg-neutral-200 dark:border-neutral-700 dark:bg-transparent dark:hover:bg-neutral-800"
+						className={buttonStyles({ variant: 'discreet' })}
 						href="https://discordjs.guide"
 						rel="noopener noreferrer"
 						target="_blank"
 					>
-						Guide <ExternalLink aria-hidden size={20} />
+						Guide <ExternalLink aria-hidden data-slot="icon" size={18} />
 					</a>
 					<a
-						className="inline-flex gap-2 rounded-md border border-neutral-300 bg-white px-6 py-2 font-medium hover:bg-neutral-200 dark:border-neutral-700 dark:bg-transparent dark:hover:bg-neutral-800"
+						className={buttonStyles({ variant: 'discreet' })}
 						href="https://github.com/discordjs/discord.js"
 						rel="external noopener noreferrer"
 						target="_blank"
 					>
-						GitHub <ExternalLink aria-hidden size={20} />
+						GitHub <ExternalLink aria-hidden data-slot="icon" size={18} />
 					</a>
 				</div>
 

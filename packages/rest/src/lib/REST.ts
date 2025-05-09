@@ -115,7 +115,7 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 						sweptHashes.set(key, val);
 
 						// Emit debug information
-						this.emit(RESTEvents.Debug, `Hash ${val.value} for ${key} swept due to lifetime being exceeded`);
+						this.emit(RESTEvents.Debug, `[REST] Hash ${val.value} for ${key} swept due to lifetime being exceeded`);
 					}
 
 					return shouldSweep;
@@ -140,7 +140,7 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 					// Collect inactive handlers
 					if (inactive) {
 						sweptHandlers.set(key, val);
-						this.emit(RESTEvents.Debug, `Handler ${val.id} for ${key} swept due to being inactive`);
+						this.emit(RESTEvents.Debug, `[REST] Handler ${val.id} for ${key} swept due to being inactive`);
 					}
 
 					return inactive;
@@ -345,9 +345,9 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 			for (const [index, file] of request.files.entries()) {
 				const fileKey = file.key ?? `files[${index}]`;
 
-				// https://developer.mozilla.org/en-US/docs/Web/API/FormData/append#parameters
+				// https://developer.mozilla.org/docs/Web/API/FormData/append#parameters
 				// FormData.append only accepts a string or Blob.
-				// https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob#parameters
+				// https://developer.mozilla.org/docs/Web/API/Blob/Blob#parameters
 				// The Blob constructor accepts TypedArray/ArrayBuffer, strings, and Blobs.
 				if (isBufferLike(file.data)) {
 					// Try to infer the content type from the buffer if one isn't passed

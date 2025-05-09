@@ -1,5 +1,7 @@
 'use strict';
 
+const { Poll } = require('../../structures/Poll.js');
+const { PollAnswer } = require('../../structures/PollAnswer.js');
 const { Partials } = require('../../util/Partials.js');
 
 /*
@@ -63,6 +65,23 @@ class Action {
     );
   }
 
+  getPoll(data, message, channel) {
+    const includePollPartial = this.client.options.partials.includes(Partials.Poll);
+    const includePollAnswerPartial = this.client.options.partials.includes(Partials.PollAnswer);
+    if (message.partial && (!includePollPartial || !includePollAnswerPartial)) return null;
+
+    if (!message.poll && includePollPartial) {
+      message.poll = new Poll(this.client, data, message, channel);
+    }
+
+    if (message.poll && !message.poll.answers.has(data.answer_id) && includePollAnswerPartial) {
+      const pollAnswer = new PollAnswer(this.client, data, message.poll);
+      message.poll.answers.set(data.answer_id, pollAnswer);
+    }
+
+    return message.poll;
+  }
+
   getReaction(data, message, user) {
     const id = data.emoji.id ?? decodeURIComponent(data.emoji.name);
     return this.getPayload(
@@ -110,6 +129,10 @@ class Action {
 
   getThreadMember(id, manager) {
     return this.getPayload({ user_id: id }, manager, id, Partials.ThreadMember, false);
+  }
+
+  getSoundboardSound(data, guild) {
+    return this.getPayload(data, guild.soundboardSounds, data.sound_id, Partials.SoundboardSound);
   }
 
   spreadInjectedData(data) {

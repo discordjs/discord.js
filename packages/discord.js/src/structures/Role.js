@@ -264,9 +264,9 @@ class Role extends Base {
    * @returns {Readonly<PermissionsBitField>}
    */
   permissionsIn(channel, checkAdmin = true) {
-    channel = this.guild.channels.resolve(channel);
-    if (!channel) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
-    return channel.rolePermissions(this, checkAdmin);
+    const resolvedChannel = this.guild.channels.resolve(channel);
+    if (!resolvedChannel) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
+    return resolvedChannel.rolePermissions(this, checkAdmin);
   }
 
   /**

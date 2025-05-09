@@ -180,10 +180,10 @@ class GuildChannel extends BaseChannel {
   }
 
   overwritesFor(member, verified = false, roles = null) {
-    if (!verified) member = this.guild.members.resolve(member);
-    if (!member) return [];
+    const resolvedMember = verified ? member : this.guild.members.resolve(member);
+    if (!resolvedMember) return [];
 
-    roles ??= member.roles.cache;
+    const resolvedRoles = roles ?? resolvedMember.roles.cache;
     const roleOverwrites = [];
     let memberOverwrites;
     let everyoneOverwrites;
@@ -191,9 +191,9 @@ class GuildChannel extends BaseChannel {
     for (const overwrite of this.permissionOverwrites.cache.values()) {
       if (overwrite.id === this.guild.id) {
         everyoneOverwrites = overwrite;
-      } else if (roles.has(overwrite.id)) {
+      } else if (resolvedRoles.has(overwrite.id)) {
         roleOverwrites.push(overwrite);
-      } else if (overwrite.id === member.id) {
+      } else if (overwrite.id === resolvedMember.id) {
         memberOverwrites = overwrite;
       }
     }

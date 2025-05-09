@@ -185,6 +185,7 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.WebhooksUpdate]: [ToEventProps<GatewayWebhooksUpdateDispatchData>];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ManagerShardEventsMap extends MappedEvents {}
 
 export interface ClientOptions {

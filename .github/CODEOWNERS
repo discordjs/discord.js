@@ -1,13 +1,18 @@
 # Learn how to add code owners here:
-# https://help.github.com/en/articles/about-code-owners
+# https://help.github.com/articles/about-code-owners
 
 * @iCrawl
+
+package.json @discordjs/core
+pnpm-lock.yaml @discordjs/core
 
 /apps/guide/ @discordjs/website @discordjs/guide
 /apps/guide/src/content/ @discordjs/guide
 /apps/website/ @discordjs/website
 
 /packages/actions/ @discordjs/actions
+/packages/api-extractor/ @discordjs/api-extractor-utils
+/packages/api-extractor-model/ @discordjs/api-extractor-utils
 /packages/api-extractor-utils/ @discordjs/api-extractor-utils
 /packages/brokers/ @discordjs/brokers
 /packages/builders/ @discordjs/builders

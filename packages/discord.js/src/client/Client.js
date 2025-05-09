@@ -11,7 +11,6 @@ const { ActionsManager } = require('./actions/ActionsManager.js');
 const { ClientVoiceManager } = require('./voice/ClientVoiceManager.js');
 const { PacketHandlers } = require('./websocket/handlers/index.js');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { BaseGuildEmojiManager } = require('../managers/BaseGuildEmojiManager.js');
 const { ChannelManager } = require('../managers/ChannelManager.js');
 const { GuildManager } = require('../managers/GuildManager.js');
 const { UserManager } = require('../managers/UserManager.js');
@@ -20,6 +19,7 @@ const { ClientPresence } = require('../structures/ClientPresence.js');
 const { GuildPreview } = require('../structures/GuildPreview.js');
 const { GuildTemplate } = require('../structures/GuildTemplate.js');
 const { Invite } = require('../structures/Invite.js');
+const { SoundboardSound } = require('../structures/SoundboardSound.js');
 const { Sticker } = require('../structures/Sticker.js');
 const { StickerPack } = require('../structures/StickerPack.js');
 const { VoiceRegion } = require('../structures/VoiceRegion.js');
@@ -59,7 +59,8 @@ class Client extends BaseClient {
     const defaults = Options.createDefault();
 
     if (this.options.ws.shardIds === defaults.ws.shardIds && 'SHARDS' in data) {
-      this.options.ws.shardIds = JSON.parse(data.SHARDS);
+      const shards = JSON.parse(data.SHARDS);
+      this.options.ws.shardIds = Array.isArray(shards) ? shards : [shards];
     }
 
     if (this.options.ws.shardCount === defaults.ws.shardCount && 'SHARD_COUNT' in data) {
@@ -218,19 +219,6 @@ class Client extends BaseClient {
   }
 
   /**
-   * A manager of all the custom emojis that the client has access to
-   * @type {BaseGuildEmojiManager}
-   * @readonly
-   */
-  get emojis() {
-    const emojis = new BaseGuildEmojiManager(this);
-    for (const guild of this.guilds.cache.values()) {
-      if (guild.available) for (const emoji of guild.emojis.cache.values()) emojis.cache.set(emoji.id, emoji);
-    }
-    return emojis;
-  }
-
-  /**
    * Time at which the client was last regarded as being in the {@link Status.Ready} state
    * (each time the client disconnects and successfully reconnects, this will be overwritten)
    * @type {?Date}
@@ -292,7 +280,6 @@ class Client extends BaseClient {
       (await this.ws.fetchStatus()).every(status => status === WebSocketShardStatus.Ready)
     ) {
       this.emit(Events.Debug, 'Client received all its guilds. Marking as fully ready.');
-      this.status = Status.Ready;
 
       this._triggerClientReady();
       return;
@@ -315,7 +302,6 @@ class Client extends BaseClient {
         );
 
         this.readyTimeout = null;
-        this.status = Status.Ready;
 
         this._triggerClientReady();
       },
@@ -455,7 +441,6 @@ class Client extends BaseClient {
     const code = resolveInviteCode(invite);
     const query = makeURLSearchParams({
       with_counts: true,
-      with_expiration: true,
       guild_scheduled_event_id: options?.guildScheduledEventId,
     });
     const data = await this.rest.get(Routes.invite(code), { query });
@@ -549,6 +534,19 @@ class Client extends BaseClient {
 
     const data = await this.rest.get(Routes.stickerPacks());
     return new Collection(data.sticker_packs.map(stickerPack => [stickerPack.id, new StickerPack(this, stickerPack)]));
+  }
+
+  /**
+   * Obtains the list of default soundboard sounds.
+   * @returns {Promise<Collection<string, SoundboardSound>>}
+   * @example
+   * client.fetchDefaultSoundboardSounds()
+   *  .then(sounds => console.log(`Available soundboard sounds are: ${sounds.map(sound => sound.name).join(', ')}`))
+   *  .catch(console.error);
+   */
+  async fetchDefaultSoundboardSounds() {
+    const data = await this.rest.get(Routes.soundboardDefaultSounds());
+    return new Collection(data.map(sound => [sound.sound_id, new SoundboardSound(this, sound)]));
   }
 
   /**
@@ -670,7 +668,7 @@ class Client extends BaseClient {
   }
 
   /**
-   * Calls {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval} on a script
+   * Calls {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/eval} on a script
    * with the client as `this`.
    * @param {string} script Script to eval
    * @returns {*}
@@ -747,7 +745,7 @@ exports.Client = Client;
  */
 
 /**
- * A {@link https://developer.twitter.com/en/docs/twitter-ids Twitter snowflake},
+ * A {@link https://docs.x.com/resources/fundamentals/x-ids Twitter snowflake},
  * except the epoch is 2015-01-01T00:00:00.000Z.
  *
  * If we have a snowflake '266241948824764416' we can represent it as binary:

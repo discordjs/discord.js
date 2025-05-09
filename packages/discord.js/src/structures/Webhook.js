@@ -137,6 +137,8 @@ class Webhook {
    * @property {string} [threadName] Name of the thread to create (only available if the webhook is in a forum channel)
    * @property {Snowflake[]} [appliedTags]
    * The tags to apply to the created thread (only available if the webhook is in a forum channel)
+   * @property {boolean} [withComponents] Whether to allow sending non-interactive components in the message.
+   * <info>For application-owned webhooks, this property is ignored</info>
    */
 
   /**
@@ -144,6 +146,8 @@ class Webhook {
    * @typedef {MessageEditOptions} WebhookMessageEditOptions
    * @property {Snowflake} [threadId] The id of the thread this message belongs to
    * <info>For interaction webhooks, this property is ignored</info>
+   * @property {boolean} [withComponents] Whether to allow sending non-interactive components in the message.
+   * <info>For application-owned webhooks, this property is ignored</info>
    */
 
   /**
@@ -172,7 +176,7 @@ class Webhook {
    * @example
    * // Send a remote file
    * webhook.send({
-   *   files: ['https://cdn.discordapp.com/icons/222078108977594368/6e1019b3179d71046e463a75915e7244.png?size=2048']
+   *   files: ['https://github.com/discordjs.png']
    * })
    *   .then(console.log)
    *   .catch(console.error);
@@ -217,6 +221,7 @@ class Webhook {
     const query = makeURLSearchParams({
       wait: true,
       thread_id: messagePayload.options.threadId,
+      with_components: messagePayload.options.withComponents,
     });
 
     const { body, files } = await messagePayload.resolveFiles();
@@ -275,11 +280,12 @@ class Webhook {
    * @param {WebhookEditOptions} options Options for editing the webhook
    * @returns {Promise<Webhook>}
    */
-  async edit({ name = this.name, avatar, channel, reason }) {
+  async edit({ name = this.name, avatar: newAvatar, channel: newChannel, reason }) {
+    let avatar = newAvatar;
     if (avatar && !(typeof avatar === 'string' && avatar.startsWith('data:'))) {
       avatar = await resolveImage(avatar);
     }
-    channel &&= channel.id ?? channel;
+    const channel = newChannel?.id ?? newChannel;
     const data = await this.client.rest.patch(Routes.webhook(this.id, channel ? undefined : this.token), {
       body: { name, avatar, channel_id: channel },
       reason,
@@ -337,14 +343,17 @@ class Webhook {
 
     const { body, files } = await messagePayload.resolveBody().resolveFiles();
 
+    const query = makeURLSearchParams({
+      thread_id: messagePayload.options.threadId,
+      with_components: messagePayload.options.withComponents,
+    });
+
     const d = await this.client.rest.patch(
       Routes.webhookMessage(this.id, this.token, typeof message === 'string' ? message : message.id),
       {
         body,
         files,
-        query: messagePayload.options.threadId
-          ? makeURLSearchParams({ thread_id: messagePayload.options.threadId })
-          : undefined,
+        query,
         auth: false,
       },
     );

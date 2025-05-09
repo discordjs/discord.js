@@ -41,6 +41,10 @@
  * @property {string} GuildScheduledEventUpdate guildScheduledEventUpdate
  * @property {string} GuildScheduledEventUserAdd guildScheduledEventUserAdd
  * @property {string} GuildScheduledEventUserRemove guildScheduledEventUserRemove
+ * @property {string} GuildSoundboardSoundCreate guildSoundboardSoundCreate
+ * @property {string} GuildSoundboardSoundDelete guildSoundboardSoundDelete
+ * @property {string} GuildSoundboardSoundsUpdate guildSoundboardSoundsUpdate
+ * @property {string} GuildSoundboardSoundUpdate guildSoundboardSoundUpdate
  * @property {string} GuildStickerCreate stickerCreate
  * @property {string} GuildStickerDelete stickerDelete
  * @property {string} GuildStickerUpdate stickerUpdate
@@ -61,6 +65,7 @@
  * @property {string} MessageReactionRemoveEmoji messageReactionRemoveEmoji
  * @property {string} MessageUpdate messageUpdate
  * @property {string} PresenceUpdate presenceUpdate
+ * @property {string} SoundboardSounds soundboardSounds
  * @property {string} StageInstanceCreate stageInstanceCreate
  * @property {string} StageInstanceDelete stageInstanceDelete
  * @property {string} StageInstanceUpdate stageInstanceUpdate
@@ -127,6 +132,10 @@ exports.Events = {
   GuildScheduledEventUpdate: 'guildScheduledEventUpdate',
   GuildScheduledEventUserAdd: 'guildScheduledEventUserAdd',
   GuildScheduledEventUserRemove: 'guildScheduledEventUserRemove',
+  GuildSoundboardSoundCreate: 'guildSoundboardSoundCreate',
+  GuildSoundboardSoundDelete: 'guildSoundboardSoundDelete',
+  GuildSoundboardSoundsUpdate: 'guildSoundboardSoundsUpdate',
+  GuildSoundboardSoundUpdate: 'guildSoundboardSoundUpdate',
   GuildStickerCreate: 'stickerCreate',
   GuildStickerDelete: 'stickerDelete',
   GuildStickerUpdate: 'stickerUpdate',
@@ -147,6 +156,7 @@ exports.Events = {
   MessageReactionRemoveEmoji: 'messageReactionRemoveEmoji',
   MessageUpdate: 'messageUpdate',
   PresenceUpdate: 'presenceUpdate',
+  SoundboardSounds: 'soundboardSounds',
   StageInstanceCreate: 'stageInstanceCreate',
   StageInstanceDelete: 'stageInstanceDelete',
   StageInstanceUpdate: 'stageInstanceUpdate',

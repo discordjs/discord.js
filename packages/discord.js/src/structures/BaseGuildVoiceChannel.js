@@ -229,6 +229,6 @@ class BaseGuildVoiceChannel extends GuildChannel {
   setNSFW() {}
 }
 
-TextBasedChannel.applyToClass(BaseGuildVoiceChannel, true, ['lastPinAt']);
+TextBasedChannel.applyToClass(BaseGuildVoiceChannel, ['lastPinAt']);
 
 exports.BaseGuildVoiceChannel = BaseGuildVoiceChannel;
