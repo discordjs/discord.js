@@ -141,44 +141,7 @@ const { ComponentType } = require('discord-api-types/v10');
  * @ignore
  */
 function createComponent(data) {
-  if (data instanceof Component) {
-    return data;
-  }
-
-  switch (data.type) {
-    case ComponentType.ActionRow:
-      return new ActionRow(data);
-    case ComponentType.Button:
-      return new ButtonComponent(data);
-    case ComponentType.StringSelect:
-      return new StringSelectMenuComponent(data);
-    case ComponentType.TextInput:
-      return new TextInputComponent(data);
-    case ComponentType.UserSelect:
-      return new UserSelectMenuComponent(data);
-    case ComponentType.RoleSelect:
-      return new RoleSelectMenuComponent(data);
-    case ComponentType.MentionableSelect:
-      return new MentionableSelectMenuComponent(data);
-    case ComponentType.ChannelSelect:
-      return new ChannelSelectMenuComponent(data);
-    case ComponentType.Container:
-      return new ContainerComponent(data);
-    case ComponentType.TextDisplay:
-      return new TextDisplayComponent(data);
-    case ComponentType.File:
-      return new FileComponent(data);
-    case ComponentType.MediaGallery:
-      return new MediaGalleryComponent(data);
-    case ComponentType.Section:
-      return new SectionComponent(data);
-    case ComponentType.Separator:
-      return new SeparatorComponent(data);
-    case ComponentType.Thumbnail:
-      return new ThumbnailComponent(data);
-    default:
-      return new Component(data);
-  }
+  return data instanceof Component ? data : new (ComponentTypeToComponent[data.type] ?? Component)(data);
 }
 
 /**
@@ -188,30 +151,7 @@ function createComponent(data) {
  * @ignore
  */
 function createComponentBuilder(data) {
-  if (data instanceof ComponentBuilder) {
-    return data;
-  }
-
-  switch (data.type) {
-    case ComponentType.ActionRow:
-      return new ActionRowBuilder(data);
-    case ComponentType.Button:
-      return new ButtonBuilder(data);
-    case ComponentType.StringSelect:
-      return new StringSelectMenuBuilder(data);
-    case ComponentType.TextInput:
-      return new TextInputBuilder(data);
-    case ComponentType.UserSelect:
-      return new UserSelectMenuBuilder(data);
-    case ComponentType.RoleSelect:
-      return new RoleSelectMenuBuilder(data);
-    case ComponentType.MentionableSelect:
-      return new MentionableSelectMenuBuilder(data);
-    case ComponentType.ChannelSelect:
-      return new ChannelSelectMenuBuilder(data);
-    default:
-      return new ComponentBuilder(data);
-  }
+  return data instanceof ComponentBuilder ? data : new (ComponentTypeToBuilder[data.type] ?? ComponentBuilder)(data);
 }
 
 /**
@@ -274,3 +214,32 @@ const TextInputComponent = require('../structures/TextInputComponent');
 const ThumbnailComponent = require('../structures/ThumbnailComponent');
 const UserSelectMenuBuilder = require('../structures/UserSelectMenuBuilder');
 const UserSelectMenuComponent = require('../structures/UserSelectMenuComponent');
+
+const ComponentTypeToComponent = {
+  [ComponentType.ActionRow]: ActionRow,
+  [ComponentType.Button]: ButtonComponent,
+  [ComponentType.StringSelect]: StringSelectMenuComponent,
+  [ComponentType.TextInput]: TextInputComponent,
+  [ComponentType.UserSelect]: UserSelectMenuComponent,
+  [ComponentType.RoleSelect]: RoleSelectMenuComponent,
+  [ComponentType.MentionableSelect]: MentionableSelectMenuComponent,
+  [ComponentType.ChannelSelect]: ChannelSelectMenuComponent,
+  [ComponentType.Container]: ContainerComponent,
+  [ComponentType.TextDisplay]: TextDisplayComponent,
+  [ComponentType.File]: FileComponent,
+  [ComponentType.MediaGallery]: MediaGalleryComponent,
+  [ComponentType.Section]: SectionComponent,
+  [ComponentType.Separator]: SeparatorComponent,
+  [ComponentType.Thumbnail]: ThumbnailComponent,
+};
+
+const ComponentTypeToBuilder = {
+  [ComponentType.ActionRow]: ActionRowBuilder,
+  [ComponentType.Button]: ButtonBuilder,
+  [ComponentType.StringSelect]: StringSelectMenuBuilder,
+  [ComponentType.TextInput]: TextInputBuilder,
+  [ComponentType.UserSelect]: UserSelectMenuBuilder,
+  [ComponentType.RoleSelect]: RoleSelectMenuBuilder,
+  [ComponentType.MentionableSelect]: MentionableSelectMenuBuilder,
+  [ComponentType.ChannelSelect]: ChannelSelectMenuBuilder,
+};
