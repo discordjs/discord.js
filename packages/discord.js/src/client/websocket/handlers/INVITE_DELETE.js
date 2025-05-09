@@ -1,6 +1,6 @@
 'use strict';
 
-const { Invite } = require('../../../structures/Invite.js');
+const { GuildInvite } = require('../../../structures/GuildInvite.js');
 const { Events } = require('../../../util/Events.js');
 
 module.exports = (client, { d: data }) => {
@@ -9,7 +9,7 @@ module.exports = (client, { d: data }) => {
   if (!channel) return;
 
   const inviteData = Object.assign(data, { channel, guild });
-  const invite = new Invite(client, inviteData);
+  const invite = new GuildInvite(client, inviteData);
 
   guild.invites.cache.delete(invite.code);
 
@@ -17,7 +17,7 @@ module.exports = (client, { d: data }) => {
    * Emitted when an invite is deleted.
    * <info>This event requires the {@link PermissionFlagsBits.ManageChannels} permission for the channel.</info>
    * @event Client#inviteDelete
-   * @param {Invite} invite The invite that was deleted
+   * @param {GuildInvite} invite The invite that was deleted
    */
   client.emit(Events.InviteDelete, invite);
 };
