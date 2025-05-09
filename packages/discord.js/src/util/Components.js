@@ -135,44 +135,7 @@ const { ComponentType } = require('discord-api-types/v10');
  * @ignore
  */
 function createComponent(data) {
-  if (data instanceof Component) {
-    return data;
-  }
-
-  switch (data.type) {
-    case ComponentType.ActionRow:
-      return new ActionRow(data);
-    case ComponentType.Button:
-      return new ButtonComponent(data);
-    case ComponentType.StringSelect:
-      return new StringSelectMenuComponent(data);
-    case ComponentType.TextInput:
-      return new TextInputComponent(data);
-    case ComponentType.UserSelect:
-      return new UserSelectMenuComponent(data);
-    case ComponentType.RoleSelect:
-      return new RoleSelectMenuComponent(data);
-    case ComponentType.MentionableSelect:
-      return new MentionableSelectMenuComponent(data);
-    case ComponentType.ChannelSelect:
-      return new ChannelSelectMenuComponent(data);
-    case ComponentType.Container:
-      return new ContainerComponent(data);
-    case ComponentType.TextDisplay:
-      return new TextDisplayComponent(data);
-    case ComponentType.File:
-      return new FileComponent(data);
-    case ComponentType.MediaGallery:
-      return new MediaGalleryComponent(data);
-    case ComponentType.Section:
-      return new SectionComponent(data);
-    case ComponentType.Separator:
-      return new SeparatorComponent(data);
-    case ComponentType.Thumbnail:
-      return new ThumbnailComponent(data);
-    default:
-      return new Component(data);
-  }
+  return data instanceof Component ? data : new (ComponentTypeToClass[data.type] ?? Component)(data);
 }
 
 /**
@@ -228,3 +191,21 @@ const { TextDisplayComponent } = require('../structures/TextDisplayComponent.js'
 const { TextInputComponent } = require('../structures/TextInputComponent.js');
 const { ThumbnailComponent } = require('../structures/ThumbnailComponent.js');
 const { UserSelectMenuComponent } = require('../structures/UserSelectMenuComponent.js');
+
+const ComponentTypeToClass = {
+  [ComponentType.ActionRow]: ActionRow,
+  [ComponentType.Button]: ButtonComponent,
+  [ComponentType.StringSelect]: StringSelectMenuComponent,
+  [ComponentType.TextInput]: TextInputComponent,
+  [ComponentType.UserSelect]: UserSelectMenuComponent,
+  [ComponentType.RoleSelect]: RoleSelectMenuComponent,
+  [ComponentType.MentionableSelect]: MentionableSelectMenuComponent,
+  [ComponentType.ChannelSelect]: ChannelSelectMenuComponent,
+  [ComponentType.Container]: ContainerComponent,
+  [ComponentType.TextDisplay]: TextDisplayComponent,
+  [ComponentType.File]: FileComponent,
+  [ComponentType.MediaGallery]: MediaGalleryComponent,
+  [ComponentType.Section]: SectionComponent,
+  [ComponentType.Separator]: SeparatorComponent,
+  [ComponentType.Thumbnail]: ThumbnailComponent,
+};
