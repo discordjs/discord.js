@@ -15,13 +15,13 @@ export async function ParameterNode({
 	readonly version: string;
 }) {
 	return (
-		<div className={`${description ? 'flex flex-col gap-8' : 'inline'}`}>
+		<div className={`${description ? 'flex flex-col gap-4' : 'inline'}`}>
 			{node.map((parameter: any, idx: number) => (
 				<Fragment key={`${parameter.name}-${idx}`}>
 					<div className={description ? 'group' : 'inline after:content-[",_"] last-of-type:after:content-none'}>
 						<span className="font-mono font-semibold">
 							{description ? (
-								<Link className="float-left -ml-6 hidden pb-2 pr-2 group-hover:block" href={`#${parameter.name}`}>
+								<Link className="float-left -ml-6 hidden pr-2 pb-2 group-hover:block" href={`#${parameter.name}`}>
 									<LinkIcon aria-hidden size={16} />
 								</Link>
 							) : null}
@@ -39,7 +39,7 @@ export async function ParameterNode({
 				</Fragment>
 			))}
 			{description ? (
-				<div aria-hidden className="px-4">
+				<div aria-hidden className="p-4">
 					<div className="h-[2px] bg-neutral-300 dark:bg-neutral-700" role="separator" />
 				</div>
 			) : null}

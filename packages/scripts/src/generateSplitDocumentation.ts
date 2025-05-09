@@ -463,12 +463,14 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 				const comment = node as DocComment;
 
 				const exampleBlocks = comment.customBlocks.filter(
-					(block) => block.blockTag.tagName.toUpperCase() === StandardTags.example.tagNameWithUpperCase,
+					(block) => block.blockTag.tagNameWithUpperCase === StandardTags.example.tagNameWithUpperCase,
 				);
 
 				const defaultValueBlock = comment.customBlocks.find(
-					(block) => block.blockTag.tagName.toUpperCase() === StandardTags.defaultValue.tagNameWithUpperCase,
+					(block) => block.blockTag.tagNameWithUpperCase === StandardTags.defaultValue.tagNameWithUpperCase,
 				);
+
+				const mixesBlocks = comment.customBlocks.filter((block) => block.blockTag.tagNameWithUpperCase === '@MIXES');
 
 				return {
 					kind: DocNodeKind.Comment,
@@ -503,6 +505,9 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 					seeBlocks: comment.seeBlocks
 						.flatMap((block) => createNode(block.content).flat(1))
 						.filter((val: any) => val.kind !== DocNodeKind.SoftBreak),
+					mixesBlocks: mixesBlocks
+						.flatMap((block) => createNode(block.content).flat(1))
+						.filter((val: any) => val.kind !== DocNodeKind.SoftBreak),
 				};
 			}
 
@@ -528,8 +533,7 @@ function itemInfo(item: ApiDeclaredItem) {
 	const isAbstract = ApiAbstractMixin.isBaseClassOf(item) && item.isAbstract;
 	const isOptional = ApiOptionalMixin.isBaseClassOf(item) && item.isOptional;
 	const isDeprecated = Boolean(item.tsdocComment?.deprecatedBlock);
-	const isExternal = Boolean(item.sourceLocation.fileUrl?.includes('node_modules'));
-
+	const isExternal = Boolean(sourceLine === undefined);
 	const hasSummary = Boolean(item.tsdocComment?.summarySection);
 
 	return {
@@ -593,6 +597,19 @@ function resolveFileUrl(item: ApiDeclaredItem) {
 				sourceURL: href,
 			};
 		}
+	} else if (fileUrl?.includes('/dist/') && fileUrl.includes('/main/packages/')) {
+		const [, pkg] = fileUrl.split('/main/packages/');
+		const pkgName = pkg!.split('/')[0];
+		const version = 'main';
+
+		// https://github.com/discordjs/discord.js/tree/main/packages/builders/dist/index.d.ts
+		let currentItem = item;
+		while (currentItem.parent && currentItem.parent.kind !== ApiItemKind.EntryPoint)
+			currentItem = currentItem.parent as ApiDeclaredItem;
+
+		return {
+			sourceURL: `/docs/packages/${pkgName}/${version}/${currentItem.displayName}:${currentItem.kind}`,
+		};
 	}
 
 	return {
@@ -679,12 +696,8 @@ function itemParameters(item: ApiDocumentedItem & ApiParameterListMixin) {
 
 function itemConstructor(item: ApiConstructor) {
 	return {
-		kind: item.kind,
-		name: item.displayName,
-		sourceURL: item.sourceLocation.fileUrl,
-		sourceLine: item.sourceLocation.fileLine,
+		...itemInfo(item),
 		parametersString: parametersString(item),
-		summary: item.tsdocComment ? itemTsDoc(item.tsdocComment, item) : null,
 		parameters: itemParameters(item),
 	};
 }
@@ -878,7 +891,7 @@ function itemClass(item: ApiClass) {
 		extends: itemHierarchyText({ item, type: 'Extends' }),
 		implements: itemHierarchyText({ item, type: 'Implements' }),
 		typeParameters: itemTypeParameters(item),
-		constructor: constructor ? itemConstructor(constructor) : null,
+		construct: constructor ? itemConstructor(constructor) : null,
 		members: itemMembers(item),
 	};
 }
@@ -909,13 +922,13 @@ function itemInterface(item: ApiInterface) {
 	};
 }
 
-function itemUnion(item: ApiTypeAlias) {
+function itemUnion(item: Excerpt) {
 	const union: ExcerptToken[][] = [];
 	let currentUnionMember: ExcerptToken[] = [];
 	let depth = 0;
-	for (const token of item.typeExcerpt.spannedTokens) {
+	for (const token of item.spannedTokens) {
 		if (token.text.includes('?')) {
-			return [item.typeExcerpt.spannedTokens];
+			return [item.spannedTokens];
 		}
 
 		depth += token.text.split('<').length - token.text.split('>').length;
@@ -954,7 +967,7 @@ function itemTypeAlias(item: ApiTypeAlias) {
 	return {
 		...itemInfo(item),
 		typeParameters: itemTypeParameters(item),
-		unionMembers: itemUnion(item).map((member) =>
+		unionMembers: itemUnion(item.typeExcerpt).map((member) =>
 			itemExcerptText(
 				new Excerpt(member, { startIndex: 0, endIndex: member.length }),
 				item.getAssociatedPackage()!,
@@ -967,6 +980,13 @@ function itemTypeAlias(item: ApiTypeAlias) {
 function itemVariable(item: ApiVariable) {
 	return {
 		...itemInfo(item),
+		unionMembers: itemUnion(item.variableTypeExcerpt).map((member) =>
+			itemExcerptText(
+				new Excerpt(member, { startIndex: 0, endIndex: member.length }),
+				item.getAssociatedPackage()!,
+				item.getHierarchy().find(ApiTypeParameterListMixin.isBaseClassOf),
+			),
+		),
 	};
 }
 

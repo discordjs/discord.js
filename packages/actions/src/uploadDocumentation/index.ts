@@ -2,12 +2,24 @@ import { readFile } from 'node:fs/promises';
 import process from 'node:process';
 import { getInput, setFailed } from '@actions/core';
 import { create } from '@actions/glob';
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { put } from '@vercel/blob';
 import { createPool } from '@vercel/postgres';
+import Cloudflare from 'cloudflare';
 import pLimit from 'p-limit';
 
-if (!process.env.DATABASE_URL) {
-	setFailed('DATABASE_URL is not set');
+if (
+	!process.env.DATABASE_URL ||
+	!process.env.CF_R2_DOCS_URL ||
+	!process.env.CF_R2_DOCS_ACCESS_KEY_ID ||
+	!process.env.CF_R2_DOCS_SECRET_ACCESS_KEY ||
+	!process.env.CF_R2_DOCS_BUCKET ||
+	!process.env.CF_R2_DOCS_BUCKET_URL ||
+	!process.env.CF_D1_DOCS_API_KEY ||
+	!process.env.CF_D1_DOCS_ID ||
+	!process.env.CF_ACCOUNT_ID
+) {
+	setFailed('Missing environment variables');
 }
 
 const pkg = getInput('package') || '*';
@@ -15,6 +27,21 @@ const version = getInput('version') || 'main';
 
 const pool = createPool({
 	connectionString: process.env.DATABASE_URL,
+});
+
+const S3 = new S3Client({
+	region: 'auto',
+	endpoint: process.env.CF_R2_DOCS_URL!,
+	credentials: {
+		accessKeyId: process.env.CF_R2_DOCS_ACCESS_KEY_ID!,
+		secretAccessKey: process.env.CF_R2_DOCS_SECRET_ACCESS_KEY!,
+	},
+	requestChecksumCalculation: 'WHEN_REQUIRED',
+	responseChecksumValidation: 'WHEN_REQUIRED',
+});
+
+const client = new Cloudflare({
+	apiToken: process.env.CF_D1_DOCS_API_KEY,
 });
 
 const limit = pLimit(10);
@@ -30,7 +57,10 @@ for await (const file of globber.globGenerator()) {
 				console.log(`Uploading ${file} with ${version}...`);
 				const json = JSON.parse(data);
 				const name = json.name ?? json.n;
-				const { url } = await put(`${name.replace('@discordjs/', '')}/${version}.json`, data, {
+
+				const key = `${name.replace('@discordjs/', '')}/${version}.json`;
+
+				const { url } = await put(key, data, {
 					access: 'public',
 					addRandomSuffix: false,
 				});
@@ -38,6 +68,19 @@ for await (const file of globber.globGenerator()) {
 					'@discordjs/',
 					'',
 				)}, ${version}, ${url}) on conflict (name, version) do update set url = EXCLUDED.url`;
+
+				await S3.send(
+					new PutObjectCommand({
+						Bucket: process.env.CF_R2_DOCS_BUCKET,
+						Key: key,
+						Body: data,
+					}),
+				);
+				await client.d1.database.raw(process.env.CF_D1_DOCS_ID!, {
+					account_id: process.env.CF_ACCOUNT_ID!,
+					sql: `insert into documentation (name, version, url) values (?, ?, ?) on conflict (name, version) do update set url = excluded.url;`,
+					params: [name.replace('@discordjs/', ''), version, process.env.CF_R2_DOCS_BUCKET_URL + '/' + key],
+				});
 			}),
 		);
 	} catch (error) {

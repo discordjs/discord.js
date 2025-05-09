@@ -87,6 +87,7 @@ export default tseslint.config(
 			'**/coverage/',
 			'**/storybook-static/',
 			'**/.next/',
+			'**/shiki.bundle.ts',
 			'packages/discord.js/',
 		],
 	},

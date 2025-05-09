@@ -1,6 +1,6 @@
 import type { PathLike } from 'node:fs';
 import { readdir, stat } from 'node:fs/promises';
-import { fileURLToPath, URL } from 'node:url';
+import { URL } from 'node:url';
 import type { Command } from '../commands/index.[REPLACE_IMPORT_EXT]';
 import { predicate as commandPredicate } from '../commands/index.[REPLACE_IMPORT_EXT]';
 import type { Event } from '../events/index.[REPLACE_IMPORT_EXT]';
@@ -57,7 +57,7 @@ export async function loadStructures<T>(
 		}
 
 		// Import the structure dynamically from the file
-		const structure = (await import(fileURLToPath(fileUrl))).default;
+		const structure = (await import(fileUrl.toString())).default;
 
 		// If the structure is a valid structure, add it
 		if (predicate(structure)) structures.push(structure);

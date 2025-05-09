@@ -2,9 +2,10 @@
 
 import { useSetAtom } from 'jotai';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import type { PropsWithChildren } from 'react';
-import { isDrawerOpenAtom } from '~/stores/drawer';
+import { isDrawerOpenAtom } from '@/stores/drawer';
+import { cx } from '@/styles/cva';
 
 export function NavigationItem({
 	node,
@@ -16,6 +17,7 @@ export function NavigationItem({
 	readonly packageName: string;
 	readonly version: string;
 }>) {
+	const router = useRouter();
 	const pathname = usePathname();
 	const setDrawerOpen = useSetAtom(isDrawerOpenAtom);
 
@@ -23,10 +25,19 @@ export function NavigationItem({
 
 	return (
 		<Link
-			className={`truncate rounded-md p-2 font-mono transition-colors hover:bg-neutral-200 dark:hover:bg-neutral-800 md:px-1 md:py-1 ${pathname === href ? 'bg-neutral-200 font-medium text-blurple dark:bg-neutral-800' : ''}`}
+			className={cx(
+				'dark:hover:text-base-neutral-40 hover:text-base-neutral-900 truncate rounded-lg p-2 font-mono text-[#676771] transition-colors hover:bg-[#e7e7e9] active:bg-[#e4e4e7] md:py-1 dark:text-[#83838b] dark:hover:bg-[#1d1d1e] dark:active:bg-[#27272b]',
+				pathname === href &&
+					'dark:text-base-neutral-40 text-base-neutral-900 bg-[#d9d9dc] font-medium dark:bg-[#323235] dark:hover:bg-[#323235]',
+			)}
 			href={href}
 			onClick={() => setDrawerOpen(false)}
+			onMouseEnter={() => router.prefetch(href)}
+			onTouchStart={() => router.prefetch(href)}
+			prefetch={false}
 			title={node.name}
+			// @ts-expect-error - unstable_dynamicOnHover is not part of the public types
+			unstable_dynamicOnHover
 		>
 			{children}
 		</Link>

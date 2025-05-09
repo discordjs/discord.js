@@ -10,7 +10,6 @@
 		"ignore": [
 			".turbo",
 			".vercel",
-			".contentlayer",
 			".next",
 			"coverage",
 			"dist",

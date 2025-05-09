@@ -27,6 +27,7 @@ class ActionsManager {
     this.register(require('./GuildScheduledEventDelete.js').GuildScheduledEventDeleteAction);
     this.register(require('./GuildScheduledEventUserAdd.js').GuildScheduledEventUserAddAction);
     this.register(require('./GuildScheduledEventUserRemove.js').GuildScheduledEventUserRemoveAction);
+    this.register(require('./GuildSoundboardSoundDelete.js').GuildSoundboardSoundDeleteAction);
     this.register(require('./GuildStickerCreate.js').GuildStickerCreateAction);
     this.register(require('./GuildStickerDelete.js').GuildStickerDeleteAction);
     this.register(require('./GuildStickerUpdate.js').GuildStickerUpdateAction);
