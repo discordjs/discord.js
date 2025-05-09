@@ -175,7 +175,7 @@ class Role extends Base {
 
   /**
    * The cached guild members that have this role
-   * @type {Collection<Snowflake, GuildMember>}
+   * @type {Collection<Snowflake, GuildMember | PartialGuildMember>}
    * @readonly
    */
   get members() {
