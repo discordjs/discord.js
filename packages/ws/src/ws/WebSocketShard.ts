@@ -249,7 +249,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 					if (zlib && 'createZstdDecompress' in zlib) {
 						this.inflateBuffer = [];
 
-						// @ts-expect-error node 23 called, it wants its code back
 						const inflate = zlib.createZstdDecompress({
 							chunkSize: 65_535,
 						}) as nativeZlib.Inflate;
