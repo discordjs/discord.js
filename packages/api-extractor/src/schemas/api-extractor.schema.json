@@ -23,6 +23,14 @@
 			"type": "string"
 		},
 
+		"additionalEntryPoints": {
+			"description": "Specifies the .d.ts files to be used as the starting points for analysis.",
+			"type": "array",
+			"items": {
+				"type": "object"
+			}
+		},
+
 		"bundledPackages": {
 			"description": "A list of NPM package names whose exports should be treated as part of this package.",
 			"type": "array",
