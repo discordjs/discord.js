@@ -17,12 +17,16 @@ export interface SharedChatInputCommandOptionsData {
 
 /**
  * This mixin holds symbols that can be shared in chat input command options.
- *
- * @typeParam TypeAfterAddingOptions - The type this class should return after adding an option.
  */
 export class SharedChatInputCommandOptions {
+	/**
+	 * @internal
+	 */
 	declare protected readonly data: SharedChatInputCommandOptionsData;
 
+	/**
+	 * The options within this command.
+	 */
 	public get options(): readonly ApplicationCommandOptionBase[] {
 		return (this.data.options ??= []);
 	}
