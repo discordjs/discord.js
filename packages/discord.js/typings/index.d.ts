@@ -4304,8 +4304,15 @@ export interface GuildSoundboardSoundEditOptions {
   emojiId?: Snowflake | null;
   emojiName?: string | null;
   name?: string;
+  reason?: string;
   volume?: number | null;
 }
+
+export interface FetchGuildSoundboardSoundOptions extends BaseFetchOptions {
+  soundboardSound: SoundboardSoundResolvable;
+}
+
+export interface FetchGuildSoundboardSoundsOptions extends Pick<BaseFetchOptions, 'cache'> {}
 
 export class GuildSoundboardSoundManager extends CachedManager<Snowflake, SoundboardSound, SoundboardSoundResolvable> {
   private constructor(guild: Guild, iterable?: Iterable<APISoundboardSound>);
@@ -5818,8 +5825,7 @@ export interface GuildAuditLogsEntryTargetField<TAction extends AuditLogEvent> {
   Invite: Invite;
   Message: TAction extends AuditLogEvent.MessageBulkDelete ? GuildTextBasedChannel | { id: Snowflake } : User | null;
   Role: Role | { id: Snowflake };
-  // TODO: Update when https://github.com/discordjs/discord.js/pull/10590 is merged
-  SoundboardSound: { id: Snowflake };
+  SoundboardSound: SoundboardSound | { id: Snowflake };
   StageInstance: StageInstance;
   Sticker: Sticker;
   Thread: AnyThreadChannel | { [x: string]: unknown; id: Snowflake };
