@@ -11,7 +11,13 @@ const events = await loadEvents(new URL('events/', import.meta.url));
 
 // Register the event handlers
 for (const event of events) {
-	client[event.once ? 'once' : 'on'](event.name, async (...args) => event.execute(...args));
+	client[event.once ? 'once' : 'on'](event.name, async (...args) => {
+		try {
+			event.execute(...args);
+		} catch (error) {
+			console.error(`Error executing event ${String(event.name)}:`, error);
+		}
+	});
 }
 
 // Login to the client
