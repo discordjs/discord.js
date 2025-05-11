@@ -1882,6 +1882,7 @@ client.on('interactionCreate', async interaction => {
       expectType<Promise<Message<true>>>(interaction.editReply({ content: 'a' }));
       expectType<Promise<Message<true>>>(interaction.fetchReply());
       expectType<Promise<InteractionCallbackResponse<true>>>(interaction.update({ content: 'a', withResponse: true }));
+      expectType<Promise<undefined>>(interaction.update());
       expectType<Promise<InteractionCallbackResponse<true>>>(interaction.deferUpdate({ withResponse: true }));
       expectType<Promise<undefined>>(interaction.deferUpdate());
       expectType<Promise<Message<true>>>(interaction.followUp({ content: 'a' }));
@@ -1910,6 +1911,7 @@ client.on('interactionCreate', async interaction => {
       expectType<Promise<Message<false>>>(interaction.fetchReply());
       expectType<Promise<InteractionCallbackResponse<false>>>(interaction.update({ content: 'a', withResponse: true }));
       expectType<Promise<undefined>>(interaction.update({ content: 'a', withResponse: false }));
+      expectType<Promise<undefined>>(interaction.update());
       expectType<Promise<InteractionCallbackResponse<false> | undefined>>(
         interaction.update({ content: 'a', withResponse: booleanValue }),
       );
@@ -1944,6 +1946,7 @@ client.on('interactionCreate', async interaction => {
       expectType<Promise<InteractionCallbackResponse | undefined>>(
         interaction.update({ content: 'a', withResponse: booleanValue }),
       );
+      expectType<Promise<undefined>>(interaction.update());
       expectType<Promise<InteractionCallbackResponse>>(interaction.deferUpdate({ withResponse: true }));
       expectType<Promise<undefined>>(interaction.deferUpdate());
       expectType<Promise<Message>>(interaction.followUp({ content: 'a' }));
