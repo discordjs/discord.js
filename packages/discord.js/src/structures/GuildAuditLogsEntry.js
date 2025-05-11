@@ -3,10 +3,10 @@
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { AuditLogOptionsType, AuditLogEvent } = require('discord-api-types/v10');
 const { AutoModerationRule } = require('./AutoModerationRule.js');
+const { GuildInvite } = require('./GuildInvite.js');
 const { GuildOnboardingPrompt } = require('./GuildOnboardingPrompt.js');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent.js');
 const { Integration } = require('./Integration.js');
-const { Invite } = require('./Invite.js');
 const { StageInstance } = require('./StageInstance.js');
 const { Sticker } = require('./Sticker.js');
 const { Webhook } = require('./Webhook.js');
@@ -318,7 +318,7 @@ class GuildAuditLogsEntry {
 
       this.target =
         guild.invites.cache.get(inviteChange.new ?? inviteChange.old) ??
-        new Invite(guild.client, changesReduce(this.changes, { guild }));
+        new GuildInvite(guild.client, changesReduce(this.changes, { guild }));
     } else if (targetType === Targets.Message) {
       // Discord sends a channel id for the MessageBulkDelete action type.
       this.target =

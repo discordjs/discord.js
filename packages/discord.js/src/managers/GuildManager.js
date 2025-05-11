@@ -11,8 +11,8 @@ const { ShardClientUtil } = require('../sharding/ShardClientUtil.js');
 const { Guild } = require('../structures/Guild.js');
 const { GuildChannel } = require('../structures/GuildChannel.js');
 const { GuildEmoji } = require('../structures/GuildEmoji.js');
+const { GuildInvite } = require('../structures/GuildInvite.js');
 const { GuildMember } = require('../structures/GuildMember.js');
-const { Invite } = require('../structures/Invite.js');
 const { OAuth2Guild } = require('../structures/OAuth2Guild.js');
 const { Role } = require('../structures/Role.js');
 const { resolveImage } = require('../util/DataResolver.js');
@@ -112,7 +112,7 @@ class GuildManager extends CachedManager {
       guild instanceof GuildMember ||
       guild instanceof GuildEmoji ||
       guild instanceof Role ||
-      (guild instanceof Invite && guild.guild)
+      (guild instanceof GuildInvite && guild.guild)
     ) {
       return super.resolve(guild.guild);
     }
@@ -133,7 +133,7 @@ class GuildManager extends CachedManager {
       guild instanceof GuildMember ||
       guild instanceof GuildEmoji ||
       guild instanceof Role ||
-      (guild instanceof Invite && guild.guild)
+      (guild instanceof GuildInvite && guild.guild)
     ) {
       return super.resolveId(guild.guild.id);
     }

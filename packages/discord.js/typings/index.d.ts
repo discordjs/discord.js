@@ -619,8 +619,8 @@ export class BaseGuildTextChannel extends GuildChannel {
   public nsfw: boolean;
   public threads: GuildTextThreadManager<AllowedThreadTypeForTextChannel | AllowedThreadTypeForAnnouncementChannel>;
   public topic: string | null;
-  public createInvite(options?: InviteCreateOptions): Promise<Invite>;
-  public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
+  public createInvite(options?: InviteCreateOptions): Promise<GuildInvite>;
+  public fetchInvites(cache?: boolean): Promise<Collection<string, GuildInvite>>;
   public setDefaultAutoArchiveDuration(
     defaultAutoArchiveDuration: ThreadAutoArchiveDuration,
     reason?: string,
@@ -643,8 +643,8 @@ export class BaseGuildVoiceChannel extends GuildChannel {
   public rtcRegion: string | null;
   public userLimit: number;
   public videoQualityMode: VideoQualityMode | null;
-  public createInvite(options?: InviteCreateOptions): Promise<Invite>;
-  public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
+  public createInvite(options?: InviteCreateOptions): Promise<GuildInvite>;
+  public fetchInvites(cache?: boolean): Promise<Collection<string, GuildInvite>>;
   public setBitrate(bitrate: number, reason?: string): Promise<this>;
   public setRTCRegion(rtcRegion: string | null, reason?: string): Promise<this>;
   public setUserLimit(userLimit: number, reason?: string): Promise<this>;
@@ -889,6 +889,10 @@ export class Client<Ready extends boolean = boolean> extends BaseClient<ClientEv
   public destroy(): Promise<void>;
   public deleteWebhook(id: Snowflake, options?: WebhookDeleteOptions): Promise<void>;
   public fetchGuildPreview(guild: GuildResolvable): Promise<GuildPreview>;
+  public fetchInvite(
+    invite: InviteResolvable,
+    options: ClientFetchInviteOptions & { withCounts: true },
+  ): Promise<Invite<true>>;
   public fetchInvite(invite: InviteResolvable, options?: ClientFetchInviteOptions): Promise<Invite>;
   public fetchGuildTemplate(template: GuildTemplateResolvable): Promise<GuildTemplate>;
   public fetchVoiceRegions(): Promise<Collection<string, VoiceRegion>>;
@@ -1925,36 +1929,48 @@ export class InteractionWebhook {
   public fetchMessage(message: Snowflake | '@original'): Promise<Message>;
 }
 
-export class Invite extends Base {
-  private constructor(client: Client<true>, data: RawInviteData);
-  public channel: NonThreadGuildBasedChannel | PartialGroupDMChannel | null;
-  public channelId: Snowflake | null;
-  public code: string;
-  public get deletable(): boolean;
+export class BaseInvite<WithCounts extends boolean = boolean> extends Base {
+  protected constructor(client: Client<true>, data: RawInviteData);
+  public readonly type: InviteType;
+  public readonly code: string;
+  public readonly inviterId: Snowflake | null;
+  public get inviter(): User | null;
+  public maxAge: number | null;
   public get createdAt(): Date | null;
   public createdTimestamp: number | null;
   public get expiresAt(): Date | null;
   public get expiresTimestamp(): number | null;
-  public guild: InviteGuild | Guild | null;
-  public get inviter(): User | null;
-  public inviterId: Snowflake | null;
-  public maxAge: number | null;
-  public maxUses: number | null;
-  public memberCount: number;
-  public presenceCount: number;
-  public targetApplication: IntegrationApplication | null;
-  public targetUser: User | null;
-  public targetType: InviteTargetType | null;
-  public temporary: boolean | null;
-  public type: InviteType;
+  public readonly channelId: Snowflake | null;
+  public approximateMemberCount: WithCounts extends true ? number : null;
   public get url(): string;
-  public uses: number | null;
-  public delete(reason?: string): Promise<Invite>;
-  public toJSON(): unknown;
-  public toString(): string;
   public static InvitesPattern: RegExp;
-  public guildScheduledEvent: GuildScheduledEvent | null;
+  public toString(): string;
+  public toJSON(): unknown;
 }
+
+export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvite<WithCounts> {
+  public readonly type: InviteType.Guild;
+  public guild: InviteGuild | Guild | null;
+  public readonly guildId: Snowflake;
+  public channel: NonThreadGuildBasedChannel | null;
+  public targetType: InviteTargetType | null;
+  public targetUser: User | null;
+  public targetApplication: IntegrationApplication | null;
+  public guildScheduledEvent: GuildScheduledEvent | null;
+  public uses: number | null;
+  public maxUses: number | null;
+  public temporary: boolean | null;
+  public approximatePresenceCount: WithCounts extends true ? number : null;
+  public get deletable(): boolean;
+  public delete(reason?: string): Promise<void>;
+}
+
+export class GroupDMInvite<WithCounts extends boolean = boolean> extends BaseInvite<WithCounts> {
+  public readonly type: InviteType.GroupDM;
+  public channel: PartialGroupDMChannel | null;
+}
+
+export type Invite<WithCounts extends boolean = boolean> = GuildInvite<WithCounts> | GroupDMInvite<WithCounts>;
 
 export class InviteGuild extends AnonymousGuild {
   private constructor(client: Client<true>, data: RawInviteGuildData);
@@ -2569,8 +2585,8 @@ export abstract class ThreadOnlyChannel extends GuildChannel {
   public setAvailableTags(tags: readonly GuildForumTagData[], reason?: string): Promise<this>;
   public setDefaultReactionEmoji(emojiId: DefaultReactionEmoji | null, reason?: string): Promise<this>;
   public setDefaultThreadRateLimitPerUser(rateLimit: number, reason?: string): Promise<this>;
-  public createInvite(options?: InviteCreateOptions): Promise<Invite>;
-  public fetchInvites(cache?: boolean): Promise<Collection<string, Invite>>;
+  public createInvite(options?: InviteCreateOptions): Promise<GuildInvite>;
+  public fetchInvites(cache?: boolean): Promise<Collection<string, GuildInvite>>;
   public setDefaultAutoArchiveDuration(
     defaultAutoArchiveDuration: ThreadAutoArchiveDuration,
     reason?: string,
@@ -4240,13 +4256,13 @@ export class GuildBanManager extends CachedManager<Snowflake, GuildBan, GuildBan
   ): Promise<BulkBanResult>;
 }
 
-export class GuildInviteManager extends DataManager<string, Invite, InviteResolvable> {
+export class GuildInviteManager extends DataManager<string, GuildInvite, GuildInviteResolvable> {
   private constructor(guild: Guild, iterable?: Iterable<RawInviteData>);
   public guild: Guild;
-  public create(channel: GuildInvitableChannelResolvable, options?: InviteCreateOptions): Promise<Invite>;
-  public fetch(options: InviteResolvable | FetchInviteOptions): Promise<Invite>;
-  public fetch(options?: FetchInvitesOptions): Promise<Collection<string, Invite>>;
-  public delete(invite: InviteResolvable, reason?: string): Promise<Invite>;
+  public create(channel: GuildInvitableChannelResolvable, options?: InviteCreateOptions): Promise<GuildInvite>;
+  public fetch(options: InviteResolvable | FetchInviteOptions): Promise<GuildInvite>;
+  public fetch(options?: FetchInvitesOptions): Promise<Collection<string, GuildInvite>>;
+  public delete(invite: InviteResolvable, reason?: string): Promise<void>;
 }
 
 export class GuildScheduledEventManager extends CachedManager<
@@ -5037,7 +5053,7 @@ export interface Caches {
   // TODO: GuildChannelManager: [manager: typeof GuildChannelManager, holds: typeof GuildChannel];
   GuildEmojiManager: [manager: typeof GuildEmojiManager, holds: typeof GuildEmoji];
   GuildForumThreadManager: [manager: typeof GuildForumThreadManager, holds: typeof ThreadChannel<true>];
-  GuildInviteManager: [manager: typeof GuildInviteManager, holds: typeof Invite];
+  GuildInviteManager: [manager: typeof GuildInviteManager, holds: typeof GuildInvite];
   // TODO: GuildManager: [manager: typeof GuildManager, holds: typeof Guild];
   GuildMemberManager: [manager: typeof GuildMemberManager, holds: typeof GuildMember];
   GuildMessageManager: [manager: typeof GuildMessageManager, holds: typeof Message<true>];
@@ -5185,8 +5201,8 @@ export interface ClientEventTypes {
   guildSoundboardSoundCreate: [soundboardSound: SoundboardSound];
   guildSoundboardSoundDelete: [soundboardSound: SoundboardSound | PartialSoundboardSound];
   guildSoundboardSoundUpdate: [oldSoundboardSound: SoundboardSound | null, newSoundboardSound: SoundboardSound];
-  inviteCreate: [invite: Invite];
-  inviteDelete: [invite: Invite];
+  inviteCreate: [invite: GuildInvite];
+  inviteDelete: [invite: GuildInvite];
   messageCreate: [message: OmitPartialGroupDMChannel<Message>];
   messageDelete: [message: OmitPartialGroupDMChannel<Message | PartialMessage>];
   messagePollVoteAdd: [pollAnswer: PollAnswer | PartialPollAnswer, userId: Snowflake];
@@ -5256,6 +5272,7 @@ export interface ClientEventTypes {
 }
 
 export interface ClientFetchInviteOptions {
+  withCounts?: boolean;
   guildScheduledEventId?: Snowflake;
 }
 
@@ -5798,7 +5815,7 @@ export interface GuildAuditLogsEntryTargetField<TAction extends AuditLogEvent> {
   User: User | PartialUser | null;
   Guild: Guild;
   Webhook: Webhook<WebhookType.ChannelFollower | WebhookType.Incoming>;
-  Invite: Invite;
+  Invite: GuildInvite;
   Emoji: GuildEmoji | { id: Snowflake };
   Role: Role | { id: Snowflake };
   Message: TAction extends AuditLogEvent.MessageBulkDelete ? GuildTextBasedChannel | { id: Snowflake } : User | null;
@@ -5986,7 +6003,14 @@ export interface GuildMemberEditOptions {
   reason?: string;
 }
 
-export type GuildResolvable = Guild | NonThreadGuildBasedChannel | GuildMember | GuildEmoji | Invite | Role | Snowflake;
+export type GuildResolvable =
+  | Guild
+  | NonThreadGuildBasedChannel
+  | GuildMember
+  | GuildEmoji
+  | GuildInvite
+  | Role
+  | Snowflake;
 
 export interface GuildPruneMembersOptions {
   count?: boolean;
@@ -6218,14 +6242,15 @@ export interface InviteGenerationOptions {
   scopes: readonly OAuth2Scopes[];
 }
 
-export type GuildInvitableChannelResolvable =
+export type GuildInvitableChannel =
   | TextChannel
   | VoiceChannel
   | AnnouncementChannel
   | StageChannel
   | ForumChannel
-  | MediaChannel
-  | Snowflake;
+  | MediaChannel;
+
+export type GuildInvitableChannelResolvable = GuildInvitableChannel | Snowflake;
 
 export interface InviteCreateOptions {
   temporary?: boolean;
@@ -6239,6 +6264,7 @@ export interface InviteCreateOptions {
 }
 
 export type InviteResolvable = string;
+export type GuildInviteResolvable = string;
 
 export interface LifetimeFilterOptions<Key, Value> {
   excludeFromSweep?: (value: Value, key: Key, collection: LimitedCollection<Key, Value>) => boolean;
@@ -6796,7 +6822,7 @@ export interface SweeperDefinitions {
   bans: [Snowflake, GuildBan];
   emojis: [Snowflake, GuildEmoji];
   entitlements: [Snowflake, Entitlement];
-  invites: [string, Invite, true];
+  invites: [string, GuildInvite, true];
   guildMembers: [Snowflake, GuildMember];
   messages: [Snowflake, Message, true];
   presences: [Snowflake, Presence];
