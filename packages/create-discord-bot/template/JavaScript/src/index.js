@@ -13,7 +13,7 @@ const events = await loadEvents(new URL('events/', import.meta.url));
 for (const event of events) {
 	client[event.once ? 'once' : 'on'](event.name, async (...args) => {
 		try {
-			event.execute(...args);
+			await event.execute(...args);
 		} catch (error) {
 			console.error(`Error executing event ${String(event.name)}:`, error);
 		}
