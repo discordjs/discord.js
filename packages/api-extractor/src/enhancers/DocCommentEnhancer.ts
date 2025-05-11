@@ -11,6 +11,7 @@ import { ExtractorMessageId } from '../api/ExtractorMessageId.js';
 import type { ApiItemMetadata } from '../collector/ApiItemMetadata.js';
 import type { Collector } from '../collector/Collector.js';
 import { VisitorState } from '../collector/VisitorState.js';
+import type { IWorkingPackageEntryPoint } from '../collector/WorkingPackage.js';
 
 export class DocCommentEnhancer {
 	private readonly _collector: Collector;
@@ -25,7 +26,7 @@ export class DocCommentEnhancer {
 	}
 
 	public analyze(): void {
-		for (const entities of this._collector.entities.values()) {
+		for (const [entryPoint, entities] of this._collector.entities) {
 			for (const entity of entities) {
 				if (
 					entity.astEntity instanceof AstSymbol &&
@@ -34,14 +35,14 @@ export class DocCommentEnhancer {
 						this._collector.extractorConfig.docModelIncludeForgottenExports)
 				) {
 					entity.astEntity.forEachDeclarationRecursive((astDeclaration: AstDeclaration) => {
-						this._analyzeApiItem(astDeclaration);
+						this._analyzeApiItem(astDeclaration, entryPoint);
 					});
 				}
 			}
 		}
 	}
 
-	private _analyzeApiItem(astDeclaration: AstDeclaration): void {
+	private _analyzeApiItem(astDeclaration: AstDeclaration, entryPoint: IWorkingPackageEntryPoint): void {
 		const metadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 		if (metadata.docCommentEnhancerVisitorState === VisitorState.Visited) {
 			return;
@@ -59,12 +60,12 @@ export class DocCommentEnhancer {
 		metadata.docCommentEnhancerVisitorState = VisitorState.Visiting;
 
 		if (metadata.tsdocComment?.inheritDocTag) {
-			this._applyInheritDoc(astDeclaration, metadata.tsdocComment, metadata.tsdocComment.inheritDocTag);
+			this._applyInheritDoc(astDeclaration, metadata.tsdocComment, metadata.tsdocComment.inheritDocTag, entryPoint);
 		}
 
 		this._analyzeNeedsDocumentation(astDeclaration, metadata);
 
-		this._checkForBrokenLinks(astDeclaration, metadata);
+		this._checkForBrokenLinks(astDeclaration, metadata, entryPoint);
 
 		metadata.docCommentEnhancerVisitorState = VisitorState.Visited;
 	}
@@ -143,15 +144,23 @@ export class DocCommentEnhancer {
 		}
 	}
 
-	private _checkForBrokenLinks(astDeclaration: AstDeclaration, metadata: ApiItemMetadata): void {
+	private _checkForBrokenLinks(
+		astDeclaration: AstDeclaration,
+		metadata: ApiItemMetadata,
+		entryPoint: IWorkingPackageEntryPoint,
+	): void {
 		if (!metadata.tsdocComment) {
 			return;
 		}
 
-		this._checkForBrokenLinksRecursive(astDeclaration, metadata.tsdocComment);
+		this._checkForBrokenLinksRecursive(astDeclaration, metadata.tsdocComment, entryPoint);
 	}
 
-	private _checkForBrokenLinksRecursive(astDeclaration: AstDeclaration, node: tsdoc.DocNode): void {
+	private _checkForBrokenLinksRecursive(
+		astDeclaration: AstDeclaration,
+		node: tsdoc.DocNode,
+		entryPoint: IWorkingPackageEntryPoint,
+	): void {
 		if (
 			node instanceof tsdoc.DocLinkTag &&
 			node.codeDestination && // Is it referring to the working package?  If not, we don't do any link validation, because
@@ -162,6 +171,7 @@ export class DocCommentEnhancer {
 		) {
 			const referencedAstDeclaration: AstDeclaration | ResolverFailure = this._collector.astReferenceResolver.resolve(
 				node.codeDestination,
+				entryPoint,
 			);
 
 			if (referencedAstDeclaration instanceof ResolverFailure) {
@@ -174,7 +184,7 @@ export class DocCommentEnhancer {
 		}
 
 		for (const childNode of node.getChildNodes()) {
-			this._checkForBrokenLinksRecursive(astDeclaration, childNode);
+			this._checkForBrokenLinksRecursive(astDeclaration, childNode, entryPoint);
 		}
 	}
 
@@ -185,6 +195,7 @@ export class DocCommentEnhancer {
 		astDeclaration: AstDeclaration,
 		docComment: tsdoc.DocComment,
 		inheritDocTag: tsdoc.DocInheritDocTag,
+		entryPoint: IWorkingPackageEntryPoint,
 	): void {
 		if (!inheritDocTag.declarationReference) {
 			this._collector.messageRouter.addAnalyzerIssue(
@@ -210,6 +221,7 @@ export class DocCommentEnhancer {
 
 		const referencedAstDeclaration: AstDeclaration | ResolverFailure = this._collector.astReferenceResolver.resolve(
 			inheritDocTag.declarationReference,
+			entryPoint,
 		);
 
 		if (referencedAstDeclaration instanceof ResolverFailure) {
@@ -221,7 +233,7 @@ export class DocCommentEnhancer {
 			return;
 		}
 
-		this._analyzeApiItem(referencedAstDeclaration);
+		this._analyzeApiItem(referencedAstDeclaration, entryPoint);
 
 		const referencedMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(referencedAstDeclaration);
 

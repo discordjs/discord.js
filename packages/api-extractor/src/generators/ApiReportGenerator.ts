@@ -9,7 +9,7 @@ import * as ts from 'typescript';
 import { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstEntity } from '../analyzer/AstEntity.js';
 import { AstImport } from '../analyzer/AstImport.js';
-import type { AstModuleExportInfo } from '../analyzer/AstModule.js';
+import type { IAstModuleExportInfo } from '../analyzer/AstModule.js';
 import { AstNamespaceImport } from '../analyzer/AstNamespaceImport.js';
 import { AstSymbol } from '../analyzer/AstSymbol.js';
 import { SourceFileLocationFormatter } from '../analyzer/SourceFileLocationFormatter.js';
@@ -17,11 +17,17 @@ import { Span } from '../analyzer/Span.js';
 import { TypeScriptHelpers } from '../analyzer/TypeScriptHelpers.js';
 import type { ExtractorMessage } from '../api/ExtractorMessage.js';
 import { ExtractorMessageId } from '../api/ExtractorMessageId.js';
+import type { ApiReportVariant } from '../api/IConfigFile';
 import type { ApiItemMetadata } from '../collector/ApiItemMetadata.js';
 import { Collector } from '../collector/Collector.js';
 import type { CollectorEntity } from '../collector/CollectorEntity.js';
+import type { SymbolMetadata } from '../collector/SymbolMetadata';
 import { DtsEmitHelpers } from './DtsEmitHelpers.js';
 import { IndentedWriter } from './IndentedWriter.js';
+
+function capitalizeFirstLetter(input: string): string {
+	return input === '' ? '' : `${input[0]!.toLocaleUpperCase()}${input.slice(1)}`;
+}
 
 export class ApiReportGenerator {
 	private static _trimSpacesRegExp: RegExp = / +$/gm;
@@ -40,7 +46,14 @@ export class ApiReportGenerator {
 		return normalizedActual === normalizedExpected;
 	}
 
-	public static generateReviewFileContent(collector: Collector): Map<string, string> {
+	/**
+	 * Generates and returns the API report contents as a string.
+	 *
+	 * @param collector - The collector that has the entities.
+	 * @param reportVariant - The release level with which the report is associated.
+	 * Can also be viewed as the minimal release level of items that should be included in the report.
+	 */
+	public static generateReviewFileContent(collector: Collector, reportVariant: ApiReportVariant): Map<string, string> {
 		// mapping from entrypoint name to its file content
 		const fileContentMap: Map<string, string> = new Map<string, string>();
 
@@ -48,9 +61,11 @@ export class ApiReportGenerator {
 			const writer: IndentedWriter = new IndentedWriter();
 			writer.trimLeadingSpaces = true;
 
+			// For backwards compatibility, don't emit "complete" in report text for untrimmed reports.
+			const releaseLevelPrefix: string = reportVariant === 'complete' ? '' : `${capitalizeFirstLetter(reportVariant)} `;
 			writer.writeLine(
 				[
-					`## API Report File for "${collector.workingPackage.name}${entryPoint.modulePath ? '/' : ''}${
+					`## ${releaseLevelPrefix}API Report File for "${collector.workingPackage.name}${entryPoint.modulePath ? '/' : ''}${
 						entryPoint.modulePath
 					}"`,
 					``,
@@ -86,6 +101,13 @@ export class ApiReportGenerator {
 			// Emit the regular declarations
 			for (const entity of entryPointEntities) {
 				const astEntity: AstEntity = entity.astEntity;
+				const symbolMetadata: SymbolMetadata | undefined = collector.tryFetchMetadataForAstEntity(astEntity);
+				const maxEffectiveReleaseTag: ReleaseTag = symbolMetadata?.maxEffectiveReleaseTag ?? ReleaseTag.None;
+
+				if (!this._shouldIncludeReleaseTag(maxEffectiveReleaseTag, reportVariant)) {
+					continue;
+				}
+
 				if (entity.consumable || collector.extractorConfig.apiReportIncludeForgottenExports) {
 					// First, collect the list of export names for this symbol.  When reporting messages with
 					// ExtractorMessage.properties.exportName, this will enable us to emit the warning comments alongside
@@ -125,25 +147,27 @@ export class ApiReportGenerator {
 								messagesToReport.push(message);
 							}
 
-							writer.ensureSkippedLine();
-							writer.write(ApiReportGenerator._getAedocSynopsis(collector, astDeclaration, messagesToReport));
+							if (this._shouldIncludeDeclaration(collector, astDeclaration, reportVariant)) {
+								writer.ensureSkippedLine();
+								writer.write(ApiReportGenerator._getAedocSynopsis(collector, astDeclaration, messagesToReport));
 
-							const span: Span = new Span(astDeclaration.declaration);
+								const span: Span = new Span(astDeclaration.declaration);
 
-							const apiItemMetadata: ApiItemMetadata = collector.fetchApiItemMetadata(astDeclaration);
-							if (apiItemMetadata.isPreapproved) {
-								ApiReportGenerator._modifySpanForPreapproved(span);
-							} else {
-								ApiReportGenerator._modifySpan(collector, span, entity, astDeclaration, false);
+								const apiItemMetadata: ApiItemMetadata = collector.fetchApiItemMetadata(astDeclaration);
+								if (apiItemMetadata.isPreapproved) {
+									ApiReportGenerator._modifySpanForPreapproved(span);
+								} else {
+									ApiReportGenerator._modifySpan(collector, span, entity, astDeclaration, false, reportVariant);
+								}
+
+								span.writeModifiedText(writer);
+								writer.ensureNewLine();
 							}
-
-							span.writeModifiedText(writer);
-							writer.ensureNewLine();
 						}
 					}
 
 					if (astEntity instanceof AstNamespaceImport) {
-						const astModuleExportInfo: AstModuleExportInfo = astEntity.fetchAstModuleExportInfo(collector);
+						const astModuleExportInfo: IAstModuleExportInfo = astEntity.fetchAstModuleExportInfo(collector);
 
 						if (entity.nameForEmit === undefined) {
 							// This should never happen
@@ -262,10 +286,11 @@ export class ApiReportGenerator {
 		entity: CollectorEntity,
 		astDeclaration: AstDeclaration,
 		insideTypeLiteral: boolean,
+		reportVariant: ApiReportVariant,
 	): void {
 		// Should we process this declaration at all?
 
-		if ((astDeclaration.modifierFlags & ts.ModifierFlags.Private) !== 0) {
+		if (!ApiReportGenerator._shouldIncludeDeclaration(collector, astDeclaration, reportVariant)) {
 			span.modification.skipAll();
 			return;
 		}
@@ -382,7 +407,14 @@ export class ApiReportGenerator {
 
 			case ts.SyntaxKind.ImportType:
 				DtsEmitHelpers.modifyImportTypeSpan(collector, span, astDeclaration, (childSpan, childAstDeclaration) => {
-					ApiReportGenerator._modifySpan(collector, childSpan, entity, childAstDeclaration, insideTypeLiteral);
+					ApiReportGenerator._modifySpan(
+						collector,
+						childSpan,
+						entity,
+						childAstDeclaration,
+						insideTypeLiteral,
+						reportVariant,
+					);
 				});
 				break;
 
@@ -417,8 +449,53 @@ export class ApiReportGenerator {
 					}
 				}
 
-				ApiReportGenerator._modifySpan(collector, child, entity, childAstDeclaration, insideTypeLiteral);
+				ApiReportGenerator._modifySpan(collector, child, entity, childAstDeclaration, insideTypeLiteral, reportVariant);
 			}
+		}
+	}
+
+	private static _shouldIncludeDeclaration(
+		collector: Collector,
+		astDeclaration: AstDeclaration,
+		reportVariant: ApiReportVariant,
+	): boolean {
+		// Private declarations are not included in the API report
+		if ((astDeclaration.modifierFlags & ts.ModifierFlags.Private) !== 0) {
+			return false;
+		}
+
+		const apiItemMetadata: ApiItemMetadata = collector.fetchApiItemMetadata(astDeclaration);
+
+		return this._shouldIncludeReleaseTag(apiItemMetadata.effectiveReleaseTag, reportVariant);
+	}
+
+	private static _shouldIncludeReleaseTag(releaseTag: ReleaseTag, reportVariant: ApiReportVariant): boolean {
+		switch (reportVariant) {
+			case 'complete':
+				return true;
+			case 'alpha':
+				return (
+					releaseTag === ReleaseTag.Alpha ||
+					releaseTag === ReleaseTag.Beta ||
+					releaseTag === ReleaseTag.Public ||
+					// NOTE: No specified release tag is implicitly treated as `@public`.
+					releaseTag === ReleaseTag.None
+				);
+			case 'beta':
+				return (
+					releaseTag === ReleaseTag.Beta ||
+					releaseTag === ReleaseTag.Public ||
+					// NOTE: No specified release tag is implicitly treated as `@public`.
+					releaseTag === ReleaseTag.None
+				);
+			case 'public':
+				return (
+					releaseTag === ReleaseTag.Public ||
+					// NOTE: No specified release tag is implicitly treated as `@public`.
+					releaseTag === ReleaseTag.None
+				);
+			default:
+				throw new Error(`Unrecognized release level: ${reportVariant}`);
 		}
 	}
 
@@ -491,30 +568,59 @@ export class ApiReportGenerator {
 		if (!collector.isAncillaryDeclaration(astDeclaration)) {
 			const footerParts: string[] = [];
 			const apiItemMetadata: ApiItemMetadata = collector.fetchApiItemMetadata(astDeclaration);
+
+			// 1. Release tag (if present)
 			if (!apiItemMetadata.releaseTagSameAsParent && apiItemMetadata.effectiveReleaseTag !== ReleaseTag.None) {
 				footerParts.push(releaseTagGetTagName(apiItemMetadata.effectiveReleaseTag));
 			}
 
-			if (apiItemMetadata.isSealed) {
+			// 2. Enumerate configured tags, reporting standard system tags first and then other configured tags.
+			// Note that the ordering we handle the standard tags is important for backwards compatibility.
+			// Also note that we had special mechanisms for checking whether or not an item is documented with these tags,
+			// so they are checked specially.
+			const {
+				'@sealed': reportSealedTag,
+				'@virtual': reportVirtualTag,
+				'@override': reportOverrideTag,
+				'@eventProperty': reportEventPropertyTag,
+				'@deprecated': reportDeprecatedTag,
+				...otherTagsToReport
+			} = collector.extractorConfig.tagsToReport;
+
+			// 2.a Check for standard tags and report those that are both configured and present in the metadata.
+			if (reportSealedTag && apiItemMetadata.isSealed) {
 				footerParts.push('@sealed');
 			}
 
-			if (apiItemMetadata.isVirtual) {
+			if (reportVirtualTag && apiItemMetadata.isVirtual) {
 				footerParts.push('@virtual');
 			}
 
-			if (apiItemMetadata.isOverride) {
+			if (reportOverrideTag && apiItemMetadata.isOverride) {
 				footerParts.push('@override');
 			}
 
-			if (apiItemMetadata.isEventProperty) {
+			if (reportEventPropertyTag && apiItemMetadata.isEventProperty) {
 				footerParts.push('@eventProperty');
 			}
 
-			if (apiItemMetadata.tsdocComment?.deprecatedBlock) {
+			if (reportDeprecatedTag && apiItemMetadata.tsdocComment?.deprecatedBlock) {
 				footerParts.push('@deprecated');
 			}
 
+			// 2.b Check for other configured tags and report those that are present in the tsdoc metadata.
+			for (const [tag, reportTag] of Object.entries(otherTagsToReport)) {
+				// If the tag was not handled specially, check if it is present in the metadata.
+				if (
+					reportTag &&
+					(apiItemMetadata.tsdocComment?.customBlocks.some((block) => block.blockTag.tagName === tag) ||
+						apiItemMetadata.tsdocComment?.modifierTagSet.hasTagName(tag))
+				) {
+					footerParts.push(tag);
+				}
+			}
+
+			// 3. If the item is undocumented, append notice at the end of the list
 			if (apiItemMetadata.undocumented) {
 				footerParts.push('(undocumented)');
 

@@ -6,7 +6,7 @@ import { ReleaseTag, releaseTagCompare, releaseTagGetTagName } from '@discordjs/
 import * as ts from 'typescript';
 import type { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstEntity } from '../analyzer/AstEntity.js';
-import type { AstModuleExportInfo } from '../analyzer/AstModule.js';
+import type { IAstModuleExportInfo } from '../analyzer/AstModule.js';
 import { AstNamespaceImport } from '../analyzer/AstNamespaceImport.js';
 import { AstSymbol } from '../analyzer/AstSymbol.js';
 import { ExtractorMessageId } from '../api/ExtractorMessageId.js';
@@ -14,12 +14,13 @@ import type { ApiItemMetadata } from '../collector/ApiItemMetadata.js';
 import type { Collector } from '../collector/Collector.js';
 import type { CollectorEntity } from '../collector/CollectorEntity.js';
 import type { SymbolMetadata } from '../collector/SymbolMetadata.js';
+import type { IWorkingPackageEntryPoint } from '../collector/WorkingPackage.js';
 
 export class ValidationEnhancer {
 	public static analyze(collector: Collector): void {
 		const alreadyWarnedEntities: Set<AstEntity> = new Set<AstEntity>();
 
-		for (const entities of collector.entities.values()) {
+		for (const [entryPoint, entities] of collector.entities) {
 			for (const entity of entities) {
 				if (
 					!(
@@ -37,7 +38,7 @@ export class ValidationEnhancer {
 					const astSymbol: AstSymbol = entity.astEntity;
 
 					astSymbol.forEachDeclarationRecursive((astDeclaration: AstDeclaration) => {
-						ValidationEnhancer._checkReferences(collector, astDeclaration, alreadyWarnedEntities);
+						ValidationEnhancer._checkReferences(collector, astDeclaration, alreadyWarnedEntities, entryPoint);
 					});
 
 					const symbolMetadata: SymbolMetadata = collector.fetchSymbolMetadata(astSymbol);
@@ -47,14 +48,14 @@ export class ValidationEnhancer {
 					// A namespace created using "import * as ___ from ___"
 					const astNamespaceImport: AstNamespaceImport = entity.astEntity;
 
-					const astModuleExportInfo: AstModuleExportInfo = astNamespaceImport.fetchAstModuleExportInfo(collector);
+					const astModuleExportInfo: IAstModuleExportInfo = astNamespaceImport.fetchAstModuleExportInfo(collector);
 
 					for (const namespaceMemberAstEntity of astModuleExportInfo.exportedLocalEntities.values()) {
 						if (namespaceMemberAstEntity instanceof AstSymbol) {
 							const astSymbol: AstSymbol = namespaceMemberAstEntity;
 
 							astSymbol.forEachDeclarationRecursive((astDeclaration: AstDeclaration) => {
-								ValidationEnhancer._checkReferences(collector, astDeclaration, alreadyWarnedEntities);
+								ValidationEnhancer._checkReferences(collector, astDeclaration, alreadyWarnedEntities, entryPoint);
 							});
 
 							const symbolMetadata: SymbolMetadata = collector.fetchSymbolMetadata(astSymbol);
@@ -196,6 +197,7 @@ export class ValidationEnhancer {
 		collector: Collector,
 		astDeclaration: AstDeclaration,
 		alreadyWarnedEntities: Set<AstEntity>,
+		entryPoint: IWorkingPackageEntryPoint,
 	): void {
 		const apiItemMetadata: ApiItemMetadata = collector.fetchApiItemMetadata(astDeclaration);
 		const declarationReleaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
@@ -243,12 +245,7 @@ export class ValidationEnhancer {
 					);
 				}
 			} else {
-				// TODO: how to handle multiple entry points? e.g. how do we know from which entry point the symbol should be exported?
-				// We use the default entry point for now
-				const entryPointFilename: string = path.basename(
-					collector.workingPackage.entryPoints.find((ep) => collector.workingPackage.isDefaultEntryPoint(ep))!
-						.sourceFile.fileName,
-				);
+				const entryPointFilename: string = path.basename(entryPoint!.sourceFile.fileName);
 
 				if (!alreadyWarnedEntities.has(referencedEntity)) {
 					alreadyWarnedEntities.add(referencedEntity);

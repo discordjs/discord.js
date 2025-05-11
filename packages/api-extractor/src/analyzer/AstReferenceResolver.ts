@@ -52,7 +52,10 @@ export class AstReferenceResolver {
 		this._workingPackage = collector.workingPackage;
 	}
 
-	public resolve(declarationReference: tsdoc.DocDeclarationReference): AstDeclaration | ResolverFailure {
+	public resolve(
+		declarationReference: tsdoc.DocDeclarationReference,
+		entryPoint: IWorkingPackageEntryPoint,
+	): AstDeclaration | ResolverFailure {
 		// Is it referring to the working package?
 		if (
 			declarationReference.packageName !== undefined &&
@@ -66,13 +69,7 @@ export class AstReferenceResolver {
 			return new ResolverFailure('Import paths are not supported');
 		}
 
-		// I'm not sure what I'm doing :(
-		// Find the default entry point and use it. We probably should handle all entry points, but I couldn't find any real usage of this class to figure out what it actually does
-		const defaultEntryPoint: IWorkingPackageEntryPoint = this._workingPackage.entryPoints.find((ep) =>
-			this._workingPackage.isDefaultEntryPoint(ep),
-		)!;
-
-		const astModule: AstModule = this._astSymbolTable.fetchAstModuleFromWorkingPackage(defaultEntryPoint.sourceFile);
+		const astModule: AstModule = this._astSymbolTable.fetchAstModuleFromWorkingPackage(entryPoint.sourceFile);
 
 		if (declarationReference.memberReferences.length === 0) {
 			return new ResolverFailure('Package references are not supported');

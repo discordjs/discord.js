@@ -8,7 +8,7 @@ import * as ts from 'typescript';
 import { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstEntity } from '../analyzer/AstEntity.js';
 import { AstImport } from '../analyzer/AstImport.js';
-import type { AstModuleExportInfo } from '../analyzer/AstModule.js';
+import type { IAstModuleExportInfo } from '../analyzer/AstModule.js';
 import { AstNamespaceImport } from '../analyzer/AstNamespaceImport.js';
 import { AstSymbol } from '../analyzer/AstSymbol.js';
 import { SourceFileLocationFormatter } from '../analyzer/SourceFileLocationFormatter.js';
@@ -161,7 +161,7 @@ export class DtsRollupGenerator {
 			}
 
 			if (astEntity instanceof AstNamespaceImport) {
-				const astModuleExportInfo: AstModuleExportInfo = astEntity.fetchAstModuleExportInfo(collector);
+				const astModuleExportInfo: IAstModuleExportInfo = astEntity.fetchAstModuleExportInfo(collector);
 
 				if (entity.nameForEmit === undefined) {
 					// This should never happen
