@@ -3364,7 +3364,7 @@ export interface TextDisplayComponentData extends BaseComponentData {
 
 export class TextDisplayComponent extends Component<APITextDisplayComponent> {
   private constructor(data: APITextDisplayComponent);
-  public readonly content: string;
+  public get content(): string;
 }
 
 export type ForumThreadChannel = PublicThreadChannel<true>;

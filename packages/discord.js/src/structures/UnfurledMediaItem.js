@@ -13,7 +13,7 @@ class UnfurledMediaItem {
   }
 
   /**
-   * The URL of this media gallery item
+   * The URL of this media item
    * @type {string}
    * @readonly
    */
