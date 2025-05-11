@@ -161,6 +161,18 @@ import {
   RESTAPIPoll,
   EntryPointCommandHandlerType,
   APISoundboardSound,
+  APIComponentInContainer,
+  APIContainerComponent,
+  APIThumbnailComponent,
+  APISectionComponent,
+  APITextDisplayComponent,
+  APIUnfurledMediaItem,
+  APIMediaGalleryItem,
+  APIMediaGalleryComponent,
+  APISeparatorComponent,
+  SeparatorSpacingSize,
+  APIFileComponent,
+  APIMessageTopLevelComponent,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { Stream } from 'node:stream';
@@ -690,14 +702,36 @@ export class ButtonInteraction<Cached extends CacheType = CacheType> extends Mes
 export type AnyComponent =
   | APIMessageComponent
   | APIModalComponent
-  | APIActionRowComponent<APIComponentInMessageActionRow | APIComponentInModalActionRow>;
+  | APIActionRowComponent<APIComponentInMessageActionRow | APIComponentInModalActionRow>
+  | AnyComponentV2;
 
 export class Component<RawComponentData extends AnyComponent = AnyComponent> {
   public readonly data: Readonly<RawComponentData>;
+  public get id(): RawComponentData['id'];
   public get type(): RawComponentData['type'];
   public toJSON(): RawComponentData;
   public equals(other: this | RawComponentData): boolean;
 }
+
+export type AnyComponentV2 = APIComponentInContainer | APIContainerComponent | APIThumbnailComponent;
+
+export type TopLevelComponent =
+  | ActionRow<MessageActionRowComponent>
+  | ContainerComponent
+  | FileComponent
+  | MediaGalleryComponent
+  | SectionComponent
+  | SeparatorComponent
+  | TextDisplayComponent;
+
+export type TopLevelComponentData =
+  | ActionRowData<MessageActionRowComponentData>
+  | ContainerComponentData
+  | FileComponentData
+  | MediaGalleryComponentData
+  | SectionComponentData
+  | SeparatorComponentData
+  | TextDisplayComponentData;
 
 export class ButtonComponent extends Component<APIButtonComponent> {
   private constructor(data: APIButtonComponent);
@@ -978,6 +1012,40 @@ export class ClientVoiceManager {
   private constructor(client: Client);
   public readonly client: Client;
   public adapters: Map<Snowflake, InternalDiscordGatewayAdapterLibraryMethods>;
+}
+
+export type ComponentInContainer =
+  | ActionRow<MessageActionRowComponent>
+  | FileComponent
+  | MediaGalleryComponent
+  | SectionComponent
+  | SeparatorComponent
+  | TextDisplayComponent;
+
+export type ComponentInContainerData =
+  | ActionRowData<ActionRowComponentData>
+  | FileComponentData
+  | MediaGalleryComponentData
+  | SectionComponentData
+  | SeparatorComponentData
+  | TextDisplayComponentData;
+
+export interface ContainerComponentData<
+  ComponentType extends JSONEncodable<APIComponentInContainer> | ComponentInContainerData =
+    | JSONEncodable<APIComponentInContainer>
+    | ComponentInContainerData,
+> extends BaseComponentData {
+  components: readonly ComponentType[];
+  accentColor?: number;
+  spoiler?: boolean;
+}
+
+export class ContainerComponent extends Component<APIContainerComponent> {
+  private constructor(data: APIContainerComponent);
+  public get accentColor(): number;
+  public get hexAccentColor(): HexColorString;
+  public get spoiler(): boolean;
+  public readonly components: ComponentInContainer[];
 }
 
 export { Collection, ReadonlyCollection } from '@discordjs/collection';
@@ -1275,6 +1343,16 @@ export class Entitlement extends Base {
   };
   public isUserSubscription(): this is this & { guildId: null; get guild(): null };
   public isGuildSubscription(): this is this & { guildId: Snowflake; guild: Guild };
+}
+
+export interface FileComponentData extends BaseComponentData {
+  file: UnfurledMediaItemData;
+  spoiler?: boolean;
+}
+export class FileComponent extends Component<APIFileComponent> {
+  private constructor(data: APIFileComponent);
+  public readonly file: UnfurledMediaItem;
+  public get spoiler(): boolean;
 }
 
 export class Guild extends AnonymousGuild {
@@ -1967,6 +2045,27 @@ export class LimitedCollection<Key, Value> extends Collection<Key, Value> {
   public keepOverLimit: ((value: Value, key: Key, collection: this) => boolean) | null;
 }
 
+export interface MediaGalleryComponentData extends BaseComponentData {
+  items: readonly MediaGalleryItemData[];
+}
+export class MediaGalleryComponent extends Component<APIMediaGalleryComponent> {
+  private constructor(data: APIMediaGalleryComponent);
+  public readonly items: MediaGalleryItem[];
+}
+
+export interface MediaGalleryItemData {
+  media: UnfurledMediaItemData;
+  description?: string;
+  spoiler?: boolean;
+}
+export class MediaGalleryItem {
+  private constructor(data: APIMediaGalleryItem);
+  public readonly data: APIMediaGalleryItem;
+  public readonly media: UnfurledMediaItem;
+  public get description(): string | null;
+  public get spoiler(): boolean;
+}
+
 export interface MessageCall {
   get endedAt(): Date | null;
   endedTimestamp: number | null;
@@ -2039,7 +2138,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public get channel(): If<InGuild, GuildTextBasedChannel, TextBasedChannel>;
   public channelId: Snowflake;
   public get cleanContent(): string;
-  public components: ActionRow<MessageActionRowComponent>[];
+  public components: TopLevelComponent[];
   public content: string;
   public get createdAt(): Date;
   public createdTimestamp: number;
@@ -2774,6 +2873,20 @@ export class RoleFlagsBitField extends BitField<RoleFlagsString> {
   public static resolve(bit?: BitFieldResolvable<RoleFlagsString, number>): number;
 }
 
+export interface SectionComponentData extends BaseComponentData {
+  accessory: ButtonComponentData | ThumbnailComponentData;
+  components: readonly TextDisplayComponentData[];
+}
+
+export class SectionComponent<
+  AccessoryType extends ButtonComponent | ThumbnailComponent = ButtonComponent | ThumbnailComponent,
+> extends Component<APISectionComponent> {
+  private constructor(data: APISectionComponent);
+  public readonly accessory: AccessoryType;
+  public readonly components: TextDisplayComponent[];
+  public toJSON(): APISectionComponent;
+}
+
 export class StringSelectMenuInteraction<
   Cached extends CacheType = CacheType,
 > extends MessageComponentInteraction<Cached> {
@@ -2888,6 +3001,16 @@ export type SelectMenuInteraction<Cached extends CacheType = CacheType> =
   | ChannelSelectMenuInteraction<Cached>;
 
 export type SelectMenuType = APISelectMenuComponent['type'];
+
+export interface SeparatorComponentData extends BaseComponentData {
+  spacing?: SeparatorSpacingSize;
+  divider?: boolean;
+}
+export class SeparatorComponent extends Component<APISeparatorComponent> {
+  private constructor(data: APISeparatorComponent);
+  public get spacing(): SeparatorSpacingSize;
+  public get divider(): boolean;
+}
 
 export interface ShardEventTypes {
   death: [process: ChildProcess | Worker];
@@ -3235,6 +3358,15 @@ export class TextChannel extends BaseGuildTextChannel {
   public type: ChannelType.GuildText;
 }
 
+export interface TextDisplayComponentData extends BaseComponentData {
+  content: string;
+}
+
+export class TextDisplayComponent extends Component<APITextDisplayComponent> {
+  private constructor(data: APITextDisplayComponent);
+  public get content(): string;
+}
+
 export type ForumThreadChannel = PublicThreadChannel<true>;
 export type TextThreadChannel = PublicThreadChannel<false> | PrivateThreadChannel;
 export type AnyThreadChannel = TextThreadChannel | ForumThreadChannel;
@@ -3330,6 +3462,19 @@ export class ThreadMemberFlagsBitField extends BitField<ThreadMemberFlagsString>
   public static resolve(bit?: BitFieldResolvable<ThreadMemberFlagsString, number>): number;
 }
 
+export interface ThumbnailComponentData extends BaseComponentData {
+  media: UnfurledMediaItemData;
+  description?: string;
+  spoiler?: boolean;
+}
+
+export class ThumbnailComponent extends Component<APIThumbnailComponent> {
+  private constructor(data: APIThumbnailComponent);
+  public readonly media: UnfurledMediaItem;
+  public get description(): string | null;
+  public get spoiler(): boolean;
+}
+
 export class Typing extends Base {
   private constructor(channel: TextBasedChannel, user: PartialUser, data?: RawTypingData);
   public channel: TextBasedChannel;
@@ -3347,6 +3492,16 @@ export class Typing extends Base {
 export interface AvatarDecorationData {
   asset: string;
   skuId: Snowflake;
+}
+
+export interface UnfurledMediaItemData {
+  url: string;
+}
+
+export class UnfurledMediaItem {
+  private constructor(data: APIUnfurledMediaItem);
+  public readonly data: APIUnfurledMediaItem;
+  public get url(): string;
 }
 
 // tslint:disable-next-line no-empty-interface
@@ -3481,7 +3636,9 @@ export function createChannel(
 export type ComponentData =
   | MessageActionRowComponentData
   | ModalActionRowComponentData
-  | ActionRowData<MessageActionRowComponentData | ModalActionRowComponentData>;
+  | ComponentInContainerData
+  | ContainerComponentData
+  | ThumbnailComponentData;
 
 export interface SendSoundboardSoundOptions {
   soundId: Snowflake;
@@ -6201,8 +6358,11 @@ export interface InteractionReplyOptions extends BaseMessageOptionsWithPoll {
   withResponse?: boolean;
   flags?:
     | BitFieldResolvable<
-        Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds' | 'SuppressNotifications'>,
-        MessageFlags.Ephemeral | MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
+        Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds' | 'SuppressNotifications' | 'IsComponentsV2'>,
+        | MessageFlags.Ephemeral
+        | MessageFlags.SuppressEmbeds
+        | MessageFlags.SuppressNotifications
+        | MessageFlags.IsComponentsV2
       >
     | undefined;
 }
@@ -6364,8 +6524,10 @@ export interface BaseMessageOptions {
   )[];
   components?: readonly (
     | JSONEncodable<APIActionRowComponent<APIComponentInActionRow>>
+    | JSONEncodable<APIMessageTopLevelComponent>
+    | TopLevelComponentData
     | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>
-    | APIActionRowComponent<APIComponentInActionRow>
+    | APIMessageTopLevelComponent
   )[];
 }
 
@@ -6380,8 +6542,8 @@ export interface BaseMessageCreateOptions extends BaseMessageOptionsWithPoll {
   stickers?: readonly StickerResolvable[];
   flags?:
     | BitFieldResolvable<
-        Extract<MessageFlagsString, 'SuppressEmbeds' | 'SuppressNotifications'>,
-        MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
+        Extract<MessageFlagsString, 'SuppressEmbeds' | 'SuppressNotifications' | 'IsComponentsV2'>,
+        MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications | MessageFlags.IsComponentsV2
       >
     | undefined;
 }
@@ -6401,7 +6563,12 @@ export interface MessageEditAttachmentData {
 export interface MessageEditOptions extends Omit<BaseMessageOptions, 'content'> {
   content?: string | null;
   attachments?: readonly (Attachment | MessageEditAttachmentData)[];
-  flags?: BitFieldResolvable<Extract<MessageFlagsString, 'SuppressEmbeds'>, MessageFlags.SuppressEmbeds> | undefined;
+  flags?:
+    | BitFieldResolvable<
+        Extract<MessageFlagsString, 'SuppressEmbeds' | 'IsComponentsV2'>,
+        MessageFlags.SuppressEmbeds | MessageFlags.IsComponentsV2
+      >
+    | undefined;
 }
 
 export type MessageReactionResolvable = MessageReaction | Snowflake | string;
