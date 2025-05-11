@@ -13,6 +13,7 @@ export const PACKAGES = [
 	'util',
 	'voice',
 	'ws',
+	'discord-api-types',
 ];
 
 export async function fetchVersions(pkg: string) {
