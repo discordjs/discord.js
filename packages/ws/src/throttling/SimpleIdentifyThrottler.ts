@@ -25,12 +25,10 @@ export class SimpleIdentifyThrottler implements IIdentifyThrottler {
 	public async waitForIdentify(shardId: number, signal: AbortSignal): Promise<void> {
 		const key = shardId % this.maxConcurrency;
 
-		const state = this.states.ensure(key, () => {
-			return {
-				queue: new AsyncQueue(),
-				resetsAt: Number.POSITIVE_INFINITY,
-			};
-		});
+		const state = this.states.ensure(key, () => ({
+			queue: new AsyncQueue(),
+			resetsAt: Number.POSITIVE_INFINITY,
+		}));
 
 		await state.queue.wait({ signal });
 

@@ -61,6 +61,7 @@
  * @property {'GuildChannelUnowned'} GuildChannelUnowned
  * @property {'GuildOwned'} GuildOwned
  * @property {'GuildMembersTimeout'} GuildMembersTimeout
+ * @property {'GuildSoundboardSoundsTimeout'} GuildSoundboardSoundsTimeout
  * @property {'GuildUncachedMe'} GuildUncachedMe
  * @property {'ChannelNotCached'} ChannelNotCached
  * @property {'StageChannelResolve'} StageChannelResolve
@@ -85,6 +86,8 @@
  * @property {'EmojiManaged'} EmojiManaged
  * @property {'MissingManageGuildExpressionsPermission'} MissingManageGuildExpressionsPermission
  *
+
+ * @property {'NotGuildSoundboardSound'} NotGuildSoundboardSound
  * @property {'NotGuildSticker'} NotGuildSticker
 
  * @property {'ReactionResolveUser'} ReactionResolveUser
@@ -193,6 +196,7 @@ const keys = [
   'GuildChannelUnowned',
   'GuildOwned',
   'GuildMembersTimeout',
+  'GuildSoundboardSoundsTimeout',
   'GuildUncachedMe',
   'ChannelNotCached',
   'StageChannelResolve',
@@ -217,6 +221,7 @@ const keys = [
   'EmojiManaged',
   'MissingManageGuildExpressionsPermission',
 
+  'NotGuildSoundboardSound',
   'NotGuildSticker',
 
   'ReactionResolveUser',

@@ -23,7 +23,7 @@ const { ComponentType } = require('discord-api-types/v10');
  */
 
 /**
- * @typedef {object} SelectMenuComponentOptionData
+ * @typedef {Object} SelectMenuComponentOptionData
  * @property {string} label The label of the option
  * @property {string} value The value of the option
  * @property {?string} description The description of the option
@@ -68,30 +68,7 @@ const { ComponentType } = require('discord-api-types/v10');
  * @ignore
  */
 function createComponent(data) {
-  if (data instanceof Component) {
-    return data;
-  }
-
-  switch (data.type) {
-    case ComponentType.ActionRow:
-      return new ActionRow(data);
-    case ComponentType.Button:
-      return new ButtonComponent(data);
-    case ComponentType.StringSelect:
-      return new StringSelectMenuComponent(data);
-    case ComponentType.TextInput:
-      return new TextInputComponent(data);
-    case ComponentType.UserSelect:
-      return new UserSelectMenuComponent(data);
-    case ComponentType.RoleSelect:
-      return new RoleSelectMenuComponent(data);
-    case ComponentType.MentionableSelect:
-      return new MentionableSelectMenuComponent(data);
-    case ComponentType.ChannelSelect:
-      return new ChannelSelectMenuComponent(data);
-    default:
-      return new Component(data);
-  }
+  return data instanceof Component ? data : new (ComponentTypeToClass[data.type] ?? Component)(data);
 }
 
 exports.createComponent = createComponent;
@@ -105,3 +82,14 @@ const { RoleSelectMenuComponent } = require('../structures/RoleSelectMenuCompone
 const { StringSelectMenuComponent } = require('../structures/StringSelectMenuComponent.js');
 const { TextInputComponent } = require('../structures/TextInputComponent.js');
 const { UserSelectMenuComponent } = require('../structures/UserSelectMenuComponent.js');
+
+const ComponentTypeToClass = {
+  [ComponentType.ActionRow]: ActionRow,
+  [ComponentType.Button]: ButtonComponent,
+  [ComponentType.StringSelect]: StringSelectMenuComponent,
+  [ComponentType.TextInput]: TextInputComponent,
+  [ComponentType.UserSelect]: UserSelectMenuComponent,
+  [ComponentType.RoleSelect]: RoleSelectMenuComponent,
+  [ComponentType.MentionableSelect]: MentionableSelectMenuComponent,
+  [ComponentType.ChannelSelect]: ChannelSelectMenuComponent,
+};
