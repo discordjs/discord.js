@@ -1,24 +1,24 @@
 import { mkdir, stat, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
-import type {
-	ApiClass,
-	ApiConstructor,
-	ApiDeclaredItem,
-	ApiDocumentedItem,
-	ApiEntryPoint,
-	ApiEnum,
-	ApiEnumMember,
-	ApiEvent,
-	ApiInterface,
-	ApiItem,
-	ApiItemContainerMixin,
-	ApiMethod,
-	ApiMethodSignature,
-	ApiProperty,
-	ApiPropertySignature,
-	ApiTypeAlias,
-	ApiVariable,
+import {
+	type ApiClass,
+	type ApiConstructor,
+	type ApiDeclaredItem,
+	type ApiDocumentedItem,
+	type ApiEntryPoint,
+	type ApiEnum,
+	type ApiEnumMember,
+	type ApiEvent,
+	type ApiInterface,
+	type ApiItem,
+	type ApiItemContainerMixin,
+	type ApiMethod,
+	type ApiMethodSignature,
+	type ApiProperty,
+	type ApiPropertySignature,
+	type ApiTypeAlias,
+	type ApiVariable,
 	ApiTypeParameterListMixin,
 	Excerpt,
 	Meaning,
@@ -33,7 +33,7 @@ import type {
 	ApiStaticMixin,
 	ExcerptTokenKind,
 	ExcerptToken,
-	ApiOptionalMixin
+	ApiOptionalMixin,
 } from '@discordjs/api-extractor-model';
 import { DocNodeKind, SelectorKind, StandardTags } from '@microsoft/tsdoc';
 import type {
@@ -50,28 +50,16 @@ import type { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/De
 import { BuiltinDocumentationLinks } from './builtinDocumentationLinks.js';
 import { PACKAGES, fetchVersionDocs, fetchVersions } from './shared.js';
 
-function resolvePackageName(packageName: string) {
-	return ['discord.js', 'discord-api-types'].includes(packageName) ? packageName : `@discordjs/${packageName}`;
+function findMemberByKey(entry: ApiEntryPoint, containerKey: string) {
+	return entry.tryGetMemberByKey(containerKey);
 }
 
-function findMemberByKey(model: ApiModel, packageName: string, containerKey: string) {
-	const pkg = model.tryGetPackageByName(resolvePackageName(packageName))!;
-	return pkg.members.reduce<ApiItem | undefined>(
-		(found, entrypoint) => found ?? (entrypoint as ApiEntryPoint).tryGetMemberByKey(containerKey),
-		undefined,
-	);
-}
-
-function findMember(model: ApiModel, packageName: string, memberName: string | undefined) {
+function findMember(entry: ApiEntryPoint, memberName: string | undefined) {
 	if (!memberName) {
 		return undefined;
 	}
 
-	const pkg = model.tryGetPackageByName(resolvePackageName(packageName))!;
-	return pkg.entryPoints.reduce<ApiItem | undefined>(
-		(found, entrypoint) => found ?? entrypoint.findMembersByName(memberName)[0],
-		undefined,
-	);
+	return entry.findMembersByName(memberName)[0];
 }
 
 /**
@@ -1074,7 +1062,7 @@ async function writeSplitDocsToFileSystem({
 			'docs',
 			packageName,
 			dir,
-			`${tag}.${entry === undefined ? '' : `${entry}.`}${overrideName ?? `${member.displayName.toLowerCase()}.${member.kind.toLowerCase()}`}.api.json`,
+			`${tag}.${entry ? `${entry.replaceAll('/', '.')}.` : ''}${overrideName ?? `${member.displayName.toLowerCase()}.${member.kind.toLowerCase()}`}.api.json`,
 		),
 		JSON.stringify(member),
 	);
@@ -1149,13 +1137,12 @@ export async function generateSplitDocumentation({
 					const [memberName, overloadIndex] = decodeURIComponent(item).split(':');
 
 					// eslint-disable-next-line prefer-const
-					let { containerKey, displayName: name } = findMember(model, pkgName, memberName) ?? {};
+					let { containerKey, displayName: name } = findMember(entry, memberName) ?? {};
 					if (name && overloadIndex && !Number.isNaN(Number.parseInt(overloadIndex, 10))) {
 						containerKey = ApiFunction.getContainerKey(name, Number.parseInt(overloadIndex, 10));
 					}
 
-					const foundMember =
-						memberName && containerKey ? (findMemberByKey(model, pkgName, containerKey) ?? null) : null;
+					const foundMember = memberName && containerKey ? (findMemberByKey(entry, containerKey) ?? null) : null;
 
 					const returnValue = memberKind(foundMember);
 
