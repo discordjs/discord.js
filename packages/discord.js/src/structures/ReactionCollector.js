@@ -110,12 +110,10 @@ class ReactionCollector extends Collector {
    * Handles an incoming reaction for possible collection.
    *
    * @param {MessageReaction} reaction The reaction to possibly collect
-   * @param {User} user The user that added the reaction
    * @returns {?(Snowflake|string)}
    * @private
    */
-  // eslint-disable-next-line no-unused-vars
-  collect(reaction, user) {
+  collect(reaction) {
     /**
      * Emitted whenever a reaction is collected.
      *
