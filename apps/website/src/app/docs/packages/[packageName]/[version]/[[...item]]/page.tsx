@@ -7,6 +7,7 @@ import type { Metadata } from 'next';
 import { MDXRemote } from 'next-mdx-remote-client/rsc';
 import remarkGfm from 'remark-gfm';
 import { DocItem } from '@/components/DocItem';
+import { PACKAGES_WITH_ENTRY_POINTS } from '@/util/constants';
 import { fetchNode } from '@/util/fetchNode';
 import { parseDocsPathParams } from '@/util/parseDocsPathParams';
 import { getSingletonHighlighter } from '@/util/shiki.bundle';
@@ -52,6 +53,12 @@ export default async function Page({
 	const { entryPoints: parsedEntrypoints, foundItem } = parseDocsPathParams(item);
 
 	if (!foundItem) {
+		const hasEntryPoint = PACKAGES_WITH_ENTRY_POINTS.includes(packageName);
+
+		if (hasEntryPoint) {
+			return <>Placeholder</>;
+		}
+
 		const fileContent = await readFile(join(process.cwd(), `src/assets/readme/${packageName}/home-README.md`), 'utf8');
 
 		return (
