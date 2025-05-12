@@ -53,9 +53,10 @@ export default async function Layout({
 	const { packageName, version, item } = await params;
 
 	const versions = fetchVersions(packageName);
-	const entryPoints = fetchEntryPoints(packageName, version);
 
 	const hasEntryPoints = PACKAGES_WITH_ENTRY_POINTS.includes(packageName);
+
+	const entryPoints = hasEntryPoints ? fetchEntryPoints(packageName, version) : Promise.resolve([]);
 	const { entryPoints: parsedEntrypoints } = parseDocsPathParams(item);
 
 	return (
