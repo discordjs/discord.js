@@ -11,7 +11,7 @@ export const PACKAGES = [
 	{ name: 'util' },
 	{ name: 'voice' },
 	{ name: 'ws' },
-	{ name: 'discord-api-types' },
+	// { name: 'discord-api-types' },
 ];
 
 export const PACKAGES_WITH_ENTRY_POINTS = ['discord-api-types'];
