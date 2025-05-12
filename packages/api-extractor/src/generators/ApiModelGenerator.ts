@@ -51,6 +51,7 @@ import type { AstModule } from '../analyzer/AstModule.js';
 import { AstNamespaceImport } from '../analyzer/AstNamespaceImport.js';
 import { AstSymbol } from '../analyzer/AstSymbol.js';
 import { TypeScriptInternals } from '../analyzer/TypeScriptInternals.js';
+import type { ExtractorConfig } from '../api/ExtractorConfig';
 import type { ApiItemMetadata } from '../collector/ApiItemMetadata.js';
 import type { Collector } from '../collector/Collector.js';
 import type { DeclarationMetadata } from '../collector/DeclarationMetadata.js';
@@ -210,6 +211,16 @@ interface IProcessAstEntityContext {
 	parentDocgenJson?: DocgenContainerJson | undefined;
 }
 
+/**
+ * @beta
+ */
+export interface IApiModelGenerationOptions {
+	/**
+	 * The release tags to trim.
+	 */
+	releaseTagsToTrim: Set<ReleaseTag>;
+}
+
 const linkRegEx =
 	/{@link\s(?:(?<class>\w+)(?:[#.](?<event>event:)?(?<prop>[\w()]+))?|(?<url>https?:\/\/[^\s}]*))(?<name>\s[^}]*)?}/g;
 
@@ -239,12 +250,25 @@ export class ApiModelGenerator {
 
 	private readonly _referenceGenerator: DeclarationReferenceGenerator;
 
+	private readonly _releaseTagsToTrim: Set<ReleaseTag> | undefined;
+
+	public readonly docModelEnabled: boolean;
+
 	private readonly _jsDocJson: DocgenJson | undefined;
 
-	public constructor(collector: Collector) {
+	public constructor(collector: Collector, extractorConfig: ExtractorConfig) {
 		this._collector = collector;
 		this._apiModel = new ApiModel();
 		this._referenceGenerator = new DeclarationReferenceGenerator(collector);
+
+		const apiModelGenerationOptions: IApiModelGenerationOptions | undefined = extractorConfig.docModelGenerationOptions;
+		if (apiModelGenerationOptions) {
+			this._releaseTagsToTrim = apiModelGenerationOptions.releaseTagsToTrim;
+			this.docModelEnabled = true;
+		} else {
+			this.docModelEnabled = false;
+		}
+
 		// @ts-expect-error we reuse the private tsdocParser from collector here
 		this._tsDocParser = collector._tsdocParser;
 	}
@@ -270,20 +294,22 @@ export class ApiModelGenerator {
 		});
 		this._apiModel.addMember(apiPackage);
 
-		const apiEntryPoint: ApiEntryPoint = new ApiEntryPoint({ name: '' });
-		apiPackage.addMember(apiEntryPoint);
+		for (const [entryPoint, entities] of this._collector.entities.entries()) {
+			const apiEntryPoint: ApiEntryPoint = new ApiEntryPoint({ name: entryPoint.modulePath });
+			apiPackage.addMember(apiEntryPoint);
 
-		for (const entity of this._collector.entities) {
-			// Only process entities that are exported from the entry point. Entities that are exported from
-			// `AstNamespaceImport` entities will be processed by `_processAstNamespaceImport`. However, if
-			// we are including forgotten exports, then process everything.
-			if (entity.exportedFromEntryPoint || this._collector.extractorConfig.docModelIncludeForgottenExports) {
-				this._processAstEntity(entity.astEntity, {
-					name: entity.nameForEmit!,
-					isExported: entity.exportedFromEntryPoint,
-					parentApiItem: apiEntryPoint,
-					parentDocgenJson: this._jsDocJson,
-				});
+			for (const entity of entities) {
+				// Only process entities that are exported from the entry point. Entities that are exported from
+				// `AstNamespaceImport` entities will be processed by `_processAstNamespaceImport`. However, if
+				// we are including forgotten exports, then process everything.
+				if (entity.exportedFromEntryPoint || this._collector.extractorConfig.docModelIncludeForgottenExports) {
+					this._processAstEntity(entity.astEntity, {
+						name: entity.nameForEmit!,
+						isExported: entity.exportedFromEntryPoint,
+						parentApiItem: apiEntryPoint,
+						parentDocgenJson: this._jsDocJson,
+					});
+				}
 			}
 		}
 
@@ -362,8 +388,8 @@ export class ApiModelGenerator {
 
 		const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 		const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
-		if (releaseTag === ReleaseTag.Internal) {
-			return; // trim out items marked as "@internal"
+		if (this._releaseTagsToTrim?.has(releaseTag)) {
+			return;
 		}
 
 		switch (astDeclaration.declaration.kind) {
@@ -435,13 +461,29 @@ export class ApiModelGenerator {
 				this._processApiTypeAlias(astDeclaration, context);
 				break;
 
-			case ts.SyntaxKind.VariableDeclaration:
-				this._processApiVariable(astDeclaration, context);
+			case ts.SyntaxKind.VariableDeclaration: {
+				// check for arrow functions in variable declaration
+				const functionDeclaration: ts.FunctionDeclaration | undefined =
+					this._tryFindFunctionDeclaration(astDeclaration);
+				if (functionDeclaration) {
+					this._processApiFunction(astDeclaration, context, functionDeclaration);
+				} else {
+					this._processApiVariable(astDeclaration, context);
+				}
+
 				break;
+			}
 
 			default:
 			// ignore unknown types
 		}
+	}
+
+	private _tryFindFunctionDeclaration(astDeclaration: AstDeclaration): ts.FunctionDeclaration | undefined {
+		const children: readonly ts.Node[] = astDeclaration.declaration.getChildren(
+			astDeclaration.declaration.getSourceFile(),
+		);
+		return children.find(ts.isFunctionTypeNode) as ts.FunctionDeclaration | undefined;
 	}
 
 	private _processChildDeclarations(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
@@ -817,7 +859,11 @@ export class ApiModelGenerator {
 		}
 	}
 
-	private _processApiFunction(astDeclaration: AstDeclaration, context: IProcessAstEntityContext): void {
+	private _processApiFunction(
+		astDeclaration: AstDeclaration,
+		context: IProcessAstEntityContext,
+		altFunctionDeclaration?: ts.FunctionDeclaration,
+	): void {
 		const { name, isExported, parentApiItem } = context;
 
 		const overloadIndex: number = this._collector.getOverloadIndex(astDeclaration);
@@ -828,7 +874,8 @@ export class ApiModelGenerator {
 		const jsDoc = parent?.functions.find((fun) => fun.name === name);
 
 		if (apiFunction === undefined) {
-			const functionDeclaration: ts.FunctionDeclaration = astDeclaration.declaration as ts.FunctionDeclaration;
+			const functionDeclaration: ts.FunctionDeclaration =
+				altFunctionDeclaration ?? (astDeclaration.declaration as ts.FunctionDeclaration);
 
 			const nodesToCapture: IExcerptBuilderNodeToCapture[] = [];
 
@@ -1799,11 +1846,20 @@ export class ApiModelGenerator {
 			.flatMap((typ, index) => {
 				const result = typ.reduce<IExcerptToken[]>((arr, [type, symbol]) => {
 					const astEntity =
-						(this._collector.entities.find(
-							(entity) => entity.nameForEmit === type && 'astDeclarations' in entity.astEntity,
-						)?.astEntity as AstSymbol | undefined) ??
-						(this._collector.entities.find((entity) => entity.nameForEmit === type && 'astSymbol' in entity.astEntity)
-							?.astEntity as AstImport | undefined);
+						[...this._collector.entities.values()].reduce<AstSymbol | undefined>(
+							(found, entities) =>
+								found ??
+								(entities.find((entity) => entity.nameForEmit === type && 'astDeclarations' in entity.astEntity)
+									?.astEntity as AstSymbol | undefined),
+							undefined,
+						) ??
+						[...this._collector.entities.values()].reduce<AstImport | undefined>(
+							(found, entities) =>
+								found ??
+								(entities.find((entity) => entity.nameForEmit === type && 'astSymbol' in entity.astEntity)
+									?.astEntity as AstImport | undefined),
+							undefined,
+						);
 					const astSymbol = astEntity instanceof AstImport ? astEntity.astSymbol : astEntity;
 					const match = astEntity instanceof AstImport ? moduleNameRegEx.exec(astEntity.modulePath) : null;
 					const pkg = match?.groups!.package ?? this._apiModel.packages[0]!.name;

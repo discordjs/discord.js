@@ -4,6 +4,7 @@ import { VscGithubInverted } from '@react-icons/all-files/vsc/VscGithubInverted'
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Suspense, type PropsWithChildren } from 'react';
+import { EntryPointSelect } from '@/components/EntrypointSelect';
 import { Footer } from '@/components/Footer';
 import { Navigation } from '@/components/Navigation';
 import { Scrollbars } from '@/components/OverlayScrollbars';
@@ -13,14 +14,21 @@ import { ThemeSwitchNoSRR } from '@/components/ThemeSwitch';
 import { VersionSelect } from '@/components/VersionSelect';
 import { Sidebar, SidebarContent, SidebarHeader, SidebarInset, SidebarTrigger } from '@/components/ui/Sidebar';
 import { buttonStyles } from '@/styles/ui/button';
+import { PACKAGES_WITH_ENTRY_POINTS } from '@/util/constants';
 import { ENV } from '@/util/env';
+import { fetchEntryPoints } from '@/util/fetchEntryPoints';
 import { fetchVersions } from '@/util/fetchVersions';
+import { parseDocsPathParams } from '@/util/parseDocsPathParams';
 import { CmdK } from './CmdK';
 
 export async function generateMetadata({
 	params,
 }: {
-	readonly params: Promise<{ readonly packageName: string; readonly version: string }>;
+	readonly params: Promise<{
+		readonly item?: string[] | undefined;
+		readonly packageName: string;
+		readonly version: string;
+	}>;
 }): Promise<Metadata> {
 	const { packageName, version } = await params;
 
@@ -35,10 +43,21 @@ export async function generateMetadata({
 export default async function Layout({
 	params,
 	children,
-}: PropsWithChildren<{ readonly params: Promise<{ readonly packageName: string; readonly version: string }> }>) {
-	const { packageName, version } = await params;
+}: PropsWithChildren<{
+	readonly params: Promise<{
+		readonly item?: string[] | undefined;
+		readonly packageName: string;
+		readonly version: string;
+	}>;
+}>) {
+	const { packageName, version, item } = await params;
 
 	const versions = fetchVersions(packageName);
+
+	const hasEntryPoints = PACKAGES_WITH_ENTRY_POINTS.includes(packageName);
+
+	const entryPoints = hasEntryPoints ? fetchEntryPoints(packageName, version) : Promise.resolve([]);
+	const { entryPoints: parsedEntrypoints } = parseDocsPathParams(item);
 
 	return (
 		<>
@@ -65,12 +84,13 @@ export default async function Layout({
 						<PackageSelect />
 						{/* <h3 className="p-1 text-lg font-semibold">{version}</h3> */}
 						<VersionSelect versionsPromise={versions} />
+						{hasEntryPoints ? <EntryPointSelect entryPointsPromise={entryPoints} /> : null}
 						<SearchButton />
 					</div>
 				</SidebarHeader>
 				<SidebarContent className="bg-[#f3f3f4] p-0 py-4 pl-4 dark:bg-[#121214]">
 					<Scrollbars>
-						<Navigation packageName={packageName} version={version} />
+						<Navigation entryPoint={parsedEntrypoints.join('.')} packageName={packageName} version={version} />
 					</Scrollbars>
 				</SidebarContent>
 			</Sidebar>
