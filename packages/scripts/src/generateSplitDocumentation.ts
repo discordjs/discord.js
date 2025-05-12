@@ -1,26 +1,24 @@
 import { mkdir, stat, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { cwd } from 'node:process';
-import type {
-	ApiClass,
-	ApiConstructor,
-	ApiDeclaredItem,
-	ApiDocumentedItem,
-	ApiEntryPoint,
-	ApiEnum,
-	ApiEnumMember,
-	ApiEvent,
-	ApiInterface,
-	ApiItem,
-	ApiItemContainerMixin,
-	ApiMethod,
-	ApiMethodSignature,
-	ApiProperty,
-	ApiPropertySignature,
-	ApiTypeAlias,
-	ApiVariable,
-} from '@discordjs/api-extractor-model';
 import {
+	type ApiClass,
+	type ApiConstructor,
+	type ApiDeclaredItem,
+	type ApiDocumentedItem,
+	type ApiEntryPoint,
+	type ApiEnum,
+	type ApiEnumMember,
+	type ApiEvent,
+	type ApiInterface,
+	type ApiItem,
+	type ApiItemContainerMixin,
+	type ApiMethod,
+	type ApiMethodSignature,
+	type ApiProperty,
+	type ApiPropertySignature,
+	type ApiTypeAlias,
+	type ApiVariable,
 	ApiTypeParameterListMixin,
 	Excerpt,
 	Meaning,
@@ -52,22 +50,16 @@ import type { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/De
 import { BuiltinDocumentationLinks } from './builtinDocumentationLinks.js';
 import { PACKAGES, fetchVersionDocs, fetchVersions } from './shared.js';
 
-function resolvePackageName(packageName: string) {
-	return packageName === 'discord.js' ? packageName : `@discordjs/${packageName}`;
+function findMemberByKey(entry: ApiEntryPoint, containerKey: string) {
+	return entry.tryGetMemberByKey(containerKey);
 }
 
-function findMemberByKey(model: ApiModel, packageName: string, containerKey: string) {
-	const pkg = model.tryGetPackageByName(resolvePackageName(packageName))!;
-	return (pkg.members[0] as ApiEntryPoint).tryGetMemberByKey(containerKey);
-}
-
-function findMember(model: ApiModel, packageName: string, memberName: string | undefined) {
+function findMember(entry: ApiEntryPoint, memberName: string | undefined) {
 	if (!memberName) {
 		return undefined;
 	}
 
-	const pkg = model.tryGetPackageByName(resolvePackageName(packageName))!;
-	return pkg.entryPoints[0]?.findMembersByName(memberName)[0];
+	return entry.findMembersByName(memberName)[0];
 }
 
 /**
@@ -215,15 +207,19 @@ export function hasEvents(item: ApiItemContainerMixin) {
 interface ApiItemLike {
 	containerKey?: string;
 	displayName: string;
+	getAssociatedEntryPoint?(): ApiEntryPoint | undefined;
 	kind: string;
 	members?: readonly ApiItemLike[];
 	parent?: ApiItemLike | undefined;
 }
 
-function resolveItemURI(item: ApiItemLike): string {
-	return !item.parent || item.parent.kind === ApiItemKind.EntryPoint
-		? `${item.displayName}:${item.kind}`
-		: `${item.parent.displayName}:${item.parent.kind}#${item.displayName}`;
+function resolveItemURI(item: ApiItemLike, entryPoint?: ApiEntryPoint): string {
+	const actualEntryPoint = entryPoint ?? item.getAssociatedEntryPoint?.();
+	return `${actualEntryPoint?.importPath ? `${actualEntryPoint.importPath}/` : ''}${
+		!item.parent || item.parent.kind === ApiItemKind.EntryPoint
+			? `${item.displayName}:${item.kind}`
+			: `${item.parent.displayName}:${item.parent.kind}#${item.displayName}`
+	}`;
 }
 
 function itemExcerptText(excerpt: Excerpt, apiPackage: ApiPackage, parent?: ApiTypeParameterListMixin) {
@@ -1040,11 +1036,13 @@ function memberKind(member: ApiItem | null) {
 }
 
 async function writeSplitDocsToFileSystem({
+	entry,
 	member,
 	packageName,
 	tag = 'main',
 	overrideName,
 }: {
+	entry?: string;
 	member: Record<string, any>;
 	overrideName?: string;
 	packageName: string;
@@ -1064,7 +1062,7 @@ async function writeSplitDocsToFileSystem({
 			'docs',
 			packageName,
 			dir,
-			`${tag}.${overrideName ?? `${member.displayName.toLowerCase()}.${member.kind.toLowerCase()}`}.api.json`,
+			`${tag}.${entry ? `${entry.replaceAll('/', '.')}.` : ''}${overrideName ?? `${member.displayName.toLowerCase()}.${member.kind.toLowerCase()}`}.api.json`,
 		),
 		JSON.stringify(member),
 	);
@@ -1082,9 +1080,9 @@ export async function generateSplitDocumentation({
 			const model = new ApiModel();
 			model.addMember(ApiPackage.loadFromJson(data));
 			const pkg = model.tryGetPackageByName(pkgName);
-			const entry = pkg?.entryPoints[0];
+			const entries = pkg?.entryPoints;
 
-			if (!entry) {
+			if (!entries) {
 				continue;
 			}
 
@@ -1095,52 +1093,70 @@ export async function generateSplitDocumentation({
 				overrideName: 'dependencies',
 			});
 
-			const members = entry.members
-				.filter((item) => {
-					// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
-					switch (item.kind) {
-						case ApiItemKind.Function:
-							return (item as ApiFunction).overloadIndex === 1;
-						case ApiItemKind.Interface:
-							return !entry.members.some(
-								(innerItem) => innerItem.kind === ApiItemKind.Class && innerItem.displayName === item.displayName,
-							);
-						default:
-							return true;
-					}
-				})
-				.map((item) => ({
-					kind: item.kind,
-					name: item.displayName,
-					href: resolveItemURI(item),
-				}));
-
 			await writeSplitDocsToFileSystem({
-				member: members,
+				member: entries.map((entry) => ({
+					entryPoint: entry.importPath,
+				})),
 				packageName: pkgName,
 				tag: version,
-				overrideName: 'sitemap',
+				overrideName: 'entrypoints',
 			});
 
-			for (const member of members) {
-				const item = `${member.name}:${member.kind}`;
-				const [memberName, overloadIndex] = decodeURIComponent(item).split(':');
+			for (const entry of entries) {
+				const members = entry.members
+					.filter((item) => {
+						// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
+						switch (item.kind) {
+							case ApiItemKind.Function:
+								return (item as ApiFunction).overloadIndex === 1;
+							case ApiItemKind.Interface:
+								return !entry.members.some(
+									(innerItem) => innerItem.kind === ApiItemKind.Class && innerItem.displayName === item.displayName,
+								);
+							default:
+								return true;
+						}
+					})
+					.map((item) => ({
+						kind: item.kind,
+						name: item.displayName,
+						href: resolveItemURI(item),
+						entry: entry.importPath,
+					}));
 
-				// eslint-disable-next-line prefer-const
-				let { containerKey, displayName: name } = findMember(model, pkgName, memberName) ?? {};
-				if (name && overloadIndex && !Number.isNaN(Number.parseInt(overloadIndex, 10))) {
-					containerKey = ApiFunction.getContainerKey(name, Number.parseInt(overloadIndex, 10));
+				await writeSplitDocsToFileSystem({
+					member: members,
+					packageName: pkgName,
+					tag: version,
+					overrideName: 'sitemap',
+					entry: entry.importPath,
+				});
+
+				for (const member of members) {
+					const item = `${member.name}:${member.kind}`;
+					const [memberName, overloadIndex] = decodeURIComponent(item).split(':');
+
+					// eslint-disable-next-line prefer-const
+					let { containerKey, displayName: name } = findMember(entry, memberName) ?? {};
+					if (name && overloadIndex && !Number.isNaN(Number.parseInt(overloadIndex, 10))) {
+						containerKey = ApiFunction.getContainerKey(name, Number.parseInt(overloadIndex, 10));
+					}
+
+					const foundMember = memberName && containerKey ? (findMemberByKey(entry, containerKey) ?? null) : null;
+
+					const returnValue = memberKind(foundMember);
+
+					if (!returnValue) {
+						continue;
+					}
+
+					await writeSplitDocsToFileSystem({
+						member: returnValue,
+						packageName: pkgName,
+						tag: version,
+						entry: entry.importPath,
+					});
 				}
-
-				const foundMember = memberName && containerKey ? (findMemberByKey(model, pkgName, containerKey) ?? null) : null;
-
-				const returnValue = memberKind(foundMember);
-
-				if (!returnValue) {
-					continue;
-				}
-
-				await writeSplitDocsToFileSystem({ member: returnValue, packageName: pkgName, tag: version });
 			}
 		}
 	}

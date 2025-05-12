@@ -5,8 +5,16 @@ import { resolveNodeKind } from './DocKind';
 import { NavigationItem } from './NavigationItem';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/Collapsible';
 
-export async function Navigation({ packageName, version }: { readonly packageName: string; readonly version: string }) {
-	const node = await fetchSitemap({ packageName, version });
+export async function Navigation({
+	entryPoint,
+	packageName,
+	version,
+}: {
+	readonly entryPoint?: string | undefined;
+	readonly packageName: string;
+	readonly version: string;
+}) {
+	const node = await fetchSitemap({ entryPoint, packageName, version });
 
 	if (!node) {
 		notFound();
