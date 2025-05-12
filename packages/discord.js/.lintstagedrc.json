@@ -1,5 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/lintstagedrc.schema.json",
   "*": "prettier --ignore-unknown --write",
-  "{src/**,test/**,typings/**,scripts/**}.{mjs,js,ts}": "cross-env eslint --fix"
+  "{src/**,typings/**,scripts/**}.{mjs,js,ts}": "cross-env eslint --fix --format=pretty"
 }
