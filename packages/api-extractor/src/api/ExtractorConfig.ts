@@ -209,6 +209,7 @@ interface IExtractorConfigParameters {
 	docModelIncludeForgottenExports: boolean;
 	enumMemberOrder: EnumMemberOrder;
 	mainEntryPointFilePath: string;
+	mainEntryPointName: string;
 	messages: IExtractorMessagesConfig;
 	newlineKind: NewlineKind;
 	omitTrimmingComments: boolean;
@@ -474,6 +475,7 @@ export class ExtractorConfig {
 		projectFolder,
 		packageJson,
 		packageFolder,
+		mainEntryPointName,
 		mainEntryPointFilePath,
 		additionalEntryPoints,
 		bundledPackages,
@@ -509,7 +511,7 @@ export class ExtractorConfig {
 		this.packageJson = packageJson;
 		this.packageFolder = packageFolder;
 		this.mainEntryPointFilePath = {
-			modulePath: '',
+			modulePath: mainEntryPointName,
 			filePath: mainEntryPointFilePath,
 		};
 		this.additionalEntryPoints = additionalEntryPoints;
@@ -1003,6 +1005,8 @@ export class ExtractorConfig {
 				tokenContext,
 			);
 
+			const mainEntryPointName = configObject.mainEntryPointName ?? '';
+
 			if (!ExtractorConfig.hasDtsFileExtension(mainEntryPointFilePath)) {
 				throw new Error('The "mainEntryPointFilePath" value is not a declaration file: ' + mainEntryPointFilePath);
 			}
@@ -1289,6 +1293,7 @@ export class ExtractorConfig {
 				packageJson,
 				packageFolder,
 				mainEntryPointFilePath,
+				mainEntryPointName,
 				additionalEntryPoints,
 				bundledPackages,
 				tsconfigFilePath,

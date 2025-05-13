@@ -23,6 +23,11 @@
 			"type": "string"
 		},
 
+		"mainEntryPointName": {
+			"description": "Specifies the import path of the entrypoint used as the starting point for analysis.",
+			"type": "string"
+		},
+
 		"additionalEntryPoints": {
 			"description": "Specifies the .d.ts files to be used as the starting points for analysis.",
 			"type": "array",

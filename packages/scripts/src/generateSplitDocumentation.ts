@@ -517,7 +517,7 @@ function resolveFileUrl(item: ApiDeclaredItem) {
 				currentItem = currentItem.parent as ApiDeclaredItem;
 
 			return {
-				sourceURL: `/docs/packages/${pkgName}/${version}/${extractImportPath(pkgName, currentItem.parent as ApiEntryPoint)}/${currentItem.displayName}:${currentItem.kind}`,
+				sourceURL: `/docs/packages/${pkgName}/${version}/${(currentItem.parent as ApiEntryPoint).importPath}/${currentItem.displayName}:${currentItem.kind}`,
 			};
 		}
 	} else if (fileUrl?.includes('/dist/') && fileUrl.includes('/main/packages/')) {
@@ -968,14 +968,6 @@ function memberKind(member: ApiItem | null) {
 	}
 }
 
-function extractImportPath(pkgName: string, entryPoint: ApiEntryPoint) {
-	if (pkgName === 'discord-api-types' && entryPoint.importPath === '') {
-		return 'v10';
-	}
-
-	return entryPoint.importPath;
-}
-
 async function writeSplitDocsToFileSystem({
 	entry,
 	member,
@@ -1036,7 +1028,7 @@ export async function generateSplitDocumentation({
 
 			await writeSplitDocsToFileSystem({
 				member: entries.map((entry) => ({
-					entryPoint: extractImportPath(pkgName, entry),
+					entryPoint: entry.importPath,
 				})),
 				packageName: pkgName,
 				tag: version,
@@ -1062,7 +1054,7 @@ export async function generateSplitDocumentation({
 						kind: item.kind,
 						name: item.displayName,
 						href: resolveItemURI(item),
-						entry: extractImportPath(pkgName, entry),
+						entry: entry.importPath,
 					}));
 
 				await writeSplitDocsToFileSystem({
@@ -1070,7 +1062,7 @@ export async function generateSplitDocumentation({
 					packageName: pkgName,
 					tag: version,
 					overrideName: 'sitemap',
-					entry: extractImportPath(pkgName, entry),
+					entry: entry.importPath,
 				});
 
 				for (const member of members) {
@@ -1095,7 +1087,7 @@ export async function generateSplitDocumentation({
 						member: returnValue,
 						packageName: pkgName,
 						tag: version,
-						entry: extractImportPath(pkgName, entry),
+						entry: entry.importPath,
 					});
 				}
 			}
