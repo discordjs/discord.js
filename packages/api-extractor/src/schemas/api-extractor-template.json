@@ -48,6 +48,11 @@
 	"mainEntryPointFilePath": "<projectFolder>/lib/index.d.ts",
 
 	/**
+	 * Specifies the import path of the entrypoint used as the starting point for analysis.
+	 */
+	// "mainEntryPointName": "",
+
+	/**
 	 * A list of NPM package names whose exports should be treated as part of this package.
 	 *
 	 * For example, suppose that Webpack is used to generate a distributed bundle for the project "library1",

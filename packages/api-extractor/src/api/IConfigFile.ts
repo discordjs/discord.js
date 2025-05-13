@@ -492,6 +492,11 @@ export interface IConfigFile {
 	mainEntryPointFilePath: string;
 
 	/**
+	 * Specifies the import path of the entrypoint used as the starting point for analysis.
+	 */
+	mainEntryPointName: string;
+
+	/**
 	 * {@inheritDoc IExtractorMessagesConfig}
 	 */
 	messages?: IExtractorMessagesConfig;

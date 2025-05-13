@@ -17,24 +17,21 @@ export function EntryPointSelect({
 	const { entryPoints: parsedEntrypoints } = parseDocsPathParams(params.item as string[] | undefined);
 
 	return (
-		<Select
-			aria-label="Select an entrypoint"
-			defaultSelectedKey={parsedEntrypoints.length ? parsedEntrypoints.join('/') : 'global'}
-		>
+		<Select aria-label="Select an entrypoint" defaultSelectedKey={parsedEntrypoints.join('/')}>
 			<SelectTrigger className="bg-[#f3f3f4] dark:bg-[#121214]" />
 			<SelectList classNames={{ popover: 'bg-[#f3f3f4] dark:bg-[#28282d]' }} items={entryPoints}>
 				{(item) => (
 					<SelectOption
 						className="dark:pressed:bg-[#313135] bg-[#f3f3f4] dark:bg-[#28282d] dark:hover:bg-[#313135]"
 						href={`/docs/packages/${params.packageName}/${params.version}/${item.entryPoint}`}
-						id={item.entryPoint || 'global'}
-						key={item.entryPoint || 'global'}
+						id={item.entryPoint}
+						key={item.entryPoint}
 						onHoverStart={() =>
 							router.prefetch(`/docs/packages/${params.packageName}/${params.version}/${item.entryPoint}`)
 						}
-						textValue={item.entryPoint || 'global'}
+						textValue={item.entryPoint}
 					>
-						{item.entryPoint || 'global'}
+						{item.entryPoint}
 					</SelectOption>
 				)}
 			</SelectList>
