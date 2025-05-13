@@ -1,6 +1,6 @@
 import Cloudflare from 'cloudflare';
 import { NextResponse, type NextRequest } from 'next/server';
-import { PACKAGES, PACKAGES_WITH_ENTRY_POINTS } from './util/constants';
+import { DEFAULT_ENTRY_POINT, PACKAGES, PACKAGES_WITH_ENTRY_POINTS } from './util/constants';
 import { ENV } from './util/env';
 
 const client = new Cloudflare({
@@ -11,7 +11,7 @@ async function fetchLatestVersion(packageName: string): Promise<string> {
 	const hasEntryPoints = PACKAGES_WITH_ENTRY_POINTS.includes(packageName);
 	if (ENV.IS_LOCAL_DEV) {
 		if (hasEntryPoints) {
-			return 'main/v10';
+			return ['main', ...DEFAULT_ENTRY_POINT].join('/');
 		}
 
 		return 'main';
@@ -24,7 +24,7 @@ async function fetchLatestVersion(packageName: string): Promise<string> {
 			params: [packageName],
 		});
 
-		return `${(result[0]?.results as { version: string }[] | undefined)?.[0]?.version ?? 'main'}${hasEntryPoints ? '/v10' : ''}`;
+		return `${(result[0]?.results as { version: string }[] | undefined)?.[0]?.version ?? 'main'}${hasEntryPoints ? ['', ...DEFAULT_ENTRY_POINT].join('/') : ''}`;
 	} catch {
 		return '';
 	}

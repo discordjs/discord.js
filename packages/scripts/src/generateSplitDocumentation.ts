@@ -517,7 +517,7 @@ function resolveFileUrl(item: ApiDeclaredItem) {
 				currentItem = currentItem.parent as ApiDeclaredItem;
 
 			return {
-				sourceURL: `/docs/packages/${pkgName}/${version}/${(currentItem.parent as ApiEntryPoint).importPath || 'v10'}/${currentItem.displayName}:${currentItem.kind}`,
+				sourceURL: `/docs/packages/${pkgName}/${version}/${extractImportPath(pkgName, currentItem.parent as ApiEntryPoint)}/${currentItem.displayName}:${currentItem.kind}`,
 			};
 		}
 	} else if (fileUrl?.includes('/dist/') && fileUrl.includes('/main/packages/')) {
