@@ -6534,17 +6534,21 @@ export interface BaseMessageOptions {
   allowedMentions?: MessageMentionOptions;
   components?: readonly (
     | ActionRowData<MessageActionRowComponentBuilder | MessageActionRowComponentData>
-    | APIActionRowComponent<APIComponentInActionRow>
+    | APIMessageTopLevelComponent
     | JSONEncodable<APIActionRowComponent<APIComponentInActionRow>>
-  )[];
-  components?: readonly (
-    | ActionRowData<MessageActionRowComponentBuilder | MessageActionRowComponentData>
-    | APIActionRowComponent<APIComponentInActionRow>
-    | JSONEncodable<APIActionRowComponent<APIComponentInActionRow>>
+    | JSONEncodable<APIMessageTopLevelComponent>
+    | TopLevelComponentData
   )[];
   content?: string;
   embeds?: readonly (APIEmbed | JSONEncodable<APIEmbed>)[];
-  files?: readonly (Attachment | AttachmentBuilder | AttachmentPayload)[];
+  files?: readonly (
+    | Attachment
+    | AttachmentBuilder
+    | AttachmentPayload
+    | BufferResolvable
+    | JSONEncodable<APIAttachment>
+    | Stream
+  )[];
 }
 
 export interface BaseMessageOptionsWithPoll extends BaseMessageOptions {
