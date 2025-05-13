@@ -3649,10 +3649,11 @@ export function createChannel(
 ): Channel;
 
 export type ComponentData =
-  | ActionRowData<MessageActionRowComponentData | ModalActionRowComponentData>
-  | ActionRowData<MessageActionRowComponentData | ModalActionRowComponentData>
+  | ComponentInContainerData
+  | ContainerComponentData
   | MessageActionRowComponentData
-  | ModalActionRowComponentData;
+  | ModalActionRowComponentData
+  | ThumbnailComponentData;
 
 export interface SendSoundboardSoundOptions {
   guildId?: Snowflake;
