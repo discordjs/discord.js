@@ -31,7 +31,7 @@ export default async function Image({
 
 	const isMain = version === 'main';
 	const fileContent = await fetch(
-		`${process.env.BLOB_STORAGE_URL}/rewrite/${packageName}/${version}.${normalizeItem}.api.json`,
+		`${process.env.CF_R2_DOCS_BUCKET_URL}/${packageName}/${version}.${normalizeItem}.api.json`,
 		{ next: { revalidate: isMain ? 0 : 604_800 } },
 	);
 	const node = await fileContent.json();

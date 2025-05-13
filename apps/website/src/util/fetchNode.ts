@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { PACKAGES_WITH_ENTRY_POINTS } from './constants';
 import { ENV } from './env';
 
 export async function fetchNode({
@@ -13,6 +14,7 @@ export async function fetchNode({
 	readonly packageName: string;
 	readonly version: string;
 }) {
+	const hasEntryPoint = PACKAGES_WITH_ENTRY_POINTS.includes(packageName);
 	const normalizedEntryPoint = entryPoint ? `${entryPoint}.` : '';
 	const normalizeItem = item.replaceAll(':', '.').toLowerCase();
 
@@ -20,7 +22,7 @@ export async function fetchNode({
 		const fileContent = await readFile(
 			join(
 				process.cwd(),
-				`../../packages/${packageName}/docs/${packageName}/split/${version}.${normalizedEntryPoint}${normalizeItem}.api.json`,
+				`${hasEntryPoint || normalizedEntryPoint ? `../../../discord-api-types` : `../../packages/${packageName}`}/docs/${packageName}/split/${version}.${normalizedEntryPoint}${normalizeItem}.api.json`,
 			),
 			'utf8',
 		);
@@ -30,7 +32,7 @@ export async function fetchNode({
 
 	const isMain = version === 'main';
 	const fileContent = await fetch(
-		`${process.env.BLOB_STORAGE_URL}/rewrite/${packageName}/${version}.${normalizedEntryPoint}${normalizeItem}.api.json`,
+		`${process.env.CF_R2_DOCS_BUCKET_URL}/${packageName}/${version}.${normalizedEntryPoint}${normalizeItem}.api.json`,
 		{ next: { revalidate: isMain ? 0 : 604_800 } },
 	);
 
