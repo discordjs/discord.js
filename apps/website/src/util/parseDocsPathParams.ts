@@ -10,7 +10,7 @@ export function parseDocsPathParams(item: string[] | undefined): {
 	const hasTypeMarker = lastElement?.includes('%3A');
 
 	return {
-		entryPoints: hasTypeMarker ? item.slice(0, -1) : item,
+		entryPoints: hasTypeMarker ? item.slice(0, -1) : lastElement?.length === 0 ? ['v10'] : item,
 		foundItem: hasTypeMarker ? lastElement : undefined,
 	};
 }
