@@ -627,7 +627,7 @@ export class ApiModelGenerator {
 			if (!docComment && parent) {
 				this._collector.messageRouter.addAnalyzerIssue(
 					ExtractorMessageId.DjsMissingJSDoc,
-					`The symbol ${parentApiItem.displayName}#constrcutor() has no matching jsdoc equivalent in the JavaScript source files.`,
+					`The constructor ${parentApiItem.displayName}() has no matching jsdoc equivalent in the JavaScript source files.`,
 					astDeclaration,
 				);
 			}
@@ -726,7 +726,7 @@ export class ApiModelGenerator {
 			if (!docComment && parent) {
 				this._collector.messageRouter.addAnalyzerIssue(
 					ExtractorMessageId.DjsMissingJSDoc,
-					`The symbol ${name} has no matching jsdoc equivalent in the JavaScript source files.`,
+					`The class ${name} has no matching jsdoc equivalent in the JavaScript source files.`,
 					astDeclaration,
 				);
 			}
@@ -805,7 +805,7 @@ export class ApiModelGenerator {
 			if (!docComment && parent) {
 				this._collector.messageRouter.addAnalyzerIssue(
 					ExtractorMessageId.DjsMissingJSDoc,
-					`The symbol ${parentApiItem.displayName}#constructor() has no matching jsdoc equivalent in the JavaScript source files.`,
+					`The constructor signature ${parentApiItem.displayName}() has no matching jsdoc equivalent in the JavaScript source files.`,
 					astDeclaration,
 				);
 			}
@@ -961,7 +961,7 @@ export class ApiModelGenerator {
 			if (!docComment && parent) {
 				this._collector.messageRouter.addAnalyzerIssue(
 					ExtractorMessageId.DjsMissingJSDoc,
-					`The symbol ${name}() has no matching jsdoc equivalent in the JavaScript source files.`,
+					`The function ${name}() has no matching jsdoc equivalent in the JavaScript source files.`,
 					astDeclaration,
 				);
 			}
@@ -1092,7 +1092,7 @@ export class ApiModelGenerator {
 			if (!docComment && parent) {
 				this._collector.messageRouter.addAnalyzerIssue(
 					ExtractorMessageId.DjsMissingJSDoc,
-					`The symbol ${name} has no matching jsdoc equivalent in the JavaScript source files.`,
+					`The interface ${name} has no matching jsdoc equivalent in the JavaScript source files.`,
 					astDeclaration,
 				);
 			}
@@ -1182,7 +1182,7 @@ export class ApiModelGenerator {
 				if (!docComment && parent) {
 					this._collector.messageRouter.addAnalyzerIssue(
 						ExtractorMessageId.DjsMissingJSDoc,
-						`The symbol ${parentApiItem.displayName}#${name}() has no matching jsdoc equivalent in the JavaScript source files.`,
+						`The method ${parentApiItem.displayName}#${name}() has no matching jsdoc equivalent in the JavaScript source files.`,
 						astDeclaration,
 					);
 				}
@@ -1221,7 +1221,7 @@ export class ApiModelGenerator {
 
 				this._collector.messageRouter.addAnalyzerIssueForPosition(
 					ExtractorMessageId.DjsMissingTypeScriptType,
-					`The JSDoc comment for ${parentApiItem.displayName}#${name}() has no matching type equivalent in the TypeScript declaration file.`,
+					`The JSDoc comment for method ${parentApiItem.displayName}#${name}() has no matching type equivalent in the TypeScript declaration file.`,
 					this._mainSourceFile!,
 					0,
 				);
@@ -1294,7 +1294,7 @@ export class ApiModelGenerator {
 				if (!docComment && parent) {
 					this._collector.messageRouter.addAnalyzerIssue(
 						ExtractorMessageId.DjsMissingJSDoc,
-						`The symbol ${parentApiItem.displayName}#${name}() has no matching jsdoc equivalent in the JavaScript source files.`,
+						`The method signature ${parentApiItem.displayName}#${name}() has no matching jsdoc equivalent in the JavaScript source files.`,
 						astDeclaration,
 					);
 				}
@@ -1320,7 +1320,7 @@ export class ApiModelGenerator {
 			} else if (jsDoc) {
 				this._collector.messageRouter.addAnalyzerIssueForPosition(
 					ExtractorMessageId.DjsMissingTypeScriptType,
-					`The JSDoc comment for ${parentApiItem.displayName}#${name}() has no matching type equivalent in the TypeScript declaration file.`,
+					`The JSDoc comment for method signature ${parentApiItem.displayName}#${name}() has no matching type equivalent in the TypeScript declaration file.`,
 					this._mainSourceFile!,
 					0,
 				);
@@ -1366,7 +1366,8 @@ export class ApiModelGenerator {
 	private _processApiProperty(astDeclaration: AstDeclaration | null, context: IProcessAstEntityContext): void {
 		const { name, parentApiItem } = context;
 		const parent = context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | DocgenTypedefJson | undefined;
-		const jsDoc = parent?.props?.find((prop) => prop.name === name);
+		const inherited = parent && 'extends' in parent ? this._isInherited(parent, name, parentApiItem.kind) : undefined;
+		const jsDoc = parent?.props?.find((prop) => prop.name === name) ?? inherited;
 		const isStatic: boolean = astDeclaration
 			? (astDeclaration.modifierFlags & ts.ModifierFlags.Static) !== 0
 			: parentApiItem.kind === ApiItemKind.Class || parentApiItem.kind === ApiItemKind.Interface
@@ -1376,11 +1377,7 @@ export class ApiModelGenerator {
 
 		let apiProperty: ApiProperty | undefined = parentApiItem.tryGetMemberByKey(containerKey) as ApiProperty;
 
-		if (
-			apiProperty === undefined &&
-			(astDeclaration ||
-				!this._isInherited(parent as DocgenClassJson | DocgenInterfaceJson, jsDoc!, parentApiItem.kind))
-		) {
+		if (apiProperty === undefined && (astDeclaration || !inherited)) {
 			if (astDeclaration) {
 				const declaration: ts.Declaration = astDeclaration.declaration;
 				const nodesToCapture: IExcerptBuilderNodeToCapture[] = [];
@@ -1424,7 +1421,7 @@ export class ApiModelGenerator {
 				if (!docComment && parent) {
 					this._collector.messageRouter.addAnalyzerIssue(
 						ExtractorMessageId.DjsMissingJSDoc,
-						`The symbol ${parentApiItem.displayName}#${name} has no matching jsdoc equivalent in the JavaScript source files.`,
+						`The property ${parentApiItem.displayName}#${name} has no matching jsdoc equivalent in the JavaScript source files.`,
 						astDeclaration,
 					);
 				}
@@ -1455,7 +1452,7 @@ export class ApiModelGenerator {
 			} else if (parentApiItem.kind === ApiItemKind.Class || parentApiItem.kind === ApiItemKind.Interface) {
 				this._collector.messageRouter.addAnalyzerIssueForPosition(
 					ExtractorMessageId.DjsMissingTypeScriptType,
-					`The JSDoc comment for ${parentApiItem.displayName}#${name} has no matching type equivalent in the TypeScript declaration file.`,
+					`The JSDoc comment for property ${parentApiItem.displayName}#${name} has no matching type equivalent in the TypeScript declaration file.`,
 					this._mainSourceFile!,
 					0,
 				);
@@ -1484,11 +1481,13 @@ export class ApiModelGenerator {
 			containerKey,
 		) as ApiPropertySignature;
 		const parent = context.parentDocgenJson as DocgenInterfaceJson | DocgenPropertyJson | DocgenTypedefJson | undefined;
-		const jsDoc = parent?.props?.find((prop) => prop.name === name);
+		const inherited = parent && 'extends' in parent ? this._isInherited(parent, name, parentApiItem.kind) : undefined;
+		const jsDoc = parent?.props?.find((prop) => prop.name === name) ?? inherited;
 
 		if (
 			apiPropertySignature === undefined &&
-			(astDeclaration || !this._isInherited(parent as DocgenInterfaceJson, jsDoc!, parentApiItem.kind))
+			(astDeclaration || !inherited) &&
+			parentApiItem.kind !== ApiItemKind.Class
 		) {
 			if (astDeclaration) {
 				const propertySignature: ts.PropertySignature = astDeclaration.declaration as ts.PropertySignature;
@@ -1517,7 +1516,7 @@ export class ApiModelGenerator {
 				if (!docComment && parent) {
 					this._collector.messageRouter.addAnalyzerIssue(
 						ExtractorMessageId.DjsMissingJSDoc,
-						`The symbol ${parentApiItem.displayName}#${name} has no matching jsdoc equivalent in the JavaScript source files.`,
+						`The property signature ${parentApiItem.displayName}#${name} has no matching jsdoc equivalent in the JavaScript source files.`,
 						astDeclaration,
 					);
 				}
@@ -1539,10 +1538,10 @@ export class ApiModelGenerator {
 					fileLine: jsDoc && 'meta' in jsDoc ? jsDoc.meta.line : sourceLocation.sourceFileLine,
 					fileColumn: sourceLocation.sourceFileColumn,
 				});
-			} else if (parentApiItem.kind === ApiItemKind.Class || parentApiItem.kind === ApiItemKind.Interface) {
+			} else if (parentApiItem.kind === ApiItemKind.Interface) {
 				this._collector.messageRouter.addAnalyzerIssueForPosition(
 					ExtractorMessageId.DjsMissingTypeScriptType,
-					`The JSDoc comment for ${parentApiItem.displayName}#${name} has no matching type equivalent in the TypeScript declaration file.`,
+					`The JSDoc comment for property signature ${parentApiItem.displayName}#${name} has no matching type equivalent in the TypeScript declaration file.`,
 					this._mainSourceFile!,
 					0,
 				);
@@ -1610,7 +1609,7 @@ export class ApiModelGenerator {
 			if (!docComment && parent) {
 				this._collector.messageRouter.addAnalyzerIssue(
 					ExtractorMessageId.DjsMissingJSDoc,
-					`The symbol ${name} has no matching jsdoc equivalent in the JavaScript source files.`,
+					`The type alias ${name} has no matching jsdoc equivalent in the JavaScript source files.`,
 					astDeclaration,
 				);
 			}
@@ -1848,20 +1847,19 @@ export class ApiModelGenerator {
 
 	private _isInherited(
 		container: DocgenClassJson | DocgenInterfaceJson,
-		jsDoc: DocgenParamJson | DocgenPropertyJson,
+		propertyName: string,
 		containerKind: ApiItemKind,
-	): boolean {
+	): DocgenPropertyJson | undefined {
 		switch (containerKind) {
 			case ApiItemKind.Class: {
 				const token = (container as DocgenClassJson).extends;
 				const parentName = Array.isArray(token) ? token[0]?.[0]?.[0] : token?.types?.[0]?.[0]?.[0];
 				const parentJson = this._jsDocJson?.classes.find((clas) => clas.name === parentName);
 				if (parentJson) {
-					if (parentJson.props?.find((prop) => prop.name === jsDoc.name)) {
-						return true;
-					} else {
-						return this._isInherited(parentJson, jsDoc, containerKind);
-					}
+					return (
+						parentJson.props?.find((prop) => prop.name === propertyName) ??
+						this._isInherited(parentJson, propertyName, containerKind)
+					);
 				}
 
 				break;
@@ -1873,13 +1871,15 @@ export class ApiModelGenerator {
 				const parentJsons = parentNames?.map((name) =>
 					this._jsDocJson?.interfaces.find((inter) => inter.name === name),
 				);
+				if (propertyName === 'content') console.log(container.name, parentNames, parentJsons);
 				if (parentJsons?.length) {
 					for (const parentJson of parentJsons) {
-						if (
-							parentJson?.props?.find((prop) => prop.name === jsDoc.name) ||
-							this._isInherited(parentJson as DocgenInterfaceJson, jsDoc, containerKind)
-						) {
-							return true;
+						const result =
+							parentJson?.props?.find((prop) => prop.name === propertyName) ??
+							this._isInherited(parentJson as DocgenInterfaceJson, propertyName, containerKind);
+
+						if (result) {
+							return result;
 						}
 					}
 				}
@@ -1888,10 +1888,10 @@ export class ApiModelGenerator {
 			}
 
 			default:
-				console.log(`Unexpected parent of type ${containerKind} (${container.name}) of ${jsDoc?.name} `);
+				console.log(`Unexpected parent of type ${containerKind} (${container.name}) of ${propertyName} `);
 		}
 
-		return false;
+		return undefined;
 	}
 
 	private _isReadonly(astDeclaration: AstDeclaration): boolean {
