@@ -1,5 +1,5 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import type { APIChannel, APIPartialChannel, ChannelType } from 'discord-api-types/v10';
+import { type APIChannel, type APIPartialChannel, type ChannelType } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
 
@@ -74,6 +74,16 @@ export class Channel<
 	}
 
 	/**
+	 * The flags that are applied to the channel.
+	 *
+	 * @privateRemarks The type of `flags` can be narrowed in Guild Channels and DMChannel to ChannelFlags, and in GroupDM channel
+	 * to null, respecting Omit behaviors
+	 */
+	public get flags() {
+		return this[kData].flags;
+	}
+
+	/**
 	 * The timestamp the channel was created at
 	 */
 	public get createdTimestamp() {
@@ -103,7 +113,7 @@ export class Channel<
 	 *
 	 * @privateRemarks Overriden to `true` on `TextChannelMixin`
 	 */
-	public iSTextBased() {
+	public isTextBased() {
 		return false;
 	}
 
