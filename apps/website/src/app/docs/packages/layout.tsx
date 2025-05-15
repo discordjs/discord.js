@@ -12,7 +12,7 @@ export default async function Layout({ children }: PropsWithChildren) {
 		<>
 			<Sidebar closeButton={false} intent="inset">
 				<SidebarHeader />
-				<SidebarContent className="bg-[#f3f3f4] p-0 py-4 pl-4 dark:bg-[#121214]">
+				<SidebarContent className="bg-[#f3f3f4] p-0 pb-4 pl-4 dark:bg-[#121214]">
 					<Scrollbars>
 						<Navigation />
 					</Scrollbars>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Loader2Icon } from 'lucide-react';
 import { notFound, useParams } from 'next/navigation';
 import { parseDocsPathParams } from '@/util/parseDocsPathParams';
 import { resolveNodeKind } from './DocKind';
@@ -17,7 +17,11 @@ export function Navigation() {
 
 	const { entryPoints: parsedEntrypoints } = parseDocsPathParams(params.item);
 
-	const { data: node, status } = useQuery({
+	const {
+		data: node,
+		status,
+		isLoading,
+	} = useQuery({
 		queryKey: ['sitemap', params.packageName, params.version, parsedEntrypoints.join('.')],
 		queryFn: async () => {
 			const response = await fetch(
@@ -37,6 +41,10 @@ export function Navigation() {
 		(acc[node.kind.toLowerCase()] ||= []).push(node);
 		return acc;
 	}, {});
+
+	if (isLoading) {
+		return <Loader2Icon className="mx-auto h-10 w-10 animate-spin" />;
+	}
 
 	return (
 		<nav className="flex flex-col gap-2 pr-3">

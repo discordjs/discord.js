@@ -21,7 +21,7 @@ export function SidebarHeader() {
 
 	const hasEntryPoints = PACKAGES_WITH_ENTRY_POINTS.includes(params.packageName);
 
-	const { data: entryPoints } = useQuery({
+	const { data: entryPoints, isLoading: isLoadingEntryPoints } = useQuery({
 		queryKey: ['entryPoints', params.packageName, params.version],
 		queryFn: async () => {
 			const response = await fetch(`/api/docs/entrypoints?packageName=${params.packageName}&version=${params.version}`);
@@ -30,7 +30,7 @@ export function SidebarHeader() {
 		},
 	});
 
-	const { data: versions } = useQuery({
+	const { data: versions, isLoading: isLoadingVersions } = useQuery({
 		queryKey: ['versions', params.packageName],
 		queryFn: async () => {
 			const response = await fetch(`/api/docs/versions?packageName=${params.packageName}`);
@@ -61,8 +61,8 @@ export function SidebarHeader() {
 				</div>
 				<PackageSelect />
 				{/* <h3 className="p-1 text-lg font-semibold">{version}</h3> */}
-				<VersionSelect versions={versions ?? []} />
-				{hasEntryPoints ? <EntryPointSelect entryPoints={entryPoints ?? []} /> : null}
+				<VersionSelect isLoading={isLoadingVersions} versions={versions ?? []} />
+				{hasEntryPoints ? <EntryPointSelect entryPoints={entryPoints ?? []} isLoading={isLoadingEntryPoints} /> : null}
 				<SearchButton />
 			</div>
 		</BasSidebarHeader>
