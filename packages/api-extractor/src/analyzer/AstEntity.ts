@@ -13,6 +13,7 @@
  *   - AstSyntheticEntity
  *     - AstImport
  *     - AstNamespaceImport
+ *       - AstNamespaceExport
  * ```
  */
 export abstract class AstEntity {
