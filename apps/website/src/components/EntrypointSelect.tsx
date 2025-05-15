@@ -1,23 +1,25 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { use } from 'react';
 import { parseDocsPathParams } from '@/util/parseDocsPathParams';
 import { Select, SelectList, SelectOption, SelectTrigger } from './ui/Select';
 
-export function EntryPointSelect({
-	entryPointsPromise,
-}: {
-	readonly entryPointsPromise: Promise<{ readonly entryPoint: string }[]>;
-}) {
+export function EntryPointSelect({ entryPoints }: { readonly entryPoints: { readonly entryPoint: string }[] }) {
 	const router = useRouter();
-	const params = useParams();
-	const entryPoints = use(entryPointsPromise);
+	const params = useParams<{
+		item?: string[] | undefined;
+		packageName: string;
+		version: string;
+	}>();
 
-	const { entryPoints: parsedEntrypoints } = parseDocsPathParams(params.item as string[] | undefined);
+	const { entryPoints: parsedEntrypoints } = parseDocsPathParams(params.item);
 
 	return (
-		<Select aria-label="Select an entrypoint" defaultSelectedKey={parsedEntrypoints.join('/')}>
+		<Select
+			aria-label="Select an entrypoint"
+			defaultSelectedKey={parsedEntrypoints.join('/')}
+			key={parsedEntrypoints.join('/')}
+		>
 			<SelectTrigger className="bg-[#f3f3f4] dark:bg-[#121214]" />
 			<SelectList classNames={{ popover: 'bg-[#f3f3f4] dark:bg-[#28282d]' }} items={entryPoints}>
 				{(item) => (

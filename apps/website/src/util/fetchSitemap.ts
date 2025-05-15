@@ -8,7 +8,7 @@ export async function fetchSitemap({
 	packageName,
 	version,
 }: {
-	readonly entryPoint?: string | undefined;
+	readonly entryPoint?: string | null | undefined;
 	readonly packageName: string;
 	readonly version: string;
 }) {

@@ -9,6 +9,7 @@ const client = new Cloudflare({
 
 async function fetchLatestVersion(packageName: string): Promise<string> {
 	const hasEntryPoints = PACKAGES_WITH_ENTRY_POINTS.includes(packageName);
+
 	if (ENV.IS_LOCAL_DEV) {
 		if (hasEntryPoints) {
 			return ['main', ...DEFAULT_ENTRY_POINT].join('/');
