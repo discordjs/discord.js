@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import rehypeShikiFromHighlighter from '@shikijs/rehype/core';
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { MDXRemote } from 'next-mdx-remote-client/rsc';
 import remarkGfm from 'remark-gfm';
 import { DocItem } from '@/components/DocItem';
@@ -89,12 +90,17 @@ export default async function Page({
 	}
 
 	const entryPointString = parsedEntrypoints.join('.');
+
 	const node = await fetchNode({
 		entryPoint: entryPointString,
 		item: decodeURIComponent(foundItem),
 		packageName,
 		version,
 	});
+
+	if (!node) {
+		notFound();
+	}
 
 	return (
 		<main className="mx-auto flex w-full max-w-screen-xl flex-col gap-8 px-6 py-4">
