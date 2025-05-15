@@ -62,27 +62,28 @@
 	"homepage": "https://discord.js.org",
 	"dependencies": {
 		"@sapphire/snowflake": "^3.5.5",
-		"discord-api-types": "^0.37.114"
+		"discord-api-types": "^0.38.1"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^4.1.0",
-		"@types/node": "20.17.10",
-		"@vitest/coverage-v8": "^2.1.8",
+		"@types/node": "22.15.2",
+		"@vitest/coverage-v8": "^3.1.1",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.2.1",
-		"eslint": "^8.57.1",
-		"eslint-config-neon": "^0.1.62",
+		"eslint": "^9.25.1",
+		"eslint-config-neon": "^0.2.7",
+		"eslint-formatter-compact": "^8.40.0",
 		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.4.2",
+		"prettier": "^3.5.3",
 		"tsd": "^0.31.2",
-		"tsup": "^8.3.5",
-		"typescript": "~5.5.4",
-		"vitest": "^2.1.8"
+		"tsup": "^8.4.0",
+		"typescript": "~5.8.3",
+		"vitest": "^3.1.1"
 	},
 	"engines": {
-		"node": ">=20"
+		"node": ">=22.12.0"
 	},
 	"publishConfig": {
 		"access": "public",
