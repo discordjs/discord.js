@@ -6,13 +6,15 @@ import type { APIPollMedia } from 'discord-api-types/v10';
 export abstract class PollMediaBuilder {
 	/**
 	 * The API data associated with this poll media.
+	 *
+	 * @internal
 	 */
 	protected readonly data: Partial<APIPollMedia>;
 
 	/**
-	 * Creates new poll media from API data.
+	 * Creates new poll media.
 	 *
-	 * @param data - The API data to use
+	 * @param data - The API data to create this poll media with
 	 */
 	public constructor(data: Partial<APIPollMedia> = {}) {
 		this.data = structuredClone(data);

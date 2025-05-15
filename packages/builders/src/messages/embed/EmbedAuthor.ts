@@ -7,15 +7,18 @@ import { embedAuthorPredicate } from './Assertions.js';
  * A builder that creates API-compatible JSON data for the embed author.
  */
 export class EmbedAuthorBuilder implements JSONEncodable<APIEmbedAuthor> {
+	/**
+	 * The API data associated with this embed author.
+	 */
 	private readonly data: Partial<APIEmbedAuthor>;
 
 	/**
-	 * Creates a new embed author from API data.
+	 * Creates a new embed author.
 	 *
-	 * @param data - The API data to use
+	 * @param data - The API data to create this embed author with
 	 */
-	public constructor(data?: Partial<APIEmbedAuthor>) {
-		this.data = structuredClone(data) ?? {};
+	public constructor(data: Partial<APIEmbedAuthor> = {}) {
+		this.data = structuredClone(data);
 	}
 
 	/**
