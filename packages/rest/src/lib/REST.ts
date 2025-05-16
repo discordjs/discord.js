@@ -70,9 +70,9 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 
 	#token: string | null = null;
 
-	private hashTimer!: NodeJS.Timer | number;
+	private hashTimer!: NodeJS.Timeout | number;
 
-	private handlerTimer!: NodeJS.Timer | number;
+	private handlerTimer!: NodeJS.Timeout | number;
 
 	public readonly options: RESTOptions;
 
