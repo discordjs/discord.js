@@ -1,7 +1,7 @@
 'use strict';
 
-const { Action } = require('./Action.js');
 const { Events } = require('../../util/Events.js');
+const { Action } = require('./Action.js');
 
 class GuildSoundboardSoundDeleteAction extends Action {
   handle(data) {
@@ -16,6 +16,7 @@ class GuildSoundboardSoundDeleteAction extends Action {
 
       /**
        * Emitted whenever a soundboard sound is deleted in a guild.
+       *
        * @event Client#guildSoundboardSoundDelete
        * @param {SoundboardSound} soundboardSound The soundboard sound that was deleted
        */

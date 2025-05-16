@@ -2,12 +2,13 @@
 
 const { Collection } = require('@discordjs/collection');
 const { PermissionFlagsBits } = require('discord-api-types/v10');
+const { GuildMessageManager } = require('../managers/GuildMessageManager.js');
 const { GuildChannel } = require('./GuildChannel.js');
 const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
-const { GuildMessageManager } = require('../managers/GuildMessageManager.js');
 
 /**
  * Represents a voice-based guild channel on Discord.
+ *
  * @extends {GuildChannel}
  * @implements {TextBasedChannel}
  */
@@ -16,12 +17,14 @@ class BaseGuildVoiceChannel extends GuildChannel {
     super(guild, data, client, false);
     /**
      * A manager of the messages sent to this channel
+     *
      * @type {GuildMessageManager}
      */
     this.messages = new GuildMessageManager(this);
 
     /**
      * If the guild considers this channel NSFW
+     *
      * @type {boolean}
      */
     this.nsfw = Boolean(data.nsfw);
@@ -35,6 +38,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
     if ('rtc_region' in data) {
       /**
        * The RTC region for this voice-based channel. This region is automatically selected if `null`.
+       *
        * @type {?string}
        */
       this.rtcRegion = data.rtc_region;
@@ -43,6 +47,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
     if ('bitrate' in data) {
       /**
        * The bitrate of this voice-based channel
+       *
        * @type {number}
        */
       this.bitrate = data.bitrate;
@@ -51,6 +56,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
     if ('user_limit' in data) {
       /**
        * The maximum amount of users allowed in this channel.
+       *
        * @type {number}
        */
       this.userLimit = data.user_limit;
@@ -59,6 +65,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
     if ('video_quality_mode' in data) {
       /**
        * The camera video quality mode of the channel.
+       *
        * @type {?VideoQualityMode}
        */
       this.videoQualityMode = data.video_quality_mode;
@@ -69,6 +76,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
     if ('last_message_id' in data) {
       /**
        * The last message id sent in the channel, if one was sent
+       *
        * @type {?Snowflake}
        */
       this.lastMessageId = data.last_message_id;
@@ -81,6 +89,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
     if ('rate_limit_per_user' in data) {
       /**
        * The rate limit per user (slowmode) for this channel in seconds
+       *
        * @type {number}
        */
       this.rateLimitPerUser = data.rate_limit_per_user;
@@ -93,6 +102,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
 
   /**
    * The members in this voice-based channel
+   *
    * @type {Collection<Snowflake, GuildMember>}
    * @readonly
    */
@@ -103,11 +113,13 @@ class BaseGuildVoiceChannel extends GuildChannel {
         coll.set(state.id, state.member);
       }
     }
+
     return coll;
   }
 
   /**
    * Checks if the voice-based channel is full
+   *
    * @type {boolean}
    * @readonly
    */
@@ -117,6 +129,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
 
   /**
    * Whether the channel is joinable by the client user
+   *
    * @type {boolean}
    * @readonly
    */
@@ -136,6 +149,7 @@ class BaseGuildVoiceChannel extends GuildChannel {
 
   /**
    * Creates an invite to this guild channel.
+   *
    * @param {InviteCreateOptions} [options={}] The options for creating the invite
    * @returns {Promise<Invite>}
    * @example
@@ -144,21 +158,23 @@ class BaseGuildVoiceChannel extends GuildChannel {
    *   .then(invite => console.log(`Created an invite with a code of ${invite.code}`))
    *   .catch(console.error);
    */
-  createInvite(options) {
+  async createInvite(options) {
     return this.guild.invites.create(this.id, options);
   }
 
   /**
    * Fetches a collection of invites to this guild channel.
+   *
    * @param {boolean} [cache=true] Whether to cache the fetched invites
    * @returns {Promise<Collection<string, Invite>>}
    */
-  fetchInvites(cache = true) {
+  async fetchInvites(cache = true) {
     return this.guild.invites.fetch({ channelId: this.id, cache });
   }
 
   /**
    * Sets the bitrate of the channel.
+   *
    * @param {number} bitrate The new bitrate
    * @param {string} [reason] Reason for changing the channel's bitrate
    * @returns {Promise<BaseGuildVoiceChannel>}
@@ -168,12 +184,13 @@ class BaseGuildVoiceChannel extends GuildChannel {
    *   .then(channel => console.log(`Set bitrate to ${channel.bitrate}bps for ${channel.name}`))
    *   .catch(console.error);
    */
-  setBitrate(bitrate, reason) {
+  async setBitrate(bitrate, reason) {
     return this.edit({ bitrate, reason });
   }
 
   /**
    * Sets the RTC region of the channel.
+   *
    * @param {?string} rtcRegion The new region of the channel. Set to `null` to remove a specific region for the channel
    * @param {string} [reason] The reason for modifying this region.
    * @returns {Promise<BaseGuildVoiceChannel>}
@@ -184,12 +201,13 @@ class BaseGuildVoiceChannel extends GuildChannel {
    * // Remove a fixed region for this channel - let Discord decide automatically
    * channel.setRTCRegion(null, 'We want to let Discord decide.');
    */
-  setRTCRegion(rtcRegion, reason) {
+  async setRTCRegion(rtcRegion, reason) {
     return this.edit({ rtcRegion, reason });
   }
 
   /**
    * Sets the user limit of the channel.
+   *
    * @param {number} userLimit The new user limit
    * @param {string} [reason] Reason for changing the user limit
    * @returns {Promise<BaseGuildVoiceChannel>}
@@ -199,33 +217,46 @@ class BaseGuildVoiceChannel extends GuildChannel {
    *   .then(channel => console.log(`Set user limit to ${channel.userLimit} for ${channel.name}`))
    *   .catch(console.error);
    */
-  setUserLimit(userLimit, reason) {
+  async setUserLimit(userLimit, reason) {
     return this.edit({ userLimit, reason });
   }
 
   /**
    * Sets the camera video quality mode of the channel.
+   *
    * @param {VideoQualityMode} videoQualityMode The new camera video quality mode.
    * @param {string} [reason] Reason for changing the camera video quality mode.
    * @returns {Promise<BaseGuildVoiceChannel>}
    */
-  setVideoQualityMode(videoQualityMode, reason) {
+  async setVideoQualityMode(videoQualityMode, reason) {
     return this.edit({ videoQualityMode, reason });
   }
 
   // These are here only for documentation purposes - they are implemented by TextBasedChannel
-  /* eslint-disable no-empty-function */
+
+  // eslint-disable-next-line getter-return
   get lastMessage() {}
+
   send() {}
+
   sendTyping() {}
+
   createMessageCollector() {}
+
   awaitMessages() {}
+
   createMessageComponentCollector() {}
+
   awaitMessageComponent() {}
+
   bulkDelete() {}
+
   fetchWebhooks() {}
+
   createWebhook() {}
+
   setRateLimitPerUser() {}
+
   setNSFW() {}
 }
 

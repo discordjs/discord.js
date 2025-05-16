@@ -2,13 +2,14 @@
 
 const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager.js');
 const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { Invite } = require('../structures/Invite.js');
 const { resolveInviteCode } = require('../util/DataResolver.js');
+const { CachedManager } = require('./CachedManager.js');
 
 /**
  * Manages API methods for GuildInvites and stores their cache.
+ *
  * @extends {CachedManager}
  */
 class GuildInviteManager extends CachedManager {
@@ -17,6 +18,7 @@ class GuildInviteManager extends CachedManager {
 
     /**
      * The guild this Manager belongs to
+     *
      * @type {Guild}
      */
     this.guild = guild;
@@ -24,6 +26,7 @@ class GuildInviteManager extends CachedManager {
 
   /**
    * The cache of this Manager
+   *
    * @type {Collection<string, Invite>}
    * @name GuildInviteManager#cache
    */
@@ -34,26 +37,29 @@ class GuildInviteManager extends CachedManager {
 
   /**
    * Data that resolves to give an Invite object. This can be:
-   * * An invite code
-   * * An invite URL
+   * - An invite code
+   * - An invite URL
+   *
    * @typedef {string} InviteResolvable
    */
 
   /**
    * Data that can be resolved to a channel that an invite can be created on. This can be:
-   * * TextChannel
-   * * VoiceChannel
-   * * AnnouncementChannel
-   * * StageChannel
-   * * ForumChannel
-   * * MediaChannel
-   * * Snowflake
+   * - TextChannel
+   * - VoiceChannel
+   * - AnnouncementChannel
+   * - StageChannel
+   * - ForumChannel
+   * - MediaChannel
+   * - Snowflake
+   *
    * @typedef {TextChannel|VoiceChannel|AnnouncementChannel|StageChannel|ForumChannel|MediaChannel|Snowflake}
    * GuildInvitableChannelResolvable
    */
 
   /**
    * Resolves an InviteResolvable to an Invite object.
+   *
    * @method resolve
    * @memberof GuildInviteManager
    * @instance
@@ -63,6 +69,7 @@ class GuildInviteManager extends CachedManager {
 
   /**
    * Resolves an InviteResolvable to an invite code string.
+   *
    * @method resolveId
    * @memberof GuildInviteManager
    * @instance
@@ -72,6 +79,7 @@ class GuildInviteManager extends CachedManager {
 
   /**
    * Options used to fetch a single invite from a guild.
+   *
    * @typedef {Object} FetchInviteOptions
    * @property {InviteResolvable} code The invite to fetch
    * @property {boolean} [cache=true] Whether or not to cache the fetched invite
@@ -80,6 +88,7 @@ class GuildInviteManager extends CachedManager {
 
   /**
    * Options used to fetch all invites from a guild.
+   *
    * @typedef {Object} FetchInvitesOptions
    * @property {GuildInvitableChannelResolvable} [channelId]
    * The channel to fetch all invites from
@@ -88,6 +97,7 @@ class GuildInviteManager extends CachedManager {
 
   /**
    * Fetches invite(s) from Discord.
+   *
    * @param {InviteResolvable|FetchInviteOptions|FetchInvitesOptions} [options] Options for fetching guild invite(s)
    * @returns {Promise<Invite|Collection<string, Invite>>}
    * @example
@@ -128,6 +138,7 @@ class GuildInviteManager extends CachedManager {
       if (!code) throw new DiscordjsError(ErrorCodes.InviteResolveCode);
       return this._fetchSingle({ code, cache: true });
     }
+
     if (!options.code) {
       if (options.channelId) {
         const id = this.guild.channels.resolveId(options.channelId);
@@ -138,6 +149,7 @@ class GuildInviteManager extends CachedManager {
       if ('cache' in options) return this._fetchMany(options.cache);
       throw new DiscordjsError(ErrorCodes.InviteResolveCode);
     }
+
     return this._fetchSingle({
       ...options,
       code: resolveInviteCode(options.code),
@@ -168,6 +180,7 @@ class GuildInviteManager extends CachedManager {
 
   /**
    * Create an invite to the guild from the provided channel.
+   *
    * @param {GuildInvitableChannelResolvable} channel The options for creating the invite from a channel.
    * @param {InviteCreateOptions} [options={}] The options for creating the invite from a channel.
    * @returns {Promise<Invite>}
@@ -201,6 +214,7 @@ class GuildInviteManager extends CachedManager {
 
   /**
    * Deletes an invite.
+   *
    * @param {InviteResolvable} invite The invite to delete
    * @param {string} [reason] Reason for deleting the invite
    * @returns {Promise<void>}

@@ -1,4 +1,4 @@
-/* eslint-disable max-len */
+/* eslint-disable unicorn/no-empty-file */
 
 /**
  * @external ActivityFlags

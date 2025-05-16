@@ -1,22 +1,25 @@
 'use strict';
 
 const { ChannelType, Routes } = require('discord-api-types/v10');
-const { ThreadManager } = require('./ThreadManager.js');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { ThreadManager } = require('./ThreadManager.js');
 
 /**
  * Manages API methods for {@link ThreadChannel} objects and stores their cache.
+ *
  * @extends {ThreadManager}
  */
 class GuildTextThreadManager extends ThreadManager {
   /**
    * The channel this Manager belongs to
+   *
    * @name GuildTextThreadManager#channel
    * @type {TextChannel|AnnouncementChannel}
    */
 
   /**
    * Options for creating a thread. <warn>Only one of `startMessage` or `type` can be defined.</warn>
+   *
    * @typedef {StartThreadOptions} GuildTextThreadCreateOptions
    * @property {MessageResolvable} [startMessage] The message to start a thread from.
    * <warn>If this is defined, then the `type` of thread gets inferred automatically and cannot be changed.</warn>
@@ -30,6 +33,7 @@ class GuildTextThreadManager extends ThreadManager {
 
   /**
    * Creates a new thread in the channel.
+   *
    * @param {GuildTextThreadCreateOptions} [options] Options to create a new thread
    * @returns {Promise<ThreadChannel>}
    * @example

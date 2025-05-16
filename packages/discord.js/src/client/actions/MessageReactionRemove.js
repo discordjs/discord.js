@@ -1,7 +1,7 @@
 'use strict';
 
-const { Action } = require('./Action.js');
 const { Events } = require('../../util/Events.js');
+const { Action } = require('./Action.js');
 
 /*
 { user_id: 'id',
@@ -36,6 +36,7 @@ class MessageReactionRemoveAction extends Action {
     reaction._remove(user, data.burst);
     /**
      * Emitted whenever a reaction is removed from a cached message.
+     *
      * @event Client#messageReactionRemove
      * @param {MessageReaction} messageReaction The reaction object
      * @param {User} user The user whose emoji or reaction emoji was removed

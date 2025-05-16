@@ -4,11 +4,13 @@ const { Component } = require('./Component.js');
 
 /**
  * Represents a text display component
+ *
  * @extends {Component}
  */
 class TextDisplayComponent extends Component {
   /**
    * The content of this text display
+   *
    * @type {string}
    * @readonly
    */
