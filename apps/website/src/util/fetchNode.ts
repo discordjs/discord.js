@@ -19,15 +19,19 @@ export async function fetchNode({
 	const normalizeItem = item.replaceAll(':', '.').toLowerCase();
 
 	if (ENV.IS_LOCAL_DEV) {
-		const fileContent = await readFile(
-			join(
-				process.cwd(),
-				`${hasEntryPoint || normalizedEntryPoint ? `../../../discord-api-types` : `../../packages/${packageName}`}/docs/${packageName}/split/${version}.${normalizedEntryPoint}${normalizeItem}.api.json`,
-			),
-			'utf8',
-		);
+		try {
+			const fileContent = await readFile(
+				join(
+					process.cwd(),
+					`${hasEntryPoint || normalizedEntryPoint ? `../../../discord-api-types` : `../../packages/${packageName}`}/docs/${packageName}/split/${version}.${normalizedEntryPoint}${normalizeItem}.api.json`,
+				),
+				'utf8',
+			);
 
-		return JSON.parse(fileContent);
+			return JSON.parse(fileContent);
+		} catch {
+			return null;
+		}
 	}
 
 	const isMain = version === 'main';
