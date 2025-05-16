@@ -1,3 +1,5 @@
+import { DEFAULT_ENTRY_POINT } from './constants';
+
 export function parseDocsPathParams(item: string[] | undefined): {
 	entryPoints: string[];
 	foundItem: string | undefined;
@@ -10,7 +12,7 @@ export function parseDocsPathParams(item: string[] | undefined): {
 	const hasTypeMarker = lastElement?.includes('%3A');
 
 	return {
-		entryPoints: hasTypeMarker ? item.slice(0, -1) : item,
+		entryPoints: hasTypeMarker ? item.slice(0, -1) : lastElement?.length === 0 ? DEFAULT_ENTRY_POINT : item,
 		foundItem: hasTypeMarker ? lastElement : undefined,
 	};
 }

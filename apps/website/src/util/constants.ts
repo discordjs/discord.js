@@ -16,5 +16,7 @@ export const PACKAGES = [
 
 export const PACKAGES_WITH_ENTRY_POINTS = ['discord-api-types'];
 
+export const DEFAULT_ENTRY_POINT = ['v10'];
+
 export const DESCRIPTION =
 	"discord.js is a powerful Node.js module that allows you to interact with the Discord API very easily. It takes a much more object-oriented approach than most other JS Discord libraries, making your bot's code significantly tidier and easier to comprehend.";

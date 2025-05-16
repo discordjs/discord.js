@@ -291,6 +291,7 @@ export class ApiModelGenerator {
 			docComment: packageDocComment,
 			tsdocConfiguration: this._collector.extractorConfig.tsdocConfiguration,
 			projectFolderUrl: this._collector.extractorConfig.projectFolderUrl,
+			preserveMemberOrder: true,
 		});
 		this._apiModel.addMember(apiPackage);
 

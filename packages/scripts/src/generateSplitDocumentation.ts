@@ -223,39 +223,8 @@ function resolveItemURI(item: ApiItemLike, entryPoint?: ApiEntryPoint): string {
 }
 
 function itemExcerptText(excerpt: Excerpt, apiPackage: ApiPackage, parent?: ApiTypeParameterListMixin) {
-	const DISCORD_API_TYPES_VERSION = 'v10';
-	const DISCORD_API_TYPES_DOCS_URL = `https://discord-api-types.dev/api/discord-api-types-${DISCORD_API_TYPES_VERSION}`;
-
 	return excerpt.spannedTokens.map((token) => {
 		if (token.kind === ExcerptTokenKind.Reference) {
-			const source = token.canonicalReference?.source;
-			const symbol = token.canonicalReference?.symbol;
-
-			if (source && 'packageName' in source && source.packageName === 'discord-api-types' && symbol) {
-				const { meaning, componentPath: path } = symbol;
-				let href = DISCORD_API_TYPES_DOCS_URL;
-
-				// dapi-types doesn't have routes for class members
-				// so we can assume this member is for an enum
-				if (meaning === 'member' && path && 'parent' in path) {
-					// unless it's a variable like FormattingPatterns.Role
-					if (path.parent.toString() === '__type') {
-						href += `#${token.text.split('.')[0]}`;
-					} else {
-						href += `/enum/${path.parent}#${path.component}`;
-					}
-				} else if (meaning === 'type' || meaning === 'var') {
-					href += `#${token.text}`;
-				} else {
-					href += `/${meaning}/${token.text}`;
-				}
-
-				return {
-					text: token.text,
-					href,
-				};
-			}
-
 			if (token.canonicalReference) {
 				const resolved = resolveCanonicalReference(token.canonicalReference, apiPackage);
 
@@ -316,9 +285,6 @@ function itemExcerptText(excerpt: Excerpt, apiPackage: ApiPackage, parent?: ApiT
 }
 
 function itemTsDoc(item: DocNode, apiItem: ApiItem) {
-	const DISCORD_API_TYPES_VERSION = 'v10';
-	const DISCORD_API_TYPES_DOCS_URL = `https://discord-api-types.dev/api/discord-api-types-${DISCORD_API_TYPES_VERSION}`;
-
 	const createNode = (node: DocNode): any => {
 		switch (node.kind) {
 			case DocNodeKind.PlainText:
@@ -377,29 +343,6 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 						return {
 							kind: DocNodeKind.LinkTag,
 							text: itemName ?? null,
-						};
-					}
-
-					if (resolved && resolved.package === 'discord-api-types') {
-						const { displayName, kind, members, containerKey } = resolved.item;
-						let href = DISCORD_API_TYPES_DOCS_URL;
-
-						// dapi-types doesn't have routes for class members
-						// so we can assume this member is for an enum
-						if (kind === 'enum' && members?.[0]) {
-							href += `/enum/${displayName}#${members[0].displayName}`;
-						} else if (kind === 'type' || kind === 'var') {
-							href += `#${displayName}`;
-						} else {
-							href += `/${kind}/${displayName}`;
-						}
-
-						return {
-							kind: DocNodeKind.LinkTag,
-							text: displayName,
-							containerKey,
-							uri: href,
-							members: members?.map((member) => `.${member.displayName}`).join('') ?? '',
 						};
 					}
 
@@ -545,8 +488,6 @@ function itemInfo(item: ApiDeclaredItem) {
 
 function resolveFileUrl(item: ApiDeclaredItem) {
 	const {
-		displayName,
-		kind,
 		sourceLocation: { fileUrl, fileLine },
 	} = item;
 	if (fileUrl?.includes('/node_modules/')) {
@@ -571,20 +512,12 @@ function resolveFileUrl(item: ApiDeclaredItem) {
 
 		// https://github.com/discordjs/discord.js/tree/main/node_modules/.pnpm/discord-api-types@0.37.97/node_modules/discord-api-types/payloads/v10/gateway.d.ts#L240
 		if (pkgName === 'discord-api-types') {
-			const DISCORD_API_TYPES_VERSION = 'v10';
-			const DISCORD_API_TYPES_DOCS_URL = `https://discord-api-types.dev/api/discord-api-types-${DISCORD_API_TYPES_VERSION}`;
-			let href = DISCORD_API_TYPES_DOCS_URL;
-
-			if (kind === ApiItemKind.EnumMember) {
-				href += `/enum/${item.parent!.displayName}#${displayName}`;
-			} else if (kind === ApiItemKind.TypeAlias || kind === ApiItemKind.Variable) {
-				href += `#${displayName}`;
-			} else {
-				href += `/${kindToMeaning.get(kind)}/${displayName}`;
-			}
+			let currentItem = item;
+			while (currentItem.parent && currentItem.parent.kind !== ApiItemKind.EntryPoint)
+				currentItem = currentItem.parent as ApiDeclaredItem;
 
 			return {
-				sourceURL: href,
+				sourceURL: `/docs/packages/${pkgName}/${version}/${(currentItem.parent as ApiEntryPoint).importPath}/${currentItem.displayName}:${currentItem.kind}`,
 			};
 		}
 	} else if (fileUrl?.includes('/dist/') && fileUrl.includes('/main/packages/')) {
