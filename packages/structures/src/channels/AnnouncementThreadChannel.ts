@@ -9,7 +9,7 @@ import { GuildChannelMixin } from './mixins/GuildChannelMixin.js';
 import { TextChannelMixin } from './mixins/TextChannelMixin.js';
 import { ThreadChannelMixin } from './mixins/ThreadChannelMixin.js';
 
-export interface AnnouncementThreadChannel<Omitted extends keyof APIThreadChannel>
+export interface AnnouncementThreadChannel<Omitted extends keyof APIThreadChannel | '' = ''>
 	extends MixinTypes<
 		Channel<ChannelType.AnnouncementThread>,
 		[
@@ -23,7 +23,7 @@ export interface AnnouncementThreadChannel<Omitted extends keyof APIThreadChanne
 		]
 	> {}
 
-export class AnnouncementThreadChannel<Omitted extends keyof APIThreadChannel> extends Channel<
+export class AnnouncementThreadChannel<Omitted extends keyof APIThreadChannel | '' = ''> extends Channel<
 	ChannelType.AnnouncementThread,
 	Omitted
 > {}

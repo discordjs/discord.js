@@ -10,7 +10,7 @@ import { GuildChannelMixin } from './mixins/GuildChannelMixin.js';
 import { TextChannelMixin } from './mixins/TextChannelMixin.js';
 import { ThreadContainerChannelMixin } from './mixins/ThreadContainerChannelMixin.js';
 
-export interface TextChannel<Omitted extends keyof APITextChannel>
+export interface TextChannel<Omitted extends keyof APITextChannel | '' = ''>
 	extends MixinTypes<
 		Channel<ChannelType.GuildText>,
 		[
@@ -25,7 +25,10 @@ export interface TextChannel<Omitted extends keyof APITextChannel>
 		]
 	> {}
 
-export class TextChannel<Omitted extends keyof APITextChannel> extends Channel<ChannelType.GuildText, Omitted> {}
+export class TextChannel<Omitted extends keyof APITextChannel | '' = ''> extends Channel<
+	ChannelType.GuildText,
+	Omitted
+> {}
 
 Mixin(TextChannel, [
 	TextChannelMixin,

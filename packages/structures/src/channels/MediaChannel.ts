@@ -8,7 +8,7 @@ import { GuildChannelMixin } from './mixins/GuildChannelMixin.js';
 import { ThreadContainerChannelMixin } from './mixins/ThreadContainerChannelMixin.js';
 import { ThreadOnlyChannelMixin } from './mixins/ThreadOnlyChannelMixin.js';
 
-export interface MediaChannel<Omitted extends keyof APIGuildMediaChannel>
+export interface MediaChannel<Omitted extends keyof APIGuildMediaChannel | '' = ''>
 	extends MixinTypes<
 		Channel<ChannelType.GuildMedia>,
 		[
@@ -21,7 +21,7 @@ export interface MediaChannel<Omitted extends keyof APIGuildMediaChannel>
 		]
 	> {}
 
-export class MediaChannel<Omitted extends keyof APIGuildMediaChannel> extends Channel<
+export class MediaChannel<Omitted extends keyof APIGuildMediaChannel | '' = ''> extends Channel<
 	ChannelType.GuildMedia,
 	Omitted
 > {}

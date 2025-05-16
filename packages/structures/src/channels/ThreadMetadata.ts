@@ -17,6 +17,7 @@ export class ThreadMetadata<Omitted extends keyof APIThreadMetadata | '' = ''> e
 
 	public constructor(data: Partial<APIThreadMetadata>) {
 		super(data);
+		this._optimizeData(data);
 		this[kArchiveTimestamp] ??= null;
 		this[kCreatedTimestamp] ??= null;
 	}

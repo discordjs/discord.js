@@ -8,7 +8,7 @@ import { GuildChannelMixin } from './mixins/GuildChannelMixin.js';
 import { TextChannelMixin } from './mixins/TextChannelMixin.js';
 import { VoiceChannelMixin } from './mixins/VoiceChannelMixin.js';
 
-export interface StageChannel<Omitted extends keyof APIGuildStageVoiceChannel>
+export interface StageChannel<Omitted extends keyof APIGuildStageVoiceChannel | '' = ''>
 	extends MixinTypes<
 		Channel<ChannelType.GuildStageVoice>,
 		[
@@ -21,7 +21,7 @@ export interface StageChannel<Omitted extends keyof APIGuildStageVoiceChannel>
 		]
 	> {}
 
-export class StageChannel<Omitted extends keyof APIGuildStageVoiceChannel> extends Channel<
+export class StageChannel<Omitted extends keyof APIGuildStageVoiceChannel | '' = ''> extends Channel<
 	ChannelType.GuildStageVoice,
 	Omitted
 > {}

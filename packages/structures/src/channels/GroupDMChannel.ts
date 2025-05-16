@@ -3,15 +3,19 @@ import { Mixin, type MixinTypes } from '../Mixin.js';
 import { kData } from '../utils/symbols.js';
 import { Channel } from './Channel.js';
 import { ChannelOwnerMixin } from './mixins/ChannelOwnerMixin.js';
+import { DMChannelMixin } from './mixins/DMChannelMixin.js';
 import { TextChannelMixin } from './mixins/TextChannelMixin.js';
 
-export interface GroupDMChannel<Omitted extends keyof APIGroupDMChannel>
+export interface GroupDMChannel<Omitted extends keyof APIGroupDMChannel | '' = ''>
 	extends MixinTypes<
 		Channel<ChannelType.GroupDM>,
-		[TextChannelMixin<ChannelType.GroupDM>, ChannelOwnerMixin<ChannelType.GroupDM>]
+		[DMChannelMixin<ChannelType.GroupDM>, TextChannelMixin<ChannelType.GroupDM>, ChannelOwnerMixin<ChannelType.GroupDM>]
 	> {}
 
-export class GroupDMChannel<Omitted extends keyof APIGroupDMChannel> extends Channel<ChannelType.GroupDM, Omitted> {
+export class GroupDMChannel<Omitted extends keyof APIGroupDMChannel | '' = ''> extends Channel<
+	ChannelType.GroupDM,
+	Omitted
+> {
 	public get icon() {
 		return this[kData].icon;
 	}
@@ -19,6 +23,10 @@ export class GroupDMChannel<Omitted extends keyof APIGroupDMChannel> extends Cha
 	public get managed() {
 		return this[kData].managed;
 	}
+
+	public get applicationId() {
+		return this[kData].application_id;
+	}
 }
 
-Mixin(GroupDMChannel, [TextChannelMixin, ChannelOwnerMixin]);
+Mixin(GroupDMChannel, [DMChannelMixin, TextChannelMixin, ChannelOwnerMixin]);

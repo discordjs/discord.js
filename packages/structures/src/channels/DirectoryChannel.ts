@@ -6,10 +6,10 @@ import { Mixin, type MixinTypes } from '../Mixin.js';
 import { Channel } from './Channel.js';
 import { GuildChannelMixin } from './mixins/GuildChannelMixin.js';
 
-export interface DirectoryChannel<Omitted extends keyof APIChannelBase<ChannelType.GuildDirectory>>
+export interface DirectoryChannel<Omitted extends keyof APIChannelBase<ChannelType.GuildDirectory> | '' = ''>
 	extends MixinTypes<Channel<ChannelType.GuildDirectory>, [GuildChannelMixin<ChannelType.GuildDirectory>]> {}
 
-export class DirectoryChannel<Omitted extends keyof APIChannelBase<ChannelType.GuildDirectory>> extends Channel<
+export class DirectoryChannel<Omitted extends keyof APIChannelBase<ChannelType.GuildDirectory> | '' = ''> extends Channel<
 	ChannelType.GuildDirectory,
 	Omitted
 > {}

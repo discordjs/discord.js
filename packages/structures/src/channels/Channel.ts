@@ -6,7 +6,6 @@ import type {
 	APIPartialChannel,
 	ChannelType,
 	GuildChannelType,
-	APIThreadChannel,
 } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
@@ -25,9 +24,7 @@ export type PartialChannel = Channel<'unknown', Exclude<keyof APIChannel, keyof 
  */
 export type ChannelDataType<Type extends ChannelType | 'unknown'> = Type extends 'unknown'
 	? APIChannel
-	: Type extends ChannelType.AnnouncementThread | ChannelType.PrivateThread | ChannelType.PublicThread
-		? APIThreadChannel
-		: Extract<APIChannel, { type: Type }>;
+	: APIChannel & { type: Type };
 
 /**
  * Represents any channel on Discord.
