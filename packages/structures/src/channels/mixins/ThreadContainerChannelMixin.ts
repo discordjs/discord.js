@@ -1,23 +1,19 @@
 import type { ChannelType } from 'discord-api-types/v10';
-import { kData } from '../utils/symbols';
-import type { Channel } from './Channel';
+import { kData } from '../../utils/symbols';
+import type { Channel } from '../Channel';
 
-export interface ChannelTopicMixin<
+export interface ThreadContainerChannelMixin<
 	Type extends ChannelType.GuildAnnouncement | ChannelType.GuildForum | ChannelType.GuildMedia | ChannelType.GuildText,
 > extends Channel<Type> {}
 
-export class ChannelTopicMixin<
+export class ThreadContainerChannelMixin<
 	Type extends ChannelType.GuildAnnouncement | ChannelType.GuildForum | ChannelType.GuildMedia | ChannelType.GuildText,
 > {
-	public get topic() {
-		return this[kData].topic;
-	}
-
 	public get defaultAutoArchiveDuration() {
-		return this[kData].default_auto_archive_duration;
+		return this[kData].default_auto_archive_duration!;
 	}
 
 	public get defaultThreadRateLimitPerUser() {
-		return this[kData].default_thread_rate_limit_per_user;
+		return this[kData].default_thread_rate_limit_per_user!;
 	}
 }

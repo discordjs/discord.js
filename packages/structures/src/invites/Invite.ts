@@ -53,6 +53,7 @@ export class Invite<
 		data: Omit<APIExtendedInvite, Omitted>,
 	) {
 		super(data);
+		this._optimizeData(data);
 		this[kExpiresTimestamp] ??= null;
 		this[kCreatedTimestamp] ??= null;
 	}

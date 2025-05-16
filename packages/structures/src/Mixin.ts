@@ -8,6 +8,8 @@ export type Mixinable<ClassType> = new (...args: unknown[]) => ClassType;
 export type MixinBase<BaseClass extends Structure<unknown>> =
 	BaseClass extends Structure<infer DataType, infer Omitted> ? Structure<DataType, Omitted> : never;
 
+export const EnrichToJSONPropertyName = '_toJSON';
+
 /**
  * Copies the prototype (getters, setters, and methods) of all mixins to the destination class.
  * For type information see {@link MixinTypes}
@@ -40,6 +42,7 @@ export function Mixin<DestinationClass extends typeof Structure<unknown>>(
 ) {
 	const dataTemplates: Record<string, unknown>[] = [];
 	const dataOptimizations: ((data: unknown) => void)[] = [];
+	const enrichToJSONs: ((data: unknown) => void)[] = [];
 	const constructors: ((data: Partial<unknown>) => void)[] = [];
 
 	for (const mixin of mixins) {
@@ -79,6 +82,10 @@ export function Mixin<DestinationClass extends typeof Structure<unknown>>(
 				if (prop === OptimizeDataPropertyName) {
 					if (typeof descriptor.value !== 'function') return;
 					dataOptimizations.push(descriptor.value);
+					continue;
+				} else if (prop === EnrichToJSONPropertyName) {
+					if (typeof descriptor.value !== 'function') return;
+					enrichToJSONs.push(descriptor.value);
 					continue;
 				}
 
@@ -141,6 +148,34 @@ export function Mixin<DestinationClass extends typeof Structure<unknown>>(
 				}
 			},
 		});
+	}
+
+	if (enrichToJSONs.length > 0) {
+		// call base toJSON first, then enrich the result with mixins if they have a _toJSON function
+		let baseToJSON;
+		let destinationClass = destination;
+
+		while (!baseToJSON && destinationClass) {
+			baseToJSON = Object.getOwnPropertyDescriptor(destinationClass.prototype, 'toJSON')?.value;
+			destinationClass = Object.getPrototypeOf(destinationClass);
+		}
+
+		if (baseToJSON && typeof baseToJSON === 'function') {
+			Object.defineProperty(destination.prototype, 'toJSON', {
+				writable: true,
+				enumerable: true,
+				configurable: true,
+				// eslint-disable-next-line func-name-matching
+				value: function _mixinToJSON() {
+					const data = baseToJSON.call(this);
+					for (const enricher of enrichToJSONs) {
+						enricher.call(this, data);
+					}
+
+					return data;
+				},
+			});
+		}
 	}
 
 	// Copy the properties (setters) of each mixins template to the destinations template

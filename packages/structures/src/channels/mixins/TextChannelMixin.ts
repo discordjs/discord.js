@@ -1,6 +1,6 @@
 import type { TextChannelType } from 'discord-api-types/v10';
-import { kData } from '../utils/symbols';
-import type { Channel } from './Channel';
+import { kData } from '../../utils/symbols';
+import type { Channel } from '../Channel';
 
 export interface TextChannelMixin<Type extends TextChannelType> extends Channel<Type> {}
 
@@ -12,7 +12,7 @@ export class TextChannelMixin<Type extends TextChannelType> {
 	/**
 	 * Indicates whether this channel can contain messages
 	 */
-	public isTextBased() {
+	public isTextBased(): this is TextChannelMixin<Extract<Type, TextChannelType>> {
 		return true;
 	}
 }

@@ -1,6 +1,6 @@
 import type { GuildChannelType } from 'discord-api-types/v10';
-import { kData } from '../utils/symbols';
-import type { Channel } from './Channel';
+import { kData } from '../../utils/symbols';
+import type { Channel } from '../Channel';
 
 export interface GuildChannelMixin<Type extends GuildChannelType> extends Channel<Type> {}
 
@@ -23,13 +23,13 @@ export class GuildChannelMixin<Type extends GuildChannelType> {
 	 * The URL to this channel.
 	 */
 	public get url() {
-		return `https://discord.com/${this.guildId}/${this.id}`;
+		return `https://discord.com/channels/${this.guildId}/${this.id}`;
 	}
 
 	/**
 	 * Indiciates whether this channel is in a guild
 	 */
-	public isGuildBased() {
+	public isGuildBased(): this is GuildChannelMixin<Extract<Type, GuildChannelType>> {
 		return true;
 	}
 }
