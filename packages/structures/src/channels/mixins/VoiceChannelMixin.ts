@@ -9,18 +9,30 @@ export interface VoiceChannelMixin<Type extends ChannelType.GuildStageVoice | Ch
 export class VoiceChannelMixin<
 	Type extends ChannelType.GuildStageVoice | ChannelType.GuildVoice,
 > extends TextChannelMixin<Type> {
+	/**
+	 * The bitrate (in bits) of the voice channel.
+	 */
 	public get bitrate() {
 		return this[kData].bitrate!;
 	}
 
+	/**
+	 * The voice region id for this channel, automatic when set to null.
+	 */
 	public get rtcRegion() {
 		return this[kData].rtc_region!;
 	}
 
+	/**
+	 * The camera video quality mode of the voice channel, 1 when not present.
+	 */
 	public get videoQualityMode() {
 		return this[kData].video_quality_mode!;
 	}
 
+	/**
+	 * The user limit of the voice channel.
+	 */
 	public get userLimit() {
 		return this[kData].user_limit!;
 	}

@@ -15,6 +15,9 @@ export class GuildChannelMixin<Type extends GuildChannelType> {
 		return this[kData].flags!;
 	}
 
+	/**
+	 * THe id of the guild this channel is in.
+	 */
 	public get guildId() {
 		return this[kData].guild_id!;
 	}

@@ -10,6 +10,9 @@ export interface DMChannelMixin<Type extends ChannelType.DM | ChannelType.GroupD
 }
 
 export class DMChannelMixin<Type extends ChannelType.DM | ChannelType.GroupDM> {
+	/**
+	 * The template used for removing data from the raw data stored for each Channel.
+	 */
 	public static DataTemplate: Partial<ChannelDataType<ChannelType.DM | ChannelType.GroupDM>> = {
 		set recipients(_: APIUser[]) {},
 	};
@@ -37,6 +40,11 @@ export class DMChannelMixin<Type extends ChannelType.DM | ChannelType.GroupDM> {
 		return true;
 	}
 
+	/**
+	 * Adds data from optimized properties omitted from [kData].
+	 *
+	 * @param data the result of {@link Channel.toJSON()}
+	 */
 	protected _toJSON(data: Partial<ChannelDataType<Type>>) {
 		if (this.recipients) {
 			data.recipients = this.recipients.map((recipient) => recipient.toJSON());

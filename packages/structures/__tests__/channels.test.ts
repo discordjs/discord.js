@@ -28,11 +28,11 @@ import {
 	GroupDMChannel,
 	MediaChannel,
 	PrivateThreadChannel,
+	PublicThreadChannel,
 	StageChannel,
 	TextChannel,
 	VoiceChannel,
 } from '../src';
-import { PublicThreadChannel } from '../src/channels/PublicThreadChannel';
 import { kData } from '../src/utils/symbols';
 
 describe('text channel', () => {
@@ -350,6 +350,8 @@ describe('forum channel', () => {
 		expect(instance.parentId).toBe(data.parent_id);
 		expect(instance.permissionOverwrites?.map((overwrite) => overwrite.toJSON())).toEqual(data.permission_overwrites);
 		expect(instance.defaultForumLayout).toBe(data.default_forum_layout);
+		expect(instance.defaultReactionEmoji).toBe(data.default_reaction_emoji);
+		expect(instance.defaultSortOrder).toBe(data.default_sort_order);
 		expect(instance.availableTags.map((tag) => tag.toJSON())).toEqual(data.available_tags);
 		expect(instance.availableTags[0]?.id).toBe(data.available_tags[0]?.id);
 		expect(instance.availableTags[0]?.emojiId).toBe(data.available_tags[0]?.emoji_id);
@@ -574,24 +576,27 @@ describe('thread channels', () => {
 		parent_id: '4',
 		rate_limit_per_user: 9,
 		applied_tags: ['567'],
+	};
+
+	const dataAnnounce: Omit<APIThreadChannel, 'position'> = {
+		...dataPublic,
 		thread_metadata: {
 			archive_timestamp: '2024-09-08T12:01:02.345Z',
 			archived: false,
 			auto_archive_duration: ThreadAutoArchiveDuration.ThreeDays,
 			locked: true,
 			create_timestamp: '2023-01-02T15:13:11.987Z',
-			invitable: true,
 		},
+		type: ChannelType.AnnouncementThread,
 	};
 
 	const dataPrivate: Omit<APIThreadChannel, 'position'> = {
 		...dataPublic,
+		thread_metadata: {
+			...dataAnnounce.thread_metadata!,
+			invitable: true,
+		},
 		type: ChannelType.PrivateThread,
-	};
-
-	const dataAnnounce: Omit<APIThreadChannel, 'position'> = {
-		...dataPublic,
-		type: ChannelType.AnnouncementThread,
 	};
 
 	test('PublicThreadChannel has all properties', () => {
@@ -606,7 +611,9 @@ describe('thread channels', () => {
 		expect(instance.rateLimitPerUser).toBe(dataPublic.rate_limit_per_user);
 		expect(instance.type).toBe(ChannelType.PublicThread);
 		expect(instance.appliedTags).toEqual(dataPublic.applied_tags);
-		expect(instance.threadMetadata?.toJSON()).toEqual(dataAnnounce.thread_metadata);
+		expect(instance.memberCount).toBe(dataPublic.member_count);
+		expect(instance.messageCount).toBe(dataPublic.message_count);
+		expect(instance.totalMessageSent).toBe(dataPublic.total_message_sent);
 		expect(instance.url).toBe('https://discord.com/channels/2/1');
 		expect(instance.toJSON()).toEqual(dataPublic);
 	});
@@ -633,6 +640,15 @@ describe('thread channels', () => {
 		expect(instance.nsfw).toBe(dataPrivate.nsfw);
 		expect(instance.parentId).toBe(dataPrivate.parent_id);
 		expect(instance.rateLimitPerUser).toBe(dataPrivate.rate_limit_per_user);
+		expect(instance.threadMetadata?.toJSON()).toEqual(dataPrivate.thread_metadata);
+		expect(instance.threadMetadata?.archived).toBe(dataPrivate.thread_metadata?.archived);
+		expect(instance.threadMetadata?.archivedAt?.toISOString()).toBe(dataPrivate.thread_metadata?.archive_timestamp);
+		expect(instance.threadMetadata?.archivedTimestamp).toBe(Date.parse(dataPrivate.thread_metadata!.archive_timestamp));
+		expect(instance.threadMetadata?.createdAt?.toISOString()).toBe(dataPrivate.thread_metadata?.create_timestamp);
+		expect(instance.threadMetadata?.createdTimestamp).toBe(Date.parse(dataPrivate.thread_metadata!.create_timestamp!));
+		expect(instance.threadMetadata?.autoArchiveDuration).toBe(dataPrivate.thread_metadata?.auto_archive_duration);
+		expect(instance.threadMetadata?.invitable).toBe(dataPrivate.thread_metadata?.invitable);
+		expect(instance.threadMetadata?.locked).toBe(dataPrivate.thread_metadata?.locked);
 		expect(instance.type).toBe(ChannelType.PrivateThread);
 		expect(instance.url).toBe('https://discord.com/channels/2/1');
 		expect(instance.toJSON()).toEqual(dataPrivate);
@@ -660,6 +676,7 @@ describe('thread channels', () => {
 		expect(instance.nsfw).toBe(dataAnnounce.nsfw);
 		expect(instance.parentId).toBe(dataAnnounce.parent_id);
 		expect(instance.rateLimitPerUser).toBe(dataAnnounce.rate_limit_per_user);
+		expect(instance.threadMetadata?.toJSON()).toEqual(dataAnnounce.thread_metadata);
 		expect(instance.type).toBe(ChannelType.AnnouncementThread);
 		expect(instance.url).toBe('https://discord.com/channels/2/1');
 		expect(instance.toJSON()).toEqual(dataAnnounce);

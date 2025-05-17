@@ -15,6 +15,9 @@ export interface ChannelPermissionMixin<
 export class ChannelPermissionMixin<
 	Type extends Exclude<GuildChannelType, ChannelType.GuildDirectory | ThreadChannelType>,
 > {
+	/**
+	 * The template used for removing data from the raw data stored for each Channel.
+	 */
 	public static DataTemplate: Partial<
 		ChannelDataType<Exclude<GuildChannelType, ChannelType.GuildDirectory | ThreadChannelType>>
 	> = {
@@ -46,6 +49,11 @@ export class ChannelPermissionMixin<
 		return true;
 	}
 
+	/**
+	 * Adds data from optimized properties omitted from [kData].
+	 *
+	 * @param data the result of {@link Channel.toJSON()}
+	 */
 	protected _toJSON(data: Partial<ChannelDataType<Type>>) {
 		if (this.permissionOverwrites) {
 			data.permission_overwrites = this.permissionOverwrites?.map((overwrite) => overwrite.toJSON());

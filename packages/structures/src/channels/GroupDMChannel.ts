@@ -21,14 +21,23 @@ export class GroupDMChannel<Omitted extends keyof APIGroupDMChannel | '' = ''> e
 		this._optimizeData(data);
 	}
 
+	/**
+	 * The icon hash of the group DM.
+	 */
 	public get icon() {
 		return this[kData].icon;
 	}
 
+	/**
+	 * Whether the channel is managed by an application via the `gdm.join` OAuth2 scope.
+	 */
 	public get managed() {
 		return this[kData].managed;
 	}
 
+	/**
+	 * The application id of the group DM creator if it is bot-created.
+	 */
 	public get applicationId() {
 		return this[kData].application_id;
 	}

@@ -8,6 +8,9 @@ export interface ChannelWebhookMixin<
 export class ChannelWebhookMixin<
 	Type extends ChannelType.GuildForum | ChannelType.GuildMedia | Exclude<GuildTextChannelType, ThreadChannelType>,
 > {
+	/**
+	 * Indicates whether this channel can have webhooks
+	 */
 	public isWebhookCapable(): this is ChannelWebhookMixin<
 		Extract<Type, ChannelType.GuildForum | ChannelType.GuildMedia | Exclude<GuildTextChannelType, ThreadChannelType>>
 	> {

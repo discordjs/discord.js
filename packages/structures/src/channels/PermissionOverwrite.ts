@@ -41,18 +41,30 @@ export class PermissionOverwrite<Omitted extends keyof APIOverwrite | '' = ''> e
 		this[kDeny] = data.deny ? BigInt(data.deny) : (this[kDeny] ?? null);
 	}
 
+	/**
+	 * The permission bit set allowed by this overwrite.
+	 */
 	public get allow() {
 		return this[kAllow];
 	}
 
+	/**
+	 * The permission bit set denied by this overwrite.
+	 */
 	public get deny() {
 		return this[kDeny];
 	}
 
+	/**
+	 * The role or user id for this overwrite.
+	 */
 	public get id() {
 		return this[kData].id;
 	}
 
+	/**
+	 * The type of this overwrite.
+	 */
 	public get type() {
 		return this[kData].type;
 	}
