@@ -88,6 +88,15 @@ runs:
         flags: rest
         token: ${{ inputs.CODECOV_TOKEN }}
 
+    - name: Upload Structures Coverage
+      if: ${{ hashFiles('packages/structures/coverage/cobertura-coverage.xml') != '' }}
+      uses: codecov/codecov-action@v4
+      with:
+        files: ./packages/structures/coverage/cobertura-coverage.xml
+        disable_search: true
+        flags: rest
+        token: ${{ inputs.CODECOV_TOKEN }}
+
     - name: Upload Util Coverage
       if: ${{ hashFiles('packages/util/coverage/cobertura-coverage.xml') != '' }}
       uses: codecov/codecov-action@v4
