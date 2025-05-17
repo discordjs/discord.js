@@ -29,6 +29,11 @@ export class ChannelPinMixin<
 		return this.lastPinTimestamp ? new Date(this.lastPinTimestamp) : null;
 	}
 
+	/**
+	 * Adds data from optimized properties omitted from [kData].
+	 *
+	 * @param data the result of {@link Channel.toJSON()}
+	 */
 	protected _toJSON(data: Partial<ChannelDataType<Type>>) {
 		if (this.lastPinTimestamp) {
 			data.last_pin_timestamp = new Date(this.lastPinTimestamp).toISOString();
