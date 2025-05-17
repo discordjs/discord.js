@@ -18,7 +18,7 @@ describe('Invite', () => {
 		target_type: InviteTargetType.EmbeddedApplication,
 	};
 
-	test('TextChannel has all properties', () => {
+	test('Invite has all properties', () => {
 		const instance = new Invite(data);
 		// expect(instance.type).toBe(data.type);
 		expect(instance.code).toBe(data.code);
@@ -30,6 +30,9 @@ describe('Invite', () => {
 		expect(instance.presenceCount).toBe(data.approximate_presence_count);
 		expect(instance.targetType).toBe(data.target_type);
 		expect(instance.temporary).toBe(data.temporary);
+		expect(instance.uses).toBe(data.uses);
+		expect(instance.expiresTimestamp).toStrictEqual(Date.parse('2020-10-10T13:50:29.209Z'));
+		expect(instance.expiresAt).toStrictEqual(new Date('2020-10-10T13:50:29.209Z'));
 		expect(instance.url).toBe('https://discord.gg/123');
 		expect(instance.toJSON()).toEqual(data);
 	});

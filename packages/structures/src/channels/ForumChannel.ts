@@ -5,7 +5,6 @@ import { Channel } from './Channel.js';
 import { ChannelParentMixin } from './mixins/ChannelParentMixin.js';
 import { ChannelPermissionMixin } from './mixins/ChannelPermissionMixin.js';
 import { ChannelTopicMixin } from './mixins/ChannelTopicMixin.js';
-import { ThreadContainerChannelMixin } from './mixins/ThreadContainerChannelMixin.js';
 import { ThreadOnlyChannelMixin } from './mixins/ThreadOnlyChannelMixin.js';
 
 export interface ForumChannel<Omitted extends keyof APIGuildForumChannel | '' = 'available_tags'>
@@ -15,7 +14,6 @@ export interface ForumChannel<Omitted extends keyof APIGuildForumChannel | '' = 
 			ChannelParentMixin<ChannelType.GuildForum>,
 			ChannelPermissionMixin<ChannelType.GuildForum>,
 			ChannelTopicMixin<ChannelType.GuildForum>,
-			ThreadContainerChannelMixin<ChannelType.GuildForum>,
 			ThreadOnlyChannelMixin<ChannelType.GuildForum>,
 		]
 	> {}
@@ -34,10 +32,4 @@ export class ForumChannel<Omitted extends keyof APIGuildForumChannel | '' = 'ava
 	}
 }
 
-Mixin(ForumChannel, [
-	ChannelParentMixin,
-	ChannelPermissionMixin,
-	ChannelTopicMixin,
-	ThreadContainerChannelMixin,
-	ThreadOnlyChannelMixin,
-]);
+Mixin(ForumChannel, [ChannelParentMixin, ChannelPermissionMixin, ChannelTopicMixin, ThreadOnlyChannelMixin]);

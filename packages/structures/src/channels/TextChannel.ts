@@ -7,7 +7,6 @@ import { ChannelPinMixin } from './mixins/ChannelPinMixin.js';
 import { ChannelSlowmodeMixin } from './mixins/ChannelSlowmodeMixin.js';
 import { ChannelTopicMixin } from './mixins/ChannelTopicMixin.js';
 import { TextChannelMixin } from './mixins/TextChannelMixin.js';
-import { ThreadContainerChannelMixin } from './mixins/ThreadContainerChannelMixin.js';
 
 export interface TextChannel<Omitted extends keyof APITextChannel | '' = ''>
 	extends MixinTypes<
@@ -19,7 +18,6 @@ export interface TextChannel<Omitted extends keyof APITextChannel | '' = ''>
 			ChannelPinMixin<ChannelType.GuildText>,
 			ChannelSlowmodeMixin<ChannelType.GuildText>,
 			ChannelTopicMixin<ChannelType.GuildText>,
-			ThreadContainerChannelMixin<ChannelType.GuildText>,
 		]
 	> {}
 
@@ -40,5 +38,4 @@ Mixin(TextChannel, [
 	ChannelPinMixin,
 	ChannelSlowmodeMixin,
 	ChannelTopicMixin,
-	ThreadContainerChannelMixin,
 ]);

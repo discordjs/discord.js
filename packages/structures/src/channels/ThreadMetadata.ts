@@ -84,4 +84,17 @@ export class ThreadMetadata<Omitted extends keyof APIThreadMetadata | '' = ''> e
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
+
+	public override toJSON() {
+		const data = super.toJSON();
+		if (this[kArchiveTimestamp]) {
+			data.archive_timestamp = new Date(this[kArchiveTimestamp]).toISOString();
+		}
+
+		if (this[kCreatedTimestamp]) {
+			data.create_timestamp = new Date(this[kCreatedTimestamp]).toISOString();
+		}
+
+		return data;
+	}
 }

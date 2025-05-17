@@ -75,6 +75,10 @@ describe('text channel', () => {
 		expect(instance.nsfw).toBe(data.nsfw);
 		expect(instance.parentId).toBe(data.parent_id);
 		expect(instance.permissionOverwrites?.map((overwrite) => overwrite.toJSON())).toEqual(data.permission_overwrites);
+		expect(instance.permissionOverwrites?.[0]?.allow?.toString()).toBe(data.permission_overwrites?.[0]?.allow);
+		expect(instance.permissionOverwrites?.[0]?.deny?.toString()).toBe(data.permission_overwrites?.[0]?.deny);
+		expect(instance.permissionOverwrites?.[0]?.id).toBe(data.permission_overwrites?.[0]?.id);
+		expect(instance.permissionOverwrites?.[0]?.type).toBe(data.permission_overwrites?.[0]?.type);
 		expect(instance.rateLimitPerUser).toBe(data.rate_limit_per_user);
 		expect(instance.topic).toBe(data.topic);
 		expect(instance.type).toBe(ChannelType.GuildText);
@@ -92,6 +96,7 @@ describe('text channel', () => {
 		expect(instance.isThread()).toBe(false);
 		expect(instance.isThreadOnly()).toBe(false);
 		expect(instance.isVoiceBased()).toBe(false);
+		expect(instance.isWebhookCapable()).toBe(true);
 	});
 });
 
@@ -103,17 +108,9 @@ describe('announcement channel', () => {
 		position: 0,
 		guild_id: '2',
 		last_message_id: '3',
-		last_pin_timestamp: '2020-10-10T13:50:17.209Z',
+		last_pin_timestamp: null,
 		nsfw: true,
 		parent_id: '4',
-		permission_overwrites: [
-			{
-				allow: '123',
-				deny: '456',
-				type: OverwriteType.Member,
-				id: '5',
-			},
-		],
 		rate_limit_per_user: 9,
 		topic: 'hello',
 		default_auto_archive_duration: ThreadAutoArchiveDuration.OneHour,
@@ -130,8 +127,8 @@ describe('announcement channel', () => {
 		expect(instance.flags).toBe(data.flags);
 		expect(instance.guildId).toBe(data.guild_id);
 		expect(instance.lastMessageId).toBe(data.last_message_id);
-		expect(instance.lastPinTimestamp).toBe(Date.parse(data.last_pin_timestamp!));
-		expect(instance.lastPinAt?.toISOString()).toBe(data.last_pin_timestamp);
+		expect(instance.lastPinTimestamp).toBe(null);
+		expect(instance.lastPinAt).toBe(data.last_pin_timestamp);
 		expect(instance.nsfw).toBe(data.nsfw);
 		expect(instance.parentId).toBe(data.parent_id);
 		expect(instance.permissionOverwrites?.map((overwrite) => overwrite.toJSON())).toEqual(data.permission_overwrites);
@@ -151,6 +148,7 @@ describe('announcement channel', () => {
 		expect(instance.isThread()).toBe(false);
 		expect(instance.isThreadOnly()).toBe(false);
 		expect(instance.isVoiceBased()).toBe(false);
+		expect(instance.isWebhookCapable()).toBe(true);
 	});
 });
 
@@ -193,16 +191,21 @@ describe('category channel', () => {
 		expect(instance.isThread()).toBe(false);
 		expect(instance.isThreadOnly()).toBe(false);
 		expect(instance.isVoiceBased()).toBe(false);
+		expect(instance.isWebhookCapable()).toBe(false);
 	});
 });
 
 describe('DM channel', () => {
-	const data: APIDMChannel = {
+	const dataNoRecipients: APIDMChannel = {
 		id: '1',
 		type: ChannelType.DM,
 		last_message_id: '3',
 		last_pin_timestamp: '2020-10-10T13:50:17.209Z',
 		name: null,
+	};
+
+	const data = {
+		...dataNoRecipients,
 		recipients: [
 			{
 				avatar: '123',
@@ -228,6 +231,12 @@ describe('DM channel', () => {
 		expect(instance.toJSON()).toEqual(data);
 	});
 
+	test('DMChannel with no recipients', () => {
+		const instance = new DMChannel(dataNoRecipients);
+		expect(instance.recipients?.map((recipient) => recipient.toJSON())).toEqual(dataNoRecipients.recipients);
+		expect(instance.toJSON()).toEqual(dataNoRecipients);
+	});
+
 	test('typeguards', () => {
 		const instance = new DMChannel(data);
 		expect(instance.isDMBased()).toBe(true);
@@ -237,6 +246,7 @@ describe('DM channel', () => {
 		expect(instance.isThread()).toBe(false);
 		expect(instance.isThreadOnly()).toBe(false);
 		expect(instance.isVoiceBased()).toBe(false);
+		expect(instance.isWebhookCapable()).toBe(false);
 	});
 });
 
@@ -272,6 +282,7 @@ describe('GroupDM channel', () => {
 		expect(instance.managed).toBe(data.managed);
 		expect(instance.ownerId).toBe(data.owner_id);
 		expect(instance.type).toBe(ChannelType.GroupDM);
+		expect(instance.icon).toBe(data.icon);
 		expect(instance.url).toBe('https://discord.com/channels/@me/1');
 		expect(instance.toJSON()).toEqual(data);
 	});
@@ -285,6 +296,7 @@ describe('GroupDM channel', () => {
 		expect(instance.isThread()).toBe(false);
 		expect(instance.isThreadOnly()).toBe(false);
 		expect(instance.isVoiceBased()).toBe(false);
+		expect(instance.isWebhookCapable()).toBe(false);
 	});
 });
 
@@ -338,6 +350,13 @@ describe('forum channel', () => {
 		expect(instance.parentId).toBe(data.parent_id);
 		expect(instance.permissionOverwrites?.map((overwrite) => overwrite.toJSON())).toEqual(data.permission_overwrites);
 		expect(instance.defaultForumLayout).toBe(data.default_forum_layout);
+		expect(instance.availableTags.map((tag) => tag.toJSON())).toEqual(data.available_tags);
+		expect(instance.availableTags[0]?.id).toBe(data.available_tags[0]?.id);
+		expect(instance.availableTags[0]?.emojiId).toBe(data.available_tags[0]?.emoji_id);
+		expect(instance.availableTags[0]?.emojiName).toBe(data.available_tags[0]?.emoji_name);
+		expect(instance.availableTags[0]?.name).toBe(data.available_tags[0]?.name);
+		expect(instance.availableTags[0]?.moderated).toBe(data.available_tags[0]?.moderated);
+		expect(instance.availableTags[0]?.emoji).toBe(data.available_tags[0]?.emoji_name);
 		expect(instance.topic).toBe(data.topic);
 		expect(instance.type).toBe(ChannelType.GuildForum);
 		expect(instance.url).toBe('https://discord.com/channels/2/1');
@@ -353,6 +372,7 @@ describe('forum channel', () => {
 		expect(instance.isThread()).toBe(false);
 		expect(instance.isThreadOnly()).toBe(true);
 		expect(instance.isVoiceBased()).toBe(false);
+		expect(instance.isWebhookCapable()).toBe(true);
 	});
 });
 
@@ -379,10 +399,10 @@ describe('media channel', () => {
 		available_tags: [
 			{
 				name: 'emoji',
-				emoji_name: '😀',
+				emoji_name: null,
 				moderated: false,
 				id: '789',
-				emoji_id: null,
+				emoji_id: '444',
 			},
 		],
 		default_reaction_emoji: {
@@ -405,6 +425,7 @@ describe('media channel', () => {
 		expect(instance.parentId).toBe(data.parent_id);
 		expect(instance.permissionOverwrites?.map((overwrite) => overwrite.toJSON())).toEqual(data.permission_overwrites);
 		expect(instance.availableTags.map((tag) => tag.toJSON())).toEqual(data.available_tags);
+		expect(instance.availableTags[0]?.emoji).toBe(`<:_:${data.available_tags[0]?.emoji_id}>`);
 		expect(instance.topic).toBe(data.topic);
 		expect(instance.type).toBe(ChannelType.GuildMedia);
 		expect(instance.url).toBe('https://discord.com/channels/2/1');
@@ -420,6 +441,7 @@ describe('media channel', () => {
 		expect(instance.isThread()).toBe(false);
 		expect(instance.isThreadOnly()).toBe(true);
 		expect(instance.isVoiceBased()).toBe(false);
+		expect(instance.isWebhookCapable()).toBe(true);
 	});
 });
 
@@ -459,6 +481,7 @@ describe('voice channel', () => {
 		expect(instance.guildId).toBe(data.guild_id);
 		expect(instance.lastMessageId).toBe(data.last_message_id);
 		expect(instance.videoQualityMode).toBe(data.video_quality_mode);
+		expect(instance.userLimit).toBe(data.user_limit);
 		expect(instance.nsfw).toBe(data.nsfw);
 		expect(instance.parentId).toBe(data.parent_id);
 		expect(instance.permissionOverwrites?.map((overwrite) => overwrite.toJSON())).toEqual(data.permission_overwrites);
@@ -477,6 +500,7 @@ describe('voice channel', () => {
 		expect(instance.isThread()).toBe(false);
 		expect(instance.isThreadOnly()).toBe(false);
 		expect(instance.isVoiceBased()).toBe(true);
+		expect(instance.isWebhookCapable()).toBe(true);
 	});
 });
 
@@ -534,6 +558,7 @@ describe('stage channel', () => {
 		expect(instance.isThread()).toBe(false);
 		expect(instance.isThreadOnly()).toBe(false);
 		expect(instance.isVoiceBased()).toBe(true);
+		expect(instance.isWebhookCapable()).toBe(true);
 	});
 });
 
@@ -549,6 +574,14 @@ describe('thread channels', () => {
 		parent_id: '4',
 		rate_limit_per_user: 9,
 		applied_tags: ['567'],
+		thread_metadata: {
+			archive_timestamp: '2024-09-08T12:01:02.345Z',
+			archived: false,
+			auto_archive_duration: ThreadAutoArchiveDuration.ThreeDays,
+			locked: true,
+			create_timestamp: '2023-01-02T15:13:11.987Z',
+			invitable: true,
+		},
 	};
 
 	const dataPrivate: Omit<APIThreadChannel, 'position'> = {
@@ -572,6 +605,8 @@ describe('thread channels', () => {
 		expect(instance.parentId).toBe(dataPublic.parent_id);
 		expect(instance.rateLimitPerUser).toBe(dataPublic.rate_limit_per_user);
 		expect(instance.type).toBe(ChannelType.PublicThread);
+		expect(instance.appliedTags).toEqual(dataPublic.applied_tags);
+		expect(instance.threadMetadata?.toJSON()).toEqual(dataAnnounce.thread_metadata);
 		expect(instance.url).toBe('https://discord.com/channels/2/1');
 		expect(instance.toJSON()).toEqual(dataPublic);
 	});
@@ -585,6 +620,7 @@ describe('thread channels', () => {
 		expect(instance.isThread()).toBe(true);
 		expect(instance.isThreadOnly()).toBe(false);
 		expect(instance.isVoiceBased()).toBe(false);
+		expect(instance.isWebhookCapable()).toBe(false);
 	});
 
 	test('PrivateThreadChannel has all properties', () => {
@@ -611,6 +647,7 @@ describe('thread channels', () => {
 		expect(instance.isThread()).toBe(true);
 		expect(instance.isThreadOnly()).toBe(false);
 		expect(instance.isVoiceBased()).toBe(false);
+		expect(instance.isWebhookCapable()).toBe(false);
 	});
 
 	test('AnnouncementThreadChannel has all properties', () => {
@@ -637,5 +674,6 @@ describe('thread channels', () => {
 		expect(instance.isThread()).toBe(true);
 		expect(instance.isThreadOnly()).toBe(false);
 		expect(instance.isVoiceBased()).toBe(false);
+		expect(instance.isWebhookCapable()).toBe(false);
 	});
 });

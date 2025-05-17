@@ -8,7 +8,6 @@ import { ChannelPinMixin } from './mixins/ChannelPinMixin.js';
 import { ChannelSlowmodeMixin } from './mixins/ChannelSlowmodeMixin.js';
 import { ChannelTopicMixin } from './mixins/ChannelTopicMixin.js';
 import { TextChannelMixin } from './mixins/TextChannelMixin.js';
-import { ThreadContainerChannelMixin } from './mixins/ThreadContainerChannelMixin.js';
 
 export interface AnnouncementChannel<
 	Omitted extends keyof APINewsChannel | '' = 'last_pin_timestamp' | 'permission_overwrites',
@@ -21,7 +20,6 @@ export interface AnnouncementChannel<
 			ChannelPinMixin<ChannelType.GuildAnnouncement>,
 			ChannelSlowmodeMixin<ChannelType.GuildAnnouncement>,
 			ChannelTopicMixin<ChannelType.GuildAnnouncement>,
-			ThreadContainerChannelMixin<ChannelType.GuildAnnouncement>,
 		]
 	> {}
 
@@ -41,5 +39,4 @@ Mixin(AnnouncementChannel, [
 	ChannelPinMixin,
 	ChannelSlowmodeMixin,
 	ChannelTopicMixin,
-	ThreadContainerChannelMixin,
 ]);
