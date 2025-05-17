@@ -1,9 +1,9 @@
-import type { ChannelType, GuildTextChannelType } from 'discord-api-types/v10';
+import type { ChannelType, GuildChannelType } from 'discord-api-types/v10';
 import { kData } from '../../utils/symbols';
 import { GuildChannelMixin } from './GuildChannelMixin';
 
 export class ChannelParentMixin<
-	Type extends ChannelType.GuildForum | ChannelType.GuildMedia | GuildTextChannelType,
+	Type extends Exclude<GuildChannelType, ChannelType.GuildCategory | ChannelType.GuildDirectory>,
 > extends GuildChannelMixin<Type> {
 	/**
 	 * The id of the parent category for a channel (each parent category can contain up to 50 channels) or id of the parent channel for a thread

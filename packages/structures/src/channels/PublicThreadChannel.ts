@@ -7,7 +7,6 @@ import { ChannelOwnerMixin } from './mixins/ChannelOwnerMixin.js';
 import { ChannelParentMixin } from './mixins/ChannelParentMixin.js';
 import { ChannelPinMixin } from './mixins/ChannelPinMixin.js';
 import { ChannelSlowmodeMixin } from './mixins/ChannelSlowmodeMixin.js';
-import { GuildChannelMixin } from './mixins/GuildChannelMixin.js';
 import { TextChannelMixin } from './mixins/TextChannelMixin.js';
 import { ThreadChannelMixin } from './mixins/ThreadChannelMixin.js';
 
@@ -20,7 +19,6 @@ export interface PublicThreadChannel<Omitted extends keyof APIThreadChannel | ''
 			ChannelParentMixin<ChannelType.PublicThread>,
 			ChannelPinMixin<ChannelType.PublicThread>,
 			ChannelSlowmodeMixin<ChannelType.PublicThread>,
-			GuildChannelMixin<ChannelType.PublicThread>,
 			ThreadChannelMixin<ChannelType.PublicThread>,
 		]
 	> {}
@@ -45,6 +43,5 @@ Mixin(PublicThreadChannel, [
 	ChannelParentMixin,
 	ChannelPinMixin,
 	ChannelSlowmodeMixin,
-	GuildChannelMixin,
 	ThreadChannelMixin,
 ]);

@@ -1,11 +1,14 @@
 import type { ChannelType } from 'discord-api-types/v10';
 import { kData } from '../../utils/symbols';
 import type { Channel } from '../Channel';
+import { TextChannelMixin } from './TextChannelMixin';
 
 export interface VoiceChannelMixin<Type extends ChannelType.GuildStageVoice | ChannelType.GuildVoice>
 	extends Channel<Type> {}
 
-export class VoiceChannelMixin<Type extends ChannelType.GuildStageVoice | ChannelType.GuildVoice> {
+export class VoiceChannelMixin<
+	Type extends ChannelType.GuildStageVoice | ChannelType.GuildVoice,
+> extends TextChannelMixin<Type> {
 	public get bitrate() {
 		return this[kData].bitrate!;
 	}
@@ -25,7 +28,7 @@ export class VoiceChannelMixin<Type extends ChannelType.GuildStageVoice | Channe
 	/**
 	 * Indicates whether this channel has voice connection capabilities
 	 */
-	public isVoiceBased(): this is VoiceChannelMixin<
+	public override isVoiceBased(): this is VoiceChannelMixin<
 		Extract<Type, ChannelType.GuildStageVoice | ChannelType.GuildVoice>
 	> {
 		return true;

@@ -1,6 +1,7 @@
 import type { ChannelType } from 'discord-api-types/v10';
 import { kData } from '../../utils/symbols';
 import type { Channel } from '../Channel';
+import { ChannelWebhookMixin } from './ChannelWebhookMixin';
 
 export interface ChannelTopicMixin<
 	Type extends ChannelType.GuildAnnouncement | ChannelType.GuildForum | ChannelType.GuildMedia | ChannelType.GuildText,
@@ -8,7 +9,7 @@ export interface ChannelTopicMixin<
 
 export class ChannelTopicMixin<
 	Type extends ChannelType.GuildAnnouncement | ChannelType.GuildForum | ChannelType.GuildMedia | ChannelType.GuildText,
-> {
+> extends ChannelWebhookMixin<Type> {
 	public get topic() {
 		return this[kData].topic;
 	}

@@ -4,19 +4,17 @@ import { Channel } from './Channel.js';
 import { ChannelParentMixin } from './mixins/ChannelParentMixin.js';
 import { ChannelPermissionMixin } from './mixins/ChannelPermissionMixin.js';
 import { ChannelSlowmodeMixin } from './mixins/ChannelSlowmodeMixin.js';
-import { GuildChannelMixin } from './mixins/GuildChannelMixin.js';
-import { TextChannelMixin } from './mixins/TextChannelMixin.js';
+import { ChannelWebhookMixin } from './mixins/ChannelWebhookMixin.js';
 import { VoiceChannelMixin } from './mixins/VoiceChannelMixin.js';
 
 export interface StageChannel<Omitted extends keyof APIGuildStageVoiceChannel | '' = ''>
 	extends MixinTypes<
 		Channel<ChannelType.GuildStageVoice>,
 		[
-			TextChannelMixin<ChannelType.GuildStageVoice>,
 			ChannelParentMixin<ChannelType.GuildStageVoice>,
 			ChannelPermissionMixin<ChannelType.GuildStageVoice>,
 			ChannelSlowmodeMixin<ChannelType.GuildStageVoice>,
-			GuildChannelMixin<ChannelType.GuildStageVoice>,
+			ChannelWebhookMixin<ChannelType.GuildStageVoice>,
 			VoiceChannelMixin<ChannelType.GuildStageVoice>,
 		]
 	> {}
@@ -32,10 +30,9 @@ export class StageChannel<Omitted extends keyof APIGuildStageVoiceChannel | '' =
 }
 
 Mixin(StageChannel, [
-	TextChannelMixin,
 	ChannelParentMixin,
 	ChannelPermissionMixin,
 	ChannelSlowmodeMixin,
-	GuildChannelMixin,
+	ChannelWebhookMixin,
 	VoiceChannelMixin,
 ]);

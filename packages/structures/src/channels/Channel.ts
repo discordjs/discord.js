@@ -6,11 +6,13 @@ import type {
 	APIPartialChannel,
 	ChannelType,
 	GuildChannelType,
+	GuildTextChannelType,
 } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
 import type { APIThreadChannel } from '../utils/types';
 import type { ChannelPermissionMixin } from './mixins/ChannelPermissionMixin.js';
+import type { ChannelWebhookMixin } from './mixins/ChannelWebhookMixin.js';
 import type { DMChannelMixin } from './mixins/DMChannelMixin.js';
 import type { GuildChannelMixin } from './mixins/GuildChannelMixin.js';
 import type { TextChannelMixin } from './mixins/TextChannelMixin.js';
@@ -190,7 +192,9 @@ export class Channel<
 	 *
 	 * @privateRemarks Overriden to `true` on `ChannelWebhooksMixin`
 	 */
-	public isWebhookCapable() {
+	public isWebhookCapable(): this is ChannelWebhookMixin<
+		Extract<Type, ChannelType.GuildForum | ChannelType.GuildMedia | Exclude<GuildTextChannelType, ThreadChannelType>>
+	> {
 		return false;
 	}
 }
