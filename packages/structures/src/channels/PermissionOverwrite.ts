@@ -17,8 +17,9 @@ export class PermissionOverwrite<Omitted extends keyof APIOverwrite | '' = ''> e
 
 	public constructor(data: Partial<APIOverwrite>) {
 		super(data);
-		this[kAllow] = data.allow ? BigInt(data.allow) : null;
-		this[kDeny] = data.deny ? BigInt(data.deny) : null;
+		this._optimizeData(data);
+		this[kAllow] ??= null;
+		this[kDeny] ??= null;
 	}
 
 	/**

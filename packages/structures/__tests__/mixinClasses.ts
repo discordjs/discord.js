@@ -41,6 +41,15 @@ export class Base<Omitted extends keyof APIData | '' = ''> extends Structure<API
 	public getId() {
 		return this.id;
 	}
+
+	public override toJSON() {
+		const data = super.toJSON();
+		if (this.baseOptimize) {
+			data.baseOptimize = String(this.baseOptimize);
+		}
+
+		return data;
+	}
 }
 
 export interface MixinProperty1<Omitted extends keyof APIData | '' = ''> extends Base<Omitted> {
@@ -67,6 +76,12 @@ export class MixinProperty1 {
 
 	public getProperty1() {
 		return this.property1;
+	}
+
+	protected _toJSON(data: Partial<APIData>) {
+		if (this.mixinOptimize) {
+			data.mixinOptimize = String(this.mixinOptimize);
+		}
 	}
 }
 

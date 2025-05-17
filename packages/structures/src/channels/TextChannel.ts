@@ -28,7 +28,12 @@ export interface TextChannel<Omitted extends keyof APITextChannel | '' = ''>
 export class TextChannel<Omitted extends keyof APITextChannel | '' = ''> extends Channel<
 	ChannelType.GuildText,
 	Omitted
-> {}
+> {
+	public constructor(data: APITextChannel) {
+		super(data);
+		this._optimizeData(data);
+	}
+}
 
 Mixin(TextChannel, [
 	TextChannelMixin,

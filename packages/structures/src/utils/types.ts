@@ -1,3 +1,5 @@
+import type { APIThreadChannel as _APIThreadChannel } from 'discord-api-types/v10';
+
 export type ReplaceOmittedWithUnknown<Omitted extends keyof Data | '', Data> = {
 	[Key in keyof Data]: Key extends Omitted ? unknown : Data[Key];
 };
@@ -19,3 +21,6 @@ export type MergePrototypes<ClassArray extends readonly unknown[]> = ClassArray 
 	: ClassArray extends [infer Class1, ...infer Rest]
 		? MergePrototype<Class1, MergePrototypes<Rest>>
 		: never;
+
+// TODO: remove helper type once dtypes PR for thread channel types releases
+export type APIThreadChannel = Omit<_APIThreadChannel, 'position'>;

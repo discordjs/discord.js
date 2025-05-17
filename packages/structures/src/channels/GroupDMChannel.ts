@@ -16,6 +16,11 @@ export class GroupDMChannel<Omitted extends keyof APIGroupDMChannel | '' = ''> e
 	ChannelType.GroupDM,
 	Omitted
 > {
+	public constructor(data: APIGroupDMChannel) {
+		super(data);
+		this._optimizeData(data);
+	}
+
 	public get icon() {
 		return this[kData].icon;
 	}

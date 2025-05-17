@@ -9,6 +9,7 @@ import type {
 } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
+import type { APIThreadChannel } from '../utils/types';
 import type { ChannelPermissionMixin } from './mixins/ChannelPermissionMixin.js';
 import type { DMChannelMixin } from './mixins/DMChannelMixin.js';
 import type { GuildChannelMixin } from './mixins/GuildChannelMixin.js';
@@ -24,7 +25,9 @@ export type PartialChannel = Channel<'unknown', Exclude<keyof APIChannel, keyof 
  */
 export type ChannelDataType<Type extends ChannelType | 'unknown'> = Type extends 'unknown'
 	? APIChannel
-	: APIChannel & { type: Type };
+	: Type extends ChannelType.AnnouncementThread | ChannelType.PrivateThread | ChannelType.PublicThread
+		? APIThreadChannel
+		: Extract<APIChannel, { type: Type }>; // TODO: remove special handling once dtypes PR for thread channel types releases
 
 /**
  * Represents any channel on Discord.

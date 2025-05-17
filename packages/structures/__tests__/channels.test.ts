@@ -21,16 +21,19 @@ import {
 import { describe, expect, test } from 'vitest';
 import {
 	AnnouncementChannel,
+	AnnouncementThreadChannel,
 	CategoryChannel,
 	DMChannel,
 	ForumChannel,
 	GroupDMChannel,
 	MediaChannel,
+	PrivateThreadChannel,
 	StageChannel,
 	TextChannel,
 	VoiceChannel,
 } from '../src';
 import { PublicThreadChannel } from '../src/channels/PublicThreadChannel';
+import { kData } from '../src/utils/symbols';
 
 describe('text channel', () => {
 	const data: APITextChannel = {
@@ -77,6 +80,7 @@ describe('text channel', () => {
 		expect(instance.type).toBe(ChannelType.GuildText);
 		expect(instance.url).toBe('https://discord.com/channels/2/1');
 		expect(instance.toJSON()).toEqual(data);
+		console.log(instance[kData]);
 	});
 
 	test('typeguards', () => {
@@ -400,6 +404,7 @@ describe('media channel', () => {
 		expect(instance.nsfw).toBe(data.nsfw);
 		expect(instance.parentId).toBe(data.parent_id);
 		expect(instance.permissionOverwrites?.map((overwrite) => overwrite.toJSON())).toEqual(data.permission_overwrites);
+		expect(instance.availableTags.map((tag) => tag.toJSON())).toEqual(data.available_tags);
 		expect(instance.topic).toBe(data.topic);
 		expect(instance.type).toBe(ChannelType.GuildMedia);
 		expect(instance.url).toBe('https://discord.com/channels/2/1');
@@ -533,7 +538,8 @@ describe('stage channel', () => {
 });
 
 describe('thread channels', () => {
-	const data: APIThreadChannel = {
+	// TODO: remove special handling once dtypes PR for thread channel types releases
+	const dataPublic: Omit<APIThreadChannel, 'position'> = {
 		id: '1',
 		name: 'test',
 		type: ChannelType.PublicThread,
@@ -545,29 +551,91 @@ describe('thread channels', () => {
 		applied_tags: ['567'],
 	};
 
+	const dataPrivate: Omit<APIThreadChannel, 'position'> = {
+		...dataPublic,
+		type: ChannelType.PrivateThread,
+	};
+
+	const dataAnnounce: Omit<APIThreadChannel, 'position'> = {
+		...dataPublic,
+		type: ChannelType.AnnouncementThread,
+	};
+
 	test('PublicThreadChannel has all properties', () => {
-		const instance = new PublicThreadChannel(data);
-		expect(instance.id).toBe(data.id);
-		expect(instance.name).toBe(data.name);
-		expect(instance.flags).toBe(data.flags);
-		expect(instance.guildId).toBe(data.guild_id);
-		expect(instance.lastMessageId).toBe(data.last_message_id);
-		expect(instance.nsfw).toBe(data.nsfw);
-		expect(instance.parentId).toBe(data.parent_id);
-		expect(instance.rateLimitPerUser).toBe(data.rate_limit_per_user);
+		const instance = new PublicThreadChannel(dataPublic);
+		expect(instance.id).toBe(dataPublic.id);
+		expect(instance.name).toBe(dataPublic.name);
+		expect(instance.flags).toBe(dataPublic.flags);
+		expect(instance.guildId).toBe(dataPublic.guild_id);
+		expect(instance.lastMessageId).toBe(dataPublic.last_message_id);
+		expect(instance.nsfw).toBe(dataPublic.nsfw);
+		expect(instance.parentId).toBe(dataPublic.parent_id);
+		expect(instance.rateLimitPerUser).toBe(dataPublic.rate_limit_per_user);
 		expect(instance.type).toBe(ChannelType.PublicThread);
 		expect(instance.url).toBe('https://discord.com/channels/2/1');
-		expect(instance.toJSON()).toEqual(data);
+		expect(instance.toJSON()).toEqual(dataPublic);
 	});
 
-	test('typeguards', () => {
-		const instance = new PublicThreadChannel(data);
+	test('typeguards PublicThread', () => {
+		const instance = new PublicThreadChannel(dataPublic);
 		expect(instance.isDMBased()).toBe(false);
 		expect(instance.isGuildBased()).toBe(true);
-		expect(instance.isPermissionCapabale()).toBe(true);
+		expect(instance.isPermissionCapabale()).toBe(false);
 		expect(instance.isTextBased()).toBe(true);
-		expect(instance.isThread()).toBe(false);
+		expect(instance.isThread()).toBe(true);
 		expect(instance.isThreadOnly()).toBe(false);
-		expect(instance.isVoiceBased()).toBe(true);
+		expect(instance.isVoiceBased()).toBe(false);
+	});
+
+	test('PrivateThreadChannel has all properties', () => {
+		const instance = new PrivateThreadChannel(dataPrivate);
+		expect(instance.id).toBe(dataPrivate.id);
+		expect(instance.name).toBe(dataPrivate.name);
+		expect(instance.flags).toBe(dataPrivate.flags);
+		expect(instance.guildId).toBe(dataPrivate.guild_id);
+		expect(instance.lastMessageId).toBe(dataPrivate.last_message_id);
+		expect(instance.nsfw).toBe(dataPrivate.nsfw);
+		expect(instance.parentId).toBe(dataPrivate.parent_id);
+		expect(instance.rateLimitPerUser).toBe(dataPrivate.rate_limit_per_user);
+		expect(instance.type).toBe(ChannelType.PrivateThread);
+		expect(instance.url).toBe('https://discord.com/channels/2/1');
+		expect(instance.toJSON()).toEqual(dataPrivate);
+	});
+
+	test('typeguards PrivateThread', () => {
+		const instance = new PrivateThreadChannel(dataPrivate);
+		expect(instance.isDMBased()).toBe(false);
+		expect(instance.isGuildBased()).toBe(true);
+		expect(instance.isPermissionCapabale()).toBe(false);
+		expect(instance.isTextBased()).toBe(true);
+		expect(instance.isThread()).toBe(true);
+		expect(instance.isThreadOnly()).toBe(false);
+		expect(instance.isVoiceBased()).toBe(false);
+	});
+
+	test('AnnouncementThreadChannel has all properties', () => {
+		const instance = new AnnouncementThreadChannel(dataAnnounce);
+		expect(instance.id).toBe(dataAnnounce.id);
+		expect(instance.name).toBe(dataAnnounce.name);
+		expect(instance.flags).toBe(dataAnnounce.flags);
+		expect(instance.guildId).toBe(dataAnnounce.guild_id);
+		expect(instance.lastMessageId).toBe(dataAnnounce.last_message_id);
+		expect(instance.nsfw).toBe(dataAnnounce.nsfw);
+		expect(instance.parentId).toBe(dataAnnounce.parent_id);
+		expect(instance.rateLimitPerUser).toBe(dataAnnounce.rate_limit_per_user);
+		expect(instance.type).toBe(ChannelType.AnnouncementThread);
+		expect(instance.url).toBe('https://discord.com/channels/2/1');
+		expect(instance.toJSON()).toEqual(dataAnnounce);
+	});
+
+	test('typeguards AnnouncementThread', () => {
+		const instance = new AnnouncementThreadChannel(dataAnnounce);
+		expect(instance.isDMBased()).toBe(false);
+		expect(instance.isGuildBased()).toBe(true);
+		expect(instance.isPermissionCapabale()).toBe(false);
+		expect(instance.isTextBased()).toBe(true);
+		expect(instance.isThread()).toBe(true);
+		expect(instance.isThreadOnly()).toBe(false);
+		expect(instance.isVoiceBased()).toBe(false);
 	});
 });

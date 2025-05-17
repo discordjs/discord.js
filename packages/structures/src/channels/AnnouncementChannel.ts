@@ -10,8 +10,9 @@ import { ChannelTopicMixin } from './mixins/ChannelTopicMixin.js';
 import { TextChannelMixin } from './mixins/TextChannelMixin.js';
 import { ThreadContainerChannelMixin } from './mixins/ThreadContainerChannelMixin.js';
 
-export interface AnnouncementChannel<Omitted extends keyof APINewsChannel | '' = 'last_pin_timestamp'>
-	extends MixinTypes<
+export interface AnnouncementChannel<
+	Omitted extends keyof APINewsChannel | '' = 'last_pin_timestamp' | 'permission_overwrites',
+> extends MixinTypes<
 		Channel<ChannelType.GuildAnnouncement>,
 		[
 			TextChannelMixin<ChannelType.GuildAnnouncement>,
@@ -24,10 +25,14 @@ export interface AnnouncementChannel<Omitted extends keyof APINewsChannel | '' =
 		]
 	> {}
 
-export class AnnouncementChannel<Omitted extends keyof APINewsChannel | '' = 'last_pin_timestamp'> extends Channel<
-	ChannelType.GuildAnnouncement,
-	Omitted
-> {}
+export class AnnouncementChannel<
+	Omitted extends keyof APINewsChannel | '' = 'last_pin_timestamp' | 'permission_overwrites',
+> extends Channel<ChannelType.GuildAnnouncement, Omitted> {
+	public constructor(data: APINewsChannel) {
+		super(data);
+		this._optimizeData(data);
+	}
+}
 
 Mixin(AnnouncementChannel, [
 	TextChannelMixin,

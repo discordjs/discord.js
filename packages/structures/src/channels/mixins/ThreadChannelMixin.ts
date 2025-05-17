@@ -1,22 +1,23 @@
-import type { APIThreadChannel, ThreadChannelType } from 'discord-api-types/v10';
-import { kData, kMixinConstruct } from '../../utils/symbols';
-import type { Channel } from '../Channel';
+import type { APIThreadMetadata, ThreadChannelType } from 'discord-api-types/v10';
+import { kData } from '../../utils/symbols';
+import type { APIThreadChannel } from '../../utils/types';
+import type { Channel, ChannelDataType } from '../Channel';
 import { ThreadMetadata } from '../ThreadMetadata';
 
 export interface ThreadChannelMixin<
 	Type extends ThreadChannelType = ThreadChannelType,
-	Omitted extends keyof APIThreadChannel = never,
+	Omitted extends keyof APIThreadChannel | '' = '',
 > extends Channel<Type, Omitted> {
 	threadMetadata: ThreadMetadata | null;
 }
 
 export class ThreadChannelMixin<
 	Type extends ThreadChannelType = ThreadChannelType,
-	Omitted extends keyof APIThreadChannel = never,
+	Omitted extends keyof APIThreadChannel | '' = '',
 > {
-	public [kMixinConstruct](data: Partial<APIThreadChannel>) {
-		this._optimizeData(data);
-	}
+	public static DataTemplate: Partial<ChannelDataType<ThreadChannelType>> = {
+		set thread_metadata(_: APIThreadMetadata) {},
+	};
 
 	/**
 	 * {@inheritDoc Structure._optimizeData}
@@ -37,6 +38,10 @@ export class ThreadChannelMixin<
 
 	public get totalMessageSent() {
 		return this[kData].total_message_sent;
+	}
+
+	public isThread(): this is ThreadChannelMixin<Extract<Type, ThreadChannelType>> {
+		return true;
 	}
 
 	public _toJSON(data: Partial<APIThreadChannel>) {

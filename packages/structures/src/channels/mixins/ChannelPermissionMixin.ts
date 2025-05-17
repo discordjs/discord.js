@@ -1,5 +1,5 @@
 import type { APIOverwrite, ChannelType, GuildChannelType, ThreadChannelType } from 'discord-api-types/v10';
-import { kData, kMixinConstruct } from '../../utils/symbols';
+import { kData } from '../../utils/symbols';
 import type { Channel, ChannelDataType } from '../Channel';
 import { PermissionOverwrite } from '../PermissionOverwrite';
 
@@ -20,10 +20,6 @@ export class ChannelPermissionMixin<
 	> = {
 		set permission_overwrites(_: APIOverwrite[]) {},
 	};
-
-	public [kMixinConstruct](data: Partial<ChannelDataType<Type>>) {
-		this._optimizeData(data);
-	}
 
 	/**
 	 * {@inheritDoc Structure._optimizeData}
@@ -54,7 +50,5 @@ export class ChannelPermissionMixin<
 		if (this.permissionOverwrites) {
 			data.permission_overwrites = this.permissionOverwrites?.map((overwrite) => overwrite.toJSON());
 		}
-
-		return data;
 	}
 }

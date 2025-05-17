@@ -1,6 +1,7 @@
-import type { APIThreadChannel, ChannelType } from 'discord-api-types/v10';
+import type { ChannelType } from 'discord-api-types/v10';
 import { Mixin, type MixinTypes } from '../Mixin.js';
 import { kData } from '../utils/symbols.js';
+import type { APIThreadChannel } from '../utils/types';
 import { Channel } from './Channel.js';
 import { ChannelOwnerMixin } from './mixins/ChannelOwnerMixin.js';
 import { ChannelParentMixin } from './mixins/ChannelParentMixin.js';
@@ -28,6 +29,11 @@ export class PublicThreadChannel<Omitted extends keyof APIThreadChannel | '' = '
 	ChannelType.PublicThread,
 	Omitted
 > {
+	public constructor(data: APIThreadChannel) {
+		super(data);
+		this._optimizeData(data);
+	}
+
 	public get appliedTags() {
 		return this[kData].applied_tags;
 	}

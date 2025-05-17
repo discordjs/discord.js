@@ -1,9 +1,11 @@
 import type { APIUser, ChannelType } from 'discord-api-types/v10';
 import { User } from '../../users';
-import { kMixinConstruct } from '../../utils/symbols';
 import type { Channel, ChannelDataType } from '../Channel';
 
 export interface DMChannelMixin<Type extends ChannelType.DM | ChannelType.GroupDM> extends Channel<Type> {
+	/**
+	 * The recipients of this DM based channel.
+	 */
 	recipients: readonly User[] | null;
 }
 
@@ -11,10 +13,6 @@ export class DMChannelMixin<Type extends ChannelType.DM | ChannelType.GroupDM> {
 	public static DataTemplate: Partial<ChannelDataType<ChannelType.DM | ChannelType.GroupDM>> = {
 		set recipients(_: APIUser[]) {},
 	};
-
-	public [kMixinConstruct](data: Partial<ChannelDataType<Type>>) {
-		this._optimizeData(data);
-	}
 
 	/**
 	 * {@inheritDoc Structure._optimizeData}

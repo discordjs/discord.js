@@ -22,11 +22,11 @@ export const OptimizeDataPropertyName = '_optimizeData';
  * There are two layers of Omitted generics, one here, which allows omitting things at the library level so we do not accidentally
  * access them, in addition to whatever the user does at the layer above.
  *
- * The second layer, in the exported structure is effectively a type cast that allows the getters types to match whatever data template is ued
+ * The second layer, in the exported structure is effectively a type cast that allows the getters types to match whatever data template is used
  *
  * In order to safely set and access this data, the constructor and patch take data as "partial" and forcibly assigns it to kData. To acommodate this,
  * kData stores properties as `unknown` when it is omitted, which allows accessing the property in getters even when it may not actually be present.
- * This is the most technically correct way of represnting the value, especially since there is no way to guarantee runtime matches the "type cast."
+ * This is the most technically correct way of representing the value, especially since there is no way to guarantee runtime matches the "type cast."
  */
 export abstract class Structure<DataType, Omitted extends keyof DataType | '' = ''> {
 	/**

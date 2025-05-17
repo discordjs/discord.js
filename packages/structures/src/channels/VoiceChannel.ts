@@ -24,7 +24,12 @@ export interface VoiceChannel<Omitted extends keyof APIGuildVoiceChannel | '' = 
 export class VoiceChannel<Omitted extends keyof APIGuildVoiceChannel | '' = ''> extends Channel<
 	ChannelType.GuildVoice,
 	Omitted
-> {}
+> {
+	public constructor(data: APIGuildVoiceChannel) {
+		super(data);
+		this._optimizeData(data);
+	}
+}
 
 Mixin(VoiceChannel, [
 	TextChannelMixin,

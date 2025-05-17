@@ -11,6 +11,11 @@ export interface DMChannel<Omitted extends keyof APIDMChannel | '' = ''>
 		[DMChannelMixin<ChannelType.DM>, TextChannelMixin<ChannelType.DM>, ChannelPinMixin<ChannelType.DM>]
 	> {}
 
-export class DMChannel<Omitted extends keyof APIDMChannel | '' = ''> extends Channel<ChannelType.DM, Omitted> {}
+export class DMChannel<Omitted extends keyof APIDMChannel | '' = ''> extends Channel<ChannelType.DM, Omitted> {
+	public constructor(data: APIDMChannel) {
+		super(data);
+		this._optimizeData(data);
+	}
+}
 
 Mixin(DMChannel, [DMChannelMixin, TextChannelMixin, ChannelPinMixin]);
