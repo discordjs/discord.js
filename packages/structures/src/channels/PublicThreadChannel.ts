@@ -32,8 +32,11 @@ export class PublicThreadChannel<Omitted extends keyof APIThreadChannel | '' = '
 		this._optimizeData(data);
 	}
 
+	/**
+	 * The IDs of the set of tags that have been applied to a thread in a {@link ForumChannel} or a {@link MediaChannel}.
+	 */
 	public get appliedTags() {
-		return this[kData].applied_tags;
+		return Array.isArray(this[kData].applied_tags) ? [...this[kData].applied_tags] : null;
 	}
 }
 

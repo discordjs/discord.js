@@ -27,6 +27,10 @@ export class ForumChannel<Omitted extends keyof APIGuildForumChannel | '' = 'ava
 		this._optimizeData(data);
 	}
 
+	/**
+	 * The default forum layout view used to display posts in this channel.
+	 * Defaults to 0, which indicates a layout view has not been set by a channel admin.
+	 */
 	public get defaultForumLayout() {
 		return this[kData].default_forum_layout;
 	}

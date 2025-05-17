@@ -45,26 +45,44 @@ export class ThreadMetadata<Omitted extends keyof APIThreadMetadata | '' = ''> e
 			: (this[kArchiveTimestamp] ?? null);
 	}
 
+	/**
+	 * Whether the thread is archived.
+	 */
 	public get archived() {
 		return this[kData].archived;
 	}
 
+	/**
+	 * The timestamp when the thread's archive status was last changed, used for calculating recent activity.
+	 */
 	public get archivedTimestamp() {
 		return this[kArchiveTimestamp];
 	}
 
+	/**
+	 * The timestamp when the thread was created; only populated for threads created after 2022-01-09.
+	 */
 	public get createdTimestamp() {
 		return this[kCreatedTimestamp];
 	}
 
+	/**
+	 * The thread will stop showing in the channel list after auto_archive_duration minutes of inactivity,
+	 */
 	public get autoArchiveDuration() {
 		return this[kData].auto_archive_duration;
 	}
 
+	/**
+	 * Whether non-moderators can add other non-moderators to a thread; only available on private threads.
+	 */
 	public get invitable() {
 		return this[kData].invitable;
 	}
 
+	/**
+	 * Whether the thread is locked; when a thread is locked, only users with {@link PermissionFlagsBits.ManageThreads} can unarchive it.
+	 */
 	public get locked() {
 		return this[kData].locked;
 	}
@@ -85,6 +103,9 @@ export class ThreadMetadata<Omitted extends keyof APIThreadMetadata | '' = ''> e
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
 
+	/**
+	 * {@inheritDoc Structure.toJSON}
+	 */
 	public override toJSON() {
 		const data = super.toJSON();
 		if (this[kArchiveTimestamp]) {
