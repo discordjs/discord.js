@@ -181,16 +181,14 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = ''> extends Str
 	 * The URL to the invite
 	 */
 	public get url() {
-		return this.code ? `${RouteBases.invite}/${this.code}` : '';
+		return this.code ? `${RouteBases.invite}/${this.code}` : null;
 	}
 
 	/**
 	 * When concatenated with a string, this automatically concatenates the invite's URL instead of the object.
-	 *
-	 * @returns the url
 	 */
 	public override toString() {
-		return this.url;
+		return this.url ?? '';
 	}
 
 	/**
