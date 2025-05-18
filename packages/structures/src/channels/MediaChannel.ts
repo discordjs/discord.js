@@ -21,7 +21,7 @@ export class MediaChannel<Omitted extends keyof APIGuildMediaChannel | '' = ''> 
 	ChannelType.GuildMedia,
 	Omitted
 > {
-	public constructor(data: APIGuildMediaChannel) {
+	public constructor(data: Omit<APIGuildMediaChannel, Omitted>) {
 		super(data);
 		this._optimizeData(data);
 	}

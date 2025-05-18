@@ -28,7 +28,7 @@ export class AnnouncementThreadChannel<Omitted extends keyof APIThreadChannel | 
 	ChannelType.AnnouncementThread,
 	Omitted
 > {
-	public constructor(data: APIThreadChannel) {
+	public constructor(data: Omit<APIThreadChannel, Omitted>) {
 		super(data);
 		this._optimizeData(data);
 	}

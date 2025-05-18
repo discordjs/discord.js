@@ -26,7 +26,7 @@ export class PrivateThreadChannel<Omitted extends keyof APIThreadChannel | '' = 
 	ChannelType.PrivateThread,
 	Omitted
 > {
-	public constructor(data: APIThreadChannel) {
+	public constructor(data: Omit<APIThreadChannel, Omitted>) {
 		super(data);
 		this._optimizeData(data);
 	}

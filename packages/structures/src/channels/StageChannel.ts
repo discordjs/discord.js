@@ -23,7 +23,7 @@ export class StageChannel<Omitted extends keyof APIGuildStageVoiceChannel | '' =
 	ChannelType.GuildStageVoice,
 	Omitted
 > {
-	public constructor(data: APIGuildStageVoiceChannel) {
+	public constructor(data: Omit<APIGuildStageVoiceChannel, Omitted>) {
 		super(data);
 		this._optimizeData(data);
 	}

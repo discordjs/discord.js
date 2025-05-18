@@ -25,7 +25,7 @@ export class TextChannel<Omitted extends keyof APITextChannel | '' = ''> extends
 	ChannelType.GuildText,
 	Omitted
 > {
-	public constructor(data: APITextChannel) {
+	public constructor(data: Omit<APITextChannel, Omitted>) {
 		super(data);
 		this._optimizeData(data);
 	}

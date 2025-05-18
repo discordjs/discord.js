@@ -26,7 +26,7 @@ export class AnnouncementChannel<Omitted extends keyof APINewsChannel | '' = ''>
 	ChannelType.GuildAnnouncement,
 	Omitted
 > {
-	public constructor(data: APINewsChannel) {
+	public constructor(data: Omit<APINewsChannel, Omitted>) {
 		super(data);
 		this._optimizeData(data);
 	}

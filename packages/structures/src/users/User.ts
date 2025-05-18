@@ -25,6 +25,8 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 
 	/**
 	 * {@inheritDoc Structure._patch}
+	 *
+	 * @internal
 	 */
 	public override _patch(data: Partial<APIUser>) {
 		return super._patch(data);
@@ -150,10 +152,17 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	}
 
 	/**
-	 * The user's avatar decoration hash
+	 * The user's avatar decoration asset
 	 */
-	public get avatarDecoration() {
-		return this[kData].avatar_decoration;
+	public get avatarDecorationDataAsset() {
+		return (this[kData].avatar_decoration_data as APIUser['avatar_decoration_data'])?.asset;
+	}
+
+	/**
+	 * The user's avatar decoration SKU id
+	 */
+	public get avatarDecorationDataSKUId() {
+		return (this[kData].avatar_decoration_data as APIUser['avatar_decoration_data'])?.sku_id;
 	}
 
 	/**

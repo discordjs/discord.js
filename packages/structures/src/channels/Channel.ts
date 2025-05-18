@@ -20,16 +20,17 @@ import type { ThreadChannelMixin } from './mixins/ThreadChannelMixin.js';
 import type { ThreadOnlyChannelMixin } from './mixins/ThreadOnlyChannelMixin.js';
 import type { VoiceChannelMixin } from './mixins/VoiceChannelMixin.js';
 
-export type PartialChannel = Channel<'unknown', Exclude<keyof APIChannel, keyof APIPartialChannel>>;
+export type PartialChannel = Channel<ChannelType, Exclude<keyof APIChannel, keyof APIPartialChannel>>;
 
 /**
  * @internal
  */
-export type ChannelDataType<Type extends ChannelType | 'unknown'> = Type extends 'unknown'
-	? APIChannel
-	: Type extends ChannelType.AnnouncementThread | ChannelType.PrivateThread | ChannelType.PublicThread
-		? APIThreadChannel
-		: Extract<APIChannel, { type: Type }>; // TODO: remove special handling once dtypes PR for thread channel types releases
+export type ChannelDataType<Type extends ChannelType> = Type extends
+	| ChannelType.AnnouncementThread
+	| ChannelType.PrivateThread
+	| ChannelType.PublicThread
+	? APIThreadChannel
+	: Extract<APIChannel, { type: Type }>; // TODO: remove special handling once dtypes PR for thread channel types releases
 
 /**
  * Represents any channel on Discord.
@@ -40,7 +41,7 @@ export type ChannelDataType<Type extends ChannelType | 'unknown'> = Type extends
  * preferring instead to create class that extend this class with the appropriate mixins for each channel type.
  */
 export class Channel<
-	Type extends ChannelType | 'unknown' = 'unknown',
+	Type extends ChannelType = ChannelType,
 	Omitted extends keyof ChannelDataType<Type> | '' = '',
 > extends Structure<ChannelDataType<Type>, Omitted> {
 	/**
@@ -62,6 +63,8 @@ export class Channel<
 
 	/**
 	 * {@inheritDoc Structure._patch}
+	 *
+	 * @internal
 	 */
 	public override _patch(data: Partial<ChannelDataType<Type>>) {
 		return super._patch(data);

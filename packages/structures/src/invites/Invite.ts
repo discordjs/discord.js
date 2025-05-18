@@ -9,7 +9,7 @@ import { kData, kExpiresTimestamp, kCreatedTimestamp } from '../utils/symbols.js
  * @typeParam Extended - Whether the invite is a full extended invite
  */
 export class Invite<
-	Omitted extends keyof APIExtendedInvite | '' = 'created_at' | 'expires_at',
+	Omitted extends keyof APIExtendedInvite | '' = '',
 	Extended extends boolean = false,
 > extends Structure<
 	APIExtendedInvite,
@@ -50,7 +50,7 @@ export class Invite<
 		/**
 		 * The raw data received from the API for the invite
 		 */
-		data: Omit<APIExtendedInvite, Omitted>,
+		data: Extended extends true ? Omit<APIExtendedInvite, Omitted> : Omit<APIInvite, Omitted>,
 	) {
 		super(data);
 		this._optimizeData(data);
@@ -60,6 +60,8 @@ export class Invite<
 
 	/**
 	 * {@inheritDoc Structure._patch}
+	 *
+	 * @internal
 	 */
 	public override _patch(data: Partial<APIExtendedInvite>) {
 		super._patch(data);
@@ -68,6 +70,8 @@ export class Invite<
 
 	/**
 	 * {@inheritDoc Structure._optimizeData}
+	 *
+	 * @internal
 	 */
 	protected override _optimizeData(data: Partial<APIExtendedInvite>) {
 		this[kExpiresTimestamp] = data.expires_at ? Date.parse(data.expires_at) : (this[kExpiresTimestamp] ?? null);
@@ -110,10 +114,19 @@ export class Invite<
 	 * The timestamp this invite will expire at
 	 */
 	public get expiresTimestamp() {
-		return (
-			this[kExpiresTimestamp] ??
-			(this[kCreatedTimestamp] && this.maxAge ? this[kCreatedTimestamp] + (this.maxAge as number) * 1_000 : null)
-		);
+		if (this[kExpiresTimestamp]) {
+			return this[kExpiresTimestamp];
+		}
+
+		const createdTimestamp = this.createdTimestamp;
+		const maxAge = this.maxAge;
+		if (createdTimestamp && maxAge) {
+			this[kExpiresTimestamp] = createdTimestamp + (maxAge as number) * 1_000;
+		} else {
+			this[kExpiresTimestamp] ??= null;
+		}
+
+		return this[kExpiresTimestamp];
 	}
 
 	/**
@@ -171,7 +184,7 @@ export class Invite<
 	 * The URL to the invite
 	 */
 	public get url() {
-		return `${RouteBases.invite}/${this.code}`;
+		return this.code ? `${RouteBases.invite}/${this.code}` : '';
 	}
 
 	/**

@@ -301,7 +301,7 @@ describe('GroupDM channel', () => {
 });
 
 describe('forum channel', () => {
-	const data: APIGuildForumChannel = {
+	const dataNoTags: Omit<APIGuildForumChannel, 'available_tags'> = {
 		id: '1',
 		name: 'test',
 		type: ChannelType.GuildForum,
@@ -320,6 +320,15 @@ describe('forum channel', () => {
 		topic: 'hello',
 		default_auto_archive_duration: ThreadAutoArchiveDuration.OneHour,
 		default_thread_rate_limit_per_user: 30,
+		default_forum_layout: ForumLayoutType.GalleryView,
+		default_reaction_emoji: {
+			emoji_id: '159',
+			emoji_name: null,
+		},
+		default_sort_order: SortOrderType.LatestActivity,
+	};
+	const data: APIGuildForumChannel = {
+		...dataNoTags,
 		available_tags: [
 			{
 				name: 'emoji',
@@ -329,12 +338,6 @@ describe('forum channel', () => {
 				emoji_id: null,
 			},
 		],
-		default_forum_layout: ForumLayoutType.GalleryView,
-		default_reaction_emoji: {
-			emoji_id: '159',
-			emoji_name: null,
-		},
-		default_sort_order: SortOrderType.LatestActivity,
 	};
 
 	test('ForumChannel has all properties', () => {
@@ -375,6 +378,11 @@ describe('forum channel', () => {
 		expect(instance.isThreadOnly()).toBe(true);
 		expect(instance.isVoiceBased()).toBe(false);
 		expect(instance.isWebhookCapable()).toBe(true);
+	});
+
+	test('omitted property from ForumChannel', () => {
+		const instance = new ForumChannel(dataNoTags);
+		expect(instance.toJSON()).toEqual(dataNoTags);
 	});
 });
 
@@ -565,8 +573,7 @@ describe('stage channel', () => {
 });
 
 describe('thread channels', () => {
-	// TODO: remove special handling once dtypes PR for thread channel types releases
-	const dataPublic: Omit<APIThreadChannel, 'position'> = {
+	const dataNoTags: Omit<APIThreadChannel, 'applied_tags' | 'position'> = {
 		id: '1',
 		name: 'test',
 		type: ChannelType.PublicThread,
@@ -575,6 +582,10 @@ describe('thread channels', () => {
 		nsfw: true,
 		parent_id: '4',
 		rate_limit_per_user: 9,
+	};
+	// TODO: remove special handling once dtypes PR for thread channel types releases
+	const dataPublic: Omit<APIThreadChannel, 'position'> = {
+		...dataNoTags,
 		applied_tags: ['567'],
 	};
 
@@ -692,5 +703,11 @@ describe('thread channels', () => {
 		expect(instance.isThreadOnly()).toBe(false);
 		expect(instance.isVoiceBased()).toBe(false);
 		expect(instance.isWebhookCapable()).toBe(false);
+	});
+
+	test('omitted property from PublicThread', () => {
+		const instance = new PublicThreadChannel(dataNoTags);
+		expect(instance.toJSON()).toEqual(dataNoTags);
+		expect(instance.appliedTags).toBe(null);
 	});
 });

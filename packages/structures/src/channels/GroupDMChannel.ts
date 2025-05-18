@@ -16,7 +16,7 @@ export class GroupDMChannel<Omitted extends keyof APIGroupDMChannel | '' = ''> e
 	ChannelType.GroupDM,
 	Omitted
 > {
-	public constructor(data: APIGroupDMChannel) {
+	public constructor(data: Omit<APIGroupDMChannel, Omitted>) {
 		super(data);
 		this._optimizeData(data);
 	}

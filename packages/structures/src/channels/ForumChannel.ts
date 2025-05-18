@@ -22,7 +22,7 @@ export class ForumChannel<Omitted extends keyof APIGuildForumChannel | '' = ''> 
 	ChannelType.GuildForum,
 	Omitted
 > {
-	public constructor(data: APIGuildForumChannel) {
+	public constructor(data: Omit<APIGuildForumChannel, Omitted>) {
 		super(data);
 		this._optimizeData(data);
 	}

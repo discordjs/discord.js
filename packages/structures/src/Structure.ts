@@ -32,6 +32,7 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	/**
 	 * A construct function used when mixing to allow mixins to set optimized property defaults
 	 *
+	 * @internal
 	 * @remarks This should only be used to set defaults, setting optimized values should be done
 	 * in the mixins `_optimizeData` method, which will be called automatically.
 	 * @param data - The full API data received by the Structure
