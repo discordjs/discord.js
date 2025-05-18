@@ -48,7 +48,7 @@ describe('Invite', () => {
 	});
 
 	test('extended Invite has all properties', () => {
-		const instance = new Invite<'', true>(dataExtended);
+		const instance = new Invite(dataExtended);
 		// expect(instance.type).toBe(data.type);
 		expect(instance.code).toBe(dataExtended.code);
 		expect(instance.createdAt?.toISOString()).toBe(dataExtended.created_at);
@@ -67,7 +67,7 @@ describe('Invite', () => {
 	});
 
 	test('Invite with omitted properties', () => {
-		const instance = new Invite<'code'>(dataNoCode);
+		const instance = new Invite(dataNoCode);
 		expect(instance.toJSON()).toEqual(dataNoCode);
 		expect(instance.url).toBe('');
 		expect(instance.code).toBe(undefined);
@@ -75,7 +75,7 @@ describe('Invite', () => {
 	});
 
 	test('Invite with expiration', () => {
-		const instance = new Invite<'', true>({ ...dataExtended, expires_at: '2020-10-10T13:50:29.209Z' });
+		const instance = new Invite({ ...dataExtended, expires_at: '2020-10-10T13:50:29.209Z' });
 		expect(instance.toJSON()).toEqual({ ...dataExtended, expires_at: '2020-10-10T13:50:29.209Z' });
 	});
 

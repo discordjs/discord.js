@@ -1,6 +1,9 @@
-import { type APIInvite, type APIExtendedInvite, RouteBases } from 'discord-api-types/v10';
+import type { APIInvite, type APIExtendedInvite, RouteBases } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { kData, kExpiresTimestamp, kCreatedTimestamp } from '../utils/symbols.js';
+
+// TODO: use an actual dtypes type instead if it exists
+export interface APIActualInvite extends APIInvite, Partial<Omit<APIExtendedInvite, keyof APIInvite>> {}
 
 /**
  * Represents an invitation to a discord channel
@@ -8,13 +11,7 @@ import { kData, kExpiresTimestamp, kCreatedTimestamp } from '../utils/symbols.js
  * @typeParam Omitted - Specify the propeties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  * @typeParam Extended - Whether the invite is a full extended invite
  */
-export class Invite<
-	Omitted extends keyof APIExtendedInvite | '' = '',
-	Extended extends boolean = false,
-> extends Structure<
-	APIExtendedInvite,
-	Omitted | (Extended extends true ? '' : Exclude<keyof APIExtendedInvite, keyof APIInvite>)
-> {
+export class Invite<Omitted extends keyof APIActualInvite | '' = ''> extends Structure<APIActualInvite, Omitted> {
 	/**
 	 * A regular expression that matches Discord invite links.
 	 * The `code` group property is present on the `exec()` result of this expression.
@@ -27,20 +24,20 @@ export class Invite<
 	 * @remarks This template has defaults, if you want to remove additional data and keep the defaults,
 	 * use `Object.defineProperties`. To override the defaults, set this value directly.
 	 */
-	public static override DataTemplate: Partial<APIExtendedInvite> = {
+	public static override DataTemplate: Partial<APIActualInvite> = {
 		set created_at(_: string) {},
 		set expires_at(_: string) {},
 	};
 
 	/**
-	 * Optimized storage of {@link APIExtendedInvite.expires_at}
+	 * Optimized storage of {@link APIActualInvite.expires_at}
 	 *
 	 * @internal
 	 */
 	protected [kExpiresTimestamp]: number | null;
 
 	/**
-	 * Optimized storage of {@link APIExtendedInvite.created_at}
+	 * Optimized storage of {@link APIActualInvite.created_at}
 	 *
 	 * @internal
 	 */
@@ -50,7 +47,7 @@ export class Invite<
 		/**
 		 * The raw data received from the API for the invite
 		 */
-		data: Extended extends true ? Omit<APIExtendedInvite, Omitted> : Omit<APIInvite, Omitted>,
+		data: Omit<APIActualInvite, Omitted>,
 	) {
 		super(data);
 		this._optimizeData(data);
@@ -63,7 +60,7 @@ export class Invite<
 	 *
 	 * @internal
 	 */
-	public override _patch(data: Partial<APIExtendedInvite>) {
+	public override _patch(data: Partial<APIActualInvite>) {
 		super._patch(data);
 		return this;
 	}
@@ -73,7 +70,7 @@ export class Invite<
 	 *
 	 * @internal
 	 */
-	protected override _optimizeData(data: Partial<APIExtendedInvite>) {
+	protected override _optimizeData(data: Partial<APIActualInvite>) {
 		this[kExpiresTimestamp] = data.expires_at ? Date.parse(data.expires_at) : (this[kExpiresTimestamp] ?? null);
 		this[kCreatedTimestamp] = data.created_at ? Date.parse(data.created_at) : (this[kCreatedTimestamp] ?? null);
 	}
