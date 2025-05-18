@@ -1,4 +1,4 @@
-import type { APIInvite, type APIExtendedInvite, RouteBases } from 'discord-api-types/v10';
+import { type APIInvite, type APIExtendedInvite, RouteBases } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { kData, kExpiresTimestamp, kCreatedTimestamp } from '../utils/symbols.js';
 
