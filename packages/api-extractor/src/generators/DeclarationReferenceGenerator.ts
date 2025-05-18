@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
+import { dirname } from 'node:path';
 import { Navigation, Meaning } from '@discordjs/api-extractor-model';
 import {
 	DeclarationReference,
@@ -348,6 +349,16 @@ export class DeclarationReferenceGenerator {
 			);
 
 			if (packageJson?.name) {
+				if (packageJson?.exports && !Array.isArray(packageJson.exports) && typeof packageJson.exports !== 'string') {
+					const entryPoint = Object.keys(packageJson.exports).find((path) =>
+						dirname(sourceFile.fileName).endsWith(path.slice(1)),
+					);
+
+					if (entryPoint && packageJson.exports[entryPoint]) {
+						return `${packageJson.name}${entryPoint.slice(1)}`;
+					}
+				}
+
 				return packageJson.name;
 			}
 

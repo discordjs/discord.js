@@ -46,7 +46,7 @@ import type {
 	DocFencedCode,
 	DocComment,
 } from '@microsoft/tsdoc';
-import type { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
+import type { DeclarationReference, ModuleSource } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { BuiltinDocumentationLinks } from './builtinDocumentationLinks.js';
 import { PACKAGES, fetchVersionDocs, fetchVersions } from './shared.js';
 
@@ -147,6 +147,9 @@ function resolveCanonicalReference(
 				containerKey: `|${
 					canonicalReference.symbol.meaning
 				}|${canonicalReference.symbol.componentPath.component.toString()}`,
+				getAssociatedEntryPoint() {
+					return canonicalReference.source as ModuleSource;
+				},
 			},
 			// eslint-disable-next-line unicorn/better-regex
 			version: apiPackage?.dependencies?.[canonicalReference.source.packageName]?.replace(/[~^]/, ''),
@@ -167,6 +170,9 @@ function resolveCanonicalReference(
 				members: canonicalReference.memberReferences
 					.slice(1)
 					.map((member) => ({ kind: member.kind, displayName: member.memberIdentifier!.identifier! })),
+				getAssociatedEntryPoint() {
+					return canonicalReference;
+				},
 			},
 			// eslint-disable-next-line unicorn/better-regex
 			version: apiPackage?.dependencies?.[canonicalReference.packageName ?? '']?.replace(/[~^]/, ''),
@@ -204,10 +210,14 @@ export function hasEvents(item: ApiItemContainerMixin) {
 	return resolveMembers(item, memberPredicate).some(({ item: member }) => member.kind === ApiItemKind.Event);
 }
 
+interface ApiEntryPointLike {
+	importPath: string | undefined;
+}
+
 interface ApiItemLike {
 	containerKey?: string;
 	displayName: string;
-	getAssociatedEntryPoint?(): ApiEntryPoint | undefined;
+	getAssociatedEntryPoint?(): ApiEntryPointLike | undefined;
 	kind: string;
 	members?: readonly ApiItemLike[];
 	parent?: ApiItemLike | undefined;
