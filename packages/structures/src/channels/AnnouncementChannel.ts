@@ -9,9 +9,8 @@ import { ChannelSlowmodeMixin } from './mixins/ChannelSlowmodeMixin.js';
 import { ChannelTopicMixin } from './mixins/ChannelTopicMixin.js';
 import { TextChannelMixin } from './mixins/TextChannelMixin.js';
 
-export interface AnnouncementChannel<
-	Omitted extends keyof APINewsChannel | '' = 'last_pin_timestamp' | 'permission_overwrites',
-> extends MixinTypes<
+export interface AnnouncementChannel<Omitted extends keyof APINewsChannel | '' = ''>
+	extends MixinTypes<
 		Channel<ChannelType.GuildAnnouncement>,
 		[
 			TextChannelMixin<ChannelType.GuildAnnouncement>,
@@ -23,9 +22,10 @@ export interface AnnouncementChannel<
 		]
 	> {}
 
-export class AnnouncementChannel<
-	Omitted extends keyof APINewsChannel | '' = 'last_pin_timestamp' | 'permission_overwrites',
-> extends Channel<ChannelType.GuildAnnouncement, Omitted> {
+export class AnnouncementChannel<Omitted extends keyof APINewsChannel | '' = ''> extends Channel<
+	ChannelType.GuildAnnouncement,
+	Omitted
+> {
 	public constructor(data: APINewsChannel) {
 		super(data);
 		this._optimizeData(data);

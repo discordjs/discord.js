@@ -7,7 +7,7 @@ import { ChannelPermissionMixin } from './mixins/ChannelPermissionMixin.js';
 import { ChannelTopicMixin } from './mixins/ChannelTopicMixin.js';
 import { ThreadOnlyChannelMixin } from './mixins/ThreadOnlyChannelMixin.js';
 
-export interface ForumChannel<Omitted extends keyof APIGuildForumChannel | '' = 'available_tags'>
+export interface ForumChannel<Omitted extends keyof APIGuildForumChannel | '' = ''>
 	extends MixinTypes<
 		Channel<ChannelType.GuildForum>,
 		[
@@ -18,7 +18,7 @@ export interface ForumChannel<Omitted extends keyof APIGuildForumChannel | '' = 
 		]
 	> {}
 
-export class ForumChannel<Omitted extends keyof APIGuildForumChannel | '' = 'available_tags'> extends Channel<
+export class ForumChannel<Omitted extends keyof APIGuildForumChannel | '' = ''> extends Channel<
 	ChannelType.GuildForum,
 	Omitted
 > {

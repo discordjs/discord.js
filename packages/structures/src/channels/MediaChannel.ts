@@ -6,7 +6,7 @@ import { ChannelPermissionMixin } from './mixins/ChannelPermissionMixin.js';
 import { ChannelTopicMixin } from './mixins/ChannelTopicMixin.js';
 import { ThreadOnlyChannelMixin } from './mixins/ThreadOnlyChannelMixin.js';
 
-export interface MediaChannel<Omitted extends keyof APIGuildMediaChannel | '' = 'available_tags'>
+export interface MediaChannel<Omitted extends keyof APIGuildMediaChannel | '' = ''>
 	extends MixinTypes<
 		Channel<ChannelType.GuildMedia>,
 		[
@@ -17,7 +17,7 @@ export interface MediaChannel<Omitted extends keyof APIGuildMediaChannel | '' = 
 		]
 	> {}
 
-export class MediaChannel<Omitted extends keyof APIGuildMediaChannel | '' = 'available_tags'> extends Channel<
+export class MediaChannel<Omitted extends keyof APIGuildMediaChannel | '' = ''> extends Channel<
 	ChannelType.GuildMedia,
 	Omitted
 > {
