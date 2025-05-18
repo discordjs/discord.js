@@ -129,7 +129,7 @@ class MessageMentions {
 
     /**
      * Cached members for {@link MessageMentions#members}
-     * @type {?Collection<Snowflake, GuildMember>}
+     * @type {?Collection<Snowflake, GuildMember | PartialGuildMember>}
      * @private
      */
     this._members = null;
@@ -190,7 +190,7 @@ class MessageMentions {
   /**
    * Any members that were mentioned (only in {@link Guild}s)
    * <info>Order as received from the API, not as they appear in the message content</info>
-   * @type {?Collection<Snowflake, GuildMember>}
+   * @type {?Collection<Snowflake, GuildMember | PartialGuildMember>}
    * @readonly
    */
   get members() {
