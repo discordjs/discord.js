@@ -350,14 +350,14 @@ export class DeclarationReferenceGenerator {
 
 			if (packageJson?.name) {
 				if (packageJson?.exports && !Array.isArray(packageJson.exports) && typeof packageJson.exports !== 'string') {
-						const entryPoint = Object.keys(packageJson.exports).find((path) =>
-							dirname(sourceFile.fileName).endsWith(path.slice(1)),
-						);
+					const entryPoint = Object.keys(packageJson.exports).find((path) =>
+						dirname(sourceFile.fileName).endsWith(path.slice(1)),
+					);
 
-						if (entryPoint && packageJson.exports[entryPoint]) {
-							return `${packageJson.name}${entryPoint.slice(1)}`;
-						}
+					if (entryPoint && packageJson.exports[entryPoint]) {
+						return `${packageJson.name}${entryPoint.slice(1)}`;
 					}
+				}
 
 				return packageJson.name;
 			}
