@@ -5,6 +5,7 @@ const { UnfurledMediaItem } = require('./UnfurledMediaItem.js');
 
 /**
  * Represents a thumbnail component
+ *
  * @extends {Component}
  */
 class ThumbnailComponent extends Component {
@@ -13,6 +14,7 @@ class ThumbnailComponent extends Component {
 
     /**
      * The media associated with this thumbnail
+     *
      * @type {UnfurledMediaItem}
      * @readonly
      */
@@ -21,6 +23,7 @@ class ThumbnailComponent extends Component {
 
   /**
    * The description of this thumbnail
+   *
    * @type {?string}
    * @readonly
    */
@@ -30,6 +33,7 @@ class ThumbnailComponent extends Component {
 
   /**
    * Whether this thumbnail is spoilered
+   *
    * @type {boolean}
    * @readonly
    */
@@ -39,6 +43,7 @@ class ThumbnailComponent extends Component {
 
   /**
    * Returns the API-compatible JSON for this component
+   *
    * @returns {APIThumbnailComponent}
    */
   toJSON() {

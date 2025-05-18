@@ -11,6 +11,7 @@ module.exports = (client, { d: data }) => {
 
   /**
    * Emitted whenever a guild scheduled event gets updated.
+   *
    * @event Client#guildScheduledEventUpdate
    * @param {?GuildScheduledEvent} oldGuildScheduledEvent The guild scheduled event object before the update
    * @param {GuildScheduledEvent} newGuildScheduledEvent The guild scheduled event object after the update

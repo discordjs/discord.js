@@ -7,6 +7,7 @@ class UnfurledMediaItem {
   constructor(data) {
     /**
      * The API data associated with this media item
+     *
      * @type {APIUnfurledMediaItem}
      */
     this.data = data;
@@ -14,6 +15,7 @@ class UnfurledMediaItem {
 
   /**
    * The URL of this media item
+   *
    * @type {string}
    * @readonly
    */
@@ -23,6 +25,7 @@ class UnfurledMediaItem {
 
   /**
    * Returns the API-compatible JSON for this media item
+   *
    * @returns {APIUnfurledMediaItem}
    */
   toJSON() {

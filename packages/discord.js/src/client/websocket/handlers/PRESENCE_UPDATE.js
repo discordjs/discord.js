@@ -8,11 +8,10 @@ module.exports = (client, { d: data }) => {
   if (!user && ('username' in data.user || client.options.partials.includes(Partials.User))) {
     user = client.users._add(data.user);
   }
+
   if (!user) return;
 
-  if (data.user.username) {
-    if (!user._equals(data.user)) client.actions.UserUpdate.handle(data.user);
-  }
+  if (data.user.username && !user._equals(data.user)) client.actions.UserUpdate.handle(data.user);
 
   const guild = client.guilds.cache.get(data.guild_id);
   if (!guild) return;
@@ -34,6 +33,7 @@ module.exports = (client, { d: data }) => {
   if (client.listenerCount(Events.PresenceUpdate) > 0 && !newPresence.equals(oldPresence)) {
     /**
      * Emitted whenever a guild member's presence (e.g. status, activity) is changed.
+     *
      * @event Client#presenceUpdate
      * @param {?Presence} oldPresence The presence before the update, if one at all
      * @param {Presence} newPresence The presence after the update

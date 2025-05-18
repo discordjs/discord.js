@@ -1,8 +1,8 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { Collector } = require('./interfaces/Collector.js');
 const { Events } = require('../util/Events.js');
+const { Collector } = require('./interfaces/Collector.js');
 
 /**
  * @typedef {CollectorOptions} ReactionCollectorOptions
@@ -18,6 +18,7 @@ const { Events } = require('../util/Events.js');
  * channel ({@link Client#event:channelDelete channelDelete}),
  * thread ({@link Client#event:threadDelete threadDelete}), or
  * guild ({@link Client#event:guildDelete guildDelete}) is deleted.
+ *
  * @extends {Collector}
  */
 class ReactionCollector extends Collector {
@@ -30,18 +31,21 @@ class ReactionCollector extends Collector {
 
     /**
      * The message upon which to collect reactions
+     *
      * @type {Message}
      */
     this.message = message;
 
     /**
      * The users that have reacted to this message
+     *
      * @type {Collection}
      */
     this.users = new Collection();
 
     /**
      * The total number of reactions collected
+     *
      * @type {number}
      */
     this.total = 0;
@@ -83,6 +87,7 @@ class ReactionCollector extends Collector {
        * Emitted whenever a reaction is newly created on a message. Will emit only when a new reaction is
        * added to the message, as opposed to {@link Collector#event:collect} which will
        * be emitted even when a reaction has already been added to the message.
+       *
        * @event ReactionCollector#create
        * @param {MessageReaction} reaction The reaction that was added
        * @param {User} user The user that added the reaction
@@ -90,6 +95,7 @@ class ReactionCollector extends Collector {
       if (reaction.count === 1) {
         this.emit('create', reaction, user);
       }
+
       this.total++;
       this.users.set(user.id, user);
     });
@@ -102,14 +108,15 @@ class ReactionCollector extends Collector {
 
   /**
    * Handles an incoming reaction for possible collection.
+   *
    * @param {MessageReaction} reaction The reaction to possibly collect
-   * @param {User} user The user that added the reaction
    * @returns {?(Snowflake|string)}
    * @private
    */
   collect(reaction) {
     /**
      * Emitted whenever a reaction is collected.
+     *
      * @event ReactionCollector#collect
      * @param {MessageReaction} reaction The reaction that was collected
      * @param {User} user The user that added the reaction
@@ -121,6 +128,7 @@ class ReactionCollector extends Collector {
 
   /**
    * Handles a reaction deletion for possible disposal.
+   *
    * @param {MessageReaction} reaction The reaction to possibly dispose of
    * @param {User} user The user that removed the reaction
    * @returns {?(Snowflake|string)}
@@ -128,6 +136,7 @@ class ReactionCollector extends Collector {
   dispose(reaction, user) {
     /**
      * Emitted when the reaction had all the users removed and the `dispose` option is set to true.
+     *
      * @event ReactionCollector#dispose
      * @param {MessageReaction} reaction The reaction that was disposed of
      * @param {User} user The user that removed the reaction
@@ -136,6 +145,7 @@ class ReactionCollector extends Collector {
 
     /**
      * Emitted when the reaction had one user removed and the `dispose` option is set to true.
+     *
      * @event ReactionCollector#remove
      * @param {MessageReaction} reaction The reaction that was removed
      * @param {User} user The user that removed the reaction
@@ -143,6 +153,7 @@ class ReactionCollector extends Collector {
     if (this.collected.has(ReactionCollector.key(reaction)) && this.users.has(user.id)) {
       this.emit('remove', reaction, user);
     }
+
     return reaction.count ? null : ReactionCollector.key(reaction);
   }
 
@@ -158,6 +169,7 @@ class ReactionCollector extends Collector {
 
   /**
    * The reason this collector has ended with, or null if it hasn't ended yet
+   *
    * @type {?string}
    * @readonly
    */
@@ -170,6 +182,7 @@ class ReactionCollector extends Collector {
 
   /**
    * Handles checking if the message has been deleted, and if so, stops the collector with the reason 'messageDelete'.
+   *
    * @private
    * @param {Message} message The message that was deleted
    * @returns {void}
@@ -182,6 +195,7 @@ class ReactionCollector extends Collector {
 
   /**
    * Handles checking if the channel has been deleted, and if so, stops the collector with the reason 'channelDelete'.
+   *
    * @private
    * @param {GuildChannel} channel The channel that was deleted
    * @returns {void}
@@ -194,6 +208,7 @@ class ReactionCollector extends Collector {
 
   /**
    * Handles checking if the thread has been deleted, and if so, stops the collector with the reason 'threadDelete'.
+   *
    * @private
    * @param {ThreadChannel} thread The thread that was deleted
    * @returns {void}
@@ -206,6 +221,7 @@ class ReactionCollector extends Collector {
 
   /**
    * Handles checking if the guild has been deleted, and if so, stops the collector with the reason 'guildDelete'.
+   *
    * @private
    * @param {Guild} guild The guild that was deleted
    * @returns {void}
@@ -218,6 +234,7 @@ class ReactionCollector extends Collector {
 
   /**
    * Gets the collector key for a reaction.
+   *
    * @param {MessageReaction} reaction The message reaction to get the key for
    * @returns {Snowflake|string}
    */

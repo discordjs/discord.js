@@ -1,10 +1,11 @@
 'use strict';
 
-const { CachedManager } = require('./CachedManager.js');
 const { Presence } = require('../structures/Presence.js');
+const { CachedManager } = require('./CachedManager.js');
 
 /**
  * Manages API methods for Presences and holds their cache.
+ *
  * @extends {CachedManager}
  */
 class PresenceManager extends CachedManager {
@@ -14,6 +15,7 @@ class PresenceManager extends CachedManager {
 
   /**
    * The cache of Presences
+   *
    * @type {Collection<Snowflake, Presence>}
    * @name PresenceManager#cache
    */
@@ -24,14 +26,16 @@ class PresenceManager extends CachedManager {
 
   /**
    * Data that can be resolved to a Presence object. This can be:
-   * * A Presence
-   * * A UserResolvable
-   * * A Snowflake
+   * - A Presence
+   * - A UserResolvable
+   * - A Snowflake
+   *
    * @typedef {Presence|UserResolvable|Snowflake} PresenceResolvable
    */
 
   /**
    * Resolves a {@link PresenceResolvable} to a {@link Presence} object.
+   *
    * @param {PresenceResolvable} presence The presence resolvable to resolve
    * @returns {?Presence}
    */
@@ -44,6 +48,7 @@ class PresenceManager extends CachedManager {
 
   /**
    * Resolves a {@link PresenceResolvable} to a {@link Presence} id.
+   *
    * @param {PresenceResolvable} presence The presence resolvable to resolve
    * @returns {?Snowflake}
    */

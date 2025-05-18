@@ -5,6 +5,7 @@ const { WelcomeScreen } = require('./WelcomeScreen.js');
 
 /**
  * Represents a guild received from an invite, includes welcome screen data if available.
+ *
  * @extends {AnonymousGuild}
  */
 class InviteGuild extends AnonymousGuild {
@@ -13,9 +14,10 @@ class InviteGuild extends AnonymousGuild {
 
     /**
      * The welcome screen for this invite guild
+     *
      * @type {?WelcomeScreen}
      */
-    this.welcomeScreen = data.welcome_screen !== undefined ? new WelcomeScreen(this, data.welcome_screen) : null;
+    this.welcomeScreen = data.welcome_screen === undefined ? null : new WelcomeScreen(this, data.welcome_screen);
   }
 }
 

@@ -1,7 +1,7 @@
 'use strict';
 
-const { Action } = require('./Action.js');
 const { Events } = require('../../util/Events.js');
+const { Action } = require('./Action.js');
 
 class MessageReactionRemoveAllAction extends Action {
   handle(data) {
@@ -25,6 +25,7 @@ class MessageReactionRemoveAllAction extends Action {
 
 /**
  * Emitted whenever all reactions are removed from a cached message.
+ *
  * @event Client#messageReactionRemoveAll
  * @param {Message} message The message the reactions were removed from
  * @param {Collection<string|Snowflake, MessageReaction>} reactions The cached message reactions that were removed.

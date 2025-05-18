@@ -1,7 +1,7 @@
 'use strict';
 
-const { Action } = require('./Action.js');
 const { Events } = require('../../util/Events.js');
+const { Action } = require('./Action.js');
 
 class StageInstanceCreateAction extends Action {
   handle(data) {
@@ -13,6 +13,7 @@ class StageInstanceCreateAction extends Action {
 
       /**
        * Emitted whenever a stage instance is created.
+       *
        * @event Client#stageInstanceCreate
        * @param {StageInstance} stageInstance The created stage instance
        */

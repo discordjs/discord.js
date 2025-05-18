@@ -1,7 +1,7 @@
 // These are aggregate types that are used in the typings file but do not exist as actual exported values.
 // To prevent them from showing up in an editor, they are imported from here instead of exporting them there directly.
 
-import {
+import type {
   APIApplication,
   APIApplicationCommand,
   APIApplicationCommandInteraction,
@@ -76,31 +76,31 @@ import {
   Snowflake,
   APIGuildScheduledEvent,
 } from 'discord-api-types/v10';
-import { GuildChannel, Guild, PermissionOverwrites } from './index.js';
+import type { GuildChannel, Guild, PermissionOverwrites } from './index.js';
 
 export type RawActivityData = GatewayActivity;
 
 export type RawApplicationData = RawClientApplicationData | RawIntegrationApplicationData;
-export type RawClientApplicationData = GatewayReadyDispatchData['application'] | APIMessage['application'];
+export type RawClientApplicationData = APIMessage['application'] | GatewayReadyDispatchData['application'];
 export type RawIntegrationApplicationData = APIGuildIntegrationApplication | Partial<APIApplication>;
 
 export type RawApplicationCommandData = APIApplicationCommand;
 
 export type RawChannelData =
-  | RawGuildChannelData
-  | RawThreadChannelData
   | RawDMChannelData
-  | RawPartialGroupDMChannelData;
+  | RawGuildChannelData
+  | RawPartialGroupDMChannelData
+  | RawThreadChannelData;
 export type RawDMChannelData = APIChannel | APIInteractionDataResolvedChannel;
 export type RawGuildChannelData = APIChannel | APIInteractionDataResolvedChannel | Required<APIPartialChannel>;
 export type RawPartialGroupDMChannelData = APIChannel | Required<APIPartialChannel>;
 export type RawThreadChannelData = APIChannel | APIInteractionDataResolvedChannel;
 
 export type RawEmojiData =
-  | RawGuildEmojiData
-  | RawReactionEmojiData
   | GatewayActivityEmoji
-  | Omit<Partial<APIPartialEmoji>, 'animated'>;
+  | Omit<Partial<APIPartialEmoji>, 'animated'>
+  | RawGuildEmojiData
+  | RawReactionEmojiData;
 export type RawApplicationEmojiData = APIEmoji;
 export type RawGuildEmojiData = APIEmoji;
 export type RawReactionEmojiData = APIEmoji | APIPartialEmoji;
@@ -109,7 +109,7 @@ export type RawGuildAuditLogData = APIAuditLog;
 
 export type RawGuildAuditLogEntryData = APIAuditLogEntry;
 
-export type RawGuildBanData = GatewayGuildBanAddDispatchData | APIBan;
+export type RawGuildBanData = APIBan | GatewayGuildBanAddDispatchData;
 
 export type RawGuildData = APIGuild | APIUnavailableGuild;
 export type RawAnonymousGuildData = RawGuildData | RawInviteGuildData;
@@ -119,8 +119,8 @@ export type RawOAuth2GuildData = RESTAPIPartialCurrentUserGuild;
 
 export type RawGuildMemberData =
   | APIGuildMember
-  | APIInteractionGuildMember
   | APIInteractionDataResolvedGuildMember
+  | APIInteractionGuildMember
   | GatewayGuildMemberAddDispatchData
   | GatewayGuildMemberUpdateDispatchData
   | Required<RESTPatchAPICurrentGuildMemberNicknameJSONBody>
@@ -153,14 +153,14 @@ export type RawPartialMessageData = GatewayMessageUpdateDispatchData;
 export type RawAttachmentData = APIAttachment;
 
 export type RawMessagePayloadData =
-  | RESTPostAPIChannelMessageJSONBody
   | RESTPatchAPIChannelMessageJSONBody
-  | RESTPostAPIWebhookWithTokenJSONBody
-  | RESTPatchAPIWebhookWithTokenJSONBody
-  | RESTPostAPIInteractionCallbackFormDataBody
+  | RESTPatchAPIInteractionFollowupJSONBody
   | RESTPatchAPIInteractionOriginalResponseJSONBody
+  | RESTPatchAPIWebhookWithTokenJSONBody
+  | RESTPostAPIChannelMessageJSONBody
+  | RESTPostAPIInteractionCallbackFormDataBody
   | RESTPostAPIInteractionFollowupJSONBody
-  | RESTPatchAPIInteractionFollowupJSONBody;
+  | RESTPostAPIWebhookWithTokenJSONBody;
 
 export type RawMessageReactionData = APIReaction | GatewayMessageReactionAddDispatchData;
 
@@ -174,7 +174,7 @@ export type RawRichPresenceAssets = GatewayActivityAssets;
 
 export type RawStageInstanceData =
   | APIStageInstance
-  | (Partial<APIStageInstance> & Pick<APIStageInstance, 'id' | 'channel_id' | 'guild_id'>);
+  | (Partial<APIStageInstance> & Pick<APIStageInstance, 'channel_id' | 'guild_id' | 'id'>);
 
 export type RawStickerData = APISticker | APIStickerItem;
 
@@ -197,7 +197,7 @@ export type RawVoiceStateData = APIVoiceState | Omit<APIVoiceState, 'guild_id'>;
 export type RawWebhookData =
   | APIWebhook
   | RESTGetAPIWebhookWithTokenResult
-  | (Partial<APIWebhook> & Required<Pick<APIWebhook, 'id' | 'guild_id'>>);
+  | (Partial<APIWebhook> & Required<Pick<APIWebhook, 'guild_id' | 'id'>>);
 
 export type RawWelcomeChannelData = APIGuildWelcomeScreenChannel;
 

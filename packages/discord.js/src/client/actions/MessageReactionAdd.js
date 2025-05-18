@@ -1,8 +1,8 @@
 'use strict';
 
-const { Action } = require('./Action.js');
 const { Events } = require('../../util/Events.js');
 const { Partials } = require('../../util/Partials.js');
+const { Action } = require('./Action.js');
 
 /*
 { user_id: 'id',
@@ -50,12 +50,14 @@ class MessageReactionAddAction extends Action {
     if (fromStructure) return { message, reaction, user };
     /**
      * Provides additional information about altered reaction
+     *
      * @typedef {Object} MessageReactionEventDetails
      * @property {ReactionType} type The type of the reaction
      * @property {boolean} burst Determines whether a super reaction was used
      */
     /**
      * Emitted whenever a reaction is added to a cached message.
+     *
      * @event Client#messageReactionAdd
      * @param {MessageReaction} messageReaction The reaction object
      * @param {User} user The user that applied the guild or reaction emoji

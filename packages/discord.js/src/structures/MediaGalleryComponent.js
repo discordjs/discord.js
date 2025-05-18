@@ -5,6 +5,7 @@ const { MediaGalleryItem } = require('./MediaGalleryItem.js');
 
 /**
  * Represents a media gallery component
+ *
  * @extends {Component}
  */
 class MediaGalleryComponent extends Component {
@@ -13,6 +14,7 @@ class MediaGalleryComponent extends Component {
 
     /**
      * The items in this media gallery
+     *
      * @type {MediaGalleryItem[]}
      * @readonly
      */
@@ -21,6 +23,7 @@ class MediaGalleryComponent extends Component {
 
   /**
    * Returns the API-compatible JSON for this component
+   *
    * @returns {APIMediaGalleryComponent}
    */
   toJSON() {

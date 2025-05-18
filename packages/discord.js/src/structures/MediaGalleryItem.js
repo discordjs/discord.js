@@ -9,12 +9,14 @@ class MediaGalleryItem {
   constructor({ media, ...data }) {
     /**
      * The API data associated with this component
+     *
      * @type {APIMediaGalleryItem}
      */
     this.data = data;
 
     /**
      * The media associated with this media gallery item
+     *
      * @type {UnfurledMediaItem}
      * @readonly
      */
@@ -23,6 +25,7 @@ class MediaGalleryItem {
 
   /**
    * The description of this media gallery item
+   *
    * @type {?string}
    * @readonly
    */
@@ -32,6 +35,7 @@ class MediaGalleryItem {
 
   /**
    * Whether this media gallery item is spoilered
+   *
    * @type {boolean}
    * @readonly
    */
@@ -41,6 +45,7 @@ class MediaGalleryItem {
 
   /**
    * Returns the API-compatible JSON for this component
+   *
    * @returns {APIMediaGalleryItem}
    */
   toJSON() {
