@@ -1295,9 +1295,11 @@ export class ApplicationEmoji extends Emoji {
   private constructor(client: Client<true>, data: RawApplicationEmojiData, application: ClientApplication);
 
   public application: ClientApplication;
-  public author: User | null;
+  public animated: boolean;
+  public author: User;
   public id: Snowflake;
   public managed: boolean | null;
+  public name: string;
   public requiresColons: boolean | null;
   public delete(): Promise<ApplicationEmoji>;
   public edit(options: ApplicationEmojiEditOptions): Promise<ApplicationEmoji>;
