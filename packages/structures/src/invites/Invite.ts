@@ -197,11 +197,11 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = ''> extends Str
 	public override toJSON() {
 		const clone = super.toJSON();
 		if (this[kExpiresTimestamp]) {
-			clone.expires_at = new Date(this[kExpiresTimestamp]).toISOString();
+			clone.expires_at = this.expiresAt!.toISOString();
 		}
 
 		if (this[kCreatedTimestamp]) {
-			clone.created_at = new Date(this[kCreatedTimestamp]).toISOString();
+			clone.created_at = this.createdAt!.toISOString();
 		}
 
 		return clone;

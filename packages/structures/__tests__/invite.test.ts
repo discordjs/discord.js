@@ -69,7 +69,7 @@ describe('Invite', () => {
 	test('Invite with omitted properties', () => {
 		const instance = new Invite(dataNoCode);
 		expect(instance.toJSON()).toEqual(dataNoCode);
-		expect(instance.url).toBe('');
+		expect(instance.url).toBe(null);
 		expect(instance.code).toBe(undefined);
 		expect(instance.valueOf()).toEqual(Object.prototype.valueOf.apply(instance));
 	});
