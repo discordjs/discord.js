@@ -1,3 +1,4 @@
+import type { Collection } from '@discordjs/collection';
 import type { REST } from '@discordjs/rest';
 import { range, type Awaitable } from '@discordjs/util';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
@@ -15,7 +16,7 @@ import {
 import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy.js';
 import type { IIdentifyThrottler } from '../throttling/IIdentifyThrottler.js';
 import { DefaultWebSocketManagerOptions, type CompressionMethod, type Encoding } from '../utils/constants.js';
-import type { WebSocketShardDestroyOptions, WebSocketShardEvents } from './WebSocketShard.js';
+import type { WebSocketShardDestroyOptions, WebSocketShardEvents, WebSocketShardStatus } from './WebSocketShard.js';
 
 /**
  * Represents a range of shard ids
@@ -400,7 +401,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 		return this.strategy.send(shardId, payload);
 	}
 
-	public fetchStatus() {
+	public fetchStatus(): Awaitable<Collection<number, WebSocketShardStatus>> {
 		return this.strategy.fetchStatus();
 	}
 

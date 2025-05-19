@@ -96,6 +96,7 @@ export function SelectList<Type extends object>(props: SelectListProps<Type>) {
 export type SelectTriggerProps = ComponentProps<typeof Button> & {
 	readonly className?: string;
 	readonly prefix?: ReactNode;
+	readonly suffix?: ReactNode;
 };
 
 export function SelectTrigger(props: SelectTriggerProps) {
@@ -113,6 +114,7 @@ export function SelectTrigger(props: SelectTriggerProps) {
 				className="text-base-neutral-900 group-disabled:data-placeholder:text-base-neutral-900 dark:group-disabled:data-placeholder:text-base-neutral-40 dark:data-placeholder:text-base-neutral-500 dark:text-base-neutral-40 data-placeholder:text-base-neutral-400 text-base-lg sm:text-base-md grid flex-1 grid-cols-[auto_1fr] place-items-start items-center px-3 py-2.5 *:data-[slot=avatar]:*:-mx-0.5 *:data-[slot=avatar]:-mx-0.5 *:data-[slot=avatar]:*:mr-2 *:data-[slot=avatar]:mr-2 *:data-[slot=icon]:-mx-0.5 *:data-[slot=icon]:mr-1 *:data-[slot=icon]:size-5.5 [&_[slot=description]]:hidden *:[span]:col-start-2"
 				data-slot="select-value"
 			/>
+			{props.suffix && <span className="mr-10 ml-2 *:data-[slot=icon]:size-5.5">{props.suffix}</span>}
 			<ChevronDownIcon
 				aria-hidden
 				className="size-6 shrink-0 duration-200 group-open:rotate-180 forced-colors:text-[ButtonText] forced-colors:group-disabled:text-[GrayText]"

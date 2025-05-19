@@ -47,7 +47,7 @@
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@discordjs/api-extractor-model": "workspace:^",
-		"@microsoft/tsdoc": "0.14.2"
+		"@microsoft/tsdoc": "~0.15.1"
 	},
 	"devDependencies": {
 		"@types/node": "^22.15.2",

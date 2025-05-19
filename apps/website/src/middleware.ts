@@ -1,24 +1,6 @@
-import { sql } from '@vercel/postgres';
 import { NextResponse, type NextRequest } from 'next/server';
-import { PACKAGES } from './util/constants';
-import { ENV } from './util/env';
-
-async function fetchLatestVersion(packageName: string): Promise<string> {
-	if (ENV.IS_LOCAL_DEV) {
-		return 'main';
-	}
-
-	try {
-		const { rows } = await sql<{ version: string }>`with ordered_versions as (
-			select version from documentation where name = ${packageName} and version != 'main' order by string_to_array(version, '.')::int[] desc
-		)
-		select version from ordered_versions limit 1`;
-
-		return rows[0]?.version ?? 'main';
-	} catch {
-		return '';
-	}
-}
+import { PACKAGES } from '@/util/constants';
+import { fetchLatestVersion } from '@/util/fetchLatestVersion';
 
 export default async function middleware(request: NextRequest) {
 	if (request.nextUrl.pathname === '/docs') {

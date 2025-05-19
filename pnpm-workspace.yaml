@@ -29,4 +29,4 @@ publicHoistPattern:
   - '*jju*'
 
 patchedDependencies:
-  '@microsoft/tsdoc-config@0.16.2': patches/@microsoft__tsdoc-config@0.16.2.patch
+  '@microsoft/tsdoc-config@0.17.1': patches/@microsoft__tsdoc-config@0.17.1.patch

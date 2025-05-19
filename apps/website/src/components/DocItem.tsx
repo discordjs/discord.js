@@ -26,8 +26,6 @@ async function OverloadNode({
 	readonly packageName: string;
 	readonly version: string;
 }) {
-	'use cache';
-
 	return (
 		<Tabs className="flex flex-col gap-4">
 			<TabList className="flex flex-wrap gap-2">
@@ -63,8 +61,6 @@ export async function DocItem({
 	readonly packageName: string;
 	readonly version: string;
 }) {
-	'use cache';
-
 	if (node.overloads?.length) {
 		return <OverloadNode node={node} packageName={packageName} version={version} />;
 	}
