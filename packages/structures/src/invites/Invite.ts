@@ -186,6 +186,8 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = ''> extends Str
 
 	/**
 	 * When concatenated with a string, this automatically concatenates the invite's URL instead of the object.
+	 *
+	 * @returns The URL to the invite or an empty string if it doesn't have a code
 	 */
 	public override toString() {
 		return this.url ?? '';
