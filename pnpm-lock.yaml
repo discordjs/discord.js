@@ -968,8 +968,8 @@ importers:
         specifier: ^2.6.3
         version: 2.6.3
       undici:
-        specifier: 6.21.1
-        version: 6.21.1
+        specifier: 6.21.3
+        version: 6.21.3
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1331,8 +1331,8 @@ importers:
         specifier: ^2.6.3
         version: 2.6.3
       undici:
-        specifier: 6.21.1
-        version: 6.21.1
+        specifier: 6.21.3
+        version: 6.21.3
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1774,8 +1774,8 @@ importers:
         specifier: ~5.5.4
         version: 5.5.4
       undici:
-        specifier: 6.21.1
-        version: 6.21.1
+        specifier: 6.21.3
+        version: 6.21.3
       vitest:
         specifier: ^2.0.5
         version: 2.0.5(@edge-runtime/vm@3.2.0)(@types/node@18.19.45)(happy-dom@14.12.3)(terser@5.39.0)
@@ -13975,6 +13975,10 @@ packages:
 
   undici@6.21.1:
     resolution: {integrity: sha512-q/1rj5D0/zayJB2FraXdaWxbhWiNKDvu8naDT2dl1yTlvJp4BLtOcp2a5BvgGNQpYYJzau7tf1WgKv3b+7mqpQ==}
+    engines: {node: '>=18.17'}
+
+  undici@6.21.3:
+    resolution: {integrity: sha512-gBLkYIlEnSp8pFbT64yFgGE6UIB9tAkhukC23PmMDCe5Nd+cRqKxSjw5y54MK2AZMgZfJWMaNE4nYUHgi1XEOw==}
     engines: {node: '>=18.17'}
 
   undici@7.8.0:
@@ -31403,6 +31407,8 @@ snapshots:
       '@fastify/busboy': 2.1.1
 
   undici@6.21.1: {}
+
+  undici@6.21.3: {}
 
   undici@7.8.0: {}
 
