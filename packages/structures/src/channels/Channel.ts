@@ -36,9 +36,9 @@ export type ChannelDataType<Type extends ChannelType> = Type extends
  * Represents any channel on Discord.
  *
  * @typeParam Type - Specify the type of the channel being constructed for more accurate data types
- * @typeParam Omitted - Specify the propeties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @remarks While this class can be directly constructed for any channel type, this class is not intended to be used directly,
- * preferring instead to create class that extend this class with the appropriate mixins for each channel type.
+ * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
+ * @remarks Although this class _can_ be instantiated directly for any channel type,
+ * it's intended to be subclassed with the appropriate mixins for each channel type.
  */
 export class Channel<
 	Type extends ChannelType = ChannelType,
@@ -52,12 +52,10 @@ export class Channel<
 	 */
 	public static override DataTemplate: Partial<APIChannel> = {};
 
-	public constructor(
-		/**
-		 * The raw data received from the API for the channel
-		 */
-		data: Omit<ChannelDataType<Type>, Omitted>,
-	) {
+	/**
+	 * @param data - The raw data received from the API for the channel
+	 */
+	public constructor(data: Omit<ChannelDataType<Type>, Omitted>) {
 		super(data as ChannelDataType<Type>);
 	}
 
@@ -109,7 +107,9 @@ export class Channel<
 	 * The timestamp the channel was created at
 	 */
 	public get createdTimestamp() {
-		return typeof this.id === 'string' ? DiscordSnowflake.timestampFrom(this.id) : null;
+		return ['string', 'bigint'].includes(typeof this.id)
+			? DiscordSnowflake.timestampFrom(this.id as bigint | string)
+			: null;
 	}
 
 	/**

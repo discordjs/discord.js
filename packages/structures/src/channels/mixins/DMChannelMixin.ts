@@ -43,7 +43,7 @@ export class DMChannelMixin<Type extends ChannelType.DM | ChannelType.GroupDM> {
 	/**
 	 * Adds data from optimized properties omitted from [kData].
 	 *
-	 * @param data the result of {@link Channel.toJSON()}
+	 * @param data - the result of {@link Channel.toJSON}
 	 */
 	protected _toJSON(data: Partial<ChannelDataType<Type>>) {
 		if (this.recipients) {

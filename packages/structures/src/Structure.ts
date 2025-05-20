@@ -98,8 +98,9 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 * For typescript users, mixins must use the closest ancestors access modifier.
 	 * @remarks Automatically called in {@link Structure#_patch} but must be called manually in the constructor
 	 * of any class implementing this method.
-	 * @remarks Additionally, when implementing, ensure to call `super._optimzeData` if any class in the super chain aside from Structure
-	 * contains an implementation. Note: mixins do not need to call super ever as the process of mixing walks the prototype chain.
+	 * @remarks Additionally, when implementing, ensure to call `super._optimizeData` if any class in the super chain aside
+	 * from Structure contains an implementation.
+	 * Note: mixins do not need to call super ever as the process of mixing walks the prototype chain.
 	 * @virtual
 	 * @internal
 	 */

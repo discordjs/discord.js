@@ -5,7 +5,7 @@ import { kData } from '../utils/symbols.js';
 /**
  * Represents a user's connection on Discord.
  *
- * @typeParam Omitted - Specify the propeties that will not be stored in the raw data field as a union, implement via `DataTemplate`
+ * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  */
 export class Connection<Omitted extends keyof APIConnection | '' = ''> extends Structure<APIConnection, Omitted> {
 	/**
@@ -13,12 +13,10 @@ export class Connection<Omitted extends keyof APIConnection | '' = ''> extends S
 	 */
 	public static override DataTemplate: Partial<APIConnection> = {};
 
-	public constructor(
-		/**
-		 * The raw data received from the API for the connection
-		 */
-		data: Omit<APIConnection, Omitted>,
-	) {
+	/**
+	 * @param data - The raw data received from the API for the connection
+	 */
+	public constructor(data: Omit<APIConnection, Omitted>) {
 		super(data);
 	}
 

@@ -5,7 +5,7 @@ import { kData } from '../utils/symbols.js';
 /**
  * Represents metadata of a thread channel on Discord.
  *
- * @typeParam Omitted - Specify the propeties that will not be stored in the raw data field as a union, implement via `DataTemplate`
+ * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  */
 export class ForumTag<Omitted extends keyof APIGuildForumTag | '' = ''> extends Structure<APIGuildForumTag, Omitted> {
 	/**
@@ -23,7 +23,7 @@ export class ForumTag<Omitted extends keyof APIGuildForumTag | '' = ''> extends 
 	}
 
 	/**
-	 * Whether this tag can only be added to or removed from threads by a member with the {@link discord-api-types/v10!PermissionFlagsBits.ManageThreads} permission.
+	 * Whether this tag can only be added to or removed from threads by a member with the {@link discord-api-types/v10#PermissionFlagsBits.ManageThreads} permission.
 	 */
 	public get moderated() {
 		return this[kData].moderated;

@@ -1,8 +1,11 @@
 export * from './mixins/index.js';
+
 export * from './ForumTag.js';
 export * from './PermissionOverwrite.js';
 export * from './ThreadMetadata.js';
+
 export * from './Channel.js';
+
 export * from './AnnouncementChannel.js';
 export * from './AnnouncementThreadChannel.js';
 export * from './CategoryChannel.js';

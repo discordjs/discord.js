@@ -6,7 +6,8 @@ import { kData } from '../utils/symbols.js';
 /**
  * Represents any user on Discord.
  *
- * @typeParam Omitted - Specify the propeties that will not be stored in the raw data field as a union, implement via `DataTemplate`
+ * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
+ * @remarks has a substructure `AvatarDecorationData`, which needs to be instantiated and stored by an extending class using it
  */
 export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<APIUser, Omitted> {
 	/**
@@ -14,12 +15,10 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	 */
 	public static override DataTemplate: Partial<APIUser> = {};
 
-	public constructor(
-		/**
-		 * The raw data received from the API for the user
-		 */
-		data: Omit<APIUser, Omitted>,
-	) {
+	/**
+	 * @param data - The raw data received from the API for the user
+	 */
+	public constructor(data: Omit<APIUser, Omitted>) {
 		super(data);
 	}
 
@@ -152,24 +151,10 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	}
 
 	/**
-	 * The user's avatar decoration asset
-	 */
-	public get avatarDecorationDataAsset() {
-		return (this[kData].avatar_decoration_data as APIUser['avatar_decoration_data'])?.asset;
-	}
-
-	/**
-	 * The user's avatar decoration SKU id
-	 */
-	public get avatarDecorationDataSKUId() {
-		return (this[kData].avatar_decoration_data as APIUser['avatar_decoration_data'])?.sku_id;
-	}
-
-	/**
 	 * The timestamp the user was created at
 	 */
 	public get createdTimestamp() {
-		return typeof this.id === 'string' ? DiscordSnowflake.timestampFrom(this.id) : null;
+		return typeof this.id === 'string' || typeof this.id === 'bigint' ? DiscordSnowflake.timestampFrom(this.id) : null;
 	}
 
 	/**
@@ -186,7 +171,8 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	 * @remarks This property is only set when the user was manually fetched
 	 */
 	public get hexAccentColor() {
-		if (typeof this.accentColor !== 'number') return this.accentColor;
-		return `#${this.accentColor.toString(16).padStart(6, '0')}`;
+		const accentColor = this.accentColor;
+		if (typeof accentColor !== 'number') return accentColor;
+		return `#${accentColor.toString(16).padStart(6, '0')}`;
 	}
 }

@@ -66,7 +66,7 @@ export class ThreadChannelMixin<
 	/**
 	 * Adds data from optimized properties omitted from [kData].
 	 *
-	 * @param data the result of {@link Channel.toJSON()}
+	 * @param data - the result of {@link Channel.toJSON}
 	 */
 	public _toJSON(data: Partial<APIThreadChannel>) {
 		if (this.threadMetadata) {

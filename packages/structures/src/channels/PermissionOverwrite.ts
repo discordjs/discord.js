@@ -5,7 +5,7 @@ import { kAllow, kData, kDeny } from '../utils/symbols.js';
 /**
  * Represents metadata of a thread channel on Discord.
  *
- * @typeParam Omitted - Specify the propeties that will not be stored in the raw data field as a union, implement via `DataTemplate`
+ * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  */
 export class PermissionOverwrite<Omitted extends keyof APIOverwrite | '' = ''> extends Structure<
 	APIOverwrite,

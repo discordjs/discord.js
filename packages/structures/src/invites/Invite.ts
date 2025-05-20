@@ -8,16 +8,9 @@ export interface APIActualInvite extends APIInvite, Partial<Omit<APIExtendedInvi
 /**
  * Represents an invitation to a discord channel
  *
- * @typeParam Omitted - Specify the propeties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @typeParam Extended - Whether the invite is a full extended invite
+ * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  */
 export class Invite<Omitted extends keyof APIActualInvite | '' = ''> extends Structure<APIActualInvite, Omitted> {
-	/**
-	 * A regular expression that matches Discord invite links.
-	 * The `code` group property is present on the `exec()` result of this expression.
-	 */
-	public static InvitesPattern = /discord(?:(?:app)?\.com\/invite|\.gg(?:\/invite)?)\/(?<code>[\w-]{2,255})/i;
-
 	/**
 	 * The template used for removing data from the raw data stored for each Invite
 	 *
@@ -43,12 +36,10 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = ''> extends Str
 	 */
 	protected [kCreatedTimestamp]: number | null;
 
-	public constructor(
-		/**
-		 * The raw data received from the API for the invite
-		 */
-		data: Omit<APIActualInvite, Omitted>,
-	) {
+	/**
+	 * @param data - The raw data received from the API for the invite
+	 */
+	public constructor(data: Omit<APIActualInvite, Omitted>) {
 		super(data);
 		this._optimizeData(data);
 		this[kExpiresTimestamp] ??= null;
@@ -119,8 +110,6 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = ''> extends Str
 		const maxAge = this.maxAge;
 		if (createdTimestamp && maxAge) {
 			this[kExpiresTimestamp] = createdTimestamp + (maxAge as number) * 1_000;
-		} else {
-			this[kExpiresTimestamp] ??= null;
 		}
 
 		return this[kExpiresTimestamp];
@@ -199,11 +188,11 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = ''> extends Str
 	public override toJSON() {
 		const clone = super.toJSON();
 		if (this[kExpiresTimestamp]) {
-			clone.expires_at = this.expiresAt!.toISOString();
+			clone.expires_at = new Date(this[kExpiresTimestamp]).toISOString();
 		}
 
 		if (this[kCreatedTimestamp]) {
-			clone.created_at = this.createdAt!.toISOString();
+			clone.created_at = new Date(this[kCreatedTimestamp]).toISOString();
 		}
 
 		return clone;

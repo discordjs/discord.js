@@ -37,7 +37,8 @@ export class ThreadOnlyChannelMixin<Type extends ChannelType.GuildForum | Channe
 
 	/**
 	 * The default sort order type used to order posts in this channel.
-	 * Defaults to null, which indicates a preferred sort order hasn't been set by a channel admin.
+	 *
+	 * @defaultValue `null` – indicates a preferred sort order hasn't been set.
 	 */
 	public get defaultSortOrder() {
 		return this[kData].default_sort_order!;
@@ -55,11 +56,11 @@ export class ThreadOnlyChannelMixin<Type extends ChannelType.GuildForum | Channe
 	/**
 	 * Adds data from optimized properties omitted from [kData].
 	 *
-	 * @param data the result of {@link Channel.toJSON()}
+	 * @param data - the result of {@link Channel.toJSON}
 	 */
 	protected _toJSON(data: Partial<ChannelDataType<Type>>) {
 		if (this.availableTags) {
-			data.available_tags = this.availableTags?.map((tag) => tag.toJSON());
+			data.available_tags = this.availableTags.map((tag) => tag.toJSON());
 		}
 	}
 }
