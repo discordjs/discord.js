@@ -1759,8 +1759,8 @@ importers:
         specifier: ^5.4.5
         version: 5.4.5
       undici:
-        specifier: 6.21.1
-        version: 6.21.1
+        specifier: 6.21.3
+        version: 6.21.3
       vitest:
         specifier: ^1.6.0
         version: 1.6.0(@edge-runtime/vm@3.2.0)(@types/node@18.17.9)(happy-dom@14.12.0)(terser@5.31.0)
@@ -13306,6 +13306,10 @@ packages:
 
   undici@6.21.1:
     resolution: {integrity: sha512-q/1rj5D0/zayJB2FraXdaWxbhWiNKDvu8naDT2dl1yTlvJp4BLtOcp2a5BvgGNQpYYJzau7tf1WgKv3b+7mqpQ==}
+    engines: {node: '>=18.17'}
+
+  undici@6.21.3:
+    resolution: {integrity: sha512-gBLkYIlEnSp8pFbT64yFgGE6UIB9tAkhukC23PmMDCe5Nd+cRqKxSjw5y54MK2AZMgZfJWMaNE4nYUHgi1XEOw==}
     engines: {node: '>=18.17'}
 
   unicode-canonical-property-names-ecmascript@2.0.0:
@@ -29790,6 +29794,8 @@ snapshots:
       '@fastify/busboy': 2.1.1
 
   undici@6.21.1: {}
+
+  undici@6.21.3: {}
 
   unicode-canonical-property-names-ecmascript@2.0.0: {}
 
