@@ -174,6 +174,18 @@ class ApplicationCommand extends Base {
       this.contexts ??= null;
     }
 
+    if ('handler' in data) {
+      /**
+       * Determines whether the interaction is handled by the app's interactions handler or by Discord.
+       * <info>Only available for {@link ApplicationCommandType.PrimaryEntryPoint} commands on
+       * applications with the {@link ApplicationFlags.Embedded} flag (i.e, those that have an Activity)</info>
+       * @type {?EntryPointCommandHandlerType}
+       */
+      this.handler = data.handler;
+    } else {
+      this.handler ??= null;
+    }
+
     if ('version' in data) {
       /**
        * Autoincrementing version identifier updated during substantial record changes
@@ -216,15 +228,20 @@ class ApplicationCommand extends Base {
    * @property {string} name The name of the command, must be in all lowercase if type is
    * {@link ApplicationCommandType.ChatInput}
    * @property {Object<Locale, string>} [nameLocalizations] The localizations for the command name
-   * @property {string} description The description of the command, if type is {@link ApplicationCommandType.ChatInput}
+   * @property {string} description The description of the command,
+   * if type is {@link ApplicationCommandType.ChatInput} or {@link ApplicationCommandType.PrimaryEntryPoint}
    * @property {boolean} [nsfw] Whether the command is age-restricted
    * @property {Object<Locale, string>} [descriptionLocalizations] The localizations for the command description,
-   * if type is {@link ApplicationCommandType.ChatInput}
+   * if type is {@link ApplicationCommandType.ChatInput} or {@link ApplicationCommandType.PrimaryEntryPoint}
    * @property {ApplicationCommandType} [type=ApplicationCommandType.ChatInput] The type of the command
    * @property {ApplicationCommandOptionData[]} [options] Options for the command
    * @property {?PermissionResolvable} [defaultMemberPermissions] The bitfield used to determine the default permissions
    * a member needs in order to run the command
    * @property {boolean} [dmPermission] Whether the command is enabled in DMs
+   * @property {ApplicationIntegrationType[]} [integrationTypes] Installation contexts where the command is available
+   * @property {InteractionContextType[]} [contexts] Interaction contexts where the command can be used
+   * @property {EntryPointCommandHandlerType} [handler] Whether the interaction is handled by the app's
+   * interactions handler or by Discord.
    */
 
   /**
@@ -419,7 +436,8 @@ class ApplicationCommand extends Base {
         this.descriptionLocalizations ?? {},
       ) ||
       !isEqual(command.integrationTypes ?? command.integration_types ?? [], this.integrationTypes ?? []) ||
-      !isEqual(command.contexts ?? [], this.contexts ?? [])
+      !isEqual(command.contexts ?? [], this.contexts ?? []) ||
+      ('handler' in command && command.handler !== this.handler)
     ) {
       return false;
     }

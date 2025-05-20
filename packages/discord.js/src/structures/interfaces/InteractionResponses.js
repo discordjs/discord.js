@@ -70,6 +70,12 @@ class InteractionResponses {
    */
 
   /**
+   * Options for launching activity in response to a {@link BaseInteraction}
+   * @typedef {Object} LaunchActivityOptions
+   * @property {boolean} [withResponse] Whether to return an {@link InteractionCallbackResponse} as the response
+   */
+
+  /**
    * Options for showing a modal in response to a {@link BaseInteraction}
    * @typedef {Object} ShowModalOptions
    * @property {boolean} [withResponse] Whether to return an {@link InteractionCallbackResponse} as the response
@@ -371,6 +377,25 @@ class InteractionResponses {
   }
 
   /**
+   * Launches this application's activity, if enabled
+   * @param {LaunchActivityOptions} [options={}] Options for launching the activity
+   * @returns {Promise<InteractionCallbackResponse|undefined>}
+   */
+  async launchActivity({ withResponse } = {}) {
+    if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
+    const response = await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
+      query: makeURLSearchParams({ with_response: withResponse ?? false }),
+      body: {
+        type: InteractionResponseType.LaunchActivity,
+      },
+      auth: false,
+    });
+    this.replied = true;
+
+    return withResponse ? new InteractionCallbackResponse(this.client, response) : undefined;
+  }
+
+  /**
    * Shows a modal component
    * @param {ModalBuilder|ModalComponentData|APIModalInteractionResponseCallbackData} modal The modal to show
    * @param {ShowModalOptions} [options={}] The options for sending this interaction response
@@ -450,6 +475,7 @@ class InteractionResponses {
       'followUp',
       'deferUpdate',
       'update',
+      'launchActivity',
       'showModal',
       'sendPremiumRequired',
       'awaitModalSubmit',
