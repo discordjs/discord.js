@@ -616,7 +616,6 @@ describe('thread channels', () => {
 			archived: false,
 			auto_archive_duration: ThreadAutoArchiveDuration.ThreeDays,
 			locked: true,
-			create_timestamp: '2023-01-02T15:13:11.987Z',
 		},
 		type: ChannelType.AnnouncementThread,
 	};
@@ -625,6 +624,7 @@ describe('thread channels', () => {
 		...dataPublic,
 		thread_metadata: {
 			...dataAnnounce.thread_metadata!,
+			create_timestamp: '2023-01-02T15:13:11.987Z',
 			invitable: true,
 		},
 		type: ChannelType.PrivateThread,

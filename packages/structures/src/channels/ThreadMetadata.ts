@@ -37,12 +37,13 @@ export class ThreadMetadata<Omitted extends keyof APIThreadMetadata | '' = ''> e
 	 * {@inheritDoc Structure._optimizeData}
 	 */
 	protected override _optimizeData(data: Partial<APIThreadMetadata>) {
-		this[kCreatedTimestamp] = data.create_timestamp
-			? Date.parse(data.create_timestamp)
-			: (this[kCreatedTimestamp] ?? null);
-		this[kArchiveTimestamp] = data.archive_timestamp
-			? Date.parse(data.archive_timestamp)
-			: (this[kArchiveTimestamp] ?? null);
+		if (data.create_timestamp) {
+			this[kCreatedTimestamp] = Date.parse(data.create_timestamp);
+		}
+
+		if (data.archive_timestamp) {
+			this[kArchiveTimestamp] = Date.parse(data.archive_timestamp);
+		}
 	}
 
 	/**

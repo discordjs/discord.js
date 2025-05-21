@@ -37,8 +37,13 @@ export class PermissionOverwrite<Omitted extends keyof APIOverwrite | '' = ''> e
 	 * {@inheritDoc Structure._optimizeData}
 	 */
 	protected override _optimizeData(data: Partial<APIOverwrite>) {
-		this[kAllow] = data.allow ? BigInt(data.allow) : (this[kAllow] ?? null);
-		this[kDeny] = data.deny ? BigInt(data.deny) : (this[kDeny] ?? null);
+		if (data.allow) {
+			this[kAllow] = BigInt(data.allow);
+		}
+
+		if (data.deny) {
+			this[kDeny] = BigInt(data.deny);
+		}
 	}
 
 	/**

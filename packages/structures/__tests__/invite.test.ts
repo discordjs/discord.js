@@ -71,6 +71,7 @@ describe('Invite', () => {
 		expect(instance.toJSON()).toEqual(dataNoCode);
 		expect(instance.url).toBe(null);
 		expect(instance.code).toBe(undefined);
+		expect(`${instance}`).toBe('');
 		expect(instance.valueOf()).toEqual(Object.prototype.valueOf.apply(instance));
 	});
 
