@@ -1,6 +1,6 @@
 import type { APIUser, ChannelType } from 'discord-api-types/v10';
 import { User } from '../../users';
-import type { Channel, ChannelDataType } from '../Channel';
+import type { Channel, ChannelDataType } from '../Channel.js';
 
 export interface DMChannelMixin<Type extends ChannelType.DM | ChannelType.GroupDM> extends Channel<Type> {
 	/**

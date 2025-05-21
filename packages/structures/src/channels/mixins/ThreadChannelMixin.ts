@@ -1,39 +1,20 @@
-import type { APIThreadMetadata, ThreadChannelType } from 'discord-api-types/v10';
-import { kData } from '../../utils/symbols';
-import type { APIThreadChannel } from '../../utils/types';
-import type { Channel, ChannelDataType } from '../Channel';
-import { ThreadMetadata } from '../ThreadMetadata';
+import type { ThreadChannelType } from 'discord-api-types/v10';
+import { kData } from '../../utils/symbols.js';
+import type { APIThreadChannel } from '../../utils/types.js';
+import type { Channel } from '../Channel.js';
 
 export interface ThreadChannelMixin<
 	Type extends ThreadChannelType = ThreadChannelType,
 	Omitted extends keyof APIThreadChannel | '' = '',
-> extends Channel<Type, Omitted> {
-	/**
-	 * The metadata of this thread channel.
-	 */
-	threadMetadata: ThreadMetadata | null;
-}
+> extends Channel<Type, Omitted> {}
 
+/**
+ * @remarks has a sub-structure {@link ThreadMetadata} that extending mixins should add to their DataTemplate and _optimizeData
+ */
 export class ThreadChannelMixin<
 	Type extends ThreadChannelType = ThreadChannelType,
 	Omitted extends keyof APIThreadChannel | '' = '',
 > {
-	/**
-	 * The template used for removing data from the raw data stored for each Channel.
-	 */
-	public static DataTemplate: Partial<ChannelDataType<ThreadChannelType>> = {
-		set thread_metadata(_: APIThreadMetadata) {},
-	};
-
-	/**
-	 * {@inheritDoc Structure._optimizeData}
-	 */
-	protected _optimizeData(data: Partial<APIThreadChannel>) {
-		this.threadMetadata = data.thread_metadata
-			? new ThreadMetadata(data.thread_metadata)
-			: (this.threadMetadata ?? null);
-	}
-
 	/**
 	 * The approximate count of users in a thread, stops counting at 50
 	 */
@@ -61,16 +42,5 @@ export class ThreadChannelMixin<
 	 */
 	public isThread(): this is ThreadChannelMixin<Extract<Type, ThreadChannelType>> {
 		return true;
-	}
-
-	/**
-	 * Adds data from optimized properties omitted from [kData].
-	 *
-	 * @param data - the result of {@link Channel.toJSON}
-	 */
-	public _toJSON(data: Partial<APIThreadChannel>) {
-		if (this.threadMetadata) {
-			data.thread_metadata = this.threadMetadata.toJSON();
-		}
 	}
 }

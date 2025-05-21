@@ -8,6 +8,10 @@ import { kData } from '../utils/symbols.js';
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  */
 export class ForumTag<Omitted extends keyof APIGuildForumTag | '' = ''> extends Structure<APIGuildForumTag, Omitted> {
+	public constructor(data: Omit<APIGuildForumTag, Omitted>) {
+		super(data);
+	}
+
 	/**
 	 * The id of the tag.
 	 */

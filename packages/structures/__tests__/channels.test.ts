@@ -25,12 +25,15 @@ import {
 	CategoryChannel,
 	DMChannel,
 	ForumChannel,
+	ForumTag,
 	GroupDMChannel,
 	MediaChannel,
+	PermissionOverwrite,
 	PrivateThreadChannel,
 	PublicThreadChannel,
 	StageChannel,
 	TextChannel,
+	ThreadMetadata,
 	VoiceChannel,
 } from '../src';
 import { kData } from '../src/utils/symbols';
@@ -74,11 +77,7 @@ describe('text channel', () => {
 		expect(instance.lastPinAt?.toISOString()).toBe(data.last_pin_timestamp);
 		expect(instance.nsfw).toBe(data.nsfw);
 		expect(instance.parentId).toBe(data.parent_id);
-		expect(instance.permissionOverwrites?.map((overwrite) => overwrite.toJSON())).toEqual(data.permission_overwrites);
-		expect(instance.permissionOverwrites?.[0]?.allow?.toString()).toBe(data.permission_overwrites?.[0]?.allow);
-		expect(instance.permissionOverwrites?.[0]?.deny?.toString()).toBe(data.permission_overwrites?.[0]?.deny);
-		expect(instance.permissionOverwrites?.[0]?.id).toBe(data.permission_overwrites?.[0]?.id);
-		expect(instance.permissionOverwrites?.[0]?.type).toBe(data.permission_overwrites?.[0]?.type);
+		expect(instance[kData].permission_overwrites).toEqual(data.permission_overwrites);
 		expect(instance.rateLimitPerUser).toBe(data.rate_limit_per_user);
 		expect(instance.topic).toBe(data.topic);
 		expect(instance.type).toBe(ChannelType.GuildText);
@@ -97,6 +96,15 @@ describe('text channel', () => {
 		expect(instance.isThreadOnly()).toBe(false);
 		expect(instance.isVoiceBased()).toBe(false);
 		expect(instance.isWebhookCapable()).toBe(true);
+	});
+
+	test('PermissionOverwrite sub-structure', () => {
+		const instances = data.permission_overwrites?.map((overwrite) => new PermissionOverwrite(overwrite));
+		expect(instances?.map((overwrite) => overwrite.toJSON())).toEqual(data.permission_overwrites);
+		expect(instances?.[0]?.allow?.toString()).toBe(data.permission_overwrites?.[0]?.allow);
+		expect(instances?.[0]?.deny?.toString()).toBe(data.permission_overwrites?.[0]?.deny);
+		expect(instances?.[0]?.id).toBe(data.permission_overwrites?.[0]?.id);
+		expect(instances?.[0]?.type).toBe(data.permission_overwrites?.[0]?.type);
 	});
 });
 
@@ -131,7 +139,7 @@ describe('announcement channel', () => {
 		expect(instance.lastPinAt).toBe(data.last_pin_timestamp);
 		expect(instance.nsfw).toBe(data.nsfw);
 		expect(instance.parentId).toBe(data.parent_id);
-		expect(instance.permissionOverwrites?.map((overwrite) => overwrite.toJSON())).toEqual(data.permission_overwrites);
+		expect(instance[kData].permission_overwrites).toEqual(data.permission_overwrites);
 		expect(instance.rateLimitPerUser).toBe(data.rate_limit_per_user);
 		expect(instance.topic).toBe(data.topic);
 		expect(instance.type).toBe(ChannelType.GuildAnnouncement);
@@ -176,7 +184,7 @@ describe('category channel', () => {
 		expect(instance.position).toBe(data.position);
 		expect(instance.flags).toBe(data.flags);
 		expect(instance.guildId).toBe(data.guild_id);
-		expect(instance.permissionOverwrites?.map((overwrite) => overwrite.toJSON())).toEqual(data.permission_overwrites);
+		expect(instance[kData].permission_overwrites).toEqual(data.permission_overwrites);
 		expect(instance.type).toBe(ChannelType.GuildCategory);
 		expect(instance.url).toBe('https://discord.com/channels/2/1');
 		expect(instance.toJSON()).toEqual(data);
@@ -352,17 +360,11 @@ describe('forum channel', () => {
 		expect(instance.guildId).toBe(data.guild_id);
 		expect(instance.nsfw).toBe(data.nsfw);
 		expect(instance.parentId).toBe(data.parent_id);
-		expect(instance.permissionOverwrites?.map((overwrite) => overwrite.toJSON())).toEqual(data.permission_overwrites);
+		expect(instance[kData].permission_overwrites).toEqual(data.permission_overwrites);
 		expect(instance.defaultForumLayout).toBe(data.default_forum_layout);
 		expect(instance.defaultReactionEmoji).toBe(data.default_reaction_emoji);
 		expect(instance.defaultSortOrder).toBe(data.default_sort_order);
-		expect(instance.availableTags.map((tag) => tag.toJSON())).toEqual(data.available_tags);
-		expect(instance.availableTags[0]?.id).toBe(data.available_tags[0]?.id);
-		expect(instance.availableTags[0]?.emojiId).toBe(data.available_tags[0]?.emoji_id);
-		expect(instance.availableTags[0]?.emojiName).toBe(data.available_tags[0]?.emoji_name);
-		expect(instance.availableTags[0]?.name).toBe(data.available_tags[0]?.name);
-		expect(instance.availableTags[0]?.moderated).toBe(data.available_tags[0]?.moderated);
-		expect(instance.availableTags[0]?.emoji).toBe(data.available_tags[0]?.emoji_name);
+		expect(instance[kData].available_tags).toEqual(data.available_tags);
 		expect(instance.topic).toBe(data.topic);
 		expect(instance.type).toBe(ChannelType.GuildForum);
 		expect(instance.url).toBe('https://discord.com/channels/2/1');
@@ -379,6 +381,17 @@ describe('forum channel', () => {
 		expect(instance.isThreadOnly()).toBe(true);
 		expect(instance.isVoiceBased()).toBe(false);
 		expect(instance.isWebhookCapable()).toBe(true);
+	});
+
+	test('ForumTag has all properties', () => {
+		const instances = data.available_tags.map((tag) => new ForumTag(tag));
+		expect(instances.map((tag) => tag.toJSON())).toEqual(data.available_tags);
+		expect(instances[0]?.id).toBe(data.available_tags[0]?.id);
+		expect(instances[0]?.emojiId).toBe(data.available_tags[0]?.emoji_id);
+		expect(instances[0]?.emojiName).toBe(data.available_tags[0]?.emoji_name);
+		expect(instances[0]?.name).toBe(data.available_tags[0]?.name);
+		expect(instances[0]?.moderated).toBe(data.available_tags[0]?.moderated);
+		expect(instances[0]?.emoji).toBe(data.available_tags[0]?.emoji_name);
 	});
 
 	test('omitted property from ForumChannel', () => {
@@ -434,9 +447,8 @@ describe('media channel', () => {
 		expect(instance.guildId).toBe(data.guild_id);
 		expect(instance.nsfw).toBe(data.nsfw);
 		expect(instance.parentId).toBe(data.parent_id);
-		expect(instance.permissionOverwrites?.map((overwrite) => overwrite.toJSON())).toEqual(data.permission_overwrites);
-		expect(instance.availableTags.map((tag) => tag.toJSON())).toEqual(data.available_tags);
-		expect(instance.availableTags[0]?.emoji).toBe(`<:_:${data.available_tags[0]?.emoji_id}>`);
+		expect(instance[kData].permission_overwrites).toEqual(data.permission_overwrites);
+		expect(instance[kData].available_tags).toEqual(data.available_tags);
 		expect(instance.topic).toBe(data.topic);
 		expect(instance.type).toBe(ChannelType.GuildMedia);
 		expect(instance.url).toBe('https://discord.com/channels/2/1');
@@ -453,6 +465,12 @@ describe('media channel', () => {
 		expect(instance.isThreadOnly()).toBe(true);
 		expect(instance.isVoiceBased()).toBe(false);
 		expect(instance.isWebhookCapable()).toBe(true);
+	});
+
+	test('ForumTag has all properties', () => {
+		const instances = data.available_tags.map((tag) => new ForumTag(tag));
+		expect(instances.map((tag) => tag.toJSON())).toEqual(data.available_tags);
+		expect(instances[0]?.emoji).toBe(`<:_:${data.available_tags[0]?.emoji_id}>`);
 	});
 });
 
@@ -495,7 +513,7 @@ describe('voice channel', () => {
 		expect(instance.userLimit).toBe(data.user_limit);
 		expect(instance.nsfw).toBe(data.nsfw);
 		expect(instance.parentId).toBe(data.parent_id);
-		expect(instance.permissionOverwrites?.map((overwrite) => overwrite.toJSON())).toEqual(data.permission_overwrites);
+		expect(instance[kData].permission_overwrites).toEqual(data.permission_overwrites);
 		expect(instance.rateLimitPerUser).toBe(data.rate_limit_per_user);
 		expect(instance.type).toBe(ChannelType.GuildVoice);
 		expect(instance.url).toBe('https://discord.com/channels/2/1');
@@ -553,7 +571,7 @@ describe('stage channel', () => {
 		expect(instance.videoQualityMode).toBe(data.video_quality_mode);
 		expect(instance.nsfw).toBe(data.nsfw);
 		expect(instance.parentId).toBe(data.parent_id);
-		expect(instance.permissionOverwrites?.map((overwrite) => overwrite.toJSON())).toEqual(data.permission_overwrites);
+		expect(instance[kData].permission_overwrites).toEqual(data.permission_overwrites);
 		expect(instance.rateLimitPerUser).toBe(data.rate_limit_per_user);
 		expect(instance.type).toBe(ChannelType.GuildStageVoice);
 		expect(instance.url).toBe('https://discord.com/channels/2/1');
@@ -653,15 +671,7 @@ describe('thread channels', () => {
 		expect(instance.nsfw).toBe(dataPrivate.nsfw);
 		expect(instance.parentId).toBe(dataPrivate.parent_id);
 		expect(instance.rateLimitPerUser).toBe(dataPrivate.rate_limit_per_user);
-		expect(instance.threadMetadata?.toJSON()).toEqual(dataPrivate.thread_metadata);
-		expect(instance.threadMetadata?.archived).toBe(dataPrivate.thread_metadata?.archived);
-		expect(instance.threadMetadata?.archivedAt?.toISOString()).toBe(dataPrivate.thread_metadata?.archive_timestamp);
-		expect(instance.threadMetadata?.archivedTimestamp).toBe(Date.parse(dataPrivate.thread_metadata!.archive_timestamp));
-		expect(instance.threadMetadata?.createdAt?.toISOString()).toBe(dataPrivate.thread_metadata?.create_timestamp);
-		expect(instance.threadMetadata?.createdTimestamp).toBe(Date.parse(dataPrivate.thread_metadata!.create_timestamp!));
-		expect(instance.threadMetadata?.autoArchiveDuration).toBe(dataPrivate.thread_metadata?.auto_archive_duration);
-		expect(instance.threadMetadata?.invitable).toBe(dataPrivate.thread_metadata?.invitable);
-		expect(instance.threadMetadata?.locked).toBe(dataPrivate.thread_metadata?.locked);
+		expect(instance[kData].thread_metadata).toEqual(dataPrivate.thread_metadata);
 		expect(instance.type).toBe(ChannelType.PrivateThread);
 		expect(instance.url).toBe('https://discord.com/channels/2/1');
 		expect(instance.toJSON()).toEqual(dataPrivate);
@@ -689,7 +699,7 @@ describe('thread channels', () => {
 		expect(instance.nsfw).toBe(dataAnnounce.nsfw);
 		expect(instance.parentId).toBe(dataAnnounce.parent_id);
 		expect(instance.rateLimitPerUser).toBe(dataAnnounce.rate_limit_per_user);
-		expect(instance.threadMetadata?.toJSON()).toEqual(dataAnnounce.thread_metadata);
+		expect(instance[kData].thread_metadata).toEqual(dataAnnounce.thread_metadata);
 		expect(instance.type).toBe(ChannelType.AnnouncementThread);
 		expect(instance.url).toBe('https://discord.com/channels/2/1');
 		expect(instance.toJSON()).toEqual(dataAnnounce);
@@ -711,5 +721,18 @@ describe('thread channels', () => {
 		const instance = new PublicThreadChannel(dataNoTags);
 		expect(instance.toJSON()).toEqual(dataNoTags);
 		expect(instance.appliedTags).toBe(null);
+	});
+
+	test('ThreadMetadata has all properties', () => {
+		const instance = new ThreadMetadata(dataPrivate.thread_metadata!);
+		expect(instance.toJSON()).toEqual(dataPrivate.thread_metadata);
+		expect(instance.archived).toBe(dataPrivate.thread_metadata?.archived);
+		expect(instance.archivedAt?.toISOString()).toBe(dataPrivate.thread_metadata?.archive_timestamp);
+		expect(instance.archivedTimestamp).toBe(Date.parse(dataPrivate.thread_metadata!.archive_timestamp));
+		expect(instance.createdAt?.toISOString()).toBe(dataPrivate.thread_metadata?.create_timestamp);
+		expect(instance.createdTimestamp).toBe(Date.parse(dataPrivate.thread_metadata!.create_timestamp!));
+		expect(instance.autoArchiveDuration).toBe(dataPrivate.thread_metadata?.auto_archive_duration);
+		expect(instance.invitable).toBe(dataPrivate.thread_metadata?.invitable);
+		expect(instance.locked).toBe(dataPrivate.thread_metadata?.locked);
 	});
 });

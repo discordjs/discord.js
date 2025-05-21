@@ -1,33 +1,14 @@
-import type { APIGuildForumTag, ChannelType } from 'discord-api-types/v10';
-import { kData } from '../../utils/symbols';
-import type { Channel, ChannelDataType } from '../Channel';
-import { ForumTag } from '../ForumTag';
+import type { ChannelType } from 'discord-api-types/v10';
+import { kData } from '../../utils/symbols.js';
+import type { Channel } from '../Channel.js';
 
 export interface ThreadOnlyChannelMixin<Type extends ChannelType.GuildForum | ChannelType.GuildMedia>
-	extends Channel<Type> {
-	/**
-	 * The set of tags that can be used in this channel.
-	 */
-	availableTags: readonly ForumTag[];
-}
+	extends Channel<Type> {}
 
+/**
+ * @remarks has an array of sub-structures {@link ForumTag} that extending mixins should add to their DataTemplate and _optimizeData
+ */
 export class ThreadOnlyChannelMixin<Type extends ChannelType.GuildForum | ChannelType.GuildMedia> {
-	/**
-	 * The template used for removing data from the raw data stored for each Channel.
-	 */
-	public static DataTemplate: Partial<ChannelDataType<ChannelType.GuildForum | ChannelType.GuildMedia>> = {
-		set available_tags(_: APIGuildForumTag[]) {},
-	};
-
-	/**
-	 * {@inheritDoc Structure._optimizeData}
-	 */
-	protected _optimizeData(data: Partial<ChannelDataType<Type>>) {
-		this.availableTags = data.available_tags
-			? data.available_tags.map((overwrite) => new ForumTag(overwrite))
-			: (this.availableTags ?? null);
-	}
-
 	/**
 	 * The emoji to show in the add reaction button on a thread in this channel.
 	 */
@@ -51,16 +32,5 @@ export class ThreadOnlyChannelMixin<Type extends ChannelType.GuildForum | Channe
 		Extract<Type, ChannelType.GuildForum | ChannelType.GuildMedia>
 	> {
 		return true;
-	}
-
-	/**
-	 * Adds data from optimized properties omitted from [kData].
-	 *
-	 * @param data - the result of {@link Channel.toJSON}
-	 */
-	protected _toJSON(data: Partial<ChannelDataType<Type>>) {
-		if (this.availableTags) {
-			data.available_tags = this.availableTags.map((tag) => tag.toJSON());
-		}
 	}
 }

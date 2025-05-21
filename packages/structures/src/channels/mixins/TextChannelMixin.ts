@@ -1,6 +1,6 @@
 import type { TextChannelType } from 'discord-api-types/v10';
-import { kData } from '../../utils/symbols';
-import type { Channel } from '../Channel';
+import { kData } from '../../utils/symbols.js';
+import type { Channel } from '../Channel.js';
 
 export interface TextChannelMixin<Type extends TextChannelType> extends Channel<Type> {}
 

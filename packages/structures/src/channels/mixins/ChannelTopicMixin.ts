@@ -1,7 +1,7 @@
 import type { ChannelType } from 'discord-api-types/v10';
-import { kData } from '../../utils/symbols';
-import type { Channel } from '../Channel';
-import { ChannelWebhookMixin } from './ChannelWebhookMixin';
+import { kData } from '../../utils/symbols.js';
+import type { Channel } from '../Channel.js';
+import { ChannelWebhookMixin } from './ChannelWebhookMixin.js';
 
 export interface ChannelTopicMixin<
 	Type extends ChannelType.GuildAnnouncement | ChannelType.GuildForum | ChannelType.GuildMedia | ChannelType.GuildText,
