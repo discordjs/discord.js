@@ -1571,6 +1571,9 @@ importers:
       '@discordjs/api-extractor':
         specifier: workspace:^
         version: link:../api-extractor
+      '@discordjs/formatters':
+        specifier: workspace:^
+        version: link:../formatters
       '@discordjs/scripts':
         specifier: workspace:^
         version: link:../scripts
