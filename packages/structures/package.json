@@ -66,6 +66,7 @@
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
+		"@discordjs/formatters": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^4.1.0",
 		"@types/node": "22.15.2",

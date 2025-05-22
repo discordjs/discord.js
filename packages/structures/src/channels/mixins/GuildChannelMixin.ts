@@ -1,3 +1,4 @@
+import { channelLink } from '@discordjs/formatters';
 import type { GuildChannelType } from 'discord-api-types/v10';
 import { kData } from '../../utils/symbols.js';
 import type { Channel } from '../Channel.js';
@@ -26,7 +27,7 @@ export class GuildChannelMixin<Type extends GuildChannelType> {
 	 * The URL to this channel.
 	 */
 	public get url() {
-		return `https://discord.com/channels/${this.guildId}/${this.id}`;
+		return channelLink(this.id, this.guildId);
 	}
 
 	/**

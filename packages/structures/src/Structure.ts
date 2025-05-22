@@ -69,7 +69,7 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 * @remarks To be made public in subclasses
 	 * @internal
 	 */
-	protected constructor(data: Readonly<Partial<DataType>>) {
+	protected constructor(data: Readonly<Partial<DataType>>, ..._rest: unknown[]) {
 		this[kData] = Object.assign(this._getDataTemplate(), data);
 		this[kMixinConstruct]?.(data);
 	}
@@ -87,6 +87,17 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 		this[kData] = Object.assign(this._getDataTemplate(), this[kData], data);
 		this._optimizeData(data);
 		return this;
+	}
+
+	/**
+	 * Creates a clone of this structure
+	 *
+	 * @returns a clone of this
+	 * @internal
+	 */
+	protected _clone(): typeof this {
+		// @ts-expect-error constructor is of abstract class is unknown
+		return new this.constructor(this.toJSON());
 	}
 
 	/**

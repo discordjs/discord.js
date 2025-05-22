@@ -1,3 +1,4 @@
+import { channelLink } from '@discordjs/formatters';
 import type { APIUser, ChannelType } from 'discord-api-types/v10';
 import { User } from '../../users';
 import type { Channel, ChannelDataType } from '../Channel.js';
@@ -30,7 +31,7 @@ export class DMChannelMixin<Type extends ChannelType.DM | ChannelType.GroupDM> {
 	 * The URL to this channel.
 	 */
 	public get url() {
-		return `https://discord.com/channels/@me/${this.id}`;
+		return channelLink(this.id);
 	}
 
 	/**
