@@ -10,6 +10,7 @@ export const PACKAGES = [
 	'next',
 	'proxy',
 	'rest',
+	'structures',
 	'util',
 	'voice',
 	'ws',

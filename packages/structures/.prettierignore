@@ -1,0 +1,8 @@
+.turbo
+coverage
+dist
+dist-docs
+docs/docs.api.json
+CHANGELOG.md
+tsup.config.bundled*
+vitest.config.ts.timestamp*
