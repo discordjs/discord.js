@@ -17,6 +17,7 @@ import {
 	OverwriteType,
 	ThreadAutoArchiveDuration,
 	VideoQualityMode,
+	ChannelFlags,
 } from 'discord-api-types/v10';
 import { describe, expect, test } from 'vitest';
 import {
@@ -70,7 +71,7 @@ describe('text channel', () => {
 		expect(instance.position).toBe(data.position);
 		expect(instance.defaultAutoArchiveDuration).toBe(data.default_auto_archive_duration);
 		expect(instance.defaultThreadRateLimitPerUser).toBe(data.default_thread_rate_limit_per_user);
-		expect(instance.flags).toBe(data.flags);
+		expect(instance.flags?.toJSON()).toBe(data.flags);
 		expect(instance.guildId).toBe(data.guild_id);
 		expect(instance.lastMessageId).toBe(data.last_message_id);
 		expect(instance.lastPinTimestamp).toBe(Date.parse(data.last_pin_timestamp!));
@@ -83,7 +84,6 @@ describe('text channel', () => {
 		expect(instance.type).toBe(ChannelType.GuildText);
 		expect(instance.url).toBe('https://discord.com/channels/2/1');
 		expect(instance.toJSON()).toEqual(data);
-		console.log(instance[kData]);
 	});
 
 	test('typeguards', () => {
@@ -132,7 +132,7 @@ describe('announcement channel', () => {
 		expect(instance.position).toBe(data.position);
 		expect(instance.defaultAutoArchiveDuration).toBe(data.default_auto_archive_duration);
 		expect(instance.defaultThreadRateLimitPerUser).toBe(data.default_thread_rate_limit_per_user);
-		expect(instance.flags).toBe(data.flags);
+		expect(instance.flags?.toJSON()).toBe(data.flags);
 		expect(instance.guildId).toBe(data.guild_id);
 		expect(instance.lastMessageId).toBe(data.last_message_id);
 		expect(instance.lastPinTimestamp).toBe(null);
@@ -182,7 +182,7 @@ describe('category channel', () => {
 		expect(instance.id).toBe(data.id);
 		expect(instance.name).toBe(data.name);
 		expect(instance.position).toBe(data.position);
-		expect(instance.flags).toBe(data.flags);
+		expect(instance.flags?.toJSON()).toBe(data.flags);
 		expect(instance.guildId).toBe(data.guild_id);
 		expect(instance[kData].permission_overwrites).toEqual(data.permission_overwrites);
 		expect(instance.type).toBe(ChannelType.GuildCategory);
@@ -229,11 +229,11 @@ describe('DM channel', () => {
 		const instance = new DMChannel(data);
 		expect(instance.id).toBe(data.id);
 		expect(instance.name).toBe(data.name);
-		expect(instance.flags).toBe(data.flags);
+		expect(instance.flags?.toJSON()).toBe(data.flags);
 		expect(instance.lastMessageId).toBe(data.last_message_id);
 		expect(instance.lastPinTimestamp).toBe(Date.parse(data.last_pin_timestamp!));
 		expect(instance.lastPinAt?.toISOString()).toBe(data.last_pin_timestamp);
-		expect(instance.recipients?.map((recipient) => recipient.toJSON())).toEqual(data.recipients);
+		expect(instance[kData].recipients).toEqual(data.recipients);
 		expect(instance.type).toBe(ChannelType.DM);
 		expect(instance.url).toBe('https://discord.com/channels/@me/1');
 		expect(instance.toJSON()).toEqual(data);
@@ -241,7 +241,7 @@ describe('DM channel', () => {
 
 	test('DMChannel with no recipients', () => {
 		const instance = new DMChannel(dataNoRecipients);
-		expect(instance.recipients?.map((recipient) => recipient.toJSON())).toEqual(dataNoRecipients.recipients);
+		expect(instance[kData].recipients).toEqual(dataNoRecipients.recipients);
 		expect(instance.toJSON()).toEqual(dataNoRecipients);
 	});
 
@@ -284,9 +284,9 @@ describe('GroupDM channel', () => {
 		const instance = new GroupDMChannel(data);
 		expect(instance.id).toBe(data.id);
 		expect(instance.name).toBe(data.name);
-		expect(instance.flags).toBe(data.flags);
+		expect(instance.flags?.toJSON()).toBe(data.flags);
 		expect(instance.lastMessageId).toBe(data.last_message_id);
-		expect(instance.recipients?.map((recipient) => recipient.toJSON())).toEqual(data.recipients);
+		expect(instance[kData].recipients).toEqual(data.recipients);
 		expect(instance.applicationId).toBe(data.application_id);
 		expect(instance.managed).toBe(data.managed);
 		expect(instance.ownerId).toBe(data.owner_id);
@@ -356,7 +356,7 @@ describe('forum channel', () => {
 		expect(instance.position).toBe(data.position);
 		expect(instance.defaultAutoArchiveDuration).toBe(data.default_auto_archive_duration);
 		expect(instance.defaultThreadRateLimitPerUser).toBe(data.default_thread_rate_limit_per_user);
-		expect(instance.flags).toBe(data.flags);
+		expect(instance.flags?.toJSON()).toBe(data.flags);
 		expect(instance.guildId).toBe(data.guild_id);
 		expect(instance.nsfw).toBe(data.nsfw);
 		expect(instance.parentId).toBe(data.parent_id);
@@ -443,7 +443,7 @@ describe('media channel', () => {
 		expect(instance.position).toBe(data.position);
 		expect(instance.defaultAutoArchiveDuration).toBe(data.default_auto_archive_duration);
 		expect(instance.defaultThreadRateLimitPerUser).toBe(data.default_thread_rate_limit_per_user);
-		expect(instance.flags).toBe(data.flags);
+		expect(instance.flags?.toJSON()).toBe(data.flags);
 		expect(instance.guildId).toBe(data.guild_id);
 		expect(instance.nsfw).toBe(data.nsfw);
 		expect(instance.parentId).toBe(data.parent_id);
@@ -506,7 +506,7 @@ describe('voice channel', () => {
 		expect(instance.position).toBe(data.position);
 		expect(instance.bitrate).toBe(data.bitrate);
 		expect(instance.rtcRegion).toBe(data.rtc_region);
-		expect(instance.flags).toBe(data.flags);
+		expect(instance.flags?.toJSON()).toBe(data.flags);
 		expect(instance.guildId).toBe(data.guild_id);
 		expect(instance.lastMessageId).toBe(data.last_message_id);
 		expect(instance.videoQualityMode).toBe(data.video_quality_mode);
@@ -565,7 +565,7 @@ describe('stage channel', () => {
 		expect(instance.position).toBe(data.position);
 		expect(instance.bitrate).toBe(data.bitrate);
 		expect(instance.rtcRegion).toBe(data.rtc_region);
-		expect(instance.flags).toBe(data.flags);
+		expect(instance.flags?.toJSON()).toBe(data.flags);
 		expect(instance.guildId).toBe(data.guild_id);
 		expect(instance.lastMessageId).toBe(data.last_message_id);
 		expect(instance.videoQualityMode).toBe(data.video_quality_mode);
@@ -617,6 +617,7 @@ describe('thread channels', () => {
 			auto_archive_duration: ThreadAutoArchiveDuration.ThreeDays,
 			locked: true,
 		},
+		flags: ChannelFlags.Pinned,
 		type: ChannelType.AnnouncementThread,
 	};
 
@@ -634,7 +635,7 @@ describe('thread channels', () => {
 		const instance = new PublicThreadChannel(dataPublic);
 		expect(instance.id).toBe(dataPublic.id);
 		expect(instance.name).toBe(dataPublic.name);
-		expect(instance.flags).toBe(dataPublic.flags);
+		expect(instance.flags?.toJSON()).toBe(dataPublic.flags);
 		expect(instance.guildId).toBe(dataPublic.guild_id);
 		expect(instance.lastMessageId).toBe(dataPublic.last_message_id);
 		expect(instance.nsfw).toBe(dataPublic.nsfw);
@@ -665,7 +666,7 @@ describe('thread channels', () => {
 		const instance = new PrivateThreadChannel(dataPrivate);
 		expect(instance.id).toBe(dataPrivate.id);
 		expect(instance.name).toBe(dataPrivate.name);
-		expect(instance.flags).toBe(dataPrivate.flags);
+		expect(instance.flags?.toJSON()).toBe(dataPrivate.flags);
 		expect(instance.guildId).toBe(dataPrivate.guild_id);
 		expect(instance.lastMessageId).toBe(dataPrivate.last_message_id);
 		expect(instance.nsfw).toBe(dataPrivate.nsfw);
@@ -693,7 +694,7 @@ describe('thread channels', () => {
 		const instance = new AnnouncementThreadChannel(dataAnnounce);
 		expect(instance.id).toBe(dataAnnounce.id);
 		expect(instance.name).toBe(dataAnnounce.name);
-		expect(instance.flags).toBe(dataAnnounce.flags);
+		expect(instance.flags?.toJSON()).toBe(dataAnnounce.flags);
 		expect(instance.guildId).toBe(dataAnnounce.guild_id);
 		expect(instance.lastMessageId).toBe(dataAnnounce.last_message_id);
 		expect(instance.nsfw).toBe(dataAnnounce.nsfw);

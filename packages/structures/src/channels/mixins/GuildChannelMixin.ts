@@ -1,5 +1,6 @@
 import { channelLink } from '@discordjs/formatters';
 import type { GuildChannelType } from 'discord-api-types/v10';
+import { ChannelFlagsBitField } from '../../bitfields/ChannelFlagsBitField.js';
 import { kData } from '../../utils/symbols.js';
 import type { Channel } from '../Channel.js';
 
@@ -13,7 +14,7 @@ export class GuildChannelMixin<Type extends GuildChannelType> {
 	 * to null, respecting Omit behaviors
 	 */
 	public get flags() {
-		return this[kData].flags!;
+		return this[kData].flags ? new ChannelFlagsBitField(this[kData].flags) : null;
 	}
 
 	/**

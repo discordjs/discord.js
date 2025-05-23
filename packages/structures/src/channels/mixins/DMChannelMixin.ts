@@ -1,32 +1,14 @@
 import { channelLink } from '@discordjs/formatters';
-import type { APIUser, ChannelType } from 'discord-api-types/v10';
-import { User } from '../../users';
-import type { Channel, ChannelDataType } from '../Channel.js';
+import type { ChannelType } from 'discord-api-types/v10';
+import type { User } from '../../users';
+import type { Channel } from '../Channel.js';
 
-export interface DMChannelMixin<Type extends ChannelType.DM | ChannelType.GroupDM> extends Channel<Type> {
-	/**
-	 * The recipients of this DM based channel.
-	 */
-	recipients: readonly User[] | null;
-}
+export interface DMChannelMixin<Type extends ChannelType.DM | ChannelType.GroupDM> extends Channel<Type> {}
 
+/**
+ * @remarks has recipients, an array of sub-structures {@link User} that extending mixins should add to their DataTemplate and _optimizeData
+ */
 export class DMChannelMixin<Type extends ChannelType.DM | ChannelType.GroupDM> {
-	/**
-	 * The template used for removing data from the raw data stored for each Channel.
-	 */
-	public static DataTemplate: Partial<ChannelDataType<ChannelType.DM | ChannelType.GroupDM>> = {
-		set recipients(_: APIUser[]) {},
-	};
-
-	/**
-	 * {@inheritDoc Structure._optimizeData}
-	 */
-	protected _optimizeData(data: Partial<ChannelDataType<Type>>) {
-		this.recipients = data.recipients
-			? data.recipients.map((recipient) => new User(recipient))
-			: (this.recipients ?? null);
-	}
-
 	/**
 	 * The URL to this channel.
 	 */
@@ -39,16 +21,5 @@ export class DMChannelMixin<Type extends ChannelType.DM | ChannelType.GroupDM> {
 	 */
 	public isDMBased(): this is DMChannelMixin<Extract<Type, ChannelType.DM | ChannelType.GroupDM>> {
 		return true;
-	}
-
-	/**
-	 * Adds data from optimized properties omitted from [kData].
-	 *
-	 * @param data - the result of {@link Channel.toJSON}
-	 */
-	protected _toJSON(data: Partial<ChannelDataType<Type>>) {
-		if (this.recipients) {
-			data.recipients = this.recipients.map((recipient) => recipient.toJSON());
-		}
 	}
 }

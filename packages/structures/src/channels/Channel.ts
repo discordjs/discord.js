@@ -7,8 +7,10 @@ import type {
 	ChannelType,
 	GuildChannelType,
 	GuildTextChannelType,
+	ChannelFlags,
 } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
+import { ChannelFlagsBitField } from '../bitfields/ChannelFlagsBitField.js';
 import { kData } from '../utils/symbols.js';
 import type { APIThreadChannel } from '../utils/types';
 import type { ChannelPermissionMixin } from './mixins/ChannelPermissionMixin.js';
@@ -100,7 +102,8 @@ export class Channel<
 	 * to null, respecting Omit behaviors
 	 */
 	public get flags() {
-		return this[kData].flags;
+		const flags = this[kData].flags;
+		return flags ? new ChannelFlagsBitField(this[kData].flags as ChannelFlags) : null;
 	}
 
 	/**
