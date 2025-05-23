@@ -13,6 +13,7 @@ import {
   APIRole,
   APISelectMenuComponent,
   APIStringSelectComponent,
+  APITextInputComponent,
   ApplicationCommandOptionType,
   ApplicationCommandPermissionType,
   ApplicationCommandType,
@@ -26,16 +27,11 @@ import {
   GuildScheduledEventRecurrenceRuleWeekday,
   InteractionType,
   Locale,
+  MessageFlags,
   PermissionFlagsBits,
   TextInputStyle,
   ThreadChannelType,
   WebhookType,
-  GuildScheduledEventRecurrenceRuleFrequency,
-  GuildScheduledEventRecurrenceRuleMonth,
-  GuildScheduledEventRecurrenceRuleWeekday,
-  APIButtonComponentWithCustomId,
-  MessageFlags,
-  APITextInputComponent,
 } from 'discord-api-types/v10';
 import type { ChildProcess } from 'node:child_process';
 import type { Worker } from 'node:worker_threads';
