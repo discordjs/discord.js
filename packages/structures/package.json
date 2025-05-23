@@ -6,7 +6,7 @@
 	"scripts": {
 		"test": "vitest run && tsd",
 		"build": "tsc --noEmit && tsup",
-		"build:docs": "tsc -p tsconfig.docs.json",
+		"build:docs": "tsc -p tsconfig.docs.json && cpy \"./src/*.d.ts\" \"./dist-docs\"",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
 		"fmt": "pnpm run format",
@@ -71,6 +71,7 @@
 		"@favware/cliff-jumper": "^4.1.0",
 		"@types/node": "22.15.2",
 		"@vitest/coverage-v8": "^3.1.1",
+		"cpy-cli": "^5.0.0",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.2.1",
 		"eslint": "^9.25.1",
