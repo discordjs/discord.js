@@ -1,5 +1,6 @@
 import type { APIDMChannel, ChannelType } from 'discord-api-types/v10';
-import { Mixin, type MixinTypes } from '../Mixin.js';
+import { Mixin } from '../Mixin.js';
+import type { MixinTypes } from '../MixinTypes.d.ts';
 import { Channel } from './Channel.js';
 import { ChannelPinMixin } from './mixins/ChannelPinMixin.js';
 import { DMChannelMixin } from './mixins/DMChannelMixin.js';

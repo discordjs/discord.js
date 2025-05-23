@@ -2,7 +2,8 @@
 // TODO: what does a DirectoryChannel even have and what not?
 /*
 import type { APIChannelBase, ChannelType } from 'discord-api-types/v10';
-import { Mixin, type MixinTypes } from '../Mixin.js';
+import { Mixin } from '../Mixin.js';
+import type { MixinTypes } from '../MixinTypes.d.ts';
 import { Channel } from './Channel.js';
 import { GuildChannelMixin } from './mixins/GuildChannelMixin.js';
 
