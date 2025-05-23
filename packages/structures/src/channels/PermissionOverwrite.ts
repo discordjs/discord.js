@@ -1,5 +1,6 @@
 import type { APIOverwrite } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
+import { PermissionsBitField } from '../bitfields/PermissionsBitField.js';
 import { kAllow, kData, kDeny } from '../utils/symbols.js';
 
 /**
@@ -50,14 +51,16 @@ export class PermissionOverwrite<Omitted extends keyof APIOverwrite | '' = ''> e
 	 * The permission bit set allowed by this overwrite.
 	 */
 	public get allow() {
-		return this[kAllow];
+		const allow = this[kAllow];
+		return allow ? new PermissionsBitField(allow) : null;
 	}
 
 	/**
 	 * The permission bit set denied by this overwrite.
 	 */
 	public get deny() {
-		return this[kDeny];
+		const deny = this[kDeny];
+		return deny ? new PermissionsBitField(deny) : null;
 	}
 
 	/**

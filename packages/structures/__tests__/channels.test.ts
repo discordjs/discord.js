@@ -101,8 +101,8 @@ describe('text channel', () => {
 	test('PermissionOverwrite sub-structure', () => {
 		const instances = data.permission_overwrites?.map((overwrite) => new PermissionOverwrite(overwrite));
 		expect(instances?.map((overwrite) => overwrite.toJSON())).toEqual(data.permission_overwrites);
-		expect(instances?.[0]?.allow?.toString()).toBe(data.permission_overwrites?.[0]?.allow);
-		expect(instances?.[0]?.deny?.toString()).toBe(data.permission_overwrites?.[0]?.deny);
+		expect(instances?.[0]?.allow?.toJSON()).toBe(data.permission_overwrites?.[0]?.allow);
+		expect(instances?.[0]?.deny?.toJSON()).toBe(data.permission_overwrites?.[0]?.deny);
 		expect(instances?.[0]?.id).toBe(data.permission_overwrites?.[0]?.id);
 		expect(instances?.[0]?.type).toBe(data.permission_overwrites?.[0]?.type);
 	});

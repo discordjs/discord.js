@@ -24,7 +24,7 @@ export abstract class BitField<Flags extends string, Type extends bigint | numbe
 	 */
 	public static Flags: EnumLike<unknown, bigint | number> = {};
 
-	private static DefaultBit: bigint | number = 0;
+	protected static DefaultBit: bigint | number = 0;
 
 	/**
 	 * Bitfield of the packed bits
