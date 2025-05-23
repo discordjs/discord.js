@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
+import { dirname } from 'node:path';
 import { Navigation, Meaning } from '@discordjs/api-extractor-model';
 import {
 	DeclarationReference,
@@ -341,31 +342,48 @@ export class DeclarationReferenceGenerator {
 		}
 	}
 
-	private _getPackageName(sourceFile: ts.SourceFile): string {
+	private _getEntryPointName(sourceFile: ts.SourceFile): string {
 		if (this._collector.program.isSourceFileFromExternalLibrary(sourceFile)) {
 			const packageJson: INodePackageJson | undefined = this._collector.packageJsonLookup.tryLoadNodePackageJsonFor(
 				sourceFile.fileName,
 			);
 
 			if (packageJson?.name) {
+				if (packageJson?.exports && !Array.isArray(packageJson.exports) && typeof packageJson.exports !== 'string') {
+					const entryPoint = Object.keys(packageJson.exports).find((path) =>
+						dirname(sourceFile.fileName).endsWith(path.slice(1)),
+					);
+
+					if (entryPoint && packageJson.exports[entryPoint]) {
+						return `${packageJson.name}${entryPoint.slice(1)}`;
+					}
+				}
+
 				return packageJson.name;
 			}
 
 			return DeclarationReferenceGenerator.unknownReference;
 		}
 
-		return this._collector.workingPackage.name;
+		let modulePath = '';
+		for (const entryPoint of this._collector.workingPackage.entryPoints) {
+			if (entryPoint.sourceFile === sourceFile) {
+				modulePath = entryPoint.modulePath;
+			}
+		}
+
+		return `${this._collector.workingPackage.name}${modulePath ? `/${modulePath}` : ''}`;
 	}
 
 	private _sourceFileToModuleSource(sourceFile: ts.SourceFile | undefined): GlobalSource | ModuleSource {
 		if (sourceFile && ts.isExternalModule(sourceFile)) {
-			const packageName: string = this._getPackageName(sourceFile);
+			const packageName: string = this._getEntryPointName(sourceFile);
 
 			if (this._collector.bundledPackageNames.has(packageName)) {
 				// The api-extractor.json config file has a "bundledPackages" setting, which causes imports from
 				// certain NPM packages to be treated as part of the working project.  In this case, we need to
 				// substitute the working package name.
-				return new ModuleSource(this._collector.workingPackage.name);
+				return new ModuleSource(this._collector.workingPackage.name); // TODO: make it work with multiple entrypoints
 			} else {
 				return new ModuleSource(packageName);
 			}

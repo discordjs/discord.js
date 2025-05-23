@@ -6,6 +6,7 @@ import { InternalError } from '@rushstack/node-core-library';
 import { ApiItemContainerMixin } from '../mixins/ApiItemContainerMixin.js';
 import { ApiParameterListMixin } from '../mixins/ApiParameterListMixin.js';
 import type { Constructor, PropertiesOf } from '../mixins/Mixin.js';
+import type { ApiEntryPoint } from '../model/ApiEntryPoint.js';
 import type { ApiModel } from '../model/ApiModel.js';
 import type { ApiPackage } from '../model/ApiPackage.js';
 import type { DocgenJson } from '../model/Deserializer';
@@ -299,6 +300,20 @@ export class ApiItem {
 		}
 
 		return reversedParts.reverse().join('');
+	}
+
+	/**
+	 * If this item is an ApiEntryPoint or has an ApiEntryPoint as one of its parents, then that object is returned.
+	 * Otherwise undefined is returned.
+	 */
+	public getAssociatedEntryPoint(): ApiEntryPoint | undefined {
+		for (let current: ApiItem | undefined = this; current !== undefined; current = current.parent) {
+			if (current.kind === ApiItemKind.EntryPoint) {
+				return current as ApiEntryPoint;
+			}
+		}
+
+		return undefined;
 	}
 
 	/**

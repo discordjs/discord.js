@@ -38,7 +38,7 @@ export async function PropertyNode({
 							<div className="flex flex-col gap-4">
 								<div className="flex place-content-between place-items-center gap-1">
 									<h3
-										className={`${ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group flex flex-col gap-2 px-2 font-mono font-semibold break-words`}
+										className={`${ENV.IS_LOCAL_DEV || ENV.IS_PREVIEW ? 'scroll-mt-16' : 'scroll-mt-8'} group flex flex-col gap-2 px-2 font-mono font-semibold break-all`}
 										id={property.displayName}
 									>
 										<Badges node={property} />

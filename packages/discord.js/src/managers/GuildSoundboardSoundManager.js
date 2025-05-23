@@ -105,7 +105,7 @@ class GuildSoundboardSoundManager extends CachedManager {
    * Data for editing a soundboard sound.
    * @typedef {Object} GuildSoundboardSoundEditOptions
    * @property {string} [name] The name of the soundboard sound
-   * @property {?number} [volume] The volume of the soundboard sound, from 0 to 1
+   * @property {?number} [volume] The volume (a double) of the soundboard sound, from 0 (inclusive) to 1
    * @property {?Snowflake} [emojiId] The emoji id of the soundboard sound
    * @property {?string} [emojiName] The emoji name of the soundboard sound
    * @property {string} [reason] The reason for editing the soundboard sound
@@ -158,34 +158,56 @@ class GuildSoundboardSoundManager extends CachedManager {
   }
 
   /**
+   * Options used to fetch a soundboard sound.
+   * @typedef {BaseFetchOptions} FetchSoundboardSoundOptions
+   * @property {SoundboardSoundResolvable} soundboardSound The soundboard sound to fetch
+   */
+
+  /**
+   * Options used to fetch soundboard sounds from Discord
+   * @typedef {Object} FetchGuildSoundboardSoundsOptions
+   * @property {boolean} [cache] Whether to cache the fetched soundboard sounds
+   */
+
+  /* eslint-disable max-len */
+  /**
    * Obtains one or more soundboard sounds from Discord, or the soundboard sound cache if they're already available.
-   * @param {Snowflake} [id] The soundboard sound's id
-   * @param {BaseFetchOptions} [options] Additional options for this fetch
+   * @param {SoundboardSoundResolvable|FetchSoundboardSoundOptions|FetchGuildSoundboardSoundsOptions} [options] Options for fetching soundboard sound(s)
    * @returns {Promise<SoundboardSound|Collection<Snowflake, SoundboardSound>>}
-   * @example
-   * // Fetch all soundboard sounds from the guild
-   * guild.soundboardSounds.fetch()
-   *   .then(sounds => console.log(`There are ${sounds.size} soundboard sounds.`))
-   *   .catch(console.error);
    * @example
    * // Fetch a single soundboard sound
    * guild.soundboardSounds.fetch('222078108977594368')
    *   .then(sound => console.log(`The soundboard sound name is: ${sound.name}`))
    *   .catch(console.error);
+   * @example
+   * // Fetch all soundboard sounds from the guild
+   * guild.soundboardSounds.fetch()
+   *   .then(sounds => console.log(`There are ${sounds.size} soundboard sounds.`))
+   *   .catch(console.error);
    */
-  async fetch(id, { cache = true, force = false } = {}) {
-    if (id) {
-      if (!force) {
-        const existing = this.cache.get(id);
-        if (existing) return existing;
-      }
+  /* eslint-enable max-len */
+  async fetch(options) {
+    if (!options) return this._fetchMany();
+    const { cache, force, soundboardSound } = options;
+    const resolvedSoundboardSound = this.resolveId(soundboardSound ?? options);
+    if (resolvedSoundboardSound) return this._fetchSingle({ cache, force, soundboardSound: resolvedSoundboardSound });
+    return this._fetchMany({ cache });
+  }
 
-      const sound = await this.client.rest.get(Routes.guildSoundboardSound(this.guild.id, id));
-      return this._add(sound, cache);
+  async _fetchSingle({ cache, force, soundboardSound } = {}) {
+    if (!force) {
+      const existing = this.cache.get(soundboardSound);
+      if (existing) return existing;
     }
 
+    const data = await this.client.rest.get(Routes.guildSoundboardSound(this.guild.id, soundboardSound));
+    return this._add(data, cache);
+  }
+
+  async _fetchMany({ cache } = {}) {
     const data = await this.client.rest.get(Routes.guildSoundboardSounds(this.guild.id));
-    return new Collection(data.map(sound => [sound.sound_id, this._add(sound, cache)]));
+
+    return data.items.reduce((coll, sound) => coll.set(sound.sound_id, this._add(sound, cache)), new Collection());
   }
 }
 

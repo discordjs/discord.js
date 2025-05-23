@@ -26,14 +26,12 @@ async function OverloadNode({
 	readonly packageName: string;
 	readonly version: string;
 }) {
-	'use cache';
-
 	return (
 		<Tabs className="flex flex-col gap-4">
-			<TabList className="flex gap-2">
+			<TabList className="flex flex-wrap gap-2">
 				{node.overloads.map((overload: any) => (
 					<Tab
-						className="cursor-pointer rounded-full bg-neutral-800/10 px-2 py-1 font-sans text-sm leading-none font-normal text-neutral-800 hover:bg-neutral-800/20 data-[selected]:bg-neutral-500 data-[selected]:text-neutral-100 dark:bg-neutral-200/10 dark:text-neutral-200 dark:hover:bg-neutral-200/20 dark:data-[selected]:bg-neutral-500/70"
+						className="cursor-pointer rounded-full bg-neutral-800/10 px-2 py-1 font-sans text-sm leading-none font-normal whitespace-nowrap text-neutral-800 hover:bg-neutral-800/20 data-[selected]:bg-neutral-500 data-[selected]:text-neutral-100 dark:bg-neutral-200/10 dark:text-neutral-200 dark:hover:bg-neutral-200/20 dark:data-[selected]:bg-neutral-500/70"
 						id={`overload-${overload.displayName}-${overload.overloadIndex}`}
 						key={`overload-tab-${overload.displayName}-${overload.overloadIndex}`}
 					>
@@ -63,8 +61,6 @@ export async function DocItem({
 	readonly packageName: string;
 	readonly version: string;
 }) {
-	'use cache';
-
 	if (node.overloads?.length) {
 		return <OverloadNode node={node} packageName={packageName} version={version} />;
 	}
@@ -75,7 +71,7 @@ export async function DocItem({
 
 			<Scrollbars className="border-base-neutral-200 dark:border-base-neutral-600 bg-base-neutral-100 dark:bg-base-neutral-900 rounded-sm border">
 				<SyntaxHighlighter
-					className="bg-[#f3f3f4] py-4 text-sm dark:bg-[#121214]"
+					className="min-w-max bg-[#f3f3f4] py-4 text-sm dark:bg-[#121214]"
 					code={node.sourceExcerpt}
 					lang="typescript"
 				/>
@@ -93,7 +89,7 @@ export async function DocItem({
 
 			<Outline node={node} />
 
-			{node.constructor?.parametersString ? <ConstructorNode node={node.constructor} version={version} /> : null}
+			{node.construct ? <ConstructorNode node={node.construct} version={version} /> : null}
 
 			{node.typeParameters?.length ? (
 				<div className="flex flex-col gap-4">
