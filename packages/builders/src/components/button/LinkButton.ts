@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/valid-types */
 import {
 	ButtonStyle,
 	ComponentType,
@@ -11,8 +12,8 @@ import { EmojiOrLabelButtonMixin } from './mixins/EmojiOrLabelButtonMixin.js';
 /**
  * A builder that creates API-compatible JSON data for buttons with links.
  *
- * @mixes BaseButtonBuilder<APIButtonComponentWithURL>
- * @mixes EmojiOrLabelButtonMixin
+ * @mixes {@link BaseButtonBuilder}\<{@link discord-api-types/v10#(APIButtonComponentWithURL:interface)}\>
+ * @mixes {@link EmojiOrLabelButtonMixin}
  */
 export class LinkButtonBuilder extends Mixin(BaseButtonBuilder<APIButtonComponentWithURL>, EmojiOrLabelButtonMixin) {
 	protected override readonly data: Partial<APIButtonComponentWithURL>;

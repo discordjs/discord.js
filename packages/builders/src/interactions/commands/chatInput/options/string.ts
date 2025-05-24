@@ -11,9 +11,9 @@ import type { ApplicationCommandOptionBaseData } from './ApplicationCommandOptio
 /**
  * A chat input command string option.
  *
- * @mixes ApplicationCommandOptionBase
- * @mixes ApplicationCommandOptionWithAutocompleteMixin
- * @mixes ApplicationCommandOptionWithChoicesMixin<string>
+ * @mixes {@link ApplicationCommandOptionBase}
+ * @mixes {@link ApplicationCommandOptionWithAutocompleteMixin}
+ * @mixes {@link ApplicationCommandOptionWithChoicesMixin}\<string\>
  */
 export class ChatInputCommandStringOption extends Mixin(
 	ApplicationCommandOptionBase,

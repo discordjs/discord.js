@@ -7,8 +7,8 @@ import { ApplicationCommandOptionBase } from './ApplicationCommandOptionBase.js'
 /**
  * A chat input command channel option.
  *
- * @mixes ApplicationCommandOptionBase
- * @mixes ApplicationCommandOptionChannelTypesMixin
+ * @mixes {@link ApplicationCommandOptionBase}
+ * @mixes {@link ApplicationCommandOptionChannelTypesMixin}
  */
 export class ChatInputCommandChannelOption extends Mixin(
 	ApplicationCommandOptionBase,

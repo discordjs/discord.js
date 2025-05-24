@@ -9,10 +9,10 @@ import { ApplicationCommandOptionBase } from './ApplicationCommandOptionBase.js'
 /**
  * A chat input command number option.
  *
- * @mixes ApplicationCommandOptionBase
- * @mixes ApplicationCommandNumericOptionMinMaxValueMixin
- * @mixes ApplicationCommandOptionWithAutocompleteMixin
- * @mixes ApplicationCommandOptionWithChoicesMixin<number>
+ * @mixes {@link ApplicationCommandOptionBase}
+ * @mixes {@link ApplicationCommandNumericOptionMinMaxValueMixin}
+ * @mixes {@link ApplicationCommandOptionWithAutocompleteMixin}
+ * @mixes {@link ApplicationCommandOptionWithChoicesMixin}\<number\>
  */
 export class ChatInputCommandNumberOption extends Mixin(
 	ApplicationCommandOptionBase,

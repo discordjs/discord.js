@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/valid-types */
 import { ButtonStyle, ComponentType, type APIButtonComponentWithCustomId } from 'discord-api-types/v10';
 import { Mixin } from 'ts-mixer';
 import { BaseButtonBuilder } from './Button.js';
@@ -8,8 +9,8 @@ export type CustomIdButtonStyle = APIButtonComponentWithCustomId['style'];
 /**
  * A builder that creates API-compatible JSON data for buttons with custom IDs.
  *
- * @mixes BaseButtonBuilder<APIButtonComponentWithCustomId>
- * @mixes EmojiOrLabelButtonMixin
+ * @mixes {@link BaseButtonBuilder}\<{@link discord-api-types/v10#(APIButtonComponentWithCustomId:interface)}\>
+ * @mixes {@link EmojiOrLabelButtonMixin}
  */
 export abstract class CustomIdButtonBuilder extends Mixin(
 	BaseButtonBuilder<APIButtonComponentWithCustomId>,

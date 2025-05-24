@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/valid-types */
 import type { JSONEncodable } from '@discordjs/util';
 import type {
 	APIApplicationCommandSubcommandOption,
@@ -86,8 +87,8 @@ export class ChatInputCommandSubcommandGroupBuilder
 /**
  * A builder that creates API-compatible JSON data for chat input command subcommands.
  *
- * @mixes SharedNameAndDescription
- * @mixes SharedChatInputCommandOptions
+ * @mixes {@link SharedNameAndDescription}
+ * @mixes {@link SharedChatInputCommandOptions}
  * @see {@link https://discord.com/developers/docs/interactions/application-commands#subcommands-and-subcommand-groups}
  */
 export class ChatInputCommandSubcommandBuilder

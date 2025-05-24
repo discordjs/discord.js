@@ -11,8 +11,8 @@ export type ContextMenuCommandType = ApplicationCommandType.Message | Applicatio
 /**
  * A builder that creates API-compatible JSON data for context menu commands.
  *
- * @mixes CommandBuilder<RESTPostAPIContextMenuApplicationCommandsJSONBody>
- * @mixes SharedName
+ * @mixes {@link CommandBuilder}\<{@link discord-api-types/v10#(RESTPostAPIContextMenuApplicationCommandsJSONBody:interface)}\>
+ * @mixes {@link SharedName}
  */
 export abstract class ContextMenuCommandBuilder extends Mixin(
 	CommandBuilder<RESTPostAPIContextMenuApplicationCommandsJSONBody>,
