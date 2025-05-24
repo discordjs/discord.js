@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/valid-types */
 import {
 	ButtonStyle,
 	ComponentType,

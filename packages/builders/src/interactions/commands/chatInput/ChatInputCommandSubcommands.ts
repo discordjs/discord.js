@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/valid-types */
 import type { JSONEncodable } from '@discordjs/util';
 import type {
 	APIApplicationCommandSubcommandOption,
