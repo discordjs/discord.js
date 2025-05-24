@@ -16,9 +16,9 @@ export class RoleSelectMenuBuilder extends BaseSelectMenuBuilder<APIRoleSelectCo
 	protected override readonly data: Partial<APIRoleSelectComponent>;
 
 	/**
-	 * Creates a new select menu from API data.
+	 * Creates a new role select menu.
 	 *
-	 * @param data - The API data to create this select menu with
+	 * @param data - The API data to create this role select menu with
 	 * @example
 	 * Creating a select menu from an API data object:
 	 * ```ts

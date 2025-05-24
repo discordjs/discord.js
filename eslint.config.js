@@ -135,6 +135,7 @@ export default tseslint.config(
 		files: [`packages/builders/**/*${commonFiles}`],
 		rules: {
 			'@typescript-eslint/no-empty-object-type': 0,
+			'jsdoc/valid-types': 0,
 		},
 	},
 	{

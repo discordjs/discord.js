@@ -10,19 +10,32 @@ import type { ApplicationCommandOptionBaseData } from './ApplicationCommandOptio
 
 /**
  * A chat input command string option.
+ *
+ * @mixes {@link ApplicationCommandOptionBase}
+ * @mixes {@link ApplicationCommandOptionWithAutocompleteMixin}
+ * @mixes {@link ApplicationCommandOptionWithChoicesMixin}\<string\>
  */
 export class ChatInputCommandStringOption extends Mixin(
 	ApplicationCommandOptionBase,
 	ApplicationCommandOptionWithAutocompleteMixin,
 	ApplicationCommandOptionWithChoicesMixin<string>,
 ) {
+	/**
+	 * @internal
+	 */
 	protected static override readonly predicate = stringOptionPredicate;
 
+	/**
+	 * @internal
+	 */
 	declare protected readonly data: ApplicationCommandOptionBaseData &
 		ApplicationCommandOptionWithAutocompleteData &
 		ApplicationCommandOptionWithChoicesData &
 		Partial<Pick<APIApplicationCommandStringOption, 'max_length' | 'min_length'>>;
 
+	/**
+	 * Creates a new string option builder.
+	 */
 	public constructor() {
 		super(ApplicationCommandOptionType.String);
 	}

@@ -32,15 +32,24 @@ export interface SectionBuilderData extends Partial<Omit<APISectionComponent, 'a
 	components: TextDisplayBuilder[];
 }
 
+/**
+ * A builder that creates API-compatible JSON data for sections.
+ */
 export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
+	/**
+	 * @internal
+	 */
 	protected readonly data: SectionBuilderData;
 
+	/**
+	 * The components within this section.
+	 */
 	public get components(): readonly TextDisplayBuilder[] {
 		return this.data.components;
 	}
 
 	/**
-	 * Creates a new section from API data.
+	 * Creates a new section.
 	 *
 	 * @param data - The API data to create this section with
 	 * @example
@@ -81,7 +90,7 @@ export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
 
 		this.data = {
 			...structuredClone(rest),
-			accessory: accessory ? resolveAccessoryComponent(accessory) : undefined,
+			accessory: accessory && resolveAccessoryComponent(accessory),
 			components: components.map((component) => new TextDisplayBuilder(component)),
 			type: ComponentType.Section,
 		};
