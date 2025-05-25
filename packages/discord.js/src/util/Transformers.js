@@ -2,6 +2,7 @@
 
 const { isJSONEncodable } = require('@discordjs/util');
 const snakeCase = require('lodash.snakecase');
+const { resolvePartialEmoji } = require('./Util');
 
 /**
  * Transforms camel-cased keys into snake cased keys
@@ -13,7 +14,14 @@ function toSnakeCase(obj) {
   if (obj instanceof Date) return obj;
   if (isJSONEncodable(obj)) return toSnakeCase(obj.toJSON());
   if (Array.isArray(obj)) return obj.map(toSnakeCase);
-  return Object.fromEntries(Object.entries(obj).map(([key, value]) => [snakeCase(key), toSnakeCase(value)]));
+  return Object.fromEntries(
+    Object.entries(obj).map(([key, value]) => [
+      snakeCase(key),
+      // TODO: The special handling of 'emoji' is just a temporary fix for v14, will be dropped in v15.
+      // See https://github.com/discordjs/discord.js/issues/10909
+      key === 'emoji' && typeof value === 'string' ? resolvePartialEmoji(value) : toSnakeCase(value),
+    ]),
+  );
 }
 
 /**
