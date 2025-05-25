@@ -52,6 +52,7 @@ import { AstNamespaceImport } from '../analyzer/AstNamespaceImport.js';
 import { AstSymbol } from '../analyzer/AstSymbol.js';
 import { TypeScriptInternals } from '../analyzer/TypeScriptInternals.js';
 import type { ExtractorConfig } from '../api/ExtractorConfig';
+import { ExtractorMessageId } from '../api/ExtractorMessageId.js';
 import type { ApiItemMetadata } from '../collector/ApiItemMetadata.js';
 import type { Collector } from '../collector/Collector.js';
 import type { DeclarationMetadata } from '../collector/DeclarationMetadata.js';
@@ -256,6 +257,8 @@ export class ApiModelGenerator {
 
 	private readonly _jsDocJson: DocgenJson | undefined;
 
+	private readonly _mainSourceFile: ts.SourceFile | undefined;
+
 	public constructor(collector: Collector, extractorConfig: ExtractorConfig) {
 		this._collector = collector;
 		this._apiModel = new ApiModel();
@@ -271,6 +274,9 @@ export class ApiModelGenerator {
 
 		// @ts-expect-error we reuse the private tsdocParser from collector here
 		this._tsDocParser = collector._tsdocParser;
+		this._mainSourceFile = this._collector.workingPackage.entryPoints.find((entry) =>
+			this._collector.workingPackage.isDefaultEntryPoint(entry),
+		)?.sourceFile;
 	}
 
 	public get apiModel(): ApiModel {
@@ -319,6 +325,15 @@ export class ApiModelGenerator {
 
 	private _processAstEntity(astEntity: AstEntity, context: IProcessAstEntityContext): void {
 		if (astEntity instanceof AstSymbol) {
+			if (
+				context.parentDocgenJson &&
+				astEntity.followedSymbol.declarations?.some(
+					(declaration) => declaration.getSourceFile() !== this._mainSourceFile,
+				)
+			) {
+				context.parentDocgenJson = undefined;
+			}
+
 			// Skip ancillary declarations; we will process them with the main declaration
 			for (const astDeclaration of this._collector.getNonAncillaryDeclarations(astEntity)) {
 				this._processDeclaration(astDeclaration, context);
@@ -608,6 +623,15 @@ export class ApiModelGenerator {
 						} */`,
 					).docComment
 				: apiItemMetadata.tsdocComment;
+
+			if (!docComment && parent) {
+				this._collector.messageRouter.addAnalyzerIssue(
+					ExtractorMessageId.DjsMissingJSDoc,
+					`The constructor ${parentApiItem.displayName}() has no matching jsdoc equivalent in the JavaScript source files.`,
+					astDeclaration,
+				);
+			}
+
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const isProtected: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Protected) !== 0;
 			const sourceLocation: ISourceLocation = this._getSourceLocation(constructorDeclaration);
@@ -698,6 +722,15 @@ export class ApiModelGenerator {
 						} */`,
 					).docComment
 				: apiItemMetadata.tsdocComment;
+
+			if (!docComment && parent) {
+				this._collector.messageRouter.addAnalyzerIssue(
+					ExtractorMessageId.DjsMissingJSDoc,
+					`The class ${name} has no matching jsdoc equivalent in the JavaScript source files.`,
+					astDeclaration,
+				);
+			}
+
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const isAbstract: boolean = (ts.getCombinedModifierFlags(classDeclaration) & ts.ModifierFlags.Abstract) !== 0;
 			const sourceLocation: ISourceLocation = this._getSourceLocation(classDeclaration);
@@ -768,6 +801,15 @@ export class ApiModelGenerator {
 						} */`,
 					).docComment
 				: apiItemMetadata.tsdocComment;
+
+			if (!docComment && parent) {
+				this._collector.messageRouter.addAnalyzerIssue(
+					ExtractorMessageId.DjsMissingJSDoc,
+					`The constructor signature ${parentApiItem.displayName}() has no matching jsdoc equivalent in the JavaScript source files.`,
+					astDeclaration,
+				);
+			}
+
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const sourceLocation: ISourceLocation = this._getSourceLocation(constructSignature);
 
@@ -915,6 +957,15 @@ export class ApiModelGenerator {
 						} */`,
 					).docComment
 				: apiItemMetadata.tsdocComment;
+
+			if (!docComment && parent) {
+				this._collector.messageRouter.addAnalyzerIssue(
+					ExtractorMessageId.DjsMissingJSDoc,
+					`The function ${name}() has no matching jsdoc equivalent in the JavaScript source files.`,
+					astDeclaration,
+				);
+			}
+
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const sourceLocation: ISourceLocation = this._getSourceLocation(functionDeclaration);
 
@@ -1037,6 +1088,15 @@ export class ApiModelGenerator {
 						} */`,
 					).docComment
 				: apiItemMetadata.tsdocComment;
+
+			if (!docComment && parent) {
+				this._collector.messageRouter.addAnalyzerIssue(
+					ExtractorMessageId.DjsMissingJSDoc,
+					`The interface ${name} has no matching jsdoc equivalent in the JavaScript source files.`,
+					astDeclaration,
+				);
+			}
+
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const sourceLocation: ISourceLocation = this._getSourceLocation(interfaceDeclaration);
 
@@ -1118,6 +1178,15 @@ export class ApiModelGenerator {
 							} */`,
 						).docComment
 					: apiItemMetadata.tsdocComment;
+
+				if (!docComment && parent) {
+					this._collector.messageRouter.addAnalyzerIssue(
+						ExtractorMessageId.DjsMissingJSDoc,
+						`The method ${parentApiItem.displayName}#${name}() has no matching jsdoc equivalent in the JavaScript source files.`,
+						astDeclaration,
+					);
+				}
+
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 				if (releaseTag === ReleaseTag.Internal || releaseTag === ReleaseTag.Alpha) {
 					return; // trim out items marked as "@internal" or "@alpha"
@@ -1149,6 +1218,13 @@ export class ApiModelGenerator {
 				if (jsDoc.inherited) {
 					return;
 				}
+
+				this._collector.messageRouter.addAnalyzerIssueForPosition(
+					ExtractorMessageId.DjsMissingTypeScriptType,
+					`The JSDoc comment for method ${parentApiItem.displayName}#${name}() has no matching type equivalent in the TypeScript declaration file.`,
+					this._mainSourceFile!,
+					0,
+				);
 
 				const methodOptions = this._mapMethod(jsDoc, parentApiItem.getAssociatedPackage()!.name);
 				if (methodOptions.releaseTag === ReleaseTag.Internal || methodOptions.releaseTag === ReleaseTag.Alpha) {
@@ -1214,6 +1290,15 @@ export class ApiModelGenerator {
 							} */`,
 						).docComment
 					: apiItemMetadata.tsdocComment;
+
+				if (!docComment && parent) {
+					this._collector.messageRouter.addAnalyzerIssue(
+						ExtractorMessageId.DjsMissingJSDoc,
+						`The method signature ${parentApiItem.displayName}#${name}() has no matching jsdoc equivalent in the JavaScript source files.`,
+						astDeclaration,
+					);
+				}
+
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
 				const sourceLocation: ISourceLocation = this._getSourceLocation(methodSignature);
@@ -1233,6 +1318,12 @@ export class ApiModelGenerator {
 					fileColumn: sourceLocation.sourceFileColumn,
 				});
 			} else if (jsDoc) {
+				this._collector.messageRouter.addAnalyzerIssueForPosition(
+					ExtractorMessageId.DjsMissingTypeScriptType,
+					`The JSDoc comment for method signature ${parentApiItem.displayName}#${name}() has no matching type equivalent in the TypeScript declaration file.`,
+					this._mainSourceFile!,
+					0,
+				);
 				apiMethodSignature = new ApiMethodSignature(this._mapMethod(jsDoc, parentApiItem.getAssociatedPackage()!.name));
 			}
 
@@ -1275,7 +1366,8 @@ export class ApiModelGenerator {
 	private _processApiProperty(astDeclaration: AstDeclaration | null, context: IProcessAstEntityContext): void {
 		const { name, parentApiItem } = context;
 		const parent = context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | DocgenTypedefJson | undefined;
-		const jsDoc = parent?.props?.find((prop) => prop.name === name);
+		const inherited = parent && 'extends' in parent ? this._isInherited(parent, name, parentApiItem.kind) : undefined;
+		const jsDoc = parent?.props?.find((prop) => prop.name === name) ?? inherited;
 		const isStatic: boolean = astDeclaration
 			? (astDeclaration.modifierFlags & ts.ModifierFlags.Static) !== 0
 			: parentApiItem.kind === ApiItemKind.Class || parentApiItem.kind === ApiItemKind.Interface
@@ -1285,11 +1377,7 @@ export class ApiModelGenerator {
 
 		let apiProperty: ApiProperty | undefined = parentApiItem.tryGetMemberByKey(containerKey) as ApiProperty;
 
-		if (
-			apiProperty === undefined &&
-			(astDeclaration ||
-				!this._isInherited(parent as DocgenClassJson | DocgenInterfaceJson, jsDoc!, parentApiItem.kind))
-		) {
+		if (apiProperty === undefined && (astDeclaration || !inherited)) {
 			if (astDeclaration) {
 				const declaration: ts.Declaration = astDeclaration.declaration;
 				const nodesToCapture: IExcerptBuilderNodeToCapture[] = [];
@@ -1329,6 +1417,15 @@ export class ApiModelGenerator {
 							} */`,
 						).docComment
 					: apiItemMetadata.tsdocComment;
+
+				if (!docComment && parent) {
+					this._collector.messageRouter.addAnalyzerIssue(
+						ExtractorMessageId.DjsMissingJSDoc,
+						`The property ${parentApiItem.displayName}#${name} has no matching jsdoc equivalent in the JavaScript source files.`,
+						astDeclaration,
+					);
+				}
+
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
 				const isProtected: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Protected) !== 0;
@@ -1353,6 +1450,12 @@ export class ApiModelGenerator {
 					fileColumn: sourceLocation.sourceFileColumn,
 				});
 			} else if (parentApiItem.kind === ApiItemKind.Class || parentApiItem.kind === ApiItemKind.Interface) {
+				this._collector.messageRouter.addAnalyzerIssueForPosition(
+					ExtractorMessageId.DjsMissingTypeScriptType,
+					`The JSDoc comment for property ${parentApiItem.displayName}#${name} has no matching type equivalent in the TypeScript declaration file.`,
+					this._mainSourceFile!,
+					0,
+				);
 				const propertyOptions = this._mapProp(jsDoc as DocgenPropertyJson, parentApiItem.getAssociatedPackage()!.name);
 				if (propertyOptions.releaseTag === ReleaseTag.Internal || propertyOptions.releaseTag === ReleaseTag.Alpha) {
 					return; // trim out items marked as "@internal" or "@alpha"
@@ -1378,11 +1481,13 @@ export class ApiModelGenerator {
 			containerKey,
 		) as ApiPropertySignature;
 		const parent = context.parentDocgenJson as DocgenInterfaceJson | DocgenPropertyJson | DocgenTypedefJson | undefined;
-		const jsDoc = parent?.props?.find((prop) => prop.name === name);
+		const inherited = parent && 'extends' in parent ? this._isInherited(parent, name, parentApiItem.kind) : undefined;
+		const jsDoc = parent?.props?.find((prop) => prop.name === name) ?? inherited;
 
 		if (
 			apiPropertySignature === undefined &&
-			(astDeclaration || !this._isInherited(parent as DocgenInterfaceJson, jsDoc!, parentApiItem.kind))
+			(astDeclaration || !inherited) &&
+			parentApiItem.kind !== ApiItemKind.Class
 		) {
 			if (astDeclaration) {
 				const propertySignature: ts.PropertySignature = astDeclaration.declaration as ts.PropertySignature;
@@ -1407,6 +1512,15 @@ export class ApiModelGenerator {
 							} */`,
 						).docComment
 					: apiItemMetadata.tsdocComment;
+
+				if (!docComment && parent) {
+					this._collector.messageRouter.addAnalyzerIssue(
+						ExtractorMessageId.DjsMissingJSDoc,
+						`The property signature ${parentApiItem.displayName}#${name} has no matching jsdoc equivalent in the JavaScript source files.`,
+						astDeclaration,
+					);
+				}
+
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
 				const isReadonly: boolean = this._isReadonly(astDeclaration);
@@ -1424,7 +1538,13 @@ export class ApiModelGenerator {
 					fileLine: jsDoc && 'meta' in jsDoc ? jsDoc.meta.line : sourceLocation.sourceFileLine,
 					fileColumn: sourceLocation.sourceFileColumn,
 				});
-			} else if (parentApiItem.kind === ApiItemKind.Class || parentApiItem.kind === ApiItemKind.Interface) {
+			} else if (parentApiItem.kind === ApiItemKind.Interface) {
+				this._collector.messageRouter.addAnalyzerIssueForPosition(
+					ExtractorMessageId.DjsMissingTypeScriptType,
+					`The JSDoc comment for property signature ${parentApiItem.displayName}#${name} has no matching type equivalent in the TypeScript declaration file.`,
+					this._mainSourceFile!,
+					0,
+				);
 				apiPropertySignature = new ApiPropertySignature(
 					this._mapProp(jsDoc as DocgenPropertyJson, parentApiItem.getAssociatedPackage()!.name),
 				);
@@ -1485,6 +1605,15 @@ export class ApiModelGenerator {
 						} */`,
 					).docComment
 				: apiItemMetadata.tsdocComment;
+
+			if (!docComment && parent) {
+				this._collector.messageRouter.addAnalyzerIssue(
+					ExtractorMessageId.DjsMissingJSDoc,
+					`The type alias ${name} has no matching jsdoc equivalent in the JavaScript source files.`,
+					astDeclaration,
+				);
+			}
+
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const sourceLocation: ISourceLocation = this._getSourceLocation(typeAliasDeclaration);
 
@@ -1718,20 +1847,19 @@ export class ApiModelGenerator {
 
 	private _isInherited(
 		container: DocgenClassJson | DocgenInterfaceJson,
-		jsDoc: DocgenParamJson | DocgenPropertyJson,
+		propertyName: string,
 		containerKind: ApiItemKind,
-	): boolean {
+	): DocgenPropertyJson | undefined {
 		switch (containerKind) {
 			case ApiItemKind.Class: {
 				const token = (container as DocgenClassJson).extends;
 				const parentName = Array.isArray(token) ? token[0]?.[0]?.[0] : token?.types?.[0]?.[0]?.[0];
 				const parentJson = this._jsDocJson?.classes.find((clas) => clas.name === parentName);
 				if (parentJson) {
-					if (parentJson.props?.find((prop) => prop.name === jsDoc.name)) {
-						return true;
-					} else {
-						return this._isInherited(parentJson, jsDoc, containerKind);
-					}
+					return (
+						parentJson.props?.find((prop) => prop.name === propertyName) ??
+						this._isInherited(parentJson, propertyName, containerKind)
+					);
 				}
 
 				break;
@@ -1743,13 +1871,15 @@ export class ApiModelGenerator {
 				const parentJsons = parentNames?.map((name) =>
 					this._jsDocJson?.interfaces.find((inter) => inter.name === name),
 				);
+				if (propertyName === 'content') console.log(container.name, parentNames, parentJsons);
 				if (parentJsons?.length) {
 					for (const parentJson of parentJsons) {
-						if (
-							parentJson?.props?.find((prop) => prop.name === jsDoc.name) ||
-							this._isInherited(parentJson as DocgenInterfaceJson, jsDoc, containerKind)
-						) {
-							return true;
+						const result =
+							parentJson?.props?.find((prop) => prop.name === propertyName) ??
+							this._isInherited(parentJson as DocgenInterfaceJson, propertyName, containerKind);
+
+						if (result) {
+							return result;
 						}
 					}
 				}
@@ -1758,10 +1888,10 @@ export class ApiModelGenerator {
 			}
 
 			default:
-				console.log(`Unexpected parent of type ${containerKind} (${container.name}) of ${jsDoc?.name} `);
+				console.log(`Unexpected parent of type ${containerKind} (${container.name}) of ${propertyName} `);
 		}
 
-		return false;
+		return undefined;
 	}
 
 	private _isReadonly(astDeclaration: AstDeclaration): boolean {
