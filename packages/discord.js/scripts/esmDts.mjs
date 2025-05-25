@@ -1,4 +1,5 @@
 import { readFile, writeFile } from 'node:fs/promises';
+import { URL } from 'node:url';
 
 const rawTypesDTS = new URL('../typings/rawDataTypes.d.ts', import.meta.url);
 const rawIndexDTS = new URL('../typings/index.d.ts', import.meta.url);
@@ -12,14 +13,11 @@ const [rawTypesString, rawIndexString] = await Promise.all([
 ]);
 
 /**
- *
  * @param {string} source
  * @param {[from: string, to: string][]} imports
  */
 function updateImports(source, imports) {
-  return imports.reduce((code, [from, to]) => {
-    return code.replaceAll(from, to);
-  }, source);
+  return imports.reduce((code, [from, to]) => code.replaceAll(from, to), source);
 }
 
 /** @type {[string, string][]} */

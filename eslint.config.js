@@ -138,7 +138,7 @@ export default tseslint.config(
 		},
 	},
 	{
-		files: [`packages/discord.js/**/*{js,mjs,cjs}`],
+		files: [`packages/discord.js/**/*.{js,cjs}`],
 		languageOptions: {
 			sourceType: 'commonjs',
 			parserOptions: {
