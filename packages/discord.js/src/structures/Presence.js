@@ -63,7 +63,7 @@ class Presence extends Base {
 
   /**
    * The member of this presence
-   * @type {?GuildMember}
+   * @type {?(GuildMember | PartialGuildMember)}
    * @readonly
    */
   get member() {
