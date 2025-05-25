@@ -2317,9 +2317,9 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public update(
     options: InteractionUpdateOptions & { withResponse: true },
   ): Promise<InteractionCallbackResponse<BooleanCache<Cached>>>;
-  public update(options: InteractionUpdateOptions & { withResponse: false }): Promise<undefined>;
+  public update(options?: InteractionUpdateOptions & { withResponse: false }): Promise<undefined>;
   public update(
-    options: string | MessagePayload | InteractionUpdateOptions,
+    options?: string | MessagePayload | InteractionUpdateOptions,
   ): Promise<InteractionCallbackResponse<BooleanCache<Cached>> | undefined>;
   public launchActivity(
     options: LaunchActivityOptions & { withResponse: true },
