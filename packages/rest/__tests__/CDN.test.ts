@@ -23,7 +23,7 @@ test('avatar default', () => {
 });
 
 test('avatar dynamic-animated', () => {
-	expect(cdn.avatar(id, animatedHash)).toEqual(`${baseCDN}/avatars/${id}/${animatedHash}.gif`);
+	expect(cdn.avatar(id, animatedHash)).toEqual(`${baseCDN}/avatars/${id}/${animatedHash}.webp?animated=true`);
 });
 
 test('avatar dynamic-not-animated', () => {
@@ -68,7 +68,7 @@ test('guildMemberAvatar default', () => {
 
 test('guildMemberAvatar dynamic-animated', () => {
 	expect(cdn.guildMemberAvatar(id, id, animatedHash)).toEqual(
-		`${baseCDN}/guilds/${id}/users/${id}/avatars/${animatedHash}.gif`,
+		`${baseCDN}/guilds/${id}/users/${id}/avatars/${animatedHash}.webp?animated=true`,
 	);
 });
 
@@ -82,7 +82,7 @@ test('guildMemberBanner default', () => {
 
 test('guildMemberBanner dynamic-animated', () => {
 	expect(cdn.guildMemberBanner(id, id, animatedHash)).toEqual(
-		`${baseCDN}/guilds/${id}/users/${id}/banners/${animatedHash}.gif`,
+		`${baseCDN}/guilds/${id}/users/${id}/banners/${animatedHash}.webp?animated=true`,
 	);
 });
 
@@ -99,7 +99,7 @@ test('icon default', () => {
 });
 
 test('icon dynamic-animated', () => {
-	expect(cdn.icon(id, animatedHash)).toEqual(`${baseCDN}/icons/${id}/${animatedHash}.gif`);
+	expect(cdn.icon(id, animatedHash)).toEqual(`${baseCDN}/icons/${id}/${animatedHash}.webp?animated=true`);
 });
 
 test('icon dynamic-not-animated', () => {
@@ -145,5 +145,7 @@ test('makeURL throws on invalid extension', () => {
 });
 
 test('makeURL valid size', () => {
-	expect(cdn.avatar(id, animatedHash, { size: 512 })).toEqual(`${baseCDN}/avatars/${id}/${animatedHash}.gif?size=512`);
+	expect(cdn.avatar(id, animatedHash, { size: 512 })).toEqual(
+		`${baseCDN}/avatars/${id}/${animatedHash}.webp?animated=true&size=512`,
+	);
 });

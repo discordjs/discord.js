@@ -11,54 +11,62 @@ import {
 } from './utils/constants.js';
 
 /**
- * The options used for image URLs
+ * The options used for image URLs.
  */
 export interface BaseImageURLOptions {
 	/**
-	 * The extension to use for the image URL
+	 * The extension to use for the image URL.
 	 *
 	 * @defaultValue `'webp'`
 	 */
 	extension?: ImageExtension;
 	/**
-	 * The size specified in the image URL
+	 * The size specified in the image URL.
 	 */
 	size?: ImageSize;
 }
 
-interface EmojiURLOptionsWebp extends BaseImageURLOptions {
+export interface EmojiURLOptionsWebp extends BaseImageURLOptions {
 	/**
 	 * Whether to use the `animated` query parameter.
-	 *
-	 * @remarks An animated custom emoji with the WebP format utilises this query paramter to be animated.
 	 */
 	animated?: boolean;
 	extension?: 'webp';
 }
 
-interface EmojiURLOptionsNotWebP extends BaseImageURLOptions {
+export interface EmojiURLOptionsNotWebp extends BaseImageURLOptions {
 	extension: Exclude<ImageExtension, 'webp'>;
 }
 
 /**
  * The options used for emoji URLs.
  */
-export type EmojiURLOptions = EmojiURLOptionsNotWebP | EmojiURLOptionsWebp;
+export type EmojiURLOptions = EmojiURLOptionsNotWebp | EmojiURLOptionsWebp;
 
-/**
- * The options used for image URLs with animated content
- */
-export interface ImageURLOptions extends BaseImageURLOptions {
+export interface BaseAnimatedImageURLOptions extends BaseImageURLOptions {
 	/**
-	 * Whether or not to prefer the static version of an image asset.
+	 * Whether to prefer the static asset.
 	 */
 	forceStatic?: boolean;
 }
 
+export interface ImageURLOptionsWebp extends BaseAnimatedImageURLOptions {
+	extension?: 'webp';
+}
+
+export interface ImageURLOptionsNotWebp extends BaseAnimatedImageURLOptions {
+	extension: Exclude<ImageExtension, 'webp'>;
+}
+
+/**
+ * The options used for image URLs that may be animated.
+ */
+export type ImageURLOptions = ImageURLOptionsNotWebp | ImageURLOptionsWebp;
+
 /**
  * The options to use when making a CDN URL
  */
-export interface MakeURLOptions {
+interface MakeURLOptions {
 	/**
 	 * The allowed extensions that can be used
 	 */
@@ -332,7 +340,7 @@ export class CDN {
 		hash: string,
 		{ forceStatic = false, ...options }: Readonly<ImageURLOptions> = {},
 	): string {
-		return this.makeURL(route, !forceStatic && hash.startsWith('a_') ? { ...options, extension: 'gif' } : options);
+		return this.makeURL(route, !forceStatic && hash.startsWith('a_') ? { ...options, animated: true } : options);
 	}
 
 	/**
@@ -364,12 +372,12 @@ export class CDN {
 
 		const url = new URL(`${base}${route}.${extension}`);
 
-		if (size) {
-			url.searchParams.set('size', String(size));
-		}
-
 		if (animated !== undefined) {
 			url.searchParams.set('animated', String(animated));
+		}
+
+		if (size) {
+			url.searchParams.set('size', String(size));
 		}
 
 		return url.toString();
