@@ -16,10 +16,10 @@ const { Emoji } = require('./Emoji.js');
 
 /**
  * The status of this presence:
- * - __`online`__ - user is online
- * - __`idle`__ - user is AFK
- * - __`offline`__ - user is offline or invisible
- * - __`dnd`__ - user is in Do Not Disturb
+ * - `online` - user is online
+ * - `idle` - user is AFK
+ * - `offline` - user is offline or invisible
+ * - `dnd` - user is in Do Not Disturb
  *
  * @typedef {string} PresenceStatus
  */
