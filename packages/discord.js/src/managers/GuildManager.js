@@ -235,6 +235,15 @@ class GuildManager extends CachedManager {
     return (
       this.client.guilds.cache.get(data.id) ??
       new Promise(resolve => {
+        const handleGuild = guild => {
+          if (guild.id === data.id) {
+            // eslint-disable-next-line no-use-before-define
+            clearTimeout(timeout);
+            this.client.decrementMaxListeners();
+            resolve(guild);
+          }
+        };
+
         this.client.incrementMaxListeners();
         this.client.once(Events.GuildCreate, handleGuild);
 
@@ -243,14 +252,6 @@ class GuildManager extends CachedManager {
           this.client.decrementMaxListeners();
           resolve(this.client.guilds._add(data));
         }, 10_000).unref();
-
-        function handleGuild(guild) {
-          if (guild.id === data.id) {
-            clearTimeout(timeout);
-            this.client.decrementMaxListeners();
-            resolve(guild);
-          }
-        }
       })
     );
   }
@@ -336,13 +337,8 @@ class GuildManager extends CachedManager {
 
       const fetchedSoundboardSounds = new Collection();
 
-      const timeout = setTimeout(() => {
-        this.client.removeListener(Events.SoundboardSounds, handler);
-        this.client.decrementMaxListeners();
-        reject(new DiscordjsError(ErrorCodes.GuildSoundboardSoundsTimeout));
-      }, time).unref();
-
-      function handler(soundboardSounds, guild) {
+      const handler = (soundboardSounds, guild) => {
+        // eslint-disable-next-line no-use-before-define
         timeout.refresh();
 
         if (!remainingGuildIds.has(guild.id)) return;
@@ -352,13 +348,20 @@ class GuildManager extends CachedManager {
         remainingGuildIds.delete(guild.id);
 
         if (remainingGuildIds.size === 0) {
+          // eslint-disable-next-line no-use-before-define
           clearTimeout(timeout);
           this.client.removeListener(Events.SoundboardSounds, handler);
           this.client.decrementMaxListeners();
 
           resolve(fetchedSoundboardSounds);
         }
-      }
+      };
+
+      const timeout = setTimeout(() => {
+        this.client.removeListener(Events.SoundboardSounds, handler);
+        this.client.decrementMaxListeners();
+        reject(new DiscordjsError(ErrorCodes.GuildSoundboardSoundsTimeout));
+      }, time).unref();
 
       this.client.incrementMaxListeners();
       this.client.on(Events.SoundboardSounds, handler);

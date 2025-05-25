@@ -287,30 +287,19 @@ class Message extends Base {
       this.reactions ??= new ReactionManager(this);
     }
 
-    if (this.mentions) {
-      /**
-       * All valid mentions that the message contains
-       *
-       * @type {MessageMentions}
-       */
-      this.mentions = new MessageMentions(
-        this,
-        data.mentions ?? this.mentions.users,
-        data.mention_roles ?? this.mentions.roles,
-        data.mention_everyone ?? this.mentions.everyone,
-        data.mention_channels ?? this.mentions.crosspostedChannels,
-        data.referenced_message?.author ?? this.mentions.repliedUser,
-      );
-    } else {
-      this.mentions = new MessageMentions(
-        this,
-        data.mentions,
-        data.mention_roles,
-        data.mention_everyone,
-        data.mention_channels,
-        data.referenced_message?.author,
-      );
-    }
+    /**
+     * All valid mentions that the message contains
+     *
+     * @type {MessageMentions}
+     */
+    this.mentions = new MessageMentions(
+      this,
+      data.mentions ?? this.mentions?.users,
+      data.mention_roles ?? this.mentions?.roles,
+      data.mention_everyone ?? this.mentions?.everyone,
+      data.mention_channels ?? this.mentions?.crosspostedChannels,
+      data.referenced_message?.author ?? this.mentions?.repliedUser,
+    );
 
     if ('webhook_id' in data) {
       /**
