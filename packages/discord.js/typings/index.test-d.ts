@@ -1953,6 +1953,7 @@ client.on('interactionCreate', async interaction => {
       expectType<Promise<Message<true>>>(interaction.update({ content: 'a', fetchReply: true }));
       expectType<Promise<Message<true>>>(interaction.deferUpdate({ fetchReply: true }));
       expectType<Promise<InteractionCallbackResponse<true>>>(interaction.update({ content: 'a', withResponse: true }));
+      expectType<Promise<InteractionResponse<true>>>(interaction.update());
       expectType<Promise<InteractionCallbackResponse<true>>>(interaction.deferUpdate({ withResponse: true }));
       expectType<Promise<Message<true>>>(interaction.followUp({ content: 'a' }));
       expectType<Promise<InteractionCallbackResponse<true>>>(interaction.launchActivity({ withResponse: true }));
@@ -1974,6 +1975,7 @@ client.on('interactionCreate', async interaction => {
       expectType<Promise<Message<false>>>(interaction.update({ content: 'a', fetchReply: true }));
       expectType<Promise<Message<false>>>(interaction.deferUpdate({ fetchReply: true }));
       expectType<Promise<InteractionCallbackResponse<false>>>(interaction.update({ content: 'a', withResponse: true }));
+      expectType<Promise<InteractionResponse<false>>>(interaction.update());
       expectType<Promise<InteractionCallbackResponse<false>>>(interaction.deferUpdate({ withResponse: true }));
       expectType<Promise<Message<false>>>(interaction.followUp({ content: 'a' }));
       expectType<Promise<InteractionCallbackResponse<false>>>(interaction.launchActivity({ withResponse: true }));
@@ -1995,6 +1997,7 @@ client.on('interactionCreate', async interaction => {
       expectType<Promise<Message>>(interaction.update({ content: 'a', fetchReply: true }));
       expectType<Promise<Message>>(interaction.deferUpdate({ fetchReply: true }));
       expectType<Promise<InteractionCallbackResponse>>(interaction.update({ content: 'a', withResponse: true }));
+      expectType<Promise<InteractionResponse>>(interaction.update());
       expectType<Promise<InteractionCallbackResponse>>(interaction.deferUpdate({ withResponse: true }));
       expectType<Promise<Message>>(interaction.followUp({ content: 'a' }));
       expectType<Promise<InteractionCallbackResponse>>(interaction.launchActivity({ withResponse: true }));

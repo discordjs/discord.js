@@ -2677,7 +2677,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   /** @deprecated `fetchReply` is deprecated. Use `withResponse` instead or fetch the response after using the method. */
   public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<Message<BooleanCache<Cached>>>;
   public update(
-    options: string | MessagePayload | InteractionUpdateOptions,
+    options?: string | MessagePayload | InteractionUpdateOptions,
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public launchActivity(
     options: LaunchActivityOptions & { withResponse: true },

@@ -320,8 +320,8 @@ class InteractionResponses {
 
   /**
    * Updates the original message of the component on which the interaction was received on.
-   * @param {string|MessagePayload|InteractionUpdateOptions} options The options for the updated message
-   * @returns {Promise<InteractionCallbackResponse|Message|void>}
+   * @param {string|MessagePayload|InteractionUpdateOptions} [options] The options for the updated message
+   * @returns {Promise<InteractionCallbackResponse|Message|InteractionResponse>}
    * @example
    * // Remove the components from the message
    * interaction.update({
@@ -331,7 +331,7 @@ class InteractionResponses {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  async update(options) {
+  async update(options = {}) {
     if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
 
     if (typeof options !== 'string' && 'fetchReply' in options) {
