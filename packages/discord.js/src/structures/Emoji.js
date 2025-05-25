@@ -42,11 +42,20 @@ class Emoji extends Base {
 
   /**
    * Returns a URL for the emoji or `null` if this is not a custom emoji.
-   * @param {ImageURLOptions} [options={}] Options for the image URL
+   * @param {EmojiURLOptions} [options={}] Options for the emoji URL
    * @returns {?string}
    */
   imageURL(options = {}) {
-    return this.id && this.client.rest.cdn.emoji(this.id, this.animated, options);
+    if (!this.id) return null;
+
+    // Return a dynamic extension depending on whether the emoji is animated.
+    const resolvedOptions = { extension: options.extension, size: options.size };
+
+    if (!options.extension || options.extension === 'webp') {
+      resolvedOptions.animated = options.animated ?? (this.animated || undefined);
+    }
+
+    return this.client.rest.cdn.emoji(this.id, resolvedOptions);
   }
 
   /**

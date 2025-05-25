@@ -26,6 +26,25 @@ export interface BaseImageURLOptions {
 	size?: ImageSize;
 }
 
+interface EmojiURLOptionsWebp extends BaseImageURLOptions {
+	/**
+	 * Whether to use the `animated` query parameter.
+	 *
+	 * @remarks An animated custom emoji with the WebP format utilises this query paramter to be animated.
+	 */
+	animated?: boolean;
+	extension?: 'webp';
+}
+
+interface EmojiURLOptionsNotWebP extends BaseImageURLOptions {
+	extension: Exclude<ImageExtension, 'webp'>;
+}
+
+/**
+ * The options used for emoji URLs.
+ */
+export type EmojiURLOptions = EmojiURLOptionsNotWebP | EmojiURLOptionsWebp;
+
 /**
  * The options used for image URLs with animated content
  */
@@ -44,6 +63,10 @@ export interface MakeURLOptions {
 	 * The allowed extensions that can be used
 	 */
 	allowedExtensions?: readonly string[];
+	/**
+	 * Whether to use the `animated` query parameter
+	 */
+	animated?: boolean;
 	/**
 	 * The base URL.
 	 *
@@ -162,11 +185,10 @@ export class CDN {
 	 * Generates an emoji's URL.
 	 *
 	 * @param emojiId - The emoji id
-	 * @param animated - Whether the emoji is animated
 	 * @param options - Optional options for the emoji
 	 */
-	public emoji(emojiId: string, animated: boolean, options?: Readonly<ImageURLOptions>): string {
-		return this.dynamicMakeURL(`/emojis/${emojiId}`, animated ? 'a_' : '', options);
+	public emoji(emojiId: string, options?: Readonly<EmojiURLOptions>): string {
+		return this.makeURL(`/emojis/${emojiId}`, options);
 	}
 
 	/**
@@ -326,6 +348,7 @@ export class CDN {
 			base = this.cdn,
 			extension = 'webp',
 			size,
+			animated,
 		}: Readonly<MakeURLOptions> = {},
 	): string {
 		// eslint-disable-next-line no-param-reassign
@@ -343,6 +366,10 @@ export class CDN {
 
 		if (size) {
 			url.searchParams.set('size', String(size));
+		}
+
+		if (animated !== undefined) {
+			url.searchParams.set('animated', String(animated));
 		}
 
 		return url.toString();

@@ -50,28 +50,16 @@ test('discoverySplash default', () => {
 	expect(cdn.discoverySplash(id, hash)).toEqual(`${baseCDN}/discovery-splashes/${id}/${hash}.webp`);
 });
 
-test('emoji static', () => {
-	expect(cdn.emoji(id, false)).toEqual(`${baseCDN}/emojis/${id}.webp`);
-});
-
-test('emoji static with JPG extension', () => {
-	expect(cdn.emoji(id, false, { extension: 'jpg' })).toEqual(`${baseCDN}/emojis/${id}.jpg`);
-});
-
-test('emoji static with JPG extension with force static', () => {
-	expect(cdn.emoji(id, false, { extension: 'jpg', forceStatic: true })).toEqual(`${baseCDN}/emojis/${id}.jpg`);
+test('emoji', () => {
+	expect(cdn.emoji(id)).toEqual(`${baseCDN}/emojis/${id}.webp`);
 });
 
 test('emoji animated', () => {
-	expect(cdn.emoji(id, true)).toEqual(`${baseCDN}/emojis/${id}.gif`);
+	expect(cdn.emoji(id, { animated: true })).toEqual(`${baseCDN}/emojis/${id}.webp?animated=true`);
 });
 
-test('emoji animated with JPG extension', () => {
-	expect(cdn.emoji(id, true, { extension: 'jpg' })).toEqual(`${baseCDN}/emojis/${id}.gif`);
-});
-
-test('emoji animated with JPG extension with force static', () => {
-	expect(cdn.emoji(id, true, { extension: 'jpg', forceStatic: true })).toEqual(`${baseCDN}/emojis/${id}.jpg`);
+test('emoji with GIF format', () => {
+	expect(cdn.emoji(id, { extension: 'gif' })).toEqual(`${baseCDN}/emojis/${id}.gif`);
 });
 
 test('guildMemberAvatar default', () => {
