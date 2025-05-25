@@ -1295,6 +1295,7 @@ export class ApplicationEmoji extends Emoji {
   public requiresColons: true;
   public name: string;
   public animated: boolean;
+  public available: true;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   /** @deprecated Use {@link ApplicationEmoji#imageURL} instead */

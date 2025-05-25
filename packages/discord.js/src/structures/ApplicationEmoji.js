@@ -24,6 +24,7 @@ class ApplicationEmoji extends Emoji {
 
     this.managed = null;
     this.requiresColons = null;
+    this.available = null;
 
     this._patch(data);
   }
@@ -46,6 +47,15 @@ class ApplicationEmoji extends Emoji {
        * @type {true}
        */
       this.requiresColons = data.require_colons;
+    }
+
+    if ('available' in data) {
+      /**
+       * Whether this emoji is available
+       * @remarks Always true for application emojis
+       * @type {true}
+       */
+      this.available = data.available;
     }
   }
 
@@ -107,7 +117,8 @@ class ApplicationEmoji extends Emoji {
         other.id === this.id &&
         other.name === this.name &&
         other.managed === this.managed &&
-        other.requiresColons === this.requiresColons
+        other.requiresColons === this.requiresColons &&
+        other.available === this.available
       );
     }
 
