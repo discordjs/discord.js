@@ -43,25 +43,15 @@ export interface EmojiURLOptionsNotWebp extends BaseImageURLOptions {
  */
 export type EmojiURLOptions = EmojiURLOptionsNotWebp | EmojiURLOptionsWebp;
 
-export interface BaseAnimatedImageURLOptions extends BaseImageURLOptions {
+/**
+ * The options used for image URLs that may be animated.
+ */
+export interface ImageURLOptions extends BaseImageURLOptions {
 	/**
 	 * Whether to prefer the static asset.
 	 */
 	forceStatic?: boolean;
 }
-
-export interface ImageURLOptionsWebp extends BaseAnimatedImageURLOptions {
-	extension?: 'webp';
-}
-
-export interface ImageURLOptionsNotWebp extends BaseAnimatedImageURLOptions {
-	extension: Exclude<ImageExtension, 'webp'>;
-}
-
-/**
- * The options used for image URLs that may be animated.
- */
-export type ImageURLOptions = ImageURLOptionsNotWebp | ImageURLOptionsWebp;
 
 /**
  * The options to use when making a CDN URL
