@@ -589,7 +589,7 @@ export abstract class BaseGuild extends Base {
 }
 
 export class BaseGuildEmoji extends Emoji {
-  protected constructor(client: Client<true>, data: RawGuildEmojiData, guild: Guild | GuildPreview);
+  protected constructor(client: Client<true>, data: APIEmoji, guild: Guild | GuildPreview);
   public imageURL(options?: BaseImageURLOptions): string;
   /** @deprecated Use {@link BaseGuildEmoji.imageURL} instead */
   public get url(): string;
