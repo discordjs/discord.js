@@ -26,9 +26,9 @@ const { Emoji } = require('./Emoji.js');
 
 /**
  * The status of this presence:
- * - __`online`__ - user is online
- * - __`idle`__ - user is AFK
- * - __`dnd`__ - user is in Do Not Disturb
+ * - `online` - user is online
+ * - `idle` - user is AFK
+ * - `dnd` - user is in Do Not Disturb
  *
  * @typedef {string} ClientPresenceStatus
  */
