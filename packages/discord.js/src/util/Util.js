@@ -569,26 +569,29 @@ function resolveSKUId(resolvable) {
   return null;
 }
 
-exports.flatten = flatten;
+// Public
+exports.cleanCodeBlockContent = cleanCodeBlockContent;
+exports.cleanContent = cleanContent;
+exports.discordSort = discordSort;
 exports.fetchRecommendedShardCount = fetchRecommendedShardCount;
+exports.flatten = flatten;
 exports.parseEmoji = parseEmoji;
+exports.parseWebhookURL = parseWebhookURL;
+exports.resolveColor = resolveColor;
+exports.resolveSKUId = resolveSKUId;
+exports.verifyString = verifyString;
+
+// Private
 exports.resolvePartialEmoji = resolvePartialEmoji;
 exports.resolveGuildEmoji = resolveGuildEmoji;
 exports.makeError = makeError;
 exports.makePlainError = makePlainError;
 exports.getSortableGroupTypes = getSortableGroupTypes;
 exports.moveElementInArray = moveElementInArray;
-exports.verifyString = verifyString;
-exports.resolveColor = resolveColor;
-exports.discordSort = discordSort;
 exports.setPosition = setPosition;
 exports.basename = basename;
 exports.findName = findName;
-exports.cleanContent = cleanContent;
-exports.cleanCodeBlockContent = cleanCodeBlockContent;
-exports.parseWebhookURL = parseWebhookURL;
 exports.transformResolved = transformResolved;
-exports.resolveSKUId = resolveSKUId;
 
 // Fixes Circular
 const { Attachment } = require('../structures/Attachment.js');

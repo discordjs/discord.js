@@ -86,7 +86,7 @@ export * from './messages/MessageReference.js';
 export * from './util/componentUtil.js';
 export * from './util/normalizeArray.js';
 export * from './util/resolveBuilder.js';
-export * from './util/validation.js';
+export { disableValidators, enableValidators, isValidationEnabled } from './util/validation.js';
 
 export * from './Assertions.js';
 
