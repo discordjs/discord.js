@@ -77,7 +77,7 @@ class BaseGuildEmoji extends Emoji {
  * @name name
  * @memberof BaseGuildEmoji
  * @instance
- * @type {Snowflake}
+ * @type {string}
  * @readonly
  */
 
