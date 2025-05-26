@@ -79,10 +79,10 @@ import type {
   ChannelMention,
   ChannelSelectMenuComponent,
   ChannelSelectMenuInteraction,
-  ClientApplication,
-  ClientUser,
   ChatInputApplicationCommandData,
   ChatInputCommandInteraction,
+  ClientApplication,
+  ClientUser,
   CollectedMessageInteraction,
   Collector,
   CommandInteraction,
@@ -1681,12 +1681,13 @@ declare const applicationCommandSubCommand: ApplicationCommandSubCommand;
 
 declare const applicationSubGroupCommandData: ApplicationCommandSubGroupData;
 declare const applicationCommandSubGroup: ApplicationCommandSubGroup;
-
-expectType<ApplicationCommandOptionType.SubcommandGroup>(applicationSubGroupCommandData.type);
-applicationSubGroupCommandData.options = [];
-applicationSubGroupCommandData.options = [] as const;
-applicationCommandSubGroup.options = [];
-applicationCommandSubGroup.options = [] as const;
+{
+  expectType<ApplicationCommandOptionType.SubcommandGroup>(applicationSubGroupCommandData.type);
+  applicationSubGroupCommandData.options = [];
+  applicationSubGroupCommandData.options = [] as const;
+  applicationCommandSubGroup.options = [];
+  applicationCommandSubGroup.options = [] as const;
+}
 
 declare const autoModerationRuleManager: AutoModerationRuleManager;
 {
