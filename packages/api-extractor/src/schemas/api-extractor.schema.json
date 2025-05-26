@@ -252,7 +252,7 @@
 					"properties": {
 						"logLevel": {
 							"type": "string",
-							"description": "Specifies whether the message should be written to the the tool's output log. Note that the \"addToApiReportFile\" property may supersede this option.",
+							"description": "Specifies whether the message should be written to the tool's output log. Note that the \"addToApiReportFile\" property may supersede this option.",
 							"enum": ["error", "warning", "none"]
 						},
 						"addToApiReportFile": {
