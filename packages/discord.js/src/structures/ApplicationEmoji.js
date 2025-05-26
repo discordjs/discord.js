@@ -144,7 +144,7 @@ class ApplicationEmoji extends Emoji {
  * @method imageURL
  * @memberof ApplicationEmoji
  * @instance
- * @param {BaseImageURLOptions} [options] Options for the image URL
+ * @param {ImageURLOptions} [options] Options for the image URL
  * @returns {string}
  */
 

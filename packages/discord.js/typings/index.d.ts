@@ -590,7 +590,7 @@ export abstract class BaseGuild extends Base {
 
 export class BaseGuildEmoji extends Emoji {
   protected constructor(client: Client<true>, data: APIEmoji, guild: Guild | GuildPreview);
-  public imageURL(options?: BaseImageURLOptions): string;
+  public imageURL(options?: ImageURLOptions): string;
   /** @deprecated Use {@link BaseGuildEmoji.imageURL} instead */
   public get url(): string;
   public available: boolean | null;
@@ -1300,7 +1300,7 @@ export class ApplicationEmoji extends Emoji {
   public get createdTimestamp(): number;
   /** @deprecated Use {@link ApplicationEmoji.imageURL} instead */
   public get url(): string;
-  public imageURL(options?: BaseImageURLOptions): string;
+  public imageURL(options?: ImageURLOptions): string;
   public delete(): Promise<ApplicationEmoji>;
   public edit(options: ApplicationEmojiEditOptions): Promise<ApplicationEmoji>;
   public equals(other: ApplicationEmoji | unknown): boolean;
