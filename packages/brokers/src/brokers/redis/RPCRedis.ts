@@ -5,7 +5,7 @@ import type { IRPCBroker } from '../Broker.js';
 import type { RedisBrokerOptions } from './BaseRedis.js';
 import { BaseRedisBroker, DefaultRedisBrokerOptions } from './BaseRedis.js';
 
-export interface InternalPromise {
+interface InternalPromise {
 	reject(error: any): void;
 	resolve(data: any): void;
 	timeout: NodeJS.Timeout;
@@ -63,6 +63,9 @@ export class RPCRedisBroker<TEvents extends Record<string, any[]>, TResponses ex
 	 */
 	protected override readonly options: Required<RPCRedisBrokerOptions>;
 
+	/**
+	 * @internal
+	 */
 	protected readonly promises = new Map<string, InternalPromise>();
 
 	public constructor(redisClient: Redis, options: RPCRedisBrokerOptions) {
