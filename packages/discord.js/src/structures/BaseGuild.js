@@ -71,10 +71,12 @@ class BaseGuild extends Base {
    * @readonly
    */
   get nameAcronym() {
+    /* eslint-disable unicorn/prefer-string-replace-all */
     return this.name
-      .replaceAll("'s ", ' ')
-      .replaceAll(/\w+/g, word => word[0])
-      .replaceAll(/\s/g, '');
+      .replace(/'s /g, ' ')
+      .replace(/\w+/g, word => word[0])
+      .replace(/\s/g, '');
+    /* eslint-enable unicorn/prefer-string-replace-all */
   }
 
   /**
