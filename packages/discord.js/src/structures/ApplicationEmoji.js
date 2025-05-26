@@ -18,7 +18,7 @@ class ApplicationEmoji extends Emoji {
 
     /**
      * The user who created this emoji
-     * @type {?User}
+     * @type {User}
      */
     this.author = null;
 
@@ -34,16 +34,16 @@ class ApplicationEmoji extends Emoji {
 
     if ('managed' in data) {
       /**
-       * Whether this emoji is managed by an external service
-       * @type {?boolean}
+       * Whether this emoji is managed by an external service. Always false for application emojis
+       * @type {false}
        */
       this.managed = data.managed;
     }
 
     if ('require_colons' in data) {
       /**
-       * Whether or not this emoji requires colons surrounding it
-       * @type {?boolean}
+       * Whether or not this emoji requires colons surrounding it. Always true for application emojis
+       * @type {true}
        */
       this.requiresColons = data.require_colons;
     }
@@ -114,5 +114,60 @@ class ApplicationEmoji extends Emoji {
     return other.id === this.id && other.name === this.name;
   }
 }
+
+/**
+ * The emoji's name
+ * @name name
+ * @memberof ApplicationEmoji
+ * @instance
+ * @type {string}
+ * @readonly
+ */
+
+/**
+ * Whether or not the emoji is animated
+ * @name animated
+ * @memberof ApplicationEmoji
+ * @instance
+ * @type {boolean}
+ * @readonly
+ */
+
+/**
+ * Returns a URL for the emoji.
+ * @method imageURL
+ * @memberof ApplicationEmoji
+ * @instance
+ * @param {BaseImageURLOptions} [options] Options for the image URL
+ * @returns {string}
+ */
+
+/**
+ * Returns a URL for the emoji.
+ * @name url
+ * @memberof ApplicationEmoji
+ * @instance
+ * @type {string}
+ * @readonly
+ * @deprecated Use {@link ApplicationEmoji#imageURL} instead.
+ */
+
+/**
+ * The time the emoji was created at
+ * @name createdAt
+ * @memberof ApplicationEmoji
+ * @instance
+ * @type {Date}
+ * @readonly
+ */
+
+/**
+ * The timestamp the emoji was created at
+ * @name createdTimestamp
+ * @memberof ApplicationEmoji
+ * @instance
+ * @type {number}
+ * @readonly
+ */
 
 exports.ApplicationEmoji = ApplicationEmoji;

@@ -62,4 +62,50 @@ class BaseGuildEmoji extends Emoji {
  * @returns {string}
  */
 
+/**
+ * Returns a URL for the emoji.
+ * @name url
+ * @memberof BaseGuildEmoji
+ * @instance
+ * @type {string}
+ * @readonly
+ * @deprecated Use {@link BaseGuildEmoji#imageURL} instead.
+ */
+
+/**
+ * The emoji's name
+ * @name name
+ * @memberof BaseGuildEmoji
+ * @instance
+ * @type {Snowflake}
+ * @readonly
+ */
+
+/**
+ * Whether or not the emoji is animated
+ * @name animated
+ * @memberof BaseGuildEmoji
+ * @instance
+ * @type {boolean}
+ * @readonly
+ */
+
+/**
+ * The time the emoji was created at.
+ * @name createdAt
+ * @memberof BaseGuildEmoji
+ * @instance
+ * @type {Date}
+ * @readonly
+ */
+
+/**
+ * The timestamp the emoji was created at.
+ * @name createdTimestamp
+ * @memberof BaseGuildEmoji
+ * @instance
+ * @type {number}
+ * @readonly
+ */
+
 exports.BaseGuildEmoji = BaseGuildEmoji;
