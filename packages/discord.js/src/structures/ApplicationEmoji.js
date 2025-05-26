@@ -16,22 +16,18 @@ class ApplicationEmoji extends Emoji {
      */
     this.application = application;
 
-    /**
-     * The user who created this emoji
-     * @type {User}
-     */
-    this.author = null;
-
-    this.managed = null;
-    this.requiresColons = null;
-    this.available = null;
-
     this._patch(data);
   }
 
   _patch(data) {
     if ('name' in data) this.name = data.name;
-    if (data.user) this.author = this.client.users._add(data.user);
+    if (data.user) {
+      /**
+       * The user who created this emoji
+       * @type {User}
+       */
+      this.author = this.client.users._add(data.user);
+    }
 
     if ('managed' in data) {
       /**
@@ -51,8 +47,7 @@ class ApplicationEmoji extends Emoji {
 
     if ('available' in data) {
       /**
-       * Whether this emoji is available
-       * @remarks Always true for application emojis
+       * Whether this emoji is available. Always true for application emojis
        * @type {true}
        */
       this.available = data.available;
