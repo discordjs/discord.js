@@ -704,7 +704,7 @@ export abstract class BaseGuild extends Base {
 export class BaseGuildEmoji extends Emoji {
   protected constructor(client: Client<true>, data: RawGuildEmojiData, guild: Guild | GuildPreview);
   public imageURL(options?: BaseImageURLOptions): string;
-  /** @deprecated Use {@link BaseGuildEmoji#imageURL} instead */
+  /** @deprecated Use {@link BaseGuildEmoji.imageURL} instead */
   public get url(): string;
   public available: boolean | null;
   public get createdAt(): Date;
@@ -1502,7 +1502,7 @@ export class ApplicationEmoji extends Emoji {
   public available: true;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
-  /** @deprecated Use {@link ApplicationEmoji#imageURL} instead */
+  /** @deprecated Use {@link ApplicationEmoji.imageURL} instead */
   public get url(): string;
   public imageURL(options?: BaseImageURLOptions): string;
   public delete(): Promise<ApplicationEmoji>;
