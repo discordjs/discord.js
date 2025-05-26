@@ -1,15 +1,19 @@
 import type { InternalRequest, RawFile } from '../utils/types.js';
 
-interface DiscordErrorFieldInformation {
+export interface DiscordErrorFieldInformation {
 	code: string;
 	message: string;
 }
 
-interface DiscordErrorGroupWrapper {
+export interface DiscordErrorGroupWrapper {
 	_errors: DiscordError[];
 }
 
-type DiscordError = DiscordErrorFieldInformation | DiscordErrorGroupWrapper | string | { [k: string]: DiscordError };
+export type DiscordError =
+	| DiscordErrorFieldInformation
+	| DiscordErrorGroupWrapper
+	| string
+	| { [k: string]: DiscordError };
 
 export interface DiscordErrorData {
 	code: number;

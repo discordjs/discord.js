@@ -1106,12 +1106,6 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	declare public static readonly [Symbol.species]: typeof Collection;
 }
 
-/**
- * @internal
- */
 export type Keep<Value> = { keep: false } | { keep: true; value: Value };
 
-/**
- * @internal
- */
 export type Comparator<Key, Value> = (firstValue: Value, secondValue: Value, firstKey: Key, secondKey: Key) => number;

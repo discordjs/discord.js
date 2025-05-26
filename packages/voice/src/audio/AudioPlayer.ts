@@ -304,14 +304,14 @@ export class AudioPlayer extends EventEmitter {
 
 	/**
 	 * The state that the player is in.
+	 *
+	 * @remarks
+	 * The setter will perform clean-up operations where necessary.
 	 */
 	public get state() {
 		return this._state;
 	}
 
-	/**
-	 * Sets a new state for the player, performing clean-up operations where necessary.
-	 */
 	public set state(newState: AudioPlayerState) {
 		const oldState = this._state;
 		const newResource = Reflect.get(newState, 'resource') as AudioResource | undefined;
