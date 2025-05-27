@@ -31,7 +31,7 @@ class ApplicationEmoji extends Emoji {
 
     if ('managed' in data) {
       /**
-       * Whether this emoji is managed by an external service. Always false for application emojis
+       * Whether this emoji is managed by an external service. Always `false` for application emojis
        * @type {false}
        */
       this.managed = data.managed;
@@ -39,7 +39,7 @@ class ApplicationEmoji extends Emoji {
 
     if ('require_colons' in data) {
       /**
-       * Whether or not this emoji requires colons surrounding it. Always true for application emojis
+       * Whether this emoji requires colons surrounding it. Always `true` for application emojis
        * @type {true}
        */
       this.requiresColons = data.require_colons;
@@ -131,7 +131,7 @@ class ApplicationEmoji extends Emoji {
  */
 
 /**
- * Whether or not the emoji is animated
+ * Whether the emoji is animated
  * @name animated
  * @memberof ApplicationEmoji
  * @instance
