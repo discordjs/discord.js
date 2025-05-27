@@ -63,16 +63,6 @@ class BaseGuildEmoji extends Emoji {
  */
 
 /**
- * Returns a URL for the emoji.
- * @name url
- * @memberof BaseGuildEmoji
- * @instance
- * @type {string}
- * @readonly
- * @deprecated Use {@link BaseGuildEmoji#imageURL} instead.
- */
-
-/**
  * The emoji's name
  * @name name
  * @memberof BaseGuildEmoji

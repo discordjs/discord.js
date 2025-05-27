@@ -149,16 +149,6 @@ class ApplicationEmoji extends Emoji {
  */
 
 /**
- * Returns a URL for the emoji.
- * @name url
- * @memberof ApplicationEmoji
- * @instance
- * @type {string}
- * @readonly
- * @deprecated Use {@link ApplicationEmoji#imageURL} instead.
- */
-
-/**
  * The time the emoji was created at
  * @name createdAt
  * @memberof ApplicationEmoji

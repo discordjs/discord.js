@@ -591,8 +591,6 @@ export abstract class BaseGuild extends Base {
 export class BaseGuildEmoji extends Emoji {
   protected constructor(client: Client<true>, data: APIEmoji, guild: Guild | GuildPreview);
   public imageURL(options?: ImageURLOptions): string;
-  /** @deprecated Use {@link BaseGuildEmoji.imageURL} instead */
-  public get url(): string;
   public available: boolean | null;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
@@ -1298,8 +1296,6 @@ export class ApplicationEmoji extends Emoji {
   public available: true;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
-  /** @deprecated Use {@link ApplicationEmoji.imageURL} instead */
-  public get url(): string;
   public imageURL(options?: ImageURLOptions): string;
   public delete(): Promise<ApplicationEmoji>;
   public edit(options: ApplicationEmojiEditOptions): Promise<ApplicationEmoji>;
