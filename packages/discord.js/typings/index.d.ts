@@ -37,7 +37,7 @@ import {
 } from '@discordjs/formatters';
 import { Awaitable, JSONEncodable } from '@discordjs/util';
 import { Collection, ReadonlyCollection } from '@discordjs/collection';
-import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
+import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions, EmojiURLOptions } from '@discordjs/rest';
 import {
   WebSocketManager as WSWebSocketManager,
   IShardingStrategy,
@@ -697,7 +697,7 @@ export abstract class BaseGuild extends Base {
 
 export class BaseGuildEmoji extends Emoji {
   protected constructor(client: Client<true>, data: RawGuildEmojiData, guild: Guild | GuildPreview);
-  public imageURL(options?: BaseImageURLOptions): string;
+  public imageURL(options?: EmojiURLOptions): string;
   public get url(): string;
   public available: boolean | null;
   public get createdAt(): Date;
@@ -1492,7 +1492,7 @@ export class Emoji extends Base {
   public id: Snowflake | null;
   public name: string | null;
   public get identifier(): string;
-  public imageURL(options?: BaseImageURLOptions): string | null;
+  public imageURL(options?: EmojiURLOptions): string | null;
   public get url(): string | null;
   public toJSON(): unknown;
   public toString(): string;

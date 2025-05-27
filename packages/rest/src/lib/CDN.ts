@@ -14,27 +14,44 @@ import { deprecationWarning } from './utils/utils.js';
 let deprecationEmittedForEmoji = false;
 
 /**
- * The options used for image URLs
+ * The options used for image URLs.
  */
 export interface BaseImageURLOptions {
 	/**
-	 * The extension to use for the image URL
+	 * The extension to use for the image URL.
 	 *
 	 * @defaultValue `'webp'`
 	 */
 	extension?: ImageExtension;
 	/**
-	 * The size specified in the image URL
+	 * The size specified in the image URL.
 	 */
 	size?: ImageSize;
 }
 
+export interface EmojiURLOptionsWebp extends BaseImageURLOptions {
+	/**
+	 * Whether to use the `animated` query parameter.
+	 */
+	animated?: boolean;
+	extension?: 'webp';
+}
+
+export interface EmojiURLOptionsNotWebp extends BaseImageURLOptions {
+	extension: Exclude<ImageExtension, 'webp'>;
+}
+
 /**
- * The options used for image URLs with animated content
+ * The options used for emoji URLs.
+ */
+export type EmojiURLOptions = EmojiURLOptionsNotWebp | EmojiURLOptionsWebp;
+
+/**
+ * The options used for image URLs that may be animated.
  */
 export interface ImageURLOptions extends BaseImageURLOptions {
 	/**
-	 * Whether or not to prefer the static version of an image asset.
+	 * Whether to prefer the static asset.
 	 */
 	forceStatic?: boolean;
 }
@@ -42,11 +59,15 @@ export interface ImageURLOptions extends BaseImageURLOptions {
 /**
  * The options to use when making a CDN URL
  */
-export interface MakeURLOptions {
+interface MakeURLOptions {
 	/**
 	 * The allowed extensions that can be used
 	 */
 	allowedExtensions?: readonly string[];
+	/**
+	 * Whether to use the `animated` query parameter
+	 */
+	animated?: boolean;
 	/**
 	 * The base URL.
 	 *
@@ -192,7 +213,7 @@ export class CDN {
 	 * @param emojiId - The emoji id
 	 * @param options - Optional options for the emoji
 	 */
-	public emoji(emojiId: string, options?: Readonly<BaseImageURLOptions>): string;
+	public emoji(emojiId: string, options?: Readonly<EmojiURLOptions>): string;
 
 	/**
 	 * Generates an emoji's URL for an emoji.
@@ -204,7 +225,7 @@ export class CDN {
 	// eslint-disable-next-line @typescript-eslint/unified-signatures
 	public emoji(emojiId: string, extension?: ImageExtension): string;
 
-	public emoji(emojiId: string, options?: ImageExtension | Readonly<BaseImageURLOptions>): string {
+	public emoji(emojiId: string, options?: ImageExtension | Readonly<EmojiURLOptions>): string {
 		let resolvedOptions;
 
 		if (typeof options === 'string') {
@@ -381,6 +402,7 @@ export class CDN {
 			base = this.cdn,
 			extension = 'webp',
 			size,
+			animated,
 		}: Readonly<MakeURLOptions> = {},
 	): string {
 		// eslint-disable-next-line no-param-reassign
@@ -395,6 +417,10 @@ export class CDN {
 		}
 
 		const url = new URL(`${base}${route}.${extension}`);
+
+		if (animated !== undefined) {
+			url.searchParams.set('animated', String(animated));
+		}
 
 		if (size) {
 			url.searchParams.set('size', String(size));
