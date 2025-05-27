@@ -849,6 +849,11 @@ exports.Client = Client;
  */
 
 /**
+ * @external EmojiURLOptions
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/EmojiURLOptions:TypeAlias}
+ */
+
+/**
  * @external BaseImageURLOptions
  * @see {@link https://discord.js.org/docs/packages/rest/stable/BaseImageURLOptions:Interface}
  */

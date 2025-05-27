@@ -4,7 +4,7 @@ import { Stream } from 'node:stream';
 import { MessagePort, Worker } from 'node:worker_threads';
 import { ApplicationCommandOptionAllowedChannelTypes, MessageActionRowComponentBuilder } from '@discordjs/builders';
 import { Collection, ReadonlyCollection } from '@discordjs/collection';
-import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
+import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions, EmojiURLOptions } from '@discordjs/rest';
 import { Awaitable, JSONEncodable } from '@discordjs/util';
 import { WebSocketManager, WebSocketManagerOptions } from '@discordjs/ws';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
@@ -591,7 +591,7 @@ export abstract class BaseGuild extends Base {
 
 export class BaseGuildEmoji extends Emoji {
   protected constructor(client: Client<true>, data: APIEmoji, guild: Guild | GuildPreview);
-  public imageURL(options?: ImageURLOptions): string;
+  public imageURL(options?: EmojiURLOptions): string;
   public get url(): string;
   public available: boolean | null;
   public get createdAt(): Date;
@@ -1265,7 +1265,7 @@ export class Emoji extends Base {
   public id: Snowflake | null;
   public name: string | null;
   public get identifier(): string;
-  public imageURL(options?: ImageURLOptions): string | null;
+  public imageURL(options?: EmojiURLOptions): string | null;
   public get url(): string | null;
   public toJSON(): unknown;
   public toString(): string;
