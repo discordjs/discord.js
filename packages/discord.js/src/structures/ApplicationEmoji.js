@@ -47,7 +47,7 @@ class ApplicationEmoji extends Emoji {
 
     if ('available' in data) {
       /**
-       * Whether this emoji is available. Always true for application emojis
+       * Whether this emoji is available. Always `true` for application emojis
        * @type {true}
        */
       this.available = data.available;
