@@ -1295,7 +1295,7 @@ export class ApplicationEmoji extends Emoji {
   public available: true;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
-  public imageURL(options?: ImageURLOptions): string;
+  public imageURL(options?: EmojiURLOptions): string;
   public delete(): Promise<ApplicationEmoji>;
   public edit(options: ApplicationEmojiEditOptions): Promise<ApplicationEmoji>;
   public equals(other: ApplicationEmoji | unknown): boolean;
