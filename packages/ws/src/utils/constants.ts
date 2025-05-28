@@ -2,6 +2,7 @@ import process from 'node:process';
 import { Collection } from '@discordjs/collection';
 import { lazy } from '@discordjs/util';
 import { APIVersion, GatewayOpcodes } from 'discord-api-types/v10';
+import * as ZlibSync from 'zlib-sync';
 import { SimpleShardingStrategy } from '../strategies/sharding/SimpleShardingStrategy.js';
 import { SimpleIdentifyThrottler } from '../throttling/SimpleIdentifyThrottler.js';
 import type { SessionInfo, OptionalWebSocketManagerOptions, WebSocketManager } from '../ws/WebSocketManager.js';
@@ -30,6 +31,17 @@ export const CompressionParameterMap = {
 	[CompressionMethod.ZlibNative]: 'zlib-stream',
 	[CompressionMethod.ZlibSync]: 'zlib-stream',
 } as const satisfies Record<CompressionMethod, string>;
+
+export const ZlibErrorCodes = {
+	[ZlibSync.Z_NEED_DICT]: 'Z_NEED_DICT',
+	[ZlibSync.Z_STREAM_END]: 'Z_STREAM_END',
+	[ZlibSync.Z_ERRNO]: 'Z_ERRNO',
+	[ZlibSync.Z_STREAM_ERROR]: 'Z_STREAM_ERROR',
+	[ZlibSync.Z_DATA_ERROR]: 'Z_DATA_ERROR',
+	[ZlibSync.Z_MEM_ERROR]: 'Z_MEM_ERROR',
+	[ZlibSync.Z_BUF_ERROR]: 'Z_BUF_ERROR',
+	[ZlibSync.Z_VERSION_ERROR]: 'Z_VERSION_ERROR',
+} as const satisfies Record<number, string>;
 
 /**
  * Default options used by the manager
