@@ -56,9 +56,11 @@ export class AudioReceiveStream extends Readable {
 
 	private endTimeout?: NodeJS.Timeout;
 
-	public constructor({ end, ...options }: AudioReceiveStreamOptions) {
+	public constructor(options: AudioReceiveStreamOptions) {
+		const { end, ...rest } = options;
+
 		super({
-			...options,
+			...rest,
 			objectMode: true,
 		});
 

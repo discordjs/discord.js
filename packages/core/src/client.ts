@@ -211,11 +211,11 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 
 	public readonly api: API;
 
-	public constructor({ rest, gateway }: ClientOptions) {
+	public constructor(options: ClientOptions) {
 		super();
-		this.rest = rest;
-		this.gateway = gateway;
-		this.api = new API(rest);
+		this.rest = options.rest;
+		this.gateway = options.gateway;
+		this.api = new API(this.rest);
 
 		this.gateway.on(WebSocketShardEvents.Dispatch, (dispatch, shardId) => {
 			this.emit(dispatch.t, this.toEventProps(dispatch.d, shardId));

@@ -7,7 +7,7 @@ export class MediaGalleryItemBuilder implements JSONEncodable<APIMediaGalleryIte
 	private readonly data: Partial<APIMediaGalleryItem>;
 
 	/**
-	 * Creates a new media gallery item from API data.
+	 * Creates a new media gallery item.
 	 *
 	 * @param data - The API data to create this media gallery item with
 	 * @example
@@ -32,9 +32,7 @@ export class MediaGalleryItemBuilder implements JSONEncodable<APIMediaGalleryIte
 	 * ```
 	 */
 	public constructor(data: Partial<APIMediaGalleryItem> = {}) {
-		this.data = {
-			...structuredClone(data),
-		};
+		this.data = structuredClone(data);
 	}
 
 	/**

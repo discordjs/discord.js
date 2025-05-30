@@ -13,6 +13,9 @@ export interface ComponentBuilderBaseData {
 export abstract class ComponentBuilder<Component extends APIBaseComponent<ComponentType>>
 	implements JSONEncodable<Component>
 {
+	/**
+	 * @internal
+	 */
 	protected abstract readonly data: ComponentBuilderBaseData;
 
 	/**
