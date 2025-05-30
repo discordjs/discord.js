@@ -9,6 +9,7 @@ module.exports = (client, { d: data }) => {
 
   /**
    * Emitted when someone sends an effect, such as an emoji reaction, in a voice channel the client is connected to.
+   *
    * @event Client#voiceChannelEffectSend
    * @param {VoiceChannelEffect} voiceChannelEffect The sent voice channel effect
    */

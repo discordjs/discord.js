@@ -5,6 +5,7 @@ const { Base } = require('./Base.js');
 
 /**
  * Represents a stage instance.
+ *
  * @extends {Base}
  */
 class StageInstance extends Base {
@@ -13,6 +14,7 @@ class StageInstance extends Base {
 
     /**
      * The stage instance's id
+     *
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -24,6 +26,7 @@ class StageInstance extends Base {
     if ('guild_id' in data) {
       /**
        * The id of the guild associated with the stage channel
+       *
        * @type {Snowflake}
        */
       this.guildId = data.guild_id;
@@ -32,6 +35,7 @@ class StageInstance extends Base {
     if ('channel_id' in data) {
       /**
        * The id of the channel associated with the stage channel
+       *
        * @type {Snowflake}
        */
       this.channelId = data.channel_id;
@@ -40,6 +44,7 @@ class StageInstance extends Base {
     if ('topic' in data) {
       /**
        * The topic of the stage instance
+       *
        * @type {string}
        */
       this.topic = data.topic;
@@ -48,6 +53,7 @@ class StageInstance extends Base {
     if ('privacy_level' in data) {
       /**
        * The privacy level of the stage instance
+       *
        * @type {StageInstancePrivacyLevel}
        */
       this.privacyLevel = data.privacy_level;
@@ -56,6 +62,7 @@ class StageInstance extends Base {
     if ('guild_scheduled_event_id' in data) {
       /**
        * The associated guild scheduled event id of this stage instance
+       *
        * @type {?Snowflake}
        */
       this.guildScheduledEventId = data.guild_scheduled_event_id;
@@ -66,6 +73,7 @@ class StageInstance extends Base {
 
   /**
    * The stage channel associated with this stage instance
+   *
    * @type {?StageChannel}
    * @readonly
    */
@@ -75,6 +83,7 @@ class StageInstance extends Base {
 
   /**
    * The guild this stage instance belongs to
+   *
    * @type {?Guild}
    * @readonly
    */
@@ -84,6 +93,7 @@ class StageInstance extends Base {
 
   /**
    * The associated guild scheduled event of this stage instance
+   *
    * @type {?GuildScheduledEvent}
    * @readonly
    */
@@ -93,6 +103,7 @@ class StageInstance extends Base {
 
   /**
    * Edits this stage instance.
+   *
    * @param {StageInstanceEditOptions} options The options to edit the stage instance
    * @returns {Promise<StageInstance>}
    * @example
@@ -101,12 +112,13 @@ class StageInstance extends Base {
    *  .then(stageInstance => console.log(stageInstance))
    *  .catch(console.error)
    */
-  edit(options) {
+  async edit(options) {
     return this.guild.stageInstances.edit(this.channelId, options);
   }
 
   /**
    * Deletes this stage instance.
+   *
    * @returns {Promise<StageInstance>}
    * @example
    * // Delete a stage instance
@@ -116,12 +128,12 @@ class StageInstance extends Base {
    */
   async delete() {
     await this.guild.stageInstances.delete(this.channelId);
-    const clone = this._clone();
-    return clone;
+    return this._clone();
   }
 
   /**
    * Sets the topic of this stage instance.
+   *
    * @param {string} topic The topic for the stage instance
    * @returns {Promise<StageInstance>}
    * @example
@@ -130,12 +142,13 @@ class StageInstance extends Base {
    *  .then(stageInstance => console.log(`Set the topic to: ${stageInstance.topic}`))
    *  .catch(console.error);
    */
-  setTopic(topic) {
+  async setTopic(topic) {
     return this.guild.stageInstances.edit(this.channelId, { topic });
   }
 
   /**
    * The timestamp this stage instances was created at
+   *
    * @type {number}
    * @readonly
    */
@@ -145,6 +158,7 @@ class StageInstance extends Base {
 
   /**
    * The time this stage instance was created at
+   *
    * @type {Date}
    * @readonly
    */

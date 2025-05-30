@@ -1,7 +1,7 @@
 'use strict';
 
-const { Action } = require('./Action.js');
 const { Events } = require('../../util/Events.js');
+const { Action } = require('./Action.js');
 
 class StageInstanceDeleteAction extends Action {
   handle(data) {
@@ -15,6 +15,7 @@ class StageInstanceDeleteAction extends Action {
 
         /**
          * Emitted whenever a stage instance is deleted.
+         *
          * @event Client#stageInstanceDelete
          * @param {StageInstance} stageInstance The deleted stage instance
          */

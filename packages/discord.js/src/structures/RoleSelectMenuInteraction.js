@@ -5,6 +5,7 @@ const { MessageComponentInteraction } = require('./MessageComponentInteraction.j
 
 /**
  * Represents a {@link ComponentType.RoleSelect} select menu interaction.
+ *
  * @extends {MessageComponentInteraction}
  */
 class RoleSelectMenuInteraction extends MessageComponentInteraction {
@@ -14,12 +15,14 @@ class RoleSelectMenuInteraction extends MessageComponentInteraction {
 
     /**
      * An array of the selected role ids
+     *
      * @type {Snowflake[]}
      */
     this.values = values ?? [];
 
     /**
      * Collection of the selected roles
+     *
      * @type {Collection<Snowflake, Role|APIRole>}
      */
     this.roles = new Collection();

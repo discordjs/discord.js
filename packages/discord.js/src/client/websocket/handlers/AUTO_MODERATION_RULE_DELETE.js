@@ -14,6 +14,7 @@ module.exports = (client, { d: data }) => {
   /**
    * Emitted whenever an auto moderation rule is deleted.
    * <info>This event requires the {@link PermissionFlagsBits.ManageGuild} permission.</info>
+   *
    * @event Client#autoModerationRuleDelete
    * @param {AutoModerationRule} autoModerationRule The deleted auto moderation rule
    */

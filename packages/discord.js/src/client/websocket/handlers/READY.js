@@ -1,6 +1,7 @@
 'use strict';
 
 const { ClientApplication } = require('../../../structures/ClientApplication.js');
+
 let ClientUser;
 
 module.exports = (client, { d: data }, shardId) => {

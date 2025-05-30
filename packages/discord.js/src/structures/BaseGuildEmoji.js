@@ -4,6 +4,7 @@ const { Emoji } = require('./Emoji.js');
 
 /**
  * Parent class for {@link GuildEmoji} and {@link GuildPreviewEmoji}.
+ *
  * @extends {Emoji}
  * @abstract
  */
@@ -13,6 +14,7 @@ class BaseGuildEmoji extends Emoji {
 
     /**
      * The guild this emoji is a part of
+     *
      * @type {Guild|GuildPreview}
      */
     this.guild = guild;
@@ -30,6 +32,7 @@ class BaseGuildEmoji extends Emoji {
     if ('require_colons' in data) {
       /**
        * Whether or not this emoji requires colons surrounding it
+       *
        * @type {?boolean}
        */
       this.requiresColons = data.require_colons;
@@ -38,6 +41,7 @@ class BaseGuildEmoji extends Emoji {
     if ('managed' in data) {
       /**
        * Whether this emoji is managed by an external service
+       *
        * @type {?boolean}
        */
       this.managed = data.managed;
@@ -46,6 +50,7 @@ class BaseGuildEmoji extends Emoji {
     if ('available' in data) {
       /**
        * Whether this emoji is available
+       *
        * @type {?boolean}
        */
       this.available = data.available;
@@ -55,6 +60,7 @@ class BaseGuildEmoji extends Emoji {
 
 /**
  * Returns a URL for the emoji.
+ *
  * @method imageURL
  * @memberof BaseGuildEmoji
  * @instance

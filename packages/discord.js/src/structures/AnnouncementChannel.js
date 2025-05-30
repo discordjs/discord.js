@@ -4,11 +4,13 @@ const { BaseGuildTextChannel } = require('./BaseGuildTextChannel.js');
 
 /**
  * Represents a guild announcement channel on Discord.
+ *
  * @extends {BaseGuildTextChannel}
  */
 class AnnouncementChannel extends BaseGuildTextChannel {
   /**
    * Adds the target to this channel's followers.
+   *
    * @param {TextChannelResolvable} channel The channel where the webhook should be created
    * @param {string} [reason] Reason for creating the webhook
    * @returns {Promise<FollowedChannelData>} Returns the data for the followed channel

@@ -1,14 +1,17 @@
+/* eslint-disable jsdoc/check-values */
 'use strict';
 const { GatewayIntentBits } = require('discord-api-types/v10');
 const { BitField } = require('./BitField.js');
 
 /**
  * Data structure that makes it easy to calculate intents.
+ *
  * @extends {BitField}
  */
 class IntentsBitField extends BitField {
   /**
    * Numeric WebSocket intents
+   *
    * @type {GatewayIntentBits}
    * @memberof IntentsBitField
    */
@@ -24,10 +27,11 @@ class IntentsBitField extends BitField {
 
 /**
  * Data that can be resolved to give a permission number. This can be:
- * * A string (see {@link IntentsBitField.Flags})
- * * An intents flag
- * * An instance of {@link IntentsBitField}
- * * An array of IntentsResolvable
+ * - A string (see {@link IntentsBitField.Flags})
+ * - An intents flag
+ * - An instance of {@link IntentsBitField}
+ * - An array of IntentsResolvable
+ *
  * @typedef {string|number|IntentsBitField|IntentsResolvable[]} IntentsResolvable
  */
 

@@ -9,6 +9,7 @@ module.exports = (client, { d: data }) => {
     const member = guild.members._add(data);
     /**
      * Emitted whenever a user joins a guild.
+     *
      * @event Client#guildMemberAdd
      * @param {GuildMember} member The member that has joined a guild
      */

@@ -1,4 +1,5 @@
 import { readdir, writeFile } from 'node:fs/promises';
+import { URL } from 'node:url';
 
 async function writeWebsocketHandlerImports() {
   const lines = ["'use strict';\n", 'const PacketHandlers = Object.fromEntries(['];
@@ -25,8 +26,8 @@ async function writeClientActionImports() {
     '  // These symbols represent fully built data that we inject at times when calling actions manually.',
     '  // Action#getUser, for example, will return the injected data (which is assumed to be a built structure)',
     '  // instead of trying to make it from provided data',
-    "  injectedUser = Symbol('djs.actions.injectedUser');",
-    "  injectedChannel = Symbol('djs.actions.injectedChannel');",
+    "  injectedUser = Symbol('djs.actions.injectedUser');\n",
+    "  injectedChannel = Symbol('djs.actions.injectedChannel');\n",
     "  injectedMessage = Symbol('djs.actions.injectedMessage');\n",
     '  constructor(client) {',
     '    this.client = client;\n',

@@ -1,17 +1,19 @@
 'use strict';
 
 const { Routes } = require('discord-api-types/v10');
-const { ThreadManager } = require('./ThreadManager.js');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 const { MessagePayload } = require('../structures/MessagePayload.js');
+const { ThreadManager } = require('./ThreadManager.js');
 
 /**
  * Manages API methods for threads in forum channels and stores their cache.
+ *
  * @extends {ThreadManager}
  */
 class GuildForumThreadManager extends ThreadManager {
   /**
    * The channel this Manager belongs to
+   *
    * @name GuildForumThreadManager#channel
    * @type {ForumChannel}
    */
@@ -25,6 +27,7 @@ class GuildForumThreadManager extends ThreadManager {
 
   /**
    * Options for creating a thread.
+   *
    * @typedef {StartThreadOptions} GuildForumThreadCreateOptions
    * @property {GuildForumThreadMessageCreateOptions|MessagePayload} message The message associated with the thread post
    * @property {Snowflake[]} [appliedTags] The tags to apply to the thread
@@ -32,6 +35,7 @@ class GuildForumThreadManager extends ThreadManager {
 
   /**
    * Creates a new thread in the channel.
+   *
    * @param {GuildForumThreadCreateOptions} [options] Options to create a new thread
    * @returns {Promise<ThreadChannel>}
    * @example
