@@ -25,6 +25,7 @@ import type { IContextFetchingStrategy } from '../strategies/context/IContextFet
 import {
 	CompressionMethod,
 	CompressionParameterMap,
+	ZlibErrorCodes,
 	ImportantGatewayOpcodes,
 	getInitialSendRateLimitState,
 } from '../utils/constants.js';
@@ -668,10 +669,11 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				this.zLibSyncInflate.push(Buffer.from(decompressable), flush ? zLibSync.Z_SYNC_FLUSH : zLibSync.Z_NO_FLUSH);
 
 				if (this.zLibSyncInflate.err) {
-					this.emit(
-						WebSocketShardEvents.Error,
-						new Error(`${this.zLibSyncInflate.err}${this.zLibSyncInflate.msg ? `: ${this.zLibSyncInflate.msg}` : ''}`),
-					);
+					// Try to match nodejs zlib errors as much as possible
+					const error: NodeJS.ErrnoException = new Error(this.zLibSyncInflate.msg ?? undefined);
+					error.errno = this.zLibSyncInflate.err;
+					error.code = ZlibErrorCodes[this.zLibSyncInflate.err];
+					this.emit(WebSocketShardEvents.Error, error);
 				}
 
 				if (!flush) {
