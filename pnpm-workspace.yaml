@@ -2,6 +2,7 @@ autoInstallPeers: false
 
 ignoredBuiltDependencies:
   - core-js-pure
+  - unrs-resolver
 
 onlyBuiltDependencies:
   - '@discordjs/opus'
