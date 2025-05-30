@@ -27,10 +27,9 @@ export async function fetchDependencies({
 	}
 
 	try {
-		const isMain = version === 'main';
 		const fileContent = await fetch(
 			`${process.env.CF_R2_DOCS_BUCKET_URL}/${packageName}/${version}.dependencies.api.json`,
-			{ next: { revalidate: isMain ? 0 : 604_800 } },
+			{ cache: 'no-store' },
 		);
 		const parsedDependencies = await fileContent.json();
 

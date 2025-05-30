@@ -26,10 +26,9 @@ export async function fetchEntryPoints(packageName: string, version: string) {
 		}
 	}
 
-	const isMain = version === 'main';
 	const fileContent = await fetch(
 		`${process.env.CF_R2_DOCS_BUCKET_URL}/${packageName}/${version}.entrypoints.api.json`,
-		{ next: { revalidate: isMain ? 0 : 604_800 } },
+		{ cache: 'no-store' },
 	);
 
 	if (!fileContent.ok) {

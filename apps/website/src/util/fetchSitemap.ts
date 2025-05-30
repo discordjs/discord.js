@@ -31,12 +31,9 @@ export async function fetchSitemap({
 		}
 	}
 
-	const isMain = version === 'main';
 	const fileContent = await fetch(
 		`${process.env.CF_R2_DOCS_BUCKET_URL}/${packageName}/${version}.${normalizedEntryPoint}sitemap.api.json`,
-		{
-			next: { revalidate: isMain ? 0 : 604_800 },
-		},
+		{ cache: 'no-store' },
 	);
 
 	if (!fileContent.ok) {
