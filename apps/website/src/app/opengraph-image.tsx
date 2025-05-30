@@ -12,9 +12,9 @@ export const size = {
 export const contentType = 'image/png';
 
 export default async function Image() {
-	const fontData = await fetch(new URL('../assets/Geist-Black.ttf', import.meta.url), {
-		next: { revalidate: 604_800 },
-	}).then(async (res) => res.arrayBuffer());
+	const fontData = await fetch(new URL('../assets/Geist-Black.ttf', import.meta.url), { cache: 'force-cache' }).then(
+		async (res) => res.arrayBuffer(),
+	);
 
 	return new ImageResponse(
 		(
