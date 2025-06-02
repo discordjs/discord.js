@@ -8,6 +8,7 @@ module.exports = (client, { d: data }) => {
 
   /**
    * Emitted whenever a subscription is updated - i.e. when a user's subscription renews.
+   *
    * @event Client#subscriptionUpdate
    * @param {?Subscription} oldSubscription The subscription before the update
    * @param {Subscription} newSubscription The subscription after the update

@@ -3,7 +3,13 @@ import type { APIButtonComponent, APIButtonComponentWithSKUId, APIMessageCompone
 export interface EmojiOrLabelButtonData
 	extends Pick<Exclude<APIButtonComponent, APIButtonComponentWithSKUId>, 'emoji' | 'label'> {}
 
+/**
+ * A mixin that adds emoji and label symbols to a button builder.
+ */
 export class EmojiOrLabelButtonMixin {
+	/**
+	 * @internal
+	 */
 	declare protected readonly data: EmojiOrLabelButtonData;
 
 	/**

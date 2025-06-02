@@ -1,10 +1,11 @@
 'use strict';
 
-const { Component } = require('./Component.js');
 const { createComponent } = require('../util/Components.js');
+const { Component } = require('./Component.js');
 
 /**
  * Represents a section component
+ *
  * @extends {Component}
  */
 class SectionComponent extends Component {
@@ -13,6 +14,7 @@ class SectionComponent extends Component {
 
     /**
      * The components in this section
+     *
      * @type {Component[]}
      * @readonly
      */
@@ -20,6 +22,7 @@ class SectionComponent extends Component {
 
     /**
      * The accessory component of this section
+     *
      * @type {Component}
      * @readonly
      */
@@ -28,6 +31,7 @@ class SectionComponent extends Component {
 
   /**
    * Returns the API-compatible JSON for this component
+   *
    * @returns {APISectionComponent}
    */
   toJSON() {

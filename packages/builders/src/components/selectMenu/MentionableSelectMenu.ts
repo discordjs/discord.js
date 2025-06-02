@@ -17,9 +17,9 @@ export class MentionableSelectMenuBuilder extends BaseSelectMenuBuilder<APIMenti
 	protected override readonly data: Partial<APIMentionableSelectComponent>;
 
 	/**
-	 * Creates a new select menu from API data.
+	 * Creates a new mentionable select menu.
 	 *
-	 * @param data - The API data to create this select menu with
+	 * @param data - The API data to create this mentionable select menu with
 	 * @example
 	 * Creating a select menu from an API data object:
 	 * ```ts
