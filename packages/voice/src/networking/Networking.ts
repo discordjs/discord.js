@@ -298,9 +298,14 @@ export class Networking extends EventEmitter {
 	 * Creates a new WebSocket to a Discord Voice gateway.
 	 *
 	 * @param endpoint - The endpoint to connect to
+	 * @param lastSequence - The last sequence to set for this WebSocket
 	 */
-	private createWebSocket(endpoint: string) {
-		const ws = new VoiceWebSocket(`wss://${endpoint}?v=4`, Boolean(this.debug));
+	private createWebSocket(endpoint: string, lastSequence?: number) {
+		const ws = new VoiceWebSocket(`wss://${endpoint}?v=8`, Boolean(this.debug));
+
+		if (lastSequence !== undefined) {
+			ws.sequence = lastSequence;
+		}
 
 		ws.on('error', this.onChildError);
 		ws.once('open', this.onWsOpen);
@@ -347,6 +352,7 @@ export class Networking extends EventEmitter {
 					server_id: this.state.connectionOptions.serverId,
 					session_id: this.state.connectionOptions.sessionId,
 					token: this.state.connectionOptions.token,
+					seq_ack: this.state.ws.sequence,
 				},
 			};
 			this.state.ws.sendPacket(packet);
@@ -363,10 +369,11 @@ export class Networking extends EventEmitter {
 	private onWsClose({ code }: CloseEvent) {
 		const canResume = code === 4_015 || code < 4_000;
 		if (canResume && this.state.code === NetworkingStatusCode.Ready) {
+			const lastSequence = this.state.ws.sequence;
 			this.state = {
 				...this.state,
 				code: NetworkingStatusCode.Resuming,
-				ws: this.createWebSocket(this.state.connectionOptions.endpoint),
+				ws: this.createWebSocket(this.state.connectionOptions.endpoint, lastSequence),
 			};
 		} else if (this.state.code !== NetworkingStatusCode.Closed) {
 			this.destroy();
@@ -379,10 +386,11 @@ export class Networking extends EventEmitter {
 	 */
 	private onUdpClose() {
 		if (this.state.code === NetworkingStatusCode.Ready) {
+			const lastSequence = this.state.ws.sequence;
 			this.state = {
 				...this.state,
 				code: NetworkingStatusCode.Resuming,
-				ws: this.createWebSocket(this.state.connectionOptions.endpoint),
+				ws: this.createWebSocket(this.state.connectionOptions.endpoint, lastSequence),
 			};
 		}
 	}
