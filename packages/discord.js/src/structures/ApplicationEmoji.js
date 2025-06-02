@@ -18,39 +18,45 @@ class ApplicationEmoji extends Emoji {
      */
     this.application = application;
 
-    /**
-     * The user who created this emoji
-     *
-     * @type {?User}
-     */
-    this.author = null;
-
-    this.managed = null;
-    this.requiresColons = null;
-
     this._patch(data);
   }
 
   _patch(data) {
     if ('name' in data) this.name = data.name;
-    if (data.user) this.author = this.client.users._add(data.user);
+    if (data.user) {
+      /**
+       * The user who created this emoji
+       *
+       * @type {User}
+       */
+      this.author = this.client.users._add(data.user);
+    }
 
     if ('managed' in data) {
       /**
-       * Whether this emoji is managed by an external service
+       * Whether this emoji is managed by an external service. Always `false` for application emojis
        *
-       * @type {?boolean}
+       * @type {false}
        */
       this.managed = data.managed;
     }
 
     if ('require_colons' in data) {
       /**
-       * Whether or not this emoji requires colons surrounding it
+       * Whether this emoji requires colons surrounding it. Always `true` for application emojis
        *
-       * @type {?boolean}
+       * @type {true}
        */
       this.requiresColons = data.require_colons;
+    }
+
+    if ('available' in data) {
+      /**
+       * Whether this emoji is available. Always `true` for application emojis
+       *
+       * @type {true}
+       */
+      this.available = data.available;
     }
   }
 
@@ -118,12 +124,63 @@ class ApplicationEmoji extends Emoji {
         other.id === this.id &&
         other.name === this.name &&
         other.managed === this.managed &&
-        other.requiresColons === this.requiresColons
+        other.requiresColons === this.requiresColons &&
+        other.available === this.available
       );
     }
 
     return other.id === this.id && other.name === this.name;
   }
 }
+
+/**
+ * The emoji's name
+ *
+ * @name name
+ * @memberof ApplicationEmoji
+ * @instance
+ * @type {string}
+ * @readonly
+ */
+
+/**
+ * Whether the emoji is animated
+ *
+ * @name animated
+ * @memberof ApplicationEmoji
+ * @instance
+ * @type {boolean}
+ * @readonly
+ */
+
+/**
+ * Returns a URL for the emoji.
+ *
+ * @method imageURL
+ * @memberof ApplicationEmoji
+ * @instance
+ * @param {EmojiURLOptions} [options] Options for the image URL
+ * @returns {string}
+ */
+
+/**
+ * The time the emoji was created at
+ *
+ * @name createdAt
+ * @memberof ApplicationEmoji
+ * @instance
+ * @type {Date}
+ * @readonly
+ */
+
+/**
+ * The timestamp the emoji was created at
+ *
+ * @name createdTimestamp
+ * @memberof ApplicationEmoji
+ * @instance
+ * @type {number}
+ * @readonly
+ */
 
 exports.ApplicationEmoji = ApplicationEmoji;

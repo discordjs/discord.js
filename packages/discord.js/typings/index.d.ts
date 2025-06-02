@@ -592,13 +592,14 @@ export abstract class BaseGuild extends Base {
 export class BaseGuildEmoji extends Emoji {
   protected constructor(client: Client<true>, data: APIEmoji, guild: Guild | GuildPreview);
   public imageURL(options?: EmojiURLOptions): string;
-  public get url(): string;
   public available: boolean | null;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public guild: Guild | GuildPreview;
   public id: Snowflake;
-  public managed: boolean | null;
+  public name: string;
+  public animated: boolean;
+  public managed: boolean;
   public requiresColons: boolean | null;
 }
 
@@ -1266,7 +1267,6 @@ export class Emoji extends Base {
   public name: string | null;
   public get identifier(): string;
   public imageURL(options?: EmojiURLOptions): string | null;
-  public get url(): string | null;
   public toJSON(): unknown;
   public toString(): string;
 }
@@ -1284,10 +1284,16 @@ export class ApplicationEmoji extends Emoji {
   private constructor(client: Client<true>, data: APIEmoji, application: ClientApplication);
 
   public application: ClientApplication;
-  public author: User | null;
+  public author: User;
   public id: Snowflake;
-  public managed: boolean | null;
-  public requiresColons: boolean | null;
+  public managed: false;
+  public requiresColons: true;
+  public name: string;
+  public animated: boolean;
+  public available: true;
+  public get createdAt(): Date;
+  public get createdTimestamp(): number;
+  public imageURL(options?: EmojiURLOptions): string;
   public delete(): Promise<ApplicationEmoji>;
   public edit(options: ApplicationEmojiEditOptions): Promise<ApplicationEmoji>;
   public equals(other: ApplicationEmoji | unknown): boolean;
