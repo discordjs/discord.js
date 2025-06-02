@@ -53,7 +53,7 @@ export class VoiceWebSocket extends EventEmitter {
 	public ping?: number;
 
 	/**
-	 * The last sequence number acknowledged from Discord. Will be `-1` if no sequence numbered messages have been recieved.
+	 * The last sequence number acknowledged from Discord. Will be `-1` if no sequence numbered messages have been received.
 	 */
 	public sequence = -1;
 
