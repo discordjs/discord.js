@@ -5,11 +5,13 @@ const { Component } = require('./Component.js');
 
 /**
  * Represents a separator component
+ *
  * @extends {Component}
  */
 class SeparatorComponent extends Component {
   /**
    * The spacing of this separator
+   *
    * @type {SeparatorSpacingSize}
    * @readonly
    */
@@ -19,6 +21,7 @@ class SeparatorComponent extends Component {
 
   /**
    * Whether this separator is a divider
+   *
    * @type {boolean}
    * @readonly
    */

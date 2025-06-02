@@ -3,11 +3,12 @@
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager.js');
 const { User } = require('../structures/User.js');
+const { CachedManager } = require('./CachedManager.js');
 
 /**
  * Manages API methods for users who voted on a poll and stores their cache.
+ *
  * @extends {CachedManager}
  */
 class PollAnswerVoterManager extends CachedManager {
@@ -16,6 +17,7 @@ class PollAnswerVoterManager extends CachedManager {
 
     /**
      * The poll answer that this manager belongs to
+     *
      * @type {PollAnswer}
      */
     this.answer = answer;
@@ -23,12 +25,14 @@ class PollAnswerVoterManager extends CachedManager {
 
   /**
    * The cache of this manager
+   *
    * @type {Collection<Snowflake, User>}
    * @name PollAnswerVoterManager#cache
    */
 
   /**
    * Fetches the users that voted on this poll answer. Resolves with a collection of users, mapped by their ids.
+   *
    * @param {BaseFetchPollAnswerVotersOptions} [options={}] Options for fetching the users
    * @returns {Promise<Collection<Snowflake, User>>}
    */

@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/check-values */
 'use strict';
 
 const { RoleFlags } = require('discord-api-types/v10');
@@ -5,11 +6,13 @@ const { BitField } = require('./BitField.js');
 
 /**
  * Data structure that makes it easy to interact with a {@link Role#flags} bitfield.
+ *
  * @extends {BitField}
  */
 class RoleFlagsBitField extends BitField {
   /**
    * Numeric role flags.
+   *
    * @type {RoleFlags}
    * @memberof RoleFlagsBitField
    */

@@ -1,12 +1,13 @@
 'use strict';
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { Base } = require('./Base.js');
 const { Emoji } = require('./Emoji.js');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 
 /**
  * Represents a soundboard sound.
+ *
  * @extends {Base}
  */
 class SoundboardSound extends Base {
@@ -15,6 +16,7 @@ class SoundboardSound extends Base {
 
     /**
      * The id of this soundboard sound
+     *
      * @type {Snowflake|string}
      */
     this.soundId = data.sound_id;
@@ -26,6 +28,7 @@ class SoundboardSound extends Base {
     if ('available' in data) {
       /**
        * Whether this soundboard sound is available
+       *
        * @type {?boolean}
        */
       this.available = data.available;
@@ -36,6 +39,7 @@ class SoundboardSound extends Base {
     if ('name' in data) {
       /**
        * The name of this soundboard sound
+       *
        * @type {?string}
        */
       this.name = data.name;
@@ -46,6 +50,7 @@ class SoundboardSound extends Base {
     if ('volume' in data) {
       /**
        * The volume (a double) of this soundboard sound, from 0 to 1
+       *
        * @type {?number}
        */
       this.volume = data.volume;
@@ -56,6 +61,7 @@ class SoundboardSound extends Base {
     if ('emoji_id' in data) {
       /**
        * The raw emoji data of this soundboard sound
+       *
        * @type {?Object}
        * @private
        */
@@ -70,6 +76,7 @@ class SoundboardSound extends Base {
     if ('guild_id' in data) {
       /**
        * The guild id of this soundboard sound
+       *
        * @type {?Snowflake}
        */
       this.guildId = data.guild_id;
@@ -80,6 +87,7 @@ class SoundboardSound extends Base {
     if ('user' in data) {
       /**
        * The user who created this soundboard sound
+       *
        * @type {?User}
        */
       this.user = this.client.users._add(data.user);
@@ -90,6 +98,7 @@ class SoundboardSound extends Base {
 
   /**
    * The timestamp this soundboard sound was created at
+   *
    * @type {number}
    * @readonly
    */
@@ -99,6 +108,7 @@ class SoundboardSound extends Base {
 
   /**
    * The time this soundboard sound was created at
+   *
    * @type {Date}
    * @readonly
    */
@@ -108,6 +118,7 @@ class SoundboardSound extends Base {
 
   /**
    * The emoji of this soundboard sound
+   *
    * @type {?Emoji}
    * @readonly
    */
@@ -119,6 +130,7 @@ class SoundboardSound extends Base {
 
   /**
    * The guild this soundboard sound is part of
+   *
    * @type {?Guild}
    * @readonly
    */
@@ -128,6 +140,7 @@ class SoundboardSound extends Base {
 
   /**
    * A link to this soundboard sound
+   *
    * @type {string}
    * @readonly
    */
@@ -137,6 +150,7 @@ class SoundboardSound extends Base {
 
   /**
    * Edits this soundboard sound.
+   *
    * @param {GuildSoundboardSoundEditOptions} options The options to provide
    * @returns {Promise<SoundboardSound>}
    * @example
@@ -153,6 +167,7 @@ class SoundboardSound extends Base {
 
   /**
    * Deletes this soundboard sound.
+   *
    * @param {string} [reason] Reason for deleting this soundboard sound
    * @returns {Promise<SoundboardSound>}
    * @example
@@ -171,6 +186,7 @@ class SoundboardSound extends Base {
 
   /**
    * Whether this soundboard sound is the same as another one.
+   *
    * @param {SoundboardSound|APISoundboardSound} other The soundboard sound to compare it to
    * @returns {boolean}
    */

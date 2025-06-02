@@ -1,10 +1,11 @@
 'use strict';
 
-const { BaseManager } = require('./BaseManager.js');
 const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
+const { BaseManager } = require('./BaseManager.js');
 
 /**
  * Manages the API methods of a data model along with a collection of instances.
+ *
  * @extends {BaseManager}
  * @abstract
  */
@@ -14,6 +15,7 @@ class DataManager extends BaseManager {
 
     /**
      * The data structure belonging to this manager.
+     *
      * @name DataManager#holds
      * @type {Function}
      * @private
@@ -24,6 +26,7 @@ class DataManager extends BaseManager {
 
   /**
    * The cache of items for this manager.
+   *
    * @type {Collection}
    * @abstract
    */
@@ -33,7 +36,8 @@ class DataManager extends BaseManager {
 
   /**
    * Resolves a data entry to a data Object.
-   * @param {string|Object} idOrInstance The id or instance of something in this Manager
+   *
+   * @param {string | Object} idOrInstance The id or instance of something in this Manager
    * @returns {?Object} An instance from this Manager
    */
   resolve(idOrInstance) {
@@ -44,7 +48,8 @@ class DataManager extends BaseManager {
 
   /**
    * Resolves a data entry to an instance id.
-   * @param {string|Object} idOrInstance The id or instance of something in this Manager
+   *
+   * @param {string | Object} idOrInstance The id or instance of something in this Manager
    * @returns {?Snowflake}
    */
   resolveId(idOrInstance) {

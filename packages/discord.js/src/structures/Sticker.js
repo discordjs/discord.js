@@ -2,12 +2,13 @@
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes } = require('discord-api-types/v10');
-const { Base } = require('./Base.js');
 const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { StickerFormatExtensionMap } = require('../util/Constants.js');
+const { Base } = require('./Base.js');
 
 /**
  * Represents a Sticker.
+ *
  * @extends {Base}
  */
 class Sticker extends Base {
@@ -20,6 +21,7 @@ class Sticker extends Base {
   _patch(sticker) {
     /**
      * The sticker's id
+     *
      * @type {Snowflake}
      */
     this.id = sticker.id;
@@ -27,6 +29,7 @@ class Sticker extends Base {
     if ('description' in sticker) {
       /**
        * The description of the sticker
+       *
        * @type {?string}
        */
       this.description = sticker.description;
@@ -37,6 +40,7 @@ class Sticker extends Base {
     if ('type' in sticker) {
       /**
        * The type of the sticker
+       *
        * @type {?StickerType}
        */
       this.type = sticker.type;
@@ -47,6 +51,7 @@ class Sticker extends Base {
     if ('format_type' in sticker) {
       /**
        * The format of the sticker
+       *
        * @type {StickerFormatType}
        */
       this.format = sticker.format_type;
@@ -55,6 +60,7 @@ class Sticker extends Base {
     if ('name' in sticker) {
       /**
        * The name of the sticker
+       *
        * @type {string}
        */
       this.name = sticker.name;
@@ -63,6 +69,7 @@ class Sticker extends Base {
     if ('pack_id' in sticker) {
       /**
        * The id of the pack the sticker is from, for standard stickers
+       *
        * @type {?Snowflake}
        */
       this.packId = sticker.pack_id;
@@ -73,6 +80,7 @@ class Sticker extends Base {
     if ('tags' in sticker) {
       /**
        * Autocomplete/suggestions for the sticker
+       *
        * @type {?string}
        */
       this.tags = sticker.tags;
@@ -83,6 +91,7 @@ class Sticker extends Base {
     if ('available' in sticker) {
       /**
        * Whether or not the guild sticker is available
+       *
        * @type {?boolean}
        */
       this.available = sticker.available;
@@ -93,6 +102,7 @@ class Sticker extends Base {
     if ('guild_id' in sticker) {
       /**
        * The id of the guild that owns this sticker
+       *
        * @type {?Snowflake}
        */
       this.guildId = sticker.guild_id;
@@ -103,6 +113,7 @@ class Sticker extends Base {
     if ('user' in sticker) {
       /**
        * The user that uploaded the guild sticker
+       *
        * @type {?User}
        */
       this.user = this.client.users._add(sticker.user);
@@ -113,6 +124,7 @@ class Sticker extends Base {
     if ('sort_value' in sticker) {
       /**
        * The standard sticker's sort order within its pack
+       *
        * @type {?number}
        */
       this.sortValue = sticker.sort_value;
@@ -123,6 +135,7 @@ class Sticker extends Base {
 
   /**
    * The timestamp the sticker was created at
+   *
    * @type {number}
    * @readonly
    */
@@ -132,6 +145,7 @@ class Sticker extends Base {
 
   /**
    * The time the sticker was created at
+   *
    * @type {Date}
    * @readonly
    */
@@ -141,6 +155,7 @@ class Sticker extends Base {
 
   /**
    * Whether this sticker is partial
+   *
    * @type {boolean}
    * @readonly
    */
@@ -150,6 +165,7 @@ class Sticker extends Base {
 
   /**
    * The guild that owns this sticker
+   *
    * @type {?Guild}
    * @readonly
    */
@@ -161,6 +177,7 @@ class Sticker extends Base {
    * A link to the sticker
    * <info>If the sticker's format is {@link StickerFormatType.Lottie}, it returns
    * the URL of the Lottie JSON file.</info>
+   *
    * @type {string}
    * @readonly
    */
@@ -170,6 +187,7 @@ class Sticker extends Base {
 
   /**
    * Fetches this sticker.
+   *
    * @returns {Promise<Sticker>}
    */
   async fetch() {
@@ -180,6 +198,7 @@ class Sticker extends Base {
 
   /**
    * Fetches the pack that contains this sticker.
+   *
    * @returns {Promise<?StickerPack>} The sticker pack or `null` if this sticker does not belong to one.
    */
   async fetchPack() {
@@ -189,6 +208,7 @@ class Sticker extends Base {
 
   /**
    * Fetches the user who uploaded this sticker, if this is a guild sticker.
+   *
    * @returns {Promise<?User>}
    */
   async fetchUser() {
@@ -199,6 +219,7 @@ class Sticker extends Base {
 
   /**
    * Data for editing a sticker.
+   *
    * @typedef {Object} GuildStickerEditOptions
    * @property {string} [name] The name of the sticker
    * @property {?string} [description] The description of the sticker
@@ -208,6 +229,7 @@ class Sticker extends Base {
 
   /**
    * Edits the sticker.
+   *
    * @param {GuildStickerEditOptions} options The options to provide
    * @returns {Promise<Sticker>}
    * @example
@@ -216,12 +238,13 @@ class Sticker extends Base {
    *   .then(sticker => console.log(`Updated the name of the sticker to ${sticker.name}`))
    *   .catch(console.error);
    */
-  edit(options) {
+  async edit(options) {
     return this.guild.stickers.edit(this, options);
   }
 
   /**
    * Deletes the sticker.
+   *
    * @returns {Promise<Sticker>}
    * @param {string} [reason] Reason for deleting this sticker
    * @example
@@ -237,6 +260,7 @@ class Sticker extends Base {
 
   /**
    * Whether this sticker is the same as another one.
+   *
    * @param {Sticker|APISticker} other The sticker to compare it to
    * @returns {boolean}
    */

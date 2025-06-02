@@ -9,6 +9,7 @@ const { Sticker } = require('./Sticker.js');
 
 /**
  * Represents the data about the guild any bot can preview, connected to the specified guild.
+ *
  * @extends {Base}
  */
 class GuildPreview extends Base {
@@ -23,6 +24,7 @@ class GuildPreview extends Base {
   _patch(data) {
     /**
      * The id of this guild
+     *
      * @type {string}
      */
     this.id = data.id;
@@ -30,6 +32,7 @@ class GuildPreview extends Base {
     if ('name' in data) {
       /**
        * The name of this guild
+       *
        * @type {string}
        */
       this.name = data.name;
@@ -38,6 +41,7 @@ class GuildPreview extends Base {
     if ('icon' in data) {
       /**
        * The icon of this guild
+       *
        * @type {?string}
        */
       this.icon = data.icon;
@@ -46,6 +50,7 @@ class GuildPreview extends Base {
     if ('splash' in data) {
       /**
        * The splash icon of this guild
+       *
        * @type {?string}
        */
       this.splash = data.splash;
@@ -54,6 +59,7 @@ class GuildPreview extends Base {
     if ('discovery_splash' in data) {
       /**
        * The discovery splash icon of this guild
+       *
        * @type {?string}
        */
       this.discoverySplash = data.discovery_splash;
@@ -62,6 +68,7 @@ class GuildPreview extends Base {
     if ('features' in data) {
       /**
        * An array of enabled guild features
+       *
        * @type {GuildFeature[]}
        */
       this.features = data.features;
@@ -70,6 +77,7 @@ class GuildPreview extends Base {
     if ('approximate_member_count' in data) {
       /**
        * The approximate count of members in this guild
+       *
        * @type {number}
        */
       this.approximateMemberCount = data.approximate_member_count;
@@ -78,6 +86,7 @@ class GuildPreview extends Base {
     if ('approximate_presence_count' in data) {
       /**
        * The approximate count of online members in this guild
+       *
        * @type {number}
        */
       this.approximatePresenceCount = data.approximate_presence_count;
@@ -86,6 +95,7 @@ class GuildPreview extends Base {
     if ('description' in data) {
       /**
        * The description for this guild
+       *
        * @type {?string}
        */
       this.description = data.description;
@@ -93,21 +103,24 @@ class GuildPreview extends Base {
       this.description ??= null;
     }
 
-    if (!this.emojis) {
+    if (this.emojis) {
+      this.emojis.clear();
+    } else {
       /**
        * Collection of emojis belonging to this guild
+       *
        * @type {Collection<Snowflake, GuildPreviewEmoji>}
        */
       this.emojis = new Collection();
-    } else {
-      this.emojis.clear();
     }
+
     for (const emoji of data.emojis) {
       this.emojis.set(emoji.id, new GuildPreviewEmoji(this.client, emoji, this));
     }
 
     /**
      * Collection of stickers belonging to this guild
+     *
      * @type {Collection<Snowflake, Sticker>}
      */
     this.stickers = data.stickers.reduce(
@@ -118,6 +131,7 @@ class GuildPreview extends Base {
 
   /**
    * The timestamp this guild was created at
+   *
    * @type {number}
    * @readonly
    */
@@ -127,6 +141,7 @@ class GuildPreview extends Base {
 
   /**
    * The time this guild was created at
+   *
    * @type {Date}
    * @readonly
    */
@@ -136,6 +151,7 @@ class GuildPreview extends Base {
 
   /**
    * The URL to this guild's splash.
+   *
    * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
@@ -145,6 +161,7 @@ class GuildPreview extends Base {
 
   /**
    * The URL to this guild's discovery splash.
+   *
    * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
@@ -154,6 +171,7 @@ class GuildPreview extends Base {
 
   /**
    * The URL to this guild's icon.
+   *
    * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
@@ -163,6 +181,7 @@ class GuildPreview extends Base {
 
   /**
    * Fetches this guild.
+   *
    * @returns {Promise<GuildPreview>}
    */
   async fetch() {
@@ -173,6 +192,7 @@ class GuildPreview extends Base {
 
   /**
    * When concatenated with a string, this automatically returns the guild's name instead of the Guild object.
+   *
    * @returns {string}
    * @example
    * // Logs: Hello from My Guild!

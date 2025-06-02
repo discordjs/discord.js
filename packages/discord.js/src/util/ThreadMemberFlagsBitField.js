@@ -1,14 +1,17 @@
+/* eslint-disable jsdoc/check-values */
 'use strict';
 
 const { BitField } = require('./BitField.js');
 
 /**
  * Data structure that makes it easy to interact with a {@link ThreadMember#flags} bitfield.
+ *
  * @extends {BitField}
  */
 class ThreadMemberFlagsBitField extends BitField {
   /**
    * Numeric thread member flags. There are currently no bitflags relevant to bots for this.
+   *
    * @type {Object<string, number>}
    * @memberof ThreadMemberFlagsBitField
    */
@@ -24,6 +27,7 @@ class ThreadMemberFlagsBitField extends BitField {
 
 /**
  * Bitfield of the packed bits
+ *
  * @type {number}
  * @name ThreadMemberFlagsBitField#bitfield
  */

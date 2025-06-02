@@ -4,6 +4,7 @@ const { MessageComponentInteraction } = require('./MessageComponentInteraction.j
 
 /**
  * Represents a button interaction.
+ *
  * @extends {MessageComponentInteraction}
  */
 class ButtonInteraction extends MessageComponentInteraction {}

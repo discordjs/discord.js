@@ -1,7 +1,7 @@
 'use strict';
 
-const { Action } = require('./Action.js');
 const { Events } = require('../../util/Events.js');
+const { Action } = require('./Action.js');
 
 class GuildMemberUpdateAction extends Action {
   handle(data) {
@@ -22,6 +22,7 @@ class GuildMemberUpdateAction extends Action {
         const old = member._update(data);
         /**
          * Emitted whenever a guild member changes - i.e. new role, removed role, nickname.
+         *
          * @event Client#guildMemberUpdate
          * @param {GuildMember} oldMember The member before the update
          * @param {GuildMember} newMember The member after the update
@@ -31,6 +32,7 @@ class GuildMemberUpdateAction extends Action {
         const newMember = guild.members._add(data);
         /**
          * Emitted whenever a member becomes available.
+         *
          * @event Client#guildMemberAvailable
          * @param {GuildMember} member The member that became available
          */

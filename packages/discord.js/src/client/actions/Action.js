@@ -114,6 +114,7 @@ class Action {
         return this.client.users._add(data.member.user);
       }
     }
+
     return this.getUser(data);
   }
 

@@ -10,6 +10,7 @@ module.exports = (client, { d: data }) => {
 
   /**
    * Emitted whenever a thread is deleted.
+   *
    * @event Client#threadDelete
    * @param {ThreadChannel} thread The thread that was deleted
    */

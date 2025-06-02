@@ -2,12 +2,13 @@
 
 const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
-const { DataManager } = require('./DataManager.js');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 const { Role } = require('../structures/Role.js');
+const { DataManager } = require('./DataManager.js');
 
 /**
  * Manages API methods for roles of a GuildMember and stores their cache.
+ *
  * @extends {DataManager}
  */
 class GuildMemberRoleManager extends DataManager {
@@ -16,12 +17,14 @@ class GuildMemberRoleManager extends DataManager {
 
     /**
      * The GuildMember this manager belongs to
+     *
      * @type {GuildMember}
      */
     this.member = member;
 
     /**
      * The Guild this manager belongs to
+     *
      * @type {Guild}
      */
     this.guild = member.guild;
@@ -29,6 +32,7 @@ class GuildMemberRoleManager extends DataManager {
 
   /**
    * The roles of this member
+   *
    * @type {Collection<Snowflake, Role>}
    * @readonly
    */
@@ -39,6 +43,7 @@ class GuildMemberRoleManager extends DataManager {
 
   /**
    * The role of the member used to hoist them in a separate category in the users list
+   *
    * @type {?Role}
    * @readonly
    */
@@ -50,17 +55,19 @@ class GuildMemberRoleManager extends DataManager {
 
   /**
    * The role of the member used to set their role icon
+   *
    * @type {?Role}
    * @readonly
    */
   get icon() {
-    const iconRoles = this.cache.filter(role => role.icon || role.unicodeEmoji);
+    const iconRoles = this.cache.filter(role => role.icon ?? role.unicodeEmoji);
     if (!iconRoles.size) return null;
     return iconRoles.reduce((prev, role) => (role.comparePositionTo(prev) > 0 ? role : prev));
   }
 
   /**
    * The role of the member used to set their color
+   *
    * @type {?Role}
    * @readonly
    */
@@ -72,6 +79,7 @@ class GuildMemberRoleManager extends DataManager {
 
   /**
    * The role of the member with the highest position
+   *
    * @type {Role}
    * @readonly
    */
@@ -81,6 +89,7 @@ class GuildMemberRoleManager extends DataManager {
 
   /**
    * The premium subscriber role of the guild, if present on the member
+   *
    * @type {?Role}
    * @readonly
    */
@@ -91,6 +100,7 @@ class GuildMemberRoleManager extends DataManager {
   /**
    * The managed role this member created when joining the guild, if any
    * <info>Only ever available on bots</info>
+   *
    * @type {?Role}
    * @readonly
    */
@@ -103,6 +113,7 @@ class GuildMemberRoleManager extends DataManager {
    * Adds a role (or multiple roles) to the member.
    *
    * <info>Uses the idempotent PUT route for singular roles, otherwise PATCHes the underlying guild member</info>
+   *
    * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} roleOrRoles The role or roles to add
    * @param {string} [reason] Reason for adding the role(s)
    * @returns {Promise<GuildMember>}
@@ -115,6 +126,7 @@ class GuildMemberRoleManager extends DataManager {
         if (!resolvedRole) {
           throw new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array or Collection', 'roles', role);
         }
+
         resolvedRoles.push(resolvedRole);
       }
 
@@ -142,6 +154,7 @@ class GuildMemberRoleManager extends DataManager {
    * Removes a role (or multiple roles) from the member.
    *
    * <info>Uses the idempotent DELETE route for singular roles, otherwise PATCHes the underlying guild member</info>
+   *
    * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} roleOrRoles The role or roles to remove
    * @param {string} [reason] Reason for removing the role(s)
    * @returns {Promise<GuildMember>}
@@ -154,6 +167,7 @@ class GuildMemberRoleManager extends DataManager {
         if (!resolvedRole) {
           throw new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array or Collection', 'roles', role);
         }
+
         resolvedRoles.push(resolvedRole);
       }
 
@@ -180,6 +194,7 @@ class GuildMemberRoleManager extends DataManager {
 
   /**
    * Sets the roles applied to the member.
+   *
    * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role ids to apply
    * @param {string} [reason] Reason for applying the roles
    * @returns {Promise<GuildMember>}
@@ -194,7 +209,7 @@ class GuildMemberRoleManager extends DataManager {
    *   .then(member => console.log(`Member roles is now of ${member.roles.cache.size} size`))
    *   .catch(console.error);
    */
-  set(roles, reason) {
+  async set(roles, reason) {
     return this.member.edit({ roles, reason });
   }
 
