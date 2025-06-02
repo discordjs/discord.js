@@ -1,5 +1,3 @@
-/* eslint-disable jsdoc/check-param-names */
-
 import type { JSONEncodable } from '@discordjs/util';
 import type {
 	APIActionRowComponent,
@@ -34,13 +32,15 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	}
 
 	/**
-	 * Creates a new modal from API data.
+	 * Creates a new modal.
 	 *
 	 * @param data - The API data to create this modal with
 	 */
-	public constructor({ components = [], ...data }: Partial<APIModalInteractionResponseCallbackData> = {}) {
+	public constructor(data: Partial<APIModalInteractionResponseCallbackData> = {}) {
+		const { components = [], ...rest } = data;
+
 		this.data = {
-			...structuredClone(data),
+			...structuredClone(rest),
 			components: components.map((component) => createComponentBuilder(component)),
 		};
 	}

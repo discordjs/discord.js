@@ -8,12 +8,15 @@ import { allowedMentionPredicate } from './Assertions.js';
  * A builder that creates API-compatible JSON data for allowed mentions.
  */
 export class AllowedMentionsBuilder implements JSONEncodable<APIAllowedMentions> {
+	/**
+	 * The API data associated with these allowed mentions.
+	 */
 	private readonly data: Partial<APIAllowedMentions>;
 
 	/**
-	 * Creates a new allowed mentions builder from API data.
+	 * Creates a new allowed mentions builder.
 	 *
-	 * @param data - The API data to create this allowed mentions builder with
+	 * @param data - The API data to create this allowed mentions with
 	 */
 	public constructor(data: Partial<APIAllowedMentions> = {}) {
 		this.data = structuredClone(data);

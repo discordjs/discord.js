@@ -4,11 +4,17 @@ import { validate } from '../../util/validation.js';
 import { ComponentBuilder } from '../Component.js';
 import { textDisplayPredicate } from './Assertions.js';
 
+/**
+ * A builder that creates API-compatible JSON data for text displays.
+ */
 export class TextDisplayBuilder extends ComponentBuilder<APITextDisplayComponent> {
+	/**
+	 * @internal
+	 */
 	protected readonly data: Partial<APITextDisplayComponent>;
 
 	/**
-	 * Creates a new text display from API data.
+	 * Creates a new text display.
 	 *
 	 * @param data - The API data to create this text display with
 	 * @example
