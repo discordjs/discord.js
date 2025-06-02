@@ -1,11 +1,11 @@
 'use strict';
 
 const { Routes } = require('discord-api-types/v10');
+const { ReactionUserManager } = require('../managers/ReactionUserManager.js');
+const { flatten, resolveGuildEmoji } = require('../util/Util.js');
 const { ApplicationEmoji } = require('./ApplicationEmoji.js');
 const { GuildEmoji } = require('./GuildEmoji.js');
 const { ReactionEmoji } = require('./ReactionEmoji.js');
-const { ReactionUserManager } = require('../managers/ReactionUserManager.js');
-const { flatten, resolveGuildEmoji } = require('../util/Util.js');
 
 /**
  * Represents a reaction to a message.
@@ -14,6 +14,7 @@ class MessageReaction {
   constructor(client, data, message) {
     /**
      * The client that instantiated this message reaction
+     *
      * @name MessageReaction#client
      * @type {Client}
      * @readonly
@@ -22,24 +23,28 @@ class MessageReaction {
 
     /**
      * The message that this reaction refers to
+     *
      * @type {Message}
      */
     this.message = message;
 
     /**
      * Whether the client has given this reaction
+     *
      * @type {boolean}
      */
     this.me = data.me;
 
     /**
      * Whether the client has super-reacted using this emoji
+     *
      * @type {boolean}
      */
     this.meBurst = Boolean(data.me_burst);
 
     /**
      * A manager of the users that have given this reaction
+     *
      * @type {ReactionUserManager}
      */
     this.users = new ReactionUserManager(this, this.me ? [client.user] : []);
@@ -55,6 +60,7 @@ class MessageReaction {
     if (data.burst_colors) {
       /**
        * Hexadecimal colors used for this super reaction
+       *
        * @type {?string[]}
        */
       this.burstColors = data.burst_colors;
@@ -63,6 +69,7 @@ class MessageReaction {
     if ('count' in data) {
       /**
        * The number of people that have given the same reaction
+       *
        * @type {?number}
        */
       this.count ??= data.count;
@@ -71,6 +78,7 @@ class MessageReaction {
     if ('count_details' in data) {
       /**
        * The reaction count details object contains information about super and normal reaction counts.
+       *
        * @typedef {Object} ReactionCountDetailsData
        * @property {number} burst Count of super reactions
        * @property {number} normal Count of normal reactions
@@ -78,6 +86,7 @@ class MessageReaction {
 
       /**
        * The reaction count details object contains information about super and normal reaction counts.
+       *
        * @type {ReactionCountDetailsData}
        */
       this.countDetails = {
@@ -91,14 +100,16 @@ class MessageReaction {
 
   /**
    * Makes the client user react with this reaction
+   *
    * @returns {Promise<MessageReaction>}
    */
-  react() {
+  async react() {
     return this.message.react(this.emoji);
   }
 
   /**
    * Removes all users from this reaction.
+   *
    * @returns {Promise<MessageReaction>}
    */
   async remove() {
@@ -113,6 +124,7 @@ class MessageReaction {
    * {@link ApplicationEmoji} for application emojis, or a {@link ReactionEmoji} object
    * which has fewer properties. Whatever the prototype of the emoji, it will still have
    * `name`, `id`, `identifier` and `toString()`
+   *
    * @type {GuildEmoji|ReactionEmoji|ApplicationEmoji}
    * @readonly
    */
@@ -123,17 +135,19 @@ class MessageReaction {
     if (this._emoji.id) {
       const applicationEmojis = this.message.client.application.emojis.cache;
       if (applicationEmojis.has(this._emoji.id)) {
-        const emoji = applicationEmojis.get(this._emoji.id);
-        this._emoji = emoji;
-        return emoji;
+        const innerEmoji = applicationEmojis.get(this._emoji.id);
+        this._emoji = innerEmoji;
+        return innerEmoji;
       }
     }
+
     const emoji = resolveGuildEmoji(this.client, this._emoji.id);
     return emoji ?? this._emoji;
   }
 
   /**
    * Whether or not this reaction is a partial
+   *
    * @type {boolean}
    * @readonly
    */
@@ -143,6 +157,7 @@ class MessageReaction {
 
   /**
    * Fetch this reaction.
+   *
    * @returns {Promise<MessageReaction>}
    */
   async fetch() {
@@ -169,11 +184,13 @@ class MessageReaction {
       if (burst) this.countDetails.burst++;
       else this.countDetails.normal++;
     }
+
     if (user.id === this.message.client.user.id) {
       if (burst) this.meBurst = true;
       else this.me = true;
     }
   }
+
   _remove(user, burst) {
     if (this.partial) return;
     this.users.cache.delete(user.id);
@@ -182,10 +199,12 @@ class MessageReaction {
       if (burst) this.countDetails.burst--;
       else this.countDetails.normal--;
     }
+
     if (user.id === this.message.client.user.id) {
       if (burst) this.meBurst = false;
       else this.me = false;
     }
+
     if (this.count <= 0 && this.users.cache.size === 0) {
       this.message.reactions.cache.delete(this.emoji.id ?? this.emoji.name);
     }

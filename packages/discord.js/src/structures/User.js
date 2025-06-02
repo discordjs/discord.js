@@ -3,11 +3,12 @@
 const { userMention } = require('@discordjs/formatters');
 const { calculateUserDefaultAvatarIndex } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Base } = require('./Base.js');
 const { UserFlagsBitField } = require('../util/UserFlagsBitField.js');
+const { Base } = require('./Base.js');
 
 /**
  * Represents a user on Discord.
+ *
  * @extends {Base}
  */
 class User extends Base {
@@ -16,6 +17,7 @@ class User extends Base {
 
     /**
      * The user's id
+     *
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -33,6 +35,7 @@ class User extends Base {
     if ('username' in data) {
       /**
        * The username of the user
+       *
        * @type {?string}
        */
       this.username = data.username;
@@ -43,6 +46,7 @@ class User extends Base {
     if ('global_name' in data) {
       /**
        * The global name of this user
+       *
        * @type {?string}
        */
       this.globalName = data.global_name;
@@ -53,6 +57,7 @@ class User extends Base {
     if ('bot' in data) {
       /**
        * Whether or not the user is a bot
+       *
        * @type {?boolean}
        */
       this.bot = Boolean(data.bot);
@@ -64,6 +69,7 @@ class User extends Base {
       /**
        * The discriminator of this user
        * <info>`'0'`, or a 4-digit stringified number if they're using the legacy username system</info>
+       *
        * @type {?string}
        */
       this.discriminator = data.discriminator;
@@ -74,6 +80,7 @@ class User extends Base {
     if ('avatar' in data) {
       /**
        * The user avatar's hash
+       *
        * @type {?string}
        */
       this.avatar = data.avatar;
@@ -85,6 +92,7 @@ class User extends Base {
       /**
        * The user banner's hash
        * <info>The user must be force fetched for this property to be present or be updated</info>
+       *
        * @type {?string}
        */
       this.banner = data.banner;
@@ -96,6 +104,7 @@ class User extends Base {
       /**
        * The base 10 accent color of the user's banner
        * <info>The user must be force fetched for this property to be present or be updated</info>
+       *
        * @type {?number}
        */
       this.accentColor = data.accent_color;
@@ -106,6 +115,7 @@ class User extends Base {
     if ('system' in data) {
       /**
        * Whether the user is an Official Discord System user (part of the urgent message system)
+       *
        * @type {?boolean}
        */
       this.system = Boolean(data.system);
@@ -116,6 +126,7 @@ class User extends Base {
     if ('public_flags' in data) {
       /**
        * The flags for this user
+       *
        * @type {?UserFlagsBitField}
        */
       this.flags = new UserFlagsBitField(data.public_flags);
@@ -130,6 +141,7 @@ class User extends Base {
     if (data.avatar_decoration_data) {
       /**
        * The user avatar decoration's data
+       *
        * @type {?AvatarDecorationData}
        */
       this.avatarDecorationData = {
@@ -143,6 +155,7 @@ class User extends Base {
 
   /**
    * Whether this User is a partial
+   *
    * @type {boolean}
    * @readonly
    */
@@ -152,6 +165,7 @@ class User extends Base {
 
   /**
    * The timestamp the user was created at
+   *
    * @type {number}
    * @readonly
    */
@@ -161,6 +175,7 @@ class User extends Base {
 
   /**
    * The time the user was created at
+   *
    * @type {Date}
    * @readonly
    */
@@ -170,6 +185,7 @@ class User extends Base {
 
   /**
    * A link to the user's avatar.
+   *
    * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
@@ -179,6 +195,7 @@ class User extends Base {
 
   /**
    * A link to the user's avatar decoration.
+   *
    * @returns {?string}
    */
   avatarDecorationURL() {
@@ -187,6 +204,7 @@ class User extends Base {
 
   /**
    * A link to the user's default avatar
+   *
    * @type {string}
    * @readonly
    */
@@ -198,6 +216,7 @@ class User extends Base {
   /**
    * A link to the user's avatar if they have one.
    * Otherwise a link to their default avatar will be returned.
+   *
    * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {string}
    */
@@ -208,6 +227,7 @@ class User extends Base {
   /**
    * The hexadecimal version of the user accent color, with a leading hash
    * <info>The user must be force fetched for this property to be present</info>
+   *
    * @type {?string}
    * @readonly
    */
@@ -218,6 +238,7 @@ class User extends Base {
 
   /**
    * A link to the user's banner. See {@link User#banner} for more info
+   *
    * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
@@ -229,6 +250,7 @@ class User extends Base {
    * The tag of this user
    * <info>This user's username, or their legacy tag (e.g. `hydrabolt#0001`)
    * if they're using the legacy username system</info>
+   *
    * @type {?string}
    * @readonly
    */
@@ -242,6 +264,7 @@ class User extends Base {
 
   /**
    * The global name of this user, or their username if they don't have one
+   *
    * @type {?string}
    * @readonly
    */
@@ -251,6 +274,7 @@ class User extends Base {
 
   /**
    * The DM between the client's user and this user
+   *
    * @type {?DMChannel}
    * @readonly
    */
@@ -260,23 +284,26 @@ class User extends Base {
 
   /**
    * Creates a DM channel between the client and the user.
+   *
    * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<DMChannel>}
    */
-  createDM(force = false) {
+  async createDM(force = false) {
     return this.client.users.createDM(this.id, { force });
   }
 
   /**
    * Deletes a DM channel (if one exists) between the client and the user. Resolves with the channel if successful.
+   *
    * @returns {Promise<DMChannel>}
    */
-  deleteDM() {
+  async deleteDM() {
     return this.client.users.deleteDM(this.id);
   }
 
   /**
    * Sends a message to this user.
+   *
    * @param {string|MessagePayload|MessageCreateOptions} options The options to provide
    * @returns {Promise<Message>}
    * @example
@@ -295,6 +322,7 @@ class User extends Base {
    * Checks if the user is equal to another.
    * It compares id, username, discriminator, avatar, banner, accent color, and bot flags.
    * It is recommended to compare equality by using `user.id === user2.id` unless you want to compare all properties.
+   *
    * @param {User} user User to compare with
    * @returns {boolean}
    */
@@ -316,6 +344,7 @@ class User extends Base {
 
   /**
    * Compares the user with an API user object
+   *
    * @param {APIUser} user The API user object to compare
    * @returns {boolean}
    * @private
@@ -340,15 +369,17 @@ class User extends Base {
 
   /**
    * Fetches this user.
+   *
    * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<User>}
    */
-  fetch(force = true) {
+  async fetch(force = true) {
     return this.client.users.fetch(this.id, { force });
   }
 
   /**
    * When concatenated with a string, this automatically returns the user's mention instead of the User object.
+   *
    * @returns {string}
    * @example
    * // Logs: Hello from <@123456789012345678>!

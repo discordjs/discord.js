@@ -105,11 +105,9 @@ jobs:
       - name: Upload documentation to database
         if: ${{ env.REF_TYPE == 'tag' && (!inputs.ref || inputs.ref == 'main') }}
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CF_D1_DOCS_API_KEY: ${{ secrets.CF_D1_DOCS_API_KEY }}
           CF_D1_DOCS_ID: ${{ secrets.CF_D1_DOCS_ID }}
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
           CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
           CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
           CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
@@ -123,11 +121,9 @@ jobs:
       - name: Upload documentation to database
         if: ${{ env.REF_TYPE == 'tag' && inputs.ref && inputs.ref != 'main' }}
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CF_D1_DOCS_API_KEY: ${{ secrets.CF_D1_DOCS_API_KEY }}
           CF_D1_DOCS_ID: ${{ secrets.CF_D1_DOCS_ID }}
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
           CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
           CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
           CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
@@ -141,7 +137,6 @@ jobs:
       - name: Upload split documentation to blob storage
         if: ${{ env.REF_TYPE == 'tag' && (!inputs.ref || inputs.ref == 'main') }}
         env:
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
           CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
           CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
           CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
@@ -154,7 +149,6 @@ jobs:
       - name: Upload split documentation to blob storage
         if: ${{ env.REF_TYPE == 'tag' && inputs.ref && inputs.ref != 'main' }}
         env:
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
           CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
           CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
           CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
@@ -181,11 +175,9 @@ jobs:
       - name: Upload documentation to database
         if: ${{ env.REF_TYPE == 'branch' && (!inputs.ref || inputs.ref == 'main') }}
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CF_D1_DOCS_API_KEY: ${{ secrets.CF_D1_DOCS_API_KEY }}
           CF_D1_DOCS_ID: ${{ secrets.CF_D1_DOCS_ID }}
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
           CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
           CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
           CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
@@ -196,11 +188,9 @@ jobs:
       - name: Upload documentation to database
         if: ${{ env.REF_TYPE == 'branch' && inputs.ref && inputs.ref != 'main' }}
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CF_D1_DOCS_API_KEY: ${{ secrets.CF_D1_DOCS_API_KEY }}
           CF_D1_DOCS_ID: ${{ secrets.CF_D1_DOCS_ID }}
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
           CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
           CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
           CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
@@ -211,7 +201,6 @@ jobs:
       - name: Upload split documentation to blob storage
         if: ${{ env.REF_TYPE == 'branch' && (!inputs.ref || inputs.ref == 'main') }}
         env:
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
           CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
           CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
           CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
@@ -221,7 +210,6 @@ jobs:
       - name: Upload split documentation to blob storage
         if: ${{ env.REF_TYPE == 'branch' && inputs.ref && inputs.ref != 'main' }}
         env:
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
           CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
           CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
           CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}

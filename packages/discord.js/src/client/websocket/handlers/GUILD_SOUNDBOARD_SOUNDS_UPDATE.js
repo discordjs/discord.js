@@ -16,6 +16,7 @@ module.exports = (client, { d: data }) => {
 
   /**
    * Emitted whenever multiple guild soundboard sounds are updated.
+   *
    * @event Client#guildSoundboardSoundsUpdate
    * @param {Collection<Snowflake, SoundboardSound>} soundboardSounds The updated soundboard sounds
    * @param {Guild} guild The guild that the soundboard sounds are from

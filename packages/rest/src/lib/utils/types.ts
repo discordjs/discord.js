@@ -363,8 +363,6 @@ export type RouteLike = `/${string}`;
 
 /**
  * Internal request options
- *
- * @internal
  */
 export interface InternalRequest extends RequestData {
 	fullRoute: RouteLike;
@@ -377,8 +375,6 @@ export interface HandlerRequestData extends Pick<InternalRequest, 'body' | 'file
 
 /**
  * Parsed route data for an endpoint
- *
- * @internal
  */
 export interface RouteData {
 	bucketRoute: string;
@@ -388,8 +384,6 @@ export interface RouteData {
 
 /**
  * Represents a hash and its associated fields
- *
- * @internal
  */
 export interface HashData {
 	lastAccess: number;

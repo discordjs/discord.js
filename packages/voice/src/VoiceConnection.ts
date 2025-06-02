@@ -272,14 +272,14 @@ export class VoiceConnection extends EventEmitter {
 
 	/**
 	 * The current state of the voice connection.
+	 *
+	 * @remarks
+	 * The setter will perform clean-up operations where necessary.
 	 */
 	public get state() {
 		return this._state;
 	}
 
-	/**
-	 * Updates the state of the voice connection, performing clean-up operations where necessary.
-	 */
 	public set state(newState: VoiceConnectionState) {
 		const oldState = this._state;
 		const oldNetworking = Reflect.get(oldState, 'networking') as Networking | undefined;

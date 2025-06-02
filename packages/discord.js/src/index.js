@@ -45,7 +45,17 @@ exports.ThreadMemberFlagsBitField = require('./util/ThreadMemberFlagsBitField.js
 exports.UserFlagsBitField = require('./util/UserFlagsBitField.js').UserFlagsBitField;
 
 __exportStar(require('./util/DataResolver.js'), exports);
-__exportStar(require('./util/Util.js'), exports);
+
+exports.cleanCodeBlockContent = require('./util/Util.js').cleanCodeBlockContent;
+exports.cleanContent = require('./util/Util.js').cleanContent;
+exports.discordSort = require('./util/Util.js').discordSort;
+exports.fetchRecommendedShardCount = require('./util/Util.js').fetchRecommendedShardCount;
+exports.flatten = require('./util/Util.js').flatten;
+exports.parseEmoji = require('./util/Util.js').parseEmoji;
+exports.parseWebhookURL = require('./util/Util.js').parseWebhookURL;
+exports.resolveColor = require('./util/Util.js').resolveColor;
+exports.resolveSKUId = require('./util/Util.js').resolveSKUId;
+exports.verifyString = require('./util/Util.js').verifyString;
 
 exports.version = require('../package.json').version;
 
@@ -131,12 +141,14 @@ exports.CommandInteraction = require('./structures/CommandInteraction.js').Comma
 exports.CommandInteractionOptionResolver =
   require('./structures/CommandInteractionOptionResolver.js').CommandInteractionOptionResolver;
 exports.Component = require('./structures/Component.js').Component;
+exports.ContainerComponent = require('./structures/ContainerComponent.js').ContainerComponent;
 exports.ContextMenuCommandInteraction =
   require('./structures/ContextMenuCommandInteraction.js').ContextMenuCommandInteraction;
 exports.DMChannel = require('./structures/DMChannel.js').DMChannel;
 exports.Embed = require('./structures/Embed.js').Embed;
 exports.Emoji = require('./structures/Emoji.js').Emoji;
 exports.Entitlement = require('./structures/Entitlement.js').Entitlement;
+exports.FileComponent = require('./structures/FileComponent.js').FileComponent;
 exports.ForumChannel = require('./structures/ForumChannel.js').ForumChannel;
 exports.Guild = require('./structures/Guild.js').Guild;
 exports.GuildAuditLogs = require('./structures/GuildAuditLogs.js').GuildAuditLogs;
@@ -165,6 +177,8 @@ exports.InteractionWebhook = require('./structures/InteractionWebhook.js').Inter
 exports.Invite = require('./structures/Invite.js').Invite;
 exports.InviteGuild = require('./structures/InviteGuild.js').InviteGuild;
 exports.MediaChannel = require('./structures/MediaChannel.js').MediaChannel;
+exports.MediaGalleryComponent = require('./structures/MediaGalleryComponent.js').MediaGalleryComponent;
+exports.MediaGalleryItem = require('./structures/MediaGalleryItem.js').MediaGalleryItem;
 exports.MentionableSelectMenuComponent =
   require('./structures/MentionableSelectMenuComponent.js').MentionableSelectMenuComponent;
 exports.MentionableSelectMenuInteraction =
@@ -196,6 +210,8 @@ exports.RichPresenceAssets = require('./structures/Presence.js').RichPresenceAss
 exports.Role = require('./structures/Role.js').Role;
 exports.RoleSelectMenuComponent = require('./structures/RoleSelectMenuComponent.js').RoleSelectMenuComponent;
 exports.RoleSelectMenuInteraction = require('./structures/RoleSelectMenuInteraction.js').RoleSelectMenuInteraction;
+exports.SectionComponent = require('./structures/SectionComponent.js').SectionComponent;
+exports.SeparatorComponent = require('./structures/SeparatorComponent.js').SeparatorComponent;
 exports.SKU = require('./structures/SKU.js').SKU;
 exports.SoundboardSound = require('./structures/SoundboardSound.js').SoundboardSound;
 exports.StageChannel = require('./structures/StageChannel.js').StageChannel;
@@ -209,11 +225,14 @@ exports.Subscription = require('./structures/Subscription.js').Subscription;
 exports.Team = require('./structures/Team.js').Team;
 exports.TeamMember = require('./structures/TeamMember.js').TeamMember;
 exports.TextChannel = require('./structures/TextChannel.js').TextChannel;
+exports.TextDisplayComponent = require('./structures/TextDisplayComponent.js').TextDisplayComponent;
 exports.TextInputComponent = require('./structures/TextInputComponent.js').TextInputComponent;
 exports.ThreadChannel = require('./structures/ThreadChannel.js').ThreadChannel;
 exports.ThreadMember = require('./structures/ThreadMember.js').ThreadMember;
 exports.ThreadOnlyChannel = require('./structures/ThreadOnlyChannel.js').ThreadOnlyChannel;
+exports.ThumbnailComponent = require('./structures/ThumbnailComponent.js').ThumbnailComponent;
 exports.Typing = require('./structures/Typing.js').Typing;
+exports.UnfurledMediaItem = require('./structures/UnfurledMediaItem.js').UnfurledMediaItem;
 exports.User = require('./structures/User.js').User;
 exports.UserContextMenuCommandInteraction =
   require('./structures/UserContextMenuCommandInteraction.js').UserContextMenuCommandInteraction;

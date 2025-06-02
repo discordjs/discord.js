@@ -22,7 +22,6 @@ export default {
 	experimental: {
 		ppr: true,
 		reactCompiler: true,
-		useCache: true,
 		dynamicOnHover: true,
 	},
 	eslint: {

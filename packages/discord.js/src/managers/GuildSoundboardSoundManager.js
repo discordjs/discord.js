@@ -3,15 +3,16 @@
 const { Collection } = require('@discordjs/collection');
 const { lazy } = require('@discordjs/util');
 const { Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager.js');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 const { SoundboardSound } = require('../structures/SoundboardSound.js');
 const { resolveBase64, resolveFile } = require('../util/DataResolver.js');
+const { CachedManager } = require('./CachedManager.js');
 
 const fileTypeMime = lazy(() => require('magic-bytes.js').filetypemime);
 
 /**
  * Manages API methods for Soundboard Sounds and stores their cache.
+ *
  * @extends {CachedManager}
  */
 class GuildSoundboardSoundManager extends CachedManager {
@@ -20,6 +21,7 @@ class GuildSoundboardSoundManager extends CachedManager {
 
     /**
      * The guild this manager belongs to
+     *
      * @type {Guild}
      */
     this.guild = guild;
@@ -27,6 +29,7 @@ class GuildSoundboardSoundManager extends CachedManager {
 
   /**
    * The cache of Soundboard Sounds
+   *
    * @type {Collection<Snowflake, SoundboardSound>}
    * @name GuildSoundboardSoundManager#cache
    */
@@ -37,13 +40,15 @@ class GuildSoundboardSoundManager extends CachedManager {
 
   /**
    * Data that resolves to give a SoundboardSound object. This can be:
-   * * A SoundboardSound object
-   * * A Snowflake
+   * - A SoundboardSound object
+   * - A Snowflake
+   *
    * @typedef {SoundboardSound|Snowflake} SoundboardSoundResolvable
    */
 
   /**
    * Resolves a SoundboardSoundResolvable to a SoundboardSound object.
+   *
    * @method resolve
    * @memberof GuildSoundboardSoundManager
    * @instance
@@ -53,6 +58,7 @@ class GuildSoundboardSoundManager extends CachedManager {
 
   /**
    * Resolves a {@link SoundboardSoundResolvable} to a {@link SoundboardSound} id.
+   *
    * @param {SoundboardSoundResolvable} soundboardSound The soundboard sound resolvable to resolve
    * @returns {?Snowflake}
    */
@@ -64,6 +70,7 @@ class GuildSoundboardSoundManager extends CachedManager {
 
   /**
    * Options used to create a soundboard sound in a guild.
+   *
    * @typedef {Object} GuildSoundboardSoundCreateOptions
    * @property {BufferResolvable|Stream} file The file for the soundboard sound
    * @property {string} name The name for the soundboard sound
@@ -76,6 +83,7 @@ class GuildSoundboardSoundManager extends CachedManager {
 
   /**
    * Creates a new guild soundboard sound.
+   *
    * @param {GuildSoundboardSoundCreateOptions} options Options for creating a guild soundboard sound
    * @returns {Promise<SoundboardSound>} The created soundboard sound
    * @example
@@ -103,9 +111,10 @@ class GuildSoundboardSoundManager extends CachedManager {
 
   /**
    * Data for editing a soundboard sound.
+   *
    * @typedef {Object} GuildSoundboardSoundEditOptions
    * @property {string} [name] The name of the soundboard sound
-   * @property {?number} [volume] The volume of the soundboard sound, from 0 to 1
+   * @property {?number} [volume] The volume (a double) of the soundboard sound, from 0 (inclusive) to 1
    * @property {?Snowflake} [emojiId] The emoji id of the soundboard sound
    * @property {?string} [emojiName] The emoji name of the soundboard sound
    * @property {string} [reason] The reason for editing the soundboard sound
@@ -113,6 +122,7 @@ class GuildSoundboardSoundManager extends CachedManager {
 
   /**
    * Edits a soundboard sound.
+   *
    * @param {SoundboardSoundResolvable} soundboardSound The soundboard sound to edit
    * @param {GuildSoundboardSoundEditOptions} [options={}] The new data for the soundboard sound
    * @returns {Promise<SoundboardSound>}
@@ -145,6 +155,7 @@ class GuildSoundboardSoundManager extends CachedManager {
 
   /**
    * Deletes a soundboard sound.
+   *
    * @param {SoundboardSoundResolvable} soundboardSound The soundboard sound to delete
    * @param {string} [reason] Reason for deleting this soundboard sound
    * @returns {Promise<void>}
@@ -158,34 +169,57 @@ class GuildSoundboardSoundManager extends CachedManager {
   }
 
   /**
+   * Options used to fetch a soundboard sound.
+   *
+   * @typedef {BaseFetchOptions} FetchSoundboardSoundOptions
+   * @property {SoundboardSoundResolvable} soundboardSound The soundboard sound to fetch
+   */
+
+  /**
+   * Options used to fetch soundboard sounds from Discord
+   *
+   * @typedef {Object} FetchGuildSoundboardSoundsOptions
+   * @property {boolean} [cache] Whether to cache the fetched soundboard sounds
+   */
+
+  /**
    * Obtains one or more soundboard sounds from Discord, or the soundboard sound cache if they're already available.
-   * @param {Snowflake} [id] The soundboard sound's id
-   * @param {BaseFetchOptions} [options] Additional options for this fetch
+   *
+   * @param {SoundboardSoundResolvable|FetchSoundboardSoundOptions|FetchGuildSoundboardSoundsOptions} [options] Options for fetching soundboard sound(s)
    * @returns {Promise<SoundboardSound|Collection<Snowflake, SoundboardSound>>}
-   * @example
-   * // Fetch all soundboard sounds from the guild
-   * guild.soundboardSounds.fetch()
-   *   .then(sounds => console.log(`There are ${sounds.size} soundboard sounds.`))
-   *   .catch(console.error);
    * @example
    * // Fetch a single soundboard sound
    * guild.soundboardSounds.fetch('222078108977594368')
    *   .then(sound => console.log(`The soundboard sound name is: ${sound.name}`))
    *   .catch(console.error);
+   * @example
+   * // Fetch all soundboard sounds from the guild
+   * guild.soundboardSounds.fetch()
+   *   .then(sounds => console.log(`There are ${sounds.size} soundboard sounds.`))
+   *   .catch(console.error);
    */
-  async fetch(id, { cache = true, force = false } = {}) {
-    if (id) {
-      if (!force) {
-        const existing = this.cache.get(id);
-        if (existing) return existing;
-      }
+  async fetch(options) {
+    if (!options) return this._fetchMany();
+    const { cache, force, soundboardSound } = options;
+    const resolvedSoundboardSound = this.resolveId(soundboardSound ?? options);
+    if (resolvedSoundboardSound) return this._fetchSingle({ cache, force, soundboardSound: resolvedSoundboardSound });
+    return this._fetchMany({ cache });
+  }
 
-      const sound = await this.client.rest.get(Routes.guildSoundboardSound(this.guild.id, id));
-      return this._add(sound, cache);
+  async _fetchSingle({ cache, force, soundboardSound } = {}) {
+    if (!force) {
+      const existing = this.cache.get(soundboardSound);
+      if (existing) return existing;
     }
 
+    const data = await this.client.rest.get(Routes.guildSoundboardSound(this.guild.id, soundboardSound));
+    return this._add(data, cache);
+  }
+
+  async _fetchMany({ cache } = {}) {
     const data = await this.client.rest.get(Routes.guildSoundboardSounds(this.guild.id));
-    return new Collection(data.map(sound => [sound.sound_id, this._add(sound, cache)]));
+
+    return data.items.reduce((coll, sound) => coll.set(sound.sound_id, this._add(sound, cache)), new Collection());
   }
 }
 
