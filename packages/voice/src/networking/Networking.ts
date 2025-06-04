@@ -623,7 +623,7 @@ export class Networking extends EventEmitter {
 	public prepareAudioPacket(opusPacket: Buffer) {
 		const state = this.state;
 		if (state.code !== NetworkingStatusCode.Ready) return;
-		state.preparedPacket = this.createAudioPacket(opusPacket, state.connectionData);
+		state.preparedPacket = this.createAudioPacket(opusPacket, state.connectionData, state.dave);
 		return state.preparedPacket;
 	}
 
@@ -688,8 +688,9 @@ export class Networking extends EventEmitter {
 	 *
 	 * @param opusPacket - The Opus packet to prepare
 	 * @param connectionData - The current connection data of the instance
+	 * @param daveSession - The DAVE session to use for encryption
 	 */
-	private createAudioPacket(opusPacket: Buffer, connectionData: ConnectionData) {
+	private createAudioPacket(opusPacket: Buffer, connectionData: ConnectionData, daveSession?: DAVESession) {
 		const rtpHeader = Buffer.alloc(12);
 		rtpHeader[0] = 0x80;
 		rtpHeader[1] = 0x78;
@@ -701,7 +702,7 @@ export class Networking extends EventEmitter {
 		rtpHeader.writeUIntBE(ssrc, 8, 4);
 
 		rtpHeader.copy(nonce, 0, 0, 12);
-		return Buffer.concat([rtpHeader, ...this.encryptOpusPacket(opusPacket, connectionData, rtpHeader)]);
+		return Buffer.concat([rtpHeader, ...this.encryptOpusPacket(opusPacket, connectionData, rtpHeader, daveSession)]);
 	}
 
 	/**
@@ -709,9 +710,18 @@ export class Networking extends EventEmitter {
 	 *
 	 * @param opusPacket - The Opus packet to encrypt
 	 * @param connectionData - The current connection data of the instance
+	 * @param daveSession - The DAVE session to use for encryption
 	 */
-	private encryptOpusPacket(opusPacket: Buffer, connectionData: ConnectionData, additionalData: Buffer) {
+	private encryptOpusPacket(
+		opusPacket: Buffer,
+		connectionData: ConnectionData,
+		additionalData: Buffer,
+		daveSession?: DAVESession,
+	) {
 		const { secretKey, encryptionMode } = connectionData;
+
+		let packet = opusPacket;
+		if (daveSession) packet = daveSession.encrypt(opusPacket);
 
 		// Both supported encryption methods want the nonce to be an incremental integer
 		connectionData.nonce++;
@@ -727,14 +737,14 @@ export class Networking extends EventEmitter {
 				const cipher = crypto.createCipheriv('aes-256-gcm', secretKey, connectionData.nonceBuffer);
 				cipher.setAAD(additionalData);
 
-				encrypted = Buffer.concat([cipher.update(opusPacket), cipher.final(), cipher.getAuthTag()]);
+				encrypted = Buffer.concat([cipher.update(packet), cipher.final(), cipher.getAuthTag()]);
 
 				return [encrypted, noncePadding];
 			}
 
 			case 'aead_xchacha20_poly1305_rtpsize': {
 				encrypted = secretbox.methods.crypto_aead_xchacha20poly1305_ietf_encrypt(
-					opusPacket,
+					packet,
 					additionalData,
 					connectionData.nonceBuffer,
 					secretKey,

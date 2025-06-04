@@ -1,6 +1,7 @@
 import { Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
 import type { VoiceDavePrepareEpochData, VoiceDavePrepareTransitionData } from 'discord-api-types/voice/v8';
+import { SILENCE_FRAME } from '../audio/AudioPlayer';
 import { DAVESessionError, DAVESessionErrorKind } from './DAVESessionError';
 
 const LIBRARY_NAME = '@snazzah/davey';
@@ -247,6 +248,16 @@ export class DAVESession extends EventEmitter {
 			this.emit('error', new DAVESessionError(error as Error, DAVESessionErrorKind.Welcome, transitionId));
 			return { transitionId, success: false };
 		}
+	}
+
+	/**
+	 * Encrypt a packet using end-to-end encryption.
+	 *
+	 * @param packet - The packet to encrypt
+	 */
+	public encrypt(packet: Buffer) {
+		if (packet.equals(SILENCE_FRAME) || this.protocolVersion === 0 || !this.session?.ready) return packet;
+		return this.session.encryptOpus(packet);
 	}
 
 	/**
