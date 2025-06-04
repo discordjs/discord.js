@@ -193,13 +193,17 @@ export class DAVESession extends EventEmitter {
 	/**
 	 * Processes proposals from the MLS group.
 	 *
-	 * @param payload - The proposals or proposal refs buffer
+	 * @param payload - The binary message payload
+	 * @param connectedClients - The set of connected client IDs
 	 * @returns The payload to send back to the voice server, if there is one
 	 */
-	public processProposals(payload: Buffer): Buffer | undefined {
+	public processProposals(payload: Buffer, connectedClients: Set<string>): Buffer | undefined {
 		const optype = payload.readUInt8(0);
-		// TODO store clients connected and pass in here
-		const { commit, welcome } = this.session.processProposals(optype, payload.subarray(1));
+		const { commit, welcome } = this.session.processProposals(
+			optype,
+			payload.subarray(1),
+			Array.from(connectedClients),
+		);
 		this.emit('debug', 'MLS proposals processed');
 		if (!commit) return;
 		return welcome ? Buffer.concat([commit, welcome]) : commit;

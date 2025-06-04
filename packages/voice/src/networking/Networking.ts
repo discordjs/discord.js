@@ -66,7 +66,7 @@ export interface NetworkingIdentifyingState {
  */
 export interface NetworkingUdpHandshakingState {
 	code: NetworkingStatusCode.UdpHandshaking;
-	connectionData: Pick<ConnectionData, 'ssrc'>;
+	connectionData: Pick<ConnectionData, 'connectedClients' | 'ssrc'>;
 	connectionOptions: ConnectionOptions;
 	udp: VoiceUDPSocket;
 	ws: VoiceWebSocket;
@@ -77,7 +77,7 @@ export interface NetworkingUdpHandshakingState {
  */
 export interface NetworkingSelectingProtocolState {
 	code: NetworkingStatusCode.SelectingProtocol;
-	connectionData: Pick<ConnectionData, 'ssrc'>;
+	connectionData: Pick<ConnectionData, 'connectedClients' | 'ssrc'>;
 	connectionOptions: ConnectionOptions;
 	udp: VoiceUDPSocket;
 	ws: VoiceWebSocket;
@@ -150,6 +150,7 @@ export interface ConnectionOptions {
  * the connection, timing information for playback of streams.
  */
 export interface ConnectionData {
+	connectedClients: Set<string>;
 	encryptionMode: string;
 	nonce: number;
 	nonceBuffer: Buffer;
@@ -488,6 +489,7 @@ export class Networking extends EventEmitter {
 				udp,
 				connectionData: {
 					ssrc,
+					connectedClients: new Set(),
 				},
 			};
 		} else if (
@@ -517,7 +519,21 @@ export class Networking extends EventEmitter {
 				code: NetworkingStatusCode.Ready,
 			};
 			this.state.connectionData.speaking = false;
-		} else if (this.state.code === NetworkingStatusCode.Ready && this.state.dave) {
+		} else if (
+			(packet.op === VoiceOpcodes.ClientsConnect || packet.op === VoiceOpcodes.ClientDisconnect) &&
+			(this.state.code === NetworkingStatusCode.UdpHandshaking ||
+				this.state.code === NetworkingStatusCode.SelectingProtocol ||
+				this.state.code === NetworkingStatusCode.Ready ||
+				this.state.code === NetworkingStatusCode.Resuming)
+		) {
+			const { connectionData } = this.state;
+			if (packet.op === VoiceOpcodes.ClientsConnect)
+				for (const id of packet.d.user_ids) connectionData.connectedClients.add(id);
+			else connectionData.connectedClients.delete(packet.d.user_id);
+		} else if (
+			(this.state.code === NetworkingStatusCode.Ready || this.state.code === NetworkingStatusCode.Resuming) &&
+			this.state.dave
+		) {
 			if (packet.op === VoiceOpcodes.DavePrepareTransition) this.state.dave.prepareTransition(packet.d);
 			else if (packet.op === VoiceOpcodes.DaveExecuteTransition)
 				this.state.dave.executeTransition(packet.d.transition_id);
@@ -535,7 +551,7 @@ export class Networking extends EventEmitter {
 			if (message.op === VoiceOpcodes.DaveMlsExternalSender) {
 				this.state.dave.setExternalSender(message.payload);
 			} else if (message.op === VoiceOpcodes.DaveMlsProposals) {
-				const payload = this.state.dave.processProposals(message.payload);
+				const payload = this.state.dave.processProposals(message.payload, this.state.connectionData.connectedClients);
 				if (payload) this.state.ws.sendBinaryMessage(VoiceOpcodes.DaveMlsCommitWelcome, payload);
 			} else if (message.op === VoiceOpcodes.DaveMlsAnnounceCommitTransition) {
 				const { transitionId, success } = this.state.dave.processCommit(message.payload);
