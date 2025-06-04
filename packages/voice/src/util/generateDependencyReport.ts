@@ -72,6 +72,7 @@ export function generateDependencyReport() {
 	addVersion('libsodium-wrappers');
 	addVersion('@stablelib/xchacha20poly1305');
 	addVersion('@noble/ciphers');
+	addVersion('@snazzah/davey');
 	report.push('');
 
 	// ffmpeg

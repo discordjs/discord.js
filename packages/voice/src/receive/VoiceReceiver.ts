@@ -2,7 +2,8 @@
 
 import { Buffer } from 'node:buffer';
 import crypto from 'node:crypto';
-import { VoiceOpcodes } from 'discord-api-types/voice/v4';
+import type { VoiceReceivePayload } from 'discord-api-types/voice/v8';
+import { VoiceOpcodes } from 'discord-api-types/voice/v8';
 import type { VoiceConnection } from '../VoiceConnection';
 import type { ConnectionData } from '../networking/Networking';
 import { methods } from '../util/Secretbox';
@@ -69,25 +70,11 @@ export class VoiceReceiver {
 	 * @param packet - The received packet
 	 * @internal
 	 */
-	public onWsPacket(packet: any) {
-		if (packet.op === VoiceOpcodes.ClientDisconnect && typeof packet.d?.user_id === 'string') {
+	public onWsPacket(packet: VoiceReceivePayload) {
+		if (packet.op === VoiceOpcodes.ClientDisconnect) {
 			this.ssrcMap.delete(packet.d.user_id);
-		} else if (
-			packet.op === VoiceOpcodes.Speaking &&
-			typeof packet.d?.user_id === 'string' &&
-			typeof packet.d?.ssrc === 'number'
-		) {
+		} else if (packet.op === VoiceOpcodes.Speaking) {
 			this.ssrcMap.update({ userId: packet.d.user_id, audioSSRC: packet.d.ssrc });
-		} else if (
-			packet.op === VoiceOpcodes.ClientConnect &&
-			typeof packet.d?.user_id === 'string' &&
-			typeof packet.d?.audio_ssrc === 'number'
-		) {
-			this.ssrcMap.update({
-				userId: packet.d.user_id,
-				audioSSRC: packet.d.audio_ssrc,
-				videoSSRC: packet.d.video_ssrc === 0 ? undefined : packet.d.video_ssrc,
-			});
 		}
 	}
 
