@@ -1,6 +1,6 @@
 import { Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
-import type { VoiceDavePrepareEpochData, VoiceDavePrepareTransitionData } from 'discord-api-types/voice';
+import type { VoiceDavePrepareEpochData, VoiceDavePrepareTransitionData } from 'discord-api-types/voice/v8';
 
 const LIBRARY_NAME = '@snazzah/davey';
 let Davey: any = null;

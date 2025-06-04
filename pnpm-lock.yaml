@@ -1710,8 +1710,8 @@ importers:
         specifier: ^8.18.1
         version: 8.18.1
       discord-api-types:
-        specifier: 0.38.11-next.121fb47.1748992030
-        version: 0.38.11-next.121fb47.1748992030
+        specifier: ^0.38.11
+        version: 0.38.11
       prism-media:
         specifier: ^1.3.5
         version: 1.3.5(@discordjs/opus@0.9.0(encoding@0.1.13))
@@ -8543,8 +8543,8 @@ packages:
   discord-api-types@0.38.1:
     resolution: {integrity: sha512-vsjsqjAuxsPhiwbPjTBeGQaDPlizFmSkU0mTzFGMgRxqCDIRBR7iTY74HacpzrDV0QtERHRKQEk1tq7drZUtHg==}
 
-  discord-api-types@0.38.11-next.121fb47.1748992030:
-    resolution: {integrity: sha512-h3ymIam5+4xImb3Nmeyk/x61uCn2IX8pKEuGLz1jzJw0xJikRjhnnKKcrV6AfcpQ3t6GKb2oGOdN4Bkz9qdm0g==}
+  discord-api-types@0.38.11:
+    resolution: {integrity: sha512-XN0qhcQpetkyb/49hcDHuoeUPsQqOkb17wbV/t48gUkoEDi4ajhsxqugGcxvcN17BBtI9FPPWEgzv6IhQmCwyw==}
 
   dmd@6.2.3:
     resolution: {integrity: sha512-SIEkjrG7cZ9GWZQYk/mH+mWtcRPly/3ibVuXO/tP/MFoWz6KiRK77tSMq6YQBPl7RljPtXPQ/JhxbNuCdi1bNw==}
@@ -22563,7 +22563,7 @@ snapshots:
 
   discord-api-types@0.38.1: {}
 
-  discord-api-types@0.38.11-next.121fb47.1748992030: {}
+  discord-api-types@0.38.11: {}
 
   dmd@6.2.3:
     dependencies:
