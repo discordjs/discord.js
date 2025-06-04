@@ -219,7 +219,8 @@ export class DAVESession extends EventEmitter {
 		const transitionId = payload.readUInt16BE(0);
 		try {
 			this.session.processCommit(payload.subarray(2));
-			this.pendingTransition = { transition_id: transitionId, protocol_version: this.protocolVersion };
+			if (transitionId !== 0)
+				this.pendingTransition = { transition_id: transitionId, protocol_version: this.protocolVersion };
 			this.emit('debug', `MLS commit processed (transition id: ${transitionId})`);
 			return { transitionId, success: true };
 		} catch (error) {
@@ -238,7 +239,8 @@ export class DAVESession extends EventEmitter {
 		const transitionId = payload.readUInt16BE(0);
 		try {
 			this.session.processWelcome(payload.subarray(2));
-			this.pendingTransition = { transition_id: transitionId, protocol_version: this.protocolVersion };
+			if (transitionId !== 0)
+				this.pendingTransition = { transition_id: transitionId, protocol_version: this.protocolVersion };
 			this.emit('debug', `MLS welcome processed (transition id: ${transitionId})`);
 			return { transitionId, success: true };
 		} catch (error) {

@@ -555,17 +555,19 @@ export class Networking extends EventEmitter {
 				if (payload) this.state.ws.sendBinaryMessage(VoiceOpcodes.DaveMlsCommitWelcome, payload);
 			} else if (message.op === VoiceOpcodes.DaveMlsAnnounceCommitTransition) {
 				const { transitionId, success } = this.state.dave.processCommit(message.payload);
-				this.state.ws.sendPacket({
-					op: success ? VoiceOpcodes.DaveTransitionReady : VoiceOpcodes.DaveMlsInvalidCommitWelcome,
-					d: { transition_id: transitionId },
-				});
+				if (transitionId !== 0)
+					this.state.ws.sendPacket({
+						op: success ? VoiceOpcodes.DaveTransitionReady : VoiceOpcodes.DaveMlsInvalidCommitWelcome,
+						d: { transition_id: transitionId },
+					});
 				if (!success) this.state.dave.reinit();
 			} else if (message.op === VoiceOpcodes.DaveMlsWelcome) {
 				const { transitionId, success } = this.state.dave.processWelcome(message.payload);
-				this.state.ws.sendPacket({
-					op: success ? VoiceOpcodes.DaveTransitionReady : VoiceOpcodes.DaveMlsInvalidCommitWelcome,
-					d: { transition_id: transitionId },
-				});
+				if (transitionId !== 0)
+					this.state.ws.sendPacket({
+						op: success ? VoiceOpcodes.DaveTransitionReady : VoiceOpcodes.DaveMlsInvalidCommitWelcome,
+						d: { transition_id: transitionId },
+					});
 				if (!success) this.state.dave.reinit();
 			}
 		}
