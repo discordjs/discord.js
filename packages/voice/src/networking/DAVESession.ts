@@ -6,6 +6,17 @@ import { DAVESessionError, DAVESessionErrorKind } from './DAVESessionError';
 const LIBRARY_NAME = '@snazzah/davey';
 let Davey: any = null;
 
+/**
+ * The amount of seconds that a previous transition should be valid for.
+ */
+const TRANSITION_EXPIRY = 10;
+
+/**
+ * The arbitrary amount of seconds to allow passthrough for mid-downgrade.
+ * Generally, transitions should not even last this long, but should be more than enough to cover it.
+ */
+const TRANSITION_EXPIRY_PENDING_DOWNGRADE = 120;
+
 // eslint-disable-next-line no-async-promise-executor
 export const daveLoadPromise = new Promise<void>(async (resolve) => {
 	try {
@@ -98,7 +109,7 @@ export class DAVESession extends EventEmitter {
 			this.emit('keyPackage', this.session.getSerializedKeyPackage());
 		} else if (this.session) {
 			this.session.reset();
-			this.session.setPassthroughMode(true, 10);
+			this.session.setPassthroughMode(true, TRANSITION_EXPIRY);
 			this.emit('debug', 'Session reset');
 		}
 	}
@@ -127,7 +138,7 @@ export class DAVESession extends EventEmitter {
 		if (data.transition_id === 0) {
 			this.executeTransition(data.transition_id);
 		} else {
-			if (data.protocol_version === 0) this.session?.setPassthroughMode(true, 120);
+			if (data.protocol_version === 0) this.session?.setPassthroughMode(true, TRANSITION_EXPIRY_PENDING_DOWNGRADE);
 			return true;
 		}
 
