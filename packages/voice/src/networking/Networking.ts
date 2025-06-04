@@ -301,6 +301,7 @@ export class Networking extends EventEmitter {
 		const newDave = Reflect.get(newState, 'dave') as DAVESession | undefined;
 
 		if (oldDave && oldDave !== newDave) {
+			oldDave.off('error', this.onChildError);
 			oldDave.off('debug', this.onDaveDebug);
 			oldDave.off('keyPackage', this.onDaveKeyPackage);
 			oldDave.destroy();
@@ -356,6 +357,7 @@ export class Networking extends EventEmitter {
 			this.state.connectionOptions.channelId,
 		);
 
+		session.on('error', this.onChildError);
 		session.on('debug', this.onDaveDebug);
 		session.on('keyPackage', this.onDaveKeyPackage);
 		session.reinit();
@@ -364,7 +366,7 @@ export class Networking extends EventEmitter {
 	}
 
 	/**
-	 * Propagates errors from the children VoiceWebSocket and VoiceUDPSocket.
+	 * Propagates errors from the children VoiceWebSocket, VoiceUDPSocket and DAVESession.
 	 *
 	 * @param error - The error that was emitted by a child
 	 */

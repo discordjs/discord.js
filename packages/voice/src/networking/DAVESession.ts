@@ -1,6 +1,7 @@
 import { Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
 import type { VoiceDavePrepareEpochData, VoiceDavePrepareTransitionData } from 'discord-api-types/voice/v8';
+import { DAVESessionError, DAVESessionErrorKind } from './DAVESessionError';
 
 const LIBRARY_NAME = '@snazzah/davey';
 let Davey: any = null;
@@ -206,9 +207,8 @@ export class DAVESession extends EventEmitter {
 			this.pendingTransition = { transition_id: transitionId, protocol_version: this.protocolVersion };
 			this.emit('debug', `MLS commit processed (transition id: ${transitionId})`);
 			return { transitionId, success: true };
-		} catch {
-			// TODO
-			// this.emit("warn", `MLS commit errored: ${e}`);
+		} catch (error) {
+			this.emit('error', new DAVESessionError(error as Error, DAVESessionErrorKind.Commit, transitionId));
 			return { transitionId, success: false };
 		}
 	}
@@ -226,9 +226,8 @@ export class DAVESession extends EventEmitter {
 			this.pendingTransition = { transition_id: transitionId, protocol_version: this.protocolVersion };
 			this.emit('debug', `MLS welcome processed (transition id: ${transitionId})`);
 			return { transitionId, success: true };
-		} catch {
-			// TODO
-			// this.emit("warn", `MLS welcome errored: ${e}`);
+		} catch (error) {
+			this.emit('error', new DAVESessionError(error as Error, DAVESessionErrorKind.Welcome, transitionId));
 			return { transitionId, success: false };
 		}
 	}
