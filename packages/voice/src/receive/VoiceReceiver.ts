@@ -4,8 +4,8 @@ import { Buffer } from 'node:buffer';
 import crypto from 'node:crypto';
 import type { VoiceReceivePayload } from 'discord-api-types/voice/v8';
 import { VoiceOpcodes } from 'discord-api-types/voice/v8';
-import type { VoiceConnection } from '../VoiceConnection';
-import type { ConnectionData } from '../networking/Networking';
+import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection';
+import { NetworkingStatusCode, type ConnectionData } from '../networking/Networking';
 import { methods } from '../util/Secretbox';
 import {
 	AudioReceiveStream,
@@ -130,9 +130,10 @@ export class VoiceReceiver {
 	 * @param mode - The encryption mode
 	 * @param nonce - The nonce buffer used by the connection for encryption
 	 * @param secretKey - The secret key used by the connection for encryption
+	 * @param userId - The user ID that sent the packet
 	 * @returns The parsed Opus packet
 	 */
-	private parsePacket(buffer: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array) {
+	private parsePacket(buffer: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array, userId: string) {
 		let packet = this.decrypt(buffer, mode, nonce, secretKey);
 		if (!packet) return;
 
@@ -141,6 +142,16 @@ export class VoiceReceiver {
 		if (buffer.subarray(12, 14).compare(HEADER_EXTENSION_BYTE) === 0) {
 			const headerExtensionLength = buffer.subarray(14).readUInt16BE();
 			packet = packet.subarray(4 * headerExtensionLength);
+		}
+
+		// Decrypt packet if in a DAVE session.
+		if (
+			this.voiceConnection.state.status === VoiceConnectionStatus.Ready &&
+			(this.voiceConnection.state.networking.state.code === NetworkingStatusCode.Ready ||
+				this.voiceConnection.state.networking.state.code === NetworkingStatusCode.Resuming)
+		) {
+			const daveSession = this.voiceConnection.state.networking.state.dave;
+			if (daveSession) packet = daveSession.decrypt(packet, userId);
 		}
 
 		return packet;
@@ -170,6 +181,7 @@ export class VoiceReceiver {
 				this.connectionData.encryptionMode,
 				this.connectionData.nonceBuffer,
 				this.connectionData.secretKey,
+				userData.userId,
 			);
 			if (packet) {
 				stream.push(packet);

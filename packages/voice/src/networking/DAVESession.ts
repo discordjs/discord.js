@@ -260,6 +260,18 @@ export class DAVESession extends EventEmitter {
 	}
 
 	/**
+	 * Decrypt a packet using end-to-end encryption.
+	 *
+	 * @param packet - The packet to decrypt
+	 * @param userId - The user ID that sent the packet
+	 */
+	public decrypt(packet: Buffer, userId: string) {
+		const canDecrypt = this?.session.ready && (this.protocolVersion !== 0 || this.session?.canPassthrough(userId));
+		if (packet.equals(SILENCE_FRAME) || !canDecrypt) return packet;
+		return this.session.decrypt(userId, Davey.MediaType.AUDIO, packet);
+	}
+
+	/**
 	 * Resets the session.
 	 */
 	public destroy() {
