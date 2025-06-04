@@ -16,7 +16,7 @@ export const daveLoadPromise = new Promise<void>(async (resolve) => {
 	resolve();
 });
 
-export interface TransitionResult {
+interface TransitionResult {
 	success: boolean;
 	transitionId: number;
 }
