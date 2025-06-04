@@ -72,6 +72,10 @@ export function generateDependencyReport() {
 	addVersion('libsodium-wrappers');
 	addVersion('@stablelib/xchacha20poly1305');
 	addVersion('@noble/ciphers');
+	report.push('');
+
+	// dave
+	report.push('DAVE Libraries');
 	addVersion('@snazzah/davey');
 	report.push('');
 

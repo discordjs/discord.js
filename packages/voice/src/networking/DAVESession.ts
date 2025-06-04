@@ -119,7 +119,7 @@ export class DAVESession extends EventEmitter {
 	 * @returns Whether we should signal to the voice server that we are ready
 	 */
 	public prepareTransition(data: VoiceDavePrepareTransitionData) {
-		this.emit('debug', `Preparing for DAVE transition (${data.transition_id}, v${data.protocol_version})`);
+		this.emit('debug', `Preparing for transition (${data.transition_id}, v${data.protocol_version})`);
 		this.pendingTransition = data;
 
 		// When the included transition ID is 0, the transition is for (re)initialization and it can be executed immediately.
@@ -139,7 +139,7 @@ export class DAVESession extends EventEmitter {
 	 * @param transitionId - The transition id to execute on
 	 */
 	public executeTransition(transitionId: number) {
-		this.emit('debug', `Executing DAVE transition (${transitionId})`);
+		this.emit('debug', `Executing transition (${transitionId})`);
 		if (!this.pendingTransition) return;
 		let transitioned = false;
 		if (transitionId === this.pendingTransition.transition_id) {
@@ -149,16 +149,16 @@ export class DAVESession extends EventEmitter {
 			// Handle upgrades & defer downgrades
 			if (oldVersion !== this.protocolVersion && this.protocolVersion === 0) {
 				this.downgraded = true;
-				this.emit('debug', 'DAVE protocol downgraded');
+				this.emit('debug', 'Session downgraded');
 			} else if (transitionId > 0 && this.downgraded) {
 				this.downgraded = false;
 				this.session?.setPassthroughMode(true, 10);
-				this.emit('debug', 'DAVE protocol upgraded');
+				this.emit('debug', 'Session upgraded');
 			}
 
 			// In the future we'd want to signal to the DAVESession to transition also, but it only supports v1 at this time
 			transitioned = true;
-			this.emit('debug', `DAVE transition executed (v${oldVersion} -> v${this.protocolVersion}, id: ${transitionId})`);
+			this.emit('debug', `Transition executed (v${oldVersion} -> v${this.protocolVersion}, id: ${transitionId})`);
 		}
 
 		this.pendingTransition = undefined;
@@ -171,7 +171,7 @@ export class DAVESession extends EventEmitter {
 	 * @param data - The epoch data
 	 */
 	public prepareEpoch(data: VoiceDavePrepareEpochData) {
-		this.emit('debug', `Preparing for DAVE epoch (${data.epoch})`);
+		this.emit('debug', `Preparing for epoch (${data.epoch})`);
 		if (data.epoch === 1) {
 			this.protocolVersion = data.protocol_version;
 			this.reinit();
