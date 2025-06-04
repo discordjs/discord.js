@@ -4,7 +4,6 @@ import type { VoiceDavePrepareEpochData, VoiceDavePrepareTransitionData } from '
 import { SILENCE_FRAME } from '../audio/AudioPlayer';
 import { DAVESessionError, DAVESessionErrorKind } from './DAVESessionError';
 
-const LIBRARY_NAME = '@snazzah/davey';
 let Davey: any = null;
 
 /**
@@ -21,7 +20,7 @@ const TRANSITION_EXPIRY_PENDING_DOWNGRADE = 120;
 // eslint-disable-next-line no-async-promise-executor
 export const daveLoadPromise = new Promise<void>(async (resolve) => {
 	try {
-		const lib = await import(LIBRARY_NAME);
+		const lib = await import('@snazzah/davey');
 		Davey = lib;
 	} catch {}
 
