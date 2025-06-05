@@ -5,6 +5,7 @@ import crypto from 'node:crypto';
 import type { VoiceReceivePayload } from 'discord-api-types/voice/v8';
 import { VoiceOpcodes } from 'discord-api-types/voice/v8';
 import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection';
+import { DEFAULT_DECRYPTION_FAILURE_TOLERANCE } from '../networking';
 import { NetworkingStatusCode, type ConnectionData } from '../networking/Networking';
 import { methods } from '../util/Secretbox';
 import {
@@ -53,6 +54,11 @@ export class VoiceReceiver {
 	 */
 	public readonly speaking: SpeakingMap;
 
+	/**
+	 * The amount of consecutive failures encountered when decrypting with the DAVE protocol.
+	 */
+	private consecutiveDAVEFailures = 0;
+
 	public constructor(voiceConnection: VoiceConnection) {
 		this.voiceConnection = voiceConnection;
 		this.ssrcMap = new SSRCMap();
@@ -62,6 +68,11 @@ export class VoiceReceiver {
 
 		this.onWsPacket = this.onWsPacket.bind(this);
 		this.onUdpMessage = this.onUdpMessage.bind(this);
+		this.onDaveInvalidateTransition = this.onDaveInvalidateTransition.bind(this);
+	}
+
+	public onDaveInvalidateTransition() {
+		this.consecutiveDAVEFailures = 0;
 	}
 
 	/**
@@ -135,7 +146,7 @@ export class VoiceReceiver {
 	 */
 	private parsePacket(buffer: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array, userId: string) {
 		let packet = this.decrypt(buffer, mode, nonce, secretKey);
-		if (!packet) return;
+		if (!packet) throw new Error('Failed to parse packet');
 
 		// Strip decrypted RTP Header Extension if present
 		// The header is only indicated in the original data, so compare with buffer first
@@ -151,7 +162,20 @@ export class VoiceReceiver {
 				this.voiceConnection.state.networking.state.code === NetworkingStatusCode.Resuming)
 		) {
 			const daveSession = this.voiceConnection.state.networking.state.dave;
-			if (daveSession) packet = daveSession.decrypt(packet, userId);
+			if (daveSession) {
+				try {
+					packet = daveSession.decrypt(packet, userId);
+					this.consecutiveDAVEFailures = 0;
+				} catch (error) {
+					if (!daveSession?.reinitializing) {
+						this.consecutiveDAVEFailures++;
+						if (this.consecutiveDAVEFailures > DEFAULT_DECRYPTION_FAILURE_TOLERANCE) {
+							if (daveSession.lastTransitionId) daveSession.recoverFromInvalidTransition(daveSession.lastTransitionId);
+							else throw error;
+						}
+					}
+				}
+			}
 		}
 
 		return packet;
@@ -176,17 +200,17 @@ export class VoiceReceiver {
 		if (!stream) return;
 
 		if (this.connectionData.encryptionMode && this.connectionData.nonceBuffer && this.connectionData.secretKey) {
-			const packet = this.parsePacket(
-				msg,
-				this.connectionData.encryptionMode,
-				this.connectionData.nonceBuffer,
-				this.connectionData.secretKey,
-				userData.userId,
-			);
-			if (packet) {
-				stream.push(packet);
-			} else {
-				stream.destroy(new Error('Failed to parse packet'));
+			try {
+				const packet = this.parsePacket(
+					msg,
+					this.connectionData.encryptionMode,
+					this.connectionData.nonceBuffer,
+					this.connectionData.secretKey,
+					userData.userId,
+				);
+				if (packet) stream.push(packet);
+			} catch (error) {
+				stream.destroy(error as Error);
 			}
 		}
 	}

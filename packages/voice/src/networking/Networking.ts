@@ -243,6 +243,7 @@ export class Networking extends EventEmitter {
 		this.onUdpClose = this.onUdpClose.bind(this);
 		this.onDaveDebug = this.onDaveDebug.bind(this);
 		this.onDaveKeyPackage = this.onDaveKeyPackage.bind(this);
+		this.onDaveInvalidateTransition = this.onDaveInvalidateTransition.bind(this);
 
 		this.debug = debug ? (message: string) => this.emit('debug', message) : null;
 
@@ -305,6 +306,7 @@ export class Networking extends EventEmitter {
 			oldDave.off('error', this.onChildError);
 			oldDave.off('debug', this.onDaveDebug);
 			oldDave.off('keyPackage', this.onDaveKeyPackage);
+			oldDave.off('invalidateTransition', this.onDaveInvalidateTransition);
 			oldDave.destroy();
 		}
 
@@ -361,6 +363,7 @@ export class Networking extends EventEmitter {
 		session.on('error', this.onChildError);
 		session.on('debug', this.onDaveDebug);
 		session.on('keyPackage', this.onDaveKeyPackage);
+		session.on('invalidateTransition', this.onDaveInvalidateTransition);
 		session.reinit();
 
 		return session;
@@ -555,20 +558,18 @@ export class Networking extends EventEmitter {
 				if (payload) this.state.ws.sendBinaryMessage(VoiceOpcodes.DaveMlsCommitWelcome, payload);
 			} else if (message.op === VoiceOpcodes.DaveMlsAnnounceCommitTransition) {
 				const { transitionId, success } = this.state.dave.processCommit(message.payload);
-				if (transitionId !== 0)
+				if (success)
 					this.state.ws.sendPacket({
-						op: success ? VoiceOpcodes.DaveTransitionReady : VoiceOpcodes.DaveMlsInvalidCommitWelcome,
+						op: VoiceOpcodes.DaveTransitionReady,
 						d: { transition_id: transitionId },
 					});
-				if (!success) this.state.dave.reinit();
 			} else if (message.op === VoiceOpcodes.DaveMlsWelcome) {
 				const { transitionId, success } = this.state.dave.processWelcome(message.payload);
-				if (transitionId !== 0)
+				if (success)
 					this.state.ws.sendPacket({
-						op: success ? VoiceOpcodes.DaveTransitionReady : VoiceOpcodes.DaveMlsInvalidCommitWelcome,
+						op: VoiceOpcodes.DaveTransitionReady,
 						d: { transition_id: transitionId },
 					});
-				if (!success) this.state.dave.reinit();
 			}
 		}
 	}
@@ -581,6 +582,19 @@ export class Networking extends EventEmitter {
 	private onDaveKeyPackage(keyPackage: Buffer) {
 		if (this.state.code === NetworkingStatusCode.SelectingProtocol || this.state.code === NetworkingStatusCode.Ready)
 			this.state.ws.sendBinaryMessage(VoiceOpcodes.DaveMlsKeyPackage, keyPackage);
+	}
+
+	/**
+	 * Called when the DAVE session wants to invalidate their transition and re-initialize.
+	 *
+	 * @param transitionId - The transition to invalidate
+	 */
+	private onDaveInvalidateTransition(transitionId: number) {
+		if (this.state.code === NetworkingStatusCode.SelectingProtocol || this.state.code === NetworkingStatusCode.Ready)
+			this.state.ws.sendPacket({
+				op: VoiceOpcodes.DaveMlsInvalidCommitWelcome,
+				d: { transition_id: transitionId },
+			});
 	}
 
 	/**

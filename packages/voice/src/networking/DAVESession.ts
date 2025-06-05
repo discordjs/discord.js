@@ -17,6 +17,13 @@ const TRANSITION_EXPIRY = 10;
  */
 const TRANSITION_EXPIRY_PENDING_DOWNGRADE = 120;
 
+/**
+ * The amount of packets to allow decryption failure for until we deem the transition bad and re-initialize.
+ * Usually 4 packets on a good connection may slip past when entering a new session.
+ * After re-initializing, 5-24 packets may fail to decrypt after.
+ */
+export const DEFAULT_DECRYPTION_FAILURE_TOLERANCE = 36;
+
 // eslint-disable-next-line no-async-promise-executor
 export const daveLoadPromise = new Promise<void>(async (resolve) => {
 	try {
@@ -43,6 +50,7 @@ export interface DAVESession extends EventEmitter {
 	on(event: 'error', listener: (error: Error) => void): this;
 	on(event: 'debug', listener: (message: string) => void): this;
 	on(event: 'keyPackage', listener: (message: Buffer) => void): this;
+	on(event: 'invalidateTransition', listener: (transitionId: number) => void): this;
 }
 
 /**
@@ -65,6 +73,11 @@ export class DAVESession extends EventEmitter {
 	public protocolVersion: number;
 
 	/**
+	 * The last transition ID executed.
+	 */
+	public lastTransitionId?: number | undefined;
+
+	/**
 	 * The pending transition.
 	 */
 	private pendingTransition?: VoiceDavePrepareTransitionData | undefined;
@@ -73,6 +86,11 @@ export class DAVESession extends EventEmitter {
 	 * Whether this session was downgraded previously.
 	 */
 	private downgraded = false;
+
+	/**
+	 * Whether this session is currently re-initializing due to an invalid transition.
+	 */
+	public reinitializing = false;
 
 	/**
 	 * The underlying DAVE Session of this wrapper.
@@ -170,6 +188,8 @@ export class DAVESession extends EventEmitter {
 
 			// In the future we'd want to signal to the DAVESession to transition also, but it only supports v1 at this time
 			transitioned = true;
+			this.reinitializing = false;
+			this.lastTransitionId = transitionId;
 			this.emit('debug', `Transition executed (v${oldVersion} -> v${this.protocolVersion}, id: ${transitionId})`);
 		}
 
@@ -188,6 +208,19 @@ export class DAVESession extends EventEmitter {
 			this.protocolVersion = data.protocol_version;
 			this.reinit();
 		}
+	}
+
+	/**
+	 * Recover from an invalid transition by re-initializing.
+	 *
+	 * @param transitionId - The transition ID to invalidate
+	 */
+	public recoverFromInvalidTransition(transitionId: number) {
+		if (this.reinitializing) return;
+		this.emit('debug', `Invalidating transition ${transitionId}`);
+		this.reinitializing = true;
+		this.emit('invalidateTransition', transitionId);
+		this.reinit();
 	}
 
 	/**
@@ -219,12 +252,15 @@ export class DAVESession extends EventEmitter {
 		const transitionId = payload.readUInt16BE(0);
 		try {
 			this.session.processCommit(payload.subarray(2));
-			if (transitionId !== 0)
-				this.pendingTransition = { transition_id: transitionId, protocol_version: this.protocolVersion };
+			if (transitionId === 0) {
+				this.reinitializing = false;
+				this.lastTransitionId = transitionId;
+			} else this.pendingTransition = { transition_id: transitionId, protocol_version: this.protocolVersion };
 			this.emit('debug', `MLS commit processed (transition id: ${transitionId})`);
 			return { transitionId, success: true };
 		} catch (error) {
 			this.emit('error', new DAVESessionError(error as Error, DAVESessionErrorKind.Commit, transitionId));
+			this.recoverFromInvalidTransition(transitionId);
 			return { transitionId, success: false };
 		}
 	}
@@ -239,12 +275,15 @@ export class DAVESession extends EventEmitter {
 		const transitionId = payload.readUInt16BE(0);
 		try {
 			this.session.processWelcome(payload.subarray(2));
-			if (transitionId !== 0)
-				this.pendingTransition = { transition_id: transitionId, protocol_version: this.protocolVersion };
+			if (transitionId === 0) {
+				this.reinitializing = false;
+				this.lastTransitionId = transitionId;
+			} else this.pendingTransition = { transition_id: transitionId, protocol_version: this.protocolVersion };
 			this.emit('debug', `MLS welcome processed (transition id: ${transitionId})`);
 			return { transitionId, success: true };
 		} catch (error) {
 			this.emit('error', new DAVESessionError(error as Error, DAVESessionErrorKind.Welcome, transitionId));
+			this.recoverFromInvalidTransition(transitionId);
 			return { transitionId, success: false };
 		}
 	}

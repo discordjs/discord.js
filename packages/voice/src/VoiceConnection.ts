@@ -11,7 +11,7 @@ import {
 } from './DataStore';
 import type { AudioPlayer } from './audio/AudioPlayer';
 import type { PlayerSubscription } from './audio/PlayerSubscription';
-import type { VoiceWebSocket, VoiceUDPSocket } from './networking';
+import type { VoiceWebSocket, VoiceUDPSocket, DAVESession } from './networking';
 import { Networking, NetworkingStatusCode, type NetworkingState } from './networking/Networking';
 import { VoiceReceiver } from './receive/index';
 import type { DiscordGatewayAdapterImplementerMethods } from './util/adapter';
@@ -376,6 +376,8 @@ export class VoiceConnection extends EventEmitter {
 		const newWs = Reflect.get(newState, 'ws') as VoiceWebSocket | undefined;
 		const oldUdp = Reflect.get(oldState ?? {}, 'udp') as VoiceUDPSocket | undefined;
 		const newUdp = Reflect.get(newState, 'udp') as VoiceUDPSocket | undefined;
+		const oldDave = Reflect.get(oldState ?? {}, 'dave') as DAVESession | undefined;
+		const newDave = Reflect.get(newState, 'dave') as DAVESession | undefined;
 
 		if (oldWs !== newWs) {
 			oldWs?.off('packet', this.receiver.onWsPacket);
@@ -385,6 +387,11 @@ export class VoiceConnection extends EventEmitter {
 		if (oldUdp !== newUdp) {
 			oldUdp?.off('message', this.receiver.onUdpMessage);
 			newUdp?.on('message', this.receiver.onUdpMessage);
+		}
+
+		if (oldDave !== newDave) {
+			oldDave?.off('invalidateTransition', this.receiver.onDaveInvalidateTransition);
+			newDave?.on('invalidateTransition', this.receiver.onDaveInvalidateTransition);
 		}
 
 		this.receiver.connectionData = Reflect.get(newState, 'connectionData') ?? {};
