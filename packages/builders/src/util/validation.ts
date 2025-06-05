@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 
 let validationEnabled = true;
 
@@ -36,20 +36,19 @@ export function isValidationEnabled() {
  * @returns The result from parsing
  * @internal
  */
-export function validate<Validator extends z.ZodTypeAny>(
+export function validate<Validator extends z.ZodType>(
 	validator: Validator,
 	value: unknown,
 	validationOverride?: boolean,
 ): z.output<Validator> {
 	if (validationOverride === false || !isValidationEnabled()) {
-		return value;
+		return value as z.output<Validator>;
 	}
 
 	const result = validator.safeParse(value);
 
 	if (!result.success) {
-		// eslint-disable-next-line @typescript-eslint/only-throw-error
-		throw z.prettifyError(result.error);
+		throw new Error(z.prettifyError(result.error));
 	}
 
 	return result.data;

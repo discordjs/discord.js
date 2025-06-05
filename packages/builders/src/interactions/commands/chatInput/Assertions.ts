@@ -3,8 +3,7 @@ import {
 	InteractionContextType,
 	ApplicationCommandOptionType,
 } from 'discord-api-types/v10';
-import type { ZodTypeAny } from 'zod';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { localeMapPredicate, memberPermissionsPredicate } from '../../../Assertions.js';
 import { ApplicationCommandOptionAllowedChannelTypes } from './mixins/ApplicationCommandOptionChannelTypesMixin.js';
 
@@ -35,13 +34,7 @@ const numericMixinIntegerOptionPredicate = z.object({
 
 const channelMixinOptionPredicate = z.object({
 	channel_types: z
-		.union(
-			ApplicationCommandOptionAllowedChannelTypes.map((type) => z.literal(type)) as unknown as [
-				ZodTypeAny,
-				ZodTypeAny,
-				...ZodTypeAny[],
-			],
-		)
+		.literal(ApplicationCommandOptionAllowedChannelTypes as unknown as ApplicationCommandOptionAllowedChannelTypes[])
 		.array()
 		.optional(),
 });
@@ -74,7 +67,7 @@ const choiceNumberMixinPredicate = choiceBaseMixinPredicate.extend({
 	choices: choiceNumberPredicate.array().max(25).optional(),
 });
 
-const basicOptionTypes = [
+const basicOptionTypesPredicate = z.literal([
 	ApplicationCommandOptionType.Attachment,
 	ApplicationCommandOptionType.Boolean,
 	ApplicationCommandOptionType.Channel,
@@ -84,11 +77,7 @@ const basicOptionTypes = [
 	ApplicationCommandOptionType.Role,
 	ApplicationCommandOptionType.String,
 	ApplicationCommandOptionType.User,
-] as const;
-
-const basicOptionTypesPredicate = z.union(
-	basicOptionTypes.map((type) => z.literal(type)) as unknown as [ZodTypeAny, ZodTypeAny, ...ZodTypeAny[]],
-);
+]);
 
 export const basicOptionPredicate = sharedNameAndDescriptionPredicate.extend({
 	required: z.boolean().optional(),
@@ -123,9 +112,9 @@ export const stringOptionPredicate = basicOptionPredicate
 	.and(autocompleteOrStringChoicesMixinOptionPredicate);
 
 const baseChatInputCommandPredicate = sharedNameAndDescriptionPredicate.extend({
-	contexts: z.array(z.nativeEnum(InteractionContextType)).optional(),
+	contexts: z.array(z.enum(InteractionContextType)).optional(),
 	default_member_permissions: memberPermissionsPredicate.optional(),
-	integration_types: z.array(z.nativeEnum(ApplicationIntegrationType)).optional(),
+	integration_types: z.array(z.enum(ApplicationIntegrationType)).optional(),
 	nsfw: z.boolean().optional(),
 });
 

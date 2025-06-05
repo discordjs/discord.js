@@ -1,20 +1,16 @@
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { refineURLPredicate } from '../../Assertions.js';
 import { embedLength } from '../../util/componentUtil.js';
 
 const namePredicate = z.string().max(256);
 
 const URLPredicate = z
-	.string()
 	.url()
-	.refine(refineURLPredicate(['http:', 'https:']), { message: 'Invalid protocol for URL. Must be http: or https:' });
+	.refine(refineURLPredicate(['http:', 'https:']), { error: 'Invalid protocol for URL. Must be http: or https:' });
 
-const URLWithAttachmentProtocolPredicate = z
-	.string()
-	.url()
-	.refine(refineURLPredicate(['http:', 'https:', 'attachment:']), {
-		message: 'Invalid protocol for URL. Must be http:, https:, or attachment:',
-	});
+const URLWithAttachmentProtocolPredicate = z.url().refine(refineURLPredicate(['http:', 'https:', 'attachment:']), {
+	error: 'Invalid protocol for URL. Must be http:, https:, or attachment:',
+});
 
 export const embedFieldPredicate = z.object({
 	name: namePredicate,
@@ -56,7 +52,7 @@ export const embedPredicate = z
 			embed.image !== undefined ||
 			embed.thumbnail !== undefined,
 		{
-			message: 'Embed must have at least a title, description, a field, a footer, an author, an image, OR a thumbnail.',
+			error: 'Embed must have at least a title, description, a field, a footer, an author, an image, OR a thumbnail.',
 		},
 	)
-	.refine((embed) => embedLength(embed) <= 6_000, { message: 'Embeds must not exceed 6000 characters in total.' });
+	.refine((embed) => embedLength(embed) <= 6_000, { error: 'Embeds must not exceed 6000 characters in total.' });

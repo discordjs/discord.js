@@ -1,15 +1,12 @@
 import { ComponentType, SeparatorSpacingSize } from 'discord-api-types/v10';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { refineURLPredicate } from '../../Assertions.js';
 import { actionRowPredicate } from '../Assertions.js';
 
 const unfurledMediaItemPredicate = z.object({
-	url: z
-		.string()
-		.url()
-		.refine(refineURLPredicate(['http:', 'https:', 'attachment:']), {
-			message: 'Invalid protocol for media URL. Must be http:, https:, or attachment:',
-		}),
+	url: z.url().refine(refineURLPredicate(['http:', 'https:', 'attachment:']), {
+		error: 'Invalid protocol for media URL. Must be http:, https:, or attachment:',
+	}),
 });
 
 export const thumbnailPredicate = z.object({
@@ -19,12 +16,9 @@ export const thumbnailPredicate = z.object({
 });
 
 const unfurledMediaItemAttachmentOnlyPredicate = z.object({
-	url: z
-		.string()
-		.url()
-		.refine(refineURLPredicate(['attachment:']), {
-			message: 'Invalid protocol for file URL. Must be attachment:',
-		}),
+	url: z.url().refine(refineURLPredicate(['attachment:']), {
+		error: 'Invalid protocol for file URL. Must be attachment:',
+	}),
 });
 
 export const filePredicate = z.object({
@@ -34,7 +28,7 @@ export const filePredicate = z.object({
 
 export const separatorPredicate = z.object({
 	divider: z.boolean().optional(),
-	spacing: z.nativeEnum(SeparatorSpacingSize).optional(),
+	spacing: z.enum(SeparatorSpacingSize).optional(),
 });
 
 export const textDisplayPredicate = z.object({
