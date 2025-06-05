@@ -3,8 +3,7 @@
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
 		"emitDecoratorMetadata": true,
-		"exactOptionalPropertyTypes": false,
-		"skipLibCheck": true
+		"exactOptionalPropertyTypes": false
 	},
 	"include": ["src/**/*.ts", "src/**/*.js", "src/**/*.cjs", "src/**/*.mjs", "bin"],
 	"exclude": ["node_modules"]

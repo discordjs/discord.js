@@ -759,8 +759,8 @@ importers:
         specifier: ^2.8.1
         version: 2.8.1
       zod:
-        specifier: 4.0.0-beta.20250430T185432
-        version: 4.0.0-beta.20250430T185432
+        specifier: ^3.25.57
+        version: 3.25.57
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -7191,9 +7191,6 @@ packages:
 
   '@vue/shared@3.5.13':
     resolution: {integrity: sha512-/hnE/qP5ZoGpol0a5mDi45bOd7t3tjYJBjsgCsivow7D48cJeV5l05RD82lPqi7gRiphZM37rnhW1l6ZoCNNnQ==}
-
-  '@zod/core@0.10.0':
-    resolution: {integrity: sha512-iMITRygme3v9jPsITJjvRMw60+MQq7MWnNpJleRkfjeSCjBm3c1/tiw3NUS4re/M2CBXVP5kAjI7sQrf22twXA==}
 
   JSONStream@1.3.5:
     resolution: {integrity: sha512-E+iruNOY8VV9s4JEbe1aNEm6MiszPRr/UfcHMz0TQh1BXSxHK+ASV1R6W4HpjBhSeS+54PIsAMCBmwD06LLsqQ==}
@@ -14010,8 +14007,8 @@ packages:
   zod@3.25.39:
     resolution: {integrity: sha512-yrva2T2x4R+FMFTPBVD/YPS7ct8njqjnV93zNx/MlwqLAxcnxwRGbXWyWF63/nErl3rdRd8KARObon7BiWzabQ==}
 
-  zod@4.0.0-beta.20250430T185432:
-    resolution: {integrity: sha512-vslrh3wNLK14cpJwzcuU/uphPR0K/nf4G+/rDpp7TTl4d9h5Rgk1PNcr+2zftZJ4o+sKRUvlFV+FmAVfhu7ZqA==}
+  zod@3.25.57:
+    resolution: {integrity: sha512-6tgzLuwVST5oLUxXTmBqoinKMd3JeesgbgseXeFasKKj8Q1FCZrHnbqJOyiEvr4cVAlbug+CgIsmJ8cl/pU5FA==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -21121,8 +21118,6 @@ snapshots:
       typescript: 5.8.3
 
   '@vue/shared@3.5.13': {}
-
-  '@zod/core@0.10.0': {}
 
   JSONStream@1.3.5:
     dependencies:
@@ -29699,8 +29694,6 @@ snapshots:
 
   zod@3.25.39: {}
 
-  zod@4.0.0-beta.20250430T185432:
-    dependencies:
-      '@zod/core': 0.10.0
+  zod@3.25.57: {}
 
   zwitch@2.0.4: {}
