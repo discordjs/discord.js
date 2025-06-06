@@ -11,9 +11,3 @@ export const localeMapPredicate = z.strictObject(
 		z.ZodOptional<z.ZodString>
 	>,
 );
-
-export const refineURLPredicate = (allowedProtocols: string[]) => (value: string) => {
-	// eslint-disable-next-line n/prefer-global/url
-	const url = new URL(value);
-	return allowedProtocols.includes(url.protocol);
-};

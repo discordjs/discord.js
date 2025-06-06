@@ -1,12 +1,9 @@
 import { ComponentType, SeparatorSpacingSize } from 'discord-api-types/v10';
 import { z } from 'zod/v4';
-import { refineURLPredicate } from '../../Assertions.js';
 import { actionRowPredicate } from '../Assertions.js';
 
 const unfurledMediaItemPredicate = z.object({
-	url: z.url().refine(refineURLPredicate(['http:', 'https:', 'attachment:']), {
-		error: 'Invalid protocol for media URL. Must be http:, https:, or attachment:',
-	}),
+	url: z.url({ protocol: /^(?:https?|attachment)$/ }),
 });
 
 export const thumbnailPredicate = z.object({
@@ -16,9 +13,7 @@ export const thumbnailPredicate = z.object({
 });
 
 const unfurledMediaItemAttachmentOnlyPredicate = z.object({
-	url: z.url().refine(refineURLPredicate(['attachment:']), {
-		error: 'Invalid protocol for file URL. Must be attachment:',
-	}),
+	url: z.url({ protocol: /^attachment$/ }),
 });
 
 export const filePredicate = z.object({

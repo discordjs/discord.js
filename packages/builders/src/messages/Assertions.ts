@@ -75,11 +75,10 @@ const messageNoComponentsV2Predicate = baseMessagePredicate
 		poll: pollPredicate.optional(),
 		components: basicActionRowPredicate.array().max(5).optional(),
 		flags: z
-			.number()
+			.int()
 			.optional()
-			// If we have flags, ensure we don't have the ComponentsV2 flag
 			.refine((flags) => !flags || (flags & MessageFlags.IsComponentsV2) === 0, {
-				error: 'ComponentsV2 flag cannot be set on messages without components v2',
+				error: 'Cannot set content, embeds, stickers, or poll with IsComponentsV2 flag set',
 			}),
 	})
 	.refine(
@@ -115,7 +114,9 @@ const allTopLevelComponentsPredicate = z
 
 const messageComponentsV2Predicate = baseMessagePredicate.extend({
 	components: allTopLevelComponentsPredicate,
-	flags: z.number().refine((flags) => (flags & MessageFlags.IsComponentsV2) === MessageFlags.IsComponentsV2),
+	flags: z.int().refine((flags) => (flags & MessageFlags.IsComponentsV2) === MessageFlags.IsComponentsV2, {
+		error: 'Must set IsComponentsV2 flag to use Components V2',
+	}),
 	// These fields cannot be set
 	content: z.string().length(0).nullish(),
 	embeds: z.array(z.never()).nullish(),

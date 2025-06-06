@@ -1,6 +1,6 @@
 import { ButtonStyle, ChannelType, ComponentType, SelectMenuDefaultValueType } from 'discord-api-types/v10';
 import { z } from 'zod/v4';
-import { customIdPredicate, refineURLPredicate } from '../Assertions.js';
+import { customIdPredicate } from '../Assertions.js';
 
 const labelPredicate = z.string().min(1).max(80);
 
@@ -32,7 +32,7 @@ const buttonDangerPredicate = buttonCustomIdPredicateBase.extend({ style: z.lite
 
 const buttonLinkPredicate = buttonPredicateBase.extend({
 	style: z.literal(ButtonStyle.Link),
-	url: z.url().refine(refineURLPredicate(['http:', 'https:', 'discord:'])),
+	url: z.url({ protocol: /^(?:https?|attachment)$/ }),
 	emoji: emojiPredicate.optional(),
 	label: labelPredicate,
 });

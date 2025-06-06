@@ -1,16 +1,11 @@
 import { z } from 'zod/v4';
-import { refineURLPredicate } from '../../Assertions.js';
 import { embedLength } from '../../util/componentUtil.js';
 
 const namePredicate = z.string().max(256);
 
-const URLPredicate = z
-	.url()
-	.refine(refineURLPredicate(['http:', 'https:']), { error: 'Invalid protocol for URL. Must be http: or https:' });
+const URLPredicate = z.url({ protocol: /^https?$/ });
 
-const URLWithAttachmentProtocolPredicate = z.url().refine(refineURLPredicate(['http:', 'https:', 'attachment:']), {
-	error: 'Invalid protocol for URL. Must be http:, https:, or attachment:',
-});
+const URLWithAttachmentProtocolPredicate = z.url({ protocol: /^(?:https?|attachment)$/ });
 
 export const embedFieldPredicate = z.object({
 	name: namePredicate,
