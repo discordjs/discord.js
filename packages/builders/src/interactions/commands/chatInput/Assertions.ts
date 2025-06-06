@@ -5,7 +5,10 @@ import {
 } from 'discord-api-types/v10';
 import { z } from 'zod/v4';
 import { localeMapPredicate, memberPermissionsPredicate } from '../../../Assertions.js';
-import { ApplicationCommandOptionAllowedChannelTypes } from './mixins/ApplicationCommandOptionChannelTypesMixin.js';
+import {
+	type ApplicationCommandOptionAllowedChannelType,
+	ApplicationCommandOptionAllowedChannelTypes,
+} from './mixins/ApplicationCommandOptionChannelTypesMixin.js';
 
 const namePredicate = z
 	.string()
@@ -34,7 +37,8 @@ const numericMixinIntegerOptionPredicate = z.object({
 
 const channelMixinOptionPredicate = z.object({
 	channel_types: z
-		.literal(ApplicationCommandOptionAllowedChannelTypes as unknown as ApplicationCommandOptionAllowedChannelTypes[])
+		// Zod doesn't allow passing readonly arrays :/
+		.literal(ApplicationCommandOptionAllowedChannelTypes as unknown as ApplicationCommandOptionAllowedChannelType[])
 		.array()
 		.optional(),
 });
@@ -94,14 +98,23 @@ const autocompleteOrNumberChoicesMixinOptionPredicate = z.discriminatedUnion('au
 	choiceNumberMixinPredicate,
 ]);
 
-export const channelOptionPredicate = basicOptionPredicate.merge(channelMixinOptionPredicate);
+export const channelOptionPredicate = z.object({
+	...basicOptionPredicate.shape,
+	...channelMixinOptionPredicate.shape,
+});
 
-export const integerOptionPredicate = basicOptionPredicate
-	.merge(numericMixinIntegerOptionPredicate)
+export const integerOptionPredicate = z
+	.object({
+		...basicOptionPredicate.shape,
+		...numericMixinIntegerOptionPredicate.shape,
+	})
 	.and(autocompleteOrNumberChoicesMixinOptionPredicate);
 
-export const numberOptionPredicate = basicOptionPredicate
-	.merge(numericMixinNumberOptionPredicate)
+export const numberOptionPredicate = z
+	.object({
+		...basicOptionPredicate.shape,
+		...numericMixinNumberOptionPredicate.shape,
+	})
 	.and(autocompleteOrNumberChoicesMixinOptionPredicate);
 
 export const stringOptionPredicate = basicOptionPredicate
