@@ -88,6 +88,11 @@ export class DAVESession extends EventEmitter {
 	private downgraded = false;
 
 	/**
+	 * The amount of consecutive failures encountered when decrypting.
+	 */
+	private consecutiveFailures = 0;
+
+	/**
 	 * Whether this session is currently re-initializing due to an invalid transition.
 	 */
 	public reinitializing = false;
@@ -219,6 +224,7 @@ export class DAVESession extends EventEmitter {
 		if (this.reinitializing) return;
 		this.emit('debug', `Invalidating transition ${transitionId}`);
 		this.reinitializing = true;
+		this.consecutiveFailures = 0;
 		this.emit('invalidateTransition', transitionId);
 		this.reinit();
 	}
@@ -303,11 +309,34 @@ export class DAVESession extends EventEmitter {
 	 *
 	 * @param packet - The packet to decrypt
 	 * @param userId - The user ID that sent the packet
+	 * @returns The decrypted packet, or `null` if the decryption failed but should be ignored
 	 */
 	public decrypt(packet: Buffer, userId: string) {
 		const canDecrypt = this?.session.ready && (this.protocolVersion !== 0 || this.session?.canPassthrough(userId));
 		if (packet.equals(SILENCE_FRAME) || !canDecrypt) return packet;
-		return this.session.decrypt(userId, Davey.MediaType.AUDIO, packet);
+		try {
+			const buffer = this.session.decrypt(userId, Davey.MediaType.AUDIO, packet);
+			this.consecutiveFailures = 0;
+			return buffer;
+		} catch (error) {
+			if (!this.reinitializing && !this.pendingTransition) {
+				this.consecutiveFailures++;
+				this.emit('debug', `Failed to decrypt a packet (${this.consecutiveFailures} consecutive fails)`);
+				if (this.consecutiveFailures > DEFAULT_DECRYPTION_FAILURE_TOLERANCE) {
+					if (this.lastTransitionId) this.recoverFromInvalidTransition(this.lastTransitionId);
+					else throw error;
+				}
+			} else if (this.reinitializing) {
+				this.emit('debug', 'Failed to decrypt a packet (reinitializing session)');
+			} else if (this.pendingTransition) {
+				this.emit(
+					'debug',
+					`Failed to decrypt a packet (pending transition ${this.pendingTransition.transition_id} to v${this.pendingTransition.protocol_version})`,
+				);
+			}
+		}
+
+		return null;
 	}
 
 	/**

@@ -5,7 +5,6 @@ import crypto from 'node:crypto';
 import type { VoiceReceivePayload } from 'discord-api-types/voice/v8';
 import { VoiceOpcodes } from 'discord-api-types/voice/v8';
 import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection';
-import { DEFAULT_DECRYPTION_FAILURE_TOLERANCE } from '../networking';
 import { NetworkingStatusCode, type ConnectionData } from '../networking/Networking';
 import { methods } from '../util/Secretbox';
 import {
@@ -54,11 +53,6 @@ export class VoiceReceiver {
 	 */
 	public readonly speaking: SpeakingMap;
 
-	/**
-	 * The amount of consecutive failures encountered when decrypting with the DAVE protocol.
-	 */
-	private consecutiveDAVEFailures = 0;
-
 	public constructor(voiceConnection: VoiceConnection) {
 		this.voiceConnection = voiceConnection;
 		this.ssrcMap = new SSRCMap();
@@ -68,11 +62,6 @@ export class VoiceReceiver {
 
 		this.onWsPacket = this.onWsPacket.bind(this);
 		this.onUdpMessage = this.onUdpMessage.bind(this);
-		this.onDaveInvalidateTransition = this.onDaveInvalidateTransition.bind(this);
-	}
-
-	public onDaveInvalidateTransition() {
-		this.consecutiveDAVEFailures = 0;
 	}
 
 	/**
@@ -162,20 +151,7 @@ export class VoiceReceiver {
 				this.voiceConnection.state.networking.state.code === NetworkingStatusCode.Resuming)
 		) {
 			const daveSession = this.voiceConnection.state.networking.state.dave;
-			if (daveSession) {
-				try {
-					packet = daveSession.decrypt(packet, userId);
-					this.consecutiveDAVEFailures = 0;
-				} catch (error) {
-					if (!daveSession?.reinitializing) {
-						this.consecutiveDAVEFailures++;
-						if (this.consecutiveDAVEFailures > DEFAULT_DECRYPTION_FAILURE_TOLERANCE) {
-							if (daveSession.lastTransitionId) daveSession.recoverFromInvalidTransition(daveSession.lastTransitionId);
-							else throw error;
-						}
-					}
-				}
-			}
+			if (daveSession) packet = daveSession.decrypt(packet, userId);
 		}
 
 		return packet;
