@@ -412,6 +412,7 @@ export class VoiceConnection extends EventEmitter {
 				token: server.token,
 				sessionId: state.session_id,
 				userId: state.user_id,
+				channelId: state.channel_id!,
 			},
 			Boolean(this.debug),
 		);
