@@ -4,7 +4,7 @@ import type {
 	APIApplicationCommandOption,
 	ApplicationCommandOptionType,
 } from 'discord-api-types/v10';
-import type { z } from 'zod';
+import type { z } from 'zod/v4';
 import { validate } from '../../../../util/validation.js';
 import type { SharedNameAndDescriptionData } from '../../SharedNameAndDescription.js';
 import { SharedNameAndDescription } from '../../SharedNameAndDescription.js';
@@ -24,7 +24,7 @@ export abstract class ApplicationCommandOptionBase
 	/**
 	 * @internal
 	 */
-	protected static readonly predicate: z.ZodTypeAny = basicOptionPredicate;
+	protected static readonly predicate: z.ZodType = basicOptionPredicate;
 
 	/**
 	 * @internal
