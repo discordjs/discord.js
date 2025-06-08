@@ -120,7 +120,21 @@ export class DAVESession extends EventEmitter {
 	 * The current voice privacy code of the session. Will be `null` if there is no session.
 	 */
 	public get voicePrivacyCode(): string | null {
-		return this.protocolVersion === 0 ? null : (this.session.voicePrivacyCode ?? null);
+		return this.protocolVersion === 0
+			? null
+			: this.session.voicePrivacyCode === ''
+				? null
+				: this.session.voicePrivacyCode;
+	}
+
+	/**
+	 * Gets the verification code for a user in the session.
+	 *
+	 * @throws Will throw if there is not an active session or the user ID provided is invalid or not in the session.
+	 */
+	public async getVerificationCode(userId: string): Promise<string> {
+		if (!this.session) throw new Error('Session not available');
+		return this.session.getVerificationCode(userId);
 	}
 
 	/**
@@ -194,7 +208,7 @@ export class DAVESession extends EventEmitter {
 				this.emit('debug', 'Session downgraded');
 			} else if (transitionId > 0 && this.downgraded) {
 				this.downgraded = false;
-				this.session?.setPassthroughMode(true, 10);
+				this.session?.setPassthroughMode(true, TRANSITION_EXPIRY);
 				this.emit('debug', 'Session upgraded');
 			}
 

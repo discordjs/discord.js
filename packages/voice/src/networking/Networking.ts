@@ -177,6 +177,7 @@ export interface Networking extends EventEmitter {
 	on(event: 'error', listener: (error: Error) => void): this;
 	on(event: 'stateChange', listener: (oldState: NetworkingState, newState: NetworkingState) => void): this;
 	on(event: 'close', listener: (code: number) => void): this;
+	on(event: 'transitioned', listener: (transitionId: number) => void): this;
 }
 
 /**
@@ -538,15 +539,17 @@ export class Networking extends EventEmitter {
 			this.state.dave
 		) {
 			if (packet.op === VoiceOpcodes.DavePrepareTransition) {
-				const ready = this.state.dave.prepareTransition(packet.d);
-				if (ready)
+				const sendReady = this.state.dave.prepareTransition(packet.d);
+				if (sendReady)
 					this.state.ws.sendPacket({
 						op: VoiceOpcodes.DaveTransitionReady,
 						d: { transition_id: packet.d.transition_id },
 					});
-			} else if (packet.op === VoiceOpcodes.DaveExecuteTransition)
-				this.state.dave.executeTransition(packet.d.transition_id);
-			else if (packet.op === VoiceOpcodes.DavePrepareEpoch) this.state.dave.prepareEpoch(packet.d);
+				if (packet.d.transition_id === 0) this.emit('transitioned', 0);
+			} else if (packet.op === VoiceOpcodes.DaveExecuteTransition) {
+				const transitioned = this.state.dave.executeTransition(packet.d.transition_id);
+				if (transitioned) this.emit('transitioned', packet.d.transition_id);
+			} else if (packet.op === VoiceOpcodes.DavePrepareEpoch) this.state.dave.prepareEpoch(packet.d);
 		}
 	}
 
@@ -564,18 +567,24 @@ export class Networking extends EventEmitter {
 				if (payload) this.state.ws.sendBinaryMessage(VoiceOpcodes.DaveMlsCommitWelcome, payload);
 			} else if (message.op === VoiceOpcodes.DaveMlsAnnounceCommitTransition) {
 				const { transitionId, success } = this.state.dave.processCommit(message.payload);
-				if (success && transitionId !== 0)
-					this.state.ws.sendPacket({
-						op: VoiceOpcodes.DaveTransitionReady,
-						d: { transition_id: transitionId },
-					});
+				if (success) {
+					if (transitionId === 0) this.emit('transitioned', transitionId);
+					else
+						this.state.ws.sendPacket({
+							op: VoiceOpcodes.DaveTransitionReady,
+							d: { transition_id: transitionId },
+						});
+				}
 			} else if (message.op === VoiceOpcodes.DaveMlsWelcome) {
 				const { transitionId, success } = this.state.dave.processWelcome(message.payload);
-				if (success && transitionId !== 0)
-					this.state.ws.sendPacket({
-						op: VoiceOpcodes.DaveTransitionReady,
-						d: { transition_id: transitionId },
-					});
+				if (success) {
+					if (transitionId === 0) this.emit('transitioned', transitionId);
+					else
+						this.state.ws.sendPacket({
+							op: VoiceOpcodes.DaveTransitionReady,
+							d: { transition_id: transitionId },
+						});
+				}
 			}
 		}
 	}
