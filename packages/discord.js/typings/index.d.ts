@@ -5300,9 +5300,13 @@ export interface ClientEventTypes {
   ];
   guildScheduledEventUserAdd: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent, user: User];
   guildScheduledEventUserRemove: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent, user: User];
-  guildSoundboardSoundCreate: [soundboardSound: SoundboardSound];
-  guildSoundboardSoundDelete: [soundboardSound: PartialSoundboardSound | SoundboardSound];
-  guildSoundboardSoundUpdate: [oldSoundboardSound: SoundboardSound | null, newSoundboardSound: SoundboardSound];
+  guildSoundboardSoundCreate: [soundboardSound: GuildSoundboardSound];
+  guildSoundboardSoundDelete: [soundboardSound: GuildSoundboardSound | PartialSoundboardSound];
+  guildSoundboardSoundUpdate: [
+    oldSoundboardSound: GuildSoundboardSound | null,
+    newSoundboardSound: GuildSoundboardSound,
+  ];
+  guildSoundboardSoundsUpdate: [soundboardSounds: ReadonlyCollection<Snowflake, GuildSoundboardSound>, guild: Guild];
   guildUnavailable: [guild: Guild];
   guildUpdate: [oldGuild: Guild, newGuild: Guild];
   interactionCreate: [interaction: Interaction];
@@ -5340,7 +5344,7 @@ export interface ClientEventTypes {
   roleCreate: [role: Role];
   roleDelete: [role: Role];
   roleUpdate: [oldRole: Role, newRole: Role];
-  soundboardSounds: [soundboardSounds: ReadonlyCollection<Snowflake, SoundboardSound>, guild: Guild];
+  soundboardSounds: [soundboardSounds: ReadonlyCollection<Snowflake, GuildSoundboardSound>, guild: Guild];
   stageInstanceCreate: [stageInstance: StageInstance];
   stageInstanceDelete: [stageInstance: StageInstance];
   stageInstanceUpdate: [oldStageInstance: StageInstance | null, newStageInstance: StageInstance];
