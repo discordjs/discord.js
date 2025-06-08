@@ -696,6 +696,24 @@ export class VoiceConnection extends EventEmitter {
 	}
 
 	/**
+	 * The current voice privacy code of the encrypted session.
+	 *
+	 * @remarks
+	 * For this data to be available, the VoiceConnection must be in the Ready state,
+	 * and the connection would have to be end-to-end encrypted.
+	 */
+	public get voicePrivacyCode() {
+		if (
+			this.state.status === VoiceConnectionStatus.Ready &&
+			this.state.networking.state.code === NetworkingStatusCode.Ready
+		) {
+			return this.state.networking.state.dave?.voicePrivacyCode ?? undefined;
+		}
+
+		return undefined;
+	}
+
+	/**
 	 * Called when a subscription of this voice connection to an audio player is removed.
 	 *
 	 * @param subscription - The removed subscription

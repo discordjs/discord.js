@@ -117,6 +117,13 @@ export class DAVESession extends EventEmitter {
 	}
 
 	/**
+	 * The current voice privacy code of the session. Will be `null` if there is no session.
+	 */
+	public get voicePrivacyCode(): string | null {
+		return this.protocolVersion === 0 ? null : (this.session.voicePrivacyCode ?? null);
+	}
+
+	/**
 	 * Re-initializes (or initializes) the underlying session.
 	 */
 	public reinit() {
