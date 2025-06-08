@@ -537,8 +537,14 @@ export class Networking extends EventEmitter {
 			(this.state.code === NetworkingStatusCode.Ready || this.state.code === NetworkingStatusCode.Resuming) &&
 			this.state.dave
 		) {
-			if (packet.op === VoiceOpcodes.DavePrepareTransition) this.state.dave.prepareTransition(packet.d);
-			else if (packet.op === VoiceOpcodes.DaveExecuteTransition)
+			if (packet.op === VoiceOpcodes.DavePrepareTransition) {
+				const ready = this.state.dave.prepareTransition(packet.d);
+				if (ready)
+					this.state.ws.sendPacket({
+						op: VoiceOpcodes.DaveTransitionReady,
+						d: { transition_id: packet.d.transition_id },
+					});
+			} else if (packet.op === VoiceOpcodes.DaveExecuteTransition)
 				this.state.dave.executeTransition(packet.d.transition_id);
 			else if (packet.op === VoiceOpcodes.DavePrepareEpoch) this.state.dave.prepareEpoch(packet.d);
 		}

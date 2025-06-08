@@ -13,9 +13,9 @@ const TRANSITION_EXPIRY = 10;
 
 /**
  * The arbitrary amount of seconds to allow passthrough for mid-downgrade.
- * Generally, transitions should not even last this long, but should be more than enough to cover it.
+ * Generally, transitions last about 3 seconds maximum, but this should cover for when connections are delayed.
  */
-const TRANSITION_EXPIRY_PENDING_DOWNGRADE = 120;
+const TRANSITION_EXPIRY_PENDING_DOWNGRADE = 24;
 
 /**
  * The amount of packets to allow decryption failure for until we deem the transition bad and re-initialize.
