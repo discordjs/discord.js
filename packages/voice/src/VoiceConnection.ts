@@ -242,6 +242,11 @@ export class VoiceConnection extends EventEmitter {
 	private readonly debug: ((message: string) => void) | null;
 
 	/**
+	 * The options used to create this voice connection.
+	 */
+	private readonly options: CreateVoiceConnectionOptions;
+
+	/**
 	 * Creates a new voice connection.
 	 *
 	 * @param joinConfig - The data required to establish the voice connection
@@ -275,6 +280,7 @@ export class VoiceConnection extends EventEmitter {
 		};
 
 		this.joinConfig = joinConfig;
+		this.options = options;
 	}
 
 	/**
@@ -422,7 +428,11 @@ export class VoiceConnection extends EventEmitter {
 				userId: state.user_id,
 				channelId: state.channel_id!,
 			},
-			Boolean(this.debug),
+			{
+				debug: Boolean(this.debug),
+				daveEncryption: this.options.daveEncryption ?? true,
+				decryptionFailureTolerance: this.options.decryptionFailureTolerance,
+			},
 		);
 
 		networking.once('close', this.onNetworkingClose);

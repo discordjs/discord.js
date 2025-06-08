@@ -163,6 +163,15 @@ export interface ConnectionData {
 }
 
 /**
+ * Options for networking that dictate behavior.
+ */
+export interface NetworkingOptions {
+	daveEncryption?: boolean | undefined;
+	debug?: boolean | undefined;
+	decryptionFailureTolerance?: number | undefined;
+}
+
+/**
  * An empty buffer that is reused in packet encryption by many different networking instances.
  */
 const nonce = Buffer.alloc(24);
@@ -229,9 +238,14 @@ export class Networking extends EventEmitter {
 	private readonly debug: ((message: string) => void) | null;
 
 	/**
+	 * The options used to create this Networking instance.
+	 */
+	private readonly options: NetworkingOptions;
+
+	/**
 	 * Creates a new Networking instance.
 	 */
-	public constructor(options: ConnectionOptions, debug: boolean) {
+	public constructor(connectionOptions: ConnectionOptions, options: NetworkingOptions) {
 		super();
 
 		this.onWsOpen = this.onWsOpen.bind(this);
@@ -246,13 +260,14 @@ export class Networking extends EventEmitter {
 		this.onDaveKeyPackage = this.onDaveKeyPackage.bind(this);
 		this.onDaveInvalidateTransition = this.onDaveInvalidateTransition.bind(this);
 
-		this.debug = debug ? (message: string) => this.emit('debug', message) : null;
+		this.debug = options?.debug ? (message: string) => this.emit('debug', message) : null;
 
 		this._state = {
 			code: NetworkingStatusCode.OpeningWs,
-			ws: this.createWebSocket(options.endpoint),
-			connectionOptions: options,
+			ws: this.createWebSocket(connectionOptions.endpoint),
+			connectionOptions,
 		};
+		this.options = options;
 	}
 
 	/**
@@ -349,6 +364,7 @@ export class Networking extends EventEmitter {
 	private createDaveSession(protocolVersion: number) {
 		if (
 			getMaxProtocolVersion() === null ||
+			this.options.daveEncryption === false ||
 			(this.state.code !== NetworkingStatusCode.SelectingProtocol &&
 				this.state.code !== NetworkingStatusCode.Ready &&
 				this.state.code !== NetworkingStatusCode.Resuming)
@@ -359,6 +375,9 @@ export class Networking extends EventEmitter {
 			protocolVersion,
 			this.state.connectionOptions.userId,
 			this.state.connectionOptions.channelId,
+			{
+				decryptionFailureTolerance: this.options.decryptionFailureTolerance,
+			},
 		);
 
 		session.on('error', this.onChildError);
@@ -392,7 +411,7 @@ export class Networking extends EventEmitter {
 					user_id: this.state.connectionOptions.userId,
 					session_id: this.state.connectionOptions.sessionId,
 					token: this.state.connectionOptions.token,
-					max_dave_protocol_version: getMaxProtocolVersion() ?? 0,
+					max_dave_protocol_version: this.options.daveEncryption === false ? 0 : (getMaxProtocolVersion() ?? 0),
 				},
 			});
 			this.state = {

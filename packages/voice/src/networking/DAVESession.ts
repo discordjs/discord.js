@@ -38,6 +38,12 @@ interface TransitionResult {
 	success: boolean;
 	transitionId: number;
 }
+/**
+ * Options that dictate the session behavior.
+ */
+export interface DAVESessionOptions {
+	decryptionFailureTolerance?: number | undefined;
+}
 
 /**
  * The maximum DAVE protocol version supported.
@@ -93,6 +99,11 @@ export class DAVESession extends EventEmitter {
 	private consecutiveFailures = 0;
 
 	/**
+	 * The amount of consecutive failures needed to attempt to recover.
+	 */
+	private readonly failureTolerance: number;
+
+	/**
 	 * Whether this session is currently re-initializing due to an invalid transition.
 	 */
 	public reinitializing = false;
@@ -102,7 +113,7 @@ export class DAVESession extends EventEmitter {
 	 */
 	public session: any;
 
-	public constructor(protocolVersion: number, userId: string, channelId: string) {
+	public constructor(protocolVersion: number, userId: string, channelId: string, options: DAVESessionOptions) {
 		if (Davey === null)
 			throw new Error(
 				`Cannot utilize the DAVE protocol as the @snazzah/davey package has not been installed.
@@ -114,6 +125,7 @@ export class DAVESession extends EventEmitter {
 		this.protocolVersion = protocolVersion;
 		this.userId = userId;
 		this.channelId = channelId;
+		this.failureTolerance = options.decryptionFailureTolerance ?? DEFAULT_DECRYPTION_FAILURE_TOLERANCE;
 	}
 
 	/**
@@ -343,7 +355,7 @@ export class DAVESession extends EventEmitter {
 			if (!this.reinitializing && !this.pendingTransition) {
 				this.consecutiveFailures++;
 				this.emit('debug', `Failed to decrypt a packet (${this.consecutiveFailures} consecutive fails)`);
-				if (this.consecutiveFailures > DEFAULT_DECRYPTION_FAILURE_TOLERANCE) {
+				if (this.consecutiveFailures > this.failureTolerance) {
 					if (this.lastTransitionId) this.recoverFromInvalidTransition(this.lastTransitionId);
 					else throw error;
 				}
