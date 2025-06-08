@@ -5791,9 +5791,13 @@ export interface ClientEvents {
   guildMembersChunk: [members: ReadonlyCollection<Snowflake, GuildMember>, guild: Guild, data: GuildMembersChunk];
   guildMemberUpdate: [oldMember: GuildMember | PartialGuildMember, newMember: GuildMember];
   guildUpdate: [oldGuild: Guild, newGuild: Guild];
-  guildSoundboardSoundCreate: [soundboardSound: SoundboardSound];
-  guildSoundboardSoundDelete: [soundboardSound: SoundboardSound | PartialSoundboardSound];
-  guildSoundboardSoundUpdate: [oldSoundboardSound: SoundboardSound | null, newSoundboardSound: SoundboardSound];
+  guildSoundboardSoundCreate: [soundboardSound: GuildSoundboardSound];
+  guildSoundboardSoundDelete: [soundboardSound: GuildSoundboardSound | PartialSoundboardSound];
+  guildSoundboardSoundUpdate: [
+    oldSoundboardSound: GuildSoundboardSound | null,
+    newSoundboardSound: GuildSoundboardSound,
+  ];
+  guildSoundboardSoundsUpdate: [soundboardSounds: ReadonlyCollection<Snowflake, GuildSoundboardSound>, guild: Guild];
   inviteCreate: [invite: Invite];
   inviteDelete: [invite: Invite];
   messageCreate: [message: OmitPartialGroupDMChannel<Message>];
@@ -5869,7 +5873,7 @@ export interface ClientEvents {
   guildScheduledEventDelete: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent];
   guildScheduledEventUserAdd: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent, user: User];
   guildScheduledEventUserRemove: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent, user: User];
-  soundboardSounds: [soundboardSounds: ReadonlyCollection<Snowflake, SoundboardSound>, guild: Guild];
+  soundboardSounds: [soundboardSounds: ReadonlyCollection<Snowflake, GuildSoundboardSound>, guild: Guild];
 }
 
 export interface ClientFetchInviteOptions {
