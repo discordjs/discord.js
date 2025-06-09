@@ -545,9 +545,9 @@ export class Networking extends EventEmitter {
 			this.state.connectionData.speaking = false;
 		} else if (
 			(packet.op === VoiceOpcodes.ClientsConnect || packet.op === VoiceOpcodes.ClientDisconnect) &&
-			(this.state.code === NetworkingStatusCode.UdpHandshaking ||
+			(this.state.code === NetworkingStatusCode.Ready ||
+				this.state.code === NetworkingStatusCode.UdpHandshaking ||
 				this.state.code === NetworkingStatusCode.SelectingProtocol ||
-				this.state.code === NetworkingStatusCode.Ready ||
 				this.state.code === NetworkingStatusCode.Resuming)
 		) {
 			const { connectionData } = this.state;
@@ -773,8 +773,7 @@ export class Networking extends EventEmitter {
 	) {
 		const { secretKey, encryptionMode } = connectionData;
 
-		let packet = opusPacket;
-		if (daveSession) packet = daveSession.encrypt(opusPacket);
+		const packet = daveSession?.encrypt(opusPacket) ?? opusPacket;
 
 		// Both supported encryption methods want the nonce to be an incremental integer
 		connectionData.nonce++;
