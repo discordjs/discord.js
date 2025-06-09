@@ -368,8 +368,9 @@ export class Networking extends EventEmitter {
 			(this.state.code !== NetworkingStatusCode.SelectingProtocol &&
 				this.state.code !== NetworkingStatusCode.Ready &&
 				this.state.code !== NetworkingStatusCode.Resuming)
-		)
+		) {
 			return;
+		}
 
 		const session = new DAVESession(
 			protocolVersion,
@@ -552,7 +553,9 @@ export class Networking extends EventEmitter {
 			const { connectionData } = this.state;
 			if (packet.op === VoiceOpcodes.ClientsConnect)
 				for (const id of packet.d.user_ids) connectionData.connectedClients.add(id);
-			else connectionData.connectedClients.delete(packet.d.user_id);
+			else {
+				connectionData.connectedClients.delete(packet.d.user_id);
+			}
 		} else if (
 			(this.state.code === NetworkingStatusCode.Ready || this.state.code === NetworkingStatusCode.Resuming) &&
 			this.state.dave
@@ -564,7 +567,9 @@ export class Networking extends EventEmitter {
 						op: VoiceOpcodes.DaveTransitionReady,
 						d: { transition_id: packet.d.transition_id },
 					});
-				if (packet.d.transition_id === 0) this.emit('transitioned', 0);
+				if (packet.d.transition_id === 0) {
+					this.emit('transitioned', 0);
+				}
 			} else if (packet.op === VoiceOpcodes.DaveExecuteTransition) {
 				const transitioned = this.state.dave.executeTransition(packet.d.transition_id);
 				if (transitioned) this.emit('transitioned', packet.d.transition_id);

@@ -132,11 +132,11 @@ export class DAVESession extends EventEmitter {
 	 * The current voice privacy code of the session. Will be `null` if there is no session.
 	 */
 	public get voicePrivacyCode(): string | null {
-		return this.protocolVersion === 0
-			? null
-			: this.session.voicePrivacyCode === ''
-				? null
-				: this.session.voicePrivacyCode;
+		if (this.protocolVersion === 0 || !this.session?.voicePrivacyCode) {
+			return null;
+		}
+
+		return this.session.voicePrivacyCode;
 	}
 
 	/**
@@ -294,7 +294,10 @@ export class DAVESession extends EventEmitter {
 			if (transitionId === 0) {
 				this.reinitializing = false;
 				this.lastTransitionId = transitionId;
-			} else this.pendingTransition = { transition_id: transitionId, protocol_version: this.protocolVersion };
+			} else {
+				this.pendingTransition = { transition_id: transitionId, protocol_version: this.protocolVersion };
+			}
+
 			this.emit('debug', `MLS commit processed (transition id: ${transitionId})`);
 			return { transitionId, success: true };
 		} catch (error) {
@@ -317,7 +320,10 @@ export class DAVESession extends EventEmitter {
 			if (transitionId === 0) {
 				this.reinitializing = false;
 				this.lastTransitionId = transitionId;
-			} else this.pendingTransition = { transition_id: transitionId, protocol_version: this.protocolVersion };
+			} else {
+				this.pendingTransition = { transition_id: transitionId, protocol_version: this.protocolVersion };
+			}
+
 			this.emit('debug', `MLS welcome processed (transition id: ${transitionId})`);
 			return { transitionId, success: true };
 		} catch (error) {
@@ -333,7 +339,7 @@ export class DAVESession extends EventEmitter {
 	 * @param packet - The packet to encrypt
 	 */
 	public encrypt(packet: Buffer) {
-		if (packet.equals(SILENCE_FRAME) || this.protocolVersion === 0 || !this.session?.ready) return packet;
+		if (this.protocolVersion === 0 || !this.session?.ready || packet.equals(SILENCE_FRAME)) return packet;
 		return this.session.encryptOpus(packet);
 	}
 
@@ -345,7 +351,7 @@ export class DAVESession extends EventEmitter {
 	 * @returns The decrypted packet, or `null` if the decryption failed but should be ignored
 	 */
 	public decrypt(packet: Buffer, userId: string) {
-		const canDecrypt = this?.session.ready && (this.protocolVersion !== 0 || this.session?.canPassthrough(userId));
+		const canDecrypt = this.session?.ready && (this.protocolVersion !== 0 || this.session?.canPassthrough(userId));
 		if (packet.equals(SILENCE_FRAME) || !canDecrypt) return packet;
 		try {
 			const buffer = this.session.decrypt(userId, Davey.MediaType.AUDIO, packet);
@@ -377,7 +383,7 @@ export class DAVESession extends EventEmitter {
 	 */
 	public destroy() {
 		try {
-			this.session.reset();
+			this.session?.reset();
 		} catch {}
 	}
 }

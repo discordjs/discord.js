@@ -135,7 +135,9 @@ export class VoiceWebSocket extends EventEmitter {
 
 			this.emit('binary', { op, seq, payload });
 			return;
-		} else if (typeof event.data !== 'string') return;
+		} else if (typeof event.data !== 'string') {
+			return;
+		}
 
 		this.debug?.(`<< ${event.data}`);
 
