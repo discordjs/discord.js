@@ -2,7 +2,6 @@ import { Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
 import type { VoiceDavePrepareEpochData, VoiceDavePrepareTransitionData } from 'discord-api-types/voice/v8';
 import { SILENCE_FRAME } from '../audio/AudioPlayer';
-import { DAVESessionError, DAVESessionErrorKind } from './DAVESessionError';
 
 let Davey: any = null;
 
@@ -310,7 +309,7 @@ export class DAVESession extends EventEmitter {
 			this.emit('debug', `MLS commit processed (transition id: ${transitionId})`);
 			return { transitionId, success: true };
 		} catch (error) {
-			this.emit('error', new DAVESessionError(error as Error, DAVESessionErrorKind.Commit, transitionId));
+			this.emit('debug', `MLS commit errored from transition ${transitionId}: ${error}`);
 			this.recoverFromInvalidTransition(transitionId);
 			return { transitionId, success: false };
 		}
@@ -336,7 +335,7 @@ export class DAVESession extends EventEmitter {
 			this.emit('debug', `MLS welcome processed (transition id: ${transitionId})`);
 			return { transitionId, success: true };
 		} catch (error) {
-			this.emit('error', new DAVESessionError(error as Error, DAVESessionErrorKind.Welcome, transitionId));
+			this.emit('debug', `MLS welcome errored from transition ${transitionId}: ${error}`);
 			this.recoverFromInvalidTransition(transitionId);
 			return { transitionId, success: false };
 		}
