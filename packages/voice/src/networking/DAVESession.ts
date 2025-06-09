@@ -208,7 +208,11 @@ export class DAVESession extends EventEmitter {
 	 */
 	public executeTransition(transitionId: number) {
 		this.emit('debug', `Executing transition (${transitionId})`);
-		if (!this.pendingTransition) return;
+		if (!this.pendingTransition) {
+			this.emit('debug', `Received execute transition, but we don't have a pending transition for ${transitionId}`);
+			return;
+		}
+
 		let transitioned = false;
 		if (transitionId === this.pendingTransition.transition_id) {
 			const oldVersion = this.protocolVersion;
@@ -229,6 +233,11 @@ export class DAVESession extends EventEmitter {
 			this.reinitializing = false;
 			this.lastTransitionId = transitionId;
 			this.emit('debug', `Transition executed (v${oldVersion} -> v${this.protocolVersion}, id: ${transitionId})`);
+		} else {
+			this.emit(
+				'debug',
+				`Received execute transition for an unexpected transition id (expected: ${this.pendingTransition.transition_id}, actual: ${transitionId})`,
+			);
 		}
 
 		this.pendingTransition = undefined;
