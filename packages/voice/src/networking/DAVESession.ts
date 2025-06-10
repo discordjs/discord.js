@@ -3,6 +3,28 @@ import { EventEmitter } from 'node:events';
 import type { VoiceDavePrepareEpochData, VoiceDavePrepareTransitionData } from 'discord-api-types/voice/v8';
 import { SILENCE_FRAME } from '../audio/AudioPlayer';
 
+interface SessionMethods {
+	canPassthrough(userId: string): boolean;
+	decrypt(userId: string, mediaType: 0 | 1, packet: Buffer): Buffer;
+	encryptOpus(packet: Buffer): Buffer;
+	getSerializedKeyPackage(): Buffer;
+	getVerificationCode(userId: string): Promise<string>;
+	processCommit(commit: Buffer): void;
+	processProposals(optype: 0 | 1, proposals: Buffer, recognizedUserIds?: string[]): ProposalsResult;
+	processWelcome(welcome: Buffer): void;
+	ready: boolean;
+	reinit(protocolVersion: number, userId: string, channelId: string): void;
+	reset(): void;
+	setExternalSender(externalSender: Buffer): void;
+	setPassthroughMode(passthrough: boolean, expiry: number): void;
+	voicePrivacyCode: string;
+}
+
+interface ProposalsResult {
+	commit?: Buffer;
+	welcome?: Buffer;
+}
+
 let Davey: any = null;
 
 /**
@@ -110,7 +132,7 @@ export class DAVESession extends EventEmitter {
 	/**
 	 * The underlying DAVE Session of this wrapper.
 	 */
-	public session: any;
+	public session: SessionMethods | undefined;
 
 	public constructor(protocolVersion: number, userId: string, channelId: string, options: DAVESessionOptions) {
 		if (Davey === null)
@@ -161,7 +183,7 @@ export class DAVESession extends EventEmitter {
 				this.emit('debug', `Session initialized for protocol version ${this.protocolVersion}`);
 			}
 
-			this.emit('keyPackage', this.session.getSerializedKeyPackage());
+			this.emit('keyPackage', this.session!.getSerializedKeyPackage());
 		} else if (this.session) {
 			this.session.reset();
 			this.session.setPassthroughMode(true, TRANSITION_EXPIRY);
@@ -175,6 +197,7 @@ export class DAVESession extends EventEmitter {
 	 * @param externalSender - The external sender
 	 */
 	public setExternalSender(externalSender: Buffer) {
+		if (!this.session) throw new Error('No session available');
 		this.session.setExternalSender(externalSender);
 		this.emit('debug', 'Set MLS external sender');
 	}
@@ -278,7 +301,8 @@ export class DAVESession extends EventEmitter {
 	 * @returns The payload to send back to the voice server, if there is one
 	 */
 	public processProposals(payload: Buffer, connectedClients: Set<string>): Buffer | undefined {
-		const optype = payload.readUInt8(0);
+		if (!this.session) throw new Error('No session available');
+		const optype = payload.readUInt8(0) as 0 | 1;
 		const { commit, welcome } = this.session.processProposals(
 			optype,
 			payload.subarray(1),
@@ -296,6 +320,7 @@ export class DAVESession extends EventEmitter {
 	 * @returns The transaction ID and whether it was successful
 	 */
 	public processCommit(payload: Buffer): TransitionResult {
+		if (!this.session) throw new Error('No session available');
 		const transitionId = payload.readUInt16BE(0);
 		try {
 			this.session.processCommit(payload.subarray(2));
@@ -322,6 +347,7 @@ export class DAVESession extends EventEmitter {
 	 * @returns The transaction ID and whether it was successful
 	 */
 	public processWelcome(payload: Buffer): TransitionResult {
+		if (!this.session) throw new Error('No session available');
 		const transitionId = payload.readUInt16BE(0);
 		try {
 			this.session.processWelcome(payload.subarray(2));
@@ -360,7 +386,7 @@ export class DAVESession extends EventEmitter {
 	 */
 	public decrypt(packet: Buffer, userId: string) {
 		const canDecrypt = this.session?.ready && (this.protocolVersion !== 0 || this.session?.canPassthrough(userId));
-		if (packet.equals(SILENCE_FRAME) || !canDecrypt) return packet;
+		if (packet.equals(SILENCE_FRAME) || !canDecrypt || !this.session) return packet;
 		try {
 			const buffer = this.session.decrypt(userId, Davey.MediaType.AUDIO, packet);
 			this.consecutiveFailures = 0;

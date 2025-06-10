@@ -151,7 +151,7 @@ export class VoiceReceiver {
 				this.voiceConnection.state.networking.state.code === NetworkingStatusCode.Resuming)
 		) {
 			const daveSession = this.voiceConnection.state.networking.state.dave;
-			if (daveSession) packet = daveSession.decrypt(packet, userId);
+			if (daveSession) packet = daveSession.decrypt(packet, userId)!;
 		}
 
 		return packet;
