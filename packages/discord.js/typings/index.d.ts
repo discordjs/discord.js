@@ -2,7 +2,7 @@ import { Buffer } from 'node:buffer';
 import { ChildProcess } from 'node:child_process';
 import { Stream } from 'node:stream';
 import { MessagePort, Worker } from 'node:worker_threads';
-import { ApplicationCommandOptionAllowedChannelTypes, MessageActionRowComponentBuilder } from '@discordjs/builders';
+import { ApplicationCommandOptionAllowedChannelType, MessageActionRowComponentBuilder } from '@discordjs/builders';
 import { Collection, ReadonlyCollection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions, EmojiURLOptions } from '@discordjs/rest';
 import { Awaitable, JSONEncodable } from '@discordjs/util';
@@ -4819,13 +4819,13 @@ export type ApplicationCommandData =
   | UserApplicationCommandData;
 
 export interface ApplicationCommandChannelOptionData extends BaseApplicationCommandOptionsData {
-  channelTypes?: readonly ApplicationCommandOptionAllowedChannelTypes[];
-  channel_types?: readonly ApplicationCommandOptionAllowedChannelTypes[];
+  channelTypes?: readonly ApplicationCommandOptionAllowedChannelType[];
+  channel_types?: readonly ApplicationCommandOptionAllowedChannelType[];
   type: CommandOptionChannelResolvableType;
 }
 
 export interface ApplicationCommandChannelOption extends BaseApplicationCommandOptionsData {
-  channelTypes?: readonly ApplicationCommandOptionAllowedChannelTypes[];
+  channelTypes?: readonly ApplicationCommandOptionAllowedChannelType[];
   type: ApplicationCommandOptionType.Channel;
 }
 
