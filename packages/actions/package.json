@@ -8,7 +8,7 @@
 		"test": "vitest run --config ../../vitest.config.ts",
 		"build": "tsc --noEmit --lib ESNext,DOM && tsup",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
-		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
+		"format": "cross-env TIMING=1 eslint --fix --format=pretty src __tests__ && prettier --write .",
 		"fmt": "pnpm run format"
 	},
 	"type": "module",

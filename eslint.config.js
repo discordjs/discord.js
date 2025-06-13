@@ -268,5 +268,11 @@ export default tseslint.config(
 		rules: { 'tsdoc/syntax': 0 },
 	},
 	prettierRuleset,
+	{
+		rules: {
+			// Re-enable curly brace rule
+			curly: 2,
+		},
+	},
 	// oxlintRuleset,
 );
