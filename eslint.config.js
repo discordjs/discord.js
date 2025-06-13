@@ -277,6 +277,7 @@ export default tseslint.config(
 	},
 	prettierRuleset,
 	{
+		files: [`**/*${commonFiles}`],
 		rules: {
 			// Re-enable curly brace rule
 			curly: 2,
