@@ -298,7 +298,9 @@ export class SequentialHandler implements IHandler {
 		this.reset = reset ? Number(reset) * 1_000 + Date.now() + offset : Date.now();
 
 		// Amount of time in milliseconds until we should retry if rate limited (globally or otherwise)
-		if (retry) retryAfter = Number(retry) * 1_000 + offset;
+		if (retry) {
+			retryAfter = Number(retry) * 1_000 + offset;
+		}
 
 		// Handle buckets via the hash header retroactively
 		if (hash && hash !== this.hash) {

@@ -83,7 +83,9 @@ class BaseGuildVoiceChannel extends GuildChannel {
     }
 
     if ('messages' in data) {
-      for (const message of data.messages) this.messages._add(message);
+      for (const message of data.messages) {
+        this.messages._add(message);
+      }
     }
 
     if ('rate_limit_per_user' in data) {
@@ -134,12 +136,19 @@ class BaseGuildVoiceChannel extends GuildChannel {
    * @readonly
    */
   get joinable() {
-    if (!this.viewable) return false;
+    if (!this.viewable) {
+      return false;
+    }
+
     const permissions = this.permissionsFor(this.client.user);
-    if (!permissions) return false;
+    if (!permissions) {
+      return false;
+    }
 
     // This flag allows joining even if timed out
-    if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
+    if (permissions.has(PermissionFlagsBits.Administrator, false)) {
+      return true;
+    }
 
     return (
       this.guild.members.me.communicationDisabledUntilTimestamp < Date.now() &&

@@ -41,7 +41,10 @@ class Emoji extends Base {
    * @readonly
    */
   get identifier() {
-    if (this.id) return `${this.animated ? 'a:' : ''}${this.name}:${this.id}`;
+    if (this.id) {
+      return `${this.animated ? 'a:' : ''}${this.name}:${this.id}`;
+    }
+
     return encodeURIComponent(this.name);
   }
 
@@ -52,7 +55,9 @@ class Emoji extends Base {
    * @returns {?string}
    */
   imageURL(options = {}) {
-    if (!this.id) return null;
+    if (!this.id) {
+      return null;
+    }
 
     // Return a dynamic extension depending on whether the emoji is animated.
     const resolvedOptions = { extension: options.extension, size: options.size };

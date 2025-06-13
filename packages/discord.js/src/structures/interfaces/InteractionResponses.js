@@ -87,7 +87,9 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async deferReply(options = {}) {
-    if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
+    if (this.deferred || this.replied) {
+      throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
+    }
 
     const resolvedFlags = new MessageFlagsBitField(options.flags);
 
@@ -128,11 +130,16 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async reply(options) {
-    if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
+    if (this.deferred || this.replied) {
+      throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
+    }
 
     let messagePayload;
-    if (options instanceof MessagePayload) messagePayload = options;
-    else messagePayload = MessagePayload.create(this, options);
+    if (options instanceof MessagePayload) {
+      messagePayload = options;
+    } else {
+      messagePayload = MessagePayload.create(this, options);
+    }
 
     const { body: data, files } = await messagePayload.resolveBody().resolveFiles();
 
@@ -188,7 +195,10 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async editReply(options) {
-    if (!this.deferred && !this.replied) throw new DiscordjsError(ErrorCodes.InteractionNotReplied);
+    if (!this.deferred && !this.replied) {
+      throw new DiscordjsError(ErrorCodes.InteractionNotReplied);
+    }
+
     const msg = await this.webhook.editMessage(options.message ?? '@original', options);
     this.replied = true;
     return msg;
@@ -207,7 +217,9 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async deleteReply(message = '@original') {
-    if (!this.deferred && !this.replied) throw new DiscordjsError(ErrorCodes.InteractionNotReplied);
+    if (!this.deferred && !this.replied) {
+      throw new DiscordjsError(ErrorCodes.InteractionNotReplied);
+    }
 
     await this.webhook.deleteMessage(message);
   }
@@ -219,7 +231,10 @@ class InteractionResponses {
    * @returns {Promise<Message>}
    */
   async followUp(options) {
-    if (!this.deferred && !this.replied) throw new DiscordjsError(ErrorCodes.InteractionNotReplied);
+    if (!this.deferred && !this.replied) {
+      throw new DiscordjsError(ErrorCodes.InteractionNotReplied);
+    }
+
     const msg = await this.webhook.send(options);
     this.replied = true;
     return msg;
@@ -237,7 +252,10 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async deferUpdate(options = {}) {
-    if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
+    if (this.deferred || this.replied) {
+      throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
+    }
+
     const response = await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
         type: InteractionResponseType.DeferredMessageUpdate,
@@ -265,11 +283,16 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async update(options = {}) {
-    if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
+    if (this.deferred || this.replied) {
+      throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
+    }
 
     let messagePayload;
-    if (options instanceof MessagePayload) messagePayload = options;
-    else messagePayload = MessagePayload.create(this, options);
+    if (options instanceof MessagePayload) {
+      messagePayload = options;
+    } else {
+      messagePayload = MessagePayload.create(this, options);
+    }
 
     const { body: data, files } = await messagePayload.resolveBody().resolveFiles();
 
@@ -294,7 +317,10 @@ class InteractionResponses {
    * @returns {Promise<InteractionCallbackResponse|undefined>}
    */
   async launchActivity({ withResponse } = {}) {
-    if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
+    if (this.deferred || this.replied) {
+      throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
+    }
+
     const response = await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       query: makeURLSearchParams({ with_response: withResponse ?? false }),
       body: {
@@ -315,7 +341,10 @@ class InteractionResponses {
    * @returns {Promise<InteractionCallbackResponse|undefined>}
    */
   async showModal(modal, options = {}) {
-    if (this.deferred || this.replied) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
+    if (this.deferred || this.replied) {
+      throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
+    }
+
     const response = await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {
         type: InteractionResponseType.Modal,
@@ -351,14 +380,20 @@ class InteractionResponses {
    *   .catch(console.error);
    */
   async awaitModalSubmit(options) {
-    if (typeof options.time !== 'number') throw new DiscordjsError(ErrorCodes.InvalidType, 'time', 'number');
+    if (typeof options.time !== 'number') {
+      throw new DiscordjsError(ErrorCodes.InvalidType, 'time', 'number');
+    }
+
     const _options = { ...options, max: 1, interactionType: InteractionType.ModalSubmit };
     return new Promise((resolve, reject) => {
       const collector = new InteractionCollector(this.client, _options);
       collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
-        if (interaction) resolve(interaction);
-        else reject(new DiscordjsError(ErrorCodes.InteractionCollectorError, reason));
+        if (interaction) {
+          resolve(interaction);
+        } else {
+          reject(new DiscordjsError(ErrorCodes.InteractionCollectorError, reason));
+        }
       });
     });
   }
@@ -379,7 +414,10 @@ class InteractionResponses {
     ];
 
     for (const prop of props) {
-      if (ignore.includes(prop)) continue;
+      if (ignore.includes(prop)) {
+        continue;
+      }
+
       Object.defineProperty(
         structure.prototype,
         prop,

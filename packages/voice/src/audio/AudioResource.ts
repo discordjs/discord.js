@@ -123,10 +123,16 @@ export class AudioResource<Metadata = unknown> {
 	 * while there are silence padding frames left to play.
 	 */
 	public get readable() {
-		if (this.silenceRemaining === 0) return false;
+		if (this.silenceRemaining === 0) {
+			return false;
+		}
+
 		const real = this.playStream.readable;
 		if (!real) {
-			if (this.silenceRemaining === -1) this.silenceRemaining = this.silencePaddingFrames;
+			if (this.silenceRemaining === -1) {
+				this.silenceRemaining = this.silencePaddingFrames;
+			}
+
 			return this.silenceRemaining !== 0;
 		}
 
@@ -274,7 +280,10 @@ export function createAudioResource<Metadata>(
 	const transformerPipeline = findPipeline(inputType, needsInlineVolume ? VOLUME_CONSTRAINT : NO_CONSTRAINT);
 
 	if (transformerPipeline.length === 0) {
-		if (typeof input === 'string') throw new Error(`Invalid pipeline constructed for string resource '${input}'`);
+		if (typeof input === 'string') {
+			throw new TypeError(`Invalid pipeline constructed for string resource '${input}'`);
+		}
+
 		// No adjustments required
 		return new AudioResource<Metadata>(
 			[],
@@ -285,7 +294,9 @@ export function createAudioResource<Metadata>(
 	}
 
 	const streams = transformerPipeline.map((edge) => edge.transformer(input));
-	if (typeof input !== 'string') streams.unshift(input);
+	if (typeof input !== 'string') {
+		streams.unshift(input);
+	}
 
 	return new AudioResource<Metadata>(
 		transformerPipeline,

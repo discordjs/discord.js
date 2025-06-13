@@ -74,7 +74,10 @@ function createChannel(client, data, guild, { allowUnknownGuild } = {}) {
       case ChannelType.PublicThread:
       case ChannelType.PrivateThread: {
         channel = new (getThreadChannel())(resolvedGuild, data, client);
-        if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);
+        if (!allowUnknownGuild) {
+          channel.parent?.threads.cache.set(channel.id, channel);
+        }
+
         break;
       }
 
@@ -91,7 +94,9 @@ function createChannel(client, data, guild, { allowUnknownGuild } = {}) {
         break;
     }
 
-    if (channel && !allowUnknownGuild) resolvedGuild.channels?.cache.set(channel.id, channel);
+    if (channel && !allowUnknownGuild) {
+      resolvedGuild.channels?.cache.set(channel.id, channel);
+    }
   }
 
   return channel;

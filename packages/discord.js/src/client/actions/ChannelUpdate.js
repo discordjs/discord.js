@@ -20,7 +20,9 @@ class ChannelUpdateAction extends Action {
         }
 
         if (channel.isTextBased() && newChannel.isTextBased()) {
-          for (const [id, message] of channel.messages.cache) newChannel.messages.cache.set(id, message);
+          for (const [id, message] of channel.messages.cache) {
+            newChannel.messages.cache.set(id, message);
+          }
         }
 
         channel = newChannel;

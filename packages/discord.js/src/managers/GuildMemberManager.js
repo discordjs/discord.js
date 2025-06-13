@@ -50,9 +50,15 @@ class GuildMemberManager extends CachedManager {
    */
   resolve(member) {
     const memberResolvable = super.resolve(member);
-    if (memberResolvable) return memberResolvable;
+    if (memberResolvable) {
+      return memberResolvable;
+    }
+
     const userResolvable = this.client.users.resolveId(member);
-    if (userResolvable) return super.cache.get(userResolvable) ?? null;
+    if (userResolvable) {
+      return super.cache.get(userResolvable) ?? null;
+    }
+
     return null;
   }
 
@@ -64,7 +70,10 @@ class GuildMemberManager extends CachedManager {
    */
   resolveId(member) {
     const memberResolvable = super.resolveId(member);
-    if (memberResolvable) return memberResolvable;
+    if (memberResolvable) {
+      return memberResolvable;
+    }
+
     const userResolvable = this.client.users.resolveId(member);
     return this.cache.has(userResolvable) ? userResolvable : null;
   }
@@ -97,10 +106,15 @@ class GuildMemberManager extends CachedManager {
    */
   async add(user, options) {
     const userId = this.client.users.resolveId(user);
-    if (!userId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
+    if (!userId) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
+    }
+
     if (!options.force) {
       const cachedUser = this.cache.get(userId);
-      if (cachedUser) return cachedUser;
+      if (cachedUser) {
+        return cachedUser;
+      }
     }
 
     const resolvedOptions = {
@@ -214,10 +228,16 @@ class GuildMemberManager extends CachedManager {
    *   .catch(console.error);
    */
   async fetch(options) {
-    if (!options) return this._fetchMany();
+    if (!options) {
+      return this._fetchMany();
+    }
+
     const { user: users, limit, withPresences, cache, force } = options;
     const resolvedUser = this.client.users.resolveId(users ?? options);
-    if (resolvedUser && !limit && !withPresences) return this._fetchSingle({ user: resolvedUser, cache, force });
+    if (resolvedUser && !limit && !withPresences) {
+      return this._fetchSingle({ user: resolvedUser, cache, force });
+    }
+
     const resolvedUsers = users?.map?.(user => this.client.users.resolveId(user)) ?? resolvedUser ?? undefined;
     return this._fetchMany({ ...options, users: resolvedUsers });
   }
@@ -225,7 +245,9 @@ class GuildMemberManager extends CachedManager {
   async _fetchSingle({ user, cache, force = false }) {
     if (!force) {
       const existing = this.cache.get(user);
-      if (existing && !existing.partial) return existing;
+      if (existing && !existing.partial) {
+        return existing;
+      }
     }
 
     const data = await this.client.rest.get(Routes.guildMember(this.guild.id, user));
@@ -240,7 +262,9 @@ class GuildMemberManager extends CachedManager {
     time = 120e3,
     nonce = DiscordSnowflake.generate().toString(),
   } = {}) {
-    if (nonce.length > 32) throw new DiscordjsRangeError(ErrorCodes.MemberFetchNonceLength);
+    if (nonce.length > 32) {
+      throw new DiscordjsRangeError(ErrorCodes.MemberFetchNonceLength);
+    }
 
     const query = initialQuery ?? (users ? undefined : '');
 
@@ -260,7 +284,9 @@ class GuildMemberManager extends CachedManager {
       const fetchedMembers = new Collection();
       let index = 0;
       const handler = (members, _, chunk) => {
-        if (chunk.nonce !== nonce) return;
+        if (chunk.nonce !== nonce) {
+          return;
+        }
 
         // eslint-disable-next-line no-use-before-define
         timeout.refresh();
@@ -367,7 +393,9 @@ class GuildMemberManager extends CachedManager {
    */
   async edit(user, { reason, ...options }) {
     const id = this.client.users.resolveId(user);
-    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
+    if (!id) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
+    }
 
     if (options.channel) {
       options.channel = this.guild.channels.resolve(options.channel);
@@ -399,8 +427,11 @@ class GuildMemberManager extends CachedManager {
     let endpoint;
     if (id === this.client.user.id) {
       const keys = Object.keys(options);
-      if (keys.length === 1 && keys[0] === 'nick') endpoint = Routes.guildMember(this.guild.id);
-      else endpoint = Routes.guildMember(this.guild.id, id);
+      if (keys.length === 1 && keys[0] === 'nick') {
+        endpoint = Routes.guildMember(this.guild.id);
+      } else {
+        endpoint = Routes.guildMember(this.guild.id, id);
+      }
     } else {
       endpoint = Routes.guildMember(this.guild.id, id);
     }
@@ -447,7 +478,9 @@ class GuildMemberManager extends CachedManager {
    *    .catch(console.error);
    */
   async prune({ days, dry = false, count: compute_prune_count, roles = [], reason } = {}) {
-    if (typeof days !== 'number') throw new DiscordjsTypeError(ErrorCodes.PruneDaysType);
+    if (typeof days !== 'number') {
+      throw new DiscordjsTypeError(ErrorCodes.PruneDaysType);
+    }
 
     const query = { days };
     const resolvedRoles = [];
@@ -487,7 +520,9 @@ class GuildMemberManager extends CachedManager {
    */
   async kick(user, reason) {
     const id = this.client.users.resolveId(user);
-    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
+    if (!id) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
+    }
 
     await this.client.rest.delete(Routes.guildMember(this.guild.id, id), { reason });
   }

@@ -249,8 +249,13 @@ class Invite extends Base {
    */
   get deletable() {
     const guild = this.guild;
-    if (!guild || !this.client.guilds.cache.has(guild.id)) return false;
-    if (!guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
+    if (!guild || !this.client.guilds.cache.has(guild.id)) {
+      return false;
+    }
+
+    if (!guild.members.me) {
+      throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
+    }
 
     return (
       this.channel?.permissionsFor(this.client.user).has(PermissionFlagsBits.ManageChannels, false) ||

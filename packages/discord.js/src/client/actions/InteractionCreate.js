@@ -36,7 +36,10 @@ class InteractionCreateAction extends Action {
             InteractionClass = UserContextMenuCommandInteraction;
             break;
           case ApplicationCommandType.Message:
-            if (channel && !channel.isTextBased()) return;
+            if (channel && !channel.isTextBased()) {
+              return;
+            }
+
             InteractionClass = MessageContextMenuCommandInteraction;
             break;
           case ApplicationCommandType.PrimaryEntryPoint:
@@ -52,7 +55,9 @@ class InteractionCreateAction extends Action {
 
         break;
       case InteractionType.MessageComponent:
-        if (channel && !channel.isTextBased()) return;
+        if (channel && !channel.isTextBased()) {
+          return;
+        }
 
         switch (data.data.component_type) {
           case ComponentType.Button:

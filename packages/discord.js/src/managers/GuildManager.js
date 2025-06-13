@@ -285,7 +285,9 @@ class GuildManager extends CachedManager {
     if (id) {
       if (!options.force) {
         const existing = this.cache.get(id);
-        if (existing) return existing;
+        if (existing) {
+          return existing;
+        }
       }
 
       const innerData = await this.client.rest.get(Routes.guild(id), {
@@ -341,7 +343,9 @@ class GuildManager extends CachedManager {
         // eslint-disable-next-line no-use-before-define
         timeout.refresh();
 
-        if (!remainingGuildIds.has(guild.id)) return;
+        if (!remainingGuildIds.has(guild.id)) {
+          return;
+        }
 
         fetchedSoundboardSounds.set(guild.id, soundboardSounds);
 

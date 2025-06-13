@@ -33,7 +33,9 @@ class ClientUser extends User {
       this.mfaEnabled ??= null;
     }
 
-    if ('token' in data) this.client.token = data.token;
+    if ('token' in data) {
+      this.client.token = data.token;
+    }
   }
 
   /**
@@ -202,7 +204,9 @@ class ClientUser extends User {
    * client.user.setActivity('discord.js', { type: ActivityType.Watching });
    */
   async setActivity(name, options = {}) {
-    if (!name) return this.setPresence({ activities: [], shardId: options.shardId });
+    if (!name) {
+      return this.setPresence({ activities: [], shardId: options.shardId });
+    }
 
     const activity = { ...options, ...(typeof name === 'object' ? name : { name }) };
     return this.setPresence({ activities: [activity], shardId: activity.shardId });
