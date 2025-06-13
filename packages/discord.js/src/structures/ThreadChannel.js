@@ -55,13 +55,17 @@ class ThreadChannel extends BaseChannel {
      * @type {ThreadMemberManager}
      */
     this.members = new ThreadMemberManager(this);
-    if (data) this._patch(data);
+    if (data) {
+      this._patch(data);
+    }
   }
 
   _patch(data) {
     super._patch(data);
 
-    if ('message' in data) this.messages._add(data.message);
+    if ('message' in data) {
+      this.messages._add(data.message);
+    }
 
     if ('name' in data) {
       /**
@@ -212,8 +216,15 @@ class ThreadChannel extends BaseChannel {
       this.totalMessageSent ??= null;
     }
 
-    if (data.member && this.client.user) this.members._add({ user_id: this.client.user.id, ...data.member });
-    if (data.messages) for (const message of data.messages) this.messages._add(message);
+    if (data.member && this.client.user) {
+      this.members._add({ user_id: this.client.user.id, ...data.member });
+    }
+
+    if (data.messages) {
+      for (const message of data.messages) {
+        this.messages._add(message);
+      }
+    }
 
     if ('applied_tags' in data) {
       /**
@@ -565,9 +576,14 @@ class ThreadChannel extends BaseChannel {
    */
   get manageable() {
     const permissions = this.permissionsFor(this.client.user);
-    if (!permissions) return false;
+    if (!permissions) {
+      return false;
+    }
+
     // This flag allows managing even if timed out
-    if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
+    if (permissions.has(PermissionFlagsBits.Administrator, false)) {
+      return true;
+    }
 
     return (
       this.guild.members.me.communicationDisabledUntilTimestamp < Date.now() &&
@@ -582,9 +598,15 @@ class ThreadChannel extends BaseChannel {
    * @readonly
    */
   get viewable() {
-    if (this.client.user.id === this.guild.ownerId) return true;
+    if (this.client.user.id === this.guild.ownerId) {
+      return true;
+    }
+
     const permissions = this.permissionsFor(this.client.user);
-    if (!permissions) return false;
+    if (!permissions) {
+      return false;
+    }
+
     return permissions.has(PermissionFlagsBits.ViewChannel, false);
   }
 
@@ -596,9 +618,14 @@ class ThreadChannel extends BaseChannel {
    */
   get sendable() {
     const permissions = this.permissionsFor(this.client.user);
-    if (!permissions) return false;
+    if (!permissions) {
+      return false;
+    }
+
     // This flag allows sending even if timed out
-    if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
+    if (permissions.has(PermissionFlagsBits.Administrator, false)) {
+      return true;
+    }
 
     return (
       !(this.archived && this.locked && !this.manageable) &&

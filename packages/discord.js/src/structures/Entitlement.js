@@ -118,7 +118,10 @@ class Entitlement extends Base {
    * @type {?Guild}
    */
   get guild() {
-    if (!this.guildId) return null;
+    if (!this.guildId) {
+      return null;
+    }
+
     return this.client.guilds.cache.get(this.guildId) ?? null;
   }
 

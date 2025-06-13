@@ -98,17 +98,25 @@ class MessageManager extends CachedManager {
    *   .catch(console.error);
    */
   async fetch(options) {
-    if (!options) return this._fetchMany();
+    if (!options) {
+      return this._fetchMany();
+    }
+
     const { message, cache, force } = options;
     const resolvedMessage = this.resolveId(message ?? options);
-    if (resolvedMessage) return this._fetchSingle({ message: resolvedMessage, cache, force });
+    if (resolvedMessage) {
+      return this._fetchSingle({ message: resolvedMessage, cache, force });
+    }
+
     return this._fetchMany(options);
   }
 
   async _fetchSingle({ message, cache, force = false }) {
     if (!force) {
       const existing = this.cache.get(message);
-      if (existing && !existing.partial) return existing;
+      if (existing && !existing.partial) {
+        return existing;
+      }
     }
 
     const data = await this.client.rest.get(Routes.channelMessage(this.channel.id, message));
@@ -139,7 +147,10 @@ class MessageManager extends CachedManager {
   async fetchPinned(cache = true) {
     const data = await this.client.rest.get(Routes.channelPins(this.channel.id));
     const messages = new Collection();
-    for (const message of data) messages.set(message.id, this._add(message, cache));
+    for (const message of data) {
+      messages.set(message.id, this._add(message, cache));
+    }
+
     return messages;
   }
 
@@ -189,7 +200,9 @@ class MessageManager extends CachedManager {
    */
   async edit(message, options) {
     const messageId = this.resolveId(message);
-    if (!messageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    if (!messageId) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    }
 
     const { body, files } = await (
       options instanceof MessagePayload
@@ -219,7 +232,9 @@ class MessageManager extends CachedManager {
    */
   async pin(message, reason) {
     const messageId = this.resolveId(message);
-    if (!messageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    if (!messageId) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    }
 
     await this.client.rest.put(Routes.channelPin(this.channel.id, messageId), { reason });
   }
@@ -233,7 +248,9 @@ class MessageManager extends CachedManager {
    */
   async unpin(message, reason) {
     const messageId = this.resolveId(message);
-    if (!messageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    if (!messageId) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    }
 
     await this.client.rest.delete(Routes.channelPin(this.channel.id, messageId), { reason });
   }
@@ -247,10 +264,14 @@ class MessageManager extends CachedManager {
    */
   async react(message, emoji) {
     const messageId = this.resolveId(message);
-    if (!messageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    if (!messageId) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    }
 
     const resolvedEmoji = resolvePartialEmoji(emoji);
-    if (!resolvedEmoji) throw new DiscordjsTypeError(ErrorCodes.EmojiType, 'emoji', 'EmojiIdentifierResolvable');
+    if (!resolvedEmoji) {
+      throw new DiscordjsTypeError(ErrorCodes.EmojiType, 'emoji', 'EmojiIdentifierResolvable');
+    }
 
     const emojiId = resolvedEmoji.id
       ? `${resolvedEmoji.animated ? 'a:' : ''}${resolvedEmoji.name}:${resolvedEmoji.id}`
@@ -267,7 +288,9 @@ class MessageManager extends CachedManager {
    */
   async delete(message) {
     const messageId = this.resolveId(message);
-    if (!messageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    if (!messageId) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    }
 
     await this.client.rest.delete(Routes.channelMessage(this.channel.id, messageId));
   }

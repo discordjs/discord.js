@@ -40,7 +40,9 @@ class Sweepers {
     this.intervals = Object.fromEntries(SweeperKeys.map(key => [key, null]));
 
     for (const key of SweeperKeys) {
-      if (!(key in options)) continue;
+      if (!(key in options)) {
+        continue;
+      }
 
       this._validateProperties(key);
 
@@ -179,7 +181,9 @@ class Sweepers {
     let messages = 0;
 
     for (const channel of this.client.channels.cache.values()) {
-      if (!channel.isTextBased()) continue;
+      if (!channel.isTextBased()) {
+        continue;
+      }
 
       channels++;
       messages += channel.messages.cache.sweep(filter);
@@ -215,7 +219,10 @@ class Sweepers {
     let reactions = 0;
 
     for (const channel of this.client.channels.cache.values()) {
-      if (!channel.isTextBased()) continue;
+      if (!channel.isTextBased()) {
+        continue;
+      }
+
       channels++;
 
       for (const message of channel.messages.cache.values()) {
@@ -266,7 +273,10 @@ class Sweepers {
     let threads = 0;
     let members = 0;
     for (const channel of this.client.channels.cache.values()) {
-      if (!ThreadChannelTypes.includes(channel.type)) continue;
+      if (!ThreadChannelTypes.includes(channel.type)) {
+        continue;
+      }
+
       threads++;
       members += channel.members.cache.sweep(filter);
     }
@@ -297,7 +307,10 @@ class Sweepers {
 
     let threads = 0;
     for (const [key, val] of this.client.channels.cache.entries()) {
-      if (!ThreadChannelTypes.includes(val.type)) continue;
+      if (!ThreadChannelTypes.includes(val.type)) {
+        continue;
+      }
+
       if (filter(val, key, this.client.channels.cache)) {
         threads++;
         this.client.channels._remove(key);
@@ -343,7 +356,9 @@ class Sweepers {
    */
   destroy() {
     for (const key of SweeperKeys) {
-      if (this.intervals[key]) clearInterval(this.intervals[key]);
+      if (this.intervals[key]) {
+        clearInterval(this.intervals[key]);
+      }
     }
   }
 
@@ -383,7 +398,10 @@ class Sweepers {
     }
 
     return () => {
-      if (lifetime <= 0) return null;
+      if (lifetime <= 0) {
+        return null;
+      }
+
       const lifetimeMs = lifetime * 1_000;
       const now = Date.now();
       return (entry, key, coll) => {
@@ -392,7 +410,10 @@ class Sweepers {
         }
 
         const comparisonTimestamp = getComparisonTimestamp(entry, key, coll);
-        if (!comparisonTimestamp || typeof comparisonTimestamp !== 'number') return false;
+        if (!comparisonTimestamp || typeof comparisonTimestamp !== 'number') {
+          return false;
+        }
+
         return now - comparisonTimestamp > lifetimeMs;
       };
     };
@@ -466,7 +487,9 @@ class Sweepers {
 
     for (const guild of this.client.guilds.cache.values()) {
       // We may be unable to sweep the cache if the guild is unavailable and was never patched
-      if (!guild.available) continue;
+      if (!guild.available) {
+        continue;
+      }
 
       const { cache } = guild[key];
 
@@ -520,11 +543,20 @@ class Sweepers {
    * @private
    */
   _initInterval(intervalKey, sweepKey, opts) {
-    if (opts.interval <= 0 || opts.interval === Infinity) return;
+    if (opts.interval <= 0 || opts.interval === Infinity) {
+      return;
+    }
+
     this.intervals[intervalKey] = setInterval(() => {
       const sweepFn = opts.filter();
-      if (sweepFn === null) return;
-      if (typeof sweepFn !== 'function') throw new DiscordjsTypeError(ErrorCodes.SweepFilterReturn);
+      if (sweepFn === null) {
+        return;
+      }
+
+      if (typeof sweepFn !== 'function') {
+        throw new DiscordjsTypeError(ErrorCodes.SweepFilterReturn);
+      }
+
       this[sweepKey](sweepFn);
     }, opts.interval * 1_000).unref();
   }
