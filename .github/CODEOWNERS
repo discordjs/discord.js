@@ -27,6 +27,7 @@ pnpm-lock.yaml @discordjs/core
 /packages/proxy-container/ @discordjs/proxy
 /packages/rest/ @discordjs/rest
 /packages/scripts/ @discordjs/scripts
+/packages/structures/ @discordjs/structures
 /packages/ui/ @discordjs/ui
 /packages/util/ @discordjs/util
 /packages/voice/ @discordjs/core
