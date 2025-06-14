@@ -53,6 +53,11 @@ export class VoiceWebSocket extends EventEmitter {
 	public ping?: number;
 
 	/**
+	 * The last sequence number acknowledged from Discord. Will be `-1` if no sequence numbered messages have been received.
+	 */
+	public sequence = -1;
+
+	/**
 	 * The debug logger function, if debugging is enabled.
 	 */
 	private readonly debug: ((message: string) => void) | null;
@@ -115,6 +120,10 @@ export class VoiceWebSocket extends EventEmitter {
 			return;
 		}
 
+		if (packet.seq) {
+			this.sequence = packet.seq;
+		}
+
 		if (packet.op === VoiceOpcodes.HeartbeatAck) {
 			this.lastHeartbeatAck = Date.now();
 			this.missedHeartbeats = 0;
@@ -150,7 +159,11 @@ export class VoiceWebSocket extends EventEmitter {
 		this.sendPacket({
 			op: VoiceOpcodes.Heartbeat,
 			// eslint-disable-next-line id-length
-			d: nonce,
+			d: {
+				// eslint-disable-next-line id-length
+				t: nonce,
+				seq_ack: this.sequence,
+			},
 		});
 	}
 

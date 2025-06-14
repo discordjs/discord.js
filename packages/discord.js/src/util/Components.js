@@ -1,5 +1,7 @@
+/* eslint-disable no-use-before-define */
 'use strict';
 
+// eslint-disable-next-line import-x/order
 const { ComponentType } = require('discord-api-types/v10');
 
 /**
@@ -130,6 +132,7 @@ const { ComponentType } = require('discord-api-types/v10');
 
 /**
  * Transforms API data into a component
+ *
  * @param {APIMessageComponent|Component} data The data to create the component from
  * @returns {Component}
  * @ignore
@@ -140,6 +143,7 @@ function createComponent(data) {
 
 /**
  * Extracts all interactive components from the component tree
+ *
  * @param {Component|APIMessageComponent} component The component to find all interactive components in
  * @returns {Array<Component|APIMessageComponent>}
  * @ignore
@@ -159,6 +163,7 @@ function extractInteractiveComponents(component) {
 
 /**
  * Finds a component by customId in nested components
+ *
  * @param {Array<Component|APIMessageComponent>} components The components to search in
  * @param {string} customId The customId to search for
  * @returns {Component|APIMessageComponent}

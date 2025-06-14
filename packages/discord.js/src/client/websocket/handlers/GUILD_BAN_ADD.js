@@ -8,6 +8,7 @@ module.exports = (client, { d: data }) => {
 
   /**
    * Emitted whenever a member is banned from a guild.
+   *
    * @event Client#guildBanAdd
    * @param {GuildBan} ban The ban that occurred
    */

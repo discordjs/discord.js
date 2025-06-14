@@ -4,6 +4,7 @@ const { BaseGuildVoiceChannel } = require('./BaseGuildVoiceChannel.js');
 
 /**
  * Represents a guild stage channel on Discord.
+ *
  * @extends {BaseGuildVoiceChannel}
  */
 class StageChannel extends BaseGuildVoiceChannel {
@@ -13,6 +14,7 @@ class StageChannel extends BaseGuildVoiceChannel {
     if ('topic' in data) {
       /**
        * The topic of the stage channel
+       *
        * @type {?string}
        */
       this.topic = data.topic;
@@ -21,6 +23,7 @@ class StageChannel extends BaseGuildVoiceChannel {
 
   /**
    * The stage instance of this stage channel, if it exists
+   *
    * @type {?StageInstance}
    * @readonly
    */
@@ -30,15 +33,17 @@ class StageChannel extends BaseGuildVoiceChannel {
 
   /**
    * Creates a stage instance associated with this stage channel.
+   *
    * @param {StageInstanceCreateOptions} options The options to create the stage instance
    * @returns {Promise<StageInstance>}
    */
-  createStageInstance(options) {
+  async createStageInstance(options) {
     return this.guild.stageInstances.create(this.id, options);
   }
 
   /**
    * Sets a new topic for the guild channel.
+   *
    * @param {?string} topic The new topic for the guild channel
    * @param {string} [reason] Reason for changing the guild channel's topic
    * @returns {Promise<StageChannel>}
@@ -48,13 +53,14 @@ class StageChannel extends BaseGuildVoiceChannel {
    *   .then(channel => console.log(`Channel's new topic is ${channel.topic}`))
    *   .catch(console.error);
    */
-  setTopic(topic, reason) {
+  async setTopic(topic, reason) {
     return this.edit({ topic, reason });
   }
 }
 
 /**
  * Sets the bitrate of the channel.
+ *
  * @method setBitrate
  * @memberof StageChannel
  * @instance
@@ -70,6 +76,7 @@ class StageChannel extends BaseGuildVoiceChannel {
 
 /**
  * Sets the RTC region of the channel.
+ *
  * @method setRTCRegion
  * @memberof StageChannel
  * @instance
@@ -86,6 +93,7 @@ class StageChannel extends BaseGuildVoiceChannel {
 
 /**
  * Sets the user limit of the channel.
+ *
  * @method setUserLimit
  * @memberof StageChannel
  * @instance
@@ -101,6 +109,7 @@ class StageChannel extends BaseGuildVoiceChannel {
 
 /**
  * Sets the camera video quality mode of the channel.
+ *
  * @method setVideoQualityMode
  * @memberof StageChannel
  * @instance

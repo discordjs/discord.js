@@ -1,10 +1,11 @@
 'use strict';
 
-const { Component } = require('./Component.js');
 const { createComponent } = require('../util/Components.js');
+const { Component } = require('./Component.js');
 
 /**
  * Represents a container component
+ *
  * @extends {Component}
  */
 class ContainerComponent extends Component {
@@ -13,6 +14,7 @@ class ContainerComponent extends Component {
 
     /**
      * The components in this container
+     *
      * @type {Component[]}
      * @readonly
      */
@@ -21,6 +23,7 @@ class ContainerComponent extends Component {
 
   /**
    * The accent color of this container
+   *
    * @type {?number}
    * @readonly
    */
@@ -30,6 +33,7 @@ class ContainerComponent extends Component {
 
   /**
    * The hex accent color of this container
+   *
    * @type {?string}
    * @readonly
    */
@@ -41,6 +45,7 @@ class ContainerComponent extends Component {
 
   /**
    * Whether this container is spoilered
+   *
    * @type {boolean}
    * @readonly
    */
@@ -50,6 +55,7 @@ class ContainerComponent extends Component {
 
   /**
    * Returns the API-compatible JSON for this component
+   *
    * @returns {APIContainerComponent}
    */
   toJSON() {

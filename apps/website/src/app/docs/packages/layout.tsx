@@ -29,7 +29,7 @@ export default async function Layout({ children }: PropsWithChildren) {
 						Preview environment
 					</div>
 				) : null}
-				<div className="bg-[#fbfbfb] pb-12 dark:bg-[#1a1a1e]">
+				<div className="flex-1 bg-[#fbfbfb] pb-12 dark:bg-[#1a1a1e]">
 					<div className="relative px-6 pt-6 md:hidden">
 						<div className="fixed top-5 left-6 z-20 md:hidden">
 							<SidebarTrigger aria-label="Navigation" size="icon" variant="filled" />

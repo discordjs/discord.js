@@ -12,6 +12,7 @@ module.exports = (client, { d: data }) => {
 
   /**
    * Emitted whenever a guild soundboard sound is updated.
+   *
    * @event Client#guildSoundboardSoundUpdate
    * @param {?SoundboardSound} oldGuildSoundboardSound The guild soundboard sound before the update
    * @param {SoundboardSound} newGuildSoundboardSound The guild soundboard sound after the update
