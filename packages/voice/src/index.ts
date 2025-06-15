@@ -19,6 +19,7 @@ export {
 	VoiceUDPSocket,
 	VoiceWebSocket,
 	type SocketConfig,
+	DAVESession,
 } from './networking/index.js';
 
 export {
