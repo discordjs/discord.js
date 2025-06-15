@@ -35,6 +35,8 @@ bun add @discordjs/formatters
 
 ## Example usage
 
+The example uses [ES modules](https://nodejs.org/api/esm.html#enabling).
+
 ````ts
 import { codeBlock } from '@discordjs/formatters';
 

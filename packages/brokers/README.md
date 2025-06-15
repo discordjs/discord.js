@@ -34,6 +34,8 @@ pnpm add @discordjs/brokers
 
 ## Example usage
 
+These examples use [ES modules](https://nodejs.org/api/esm.html#enabling).
+
 ### pub sub
 
 ```ts
