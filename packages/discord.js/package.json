@@ -71,7 +71,7 @@
     "@discordjs/formatters": "^0.6.1",
     "@discordjs/rest": "workspace:^",
     "@discordjs/util": "workspace:^",
-    "@discordjs/ws": "^1.2.2",
+    "@discordjs/ws": "^1.2.3",
     "@sapphire/snowflake": "3.5.3",
     "discord-api-types": "^0.38.1",
     "fast-deep-equal": "3.1.3",
