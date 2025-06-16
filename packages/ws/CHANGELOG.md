@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/ws@2.0.3](https://github.com/discordjs/discord.js/compare/@discordjs/ws@2.0.2...@discordjs/ws@2.0.3) - (2025-06-16)
+
+## Bug Fixes
+
+- Regression in allowedMentions when replying (#10866) ([2ebb5cb](https://github.com/discordjs/discord.js/commit/2ebb5cbd53d869a52cba4549e7acc417963741cd))
+
+# [@discordjs/ws@2.0.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@1.1.1...@discordjs/ws@2.0.0) - (2024-09-02)
+
+## Bug Fixes
+
+- **WebSocketShard:** Buffer native zlib decompression payload (#10416) ([defb083](https://github.com/discordjs/discord.js/commit/defb083528ef31383778187a04ced8b00d886242)) by @didinele
+- **WebSocketManager:** Heartbeat event had outdated types (#10417) ([5eabec1](https://github.com/discordjs/discord.js/commit/5eabec14d45ef7bdd7f610e84234eb63e726eacd)) by @didinele
+- Retry for EAI_AGAIN I/O error (#10383) ([be04acd](https://github.com/discordjs/discord.js/commit/be04acd534d7d0c3fb7f6bd174e4a6482aae0d73)) by @didinele
+- Consistent debug log spacing (#10349) ([38c699b](https://github.com/discordjs/discord.js/commit/38c699bc8a2ca40f37f70c93e08067e00f12ee81)) by @Jiralite
+
+## Features
+
+- **WebsocketManager:** Retroactive token setting (#10418) ([de94eaf](https://github.com/discordjs/discord.js/commit/de94eaf351a69fab57ec766bd9e90e8c05e8c3d1)) by @didinele
+- **WebSocketShard:** Explicit time out network error handling (#10375) ([093ac92](https://github.com/discordjs/discord.js/commit/093ac924aef1bf328feadb49876bfbe26052fe1a)) by @didinele
+
+## Refactor
+
+- **WebSocketShard:** Error event handling (#10436) ([a6de270](https://github.com/discordjs/discord.js/commit/a6de2707fc1107262b12491f73b5b6887df91c67)) by @didinele
+- **ws:** Event layout (#10376) ([bf6761a](https://github.com/discordjs/discord.js/commit/bf6761a44adec1fe5017f6bf5d8bc0734916961f)) by @didinele
+  - **BREAKING CHANGE:** All events now emit shard id as its own param
+
+* fix: worker event forwarding
+
+---------
+- Native zlib support (#10316) ([94cc02a](https://github.com/discordjs/discord.js/commit/94cc02a2580496774d75673abc0caabc765d9ee0)) by @sdanialraza
+
 # [@discordjs/ws@2.0.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@1.1.1...@discordjs/ws@2.0.0) - (2024-09-02)
 
 ## Bug Fixes
