@@ -14,6 +14,18 @@ All notable changes to this project will be documented in this file.
 
 - **WebSocketShard:** Explicit time out network error handling (#10375) ([a5437a4](https://github.com/discordjs/discord.js/commit/a5437a41f31bf47e9a6f8dc4452086c614d71d1c))
 
+# [@discordjs/ws@1.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/ws@1.1.1...@discordjs/ws@1.2.0) - (2025-01-01)
+
+## Bug Fixes
+
+- **SimpleIdentifyThrottler:** Don't sleep negative amounts ([a589c6d](https://github.com/discordjs/discord.js/commit/a589c6d49265d24cf202e8f68c6b2ad4fafd398c))
+- Retry for EAI_AGAIN I/O error (#10383) ([5b8a08e](https://github.com/discordjs/discord.js/commit/5b8a08ebb66276320a5095630ecee403783afec0))
+- Consistent debug log spacing (#10349) ([c6710e5](https://github.com/discordjs/discord.js/commit/c6710e56cc634ecb2b922d777fe715c49fa91baa))
+
+## Features
+
+- **WebSocketShard:** Explicit time out network error handling (#10375) ([a5437a4](https://github.com/discordjs/discord.js/commit/a5437a41f31bf47e9a6f8dc4452086c614d71d1c))
+
 # [@discordjs/ws@1.1.1](https://github.com/discordjs/discord.js/compare/@discordjs/ws@1.1.0...@discordjs/ws@1.1.1) - (2024-06-02)
 
 ## Bug Fixes
