@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.20.0](https://github.com/discordjs/discord.js/compare/14.19.3...14.20.0) - (2025-06-16)
+
+## Bug Fixes
+
+- Use resolvePartialEmoji on MessagePayload#options#components (#10910) ([f2f757c](https://github.com/discordjs/discord.js/commit/f2f757ce52b76d5e571f47f9bf1c5188627b80d5))
+- **ChannelManager:** Remove threads from cache upon deletion (#10883) ([ee2eb73](https://github.com/discordjs/discord.js/commit/ee2eb7349f2467451880baaea54e02074916015f))
+- **PartialGroupDMChannel:** Prevent `undefined` values (#10889) ([9bca4af](https://github.com/discordjs/discord.js/commit/9bca4af5fdb78fae7b970498db7f93df31f55ef9))
+
+## Features
+
+- Backport entrypoint command (#10908) ([c0eae34](https://github.com/discordjs/discord.js/commit/c0eae344c2ed43fa67be9fda8e3d3e479693d2d1))
+- **BaseInteraction:** Add `attachmentSizeLimit` (#10830) ([7e21a94](https://github.com/discordjs/discord.js/commit/7e21a9474e532c5b22c6e0600c446fca47352617))
+
+## Performance
+
+- **Components:** Hash table (#10893) ([2d19163](https://github.com/discordjs/discord.js/commit/2d19163d764705667691430e438499fd330ffb65))
+
+## Refactor
+
+- **Client:** Remove `with_expiration` query parameter (#10800) ([c8f6066](https://github.com/discordjs/discord.js/commit/c8f6066d6a0a1fc6ac23a49d66604d95b588af3e))
+
 # [14.19.3](https://github.com/discordjs/discord.js/compare/14.19.2...14.19.3) - (2025-05-02)
 
 ## Bug Fixes
