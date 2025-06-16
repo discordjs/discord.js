@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/core@2.1.1](https://github.com/discordjs/discord.js/compare/@discordjs/core@2.1.0...@discordjs/core@2.1.1) - (2025-06-16)
+
+## Bug Fixes
+
+- **guild:** Fix incorrectly-detected deprecated overload ([d0a535e](https://github.com/discordjs/discord.js/commit/d0a535ea6a66861276691a51547adfb2bcef0384))
+
 # [@discordjs/core@2.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@2.0.1...@discordjs/core@2.1.0) - (2025-04-25)
 
 ## Features
