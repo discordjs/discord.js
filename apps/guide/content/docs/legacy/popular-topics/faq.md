@@ -1,0 +1,402 @@
+---
+title: FAQ
+icon: MessageCircleQuestion
+---
+
+# Frequently asked Questions
+
+## Legend
+
+- `client` is a placeholder for the <DocsLink path="Client:Class" /> object, such as `const client = new Client({ intents: [GatewayIntentBits.Guilds] });`.
+- `interaction` is a placeholder for the <DocsLink path="BaseInteraction:Class" /> object, such as `client.on(Events.InteractionCreate, interaction => { ... });`.
+- `guild` is a placeholder for the <DocsLink path="Guild:Class" /> object, such as `interaction.guild` or `client.guilds.cache.get('id')`.
+- `voiceChannel` is a placeholder for the <DocsLink path="VoiceChannel:Class" /> object, such as `interaction.member.voice.channel`
+
+For a more detailed explanation of the notations commonly used in this guide, the docs, and the support server, see [here](/additional-info/notation.md).
+
+## Administrative
+
+### How do I ban a user?
+
+```js
+const user = interaction.options.getUser('target');
+guild.members.ban(user);
+```
+
+### How do I unban a user?
+
+```js
+const user = interaction.options.getUser('target');
+guild.members.unban(user);
+```
+
+::: tip
+Discord validates and resolves user ids for users not on the server in user slash command options. To retrieve and use the full structure from the resulting interaction, you can use the <DocsLink path="CommandInteractionOptionResolver:Class#getUser" type="method"/> method.
+:::
+
+### How do I kick a guild member?
+
+```js
+const member = interaction.options.getMember('target');
+member.kick();
+```
+
+### How do I timeout a guild member?
+
+```js
+const member = interaction.options.getMember('target');
+member.timeout(60_000); // Timeout for one minute
+```
+
+::: tip
+Timeout durations are measured by the millisecond. The maximum timeout duration you can set is 28 days. To remove a timeout set on a member, pass `null` instead of a timeout duration.
+:::
+
+### How do I add a role to a guild member?
+
+```js
+const role = interaction.options.getRole('role');
+const member = interaction.options.getMember('target');
+member.roles.add(role);
+```
+
+### How do I check if a guild member has a specific role?
+
+```js
+const member = interaction.options.getMember('target');
+if (member.roles.cache.some((role) => role.name === 'role name')) {
+	// ...
+}
+```
+
+### How do I limit a command to a single user?
+
+```js
+if (interaction.user.id === 'id') {
+	// ...
+}
+```
+
+## Bot Configuration and Utility
+
+### How do I set my bot's username?
+
+```js
+client.user.setUsername('username');
+```
+
+### How do I set my bot's avatar?
+
+```js
+client.user.setAvatar('URL or path');
+```
+
+### How do I set my playing status?
+
+```js
+client.user.setActivity('activity');
+```
+
+### How do I set my status to "Watching/Listening to/Competing in ..."?
+
+```js
+const { ActivityType } = require('discord.js');
+
+client.user.setActivity('activity', { type: ActivityType.Watching });
+client.user.setActivity('activity', { type: ActivityType.Listening });
+client.user.setActivity('activity', { type: ActivityType.Competing });
+```
+
+::: tip
+If you would like to set your activity upon startup, you can use the `ClientOptions` object to set the appropriate `Presence` data.
+:::
+
+### How do I make my bot display online/idle/dnd/invisible?
+
+```js
+const { PresenceUpdateStatus } = require('discord.js');
+
+client.user.setStatus(PresenceUpdateStatus.Online);
+client.user.setStatus(PresenceUpdateStatus.Idle);
+client.user.setStatus(PresenceUpdateStatus.DoNotDisturb);
+client.user.setStatus(PresenceUpdateStatus.Invisible);
+```
+
+### How do I set both status and activity in one go?
+
+```js
+const { PresenceUpdateStatus } = require('discord.js');
+
+client.user.setPresence({ activities: [{ name: 'activity' }], status: PresenceUpdateStatus.Idle });
+```
+
+## Miscellaneous
+
+### How do I send a message to a specific channel?
+
+```js
+const channel = client.channels.cache.get('id');
+channel.send('content');
+```
+
+### How do I create a post in a forum channel?
+
+::: tip
+Currently, the only way to get tag ids is programmatically through <DocsLink path="ForumChannel:Class#availableTags" />.
+:::
+
+```js
+const channel = client.channels.cache.get('id');
+channel.threads.create({
+	name: 'Post name',
+	message: { content: 'Message content' },
+	appliedTags: ['tagID', 'anotherTagID'],
+});
+```
+
+### How do I DM a specific user?
+
+<!-- eslint-skip -->
+
+```js
+client.users.send('id', 'content');
+```
+
+::: tip
+If you want to DM the user who sent the interaction, you can use `interaction.user.send()`.
+:::
+
+### How do I mention a specific user in a message?
+
+<!-- eslint-skip -->
+
+```js
+const user = interaction.options.getUser('target');
+await interaction.reply(`Hi, ${user}.`);
+await interaction.followUp(`Hi, <@${user.id}>.`);
+```
+
+::: tip
+Mentions in embeds may resolve correctly in embed titles, descriptions and field values but will never notify the user. Other areas do not support mentions at all.
+:::
+
+### How do I control which users and/or roles are mentioned in a message?
+
+Controlling which mentions will send a ping is done via the `allowedMentions` option, which replaces `disableMentions`.
+
+This can be set as a default in `ClientOptions`, and controlled per-message sent by your bot.
+
+```js
+new Client({ allowedMentions: { parse: ['users', 'roles'] } });
+```
+
+Even more control can be achieved by listing specific `users` or `roles` to be mentioned by ID, e.g.:
+
+```js
+channel.send({
+	content: '<@123456789012345678> <@987654321098765432> <@&102938475665748392>',
+	allowedMentions: { users: ['123456789012345678'], roles: ['102938475665748392'] },
+});
+```
+
+### How do I prompt the user for additional input?
+
+```js
+interaction.reply('Please enter more input.').then(() => {
+	const collectorFilter = (m) => interaction.user.id === m.author.id;
+
+	interaction.channel
+		.awaitMessages({ filter: collectorFilter, time: 60_000, max: 1, errors: ['time'] })
+		.then((messages) => {
+			interaction.followUp(`You've entered: ${messages.first().content}`);
+		})
+		.catch(() => {
+			interaction.followUp('You did not enter any input!');
+		});
+});
+```
+
+::: tip
+If you want to learn more about this syntax or other types of collectors, check out [this dedicated guide page for collectors](/popular-topics/collectors.md)!
+:::
+
+### How do I block a user from using my bot?
+
+<!-- eslint-disable no-useless-return -->
+
+```js
+const blockedUsers = ['id1', 'id2'];
+client.on(Events.InteractionCreate, (interaction) => {
+	if (blockedUsers.includes(interaction.user.id)) return;
+});
+```
+
+::: tip
+You do not need to have a constant local variable like `blockedUsers` above. If you have a database system that you use to store IDs of blocked users, you can query the database instead:
+
+<!-- eslint-disable no-useless-return -->
+
+```js
+client.on(Events.InteractionCreate, async (interaction) => {
+	const blockedUsers = await database.query('SELECT user_id FROM blocked_users;');
+	if (blockedUsers.includes(interaction.user.id)) return;
+});
+```
+
+Note that this is just a showcase of how you could do such a check.
+:::
+
+### How do I react to the message my bot sent?
+
+```js
+interaction.channel.send('My message to react to.').then((sentMessage) => {
+	// Unicode emoji
+	sentMessage.react('👍');
+
+	// Custom emoji
+	sentMessage.react('123456789012345678');
+	sentMessage.react('<emoji:123456789012345678>');
+	sentMessage.react('<a:emoji:123456789012345678>');
+	sentMessage.react('emoji:123456789012345678');
+	sentMessage.react('a:emoji:123456789012345678');
+});
+```
+
+::: tip
+If you want to learn more about reactions, check out [this dedicated guide on reactions](/popular-topics/reactions.md)!
+:::
+
+### How do I restart my bot with a command?
+
+```js
+process.exit();
+```
+
+::: danger
+`process.exit()` will only kill your Node process, but when using [PM2](http://pm2.keymetrics.io/), it will restart the process whenever it gets killed. You can read our guide on PM2 [here](/improving-dev-environment/pm2.md).
+:::
+
+### What is the difference between a User and a GuildMember?
+
+A User represents a global Discord user, and a GuildMember represents a Discord user on a specific server. That means only GuildMembers can have permissions, roles, and nicknames, for example, because all of these things are server-bound information that could be different on each server that the user is in.
+
+### How do I find all online members of a guild?
+
+```js
+// First use guild.members.fetch to make sure all members are cached
+guild.members.fetch({ withPresences: true }).then((fetchedMembers) => {
+	const totalOnline = fetchedMembers.filter((member) => member.presence?.status === PresenceUpdateStatus.Online);
+	// Now you have a collection with all online member objects in the totalOnline variable
+	console.log(`There are currently ${totalOnline.size} members online in this guild!`);
+});
+```
+
+::: warning
+This only works correctly if you have the `GuildPresences` intent enabled for your application and client.
+If you want to learn more about intents, check out [this dedicated guide on intents](/popular-topics/intents.md)!
+:::
+
+### How do I check which role was added/removed and for which member?
+
+```js
+// Start by declaring a guildMemberUpdate listener
+// This code should be placed outside of any other listener callbacks to prevent listener nesting
+client.on(Events.GuildMemberUpdate, (oldMember, newMember) => {
+	// If the role(s) are present on the old member object but no longer on the new one (i.e role(s) were removed)
+	const removedRoles = oldMember.roles.cache.filter((role) => !newMember.roles.cache.has(role.id));
+	if (removedRoles.size > 0) {
+		console.log(`The roles ${removedRoles.map((r) => r.name)} were removed from ${oldMember.displayName}.`);
+	}
+
+	// If the role(s) are present on the new member object but are not on the old one (i.e role(s) were added)
+	const addedRoles = newMember.roles.cache.filter((role) => !oldMember.roles.cache.has(role.id));
+	if (addedRoles.size > 0) {
+		console.log(`The roles ${addedRoles.map((r) => r.name)} were added to ${oldMember.displayName}.`);
+	}
+});
+```
+
+### How do I check the bot's ping?
+
+There are two common measurements for bot pings. The first, **websocket heartbeat**, is the average interval of a regularly sent signal indicating the healthy operation of the websocket connection the library receives events over:
+
+```js
+interaction.reply(`Websocket heartbeat: ${client.ws.ping}ms.`);
+```
+
+::: tip
+If you're using [sharding](/sharding/), a specific shard's heartbeat can be found on the WebSocketShard instance, accessible at `client.ws.shards.get(id).ping`.
+:::
+
+The second, **Roundtrip Latency**, describes the amount of time a full API roundtrip (from the creation of the command message to the creation of the response message) takes. You then edit the response to the respective value to avoid needing to send yet another message:
+
+```js
+const sent = await interaction.reply({ content: 'Pinging...', withResponse: true });
+interaction.editReply(`Roundtrip latency: ${sent.resource.message.createdTimestamp - interaction.createdTimestamp}ms`);
+```
+
+### Why do some emojis behave weirdly?
+
+If you've tried using [the usual method of retrieving unicode emojis](/popular-topics/reactions.md#unicode-emojis), you may have noticed that some characters don't provide the expected results. Here's a short snippet that'll help with that issue. You can toss this into a file of its own and use it anywhere you need! Alternatively feel free to simply copy-paste the characters from below:
+
+```js
+// emojiCharacters.js
+module.exports = {
+	a: '🇦',
+	b: '🇧',
+	c: '🇨',
+	d: '🇩',
+	e: '🇪',
+	f: '🇫',
+	g: '🇬',
+	h: '🇭',
+	i: '🇮',
+	j: '🇯',
+	k: '🇰',
+	l: '🇱',
+	m: '🇲',
+	n: '🇳',
+	o: '🇴',
+	p: '🇵',
+	q: '🇶',
+	r: '🇷',
+	s: '🇸',
+	t: '🇹',
+	u: '🇺',
+	v: '🇻',
+	w: '🇼',
+	x: '🇽',
+	y: '🇾',
+	z: '🇿',
+	0: '0️⃣',
+	1: '1️⃣',
+	2: '2️⃣',
+	3: '3️⃣',
+	4: '4️⃣',
+	5: '5️⃣',
+	6: '6️⃣',
+	7: '7️⃣',
+	8: '8️⃣',
+	9: '9️⃣',
+	10: '🔟',
+	'#': '#️⃣',
+	'*': '*️⃣',
+	'!': '❗',
+	'?': '❓',
+};
+```
+
+```js
+// index.js
+const emojiCharacters = require('./emojiCharacters.js');
+
+console.log(emojiCharacters.a); // 🇦
+console.log(emojiCharacters[10]); // 🔟
+console.log(emojiCharacters['!']); // ❗
+```
+
+::: tip
+On Windows, you may be able to use the `Win + .` keyboard shortcut to open up an emoji picker that can be used for quick, easy access to all the Unicode emojis available to you. Some of the emojis listed above may not be represented there, though (e.g., the 0-9 emojis).
+
+You can also use the `Control + Command + Space` keyboard shortcut to perform the same behavior on macOS.
+:::

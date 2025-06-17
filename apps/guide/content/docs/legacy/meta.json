@@ -1,0 +1,29 @@
+{
+	"pages": [
+		"index",
+		"popular-topics/faq",
+		"additional-info/changes-in-v14",
+		"---Setup---",
+		"preparations",
+		"---Your App---",
+		"creating-your-bot",
+		"additional-features",
+		"slash-commands",
+		"interactions",
+		"interactive-components",
+		"---More To Know---",
+		"popular-topics",
+		"...",
+		"---Persisting Data---",
+		"keyv",
+		"sequelize",
+		"---Advanced Concepts---",
+		"oauth2",
+		"sharding",
+		"voice"
+	],
+	"title": "Legacy Guide",
+	"description": "The legacy discord.js guide",
+	"icon": "Book",
+	"root": true
+}

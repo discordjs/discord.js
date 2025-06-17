@@ -31,6 +31,10 @@ Before creating an issue, please ensure that it hasn't already been reported/sug
 [documentation][documentation].  
 See [the contribution guide][contributing] if you'd like to submit a PR.
 
+## Local Development
+
+To install and run just the guide portion of the repository for development, you can install dependencies with `pnpm --filter guide install` and serve a development version of the guide on localhost with `pnpm dev`.
+
 ## Help
 
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle nudge in the right direction, please don't hesitate to join our official [discord.js Server][discord].
