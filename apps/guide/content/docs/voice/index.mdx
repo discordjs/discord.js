@@ -10,16 +10,18 @@ title: Voice
 
 To add voice functionality to your discord.js bot, you will need the `@discordjs/voice` package, as well as one of the encryption packages listed below. For example:
 
-
 ```sh tab="npm"
 npm install @discordjs/voice libsodium-wrappers
 ```
+
 ```sh tab="yarn"
 yarn add @discordjs/voice libsodium-wrappers
 ```
+
 ```sh tab="pnpm"
 pnpm add @discordjs/voice libsodium-wrappers
 ```
+
 ```sh tab="bun"
 bun add @discordjs/voice libsodium-wrappers
 ```
@@ -27,7 +29,8 @@ bun add @discordjs/voice libsodium-wrappers
 After this, you'll be able to play Ogg and WebM Opus files without any other dependencies. If you want to play audio from other sources, or want to improve performance, consider installing some of the extra dependencies listed below.
 
 <Callout>
-	This guide assumes you have installed at least one additional dependency – FFmpeg. More information on this can be found in the section below.
+	This guide assumes you have installed at least one additional dependency – FFmpeg. More information on this can be
+	found in the section below.
 </Callout>
 
 ### Extra Dependencies
@@ -51,12 +54,15 @@ If you're struggling to install these dependencies, make sure you have build too
 ```sh tab="npm"
 npm install --global --production --add-python-to-path windows-build-tools
 ```
+
 ```sh tab="yarn"
 yarn global add --production --add-python-to-path windows-build-tools
 ```
+
 ```sh tab="pnpm"
 pnpm add --global --production --add-python-to-path windows-build-tools
 ```
+
 ```sh tab="bun"
 bun add --global --production --add-python-to-path windows-build-tools
 ```
@@ -101,4 +107,3 @@ FFmpeg
 - **FFmpeg**
   - If you want to play audio from many different file types, you will need to have FFmpeg installed.
   - If `libopus` is enabled, you will be able to benefit from increased performance if real-time volume alteration is disabled.
-

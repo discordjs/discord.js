@@ -25,13 +25,13 @@ Slash commands provide a huge number of benefits over manual message parsing, in
 Assuming you've followed the guide so far, your project directory should look something like this:
 
 <Files>
-  <Folder name="discord-bot" defaultOpen>
-    <Folder name="node_modules" defaultOpen/>
-    <File name="config.json" />
-    <File name="index.js" />
-    <File name="packge-lock.json" />
-    <File name="packge.json" />
-  </Folder>
+	<Folder name="discord-bot" defaultOpen>
+		<Folder name="node_modules" defaultOpen />
+		<File name="config.json" />
+		<File name="index.js" />
+		<File name="packge-lock.json" />
+		<File name="packge.json" />
+	</Folder>
 </Files>
 
 <Steps>
@@ -74,7 +74,6 @@ A slash command also requires a function to run when the command is used, to res
 
 The simplest way to acknowledge and respond to an interaction is the `interaction.reply()` method. Other methods of replying are covered on the [Response methods](/slash-commands/response-methods.md) page later in this section.
 
-
 ```js
 async execute(interaction) {
 	await interaction.reply('Pong!')
@@ -102,11 +101,11 @@ module.exports = {
 <Callout>
 	[`module.exports`](https://nodejs.org/api/modules.html#modules_module_exports) is how you export data in Node.js so that you can [`require()`](https://nodejs.org/api/modules.html#modules_require_id) it in other files.
 
-	If you need to access your client instance from inside a command file, you can access it via `interaction.client`. If you need to access external files, packages, etc., you should `require()` them at the top of the file.
+    If you need to access your client instance from inside a command file, you can access it via `interaction.client`. If you need to access external files, packages, etc., you should `require()` them at the top of the file.
+
 </Callout>
 
 That's it for your basic ping command. Below are examples of two more commands we're going to build upon throughout the guide, so create two more files for these before you continue reading.
-
 
 ```js tab="User" title="commands/utility/user.js"
 const { SlashCommandBuilder } = require('discord.js');
@@ -122,6 +121,7 @@ module.exports = {
 	},
 };
 ```
+
 ```js tab="Server" title="commands/utility/server.js"
 const { SlashCommandBuilder } = require('discord.js');
 
@@ -139,4 +139,3 @@ module.exports = {
 #### Next steps
 
 You can implement additional commands by creating new files within a dedicated subfolder in the `commands` folder, but these three are the ones we're going to use for the examples as we go on. For now let's move on to the code you'll need for command handling, to load the files and respond to incoming interactions.
-

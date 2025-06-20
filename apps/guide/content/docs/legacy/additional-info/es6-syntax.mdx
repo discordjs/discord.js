@@ -12,7 +12,8 @@ const config = require('./config.json');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-client.once(Events.ClientReady, () => { // [!code word:=>]
+// [!code word:=>]
+client.once(Events.ClientReady, () => {
 	console.log('Ready!');
 });
 
@@ -88,10 +89,11 @@ console.log(`
 	is a breeze
 	with template literals!
 `);
-
 ```
+
 <Callout>
-	As you  will notice, template literals will also render the white space inside them, including the indentation! There are ways around this, which we will discuss in another section.
+	As you will notice, template literals will also render the white space inside them, including the indentation! There
+	are ways around this, which we will discuss in another section.
 </Callout>
 
 You can see how it makes things easier and more readable. In some cases, it can even make your code shorter! This one is something you'll want to take advantage of as much as possible.
@@ -103,27 +105,32 @@ Arrow functions are shorthand for regular functions, with the addition that they
 Here are some examples of ways you can benefit from arrow functions over regular functions:
 
 ```js
-client.once(Events.ClientReady, function () { // [!code --:3]
+// [!code --:3]
+client.once(Events.ClientReady, function () {
 	console.log('Ready!');
 });
 client.once(Events.ClientReady, () => console.log('Ready!')); // [!code ++]
 
-client.on(Events.TypingStart, function (typing) { // [!code --:3]
+// [!code --:3]
+client.on(Events.TypingStart, function (typing) {
 	console.log(typing.user.tag + ' started typing in #' + typing.channel.name);
 });
 client.on(Events.TypingStart, (typing) => console.log(`${typing.user.tag} started typing in #${typing.channel.name}`)); // [!code ++]
 
-client.on(Events.MessageCreate, function (message) { // [!code --:3]
+// [!code --:3]
+client.on(Events.MessageCreate, function (message) {
 	console.log(message.author.tag + ' sent: ' + message.content);
 });
 client.on(Events.MessageCreate, (message) => console.log(`${message.author.tag} sent: ${message.content}`)); // [!code ++]
 
-var doubleAge = function (age) { // [!code --:3]
+// [!code --:3]
+var doubleAge = function (age) {
 	return 'Your age doubled is: ' + age * 2;
 };
 const doubleAge = (age) => `Your age doubled is: ${age * 2}`; // [!code ++]
 
-var collectorFilter = function (m) { // [!code --:4]
+// [!code --:4]
+var collectorFilter = function (m) {
 	return m.content === 'I agree' && !m.author.bot;
 };
 var collector = message.createMessageCollector({ filter: collectorFilter, time: 15_000 });
@@ -221,7 +228,8 @@ const [, username, id] = message.content.match(someRegex);
 In this snippet, we use a comma without providing a name for the item in the array we don't need. You can also give it a placeholder name (`_match` or similar) if you prefer, of course; it's entirely preference at that point.
 
 <Callout>
-	The underscore `_` prefix is a convention for unused variables. Some lint rules will error or warn if you define identifiers without using them in your code but ignore identifiers starting with `_`.
+	The underscore `_` prefix is a convention for unused variables. Some lint rules will error or warn if you define
+	identifiers without using them in your code but ignore identifiers starting with `_`.
 </Callout>
 
 ## var, let, and const
@@ -233,4 +241,3 @@ Since there are many, many articles out there that can explain this part more in
 3. The `const` keyword is for giving variables a constant value that is unable to be reassigned. `const`, like `let`, is also block-scoped.
 
 The general rule of thumb recommended by this guide is to use `const` wherever possible, `let` otherwise, and avoid using `var`. Here's a [helpful article](https://madhatted.com/2016/1/25/let-it-be) if you want to read more about this subject.
-

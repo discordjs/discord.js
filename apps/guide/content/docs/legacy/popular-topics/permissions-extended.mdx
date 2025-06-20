@@ -49,12 +49,11 @@ One possible scenario causing this: the channel has permission overwrites for th
 As you only check for `SendMessages`, the bot will try to execute the send, but since `ViewChannel` is missing, the API denies the request.
 
 <Callout title='Causes for "Missing Access"'>
-	- Text Channels require `ViewChannel` as detailed above.
-	- Voice Channels require `Connect` in the same way.
-	- Reacting to a message requires `ReadMessageHistory` in the channel the message was sent.
-	- When deploying slash commands: Enable the `applications.commands` scope (for more information see the [adding your bot](/preparations/adding-your-bot-to-servers) section).
-	- Timing out a member requires `ModerateMembers`.
-	- Editing threads (tags, locking, closing, etc.) requires `SendMessagesInThreads`.
+	- Text Channels require `ViewChannel` as detailed above. - Voice Channels require `Connect` in the same way. -
+	Reacting to a message requires `ReadMessageHistory` in the channel the message was sent. - When deploying slash
+	commands: Enable the `applications.commands` scope (for more information see the [adding your
+	bot](/preparations/adding-your-bot-to-servers) section). - Timing out a member requires `ModerateMembers`. - Editing
+	threads (tags, locking, closing, etc.) requires `SendMessagesInThreads`.
 </Callout>
 
 ## Limitations and oddities
@@ -84,7 +83,4 @@ During your development, you will likely run into `DiscordAPIError: Missing Perm
 - It is trying to execute an action on a voice channel without the `ViewChannel` permission.
 - It is trying to create a channel or channel overwrite including the `ManageRoles` flag but does not have the `Administrator` permission or an explicit `ManageRoles` overwrite on this channel (note that the global permission does not count).
 
-<Callout type="warn">
-	Granting the `Administrator` permission does not skip any **hierarchical** check!
-</Callout>
-
+<Callout type="warn">Granting the `Administrator` permission does not skip any **hierarchical** check!</Callout>

@@ -75,6 +75,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
     message.react('<a:animated_blobreach:123456789012345678>'); // [!code word:a\:]
     message.react('a:animated_blobreach:123456789012345678');
     ```
+
 </Callout>
 
 Great! This route may not always be available to you, though. Sometimes you'll need to react with an emoji programmatically. To do so, you'll need to retrieve the emoji object.
@@ -85,11 +86,11 @@ Two of the easiest ways you can retrieve an emoji would be:
 - Use `.get()` on the `client.emojis.cache` Collection.
 
 <Callout>
-    Two or more emojis can have the same name, and using `.find()` will only return the **first** entry it finds. As such, this can cause unexpected results.
-   </Callout>
+	Two or more emojis can have the same name, and using `.find()` will only return the **first** entry it finds. As such,
+	this can cause unexpected results.
+</Callout>
 
 Using `.find()`, your code would look something like this:
-
 
 ```js title="reactionsample.js" lineNumbers=16
 if (commandName === 'react-custom') {
@@ -101,7 +102,6 @@ if (commandName === 'react-custom') {
 ```
 
 Using `.get()`, your code would look something like this:
-
 
 ```js title="reactionsample.js" lineNumbers=16
 if (commandName === 'react-custom') {
@@ -155,10 +155,11 @@ client.on(Events.InteractionCreate, async (interaction) => {
 });
 ```
 
-The other would be to use the `async`/`await` keywords. 
+The other would be to use the `async`/`await` keywords.
 
 ```js title="reactionsample.js" lineNumbers=11
-client.on(Events.InteractionCreate, async (interaction) => { // [!code word:async]
+// [!code word:async]
+client.on(Events.InteractionCreate, async (interaction) => {
 	if (!interaction.isChatInputCommand()) return;
 
 	const { commandName } = interaction;
@@ -181,7 +182,9 @@ client.on(Events.InteractionCreate, async (interaction) => { // [!code word:asyn
 If you try again with either of the code blocks above, you'll get the result you originally wanted!
 
 <Callout>
-    If you aren't familiar with Promises or `async`/`await`, you can read more about them on [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) or [our guide page on async/await](/guide/legacy/additional-info/async-await.md)!
+	If you aren't familiar with Promises or `async`/`await`, you can read more about them on
+	[MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) or [our guide page on
+	async/await](/guide/legacy/additional-info/async-await.md)!
 </Callout>
 
 ### Handling multiple reactions if the order doesn't matter
@@ -204,7 +207,8 @@ This small optimization allows you to use `.then()` to handle when all of the Pr
 Now that you know how to add reactions, you might be asking, how do you remove them? In this section, you will learn how to remove all reactions, remove reactions by user, and remove reactions by emoji.
 
 <Callout type="warn">
-    All of these methods require `ManageMessages` permissions. Ensure your bot has permissions before attempting to utilize any of these methods, as it will error if it doesn't.
+	All of these methods require `ManageMessages` permissions. Ensure your bot has permissions before attempting to
+	utilize any of these methods, as it will error if it doesn't.
 </Callout>
 
 ### Removing all reactions
@@ -229,7 +233,9 @@ message.reactions.cache
 ### Removing reactions by user
 
 <Callout>
-	If you are not familiar with `Collection#filter` and [`Map.has()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has) take the time to understand what they do and then come back.
+	If you are not familiar with `Collection#filter` and
+	[`Map.has()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has) take the time
+	to understand what they do and then come back.
 </Callout>
 
 Removing reactions by a user is not as straightforward as removing by emoji or removing all reactions. The API does not provide a method for selectively removing the reactions of a user. This means you will have to iterate through reactions that include the user and remove them.
@@ -281,7 +287,8 @@ Since version 12, you can change this behavior by activating partials. For a ful
 Make sure you enable partial structures for `Message`, `Channel`, and `Reaction` when instantiating your client if you want reaction events on uncached messages for both server and direct message channels. If you do not want to support direct message channels, you can exclude `Channel`.
 
 <Callout>
-	If you use [gateway intents](/guide/legacy/popular-topics/intents) but can't or don't want to use the privileged `GuildPresences` intent, you additionally need the `User` partial.
+	If you use [gateway intents](/guide/legacy/popular-topics/intents) but can't or don't want to use the privileged
+	`GuildPresences` intent, you additionally need the `User` partial.
 </Callout>
 
 ```js title="old-reactions.js"
@@ -290,7 +297,8 @@ const { Client, Events, GatewayIntentBits, Partials } = require('discord.js');
 const client = new Client({
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],
 	// [!code word:Partials]
-	partials: [Partials.Message, Partials.Channel, Partials.Reaction], });
+	partials: [Partials.Message, Partials.Channel, Partials.Reaction],
+});
 
 client.on(Events.MessageReactionAdd, async (reaction, user) => {
 	// When a reaction is received, check if the structure is partial
@@ -313,6 +321,8 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 ```
 
 <Callout>
-	Partial structures are enabled **globally**. You cannot only make them work for a specific event or cache, and you very likely **need to adapt other parts of your code** that are accessing data from the relevant caches. All caches holding the respective structure type might return partials as well! For more info, check out [this page](/guide/legacy/popular-topics/partials).
+	Partial structures are enabled **globally**. You cannot only make them work for a specific event or cache, and you
+	very likely **need to adapt other parts of your code** that are accessing data from the relevant caches. All caches
+	holding the respective structure type might return partials as well! For more info, check out [this
+	page](/guide/legacy/popular-topics/partials).
 </Callout>
-

@@ -52,7 +52,9 @@ app.listen(port, () => console.log(`App listening at http://localhost:${port}`))
 After running `npm i express`, you can start your server with `node index.js`. Once started, connect to `http://localhost:53134`, and you should see "Hoi!".
 
 <Callout>
-	Although we're using express, there are many other alternatives to handle a web server, such as: [fastify](https://www.fastify.io/), [koa](https://koajs.com/), and the [native Node.js http module](https://nodejs.org/api/http.html).
+	Although we're using express, there are many other alternatives to handle a web server, such as:
+	[fastify](https://www.fastify.io/), [koa](https://koajs.com/), and the [native Node.js http
+	module](https://nodejs.org/api/http.html).
 </Callout>
 
 ### Getting an OAuth2 URL
@@ -214,7 +216,8 @@ bun add undici
 Require `undici` and make your request.
 
 <Callout>
-	If you are used to the Fetch API and want to use that instead of how `undici` does it, instead of using `undici#request`, use `undici#fetch` with the same parameters as node-fetch.
+	If you are used to the Fetch API and want to use that instead of how `undici` does it, instead of using
+	`undici#request`, use `undici#fetch` with the same parameters as node-fetch.
 </Callout>
 
 ```js title="index.js"
@@ -260,7 +263,8 @@ app.get('/', async ({ query }, response) => {
 ```
 
 <Callout>
-	The content-type for the token URL must be `application/x-www-form-urlencoded`, which is why `URLSearchParams` is used.
+	The content-type for the token URL must be `application/x-www-form-urlencoded`, which is why `URLSearchParams` is
+	used.
 </Callout>
 
 Now try visiting your OAuth2 URL and authorizing your application. Once you're redirected, you should see an [access token response](https://discord.com/developers/docs/topics/oauth2#authorization-code-grant-access-token-response) in your console.
@@ -287,10 +291,12 @@ const userResult = await request('https://discord.com/api/users/@me', {
 console.log(await userResult.body.json());
 ```
 
-<Callout type="error" title="To maintain security, store the access token server-side but associate it with a session ID that you generate for the user." />
+<Callout
+	type="error"
+	title="To maintain security, store the access token server-side but associate it with a session ID that you generate for the user."
+/>
 
 ## Additional reading
 
 [RFC 6759](https://tools.ietf.org/html/rfc6749)  
 [Discord Docs for OAuth2](https://discord.com/developers/docs/topics/oauth2)
-

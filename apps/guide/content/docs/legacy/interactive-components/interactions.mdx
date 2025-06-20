@@ -11,7 +11,10 @@ Every button click or select menu selection on a component sent by your bot fire
 - Creating a permanent component handler in the `Client#interactionCreate` event.
 
 <Callout>
-	This page is a follow-up to the [slash commands](/guide/legacy/slash-commands/advanced-creation) section, and assumes you have created either [buttons](/guide/legacy/interactive-components/buttons) or [select menus](/guide/legacy/interactive-components/select-menus) as detailed in this guide. Please carefully read those pages first so that you can understand the methods used here.
+	This page is a follow-up to the [slash commands](/guide/legacy/slash-commands/advanced-creation) section, and assumes
+	you have created either [buttons](/guide/legacy/interactive-components/buttons) or [select
+	menus](/guide/legacy/interactive-components/select-menus) as detailed in this guide. Please carefully read those pages
+	first so that you can understand the methods used here.
 </Callout>
 
 ## Responding to component interactions
@@ -76,7 +79,7 @@ try {
 	// [!code focus:8] [!code word:customId]
 	const confirmation = await response.resource.message.awaitMessageComponent({ filter: collectorFilter, time: 60_000 });
 
-	if (confirmation.customId === 'confirm') { 
+	if (confirmation.customId === 'confirm') {
 		await interaction.guild.members.ban(target);
 		await confirmation.update({ content: `${target.username} has been banned for reason: ${reason}`, components: [] });
 	} else if (confirmation.customId === 'cancel') {
@@ -182,8 +185,10 @@ const { Events } = require('discord.js');
 
 module.exports = {
 	name: Events.InteractionCreate,
-	async execute(interaction) { // [!code focus]
-		if (interaction.isChatInputCommand()) { // [!code focus]
+	// [!code focus]
+	async execute(interaction) {
+		// [!code focus]
+		if (interaction.isChatInputCommand()) {
 			const command = interaction.client.commands.get(interaction.commandName);
 
 			if (!command) {
@@ -197,13 +202,13 @@ module.exports = {
 				console.error(`Error executing ${interaction.commandName}`);
 				console.error(error);
 			}
-		// [!code focus:5] [!code ++:5]
+			// [!code focus:5] [!code ++:5]
 		} else if (interaction.isButton()) {
 			// respond to the button
 		} else if (interaction.isStringSelectMenu()) {
 			// respond to the select menu
 		}
+		// [!code focus]
 	},
 };
 ```
-

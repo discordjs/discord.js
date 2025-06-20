@@ -4,7 +4,7 @@ title: Command Responses
 
 The most common way of sending a response is by using the `ChatInputCommandInteraction#reply()` method, as you have done in earlier examples. This method acknowledges the interaction and sends a new message in response.
 
-```js title="commands/utility/ping.js" 
+```js title="commands/utility/ping.js"
 module.exports = {
 	data: new SlashCommandBuilder().setName('ping').setDescription('Replies with Pong!'),
 	async execute(interaction) {
@@ -14,7 +14,9 @@ module.exports = {
 ```
 
 <Callout>
-	Initially an interaction token is only valid for three seconds, so that's the timeframe in which you are able to use the `ChatInputCommandInteraction#reply()` method. Responses that require more time ("Deferred Responses") are explained later on this page.
+	Initially an interaction token is only valid for three seconds, so that's the timeframe in which you are able to use
+	the `ChatInputCommandInteraction#reply()` method. Responses that require more time ("Deferred Responses") are
+	explained later on this page.
 </Callout>
 
 ## Ephemeral responses
@@ -41,7 +43,9 @@ Ephemeral responses are _only_ available for interaction responses; another grea
 After you've sent an initial response, you may want to edit that response for various reasons. This can be achieved with the `ChatInputCommandInteraction#editReply()` method:
 
 <Callout type="warn">
-	After the initial response, an interaction token is valid for **15 minutes**, so this is the timeframe in which you can edit the response and send follow-up messages. You also **cannot** edit the ephemeral state of a message, so make sure that your first response sets this correctly.
+	After the initial response, an interaction token is valid for **15 minutes**, so this is the timeframe in which you
+	can edit the response and send follow-up messages. You also **cannot** edit the ephemeral state of a message, so make
+	sure that your first response sets this correctly.
 </Callout>
 
 ```js
@@ -65,7 +69,6 @@ In fact, editing your interaction response is necessary to [calculate the ping](
 As previously mentioned, Discord requires an acknowledgement from your bot within three seconds that the interaction was received. Otherwise, Discord considers the interaction to have failed and the token becomes invalid. But what if you have a command that performs a task which takes longer than three seconds before being able to reply?
 
 In this case, you can make use of the `ChatInputCommandInteraction#deferReply()` method, which triggers the `<application> is thinking...` message. This also acts as the initial response, to confirm to Discord that the interaction was received successfully and gives you a **15-minute timeframe to complete your tasks** before responding.
-
 
 ```js
 const wait = require('node:timers/promises').setTimeout;
@@ -94,7 +97,8 @@ await interaction.deferReply({ flags: MessageFlags.Ephemeral });
 It is not possible to edit a reply to change its ephemeral state once sent.
 
 <Callout>
-	If you want to make a proper ping command, one is available in our [FAQ](/popular-topics/faq.md#how-do-i-check-the-bot-s-ping).
+	If you want to make a proper ping command, one is available in our
+	[FAQ](/popular-topics/faq.md#how-do-i-check-the-bot-s-ping).
 </Callout>
 
 ## Follow-ups
@@ -102,7 +106,8 @@ It is not possible to edit a reply to change its ephemeral state once sent.
 The `reply()` and `deferReply()` methods are both _initial_ responses, which tell Discord that your bot successfully received the interaction, but cannot be used to send additional messages. This is where follow-up messages come in. After having initially responded to an interaction, you can use `ChatInputCommandInteraction#followUp()` to send additional messages:
 
 <Callout type="warn">
-	After the initial response, an interaction token is valid for **15 minutes**, so this is the timeframe in which you can edit the response and send follow-up messages.
+	After the initial response, an interaction token is valid for **15 minutes**, so this is the timeframe in which you
+	can edit the response and send follow-up messages.
 </Callout>
 
 ```js
@@ -126,9 +131,7 @@ Note that if you use `followUp()` after a `deferReply()`, the first follow-up wi
 
 That's all, now you know everything there is to know on how to reply to slash commands!
 
-<Callout>
-	Interaction responses can use masked links (e.g. `[text](http://site.com)`) in the message content.
-</Callout>
+<Callout>Interaction responses can use masked links (e.g. `[text](http://site.com)`) in the message content.</Callout>
 
 ## Fetching and deleting responses
 
@@ -167,4 +170,3 @@ client.on(Events.InteractionCreate, (interaction) => {
 	interaction.reply(locales[interaction.locale] ?? 'Hello World (default is english)');
 });
 ```
-

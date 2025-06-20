@@ -3,7 +3,8 @@ title: Deleting Commands
 ---
 
 <Callout>
-	This page is a follow-up to [command deployment](/guide/legacy/app-creation/deploying-commands). To delete commands, you need to register them in the first place.
+	This page is a follow-up to [command deployment](/guide/legacy/app-creation/deploying-commands). To delete commands,
+	you need to register them in the first place.
 </Callout>
 
 You may have decided that you don't need a command anymore and don't want your users to be confused when they encounter a removed command.
@@ -22,7 +23,7 @@ To delete a specific command, you will need its id. Head to **Server Settings ->
 
 Edit your `deploy-commands.js` as shown below, or put it into its own file to clearly discern it from the deploy workflow:
 
-```js title="deleteCommands.js" 
+```js title="deleteCommands.js"
 const { REST, Routes } = require('discord.js');
 const { clientId, guildId, token } = require('./config.json');
 
@@ -49,7 +50,7 @@ Where `'commandId'` is the id of the command you want to delete. Run your deploy
 
 To delete all commands in the respective scope (one guild, all global commands) you can pass an empty array when setting commands.
 
-```js title="deleteAllCommands" 
+```js title="deleteAllCommands"
 const { REST, Routes } = require('discord.js');
 const { clientId, guildId, token } = require('./config.json');
 
@@ -75,4 +76,3 @@ Discord's API doesn't currently provide an easy way to delete guild-based comman
 <Callout type="warn">
 	Note, that the same command will have a **different id**, if deployed to a **different guild**!
 </Callout>
-

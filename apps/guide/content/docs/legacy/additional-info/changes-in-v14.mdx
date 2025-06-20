@@ -68,15 +68,17 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds], partials: [Part
 const { ApplicationCommandType, ApplicationCommandOptionType } = require('discord.js'); // [!code ++]
 
 const command = {
-  name: 'ping',
-  type: 'CHAT_INPUT', // [!code --]
-  type: ApplicationCommandType.ChatInput, // [!code ++]
-  options: [{
-    name: 'option',
-    description: 'A sample option',
-    type: 'STRING', // [!code --]
-    type: ApplicationCommandOptionType.String, // [!code ++]
-  }],
+	name: 'ping',
+	type: 'CHAT_INPUT', // [!code --]
+	type: ApplicationCommandType.ChatInput, // [!code ++]
+	options: [
+		{
+			name: 'option',
+			description: 'A sample option',
+			type: 'STRING', // [!code --]
+			type: ApplicationCommandOptionType.String, // [!code ++]
+		},
+	],
 };
 ```
 
@@ -86,11 +88,11 @@ const command = {
 const { ButtonStyle } = require('discord.js'); // [!code ++]
 
 const button = {
-  label: 'test',
-  style: 'PRIMARY', // [!code --]
-  style: ButtonStyle.Primary, // [!code ++]
-  customId: '1234'
-}
+	label: 'test',
+	style: 'PRIMARY', // [!code --]
+	style: ButtonStyle.Primary, // [!code ++]
+	customId: '1234',
+};
 ```
 
 ### Removal of method-based type guards
@@ -102,14 +104,14 @@ Some channel type guard methods that narrowed to one channel type have been remo
 ```js
 const { ChannelType } = require('discord.js'); // [!code ++]
 
-channel.isText() // [!code --]
-channel.type === ChannelType.GuildText // [!code ++]
+channel.isText(); // [!code --]
+channel.type === ChannelType.GuildText; // [!code ++]
 
-channel.isVoice() // [!code --]
-channel.type === ChannelType.GuildVoice // [!code ++]
+channel.isVoice(); // [!code --]
+channel.type === ChannelType.GuildVoice; // [!code ++]
 
-channel.isDM() // [!code --]
-channel.type === ChannelType.DM // [!code ++]
+channel.isDM(); // [!code --]
+channel.type === ChannelType.DM; // [!code ++]
 ```
 
 ### Builders
@@ -159,29 +161,29 @@ The following properties have been removed as they are not documented by Discord
 - BitField constituents now have a `BitField` suffix to avoid naming conflicts with the enum names:
 
 ```js
-new Permissions() // [!code --]
-new PermissionsBitField() // [!code ++]
+new Permissions(); // [!code --]
+new PermissionsBitField(); // [!code ++]
 
-new MessageFlags() // [!code --]
-new MessageFlagsBitField() // [!code ++]
+new MessageFlags(); // [!code --]
+new MessageFlagsBitField(); // [!code ++]
 
-new ThreadMemberFlags() // [!code --]
-new ThreadMemberFlagsBitField() // [!code ++]
+new ThreadMemberFlags(); // [!code --]
+new ThreadMemberFlagsBitField(); // [!code ++]
 
-new UserFlags() // [!code --]
-new UserFlagsBitField() // [!code ++]
+new UserFlags(); // [!code --]
+new UserFlagsBitField(); // [!code ++]
 
-new SystemChannelFlags() // [!code --]
-new SystemChannelFlagsBitField() // [!code ++]
+new SystemChannelFlags(); // [!code --]
+new SystemChannelFlagsBitField(); // [!code ++]
 
-new ApplicationFlags() // [!code --]
-new ApplicationFlagsBitField() // [!code ++]
+new ApplicationFlags(); // [!code --]
+new ApplicationFlagsBitField(); // [!code ++]
 
-new Intents() // [!code --]
-new IntentsBitField() // [!code ++]
+new Intents(); // [!code --]
+new IntentsBitField(); // [!code ++]
 
-new ActivityFlags() // [!code --]
-new ActivityFlagsBitField() // [!code ++]
+new ActivityFlags(); // [!code --]
+new ActivityFlagsBitField(); // [!code ++]
 ```
 
 - `#FLAGS` has been renamed to `#Flags`
@@ -191,8 +193,8 @@ new ActivityFlagsBitField() // [!code ++]
 The methods that return CDN URLs have changed. Here is an example on a User:
 
 ```js
-const url = user.displayAvatarURL({ dynamic: true, format: "png", size: 1_024 }); // [!code --]
-const url = user.displayAvatarURL({ extension: "png", size: 1_024 }); // [!code ++]
+const url = user.displayAvatarURL({ dynamic: true, format: 'png', size: 1_024 }); // [!code --]
+const url = user.displayAvatarURL({ extension: 'png', size: 1_024 }); // [!code ++]
 ```
 
 Dynamic URLs use `ImageURLOptions` and static URLs use `BaseImageURLOptions`. Since dynamic URLs are returned by default, this option has been renamed to `forceStatic` which forces the return of a static URL. Additionally, `format` has been renamed to `extension`.
@@ -240,17 +242,17 @@ const { Colors } = require('discord.js'); // [!code ++]
 - Many of the exported constants structures have been replaced and renamed:
 
 ```js
-Opcodes // [!code --]
-GatewayOpcodes // [!code ++]
+Opcodes; // [!code --]
+GatewayOpcodes; // [!code ++]
 
-WSEvents // [!code --]
-GatewayDispatchEvents // [!code ++]
+WSEvents; // [!code --]
+GatewayDispatchEvents; // [!code ++]
 
-WSCodes // [!code --]
-GatewayCloseCodes // [!code ++]
+WSCodes; // [!code --]
+GatewayCloseCodes; // [!code ++]
 
-InviteScopes // [!code --]
-OAuth2Scopes // [!code ++]
+InviteScopes; // [!code --]
+OAuth2Scopes; // [!code ++]
 ```
 
 ### Events
@@ -342,10 +344,10 @@ const textInput = new TextInputBuilder(); // [!code ++]
 
 ```js
 const editedButton = receivedButton // [!code --]
-  .setDisabled(true); // [!code --]
+	.setDisabled(true); // [!code --]
 const { ButtonBuilder } = require('discord.js'); // [!code ++]
 const editedButton = ButtonBuilder.from(receivedButton) // [!code ++]
-  .setDisabled(true); // [!code ++]
+	.setDisabled(true); // [!code ++]
 ```
 
 ### MessageManager
@@ -565,9 +567,9 @@ const { ComponentType } = require('discord.js'); // [!code ++]
 
 const collector = interaction.channel.createMessageComponentCollector({
 	filter: collectorFilter,
-	componentType: 'BUTTON',  // [!code --]
+	componentType: 'BUTTON', // [!code --]
 	componentType: ComponentType.Button, // [!code ++]
-	time: 20_000
+	time: 20_000,
 });
 ```
 
@@ -670,4 +672,3 @@ Added the `threadName` property in `Webhook#send()` options which allows a webho
 ### WebSocketManager
 
 discord.js uses `@discordjs/ws` internally
-

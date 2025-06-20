@@ -26,7 +26,6 @@ pnpm add undici
 
 To start off, you will be using the following skeleton code. Since both the commands you will be adding in this section require an interaction with external APIs, you will defer the reply, so your application responds with a "thinking..." state. You can then edit the reply once you got the data you need:
 
-
 ```js title="rest-examples.js" lineNumbers
 const { Client, EmbedBuilder, Events, GatewayIntentBits } = require('discord.js');
 
@@ -48,7 +47,8 @@ client.login('your-token-goes-here');
 ```
 
 <Callout>
-	We're taking advantage of [destructuring](/guide/legacy/additional-info/es6-syntax#destructuring) in this tutorial to maintain readability.
+	We're taking advantage of [destructuring](/guide/legacy/additional-info/es6-syntax#destructuring) in this tutorial to
+	maintain readability.
 </Callout>
 
 ## Using undici
@@ -66,7 +66,8 @@ const { request } = require('undici');
 ### Random Cat
 
 <Callout title="No more cats :(" type="error">
-	Unfortunately, the `aws.random.cat` API doesn't work anymore. We will keep the example as-is until we find a better showcase!
+	Unfortunately, the `aws.random.cat` API doesn't work anymore. We will keep the example as-is until we find a better
+	showcase!
 </Callout>
 
 Random cat's API is available at [https://aws.random.cat/meow](https://aws.random.cat/meow) and returns a [JSON](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON) response. To actually fetch data from the API, you're going to do the following:
@@ -171,6 +172,6 @@ interaction.editReply({ embeds: [embed] });
 ```
 
 <Callout>
-	Check out display components for a newer approach to message formatting! You can read the [display components](/guide/legacy/popular-topics/display-components) section of this guide to learn more about using them!
+	Check out display components for a newer approach to message formatting! You can read the [display
+	components](/guide/legacy/popular-topics/display-components) section of this guide to learn more about using them!
 </Callout>
-

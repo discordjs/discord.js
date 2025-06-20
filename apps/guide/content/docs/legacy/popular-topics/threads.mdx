@@ -6,9 +6,7 @@ Threads can be thought of as temporary sub-channels inside an existing channel, 
 
 ## Thread related gateway events
 
-<Callout>
-    You can use the `ThreadChannel#isThread` type guard to make sure a channel is a `ThreadChannel`!
-</Callout>
+<Callout>You can use the `ThreadChannel#isThread` type guard to make sure a channel is a `ThreadChannel`!</Callout>
 
 Threads introduce a number of new gateway events, which are listed below:
 
@@ -25,7 +23,8 @@ Threads are created and deleted using the `GuildTextThreadManager` of a text or 
 To create a thread you call the `GuildTextThreadManager#create` method:
 
 ```js
-const thread = await channel.threads.create({ // [!code word:create]
+// [!code word:create]
+const thread = await channel.threads.create({
 	name: 'food-talk',
 	autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
 	reason: 'Needed a separate thread for food',
@@ -84,7 +83,8 @@ await thread.setLocked(false); // unlocked
 Public threads are viewable by everyone who can view the parent channel of the thread. Public threads can be created with the `GuildTextThreadManager#create` method.
 
 ```js
-const thread = await channel.threads.create({ // [!code word:create]
+// [!code word:create]
+const thread = await channel.threads.create({
 	name: 'food-talk',
 	autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
 	reason: 'Needed a separate thread for food',
@@ -96,7 +96,8 @@ console.log(`Created thread: ${thread.name}`);
 They can also be created from an existing message with the `Message#startThread` method, but will be "orphaned" if that message is deleted. The thread is not deleted along with the message and will still be available through the hcannels thread list!
 
 ```js
-const thread = await message.startThread({ // [!code word:startThread]
+// [!code word:startThread]
+const thread = await message.startThread({
 	name: 'food-talk',
 	autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
 	reason: 'Needed a separate thread for food',
@@ -104,9 +105,8 @@ const thread = await message.startThread({ // [!code word:startThread]
 
 console.log(`Created thread: ${thread.name}`);
 ```
-<Callout>
-	The created thread and the message it originated from will share the same ID.
-</Callout>
+
+<Callout>The created thread and the message it originated from will share the same ID.</Callout>
 
 Private threads can only be created on text channels. Private threads can initially only be viewed by the user creating them as well as moderators with the `ManageThreads` permission. Users that are mentioned in threads are added to the thread! This is also true for roles with few role members. The notifications for `@here` and `@everyone` will only affect members in the thread and not add anyone.
 
@@ -125,10 +125,7 @@ const thread = await channel.threads.create({
 console.log(`Created thread: ${thread.name}`);
 ```
 
-<Callout>
-	You cannot create private threads on an existing message.
-</Callout>
-
+<Callout>You cannot create private threads on an existing message.</Callout>
 
 ## Adding and removing members
 
@@ -163,4 +160,3 @@ await webhook.send({
 ```
 
 And that's it! Now you know all there is to know on working with threads using discord.js!
-

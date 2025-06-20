@@ -5,7 +5,9 @@ title: Select Menus
 Select menus are one of the `MessageComponent` classes, which can be sent via messages or interaction responses.
 
 <Callout>
-	This page is a follow-up to the [slash commands](/guide/legacy/slash-commands/advanced-creation) section and [action rows](/guide/legacy/interactive-components/action-rows) page. Please carefully read those pages first so that you can understand the methods used here.
+	This page is a follow-up to the [slash commands](/guide/legacy/slash-commands/advanced-creation) section and [action
+	rows](/guide/legacy/interactive-components/action-rows) page. Please carefully read those pages first so that you can
+	understand the methods used here.
 </Callout>
 
 ## Building string select menus
@@ -42,7 +44,8 @@ module.exports = {
 ```
 
 <Callout>
-	The custom id is a developer-defined string of up to 100 characters. Use this field to ensure you can uniquely define all incoming interactions from your select menus!
+	The custom id is a developer-defined string of up to 100 characters. Use this field to ensure you can uniquely define
+	all incoming interactions from your select menus!
 </Callout>
 
 ## Sending select menus
@@ -89,9 +92,7 @@ module.exports = {
 };
 ```
 
-<Callout>
-	Remember that if you have more than one select menu, each one will need its own action row.
-</Callout>
+<Callout>Remember that if you have more than one select menu, each one will need its own action row.</Callout>
 
 ### String select menu options
 
@@ -100,17 +101,15 @@ String select menu options are custom-defined by the user, as shown in the examp
 In addition to these, each option can be enhanced with a `description` or `emoji`, or can be set to be selected by default.
 
 ```js
-const select = new StringSelectMenuBuilder()
-	.setCustomId('select')
-	.addOptions(
-		// [!code focus:6]
-		new StringSelectMenuOptionBuilder()
-			.setLabel('Option')
-			.setValue('option')
-			.setDescription('A selectable option') // [!code word:setDescription]
-			.setEmoji('123456789012345678') // [!code word:setEmoji]
-			.setDefault(true),
-	);
+const select = new StringSelectMenuBuilder().setCustomId('select').addOptions(
+	// [!code focus:6]
+	new StringSelectMenuOptionBuilder()
+		.setLabel('Option')
+		.setValue('option')
+		.setDescription('A selectable option') // [!code word:setDescription]
+		.setEmoji('123456789012345678') // [!code word:setEmoji]
+		.setDefault(true),
+);
 ```
 
 ## Auto-populating select menus

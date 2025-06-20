@@ -20,13 +20,15 @@ As an application grows large, a developer may find it necessary to split their 
 <Callout type="warn">
 	This guide only explains the basics of sharding using the built-in `ShardingManager`, which can run shards as separate processes or threads on a single machine.
 
-	If you need to scale beyond that (e.g., running shards on multiple machines/containers), you can still do it with discord.js by passing appropriate options to the Client constructor. Nevertheless, you will be on your own regarding managing shards and sharing information between them.
+    If you need to scale beyond that (e.g., running shards on multiple machines/containers), you can still do it with discord.js by passing appropriate options to the Client constructor. Nevertheless, you will be on your own regarding managing shards and sharing information between them.
+
 </Callout>
 
 <Callout>
 	Apart from `ShardingManager`, discord.js also supports a sharding mode known as Internal sharding. Internal sharding creates multiple websocket connections from the same process, and does not require major code changes. To enable it, simply pass `shards: 'auto'` as ClientOptions to the Client constructor.
 
-	However, **internal sharding is not ideal for bigger bots due to high memory usage** of the single main process and will not be further discussed in this guide.
+    However, **internal sharding is not ideal for bigger bots due to high memory usage** of the single main process and will not be further discussed in this guide.
+
 </Callout>
 
 ## Sharding file
@@ -46,7 +48,9 @@ manager.spawn();
 The above code utilizes the discord.js sharding manager to spawn the recommended amount of shards for your bot. The recommended amount should be approximately 1,000 guilds per shard. Note that you have to attach the event listener to `shardCreate` before calling `.spawn()` to prevent a race condition possibly preventing shard 0 from logging the successful launch. Even though you provide the token here, you will still need to send it over to the main bot file in `client.login()`, so don't forget to do that.
 
 <Callout>
-	You can find the methods available for the ShardingManager class `ShardingManager`. Though, you may not be making much use of this section, unlike the next feature we will explore, which you may learn about by clicking [this link](/sharding/additional-information.md).
+	You can find the methods available for the ShardingManager class `ShardingManager`. Though, you may not be making much
+	use of this section, unlike the next feature we will explore, which you may learn about by clicking [this
+	link](/sharding/additional-information.md).
 </Callout>
 
 ## Getting started
@@ -90,7 +94,9 @@ client.shard.fetchClientValues('guilds.cache.size').then(console.log); // [!code
 If you run it, you will notice an output like `[898, 901, 900, 901]`. You will be correct in assuming that that's the total number of guilds per shard stored in an array in the Promise. This probably isn't the ideal output for guild count, so let's use [Array.reduce()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce) to provide a better output.
 
 <Callout>
-	It's highly recommended for you to visit [the documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce) to understand how the `reduce()` method works, as you will probably find great use of it in sharding.
+	It's highly recommended for you to visit [the
+	documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce) to
+	understand how the `reduce()` method works, as you will probably find great use of it in sharding.
 </Callout>
 
 In this case, this method iterates through the array and adds each current value to the total amount:
@@ -111,7 +117,8 @@ client.on(Events.InteractionCreate, (interaction) => {
 	if (!interaction.isChatInputCommand()) return;
 
 	const { commandName } = interaction;
-	if (commandName === 'stats') { // [!code focus:9]
+	// [!code focus:9]
+	if (commandName === 'stats') {
 		return interaction.reply(`Server count: ${client.guilds.cache.size}.`); // [!code --]
 		return client.shard // [!code ++:6]
 			.fetchClientValues('guilds.cache.size')
@@ -130,8 +137,11 @@ client.on(Events.InteractionCreate, (interaction) => {
 Next, check out another handy sharding method known as `ShardClientUtil#broadcastEval`. This method makes all of the shards evaluate a given method, which receives a `client` and a `context` argument. The `client` argument refers to the Client object of the shard evaluating it. You can read about the `context` argument [here](/sharding/additional-information.md#eval-arguments).
 
 ```js
-client.shard.broadcastEval((c) => c.guilds.cache // [!code word:broadcastEval]
-	.reduce((acc, guild) => acc + guild.memberCount, 0))
+client.shard
+	.broadcastEval((c) =>
+		c.guilds.cache // [!code word:broadcastEval]
+			.reduce((acc, guild) => acc + guild.memberCount, 0),
+	)
 	.then(console.log);
 ```
 
@@ -170,18 +180,21 @@ Promise.all(promises) // [!code word:all]
 ```js title="bot.js" lineNumbers=5
 client.on(Events.InteractionCreate, (interaction) => {
 	// ...
-	if (commandName === 'stats') { // [!code focus:20]
+	// [!code focus:21]
+	if (commandName === 'stats') {
 		return client.shard // [!code --:6]
 			.fetchClientValues('guilds.cache.size')
 			.then((results) => {
 				return interaction.reply(`Server count: ${results.reduce((acc, guildCount) => acc + guildCount, 0)}`);
 			})
 			.catch(console.error);
-		const promises = [ // [!code ++:12]
+
+		// [!code ++:12]
+		const promises = [
 			client.shard.fetchClientValues('guilds.cache.size'),
-			lient.shard.broadcastEval(c => c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)),
+			lient.shard.broadcastEval((c) => c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)),
 		];
-		
+
 		return Promise.all(promises)
 			.then((results) => {
 				const totalGuilds = results[0].reduce((acc, guildCount) => acc + guildCount, 0);
@@ -194,4 +207,3 @@ client.on(Events.InteractionCreate, (interaction) => {
 ```
 
 The next section contains additional changes you might want to consider.
-

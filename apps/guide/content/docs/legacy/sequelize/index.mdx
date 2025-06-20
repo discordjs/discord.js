@@ -34,15 +34,18 @@ bun add discord.js sequelize sqlite3
 ```
 
 <Callout type="error" title="Attention! Security Risk!">
-    **Make sure you use version 5 or later of Sequelize!** As used in this guide, version 4 and earlier will pose a security threat. You can read more about this issue on the [Sequelize issue tracker](https://github.com/sequelize/sequelize/issues/7310).
+	**Make sure you use version 5 or later of Sequelize!** As used in this guide, version 4 and earlier will pose a
+	security threat. You can read more about this issue on the [Sequelize issue
+	tracker](https://github.com/sequelize/sequelize/issues/7310).
 </Callout>
 
 <Callout>
 	This section will still work with any provider supported by sequelize. We recommend PostgreSQL for larger applications.
 
-	Do note that "large" here should be interpreted as absolutely massive. Sqlite is used at scale by many companies and products you use every single day. The slight overhead should not be noticable for the application of a Discord bot at all unless you are dealing with super complicated queries or are using specific features that do not exist in sqlite.
+    Do note that "large" here should be interpreted as absolutely massive. Sqlite is used at scale by many companies and products you use every single day. The slight overhead should not be noticable for the application of a Discord bot at all unless you are dealing with super complicated queries or are using specific features that do not exist in sqlite.
 
-	You can find out if sqlite might be a good choice for your project (it very likely is) by reading [their own article](https://www.sqlite.org/whentouse.html) on the topic.
+    You can find out if sqlite might be a good choice for your project (it very likely is) by reading [their own article](https://www.sqlite.org/whentouse.html) on the topic.
+
 </Callout>
 
 After you have installed discord.js and Sequelize, you can start with the following skeleton code. The comment labels will tell you where to insert code later on.
@@ -79,7 +82,8 @@ The first step is to define the connection information. It should look something
 ```js title="sequelize-example.js"
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-const sequelize = new Sequelize('database', 'user', 'password', { // [!code ++:7]
+// [!code ++:7]
+const sequelize = new Sequelize('database', 'user', 'password', {
 	host: 'localhost',
 	dialect: 'sqlite',
 	logging: false,
@@ -88,9 +92,9 @@ const sequelize = new Sequelize('database', 'user', 'password', { // [!code ++:7
 });
 ```
 
-- `host` tells Sequelize where to look for the database. For most systems, the host will be localhost, as the database usually resides with the application. If you have a remote database, however, then you can set it to that connection address. Otherwise, don't touch this unless you know what you're doing.  
-- `dialect` refers to the database engine you are going to use. For this tutorial, it will be sqlite.  
-- `logging` enables verbose output from Sequelize–useful for when you are trying to debug. You can disable it by setting it to `false`.  
+- `host` tells Sequelize where to look for the database. For most systems, the host will be localhost, as the database usually resides with the application. If you have a remote database, however, then you can set it to that connection address. Otherwise, don't touch this unless you know what you're doing.
+- `dialect` refers to the database engine you are going to use. For this tutorial, it will be sqlite.
+- `logging` enables verbose output from Sequelize–useful for when you are trying to debug. You can disable it by setting it to `false`.
 - `storage` is a sqlite-only setting because sqlite is the only database that stores all its data to a single file.
 
 ### Creating the model
@@ -107,7 +111,7 @@ To do that in Sequelize, define a model based on this structure below the connec
 ```js title="sequelize-example.js"
 // ...
 
-const sequelize = new Sequelize('database', 'user', 'password', { 
+const sequelize = new Sequelize('database', 'user', 'password', {
 	host: 'localhost',
 	dialect: 'sqlite',
 	logging: false,
@@ -123,7 +127,8 @@ const sequelize = new Sequelize('database', 'user', 'password', {
  * usage_count  INT NOT NULL DEFAULT 0
  * );
  */
-const Tags = sequelize.define('tags', { // [!code word:define]
+// [!code word:define]
+const Tags = sequelize.define('tags', {
 	name: {
 		type: Sequelize.STRING,
 		unique: true,
@@ -144,13 +149,15 @@ The model mirrors very closely what the database defines. There will be a table 
 
 `sequelize.define()` takes two parameters. `'tags'` are passed as the name of our table, and an object that represents the table's schema in key-value pairs. Keys in the object become the model's attributes, and the values describe the attributes.
 
-- `type` refers to what kind of data this attribute should hold. The most common types are number, string, and date, but other data types are available depending on the database.  
-- `unique: true` will ensure that this field will never have duplicated entries. Duplicate tag names are disallowed in this database.  
-- `defaultValue` allows you to set a fallback value if there's no initial value during the insert.  
+- `type` refers to what kind of data this attribute should hold. The most common types are number, string, and date, but other data types are available depending on the database.
+- `unique: true` will ensure that this field will never have duplicated entries. Duplicate tag names are disallowed in this database.
+- `defaultValue` allows you to set a fallback value if there's no initial value during the insert.
 - `allowNull` is not all that important, but this will guarantee in the database that the attribute is never unset. You could potentially set it to be a blank or empty string, but it has to be _something_.
 
 <Callout>
-    `Sequelize.STRING` vs. `Sequelize.TEXT`: In most database systems, the string's length is a fixed length for performance reasons. Sequelize defaults this to 255. Use STRING if your input has a max length, and use TEXT if it does not. For sqlite, there is no unbounded string type, so it will not matter which one you pick.
+	`Sequelize.STRING` vs. `Sequelize.TEXT`: In most database systems, the string's length is a fixed length for
+	performance reasons. Sequelize defaults this to 255. Use STRING if your input has a max length, and use TEXT if it
+	does not. For sqlite, there is no unbounded string type, so it will not matter which one you pick.
 </Callout>
 
 ### Syncing the model
@@ -208,14 +215,15 @@ The `catch (error)` section is necessary for the insert because it will offload 
 Although `if (error.name === 'SequelizeUniqueConstraintError')` was mostly for doing less work, it is always good to handle your errors, especially if you know what types of errors you will receive. This error comes up if your unique constraint is violated, i.e., duplicate values are inserted.
 
 <Callout type="warn">
-    Do not use catch for inserting new data. Only use it for gracefully handling things that go wrong in your code or logging errors.
+	Do not use catch for inserting new data. Only use it for gracefully handling things that go wrong in your code or
+	logging errors.
 </Callout>
 
 ### Fetching a tag
 
 Next, let's fetch the inserted tag.
 
-```js title="sequelize-example.js" 
+```js title="sequelize-example.js"
 if (commandName === 'addtag') {
 	// ...
 } // [!code --]
@@ -345,4 +353,3 @@ if (commandName === 'addtag') {
 ```
 
 `.destroy()` runs the delete operation. The operation returns a count of the number of affected rows. If it returns with a value of 0, then nothing was deleted, and that tag did not exist in the database in the first place.
-

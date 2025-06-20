@@ -31,19 +31,22 @@ bun run lint
 <Callout>
 Before getting started, you'll need to have a `package.json` file. If you don't have a `package.json` file yet, you can run the following command in the console to generate one.
 
-
 ```sh tab="npm"
 npm init -y
 ```
+
 ```sh tab="yarn"
 yarn init -y
 ```
+
 ```sh tab="pnpm"
 pnpm init
 ```
+
 ```sh tab="bun"
 bun init -y
 ```
+
 </Callout>
 
 If you haven't touched your `package.json` file yet (excluding installing dependencies), your `package.json` file should look similar to the following:
@@ -68,7 +71,8 @@ Let's zoom in more. Below `main`, you'll see `scripts`. You can specify your scr
 ## Adding your first script
 
 <Callout>
-	We'll assume you have finished the [creating your app](/guide/legacy/app-creation/project-setup) section of the guide. If you haven't, ensure to follow it first!
+	We'll assume you have finished the [creating your app](/guide/legacy/app-creation/project-setup) section of the guide.
+	If you haven't, ensure to follow it first!
 </Callout>
 
 Over at your `package.json` file, add the following line to the `scripts`:
@@ -91,21 +95,24 @@ Over at your `package.json` file, add the following line to the `scripts`:
 ```
 
 <Callout>
-	The `node .` script will run the file you have specified at the `main` entry in your `package.json` file. If you don't have it set yet, make sure to select your bot's main file as `main`!
+	The `node .` script will run the file you have specified at the `main` entry in your `package.json` file. If you don't
+	have it set yet, make sure to select your bot's main file as `main`!
 </Callout>
 
 Now, whenever you run the `start` script in your bot's directory, it will run the `node .` command.
 
-
 ```sh tab="npm"
 npm run start
 ```
+
 ```sh tab="yarn"
 yarn run start
 ```
+
 ```sh tab="pnpm"
 pnpm run start
 ```
+
 ```sh tab="bun"
 bun run start
 ```
@@ -120,9 +127,9 @@ Let's create another script to lint your code via the command line. Add the foll
 	"main": "index.js",
 	"scripts": { // [!code focus:6]
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "node ." // needs a comma // [!code --] 
+		"start": "node ." // needs a comma // [!code --]
 		"start": "node .", // [!code ++]
-		"lint": "eslint ." // [!code ++] 
+		"lint": "eslint ." // [!code ++]
 	},
 	"keywords": [],
 	"author": "",
@@ -132,16 +139,18 @@ Let's create another script to lint your code via the command line. Add the foll
 
 Now, whenever you run the `lint` script, ESLint will lint your `index.js` file.
 
-
 ```sh tab="npm"
 npm run lint
 ```
+
 ```sh tab="yarn"
 yarn run lint
 ```
+
 ```sh tab="pnpm"
 pnpm run lint
 ```
+
 ```sh tab="bun"
 bun run lint
 ```
@@ -170,19 +179,22 @@ And that's it! You can always add more scripts now, running them with:
 ```sh tab="npm"
 npm run <script-name>
 ```
+
 ```sh tab="yarn"
 yarn run <script-name>
 ```
+
 ```sh tab="pnpm"
 pnpm run <script-name>
 ```
+
 ```sh tab="bun"
 bun run <script-name>
 ```
 
 <Cards>
-    <Card title="Package Scripts" href="https://docs.npmjs.com/cli/v7/using-npm/scripts">
-        Package scripts allow some more configuration (like pre-, post- and lifecycle scripts) than we can cover in this guide. Check out the official documentation on for more information.
-    </Card>
+	<Card title="Package Scripts" href="https://docs.npmjs.com/cli/v7/using-npm/scripts">
+		Package scripts allow some more configuration (like pre-, post- and lifecycle scripts) than we can cover in this
+		guide. Check out the official documentation on for more information.
+	</Card>
 </Cards>
-

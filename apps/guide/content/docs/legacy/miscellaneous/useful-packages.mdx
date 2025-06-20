@@ -6,9 +6,7 @@ Some of the examples in this section are far from complete. We encourage you to 
 
 ## Day.js
 
-<Callout>
-	Official documentation: [https://day.js.org/](https://day.js.org/en)
-</Callout>
+<Callout>Official documentation: [https://day.js.org/](https://day.js.org/en)</Callout>
 
 Day.js is a powerful package that parses, validates, manipulates, and displays dates and times in JavaScript.
 It allows you to quickly and easily format dates in any way you want or parse strings back into JavaScript Date objects.
@@ -16,7 +14,6 @@ There are many plugins for it that allow you to work with durations and more.
 
 For example if you wanted to ask your users to give you a date,  
 you can use Day.js to turn it into a Date object you can use in your code:
-
 
 ```js
 const input = await interaction.channel.awaitMessages({
@@ -48,9 +45,7 @@ if (date.isValid()) {
 
 ## ms
 
-<Callout>
-	Official documentation: [https://github.com/vercel/ms](https://github.com/vercel/ms)
-</Callout>
+<Callout>Official documentation: [https://github.com/vercel/ms](https://github.com/vercel/ms)</Callout>
 
 Ms is another tool for working with times in JavaScript. However, ms specializes on durations.
 It allows you to convert times in milliseconds into human-readable formats and vice versa.
@@ -119,9 +114,7 @@ Check the the documentation to find more useful functions.
 
 ## chalk
 
-<Callout>
-	Official documentation: [https://www.npmjs.com/package/chalk](https://www.npmjs.com/package/chalk)
-</Callout>
+<Callout>Official documentation: [https://www.npmjs.com/package/chalk](https://www.npmjs.com/package/chalk)</Callout>
 
 Chalk is not exactly useful for Discord bots themselves, but it will make your terminal output a lot prettier and organized.
 This package lets you color and style your `console.log`s in many different ways; No more simple white on black.
@@ -145,27 +138,27 @@ console.log(chalk.green.bgBrightBlack.underline('This is so pretty.'));
 
 ## pino
 
-<Callout>
-	Official documentation: [getpino.io](https://getpino.io)
-</Callout>
+<Callout>Official documentation: [getpino.io](https://getpino.io)</Callout>
 
 Pino is a Node.js logger with a very low overhead. But why does that even matter, if `console.log()` exists? Well, `console.log()` is quite slow and not very versatile. Whenever you make a call to `console.log()` your program halts and cannot do anything until the logging is finished.
 
 To get started, install the package:
 
-
 ```sh tab="sh"
 npm install pino@next
 npm install -g pino-pretty
 ```
+
 ```sh tab="yarn"
 yarn add pino@next
 yarn global add pino-pretty
 ```
+
 ```sh tab="pnpm"
 pnpm add pino@next
 pnpm add --global pino-pretty
 ```
+
 ```sh tab="bun"
 bun add pino@next
 bun add --global pino-pretty
@@ -217,7 +210,8 @@ We recommend you set `pino-pretty` up in a package script in your `package.json`
 ```
 
 <Callout type="warn">
-	If you are using powershell, you have to use a package script for `pino-pretty`. Powershell handles pipelines in a way that prevents logging. The cmd commandline interface is not affected.
+	If you are using powershell, you have to use a package script for `pino-pretty`. Powershell handles pipelines in a way
+	that prevents logging. The cmd commandline interface is not affected.
 </Callout>
 
 In the example above, further arguments are passed to `pino-pretty` to modify the generated output. `-i pid,hostname` hides these two elements from logged lines and `-t yyyy-mm-dd HH:MM:ss` formats the timestamp into an easy to use format. Try out what works for you! The official [pino-pretty documentation](https://github.com/pinojs/pino-pretty) explains all possible arguments.
@@ -254,11 +248,8 @@ module.exports = logger;
 
 ## i18next
 
-<Callout>
-	Official documentation: [https://www.i18next.com](https://www.i18next.com)
-</Callout>
+<Callout>Official documentation: [https://www.i18next.com](https://www.i18next.com)</Callout>
 
 i18next is an internationalization-framework for JavaScript. It is beneficial to translate your bot's user-facing messages into various languages based on the server it is used in.
 
 Covering an entire use case example for internationalization would be out of this guide's scope and requires some more explanation as to how the system operates. Please refer to the official documentation linked above for an in-depth usage guide.
-

@@ -5,14 +5,16 @@ title: Autocomplete
 Autocomplete allows you to dynamically provide a selection of values to the user, based on their input, rather than relying on static choices. In this section we will cover how to add autocomplete support to your commands.
 
 <Callout>
-	This page is a follow-up to the [slash commands](/guide/legacy/slash-commands/advanced-creation) section covering options and option choices. Please carefully read those pages first so that you can understand the methods used in this section.
+	This page is a follow-up to the [slash commands](/guide/legacy/slash-commands/advanced-creation) section covering
+	options and option choices. Please carefully read those pages first so that you can understand the methods used in
+	this section.
 </Callout>
 
 ## Enabling autocomplete
 
 To use autocomplete with your commands, _instead_ of listing static choices, the option must be set to use autocompletion using `SlashCommandStringOption#setAutocomplete`:
 
-```js title="commands/utility/guide".js 
+```js title="commands/utility/guide".js
 const { SlashCommandBuilder } = require('discord.js');
 
 const data = new SlashCommandBuilder()
@@ -42,7 +44,8 @@ The example below shows how this might be applied to a conceptual version of the
 client.on(Events.InteractionCreate, async (interaction) => {
 	if (interaction.isChatInputCommand()) {
 		// command handling...
-	} else if (interaction.isAutocomplete()) { // [!code ++]
+		// [!code ++]
+	} else if (interaction.isAutocomplete()) {
 		const command = interaction.client.commands.get(interaction.commandName);
 
 		if (!command) {
@@ -78,7 +81,8 @@ module.exports = {
 The command handling is almost identical, but notice the change from `execute` to `autocomplete` in the new else-if branch. By adding a separate `autocomplete` function to the `module.exports` of commands that require autocompletion, you can safely separate the logic of providing dynamic choices from the code that needs to respond to the slash command once it is complete.
 
 <Callout>
-	You might have already moved this code to `events/interactionCreate.js` if you followed our [Event handling](/guide/legacy/app-creation/handling-events) guide too.
+	You might have already moved this code to `events/interactionCreate.js` if you followed our [Event
+	handling](/guide/legacy/app-creation/handling-events) guide too.
 </Callout>
 
 ### Sending results

@@ -7,7 +7,9 @@ Slash commands have their own permissions system. This system allows you to set 
 The slash command permissions for guilds are defaults only and can be altered by guild administrators, allowing them to configure access however best suits their moderation and server roles. Your code should not try to enforce its own permission management, as this can result in a conflict between the server-configured permissions and your bot's code.
 
 <Callout type="warn">
-	It is **not possible to prevent users with Administrator permissions from using any commands deployed globally or specifically to their guild**. Think twice before creating "dev-only" commands such as `eval` and restrict them to your private, personal dev server.
+	It is **not possible to prevent users with Administrator permissions from using any commands deployed globally or
+	specifically to their guild**. Think twice before creating "dev-only" commands such as `eval` and restrict them to
+	your private, personal dev server.
 </Callout>
 
 ## Member permissions
@@ -16,7 +18,7 @@ You can use `SlashCommandBuilder#setDefaultMemberPermissions` to set the default
 
 For this, you'll introduce two common and simple moderation commands: `ban` and `kick`. For a ban command, a sensible default is to ensure that users already have the Discord permission `BanMembers` in order to use it.
 
-```js title="commands/moderation/ban.js" 
+```js title="commands/moderation/ban.js"
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 
 const data = new SlashCommandBuilder()
@@ -32,7 +34,8 @@ For a kick command however, yout can allow members with the `KickMembers` permis
 	You can require the user to have all of multiple permissions by merging them with the `|` bitwise OR operator (for example `PermissionFlagsBits.BanMembers | PermissionFlagsBits.KickMembers`).
 	You cannot require any of multiple permissions. Discord evaluates against the combined permission bitfield!
 
-	If you want to learn more about the `|` bitwise OR operator you can check the [Wikipedia](https://en.wikipedia.org/wiki/Bitwise_operation#OR) and [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_OR) articles on the topic.
+    If you want to learn more about the `|` bitwise OR operator you can check the [Wikipedia](https://en.wikipedia.org/wiki/Bitwise_operation#OR) and [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Bitwise_OR) articles on the topic.
+
 </Callout>
 
 ```js title="commands/moderation/kick.js"
@@ -65,4 +68,3 @@ const data = new SlashCommandBuilder()
 ```
 
 And that's all you need to know on slash command permissions and contexts!
-

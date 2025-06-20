@@ -7,11 +7,14 @@ title: Canvas
 `@napi-rs/canvas` is an image manipulation tool that allows you to modify images with code. We'll explore how to use this module in a slash command to make a profile command.
 
 <Callout>
-	This guide is last tested with `@napi-rs/canvas^0.1.25`, so make sure you have this or a similar version after installation.
+	This guide is last tested with `@napi-rs/canvas^0.1.25`, so make sure you have this or a similar version after
+	installation.
 </Callout>
 
 <Callout type="warn">
-	Be sure that you're familiar with things like [async/await](/guide/legacy/additional-info/async-await) and [object destructuring](/guide/legacy/additional-info/es6-syntax#object-destructuring) before continuing, as we'll be making use of those features in the coming sections.
+	Be sure that you're familiar with things like [async/await](/guide/legacy/additional-info/async-await) and [object
+	destructuring](/guide/legacy/additional-info/es6-syntax#object-destructuring) before continuing, as we'll be making
+	use of those features in the coming sections.
 </Callout>
 
 ## Package installation
@@ -58,12 +61,15 @@ client.on(Events.InteractionCreate, (interaction) => {
 
 client.login('your-token-goes-here');
 ```
+
 <Callout>
-	If you followed the [event handler section](/guide/legacy/app-creation/handling-events) of this guide, consider putting this into your interaction handler instead!
+	If you followed the [event handler section](/guide/legacy/app-creation/handling-events) of this guide, consider
+	putting this into your interaction handler instead!
 </Callout>
 
 <Callout type="warn">
-	Remember to register the slash commands before continuing on with this section of the guide. You can view how to do that [here](/guide/legacy/interactions/slash-commands.md#registering-slash-commands).
+	Remember to register the slash commands before continuing on with this section of the guide. You can view how to do
+	that [here](/guide/legacy/interactions/slash-commands.md#registering-slash-commands).
 </Callout>
 
 ### Basic image loading
@@ -73,7 +79,9 @@ The end goal will be to display the user's avatar and nickname.
 After importing the `@napi-rs/canvas` module and initializing it, you should load the images. With `@napi-rs/canvas`, you have to specify where the image comes from first, naturally, and then specify how it gets loaded into the actual Canvas using `context`, which you will use to interact with Canvas.
 
 <Callout>
-	`@napi-rs/canvas` works almost identical to HTML5 Canvas. You can read the HTML5 Canvas tutorials on [w3Schools](https://www.w3schools.com/html/html5_canvas.asp) and [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) for more information later!
+	`@napi-rs/canvas` works almost identical to HTML5 Canvas. You can read the HTML5 Canvas tutorials on
+	[w3Schools](https://www.w3schools.com/html/html5_canvas.asp) and
+	[MDN](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) for more information later!
 </Callout>
 
 ```js lineNumbers=10 title="index.js"
@@ -213,7 +221,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
 ![Image](./images/canvas-circle-avatar.png)
 
 <Callout>
-	You can read more about `context.arc()` on [w3schools](https://www.w3schools.com/tags/canvas_arc.asp) or [MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/arc).
+	You can read more about `context.arc()` on [w3schools](https://www.w3schools.com/tags/canvas_arc.asp) or
+	[MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/arc).
 </Callout>
 
 ### Adding in text
@@ -241,7 +250,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
 ![Image](./images/canvas-add-name.png)
 
 <Callout type="error">
-	If you get an error like `Fontconfig error: Cannot load default config file`, it means you do not have any fonts installed on your system. On Linux, you can run the following command to fix this: `sudo apt-get install fontconfig`. This might also need to be installed if you see boxes where the text should be. As for Windows, you will need to find a way to install fonts.
+	If you get an error like `Fontconfig error: Cannot load default config file`, it means you do not have any fonts
+	installed on your system. On Linux, you can run the following command to fix this: `sudo apt-get install fontconfig`.
+	This might also need to be installed if you see boxes where the text should be. As for Windows, you will need to find
+	a way to install fonts.
 </Callout>
 
 You may have noticed or considered that if a member's username is too long, then the output won't be quite nice. This is because the text overflows out of the canvas, and you don't have any measures in place for that. Let's take care of this issue!
@@ -310,4 +322,3 @@ client.on(Events.InteractionCreate, async (interaction) => {
 ![Final result](./images/canvas-final-result.png)
 
 And that's it! We have covered the basics of image manipulation, text generation, and loading from a remote source.
-

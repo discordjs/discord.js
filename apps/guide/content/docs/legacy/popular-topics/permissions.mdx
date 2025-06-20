@@ -34,7 +34,9 @@ To include permission checks like `Administrator` or `ManageGuild`, keep reading
 - Flag: Human readable string in PascalCase (e.g., `KickMembers`) that refers to a position in the permission BitField. You can find a list of all valid flags on the `PermissionsBitField#Flags` page
 
 <Callout>
-	You can provide permission decimals wherever we use flag literals in this guide. If you are interested in a handy permission calculator, you can look at the "Bot" section in the [Discord developer portal](https://discord.com/developers/applications).
+	You can provide permission decimals wherever we use flag literals in this guide. If you are interested in a handy
+	permission calculator, you can look at the "Bot" section in the [Discord developer
+	portal](https://discord.com/developers/applications).
 </Callout>
 
 ## Base permissions
@@ -52,7 +54,8 @@ guild.roles.everyone.setPermissions([PermissionsBitField.Flags.SendMessages, Per
 Any permission not referenced in the flag array or bit field is not granted to the role.
 
 <Callout>
-	Note that flag names are literal. Although `ViewChannel` grants access to view multiple channels, the permission flag is still called `ViewChannel` in singular form.
+	Note that flag names are literal. Although `ViewChannel` grants access to view multiple channels, the permission flag
+	is still called `ViewChannel` in singular form.
 </Callout>
 
 ### Creating a role with permissions
@@ -90,9 +93,7 @@ if (member.permissions.has(PermissionsBitField.Flags.KickMembers, false)) {
 
 If you provide multiple permissions to the method, it will only return `true` if all permissions you specified are granted.
 
-<Callout>
-	You can learn more about the `.has()` method [here](#checking-for-permissions).
-</Callout>
+<Callout>You can learn more about the `.has()` method [here](#checking-for-permissions).</Callout>
 
 ## Channel overwrites
 
@@ -185,9 +186,9 @@ channel.permissionOverwrites.delete(interaction.user.id);
 If the permission overwrites on a channel under a category match with the parent (category), it is considered synchronized. This means that any changes in the categories overwrites will now also change the channels overwrites. Changing the child channels overwrites will not affect the parent.
 
 <Callout>
-	This is indeed all that a "sync" in Discord categories means! Users and developers alike commonly misunderstand this and expect a proper "sync" state that applies in both directions.
+	This is indeed all that a "sync" in Discord categories means! Users and developers alike commonly misunderstand this
+	and expect a proper "sync" state that applies in both directions.
 </Callout>
-	
 
 To easily synchronize permissions with the parent channel, you can call the `.lockPermissions()` method on the respective child channel.
 
@@ -220,7 +221,10 @@ const rolePermissions = channel.permissionsFor(role);
 ```
 
 <Callout type="warn">
-	The `.permissionsFor()` and `.permissionsIn()` methods return a Permissions object with all permissions set if the member or role has the global `Administrator` permission and does not take overwrites into consideration in this case. Using the second parameter of the `.has()` method as described further down in the guide will not allow you to check without taking `Administrator` into account here!
+	The `.permissionsFor()` and `.permissionsIn()` methods return a Permissions object with all permissions set if the
+	member or role has the global `Administrator` permission and does not take overwrites into consideration in this case.
+	Using the second parameter of the `.has()` method as described further down in the guide will not allow you to check
+	without taking `Administrator` into account here!
 </Callout>
 
 If you want to know how to work with the returned Permissions objects, keep reading as this will be our next topic.
@@ -241,7 +245,9 @@ const rolePermissions = role.permissions.toArray();
 ```
 
 <Callout>
-	The return value of `toArray()` always represents the permission flags present in the Permissions instance that the method was called on. This means that if you call the method on, for example: `PermissionOverwrites#deny`, you will receive an array of all denied permissions in that overwrite.
+	The return value of `toArray()` always represents the permission flags present in the Permissions instance that the
+	method was called on. This means that if you call the method on, for example: `PermissionOverwrites#deny`, you will
+	receive an array of all denied permissions in that overwrite.
 </Callout>
 
 Additionally, you can serialize the Permissions object's underlying bit field by calling `.serialize()`. This returns an object that maps permission names to a boolean value, indicating whether the relevant "bit" is available in the Permissions instance.
@@ -362,4 +368,3 @@ console.log(permissions.has(PermissionsBitField.Flags.KickMembers));
 ```
 
 You can utilize these methods to adapt permissions or overwrites without touching the other flags. To achieve this, you can get the existing permissions for a role, manipulating the bit field as described above and passing the changed bit field to `role.setPermissions()`.
-

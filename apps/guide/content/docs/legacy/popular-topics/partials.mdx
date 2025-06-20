@@ -25,7 +25,9 @@ const client = new Client({ partials: [Partials.Message, Partials.Channel, Parti
 </Callout>
 
 <Callout type="warn">
-	Partial structures are enabled **globally**. You cannot make them work for only a specific event or cache. You very **likely need to adapt** other parts of your code that are accessing data from the relevant caches. All caches holding the respective structure type might return partials as well!
+	Partial structures are enabled **globally**. You cannot make them work for only a specific event or cache. You very
+	**likely need to adapt** other parts of your code that are accessing data from the relevant caches. All caches holding
+	the respective structure type might return partials as well!
 </Callout>
 
 ## Handling Partial data
@@ -33,7 +35,8 @@ const client = new Client({ partials: [Partials.Message, Partials.Channel, Parti
 All structures you can choose to use partials for have a new property, fittingly called `.partial`, indicating if it is a fully functional or partial instance of its class. The value is `true` if partial, `false` if fully functional.
 
 <Callout type="error">
-	Partial data is only ever guaranteed to contain an ID! **Do not assume any property or method to work when dealing with a partial structure**!
+	Partial data is only ever guaranteed to contain an ID! **Do not assume any property or method to work when dealing
+	with a partial structure**!
 </Callout>
 
 ```js
@@ -49,7 +52,8 @@ if (message.partial) {
 Along with `.partial` to check if the structure you call it on is partial or not, the library also introduced a `.fetch()` method to retrieve the missing data from the API and complete the structure. The method returns a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) you need to handle. After the Promise resolves (and with it, the missing data arrived), you can use the structure as you would before.
 
 ```js
-if (message.partial) { // [!code word:partial]
+// [!code word:partial]
+if (message.partial) {
 	message
 		.fetch()
 		.then((fullMessage) => {
@@ -64,5 +68,7 @@ if (message.partial) { // [!code word:partial]
 ```
 
 <Callout type="warn">
-	You **cannot fetch deleted data** from the API. For message deletions, `messageDelete` will only emit with the ID, which you cannot use to fetch the complete message containing content, author, or other information, as it is already inaccessible by the time you receive the event.
+	You **cannot fetch deleted data** from the API. For message deletions, `messageDelete` will only emit with the ID,
+	which you cannot use to fetch the complete message containing content, author, or other information, as it is already
+	inaccessible by the time you receive the event.
 </Callout>

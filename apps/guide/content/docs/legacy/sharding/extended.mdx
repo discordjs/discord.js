@@ -2,9 +2,9 @@
 title: Advanced Sharding
 ---
 
-
 <Callout type="warn">
-	This page is a follow-up and bases its code on [the previous page](/guide/legacy/sharding/additional-information), which assumes knowledge of arguments and passing functions.
+	This page is a follow-up and bases its code on [the previous page](/guide/legacy/sharding/additional-information),
+	which assumes knowledge of arguments and passing functions.
 </Callout>
 
 ## Sending messages across shards
@@ -14,7 +14,8 @@ Let's start with the basic usage of shards. At some point in bot development, yo
 ```js title="bot.js"
 client.on(Events.InteractionCreate, (interaction) => {
 	// ...
-	if (commandName === 'send') { // [!code focus:9]
+	// [!code focus:9]
+	if (commandName === 'send') {
 		const id = interaction.options.getString('destination');
 		const channel = client.channels.cache.get(id);
 
@@ -29,10 +30,11 @@ client.on(Events.InteractionCreate, (interaction) => {
 This will never work for a channel that lies on another shard. So, let's remedy this.
 
 <Callout>
-	`ShardClientUtil#ids` can hold multiple ids. If you use the default sharding manager, the `.ids` array will only have one entry.
+	`ShardClientUtil#ids` can hold multiple ids. If you use the default sharding manager, the `.ids` array will only have
+	one entry.
 </Callout>
 
-```js title="bot.js" 
+```js title="bot.js"
 if (commandName === 'send') {
 	const id = interaction.options.getString('destination');
 	return client.shard
@@ -76,7 +78,8 @@ If you remember, there was a brief mention of passing functions through `.broadc
 ```js title="bot.js"
 client.on(Events.InteractionCreate, (interaction) => {
 	// ...
-	if (commandName === 'emoji') { // [!code focus:5]
+	// [!code focus:5]
+	if (commandName === 'emoji') {
 		const emojiId = interaction.options.getString('emoji');
 		const emoji = client.emojis.cache.get(emojiId);
 
@@ -100,7 +103,8 @@ Next, you need to call the function in your command properly. If you recall from
 ```js {4-7}
 client.on(Events.InteractionCreate, (interaction) => {
 	// ...
-	if (commandName === 'emoji') { // [!code focus:5]
+	// [!code :5]
+	if (commandName === 'emoji') {
 		const emojiNameOrId = interaction.options.getString('emoji');
 
 		return client.shard.broadcastEval(findEmoji, { context: { nameOrId: emojiNameOrId } }).then(console.log);
@@ -159,4 +163,3 @@ return client.shard.broadcastEval(findEmoji, { context: { nameOrId: emojiNameOrI
 ```
 
 And that's all! The emoji should have pretty-printed in a message, as you'd expect.
-

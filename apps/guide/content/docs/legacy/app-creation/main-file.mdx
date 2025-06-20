@@ -3,7 +3,9 @@ title: The Main File
 ---
 
 <Callout>
-    This page assumes you've already prepared the [configuration files](/guide/legacy/app-creation/project-setup#configuration-files) from the previous page. We're using the `config.json` approach, however feel free to substitute your own!
+	This page assumes you've already prepared the [configuration
+	files](/guide/legacy/app-creation/project-setup#configuration-files) from the previous page. We're using the
+	`config.json` approach, however feel free to substitute your own!
 </Callout>
 
 ## Creating the main file
@@ -33,11 +35,7 @@ client.login(token);
 
 This is how you create a client instance for your Discord bot and log in to Discord. The `GatewayIntentBits.Guilds` intents option is necessary for the discord.js client to work as you expect it to, as it ensures that the caches for guilds, channels, and roles are populated and available for internal use.
 
-<Callout>
-    The term "guild" is used by the Discord API and in discord.js to refer to a Discord server.
-</Callout>
-
-
+<Callout>The term "guild" is used by the Discord API and in discord.js to refer to a Discord server.</Callout>
 
 Intents also define which events Discord should send to your bot, and you may wish to enable more than just the minimum. You can read more about the other intents in the [Intents topic](/guide/legacy/popular-topics/intents).
 
@@ -49,5 +47,5 @@ Open your terminal and run `node index.js` to start the process. If you see "Rea
     You can open your `package.json` file and edit the `"main": "index.js"` field to point to your main file. You can then run `node .` in your terminal to start the process!
 
     After closing the process with `Ctrl + C`, you can press the up arrow on your keyboard to bring up the latest commands you've run. Pressing up and then enter after closing the process is a quick way to start it up again.
-</Callout>
 
+</Callout>

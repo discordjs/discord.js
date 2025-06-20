@@ -105,9 +105,10 @@ Although Keyv can assist in any scenario where you need key-value data, we will 
 <Callout>
 	This section will still work with any provider supported by Keyv. We recommend PostgreSQL for larger applications.
 
-	Do note that "large" here should be interpreted as absolutely massive. Sqlite is used at scale by many companies and products you use every single day. The slight overhead should not be noticable for the application of a Discord bot at all unless you are dealing with super complicated queries or are using specific features that do not exist in sqlite.
+    Do note that "large" here should be interpreted as absolutely massive. Sqlite is used at scale by many companies and products you use every single day. The slight overhead should not be noticable for the application of a Discord bot at all unless you are dealing with super complicated queries or are using specific features that do not exist in sqlite.
 
-	You can find out if sqlite might be a good choice for your project (it very likely is) by reading [their own article](https://www.sqlite.org/whentouse.html) on the topic.
+    You can find out if sqlite might be a good choice for your project (it very likely is) by reading [their own article](https://www.sqlite.org/whentouse.html) on the topic.
+
 </Callout>
 
 ### Setup
@@ -126,7 +127,10 @@ const prefixes = new Keyv('sqlite://path/to.sqlite');
 ### Command handler
 
 <Callout type="warn">
-	This guide example is from a time where parsing the message content of Discord messages was the only option for commands. We have since moved on from this and recommend you do the same with [slash commands](/guide/legacy/app-creation/handling-commands). It can still serve as an example for using databases in a more integrated example. We hope it can help you understand the core idea and apply it to your own use cases!
+	This guide example is from a time where parsing the message content of Discord messages was the only option for
+	commands. We have since moved on from this and recommend you do the same with [slash
+	commands](/guide/legacy/app-creation/handling-commands). It can still serve as an example for using databases in a
+	more integrated example. We hope it can help you understand the core idea and apply it to your own use cases!
 </Callout>
 
 ```js
@@ -188,4 +192,3 @@ client.on(Events.MessageCreate, async (message) => {
 Various other applications can use Keyv, such as guild settings; create another instance with a different [namespace](https://github.com/jaredwray/keyv/tree/main/packages/keyv#namespaces) for each setting. Additionally, it can be [extended](https://github.com/jaredwray/keyv/tree/main/packages/keyv#third-party-storage-adapters) to work with whatever storage backend you prefer.
 
 Check out the [Keyv repository](https://github.com/jaredwray/keyv/tree/main/packages/keyv) for more information.
-

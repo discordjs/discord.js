@@ -9,8 +9,8 @@ To this end, discord.js provides you with two ways to do so:
 2. Periodically removing old items from caches.
 
 <Callout type="error">
-	Customization of caching behavior is an advanced topic.
-	It is very easy to introduce errors if your custom cache is not working as expected.
+	Customization of caching behavior is an advanced topic. It is very easy to introduce errors if your custom cache is
+	not working as expected.
 </Callout>
 
 ## Limiting caches
@@ -39,7 +39,8 @@ const client = new Client({
 ```
 
 <Callout type="error" title="Unsupported customization">
-	As noted in the documentation, customizing `GuildManager`, `ChannelManager`, `GuildChannelManager`, `RoleManager`, or `PermissionOverwriteManager` is unsupported! Functionality will break with any kind of customization.
+	As noted in the documentation, customizing `GuildManager`, `ChannelManager`, `GuildChannelManager`, `RoleManager`, or
+	`PermissionOverwriteManager` is unsupported! Functionality will break with any kind of customization.
 </Callout>
 
 We can further customize this by passing options to `LimitedCollection`, a special kind of collection that limits the number of items. In the example below, the client is configured so that:
@@ -93,7 +94,6 @@ const client = new Client({
 ```
 
 <Callout title="Take some time to consider what you are changing and do some research about what that implies">
-	Take a look at the documentation for which types of cache you can sweep.
-	Also consider what exactly lifetime implies for invites, messages, and threads!
+	Take a look at the documentation for which types of cache you can sweep. Also consider what exactly lifetime implies
+	for invites, messages, and threads!
 </Callout>
-

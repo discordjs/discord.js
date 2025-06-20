@@ -6,7 +6,11 @@ discord.js comes with a utility class known as `Collection`.
 It extends JavaScript's native `Map` class, so it has all the `Map` features and more!
 
 <Callout type="warn">
-	If you're not familiar with `Map`, read [MDN's page on it](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) before continuing. You should be familiar with `Array` [methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) as well. We will also use some ES6 features, so read up [here](/additional-info/es6-syntax.md) if you do not know what they are.
+	If you're not familiar with `Map`, read [MDN's page on
+	it](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) before continuing. You
+	should be familiar with `Array`
+	[methods](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) as well. We will
+	also use some ES6 features, so read up [here](/additional-info/es6-syntax.md) if you do not know what they are.
 </Callout>
 
 A `Map` allows for an association between unique keys and their values.
@@ -60,9 +64,10 @@ Array.from(collection);
 <Callout>
 	Many people convert Collections to Arrays way too much!
 
-	This can lead to unnecessary and confusing code. Before you use `Array.from()` or similar, ask yourself if whatever you are trying to do can't be done with the given `Map` or `Collection` methods or with a for-of loop. Not being familiar with a new data structure should not mean you default to transforming it into the other.
+    This can lead to unnecessary and confusing code. Before you use `Array.from()` or similar, ask yourself if whatever you are trying to do can't be done with the given `Map` or `Collection` methods or with a for-of loop. Not being familiar with a new data structure should not mean you default to transforming it into the other.
 
-	There is usually a reason, why a `Map` or `Collection` is used. Most structures in Discord can be identified with an `id`, which lends itself well to `key -> value` associations like in `Map`s.
+    There is usually a reason, why a `Map` or `Collection` is used. Most structures in Discord can be identified with an `id`, which lends itself well to `key -> value` associations like in `Map`s.
+
 </Callout>
 
 ## Extra Utilities
@@ -100,4 +105,3 @@ const [bots, humans] = collection.partition((u) => u.bot); // [!code word:partit
 bots.every((b) => b.bot);
 humans.every((h) => !h.bot); // note the "not" ! operator
 ```
-

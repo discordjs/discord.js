@@ -19,23 +19,27 @@ A Promise can have three states; pending, resolved, and rejected.
 One important thing to know is that a Promise can only have one state simultaneously; it can never be pending and resolved, rejected and resolved, or pending and rejected. You may be asking, "How would that look in code?". Here is a small example:
 
 <Callout>
-	This example uses ES6 code. If you do not know what that is, you should read up on that [here](/guide/legacy/additional-info/es6-syntax).
+	This example uses ES6 code. If you do not know what that is, you should read up on that
+	[here](/guide/legacy/additional-info/es6-syntax).
 </Callout>
 
 ```js
 function deleteMessages(amount) {
-	return new Promise((resolve, reject) => { // [!code word:Promise]
+	// [!code word:Promise]
+	return new Promise((resolve, reject) => {
 		if (amount > 10) return reject(new Error("You can't delete more than 10 Messages at a time."));
 		setTimeout(() => resolve('Deleted 10 messages.'), 2_000);
 	});
 }
 
 deleteMessages(5)
-	.then((value) => { // [!code word:then]
+	// [!code word:then]
+	.then((value) => {
 		// `deleteMessages` is complete and has not encountered any errors
 		// the resolved value will be the string "Deleted 10 messages"
 	})
-	.catch((error) => { // [!code word:catch]
+	// [!code word:catch]
+	.catch((error) => {
 		// `deleteMessages` encountered an error
 		// the error will be an Error Object
 	});
@@ -52,7 +56,8 @@ The following information is essential to know before working with async/await. 
 A simple example would be:
 
 ```js
-async function declaredAsAsync() { // [!code word:async]
+// [!code word:async]
+async function declaredAsAsync() {
 	// ...
 }
 ```
@@ -60,7 +65,8 @@ async function declaredAsAsync() { // [!code word:async]
 or
 
 ```js
-const declaredAsAsync = async () => { // [!code word:async]
+// [!code word:async]
+const declaredAsAsync = async () => {
 	// ...
 };
 ```
@@ -104,7 +110,8 @@ If you don't know how Node.js asynchronous execution works, you would probably t
 ```js title="promise-example.js" lineNumbers=9
 client.on(Events.InteractionCreate, (interaction) => {
 	// ...
-	if (commandName === 'react') { // [!code focus:7]
+	// [!code focus:7]
+	if (commandName === 'react') {
 		const response = interaction.reply({ content: 'Reacting!', withResponse: true }); // [!code ++:5]
 		const { message } = response.resource;
 		message.react('🇦');
@@ -160,13 +167,15 @@ It's mostly the same code, but how would you catch Promise rejections now since 
 ```js title="promise-example.js" lineNumbers=9
 client.on(Events.InteractionCreate, async (interaction) => {
 	if (commandName === 'react') {
-		try { // [!code ++]
+		// [!code ++]
+		try {
 			const response = await interaction.reply({ content: 'Reacting!', withResponse: true });
 			const { message } = response.resource;
 			await message.react('🇦');
 			await message.react('🇧');
 			await message.react('🇨');
-		} catch (error) { // [!code ++:3]
+			// [!code ++:3]
+		} catch (error) {
 			// handle failure of any Promise rejection inside here
 		}
 	}
@@ -209,4 +218,3 @@ client.on(Events.InteractionCreate, async (interaction) => {
 ```
 
 With async/await, you can assign the awaited function to a variable representing the returned value. Now you know how you use async/await.
-

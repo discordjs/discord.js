@@ -77,4 +77,3 @@ Try to avoid gendered and otherwise non-inclusive language. Examples are:
 ### Paragraph structure
 
 Tied in with the section above, try to keep things as neatly formatted as possible. If a paragraph gets long, split it up into multiple paragraphs so that it adds some spacing and is easier on the eyes.
-

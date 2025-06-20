@@ -49,7 +49,7 @@ const { token } = require('./config.json');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-client.once(Events.ClientReady, readyClient => {
+client.once(Events.ClientReady, (readyClient) => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 });
 
@@ -59,9 +59,13 @@ client.commands = new Collection(); // [!code ++]
 We recommend attaching a `.commands` property to your client instance so that you can access your commands in other files. The rest of the examples in this guide will follow this convention. For TypeScript users, we recommend extending the base Client class to add this property, [casting](https://www.typescripttutorial.net/typescript-tutorial/type-casting/), or [augmenting the module type](https://www.typescriptlang.org/docs/handbook/declaration-merging.html#module-augmentation).
 
 <Callout>
-	- The [`fs`](https://nodejs.org/api/fs.html) module is Node's native file system module. `fs` is used to read the `commands` directory and identify our command files.
-	- The [`path`](https://nodejs.org/api/path.html) module is Node's native path utility module. `path` helps construct paths to access files and directories. One of the advantages of the `path` module is that it automatically detects the operating system and uses the appropriate joiners.
-	- The `Collection` class extends JavaScript's native [`Map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) class, and includes more extensive, useful functionality. `Collection` is used to store and efficiently retrieve commands for execution.
+	- The [`fs`](https://nodejs.org/api/fs.html) module is Node's native file system module. `fs` is used to read the
+	`commands` directory and identify our command files. - The [`path`](https://nodejs.org/api/path.html) module is Node's
+	native path utility module. `path` helps construct paths to access files and directories. One of the advantages of the
+	`path` module is that it automatically detects the operating system and uses the appropriate joiners. - The
+	`Collection` class extends JavaScript's native
+	[`Map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) class, and includes more
+	extensive, useful functionality. `Collection` is used to store and efficiently retrieve commands for execution.
 </Callout>
 
 Next, using the modules imported above, dynamically retrieve your command files with a few more additions to the `index.js` file:
@@ -105,7 +109,7 @@ client.on(Events.InteractionCreate, (interaction) => {
 
 Not every interaction is a slash command (e.g. `MessageComponent` interactions). Make sure to only handle slash commands in this function by making use of the `BaseInteraction#isChatInputCommand` method to exit the handler if another type is encountered. This method also provides typeguarding for TypeScript users, narrowing the type from `BaseInteraction` to a `ChatInputCommandInteraction`.
 
-```js title="index.js" lineNumbers=32 
+```js title="index.js" lineNumbers=32
 client.on(Events.InteractionCreate, (interaction) => {
 	if (!interaction.isChatInputCommand()) return; // [!code ++]
 	console.log(interaction);
@@ -165,4 +169,3 @@ client.on(Events.InteractionCreate, async (interaction) => {
 #### Next steps
 
 Your command files are now loaded into your bot, and the event listener is prepared and ready to respond. In the next section, we cover the final step: a command deployment script you'll need to register your commands so they appear in the Discord client.
-

@@ -9,12 +9,13 @@ The examples we've covered so far have all been fairly simple commands, such as 
 Application commands can have additional `options`. Think of these options as arguments to a function, and as a way for the user to provide the additional information the command requires.
 
 <Callout>
-    If you've already added options to your commands and need to know how to receive and parse them, refer to the [Parsing options](/guide/legacy/slash-commands/parsing-options) page in this section of the guide.
+	If you've already added options to your commands and need to know how to receive and parse them, refer to the [Parsing
+	options](/guide/legacy/slash-commands/parsing-options) page in this section of the guide.
 </Callout>
 
 Options require at minimum a name and description. The same restrictions apply to option names as slash command names - 1-32 characters containing no capital letters, spaces, or symbols other than `-` and `_`. You can specify them as shown in the `echo` command below, which prompt the user to enter a String for the `input` option.
 
-```js title="commands/utility/echo.js" 
+```js title="commands/utility/echo.js"
 const { SlashCommandBuilder } = require('discord.js');
 
 const data = new SlashCommandBuilder()
@@ -29,7 +30,7 @@ By specifying the `type` of an `ApplicationCommandOption` using the correspondin
 
 The example above uses `addStringOption`, the simplest form of standard text input with no additional validation. By leveraging additional option types, you could change the behavior of this command in many ways, such as using a Channel option to direct the response to a specific channel:
 
-```js title="commands/utility/echo.js" 
+```js title="commands/utility/echo.js"
 const { SlashCommandBuilder } = require('discord.js');
 
 const data = new SlashCommandBuilder()
@@ -65,7 +66,8 @@ Listed below is a short description of the different types of options that can b
 - `Subcommand` and `SubcommandGroup` options allow you to have branching pathways of subsequent options for your commands - more on that later on this page.
 
 <Callout>
-	Refer to the Discord API documentation for detailed explanations on the [`SUB_COMMAND` and `SUB_COMMAND_GROUP` option types](https://discord.com/developers/docs/interactions/application-commands#subcommands-and-subcommand-groups).
+	Refer to the Discord API documentation for detailed explanations on the [`SUB_COMMAND` and `SUB_COMMAND_GROUP` option
+	types](https://discord.com/developers/docs/interactions/application-commands#subcommands-and-subcommand-groups).
 </Callout>
 
 ## Required options
@@ -74,7 +76,7 @@ With option types covered, you can start looking at additional forms of validati
 
 Review the `echo` example again and use `setRequired(true)` to mark the `input` option as required.
 
-```js title="commands/utility/echo.js" 
+```js title="commands/utility/echo.js"
 const { SlashCommandBuilder } = require('discord.js');
 
 const data = new SlashCommandBuilder()
@@ -98,7 +100,7 @@ Specify choices by using the `addChoices()` method from within the option builde
 
 The `gif` command example below allows users to select from predetermined categories of gifs to send:
 
-```js title="commands/fun/gif.js" 
+```js title="commands/fun/gif.js"
 const { SlashCommandBuilder } = require('discord.js');
 
 const data = new SlashCommandBuilder()
@@ -130,7 +132,7 @@ Even without predetermined choices, additional restrictions can still be applied
 
 We'll use these to show you how to enhance your `echo` command from earlier with extra validation to ensure it won't (or at least shouldn't) break when used:
 
-```js title="commands/utility/echo.js" 
+```js title="commands/utility/echo.js"
 const { SlashCommandBuilder, ChannelType } = require('discord.js');
 
 const data = new SlashCommandBuilder()
@@ -184,7 +186,7 @@ The names and descriptions of slash commands can be localized to the user's sele
 
 Setting localizations with `setNameLocalizations()` and `setDescriptionLocalizations()` takes the format of an object, mapping location codes (e.g. `pl` and `de`) to their localized strings.
 
-```js title="commands/fun/dog.js" 
+```js title="commands/fun/dog.js"
 const { SlashCommandBuilder } = require('discord.js');
 
 const data = new SlashCommandBuilder()
@@ -219,4 +221,3 @@ const data = new SlashCommandBuilder()
 #### Next steps
 
 For more information on receiving and parsing the different types of options covered on this page, refer to [Parsing options](/guide/legacy/slash-commands/parsing-options), or for more general information on how you can respond to slash commands, check out [Response methods](/guide/legacy/slash-commands/response-methods).
-

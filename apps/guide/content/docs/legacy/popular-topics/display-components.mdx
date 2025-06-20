@@ -15,6 +15,7 @@ To use the display components, you need to pass the `IsComponentsV2` message fla
     - Messages can have up to **40** total components (nested components count!)
     - The amount of text across all text display components **cannot** exceed 4000 characters.
     - All attached files have to explicitly be referenced in a component (refer to the [Thumbnail](/guide/legacy/popular-topics/display-components#thumbnail), [Media Gallery](/guide/legacy/popular-topics/display-components#media-gallery), and [file](/guide/legacy/popular-topics/display-components#file) sections).
+
 </Callout>
 
 All components can be passed an optional, unique, `id` field holding a 32-bit integer identifier to later identify them in interaction responses. Do not confuse this with the `custom_id` field for interactive components! You can find more information about this [in the discord api documentation](https://discord.com/developers/docs/components/reference#anatomy-of-a-component). Discord will automatically populate the `id` of components that don't have the `id` specified in the payload sequentially starting from `1`. The `id` value `0` is treated as empty. The order components are automatically filled in is an implementation detail and not officially document. If you want to work with the `id` (for example to find and replace the content of a specific component lateron), you should explicitly specify it.
@@ -26,7 +27,8 @@ In the following sections, we will explain all available display component types
 Text Display components let you add markdown-formatted text to your message and directly replace the `content` field when opting to use display components. You can use the `TextDisplayBuilder` class to easily create a Text Display component.
 
 <Callout type="error">
-	Sending user and role mentions in text display components **will notify users and roles**! You can and should control mentions with the `allowedMentions` message option.
+	Sending user and role mentions in text display components **will notify users and roles**! You can and should control
+	mentions with the `allowedMentions` message option.
 </Callout>
 
 The example below shows how you can send a Text Display component in a channel.
@@ -159,7 +161,8 @@ await channel.send({
 A Separator is a layout component that adds vertical padding and optional visual division between components. You can select the amount of padding used for the Separator component (small or large) as well as whether a visual divider should be displayed (defaults to `true`). You can use the `SeparatorBuilder` class to easily create a Separator component.
 
 <Callout type="warn">
-	When a Separator component is used without any non-Separator components in the message payload, the message will not have any visible content.
+	When a Separator component is used without any non-Separator components in the message payload, the message will not
+	have any visible content.
 </Callout>
 
 The example below shows how you can send a Separator component in a channel, separating two Text Display components.

@@ -5,7 +5,8 @@ title: Modals
 With modals you can create pop-up forms that allow users to provide you with formatted inputs through submissions. We'll cover how to create, show, and receive modal forms using discord.js!
 
 <Callout>
-    This page is a follow-up to the [interactions (slash commands) page](/guide/legacy/slash-commands/advanced-creation). Please carefully read that section first, so that you can understand the methods used in this section.
+	This page is a follow-up to the [interactions (slash commands) page](/guide/legacy/slash-commands/advanced-creation).
+	Please carefully read that section first, so that you can understand the methods used in this section.
 </Callout>
 
 ## Building and responding with modals
@@ -13,7 +14,8 @@ With modals you can create pop-up forms that allow users to provide you with for
 Unlike message components, modals aren't strictly components themselves. They're a callback structure used to respond to interactions.
 
 <Callout>
-    You can have a maximum of five `ActionRowBuilder`s per modal builder, and one `TextInputBuilder` within an `ActionRowBuilder`. Currently, you can only use `TextInputBuilder`s in modal action rows builders.
+	You can have a maximum of five `ActionRowBuilder`s per modal builder, and one `TextInputBuilder` within an
+	`ActionRowBuilder`. Currently, you can only use `TextInputBuilder`s in modal action rows builders.
 </Callout>
 
 To create a modal you construct a new `ModalBuilder`. You can then use the setters to add the custom id and title.
@@ -25,9 +27,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 	if (!interaction.isChatInputCommand()) return;
 
 	if (interaction.commandName === 'ping') {
-		const modal = new ModalBuilder()
-			.setCustomId('myModal')
-			.setTitle('My Modal');
+		const modal = new ModalBuilder().setCustomId('myModal').setTitle('My Modal');
 
 		// TODO: Add components to modal...
 	}
@@ -35,7 +35,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
 ```
 
 <Callout>
-    The custom id is a developer-defined string of up to 100 characters. Use this field to ensure you can uniquely define all incoming interactions from your modals!
+	The custom id is a developer-defined string of up to 100 characters. Use this field to ensure you can uniquely define
+	all incoming interactions from your modals!
 </Callout>
 
 The next step is to add the input fields in which users responding can enter free-text. Adding inputs is similar to adding components to messages.
@@ -97,7 +98,8 @@ Restart your bot and invoke the `/ping` command again. You should see a popup fo
 ![Modal Example](./images/modal-example.png)
 
 <Callout type="warn">
-    Showing a modal must be the first response to an interaction. You cannot `defer()` or `deferUpdate()` then show a modal later.
+	Showing a modal must be the first response to an interaction. You cannot `defer()` or `deferUpdate()` then show a
+	modal later.
 </Callout>
 
 ### Input styles
@@ -170,7 +172,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
 ```
 
 <Callout>
-    If you're using typescript, you can use the `ModalSubmitInteraction#isFromMessage` typeguard, to make sure the received interaction was from a `MessageComponentInteraction`.
+	If you're using typescript, you can use the `ModalSubmitInteraction#isFromMessage` typeguard, to make sure the
+	received interaction was from a `MessageComponentInteraction`.
 </Callout>
 
 ## Extracting data from modal submissions
@@ -187,4 +190,3 @@ client.on(Events.InteractionCreate, (interaction) => {
 	console.log({ favoriteColor, hobbies });
 });
 ```
-

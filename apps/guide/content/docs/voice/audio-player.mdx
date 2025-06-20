@@ -50,7 +50,8 @@ connection2.subscribe(player);
 ```
 
 <Callout>
-	**Audio players can play one audio resource at most.** If you try to play another audio resource while one is already playing on the same player, the existing one is destroyed and replaced with the new one.
+	**Audio players can play one audio resource at most.** If you try to play another audio resource while one is already
+	playing on the same player, the existing one is destroyed and replaced with the new one.
 </Callout>
 
 ### Pausing/unpausing
@@ -140,4 +141,3 @@ player.on(AudioPlayerStatus.Idle, () => {
 	player.play(getNextResource());
 });
 ```
-

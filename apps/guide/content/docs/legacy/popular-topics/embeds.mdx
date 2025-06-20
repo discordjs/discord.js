@@ -136,9 +136,10 @@ You can upload images with your embedded message and use them as source for embe
 You can then reference and use the images inside the embed itself with `attachment://fileName.extension`.
 
 <Callout>
-	If you plan to attach the same image repeatedly, **consider hosting it online and providing the URL** in the respective embed field instead. This also makes your bot respond faster since it doesn't need to upload the image with every response depending on it.
+	If you plan to attach the same image repeatedly, **consider hosting it online and providing the URL** in the
+	respective embed field instead. This also makes your bot respond faster since it doesn't need to upload the image with
+	every response depending on it.
 </Callout>
-
 
 ### Using the EmbedBuilder
 
@@ -169,7 +170,8 @@ channel.send({ embeds: [exampleEmbed], files: [file] });
 ```
 
 <Callout type="warn">
-	If the images don't display inside the embed but outside of it, double-check your syntax to make sure it's as shown above.
+	If the images don't display inside the embed but outside of it, double-check your syntax to make sure it's as shown
+	above.
 </Callout>
 
 ## Resending and editing
@@ -226,4 +228,3 @@ There are a few limits to be aware of while planning your embeds due to the API'
 - **10** embeds can be sent per message
 
 Source: [Discord API documentation](https://discord.com/developers/docs/resources/message#embed-object-embed-limits)
-

@@ -9,13 +9,13 @@ Webhooks can send messages to a text channel without having to log in as a bot. 
 Webhooks are a utility used to send messages to text channels without needing a Discord application. Webhooks are useful for allowing something to send messages without requiring a Discord application. You can also directly edit or delete messages you sent through the webhook. There are two structures to make use of this functionality: `Webhook` and `WebhookClient`. `WebhookClient` is an extended version of a `Webhook`, which allows you to send messages through it without needing a bot client.
 
 <Callout>
-	If you would like to read about using webhooks through the API without discord.js, you can read about them [here](https://discord.com/developers/docs/resources/webhook).
+	If you would like to read about using webhooks through the API without discord.js, you can read about them
+	[here](https://discord.com/developers/docs/resources/webhook).
 </Callout>
 
 ## Detecting webhook messages
 
 Bots receive webhook messages in a text channel as usual. You can detect if a webhook sent the message by checking if the `Message.webhookId` is not `null`. In this example, we return if a webhook sent the message.
-
 
 ```js
 if (message.webhookId) return;
@@ -26,7 +26,10 @@ If you would like to get the webhook object that sent the message, you can use `
 ## Fetching webhooks
 
 <Callout>
-	Webhook fetching will always make use of collections and Promises. If you do not understand either concept, revise them, and then come back to this section. You can read about collections [here](/guide/legacy/additional-info/collections), and Promises [here](/guide/legacy/additional-info/async-await) and [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises).
+	Webhook fetching will always make use of collections and Promises. If you do not understand either concept, revise
+	them, and then come back to this section. You can read about collections
+	[here](/guide/legacy/additional-info/collections), and Promises [here](/guide/legacy/additional-info/async-await) and
+	[here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises).
 </Callout>
 
 ### Fetching all webhooks of a guild
@@ -56,7 +59,6 @@ You can also pass in just a `url`:
 
 ```js
 const webhookClient = new WebhookClient({ url: 'https://discord.com/api/webhooks/id/token' }); // [!code word:url\:]
-
 ```
 
 ## Creating webhooks
@@ -81,7 +83,8 @@ Webhooks can be created with the `TextChannel#createWebhook` method.
 
 ```js
 channel
-	.createWebhook({ // [!code word:createWebhook]
+	// [!code word:createWebhook]
+	.createWebhook({
 		name: 'Some-username',
 		avatar: 'https://i.imgur.com/AfFp7pu.png',
 	})
@@ -95,7 +98,8 @@ You can edit Webhooks and WebhookClients to change their name, avatar, and chann
 
 ```js
 webhook
-	.edit({ // [!code word:edit]
+	// [!code word:edit]
+	.edit({
 		name: 'Some-username',
 		avatar: 'https://i.imgur.com/AfFp7pu.png',
 		channel: '222197033908436994',
@@ -122,7 +126,8 @@ const webhookClient = new WebhookClient({ id: webhookId, token: webhookToken });
 
 const embed = new EmbedBuilder().setTitle('Some Title').setColor(0x00ffff);
 
-webhookClient.send({ // [!code word:send]
+// [!code word:send]
+webhookClient.send({
 	content: 'Webhook test',
 	username: 'some-username',
 	avatarURL: 'https://i.imgur.com/AfFp7pu.png',
@@ -177,7 +182,8 @@ const message = await webhookClient.fetchMessage('123456789012345678'); // [!cod
 You can use `Webhook#editMessage` to edit messages previously sent by the Webhook.
 
 ```js
-const message = await webhook.editMessage('123456789012345678', { //[!code word:editMessage]
+//[!code word:editMessage]
+const message = await webhook.editMessage('123456789012345678', {
 	content: 'Edited!',
 	embeds: [embed],
 });
@@ -190,4 +196,3 @@ You can use `Webhook#deleteMessage` to delete messages previously sent by the We
 ```js
 await webhookClient.deleteMessage('123456789012345678'); // [!code word:deleteMessage]
 ```
-

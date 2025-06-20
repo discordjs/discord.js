@@ -4,7 +4,7 @@ title: Collectors
 
 ## Message collectors
 
-`Collector` are useful to enable your bot to obtain *additional* input after the first command was sent. An example would be initiating a quiz, where the bot will "await" a correct response from somebody.
+`Collector` are useful to enable your bot to obtain _additional_ input after the first command was sent. An example would be initiating a quiz, where the bot will "await" a correct response from somebody.
 
 ### Basic message collector
 
@@ -80,7 +80,8 @@ interaction.reply({ content: item.question, withResponse: true }).then((response
 ```
 
 <Callout>
-	If you don't understand how `.some()` works, you can read about it in more detail [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
+	If you don't understand how `.some()` works, you can read about it in more detail
+	[here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
 </Callout>
 
 In this filter, you iterate through the answers to find what you want. You would like to ignore the case because simple typos can happen, so you convert each answer to its lowercase form and check if it's equal to the response in lowercase form as well. In the options section, you only want to allow one answer to pass through, hence the `max: 1` setting.

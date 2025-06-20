@@ -5,7 +5,8 @@ title: Cooldowns
 Spam is something you generally want to avoid, especially if one of your commands require calls to other APIs or takes a bit of time to build/send.
 
 <Callout>
-    This section assumes you followed the [Command Handling](/guide/legacy/app-creation/handling-commands) part of the guide.
+	This section assumes you followed the [Command Handling](/guide/legacy/app-creation/handling-commands) part of the
+	guide.
 </Callout>
 
 First, add a cooldown property to your command. This will determine how long the user would have to wait (in seconds) before using the command again.
@@ -85,8 +86,9 @@ Since the `timestamps` Collection has the user's id as the key, you can use the 
 
 The previous user check serves as a precaution in case the user leaves the guild. You can now use the `setTimeout` method, which will allow you to execute a function after a specified amount of time and remove the timeout.
 
-```js {5-6}
-if (timestamps.has(interaction.user.id)) { // [!code focus]
+```js
+// [!code focus]
+if (timestamps.has(interaction.user.id)) {
 	const expiredTimestamp = Math.round(expirationTime / 1_000);
 	return interaction.reply({
 		content: `Please wait, you are on a cooldown for \`${command.data.name}\`. You can use it again <t:${expiredTimestamp}:R>.`,
@@ -100,4 +102,3 @@ setTimeout(() => timestamps.delete(interaction.user.id), cooldownAmount);
 ```
 
 This line causes the entry for the user under the specified command to be deleted after the command's cooldown time has expired for them.
-
