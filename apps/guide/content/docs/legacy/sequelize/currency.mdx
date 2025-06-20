@@ -21,7 +21,29 @@ This time we'll have six files.
 
 Here is an entity relation diagram of the models we'll be making:
 
-![Currency database structure diagram](./images/currency_er_diagram.svg)
+<Mermaid
+	chart="
+erDiagram
+	USER ||--o{ USERITEMS : owns 
+	CURRENCYSHOP ||..o{ USERITEMS : offers
+	USER {
+		string user_id PK
+		string balance
+	}
+	USERITEMS
+	USERITEMS {
+		string user_id FK
+		string item_id FK
+		number amount
+	}
+	CURRENCYSHOP
+	CURRENCYSHOP {
+		string id PK
+		string name
+		number cost
+	}
+"
+/>
 
 `Users` have a `user_id`, and a `balance`. Each `user_id` can have multiple links to the `UserItems` table, and each entry in the table connects to one of the items in the `CurrencyShop`, which will have a `name` and a `cost` associated with it.
 
@@ -111,9 +133,10 @@ Now that the models are defined, you should create them in your database to acce
 Create a file called `dbInit.js` in the base directory (_not_ in the `models` folder).
 
 <Callout type="error" title="Attention! Security Risk!">
-    **Make sure you use version 5 or later of Sequelize!** As used in this guide, version 4 and earlier will pose a security threat. You can read more about this issue on the [Sequelize issue tracker](https://github.com/sequelize/sequelize/issues/7310).
+	**Make sure you use version 5 or later of Sequelize!** As used in this guide, version 4 and earlier will pose a
+	security threat. You can read more about this issue on the [Sequelize issue
+	tracker](https://github.com/sequelize/sequelize/issues/7310).
 </Callout>
-
 
 ```js title="dbInit.js" lineNumbers
 const Sequelize = require('sequelize');
@@ -134,7 +157,8 @@ const force = process.argv.includes('--force') || process.argv.includes('-f');
 sequelize
 	.sync({ force })
 	.then(async () => {
-		const shop = [ // [!code word:upsert]
+		const shop = [
+			// [!code word:upsert]
 			CurrencyShop.upsert({ name: 'Tea', cost: 1 }),
 			CurrencyShop.upsert({ name: 'Coffee', cost: 2 }),
 			CurrencyShop.upsert({ name: 'Cake', cost: 5 }),
@@ -153,7 +177,9 @@ Here you pull the two models and the junction table from the respective model de
 A new function here is the `.upsert()` function. It's a portmanteau for **up**date or in**sert**. `upsert` is used here to avoid creating duplicates if you run this file multiple times. That shouldn't happen because `name` is defined as _unique_, but there's no harm in being safe. Upsert also has a nice side benefit: if you adjust the cost, the respective item should also have their cost updated.
 
 <Callout>
-	Execute `node dbInit.js` to create the database tables. Unless you make a change to the models, you'll never need to touch the file again. If you change a model, you can execute `node dbInit.js --force` or `node dbInit.js -f` to force sync your tables. It's important to note that this **will** empty and remake your model tables.
+	Execute `node dbInit.js` to create the database tables. Unless you make a change to the models, you'll never need to
+	touch the file again. If you change a model, you can execute `node dbInit.js --force` or `node dbInit.js -f` to force
+	sync your tables. It's important to note that this **will** empty and remake your model tables.
 </Callout>
 
 ## Create associations
@@ -178,7 +204,8 @@ UserItems.belongsTo(CurrencyShop, { foreignKey: 'item_id', as: 'item' }); // [!c
 
 Reflect.defineProperty(Users.prototype, 'addItem', {
 	value: async (item) => {
-		const userItem = await UserItems.findOne({ // [!code word:findOne]
+		const userItem = await UserItems.findOne({
+			// [!code word:findOne]
 			where: { user_id: this.user_id, item_id: item.id },
 		});
 
@@ -193,7 +220,8 @@ Reflect.defineProperty(Users.prototype, 'addItem', {
 
 Reflect.defineProperty(Users.prototype, 'getItems', {
 	value: () => {
-		return UserItems.findAll({ // [!code word:findAll]
+		return UserItems.findAll({
+			// [!code word:findAll]
 			where: { user_id: this.user_id },
 			include: ['item'],
 		});
@@ -251,7 +279,8 @@ Nothing special about this skeleton. You import the Users and CurrencyShop model
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 const currency = new Collection();
 
-async function addBalance(id, amount) { // [!code ++:18]
+async function addBalance(id, amount) {
+	// [!code ++:18]
 	const user = currency.get(id);
 
 	if (user) {
@@ -294,7 +323,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 	const { commandName } = interaction;
 
-	if (commandName === 'balance') { // [!code ++:5]
+	if (commandName === 'balance') {
+		// [!code ++:5]
 		const target = interaction.options.getUser('user') ?? interaction.user;
 
 		return interaction.reply(`${target.tag} has ${getBalance(target.id)}💰`); // [!code word:getBalance]
@@ -401,7 +431,7 @@ There's nothing special here; just a regular `.findAll()` to get all the items i
 
 ### Display the leaderboard
 
-```js title="app.js" 
+```js title="app.js"
 if (commandName === 'balance') {
 	// ...
 } else if (commandName === 'inventory')
@@ -427,4 +457,3 @@ if (commandName === 'balance') {
 ```
 
 Nothing extraordinary here either. You could query the database for the top ten currency holders, but since you already have access to them locally inside the `currency` variable, you can sort the Collection and use `.map()` to display it in a friendly format. The filter is in case the users no longer exist in the bot's cache.
-

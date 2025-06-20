@@ -20,9 +20,19 @@
 	"directories": {
 		"lib": "src"
 	},
-	"contributors": ["Crawl <icrawltogo@gmail.com>"],
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>"
+	],
 	"license": "Apache-2.0",
-	"keywords": ["discord", "api", "bot", "client", "node", "discordapp", "discordjs"],
+	"keywords": [
+		"discord",
+		"api",
+		"bot",
+		"client",
+		"node",
+		"discordapp",
+		"discordjs"
+	],
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/discordjs/discord.js.git",
@@ -47,6 +57,7 @@
 		"jotai": "^2.12.5",
 		"jotai-immer": "^0.4.1",
 		"lucide-react": "^0.511.0",
+		"mermaid": "^11.7.0",
 		"motion": "^12.15.0",
 		"next": "15.4.0-canary.11",
 		"next-mdx-remote-client": "^2.1.2",
