@@ -3,6 +3,7 @@
 const { userMention } = require('@discordjs/formatters');
 const { calculateUserDefaultAvatarIndex } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
+const { _transformCollectibles } = require('../util/Transformers.js');
 const { UserFlagsBitField } = require('../util/UserFlagsBitField.js');
 const { Base } = require('./Base.js');
 
@@ -150,6 +151,30 @@ class User extends Base {
       };
     } else {
       this.avatarDecorationData = null;
+    }
+
+    /**
+     * @typedef {Object} NameplateData
+     * @property {Snowflake} skuId The id of the nameplate's SKU
+     * @property {string} asset The nameplate's asset path
+     * @property {string} label The nameplate's label
+     * @property {NameplatePalette} palette Background color of the nameplate
+     */
+
+    /**
+     * @typedef {Object} Collectibles
+     * @property {NameplateData} nameplate The user's nameplate data
+     */
+
+    if (data.collectibles) {
+      /**
+       * The user's collectibles
+       *
+       * @type {Collectibles}
+       */
+      this.collectibles = data.collectibles && _transformCollectibles(data.collectibles);
+    } else {
+      this.collectibles = null;
     }
   }
 
