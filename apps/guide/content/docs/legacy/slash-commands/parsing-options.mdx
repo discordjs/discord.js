@@ -59,12 +59,16 @@ module.exports = {
 		.setName('gif')
 		.setDescription('Sends a random gif!')
 		.addStringOption((option) =>
-			option.setName('category').setDescription('The gif category').setRequired(true).addChoices(
-				// [!code focus:3]
-				{ name: 'Funny', value: 'gif_funny' },
-				{ name: 'Meme', value: 'gif_meme' },
-				{ name: 'Movie', value: 'gif_movie' },
-			),
+			// [!code focus:5] [!code word:setRequired]
+			option
+				.setName('category')
+				.setDescription('The gif category')
+				.setRequired(true)
+				.addChoices(
+					{ name: 'Funny', value: 'gif_funny' },
+					{ name: 'Meme', value: 'gif_meme' },
+					{ name: 'Movie', value: 'gif_movie' },
+				),
 		),
 
 	// [!code focus:4]
