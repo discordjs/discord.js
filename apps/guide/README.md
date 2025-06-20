@@ -19,17 +19,13 @@
 - [Website][website] ([source][website-source])
 - [Documentation][documentation]
 - [Guide][guide] ([source][guide-source])
-  Also see the v13 to v14 [Update Guide][guide-update], which includes updated and removed items from the library.
 - [discord.js Discord server][discord]
-- [Discord API Discord server][discord-api]
 - [GitHub][source]
-- [Related libraries][related-libs]
 
 ## Contributing
 
-Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the
-[documentation][documentation].  
-See [the contribution guide][contributing] if you'd like to submit a PR.
+Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the existing guide.  
+See [the contribution guide][./contributing] if you'd like to submit a PR.
 
 ## Local Development
 
@@ -42,11 +38,9 @@ If you don't understand something in the documentation, you are experiencing pro
 [website]: https://discord.js.org
 [website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
 [documentation]: https://discord.js.org/docs
-[guide]: https://discordjs.guide/
-[guide-source]: https://github.com/discordjs/guide
+[guide]: https://discord.js/guide
+[guide-source]: https://github.com/discordjs/discord.js/tree/main/apps/guide
 [guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
 [discord]: https://discord.gg/djs
-[discord-api]: https://discord.gg/discord-api
-[source]: https://github.com/discordjs/discord.js/tree/main/apps/website
-[related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
+[source]: https://github.com/discordjs/discord.js/tree/main/apps/guide
 [contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md

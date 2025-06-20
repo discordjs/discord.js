@@ -1,5 +1,4 @@
 {
 	"title": "Getting Started",
-	"pages": ["setting-up-a-bot-application", "adding-your-bot-to-servers", "setup", "setting-up-a-linter"],
-	"defaultOpen": true
+	"pages": ["app-setup", "adding-your-app", "installation", "linter"]
 }

@@ -20,19 +20,9 @@
 	"directories": {
 		"lib": "src"
 	},
-	"contributors": [
-		"Crawl <icrawltogo@gmail.com>"
-	],
+	"contributors": ["Crawl <icrawltogo@gmail.com>"],
 	"license": "Apache-2.0",
-	"keywords": [
-		"discord",
-		"api",
-		"bot",
-		"client",
-		"node",
-		"discordapp",
-		"discordjs"
-	],
+	"keywords": ["discord", "api", "bot", "client", "node", "discordapp", "discordjs"],
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/discordjs/discord.js.git",
