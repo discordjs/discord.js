@@ -12,6 +12,7 @@
 		"slash-commands",
 		"interactions",
 		"interactive-components",
+		"popular-topics/display-components",
 		"---More To Know---",
 		"popular-topics",
 		"improving-dev-environment",
