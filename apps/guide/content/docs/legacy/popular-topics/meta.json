@@ -1,4 +1,4 @@
 {
 	"defaultOpen": true,
-	"pages": ["faq", "..."]
+	"pages": ["!faq", "...", "!display-components"]
 }
