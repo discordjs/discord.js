@@ -352,7 +352,7 @@ class User extends Base {
       this.accentColor === user.accentColor &&
       this.avatarDecorationData?.asset === user.avatarDecorationData?.asset &&
       this.avatarDecorationData?.skuId === user.avatarDecorationData?.skuId &&
-      this.guildtag === user.primary_guild?.tag
+      this.guildtag === user.guildtag
     );
   }
 
