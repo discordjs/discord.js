@@ -2,13 +2,11 @@
 title: Actionrows
 ---
 
-With the components API, you can create interactive message components to enhance the functionality of your slash commands. To get started with this, the first component type you'll need to understand is the action row. To send any type of component, it **must** be placed in an action row.
+Actionrows are a layout component with five "slots" that can be filled with other components. At the time of writing this guide, buttons take up one slot and select menus take up five "slots". Accordingly, each `ActionRow` can hold up to 5 buttons or a single select menu. A message can have up to five rows without providing the `IsComponentsV2` message flag. If you want to place buttons or action rows into the message body, they have to be wrapped inside rows.
 
-Action rows are a fairly simple form of layout component. A message may contain up to five rows, each of which has a "width" of five units. This can be thought of as a flexible 5x5 grid. A button will consume one unit of width in a row, while a select menu will consume the whole five units of width. At this time, these are the only types of components that can be sent in a message.
-
-<Callout type="warn">
-	The "width units" referred to are not fixed - the actual width of each individual button will be dynamic based on its
-	label contents.
+<Callout>
+	Read our guide section on [display components](/guide/legacy/popular-topics/display-components) if you want to learn
+	more about those.
 </Callout>
 
 ## Building action rows
@@ -22,9 +20,9 @@ const row = new ActionRowBuilder().addComponents(component);
 <Callout>
 If you're using TypeScript, you'll need to specify the type of components your action row holds. This can be done by specifying the component builder you will add to it using a generic parameter in `ActionRowBuilder`.
 
-```diff
-- new ActionRowBuilder()
-+ new ActionRowBuilder<ButtonBuilder>()
+```js
+new ActionRowBuilder() // [!code --]
+new ActionRowBuilder<ButtonBuilder>() // [!code ++]
 ```
 
 </Callout>
@@ -33,7 +31,7 @@ If you're using TypeScript, you'll need to specify the type of components your a
 
 Once one or many components are inside your row(s), send them in the `components` property of your `InteractionReplyOptions` (extends `BaseMessageOptions`).
 
-```js {4}
+```js
 const row = new ActionRowBuilder().addComponents(component);
 
 await interaction.reply({ components: [row] });
