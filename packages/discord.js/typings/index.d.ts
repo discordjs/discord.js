@@ -3519,6 +3519,7 @@ export class User extends Base {
   public avatarDecorationData: AvatarDecorationData | null;
   public banner: string | null | undefined;
   public bot: boolean;
+  public guildtag: string | null;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public discriminator: string;

@@ -28,6 +28,8 @@ class User extends Base {
 
     this.flags = null;
 
+    this.guildtag = null;
+
     this._patch(data);
   }
 
@@ -150,6 +152,17 @@ class User extends Base {
       };
     } else {
       this.avatarDecorationData = null;
+    }
+
+    if (data.primary_guild?.tag) {
+      /**
+       * The guild tag name of this user
+       *
+       * @type {?string}
+       */
+      this.guildtag = data.primary_guild?.tag;
+    } else {
+      this.guildtag ??= null;
     }
   }
 
@@ -338,7 +351,8 @@ class User extends Base {
       this.banner === user.banner &&
       this.accentColor === user.accentColor &&
       this.avatarDecorationData?.asset === user.avatarDecorationData?.asset &&
-      this.avatarDecorationData?.skuId === user.avatarDecorationData?.skuId
+      this.avatarDecorationData?.skuId === user.avatarDecorationData?.skuId &&
+      this.guildtag === user.primary_guild?.tag
     );
   }
 
@@ -363,7 +377,8 @@ class User extends Base {
       ('avatar_decoration_data' in user
         ? this.avatarDecorationData?.asset === user.avatar_decoration_data?.asset &&
           this.avatarDecorationData?.skuId === user.avatar_decoration_data?.sku_id
-        : true)
+        : true) &&
+      this.guildtag === user.primary_guild?.tag
     );
   }
 
@@ -396,6 +411,7 @@ class User extends Base {
         defaultAvatarURL: true,
         hexAccentColor: true,
         tag: true,
+        guildtag: true,
       },
       ...props,
     );
