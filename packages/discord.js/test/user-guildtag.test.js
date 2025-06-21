@@ -96,9 +96,22 @@ describe('User guildtag property tests', () => {
     const apiUserData = {
       id: '1234567890123456789',
       username: 'testuser',
+      avatar: null,
       discriminator: '0',
-      avatar: 'test_avatar_hash',
       public_flags: 128,
+      flags: 128,
+      banner: null,
+      accent_color: null,
+      global_name: 'Test User',
+      avatar_decoration_data: null,
+      collectibles: null,
+      banner_color: null,
+      clan: {
+        identity_guild_id: '9876543210987654321',
+        identity_enabled: true,
+        tag: 'TEST',
+        badge: 'abcdef1234567890abcdef1234567890',
+      },
       primary_guild: {
         identity_guild_id: '9876543210987654321',
         identity_enabled: true,
