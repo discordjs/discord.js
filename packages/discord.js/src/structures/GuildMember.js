@@ -237,6 +237,14 @@ class GuildMember extends Base {
   }
 
   /**
+   * A link to the member's guild avatar decoration if they have one.
+   * Otherwise, a link to their {@link User#avatarDecorationURL} will be returned.
+   */
+  displayAvatarDecorationURL() {
+    return this.avatarDecorationURL() ?? this.user.avatarDecorationURL();
+  }
+
+  /**
    * The time this member joined the guild
    *
    * @type {?Date}
