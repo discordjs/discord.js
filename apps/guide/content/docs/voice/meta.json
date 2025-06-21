@@ -1,7 +1,15 @@
 {
 	"title": "Voice",
-	"description": "Working with voice: connecting, receiving, sending",
-	"pages": ["index", "life-cycles", "voice-connections", "audio-player", "audio-resources"],
+	"description": "Working with the voice library",
+	"pages": [
+		"[LibraryBig][Documentation](https://discord.js.org/docs/packages/voice/main)",
+		"---Working with Voice---",
+		"index",
+		"life-cycles",
+		"voice-connections",
+		"audio-player",
+		"audio-resources"
+	],
 	"root": true,
 	"icon": "Volume2"
 }
