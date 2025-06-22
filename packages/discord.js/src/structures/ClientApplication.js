@@ -163,6 +163,17 @@ class ClientApplication extends Application {
       this.approximateUserInstallCount ??= null;
     }
 
+    if ('approximate_user_authorization_count' in data) {
+      /**
+       * An approximate amount of users that have OAuth2 authorizations for this application.
+       *
+       * @type {?number}
+       */
+      this.approximateUserAuthorizationCount = data.approximate_user_authorization_count;
+    } else {
+      this.approximateUserAuthorizationCount ??= null;
+    }
+
     if ('guild_id' in data) {
       /**
        * The id of the guild associated with this application.
