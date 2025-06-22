@@ -27,6 +27,8 @@ class User extends Base {
     this.system = null;
 
     this.flags = null;
+    
+    this.clan = null;
 
     this._patch(data);
   }
@@ -150,6 +152,27 @@ class User extends Base {
       };
     } else {
       this.avatarDecorationData = null;
+    }
+    
+    /**
+     * @typedef {Object} UserClan
+     * @property {Snowflake} guildId Identifier of the guild of the tag
+     * @property {string} badge The badge of the clan
+     * @property {string} tag The tag of the clan
+     */
+
+    if (data.clan) {
+      /**
+       * The user clan data
+       * @type {?UserClan}
+       */
+      this.clan = {
+        guildId: data.clan.identity_guild_id,
+        badge: data.clan.badge,
+        tag: data.clan.tag,
+      };
+    } else {
+      this.clan ??= null;
     }
   }
 
@@ -338,7 +361,8 @@ class User extends Base {
       this.banner === user.banner &&
       this.accentColor === user.accentColor &&
       this.avatarDecorationData?.asset === user.avatarDecorationData?.asset &&
-      this.avatarDecorationData?.skuId === user.avatarDecorationData?.skuId
+      this.avatarDecorationData?.skuId === user.avatarDecorationData?.skuId &&
+      this.clan?.guildId === user.clan?.guildId
     );
   }
 
@@ -363,7 +387,8 @@ class User extends Base {
       ('avatar_decoration_data' in user
         ? this.avatarDecorationData?.asset === user.avatar_decoration_data?.asset &&
           this.avatarDecorationData?.skuId === user.avatar_decoration_data?.sku_id
-        : true)
+        : true) &&
+      ('clan' in user ? this.clan?.guildId === user.clan?.guildId : true)
     );
   }
 
