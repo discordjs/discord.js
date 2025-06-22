@@ -14,7 +14,7 @@ Node.js uses an event-driven architecture, making it possible to execute code wh
 At this point, your `index.js` file has listeners for two events: `ClientReady` and `InteractionCreate`.
 
 ```js title="index.js"
-// [!code word:ClientRead]
+// [!code word:ClientReady]
 client.once(Events.ClientReady, (readyClient) => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 
