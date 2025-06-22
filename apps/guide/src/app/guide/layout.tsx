@@ -19,7 +19,7 @@ export default function Layout({ children }: { readonly children: ReactNode }) {
 							...option,
 							icon: (
 								<div
-									className="border rounded-lg p-1.5 shadow-lg md:mb-auto [&_svg]:size-6 md:rounded-md md:p-1 md:[&_svg]:size-5"
+									className="rounded-lg border p-1.5 shadow-lg md:mb-auto md:rounded-md md:p-1 [&_svg]:size-6 md:[&_svg]:size-5"
 									style={
 										{
 											color,
