@@ -1,4 +1,4 @@
-import { Events } from 'npm:discord.js@^14.19.3';
+import { Events } from 'npm:discord.js@^14.20.0';
 import type { Event } from './index.ts';
 import { loadCommands } from '../util/loaders.ts';
 
