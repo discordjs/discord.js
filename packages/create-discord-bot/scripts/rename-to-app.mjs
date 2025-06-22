@@ -6,7 +6,7 @@ const pkgJson = JSON.parse(await readFile(pkgJsonPath, 'utf8'));
 
 pkgJson.name = 'create-discord-app';
 
-await writeFile(pkgJsonPath, JSON.stringify(pkgJson, null, '\t'));
+await writeFile(pkgJsonPath, JSON.stringify(pkgJson, null, '\t') + '\n');
 
 const readmePath = new URL('../README.md', import.meta.url);
 const readme = await readFile(readmePath, 'utf8');
