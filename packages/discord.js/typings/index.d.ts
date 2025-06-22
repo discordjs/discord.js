@@ -947,6 +947,7 @@ export class ClientApplication extends Application {
   public flags: Readonly<ApplicationFlagsBitField>;
   public approximateGuildCount: number | null;
   public approximateUserInstallCount: number | null;
+  public approximateUserAuthorizationCount: number | null;
   public tags: string[];
   public installParams: ClientApplicationInstallParams | null;
   public integrationTypesConfig: IntegrationTypesConfiguration | null;
