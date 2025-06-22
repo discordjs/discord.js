@@ -85,6 +85,7 @@ class AutoModerationRuleManager extends CachedManager {
    *
    * @typedef {Object} AutoModerationActionMetadataOptions
    * @property {GuildTextChannelResolvable|ThreadChannel} [channel] The channel to which content will be logged
+   * @property {string} [channelId] The ID of the channel to which content will be logged
    * @property {number} [durationSeconds] The timeout duration in seconds
    * @property {string} [customMessage] The custom message that is shown whenever a message is blocked
    */
@@ -146,7 +147,7 @@ class AutoModerationRuleManager extends CachedManager {
           type: action.type,
           metadata: {
             duration_seconds: action.metadata?.durationSeconds,
-            channel_id: action.metadata?.channel && this.guild.channels.resolveId(action.metadata.channel),
+            channel_id: (action.metadata?.channel && this.guild.channels.resolveId(action.metadata.channel)) || action.metadata?.channelId,
             custom_message: action.metadata?.customMessage,
           },
         })),
@@ -206,7 +207,7 @@ class AutoModerationRuleManager extends CachedManager {
           type: action.type,
           metadata: {
             duration_seconds: action.metadata?.durationSeconds,
-            channel_id: action.metadata?.channel && this.guild.channels.resolveId(action.metadata.channel),
+            channel_id: (action.metadata?.channel && this.guild.channels.resolveId(action.metadata.channel)) || action.metadata?.channelId,
             custom_message: action.metadata?.customMessage,
           },
         })),
