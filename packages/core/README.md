@@ -34,6 +34,8 @@ pnpm add @discordjs/core
 
 ## Example usage
 
+These examples use [ES modules](https://nodejs.org/api/esm.html#enabling).
+
 ```ts
 import { REST } from '@discordjs/rest';
 import { WebSocketManager } from '@discordjs/ws';
