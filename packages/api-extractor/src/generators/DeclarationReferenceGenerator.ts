@@ -372,7 +372,6 @@ export class DeclarationReferenceGenerator {
 
 	private _getEntryPointName(sourceFile: ts.SourceFile, entry: IWorkingPackageEntryPoint): string {
 		if (this._collector.program.isSourceFileFromExternalLibrary(sourceFile)) {
-			console.log(sourceFile.fileName, 'is external!');
 			const packageJson: INodePackageJson | undefined = this._collector.packageJsonLookup.tryLoadNodePackageJsonFor(
 				sourceFile.fileName,
 			);
