@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/core@2.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@2.1.1...@discordjs/core@2.2.0) - (2025-06-25)
+
+## Features
+
+- **webhook:** Support `with_components` (#10945) ([7713627](https://github.com/discordjs/discord.js/commit/7713627fd18599a6187b325e1e4bc9a17cf23e21))
+
 # [@discordjs/core@2.1.1](https://github.com/discordjs/discord.js/compare/@discordjs/core@2.1.0...@discordjs/core@2.1.1) - (2025-06-16)
 
 ## Bug Fixes
