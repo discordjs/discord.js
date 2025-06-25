@@ -489,22 +489,25 @@ export class Deserializer {
 				},
 			];
 
-			if (_class.extends)
+			if (_class.extends) {
 				excerptTokens.push({
 					kind: ExcerptTokenKind.Reference,
 					text: formatVarType(_class.extends) ?? '',
 					canonicalReference: `${_package}!${getFirstType(_class.extends) ?? ''}:class`,
 				});
+			}
 
-			if (_class.extends && _class.implements)
+			if (_class.extends && _class.implements) {
 				excerptTokens.push({ kind: ExcerptTokenKind.Content, text: ' implements ' });
+			}
 
-			if (_class.implements)
+			if (_class.implements) {
 				excerptTokens.push({
 					kind: ExcerptTokenKind.Reference,
 					text: formatVarType(_class.implements) ?? '',
 					canonicalReference: `${_package}!${getFirstType(_class.implements) ?? ''}:class`,
 				});
+			}
 
 			members.push({
 				members: classMembers,

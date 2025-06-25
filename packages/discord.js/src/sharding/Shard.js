@@ -139,8 +139,13 @@ class Shard extends AsyncEventEmitter {
    * @returns {Promise<ChildProcess>}
    */
   async spawn(timeout = 30_000) {
-    if (this.process) throw new DiscordjsError(ErrorCodes.ShardingProcessExists, this.id);
-    if (this.worker) throw new DiscordjsError(ErrorCodes.ShardingWorkerExists, this.id);
+    if (this.process) {
+      throw new DiscordjsError(ErrorCodes.ShardingProcessExists, this.id);
+    }
+
+    if (this.worker) {
+      throw new DiscordjsError(ErrorCodes.ShardingWorkerExists, this.id);
+    }
 
     this._exitListener = this._handleExit.bind(this, undefined, timeout);
 
@@ -182,7 +187,10 @@ class Shard extends AsyncEventEmitter {
      */
     this.emit(ShardEvents.Spawn, child);
 
-    if (timeout === -1 || timeout === Infinity) return child;
+    if (timeout === -1 || timeout === Infinity) {
+      return child;
+    }
+
     return new Promise((resolve, reject) => {
       const cleanup = () => {
         clearTimeout(spawnTimeoutTimer);
@@ -251,7 +259,10 @@ class Shard extends AsyncEventEmitter {
    */
   async respawn({ delay = 500, timeout = 30_000 } = {}) {
     this.kill();
-    if (delay > 0) await sleep(delay);
+    if (delay > 0) {
+      await sleep(delay);
+    }
+
     return this.spawn(timeout);
   }
 
@@ -265,8 +276,11 @@ class Shard extends AsyncEventEmitter {
     return new Promise((resolve, reject) => {
       if (this.process) {
         this.process.send(message, err => {
-          if (err) reject(err);
-          else resolve(this);
+          if (err) {
+            reject(err);
+          } else {
+            resolve(this);
+          }
         });
       } else {
         this.worker.postMessage(message);
@@ -292,18 +306,26 @@ class Shard extends AsyncEventEmitter {
     }
 
     // Cached promise from previous call
-    if (this._fetches.has(prop)) return this._fetches.get(prop);
+    if (this._fetches.has(prop)) {
+      return this._fetches.get(prop);
+    }
 
     const promise = new Promise((resolve, reject) => {
       const child = this.process ?? this.worker;
 
       const listener = message => {
-        if (message?._fetchProp !== prop) return;
+        if (message?._fetchProp !== prop) {
+          return;
+        }
+
         child.removeListener('message', listener);
         this.decrementMaxListeners(child);
         this._fetches.delete(prop);
-        if (message._error) reject(makeError(message._error));
-        else resolve(message._result);
+        if (message._error) {
+          reject(makeError(message._error));
+        } else {
+          resolve(message._result);
+        }
       };
 
       this.incrementMaxListeners(child);
@@ -338,18 +360,26 @@ class Shard extends AsyncEventEmitter {
     }
 
     // Cached promise from previous call
-    if (this._evals.has(_eval)) return this._evals.get(_eval);
+    if (this._evals.has(_eval)) {
+      return this._evals.get(_eval);
+    }
 
     const promise = new Promise((resolve, reject) => {
       const child = this.process ?? this.worker;
 
       const listener = message => {
-        if (message?._eval !== _eval) return;
+        if (message?._eval !== _eval) {
+          return;
+        }
+
         child.removeListener('message', listener);
         this.decrementMaxListeners(child);
         this._evals.delete(_eval);
-        if (message._error) reject(makeError(message._error));
-        else resolve(message._result);
+        if (message._error) {
+          reject(makeError(message._error));
+        } else {
+          resolve(message._result);
+        }
       };
 
       this.incrementMaxListeners(child);
@@ -473,7 +503,9 @@ class Shard extends AsyncEventEmitter {
     this._evals.clear();
     this._fetches.clear();
 
-    if (respawn) this.spawn(timeout).catch(error => this.emit(ShardEvents.Error, error));
+    if (respawn) {
+      this.spawn(timeout).catch(error => this.emit(ShardEvents.Error, error));
+    }
   }
 
   /**

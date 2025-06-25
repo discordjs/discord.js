@@ -144,7 +144,9 @@ class GuildTemplate extends Base {
       },
     });
 
-    if (client.guilds.cache.has(data.id)) return client.guilds.cache.get(data.id);
+    if (client.guilds.cache.has(data.id)) {
+      return client.guilds.cache.get(data.id);
+    }
 
     return new Promise(resolve => {
       function resolveGuild(guild) {

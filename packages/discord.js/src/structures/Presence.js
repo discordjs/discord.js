@@ -382,7 +382,10 @@ class RichPresenceAssets {
    * @returns {?string}
    */
   smallImageURL(options = {}) {
-    if (!this.smallImage) return null;
+    if (!this.smallImage) {
+      return null;
+    }
+
     if (this.smallImage.includes(':')) {
       const [platform, id] = this.smallImage.split(':');
       switch (platform) {
@@ -403,7 +406,10 @@ class RichPresenceAssets {
    * @returns {?string}
    */
   largeImageURL(options = {}) {
-    if (!this.largeImage) return null;
+    if (!this.largeImage) {
+      return null;
+    }
+
     if (this.largeImage.includes(':')) {
       const [platform, id] = this.largeImage.split(':');
       switch (platform) {

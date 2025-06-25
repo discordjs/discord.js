@@ -49,8 +49,13 @@ class GuildEmoji extends BaseGuildEmoji {
   _patch(data) {
     super._patch(data);
 
-    if (data.user) this.author = this.client.users._add(data.user);
-    if (data.roles) this._roles = data.roles;
+    if (data.user) {
+      this.author = this.client.users._add(data.user);
+    }
+
+    if (data.roles) {
+      this._roles = data.roles;
+    }
   }
 
   /**
@@ -60,7 +65,10 @@ class GuildEmoji extends BaseGuildEmoji {
    * @readonly
    */
   get deletable() {
-    if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
+    if (!this.guild.members.me) {
+      throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
+    }
+
     return !this.managed && this.guild.members.me.permissions.has(PermissionFlagsBits.ManageGuildExpressions);
   }
 

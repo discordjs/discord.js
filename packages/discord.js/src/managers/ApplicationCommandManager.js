@@ -123,13 +123,19 @@ class ApplicationCommandManager extends CachedManager {
    *   .catch(console.error)
    */
   async fetch(options) {
-    if (!options) return this._fetchMany();
+    if (!options) {
+      return this._fetchMany();
+    }
 
-    if (typeof options === 'string') return this._fetchSingle({ id: options });
+    if (typeof options === 'string') {
+      return this._fetchSingle({ id: options });
+    }
 
     const { cache, force, guildId, id, locale, withLocalizations } = options;
 
-    if (id) return this._fetchSingle({ cache, force, guildId, id });
+    if (id) {
+      return this._fetchSingle({ cache, force, guildId, id });
+    }
 
     return this._fetchMany({ cache, guildId, locale, withLocalizations });
   }
@@ -137,7 +143,9 @@ class ApplicationCommandManager extends CachedManager {
   async _fetchSingle({ cache, force = false, guildId, id }) {
     if (!force) {
       const existing = this.cache.get(id);
-      if (existing) return existing;
+      if (existing) {
+        return existing;
+      }
     }
 
     const command = await this.client.rest.get(this.commandPath({ id, guildId }));
@@ -229,7 +237,9 @@ class ApplicationCommandManager extends CachedManager {
    */
   async edit(command, data, guildId) {
     const id = this.resolveId(command);
-    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'command', 'ApplicationCommandResolvable');
+    if (!id) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'command', 'ApplicationCommandResolvable');
+    }
 
     const patched = await this.client.rest.patch(this.commandPath({ id, guildId }), {
       body: this.constructor.transformCommand(data),
@@ -252,7 +262,9 @@ class ApplicationCommandManager extends CachedManager {
    */
   async delete(command, guildId) {
     const id = this.resolveId(command);
-    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'command', 'ApplicationCommandResolvable');
+    if (!id) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'command', 'ApplicationCommandResolvable');
+    }
 
     await this.client.rest.delete(this.commandPath({ id, guildId }));
 
@@ -269,7 +281,9 @@ class ApplicationCommandManager extends CachedManager {
    * @private
    */
   static transformCommand(command) {
-    if (isJSONEncodable(command)) return command.toJSON();
+    if (isJSONEncodable(command)) {
+      return command.toJSON();
+    }
 
     let default_member_permissions;
 

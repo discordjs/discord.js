@@ -114,7 +114,9 @@ class GuildStickerManager extends CachedManager {
    */
   async edit(sticker, options = {}) {
     const stickerId = this.resolveId(sticker);
-    if (!stickerId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'sticker', 'StickerResolvable');
+    if (!stickerId) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'sticker', 'StickerResolvable');
+    }
 
     const data = await this.client.rest.patch(Routes.guildSticker(this.guild.id, stickerId), {
       body: options,
@@ -140,7 +142,9 @@ class GuildStickerManager extends CachedManager {
    */
   async delete(sticker, reason) {
     const resolvedStickerId = this.resolveId(sticker);
-    if (!resolvedStickerId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'sticker', 'StickerResolvable');
+    if (!resolvedStickerId) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'sticker', 'StickerResolvable');
+    }
 
     await this.client.rest.delete(Routes.guildSticker(this.guild.id, resolvedStickerId), { reason });
   }
@@ -166,7 +170,9 @@ class GuildStickerManager extends CachedManager {
     if (id) {
       if (!force) {
         const existing = this.cache.get(id);
-        if (existing) return existing;
+        if (existing) {
+          return existing;
+        }
       }
 
       const sticker = await this.client.rest.get(Routes.guildSticker(this.guild.id, id));
@@ -185,7 +191,10 @@ class GuildStickerManager extends CachedManager {
    */
   async fetchUser(sticker) {
     const resolvedSticker = this.resolve(sticker);
-    if (!resolvedSticker) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'sticker', 'StickerResolvable');
+    if (!resolvedSticker) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'sticker', 'StickerResolvable');
+    }
+
     const data = await this.client.rest.get(Routes.guildSticker(this.guild.id, resolvedSticker.id));
     resolvedSticker._patch(data);
     return resolvedSticker.user;

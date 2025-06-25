@@ -72,7 +72,10 @@ class EntitlementManager extends CachedManager {
    * @returns {Promise<Entitlement|Collection<Snowflake, Entitlement>>}
    */
   async fetch(options) {
-    if (!options) return this._fetchMany(options);
+    if (!options) {
+      return this._fetchMany(options);
+    }
+
     const { entitlement, cache, force } = options;
     const resolvedEntitlement = this.resolveId(entitlement ?? options);
 
@@ -134,7 +137,9 @@ class EntitlementManager extends CachedManager {
    */
   async createTest({ sku, guild, user }) {
     const skuId = resolveSKUId(sku);
-    if (!skuId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'sku', 'SKUResolvable');
+    if (!skuId) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'sku', 'SKUResolvable');
+    }
 
     if ((guild && user) || (!guild && !user)) {
       throw new DiscordjsTypeError(ErrorCodes.EntitlementCreateInvalidOwner);
@@ -165,7 +170,9 @@ class EntitlementManager extends CachedManager {
    */
   async deleteTest(entitlement) {
     const resolved = this.resolveId(entitlement);
-    if (!resolved) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'entitlement', 'EntitlementResolvable');
+    if (!resolved) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'entitlement', 'EntitlementResolvable');
+    }
 
     await this.client.rest.delete(Routes.entitlement(this.client.application.id, resolved));
   }
