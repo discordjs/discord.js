@@ -40,6 +40,8 @@ bun add @discordjs/ws
 
 ## Example usage
 
+The example uses [ES modules](https://nodejs.org/api/esm.html#enabling).
+
 ```ts
 import { WebSocketManager, WebSocketShardEvents, CompressionMethod } from '@discordjs/ws';
 import { REST } from '@discordjs/rest';

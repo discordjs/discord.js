@@ -56,6 +56,8 @@ pnpm add discord.js
 bun add discord.js
 ```
 
+These examples use [ES modules](https://nodejs.org/api/esm.html#enabling).
+
 Register a slash command against the Discord API:
 
 ```js
