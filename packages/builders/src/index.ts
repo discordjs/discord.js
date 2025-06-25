@@ -87,6 +87,7 @@ export * from './util/componentUtil.js';
 export * from './util/normalizeArray.js';
 export * from './util/resolveBuilder.js';
 export { disableValidators, enableValidators, isValidationEnabled } from './util/validation.js';
+export * from './util/ValidationError.js';
 
 export * from './Assertions.js';
 
