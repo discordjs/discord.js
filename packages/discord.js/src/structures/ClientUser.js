@@ -64,8 +64,6 @@ class ClientUser extends User {
       },
     });
 
-    this.client.token = data.token;
-    this.client.rest.setToken(data.token);
     const { updated } = this.client.actions.UserUpdate.handle(data);
     return updated ?? this;
   }
