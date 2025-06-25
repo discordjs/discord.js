@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.21.0](https://github.com/discordjs/discord.js/compare/14.20.0...14.21.0) - (2025-06-25)
+
+## Bug Fixes
+
+- **ClientUser:** Remove token assignment (#10953) ([507b696](https://github.com/discordjs/discord.js/commit/507b696792d61ae49565b4613439aceb08dcf38a))
+
+## Features
+
+- **GuildMember:** Add `avatarDecorationData` (#10942) ([15f7571](https://github.com/discordjs/discord.js/commit/15f7571243d5b206141290478fd5164d299c0850))
+- **ClientApplication:** Add `approximateUserAuthorizationCount` (#10933) ([3fa429c](https://github.com/discordjs/discord.js/commit/3fa429c7dfa3bb3e6f099cd2f068c474a01677b1))
+
+## Typings
+
+- **ClientEventTypes:** Add missing `guildSoundboardSoundsUpdate` (#10928) ([c2a43b6](https://github.com/discordjs/discord.js/commit/c2a43b685e01eff878a399e8c00df8e473c185ad))
+
 # [14.20.0](https://github.com/discordjs/discord.js/compare/14.19.3...14.20.0) - (2025-06-16)
 
 ## Bug Fixes
