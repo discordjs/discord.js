@@ -210,8 +210,8 @@ We recommend you set `pino-pretty` up in a package script in your `package.json`
 ```
 
 <Callout type="warn">
-	If you are using powershell, you have to use a package script for `pino-pretty`. Powershell handles pipelines in a way
-	that prevents logging. The cmd commandline interface is not affected.
+	If you are using PowerShell, you have to use a package script for `pino-pretty`. PowerShell handles pipelines in a way
+	that prevents logging. The command line interface is not affected.
 </Callout>
 
 In the example above, further arguments are passed to `pino-pretty` to modify the generated output. `-i pid,hostname` hides these two elements from logged lines and `-t yyyy-mm-dd HH:MM:ss` formats the timestamp into an easy to use format. Try out what works for you! The official [pino-pretty documentation](https://github.com/pinojs/pino-pretty) explains all possible arguments.
