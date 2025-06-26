@@ -133,6 +133,20 @@ class GuildMember extends Base {
     } else {
       this.flags ??= new GuildMemberFlagsBitField().freeze();
     }
+
+    if (data.avatar_decoration_data) {
+      /**
+       * The member avatar decoration's data
+       *
+       * @type {?AvatarDecorationData}
+       */
+      this.avatarDecorationData = {
+        asset: data.avatar_decoration_data.asset,
+        skuId: data.avatar_decoration_data.sku_id,
+      };
+    } else {
+      this.avatarDecorationData = null;
+    }
   }
 
   _clone() {
@@ -182,6 +196,15 @@ class GuildMember extends Base {
   }
 
   /**
+   * A link to the member's avatar decoration.
+   *
+   * @returns {?string}
+   */
+  avatarDecorationURL() {
+    return this.avatarDecorationData ? this.client.rest.cdn.avatarDecoration(this.avatarDecorationData.asset) : null;
+  }
+
+  /**
    * A link to the member's banner.
    *
    * @param {ImageURLOptions} [options={}] Options for the banner URL
@@ -211,6 +234,16 @@ class GuildMember extends Base {
    */
   displayBannerURL(options) {
     return this.bannerURL(options) ?? this.user.bannerURL(options);
+  }
+
+  /**
+   * A link to the member's guild avatar decoration if they have one.
+   * Otherwise, a link to their {@link User#avatarDecorationURL} will be returned.
+   *
+   * @returns {?string}
+   */
+  displayAvatarDecorationURL() {
+    return this.avatarDecorationURL() ?? this.user.avatarDecorationURL();
   }
 
   /**
@@ -560,7 +593,9 @@ class GuildMember extends Base {
       this.flags.bitfield === member.flags.bitfield &&
       (this._roles === member._roles ||
         (this._roles.length === member._roles.length &&
-          this._roles.every((role, index) => role === member._roles[index])))
+          this._roles.every((role, index) => role === member._roles[index]))) &&
+      this.avatarDecorationData?.asset === member.avatarDecorationData?.asset &&
+      this.avatarDecorationData?.skuId === member.avatarDecorationData?.skuId
     );
   }
 
@@ -587,6 +622,7 @@ class GuildMember extends Base {
     json.bannerURL = this.bannerURL();
     json.displayAvatarURL = this.displayAvatarURL();
     json.displayBannerURL = this.displayBannerURL();
+    json.avatarDecorationURL = this.avatarDecorationURL();
     return json;
   }
 }
