@@ -30,7 +30,7 @@ module.exports = {
 
 First off, you need to check if the command you want to reload exists. You can do this check similarly to getting a command.
 
-```js {4-9}
+```js
 module.exports = {
 	// ...
 	// [!code focus:10]
@@ -56,7 +56,7 @@ To build the correct file path, you will need the file name. You can use `comman
 
 In theory, all there is to do is delete the previous command from `client.commands` and require the file again. In practice, you cannot do this easily as `require()` caches the file. If you were to require it again, you would load the previously cached file without any changes. You first need to delete the file from `require.cache`, and only then should you require and set the command file to `client.commands`:
 
-```js {1,4-6}
+```js
 delete require.cache[require.resolve(`./${command.data.name}.js`)];
 
 try {

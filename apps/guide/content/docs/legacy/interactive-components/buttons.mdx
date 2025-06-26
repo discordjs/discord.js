@@ -81,7 +81,7 @@ You'll notice in the above example that two different styles of buttons have bee
 
 Link buttons are a little different to the other styles. `Link` buttons **must** have a `url`, **cannot** have a `customId` and **do not** send an interaction event when clicked.
 
-```js {3}
+```js
 const button = new ButtonBuilder()
 	.setLabel('discord.js docs')
 	.setURL('https://discord.js.org') // [!code word:setURL]
@@ -104,7 +104,7 @@ const button = new ButtonBuilder()
 
 If you want to use a guild emoji within a `ButtonBuilder`, you can use the `ButtonBuilder#setEmoji` method:
 
-```js {5}
+```js
 const button = new ButtonBuilder()
 	.setCustomId('primary')
 	.setLabel('Primary')

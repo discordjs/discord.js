@@ -236,7 +236,7 @@ bun run dev
 
 Pino is very flexible, supports custom log levels, worker threads and many more features. Please check out the [official documentation](https://getpino.io) if you want to up your pino game! Below we show an alternative for a production setup. Using this code, you will be logging the raw json objects into a file, instead of printing to your console:
 
-```js {2-6}
+```js
 const pino = require('pino');
 const transport = pino.transport({
 	target: 'pino/file',

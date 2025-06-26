@@ -36,7 +36,7 @@ For user context menus, you can get the targeted user by accessing the `targetUs
 
 For message context menus, you can get the targeted message by accessing the `targetMessage` property from the `MessageContextMenuCommandInteraction`.
 
-```js {4}
+```js
 client.on(Events.InteractionCreate, (interaction) => {
 	if (!interaction.isUserContextMenuCommand()) return;
 	// Get the User's username from context menu

@@ -117,7 +117,7 @@ Global application commands will be available in all the guilds your application
 
 To deploy global commands, you can use the same script from the guild commands section above and simply adjust the route in the script to `.applicationCommands(clientId)`
 
-```js {2}
+```js
 await rest.put(Routes.applicationCommands(clientId), { body: commands });
 ```
 

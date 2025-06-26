@@ -100,7 +100,7 @@ function findEmoji(c, { nameOrId }) {
 
 Next, you need to call the function in your command properly. If you recall from [this section](./additional-information#eval-arguments), it is shown there how to pass a function and arguments correctly.
 
-```js {4-7}
+```js
 client.on(Events.InteractionCreate, (interaction) => {
 	// ...
 	// [!code :5]
@@ -138,7 +138,7 @@ Now, run this code, and you will surely get a result that looks like the followi
 
 While this result isn't _necessarily_ bad or incorrect, it's simply a raw object that got `JSON.parse()`'d and `JSON.stringify()`'d over, so all of the circular references are gone. More importantly, The object is no longer a true `GuildEmoji` object as provided by discord.js. _This means none of the convenience methods usually provided to you are available._ If this is a problem for you, you will want to handle the item _inside_ the `broadcastEval`. Conveniently, the `findEmoji` function will be run, so you should execute your relevant methods there, before the object leaves the context.
 
-```js {2-3,5-6}
+```js
 function findEmoji(c, { nameOrId }) {
 	const emoji =
 		c.emojis.cache.get(nameOrId) || c.emojis.cache.find((e) => e.name.toLowerCase() === nameOrId.toLowerCase());
@@ -151,7 +151,7 @@ function findEmoji(c, { nameOrId }) {
 
 With all that said and done, usually you'll want to display the result, so here is how you can go about doing that:
 
-```js {2-7}
+```js
 return client.shard.broadcastEval(findEmoji, { context: { nameOrId: emojiNameOrId } }).then((emojiArray) => {
 	// Locate a non falsy result, which will be the emoji in question
 	const foundEmoji = emojiArray.find((emoji) => emoji);

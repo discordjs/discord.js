@@ -186,7 +186,7 @@ What you did in the quick example was go through the `implicit grant` flow, whic
 
 Unlike the [implicit grant flow](#implicit-grant-flow), you need an OAuth2 URL where the `response_type` is `code`. After you change the `response_type`, try visiting the link and authorizing your application. You should notice that instead of a hash, the redirect URL now has a single query parameter appended to it, i.e. `?code=ACCESS_CODE`. Modify your `index.js` file to access the parameter from the URL if it exists. In express, you can use the `request` parameter's `query` property.
 
-```js {2}
+```js
 app.get('/', (request, response) => {
 	console.log(`The access code is: ${request.query.code}`);
 	return response.sendFile('index.html', { root: '.' });

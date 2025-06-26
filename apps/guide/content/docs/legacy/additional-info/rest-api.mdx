@@ -80,7 +80,7 @@ If you just add this code, it will seem like nothing happens. What you do not se
 
 Next, you will implement this approach into an application command:
 
-```js {3-7}
+```js
 client.on(Events.InteractionCreate, async (interaction) => {
 	// ...
 	if (commandName === 'cat') {
@@ -105,7 +105,7 @@ Urban Dictionary's API is available at [https://api.urbandictionary.com/v0/defin
 
 The following code will fetch data from this api:
 
-```js {1,5-11}
+```js
 // ...
 client.on(Events.InteractionCreate, async (interaction) => {
 	// ...
@@ -129,7 +129,7 @@ Now, if you look at the JSON, you can see that it has a `list` property, which i
 
 As explained above, you'll want to check if the API returned any answers for your query, and send back the definition if that's the case:
 
-```js {3-5,7}
+```js
 if (commandName === 'urban') {
 	// ...
 	if (!list.length) {
