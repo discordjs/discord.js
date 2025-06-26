@@ -92,7 +92,7 @@ for (const folder of commandFolders) {
 }
 ```
 
-First, [`path.join()`](https://nodejs.org/api/path.html) helps to construct a path to the `commands` directory. The first [`fs.readdirSync()`](https://nodejs.org/api/fs.html#fs_fs_readdirsync_path_options) method then reads the path to the directory and returns an array of all the folder names it contains, currently `['utility']`. The second `fs.readdirSync()` method reads the path to this directory and returns an array of all the file names they contain, currently `['ping.js', 'server.js', 'user.js']`. To ensure only command files get processed, `Array.filter()` removes any non-JavaScript files from the array.
+First, [`path.join()`](https://nodejs.org/api/path.html#pathjoinpaths) helps to construct a path to the `commands` directory. The first [`fs.readdirSync()`](https://nodejs.org/api/fs.html#fs_fs_readdirsync_path_options) method then reads the path to the directory and returns an array of all the folder names it contains, currently `['utility']`. The second `fs.readdirSync()` method reads the path to this directory and returns an array of all the file names they contain, currently `['ping.js', 'server.js', 'user.js']`. To ensure only command files get processed, `Array.filter()` removes any non-JavaScript files from the array.
 
 With the correct files identified, the last step is dynamically set each command into the `client.commands` Collection. For each file being loaded, check that it has at least the `data` and `execute` properties. This helps to prevent errors resulting from loading empty, unfinished, or otherwise incorrect command files while you're still developing.
 
