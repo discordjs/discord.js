@@ -184,7 +184,7 @@ If you try again with either of the code blocks above, you'll get the result you
 <Callout>
 	If you aren't familiar with Promises or `async`/`await`, you can read more about them on
 	[MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) or [our guide page on
-	async/await](/guide/legacy/additional-info/async-await.md)!
+	async/await](../additional-info/async-await.md)!
 </Callout>
 
 ### Handling multiple reactions if the order doesn't matter
@@ -254,7 +254,7 @@ try {
 
 ## Awaiting reactions
 
-A common use case for reactions in commands is having a user confirm or deny an action or creating a poll system. Luckily, we actually [already have a guide page covering this](/guide/legacy/popular-topics/collectors)! Check out that page if you want a more in-depth explanation. Otherwise, here's a basic example for reference:
+A common use case for reactions in commands is having a user confirm or deny an action or creating a poll system. Luckily, we actually [already have a guide page covering this](./collectors)! Check out that page if you want a more in-depth explanation. Otherwise, here's a basic example for reference:
 
 ```js
 message.react('👍').then(() => message.react('👎'));
@@ -282,13 +282,13 @@ message
 ## Listening for reactions on old messages
 
 Messages sent before your bot started are uncached unless you fetch them first. By default, the library does not emit client events if the data received and cached is not sufficient to build fully functional objects.
-Since version 12, you can change this behavior by activating partials. For a full explanation of partials see [this page](/guide/legacy/popular-topics/partials).
+Since version 12, you can change this behavior by activating partials. For a full explanation of partials see [this page](./partials).
 
 Make sure you enable partial structures for `Message`, `Channel`, and `Reaction` when instantiating your client if you want reaction events on uncached messages for both server and direct message channels. If you do not want to support direct message channels, you can exclude `Channel`.
 
 <Callout>
-	If you use [gateway intents](/guide/legacy/popular-topics/intents) but can't or don't want to use the privileged
-	`GuildPresences` intent, you additionally need the `User` partial.
+	If you use [gateway intents](./intents) but can't or don't want to use the privileged `GuildPresences` intent, you
+	additionally need the `User` partial.
 </Callout>
 
 ```js title="old-reactions.js"
@@ -323,6 +323,5 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 <Callout>
 	Partial structures are enabled **globally**. You cannot only make them work for a specific event or cache, and you
 	very likely **need to adapt other parts of your code** that are accessing data from the relevant caches. All caches
-	holding the respective structure type might return partials as well! For more info, check out [this
-	page](/guide/legacy/popular-topics/partials).
+	holding the respective structure type might return partials as well! For more info, check out [this page](./partials).
 </Callout>

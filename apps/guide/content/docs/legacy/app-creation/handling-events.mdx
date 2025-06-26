@@ -52,7 +52,7 @@ Currently, the event listeners are in the `index.js` file. `Client#ready`emits o
 
 <Callout type="warn">
 	You're only going to move these two events from `index.js`. The code for [loading command
-	files](/creating-your-bot/command-handling.html#loading-command-files) will stay here!
+	files](./handling-commands#loading-command-files) will stay here!
 </Callout>
 
 ## Individual event files
@@ -153,7 +153,7 @@ The `name` property states which event this file is for, and the `once` property
 
 ## Reading event files
 
-Next, let's write the code for dynamically retrieving all the event files in the `events` folder. We'll be taking a similar approach to our [command handler](/creating-your-bot/command-handling.md). Place the new code highlighted below in your `index.js`.
+Next, let's write the code for dynamically retrieving all the event files in the `events` folder. We'll be taking a similar approach to our [command handler](./handling-commands). Place the new code highlighted below in your `index.js`.
 
 `fs.readdirSync().filter()` returns an array of all the file names in the given directory and filters for only `.js` files, i.e. `['ready.js', 'interactionCreate.js']`.
 

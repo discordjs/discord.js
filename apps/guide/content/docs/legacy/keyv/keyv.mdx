@@ -2,7 +2,7 @@
 title: Keyv
 ---
 
-[Keyv](https://www.npmjs.com/package/keyv) is a simple key-value store that works with multiple backends. It's fully scalable for [sharding](/guide/legacy/sharding/) and supports JSON storage.
+[Keyv](https://www.npmjs.com/package/keyv) is a simple key-value store that works with multiple backends. It's fully scalable for [sharding](../sharding/) and supports JSON storage.
 
 ## Installation
 
@@ -80,7 +80,7 @@ For a more detailed setup, check out the [Keyv readme](https://github.com/jaredw
 
 ## Usage
 
-Keyv exposes a familiar [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)-like API. However, it only has `set`, `get`, `delete`, and `clear` methods. Additionally, instead of immediately returning data, these methods return [Promises](/guide/legacy/additional-info/async-await) that resolve with the data.
+Keyv exposes a familiar [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)-like API. However, it only has `set`, `get`, `delete`, and `clear` methods. Additionally, instead of immediately returning data, these methods return [Promises](../additional-info/async-await) that resolve with the data.
 
 ```js
 (async () => {
@@ -129,8 +129,8 @@ const prefixes = new Keyv('sqlite://path/to.sqlite');
 <Callout type="warn">
 	This guide example is from a time where parsing the message content of Discord messages was the only option for
 	commands. We have since moved on from this and recommend you do the same with [slash
-	commands](/guide/legacy/app-creation/handling-commands). It can still serve as an example for using databases in a
-	more integrated example. We hope it can help you understand the core idea and apply it to your own use cases!
+	commands](../app-creation/handling-commands). It can still serve as an example for using databases in a more
+	integrated example. We hope it can help you understand the core idea and apply it to your own use cases!
 </Callout>
 
 ```js

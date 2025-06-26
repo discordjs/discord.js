@@ -38,7 +38,7 @@ player.stop();
 
 ### Playing audio
 
-You can create [audio resources](./audio-resources.md) and then play them on an audio player.
+You can create [audio resources](./audio-resources) and then play them on an audio player.
 
 ```js
 const resource = createAudioResource('/home/user/voice/track.mp3');
@@ -67,7 +67,7 @@ setTimeout(() => player.unpause(), 5_000);
 
 ## Life cycle
 
-Voice connections have their own life cycle, with five distinct states. You can follow the methods discussed in the [life cycles](/voice/life-cycles.md) section to subscribe to changes to voice connections.
+Voice connections have their own life cycle, with five distinct states. You can follow the methods discussed in the [life cycles](./life-cycles) section to subscribe to changes to voice connections.
 
 - **Idle** - the initial state of an audio player. The audio player will be in this state when there is no audio resource for it to play.
 

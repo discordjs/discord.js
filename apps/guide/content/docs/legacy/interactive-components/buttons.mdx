@@ -5,16 +5,15 @@ title: Buttons
 The first type of interactive component we'll cover creating is a Button. Buttons are available in a variety of styles and can be used to provide permanent interfaces, temporary confirmation workflows, and other forms of additional interaction with your bot.
 
 <Callout>
-	This page is a follow-up to the [slash commands](/guide/legacy/slash-commands/advanced-creation) section and [action
-	rows](/guide/legacy/interactive-components/action-rows) page. Please carefully read those pages first so that you can
-	understand the methods used here.
+	This page is a follow-up to the [slash commands](../slash-commands/advanced-creation) section and [action
+	rows](./action-rows) page. Please carefully read those pages first so that you can understand the methods used here.
 </Callout>
 
 ## Building buttons
 
 Buttons are one of the `MessageComponent` classes, which can be sent via messages or interaction responses.
 
-For this example, you're going to expand on the `ban` command that was previously covered on the [parsing options](/guide/legacy/slash-commands/parsing-options) page with a confirmation workflow.
+For this example, you're going to expand on the `ban` command that was previously covered on the [parsing options](../slash-commands/parsing-options) page with a confirmation workflow.
 
 To create your buttons, use the `ButtonBuilder` class, defining at least the `customId`, `style` and `label`.
 
@@ -117,7 +116,7 @@ const button = new ButtonBuilder()
 
 <Callout>
 	Buttons can also be set as an accessory in section components. Check the guide section on [display
-	components](/guide/legacy/popular-topics/display-components) if you want to find out more about this.
+	components](../popular-topics/display-components) if you want to find out more about this.
 </Callout>
 
-That's everything you need to know about building and sending buttons! From here you can learn about the other type of message component, [select menus](/guide/legacy/interactive-components/select-menus), or have your bot start listening to [component interactions](/guide/legacy/interactive-components/interactions) from your buttons.
+That's everything you need to know about building and sending buttons! From here you can learn about the other type of message component, [select menus](./select-menus), or have your bot start listening to [component interactions](./interactions) from your buttons.

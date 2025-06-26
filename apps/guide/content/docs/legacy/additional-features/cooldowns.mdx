@@ -5,8 +5,7 @@ title: Cooldowns
 Spam is something you generally want to avoid, especially if one of your commands require calls to other APIs or takes a bit of time to build/send.
 
 <Callout>
-	This section assumes you followed the [Command Handling](/guide/legacy/app-creation/handling-commands) part of the
-	guide.
+	This section assumes you followed the [Command Handling](../app-creation/handling-commands) part of the guide.
 </Callout>
 
 First, add a cooldown property to your command. This will determine how long the user would have to wait (in seconds) before using the command again.
@@ -23,7 +22,7 @@ module.exports = {
 };
 ```
 
-In your main file, initialize a [Collection](/additional-info/collections.md) to store cooldowns of commands:
+In your main file, initialize a [Collection](../additional-info/collections) to store cooldowns of commands:
 
 ```js
 client.cooldowns = new Collection();

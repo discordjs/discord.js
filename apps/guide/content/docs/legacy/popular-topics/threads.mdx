@@ -147,7 +147,7 @@ await thread.members.remove('140214425276776449'); // [!code word:remove]
 
 ## Sending messages to threads with webhooks
 
-It is possible for a webhook built on the parent channel to send messages to the channel's threads. For the purpose of this example, it is assumed a single webhook already exists for that channel (More specifically, that there are no followed channels or managed webhooks. These webhook types cannot be accessed by your app). If you wish to learn more about webhooks, see our [webhook guide](/guide/legacy/popular-topics/webhooks).
+It is possible for a webhook built on the parent channel to send messages to the channel's threads. For the purpose of this example, it is assumed a single webhook already exists for that channel (More specifically, that there are no followed channels or managed webhooks. These webhook types cannot be accessed by your app). If you wish to learn more about webhooks, see our [webhook guide](./webhooks).
 
 ```js
 const webhooks = await channel.fetchWebhooks();

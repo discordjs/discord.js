@@ -47,13 +47,12 @@ client.login('your-token-goes-here');
 ```
 
 <Callout>
-	We're taking advantage of [destructuring](/guide/legacy/additional-info/es6-syntax#destructuring) in this tutorial to
-	maintain readability.
+	We're taking advantage of [destructuring](./es6-syntax#destructuring) in this tutorial to maintain readability.
 </Callout>
 
 ## Using undici
 
-Undici is a Promise-based HTTP/1.1 client, written from scratch for Node.js. If you aren't already familiar with Promises, you should read up on them [here](/guide/legacy/additional-info/async-await).
+Undici is a Promise-based HTTP/1.1 client, written from scratch for Node.js. If you aren't already familiar with Promises, you should read up on them [here](./async-await).
 
 In this tutorial, you will be making a bot with two API-based commands using the [random.cat](https://aws.random.cat) and [Urban Dictionary](https://www.urbandictionary.com) APIs.
 
@@ -145,7 +144,7 @@ Here, you are only getting the first object from the array of objects called `li
 
 If you've followed the tutorial, you should have something like this:
 
-Now, you can make it an [embed](/guide/legacy/popular-topics/embeds) for easier formatting.
+Now, you can make it an [embed](../popular-topics/embeds) for easier formatting.
 
 You can define the following helper function at the top of your file. In the code below, you can use this function to truncate the returned data and make sure the embed doesn't error, because field values exceed 1024 characters.
 
@@ -173,5 +172,5 @@ interaction.editReply({ embeds: [embed] });
 
 <Callout>
 	Check out display components for a newer approach to message formatting! You can read the [display
-	components](/guide/legacy/popular-topics/display-components) section of this guide to learn more about using them!
+	components](../popular-topics/display-components) section of this guide to learn more about using them!
 </Callout>

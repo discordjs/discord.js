@@ -11,7 +11,7 @@ title: FAQ
 - `guild` is a placeholder for the `Guild` object, such as `interaction.guild` or `client.guilds.cache.get('id')`.
 - `voiceChannel` is a placeholder for the `VoiceChannel` object, such as `interaction.member.voice.channel`
 
-For a more detailed explanation of the notations commonly used in this guide, the docs, and the support server, see [here](/guide/legacy/additional-info/notation).
+For a more detailed explanation of the notations commonly used in this guide, the docs, and the support server, see [here](../additional-info/notation).
 
 ## Administrative
 
@@ -214,7 +214,7 @@ interaction.reply('Please enter more input.').then(() => {
 
 <Callout>
 	If you want to learn more about this syntax or other types of collectors, check out [this dedicated guide page for
-	collectors](/guide/legacy/popular-topics/collectors)!
+	collectors](./collectors)!
 </Callout>
 
 ### How do I block a user from using my bot?
@@ -257,8 +257,7 @@ interaction.channel.send('My message to react to.').then((sentMessage) => {
 ```
 
 <Callout>
-	If you want to learn more about reactions, check out [this dedicated guide on
-	reactions](/guide/legacy/popular-topics/reactions.md)!
+	If you want to learn more about reactions, check out [this dedicated guide on reactions](./reactions)!
 </Callout>
 
 ### How do I restart my bot with a command?
@@ -269,8 +268,7 @@ process.exit();
 
 <Callout type="error">
 	`process.exit()` will only kill your Node process, but when using [PM2](http://pm2.keymetrics.io/), it will restart
-	the process whenever it gets killed. You can read our guide on PM2
-	[here](/guide/legacy/improving-dev-environment/pm2).
+	the process whenever it gets killed. You can read our guide on PM2 [here](../improving-dev-environment/pm2).
 </Callout>
 
 ### What is the difference between a User and a GuildMember?
@@ -290,7 +288,7 @@ guild.members.fetch({ withPresences: true }).then((fetchedMembers) => {
 
 <Callout type="warn">
 	This only works correctly if you have the `GuildPresences` intent enabled for your application and client. If you want
-	to learn more about intents, check out [this dedicated guide on intents](/guide/legacy/popular-topics/intents)!
+	to learn more about intents, check out [this dedicated guide on intents](./intents)!
 </Callout>
 
 ### How do I check which role was added/removed and for which member?
@@ -322,8 +320,8 @@ interaction.reply(`Websocket heartbeat: ${client.ws.ping}ms.`);
 ```
 
 <Callout>
-	If you're using [sharding](/guide/legacy/sharding/), a specific shard's heartbeat can be found on the WebSocketShard
-	instance, accessible at `client.ws.shards.get(id).ping`.
+	If you're using [sharding](../sharding/), a specific shard's heartbeat can be found on the WebSocketShard instance,
+	accessible at `client.ws.shards.get(id).ping`.
 </Callout>
 
 The second, **Roundtrip Latency**, describes the amount of time a full API roundtrip (from the creation of the command message to the creation of the response message) takes. You then edit the response to the respective value to avoid needing to send yet another message:
@@ -335,7 +333,7 @@ interaction.editReply(`Roundtrip latency: ${sent.resource.message.createdTimesta
 
 ### Why do some emojis behave weirdly?
 
-If you've tried using [the usual method of retrieving unicode emojis](/guide/legacy/popular-topics/reactions#unicode-emojis), you may have noticed that some characters don't provide the expected results. Here's a short snippet that'll help with that issue. You can toss this into a file of its own and use it anywhere you need! Alternatively feel free to simply copy-paste the characters from below:
+If you've tried using [the usual method of retrieving unicode emojis](./reactions#unicode-emojis), you may have noticed that some characters don't provide the expected results. Here's a short snippet that'll help with that issue. You can toss this into a file of its own and use it anywhere you need! Alternatively feel free to simply copy-paste the characters from below:
 
 ```js
 // emojiCharacters.js

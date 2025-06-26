@@ -49,7 +49,7 @@ In the same way as the above examples, you can get values of any type using the 
 
 ### Choices
 
-If you specified preset choices for your String, Integer, or Number option, getting the selected choice is exactly the same as the free-entry options above. Consider the [gif command](/guide/legacy/slash-commands/advanced-creation#choices) example you looked at earlier:
+If you specified preset choices for your String, Integer, or Number option, getting the selected choice is exactly the same as the free-entry options above. Consider the [gif command](./advanced-creation#choices) example you looked at earlier:
 
 ```js title="commands/fun/gif.js"
 const { SlashCommandBuilder } = require('discord.js');
@@ -85,7 +85,7 @@ Notice that nothing changes - you still use `getString()` to get the choice valu
 
 If you have a command that contains subcommands, the `CommandInteractionOptionResolver#getSubcommand()` will tell you which subcommand was used. You can then get any additional options of the selected subcommand using the same methods as above.
 
-The snippet below uses the same `info` command from the [subcommand creation guide](/guide/legacy/slash-commands/advanced-creation#subcommands) to demonstrate how you can control the logic flow when replying to different subcommands:
+The snippet below uses the same `info` command from the [subcommand creation guide](./advanced-creation#subcommands) to demonstrate how you can control the logic flow when replying to different subcommands:
 
 ```js title="commands/utility/info.js"
 module.exports = {

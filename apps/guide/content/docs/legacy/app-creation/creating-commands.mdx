@@ -46,14 +46,14 @@ The individual command files, containing slash command definitions and functiona
 
 ### Command Handler
 
-The [command handler](/guide/legacy/app-creation/handling-commands), dynamically reads the command files and executes commands.
+The [command handler](./handling-commands), dynamically reads the command files and executes commands.
 
 </Step>
 <Step>
 
 ### Command Deployment
 
-The command [deployment script](/guide/legacy/app-creation/deploying-commands) to register your slash commands with Discord.
+The command [deployment script](./deploying-commands) to register your slash commands with Discord.
 
 </Step>
 </Steps>
@@ -72,7 +72,7 @@ new SlashCommandBuilder().setName('ping').setDescription('Replies with Pong!');
 
 A slash command also requires a function to run when the command is used, to respond to the interaction. Using an interaction response method confirms to Discord that your bot successfully received the interaction, and has responded to the user. Discord enforces this to ensure that all slash commands provide a good user experience (UX). Failing to respond will cause Discord to show that the command failed, even if your bot is performing other actions as a result.
 
-The simplest way to acknowledge and respond to an interaction is the `interaction.reply()` method. Other methods of replying are covered on the [Response methods](/slash-commands/response-methods.md) page later in this section.
+The simplest way to acknowledge and respond to an interaction is the `interaction.reply()` method. Other methods of replying are covered on the [Response methods](../slash-commands/response-methods) page later in this section.
 
 ```js
 async execute(interaction) {

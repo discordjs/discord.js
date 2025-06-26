@@ -189,7 +189,7 @@ client.login('your-token-goes-here');
 
 Pino logs in a json format, so other programs and services like log aggregators can easily parse and work with the output. This is very useful for production systems, but quite tedious to read during development. This is why you installed `pino-pretty` earlier. Instead of formatting the log output itself the developers recommended that you [pipe](<https://en.wikipedia.org/wiki/Pipeline_(Unix)>) the log output to other services instead. `pino-pretty` is a formatter you can use for easy-to-read logs during development.
 
-We recommend you set `pino-pretty` up in a package script in your `package.json` file, rather than typing the pipeline out every time. Please read our [guide section on package scripts](/improving-dev-environment/package-json-scripts), if you are not sure what we're talking about here.
+We recommend you set `pino-pretty` up in a package script in your `package.json` file, rather than typing the pipeline out every time. Please read our [guide section on package scripts](../improving-dev-environment/package-json-scripts), if you are not sure what we're talking about here.
 
 ```json
 {

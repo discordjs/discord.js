@@ -62,7 +62,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 });
 ```
 
-In fact, editing your interaction response is necessary to [calculate the ping](/guide/legacy/popular-topics/faq#how-do-i-check-the-bots-ping) properly for this command.
+In fact, editing your interaction response is necessary to [calculate the ping](../popular-topics/faq#how-do-i-check-the-bots-ping) properly for this command.
 
 ## Deferred responses
 
@@ -98,7 +98,7 @@ It is not possible to edit a reply to change its ephemeral state once sent.
 
 <Callout>
 	If you want to make a proper ping command, one is available in our
-	[FAQ](/popular-topics/faq.md#how-do-i-check-the-bot-s-ping).
+	[FAQ](../popular-topics/faq#how-do-i-check-the-bot-s-ping).
 </Callout>
 
 ## Follow-ups
@@ -159,7 +159,7 @@ console.log(message);
 
 ## Localized responses
 
-In addition to the ability to provide [localized command definitions](/guide/legacy/slash-commands/advanced-creation#localizations), you can also localize your responses. To do this, get the locale of the user with `ChatInputCommandInteraction#locale` and respond accordingly:
+In addition to the ability to provide [localized command definitions](./advanced-creation#localizations), you can also localize your responses. To do this, get the locale of the user with `ChatInputCommandInteraction#locale` and respond accordingly:
 
 ```js
 client.on(Events.InteractionCreate, (interaction) => {

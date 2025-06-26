@@ -11,14 +11,14 @@ For fully functional slash commands, you need three important pieces of code:
 
 ### Command Files
 
-The individual command files, containing [slash command](/guide/legacy/app-creation/creating-commands) definitions and functionality.
+The individual command files, containing [slash command](./creating-commands) definitions and functionality.
 
 </Step>
 <Step>
 
 ### Command Handler
 
-The [command handler](/guide/legacy/app-creation/handling-commands), dynamically reads the command files and executes commands.
+The [command handler](./handling-commands), dynamically reads the command files and executes commands.
 
 </Step>
 <Step>
@@ -135,19 +135,19 @@ await rest.put(Routes.applicationCommands(clientId), { body: commands });
 You've successfully sent a response to a slash command! However, this is only the most basic of command event and response functionality. Much more is available to enhance the user experience including:
 
 <Cards>
-	<Card title="Event Handling" href="/guide/legacy/app-creation/handling-events">
+	<Card title="Event Handling" href="./handling-events">
 		Apply a similar dynamic, modular handling approach to client events.
 	</Card>
-	<Card title="Response Methods" href="/guide/legacy/slash-commands/response-methods">
+	<Card title="Response Methods" href="../slash-commands/response-methods">
 		Utilize different response methods for slash commands.
 	</Card>
-	<Card title="Advanced Command Creation" href="/guide/legacy/slash-commands/advanced-creation">
+	<Card title="Advanced Command Creation" href="../slash-commands/advanced-creation">
 		Expand on the command examples with additional, validated, option types.
 	</Card>
-	<Card title="Display Components" href="/guide/legacy/popular-topics/display-components">
+	<Card title="Display Components" href="../popular-topics/display-components">
 		Level up command responses with formatted content and display components.
 	</Card>
-	<Card title="Interactive Components" href="/guide/legacy/popular-topics/interactive-components/action-rows">
+	<Card title="Interactive Components" href="../interactive-components/action-rows">
 		Enhance your commands with more input methods using Buttons, Select Menus, and Modals!
 	</Card>
 </Cards>

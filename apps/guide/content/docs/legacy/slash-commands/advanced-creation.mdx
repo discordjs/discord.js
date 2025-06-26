@@ -10,7 +10,7 @@ Application commands can have additional `options`. Think of these options as ar
 
 <Callout>
 	If you've already added options to your commands and need to know how to receive and parse them, refer to the [Parsing
-	options](/guide/legacy/slash-commands/parsing-options) page in this section of the guide.
+	options](./parsing-options) page in this section of the guide.
 </Callout>
 
 Options require at minimum a name and description. The same restrictions apply to option names as slash command names - 1-32 characters containing no capital letters, spaces, or symbols other than `-` and `_`. You can specify them as shown in the `echo` command below, which prompt the user to enter a String for the `input` option.
@@ -120,7 +120,7 @@ const data = new SlashCommandBuilder()
 	);
 ```
 
-If you have too many choices to display (the maximum is 25), you may prefer to provide dynamic choices based on what the user has typed so far. This can be achieved using [autocomplete](/guide/legacy/slash-commands/autocomplete).
+If you have too many choices to display (the maximum is 25), you may prefer to provide dynamic choices based on what the user has typed so far. This can be achieved using [autocomplete](./autocomplete).
 
 ## Further validation
 
@@ -220,4 +220,4 @@ const data = new SlashCommandBuilder()
 
 #### Next steps
 
-For more information on receiving and parsing the different types of options covered on this page, refer to [Parsing options](/guide/legacy/slash-commands/parsing-options), or for more general information on how you can respond to slash commands, check out [Response methods](/guide/legacy/slash-commands/response-methods).
+For more information on receiving and parsing the different types of options covered on this page, refer to [parsing options](./parsing-options), or for more general information on how you can respond to slash commands, check out [response methods](./response-methods).

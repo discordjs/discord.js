@@ -11,17 +11,16 @@ Every button click or select menu selection on a component sent by your bot fire
 - Creating a permanent component handler in the `Client#interactionCreate` event.
 
 <Callout>
-	This page is a follow-up to the [slash commands](/guide/legacy/slash-commands/advanced-creation) section, and assumes
-	you have created either [buttons](/guide/legacy/interactive-components/buttons) or [select
-	menus](/guide/legacy/interactive-components/select-menus) as detailed in this guide. Please carefully read those pages
-	first so that you can understand the methods used here.
+	This page is a follow-up to the [slash commands](../slash-commands/advanced-creation) section, and assumes you have
+	created either [buttons](./buttons) or [select menus](./select-menus) as detailed in this guide. Please carefully read
+	those pages first so that you can understand the methods used here.
 </Callout>
 
 ## Responding to component interactions
 
 As with all other interactions message components interactions require a response within 3 seconds, else Discord will treat them as failed.
 
-Like slash commands, all types of message component interactions support the `reply()`, `deferReply()`, `editReply()` and `followUp()` methods, with the option for these responses to be ephemeral. These function identically to how they do for slash commands, so refer to the page on [slash command response methods](/guide/legacy/slash-commands/response-methods) for information on those.
+Like slash commands, all types of message component interactions support the `reply()`, `deferReply()`, `editReply()` and `followUp()` methods, with the option for these responses to be ephemeral. These function identically to how they do for slash commands, so refer to the page on [slash command response methods](../slash-commands/response-methods) for information on those.
 
 Component interactions also support two additional methods of response, detailed below and demonstrated in examples later on the page.
 
@@ -39,9 +38,9 @@ Once `deferUpdate()` has been called, future messages can be sent by calling `fo
 
 ## Awaiting components
 
-If you followed our [buttons](/guide/legacy/interactive-components/buttons) guide, the confirmation workflow for the `ban` command is a good example of a situation where your bot is expecting to receive a single response, from either the Confirm or Cancel button.
+If you followed our [buttons](./buttons) guide, the confirmation workflow for the `ban` command is a good example of a situation where your bot is expecting to receive a single response, from either the Confirm or Cancel button.
 
-Begin by adding `withResponse` to the options, and then calling `Message#awaitMessageComponent` on the message. This method returns a [Promise](/additional-info/async-await.md) that resolves when any interaction passes its filter (if one is provided), or throws if none are received before the timeout. If this happens, remove the components and notify the user.
+Begin by adding `withResponse` to the options, and then calling `Message#awaitMessageComponent` on the message. This method returns a [Promise](../additional-info/async-await) that resolves when any interaction passes its filter (if one is provided), or throws if none are received before the timeout. If this happens, remove the components and notify the user.
 
 ```js title="commands/moderation/ban.js"
 const response = await interaction.reply({
@@ -92,7 +91,7 @@ try {
 
 ## Component collectors
 
-For situations where you want to collect multiple interactions, the Collector approach is better suited than awaiting singular interactions. Following on from the [select menus](/guide/legacy/interactive-components/select-menus) guide, you're going to extend that example to use an `InteractionCollector` to listen for multiple `StringSelectMenuInteraction`.
+For situations where you want to collect multiple interactions, the Collector approach is better suited than awaiting singular interactions. Following on from the [select menus](./select-menus) guide, you're going to extend that example to use an `InteractionCollector` to listen for multiple `StringSelectMenuInteraction`.
 
 Begin by adding `withResponse` to the options, and then calling `Message#createMessageComponentCollector` on this instance. This method returns an InteractionCollector that will fire its `InteractionCollector#collect` event whenever an interaction passes its filter (if one is provided).
 
@@ -121,7 +120,7 @@ collector.on('collect', async (i) => {
 
 Third and finally, you may wish to have a listener setup to respond to permanent button or select menu features of your guild. For this, returning to the `Client#interactionCreate` event is the best approach.
 
-If your event handling has been setup in multiple files as per our [event handling](/guide/legacy/app-creation/handling-events) guide, you should already have an `events/interactionCreate.js` file that looks something like this.
+If your event handling has been setup in multiple files as per our [event handling](../app-creation/handling-events) guide, you should already have an `events/interactionCreate.js` file that looks something like this.
 
 ```js title="events/interactionCreate.js"
 const { Events } = require('discord.js');

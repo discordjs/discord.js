@@ -5,9 +5,8 @@ title: Autocomplete
 Autocomplete allows you to dynamically provide a selection of values to the user, based on their input, rather than relying on static choices. In this section we will cover how to add autocomplete support to your commands.
 
 <Callout>
-	This page is a follow-up to the [slash commands](/guide/legacy/slash-commands/advanced-creation) section covering
-	options and option choices. Please carefully read those pages first so that you can understand the methods used in
-	this section.
+	This page is a follow-up to the [slash commands](./advanced-creation) section covering options and option choices.
+	Please carefully read those pages first so that you can understand the methods used in this section.
 </Callout>
 
 ## Enabling autocomplete
@@ -36,7 +35,7 @@ client.on(Events.InteractionCreate, (interaction) => {
 });
 ```
 
-Or alternatively, by making a small change to your existing [Command handler](/guide/legacy/creating-your-bot/command-handling) and adding an additional method to your individual command files.
+Or alternatively, by making a small change to your existing [command handler](../app-creation/handling-commands) and adding an additional method to your individual command files.
 
 The example below shows how this might be applied to a conceptual version of the `guide` command to determine the closest topic to the search input:
 
@@ -82,7 +81,7 @@ The command handling is almost identical, but notice the change from `execute` t
 
 <Callout>
 	You might have already moved this code to `events/interactionCreate.js` if you followed our [Event
-	handling](/guide/legacy/app-creation/handling-events) guide too.
+	handling](../app-creation/handling-events) guide too.
 </Callout>
 
 ### Sending results

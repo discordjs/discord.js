@@ -5,8 +5,8 @@ title: Modals
 With modals you can create pop-up forms that allow users to provide you with formatted inputs through submissions. We'll cover how to create, show, and receive modal forms using discord.js!
 
 <Callout>
-	This page is a follow-up to the [interactions (slash commands) page](/guide/legacy/slash-commands/advanced-creation).
-	Please carefully read that section first, so that you can understand the methods used in this section.
+	This page is a follow-up to the [interactions (slash commands) page](../slash-commands/advanced-creation). Please
+	carefully read that section first, so that you can understand the methods used in this section.
 </Callout>
 
 ## Building and responding with modals
@@ -133,7 +133,7 @@ const input = new TextInputBuilder()
 
 Modal submissions can be collected within the scope of the interaction that showed it by utilising an `InteractionCollector`, or the `ChatInputCommandInteraction#awaitModalSubmit` promisified method. These both provide instances of the `ModalSubmitInteraction` class as collected items.
 
-For a detailed guide on receiving message components via collectors, please refer to the [collectors guide](/guide/legacy/popular-topics/collectors#interaction-collectors).
+For a detailed guide on receiving message components via collectors, please refer to the [collectors guide](../popular-topics/collectors#interaction-collectors).
 
 ### The interactionCreate event
 

@@ -62,13 +62,13 @@ if (subscription) {
 <Callout>
     **Voice connections can be subscribed to one audio player at most.** If you try to subscribe to another audio player while already subscribed to one, the current audio player is unsubscribed and replaced with the new one.
 
-    It is also worth noting that the **GuildVoiceStates** [gateway intent](/popular-topics/intents.md#gateway-intents) is required. Without it, the connection will permanently stay in the `signalling` state, and you'll be unable to play audio.
+    It is also worth noting that the **GuildVoiceStates** [gateway intent](../legacy/popular-topics/intents) is required. Without it, the connection will permanently stay in the `signalling` state, and you'll be unable to play audio.
 
 </Callout>
 
 ## Life cycle
 
-Voice connections have their own life cycle, with five distinct states. You can follow the methods discussed in the [life cycles](/voice/life-cycles.md) section to subscribe to changes to voice connections.
+Voice connections have their own life cycle, with five distinct states. You can follow the methods discussed in the [life cycles](./life-cycles) section to subscribe to changes to voice connections.
 
 - **Signalling** - the initial state of a voice connection. The connection will be in this state when it is requesting permission to join a voice channel.
 
