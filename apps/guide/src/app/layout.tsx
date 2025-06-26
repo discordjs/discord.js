@@ -4,6 +4,7 @@ import { GeistMono } from 'geist/font/mono';
 import { GeistSans } from 'geist/font/sans';
 import type { Metadata, Viewport } from 'next';
 import type { PropsWithChildren } from 'react';
+import { Body } from '@/app/layout.client';
 import { ENV } from '@/util/env';
 
 import '@/styles/base.css';
@@ -72,10 +73,10 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
 		<html className={`${GeistSans.variable} ${GeistMono.variable} antialiased`} lang="en" suppressHydrationWarning>
-			<body className="overscroll-y-none">
+			<Body>
 				<RootProvider>{children}</RootProvider>
 				<Analytics />
-			</body>
+			</Body>
 		</html>
 	);
 }

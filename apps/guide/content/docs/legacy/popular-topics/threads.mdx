@@ -1,0 +1,162 @@
+---
+title: Threads
+---
+
+Threads can be thought of as temporary sub-channels inside an existing channel, to help better organize conversation in a busy channel.
+
+## Thread related gateway events
+
+<Callout>You can use the `ThreadChannel#isThread` type guard to make sure a channel is a `ThreadChannel`!</Callout>
+
+Threads introduce a number of new gateway events, which are listed below:
+
+- `Client#threadCreate`: Emitted whenever a thread is created or when the client user is added to a thread.
+- `Client#threadDelete`: Emitted whenever a thread is deleted.
+- `Client#threadUpdate`: Emitted whenever a thread is updated (e.g. name change, archive state change, locked state change).
+- `Client#threadListSync`: Emitted whenever the client user gains access to a text or news channel that contains threads.
+- `Client#threadMembersUpdate`: Emitted whenever members are added or removed from a thread. Requires `GuildMembers` privileged intent.
+- `Client#threadMemberUpdate`: Emitted whenever the client user's thread member is updated.
+
+## Creating and deleting threads
+
+Threads are created and deleted using the `GuildTextThreadManager` of a text or news channel.
+To create a thread you call the `GuildTextThreadManager#create` method:
+
+```js
+// [!code word:create]
+const thread = await channel.threads.create({
+	name: 'food-talk',
+	autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
+	reason: 'Needed a separate thread for food',
+});
+
+console.log(`Created thread: ${thread.name}`);
+```
+
+To delete a thread, use the `ThreadChannel#delete` method:
+
+```js
+const thread = channel.threads.cache.find((x) => x.name === 'food-talk');
+await thread.delete(); // [!code word:delete]
+```
+
+## Joining and leaving threads
+
+To join your client to a ThreadChannel, use the `ThreadChannel#join` method:
+
+```js
+const thread = channel.threads.cache.find((x) => x.name === 'food-talk');
+if (thread.joinable) await thread.join(); // [!code word:join()]
+```
+
+And to leave one, use `ThreadChannel#leave`;
+
+```js
+const thread = channel.threads.cache.find((x) => x.name === 'food-talk');
+await thread.leave(); // [!code word:leave]
+```
+
+## Archiving, unarchiving, and locking threads
+
+A thread can be either active or archived. Changing a thread from archived to active is referred to as unarchiving the thread. Threads that have `locked` set to true can only be unarchived by a member with the `ManageThreads` permission.
+
+Threads are automatically archived after inactivity. "Activity" is defined as sending a message, unarchiving a thread, or changing the auto-archive time.
+
+To archive or unarchive a thread, use the `ThreadChannel#setArchived` method and pass in a boolean parameter:
+
+```js
+const thread = channel.threads.cache.find((x) => x.name === 'food-talk');
+await thread.setArchived(true); // archived // [!code word:setArchived]
+await thread.setArchived(false); // unarchived
+```
+
+This same principle applies to locking and unlocking a thread via the `ThreadChannel#setLocked` method:
+
+```js
+const thread = channel.threads.cache.find((x) => x.name === 'food-talk');
+await thread.setLocked(true); // locked [!code word:setLocked]
+await thread.setLocked(false); // unlocked
+```
+
+## Public and private threads
+
+Public threads are viewable by everyone who can view the parent channel of the thread. Public threads can be created with the `GuildTextThreadManager#create` method.
+
+```js
+// [!code word:create]
+const thread = await channel.threads.create({
+	name: 'food-talk',
+	autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
+	reason: 'Needed a separate thread for food',
+});
+
+console.log(`Created thread: ${thread.name}`);
+```
+
+They can also be created from an existing message with the `Message#startThread` method, but will be "orphaned" if that message is deleted. The thread is not deleted along with the message and will still be available through the hcannels thread list!
+
+```js
+// [!code word:startThread]
+const thread = await message.startThread({
+	name: 'food-talk',
+	autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
+	reason: 'Needed a separate thread for food',
+});
+
+console.log(`Created thread: ${thread.name}`);
+```
+
+<Callout>The created thread and the message it originated from will share the same ID.</Callout>
+
+Private threads can only be created on text channels. Private threads can initially only be viewed by the user creating them as well as moderators with the `ManageThreads` permission. Users that are mentioned in threads are added to the thread! This is also true for roles with few role members. The notifications for `@here` and `@everyone` will only affect members in the thread and not add anyone.
+
+To create a private thread, use `GuildTextThreadManager#create` and pass in `ChannelType.PrivateThread` as the `type`. Public channels are the default, hence passing `ChannelType.PublicThread` is not required in the example above:
+
+```js
+const { ChannelType, ThreadAutoArchiveDuration } = require('discord.js');
+
+const thread = await channel.threads.create({
+	name: 'mod-talk',
+	autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
+	type: ChannelType.PrivateThread, // [!code word:PrivateThread] [!code ++]
+	reason: 'Needed a separate thread for moderation',
+});
+
+console.log(`Created thread: ${thread.name}`);
+```
+
+<Callout>You cannot create private threads on an existing message.</Callout>
+
+## Adding and removing members
+
+You can add and remove members to and from a thread channel.
+
+To add a member to a thread, use the `ThreadMemberManager#add` method:
+
+```js
+const thread = channel.threads.cache.find((x) => x.name === 'food-talk');
+await thread.members.add('140214425276776449'); // [!code word:add]
+```
+
+And to remove a member from a thread, use `ThreadMemberManager#remove`:
+
+```js
+const thread = channel.threads.cache.find((x) => x.name === 'food-talk');
+await thread.members.remove('140214425276776449'); // [!code word:remove]
+```
+
+## Sending messages to threads with webhooks
+
+It is possible for a webhook built on the parent channel to send messages to the channel's threads. For the purpose of this example, it is assumed a single webhook already exists for that channel (More specifically, that there are no followed channels or managed webhooks. These webhook types cannot be accessed by your app). If you wish to learn more about webhooks, see our [webhook guide](./webhooks).
+
+```js
+const webhooks = await channel.fetchWebhooks();
+const webhook = webhooks.first();
+
+await webhook.send({
+	content: "Look ma! I'm in a thread!",
+	threadId: '123456789012345678', // [!code word:threadId]
+});
+```
+
+And that's it! Now you know all there is to know on working with threads using discord.js!
