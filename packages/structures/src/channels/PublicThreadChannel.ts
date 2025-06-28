@@ -1,7 +1,6 @@
 import type { APIPublicThreadChannel, ChannelType } from 'discord-api-types/v10';
 import { Mixin } from '../Mixin.js';
 import type { MixinTypes } from '../MixinTypes.d.ts';
-import { kData } from '../utils/symbols.js';
 import type { Partialize } from '../utils/types.js';
 import { Channel } from './Channel.js';
 import { AppliedTagsMixin } from './mixins/AppliedTagsMixin.js';
