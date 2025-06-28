@@ -1,4 +1,4 @@
-import type { EnumLike, RecursiveReadonlyArray } from '../utils/types';
+import type { EnumLike, NonAbstract, RecursiveReadonlyArray } from '../utils/types';
 
 /**
  * Data that can be resolved to give a bitfield. This can be:
@@ -24,20 +24,20 @@ export abstract class BitField<Flags extends string, Type extends bigint | numbe
 	 */
 	public static readonly Flags: EnumLike<unknown, bigint | number> = {};
 
-	protected static readonly DefaultBit: bigint | number = 0;
+	public static readonly DefaultBit: bigint | number = 0;
 
 	/**
 	 * Bitfield of the packed bits
 	 */
 	public bitfield: Type;
 
+	declare public ['constructor']: NonAbstract<typeof BitField<Flags, Type>>;
+
 	/**
 	 * @param bits - Bit(s) to read from
 	 */
-	public constructor(
-		bits: BitFieldResolvable<Flags, Type> = (this.constructor as typeof BitField<Flags, Type>).DefaultBit as Type,
-	) {
-		this.bitfield = (this.constructor as typeof BitField<Flags, Type>).resolve(bits);
+	public constructor(bits: BitFieldResolvable<Flags, Type> = this.constructor.DefaultBit as Type) {
+		this.bitfield = this.constructor.resolve(bits);
 	}
 
 	/**
@@ -47,10 +47,7 @@ export abstract class BitField<Flags extends string, Type extends bigint | numbe
 	 * @returns
 	 */
 	public any(bit: BitFieldResolvable<Flags, Type>) {
-		return (
-			(this.bitfield & (this.constructor as typeof BitField<Flags, Type>).resolve(bit)) !==
-			(this.constructor as typeof BitField<Flags, Type>).DefaultBit
-		);
+		return (this.bitfield & this.constructor.resolve(bit)) !== this.constructor.DefaultBit;
 	}
 
 	/**
@@ -60,7 +57,7 @@ export abstract class BitField<Flags extends string, Type extends bigint | numbe
 	 * @returns
 	 */
 	public equals(bit: BitFieldResolvable<Flags, Type>) {
-		return this.bitfield === (this.constructor as typeof BitField<Flags, Type>).resolve(bit);
+		return this.bitfield === this.constructor.resolve(bit);
 	}
 
 	/**
@@ -70,7 +67,7 @@ export abstract class BitField<Flags extends string, Type extends bigint | numbe
 	 * @returns
 	 */
 	public has(bit: BitFieldResolvable<Flags, Type>, ..._hasParams: unknown[]) {
-		const resolvedBit = (this.constructor as typeof BitField<Flags, Type>).resolve(bit);
+		const resolvedBit = this.constructor.resolve(bit);
 		return (this.bitfield & resolvedBit) === resolvedBit;
 	}
 
@@ -82,7 +79,9 @@ export abstract class BitField<Flags extends string, Type extends bigint | numbe
 	 * @returns
 	 */
 	public missing(bits: BitFieldResolvable<Flags, Type>, ...hasParams: readonly unknown[]) {
-		return new (this.constructor as new (bits: BitFieldResolvable<Flags, Type>) => BitField<Flags, Type>)(bits)
+		return new (this.constructor as unknown as new (bits: BitFieldResolvable<Flags, Type>) => BitField<Flags, Type>)(
+			bits,
+		)
 			.remove(this)
 			.toArray(...hasParams);
 	}
@@ -110,7 +109,7 @@ export abstract class BitField<Flags extends string, Type extends bigint | numbe
 		}
 
 		if (Object.isFrozen(this))
-			return new (this.constructor as new (bits: BitFieldResolvable<Flags, Type>) => BitField<Flags, Type>)(
+			return new (this.constructor as unknown as new (bits: BitFieldResolvable<Flags, Type>) => BitField<Flags, Type>)(
 				// @ts-expect-error we know both are bigint or both number here
 				this.bitfield | total,
 			);
@@ -126,7 +125,7 @@ export abstract class BitField<Flags extends string, Type extends bigint | numbe
 	 * @returns These bits or new BitField if the instance is frozen.
 	 */
 	public remove(...bits: BitFieldResolvable<Flags, Type>[]) {
-		let total = (this.constructor as typeof BitField<Flags, Type>).DefaultBit as Type;
+		let total = this.constructor.DefaultBit as Type;
 		for (const bit of bits) {
 			// @ts-expect-error we know both are bigint or both number here
 			total |= (this.constructor as typeof BitField<Flags, Type>).resolve(bit);
@@ -149,7 +148,7 @@ export abstract class BitField<Flags extends string, Type extends bigint | numbe
 	 */
 	public serialize(...hasParams: readonly unknown[]) {
 		const serialized: Partial<Record<keyof Flags, boolean>> = {};
-		for (const [flag, bit] of Object.entries((this.constructor as typeof BitField<Flags, Type>).Flags)) {
+		for (const [flag, bit] of Object.entries(this.constructor.Flags)) {
 			if (Number.isNaN(Number(flag))) serialized[flag as keyof Flags] = this.has(bit as Type, ...hasParams);
 		}
 
@@ -175,7 +174,7 @@ export abstract class BitField<Flags extends string, Type extends bigint | numbe
 	}
 
 	public *[Symbol.iterator](...hasParams: unknown[]) {
-		for (const bitName of Object.keys((this.constructor as typeof BitField<Flags, Type>).Flags)) {
+		for (const bitName of Object.keys(this.constructor.Flags)) {
 			if (Number.isNaN(Number(bitName)) && this.has(bitName as Flags, ...hasParams)) yield bitName as Flags;
 		}
 	}
@@ -186,7 +185,9 @@ export abstract class BitField<Flags extends string, Type extends bigint | numbe
 	 * @param bit - bit(s) to resolve
 	 * @returns
 	 */
-	public static resolve<Type extends bigint | number>(bit: BitFieldResolvable<string, Type>): Type {
+	public static resolve<Type extends bigint | number, Flags extends string = string>(
+		bit: BitFieldResolvable<Flags, Type>,
+	): Type {
 		const DefaultBit = this.DefaultBit as Type;
 		if (typeof DefaultBit === typeof bit && (bit as typeof DefaultBit) >= DefaultBit) return bit as typeof DefaultBit;
 		if (bit instanceof BitField) return bit.bitfield;

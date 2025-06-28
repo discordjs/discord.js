@@ -32,7 +32,7 @@ export class PermissionsBitField extends BitField<keyof typeof PermissionFlagsBi
 	public static readonly StageModerator =
 		PermissionFlagsBits.ManageChannels | PermissionFlagsBits.MuteMembers | PermissionFlagsBits.MoveMembers;
 
-	protected static override DefaultBit = 0n;
+	public static override readonly DefaultBit = 0n;
 
 	/**
 	 * Gets all given bits that are missing from the bitfield.

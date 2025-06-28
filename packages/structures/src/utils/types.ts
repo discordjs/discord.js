@@ -25,3 +25,9 @@ export interface RecursiveReadonlyArray<ItemType> extends ReadonlyArray<ItemType
 export type EnumLike<Enum, Value> = Record<keyof Enum, Value>;
 
 export type If<Check, Value, True, False = never> = Check extends Value ? (Value extends Check ? True : False) : False;
+
+export type NonAbstract<Type extends abstract new (...args: any) => any> = Type extends abstract new (
+	...args: infer Args
+) => infer Instance
+	? Pick<Type, keyof Type> & (new (...args: Args) => Instance)
+	: never;
