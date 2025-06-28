@@ -1,5 +1,3 @@
-import type { APIThreadChannel as _APIThreadChannel } from 'discord-api-types/v10';
-
 export type ReplaceOmittedWithUnknown<Omitted extends keyof Data | '', Data> = {
 	[Key in keyof Data]: Key extends Omitted ? unknown : Data[Key];
 };
