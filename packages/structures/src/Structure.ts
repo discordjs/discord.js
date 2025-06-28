@@ -7,7 +7,6 @@ import type { ReplaceOmittedWithUnknown } from './utils/types.js';
  *
  * @internal
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface StructureExtraOptions {}
 
 export const DataTemplatePropertyName = 'DataTemplate';
@@ -79,7 +78,7 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 * @remarks To be made public in subclasses
 	 * @internal
 	 */
-	protected constructor(data: Readonly<Partial<DataType>>, ..._rest: unknown[]) {
+	public constructor(data: Readonly<Partial<DataType>>, ..._rest: unknown[]) {
 		this[kData] = Object.assign(this.getDataTemplate(), data);
 		this[kMixinConstruct]?.(data);
 	}

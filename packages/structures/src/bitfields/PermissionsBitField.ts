@@ -24,7 +24,7 @@ export class PermissionsBitField extends BitField<keyof typeof PermissionFlagsBi
 	/**
 	 * Bitfield representing the default permissions for users
 	 */
-	public static readonly Default = BigInt(104_324_673);
+	public static readonly Default = 104_324_673n;
 
 	/**
 	 * Bitfield representing the permissions required for moderators of stage channels
@@ -32,7 +32,7 @@ export class PermissionsBitField extends BitField<keyof typeof PermissionFlagsBi
 	public static readonly StageModerator =
 		PermissionFlagsBits.ManageChannels | PermissionFlagsBits.MuteMembers | PermissionFlagsBits.MoveMembers;
 
-	protected static override DefaultBit = BigInt(0);
+	protected static override DefaultBit = 0n;
 
 	/**
 	 * Gets all given bits that are missing from the bitfield.

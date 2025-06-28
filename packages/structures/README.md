@@ -23,7 +23,7 @@
 
 ## Installation
 
-**Node.js 18.17.1 or newer is required.**
+**Node.js 22.12.0 or newer is required.**
 
 ```sh
 npm install @discordjs/structures

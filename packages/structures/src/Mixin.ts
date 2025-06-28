@@ -80,7 +80,8 @@ export function Mixin<DestinationClass extends typeof Structure<unknown>>(
 
 				// Special case for optimize function, we want to combine these
 				if (prop === OptimizeDataPropertyName) {
-					if (typeof descriptor.value !== 'function') return;
+					if (typeof descriptor.value !== 'function')
+						throw new RangeError(`Expected ${prop} to be a function, received ${typeof descriptor.value} instead.`);
 					dataOptimizations.push(descriptor.value);
 					continue;
 				}
