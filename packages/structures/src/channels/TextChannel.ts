@@ -28,7 +28,7 @@ export class TextChannel<Omitted extends keyof APITextChannel | '' = ''> extends
 > {
 	public constructor(data: Omit<APITextChannel, Omitted>) {
 		super(data);
-		this._optimizeData(data);
+		this.optimizeData(data);
 	}
 }
 

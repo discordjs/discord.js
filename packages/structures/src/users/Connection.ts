@@ -20,8 +20,8 @@ export class Connection<Omitted extends keyof APIConnection | '' = ''> extends S
 		super(data);
 	}
 
-	public override _patch(data: Partial<APIConnection>) {
-		return super._patch(data);
+	public override patch(data: Partial<APIConnection>) {
+		return super.patch(data);
 	}
 
 	/**

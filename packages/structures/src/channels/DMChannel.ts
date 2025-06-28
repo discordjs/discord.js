@@ -15,7 +15,7 @@ export interface DMChannel<Omitted extends keyof APIDMChannel | '' = ''>
 export class DMChannel<Omitted extends keyof APIDMChannel | '' = ''> extends Channel<ChannelType.DM, Omitted> {
 	public constructor(data: Omit<APIDMChannel, Omitted>) {
 		super(data);
-		this._optimizeData(data);
+		this.optimizeData(data);
 	}
 }
 

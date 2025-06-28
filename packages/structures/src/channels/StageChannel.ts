@@ -26,7 +26,7 @@ export class StageChannel<Omitted extends keyof APIGuildStageVoiceChannel | '' =
 > {
 	public constructor(data: Omit<APIGuildStageVoiceChannel, Omitted>) {
 		super(data);
-		this._optimizeData(data);
+		this.optimizeData(data);
 	}
 }
 

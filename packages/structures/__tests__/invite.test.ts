@@ -82,7 +82,7 @@ describe('Invite', () => {
 
 	test('Patching Invite works in place', () => {
 		const instance1 = new Invite(data);
-		const instance2 = instance1._patch({ max_age: 34 });
+		const instance2 = instance1.patch({ max_age: 34 });
 		expect(instance1.toJSON()).not.toEqual(data);
 		expect(instance2).toBe(instance1);
 	});

@@ -76,7 +76,7 @@ describe('Mixin function', () => {
 		expect(alreadyOptimizedInstance[kData].mixinOptimize).toBeUndefined();
 		expect(alreadyOptimizedInstance.toJSON()).toEqual({ ...data, mixinOptimize: 'true', baseOptimize: 'true' });
 
-		alreadyOptimizedInstance._patch({ mixinOptimize: '', baseOptimize: '' });
+		alreadyOptimizedInstance.patch({ mixinOptimize: '', baseOptimize: '' });
 
 		expect(alreadyOptimizedInstance.baseOptimize).toBe(false);
 		expect(alreadyOptimizedInstance.mixinOptimize).toBe(false);

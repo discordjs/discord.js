@@ -30,7 +30,7 @@ export class AnnouncementThreadChannel<Omitted extends keyof APIAnnouncementThre
 > {
 	public constructor(data: Omit<APIAnnouncementThreadChannel, Omitted>) {
 		super(data);
-		this._optimizeData?.(data);
+		this.optimizeData?.(data);
 	}
 }
 

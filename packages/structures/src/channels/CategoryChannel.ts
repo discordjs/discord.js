@@ -17,7 +17,7 @@ export class CategoryChannel<Omitted extends keyof APIGuildCategoryChannel | '' 
 > {
 	public constructor(data: Omit<APIGuildCategoryChannel, Omitted>) {
 		super(data);
-		this._optimizeData(data);
+		this.optimizeData(data);
 	}
 }
 

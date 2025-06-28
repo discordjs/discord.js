@@ -1,7 +1,7 @@
 import { Mixin } from '../src/Mixin.js';
 import type { MixinTypes } from '../src/MixinTypes.d.ts';
 import { Structure } from '../src/Structure.js';
-import { kData, kMixinConstruct } from '../src/utils/symbols.js';
+import { kData, kMixinConstruct, kMixinToJSON } from '../src/utils/symbols.js';
 
 export interface APIData {
 	baseOptimize?: string;
@@ -12,7 +12,7 @@ export interface APIData {
 }
 
 export class Base<Omitted extends keyof APIData | '' = ''> extends Structure<APIData, Omitted> {
-	public static override DataTemplate = {
+	public static override readonly DataTemplate = {
 		set baseOptimize(_: unknown) {},
 	};
 
@@ -20,15 +20,15 @@ export class Base<Omitted extends keyof APIData | '' = ''> extends Structure<API
 
 	public constructor(data: APIData) {
 		super(data);
-		this._optimizeData(data);
+		this.optimizeData(data);
 	}
 
-	public override _patch(data: Partial<APIData>) {
-		super._patch(data);
+	public override patch(data: Partial<APIData>) {
+		super.patch(data);
 		return this;
 	}
 
-	public override _optimizeData(data: Partial<APIData>) {
+	public override optimizeData(data: Partial<APIData>) {
 		if ('baseOptimize' in data) {
 			this.baseOptimize = Boolean(data.baseOptimize);
 		}
@@ -56,7 +56,7 @@ export interface MixinProperty1<Omitted extends keyof APIData | '' = ''> extends
 	mixinOptimize: boolean | null;
 }
 export class MixinProperty1 {
-	public static DataTemplate = {
+	public static readonly DataTemplate = {
 		set mixinOptimize(_: unknown) {},
 	};
 
@@ -64,7 +64,7 @@ export class MixinProperty1 {
 		this.mixinOptimize = null;
 	}
 
-	public _optimizeData(data: Partial<APIData>) {
+	public optimizeData(data: Partial<APIData>) {
 		if ('mixinOptimize' in data) {
 			this.mixinOptimize = Boolean(data.mixinOptimize);
 		}
@@ -78,7 +78,7 @@ export class MixinProperty1 {
 		return this.property1;
 	}
 
-	protected _toJSON(data: Partial<APIData>) {
+	protected [kMixinToJSON](data: Partial<APIData>) {
 		if (this.mixinOptimize) {
 			data.mixinOptimize = String(this.mixinOptimize);
 		}

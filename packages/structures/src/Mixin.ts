@@ -1,12 +1,10 @@
 import { DataTemplatePropertyName, OptimizeDataPropertyName, type Structure } from './Structure.js';
-import { kMixinConstruct } from './utils/symbols.js';
+import { kMixinConstruct, kMixinToJSON } from './utils/symbols.js';
 
 export type Mixinable<ClassType> = new (...args: unknown[]) => ClassType;
 
 export type MixinBase<BaseClass extends Structure<unknown>> =
 	BaseClass extends Structure<infer DataType, infer Omitted> ? Structure<DataType, Omitted> : never;
-
-export const EnrichToJSONPropertyName = '_toJSON';
 
 /**
  * Copies the prototype (getters, setters, and methods) of all mixins to the destination class.
@@ -40,7 +38,7 @@ export function Mixin<DestinationClass extends typeof Structure<unknown>>(
 ) {
 	const dataTemplates: Record<string, unknown>[] = [];
 	const dataOptimizations: ((data: unknown) => void)[] = [];
-	const enrichToJSONs: ((data: unknown) => void)[] = [];
+	const enrichToJSONs: ((data: Partial<unknown>) => void)[] = [];
 	const constructors: ((data: Partial<unknown>) => void)[] = [];
 
 	for (const mixin of mixins) {
@@ -67,6 +65,10 @@ export function Mixin<DestinationClass extends typeof Structure<unknown>>(
 				constructors.push(prototype[kMixinConstruct]);
 			}
 
+			if (prototype[kMixinToJSON]) {
+				enrichToJSONs.push(prototype[kMixinToJSON]);
+			}
+
 			// Copy instance methods and setters / getters
 			const originalDescriptors = Object.getOwnPropertyDescriptors(prototype);
 			const usingDescriptors: { [prop: string]: PropertyDescriptor } = {};
@@ -80,10 +82,6 @@ export function Mixin<DestinationClass extends typeof Structure<unknown>>(
 				if (prop === OptimizeDataPropertyName) {
 					if (typeof descriptor.value !== 'function') return;
 					dataOptimizations.push(descriptor.value);
-					continue;
-				} else if (prop === EnrichToJSONPropertyName) {
-					if (typeof descriptor.value !== 'function') return;
-					enrichToJSONs.push(descriptor.value);
 					continue;
 				}
 
@@ -149,31 +147,17 @@ export function Mixin<DestinationClass extends typeof Structure<unknown>>(
 	}
 
 	if (enrichToJSONs.length > 0) {
-		// call base toJSON first, then enrich the result with mixins if they have a _toJSON function
-		let baseToJSON;
-		let destinationClass = destination;
-
-		while (!baseToJSON && destinationClass) {
-			baseToJSON = Object.getOwnPropertyDescriptor(destinationClass.prototype, 'toJSON')?.value;
-			destinationClass = Object.getPrototypeOf(destinationClass);
-		}
-
-		if (baseToJSON && typeof baseToJSON === 'function') {
-			Object.defineProperty(destination.prototype, 'toJSON', {
-				writable: true,
-				enumerable: true,
-				configurable: true,
-				// eslint-disable-next-line func-name-matching
-				value: function _mixinToJSON() {
-					const data = baseToJSON.call(this);
-					for (const enricher of enrichToJSONs) {
-						enricher.call(this, data);
-					}
-
-					return data;
-				},
-			});
-		}
+		Object.defineProperty(destination.prototype, kMixinToJSON, {
+			writable: true,
+			enumerable: true,
+			configurable: true,
+			// eslint-disable-next-line func-name-matching
+			value: function _mixinToJSON(data: Partial<unknown>) {
+				for (const enricher of enrichToJSONs) {
+					enricher.call(this, data);
+				}
+			},
+		});
 	}
 
 	// Copy the properties (setters) of each mixins template to the destinations template

@@ -9,3 +9,4 @@ export const kPermissionOverwrite = Symbol.for('djs.structures.permissionOverwri
 export const kLastPinTimestamp = Symbol.for('djs.structures.lastPinTimestamp');
 
 export const kMixinConstruct = Symbol.for('djs.structures.mixin.construct');
+export const kMixinToJSON = Symbol.for('djs.structures.mixin.toJSON');

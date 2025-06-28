@@ -29,7 +29,7 @@ export class PublicThreadChannel<Omitted extends keyof APIPublicThreadChannel | 
 > {
 	public constructor(data: Omit<APIPublicThreadChannel, Omitted>) {
 		super(data);
-		this._optimizeData(data);
+		this.optimizeData(data);
 	}
 
 	/**

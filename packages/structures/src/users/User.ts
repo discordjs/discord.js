@@ -27,8 +27,8 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	 *
 	 * @internal
 	 */
-	public override _patch(data: Partial<APIUser>) {
-		return super._patch(data);
+	public override patch(data: Partial<APIUser>) {
+		return super.patch(data);
 	}
 
 	/**

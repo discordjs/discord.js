@@ -1,5 +1,5 @@
 /* eslint-disable jsdoc/check-param-names */
-import { kData, kMixinConstruct } from './utils/symbols.js';
+import { kData, kMixinConstruct, kMixinToJSON } from './utils/symbols.js';
 import type { ReplaceOmittedWithUnknown } from './utils/types.js';
 
 /**
@@ -11,7 +11,7 @@ import type { ReplaceOmittedWithUnknown } from './utils/types.js';
 export interface StructureExtraOptions {}
 
 export const DataTemplatePropertyName = 'DataTemplate';
-export const OptimizeDataPropertyName = '_optimizeData';
+export const OptimizeDataPropertyName = 'optimizeData';
 
 /**
  * Represents a data model from the Discord API
@@ -40,6 +40,16 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	protected [kMixinConstruct]?(data: Partial<DataType>): void;
 
 	/**
+	 * A function used when mixing to allow mixins to add properties to the result of toJSON
+	 *
+	 * @internal
+	 * @remarks This should only be used to add properties that the mixin optimizes, if the raw
+	 * JSON data is unchanged the property will already be returned.
+	 * @param data - The result of the base class toJSON Structure before it gets returned
+	 */
+	protected [kMixinToJSON]?(data: Partial<DataType>): void;
+
+	/**
 	 * The template used for removing data from the raw data stored for each Structure.
 	 *
 	 * @remarks This template should be overriden in all subclasses to provide more accurate type information.
@@ -50,7 +60,7 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	/**
 	 * @returns A cloned version of the data template, ready to create a new data object.
 	 */
-	private _getDataTemplate() {
+	private getDataTemplate() {
 		return Object.create((this.constructor as typeof Structure).DataTemplate);
 	}
 
@@ -70,7 +80,7 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 * @internal
 	 */
 	protected constructor(data: Readonly<Partial<DataType>>, ..._rest: unknown[]) {
-		this[kData] = Object.assign(this._getDataTemplate(), data);
+		this[kData] = Object.assign(this.getDataTemplate(), data);
 		this[kMixinConstruct]?.(data);
 	}
 
@@ -83,9 +93,9 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 * @returns this
 	 * @internal
 	 */
-	protected _patch(data: Readonly<Partial<DataType>>): this {
-		this[kData] = Object.assign(this._getDataTemplate(), this[kData], data);
-		this._optimizeData(data);
+	protected patch(data: Readonly<Partial<DataType>>): this {
+		this[kData] = Object.assign(this.getDataTemplate(), this[kData], data);
+		this.optimizeData(data);
 		return this;
 	}
 
@@ -95,7 +105,7 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 * @returns a clone of this
 	 * @internal
 	 */
-	protected _clone(): typeof this {
+	protected clone(): typeof this {
 		// @ts-expect-error constructor is of abstract class is unknown
 		return new this.constructor(this.toJSON());
 	}
@@ -115,7 +125,7 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 * @virtual
 	 * @internal
 	 */
-	protected _optimizeData(_data: Partial<DataType>) {}
+	protected optimizeData(_data: Partial<DataType>) {}
 
 	/**
 	 * Transforms this object to its JSON format with raw API data (or close to it),
@@ -128,6 +138,8 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 */
 	public toJSON(): DataType {
 		// This will be DataType provided nothing is omitted, when omits occur, subclass needs to overwrite this.
-		return { ...this[kData] } as DataType;
+		const data = { ...this[kData] } as DataType;
+		this[kMixinToJSON]?.(data);
+		return data;
 	}
 }

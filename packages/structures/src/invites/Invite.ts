@@ -41,7 +41,7 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = ''> extends Str
 	 */
 	public constructor(data: Omit<APIActualInvite, Omitted>) {
 		super(data);
-		this._optimizeData(data);
+		this.optimizeData(data);
 		this[kExpiresTimestamp] ??= null;
 		this[kCreatedTimestamp] ??= null;
 	}
@@ -51,8 +51,8 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = ''> extends Str
 	 *
 	 * @internal
 	 */
-	public override _patch(data: Partial<APIActualInvite>) {
-		super._patch(data);
+	public override patch(data: Partial<APIActualInvite>) {
+		super.patch(data);
 		return this;
 	}
 
@@ -61,7 +61,7 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = ''> extends Str
 	 *
 	 * @internal
 	 */
-	protected override _optimizeData(data: Partial<APIActualInvite>) {
+	protected override optimizeData(data: Partial<APIActualInvite>) {
 		this[kExpiresTimestamp] = data.expires_at ? Date.parse(data.expires_at) : (this[kExpiresTimestamp] ?? null);
 		this[kCreatedTimestamp] = data.created_at ? Date.parse(data.created_at) : (this[kCreatedTimestamp] ?? null);
 	}

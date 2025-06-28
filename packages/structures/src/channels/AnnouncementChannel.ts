@@ -28,7 +28,7 @@ export class AnnouncementChannel<Omitted extends keyof APINewsChannel | '' = ''>
 > {
 	public constructor(data: Omit<APINewsChannel, Omitted>) {
 		super(data);
-		this._optimizeData(data);
+		this.optimizeData(data);
 	}
 }
 

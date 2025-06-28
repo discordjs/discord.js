@@ -66,8 +66,8 @@ export class Channel<
 	 *
 	 * @internal
 	 */
-	public override _patch(data: Partial<ChannelDataType<Type>>) {
-		return super._patch(data);
+	public override patch(data: Partial<ChannelDataType<Type>>) {
+		return super.patch(data);
 	}
 
 	/**
