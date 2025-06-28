@@ -20,6 +20,11 @@ export class Connection<Omitted extends keyof APIConnection | '' = ''> extends S
 		super(data);
 	}
 
+	/**
+	 * {@inheritDoc Structure.patch}
+	 *
+	 * @internal
+	 */
 	public override patch(data: Partial<APIConnection>) {
 		return super.patch(data);
 	}

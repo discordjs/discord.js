@@ -27,14 +27,14 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = ''> extends Str
 	 *
 	 * @internal
 	 */
-	protected [kExpiresTimestamp]: number | null;
+	protected [kExpiresTimestamp]: number | null = null;
 
 	/**
 	 * Optimized storage of {@link APIActualInvite.created_at}
 	 *
 	 * @internal
 	 */
-	protected [kCreatedTimestamp]: number | null;
+	protected [kCreatedTimestamp]: number | null = null;
 
 	/**
 	 * @param data - The raw data received from the API for the invite
@@ -42,12 +42,10 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = ''> extends Str
 	public constructor(data: Omit<APIActualInvite, Omitted>) {
 		super(data);
 		this.optimizeData(data);
-		this[kExpiresTimestamp] ??= null;
-		this[kCreatedTimestamp] ??= null;
 	}
 
 	/**
-	 * {@inheritDoc Structure._patch}
+	 * {@inheritDoc Structure.patch}
 	 *
 	 * @internal
 	 */
@@ -57,13 +55,18 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = ''> extends Str
 	}
 
 	/**
-	 * {@inheritDoc Structure._optimizeData}
+	 * {@inheritDoc Structure.optimizeData}
 	 *
 	 * @internal
 	 */
 	protected override optimizeData(data: Partial<APIActualInvite>) {
-		this[kExpiresTimestamp] = data.expires_at ? Date.parse(data.expires_at) : (this[kExpiresTimestamp] ?? null);
-		this[kCreatedTimestamp] = data.created_at ? Date.parse(data.created_at) : (this[kCreatedTimestamp] ?? null);
+		if (data.expires_at) {
+			this[kExpiresTimestamp] = Date.parse(data.expires_at);
+		}
+
+		if (data.created_at) {
+			this[kCreatedTimestamp] = Date.parse(data.created_at);
+		}
 	}
 
 	/**

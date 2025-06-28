@@ -8,7 +8,7 @@ import { BitField } from './BitField.js';
  * permissions in their guild, and each channel in the guild may also have {@link PermissionOverwrites} for the member
  * that override their default permissions.
  */
-export class PermissionsBitField extends BitField<keyof typeof PermissionFlagsBits, bigint> {
+export class PermissionsBitField extends BitField<keyof typeof PermissionFlagsBits> {
 	/**
 	 * Numeric permission flags.
 	 *
@@ -41,7 +41,7 @@ export class PermissionsBitField extends BitField<keyof typeof PermissionFlagsBi
 	 * @param checkAdmin - Whether to allow the administrator permission to override
 	 * @returns
 	 */
-	public override missing(bits: BitFieldResolvable<keyof typeof PermissionFlagsBits, bigint>, checkAdmin = true) {
+	public override missing(bits: BitFieldResolvable<keyof typeof PermissionFlagsBits>, checkAdmin = true) {
 		return checkAdmin && this.has(PermissionFlagsBits.Administrator) ? [] : super.missing(bits);
 	}
 
@@ -52,7 +52,7 @@ export class PermissionsBitField extends BitField<keyof typeof PermissionFlagsBi
 	 * @param checkAdmin - Whether to allow the administrator permission to override
 	 * @returns
 	 */
-	public override any(permission: BitFieldResolvable<keyof typeof PermissionFlagsBits, bigint>, checkAdmin = true) {
+	public override any(permission: BitFieldResolvable<keyof typeof PermissionFlagsBits>, checkAdmin = true) {
 		return (checkAdmin && super.has(PermissionFlagsBits.Administrator)) || super.any(permission);
 	}
 
@@ -63,7 +63,7 @@ export class PermissionsBitField extends BitField<keyof typeof PermissionFlagsBi
 	 * @param checkAdmin - Whether to allow the administrator permission to override
 	 * @returns
 	 */
-	public override has(permission: BitFieldResolvable<keyof typeof PermissionFlagsBits, bigint>, checkAdmin = true) {
+	public override has(permission: BitFieldResolvable<keyof typeof PermissionFlagsBits>, checkAdmin = true) {
 		return (checkAdmin && super.has(PermissionFlagsBits.Administrator)) || super.has(permission);
 	}
 

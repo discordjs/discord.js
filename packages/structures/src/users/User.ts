@@ -2,6 +2,7 @@ import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APIUser } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
+import { isIdSet } from '../utils/typeguards.js';
 
 /**
  * Represents any user on Discord.
@@ -23,7 +24,7 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	}
 
 	/**
-	 * {@inheritDoc Structure._patch}
+	 * {@inheritDoc Structure.patch}
 	 *
 	 * @internal
 	 */
@@ -154,7 +155,7 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	 * The timestamp the user was created at
 	 */
 	public get createdTimestamp() {
-		return typeof this.id === 'string' || typeof this.id === 'bigint' ? DiscordSnowflake.timestampFrom(this.id) : null;
+		return isIdSet(this.id) ? DiscordSnowflake.timestampFrom(this.id) : null;
 	}
 
 	/**

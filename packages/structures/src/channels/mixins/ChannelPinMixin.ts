@@ -28,7 +28,7 @@ export class ChannelPinMixin<
 	}
 
 	/**
-	 * {@inheritDoc Structure._optimizeData}
+	 * {@inheritDoc Structure.optimizeData}
 	 */
 	protected optimizeData(data: Partial<ChannelDataType<Type>>) {
 		if (data.last_pin_timestamp) {

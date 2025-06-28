@@ -58,7 +58,7 @@ export class Channel<
 	}
 
 	/**
-	 * {@inheritDoc Structure._patch}
+	 * {@inheritDoc Structure.patch}
 	 *
 	 * @internal
 	 */
