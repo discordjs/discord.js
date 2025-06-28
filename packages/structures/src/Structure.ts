@@ -137,7 +137,11 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 */
 	public toJSON(): DataType {
 		// This will be DataType provided nothing is omitted, when omits occur, subclass needs to overwrite this.
-		const data = { ...this[kData] } as DataType;
+		const data = (
+			Object.values(this[kData]).some((value) => typeof value === 'object' && value !== null)
+				? structuredClone(this[kData])
+				: { ...this[kData] }
+		) as DataType;
 		this[kMixinToJSON]?.(data);
 		return data;
 	}
