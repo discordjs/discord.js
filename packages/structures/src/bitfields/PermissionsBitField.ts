@@ -19,17 +19,17 @@ export class PermissionsBitField extends BitField<keyof typeof PermissionFlagsBi
 	/**
 	 * Bitfield representing every permission combined
 	 */
-	public static All = Object.values(PermissionFlagsBits).reduce((all, perm) => all | perm, 0n);
+	public static readonly All = Object.values(PermissionFlagsBits).reduce((all, perm) => all | perm, 0n);
 
 	/**
 	 * Bitfield representing the default permissions for users
 	 */
-	public static Default = BigInt(104_324_673);
+	public static readonly Default = BigInt(104_324_673);
 
 	/**
 	 * Bitfield representing the permissions required for moderators of stage channels
 	 */
-	public static StageModerator =
+	public static readonly StageModerator =
 		PermissionFlagsBits.ManageChannels | PermissionFlagsBits.MuteMembers | PermissionFlagsBits.MoveMembers;
 
 	protected static override DefaultBit = BigInt(0);

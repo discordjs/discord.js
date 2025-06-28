@@ -45,7 +45,7 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 * @remarks This template should be overriden in all subclasses to provide more accurate type information.
 	 * The template in the base {@link Structure} class will have no effect on most subclasses for this reason.
 	 */
-	protected static DataTemplate: Record<string, unknown> = {};
+	protected static readonly DataTemplate: Record<string, unknown> = {};
 
 	/**
 	 * @returns A cloned version of the data template, ready to create a new data object.

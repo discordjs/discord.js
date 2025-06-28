@@ -1,4 +1,5 @@
 import type {
+	APIAnnouncementThreadChannel,
 	APIDMChannel,
 	APIGroupDMChannel,
 	APIGuildCategoryChannel,
@@ -7,6 +8,7 @@ import type {
 	APIGuildStageVoiceChannel,
 	APIGuildVoiceChannel,
 	APINewsChannel,
+	APIPublicThreadChannel,
 	APITextChannel,
 	APIThreadChannel,
 } from 'discord-api-types/v10';
@@ -592,7 +594,7 @@ describe('stage channel', () => {
 });
 
 describe('thread channels', () => {
-	const dataNoTags: Omit<APIThreadChannel, 'applied_tags' | 'position'> = {
+	const dataNoTags: Omit<APIPublicThreadChannel, 'applied_tags'> = {
 		id: '1',
 		name: 'test',
 		type: ChannelType.PublicThread,
@@ -603,13 +605,13 @@ describe('thread channels', () => {
 		parent_id: '4',
 		rate_limit_per_user: 9,
 	};
-	// TODO: remove special handling once dtypes PR for thread channel types releases
-	const dataPublic: Omit<APIThreadChannel, 'position'> = {
+
+	const dataPublic: APIPublicThreadChannel = {
 		...dataNoTags,
 		applied_tags: ['567'],
 	};
 
-	const dataAnnounce: Omit<APIThreadChannel, 'position'> = {
+	const dataAnnounce: APIAnnouncementThreadChannel = {
 		...dataPublic,
 		thread_metadata: {
 			archive_timestamp: '2024-09-08T12:01:02.345Z',

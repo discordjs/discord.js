@@ -1,8 +1,7 @@
-import type { ChannelType } from 'discord-api-types/v10';
+import type { APIPublicThreadChannel, ChannelType } from 'discord-api-types/v10';
 import { Mixin } from '../Mixin.js';
 import type { MixinTypes } from '../MixinTypes.d.ts';
 import { kData } from '../utils/symbols.js';
-import type { APIThreadChannel } from '../utils/types';
 import { Channel } from './Channel.js';
 import { ChannelOwnerMixin } from './mixins/ChannelOwnerMixin.js';
 import { ChannelParentMixin } from './mixins/ChannelParentMixin.js';
@@ -11,7 +10,7 @@ import { ChannelSlowmodeMixin } from './mixins/ChannelSlowmodeMixin.js';
 import { TextChannelMixin } from './mixins/TextChannelMixin.js';
 import { ThreadChannelMixin } from './mixins/ThreadChannelMixin.js';
 
-export interface PublicThreadChannel<Omitted extends keyof APIThreadChannel | '' = ''>
+export interface PublicThreadChannel<Omitted extends keyof APIPublicThreadChannel | '' = ''>
 	extends MixinTypes<
 		Channel<ChannelType.PublicThread>,
 		[
@@ -24,11 +23,11 @@ export interface PublicThreadChannel<Omitted extends keyof APIThreadChannel | ''
 		]
 	> {}
 
-export class PublicThreadChannel<Omitted extends keyof APIThreadChannel | '' = ''> extends Channel<
+export class PublicThreadChannel<Omitted extends keyof APIPublicThreadChannel | '' = ''> extends Channel<
 	ChannelType.PublicThread,
 	Omitted
 > {
-	public constructor(data: Omit<APIThreadChannel, Omitted>) {
+	public constructor(data: Omit<APIPublicThreadChannel, Omitted>) {
 		super(data);
 		this._optimizeData(data);
 	}

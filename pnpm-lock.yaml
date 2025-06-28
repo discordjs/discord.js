@@ -1556,8 +1556,8 @@ importers:
         specifier: ^3.5.5
         version: 3.5.5
       discord-api-types:
-        specifier: ^0.38.1
-        version: 0.38.1
+        specifier: ^0.38.13
+        version: 0.38.13
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -8510,6 +8510,9 @@ packages:
 
   discord-api-types@0.38.1:
     resolution: {integrity: sha512-vsjsqjAuxsPhiwbPjTBeGQaDPlizFmSkU0mTzFGMgRxqCDIRBR7iTY74HacpzrDV0QtERHRKQEk1tq7drZUtHg==}
+
+  discord-api-types@0.38.13:
+    resolution: {integrity: sha512-FELWJRgLVQuR7Az8RhdEZE0k6QNjSW9PCUcU1iyP2Gke8HrJmnMceSS9pD93UM64s3tvZzJPajpPLjWZJylf4g==}
 
   dmd@6.2.3:
     resolution: {integrity: sha512-SIEkjrG7cZ9GWZQYk/mH+mWtcRPly/3ibVuXO/tP/MFoWz6KiRK77tSMq6YQBPl7RljPtXPQ/JhxbNuCdi1bNw==}
@@ -22397,6 +22400,8 @@ snapshots:
       path-type: 4.0.0
 
   discord-api-types@0.38.1: {}
+
+  discord-api-types@0.38.13: {}
 
   dmd@6.2.3:
     dependencies:

@@ -22,9 +22,9 @@ export abstract class BitField<Flags extends string, Type extends bigint | numbe
 	 * Numeric bitfield flags.
 	 * <info>Defined in extension classes</info>
 	 */
-	public static Flags: EnumLike<unknown, bigint | number> = {};
+	public static readonly Flags: EnumLike<unknown, bigint | number> = {};
 
-	protected static DefaultBit: bigint | number = 0;
+	protected static readonly DefaultBit: bigint | number = 0;
 
 	/**
 	 * Bitfield of the packed bits

@@ -1,11 +1,10 @@
 import type { ThreadChannelType } from 'discord-api-types/v10';
 import { kData } from '../../utils/symbols.js';
-import type { APIThreadChannel } from '../../utils/types.js';
-import type { Channel } from '../Channel.js';
+import type { Channel, ChannelDataType } from '../Channel.js';
 
 export interface ThreadChannelMixin<
 	Type extends ThreadChannelType = ThreadChannelType,
-	Omitted extends keyof APIThreadChannel | '' = '',
+	Omitted extends keyof ChannelDataType<Type> | '' = '',
 > extends Channel<Type, Omitted> {}
 
 /**
@@ -13,7 +12,7 @@ export interface ThreadChannelMixin<
  */
 export class ThreadChannelMixin<
 	Type extends ThreadChannelType = ThreadChannelType,
-	Omitted extends keyof APIThreadChannel | '' = '',
+	Omitted extends keyof ChannelDataType<Type> | '' = '',
 > {
 	/**
 	 * The approximate count of users in a thread, stops counting at 50

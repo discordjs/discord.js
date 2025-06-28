@@ -8,11 +8,11 @@ import type {
 	GuildChannelType,
 	GuildTextChannelType,
 	ChannelFlags,
+	APIThreadChannel,
 } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { ChannelFlagsBitField } from '../bitfields/ChannelFlagsBitField.js';
 import { kData } from '../utils/symbols.js';
-import type { APIThreadChannel } from '../utils/types';
 import type { ChannelPermissionMixin } from './mixins/ChannelPermissionMixin.js';
 import type { ChannelWebhookMixin } from './mixins/ChannelWebhookMixin.js';
 import type { DMChannelMixin } from './mixins/DMChannelMixin.js';
@@ -31,8 +31,8 @@ export type ChannelDataType<Type extends ChannelType> = Type extends
 	| ChannelType.AnnouncementThread
 	| ChannelType.PrivateThread
 	| ChannelType.PublicThread
-	? APIThreadChannel
-	: Extract<APIChannel, { type: Type }>; // TODO: remove special handling once dtypes PR for thread channel types releases
+	? APIThreadChannel<Type>
+	: Extract<APIChannel, { type: Type }>; // TODO: this still breaks without the (new) special handling, find out why
 
 /**
  * Represents any channel on Discord.
@@ -123,7 +123,6 @@ export class Channel<
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
 
-	// TODO: Make these type guards once the mixins are written
 	/**
 	 * Indicates whether this channel is a thread channel
 	 *

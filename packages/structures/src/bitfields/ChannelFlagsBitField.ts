@@ -8,5 +8,5 @@ export class ChannelFlagsBitField extends BitField<keyof ChannelFlags> {
 	/**
 	 * Numeric guild channel flags.
 	 */
-	public static override Flags = ChannelFlags;
+	public static override readonly Flags = ChannelFlags;
 }

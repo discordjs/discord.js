@@ -27,6 +27,3 @@ export interface RecursiveReadonlyArray<ItemType> extends ReadonlyArray<ItemType
 export type EnumLike<Enum, Value> = Record<keyof Enum, Value>;
 
 export type If<Check, Value, True, False = never> = Check extends Value ? (Value extends Check ? True : False) : False;
-
-// TODO: remove helper type once dtypes PR for thread channel types releases
-export type APIThreadChannel = Omit<_APIThreadChannel, 'position'>;
