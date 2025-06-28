@@ -8,7 +8,6 @@ import type {
 	GuildChannelType,
 	GuildTextChannelType,
 	ChannelFlags,
-	APIThreadChannel,
 } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { ChannelFlagsBitField } from '../bitfields/ChannelFlagsBitField.js';
@@ -27,12 +26,9 @@ export type PartialChannel = Channel<ChannelType, Exclude<keyof APIChannel, keyo
 /**
  * @internal
  */
-export type ChannelDataType<Type extends ChannelType> = Type extends
-	| ChannelType.AnnouncementThread
-	| ChannelType.PrivateThread
-	| ChannelType.PublicThread
-	? APIThreadChannel<Type>
-	: Extract<APIChannel, { type: Type }>; // TODO: this still breaks without the (new) special handling, find out why
+export type ChannelDataType<Type extends ChannelType> = Type extends ChannelType
+	? Extract<APIChannel, { type: Type }>
+	: never; // TODO: this breaks without a conditional, find out why
 
 /**
  * Represents any channel on Discord.
