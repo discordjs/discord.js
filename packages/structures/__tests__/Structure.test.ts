@@ -31,7 +31,7 @@ describe('Base Structure', () => {
 	test('patch clones data and updates in place', () => {
 		const dataBefore = struct[kData];
 		// @ts-expect-error Structure#_patch is protected
-		const patched = struct.patch({ patched: true });
+		const patched = struct._patch({ patched: true });
 		expect(patched[kData].patched).toBe(true);
 		// Patch in place
 		expect(struct[kData]).toBe(patched[kData]);
@@ -46,7 +46,7 @@ describe('Base Structure', () => {
 		// @ts-expect-error Structure constructor is protected
 		const templatedStruct: Structure<typeof data> = new Structure(data);
 		// @ts-expect-error Structure#patch is protected
-		templatedStruct.patch({ removed: false });
+		templatedStruct._patch({ removed: false });
 		expect(templatedStruct[kData].removed).toBe(undefined);
 		// Setters still exist and pass "in" test unfortunately
 		expect('removed' in templatedStruct[kData]).toBe(true);

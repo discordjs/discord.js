@@ -28,7 +28,7 @@ describe('Invite', () => {
 
 	test('Invite has all properties', () => {
 		const instance = new Invite(data);
-		// expect(instance.type).toBe(data.type);
+		expect(instance.type).toBe(data.type);
 		expect(instance.code).toBe(data.code);
 		expect(instance.createdAt).toBe(null);
 		expect(instance.createdTimestamp).toBe(null);
@@ -49,7 +49,7 @@ describe('Invite', () => {
 
 	test('extended Invite has all properties', () => {
 		const instance = new Invite(dataExtended);
-		// expect(instance.type).toBe(data.type);
+		expect(instance.type).toBe(data.type);
 		expect(instance.code).toBe(dataExtended.code);
 		expect(instance.createdAt?.toISOString()).toBe(dataExtended.created_at);
 		expect(instance.createdTimestamp).toBe(Date.parse(dataExtended.created_at));
@@ -82,7 +82,7 @@ describe('Invite', () => {
 
 	test('Patching Invite works in place', () => {
 		const instance1 = new Invite(data);
-		const instance2 = instance1.patch({ max_age: 34 });
+		const instance2 = instance1._patch({ max_age: 34 });
 		expect(instance1.toJSON()).not.toEqual(data);
 		expect(instance2).toBe(instance1);
 	});

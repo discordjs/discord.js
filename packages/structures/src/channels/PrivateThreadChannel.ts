@@ -1,6 +1,7 @@
 import type { APIPrivateThreadChannel, ChannelType } from 'discord-api-types/v10';
 import { Mixin } from '../Mixin.js';
 import type { MixinTypes } from '../MixinTypes.d.ts';
+import type { Partialize } from '../utils/types.js';
 import { Channel } from './Channel.js';
 import { ChannelOwnerMixin } from './mixins/ChannelOwnerMixin.js';
 import { ChannelParentMixin } from './mixins/ChannelParentMixin.js';
@@ -22,11 +23,14 @@ export interface PrivateThreadChannel<Omitted extends keyof APIPrivateThreadChan
 		]
 	> {}
 
+/**
+ * Sample Implementation of a structure for private thread channels, usable by direct end consumers.
+ */
 export class PrivateThreadChannel<Omitted extends keyof APIPrivateThreadChannel | '' = ''> extends Channel<
 	ChannelType.PrivateThread,
 	Omitted
 > {
-	public constructor(data: Omit<APIPrivateThreadChannel, Omitted>) {
+	public constructor(data: Partialize<APIPrivateThreadChannel, Omitted>) {
 		super(data);
 		this.optimizeData(data);
 	}

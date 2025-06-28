@@ -1,6 +1,7 @@
 import { type APIInvite, type APIExtendedInvite, RouteBases } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { kData, kExpiresTimestamp, kCreatedTimestamp } from '../utils/symbols.js';
+import type { Partialize } from '../utils/types.js';
 
 // TODO: use an actual dtypes type instead if it exists
 export interface APIActualInvite extends APIInvite, Partial<Omit<APIExtendedInvite, keyof APIInvite>> {}
@@ -10,7 +11,10 @@ export interface APIActualInvite extends APIInvite, Partial<Omit<APIExtendedInvi
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  */
-export class Invite<Omitted extends keyof APIActualInvite | '' = ''> extends Structure<APIActualInvite, Omitted> {
+export class Invite<Omitted extends keyof APIActualInvite | '' = 'created_at' | 'expires_at'> extends Structure<
+	APIActualInvite,
+	Omitted
+> {
 	/**
 	 * The template used for removing data from the raw data stored for each Invite
 	 *
@@ -39,18 +43,18 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = ''> extends Str
 	/**
 	 * @param data - The raw data received from the API for the invite
 	 */
-	public constructor(data: Omit<APIActualInvite, Omitted>) {
+	public constructor(data: Partialize<APIActualInvite, Omitted>) {
 		super(data);
 		this.optimizeData(data);
 	}
 
 	/**
-	 * {@inheritDoc Structure.patch}
+	 * {@inheritDoc Structure._patch}
 	 *
 	 * @internal
 	 */
-	public override patch(data: Partial<APIActualInvite>) {
-		super.patch(data);
+	public override _patch(data: Partial<APIActualInvite>) {
+		super._patch(data);
 		return this;
 	}
 
@@ -81,6 +85,13 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = ''> extends Str
 	 */
 	public get targetType() {
 		return this[kData].target_type;
+	}
+
+	/**
+	 * The type of this invite
+	 */
+	public get type() {
+		return this[kData].type;
 	}
 
 	/**

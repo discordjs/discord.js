@@ -23,8 +23,8 @@ export class Base<Omitted extends keyof APIData | '' = ''> extends Structure<API
 		this.optimizeData(data);
 	}
 
-	public override patch(data: Partial<APIData>) {
-		super.patch(data);
+	public override _patch(data: Partial<APIData>) {
+		super._patch(data);
 		return this;
 	}
 

@@ -1,6 +1,7 @@
 import type { APITextChannel, ChannelType } from 'discord-api-types/v10';
 import { Mixin } from '../Mixin.js';
 import type { MixinTypes } from '../MixinTypes.d.ts';
+import type { Partialize } from '../utils/types.js';
 import { Channel } from './Channel.js';
 import { ChannelParentMixin } from './mixins/ChannelParentMixin.js';
 import { ChannelPermissionMixin } from './mixins/ChannelPermissionMixin.js';
@@ -26,7 +27,7 @@ export class TextChannel<Omitted extends keyof APITextChannel | '' = ''> extends
 	ChannelType.GuildText,
 	Omitted
 > {
-	public constructor(data: Omit<APITextChannel, Omitted>) {
+	public constructor(data: Partialize<APITextChannel, Omitted>) {
 		super(data);
 		this.optimizeData(data);
 	}

@@ -31,3 +31,6 @@ export type NonAbstract<Type extends abstract new (...args: any) => any> = Type 
 ) => infer Instance
 	? Pick<Type, keyof Type> & (new (...args: Args) => Instance)
 	: never;
+
+export type Partialize<Type, Omitted extends keyof Type | ''> = Omit<Type, Omitted> &
+	Partial<Pick<Type, Exclude<Omitted, ''>>>;

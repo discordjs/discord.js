@@ -3,6 +3,7 @@ import type { APIUser } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
 import { isIdSet } from '../utils/typeguards.js';
+import type { Partialize } from '../utils/types.js';
 
 /**
  * Represents any user on Discord.
@@ -19,17 +20,17 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	/**
 	 * @param data - The raw data received from the API for the user
 	 */
-	public constructor(data: Omit<APIUser, Omitted>) {
+	public constructor(data: Partialize<APIUser, Omitted>) {
 		super(data);
 	}
 
 	/**
-	 * {@inheritDoc Structure.patch}
+	 * {@inheritDoc Structure._patch}
 	 *
 	 * @internal
 	 */
-	public override patch(data: Partial<APIUser>) {
-		return super.patch(data);
+	public override _patch(data: Partial<APIUser>) {
+		return super._patch(data);
 	}
 
 	/**
@@ -47,7 +48,7 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	}
 
 	/**
-	 * The user's 4 digit tag, if a bot or not migrated to unique usernames
+	 * The user's 4 digit tag, if a bot
 	 */
 	public get discriminator() {
 		return this[kData].discriminator;

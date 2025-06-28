@@ -8,9 +8,9 @@ import type {
 	APIGuildStageVoiceChannel,
 	APIGuildVoiceChannel,
 	APINewsChannel,
+	APIPrivateThreadChannel,
 	APIPublicThreadChannel,
 	APITextChannel,
-	APIThreadChannel,
 } from 'discord-api-types/v10';
 import {
 	ForumLayoutType,
@@ -623,7 +623,7 @@ describe('thread channels', () => {
 		type: ChannelType.AnnouncementThread,
 	};
 
-	const dataPrivate: Omit<APIThreadChannel, 'position'> = {
+	const dataPrivate: APIPrivateThreadChannel = {
 		...dataPublic,
 		thread_metadata: {
 			...dataAnnounce.thread_metadata!,

@@ -1,6 +1,7 @@
 import type { APIConnection } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
+import type { Partialize } from '../utils/types.js';
 
 /**
  * Represents a user's connection on Discord.
@@ -16,17 +17,17 @@ export class Connection<Omitted extends keyof APIConnection | '' = ''> extends S
 	/**
 	 * @param data - The raw data received from the API for the connection
 	 */
-	public constructor(data: Omit<APIConnection, Omitted>) {
+	public constructor(data: Partialize<APIConnection, Omitted>) {
 		super(data);
 	}
 
 	/**
-	 * {@inheritDoc Structure.patch}
+	 * {@inheritDoc Structure._patch}
 	 *
 	 * @internal
 	 */
-	public override patch(data: Partial<APIConnection>) {
-		return super.patch(data);
+	public override _patch(data: Partial<APIConnection>) {
+		return super._patch(data);
 	}
 
 	/**

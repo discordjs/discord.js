@@ -2,7 +2,9 @@ import type { APIPublicThreadChannel, ChannelType } from 'discord-api-types/v10'
 import { Mixin } from '../Mixin.js';
 import type { MixinTypes } from '../MixinTypes.d.ts';
 import { kData } from '../utils/symbols.js';
+import type { Partialize } from '../utils/types.js';
 import { Channel } from './Channel.js';
+import { AppliedTagsMixin } from './mixins/AppliedTagsMixin.js';
 import { ChannelOwnerMixin } from './mixins/ChannelOwnerMixin.js';
 import { ChannelParentMixin } from './mixins/ChannelParentMixin.js';
 import { ChannelPinMixin } from './mixins/ChannelPinMixin.js';
@@ -20,23 +22,20 @@ export interface PublicThreadChannel<Omitted extends keyof APIPublicThreadChanne
 			ChannelPinMixin<ChannelType.PublicThread>,
 			ChannelSlowmodeMixin<ChannelType.PublicThread>,
 			ThreadChannelMixin<ChannelType.PublicThread>,
+			AppliedTagsMixin,
 		]
 	> {}
 
+/**
+ * Sample Implementation of a structure for public thread channels, usable by direct end consumers.
+ */
 export class PublicThreadChannel<Omitted extends keyof APIPublicThreadChannel | '' = ''> extends Channel<
 	ChannelType.PublicThread,
 	Omitted
 > {
-	public constructor(data: Omit<APIPublicThreadChannel, Omitted>) {
+	public constructor(data: Partialize<APIPublicThreadChannel, Omitted>) {
 		super(data);
 		this.optimizeData(data);
-	}
-
-	/**
-	 * The IDs of the set of tags that have been applied to a thread in a {@link ForumChannel} or a {@link MediaChannel}.
-	 */
-	public get appliedTags() {
-		return Array.isArray(this[kData].applied_tags) ? [...this[kData].applied_tags] : null;
 	}
 }
 
@@ -47,4 +46,5 @@ Mixin(PublicThreadChannel, [
 	ChannelPinMixin,
 	ChannelSlowmodeMixin,
 	ThreadChannelMixin,
+	AppliedTagsMixin,
 ]);

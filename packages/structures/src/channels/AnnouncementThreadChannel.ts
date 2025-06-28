@@ -1,6 +1,7 @@
 import type { APIAnnouncementThreadChannel, ChannelType } from 'discord-api-types/v10';
 import { Mixin } from '../Mixin.js';
 import type { MixinTypes } from '../MixinTypes.d.ts';
+import type { Partialize } from '../utils/types.js';
 import { Channel } from './Channel.js';
 import { ChannelOwnerMixin } from './mixins/ChannelOwnerMixin.js';
 import { ChannelParentMixin } from './mixins/ChannelParentMixin.js';
@@ -24,11 +25,14 @@ export interface AnnouncementThreadChannel<Omitted extends keyof APIAnnouncement
 		]
 	> {}
 
+/**
+ * Sample Implementation of a structure for announcement threads, usable by direct end consumers.
+ */
 export class AnnouncementThreadChannel<Omitted extends keyof APIAnnouncementThreadChannel | '' = ''> extends Channel<
 	ChannelType.AnnouncementThread,
 	Omitted
 > {
-	public constructor(data: Omit<APIAnnouncementThreadChannel, Omitted>) {
+	public constructor(data: Partialize<APIAnnouncementThreadChannel, Omitted>) {
 		super(data);
 		this.optimizeData?.(data);
 	}

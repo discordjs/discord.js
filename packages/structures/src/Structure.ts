@@ -33,7 +33,7 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 *
 	 * @internal
 	 * @remarks This should only be used to set defaults, setting optimized values should be done
-	 * in the mixins `_optimizeData` method, which will be called automatically.
+	 * in the mixins `optimizeData` method, which will be called automatically.
 	 * @param data - The full API data received by the Structure
 	 */
 	protected [kMixinConstruct]?(data: Partial<DataType>): void;
@@ -92,7 +92,7 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 * @returns this
 	 * @internal
 	 */
-	protected patch(data: Readonly<Partial<DataType>>): this {
+	protected _patch(data: Readonly<Partial<DataType>>): this {
 		this[kData] = Object.assign(this.getDataTemplate(), this[kData], data);
 		this.optimizeData(data);
 		return this;
@@ -104,9 +104,9 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 * @returns a clone of this
 	 * @internal
 	 */
-	protected clone(): typeof this {
+	protected clone(patchPayload: Readonly<Partial<DataType>>): typeof this {
 		// @ts-expect-error constructor is of abstract class is unknown
-		return new this.constructor(this.toJSON());
+		return new this.constructor(Object.assign(this.toJSON(), patchPayload));
 	}
 
 	/**

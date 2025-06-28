@@ -2,6 +2,7 @@ import type { APIGuildForumChannel, ChannelType } from 'discord-api-types/v10';
 import { Mixin } from '../Mixin.js';
 import type { MixinTypes } from '../MixinTypes.d.ts';
 import { kData } from '../utils/symbols.js';
+import type { Partialize } from '../utils/types.js';
 import { Channel } from './Channel.js';
 import { ChannelParentMixin } from './mixins/ChannelParentMixin.js';
 import { ChannelPermissionMixin } from './mixins/ChannelPermissionMixin.js';
@@ -19,11 +20,14 @@ export interface ForumChannel<Omitted extends keyof APIGuildForumChannel | '' = 
 		]
 	> {}
 
+/**
+ * Sample Implementation of a structure for forum channels, usable by direct end consumers.
+ */
 export class ForumChannel<Omitted extends keyof APIGuildForumChannel | '' = ''> extends Channel<
 	ChannelType.GuildForum,
 	Omitted
 > {
-	public constructor(data: Omit<APIGuildForumChannel, Omitted>) {
+	public constructor(data: Partialize<APIGuildForumChannel, Omitted>) {
 		super(data);
 		this.optimizeData(data);
 	}

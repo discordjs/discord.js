@@ -150,7 +150,7 @@ export function Mixin<DestinationClass extends typeof Structure<unknown>>(
 	if (enrichToJSONs.length > 0) {
 		Object.defineProperty(destination.prototype, kMixinToJSON, {
 			writable: true,
-			enumerable: true,
+			enumerable: false,
 			configurable: true,
 			// eslint-disable-next-line func-name-matching
 			value: function _mixinToJSON(data: Partial<unknown>) {

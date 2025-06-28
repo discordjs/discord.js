@@ -1,6 +1,7 @@
 import type { APIThreadMetadata } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { kArchiveTimestamp, kCreatedTimestamp, kData } from '../utils/symbols.js';
+import type { Partialize } from '../utils/types.js';
 
 /**
  * Represents metadata of a thread channel on Discord.
@@ -9,17 +10,15 @@ import { kArchiveTimestamp, kCreatedTimestamp, kData } from '../utils/symbols.js
  */
 export class ThreadMetadata<Omitted extends keyof APIThreadMetadata | '' = ''> extends Structure<
 	APIThreadMetadata,
-	Omitted
+	Omitted | 'archive_timestamp' | 'create_timestamp'
 > {
-	protected [kArchiveTimestamp]: number | null;
+	protected [kArchiveTimestamp]: number | null = null;
 
-	protected [kCreatedTimestamp]: number | null;
+	protected [kCreatedTimestamp]: number | null = null;
 
-	public constructor(data: Omit<APIThreadMetadata, Omitted>) {
+	public constructor(data: Partialize<APIThreadMetadata, Omitted>) {
 		super(data);
 		this.optimizeData(data);
-		this[kArchiveTimestamp] ??= null;
-		this[kCreatedTimestamp] ??= null;
 	}
 
 	/**

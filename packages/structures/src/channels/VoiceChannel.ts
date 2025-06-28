@@ -1,6 +1,7 @@
 import type { APIGuildVoiceChannel, ChannelType } from 'discord-api-types/v10';
 import { Mixin } from '../Mixin.js';
 import type { MixinTypes } from '../MixinTypes.d.ts';
+import type { Partialize } from '../utils/types.js';
 import { Channel } from './Channel.js';
 import { ChannelParentMixin } from './mixins/ChannelParentMixin.js';
 import { ChannelPermissionMixin } from './mixins/ChannelPermissionMixin.js';
@@ -24,7 +25,7 @@ export class VoiceChannel<Omitted extends keyof APIGuildVoiceChannel | '' = ''> 
 	ChannelType.GuildVoice,
 	Omitted
 > {
-	public constructor(data: Omit<APIGuildVoiceChannel, Omitted>) {
+	public constructor(data: Partialize<APIGuildVoiceChannel, Omitted>) {
 		super(data);
 		this.optimizeData(data);
 	}

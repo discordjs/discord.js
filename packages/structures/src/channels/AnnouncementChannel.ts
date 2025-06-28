@@ -1,6 +1,7 @@
 import type { APINewsChannel, ChannelType } from 'discord-api-types/v10';
 import { Mixin } from '../Mixin.js';
 import type { MixinTypes } from '../MixinTypes.d.ts';
+import type { Partialize } from '../utils/types.js';
 import { Channel } from './Channel.js';
 import { ChannelParentMixin } from './mixins/ChannelParentMixin.js';
 import { ChannelPermissionMixin } from './mixins/ChannelPermissionMixin.js';
@@ -22,11 +23,14 @@ export interface AnnouncementChannel<Omitted extends keyof APINewsChannel | '' =
 		]
 	> {}
 
+/**
+ * Sample Implementation of a structure for announcement channels, usable by direct end consumers.
+ */
 export class AnnouncementChannel<Omitted extends keyof APINewsChannel | '' = ''> extends Channel<
 	ChannelType.GuildAnnouncement,
 	Omitted
 > {
-	public constructor(data: Omit<APINewsChannel, Omitted>) {
+	public constructor(data: Partialize<APINewsChannel, Omitted>) {
 		super(data);
 		this.optimizeData(data);
 	}

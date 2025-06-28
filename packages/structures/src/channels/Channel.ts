@@ -12,6 +12,7 @@ import type {
 import { Structure } from '../Structure.js';
 import { ChannelFlagsBitField } from '../bitfields/ChannelFlagsBitField.js';
 import { kData } from '../utils/symbols.js';
+import type { Partialize } from '../utils/types.js';
 import type { ChannelPermissionMixin } from './mixins/ChannelPermissionMixin.js';
 import type { ChannelWebhookMixin } from './mixins/ChannelWebhookMixin.js';
 import type { DMChannelMixin } from './mixins/DMChannelMixin.js';
@@ -26,9 +27,9 @@ export type PartialChannel = Channel<ChannelType, Exclude<keyof APIChannel, keyo
 /**
  * @internal
  */
-export type ChannelDataType<Type extends ChannelType> = Type extends ChannelType
+export type ChannelDataType<Type extends ChannelType | 'unknown'> = Type extends ChannelType
 	? Extract<APIChannel, { type: Type }>
-	: never; // TODO: this breaks without a conditional, find out why
+	: APIPartialChannel;
 
 /**
  * Represents any channel on Discord.
@@ -39,7 +40,7 @@ export type ChannelDataType<Type extends ChannelType> = Type extends ChannelType
  * it's intended to be subclassed with the appropriate mixins for each channel type.
  */
 export class Channel<
-	Type extends ChannelType = ChannelType,
+	Type extends ChannelType | 'unknown' = ChannelType,
 	Omitted extends keyof ChannelDataType<Type> | '' = '',
 > extends Structure<ChannelDataType<Type>, Omitted> {
 	/**
@@ -53,17 +54,17 @@ export class Channel<
 	/**
 	 * @param data - The raw data received from the API for the channel
 	 */
-	public constructor(data: Omit<ChannelDataType<Type>, Omitted>) {
+	public constructor(data: Partialize<ChannelDataType<Type>, Omitted>) {
 		super(data as ChannelDataType<Type>);
 	}
 
 	/**
-	 * {@inheritDoc Structure.patch}
+	 * {@inheritDoc Structure._patch}
 	 *
 	 * @internal
 	 */
-	public override patch(data: Partial<ChannelDataType<Type>>) {
-		return super.patch(data);
+	public override _patch(data: Partial<ChannelDataType<Type>>) {
+		return super._patch(data);
 	}
 
 	/**
@@ -98,8 +99,9 @@ export class Channel<
 	 * to null, respecting Omit behaviors
 	 */
 	public get flags() {
-		const flags = this[kData].flags;
-		return flags ? new ChannelFlagsBitField(this[kData].flags as ChannelFlags) : null;
+		const flags =
+			'flags' in this[kData] && typeof this[kData].flags === 'number' ? (this[kData].flags as ChannelFlags) : null;
+		return flags ? new ChannelFlagsBitField(flags) : null;
 	}
 
 	/**

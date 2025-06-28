@@ -2,25 +2,24 @@ import type { APIOverwrite } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { PermissionsBitField } from '../bitfields/PermissionsBitField.js';
 import { kAllow, kData, kDeny } from '../utils/symbols.js';
+import type { Partialize } from '../utils/types.js';
 
 /**
  * Represents metadata of a thread channel on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  */
-export class PermissionOverwrite<Omitted extends keyof APIOverwrite | '' = ''> extends Structure<
+export class PermissionOverwrite<Omitted extends keyof APIOverwrite | '' = 'allow' | 'deny'> extends Structure<
 	APIOverwrite,
 	Omitted
 > {
-	protected [kAllow]: bigint | null;
+	protected [kAllow]: bigint | null = null;
 
-	protected [kDeny]: bigint | null;
+	protected [kDeny]: bigint | null = null;
 
-	public constructor(data: Omit<APIOverwrite, Omitted>) {
+	public constructor(data: Partialize<APIOverwrite, Omitted>) {
 		super(data);
 		this.optimizeData(data);
-		this[kAllow] ??= null;
-		this[kDeny] ??= null;
 	}
 
 	/**
