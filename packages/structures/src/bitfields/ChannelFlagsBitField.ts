@@ -9,4 +9,8 @@ export class ChannelFlagsBitField extends BitField<keyof ChannelFlags> {
 	 * Numeric guild channel flags.
 	 */
 	public static override readonly Flags = ChannelFlags;
+
+	public override toJSON() {
+		return super.toJSON(true);
+	}
 }
