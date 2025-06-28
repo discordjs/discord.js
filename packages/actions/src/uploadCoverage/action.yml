@@ -94,7 +94,7 @@ runs:
       with:
         files: ./packages/structures/coverage/cobertura-coverage.xml
         disable_search: true
-        flags: rest
+        flags: structures
         token: ${{ inputs.CODECOV_TOKEN }}
 
     - name: Upload Util Coverage
