@@ -1,19 +1,13 @@
 import type { ThreadChannelType } from 'discord-api-types/v10';
 import { kData } from '../../utils/symbols.js';
-import type { Channel, ChannelDataType } from '../Channel.js';
+import type { Channel } from '../Channel.js';
 
-export interface ThreadChannelMixin<
-	Type extends ThreadChannelType = ThreadChannelType,
-	Omitted extends keyof ChannelDataType<Type> | '' = '',
-> extends Channel<Type, Omitted> {}
+export interface ThreadChannelMixin<Type extends ThreadChannelType = ThreadChannelType> extends Channel<Type> {}
 
 /**
  * @remarks has a sub-structure {@link ThreadMetadata} that extending mixins should add to their DataTemplate and _optimizeData
  */
-export class ThreadChannelMixin<
-	Type extends ThreadChannelType = ThreadChannelType,
-	Omitted extends keyof ChannelDataType<Type> | '' = '',
-> {
+export class ThreadChannelMixin<Type extends ThreadChannelType = ThreadChannelType> {
 	/**
 	 * The approximate count of users in a thread, stops counting at 50
 	 */
