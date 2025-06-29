@@ -104,7 +104,7 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 * @returns a clone of this
 	 * @internal
 	 */
-	protected clone(patchPayload: Readonly<Partial<DataType>>): typeof this {
+	protected clone(patchPayload?: Readonly<Partial<DataType>> = {}): typeof this {
 		// @ts-expect-error constructor is of abstract class is unknown
 		return new this.constructor(Object.assign(this.toJSON(), patchPayload));
 	}
