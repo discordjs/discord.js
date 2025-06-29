@@ -8,10 +8,9 @@ import type { Partialize } from '../utils/types.js';
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  */
-export class ThreadMetadata<Omitted extends keyof APIThreadMetadata | '' = 'archive_timestamp' | 'create_timestamp'> extends Structure<
-	APIThreadMetadata,
-	Omitted
-> {
+export class ThreadMetadata<
+	Omitted extends keyof APIThreadMetadata | '' = 'archive_timestamp' | 'create_timestamp',
+> extends Structure<APIThreadMetadata, Omitted> {
 	protected [kArchiveTimestamp]: number | null = null;
 
 	protected [kCreatedTimestamp]: number | null = null;
