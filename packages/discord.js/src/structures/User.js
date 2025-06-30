@@ -151,6 +151,30 @@ class User extends Base {
     } else {
       this.avatarDecorationData = null;
     }
+
+    /**
+     * @typedef {Object} UserPrimaryGuild
+     * @property {?Snowflake} identityGuildId - The id of the user's primary guild
+     * @property {?boolean} identityEnabled - Whether the user is displaying the primary guild's server tag
+     * @property {?string} tag - The user's server tag. Limited to 4 characters
+     * @property {?string} badge - The server tag badge hash
+     */
+
+    if (data.primary_guild) {
+      /**
+       * The primary guild of the user
+       *
+       * @type {?UserPrimaryGuild}
+       */
+      this.primaryGuild = {
+        identityGuildId: data.primary_guild.identity_guild_id,
+        identityEnabled: data.primary_guild.identity_enabled,
+        tag: data.primary_guild.tag,
+        badge: data.primary_guild.badge,
+      };
+    } else {
+      this.primaryGuild = null;
+    }
   }
 
   /**
@@ -247,6 +271,19 @@ class User extends Base {
   }
 
   /**
+   * A link to the user's guild tag badge.
+   *
+   * @param {ImageURLOptions} [options={}] Options for the image URL
+   * @returns {?string}
+   */
+  guildTagBadgeURL(options = {}) {
+    return (
+      this.primaryGuild?.badge &&
+      this.client.rest.cdn.guildTagBadge(this.primaryGuild.identityGuildId, this.primaryGuild.badge, options)
+    );
+  }
+
+  /**
    * The tag of this user
    * <info>This user's username, or their legacy tag (e.g. `hydrabolt#0001`)
    * if they're using the legacy username system</info>
@@ -338,7 +375,11 @@ class User extends Base {
       this.banner === user.banner &&
       this.accentColor === user.accentColor &&
       this.avatarDecorationData?.asset === user.avatarDecorationData?.asset &&
-      this.avatarDecorationData?.skuId === user.avatarDecorationData?.skuId
+      this.avatarDecorationData?.skuId === user.avatarDecorationData?.skuId &&
+      this.primaryGuild?.identityGuildId === user.primaryGuild?.identityGuildId &&
+      this.primaryGuild?.identityEnabled === user.primaryGuild?.identityEnabled &&
+      this.primaryGuild?.tag === user.primaryGuild?.tag &&
+      this.primaryGuild?.badge === user.primaryGuild?.badge
     );
   }
 
@@ -363,6 +404,12 @@ class User extends Base {
       ('avatar_decoration_data' in user
         ? this.avatarDecorationData?.asset === user.avatar_decoration_data?.asset &&
           this.avatarDecorationData?.skuId === user.avatar_decoration_data?.sku_id
+        : true) &&
+      ('primary_guild' in user
+        ? this.primaryGuild?.identityGuildId === user.primary_guild?.identity_guild_id &&
+          this.primaryGuild?.identityEnabled === user.primary_guild?.identity_enabled &&
+          this.primaryGuild?.tag === user.primary_guild?.tag &&
+          this.primaryGuild?.badge === user.primary_guild?.badge
         : true)
     );
   }
@@ -402,6 +449,7 @@ class User extends Base {
     json.avatarURL = this.avatarURL();
     json.displayAvatarURL = this.displayAvatarURL();
     json.bannerURL = this.banner ? this.bannerURL() : this.banner;
+    json.guildTagBadgeURL = this.guildTagBadgeURL();
     return json;
   }
 }
