@@ -169,14 +169,11 @@ class RoleManager extends CachedManager {
       if (typeof icon !== 'string') icon = undefined;
     }
 
-    let colors;
-    if (options.colors) {
-      colors = {
-        primary_color: resolveColor(options.colors.primaryColor),
-        secondary_color: options.colors.secondaryColor && resolveColor(options.colors.secondaryColor),
-        tertiary_color: options.colors.tertiaryColor && resolveColor(options.colors.tertiaryColor),
-      };
-    }
+    const colors = options.colors && {
+      primary_color: resolveColor(options.colors.primaryColor),
+      secondary_color: options.colors.secondaryColor && resolveColor(options.colors.secondaryColor),
+      tertiary_color: options.colors.tertiaryColor && resolveColor(options.colors.tertiaryColor),
+    };
 
     const data = await this.client.rest.post(Routes.guildRoles(this.guild.id), {
       body: {
@@ -233,14 +230,11 @@ class RoleManager extends CachedManager {
       if (typeof icon !== 'string') icon = undefined;
     }
 
-    let colors;
-    if (options.colors) {
-      colors = {
-        primary_color: resolveColor(options.colors.primaryColor),
-        secondary_color: options.colors.secondaryColor && resolveColor(options.colors.secondaryColor),
-        tertiary_color: options.colors.tertiaryColor && resolveColor(options.colors.tertiaryColor),
-      };
-    }
+    const colors = options.colors && {
+      primary_color: resolveColor(options.colors.primaryColor),
+      secondary_color: options.colors.secondaryColor && resolveColor(options.colors.secondaryColor),
+      tertiary_color: options.colors.tertiaryColor && resolveColor(options.colors.tertiaryColor),
+    };
 
     const body = {
       name: options.name,
