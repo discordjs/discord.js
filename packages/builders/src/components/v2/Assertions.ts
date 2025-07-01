@@ -71,8 +71,7 @@ export const containerPredicate = z.object({
 				textDisplayPredicate,
 			]),
 		)
-		.min(1)
-		.max(10),
+		.min(1),
 	spoiler: z.boolean().optional(),
 	accent_color: z.number().int().min(0).max(0xffffff).nullish(),
 });
