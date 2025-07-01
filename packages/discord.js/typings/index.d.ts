@@ -2823,9 +2823,16 @@ export class RichPresenceAssets {
   public smallImageURL(options?: ImageURLOptions): string | null;
 }
 
+export interface RoleColors {
+  primaryColor: number;
+  secondaryColor: number | null;
+  tertiaryColor: number | null;
+}
+
 export class Role extends Base {
   private constructor(client: Client<true>, data: APIRole, guild: Guild);
   public color: number;
+  public colors: RoleColors;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public get editable(): boolean;
@@ -2854,6 +2861,7 @@ export class Role extends Base {
     checkAdmin?: boolean,
   ): Readonly<PermissionsBitField>;
   public setColor(color: ColorResolvable, reason?: string): Promise<Role>;
+  public setColors(colors: RoleColors, reason?: string): Promise<Role>;
   public setHoist(hoist?: boolean, reason?: string): Promise<Role>;
   public setMentionable(mentionable?: boolean, reason?: string): Promise<Role>;
   public setName(name: string, reason?: string): Promise<Role>;
@@ -6837,6 +6845,7 @@ export interface ResolvedOverwriteOptions {
 
 export interface RoleData {
   color?: ColorResolvable;
+  colors?: RoleColors;
   hoist?: boolean;
   icon?: Base64Resolvable | BufferResolvable | EmojiResolvable | null;
   mentionable?: boolean;
