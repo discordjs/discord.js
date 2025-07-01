@@ -110,11 +110,22 @@ class RoleManager extends CachedManager {
    */
 
   /**
+   * @typedef {Object} RoleColors
+   * @property {number} primaryColor The primary color of the role
+   * @property {?number} secondaryColor The secondary color of the role.
+   * This will make the role a gradient between the other provided colors
+   * @property {?number} tertiaryColor The tertiary color of the role.
+   * When sending `tertiaryColor` the API enforces the role color to be a holographic style with values of `primaryColor = 11127295`, `secondaryColor = 16759788`, and `tertiaryColor = 16761760`
+   */
+
+  /**
    * Options used to create a new role.
    *
    * @typedef {Object} RoleCreateOptions
    * @property {string} [name] The name of the new role
-   * @property {ColorResolvable} [color] The data to create the role with
+   * @property {ColorResolvable} [color] The color to create the role with.
+   * This will still be returned by the API, but using the `colors` field is recommended when doing requests
+   * @property {RoleColors} [colors] The colors to create the role with
    * @property {boolean} [hoist] Whether or not the new role should be hoisted
    * @property {PermissionResolvable} [permissions] The permissions for the new role
    * @property {number} [position] The position of the new role
@@ -158,10 +169,20 @@ class RoleManager extends CachedManager {
       if (typeof icon !== 'string') icon = undefined;
     }
 
+    let colors;
+    if (options.colors) {
+      colors = {
+        primary_color: resolveColor(options.colors.primaryColor),
+        secondary_color: options.colors.secondaryColor && resolveColor(options.colors.secondaryColor),
+        tertiary_color: options.colors.tertiaryColor && resolveColor(options.colors.tertiaryColor),
+      };
+    }
+
     const data = await this.client.rest.post(Routes.guildRoles(this.guild.id), {
       body: {
         name,
         color,
+        colors,
         hoist,
         permissions,
         mentionable,
@@ -212,9 +233,19 @@ class RoleManager extends CachedManager {
       if (typeof icon !== 'string') icon = undefined;
     }
 
+    let colors;
+    if (options.colors) {
+      colors = {
+        primary_color: resolveColor(options.colors.primaryColor),
+        secondary_color: options.colors.secondaryColor && resolveColor(options.colors.secondaryColor),
+        tertiary_color: options.colors.tertiaryColor && resolveColor(options.colors.tertiaryColor),
+      };
+    }
+
     const body = {
       name: options.name,
       color: options.color === undefined ? undefined : resolveColor(options.color),
+      colors,
       hoist: options.hoist,
       permissions: options.permissions === undefined ? undefined : new PermissionsBitField(options.permissions),
       mentionable: options.mentionable,
