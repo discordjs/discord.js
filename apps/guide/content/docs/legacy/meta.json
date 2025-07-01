@@ -1,9 +1,9 @@
 {
 	"pages": [
-		"[Info][Introduction](/guide/legacy)",
 		"[MessageCircleQuestion][FAQ](/guide/legacy/popular-topics/faq)",
 		"[ArrowDownToLine][Updating to v14](/guide/legacy/additional-info/changes-in-v14)",
 		"[LibraryBig][Documentation](https://discord.js.org/docs)",
+		"[Info][Introduction](/guide/legacy)",
 		"---Setup---",
 		"preparations",
 		"---Your App---",
