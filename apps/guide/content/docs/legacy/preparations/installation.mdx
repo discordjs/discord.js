@@ -2,7 +2,7 @@
 title: Installing Node.js and discord.js
 ---
 
-import { Grid2x2, Apple, Cpu } from 'lucide-react';
+import { Grid2x2, Apple, Cpu, Zap, Package } from 'lucide-react';
 
 ## Installing Node.js
 
@@ -14,16 +14,22 @@ To use discord.js, you'll need to install the latest LTS version of [Node.js](ht
 </Callout>
 
 <Cards>
-	<Card icon={<Grid2x2 />} title="Windows">
-		Download the latest version from [the Node.js website](https://nodejs.org/), open the downloaded file, and follow
-		the steps from the installer.
+	<Card icon={<Zap />} title="Volta" href="https://volta.sh/">
+		Use volta to manage your node version cross-platform.
 	</Card>
-	<Card icon={<Apple />} title="macOS">
-		Download the latest version from [the Node.js website](https://nodejs.org/), open the package installer, and follow
-		the instructions - Use a package manager like [Homebrew](https://brew.sh/) with the command `brew install node`
+	<Card icon={<Package />} title="Fast Node Manager" href="https://github.com/Schniz/fnm">
+		Use `Fast node Manager` to manage your node version cross-platform.
 	</Card>
-	<Card icon={<Cpu />} title="Linux">
-		Consult [this page](https://nodejs.org/en/download/package-manager/) to determine how you should install Node.
+	<Card icon={<Grid2x2 />} title="Windows" href="https://nodejs.org/en/download">
+		Download the latest version from the Node.js website, open the downloaded file, and follow the steps from the
+		installer.
+	</Card>
+	<Card icon={<Apple />} title="macOS" href="https://nodejs.org/en/download">
+		Download the latest version from the Node.js website, open the package installer, and follow the instructions.
+		Alternatively you can use a package manager like Homebrew with the command `brew install node`
+	</Card>
+	<Card icon={<Cpu />} title="Linux" href="https://nodejs.org/en/download">
+		Determine how you should install Node with out package manager of choice.
 	</Card>
 </Cards>
 
