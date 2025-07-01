@@ -11,61 +11,53 @@ title: Installation
 To add voice functionality to your discord.js bot, you will need the `@discordjs/voice` package, as well as one of the encryption packages listed below. For example:
 
 ```sh tab="npm"
-npm install @discordjs/voice libsodium-wrappers
+npm install @discordjs/voice
 ```
 
 ```sh tab="yarn"
-yarn add @discordjs/voice libsodium-wrappers
+yarn add @discordjs/voice
 ```
 
 ```sh tab="pnpm"
-pnpm add @discordjs/voice libsodium-wrappers
+pnpm add @discordjs/voice
 ```
 
 ```sh tab="bun"
-bun add @discordjs/voice libsodium-wrappers
+bun add @discordjs/voice
 ```
 
 After this, you'll be able to play Ogg and WebM Opus files without any other dependencies. If you want to play audio from other sources, or want to improve performance, consider installing some of the extra dependencies listed below.
 
-<Callout>
-	This guide assumes you have installed at least one additional dependency – FFmpeg. More information on this can be
-	found in the section below.
-</Callout>
-
 ### Extra Dependencies
 
-- An Opus encoding library
-  - [`@discordjs/opus`](https://github.com/discordjs/opus) (best performance)
-  - [`opusscript`](https://github.com/abalabahaha/opusscript/)
-- FFmpeg – allows you to play a range of media (e.g. MP3s).
-  - [`ffmpeg`](https://ffmpeg.org/) - install and add to your system environment
-  - [`ffmpeg-static`](https://www.npmjs.com/package/ffmpeg-static) - to install FFmpeg via npm
-- Encryption packages
-  - [`sodium`](https://www.npmjs.com/package/sodium) (best performance)
-  - [`sodium-native`](https://www.npmjs.com/package/sodium-native)
-  - [`libsodium-wrappers`](https://www.npmjs.com/package/libsodium-wrappers)
-  - [`tweetnacl`](https://www.npmjs.com/package/tweetnacl)
+#### Opus encoding
 
-Outside a development environment, it is recommended for you to use `@discordjs/opus` and `sodium` to improve performance and improve the stability of audio playback!
+- [`@discordjs/opus`](https://github.com/discordjs/opus) (best performance)
+- [`opusscript`](https://github.com/abalabahaha/opusscript/)
 
-If you're struggling to install these dependencies, make sure you have build tools installed first. On Windows, this is as easy as running the following command!
+#### FFmpeg – allows you to play a range of media (e.g. MP3s).
 
-```sh tab="npm"
-npm install --global --production --add-python-to-path windows-build-tools
-```
+- [`ffmpeg`](https://ffmpeg.org/) - install and add to your system environment
+- [`ffmpeg-static`](https://www.npmjs.com/package/ffmpeg-static) - to install FFmpeg via npm
 
-```sh tab="yarn"
-yarn global add --production --add-python-to-path windows-build-tools
-```
+#### Encryption libraries
 
-```sh tab="pnpm"
-pnpm add --global --production --add-python-to-path windows-build-tools
-```
+<Callout>
+	You only need to install one of these libraries if your system does not support `aes-256-gcm`. You can verify this by
+	running `require('node:crypto').getCiphers().includes('aes-256-gcm')`
+</Callout>
 
-```sh tab="bun"
-bun add --global --production --add-python-to-path windows-build-tools
-```
+- [`sodium-native`](https://www.npmjs.com/package/sodium-native)
+- [`sodium`](https://www.npmjs.com/package/sodium) (best performance)
+- [`@stablelib/xchacha20poly1305`](https://www.npmjs.com/package/@stablelib/xchacha20poly1305)
+- [`@noble/ciphers`](https://www.npmjs.com/package/@noble/ciphers)
+- [`libsodium-wrappers`](https://www.npmjs.com/package/libsodium-wrappers)
+
+<Callout>
+	If you are facing issues when installing these dependencies, make sure you ticked the box to install optional build
+	tools when installing Node.js or try manually installing build tools and python: ```sh winget install "Visual Studio
+	Community 2022" --override "--add Microsoft.VisualStudio.Workload.NativeDesktop " -s msstore ```
+</Callout>
 
 ## Debugging Dependencies
 
