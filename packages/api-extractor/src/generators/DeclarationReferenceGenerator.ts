@@ -15,6 +15,7 @@ import { TypeScriptHelpers } from '../analyzer/TypeScriptHelpers.js';
 import { TypeScriptInternals } from '../analyzer/TypeScriptInternals.js';
 import type { Collector } from '../collector/Collector.js';
 import type { CollectorEntity } from '../collector/CollectorEntity.js';
+import type { IWorkingPackageEntryPoint } from '../collector/WorkingPackage.js';
 
 export class DeclarationReferenceGenerator {
 	public static readonly unknownReference: string = '?';
@@ -28,14 +29,25 @@ export class DeclarationReferenceGenerator {
 	/**
 	 * Gets the UID for a TypeScript Identifier that references a type.
 	 */
-	public getDeclarationReferenceForIdentifier(node: ts.Identifier): DeclarationReference | undefined {
+	public getDeclarationReferenceForIdentifier(
+		node: ts.Identifier,
+		entryPoint: IWorkingPackageEntryPoint,
+	): DeclarationReference | undefined {
 		const symbol: ts.Symbol | undefined = this._collector.typeChecker.getSymbolAtLocation(node);
 		if (symbol !== undefined) {
 			const isExpression: boolean = DeclarationReferenceGenerator._isInExpressionContext(node);
 			return (
-				this.getDeclarationReferenceForSymbol(symbol, isExpression ? ts.SymbolFlags.Value : ts.SymbolFlags.Type) ??
-				this.getDeclarationReferenceForSymbol(symbol, isExpression ? ts.SymbolFlags.Type : ts.SymbolFlags.Value) ??
-				this.getDeclarationReferenceForSymbol(symbol, ts.SymbolFlags.Namespace)
+				this.getDeclarationReferenceForSymbol(
+					symbol,
+					isExpression ? ts.SymbolFlags.Value : ts.SymbolFlags.Type,
+					entryPoint,
+				) ??
+				this.getDeclarationReferenceForSymbol(
+					symbol,
+					isExpression ? ts.SymbolFlags.Type : ts.SymbolFlags.Value,
+					entryPoint,
+				) ??
+				this.getDeclarationReferenceForSymbol(symbol, ts.SymbolFlags.Namespace, entryPoint)
 			);
 		}
 
@@ -48,8 +60,9 @@ export class DeclarationReferenceGenerator {
 	public getDeclarationReferenceForSymbol(
 		symbol: ts.Symbol,
 		meaning: ts.SymbolFlags,
+		entryPoint: IWorkingPackageEntryPoint,
 	): DeclarationReference | undefined {
-		return this._symbolToDeclarationReference(symbol, meaning, /* includeModuleSymbols*/ false);
+		return this._symbolToDeclarationReference(symbol, meaning, /* includeModuleSymbols*/ false, entryPoint);
 	}
 
 	private static _isInExpressionContext(node: ts.Node): boolean {
@@ -197,6 +210,7 @@ export class DeclarationReferenceGenerator {
 		symbol: ts.Symbol,
 		meaning: ts.SymbolFlags,
 		includeModuleSymbols: boolean,
+		entryPoint: IWorkingPackageEntryPoint,
 	): DeclarationReference | undefined {
 		const declaration: ts.Node | undefined = TypeScriptHelpers.tryGetADeclaration(symbol);
 		const sourceFile: ts.SourceFile | undefined = declaration?.getSourceFile();
@@ -221,7 +235,7 @@ export class DeclarationReferenceGenerator {
 				return undefined;
 			}
 
-			return new DeclarationReference(this._sourceFileToModuleSource(sourceFile));
+			return new DeclarationReference(this._sourceFileToModuleSource(sourceFile, entryPoint));
 		}
 
 		// Do not generate a declaration reference for a type parameter.
@@ -229,7 +243,7 @@ export class DeclarationReferenceGenerator {
 			return undefined;
 		}
 
-		let parentRef: DeclarationReference | undefined = this._getParentReference(followedSymbol);
+		let parentRef: DeclarationReference | undefined = this._getParentReference(followedSymbol, entryPoint);
 		if (!parentRef) {
 			return undefined;
 		}
@@ -276,7 +290,10 @@ export class DeclarationReferenceGenerator {
 			.withMeaning(DeclarationReferenceGenerator._getMeaningOfSymbol(followedSymbol, meaning) as any);
 	}
 
-	private _getParentReference(symbol: ts.Symbol): DeclarationReference | undefined {
+	private _getParentReference(
+		symbol: ts.Symbol,
+		entryPoint: IWorkingPackageEntryPoint,
+	): DeclarationReference | undefined {
 		const declaration: ts.Node | undefined = TypeScriptHelpers.tryGetADeclaration(symbol);
 		const sourceFile: ts.SourceFile | undefined = declaration?.getSourceFile();
 
@@ -286,7 +303,7 @@ export class DeclarationReferenceGenerator {
 		const entity: CollectorEntity | undefined = this._collector.tryGetEntityForSymbol(symbol);
 		if (entity) {
 			if (entity.exportedFromEntryPoint) {
-				return new DeclarationReference(this._sourceFileToModuleSource(sourceFile));
+				return new DeclarationReference(this._sourceFileToModuleSource(sourceFile, entryPoint));
 			}
 
 			const firstExportingConsumableParent: CollectorEntity | undefined = entity.getFirstExportingConsumableParent();
@@ -296,7 +313,12 @@ export class DeclarationReferenceGenerator {
 					this._collector.typeChecker,
 				);
 				if (parentSymbol) {
-					return this._symbolToDeclarationReference(parentSymbol, parentSymbol.flags, /* includeModuleSymbols*/ true);
+					return this._symbolToDeclarationReference(
+						parentSymbol,
+						parentSymbol.flags,
+						/* includeModuleSymbols*/ true,
+						entryPoint,
+					);
 				}
 			}
 		}
@@ -304,7 +326,12 @@ export class DeclarationReferenceGenerator {
 		// Next, try to find a parent symbol via the symbol tree.
 		const parentSymbol: ts.Symbol | undefined = TypeScriptInternals.getSymbolParent(symbol);
 		if (parentSymbol) {
-			return this._symbolToDeclarationReference(parentSymbol, parentSymbol.flags, /* includeModuleSymbols*/ true);
+			return this._symbolToDeclarationReference(
+				parentSymbol,
+				parentSymbol.flags,
+				/* includeModuleSymbols*/ true,
+				entryPoint,
+			);
 		}
 
 		// If that doesn't work, try to find a parent symbol via the node tree. As far as we can tell,
@@ -330,19 +357,20 @@ export class DeclarationReferenceGenerator {
 					grandParentSymbol,
 					grandParentSymbol.flags,
 					/* includeModuleSymbols*/ true,
+					entryPoint,
 				);
 			}
 		}
 
 		// At this point, we have a local symbol in a module.
 		if (sourceFile && ts.isExternalModule(sourceFile)) {
-			return new DeclarationReference(this._sourceFileToModuleSource(sourceFile));
+			return new DeclarationReference(this._sourceFileToModuleSource(sourceFile, entryPoint));
 		} else {
 			return new DeclarationReference(GlobalSource.instance);
 		}
 	}
 
-	private _getEntryPointName(sourceFile: ts.SourceFile): string {
+	private _getEntryPointName(sourceFile: ts.SourceFile, entry: IWorkingPackageEntryPoint): string {
 		if (this._collector.program.isSourceFileFromExternalLibrary(sourceFile)) {
 			const packageJson: INodePackageJson | undefined = this._collector.packageJsonLookup.tryLoadNodePackageJsonFor(
 				sourceFile.fileName,
@@ -365,19 +393,17 @@ export class DeclarationReferenceGenerator {
 			return DeclarationReferenceGenerator.unknownReference;
 		}
 
-		let modulePath = '';
-		for (const entryPoint of this._collector.workingPackage.entryPoints) {
-			if (entryPoint.sourceFile === sourceFile) {
-				modulePath = entryPoint.modulePath;
-			}
-		}
+		const modulePath = entry.modulePath;
 
 		return `${this._collector.workingPackage.name}${modulePath ? `/${modulePath}` : ''}`;
 	}
 
-	private _sourceFileToModuleSource(sourceFile: ts.SourceFile | undefined): GlobalSource | ModuleSource {
+	private _sourceFileToModuleSource(
+		sourceFile: ts.SourceFile | undefined,
+		entryPoint: IWorkingPackageEntryPoint,
+	): GlobalSource | ModuleSource {
 		if (sourceFile && ts.isExternalModule(sourceFile)) {
-			const packageName: string = this._getEntryPointName(sourceFile);
+			const packageName: string = this._getEntryPointName(sourceFile, entryPoint);
 
 			if (this._collector.bundledPackageNames.has(packageName)) {
 				// The api-extractor.json config file has a "bundledPackages" setting, which causes imports from
