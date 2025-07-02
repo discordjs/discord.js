@@ -71,7 +71,7 @@ filter_commits = true
 protect_breaking_commits = true
 tag_pattern = "@discordjs/structures@[0-9]*"
 ignore_tags = ""
-topo_order = true
+topo_order = false
 sort_commits = "newest"
 
 [remote.github]

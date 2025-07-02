@@ -1577,9 +1577,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^3.1.1
         version: 3.1.4(vitest@3.1.4(@edge-runtime/vm@3.2.0)(@types/debug@4.1.12)(@types/node@22.15.26)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.0)(tsx@4.19.2)(yaml@2.8.0))
-      cpy-cli:
-        specifier: ^5.0.0
-        version: 5.0.0
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
