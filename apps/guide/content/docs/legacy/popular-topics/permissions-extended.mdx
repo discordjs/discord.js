@@ -48,12 +48,14 @@ One possible scenario causing this: the channel has permission overwrites for th
 
 As you only check for `SendMessages`, the bot will try to execute the send, but since `ViewChannel` is missing, the API denies the request.
 
+{/* prettier-ignore */}
 <Callout title='Causes for "Missing Access"'>
-	- Text Channels require `ViewChannel` as detailed above. - Voice Channels require `Connect` in the same way. -
-	Reacting to a message requires `ReadMessageHistory` in the channel the message was sent. - When deploying slash
-	commands: Enable the `applications.commands` scope (for more information see the [adding your
-	bot](../preparations/adding-your-app) section). - Timing out a member requires `ModerateMembers`. - Editing threads
-	(tags, locking, closing, etc.) requires `SendMessagesInThreads`.
+	- Text Channels require `ViewChannel` as detailed above.
+	- Voice Channels require `Connect` in the same way.
+	- Reacting to a message requires `ReadMessageHistory` in the channel the message was sent.
+	- When deploying slash commands: Enable the `applications.commands` scope (for more information see the [adding your bot](../preparations/adding-your-app) section).
+	- Timing out a member requires `ModerateMembers`.
+	- Editing threads (tags, locking, closing, renaming etc.) requires `SendMessagesInThreads`.
 </Callout>
 
 ## Limitations and oddities
