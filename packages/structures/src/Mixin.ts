@@ -60,7 +60,7 @@ export function Mixin<DestinationClass extends typeof Structure<unknown>>(
 		}
 
 		for (const prototype of prototypeChain) {
-			// Synboled data isn't traversed by Object.entries, we can handle it here
+			// Symboled data isn't traversed by Object.entries, we can handle it here
 			if (prototype[kMixinConstruct]) {
 				constructors.push(prototype[kMixinConstruct]);
 			}
