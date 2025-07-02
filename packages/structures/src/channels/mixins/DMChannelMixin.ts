@@ -1,6 +1,6 @@
 import { channelLink } from '@discordjs/formatters';
 import type { ChannelType } from 'discord-api-types/v10';
-import type { User } from '../../users';
+import type { User } from '../../users/User.js';
 import type { Channel } from '../Channel.js';
 
 export interface DMChannelMixin<Type extends ChannelType.DM | ChannelType.GroupDM> extends Channel<Type> {}
@@ -17,7 +17,7 @@ export class DMChannelMixin<Type extends ChannelType.DM | ChannelType.GroupDM> {
 	}
 
 	/**
-	 * Indiciates whether this channel is a DM or DM Group
+	 * Indicates whether this channel is a DM or DM Group
 	 */
 	public isDMBased(): this is DMChannelMixin<Extract<Type, ChannelType.DM | ChannelType.GroupDM>> {
 		return true;

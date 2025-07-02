@@ -68,7 +68,7 @@ export class PermissionsBitField extends BitField<keyof typeof PermissionFlagsBi
 	}
 
 	/**
-	 * Gets an {@link Array} of bitfield names based on the permissions available.
+	 * Gets an Array of bitfield names based on the permissions available.
 	 *
 	 * @returns
 	 */

@@ -1,4 +1,4 @@
-import type { EnumLike, NonAbstract, RecursiveReadonlyArray } from '../utils/types';
+import type { EnumLike, NonAbstract, RecursiveReadonlyArray } from '../utils/types.js';
 
 /**
  * Data that can be resolved to give a bitfield. This can be:
@@ -129,8 +129,7 @@ export abstract class BitField<Flags extends string> {
 	}
 
 	/**
-	 * Gets an object mapping field names to a {@link boolean} indicating whether the
-	 * bit is available.
+	 * Gets an object mapping field names to a boolean indicating whether the bit is available.
 	 *
 	 * @param hasParams - Additional parameters for the has method, if any
 	 * @returns
@@ -145,7 +144,7 @@ export abstract class BitField<Flags extends string> {
 	}
 
 	/**
-	 * Gets an {@link Array} of bitfield names based on the bits available.
+	 * Gets an Array of bitfield names based on the bits available.
 	 *
 	 * @param hasParams - Additional parameters for the has method, if any
 	 * @returns

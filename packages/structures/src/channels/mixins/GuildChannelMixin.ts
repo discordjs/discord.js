@@ -32,7 +32,7 @@ export class GuildChannelMixin<Type extends GuildChannelType> {
 	}
 
 	/**
-	 * Indiciates whether this channel is in a guild
+	 * Indicates whether this channel is in a guild
 	 */
 	public isGuildBased(): this is GuildChannelMixin<Extract<Type, GuildChannelType>> {
 		return true;

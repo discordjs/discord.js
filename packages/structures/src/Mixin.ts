@@ -118,7 +118,7 @@ export function Mixin<DestinationClass extends typeof Structure<unknown>>(
 	// Combine all optimizations into a single function
 	const baseOptimize = Object.getOwnPropertyDescriptor(destination, OptimizeDataPropertyName);
 	if (baseOptimize && typeof baseOptimize.value === 'function') {
-		// call base last (mimick constructor behavior)
+		// call base last (mimic constructor behavior)
 		dataOptimizations.push(baseOptimize.value);
 	}
 
@@ -128,7 +128,7 @@ export function Mixin<DestinationClass extends typeof Structure<unknown>>(
 	);
 	// the mixin base optimize should call super, so we can ignore the super in that case
 	if (!baseOptimize && superOptimize && typeof superOptimize.value === 'function') {
-		// call super first (mimick constructor behavior)
+		// call super first (mimic constructor behavior)
 		dataOptimizations.unshift(superOptimize.value);
 	}
 

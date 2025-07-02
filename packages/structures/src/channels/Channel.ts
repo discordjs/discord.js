@@ -124,7 +124,7 @@ export class Channel<
 	/**
 	 * Indicates whether this channel is a thread channel
 	 *
-	 * @privateRemarks Overriden to `true` on `ThreadChannelMixin`
+	 * @privateRemarks Overridden to `true` on `ThreadChannelMixin`
 	 */
 	public isThread(): this is ThreadChannelMixin<Extract<Type, ThreadChannelType>> {
 		return false;
@@ -133,16 +133,16 @@ export class Channel<
 	/**
 	 * Indicates whether this channel can contain messages
 	 *
-	 * @privateRemarks Overriden to `true` on `TextChannelMixin`
+	 * @privateRemarks Overridden to `true` on `TextChannelMixin`
 	 */
 	public isTextBased(): this is TextChannelMixin<Extract<Type, TextChannelType>> {
 		return false;
 	}
 
 	/**
-	 * Indiciates whether this channel is in a guild
+	 * Indicates whether this channel is in a guild
 	 *
-	 * @privateRemarks Overriden to `true` on `GuildChannelMixin`
+	 * @privateRemarks Overridden to `true` on `GuildChannelMixin`
 	 */
 	public isGuildBased(): this is GuildChannelMixin<Extract<Type, GuildChannelType>> {
 		return false;
@@ -151,7 +151,7 @@ export class Channel<
 	/**
 	 * Indicates whether this channel is a DM or DM Group
 	 *
-	 * @privateRemarks Overriden to `true` on `DMChannelMixin`
+	 * @privateRemarks Overridden to `true` on `DMChannelMixin`
 	 */
 	public isDMBased(): this is DMChannelMixin<Extract<Type, ChannelType.DM | ChannelType.GroupDM>> {
 		return false;
@@ -160,7 +160,7 @@ export class Channel<
 	/**
 	 * Indicates whether this channel has voice connection capabilities
 	 *
-	 * @privateRemarks Overriden to `true` on `VoiceChannelMixin`
+	 * @privateRemarks Overridden to `true` on `VoiceChannelMixin`
 	 */
 	public isVoiceBased(): this is VoiceChannelMixin<
 		Extract<Type, ChannelType.GuildStageVoice | ChannelType.GuildVoice>
@@ -171,7 +171,7 @@ export class Channel<
 	/**
 	 * Indicates whether this channel only allows thread creation
 	 *
-	 * @privateRemarks Overriden to `true` on `ThreadOnlyChannelMixin`
+	 * @privateRemarks Overridden to `true` on `ThreadOnlyChannelMixin`
 	 */
 	public isThreadOnly(): this is ThreadOnlyChannelMixin<
 		Extract<Type, ChannelType.GuildForum | ChannelType.GuildMedia>
@@ -182,9 +182,9 @@ export class Channel<
 	/**
 	 * Indicates whether this channel can have permission overwrites
 	 *
-	 * @privateRemarks Overriden to `true` on `ChannelPermissionsMixin`
+	 * @privateRemarks Overridden to `true` on `ChannelPermissionsMixin`
 	 */
-	public isPermissionCapabale(): this is ChannelPermissionMixin<
+	public isPermissionCapable(): this is ChannelPermissionMixin<
 		Extract<Type, Exclude<GuildChannelType, ChannelType.GuildDirectory | ThreadChannelType>>
 	> {
 		return false;
@@ -193,7 +193,7 @@ export class Channel<
 	/**
 	 * Indicates whether this channel can have webhooks
 	 *
-	 * @privateRemarks Overriden to `true` on `ChannelWebhooksMixin`
+	 * @privateRemarks Overridden to `true` on `ChannelWebhooksMixin`
 	 */
 	public isWebhookCapable(): this is ChannelWebhookMixin<
 		Extract<Type, ChannelType.GuildForum | ChannelType.GuildMedia | Exclude<GuildTextChannelType, ThreadChannelType>>

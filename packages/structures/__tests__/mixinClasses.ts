@@ -128,5 +128,5 @@ export class MixedWithExtended extends Base {
 	}
 }
 
-// Intentiontally don't directly mix Property 2
+// Intentionally don't directly mix Property 2
 Mixin(MixedWithExtended, [MixinProperty1, ExtendedMixinProperty2]);

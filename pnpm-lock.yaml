@@ -1552,6 +1552,9 @@ importers:
 
   packages/structures:
     dependencies:
+      '@discordjs/formatters':
+        specifier: workspace:^
+        version: link:../formatters
       '@sapphire/snowflake':
         specifier: ^3.5.5
         version: 3.5.5
@@ -1562,9 +1565,6 @@ importers:
       '@discordjs/api-extractor':
         specifier: workspace:^
         version: link:../api-extractor
-      '@discordjs/formatters':
-        specifier: workspace:^
-        version: link:../formatters
       '@discordjs/scripts':
         specifier: workspace:^
         version: link:../scripts
@@ -1577,6 +1577,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^3.1.1
         version: 3.1.4(vitest@3.1.4(@edge-runtime/vm@3.2.0)(@types/debug@4.1.12)(@types/node@22.15.26)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.0)(tsx@4.19.2)(yaml@2.8.0))
+      cpy-cli:
+        specifier: ^5.0.0
+        version: 5.0.0
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -1604,6 +1607,9 @@ importers:
       tsup:
         specifier: ^8.4.0
         version: 8.5.0(@microsoft/api-extractor@7.52.3(@types/node@22.15.26))(jiti@2.4.2)(postcss@8.5.4)(tsx@4.19.2)(typescript@5.8.3)(yaml@2.8.0)
+      turbo:
+        specifier: ^2.5.2
+        version: 2.5.3
       typescript:
         specifier: ~5.8.3
         version: 5.8.3

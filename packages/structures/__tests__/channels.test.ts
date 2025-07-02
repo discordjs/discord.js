@@ -38,8 +38,8 @@ import {
 	TextChannel,
 	ThreadMetadata,
 	VoiceChannel,
-} from '../src';
-import { kData } from '../src/utils/symbols';
+} from '../src/index.js';
+import { kData } from '../src/utils/symbols.js';
 
 describe('text channel', () => {
 	const data: APITextChannel = {
@@ -88,11 +88,11 @@ describe('text channel', () => {
 		expect(instance.toJSON()).toEqual(data);
 	});
 
-	test('typeguards', () => {
+	test('type guards', () => {
 		const instance = new TextChannel(data);
 		expect(instance.isDMBased()).toBe(false);
 		expect(instance.isGuildBased()).toBe(true);
-		expect(instance.isPermissionCapabale()).toBe(true);
+		expect(instance.isPermissionCapable()).toBe(true);
 		expect(instance.isTextBased()).toBe(true);
 		expect(instance.isThread()).toBe(false);
 		expect(instance.isThreadOnly()).toBe(false);
@@ -149,11 +149,11 @@ describe('announcement channel', () => {
 		expect(instance.toJSON()).toEqual(data);
 	});
 
-	test('typeguards', () => {
+	test('type guards', () => {
 		const instance = new AnnouncementChannel(data);
 		expect(instance.isDMBased()).toBe(false);
 		expect(instance.isGuildBased()).toBe(true);
-		expect(instance.isPermissionCapabale()).toBe(true);
+		expect(instance.isPermissionCapable()).toBe(true);
 		expect(instance.isTextBased()).toBe(true);
 		expect(instance.isThread()).toBe(false);
 		expect(instance.isThreadOnly()).toBe(false);
@@ -192,11 +192,11 @@ describe('category channel', () => {
 		expect(instance.toJSON()).toEqual(data);
 	});
 
-	test('typeguards', () => {
+	test('type guards', () => {
 		const instance = new CategoryChannel(data);
 		expect(instance.isDMBased()).toBe(false);
 		expect(instance.isGuildBased()).toBe(true);
-		expect(instance.isPermissionCapabale()).toBe(true);
+		expect(instance.isPermissionCapable()).toBe(true);
 		expect(instance.isTextBased()).toBe(false);
 		expect(instance.isThread()).toBe(false);
 		expect(instance.isThreadOnly()).toBe(false);
@@ -247,11 +247,11 @@ describe('DM channel', () => {
 		expect(instance.toJSON()).toEqual(dataNoRecipients);
 	});
 
-	test('typeguards', () => {
+	test('type guards', () => {
 		const instance = new DMChannel(data);
 		expect(instance.isDMBased()).toBe(true);
 		expect(instance.isGuildBased()).toBe(false);
-		expect(instance.isPermissionCapabale()).toBe(false);
+		expect(instance.isPermissionCapable()).toBe(false);
 		expect(instance.isTextBased()).toBe(true);
 		expect(instance.isThread()).toBe(false);
 		expect(instance.isThreadOnly()).toBe(false);
@@ -298,11 +298,11 @@ describe('GroupDM channel', () => {
 		expect(instance.toJSON()).toEqual(data);
 	});
 
-	test('typeguards', () => {
+	test('type guards', () => {
 		const instance = new GroupDMChannel(data);
 		expect(instance.isDMBased()).toBe(true);
 		expect(instance.isGuildBased()).toBe(false);
-		expect(instance.isPermissionCapabale()).toBe(false);
+		expect(instance.isPermissionCapable()).toBe(false);
 		expect(instance.isTextBased()).toBe(true);
 		expect(instance.isThread()).toBe(false);
 		expect(instance.isThreadOnly()).toBe(false);
@@ -373,11 +373,11 @@ describe('forum channel', () => {
 		expect(instance.toJSON()).toEqual(data);
 	});
 
-	test('typeguards', () => {
+	test('type guards', () => {
 		const instance = new ForumChannel(data);
 		expect(instance.isDMBased()).toBe(false);
 		expect(instance.isGuildBased()).toBe(true);
-		expect(instance.isPermissionCapabale()).toBe(true);
+		expect(instance.isPermissionCapable()).toBe(true);
 		expect(instance.isTextBased()).toBe(false);
 		expect(instance.isThread()).toBe(false);
 		expect(instance.isThreadOnly()).toBe(true);
@@ -457,11 +457,11 @@ describe('media channel', () => {
 		expect(instance.toJSON()).toEqual(data);
 	});
 
-	test('typeguards', () => {
+	test('type guards', () => {
 		const instance = new MediaChannel(data);
 		expect(instance.isDMBased()).toBe(false);
 		expect(instance.isGuildBased()).toBe(true);
-		expect(instance.isPermissionCapabale()).toBe(true);
+		expect(instance.isPermissionCapable()).toBe(true);
 		expect(instance.isTextBased()).toBe(false);
 		expect(instance.isThread()).toBe(false);
 		expect(instance.isThreadOnly()).toBe(true);
@@ -522,11 +522,11 @@ describe('voice channel', () => {
 		expect(instance.toJSON()).toEqual(data);
 	});
 
-	test('typeguards', () => {
+	test('type guards', () => {
 		const instance = new VoiceChannel(data);
 		expect(instance.isDMBased()).toBe(false);
 		expect(instance.isGuildBased()).toBe(true);
-		expect(instance.isPermissionCapabale()).toBe(true);
+		expect(instance.isPermissionCapable()).toBe(true);
 		expect(instance.isTextBased()).toBe(true);
 		expect(instance.isThread()).toBe(false);
 		expect(instance.isThreadOnly()).toBe(false);
@@ -580,11 +580,11 @@ describe('stage channel', () => {
 		expect(instance.toJSON()).toEqual(data);
 	});
 
-	test('typeguards', () => {
+	test('type guards', () => {
 		const instance = new StageChannel(data);
 		expect(instance.isDMBased()).toBe(false);
 		expect(instance.isGuildBased()).toBe(true);
-		expect(instance.isPermissionCapabale()).toBe(true);
+		expect(instance.isPermissionCapable()).toBe(true);
 		expect(instance.isTextBased()).toBe(true);
 		expect(instance.isThread()).toBe(false);
 		expect(instance.isThreadOnly()).toBe(false);
@@ -652,11 +652,11 @@ describe('thread channels', () => {
 		expect(instance.toJSON()).toEqual(dataPublic);
 	});
 
-	test('typeguards PublicThread', () => {
+	test('type guards PublicThread', () => {
 		const instance = new PublicThreadChannel(dataPublic);
 		expect(instance.isDMBased()).toBe(false);
 		expect(instance.isGuildBased()).toBe(true);
-		expect(instance.isPermissionCapabale()).toBe(false);
+		expect(instance.isPermissionCapable()).toBe(false);
 		expect(instance.isTextBased()).toBe(true);
 		expect(instance.isThread()).toBe(true);
 		expect(instance.isThreadOnly()).toBe(false);
@@ -680,11 +680,11 @@ describe('thread channels', () => {
 		expect(instance.toJSON()).toEqual(dataPrivate);
 	});
 
-	test('typeguards PrivateThread', () => {
+	test('type guards PrivateThread', () => {
 		const instance = new PrivateThreadChannel(dataPrivate);
 		expect(instance.isDMBased()).toBe(false);
 		expect(instance.isGuildBased()).toBe(true);
-		expect(instance.isPermissionCapabale()).toBe(false);
+		expect(instance.isPermissionCapable()).toBe(false);
 		expect(instance.isTextBased()).toBe(true);
 		expect(instance.isThread()).toBe(true);
 		expect(instance.isThreadOnly()).toBe(false);
@@ -708,11 +708,11 @@ describe('thread channels', () => {
 		expect(instance.toJSON()).toEqual(dataAnnounce);
 	});
 
-	test('typeguards AnnouncementThread', () => {
+	test('type guards AnnouncementThread', () => {
 		const instance = new AnnouncementThreadChannel(dataAnnounce);
 		expect(instance.isDMBased()).toBe(false);
 		expect(instance.isGuildBased()).toBe(true);
-		expect(instance.isPermissionCapabale()).toBe(false);
+		expect(instance.isPermissionCapable()).toBe(false);
 		expect(instance.isTextBased()).toBe(true);
 		expect(instance.isThread()).toBe(true);
 		expect(instance.isThreadOnly()).toBe(false);

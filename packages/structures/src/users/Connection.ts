@@ -87,7 +87,7 @@ export class Connection<Omitted extends keyof APIConnection | '' = ''> extends S
 	}
 
 	/**
-	 * The visibilty state for this connection
+	 * The visibility state for this connection
 	 */
 	public get visibility() {
 		return this[kData].visibility;

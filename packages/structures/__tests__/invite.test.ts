@@ -1,7 +1,7 @@
 import type { APIExtendedInvite, APIInvite } from 'discord-api-types/v10';
 import { InviteTargetType, InviteType } from 'discord-api-types/v10';
 import { describe, expect, test } from 'vitest';
-import { Invite } from '../src';
+import { Invite } from '../src/index.js';
 
 describe('Invite', () => {
 	const dataNoCode: Omit<APIInvite, 'code'> = {

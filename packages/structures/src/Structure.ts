@@ -15,7 +15,7 @@ export const OptimizeDataPropertyName = 'optimizeData';
  *
  * The second layer, in the exported structure is effectively a type cast that allows the getters types to match whatever data template is used
  *
- * In order to safely set and access this data, the constructor and patch take data as "partial" and forcibly assigns it to kData. To acommodate this,
+ * In order to safely set and access this data, the constructor and patch take data as "partial" and forcibly assigns it to kData. To accommodate this,
  * kData stores properties as `unknown` when it is omitted, which allows accessing the property in getters even when it may not actually be present.
  * This is the most technically correct way of representing the value, especially since there is no way to guarantee runtime matches the "type cast."
  */
@@ -43,7 +43,7 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	/**
 	 * The template used for removing data from the raw data stored for each Structure.
 	 *
-	 * @remarks This template should be overriden in all subclasses to provide more accurate type information.
+	 * @remarks This template should be overridden in all subclasses to provide more accurate type information.
 	 * The template in the base {@link Structure} class will have no effect on most subclasses for this reason.
 	 */
 	protected static readonly DataTemplate: Record<string, unknown> = {};
@@ -56,7 +56,7 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	}
 
 	/**
-	 * The raw data from the API for this struture
+	 * The raw data from the API for this structure
 	 *
 	 * @internal
 	 */
@@ -124,7 +124,7 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 * @remarks
 	 * The type of this data is determined by omissions at runtime and is only guaranteed for default omissions
 	 * @privateRemarks
-	 * When omitting properties at the library level, this must be overriden to re-add those properties
+	 * When omitting properties at the library level, this must be overridden to re-add those properties
 	 */
 	public toJSON(): DataType {
 		// This will be DataType provided nothing is omitted, when omits occur, subclass needs to overwrite this.

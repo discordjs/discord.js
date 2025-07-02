@@ -22,7 +22,7 @@ export class ChannelPermissionMixin<
 	/**
 	 * Indicates whether this channel can have permission overwrites
 	 */
-	public isPermissionCapabale(): this is ChannelPermissionMixin<
+	public isPermissionCapable(): this is ChannelPermissionMixin<
 		Extract<Type, Exclude<GuildChannelType, ChannelType.GuildDirectory | ThreadChannelType>>
 	> {
 		return true;
