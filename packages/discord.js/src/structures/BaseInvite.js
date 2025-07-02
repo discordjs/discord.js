@@ -5,6 +5,7 @@ const { Base } = require('./Base.js');
 
 /**
  * The base invite class.
+ *
  * @extends {Base}
  */
 class BaseInvite extends Base {
@@ -13,12 +14,14 @@ class BaseInvite extends Base {
 
     /**
      * The type of this invite.
+     *
      * @type {InviteType}
      */
     this.type = data.type;
 
     /**
      * The invite code.
+     *
      * @type {string}
      */
     this.code = data.code;
@@ -30,6 +33,7 @@ class BaseInvite extends Base {
     if ('inviter_id' in data) {
       /**
        * The id of the user that created this invite.
+       *
        * @type {?Snowflake}
        */
       this.inviterId = data.inviter_id;
@@ -45,6 +49,7 @@ class BaseInvite extends Base {
     if ('max_age' in data) {
       /**
        * The maximum age of the invite in seconds. `0` for no expiry.
+       *
        * @type {?number}
        */
       this.maxAge = data.max_age;
@@ -55,6 +60,7 @@ class BaseInvite extends Base {
     if ('created_at' in data) {
       /**
        * The timestamp this invite was created at.
+       *
        * @type {?number}
        */
       this.createdTimestamp = Date.parse(data.created_at);
@@ -71,6 +77,7 @@ class BaseInvite extends Base {
     if ('channel_id' in data) {
       /**
        * The id of the channel this invite is for.
+       *
        * @type {?Snowflake}
        */
       this.channelId = data.channel_id;
@@ -79,6 +86,7 @@ class BaseInvite extends Base {
     if ('approximate_member_count' in data) {
       /**
        * The approximate total number of members.
+       *
        * @type {?number}
        */
       this.approximateMemberCount = data.approximate_member_count;
@@ -89,6 +97,7 @@ class BaseInvite extends Base {
 
   /**
    * The user that created this invite.
+   *
    * @type {?User}
    * @readonly
    */
@@ -98,6 +107,7 @@ class BaseInvite extends Base {
 
   /**
    * The creation date of this invite.
+   *
    * @type {?Date}
    * @readonly
    */
@@ -107,6 +117,7 @@ class BaseInvite extends Base {
 
   /**
    * The timestamp this invite expires at.
+   *
    * @type {?number}
    * @readonly
    */
@@ -119,6 +130,7 @@ class BaseInvite extends Base {
 
   /**
    * The expiry date of this invite.
+   *
    * @type {?Date}
    * @readonly
    */
@@ -128,6 +140,7 @@ class BaseInvite extends Base {
 
   /**
    * The URL to the invite.
+   *
    * @type {string}
    * @readonly
    */
@@ -138,6 +151,7 @@ class BaseInvite extends Base {
   /**
    * A regular expression that matches Discord invite links.
    * The `code` group property is present on the `exec()` result of this expression.
+   *
    * @type {RegExp}
    * @memberof BaseInvite
    */
@@ -145,6 +159,7 @@ class BaseInvite extends Base {
 
   /**
    * When concatenated with a string, this automatically concatenates the invite's URL instead of the object.
+   *
    * @returns {string}
    * @example
    * // Logs: Invite: https://discord.gg/djs

@@ -7,6 +7,7 @@ const { GuildInvite } = require('../structures/GuildInvite.js');
 
 /**
  * Any invite.
+ *
  * @typedef {GuildInvite|GroupDMInvite} Invite
  */
 
@@ -17,6 +18,7 @@ const InviteTypeToClass = {
 
 /**
  * Creates an invite.
+ *
  * @param {Client} client The client
  * @param {Object} data The data
  * @returns {BaseInvite}

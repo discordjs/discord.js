@@ -2026,7 +2026,7 @@ export class BaseInvite<WithCounts extends boolean = boolean> extends Base {
 
 export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvite<WithCounts> {
   public readonly type: InviteType.Guild;
-  public guild: InviteGuild | Guild | null;
+  public guild: Guild | InviteGuild | null;
   public readonly guildId: Snowflake;
   public channel: NonThreadGuildBasedChannel | null;
   public targetType: InviteTargetType | null;
@@ -2046,7 +2046,7 @@ export class GroupDMInvite<WithCounts extends boolean = boolean> extends BaseInv
   public channel: PartialGroupDMChannel | null;
 }
 
-export type Invite<WithCounts extends boolean = boolean> = GuildInvite<WithCounts> | GroupDMInvite<WithCounts>;
+export type Invite<WithCounts extends boolean = boolean> = GroupDMInvite<WithCounts> | GuildInvite<WithCounts>;
 
 export class InviteGuild extends AnonymousGuild {
   private constructor(client: Client<true>, data: APIPartialGuild);
@@ -5393,8 +5393,8 @@ export interface ClientEventTypes {
 }
 
 export interface ClientFetchInviteOptions {
-  withCounts?: boolean;
   guildScheduledEventId?: Snowflake;
+  withCounts?: boolean;
 }
 
 export interface ClientOptions {
@@ -6124,7 +6124,14 @@ export interface GuildMemberEditOptions {
   roles?: ReadonlyCollection<Snowflake, Role> | readonly RoleResolvable[];
 }
 
-export type GuildResolvable = Guild | GuildEmoji | GuildInvite | GuildMember | NonThreadGuildBasedChannel | Role | Snowflake;
+export type GuildResolvable =
+  | Guild
+  | GuildEmoji
+  | GuildInvite
+  | GuildMember
+  | NonThreadGuildBasedChannel
+  | Role
+  | Snowflake;
 
 export interface GuildPruneMembersOptions {
   count?: boolean;
@@ -6359,8 +6366,7 @@ export interface InviteGenerationOptions {
   scopes: readonly OAuth2Scopes[];
 }
 
-export type GuildInvitableChannel =
-  AnnouncementChannel | ForumChannel | MediaChannel | TextChannel | VoiceChannel;
+export type GuildInvitableChannel = AnnouncementChannel | ForumChannel | MediaChannel | TextChannel | VoiceChannel;
 
 export type GuildInvitableChannelResolvable = GuildInvitableChannel | Snowflake;
 

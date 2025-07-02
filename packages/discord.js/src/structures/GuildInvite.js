@@ -1,14 +1,15 @@
 'use strict';
 
 const { Routes, PermissionFlagsBits, InviteType } = require('discord-api-types/v10');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { BaseInvite } = require('./BaseInvite.js');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent.js');
 const { IntegrationApplication } = require('./IntegrationApplication.js');
 const { InviteGuild } = require('./InviteGuild.js');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 
 /**
  * A channel invite leading to a guild.
+ *
  * @extends {BaseInvite}
  */
 class GuildInvite extends BaseInvite {
@@ -20,6 +21,7 @@ class GuildInvite extends BaseInvite {
 
     /**
      * The id of the guild this invite is for.
+     *
      * @type {Snowflake}
      */
     // Guild id may be missing from audit logs.
@@ -29,6 +31,7 @@ class GuildInvite extends BaseInvite {
      * The maximum age of the invite in seconds. `0` for no expiry.
      * <info>This is only available when the invite was fetched through {@link GuildInviteManager#fetch}
      * or created through {@link GuildInviteManager#create}.</info>
+     *
      * @name GuildInvite#maxAge
      * @type {?number}
      */
@@ -36,6 +39,7 @@ class GuildInvite extends BaseInvite {
     /**
      * The approximate total number of members of the guild.
      * <info>This is only available when the invite was fetched through {@link Client#fetchInvite}.</info>
+     *
      * @name GuildInvite#approximateMemberCount
      * @type {?number}
      */
@@ -47,6 +51,7 @@ class GuildInvite extends BaseInvite {
     if ('guild' in data) {
       /**
        * The guild the invite is for. May include welcome screen data.
+       *
        * @type {?(Guild|InviteGuild)}
        */
       this.guild = this.client.guilds.cache.get(data.guild.id) ?? new InviteGuild(this.client, data.guild);
@@ -57,6 +62,7 @@ class GuildInvite extends BaseInvite {
     if ('channel' in data) {
       /**
        * The channel this invite is for.
+       *
        * @type {?GuildInvitableChannel}
        */
       this.channel =
@@ -69,6 +75,7 @@ class GuildInvite extends BaseInvite {
     if ('target_type' in data) {
       /**
        * The target type.
+       *
        * @type {?InviteTargetType}
        */
       this.targetType = data.target_type;
@@ -79,6 +86,7 @@ class GuildInvite extends BaseInvite {
     if ('target_user' in data) {
       /**
        * The user whose stream to display for this voice channel stream invite.
+       *
        * @type {?User}
        */
       this.targetUser = this.client.users._add(data.target_user);
@@ -89,6 +97,7 @@ class GuildInvite extends BaseInvite {
     if ('target_application' in data) {
       /**
        * The embedded application to open for this voice channel embedded application invite.
+       *
        * @type {?IntegrationApplication}
        */
       this.targetApplication = new IntegrationApplication(this.client, data.target_application);
@@ -99,6 +108,7 @@ class GuildInvite extends BaseInvite {
     if ('guild_scheduled_event' in data) {
       /**
        * The guild scheduled event data if there is a {@link GuildScheduledEvent} in the channel.
+       *
        * @type {?GuildScheduledEvent}
        */
       this.guildScheduledEvent = new GuildScheduledEvent(this.client, data.guild_scheduled_event);
@@ -111,6 +121,7 @@ class GuildInvite extends BaseInvite {
        * How many times this invite has been used.
        * <info>This is only available when the invite was fetched through {@link GuildInviteManager#fetch}
        * or created through {@link GuildInviteManager#create}.</info>
+       *
        * @type {?number}
        */
       this.uses = data.uses;
@@ -123,6 +134,7 @@ class GuildInvite extends BaseInvite {
        * The maximum uses of this invite.
        * <info>This is only available when the invite was fetched through {@link GuildInviteManager#fetch}
        * or created through {@link GuildInviteManager#create}.</info>
+       *
        * @type {?number}
        */
       this.maxUses = data.max_uses;
@@ -135,6 +147,7 @@ class GuildInvite extends BaseInvite {
        * Whether this invite grants temporary membership.
        * <info>This is only available when the invite was fetched through {@link GuildInviteManager#fetch}
        * or created through {@link GuildInviteManager#create}.</info>
+       *
        * @type {?boolean}
        */
       this.temporary = data.temporary ?? null;
@@ -146,6 +159,7 @@ class GuildInvite extends BaseInvite {
       /**
        * The approximate number of online members of the guild.
        * <info>This is only available when the invite was fetched through {@link Client#fetchInvite}.</info>
+       *
        * @type {?number}
        */
       this.approximatePresenceCount = data.approximate_presence_count;
@@ -156,6 +170,7 @@ class GuildInvite extends BaseInvite {
 
   /**
    * Whether the invite is deletable by the client user.
+   *
    * @type {boolean}
    * @readonly
    */
@@ -171,6 +186,7 @@ class GuildInvite extends BaseInvite {
 
   /**
    * Delete this invite.
+   *
    * @param {string} [reason] Reason for deleting this invite
    * @returns {Promise<void>}
    */

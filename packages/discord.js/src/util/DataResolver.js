@@ -37,7 +37,7 @@ function resolveCode(data, regex) {
 
 /**
  * Resolves InviteResolvable to an invite code.
- * 
+ *
  * @param {InviteResolvable} data The invite resolvable to resolve
  * @returns {string}
  * @private
