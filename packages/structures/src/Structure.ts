@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/check-param-names */
 import { kData, kMixinConstruct, kMixinToJSON } from './utils/symbols.js';
 import type { ReplaceOmittedWithUnknown } from './utils/types.js';
 
@@ -79,7 +78,6 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 * Patches the raw data of this object in place
 	 *
 	 * @param data - the updated data from the API to patch with
-	 * @param extraOptions - any additional options needed to appropriately patch the data
 	 * @remarks To be made public in subclasses
 	 * @returns this
 	 * @internal
