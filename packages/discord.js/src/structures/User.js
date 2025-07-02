@@ -155,9 +155,9 @@ class User extends Base {
     /**
      * @typedef {Object} UserPrimaryGuild
      * @property {?Snowflake} identityGuildId - The id of the user's primary guild
-     * @property {?boolean} identityEnabled - Whether the user is displaying the primary guild's server tag
-     * @property {?string} tag - The user's server tag. Limited to 4 characters
-     * @property {?string} badge - The server tag badge hash
+     * @property {?boolean} identityEnabled - Whether the user is displaying the primary guild's tag
+     * @property {?string} tag - The user's guild tag. Limited to 4 characters
+     * @property {?string} badge - The guild tag badge hash
      */
 
     if (data.primary_guild) {
@@ -277,10 +277,9 @@ class User extends Base {
    * @returns {?string}
    */
   guildTagBadgeURL(options = {}) {
-    return (
-      this.primaryGuild?.badge &&
-      this.client.rest.cdn.guildTagBadge(this.primaryGuild.identityGuildId, this.primaryGuild.badge, options)
-    );
+    return this.primaryGuild?.badge
+      ? this.client.rest.cdn.guildTagBadge(this.primaryGuild.identityGuildId, this.primaryGuild.badge, options)
+      : null;
   }
 
   /**
