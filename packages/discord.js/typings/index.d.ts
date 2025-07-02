@@ -599,7 +599,7 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   public inRawGuild(): this is CommandInteraction<'raw'>;
   public deferReply(
     options: InteractionDeferReplyOptions & { withResponse: true },
-  ): Promise<InteractionCallbackResponse>;
+  ): Promise<InteractionCallbackResponse<BooleanCache<Cached>>>;
   /** @deprecated `fetchReply` is deprecated. Use `withResponse` instead or fetch the response after using the method. */
   public deferReply(
     options: InteractionDeferReplyOptions & { fetchReply: true },
@@ -611,29 +611,35 @@ export abstract class CommandInteraction<Cached extends CacheType = CacheType> e
   ): Promise<Message<BooleanCache<Cached>>>;
   public fetchReply(message?: Snowflake | '@original'): Promise<Message<BooleanCache<Cached>>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message<BooleanCache<Cached>>>;
-  public reply(options: InteractionReplyOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
+  public reply(
+    options: InteractionReplyOptions & { withResponse: true },
+  ): Promise<InteractionCallbackResponse<BooleanCache<Cached>>>;
   /** @deprecated `fetchReply` is deprecated. Use `withResponse` instead or fetch the response after using the method. */
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message<BooleanCache<Cached>>>;
   public reply(
     options: string | MessagePayload | InteractionReplyOptions,
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
-  public launchActivity(options: LaunchActivityOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
+  public launchActivity(
+    options: LaunchActivityOptions & { withResponse: true },
+  ): Promise<InteractionCallbackResponse<BooleanCache<Cached>>>;
   public launchActivity(options?: LaunchActivityOptions & { withResponse?: false }): Promise<undefined>;
-  public launchActivity(options?: LaunchActivityOptions): Promise<InteractionCallbackResponse | undefined>;
+  public launchActivity(
+    options?: LaunchActivityOptions,
+  ): Promise<InteractionCallbackResponse<BooleanCache<Cached>> | undefined>;
   public showModal(
     modal:
       | JSONEncodable<APIModalInteractionResponseCallbackData>
       | ModalComponentData
       | APIModalInteractionResponseCallbackData,
     options: ShowModalOptions & { withResponse: true },
-  ): Promise<InteractionCallbackResponse>;
+  ): Promise<InteractionCallbackResponse<BooleanCache<Cached>>>;
   public showModal(
     modal:
       | JSONEncodable<APIModalInteractionResponseCallbackData>
       | ModalComponentData
       | APIModalInteractionResponseCallbackData,
     options?: ShowModalOptions & { withResponse: true },
-  ): Promise<InteractionCallbackResponse>;
+  ): Promise<InteractionCallbackResponse<BooleanCache<Cached>>>;
   public showModal(
     modal:
       | JSONEncodable<APIModalInteractionResponseCallbackData>
@@ -2159,17 +2165,17 @@ export class InteractionCallback {
   public type: InteractionType;
 }
 
-export class InteractionCallbackResponse {
+export class InteractionCallbackResponse<InGuild extends boolean = boolean> {
   private constructor(client: Client<true>, data: RESTPostAPIInteractionCallbackWithResponseResult);
   public readonly client: Client<true>;
   public interaction: InteractionCallback;
-  public resource: InteractionCallbackResource | null;
+  public resource: InteractionCallbackResource<InGuild> | null;
 }
 
-export class InteractionCallbackResource {
+export class InteractionCallbackResource<InGuild extends boolean = boolean> {
   private constructor(client: Client<true>, data: RESTAPIInteractionCallbackResourceObject);
   public activityInstance: RESTAPIInteractionCallbackActivityInstanceResource | null;
-  public message: Message | null;
+  public message: Message<InGuild> | null;
   public type: InteractionResponseType;
 }
 
@@ -2526,7 +2532,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public inRawGuild(): this is MessageComponentInteraction<'raw'>;
   public deferReply(
     options: InteractionDeferReplyOptions & { withResponse: true },
-  ): Promise<InteractionCallbackResponse>;
+  ): Promise<InteractionCallbackResponse<BooleanCache<Cached>>>;
   /** @deprecated `fetchReply` is deprecated. Use `withResponse` instead or fetch the response after using the method. */
   public deferReply(
     options: InteractionDeferReplyOptions & { fetchReply: true },
@@ -2534,7 +2540,7 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   public deferReply(options?: InteractionDeferReplyOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   public deferUpdate(
     options: InteractionDeferUpdateOptions & { withResponse: true },
-  ): Promise<InteractionCallbackResponse>;
+  ): Promise<InteractionCallbackResponse<BooleanCache<Cached>>>;
   /** @deprecated `fetchReply` is deprecated. Use `withResponse` instead or fetch the response after using the method. */
   public deferUpdate(
     options: InteractionDeferUpdateOptions & { fetchReply: true },
@@ -2546,28 +2552,36 @@ export class MessageComponentInteraction<Cached extends CacheType = CacheType> e
   ): Promise<Message<BooleanCache<Cached>>>;
   public fetchReply(message?: Snowflake | '@original'): Promise<Message<BooleanCache<Cached>>>;
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message<BooleanCache<Cached>>>;
-  public reply(options: InteractionReplyOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
+  public reply(
+    options: InteractionReplyOptions & { withResponse: true },
+  ): Promise<InteractionCallbackResponse<BooleanCache<Cached>>>;
   /** @deprecated `fetchReply` is deprecated. Use `withResponse` instead or fetch the response after using the method. */
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message<BooleanCache<Cached>>>;
   public reply(
     options: string | MessagePayload | InteractionReplyOptions,
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
-  public update(options: InteractionUpdateOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
+  public update(
+    options: InteractionUpdateOptions & { withResponse: true },
+  ): Promise<InteractionCallbackResponse<BooleanCache<Cached>>>;
   /** @deprecated `fetchReply` is deprecated. Use `withResponse` instead or fetch the response after using the method. */
   public update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<Message<BooleanCache<Cached>>>;
   public update(
     options: string | MessagePayload | InteractionUpdateOptions,
   ): Promise<InteractionResponse<BooleanCache<Cached>>>;
-  public launchActivity(options: LaunchActivityOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
+  public launchActivity(
+    options: LaunchActivityOptions & { withResponse: true },
+  ): Promise<InteractionCallbackResponse<BooleanCache<Cached>>>;
   public launchActivity(options?: LaunchActivityOptions & { withResponse?: false }): Promise<undefined>;
-  public launchActivity(options?: LaunchActivityOptions): Promise<InteractionCallbackResponse | undefined>;
+  public launchActivity(
+    options?: LaunchActivityOptions,
+  ): Promise<InteractionCallbackResponse<BooleanCache<Cached>> | undefined>;
   public showModal(
     modal:
       | JSONEncodable<APIModalInteractionResponseCallbackData>
       | ModalComponentData
       | APIModalInteractionResponseCallbackData,
     options: ShowModalOptions & { withResponse: true },
-  ): Promise<InteractionCallbackResponse>;
+  ): Promise<InteractionCallbackResponse<BooleanCache<Cached>>>;
   public showModal(
     modal:
       | JSONEncodable<APIModalInteractionResponseCallbackData>
@@ -2755,7 +2769,9 @@ export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = C
   extends ModalSubmitInteraction<Cached> {
   message: Message<BooleanCache<Cached>>;
   channelId: Snowflake;
-  update(options: InteractionUpdateOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
+  update(
+    options: InteractionUpdateOptions & { withResponse: true },
+  ): Promise<InteractionCallbackResponse<BooleanCache<Cached>>>;
   /** @deprecated `fetchReply` is deprecated. Use `withResponse` instead or fetch the response after using the method. */
   update(options: InteractionUpdateOptions & { fetchReply: true }): Promise<Message>;
   update(
@@ -2777,7 +2793,9 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public message: Message<BooleanCache<Cached>> | null;
   public replied: boolean;
   public readonly webhook: InteractionWebhook;
-  public reply(options: InteractionReplyOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
+  public reply(
+    options: InteractionReplyOptions & { withResponse: true },
+  ): Promise<InteractionCallbackResponse<BooleanCache<Cached>>>;
   /** @deprecated `fetchReply` is deprecated. Use `withResponse` instead or fetch the response after using the method. */
   public reply(options: InteractionReplyOptions & { fetchReply: true }): Promise<Message<BooleanCache<Cached>>>;
   public reply(
@@ -2789,7 +2807,7 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   ): Promise<Message<BooleanCache<Cached>>>;
   public deferReply(
     options: InteractionDeferReplyOptions & { withResponse: true },
-  ): Promise<InteractionCallbackResponse>;
+  ): Promise<InteractionCallbackResponse<BooleanCache<Cached>>>;
   /** @deprecated `fetchReply` is deprecated. Use `withResponse` instead or fetch the response after using the method. */
   public deferReply(
     options: InteractionDeferReplyOptions & { fetchReply: true },
@@ -2799,7 +2817,7 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public followUp(options: string | MessagePayload | InteractionReplyOptions): Promise<Message<BooleanCache<Cached>>>;
   public deferUpdate(
     options: InteractionDeferUpdateOptions & { withResponse: true },
-  ): Promise<InteractionCallbackResponse>;
+  ): Promise<InteractionCallbackResponse<BooleanCache<Cached>>>;
   /** @deprecated `fetchReply` is deprecated. Use `withResponse` instead or fetch the response after using the method. */
   public deferUpdate(
     options: InteractionDeferUpdateOptions & { fetchReply: true },
@@ -2807,9 +2825,13 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   public deferUpdate(options?: InteractionDeferUpdateOptions): Promise<InteractionResponse<BooleanCache<Cached>>>;
   /** @deprecated Sending a premium-style button is the new Discord behaviour. */
   public sendPremiumRequired(): Promise<void>;
-  public launchActivity(options: LaunchActivityOptions & { withResponse: true }): Promise<InteractionCallbackResponse>;
+  public launchActivity(
+    options: LaunchActivityOptions & { withResponse: true },
+  ): Promise<InteractionCallbackResponse<BooleanCache<Cached>>>;
   public launchActivity(options?: LaunchActivityOptions & { withResponse?: false }): Promise<undefined>;
-  public launchActivity(options?: LaunchActivityOptions): Promise<InteractionCallbackResponse | undefined>;
+  public launchActivity(
+    options?: LaunchActivityOptions,
+  ): Promise<InteractionCallbackResponse<BooleanCache<Cached>> | undefined>;
   public inGuild(): this is ModalSubmitInteraction<'raw' | 'cached'>;
   public inCachedGuild(): this is ModalSubmitInteraction<'cached'>;
   public inRawGuild(): this is ModalSubmitInteraction<'raw'>;
