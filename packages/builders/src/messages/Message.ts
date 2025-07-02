@@ -4,14 +4,30 @@ import type {
 	APIAllowedMentions,
 	APIAttachment,
 	APIEmbed,
-	APIMessageActionRowComponent,
+	APIComponentInMessageActionRow,
 	APIMessageReference,
 	APIPoll,
 	RESTPostAPIChannelMessageJSONBody,
 	Snowflake,
 	MessageFlags,
+	APIContainerComponent,
+	APIFileComponent,
+	APIMediaGalleryComponent,
+	APISectionComponent,
+	APISeparatorComponent,
+	APITextDisplayComponent,
+	APIMessageTopLevelComponent,
 } from 'discord-api-types/v10';
 import { ActionRowBuilder } from '../components/ActionRow.js';
+import { ComponentBuilder } from '../components/Component.js';
+import type { MessageTopLevelComponentBuilder } from '../components/Components.js';
+import { createComponentBuilder } from '../components/Components.js';
+import { ContainerBuilder } from '../components/v2/Container.js';
+import { FileBuilder } from '../components/v2/File.js';
+import { MediaGalleryBuilder } from '../components/v2/MediaGallery.js';
+import { SectionBuilder } from '../components/v2/Section.js';
+import { SeparatorBuilder } from '../components/v2/Separator.js';
+import { TextDisplayBuilder } from '../components/v2/TextDisplay.js';
 import { normalizeArray, type RestOrArray } from '../util/normalizeArray.js';
 import { resolveBuilder } from '../util/resolveBuilder.js';
 import { validate } from '../util/validation.js';
@@ -31,12 +47,15 @@ export interface MessageBuilderData
 	> {
 	allowed_mentions?: AllowedMentionsBuilder;
 	attachments: AttachmentBuilder[];
-	components: ActionRowBuilder[];
+	components: MessageTopLevelComponentBuilder[];
 	embeds: EmbedBuilder[];
 	message_reference?: MessageReferenceBuilder;
 	poll?: PollBuilder;
 }
 
+/**
+ * A builder that creates API-compatible JSON data for messages.
+ */
 export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJSONBody> {
 	/**
 	 * The API data associated with this message.
@@ -53,7 +72,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	/**
 	 * Gets the components of this message.
 	 */
-	public get components(): readonly ActionRowBuilder[] {
+	public get components(): readonly MessageTopLevelComponentBuilder[] {
 		return this.data.components;
 	}
 
@@ -65,19 +84,21 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	}
 
 	/**
-	 * Creates new attachment builder from API data.
+	 * Creates a new message builder.
 	 *
-	 * @param data - The API data to create this attachment with
+	 * @param data - The API data to create this message with
 	 */
 	public constructor(data: Partial<RESTPostAPIChannelMessageJSONBody> = {}) {
+		const { attachments = [], embeds = [], components = [], message_reference, poll, allowed_mentions, ...rest } = data;
+
 		this.data = {
-			...structuredClone(data),
-			allowed_mentions: data.allowed_mentions ? new AllowedMentionsBuilder(data.allowed_mentions) : undefined,
-			attachments: data.attachments?.map((attachment) => new AttachmentBuilder(attachment)) ?? [],
-			embeds: data.embeds?.map((embed) => new EmbedBuilder(embed)) ?? [],
-			poll: data.poll ? new PollBuilder(data.poll) : undefined,
-			components: data.components?.map((component) => new ActionRowBuilder(component)) ?? [],
-			message_reference: data.message_reference ? new MessageReferenceBuilder(data.message_reference) : undefined,
+			...structuredClone(rest),
+			allowed_mentions: allowed_mentions && new AllowedMentionsBuilder(allowed_mentions),
+			attachments: attachments.map((attachment) => new AttachmentBuilder(attachment)),
+			embeds: embeds.map((embed) => new EmbedBuilder(embed)),
+			poll: poll && new PollBuilder(poll),
+			components: components.map((component) => createComponentBuilder(component)),
+			message_reference: message_reference && new MessageReferenceBuilder(message_reference),
 		};
 	}
 
@@ -119,6 +140,8 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 
 	/**
 	 * Sets whether the message is TTS.
+	 *
+	 * @param tts - Whether the message is TTS
 	 */
 	public setTTS(tts = true): this {
 		this.data.tts = tts;
@@ -198,6 +221,15 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	}
 
 	/**
+	 * Sets the embeds for this message.
+	 *
+	 * @param embeds - The embeds to set
+	 */
+	public setEmbeds(...embeds: RestOrArray<APIEmbed | EmbedBuilder | ((builder: EmbedBuilder) => EmbedBuilder)>): this {
+		return this.spliceEmbeds(0, this.embeds.length, ...normalizeArray(embeds));
+	}
+
+	/**
 	 * Sets the allowed mentions for this message.
 	 *
 	 * @param allowedMentions - The allowed mentions to set
@@ -217,8 +249,8 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	 *
 	 * @param updater - The function to update the allowed mentions with
 	 */
-	public updateAllowedMentions(updater: (builder: AllowedMentionsBuilder) => AllowedMentionsBuilder): this {
-		this.data.allowed_mentions = updater(this.data.allowed_mentions ?? new AllowedMentionsBuilder());
+	public updateAllowedMentions(updater: (builder: AllowedMentionsBuilder) => void): this {
+		updater((this.data.allowed_mentions ??= new AllowedMentionsBuilder()));
 		return this;
 	}
 
@@ -250,8 +282,8 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	 *
 	 * @param updater - The function to update the message reference with
 	 */
-	public updateMessageReference(updater: (builder: MessageReferenceBuilder) => MessageReferenceBuilder): this {
-		this.data.message_reference = updater(this.data.message_reference ?? new MessageReferenceBuilder());
+	public updateMessageReference(updater: (builder: MessageReferenceBuilder) => void): this {
+		updater((this.data.message_reference ??= new MessageReferenceBuilder()));
 		return this;
 	}
 
@@ -264,20 +296,124 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	}
 
 	/**
-	 * Adds components to this message.
+	 * Adds action row components to this message.
 	 *
-	 * @param components - The components to add
+	 * @param components - The action row components to add
 	 */
-	public addComponents(
+	public addActionRowComponents(
 		...components: RestOrArray<
 			| ActionRowBuilder
-			| APIActionRowComponent<APIMessageActionRowComponent>
+			| APIActionRowComponent<APIComponentInMessageActionRow>
 			| ((builder: ActionRowBuilder) => ActionRowBuilder)
 		>
 	): this {
 		this.data.components ??= [];
 
 		const resolved = normalizeArray(components).map((component) => resolveBuilder(component, ActionRowBuilder));
+		this.data.components.push(...resolved);
+
+		return this;
+	}
+
+	/**
+	 * Adds container components to this message.
+	 *
+	 * @param components - The container components to add
+	 */
+	public addContainerComponents(
+		...components: RestOrArray<
+			APIContainerComponent | ContainerBuilder | ((builder: ContainerBuilder) => ContainerBuilder)
+		>
+	): this {
+		this.data.components ??= [];
+
+		const resolved = normalizeArray(components).map((component) => resolveBuilder(component, ContainerBuilder));
+		this.data.components.push(...resolved);
+
+		return this;
+	}
+
+	/**
+	 * Adds file components to this message.
+	 *
+	 * @param components - The file components to add
+	 */
+	public addFileComponents(
+		...components: RestOrArray<APIFileComponent | FileBuilder | ((builder: FileBuilder) => FileBuilder)>
+	): this {
+		this.data.components ??= [];
+
+		const resolved = normalizeArray(components).map((component) => resolveBuilder(component, FileBuilder));
+		this.data.components.push(...resolved);
+
+		return this;
+	}
+
+	/**
+	 * Adds media gallery components to this message.
+	 *
+	 * @param components - The media gallery components to add
+	 */
+	public addMediaGalleryComponents(
+		...components: RestOrArray<
+			APIMediaGalleryComponent | MediaGalleryBuilder | ((builder: MediaGalleryBuilder) => MediaGalleryBuilder)
+		>
+	): this {
+		this.data.components ??= [];
+
+		const resolved = normalizeArray(components).map((component) => resolveBuilder(component, MediaGalleryBuilder));
+		this.data.components.push(...resolved);
+
+		return this;
+	}
+
+	/**
+	 * Adds section components to this message.
+	 *
+	 * @param components - The section components to add
+	 */
+	public addSectionComponents(
+		...components: RestOrArray<APISectionComponent | SectionBuilder | ((builder: SectionBuilder) => SectionBuilder)>
+	): this {
+		this.data.components ??= [];
+
+		const resolved = normalizeArray(components).map((component) => resolveBuilder(component, SectionBuilder));
+		this.data.components.push(...resolved);
+
+		return this;
+	}
+
+	/**
+	 * Adds separator components to this message.
+	 *
+	 * @param components - The separator components to add
+	 */
+	public addSeparatorComponents(
+		...components: RestOrArray<
+			APISeparatorComponent | SeparatorBuilder | ((builder: SeparatorBuilder) => SeparatorBuilder)
+		>
+	): this {
+		this.data.components ??= [];
+
+		const resolved = normalizeArray(components).map((component) => resolveBuilder(component, SeparatorBuilder));
+		this.data.components.push(...resolved);
+
+		return this;
+	}
+
+	/**
+	 * Adds text display components to this message.
+	 *
+	 * @param components - The text display components to add
+	 */
+	public addTextDisplayComponents(
+		...components: RestOrArray<
+			APITextDisplayComponent | TextDisplayBuilder | ((builder: TextDisplayBuilder) => TextDisplayBuilder)
+		>
+	): this {
+		this.data.components ??= [];
+
+		const resolved = normalizeArray(components).map((component) => resolveBuilder(component, TextDisplayBuilder));
 		this.data.components.push(...resolved);
 
 		return this;
@@ -314,32 +450,14 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	public spliceComponents(
 		start: number,
 		deleteCount: number,
-		...components: RestOrArray<
-			| ActionRowBuilder
-			| APIActionRowComponent<APIMessageActionRowComponent>
-			| ((builder: ActionRowBuilder) => ActionRowBuilder)
-		>
+		...components: RestOrArray<APIMessageTopLevelComponent | MessageTopLevelComponentBuilder>
 	): this {
 		this.data.components ??= [];
-		const resolved = normalizeArray(components).map((component) => resolveBuilder(component, ActionRowBuilder));
+		const resolved = normalizeArray(components).map((component) =>
+			component instanceof ComponentBuilder ? component : createComponentBuilder(component),
+		);
 
 		this.data.components.splice(start, deleteCount, ...resolved);
-		return this;
-	}
-
-	/**
-	 * Sets the components of this message.
-	 *
-	 * @param components - The components to set
-	 */
-	public setComponents(
-		...components: RestOrArray<
-			| ActionRowBuilder
-			| APIActionRowComponent<APIMessageActionRowComponent>
-			| ((builder: ActionRowBuilder) => ActionRowBuilder)
-		>
-	): this {
-		this.data.components = normalizeArray(components).map((component) => resolveBuilder(component, ActionRowBuilder));
 		return this;
 	}
 
@@ -349,8 +467,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	 * @param stickerIds - The ids of the stickers to set
 	 */
 	public setStickerIds(...stickerIds: RestOrArray<Snowflake>): this {
-		this.data.sticker_ids = normalizeArray(stickerIds) as MessageBuilderData['sticker_ids'];
-		return this;
+		return this.spliceStickerIds(0, this.data.sticker_ids?.length ?? 0, ...normalizeArray(stickerIds));
 	}
 
 	/**
@@ -406,10 +523,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	public setAttachments(
 		...attachments: RestOrArray<APIAttachment | AttachmentBuilder | ((builder: AttachmentBuilder) => AttachmentBuilder)>
 	): this {
-		const resolved = normalizeArray(attachments).map((attachment) => resolveBuilder(attachment, AttachmentBuilder));
-		this.data.attachments = resolved;
-
-		return this;
+		return this.spliceAttachments(0, this.data.attachments.length, ...normalizeArray(attachments));
 	}
 
 	/**
@@ -467,6 +581,8 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 
 	/**
 	 * Sets the flags for this message.
+	 *
+	 * @param flags - The flags to set
 	 */
 	public setFlags(flags: MessageFlags): this {
 		this.data.flags = flags;
@@ -482,7 +598,9 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	}
 
 	/**
-	 * Sets `enforce_nonce` for this message.
+	 * Sets whether to enforce recent uniqueness of the nonce of this message.
+	 *
+	 * @param enforceNonce - Whether to enforce recent uniqueness of the nonce of this message
 	 */
 	public setEnforceNonce(enforceNonce = true): this {
 		this.data.enforce_nonce = enforceNonce;
@@ -504,8 +622,8 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	 *
 	 * @param updater - The function to update the poll with
 	 */
-	public updatePoll(updater: (builder: PollBuilder) => PollBuilder): this {
-		this.data.poll = updater(this.data.poll ?? new PollBuilder());
+	public updatePoll(updater: (builder: PollBuilder) => void): this {
+		updater((this.data.poll ??= new PollBuilder()));
 		return this;
 	}
 
@@ -530,12 +648,12 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 		const data = {
 			...structuredClone(rest),
 			// Wherever we pass false, it's covered by the messagePredicate already
-			poll: this.data.poll?.toJSON(false),
+			poll: poll?.toJSON(false),
 			allowed_mentions: allowed_mentions?.toJSON(false),
 			attachments: attachments.map((attachment) => attachment.toJSON(false)),
-			embeds: this.data.embeds.map((embed) => embed.toJSON(false)),
+			embeds: embeds.map((embed) => embed.toJSON(false)),
 			// Here, the messagePredicate does specific constraints rather than using the componentPredicate
-			components: this.data.components?.map((component) => component.toJSON(validationOverride)),
+			components: components.map((component) => component.toJSON(validationOverride)),
 			message_reference: message_reference?.toJSON(false),
 		};
 

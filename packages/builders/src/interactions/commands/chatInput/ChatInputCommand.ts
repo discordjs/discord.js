@@ -10,10 +10,10 @@ import { SharedChatInputCommandSubcommands } from './mixins/SharedSubcommands.js
 /**
  * A builder that creates API-compatible JSON data for chat input commands.
  *
- * @mixes CommandBuilder<RESTPostAPIChatInputApplicationCommandsJSONBody>
- * @mixes SharedChatInputCommandOptions
- * @mixes SharedNameAndDescription
- * @mixes SharedChatInputCommandSubcommands
+ * @mixes {@link CommandBuilder}\<{@link discord-api-types/v10#(RESTPostAPIChatInputApplicationCommandsJSONBody:interface)}\>
+ * @mixes {@link SharedChatInputCommandOptions}
+ * @mixes {@link SharedNameAndDescription}
+ * @mixes {@link SharedChatInputCommandSubcommands}
  */
 export class ChatInputCommandBuilder extends Mixin(
 	CommandBuilder<RESTPostAPIChatInputApplicationCommandsJSONBody>,

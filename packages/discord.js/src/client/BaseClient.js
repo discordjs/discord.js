@@ -10,6 +10,7 @@ const { flatten } = require('../util/Util.js');
 
 /**
  * The base class for all clients.
+ *
  * @extends {AsyncEventEmitter}
  */
 class BaseClient extends AsyncEventEmitter {
@@ -23,6 +24,7 @@ class BaseClient extends AsyncEventEmitter {
     const defaultOptions = Options.createDefault();
     /**
      * The options the client was instantiated with
+     *
      * @type {ClientOptions}
      */
     this.options = {
@@ -51,6 +53,7 @@ class BaseClient extends AsyncEventEmitter {
 
     /**
      * The REST manager of the client
+     *
      * @type {REST}
      */
     this.rest = new REST(this.options.rest);
@@ -60,6 +63,7 @@ class BaseClient extends AsyncEventEmitter {
 
   /**
    * Destroys all assets used by the base client.
+   *
    * @returns {void}
    */
   destroy() {
@@ -69,6 +73,7 @@ class BaseClient extends AsyncEventEmitter {
 
   /**
    * Options used for deleting a webhook.
+   *
    * @typedef {Object} WebhookDeleteOptions
    * @property {string} [token] Token of the webhook
    * @property {string} [reason] The reason for deleting the webhook
@@ -76,6 +81,7 @@ class BaseClient extends AsyncEventEmitter {
 
   /**
    * Deletes a webhook.
+   *
    * @param {Snowflake} id The webhook's id
    * @param {WebhookDeleteOptions} [options] Options for deleting the webhook
    * @returns {Promise<void>}
@@ -86,6 +92,7 @@ class BaseClient extends AsyncEventEmitter {
 
   /**
    * Increments max listeners by one, if they are not zero.
+   *
    * @private
    */
   incrementMaxListeners() {
@@ -97,6 +104,7 @@ class BaseClient extends AsyncEventEmitter {
 
   /**
    * Decrements max listeners by one, if they are not zero.
+   *
    * @private
    */
   decrementMaxListeners() {

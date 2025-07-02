@@ -4,8 +4,8 @@ const process = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
-const { Routes, RouteBases } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager.js');
+const { GatewayOpcodes, Routes, RouteBases } = require('discord-api-types/v10');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { ShardClientUtil } = require('../sharding/ShardClientUtil.js');
 const { Guild } = require('../structures/Guild.js');
 const { GuildChannel } = require('../structures/GuildChannel.js');
@@ -20,11 +20,13 @@ const { PermissionsBitField } = require('../util/PermissionsBitField.js');
 const { SystemChannelFlagsBitField } = require('../util/SystemChannelFlagsBitField.js');
 const { _transformAPIIncidentsData } = require('../util/Transformers.js');
 const { resolveColor } = require('../util/Util.js');
+const { CachedManager } = require('./CachedManager.js');
 
 let cacheWarningEmitted = false;
 
 /**
  * Manages API methods for Guilds and stores their cache.
+ *
  * @extends {CachedManager}
  */
 class GuildManager extends CachedManager {
@@ -41,23 +43,26 @@ class GuildManager extends CachedManager {
 
   /**
    * The cache of this Manager
+   *
    * @type {Collection<Snowflake, Guild>}
    * @name GuildManager#cache
    */
 
   /**
    * Data that resolves to give a Guild object. This can be:
-   * * A Guild object
-   * * A GuildChannel object
-   * * A GuildEmoji object
-   * * A Role object
-   * * A Snowflake
-   * * An Invite object
+   * - A Guild object
+   * - A GuildChannel object
+   * - A GuildEmoji object
+   * - A Role object
+   * - A Snowflake
+   * - An Invite object
+   *
    * @typedef {Guild|GuildChannel|GuildMember|GuildEmoji|Role|Snowflake|Invite} GuildResolvable
    */
 
   /**
    * Partial data for a Role.
+   *
    * @typedef {Object} PartialRoleData
    * @property {Snowflake|number} [id] The role's id, used to set channel overrides.
    * This is a placeholder and will be replaced by the API after consumption
@@ -71,6 +76,7 @@ class GuildManager extends CachedManager {
 
   /**
    * Partial overwrite data.
+   *
    * @typedef {Object} PartialOverwriteData
    * @property {Snowflake|number} id The id of the {@link Role} or {@link User} this overwrite belongs to
    * @property {OverwriteType} [type] The type of this overwrite
@@ -80,6 +86,7 @@ class GuildManager extends CachedManager {
 
   /**
    * Partial data for a Channel.
+   *
    * @typedef {Object} PartialChannelData
    * @property {Snowflake|number} [id] The channel's id, used to set its parent.
    * This is a placeholder and will be replaced by the API after consumption
@@ -99,6 +106,7 @@ class GuildManager extends CachedManager {
 
   /**
    * Resolves a {@link GuildResolvable} to a {@link Guild} object.
+   *
    * @method resolve
    * @memberof GuildManager
    * @instance
@@ -115,11 +123,13 @@ class GuildManager extends CachedManager {
     ) {
       return super.resolve(guild.guild);
     }
+
     return super.resolve(guild);
   }
 
   /**
    * Resolves a {@link GuildResolvable} to a {@link Guild} id string.
+   *
    * @method resolveId
    * @memberof GuildManager
    * @instance
@@ -136,11 +146,13 @@ class GuildManager extends CachedManager {
     ) {
       return super.resolveId(guild.guild.id);
     }
+
     return super.resolveId(guild);
   }
 
   /**
    * Options used to create a guild.
+   *
    * @typedef {Object} GuildCreateOptions
    * @property {string} name The name of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [icon=null] The icon for the guild
@@ -156,11 +168,11 @@ class GuildManager extends CachedManager {
    * @property {Snowflake|number} [systemChannelId] The system channel's id
    * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The flags of the system channel
    */
-  /* eslint-enable max-len */
 
   /**
    * Creates a guild.
    * <warn>This is only available to bots in fewer than 10 guilds.</warn>
+   *
    * @param {GuildCreateOptions} options Options for creating the guild
    * @returns {Promise<Guild>} The guild that was created
    */
@@ -225,11 +237,13 @@ class GuildManager extends CachedManager {
       new Promise(resolve => {
         const handleGuild = guild => {
           if (guild.id === data.id) {
+            // eslint-disable-next-line no-use-before-define
             clearTimeout(timeout);
             this.client.decrementMaxListeners();
             resolve(guild);
           }
         };
+
         this.client.incrementMaxListeners();
         this.client.once(Events.GuildCreate, handleGuild);
 
@@ -244,6 +258,7 @@ class GuildManager extends CachedManager {
 
   /**
    * Options used to fetch a single guild.
+   *
    * @typedef {BaseFetchOptions} FetchGuildOptions
    * @property {GuildResolvable} guild The guild to fetch
    * @property {boolean} [withCounts=true] Whether the approximate member and presence counts should be returned
@@ -251,6 +266,7 @@ class GuildManager extends CachedManager {
 
   /**
    * Options used to fetch multiple guilds.
+   *
    * @typedef {Object} FetchGuildsOptions
    * @property {Snowflake} [before] Get guilds before this guild id
    * @property {Snowflake} [after] Get guilds after this guild id
@@ -259,6 +275,7 @@ class GuildManager extends CachedManager {
 
   /**
    * Obtains one or multiple guilds from Discord, or the guild cache if it's already available.
+   *
    * @param {GuildResolvable|FetchGuildOptions|FetchGuildsOptions} [options] The guild's id or options
    * @returns {Promise<Guild|Collection<Snowflake, OAuth2Guild>>}
    */
@@ -271,11 +288,11 @@ class GuildManager extends CachedManager {
         if (existing) return existing;
       }
 
-      const data = await this.client.rest.get(Routes.guild(id), {
+      const innerData = await this.client.rest.get(Routes.guild(id), {
         query: makeURLSearchParams({ with_counts: options.withCounts ?? true }),
       });
-      data.shardId = ShardClientUtil.shardIdForGuildId(id, await this.client.ws.fetchShardCount());
-      return this._add(data, options.cache);
+      innerData.shardId = ShardClientUtil.shardIdForGuildId(id, await this.client.ws.fetchShardCount());
+      return this._add(innerData, options.cache);
     }
 
     const data = await this.client.rest.get(Routes.userGuilds(), { query: makeURLSearchParams(options) });
@@ -283,7 +300,77 @@ class GuildManager extends CachedManager {
   }
 
   /**
+   * @typedef {Object} FetchSoundboardSoundsOptions
+   * @property {Snowflake[]} guildIds The ids of the guilds to fetch soundboard sounds for
+   * @property {number} [time=10_000] The timeout for receipt of the soundboard sounds
+   */
+
+  /**
+   * Fetches soundboard sounds for the specified guilds.
+   *
+   * @param {FetchSoundboardSoundsOptions} options The options for fetching soundboard sounds
+   * @returns {Promise<Collection<Snowflake, Collection<Snowflake, SoundboardSound>>>}
+   * @example
+   * // Fetch soundboard sounds for multiple guilds
+   * const soundboardSounds = await client.guilds.fetchSoundboardSounds({
+   *  guildIds: ['123456789012345678', '987654321098765432'],
+   * })
+   *
+   * console.log(soundboardSounds.get('123456789012345678'));
+   */
+  async fetchSoundboardSounds({ guildIds, time = 10_000 }) {
+    const shardCount = await this.client.ws.getShardCount();
+    const shardIds = Map.groupBy(guildIds, guildId => ShardClientUtil.shardIdForGuildId(guildId, shardCount));
+
+    for (const [shardId, shardGuildIds] of shardIds) {
+      this.client.ws.send(shardId, {
+        op: GatewayOpcodes.RequestSoundboardSounds,
+        // eslint-disable-next-line id-length
+        d: {
+          guild_ids: shardGuildIds,
+        },
+      });
+    }
+
+    return new Promise((resolve, reject) => {
+      const remainingGuildIds = new Set(guildIds);
+
+      const fetchedSoundboardSounds = new Collection();
+
+      const handler = (soundboardSounds, guild) => {
+        // eslint-disable-next-line no-use-before-define
+        timeout.refresh();
+
+        if (!remainingGuildIds.has(guild.id)) return;
+
+        fetchedSoundboardSounds.set(guild.id, soundboardSounds);
+
+        remainingGuildIds.delete(guild.id);
+
+        if (remainingGuildIds.size === 0) {
+          // eslint-disable-next-line no-use-before-define
+          clearTimeout(timeout);
+          this.client.removeListener(Events.SoundboardSounds, handler);
+          this.client.decrementMaxListeners();
+
+          resolve(fetchedSoundboardSounds);
+        }
+      };
+
+      const timeout = setTimeout(() => {
+        this.client.removeListener(Events.SoundboardSounds, handler);
+        this.client.decrementMaxListeners();
+        reject(new DiscordjsError(ErrorCodes.GuildSoundboardSoundsTimeout));
+      }, time).unref();
+
+      this.client.incrementMaxListeners();
+      this.client.on(Events.SoundboardSounds, handler);
+    });
+  }
+
+  /**
    * Options used to set incident actions. Supplying `null` to any option will disable the action.
+   *
    * @typedef {Object} IncidentActionsEditOptions
    * @property {?DateResolvable} [invitesDisabledUntil] When invites should be enabled again
    * @property {?DateResolvable} [dmsDisabledUntil] When direct messages should be enabled again
@@ -291,6 +378,7 @@ class GuildManager extends CachedManager {
 
   /**
    * Sets the incident actions for a guild.
+   *
    * @param {GuildResolvable} guild The guild
    * @param {IncidentActionsEditOptions} incidentActions The incident actions to set
    * @returns {Promise<IncidentActions>}
@@ -317,6 +405,7 @@ class GuildManager extends CachedManager {
 
   /**
    * Returns a URL for the PNG widget of a guild.
+   *
    * @param {GuildResolvable} guild The guild of the widget image
    * @param {GuildWidgetStyle} [style] The style for the widget image
    * @returns {string}

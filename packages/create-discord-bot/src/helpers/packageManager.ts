@@ -55,6 +55,7 @@ export function install(packageManager: PackageManager) {
 
 	console.log(`Installing dependencies with ${packageManager}...`);
 
+	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 	switch (packageManager) {
 		case 'yarn':
 			console.log();

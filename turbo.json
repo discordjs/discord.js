@@ -19,34 +19,32 @@
 		},
 		"@discordjs/guide#build:local": {
 			"dependsOn": ["^build"],
-			"inputs": [
-				"public/**",
-				"src/**",
-				"!src/styles/unocss.css",
-				"contentlayer.config.ts",
-				"next.config.js",
-				"package.json",
-				"tsconfig.json"
-			],
-			"outputs": [".next/**", ".next/cache/**", ".contentlayer/**"],
+			"inputs": ["public/**", "src/**", "next.config.ts", "package.json", "tsconfig.json"],
+			"outputs": [".next/**", ".next/cache/**", ".source/**"],
 			"outputLogs": "full"
 		},
 		"@discordjs/guide#build:prod": {
 			"dependsOn": ["^build"],
-			"inputs": [
-				"public/**",
-				"src/**",
-				"!src/styles/unocss.css",
-				"contentlayer.config.ts",
-				"next.config.js",
-				"package.json",
-				"tsconfig.json"
-			],
-			"outputs": [".next/**", ".next/cache/**", ".contentlayer/**"],
+			"inputs": ["public/**", "src/**", "next.config.ts", "package.json", "tsconfig.json"],
+			"outputs": [".next/**", ".next/cache/**", ".source/**"],
 			"outputLogs": "full"
 		},
 		"@discordjs/website#build:local": {
-			"env": ["VERCEL_ENV", "NEXT_PUBLIC_LOCAL_DEV"],
+			"env": [
+				"VERCEL_ENV",
+				"NEXT_PUBLIC_LOCAL_DEV",
+				"EDGE_CONFIG",
+				"MAX_FETCH_SIZE",
+				"CF_ACCOUNT_ID",
+				"CF_R2_DOCS_URL",
+				"CF_R2_DOCS_ACCESS_KEY_ID",
+				"CF_R2_DOCS_SECRET_ACCESS_KEY",
+				"CF_R2_DOCS_TOKEN",
+				"CF_R2_DOCS_BUCKET",
+				"CF_R2_DOCS_BUCKET_URL",
+				"CF_D1_DOCS_ID",
+				"CF_D1_DOCS_API_KEY"
+			],
 			"dependsOn": ["^build", "^docs"],
 			"inputs": [
 				"../../packages/*/README.md",
@@ -55,7 +53,7 @@
 				"scripts/**",
 				"!src/assets/readme/**",
 				"scripts/**",
-				"next.config.mjs",
+				"next.config.ts",
 				"package.json",
 				"tsconfig.json"
 			],
@@ -63,7 +61,21 @@
 			"outputLogs": "full"
 		},
 		"@discordjs/website#build:prod": {
-			"env": ["VERCEL_ENV", "NEXT_PUBLIC_LOCAL_DEV"],
+			"env": [
+				"VERCEL_ENV",
+				"NEXT_PUBLIC_LOCAL_DEV",
+				"EDGE_CONFIG",
+				"MAX_FETCH_SIZE",
+				"CF_ACCOUNT_ID",
+				"CF_R2_DOCS_URL",
+				"CF_R2_DOCS_ACCESS_KEY_ID",
+				"CF_R2_DOCS_SECRET_ACCESS_KEY",
+				"CF_R2_DOCS_TOKEN",
+				"CF_R2_DOCS_BUCKET",
+				"CF_R2_DOCS_BUCKET_URL",
+				"CF_D1_DOCS_ID",
+				"CF_D1_DOCS_API_KEY"
+			],
 			"dependsOn": ["^build"],
 			"inputs": [
 				"../../packages/*/README.md",
@@ -72,17 +84,12 @@
 				"scripts/**",
 				"!src/assets/readme/**",
 				"scripts/**",
-				"next.config.mjs",
+				"next.config.ts",
 				"package.json",
 				"tsconfig.json"
 			],
 			"outputs": [".next/**", ".next/cache/**", "src/assets/readme/**"],
 			"outputLogs": "full"
-		},
-		"@discordjs/guide#generate:contentlayer": {
-			"inputs": ["src/**/*.mdx"],
-			"outputs": [".contentlayer/**"],
-			"outputLogs": "errors-only"
 		},
 		"test": {
 			"dependsOn": ["^build"],
@@ -107,7 +114,7 @@
 			"outputLogs": "errors-only"
 		},
 		"@discordjs/guide#lint": {
-			"dependsOn": ["^build", "build:local", "generate:contentlayer"],
+			"dependsOn": ["^build", "build:local"],
 			"inputs": [
 				"../../eslint.config.js",
 				"../../.prettierrc.json",
@@ -151,7 +158,7 @@
 			"outputLogs": "errors-only"
 		},
 		"@discordjs/guide#format": {
-			"dependsOn": ["^build", "generate:contentlayer"],
+			"dependsOn": ["^build"],
 			"inputs": [
 				"../../eslint.config.js",
 				"../../.prettierrc.json",

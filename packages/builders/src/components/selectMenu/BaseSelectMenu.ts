@@ -5,14 +5,17 @@ import { ComponentBuilder } from '../Component.js';
 /**
  * The base select menu builder that contains common symbols for select menu builders.
  *
- * @typeParam SelectMenuType - The type of select menu this would be instantiated for.
+ * @typeParam Data - The type of API data that is stored within the builder
  */
 export abstract class BaseSelectMenuBuilder<Data extends APISelectMenuComponent>
 	extends ComponentBuilder<Data>
 	implements JSONEncodable<APISelectMenuComponent>
 {
-	protected abstract readonly data: Partial<
-		Pick<Data, 'custom_id' | 'disabled' | 'max_values' | 'min_values' | 'placeholder'>
+	/**
+	 * @internal
+	 */
+	protected abstract override readonly data: Partial<
+		Pick<Data, 'custom_id' | 'disabled' | 'id' | 'max_values' | 'min_values' | 'placeholder'>
 	>;
 
 	/**

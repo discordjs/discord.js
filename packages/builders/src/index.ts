@@ -20,6 +20,16 @@ export * from './components/Assertions.js';
 export * from './components/Component.js';
 export * from './components/Components.js';
 
+export * from './components/v2/Assertions.js';
+export * from './components/v2/Container.js';
+export * from './components/v2/File.js';
+export * from './components/v2/MediaGallery.js';
+export * from './components/v2/MediaGalleryItem.js';
+export * from './components/v2/Section.js';
+export * from './components/v2/Separator.js';
+export * from './components/v2/TextDisplay.js';
+export * from './components/v2/Thumbnail.js';
+
 export * from './interactions/commands/chatInput/mixins/ApplicationCommandNumericOptionMinMaxValueMixin.js';
 export * from './interactions/commands/chatInput/mixins/ApplicationCommandOptionChannelTypesMixin.js';
 export * from './interactions/commands/chatInput/mixins/ApplicationCommandOptionWithAutocompleteMixin.js';
@@ -76,7 +86,7 @@ export * from './messages/MessageReference.js';
 export * from './util/componentUtil.js';
 export * from './util/normalizeArray.js';
 export * from './util/resolveBuilder.js';
-export * from './util/validation.js';
+export { disableValidators, enableValidators, isValidationEnabled } from './util/validation.js';
 
 export * from './Assertions.js';
 

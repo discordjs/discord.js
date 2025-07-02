@@ -1,25 +1,12 @@
-import type { PropsWithChildren } from 'react';
-import Footer from '~/components/Footer';
-import Header from '~/components/Header';
-import { Nav } from '~/components/Nav';
-import { Providers } from './providers';
+import { DocsLayout } from 'fumadocs-ui/layouts/docs';
+import type { ReactNode } from 'react';
+import { baseOptions } from '@/app/layout.config';
+import { source } from '@/lib/source';
 
-export default function Layout({ children }: PropsWithChildren) {
+export default function Layout({ children }: { readonly children: ReactNode }) {
 	return (
-		<Providers>
-			<main className="mx-auto max-w-7xl px-4 lg:max-w-full">
-				<Header />
-				<div className="relative top-6 mx-auto max-w-7xl gap-6 lg:max-w-full lg:flex">
-					<div className="lg:sticky lg:top-23 lg:h-[calc(100vh_-_105px)]">
-						<Nav />
-					</div>
-
-					<div className="mx-auto max-w-5xl min-w-xs w-full pb-10">
-						{children}
-						<Footer />
-					</div>
-				</div>
-			</main>
-		</Providers>
+		<DocsLayout tree={source.pageTree} {...baseOptions}>
+			{children}
+		</DocsLayout>
 	);
 }

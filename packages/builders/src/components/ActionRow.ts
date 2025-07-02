@@ -1,9 +1,7 @@
-/* eslint-disable jsdoc/check-param-names */
-
 import type {
 	APITextInputComponent,
 	APIActionRowComponent,
-	APIActionRowComponentTypes,
+	APIComponentInActionRow,
 	APIChannelSelectComponent,
 	APIMentionableSelectComponent,
 	APIRoleSelectComponent,
@@ -37,17 +35,18 @@ import { UserSelectMenuBuilder } from './selectMenu/UserSelectMenu.js';
 import { TextInputBuilder } from './textInput/TextInput.js';
 
 export interface ActionRowBuilderData
-	extends Partial<Omit<APIActionRowComponent<APIActionRowComponentTypes>, 'components'>> {
+	extends Partial<Omit<APIActionRowComponent<APIComponentInActionRow>, 'components'>> {
 	components: AnyActionRowComponentBuilder[];
 }
 
 /**
  * A builder that creates API-compatible JSON data for action rows.
- *
- * @typeParam ComponentType - The types of components this action row holds
  */
-export class ActionRowBuilder extends ComponentBuilder<APIActionRowComponent<APIActionRowComponentTypes>> {
-	private readonly data: ActionRowBuilderData;
+export class ActionRowBuilder extends ComponentBuilder<APIActionRowComponent<APIComponentInActionRow>> {
+	/**
+	 * @internal
+	 */
+	protected readonly data: ActionRowBuilderData;
 
 	/**
 	 * The components within this action row.
@@ -57,7 +56,7 @@ export class ActionRowBuilder extends ComponentBuilder<APIActionRowComponent<API
 	}
 
 	/**
-	 * Creates a new action row from API data.
+	 * Creates a new action row.
 	 *
 	 * @param data - The API data to create this action row with
 	 * @example
@@ -90,12 +89,15 @@ export class ActionRowBuilder extends ComponentBuilder<APIActionRowComponent<API
 	 * 	.addComponents(button2, button3);
 	 * ```
 	 */
-	public constructor({ components = [], ...data }: Partial<APIActionRowComponent<APIActionRowComponentTypes>> = {}) {
+	public constructor(data: Partial<APIActionRowComponent<APIComponentInActionRow>> = {}) {
 		super();
+
+		const { components = [], ...rest } = data;
+
 		this.data = {
-			...structuredClone(data),
-			type: ComponentType.ActionRow,
+			...structuredClone(rest),
 			components: components.map((component) => createComponentBuilder(component)),
+			type: ComponentType.ActionRow,
 		};
 	}
 
@@ -328,7 +330,7 @@ export class ActionRowBuilder extends ComponentBuilder<APIActionRowComponent<API
 	/**
 	 * {@inheritDoc ComponentBuilder.toJSON}
 	 */
-	public override toJSON(validationOverride?: boolean): APIActionRowComponent<APIActionRowComponentTypes> {
+	public override toJSON(validationOverride?: boolean): APIActionRowComponent<APIComponentInActionRow> {
 		const { components, ...rest } = this.data;
 
 		const data = {
@@ -338,6 +340,6 @@ export class ActionRowBuilder extends ComponentBuilder<APIActionRowComponent<API
 
 		validate(actionRowPredicate, data, validationOverride);
 
-		return data as APIActionRowComponent<APIActionRowComponentTypes>;
+		return data as APIActionRowComponent<APIComponentInActionRow>;
 	}
 }

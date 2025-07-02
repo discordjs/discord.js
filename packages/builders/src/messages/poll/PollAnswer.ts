@@ -1,3 +1,4 @@
+import type { JSONEncodable } from '@discordjs/util';
 import type { APIPollAnswer, APIPollMedia } from 'discord-api-types/v10';
 import { resolveBuilder } from '../../util/resolveBuilder';
 import { validate } from '../../util/validation';
@@ -8,21 +9,26 @@ export interface PollAnswerData extends Omit<APIPollAnswer, 'answer_id' | 'poll_
 	poll_media: PollAnswerMediaBuilder;
 }
 
-export class PollAnswerBuilder {
+/**
+ * A builder that creates API-compatible JSON data for poll answers.
+ */
+export class PollAnswerBuilder implements JSONEncodable<Omit<APIPollAnswer, 'answer_id'>> {
 	/**
 	 * The API data associated with this poll answer.
 	 */
-	protected readonly data: PollAnswerData;
+	private readonly data: PollAnswerData;
 
 	/**
-	 * Creates a new poll answer from API data.
+	 * Creates a new poll answer.
 	 *
 	 * @param data - The API data to create this poll answer with
 	 */
 	public constructor(data: Partial<Omit<APIPollAnswer, 'answer_id'>> = {}) {
+		const { poll_media, ...rest } = data;
+
 		this.data = {
-			...structuredClone(data),
-			poll_media: new PollAnswerMediaBuilder(data.poll_media),
+			...structuredClone(rest),
+			poll_media: new PollAnswerMediaBuilder(poll_media),
 		};
 	}
 

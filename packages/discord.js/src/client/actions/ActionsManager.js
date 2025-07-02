@@ -5,7 +5,9 @@ class ActionsManager {
   // Action#getUser, for example, will return the injected data (which is assumed to be a built structure)
   // instead of trying to make it from provided data
   injectedUser = Symbol('djs.actions.injectedUser');
+
   injectedChannel = Symbol('djs.actions.injectedChannel');
+
   injectedMessage = Symbol('djs.actions.injectedMessage');
 
   constructor(client) {
@@ -27,6 +29,7 @@ class ActionsManager {
     this.register(require('./GuildScheduledEventDelete.js').GuildScheduledEventDeleteAction);
     this.register(require('./GuildScheduledEventUserAdd.js').GuildScheduledEventUserAddAction);
     this.register(require('./GuildScheduledEventUserRemove.js').GuildScheduledEventUserRemoveAction);
+    this.register(require('./GuildSoundboardSoundDelete.js').GuildSoundboardSoundDeleteAction);
     this.register(require('./GuildStickerCreate.js').GuildStickerCreateAction);
     this.register(require('./GuildStickerDelete.js').GuildStickerDeleteAction);
     this.register(require('./GuildStickerUpdate.js').GuildStickerUpdateAction);

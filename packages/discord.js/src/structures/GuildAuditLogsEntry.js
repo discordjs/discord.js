@@ -2,6 +2,8 @@
 
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { AuditLogOptionsType, AuditLogEvent } = require('discord-api-types/v10');
+const { Partials } = require('../util/Partials.js');
+const { flatten } = require('../util/Util.js');
 const { AutoModerationRule } = require('./AutoModerationRule.js');
 const { GuildOnboardingPrompt } = require('./GuildOnboardingPrompt.js');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent.js');
@@ -10,8 +12,6 @@ const { Invite } = require('./Invite.js');
 const { StageInstance } = require('./StageInstance.js');
 const { Sticker } = require('./Sticker.js');
 const { Webhook } = require('./Webhook.js');
-const { Partials } = require('../util/Partials.js');
-const { flatten } = require('../util/Util.js');
 
 const Targets = {
   Guild: 'Guild',
@@ -34,64 +34,68 @@ const Targets = {
   Unknown: 'Unknown',
 };
 
-// TODO: Add soundboard sounds when https://github.com/discordjs/discord.js/pull/10590 is merged
 /**
  * The target of a guild audit log entry. It can be one of:
- * * A guild
- * * A channel
- * * A user
- * * A role
- * * An invite
- * * A webhook
- * * A guild emoji
- * * An integration
- * * A stage instance
- * * A sticker
- * * A guild scheduled event
- * * A thread
- * * An application command
- * * An auto moderation rule
- * * A guild onboarding prompt
- * * An object with an id key if target was deleted or fake entity
- * * An object where the keys represent either the new value or the old value
+ * - A guild
+ * - A channel
+ * - A user
+ * - A role
+ * - An invite
+ * - A webhook
+ * - A guild emoji
+ * - An integration
+ * - A stage instance
+ * - A sticker
+ * - A guild scheduled event
+ * - A thread
+ * - An application command
+ * - An auto moderation rule
+ * - A guild onboarding prompt
+ * - A soundboard sound
+ * - An object with an id key if target was deleted or fake entity
+ * - An object where the keys represent either the new value or the old value
+ *
  * @typedef {?(Object|Guild|BaseChannel|User|Role|Invite|Webhook|GuildEmoji|Integration|StageInstance|Sticker|
- * GuildScheduledEvent|ApplicationCommand|AutoModerationRule|GuildOnboardingPrompt)} AuditLogEntryTarget
+ * GuildScheduledEvent|ApplicationCommand|AutoModerationRule|GuildOnboardingPrompt|SoundboardSound)} AuditLogEntryTarget
  */
 
 /**
- * The action type of an entry, e.g. `Create`. Here are the available types:
- * * Create
- * * Delete
- * * Update
- * * All
+ * The action type of an entry. Here are the available types:
+ * - Create
+ * - Delete
+ * - Update
+ * - All
+ *
  * @typedef {string} AuditLogActionType
  */
 
 /**
  * The target type of an entry. Here are the available types:
- * * Guild
- * * Channel
- * * User
- * * Role
- * * Invite
- * * Webhook
- * * Emoji
- * * Message
- * * Integration
- * * StageInstance
- * * Sticker
- * * Thread
- * * GuildScheduledEvent
- * * ApplicationCommand
- * * GuildOnboardingPrompt
- * * SoundboardSound
- * * AutoModeration
- * * Unknown
+ * - Guild
+ * - Channel
+ * - User
+ * - Role
+ * - Invite
+ * - Webhook
+ * - Emoji
+ * - Message
+ * - Integration
+ * - StageInstance
+ * - Sticker
+ * - Thread
+ * - GuildScheduledEvent
+ * - ApplicationCommand
+ * - GuildOnboardingPrompt
+ * - SoundboardSound
+ * - AutoModeration
+ * - Unknown
+ *
  * @typedef {string} AuditLogTargetType
  */
 
 /**
  * Constructs an object of known properties for a structure from an array of changes.
+ *
  * @param {AuditLogChange[]} changes The array of changes
  * @param {Object} [initialData={}] The initial data passed to the function
  * @returns {Object}
@@ -110,6 +114,7 @@ function changesReduce(changes, initialData = {}) {
 class GuildAuditLogsEntry {
   /**
    * Key mirror of all available audit log targets.
+   *
    * @type {Object<string, string>}
    * @memberof GuildAuditLogsEntry
    */
@@ -118,6 +123,7 @@ class GuildAuditLogsEntry {
   constructor(guild, data, logs) {
     /**
      * The target type of this entry
+     *
      * @type {AuditLogTargetType}
      */
     this.targetType = GuildAuditLogsEntry.targetType(data.action_type);
@@ -125,30 +131,35 @@ class GuildAuditLogsEntry {
 
     /**
      * The action type of this entry
+     *
      * @type {AuditLogActionType}
      */
     this.actionType = GuildAuditLogsEntry.actionType(data.action_type);
 
     /**
      * The type of action that occurred.
+     *
      * @type {AuditLogEvent}
      */
     this.action = data.action_type;
 
     /**
      * The reason of this entry
+     *
      * @type {?string}
      */
     this.reason = data.reason ?? null;
 
     /**
      * The id of the user that executed this entry
+     *
      * @type {?Snowflake}
      */
     this.executorId = data.user_id;
 
     /**
      * The user that executed this entry
+     *
      * @type {?User}
      */
     this.executor = data.user_id
@@ -159,6 +170,7 @@ class GuildAuditLogsEntry {
 
     /**
      * An entry in the audit log representing a specific change.
+     *
      * @typedef {Object} AuditLogChange
      * @property {string} key The property that was changed, e.g. `nick` for nickname changes
      * <warn>For application command permissions updates the key is the id of the user, channel,
@@ -169,6 +181,7 @@ class GuildAuditLogsEntry {
 
     /**
      * Specific property changes
+     *
      * @type {AuditLogChange[]}
      */
     this.changes =
@@ -180,12 +193,14 @@ class GuildAuditLogsEntry {
 
     /**
      * The entry's id
+     *
      * @type {Snowflake}
      */
     this.id = data.id;
 
     /**
      * Any extra data from the entry
+     *
      * @type {?(Object|Role|GuildMember)}
      */
     this.extra = null;
@@ -242,6 +257,7 @@ class GuildAuditLogsEntry {
           default:
             break;
         }
+
         break;
 
       case AuditLogEvent.StageInstanceCreate:
@@ -275,6 +291,7 @@ class GuildAuditLogsEntry {
             integrationType: data.integration_type,
           };
         }
+
         break;
       }
 
@@ -284,12 +301,14 @@ class GuildAuditLogsEntry {
 
     /**
      * The id of the target of this entry
+     *
      * @type {?Snowflake}
      */
     this.targetId = data.target_id;
 
     /**
      * The target of this entry
+     *
      * @type {?AuditLogEntryTarget}
      */
     this.target = null;
@@ -369,9 +388,8 @@ class GuildAuditLogsEntry {
       this.target = guild.roles.cache.get(data.target_id) ?? { id: data.target_id };
     } else if (targetType === Targets.Emoji) {
       this.target = guild.emojis.cache.get(data.target_id) ?? { id: data.target_id };
-      // TODO: Uncomment after https://github.com/discordjs/discord.js/pull/10590 is merged
-      // } else if (targetType === Targets.SoundboardSound) {
-      //   this.target = guild.soundboardSounds.cache.get(data.target_id) ?? { id: data.target_id };
+    } else if (targetType === Targets.SoundboardSound) {
+      this.target = guild.soundboardSounds.cache.get(data.target_id) ?? { id: data.target_id };
     } else if (data.target_id) {
       this.target = { id: data.target_id };
     }
@@ -379,6 +397,7 @@ class GuildAuditLogsEntry {
 
   /**
    * Finds the target type of a guild audit log entry.
+   *
    * @param {AuditLogEvent} target The action target
    * @returns {AuditLogTargetType}
    */
@@ -406,6 +425,7 @@ class GuildAuditLogsEntry {
 
   /**
    * Finds the action type from the guild audit log entry action.
+   *
    * @param {AuditLogEvent} action The action target
    * @returns {AuditLogActionType}
    */
@@ -496,6 +516,7 @@ class GuildAuditLogsEntry {
 
   /**
    * The timestamp this entry was created at
+   *
    * @type {number}
    * @readonly
    */
@@ -505,6 +526,7 @@ class GuildAuditLogsEntry {
 
   /**
    * The time this entry was created at
+   *
    * @type {Date}
    * @readonly
    */
@@ -514,6 +536,7 @@ class GuildAuditLogsEntry {
 
   /**
    * Checks whether this GuildAuditLogsEntry is of the specified {@link AuditLogEvent} type.
+   *
    * @param {AuditLogEvent} action The type to check for
    * @returns {boolean}
    */

@@ -1,29 +1,27 @@
 import { Analytics } from '@vercel/analytics/react';
+import { RootProvider } from 'fumadocs-ui/provider';
+import { GeistMono } from 'geist/font/mono';
+import { GeistSans } from 'geist/font/sans';
 import type { Metadata, Viewport } from 'next';
 import type { PropsWithChildren } from 'react';
-import { DESCRIPTION } from '~/util/constants';
-import { inter, jetBrainsMono } from '~/util/fonts';
-import { Providers } from './providers';
+import { ENV } from '@/util/env';
 
-import '~/styles/cmdk.css';
-import '@code-hike/mdx/styles.css';
-import '~/styles/ch.css';
-import '~/styles/main.css';
+import '@/styles/base.css';
 
 export const viewport: Viewport = {
 	themeColor: [
-		{ media: '(prefers-color-scheme: light)', color: '#f1f3f5' },
-		{ media: '(prefers-color-scheme: dark)', color: '#181818' },
+		{ media: '(prefers-color-scheme: light)', color: '#fbfbfb' },
+		{ media: '(prefers-color-scheme: dark)', color: '#1a1a1e' },
 	],
 	colorScheme: 'light dark',
 };
 
 export const metadata: Metadata = {
-	metadataBase: new URL(
-		process.env.METADATA_BASE_URL ? process.env.METADATA_BASE_URL : `http://localhost:${process.env.PORT ?? 3_000}`,
-	),
-	title: 'discord.js',
-	description: DESCRIPTION,
+	metadataBase: new URL(ENV.IS_LOCAL_DEV ? `http://localhost:${ENV.PORT}` : 'https://next.discordjs.guide'),
+	title: {
+		template: '%s | discord.js',
+		default: 'discord.js',
+	},
 	icons: {
 		other: [
 			{
@@ -58,7 +56,6 @@ export const metadata: Metadata = {
 		siteName: 'discord.js',
 		type: 'website',
 		title: 'discord.js',
-		description: DESCRIPTION,
 		images: 'https://discordjs.dev/api/open-graph.png',
 	},
 
@@ -68,15 +65,15 @@ export const metadata: Metadata = {
 	},
 
 	other: {
-		'msapplication-TileColor': '#090a16',
+		'msapplication-TileColor': '#1a1a1e',
 	},
 };
 
-export default function RootLayout({ children }: PropsWithChildren) {
+export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<html className={`${inter.variable} ${jetBrainsMono.variable}`} lang="en" suppressHydrationWarning>
-			<body className="bg-light-600 dark:bg-dark-600 dark:text-light-900">
-				<Providers>{children}</Providers>
+		<html className={`${GeistSans.variable} ${GeistMono.variable} antialiased`} lang="en" suppressHydrationWarning>
+			<body className="overscroll-y-none">
+				<RootProvider>{children}</RootProvider>
 				<Analytics />
 			</body>
 		</html>

@@ -25,6 +25,7 @@ export interface Collection<Key, Value> {
  * @typeParam Key - The key type this collection holds
  * @typeParam Value - The value type this collection holds
  */
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class Collection<Key, Value> extends Map<Key, Value> {
 	/**
 	 * Obtains the value of the given key if it exists, otherwise sets and returns the value provided by the default value generator.
@@ -1105,12 +1106,6 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	declare public static readonly [Symbol.species]: typeof Collection;
 }
 
-/**
- * @internal
- */
 export type Keep<Value> = { keep: false } | { keep: true; value: Value };
 
-/**
- * @internal
- */
 export type Comparator<Key, Value> = (firstValue: Value, secondValue: Value, firstKey: Key, secondKey: Key) => number;

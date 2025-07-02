@@ -1,9 +1,7 @@
-/* eslint-disable jsdoc/check-param-names */
-
 import type { JSONEncodable } from '@discordjs/util';
 import type {
 	APIActionRowComponent,
-	APIModalActionRowComponent,
+	APIComponentInModalActionRow,
 	APIModalInteractionResponseCallbackData,
 } from 'discord-api-types/v10';
 import { ActionRowBuilder } from '../../components/ActionRow.js';
@@ -34,13 +32,15 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	}
 
 	/**
-	 * Creates a new modal from API data.
+	 * Creates a new modal.
 	 *
 	 * @param data - The API data to create this modal with
 	 */
-	public constructor({ components = [], ...data }: Partial<APIModalInteractionResponseCallbackData> = {}) {
+	public constructor(data: Partial<APIModalInteractionResponseCallbackData> = {}) {
+		const { components = [], ...rest } = data;
+
 		this.data = {
-			...structuredClone(data),
+			...structuredClone(rest),
 			components: components.map((component) => createComponentBuilder(component)),
 		};
 	}
@@ -73,7 +73,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	public addActionRows(
 		...components: RestOrArray<
 			| ActionRowBuilder
-			| APIActionRowComponent<APIModalActionRowComponent>
+			| APIActionRowComponent<APIComponentInModalActionRow>
 			| ((builder: ActionRowBuilder) => ActionRowBuilder)
 		>
 	) {
@@ -93,7 +93,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	public setActionRows(
 		...components: RestOrArray<
 			| ActionRowBuilder
-			| APIActionRowComponent<APIModalActionRowComponent>
+			| APIActionRowComponent<APIComponentInModalActionRow>
 			| ((builder: ActionRowBuilder) => ActionRowBuilder)
 		>
 	) {
@@ -137,7 +137,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 		deleteCount: number,
 		...rows: (
 			| ActionRowBuilder
-			| APIActionRowComponent<APIModalActionRowComponent>
+			| APIActionRowComponent<APIComponentInModalActionRow>
 			| ((builder: ActionRowBuilder) => ActionRowBuilder)
 		)[]
 	): this {

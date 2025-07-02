@@ -10,6 +10,9 @@ export interface SharedNameAndDescriptionData
  * This mixin holds name and description symbols for chat input commands.
  */
 export class SharedNameAndDescription extends SharedName {
+	/**
+	 * @internal
+	 */
 	protected override readonly data: SharedNameAndDescriptionData = {};
 
 	/**
