@@ -2,13 +2,6 @@
 import { kData, kMixinConstruct, kMixinToJSON } from './utils/symbols.js';
 import type { ReplaceOmittedWithUnknown } from './utils/types.js';
 
-/**
- * Additional options needed to appropriately construct / patch data
- *
- * @internal
- */
-export interface StructureExtraOptions {}
-
 export const DataTemplatePropertyName = 'DataTemplate';
 export const OptimizeDataPropertyName = 'optimizeData';
 
@@ -74,7 +67,6 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 * Creates a new structure to represent API data
 	 *
 	 * @param data - the data from the API that this structure will represent
-	 * @param extraOptions - any additional options needed to appropriately construct a structure from the data
 	 * @remarks To be made public in subclasses
 	 * @internal
 	 */
