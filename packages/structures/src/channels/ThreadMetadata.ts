@@ -32,7 +32,7 @@ export class ThreadMetadata<
 	};
 
 	/**
-	 * {@inheritDoc Structure._optimizeData}
+	 * {@inheritDoc Structure.optimizeData}
 	 */
 	protected override optimizeData(data: Partial<APIThreadMetadata>) {
 		if (data.create_timestamp) {
@@ -80,7 +80,7 @@ export class ThreadMetadata<
 	}
 
 	/**
-	 * Whether the thread is locked; when a thread is locked, only users with {@link PermissionFlagsBits.ManageThreads} can unarchive it.
+	 * Whether the thread is locked; when a thread is locked, only users with {@link discord-api-types/v10#(PermissionFlagsBits:variable) | ManageThreads} can unarchive it.
 	 */
 	public get locked() {
 		return this[kData].locked;

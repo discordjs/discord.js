@@ -54,7 +54,7 @@ export class ChannelPinMixin<
 	/**
 	 * Adds data from optimized properties omitted from [kData].
 	 *
-	 * @param data - the result of {@link Channel.toJSON}
+	 * @param data - the result of {@link (Channel:class).toJSON}
 	 */
 	protected [kMixinToJSON](data: Partial<ChannelDataType<Type>>) {
 		data.last_pin_timestamp = this[kLastPinTimestamp] ? new Date(this[kLastPinTimestamp]).toISOString() : null;

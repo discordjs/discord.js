@@ -25,7 +25,7 @@ import type { VoiceChannelMixin } from './mixins/VoiceChannelMixin.js';
 export type PartialChannel = Channel<ChannelType, Exclude<keyof APIChannel, keyof APIPartialChannel>>;
 
 /**
- * @internal
+ * The data stored by a {@link Channel} structure based on its {@link (Channel:class)."type"} property.
  */
 export type ChannelDataType<Type extends ChannelType | 'unknown'> = Type extends ChannelType
 	? Extract<APIChannel, { type: Type }>

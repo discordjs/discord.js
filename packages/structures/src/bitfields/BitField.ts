@@ -2,7 +2,7 @@ import type { EnumLike, NonAbstract, RecursiveReadonlyArray } from '../utils/typ
 
 /**
  * Data that can be resolved to give a bitfield. This can be:
- * A bit number (this can be a number literal or a value taken from {@link BitField.Flags})
+ * A bit number (this can be a number literal or a value taken from {@link (BitField:class).Flags})
  * A string bit number
  * An instance of BitField
  * An Array of BitFieldResolvable

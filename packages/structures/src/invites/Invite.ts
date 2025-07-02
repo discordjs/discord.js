@@ -27,14 +27,14 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = 'created_at' | 
 	};
 
 	/**
-	 * Optimized storage of {@link APIActualInvite.expires_at}
+	 * Optimized storage of {@link discord-api-types/v10#(APIActualInvite:interface).expires_at}
 	 *
 	 * @internal
 	 */
 	protected [kExpiresTimestamp]: number | null = null;
 
 	/**
-	 * Optimized storage of {@link APIActualInvite.created_at}
+	 * Optimized storage of {@link discord-api-types/v10#(APIActualInvite:interface).created_at}
 	 *
 	 * @internal
 	 */
@@ -213,7 +213,7 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = 'created_at' | 
 	}
 
 	/**
-	 * {@inheritDoc Object.valueOf}
+	 * Returns the primitive value of the specified object.
 	 */
 	public override valueOf() {
 		return this.code ?? super.valueOf();

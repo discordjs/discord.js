@@ -34,7 +34,7 @@ export class PermissionOverwrite<Omitted extends keyof APIOverwrite | '' = 'allo
 	};
 
 	/**
-	 * {@inheritDoc Structure._optimizeData}
+	 * {@inheritDoc Structure.optimizeData}
 	 */
 	protected override optimizeData(data: Partial<APIOverwrite>) {
 		if (data.allow) {

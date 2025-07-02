@@ -28,7 +28,7 @@ export class ForumTag<Omitted extends keyof APIGuildForumTag | '' = ''> extends 
 	}
 
 	/**
-	 * Whether this tag can only be added to or removed from threads by a member with the {@link discord-api-types/v10#PermissionFlagsBits.ManageThreads} permission.
+	 * Whether this tag can only be added to or removed from threads by a member with the {@link discord-api-types/v10#(PermissionFlagsBits:variable) | ManageThreads} permission.
 	 */
 	public get moderated() {
 		return this[kData].moderated;

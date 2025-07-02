@@ -5,7 +5,7 @@ import { BitField } from './BitField.js';
 
 /**
  * Data structure that makes it easy to interact with a permission bitfield. All {@link GuildMember}s have a set of
- * permissions in their guild, and each channel in the guild may also have {@link PermissionOverwrites} for the member
+ * permissions in their guild, and each channel in the guild may also have {@link PermissionOverwrite}s for the member
  * that override their default permissions.
  */
 export class PermissionsBitField extends BitField<keyof typeof PermissionFlagsBits> {

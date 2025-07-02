@@ -24,7 +24,7 @@ export class VoiceChannelMixin<
 	}
 
 	/**
-	 * The camera video quality mode of the voice channel, {@link VideoQualityMode#Auto} when not present.
+	 * The camera video quality mode of the voice channel, {@link discord-api-types/v10#(VideoQualityMode:enum) | Auto} when not present.
 	 */
 	public get videoQualityMode() {
 		return this[kData].video_quality_mode!;
