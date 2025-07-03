@@ -85,12 +85,12 @@ export interface DAVESession extends EventEmitter {
  */
 export class DAVESession extends EventEmitter {
 	/**
-	 * The channel ID represented by this session.
+	 * The channel id represented by this session.
 	 */
 	public channelId: string;
 
 	/**
-	 * The user ID represented by this session.
+	 * The user id represented by this session.
 	 */
 	public userId: string;
 
@@ -100,7 +100,7 @@ export class DAVESession extends EventEmitter {
 	public protocolVersion: number;
 
 	/**
-	 * The last transition ID executed.
+	 * The last transition id executed.
 	 */
 	public lastTransitionId?: number | undefined;
 
@@ -163,7 +163,7 @@ export class DAVESession extends EventEmitter {
 	/**
 	 * Gets the verification code for a user in the session.
 	 *
-	 * @throws Will throw if there is not an active session or the user ID provided is invalid or not in the session.
+	 * @throws Will throw if there is not an active session or the user id provided is invalid or not in the session.
 	 */
 	public async getVerificationCode(userId: string): Promise<string> {
 		if (!this.session) throw new Error('Session not available');
@@ -212,7 +212,7 @@ export class DAVESession extends EventEmitter {
 		this.emit('debug', `Preparing for transition (${data.transition_id}, v${data.protocol_version})`);
 		this.pendingTransition = data;
 
-		// When the included transition ID is 0, the transition is for (re)initialization and it can be executed immediately.
+		// When the included transition id is 0, the transition is for (re)initialization and it can be executed immediately.
 		if (data.transition_id === 0) {
 			this.executeTransition(data.transition_id);
 		} else {
@@ -282,7 +282,7 @@ export class DAVESession extends EventEmitter {
 	/**
 	 * Recover from an invalid transition by re-initializing.
 	 *
-	 * @param transitionId - The transition ID to invalidate
+	 * @param transitionId - The transition id to invalidate
 	 */
 	public recoverFromInvalidTransition(transitionId: number) {
 		if (this.reinitializing) return;
@@ -317,7 +317,7 @@ export class DAVESession extends EventEmitter {
 	 * Processes a commit from the MLS group.
 	 *
 	 * @param payload - The payload
-	 * @returns The transaction ID and whether it was successful
+	 * @returns The transaction id and whether it was successful
 	 */
 	public processCommit(payload: Buffer): TransitionResult {
 		if (!this.session) throw new Error('No session available');
@@ -344,7 +344,7 @@ export class DAVESession extends EventEmitter {
 	 * Processes a welcome from the MLS group.
 	 *
 	 * @param payload - The payload
-	 * @returns The transaction ID and whether it was successful
+	 * @returns The transaction id and whether it was successful
 	 */
 	public processWelcome(payload: Buffer): TransitionResult {
 		if (!this.session) throw new Error('No session available');
@@ -381,7 +381,7 @@ export class DAVESession extends EventEmitter {
 	 * Decrypt a packet using end-to-end encryption.
 	 *
 	 * @param packet - The packet to decrypt
-	 * @param userId - The user ID that sent the packet
+	 * @param userId - The user id that sent the packet
 	 * @returns The decrypted packet, or `null` if the decryption failed but should be ignored
 	 */
 	public decrypt(packet: Buffer, userId: string) {

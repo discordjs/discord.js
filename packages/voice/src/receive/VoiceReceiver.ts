@@ -130,7 +130,7 @@ export class VoiceReceiver {
 	 * @param mode - The encryption mode
 	 * @param nonce - The nonce buffer used by the connection for encryption
 	 * @param secretKey - The secret key used by the connection for encryption
-	 * @param userId - The user ID that sent the packet
+	 * @param userId - The user id that sent the packet
 	 * @returns The parsed Opus packet
 	 */
 	private parsePacket(buffer: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array, userId: string) {

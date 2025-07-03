@@ -532,7 +532,7 @@ export class VoiceConnection extends EventEmitter {
 	/**
 	 * Propagates transitions from the underlying network instance.
 	 *
-	 * @param transitionId - The transition ID
+	 * @param transitionId - The transition id
 	 */
 	private onNetworkingTransitioned(transitionId: number) {
 		this.emit('transitioned', transitionId);
@@ -744,7 +744,7 @@ export class VoiceConnection extends EventEmitter {
 	/**
 	 * Gets the verification code for a user in the session.
 	 *
-	 * @throws Will throw if end-to-end encryption is not on or if the user ID provided is not in the session.
+	 * @throws Will throw if end-to-end encryption is not on or if the user id provided is not in the session.
 	 */
 	public async getVerificationCode(userId: string): Promise<string> {
 		if (
