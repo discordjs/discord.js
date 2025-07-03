@@ -3,7 +3,6 @@ import { Structure } from '../Structure.js';
 import { kData, kExpiresTimestamp, kCreatedTimestamp, kPatch } from '../utils/symbols.js';
 import type { Partialize } from '../utils/types.js';
 
-// TODO: use an actual dtypes type instead if it exists
 export interface APIActualInvite extends APIInvite, Partial<Omit<APIExtendedInvite, keyof APIInvite>> {}
 
 /**
