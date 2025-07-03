@@ -40,7 +40,7 @@ export class Channel<
 	 * @remarks This template is only guaranteed to apply to channels constructed directly via `new Channel()`.
 	 * Use the appropriate subclass template to remove data from that channel type.
 	 */
-	public static override DataTemplate: Partial<APIChannel> = {};
+	public static override readonly DataTemplate: Partial<APIChannel> = {};
 
 	/**
 	 * @param data - The raw data received from the API for the channel

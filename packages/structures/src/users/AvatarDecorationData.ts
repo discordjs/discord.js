@@ -15,7 +15,7 @@ export class AvatarDecorationData<Omitted extends keyof APIAvatarDecorationData 
 	/**
 	 * The template used for removing data from the raw data stored for each Connection
 	 */
-	public static override DataTemplate: Partial<APIAvatarDecorationData> = {};
+	public static override readonly DataTemplate: Partial<APIAvatarDecorationData> = {};
 
 	/**
 	 * @param data - The raw data received from the API for the connection

@@ -17,7 +17,7 @@ export class ChannelPinMixin<
 	/**
 	 * The template used for removing data from the raw data stored for each Channel.
 	 */
-	public static DataTemplate: Partial<
+	public static readonly DataTemplate: Partial<
 		ChannelDataType<ChannelType.DM | ChannelType.GuildAnnouncement | ChannelType.GuildText | ThreadChannelType>
 	> = {
 		set last_pin_timestamp(_: string) {},

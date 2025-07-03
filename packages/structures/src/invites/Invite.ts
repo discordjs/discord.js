@@ -21,7 +21,7 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = 'created_at' | 
 	 * @remarks This template has defaults, if you want to remove additional data and keep the defaults,
 	 * use `Object.defineProperties`. To override the defaults, set this value directly.
 	 */
-	public static override DataTemplate: Partial<APIActualInvite> = {
+	public static override readonly DataTemplate: Partial<APIActualInvite> = {
 		set created_at(_: string) {},
 		set expires_at(_: string) {},
 	};

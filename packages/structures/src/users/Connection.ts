@@ -12,7 +12,7 @@ export class Connection<Omitted extends keyof APIConnection | '' = ''> extends S
 	/**
 	 * The template used for removing data from the raw data stored for each Connection
 	 */
-	public static override DataTemplate: Partial<APIConnection> = {};
+	public static override readonly DataTemplate: Partial<APIConnection> = {};
 
 	/**
 	 * @param data - The raw data received from the API for the connection

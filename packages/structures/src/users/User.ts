@@ -15,7 +15,7 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	/**
 	 * The template used for removing data from the raw data stored for each User
 	 */
-	public static override DataTemplate: Partial<APIUser> = {};
+	public static override readonly DataTemplate: Partial<APIUser> = {};
 
 	/**
 	 * @param data - The raw data received from the API for the user

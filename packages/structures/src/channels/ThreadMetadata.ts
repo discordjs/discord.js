@@ -26,7 +26,7 @@ export class ThreadMetadata<
 	 * @remarks This template has defaults, if you want to remove additional data and keep the defaults,
 	 * use `Object.defineProperties`. To override the defaults, set this value directly.
 	 */
-	public static override DataTemplate: Partial<APIThreadMetadata> = {
+	public static override readonly DataTemplate: Partial<APIThreadMetadata> = {
 		set create_timestamp(_: string) {},
 		set archive_timestamp(_: string) {},
 	};

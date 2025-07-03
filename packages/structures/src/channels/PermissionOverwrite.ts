@@ -28,7 +28,7 @@ export class PermissionOverwrite<Omitted extends keyof APIOverwrite | '' = 'allo
 	 * @remarks This template has defaults, if you want to remove additional data and keep the defaults,
 	 * use `Object.defineProperties`. To override the defaults, set this value directly.
 	 */
-	public static override DataTemplate: Partial<APIOverwrite> = {
+	public static override readonly DataTemplate: Partial<APIOverwrite> = {
 		set allow(_: string) {},
 		set deny(_: string) {},
 	};
