@@ -1,4 +1,4 @@
-import { kData, kMixinConstruct, kMixinToJSON, kPatch } from './utils/symbols.js';
+import { kClone, kData, kMixinConstruct, kMixinToJSON, kPatch } from './utils/symbols.js';
 import type { ReplaceOmittedWithUnknown } from './utils/types.js';
 
 export const DataTemplatePropertyName = 'DataTemplate';
@@ -94,7 +94,7 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 * @returns a clone of this
 	 * @internal
 	 */
-	protected clone(patchPayload?: Readonly<Partial<DataType>>): typeof this {
+	protected [kClone](patchPayload?: Readonly<Partial<DataType>>): typeof this {
 		const clone = this.toJSON();
 		// @ts-expect-error constructor is of abstract class is unknown
 		return new this.constructor(patchPayload ? Object.assign(clone, patchPayload) : clone);

@@ -1,4 +1,5 @@
 export const kData = Symbol.for('djs.structures.data');
+export const kClone = Symbol.for('djs.structures.clone');
 export const kPatch = Symbol.for('djs.structures.patch');
 export const kExpiresTimestamp = Symbol.for('djs.structures.expiresTimestamp');
 export const kCreatedTimestamp = Symbol.for('djs.structures.createdTimestamp');
