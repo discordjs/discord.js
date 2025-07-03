@@ -39,3 +39,11 @@ jobs:
           pnpm --filter=${{ steps.extract-tag.outputs.subpackage == 'true' && '@discordjs/' || '' }}${{ steps.extract-tag.outputs.package }} publish --provenance --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+
+      - name: create-discord-bot -> create-discord-app
+        if: steps.extract-tag.outputs.package == 'create-discord-bot'
+        run: |
+          pnpm --filter=create-discord-bot run rename-to-app
+          pnpm --filter=create-discord-app publish --provenance --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
