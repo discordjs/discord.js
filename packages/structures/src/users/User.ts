@@ -117,7 +117,7 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	}
 
 	/**
-	 * The user's primary discord language
+	 * The user's primary Discord language
 	 *
 	 * @remarks This property is only set when the user was fetched with an Oauth2 token and the `identify` scope
 	 */

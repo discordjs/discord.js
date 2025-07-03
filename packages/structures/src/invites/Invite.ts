@@ -7,7 +7,7 @@ import type { Partialize } from '../utils/types.js';
 export interface APIActualInvite extends APIInvite, Partial<Omit<APIExtendedInvite, keyof APIInvite>> {}
 
 /**
- * Represents an invitation to a discord channel
+ * Represents an invitation to a Discord channel
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  */
@@ -99,7 +99,7 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = 'created_at' | 
 	 *
 	 * @remarks Only available when the invite was fetched from `GET /invites/<code>` with counts
 	 */
-	public get presenceCount() {
+	public get approximatePresenceCount() {
 		return this[kData].approximate_presence_count;
 	}
 
@@ -108,7 +108,7 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = 'created_at' | 
 	 *
 	 * @remarks Only available when the invite was fetched from `GET /invites/<code>` with counts
 	 */
-	public get memberCount() {
+	public get approximateMemberCount() {
 		return this[kData].approximate_member_count;
 	}
 

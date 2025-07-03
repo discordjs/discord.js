@@ -80,9 +80,7 @@ export abstract class BitField<Flags extends string> {
 	 * @returns
 	 */
 	public missing(bits: BitFieldResolvable<Flags>, ...hasParams: readonly unknown[]) {
-		return new (this.constructor as unknown as new (bits: BitFieldResolvable<Flags>) => BitField<Flags>)(bits)
-			.remove(this)
-			.toArray(...hasParams);
+		return new this.constructor(bits).remove(this).toArray(...hasParams);
 	}
 
 	/**
@@ -157,7 +155,7 @@ export abstract class BitField<Flags extends string> {
 		if (asNumber) {
 			if (this.bitfield > Number.MAX_SAFE_INTEGER) {
 				throw new RangeError(
-					`Cannot convert bitfield value ${this.bitfield} to number, as it is bigger than Number.MAX_SAFE_INTEGER`,
+					`Cannot convert bitfield value ${this.bitfield} to number, as it is bigger than ${Number.MAX_SAFE_INTEGER} (the maximum safe integer)`,
 				);
 			}
 

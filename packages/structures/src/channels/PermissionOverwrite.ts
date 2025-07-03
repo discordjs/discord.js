@@ -51,7 +51,7 @@ export class PermissionOverwrite<Omitted extends keyof APIOverwrite | '' = 'allo
 	 */
 	public get allow() {
 		const allow = this[kAllow];
-		return allow ? new PermissionsBitField(allow) : null;
+		return typeof allow === 'bigint' ? new PermissionsBitField(allow) : null;
 	}
 
 	/**
@@ -59,7 +59,7 @@ export class PermissionOverwrite<Omitted extends keyof APIOverwrite | '' = 'allo
 	 */
 	public get deny() {
 		const deny = this[kDeny];
-		return deny ? new PermissionsBitField(deny) : null;
+		return typeof deny === 'bigint' ? new PermissionsBitField(deny) : null;
 	}
 
 	/**

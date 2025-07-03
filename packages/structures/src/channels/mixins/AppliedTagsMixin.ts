@@ -6,7 +6,7 @@ export interface AppliedTagsMixin extends Channel<ChannelType.PublicThread> {}
 
 export class AppliedTagsMixin {
 	/**
-	 * The IDs of the set of tags that have been applied to a thread in a {@link (ForumChannel:class)} or a {@link (MediaChannel:class)}.
+	 * The ids of the set of tags that have been applied to a thread in a {@link (ForumChannel:class)} or a {@link (MediaChannel:class)}.
 	 */
 	public get appliedTags() {
 		return Array.isArray(this[kData].applied_tags) ? [...this[kData].applied_tags] : null;
