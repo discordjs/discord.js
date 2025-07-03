@@ -1,7 +1,7 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APIUser } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
-import { kData } from '../utils/symbols.js';
+import { kData, kPatch } from '../utils/symbols.js';
 import { isIdSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
 
@@ -25,12 +25,12 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	}
 
 	/**
-	 * {@inheritDoc Structure._patch}
+	 * {@inheritDoc Structure.[kPatch]}
 	 *
 	 * @internal
 	 */
-	public override _patch(data: Partial<APIUser>) {
-		return super._patch(data);
+	public override [kPatch](data: Partial<APIUser>) {
+		return super[kPatch](data);
 	}
 
 	/**

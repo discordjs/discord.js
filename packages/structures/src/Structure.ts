@@ -1,4 +1,4 @@
-import { kData, kMixinConstruct, kMixinToJSON } from './utils/symbols.js';
+import { kData, kMixinConstruct, kMixinToJSON, kPatch } from './utils/symbols.js';
 import type { ReplaceOmittedWithUnknown } from './utils/types.js';
 
 export const DataTemplatePropertyName = 'DataTemplate';
@@ -82,7 +82,7 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 * @returns this
 	 * @internal
 	 */
-	protected _patch(data: Readonly<Partial<DataType>>): this {
+	protected [kPatch](data: Readonly<Partial<DataType>>): this {
 		this[kData] = Object.assign(this.getDataTemplate(), this[kData], data);
 		this.optimizeData(data);
 		return this;
@@ -107,7 +107,7 @@ export abstract class Structure<DataType, Omitted extends keyof DataType | '' = 
 	 * @param _data - the raw data received from the API to optimize
 	 * @remarks Implementation to be done in subclasses and mixins where needed.
 	 * For typescript users, mixins must use the closest ancestors access modifier.
-	 * @remarks Automatically called in {@link Structure#_patch} but must be called manually in the constructor
+	 * @remarks Automatically called in Structure[kPatch] but must be called manually in the constructor
 	 * of any class implementing this method.
 	 * @remarks Additionally, when implementing, ensure to call `super._optimizeData` if any class in the super chain aside
 	 * from Structure contains an implementation.

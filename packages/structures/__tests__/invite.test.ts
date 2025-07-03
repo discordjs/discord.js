@@ -2,6 +2,7 @@ import type { APIExtendedInvite, APIInvite } from 'discord-api-types/v10';
 import { InviteTargetType, InviteType } from 'discord-api-types/v10';
 import { describe, expect, test } from 'vitest';
 import { Invite } from '../src/index.js';
+import { kPatch } from '../src/utils/symbols.js';
 
 describe('Invite', () => {
 	const dataNoCode: Omit<APIInvite, 'code'> = {
@@ -82,7 +83,7 @@ describe('Invite', () => {
 
 	test('Patching Invite works in place', () => {
 		const instance1 = new Invite(data);
-		const instance2 = instance1._patch({ max_age: 34 });
+		const instance2 = instance1[kPatch]({ max_age: 34 });
 		expect(instance1.toJSON()).not.toEqual(data);
 		expect(instance2).toBe(instance1);
 	});

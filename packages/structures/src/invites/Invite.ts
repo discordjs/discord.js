@@ -1,6 +1,6 @@
 import { type APIInvite, type APIExtendedInvite, RouteBases } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
-import { kData, kExpiresTimestamp, kCreatedTimestamp } from '../utils/symbols.js';
+import { kData, kExpiresTimestamp, kCreatedTimestamp, kPatch } from '../utils/symbols.js';
 import type { Partialize } from '../utils/types.js';
 
 // TODO: use an actual dtypes type instead if it exists
@@ -49,12 +49,12 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = 'created_at' | 
 	}
 
 	/**
-	 * {@inheritDoc Structure._patch}
+	 * {@inheritDoc Structure.[kPatch]}
 	 *
 	 * @internal
 	 */
-	public override _patch(data: Partial<APIActualInvite>) {
-		super._patch(data);
+	public override [kPatch](data: Partial<APIActualInvite>) {
+		super[kPatch](data);
 		return this;
 	}
 

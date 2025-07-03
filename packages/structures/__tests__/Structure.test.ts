@@ -1,6 +1,6 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { Structure } from '../src/Structure.js';
-import { kData } from '../src/utils/symbols.js';
+import { kData, kPatch } from '../src/utils/symbols.js';
 
 describe('Base Structure', () => {
 	const data = { test: true, patched: false, removed: true };
@@ -30,8 +30,7 @@ describe('Base Structure', () => {
 
 	test('patch clones data and updates in place', () => {
 		const dataBefore = struct[kData];
-		// @ts-expect-error Structure#_patch is protected
-		const patched = struct._patch({ patched: true });
+		const patched = struct[kPatch]({ patched: true });
 		expect(patched[kData].patched).toBe(true);
 		// Patch in place
 		expect(struct[kData]).toBe(patched[kData]);
@@ -40,13 +39,12 @@ describe('Base Structure', () => {
 		expect(dataBefore).not.toBe(patched[kData]);
 	});
 
-	test('Remove properties via template (_patch)', () => {
+	test('Remove properties via template ([kPatch])', () => {
 		// @ts-expect-error Structure.DataTemplate is protected
 		Structure.DataTemplate = { set removed(_) {} };
 		// @ts-expect-error Structure constructor is protected
 		const templatedStruct: Structure<typeof data> = new Structure(data);
-		// @ts-expect-error Structure#patch is protected
-		templatedStruct._patch({ removed: false });
+		templatedStruct[kPatch]({ removed: false });
 		expect(templatedStruct[kData].removed).toBe(undefined);
 		// Setters still exist and pass "in" test unfortunately
 		expect('removed' in templatedStruct[kData]).toBe(true);

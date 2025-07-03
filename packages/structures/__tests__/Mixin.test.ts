@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { kData } from '../src/utils/symbols.js';
+import { kData, kPatch } from '../src/utils/symbols.js';
 import type { APIData } from './mixinClasses.js';
 import { Base, Mixed, MixedWithExtended } from './mixinClasses.js';
 
@@ -76,7 +76,7 @@ describe('Mixin function', () => {
 		expect(alreadyOptimizedInstance[kData].mixinOptimize).toBeUndefined();
 		expect(alreadyOptimizedInstance.toJSON()).toEqual({ ...data, mixinOptimize: 'true', baseOptimize: 'true' });
 
-		alreadyOptimizedInstance._patch({ mixinOptimize: '', baseOptimize: '' });
+		alreadyOptimizedInstance[kPatch]({ mixinOptimize: '', baseOptimize: '' });
 
 		expect(alreadyOptimizedInstance.baseOptimize).toBe(false);
 		expect(alreadyOptimizedInstance.mixinOptimize).toBe(false);

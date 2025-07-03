@@ -1,7 +1,7 @@
 import { Mixin } from '../src/Mixin.js';
 import type { MixinTypes } from '../src/MixinTypes.d.ts';
 import { Structure } from '../src/Structure.js';
-import { kData, kMixinConstruct, kMixinToJSON } from '../src/utils/symbols.js';
+import { kData, kMixinConstruct, kMixinToJSON, kPatch } from '../src/utils/symbols.js';
 
 export interface APIData {
 	baseOptimize?: string;
@@ -23,8 +23,8 @@ export class Base<Omitted extends keyof APIData | '' = ''> extends Structure<API
 		this.optimizeData(data);
 	}
 
-	public override _patch(data: Partial<APIData>) {
-		super._patch(data);
+	public override [kPatch](data: Partial<APIData>) {
+		super[kPatch](data);
 		return this;
 	}
 

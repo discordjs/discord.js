@@ -2,7 +2,7 @@ import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APIChannel, APIPartialChannel, ChannelType, ChannelFlags } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { ChannelFlagsBitField } from '../bitfields/ChannelFlagsBitField.js';
-import { kData } from '../utils/symbols.js';
+import { kData, kPatch } from '../utils/symbols.js';
 import type { Partialize } from '../utils/types.js';
 import type { ChannelPermissionMixin } from './mixins/ChannelPermissionMixin.js';
 import type { ChannelWebhookMixin } from './mixins/ChannelWebhookMixin.js';
@@ -50,12 +50,12 @@ export class Channel<
 	}
 
 	/**
-	 * {@inheritDoc Structure._patch}
+	 * {@inheritDoc Structure.[kPatch]}
 	 *
 	 * @internal
 	 */
-	public override _patch(data: Partial<ChannelDataType<Type>>) {
-		return super._patch(data);
+	public override [kPatch](data: Partial<ChannelDataType<Type>>) {
+		return super[kPatch](data);
 	}
 
 	/**
