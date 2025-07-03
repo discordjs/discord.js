@@ -33,7 +33,7 @@ export class ThreadChannelMixin<Type extends ThreadChannelType = ThreadChannelTy
 	/**
 	 * Indicates whether this channel is a thread channel
 	 */
-	public isThread(): this is ThreadChannelMixin<Extract<Type, ThreadChannelType>> {
+	public isThread(): this is ThreadChannelMixin & this {
 		return true;
 	}
 }

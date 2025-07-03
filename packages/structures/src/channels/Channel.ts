@@ -1,14 +1,5 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import type {
-	TextChannelType,
-	ThreadChannelType,
-	APIChannel,
-	APIPartialChannel,
-	ChannelType,
-	GuildChannelType,
-	GuildTextChannelType,
-	ChannelFlags,
-} from 'discord-api-types/v10';
+import type { APIChannel, APIPartialChannel, ChannelType, ChannelFlags } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { ChannelFlagsBitField } from '../bitfields/ChannelFlagsBitField.js';
 import { kData } from '../utils/symbols.js';
@@ -126,7 +117,7 @@ export class Channel<
 	 *
 	 * @privateRemarks Overridden to `true` on `ThreadChannelMixin`
 	 */
-	public isThread(): this is ThreadChannelMixin<Extract<Type, ThreadChannelType>> {
+	public isThread(): this is ThreadChannelMixin & this {
 		return false;
 	}
 
@@ -135,7 +126,7 @@ export class Channel<
 	 *
 	 * @privateRemarks Overridden to `true` on `TextChannelMixin`
 	 */
-	public isTextBased(): this is TextChannelMixin<Extract<Type, TextChannelType>> {
+	public isTextBased(): this is TextChannelMixin & this {
 		return false;
 	}
 
@@ -144,7 +135,7 @@ export class Channel<
 	 *
 	 * @privateRemarks Overridden to `true` on `GuildChannelMixin`
 	 */
-	public isGuildBased(): this is GuildChannelMixin<Extract<Type, GuildChannelType>> {
+	public isGuildBased(): this is GuildChannelMixin & this {
 		return false;
 	}
 
@@ -153,7 +144,7 @@ export class Channel<
 	 *
 	 * @privateRemarks Overridden to `true` on `DMChannelMixin`
 	 */
-	public isDMBased(): this is DMChannelMixin<Extract<Type, ChannelType.DM | ChannelType.GroupDM>> {
+	public isDMBased(): this is DMChannelMixin & this {
 		return false;
 	}
 
@@ -162,9 +153,7 @@ export class Channel<
 	 *
 	 * @privateRemarks Overridden to `true` on `VoiceChannelMixin`
 	 */
-	public isVoiceBased(): this is VoiceChannelMixin<
-		Extract<Type, ChannelType.GuildStageVoice | ChannelType.GuildVoice>
-	> {
+	public isVoiceBased(): this is VoiceChannelMixin & this {
 		return false;
 	}
 
@@ -173,9 +162,7 @@ export class Channel<
 	 *
 	 * @privateRemarks Overridden to `true` on `ThreadOnlyChannelMixin`
 	 */
-	public isThreadOnly(): this is ThreadOnlyChannelMixin<
-		Extract<Type, ChannelType.GuildForum | ChannelType.GuildMedia>
-	> {
+	public isThreadOnly(): this is ThreadOnlyChannelMixin & this {
 		return false;
 	}
 
@@ -184,9 +171,7 @@ export class Channel<
 	 *
 	 * @privateRemarks Overridden to `true` on `ChannelPermissionsMixin`
 	 */
-	public isPermissionCapable(): this is ChannelPermissionMixin<
-		Extract<Type, Exclude<GuildChannelType, ChannelType.GuildDirectory | ThreadChannelType>>
-	> {
+	public isPermissionCapable(): this is ChannelPermissionMixin & this {
 		return false;
 	}
 
@@ -195,9 +180,7 @@ export class Channel<
 	 *
 	 * @privateRemarks Overridden to `true` on `ChannelWebhooksMixin`
 	 */
-	public isWebhookCapable(): this is ChannelWebhookMixin<
-		Extract<Type, ChannelType.GuildForum | ChannelType.GuildMedia | Exclude<GuildTextChannelType, ThreadChannelType>>
-	> {
+	public isWebhookCapable(): this is ChannelWebhookMixin & this {
 		return false;
 	}
 }

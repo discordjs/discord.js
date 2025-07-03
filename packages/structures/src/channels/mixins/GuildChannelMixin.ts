@@ -4,9 +4,9 @@ import { ChannelFlagsBitField } from '../../bitfields/ChannelFlagsBitField.js';
 import { kData } from '../../utils/symbols.js';
 import type { Channel } from '../Channel.js';
 
-export interface GuildChannelMixin<Type extends GuildChannelType> extends Channel<Type> {}
+export interface GuildChannelMixin<Type extends GuildChannelType = GuildChannelType> extends Channel<Type> {}
 
-export class GuildChannelMixin<Type extends GuildChannelType> {
+export class GuildChannelMixin<Type extends GuildChannelType = GuildChannelType> {
 	/**
 	 * The flags that are applied to the channel.
 	 *
@@ -34,7 +34,7 @@ export class GuildChannelMixin<Type extends GuildChannelType> {
 	/**
 	 * Indicates whether this channel is in a guild
 	 */
-	public isGuildBased(): this is GuildChannelMixin<Extract<Type, GuildChannelType>> {
+	public isGuildBased(): this is GuildChannelMixin & this {
 		return true;
 	}
 }

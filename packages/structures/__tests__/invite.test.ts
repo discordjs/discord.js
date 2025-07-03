@@ -34,8 +34,8 @@ describe('Invite', () => {
 		expect(instance.createdTimestamp).toBe(null);
 		expect(instance.maxAge).toBe(undefined);
 		expect(instance.maxUses).toBe(undefined);
-		expect(instance.memberCount).toBe(data.approximate_member_count);
-		expect(instance.presenceCount).toBe(data.approximate_presence_count);
+		expect(instance.approximateMemberCount).toBe(data.approximate_member_count);
+		expect(instance.approximatePresenceCount).toBe(data.approximate_presence_count);
 		expect(instance.targetType).toBe(data.target_type);
 		expect(instance.temporary).toBe(undefined);
 		expect(instance.uses).toBe(undefined);
@@ -55,8 +55,8 @@ describe('Invite', () => {
 		expect(instance.createdTimestamp).toBe(Date.parse(dataExtended.created_at));
 		expect(instance.maxAge).toBe(dataExtended.max_age);
 		expect(instance.maxUses).toBe(dataExtended.max_uses);
-		expect(instance.memberCount).toBe(dataExtended.approximate_member_count);
-		expect(instance.presenceCount).toBe(dataExtended.approximate_presence_count);
+		expect(instance.approximateMemberCount).toBe(dataExtended.approximate_member_count);
+		expect(instance.approximatePresenceCount).toBe(dataExtended.approximate_presence_count);
 		expect(instance.targetType).toBe(dataExtended.target_type);
 		expect(instance.temporary).toBe(dataExtended.temporary);
 		expect(instance.uses).toBe(dataExtended.uses);

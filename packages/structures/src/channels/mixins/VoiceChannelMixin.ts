@@ -3,11 +3,16 @@ import { kData } from '../../utils/symbols.js';
 import type { Channel } from '../Channel.js';
 import { TextChannelMixin } from './TextChannelMixin.js';
 
-export interface VoiceChannelMixin<Type extends ChannelType.GuildStageVoice | ChannelType.GuildVoice>
-	extends Channel<Type> {}
+export interface VoiceChannelMixin<
+	Type extends ChannelType.GuildStageVoice | ChannelType.GuildVoice =
+		| ChannelType.GuildStageVoice
+		| ChannelType.GuildVoice,
+> extends Channel<Type> {}
 
 export class VoiceChannelMixin<
-	Type extends ChannelType.GuildStageVoice | ChannelType.GuildVoice,
+	Type extends ChannelType.GuildStageVoice | ChannelType.GuildVoice =
+		| ChannelType.GuildStageVoice
+		| ChannelType.GuildVoice,
 > extends TextChannelMixin<Type> {
 	/**
 	 * The bitrate (in bits) of the voice channel.
@@ -40,9 +45,7 @@ export class VoiceChannelMixin<
 	/**
 	 * Indicates whether this channel has voice connection capabilities
 	 */
-	public override isVoiceBased(): this is VoiceChannelMixin<
-		Extract<Type, ChannelType.GuildStageVoice | ChannelType.GuildVoice>
-	> {
+	public override isVoiceBased(): this is VoiceChannelMixin & this {
 		return true;
 	}
 }
