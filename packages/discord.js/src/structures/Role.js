@@ -57,6 +57,15 @@ class Role extends Base {
       this.name = data.name;
     }
 
+    /**
+     * @typedef {Object} RoleColors
+     * @property {number} primaryColor The primary color of the role
+     * @property {?number} secondaryColor The secondary color of the role.
+     * This will make the role a gradient between the other provided colors
+     * @property {?number} tertiaryColor The tertiary color of the role.
+     * When sending `tertiaryColor` the API enforces the role color to be a holographic style with values of `primaryColor = 11127295`, `secondaryColor = 16759788`, and `tertiaryColor = 16761760`
+     */
+
     if ('colors' in data) {
       /**
        * The colors of the role
@@ -261,7 +270,7 @@ class Role extends Base {
    *
    * @typedef {Object} RoleData
    * @property {string} [name] The name of the role
-   * @property {RoleColors} [colors] The colors of the role
+   * @property {RoleColorsResolvable} [colors] The colors of the role
    * @property {boolean} [hoist] Whether or not the role should be hoisted
    * @property {number} [position] The position of the role
    * @property {PermissionResolvable} [permissions] The permissions of the role
@@ -321,7 +330,7 @@ class Role extends Base {
   /**
    * Sets new colors for the role.
    *
-   * @param {RoleColors} colors The colors of the role
+   * @param {RoleColorsResolvable} colors The colors of the role
    * @param {string} [reason] Reason for changing the role's colors
    * @returns {Promise<Role>}
    * @example
