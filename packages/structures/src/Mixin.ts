@@ -3,7 +3,7 @@ import { kMixinConstruct, kMixinToJSON } from './utils/symbols.js';
 
 export type Mixinable<ClassType> = new (...args: unknown[]) => ClassType;
 
-export type MixinBase<BaseClass extends Structure<unknown>> =
+export type MixinBase<BaseClass extends Structure<{}>> =
 	BaseClass extends Structure<infer DataType, infer Omitted> ? Structure<DataType, Omitted> : never;
 
 /**
@@ -32,7 +32,7 @@ export type MixinBase<BaseClass extends Structure<unknown>> =
  * ```
  * @typeParam DestinationClass - The class to be mixed, ensures that the mixins provided can be used with this destination
  */
-export function Mixin<DestinationClass extends typeof Structure<unknown>>(
+export function Mixin<DestinationClass extends typeof Structure<{}>>(
 	destination: DestinationClass,
 	mixins: Mixinable<MixinBase<DestinationClass['prototype']>>[],
 ) {

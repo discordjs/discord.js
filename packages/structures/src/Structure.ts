@@ -19,7 +19,7 @@ export const OptimizeDataPropertyName = 'optimizeData';
  * kData stores properties as `unknown` when it is omitted, which allows accessing the property in getters even when it may not actually be present.
  * This is the most technically correct way of representing the value, especially since there is no way to guarantee runtime matches the "type cast."
  */
-export abstract class Structure<DataType, Omitted extends keyof DataType | '' = ''> {
+export abstract class Structure<DataType extends {}, Omitted extends keyof DataType | '' = ''> {
 	/**
 	 * A construct function used when mixing to allow mixins to set optimized property defaults
 	 *

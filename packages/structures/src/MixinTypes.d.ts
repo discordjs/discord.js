@@ -9,10 +9,7 @@ import type { CollapseUnion, MergePrototypes } from './utils/types.js';
  * @typeParam BaseClass - The class that is being directly extended, must match the class that the mixins are expecting
  * @typeParam Mixins - The mixins that will be applied to this class via a {@link Mixin} call
  */
-export type MixinTypes<
-	BaseClass extends Structure<unknown>,
-	Mixins extends readonly MixinBase<BaseClass>[],
-> = CollapseUnion<
+export type MixinTypes<BaseClass extends Structure<{}>, Mixins extends readonly MixinBase<BaseClass>[]> = CollapseUnion<
 	BaseClass extends Structure<infer DataType, infer Omitted>
 		? Mixins[number] extends Structure<DataType, Omitted>
 			? // prettier-ignore
