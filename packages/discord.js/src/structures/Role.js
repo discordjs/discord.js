@@ -57,15 +57,6 @@ class Role extends Base {
       this.name = data.name;
     }
 
-    if ('color' in data) {
-      /**
-       * The base 10 color of the role
-       *
-       * @type {number}
-       */
-      this.color = data.color;
-    }
-
     if ('colors' in data) {
       /**
        * The colors of the role
@@ -270,8 +261,6 @@ class Role extends Base {
    *
    * @typedef {Object} RoleData
    * @property {string} [name] The name of the role
-   * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number.
-   * This will still be returned by the API, but using the `colors` field is recommended when doing requests
    * @property {RoleColors} [colors] The colors of the role
    * @property {boolean} [hoist] Whether or not the role should be hoisted
    * @property {number} [position] The position of the role
@@ -327,22 +316,6 @@ class Role extends Base {
    */
   async setName(name, reason) {
     return this.edit({ name, reason });
-  }
-
-  /**
-   * Sets a new color for the role.
-   *
-   * @param {ColorResolvable} color The color of the role
-   * @param {string} [reason] Reason for changing the role's color
-   * @returns {Promise<Role>}
-   * @example
-   * // Set the color of a role
-   * role.setColor('#FF0000')
-   *   .then(updated => console.log(`Set color of role to ${updated.color}`))
-   *   .catch(console.error);
-   */
-  async setColor(color, reason) {
-    return this.edit({ color, reason });
   }
 
   /**
@@ -506,7 +479,6 @@ class Role extends Base {
       role &&
       this.id === role.id &&
       this.name === role.name &&
-      this.color === role.color &&
       this.colors.primaryColor === role.colors.primaryColor &&
       this.colors.secondaryColor === role.colors.secondaryColor &&
       this.colors.tertiaryColor === role.colors.tertiaryColor &&

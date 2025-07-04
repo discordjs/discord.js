@@ -123,8 +123,6 @@ class RoleManager extends CachedManager {
    *
    * @typedef {Object} RoleCreateOptions
    * @property {string} [name] The name of the new role
-   * @property {ColorResolvable} [color] The color to create the role with.
-   * This will still be returned by the API, but using the `colors` field is recommended when doing requests
    * @property {RoleColors} [colors] The colors to create the role with
    * @property {boolean} [hoist] Whether or not the new role should be hoisted
    * @property {PermissionResolvable} [permissions] The permissions for the new role
@@ -152,16 +150,17 @@ class RoleManager extends CachedManager {
    * // Create a new role with data and a reason
    * guild.roles.create({
    *   name: 'Super Cool Blue People',
-   *   color: Colors.Blue,
    *   reason: 'we needed a role for Super Cool People',
+   *   colors: {
+   *     primaryColor: Colors.Blue,
+   *   },
    * })
    *   .then(console.log)
    *   .catch(console.error);
    */
   async create(options = {}) {
-    let { color, permissions, icon } = options;
+    let { permissions, icon } = options;
     const { name, hoist, position, mentionable, reason, unicodeEmoji } = options;
-    color &&= resolveColor(color);
     if (permissions !== undefined) permissions = new PermissionsBitField(permissions);
     if (icon) {
       const guildEmojiURL = this.guild.emojis.resolve(icon)?.imageURL();
@@ -178,7 +177,6 @@ class RoleManager extends CachedManager {
     const data = await this.client.rest.post(Routes.guildRoles(this.guild.id), {
       body: {
         name,
-        color,
         colors,
         hoist,
         permissions,
@@ -238,7 +236,6 @@ class RoleManager extends CachedManager {
 
     const body = {
       name: options.name,
-      color: options.color === undefined ? undefined : resolveColor(options.color),
       colors,
       hoist: options.hoist,
       permissions: options.permissions === undefined ? undefined : new PermissionsBitField(options.permissions),
