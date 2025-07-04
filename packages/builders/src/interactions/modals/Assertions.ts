@@ -1,5 +1,5 @@
 import { ComponentType } from 'discord-api-types/v10';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import { customIdPredicate } from '../../Assertions.js';
 
 const titlePredicate = z.string().min(1).max(45);
