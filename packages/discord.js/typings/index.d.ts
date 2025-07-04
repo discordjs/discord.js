@@ -2840,6 +2840,12 @@ export interface RoleColors {
   tertiaryColor: number | null;
 }
 
+export interface RoleColorsResolvable {
+  primaryColor: ColorResolvable;
+  secondaryColor?: ColorResolvable;
+  tertiaryColor?: ColorResolvable;
+}
+
 export class Role extends Base {
   private constructor(client: Client<true>, data: APIRole, guild: Guild);
   public colors: RoleColors;
@@ -2870,7 +2876,7 @@ export class Role extends Base {
     channel: NonThreadGuildBasedChannel | Snowflake,
     checkAdmin?: boolean,
   ): Readonly<PermissionsBitField>;
-  public setColors(colors: RoleColors, reason?: string): Promise<Role>;
+  public setColors(colors: RoleColorsResolvable, reason?: string): Promise<Role>;
   public setHoist(hoist?: boolean, reason?: string): Promise<Role>;
   public setMentionable(mentionable?: boolean, reason?: string): Promise<Role>;
   public setName(name: string, reason?: string): Promise<Role>;
@@ -6803,7 +6809,7 @@ export interface ResolvedOverwriteOptions {
 }
 
 export interface RoleData {
-  colors?: RoleColors;
+  colors?: RoleColorsResolvable;
   hoist?: boolean;
   icon?: Base64Resolvable | BufferResolvable | EmojiResolvable | null;
   mentionable?: boolean;
