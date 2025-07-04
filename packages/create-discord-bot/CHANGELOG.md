@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+# [create-discord-bot@4.0.0](https://github.com/discordjs/discord.js/compare/create-discord-bot@1.0.0...create-discord-bot@4.0.0) - (2025-06-21)
+
+## Bug Fixes
+
+- Structure imports on windows (#10835) ([5c0b714](https://github.com/discordjs/discord.js/commit/5c0b714557ce86d793145445ff5f103b6962ec11)) by @almeidx
+- **create-discord-bot:** Register command files in subdirectories (#10775) ([79b79b6](https://github.com/discordjs/discord.js/commit/79b79b6a44967d9ed1e449b49a851b417afb263b)) by @schrodienieur
+
+## Documentation
+
+- Guide setup (#10862) ([2184085](https://github.com/discordjs/discord.js/commit/2184085fdaf00c982130212eb27ab878df2c3e1e)) by @iCrawl
+- Fix close tags (#10756) ([5c49b6d](https://github.com/discordjs/discord.js/commit/5c49b6d9af9b0e69c4792ef4be831607675d418c)) by @Jiralite
+
+## Refactor
+
+- Remove `registerEvents` function (#10877) ([2c21de6](https://github.com/discordjs/discord.js/commit/2c21de68f3bd1faa52e14cc70aebc322cf4bdd56)) by @sdanialraza
+- **constants:** Update guide URL (#10803) ([eabcc52](https://github.com/discordjs/discord.js/commit/eabcc52594c2237666bbbbbc89c66d5e34ef29bb)) by @Jiralite
+
+## Build
+
+- Bump Node.js to 22.12.0 (#10726) ([3db8ce7](https://github.com/discordjs/discord.js/commit/3db8ce70a2d20bd2def70a2c839b015bc24195eb)) by @Jiralite
+  - **BREAKING CHANGE:** Node.js 22.12.0 or above is required.
+- Bumps the version of create-discord-bot and create-discord-app to `4.0.0` for consistency
+
+### New Contributors
+
+* @schrodienieur made their first contribution in #10775
+* @nsgpriyanshu made their first contribution in #10428
+
 # [create-discord-bot@1.0.0](https://github.com/discordjs/discord.js/compare/create-discord-bot@0.3.1...create-discord-bot@1.0.0) - (2025-01-01)
 
 ## Features

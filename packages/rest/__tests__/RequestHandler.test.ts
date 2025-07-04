@@ -47,8 +47,8 @@ let serverOutage = true;
 let unexpected429 = true;
 let unexpected429cf = true;
 const sublimitIntervals: {
-	reset: NodeJS.Timer | null;
-	retry: NodeJS.Timer | null;
+	reset: NodeJS.Timeout | null;
+	retry: NodeJS.Timeout | null;
 } = {
 	reset: null,
 	retry: null,
