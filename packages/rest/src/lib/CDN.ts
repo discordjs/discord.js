@@ -322,7 +322,7 @@ export class CDN {
 	 * Generates a URL for a guild tag badge.
 	 *
 	 * @param guildId - The guild id
-	 * @param badgeHash - The hash provided by Discord for this badge
+	 * @param badgeHash - The hash of the badge
 	 * @param options - Optional options for the badge
 	 */
 	public guildTagBadge(guildId: string, badgeHash: string, options?: Readonly<BaseImageURLOptions>): string {
