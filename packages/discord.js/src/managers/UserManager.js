@@ -62,7 +62,9 @@ class UserManager extends CachedManager {
 
     if (!force) {
       const dmChannel = this.dmChannel(id);
-      if (dmChannel && !dmChannel.partial) return dmChannel;
+      if (dmChannel && !dmChannel.partial) {
+        return dmChannel;
+      }
     }
 
     const data = await this.client.rest.post(Routes.userChannels(), { body: { recipient_id: id } });
@@ -78,7 +80,10 @@ class UserManager extends CachedManager {
   async deleteDM(user) {
     const id = this.resolveId(user);
     const dmChannel = this.dmChannel(id);
-    if (!dmChannel) throw new DiscordjsError(ErrorCodes.UserNoDMChannel);
+    if (!dmChannel) {
+      throw new DiscordjsError(ErrorCodes.UserNoDMChannel);
+    }
+
     await this.client.rest.delete(Routes.channel(dmChannel.id));
     this.client.channels._remove(dmChannel.id);
     return dmChannel;
@@ -95,7 +100,9 @@ class UserManager extends CachedManager {
     const id = this.resolveId(user);
     if (!force) {
       const existing = this.cache.get(id);
-      if (existing && !existing.partial) return existing;
+      if (existing && !existing.partial) {
+        return existing;
+      }
     }
 
     const data = await this.client.rest.get(Routes.user(id));
@@ -120,8 +127,14 @@ class UserManager extends CachedManager {
    * @returns {?User}
    */
   resolve(user) {
-    if (user instanceof GuildMember || user instanceof ThreadMember) return user.user;
-    if (user instanceof Message) return user.author;
+    if (user instanceof GuildMember || user instanceof ThreadMember) {
+      return user.user;
+    }
+
+    if (user instanceof Message) {
+      return user.author;
+    }
+
     return super.resolve(user);
   }
 
@@ -132,9 +145,18 @@ class UserManager extends CachedManager {
    * @returns {?Snowflake}
    */
   resolveId(user) {
-    if (user instanceof ThreadMember) return user.id;
-    if (user instanceof GuildMember) return user.user.id;
-    if (user instanceof Message) return user.author.id;
+    if (user instanceof ThreadMember) {
+      return user.id;
+    }
+
+    if (user instanceof GuildMember) {
+      return user.user.id;
+    }
+
+    if (user instanceof Message) {
+      return user.author.id;
+    }
+
     return super.resolveId(user);
   }
 }

@@ -34,11 +34,23 @@ function makeDiscordjsError(Base) {
  * @ignore
  */
 function message(code, args) {
-  if (!(code in ErrorCodes)) throw new Error('Error code must be a valid DiscordjsErrorCodes');
+  if (!(code in ErrorCodes)) {
+    throw new Error('Error code must be a valid DiscordjsErrorCodes');
+  }
+
   const msg = Messages[code];
-  if (!msg) throw new Error(`No message associated with error code: ${code}.`);
-  if (typeof msg === 'function') return msg(...args);
-  if (!args?.length) return msg;
+  if (!msg) {
+    throw new Error(`No message associated with error code: ${code}.`);
+  }
+
+  if (typeof msg === 'function') {
+    return msg(...args);
+  }
+
+  if (!args?.length) {
+    return msg;
+  }
+
   args.unshift(msg);
   return String(...args);
 }

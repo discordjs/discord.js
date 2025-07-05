@@ -63,8 +63,14 @@ class GuildSoundboardSoundManager extends CachedManager {
    * @returns {?Snowflake}
    */
   resolveId(soundboardSound) {
-    if (soundboardSound instanceof this.holds) return soundboardSound.soundId;
-    if (typeof soundboardSound === 'string') return soundboardSound;
+    if (soundboardSound instanceof this.holds) {
+      return soundboardSound.soundId;
+    }
+
+    if (typeof soundboardSound === 'string') {
+      return soundboardSound;
+    }
+
     return null;
   }
 
@@ -130,7 +136,9 @@ class GuildSoundboardSoundManager extends CachedManager {
   async edit(soundboardSound, options = {}) {
     const soundId = this.resolveId(soundboardSound);
 
-    if (!soundId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'soundboardSound', 'SoundboardSoundResolvable');
+    if (!soundId) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'soundboardSound', 'SoundboardSoundResolvable');
+    }
 
     const { emojiId, emojiName, name, reason, volume } = options;
 
@@ -163,7 +171,9 @@ class GuildSoundboardSoundManager extends CachedManager {
   async delete(soundboardSound, reason) {
     const soundId = this.resolveId(soundboardSound);
 
-    if (!soundId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'soundboardSound', 'SoundboardSoundResolvable');
+    if (!soundId) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'soundboardSound', 'SoundboardSoundResolvable');
+    }
 
     await this.client.rest.delete(Routes.guildSoundboardSound(this.guild.id, soundId), { reason });
   }
@@ -199,17 +209,25 @@ class GuildSoundboardSoundManager extends CachedManager {
    *   .catch(console.error);
    */
   async fetch(options) {
-    if (!options) return this._fetchMany();
+    if (!options) {
+      return this._fetchMany();
+    }
+
     const { cache, force, soundboardSound } = options;
     const resolvedSoundboardSound = this.resolveId(soundboardSound ?? options);
-    if (resolvedSoundboardSound) return this._fetchSingle({ cache, force, soundboardSound: resolvedSoundboardSound });
+    if (resolvedSoundboardSound) {
+      return this._fetchSingle({ cache, force, soundboardSound: resolvedSoundboardSound });
+    }
+
     return this._fetchMany({ cache });
   }
 
   async _fetchSingle({ cache, force, soundboardSound } = {}) {
     if (!force) {
       const existing = this.cache.get(soundboardSound);
-      if (existing) return existing;
+      if (existing) {
+        return existing;
+      }
     }
 
     const data = await this.client.rest.get(Routes.guildSoundboardSound(this.guild.id, soundboardSound));

@@ -91,7 +91,9 @@ export class BurstHandler implements IHandler {
 
 		// Amount of time in milliseconds until we should retry if rate limited (globally or otherwise)
 		const offset = normalizeRateLimitOffset(this.manager.options.offset, routeId.bucketRoute);
-		if (retry) retryAfter = Number(retry) * 1_000 + offset;
+		if (retry) {
+			retryAfter = Number(retry) * 1_000 + offset;
+		}
 
 		// Count the invalid requests
 		if (status === 401 || status === 403 || status === 429) {

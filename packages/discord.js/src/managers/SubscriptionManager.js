@@ -52,13 +52,17 @@ class SubscriptionManager extends CachedManager {
    * @returns {Promise<Subscription|Collection<Snowflake, Subscription>>}
    */
   async fetch(options = {}) {
-    if (typeof options !== 'object') throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
+    if (typeof options !== 'object') {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
+    }
 
     const { after, before, cache, limit, sku, subscriptionId, user } = options;
 
     const skuId = resolveSKUId(sku);
 
-    if (!skuId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'sku', 'SKUResolvable');
+    if (!skuId) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'sku', 'SKUResolvable');
+    }
 
     if (subscriptionId) {
       const subscription = await this.client.rest.get(Routes.skuSubscription(skuId, subscriptionId));

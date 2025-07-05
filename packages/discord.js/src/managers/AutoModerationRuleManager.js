@@ -265,7 +265,10 @@ class AutoModerationRuleManager extends CachedManager {
    *   .catch(console.error)
    */
   async fetch(options) {
-    if (!options) return this._fetchMany();
+    if (!options) {
+      return this._fetchMany();
+    }
+
     const { autoModerationRule, cache, force } = options;
     const resolvedAutoModerationRule = this.resolveId(autoModerationRule ?? options);
     if (resolvedAutoModerationRule) {
@@ -278,7 +281,9 @@ class AutoModerationRuleManager extends CachedManager {
   async _fetchSingle({ autoModerationRule, cache, force = false }) {
     if (!force) {
       const existing = this.cache.get(autoModerationRule);
-      if (existing) return existing;
+      if (existing) {
+        return existing;
+      }
     }
 
     const data = await this.client.rest.get(Routes.guildAutoModerationRule(this.guild.id, autoModerationRule));

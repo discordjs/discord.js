@@ -458,7 +458,10 @@ export class AudioPlayer extends EventEmitter {
 	 * @returns `true` if the player was successfully paused, otherwise `false`
 	 */
 	public pause(interpolateSilence = true) {
-		if (this.state.status !== AudioPlayerStatus.Playing) return false;
+		if (this.state.status !== AudioPlayerStatus.Playing) {
+			return false;
+		}
+
 		this.state = {
 			...this.state,
 			status: AudioPlayerStatus.Paused,
@@ -473,7 +476,10 @@ export class AudioPlayer extends EventEmitter {
 	 * @returns `true` if the player was successfully unpaused, otherwise `false`
 	 */
 	public unpause() {
-		if (this.state.status !== AudioPlayerStatus.Paused) return false;
+		if (this.state.status !== AudioPlayerStatus.Paused) {
+			return false;
+		}
+
 		this.state = {
 			...this.state,
 			status: AudioPlayerStatus.Playing,
@@ -490,7 +496,10 @@ export class AudioPlayer extends EventEmitter {
 	 * @returns `true` if the player will come to a stop, otherwise `false`
 	 */
 	public stop(force = false) {
-		if (this.state.status === AudioPlayerStatus.Idle) return false;
+		if (this.state.status === AudioPlayerStatus.Idle) {
+			return false;
+		}
+
 		if (force || this.state.resource.silencePaddingFrames === 0) {
 			this.state = {
 				status: AudioPlayerStatus.Idle,
@@ -509,7 +518,9 @@ export class AudioPlayer extends EventEmitter {
 	 */
 	public checkPlayable() {
 		const state = this._state;
-		if (state.status === AudioPlayerStatus.Idle || state.status === AudioPlayerStatus.Buffering) return false;
+		if (state.status === AudioPlayerStatus.Idle || state.status === AudioPlayerStatus.Buffering) {
+			return false;
+		}
 
 		// If the stream has been destroyed or is no longer readable, then transition to the Idle state.
 		if (!state.resource.readable) {
@@ -531,7 +542,9 @@ export class AudioPlayer extends EventEmitter {
 		const state = this._state;
 
 		// Guard against the Idle state
-		if (state.status === AudioPlayerStatus.Idle || state.status === AudioPlayerStatus.Buffering) return;
+		if (state.status === AudioPlayerStatus.Idle || state.status === AudioPlayerStatus.Buffering) {
+			return;
+		}
 
 		// Dispatch any audio packets that were prepared in the previous cycle
 		for (const connection of this.playable) {
@@ -549,7 +562,9 @@ export class AudioPlayer extends EventEmitter {
 		const state = this._state;
 
 		// Guard against the Idle state
-		if (state.status === AudioPlayerStatus.Idle || state.status === AudioPlayerStatus.Buffering) return;
+		if (state.status === AudioPlayerStatus.Idle || state.status === AudioPlayerStatus.Buffering) {
+			return;
+		}
 
 		// List of connections that can receive the packet
 		const playable = this.playable;

@@ -80,7 +80,10 @@ class PollAnswer extends Base {
    * @type {?(GuildEmoji|Emoji)}
    */
   get emoji() {
-    if (!this._emoji || (!this._emoji.id && !this._emoji.name)) return null;
+    if (!this._emoji || (!this._emoji.id && !this._emoji.name)) {
+      return null;
+    }
+
     return resolveGuildEmoji(this.client, this._emoji.id) ?? new Emoji(this.client, this._emoji);
   }
 

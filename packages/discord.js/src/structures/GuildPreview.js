@@ -16,7 +16,9 @@ class GuildPreview extends Base {
   constructor(client, data) {
     super(client);
 
-    if (!data) return;
+    if (!data) {
+      return;
+    }
 
     this._patch(data);
   }

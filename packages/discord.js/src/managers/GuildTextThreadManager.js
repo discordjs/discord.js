@@ -72,7 +72,9 @@ class GuildTextThreadManager extends ThreadManager {
     let startMessageId;
     if (startMessage) {
       startMessageId = this.channel.messages.resolveId(startMessage);
-      if (!startMessageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'startMessage', 'MessageResolvable');
+      if (!startMessageId) {
+        throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'startMessage', 'MessageResolvable');
+      }
     } else if (this.channel.type !== ChannelType.GuildAnnouncement) {
       resolvedType = type ?? resolvedType;
     }
