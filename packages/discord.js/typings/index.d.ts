@@ -31,10 +31,7 @@ import {
   APIComponentInModalActionRow,
   APIContainerComponent,
   APIEmbed,
-  APIEmbedAuthor,
   APIEmbedField,
-  APIEmbedFooter,
-  APIEmbedImage,
   APIEmbedProvider,
   APIEmoji,
   APIEntitlement,
@@ -3497,6 +3494,17 @@ export interface AvatarDecorationData {
   skuId: Snowflake;
 }
 
+export class UserPrimaryGuild {
+  // TODO: Change to APIUserPrimaryGuild
+  private constructor(data: unknown, client: Client<true>);
+  public identityGuildId: Snowflake | null;
+  public identityEnabled: boolean | null;
+  public tag: string | null;
+  public badge: string | null;
+  public get identityGuild(): Guild | null;
+  public guildTagBadgeURL(options?: ImageURLOptions): string | null;
+}
+
 export interface UnfurledMediaItemData {
   url: string;
 }
@@ -3528,6 +3536,7 @@ export class User extends Base {
   public get hexAccentColor(): HexColorString | null | undefined;
   public id: Snowflake;
   public get partial(): false;
+  public primaryGuild: UserPrimaryGuild | null;
   public system: boolean;
   public get tag(): string;
   public username: string;
