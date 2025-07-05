@@ -26,6 +26,7 @@ body:
         - proxy
         - proxy-container
         - rest
+        - structures
         - ui
         - util
         - voice
