@@ -3,7 +3,7 @@ import {
 	InteractionContextType,
 	ApplicationCommandOptionType,
 } from 'discord-api-types/v10';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 import { localeMapPredicate, memberPermissionsPredicate } from '../../../Assertions.js';
 import { ApplicationCommandOptionAllowedChannelTypes } from './mixins/ApplicationCommandOptionChannelTypesMixin.js';
 

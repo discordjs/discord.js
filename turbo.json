@@ -93,7 +93,15 @@
 		},
 		"test": {
 			"dependsOn": ["^build"],
-			"inputs": ["__mocks__/**", "__tests__/**", "src/**", "jest.config.js", "package.json", "tsconfig.json"],
+			"inputs": [
+				"../../vitest.config.ts",
+				"__mocks__/**",
+				"__tests__/**",
+				"src/**",
+				"package.json",
+				"tsconfig.json",
+				"vitest.config.ts"
+			],
 			"outputs": ["coverage/**"],
 			"outputLogs": "new-only"
 		},
