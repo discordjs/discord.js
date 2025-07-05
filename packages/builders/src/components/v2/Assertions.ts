@@ -1,5 +1,5 @@
 import { ComponentType, SeparatorSpacingSize } from 'discord-api-types/v10';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 import { actionRowPredicate } from '../Assertions.js';
 
 const unfurledMediaItemPredicate = z.object({
