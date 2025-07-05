@@ -183,6 +183,12 @@ export interface VoiceConnection extends EventEmitter {
 	 */
 	on(event: 'stateChange', listener: (oldState: VoiceConnectionState, newState: VoiceConnectionState) => void): this;
 	/**
+	 * Emitted when the end-to-end encrypted session has transitioned
+	 *
+	 * @eventProperty
+	 */
+	on(event: 'transitioned', listener: (transitionId: number) => void): this;
+	/**
 	 * Emitted when the state of the voice connection changes to a specific status
 	 *
 	 * @eventProperty
@@ -236,6 +242,11 @@ export class VoiceConnection extends EventEmitter {
 	private readonly debug: ((message: string) => void) | null;
 
 	/**
+	 * The options used to create this voice connection.
+	 */
+	private readonly options: CreateVoiceConnectionOptions;
+
+	/**
 	 * Creates a new voice connection.
 	 *
 	 * @param joinConfig - The data required to establish the voice connection
@@ -253,6 +264,7 @@ export class VoiceConnection extends EventEmitter {
 		this.onNetworkingStateChange = this.onNetworkingStateChange.bind(this);
 		this.onNetworkingError = this.onNetworkingError.bind(this);
 		this.onNetworkingDebug = this.onNetworkingDebug.bind(this);
+		this.onNetworkingTransitioned = this.onNetworkingTransitioned.bind(this);
 
 		const adapter = options.adapterCreator({
 			onVoiceServerUpdate: (data) => this.addServerPacket(data),
@@ -268,6 +280,7 @@ export class VoiceConnection extends EventEmitter {
 		};
 
 		this.joinConfig = joinConfig;
+		this.options = options;
 	}
 
 	/**
@@ -295,6 +308,7 @@ export class VoiceConnection extends EventEmitter {
 				oldNetworking.off('error', this.onNetworkingError);
 				oldNetworking.off('close', this.onNetworkingClose);
 				oldNetworking.off('stateChange', this.onNetworkingStateChange);
+				oldNetworking.off('transitioned', this.onNetworkingTransitioned);
 				oldNetworking.destroy();
 			}
 
@@ -412,14 +426,20 @@ export class VoiceConnection extends EventEmitter {
 				token: server.token,
 				sessionId: state.session_id,
 				userId: state.user_id,
+				channelId: state.channel_id!,
 			},
-			Boolean(this.debug),
+			{
+				debug: Boolean(this.debug),
+				daveEncryption: this.options.daveEncryption ?? true,
+				decryptionFailureTolerance: this.options.decryptionFailureTolerance,
+			},
 		);
 
 		networking.once('close', this.onNetworkingClose);
 		networking.on('stateChange', this.onNetworkingStateChange);
 		networking.on('error', this.onNetworkingError);
 		networking.on('debug', this.onNetworkingDebug);
+		networking.on('transitioned', this.onNetworkingTransitioned);
 
 		this.state = {
 			...this.state,
@@ -507,6 +527,15 @@ export class VoiceConnection extends EventEmitter {
 	 */
 	private onNetworkingDebug(message: string) {
 		this.debug?.(`[NW] ${message}`);
+	}
+
+	/**
+	 * Propagates transitions from the underlying network instance.
+	 *
+	 * @param transitionId - The transition id
+	 */
+	private onNetworkingTransitioned(transitionId: number) {
+		this.emit('transitioned', transitionId);
 	}
 
 	/**
@@ -692,6 +721,41 @@ export class VoiceConnection extends EventEmitter {
 			ws: undefined,
 			udp: undefined,
 		};
+	}
+
+	/**
+	 * The current voice privacy code of the encrypted session.
+	 *
+	 * @remarks
+	 * For this data to be available, the VoiceConnection must be in the Ready state,
+	 * and the connection would have to be end-to-end encrypted.
+	 */
+	public get voicePrivacyCode() {
+		if (
+			this.state.status === VoiceConnectionStatus.Ready &&
+			this.state.networking.state.code === NetworkingStatusCode.Ready
+		) {
+			return this.state.networking.state.dave?.voicePrivacyCode ?? undefined;
+		}
+
+		return undefined;
+	}
+
+	/**
+	 * Gets the verification code for a user in the session.
+	 *
+	 * @throws Will throw if end-to-end encryption is not on or if the user id provided is not in the session.
+	 */
+	public async getVerificationCode(userId: string): Promise<string> {
+		if (
+			this.state.status === VoiceConnectionStatus.Ready &&
+			this.state.networking.state.code === NetworkingStatusCode.Ready &&
+			this.state.networking.state.dave
+		) {
+			return this.state.networking.state.dave.getVerificationCode(userId);
+		}
+
+		throw new Error('Session not available');
 	}
 
 	/**
