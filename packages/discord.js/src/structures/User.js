@@ -5,7 +5,6 @@ const { calculateUserDefaultAvatarIndex } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { UserFlagsBitField } = require('../util/UserFlagsBitField.js');
 const { Base } = require('./Base.js');
-const { UserPrimaryGuild } = require('./UserPrimaryGuild.js');
 
 /**
  * Represents a user on Discord.
@@ -153,13 +152,26 @@ class User extends Base {
       this.avatarDecorationData = null;
     }
 
+    /**
+     * @typedef {Object} UserPrimaryGuild
+     * @property {?Snowflake} identityGuildId - The id of the user's primary guild
+     * @property {?boolean} identityEnabled - Whether the user is displaying the primary guild's tag
+     * @property {?string} tag - The user's guild tag. Limited to 4 characters
+     * @property {?string} badge - The guild tag badge hash
+     */
+
     if (data.primary_guild) {
       /**
        * The primary guild of the user
        *
        * @type {?UserPrimaryGuild}
        */
-      this.primaryGuild = new UserPrimaryGuild(data.primary_guild, this.client);
+      this.primaryGuild = {
+        identityGuildId: data.primary_guild.identity_guild_id,
+        identityEnabled: data.primary_guild.identity_enabled,
+        tag: data.primary_guild.tag,
+        badge: data.primary_guild.badge,
+      };
     } else {
       this.primaryGuild = null;
     }
@@ -256,6 +268,18 @@ class User extends Base {
    */
   bannerURL(options = {}) {
     return this.banner && this.client.rest.cdn.banner(this.id, this.banner, options);
+  }
+
+  /**
+   * A link to the user's guild tag badge.
+   *
+   * @param {ImageURLOptions} [options={}] Options for the image URL
+   * @returns {?string}
+   */
+  guildTagBadgeURL(options = {}) {
+    return this.primaryGuild?.badge
+      ? this.client.rest.cdn.guildTagBadge(this.primaryGuild.identityGuildId, this.primaryGuild.badge, options)
+      : null;
   }
 
   /**

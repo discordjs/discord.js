@@ -236,7 +236,6 @@ exports.UnfurledMediaItem = require('./structures/UnfurledMediaItem.js').Unfurle
 exports.User = require('./structures/User.js').User;
 exports.UserContextMenuCommandInteraction =
   require('./structures/UserContextMenuCommandInteraction.js').UserContextMenuCommandInteraction;
-exports.UserPrimaryGuild = require('./structures/UserPrimaryGuild.js').UserPrimaryGuild;
 exports.UserSelectMenuComponent = require('./structures/UserSelectMenuComponent.js').UserSelectMenuComponent;
 exports.UserSelectMenuInteraction = require('./structures/UserSelectMenuInteraction.js').UserSelectMenuInteraction;
 exports.VoiceChannel = require('./structures/VoiceChannel.js').VoiceChannel;

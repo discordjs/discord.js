@@ -3494,15 +3494,11 @@ export interface AvatarDecorationData {
   skuId: Snowflake;
 }
 
-export class UserPrimaryGuild {
-  // TODO: Change to APIUserPrimaryGuild
-  private constructor(data: unknown, client: Client<true>);
-  public identityGuildId: Snowflake | null;
-  public identityEnabled: boolean | null;
-  public tag: string | null;
-  public badge: string | null;
-  public get identityGuild(): Guild | null;
-  public guildTagBadgeURL(options?: ImageURLOptions): string | null;
+export interface UserPrimaryGuild {
+  badge: string | null;
+  identityEnabled: boolean | null;
+  identityGuildId: Snowflake | null;
+  tag: string | null;
 }
 
 export interface UnfurledMediaItemData {
@@ -3543,6 +3539,7 @@ export class User extends Base {
   public avatarURL(options?: ImageURLOptions): string | null;
   public avatarDecorationURL(): string | null;
   public bannerURL(options?: ImageURLOptions): string | null | undefined;
+  public guildTagBadgeURL(options?: ImageURLOptions): string | null;
   public createDM(force?: boolean): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;
   public displayAvatarURL(options?: ImageURLOptions): string;
