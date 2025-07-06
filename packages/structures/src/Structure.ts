@@ -97,7 +97,7 @@ export abstract class Structure<DataType extends {}, Omitted extends keyof DataT
 	protected [kClone](patchPayload?: Readonly<Partial<DataType>>): typeof this {
 		const clone = this.toJSON();
 		// @ts-expect-error constructor is of abstract class is unknown
-		return new this.constructor(patchPayload ? Object.assign(clone, patchPayload) : clone);
+		return new this.constructor(patchPayload ? Object.assign(clone, patchPayload) : clone); // Ensure the ts-expect-error only applies to the constructor call
 	}
 
 	/**
@@ -128,11 +128,13 @@ export abstract class Structure<DataType extends {}, Omitted extends keyof DataT
 	 */
 	public toJSON(): DataType {
 		// This will be DataType provided nothing is omitted, when omits occur, subclass needs to overwrite this.
-		const data = (
-			Object.values(this[kData]).some((value) => typeof value === 'object' && value !== null)
-				? structuredClone(this[kData])
-				: { ...this[kData] }
-		) as DataType;
+		const data =
+			// Spread is way faster than structuredClone, but is shallow. So use it only if there is no nested objects
+			(
+				Object.values(this[kData]).some((value) => typeof value === 'object' && value !== null)
+					? structuredClone(this[kData])
+					: { ...this[kData] }
+			) as DataType;
 		this[kMixinToJSON]?.(data);
 		return data;
 	}

@@ -3,6 +3,7 @@ import type { APIChannel, APIPartialChannel, ChannelType, ChannelFlags } from 'd
 import { Structure } from '../Structure.js';
 import { ChannelFlagsBitField } from '../bitfields/ChannelFlagsBitField.js';
 import { kData, kPatch } from '../utils/symbols.js';
+import { isIdSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
 import type { ChannelPermissionMixin } from './mixins/ChannelPermissionMixin.js';
 import type { ChannelWebhookMixin } from './mixins/ChannelWebhookMixin.js';
@@ -99,9 +100,7 @@ export class Channel<
 	 * The timestamp the channel was created at
 	 */
 	public get createdTimestamp() {
-		return ['string', 'bigint'].includes(typeof this.id)
-			? DiscordSnowflake.timestampFrom(this.id as bigint | string)
-			: null;
+		return isIdSet(this.id) ? DiscordSnowflake.timestampFrom(this.id) : null;
 	}
 
 	/**

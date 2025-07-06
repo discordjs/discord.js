@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach } from 'vitest';
-import { Structure } from '../src/Structure.js';
+import { DataTemplatePropertyName, OptimizeDataPropertyName, Structure } from '../src/Structure.js';
 import { kData, kPatch } from '../src/utils/symbols.js';
 
 describe('Base Structure', () => {
@@ -56,5 +56,10 @@ describe('Base Structure', () => {
 		expect(json).not.toBe(data);
 		expect(json).not.toBe(struct[kData]);
 		expect(struct[kData]).toEqual(json);
+	});
+
+	test("XPropertyName variable matches the actual property's names", () => {
+		expect(Structure[DataTemplatePropertyName]).toStrictEqual({});
+		expect(struct[OptimizeDataPropertyName]).toBeTypeOf('function');
 	});
 });
