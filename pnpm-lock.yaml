@@ -1556,8 +1556,8 @@ importers:
         specifier: ^3.5.5
         version: 3.5.5
       discord-api-types:
-        specifier: ^0.38.14
-        version: 0.38.14
+        specifier: ^0.38.15
+        version: 0.38.15
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
