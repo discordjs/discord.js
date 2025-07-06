@@ -4,7 +4,7 @@ import type { BitFieldResolvable } from './BitField.js';
 import { BitField } from './BitField.js';
 
 /**
- * Data structure that makes it easy to interact with a permission bitfield. All {@link GuildMember}s have a set of
+ * Data structure that makes it easy to interact with a permission bit field. All {@link GuildMember}s have a set of
  * permissions in their guild, and each channel in the guild may also have {@link PermissionOverwrite}s for the member
  * that override their default permissions.
  */
@@ -17,49 +17,49 @@ export class PermissionsBitField extends BitField<keyof typeof PermissionFlagsBi
 	public static override Flags = PermissionFlagsBits;
 
 	/**
-	 * Bitfield representing every permission combined
+	 * Bit field representing every permission combined
 	 */
 	public static readonly All = Object.values(PermissionFlagsBits).reduce((all, perm) => all | perm, 0n);
 
 	/**
-	 * Bitfield representing the default permissions for users
+	 * Bit field representing the default permissions for users
 	 */
 	public static readonly Default = 104_324_673n;
 
 	/**
-	 * Bitfield representing the permissions required for moderators of stage channels
+	 * Bit field representing the permissions required for moderators of stage channels
 	 */
 	public static readonly StageModerator =
 		PermissionFlagsBits.ManageChannels | PermissionFlagsBits.MuteMembers | PermissionFlagsBits.MoveMembers;
 
 	/**
-	 * Gets all given bits that are missing from the bitfield.
+	 * Gets all given bits that are missing from the bit field.
 	 *
 	 * @param bits - Bit(s) to check for
 	 * @param checkAdmin - Whether to allow the administrator permission to override
-	 * @returns
+	 * @returns A bit field containing the missing permissions
 	 */
 	public override missing(bits: BitFieldResolvable<keyof typeof PermissionFlagsBits>, checkAdmin = true) {
 		return checkAdmin && this.has(PermissionFlagsBits.Administrator) ? [] : super.missing(bits);
 	}
 
 	/**
-	 * Checks whether the bitfield has a permission, or any of multiple permissions.
+	 * Checks whether the bit field has a permission, or any of multiple permissions.
 	 *
 	 * @param permission - Permission(s) to check for
 	 * @param checkAdmin - Whether to allow the administrator permission to override
-	 * @returns
+	 * @returns Whether the bit field has the permission(s)
 	 */
 	public override any(permission: BitFieldResolvable<keyof typeof PermissionFlagsBits>, checkAdmin = true) {
 		return (checkAdmin && super.has(PermissionFlagsBits.Administrator)) || super.any(permission);
 	}
 
 	/**
-	 * Checks whether the bitfield has a permission, or multiple permissions.
+	 * Checks whether the bit field has a permission, or multiple permissions.
 	 *
 	 * @param permission - Permission(s) to check for
 	 * @param checkAdmin - Whether to allow the administrator permission to override
-	 * @returns
+	 * @returns Whether the bit field has the permission(s)
 	 */
 	public override has(permission: BitFieldResolvable<keyof typeof PermissionFlagsBits>, checkAdmin = true) {
 		return (checkAdmin && super.has(PermissionFlagsBits.Administrator)) || super.has(permission);
@@ -68,7 +68,7 @@ export class PermissionsBitField extends BitField<keyof typeof PermissionFlagsBi
 	/**
 	 * Gets an Array of bitfield names based on the permissions available.
 	 *
-	 * @returns
+	 * @returns An Array of permission names
 	 */
 	public override toArray() {
 		return super.toArray(false);

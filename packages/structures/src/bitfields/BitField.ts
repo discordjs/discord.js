@@ -3,7 +3,7 @@ import type { EnumLike, NonAbstract, RecursiveReadonlyArray } from '../utils/typ
 // TODO: this currently is mostly copied from mainlib discord.js v14 and definitely needs a refactor in a later iteration
 
 /**
- * Data that can be resolved to give a bitfield. This can be:
+ * Data that can be resolved to give a bit field. This can be:
  * A bit number (this can be a number literal or a value taken from {@link (BitField:class).Flags})
  * A string bit number
  * An instance of BitField
@@ -18,12 +18,13 @@ export type BitFieldResolvable<Flags extends string> =
 	| `${bigint}`;
 
 /**
- * Data structure that makes it easy to interact with a bitfield.
+ * Data structure that makes it easy to interact with a bit field.
  */
 export abstract class BitField<Flags extends string> {
 	/**
-	 * Numeric bitfield flags.
-	 * <info>Defined in extension classes</info>
+	 * Numeric bit field flags.
+	 *
+	 * @remarks Defined in extension classes
 	 */
 	public static readonly Flags: EnumLike<unknown, bigint | number> = {};
 
@@ -32,7 +33,7 @@ export abstract class BitField<Flags extends string> {
 	/**
 	 * Bitfield of the packed bits
 	 */
-	public bitfield: bigint;
+	public bitField: bigint;
 
 	declare public ['constructor']: NonAbstract<typeof BitField<Flags>>;
 
@@ -40,46 +41,46 @@ export abstract class BitField<Flags extends string> {
 	 * @param bits - Bit(s) to read from
 	 */
 	public constructor(bits: BitFieldResolvable<Flags> = this.constructor.DefaultBit) {
-		this.bitfield = this.constructor.resolve(bits);
+		this.bitField = this.constructor.resolve(bits);
 	}
 
 	/**
-	 * Checks whether the bitfield has a bit, or any of multiple bits.
+	 * Checks whether the bit field has a bit, or any of multiple bits.
 	 *
 	 * @param bit - Bit(s) to check for
-	 * @returns
+	 * @returns Whether the bit field has the bit(s)
 	 */
 	public any(bit: BitFieldResolvable<Flags>) {
-		return (this.bitfield & this.constructor.resolve(bit)) !== this.constructor.DefaultBit;
+		return (this.bitField & this.constructor.resolve(bit)) !== this.constructor.DefaultBit;
 	}
 
 	/**
-	 * Checks if this bitfield equals another
+	 * Checks if this bit field equals another
 	 *
 	 * @param bit - Bit(s) to check for
-	 * @returns
+	 * @returns Whether this bit field equals the other
 	 */
 	public equals(bit: BitFieldResolvable<Flags>) {
-		return this.bitfield === this.constructor.resolve(bit);
+		return this.bitField === this.constructor.resolve(bit);
 	}
 
 	/**
-	 * Checks whether the bitfield has a bit, or multiple bits.
+	 * Checks whether the bit field has a bit, or multiple bits.
 	 *
 	 * @param bit - Bit(s) to check for
-	 * @returns
+	 * @returns Whether the bit field has the bit(s)
 	 */
 	public has(bit: BitFieldResolvable<Flags>, ..._hasParams: unknown[]) {
 		const resolvedBit = this.constructor.resolve(bit);
-		return (this.bitfield & resolvedBit) === resolvedBit;
+		return (this.bitField & resolvedBit) === resolvedBit;
 	}
 
 	/**
-	 * Gets all given bits that are missing from the bitfield.
+	 * Gets all given bits that are missing from the bit field.
 	 *
 	 * @param bits - Bit(s) to check for
 	 * @param hasParams -  Additional parameters for the has method, if any
-	 * @returns
+	 * @returns A bit field containing the missing bits
 	 */
 	public missing(bits: BitFieldResolvable<Flags>, ...hasParams: readonly unknown[]) {
 		return new this.constructor(bits).remove(this).toArray(...hasParams);
@@ -88,7 +89,7 @@ export abstract class BitField<Flags extends string> {
 	/**
 	 * Freezes these bits, making them immutable.
 	 *
-	 * @returns
+	 * @returns This bit field but frozen
 	 */
 	public freeze() {
 		return Object.freeze(this);
@@ -106,8 +107,8 @@ export abstract class BitField<Flags extends string> {
 			total |= this.constructor.resolve(bit);
 		}
 
-		if (Object.isFrozen(this)) return new this.constructor(this.bitfield | total);
-		this.bitfield |= total;
+		if (Object.isFrozen(this)) return new this.constructor(this.bitField | total);
+		this.bitField |= total;
 		return this;
 	}
 
@@ -123,8 +124,8 @@ export abstract class BitField<Flags extends string> {
 			total |= this.constructor.resolve(bit);
 		}
 
-		if (Object.isFrozen(this)) return new this.constructor(this.bitfield & ~total);
-		this.bitfield &= ~total;
+		if (Object.isFrozen(this)) return new this.constructor(this.bitField & ~total);
+		this.bitField &= ~total;
 		return this;
 	}
 
@@ -132,7 +133,7 @@ export abstract class BitField<Flags extends string> {
 	 * Gets an object mapping field names to a boolean indicating whether the bit is available.
 	 *
 	 * @param hasParams - Additional parameters for the has method, if any
-	 * @returns
+	 * @returns An object mapping field names to a boolean indicating whether the bit is available
 	 */
 	public serialize(...hasParams: readonly unknown[]) {
 		const serialized: Partial<Record<keyof Flags, boolean>> = {};
@@ -144,10 +145,10 @@ export abstract class BitField<Flags extends string> {
 	}
 
 	/**
-	 * Gets an Array of bitfield names based on the bits available.
+	 * Gets an Array of bit field names based on the bits available.
 	 *
 	 * @param hasParams - Additional parameters for the has method, if any
-	 * @returns
+	 * @returns An Array of bit field names
 	 */
 	public toArray(...hasParams: readonly unknown[]) {
 		return [...this[Symbol.iterator](...hasParams)];
@@ -155,20 +156,20 @@ export abstract class BitField<Flags extends string> {
 
 	public toJSON(asNumber?: boolean) {
 		if (asNumber) {
-			if (this.bitfield > Number.MAX_SAFE_INTEGER) {
+			if (this.bitField > Number.MAX_SAFE_INTEGER) {
 				throw new RangeError(
-					`Cannot convert bitfield value ${this.bitfield} to number, as it is bigger than ${Number.MAX_SAFE_INTEGER} (the maximum safe integer)`,
+					`Cannot convert bitfield value ${this.bitField} to number, as it is bigger than ${Number.MAX_SAFE_INTEGER} (the maximum safe integer)`,
 				);
 			}
 
-			return Number(this.bitfield);
+			return Number(this.bitField);
 		}
 
-		return this.bitfield.toString();
+		return this.bitField.toString();
 	}
 
 	public valueOf() {
-		return this.bitfield;
+		return this.bitField;
 	}
 
 	public *[Symbol.iterator](...hasParams: unknown[]) {
@@ -178,16 +179,16 @@ export abstract class BitField<Flags extends string> {
 	}
 
 	/**
-	 * Resolves bitfields to their numeric form.
+	 * Resolves bit fields to their numeric form.
 	 *
 	 * @param bit - bit(s) to resolve
-	 * @returns
+	 * @returns the numeric value of the bit fields
 	 */
 	public static resolve<Flags extends string = string>(bit: BitFieldResolvable<Flags>): bigint {
 		const DefaultBit = this.DefaultBit;
 		if (typeof bit === 'bigint' && bit >= DefaultBit) return bit;
 		if (typeof bit === 'number' && BigInt(bit) >= DefaultBit) return BigInt(bit);
-		if (bit instanceof BitField) return bit.bitfield;
+		if (bit instanceof BitField) return bit.bitField;
 		if (Array.isArray(bit)) {
 			return bit.map((bit_) => this.resolve(bit_)).reduce((prev, bit_) => prev | bit_, DefaultBit);
 		}
