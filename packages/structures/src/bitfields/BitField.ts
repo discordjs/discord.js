@@ -1,5 +1,7 @@
 import type { EnumLike, NonAbstract, RecursiveReadonlyArray } from '../utils/types.js';
 
+// TODO: this currently is mostly copied from mainlib discord.js v14 and definitely needs a refactor in a later iteration
+
 /**
  * Data that can be resolved to give a bitfield. This can be:
  * A bit number (this can be a number literal or a value taken from {@link (BitField:class).Flags})
