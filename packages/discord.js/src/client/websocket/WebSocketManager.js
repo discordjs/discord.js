@@ -385,7 +385,11 @@ class WebSocketManager extends EventEmitter {
      */
     if (this.client.emit('ready', this.client) && !deprecationEmitted) {
       deprecationEmitted = true;
-      process.emitWarning('The ready event is deprecated. Use clientReady instead.', 'DeprecationWarning');
+
+      process.emitWarning(
+        'The ready event has been renamed to clientReady. Please use that instead',
+        'DeprecationWarning',
+      );
     }
 
     /**
