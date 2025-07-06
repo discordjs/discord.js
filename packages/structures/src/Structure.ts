@@ -97,7 +97,10 @@ export abstract class Structure<DataType extends {}, Omitted extends keyof DataT
 	protected [kClone](patchPayload?: Readonly<Partial<DataType>>): typeof this {
 		const clone = this.toJSON();
 		// @ts-expect-error constructor is of abstract class is unknown
-		return new this.constructor(patchPayload ? Object.assign(clone, patchPayload) : clone); // Ensure the ts-expect-error only applies to the constructor call
+		return new this.constructor(
+			// Ensure the ts-expect-error only applies to the constructor call
+			patchPayload ? Object.assign(clone, patchPayload) : clone,
+		);
 	}
 
 	/**
