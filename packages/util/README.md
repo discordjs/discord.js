@@ -37,7 +37,7 @@ bun add @discordjs/util
 - [Guide][guide] ([source][guide-source])
   Also see the v13 to v14 [Update Guide][guide-update], which includes updated and removed items from the library.
 - [discord.js Discord server][discord]
-- [Discord API Discord server][discord-api]
+- [Discord Developers Discord server][discord-developers]
 - [GitHub][source]
 - [npm][npm]
 - [Related libraries][related-libs]
@@ -59,7 +59,7 @@ If you don't understand something in the documentation, you are experiencing pro
 [guide-source]: https://github.com/discordjs/guide
 [guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
 [discord]: https://discord.gg/djs
-[discord-api]: https://discord.gg/discord-api
+[discord-developers]: https://discord.gg/discord-developers
 [source]: https://github.com/discordjs/discord.js/tree/main/packages/util
 [npm]: https://www.npmjs.com/package/@discordjs/util
 [related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
