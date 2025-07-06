@@ -138,18 +138,18 @@ class User extends Base {
      * @property {Snowflake} skuId The id of the avatar decoration's SKU
      */
 
-    if (data.avatar_decoration_data) {
+    if ('avatar_decoration_data' in data) {
       /**
        * The user avatar decoration's data
        *
        * @type {?AvatarDecorationData}
        */
       this.avatarDecorationData = {
-        asset: data.avatar_decoration_data.asset,
-        skuId: data.avatar_decoration_data.sku_id,
+        asset: data.avatar_decoration_data?.asset,
+        skuId: data.avatar_decoration_data?.sku_id,
       };
     } else {
-      this.avatarDecorationData = null;
+      this.avatarDecorationData ??= null;
     }
 
     /**
@@ -160,20 +160,20 @@ class User extends Base {
      * @property {?string} badge - The guild tag badge hash
      */
 
-    if (data.primary_guild) {
+    if ('primary_guild' in data) {
       /**
        * The primary guild of the user
        *
        * @type {?UserPrimaryGuild}
        */
       this.primaryGuild = {
-        identityGuildId: data.primary_guild.identity_guild_id,
-        identityEnabled: data.primary_guild.identity_enabled,
-        tag: data.primary_guild.tag,
-        badge: data.primary_guild.badge,
+        identityGuildId: data.primary_guild?.identity_guild_id,
+        identityEnabled: data.primary_guild?.identity_enabled,
+        tag: data.primary_guild?.tag,
+        badge: data.primary_guild?.badge,
       };
     } else {
-      this.primaryGuild = null;
+      this.primaryGuild ??= null;
     }
   }
 
