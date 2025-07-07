@@ -6065,7 +6065,7 @@ export enum Events {
   VoiceServerUpdate = 'voiceServerUpdate',
   VoiceStateUpdate = 'voiceStateUpdate',
   TypingStart = 'typingStart',
-  WebhooksUpdate = 'webhookUpdate',
+  WebhooksUpdate = 'webhooksUpdate',
   InteractionCreate = 'interactionCreate',
   Error = 'error',
   Warn = 'warn',
