@@ -1,0 +1,192 @@
+---
+title: Modals
+---
+
+With modals you can create pop-up forms that allow users to provide you with formatted inputs through submissions. We'll cover how to create, show, and receive modal forms using discord.js!
+
+<Callout>
+	This page is a follow-up to the [interactions (slash commands) page](../slash-commands/advanced-creation). Please
+	carefully read that section first, so that you can understand the methods used in this section.
+</Callout>
+
+## Building and responding with modals
+
+Unlike message components, modals aren't strictly components themselves. They're a callback structure used to respond to interactions.
+
+<Callout>
+	You can have a maximum of five `ActionRowBuilder`s per modal builder, and one `TextInputBuilder` within an
+	`ActionRowBuilder`. Currently, you can only use `TextInputBuilder`s in modal action rows builders.
+</Callout>
+
+To create a modal you construct a new `ModalBuilder`. You can then use the setters to add the custom id and title.
+
+```js
+const { Events, ModalBuilder } = require('discord.js');
+
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+
+	if (interaction.commandName === 'ping') {
+		const modal = new ModalBuilder().setCustomId('myModal').setTitle('My Modal');
+
+		// TODO: Add components to modal...
+	}
+});
+```
+
+<Callout>
+	The custom id is a developer-defined string of up to 100 characters. Use this field to ensure you can uniquely define
+	all incoming interactions from your modals!
+</Callout>
+
+The next step is to add the input fields in which users responding can enter free-text. Adding inputs is similar to adding components to messages.
+
+At the end, we then call `ChatInputCommandInteraction#showModal` to display the modal to the user.
+
+<Callout type="warn">
+If you're using typescript you'll need to specify the type of components your action row holds. This can be done by specifying the generic parameter in `ActionRowBuilder`:
+
+```diff
+- new ActionRowBuilder()
++ new ActionRowBuilder<ModalActionRowComponentBuilder>()
+```
+
+</Callout>
+
+```js
+const { ActionRowBuilder, Events, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+
+	if (interaction.commandName === 'ping') {
+		// Create the modal
+		const modal = new ModalBuilder().setCustomId('myModal').setTitle('My Modal');
+
+		// Add components to modal
+
+		// Create the text input components
+		const favoriteColorInput = new TextInputBuilder()
+			.setCustomId('favoriteColorInput')
+			// The label is the prompt the user sees for this input
+			.setLabel("What's your favorite color?")
+			// Short means only a single line of text
+			.setStyle(TextInputStyle.Short);
+
+		const hobbiesInput = new TextInputBuilder()
+			.setCustomId('hobbiesInput')
+			.setLabel("What's some of your favorite hobbies?")
+			// Paragraph means multiple lines of text.
+			.setStyle(TextInputStyle.Paragraph);
+
+		// An action row only holds one text input,
+		// so you need one action row per text input.
+		const firstActionRow = new ActionRowBuilder().addComponents(favoriteColorInput);
+		const secondActionRow = new ActionRowBuilder().addComponents(hobbiesInput);
+
+		// Add inputs to the modal
+		modal.addComponents(firstActionRow, secondActionRow);
+
+		// Show the modal to the user
+		await interaction.showModal(modal); // [!code word:showModal]
+	}
+});
+```
+
+Restart your bot and invoke the `/ping` command again. You should see a popup form resembling the image below:
+
+![Modal Example](./images/modal-example.png)
+
+<Callout type="warn">
+	Showing a modal must be the first response to an interaction. You cannot `defer()` or `deferUpdate()` then show a
+	modal later.
+</Callout>
+
+### Input styles
+
+Currently there are two different input styles available:
+
+- `Short`, a single-line text entry;
+- `Paragraph`, a multi-line text entry similar to the HTML `<textarea>`;
+
+### Input properties
+
+In addition to the `customId`, `label` and `style`, a text input can be customised in a number of ways to apply validation, prompt the user, or set default values via the `TextInputBuilder` methods:
+
+```js
+const input = new TextInputBuilder()
+	// set the maximum number of characters to allow
+	.setMaxLength(1_000)
+	// set the minimum number of characters required for submission
+	.setMinLength(10)
+	// set a placeholder string to prompt the user
+	.setPlaceholder('Enter some text!')
+	// set a default value to pre-fill the input
+	.setValue('Default')
+	// require a value in this input field
+	.setRequired(true);
+```
+
+## Receiving modal submissions
+
+### Interaction collectors
+
+Modal submissions can be collected within the scope of the interaction that showed it by utilising an `InteractionCollector`, or the `ChatInputCommandInteraction#awaitModalSubmit` promisified method. These both provide instances of the `ModalSubmitInteraction` class as collected items.
+
+For a detailed guide on receiving message components via collectors, please refer to the [collectors guide](../popular-topics/collectors#interaction-collectors).
+
+### The interactionCreate event
+
+To receive a `ModalSubmitInteraction` event, attach an `Client#interactionCreate` event listener to your client and use the `BaseInteraction#isModalSubmit` type guard to make sure you only receive modals:
+
+```js
+client.on(Events.InteractionCreate, (interaction) => {
+	if (!interaction.isModalSubmit()) return;
+	console.log(interaction);
+});
+```
+
+## Responding to modal submissions
+
+The `ModalSubmitInteraction` class provides the same methods as the `ChatInputCommandInteraction` class. These methods behave equally:
+
+- `reply()`
+- `editReply()`
+- `deferReply()`
+- `fetchReply()`
+- `deleteReply()`
+- `followUp()`
+
+If the modal was shown from a `ButtonInteraction` or `StringSelectMenuInteraction`, it will also provide these methods, which behave equally:
+
+- `update()`
+- `deferUpdate()`
+
+```js
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isModalSubmit()) return;
+	if (interaction.customId === 'myModal') {
+		await interaction.reply({ content: 'Your submission was received successfully!' });
+	}
+});
+```
+
+<Callout>
+	If you're using typescript, you can use the `ModalSubmitInteraction#isFromMessage` typeguard, to make sure the
+	received interaction was from a `MessageComponentInteraction`.
+</Callout>
+
+## Extracting data from modal submissions
+
+You'll most likely need to read the data sent by the user in the modal. You can do this by accessing the `ModalSubmitInteraction#fields`. From there you can call `ModalSubmitFields#getTextInputValue` with the custom id of the text input to get the value.
+
+```js
+client.on(Events.InteractionCreate, (interaction) => {
+	if (!interaction.isModalSubmit()) return;
+
+	// Get the data entered by the user
+	const favoriteColor = interaction.fields.getTextInputValue('favoriteColorInput');
+	const hobbies = interaction.fields.getTextInputValue('hobbiesInput');
+	console.log({ favoriteColor, hobbies });
+});
+```
