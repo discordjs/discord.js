@@ -7,7 +7,9 @@ class GuildSoundboardSoundDeleteAction extends Action {
   handle(data) {
     const guild = this.client.guilds.cache.get(data.guild_id);
 
-    if (!guild) return {};
+    if (!guild) {
+      return {};
+    }
 
     const soundboardSound = this.getSoundboardSound(data, guild);
 

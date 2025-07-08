@@ -6,7 +6,9 @@ const { Events } = require('../../../util/Events.js');
 module.exports = (client, { d: data }) => {
   const guild = client.guilds.cache.get(data.guild_id);
 
-  if (!guild) return;
+  if (!guild) {
+    return;
+  }
 
   const soundboardSounds = new Collection();
 

@@ -16,11 +16,17 @@ function findPackageJSON(
 	packageName: string,
 	depth: number,
 ): { name: string; version: string } | undefined {
-	if (depth === 0) return undefined;
+	if (depth === 0) {
+		return undefined;
+	}
+
 	const attemptedPath = resolve(dir, './package.json');
 	try {
 		const pkg = require(attemptedPath);
-		if (pkg.name !== packageName) throw new Error('package.json does not match');
+		if (pkg.name !== packageName) {
+			throw new Error('package.json does not match');
+		}
+
 		return pkg;
 	} catch {
 		return findPackageJSON(resolve(dir, '..'), packageName, depth - 1);

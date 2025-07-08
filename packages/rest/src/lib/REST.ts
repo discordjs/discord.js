@@ -104,7 +104,9 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 				// Begin sweeping hash based on lifetimes
 				this.hashes.sweep((val, key) => {
 					// `-1` indicates a global hash
-					if (val.lastAccess === -1) return false;
+					if (val.lastAccess === -1) {
+						return false;
+					}
 
 					// Check if lifetime has been exceeded
 					const shouldSweep = Math.floor(currentDate - val.lastAccess) > this.options.hashLifetime;

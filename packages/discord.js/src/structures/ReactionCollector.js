@@ -57,7 +57,9 @@ class ReactionCollector extends Collector {
     this._handleMessageDeletion = this._handleMessageDeletion.bind(this);
 
     const bulkDeleteListener = messages => {
-      if (messages.has(this.message.id)) this.stop('messageDelete');
+      if (messages.has(this.message.id)) {
+        this.stop('messageDelete');
+      }
     };
 
     this.client.incrementMaxListeners();
@@ -102,7 +104,9 @@ class ReactionCollector extends Collector {
 
     this.on('remove', (_reaction, user) => {
       this.total--;
-      if (!this.collected.some(reaction => reaction.users.cache.has(user.id))) this.users.delete(user.id);
+      if (!this.collected.some(reaction => reaction.users.cache.has(user.id))) {
+        this.users.delete(user.id);
+      }
     });
   }
 
@@ -121,7 +125,9 @@ class ReactionCollector extends Collector {
      * @param {MessageReaction} reaction The reaction that was collected
      * @param {User} user The user that added the reaction
      */
-    if (reaction.message.id !== this.message.id) return null;
+    if (reaction.message.id !== this.message.id) {
+      return null;
+    }
 
     return ReactionCollector.key(reaction);
   }
@@ -141,7 +147,9 @@ class ReactionCollector extends Collector {
      * @param {MessageReaction} reaction The reaction that was disposed of
      * @param {User} user The user that removed the reaction
      */
-    if (reaction.message.id !== this.message.id) return null;
+    if (reaction.message.id !== this.message.id) {
+      return null;
+    }
 
     /**
      * Emitted when the reaction had one user removed and the `dispose` option is set to true.
@@ -174,9 +182,18 @@ class ReactionCollector extends Collector {
    * @readonly
    */
   get endReason() {
-    if (this.options.max && this.total >= this.options.max) return 'limit';
-    if (this.options.maxEmojis && this.collected.size >= this.options.maxEmojis) return 'emojiLimit';
-    if (this.options.maxUsers && this.users.size >= this.options.maxUsers) return 'userLimit';
+    if (this.options.max && this.total >= this.options.max) {
+      return 'limit';
+    }
+
+    if (this.options.maxEmojis && this.collected.size >= this.options.maxEmojis) {
+      return 'emojiLimit';
+    }
+
+    if (this.options.maxUsers && this.users.size >= this.options.maxUsers) {
+      return 'userLimit';
+    }
+
     return super.endReason;
   }
 

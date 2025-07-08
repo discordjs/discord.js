@@ -14,13 +14,19 @@ function serializeSearchParam(value: unknown): string | null {
 		case 'boolean':
 			return value.toString();
 		case 'object':
-			if (value === null) return null;
+			if (value === null) {
+				return null;
+			}
+
 			if (value instanceof Date) {
 				return Number.isNaN(value.getTime()) ? null : value.toISOString();
 			}
 
-			// eslint-disable-next-line @typescript-eslint/no-base-to-string
-			if (typeof value.toString === 'function' && value.toString !== Object.prototype.toString) return value.toString();
+			if (typeof value.toString === 'function' && value.toString !== Object.prototype.toString) {
+				// eslint-disable-next-line @typescript-eslint/no-base-to-string
+				return value.toString();
+			}
+
 			return null;
 		default:
 			return null;
@@ -36,11 +42,15 @@ function serializeSearchParam(value: unknown): string | null {
  */
 export function makeURLSearchParams<OptionsType extends object>(options?: Readonly<OptionsType>) {
 	const params = new URLSearchParams();
-	if (!options) return params;
+	if (!options) {
+		return params;
+	}
 
 	for (const [key, value] of Object.entries(options)) {
 		const serialized = serializeSearchParam(value);
-		if (serialized !== null) params.append(key, serialized);
+		if (serialized !== null) {
+			params.append(key, serialized);
+		}
 	}
 
 	return params;
@@ -72,9 +82,15 @@ export function hasSublimit(bucketRoute: string, body?: unknown, method?: string
 	// Currently known sublimits:
 	// Editing channel `name` or `topic`
 	if (bucketRoute === '/channels/:id') {
-		if (typeof body !== 'object' || body === null) return false;
+		if (typeof body !== 'object' || body === null) {
+			return false;
+		}
+
 		// This should never be a POST body, but just in case
-		if (method !== RequestMethod.Patch) return false;
+		if (method !== RequestMethod.Patch) {
+			return false;
+		}
+
 		const castedBody = body as RESTPatchAPIChannelJSONBody;
 		return ['name', 'topic'].some((key) => Reflect.has(castedBody, key));
 	}
@@ -91,7 +107,10 @@ export function hasSublimit(bucketRoute: string, body?: unknown, method?: string
  */
 export function shouldRetry(error: Error | NodeJS.ErrnoException) {
 	// Retry for possible timed out requests
-	if (error.name === 'AbortError') return true;
+	if (error.name === 'AbortError') {
+		return true;
+	}
+
 	// Downlevel ECONNRESET to retry as it may be recoverable
 	return ('code' in error && error.code === 'ECONNRESET') || error.message.includes('ECONNRESET');
 }
@@ -103,7 +122,9 @@ export function shouldRetry(error: Error | NodeJS.ErrnoException) {
  */
 export async function onRateLimit(manager: REST, rateLimitData: RateLimitData) {
 	const { options } = manager;
-	if (!options.rejectOnRateLimit) return;
+	if (!options.rejectOnRateLimit) {
+		return;
+	}
 
 	const shouldThrow =
 		typeof options.rejectOnRateLimit === 'function'

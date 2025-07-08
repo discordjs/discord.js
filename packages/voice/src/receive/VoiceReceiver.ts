@@ -97,7 +97,9 @@ export class VoiceReceiver {
 
 		let headerSize = 12;
 		const first = buffer.readUint8();
-		if ((first >> 4) & 0x01) headerSize += 4;
+		if ((first >> 4) & 0x01) {
+			headerSize += 4;
+		}
 
 		// The unencrypted RTP header contains 12 bytes, HEADER_EXTENSION and the extension size
 		const header = buffer.subarray(0, headerSize);
@@ -147,7 +149,9 @@ export class VoiceReceiver {
 	 */
 	private parsePacket(buffer: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array) {
 		let packet = this.decrypt(buffer, mode, nonce, secretKey);
-		if (!packet) return;
+		if (!packet) {
+			return;
+		}
 
 		// Strip decrypted RTP Header Extension if present
 		// The header is only indicated in the original data, so compare with buffer first
@@ -166,16 +170,23 @@ export class VoiceReceiver {
 	 * @internal
 	 */
 	public onUdpMessage(msg: Buffer) {
-		if (msg.length <= 8) return;
+		if (msg.length <= 8) {
+			return;
+		}
+
 		const ssrc = msg.readUInt32BE(8);
 
 		const userData = this.ssrcMap.get(ssrc);
-		if (!userData) return;
+		if (!userData) {
+			return;
+		}
 
 		this.speaking.onPacket(userData.userId);
 
 		const stream = this.subscriptions.get(userData.userId);
-		if (!stream) return;
+		if (!stream) {
+			return;
+		}
 
 		if (this.connectionData.encryptionMode && this.connectionData.nonceBuffer && this.connectionData.secretKey) {
 			const packet = this.parsePacket(
@@ -200,7 +211,9 @@ export class VoiceReceiver {
 	 */
 	public subscribe(userId: string, options?: Partial<AudioReceiveStreamOptions>) {
 		const existing = this.subscriptions.get(userId);
-		if (existing) return existing;
+		if (existing) {
+			return existing;
+		}
 
 		const stream = new AudioReceiveStream({
 			...createDefaultAudioReceiveStreamOptions(),

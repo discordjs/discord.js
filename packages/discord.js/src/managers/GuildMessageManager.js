@@ -25,7 +25,9 @@ class GuildMessageManager extends MessageManager {
    */
   async crosspost(message) {
     const messageId = this.resolveId(message);
-    if (!messageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    if (!messageId) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
+    }
 
     const data = await this.client.rest.post(Routes.channelMessageCrosspost(this.channel.id, messageId));
     return this.cache.get(data.id) ?? this._add(data);

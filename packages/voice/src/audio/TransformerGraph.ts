@@ -110,7 +110,10 @@ let NODES: Map<StreamType, Node> | null = null;
  */
 export function getNode(type: StreamType) {
 	const node = (NODES ??= initializeNodes()).get(type);
-	if (!node) throw new Error(`Node type '${type}' does not exist!`);
+	if (!node) {
+		throw new Error(`Node type '${type}' does not exist!`);
+	}
+
 	return node;
 }
 
@@ -243,7 +246,10 @@ function findPath(
 
 	let currentBest: Step | undefined;
 	for (const edge of from.edges) {
-		if (currentBest && edge.cost > currentBest.cost) continue;
+		if (currentBest && edge.cost > currentBest.cost) {
+			continue;
+		}
+
 		const next = findPath(edge.to, constraints, goal, [...path, edge], depth - 1);
 		const cost = edge.cost + next.cost;
 		if (!currentBest || cost < currentBest.cost) {

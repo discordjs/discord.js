@@ -65,8 +65,14 @@ class StageInstanceManager extends CachedManager {
    */
   async create(channel, options) {
     const channelId = this.guild.channels.resolveId(channel);
-    if (!channelId) throw new DiscordjsError(ErrorCodes.StageChannelResolve);
-    if (typeof options !== 'object') throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
+    if (!channelId) {
+      throw new DiscordjsError(ErrorCodes.StageChannelResolve);
+    }
+
+    if (typeof options !== 'object') {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
+    }
+
     const { guildScheduledEvent, topic, privacyLevel, sendStartNotification } = options;
 
     const guildScheduledEventId = guildScheduledEvent && this.resolveId(guildScheduledEvent);
@@ -98,11 +104,15 @@ class StageInstanceManager extends CachedManager {
    */
   async fetch(channel, { cache = true, force = false } = {}) {
     const channelId = this.guild.channels.resolveId(channel);
-    if (!channelId) throw new DiscordjsError(ErrorCodes.StageChannelResolve);
+    if (!channelId) {
+      throw new DiscordjsError(ErrorCodes.StageChannelResolve);
+    }
 
     if (!force) {
       const existing = this.cache.find(stageInstance => stageInstance.channelId === channelId);
-      if (existing) return existing;
+      if (existing) {
+        return existing;
+      }
     }
 
     const data = await this.client.rest.get(Routes.stageInstance(channelId));
@@ -130,9 +140,14 @@ class StageInstanceManager extends CachedManager {
    *  .catch(console.error);
    */
   async edit(channel, options) {
-    if (typeof options !== 'object') throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
+    if (typeof options !== 'object') {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
+    }
+
     const channelId = this.guild.channels.resolveId(channel);
-    if (!channelId) throw new DiscordjsError(ErrorCodes.StageChannelResolve);
+    if (!channelId) {
+      throw new DiscordjsError(ErrorCodes.StageChannelResolve);
+    }
 
     const { topic, privacyLevel } = options;
 
@@ -160,7 +175,9 @@ class StageInstanceManager extends CachedManager {
    */
   async delete(channel) {
     const channelId = this.guild.channels.resolveId(channel);
-    if (!channelId) throw new DiscordjsError(ErrorCodes.StageChannelResolve);
+    if (!channelId) {
+      throw new DiscordjsError(ErrorCodes.StageChannelResolve);
+    }
 
     await this.client.rest.delete(Routes.stageInstance(channelId));
   }
