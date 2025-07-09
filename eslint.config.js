@@ -263,7 +263,7 @@ export default tseslint.config(
 	reactRuleset,
 	jsxa11yRuleset,
 	{
-		files: [`apps/guide/**/*${commonFiles}`, `packages/ui/**/*${commonFiles}`],
+		files: [`packages/ui/**/*${commonFiles}`],
 		plugins: { '@unocss': unocss },
 		rules: {
 			'@unocss/order': 2,
