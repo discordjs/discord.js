@@ -63,7 +63,8 @@ class Role extends Base {
      * @property {?number} secondaryColor The secondary color of the role.
      * This will make the role a gradient between the other provided colors
      * @property {?number} tertiaryColor The tertiary color of the role.
-     * When sending `tertiaryColor` the API enforces the role color to be a holographic style with values of `primaryColor = 11127295`, `secondaryColor = 16759788`, and `tertiaryColor = 16761760`
+     * When sending `tertiaryColor` the API enforces the role color to be a holographic style with values of `primaryColor = 11127295`, `secondaryColor = 16759788`, and `tertiaryColor = 16761760`.
+     * These values are available as a constant: `Constants.HolographicStyle`
      */
 
     if ('colors' in data) {
@@ -337,6 +338,15 @@ class Role extends Base {
    * // Set the colors of a role
    * role.setColors({ primaryColor: '#FF0000', secondaryColor: '#00FF00', tertiaryColor: '#0000FF' })
    *   .then(updated => console.log(`Set colors of role to ${updated.colors}`))
+   *   .catch(console.error);
+   * @example
+   * // Set holographic colors using constants
+   * role.setColors({
+   *   primaryColor: Constants.HolographicStyle.Primary,
+   *   secondaryColor: Constants.HolographicStyle.Secondary,
+   *   tertiaryColor: Constants.HolographicStyle.Tertiary,
+   * })
+   *   .then(updated => console.log(`Set holographic colors for role ${updated.name}`))
    *   .catch(console.error);
    */
   async setColors(colors, reason) {

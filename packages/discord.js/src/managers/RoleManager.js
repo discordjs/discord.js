@@ -115,7 +115,8 @@ class RoleManager extends CachedManager {
    * @property {ColorResolvable} [secondaryColor] The secondary color of the role.
    * This will make the role a gradient between the other provided colors
    * @property {ColorResolvable} [tertiaryColor] The tertiary color of the role.
-   * When sending `tertiaryColor` the API enforces the role color to be a holographic style with values of `primaryColor = 11127295`, `secondaryColor = 16759788`, and `tertiaryColor = 16761760`
+   * When sending `tertiaryColor` the API enforces the role color to be a holographic style with values of `primaryColor = 11127295`, `secondaryColor = 16759788`, and `tertiaryColor = 16761760`.
+   * These values are available as a constant: `Constants.HolographicStyle`
    */
 
   /**
@@ -153,6 +154,19 @@ class RoleManager extends CachedManager {
    *   reason: 'we needed a role for Super Cool People',
    *   colors: {
    *     primaryColor: Colors.Blue,
+   *   },
+   * })
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Create a role with holographic colors
+   * guild.roles.create({
+   *   name: 'Holographic Role',
+   *   reason: 'Creating a role with holographic effect',
+   *   colors: {
+   *     primaryColor: Constants.HolographicStyle.Primary,
+   *     secondaryColor: Constants.HolographicStyle.Secondary,
+   *     tertiaryColor: Constants.HolographicStyle.Tertiary,
    *   },
    * })
    *   .then(console.log)

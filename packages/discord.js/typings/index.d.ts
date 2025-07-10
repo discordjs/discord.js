@@ -3820,6 +3820,11 @@ export type UndeletableMessageType =
 
 export const Constants: {
   GuildTextBasedChannelTypes: GuildTextBasedChannelTypes[];
+  HolographicStyle: {
+    Primary: 11_127_295;
+    Secondary: 16_759_788;
+    Tertiary: 16_761_760;
+  };
   MaxBulkDeletableMessageAge: 1_209_600_000;
   NonSystemMessageTypes: NonSystemMessageType[];
   SelectMenuTypes: SelectMenuType[];
