@@ -1,0 +1,103 @@
+---
+title: Using a proxy
+---
+
+It may be necessary to use a proxy when using Discord.js, for example when you are deploying your bot on a server that has a web filtering firewall that only allows outside traffic through the proxy. This guide will show you how to set up a proxy with Discord.js.
+
+A proxy for Discord.js requires 2 separate setups, one for REST and one for WebSocket.
+
+## Prerequisites
+
+In order to set up a proxy for Discord.js, you will need to install the following packages:
+
+```sh tab="npm"
+npm install undici global-agent
+```
+
+```sh tab="yarn"
+yarn add undici global-agent
+```
+
+```sh tab="pnpm"
+pnpm add undici global-agent
+```
+
+```sh tab="bun"
+bun add undici global-agent
+```
+
+## Setting up the proxy for REST calls
+
+To set up a proxy for REST calls, you should provide a custom `ProxyAgent` to the `Client` constructor. The `ProxyAgent` must be imported from the `undici` package, which is the package that `@discordjs/rest` uses to make HTTP requests.
+
+```js
+const { ProxyAgent } = require('undici'); // [!code word:ProxyAgent]
+const { Client } = require('discord.js');
+
+const myClient = new Client({
+	// other client options
+	rest: {
+		agent: new ProxyAgent('http://my-proxy-server:port'),
+	},
+});
+```
+
+<Callout>
+	For further information on the `undici` `ProxyAgent`, please refer to the [undici
+	documentation](https://undici.nodejs.org/#/docs/api/ProxyAgent.md).
+</Callout>
+
+## Setting up the proxy for WebSocket
+
+To set up a proxy for WebSocket, you can use the `global-agent` package. You will need to provide some custom configuration to activate it:
+
+```js
+const { bootstrap } = require('global-agent'); // [!code word:bootstrap]
+
+bootstrap();
+
+class NodeGlobalProxy {
+	config = {
+		http: '',
+		https: '',
+	};
+
+	constructor(config) {
+		this.config = config;
+	}
+
+	start() {
+		global.GLOBAL_AGENT.HTTP_PROXY = this.config.http;
+		global.GLOBAL_AGENT.HTTPS_PROXY = this.config.https;
+	}
+
+	stop() {
+		global.GLOBAL_AGENT.HTTP_PROXY = null;
+		global.GLOBAL_AGENT.HTTPS_PROXY = null;
+	}
+}
+
+module.exports = {
+	NodeGlobalProxy,
+};
+```
+
+Now in the file where you create your client, you can import the `NodeGlobalProxy` class and start it with the proxy URL:
+
+```js
+const { Client } = require('discord.js');
+const { NodeGlobalProxy } = require('./NodeGlobalProxy'); // [!code word:NodeGlobalProxy]
+
+const proxy = new NodeGlobalProxy({
+	http: 'http://my-proxy-server:port',
+	https: 'http://my-proxy-server:port',
+});
+
+proxy.start();
+
+const client = new Client({
+	// client options, including the proxy agent as described above
+});
+
+client.login('your-token-goes-here');
+```
