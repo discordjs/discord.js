@@ -301,8 +301,11 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel to delete
 	 * @param options - The options for deleting the channel
 	 */
-	public async delete(channelId: Snowflake, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
-		return this.rest.delete(Routes.channel(channelId), { auth, signal }) as Promise<RESTDeleteAPIChannelResult>;
+	public async delete(
+		channelId: Snowflake,
+		{ auth, signal, reason }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
+	) {
+		return this.rest.delete(Routes.channel(channelId), { auth, signal, reason }) as Promise<RESTDeleteAPIChannelResult>;
 	}
 
 	/**
