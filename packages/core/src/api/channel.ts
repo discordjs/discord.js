@@ -519,7 +519,7 @@ export class ChannelsAPI {
 		channelId: Snowflake,
 		body: RESTPostAPIChannelThreadsJSONBody,
 		messageId?: Snowflake,
-		{ auth, signal, reason }: Pick<RequestData, 'auth' | 'signal' | 'reason'> = {},
+		{ auth, signal, reason }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
 		return this.rest.post(Routes.threads(channelId, messageId), {
 			auth,
@@ -540,7 +540,7 @@ export class ChannelsAPI {
 	public async createForumThread(
 		channelId: Snowflake,
 		{ message, ...optionsBody }: StartForumThreadOptions,
-		{ auth, signal, reason }: Pick<RequestData, 'auth' | 'signal' | 'reason'> = {},
+		{ auth, signal, reason }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
 		const { files, ...messageBody } = message;
 
