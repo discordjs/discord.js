@@ -8,7 +8,8 @@
 		"life-cycles",
 		"voice-connections",
 		"audio-player",
-		"audio-resources"
+		"audio-resources",
+		"seeking"
 	],
 	"root": true,
 	"icon": "Volume2"
