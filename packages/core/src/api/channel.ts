@@ -223,9 +223,13 @@ export class ChannelsAPI {
 	public async edit(
 		channelId: Snowflake,
 		body: RESTPatchAPIChannelJSONBody,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ signal, reason }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
-		return this.rest.patch(Routes.channel(channelId), { body, signal }) as Promise<RESTPatchAPIChannelResult>;
+		return this.rest.patch(Routes.channel(channelId), {
+			reason,
+			body,
+			signal,
+		}) as Promise<RESTPatchAPIChannelResult>;
 	}
 
 	/**
@@ -235,8 +239,8 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel to delete
 	 * @param options - The options for deleting the channel
 	 */
-	public async delete(channelId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
-		return this.rest.delete(Routes.channel(channelId), { signal }) as Promise<RESTDeleteAPIChannelResult>;
+	public async delete(channelId: Snowflake, { signal, reason }: Pick<RequestData, 'reason' | 'signal'> = {}) {
+		return this.rest.delete(Routes.channel(channelId), { signal, reason }) as Promise<RESTDeleteAPIChannelResult>;
 	}
 
 	/**
@@ -441,11 +445,12 @@ export class ChannelsAPI {
 		channelId: Snowflake,
 		body: RESTPostAPIChannelThreadsJSONBody,
 		messageId?: Snowflake,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ signal, reason }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
 		return this.rest.post(Routes.threads(channelId, messageId), {
 			body,
 			signal,
+			reason,
 		}) as Promise<RESTPostAPIChannelThreadsResult>;
 	}
 
@@ -460,7 +465,7 @@ export class ChannelsAPI {
 	public async createForumThread(
 		channelId: Snowflake,
 		{ message, ...optionsBody }: StartForumThreadOptions,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		{ signal, reason }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
 		const { files, ...messageBody } = message;
 
@@ -469,7 +474,12 @@ export class ChannelsAPI {
 			message: messageBody,
 		};
 
-		return this.rest.post(Routes.threads(channelId), { files, body, signal }) as Promise<APIThreadChannel>;
+		return this.rest.post(Routes.threads(channelId), {
+			files,
+			body,
+			reason,
+			signal,
+		}) as Promise<APIThreadChannel>;
 	}
 
 	/**
