@@ -284,9 +284,14 @@ export class ChannelsAPI {
 	public async edit(
 		channelId: Snowflake,
 		body: RESTPatchAPIChannelJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, signal, reason }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
-		return this.rest.patch(Routes.channel(channelId), { auth, body, signal }) as Promise<RESTPatchAPIChannelResult>;
+		return this.rest.patch(Routes.channel(channelId), {
+			auth,
+			reason,
+			body,
+			signal,
+		}) as Promise<RESTPatchAPIChannelResult>;
 	}
 
 	/**
