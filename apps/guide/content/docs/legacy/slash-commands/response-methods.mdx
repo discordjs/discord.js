@@ -74,9 +74,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 	if (interaction.commandName === 'ping') {
 		await interaction.deferReply(); // [!code word:deferReply]
-		// you can take up to 15 minutes! We take 4 seconds to demonstrate this
-		// since it is barely above the 3-second threshold for the initial response
 		// you can do things that take time here (database queries, api requests, ...) that you need for the initial response
+		// you can take up to 15 minutes, then the interaction token becomes invalid!
 		await interaction.editReply('Pong!'); // [!code word:editReply]
 	}
 });
