@@ -187,11 +187,8 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to delete
 	 * @param options - The options for deleting this guild
 	 */
-	public async delete(
-		guildId: Snowflake,
-		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
-	) {
-		await this.rest.delete(Routes.guild(guildId), { auth, reason, signal });
+	public async delete(guildId: Snowflake, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
+		await this.rest.delete(Routes.guild(guildId), { auth, signal });
 	}
 
 	/**
