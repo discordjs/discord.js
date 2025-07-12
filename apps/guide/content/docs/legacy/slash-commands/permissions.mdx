@@ -14,7 +14,7 @@ The slash command permissions for guilds are defaults only and can be altered by
 
 ## Member permissions
 
-You can use `SlashCommandBuilder#setDefaultMemberPermissions` to set the default permissions required for a member to run the command. Setting it to `0` will prohibit anyone in a guild from using the command unless a specific overwrite is configured or the user has the Administrator permission flag.
+You can use `SlashCommandBuilder#setDefaultMemberPermissions` to set the default permissions required for a member to run the command. Setting it to `0` will hide the command from and prohibit anyone in a guild from using the command unless a specific overwrite is configured or the user has the Administrator permission flag.
 
 For this, you'll introduce two common and simple moderation commands: `ban` and `kick`. For a ban command, a sensible default is to ensure that users already have the Discord permission `BanMembers` in order to use it.
 

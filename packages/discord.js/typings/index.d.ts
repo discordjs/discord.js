@@ -2823,9 +2823,21 @@ export class RichPresenceAssets {
   public smallImageURL(options?: ImageURLOptions): string | null;
 }
 
+export interface RoleColors {
+  primaryColor: number;
+  secondaryColor: number | null;
+  tertiaryColor: number | null;
+}
+
+export interface RoleColorsResolvable {
+  primaryColor: ColorResolvable;
+  secondaryColor?: ColorResolvable;
+  tertiaryColor?: ColorResolvable;
+}
+
 export class Role extends Base {
   private constructor(client: Client<true>, data: APIRole, guild: Guild);
-  public color: number;
+  public colors: RoleColors;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
   public get editable(): boolean;
@@ -2853,7 +2865,7 @@ export class Role extends Base {
     channel: NonThreadGuildBasedChannel | Snowflake,
     checkAdmin?: boolean,
   ): Readonly<PermissionsBitField>;
-  public setColor(color: ColorResolvable, reason?: string): Promise<Role>;
+  public setColors(colors: RoleColorsResolvable, reason?: string): Promise<Role>;
   public setHoist(hoist?: boolean, reason?: string): Promise<Role>;
   public setMentionable(mentionable?: boolean, reason?: string): Promise<Role>;
   public setName(name: string, reason?: string): Promise<Role>;
@@ -3808,6 +3820,11 @@ export type UndeletableMessageType =
 
 export const Constants: {
   GuildTextBasedChannelTypes: GuildTextBasedChannelTypes[];
+  HolographicStyle: {
+    Primary: 11_127_295;
+    Secondary: 16_759_788;
+    Tertiary: 16_761_760;
+  };
   MaxBulkDeletableMessageAge: 1_209_600_000;
   NonSystemMessageTypes: NonSystemMessageType[];
   SelectMenuTypes: SelectMenuType[];
@@ -6836,7 +6853,7 @@ export interface ResolvedOverwriteOptions {
 }
 
 export interface RoleData {
-  color?: ColorResolvable;
+  colors?: RoleColorsResolvable;
   hoist?: boolean;
   icon?: Base64Resolvable | BufferResolvable | EmojiResolvable | null;
   mentionable?: boolean;
