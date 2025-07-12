@@ -184,10 +184,10 @@ export default defineConfig(
 			'jsdoc/no-undefined-types': 0,
 			'jsdoc/no-defaults': 0,
 			'no-eq-null': 0,
-			strict: ['error', 'global'],
+			strict: [2, 'global'],
 
 			'no-restricted-syntax': [
-				'error',
+				2,
 				{
 					selector: "AssignmentExpression[left.object.name='module'][left.property.name='exports']",
 					message: 'Use named exports instead of module.exports',
@@ -204,7 +204,7 @@ export default defineConfig(
 		files: [`packages/discord.js/src/client/websocket/handlers/*.js`],
 		rules: {
 			'no-restricted-syntax': [
-				'error',
+				2,
 				{
 					selector:
 						"VariableDeclarator[init.callee.name='require'][init.arguments.0.value=/^\\./]:not([id.type='ObjectPattern'])",
@@ -218,6 +218,7 @@ export default defineConfig(
 		rules: {
 			'@typescript-eslint/no-unsafe-declaration-merging': 0,
 			'@typescript-eslint/no-empty-object-type': 0,
+			'@typescript-eslint/no-unused-vars': 2,
 			'@typescript-eslint/no-use-before-define': 0,
 			'@typescript-eslint/consistent-type-imports': 0,
 			'@stylistic/ts/lines-between-class-members': 0,
@@ -259,7 +260,7 @@ export default defineConfig(
 		},
 	},
 	{
-		files: [`packages/structures/**/*${commonFiles}`],
+		files: [`packages/{next,structures}/**/*${commonFiles}`],
 		rules: {
 			'@typescript-eslint/no-empty-interface': 0,
 			'@typescript-eslint/no-empty-object-type': 0,
