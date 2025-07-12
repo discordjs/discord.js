@@ -31,10 +31,7 @@ import {
   APIComponentInModalActionRow,
   APIContainerComponent,
   APIEmbed,
-  APIEmbedAuthor,
   APIEmbedField,
-  APIEmbedFooter,
-  APIEmbedImage,
   APIEmbedProvider,
   APIEmoji,
   APIEntitlement,
@@ -3392,7 +3389,7 @@ export interface PrivateThreadChannel extends ThreadChannel<false> {
   type: ChannelType.PrivateThread;
 }
 
-export interface ThreadChannel<ThreadOnly extends boolean = boolean>
+export interface ThreadChannel
   extends TextBasedChannelFields<true>,
     PinnableChannelFields,
     BulkDeleteMethod,
@@ -3672,7 +3669,7 @@ export class VoiceState extends Base {
   public fetch(force?: boolean): Promise<VoiceState>;
 }
 
-export interface Webhook<Type extends WebhookType = WebhookType> extends WebhookFields {}
+export interface Webhook extends WebhookFields {}
 export class Webhook<Type extends WebhookType = WebhookType> {
   private constructor(client: Client<true>, data?: unknown);
   public avatar: string | null;
