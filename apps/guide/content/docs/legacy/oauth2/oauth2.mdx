@@ -75,56 +75,11 @@ The `identify` scope will allow your application to get basic user information f
 
 ### Implicit grant flow
 
-You have your website, and you have a URL. Now you need to use those two things to get an access token. For basic applications like [SPAs](https://en.wikipedia.org/wiki/Single-page_application), getting an access token directly is enough. You can do so by changing the `response_type` in the URL to `token`. However, this means you will not get a refresh token, which means the user will have to explicitly re-authorize when this access token has expired.
-
-After you change the `response_type`, you can test the URL right away. Visiting it in your browser, you will be directed to a page that looks like this:
-
-![Authorization Page](./images/authorize-app-page.png)
-
-You can see that by clicking `Authorize`, you allow the application to access your username and avatar. Once you click through, it will redirect you to your redirect URL with a [fragment identifier](https://en.wikipedia.org/wiki/Fragment_identifier) appended to it. You now have an access token and can make requests to Discord's API to get information on the user.
-
-Modify `index.html` to add your OAuth2 URL and to take advantage of the access token if it exists. Even though [`URLSearchParams`](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams) is for working with query strings, it can work here because the structure of the fragment follows that of a query string after removing the leading "#".
-
-```html title="index.html" lineNumbers=11
-<div id="info">Hoi!</div>
-<a id="login" style="display: none;" href="your-oauth2-URL-here">Identify Yourself</a>
-<script>
-	window.onload = () => {
-		const fragment = new URLSearchParams(window.location.hash.slice(1));
-		const [accessToken, tokenType] = [fragment.get('access_token'), fragment.get('token_type')];
-
-		if (!accessToken) {
-			return (document.getElementById('login').style.display = 'block');
-		}
-
-		fetch('https://discord.com/api/users/@me', {
-			headers: {
-				authorization: `${tokenType} ${accessToken}`,
-			},
-		})
-			.then((result) => result.json())
-			.then((response) => {
-				const { username, discriminator } = response;
-				document.getElementById('info').innerText += ` ${username}#${discriminator}`;
-			})
-			.catch(console.error);
-	};
-</script>
-```
-
-Here you grab the access token and type from the URL if it's there and use it to get info on the user, which is then used to greet them. The response you get from the [`/api/users/@me` endpoint](https://discord.com/developers/docs/resources/user#get-current-user) is a [user object](https://discord.com/developers/docs/resources/user#user-object) and should look something like this:
-
-```json
-{
-	"id": "123456789012345678",
-	"username": "User",
-	"discriminator": "0001",
-	"avatar": "1cc0a3b14aec3499632225c708451d67",
-	...
-}
-```
-
-In the following sections, we'll go over various details of Discord and OAuth2.
+<Callout type="error">
+	Implicit grant flow, as previously covered in this section, is vulnerable to token leakage and replay attacks. Please
+	use the **authorization grant** flow instead. You can find out more about the best implementation practices in the
+	[Oauth2 RFC](https://datatracker.ietf.org/doc/html/rfc9700).
+</Callout>
 
 ## More details
 
