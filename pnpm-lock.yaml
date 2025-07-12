@@ -1269,6 +1269,9 @@ importers:
       '@discordjs/rest':
         specifier: workspace:^
         version: link:../rest
+      '@discordjs/structures':
+        specifier: workspace:^
+        version: link:../structures
       '@discordjs/util':
         specifier: workspace:^
         version: link:../util
