@@ -14,7 +14,6 @@ const { ShardClientUtil } = require('../sharding/ShardClientUtil.js');
 const { ClientPresence } = require('../structures/ClientPresence.js');
 const { GuildPreview } = require('../structures/GuildPreview.js');
 const { GuildTemplate } = require('../structures/GuildTemplate.js');
-const { Invite } = require('../structures/Invite.js');
 const { SoundboardSound } = require('../structures/SoundboardSound.js');
 const { Sticker } = require('../structures/Sticker.js');
 const { StickerPack } = require('../structures/StickerPack.js');
@@ -24,6 +23,7 @@ const { Widget } = require('../structures/Widget.js');
 const { resolveInviteCode, resolveGuildTemplateCode } = require('../util/DataResolver.js');
 const { Events } = require('../util/Events.js');
 const { IntentsBitField } = require('../util/IntentsBitField.js');
+const { createInvite } = require('../util/Invites.js');
 const { Options } = require('../util/Options.js');
 const { PermissionsBitField } = require('../util/PermissionsBitField.js');
 const { Status } = require('../util/Status.js');
@@ -459,6 +459,7 @@ class Client extends BaseClient {
    * Options used when fetching an invite from Discord.
    *
    * @typedef {Object} ClientFetchInviteOptions
+   * @property {boolean} [withCounts] Whether to include approximate member counts
    * @property {Snowflake} [guildScheduledEventId] The id of the guild scheduled event to include with
    * the invite
    */
@@ -474,14 +475,16 @@ class Client extends BaseClient {
    *   .then(invite => console.log(`Obtained invite with code: ${invite.code}`))
    *   .catch(console.error);
    */
-  async fetchInvite(invite, options) {
+  async fetchInvite(invite, { withCounts, guildScheduledEventId } = {}) {
     const code = resolveInviteCode(invite);
+
     const query = makeURLSearchParams({
-      with_counts: true,
-      guild_scheduled_event_id: options?.guildScheduledEventId,
+      with_counts: withCounts,
+      guild_scheduled_event_id: guildScheduledEventId,
     });
+
     const data = await this.rest.get(Routes.invite(code), { query });
-    return new Invite(this, data);
+    return createInvite(this, data);
   }
 
   /**
