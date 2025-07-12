@@ -1,9 +1,9 @@
 import type { APIChannel } from 'discord-api-types/v10';
 import type { Client } from '../Client.js';
 import { Channel } from '../structures/Channel.js';
-import { CachedlManager } from './CachedManager.js';
+import { CachedManager } from './CachedManager.js';
 
-export class ChannelManager extends CachedlManager<Channel> {
+export class ChannelManager extends CachedManager<Channel> {
 	public constructor(data: APIChannel[], client: Client) {
 		super(client, Channel);
 

@@ -4,7 +4,7 @@ import type { Snowflake } from 'discord-api-types/globals';
 import type { Client } from '../Client.js';
 import type { Cache } from '../util/types.js';
 
-export class CachedlManager<Value extends Structure<object> & { get id(): Snowflake }> {
+export class CachedManager<Value extends Structure<object> & { get id(): Snowflake }> {
 	public client: Client;
 
 	public cache: Cache<Snowflake, Value>;
