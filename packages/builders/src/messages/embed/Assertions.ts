@@ -1,4 +1,4 @@
-import { z } from 'zod/v4';
+import { z } from 'zod';
 import { embedLength } from '../../util/componentUtil.js';
 
 const namePredicate = z.string().max(256);

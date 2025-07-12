@@ -1,5 +1,5 @@
 import { PollLayoutType } from 'discord-api-types/v10';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 import { emojiPredicate } from '../../components/Assertions';
 
 export const pollQuestionPredicate = z.object({ text: z.string().min(1).max(300) });
