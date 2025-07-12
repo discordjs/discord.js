@@ -1544,6 +1544,73 @@ importers:
         specifier: ~5.8.3
         version: 5.8.3
 
+  packages/structures:
+    dependencies:
+      '@discordjs/formatters':
+        specifier: workspace:^
+        version: link:../formatters
+      '@sapphire/snowflake':
+        specifier: ^3.5.5
+        version: 3.5.5
+      discord-api-types:
+        specifier: ^0.38.15
+        version: 0.38.15
+    devDependencies:
+      '@discordjs/api-extractor':
+        specifier: workspace:^
+        version: link:../api-extractor
+      '@discordjs/scripts':
+        specifier: workspace:^
+        version: link:../scripts
+      '@favware/cliff-jumper':
+        specifier: ^4.1.0
+        version: 4.1.0
+      '@types/node':
+        specifier: ^22.15.2
+        version: 22.15.26
+      '@vitest/coverage-v8':
+        specifier: ^3.1.1
+        version: 3.1.4(vitest@3.1.4(@edge-runtime/vm@3.2.0)(@types/debug@4.1.12)(@types/node@22.15.26)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.0)(tsx@4.19.2)(yaml@2.8.0))
+      cpy-cli:
+        specifier: ^5.0.0
+        version: 5.0.0
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
+      esbuild-plugin-version-injector:
+        specifier: ^1.2.1
+        version: 1.2.1
+      eslint:
+        specifier: ^9.25.1
+        version: 9.27.0(jiti@2.4.2)
+      eslint-config-neon:
+        specifier: ^0.2.7
+        version: 0.2.7(@typescript-eslint/types@8.33.0)(@typescript-eslint/utils@8.33.0(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3))(eslint-plugin-import@2.31.0)(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3)
+      eslint-formatter-compact:
+        specifier: ^8.40.0
+        version: 8.40.0
+      eslint-formatter-pretty:
+        specifier: ^6.0.1
+        version: 6.0.1
+      prettier:
+        specifier: ^3.5.3
+        version: 3.5.3
+      tsd:
+        specifier: ^0.31.2
+        version: 0.31.2
+      tsup:
+        specifier: ^8.4.0
+        version: 8.5.0(@microsoft/api-extractor@7.52.3(@types/node@22.15.26))(jiti@2.4.2)(postcss@8.5.4)(tsx@4.19.2)(typescript@5.8.3)(yaml@2.8.0)
+      turbo:
+        specifier: ^2.5.2
+        version: 2.5.3
+      typescript:
+        specifier: ~5.8.3
+        version: 5.8.3
+      vitest:
+        specifier: ^3.1.1
+        version: 3.1.4(@edge-runtime/vm@3.2.0)(@types/debug@4.1.12)(@types/node@22.15.26)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.39.0)(tsx@4.19.2)(yaml@2.8.0)
+
   packages/ui:
     dependencies:
       '@react-icons/all-files':
@@ -6463,9 +6530,6 @@ packages:
 
   '@types/estree-jsx@1.0.5':
     resolution: {integrity: sha512-52CcUVNFyfb1A2ALocQw/Dd1BQFNmSdkuC3BkZ6iqhdMfQz7JWOFRuJFloOzjk+6WijU56m9oKXFAXc7o3Towg==}
-
-  '@types/estree@1.0.6':
-    resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
 
   '@types/estree@1.0.7':
     resolution: {integrity: sha512-w28IoSUCJpidD/TGviZwwMJckNESJZXFu7NBZ5YJ4mEUnNraUn9Pm8HSZm/jDF1pDWYKspWE7oVphigUPRakIQ==}
@@ -16759,7 +16823,7 @@ snapshots:
       proc-log: 4.2.0
       promise-inflight: 1.0.1
       promise-retry: 2.0.1
-      semver: 7.7.2
+      semver: 7.6.3
       which: 4.0.0
     transitivePeerDependencies:
       - bluebird
@@ -16781,7 +16845,7 @@ snapshots:
       json-parse-even-better-errors: 3.0.2
       normalize-package-data: 6.0.2
       proc-log: 4.2.0
-      semver: 7.7.2
+      semver: 7.6.3
     transitivePeerDependencies:
       - bluebird
 
@@ -20156,8 +20220,6 @@ snapshots:
     dependencies:
       '@types/estree': 1.0.7
 
-  '@types/estree@1.0.6': {}
-
   '@types/estree@1.0.7': {}
 
   '@types/express-serve-static-core@4.19.6':
@@ -20737,7 +20799,7 @@ snapshots:
 
   '@typescript-eslint/utils@7.18.0(eslint@9.27.0(jiti@2.4.2))(typescript@5.8.3)':
     dependencies:
-      '@eslint-community/eslint-utils': 4.4.1(eslint@9.27.0(jiti@2.4.2))
+      '@eslint-community/eslint-utils': 4.7.0(eslint@9.27.0(jiti@2.4.2))
       '@typescript-eslint/scope-manager': 7.18.0
       '@typescript-eslint/types': 7.18.0
       '@typescript-eslint/typescript-estree': 7.18.0(typescript@5.8.3)
@@ -24333,7 +24395,7 @@ snapshots:
 
   estree-walker@3.0.3:
     dependencies:
-      '@types/estree': 1.0.6
+      '@types/estree': 1.0.7
 
   esutils@2.0.3: {}
 
@@ -27248,7 +27310,7 @@ snapshots:
 
   npm-install-checks@6.3.0:
     dependencies:
-      semver: 7.7.2
+      semver: 7.6.3
 
   npm-normalize-package-bin@3.0.1: {}
 
@@ -27256,7 +27318,7 @@ snapshots:
     dependencies:
       hosted-git-info: 7.0.2
       proc-log: 4.2.0
-      semver: 7.7.2
+      semver: 7.6.3
       validate-npm-package-name: 5.0.1
 
   npm-package-arg@12.0.1:
@@ -27271,7 +27333,7 @@ snapshots:
       npm-install-checks: 6.3.0
       npm-normalize-package-bin: 3.0.1
       npm-package-arg: 11.0.3
-      semver: 7.7.2
+      semver: 7.6.3
 
   npm-registry-fetch@18.0.2:
     dependencies:

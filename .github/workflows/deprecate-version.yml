@@ -17,6 +17,7 @@ on:
           - '@discordjs/next'
           - '@discordjs/proxy'
           - '@discordjs/rest'
+          - '@discordjs/structures'
           - '@discordjs/util'
           - '@discordjs/voice'
           - '@discordjs/ws'
