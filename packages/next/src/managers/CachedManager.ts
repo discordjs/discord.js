@@ -29,9 +29,7 @@ export class CachedManager<Value extends Structure<object> & { get id(): Snowfla
 				return existing;
 			}
 
-			const clone = existing[kClone]();
-			clone[kPatch](data);
-			return clone;
+			return existing[kClone](data);
 		}
 
 		const entry = this.holds ? new this.holds(data, this.client, ...extras) : data;
