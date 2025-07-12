@@ -29,7 +29,7 @@ export class Message<Omitted extends keyof APIMessage | '' = 'edited_timestamp' 
 	}
 
 	/**
-	 * {@inheritDoc Structure._patch}
+	 * {@inheritDoc Structure.[kPatch]}
 	 *
 	 * @internal
 	 */
