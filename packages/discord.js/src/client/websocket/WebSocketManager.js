@@ -19,6 +19,7 @@ const Status = require('../../util/Status');
 const WebSocketShardEvents = require('../../util/WebSocketShardEvents');
 
 let zlib;
+let deprecationEmitted = false;
 
 try {
   zlib = require('zlib-sync');
@@ -379,6 +380,22 @@ class WebSocketManager extends EventEmitter {
     /**
      * Emitted when the client becomes ready to start working.
      * @event Client#ready
+     * @deprecated Use {@link Client#event:clientReady} instead.
+     * @param {Client} client The client
+     */
+    if (this.client.emit('ready', this.client) && !deprecationEmitted) {
+      deprecationEmitted = true;
+
+      process.emitWarning(
+        // eslint-disable-next-line max-len
+        'The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.',
+        'DeprecationWarning',
+      );
+    }
+
+    /**
+     * Emitted when the client becomes ready to start working.
+     * @event Client#clientReady
      * @param {Client} client The client
      */
     this.client.emit(Events.ClientReady, this.client);
