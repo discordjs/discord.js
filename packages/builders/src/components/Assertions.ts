@@ -1,5 +1,5 @@
 import { ButtonStyle, ChannelType, ComponentType, SelectMenuDefaultValueType } from 'discord-api-types/v10';
-import { z } from 'zod/v4';
+import { z } from 'zod';
 import { customIdPredicate } from '../Assertions.js';
 
 const labelPredicate = z.string().min(1).max(80);
