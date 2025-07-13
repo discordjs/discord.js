@@ -387,7 +387,7 @@ class WebSocketManager extends EventEmitter {
       deprecationEmitted = true;
 
       process.emitWarning(
-        'The ready event has been renamed to clientReady. Please use that instead',
+        'The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.',
         'DeprecationWarning',
       );
     }
