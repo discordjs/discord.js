@@ -126,6 +126,7 @@ exports.CommandInteractionOptionResolver = require('./structures/CommandInteract
 exports.Component = require('./structures/Component');
 exports.ContainerComponent = require('./structures/ContainerComponent');
 exports.ContextMenuCommandInteraction = require('./structures/ContextMenuCommandInteraction');
+exports.DirectoryChannel = require('./structures/DirectoryChannel');
 exports.DMChannel = require('./structures/DMChannel');
 exports.Embed = require('./structures/Embed');
 exports.EmbedBuilder = require('./structures/EmbedBuilder');
