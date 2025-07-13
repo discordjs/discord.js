@@ -152,7 +152,6 @@ import type {
   PartialMessageReaction,
   PartialPoll,
   PartialPollAnswer,
-  PartialTextBasedChannelFields,
   PartialThreadMember,
   PartialUser,
   Poll,
@@ -171,6 +170,7 @@ import type {
   SectionComponentData,
   SelectMenuInteraction,
   SendableChannels,
+  SendMethod,
   SeparatorComponentData,
   Serialized,
   Shard,
@@ -184,7 +184,6 @@ import type {
   StringSelectMenuComponent,
   StringSelectMenuComponentData,
   StringSelectMenuInteraction,
-  TextBasedChannelFields,
   TextBasedChannel,
   TextBasedChannelTypes,
   ThreadManager,
@@ -1519,13 +1518,13 @@ expectType<ForumChannel | MediaChannel | null>(threadChannelFromForum.parent);
 expectType<AnnouncementChannel | TextChannel | null>(threadChannelNotFromForum.parent);
 
 // Test whether the structures implement send
-expectType<TextBasedChannelFields<false>['send']>(dmChannel.send);
-expectType<TextBasedChannelFields<true>['send']>(threadChannel.send);
-expectType<TextBasedChannelFields<true>['send']>(announcementChannel.send);
-expectType<TextBasedChannelFields<true>['send']>(textChannel.send);
-expectType<TextBasedChannelFields<true>['send']>(voiceChannel.send);
-expectAssignable<PartialTextBasedChannelFields>(user);
-expectAssignable<PartialTextBasedChannelFields>(guildMember);
+expectType<SendMethod<false>['send']>(dmChannel.send);
+expectType<SendMethod<true>['send']>(threadChannel.send);
+expectType<SendMethod<true>['send']>(announcementChannel.send);
+expectType<SendMethod<true>['send']>(textChannel.send);
+expectType<SendMethod<true>['send']>(voiceChannel.send);
+expectAssignable<SendMethod>(user);
+expectAssignable<SendMethod>(guildMember);
 
 expectType<Promise<AnnouncementChannel>>(textChannel.setType(ChannelType.GuildAnnouncement));
 expectType<Promise<TextChannel>>(announcementChannel.setType(ChannelType.GuildText));

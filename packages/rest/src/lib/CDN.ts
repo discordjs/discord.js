@@ -84,13 +84,35 @@ interface MakeURLOptions {
 }
 
 /**
+ * Options for initializing the {@link CDN} class.
+ */
+export interface CDNOptions {
+	/**
+	 * The base URL for the CDN.
+	 *
+	 * @defaultValue `DefaultRestOptions.cdn`
+	 */
+	cdn?: string | undefined;
+	/**
+	 * The base URL for the media proxy.
+	 *
+	 * @defaultValue `DefaultRestOptions.mediaProxy`
+	 */
+	mediaProxy?: string | undefined;
+}
+
+/**
  * The CDN link builder
  */
 export class CDN {
-	public constructor(
-		private readonly cdn: string = DefaultRestOptions.cdn,
-		private readonly mediaProxy: string = DefaultRestOptions.mediaProxy,
-	) {}
+	private readonly cdn: string;
+
+	private readonly mediaProxy: string;
+
+	public constructor({ cdn, mediaProxy }: CDNOptions = {}) {
+		this.cdn = cdn ?? DefaultRestOptions.cdn;
+		this.mediaProxy = mediaProxy ?? DefaultRestOptions.mediaProxy;
+	}
 
 	/**
 	 * Generates an app asset URL for a client's asset.
