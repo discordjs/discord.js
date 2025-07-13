@@ -255,6 +255,21 @@ exports.StickerFormatExtensionMap = {
 };
 
 /**
+ * Holographic color values for role styling.
+ * When using `tertiaryColor`, the API enforces these specific values for holographic effect.
+ *
+ * @typedef {Object} HolographicStyle
+ * @property {number} Primary 11127295 (0xA9FFFF)
+ * @property {number} Secondary 16759788 (0xFFCCCC)
+ * @property {number} Tertiary 16761760 (0xFFE0A0)
+ */
+exports.HolographicStyle = {
+  Primary: 11_127_295,
+  Secondary: 16_759_788,
+  Tertiary: 16_761_760,
+};
+
+/**
  * @typedef {Object} Constants Constants that can be used in an enum or object-like way.
  * @property {number} MaxBulkDeletableMessageAge Max bulk deletable message age
  * @property {SweeperKey[]} SweeperKeys The possible names of items that can be swept in sweepers
@@ -264,4 +279,5 @@ exports.StickerFormatExtensionMap = {
  * @property {VoiceBasedChannelTypes} VoiceBasedChannelTypes The types of channels that are voice-based
  * @property {SelectMenuTypes} SelectMenuTypes The types of components that are select menus.
  * @property {Object} StickerFormatExtensionMap A mapping between sticker formats and their respective image formats.
+ * @property {HolographicStyle} HolographicStyle Holographic color values for role styling.
  */
