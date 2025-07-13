@@ -351,7 +351,7 @@ class ThreadChannel extends BaseChannel {
   async edit(options) {
     const newData = await this.client.rest.patch(Routes.channel(this.id), {
       body: {
-        name: (options.name ?? this.name).trim(),
+        name: options.name,
         archived: options.archived,
         auto_archive_duration: options.autoArchiveDuration,
         rate_limit_per_user: options.rateLimitPerUser,
