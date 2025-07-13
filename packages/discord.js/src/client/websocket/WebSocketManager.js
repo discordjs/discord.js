@@ -387,6 +387,7 @@ class WebSocketManager extends EventEmitter {
       deprecationEmitted = true;
 
       process.emitWarning(
+        // eslint-disable-next-line max-len
         'The ready event has been renamed to clientReady to distinguish it from the gateway READY event and will only emit under that name in v15. Please use clientReady instead.',
         'DeprecationWarning',
       );
