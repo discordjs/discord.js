@@ -1,6 +1,6 @@
 import { execSync } from 'node:child_process';
 import process from 'node:process';
-import picocolors from 'picocolors';
+import { styleText } from 'node:util';
 import { DEFAULT_PACKAGE_MANAGER, NODE_PACKAGE_MANAGERS } from '../util/constants.js';
 
 /**
@@ -36,7 +36,8 @@ export function resolvePackageManager(): PackageManager {
 	}
 
 	console.error(
-		picocolors.yellow(
+		styleText(
+			'yellow',
 			`Detected an unsupported package manager (${npmConfigUserAgent}). Falling back to ${DEFAULT_PACKAGE_MANAGER}.`,
 		),
 	);

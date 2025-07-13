@@ -245,6 +245,14 @@ export default tseslint.config(
 		},
 	},
 	{
+		files: [`packages/structures/**/*${commonFiles}`],
+		rules: {
+			'@typescript-eslint/no-empty-interface': 0,
+			'@typescript-eslint/no-empty-object-type': 0,
+			'@typescript-eslint/no-unsafe-declaration-merging': 0,
+		},
+	},
+	{
 		files: [`packages/voice/**/*${commonFiles}`],
 		rules: {
 			'no-restricted-globals': 0,
@@ -255,7 +263,7 @@ export default tseslint.config(
 	reactRuleset,
 	jsxa11yRuleset,
 	{
-		files: [`apps/guide/**/*${commonFiles}`, `packages/ui/**/*${commonFiles}`],
+		files: [`packages/ui/**/*${commonFiles}`],
 		plugins: { '@unocss': unocss },
 		rules: {
 			'@unocss/order': 2,

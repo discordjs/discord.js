@@ -284,9 +284,14 @@ export class ChannelsAPI {
 	public async edit(
 		channelId: Snowflake,
 		body: RESTPatchAPIChannelJSONBody,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, signal, reason }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
-		return this.rest.patch(Routes.channel(channelId), { auth, body, signal }) as Promise<RESTPatchAPIChannelResult>;
+		return this.rest.patch(Routes.channel(channelId), {
+			auth,
+			reason,
+			body,
+			signal,
+		}) as Promise<RESTPatchAPIChannelResult>;
 	}
 
 	/**
@@ -296,8 +301,11 @@ export class ChannelsAPI {
 	 * @param channelId - The id of the channel to delete
 	 * @param options - The options for deleting the channel
 	 */
-	public async delete(channelId: Snowflake, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
-		return this.rest.delete(Routes.channel(channelId), { auth, signal }) as Promise<RESTDeleteAPIChannelResult>;
+	public async delete(
+		channelId: Snowflake,
+		{ auth, signal, reason }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
+	) {
+		return this.rest.delete(Routes.channel(channelId), { auth, signal, reason }) as Promise<RESTDeleteAPIChannelResult>;
 	}
 
 	/**
@@ -511,12 +519,13 @@ export class ChannelsAPI {
 		channelId: Snowflake,
 		body: RESTPostAPIChannelThreadsJSONBody,
 		messageId?: Snowflake,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, signal, reason }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
 		return this.rest.post(Routes.threads(channelId, messageId), {
 			auth,
 			body,
 			signal,
+			reason,
 		}) as Promise<RESTPostAPIChannelThreadsResult>;
 	}
 
@@ -531,7 +540,7 @@ export class ChannelsAPI {
 	public async createForumThread(
 		channelId: Snowflake,
 		{ message, ...optionsBody }: StartForumThreadOptions,
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+		{ auth, signal, reason }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
 		const { files, ...messageBody } = message;
 
@@ -540,7 +549,13 @@ export class ChannelsAPI {
 			message: messageBody,
 		};
 
-		return this.rest.post(Routes.threads(channelId), { auth, files, body, signal }) as Promise<APIThreadChannel>;
+		return this.rest.post(Routes.threads(channelId), {
+			auth,
+			files,
+			body,
+			reason,
+			signal,
+		}) as Promise<APIThreadChannel>;
 	}
 
 	/**

@@ -57,6 +57,7 @@
 		"jotai": "^2.12.5",
 		"jotai-immer": "^0.4.1",
 		"lucide-react": "^0.511.0",
+		"mermaid": "^11.7.0",
 		"motion": "^12.15.0",
 		"next": "15.4.0-canary.11",
 		"next-mdx-remote-client": "^2.1.2",
