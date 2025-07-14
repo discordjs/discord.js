@@ -12,6 +12,8 @@ const PermissionsBitField = require('../util/PermissionsBitField');
 const { setPosition, resolveColor } = require('../util/Util');
 
 let cacheWarningEmitted = false;
+let deprecationEmittedForCreate = false;
+let deprecationEmittedForEdit = false;
 
 /**
  * Manages API methods for roles and stores their cache.
@@ -113,10 +115,23 @@ class RoleManager extends CachedManager {
    */
 
   /**
+   * @typedef {Object} RoleColorsResolvable
+   * @property {ColorResolvable} primaryColor The primary color of the role
+   * @property {ColorResolvable} [secondaryColor] The secondary color of the role.
+   * This will make the role a gradient between the other provided colors
+   * @property {ColorResolvable} [tertiaryColor] The tertiary color of the role.
+   * When sending `tertiaryColor` the API enforces the role color to be a holographic style
+   * with values of `primaryColor = 11127295`, `secondaryColor = 16759788`, and `tertiaryColor = 16761760`.
+   * These values are available as a constant: `Constants.HolographicStyle`
+   */
+
+  /**
    * Options used to create a new role.
    * @typedef {Object} RoleCreateOptions
    * @property {string} [name] The name of the new role
    * @property {ColorResolvable} [color] The data to create the role with
+   * <warn>This property is deprecated. Use `colors` instead.</warn>
+   * @property {RoleColorsResolvable} [colors] The colors to create the role with
    * @property {boolean} [hoist] Whether or not the new role should be hoisted
    * @property {PermissionResolvable} [permissions] The permissions for the new role
    * @property {number} [position] The position of the new role
@@ -142,15 +157,30 @@ class RoleManager extends CachedManager {
    * // Create a new role with data and a reason
    * guild.roles.create({
    *   name: 'Super Cool Blue People',
-   *   color: Colors.Blue,
    *   reason: 'we needed a role for Super Cool People',
+   *   colors: {
+   *     primaryColor: Colors.Blue,
+   *   },
+   * })
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Create a role with holographic colors
+   * guild.roles.create({
+   *   name: 'Holographic Role',
+   *   reason: 'Creating a role with holographic effect',
+   *   colors: {
+   *     primaryColor: Constants.HolographicStyle.Primary,
+   *     secondaryColor: Constants.HolographicStyle.Secondary,
+   *     tertiaryColor: Constants.HolographicStyle.Tertiary,
+   *   },
    * })
    *   .then(console.log)
    *   .catch(console.error);
    */
   async create(options = {}) {
-    let { name, color, hoist, permissions, position, mentionable, reason, icon, unicodeEmoji } = options;
-    color &&= resolveColor(color);
+    let { permissions, icon } = options;
+    const { name, color, hoist, position, mentionable, reason, unicodeEmoji } = options;
     if (permissions !== undefined) permissions = new PermissionsBitField(permissions);
     if (icon) {
       const guildEmojiURL = this.guild.emojis.resolve(icon)?.imageURL();
@@ -158,10 +188,30 @@ class RoleManager extends CachedManager {
       if (typeof icon !== 'string') icon = undefined;
     }
 
+    let colors = options.colors && {
+      primary_color: resolveColor(options.colors.primaryColor),
+      secondary_color: options.colors.secondaryColor && resolveColor(options.colors.secondaryColor),
+      tertiary_color: options.colors.tertiaryColor && resolveColor(options.colors.tertiaryColor),
+    };
+
+    if (color !== undefined) {
+      if (!deprecationEmittedForCreate) {
+        process.emitWarning(`Passing "color" to RoleManager#create() is deprecated. Use "colors" instead.`);
+      }
+
+      deprecationEmittedForCreate = true;
+
+      colors = {
+        primary_color: resolveColor(color),
+        secondary_color: null,
+        tertiary_color: null,
+      };
+    }
+
     const data = await this.client.rest.post(Routes.guildRoles(this.guild.id), {
       body: {
         name,
-        color,
+        colors,
         hoist,
         permissions,
         mentionable,
@@ -210,9 +260,29 @@ class RoleManager extends CachedManager {
       if (typeof icon !== 'string') icon = undefined;
     }
 
+    let colors = options.colors && {
+      primary_color: resolveColor(options.colors.primaryColor),
+      secondary_color: options.colors.secondaryColor && resolveColor(options.colors.secondaryColor),
+      tertiary_color: options.colors.tertiaryColor && resolveColor(options.colors.tertiaryColor),
+    };
+
+    if (options.color !== undefined) {
+      if (!deprecationEmittedForEdit) {
+        process.emitWarning(`Passing "color" to RoleManager#edit() is deprecated. Use "colors" instead.`);
+      }
+
+      deprecationEmittedForEdit = true;
+
+      colors = {
+        primary_color: resolveColor(options.color),
+        secondary_color: null,
+        tertiary_color: null,
+      };
+    }
+
     const body = {
       name: options.name,
-      color: options.color === undefined ? undefined : resolveColor(options.color),
+      colors,
       hoist: options.hoist,
       permissions: options.permissions === undefined ? undefined : new PermissionsBitField(options.permissions),
       mentionable: options.mentionable,

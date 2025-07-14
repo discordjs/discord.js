@@ -54,9 +54,35 @@ class Role extends Base {
     if ('color' in data) {
       /**
        * The base 10 color of the role
+       *
        * @type {number}
+       * @deprecated Use {@link Role#colors} instead.
        */
       this.color = data.color;
+    }
+
+    /**
+     * @typedef {Object} RoleColors
+     * @property {number} primaryColor The primary color of the role
+     * @property {?number} secondaryColor The secondary color of the role.
+     * This will make the role a gradient between the other provided colors
+     * @property {?number} tertiaryColor The tertiary color of the role.
+     * When sending `tertiaryColor` the API enforces the role color to be a holographic style
+     * with values of `primaryColor = 11127295`, `secondaryColor = 16759788`, and `tertiaryColor = 16761760`.
+     * These values are available as a constant: `Constants.HolographicStyle`
+     */
+
+    if ('colors' in data) {
+      /**
+       * The colors of the role
+       *
+       * @type {RoleColors}
+       */
+      this.colors = {
+        primaryColor: data.colors.primary_color,
+        secondaryColor: data.colors.secondary_color,
+        tertiaryColor: data.colors.tertiary_color,
+      };
     }
 
     if ('hoist' in data) {
@@ -231,6 +257,8 @@ class Role extends Base {
    * @typedef {Object} RoleData
    * @property {string} [name] The name of the role
    * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number
+   * <warn>This property is deprecated. Use `colors` instead.</warn>
+   * @property {RoleColorsResolvable} [colors] The colors of the role
    * @property {boolean} [hoist] Whether or not the role should be hoisted
    * @property {number} [position] The position of the role
    * @property {PermissionResolvable} [permissions] The permissions of the role
@@ -286,17 +314,39 @@ class Role extends Base {
 
   /**
    * Sets a new color for the role.
+   *
    * @param {ColorResolvable} color The color of the role
    * @param {string} [reason] Reason for changing the role's color
    * @returns {Promise<Role>}
+   * @deprecated Use {@link Role#setColors} instead.
+   */
+  async setColor(color, reason) {
+    return this.edit({ color, reason });
+  }
+
+  /**
+   * Sets new colors for the role.
+   *
+   * @param {RoleColorsResolvable} colors The colors of the role
+   * @param {string} [reason] Reason for changing the role's colors
+   * @returns {Promise<Role>}
    * @example
-   * // Set the color of a role
-   * role.setColor('#FF0000')
-   *   .then(updated => console.log(`Set color of role to ${updated.color}`))
+   * // Set the colors of a role
+   * role.setColors({ primaryColor: '#FF0000', secondaryColor: '#00FF00', tertiaryColor: '#0000FF' })
+   *   .then(updated => console.log(`Set colors of role to ${updated.colors}`))
+   *   .catch(console.error);
+   * @example
+   * // Set holographic colors using constants
+   * role.setColors({
+   *   primaryColor: Constants.HolographicStyle.Primary,
+   *   secondaryColor: Constants.HolographicStyle.Secondary,
+   *   tertiaryColor: Constants.HolographicStyle.Tertiary,
+   * })
+   *   .then(updated => console.log(`Set holographic colors for role ${updated.name}`))
    *   .catch(console.error);
    */
-  setColor(color, reason) {
-    return this.edit({ color, reason });
+  async setColors(colors, reason) {
+    return this.edit({ colors, reason });
   }
 
   /**
@@ -434,7 +484,9 @@ class Role extends Base {
       role &&
       this.id === role.id &&
       this.name === role.name &&
-      this.color === role.color &&
+      this.colors.primaryColor === role.colors.primaryColor &&
+      this.colors.secondaryColor === role.colors.secondaryColor &&
+      this.colors.tertiaryColor === role.colors.tertiaryColor &&
       this.hoist === role.hoist &&
       this.position === role.position &&
       this.permissions.bitfield === role.permissions.bitfield &&
