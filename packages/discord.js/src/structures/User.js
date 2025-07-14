@@ -163,14 +163,14 @@ class User extends Base {
 
     /**
      * @typedef {Object} Collectibles
-     * @property {NameplateData} nameplate The user's nameplate data
+     * @property {?NameplateData} nameplate The user's nameplate data
      */
 
     if (data.collectibles) {
       /**
        * The user's collectibles
        *
-       * @type {Collectibles}
+       * @type {?Collectibles}
        */
       this.collectibles = _transformCollectibles(data.collectibles);
     } else {
