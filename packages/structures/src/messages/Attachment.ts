@@ -6,11 +6,6 @@ import type { Partialize } from '../utils/types.js';
 
 export class Attachment<Omitted extends keyof APIAttachment | '' = ''> extends Structure<APIAttachment, Omitted> {
 	/**
-	 * The template used for removing data from the raw data stored for each Connection
-	 */
-	public static override DataTemplate: Partial<APIAttachment> = {};
-
-	/**
 	 * @param data - The raw data received from the API for the connection
 	 */
 	public constructor(data: Partialize<APIAttachment, Omitted>) {
