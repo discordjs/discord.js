@@ -59,7 +59,7 @@ export interface ImageURLOptions extends BaseImageURLOptions {
 /**
  * The options to use when making a CDN URL
  */
-interface MakeURLOptions {
+export interface MakeURLOptions {
 	/**
 	 * The allowed extensions that can be used
 	 */
