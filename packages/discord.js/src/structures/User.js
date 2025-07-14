@@ -3,6 +3,7 @@
 const { userMention } = require('@discordjs/formatters');
 const { calculateUserDefaultAvatarIndex } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
+const { _transformCollectibles } = require('../util/Transformers.js');
 const { UserFlagsBitField } = require('../util/UserFlagsBitField.js');
 const { Base } = require('./Base.js');
 
@@ -150,6 +151,30 @@ class User extends Base {
       };
     } else {
       this.avatarDecorationData = null;
+    }
+
+    /**
+     * @typedef {Object} NameplateData
+     * @property {Snowflake} skuId The id of the nameplate's SKU
+     * @property {string} asset The nameplate's asset path
+     * @property {string} label The nameplate's label
+     * @property {NameplatePalette} palette Background color of the nameplate
+     */
+
+    /**
+     * @typedef {Object} Collectibles
+     * @property {?NameplateData} nameplate The user's nameplate data
+     */
+
+    if (data.collectibles) {
+      /**
+       * The user's collectibles
+       *
+       * @type {?Collectibles}
+       */
+      this.collectibles = _transformCollectibles(data.collectibles);
+    } else {
+      this.collectibles = null;
     }
   }
 
@@ -338,7 +363,11 @@ class User extends Base {
       this.banner === user.banner &&
       this.accentColor === user.accentColor &&
       this.avatarDecorationData?.asset === user.avatarDecorationData?.asset &&
-      this.avatarDecorationData?.skuId === user.avatarDecorationData?.skuId
+      this.avatarDecorationData?.skuId === user.avatarDecorationData?.skuId &&
+      this.collectibles?.nameplate?.skuId === user.collectibles?.nameplate?.skuId &&
+      this.collectibles?.nameplate?.asset === user.collectibles?.nameplate?.asset &&
+      this.collectibles?.nameplate?.label === user.collectibles?.nameplate?.label &&
+      this.collectibles?.nameplate?.palette === user.collectibles?.nameplate?.palette
     );
   }
 
@@ -363,6 +392,12 @@ class User extends Base {
       ('avatar_decoration_data' in user
         ? this.avatarDecorationData?.asset === user.avatar_decoration_data?.asset &&
           this.avatarDecorationData?.skuId === user.avatar_decoration_data?.sku_id
+        : true) &&
+      ('collectibles' in user
+        ? this.collectibles?.nameplate?.skuId === user.collectibles?.nameplate?.sku_id &&
+          this.collectibles?.nameplate?.asset === user.collectibles?.nameplate?.asset &&
+          this.collectibles?.nameplate?.label === user.collectibles?.nameplate?.label &&
+          this.collectibles?.nameplate?.palette === user.collectibles?.nameplate?.palette
         : true)
     );
   }

@@ -170,6 +170,7 @@ import {
   MessageFlags,
   MessageReferenceType,
   MessageType,
+  NameplatePalette,
   OAuth2Scopes,
   OverwriteType,
   PermissionFlagsBits,
@@ -3509,6 +3510,17 @@ export interface AvatarDecorationData {
   skuId: Snowflake;
 }
 
+export interface NameplateData {
+  asset: string;
+  label: string;
+  palette: NameplatePalette;
+  skuId: Snowflake;
+}
+
+export interface Collectibles {
+  nameplate: NameplateData | null;
+}
+
 export interface UnfurledMediaItemData {
   url: string;
 }
@@ -3531,6 +3543,7 @@ export class User extends Base {
   public bot: boolean;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
+  public collectibles: Collectibles | null;
   public discriminator: string;
   public get displayName(): string;
   public get defaultAvatarURL(): string;
