@@ -129,7 +129,7 @@ class MessageManager extends CachedManager {
    * @typedef {Object} FetchPinnedMessagesOptions
    * @property {DateResolvable} [before] Consider only pinned messages before this time
    * @property {number} [limit] The maximum number of pinned messages to return
-   * @property {boolean} [cache] Whether to cache the pinned fetched messages
+   * @property {boolean} [cache] Whether to cache the pinned messages
    */
 
   /**
