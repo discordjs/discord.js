@@ -551,6 +551,11 @@
  */
 
 /**
+ * @external NameplatePalette
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/NameplatePalette}
+ */
+
+/**
  * @external OAuth2Scopes
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/OAuth2Scopes}
  */

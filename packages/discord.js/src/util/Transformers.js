@@ -95,10 +95,31 @@ function _transformAPIIncidentsData(data) {
   };
 }
 
+/**
+ * Transforms a collectibles object to a camel-cased variant.
+ *
+ * @param {APICollectibles} collectibles The collectibles to transform
+ * @returns {Collectibles}
+ * @ignore
+ */
+function _transformCollectibles(collectibles) {
+  if (!collectibles.nameplate) return { nameplate: null };
+
+  return {
+    nameplate: {
+      skuId: collectibles.nameplate.sku_id,
+      asset: collectibles.nameplate.asset,
+      label: collectibles.nameplate.label,
+      palette: collectibles.nameplate.palette,
+    },
+  };
+}
+
 module.exports = {
   toSnakeCase,
   _transformAPIAutoModerationAction,
   _transformAPIMessageInteractionMetadata,
   _transformGuildScheduledEventRecurrenceRule,
   _transformAPIIncidentsData,
+  _transformCollectibles,
 };
