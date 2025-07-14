@@ -172,8 +172,10 @@ class MessageManager extends CachedManager {
 
     return {
       items: data.items.map(item => ({
-        pinnedAt: new Date(item.pinned_at),
         pinnedTimestamp: Date.parse(item.pinned_at),
+        get pinnedAt() {
+          return new Date(this.pinnedTimestamp);
+        },
         message: this._add(item.message, options.cache),
       })),
       hasMore: data.has_more,
