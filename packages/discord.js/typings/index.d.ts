@@ -3094,6 +3094,7 @@ export interface RoleColorsResolvable {
 
 export class Role extends Base {
   private constructor(client: Client<true>, data: RawRoleData, guild: Guild);
+  /** @deprecated Use {@link Role.colors} instead. */
   public color: number;
   public colors: RoleColors;
   public get createdAt(): Date;
@@ -3123,6 +3124,7 @@ export class Role extends Base {
     channel: NonThreadGuildBasedChannel | Snowflake,
     checkAdmin?: boolean,
   ): Readonly<PermissionsBitField>;
+  /** @deprecated Use {@link Role.setColors} instead. */
   public setColor(color: ColorResolvable, reason?: string): Promise<Role>;
   public setColors(colors: RoleColorsResolvable, reason?: string): Promise<Role>;
   public setHoist(hoist?: boolean, reason?: string): Promise<Role>;
@@ -7391,6 +7393,7 @@ export interface ResolvedOverwriteOptions {
 
 export interface RoleData {
   name?: string;
+  /** @deprecated Use {@link RoleData.colors} instead. */
   color?: ColorResolvable;
   colors?: RoleColorsResolvable;
   hoist?: boolean;

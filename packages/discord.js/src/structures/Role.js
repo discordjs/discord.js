@@ -56,6 +56,7 @@ class Role extends Base {
        * The base 10 color of the role
        *
        * @type {number}
+       * @deprecated Use {@link Role#colors} instead.
        */
       this.color = data.color;
     }
@@ -256,6 +257,7 @@ class Role extends Base {
    * @typedef {Object} RoleData
    * @property {string} [name] The name of the role
    * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number
+   * <warn>This property is deprecated. Use `colors` instead.</warn>
    * @property {RoleColorsResolvable} [colors] The colors of the role
    * @property {boolean} [hoist] Whether or not the role should be hoisted
    * @property {number} [position] The position of the role
@@ -316,11 +318,7 @@ class Role extends Base {
    * @param {ColorResolvable} color The color of the role
    * @param {string} [reason] Reason for changing the role's color
    * @returns {Promise<Role>}
-   * @example
-   * // Set the color of a role
-   * role.setColor('#FF0000')
-   *   .then(updated => console.log(`Set color of role to ${updated.color}`))
-   *   .catch(console.error);
+   * @deprecated Use {@link Role#setColors} instead.
    */
   async setColor(color, reason) {
     return this.edit({ color, reason });

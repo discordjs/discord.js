@@ -12,6 +12,8 @@ const PermissionsBitField = require('../util/PermissionsBitField');
 const { setPosition, resolveColor } = require('../util/Util');
 
 let cacheWarningEmitted = false;
+let deprecationEmittedForCreate = false;
+let deprecationEmittedForEdit = false;
 
 /**
  * Manages API methods for roles and stores their cache.
@@ -128,6 +130,7 @@ class RoleManager extends CachedManager {
    * @typedef {Object} RoleCreateOptions
    * @property {string} [name] The name of the new role
    * @property {ColorResolvable} [color] The data to create the role with
+   * <warn>This property is deprecated. Use `colors` instead.</warn>
    * @property {RoleColorsResolvable} [colors] The colors to create the role with
    * @property {boolean} [hoist] Whether or not the new role should be hoisted
    * @property {PermissionResolvable} [permissions] The permissions for the new role
@@ -176,8 +179,8 @@ class RoleManager extends CachedManager {
    *   .catch(console.error);
    */
   async create(options = {}) {
-    let { permissions, color, icon } = options;
-    const { name, hoist, position, mentionable, reason, unicodeEmoji } = options;
+    let { permissions, icon } = options;
+    const { name, color, hoist, position, mentionable, reason, unicodeEmoji } = options;
     if (permissions !== undefined) permissions = new PermissionsBitField(permissions);
     if (icon) {
       const guildEmojiURL = this.guild.emojis.resolve(icon)?.imageURL();
@@ -185,13 +188,25 @@ class RoleManager extends CachedManager {
       if (typeof icon !== 'string') icon = undefined;
     }
 
-    color &&= resolveColor(color);
-
-    const colors = options.colors && {
+    let colors = options.colors && {
       primary_color: resolveColor(options.colors.primaryColor),
       secondary_color: options.colors.secondaryColor && resolveColor(options.colors.secondaryColor),
       tertiary_color: options.colors.tertiaryColor && resolveColor(options.colors.tertiaryColor),
     };
+
+    if (color !== undefined) {
+      if (!deprecationEmittedForCreate) {
+        process.emitWarning(`Passing "color" to RoleManager#create() is deprecated. Use "colors" instead.`);
+      }
+
+      deprecationEmittedForCreate = true;
+
+      colors = {
+        primary_color: resolveColor(color),
+        secondary_color: null,
+        tertiary_color: null,
+      };
+    }
 
     const data = await this.client.rest.post(Routes.guildRoles(this.guild.id), {
       body: {
@@ -245,15 +260,28 @@ class RoleManager extends CachedManager {
       if (typeof icon !== 'string') icon = undefined;
     }
 
-    const colors = options.colors && {
+    let colors = options.colors && {
       primary_color: resolveColor(options.colors.primaryColor),
       secondary_color: options.colors.secondaryColor && resolveColor(options.colors.secondaryColor),
       tertiary_color: options.colors.tertiaryColor && resolveColor(options.colors.tertiaryColor),
     };
 
+    if (options.color !== undefined) {
+      if (!deprecationEmittedForEdit) {
+        process.emitWarning(`Passing "color" to RoleManager#edit() is deprecated. Use "colors" instead.`);
+      }
+
+      deprecationEmittedForEdit = true;
+
+      colors = {
+        primary_color: resolveColor(options.color),
+        secondary_color: null,
+        tertiary_color: null,
+      };
+    }
+
     const body = {
       name: options.name,
-      color: options.color === undefined ? undefined : resolveColor(options.color),
       colors,
       hoist: options.hoist,
       permissions: options.permissions === undefined ? undefined : new PermissionsBitField(options.permissions),
