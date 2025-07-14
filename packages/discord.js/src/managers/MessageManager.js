@@ -135,7 +135,7 @@ class MessageManager extends CachedManager {
   /**
    * Data returned from fetching pinned messages.
    *
-   * @typedef {FetchedThreads} FetchPinnedMessagesResponse
+   * @typedef {Object} FetchPinnedMessagesResponse
    * @property {MessagePin[]} items The pinned messages
    * @property {boolean} hasMore Whether there are additional pinned messages that require a subsequent call
    */
