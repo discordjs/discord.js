@@ -350,7 +350,7 @@ export class ChannelsAPI {
 	 */
 	public async getPins(
 		channelId: Snowflake,
-		query: RESTGetAPIChannelMessagesPinsQuery,
+		query: RESTGetAPIChannelMessagesPinsQuery = {},
 		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
 		return this.rest.get(Routes.channelMessagesPins(channelId), {
