@@ -54,12 +54,20 @@ test('discoverySplash default', () => {
 	expect(cdn.discoverySplash(id, hash)).toEqual(`${baseCDN}/discovery-splashes/${id}/${hash}.webp`);
 });
 
-test('emoji default', () => {
+test('emoji', () => {
 	expect(cdn.emoji(id)).toEqual(`${baseCDN}/emojis/${id}.webp`);
 });
 
 test('emoji gif', () => {
 	expect(cdn.emoji(id, 'gif')).toEqual(`${baseCDN}/emojis/${id}.gif`);
+});
+
+test('emoji animated', () => {
+	expect(cdn.emoji(id, { animated: true })).toEqual(`${baseCDN}/emojis/${id}.webp?animated=true`);
+});
+
+test('emoji with GIF format', () => {
+	expect(cdn.emoji(id, { extension: 'gif' })).toEqual(`${baseCDN}/emojis/${id}.gif`);
 });
 
 test('guildMemberAvatar default', () => {
