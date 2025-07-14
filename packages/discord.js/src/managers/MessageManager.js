@@ -154,7 +154,7 @@ class MessageManager extends CachedManager {
    * <info>The returned Collection does not contain any reaction data of the messages.
    * Those need to be fetched separately.</info>
    *
-   * @param {FetchPinnedMessagesOptions} [options] Options for fetching pinned messages
+   * @param {FetchPinnedMessagesOptions} [options={}] Options for fetching pinned messages
    * @returns {Promise<FetchPinnedMessagesResponse>}
    * @example
    * // Get pinned messages
