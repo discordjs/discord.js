@@ -5802,6 +5802,7 @@ export interface FetchMessagesOptions {
 
 export interface FetchPinnedMessagesOptions {
   before?: DateResolvable;
+  cache?: boolean;
   limit?: number;
 }
 
