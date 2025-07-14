@@ -135,7 +135,6 @@ test('soundboardSound', () => {
 });
 
 test('makeURL throws on invalid size', () => {
-	// @ts-expect-error: Invalid size
 	expect(() => cdn.avatar(id, animatedHash, { size: 5 })).toThrow(RangeError);
 });
 
