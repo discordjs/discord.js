@@ -812,6 +812,7 @@ class Message extends Base {
     return Boolean(
       channel?.type === ChannelType.GuildAnnouncement &&
         !this.flags.has(MessageFlags.Crossposted) &&
+        this.reference?.type !== MessageReferenceType.Forward &&
         this.type === MessageType.Default &&
         !this.poll &&
         channel.viewable &&
