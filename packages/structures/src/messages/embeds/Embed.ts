@@ -1,9 +1,7 @@
 import type { APIEmbed } from 'discord-api-types/v10';
-import { Structure } from '../Structure.js';
-import { kData } from '../utils/symbols.js';
-import type { Partialize } from '../utils/types.js';
-
-// TODO: implement the needed substructures
+import { Structure } from '../../Structure.js';
+import { kData } from '../../utils/symbols.js';
+import type { Partialize } from '../../utils/types.js';
 
 /**
  * Represents an embed on a message.
