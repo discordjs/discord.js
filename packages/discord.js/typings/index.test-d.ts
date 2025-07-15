@@ -231,6 +231,7 @@ import {
   FileComponentData,
   ContainerComponentData,
   InteractionResponse,
+  FetchPinnedMessagesResponse,
 } from '.';
 import {
   expectAssignable,
@@ -1690,6 +1691,7 @@ declare const guildChannelManager: GuildChannelManager;
     expectType<Promise<Message<true>>>(messages.edit('1234567890', 'text'));
     expectType<Promise<Message<true>>>(messages.fetch('1234567890'));
     expectType<Promise<Collection<Snowflake, Message<true>>>>(messages.fetchPinned());
+    expectType<Promise<FetchPinnedMessagesResponse<true>>>(messages.fetchPins());
     expectType<Guild>(message.guild);
     expectType<Snowflake>(message.guildId);
     expectType<GuildTextBasedChannel>(message.channel.messages.channel);
@@ -1703,6 +1705,7 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<Promise<Message>>(messages.edit('1234567890', 'text'));
   expectType<Promise<Message>>(messages.fetch('1234567890'));
   expectType<Promise<Collection<Snowflake, Message>>>(messages.fetchPinned());
+  expectType<Promise<FetchPinnedMessagesResponse>>(messages.fetchPins());
   expectType<Guild | null>(message.guild);
   expectType<Snowflake | null>(message.guildId);
   expectType<DMChannel | PartialGroupDMChannel | GuildTextBasedChannel>(message.channel.messages.channel);
