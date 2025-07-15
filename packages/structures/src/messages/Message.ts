@@ -1,12 +1,19 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import type { APIMessage, MessageFlags } from 'discord-api-types/v10';
+import { MessageReferenceType, type APIMessage, type MessageFlags } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { MessageFlagsBitField } from '../bitfields/MessageFlagsBitField.js';
 import { kData, kEditedTimestamp } from '../utils/symbols.js';
 import { isIdSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
 
-// TODO: missing substructures: interaction_metadata, message_reference, message_snapshots, poll, reactions, resolved(?), role_subscriptions_data, sticker_items,
+// TODO: missing substructures: message_reference, message_snapshots, poll, reactions, resolved(?), role_subscriptions_data, sticker_items,
+
+export interface MessageReference {
+	channelId: string | null;
+	guildId: string | null;
+	messageId: string | null;
+	type: MessageReferenceType;
+}
 
 /**
  * Represents a message on Discord.
@@ -54,6 +61,9 @@ export class Message<Omitted extends keyof APIMessage | '' = 'edited_timestamp' 
 		return this[kData].id;
 	}
 
+	/**
+	 * The id of the interaction's application, if this message is a reply to an interaction
+	 */
 	public get applicationId() {
 		return this[kData].application_id;
 	}
@@ -102,6 +112,9 @@ export class Message<Omitted extends keyof APIMessage | '' = 'edited_timestamp' 
 		return editedTimestamp ? new Date(editedTimestamp) : null;
 	}
 
+	/**
+	 * The flags of this message as a bit field
+	 */
 	public get flags() {
 		const flags = this[kData].flags;
 		return flags ? new MessageFlagsBitField(this[kData].flags as MessageFlags) : null;
@@ -129,6 +142,31 @@ export class Message<Omitted extends keyof APIMessage | '' = 'edited_timestamp' 
 	 */
 	public get position() {
 		return this[kData].position;
+	}
+
+	public get messageReference(): MessageReference | null {
+		if (typeof this[kData].message_reference === 'object' && this[kData].message_reference !== null) {
+			return {
+				type:
+					'type' in this[kData].message_reference
+						? (this[kData].message_reference.type as MessageReferenceType)
+						: MessageReferenceType.Default,
+				messageId:
+					'message_id' in this[kData].message_reference && typeof this[kData].message_reference.message_id === 'string'
+						? this[kData].message_reference.message_id
+						: null,
+				channelId:
+					'channel_id' in this[kData].message_reference && typeof this[kData].message_reference.channel_id === 'string'
+						? this[kData].message_reference.channel_id
+						: null,
+				guildId:
+					'guild_id' in this[kData].message_reference && typeof this[kData].message_reference.guild_id === 'string'
+						? this[kData].message_reference.guild_id
+						: null,
+			};
+		}
+
+		return null;
 	}
 
 	/**
