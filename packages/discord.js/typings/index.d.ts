@@ -5813,7 +5813,7 @@ export interface FetchPinnedMessagesResponse<InGuild extends boolean = boolean> 
 
 export interface MessagePin<InGuild extends boolean = boolean> {
   message: Message<InGuild>;
-  pinnedAt: Date;
+  get pinnedAt(): Date;
   pinnedTimestamp: number;
 }
 
