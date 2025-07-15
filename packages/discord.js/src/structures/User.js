@@ -140,20 +140,24 @@ class User extends Base {
      */
 
     if ('avatar_decoration_data' in data) {
-      /**
-       * The user avatar decoration's data
-       *
-       * @type {?AvatarDecorationData}
-       */
-      this.avatarDecorationData = {
-        asset: data.avatar_decoration_data?.asset,
-        skuId: data.avatar_decoration_data?.sku_id,
-      };
+      if (data.avatar_decoration_data) {
+        /**
+         * The user avatar decoration's data
+         *
+         * @type {?AvatarDecorationData}
+         */
+        this.avatarDecorationData = {
+          asset: data.avatar_decoration_data.asset,
+          skuId: data.avatar_decoration_data.sku_id,
+        };
+      } else {
+        this.avatarDecorationData = null;
+      }
     } else {
       this.avatarDecorationData ??= null;
     }
-    
-   /**
+
+    /**
      * @typedef {Object} NameplateData
      * @property {Snowflake} skuId The id of the nameplate's SKU
      * @property {string} asset The nameplate's asset path
@@ -186,17 +190,21 @@ class User extends Base {
      */
 
     if ('primary_guild' in data) {
-      /**
-       * The primary guild of the user
-       *
-       * @type {?UserPrimaryGuild}
-       */
-      this.primaryGuild = {
-        identityGuildId: data.primary_guild?.identity_guild_id,
-        identityEnabled: data.primary_guild?.identity_enabled,
-        tag: data.primary_guild?.tag,
-        badge: data.primary_guild?.badge,
-      };
+      if (data.primary_guild) {
+        /**
+         * The primary guild of the user
+         *
+         * @type {?UserPrimaryGuild}
+         */
+        this.primaryGuild = {
+          identityGuildId: data.primary_guild.identity_guild_id,
+          identityEnabled: data.primary_guild.identity_enabled,
+          tag: data.primary_guild.tag,
+          badge: data.primary_guild.badge,
+        };
+      } else {
+        this.primaryGuild = null;
+      }
     } else {
       this.primaryGuild ??= null;
     }
@@ -444,7 +452,7 @@ class User extends Base {
           this.primaryGuild?.identityEnabled === user.primary_guild?.identity_enabled &&
           this.primaryGuild?.tag === user.primary_guild?.tag &&
           this.primaryGuild?.badge === user.primary_guild?.badge
-       : true)
+        : true)
     );
   }
 
