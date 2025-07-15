@@ -183,10 +183,10 @@ class User extends Base {
 
     /**
      * @typedef {Object} UserPrimaryGuild
-     * @property {?Snowflake} identityGuildId - The id of the user's primary guild
-     * @property {?boolean} identityEnabled - Whether the user is displaying the primary guild's tag
-     * @property {?string} tag - The user's guild tag. Limited to 4 characters
-     * @property {?string} badge - The guild tag badge hash
+     * @property {?Snowflake} identityGuildId The id of the user's primary guild
+     * @property {?boolean} identityEnabled Whether the user is displaying the primary guild's tag
+     * @property {?string} tag The user's guild tag. Limited to 4 characters
+     * @property {?string} badge The guild tag badge hash
      */
 
     if ('primary_guild' in data) {
