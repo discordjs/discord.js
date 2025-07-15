@@ -1,0 +1,98 @@
+---
+title: Audit Logs
+---
+
+## Working with Audit Logs
+
+### A Quick Background
+
+Audit logs are an excellent moderation tool offered by Discord to know what happened in a server and usually by whom. Making use of audit logs requires the `ViewAuditLog` permission. Audit logs may be fetched on a server, or they may be received via the gateway event `guildAuditLogEntryCreate` which requires the `GuildModeration` intent.
+
+There are quite a few cases where you may use audit logs. This guide will limit itself to the most common use cases. Feel free to consult the [relevant Discord API page](https://discord.com/developers/docs/resources/audit-log) for more information.
+
+Keep in mind that these examples explore a straightforward case and are by no means exhaustive. Their purpose is to teach you how audit logs work, and expansion of these examples is likely needed to suit your specific use case.
+
+## Fetching Audit Logs
+
+Let's start by glancing at the `Guild#fetchAuditLogs` method and how to work with it. Like many discord.js methods, it returns a [`Promise`](../additional-info/async-await) containing the `GuildAuditLogs` object. This object has one property, `entries`, which holds a [`Collection`](../additional-info/collections) of `GuildAuditLogsEntry` objects, and consequently, the information you want to retrieve.
+
+Here is the most basic fetch to look at some entries.
+
+```js
+const fetchedLogs = await guild.fetchAuditLogs();
+const firstEntry = fetchedLogs.entries.first();
+```
+
+Simple, right? Now, let's look at utilizing its options:
+
+```js
+const { AuditLogEvent } = require('discord.js');
+
+const fetchedLogs = await guild.fetchAuditLogs({
+	type: AuditLogEvent.InviteCreate,
+	limit: 1,
+});
+
+const firstEntry = fetchedLogs.entries.first();
+```
+
+This will return the first entry where an invite was created. You used `limit: 1` here to specify only one entry.
+
+## Receiving Audit Logs
+
+Audit logs may be received via the gateway event `guildAuditLogEntryCreate`. This is the best way to receive audit logs if you want to monitor them. As soon as a message is deleted, or an invite or emoji is created, your application will receive an instance of this event. A common use case is to find out _who_ did the action that caused the audit log event to happen.
+
+### Who deleted a message?
+
+One of the most common use cases for audit logs is understanding who deleted a message in a Discord server. If a user deleted another user's message, you can find out who did that as soon as you receive the corresponding audit log event.
+
+```js
+const { AuditLogEvent, Events } = require('discord.js');
+
+client.on(Events.GuildAuditLogEntryCreate, async (auditLog) => {
+	// Define your variables.
+	// The extra information here will be the channel.
+	const { action, extra: channel, executorId, targetId } = auditLog;
+
+	// Check only for deleted messages.
+	if (action !== AuditLogEvent.MessageDelete) return;
+
+	// Ensure the executor is cached.
+	const executor = await client.users.fetch(executorId);
+
+	// Ensure the author whose message was deleted is cached.
+	const target = await client.users.fetch(targetId);
+
+	// Log the output.
+	console.log(`A message by ${target.tag} was deleted by ${executor.tag} in ${channel}.`);
+});
+```
+
+With this, you now have a very simple logger telling you who deleted a message authored by another person.
+
+### Who kicked a user?
+
+This is very similar to the example above.
+
+```js
+const { AuditLogEvent, Events } = require('discord.js');
+
+client.on(Events.GuildAuditLogEntryCreate, async (auditLog) => {
+	// Define your variables.
+	const { action, executorId, targetId } = auditLog;
+
+	// Check only for kicked users.
+	if (action !== AuditLogEvent.MemberKick) return;
+
+	// Ensure the executor is cached.
+	const executor = await client.users.fetch(executorId);
+
+	// Ensure the kicked guild member is cached.
+	const kickedUser = await client.users.fetch(targetId);
+
+	// Now you can log the output!
+	console.log(`${kickedUser.tag} was kicked by ${executor.tag}.`);
+});
+```
+
+If you want to check who banned a user, it's the same example as above except the `action` should be `AuditLogEvent.MemberBanAdd`. You can check the rest of the types over at the [discord-api-types documentation](https://discord-api-types.dev/api/discord-api-types-v10/enum/AuditLogEvent).

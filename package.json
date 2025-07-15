@@ -55,28 +55,28 @@
 		"@favware/cliff-jumper": "^4.1.0",
 		"@favware/npm-deprecate": "^2.0.0",
 		"@types/lodash.merge": "^4.6.9",
-		"@unocss/eslint-plugin": "^0.65.3",
-		"@vitest/coverage-v8": "^3.1.4",
+		"@unocss/eslint-plugin": "^66.3.3",
+		"@vitest/coverage-v8": "^3.2.4",
 		"conventional-changelog-cli": "^5.0.0",
-		"eslint": "^9.27.0",
+		"eslint": "^9.30.1",
 		"eslint-config-neon": "^0.2.7",
-		"eslint-import-resolver-typescript": "^4.4.1",
+		"eslint-import-resolver-typescript": "^4.4.4",
 		"eslint-plugin-react-compiler": "19.1.0-rc.2",
 		"husky": "^9.1.7",
 		"is-ci": "^4.1.0",
-		"lint-staged": "^16.1.0",
+		"lint-staged": "^16.1.2",
 		"lodash.merge": "^4.6.2",
-		"prettier": "^3.5.3",
+		"prettier": "^3.6.2",
 		"tsup": "^8.5.0",
-		"turbo": "^2.5.3",
+		"turbo": "^2.5.4",
 		"typescript": "~5.8.3",
-		"typescript-eslint": "^8.33.0",
-		"unocss": "^0.65.3",
-		"vercel": "^42.2.0",
-		"vitest": "^3.1.4"
+		"typescript-eslint": "^8.36.0",
+		"unocss": "^66.3.3",
+		"vercel": "^44.4.1",
+		"vitest": "^3.2.4"
 	},
 	"engines": {
 		"node": ">=22.12.0"
 	},
-	"packageManager": "pnpm@10.9.0"
+	"packageManager": "pnpm@10.12.4"
 }

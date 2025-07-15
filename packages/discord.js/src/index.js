@@ -144,6 +144,7 @@ exports.Component = require('./structures/Component.js').Component;
 exports.ContainerComponent = require('./structures/ContainerComponent.js').ContainerComponent;
 exports.ContextMenuCommandInteraction =
   require('./structures/ContextMenuCommandInteraction.js').ContextMenuCommandInteraction;
+exports.DirectoryChannel = require('./structures/DirectoryChannel.js').DirectoryChannel;
 exports.DMChannel = require('./structures/DMChannel.js').DMChannel;
 exports.Embed = require('./structures/Embed.js').Embed;
 exports.Emoji = require('./structures/Emoji.js').Emoji;
