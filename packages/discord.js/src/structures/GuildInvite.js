@@ -17,7 +17,7 @@ class GuildInvite extends BaseInvite {
     super(client, data);
 
     // Type may be missing from audit logs.
-    this.type ??= InviteType.Guild;
+    this.type = InviteType.Guild;
 
     /**
      * The id of the guild this invite is for.
