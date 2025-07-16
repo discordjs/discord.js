@@ -2,7 +2,14 @@ import { ApplicationCommandType, ApplicationIntegrationType, InteractionContextT
 import { z } from 'zod';
 import { localeMapPredicate, memberPermissionsPredicate } from '../../../Assertions.js';
 
-const namePredicate = z.string().min(1).max(32);
+const namePredicate = z
+	.string()
+	.min(1)
+	.max(32)
+	.refine((val) => val.trim().length > 0, {
+		error: 'Must not consist of only whitespace.',
+	});
+
 const contextsPredicate = z.array(z.enum(InteractionContextType));
 const integrationTypesPredicate = z.array(z.enum(ApplicationIntegrationType));
 
