@@ -4522,7 +4522,7 @@ export abstract class MessageManager<InGuild extends boolean = boolean> extends 
   ): Promise<Message<InGuild>>;
   public fetch(options: FetchMessageOptions | MessageResolvable): Promise<Message<InGuild>>;
   public fetch(options?: FetchMessagesOptions): Promise<Collection<Snowflake, Message<InGuild>>>;
-  public fetchPinned(cache?: boolean): Promise<Collection<Snowflake, Message<InGuild>>>;
+  public fetchPins(options?: FetchPinnedMessagesOptions): Promise<FetchPinnedMessagesResponse<InGuild>>;
   public react(message: MessageResolvable, emoji: EmojiIdentifierResolvable): Promise<void>;
   public pin(message: MessageResolvable, reason?: string): Promise<void>;
   public unpin(message: MessageResolvable, reason?: string): Promise<void>;
@@ -5804,6 +5804,23 @@ export interface FetchMessagesOptions {
   before?: Snowflake;
   cache?: boolean;
   limit?: number;
+}
+
+export interface FetchPinnedMessagesOptions {
+  before?: DateResolvable;
+  cache?: boolean;
+  limit?: number;
+}
+
+export interface FetchPinnedMessagesResponse<InGuild extends boolean = boolean> {
+  hasMore: boolean;
+  items: readonly MessagePin<InGuild>[];
+}
+
+export interface MessagePin<InGuild extends boolean = boolean> {
+  message: Message<InGuild>;
+  get pinnedAt(): Date;
+  pinnedTimestamp: number;
 }
 
 export interface FetchReactionUsersOptions {

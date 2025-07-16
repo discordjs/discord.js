@@ -99,6 +99,7 @@ import type {
   Entitlement,
   FetchedThreads,
   FetchedThreadsMore,
+  FetchPinnedMessagesResponse,
   FileComponentData,
   ForumChannel,
   Guild,
@@ -1756,7 +1757,7 @@ declare const guildChannelManager: GuildChannelManager;
     expectType<Promise<Message<true>>>(messages.crosspost('1234567890'));
     expectType<Promise<Message<true>>>(messages.edit('1234567890', 'text'));
     expectType<Promise<Message<true>>>(messages.fetch('1234567890'));
-    expectType<Promise<Collection<Snowflake, Message<true>>>>(messages.fetchPinned());
+    expectType<Promise<FetchPinnedMessagesResponse<true>>>(messages.fetchPins());
     expectType<Guild>(message.guild);
     expectType<Snowflake>(message.guildId);
     expectType<GuildTextBasedChannel>(message.channel.messages.channel);
@@ -1769,7 +1770,7 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<DMMessageManager>(messages);
   expectType<Promise<Message>>(messages.edit('1234567890', 'text'));
   expectType<Promise<Message>>(messages.fetch('1234567890'));
-  expectType<Promise<Collection<Snowflake, Message>>>(messages.fetchPinned());
+  expectType<Promise<FetchPinnedMessagesResponse>>(messages.fetchPins());
   expectType<Guild | null>(message.guild);
   expectType<Snowflake | null>(message.guildId);
   expectType<DMChannel | GuildTextBasedChannel | PartialGroupDMChannel>(message.channel.messages.channel);
