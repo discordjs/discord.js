@@ -341,6 +341,17 @@ export class CDN {
 	}
 
 	/**
+	 * Generates a URL for a guild tag badge.
+	 *
+	 * @param guildId - The guild id
+	 * @param badgeHash - The hash of the badge
+	 * @param options - Optional options for the badge
+	 */
+	public guildTagBadge(guildId: string, badgeHash: string, options?: Readonly<BaseImageURLOptions>): string {
+		return this.makeURL(`/guild-tag-badges/${guildId}/${badgeHash}`, options);
+	}
+
+	/**
 	 * Constructs the URL for the resource, checking whether or not `hash` starts with `a_` if `dynamic` is set to `true`.
 	 *
 	 * @param route - The base cdn route
