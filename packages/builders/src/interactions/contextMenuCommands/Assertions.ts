@@ -7,7 +7,7 @@ const namePredicate = s
 	.string()
 	.lengthGreaterThanOrEqual(1)
 	.lengthLessThanOrEqual(32)
-	.regex(/.*\S.*/)
+	.regex(/\S/)
 	.setValidationEnabled(isValidationEnabled);
 const typePredicate = s
 	.union([s.literal(ApplicationCommandType.User), s.literal(ApplicationCommandType.Message)])
