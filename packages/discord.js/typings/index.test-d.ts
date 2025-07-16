@@ -99,6 +99,7 @@ import type {
   Entitlement,
   FetchedThreads,
   FetchedThreadsMore,
+  FetchPinnedMessagesResponse,
   FileComponentData,
   ForumChannel,
   Guild,
@@ -152,7 +153,6 @@ import type {
   PartialMessageReaction,
   PartialPoll,
   PartialPollAnswer,
-  PartialTextBasedChannelFields,
   PartialThreadMember,
   PartialUser,
   Poll,
@@ -171,6 +171,7 @@ import type {
   SectionComponentData,
   SelectMenuInteraction,
   SendableChannels,
+  SendMethod,
   SeparatorComponentData,
   Serialized,
   Shard,
@@ -184,7 +185,6 @@ import type {
   StringSelectMenuComponent,
   StringSelectMenuComponentData,
   StringSelectMenuInteraction,
-  TextBasedChannelFields,
   TextBasedChannel,
   TextBasedChannelTypes,
   ThreadManager,
@@ -1532,13 +1532,13 @@ expectType<ForumChannel | MediaChannel | null>(threadChannelFromForum.parent);
 expectType<AnnouncementChannel | TextChannel | null>(threadChannelNotFromForum.parent);
 
 // Test whether the structures implement send
-expectType<TextBasedChannelFields<false>['send']>(dmChannel.send);
-expectType<TextBasedChannelFields<true>['send']>(threadChannel.send);
-expectType<TextBasedChannelFields<true>['send']>(announcementChannel.send);
-expectType<TextBasedChannelFields<true>['send']>(textChannel.send);
-expectType<TextBasedChannelFields<true>['send']>(voiceChannel.send);
-expectAssignable<PartialTextBasedChannelFields>(user);
-expectAssignable<PartialTextBasedChannelFields>(guildMember);
+expectType<SendMethod<false>['send']>(dmChannel.send);
+expectType<SendMethod<true>['send']>(threadChannel.send);
+expectType<SendMethod<true>['send']>(announcementChannel.send);
+expectType<SendMethod<true>['send']>(textChannel.send);
+expectType<SendMethod<true>['send']>(voiceChannel.send);
+expectAssignable<SendMethod>(user);
+expectAssignable<SendMethod>(guildMember);
 
 expectType<Promise<AnnouncementChannel>>(textChannel.setType(ChannelType.GuildAnnouncement));
 expectType<Promise<TextChannel>>(announcementChannel.setType(ChannelType.GuildText));
@@ -1770,7 +1770,7 @@ declare const guildChannelManager: GuildChannelManager;
     expectType<Promise<Message<true>>>(messages.crosspost('1234567890'));
     expectType<Promise<Message<true>>>(messages.edit('1234567890', 'text'));
     expectType<Promise<Message<true>>>(messages.fetch('1234567890'));
-    expectType<Promise<Collection<Snowflake, Message<true>>>>(messages.fetchPinned());
+    expectType<Promise<FetchPinnedMessagesResponse<true>>>(messages.fetchPins());
     expectType<Guild>(message.guild);
     expectType<Snowflake>(message.guildId);
     expectType<GuildTextBasedChannel>(message.channel.messages.channel);
@@ -1783,7 +1783,7 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<DMMessageManager>(messages);
   expectType<Promise<Message>>(messages.edit('1234567890', 'text'));
   expectType<Promise<Message>>(messages.fetch('1234567890'));
-  expectType<Promise<Collection<Snowflake, Message>>>(messages.fetchPinned());
+  expectType<Promise<FetchPinnedMessagesResponse>>(messages.fetchPins());
   expectType<Guild | null>(message.guild);
   expectType<Snowflake | null>(message.guildId);
   expectType<DMChannel | GuildTextBasedChannel | PartialGroupDMChannel>(message.channel.messages.channel);

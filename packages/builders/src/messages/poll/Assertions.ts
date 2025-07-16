@@ -16,5 +16,5 @@ export const pollPredicate = z.object({
 	answers: z.array(pollAnswerPredicate).min(1).max(10),
 	duration: z.number().min(1).max(768).optional(),
 	allow_multiselect: z.boolean().optional(),
-	layout_type: z.nativeEnum(PollLayoutType).optional(),
+	layout_type: z.enum(PollLayoutType).optional(),
 });

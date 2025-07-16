@@ -17,7 +17,7 @@ export const attachmentPredicate = z.object({
 
 export const allowedMentionPredicate = z
 	.object({
-		parse: z.nativeEnum(AllowedMentionsTypes).array().optional(),
+		parse: z.enum(AllowedMentionsTypes).array().optional(),
 		roles: z.string().array().max(100).optional(),
 		users: z.string().array().max(100).optional(),
 		replied_user: z.boolean().optional(),
@@ -29,7 +29,7 @@ export const allowedMentionPredicate = z
 				(data.parse?.includes(AllowedMentionsTypes.Role) && data.roles?.length)
 			),
 		{
-			message:
+			error:
 				'Cannot specify both parse: ["users"] and non-empty users array, or parse: ["roles"] and non-empty roles array. These are mutually exclusive',
 		},
 	);
@@ -39,7 +39,7 @@ export const messageReferencePredicate = z.object({
 	fail_if_not_exists: z.boolean().optional(),
 	guild_id: z.string().optional(),
 	message_id: z.string(),
-	type: z.nativeEnum(MessageReferenceType).optional(),
+	type: z.enum(MessageReferenceType).optional(),
 });
 
 const baseMessagePredicate = z.object({
@@ -55,13 +55,13 @@ const basicActionRowPredicate = z.object({
 	type: z.literal(ComponentType.ActionRow),
 	components: z
 		.object({
-			type: z.union([
-				z.literal(ComponentType.Button),
-				z.literal(ComponentType.ChannelSelect),
-				z.literal(ComponentType.MentionableSelect),
-				z.literal(ComponentType.RoleSelect),
-				z.literal(ComponentType.StringSelect),
-				z.literal(ComponentType.UserSelect),
+			type: z.literal([
+				ComponentType.Button,
+				ComponentType.ChannelSelect,
+				ComponentType.MentionableSelect,
+				ComponentType.RoleSelect,
+				ComponentType.StringSelect,
+				ComponentType.UserSelect,
 			]),
 		})
 		.array(),
@@ -75,15 +75,10 @@ const messageNoComponentsV2Predicate = baseMessagePredicate
 		poll: pollPredicate.optional(),
 		components: basicActionRowPredicate.array().max(5).optional(),
 		flags: z
-			.number()
+			.int()
 			.optional()
-			.refine((flags) => {
-				// If we have flags, ensure we don't have the ComponentsV2 flag
-				if (flags) {
-					return (flags & MessageFlags.IsComponentsV2) === 0;
-				}
-
-				return true;
+			.refine((flags) => !flags || (flags & MessageFlags.IsComponentsV2) === 0, {
+				error: 'Cannot set content, embeds, stickers, or poll with IsComponentsV2 flag set',
 			}),
 	})
 	.refine(
@@ -94,22 +89,22 @@ const messageNoComponentsV2Predicate = baseMessagePredicate
 			(data.attachments !== undefined && data.attachments.length > 0) ||
 			(data.components !== undefined && data.components.length > 0) ||
 			(data.sticker_ids !== undefined && data.sticker_ids.length > 0),
-		{ message: 'Messages must have content, embeds, a poll, attachments, components or stickers' },
+		{ error: 'Messages must have content, embeds, a poll, attachments, components or stickers' },
 	);
 
 const allTopLevelComponentsPredicate = z
 	.union([
 		basicActionRowPredicate,
 		z.object({
-			type: z.union([
+			type: z.literal([
 				// Components v2
-				z.literal(ComponentType.Container),
-				z.literal(ComponentType.File),
-				z.literal(ComponentType.MediaGallery),
-				z.literal(ComponentType.Section),
-				z.literal(ComponentType.Separator),
-				z.literal(ComponentType.TextDisplay),
-				z.literal(ComponentType.Thumbnail),
+				ComponentType.Container,
+				ComponentType.File,
+				ComponentType.MediaGallery,
+				ComponentType.Section,
+				ComponentType.Separator,
+				ComponentType.TextDisplay,
+				ComponentType.Thumbnail,
 			]),
 		}),
 	])
@@ -119,7 +114,9 @@ const allTopLevelComponentsPredicate = z
 
 const messageComponentsV2Predicate = baseMessagePredicate.extend({
 	components: allTopLevelComponentsPredicate,
-	flags: z.number().refine((flags) => (flags & MessageFlags.IsComponentsV2) === MessageFlags.IsComponentsV2),
+	flags: z.int().refine((flags) => (flags & MessageFlags.IsComponentsV2) === MessageFlags.IsComponentsV2, {
+		error: 'Must set IsComponentsV2 flag to use Components V2',
+	}),
 	// These fields cannot be set
 	content: z.string().length(0).nullish(),
 	embeds: z.array(z.never()).nullish(),

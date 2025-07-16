@@ -24,7 +24,7 @@ export abstract class ApplicationCommandOptionBase
 	/**
 	 * @internal
 	 */
-	protected static readonly predicate: z.ZodTypeAny = basicOptionPredicate;
+	protected static readonly predicate: z.ZodType = basicOptionPredicate;
 
 	/**
 	 * @internal
