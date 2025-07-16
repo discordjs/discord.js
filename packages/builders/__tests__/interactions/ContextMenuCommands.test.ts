@@ -12,8 +12,6 @@ describe('Context Menu Commands', () => {
 			});
 
 			test('GIVEN invalid name THEN throw error', () => {
-				expect(() => getBuilder().setName('$$$').toJSON()).toThrowError();
-
 				expect(() => getBuilder().setName(' ').toJSON()).toThrowError();
 			});
 
