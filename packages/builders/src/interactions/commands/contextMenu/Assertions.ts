@@ -2,12 +2,7 @@ import { ApplicationCommandType, ApplicationIntegrationType, InteractionContextT
 import { z } from 'zod';
 import { localeMapPredicate, memberPermissionsPredicate } from '../../../Assertions.js';
 
-const namePredicate = z
-	.string()
-	.min(1)
-	.max(32)
-	.regex(/^(?:(?: *[\p{P}\p{L}\p{N}\p{sc=Devanagari}\p{sc=Thai}\p{Extended_Pictographic}\p{Emoji_Component}]) *)+$/u);
-
+const namePredicate = z.string().min(1).max(32);
 const contextsPredicate = z.array(z.enum(InteractionContextType));
 const integrationTypesPredicate = z.array(z.enum(ApplicationIntegrationType));
 
