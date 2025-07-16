@@ -2255,8 +2255,8 @@ export class Invite extends Base {
   public inviterId: Snowflake | null;
   public maxAge: number | null;
   public maxUses: number | null;
-  public memberCount: number;
-  public presenceCount: number;
+  public memberCount: number | null;
+  public presenceCount: number | null;
   public targetApplication: IntegrationApplication | null;
   public targetUser: User | null;
   public targetType: InviteTargetType | null;
