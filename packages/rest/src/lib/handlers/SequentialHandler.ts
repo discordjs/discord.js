@@ -158,9 +158,10 @@ export class SequentialHandler implements IHandler {
 				const wait = queue.wait();
 				this.#asyncQueue.shift();
 				await wait;
+			} else if (this.#sublimitPromise) {
+				// Stall requests while the sublimit queue gets processed
+				await this.#sublimitPromise.promise;
 			}
-			// Note: Removed the "else if (this.#sublimitPromise)" block to allow non-sublimited requests
-			// to proceed independently of the sublimit queue
 		}
 
 		try {
