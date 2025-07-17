@@ -55,8 +55,8 @@ export interface SessionInfo {
  */
 export interface RequiredWebSocketManagerOptions {
 	/**
-	 * Fetches the initial gateway URL used to connect to Discord. When missing, this will default to the gateway URL
-	 * that Discord returns from the `/gateway/bot` route.
+	 * Function for retrieving the information returned by the `/gateway/bot` endpoint.
+	 * We recommend using a REST client that respects Discord's rate limits, such as `@discordjs/rest`.
 	 *
 	 * @example
 	 * ```ts
@@ -267,6 +267,10 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 	}
 
 	public constructor(options: CreateWebSocketManagerOptions) {
+		if (typeof options.fetchGatewayInformation !== 'function') {
+			throw new TypeError('fetchGatewayInformation is required');
+		}
+
 		super();
 		this.options = {
 			...DefaultWebSocketManagerOptions,
