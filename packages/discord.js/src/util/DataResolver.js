@@ -5,7 +5,7 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const { fetch } = require('undici');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const { Invite } = require('../structures/Invite.js');
+const { BaseInvite } = require('../structures/BaseInvite.js');
 
 /**
  * Data that can be resolved to give an invite code. This can be:
@@ -43,7 +43,7 @@ function resolveCode(data, regex) {
  * @private
  */
 function resolveInviteCode(data) {
-  return resolveCode(data, Invite.InvitesPattern);
+  return resolveCode(data, BaseInvite.InvitesPattern);
 }
 
 /**
