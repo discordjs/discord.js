@@ -1849,9 +1849,6 @@ importers:
       '@discordjs/collection':
         specifier: workspace:^
         version: link:../collection
-      '@discordjs/rest':
-        specifier: workspace:^
-        version: link:../rest
       '@discordjs/util':
         specifier: workspace:^
         version: link:../util
@@ -1922,9 +1919,6 @@ importers:
       typescript:
         specifier: ~5.8.3
         version: 5.8.3
-      undici:
-        specifier: 7.11.0
-        version: 7.11.0
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@edge-runtime/vm@3.2.0)(@types/debug@4.1.12)(@types/node@22.16.3)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.0)

@@ -74,7 +74,6 @@
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@discordjs/collection": "workspace:^",
-		"@discordjs/rest": "workspace:^",
 		"@discordjs/util": "workspace:^",
 		"@sapphire/async-queue": "^1.5.5",
 		"@types/ws": "^8.18.1",
@@ -100,7 +99,6 @@
 		"tsup": "^8.5.0",
 		"turbo": "^2.5.4",
 		"typescript": "~5.8.3",
-		"undici": "7.11.0",
 		"vitest": "^3.2.4",
 		"zlib-sync": "^0.1.10"
 	},

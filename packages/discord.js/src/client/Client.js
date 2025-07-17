@@ -163,7 +163,7 @@ class Client extends BaseClient {
     const wsOptions = {
       ...this.options.ws,
       intents: this.options.intents.bitfield,
-      rest: this.rest,
+      fetchGatewayInformation: () => this.rest.get(Routes.gatewayBot()),
       // Explicitly nulled to always be set using `setToken` in `login`
       token: null,
     };
