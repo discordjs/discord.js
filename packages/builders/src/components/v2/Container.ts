@@ -1,14 +1,15 @@
-import type {
-	APIActionRowComponent,
-	APIFileComponent,
-	APITextDisplayComponent,
-	APIContainerComponent,
-	APIComponentInContainer,
-	APIMediaGalleryComponent,
-	APISectionComponent,
+import {
+	type APIComponentInMessageActionRow,
+	type APISeparatorComponent,
+	type APIActionRowComponent,
+	type APIFileComponent,
+	type APITextDisplayComponent,
+	type APIContainerComponent,
+	type APIComponentInContainer,
+	type APIMediaGalleryComponent,
+	type APISectionComponent,
+	ComponentType,
 } from 'discord-api-types/v10';
-import { ComponentType } from 'discord-api-types/v10';
-import type { APIComponentInMessageActionRow, APISeparatorComponent } from 'discord-api-types/v9';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
 import { resolveBuilder } from '../../util/resolveBuilder';
 import { validate } from '../../util/validation';
