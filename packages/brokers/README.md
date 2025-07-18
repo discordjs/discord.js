@@ -88,7 +88,7 @@ import { RPCRedisBroker } from '@discordjs/brokers';
 import Redis from 'ioredis';
 
 const broker = new RPCRedisBroker(new Redis(), {
-	// Equivelent to the group/name in pubsub, refer to the previous example.
+	// Equivalent to the group/name in pubsub, refer to the previous example.
 	group: 'responders',
 	name: `consumer-${UNIQUE_ID}`,
 });
