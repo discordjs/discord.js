@@ -8,10 +8,12 @@ import { ReplyError } from 'ioredis';
 import type { BaseBrokerOptions, IBaseBroker, ToEventMap } from '../Broker.js';
 import { DefaultBrokerOptions } from '../Broker.js';
 
+type RedisReadGroupData = [Buffer, [Buffer, Buffer[]][]][];
+
 // For some reason ioredis doesn't have this typed, but it exists
 declare module 'ioredis' {
 	interface Redis {
-		xreadgroupBuffer(...args: (Buffer | string)[]): Promise<[Buffer, [Buffer, Buffer[]][]][] | null>;
+		xreadgroupBuffer(...args: (Buffer | string)[]): Promise<RedisReadGroupData | null>;
 	}
 }
 
@@ -150,40 +152,36 @@ export abstract class BaseRedisBroker<
 
 		this.listening = true;
 
+		// First, we might be off a crash. Let's try to see if our consumer has anything in the queue
+		let recovering = true;
+		while (recovering) {
+			try {
+				// Anything else other than '>', Redis will return events with an ID greater than that that have been
+				// read, but not ACKed (i.e. belong to this consumer clearly, but have not been handled)
+				const data = await this.readGroup('0', this.options.blockTimeout);
+				if (!data.length) {
+					recovering = false;
+					break;
+				}
+
+				await this.processMessages(data);
+			} catch (error) {
+				// @ts-expect-error: Intended
+				this.emit('error', error);
+				break;
+			}
+		}
+
+		// Enter regular polling
 		while (this.subscribedEvents.size > 0) {
 			try {
-				const data = await this.streamReadClient.xreadgroupBuffer(
-					'GROUP',
-					this.options.group,
-					this.options.name,
-					'COUNT',
-					String(this.options.maxChunk),
-					'BLOCK',
-					String(this.options.blockTimeout),
-					'STREAMS',
-					...this.subscribedEvents,
-					...Array.from({ length: this.subscribedEvents.size }, () => '>'),
-				);
-
+				// As per docs, '>' means "give me a new message"
+				const data = await this.readGroup('>', this.options.blockTimeout);
 				if (!data) {
 					continue;
 				}
 
-				for (const [event, info] of data) {
-					for (const [id, packet] of info) {
-						const idx = packet.findIndex((value, idx) => value.toString('utf8') === 'data' && idx % 2 === 0);
-						if (idx < 0) {
-							continue;
-						}
-
-						const data = packet[idx + 1];
-						if (!data) {
-							continue;
-						}
-
-						this.emitEvent(id, this.options.group, event.toString('utf8'), this.options.decode(data));
-					}
-				}
+				await this.processMessages(data);
 			} catch (error) {
 				// @ts-expect-error: Intended
 				this.emit('error', error);
@@ -192,6 +190,39 @@ export abstract class BaseRedisBroker<
 		}
 
 		this.listening = false;
+	}
+
+	private async readGroup(fromId: string, block: number): Promise<RedisReadGroupData> {
+		const data = await this.streamReadClient.xreadgroupBuffer(
+			'GROUP',
+			this.options.group,
+			this.options.name,
+			'COUNT',
+			String(this.options.maxChunk),
+			'BLOCK',
+			String(block),
+			'STREAMS',
+			...this.subscribedEvents,
+			...Array.from({ length: this.subscribedEvents.size }, () => fromId),
+		);
+
+		return data ?? [];
+	}
+
+	private async processMessages(data: RedisReadGroupData): Promise<void> {
+		for (const [event, messages] of data) {
+			const eventName = event.toString('utf8');
+
+			for (const [id, packet] of messages) {
+				const idx = packet.findIndex((value, idx) => value.toString('utf8') === 'data' && idx % 2 === 0);
+				if (idx < 0) continue;
+
+				const payload = packet[idx + 1];
+				if (!payload) continue;
+
+				this.emitEvent(id, this.options.group, eventName, this.options.decode(payload));
+			}
+		}
 	}
 
 	/**
