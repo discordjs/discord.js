@@ -270,6 +270,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 			throw new TypeError('fetchGatewayInformation is required');
 		}
 
+		console.log('woah. new. NEW! NEW!!!!!!! ‼️ 🗣️ 🔥');
 		super();
 		this.options = {
 			...DefaultWebSocketManagerOptions,
