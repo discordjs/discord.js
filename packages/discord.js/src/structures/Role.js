@@ -206,7 +206,7 @@ class Role extends Base {
    * @readonly
    */
   get hexColor() {
-    return `#${this.color.toString(16).padStart(6, '0')}`;
+    return `#${this.colors.primaryColor.toString(16).padStart(6, '0')}`;
   }
 
   /**

@@ -293,7 +293,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get displayColor() {
-    return this.roles.color?.color ?? 0;
+    return this.roles.color?.colors.primaryColor ?? 0;
   }
 
   /**
