@@ -2,26 +2,24 @@ import type { Structure } from '@discordjs/structures';
 import { kClone, kPatch } from '@discordjs/structures';
 import type { Snowflake } from 'discord-api-types/globals';
 import type { Client } from '../Client.js';
-import type { Cache } from '../util/types.js';
+import type { StructureCache } from '../util/cache.js';
 
-export class CachedManager<Value extends Structure<object> & { get id(): Snowflake }> {
+export abstract class CachedManager<
+	Value extends Structure<{ id: Snowflake }> & { get id(): Snowflake },
+	Raw extends { id: Snowflake } = Value extends Structure<infer Type> ? Type : never,
+> {
 	public client: Client;
 
-	public cache: Cache<Snowflake, Value>;
+	public cache: StructureCache<Raw, Value>;
 
-	private readonly holds: new (...args: any[]) => Value;
+	protected abstract createStructure(data: Raw, ...extras: unknown[]): Value;
 
-	public constructor(client: Client, value: new (...args: any[]) => Value) {
+	public constructor(client: Client) {
 		this.client = client;
-		this.cache = client.CacheConstructor(value);
-		this.holds = value;
+		this.cache = client.CacheConstructor<Value, Raw>();
 	}
 
-	protected async _add(
-		data: Value extends Structure<infer Type> ? (Type extends { id: Snowflake } ? Type : never) : never,
-		cache = true,
-		{ id, extras = [] }: { extras?: unknown[]; id?: Snowflake } = {},
-	) {
+	protected async _add(data: Raw, cache = true, { id, extras = [] }: { extras?: unknown[]; id?: Snowflake } = {}) {
 		const existing = await this.cache.get(id ?? data.id);
 		if (existing) {
 			if (cache) {
@@ -32,7 +30,7 @@ export class CachedManager<Value extends Structure<object> & { get id(): Snowfla
 			return existing[kClone](data);
 		}
 
-		const entry = this.holds ? new this.holds(data, this.client, ...extras) : data;
+		const entry = this.createStructure(data, ...extras);
 		if (cache) await this.cache.set(id ?? entry.id, entry);
 		return entry;
 	}
