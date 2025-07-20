@@ -60,7 +60,7 @@ class RoleManager extends CachedManager {
    * @example
    * // Fetch a single role
    * message.guild.roles.fetch('222078108977594368')
-   *   .then(role => console.log(`The role color is: ${role.color}`))
+   *   .then(role => console.log(`The role color is: ${role.colors.primaryColor}`))
    *   .catch(console.error);
    */
   async fetch(id, { cache = true, force = false } = {}) {
