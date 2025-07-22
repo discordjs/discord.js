@@ -33,6 +33,7 @@ This repository contains multiple packages with separate [releases][github-relea
 - `@discordjs/formatters` ([source][formatters-source]) - A collection of functions for formatting strings
 - `@discordjs/proxy` ([source][proxy-source]) - A wrapper around `@discordjs/rest` for running an HTTP proxy
 - `@discordjs/rest` ([source][rest-source]) - A module for interacting with the Discord REST API
+- `@discordjs/structures` ([source][structures-source]) - A wrapper around Discord's structures
 - `@discordjs/voice` ([source][voice-source]) - A module for interacting with the Discord Voice API
 - `@discordjs/util` ([source][util-source]) - A collection of utility functions
 - `@discordjs/ws` ([source][ws-source]) - A wrapper around Discord's gateway
@@ -83,6 +84,7 @@ If you don't understand something in the documentation, you are experiencing pro
 [formatters-source]: https://github.com/discordjs/discord.js/tree/main/packages/formatters
 [proxy-source]: https://github.com/discordjs/discord.js/tree/main/packages/proxy
 [rest-source]: https://github.com/discordjs/discord.js/tree/main/packages/rest
+[structures-source]: https://github.com/discordjs/discord.js/tree/main/packages/structures
 [voice-source]: https://github.com/discordjs/discord.js/tree/main/packages/voice
 [util-source]: https://github.com/discordjs/discord.js/tree/main/packages/util
 [ws-source]: https://github.com/discordjs/discord.js/tree/main/packages/ws
