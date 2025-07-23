@@ -156,6 +156,7 @@ describe('Button Components', () => {
 			expect(() => buttonComponent().setEmoji('foo')).toThrowError();
 
 			expect(() => buttonComponent().setURL('foobar')).toThrowError();
+			expect(() => buttonComponent().setURL(`https://google.com/${'a'.repeat(512)}`)).toThrowError();
 		});
 
 		test('GiVEN valid input THEN valid JSON outputs are given', () => {

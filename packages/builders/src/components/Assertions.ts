@@ -98,6 +98,7 @@ export const channelTypesValidator = s.nativeEnum(ChannelType).array().setValida
 
 export const urlValidator = s
 	.string()
+	.lengthLessThanOrEqual(512)
 	.url({
 		allowedProtocols: ['http:', 'https:', 'discord:'],
 	})
