@@ -32,7 +32,7 @@ const buttonDangerPredicate = buttonCustomIdPredicateBase.extend({ style: z.lite
 
 const buttonLinkPredicate = buttonPredicateBase.extend({
 	style: z.literal(ButtonStyle.Link),
-	url: z.url({ protocol: /^(?:https?|discord)$/ }),
+	url: z.url({ protocol: /^(?:https?|discord)$/ }).max(512),
 	emoji: emojiPredicate.optional(),
 	label: labelPredicate,
 });
