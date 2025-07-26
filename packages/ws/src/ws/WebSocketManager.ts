@@ -271,6 +271,8 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 	}
 
 	public constructor(options: CreateWebSocketManagerOptions) {
+		console.log('woah. new. NEW! NEW!!!!!!! ‼️ 🗣️ 🔥');
+
 		if (!options.rest && !options.fetchGatewayInformation) {
 			throw new RangeError('Either a REST instance or a fetchGatewayInformation function must be provided');
 		}

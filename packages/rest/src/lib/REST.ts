@@ -77,6 +77,8 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 	public readonly options: RESTOptions;
 
 	public constructor(options: Partial<RESTOptions> = {}) {
+		console.log('even rest got something new ‼️ 🗣️ 🔥');
+
 		super();
 		this.cdn = new CDN(options);
 		this.options = { ...DefaultRestOptions, ...options };
