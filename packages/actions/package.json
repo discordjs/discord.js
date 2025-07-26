@@ -42,12 +42,14 @@
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@actions/core": "^1.11.1",
+		"@actions/github": "^6.0.1",
 		"@actions/glob": "^0.5.0",
 		"@aws-sdk/client-s3": "^3.844.0",
 		"@discordjs/scripts": "workspace:^",
 		"@vercel/blob": "^1.1.1",
 		"@vercel/postgres": "^0.10.0",
 		"cloudflare": "^4.4.1",
+		"commander": "^14.0.0",
 		"meilisearch": "^0.38.0",
 		"p-limit": "^6.2.0",
 		"p-queue": "^8.1.0",
@@ -55,6 +57,8 @@
 		"undici": "7.11.0"
 	},
 	"devDependencies": {
+		"@npm/types": "^2.1.0",
+		"@types/bun": "^1.2.19",
 		"@types/node": "^22.16.3",
 		"@vitest/coverage-v8": "^3.2.4",
 		"cross-env": "^7.0.3",
