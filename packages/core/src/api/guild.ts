@@ -89,9 +89,7 @@ import {
 	type RESTPostAPIGuildStickerResult,
 	type RESTPostAPIGuildTemplatesJSONBody,
 	type RESTPostAPIGuildTemplatesResult,
-	type RESTPostAPIGuildsJSONBody,
 	type RESTPostAPIGuildsMFAResult,
-	type RESTPostAPIGuildsResult,
 	type RESTPutAPIGuildBanJSONBody,
 	type RESTPutAPIGuildMemberJSONBody,
 	type RESTPutAPIGuildMemberResult,
@@ -146,17 +144,6 @@ export class GuildsAPI {
 			auth,
 			signal,
 		}) as Promise<RESTGetAPIGuildPreviewResult>;
-	}
-
-	/**
-	 * Creates a guild
-	 *
-	 * @see {@link https://discord.com/developers/docs/resources/guild#create-guild}
-	 * @param body - The guild to create
-	 * @param options - The options for creating the guild
-	 */
-	public async create(body: RESTPostAPIGuildsJSONBody, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
-		return this.rest.post(Routes.guilds(), { auth, body, signal }) as Promise<RESTPostAPIGuildsResult>;
 	}
 
 	/**

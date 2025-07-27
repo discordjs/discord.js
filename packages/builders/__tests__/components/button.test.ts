@@ -30,7 +30,7 @@ describe('Button Components', () => {
 				button.toJSON();
 			}).not.toThrowError();
 
-			expect(() => new LinkButtonBuilder().setURL('https://google.com')).not.toThrowError();
+			expect(() => new LinkButtonBuilder().setLabel('label').setURL('https://google.com').toJSON()).not.toThrowError();
 		});
 
 		test('GIVEN invalid fields THEN build does throw', () => {
@@ -61,6 +61,13 @@ describe('Button Components', () => {
 			expect(() => new PrimaryButtonBuilder().setCustomId('hi').setDisabled(0).toJSON()).toThrowError();
 			// @ts-expect-error: Invalid emoji
 			expect(() => new PrimaryButtonBuilder().setCustomId('hi').setEmoji('foo').toJSON()).toThrowError();
+
+			expect(() =>
+				new LinkButtonBuilder()
+					.setLabel('label')
+					.setURL(`https://google.com/${'a'.repeat(512)}`)
+					.toJSON(),
+			).toThrowError();
 		});
 
 		test('GiVEN valid input THEN valid JSON outputs are given', () => {
