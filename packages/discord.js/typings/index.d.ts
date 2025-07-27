@@ -4347,7 +4347,6 @@ export interface FetchSoundboardSoundsOptions {
 
 export class GuildManager extends CachedManager<Snowflake, Guild, GuildResolvable> {
   private constructor(client: Client<true>, iterable?: Iterable<APIGuild | APIUnavailableGuild>);
-  public create(options: GuildCreateOptions): Promise<Guild>;
   public fetch(options: FetchGuildOptions | Snowflake): Promise<Guild>;
   public fetch(options?: FetchGuildsOptions): Promise<Collection<Snowflake, OAuth2Guild>>;
   public fetchSoundboardSounds(
@@ -6111,20 +6110,6 @@ export interface GuildChannelOverwriteOptions {
   type?: OverwriteType;
 }
 
-export interface GuildCreateOptions {
-  afkChannelId?: Snowflake | number;
-  afkTimeout?: number;
-  channels?: readonly PartialChannelData[];
-  defaultMessageNotifications?: GuildDefaultMessageNotifications;
-  explicitContentFilter?: GuildExplicitContentFilter;
-  icon?: Base64Resolvable | BufferResolvable | null;
-  name: string;
-  roles?: readonly PartialRoleData[];
-  systemChannelFlags?: SystemChannelFlagsResolvable;
-  systemChannelId?: Snowflake | number;
-  verificationLevel?: GuildVerificationLevel;
-}
-
 export interface GuildWidgetSettings {
   channel: AnnouncementChannel | ForumChannel | MediaChannel | TextChannel | VoiceBasedChannel | null;
   enabled: boolean;
@@ -6788,21 +6773,6 @@ export interface PresenceData {
 
 export type PresenceResolvable = Presence | Snowflake | UserResolvable;
 
-export interface PartialChannelData {
-  bitrate?: number;
-  id?: Snowflake | number;
-  name: string;
-  nsfw?: boolean;
-  parentId?: Snowflake | number;
-  permissionOverwrites?: readonly PartialOverwriteData[];
-  rateLimitPerUser?: number;
-  rtcRegion?: string | null;
-  topic?: string | null;
-  type?: ChannelType.GuildCategory | ChannelType.GuildText | ChannelType.GuildVoice;
-  userLimit?: number;
-  videoQualityMode?: VideoQualityMode;
-}
-
 export interface PartialEmoji {
   animated: boolean;
   id: Snowflake | undefined;
@@ -6862,17 +6832,6 @@ export interface PartialGuildScheduledEvent
 export interface PartialThreadMember extends Partialize<ThreadMember, 'flags' | 'joinedAt' | 'joinedTimestamp'> {}
 
 export interface PartialSoundboardSound extends Partialize<SoundboardSound, 'available' | 'name' | 'volume'> {}
-
-export interface PartialOverwriteData {
-  allow?: PermissionResolvable;
-  deny?: PermissionResolvable;
-  id: Snowflake | number;
-  type?: OverwriteType;
-}
-
-export interface PartialRoleData extends RoleData {
-  id?: Snowflake | number;
-}
 
 export enum Partials {
   User,
