@@ -5,41 +5,12 @@ on:
   workflow_dispatch:
     inputs:
       dry_run:
+        description: 'Perform a dry run that skips publishing and outputs logs indicating what would have happened'
         type: boolean
         default: false
 jobs:
   npm-publish:
     name: npm publish
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - package: '@discordjs/brokers'
-            folder: 'brokers'
-          - package: '@discordjs/builders'
-            folder: 'builders'
-          - package: '@discordjs/collection'
-            folder: 'collection'
-          - package: '@discordjs/core'
-            folder: 'core'
-          - package: '@discordjs/formatters'
-            folder: 'formatters'
-          - package: 'discord.js'
-            folder: 'discord.js'
-          - package: '@discordjs/next'
-            folder: 'next'
-          - package: '@discordjs/proxy'
-            folder: 'proxy'
-          - package: '@discordjs/rest'
-            folder: 'rest'
-          - package: '@discordjs/structures'
-            folder: 'structures'
-          - package: '@discordjs/util'
-            folder: 'util'
-          - package: '@discordjs/voice'
-            folder: 'voice'
-          - package: '@discordjs/ws'
-            folder: 'ws'
     runs-on: ubuntu-latest
     permissions:
       id-token: write
