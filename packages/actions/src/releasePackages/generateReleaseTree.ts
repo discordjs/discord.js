@@ -73,7 +73,7 @@ async function getReleaseEntries(dev: boolean, dry: boolean) {
 				info(`[DRY] Bumping ${pkg.name} via git-cliff.`);
 				release.version = `${pkg.version}.DRY-dev.${Math.round(Date.now() / 1_000)}-${commitHash}`;
 			} else {
-				await $`pnpm --filter=${pkg.name} run release --preid "dev.${Math.round(Date.now() / 1_000)}-${commitHash} --skip-changelog"`;
+				await $`pnpm --filter=${pkg.name} run release --preid "dev.${Math.round(Date.now() / 1_000)}-${commitHash}" --skip-changelog`;
 				// Read again instead of parsing the output to be sure we're matching when checking against npm
 				const pkgJson = (await file(`${pkg.path}/package.json`).json()) as PackageJSON;
 				release.version = pkgJson.version;

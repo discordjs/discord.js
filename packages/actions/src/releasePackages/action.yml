@@ -3,10 +3,10 @@ description: 'Tags and releases any unreleased packages'
 inputs:
   dev:
     description: 'Releases development versions of packages (skips tagging and github releases)'
-    default: false
+    default: 'false'
   dry:
-    descrption: 'Perform a dry run that skips publishing and outputs logs indicating what would have happened'
-    default: false
+    description: 'Perform a dry run that skips publishing and outputs logs indicating what would have happened'
+    default: 'false'
   package:
     description: 'The published name of a single package to release'
   exclude:
@@ -14,7 +14,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: oven-sh/setup-bun@v1
+    - uses: oven-sh/setup-bun@v2
     - run: bun packages/actions/src/releasePackages/index.ts
       shell: bash
       env:
