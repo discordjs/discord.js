@@ -17,18 +17,41 @@ class AttachmentBuilder {
      * @type {BufferResolvable|Stream}
      */
     this.attachment = attachment;
+
     /**
      * The name of this attachment
      *
      * @type {?string}
      */
     this.name = data.name;
+
     /**
      * The description of the attachment
      *
      * @type {?string}
      */
     this.description = data.description;
+
+    /**
+     * The title of the attachment
+     *
+     * @type {?string}
+     */
+    this.title = data.title;
+
+    /**
+     * The base64 encoded byte array representing a sampled waveform
+     *
+     * @type {?string}
+     */
+    this.waveform = data.waveform;
+
+    /**
+     * The duration of the attachment in seconds
+     *
+     * @type {?number}
+     */
+    this.duration = data.duration;
   }
 
   /**
@@ -61,6 +84,39 @@ class AttachmentBuilder {
    */
   setName(name) {
     this.name = name;
+    return this;
+  }
+
+  /**
+   * Sets the title of this attachment.
+   *
+   * @param {string} title The title of the file
+   * @returns {AttachmentBuilder} This attachment
+   */
+  setTitle(title) {
+    this.title = title;
+    return this;
+  }
+
+  /**
+   * Sets the waveform of this attachment.
+   *
+   * @param {string} waveform The base64 encoded byte array representing a sampled waveform
+   * @returns {AttachmentBuilder} This attachment
+   */
+  setWaveform(waveform) {
+    this.waveform = waveform;
+    return this;
+  }
+
+  /**
+   * Sets the duration of this attachment.
+   *
+   * @param {number} duration The duration of the attachment in seconds
+   * @returns {AttachmentBuilder} This attachment
+   */
+  setDuration(duration) {
+    this.duration = duration;
     return this;
   }
 
@@ -119,4 +175,7 @@ exports.AttachmentBuilder = AttachmentBuilder;
  * @typedef {Object} AttachmentData
  * @property {string} [name] The name of the attachment
  * @property {string} [description] The description of the attachment
+ * @property {string} [title] The title of the attachment
+ * @property {string} [waveform] The base64 encoded byte array representing a sampled waveform
+ * @property {number} [duration] The duration of the attachment in seconds
  */

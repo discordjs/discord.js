@@ -5,9 +5,12 @@ const { basename, flatten } = require('../util/Util.js');
 
 /**
  * @typedef {Object} AttachmentPayload
- * @property {?string} name The name of the attachment
  * @property {Stream|BufferResolvable} attachment The attachment in this payload
- * @property {?string} description The description of the attachment
+ * @property {string} [name] The name of the attachment
+ * @property {string} [description] The description of the attachment
+ * @property {title} [title] The title of the attachment
+ * @property {string} [waveform] The base64 encoded byte array representing a sampled waveform
+ * @property {number} [duration] The duration of the attachment in seconds
  */
 
 /**
