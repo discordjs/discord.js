@@ -14,7 +14,7 @@ inputs:
 runs:
   using: composite
   steps:
-    - uses: oven-sh/setup-bun@v1
+    - uses: oven-sh/setup-bun@v2
     - run: bun packages/actions/src/releasePackages/index.ts
       shell: bash
       env:
