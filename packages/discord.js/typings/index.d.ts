@@ -1822,7 +1822,6 @@ export class GuildTemplate extends Base {
   public guildId: Snowflake;
   public serializedGuild: APITemplateSerializedSourceGuild;
   public unSynced: boolean | null;
-  public createGuild(name: string, icon?: Base64Resolvable | BufferResolvable): Promise<Guild>;
   public delete(): Promise<GuildTemplate>;
   public edit(options?: GuildTemplateEditOptions): Promise<GuildTemplate>;
   public sync(): Promise<GuildTemplate>;
