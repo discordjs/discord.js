@@ -530,7 +530,7 @@ class GuildMember extends Base {
    * Times this guild member out.
    *
    * @param {?number} timeout The duration in milliseconds
-   * for the member's communication to be disabled. Provide `null` to remove the timeout.
+   * for the member's communication to be disabled. Use clearTimeout or provide `null` to remove the timeout.
    * @param {string} [reason] The reason for this timeout.
    * @returns {Promise<GuildMember>}
    * @example
@@ -541,6 +541,21 @@ class GuildMember extends Base {
    */
   async timeout(timeout, reason) {
     return this.disableCommunicationUntil(timeout && Date.now() + timeout, reason);
+  }
+
+  /**
+   * Clear the timeout of this guild member.
+   *
+   * @param {string} [reason] The reason for clearing this timeout.
+   * @returns {Promise<GuildMember>}
+   * @example
+   * // Clear the timeout of a guild member
+   * guildMember.clearTimeout('I forgive you')
+   *   .then(console.log)
+   *   .catch(console.error);
+   */
+  async clearTimeout(reason) {
+    return this.disableCommunicationUntil(null, reason);
   }
 
   /**
