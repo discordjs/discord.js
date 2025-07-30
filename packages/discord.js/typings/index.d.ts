@@ -1651,6 +1651,7 @@ export class GuildMember extends Base {
   public ban(options?: BanOptions): Promise<void>;
   public disableCommunicationUntil(timeout: DateResolvable | null, reason?: string): Promise<GuildMember>;
   public timeout(timeout: number | null, reason?: string): Promise<GuildMember>;
+  public clearTimeout(reason?: string): Promise<GuildMember>;
   public fetch(force?: boolean): Promise<GuildMember>;
   public createDM(force?: boolean): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;
