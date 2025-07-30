@@ -1438,7 +1438,6 @@ export class Guild extends AnonymousGuild {
   public widgetEnabled: boolean | null;
   public get maximumBitrate(): number;
   public createTemplate(name: string, description?: string): Promise<GuildTemplate>;
-  public delete(): Promise<Guild>;
   public discoverySplashURL(options?: ImageURLOptions): string | null;
   public edit(options: GuildEditOptions): Promise<Guild>;
   public editOnboarding(options: GuildOnboardingEditOptions): Promise<GuildOnboarding>;

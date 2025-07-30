@@ -1451,21 +1451,6 @@ class Guild extends AnonymousGuild {
   }
 
   /**
-   * Deletes the guild.
-   *
-   * @returns {Promise<Guild>}
-   * @example
-   * // Delete a guild
-   * guild.delete()
-   *   .then(guild => console.log(`Deleted the guild ${guild}`))
-   *   .catch(console.error);
-   */
-  async delete() {
-    await this.client.rest.delete(Routes.guild(this.id));
-    return this;
-  }
-
-  /**
    * Sets whether this guild's invites are disabled.
    *
    * @param {boolean} [disabled=true] Whether the invites are disabled
