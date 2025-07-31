@@ -1435,29 +1435,6 @@ class Guild extends AnonymousGuild {
   }
 
   /**
-   * Sets the guild's MFA level
-   * <info>An elevated MFA level requires guild moderators to have 2FA enabled.</info>
-   *
-   * @param {GuildMFALevel} level The MFA level
-   * @param {string} [reason] Reason for changing the guild's MFA level
-   * @returns {Promise<Guild>}
-   * @example
-   * // Set the MFA level of the guild to Elevated
-   * guild.setMFALevel(GuildMFALevel.Elevated)
-   *   .then(guild => console.log("Set guild's MFA level to Elevated"))
-   *   .catch(console.error);
-   */
-  async setMFALevel(level, reason) {
-    await this.client.rest.post(Routes.guildMFA(this.id), {
-      body: {
-        level,
-      },
-      reason,
-    });
-    return this;
-  }
-
-  /**
    * Leaves the guild.
    *
    * @returns {Promise<Guild>}
@@ -1470,21 +1447,6 @@ class Guild extends AnonymousGuild {
   async leave() {
     if (this.ownerId === this.client.user.id) throw new DiscordjsError(ErrorCodes.GuildOwned);
     await this.client.rest.delete(Routes.userGuild(this.id));
-    return this;
-  }
-
-  /**
-   * Deletes the guild.
-   *
-   * @returns {Promise<Guild>}
-   * @example
-   * // Delete a guild
-   * guild.delete()
-   *   .then(guild => console.log(`Deleted the guild ${guild}`))
-   *   .catch(console.error);
-   */
-  async delete() {
-    await this.client.rest.delete(Routes.guild(this.id));
     return this;
   }
 
