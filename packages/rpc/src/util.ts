@@ -9,7 +9,7 @@ export const register: (scheme: string) => boolean = (() => {
 		try {
 			// eslint-disable-next-line @typescript-eslint/no-require-imports
 			return require('register-scheme');
-		} catch {}  
+		} catch {}
 	}
 })();
 
