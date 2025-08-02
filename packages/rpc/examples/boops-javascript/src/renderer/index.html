@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>BOOP TEH SNEK (RPC JavaScript Example)</title>
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
+    />
+
+    <link href="./styles.css" type="text/css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <h1>BOOP TEH SNEK</h1>
+    <div id="game"><div id="snek">🐍</div></div>
+    <h3 id="boops">0 BOOPS</h3>
+
+    <script type="module" src="./src/renderer.js"></script>
+  </body>
+</html>
