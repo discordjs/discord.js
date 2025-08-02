@@ -128,7 +128,7 @@ const working: WorkingData = {
 };
 
 // eslint-disable-next-line promise/prefer-await-to-callbacks
-export function decode(socket: Socket, callback: (data: { data: RPCMessagePayload, op: OPCodes; }) => void) {
+export function decode(socket: Socket, callback: (data: { data: RPCMessagePayload; op: OPCodes }) => void) {
 	const packet = socket.read();
 	if (!packet) {
 		return;
@@ -148,12 +148,13 @@ export function decode(socket: Socket, callback: (data: { data: RPCMessagePayloa
 		const data = JSON.parse(working.full + raw);
 		working.full = '';
 		working.op = undefined;
-		callback({ op: op!, data }); return;
+		// eslint-disable-next-line promise/prefer-await-to-callbacks
+		callback({ op: op!, data });
+		return;
 	} catch {
 		working.full += raw;
 	}
 
-	 
 	decode(socket, callback);
 }
 
