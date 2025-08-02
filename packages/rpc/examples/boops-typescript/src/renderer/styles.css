@@ -1,0 +1,46 @@
+body,
+html {
+  margin: 0px;
+  height: 100%;
+  cursor: default;
+  font-family: sans-serif;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-app-region: drag;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    background-color: black;
+    color: white;
+  }
+}
+
+h1 {
+  text-align: center;
+  margin: auto;
+  padding-top: 1em;
+}
+
+#game {
+  height: 60%;
+  display: grid;
+  -webkit-app-region: no-drag;
+}
+
+#snek {
+  cursor: pointer;
+  font-size: 500%;
+  margin: auto;
+}
+
+#boops {
+  text-align: center;
+  -webkit-app-region: no-drag;
+}
