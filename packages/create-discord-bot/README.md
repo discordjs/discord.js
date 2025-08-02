@@ -24,6 +24,7 @@ npm create discord-bot ./your/chosen/directory
 yarn create discord-bot ./your/chosen/directory
 pnpm create discord-bot ./your/chosen/directory
 bun create discord-bot ./your/chosen/directory
+deno create discord-bot ./your/chosen/directory
 ```
 
 ## Links

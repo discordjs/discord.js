@@ -35,6 +35,10 @@ export function resolvePackageManager(): PackageManager {
 		return 'bun';
 	}
 
+	if (npmConfigUserAgent.startsWith('deno')) {
+		return 'deno';
+	}
+
 	console.error(
 		picocolors.yellow(
 			`Detected an unsupported package manager (${npmConfigUserAgent}). Falling back to ${DEFAULT_PACKAGE_MANAGER}.`,
