@@ -86,6 +86,8 @@ import {
 	type RESTPostAPIGuildScheduledEventResult,
 	type RESTPostAPIGuildStickerFormDataBody,
 	type RESTPostAPIGuildStickerResult,
+	type RESTPostAPIGuildTemplatesJSONBody,
+	type RESTPostAPIGuildTemplatesResult,
 	type RESTPutAPIGuildBanJSONBody,
 	type RESTPutAPIGuildMemberJSONBody,
 	type RESTPutAPIGuildMemberResult,
@@ -99,8 +101,6 @@ import {
 	type RESTPostAPIGuildSoundboardSoundJSONBody,
 	type RESTPostAPIGuildSoundboardSoundResult,
 	type Snowflake,
-	RESTPostAPIGuildTemplatesJSONBody,
-	RESTPostAPIGuildTemplatesResult,
 } from 'discord-api-types/v10';
 
 export interface CreateStickerOptions extends Omit<RESTPostAPIGuildStickerFormDataBody, 'file'> {
