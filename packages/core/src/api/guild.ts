@@ -1322,16 +1322,16 @@ export class GuildsAPI {
 	 * Creates a new template
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/guild-template#create-guild-template}
-	 * @param templateCode - The code of the template
+	 * @param guildId - The id of the guild
 	 * @param body - The data for creating the template
 	 * @param options - The options for creating the template
 	 */
 	public async createTemplate(
-		templateCode: string,
+		guildId: Snowflake,
 		body: RESTPostAPIGuildTemplatesJSONBody,
 		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
-		return this.rest.post(Routes.template(templateCode), {
+		return this.rest.post(Routes.guildTemplates(guildId), {
 			auth,
 			body,
 			signal,
