@@ -237,6 +237,15 @@ export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
 	}
 
 	/**
+	 * Checks if the container is empty
+	 *
+	 * @returns Whether the container is empty
+	 */
+	public isEmpty(): boolean {
+		return this.data.components.length === 0;
+	}
+
+	/**
 	 * {@inheritDoc ComponentBuilder.toJSON}
 	 */
 	public override toJSON(validationOverride?: boolean): APIContainerComponent {
