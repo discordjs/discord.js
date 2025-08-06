@@ -5,7 +5,7 @@
 	"description": "Imagine a bot... the most popular way to build discord bots",
 	"private": true,
 	"scripts": {
-		"build:copy_readme": "cpy \"../../packages/(discord.js|brokers|builders|collection|core|formatters|next|proxy|rest|structures|util|voice|ws)/README.md\" \"src/assets/readme\" --rename='home-{{basename}}'",
+		"build:copy_readme": "cpy \"../../packages/(discord.js|brokers|builders|collection|core|formatters|next|proxy|rest|rpc|structures|util|voice|ws)/README.md\" \"src/assets/readme\" --rename='home-{{basename}}'",
 		"build:check": "tsc --noEmit",
 		"build:local": "cross-env NEXT_PUBLIC_LOCAL_DEV=true pnpm run build:prod",
 		"build:prod": "pnpm run build:copy_readme && pnpm run build:next",
