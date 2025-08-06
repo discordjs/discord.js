@@ -42,8 +42,13 @@
 		"Vlad Frangu <me@vladfrangu.dev>",
 		"Aura Román <kyradiscord@gmail.com>"
 	],
-	"license": "Apache-2.0",
-	"keywords": [],
+	"license": "MIT",
+	"keywords": [
+		"discord",
+		"rpc",
+		"rich presence",
+		"remote procedural call"
+	],
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/discordjs/discord.js.git",
