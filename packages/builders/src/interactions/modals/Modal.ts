@@ -1,6 +1,9 @@
 import type { JSONEncodable } from '@discordjs/util';
-import type { APILabelComponent, APIModalInteractionResponseCallbackData } from 'discord-api-types/v10';
-import type { ActionRowBuilder } from '../../components/ActionRow.js';
+import type {
+	APILabelComponent,
+	APIModalInteractionResponseCallbackData,
+} from 'discord-api-types/v10';
+import { ActionRowBuilder } from '../../components/ActionRow.js';
 import { createComponentBuilder } from '../../components/Components.js';
 import { LabelBuilder } from '../../components/label/Label.js';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
