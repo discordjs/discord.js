@@ -123,13 +123,13 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	 * modal.spliceLabelComponents(0, n);
 	 * ```
 	 * @example
-	 * Remove the last action row:
+	 * Remove the last label:
 	 * ```ts
 	 * modal.spliceLabelComponents(-1, 1);
 	 * ```
 	 * @param index - The index to start at
 	 * @param deleteCount - The number of labels to remove
-	 * @param rows - The replacing action row objects
+	 * @param rows - The replacing label objects
 	 */
 	public spliceLabelComponents(
 		index: number,
