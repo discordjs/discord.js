@@ -2,17 +2,19 @@ import type { JSONEncodable } from '@discordjs/util';
 import type {
 	APIActionRowComponent,
 	APIComponentInModalActionRow,
+	APILabelComponent,
 	APIModalInteractionResponseCallbackData,
 } from 'discord-api-types/v10';
 import { ActionRowBuilder } from '../../components/ActionRow.js';
 import { createComponentBuilder } from '../../components/Components.js';
+import { LabelBuilder } from '../../components/label/Label.js';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { resolveBuilder } from '../../util/resolveBuilder.js';
 import { validate } from '../../util/validation.js';
 import { modalPredicate } from './Assertions.js';
 
 export interface ModalBuilderData extends Partial<Omit<APIModalInteractionResponseCallbackData, 'components'>> {
-	components: ActionRowBuilder[];
+	components: (ActionRowBuilder | LabelBuilder)[];
 }
 
 /**
@@ -27,7 +29,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	/**
 	 * The components within this modal.
 	 */
-	public get components(): readonly ActionRowBuilder[] {
+	public get components(): readonly (ActionRowBuilder | LabelBuilder)[] {
 		return this.data.components;
 	}
 
@@ -63,6 +65,82 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	 */
 	public setCustomId(customId: string) {
 		this.data.custom_id = customId;
+		return this;
+	}
+	
+	/**
+	 * Adds label components to this modal.
+	 *
+	 * @param components - The components to add
+	 */
+	public addLabelComponents(
+		...components: RestOrArray<
+			APILabelComponent | LabelBuilder | ((builder: LabelBuilder) => LabelBuilder)
+		>
+	) {
+		const normalized = normalizeArray(components);
+		const resolved = normalized.map((row) => resolveBuilder(row, LabelBuilder));
+
+		this.data.components.push(...resolved);
+
+		return this;
+	}
+
+	/**
+	 * Sets the labels for this modal.
+	 *
+	 * @param components - The components to set
+	 */
+	public setLabelComponents(
+		...components: RestOrArray<
+			APILabelComponent | LabelBuilder | ((builder: LabelBuilder) => LabelBuilder)
+		>
+	) {
+		const normalized = normalizeArray(components);
+		this.spliceLabelComponents(0, this.data.components.length, ...normalized);
+
+		return this;
+	}
+
+	/**
+	 * Removes, replaces, or inserts labels for this modal.
+	 *
+	 * @remarks
+	 * This method behaves similarly
+	 * to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
+	 * The maximum amount of labels that can be added is 5.
+	 *
+	 * It's useful for modifying and adjusting order of the already-existing labels of a modal.
+	 * @example
+	 * Remove the first action row:
+	 * ```ts
+	 * modal.spliceLabelComponents(0, 1);
+	 * ```
+	 * @example
+	 * Remove the first n labels:
+	 * ```ts
+	 * const n = 4;
+	 * modal.spliceLabelComponents(0, n);
+	 * ```
+	 * @example
+	 * Remove the last action row:
+	 * ```ts
+	 * modal.spliceLabelComponents(-1, 1);
+	 * ```
+	 * @param index - The index to start at
+	 * @param deleteCount - The number of labels to remove
+	 * @param rows - The replacing action row objects
+	 */
+	public spliceLabelComponents(
+		index: number,
+		deleteCount: number,
+		...rows: (
+			APILabelComponent | LabelBuilder | ((builder: LabelBuilder) => LabelBuilder)
+		)[]
+	): this {
+		const resolved = rows.map((row) => resolveBuilder(row, LabelBuilder));
+		this.data.components.splice(index, deleteCount, ...resolved);
+
 		return this;
 	}
 
@@ -116,18 +194,18 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	 * @example
 	 * Remove the first action row:
 	 * ```ts
-	 * embed.spliceActionRows(0, 1);
+	 * modal.spliceActionRows(0, 1);
 	 * ```
 	 * @example
 	 * Remove the first n action rows:
 	 * ```ts
 	 * const n = 4;
-	 * embed.spliceActionRows(0, n);
+	 * modal.spliceActionRows(0, n);
 	 * ```
 	 * @example
 	 * Remove the last action row:
 	 * ```ts
-	 * embed.spliceActionRows(-1, 1);
+	 * modal.spliceActionRows(-1, 1);
 	 * ```
 	 * @param index - The index to start at
 	 * @param deleteCount - The number of action rows to remove
