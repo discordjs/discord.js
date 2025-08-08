@@ -78,11 +78,11 @@ export class LabelBuilder extends ComponentBuilder<APILabelComponent> {
 	}
 
 	/**
-	 * Adds a string select menu component to this label.
+	 * Sets a string select menu component to this label.
 	 *
 	 * @param input - A function that returns a component builder or an already built builder
 	 */
-	public addStringSelectMenuComponent(
+	public setStringSelectMenuComponent(
 		input:
 			| APIStringSelectComponentInModal
 			| StringSelectMenuBuilder
@@ -93,11 +93,11 @@ export class LabelBuilder extends ComponentBuilder<APILabelComponent> {
 	}
 
 	/**
-	 * Adds a text input component to this label.
+	 * Sets a text input component to this label.
 	 *
 	 * @param input - A function that returns a component builder or an already built builder
 	 */
-	public addTextInputComponent(
+	public setTextInputComponent(
 		input: APITextInputComponentInModal | TextInputBuilder | ((builder: TextInputBuilder) => TextInputBuilder),
 	): this {
 		this.data.component = resolveBuilder(input, TextInputBuilder);
