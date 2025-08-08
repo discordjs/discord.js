@@ -1,11 +1,8 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type {
-	APIActionRowComponent,
-	APIComponentInModalActionRow,
 	APILabelComponent,
 	APIModalInteractionResponseCallbackData,
 } from 'discord-api-types/v10';
-import { ActionRowBuilder } from '../../components/ActionRow.js';
 import { createComponentBuilder } from '../../components/Components.js';
 import { LabelBuilder } from '../../components/label/Label.js';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
@@ -14,7 +11,7 @@ import { validate } from '../../util/validation.js';
 import { modalPredicate } from './Assertions.js';
 
 export interface ModalBuilderData extends Partial<Omit<APIModalInteractionResponseCallbackData, 'components'>> {
-	components: (ActionRowBuilder | LabelBuilder)[];
+	components: LabelBuilder[];
 }
 
 /**
@@ -29,7 +26,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	/**
 	 * The components within this modal.
 	 */
-	public get components(): readonly (ActionRowBuilder | LabelBuilder)[] {
+	public get components(): readonly LabelBuilder[] {
 		return this.data.components;
 	}
 
@@ -38,7 +35,11 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	 *
 	 * @param data - The API data to create this modal with
 	 */
-	public constructor(data: Partial<APIModalInteractionResponseCallbackData> = {}) {
+	public constructor(
+		data: Partial<
+			Omit<APIModalInteractionResponseCallbackData, 'components'> & { components: APILabelComponent[] }
+		> = {},
+	) {
 		const { components = [], ...rest } = data;
 
 		this.data = {
@@ -67,16 +68,14 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 		this.data.custom_id = customId;
 		return this;
 	}
-	
+
 	/**
 	 * Adds label components to this modal.
 	 *
 	 * @param components - The components to add
 	 */
 	public addLabelComponents(
-		...components: RestOrArray<
-			APILabelComponent | LabelBuilder | ((builder: LabelBuilder) => LabelBuilder)
-		>
+		...components: RestOrArray<APILabelComponent | LabelBuilder | ((builder: LabelBuilder) => LabelBuilder)>
 	) {
 		const normalized = normalizeArray(components);
 		const resolved = normalized.map((row) => resolveBuilder(row, LabelBuilder));
@@ -92,9 +91,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	 * @param components - The components to set
 	 */
 	public setLabelComponents(
-		...components: RestOrArray<
-			APILabelComponent | LabelBuilder | ((builder: LabelBuilder) => LabelBuilder)
-		>
+		...components: RestOrArray<APILabelComponent | LabelBuilder | ((builder: LabelBuilder) => LabelBuilder)>
 	) {
 		const normalized = normalizeArray(components);
 		this.spliceLabelComponents(0, this.data.components.length, ...normalized);
@@ -112,7 +109,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	 *
 	 * It's useful for modifying and adjusting order of the already-existing labels of a modal.
 	 * @example
-	 * Remove the first action row:
+	 * Remove the first label:
 	 * ```ts
 	 * modal.spliceLabelComponents(0, 1);
 	 * ```
@@ -134,93 +131,9 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	public spliceLabelComponents(
 		index: number,
 		deleteCount: number,
-		...rows: (
-			APILabelComponent | LabelBuilder | ((builder: LabelBuilder) => LabelBuilder)
-		)[]
+		...rows: (APILabelComponent | LabelBuilder | ((builder: LabelBuilder) => LabelBuilder))[]
 	): this {
 		const resolved = rows.map((row) => resolveBuilder(row, LabelBuilder));
-		this.data.components.splice(index, deleteCount, ...resolved);
-
-		return this;
-	}
-
-	/**
-	 * Adds action rows to this modal.
-	 *
-	 * @param components - The components to add
-	 */
-	public addActionRows(
-		...components: RestOrArray<
-			| ActionRowBuilder
-			| APIActionRowComponent<APIComponentInModalActionRow>
-			| ((builder: ActionRowBuilder) => ActionRowBuilder)
-		>
-	) {
-		const normalized = normalizeArray(components);
-		const resolved = normalized.map((row) => resolveBuilder(row, ActionRowBuilder));
-
-		this.data.components.push(...resolved);
-
-		return this;
-	}
-
-	/**
-	 * Sets the action rows for this modal.
-	 *
-	 * @param components - The components to set
-	 */
-	public setActionRows(
-		...components: RestOrArray<
-			| ActionRowBuilder
-			| APIActionRowComponent<APIComponentInModalActionRow>
-			| ((builder: ActionRowBuilder) => ActionRowBuilder)
-		>
-	) {
-		const normalized = normalizeArray(components);
-		this.spliceActionRows(0, this.data.components.length, ...normalized);
-
-		return this;
-	}
-
-	/**
-	 * Removes, replaces, or inserts action rows for this modal.
-	 *
-	 * @remarks
-	 * This method behaves similarly
-	 * to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
-	 * The maximum amount of action rows that can be added is 5.
-	 *
-	 * It's useful for modifying and adjusting order of the already-existing action rows of a modal.
-	 * @example
-	 * Remove the first action row:
-	 * ```ts
-	 * modal.spliceActionRows(0, 1);
-	 * ```
-	 * @example
-	 * Remove the first n action rows:
-	 * ```ts
-	 * const n = 4;
-	 * modal.spliceActionRows(0, n);
-	 * ```
-	 * @example
-	 * Remove the last action row:
-	 * ```ts
-	 * modal.spliceActionRows(-1, 1);
-	 * ```
-	 * @param index - The index to start at
-	 * @param deleteCount - The number of action rows to remove
-	 * @param rows - The replacing action row objects
-	 */
-	public spliceActionRows(
-		index: number,
-		deleteCount: number,
-		...rows: (
-			| ActionRowBuilder
-			| APIActionRowComponent<APIComponentInModalActionRow>
-			| ((builder: ActionRowBuilder) => ActionRowBuilder)
-		)[]
-	): this {
-		const resolved = rows.map((row) => resolveBuilder(row, ActionRowBuilder));
 		this.data.components.splice(index, deleteCount, ...resolved);
 
 		return this;
