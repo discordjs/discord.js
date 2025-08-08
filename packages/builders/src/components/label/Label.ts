@@ -33,16 +33,17 @@ export class LabelBuilder extends ComponentBuilder<APILabelComponent> {
 	 * Creating a label from an API data object:
 	 * ```ts
 	 * const label = new LabelBuilder({
-	 * 	content: 'some text',
+	 * 	label: "label",
+	 * 	component,
 	 * });
 	 * ```
 	 * @example
 	 * Creating a label using setters and API data:
 	 * ```ts
 	 * const label = new LabelBuilder({
-	 * 	content: 'old text',
-	 * })
-	 * 	.setContent('new text');
+	 * 	label: 'label',
+	 * 	component,
+	 * }).setContent('new text');
 	 * ```
 	 */
 	public constructor(data: Partial<APILabelComponent> = {}) {
