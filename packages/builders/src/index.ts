@@ -4,6 +4,9 @@ export * from './components/button/CustomIdButton.js';
 export * from './components/button/LinkButton.js';
 export * from './components/button/PremiumButton.js';
 
+export * from './components/label/Label.js';
+export * from './components/label/Assertions.js';
+
 export * from './components/selectMenu/BaseSelectMenu.js';
 export * from './components/selectMenu/ChannelSelectMenu.js';
 export * from './components/selectMenu/MentionableSelectMenu.js';
