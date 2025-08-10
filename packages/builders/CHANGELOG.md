@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.11.3](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.11.2...@discordjs/builders@1.11.3) - (2025-08-10)
+
+## Bug Fixes
+
+- **contextMenuCommands:** Remove regular expression validation (#10996) ([4906aae](https://github.com/discordjs/discord.js/commit/4906aaea4c0e6e868fa658d3359026eb662fbcb8))
+
 # [@discordjs/builders@1.11.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.10.1...@discordjs/builders@1.11.0) - (2025-04-25)
 
 ## Features
