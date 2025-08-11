@@ -54,6 +54,11 @@ jobs:
           ref: ${{ inputs.ref || '' }}
           ssh-key: ${{ secrets.DEPLOY_KEY_CI_RELEASE_TAGS }}
 
+      - name: Set Git User and Email
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
       - name: Install Node.js v22
         uses: actions/setup-node@v4
         with:
