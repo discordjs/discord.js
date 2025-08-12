@@ -42,7 +42,7 @@ describe('Text Input Components', () => {
 	});
 
 	test('GIVEN valid input THEN valid JSON outputs are given', () => {
-		const textInputData: APITextInputComponent = {
+		const textInputData = {
 			type: ComponentType.TextInput,
 			label: 'label',
 			custom_id: 'custom id',
@@ -52,17 +52,17 @@ describe('Text Input Components', () => {
 			value: 'value',
 			required: false,
 			style: TextInputStyle.Paragraph,
-		};
+		} satisfies APITextInputComponent;
 
 		expect(new TextInputBuilder(textInputData).toJSON()).toEqual(textInputData);
 		expect(
 			textInputComponent()
 				.setCustomId(textInputData.custom_id)
 				.setLabel(textInputData.label)
-				.setPlaceholder(textInputData.placeholder!)
-				.setMaxLength(textInputData.max_length!)
-				.setMinLength(textInputData.min_length!)
-				.setValue(textInputData.value!)
+				.setPlaceholder(textInputData.placeholder)
+				.setMaxLength(textInputData.max_length)
+				.setMinLength(textInputData.min_length)
+				.setValue(textInputData.value)
 				.setRequired(textInputData.required)
 				.setStyle(textInputData.style)
 				.toJSON(),
