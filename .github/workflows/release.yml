@@ -49,7 +49,7 @@ jobs:
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ inputs.ref || '' }}
           ssh-key: ${{ secrets.DEPLOY_KEY_CI_RELEASE_TAGS }}
