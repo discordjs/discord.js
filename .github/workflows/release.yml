@@ -48,16 +48,17 @@ jobs:
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     if: github.repository_owner == 'discordjs'
     steps:
+      - uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ vars.DISCORDJS_APP_ID }}
+          private-key: ${{ secrets.DISCORDJS_APP_KEY_RELEASE }}
+          permission-contents: write
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref || '' }}
-          ssh-key: ${{ secrets.DEPLOY_KEY_CI_RELEASE_TAGS }}
-
-      - name: Set Git User and Email
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Install Node.js v22
         uses: actions/setup-node@v4
@@ -79,4 +80,4 @@ jobs:
           dry: ${{ inputs.dry_run }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
