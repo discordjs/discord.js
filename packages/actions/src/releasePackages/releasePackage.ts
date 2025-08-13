@@ -18,20 +18,19 @@ async function checkRegistry(release: ReleaseEntry) {
 
 async function gitTagAndRelease(release: ReleaseEntry, dry: boolean) {
 	const tagName = `${release.name === 'discord.js' ? `` : `${release.name}@`}${release.version}`;
-	// Don't throw, if this exits non-zero it's probably because the tag already exists
-	await $`git tag ${tagName}`.nothrow();
 
 	if (dry) {
-		info(`[DRY] Tag "${tagName}" created, skipping push and release creation.`);
+		info(`[DRY] Release would be "${tagName}", skipping release creation.`);
 		return;
 	}
 
-	await $`git push origin ${tagName}`;
+	const commitHash = (await $`git rev-parse --short HEAD`.text()).trim();
 
 	try {
 		await octokit?.rest.repos.createRelease({
 			...context.repo,
 			tag_name: tagName,
+			target_commitish: commitHash,
 			name: tagName,
 			body: release.changelog ?? '',
 			generate_release_notes: release.changelog === undefined,
