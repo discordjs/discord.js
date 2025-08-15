@@ -519,6 +519,24 @@ test('Unauthorized', async () => {
 	expect(setTokenSpy).toHaveBeenCalledTimes(1);
 });
 
+test('Unauthorized: webhook with token', async () => {
+	mockPool
+		.intercept({
+			path: genPath('/webhooks/339942739275677727/ZmFrZSB0b2tlbg'),
+			method: 'POST',
+		})
+		.reply(401, { message: '401: Unauthorized', code: 0 }, responseOptions)
+		.times(1);
+
+	const setTokenSpy = vitest.spyOn(invalidAuthApi, 'setToken');
+
+	// Ensure requests do not reset the token
+	const promise = invalidAuthApi.post('/webhooks/339942739275677727/ZmFrZSB0b2tlbg');
+	await expect(promise).rejects.toThrowError('401: Unauthorized');
+	await expect(promise).rejects.toBeInstanceOf(DiscordAPIError);
+	expect(setTokenSpy).toHaveBeenCalledTimes(0);
+});
+
 test('Bad Request', async () => {
 	mockPool
 		.intercept({
