@@ -257,7 +257,7 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 			this.createHandler(hash.value, routeId.majorParameter);
 
 		// Resolve the request into usable fetch options
-		const { url, fetchOptions } = await this.resolveRequest(request);
+		const { url, fetchOptions } = await this.resolveRequest(request, routeId);
 
 		// Queue the request
 		return handler.queueRequest(routeId, url, fetchOptions, {
@@ -291,8 +291,12 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 	 * Formats the request data to a usable format for fetch
 	 *
 	 * @param request - The request data
+	 * @param routeId - The generalized api route with literal ids for major parameters
 	 */
-	private async resolveRequest(request: InternalRequest): Promise<{ fetchOptions: RequestInit; url: string }> {
+	private async resolveRequest(
+		request: InternalRequest,
+		routeId: RouteData,
+	): Promise<{ fetchOptions: RequestInit; url: string }> {
 		const { options } = this;
 
 		let query = '';
@@ -311,11 +315,13 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 			'User-Agent': `${DefaultUserAgent} ${options.userAgentAppendix}`.trim(),
 		};
 
+		const isWebhookWithTokenRoute = routeId.bucketRoute.startsWith('/webhooks/:id/:token');
+
 		// If this request requires authorization (allowing non-"authorized" requests for webhooks)
 		if (request.auth !== false) {
 			if (typeof request.auth === 'object') {
 				headers.Authorization = `${request.auth.prefix ?? this.options.authPrefix} ${request.auth.token}`;
-			} else {
+			} else if (!isWebhookWithTokenRoute) {
 				// If we haven't received a token, throw an error
 				if (!this.#token) {
 					throw new Error('Expected token to be set for this request, but none was present');

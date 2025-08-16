@@ -137,8 +137,11 @@ export async function handleErrors(
 	} else {
 		// Handle possible malformed requests
 		if (status >= 400 && status < 500) {
+			const isWebhookWithTokenRoute = /\/webhooks\/\d{17,19}\/[^/?]+/.test(url);
+
 			// If we receive this status code, it means the token we had is no longer valid.
-			if (status === 401 && requestData.auth === true) {
+			// If the request was placed to a /webhooks/:id/:token route, this error concerns the webhook token.
+			if (status === 401 && requestData.auth === true && !isWebhookWithTokenRoute) {
 				manager.setToken(null!);
 			}
 
