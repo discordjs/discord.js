@@ -24,7 +24,7 @@ async function gitTagAndRelease(release: ReleaseEntry, dry: boolean) {
 		return;
 	}
 
-	const commitHash = (await $`git rev-parse --short HEAD`.text()).trim();
+	const commitHash = (await $`git rev-parse HEAD`.text()).trim();
 
 	try {
 		await octokit?.rest.repos.createRelease({
