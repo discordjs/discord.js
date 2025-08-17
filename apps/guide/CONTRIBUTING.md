@@ -18,7 +18,7 @@ To add a new page to the guide, create a `filename.mdx` file in the folder of yo
 
 ## Framework and components
 
-The guide uses the fumadocs documention framework for Next.js. You can find examples as well as documentation for the components you can use at <https://fumadocs.dev/docs/ui>.
+The guide uses the fumadocs documentation framework for Next.js. You can find examples as well as documentation for the components you can use at <https://fumadocs.dev/docs/ui>.
 
 ## General guidelines
 
@@ -64,7 +64,7 @@ When referring to yourself, use "we" (as in "the writers of this guide") instead
 
 #### Inclusive language
 
-Try to avoid using genered and otherwise non-inclusive language. The following are just examples to give you an idea of what we expect. Don't understand this as a complete list of "banned terms":
+Try to avoid using gendered and otherwise non-inclusive language. The following are just examples to give you an idea of what we expect. Don't understand this as a complete list of "banned terms":
 
 - Use they/them/their instead of gendered pronouns (he/him/his, she/her/hers).
 - Avoid using "master" and "slave", you can use "primary" and "replica" or "secondary" instead.
@@ -95,7 +95,7 @@ console.log('Hello'); // [!code --]
 console.log('Hello World'); // [!code ++]
 ```
 
-You can put the transfomer syntax above the respective line and declare ranges instead of repeating formatting intsructions. You can also combine different transformers on the same line. Note that word highlights highlight the word across the code block by default, but do respect ranges.
+You can put the transformer syntax above the respective line and declare ranges instead of repeating formatting intsructions. You can also combine different transformers on the same line. Note that word highlights highlight the word across the code block by default, but do respect ranges.
 
 ```js
 console.log('Hello'); // [!code --:2]
@@ -126,7 +126,7 @@ Make sure to denote the file names or paths if you describe progress in a specif
 ```
 
 ```js tab="Usage"
-// code showing how to use what is being configued
+// code showing how to use what is being configured
 ```
 ````
 
