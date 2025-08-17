@@ -33,7 +33,7 @@ program
 	.parse();
 
 const { exclude, dry, dev } = program.opts<{ dev: boolean; dry: boolean; exclude: string[] }>();
-const packageName = program.args[0]!;
+const [packageName] = program.processedArgs as [string];
 
 const tree = await generateReleaseTree(dev, dry, packageName, exclude);
 for (const branch of tree) {
