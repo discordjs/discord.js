@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file.
 
+# [15.0.0](https://github.com/discordjs/discord.js/compare/14.21.0...15.0.0) - (2025-08-20)
+
+## Bug Fixes
+
+- Remove trailing `color` references (#11007) ([b532df6](https://github.com/discordjs/discord.js/commit/b532df61ed346e2289831f2905984583a53d3fa5))
+- **Emoji:** Remove incorrect nullables, add `ApplicationEmoji#available` (#10990) ([90d3b28](https://github.com/discordjs/discord.js/commit/90d3b282684f5a4bbf9ce2672fa5efd5ec802e95))
+- **GuildChannelManager:** Properly resolve avatar for createWebhook (#10772) ([63f5261](https://github.com/discordjs/discord.js/commit/63f5261f4c351cd1b6befca1163254300f7424f4))
+- **Message:** Forwarded messages are not `crosspostable` (#10821) ([b36b751](https://github.com/discordjs/discord.js/commit/b36b751bde5f5de286d748465619147619959d4f))
+- **DirectoryChannel:** Export class (#10985) ([51ceb20](https://github.com/discordjs/discord.js/commit/51ceb203fa218accab47f604f91f74b49af7e51f))
+- **Events:** `WebhooksUpdate` enum value (#10970) ([1404e32](https://github.com/discordjs/discord.js/commit/1404e328492549f4a17ab997eb648f3263e8ec25))
+
+## Documentation
+
+- Remove hardcoded locale from links (#10794) ([5be774d](https://github.com/discordjs/discord.js/commit/5be774db641b60669505645861d721200d335a7b))
+- **ApplicationCommand:** Incorrect method in example (#10837) ([040c66a](https://github.com/discordjs/discord.js/commit/040c66ae15fd3cc7cb40bdbb5384ede445c40973))
+
+## Features
+
+- Support user guilds (#10995) ([baa08b8](https://github.com/discordjs/discord.js/commit/baa08b8fbb64abd8265890413c95f81e2c61303f))
+- **MessageManager:** New pinned messages routes (#10993) ([f469f74](https://github.com/discordjs/discord.js/commit/f469f74acaa14f126fd02af4a032ca8e56dbb534))
+  - **BREAKING CHANGE:** `fetchPinned()` has been renamed to `fetchPins()`, which is a paginated endpoint to fetch pinned messages.
+- **User:** Add `collectibles` (#10939) ([8ac0e1e](https://github.com/discordjs/discord.js/commit/8ac0e1e5d6df9c51fd3a41d9f8c9dbe8f786229a))
+- Role gradient colours (#10986) ([9d6fdf8](https://github.com/discordjs/discord.js/commit/9d6fdf8979d29787a13912cfa55f1ff3961c6b68))
+- Support animated WebP (#10987) ([cafe58b](https://github.com/discordjs/discord.js/commit/cafe58b3bd9defb5050a7a90bd07568f3b509c89))
+
+## Refactor
+
+- Deprecate `ready` event in favor of `clientReady` (#10969) ([82378fc](https://github.com/discordjs/discord.js/commit/82378fc2e8f4fd7e56b5a80eb6a6d3a8315e388e))
+- **ThreadChannel:** Remove trimming of name (#10984) ([d4f742e](https://github.com/discordjs/discord.js/commit/d4f742e99e31b4eb9e84afce3bab48ed549f8ae3))
+
+## Typings
+
+- **Invite:** Approximate fields should be nullable (#10997) ([d60e0bf](https://github.com/discordjs/discord.js/commit/d60e0bf30bac05921063d010fab253ca829ae3bb))
+- **ModalSubmitFields:** Fix `fields` type (#10816) ([500712d](https://github.com/discordjs/discord.js/commit/500712d5eaef1a75133e088e0f260842d12f3419))
+- **InteractionCallbackResponse:** Add missing InGuild generic (#10963) ([19e74b1](https://github.com/discordjs/discord.js/commit/19e74b153317cf8b910317c56beb95a698acc00c))
+
 # [14.21.0](https://github.com/discordjs/discord.js/compare/14.20.0...14.21.0) - (2025-06-25)
 
 ## Bug Fixes
