@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-# [15.0.0](https://github.com/discordjs/discord.js/compare/14.21.0...15.0.0) - (2025-08-20)
+# [14.22.0](https://github.com/discordjs/discord.js/compare/14.21.0...14.22.0) - (2025-08-20)
 
 ## Bug Fixes
 
@@ -22,7 +22,7 @@ All notable changes to this project will be documented in this file.
 
 - Support user guilds (#10995) ([baa08b8](https://github.com/discordjs/discord.js/commit/baa08b8fbb64abd8265890413c95f81e2c61303f))
 - **MessageManager:** New pinned messages routes (#10993) ([f469f74](https://github.com/discordjs/discord.js/commit/f469f74acaa14f126fd02af4a032ca8e56dbb534))
-  - **BREAKING CHANGE:** `fetchPinned()` has been renamed to `fetchPins()`, which is a paginated endpoint to fetch pinned messages.
+  - `fetchPinned()` has been renamed to `fetchPins()`, which is a paginated endpoint to fetch pinned messages.
 - **User:** Add `collectibles` (#10939) ([8ac0e1e](https://github.com/discordjs/discord.js/commit/8ac0e1e5d6df9c51fd3a41d9f8c9dbe8f786229a))
 - Role gradient colours (#10986) ([9d6fdf8](https://github.com/discordjs/discord.js/commit/9d6fdf8979d29787a13912cfa55f1ff3961c6b68))
 - Support animated WebP (#10987) ([cafe58b](https://github.com/discordjs/discord.js/commit/cafe58b3bd9defb5050a7a90bd07568f3b509c89))
