@@ -12,7 +12,7 @@
 		"start": "node --env-file=.env dist/index.js"
 	},
 	"dependencies": {
-		"@discordjs/core": "^2.2.0",
+		"@discordjs/core": "^2.2.1",
 		"discord.js": "^14.22.0"
 	},
 	"devDependencies": {
