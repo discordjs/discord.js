@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/rest@2.6.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.5.1...@discordjs/rest@2.6.0) - (2025-08-20)
+
+## Documentation
+
+- Remove hardcoded locale from links (#10794) ([5be774d](https://github.com/discordjs/discord.js/commit/5be774db641b60669505645861d721200d335a7b))
+
+## Features
+
+- Support user guilds (#10995) ([baa08b8](https://github.com/discordjs/discord.js/commit/baa08b8fbb64abd8265890413c95f81e2c61303f))
+- Support animated WebP (#10987) ([cafe58b](https://github.com/discordjs/discord.js/commit/cafe58b3bd9defb5050a7a90bd07568f3b509c89))
+
 # [@discordjs/rest@2.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.4.3...@discordjs/rest@2.5.0) - (2025-04-25)
 
 ## Features
