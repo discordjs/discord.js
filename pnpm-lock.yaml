@@ -1498,9 +1498,6 @@ importers:
       '@types/node':
         specifier: ^22.16.0
         version: 22.16.3
-      '@vitest/coverage-v8':
-        specifier: ^3.2.4
-        version: 3.2.4(vitest@3.2.4(@edge-runtime/vm@3.2.0)(@types/debug@4.1.12)(@types/node@22.16.3)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.0))
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -1531,9 +1528,6 @@ importers:
       typescript:
         specifier: ~5.8.3
         version: 5.8.3
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@edge-runtime/vm@3.2.0)(@types/debug@4.1.12)(@types/node@22.16.3)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(yaml@2.8.0)
 
   packages/scripts:
     dependencies:
