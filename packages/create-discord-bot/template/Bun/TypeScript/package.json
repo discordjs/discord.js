@@ -12,7 +12,7 @@
 	},
 	"dependencies": {
 		"@discordjs/core": "^2.2.0",
-		"discord.js": "^14.21.0"
+		"discord.js": "^14.22.0"
 	},
 	"devDependencies": {
 		"@sapphire/ts-config": "^5.0.1",
