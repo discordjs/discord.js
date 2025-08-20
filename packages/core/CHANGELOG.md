@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/core@2.2.1](https://github.com/discordjs/discord.js/compare/@discordjs/core@2.2.0...@discordjs/core@2.2.1) - (2025-08-20)
+
+## Bug Fixes
+
+- Adjust `reason` in methods options (#10977) ([9fc3e5e](https://github.com/discordjs/discord.js/commit/9fc3e5ea72a2714d81cc57cbac4f378a49934446))
+
 # [@discordjs/core@2.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@2.1.1...@discordjs/core@2.2.0) - (2025-06-25)
 
 ## Features
