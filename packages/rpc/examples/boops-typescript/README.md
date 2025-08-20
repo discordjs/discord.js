@@ -1,6 +1,6 @@
 # boops-typescript
 
-A minimal Electron application using discord-rpc with TypeScript
+A minimal Electron application using @discordjs/rpc with TypeScript.
 
 ## Recommended IDE Setup
 
