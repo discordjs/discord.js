@@ -95,6 +95,9 @@ body:
         - Reaction
         - GuildScheduledEvent
         - ThreadMember
+        - Poll
+        - PollAnswer
+        - SoundboardSound
       multiple: true
     validations:
       required: true
