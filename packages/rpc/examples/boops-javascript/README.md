@@ -1,6 +1,6 @@
 # boops-javascript
 
-A minimal Electron application using discord-rpc with JavaScript
+A minimal Electron application using @discordjs/rpc with JavaScript.
 
 ## Recommended IDE Setup
 

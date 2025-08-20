@@ -1,7 +1,7 @@
 {
   "name": "boops-typescript",
   "version": "1.0.0",
-  "description": "A minimal Electron application using discord-rpc with TypeScript",
+  "description": "A minimal Electron application using @discordjs/rpc with TypeScript",
   "main": "./out/main/index.js",
   "scripts": {
     "format": "prettier --write .",
