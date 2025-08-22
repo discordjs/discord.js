@@ -765,8 +765,8 @@ importers:
         specifier: workspace:^
         version: link:../util
       discord-api-types:
-        specifier: ^0.38.16
-        version: 0.38.18
+        specifier: ^0.38.21
+        version: 0.38.21
       ts-mixer:
         specifier: ^6.0.4
         version: 6.0.4
@@ -895,8 +895,8 @@ importers:
         specifier: ^2.4.6
         version: 2.4.6
       discord-api-types:
-        specifier: ^0.38.16
-        version: 0.38.18
+        specifier: ^0.38.21
+        version: 0.38.21
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1029,8 +1029,8 @@ importers:
         specifier: ^2.4.6
         version: 2.4.6
       discord-api-types:
-        specifier: ^0.38.16
-        version: 0.38.18
+        specifier: ^0.38.21
+        version: 0.38.21
       fast-deep-equal:
         specifier: 3.1.3
         version: 3.1.3
@@ -1154,8 +1154,8 @@ importers:
   packages/formatters:
     dependencies:
       discord-api-types:
-        specifier: ^0.38.16
-        version: 0.38.18
+        specifier: ^0.38.21
+        version: 0.38.21
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1230,8 +1230,8 @@ importers:
         specifier: workspace:^
         version: link:../ws
       discord-api-types:
-        specifier: ^0.38.16
-        version: 0.38.18
+        specifier: ^0.38.21
+        version: 0.38.21
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1416,8 +1416,8 @@ importers:
         specifier: ^2.4.6
         version: 2.4.6
       discord-api-types:
-        specifier: ^0.38.16
-        version: 0.38.18
+        specifier: ^0.38.21
+        version: 0.38.21
       magic-bytes.js:
         specifier: ^1.12.1
         version: 1.12.1
@@ -1565,8 +1565,8 @@ importers:
         specifier: ^3.5.5
         version: 3.5.5
       discord-api-types:
-        specifier: ^0.38.16
-        version: 0.38.18
+        specifier: ^0.38.21
+        version: 0.38.21
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1783,8 +1783,8 @@ importers:
         specifier: ^8.18.1
         version: 8.18.1
       discord-api-types:
-        specifier: ^0.38.16
-        version: 0.38.18
+        specifier: ^0.38.21
+        version: 0.38.21
       prism-media:
         specifier: ^1.3.5
         version: 1.3.5(@discordjs/opus@0.9.0(encoding@0.1.13))
@@ -1874,8 +1874,8 @@ importers:
         specifier: ^2.4.6
         version: 2.4.6
       discord-api-types:
-        specifier: ^0.38.16
-        version: 0.38.18
+        specifier: ^0.38.21
+        version: 0.38.21
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
@@ -7753,8 +7753,8 @@ packages:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
     engines: {node: '>=8'}
 
-  discord-api-types@0.38.18:
-    resolution: {integrity: sha512-ygenySjZKUaBf5JT8BNhZSxLzwpwdp41O0wVroOTu/N2DxFH7dxYTZUSnFJ6v+/2F3BMcnD47PC47u4aLOLxrQ==}
+  discord-api-types@0.38.21:
+    resolution: {integrity: sha512-E6KtXUNjZVIYP1GMjmeRdAC1xRql9xtSahRwJYpP74/hJ6Q2i2oTp6ZbFG/FUN0WqtdW2igHDsJyF2u9hV8pHQ==}
 
   dmd@6.2.3:
     resolution: {integrity: sha512-SIEkjrG7cZ9GWZQYk/mH+mWtcRPly/3ibVuXO/tP/MFoWz6KiRK77tSMq6YQBPl7RljPtXPQ/JhxbNuCdi1bNw==}
@@ -20469,7 +20469,7 @@ snapshots:
     dependencies:
       path-type: 4.0.0
 
-  discord-api-types@0.38.18: {}
+  discord-api-types@0.38.21: {}
 
   dmd@6.2.3:
     dependencies:
