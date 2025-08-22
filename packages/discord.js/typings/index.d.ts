@@ -1682,6 +1682,7 @@ export class Guild extends AnonymousGuild {
   public setVerificationLevel(verificationLevel: GuildVerificationLevel | null, reason?: string): Promise<Guild>;
   public setPremiumProgressBarEnabled(enabled?: boolean, reason?: string): Promise<Guild>;
   public setWidgetSettings(settings: GuildWidgetSettingsData, reason?: string): Promise<Guild>;
+  /** @deprecated API related to guild ownership may no longer be used. */
   public setMFALevel(level: GuildMFALevel, reason?: string): Promise<Guild>;
   public toJSON(): unknown;
 }
@@ -2020,6 +2021,7 @@ export class GuildTemplate extends Base {
   public guildId: Snowflake;
   public serializedGuild: APITemplateSerializedSourceGuild;
   public unSynced: boolean | null;
+  /** @deprecated API related to guild ownership may no longer be used. */
   public createGuild(name: string, icon?: BufferResolvable | Base64Resolvable): Promise<Guild>;
   public delete(): Promise<GuildTemplate>;
   public edit(options?: GuildTemplateEditOptions): Promise<GuildTemplate>;
@@ -4845,6 +4847,7 @@ export interface FetchSoundboardSoundsOptions {
 
 export class GuildManager extends CachedManager<Snowflake, Guild, GuildResolvable> {
   private constructor(client: Client<true>, iterable?: Iterable<RawGuildData>);
+  /** @deprecated API related to guild ownership may no longer be used. */
   public create(options: GuildCreateOptions): Promise<Guild>;
   public fetch(options: Snowflake | FetchGuildOptions): Promise<Guild>;
   public fetch(options?: FetchGuildsOptions): Promise<Collection<Snowflake, OAuth2Guild>>;
@@ -6645,6 +6648,7 @@ export interface GuildChannelOverwriteOptions {
   type?: OverwriteType;
 }
 
+/** @deprecated API related to guild ownership may no longer be used. */
 export interface GuildCreateOptions {
   name: string;
   icon?: BufferResolvable | Base64Resolvable | null;
@@ -7320,6 +7324,7 @@ export interface PresenceData {
 
 export type PresenceResolvable = Presence | UserResolvable | Snowflake;
 
+/** @deprecated API related to guild ownership may no longer be used. */
 export interface PartialChannelData {
   id?: Snowflake | number;
   parentId?: Snowflake | number;
@@ -7378,6 +7383,7 @@ export interface PartialThreadMember extends Partialize<ThreadMember, 'flags' | 
 
 export interface PartialSoundboardSound extends Partialize<SoundboardSound, 'available' | 'name' | 'volume'> {}
 
+/** @deprecated API related to guild ownership may no longer be used. */
 export interface PartialOverwriteData {
   id: Snowflake | number;
   type?: OverwriteType;
@@ -7385,6 +7391,7 @@ export interface PartialOverwriteData {
   deny?: PermissionResolvable;
 }
 
+/** @deprecated API related to guild ownership may no longer be used. */
 export interface PartialRoleData extends RoleData {
   id?: Snowflake | number;
 }
