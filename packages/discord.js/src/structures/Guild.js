@@ -1345,6 +1345,7 @@ class Guild extends AnonymousGuild {
    * @param {GuildMFALevel} level The MFA level
    * @param {string} [reason] Reason for changing the guild's MFA level
    * @returns {Promise<Guild>}
+   * @deprecated API related to guild ownership may no longer be used.
    * @example
    * // Set the MFA level of the guild to Elevated
    * guild.setMFALevel(GuildMFALevel.Elevated)
@@ -1379,6 +1380,7 @@ class Guild extends AnonymousGuild {
   /**
    * Deletes the guild.
    * @returns {Promise<Guild>}
+   * @deprecated API related to guild ownership may no longer be used.
    * @example
    * // Delete a guild
    * guild.delete()
