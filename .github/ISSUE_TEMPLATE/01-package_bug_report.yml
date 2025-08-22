@@ -1,6 +1,6 @@
 name: Bug report
 description: Report an issue with discord.js or another package.
-labels: [bug, need repro]
+labels: [t:bug, t:need reproduction]
 body:
   - type: markdown
     attributes:
