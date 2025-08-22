@@ -166,6 +166,7 @@ export class GuildsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/guild#create-guild}
 	 * @param body - The guild to create
 	 * @param options - The options for creating the guild
+	 * @deprecated API related to guild ownership may no longer be used.
 	 */
 	public async create(body: RESTPostAPIGuildsJSONBody, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.post(Routes.guilds(), { body, signal }) as Promise<RESTPostAPIGuildsResult>;
@@ -197,6 +198,7 @@ export class GuildsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/guild#delete-guild}
 	 * @param guildId - The id of the guild to delete
 	 * @param options - The options for deleting this guild
+	 * @deprecated API related to guild ownership may no longer be used.
 	 */
 	public async delete(guildId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
 		await this.rest.delete(Routes.guild(guildId), { signal });
@@ -491,6 +493,7 @@ export class GuildsAPI {
 	 * @param guildId - The id of the guild to edit the MFA level for
 	 * @param level - The new MFA level
 	 * @param options - The options for editing the MFA level
+	 * @deprecated API related to guild ownership may no longer be used.
 	 */
 	public async editMFALevel(
 		guildId: Snowflake,
