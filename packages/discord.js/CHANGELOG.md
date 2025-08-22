@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.22.1](https://github.com/discordjs/discord.js/compare/14.22.0...14.22.1) - (2025-08-22)
+
+## Bug Fixes
+
+- **GuildChannel:** Account for everyone base permissions (#11053) ([ecef7bd](https://github.com/discordjs/discord.js/commit/ecef7bdf22cc3e7c1fc47d828a55f6139672b2a8))
+
 # [14.22.0](https://github.com/discordjs/discord.js/compare/14.21.0...14.22.0) - (2025-08-20)
 
 ## Bug Fixes
