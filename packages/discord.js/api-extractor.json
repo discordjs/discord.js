@@ -3,6 +3,7 @@
   "mainEntryPointFilePath": "<projectFolder>/typings/index.d.ts",
   "bundledPackages": [
     "discord-api-types",
+    "@discordjs/collection",
     "@discordjs/builders",
     "@discordjs/formatters",
     "@discordjs/rest",
