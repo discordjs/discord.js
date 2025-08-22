@@ -1,0 +1,35 @@
+import type { APIButtonComponent, APIButtonComponentWithCustomId, ButtonStyle } from 'discord-api-types/v10';
+import { kData } from '../../utils/symbols.js';
+import type { Partialize } from '../../utils/types.js';
+import { Component } from './Component.js';
+
+/**
+ * The data stored by a {@link Component} structure based on its {@link (Component:class)."type"} property.
+ */
+export type ButtonDataType<Style extends ButtonStyle> = Style extends
+	| ButtonStyle.Danger
+	| ButtonStyle.Primary
+	| ButtonStyle.Secondary
+	| ButtonStyle.Success
+	? APIButtonComponentWithCustomId
+	: Extract<APIButtonComponent, { style: Style }>;
+
+export class ButtonComponent<
+	Style extends ButtonStyle,
+	Omitted extends keyof ButtonDataType<Style> | '' = '',
+> extends Component<ButtonDataType<Style>, Omitted> {
+	/**
+	 * @param data - The raw data received from the API for the connection
+	 */
+	public constructor(data: Partialize<ButtonDataType<Style>, Omitted>) {
+		super(data);
+	}
+
+	public get style() {
+		return this[kData].style;
+	}
+
+	public get disabled() {
+		return typeof this[kData].disabled === 'boolean' ? this[kData].disabled : null;
+	}
+}
