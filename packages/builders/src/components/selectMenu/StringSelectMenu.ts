@@ -9,6 +9,7 @@ import { StringSelectMenuOptionBuilder } from './StringSelectMenuOption.js';
 
 export interface StringSelectMenuData extends Partial<Omit<APIStringSelectComponent, 'options'>> {
 	options: StringSelectMenuOptionBuilder[];
+	required?: boolean;
 }
 
 /**
@@ -143,6 +144,17 @@ export class StringSelectMenuBuilder extends BaseSelectMenuBuilder<APIStringSele
 		this.data.options ??= [];
 		this.data.options.splice(index, deleteCount, ...resolved);
 
+		return this;
+	}
+
+	/**
+	 * Sets whether this string select menu is required.
+	 *
+	 * @remarks Only for use in modals.
+	 * @param required - Whether this string select menu is required
+	 */
+	public setRequired(required = true) {
+		this.data.required = required;
 		return this;
 	}
 
