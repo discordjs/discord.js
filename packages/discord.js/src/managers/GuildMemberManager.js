@@ -446,42 +446,41 @@ class GuildMemberManager extends CachedManager {
    *    .then(pruned => console.log(`I just pruned ${pruned} people!`))
    *    .catch(console.error);
    */
-async prune({ days, dry = false, count: compute_prune_count, roles = [], reason, timeout } = {}) {
-  if (typeof days !== 'number') throw new DiscordjsTypeError(ErrorCodes.PruneDaysType);
+  async prune({ days, dry = false, count: compute_prune_count, roles = [], reason, timeout } = {}) {
+    if (typeof days !== 'number') throw new DiscordjsTypeError(ErrorCodes.PruneDaysType);
 
-  const query = { days };
-  const resolvedRoles = [];
+    const query = { days };
+    const resolvedRoles = [];
 
-  for (const role of roles) {
-    const resolvedRole = this.guild.roles.resolveId(role);
-    if (!resolvedRole) {
-      throw new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array', 'options.roles', role);
+    for (const role of roles) {
+      const resolvedRole = this.guild.roles.resolveId(role);
+      if (!resolvedRole) {
+        throw new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array', 'options.roles', role);
+      }
+
+      resolvedRoles.push(resolvedRole);
     }
 
-    resolvedRoles.push(resolvedRole);
+    if (resolvedRoles.length) {
+      query.include_roles = dry ? resolvedRoles.join(',') : resolvedRoles;
+    }
+
+    const endpoint = Routes.guildPrune(this.guild.id);
+
+    const { pruned } = await (dry
+      ? this.client.rest.get(endpoint, {
+          query: makeURLSearchParams(query),
+          reason,
+          timeout,
+        })
+      : this.client.rest.post(endpoint, {
+          body: { ...query, compute_prune_count },
+          reason,
+          timeout,
+        }));
+
+    return pruned;
   }
-
-  if (resolvedRoles.length) {
-    query.include_roles = dry ? resolvedRoles.join(',') : resolvedRoles;
-  }
-
-  const endpoint = Routes.guildPrune(this.guild.id);
-
-  const { pruned } = await (dry
-    ? this.client.rest.get(endpoint, {
-        query: makeURLSearchParams(query),
-        reason,
-        timeout,
-      })
-    : this.client.rest.post(endpoint, {
-        body: { ...query, compute_prune_count },
-        reason,
-        timeout,
-      }));
-
-  return pruned;
-}
-
 
   /**
    * Kicks a user from the guild.
