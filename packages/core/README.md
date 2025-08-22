@@ -37,9 +37,16 @@ pnpm add @discordjs/core
 These examples use [ES modules](https://nodejs.org/api/esm.html#enabling).
 
 ```ts
+import {
+	Client,
+	GatewayDispatchEvents,
+	GatewayIntentBits,
+	InteractionType,
+	MessageFlags,
+	type RESTGetAPIGatewayBotResult,
+} from '@discordjs/core';
 import { REST } from '@discordjs/rest';
 import { WebSocketManager } from '@discordjs/ws';
-import { GatewayDispatchEvents, GatewayIntentBits, InteractionType, MessageFlags, Client } from '@discordjs/core';
 
 // Create REST and WebSocket managers directly
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
@@ -47,7 +54,7 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 const gateway = new WebSocketManager({
 	token: process.env.DISCORD_TOKEN,
 	intents: GatewayIntentBits.GuildMessages | GatewayIntentBits.MessageContent,
-	rest,
+	fetchGatewayInformation: () => rest.get('/gateway/bot') as Promise<RESTGetAPIGatewayBotResult>,
 });
 
 // Create a client to emit relevant events.
