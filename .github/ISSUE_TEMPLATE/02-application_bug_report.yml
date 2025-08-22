@@ -1,6 +1,6 @@
 name: Websites bug report
 description: Report an issue with the documentation or guide websites.
-labels: [bug, need repro]
+labels: [t:bug, t:need reproduction]
 body:
   - type: markdown
     attributes:
