@@ -250,10 +250,11 @@ class GuildChannel extends BaseChannel {
       return new PermissionsBitField(PermissionsBitField.All).freeze();
     }
 
+    const basePermissions = new PermissionsBitField([role.permissions, role.guild.roles.everyone.permissions]);
     const everyoneOverwrites = this.permissionOverwrites.cache.get(this.guild.id);
     const roleOverwrites = this.permissionOverwrites.cache.get(role.id);
 
-    return role.permissions
+    return basePermissions
       .remove(everyoneOverwrites?.deny ?? PermissionsBitField.DefaultBit)
       .add(everyoneOverwrites?.allow ?? PermissionsBitField.DefaultBit)
       .remove(roleOverwrites?.deny ?? PermissionsBitField.DefaultBit)
