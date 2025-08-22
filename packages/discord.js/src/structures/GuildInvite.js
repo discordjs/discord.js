@@ -2,6 +2,7 @@
 
 const { Routes, PermissionFlagsBits, InviteType } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
+const { InviteFlagsBitField } = require('../util/InviteFlagsBitField.js');
 const { BaseInvite } = require('./BaseInvite.js');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent.js');
 const { IntegrationApplication } = require('./IntegrationApplication.js');
@@ -47,6 +48,17 @@ class GuildInvite extends BaseInvite {
 
   _patch(data) {
     super._patch(data);
+
+    if ('flags' in data) {
+      /**
+       * The flags of this invite.
+       *
+       * @type {Readonly<InviteFlagsBitField>}
+       */
+      this.flags = new InviteFlagsBitField(data.flags).freeze();
+    } else {
+      this.flags ??= new InviteFlagsBitField().freeze();
+    }
 
     if ('guild' in data) {
       /**
