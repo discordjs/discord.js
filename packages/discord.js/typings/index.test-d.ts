@@ -3000,3 +3000,23 @@ await guildScheduledEventManager.edit(snowflake, { recurrenceRule: null });
     byMonth: [GuildScheduledEventRecurrenceRuleMonth.May],
   });
 }
+
+await textChannel.send({
+  files: [
+    new AttachmentBuilder('https://example.com/voice-message.ogg')
+      .setDuration(2)
+      .setWaveform('AFUqPDw3Eg2hh4+gopOYj4xthU4='),
+  ],
+  flags: MessageFlags.IsVoiceMessage,
+});
+
+await textChannel.send({
+  files: [
+    {
+      attachment: 'https://example.com/voice-message.ogg',
+      duration: 2,
+      waveform: 'AFUqPDw3Eg2hh4+gopOYj4xthU4=',
+    },
+  ],
+  flags: MessageFlags.IsVoiceMessage,
+});

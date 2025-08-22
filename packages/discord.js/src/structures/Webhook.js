@@ -142,7 +142,7 @@ class Webhook {
    * @typedef {BaseMessageOptionsWithPoll} WebhookMessageCreateOptions
    * @property {boolean} [tts=false] Whether the message should be spoken aloud
    * @property {MessageFlags} [flags] Which flags to set for the message.
-   * <info>Only the {@link MessageFlags.SuppressEmbeds} flag can be set.</info>
+   * <info>Only {@link MessageFlags.SuppressEmbeds} and {@link MessageFlags.IsVoiceMessage} can be set.</info>
    * @property {string} [username=this.name] Username override for the message
    * @property {string} [avatarURL] Avatar URL override for the message
    * @property {Snowflake} [threadId] The id of the thread in the channel to send to.
