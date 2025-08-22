@@ -6190,6 +6190,7 @@ export interface GuildPruneMembersOptions {
   dry?: boolean;
   reason?: string;
   roles?: readonly RoleResolvable[];
+  timeout?: number;
 }
 
 export interface GuildWidgetSettingsData {
