@@ -659,6 +659,60 @@ export function applicationDirectory<ApplicationId extends Snowflake, SKUId exte
 }
 
 /**
+ * Formats an email address into an email mention.
+ *
+ * @typeParam Email - This is inferred by the supplied email address
+ * @param email - The email address to format
+ */
+export function email<Email extends string>(email: Email): `<${Email}>`;
+
+/**
+ * Formats an email address and headers into an email mention.
+ *
+ * @typeParam Email - This is inferred by the supplied email address
+ * @param email - The email address to format
+ * @param headers - Optional headers to include in the email mention
+ */
+export function email<Email extends string>(
+	email: Email,
+	headers: Record<string, string | readonly string[]> | undefined,
+): `<${Email}?${string}>`;
+
+/**
+ * Formats an email address into an email mention.
+ *
+ * @typeParam Email - This is inferred by the supplied email address
+ * @param email - The email address to format
+ * @param headers - Optional headers to include in the email mention
+ */
+export function email<Email extends string>(email: Email, headers?: Record<string, string | readonly string[]>) {
+	if (headers) {
+		// eslint-disable-next-line n/prefer-global/url-search-params
+		const searchParams = new URLSearchParams(
+			Object.fromEntries(Object.entries(headers).map(([key, value]) => [key.toLowerCase(), value])),
+		);
+
+		return `<${email}?${searchParams.toString()}>` as const;
+	}
+
+	return `<${email}>` as const;
+}
+
+/**
+ * Formats a phone number into a phone number mention.
+ *
+ * @typeParam PhoneNumber - This is inferred by the supplied phone number
+ * @param phoneNumber - The phone number to format. Must start with a `+` sign.
+ */
+export function phoneNumber<PhoneNumber extends `+${string}`>(phoneNumber: PhoneNumber) {
+	if (!phoneNumber.startsWith('+')) {
+		throw new Error('Phone number must start with a "+" sign.');
+	}
+
+	return `<${phoneNumber}>` as const;
+}
+
+/**
  * The {@link https://discord.com/developers/docs/reference#message-formatting-timestamp-styles | message formatting timestamp styles}
  * supported by Discord.
  */
