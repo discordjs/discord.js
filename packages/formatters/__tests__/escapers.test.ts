@@ -23,6 +23,7 @@ const testURLs = [
 	'https://example.com/name_with_underscores',
 	'https://example.com/name__with__underscores',
 	'https://example.com/name_with_underscores_and__double__underscores',
+	'https://*.example.com/globbed/*',
 ];
 
 describe('Markdown escapers', () => {
