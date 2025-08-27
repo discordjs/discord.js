@@ -192,7 +192,7 @@ class MessagePayload {
     const attachments = this.options.files?.map((file, index) => ({
       id: index.toString(),
       description: file.description,
-      title: file.name,
+      title: file.title,
       waveform: file.waveform,
       duration_secs: file.duration,
     }));
