@@ -148,7 +148,7 @@ export async function handleErrors(
 				if (isDiscordError && data.code !== 0 && !authFalseWarningEmitted) {
 					const errorText = `Encountered HTTP 401 with error ${data.code}: ${data.message}. Your token will be removed from this REST instance. If you are using @discordjs/rest directly, consider adding 'auth: false' to the request. Open an issue with your library if not.`;
 					// Use emitWarning if possible, probably not available in edge / web
-					if (typeof process?.emitWarning === 'function') {
+					if (typeof process !== 'undefined' && typeof process.emitWarning === 'function') {
 						process.emitWarning(errorText);
 					} else {
 						console.warn(errorText);
