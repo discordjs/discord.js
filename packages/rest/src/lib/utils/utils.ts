@@ -186,6 +186,7 @@ export function normalizeRetryBackoff(
 		return backoff;
 	}
 
+	// No need to Math.max as we'll only set the sleep timer if the value is > 0 (and not equal)
 	return retryBackoff(route, statusCode, retryCount, requestBody);
 }
 
