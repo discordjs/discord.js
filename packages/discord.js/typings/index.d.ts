@@ -3005,19 +3005,30 @@ export class Presence extends Base {
 }
 
 export interface PollQuestionMedia {
-  text: string;
+  text: string | null;
+}
+
+export class PollAnswerVoterManager extends CachedManager<Snowflake, User, UserResolvable> {
+  private constructor(answer: PollAnswer);
+  public answer: PollAnswer;
+  public fetch(options?: BaseFetchPollAnswerVotersOptions): Promise<Collection<Snowflake, User>>;
 }
 
 export class Poll extends Base {
-  private constructor(client: Client<true>, data: APIPoll, message: Message);
+  private constructor(client: Client<true>, data: APIPoll, message: Message, channel: TextBasedChannel);
+  public readonly channel: TextBasedChannel;
+  public channelId: Snowflake;
   public readonly message: Message;
+  public messageId: Snowflake;
   public question: PollQuestionMedia;
-  public answers: Collection<number, PollAnswer>;
-  public expiresTimestamp: number;
-  public get expiresAt(): Date;
+  public answers: Collection<number, PollAnswer | PartialPollAnswer>;
+  public expiresTimestamp: number | null;
+  public get expiresAt(): Date | null;
   public allowMultiselect: boolean;
   public layoutType: PollLayoutType;
   public resultsFinalized: boolean;
+  public get partial(): false;
+  public fetch(): Promise<this>;
   public end(): Promise<Message>;
 }
 
@@ -3029,11 +3040,14 @@ export interface BaseFetchPollAnswerVotersOptions {
 export class PollAnswer extends Base {
   private constructor(client: Client<true>, data: APIPollAnswer & { count?: number }, poll: Poll);
   private _emoji: APIPartialEmoji | null;
-  public readonly poll: Poll;
+  public readonly poll: Poll | PartialPoll;
   public id: number;
   public text: string | null;
   public voteCount: number;
+  public voters: PollAnswerVoterManager;
   public get emoji(): GuildEmoji | Emoji | null;
+  public get partial(): false;
+  /** @deprecated Use {@link PollAnswerVoterManager.fetch} instead */
   public fetchVoters(options?: BaseFetchPollAnswerVotersOptions): Promise<Collection<Snowflake, User>>;
 }
 
@@ -5310,7 +5324,9 @@ export type AllowedPartial =
   | MessageReaction
   | GuildScheduledEvent
   | ThreadMember
-  | SoundboardSound;
+  | SoundboardSound
+  | Poll
+  | PollAnswer;
 
 export type AllowedThreadTypeForNewsChannel = ChannelType.AnnouncementThread;
 
@@ -5882,8 +5898,8 @@ export interface ClientEvents {
   inviteDelete: [invite: Invite];
   messageCreate: [message: OmitPartialGroupDMChannel<Message>];
   messageDelete: [message: OmitPartialGroupDMChannel<Message | PartialMessage>];
-  messagePollVoteAdd: [pollAnswer: PollAnswer, userId: Snowflake];
-  messagePollVoteRemove: [pollAnswer: PollAnswer, userId: Snowflake];
+  messagePollVoteAdd: [pollAnswer: PollAnswer | PartialPollAnswer, userId: Snowflake];
+  messagePollVoteRemove: [pollAnswer: PollAnswer | PartialPollAnswer, userId: Snowflake];
   messageReactionRemoveAll: [
     message: OmitPartialGroupDMChannel<Message | PartialMessage>,
     reactions: ReadonlyCollection<string | Snowflake, MessageReaction>,
@@ -7377,6 +7393,23 @@ export interface PartialMessage
 
 export interface PartialMessageReaction extends Partialize<MessageReaction, 'count'> {}
 
+export interface PartialPoll
+  extends Partialize<
+    Poll,
+    'allowMultiselect' | 'layoutType' | 'expiresTimestamp',
+    null,
+    'question' | 'message' | 'answers'
+  > {
+  question: { text: null };
+  message: PartialMessage;
+  // eslint-disable-next-line no-restricted-syntax
+  answers: Collection<number, PartialPollAnswer>;
+}
+
+export interface PartialPollAnswer extends Partialize<PollAnswer, 'emoji' | 'text', null, 'poll'> {
+  readonly poll: PartialPoll;
+}
+
 export interface PartialGuildScheduledEvent
   extends Partialize<GuildScheduledEvent, 'userCount', 'status' | 'privacyLevel' | 'name' | 'entityType'> {}
 
@@ -7406,6 +7439,8 @@ export enum Partials {
   GuildScheduledEvent,
   ThreadMember,
   SoundboardSound,
+  Poll,
+  PollAnswer,
 }
 
 export interface PartialUser extends Partialize<User, 'username' | 'tag' | 'discriminator'> {}
