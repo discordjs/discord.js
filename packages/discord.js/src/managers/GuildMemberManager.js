@@ -446,7 +446,7 @@ class GuildMemberManager extends CachedManager {
    *    .then(pruned => console.log(`I just pruned ${pruned} people!`))
    *    .catch(console.error);
    */
-  async prune({ days, dry = false, count: compute_prune_count, roles = [], reason } = {}) {
+  async prune({ days, dry = false, count: compute_prune_count, roles = [], reason, timeout } = {}) {
     if (typeof days !== 'number') throw new DiscordjsTypeError(ErrorCodes.PruneDaysType);
 
     const query = { days };
@@ -468,8 +468,16 @@ class GuildMemberManager extends CachedManager {
     const endpoint = Routes.guildPrune(this.guild.id);
 
     const { pruned } = await (dry
-      ? this.client.rest.get(endpoint, { query: makeURLSearchParams(query), reason })
-      : this.client.rest.post(endpoint, { body: { ...query, compute_prune_count }, reason }));
+      ? this.client.rest.get(endpoint, {
+          query: makeURLSearchParams(query),
+          reason,
+          timeout,
+        })
+      : this.client.rest.post(endpoint, {
+          body: { ...query, compute_prune_count },
+          reason,
+          timeout,
+        }));
 
     return pruned;
   }
