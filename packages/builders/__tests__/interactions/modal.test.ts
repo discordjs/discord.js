@@ -5,9 +5,9 @@ import { ModalBuilder, TextInputBuilder, LabelBuilder } from '../../src/index.js
 const modal = () => new ModalBuilder();
 
 const label = () =>
-	new LabelBuilder().setTextInputComponent(
-		new TextInputBuilder().setCustomId('text').setLabel(':3').setStyle(TextInputStyle.Short),
-	);
+	new LabelBuilder()
+		.setLabel('label')
+		.setTextInputComponent(new TextInputBuilder().setCustomId('text').setStyle(TextInputStyle.Short));
 
 describe('Modals', () => {
 	test('GIVEN valid fields THEN builder does not throw', () => {
@@ -37,7 +37,6 @@ describe('Modals', () => {
 					description: 'description',
 					component: {
 						type: ComponentType.TextInput,
-						label: 'label',
 						style: TextInputStyle.Paragraph,
 						custom_id: 'custom id',
 					},
@@ -48,7 +47,6 @@ describe('Modals', () => {
 					description: 'description',
 					component: {
 						type: ComponentType.TextInput,
-						label: 'label',
 						style: TextInputStyle.Paragraph,
 						custom_id: 'custom id',
 					},
@@ -67,17 +65,13 @@ describe('Modals', () => {
 						.setId(33)
 						.setLabel('label')
 						.setDescription('description')
-						.setTextInputComponent(
-							new TextInputBuilder().setCustomId('custom id').setLabel('label').setStyle(TextInputStyle.Paragraph),
-						),
+						.setTextInputComponent(new TextInputBuilder().setCustomId('custom id').setStyle(TextInputStyle.Paragraph)),
 				)
 				.addLabelComponents(
 					new LabelBuilder()
 						.setLabel('label')
 						.setDescription('description')
-						.setTextInputComponent(
-							new TextInputBuilder().setCustomId('custom id').setLabel('label').setStyle(TextInputStyle.Paragraph),
-						),
+						.setTextInputComponent(new TextInputBuilder().setCustomId('custom id').setStyle(TextInputStyle.Paragraph)),
 				)
 				.toJSON(),
 		).toEqual(modalData);
