@@ -6693,6 +6693,7 @@ export interface GuildEditOptions {
   afkTimeout?: number;
   afkChannel?: VoiceChannelResolvable | null;
   icon?: BufferResolvable | Base64Resolvable | null;
+  /** @deprecated API related to guild ownership may no longer be used. */
   owner?: GuildMemberResolvable;
   splash?: BufferResolvable | Base64Resolvable | null;
   discoverySplash?: BufferResolvable | Base64Resolvable | null;
