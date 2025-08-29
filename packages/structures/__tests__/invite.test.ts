@@ -5,7 +5,9 @@ import { Invite } from '../src/index.js';
 import { kPatch } from '../src/utils/symbols.js';
 
 describe('Invite', () => {
-	const dataNoCode: Omit<APIInvite, 'code'> = {
+	// TODO: Check if omitting `expires_at` is appropriate
+
+	const dataNoCode: Omit<APIInvite, 'code' | 'expires_at'> = {
 		type: InviteType.Guild,
 		channel: null,
 		approximate_member_count: 15,
@@ -13,12 +15,12 @@ describe('Invite', () => {
 		target_type: InviteTargetType.EmbeddedApplication,
 	};
 
-	const data: APIInvite = {
+	const data: Omit<APIInvite, 'expires_at'> = {
 		...dataNoCode,
 		code: '123',
 	};
 
-	const dataExtended: APIExtendedInvite = {
+	const dataExtended: Omit<APIExtendedInvite, 'expires_at'> = {
 		...data,
 		created_at: '2020-10-10T13:50:17.209Z',
 		max_age: 12,

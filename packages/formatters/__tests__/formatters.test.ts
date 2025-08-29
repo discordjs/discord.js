@@ -30,6 +30,8 @@ import {
 	underline,
 	unorderedList,
 	userMention,
+	email,
+	phoneNumber,
 } from '../src/index.js';
 
 describe('Message formatters', () => {
@@ -345,6 +347,33 @@ describe('Message formatters', () => {
 			expect(applicationDirectory('123456789012345678', '123456789012345678')).toEqual(
 				'https://discord.com/application-directory/123456789012345678/store/123456789012345678',
 			);
+		});
+	});
+
+	describe('email', () => {
+		test('GIVEN an email THEN returns "<[email]>"', () => {
+			expect<'<test@example.com>'>(email('test@example.com')).toEqual('<test@example.com>');
+		});
+
+		test('GIVEN an email AND headers THEN returns "<[email]?[headers]>"', () => {
+			expect<`<test@example.com?${string}>`>(email('test@example.com', { subject: 'Hello', body: 'World' })).toEqual(
+				'<test@example.com?subject=Hello&body=World>',
+			);
+		});
+	});
+
+	describe('phoneNumber', () => {
+		test('GIVEN a phone number with + THEN returns "<[phoneNumber]>"', () => {
+			expect<'<+1234567890>'>(phoneNumber('+1234567890')).toEqual('<+1234567890>');
+		});
+
+		test('GIVEN a phone number without + THEN throws', () => {
+			expect(() =>
+				phoneNumber(
+					// @ts-expect-error - Invalid input
+					'1234567890',
+				),
+			).toThrowError();
 		});
 	});
 
