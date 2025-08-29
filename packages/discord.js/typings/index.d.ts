@@ -1477,7 +1477,6 @@ export class Guild extends AnonymousGuild {
   ): Promise<Guild>;
   public setIcon(icon: Base64Resolvable | BufferResolvable | null, reason?: string): Promise<Guild>;
   public setName(name: string, reason?: string): Promise<Guild>;
-  public setOwner(owner: UserResolvable, reason?: string): Promise<Guild>;
   public setPreferredLocale(preferredLocale: Locale | null, reason?: string): Promise<Guild>;
   public setPublicUpdatesChannel(publicUpdatesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setRulesChannel(rulesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
@@ -6123,7 +6122,6 @@ export interface GuildEditOptions {
   features?: readonly `${GuildFeature}`[];
   icon?: Base64Resolvable | BufferResolvable | null;
   name?: string;
-  owner?: UserResolvable;
   preferredLocale?: Locale | null;
   premiumProgressBarEnabled?: boolean;
   publicUpdatesChannel?: TextChannelResolvable | null;

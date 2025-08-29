@@ -292,7 +292,9 @@ export interface RequestData {
 	 */
 	appendToFormData?: boolean;
 	/**
-	 * Alternate authorization data to use for this request only, or `false` to disable the Authorization header
+	 * Alternate authorization data to use for this request only, or `false` to disable the Authorization header.
+	 * When making a request to a route that includes a token (such as interactions or webhooks), set to `false`
+	 * to avoid accidentally unsetting the instance token if a 401 is encountered.
 	 *
 	 * @defaultValue `true`
 	 */
