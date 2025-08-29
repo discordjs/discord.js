@@ -1197,12 +1197,7 @@ class Guild extends AnonymousGuild {
    * @param {GuildMemberResolvable} owner The new owner of the guild
    * @param {string} [reason] Reason for setting the new owner
    * @returns {Promise<Guild>}
-   * @example
-   * // Edit the guild owner
-   * guild.setOwner(guild.members.cache.first())
-   *  .then(guild => guild.fetchOwner())
-   *  .then(owner => console.log(`Updated the guild owner to ${owner.displayName}`))
-   *  .catch(console.error);
+   * @deprecated API related to guild ownership may no longer be used.
    */
   setOwner(owner, reason) {
     return this.edit({ owner, reason });
