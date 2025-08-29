@@ -1,0 +1,24 @@
+import type { APIMessageComponentInteractionMetadata, InteractionType } from 'discord-api-types/v10';
+import { kData } from '../utils/symbols.js';
+import type { Partialize } from '../utils/types.js';
+import { InteractionMetadata } from './InteractionMetadata.js';
+
+/**
+ * Represents video data in an embed on a message.
+ *
+ * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
+ */
+export class MessageComponentInteractionMetadata<
+	Omitted extends keyof APIMessageComponentInteractionMetadata | '' = '',
+> extends InteractionMetadata<InteractionType.MessageComponent, Omitted> {
+	/**
+	 * @param data - The raw data received from the API for the connection
+	 */
+	public constructor(data: Partialize<APIMessageComponentInteractionMetadata, Omitted>) {
+		super(data);
+	}
+
+	public get interactedMessageId() {
+		return this[kData].interacted_message_id;
+	}
+}
