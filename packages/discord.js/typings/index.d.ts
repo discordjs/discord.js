@@ -2240,10 +2240,16 @@ export class AttachmentBuilder {
   public attachment: BufferResolvable | Stream;
   public description: string | null;
   public name: string | null;
+  public title: string | null;
+  public waveform: string | null;
+  public duration: number | null;
   public get spoiler(): boolean;
   public setDescription(description: string): this;
   public setFile(attachment: BufferResolvable | Stream, name?: string): this;
   public setName(name: string): this;
+  public setTitle(title: string): this;
+  public setWaveform(waveform: string): this;
+  public setDuration(duration: number): this;
   public setSpoiler(spoiler?: boolean): this;
   public toJSON(): unknown;
   public static from(other: JSONEncodable<AttachmentPayload>): AttachmentBuilder;
@@ -4823,7 +4829,10 @@ export interface BaseApplicationCommandData {
 
 export interface AttachmentData {
   description?: string;
+  duration?: number;
   name?: string;
+  title?: string;
+  waveform?: string;
 }
 
 export type CommandOptionDataTypeResolvable = ApplicationCommandOptionType;
@@ -5873,7 +5882,10 @@ export interface FetchThreadsOptions {
 export interface AttachmentPayload {
   attachment: BufferResolvable | Stream;
   description?: string;
+  duration?: number;
   name?: string;
+  title?: string;
+  waveform?: string;
 }
 
 export type GlobalSweepFilter<Key, Value> = () =>
@@ -6393,9 +6405,13 @@ export interface InteractionDeferUpdateOptions {
 export interface InteractionReplyOptions extends BaseMessageOptions, MessageOptionsPoll {
   flags?:
     | BitFieldResolvable<
-        Extract<MessageFlagsString, 'Ephemeral' | 'IsComponentsV2' | 'SuppressEmbeds' | 'SuppressNotifications'>,
+        Extract<
+          MessageFlagsString,
+          'Ephemeral' | 'IsComponentsV2' | 'IsVoiceMessage' | 'SuppressEmbeds' | 'SuppressNotifications'
+        >,
         | MessageFlags.Ephemeral
         | MessageFlags.IsComponentsV2
+        | MessageFlags.IsVoiceMessage
         | MessageFlags.SuppressEmbeds
         | MessageFlags.SuppressNotifications
       >
@@ -6572,8 +6588,11 @@ export interface MessageOptionsPoll {
 export interface MessageOptionsFlags {
   flags?:
     | BitFieldResolvable<
-        Extract<MessageFlagsString, 'IsComponentsV2' | 'SuppressEmbeds' | 'SuppressNotifications'>,
-        MessageFlags.IsComponentsV2 | MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
+        Extract<MessageFlagsString, 'IsComponentsV2' | 'IsVoiceMessage' | 'SuppressEmbeds' | 'SuppressNotifications'>,
+        | MessageFlags.IsComponentsV2
+        | MessageFlags.IsVoiceMessage
+        | MessageFlags.SuppressEmbeds
+        | MessageFlags.SuppressNotifications
       >
     | undefined;
 }
