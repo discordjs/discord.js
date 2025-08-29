@@ -14,6 +14,11 @@ export type PackageManager = 'bun' | 'deno' | 'npm' | 'pnpm' | 'yarn';
 export function resolvePackageManager(): PackageManager {
 	const npmConfigUserAgent = process.env.npm_config_user_agent;
 
+	// @ts-expect-error: We're not using Deno's types, so its global is not declared
+	if (typeof Deno !== 'undefined') {
+		return 'deno';
+	}
+
 	// If this is not present, return the default package manager.
 	if (!npmConfigUserAgent) {
 		return DEFAULT_PACKAGE_MANAGER;
