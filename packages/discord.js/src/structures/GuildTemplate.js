@@ -120,6 +120,7 @@ class GuildTemplate extends Base {
    * @param {string} name The name of the guild
    * @param {BufferResolvable|Base64Resolvable} [icon] The icon for the guild
    * @returns {Promise<Guild>}
+   * @deprecated API related to guild ownership may no longer be used.
    */
   async createGuild(name, icon) {
     const { client } = this;

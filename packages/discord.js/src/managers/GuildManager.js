@@ -163,6 +163,7 @@ class GuildManager extends CachedManager {
    * Creates a guild.
    * <warn>This is only available to bots in fewer than 10 guilds.</warn>
    * @param {GuildCreateOptions} options Options for creating the guild
+   * @deprecated API related to guild ownership may no longer be used.
    * @returns {Promise<Guild>} The guild that was created
    */
   async create({
