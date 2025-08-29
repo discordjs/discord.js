@@ -1,5 +1,6 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { APILabelComponent, APIModalInteractionResponseCallbackData } from 'discord-api-types/v10';
+import type { ActionRowBuilder } from '../../components/ActionRow.js';
 import { createComponentBuilder } from '../../components/Components.js';
 import { LabelBuilder } from '../../components/label/Label.js';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
@@ -8,7 +9,7 @@ import { validate } from '../../util/validation.js';
 import { modalPredicate } from './Assertions.js';
 
 export interface ModalBuilderData extends Partial<Omit<APIModalInteractionResponseCallbackData, 'components'>> {
-	components: LabelBuilder[];
+	components: (ActionRowBuilder | LabelBuilder)[];
 }
 
 /**
@@ -23,7 +24,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	/**
 	 * The components within this modal.
 	 */
-	public get components(): readonly LabelBuilder[] {
+	public get components(): readonly (ActionRowBuilder | LabelBuilder)[] {
 		return this.data.components;
 	}
 
@@ -32,11 +33,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	 *
 	 * @param data - The API data to create this modal with
 	 */
-	public constructor(
-		data: Partial<
-			Omit<APIModalInteractionResponseCallbackData, 'components'> & { components: APILabelComponent[] }
-		> = {},
-	) {
+	public constructor(data: Partial<APIModalInteractionResponseCallbackData> = {}) {
 		const { components = [], ...rest } = data;
 
 		this.data = {
