@@ -187,8 +187,6 @@ export function createComponentBuilder(
 		return data;
 	}
 
-	// https://github.com/discordjs/discord.js/pull/11034
-	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 	switch (data.type) {
 		case ComponentType.ActionRow:
 			return new ActionRowBuilder(data);
@@ -223,6 +221,7 @@ export function createComponentBuilder(
 		case ComponentType.Label:
 			return new LabelBuilder(data);
 		default:
+			// @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);
 	}
 }

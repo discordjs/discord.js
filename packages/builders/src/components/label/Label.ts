@@ -1,8 +1,4 @@
-import type {
-	APILabelComponent,
-	APIStringSelectComponentInModal,
-	APITextInputComponentInModal,
-} from 'discord-api-types/v10';
+import type { APILabelComponent, APIStringSelectComponent, APITextInputComponent } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
 import { resolveBuilder } from '../../util/resolveBuilder.js';
 import { validate } from '../../util/validation.js';
@@ -85,7 +81,7 @@ export class LabelBuilder extends ComponentBuilder<APILabelComponent> {
 	 */
 	public setStringSelectMenuComponent(
 		input:
-			| APIStringSelectComponentInModal
+			| APIStringSelectComponent
 			| StringSelectMenuBuilder
 			| ((builder: StringSelectMenuBuilder) => StringSelectMenuBuilder),
 	): this {
@@ -99,7 +95,7 @@ export class LabelBuilder extends ComponentBuilder<APILabelComponent> {
 	 * @param input - A function that returns a component builder or an already built builder
 	 */
 	public setTextInputComponent(
-		input: APITextInputComponentInModal | TextInputBuilder | ((builder: TextInputBuilder) => TextInputBuilder),
+		input: APITextInputComponent | TextInputBuilder | ((builder: TextInputBuilder) => TextInputBuilder),
 	): this {
 		this.data.component = resolveBuilder(input, TextInputBuilder);
 		return this;
