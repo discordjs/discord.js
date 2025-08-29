@@ -90,7 +90,7 @@ describe('makeURLSearchParams', () => {
 	});
 });
 
-describe('option normalizaztion functions', () => {
+describe('option normalization functions', () => {
 	describe('rate limit offset', () => {
 		const func: GetRateLimitOffsetFunction = (route) => {
 			if (route === '/negative') return -150;
