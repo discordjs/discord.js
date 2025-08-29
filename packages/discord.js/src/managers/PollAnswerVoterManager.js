@@ -31,6 +31,14 @@ class PollAnswerVoterManager extends CachedManager {
    */
 
   /**
+   * Options used for fetching voters of a poll answer.
+   *
+   * @typedef {Object} BaseFetchPollAnswerVotersOptions
+   * @property {number} [limit] The maximum number of voters to fetch
+   * @property {Snowflake} [after] The user id to fetch voters after
+   */
+
+  /**
    * Fetches the users that voted on this poll answer. Resolves with a collection of users, mapped by their ids.
    *
    * @param {BaseFetchPollAnswerVotersOptions} [options={}] Options for fetching the users
