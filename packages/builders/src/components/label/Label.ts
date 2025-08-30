@@ -75,6 +75,14 @@ export class LabelBuilder extends ComponentBuilder<APILabelComponent> {
 	}
 
 	/**
+	 * Clears the description for this label.
+	 */
+	public clearDescription() {
+		this.data.description = undefined;
+		return this;
+	}
+
+	/**
 	 * Sets a string select menu component to this label.
 	 *
 	 * @param input - A function that returns a component builder or an already built builder
