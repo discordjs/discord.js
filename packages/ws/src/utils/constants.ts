@@ -49,6 +49,7 @@ export const DefaultWebSocketManagerOptions = {
 		device: DefaultDeviceProperty,
 		os: process.platform,
 	},
+	url: null,
 	version: APIVersion,
 	encoding: Encoding.JSON,
 	compression: null,

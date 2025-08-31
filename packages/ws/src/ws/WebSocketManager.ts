@@ -189,6 +189,10 @@ export interface OptionalWebSocketManagerOptions {
 	 */
 	updateSessionInfo(shardId: number, sessionInfo: SessionInfo | null): Awaitable<void>;
 	/**
+	 * The URL to use for the gateway
+	 */
+	url: string | null;
+	/**
 	 * Whether to use the `compress` option when identifying
 	 *
 	 * @defaultValue `false`
@@ -295,6 +299,10 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 		}
 
 		const data = await this.options.fetchGatewayInformation();
+
+		if (this.options.url) {
+			data.url = this.options.url;
+		}
 
 		// For single sharded bots session_start_limit.reset_after will be 0, use 5 seconds as a minimum expiration time
 		this.gatewayInformation = { data, expiresAt: Date.now() + (data.session_start_limit.reset_after || 5_000) };
