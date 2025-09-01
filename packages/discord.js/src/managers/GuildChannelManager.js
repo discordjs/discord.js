@@ -12,6 +12,7 @@ const { ChannelFlagsBitField } = require('../util/ChannelFlagsBitField.js');
 const { transformGuildForumTag, transformGuildDefaultReaction } = require('../util/Channels.js');
 const { ThreadChannelTypes } = require('../util/Constants.js');
 const { resolveImage } = require('../util/DataResolver.js');
+const { toSnakeCase } = require('../util/Transformers.js');
 const { setPosition } = require('../util/Util.js');
 const { CachedManager } = require('./CachedManager.js');
 const { GuildTextThreadManager } = require('./GuildTextThreadManager.js');
@@ -298,7 +299,7 @@ class GuildChannelManager extends CachedManager {
   /**
    * Edits the channel.
    *
-   * @param {GuildChannelResolvable} channel The channel to edit
+   * @param {GuildChannelResolvable} channel The channel to edit. Can be the id of an uncached channel if not editing position or locking permissions
    * @param {GuildChannelEditOptions} options Options for editing the channel
    * @returns {Promise<GuildChannel>}
    * @example
@@ -308,13 +309,17 @@ class GuildChannelManager extends CachedManager {
    *   .catch(console.error);
    */
   async edit(channel, options) {
-    const resolvedChannel = this.resolve(channel);
-    if (!resolvedChannel) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
+    // Let uncached channels be edited if they don't need to lock to a parent without passing parent_id
+    const resolvedChannelId = this.resolveId(channel);
+    if (!resolvedChannelId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
 
     const parentId = options.parent && this.client.channels.resolveId(options.parent);
 
     if (options.position !== undefined) {
-      await this.setPosition(resolvedChannel, options.position, { position: options.position, reason: options.reason });
+      await this.setPosition(resolvedChannelId, options.position, {
+        position: options.position,
+        reason: options.reason,
+      });
     }
 
     let permission_overwrites = options.permissionOverwrites?.map(overwrite =>
@@ -329,36 +334,53 @@ class GuildChannelManager extends CachedManager {
             PermissionOverwrites.resolve(overwrite, this.guild),
           );
         }
-      } else if (resolvedChannel.parent) {
-        permission_overwrites = resolvedChannel.parent.permissionOverwrites.cache.map(overwrite =>
-          PermissionOverwrites.resolve(overwrite, this.guild),
-        );
+      } else {
+        const resolvedChannel = this.resolve(channel);
+        if (!resolvedChannel) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
+        if (resolvedChannel.parent) {
+          permission_overwrites = resolvedChannel.parent.permissionOverwrites.cache.map(overwrite =>
+            PermissionOverwrites.resolve(overwrite, this.guild),
+          );
+        }
       }
     }
 
-    const newData = await this.client.rest.patch(Routes.channel(resolvedChannel.id), {
-      body: {
-        name: options.name,
-        type: options.type,
-        topic: options.topic,
-        nsfw: options.nsfw,
-        bitrate: options.bitrate,
-        user_limit: options.userLimit,
-        rtc_region: options.rtcRegion,
-        video_quality_mode: options.videoQualityMode,
-        parent_id: parentId,
-        lock_permissions: options.lockPermissions,
-        rate_limit_per_user: options.rateLimitPerUser,
-        default_auto_archive_duration: options.defaultAutoArchiveDuration,
-        permission_overwrites,
-        available_tags: options.availableTags?.map(availableTag => transformGuildForumTag(availableTag)),
-        default_reaction_emoji:
-          options.defaultReactionEmoji && transformGuildDefaultReaction(options.defaultReactionEmoji),
-        default_thread_rate_limit_per_user: options.defaultThreadRateLimitPerUser,
-        flags: 'flags' in options ? ChannelFlagsBitField.resolve(options.flags) : undefined,
-        default_sort_order: options.defaultSortOrder,
-        default_forum_layout: options.defaultForumLayout,
+    const snakeCaseBody = Object.assign(
+      // Remove properties we don't want to pass to the API in the body
+      {
+        set parent(_) {},
+        set position(_) {},
+        set reason(_) {},
       },
+      toSnakeCase(options),
+    );
+
+    // This overwrites a passed snake_case version if a camelCase version OR `parent` is passed
+    if (parentId) {
+      snakeCaseBody.parent_id = parentId;
+    }
+
+    // This overwrites a passed snake_case version if a camelCase version is passed
+    if (permission_overwrites) {
+      snakeCaseBody.permission_overwrites = permission_overwrites;
+    }
+
+    if (snakeCaseBody.available_tags) {
+      snakeCaseBody.available_tags = snakeCaseBody.available_tags.map(availableTag =>
+        'emoji' in availableTag ? transformGuildForumTag(availableTag) : availableTag,
+      );
+    }
+
+    if (snakeCaseBody.default_reaction_emoji?.id) {
+      snakeCaseBody.default_reaction_emoji = transformGuildDefaultReaction(snakeCaseBody.default_reaction_emoji);
+    }
+
+    if (snakeCaseBody.flags) {
+      snakeCaseBody.flags = ChannelFlagsBitField.resolve(snakeCaseBody.flags);
+    }
+
+    const newData = await this.client.rest.patch(Routes.channel(resolvedChannelId), {
+      body: snakeCaseBody,
       reason: options.reason,
     });
 
