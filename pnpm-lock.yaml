@@ -816,8 +816,8 @@ importers:
         specifier: ^2.4.6
         version: 2.4.6
       discord-api-types:
-        specifier: ^0.38.16
-        version: 0.38.16
+        specifier: ^0.38.22
+        version: 0.38.22
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -953,8 +953,8 @@ importers:
         specifier: 3.5.3
         version: 3.5.3
       discord-api-types:
-        specifier: ^0.38.16
-        version: 0.38.16
+        specifier: ^0.38.22
+        version: 0.38.22
       fast-deep-equal:
         specifier: 3.1.3
         version: 3.1.3
@@ -1075,8 +1075,8 @@ importers:
   packages/formatters:
     dependencies:
       discord-api-types:
-        specifier: ^0.38.16
-        version: 0.38.16
+        specifier: ^0.38.22
+        version: 0.38.22
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1148,8 +1148,8 @@ importers:
         specifier: workspace:^
         version: link:../ws
       discord-api-types:
-        specifier: ^0.38.16
-        version: 0.38.16
+        specifier: ^0.38.22
+        version: 0.38.22
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1322,8 +1322,8 @@ importers:
         specifier: ^2.4.6
         version: 2.4.6
       discord-api-types:
-        specifier: ^0.38.16
-        version: 0.38.16
+        specifier: ^0.38.22
+        version: 0.38.22
       magic-bytes.js:
         specifier: ^1.10.0
         version: 1.10.0
@@ -1619,8 +1619,8 @@ importers:
         specifier: ^8.5.12
         version: 8.5.12
       discord-api-types:
-        specifier: ^0.38.16
-        version: 0.38.16
+        specifier: ^0.38.22
+        version: 0.38.22
       prism-media:
         specifier: ^1.3.5
         version: 1.3.5
@@ -1716,8 +1716,8 @@ importers:
         specifier: ^2.4.6
         version: 2.4.6
       discord-api-types:
-        specifier: ^0.38.16
-        version: 0.38.16
+        specifier: ^0.38.22
+        version: 0.38.22
       tslib:
         specifier: ^2.6.3
         version: 2.6.3
@@ -2777,12 +2777,12 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@definitelytyped/header-parser@0.2.19':
-    resolution: {integrity: sha512-zu+RxQpUCgorYUQZoyyrRIn9CljL1CeM4qak3NDeMO1r7tjAkodfpAGnVzx/6JR2OUk0tAgwmZxNMSwd9LVgxw==}
+  '@definitelytyped/header-parser@0.2.20':
+    resolution: {integrity: sha512-97YPAlUo8XjWNtZ+6k+My+50/ljE2iX6KEPjOZ1Az1RsZdKwJ6taAX3F5g6SY1SJr50bzdm2RZzyQNdRmHcs4w==}
     engines: {node: '>=18.18.0'}
 
-  '@definitelytyped/typescript-versions@0.1.8':
-    resolution: {integrity: sha512-iz6q9aTwWW7CzN2g8jFQfZ955D63LA+wdIAKz4+2pCc/7kokmEHie1/jVWSczqLFOlmH+69bWQxIurryBP/sig==}
+  '@definitelytyped/typescript-versions@0.1.9':
+    resolution: {integrity: sha512-Qjalw9eNlcTjXhzx0Q6kHKuRCOUt/M5RGGRGKsiYlm/nveGvPX9liZSQlGXZVwyQ5I9qvq/GdaWiPchQ+ZXOrQ==}
     engines: {node: '>=18.18.0'}
 
   '@definitelytyped/utils@0.1.8':
@@ -8357,8 +8357,8 @@ packages:
   discord-api-types@0.37.119:
     resolution: {integrity: sha512-WasbGFXEB+VQWXlo6IpW3oUv73Yuau1Ig4AZF/m13tXcTKnMpc/mHjpztIlz4+BM9FG9BHQkEXiPto3bKduQUg==}
 
-  discord-api-types@0.38.16:
-    resolution: {integrity: sha512-Cz42dC5WqJD17Yk0bRy7YLTJmh3NKo4FGpxZuA8MHqT0RPxKSrll5YhlODZ2z5DiEV/gpHMeTSrTFTWpSXjT1Q==}
+  discord-api-types@0.38.22:
+    resolution: {integrity: sha512-2gnYrgXN3yTlv2cKBISI/A8btZwsSZLwKpIQXeI1cS8a7W7wP3sFVQOm3mPuuinTD8jJCKGPGNH399zE7Un1kA==}
 
   dlv@1.1.3:
     resolution: {integrity: sha512-+HlytyjlPKnIG8XuRG8WvmBP8xs8P71y+SKKS6ZXWoEgLuePxtDoUEiH7WkdePWrQ5JBpE6aoVqfZfJUQkjXwA==}
@@ -16299,13 +16299,13 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@definitelytyped/header-parser@0.2.19':
+  '@definitelytyped/header-parser@0.2.20':
     dependencies:
-      '@definitelytyped/typescript-versions': 0.1.8
+      '@definitelytyped/typescript-versions': 0.1.9
       '@definitelytyped/utils': 0.1.8
       semver: 7.7.1
 
-  '@definitelytyped/typescript-versions@0.1.8': {}
+  '@definitelytyped/typescript-versions@0.1.9': {}
 
   '@definitelytyped/utils@0.1.8':
     dependencies:
@@ -16323,7 +16323,7 @@ snapshots:
       '@discordjs/formatters': 0.6.1
       '@discordjs/util': 1.1.1
       '@sapphire/shapeshift': 4.0.0
-      discord-api-types: 0.38.16
+      discord-api-types: 0.38.22
       fast-deep-equal: 3.1.3
       ts-mixer: 6.0.4
       tslib: 2.8.1
@@ -16334,7 +16334,7 @@ snapshots:
 
   '@discordjs/formatters@0.6.1':
     dependencies:
-      discord-api-types: 0.38.16
+      discord-api-types: 0.38.22
 
   '@discordjs/rest@2.5.1':
     dependencies:
@@ -16343,7 +16343,7 @@ snapshots:
       '@sapphire/async-queue': 1.5.3
       '@sapphire/snowflake': 3.5.3
       '@vladfrangu/async_event_emitter': 2.4.6
-      discord-api-types: 0.38.16
+      discord-api-types: 0.38.22
       magic-bytes.js: 1.10.0
       tslib: 2.8.1
       undici: 6.21.3
@@ -16358,7 +16358,7 @@ snapshots:
       '@sapphire/async-queue': 1.5.3
       '@types/ws': 8.5.12
       '@vladfrangu/async_event_emitter': 2.4.6
-      discord-api-types: 0.38.16
+      discord-api-types: 0.38.22
       tslib: 2.8.1
       ws: 8.18.0(bufferutil@4.0.8)(utf-8-validate@6.0.4)
     transitivePeerDependencies:
@@ -23711,7 +23711,7 @@ snapshots:
 
   discord-api-types@0.37.119: {}
 
-  discord-api-types@0.38.16: {}
+  discord-api-types@0.38.22: {}
 
   dlv@1.1.3: {}
 
@@ -23762,7 +23762,7 @@ snapshots:
 
   dts-critic@3.3.11(typescript@5.5.4):
     dependencies:
-      '@definitelytyped/header-parser': 0.2.19
+      '@definitelytyped/header-parser': 0.2.20
       command-exists: 1.2.9
       rimraf: 3.0.2
       semver: 6.3.1
@@ -23772,8 +23772,8 @@ snapshots:
 
   dtslint@4.2.1(typescript@5.5.4):
     dependencies:
-      '@definitelytyped/header-parser': 0.2.19
-      '@definitelytyped/typescript-versions': 0.1.8
+      '@definitelytyped/header-parser': 0.2.20
+      '@definitelytyped/typescript-versions': 0.1.9
       '@definitelytyped/utils': 0.1.8
       dts-critic: 3.3.11(typescript@5.5.4)
       fs-extra: 6.0.1
