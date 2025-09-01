@@ -29,6 +29,7 @@ exports.Constants = require('./util/Constants.js');
 exports.Events = require('./util/Events.js').Events;
 exports.GuildMemberFlagsBitField = require('./util/GuildMemberFlagsBitField.js').GuildMemberFlagsBitField;
 exports.IntentsBitField = require('./util/IntentsBitField.js').IntentsBitField;
+exports.InviteFlagsBitField = require('./util/InviteFlagsBitField.js').InviteFlagsBitField;
 exports.LimitedCollection = require('./util/LimitedCollection.js').LimitedCollection;
 exports.MessageFlagsBitField = require('./util/MessageFlagsBitField.js').MessageFlagsBitField;
 exports.Options = require('./util/Options.js').Options;
