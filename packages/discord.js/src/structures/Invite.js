@@ -6,6 +6,7 @@ const { GuildScheduledEvent } = require('./GuildScheduledEvent');
 const IntegrationApplication = require('./IntegrationApplication');
 const InviteStageInstance = require('./InviteStageInstance');
 const { DiscordjsError, ErrorCodes } = require('../errors');
+const { InviteFlagsBitField } = require('../util/InviteFlagsBitField.js');
 
 /**
  * Represents an invitation to a guild channel.
@@ -221,6 +222,17 @@ class Invite extends Base {
       this.guildScheduledEvent = new GuildScheduledEvent(this.client, data.guild_scheduled_event);
     } else {
       this.guildScheduledEvent ??= null;
+    }
+
+    if ('flags' in data) {
+      /**
+       * The flags of this invite.
+       *
+       * @type {Readonly<InviteFlagsBitField>}
+       */
+      this.flags = new InviteFlagsBitField(data.flags).freeze();
+    } else {
+      this.flags ??= new InviteFlagsBitField().freeze();
     }
   }
 

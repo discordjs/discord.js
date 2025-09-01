@@ -33,6 +33,7 @@ exports.Events = require('./util/Events');
 exports.Formatters = require('./util/Formatters');
 exports.GuildMemberFlagsBitField = require('./util/GuildMemberFlagsBitField').GuildMemberFlagsBitField;
 exports.IntentsBitField = require('./util/IntentsBitField');
+exports.InviteFlagsBitField = require('./util/InviteFlagsBitField.js').InviteFlagsBitField;
 exports.LimitedCollection = require('./util/LimitedCollection');
 exports.MessageFlagsBitField = require('./util/MessageFlagsBitField');
 exports.Options = require('./util/Options');

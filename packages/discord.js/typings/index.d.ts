@@ -215,6 +215,7 @@ import {
   APIFileComponent,
   APIMessageTopLevelComponent,
   EntryPointCommandHandlerType,
+  InviteFlags,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -2274,6 +2275,7 @@ export class Invite extends Base {
   /** @deprecated Public Stage Instances don't exist anymore  */
   public stageInstance: InviteStageInstance | null;
   public guildScheduledEvent: GuildScheduledEvent | null;
+  public flags: Readonly<InviteFlagsBitField>;
 }
 
 /** @deprecated Public Stage Instances don't exist anymore */
@@ -2292,6 +2294,13 @@ export class InviteStageInstance extends Base {
 export class InviteGuild extends AnonymousGuild {
   private constructor(client: Client<true>, data: RawInviteGuildData);
   public welcomeScreen: WelcomeScreen | null;
+}
+
+export type InviteFlagsString = keyof typeof InviteFlags;
+
+export class InviteFlagsBitField extends BitField<InviteFlagsString> {
+  public static Flags: typeof InviteFlags;
+  public static resolve(bit?: BitFieldResolvable<InviteFlagsString, number>): number;
 }
 
 export class LimitedCollection<Key, Value> extends Collection<Key, Value> {
