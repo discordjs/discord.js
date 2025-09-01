@@ -38,7 +38,7 @@ async function writeClientActionImports() {
 
     const actionName = file.slice(0, -3);
 
-    lines.push(`    this.${actionName} = this.load(require('./${file}').${actionName}Action);`);
+    lines.push(`    this.${actionName} = this.load(require('./${file}'));`);
   }
 
   lines.push('  }\n');
