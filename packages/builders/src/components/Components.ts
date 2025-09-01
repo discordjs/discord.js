@@ -90,6 +90,11 @@ export type ModalActionRowComponentBuilder = TextInputBuilder;
 export type AnyActionRowComponentBuilder = MessageActionRowComponentBuilder | ModalActionRowComponentBuilder;
 
 /**
+ * Any modal component builder.
+ */
+export type AnyModalComponentBuilder = TextDisplayBuilder | LabelBuilder;
+
+/**
  * Components here are mapped to their respective builder.
  */
 export interface MappedComponentTypes {

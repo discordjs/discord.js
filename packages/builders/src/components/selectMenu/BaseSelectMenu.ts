@@ -15,7 +15,8 @@ export abstract class BaseSelectMenuBuilder<Data extends APISelectMenuComponent>
 	 * @internal
 	 */
 	protected abstract override readonly data: Partial<
-		Pick<Data, 'custom_id' | 'disabled' | 'id' | 'max_values' | 'min_values' | 'placeholder'>
+		// @ts-expect-error https://github.com/discordjs/discord-api-types/pull/1351
+		Pick<Data, 'custom_id' | 'disabled' | 'id' | 'max_values' | 'min_values' | 'placeholder' | 'required'>
 	>;
 
 	/**
@@ -73,6 +74,18 @@ export abstract class BaseSelectMenuBuilder<Data extends APISelectMenuComponent>
 	 */
 	public setDisabled(disabled = true) {
 		this.data.disabled = disabled;
+		return this;
+	}
+
+	/**
+	 * Sets whether this string select menu is required.
+	 *
+	 * @remarks Only for use in modals.
+	 * @param required - Whether this string select menu is required
+	 */
+	public setRequired(required = true) {
+		// @ts-expect-error https://github.com/discordjs/discord-api-types/pull/1351
+		this.data.required = required;
 		return this;
 	}
 }
