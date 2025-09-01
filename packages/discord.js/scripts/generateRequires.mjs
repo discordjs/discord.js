@@ -36,12 +36,14 @@ async function writeClientActionImports() {
   for (const file of (await readdir(actionsDirectory)).sort()) {
     if (file === 'Action.js' || file === 'ActionsManager.js') continue;
 
-    lines.push(`    this.register(require('./${file.slice(0, -3)}'));`);
+    const actionName = file.slice(0, -3);
+
+    lines.push(`    this.${actionName} = this.load(require('./${file}').${actionName}Action);`);
   }
 
   lines.push('  }\n');
-  lines.push('  register(Action) {');
-  lines.push("    this[Action.name.replace(/Action$/, '')] = new Action(this.client);");
+  lines.push('  load(Action) {');
+  lines.push('    return new Action(this.client);');
   lines.push('  }');
   lines.push('}\n');
   lines.push('module.exports = ActionsManager;\n');
