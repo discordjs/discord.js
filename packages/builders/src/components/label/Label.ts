@@ -1,4 +1,12 @@
-import type { APILabelComponent, APIStringSelectComponent, APITextInputComponent } from 'discord-api-types/v10';
+import type {
+	APIChannelSelectComponent,
+	APILabelComponent,
+	APIMentionableSelectComponent,
+	APIRoleSelectComponent,
+	APIStringSelectComponent,
+	APITextInputComponent,
+	APIUserSelectComponent,
+} from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
 import { resolveBuilder } from '../../util/resolveBuilder.js';
 import { validate } from '../../util/validation.js';
@@ -7,9 +15,19 @@ import { createComponentBuilder } from '../Components.js';
 import { StringSelectMenuBuilder } from '../selectMenu/StringSelectMenu.js';
 import { TextInputBuilder } from '../textInput/TextInput.js';
 import { labelPredicate } from './Assertions.js';
+import { UserSelectMenuBuilder } from '../selectMenu/UserSelectMenu.js';
+import { RoleSelectMenuBuilder } from '../selectMenu/RoleSelectMenu.js';
+import { MentionableSelectMenuBuilder } from '../selectMenu/MentionableSelectMenu.js';
+import { ChannelSelectMenuBuilder } from '../selectMenu/ChannelSelectMenu.js';
 
 export interface LabelBuilderData extends Partial<Omit<APILabelComponent, 'component'>> {
-	component?: StringSelectMenuBuilder | TextInputBuilder;
+	component?:
+		| StringSelectMenuBuilder
+		| TextInputBuilder
+		| UserSelectMenuBuilder
+		| RoleSelectMenuBuilder
+		| MentionableSelectMenuBuilder
+		| ChannelSelectMenuBuilder;
 }
 
 /**
@@ -95,6 +113,60 @@ export class LabelBuilder extends ComponentBuilder<APILabelComponent> {
 			| ((builder: StringSelectMenuBuilder) => StringSelectMenuBuilder),
 	): this {
 		this.data.component = resolveBuilder(input, StringSelectMenuBuilder);
+		return this;
+	}
+
+	/**
+	 * Sets a user select menu component to this label.
+	 *
+	 * @param input - A function that returns a component builder or an already built builder
+	 */
+	public setUserSelectMenuComponent(
+		input: APIUserSelectComponent | UserSelectMenuBuilder | ((builder: UserSelectMenuBuilder) => UserSelectMenuBuilder),
+	): this {
+		this.data.component = resolveBuilder(input, UserSelectMenuBuilder);
+		return this;
+	}
+
+	/**
+	 * Sets a role select menu component to this label.
+	 *
+	 * @param input - A function that returns a component builder or an already built builder
+	 */
+	public setRoleSelectMenuComponent(
+		input: APIRoleSelectComponent | RoleSelectMenuBuilder | ((builder: RoleSelectMenuBuilder) => RoleSelectMenuBuilder),
+	): this {
+		this.data.component = resolveBuilder(input, RoleSelectMenuBuilder);
+		return this;
+	}
+
+	/**
+	 * Sets a mentionable select menu component to this label.
+	 *
+	 * @param input - A function that returns a component builder or an already built builder
+	 */
+	public setMentionableSelectMenuComponent(
+		input:
+			| APIMentionableSelectComponent
+			| MentionableSelectMenuBuilder
+			| ((builder: MentionableSelectMenuBuilder) => MentionableSelectMenuBuilder),
+	): this {
+		this.data.component = resolveBuilder(input, MentionableSelectMenuBuilder);
+		return this;
+	}
+
+	/**
+	 * Sets a channel select menu component to this label.
+	 *
+	 * @param input - A function that returns a component builder or an already built builder
+	 */
+	public setChannelSelectMenuComponent(
+		input:
+			| APIChannelSelectComponent
+			| ChannelSelectMenuBuilder
+			| ((builder: ChannelSelectMenuBuilder) => ChannelSelectMenuBuilder),
+	): this {
+		this.data.component = resolveBuilder(input, ChannelSelectMenuBuilder);
 		return this;
 	}
 
