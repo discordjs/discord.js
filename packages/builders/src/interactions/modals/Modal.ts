@@ -71,7 +71,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 		...components: RestOrArray<APILabelComponent | LabelBuilder | ((builder: LabelBuilder) => LabelBuilder)>
 	) {
 		const normalized = normalizeArray(components);
-		const resolved = normalized.map((row) => resolveBuilder(row, LabelBuilder));
+		const resolved = normalized.map((label) => resolveBuilder(label, LabelBuilder));
 
 		this.data.components.push(...resolved);
 
@@ -119,14 +119,14 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	 * ```
 	 * @param index - The index to start at
 	 * @param deleteCount - The number of labels to remove
-	 * @param rows - The replacing label objects
+	 * @param labels - The replacing label objects
 	 */
 	public spliceLabelComponents(
 		index: number,
 		deleteCount: number,
-		...rows: (APILabelComponent | LabelBuilder | ((builder: LabelBuilder) => LabelBuilder))[]
+		...labels: (APILabelComponent | LabelBuilder | ((builder: LabelBuilder) => LabelBuilder))[]
 	): this {
-		const resolved = rows.map((row) => resolveBuilder(row, LabelBuilder));
+		const resolved = labels.map((label) => resolveBuilder(label, LabelBuilder));
 		this.data.components.splice(index, deleteCount, ...resolved);
 
 		return this;
