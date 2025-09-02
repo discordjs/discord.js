@@ -199,6 +199,7 @@ const ChannelSelectMenuComponent = require('../structures/ChannelSelectMenuCompo
 const Component = require('../structures/Component');
 const ContainerComponent = require('../structures/ContainerComponent');
 const FileComponent = require('../structures/FileComponent');
+const LabelComponent = require('../structures/LabelComponent');
 const MediaGalleryComponent = require('../structures/MediaGalleryComponent');
 const MentionableSelectMenuBuilder = require('../structures/MentionableSelectMenuBuilder');
 const MentionableSelectMenuComponent = require('../structures/MentionableSelectMenuComponent');
@@ -231,6 +232,7 @@ const ComponentTypeToComponent = {
   [ComponentType.Section]: SectionComponent,
   [ComponentType.Separator]: SeparatorComponent,
   [ComponentType.Thumbnail]: ThumbnailComponent,
+  [ComponentType.Label]: LabelComponent,
 };
 
 const ComponentTypeToBuilder = {

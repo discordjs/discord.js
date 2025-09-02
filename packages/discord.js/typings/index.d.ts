@@ -2764,6 +2764,7 @@ export interface ModalComponentData {
 
 export interface BaseModalData {
   customId: string;
+  id: number;
   type: ComponentType;
 }
 
@@ -2772,18 +2773,33 @@ export interface TextInputModalData extends BaseModalData {
   value: string;
 }
 
+export interface StringSelectModalData extends BaseModalData {
+  id: number;
+  type: ComponentType.StringSelect;
+  values: readonly string[];
+}
+
+export interface LabelModalData {
+  component: readonly (StringSelectModalData | TextInputModalData)[];
+  id: number;
+  type: ComponentType.Label;
+}
 export interface ActionRowModalData {
   type: ComponentType.ActionRow;
   components: readonly TextInputModalData[];
 }
 
 export class ModalSubmitFields {
-  private constructor(components: readonly (readonly ModalActionRowComponent[])[]);
-  public components: ActionRowModalData[];
-  public fields: Collection<string, TextInputModalData>;
-  public getField<Type extends ComponentType>(customId: string, type: Type): { type: Type } & TextInputModalData;
-  public getField(customId: string, type?: ComponentType): TextInputModalData;
+  private constructor(components: readonly (ActionRowModalData | LabelModalData)[]);
+  public components: (ActionRowModalData | LabelModalData)[];
+  public fields: Collection<string, StringSelectModalData | TextInputModalData>;
+  public getField<Type extends ComponentType>(
+    customId: string,
+    type: Type,
+  ): { type: Type } & (StringSelectModalData | TextInputModalData);
+  public getField(customId: string, type?: ComponentType): StringSelectModalData | TextInputModalData;
   public getTextInputValue(customId: string): string;
+  public getStringSelectValues(customId: string): readonly string[];
 }
 
 export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = CacheType>
