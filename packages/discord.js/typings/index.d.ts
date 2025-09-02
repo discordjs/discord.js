@@ -353,6 +353,14 @@ export class ActionRowBuilder<
   ): ActionRowBuilder<ComponentType>;
 }
 
+export type ComponentInLabelData = StringSelectMenuComponentData | TextInputComponentData;
+
+export interface LabelData extends BaseComponentData {
+  component: ComponentInLabelData;
+  description?: string;
+  label: string;
+}
+
 export type MessageActionRowComponent =
   | ButtonComponent
   | StringSelectMenuComponent
@@ -2764,8 +2772,9 @@ export interface ModalComponentData {
   customId: string;
   title: string;
   components: readonly (
-    | JSONEncodable<APIActionRowComponent<APIComponentInModalActionRow>>
+    | JSONEncodable<APIActionRowComponent<APIComponentInModalActionRow> | APILabelComponent>
     | ActionRowData<ModalActionRowComponentData>
+    | LabelData
   )[];
 }
 
@@ -4058,6 +4067,8 @@ export class Formatters extends null {
 export type ComponentData =
   | MessageActionRowComponentData
   | ModalActionRowComponentData
+  | LabelData
+  | ComponentInLabelData
   | ComponentInContainerData
   | ContainerComponentData
   | ThumbnailComponentData;

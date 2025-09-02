@@ -15,6 +15,20 @@ const { ComponentType } = require('discord-api-types/v10');
  */
 
 /**
+ * @typedef {Object} ModalComponentData
+ * @property {string} title The title of the modal
+ * @property {string} customId The custom id of the modal
+ * @property {Array<ActionRow | LabelData>[]} components The components within this modal
+ */
+
+/**
+ * @typedef {BaseComponentData} LabelData
+ * @property {string} label The label to use
+ * @property {string} [description] The optional description for the label
+ * @property {StringSelectMenuComponentData|TextInputComponentData} component The component within the label
+ */
+
+/**
  * @typedef {BaseComponentData} ButtonComponentData
  * @property {ButtonStyle} style The style of the button
  * @property {boolean} [disabled] Whether this button is disabled
@@ -22,6 +36,17 @@ const { ComponentType } = require('discord-api-types/v10');
  * @property {APIMessageComponentEmoji} [emoji] The emoji on this button
  * @property {string} [customId] The custom id of the button
  * @property {string} [url] The URL of the button
+ */
+
+/**
+ * @typedef {BaseComponentData} StringSelectMenuComponentData
+ * @property {string} customId The custom id of the select menu
+ * @property {boolean} [disabled] Whether the select menu is disabled or not
+ * @property {number} [maxValues] The maximum amount of options that can be selected
+ * @property {number} [minValues] The minimum amount of options that can be selected
+ * @property {SelectMenuComponentOptionData[]} [options] The options in this select menu
+ * @property {string} [placeholder] The placeholder of the select menu
+ * @property {boolean} [required] Whether this component is required in modals
  */
 
 /**
