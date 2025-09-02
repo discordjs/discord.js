@@ -186,6 +186,7 @@ const { ChannelSelectMenuComponent } = require('../structures/ChannelSelectMenuC
 const { Component } = require('../structures/Component.js');
 const { ContainerComponent } = require('../structures/ContainerComponent.js');
 const { FileComponent } = require('../structures/FileComponent.js');
+const { LabelComponent } = require('../structures/LabelComponent.js');
 const { MediaGalleryComponent } = require('../structures/MediaGalleryComponent.js');
 const { MentionableSelectMenuComponent } = require('../structures/MentionableSelectMenuComponent.js');
 const { RoleSelectMenuComponent } = require('../structures/RoleSelectMenuComponent.js');
@@ -213,4 +214,5 @@ const ComponentTypeToClass = {
   [ComponentType.Section]: SectionComponent,
   [ComponentType.Separator]: SeparatorComponent,
   [ComponentType.Thumbnail]: ThumbnailComponent,
+  [ComponentType.Label]: LabelComponent,
 };
