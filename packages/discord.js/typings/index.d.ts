@@ -66,6 +66,7 @@ import {
   APIMessageTopLevelComponent,
   APIMessageUserSelectInteractionData,
   APIModalComponent,
+  APIModalInteractionResponseCallbackComponent,
   APIModalInteractionResponseCallbackData,
   APIModalSubmitInteraction,
   APIOverwrite,
@@ -249,6 +250,7 @@ export class Activity {
 export type ActivityFlagsString = keyof typeof ActivityFlags;
 
 export interface BaseComponentData {
+  id?: number;
   type: ComponentType;
 }
 
@@ -270,6 +272,12 @@ export type ActionRowComponent = MessageActionRowComponent | ModalActionRowCompo
 export interface ActionRowData<ComponentType extends ActionRowComponentData | JSONEncodable<APIComponentInActionRow>>
   extends BaseComponentData {
   components: readonly ComponentType[];
+}
+
+export interface LabelData extends BaseComponentData {
+  component: StringSelectMenuComponentData | TextInputComponentData;
+  description?: string;
+  label: string;
 }
 
 export type MessageActionRowComponent =
@@ -2528,10 +2536,7 @@ export interface MessageReactionEventDetails {
 }
 
 export interface ModalComponentData {
-  components: readonly (
-    | ActionRowData<ModalActionRowComponentData>
-    | JSONEncodable<APIActionRowComponent<APIComponentInModalActionRow>>
-  )[];
+  components: readonly LabelData[];
   customId: string;
   title: string;
 }
