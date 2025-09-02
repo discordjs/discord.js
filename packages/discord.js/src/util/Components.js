@@ -18,7 +18,7 @@ const { ComponentType } = require('discord-api-types/v10');
  * @typedef {Object} ModalComponentData
  * @property {string} title The title of the modal
  * @property {string} customId The custom id of the modal
- * @property {Array<ActionRow | LabelData>} components The components within this modal
+ * @property {Array<ActionRow | LabelData>[]} components The components within this modal
  */
 
 /**
