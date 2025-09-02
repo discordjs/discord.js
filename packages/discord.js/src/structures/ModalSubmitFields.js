@@ -12,7 +12,7 @@ class ModalSubmitFields {
     /**
      * The components within the modal
      *
-     * @type {(ActionRowModalData | LabelModalData)[]}
+     * @type {Array<ActionRowModalData | LabelModalData>}
      */
     this.components = components;
 
