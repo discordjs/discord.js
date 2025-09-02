@@ -4,7 +4,7 @@ const { Component } = require('./Component.js');
 const { createComponent } = require('../util/Components.js');
 
 /**
- * Represents a label component
+ * Represents an action row
  *
  * @extends {Component}
  */
@@ -13,9 +13,9 @@ class LabelComponent extends Component {
     super(data);
 
     /**
-     * The component in this label
+     * The components in this action row
      *
-     * @type {Component}
+     * @type {Component[]}
      * @readonly
      */
     this.component = createComponent(component);
@@ -44,7 +44,7 @@ class LabelComponent extends Component {
   /**
    * Returns the API-compatible JSON for this component
    *
-   * @returns {APILabelComponent}
+   * @returns {APIActionRowComponent | APIStringSelectComponent}
    */
   toJSON() {
     return { ...this.data, component: this.component.toJSON() };
