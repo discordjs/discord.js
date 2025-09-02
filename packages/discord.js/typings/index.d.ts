@@ -2541,25 +2541,24 @@ export interface ModalComponentData {
   title: string;
 }
 
-export interface BaseModalData {
+export interface BaseModalData<Type extends ComponentType> {
   customId: string;
   id: number;
-  type: ComponentType;
+  type: Type;
 }
 
-export interface TextInputModalData extends BaseModalData {
-  type: ComponentType.TextInput;
+export interface TextInputModalData extends BaseModalData<ComponentType.TextInput> {
   value: string;
 }
 
-export interface StringSelectModalData extends BaseModalData {
-  id: number;
-  type: ComponentType.StringSelect;
+export interface StringSelectModalData extends BaseModalData<ComponentType.StringSelect> {
   values: readonly string[];
 }
 
+export type ModalData = StringSelectModalData | TextInputModalData;
+
 export interface LabelModalData {
-  component: readonly (StringSelectModalData | TextInputModalData)[];
+  component: readonly ModalData[];
   id: number;
   type: ComponentType.Label;
 }
@@ -2601,7 +2600,7 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   private constructor(client: Client<true>, data: APIModalSubmitInteraction);
   public type: InteractionType.ModalSubmit;
   public readonly customId: string;
-  public readonly components: ActionRowModalData[];
+  public readonly components: (ActionRowModalData | LabelModalData)[];
   public readonly fields: ModalSubmitFields;
   public deferred: boolean;
   public ephemeral: boolean | null;
