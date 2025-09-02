@@ -16,12 +16,12 @@ const getMessage = lazy(() => require('./Message').Message);
  */
 
 /**
- * @typedef {Object} TextInputModalData
+ * @typedef {BaseModalData} TextInputModalData
  * @property {string} value The value of the field
  */
 
 /**
- * @typedef {Object} StringSelectModalData
+ * @typedef {BaseModalData} StringSelectModalData
  * @property {string[]} values The values of the field
  */
 
@@ -70,7 +70,7 @@ class ModalSubmitInteraction extends BaseInteraction {
     /**
      * The components within the modal
      *
-     * @type {ActionRowModalData | LabelModalData[]}
+     * @type {Array<ActionRowModalData | LabelModalData>}
      */
     this.components = data.data.components?.map(component => ModalSubmitInteraction.transformComponent(component));
 
@@ -109,6 +109,7 @@ class ModalSubmitInteraction extends BaseInteraction {
    * Transforms component data to discord.js-compatible data
    * @param {*} rawComponent The data to transform
    * @returns {ModalData[]}
+   * @private
    */
   static transformComponent(rawComponent) {
     if ('components' in rawComponent) {
