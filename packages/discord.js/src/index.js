@@ -180,6 +180,7 @@ exports.InteractionCallbackResponse =
 exports.InteractionCollector = require('./structures/InteractionCollector.js').InteractionCollector;
 exports.InteractionWebhook = require('./structures/InteractionWebhook.js').InteractionWebhook;
 exports.InviteGuild = require('./structures/InviteGuild.js').InviteGuild;
+exports.LabelComponent = require('./structures/LabelComponent.js').LabelComponent;
 exports.MediaChannel = require('./structures/MediaChannel.js').MediaChannel;
 exports.MediaGalleryComponent = require('./structures/MediaGalleryComponent.js').MediaGalleryComponent;
 exports.MediaGalleryItem = require('./structures/MediaGalleryItem.js').MediaGalleryItem;

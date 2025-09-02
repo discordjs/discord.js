@@ -50,6 +50,7 @@ import {
   APIInteractionDataResolvedChannel,
   APIInteractionDataResolvedGuildMember,
   APIInteractionGuildMember,
+  APILabelComponent,
   APIMediaGalleryComponent,
   APIMediaGalleryItem,
   APIMentionableSelectComponent,
@@ -738,6 +739,12 @@ export type ComponentEmojiResolvable = APIMessageComponentEmoji | string;
 export class TextInputComponent extends Component<APITextInputComponent> {
   public get customId(): string;
   public get value(): string;
+}
+
+export class LabelComponent extends Component<APILabelComponent> {
+  public component: StringSelectMenuComponent | TextInputComponent;
+  public get label(): string;
+  public get description(): string | null;
 }
 
 export class BaseSelectMenuComponent<Data extends APISelectMenuComponent> extends Component<Data> {
