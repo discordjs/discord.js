@@ -159,6 +159,7 @@ import {
   InteractionContextType,
   InteractionResponseType,
   InteractionType,
+  InviteFlags,
   InviteTargetType,
   InviteType,
   Locale,
@@ -2039,6 +2040,7 @@ export class BaseInvite<WithCounts extends boolean = boolean> extends Base {
 
 export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvite<WithCounts> {
   public readonly type: InviteType.Guild;
+  public flags: Readonly<InviteFlagsBitField>;
   public guild: Guild | InviteGuild | null;
   public readonly guildId: Snowflake;
   public channel: NonThreadGuildBasedChannel | null;
@@ -2052,6 +2054,13 @@ export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvit
   public approximatePresenceCount: WithCounts extends true ? number : null;
   public get deletable(): boolean;
   public delete(reason?: string): Promise<void>;
+}
+
+export type InviteFlagsString = keyof typeof InviteFlags;
+
+export class InviteFlagsBitField extends BitField<InviteFlagsString> {
+  public static Flags: typeof InviteFlags;
+  public static resolve(bit?: BitFieldResolvable<InviteFlagsString, number>): number;
 }
 
 export class GroupDMInvite<WithCounts extends boolean = boolean> extends BaseInvite<WithCounts> {

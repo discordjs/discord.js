@@ -515,6 +515,11 @@
  */
 
 /**
+ * @external InviteFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InviteFlags}
+ */
+
+/**
  * @external InviteType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InviteType}
  */
