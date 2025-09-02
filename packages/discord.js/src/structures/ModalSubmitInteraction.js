@@ -123,6 +123,7 @@ class ModalSubmitInteraction extends BaseInteraction {
     if ('components' in rawComponent) {
       return {
         type: rawComponent.type,
+        id: rawComponent.id,
         components: rawComponent.components.map(component => this.transformComponent(component)),
       };
     }
@@ -130,6 +131,7 @@ class ModalSubmitInteraction extends BaseInteraction {
     if ('component' in rawComponent) {
       return {
         type: rawComponent.type,
+        id: rawComponent.id,
         component: this.transformComponent(rawComponent.component),
       };
     }
@@ -137,6 +139,7 @@ class ModalSubmitInteraction extends BaseInteraction {
     const data = {
       type: rawComponent.type,
       customId: rawComponent.custom_id,
+      id: rawComponent.id,
     };
 
     if (rawComponent.value) data.value = rawComponent.value;
