@@ -2606,7 +2606,6 @@ await chatInputInteraction.showModal({
         type: ComponentType.TextInput,
         style: TextInputStyle.Short,
         customId: 'aa',
-        label: 'label',
       },
       label: 'yo',
     },

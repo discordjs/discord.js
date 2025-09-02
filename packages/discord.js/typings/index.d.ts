@@ -263,19 +263,18 @@ export type MessageActionRowComponentData =
   | StringSelectMenuComponentData
   | UserSelectMenuComponentData;
 
-export type ModalActionRowComponentData = JSONEncodable<APIComponentInModalActionRow> | TextInputComponentData;
+export type ActionRowComponentData = MessageActionRowComponentData;
 
-export type ActionRowComponentData = MessageActionRowComponentData | ModalActionRowComponentData;
-
-export type ActionRowComponent = MessageActionRowComponent | ModalActionRowComponent;
+export type ActionRowComponent = MessageActionRowComponent;
 
 export interface ActionRowData<ComponentType extends ActionRowComponentData | JSONEncodable<APIComponentInActionRow>>
   extends BaseComponentData {
   components: readonly ComponentType[];
 }
 
+export type ComponentInLabelData = StringSelectMenuComponentData | TextInputComponentData;
 export interface LabelData extends BaseComponentData {
-  component: StringSelectMenuComponentData | TextInputComponentData;
+  component: ComponentInLabelData;
   description?: string;
   label: string;
 }
@@ -287,12 +286,11 @@ export type MessageActionRowComponent =
   | RoleSelectMenuComponent
   | StringSelectMenuComponent
   | UserSelectMenuComponent;
-export type ModalActionRowComponent = TextInputComponent;
 
-export class ActionRow<ComponentType extends MessageActionRowComponent | ModalActionRowComponent> extends Component<
-  APIActionRowComponent<APIComponentInMessageActionRow | APIComponentInModalActionRow>
+export class ActionRow<ComponentType extends MessageActionRowComponent> extends Component<
+  APIActionRowComponent<APIComponentInMessageActionRow>
 > {
-  private constructor(data: APIActionRowComponent<APIComponentInMessageActionRow | APIComponentInModalActionRow>);
+  private constructor(data: APIActionRowComponent<APIComponentInMessageActionRow>);
   public readonly components: ComponentType[];
   public toJSON(): APIActionRowComponent<ReturnType<ComponentType['toJSON']>>;
 }
@@ -3669,11 +3667,7 @@ export function resolveSKUId(resolvable: SKUResolvable): Snowflake | null;
 export function verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
 
 export type ComponentData =
-  | ComponentInContainerData
-  | ContainerComponentData
-  | MessageActionRowComponentData
-  | ModalActionRowComponentData
-  | ThumbnailComponentData;
+  ComponentInContainerData | ComponentInLabelData | ContainerComponentData | LabelData | MessageActionRowComponentData | ThumbnailComponentData;
 
 export interface SendSoundboardSoundOptions {
   guildId?: Snowflake;
@@ -6730,7 +6724,6 @@ export interface SelectMenuComponentOptionData {
 
 export interface TextInputComponentData extends BaseComponentData {
   customId: string;
-  label: string;
   maxLength?: number;
   minLength?: number;
   placeholder?: string;
