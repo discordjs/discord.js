@@ -2781,21 +2781,21 @@ export interface ModalComponentData {
 export interface BaseModalData<Type extends ComponentType> {
   customId: string;
   id: number;
-  type: ComponentType;
+  type: Type;
 }
 
 export interface TextInputModalData extends BaseModalData<ComponentType.TextInput> {
   value: string;
 }
 
-export interface StringSelectModalData extends BaseModalData {
-  id: number;
-  type: ComponentType.StringSelect;
+export interface StringSelectModalData extends BaseModalData<ComponentType.StringSelect> {
   values: readonly string[];
 }
 
+export type ModalData = StringSelectModalData | TextInputModalData;
+
 export interface LabelModalData {
-  component: readonly (StringSelectModalData | TextInputModalData)[];
+  component: readonly ModalData[];
   id: number;
   type: ComponentType.Label;
 }
