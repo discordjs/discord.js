@@ -3667,7 +3667,12 @@ export function resolveSKUId(resolvable: SKUResolvable): Snowflake | null;
 export function verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
 
 export type ComponentData =
-  ComponentInContainerData | ComponentInLabelData | ContainerComponentData | LabelData | MessageActionRowComponentData | ThumbnailComponentData;
+  | ComponentInContainerData
+  | ComponentInLabelData
+  | ContainerComponentData
+  | LabelData
+  | MessageActionRowComponentData
+  | ThumbnailComponentData;
 
 export interface SendSoundboardSoundOptions {
   guildId?: Snowflake;
