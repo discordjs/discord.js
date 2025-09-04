@@ -6680,6 +6680,7 @@ export interface BaseSelectMenuComponentData extends BaseComponentData {
 
 export interface StringSelectMenuComponentData extends BaseSelectMenuComponentData {
   options: readonly SelectMenuComponentOptionData[];
+  required?: boolean;
   type: ComponentType.StringSelect;
 }
 
