@@ -23,14 +23,14 @@ const { ComponentType } = require('discord-api-types/v10');
  */
 
 /**
- * @typedef {StringSelectMenuComponentData|TextInputComponentData} ComponentInLabelData
+ * @typedef {StringSelectMenuComponentData|TextInputComponentData} ComponentsInLabelData
  */
 
 /**
  * @typedef {BaseComponentData} LabelData
  * @property {string} label The label to use
  * @property {string} [description] The optional description for the label
- * @property {ComponentInLabelData} component The component within the label
+ * @property {ComponentsInLabelData} component The component within the label
  */
 
 /**
