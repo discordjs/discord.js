@@ -895,7 +895,6 @@ class Guild extends AnonymousGuild {
    * @property {?VoiceChannelResolvable} [afkChannel] The AFK channel of the guild
    * @property {number} [afkTimeout] The AFK timeout of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [icon] The icon of the guild
-   * @property {UserResolvable} [owner] The owner of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [splash] The invite splash image of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [discoverySplash] The discovery splash image of the guild
    * @property {?(BufferResolvable|Base64Resolvable)} [banner] The banner of the guild
@@ -947,7 +946,6 @@ class Guild extends AnonymousGuild {
     afkChannel,
     afkTimeout,
     icon,
-    owner,
     splash,
     discoverySplash,
     banner,
@@ -969,7 +967,6 @@ class Guild extends AnonymousGuild {
         afk_channel_id: afkChannel && this.client.channels.resolveId(afkChannel),
         afk_timeout: afkTimeout,
         icon: icon && (await resolveImage(icon)),
-        owner_id: owner && this.client.users.resolveId(owner),
         splash: splash && (await resolveImage(splash)),
         discovery_splash: discoverySplash && (await resolveImage(discoverySplash)),
         banner: banner && (await resolveImage(banner)),
@@ -1275,23 +1272,6 @@ class Guild extends AnonymousGuild {
    */
   async setIcon(icon, reason) {
     return this.edit({ icon, reason });
-  }
-
-  /**
-   * Sets a new owner of the guild.
-   *
-   * @param {UserResolvable} owner The new owner of the guild
-   * @param {string} [reason] Reason for setting the new owner
-   * @returns {Promise<Guild>}
-   * @example
-   * // Edit the guild owner
-   * guild.setOwner(guild.members.cache.first())
-   *  .then(guild => guild.fetchOwner())
-   *  .then(owner => console.log(`Updated the guild owner to ${owner.displayName}`))
-   *  .catch(console.error);
-   */
-  async setOwner(owner, reason) {
-    return this.edit({ owner, reason });
   }
 
   /**

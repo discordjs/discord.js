@@ -25,6 +25,7 @@ src/styles/unocss.css
 .tmp
 .vscode
 lighthouse-results
+next-env.d.ts
 
 .vercel
 

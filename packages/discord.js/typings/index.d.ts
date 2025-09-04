@@ -159,6 +159,7 @@ import {
   InteractionContextType,
   InteractionResponseType,
   InteractionType,
+  InviteFlags,
   InviteTargetType,
   InviteType,
   Locale,
@@ -1477,7 +1478,6 @@ export class Guild extends AnonymousGuild {
   ): Promise<Guild>;
   public setIcon(icon: Base64Resolvable | BufferResolvable | null, reason?: string): Promise<Guild>;
   public setName(name: string, reason?: string): Promise<Guild>;
-  public setOwner(owner: UserResolvable, reason?: string): Promise<Guild>;
   public setPreferredLocale(preferredLocale: Locale | null, reason?: string): Promise<Guild>;
   public setPublicUpdatesChannel(publicUpdatesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setRulesChannel(rulesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
@@ -2040,6 +2040,7 @@ export class BaseInvite<WithCounts extends boolean = boolean> extends Base {
 
 export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvite<WithCounts> {
   public readonly type: InviteType.Guild;
+  public flags: Readonly<InviteFlagsBitField>;
   public guild: Guild | InviteGuild | null;
   public readonly guildId: Snowflake;
   public channel: NonThreadGuildBasedChannel | null;
@@ -2053,6 +2054,13 @@ export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvit
   public approximatePresenceCount: WithCounts extends true ? number : null;
   public get deletable(): boolean;
   public delete(reason?: string): Promise<void>;
+}
+
+export type InviteFlagsString = keyof typeof InviteFlags;
+
+export class InviteFlagsBitField extends BitField<InviteFlagsString> {
+  public static Flags: typeof InviteFlags;
+  public static resolve(bit?: BitFieldResolvable<InviteFlagsString, number>): number;
 }
 
 export class GroupDMInvite<WithCounts extends boolean = boolean> extends BaseInvite<WithCounts> {
@@ -2745,6 +2753,11 @@ export interface PollQuestionMedia {
   text: string | null;
 }
 
+export interface BaseFetchPollAnswerVotersOptions {
+  after?: Snowflake;
+  limit?: number;
+}
+
 export class PollAnswerVoterManager extends CachedManager<Snowflake, User, UserResolvable> {
   private constructor(answer: PollAnswer);
   public answer: PollAnswer;
@@ -2769,11 +2782,6 @@ export class Poll extends Base {
   public end(): Promise<Message>;
 }
 
-export interface BaseFetchPollAnswerVotersOptions {
-  after?: Snowflake;
-  limit?: number;
-}
-
 export class PollAnswer extends Base {
   private constructor(client: Client<true>, data: APIPollAnswer & { count?: number }, poll: Poll);
   private readonly _emoji: APIPartialEmoji | null;
@@ -2784,10 +2792,6 @@ export class PollAnswer extends Base {
   public voters: PollAnswerVoterManager;
   public get emoji(): Emoji | GuildEmoji | null;
   public get partial(): false;
-  /**
-   * @deprecated Use {@link PollAnswerVoterManager.fetch} instead
-   */
-  public fetchVoters(options?: BaseFetchPollAnswerVotersOptions): Promise<Collection<Snowflake, User>>;
 }
 
 export interface ReactionCollectorEventTypes extends CollectorEventTypes<Snowflake | string, MessageReaction, [User]> {
@@ -6123,7 +6127,6 @@ export interface GuildEditOptions {
   features?: readonly `${GuildFeature}`[];
   icon?: Base64Resolvable | BufferResolvable | null;
   name?: string;
-  owner?: UserResolvable;
   preferredLocale?: Locale | null;
   premiumProgressBarEnabled?: boolean;
   publicUpdatesChannel?: TextChannelResolvable | null;
