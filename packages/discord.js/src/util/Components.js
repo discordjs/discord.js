@@ -23,7 +23,7 @@ const { ComponentType } = require('discord-api-types/v10');
  */
 
 /**
- * @typedef {StringSelectMenuComponentData|TextInputComponentData} ComponentsInLabelData
+ * @typedef {StringSelectMenuComponentData|TextInputComponentData} ComponentInLabelData
  */
 
 /**
