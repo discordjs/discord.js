@@ -9,6 +9,7 @@ const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = 
 const { BaseGuildVoiceChannel } = require('../structures/BaseGuildVoiceChannel.js');
 const { GuildMember } = require('../structures/GuildMember.js');
 const { Role } = require('../structures/Role.js');
+const { resolveImage } = require('../util/DataResolver.js');
 const { Events } = require('../util/Events.js');
 const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField.js');
 const { Partials } = require('../util/Partials.js');
@@ -344,7 +345,7 @@ class GuildMemberManager extends CachedManager {
   /**
    * The data for editing a guild member.
    *
-   * @typedef {Object} GuildMemberEditOptions
+   * @typedef {Object} GuildMemberEditMemberOptions
    * @property {?string} [nick] The nickname to set for the member
    * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles or role ids to apply
    * @property {boolean} [mute] Whether or not the member should be muted
@@ -358,14 +359,13 @@ class GuildMemberManager extends CachedManager {
    */
 
   /**
-   * Edits a member of the guild.
-   * <info>The user must be a member of the guild</info>
+   * Edits a member of a guild.
    *
    * @param {UserResolvable} user The member to edit
-   * @param {GuildMemberEditOptions} options The options to provide
+   * @param {GuildMemberEditMemberOptions} options The options to provide
    * @returns {Promise<GuildMember>}
    */
-  async edit(user, { reason, ...options }) {
+  async editMember(user, { reason, ...options }) {
     const id = this.client.users.resolveId(user);
     if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
 
@@ -396,18 +396,39 @@ class GuildMemberManager extends CachedManager {
       options.flags = GuildMemberFlagsBitField.resolve(options.flags);
     }
 
-    let endpoint;
-    if (id === this.client.user.id) {
-      const keys = Object.keys(options);
-      if (keys.length === 1 && keys[0] === 'nick') endpoint = Routes.guildMember(this.guild.id);
-      else endpoint = Routes.guildMember(this.guild.id, id);
-    } else {
-      endpoint = Routes.guildMember(this.guild.id, id);
-    }
-
-    const data = await this.client.rest.patch(endpoint, { body: options, reason });
-
+    const data = await this.client.rest.patch(Routes.guildMember(this.guild.id, id), { body: options, reason });
     const clone = this.cache.get(id)?._clone();
+    clone?._patch(data);
+    return clone ?? this._add(data, false);
+  }
+
+  /**
+   * The data for editing the current application's guild member.
+   *
+   * @typedef {Object} GuildMemberEditCurrentOptions
+   * @property {?string} [nick] The nickname to set
+   * @property {?(BufferResolvable|Base64Resolvable)} [icon] The icon to set
+   * @property {?(BufferResolvable|Base64Resolvable)} [banner] The banner to set
+   * @property {string} [reason] The reason to use
+   */
+
+  /**
+   * Edits the current application's guild member in a guild.
+   *
+   * @param {GuildMemberEditCurrentOptions} options The options to provide
+   * @returns {Promise<GuildMember>}
+   */
+  async editCurrent({ reason, ...options }) {
+    const data = await this.client.rest.patch(Routes.guildMember(this.guild.id, '@me'), {
+      body: {
+        ...options,
+        icon: options.icon && (await resolveImage(options.icon)),
+        banner: options.banner && (await resolveImage(options.banner)),
+      },
+      reason,
+    });
+
+    const clone = this.me?._clone();
     clone?._patch(data);
     return clone ?? this._add(data, false);
   }
