@@ -423,7 +423,7 @@ class GuildMember extends Base {
   /**
    * Edits this member.
    *
-   * @param {GuildMemberEditOptions} options The options to provide
+   * @param {GuildMemberEditMemberOptions} options The options to provide
    * @returns {Promise<GuildMember>}
    */
   async edit(options) {
