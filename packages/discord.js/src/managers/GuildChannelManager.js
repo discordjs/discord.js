@@ -322,7 +322,7 @@ class GuildChannelManager extends CachedManager {
       });
     }
 
-    let permission_overwrites = options.permissionOverwrites?.map(overwrite =>
+    let permissionOverwrites = options.permissionOverwrites?.map(overwrite =>
       PermissionOverwrites.resolve(overwrite, this.guild),
     );
 
@@ -330,7 +330,7 @@ class GuildChannelManager extends CachedManager {
       if (parentId) {
         const newParent = this.cache.get(parentId);
         if (newParent?.type === ChannelType.GuildCategory) {
-          permission_overwrites = newParent.permissionOverwrites.cache.map(overwrite =>
+          permissionOverwrites = newParent.permissionOverwrites.cache.map(overwrite =>
             PermissionOverwrites.resolve(overwrite, this.guild),
           );
         }
@@ -338,7 +338,7 @@ class GuildChannelManager extends CachedManager {
         const resolvedChannel = this.resolve(channel);
         if (!resolvedChannel) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'channel', 'GuildChannelResolvable');
         if (resolvedChannel.parent) {
-          permission_overwrites = resolvedChannel.parent.permissionOverwrites.cache.map(overwrite =>
+          permissionOverwrites = resolvedChannel.parent.permissionOverwrites.cache.map(overwrite =>
             PermissionOverwrites.resolve(overwrite, this.guild),
           );
         }
@@ -361,8 +361,8 @@ class GuildChannelManager extends CachedManager {
     }
 
     // This overwrites a passed snake_case version if a camelCase version is passed
-    if (permission_overwrites) {
-      snakeCaseBody.permission_overwrites = permission_overwrites;
+    if (permissionOverwrites) {
+      snakeCaseBody.permission_overwrites = permissionOverwrites;
     }
 
     if (snakeCaseBody.available_tags) {
