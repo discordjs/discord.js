@@ -109,7 +109,6 @@ class ModalSubmitInteraction extends BaseInteraction {
    * Transforms component data to discord.js-compatible data
    * @param {*} rawComponent The data to transform
    * @returns {ModalData[]}
-   * @private
    */
   static transformComponent(rawComponent) {
     if ('components' in rawComponent) {
