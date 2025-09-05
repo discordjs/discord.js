@@ -6,7 +6,7 @@ import { styleText } from 'node:util';
 import { Option, program } from 'commander';
 import prompts from 'prompts';
 import validateProjectName from 'validate-npm-package-name';
-import packageJSON from '../package.json' assert { type: 'json' };
+import packageJSON from '../package.json' with { type: 'json' };
 import { createDiscordBot } from '../src/create-discord-bot.js';
 import { resolvePackageManager } from '../src/helpers/packageManager.js';
 import { DEFAULT_PROJECT_NAME, PACKAGE_MANAGERS } from '../src/util/constants.js';

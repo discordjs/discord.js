@@ -266,7 +266,11 @@ class User extends Base {
    * @readonly
    */
   get defaultAvatarURL() {
-    const index = this.discriminator === '0' ? calculateUserDefaultAvatarIndex(this.id) : this.discriminator % 5;
+    const index =
+      this.discriminator === '0' || this.discriminator === '0000'
+        ? calculateUserDefaultAvatarIndex(this.id)
+        : this.discriminator % 5;
+
     return this.client.rest.cdn.defaultAvatar(index);
   }
 
@@ -325,7 +329,7 @@ class User extends Base {
    */
   get tag() {
     return typeof this.username === 'string'
-      ? this.discriminator === '0'
+      ? this.discriminator === '0' || this.discriminator === '0000'
         ? this.username
         : `${this.username}#${this.discriminator}`
       : null;
