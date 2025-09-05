@@ -41,6 +41,7 @@ class AttachmentBuilder {
 
     /**
      * The base64 encoded byte array representing a sampled waveform
+     * <info>This is only for voice message attachments.</info>
      *
      * @type {?string}
      */
@@ -48,6 +49,7 @@ class AttachmentBuilder {
 
     /**
      * The duration of the attachment in seconds
+     * <info>This is only for voice message attachments.</info>
      *
      * @type {?number}
      */
@@ -100,6 +102,7 @@ class AttachmentBuilder {
 
   /**
    * Sets the waveform of this attachment.
+   * <info>This is only for voice message attachments.</info>
    *
    * @param {string} waveform The base64 encoded byte array representing a sampled waveform
    * @returns {AttachmentBuilder} This attachment
@@ -111,6 +114,7 @@ class AttachmentBuilder {
 
   /**
    * Sets the duration of this attachment.
+   * <info>This is only for voice message attachments.</info>
    *
    * @param {number} duration The duration of the attachment in seconds
    * @returns {AttachmentBuilder} This attachment
@@ -176,6 +180,6 @@ exports.AttachmentBuilder = AttachmentBuilder;
  * @property {string} [name] The name of the attachment
  * @property {string} [description] The description of the attachment
  * @property {string} [title] The title of the attachment
- * @property {string} [waveform] The base64 encoded byte array representing a sampled waveform
- * @property {number} [duration] The duration of the attachment in seconds
+ * @property {string} [waveform] The base64 encoded byte array representing a sampled waveform (for voice message attachments)
+ * @property {number} [duration] The duration of the attachment in seconds (for voice message attachments)
  */

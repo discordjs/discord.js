@@ -9,8 +9,8 @@ const { basename, flatten } = require('../util/Util.js');
  * @property {string} [name] The name of the attachment
  * @property {string} [description] The description of the attachment
  * @property {title} [title] The title of the attachment
- * @property {string} [waveform] The base64 encoded byte array representing a sampled waveform
- * @property {number} [duration] The duration of the attachment in seconds
+ * @property {string} [waveform] The base64 encoded byte array representing a sampled waveform (from voice message attachments)
+ * @property {number} [duration] The duration of the attachment in seconds (from voice message attachments)
  */
 
 /**
@@ -118,7 +118,7 @@ class Attachment {
     if ('duration_secs' in data) {
       /**
        * The duration of this attachment in seconds
-       * <info>This will only be available if the attachment is an audio file.</info>
+       * <info>This will only be available if the attachment is the audio file from a voice message.</info>
        *
        * @type {?number}
        */
@@ -130,7 +130,7 @@ class Attachment {
     if ('waveform' in data) {
       /**
        * The base64 encoded byte array representing a sampled waveform
-       * <info>This will only be available if the attachment is an audio file.</info>
+       * <info>This will only be available if this attachment is the audio file from a voice message.</info>
        *
        * @type {?string}
        */
