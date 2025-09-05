@@ -178,12 +178,7 @@ export function normalizeRetryBackoff(
 	requestBody: unknown,
 ): number | null {
 	if (typeof retryBackoff === 'number') {
-		let backoff = Math.max(0, retryBackoff);
-		for (let exponent = 0; exponent < retryCount; exponent++) {
-			backoff += backoff;
-		}
-
-		return backoff;
+		return Math.max(0, retryBackoff) * (1 << retryCount);
 	}
 
 	// No need to Math.max as we'll only set the sleep timer if the value is > 0 (and not equal)
