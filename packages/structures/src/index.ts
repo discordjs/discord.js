@@ -5,5 +5,6 @@ export * from './users/index.js';
 export * from './Structure.js';
 export * from './Mixin.js';
 export * from './utils/optimization.js';
+export * from './utils/symbols.js';
 export type * from './utils/types.js';
 export type * from './MixinTypes.d.ts';
