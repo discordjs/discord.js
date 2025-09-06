@@ -403,7 +403,6 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * @param options - Options
 	 * @param options.timeout - Timeout for the command
 	 * @param options.force - Force this move. This should only be done if you
-	 *
 	 * have explicit permission from the user.
 	 */
 	public async selectVoiceChannel(
@@ -424,7 +423,6 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * @param id - Id of the voice channel
 	 * @param options - Options
 	 * @param options.timeout - Timeout for the command
-	 *
 	 * have explicit permission from the user.
 	 */
 	public async selectTextChannel(
