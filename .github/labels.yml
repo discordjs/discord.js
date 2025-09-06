@@ -119,11 +119,6 @@
   color: 88aabb
 - name: t:backport-candidate
   color: 0075ca
-- name: t:duplicate
-  color: cfd3d7
-- name: t:invalid
-  description: This is not related to discord.js.
-  color: e4e669
 - name: t:need reproduction
   color: c66037
 - name: t:won't fix
