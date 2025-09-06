@@ -119,13 +119,8 @@
   color: 88aabb
 - name: t:backport-candidate
   color: 0075ca
-- name: t:bug
-  description: Something is not working as expected.
-  color: '870808'
 - name: t:duplicate
   color: cfd3d7
-- name: t:feature request
-  color: fcf95a
 - name: t:invalid
   description: This is not related to discord.js.
   color: e4e669
