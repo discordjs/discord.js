@@ -210,11 +210,11 @@ export type RateLimitQueueFilter = (rateLimitData: RateLimitData) => Awaitable<b
 export type GetRateLimitOffsetFunction = (route: string) => number;
 
 /**
- * A function that determines the backoff for a retry for a given request
+ * A function that determines the backoff for a retry for a given request.
  *
- * @param route - The route that has encountered a server side error
+ * @param route - The route that has encountered a server-side error
  * @param statusCode - The status code received or `null` if aborted
- * @param retryCount - The number of retries that have been attempted so far, the first call will be 0
+ * @param retryCount - The number of retries that have been attempted so far. The first call will be `0`
  * @param requestBody - The body that was sent with the request
  * @returns The delay for the current request or `null` to throw an error instead of retrying
  */
@@ -226,7 +226,7 @@ export type GetRetryBackoffFunction = (
 ) => number | null;
 
 /**
- * A function that determines the timeout for a given request
+ * A function that determines the timeout for a given request.
  *
  * @param route - The route that is being processed
  * @param body - The body that will be sent with the request
