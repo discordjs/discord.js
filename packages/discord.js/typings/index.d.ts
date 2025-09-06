@@ -1655,7 +1655,7 @@ export class GuildMember extends Base {
   public displayAvatarURL(options?: ImageURLOptions): string;
   public displayBannerURL(options?: ImageURLOptions): string | null;
   public displayAvatarDecorationURL(): string | null;
-  public edit(options: GuildMemberEditOptions): Promise<GuildMember>;
+  public edit(options: GuildMemberEditMemberOptions): Promise<GuildMember>;
   public isCommunicationDisabled(): this is GuildMember & {
     readonly communicationDisabledUntil: Date;
     communicationDisabledUntilTimestamp: number;
@@ -4386,7 +4386,8 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Us
     users: ReadonlyCollection<Snowflake, UserResolvable> | readonly UserResolvable[],
     options?: BanOptions,
   ): Promise<BulkBanResult>;
-  public edit(user: UserResolvable, options: GuildMemberEditOptions): Promise<GuildMember>;
+  public editMember(user: UserResolvable, options: GuildMemberEditMemberOptions): Promise<GuildMember>;
+  public editCurrent(options: GuildMemberEditCurrentMemberOptions): Promise<GuildMember>;
   public fetch(
     options: FetchMemberOptions | UserResolvable | (FetchMembersOptions & { user: UserResolvable }),
   ): Promise<GuildMember>;
@@ -6179,7 +6180,7 @@ export interface GuildStickerEditOptions {
   tags?: string;
 }
 
-export interface GuildMemberEditOptions {
+export interface GuildMemberEditMemberOptions {
   channel?: GuildVoiceChannelResolvable | null;
   communicationDisabledUntil?: DateResolvable | null;
   deaf?: boolean;
@@ -6188,6 +6189,13 @@ export interface GuildMemberEditOptions {
   nick?: string | null;
   reason?: string;
   roles?: ReadonlyCollection<Snowflake, Role> | readonly RoleResolvable[];
+}
+
+export interface GuildMemberEditCurrentMemberOptions {
+  banner?: Base64Resolvable | BufferResolvable | null;
+  icon?: Base64Resolvable | BufferResolvable | null;
+  nick?: string | null;
+  reason?: string;
 }
 
 export type GuildResolvable =
