@@ -51,7 +51,7 @@ export interface RPCLoginOptions {
 	 */
 	accessToken: string;
 	/**
-	 * Client Id
+	 * Client id
 	 */
 	clientId: string;
 	/**
@@ -272,7 +272,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 *
 	 * @param options - authorization options
 	 * @param options.scopes - An array of scopes
-	 * @param options.clientId - Client's Id
+	 * @param options.clientId - Client's id
 	 * @param options.clientSecret - Client's Secret
 	 * @param options.redirectUri - URI to redirect to
 	 */
@@ -325,7 +325,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	/**
 	 * Fetch a guild
 	 *
-	 * @param id - Guild Id
+	 * @param id - Guild id
 	 * @param timeout - Timeout request
 	 */
 	public async getGuild(id: Snowflake, timeout: number): Promise<RPCGetGuildResultData> {
@@ -344,7 +344,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	/**
 	 * Get a channel
 	 *
-	 * @param id - Channel Id
+	 * @param id - Channel id
 	 */
 	public async getChannel(id: Snowflake): Promise<RPCGetChannelResultData> {
 		return this.#request(RPCCommands.GetChannel, { channel_id: id });
@@ -353,7 +353,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	/**
 	 * Get all channels
 	 *
-	 * @param id - Guild Id
+	 * @param id - Guild id
 	 */
 	public async getChannels(id: Snowflake): Promise<RPCGetChannelsResultData['channels']> {
 		const { channels } = await this.#request(RPCCommands.GetChannels, { guild_id: id });
@@ -363,7 +363,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	/**
 	 * Create channel invite
 	 *
-	 * @param id - Channel Id
+	 * @param id - Channel id
 	 */
 	public async createChannelInvite(id: Snowflake): Promise<RPCCreateChannelInviteResultData> {
 		return this.#request(RPCCommands.CreateChannelInvite, { channel_id: id });
