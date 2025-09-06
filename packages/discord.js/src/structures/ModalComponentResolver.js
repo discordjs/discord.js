@@ -97,10 +97,11 @@ class ModalComponentResolver {
    * Gets the value of a text input component
    *
    * @param {string} customId The custom id of the text input component
+   * @param {?boolean} required Whether to throw an error if the component value is not found or empty
    * @returns {string}
    */
-  getTextInputValue(customId) {
-    return this._getTypedComponent(customId, [ComponentType.TextInput]).value;
+  getTextInputValue(customId, required = false) {
+    return this._getTypedComponent(customId, [ComponentType.TextInput], ['value'], required).value ?? null;
   }
 
   /**
@@ -120,7 +121,7 @@ class ModalComponentResolver {
    * @param {boolean} [required=false] Whether to throw an error if the component value is not found or empty
    * @returns {?Collection<Snowflake, User>} The selected users, or null if none were selected and not required
    */
-  getUsers(customId, required = false) {
+  getSelectedUsers(customId, required = false) {
     const component = this._getTypedComponent(
       customId,
       [ComponentType.UserSelect, ComponentType.MentionableSelect],
@@ -137,7 +138,7 @@ class ModalComponentResolver {
    * @param {boolean} [required=false] Whether to throw an error if the component value is not found or empty
    * @returns {?Collection<Snowflake, Role | APIRole>} The selected roles, or null if none were selected and not required
    */
-  getRoles(customId, required = false) {
+  getSelectedRoles(customId, required = false) {
     const component = this._getTypedComponent(
       customId,
       [ComponentType.RoleSelect, ComponentType.MentionableSelect],
@@ -155,10 +156,10 @@ class ModalComponentResolver {
    * @param {ChannelType[]} [channelTypes=[]] The allowed types of channels. If empty, all channel types are allowed.
    * @returns {?Collection<Snowflake, GuildChannel|ThreadChannel|APIChannel>} The selected channels, or null if none were selected and not required
    */
-  getChannels(customId, required = false, channelTypes = []) {
+  getSelectedChannels(customId, required = false, channelTypes = []) {
     const component = this._getTypedComponent(customId, [ComponentType.ChannelSelect], ['channels'], required);
     const channels = component.channels;
-    if (channels && channelTypes.size > 0) {
+    if (channels && channelTypes.length > 0) {
       for (const channel of channels.values()) {
         if (!channelTypes.includes(channel.type)) {
           throw new DiscordjsTypeError(
@@ -180,7 +181,7 @@ class ModalComponentResolver {
    * @param {string} customId The custom id of the component
    * @returns {?Collection<Snowflake, GuildMember | APIGuildMember>} The selected members, or null if none were selected or the users were not present in the guild
    */
-  getMembers(customId) {
+  getSelectedMembers(customId) {
     const component = this._getTypedComponent(
       customId,
       [ComponentType.UserSelect, ComponentType.MentionableSelect],
@@ -197,7 +198,7 @@ class ModalComponentResolver {
    * @param {boolean} [required=false] Whether to throw an error if the component value is not found or empty
    * @returns {?{users: Collection<Snowflake, User>, members: Collection<Snowflake, GuildMember | APIGuildMember>, roles: Collection<Snowflake, Role | APIRole>}} The selected mentionables, or null if none were selected and not required
    */
-  getMentionables(customId, required = false) {
+  getSelectedMentionables(customId, required = false) {
     const component = this._getTypedComponent(
       customId,
       [ComponentType.MentionableSelect],

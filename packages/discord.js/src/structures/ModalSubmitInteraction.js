@@ -88,7 +88,7 @@ class ModalSubmitInteraction extends BaseInteraction {
      */
     this.components = new ModalComponentResolver(
       this.client,
-      data.data.components?.map(component => ModalSubmitInteraction.transformComponent(component)),
+      data.data.components?.map(component => this.transformComponent(component, data.data.resolved)),
       transformResolved({ client: this.client, guild: this.guild, channel: this.channel }, data.data.resolved),
     );
 
@@ -129,12 +129,12 @@ class ModalSubmitInteraction extends BaseInteraction {
    * @returns {ModalData[]}
    * @private
    */
-  static transformComponent(rawComponent, resolved) {
+  transformComponent(rawComponent, resolved) {
     if ('components' in rawComponent) {
       return {
         type: rawComponent.type,
         id: rawComponent.id,
-        components: rawComponent.components.map(component => this.transformComponent(component)),
+        components: rawComponent.components.map(component => this.transformComponent(component, resolved)),
       };
     }
 
@@ -142,7 +142,7 @@ class ModalSubmitInteraction extends BaseInteraction {
       return {
         type: rawComponent.type,
         id: rawComponent.id,
-        component: this.transformComponent(rawComponent.component),
+        component: this.transformComponent(rawComponent.component, resolved),
       };
     }
 
@@ -173,8 +173,9 @@ class ModalSubmitInteraction extends BaseInteraction {
         const users = resolveCollection(resolved.users, user => this.client.users._add(user));
         if (users) data.users = users;
 
-        const channels = resolveCollection(resolved.channels, channel =>
-          this.client.channels._add(channel, this.guild),
+        const channels = resolveCollection(
+          resolved.channels,
+          channel => this.client.channels._add(channel, this.guild) ?? channel,
         );
         if (channels) data.channels = channels;
 
