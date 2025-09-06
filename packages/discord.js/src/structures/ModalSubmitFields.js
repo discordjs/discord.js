@@ -12,7 +12,7 @@ class ModalSubmitFields {
     /**
      * The components within the modal
      *
-     * @type {ActionRowModalData[]}
+     * @type {Array<ActionRowModalData | LabelModalData>}
      */
     this.components = components;
 
@@ -22,7 +22,16 @@ class ModalSubmitFields {
      * @type {Collection<string, ModalData>}
      */
     this.fields = components.reduce((accumulator, next) => {
-      for (const component of next.components) accumulator.set(component.customId, component);
+      // NOTE: for legacy support of action rows in modals, which has `components`
+      if ('components' in next) {
+        for (const component of next.components) accumulator.set(component.customId, component);
+      }
+
+      // For label component
+      if ('component' in next) {
+        accumulator.set(next.component.customId, next.component);
+      }
+
       return accumulator;
     }, new Collection());
   }
@@ -53,6 +62,16 @@ class ModalSubmitFields {
    */
   getTextInputValue(customId) {
     return this.getField(customId, ComponentType.TextInput).value;
+  }
+
+  /**
+   * Gets the values of a string select component given a custom id
+   *
+   * @param {string} customId The custom id of the string select component
+   * @returns {string[]}
+   */
+  getStringSelectValues(customId) {
+    return this.getField(customId, ComponentType.StringSelect).values;
   }
 }
 

@@ -2584,15 +2584,30 @@ await chatInputInteraction.showModal({
   custom_id: 'abc',
   components: [
     {
-      components: [
-        {
-          custom_id: 'aa',
-          label: 'label',
-          style: TextInputStyle.Short,
-          type: ComponentType.TextInput,
-        },
-      ],
-      type: ComponentType.ActionRow,
+      component: {
+        type: ComponentType.StringSelect,
+        id: 2,
+        custom_id: 'aa',
+        options: [{ label: 'a', value: 'b' }],
+      },
+      type: ComponentType.Label,
+      label: 'yo',
+    },
+  ],
+});
+
+await chatInputInteraction.showModal({
+  title: 'abc',
+  customId: 'abc',
+  components: [
+    {
+      type: ComponentType.Label,
+      component: {
+        type: ComponentType.TextInput,
+        style: TextInputStyle.Short,
+        customId: 'aa',
+      },
+      label: 'yo',
     },
   ],
 });

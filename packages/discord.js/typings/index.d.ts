@@ -50,6 +50,7 @@ import {
   APIInteractionDataResolvedChannel,
   APIInteractionDataResolvedGuildMember,
   APIInteractionGuildMember,
+  APILabelComponent,
   APIMediaGalleryComponent,
   APIMediaGalleryItem,
   APIMentionableSelectComponent,
@@ -65,6 +66,7 @@ import {
   APIMessageTopLevelComponent,
   APIMessageUserSelectInteractionData,
   APIModalComponent,
+  APIModalInteractionResponseCallbackComponent,
   APIModalInteractionResponseCallbackData,
   APIModalSubmitInteraction,
   APIOverwrite,
@@ -248,6 +250,7 @@ export class Activity {
 export type ActivityFlagsString = keyof typeof ActivityFlags;
 
 export interface BaseComponentData {
+  id?: number;
   type: ComponentType;
 }
 
@@ -260,15 +263,20 @@ export type MessageActionRowComponentData =
   | StringSelectMenuComponentData
   | UserSelectMenuComponentData;
 
-export type ModalActionRowComponentData = JSONEncodable<APIComponentInModalActionRow> | TextInputComponentData;
+export type ActionRowComponentData = MessageActionRowComponentData;
 
-export type ActionRowComponentData = MessageActionRowComponentData | ModalActionRowComponentData;
-
-export type ActionRowComponent = MessageActionRowComponent | ModalActionRowComponent;
+export type ActionRowComponent = MessageActionRowComponent;
 
 export interface ActionRowData<ComponentType extends ActionRowComponentData | JSONEncodable<APIComponentInActionRow>>
   extends BaseComponentData {
   components: readonly ComponentType[];
+}
+
+export type ComponentInLabelData = StringSelectMenuComponentData | TextInputComponentData;
+export interface LabelData extends BaseComponentData {
+  component: ComponentInLabelData;
+  description?: string;
+  label: string;
 }
 
 export type MessageActionRowComponent =
@@ -278,12 +286,11 @@ export type MessageActionRowComponent =
   | RoleSelectMenuComponent
   | StringSelectMenuComponent
   | UserSelectMenuComponent;
-export type ModalActionRowComponent = TextInputComponent;
 
-export class ActionRow<ComponentType extends MessageActionRowComponent | ModalActionRowComponent> extends Component<
-  APIActionRowComponent<APIComponentInMessageActionRow | APIComponentInModalActionRow>
+export class ActionRow<ComponentType extends MessageActionRowComponent> extends Component<
+  APIActionRowComponent<APIComponentInMessageActionRow>
 > {
-  private constructor(data: APIActionRowComponent<APIComponentInMessageActionRow | APIComponentInModalActionRow>);
+  private constructor(data: APIActionRowComponent<APIComponentInMessageActionRow>);
   public readonly components: ComponentType[];
   public toJSON(): APIActionRowComponent<ReturnType<ComponentType['toJSON']>>;
 }
@@ -738,6 +745,12 @@ export type ComponentEmojiResolvable = APIMessageComponentEmoji | string;
 export class TextInputComponent extends Component<APITextInputComponent> {
   public get customId(): string;
   public get value(): string;
+}
+
+export class LabelComponent extends Component<APILabelComponent> {
+  public component: StringSelectMenuComponent | TextInputComponent;
+  public get label(): string;
+  public get description(): string | null;
 }
 
 export class BaseSelectMenuComponent<Data extends APISelectMenuComponent> extends Component<Data> {
@@ -2527,36 +2540,48 @@ export interface MessageReactionEventDetails {
 }
 
 export interface ModalComponentData {
-  components: readonly (
-    | ActionRowData<ModalActionRowComponentData>
-    | JSONEncodable<APIActionRowComponent<APIComponentInModalActionRow>>
-  )[];
+  components: readonly LabelData[];
   customId: string;
   title: string;
 }
 
-export interface BaseModalData {
+export interface BaseModalData<Type extends ComponentType> {
   customId: string;
-  type: ComponentType;
+  id: number;
+  type: Type;
 }
 
-export interface TextInputModalData extends BaseModalData {
-  type: ComponentType.TextInput;
+export interface TextInputModalData extends BaseModalData<ComponentType.TextInput> {
   value: string;
 }
 
+export interface StringSelectModalData extends BaseModalData<ComponentType.StringSelect> {
+  values: readonly string[];
+}
+
+export type ModalData = StringSelectModalData | TextInputModalData;
+
+export interface LabelModalData {
+  component: readonly ModalData[];
+  id: number;
+  type: ComponentType.Label;
+}
 export interface ActionRowModalData {
   components: readonly TextInputModalData[];
   type: ComponentType.ActionRow;
 }
 
 export class ModalSubmitFields {
-  private constructor(components: readonly (readonly ModalActionRowComponent[])[]);
-  public components: ActionRowModalData[];
-  public fields: Collection<string, TextInputModalData>;
-  public getField<Type extends ComponentType>(customId: string, type: Type): TextInputModalData & { type: Type };
-  public getField(customId: string, type?: ComponentType): TextInputModalData;
+  private constructor(components: readonly (ActionRowModalData | LabelModalData)[]);
+  public components: (ActionRowModalData | LabelModalData)[];
+  public fields: Collection<string, StringSelectModalData | TextInputModalData>;
+  public getField<Type extends ComponentType>(
+    customId: string,
+    type: Type,
+  ): { type: Type } & (StringSelectModalData | TextInputModalData);
+  public getField(customId: string, type?: ComponentType): StringSelectModalData | TextInputModalData;
   public getTextInputValue(customId: string): string;
+  public getStringSelectValues(customId: string): readonly string[];
 }
 
 export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = CacheType>
@@ -2579,7 +2604,7 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   private constructor(client: Client<true>, data: APIModalSubmitInteraction);
   public type: InteractionType.ModalSubmit;
   public readonly customId: string;
-  public readonly components: ActionRowModalData[];
+  public readonly components: (ActionRowModalData | LabelModalData)[];
   public readonly fields: ModalSubmitFields;
   public deferred: boolean;
   public ephemeral: boolean | null;
@@ -3645,9 +3670,10 @@ export function verifyString(data: string, error?: typeof Error, errorMessage?: 
 
 export type ComponentData =
   | ComponentInContainerData
+  | ComponentInLabelData
   | ContainerComponentData
+  | LabelData
   | MessageActionRowComponentData
-  | ModalActionRowComponentData
   | ThumbnailComponentData;
 
 export interface SendSoundboardSoundOptions {
@@ -6669,6 +6695,7 @@ export interface BaseSelectMenuComponentData extends BaseComponentData {
 
 export interface StringSelectMenuComponentData extends BaseSelectMenuComponentData {
   options: readonly SelectMenuComponentOptionData[];
+  required?: boolean;
   type: ComponentType.StringSelect;
 }
 
@@ -6718,7 +6745,6 @@ export interface SelectMenuComponentOptionData {
 
 export interface TextInputComponentData extends BaseComponentData {
   customId: string;
-  label: string;
   maxLength?: number;
   minLength?: number;
   placeholder?: string;
