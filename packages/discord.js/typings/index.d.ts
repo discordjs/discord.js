@@ -6218,8 +6218,8 @@ export interface GuildMemberEditMemberOptions {
 }
 
 export interface GuildMemberEditCurrentMemberOptions {
+  avatar?: Base64Resolvable | BufferResolvable | null;
   banner?: Base64Resolvable | BufferResolvable | null;
-  icon?: Base64Resolvable | BufferResolvable | null;
   nick?: string | null;
   reason?: string;
 }

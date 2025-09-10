@@ -407,8 +407,8 @@ class GuildMemberManager extends CachedManager {
    *
    * @typedef {Object} GuildMemberEditCurrentOptions
    * @property {?string} [nick] The nickname to set
-   * @property {?(BufferResolvable|Base64Resolvable)} [icon] The icon to set
    * @property {?(BufferResolvable|Base64Resolvable)} [banner] The banner to set
+   * @property {?(BufferResolvable|Base64Resolvable)} [avatar] The avatar to set
    * @property {string} [reason] The reason to use
    */
 
@@ -422,8 +422,8 @@ class GuildMemberManager extends CachedManager {
     const data = await this.client.rest.patch(Routes.guildMember(this.guild.id, '@me'), {
       body: {
         ...options,
-        icon: options.icon && (await resolveImage(options.icon)),
         banner: options.banner && (await resolveImage(options.banner)),
+        avatar: options.avatar && (await resolveImage(options.avatar)),
       },
       reason,
     });
