@@ -127,7 +127,8 @@ class ModalSubmitFields {
    *
    * @param {string} customId The custom id of the component
    * @param {boolean} [required=false] Whether to throw an error if the component value is not found or empty
-   * @returns {?Collection<Snowflake, Role | APIRole>} The selected roles, or null if none were selected and not required
+   * @returns {?Collection<Snowflake, Role | APIRole>} The selected roles,
+   * or null if none were selected and not required
    */
   getSelectedRoles(customId, required = false) {
     const component = this._getTypedComponent(
@@ -145,7 +146,8 @@ class ModalSubmitFields {
    * @param {string} customId The custom id of the component
    * @param {boolean} [required=false] Whether to throw an error if the component value is not found or empty
    * @param {ChannelType[]} [channelTypes=[]] The allowed types of channels. If empty, all channel types are allowed.
-   * @returns {?Collection<Snowflake, GuildChannel|ThreadChannel|APIChannel>} The selected channels, or null if none were selected and not required
+   * @returns {?Collection<Snowflake, GuildChannel|ThreadChannel|APIChannel>} The selected channels,
+   * or null if none were selected and not required
    */
   getSelectedChannels(customId, required = false, channelTypes = []) {
     const component = this._getTypedComponent(customId, [ComponentType.ChannelSelect], ['channels'], required);
@@ -170,7 +172,8 @@ class ModalSubmitFields {
    * Gets members component
    *
    * @param {string} customId The custom id of the component
-   * @returns {?Collection<Snowflake, GuildMember | APIGuildMember>} The selected members, or null if none were selected or the users were not present in the guild
+   * @returns {?Collection<Snowflake, GuildMember | APIGuildMember>} The selected members,
+   * or null if none were selected or the users were not present in the guild
    */
   getSelectedMembers(customId) {
     const component = this._getTypedComponent(
@@ -187,7 +190,9 @@ class ModalSubmitFields {
    *
    * @param {string} customId The custom id of the component
    * @param {boolean} [required=false] Whether to throw an error if the component value is not found or empty
-   * @returns {?{users: Collection<Snowflake, User>, members: Collection<Snowflake, GuildMember | APIGuildMember>, roles: Collection<Snowflake, Role | APIRole>}} The selected mentionables, or null if none were selected and not required
+   * @returns {?{users: Collection<Snowflake, User>, members: Collection<Snowflake, GuildMember | APIGuildMember>,
+   * roles: Collection<Snowflake, Role | APIRole>}} The selected mentionables,
+   * or null if none were selected and not required
    */
   getSelectedMentionables(customId, required = false) {
     const component = this._getTypedComponent(
