@@ -6220,6 +6220,7 @@ export interface GuildMemberEditMemberOptions {
 export interface GuildMemberEditCurrentMemberOptions {
   avatar?: Base64Resolvable | BufferResolvable | null;
   banner?: Base64Resolvable | BufferResolvable | null;
+  bio?: string | null;
   nick?: string | null;
   reason?: string;
 }

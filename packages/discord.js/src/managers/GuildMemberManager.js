@@ -409,6 +409,7 @@ class GuildMemberManager extends CachedManager {
    * @property {?string} [nick] The nickname to set
    * @property {?(BufferResolvable|Base64Resolvable)} [banner] The banner to set
    * @property {?(BufferResolvable|Base64Resolvable)} [avatar] The avatar to set
+   * @property {?string} [bio] The bio to set
    * @property {string} [reason] The reason to use
    */
 
