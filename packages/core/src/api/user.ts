@@ -2,7 +2,6 @@
 
 import { makeURLSearchParams, type RequestData, type REST } from '@discordjs/rest';
 import {
-	RESTPatchAPICurrentGuildMemberJSONBody,
 	Routes,
 	type RESTGetAPICurrentUserApplicationRoleConnectionResult,
 	type RESTGetAPICurrentUserConnectionsResult,
@@ -11,6 +10,7 @@ import {
 	type RESTGetAPICurrentUserResult,
 	type RESTGetAPIUserResult,
 	type RESTGetCurrentUserGuildMemberResult,
+	type RESTPatchAPICurrentGuildMemberJSONBody,
 	type RESTPatchAPICurrentUserJSONBody,
 	type RESTPatchAPICurrentUserResult,
 	type RESTPatchAPIGuildMemberResult,
