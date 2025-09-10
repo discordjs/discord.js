@@ -2566,6 +2566,59 @@ chatInputInteraction.showModal({
   ],
 });
 
+chatInputInteraction.showModal({
+  title: 'abc',
+  customId: 'abc',
+  components: [
+    {
+      type: ComponentType.Label,
+      label: 'label',
+      component: {
+        customId: 'aa',
+        type: ComponentType.TextInput,
+        style: TextInputStyle.Short,
+        label: 'label',
+      },
+    },
+    {
+      components: [
+        {
+          customId: 'aa',
+          label: 'label',
+          style: TextInputStyle.Short,
+          type: ComponentType.TextInput,
+        },
+      ],
+      type: ComponentType.ActionRow,
+    },
+    {
+      type: ComponentType.Label,
+      label: 'Lll',
+      component: {
+        customId: 'aa',
+        type: ComponentType.UserSelect,
+      },
+    },
+    {
+      type: ComponentType.Label,
+      label: 'Lll',
+      component: {
+        customId: 'aa',
+        type: ComponentType.ChannelSelect,
+        channelTypes: [ChannelType.GuildText, ChannelType.GuildVoice],
+      },
+    },
+    {
+      type: ComponentType.Label,
+      label: 'Lll',
+      component: {
+        customId: 'aa',
+        type: ComponentType.RoleSelect,
+      },
+    },
+  ],
+});
+
 declare const stringSelectMenuData: APIStringSelectComponent;
 StringSelectMenuBuilder.from(stringSelectMenuData);
 

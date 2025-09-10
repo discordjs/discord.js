@@ -16,13 +16,6 @@ let deprecationEmittedForEphemeralOption = false;
 let deprecationEmittedForFetchReplyOption = false;
 
 /**
- * @typedef {Object} ModalComponentData
- * @property {string} title The title of the modal
- * @property {string} customId The custom id of the modal
- * @property {ActionRow[]} components The components within this modal
- */
-
-/**
  * Interface for classes that support shared interaction response types.
  * @interface
  */
