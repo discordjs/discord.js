@@ -189,6 +189,7 @@ export class LabelBuilder extends ComponentBuilder<APILabelComponent> {
 
 		const data = {
 			...structuredClone(rest),
+			// The label predicate validates the component.
 			component: component?.toJSON(false),
 		};
 
