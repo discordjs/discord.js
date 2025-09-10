@@ -1,8 +1,7 @@
 /* eslint-disable jsdoc/check-param-names */
 
 import { makeURLSearchParams, type RequestData, type REST } from '@discordjs/rest';
-import type {
-	RESTPatchAPICurrentGuildMemberJSONBody,
+import {
 	Routes,
 	type RESTGetAPICurrentUserApplicationRoleConnectionResult,
 	type RESTGetAPICurrentUserConnectionsResult,
@@ -11,13 +10,15 @@ import type {
 	type RESTGetAPICurrentUserResult,
 	type RESTGetAPIUserResult,
 	type RESTGetCurrentUserGuildMemberResult,
+	type RESTPatchAPICurrentGuildMemberJSONBody,
 	type RESTPatchAPICurrentUserJSONBody,
 	type RESTPatchAPICurrentUserResult,
 	type RESTPatchAPIGuildMemberResult,
 	type RESTPostAPICurrentUserCreateDMChannelResult,
 	type RESTPutAPICurrentUserApplicationRoleConnectionJSONBody,
 	type RESTPutAPICurrentUserApplicationRoleConnectionResult,
-	type Snowflake} from 'discord-api-types/v10';
+	type Snowflake
+} from 'discord-api-types/v10';
 
 export class UsersAPI {
 	public constructor(private readonly rest: REST) {}
