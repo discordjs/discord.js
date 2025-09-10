@@ -12,10 +12,10 @@ const label = () =>
 describe('Modals', () => {
 	test('GIVEN valid fields THEN builder does not throw', () => {
 		expect(() =>
-			modal().setTitle('test').setCustomId('foobar').setLabelComponents(label()).toJSON(),
+			modal().setTitle('test').setCustomId('foobar').addLabelComponents(label()).toJSON(),
 		).not.toThrowError();
 		expect(() =>
-			modal().setTitle('test').setCustomId('foobar').setLabelComponents(label()).toJSON(),
+			modal().setTitle('test').setCustomId('foobar').addLabelComponents(label()).toJSON(),
 		).not.toThrowError();
 	});
 
@@ -60,7 +60,7 @@ describe('Modals', () => {
 			modal()
 				.setTitle(modalData.title)
 				.setCustomId('custom id')
-				.setLabelComponents(
+				.addLabelComponents(
 					new LabelBuilder()
 						.setId(33)
 						.setLabel('label')
