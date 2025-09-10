@@ -5,13 +5,14 @@ import type {
 	APITextDisplayComponent,
 } from 'discord-api-types/v10';
 import type { ActionRowBuilder } from '../../components/ActionRow.js';
-import { AnyModalComponentBuilder, createComponentBuilder } from '../../components/Components.js';
+import type { AnyModalComponentBuilder } from '../../components/Components.js';
+import { createComponentBuilder } from '../../components/Components.js';
 import { LabelBuilder } from '../../components/label/Label.js';
+import { TextDisplayBuilder } from '../../components/v2/TextDisplay.js';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { resolveBuilder } from '../../util/resolveBuilder.js';
 import { validate } from '../../util/validation.js';
 import { modalPredicate } from './Assertions.js';
-import { TextDisplayBuilder } from '../../components/v2/TextDisplay.js';
 
 export interface ModalBuilderData extends Partial<Omit<APIModalInteractionResponseCallbackData, 'components'>> {
 	components: (ActionRowBuilder | AnyModalComponentBuilder)[];
@@ -43,7 +44,6 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 
 		this.data = {
 			...structuredClone(rest),
-			// @ts-expect-error https://github.com/discordjs/discord.js/pull/11078
 			components: components.map((component) => createComponentBuilder(component)),
 		};
 	}

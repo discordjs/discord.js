@@ -92,7 +92,7 @@ export type AnyActionRowComponentBuilder = MessageActionRowComponentBuilder | Mo
 /**
  * Any modal component builder.
  */
-export type AnyModalComponentBuilder = TextDisplayBuilder | LabelBuilder;
+export type AnyModalComponentBuilder = LabelBuilder | TextDisplayBuilder;
 
 /**
  * Components here are mapped to their respective builder.

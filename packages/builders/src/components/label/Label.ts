@@ -12,22 +12,22 @@ import { resolveBuilder } from '../../util/resolveBuilder.js';
 import { validate } from '../../util/validation.js';
 import { ComponentBuilder } from '../Component.js';
 import { createComponentBuilder } from '../Components.js';
+import { ChannelSelectMenuBuilder } from '../selectMenu/ChannelSelectMenu.js';
+import { MentionableSelectMenuBuilder } from '../selectMenu/MentionableSelectMenu.js';
+import { RoleSelectMenuBuilder } from '../selectMenu/RoleSelectMenu.js';
 import { StringSelectMenuBuilder } from '../selectMenu/StringSelectMenu.js';
+import { UserSelectMenuBuilder } from '../selectMenu/UserSelectMenu.js';
 import { TextInputBuilder } from '../textInput/TextInput.js';
 import { labelPredicate } from './Assertions.js';
-import { UserSelectMenuBuilder } from '../selectMenu/UserSelectMenu.js';
-import { RoleSelectMenuBuilder } from '../selectMenu/RoleSelectMenu.js';
-import { MentionableSelectMenuBuilder } from '../selectMenu/MentionableSelectMenu.js';
-import { ChannelSelectMenuBuilder } from '../selectMenu/ChannelSelectMenu.js';
 
 export interface LabelBuilderData extends Partial<Omit<APILabelComponent, 'component'>> {
 	component?:
+		| ChannelSelectMenuBuilder
+		| MentionableSelectMenuBuilder
+		| RoleSelectMenuBuilder
 		| StringSelectMenuBuilder
 		| TextInputBuilder
-		| UserSelectMenuBuilder
-		| RoleSelectMenuBuilder
-		| MentionableSelectMenuBuilder
-		| ChannelSelectMenuBuilder;
+		| UserSelectMenuBuilder;
 }
 
 /**
@@ -67,7 +67,6 @@ export class LabelBuilder extends ComponentBuilder<APILabelComponent> {
 
 		this.data = {
 			...structuredClone(rest),
-			// @ts-expect-error https://github.com/discordjs/discord.js/pull/11078
 			component: component ? createComponentBuilder(component) : undefined,
 			type: ComponentType.Label,
 		};
