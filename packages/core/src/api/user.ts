@@ -1,7 +1,8 @@
 /* eslint-disable jsdoc/check-param-names */
 
 import { makeURLSearchParams, type RequestData, type REST } from '@discordjs/rest';
-import {
+import type {
+	RESTPatchAPICurrentGuildMemberJSONBody,
 	Routes,
 	type RESTGetAPICurrentUserApplicationRoleConnectionResult,
 	type RESTGetAPICurrentUserConnectionsResult,
@@ -12,13 +13,11 @@ import {
 	type RESTGetCurrentUserGuildMemberResult,
 	type RESTPatchAPICurrentUserJSONBody,
 	type RESTPatchAPICurrentUserResult,
-	type RESTPatchAPIGuildMemberJSONBody,
 	type RESTPatchAPIGuildMemberResult,
 	type RESTPostAPICurrentUserCreateDMChannelResult,
 	type RESTPutAPICurrentUserApplicationRoleConnectionJSONBody,
 	type RESTPutAPICurrentUserApplicationRoleConnectionResult,
-	type Snowflake,
-} from 'discord-api-types/v10';
+	type Snowflake} from 'discord-api-types/v10';
 
 export class UsersAPI {
 	public constructor(private readonly rest: REST) {}
@@ -111,7 +110,7 @@ export class UsersAPI {
 	 */
 	public async editCurrentGuildMember(
 		guildId: Snowflake,
-		body: RESTPatchAPIGuildMemberJSONBody = {},
+		body: RESTPatchAPICurrentGuildMemberJSONBody = {},
 		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
 		return this.rest.patch(Routes.guildMember(guildId, '@me'), {
