@@ -2,6 +2,7 @@
 
 import { makeURLSearchParams, type RequestData, type REST } from '@discordjs/rest';
 import {
+	RESTPatchAPICurrentGuildMemberJSONBody,
 	Routes,
 	type RESTGetAPICurrentUserApplicationRoleConnectionResult,
 	type RESTGetAPICurrentUserConnectionsResult,
@@ -12,7 +13,6 @@ import {
 	type RESTGetCurrentUserGuildMemberResult,
 	type RESTPatchAPICurrentUserJSONBody,
 	type RESTPatchAPICurrentUserResult,
-	type RESTPatchAPIGuildMemberJSONBody,
 	type RESTPatchAPIGuildMemberResult,
 	type RESTPostAPICurrentUserCreateDMChannelResult,
 	type RESTPutAPICurrentUserApplicationRoleConnectionJSONBody,
@@ -101,7 +101,7 @@ export class UsersAPI {
 	 */
 	public async editCurrentGuildMember(
 		guildId: Snowflake,
-		body: RESTPatchAPIGuildMemberJSONBody = {},
+		body: RESTPatchAPICurrentGuildMemberJSONBody = {},
 		{ reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {},
 	) {
 		return this.rest.patch(Routes.guildMember(guildId, '@me'), {
