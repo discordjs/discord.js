@@ -2831,7 +2831,7 @@ export class ModalSubmitFields<Cached extends CacheType = CacheType> {
     resolved?: BaseInteractionResolvedData,
   );
   public components: (ActionRowModalData | LabelModalData | TextDisplayModalData)[];
-  public resolved: Readonly<BaseInteractionResolvedData> | null;
+  public resolved: Readonly<BaseInteractionResolvedData<Cached>> | null;
   public fields: Collection<string, ModalData>;
   public getField<Type extends ComponentType>(customId: string, type: Type): Extract<ModalData, { type: Type }>;
   public getField(customId: string, type?: ComponentType): ModalData;
@@ -7361,7 +7361,6 @@ export interface BaseSelectMenuComponentData extends BaseComponentData {
 export interface StringSelectMenuComponentData extends BaseSelectMenuComponentData {
   type: ComponentType.StringSelect;
   options: readonly SelectMenuComponentOptionData[];
-  required?: boolean;
 }
 
 export interface UserSelectMenuComponentData extends BaseSelectMenuComponentData {
