@@ -37,7 +37,7 @@ const getMessage = lazy(() => require('./Message.js').Message);
  */
 
 /**
- * @typedef {SelectMenuModalData | TextInputModalData | TextDisplayModalData} ModalData
+ * @typedef {SelectMenuModalData | TextInputModalData} ModalData
  */
 
 /**
@@ -48,10 +48,6 @@ const getMessage = lazy(() => require('./Message.js').Message);
 /**
  * @typedef {BaseModalData} ActionRowModalData
  * @property {TextInputModalData[]} components The components of this action row
- */
-
-/**
- * @typedef {BaseModalData} TextDisplayModalData
  */
 
 /**
