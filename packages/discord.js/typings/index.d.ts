@@ -7271,6 +7271,7 @@ export interface BaseSelectMenuComponentData extends BaseComponentData {
 export interface StringSelectMenuComponentData extends BaseSelectMenuComponentData {
   type: ComponentType.StringSelect;
   options: readonly SelectMenuComponentOptionData[];
+  required?: boolean;
 }
 
 export interface UserSelectMenuComponentData extends BaseSelectMenuComponentData {
