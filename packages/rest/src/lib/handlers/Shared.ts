@@ -135,7 +135,7 @@ export async function makeNetworkRequest(
  * @param url - The fully resolved url to make the request to
  * @param requestData - Extra data from the user's request needed for errors and additional processing
  * @param retries - The number of retries this request has already attempted (recursion occurs on the handler)
- * @param routeId - The generalized api route with literal ids for major parameters
+ * @param routeId - The generalized API route with literal ids for major parameters
  * @returns The response if the status code is not handled or null to request a retry
  */
 export async function handleErrors(
