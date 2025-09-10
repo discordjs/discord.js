@@ -1,12 +1,12 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const { lazy } = require('@discordjs/util');
 const BaseInteraction = require('./BaseInteraction');
 const InteractionWebhook = require('./InteractionWebhook');
 const ModalSubmitFields = require('./ModalSubmitFields');
 const InteractionResponses = require('./interfaces/InteractionResponses');
 const { transformResolved } = require('../util/Util');
-const { Collection } = require('@discordjs/collection');
 
 const getMessage = lazy(() => require('./Message').Message);
 
