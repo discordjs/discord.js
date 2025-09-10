@@ -49,6 +49,7 @@ export class LabelBuilder extends ComponentBuilder<APILabelComponent> {
 
 		this.data = {
 			...structuredClone(rest),
+			// @ts-expect-error https://github.com/discordjs/discord.js/pull/11078
 			component: component ? createComponentBuilder(component) : undefined,
 			type: ComponentType.Label,
 		};

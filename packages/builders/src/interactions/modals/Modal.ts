@@ -38,6 +38,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 
 		this.data = {
 			...structuredClone(rest),
+			// @ts-expect-error https://github.com/discordjs/discord.js/pull/11078
 			components: components.map((component) => createComponentBuilder(component)),
 		};
 	}
