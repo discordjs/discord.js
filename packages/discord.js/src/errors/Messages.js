@@ -161,6 +161,10 @@ const Messages = {
     `Required field with custom id "${customId}" not found.`,
   [DjsErrorCodes.ModalSubmitInteractionFieldType]: (customId, type, expected) =>
     `Field with custom id "${customId}" is of type: ${type}; expected ${expected}.`,
+  [DjsErrorCodes.ModalSubmitInteractionFieldEmpty]: (customId, type) =>
+    `Required field with custom id "${customId}" is of type: ${type}; expected a non-empty value.`,
+  [DjsErrorCodes.ModalSubmitInteractionFieldInvalidChannelType]: (customId, type, expected) =>
+    `The type of channel of the field with custom id "${customId}" is: ${type}; expected ${expected}.`,
 
   [DjsErrorCodes.InvalidMissingScopes]: 'At least one valid scope must be provided for the invite',
   [DjsErrorCodes.InvalidScopesWithPermissions]: 'Permissions cannot be set without the bot scope.',
