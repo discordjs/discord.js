@@ -17,7 +17,7 @@ import {
 	type RESTPostAPICurrentUserCreateDMChannelResult,
 	type RESTPutAPICurrentUserApplicationRoleConnectionJSONBody,
 	type RESTPutAPICurrentUserApplicationRoleConnectionResult,
-	type Snowflake
+	type Snowflake,
 } from 'discord-api-types/v10';
 
 export class UsersAPI {
