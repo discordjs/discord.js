@@ -63,27 +63,27 @@
 	"dependencies": {
 		"@discordjs/formatters": "workspace:^",
 		"@sapphire/snowflake": "^3.5.5",
-		"discord-api-types": "^0.38.16"
+		"discord-api-types": "^0.38.23"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^4.1.0",
-		"@types/node": "^22.15.2",
-		"@vitest/coverage-v8": "^3.1.1",
-		"cpy-cli": "^5.0.0",
-		"cross-env": "^7.0.3",
+		"@types/node": "^22.17.2",
+		"@vitest/coverage-v8": "^3.2.4",
+		"cpy-cli": "^6.0.0",
+		"cross-env": "^10.0.0",
 		"esbuild-plugin-version-injector": "^1.2.1",
-		"eslint": "^9.25.1",
+		"eslint": "^9.33.0",
 		"eslint-config-neon": "^0.2.7",
 		"eslint-formatter-compact": "^8.40.0",
 		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.5.3",
-		"tsd": "^0.31.2",
-		"tsup": "^8.4.0",
-		"turbo": "^2.5.2",
-		"typescript": "~5.8.3",
-		"vitest": "^3.1.1"
+		"prettier": "^3.6.2",
+		"tsd": "^0.33.0",
+		"tsup": "^8.5.0",
+		"turbo": "^2.5.6",
+		"typescript": "~5.9.2",
+		"vitest": "^3.2.4"
 	},
 	"engines": {
 		"node": ">=22.12.0"

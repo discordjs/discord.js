@@ -43,6 +43,7 @@ async function getReleaseEntries(dev: boolean, dry: boolean) {
 		await $`pnpm list --recursive --only-projects --filter {packages/\*} --prod --json`.json();
 
 	const commitHash = (await $`git rev-parse --short HEAD`.text()).trim();
+	const timestamp = Math.round(Date.now() / 1_000);
 
 	for (const pkg of packageList) {
 		// Don't release private packages ever (npm will error anyways)
@@ -71,9 +72,9 @@ async function getReleaseEntries(dev: boolean, dry: boolean) {
 				release.version = devVersion;
 			} else if (dry) {
 				info(`[DRY] Bumping ${pkg.name} via git-cliff.`);
-				release.version = `${pkg.version}.DRY-dev.${Math.round(Date.now() / 1_000)}-${commitHash}`;
+				release.version = `${pkg.version}.DRY-dev.${timestamp}-${commitHash}`;
 			} else {
-				await $`pnpm --filter=${pkg.name} run release --preid "dev.${Math.round(Date.now() / 1_000)}-${commitHash}" --skip-changelog`;
+				await $`pnpm --filter=${pkg.name} run release --preid "dev.${timestamp}-${commitHash}" --skip-changelog`;
 				// Read again instead of parsing the output to be sure we're matching when checking against npm
 				const pkgJson = (await file(`${pkg.path}/package.json`).json()) as PackageJSON;
 				release.version = pkgJson.version;

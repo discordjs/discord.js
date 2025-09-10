@@ -19,7 +19,7 @@ describe('Message', () => {
 
 	test('GIVEN bad action row THEN it throws', () => {
 		const message = new MessageBuilder().addActionRowComponents((row) =>
-			row.addTextInputComponent((input) => input.setCustomId('abc').setLabel('def')),
+			row.addTextInputComponent((input) => input.setCustomId('abc')),
 		);
 		expect(() => message.toJSON()).toThrow();
 	});
