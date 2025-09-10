@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/core@2.2.2](https://github.com/discordjs/discord.js/compare/@discordjs/core@2.2.1...@discordjs/core@2.2.2) - (2025-09-10)
+
+## Bug Fixes
+
+- **users:** Correct type for editing current guild member (#11098) ([9ae7377](https://github.com/discordjs/discord.js/commit/9ae737708b24400320a2da4a85a6c977475a05a5))
+- **guild:** Creating a template actually creates a template (#11030) ([ac6ff15](https://github.com/discordjs/discord.js/commit/ac6ff15b7dc4a88753b7cfdf1bca1b4bcc1cc260))
+
+## Documentation
+
+- **guild:** Deprecate API related to guild ownership ([6fb0b1c](https://github.com/discordjs/discord.js/commit/6fb0b1cef6e479be3d47370438d8a588a7c2b850))
+
 # [@discordjs/core@2.2.1](https://github.com/discordjs/discord.js/compare/@discordjs/core@2.2.0...@discordjs/core@2.2.1) - (2025-08-20)
 
 ## Bug Fixes
