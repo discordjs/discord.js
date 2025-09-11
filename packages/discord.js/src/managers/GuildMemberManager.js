@@ -345,7 +345,7 @@ class GuildMemberManager extends CachedManager {
   /**
    * The data for editing a guild member.
    *
-   * @typedef {Object} GuildMemberEditMemberOptions
+   * @typedef {Object} GuildMemberEditOptions
    * @property {?string} [nick] The nickname to set for the member
    * @property {Collection<Snowflake, Role>|RoleResolvable[]} [roles] The roles or role ids to apply
    * @property {boolean} [mute] Whether or not the member should be muted
@@ -362,10 +362,10 @@ class GuildMemberManager extends CachedManager {
    * Edits a member of a guild.
    *
    * @param {UserResolvable} user The member to edit
-   * @param {GuildMemberEditMemberOptions} options The options to provide
+   * @param {GuildMemberEditOptions} options The options to provide
    * @returns {Promise<GuildMember>}
    */
-  async editMember(user, { reason, ...options }) {
+  async edit(user, { reason, ...options }) {
     const id = this.client.users.resolveId(user);
     if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
 
@@ -405,7 +405,7 @@ class GuildMemberManager extends CachedManager {
   /**
    * The data for editing the current application's guild member.
    *
-   * @typedef {Object} GuildMemberEditCurrentOptions
+   * @typedef {Object} GuildMemberEditMeOptions
    * @property {?string} [nick] The nickname to set
    * @property {?(BufferResolvable|Base64Resolvable)} [banner] The banner to set
    * @property {?(BufferResolvable|Base64Resolvable)} [avatar] The avatar to set
@@ -416,10 +416,10 @@ class GuildMemberManager extends CachedManager {
   /**
    * Edits the current application's guild member in a guild.
    *
-   * @param {GuildMemberEditCurrentOptions} options The options to provide
+   * @param {GuildMemberEditMeOptions} options The options to provide
    * @returns {Promise<GuildMember>}
    */
-  async editCurrent({ reason, ...options }) {
+  async editMe({ reason, ...options }) {
     const data = await this.client.rest.patch(Routes.guildMember(this.guild.id, '@me'), {
       body: {
         ...options,

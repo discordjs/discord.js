@@ -423,13 +423,11 @@ class GuildMember extends Base {
   /**
    * Edits this member.
    *
-   * This internally calls {@link GuildMemberManager#editMember}.
-   *
-   * @param {GuildMemberEditMemberOptions} options The options to provide
+   * @param {GuildMemberEditOptions} options The options to provide
    * @returns {Promise<GuildMember>}
    */
   async edit(options) {
-    return this.guild.members.editMember(this, options);
+    return this.guild.members.edit(this, options);
   }
 
   /**

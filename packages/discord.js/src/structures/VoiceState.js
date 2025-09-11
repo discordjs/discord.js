@@ -191,7 +191,7 @@ class VoiceState extends Base {
    * @returns {Promise<GuildMember>}
    */
   async setMute(mute = true, reason = undefined) {
-    return this.guild.members.editMember(this.id, { mute, reason });
+    return this.guild.members.edit(this.id, { mute, reason });
   }
 
   /**
@@ -202,7 +202,7 @@ class VoiceState extends Base {
    * @returns {Promise<GuildMember>}
    */
   async setDeaf(deaf = true, reason = undefined) {
-    return this.guild.members.editMember(this.id, { deaf, reason });
+    return this.guild.members.edit(this.id, { deaf, reason });
   }
 
   /**
@@ -224,7 +224,7 @@ class VoiceState extends Base {
    * @returns {Promise<GuildMember>}
    */
   async setChannel(channel, reason) {
-    return this.guild.members.editMember(this.id, { channel, reason });
+    return this.guild.members.edit(this.id, { channel, reason });
   }
 
   /**
