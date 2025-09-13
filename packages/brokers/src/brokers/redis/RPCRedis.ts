@@ -24,7 +24,7 @@ export interface RPCRedisBrokerOptions extends RedisBrokerOptions {
 export const DefaultRPCRedisBrokerOptions = {
 	...DefaultRedisBrokerOptions,
 	timeout: 5_000,
-} as const satisfies Required<Omit<RPCRedisBrokerOptions, 'group'>>;
+} as const satisfies Required<Omit<RPCRedisBrokerOptions, 'group' | 'name'>>;
 
 /**
  * RPC broker powered by Redis
