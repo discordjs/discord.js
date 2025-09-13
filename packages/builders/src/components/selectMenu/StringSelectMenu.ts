@@ -148,17 +148,6 @@ export class StringSelectMenuBuilder extends BaseSelectMenuBuilder<APIStringSele
 	}
 
 	/**
-	 * Sets whether this string select menu is required.
-	 *
-	 * @remarks Only for use in modals.
-	 * @param required - Whether this string select menu is required
-	 */
-	public setRequired(required = true) {
-		this.data.required = required;
-		return this;
-	}
-
-	/**
 	 * {@inheritDoc ComponentBuilder.toJSON}
 	 */
 	public override toJSON(validationOverride?: boolean): APIStringSelectComponent {
