@@ -1,105 +1,63 @@
-apps:guide:
+a:api-extractor:
   - changed-files:
-      - any-glob-to-any-file:
-          - apps/guide/*
-          - apps/guide/**/*
-apps:website:
+      - any-glob-to-any-file: packages/api-extractor/**/*
+a:api-extractor-model:
   - changed-files:
-      - any-glob-to-any-file:
-          - apps/website/*
-          - apps/website/**/*
-packages:api-extractor:
+      - any-glob-to-any-file: packages/api-extractor-model/**/*
+a:brokers:
   - changed-files:
-      - any-glob-to-any-file:
-          - packages/api-extractor/*
-          - packages/api-extractor/**/*
-packages:api-extractor-model:
+      - any-glob-to-any-file: packages/brokers/**/*
+a:builders:
   - changed-files:
-      - any-glob-to-any-file:
-          - packages/api-extractor-model/*
-          - packages/api-extractor-model/**/*
-packages:brokers:
+      - any-glob-to-any-file: packages/builders/**/*
+a:collection:
   - changed-files:
-      - any-glob-to-any-file:
-          - packages/brokers/*
-          - packages/brokers/**/*
-packages:builders:
+      - any-glob-to-any-file: packages/collection/**/*
+a:core:
   - changed-files:
-      - any-glob-to-any-file:
-          - packages/builders/*
-          - packages/builders/**/*
-packages:collection:
+      - any-glob-to-any-file: packages/core/**/*
+a:create-discord-bot:
   - changed-files:
-      - any-glob-to-any-file:
-          - packages/collection/*
-          - packages/collection/**/*
-packages:core:
+      - any-glob-to-any-file: packages/create-discord-bot/**/*
+a:discord.js:
   - changed-files:
-      - any-glob-to-any-file:
-          - packages/core/*
-          - packages/core/**/*
-packages:create-discord-bot:
+      - any-glob-to-any-file: packages/discord.js/**/*
+a:docgen:
   - changed-files:
-      - any-glob-to-any-file:
-          - packages/create-discord-bot/*
-          - packages/create-discord-bot/**/*
-packages:discord.js:
+      - any-glob-to-any-file: packages/docgen/**/*
+a:formatters:
   - changed-files:
-      - any-glob-to-any-file:
-          - packages/discord.js/*
-          - packages/discord.js/**/*
-packages:docgen:
+      - any-glob-to-any-file: packages/formatters/**/*
+a:guide:
   - changed-files:
-      - any-glob-to-any-file:
-          - packages/docgen/*
-          - packages/docgen/**/*
-packages:formatters:
+      - any-glob-to-any-file: apps/guide/**/*
+a:next:
   - changed-files:
-      - any-glob-to-any-file:
-          - packages/formatters/*
-          - packages/formatters/**/*
-packages:next:
+      - any-glob-to-any-file: packages/next/**/*
+a:proxy:
   - changed-files:
-      - any-glob-to-any-file:
-          - packages/next/*
-          - packages/next/**/*
-packages:proxy:
+      - any-glob-to-any-file: packages/proxy/**/*
+a:proxy-container:
   - changed-files:
-      - any-glob-to-any-file:
-          - packages/proxy/*
-          - packages/proxy/**/*
-packages:proxy-container:
+      - any-glob-to-any-file: packages/proxy-container/**/*
+a:rest:
   - changed-files:
-      - any-glob-to-any-file:
-          - packages/proxy-container/*
-          - packages/proxy-container/**/*
-packages:rest:
+      - any-glob-to-any-file: packages/rest/**/*
+a:structures:
   - changed-files:
-      - any-glob-to-any-file:
-          - packages/rest/*
-          - packages/rest/**/*
-packages:structures:
+      - any-glob-to-any-file: packages/structures/**/*
+a:ui:
   - changed-files:
-      - any-glob-to-any-file:
-          - packages/structures/*
-          - packages/structures/**/*
-packages:ui:
+      - any-glob-to-any-file: packages/ui/**/*
+a:util:
   - changed-files:
-      - any-glob-to-any-file:
-          - packages/ui/*
-          - packages/ui/**/*
-packages:util:
+      - any-glob-to-any-file: packages/util/**/*
+a:voice:
   - changed-files:
-      - any-glob-to-any-file:
-          - packages/util/*
-          - packages/util/**/*
-packages:voice:
+      - any-glob-to-any-file: packages/voice/**/*
+a:website:
   - changed-files:
-      - any-glob-to-any-file:
-          - packages/voice/*
-          - packages/voice/**/*
-packages:ws:
+      - any-glob-to-any-file: apps/website/**/*
+a:ws:
   - changed-files:
-      - any-glob-to-any-file:
-          - packages/ws/*
-          - packages/ws/**/*
+      - any-glob-to-any-file: packages/ws/**/*
