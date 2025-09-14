@@ -105,9 +105,9 @@ export class DAVESession extends EventEmitter {
 	public lastTransitionId?: number | undefined;
 
 	/**
-	 * The pending transition.
+	 * The pending transitions, mapped by their ID and the protocol version.
 	 */
-	private pendingTransition?: VoiceDavePrepareTransitionData | undefined;
+	private pendingTransitions = new Map<number, number>();
 
 	/**
 	 * Whether this session was downgraded previously.
@@ -210,7 +210,7 @@ export class DAVESession extends EventEmitter {
 	 */
 	public prepareTransition(data: VoiceDavePrepareTransitionData) {
 		this.emit('debug', `Preparing for transition (${data.transition_id}, v${data.protocol_version})`);
-		this.pendingTransition = data;
+		this.pendingTransitions.set(data.transition_id, data.protocol_version);
 
 		// When the included transition id is 0, the transition is for (re)initialization and it can be executed immediately.
 		if (data.transition_id === 0) {
@@ -230,40 +230,31 @@ export class DAVESession extends EventEmitter {
 	 */
 	public executeTransition(transitionId: number) {
 		this.emit('debug', `Executing transition (${transitionId})`);
-		if (!this.pendingTransition) {
+		if (!this.pendingTransitions.has(transitionId)) {
 			this.emit('debug', `Received execute transition, but we don't have a pending transition for ${transitionId}`);
-			return;
+			return false;
 		}
 
-		let transitioned = false;
-		if (transitionId === this.pendingTransition.transition_id) {
-			const oldVersion = this.protocolVersion;
-			this.protocolVersion = this.pendingTransition.protocol_version;
+		const oldVersion = this.protocolVersion;
+		this.protocolVersion = this.pendingTransitions.get(transitionId)!;
 
-			// Handle upgrades & defer downgrades
-			if (oldVersion !== this.protocolVersion && this.protocolVersion === 0) {
-				this.downgraded = true;
-				this.emit('debug', 'Session downgraded');
-			} else if (transitionId > 0 && this.downgraded) {
-				this.downgraded = false;
-				this.session?.setPassthroughMode(true, TRANSITION_EXPIRY);
-				this.emit('debug', 'Session upgraded');
-			}
-
-			// In the future we'd want to signal to the DAVESession to transition also, but it only supports v1 at this time
-			transitioned = true;
-			this.reinitializing = false;
-			this.lastTransitionId = transitionId;
-			this.emit('debug', `Transition executed (v${oldVersion} -> v${this.protocolVersion}, id: ${transitionId})`);
-		} else {
-			this.emit(
-				'debug',
-				`Received execute transition for an unexpected transition id (expected: ${this.pendingTransition.transition_id}, actual: ${transitionId})`,
-			);
+		// Handle upgrades & defer downgrades
+		if (oldVersion !== this.protocolVersion && this.protocolVersion === 0) {
+			this.downgraded = true;
+			this.emit('debug', 'Session downgraded');
+		} else if (transitionId > 0 && this.downgraded) {
+			this.downgraded = false;
+			this.session?.setPassthroughMode(true, TRANSITION_EXPIRY);
+			this.emit('debug', 'Session upgraded');
 		}
 
-		this.pendingTransition = undefined;
-		return transitioned;
+		// In the future we'd want to signal to the DAVESession to transition also, but it only supports v1 at this time
+		this.reinitializing = false;
+		this.lastTransitionId = transitionId;
+		this.emit('debug', `Transition executed (v${oldVersion} -> v${this.protocolVersion}, id: ${transitionId})`);
+
+		this.pendingTransitions.delete(transitionId);
+		return true;
 	}
 
 	/**
@@ -328,7 +319,7 @@ export class DAVESession extends EventEmitter {
 				this.reinitializing = false;
 				this.lastTransitionId = transitionId;
 			} else {
-				this.pendingTransition = { transition_id: transitionId, protocol_version: this.protocolVersion };
+				this.pendingTransitions.set(transitionId, this.protocolVersion);
 			}
 
 			this.emit('debug', `MLS commit processed (transition id: ${transitionId})`);
@@ -355,7 +346,7 @@ export class DAVESession extends EventEmitter {
 				this.reinitializing = false;
 				this.lastTransitionId = transitionId;
 			} else {
-				this.pendingTransition = { transition_id: transitionId, protocol_version: this.protocolVersion };
+				this.pendingTransitions.set(transitionId, this.protocolVersion);
 			}
 
 			this.emit('debug', `MLS welcome processed (transition id: ${transitionId})`);
@@ -392,7 +383,7 @@ export class DAVESession extends EventEmitter {
 			this.consecutiveFailures = 0;
 			return buffer;
 		} catch (error) {
-			if (!this.reinitializing && !this.pendingTransition) {
+			if (!this.reinitializing && this.pendingTransitions.size === 0) {
 				this.consecutiveFailures++;
 				this.emit('debug', `Failed to decrypt a packet (${this.consecutiveFailures} consecutive fails)`);
 				if (this.consecutiveFailures > this.failureTolerance) {
@@ -401,11 +392,8 @@ export class DAVESession extends EventEmitter {
 				}
 			} else if (this.reinitializing) {
 				this.emit('debug', 'Failed to decrypt a packet (reinitializing session)');
-			} else if (this.pendingTransition) {
-				this.emit(
-					'debug',
-					`Failed to decrypt a packet (pending transition ${this.pendingTransition.transition_id} to v${this.pendingTransition.protocol_version})`,
-				);
+			} else if (this.pendingTransitions.size > 0) {
+				this.emit('debug', `Failed to decrypt a packet (${this.pendingTransitions.size} pending transition[s])`);
 			}
 		}
 
