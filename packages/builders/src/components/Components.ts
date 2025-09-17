@@ -168,7 +168,7 @@ export interface MappedComponentTypes {
 	 */
 	[ComponentType.Label]: LabelBuilder;
 	/**
-	 * The label component type is associated with a {@link FileUploadBuilder}.
+	 * The file upload component type is associated with a {@link FileUploadBuilder}.
 	 */
 	[ComponentType.FileUpload]: FileUploadBuilder;
 }
