@@ -23,6 +23,7 @@ export class FileUploadBuilder extends ComponentBuilder<APIFileUploadComponent> 
 	 * const fileUpload = new FileUploadBuilder({
 	 * 	custom_id: "file_upload",
 	 *  min_values: 2,
+	 *  max_values: 5,
 	 * });
 	 * ```
 	 * @example
@@ -31,6 +32,7 @@ export class FileUploadBuilder extends ComponentBuilder<APIFileUploadComponent> 
 	 * const fileUpload = new FileUploadBuilder({
 	 * 	custom_id: "file_upload",
 	 *  min_values: 2,
+	 *  max_values: 5,
 	 * }).setRequired();
 	 * ```
 	 */
