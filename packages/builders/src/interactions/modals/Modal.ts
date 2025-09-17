@@ -1,9 +1,8 @@
 import type { JSONEncodable } from '@discordjs/util';
-import {
-	ComponentType,
-	type APILabelComponent,
-	type APIModalInteractionResponseCallbackData,
-	type APITextDisplayComponent,
+import type {
+	APILabelComponent,
+	APIModalInteractionResponseCallbackData,
+	APITextDisplayComponent,
 } from 'discord-api-types/v10';
 import type { ActionRowBuilder } from '../../components/ActionRow.js';
 import type { AnyModalComponentBuilder } from '../../components/Components.js';
@@ -14,8 +13,6 @@ import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { resolveBuilder } from '../../util/resolveBuilder.js';
 import { validate } from '../../util/validation.js';
 import { modalPredicate } from './Assertions.js';
-
-ComponentType.file
 
 export interface ModalBuilderData extends Partial<Omit<APIModalInteractionResponseCallbackData, 'components'>> {
 	components: (ActionRowBuilder | AnyModalComponentBuilder)[];

@@ -8,6 +8,7 @@ import {
 	selectMenuStringPredicate,
 	selectMenuUserPredicate,
 } from '../Assertions';
+import { fileUploadPredicate } from '../fileUpload/Assertions';
 import { textInputPredicate } from '../textInput/Assertions';
 
 export const labelPredicate = z.object({
@@ -22,5 +23,6 @@ export const labelPredicate = z.object({
 		selectMenuRolePredicate,
 		selectMenuMentionablePredicate,
 		selectMenuChannelPredicate,
+		fileUploadPredicate,
 	]),
 });
