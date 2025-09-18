@@ -7,6 +7,7 @@ const unfurledMediaItemPredicate = z.object({
 });
 
 export const thumbnailPredicate = z.object({
+	type: z.literal(ComponentType.Thumbnail),
 	media: unfurledMediaItemPredicate,
 	description: z.string().min(1).max(1_024).nullish(),
 	spoiler: z.boolean().optional(),
@@ -17,16 +18,19 @@ const unfurledMediaItemAttachmentOnlyPredicate = z.object({
 });
 
 export const filePredicate = z.object({
+	type: z.literal(ComponentType.File),
 	file: unfurledMediaItemAttachmentOnlyPredicate,
 	spoiler: z.boolean().optional(),
 });
 
 export const separatorPredicate = z.object({
+	type: z.literal(ComponentType.Separator),
 	divider: z.boolean().optional(),
 	spacing: z.enum(SeparatorSpacingSize).optional(),
 });
 
 export const textDisplayPredicate = z.object({
+	type: z.literal(ComponentType.TextDisplay),
 	content: z.string().min(1).max(4_000),
 });
 
@@ -37,10 +41,12 @@ export const mediaGalleryItemPredicate = z.object({
 });
 
 export const mediaGalleryPredicate = z.object({
+	type: z.literal(ComponentType.MediaGallery),
 	items: z.array(mediaGalleryItemPredicate).min(1).max(10),
 });
 
 export const sectionPredicate = z.object({
+	type: z.literal(ComponentType.Section),
 	components: z.array(textDisplayPredicate).min(1).max(3),
 	accessory: z.union([
 		z.object({ type: z.literal(ComponentType.Button) }),
@@ -49,6 +55,7 @@ export const sectionPredicate = z.object({
 });
 
 export const containerPredicate = z.object({
+	type: z.literal(ComponentType.Container),
 	components: z
 		.array(
 			z.union([
