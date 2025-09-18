@@ -145,7 +145,7 @@ class ModalSubmitInteraction extends BaseInteraction {
       id: rawComponent.id,
     };
 
-    // NOTE: text display do not have custom IDs
+    // Text display components do not have custom ids.
     if (rawComponent.custom_id) data.customId = rawComponent.custom_id;
 
     if (rawComponent.value) data.value = rawComponent.value;
