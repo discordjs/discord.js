@@ -26,10 +26,10 @@ const getMessage = lazy(() => require('./Message').Message);
  * @typedef {BaseModalData} SelectMenuModalData
  * @property {string} customId The custom id of the field
  * @property {string[]} values The values of the field
- * @property {Collection<string, GuildMember | APIGuildMember>} [members] The resolved members
- * @property {Collection<string, User | APIUser>} [users] The resolved users
- * @property {Collection<string, Role | APIRole>} [roles] The resolved roles
- * @property {Collection<string, BaseChannel | APIChannel>} [channels] The resolved channels
+ * @property {Collection<string, GuildMember|APIGuildMember>} [members] The resolved members
+ * @property {Collection<string, User|APIUser>} [users] The resolved users
+ * @property {Collection<string, Role|APIRole>} [roles] The resolved roles
+ * @property {Collection<string, BaseChannel|APIChannel>} [channels] The resolved channels
  */
 
 /**
@@ -37,7 +37,7 @@ const getMessage = lazy(() => require('./Message').Message);
  */
 
 /**
- * @typedef {TextInputModalData | StringSelectModalData} ModalData
+ * @typedef {SelectMenuModalData|TextInputModalData} ModalData
  */
 
 /**

@@ -12,7 +12,7 @@ class ModalSubmitFields {
     /**
      * The components within the modal
      *
-     * @type {Array<ActionRowModalData | LabelModalData | TextDisplayModalData>}
+     * @type {Array<ActionRowModalData|LabelModalData|TextDisplayModalData>}
      */
     this.components = components;
 
@@ -127,8 +127,7 @@ class ModalSubmitFields {
    *
    * @param {string} customId The custom id of the component
    * @param {boolean} [required=false] Whether to throw an error if the component value is not found or empty
-   * @returns {?Collection<Snowflake, Role | APIRole>} The selected roles,
-   * or null if none were selected and not required
+   * @returns {?Collection<Snowflake, Role|APIRole>} The selected roles, or null if none were selected and not required
    */
   getSelectedRoles(customId, required = false) {
     const component = this._getTypedComponent(
@@ -172,7 +171,7 @@ class ModalSubmitFields {
    * Gets members component
    *
    * @param {string} customId The custom id of the component
-   * @returns {?Collection<Snowflake, GuildMember | APIGuildMember>} The selected members,
+   * @returns {?Collection<Snowflake, GuildMember|APIGuildMember>} The selected members,
    * or null if none were selected or the users were not present in the guild
    */
   getSelectedMembers(customId) {
