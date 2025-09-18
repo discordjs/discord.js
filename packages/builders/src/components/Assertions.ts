@@ -1,6 +1,6 @@
 import { ButtonStyle, ChannelType, ComponentType, SelectMenuDefaultValueType } from 'discord-api-types/v10';
 import { z } from 'zod';
-import { customIdPredicate } from '../Assertions.js';
+import { idPredicate, customIdPredicate } from '../Assertions.js';
 
 const labelPredicate = z.string().min(1).max(80);
 
@@ -52,6 +52,7 @@ export const buttonPredicate = z.discriminatedUnion('style', [
 ]);
 
 const selectMenuBasePredicate = z.object({
+	id: idPredicate,
 	placeholder: z.string().max(150).optional(),
 	min_values: z.number().min(0).max(25).optional(),
 	max_values: z.number().min(0).max(25).optional(),
@@ -135,6 +136,7 @@ export const selectMenuUserPredicate = selectMenuBasePredicate.extend({
 });
 
 export const actionRowPredicate = z.object({
+	id: idPredicate,
 	type: z.literal(ComponentType.ActionRow),
 	components: z.union([
 		z
