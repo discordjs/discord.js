@@ -34,17 +34,17 @@ class ModalComponentResolver {
     this.data = components;
 
     /**
-     * The bottom level components of the interaction
+     * The bottom-level components of the interaction
      *
      * @type {Collection<string, ModalData>}
      */
     this.hoistedComponents = components.reduce((accumulator, next) => {
-      // NOTE: for legacy support of action rows in modals, which has `components`
+      // For legacy support of action rows
       if ('components' in next) {
         for (const component of next.components) accumulator.set(component.customId, component);
       }
 
-      // For label component
+      // For label components
       if ('component' in next) {
         accumulator.set(next.component.customId, next.component);
       }

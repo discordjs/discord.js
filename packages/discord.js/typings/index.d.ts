@@ -5633,10 +5633,10 @@ export interface CommandInteractionOption<Cached extends CacheType = CacheType> 
 export interface BaseInteractionResolvedData<Cached extends CacheType = CacheType> {
   channels?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, Channel, APIInteractionDataResolvedChannel>>;
   members?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>>;
-
   roles?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
   users?: ReadonlyCollection<Snowflake, User>;
 }
+
 export interface CommandInteractionResolvedData<Cached extends CacheType = CacheType>
   extends BaseInteractionResolvedData<Cached> {
   attachments?: ReadonlyCollection<Snowflake, Attachment>;

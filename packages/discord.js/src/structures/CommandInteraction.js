@@ -97,6 +97,7 @@ class CommandInteraction extends BaseInteraction {
    * @property {Collection<Snowflake, Role|APIRole>} [roles] The resolved roles
    * @property {Collection<Snowflake, BaseChannel|APIChannel>} [channels] The resolved channels
    */
+
   /**
    * Represents the resolved data of a received command interaction.
    *
