@@ -21,6 +21,8 @@ describe('File Upload Components', () => {
 	test('GIVEN invalid fields THEN builder throws', () => {
 		expect(() => fileUploadComponent().toJSON()).toThrowError();
 
+		expect(() => fileUploadComponent().setCustomId('test').setId(4.4).toJSON()).toThrowError();
+
 		expect(() => {
 			fileUploadComponent().setCustomId('a'.repeat(500)).toJSON();
 		}).toThrowError();

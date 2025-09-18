@@ -4,9 +4,9 @@ import { customIdPredicate } from '../../Assertions';
 
 export const fileUploadPredicate = z.object({
 	type: z.literal(ComponentType.FileUpload),
-	id: z.number().optional(),
+	id: z.int().min(0).optional(),
 	custom_id: customIdPredicate,
-	min_values: z.number().min(0).max(10).optional(),
-	max_values: z.number().min(1).max(10).optional(),
+	min_values: z.int().min(0).max(10).optional(),
+	max_values: z.int().min(1).max(10).optional(),
 	required: z.boolean().optional(),
 });
