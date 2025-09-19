@@ -2591,6 +2591,11 @@ export interface ActionRowModalData extends BaseModalData<ComponentType.ActionRo
 
 export interface TextDisplayModalData extends BaseModalData<ComponentType.TextDisplay> {}
 
+export interface ModalSelectedMentionables<Cached extends CacheType = CacheType> {
+  members: NonNullable<SelectMenuModalData<Cached>['members']>;
+  roles: NonNullable<SelectMenuModalData<Cached>['roles']>;
+  users: NonNullable<SelectMenuModalData<Cached>['users']>;
+}
 export class ModalComponentResolver<Cached extends CacheType = CacheType> {
   private constructor(client: Client<true>, components: readonly ModalData[], resolved: BaseInteractionResolvedData);
   public readonly client: Client<true>;
@@ -2647,22 +2652,8 @@ export class ModalComponentResolver<Cached extends CacheType = CacheType> {
     required?: boolean,
   ): NonNullable<SelectMenuModalData<Cached>['roles']> | null;
 
-  public getSelectedMentionables(
-    customId: string,
-    required: true,
-  ): {
-    members: NonNullable<SelectMenuModalData<Cached>['members']>;
-    roles: NonNullable<SelectMenuModalData<Cached>['roles']>;
-    users: NonNullable<SelectMenuModalData<Cached>['users']>;
-  };
-  public getSelectedMentionables(
-    customId: string,
-    required?: boolean,
-  ): {
-    members: NonNullable<SelectMenuModalData<Cached>['members']>;
-    roles: NonNullable<SelectMenuModalData<Cached>['roles']>;
-    users: NonNullable<SelectMenuModalData<Cached>['users']>;
-  } | null;
+  public getSelectedMentionables(customId: string, required: true): ModalSelectedMentionables<Cached>;
+  public getSelectedMentionables(customId: string, required?: boolean): ModalSelectedMentionables<Cached> | null;
 }
 
 export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = CacheType>

@@ -5,6 +5,13 @@ const { ComponentType } = require('discord-api-types/v10');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 
 /**
+ * @typedef {Object} ModalSelectedMentionables
+ * @property {Collection<Snowflake, User>} users The selected users
+ * @property {Collection<Snowflake, GuildMember | APIGuildMember>} members The selected members
+ * @property {Collection<Snowflake, Role | APIRole>} roles The selected roles
+ */
+
+/**
  * A resolver for modal submit components
  */
 class ModalComponentResolver {
@@ -196,7 +203,7 @@ class ModalComponentResolver {
    *
    * @param {string} customId The custom id of the component
    * @param {boolean} [required=false] Whether to throw an error if the component value is not found or empty
-   * @returns {?{users: Collection<Snowflake, User>, members: Collection<Snowflake, GuildMember | APIGuildMember>, roles: Collection<Snowflake, Role | APIRole>}} The selected mentionables, or null if none were selected and not required
+   * @returns {?ModalSelectedMentionables} The selected mentionables, or null if none were selected and not required
    */
   getSelectedMentionables(customId, required = false) {
     const component = this._getTypedComponent(
