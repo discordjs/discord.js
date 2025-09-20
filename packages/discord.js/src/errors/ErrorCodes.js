@@ -168,6 +168,8 @@
 
  * @property {'ModalSubmitInteractionFieldNotFound'} ModalSubmitInteractionFieldNotFound
  * @property {'ModalSubmitInteractionFieldType'} ModalSubmitInteractionFieldType
+ * @property {'ModalSubmitInteractionFieldEmpty'} ModalSubmitInteractionFieldEmpty
+ * @property {'ModalSubmitInteractionFieldInvalidChannelType'} ModalSubmitInteractionFieldInvalidChannelType
 
  * @property {'InvalidMissingScopes'} InvalidMissingScopes
  * @property {'InvalidScopesWithPermissions'} InvalidScopesWithPermissions
@@ -327,6 +329,8 @@ const keys = [
 
   'ModalSubmitInteractionFieldNotFound',
   'ModalSubmitInteractionFieldType',
+  'ModalSubmitInteractionFieldEmpty',
+  'ModalSubmitInteractionFieldInvalidChannelType',
 
   'InvalidMissingScopes',
   'InvalidScopesWithPermissions',
