@@ -2609,6 +2609,31 @@ await chatInputInteraction.showModal({
       },
       label: 'yo',
     },
+    {
+      type: ComponentType.Label,
+      component: {
+        type: ComponentType.UserSelect,
+        customId: 'user',
+      },
+      label: 'aa',
+    },
+    {
+      type: ComponentType.Label,
+      component: {
+        type: ComponentType.RoleSelect,
+        customId: 'role',
+      },
+      label: 'bb',
+    },
+    {
+      type: ComponentType.Label,
+      component: {
+        type: ComponentType.ChannelSelect,
+        customId: 'channel',
+        channelTypes: [ChannelType.GuildText, ChannelType.GuildVoice],
+      },
+      label: 'cc',
+    },
   ],
 });
 
