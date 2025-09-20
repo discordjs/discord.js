@@ -19,7 +19,7 @@ const getMessage = lazy(() => require('./Message.js').Message);
 /**
  * @typedef {BaseModalData} SelectMenuModalData
  * @property {string} customId The custom id of the component
- * @property {string[]} [values] The values of the component (for select menus)
+ * @property {string[]} values The values of the component
  * @property {Collection<string, GuildMember|APIGuildMember>} [members] The resolved members
  * @property {Collection<string, User|APIUser>} [users] The resolved users
  * @property {Collection<string, Role|APIRole>} [roles] The resolved roles
