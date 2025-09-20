@@ -9,6 +9,7 @@ const { ModalComponentResolver } = require('./ModalComponentResolver.js');
 const { InteractionResponses } = require('./interfaces/InteractionResponses.js');
 
 const getMessage = lazy(() => require('./Message.js').Message);
+const getAttachment = lazy(() => require('./Attachment.js').Attachment);
 
 /**
  * @typedef {Object} BaseModalData
@@ -27,6 +28,13 @@ const getMessage = lazy(() => require('./Message.js').Message);
  */
 
 /**
+ * @typedef {BaseModalData} FileUploadModalData
+ * @property {string} customId The custom id of the file upload
+ * @property {string[]} values The values of the file upload
+ * @property {Collection<string, Attachment>} [attachments] The resolved attachments
+ */
+
+/**
  * @typedef {BaseModalData} TextInputModalData
  * @property {string} customId The custom id of the component
  * @property {string} value The value of the component
@@ -37,7 +45,7 @@ const getMessage = lazy(() => require('./Message.js').Message);
  */
 
 /**
- * @typedef {SelectMenuModalData|TextInputModalData} ModalData
+ * @typedef {SelectMenuModalData|TextInputModalData|FileUploadModalData} ModalData
  */
 
 /**
