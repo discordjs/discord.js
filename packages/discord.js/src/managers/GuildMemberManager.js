@@ -1,5 +1,6 @@
 'use strict';
 
+const { process } = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
@@ -10,9 +11,12 @@ const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = 
 const BaseGuildVoiceChannel = require('../structures/BaseGuildVoiceChannel');
 const { GuildMember } = require('../structures/GuildMember');
 const { Role } = require('../structures/Role');
+const { resolveImage } = require('../util/DataResolver');
 const Events = require('../util/Events');
 const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField');
 const Partials = require('../util/Partials');
+
+let deprecatedEmittedForEditSoleNickname = false;
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
@@ -372,13 +376,30 @@ class GuildMemberManager extends CachedManager {
     }
 
     let endpoint;
+
     if (id === this.client.user.id) {
       const keys = Object.keys(options);
-      if (keys.length === 1 && keys[0] === 'nick') endpoint = Routes.guildMember(this.guild.id);
-      else endpoint = Routes.guildMember(this.guild.id, id);
-    } else {
-      endpoint = Routes.guildMember(this.guild.id, id);
+
+      if (keys.length === 1 && keys[0] === 'nick') {
+        // For modifying the current application's nickname only, we use the /guilds/{guild.id}/members/@me endpoint.
+        // This endpoint only requires the CHANGE_NICKNAME permission.
+        // The other endpoint would require the MANAGE_NICKNAMES permission.
+        // In v15, this will be split out, so emit a deprecation.
+        endpoint = Routes.guildMember(this.guild.id, '@me');
+
+        if (!deprecatedEmittedForEditSoleNickname) {
+          process.emitWarning(
+            // eslint-disable-next-line max-len
+            'Using GuildMemberManager#edit() to edit only your nickname will require the MANAGE_NICKNAMES permission in v15 (currently, it requires only CHANGE_NICKNAME). Use Client#GuildMemberManager#editMe() when you only need to change your nickname.',
+            'DeprecationWarning',
+          );
+
+          deprecatedEmittedForEditSoleNickname = true;
+        }
+      }
     }
+
+    endpoint ??= Routes.guildMember(this.guild.id, id);
     const d = await this.client.rest.patch(endpoint, { body: options, reason });
 
     const clone = this.cache.get(id)?._clone();
