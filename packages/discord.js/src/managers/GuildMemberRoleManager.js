@@ -99,6 +99,11 @@ class GuildMemberRoleManager extends DataManager {
     return this.cache.find(role => role.tags?.botId === this.member.user.id) ?? null;
   }
 
+  /**
+   * Whether this GuildMemberRoleManager is a partial
+   * @type {boolean}
+   * @readonly
+   */
   get partial() {
     return this.member.partial;
   }
