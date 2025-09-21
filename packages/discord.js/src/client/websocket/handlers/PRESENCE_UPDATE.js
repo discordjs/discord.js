@@ -27,7 +27,7 @@ module.exports = (client, { d: data }) => {
         deaf: false,
         mute: false,
       },
-      client.options.partials.includes(Partials.GuildMember),
+      false,
     );
 
     client.emit(Events.GuildMemberAvailable, member);
