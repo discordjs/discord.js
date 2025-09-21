@@ -63,6 +63,9 @@ export class RPCRedisBroker<TEvents extends Record<string, any[]>, TResponses ex
 	 */
 	protected override readonly options: Required<RPCRedisBrokerOptions>;
 
+	/**
+	 * @internal
+	 */
 	protected readonly promises = new Map<string, InternalPromise>();
 
 	public constructor(redisClient: Redis, options: RPCRedisBrokerOptions) {

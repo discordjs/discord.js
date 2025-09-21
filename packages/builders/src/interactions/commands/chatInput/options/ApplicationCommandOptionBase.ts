@@ -21,10 +21,21 @@ export abstract class ApplicationCommandOptionBase
 	extends SharedNameAndDescription
 	implements JSONEncodable<APIApplicationCommandBasicOption>
 {
-	protected static readonly predicate: z.ZodTypeAny = basicOptionPredicate;
+	/**
+	 * @internal
+	 */
+	protected static readonly predicate: z.ZodType = basicOptionPredicate;
 
+	/**
+	 * @internal
+	 */
 	declare protected readonly data: ApplicationCommandOptionBaseData & SharedNameAndDescriptionData;
 
+	/**
+	 * Creates a new application command option builder.
+	 *
+	 * @param type - The type of the option
+	 */
 	public constructor(type: ApplicationCommandOptionType) {
 		super();
 		this.data.type = type;

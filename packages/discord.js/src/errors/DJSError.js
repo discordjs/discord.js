@@ -6,6 +6,7 @@ const { Messages } = require('./Messages.js');
 
 /**
  * Extend an error of some sort into a DiscordjsError.
+ *
  * @param {Error} Base Base error to extend
  * @returns {DiscordjsError}
  * @ignore
@@ -26,6 +27,7 @@ function makeDiscordjsError(Base) {
 
 /**
  * Format the message for an error.
+ *
  * @param {string} code The error code
  * @param {Array<*>} args Arguments to pass for util format or as function args
  * @returns {string} Formatted string

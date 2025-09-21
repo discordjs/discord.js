@@ -3,11 +3,10 @@
 const { Buffer } = require('node:buffer');
 const { isJSONEncodable } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ActionRowBuilder } = require('./ActionRowBuilder.js');
 const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
 const { resolveFile } = require('../util/DataResolver.js');
 const { MessageFlagsBitField } = require('../util/MessageFlagsBitField.js');
-const { basename, verifyString, resolvePartialEmoji } = require('../util/Util.js');
+const { findName, verifyString, resolvePartialEmoji } = require('../util/Util.js');
 
 /**
  * Represents a message to be sent to the API.
@@ -20,24 +19,28 @@ class MessagePayload {
   constructor(target, options) {
     /**
      * The target for this message to be sent to
+     *
      * @type {MessageTarget}
      */
     this.target = target;
 
     /**
      * The payload of this message.
+     *
      * @type {MessagePayloadOption}
      */
     this.options = options;
 
     /**
      * Body sendable to the API
+     *
      * @type {?APIMessage}
      */
     this.body = null;
 
     /**
      * Files sendable to the API
+     *
      * @type {?RawFile[]}
      */
     this.files = null;
@@ -45,6 +48,7 @@ class MessagePayload {
 
   /**
    * Whether or not the target is a {@link Webhook} or a {@link WebhookClient}
+   *
    * @type {boolean}
    * @readonly
    */
@@ -56,6 +60,7 @@ class MessagePayload {
 
   /**
    * Whether or not the target is a {@link User}
+   *
    * @type {boolean}
    * @readonly
    */
@@ -67,6 +72,7 @@ class MessagePayload {
 
   /**
    * Whether or not the target is a {@link Message}
+   *
    * @type {boolean}
    * @readonly
    */
@@ -77,6 +83,7 @@ class MessagePayload {
 
   /**
    * Whether or not the target is a {@link MessageManager}
+   *
    * @type {boolean}
    * @readonly
    */
@@ -87,6 +94,7 @@ class MessagePayload {
 
   /**
    * Makes the content of this message.
+   *
    * @returns {?string}
    */
   makeContent() {
@@ -102,6 +110,7 @@ class MessagePayload {
 
   /**
    * Resolves the body.
+   *
    * @returns {MessagePayload}
    */
   resolveBody() {
@@ -133,7 +142,7 @@ class MessagePayload {
     }
 
     const components = this.options.components?.map(component =>
-      (isJSONEncodable(component) ? component : new ActionRowBuilder(component)).toJSON(),
+      isJSONEncodable(component) ? component.toJSON() : this.target.client.options.jsonTransformer(component),
     );
 
     let username;
@@ -183,6 +192,9 @@ class MessagePayload {
     const attachments = this.options.files?.map((file, index) => ({
       id: index.toString(),
       description: file.description,
+      title: file.title,
+      waveform: file.waveform,
+      duration_secs: file.duration,
     }));
     if (Array.isArray(this.options.attachments)) {
       this.options.attachments.push(...(attachments ?? []));
@@ -218,7 +230,10 @@ class MessagePayload {
       components,
       username,
       avatar_url: avatarURL,
-      allowed_mentions: content === undefined && message_reference === undefined ? undefined : allowedMentions,
+      allowed_mentions:
+        this.isMessage && message_reference === undefined && this.target.author.id !== this.target.client.user.id
+          ? undefined
+          : allowedMentions,
       flags,
       message_reference,
       attachments: this.options.attachments,
@@ -232,6 +247,7 @@ class MessagePayload {
 
   /**
    * Resolves files.
+   *
    * @returns {Promise<MessagePayload>}
    */
   async resolveFiles() {
@@ -243,24 +259,13 @@ class MessagePayload {
 
   /**
    * Resolves a single file into an object sendable to the API.
+   *
    * @param {AttachmentPayload|BufferResolvable|Stream} fileLike Something that could be resolved to a file
    * @returns {Promise<RawFile>}
    */
   static async resolveFile(fileLike) {
     let attachment;
     let name;
-
-    const findName = thing => {
-      if (typeof thing === 'string') {
-        return basename(thing);
-      }
-
-      if (thing.path) {
-        return basename(thing.path);
-      }
-
-      return 'file.jpg';
-    };
 
     const ownAttachment =
       typeof fileLike === 'string' || fileLike instanceof Buffer || typeof fileLike.pipe === 'function';
@@ -278,6 +283,7 @@ class MessagePayload {
 
   /**
    * Creates a {@link MessagePayload} from user-level arguments.
+   *
    * @param {MessageTarget} target Target to send to
    * @param {string|MessagePayloadOption} options Options or content to use
    * @param {MessagePayloadOption} [extra={}] Extra options to add onto specified options
@@ -295,12 +301,14 @@ exports.MessagePayload = MessagePayload;
 
 /**
  * A target for a message.
+ *
  * @typedef {TextBasedChannels|ChannelManager|Webhook|WebhookClient|BaseInteraction|InteractionWebhook|
  * Message|MessageManager} MessageTarget
  */
 
 /**
  * A possible payload option.
+ *
  * @typedef {MessageCreateOptions|MessageEditOptions|WebhookMessageCreateOptions|WebhookMessageEditOptions|
  * InteractionReplyOptions|InteractionUpdateOptions} MessagePayloadOption
  */

@@ -1,8 +1,8 @@
 'use strict';
 
-const { Action } = require('./Action.js');
 const { Typing } = require('../../structures/Typing.js');
 const { Events } = require('../../util/Events.js');
+const { Action } = require('./Action.js');
 
 class TypingStartAction extends Action {
   handle(data) {
@@ -18,6 +18,7 @@ class TypingStartAction extends Action {
     if (user) {
       /**
        * Emitted whenever a user starts typing in a channel.
+       *
        * @event Client#typingStart
        * @param {Typing} typing The typing state
        */

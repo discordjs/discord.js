@@ -2,7 +2,7 @@
 
 import { VscChevronDown } from '@react-icons/all-files/vsc/VscChevronDown';
 import { Disclosure, DisclosureContent, useDisclosureState } from 'ariakit/disclosure';
-import type { PropsWithChildren } from 'react';
+import type { JSX, PropsWithChildren } from 'react';
 
 export interface SectionOptions {
 	readonly background?: boolean | undefined;
@@ -50,7 +50,7 @@ export function Section({
 				</div>
 			</Disclosure>
 			<DisclosureContent
-				className={`${background ? 'bg-light-700 dark:bg-dark-500 rounded' : ''} ${gutter ? 'mt-2' : ''}`}
+				className={`${background ? 'bg-light-700 dark:bg-dark-500 rounded' : ''}  ${gutter ? 'mt-2' : ''}`}
 				state={disclosure}
 			>
 				{padded ? <div className="mx-2 px-0 py-5 md:mx-6.5 md:px-4.5">{children}</div> : children}

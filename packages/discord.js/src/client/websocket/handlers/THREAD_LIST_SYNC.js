@@ -33,6 +33,7 @@ module.exports = (client, { d: data }) => {
 
   /**
    * Emitted whenever the client user gains access to a text or announcement channel that contains threads
+   *
    * @event Client#threadListSync
    * @param {Collection<Snowflake, ThreadChannel>} threads The threads that were synced
    * @param {Guild} guild The guild that the threads were synced in
@@ -41,9 +42,11 @@ module.exports = (client, { d: data }) => {
 };
 
 function removeStaleThreads(client, channel) {
-  channel.threads?.cache.forEach(thread => {
+  if (!channel.threads) return;
+
+  for (const thread of channel.threads.cache.values()) {
     if (!thread.archived) {
       client.channels._remove(thread.id);
     }
-  });
+  }
 }

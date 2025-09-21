@@ -35,16 +35,18 @@ export class EmbedBuilder implements JSONEncodable<APIEmbed> {
 	}
 
 	/**
-	 * Creates a new embed from API data.
+	 * Creates a new embed.
 	 *
 	 * @param data - The API data to create this embed with
 	 */
-	public constructor(data: APIEmbed = {}) {
+	public constructor(data: Partial<APIEmbed> = {}) {
+		const { author, fields = [], footer, ...rest } = data;
+
 		this.data = {
-			...structuredClone(data),
-			author: data.author && new EmbedAuthorBuilder(data.author),
-			fields: data.fields?.map((field) => new EmbedFieldBuilder(field)) ?? [],
-			footer: data.footer && new EmbedFooterBuilder(data.footer),
+			...structuredClone(rest),
+			author: author && new EmbedAuthorBuilder(author),
+			fields: fields.map((field) => new EmbedFieldBuilder(field)),
+			footer: footer && new EmbedFooterBuilder(footer),
 		};
 	}
 
@@ -87,7 +89,7 @@ export class EmbedBuilder implements JSONEncodable<APIEmbed> {
 	 *
 	 * @remarks
 	 * This method behaves similarly
-	 * to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
+	 * to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
 	 * The maximum amount of fields that can be added is 25.
 	 *
 	 * It's useful for modifying and adjusting order of the already-existing fields of an embed.
@@ -338,9 +340,9 @@ export class EmbedBuilder implements JSONEncodable<APIEmbed> {
 		const data = {
 			...structuredClone(rest),
 			// Disable validation because the embedPredicate below will validate those as well
-			author: this.data.author?.toJSON(false),
-			fields: this.data.fields?.map((field) => field.toJSON(false)),
-			footer: this.data.footer?.toJSON(false),
+			author: author?.toJSON(false),
+			fields: fields.map((field) => field.toJSON(false)),
+			footer: footer?.toJSON(false),
 		};
 
 		validate(embedPredicate, data, validationOverride);

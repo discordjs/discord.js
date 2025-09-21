@@ -70,15 +70,15 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 
 	#token: string | null = null;
 
-	private hashTimer!: NodeJS.Timer | number;
+	private hashTimer!: NodeJS.Timeout | number;
 
-	private handlerTimer!: NodeJS.Timer | number;
+	private handlerTimer!: NodeJS.Timeout | number;
 
 	public readonly options: RESTOptions;
 
 	public constructor(options: Partial<RESTOptions> = {}) {
 		super();
-		this.cdn = new CDN(options.cdn ?? DefaultRestOptions.cdn, options.mediaProxy ?? DefaultRestOptions.mediaProxy);
+		this.cdn = new CDN(options);
 		this.options = { ...DefaultRestOptions, ...options };
 		this.globalRemaining = Math.max(1, this.options.globalRequestsPerSecond);
 		this.agent = options.agent ?? null;
@@ -345,9 +345,9 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 			for (const [index, file] of request.files.entries()) {
 				const fileKey = file.key ?? `files[${index}]`;
 
-				// https://developer.mozilla.org/en-US/docs/Web/API/FormData/append#parameters
+				// https://developer.mozilla.org/docs/Web/API/FormData/append#parameters
 				// FormData.append only accepts a string or Blob.
-				// https://developer.mozilla.org/en-US/docs/Web/API/Blob/Blob#parameters
+				// https://developer.mozilla.org/docs/Web/API/Blob/Blob#parameters
 				// The Blob constructor accepts TypedArray/ArrayBuffer, strings, and Blobs.
 				if (isBufferLike(file.data)) {
 					// Try to infer the content type from the buffer if one isn't passed

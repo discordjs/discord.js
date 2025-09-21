@@ -5,7 +5,9 @@ import { DiscordAPIError } from '../errors/DiscordAPIError.js';
 import { HTTPError } from '../errors/HTTPError.js';
 import { RESTEvents } from '../utils/constants.js';
 import type { ResponseLike, HandlerRequestData, RouteData } from '../utils/types.js';
-import { parseResponse, shouldRetry } from '../utils/utils.js';
+import { normalizeRetryBackoff, normalizeTimeout, parseResponse, shouldRetry, sleep } from '../utils/utils.js';
+
+let authFalseWarningEmitted = false;
 
 /**
  * Invalid request limiting is done on a per-IP basis, not a per-token basis.
@@ -63,7 +65,10 @@ export async function makeNetworkRequest(
 	retries: number,
 ) {
 	const controller = new AbortController();
-	const timeout = setTimeout(() => controller.abort(), manager.options.timeout);
+	const timeout = setTimeout(
+		() => controller.abort(),
+		normalizeTimeout(manager.options.timeout, routeId.bucketRoute, requestData.body),
+	);
 	if (requestData.signal) {
 		// If the user signal was aborted, abort the controller, else abort the local signal.
 		// The reason why we don't re-use the user's signal, is because users may use the same signal for multiple
@@ -79,6 +84,21 @@ export async function makeNetworkRequest(
 		if (!(error instanceof Error)) throw error;
 		// Retry the specified number of times if needed
 		if (shouldRetry(error) && retries !== manager.options.retries) {
+			const backoff = normalizeRetryBackoff(
+				manager.options.retryBackoff,
+				routeId.bucketRoute,
+				null,
+				retries,
+				requestData.body,
+			);
+			if (backoff === null) {
+				throw error;
+			}
+
+			if (backoff > 0) {
+				await sleep(backoff);
+			}
+
 			// Retry is handled by the handler upon receiving null
 			return null;
 		}
@@ -115,6 +135,7 @@ export async function makeNetworkRequest(
  * @param url - The fully resolved url to make the request to
  * @param requestData - Extra data from the user's request needed for errors and additional processing
  * @param retries - The number of retries this request has already attempted (recursion occurs on the handler)
+ * @param routeId - The generalized API route with literal ids for major parameters
  * @returns The response if the status code is not handled or null to request a retry
  */
 export async function handleErrors(
@@ -124,11 +145,27 @@ export async function handleErrors(
 	url: string,
 	requestData: HandlerRequestData,
 	retries: number,
+	routeId: RouteData,
 ) {
 	const status = res.status;
 	if (status >= 500 && status < 600) {
 		// Retry the specified number of times for possible server side issues
 		if (retries !== manager.options.retries) {
+			const backoff = normalizeRetryBackoff(
+				manager.options.retryBackoff,
+				routeId.bucketRoute,
+				status,
+				retries,
+				requestData.body,
+			);
+			if (backoff === null) {
+				throw new HTTPError(status, res.statusText, method, url, requestData);
+			}
+
+			if (backoff > 0) {
+				await sleep(backoff);
+			}
+
 			return null;
 		}
 
@@ -137,15 +174,29 @@ export async function handleErrors(
 	} else {
 		// Handle possible malformed requests
 		if (status >= 400 && status < 500) {
+			// The request will not succeed for some reason, parse the error returned from the api
+			const data = (await parseResponse(res)) as DiscordErrorData | OAuthErrorData;
+			const isDiscordError = 'code' in data;
+
 			// If we receive this status code, it means the token we had is no longer valid.
 			if (status === 401 && requestData.auth === true) {
+				if (isDiscordError && data.code !== 0 && !authFalseWarningEmitted) {
+					const errorText = `Encountered HTTP 401 with error ${data.code}: ${data.message}. Your token will be removed from this REST instance. If you are using @discordjs/rest directly, consider adding 'auth: false' to the request. Open an issue with your library if not.`;
+					// Use emitWarning if possible, probably not available in edge / web
+					if (typeof globalThis.process !== 'undefined' && typeof globalThis.process.emitWarning === 'function') {
+						globalThis.process.emitWarning(errorText);
+					} else {
+						console.warn(errorText);
+					}
+
+					authFalseWarningEmitted = true;
+				}
+
 				manager.setToken(null!);
 			}
 
-			// The request will not succeed for some reason, parse the error returned from the api
-			const data = (await parseResponse(res)) as DiscordErrorData | OAuthErrorData;
 			// throw the API error
-			throw new DiscordAPIError(data, 'code' in data ? data.code : data.error, status, method, url, requestData);
+			throw new DiscordAPIError(data, isDiscordError ? data.code : data.error, status, method, url, requestData);
 		}
 
 		return res;

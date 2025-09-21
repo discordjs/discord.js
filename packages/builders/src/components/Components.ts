@@ -1,7 +1,12 @@
-import type { APIButtonComponent, APIMessageComponent, APIModalComponent } from 'discord-api-types/v10';
+import type {
+	APIBaseComponent,
+	APIButtonComponent,
+	APIMessageComponent,
+	APIModalComponent,
+	APISectionAccessoryComponent,
+} from 'discord-api-types/v10';
 import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
 import { ActionRowBuilder } from './ActionRow.js';
-import type { AnyAPIActionRowComponent } from './Component.js';
 import { ComponentBuilder } from './Component.js';
 import type { BaseButtonBuilder } from './button/Button.js';
 import {
@@ -12,22 +17,45 @@ import {
 } from './button/CustomIdButton.js';
 import { LinkButtonBuilder } from './button/LinkButton.js';
 import { PremiumButtonBuilder } from './button/PremiumButton.js';
+import { LabelBuilder } from './label/Label.js';
 import { ChannelSelectMenuBuilder } from './selectMenu/ChannelSelectMenu.js';
 import { MentionableSelectMenuBuilder } from './selectMenu/MentionableSelectMenu.js';
 import { RoleSelectMenuBuilder } from './selectMenu/RoleSelectMenu.js';
 import { StringSelectMenuBuilder } from './selectMenu/StringSelectMenu.js';
 import { UserSelectMenuBuilder } from './selectMenu/UserSelectMenu.js';
 import { TextInputBuilder } from './textInput/TextInput.js';
+import { ContainerBuilder } from './v2/Container.js';
+import { FileBuilder } from './v2/File.js';
+import { MediaGalleryBuilder } from './v2/MediaGallery.js';
+import { SectionBuilder } from './v2/Section.js';
+import { SeparatorBuilder } from './v2/Separator.js';
+import { TextDisplayBuilder } from './v2/TextDisplay.js';
+import { ThumbnailBuilder } from './v2/Thumbnail.js';
+
+/**
+ * The builders that may be used as top-level components on messages
+ */
+export type MessageTopLevelComponentBuilder =
+	| ActionRowBuilder
+	| ContainerBuilder
+	| FileBuilder
+	| MediaGalleryBuilder
+	| SectionBuilder
+	| SeparatorBuilder
+	| TextDisplayBuilder;
 
 /**
  * The builders that may be used for messages.
  */
-export type MessageComponentBuilder = ActionRowBuilder | MessageActionRowComponentBuilder;
+export type MessageComponentBuilder =
+	| MessageActionRowComponentBuilder
+	| MessageTopLevelComponentBuilder
+	| ThumbnailBuilder;
 
 /**
  * The builders that may be used for modals.
  */
-export type ModalComponentBuilder = ActionRowBuilder | ModalActionRowComponentBuilder;
+export type ModalComponentBuilder = ActionRowBuilder | LabelBuilder | ModalActionRowComponentBuilder;
 
 /**
  * Any button builder
@@ -60,6 +88,11 @@ export type ModalActionRowComponentBuilder = TextInputBuilder;
  * Any action row component builder.
  */
 export type AnyActionRowComponentBuilder = MessageActionRowComponentBuilder | ModalActionRowComponentBuilder;
+
+/**
+ * Any modal component builder.
+ */
+export type AnyModalComponentBuilder = LabelBuilder | TextDisplayBuilder;
 
 /**
  * Components here are mapped to their respective builder.
@@ -97,6 +130,38 @@ export interface MappedComponentTypes {
 	 * The channel select component type is associated with a {@link ChannelSelectMenuBuilder}.
 	 */
 	[ComponentType.ChannelSelect]: ChannelSelectMenuBuilder;
+	/**
+	 * The thumbnail component type is associated with a {@link ThumbnailBuilder}.
+	 */
+	[ComponentType.Thumbnail]: ThumbnailBuilder;
+	/**
+	 * The file component type is associated with a {@link FileBuilder}.
+	 */
+	[ComponentType.File]: FileBuilder;
+	/**
+	 * The separator component type is associated with a {@link SeparatorBuilder}.
+	 */
+	[ComponentType.Separator]: SeparatorBuilder;
+	/**
+	 * The text display component type is associated with a {@link TextDisplayBuilder}.
+	 */
+	[ComponentType.TextDisplay]: TextDisplayBuilder;
+	/**
+	 * The media gallery component type is associated with a {@link MediaGalleryBuilder}.
+	 */
+	[ComponentType.MediaGallery]: MediaGalleryBuilder;
+	/**
+	 * The section component type is associated with a {@link SectionBuilder}.
+	 */
+	[ComponentType.Section]: SectionBuilder;
+	/**
+	 * The container component type is associated with a {@link ContainerBuilder}.
+	 */
+	[ComponentType.Container]: ContainerBuilder;
+	/**
+	 * The label component type is associated with a {@link LabelBuilder}.
+	 */
+	[ComponentType.Label]: LabelBuilder;
 }
 
 /**
@@ -122,7 +187,7 @@ export function createComponentBuilder<ComponentBuilder extends MessageComponent
 
 export function createComponentBuilder(
 	data: APIMessageComponent | APIModalComponent | MessageComponentBuilder,
-): ComponentBuilder<AnyAPIActionRowComponent> {
+): ComponentBuilder<APIBaseComponent<ComponentType>> {
 	if (data instanceof ComponentBuilder) {
 		return data;
 	}
@@ -144,6 +209,22 @@ export function createComponentBuilder(
 			return new MentionableSelectMenuBuilder(data);
 		case ComponentType.ChannelSelect:
 			return new ChannelSelectMenuBuilder(data);
+		case ComponentType.Thumbnail:
+			return new ThumbnailBuilder(data);
+		case ComponentType.File:
+			return new FileBuilder(data);
+		case ComponentType.Separator:
+			return new SeparatorBuilder(data);
+		case ComponentType.TextDisplay:
+			return new TextDisplayBuilder(data);
+		case ComponentType.MediaGallery:
+			return new MediaGalleryBuilder(data);
+		case ComponentType.Section:
+			return new SectionBuilder(data);
+		case ComponentType.Container:
+			return new ContainerBuilder(data);
+		case ComponentType.Label:
+			return new LabelBuilder(data);
 		default:
 			// @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);
@@ -167,5 +248,17 @@ function createButtonBuilder(data: APIButtonComponent): ButtonBuilder {
 		default:
 			// @ts-expect-error This case can still occur if we get a newer unsupported button style
 			throw new Error(`Cannot properly serialize button with style: ${data.style}`);
+	}
+}
+
+export function resolveAccessoryComponent(component: APISectionAccessoryComponent) {
+	switch (component.type) {
+		case ComponentType.Button:
+			return createButtonBuilder(component);
+		case ComponentType.Thumbnail:
+			return new ThumbnailBuilder(component);
+		default:
+			// @ts-expect-error This case can still occur if we get a newer unsupported component type
+			throw new Error(`Cannot properly serialize section accessory component: ${component.type}`);
 	}
 }

@@ -521,6 +521,7 @@ export function heading<Content extends string>(content: Content, level: Heading
 export function heading<Content extends string>(content: Content, level: HeadingLevel.Three): `### ${Content}`;
 
 export function heading(content: string, level?: HeadingLevel) {
+	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 	switch (level) {
 		case HeadingLevel.Three:
 			return `### ${content}`;
@@ -655,6 +656,60 @@ export function applicationDirectory<ApplicationId extends Snowflake, SKUId exte
 	| `https://discord.com/application-directory/${ApplicationId}/store` {
 	const url = `https://discord.com/application-directory/${applicationId}/store` as const;
 	return skuId ? `${url}/${skuId}` : url;
+}
+
+/**
+ * Formats an email address into an email mention.
+ *
+ * @typeParam Email - This is inferred by the supplied email address
+ * @param email - The email address to format
+ */
+export function email<Email extends string>(email: Email): `<${Email}>`;
+
+/**
+ * Formats an email address and headers into an email mention.
+ *
+ * @typeParam Email - This is inferred by the supplied email address
+ * @param email - The email address to format
+ * @param headers - Optional headers to include in the email mention
+ */
+export function email<Email extends string>(
+	email: Email,
+	headers: Record<string, string | readonly string[]> | undefined,
+): `<${Email}?${string}>`;
+
+/**
+ * Formats an email address into an email mention.
+ *
+ * @typeParam Email - This is inferred by the supplied email address
+ * @param email - The email address to format
+ * @param headers - Optional headers to include in the email mention
+ */
+export function email<Email extends string>(email: Email, headers?: Record<string, string | readonly string[]>) {
+	if (headers) {
+		// eslint-disable-next-line n/prefer-global/url-search-params
+		const searchParams = new URLSearchParams(
+			Object.fromEntries(Object.entries(headers).map(([key, value]) => [key.toLowerCase(), value])),
+		);
+
+		return `<${email}?${searchParams.toString()}>` as const;
+	}
+
+	return `<${email}>` as const;
+}
+
+/**
+ * Formats a phone number into a phone number mention.
+ *
+ * @typeParam PhoneNumber - This is inferred by the supplied phone number
+ * @param phoneNumber - The phone number to format. Must start with a `+` sign.
+ */
+export function phoneNumber<PhoneNumber extends `+${string}`>(phoneNumber: PhoneNumber) {
+	if (!phoneNumber.startsWith('+')) {
+		throw new Error('Phone number must start with a "+" sign.');
+	}
+
+	return `<${phoneNumber}>` as const;
 }
 
 /**

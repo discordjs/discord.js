@@ -1,7 +1,6 @@
 'use strict';
 
 const { InteractionType, ComponentType, ApplicationCommandType } = require('discord-api-types/v10');
-const { Action } = require('./Action.js');
 const { AutocompleteInteraction } = require('../../structures/AutocompleteInteraction.js');
 const { ButtonInteraction } = require('../../structures/ButtonInteraction.js');
 const { ChannelSelectMenuInteraction } = require('../../structures/ChannelSelectMenuInteraction.js');
@@ -9,11 +8,13 @@ const { ChatInputCommandInteraction } = require('../../structures/ChatInputComma
 const { MentionableSelectMenuInteraction } = require('../../structures/MentionableSelectMenuInteraction.js');
 const { MessageContextMenuCommandInteraction } = require('../../structures/MessageContextMenuCommandInteraction.js');
 const { ModalSubmitInteraction } = require('../../structures/ModalSubmitInteraction.js');
+const { PrimaryEntryPointCommandInteraction } = require('../../structures/PrimaryEntryPointCommandInteraction.js');
 const { RoleSelectMenuInteraction } = require('../../structures/RoleSelectMenuInteraction.js');
 const { StringSelectMenuInteraction } = require('../../structures/StringSelectMenuInteraction.js');
 const { UserContextMenuCommandInteraction } = require('../../structures/UserContextMenuCommandInteraction.js');
 const { UserSelectMenuInteraction } = require('../../structures/UserSelectMenuInteraction.js');
 const { Events } = require('../../util/Events.js');
+const { Action } = require('./Action.js');
 
 class InteractionCreateAction extends Action {
   handle(data) {
@@ -38,6 +39,9 @@ class InteractionCreateAction extends Action {
             if (channel && !channel.isTextBased()) return;
             InteractionClass = MessageContextMenuCommandInteraction;
             break;
+          case ApplicationCommandType.PrimaryEntryPoint:
+            InteractionClass = PrimaryEntryPointCommandInteraction;
+            break;
           default:
             client.emit(
               Events.Debug,
@@ -45,6 +49,7 @@ class InteractionCreateAction extends Action {
             );
             return;
         }
+
         break;
       case InteractionType.MessageComponent:
         if (channel && !channel.isTextBased()) return;
@@ -75,6 +80,7 @@ class InteractionCreateAction extends Action {
             );
             return;
         }
+
         break;
       case InteractionType.ApplicationCommandAutocomplete:
         InteractionClass = AutocompleteInteraction;
@@ -91,6 +97,7 @@ class InteractionCreateAction extends Action {
 
     /**
      * Emitted when an interaction is created.
+     *
      * @event Client#interactionCreate
      * @param {BaseInteraction} interaction The interaction which was created
      */

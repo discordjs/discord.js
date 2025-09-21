@@ -4,6 +4,7 @@ const { Base } = require('./Base.js');
 
 /**
  * Represents a typing state for a user in a channel.
+ *
  * @extends {Base}
  */
 class Typing extends Base {
@@ -12,12 +13,14 @@ class Typing extends Base {
 
     /**
      * The channel the status is from
+     *
      * @type {TextBasedChannels}
      */
     this.channel = channel;
 
     /**
      * The user who is typing
+     *
      * @type {User}
      */
     this.user = user;
@@ -29,6 +32,7 @@ class Typing extends Base {
     if ('timestamp' in data) {
       /**
        * The UNIX timestamp in milliseconds the user started typing at
+       *
        * @type {number}
        */
       this.startedTimestamp = data.timestamp * 1_000;
@@ -37,6 +41,7 @@ class Typing extends Base {
 
   /**
    * Indicates whether the status is received from a guild.
+   *
    * @returns {boolean}
    */
   inGuild() {
@@ -45,6 +50,7 @@ class Typing extends Base {
 
   /**
    * The time the user started typing at
+   *
    * @type {Date}
    * @readonly
    */
@@ -54,6 +60,7 @@ class Typing extends Base {
 
   /**
    * The guild the status is from
+   *
    * @type {?Guild}
    * @readonly
    */
@@ -63,6 +70,7 @@ class Typing extends Base {
 
   /**
    * The member who is typing
+   *
    * @type {?GuildMember}
    * @readonly
    */

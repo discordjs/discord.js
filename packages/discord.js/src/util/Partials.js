@@ -17,6 +17,7 @@ const { createEnum } = require('./Enums.js');
  *   ]
  * });
  * ```
+ *
  * @typedef {Object} Partials
  * @property {number} User The partial to receive uncached users.
  * @property {number} Channel The partial to receive uncached channels.
@@ -28,6 +29,7 @@ const { createEnum } = require('./Enums.js');
  * @property {number} ThreadMember The partial to receive uncached thread members.
  * @property {number} Poll The partial to receive uncached polls.
  * @property {number} PollAnswer The partial to receive uncached poll answers.
+ * @property {number} SoundboardSound The partial to receive uncached soundboard sounds.
  */
 
 // JSDoc for IntelliSense purposes
@@ -45,4 +47,5 @@ exports.Partials = createEnum([
   'ThreadMember',
   'Poll',
   'PollAnswer',
+  'SoundboardSound',
 ]);

@@ -11,6 +11,7 @@ module.exports = (client, { d: data }) => {
 
   /**
    * Emitted whenever a guild audit log entry is created.
+   *
    * @event Client#guildAuditLogEntryCreate
    * @param {GuildAuditLogsEntry} auditLogEntry The entry that was created
    * @param {Guild} guild The guild where the entry was created

@@ -1,25 +1,41 @@
-import type { PropsWithChildren } from 'react';
-import Footer from '~/components/Footer';
-import Header from '~/components/Header';
-import { Nav } from '~/components/Nav';
-import { Providers } from './providers';
+import { DocsLayout } from 'fumadocs-ui/layouts/docs';
+import type { ReactNode } from 'react';
+import { baseOptions } from '@/app/layout.config';
+import { source } from '@/lib/source';
 
-export default function Layout({ children }: PropsWithChildren) {
+export default function Layout({ children }: { readonly children: ReactNode }) {
 	return (
-		<Providers>
-			<main className="mx-auto max-w-7xl px-4 lg:max-w-full">
-				<Header />
-				<div className="relative top-6 mx-auto max-w-7xl gap-6 lg:max-w-full lg:flex">
-					<div className="lg:sticky lg:top-23 lg:h-[calc(100vh_-_105px)]">
-						<Nav />
-					</div>
+		<DocsLayout
+			sidebar={{
+				tabs: {
+					transform(option, node) {
+						const meta = source.getNodeMeta(node);
+						if (!meta || !node.icon) return option;
 
-					<div className="mx-auto max-w-5xl min-w-xs w-full pb-10">
-						{children}
-						<Footer />
-					</div>
-				</div>
-			</main>
-		</Providers>
+						// category selection color based on path src/styles/base.css
+						const color = `var(--${meta.file.path.split('/')[0]}-color, var(--color-fd-foreground))`;
+
+						return {
+							...option,
+							icon: (
+								<div
+									className="rounded-lg border p-1.5 shadow-lg md:mb-auto md:rounded-md md:p-1 [&_svg]:size-6 md:[&_svg]:size-5"
+									style={{
+										color,
+										backgroundColor: `color-mix(in oklab, ${color} 10%, transparent)`,
+									}}
+								>
+									{node.icon}
+								</div>
+							),
+						};
+					},
+				},
+			}}
+			tree={source.pageTree}
+			{...baseOptions}
+		>
+			{children}
+		</DocsLayout>
 	);
 }

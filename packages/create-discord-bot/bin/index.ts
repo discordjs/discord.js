@@ -2,11 +2,11 @@
 
 // eslint-disable-next-line n/shebang
 import process from 'node:process';
+import { styleText } from 'node:util';
 import { Option, program } from 'commander';
-import picocolors from 'picocolors';
 import prompts from 'prompts';
 import validateProjectName from 'validate-npm-package-name';
-import packageJSON from '../package.json' assert { type: 'json' };
+import packageJSON from '../package.json' with { type: 'json' };
 import { createDiscordBot } from '../src/create-discord-bot.js';
 import { resolvePackageManager } from '../src/helpers/packageManager.js';
 import { DEFAULT_PROJECT_NAME, PACKAGE_MANAGERS } from '../src/util/constants.js';
@@ -34,7 +34,7 @@ program
 	.version(packageJSON.version)
 	.description('Create a basic discord.js bot.')
 	.argument('[directory]', 'What is the name of the directory you want to create this project in?')
-	.usage(`${picocolors.green('<directory>')}`)
+	.usage(`${styleText('green', '<directory>')}`)
 	.action((directory) => {
 		projectDirectory = directory;
 	})
@@ -68,13 +68,16 @@ if (!projectDirectory) {
 					const errors = [];
 
 					for (const error of [...(validationResult.errors ?? []), ...(validationResult.warnings ?? [])]) {
-						errors.push(picocolors.red(`- ${error}`));
+						errors.push(styleText('red', `- ${error}`));
 					}
 
-					return picocolors.red(
-						`Cannot create a project named ${picocolors.yellow(
+					return styleText(
+						'red',
+						`Cannot create a project named ${styleText(
+							'yellow',
 							`"${directory}"`,
-						)} due to npm naming restrictions.\n\nErrors:\n${errors.join('\n')}\n\n${picocolors.red(
+						)} due to npm naming restrictions.\n\nErrors:\n${errors.join('\n')}\n\n${styleText(
+							'red',
 							'\nSee https://docs.npmjs.com/cli/configuring-npm/package-json for more details.',
 						)}}`,
 					);

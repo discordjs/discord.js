@@ -12,8 +12,6 @@ describe('Context Menu Commands', () => {
 			});
 
 			test('GIVEN invalid name THEN throw error', () => {
-				expect(() => getBuilder().setName('$$$').toJSON()).toThrowError();
-
 				expect(() => getBuilder().setName(' ').toJSON()).toThrowError();
 			});
 
@@ -27,6 +25,11 @@ describe('Context Menu Commands', () => {
 
 				// Translation: thx (according to GTranslate)
 				expect(() => getBuilder().setName('どうも')).not.toThrowError();
+
+				expect(() => getBuilder().setName('🎉').toJSON()).not.toThrowError();
+				expect(() => getBuilder().setName('🫆').toJSON()).not.toThrowError();
+				expect(() => getBuilder().setName('🎉 abc').toJSON()).not.toThrowError();
+				expect(() => getBuilder().setName('🫆 abc').toJSON()).not.toThrowError();
 			});
 		});
 

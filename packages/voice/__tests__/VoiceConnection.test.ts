@@ -37,9 +37,7 @@ const AudioPlayer = _AudioPlayer as unknown as vitest.Mocked<typeof _AudioPlayer
 const PlayerSubscription = _PlayerSubscription as unknown as vitest.Mock<_PlayerSubscription>;
 
 const _NetworkingClass = Networking.Networking;
-vitest.spyOn(Networking, 'Networking').mockImplementation((...args) => {
-	return new _NetworkingClass(...args);
-});
+vitest.spyOn(Networking, 'Networking').mockImplementation((...args) => new _NetworkingClass(...args));
 
 function createFakeAdapter() {
 	const sendPayload = vitest.fn();
@@ -346,7 +344,11 @@ describe('VoiceConnection#configureNetworking', () => {
 				sessionId: state.session_id,
 				userId: state.user_id,
 			},
-			false,
+			{
+				daveEncryption: true,
+				debug: false,
+				decryptionFailureTolerance: undefined,
+			},
 		);
 		expect(voiceConnection.state).toMatchObject({
 			status: VoiceConnectionStatus.Connecting,

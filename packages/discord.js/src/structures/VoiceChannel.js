@@ -1,26 +1,28 @@
 'use strict';
 
-const { PermissionFlagsBits } = require('discord-api-types/v10');
+const { PermissionFlagsBits, Routes } = require('discord-api-types/v10');
 const { BaseGuildVoiceChannel } = require('./BaseGuildVoiceChannel.js');
 
 /**
  * Represents a guild voice channel on Discord.
+ *
  * @extends {BaseGuildVoiceChannel}
  */
 class VoiceChannel extends BaseGuildVoiceChannel {
   /**
    * Whether the channel is joinable by the client user
+   *
    * @type {boolean}
    * @readonly
    */
   get joinable() {
     if (!super.joinable) return false;
-    if (this.full && !this.permissionsFor(this.client.user).has(PermissionFlagsBits.MoveMembers, false)) return false;
-    return true;
+    return !this.full || this.permissionsFor(this.client.user).has(PermissionFlagsBits.MoveMembers, false);
   }
 
   /**
    * Checks if the client has permission to send audio to the voice channel
+   *
    * @type {boolean}
    * @readonly
    */
@@ -35,10 +37,32 @@ class VoiceChannel extends BaseGuildVoiceChannel {
       permissions.has(PermissionFlagsBits.Speak, false)
     );
   }
+
+  /**
+   * @typedef {Object} SendSoundboardSoundOptions
+   * @property {string} soundId The id of the soundboard sound to send
+   * @property {string} [guildId] The id of the guild the soundboard sound is a part of
+   */
+
+  /**
+   * Send a soundboard sound to a voice channel the user is connected to.
+   *
+   * @param {SoundboardSound|SendSoundboardSoundOptions} sound The sound to send
+   * @returns {Promise<void>}
+   */
+  async sendSoundboardSound(sound) {
+    await this.client.rest.post(Routes.sendSoundboardSound(this.id), {
+      body: {
+        sound_id: sound.soundId,
+        source_guild_id: sound.guildId ?? undefined,
+      },
+    });
+  }
 }
 
 /**
  * Sets the bitrate of the channel.
+ *
  * @method setBitrate
  * @memberof VoiceChannel
  * @instance
@@ -54,6 +78,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
 
 /**
  * Sets the RTC region of the channel.
+ *
  * @method setRTCRegion
  * @memberof VoiceChannel
  * @instance
@@ -70,6 +95,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
 
 /**
  * Sets the user limit of the channel.
+ *
  * @method setUserLimit
  * @memberof VoiceChannel
  * @instance
@@ -85,6 +111,7 @@ class VoiceChannel extends BaseGuildVoiceChannel {
 
 /**
  * Sets the camera video quality mode of the channel.
+ *
  * @method setVideoQualityMode
  * @memberof VoiceChannel
  * @instance

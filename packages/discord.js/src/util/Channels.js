@@ -17,6 +17,7 @@ const getMediaChannel = lazy(() => require('../structures/MediaChannel.js').Medi
 
 /**
  * Extra options for creating a channel.
+ *
  * @typedef {Object} CreateChannelOptions
  * @property {boolean} [allowFromUnknownGuild] Whether to allow creating a channel from an unknown guild
  * @private
@@ -24,6 +25,7 @@ const getMediaChannel = lazy(() => require('../structures/MediaChannel.js').Medi
 
 /**
  * Creates a discord.js channel from data received from the API.
+ *
  * @param {Client} client The client
  * @param {APIChannel} data The data of the channel to create
  * @param {Guild} [guild] The guild where this channel belongs
@@ -33,7 +35,7 @@ const getMediaChannel = lazy(() => require('../structures/MediaChannel.js').Medi
  */
 function createChannel(client, data, guild, { allowUnknownGuild } = {}) {
   let channel;
-  let resolvedGuild = guild || client.guilds.cache.get(data.guild_id);
+  const resolvedGuild = guild ?? client.guilds.cache.get(data.guild_id);
 
   if (!data.guild_id && !resolvedGuild) {
     if ((data.recipients && data.type !== ChannelType.GroupDM) || data.type === ChannelType.DM) {
@@ -47,22 +49,27 @@ function createChannel(client, data, guild, { allowUnknownGuild } = {}) {
         channel = new (getTextChannel())(resolvedGuild, data, client);
         break;
       }
+
       case ChannelType.GuildVoice: {
         channel = new (getVoiceChannel())(resolvedGuild, data, client);
         break;
       }
+
       case ChannelType.GuildCategory: {
         channel = new (getCategoryChannel())(resolvedGuild, data, client);
         break;
       }
+
       case ChannelType.GuildAnnouncement: {
         channel = new (getAnnouncementChannel())(resolvedGuild, data, client);
         break;
       }
+
       case ChannelType.GuildStageVoice: {
         channel = new (getStageChannel())(resolvedGuild, data, client);
         break;
       }
+
       case ChannelType.AnnouncementThread:
       case ChannelType.PublicThread:
       case ChannelType.PrivateThread: {
@@ -70,6 +77,7 @@ function createChannel(client, data, guild, { allowUnknownGuild } = {}) {
         if (!allowUnknownGuild) channel.parent?.threads.cache.set(channel.id, channel);
         break;
       }
+
       case ChannelType.GuildDirectory:
         channel = new (getDirectoryChannel())(resolvedGuild, data, client);
         break;
@@ -79,14 +87,19 @@ function createChannel(client, data, guild, { allowUnknownGuild } = {}) {
       case ChannelType.GuildMedia:
         channel = new (getMediaChannel())(resolvedGuild, data, client);
         break;
+      default:
+        break;
     }
+
     if (channel && !allowUnknownGuild) resolvedGuild.channels?.cache.set(channel.id, channel);
   }
+
   return channel;
 }
 
 /**
  * Transforms an API guild forum tag to camel-cased guild forum tag.
+ *
  * @param {APIGuildForumTag} tag The tag to transform
  * @returns {GuildForumTag}
  * @ignore
@@ -108,6 +121,7 @@ function transformAPIGuildForumTag(tag) {
 
 /**
  * Transforms a camel-cased guild forum tag to an API guild forum tag.
+ *
  * @param {GuildForumTag} tag The tag to transform
  * @returns {APIGuildForumTag}
  * @ignore
@@ -125,6 +139,7 @@ function transformGuildForumTag(tag) {
 /**
  * Transforms an API guild forum default reaction object to a
  * camel-cased guild forum default reaction object.
+ *
  * @param {APIGuildForumDefaultReactionEmoji} defaultReaction The default reaction to transform
  * @returns {DefaultReactionEmoji}
  * @ignore
@@ -139,6 +154,7 @@ function transformAPIGuildDefaultReaction(defaultReaction) {
 /**
  * Transforms a camel-cased guild forum default reaction object to an
  * API guild forum default reaction object.
+ *
  * @param {DefaultReactionEmoji} defaultReaction The default reaction to transform
  * @returns {APIGuildForumDefaultReactionEmoji}
  * @ignore

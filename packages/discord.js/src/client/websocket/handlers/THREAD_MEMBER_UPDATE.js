@@ -17,6 +17,7 @@ module.exports = (client, { d: data }) => {
 
   /**
    * Emitted whenever the client user's thread member is updated.
+   *
    * @event Client#threadMemberUpdate
    * @param {ThreadMember} oldMember The member before the update
    * @param {ThreadMember} newMember The member after the update

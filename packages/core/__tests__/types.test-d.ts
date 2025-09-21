@@ -1,7 +1,7 @@
 import { REST } from '@discordjs/rest';
 import type {
 	APIActionRowComponent,
-	APIModalActionRowComponent,
+	APIComponentInModalActionRow,
 	RESTPostAPIInteractionCallbackWithResponseResult,
 } from 'discord-api-types/v10';
 import { expectTypeOf, describe, test } from 'vitest';
@@ -11,7 +11,7 @@ const rest = new REST();
 const api = new API(rest);
 const SNOWFLAKE = '123456789012345678' as const;
 const TOKEN = 'token' as const;
-const MODAL_COMPONENTS: APIActionRowComponent<APIModalActionRowComponent>[] = [] as const;
+const MODAL_COMPONENTS: APIActionRowComponent<APIComponentInModalActionRow>[] = [] as const;
 const boolValue = true as boolean;
 
 describe('Interaction with_response overloads.', () => {

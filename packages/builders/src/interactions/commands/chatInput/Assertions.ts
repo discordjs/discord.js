@@ -3,7 +3,6 @@ import {
 	InteractionContextType,
 	ApplicationCommandOptionType,
 } from 'discord-api-types/v10';
-import type { ZodTypeAny } from 'zod';
 import { z } from 'zod';
 import { localeMapPredicate, memberPermissionsPredicate } from '../../../Assertions.js';
 import { ApplicationCommandOptionAllowedChannelTypes } from './mixins/ApplicationCommandOptionChannelTypesMixin.js';
@@ -24,26 +23,17 @@ const sharedNameAndDescriptionPredicate = z.object({
 });
 
 const numericMixinNumberOptionPredicate = z.object({
-	max_value: z.number().safe().optional(),
-	min_value: z.number().safe().optional(),
+	max_value: z.float32().optional(),
+	min_value: z.float32().optional(),
 });
 
 const numericMixinIntegerOptionPredicate = z.object({
-	max_value: z.number().safe().int().optional(),
-	min_value: z.number().safe().int().optional(),
+	max_value: z.int().optional(),
+	min_value: z.int().optional(),
 });
 
 const channelMixinOptionPredicate = z.object({
-	channel_types: z
-		.union(
-			ApplicationCommandOptionAllowedChannelTypes.map((type) => z.literal(type)) as unknown as [
-				ZodTypeAny,
-				ZodTypeAny,
-				...ZodTypeAny[],
-			],
-		)
-		.array()
-		.optional(),
+	channel_types: z.literal(ApplicationCommandOptionAllowedChannelTypes).array().optional(),
 });
 
 const autocompleteMixinOptionPredicate = z.object({
@@ -52,7 +42,7 @@ const autocompleteMixinOptionPredicate = z.object({
 });
 
 const choiceValueStringPredicate = z.string().min(1).max(100);
-const choiceValueNumberPredicate = z.number().safe();
+const choiceValueNumberPredicate = z.number();
 const choiceBasePredicate = z.object({
 	name: choiceValueStringPredicate,
 	name_localizations: localeMapPredicate.optional(),
@@ -74,7 +64,7 @@ const choiceNumberMixinPredicate = choiceBaseMixinPredicate.extend({
 	choices: choiceNumberPredicate.array().max(25).optional(),
 });
 
-const basicOptionTypes = [
+const basicOptionTypesPredicate = z.literal([
 	ApplicationCommandOptionType.Attachment,
 	ApplicationCommandOptionType.Boolean,
 	ApplicationCommandOptionType.Channel,
@@ -84,11 +74,7 @@ const basicOptionTypes = [
 	ApplicationCommandOptionType.Role,
 	ApplicationCommandOptionType.String,
 	ApplicationCommandOptionType.User,
-] as const;
-
-const basicOptionTypesPredicate = z.union(
-	basicOptionTypes.map((type) => z.literal(type)) as unknown as [ZodTypeAny, ZodTypeAny, ...ZodTypeAny[]],
-);
+]);
 
 export const basicOptionPredicate = sharedNameAndDescriptionPredicate.extend({
 	required: z.boolean().optional(),
@@ -105,14 +91,23 @@ const autocompleteOrNumberChoicesMixinOptionPredicate = z.discriminatedUnion('au
 	choiceNumberMixinPredicate,
 ]);
 
-export const channelOptionPredicate = basicOptionPredicate.merge(channelMixinOptionPredicate);
+export const channelOptionPredicate = z.object({
+	...basicOptionPredicate.shape,
+	...channelMixinOptionPredicate.shape,
+});
 
-export const integerOptionPredicate = basicOptionPredicate
-	.merge(numericMixinIntegerOptionPredicate)
+export const integerOptionPredicate = z
+	.object({
+		...basicOptionPredicate.shape,
+		...numericMixinIntegerOptionPredicate.shape,
+	})
 	.and(autocompleteOrNumberChoicesMixinOptionPredicate);
 
-export const numberOptionPredicate = basicOptionPredicate
-	.merge(numericMixinNumberOptionPredicate)
+export const numberOptionPredicate = z
+	.object({
+		...basicOptionPredicate.shape,
+		...numericMixinNumberOptionPredicate.shape,
+	})
 	.and(autocompleteOrNumberChoicesMixinOptionPredicate);
 
 export const stringOptionPredicate = basicOptionPredicate
@@ -123,9 +118,9 @@ export const stringOptionPredicate = basicOptionPredicate
 	.and(autocompleteOrStringChoicesMixinOptionPredicate);
 
 const baseChatInputCommandPredicate = sharedNameAndDescriptionPredicate.extend({
-	contexts: z.array(z.nativeEnum(InteractionContextType)).optional(),
+	contexts: z.array(z.enum(InteractionContextType)).optional(),
 	default_member_permissions: memberPermissionsPredicate.optional(),
-	integration_types: z.array(z.nativeEnum(ApplicationIntegrationType)).optional(),
+	integration_types: z.array(z.enum(ApplicationIntegrationType)).optional(),
 	nsfw: z.boolean().optional(),
 });
 
