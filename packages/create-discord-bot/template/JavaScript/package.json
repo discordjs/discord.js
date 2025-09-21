@@ -7,20 +7,20 @@
 	"scripts": {
 		"lint": "prettier --check . && eslint --ext .js,.mjs,.cjs --format=pretty src",
 		"format": "prettier --write . && eslint --ext .js,.mjs,.cjs --fix --format=pretty src",
-		"start": "node --require dotenv/config src/index.js",
-		"deploy": "node --require dotenv/config src/util/deploy.js"
+		"start": "node --env-file=.env src/index.js",
+		"deploy": "node --env-file=.env src/util/deploy.js"
 	},
 	"dependencies": {
-		"@discordjs/core": "^2.0.1",
-		"discord.js": "^14.16.3",
-		"dotenv": "^16.4.5"
+		"@discordjs/core": "^2.2.1",
+		"discord.js": "^14.22.0"
 	},
 	"devDependencies": {
-		"eslint": "^8.57.1",
-		"eslint-config-neon": "^0.1.62",
+		"eslint": "^9.33.0",
+		"eslint-config-neon": "^0.2.7",
+		"eslint-formatter-compact": "^8.40.0",
 		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.4.2",
-		"zod": "^3.24.1"
+		"prettier": "^3.6.2",
+		"zod": "^3.25.76"
 	},
 	"engines": {
 		"node": ">=22.12.0"

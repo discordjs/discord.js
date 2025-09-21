@@ -8,6 +8,7 @@ module.exports = (client, { d: data }) => {
 
   /**
    * Emitted whenever a guild integration is updated
+   *
    * @event Client#guildIntegrationsUpdate
    * @param {Guild} guild The guild whose integrations were updated
    */

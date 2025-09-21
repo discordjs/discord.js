@@ -4,6 +4,9 @@ export * from './components/button/CustomIdButton.js';
 export * from './components/button/LinkButton.js';
 export * from './components/button/PremiumButton.js';
 
+export * from './components/label/Label.js';
+export * from './components/label/Assertions.js';
+
 export * from './components/selectMenu/BaseSelectMenu.js';
 export * from './components/selectMenu/ChannelSelectMenu.js';
 export * from './components/selectMenu/MentionableSelectMenu.js';
@@ -19,6 +22,16 @@ export * from './components/ActionRow.js';
 export * from './components/Assertions.js';
 export * from './components/Component.js';
 export * from './components/Components.js';
+
+export * from './components/v2/Assertions.js';
+export * from './components/v2/Container.js';
+export * from './components/v2/File.js';
+export * from './components/v2/MediaGallery.js';
+export * from './components/v2/MediaGalleryItem.js';
+export * from './components/v2/Section.js';
+export * from './components/v2/Separator.js';
+export * from './components/v2/TextDisplay.js';
+export * from './components/v2/Thumbnail.js';
 
 export * from './interactions/commands/chatInput/mixins/ApplicationCommandNumericOptionMinMaxValueMixin.js';
 export * from './interactions/commands/chatInput/mixins/ApplicationCommandOptionChannelTypesMixin.js';
@@ -67,10 +80,17 @@ export * from './messages/poll/PollAnswerMedia.js';
 export * from './messages/poll/PollMedia.js';
 export * from './messages/poll/PollQuestion.js';
 
+export * from './messages/AllowedMentions.js';
+export * from './messages/Assertions.js';
+export * from './messages/Attachment.js';
+export * from './messages/Message.js';
+export * from './messages/MessageReference.js';
+
 export * from './util/componentUtil.js';
 export * from './util/normalizeArray.js';
 export * from './util/resolveBuilder.js';
-export * from './util/validation.js';
+export { disableValidators, enableValidators, isValidationEnabled } from './util/validation.js';
+export * from './util/ValidationError.js';
 
 export * from './Assertions.js';
 

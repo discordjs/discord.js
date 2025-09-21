@@ -3,7 +3,6 @@
 import { makeURLSearchParams, type RawFile, type REST, type RequestData } from '@discordjs/rest';
 import {
 	Routes,
-	type GuildMFALevel,
 	type GuildWidgetStyle,
 	type RESTGetAPIAuditLogQuery,
 	type RESTGetAPIAuditLogResult,
@@ -89,9 +88,6 @@ import {
 	type RESTPostAPIGuildStickerResult,
 	type RESTPostAPIGuildTemplatesJSONBody,
 	type RESTPostAPIGuildTemplatesResult,
-	type RESTPostAPIGuildsJSONBody,
-	type RESTPostAPIGuildsMFAResult,
-	type RESTPostAPIGuildsResult,
 	type RESTPutAPIGuildBanJSONBody,
 	type RESTPutAPIGuildMemberJSONBody,
 	type RESTPutAPIGuildMemberResult,
@@ -149,17 +145,6 @@ export class GuildsAPI {
 	}
 
 	/**
-	 * Creates a guild
-	 *
-	 * @see {@link https://discord.com/developers/docs/resources/guild#create-guild}
-	 * @param body - The guild to create
-	 * @param options - The options for creating the guild
-	 */
-	public async create(body: RESTPostAPIGuildsJSONBody, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
-		return this.rest.post(Routes.guilds(), { auth, body, signal }) as Promise<RESTPostAPIGuildsResult>;
-	}
-
-	/**
 	 * Edits a guild
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-guild}
@@ -178,20 +163,6 @@ export class GuildsAPI {
 			body,
 			signal,
 		}) as Promise<RESTPatchAPIGuildResult>;
-	}
-
-	/**
-	 * Deletes a guild
-	 *
-	 * @see {@link https://discord.com/developers/docs/resources/guild#delete-guild}
-	 * @param guildId - The id of the guild to delete
-	 * @param options - The options for deleting this guild
-	 */
-	public async delete(
-		guildId: Snowflake,
-		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
-	) {
-		await this.rest.delete(Routes.guild(guildId), { auth, reason, signal });
 	}
 
 	/**
@@ -495,27 +466,6 @@ export class GuildsAPI {
 		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
 		await this.rest.delete(Routes.guildRole(guildId, roleId), { auth, reason, signal });
-	}
-
-	/**
-	 * Edits the multi-factor-authentication (MFA) level of a guild
-	 *
-	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-guild-mfa-level}
-	 * @param guildId - The id of the guild to edit the MFA level for
-	 * @param level - The new MFA level
-	 * @param options - The options for editing the MFA level
-	 */
-	public async editMFALevel(
-		guildId: Snowflake,
-		level: GuildMFALevel,
-		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
-	) {
-		return this.rest.post(Routes.guildMFA(guildId), {
-			auth,
-			reason,
-			signal,
-			body: { level },
-		}) as Promise<RESTPostAPIGuildsMFAResult>;
 	}
 
 	/**
@@ -1338,16 +1288,16 @@ export class GuildsAPI {
 	 * Creates a new template
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/guild-template#create-guild-template}
-	 * @param templateCode - The code of the template
+	 * @param guildId - The id of the guild
 	 * @param body - The data for creating the template
 	 * @param options - The options for creating the template
 	 */
 	public async createTemplate(
-		templateCode: string,
+		guildId: Snowflake,
 		body: RESTPostAPIGuildTemplatesJSONBody,
 		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
-		return this.rest.post(Routes.template(templateCode), {
+		return this.rest.post(Routes.guildTemplates(guildId), {
 			auth,
 			body,
 			signal,

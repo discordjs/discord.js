@@ -29,15 +29,17 @@ export class PollBuilder implements JSONEncodable<RESTAPIPoll> {
 	}
 
 	/**
-	 * Creates a new poll from API data.
+	 * Creates a new poll.
 	 *
 	 * @param data - The API data to create this poll with
 	 */
 	public constructor(data: Partial<RESTAPIPoll> = {}) {
+		const { question, answers = [], ...rest } = data;
+
 		this.data = {
-			...structuredClone(data),
-			question: new PollQuestionBuilder(data.question),
-			answers: data.answers?.map((answer) => new PollAnswerBuilder(answer)) ?? [],
+			...structuredClone(rest),
+			question: new PollQuestionBuilder(question),
+			answers: answers.map((answer) => new PollAnswerBuilder(answer)),
 		};
 	}
 
@@ -82,7 +84,7 @@ export class PollBuilder implements JSONEncodable<RESTAPIPoll> {
 	 *
 	 * @remarks
 	 * This method behaves similarly
-	 * to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
+	 * to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
 	 * The maximum amount of answers that can be added is 10.
 	 *
 	 * It's useful for modifying and adjusting order of the already-existing answers of a poll.

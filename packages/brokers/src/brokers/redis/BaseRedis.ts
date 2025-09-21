@@ -67,7 +67,7 @@ export abstract class BaseRedisBroker<
 	/**
 	 * Used for Redis queues, see the 3rd argument taken by {@link https://redis.io/commands/xadd | xadd}
 	 */
-	public static readonly STREAM_DATA_KEY = 'data';
+	public static readonly STREAM_DATA_KEY = 'data' as const;
 
 	/**
 	 * Options this broker is using

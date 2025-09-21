@@ -4,11 +4,14 @@
 import { Buffer } from 'node:buffer';
 import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
-import { VoiceOpcodes } from 'discord-api-types/voice/v4';
+import type { VoiceReceivePayload, VoiceSpeakingFlags } from 'discord-api-types/voice/v8';
+import { VoiceEncryptionMode, VoiceOpcodes } from 'discord-api-types/voice/v8';
 import type { CloseEvent } from 'ws';
 import * as secretbox from '../util/Secretbox';
 import { noop } from '../util/util';
+import { DAVESession, getMaxProtocolVersion } from './DAVESession';
 import { VoiceUDPSocket } from './VoiceUDPSocket';
+import type { BinaryWebSocketMessage } from './VoiceWebSocket';
 import { VoiceWebSocket } from './VoiceWebSocket';
 
 // The number of audio channels required by Discord
@@ -16,11 +19,11 @@ const CHANNELS = 2;
 const TIMESTAMP_INC = (48_000 / 100) * CHANNELS;
 const MAX_NONCE_SIZE = 2 ** 32 - 1;
 
-export const SUPPORTED_ENCRYPTION_MODES = ['aead_xchacha20_poly1305_rtpsize'];
+export const SUPPORTED_ENCRYPTION_MODES: VoiceEncryptionMode[] = [VoiceEncryptionMode.AeadXChaCha20Poly1305RtpSize];
 
 // Just in case there's some system that doesn't come with aes-256-gcm, conditionally add it as supported
 if (crypto.getCiphers().includes('aes-256-gcm')) {
-	SUPPORTED_ENCRYPTION_MODES.unshift('aead_aes256_gcm_rtpsize');
+	SUPPORTED_ENCRYPTION_MODES.unshift(VoiceEncryptionMode.AeadAes256GcmRtpSize);
 }
 
 /**
@@ -63,7 +66,7 @@ export interface NetworkingIdentifyingState {
  */
 export interface NetworkingUdpHandshakingState {
 	code: NetworkingStatusCode.UdpHandshaking;
-	connectionData: Pick<ConnectionData, 'ssrc'>;
+	connectionData: Pick<ConnectionData, 'connectedClients' | 'ssrc'>;
 	connectionOptions: ConnectionOptions;
 	udp: VoiceUDPSocket;
 	ws: VoiceWebSocket;
@@ -74,7 +77,7 @@ export interface NetworkingUdpHandshakingState {
  */
 export interface NetworkingSelectingProtocolState {
 	code: NetworkingStatusCode.SelectingProtocol;
-	connectionData: Pick<ConnectionData, 'ssrc'>;
+	connectionData: Pick<ConnectionData, 'connectedClients' | 'ssrc'>;
 	connectionOptions: ConnectionOptions;
 	udp: VoiceUDPSocket;
 	ws: VoiceWebSocket;
@@ -88,6 +91,7 @@ export interface NetworkingReadyState {
 	code: NetworkingStatusCode.Ready;
 	connectionData: ConnectionData;
 	connectionOptions: ConnectionOptions;
+	dave?: DAVESession | undefined;
 	preparedPacket?: Buffer | undefined;
 	udp: VoiceUDPSocket;
 	ws: VoiceWebSocket;
@@ -101,6 +105,7 @@ export interface NetworkingResumingState {
 	code: NetworkingStatusCode.Resuming;
 	connectionData: ConnectionData;
 	connectionOptions: ConnectionOptions;
+	dave?: DAVESession | undefined;
 	preparedPacket?: Buffer | undefined;
 	udp: VoiceUDPSocket;
 	ws: VoiceWebSocket;
@@ -131,7 +136,8 @@ export type NetworkingState =
  * are first received on the main bot gateway, in the form of VOICE_SERVER_UPDATE
  * and VOICE_STATE_UPDATE packets.
  */
-interface ConnectionOptions {
+export interface ConnectionOptions {
+	channelId: string;
 	endpoint: string;
 	serverId: string;
 	sessionId: string;
@@ -144,6 +150,7 @@ interface ConnectionOptions {
  * the connection, timing information for playback of streams.
  */
 export interface ConnectionData {
+	connectedClients: Set<string>;
 	encryptionMode: string;
 	nonce: number;
 	nonceBuffer: Buffer;
@@ -153,6 +160,15 @@ export interface ConnectionData {
 	speaking: boolean;
 	ssrc: number;
 	timestamp: number;
+}
+
+/**
+ * Options for networking that dictate behavior.
+ */
+export interface NetworkingOptions {
+	daveEncryption?: boolean | undefined;
+	debug?: boolean | undefined;
+	decryptionFailureTolerance?: number | undefined;
 }
 
 /**
@@ -170,6 +186,7 @@ export interface Networking extends EventEmitter {
 	on(event: 'error', listener: (error: Error) => void): this;
 	on(event: 'stateChange', listener: (oldState: NetworkingState, newState: NetworkingState) => void): this;
 	on(event: 'close', listener: (code: number) => void): this;
+	on(event: 'transitioned', listener: (transitionId: number) => void): this;
 }
 
 /**
@@ -190,7 +207,7 @@ function stringifyState(state: NetworkingState) {
  *
  * @param options - The available encryption options
  */
-function chooseEncryptionMode(options: string[]): string {
+function chooseEncryptionMode(options: VoiceEncryptionMode[]): VoiceEncryptionMode {
 	const option = options.find((option) => SUPPORTED_ENCRYPTION_MODES.includes(option));
 	if (!option) {
 		// This should only ever happen if the gateway does not give us any encryption modes we support.
@@ -221,26 +238,36 @@ export class Networking extends EventEmitter {
 	private readonly debug: ((message: string) => void) | null;
 
 	/**
+	 * The options used to create this Networking instance.
+	 */
+	private readonly options: NetworkingOptions;
+
+	/**
 	 * Creates a new Networking instance.
 	 */
-	public constructor(options: ConnectionOptions, debug: boolean) {
+	public constructor(connectionOptions: ConnectionOptions, options: NetworkingOptions) {
 		super();
 
 		this.onWsOpen = this.onWsOpen.bind(this);
 		this.onChildError = this.onChildError.bind(this);
 		this.onWsPacket = this.onWsPacket.bind(this);
+		this.onWsBinary = this.onWsBinary.bind(this);
 		this.onWsClose = this.onWsClose.bind(this);
 		this.onWsDebug = this.onWsDebug.bind(this);
 		this.onUdpDebug = this.onUdpDebug.bind(this);
 		this.onUdpClose = this.onUdpClose.bind(this);
+		this.onDaveDebug = this.onDaveDebug.bind(this);
+		this.onDaveKeyPackage = this.onDaveKeyPackage.bind(this);
+		this.onDaveInvalidateTransition = this.onDaveInvalidateTransition.bind(this);
 
-		this.debug = debug ? (message: string) => this.emit('debug', message) : null;
+		this.debug = options?.debug ? (message: string) => this.emit('debug', message) : null;
 
 		this._state = {
 			code: NetworkingStatusCode.OpeningWs,
-			ws: this.createWebSocket(options.endpoint),
-			connectionOptions: options,
+			ws: this.createWebSocket(connectionOptions.endpoint),
+			connectionOptions,
 		};
+		this.options = options;
 	}
 
 	/**
@@ -254,14 +281,14 @@ export class Networking extends EventEmitter {
 
 	/**
 	 * The current state of the networking instance.
+	 *
+	 * @remarks
+	 * The setter will perform clean-up operations where necessary.
 	 */
 	public get state(): NetworkingState {
 		return this._state;
 	}
 
-	/**
-	 * Sets a new state for the networking instance, performing clean-up operations where necessary.
-	 */
 	public set state(newState: NetworkingState) {
 		const oldWs = Reflect.get(this._state, 'ws') as VoiceWebSocket | undefined;
 		const newWs = Reflect.get(newState, 'ws') as VoiceWebSocket | undefined;
@@ -272,6 +299,7 @@ export class Networking extends EventEmitter {
 			oldWs.off('error', this.onChildError);
 			oldWs.off('open', this.onWsOpen);
 			oldWs.off('packet', this.onWsPacket);
+			oldWs.off('binary', this.onWsBinary);
 			oldWs.off('close', this.onWsClose);
 			oldWs.destroy();
 		}
@@ -287,6 +315,17 @@ export class Networking extends EventEmitter {
 			oldUdp.destroy();
 		}
 
+		const oldDave = Reflect.get(this._state, 'dave') as DAVESession | undefined;
+		const newDave = Reflect.get(newState, 'dave') as DAVESession | undefined;
+
+		if (oldDave && oldDave !== newDave) {
+			oldDave.off('error', this.onChildError);
+			oldDave.off('debug', this.onDaveDebug);
+			oldDave.off('keyPackage', this.onDaveKeyPackage);
+			oldDave.off('invalidateTransition', this.onDaveInvalidateTransition);
+			oldDave.destroy();
+		}
+
 		const oldState = this._state;
 		this._state = newState;
 		this.emit('stateChange', oldState, newState);
@@ -298,13 +337,19 @@ export class Networking extends EventEmitter {
 	 * Creates a new WebSocket to a Discord Voice gateway.
 	 *
 	 * @param endpoint - The endpoint to connect to
+	 * @param lastSequence - The last sequence to set for this WebSocket
 	 */
-	private createWebSocket(endpoint: string) {
-		const ws = new VoiceWebSocket(`wss://${endpoint}?v=4`, Boolean(this.debug));
+	private createWebSocket(endpoint: string, lastSequence?: number) {
+		const ws = new VoiceWebSocket(`wss://${endpoint}?v=8`, Boolean(this.debug));
+
+		if (lastSequence !== undefined) {
+			ws.sequence = lastSequence;
+		}
 
 		ws.on('error', this.onChildError);
 		ws.once('open', this.onWsOpen);
 		ws.on('packet', this.onWsPacket);
+		ws.on('binary', this.onWsBinary);
 		ws.once('close', this.onWsClose);
 		ws.on('debug', this.onWsDebug);
 
@@ -312,7 +357,41 @@ export class Networking extends EventEmitter {
 	}
 
 	/**
-	 * Propagates errors from the children VoiceWebSocket and VoiceUDPSocket.
+	 * Creates a new DAVE session for this voice connection if we can create one.
+	 *
+	 * @param protocolVersion - The protocol version to use
+	 */
+	private createDaveSession(protocolVersion: number) {
+		if (
+			getMaxProtocolVersion() === null ||
+			this.options.daveEncryption === false ||
+			(this.state.code !== NetworkingStatusCode.SelectingProtocol &&
+				this.state.code !== NetworkingStatusCode.Ready &&
+				this.state.code !== NetworkingStatusCode.Resuming)
+		) {
+			return;
+		}
+
+		const session = new DAVESession(
+			protocolVersion,
+			this.state.connectionOptions.userId,
+			this.state.connectionOptions.channelId,
+			{
+				decryptionFailureTolerance: this.options.decryptionFailureTolerance,
+			},
+		);
+
+		session.on('error', this.onChildError);
+		session.on('debug', this.onDaveDebug);
+		session.on('keyPackage', this.onDaveKeyPackage);
+		session.on('invalidateTransition', this.onDaveInvalidateTransition);
+		session.reinit();
+
+		return session;
+	}
+
+	/**
+	 * Propagates errors from the children VoiceWebSocket, VoiceUDPSocket and DAVESession.
 	 *
 	 * @param error - The error that was emitted by a child
 	 */
@@ -326,30 +405,30 @@ export class Networking extends EventEmitter {
 	 */
 	private onWsOpen() {
 		if (this.state.code === NetworkingStatusCode.OpeningWs) {
-			const packet = {
+			this.state.ws.sendPacket({
 				op: VoiceOpcodes.Identify,
 				d: {
 					server_id: this.state.connectionOptions.serverId,
 					user_id: this.state.connectionOptions.userId,
 					session_id: this.state.connectionOptions.sessionId,
 					token: this.state.connectionOptions.token,
+					max_dave_protocol_version: this.options.daveEncryption === false ? 0 : (getMaxProtocolVersion() ?? 0),
 				},
-			};
-			this.state.ws.sendPacket(packet);
+			});
 			this.state = {
 				...this.state,
 				code: NetworkingStatusCode.Identifying,
 			};
 		} else if (this.state.code === NetworkingStatusCode.Resuming) {
-			const packet = {
+			this.state.ws.sendPacket({
 				op: VoiceOpcodes.Resume,
 				d: {
 					server_id: this.state.connectionOptions.serverId,
 					session_id: this.state.connectionOptions.sessionId,
 					token: this.state.connectionOptions.token,
+					seq_ack: this.state.ws.sequence,
 				},
-			};
-			this.state.ws.sendPacket(packet);
+			});
 		}
 	}
 
@@ -363,10 +442,11 @@ export class Networking extends EventEmitter {
 	private onWsClose({ code }: CloseEvent) {
 		const canResume = code === 4_015 || code < 4_000;
 		if (canResume && this.state.code === NetworkingStatusCode.Ready) {
+			const lastSequence = this.state.ws.sequence;
 			this.state = {
 				...this.state,
 				code: NetworkingStatusCode.Resuming,
-				ws: this.createWebSocket(this.state.connectionOptions.endpoint),
+				ws: this.createWebSocket(this.state.connectionOptions.endpoint, lastSequence),
 			};
 		} else if (this.state.code !== NetworkingStatusCode.Closed) {
 			this.destroy();
@@ -379,10 +459,11 @@ export class Networking extends EventEmitter {
 	 */
 	private onUdpClose() {
 		if (this.state.code === NetworkingStatusCode.Ready) {
+			const lastSequence = this.state.ws.sequence;
 			this.state = {
 				...this.state,
 				code: NetworkingStatusCode.Resuming,
-				ws: this.createWebSocket(this.state.connectionOptions.endpoint),
+				ws: this.createWebSocket(this.state.connectionOptions.endpoint, lastSequence),
 			};
 		}
 	}
@@ -392,7 +473,7 @@ export class Networking extends EventEmitter {
 	 *
 	 * @param packet - The received packet
 	 */
-	private onWsPacket(packet: any) {
+	private onWsPacket(packet: VoiceReceivePayload) {
 		if (packet.op === VoiceOpcodes.Hello && this.state.code !== NetworkingStatusCode.Closed) {
 			this.state.ws.setHeartbeatInterval(packet.d.heartbeat_interval);
 		} else if (packet.op === VoiceOpcodes.Ready && this.state.code === NetworkingStatusCode.Identifying) {
@@ -432,16 +513,18 @@ export class Networking extends EventEmitter {
 				udp,
 				connectionData: {
 					ssrc,
+					connectedClients: new Set(),
 				},
 			};
 		} else if (
 			packet.op === VoiceOpcodes.SessionDescription &&
 			this.state.code === NetworkingStatusCode.SelectingProtocol
 		) {
-			const { mode: encryptionMode, secret_key: secretKey } = packet.d;
+			const { mode: encryptionMode, secret_key: secretKey, dave_protocol_version: daveProtocolVersion } = packet.d;
 			this.state = {
 				...this.state,
 				code: NetworkingStatusCode.Ready,
+				dave: this.createDaveSession(daveProtocolVersion),
 				connectionData: {
 					...this.state.connectionData,
 					encryptionMode,
@@ -460,7 +543,97 @@ export class Networking extends EventEmitter {
 				code: NetworkingStatusCode.Ready,
 			};
 			this.state.connectionData.speaking = false;
+		} else if (
+			(packet.op === VoiceOpcodes.ClientsConnect || packet.op === VoiceOpcodes.ClientDisconnect) &&
+			(this.state.code === NetworkingStatusCode.Ready ||
+				this.state.code === NetworkingStatusCode.UdpHandshaking ||
+				this.state.code === NetworkingStatusCode.SelectingProtocol ||
+				this.state.code === NetworkingStatusCode.Resuming)
+		) {
+			const { connectionData } = this.state;
+			if (packet.op === VoiceOpcodes.ClientsConnect)
+				for (const id of packet.d.user_ids) connectionData.connectedClients.add(id);
+			else {
+				connectionData.connectedClients.delete(packet.d.user_id);
+			}
+		} else if (
+			(this.state.code === NetworkingStatusCode.Ready || this.state.code === NetworkingStatusCode.Resuming) &&
+			this.state.dave
+		) {
+			if (packet.op === VoiceOpcodes.DavePrepareTransition) {
+				const sendReady = this.state.dave.prepareTransition(packet.d);
+				if (sendReady)
+					this.state.ws.sendPacket({
+						op: VoiceOpcodes.DaveTransitionReady,
+						d: { transition_id: packet.d.transition_id },
+					});
+				if (packet.d.transition_id === 0) {
+					this.emit('transitioned', 0);
+				}
+			} else if (packet.op === VoiceOpcodes.DaveExecuteTransition) {
+				const transitioned = this.state.dave.executeTransition(packet.d.transition_id);
+				if (transitioned) this.emit('transitioned', packet.d.transition_id);
+			} else if (packet.op === VoiceOpcodes.DavePrepareEpoch) this.state.dave.prepareEpoch(packet.d);
 		}
+	}
+
+	/**
+	 * Called when a binary message is received on the connection's WebSocket.
+	 *
+	 * @param message - The received message
+	 */
+	private onWsBinary(message: BinaryWebSocketMessage) {
+		if (this.state.code === NetworkingStatusCode.Ready && this.state.dave) {
+			if (message.op === VoiceOpcodes.DaveMlsExternalSender) {
+				this.state.dave.setExternalSender(message.payload);
+			} else if (message.op === VoiceOpcodes.DaveMlsProposals) {
+				const payload = this.state.dave.processProposals(message.payload, this.state.connectionData.connectedClients);
+				if (payload) this.state.ws.sendBinaryMessage(VoiceOpcodes.DaveMlsCommitWelcome, payload);
+			} else if (message.op === VoiceOpcodes.DaveMlsAnnounceCommitTransition) {
+				const { transitionId, success } = this.state.dave.processCommit(message.payload);
+				if (success) {
+					if (transitionId === 0) this.emit('transitioned', transitionId);
+					else
+						this.state.ws.sendPacket({
+							op: VoiceOpcodes.DaveTransitionReady,
+							d: { transition_id: transitionId },
+						});
+				}
+			} else if (message.op === VoiceOpcodes.DaveMlsWelcome) {
+				const { transitionId, success } = this.state.dave.processWelcome(message.payload);
+				if (success) {
+					if (transitionId === 0) this.emit('transitioned', transitionId);
+					else
+						this.state.ws.sendPacket({
+							op: VoiceOpcodes.DaveTransitionReady,
+							d: { transition_id: transitionId },
+						});
+				}
+			}
+		}
+	}
+
+	/**
+	 * Called when a new key package is ready to be sent to the voice server.
+	 *
+	 * @param keyPackage - The new key package
+	 */
+	private onDaveKeyPackage(keyPackage: Buffer) {
+		if (this.state.code === NetworkingStatusCode.SelectingProtocol || this.state.code === NetworkingStatusCode.Ready)
+			this.state.ws.sendBinaryMessage(VoiceOpcodes.DaveMlsKeyPackage, keyPackage);
+	}
+
+	/**
+	 * Called when the DAVE session wants to invalidate their transition and re-initialize.
+	 *
+	 * @param transitionId - The transition to invalidate
+	 */
+	private onDaveInvalidateTransition(transitionId: number) {
+		if (this.state.code === NetworkingStatusCode.SelectingProtocol || this.state.code === NetworkingStatusCode.Ready)
+			this.state.ws.sendPacket({
+				op: VoiceOpcodes.DaveMlsInvalidCommitWelcome,
+				d: { transition_id: transitionId },
+			});
 	}
 
 	/**
@@ -482,6 +655,15 @@ export class Networking extends EventEmitter {
 	}
 
 	/**
+	 * Propagates debug messages from the child DAVESession.
+	 *
+	 * @param message - The emitted debug message
+	 */
+	private onDaveDebug(message: string) {
+		this.debug?.(`[DAVE] ${message}`);
+	}
+
+	/**
 	 * Prepares an Opus packet for playback. This includes attaching metadata to it and encrypting it.
 	 * It will be stored within the instance, and can be played by dispatchAudio()
 	 *
@@ -494,7 +676,7 @@ export class Networking extends EventEmitter {
 	public prepareAudioPacket(opusPacket: Buffer) {
 		const state = this.state;
 		if (state.code !== NetworkingStatusCode.Ready) return;
-		state.preparedPacket = this.createAudioPacket(opusPacket, state.connectionData);
+		state.preparedPacket = this.createAudioPacket(opusPacket, state.connectionData, state.dave);
 		return state.preparedPacket;
 	}
 
@@ -546,7 +728,7 @@ export class Networking extends EventEmitter {
 		state.ws.sendPacket({
 			op: VoiceOpcodes.Speaking,
 			d: {
-				speaking: speaking ? 1 : 0,
+				speaking: (speaking ? 1 : 0) as VoiceSpeakingFlags,
 				delay: 0,
 				ssrc: state.connectionData.ssrc,
 			},
@@ -559,8 +741,9 @@ export class Networking extends EventEmitter {
 	 *
 	 * @param opusPacket - The Opus packet to prepare
 	 * @param connectionData - The current connection data of the instance
+	 * @param daveSession - The DAVE session to use for encryption
 	 */
-	private createAudioPacket(opusPacket: Buffer, connectionData: ConnectionData) {
+	private createAudioPacket(opusPacket: Buffer, connectionData: ConnectionData, daveSession?: DAVESession) {
 		const rtpHeader = Buffer.alloc(12);
 		rtpHeader[0] = 0x80;
 		rtpHeader[1] = 0x78;
@@ -572,7 +755,7 @@ export class Networking extends EventEmitter {
 		rtpHeader.writeUIntBE(ssrc, 8, 4);
 
 		rtpHeader.copy(nonce, 0, 0, 12);
-		return Buffer.concat([rtpHeader, ...this.encryptOpusPacket(opusPacket, connectionData, rtpHeader)]);
+		return Buffer.concat([rtpHeader, ...this.encryptOpusPacket(opusPacket, connectionData, rtpHeader, daveSession)]);
 	}
 
 	/**
@@ -580,9 +763,17 @@ export class Networking extends EventEmitter {
 	 *
 	 * @param opusPacket - The Opus packet to encrypt
 	 * @param connectionData - The current connection data of the instance
+	 * @param daveSession - The DAVE session to use for encryption
 	 */
-	private encryptOpusPacket(opusPacket: Buffer, connectionData: ConnectionData, additionalData: Buffer) {
+	private encryptOpusPacket(
+		opusPacket: Buffer,
+		connectionData: ConnectionData,
+		additionalData: Buffer,
+		daveSession?: DAVESession,
+	) {
 		const { secretKey, encryptionMode } = connectionData;
+
+		const packet = daveSession?.encrypt(opusPacket) ?? opusPacket;
 
 		// Both supported encryption methods want the nonce to be an incremental integer
 		connectionData.nonce++;
@@ -598,14 +789,14 @@ export class Networking extends EventEmitter {
 				const cipher = crypto.createCipheriv('aes-256-gcm', secretKey, connectionData.nonceBuffer);
 				cipher.setAAD(additionalData);
 
-				encrypted = Buffer.concat([cipher.update(opusPacket), cipher.final(), cipher.getAuthTag()]);
+				encrypted = Buffer.concat([cipher.update(packet), cipher.final(), cipher.getAuthTag()]);
 
 				return [encrypted, noncePadding];
 			}
 
 			case 'aead_xchacha20_poly1305_rtpsize': {
 				encrypted = secretbox.methods.crypto_aead_xchacha20poly1305_ietf_encrypt(
-					opusPacket,
+					packet,
 					additionalData,
 					connectionData.nonceBuffer,
 					secretKey,

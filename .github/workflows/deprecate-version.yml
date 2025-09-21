@@ -17,6 +17,7 @@ on:
           - '@discordjs/next'
           - '@discordjs/proxy'
           - '@discordjs/rest'
+          - '@discordjs/structures'
           - '@discordjs/util'
           - '@discordjs/voice'
           - '@discordjs/ws'
@@ -34,7 +35,7 @@ jobs:
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install Node.js v22
         uses: actions/setup-node@v4

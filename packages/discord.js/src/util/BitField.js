@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/prefer-number-properties */
 'use strict';
 
 const { DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
@@ -9,6 +10,7 @@ class BitField {
   /**
    * Numeric bitfield flags.
    * <info>Defined in extension classes</info>
+   *
    * @type {Object}
    * @memberof BitField
    * @abstract
@@ -28,6 +30,7 @@ class BitField {
   constructor(bits = this.constructor.DefaultBit) {
     /**
      * Bitfield of the packed bits
+     *
      * @type {number|bigint}
      */
     this.bitfield = this.constructor.resolve(bits);
@@ -35,6 +38,7 @@ class BitField {
 
   /**
    * Checks whether the bitfield has a bit, or any of multiple bits.
+   *
    * @param {BitFieldResolvable} bit Bit(s) to check for
    * @returns {boolean}
    */
@@ -44,6 +48,7 @@ class BitField {
 
   /**
    * Checks if this bitfield equals another
+   *
    * @param {BitFieldResolvable} bit Bit(s) to check for
    * @returns {boolean}
    */
@@ -53,6 +58,7 @@ class BitField {
 
   /**
    * Checks whether the bitfield has a bit, or multiple bits.
+   *
    * @param {BitFieldResolvable} bit Bit(s) to check for
    * @returns {boolean}
    */
@@ -63,6 +69,7 @@ class BitField {
 
   /**
    * Gets all given bits that are missing from the bitfield.
+   *
    * @param {BitFieldResolvable} bits Bit(s) to check for
    * @param {...*} hasParams Additional parameters for the has method, if any
    * @returns {string[]}
@@ -73,6 +80,7 @@ class BitField {
 
   /**
    * Freezes these bits, making them immutable.
+   *
    * @returns {Readonly<BitField>}
    */
   freeze() {
@@ -81,6 +89,7 @@ class BitField {
 
   /**
    * Adds bits to these ones.
+   *
    * @param {...BitFieldResolvable} [bits] Bits to add
    * @returns {BitField} These bits or new BitField if the instance is frozen.
    */
@@ -89,6 +98,7 @@ class BitField {
     for (const bit of bits) {
       total |= this.constructor.resolve(bit);
     }
+
     if (Object.isFrozen(this)) return new this.constructor(this.bitfield | total);
     this.bitfield |= total;
     return this;
@@ -96,6 +106,7 @@ class BitField {
 
   /**
    * Removes bits from these.
+   *
    * @param {...BitFieldResolvable} [bits] Bits to remove
    * @returns {BitField} These bits or new BitField if the instance is frozen.
    */
@@ -104,6 +115,7 @@ class BitField {
     for (const bit of bits) {
       total |= this.constructor.resolve(bit);
     }
+
     if (Object.isFrozen(this)) return new this.constructor(this.bitfield & ~total);
     this.bitfield &= ~total;
     return this;
@@ -112,6 +124,7 @@ class BitField {
   /**
    * Gets an object mapping field names to a {@link boolean} indicating whether the
    * bit is available.
+   *
    * @param {...*} hasParams Additional parameters for the has method, if any
    * @returns {Object}
    */
@@ -120,11 +133,13 @@ class BitField {
     for (const [flag, bit] of Object.entries(this.constructor.Flags)) {
       if (isNaN(flag)) serialized[flag] = this.has(bit, ...hasParams);
     }
+
     return serialized;
   }
 
   /**
    * Gets an {@link Array} of bitfield names based on the bits available.
+   *
    * @param {...*} hasParams Additional parameters for the has method, if any
    * @returns {string[]}
    */
@@ -148,15 +163,17 @@ class BitField {
 
   /**
    * Data that can be resolved to give a bitfield. This can be:
-   * * A bit number (this can be a number literal or a value taken from {@link BitField.Flags})
-   * * A string bit number
-   * * An instance of BitField
-   * * An Array of BitFieldResolvable
+   * - A bit number (this can be a number literal or a value taken from {@link BitField.Flags})
+   * - A string bit number
+   * - An instance of BitField
+   * - An Array of BitFieldResolvable
+   *
    * @typedef {number|string|bigint|BitField|BitFieldResolvable[]} BitFieldResolvable
    */
 
   /**
    * Resolves bitfields to their numeric form.
+   *
    * @param {BitFieldResolvable} [bit] bit(s) to resolve
    * @returns {number|bigint}
    */
@@ -167,10 +184,12 @@ class BitField {
     if (Array.isArray(bit)) {
       return bit.map(bit_ => this.resolve(bit_)).reduce((prev, bit_) => prev | bit_, DefaultBit);
     }
+
     if (typeof bit === 'string') {
       if (!isNaN(bit)) return typeof DefaultBit === 'bigint' ? BigInt(bit) : Number(bit);
       if (this.Flags[bit] !== undefined) return this.Flags[bit];
     }
+
     throw new DiscordjsRangeError(ErrorCodes.BitFieldInvalid, bit);
   }
 }

@@ -27,6 +27,7 @@ export class OAuth2API {
 	 * @param options - The options for creating the authorization URL
 	 */
 	public generateAuthorizationURL(options: RESTOAuth2AuthorizationQuery) {
+		// eslint-disable-next-line n/prefer-global/url
 		const url = new URL(`${RouteBases.api}${Routes.oauth2Authorization()}`);
 		url.search = makeURLSearchParams(options).toString();
 		return url.toString();
@@ -44,7 +45,7 @@ export class OAuth2API {
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
-			body: makeURLSearchParams(body),
+			body: makeURLSearchParams<RESTPostOAuth2AccessTokenURLEncodedData>(body),
 			passThroughBody: true,
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
@@ -66,7 +67,7 @@ export class OAuth2API {
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.oauth2TokenExchange(), {
-			body: makeURLSearchParams(body),
+			body: makeURLSearchParams<RESTPostOAuth2RefreshTokenURLEncodedData>(body),
 			passThroughBody: true,
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',

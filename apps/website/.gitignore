@@ -16,7 +16,6 @@ pids
 .env*.local
 
 # Dist
-.contentlayer
 .next
 public/searchIndex
 src/assets/readme
@@ -26,6 +25,7 @@ src/styles/unocss.css
 .tmp
 .vscode
 lighthouse-results
+next-env.d.ts
 
 .vercel
 

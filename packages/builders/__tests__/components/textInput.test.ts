@@ -8,13 +8,12 @@ describe('Text Input Components', () => {
 	describe('Assertion Tests', () => {
 		test('GIVEN valid fields THEN builder does not throw', () => {
 			expect(() => {
-				textInputComponent().setCustomId('foobar').setLabel('test').setStyle(TextInputStyle.Paragraph).toJSON();
+				textInputComponent().setCustomId('foobar').setStyle(TextInputStyle.Paragraph).toJSON();
 			}).not.toThrowError();
 
 			expect(() => {
 				textInputComponent()
 					.setCustomId('foobar')
-					.setLabel('test')
 					.setMaxLength(100)
 					.setMinLength(1)
 					.setPlaceholder('bar')
@@ -24,7 +23,7 @@ describe('Text Input Components', () => {
 			}).not.toThrowError();
 
 			expect(() => {
-				textInputComponent().setCustomId('Custom').setLabel('Guess').setStyle(TextInputStyle.Short).toJSON();
+				textInputComponent().setCustomId('Custom').setStyle(TextInputStyle.Short).toJSON();
 			}).not.toThrowError();
 		});
 	});
@@ -33,18 +32,17 @@ describe('Text Input Components', () => {
 		expect(() => textInputComponent().toJSON()).toThrowError();
 		expect(() => {
 			textInputComponent()
-				.setCustomId('test')
+				.setCustomId('a'.repeat(500))
 				.setMaxLength(100)
-				.setPlaceholder('hello')
-				.setStyle(TextInputStyle.Paragraph)
+				.setPlaceholder('a'.repeat(500))
+				.setStyle(3 as TextInputStyle)
 				.toJSON();
 		}).toThrowError();
 	});
 
 	test('GIVEN valid input THEN valid JSON outputs are given', () => {
-		const textInputData: APITextInputComponent = {
+		const textInputData = {
 			type: ComponentType.TextInput,
-			label: 'label',
 			custom_id: 'custom id',
 			placeholder: 'placeholder',
 			max_length: 100,
@@ -52,17 +50,16 @@ describe('Text Input Components', () => {
 			value: 'value',
 			required: false,
 			style: TextInputStyle.Paragraph,
-		};
+		} satisfies APITextInputComponent;
 
 		expect(new TextInputBuilder(textInputData).toJSON()).toEqual(textInputData);
 		expect(
 			textInputComponent()
 				.setCustomId(textInputData.custom_id)
-				.setLabel(textInputData.label)
-				.setPlaceholder(textInputData.placeholder!)
-				.setMaxLength(textInputData.max_length!)
-				.setMinLength(textInputData.min_length!)
-				.setValue(textInputData.value!)
+				.setPlaceholder(textInputData.placeholder)
+				.setMaxLength(textInputData.max_length)
+				.setMinLength(textInputData.min_length)
+				.setValue(textInputData.value)
 				.setRequired(textInputData.required)
 				.setStyle(textInputData.style)
 				.toJSON(),

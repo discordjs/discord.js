@@ -1,3 +1,34 @@
 packages:
-  - 'apps/*'
-  - 'packages/*'
+  - apps/*
+  - packages/*
+
+autoInstallPeers: false
+
+ignoredBuiltDependencies:
+  - core-js-pure
+  - unrs-resolver
+
+onlyBuiltDependencies:
+  - '@discordjs/opus'
+  - '@tailwindcss/oxide'
+  - bufferutil
+  - esbuild
+  - protobufjs
+  - sharp
+  - utf-8-validate
+  - zlib-sync
+
+patchedDependencies:
+  '@microsoft/tsdoc-config@0.17.1': patches/@microsoft__tsdoc-config@0.17.1.patch
+
+peerDependencyRules:
+  ignoreMissing:
+    - '*'
+  allowAny:
+    - '*'
+
+publicHoistPattern:
+  - '*eslint*'
+  - '*prettier*'
+  - '*@rushstack/node-core-library*'
+  - '*jju*'

@@ -3,17 +3,18 @@
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager.js');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 const { Role } = require('../structures/Role.js');
 const { resolveImage } = require('../util/DataResolver.js');
 const { PermissionsBitField } = require('../util/PermissionsBitField.js');
 const { setPosition, resolveColor } = require('../util/Util.js');
+const { CachedManager } = require('./CachedManager.js');
 
 let cacheWarningEmitted = false;
 
 /**
  * Manages API methods for roles and stores their cache.
+ *
  * @extends {CachedManager}
  */
 class RoleManager extends CachedManager {
@@ -29,6 +30,7 @@ class RoleManager extends CachedManager {
 
     /**
      * The guild belonging to this manager
+     *
      * @type {Guild}
      */
     this.guild = guild;
@@ -36,6 +38,7 @@ class RoleManager extends CachedManager {
 
   /**
    * The role cache of this manager
+   *
    * @type {Collection<Snowflake, Role>}
    * @name RoleManager#cache
    */
@@ -46,6 +49,7 @@ class RoleManager extends CachedManager {
 
   /**
    * Obtains a role from Discord, or the role cache if they're already available.
+   *
    * @param {Snowflake} [id] The role's id
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<Role|Collection<Snowflake, Role>>}
@@ -57,14 +61,14 @@ class RoleManager extends CachedManager {
    * @example
    * // Fetch a single role
    * message.guild.roles.fetch('222078108977594368')
-   *   .then(role => console.log(`The role color is: ${role.color}`))
+   *   .then(role => console.log(`The role color is: ${role.colors.primaryColor}`))
    *   .catch(console.error);
    */
   async fetch(id, { cache = true, force = false } = {}) {
     if (!id) {
-      const data = await this.client.rest.get(Routes.guildRoles(this.guild.id));
+      const innerData = await this.client.rest.get(Routes.guildRoles(this.guild.id));
       const roles = new Collection();
-      for (const role of data) roles.set(role.id, this._add(role, cache));
+      for (const role of innerData) roles.set(role.id, this._add(role, cache));
       return roles;
     }
 
@@ -79,13 +83,15 @@ class RoleManager extends CachedManager {
 
   /**
    * Data that can be resolved to a Role object. This can be:
-   * * A Role
-   * * A Snowflake
+   * - A Role
+   * - A Snowflake
+   *
    * @typedef {Role|Snowflake} RoleResolvable
    */
 
   /**
    * Resolves a {@link RoleResolvable} to a {@link Role} object.
+   *
    * @method resolve
    * @memberof RoleManager
    * @instance
@@ -95,6 +101,7 @@ class RoleManager extends CachedManager {
 
   /**
    * Resolves a {@link RoleResolvable} to a {@link Role} id.
+   *
    * @method resolveId
    * @memberof RoleManager
    * @instance
@@ -103,10 +110,21 @@ class RoleManager extends CachedManager {
    */
 
   /**
+   * @typedef {Object} RoleColorsResolvable
+   * @property {ColorResolvable} primaryColor The primary color of the role
+   * @property {ColorResolvable} [secondaryColor] The secondary color of the role.
+   * This will make the role a gradient between the other provided colors
+   * @property {ColorResolvable} [tertiaryColor] The tertiary color of the role.
+   * When sending `tertiaryColor` the API enforces the role color to be a holographic style with values of `primaryColor = 11127295`, `secondaryColor = 16759788`, and `tertiaryColor = 16761760`.
+   * These values are available as a constant: `Constants.HolographicStyle`
+   */
+
+  /**
    * Options used to create a new role.
+   *
    * @typedef {Object} RoleCreateOptions
    * @property {string} [name] The name of the new role
-   * @property {ColorResolvable} [color] The data to create the role with
+   * @property {RoleColorsResolvable} [colors] The colors to create the role with
    * @property {boolean} [hoist] Whether or not the new role should be hoisted
    * @property {PermissionResolvable} [permissions] The permissions for the new role
    * @property {number} [position] The position of the new role
@@ -121,6 +139,7 @@ class RoleManager extends CachedManager {
   /**
    * Creates a new role in the guild with given information.
    * <warn>The position will silently reset to 1 if an invalid one is provided, or none.</warn>
+   *
    * @param {RoleCreateOptions} [options] Options for creating the new role
    * @returns {Promise<Role>}
    * @example
@@ -132,15 +151,30 @@ class RoleManager extends CachedManager {
    * // Create a new role with data and a reason
    * guild.roles.create({
    *   name: 'Super Cool Blue People',
-   *   color: Colors.Blue,
    *   reason: 'we needed a role for Super Cool People',
+   *   colors: {
+   *     primaryColor: Colors.Blue,
+   *   },
+   * })
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Create a role with holographic colors
+   * guild.roles.create({
+   *   name: 'Holographic Role',
+   *   reason: 'Creating a role with holographic effect',
+   *   colors: {
+   *     primaryColor: Constants.HolographicStyle.Primary,
+   *     secondaryColor: Constants.HolographicStyle.Secondary,
+   *     tertiaryColor: Constants.HolographicStyle.Tertiary,
+   *   },
    * })
    *   .then(console.log)
    *   .catch(console.error);
    */
   async create(options = {}) {
-    let { name, color, hoist, permissions, position, mentionable, reason, icon, unicodeEmoji } = options;
-    color &&= resolveColor(color);
+    let { permissions, icon } = options;
+    const { name, hoist, position, mentionable, reason, unicodeEmoji } = options;
     if (permissions !== undefined) permissions = new PermissionsBitField(permissions);
     if (icon) {
       const guildEmojiURL = this.guild.emojis.resolve(icon)?.imageURL();
@@ -148,10 +182,16 @@ class RoleManager extends CachedManager {
       if (typeof icon !== 'string') icon = undefined;
     }
 
+    const colors = options.colors && {
+      primary_color: resolveColor(options.colors.primaryColor),
+      secondary_color: options.colors.secondaryColor && resolveColor(options.colors.secondaryColor),
+      tertiary_color: options.colors.tertiaryColor && resolveColor(options.colors.tertiaryColor),
+    };
+
     const data = await this.client.rest.post(Routes.guildRoles(this.guild.id), {
       body: {
         name,
-        color,
+        colors,
         hoist,
         permissions,
         mentionable,
@@ -170,12 +210,14 @@ class RoleManager extends CachedManager {
 
   /**
    * Options for editing a role
+   *
    * @typedef {RoleData} RoleEditOptions
    * @property {string} [reason] The reason for editing this role
    */
 
   /**
    * Edits a role of the guild.
+   *
    * @param {RoleResolvable} role The role to edit
    * @param {RoleEditOptions} options The options to provide
    * @returns {Promise<Role>}
@@ -200,9 +242,15 @@ class RoleManager extends CachedManager {
       if (typeof icon !== 'string') icon = undefined;
     }
 
+    const colors = options.colors && {
+      primary_color: resolveColor(options.colors.primaryColor),
+      secondary_color: options.colors.secondaryColor && resolveColor(options.colors.secondaryColor),
+      tertiary_color: options.colors.tertiaryColor && resolveColor(options.colors.tertiaryColor),
+    };
+
     const body = {
       name: options.name,
-      color: options.color === undefined ? undefined : resolveColor(options.color),
+      colors,
       hoist: options.hoist,
       permissions: options.permissions === undefined ? undefined : new PermissionsBitField(options.permissions),
       mentionable: options.mentionable,
@@ -210,18 +258,19 @@ class RoleManager extends CachedManager {
       unicode_emoji: options.unicodeEmoji,
     };
 
-    const d = await this.client.rest.patch(Routes.guildRole(this.guild.id, resolvedRole.id), {
+    const data = await this.client.rest.patch(Routes.guildRole(this.guild.id, resolvedRole.id), {
       body,
       reason: options.reason,
     });
 
     const clone = resolvedRole._clone();
-    clone._patch(d);
+    clone._patch(data);
     return clone;
   }
 
   /**
    * Deletes a role.
+   *
    * @param {RoleResolvable} role The role to delete
    * @param {string} [reason] Reason for deleting the role
    * @returns {Promise<void>}
@@ -239,6 +288,7 @@ class RoleManager extends CachedManager {
 
   /**
    * Sets the new position of the role.
+   *
    * @param {RoleResolvable} role The role to change the position of
    * @param {number} position The new position for the role
    * @param {SetRolePositionOptions} [options] Options for setting the position
@@ -271,6 +321,7 @@ class RoleManager extends CachedManager {
 
   /**
    * The data needed for updating a guild role's position
+   *
    * @typedef {Object} GuildRolePosition
    * @property {RoleResolvable} role The role's id
    * @property {number} position The position to update
@@ -278,6 +329,7 @@ class RoleManager extends CachedManager {
 
   /**
    * Batch-updates the guild's role positions
+   *
    * @param {GuildRolePosition[]} rolePositions Role positions to update
    * @returns {Promise<Guild>}
    * @example
@@ -302,6 +354,7 @@ class RoleManager extends CachedManager {
 
   /**
    * Compares the positions of two roles.
+   *
    * @param {RoleResolvable} role1 First role to compare
    * @param {RoleResolvable} role2 Second role to compare
    * @returns {number} Negative number if the first role's position is lower (second role's is higher),
@@ -327,6 +380,7 @@ class RoleManager extends CachedManager {
   /**
    * Gets the managed role a user created when joining the guild, if any
    * <info>Only ever available for bots</info>
+   *
    * @param {UserResolvable} user The user to access the bot role for
    * @returns {?Role}
    */
@@ -338,6 +392,7 @@ class RoleManager extends CachedManager {
 
   /**
    * The `@everyone` role of the guild
+   *
    * @type {Role}
    * @readonly
    */
@@ -347,6 +402,7 @@ class RoleManager extends CachedManager {
 
   /**
    * The premium subscriber role of the guild, if any
+   *
    * @type {?Role}
    * @readonly
    */
@@ -356,6 +412,7 @@ class RoleManager extends CachedManager {
 
   /**
    * The role with the highest position in the cache
+   *
    * @type {Role}
    * @readonly
    */

@@ -114,6 +114,7 @@ class Action {
         return this.client.users._add(data.member.user);
       }
     }
+
     return this.getUser(data);
   }
 
@@ -129,6 +130,10 @@ class Action {
 
   getThreadMember(id, manager) {
     return this.getPayload({ user_id: id }, manager, id, Partials.ThreadMember, false);
+  }
+
+  getSoundboardSound(data, guild) {
+    return this.getPayload(data, guild.soundboardSounds, data.sound_id, Partials.SoundboardSound);
   }
 
   spreadInjectedData(data) {
