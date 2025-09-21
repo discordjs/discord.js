@@ -5017,6 +5017,7 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Gu
     options?: BulkBanOptions,
   ): Promise<BulkBanResult>;
   public edit(user: UserResolvable, options: GuildMemberEditOptions): Promise<GuildMember>;
+  public editMe(options: GuildMemberEditMeOptions): Promise<GuildMember>;
   public fetch(
     options: UserResolvable | FetchMemberOptions | (FetchMembersOptions & { user: UserResolvable }),
   ): Promise<GuildMember>;
@@ -6874,6 +6875,14 @@ export interface GuildMemberEditOptions {
 }
 
 export type GuildMemberResolvable = GuildMember | UserResolvable;
+
+export interface GuildMemberEditMeOptions {
+  avatar?: Base64Resolvable | BufferResolvable | null;
+  banner?: Base64Resolvable | BufferResolvable | null;
+  bio?: string | null;
+  nick?: string | null;
+  reason?: string;
+}
 
 export type GuildResolvable = Guild | NonThreadGuildBasedChannel | GuildMember | GuildEmoji | Invite | Role | Snowflake;
 
