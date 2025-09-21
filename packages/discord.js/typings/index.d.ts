@@ -2693,7 +2693,7 @@ export class Presence extends Base {
   public activities: Activity[];
   public clientStatus: ClientPresenceStatusData | null;
   public guild: Guild | null;
-  public get member(): GuildMember | PartialGuildMember | null;
+  public member: PartialGuildMember | null;
   public status: PresenceStatus;
   public get user(): User | null;
   public userId: Snowflake;
