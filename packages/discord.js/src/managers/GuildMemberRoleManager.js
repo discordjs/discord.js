@@ -99,6 +99,10 @@ class GuildMemberRoleManager extends DataManager {
     return this.cache.find(role => role.tags?.botId === this.member.user.id) ?? null;
   }
 
+  get partial() {
+    return this.member.partial;
+  }
+
   /**
    * Adds a role (or multiple roles) to the member.
    *

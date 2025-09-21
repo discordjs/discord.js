@@ -4314,14 +4314,15 @@ export class GuildStickerManager extends CachedManager<Snowflake, Sticker, Stick
 }
 
 export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleResolvable> {
-  private constructor(member: GuildMember | PartialGuildMember);
+  private constructor(member: GuildMember);
   public get hoist(): Role | null;
   public get icon(): Role | null;
   public get color(): Role | null;
   public get highest(): Role;
   public get premiumSubscriberRole(): Role | null;
   public get botRole(): Role | null;
-  public member: GuildMember | PartialGuildMember;
+  public get partial(): false;
+  public member: GuildMember;
   public guild: Guild;
 
   public add(
@@ -4336,6 +4337,11 @@ export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleRes
     roleOrRoles: RoleResolvable | readonly RoleResolvable[] | ReadonlyCollection<Snowflake, Role>,
     reason?: string,
   ): Promise<GuildMember>;
+}
+
+export interface PartialGuildMemberRoleManager extends Partialize<GuildMemberRoleManager, null, null, 'member'> {
+  get partial(): true;
+  member: PartialGuildMember;
 }
 
 export interface FetchPollAnswerVotersOptions extends BaseFetchPollAnswerVotersOptions {
@@ -4611,6 +4617,7 @@ export type AllowedPartial =
   | User
   | Channel
   | GuildMember
+  | GuildMemberRoleManager
   | Message
   | MessageReaction
   | GuildScheduledEvent
@@ -6584,7 +6591,11 @@ export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'las
   lastMessageId: undefined;
 }
 
-export interface PartialGuildMember extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp' | 'pending'> {}
+export interface PartialGuildMember
+  extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp' | 'pending', null, 'roles'> {
+  get partial(): true;
+  get roles(): PartialGuildMemberRoleManager;
+}
 
 export interface PartialMessage
   extends Partialize<Message, 'type' | 'system' | 'pinned' | 'tts', 'content' | 'cleanContent' | 'author'> {}
