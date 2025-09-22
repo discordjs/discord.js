@@ -1,46 +1,53 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const { lazy } = require('@discordjs/util');
+const { transformResolved } = require('../util/Util.js');
 const { BaseInteraction } = require('./BaseInteraction.js');
 const { InteractionWebhook } = require('./InteractionWebhook.js');
-const { ModalSubmitFields } = require('./ModalSubmitFields.js');
+const { ModalComponentResolver } = require('./ModalComponentResolver.js');
 const { InteractionResponses } = require('./interfaces/InteractionResponses.js');
 
 const getMessage = lazy(() => require('./Message.js').Message);
 
 /**
  * @typedef {Object} BaseModalData
- * @property {ComponentType} type The component type of the field
- * @property {string} customId The custom id of the field
- * @property {number} id The id of the field
+ * @property {ComponentType} type The component type of the component
+ * @property {number} id The id of the component
+ */
+
+/**
+ * @typedef {BaseModalData} SelectMenuModalData
+ * @property {string} customId The custom id of the component
+ * @property {string[]} values The values of the component
+ * @property {Collection<string, GuildMember|APIGuildMember>} [members] The resolved members
+ * @property {Collection<string, User|APIUser>} [users] The resolved users
+ * @property {Collection<string, Role|APIRole>} [roles] The resolved roles
+ * @property {Collection<string, BaseChannel|APIChannel>} [channels] The resolved channels
  */
 
 /**
  * @typedef {BaseModalData} TextInputModalData
- * @property {string} value The value of the field
+ * @property {string} customId The custom id of the component
+ * @property {string} value The value of the component
  */
 
 /**
- * @typedef {BaseModalData} StringSelectModalData
- * @property {string[]} values The values of the field
+ * @typedef {BaseModalData} TextDisplayModalData
  */
 
 /**
- * @typedef {TextInputModalData | StringSelectModalData} ModalData
+ * @typedef {SelectMenuModalData|TextInputModalData} ModalData
  */
 
 /**
- * @typedef {Object} LabelModalData
+ * @typedef {BaseModalData} LabelModalData
  * @property {ModalData} component The component within the label
- * @property {ComponentType} type The component type of the label
- * @property {number} id The id of the label
  */
 
 /**
- * @typedef {Object} ActionRowModalData
+ * @typedef {BaseModalData} ActionRowModalData
  * @property {TextInputModalData[]} components The components of this action row
- * @property {ComponentType} type The component type of the action row
- * @property {number} id The id of the action row
  */
 
 /**
@@ -73,16 +80,13 @@ class ModalSubmitInteraction extends BaseInteraction {
     /**
      * The components within the modal
      *
-     * @type {Array<ActionRowModalData | LabelModalData>}
+     * @type {ModalComponentResolver}
      */
-    this.components = data.data.components?.map(component => ModalSubmitInteraction.transformComponent(component));
-
-    /**
-     * The fields within the modal
-     *
-     * @type {ModalSubmitFields}
-     */
-    this.fields = new ModalSubmitFields(this.components);
+    this.components = new ModalComponentResolver(
+      this.client,
+      data.data.components?.map(component => this.transformComponent(component, data.data.resolved)),
+      transformResolved({ client: this.client, guild: this.guild, channel: this.channel }, data.data.resolved),
+    );
 
     /**
      * Whether the reply to this interaction has been deferred
@@ -117,15 +121,16 @@ class ModalSubmitInteraction extends BaseInteraction {
    * Transforms component data to discord.js-compatible data
    *
    * @param {*} rawComponent The data to transform
+   * @param {APIInteractionDataResolved} resolved The resolved data for the interaction
    * @returns {ModalData[]}
    * @private
    */
-  static transformComponent(rawComponent) {
+  transformComponent(rawComponent, resolved) {
     if ('components' in rawComponent) {
       return {
         type: rawComponent.type,
         id: rawComponent.id,
-        components: rawComponent.components.map(component => this.transformComponent(component)),
+        components: rawComponent.components.map(component => this.transformComponent(component, resolved)),
       };
     }
 
@@ -133,18 +138,50 @@ class ModalSubmitInteraction extends BaseInteraction {
       return {
         type: rawComponent.type,
         id: rawComponent.id,
-        component: this.transformComponent(rawComponent.component),
+        component: this.transformComponent(rawComponent.component, resolved),
       };
     }
 
     const data = {
       type: rawComponent.type,
-      customId: rawComponent.custom_id,
       id: rawComponent.id,
     };
 
+    // Text display components do not have custom ids.
+    if (rawComponent.custom_id) data.customId = rawComponent.custom_id;
+
     if (rawComponent.value) data.value = rawComponent.value;
-    if (rawComponent.values) data.values = rawComponent.values;
+
+    if (rawComponent.values) {
+      data.values = rawComponent.values;
+      if (resolved) {
+        const resolveCollection = (resolvedData, resolver) => {
+          const collection = new Collection();
+          for (const value of data.values) {
+            if (resolvedData?.[value]) {
+              collection.set(value, resolver(resolvedData[value]));
+            }
+          }
+
+          return collection.size ? collection : null;
+        };
+
+        const users = resolveCollection(resolved.users, user => this.client.users._add(user));
+        if (users) data.users = users;
+
+        const channels = resolveCollection(
+          resolved.channels,
+          channel => this.client.channels._add(channel, this.guild) ?? channel,
+        );
+        if (channels) data.channels = channels;
+
+        const members = resolveCollection(resolved.members, member => this.guild?.members._add(member) ?? member);
+        if (members) data.members = members;
+
+        const roles = resolveCollection(resolved.roles, role => this.guild?.roles._add(role) ?? role);
+        if (roles) data.roles = roles;
+      }
+    }
 
     return data;
   }
