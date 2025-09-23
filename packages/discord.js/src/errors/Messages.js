@@ -127,10 +127,14 @@ const Messages = {
     `The type of channel of the option "${name}" is: ${type}; expected ${expected}.`,
   [ErrorCodes.AutocompleteInteractionOptionNoFocusedOption]: 'No focused option for autocomplete interaction.',
 
-  [ErrorCodes.ModalSubmitInteractionFieldNotFound]: customId =>
-    `Required field with custom id "${customId}" not found.`,
-  [ErrorCodes.ModalSubmitInteractionFieldType]: (customId, type, expected) =>
-    `Field with custom id "${customId}" is of type: ${type}; expected ${expected}.`,
+  [ErrorCodes.ModalSubmitInteractionComponentNotFound]: customId =>
+    `Required component with custom id "${customId}" not found.`,
+  [ErrorCodes.ModalSubmitInteractionComponentType]: (customId, type, expected) =>
+    `Component with custom id "${customId}" is of type: ${type}; expected ${expected}.`,
+  [ErrorCodes.ModalSubmitInteractionComponentEmpty]: (customId, type) =>
+    `Required component with custom id "${customId}" is of type: ${type}; expected a non-empty value.`,
+  [ErrorCodes.ModalSubmitInteractionComponentInvalidChannelType]: (customId, type, expected) =>
+    `The type of channel of the component with custom id "${customId}" is: ${type}; expected ${expected}.`,
 
   [ErrorCodes.InvalidMissingScopes]: 'At least one valid scope must be provided for the invite',
   [ErrorCodes.InvalidScopesWithPermissions]: 'Permissions cannot be set without the bot scope.',
