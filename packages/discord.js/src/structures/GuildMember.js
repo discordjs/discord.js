@@ -459,7 +459,9 @@ class GuildMember extends Base {
    *   .catch(console.error);
    */
   async setNickname(nick, reason) {
-    return this.edit({ nick, reason });
+    return this.user.id === this.client.user.id
+      ? this.guild.members.editMe({ nick, reason })
+      : this.edit({ nick, reason });
   }
 
   /**
