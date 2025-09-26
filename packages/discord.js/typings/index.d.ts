@@ -2609,8 +2609,7 @@ export class ModalComponentResolver<Cached extends CacheType = CacheType> {
     properties: string,
     required: boolean,
   ): ModalData;
-  public getTextInputValue(customId: string, required: true): string;
-  public getTextInputValue(customId: string, required?: boolean): string | null;
+  public getTextInputValue(customId: string): string;
   public getStringSelectValues(customId: string): readonly string[];
   public getSelectedUsers(customId: string, required: true): ReadonlyCollection<Snowflake, User>;
   public getSelectedUsers(customId: string, required?: boolean): ReadonlyCollection<Snowflake, User> | null;
@@ -4486,6 +4485,7 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Us
     options?: BanOptions,
   ): Promise<BulkBanResult>;
   public edit(user: UserResolvable, options: GuildMemberEditOptions): Promise<GuildMember>;
+  public editMe(options: GuildMemberEditMeOptions): Promise<GuildMember>;
   public fetch(
     options: FetchMemberOptions | UserResolvable | (FetchMembersOptions & { user: UserResolvable }),
   ): Promise<GuildMember>;
@@ -6291,6 +6291,14 @@ export interface GuildMemberEditOptions {
   nick?: string | null;
   reason?: string;
   roles?: ReadonlyCollection<Snowflake, Role> | readonly RoleResolvable[];
+}
+
+export interface GuildMemberEditMeOptions {
+  avatar?: Base64Resolvable | BufferResolvable | null;
+  banner?: Base64Resolvable | BufferResolvable | null;
+  bio?: string | null;
+  nick?: string | null;
+  reason?: string;
 }
 
 export type GuildResolvable =
