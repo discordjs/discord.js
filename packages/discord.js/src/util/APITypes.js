@@ -236,6 +236,11 @@
  */
 
 /**
+ * @external APISelectMenuDefaultValue
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISelectMenuDefaultValue}
+ */
+
+/**
  * @external APISectionComponent
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISectionComponent}
  */
