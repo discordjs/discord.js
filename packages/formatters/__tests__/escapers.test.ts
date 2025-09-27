@@ -23,6 +23,8 @@ const testURLs = [
 	'https://example.com/name_with_underscores',
 	'https://example.com/name__with__underscores',
 	'https://example.com/name_with_underscores_and__double__underscores',
+	'https://*.example.com/globbed/*',
+	'https://example.com/*before*/>/*after*',
 ];
 
 describe('Markdown escapers', () => {
@@ -86,6 +88,16 @@ describe('Markdown escapers', () => {
 
 		test('url', () => {
 			for (const url of testURLs) expect(escapeItalic(url)).toBe(url);
+		});
+
+		test('after-url', () => {
+			const url = '<https://example.com>';
+			for (const [input, output] of [
+				['*hi*', '\\*hi\\*'],
+				['_hi_', '\\_hi\\_'],
+			]) {
+				expect(escapeItalic(url + input)).toBe(url + output);
+			}
 		});
 	});
 
