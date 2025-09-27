@@ -660,6 +660,11 @@
  */
 
 /**
+ * @external ThreadMemberFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ThreadMemberFlags}
+ */
+
+/**
  * @external UserFlags
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/UserFlags}
  */
