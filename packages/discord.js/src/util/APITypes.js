@@ -540,6 +540,11 @@
  */
 
 /**
+ * @external LocalizationMap
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#LocalizationMap}
+ */
+
+/**
  * @external MessageActivityType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/MessageActivityType}
  */
