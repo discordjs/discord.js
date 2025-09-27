@@ -13,7 +13,7 @@ class ApplicationRoleConnectionMetadata {
 
     /**
      * The name localizations for this metadata field
-     * @type {?Object<Locale, string>}
+     * @type {?LocalizationMap}
      */
     this.nameLocalizations = data.name_localizations ?? null;
 
@@ -25,7 +25,7 @@ class ApplicationRoleConnectionMetadata {
 
     /**
      * The description localizations for this metadata field
-     * @type {?Object<Locale, string>}
+     * @type {?LocalizationMap}
      */
     this.descriptionLocalizations = data.description_localizations ?? null;
 
