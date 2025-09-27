@@ -12,6 +12,7 @@ import {
 	type RESTPatchAPIGuildVoiceStateCurrentMemberJSONBody,
 	type RESTPatchAPIGuildVoiceStateUserResult,
 } from 'discord-api-types/v10';
+import type { APIOptions } from '../util/api-options.js';
 
 export class VoiceAPI {
 	public constructor(private readonly rest: REST) {}
@@ -22,8 +23,8 @@ export class VoiceAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/voice#list-voice-regions}
 	 * @param options - The options for fetching the voice regions
 	 */
-	public async getVoiceRegions({ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
-		return this.rest.get(Routes.voiceRegions(), { auth, signal }) as Promise<RESTGetAPIVoiceRegionsResult>;
+	public async getVoiceRegions({ options }: APIOptions<Pick<RequestData, 'auth' | 'signal'>> = {}) {
+		return this.rest.get(Routes.voiceRegions(), options) as Promise<RESTGetAPIVoiceRegionsResult>;
 	}
 
 	/**

@@ -27,6 +27,7 @@ import {
 	type RESTPutAPIApplicationGuildCommandsResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
+import type { APIOptions } from '../util/api-options.js';
 
 export class ApplicationCommandsAPI {
 	public constructor(private readonly rest: REST) {}
@@ -35,19 +36,21 @@ export class ApplicationCommandsAPI {
 	 * Fetches all global commands for a application
 	 *
 	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#get-global-application-commands}
-	 * @param applicationId - The application id to fetch commands for
-	 * @param query - The query options for fetching commands
 	 * @param options - The options for fetching commands
 	 */
-	public async getGlobalCommands(
-		applicationId: Snowflake,
-		query: RESTGetAPIApplicationCommandsQuery = {},
-		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
-	) {
+	public async getGlobalCommands({
+		query,
+		route: { applicationId },
+		options,
+	}: APIOptions<
+		Pick<RequestData, 'auth' | 'signal'>,
+		{ applicationId: Snowflake },
+		never,
+		RESTGetAPIApplicationCommandsQuery
+	>) {
 		return this.rest.get(Routes.applicationCommands(applicationId), {
-			auth,
+			...options,
 			query: makeURLSearchParams(query),
-			signal,
 		}) as Promise<RESTGetAPIApplicationCommandsResult>;
 	}
 
