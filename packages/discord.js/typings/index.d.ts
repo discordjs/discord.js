@@ -2240,7 +2240,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public edit(
     content: MessageEditOptions | MessagePayload | string,
   ): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
-  public equals(message: Message, rawData: unknown): boolean;
+  public equals(message: Message, rawData?: APIMessage): boolean;
   public fetchReference(): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public fetchWebhook(): Promise<Webhook>;
   public crosspost(): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
