@@ -1,24 +1,26 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { APIEmbedFooter } from 'discord-api-types/v10';
+import { Refineable } from '../../mixins/Refineable.js';
 import { validate } from '../../util/validation.js';
 import { embedFooterPredicate } from './Assertions.js';
 
 /**
- * A builder that creates API-compatible JSON data for the embed footer.
+ * A builder that creates API-compatible JSON data for embed footers.
  */
-export class EmbedFooterBuilder implements JSONEncodable<APIEmbedFooter> {
+export class EmbedFooterBuilder extends Refineable implements JSONEncodable<APIEmbedFooter> {
 	/**
 	 * The API data associated with this embed footer.
 	 */
 	private readonly data: Partial<APIEmbedFooter>;
 
 	/**
-	 * Creates a new embed footer.
+	 * Creates a new embed footer builder.
 	 *
 	 * @param data - The API data to create this embed footer with
 	 */
 	public constructor(data: Partial<APIEmbedFooter> = {}) {
-		this.data = structuredClone(data);
+		super();
+		this.data = { ...structuredClone(data) };
 	}
 
 	/**

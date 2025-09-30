@@ -1,5 +1,6 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { AllowedMentionsTypes, APIAllowedMentions, Snowflake } from 'discord-api-types/v10';
+import { Refineable } from '../mixins/Refineable.js';
 import { normalizeArray, type RestOrArray } from '../util/normalizeArray.js';
 import { validate } from '../util/validation.js';
 import { allowedMentionPredicate } from './Assertions.js';
@@ -7,7 +8,7 @@ import { allowedMentionPredicate } from './Assertions.js';
 /**
  * A builder that creates API-compatible JSON data for allowed mentions.
  */
-export class AllowedMentionsBuilder implements JSONEncodable<APIAllowedMentions> {
+export class AllowedMentionsBuilder extends Refineable implements JSONEncodable<APIAllowedMentions> {
 	/**
 	 * The API data associated with these allowed mentions.
 	 */
@@ -19,7 +20,8 @@ export class AllowedMentionsBuilder implements JSONEncodable<APIAllowedMentions>
 	 * @param data - The API data to create this allowed mentions with
 	 */
 	public constructor(data: Partial<APIAllowedMentions> = {}) {
-		this.data = structuredClone(data);
+		super();
+		this.data = { ...structuredClone(data) };
 	}
 
 	/**
