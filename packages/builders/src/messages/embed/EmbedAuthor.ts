@@ -1,24 +1,26 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { APIEmbedAuthor } from 'discord-api-types/v10';
+import { Refineable } from '../../mixins/Refineable.js';
 import { validate } from '../../util/validation.js';
 import { embedAuthorPredicate } from './Assertions.js';
 
 /**
- * A builder that creates API-compatible JSON data for the embed author.
+ * A builder that creates API-compatible JSON data for embed authors.
  */
-export class EmbedAuthorBuilder implements JSONEncodable<APIEmbedAuthor> {
+export class EmbedAuthorBuilder extends Refineable implements JSONEncodable<APIEmbedAuthor> {
 	/**
 	 * The API data associated with this embed author.
 	 */
 	private readonly data: Partial<APIEmbedAuthor>;
 
 	/**
-	 * Creates a new embed author.
+	 * Creates a new embed author builder.
 	 *
 	 * @param data - The API data to create this embed author with
 	 */
 	public constructor(data: Partial<APIEmbedAuthor> = {}) {
-		this.data = structuredClone(data);
+		super();
+		this.data = { ...structuredClone(data) };
 	}
 
 	/**
