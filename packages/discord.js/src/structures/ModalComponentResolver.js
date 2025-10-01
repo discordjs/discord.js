@@ -104,7 +104,7 @@ class ModalComponentResolver {
    * Gets the value of a text input component
    *
    * @param {string} customId The custom id of the text input component
-   * @returns {?string}
+   * @returns {string}
    */
   getTextInputValue(customId) {
     return this._getTypedComponent(customId, [ComponentType.TextInput]).value;
