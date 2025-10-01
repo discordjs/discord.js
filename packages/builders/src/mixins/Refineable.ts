@@ -13,8 +13,10 @@ export class Refineable {
 	 *  .setTitle('Hello World')
 	 *  .setDescription('This is a description')
 	 *  .refine((b) => {
+	 * 		const intermediateValue = computeSomething();
+	 * 		b.setFooter(`Computed value: ${intermediateValue}`);
 	 *      if (externalVariable) {
-	 *         b.setColor('Red');
+	 *         b.setColor(0xff0000);
 	 *     }
 	 *  });
 	 * ```
