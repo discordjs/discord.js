@@ -11,6 +11,9 @@ inputs:
     description: 'The published name of a single package to release'
   exclude:
     description: 'Comma separated list of packages to exclude from release (if not depended upon)'
+  main:
+    description: 'Is this running on the main branch?'
+    default: 'true'
 runs:
   using: composite
   steps:
@@ -22,3 +25,4 @@ runs:
         INPUT_DRY: ${{ inputs.dry }}
         INPUT_PACKAGE: ${{ inputs.package }}
         INPUT_EXCLUDE: ${{ inputs.exclude }}
+        INPUT_MAIN: ${{ inputs.main }}

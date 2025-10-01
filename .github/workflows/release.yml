@@ -72,12 +72,32 @@ jobs:
       - name: Build dependencies
         run: pnpm run build
 
+      - name: Checkout main repository
+        if: ${{ inputs.ref && inputs.ref != 'main' }}
+        uses: actions/checkout@v5
+        with:
+          path: 'main'
+
       - name: Release packages
+        if: ${{ inputs.ref && inputs.ref != 'main' }}
+        uses: ./main/packages/actions/src/releasePackages
+        with:
+          package: ${{ inputs.package }}
+          exclude: ${{ inputs.exclude }}
+          dry: ${{ inputs.dry_run }}
+          main: true
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Release packages
+        if: ${{ !inputs.ref || inputs.ref == 'main' }}
         uses: ./packages/actions/src/releasePackages
         with:
           package: ${{ inputs.package }}
           exclude: ${{ inputs.exclude }}
           dry: ${{ inputs.dry_run }}
+          main: false
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
