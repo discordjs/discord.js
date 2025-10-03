@@ -81,13 +81,12 @@ jobs:
       - name: Install action deps (non-main ref only)
         if: ${{ inputs.ref && inputs.ref != 'main' }}
         shell: bash
+        working-directory: ./main
         env:
           COREPACK_ENABLE_STRICT: 0
         run: |
-          cd main
           pnpm self-update 10
           pnpm install --filter @discordjs/actions --frozen-lockfile --prefer-offline --loglevel error
-          cd ..
 
       - name: Release packages (non-main ref)
         if: ${{ inputs.ref && inputs.ref != 'main' }}
@@ -96,7 +95,7 @@ jobs:
           package: ${{ inputs.package }}
           exclude: ${{ inputs.exclude }}
           dry: ${{ inputs.dry_run }}
-          main: true
+          main: false
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
@@ -108,7 +107,7 @@ jobs:
           package: ${{ inputs.package }}
           exclude: ${{ inputs.exclude }}
           dry: ${{ inputs.dry_run }}
-          main: false
+          main: true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
