@@ -89,6 +89,7 @@ import {
 	type RESTPostAPIGuildTemplatesJSONBody,
 	type RESTPostAPIGuildTemplatesResult,
 	type RESTPutAPIGuildBanJSONBody,
+	type RESTPutAPIGuildIncidentActionsJSONBody,
 	type RESTPutAPIGuildMemberJSONBody,
 	type RESTPutAPIGuildMemberResult,
 	type RESTPutAPIGuildOnboardingJSONBody,
@@ -1438,5 +1439,21 @@ export class GuildsAPI {
 		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
 		await this.rest.delete(Routes.guildSoundboardSound(guildId, soundId), { auth, reason, signal });
+	}
+
+	/**
+	 * Modifies incident actions for a guild.
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-guild-incident-actions}
+	 * @param guildId - The id of the guild
+	 * @param body - The data for modifying guild incident actions
+	 * @param options - The options for modifying guild incident actions
+	 */
+	public async editIncidentActions(
+		guildId: Snowflake,
+		body: RESTPutAPIGuildIncidentActionsJSONBody,
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+	) {
+		await this.rest.put(Routes.guildIncidentActions(guildId), { auth, body, signal });
 	}
 }
