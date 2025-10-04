@@ -11,18 +11,14 @@ inputs:
     description: 'The published name of a single package to release'
   exclude:
     description: 'Comma separated list of packages to exclude from release (if not depended upon)'
-  main:
-    description: 'Is this running on the main branch?'
-    default: 'true'
 runs:
   using: composite
   steps:
     - uses: oven-sh/setup-bun@v2
-    - run: bun packages/actions/src/releasePackages/index.ts
+    - run: bun $GITHUB_ACTION_PATH/index.ts
       shell: bash
       env:
         INPUT_DEV: ${{ inputs.dev }}
         INPUT_DRY: ${{ inputs.dry }}
         INPUT_PACKAGE: ${{ inputs.package }}
         INPUT_EXCLUDE: ${{ inputs.exclude }}
-        INPUT_MAIN: ${{ inputs.main }}

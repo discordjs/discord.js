@@ -95,7 +95,6 @@ jobs:
           package: ${{ inputs.package }}
           exclude: ${{ inputs.exclude }}
           dry: ${{ inputs.dry_run }}
-          main: false
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
@@ -107,7 +106,6 @@ jobs:
           package: ${{ inputs.package }}
           exclude: ${{ inputs.exclude }}
           dry: ${{ inputs.dry_run }}
-          main: true
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}

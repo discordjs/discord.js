@@ -1,5 +1,4 @@
 import { getInput, startGroup, endGroup, getBooleanInput, info } from '@actions/core';
-import { $ } from 'bun';
 import { program } from 'commander';
 import { generateReleaseTree } from './generateReleaseTree.js';
 import { releasePackage } from './releasePackage.js';
@@ -7,7 +6,6 @@ import { releasePackage } from './releasePackage.js';
 const excludeInput = getInput('exclude');
 let dryInput = false;
 let devInput = false;
-let mainInput = true;
 
 try {
 	devInput = getBooleanInput('dev');
@@ -19,12 +17,6 @@ try {
 	dryInput = getBooleanInput('dry');
 } catch {
 	// We're not running in actions or the input isn't set (cron)
-}
-
-try {
-	mainInput = getBooleanInput('main');
-} catch {
-	// We're not running in actions
 }
 
 program
@@ -42,10 +34,6 @@ program
 
 const { exclude, dry, dev } = program.opts<{ dev: boolean; dry: boolean; exclude: string[] }>();
 const [packageName] = program.processedArgs as [string];
-
-if (!mainInput) {
-	$.cwd('../');
-}
 
 const tree = await generateReleaseTree(dev, dry, packageName, exclude);
 for (const branch of tree) {
