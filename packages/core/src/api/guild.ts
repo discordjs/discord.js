@@ -90,6 +90,7 @@ import {
 	type RESTPostAPIGuildTemplatesResult,
 	type RESTPutAPIGuildBanJSONBody,
 	type RESTPutAPIGuildIncidentActionsJSONBody,
+	type RESTPutAPIGuildIncidentActionsResult,
 	type RESTPutAPIGuildMemberJSONBody,
 	type RESTPutAPIGuildMemberResult,
 	type RESTPutAPIGuildOnboardingJSONBody,
@@ -1454,6 +1455,10 @@ export class GuildsAPI {
 		body: RESTPutAPIGuildIncidentActionsJSONBody,
 		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
-		await this.rest.put(Routes.guildIncidentActions(guildId), { auth, body, signal });
+		return this.rest.put(Routes.guildIncidentActions(guildId), {
+			auth,
+			body,
+			signal,
+		}) as Promise<RESTPutAPIGuildIncidentActionsResult>;
 	}
 }
