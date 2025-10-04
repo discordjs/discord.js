@@ -37,9 +37,16 @@ pnpm add @discordjs/core
 These examples use [ES modules](https://nodejs.org/api/esm.html#enabling).
 
 ```ts
+import {
+	Client,
+	GatewayDispatchEvents,
+	GatewayIntentBits,
+	InteractionType,
+	MessageFlags,
+	type RESTGetAPIGatewayBotResult,
+} from '@discordjs/core';
 import { REST } from '@discordjs/rest';
 import { WebSocketManager } from '@discordjs/ws';
-import { GatewayDispatchEvents, GatewayIntentBits, InteractionType, MessageFlags, Client } from '@discordjs/core';
 
 // Create REST and WebSocket managers directly
 const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
@@ -47,7 +54,7 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 const gateway = new WebSocketManager({
 	token: process.env.DISCORD_TOKEN,
 	intents: GatewayIntentBits.GuildMessages | GatewayIntentBits.MessageContent,
-	rest,
+	fetchGatewayInformation: () => rest.get('/gateway/bot') as Promise<RESTGetAPIGatewayBotResult>,
 });
 
 // Create a client to emit relevant events.
@@ -93,7 +100,7 @@ const guild = await api.guilds.get('1234567891011');
 - [Guide][guide] ([source][guide-source])
   Also see the v13 to v14 [Update Guide][guide-update], which includes updated and removed items from the library.
 - [discord.js Discord server][discord]
-- [Discord API Discord server][discord-api]
+- [Discord Developers Discord server][discord-developers]
 - [GitHub][source]
 - [npm][npm]
 - [Related libraries][related-libs]
@@ -115,7 +122,7 @@ If you don't understand something in the documentation, you are experiencing pro
 [guide-source]: https://github.com/discordjs/guide
 [guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
 [discord]: https://discord.gg/djs
-[discord-api]: https://discord.gg/discord-api
+[discord-developers]: https://discord.gg/discord-developers
 [source]: https://github.com/discordjs/discord.js/tree/main/packages/core
 [npm]: https://www.npmjs.com/package/@discordjs/core
 [related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries

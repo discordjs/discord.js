@@ -1,5 +1,4 @@
 import type { Buffer } from 'node:buffer';
-import { randomBytes } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
@@ -61,7 +60,7 @@ export interface RedisBrokerOptions extends BaseBrokerOptions {
 	 *
 	 * @see {@link https://redis.io/commands/xreadgroup/}
 	 */
-	name?: string;
+	name: string;
 }
 
 /**
@@ -69,12 +68,11 @@ export interface RedisBrokerOptions extends BaseBrokerOptions {
  */
 export const DefaultRedisBrokerOptions = {
 	...DefaultBrokerOptions,
-	name: randomBytes(20).toString('hex'),
 	maxChunk: 10,
 	maxDeliveredTimes: 3,
 	messageIdleTime: 3_000,
 	blockTimeout: 5_000,
-} as const satisfies Required<Omit<RedisBrokerOptions, 'group'>>;
+} as const satisfies Required<Omit<RedisBrokerOptions, 'group' | 'name'>>;
 
 /**
  * Helper class with shared Redis logic

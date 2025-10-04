@@ -25,6 +25,7 @@ export const DefaultRestOptions = {
 	offset: 50,
 	rejectOnRateLimit: null,
 	retries: 3,
+	retryBackoff: 0,
 	timeout: 15_000,
 	userAgentAppendix: DefaultUserAgentAppendix,
 	version: APIVersion,

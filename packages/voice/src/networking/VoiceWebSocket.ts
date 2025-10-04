@@ -180,7 +180,7 @@ export class VoiceWebSocket extends EventEmitter {
 	}
 
 	/**
-	 * Sends a binary mesasge over the WebSocket.
+	 * Sends a binary message over the WebSocket.
 	 *
 	 * @param opcode - The opcode to use
 	 * @param payload - The payload to send
