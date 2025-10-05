@@ -34,6 +34,9 @@ export {
 export * from './components/selectMenu/StringSelectMenuOption.js';
 export * from './components/selectMenu/UserSelectMenu.js';
 
+export * from './components/label/Label.js';
+export * as LabelAssertions from './components/label/Assertions.js';
+
 export * as ComponentsV2Assertions from './components/v2/Assertions.js';
 export * from './components/v2/Container.js';
 export * from './components/v2/File.js';

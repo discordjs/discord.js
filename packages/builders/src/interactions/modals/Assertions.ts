@@ -1,6 +1,7 @@
 import { s } from '@sapphire/shapeshift';
 import { ActionRowBuilder, type ModalActionRowComponentBuilder } from '../../components/ActionRow.js';
 import { customIdValidator } from '../../components/Assertions.js';
+import { LabelBuilder } from '../../components/label/Label.js';
 import { isValidationEnabled } from '../../util/validation.js';
 
 export const titleValidator = s
@@ -9,7 +10,7 @@ export const titleValidator = s
 	.lengthLessThanOrEqual(45)
 	.setValidationEnabled(isValidationEnabled);
 export const componentsValidator = s
-	.instance(ActionRowBuilder)
+	.union([s.instance(ActionRowBuilder), s.instance(LabelBuilder)])
 	.array()
 	.lengthGreaterThanOrEqual(1)
 	.setValidationEnabled(isValidationEnabled);
@@ -17,7 +18,7 @@ export const componentsValidator = s
 export function validateRequiredParameters(
 	customId?: string,
 	title?: string,
-	components?: ActionRowBuilder<ModalActionRowComponentBuilder>[],
+	components?: (ActionRowBuilder<ModalActionRowComponentBuilder> | LabelBuilder)[],
 ) {
 	customIdValidator.parse(customId);
 	titleValidator.parse(title);
