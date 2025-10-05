@@ -105,24 +105,30 @@ export const selectMenuStringPredicate = selectMenuBasePredicate
 		options: selectMenuStringOptionPredicate.array().min(1).max(25),
 	})
 	.check((ctx) => {
-		const addIssue = (name: string, minimum: number) =>
+		if (ctx.value.max_values !== undefined && ctx.value.options.length > ctx.value.max_values) {
 			ctx.issues.push({
-				code: 'too_small',
-				message: `The number of options must be greater than or equal to ${name}`,
+				code: 'too_big',
+				message: `The number of options must be less than or equal to ${ctx.value.max_values}`,
 				inclusive: true,
-				minimum,
+				maximum: ctx.value.max_values,
 				type: 'number',
 				path: ['options'],
 				origin: 'number',
-				input: minimum,
+				input: ctx.value.options.length,
 			});
-
-		if (ctx.value.max_values !== undefined && ctx.value.options.length < ctx.value.max_values) {
-			addIssue('max_values', ctx.value.max_values);
 		}
 
 		if (ctx.value.min_values !== undefined && ctx.value.options.length < ctx.value.min_values) {
-			addIssue('min_values', ctx.value.min_values);
+			ctx.issues.push({
+				code: 'too_small',
+				message: `The number of options must be greater than or equal to ${ctx.value.min_values}`,
+				inclusive: true,
+				minimum: ctx.value.min_values,
+				type: 'number',
+				path: ['options'],
+				origin: 'number',
+				input: ctx.value.options.length,
+			});
 		}
 	});
 
