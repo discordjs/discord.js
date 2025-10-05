@@ -390,7 +390,7 @@ class GuildMemberManager extends CachedManager {
         if (!deprecatedEmittedForEditSoleNickname) {
           process.emitWarning(
             // eslint-disable-next-line max-len
-            'Using GuildMemberManager#edit() to edit only your nickname will require the MANAGE_NICKNAMES permission in v15 (currently, it requires only CHANGE_NICKNAME). Use Client#GuildMemberManager#editMe() when you only need to change your nickname.',
+            "You should use GuildMemberManager#editMe() when changing your nickname. Due to Discord's API changes, GuildMemberManager#edit() will end up requiring MANAGE_NICKNAMES in v15.",
             'DeprecationWarning',
           );
 
