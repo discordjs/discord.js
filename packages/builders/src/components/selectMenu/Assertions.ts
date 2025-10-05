@@ -77,13 +77,14 @@ export const selectMenuStringPredicate = selectMenuBasePredicate
 		options: selectMenuStringOptionPredicate.array().lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(25),
 	})
 	.reshape((value) => {
-		if (value.max_values !== undefined && value.options.length < value.max_values) {
-			// TODO: this error message is wrong in main branch
-			return Result.err(new RangeError(`The number of options must be less than or equal to max_values`));
-		}
-
 		if (value.min_values !== undefined && value.options.length < value.min_values) {
 			return Result.err(new RangeError(`The number of options must be greater than or equal to min_values`));
+		}
+
+		if (value.min_values !== undefined && value.max_values !== undefined && value.min_values > value.max_values) {
+			return Result.err(
+				new RangeError(`The maximum amount of options must be greater than or equal to the minimum amount of options`),
+			);
 		}
 
 		return Result.ok(value);
