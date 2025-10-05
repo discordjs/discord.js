@@ -5,7 +5,9 @@ const { Action } = require('./Action.js');
 class GuildEmojisUpdateAction extends Action {
   handle(data) {
     const guild = this.client.guilds.cache.get(data.guild_id);
-    if (!guild?.emojis) return;
+    if (!guild?.emojis) {
+      return;
+    }
 
     const deletions = new Map(guild.emojis.cache);
 

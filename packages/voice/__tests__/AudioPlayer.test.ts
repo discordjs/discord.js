@@ -343,7 +343,10 @@ describe('State transitions', () => {
 		// Run through a few packet cycles
 		for (let index = 1; index <= 5; index++) {
 			expect(player.state.status).toEqual(AudioPlayerStatus.Playing);
-			if (player.state.status !== AudioPlayerStatus.Playing) throw new Error('Error');
+			if (player.state.status !== AudioPlayerStatus.Playing) {
+				throw new Error('Error');
+			}
+
 			expect(player.state.playbackDuration).toStrictEqual((index - 1) * 20);
 			expect(player.state.missedFrames).toEqual(index - 1);
 			player['_stepDispatch']();

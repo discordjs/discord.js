@@ -4,7 +4,9 @@ const { Events } = require('../../../util/Events.js');
 
 module.exports = (client, { d: data }) => {
   const channel = client.channels.cache.get(data.channel_id);
-  if (!channel) return;
+  if (!channel) {
+    return;
+  }
 
   /**
    * Emitted whenever a channel has its webhooks changed.

@@ -17,7 +17,9 @@ class GuildRoleCreateAction extends Action {
        * @event Client#roleCreate
        * @param {Role} role The role that was created
        */
-      if (!already) client.emit(Events.GuildRoleCreate, role);
+      if (!already) {
+        client.emit(Events.GuildRoleCreate, role);
+      }
     }
 
     return { role };

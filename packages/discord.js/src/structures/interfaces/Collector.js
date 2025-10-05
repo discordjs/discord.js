@@ -104,8 +104,13 @@ class Collector extends AsyncEventEmitter {
     this.handleCollect = this.handleCollect.bind(this);
     this.handleDispose = this.handleDispose.bind(this);
 
-    if (options.time) this._timeout = setTimeout(() => this.stop('time'), options.time).unref();
-    if (options.idle) this._idletimeout = setTimeout(() => this.stop('idle'), options.idle).unref();
+    if (options.time) {
+      this._timeout = setTimeout(() => this.stop('time'), options.time).unref();
+    }
+
+    if (options.idle) {
+      this._idletimeout = setTimeout(() => this.stop('idle'), options.idle).unref();
+    }
 
     /**
      * The timestamp at which this collector last collected an item
@@ -174,10 +179,15 @@ class Collector extends AsyncEventEmitter {
    * @emits Collector#dispose
    */
   async handleDispose(...args) {
-    if (!this.options.dispose) return;
+    if (!this.options.dispose) {
+      return;
+    }
 
     const dispose = this.dispose(...args);
-    if (!dispose || !(await this.filter(...args)) || !this.collected.has(dispose)) return;
+    if (!dispose || !(await this.filter(...args)) || !this.collected.has(dispose)) {
+      return;
+    }
+
     this.collected.delete(dispose);
 
     /**
@@ -233,7 +243,9 @@ class Collector extends AsyncEventEmitter {
    * @emits Collector#end
    */
   stop(reason = 'user') {
-    if (this.ended) return;
+    if (this.ended) {
+      return;
+    }
 
     if (this._timeout) {
       clearTimeout(this._timeout);
@@ -290,7 +302,10 @@ class Collector extends AsyncEventEmitter {
    */
   checkEnd() {
     const reason = this.endReason;
-    if (reason) this.stop(reason);
+    if (reason) {
+      this.stop(reason);
+    }
+
     return Boolean(reason);
   }
 

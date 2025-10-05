@@ -5,7 +5,9 @@ const { Events } = require('../../../util/Events.js');
 module.exports = (client, { d: data }) => {
   // Discord sends the thread id as id in this object
   const thread = client.channels.cache.get(data.id);
-  if (!thread) return;
+  if (!thread) {
+    return;
+  }
 
   const member = thread.members.cache.get(data.user_id);
   if (!member) {

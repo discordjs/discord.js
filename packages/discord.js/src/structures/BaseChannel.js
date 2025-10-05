@@ -24,7 +24,9 @@ class BaseChannel extends Base {
      */
     this.type = data.type;
 
-    if (data && immediatePatch) this._patch(data);
+    if (data && immediatePatch) {
+      this._patch(data);
+    }
   }
 
   _patch(data) {

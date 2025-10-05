@@ -268,7 +268,10 @@ class Client extends BaseClient {
    * client.login('my token');
    */
   async login(token = this.token) {
-    if (!token || typeof token !== 'string') throw new DiscordjsError(ErrorCodes.TokenInvalid);
+    if (!token || typeof token !== 'string') {
+      throw new DiscordjsError(ErrorCodes.TokenInvalid);
+    }
+
     this.token = token.replace(/^bot\s*/i, '');
 
     this.rest.setToken(this.token);
@@ -531,7 +534,10 @@ class Client extends BaseClient {
   async fetchVoiceRegions() {
     const apiRegions = await this.rest.get(Routes.voiceRegions());
     const regions = new Collection();
-    for (const region of apiRegions) regions.set(region.id, new VoiceRegion(region));
+    for (const region of apiRegions) {
+      regions.set(region.id, new VoiceRegion(region));
+    }
+
     return regions;
   }
 
@@ -604,7 +610,10 @@ class Client extends BaseClient {
    */
   async fetchGuildPreview(guild) {
     const id = this.guilds.resolveId(guild);
-    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'guild', 'GuildResolvable');
+    if (!id) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'guild', 'GuildResolvable');
+    }
+
     const data = await this.rest.get(Routes.guildPreview(id));
     return new GuildPreview(this, data);
   }
@@ -617,7 +626,10 @@ class Client extends BaseClient {
    */
   async fetchGuildWidget(guild) {
     const id = this.guilds.resolveId(guild);
-    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'guild', 'GuildResolvable');
+    if (!id) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'guild', 'GuildResolvable');
+    }
+
     const data = await this.rest.get(Routes.guildWidgetJSON(id));
     return new Widget(this, data);
   }
@@ -654,8 +666,13 @@ class Client extends BaseClient {
    * console.log(`Generated bot invite link: ${link}`);
    */
   generateInvite(options = {}) {
-    if (typeof options !== 'object') throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
-    if (!this.application) throw new DiscordjsError(ErrorCodes.ClientNotReady, 'generate an invite link');
+    if (typeof options !== 'object') {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
+    }
+
+    if (!this.application) {
+      throw new DiscordjsError(ErrorCodes.ClientNotReady, 'generate an invite link');
+    }
 
     const { scopes } = options;
     if (scopes === undefined) {
@@ -688,12 +705,17 @@ class Client extends BaseClient {
 
     if (options.permissions) {
       const permissions = PermissionsBitField.resolve(options.permissions);
-      if (permissions) query.set('permissions', permissions.toString());
+      if (permissions) {
+        query.set('permissions', permissions.toString());
+      }
     }
 
     if (options.guild) {
       const guildId = this.guilds.resolveId(options.guild);
-      if (!guildId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options.guild', 'GuildResolvable');
+      if (!guildId) {
+        throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options.guild', 'GuildResolvable');
+      }
+
       query.set('guild_id', guildId);
     }
 
@@ -715,7 +737,9 @@ class Client extends BaseClient {
    * @private
    */
   get _censoredToken() {
-    if (!this.token) return null;
+    if (!this.token) {
+      return null;
+    }
 
     return this.token
       .split('.')

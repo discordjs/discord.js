@@ -4,7 +4,9 @@ const { Events } = require('../../../util/Events.js');
 
 module.exports = (client, { d: data }) => {
   const thread = client.channels.cache.get(data.id);
-  if (!thread) return;
+  if (!thread) {
+    return;
+  }
 
   client.channels._remove(thread.id);
 

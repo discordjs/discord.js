@@ -94,7 +94,9 @@ class BaseGuildTextChannel extends GuildChannel {
     }
 
     if ('messages' in data) {
-      for (const message of data.messages) this.messages._add(message);
+      for (const message of data.messages) {
+        this.messages._add(message);
+      }
     }
   }
 

@@ -13,10 +13,14 @@ const { Action } = require('./Action.js');
 
 class MessageReactionRemoveAction extends Action {
   handle(data) {
-    if (!data.emoji) return false;
+    if (!data.emoji) {
+      return false;
+    }
 
     const user = this.getUser(data);
-    if (!user) return false;
+    if (!user) {
+      return false;
+    }
 
     // Verify channel
     const channel = this.getChannel({
@@ -24,15 +28,22 @@ class MessageReactionRemoveAction extends Action {
       ...('guild_id' in data && { guild_id: data.guild_id }),
       user_id: data.user_id,
     });
-    if (!channel?.isTextBased()) return false;
+    if (!channel?.isTextBased()) {
+      return false;
+    }
 
     // Verify message
     const message = this.getMessage(data, channel);
-    if (!message) return false;
+    if (!message) {
+      return false;
+    }
 
     // Verify reaction
     const reaction = this.getReaction(data, message, user);
-    if (!reaction) return false;
+    if (!reaction) {
+      return false;
+    }
+
     reaction._remove(user, data.burst);
     /**
      * Emitted whenever a reaction is removed from a cached message.

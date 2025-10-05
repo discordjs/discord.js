@@ -369,9 +369,14 @@ class GuildScheduledEvent extends Base {
   async createInviteURL(options) {
     let channelId = this.channelId;
     if (this.entityType === GuildScheduledEventEntityType.External) {
-      if (!options?.channel) throw new DiscordjsError(ErrorCodes.InviteOptionsMissingChannel);
+      if (!options?.channel) {
+        throw new DiscordjsError(ErrorCodes.InviteOptionsMissingChannel);
+      }
+
       channelId = this.guild.channels.resolveId(options.channel);
-      if (!channelId) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
+      if (!channelId) {
+        throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
+      }
     }
 
     const invite = await this.guild.invites.create(channelId, options);

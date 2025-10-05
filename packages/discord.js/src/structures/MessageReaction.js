@@ -129,8 +129,14 @@ class MessageReaction {
    * @readonly
    */
   get emoji() {
-    if (this._emoji instanceof GuildEmoji) return this._emoji;
-    if (this._emoji instanceof ApplicationEmoji) return this._emoji;
+    if (this._emoji instanceof GuildEmoji) {
+      return this._emoji;
+    }
+
+    if (this._emoji instanceof ApplicationEmoji) {
+      return this._emoji;
+    }
+
     // Check to see if the emoji has become known to the client
     if (this._emoji.id) {
       const applicationEmojis = this.message.client.application.emojis.cache;
@@ -177,32 +183,50 @@ class MessageReaction {
   }
 
   _add(user, burst) {
-    if (this.partial) return;
+    if (this.partial) {
+      return;
+    }
+
     this.users.cache.set(user.id, user);
     if (!this.me || user.id !== this.message.client.user.id || this.count === 0) {
       this.count++;
-      if (burst) this.countDetails.burst++;
-      else this.countDetails.normal++;
+      if (burst) {
+        this.countDetails.burst++;
+      } else {
+        this.countDetails.normal++;
+      }
     }
 
     if (user.id === this.message.client.user.id) {
-      if (burst) this.meBurst = true;
-      else this.me = true;
+      if (burst) {
+        this.meBurst = true;
+      } else {
+        this.me = true;
+      }
     }
   }
 
   _remove(user, burst) {
-    if (this.partial) return;
+    if (this.partial) {
+      return;
+    }
+
     this.users.cache.delete(user.id);
     if (!this.me || user.id !== this.message.client.user.id) {
       this.count--;
-      if (burst) this.countDetails.burst--;
-      else this.countDetails.normal--;
+      if (burst) {
+        this.countDetails.burst--;
+      } else {
+        this.countDetails.normal--;
+      }
     }
 
     if (user.id === this.message.client.user.id) {
-      if (burst) this.meBurst = false;
-      else this.me = false;
+      if (burst) {
+        this.meBurst = false;
+      } else {
+        this.me = false;
+      }
     }
 
     if (this.count <= 0 && this.users.cache.size === 0) {

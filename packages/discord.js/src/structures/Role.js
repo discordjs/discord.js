@@ -38,7 +38,9 @@ class Role extends Base {
      */
     this.unicodeEmoji = null;
 
-    if (data) this._patch(data);
+    if (data) {
+      this._patch(data);
+    }
   }
 
   _patch(data) {
@@ -125,9 +127,13 @@ class Role extends Base {
       this.mentionable = data.mentionable;
     }
 
-    if ('icon' in data) this.icon = data.icon;
+    if ('icon' in data) {
+      this.icon = data.icon;
+    }
 
-    if ('unicode_emoji' in data) this.unicodeEmoji = data.unicode_emoji;
+    if ('unicode_emoji' in data) {
+      this.unicodeEmoji = data.unicode_emoji;
+    }
 
     if ('flags' in data) {
       /**
@@ -228,9 +234,15 @@ class Role extends Base {
    * @readonly
    */
   get editable() {
-    if (this.managed) return false;
+    if (this.managed) {
+      return false;
+    }
+
     const clientMember = this.guild.members.resolve(this.client.user);
-    if (!clientMember.permissions.has(PermissionFlagsBits.ManageRoles)) return false;
+    if (!clientMember.permissions.has(PermissionFlagsBits.ManageRoles)) {
+      return false;
+    }
+
     return clientMember.roles.highest.comparePositionTo(this) > 0;
   }
 
@@ -308,7 +320,10 @@ class Role extends Base {
    */
   permissionsIn(channel, checkAdmin = true) {
     const resolvedChannel = this.guild.channels.resolve(channel);
-    if (!resolvedChannel) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
+    if (!resolvedChannel) {
+      throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
+    }
+
     return resolvedChannel.rolePermissions(this, checkAdmin);
   }
 
@@ -519,7 +534,10 @@ class Role extends Base {
    * console.log(`Role: ${role}`);
    */
   toString() {
-    if (this.id === this.guild.id) return '@everyone';
+    if (this.id === this.guild.id) {
+      return '@everyone';
+    }
+
     return roleMention(this.id);
   }
 

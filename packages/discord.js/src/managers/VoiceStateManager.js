@@ -30,10 +30,15 @@ class VoiceStateManager extends CachedManager {
 
   _add(data, cache = true) {
     const existing = this.cache.get(data.user_id);
-    if (existing) return existing._patch(data);
+    if (existing) {
+      return existing._patch(data);
+    }
 
     const entry = new this.holds(this.guild, data);
-    if (cache) this.cache.set(data.user_id, entry);
+    if (cache) {
+      this.cache.set(data.user_id, entry);
+    }
+
     return entry;
   }
 
@@ -53,7 +58,9 @@ class VoiceStateManager extends CachedManager {
     const id = member === '@me' ? member : this.guild.members.resolveId(member);
     if (!force) {
       const existing = this.cache.get(id === '@me' ? this.client.user.id : id);
-      if (existing) return existing;
+      if (existing) {
+        return existing;
+      }
     }
 
     const data = await this.client.rest.get(Routes.guildVoiceState(this.guild.id, id));

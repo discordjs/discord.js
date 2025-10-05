@@ -245,7 +245,10 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 	public static loadFromJson(rawJson: any, apiJsonFilename: string = ''): ApiPackage {
 		const jsonObject =
 			MinifyJSONMapping.metadata in rawJson ? this._mapFromMinified(rawJson) : (rawJson as IApiPackageJson);
-		if (!jsonObject?.metadata) throw new Error(util.inspect(rawJson, { depth: 2 }));
+		if (!jsonObject?.metadata) {
+			throw new Error(util.inspect(rawJson, { depth: 2 }));
+		}
+
 		if (!jsonObject?.metadata || typeof jsonObject.metadata.schemaVersion !== 'number') {
 			throw new Error(
 				`Error loading ${apiJsonFilename}:` +
@@ -419,17 +422,19 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 
 	private _mapToMinified(jsonObject: IApiPackageJson) {
 		const mapper = (item: any): any => {
-			if (Array.isArray(item)) return item.map(mapper);
-			else {
+			if (Array.isArray(item)) {
+				return item.map(mapper);
+			} else {
 				const result: any = {};
 				for (const key of Object.keys(item)) {
 					if (key === 'dependencies') {
 						result[MinifyJSONMapping.dependencies] = item.dependencies;
 					} else if (key === 'tsdocConfig') {
 						result[MinifyJSONMapping.tsdocConfig] = item.tsdocConfig;
-					} else
+					} else {
 						result[MinifyJSONMapping[key as keyof typeof MinifyJSONMapping]] =
 							typeof item[key] === 'object' ? mapper(item[key]) : item[key];
+					}
 				}
 
 				return result;
@@ -441,20 +446,22 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 
 	private static _mapFromMinified(jsonObject: any): IApiPackageJson {
 		const mapper = (item: any): any => {
-			if (Array.isArray(item)) return item.map(mapper);
-			else {
+			if (Array.isArray(item)) {
+				return item.map(mapper);
+			} else {
 				const result: any = {};
 				for (const key of Object.keys(item)) {
 					if (key === MinifyJSONMapping.dependencies) {
 						result.dependencies = item[MinifyJSONMapping.dependencies];
 					} else if (key === MinifyJSONMapping.tsdocConfig) {
 						result.tsdocConfig = item[MinifyJSONMapping.tsdocConfig];
-					} else
+					} else {
 						result[
 							Object.keys(MinifyJSONMapping).find(
 								(look) => MinifyJSONMapping[look as keyof typeof MinifyJSONMapping] === key,
 							)!
 						] = typeof item[key] === 'object' ? mapper(item[key]) : item[key];
+					}
 				}
 
 				return result;

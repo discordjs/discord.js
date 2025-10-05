@@ -202,7 +202,10 @@ class Sticker extends Base {
    * @returns {Promise<?StickerPack>} The sticker pack or `null` if this sticker does not belong to one.
    */
   async fetchPack() {
-    if (!this.packId) return null;
+    if (!this.packId) {
+      return null;
+    }
+
     return this.client.fetchStickerPacks({ packId: this.packId });
   }
 
@@ -212,8 +215,14 @@ class Sticker extends Base {
    * @returns {Promise<?User>}
    */
   async fetchUser() {
-    if (this.partial) await this.fetch();
-    if (!this.guildId) throw new DiscordjsError(ErrorCodes.NotGuildSticker);
+    if (this.partial) {
+      await this.fetch();
+    }
+
+    if (!this.guildId) {
+      throw new DiscordjsError(ErrorCodes.NotGuildSticker);
+    }
+
     return this.guild.stickers.fetchUser(this);
   }
 

@@ -7,7 +7,9 @@ const { Action } = require('./Action.js');
 class TypingStartAction extends Action {
   handle(data) {
     const channel = this.getChannel({ id: data.channel_id, ...('guild_id' in data && { guild_id: data.guild_id }) });
-    if (!channel) return;
+    if (!channel) {
+      return;
+    }
 
     if (!channel.isTextBased()) {
       this.client.emit(Events.Warn, `Discord sent a typing packet to a ${channel.type} channel ${channel.id}`);

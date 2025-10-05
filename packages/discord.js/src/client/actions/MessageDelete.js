@@ -9,9 +9,13 @@ class MessageDeleteAction extends Action {
     const channel = this.getChannel({ id: data.channel_id, ...('guild_id' in data && { guild_id: data.guild_id }) });
     let message;
     if (channel) {
-      if (!channel.isTextBased()) return {};
+      if (!channel.isTextBased()) {
+        return {};
+      }
 
-      if (channel.isThread()) channel.messageCount--;
+      if (channel.isThread()) {
+        channel.messageCount--;
+      }
 
       message = this.getMessage(data, channel);
       if (message) {

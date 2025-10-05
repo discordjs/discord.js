@@ -68,11 +68,19 @@ class ShardingManager extends AsyncEventEmitter {
      * @type {string}
      */
     this.file = file;
-    if (!file) throw new DiscordjsError(ErrorCodes.ClientInvalidOption, 'File', 'specified.');
-    if (!path.isAbsolute(file)) this.file = path.resolve(process.cwd(), file);
+    if (!file) {
+      throw new DiscordjsError(ErrorCodes.ClientInvalidOption, 'File', 'specified.');
+    }
+
+    if (!path.isAbsolute(file)) {
+      this.file = path.resolve(process.cwd(), file);
+    }
+
     // eslint-disable-next-line n/no-sync
     const stats = fs.statSync(this.file);
-    if (!stats.isFile()) throw new DiscordjsError(ErrorCodes.ClientInvalidOption, 'File', 'a file');
+    if (!stats.isFile()) {
+      throw new DiscordjsError(ErrorCodes.ClientInvalidOption, 'File', 'a file');
+    }
 
     /**
      * List of shards this sharding manager spawns
@@ -233,7 +241,10 @@ class ShardingManager extends AsyncEventEmitter {
     }
 
     // Make sure this many shards haven't already been spawned
-    if (this.shards.size >= shardAmount) throw new DiscordjsError(ErrorCodes.ShardingAlreadySpawned, this.shards.size);
+    if (this.shards.size >= shardAmount) {
+      throw new DiscordjsError(ErrorCodes.ShardingAlreadySpawned, this.shards.size);
+    }
+
     if (this.shardList === 'auto' || this.totalShards === 'auto' || this.totalShards !== shardAmount) {
       this.shardList = [...range(shardAmount)];
     }
@@ -255,7 +266,10 @@ class ShardingManager extends AsyncEventEmitter {
       const promises = [];
       const shard = this.createShard(shardId);
       promises.push(shard.spawn(timeout));
-      if (delay > 0 && this.shards.size !== this.shardList.length) promises.push(sleep(delay));
+      if (delay > 0 && this.shards.size !== this.shardList.length) {
+        promises.push(sleep(delay));
+      }
+
       await Promise.all(promises);
     }
 
@@ -270,7 +284,10 @@ class ShardingManager extends AsyncEventEmitter {
    */
   async broadcast(message) {
     const promises = [];
-    for (const shard of this.shards.values()) promises.push(shard.send(message));
+    for (const shard of this.shards.values()) {
+      promises.push(shard.send(message));
+    }
+
     return Promise.all(promises);
   }
 
@@ -322,10 +339,15 @@ class ShardingManager extends AsyncEventEmitter {
    * @private
    */
   async _performOnShards(method, args, shard) {
-    if (this.shards.size === 0) throw new DiscordjsError(ErrorCodes.ShardingNoShards);
+    if (this.shards.size === 0) {
+      throw new DiscordjsError(ErrorCodes.ShardingNoShards);
+    }
 
     if (typeof shard === 'number') {
-      if (this.shards.has(shard)) return this.shards.get(shard)[method](...args);
+      if (this.shards.has(shard)) {
+        return this.shards.get(shard)[method](...args);
+      }
+
       throw new DiscordjsError(ErrorCodes.ShardingShardNotFound, shard);
     }
 
@@ -334,7 +356,10 @@ class ShardingManager extends AsyncEventEmitter {
     }
 
     const promises = [];
-    for (const sh of this.shards.values()) promises.push(sh[method](...args));
+    for (const sh of this.shards.values()) {
+      promises.push(sh[method](...args));
+    }
+
     return Promise.all(promises);
   }
 
@@ -359,7 +384,10 @@ class ShardingManager extends AsyncEventEmitter {
     let shardCounter = 0;
     for (const shard of this.shards.values()) {
       const promises = [shard.respawn({ delay: respawnDelay, timeout })];
-      if (++shardCounter < this.shards.size && shardDelay > 0) promises.push(sleep(shardDelay));
+      if (++shardCounter < this.shards.size && shardDelay > 0) {
+        promises.push(sleep(shardDelay));
+      }
+
       await Promise.all(promises);
     }
 

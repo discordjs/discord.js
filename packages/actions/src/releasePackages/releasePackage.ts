@@ -54,9 +54,13 @@ export async function releasePackage(release: ReleaseEntry, dev: boolean, dry: b
 		await $`pnpm --filter=${release.name} publish --provenance --no-git-checks ${dev ? '--tag=dev' : ''}`;
 	}
 
-	if (!dev) await gitTagAndRelease(release, dry);
+	if (!dev) {
+		await gitTagAndRelease(release, dry);
+	}
 
-	if (dry) return;
+	if (dry) {
+		return;
+	}
 
 	const before = performance.now();
 

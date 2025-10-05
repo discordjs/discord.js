@@ -93,8 +93,14 @@ describe('makeURLSearchParams', () => {
 describe('option normalization functions', () => {
 	describe('rate limit offset', () => {
 		const func: GetRateLimitOffsetFunction = (route) => {
-			if (route === '/negative') return -150;
-			if (route === '/high') return 150;
+			if (route === '/negative') {
+				return -150;
+			}
+
+			if (route === '/high') {
+				return 150;
+			}
+
 			return 50;
 		};
 
@@ -116,11 +122,26 @@ describe('option normalization functions', () => {
 			content: 'yo',
 		};
 		const func: GetRetryBackoffFunction = (_route, statusCode, retryCount) => {
-			if (statusCode === null) return 0;
-			if (statusCode === 502) return 50;
-			if (retryCount === 0) return 0;
-			if (retryCount === 1) return 150;
-			if (retryCount === 2) return 500;
+			if (statusCode === null) {
+				return 0;
+			}
+
+			if (statusCode === 502) {
+				return 50;
+			}
+
+			if (retryCount === 0) {
+				return 0;
+			}
+
+			if (retryCount === 1) {
+				return 150;
+			}
+
+			if (retryCount === 2) {
+				return 500;
+			}
+
 			return null;
 		};
 
@@ -161,8 +182,14 @@ describe('option normalization functions', () => {
 				return 1_000;
 			}
 
-			if (route === '/negative') return -150;
-			if (route === '/high') return 150;
+			if (route === '/negative') {
+				return -150;
+			}
+
+			if (route === '/high') {
+				return 150;
+			}
+
 			return 50;
 		};
 

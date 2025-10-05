@@ -5,12 +5,20 @@ const { Events } = require('../../../util/Events.js');
 
 module.exports = (client, { d: data }) => {
   const guild = client.guilds.cache.get(data.guild_id);
-  if (!guild) return;
+  if (!guild) {
+    return;
+  }
+
   const members = new Collection();
 
-  for (const member of data.members) members.set(member.user.id, guild.members._add(member));
+  for (const member of data.members) {
+    members.set(member.user.id, guild.members._add(member));
+  }
+
   if (data.presences) {
-    for (const presence of data.presences) guild.presences._add(Object.assign(presence, { guild }));
+    for (const presence of data.presences) {
+      guild.presences._add(Object.assign(presence, { guild }));
+    }
   }
 
   /**

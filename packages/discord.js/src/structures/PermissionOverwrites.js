@@ -24,7 +24,9 @@ class PermissionOverwrites extends Base {
      */
     Object.defineProperty(this, 'channel', { value: channel });
 
-    if (data) this._patch(data);
+    if (data) {
+      this._patch(data);
+    }
   }
 
   _patch(data) {
@@ -184,7 +186,9 @@ class PermissionOverwrites extends Base {
    * @returns {RawOverwriteData}
    */
   static resolve(overwrite, guild) {
-    if (overwrite instanceof this) return overwrite.toJSON();
+    if (overwrite instanceof this) {
+      return overwrite.toJSON();
+    }
 
     const id = guild.roles.resolveId(overwrite.id) ?? guild.client.users.resolveId(overwrite.id);
     if (!id) {

@@ -152,7 +152,10 @@ export class VoiceUDPSocket extends EventEmitter {
 		return new Promise((resolve, reject) => {
 			const listener = (message: Buffer) => {
 				try {
-					if (message.readUInt16BE(0) !== 2) return;
+					if (message.readUInt16BE(0) !== 2) {
+						return;
+					}
+
 					const packet = parseLocalPacket(message);
 					this.socket.off('message', listener);
 					resolve(packet);

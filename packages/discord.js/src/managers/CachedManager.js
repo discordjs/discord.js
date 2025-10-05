@@ -60,7 +60,10 @@ class CachedManager extends DataManager {
     }
 
     const entry = this.holds ? new this.holds(this.client, data, ...extras) : data;
-    if (cache) this.cache.set(id ?? entry.id, entry);
+    if (cache) {
+      this.cache.set(id ?? entry.id, entry);
+    }
+
     return entry;
   }
 }

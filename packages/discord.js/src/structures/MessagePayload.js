@@ -114,7 +114,10 @@ class MessagePayload {
    * @returns {MessagePayload}
    */
   resolveBody() {
-    if (this.body) return this;
+    if (this.body) {
+      return this;
+    }
+
     const isWebhook = this.isWebhook;
 
     const content = this.makeContent();
@@ -151,9 +154,17 @@ class MessagePayload {
     let appliedTags;
     if (isWebhook) {
       username = this.options.username ?? this.target.name;
-      if (this.options.avatarURL) avatarURL = this.options.avatarURL;
-      if (this.options.threadName) threadName = this.options.threadName;
-      if (this.options.appliedTags) appliedTags = this.options.appliedTags;
+      if (this.options.avatarURL) {
+        avatarURL = this.options.avatarURL;
+      }
+
+      if (this.options.threadName) {
+        threadName = this.options.threadName;
+      }
+
+      if (this.options.appliedTags) {
+        appliedTags = this.options.appliedTags;
+      }
     }
 
     let flags;
@@ -251,7 +262,9 @@ class MessagePayload {
    * @returns {Promise<MessagePayload>}
    */
   async resolveFiles() {
-    if (this.files) return this;
+    if (this.files) {
+      return this;
+    }
 
     this.files = await Promise.all(this.options.files?.map(file => this.constructor.resolveFile(file)) ?? []);
     return this;
