@@ -21,12 +21,12 @@ export default {
 	},
 	experimental: {
 		ppr: true,
-		reactCompiler: true,
 		dynamicOnHover: true,
 	},
 	eslint: {
 		ignoreDuringBuilds: true,
 	},
+	reactCompiler: true,
 	typescript: {
 		ignoreBuildErrors: true,
 	},
