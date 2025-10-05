@@ -4244,9 +4244,9 @@ export class Webhook<Type extends WebhookType = WebhookType> {
   public editMessage(
     message: MessageResolvable,
     options: string | MessagePayload | WebhookMessageEditOptions,
-  ): Promise<Message>;
-  public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<Message>;
-  public send(options: string | MessagePayload | WebhookMessageCreateOptions): Promise<Message>;
+  ): Promise<Message<true>>;
+  public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<Message<true>>;
+  public send(options: string | MessagePayload | WebhookMessageCreateOptions): Promise<Message<true>>;
 }
 
 // tslint:disable-next-line no-empty-interface
