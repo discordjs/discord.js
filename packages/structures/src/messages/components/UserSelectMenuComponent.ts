@@ -12,7 +12,12 @@ export class UserSelectMenuComponent<
 	Omitted extends keyof APIUserSelectComponent | '' = '',
 > extends SelectMenuComponent<APIUserSelectComponent, Omitted> {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * The template used for removing data from the raw data stored for each UserSelectMenuComponent.
+	 */
+	public static override readonly DataTemplate: Partial<APIUserSelectComponent> = {};
+
+	/**
+	 * @param data - The raw data received from the API for the user select menu
 	 */
 	public constructor(data: Partialize<APIUserSelectComponent, Omitted>) {
 		super(data);

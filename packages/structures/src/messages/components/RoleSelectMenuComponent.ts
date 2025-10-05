@@ -12,7 +12,12 @@ export class RoleSelectMenuComponent<
 	Omitted extends keyof APIRoleSelectComponent | '' = '',
 > extends SelectMenuComponent<APIRoleSelectComponent, Omitted> {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * The template used for removing data from the raw data stored for each RoleSelectMenuComponent.
+	 */
+	public static override readonly DataTemplate: Partial<APIRoleSelectComponent> = {};
+
+	/**
+	 * @param data - The raw data received from the API for the role select menu
 	 */
 	public constructor(data: Partialize<APIRoleSelectComponent, Omitted>) {
 		super(data);

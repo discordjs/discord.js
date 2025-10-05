@@ -8,6 +8,11 @@ export class MessageActivity<Omitted extends keyof APIMessageActivity | '' = ''>
 	Omitted
 > {
 	/**
+	 * The template used for removing data from the raw data stored for each MessageActivity.
+	 */
+	public static override readonly DataTemplate: Partial<APIMessageActivity> = {};
+
+	/**
 	 * @param data - The raw data received from the API for the connection
 	 */
 	public constructor(data: Partialize<APIMessageActivity, Omitted>) {

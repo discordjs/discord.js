@@ -13,7 +13,12 @@ export class SeparatorComponent<Omitted extends keyof APISeparatorComponent | ''
 	Omitted
 > {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * The template used for removing data from the raw data stored for each SeparatorComponent.
+	 */
+	public static override readonly DataTemplate: Partial<APISeparatorComponent> = {};
+
+	/**
+	 * @param data - The raw data received from the API for the separator
 	 */
 	public constructor(data: Partialize<APISeparatorComponent, Omitted>) {
 		super(data);

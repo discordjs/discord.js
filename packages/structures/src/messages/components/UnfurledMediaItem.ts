@@ -3,6 +3,8 @@ import { Structure } from '../../Structure.js';
 import { kData } from '../../utils/symbols.js';
 import type { Partialize } from '../../utils/types.js';
 
+// TODO: add `flags` as a BitField class and appropriate getter, once it gets properly documented
+
 /**
  * Represents an item in a media gallery on a message.
  *
@@ -13,7 +15,12 @@ export class UnfurledMediaItem<Omitted extends keyof APIUnfurledMediaItem | '' =
 	Omitted
 > {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * The template used for removing data from the raw data stored for each UnfurledMediaItem.
+	 */
+	public static override readonly DataTemplate: Partial<APIUnfurledMediaItem> = {};
+
+	/**
+	 * @param data - The raw data received from the API for the unfurled media item
 	 */
 	public constructor(data: Partialize<APIUnfurledMediaItem, Omitted>) {
 		super(data);
@@ -25,11 +32,6 @@ export class UnfurledMediaItem<Omitted extends keyof APIUnfurledMediaItem | '' =
 
 	public get contentType() {
 		return this[kData].content_type;
-	}
-
-	public get flags() {
-		// TODO: replace with a BitField class, if this gets properly documented
-		return this[kData].flags;
 	}
 
 	public get height() {

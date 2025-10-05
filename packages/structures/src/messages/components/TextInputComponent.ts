@@ -13,7 +13,12 @@ export class TextInputComponent<Omitted extends keyof APITextInputComponent | ''
 	Omitted
 > {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * The template used for removing data from the raw data stored for each TextInputComponent.
+	 */
+	public static override readonly DataTemplate: Partial<APITextInputComponent> = {};
+
+	/**
+	 * @param data - The raw data received from the API for the text input
 	 */
 	public constructor(data: Partialize<APITextInputComponent, Omitted>) {
 		super(data);

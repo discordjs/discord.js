@@ -4,7 +4,7 @@ import type { Partialize } from '../../utils/types.js';
 import { Component } from './Component.js';
 
 /**
- * The data stored by a {@link Component} structure based on its {@link (Component:class)."type"} property.
+ * The data stored by a {@link ButtonComponent} structure based on its {@link (ButtonComponent:class)."style"} property.
  */
 export type ButtonDataType<Style extends ButtonStyle> = Style extends
 	| ButtonStyle.Danger
@@ -14,12 +14,12 @@ export type ButtonDataType<Style extends ButtonStyle> = Style extends
 	? APIButtonComponentWithCustomId
 	: Extract<APIButtonComponent, { style: Style }>;
 
-export class ButtonComponent<
+export abstract class ButtonComponent<
 	Style extends ButtonStyle,
 	Omitted extends keyof ButtonDataType<Style> | '' = '',
 > extends Component<ButtonDataType<Style>, Omitted> {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * @param data - The raw data received from the API for the button
 	 */
 	public constructor(data: Partialize<ButtonDataType<Style>, Omitted>) {
 		super(data);

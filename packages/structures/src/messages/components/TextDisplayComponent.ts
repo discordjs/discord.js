@@ -13,7 +13,12 @@ export class TextDisplayComponent<Omitted extends keyof APITextDisplayComponent 
 	Omitted
 > {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * The template used for removing data from the raw data stored for each TextDisplayComponent.
+	 */
+	public static override readonly DataTemplate: Partial<APITextDisplayComponent> = {};
+
+	/**
+	 * @param data - The raw data received from the API for the text display
 	 */
 	public constructor(data: Partialize<APITextDisplayComponent, Omitted>) {
 		super(data);

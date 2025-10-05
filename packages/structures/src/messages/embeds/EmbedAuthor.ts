@@ -24,7 +24,7 @@ export class EmbedAuthor<Omitted extends keyof APIEmbedAuthor | '' = ''> extends
 		return this[kData].icon_url;
 	}
 
-	public get proxIconUrl() {
+	public get proxyIconUrl() {
 		return this[kData].proxy_icon_url;
 	}
 

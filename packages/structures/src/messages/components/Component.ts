@@ -9,12 +9,12 @@ import type { Partialize } from '../../utils/types.js';
 export type ComponentDataType<Type extends ComponentType | 'unknown'> = Type extends ComponentType
 	? Extract<APIMessageComponent | APIModalComponent, { type: Type }>
 	: APIBaseComponent<ComponentType>;
-export class Component<
+export abstract class Component<
 	Type extends APIMessageComponent | APIModalComponent,
 	Omitted extends keyof Type | '' = '',
 > extends Structure<Type, Omitted> {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * @param data - The raw data received from the API for the component
 	 */
 	public constructor(data: Partialize<Type, Omitted>) {
 		super(data as Type);

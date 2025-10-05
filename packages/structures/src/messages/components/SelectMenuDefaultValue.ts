@@ -8,7 +8,12 @@ export class SelectMenuDefaultValue<
 	Omitted extends keyof APISelectMenuDefaultValue<Type> | '' = '',
 > extends Structure<APISelectMenuDefaultValue<Type>, Omitted> {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * The template used for removing data from the raw data stored for each SelectMenuDefaultValue.
+	 */
+	public static override readonly DataTemplate: Partial<APISelectMenuDefaultValue<SelectMenuDefaultValueType>> = {};
+
+	/**
+	 * @param data - The raw data received from the API for the select menu default value
 	 */
 	public constructor(data: Partialize<APISelectMenuDefaultValue<Type>, Omitted>) {
 		super(data);

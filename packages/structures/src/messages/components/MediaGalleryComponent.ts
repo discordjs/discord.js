@@ -13,7 +13,12 @@ export class MediaGalleryComponent<Omitted extends keyof APIMediaGalleryComponen
 	Omitted
 > {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * The template used for removing data from the raw data stored for each MediaGalleryComponent.
+	 */
+	public static override readonly DataTemplate: Partial<APIMediaGalleryComponent> = {};
+
+	/**
+	 * @param data - The raw data received from the API for the media gallery
 	 */
 	public constructor(data: Partialize<APIMediaGalleryComponent, Omitted>) {
 		super(data);

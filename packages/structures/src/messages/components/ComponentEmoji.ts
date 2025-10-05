@@ -8,7 +8,12 @@ export class ComponentEmoji<Omitted extends keyof APIMessageComponentEmoji | '' 
 	Omitted
 > {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * The template used for removing data from the raw data stored for each ComponentEmoji.
+	 */
+	public static override readonly DataTemplate: Partial<APIMessageComponentEmoji> = {};
+
+	/**
+	 * @param data - The raw data received from the API for the component emoji
 	 */
 	public constructor(data: Partialize<APIMessageComponentEmoji, Omitted>) {
 		super(data);

@@ -14,7 +14,12 @@ export class ThumbnailComponent<Omitted extends keyof APIThumbnailComponent | ''
 	Omitted
 > {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * The template used for removing data from the raw data stored for each ThumbnailComponent.
+	 */
+	public static override readonly DataTemplate: Partial<APIThumbnailComponent> = {};
+
+	/**
+	 * @param data - The raw data received from the API for the thumbnail
 	 */
 	public constructor(data: Partialize<APIThumbnailComponent, Omitted>) {
 		super(data);

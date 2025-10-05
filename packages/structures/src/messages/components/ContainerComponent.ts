@@ -14,7 +14,12 @@ export class ContainerComponent<Omitted extends keyof APIContainerComponent | ''
 	Omitted
 > {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * The template used for removing data from the raw data stored for each ContainerComponent.
+	 */
+	public static override readonly DataTemplate: Partial<APIContainerComponent> = {};
+
+	/**
+	 * @param data - The raw data received from the API for the container
 	 */
 	public constructor(data: Partialize<APIContainerComponent, Omitted>) {
 		super(data);

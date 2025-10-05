@@ -14,7 +14,12 @@ export class StringSelectMenuOption<Omitted extends keyof APISelectMenuOption | 
 	Omitted
 > {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * The template used for removing data from the raw data stored for each StringSelectMenuOption.
+	 */
+	public static override readonly DataTemplate: Partial<APISelectMenuOption> = {};
+
+	/**
+	 * @param data - The raw data received from the API for the string select menu option
 	 */
 	public constructor(data: Partialize<APISelectMenuOption, Omitted>) {
 		super(data);

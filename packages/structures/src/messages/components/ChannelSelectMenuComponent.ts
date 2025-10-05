@@ -12,7 +12,12 @@ export class ChannelSelectMenuComponent<
 	Omitted extends keyof APIChannelSelectComponent | '' = '',
 > extends SelectMenuComponent<APIChannelSelectComponent, Omitted> {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * The template used for removing data from the raw data stored for each ChannelSelectMenuComponent.
+	 */
+	public static override readonly DataTemplate: Partial<APIChannelSelectComponent> = {};
+
+	/**
+	 * @param data - The raw data received from the API for the channel select menu
 	 */
 	public constructor(data: Partialize<APIChannelSelectComponent, Omitted>) {
 		super(data);

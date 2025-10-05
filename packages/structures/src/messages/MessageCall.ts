@@ -8,7 +8,7 @@ export class MessageCall<Omitted extends keyof APIMessageCall | '' = 'ended_time
 	Omitted
 > {
 	/**
-	 * The template used for removing data from the raw data stored for each Connection
+	 * The template used for removing data from the raw data stored for each MessageCall
 	 */
 	public static override DataTemplate: Partial<APIMessageCall> = {
 		set ended_timestamp(_: string) {},
@@ -17,7 +17,7 @@ export class MessageCall<Omitted extends keyof APIMessageCall | '' = 'ended_time
 	protected [kEndedTimestamp]: number | null = null;
 
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * @param data - The raw data received from the API for the message call
 	 */
 	public constructor(data: Partialize<APIMessageCall, Omitted>) {
 		super(data);

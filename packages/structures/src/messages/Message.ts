@@ -1,25 +1,18 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import { MessageReferenceType, type APIMessage, type MessageFlags } from 'discord-api-types/v10';
+import type { APIMessage, MessageFlags } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { MessageFlagsBitField } from '../bitfields/MessageFlagsBitField.js';
 import { kData, kEditedTimestamp } from '../utils/symbols.js';
 import { isIdSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
 
-// TODO: missing substructures: message_reference, message_snapshots, poll, reactions, resolved(?), role_subscriptions_data, sticker_items,
-
-export interface MessageReference {
-	channelId: string | null;
-	guildId: string | null;
-	messageId: string | null;
-	type: MessageReferenceType;
-}
+// TODO: missing substructures: resolved(?), sticker_items, application
 
 /**
  * Represents a message on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @remarks has substructures `MessageActivity`, `MessageCall`, `MessageMentions`, `Attachment`, all the different `Component`s, ... which need to be instantiated and stored by an extending class using it
+ * @remarks has substructures `Message`, `Channel`, `MessageActivity`, `MessageCall`, `MessageReference`, `Attachment`, `ChannelMention`, `Reaction`, `Poll`, `RoleSubscriptionData`, all the different `Component`s, ... which need to be instantiated and stored by an extending class using it
  */
 export class Message<Omitted extends keyof APIMessage | '' = 'edited_timestamp' | 'timestamp'> extends Structure<
 	APIMessage,
@@ -142,31 +135,6 @@ export class Message<Omitted extends keyof APIMessage | '' = 'edited_timestamp' 
 	 */
 	public get position() {
 		return this[kData].position;
-	}
-
-	public get messageReference(): MessageReference | null {
-		if (typeof this[kData].message_reference === 'object' && this[kData].message_reference !== null) {
-			return {
-				type:
-					'type' in this[kData].message_reference
-						? (this[kData].message_reference.type as MessageReferenceType)
-						: MessageReferenceType.Default,
-				messageId:
-					'message_id' in this[kData].message_reference && typeof this[kData].message_reference.message_id === 'string'
-						? this[kData].message_reference.message_id
-						: null,
-				channelId:
-					'channel_id' in this[kData].message_reference && typeof this[kData].message_reference.channel_id === 'string'
-						? this[kData].message_reference.channel_id
-						: null,
-				guildId:
-					'guild_id' in this[kData].message_reference && typeof this[kData].message_reference.guild_id === 'string'
-						? this[kData].message_reference.guild_id
-						: null,
-			};
-		}
-
-		return null;
 	}
 
 	/**

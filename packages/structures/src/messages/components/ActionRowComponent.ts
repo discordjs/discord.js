@@ -14,7 +14,12 @@ export class ActionRowComponent<
 	Omitted extends keyof APIActionRowComponent<Type> | '' = '',
 > extends Component<ComponentDataType<ComponentType.ActionRow>, Omitted> {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * The template used for removing data from the raw data stored for each ActionRowComponent.
+	 */
+	public static override readonly DataTemplate: Partial<ComponentDataType<ComponentType.ActionRow>> = {};
+
+	/**
+	 * @param data - The raw data received from the API for the action row
 	 */
 	public constructor(data: Partialize<ComponentDataType<ComponentType.ActionRow>, Omitted>) {
 		super(data);

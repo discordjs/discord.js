@@ -24,7 +24,7 @@ export class EmbedFooter<Omitted extends keyof APIEmbedFooter | '' = ''> extends
 		return this[kData].icon_url;
 	}
 
-	public get proxIconUrl() {
+	public get proxyIconUrl() {
 		return this[kData].proxy_icon_url;
 	}
 }

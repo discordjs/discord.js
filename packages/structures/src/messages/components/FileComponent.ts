@@ -14,7 +14,12 @@ export class FileComponent<Omitted extends keyof APIFileComponent | '' = ''> ext
 	Omitted
 > {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * The template used for removing data from the raw data stored for each FileComponent.
+	 */
+	public static override readonly DataTemplate: Partial<APIFileComponent> = {};
+
+	/**
+	 * @param data - The raw data received from the API for the file component
 	 */
 	public constructor(data: Partialize<APIFileComponent, Omitted>) {
 		super(data);

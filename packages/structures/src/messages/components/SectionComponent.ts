@@ -13,7 +13,12 @@ export class SectionComponent<Omitted extends keyof APISectionComponent | '' = '
 	Omitted
 > {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * The template used for removing data from the raw data stored for each SectionComponent.
+	 */
+	public static override readonly DataTemplate: Partial<APISectionComponent> = {};
+
+	/**
+	 * @param data - The raw data received from the API for the section
 	 */
 	public constructor(data: Partialize<APISectionComponent, Omitted>) {
 		super(data);

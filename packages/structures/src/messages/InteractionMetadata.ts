@@ -13,12 +13,12 @@ export type InteractionMetadataType<Type extends InteractionType> = Extract<
 >;
 
 /**
- * Represents video data in an embed on a message.
+ * Represents metadata about the interaction causing a message.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  * @remarks has a substructure `User` which needs to be instantiated and stored by an extending class using it
  */
-export class InteractionMetadata<
+export abstract class InteractionMetadata<
 	Type extends InteractionType,
 	Omitted extends keyof InteractionMetadataType<Type> | '' = '',
 > extends Structure<InteractionMetadataType<Type>, Omitted> {
