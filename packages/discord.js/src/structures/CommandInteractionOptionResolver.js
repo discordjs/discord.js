@@ -328,7 +328,10 @@ class CommandInteractionOptionResolver {
    */
   getFocused() {
     const focusedOption = this._hoistedOptions.find(option => option.focused);
-    if (!focusedOption) throw new DiscordjsTypeError(ErrorCodes.AutocompleteInteractionOptionNoFocusedOption);
+    if (!focusedOption) {
+      throw new DiscordjsTypeError(ErrorCodes.AutocompleteInteractionOptionNoFocusedOption);
+    }
+
     return focusedOption;
   }
 }

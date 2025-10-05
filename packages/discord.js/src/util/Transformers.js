@@ -11,10 +11,22 @@ const { AuthorizingIntegrationOwners } = require('../structures/AuthorizingInteg
  * @returns {*}
  */
 function toSnakeCase(obj) {
-  if (typeof obj !== 'object' || !obj) return obj;
-  if (obj instanceof Date) return obj;
-  if (isJSONEncodable(obj)) return toSnakeCase(obj.toJSON());
-  if (Array.isArray(obj)) return obj.map(toSnakeCase);
+  if (typeof obj !== 'object' || !obj) {
+    return obj;
+  }
+
+  if (obj instanceof Date) {
+    return obj;
+  }
+
+  if (isJSONEncodable(obj)) {
+    return toSnakeCase(obj.toJSON());
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(toSnakeCase);
+  }
+
   return Object.fromEntries(Object.entries(obj).map(([key, value]) => [snakeCase(key), toSnakeCase(value)]));
 }
 
@@ -108,7 +120,9 @@ function _transformAPIIncidentsData(data) {
  * @ignore
  */
 function _transformCollectibles(collectibles) {
-  if (!collectibles.nameplate) return { nameplate: null };
+  if (!collectibles.nameplate) {
+    return { nameplate: null };
+  }
 
   return {
     nameplate: {

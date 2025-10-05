@@ -48,7 +48,9 @@ class ModalComponentResolver {
     this.hoistedComponents = components.reduce((accumulator, next) => {
       // For legacy support of action rows
       if ('components' in next) {
-        for (const component of next.components) accumulator.set(component.customId, component);
+        for (const component of next.components) {
+          accumulator.set(component.customId, component);
+        }
       }
 
       // For label components
@@ -69,7 +71,9 @@ class ModalComponentResolver {
   getComponent(customId) {
     const component = this.hoistedComponents.get(customId);
 
-    if (!component) throw new DiscordjsTypeError(ErrorCodes.ModalSubmitInteractionComponentNotFound, customId);
+    if (!component) {
+      throw new DiscordjsTypeError(ErrorCodes.ModalSubmitInteractionComponentNotFound, customId);
+    }
 
     return component;
   }

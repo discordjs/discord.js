@@ -149,7 +149,9 @@ export class DAVESession extends EventEmitter {
 	 * @throws Will throw if there is not an active session or the user id provided is invalid or not in the session.
 	 */
 	public async getVerificationCode(userId: string): Promise<string> {
-		if (!this.session) throw new Error('Session not available');
+		if (!this.session) {
+			throw new Error('Session not available');
+		}
 		return this.session.getVerificationCode(userId);
 	}
 
@@ -180,7 +182,9 @@ export class DAVESession extends EventEmitter {
 	 * @param externalSender - The external sender
 	 */
 	public setExternalSender(externalSender: Buffer) {
-		if (!this.session) throw new Error('No session available');
+		if (!this.session) {
+			throw new Error('No session available');
+		}
 		this.session.setExternalSender(externalSender);
 		this.emit('debug', 'Set MLS external sender');
 	}
@@ -199,7 +203,9 @@ export class DAVESession extends EventEmitter {
 		if (data.transition_id === 0) {
 			this.executeTransition(data.transition_id);
 		} else {
-			if (data.protocol_version === 0) this.session?.setPassthroughMode(true, TRANSITION_EXPIRY_PENDING_DOWNGRADE);
+			if (data.protocol_version === 0) {
+				this.session?.setPassthroughMode(true, TRANSITION_EXPIRY_PENDING_DOWNGRADE);
+			}
 			return true;
 		}
 
@@ -259,7 +265,9 @@ export class DAVESession extends EventEmitter {
 	 * @param transitionId - The transition id to invalidate
 	 */
 	public recoverFromInvalidTransition(transitionId: number) {
-		if (this.reinitializing) return;
+		if (this.reinitializing) {
+			return;
+		}
 		this.emit('debug', `Invalidating transition ${transitionId}`);
 		this.reinitializing = true;
 		this.consecutiveFailures = 0;
@@ -275,7 +283,9 @@ export class DAVESession extends EventEmitter {
 	 * @returns The payload to send back to the voice server, if there is one
 	 */
 	public processProposals(payload: Buffer, connectedClients: Set<string>): Buffer | undefined {
-		if (!this.session) throw new Error('No session available');
+		if (!this.session) {
+			throw new Error('No session available');
+		}
 		const optype = payload.readUInt8(0) as 0 | 1;
 		const { commit, welcome } = this.session.processProposals(
 			optype,
@@ -283,7 +293,9 @@ export class DAVESession extends EventEmitter {
 			Array.from(connectedClients),
 		);
 		this.emit('debug', 'MLS proposals processed');
-		if (!commit) return;
+		if (!commit) {
+			return;
+		}
 		return welcome ? Buffer.concat([commit, welcome]) : commit;
 	}
 
@@ -294,7 +306,9 @@ export class DAVESession extends EventEmitter {
 	 * @returns The transaction id and whether it was successful
 	 */
 	public processCommit(payload: Buffer): TransitionResult {
-		if (!this.session) throw new Error('No session available');
+		if (!this.session) {
+			throw new Error('No session available');
+		}
 		const transitionId = payload.readUInt16BE(0);
 		try {
 			this.session.processCommit(payload.subarray(2));
@@ -321,7 +335,9 @@ export class DAVESession extends EventEmitter {
 	 * @returns The transaction id and whether it was successful
 	 */
 	public processWelcome(payload: Buffer): TransitionResult {
-		if (!this.session) throw new Error('No session available');
+		if (!this.session) {
+			throw new Error('No session available');
+		}
 		const transitionId = payload.readUInt16BE(0);
 		try {
 			this.session.processWelcome(payload.subarray(2));
@@ -347,7 +363,9 @@ export class DAVESession extends EventEmitter {
 	 * @param packet - The packet to encrypt
 	 */
 	public encrypt(packet: Buffer) {
-		if (this.protocolVersion === 0 || !this.session?.ready || packet.equals(SILENCE_FRAME)) return packet;
+		if (this.protocolVersion === 0 || !this.session?.ready || packet.equals(SILENCE_FRAME)) {
+			return packet;
+		}
 		return this.session.encryptOpus(packet);
 	}
 
@@ -360,7 +378,9 @@ export class DAVESession extends EventEmitter {
 	 */
 	public decrypt(packet: Buffer, userId: string) {
 		const canDecrypt = this.session?.ready && (this.protocolVersion !== 0 || this.session?.canPassthrough(userId));
-		if (packet.equals(SILENCE_FRAME) || !canDecrypt || !this.session) return packet;
+		if (packet.equals(SILENCE_FRAME) || !canDecrypt || !this.session) {
+			return packet;
+		}
 		try {
 			// @ts-expect-error - const enum is exported and works (todo: drop const modifier on Davey end)
 			const buffer = this.session.decrypt(userId, Davey.MediaType.AUDIO, packet);
@@ -371,8 +391,11 @@ export class DAVESession extends EventEmitter {
 				this.consecutiveFailures++;
 				this.emit('debug', `Failed to decrypt a packet (${this.consecutiveFailures} consecutive fails)`);
 				if (this.consecutiveFailures > this.failureTolerance) {
-					if (this.lastTransitionId) this.recoverFromInvalidTransition(this.lastTransitionId);
-					else throw error;
+					if (this.lastTransitionId) {
+						this.recoverFromInvalidTransition(this.lastTransitionId);
+					} else {
+						throw error;
+					}
 				}
 			} else if (this.reinitializing) {
 				this.emit('debug', 'Failed to decrypt a packet (reinitializing session)');

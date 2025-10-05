@@ -107,7 +107,9 @@ export abstract class BitField<Flags extends string> {
 			total |= this.constructor.resolve(bit);
 		}
 
-		if (Object.isFrozen(this)) return new this.constructor(this.bitField | total);
+		if (Object.isFrozen(this)) {
+			return new this.constructor(this.bitField | total);
+		}
 		this.bitField |= total;
 		return this;
 	}
@@ -124,7 +126,9 @@ export abstract class BitField<Flags extends string> {
 			total |= this.constructor.resolve(bit);
 		}
 
-		if (Object.isFrozen(this)) return new this.constructor(this.bitField & ~total);
+		if (Object.isFrozen(this)) {
+			return new this.constructor(this.bitField & ~total);
+		}
 		this.bitField &= ~total;
 		return this;
 	}
@@ -138,8 +142,9 @@ export abstract class BitField<Flags extends string> {
 	public serialize(...hasParams: readonly unknown[]) {
 		const serialized: Partial<Record<keyof Flags, boolean>> = {};
 		for (const [flag, bit] of Object.entries(this.constructor.Flags)) {
-			if (Number.isNaN(Number(flag)) && (bit as bigint | number) > 0)
+			if (Number.isNaN(Number(flag)) && (bit as bigint | number) > 0) {
 				serialized[flag as keyof Flags] = this.has(bit as bigint | number, ...hasParams);
+			}
 		}
 
 		return serialized;
@@ -175,8 +180,9 @@ export abstract class BitField<Flags extends string> {
 
 	public *[Symbol.iterator](...hasParams: unknown[]) {
 		for (const [bitName, bit] of Object.entries(this.constructor.Flags)) {
-			if (Number.isNaN(Number(bitName)) && (bit as bigint | number) > 0 && this.has(bit as Flags, ...hasParams))
+			if (Number.isNaN(Number(bitName)) && (bit as bigint | number) > 0 && this.has(bit as Flags, ...hasParams)) {
 				yield bitName as Flags;
+			}
 		}
 	}
 
@@ -188,16 +194,26 @@ export abstract class BitField<Flags extends string> {
 	 */
 	public static resolve<Flags extends string = string>(bit: BitFieldResolvable<Flags>): bigint {
 		const DefaultBit = this.DefaultBit;
-		if (typeof bit === 'bigint' && bit >= DefaultBit) return bit;
-		if (typeof bit === 'number' && BigInt(bit) >= DefaultBit) return BigInt(bit);
-		if (bit instanceof BitField) return bit.bitField;
+		if (typeof bit === 'bigint' && bit >= DefaultBit) {
+			return bit;
+		}
+		if (typeof bit === 'number' && BigInt(bit) >= DefaultBit) {
+			return BigInt(bit);
+		}
+		if (bit instanceof BitField) {
+			return bit.bitField;
+		}
 		if (Array.isArray(bit)) {
 			return bit.map((bit_) => this.resolve(bit_)).reduce((prev, bit_) => prev | bit_, DefaultBit);
 		}
 
 		if (typeof bit === 'string') {
-			if (!Number.isNaN(Number(bit))) return BigInt(bit);
-			if (bit in this.Flags) return this.Flags[bit as keyof typeof this.Flags];
+			if (!Number.isNaN(Number(bit))) {
+				return BigInt(bit);
+			}
+			if (bit in this.Flags) {
+				return this.Flags[bit as keyof typeof this.Flags];
+			}
 		}
 
 		throw new Error(`BitFieldInvalid: ${JSON.stringify(bit)}`);

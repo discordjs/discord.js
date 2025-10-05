@@ -679,8 +679,11 @@ class Message extends Base {
     return new Promise((resolve, reject) => {
       const collector = this.createReactionCollector(options);
       collector.once('end', (reactions, reason) => {
-        if (options.errors?.includes(reason)) reject(reactions);
-        else resolve(reactions);
+        if (options.errors?.includes(reason)) {
+          reject(reactions);
+        } else {
+          resolve(reactions);
+        }
       });
     });
   }
@@ -743,8 +746,11 @@ class Message extends Base {
       const collector = this.createMessageComponentCollector(_options);
       collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
-        if (interaction) resolve(interaction);
-        else reject(new DiscordjsError(ErrorCodes.InteractionCollectorError, reason));
+        if (interaction) {
+          resolve(interaction);
+        } else {
+          reject(new DiscordjsError(ErrorCodes.InteractionCollectorError, reason));
+        }
       });
     });
   }
@@ -765,10 +771,15 @@ class Message extends Base {
     // Regardless of permissions thread messages cannot be edited if
     // the thread is archived or the thread is locked and the bot does not have permission to manage threads.
     if (this.channel?.isThread()) {
-      if (this.channel.archived) return false;
+      if (this.channel.archived) {
+        return false;
+      }
+
       if (this.channel.locked) {
         const permissions = this.channel.permissionsFor(this.client.user);
-        if (!permissions?.has(PermissionFlagsBits.ManageThreads, true)) return false;
+        if (!permissions?.has(PermissionFlagsBits.ManageThreads, true)) {
+          return false;
+        }
       }
     }
 
@@ -782,7 +793,9 @@ class Message extends Base {
    * @readonly
    */
   get deletable() {
-    if (UndeletableMessageTypes.includes(this.type)) return false;
+    if (UndeletableMessageTypes.includes(this.type)) {
+      return false;
+    }
 
     if (!this.guild) {
       return this.author.id === this.client.user.id;
@@ -794,9 +807,14 @@ class Message extends Base {
     }
 
     const permissions = this.channel?.permissionsFor(this.client.user);
-    if (!permissions) return false;
+    if (!permissions) {
+      return false;
+    }
+
     // This flag allows deleting even if timed out
-    if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
+    if (permissions.has(PermissionFlagsBits.Administrator, false)) {
+      return true;
+    }
 
     // The auto moderation action message author is the reference message author
     return (
@@ -833,12 +851,20 @@ class Message extends Base {
   get pinnable() {
     const { channel } = this;
 
-    if (this.system) return false;
-    if (!this.guild) return true;
-    if (!channel || channel.isVoiceBased() || !channel.viewable) return false;
+    if (this.system) {
+      return false;
+    }
+    if (!this.guild) {
+      return true;
+    }
+    if (!channel || channel.isVoiceBased() || !channel.viewable) {
+      return false;
+    }
 
     const permissions = channel.permissionsFor(this.client.user);
-    if (!permissions) return false;
+    if (!permissions) {
+      return false;
+    }
 
     return permissions.has(PermissionFlagsBits.ReadMessageHistory | PermissionFlagsBits.PinMessages);
   }
@@ -849,11 +875,20 @@ class Message extends Base {
    * @returns {Promise<Message>}
    */
   async fetchReference() {
-    if (!this.reference) throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
+    if (!this.reference) {
+      throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
+    }
+
     const { channelId, messageId } = this.reference;
-    if (!messageId) throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
+    if (!messageId) {
+      throw new DiscordjsError(ErrorCodes.MessageReferenceMissing);
+    }
+
     const channel = this.client.channels.resolve(channelId);
-    if (!channel) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
+    if (!channel) {
+      throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
+    }
+
     return channel.messages.fetch(messageId);
   }
 
@@ -892,7 +927,10 @@ class Message extends Base {
    *   .catch(console.error);
    */
   async edit(options) {
-    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
+    if (!this.channel) {
+      throw new DiscordjsError(ErrorCodes.ChannelNotCached);
+    }
+
     return this.channel.messages.edit(this, options);
   }
 
@@ -909,7 +947,10 @@ class Message extends Base {
    * }
    */
   async crosspost() {
-    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
+    if (!this.channel) {
+      throw new DiscordjsError(ErrorCodes.ChannelNotCached);
+    }
+
     return this.channel.messages.crosspost(this.id);
   }
 
@@ -925,7 +966,10 @@ class Message extends Base {
    *   .catch(console.error)
    */
   async pin(reason) {
-    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
+    if (!this.channel) {
+      throw new DiscordjsError(ErrorCodes.ChannelNotCached);
+    }
+
     await this.channel.messages.pin(this.id, reason);
     return this;
   }
@@ -942,7 +986,10 @@ class Message extends Base {
    *   .catch(console.error)
    */
   async unpin(reason) {
-    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
+    if (!this.channel) {
+      throw new DiscordjsError(ErrorCodes.ChannelNotCached);
+    }
+
     await this.channel.messages.unpin(this.id, reason);
     return this;
   }
@@ -964,7 +1011,10 @@ class Message extends Base {
    *   .catch(console.error);
    */
   async react(emoji) {
-    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
+    if (!this.channel) {
+      throw new DiscordjsError(ErrorCodes.ChannelNotCached);
+    }
+
     await this.channel.messages.react(this.id, emoji);
 
     return this.client.actions.MessageReactionAdd.handle(
@@ -989,7 +1039,10 @@ class Message extends Base {
    *   .catch(console.error);
    */
   async delete() {
-    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
+    if (!this.channel) {
+      throw new DiscordjsError(ErrorCodes.ChannelNotCached);
+    }
+
     await this.channel.messages.delete(this.id);
     return this;
   }
@@ -1069,12 +1122,18 @@ class Message extends Base {
    * @returns {Promise<ThreadChannel>}
    */
   async startThread(options = {}) {
-    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
+    if (!this.channel) {
+      throw new DiscordjsError(ErrorCodes.ChannelNotCached);
+    }
+
     if (![ChannelType.GuildText, ChannelType.GuildAnnouncement].includes(this.channel.type)) {
       throw new DiscordjsError(ErrorCodes.MessageThreadParent);
     }
 
-    if (this.hasThread) throw new DiscordjsError(ErrorCodes.MessageExistingThread);
+    if (this.hasThread) {
+      throw new DiscordjsError(ErrorCodes.MessageExistingThread);
+    }
+
     return this.channel.threads.create({ ...options, startMessage: this });
   }
 
@@ -1085,7 +1144,10 @@ class Message extends Base {
    * @returns {Promise<Message>}
    */
   async fetch(force = true) {
-    if (!this.channel) throw new DiscordjsError(ErrorCodes.ChannelNotCached);
+    if (!this.channel) {
+      throw new DiscordjsError(ErrorCodes.ChannelNotCached);
+    }
+
     return this.channel.messages.fetch({ message: this.id, force });
   }
 
@@ -1095,8 +1157,14 @@ class Message extends Base {
    * @returns {Promise<?Webhook>}
    */
   async fetchWebhook() {
-    if (!this.webhookId) throw new DiscordjsError(ErrorCodes.WebhookMessage);
-    if (this.webhookId === this.applicationId) throw new DiscordjsError(ErrorCodes.WebhookApplication);
+    if (!this.webhookId) {
+      throw new DiscordjsError(ErrorCodes.WebhookMessage);
+    }
+
+    if (this.webhookId === this.applicationId) {
+      throw new DiscordjsError(ErrorCodes.WebhookApplication);
+    }
+
     return this.client.fetchWebhook(this.webhookId);
   }
 
@@ -1147,9 +1215,14 @@ class Message extends Base {
    * @returns {boolean}
    */
   equals(message, rawData) {
-    if (!message) return false;
+    if (!message) {
+      return false;
+    }
+
     const embedUpdate = !message.author && !message.attachments;
-    if (embedUpdate) return this.id === message.id && this.embeds.length === message.embeds.length;
+    if (embedUpdate) {
+      return this.id === message.id && this.embeds.length === message.embeds.length;
+    }
 
     let equal =
       this.id === message.id &&

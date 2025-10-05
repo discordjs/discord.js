@@ -13,7 +13,9 @@ class MessageCreateAction extends Action {
       ...('channel_type' in data && { type: data.channel_type }),
     });
     if (channel) {
-      if (!channel.isTextBased()) return {};
+      if (!channel.isTextBased()) {
+        return {};
+      }
 
       if (channel.isThread()) {
         channel.messageCount++;
@@ -21,7 +23,10 @@ class MessageCreateAction extends Action {
       }
 
       const existing = channel.messages.cache.get(data.id);
-      if (existing && existing.author?.id !== this.client.user.id) return { message: existing };
+      if (existing && existing.author?.id !== this.client.user.id) {
+        return { message: existing };
+      }
+
       const message = existing ?? channel.messages._add(data);
       channel.lastMessageId = data.id;
 

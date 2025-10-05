@@ -174,9 +174,13 @@ class ModalSubmitInteraction extends BaseInteraction {
     };
 
     // Text display components do not have custom ids.
-    if ('custom_id' in rawComponent) data.customId = rawComponent.custom_id;
+    if ('custom_id' in rawComponent) {
+      data.customId = rawComponent.custom_id;
+    }
 
-    if ('value' in rawComponent) data.value = rawComponent.value;
+    if ('value' in rawComponent) {
+      data.value = rawComponent.value;
+    }
 
     if (rawComponent.values) {
       data.values = rawComponent.values;

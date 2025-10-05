@@ -6,16 +6,24 @@ const { Action } = require('./Action.js');
 class MessagePollVoteRemoveAction extends Action {
   handle(data) {
     const channel = this.getChannel({ id: data.channel_id, ...('guild_id' in data && { guild_id: data.guild_id }) });
-    if (!channel?.isTextBased()) return false;
+    if (!channel?.isTextBased()) {
+      return false;
+    }
 
     const message = this.getMessage(data, channel);
-    if (!message) return false;
+    if (!message) {
+      return false;
+    }
 
     const poll = this.getPoll(data, message, channel);
-    if (!poll) return false;
+    if (!poll) {
+      return false;
+    }
 
     const answer = poll.answers.get(data.answer_id);
-    if (!answer) return false;
+    if (!answer) {
+      return false;
+    }
 
     answer.voters.cache.delete(data.user_id);
 

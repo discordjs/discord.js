@@ -104,7 +104,10 @@ class PermissionOverwriteManager extends CachedManager {
     let resolvedType = type;
     if (typeof resolvedType !== 'number') {
       const resolvedUserOrRole = this.channel.guild.roles.resolve(userOrRole) ?? this.client.users.resolve(userOrRole);
-      if (!resolvedUserOrRole) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'parameter', 'User nor a Role');
+      if (!resolvedUserOrRole) {
+        throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'parameter', 'User nor a Role');
+      }
+
       resolvedType = resolvedUserOrRole instanceof Role ? OverwriteType.Role : OverwriteType.Member;
     }
 
@@ -167,7 +170,9 @@ class PermissionOverwriteManager extends CachedManager {
    */
   async delete(userOrRole, reason) {
     const userOrRoleId = this.channel.guild.roles.resolveId(userOrRole) ?? this.client.users.resolveId(userOrRole);
-    if (!userOrRoleId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'parameter', 'User nor a Role');
+    if (!userOrRoleId) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'parameter', 'User nor a Role');
+    }
 
     await this.client.rest.delete(Routes.channelPermission(this.channel.id, userOrRoleId), { reason });
     return this.channel;

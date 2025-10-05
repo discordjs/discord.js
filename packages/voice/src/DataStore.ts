@@ -35,7 +35,10 @@ groups.set('default', new Map());
 
 function getOrCreateGroup(group: string) {
 	const existing = groups.get(group);
-	if (existing) return existing;
+	if (existing) {
+		return existing;
+	}
+
 	const map = new Map<string, VoiceConnection>();
 	groups.set(group, map);
 	return map;
@@ -114,7 +117,9 @@ const audioPlayers: AudioPlayer[] = [];
  * the next audio frame.
  */
 function audioCycleStep() {
-	if (nextTime === -1) return;
+	if (nextTime === -1) {
+		return;
+	}
 
 	nextTime += FRAME_LENGTH;
 	const available = audioPlayers.filter((player) => player.checkPlayable());
@@ -165,7 +170,10 @@ export function hasAudioPlayer(target: AudioPlayer) {
  * @param player - The player to track
  */
 export function addAudioPlayer(player: AudioPlayer) {
-	if (hasAudioPlayer(player)) return player;
+	if (hasAudioPlayer(player)) {
+		return player;
+	}
+
 	audioPlayers.push(player);
 	if (audioPlayers.length === 1) {
 		nextTime = Date.now();
@@ -180,10 +188,15 @@ export function addAudioPlayer(player: AudioPlayer) {
  */
 export function deleteAudioPlayer(player: AudioPlayer) {
 	const index = audioPlayers.indexOf(player);
-	if (index === -1) return;
+	if (index === -1) {
+		return;
+	}
+
 	audioPlayers.splice(index, 1);
 	if (audioPlayers.length === 0) {
 		nextTime = -1;
-		if (audioCycleInterval !== undefined) clearTimeout(audioCycleInterval);
+		if (audioCycleInterval !== undefined) {
+			clearTimeout(audioCycleInterval);
+		}
 	}
 }

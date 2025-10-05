@@ -415,7 +415,9 @@ class ApplicationCommand extends Base {
    */
   equals(command, enforceOptionOrder = false) {
     // If given an id, check if the id matches
-    if (command.id && this.id !== command.id) return false;
+    if (command.id && this.id !== command.id) {
+      return false;
+    }
 
     let defaultMemberPermissions = null;
 
@@ -473,7 +475,10 @@ class ApplicationCommand extends Base {
    * @returns {boolean}
    */
   static optionsEqual(existing, options, enforceOptionOrder = false) {
-    if (existing.length !== options.length) return false;
+    if (existing.length !== options.length) {
+      return false;
+    }
+
     if (enforceOptionOrder) {
       return existing.every((option, index) => this._optionEquals(option, options[index], enforceOptionOrder));
     }
@@ -481,7 +486,9 @@ class ApplicationCommand extends Base {
     const newOptions = new Map(options.map(option => [option.name, option]));
     for (const option of existing) {
       const foundOption = newOptions.get(option.name);
-      if (!foundOption || !this._optionEquals(option, foundOption)) return false;
+      if (!foundOption || !this._optionEquals(option, foundOption)) {
+        return false;
+      }
     }
 
     return true;
@@ -546,7 +553,9 @@ class ApplicationCommand extends Base {
         const newChoices = new Map(option.choices.map(choice => [choice.name, choice]));
         for (const choice of existing.choices) {
           const foundChoice = newChoices.get(choice.name);
-          if (!foundChoice || foundChoice.value !== choice.value) return false;
+          if (!foundChoice || foundChoice.value !== choice.value) {
+            return false;
+          }
         }
       }
     }
@@ -554,14 +563,18 @@ class ApplicationCommand extends Base {
     if (existing.channelTypes) {
       const newTypes = option.channelTypes ?? option.channel_types;
       for (const type of existing.channelTypes) {
-        if (!newTypes.includes(type)) return false;
+        if (!newTypes.includes(type)) {
+          return false;
+        }
       }
     }
 
     if (existing.fileTypes) {
       const newTypes = option.fileTypes ?? option.file_types;
       for (const type of existing.fileTypes) {
-        if (!newTypes.includes(type)) return false;
+        if (!newTypes.includes(type)) {
+          return false;
+        }
       }
     }
 

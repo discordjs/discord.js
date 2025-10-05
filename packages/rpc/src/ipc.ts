@@ -43,7 +43,9 @@ async function getIPCPath(id: number) {
 
 	for (const base of bases) {
 		const candidate = path.join(base, `discord-ipc-${id}`);
-		if (await canOpenFile(candidate)) return candidate;
+		if (await canOpenFile(candidate)) {
+			return candidate;
+		}
 	}
 
 	return path.join(prefix, `discord-ipc-${id}`);
@@ -106,7 +108,9 @@ export class IPCTransport extends AsyncEventEmitter {
 				this.socket = await getIPC(id);
 				break;
 			} catch (error: unknown) {
-				if (id === 9) throw error;
+				if (id === 9) {
+					throw error;
+				}
 			}
 		}
 
@@ -135,7 +139,9 @@ export class IPCTransport extends AsyncEventEmitter {
 			chunks.push(packet);
 		}
 
-		if (chunks.length === 0) return;
+		if (chunks.length === 0) {
+			return;
+		}
 
 		const packets = Buffer.concat([this.working.buffer, ...chunks]);
 

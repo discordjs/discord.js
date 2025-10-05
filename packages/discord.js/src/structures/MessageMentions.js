@@ -133,7 +133,9 @@ class MessageMentions {
       if (guild) {
         for (const mention of roles) {
           const role = guild.roles.cache.get(mention);
-          if (role) this.roles.set(role.id, role);
+          if (role) {
+            this.roles.set(role.id, role);
+          }
         }
       }
     } else {
@@ -214,12 +216,20 @@ class MessageMentions {
    * @readonly
    */
   get members() {
-    if (this._members) return this._members;
-    if (!this.guild) return null;
+    if (this._members) {
+      return this._members;
+    }
+
+    if (!this.guild) {
+      return null;
+    }
+
     this._members = new Collection();
     for (const user of this.users.values()) {
       const member = this.guild.members.resolve(user);
-      if (member) this._members.set(member.user.id, member);
+      if (member) {
+        this._members.set(member.user.id, member);
+      }
     }
 
     return this._members;
@@ -233,13 +243,18 @@ class MessageMentions {
    * @readonly
    */
   get channels() {
-    if (this._channels) return this._channels;
+    if (this._channels) {
+      return this._channels;
+    }
+
     this._channels = new Collection();
     let matches;
 
     while ((matches = this.constructor.GlobalChannelsPattern.exec(this._content)) !== null) {
       const channel = this.client.channels.cache.get(matches.groups.id);
-      if (channel) this._channels.set(channel.id, channel);
+      if (channel) {
+        this._channels.set(channel.id, channel);
+      }
     }
 
     return this._channels;
@@ -253,12 +268,17 @@ class MessageMentions {
    * @readonly
    */
   get parsedUsers() {
-    if (this._parsedUsers) return this._parsedUsers;
+    if (this._parsedUsers) {
+      return this._parsedUsers;
+    }
+
     this._parsedUsers = new Collection();
     let matches;
     while ((matches = this.constructor.GlobalUsersPattern.exec(this._content)) !== null) {
       const user = this.client.users.cache.get(matches[1]);
-      if (user) this._parsedUsers.set(user.id, user);
+      if (user) {
+        this._parsedUsers.set(user.id, user);
+      }
     }
 
     return this._parsedUsers;
@@ -286,26 +306,40 @@ class MessageMentions {
   has(data, { ignoreDirect = false, ignoreRoles = false, ignoreRepliedUser = false, ignoreEveryone = false } = {}) {
     const user = this.client.users.resolve(data);
 
-    if (!ignoreEveryone && user && this.everyone) return true;
+    if (!ignoreEveryone && user && this.everyone) {
+      return true;
+    }
 
     const userWasRepliedTo = user && this.repliedUser?.id === user.id;
 
-    if (!ignoreRepliedUser && userWasRepliedTo && this.users.has(user.id)) return true;
+    if (!ignoreRepliedUser && userWasRepliedTo && this.users.has(user.id)) {
+      return true;
+    }
 
     if (!ignoreDirect) {
-      if (user && (!ignoreRepliedUser || this.parsedUsers.has(user.id)) && this.users.has(user.id)) return true;
+      if (user && (!ignoreRepliedUser || this.parsedUsers.has(user.id)) && this.users.has(user.id)) {
+        return true;
+      }
 
       const role = this.guild?.roles.resolve(data);
-      if (role && this.roles.has(role.id)) return true;
+      if (role && this.roles.has(role.id)) {
+        return true;
+      }
 
       const channel = this.client.channels.resolve(data);
-      if (channel && this.channels.has(channel.id)) return true;
+      if (channel && this.channels.has(channel.id)) {
+        return true;
+      }
     }
 
     if (!ignoreRoles) {
       const member = this.guild?.members.resolve(data);
       if (member) {
-        for (const mentionedRole of this.roles.values()) if (member.roles.cache.has(mentionedRole.id)) return true;
+        for (const mentionedRole of this.roles.values()) {
+          if (member.roles.cache.has(mentionedRole.id)) {
+            return true;
+          }
+        }
       }
     }
 

@@ -12,8 +12,18 @@ const { Webhook } = require('./Webhook.js');
  */
 class GuildAuditLogs {
   constructor(guild, data) {
-    if (data.users) for (const user of data.users) guild.client.users._add(user);
-    if (data.threads) for (const thread of data.threads) guild.client.channels._add(thread, guild);
+    if (data.users) {
+      for (const user of data.users) {
+        guild.client.users._add(user);
+      }
+    }
+
+    if (data.threads) {
+      for (const thread of data.threads) {
+        guild.client.channels._add(thread, guild);
+      }
+    }
+
     /**
      * Cached webhooks
      *

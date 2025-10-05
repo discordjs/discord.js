@@ -54,8 +54,12 @@ class GuildEmojiManager extends CachedManager {
    * @returns {?GuildEmoji}
    */
   resolve(emoji) {
-    if (emoji instanceof ReactionEmoji) return super.cache.get(emoji.id) ?? null;
-    if (emoji instanceof ApplicationEmoji) return super.cache.get(emoji.id) ?? null;
+    if (emoji instanceof ReactionEmoji) {
+      return super.cache.get(emoji.id) ?? null;
+    }
+    if (emoji instanceof ApplicationEmoji) {
+      return super.cache.get(emoji.id) ?? null;
+    }
     return super.resolve(emoji);
   }
 
@@ -66,8 +70,12 @@ class GuildEmojiManager extends CachedManager {
    * @returns {?Snowflake}
    */
   resolveId(emoji) {
-    if (emoji instanceof ReactionEmoji) return emoji.id;
-    if (emoji instanceof ApplicationEmoji) return emoji.id;
+    if (emoji instanceof ReactionEmoji) {
+      return emoji.id;
+    }
+    if (emoji instanceof ApplicationEmoji) {
+      return emoji.id;
+    }
     return super.resolveId(emoji);
   }
 
@@ -88,9 +96,15 @@ class GuildEmojiManager extends CachedManager {
    */
   resolveIdentifier(emoji) {
     const emojiResolvable = this.resolve(emoji);
-    if (emojiResolvable) return emojiResolvable.identifier;
-    if (emoji instanceof ReactionEmoji) return emoji.identifier;
-    if (emoji instanceof ApplicationEmoji) return emoji.identifier;
+    if (emojiResolvable) {
+      return emojiResolvable.identifier;
+    }
+    if (emoji instanceof ReactionEmoji) {
+      return emoji.identifier;
+    }
+    if (emoji instanceof ApplicationEmoji) {
+      return emoji.identifier;
+    }
     if (typeof emoji === 'string') {
       const res = parseEmoji(emoji);
       let identifier = emoji;
@@ -98,7 +112,9 @@ class GuildEmojiManager extends CachedManager {
         identifier = `${res.animated ? 'a:' : ''}${res.name}${res.id ? `:${res.id}` : ''}`;
       }
 
-      if (!identifier.includes('%')) return encodeURIComponent(identifier);
+      if (!identifier.includes('%')) {
+        return encodeURIComponent(identifier);
+      }
       return identifier;
     }
 
@@ -133,7 +149,9 @@ class GuildEmojiManager extends CachedManager {
    */
   async create({ attachment, name, roles, reason }) {
     const image = await resolveImage(attachment);
-    if (!image) throw new DiscordjsTypeError(ErrorCodes.ReqResourceType);
+    if (!image) {
+      throw new DiscordjsTypeError(ErrorCodes.ReqResourceType);
+    }
 
     const body = { image, name };
     if (roles) {
@@ -182,7 +200,9 @@ class GuildEmojiManager extends CachedManager {
     if (id) {
       if (!force) {
         const existing = this.cache.get(id);
-        if (existing) return existing;
+        if (existing) {
+          return existing;
+        }
       }
 
       const emoji = await this.client.rest.get(Routes.guildEmoji(this.guild.id, id));
@@ -191,7 +211,9 @@ class GuildEmojiManager extends CachedManager {
 
     const data = await this.client.rest.get(Routes.guildEmojis(this.guild.id));
     const emojis = new Collection();
-    for (const emoji of data) emojis.set(emoji.id, this._add(emoji, cache));
+    for (const emoji of data) {
+      emojis.set(emoji.id, this._add(emoji, cache));
+    }
     return emojis;
   }
 
@@ -204,7 +226,9 @@ class GuildEmojiManager extends CachedManager {
    */
   async delete(emoji, reason) {
     const id = this.resolveId(emoji);
-    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
+    if (!id) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
+    }
     await this.client.rest.delete(Routes.guildEmoji(this.guild.id, id), { reason });
   }
 
@@ -217,7 +241,9 @@ class GuildEmojiManager extends CachedManager {
    */
   async edit(emoji, options) {
     const id = this.resolveId(emoji);
-    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
+    if (!id) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
+    }
     const roles = options.roles?.map(role => this.guild.roles.resolveId(role));
     const newData = await this.client.rest.patch(Routes.guildEmoji(this.guild.id, id), {
       body: {
@@ -244,13 +270,17 @@ class GuildEmojiManager extends CachedManager {
    */
   async fetchAuthor(emoji) {
     const resolvedEmoji = this.resolve(emoji);
-    if (!resolvedEmoji) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
+    if (!resolvedEmoji) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
+    }
     if (resolvedEmoji.managed) {
       throw new DiscordjsError(ErrorCodes.EmojiManaged);
     }
 
     const { me } = this.guild.members;
-    if (!me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
+    if (!me) {
+      throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
+    }
     if (!me.permissions.any(PermissionFlagsBits.CreateGuildExpressions | PermissionFlagsBits.ManageGuildExpressions)) {
       throw new DiscordjsError(ErrorCodes.MissingGuildExpressionsPermission, this.guild);
     }

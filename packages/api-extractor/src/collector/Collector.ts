@@ -442,7 +442,9 @@ export class Collector {
 	 * The star is used as a delimiter because it is not a legal  identifier character.
 	 */
 	public static getSortKeyIgnoringUnderscore(identifier: string | undefined): string {
-		if (!identifier) return '';
+		if (!identifier) {
+			return '';
+		}
 
 		let parts: string[];
 
@@ -533,7 +535,10 @@ export class Collector {
 		entryPoint: IWorkingPackageEntryPoint,
 		alreadySeenAstEntities: Set<AstEntity>,
 	): void {
-		if (alreadySeenAstEntities.has(astEntity)) return;
+		if (alreadySeenAstEntities.has(astEntity)) {
+			return;
+		}
+
 		alreadySeenAstEntities.add(astEntity);
 
 		if (astEntity instanceof AstSymbol) {

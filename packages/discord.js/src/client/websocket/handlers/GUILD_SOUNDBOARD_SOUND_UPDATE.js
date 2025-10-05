@@ -5,7 +5,9 @@ const { Events } = require('../../../util/Events.js');
 module.exports = (client, { d: data }) => {
   const guild = client.guilds.cache.get(data.guild_id);
 
-  if (!guild) return;
+  if (!guild) {
+    return;
+  }
 
   const oldGuildSoundboardSound = guild.soundboardSounds.cache.get(data.sound_id)?._clone() ?? null;
   const newGuildSoundboardSound = guild.soundboardSounds._add(data);

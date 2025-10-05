@@ -78,9 +78,13 @@ class BaseRole extends Base {
       this.rawPosition = data.position;
     }
 
-    if ('icon' in data) this.icon = data.icon;
+    if ('icon' in data) {
+      this.icon = data.icon;
+    }
 
-    if ('unicode_emoji' in data) this.unicodeEmoji = data.unicode_emoji;
+    if ('unicode_emoji' in data) {
+      this.unicodeEmoji = data.unicode_emoji;
+    }
   }
 
   /**

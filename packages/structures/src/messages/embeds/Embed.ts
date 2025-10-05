@@ -51,7 +51,9 @@ export class Embed<Omitted extends keyof APIEmbed | '' = ''> extends Structure<A
 	 */
 	public get hexColor() {
 		const color = this.color;
-		if (typeof color !== 'number') return color;
+		if (typeof color !== 'number') {
+			return color;
+		}
 		return `#${color.toString(16).padStart(6, '0')}`;
 	}
 

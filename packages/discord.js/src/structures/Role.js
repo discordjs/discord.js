@@ -137,9 +137,13 @@ class Role extends BaseRole {
    * @readonly
    */
   get editable() {
-    if (this.managed) return false;
+    if (this.managed) {
+      return false;
+    }
     const clientMember = this.guild.members.resolve(this.client.user);
-    if (!clientMember.permissions.has(PermissionFlagsBits.ManageRoles)) return false;
+    if (!clientMember.permissions.has(PermissionFlagsBits.ManageRoles)) {
+      return false;
+    }
     return clientMember.roles.highest.comparePositionTo(this) > 0;
   }
 
@@ -216,7 +220,9 @@ class Role extends BaseRole {
    */
   permissionsIn(channel, checkAdmin = true) {
     const resolvedChannel = this.guild.channels.resolve(channel);
-    if (!resolvedChannel) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
+    if (!resolvedChannel) {
+      throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
+    }
     return resolvedChannel.rolePermissions(this, checkAdmin);
   }
 
@@ -409,7 +415,9 @@ class Role extends BaseRole {
   }
 
   toString() {
-    if (this.id === this.guild.id) return '@everyone';
+    if (this.id === this.guild.id) {
+      return '@everyone';
+    }
     return super.toString();
   }
 

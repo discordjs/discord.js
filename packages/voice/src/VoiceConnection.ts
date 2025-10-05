@@ -314,14 +314,18 @@ export class VoiceConnection extends EventEmitter {
 				oldNetworking.destroy();
 			}
 
-			if (newNetworking) this.updateReceiveBindings(newNetworking.state, oldNetworking?.state);
+			if (newNetworking) {
+				this.updateReceiveBindings(newNetworking.state, oldNetworking?.state);
+			}
 		}
 
 		if (newState.status === VoiceConnectionStatus.Ready) {
 			this.rejoinAttempts = 0;
 		} else if (newState.status === VoiceConnectionStatus.Destroyed) {
 			for (const stream of this.receiver.subscriptions.values()) {
-				if (!stream.destroyed) stream.destroy();
+				if (!stream.destroyed) {
+					stream.destroy();
+				}
 			}
 		}
 
@@ -370,9 +374,17 @@ export class VoiceConnection extends EventEmitter {
 	private addStatePacket(packet: GatewayVoiceStateUpdateDispatchData) {
 		this.packets.state = packet;
 
-		if (packet.self_deaf !== undefined) this.joinConfig.selfDeaf = packet.self_deaf;
-		if (packet.self_mute !== undefined) this.joinConfig.selfMute = packet.self_mute;
-		if (packet.channel_id) this.joinConfig.channelId = packet.channel_id;
+		if (packet.self_deaf !== undefined) {
+			this.joinConfig.selfDeaf = packet.self_deaf;
+		}
+
+		if (packet.self_mute !== undefined) {
+			this.joinConfig.selfMute = packet.self_mute;
+		}
+
+		if (packet.channel_id) {
+			this.joinConfig.channelId = packet.channel_id;
+		}
 		/*
 			the channel_id being null doesn't necessarily mean it was intended for the client to leave the voice channel
 			as it may have disconnected due to network failure. This will be gracefully handled once the voice websocket
@@ -428,7 +440,9 @@ export class VoiceConnection extends EventEmitter {
 	 */
 	public configureNetworking() {
 		const { server, state } = this.packets;
-		if (!server || !state || this.state.status === VoiceConnectionStatus.Destroyed || !server.endpoint) return;
+		if (!server || !state || this.state.status === VoiceConnectionStatus.Destroyed || !server.endpoint) {
+			return;
+		}
 
 		const networking = new Networking(
 			{
@@ -473,7 +487,10 @@ export class VoiceConnection extends EventEmitter {
 	 * @param code - The close code
 	 */
 	private onNetworkingClose(code: number) {
-		if (this.state.status === VoiceConnectionStatus.Destroyed) return;
+		if (this.state.status === VoiceConnectionStatus.Destroyed) {
+			return;
+		}
+
 		// If networking closes, try to connect to the voice channel again.
 		if (code === 4_014 || code === 4_021 || code === 4_022) {
 			// Disconnected - these close codes should not trigger a reconnect
@@ -507,9 +524,13 @@ export class VoiceConnection extends EventEmitter {
 	 */
 	private onNetworkingStateChange(oldState: NetworkingState, newState: NetworkingState) {
 		this.updateReceiveBindings(newState, oldState);
-		if (oldState.code === newState.code) return;
-		if (this.state.status !== VoiceConnectionStatus.Connecting && this.state.status !== VoiceConnectionStatus.Ready)
+		if (oldState.code === newState.code) {
 			return;
+		}
+
+		if (this.state.status !== VoiceConnectionStatus.Connecting && this.state.status !== VoiceConnectionStatus.Ready) {
+			return;
+		}
 
 		if (newState.code === NetworkingStatusCode.Ready) {
 			this.state = {
@@ -558,7 +579,10 @@ export class VoiceConnection extends EventEmitter {
 	 */
 	public prepareAudioPacket(buffer: Buffer) {
 		const state = this.state;
-		if (state.status !== VoiceConnectionStatus.Ready) return;
+		if (state.status !== VoiceConnectionStatus.Ready) {
+			return;
+		}
+
 		return state.networking.prepareAudioPacket(buffer);
 	}
 
@@ -567,7 +591,10 @@ export class VoiceConnection extends EventEmitter {
 	 */
 	public dispatchAudio() {
 		const state = this.state;
-		if (state.status !== VoiceConnectionStatus.Ready) return;
+		if (state.status !== VoiceConnectionStatus.Ready) {
+			return;
+		}
+
 		return state.networking.dispatchAudio();
 	}
 
@@ -578,7 +605,10 @@ export class VoiceConnection extends EventEmitter {
 	 */
 	public playOpusPacket(buffer: Buffer) {
 		const state = this.state;
-		if (state.status !== VoiceConnectionStatus.Ready) return;
+		if (state.status !== VoiceConnectionStatus.Ready) {
+			return;
+		}
+
 		state.networking.prepareAudioPacket(buffer);
 		return state.networking.dispatchAudio();
 	}
@@ -657,7 +687,10 @@ export class VoiceConnection extends EventEmitter {
 
 		const notReady = this.state.status !== VoiceConnectionStatus.Ready;
 
-		if (notReady) this.rejoinAttempts++;
+		if (notReady) {
+			this.rejoinAttempts++;
+		}
+
 		Object.assign(this.joinConfig, joinConfig);
 		if (this.state.adapter.sendPayload(createJoinVoiceChannelPayload(this.joinConfig))) {
 			if (notReady) {
@@ -686,7 +719,10 @@ export class VoiceConnection extends EventEmitter {
 	 * @param enabled - Whether or not to show as speaking
 	 */
 	public setSpeaking(enabled: boolean) {
-		if (this.state.status !== VoiceConnectionStatus.Ready) return false;
+		if (this.state.status !== VoiceConnectionStatus.Ready) {
+			return false;
+		}
+
 		// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
 		return this.state.networking.setSpeaking(enabled);
 	}
@@ -698,7 +734,9 @@ export class VoiceConnection extends EventEmitter {
 	 * @returns The created subscription
 	 */
 	public subscribe(player: AudioPlayer) {
-		if (this.state.status === VoiceConnectionStatus.Destroyed) return;
+		if (this.state.status === VoiceConnectionStatus.Destroyed) {
+			return;
+		}
 
 		// eslint-disable-next-line @typescript-eslint/dot-notation
 		const subscription = player['subscribe'](this);

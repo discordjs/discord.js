@@ -78,8 +78,11 @@ class ShardClientUtil {
       switch (this.mode) {
         case 'process':
           process.send(message, err => {
-            if (err) reject(err);
-            else resolve();
+            if (err) {
+              reject(err);
+            } else {
+              resolve();
+            }
           });
           break;
         case 'worker':
@@ -109,11 +112,17 @@ class ShardClientUtil {
       const parent = this.parentPort ?? process;
 
       const listener = message => {
-        if (message?._sFetchProp !== prop || message._sFetchPropShard !== shard) return;
+        if (message?._sFetchProp !== prop || message._sFetchPropShard !== shard) {
+          return;
+        }
+
         parent.removeListener('message', listener);
         this.decrementMaxListeners(parent);
-        if (message._error) reject(makeError(message._error));
-        else resolve(message._result);
+        if (message._error) {
+          reject(makeError(message._error));
+        } else {
+          resolve(message._result);
+        }
       };
 
       this.incrementMaxListeners(parent);
@@ -150,11 +159,17 @@ class ShardClientUtil {
       const evalScript = `(${script})(this, ${JSON.stringify(options.context)})`;
 
       const listener = message => {
-        if (message?._sEval !== evalScript || message._sEvalShard !== options.shard) return;
+        if (message?._sEval !== evalScript || message._sEvalShard !== options.shard) {
+          return;
+        }
+
         parent.removeListener('message', listener);
         this.decrementMaxListeners(parent);
-        if (message._error) reject(makeError(message._error));
-        else resolve(message._result);
+        if (message._error) {
+          reject(makeError(message._error));
+        } else {
+          resolve(message._result);
+        }
       };
 
       this.incrementMaxListeners(parent);
@@ -185,12 +200,18 @@ class ShardClientUtil {
    * @private
    */
   async _handleMessage(message) {
-    if (!message) return;
+    if (!message) {
+      return;
+    }
+
     if (message._fetchProp) {
       try {
         const props = message._fetchProp.split('.');
         let value = this.client;
-        for (const prop of props) value = value[prop];
+        for (const prop of props) {
+          value = value[prop];
+        }
+
         this._respond('fetchProp', { _fetchProp: message._fetchProp, _result: value });
       } catch (error) {
         this._respond('fetchProp', { _fetchProp: message._fetchProp, _error: makePlainError(error) });
@@ -258,7 +279,10 @@ class ShardClientUtil {
    */
   static shardIdForGuildId(guildId, shardCount) {
     const shard = calculateShardId(guildId, shardCount);
-    if (shard < 0) throw new DiscordjsError(ErrorCodes.ShardingShardMiscalculation, shard, guildId, shardCount);
+    if (shard < 0) {
+      throw new DiscordjsError(ErrorCodes.ShardingShardMiscalculation, shard, guildId, shardCount);
+    }
+
     return shard;
   }
 

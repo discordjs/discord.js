@@ -92,7 +92,9 @@ class InteractionCollector extends Collector {
     this.client.incrementMaxListeners();
 
     const bulkDeleteListener = messages => {
-      if (messages.has(this.messageId)) this.stop('messageDelete');
+      if (messages.has(this.messageId)) {
+        this.stop('messageDelete');
+      }
     };
 
     if (this.messageId) {
@@ -146,11 +148,25 @@ class InteractionCollector extends Collector {
      * @param {BaseInteraction} interaction The interaction that was collected
      */
 
-    if (this.interactionType && interaction.type !== this.interactionType) return null;
-    if (this.componentType && interaction.componentType !== this.componentType) return null;
-    if (this.messageId && interaction.message?.id !== this.messageId) return null;
-    if (this.channelId && interaction.channelId !== this.channelId) return null;
-    if (this.guildId && interaction.guildId !== this.guildId) return null;
+    if (this.interactionType && interaction.type !== this.interactionType) {
+      return null;
+    }
+
+    if (this.componentType && interaction.componentType !== this.componentType) {
+      return null;
+    }
+
+    if (this.messageId && interaction.message?.id !== this.messageId) {
+      return null;
+    }
+
+    if (this.channelId && interaction.channelId !== this.channelId) {
+      return null;
+    }
+
+    if (this.guildId && interaction.guildId !== this.guildId) {
+      return null;
+    }
 
     return interaction.id;
   }
@@ -168,11 +184,25 @@ class InteractionCollector extends Collector {
      * @event InteractionCollector#dispose
      * @param {BaseInteraction} interaction The interaction that was disposed of
      */
-    if (this.type && interaction.type !== this.type) return null;
-    if (this.componentType && interaction.componentType !== this.componentType) return null;
-    if (this.messageId && interaction.message?.id !== this.messageId) return null;
-    if (this.channelId && interaction.channelId !== this.channelId) return null;
-    if (this.guildId && interaction.guildId !== this.guildId) return null;
+    if (this.type && interaction.type !== this.type) {
+      return null;
+    }
+
+    if (this.componentType && interaction.componentType !== this.componentType) {
+      return null;
+    }
+
+    if (this.messageId && interaction.message?.id !== this.messageId) {
+      return null;
+    }
+
+    if (this.channelId && interaction.channelId !== this.channelId) {
+      return null;
+    }
+
+    if (this.guildId && interaction.guildId !== this.guildId) {
+      return null;
+    }
 
     return interaction.id;
   }
@@ -194,9 +224,18 @@ class InteractionCollector extends Collector {
    * @readonly
    */
   get endReason() {
-    if (this.options.max && this.total >= this.options.max) return 'limit';
-    if (this.options.maxComponents && this.collected.size >= this.options.maxComponents) return 'componentLimit';
-    if (this.options.maxUsers && this.users.size >= this.options.maxUsers) return 'userLimit';
+    if (this.options.max && this.total >= this.options.max) {
+      return 'limit';
+    }
+
+    if (this.options.maxComponents && this.collected.size >= this.options.maxComponents) {
+      return 'componentLimit';
+    }
+
+    if (this.options.maxUsers && this.users.size >= this.options.maxUsers) {
+      return 'userLimit';
+    }
+
     return super.endReason;
   }
 

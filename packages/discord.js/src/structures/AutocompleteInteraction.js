@@ -91,7 +91,9 @@ class AutocompleteInteraction extends BaseInteraction {
    *  .catch(console.error);
    */
   async respond(options) {
-    if (this.responded) throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
+    if (this.responded) {
+      throw new DiscordjsError(ErrorCodes.InteractionAlreadyReplied);
+    }
 
     await this.client.rest.post(Routes.interactionCallback(this.id, this.token), {
       body: {

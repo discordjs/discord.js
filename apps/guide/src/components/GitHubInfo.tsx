@@ -12,7 +12,9 @@ async function getRepoStars(owner: string, repo: string, token?: string): Promis
 		'User-Agent': 'discordjs-guide',
 	});
 
-	if (token) headers.set('Authorization', `Bearer ${token}`);
+	if (token) {
+		headers.set('Authorization', `Bearer ${token}`);
+	}
 
 	const response = await fetch(endpoint, {
 		headers,

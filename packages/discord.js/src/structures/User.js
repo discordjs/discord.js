@@ -293,7 +293,10 @@ class User extends Base {
    * @readonly
    */
   get hexAccentColor() {
-    if (typeof this.accentColor !== 'number') return this.accentColor;
+    if (typeof this.accentColor !== 'number') {
+      return this.accentColor;
+    }
+
     return `#${this.accentColor.toString(16).padStart(6, '0')}`;
   }
 

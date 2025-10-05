@@ -137,7 +137,7 @@ function resolveCanonicalReference(
 		'packageName' in canonicalReference.source &&
 		canonicalReference.symbol?.componentPath &&
 		canonicalReference.symbol.meaning
-	)
+	) {
 		return {
 			package: canonicalReference.source.packageName,
 			unscopedPackage: canonicalReference.source.unscopedPackageName,
@@ -154,7 +154,7 @@ function resolveCanonicalReference(
 			// eslint-disable-next-line unicorn/better-regex
 			version: apiPackage?.dependencies?.[canonicalReference.source.packageName]?.replace(/[~^]/, ''),
 		};
-	else if (
+	} else if (
 		'memberReferences' in canonicalReference &&
 		canonicalReference.memberReferences.length &&
 		canonicalReference.memberReferences[0]?.memberIdentifier &&
@@ -511,7 +511,10 @@ function resolveFileUrl(item: ApiDeclaredItem) {
 		const [, pkg] = fileUrl.split('/node_modules/');
 		const parts = pkg?.split('/')[1]?.split('@');
 		const unscoped = parts?.[0]?.length;
-		if (!unscoped) parts?.shift();
+		if (!unscoped) {
+			parts?.shift();
+		}
+
 		const pkgName = parts?.shift();
 		const version = parts?.shift()?.split('_')?.[0];
 
@@ -519,8 +522,9 @@ function resolveFileUrl(item: ApiDeclaredItem) {
 		// https://github.com/discordjs/discord.js/tree/main/node_modules/.pnpm/@discordjs+ws@1.1.1_bufferutil@4.0.8_utf-8-validate@6.0.4/node_modules/@discordjs/ws/dist/index.d.ts#L...
 		if (!unscoped && pkgName?.startsWith('discordjs+')) {
 			let currentItem = item;
-			while (currentItem.parent && currentItem.parent.kind !== ApiItemKind.EntryPoint)
+			while (currentItem.parent && currentItem.parent.kind !== ApiItemKind.EntryPoint) {
 				currentItem = currentItem.parent as ApiDeclaredItem;
+			}
 
 			return {
 				sourceURL: `/docs/packages/${pkgName.replace('discordjs+', '')}/${version}/${currentItem.displayName}:${currentItem.kind}`,
@@ -530,8 +534,9 @@ function resolveFileUrl(item: ApiDeclaredItem) {
 		// https://github.com/discordjs/discord.js/tree/main/node_modules/.pnpm/discord-api-types@0.37.97/node_modules/discord-api-types/payloads/v10/gateway.d.ts#L240
 		if (pkgName === 'discord-api-types') {
 			let currentItem = item;
-			while (currentItem.parent && currentItem.parent.kind !== ApiItemKind.EntryPoint)
+			while (currentItem.parent && currentItem.parent.kind !== ApiItemKind.EntryPoint) {
 				currentItem = currentItem.parent as ApiDeclaredItem;
+			}
 
 			return {
 				sourceURL: `/docs/packages/${pkgName}/${version}/${(currentItem.parent as ApiEntryPoint).importPath}/${currentItem.displayName}:${currentItem.kind}`,
@@ -549,8 +554,9 @@ function resolveFileUrl(item: ApiDeclaredItem) {
 
 		// https://github.com/discordjs/discord.js/tree/main/packages/builders/dist/index.d.ts
 		let currentItem = item;
-		while (currentItem.parent && currentItem.parent.kind !== ApiItemKind.EntryPoint)
+		while (currentItem.parent && currentItem.parent.kind !== ApiItemKind.EntryPoint) {
 			currentItem = currentItem.parent as ApiDeclaredItem;
+		}
 
 		return {
 			sourceURL: `/docs/packages/${pkgName}/${version}/${currentItem.displayName}:${currentItem.kind}`,

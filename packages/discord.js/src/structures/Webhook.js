@@ -224,7 +224,9 @@ class Webhook {
    *   .catch(console.error);
    */
   async send(options) {
-    if (!this.token) throw new DiscordjsError(ErrorCodes.WebhookTokenUnavailable);
+    if (!this.token) {
+      throw new DiscordjsError(ErrorCodes.WebhookTokenUnavailable);
+    }
 
     let messagePayload;
 
@@ -274,7 +276,9 @@ class Webhook {
    * @see {@link https://api.slack.com/messaging/webhooks}
    */
   async sendSlackMessage(body) {
-    if (!this.token) throw new DiscordjsError(ErrorCodes.WebhookTokenUnavailable);
+    if (!this.token) {
+      throw new DiscordjsError(ErrorCodes.WebhookTokenUnavailable);
+    }
 
     const data = await this.client.rest.post(Routes.webhookPlatform(this.id, this.token, 'slack'), {
       query: makeURLSearchParams({ wait: true }),
@@ -337,7 +341,9 @@ class Webhook {
    * @returns {Promise<Message>} Returns the message sent by this webhook
    */
   async fetchMessage(message, { threadId } = {}) {
-    if (!this.token) throw new DiscordjsError(ErrorCodes.WebhookTokenUnavailable);
+    if (!this.token) {
+      throw new DiscordjsError(ErrorCodes.WebhookTokenUnavailable);
+    }
 
     const data = await this.client.rest.get(Routes.webhookMessage(this.id, this.token, message), {
       query: threadId ? makeURLSearchParams({ thread_id: threadId }) : undefined,
@@ -358,12 +364,17 @@ class Webhook {
    * @returns {Promise<Message>} Returns the message edited by this webhook
    */
   async editMessage(message, options) {
-    if (!this.token) throw new DiscordjsError(ErrorCodes.WebhookTokenUnavailable);
+    if (!this.token) {
+      throw new DiscordjsError(ErrorCodes.WebhookTokenUnavailable);
+    }
 
     let messagePayload;
 
-    if (options instanceof MessagePayload) messagePayload = options;
-    else messagePayload = MessagePayload.create(this, options);
+    if (options instanceof MessagePayload) {
+      messagePayload = options;
+    } else {
+      messagePayload = MessagePayload.create(this, options);
+    }
 
     const { body, files } = await messagePayload.resolveBody().resolveFiles();
 
@@ -383,10 +394,14 @@ class Webhook {
     );
 
     const messageManager = this.client.channels.cache.get(data.channel_id)?.messages;
-    if (!messageManager) return new (getMessage())(this.client, data);
+    if (!messageManager) {
+      return new (getMessage())(this.client, data);
+    }
 
     const existing = messageManager.cache.get(data.id);
-    if (!existing) return messageManager._add(data);
+    if (!existing) {
+      return messageManager._add(data);
+    }
 
     const clone = existing._clone();
     clone._patch(data);
@@ -411,7 +426,9 @@ class Webhook {
    * @returns {Promise<void>}
    */
   async deleteMessage(message, threadId) {
-    if (!this.token) throw new DiscordjsError(ErrorCodes.WebhookTokenUnavailable);
+    if (!this.token) {
+      throw new DiscordjsError(ErrorCodes.WebhookTokenUnavailable);
+    }
 
     await this.client.rest.delete(
       Routes.webhookMessage(this.id, this.token, typeof message === 'string' ? message : message.id),
@@ -511,7 +528,9 @@ class Webhook {
       'createdAt',
       'url',
     ]) {
-      if (ignore.includes(prop)) continue;
+      if (ignore.includes(prop)) {
+        continue;
+      }
       Object.defineProperty(structure.prototype, prop, Object.getOwnPropertyDescriptor(Webhook.prototype, prop));
     }
   }

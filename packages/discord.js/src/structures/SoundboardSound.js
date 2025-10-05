@@ -123,7 +123,9 @@ class SoundboardSound extends Base {
    * @readonly
    */
   get emoji() {
-    if (!this._emoji) return null;
+    if (!this._emoji) {
+      return null;
+    }
 
     return this.guild?.emojis.cache.get(this._emoji.id) ?? new Emoji(this.client, this._emoji);
   }
@@ -160,7 +162,9 @@ class SoundboardSound extends Base {
    *   .catch(console.error);
    */
   async edit(options) {
-    if (!this.guildId) throw new DiscordjsError(ErrorCodes.NotGuildSoundboardSound, 'edited');
+    if (!this.guildId) {
+      throw new DiscordjsError(ErrorCodes.NotGuildSoundboardSound, 'edited');
+    }
 
     return this.guild.soundboardSounds.edit(this, options);
   }
@@ -177,7 +181,9 @@ class SoundboardSound extends Base {
    *   .catch(console.error);
    */
   async delete(reason) {
-    if (!this.guildId) throw new DiscordjsError(ErrorCodes.NotGuildSoundboardSound, 'deleted');
+    if (!this.guildId) {
+      throw new DiscordjsError(ErrorCodes.NotGuildSoundboardSound, 'deleted');
+    }
 
     await this.guild.soundboardSounds.delete(this, reason);
 

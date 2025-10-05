@@ -17,10 +17,14 @@ const { Action } = require('./Action.js');
 
 class MessageReactionAddAction extends Action {
   handle(data, fromStructure = false) {
-    if (!data.emoji) return false;
+    if (!data.emoji) {
+      return false;
+    }
 
     const user = this.getUserFromMember(data);
-    if (!user) return false;
+    if (!user) {
+      return false;
+    }
 
     // Verify channel
     const channel = this.getChannel({
@@ -30,24 +34,37 @@ class MessageReactionAddAction extends Action {
       ...this.spreadInjectedData(data),
     });
 
-    if (!channel?.isTextBased()) return false;
+    if (!channel?.isTextBased()) {
+      return false;
+    }
 
     // Verify message
     const message = this.getMessage(data, channel);
-    if (!message) return false;
+    if (!message) {
+      return false;
+    }
 
     // Verify reaction
     const includePartial = this.client.options.partials.includes(Partials.Reaction);
-    if (message.partial && !includePartial) return false;
+    if (message.partial && !includePartial) {
+      return false;
+    }
+
     const reaction = message.reactions._add({
       emoji: data.emoji,
       count: message.partial ? null : 0,
       me: user.id === this.client.user.id,
       burst_colors: data.burst_colors,
     });
-    if (!reaction) return false;
+    if (!reaction) {
+      return false;
+    }
+
     reaction._add(user, data.burst);
-    if (fromStructure) return { message, reaction, user };
+    if (fromStructure) {
+      return { message, reaction, user };
+    }
+
     /**
      * Provides additional information about altered reaction
      *

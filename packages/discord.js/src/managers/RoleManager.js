@@ -68,13 +68,18 @@ class RoleManager extends CachedManager {
     if (!id) {
       const innerData = await this.client.rest.get(Routes.guildRoles(this.guild.id));
       const roles = new Collection();
-      for (const role of innerData) roles.set(role.id, this._add(role, cache));
+      for (const role of innerData) {
+        roles.set(role.id, this._add(role, cache));
+      }
+
       return roles;
     }
 
     if (!force) {
       const existing = this.cache.get(id);
-      if (existing) return existing;
+      if (existing) {
+        return existing;
+      }
     }
 
     const data = await this.client.rest.get(Routes.guildRole(this.guild.id, id));
@@ -196,11 +201,16 @@ class RoleManager extends CachedManager {
   async create(options = {}) {
     let { permissions, icon } = options;
     const { name, hoist, position, mentionable, reason, unicodeEmoji } = options;
-    if (permissions !== undefined) permissions = new PermissionsBitField(permissions);
+    if (permissions !== undefined) {
+      permissions = new PermissionsBitField(permissions);
+    }
+
     if (icon) {
       const guildEmojiURL = this.guild.emojis.resolve(icon)?.imageURL();
       icon = guildEmojiURL ? await resolveImage(guildEmojiURL) : await resolveImage(icon);
-      if (typeof icon !== 'string') icon = undefined;
+      if (typeof icon !== 'string') {
+        icon = undefined;
+      }
     }
 
     const colors = options.colors && {
@@ -225,7 +235,10 @@ class RoleManager extends CachedManager {
       guild_id: this.guild.id,
       role: data,
     });
-    if (position) return this.setPosition(role, position, { reason });
+    if (position) {
+      return this.setPosition(role, position, { reason });
+    }
+
     return role;
   }
 
@@ -251,7 +264,9 @@ class RoleManager extends CachedManager {
    */
   async edit(role, options) {
     const resolvedRole = this.resolve(role);
-    if (!resolvedRole) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'role', 'RoleResolvable');
+    if (!resolvedRole) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'role', 'RoleResolvable');
+    }
 
     if (typeof options.position === 'number') {
       await this.setPosition(resolvedRole, options.position, { reason: options.reason });
@@ -261,7 +276,9 @@ class RoleManager extends CachedManager {
     if (icon) {
       const guildEmojiURL = this.guild.emojis.resolve(icon)?.imageURL();
       icon = guildEmojiURL ? await resolveImage(guildEmojiURL) : await resolveImage(icon);
-      if (typeof icon !== 'string') icon = undefined;
+      if (typeof icon !== 'string') {
+        icon = undefined;
+      }
     }
 
     const colors = options.colors && {
@@ -323,7 +340,10 @@ class RoleManager extends CachedManager {
    */
   async setPosition(role, position, { relative, reason } = {}) {
     const resolvedRole = this.resolve(role);
-    if (!resolvedRole) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'role', 'RoleResolvable');
+    if (!resolvedRole) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'role', 'RoleResolvable');
+    }
+
     const updatedRoles = await setPosition(
       resolvedRole,
       position,
@@ -408,7 +428,10 @@ class RoleManager extends CachedManager {
    */
   botRoleFor(user) {
     const userId = this.client.users.resolveId(user);
-    if (!userId) return null;
+    if (!userId) {
+      return null;
+    }
+
     return this.cache.find(role => role.tags?.botId === userId) ?? null;
   }
 

@@ -41,7 +41,9 @@ class MessageCollector extends Collector {
     this.received = 0;
 
     const bulkDeleteListener = async messages => {
-      for (const message of messages.values()) await this.handleDispose(message);
+      for (const message of messages.values()) {
+        await this.handleDispose(message);
+      }
     };
 
     this._handleChannelDeletion = this._handleChannelDeletion.bind(this);
@@ -81,7 +83,10 @@ class MessageCollector extends Collector {
      * @event MessageCollector#collect
      * @param {Message} message The message that was collected
      */
-    if (message.channelId !== this.channel.id) return null;
+    if (message.channelId !== this.channel.id) {
+      return null;
+    }
+
     this.received++;
     return message.id;
   }
@@ -109,8 +114,14 @@ class MessageCollector extends Collector {
    * @readonly
    */
   get endReason() {
-    if (this.options.max && this.collected.size >= this.options.max) return 'limit';
-    if (this.options.maxProcessed && this.received === this.options.maxProcessed) return 'processedLimit';
+    if (this.options.max && this.collected.size >= this.options.max) {
+      return 'limit';
+    }
+
+    if (this.options.maxProcessed && this.received === this.options.maxProcessed) {
+      return 'processedLimit';
+    }
+
     return super.endReason;
   }
 

@@ -11,7 +11,10 @@ export function Mermaid({ chart }: { readonly chart: string }) {
 	const { resolvedTheme } = useTheme();
 
 	useEffect(() => {
-		if (currentChartRef.current === chart || !containerRef.current) return;
+		if (currentChartRef.current === chart || !containerRef.current) {
+			return;
+		}
+
 		const container = containerRef.current;
 		currentChartRef.current = chart;
 

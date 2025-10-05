@@ -49,8 +49,12 @@ class GuildEmoji extends BaseGuildEmoji {
   _patch(data) {
     super._patch(data);
 
-    if (data.user) this.author = this.client.users._add(data.user);
-    if (data.roles) this._roles = data.roles;
+    if (data.user) {
+      this.author = this.client.users._add(data.user);
+    }
+    if (data.roles) {
+      this._roles = data.roles;
+    }
   }
 
   /**
@@ -62,11 +66,17 @@ class GuildEmoji extends BaseGuildEmoji {
    * @readonly
    */
   get deletable() {
-    if (this.managed) return false;
-    if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
+    if (this.managed) {
+      return false;
+    }
+    if (!this.guild.members.me) {
+      throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
+    }
 
     const { permissions } = this.guild.members.me;
-    if (permissions.has(PermissionFlagsBits.ManageGuildExpressions)) return true;
+    if (permissions.has(PermissionFlagsBits.ManageGuildExpressions)) {
+      return true;
+    }
 
     return permissions.has(PermissionFlagsBits.CreateGuildExpressions) && this.author?.id === this.client.user.id;
   }
