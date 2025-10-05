@@ -19,7 +19,9 @@ const isObject = data => typeof data === 'object' && data !== null;
  * @returns {Object}
  */
 function flatten(obj, ...props) {
-  if (!isObject(obj)) return obj;
+  if (!isObject(obj)) {
+    return obj;
+  }
 
   const objProps = Object.keys(obj)
     .filter(key => !key.startsWith('_'))
@@ -31,7 +33,10 @@ function flatten(obj, ...props) {
 
   // eslint-disable-next-line prefer-const
   for (let [prop, newProp] of Object.entries(mergedProps)) {
-    if (!newProp) continue;
+    if (!newProp) {
+      continue;
+    }
+
     newProp = newProp === true ? prop : newProp;
 
     const element = obj[prop];
@@ -40,19 +45,33 @@ function flatten(obj, ...props) {
     const hasToJSON = elemIsObj && typeof element.toJSON === 'function';
 
     // If it's a Collection, make the array of keys
-    if (element instanceof Collection) out[newProp] = Array.from(element.keys());
+    if (element instanceof Collection) {
+      out[newProp] = Array.from(element.keys());
+    }
     // If the valueOf is a Collection, use its array of keys
-    else if (valueOf instanceof Collection) out[newProp] = Array.from(valueOf.keys());
+    else if (valueOf instanceof Collection) {
+      out[newProp] = Array.from(valueOf.keys());
+    }
     // If it's an array, call toJSON function on each element if present, otherwise flatten each element
-    else if (Array.isArray(element)) out[newProp] = element.map(elm => elm.toJSON?.() ?? flatten(elm));
+    else if (Array.isArray(element)) {
+      out[newProp] = element.map(elm => elm.toJSON?.() ?? flatten(elm));
+    }
     // If it's an object with a primitive `valueOf`, use that value
-    else if (typeof valueOf !== 'object') out[newProp] = valueOf;
+    else if (typeof valueOf !== 'object') {
+      out[newProp] = valueOf;
+    }
     // If it's an object with a toJSON function, use the return value of it
-    else if (hasToJSON) out[newProp] = element.toJSON();
+    else if (hasToJSON) {
+      out[newProp] = element.toJSON();
+    }
     // If element is an object, use the flattened version of it
-    else if (typeof element === 'object') out[newProp] = flatten(element);
+    else if (typeof element === 'object') {
+      out[newProp] = flatten(element);
+    }
     // If it's a primitive
-    else if (!elemIsObj) out[newProp] = element;
+    else if (!elemIsObj) {
+      out[newProp] = element;
+    }
   }
 
   return out;
@@ -72,13 +91,19 @@ function flatten(obj, ...props) {
  * @returns {Promise<number>} The recommended number of shards
  */
 async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multipleOf = 1 } = {}) {
-  if (!token) throw new DiscordjsError(ErrorCodes.TokenMissing);
+  if (!token) {
+    throw new DiscordjsError(ErrorCodes.TokenMissing);
+  }
+
   const response = await fetch(RouteBases.api + Routes.gatewayBot(), {
     method: 'GET',
     headers: { Authorization: `Bot ${token.replace(/^bot\s*/i, '')}` },
   });
   if (!response.ok) {
-    if (response.status === 401) throw new DiscordjsError(ErrorCodes.TokenInvalid);
+    if (response.status === 401) {
+      throw new DiscordjsError(ErrorCodes.TokenInvalid);
+    }
+
     throw response;
   }
 
@@ -106,7 +131,10 @@ async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multi
  */
 function parseEmoji(text) {
   const decodedText = text.includes('%') ? decodeURIComponent(text) : text;
-  if (!decodedText.includes(':')) return { animated: false, name: decodedText, id: undefined };
+  if (!decodedText.includes(':')) {
+    return { animated: false, name: decodedText, id: undefined };
+  }
+
   const match = /<?(?:(?<animated>a):)?(?<name>\w{2,32}):(?<id>\d{17,19})?>?/.exec(decodedText);
   return match && { animated: Boolean(match.groups.animated), name: match.groups.name, id: match.groups.id };
 }
@@ -125,10 +153,19 @@ function parseEmoji(text) {
  * @returns {?(PartialEmoji|PartialEmojiOnlyId)} Supplying a snowflake yields `PartialEmojiOnlyId`.
  */
 function resolvePartialEmoji(emoji) {
-  if (!emoji) return null;
-  if (typeof emoji === 'string') return /^\d{17,19}$/.test(emoji) ? { id: emoji } : parseEmoji(emoji);
+  if (!emoji) {
+    return null;
+  }
+
+  if (typeof emoji === 'string') {
+    return /^\d{17,19}$/.test(emoji) ? { id: emoji } : parseEmoji(emoji);
+  }
+
   const { id, name, animated } = emoji;
-  if (!id && !name) return null;
+  if (!id && !name) {
+    return null;
+  }
+
   return { id, name, animated: Boolean(animated) };
 }
 
@@ -268,8 +305,14 @@ function verifyString(
   errorMessage = `Expected a string, got ${data} instead.`,
   allowEmpty = true,
 ) {
-  if (typeof data !== 'string') throw new error(errorMessage);
-  if (!allowEmpty && data.length === 0) throw new error(errorMessage);
+  if (typeof data !== 'string') {
+    throw new error(errorMessage);
+  }
+
+  if (!allowEmpty && data.length === 0) {
+    throw new error(errorMessage);
+  }
+
   return data;
 }
 
@@ -324,9 +367,18 @@ function resolveColor(color) {
   let resolvedColor;
 
   if (typeof color === 'string') {
-    if (color === 'Random') return Math.floor(Math.random() * (0xffffff + 1));
-    if (color === 'Default') return 0;
-    if (/^#?[\da-f]{6}$/i.test(color)) return Number.parseInt(color.replace('#', ''), 16);
+    if (color === 'Random') {
+      return Math.floor(Math.random() * (0xffffff + 1));
+    }
+
+    if (color === 'Default') {
+      return 0;
+    }
+
+    if (/^#?[\da-f]{6}$/i.test(color)) {
+      return Number.parseInt(color.replace('#', ''), 16);
+    }
+
     resolvedColor = Colors[color];
   } else if (Array.isArray(color)) {
     resolvedColor = (color[0] << 16) + (color[1] << 8) + color[2];
@@ -424,9 +476,13 @@ function cleanContent(str, channel) {
   return str.replaceAll(
     /<(?:(?<type>@[!&]?|#)|(?:\/(?<commandName>[-_\p{L}\p{N}\p{sc=Deva}\p{sc=Thai} ]+):)|(?:a?:(?<emojiName>[\w]+):))(?<id>\d{17,19})>/gu,
     (match, type, commandName, emojiName, id) => {
-      if (commandName) return `/${commandName}`;
+      if (commandName) {
+        return `/${commandName}`;
+      }
 
-      if (emojiName) return `:${emojiName}:`;
+      if (emojiName) {
+        return `:${emojiName}:`;
+      }
 
       switch (type) {
         case '@':
@@ -441,7 +497,10 @@ function cleanContent(str, channel) {
         }
 
         case '@&': {
-          if (channel.type === ChannelType.DM) return match;
+          if (channel.type === ChannelType.DM) {
+            return match;
+          }
+
           const role = channel.guild.roles.cache.get(id);
           return role ? `@${role.name}` : match;
         }
@@ -563,9 +622,15 @@ function transformResolved(
  * @returns {?Snowflake} The resolved SKU id, or `null` if the resolvable was invalid
  */
 function resolveSKUId(resolvable) {
-  if (typeof resolvable === 'string') return resolvable;
+  if (typeof resolvable === 'string') {
+    return resolvable;
+  }
+
   // eslint-disable-next-line no-use-before-define
-  if (resolvable instanceof SKU) return resolvable.id;
+  if (resolvable instanceof SKU) {
+    return resolvable.id;
+  }
+
   return null;
 }
 

@@ -127,7 +127,10 @@ class Guild extends AnonymousGuild {
      */
     this.soundboardSounds = new GuildSoundboardSoundManager(this);
 
-    if (!data) return;
+    if (!data) {
+      return;
+    }
+
     if (data.unavailable) {
       /**
        * Whether the guild is available to access. If it is not available, it indicates a server outage
@@ -137,7 +140,9 @@ class Guild extends AnonymousGuild {
       this.available = false;
     } else {
       this._patch(data);
-      if (!data.channels) this.available = false;
+      if (!data.channels) {
+        this.available = false;
+      }
     }
 
     /**
@@ -151,8 +156,14 @@ class Guild extends AnonymousGuild {
   _patch(data) {
     super._patch(data);
     this.id = data.id;
-    if ('name' in data) this.name = data.name;
-    if ('icon' in data) this.icon = data.icon;
+    if ('name' in data) {
+      this.name = data.name;
+    }
+
+    if ('icon' in data) {
+      this.icon = data.icon;
+    }
+
     if ('unavailable' in data) {
       this.available = !data.unavailable;
     } else {
@@ -440,12 +451,16 @@ class Guild extends AnonymousGuild {
 
     if (data.roles) {
       this.roles.cache.clear();
-      for (const role of data.roles) this.roles._add(role);
+      for (const role of data.roles) {
+        this.roles._add(role);
+      }
     }
 
     if (data.members) {
       this.members.cache.clear();
-      for (const guildUser of data.members) this.members._add(guildUser);
+      for (const guildUser of data.members) {
+        this.members._add(guildUser);
+      }
     }
 
     if ('owner_id' in data) {
@@ -491,7 +506,11 @@ class Guild extends AnonymousGuild {
        * @type {GuildEmojiManager}
        */
       this.emojis = new GuildEmojiManager(this);
-      if (data.emojis) for (const emoji of data.emojis) this.emojis._add(emoji);
+      if (data.emojis) {
+        for (const emoji of data.emojis) {
+          this.emojis._add(emoji);
+        }
+      }
     } else if (data.emojis) {
       this.client.actions.GuildEmojisUpdate.handle({
         guild_id: this.id,
@@ -506,7 +525,11 @@ class Guild extends AnonymousGuild {
        * @type {GuildStickerManager}
        */
       this.stickers = new GuildStickerManager(this);
-      if (data.stickers) for (const sticker of data.stickers) this.stickers._add(sticker);
+      if (data.stickers) {
+        for (const sticker of data.stickers) {
+          this.stickers._add(sticker);
+        }
+      }
     } else if (data.stickers) {
       this.client.actions.GuildStickersUpdate.handle({
         guild_id: this.id,
@@ -767,7 +790,10 @@ class Guild extends AnonymousGuild {
   async fetchWebhooks() {
     const apiHooks = await this.client.rest.get(Routes.guildWebhooks(this.id));
     const hooks = new Collection();
-    for (const hook of apiHooks) hooks.set(hook.id, new Webhook(this.client, hook));
+    for (const hook of apiHooks) {
+      hooks.set(hook.id, new Webhook(this.client, hook));
+    }
+
     return hooks;
   }
 
@@ -865,7 +891,10 @@ class Guild extends AnonymousGuild {
 
     if (user) {
       const userId = this.client.users.resolveId(user);
-      if (!userId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
+      if (!userId) {
+        throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'user', 'UserResolvable');
+      }
+
       query.set('user_id', userId);
     }
 
@@ -1425,7 +1454,10 @@ class Guild extends AnonymousGuild {
    *   .catch(console.error);
    */
   async leave() {
-    if (this.ownerId === this.client.user.id) throw new DiscordjsError(ErrorCodes.GuildOwned);
+    if (this.ownerId === this.client.user.id) {
+      throw new DiscordjsError(ErrorCodes.GuildOwned);
+    }
+
     await this.client.rest.delete(Routes.userGuild(this.id));
     return this;
   }
@@ -1438,7 +1470,10 @@ class Guild extends AnonymousGuild {
    */
   async disableInvites(disabled = true) {
     const features = this.features.filter(feature => feature !== GuildFeature.InvitesDisabled);
-    if (disabled) features.push(GuildFeature.InvitesDisabled);
+    if (disabled) {
+      features.push(GuildFeature.InvitesDisabled);
+    }
+
     return this.edit({ features });
   }
 

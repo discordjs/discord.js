@@ -53,7 +53,10 @@ class LimitedCollection extends Collection {
   }
 
   set(key, value) {
-    if (this.maxSize === 0 && !this.keepOverLimit?.(value, key, this)) return this;
+    if (this.maxSize === 0 && !this.keepOverLimit?.(value, key, this)) {
+      return this;
+    }
+
     if (this.size >= this.maxSize && !this.has(key)) {
       for (const [iteratedKey, iteratedValue] of this.entries()) {
         const keep = this.keepOverLimit?.(iteratedValue, iteratedKey, this) ?? false;

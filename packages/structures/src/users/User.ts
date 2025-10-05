@@ -174,7 +174,10 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	 */
 	public get hexAccentColor() {
 		const accentColor = this.accentColor;
-		if (typeof accentColor !== 'number') return accentColor;
+		if (typeof accentColor !== 'number') {
+			return accentColor;
+		}
+
 		return `#${accentColor.toString(16).padStart(6, '0')}`;
 	}
 }

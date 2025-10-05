@@ -13,7 +13,10 @@ class GuildEmojiCreateAction extends Action {
      * @event Client#emojiCreate
      * @param {GuildEmoji} emoji The emoji that was created
      */
-    if (!already) this.client.emit(Events.GuildEmojiCreate, emoji);
+    if (!already) {
+      this.client.emit(Events.GuildEmojiCreate, emoji);
+    }
+
     return { emoji };
   }
 }

@@ -285,8 +285,11 @@ class TextBasedChannel {
       const collector = this.createMessageComponentCollector(_options);
       collector.once('end', (interactions, reason) => {
         const interaction = interactions.first();
-        if (interaction) resolve(interaction);
-        else reject(new DiscordjsError(ErrorCodes.InteractionCollectorError, reason));
+        if (interaction) {
+          resolve(interaction);
+        } else {
+          reject(new DiscordjsError(ErrorCodes.InteractionCollectorError, reason));
+        }
       });
     });
   }
@@ -315,7 +318,9 @@ class TextBasedChannel {
         );
       }
 
-      if (messageIds.length === 0) return [];
+      if (messageIds.length === 0) {
+        return [];
+      }
 
       if (messageIds.length === 1) {
         await this.client.rest.delete(Routes.channelMessage(this.id, messageIds[0]));
@@ -416,7 +421,10 @@ class TextBasedChannel {
     ];
 
     for (const prop of props) {
-      if (ignore.includes(prop)) continue;
+      if (ignore.includes(prop)) {
+        continue;
+      }
+
       Object.defineProperty(
         structure.prototype,
         prop,

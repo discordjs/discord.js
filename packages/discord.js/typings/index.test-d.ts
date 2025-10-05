@@ -364,7 +364,9 @@ client.on('interactionCreate', async interaction => {
     expectType<Snowflake>(interaction.channelId);
   }
 
-  if (interaction.type !== InteractionType.ApplicationCommand) return;
+  if (interaction.type !== InteractionType.ApplicationCommand) {
+    return;
+  }
 
   const actionRow = new ActionRowBuilder({
     type: ComponentType.ActionRow,
@@ -810,7 +812,10 @@ client.on('messageReactionRemove', ({ client: oldClient }, { client: newClient }
 
 client.on('messageReactionRemoveAll', async (message, reactions) => {
   console.log(`messageReactionRemoveAll - id: ${message.id} (${message.id.length})`);
-  if (message.partial) message = await message.fetch();
+  if (message.partial) {
+    message = await message.fetch();
+  }
+
   console.log(`messageReactionRemoveAll - content: ${message.content}`);
   expectType<Client<true>>(message.client);
   expectType<Client<true>>(reactions.first()!.client);
@@ -1357,7 +1362,9 @@ client.on('threadMembersUpdate', (addedMembers, removedMembers, thread) => {
   expectType<ReadonlyCollection<Snowflake, PartialThreadMember | ThreadMember>>(removedMembers);
   expectType<AnyThreadChannel>(thread);
   const left = removedMembers.first();
-  if (!left) return;
+  if (!left) {
+    return;
+  }
 
   if (left.partial) {
     expectType<PartialThreadMember>(left);
@@ -1395,7 +1402,9 @@ client.on('webhooksUpdate', ({ client }) => expectType<Client<true>>(client));
 client.on('guildCreate', async g => {
   expectType<Client<true>>(g.client);
   const channel = g.channels.cache.random();
-  if (!channel) return;
+  if (!channel) {
+    return;
+  }
 
   if (channel.type === ChannelType.GuildText) {
     const row: ActionRowData<MessageActionRowComponentData> = {
@@ -1920,11 +1929,18 @@ declare const threadMemberManager: ThreadMemberManager;
 
 declare const typing: Typing;
 expectType<PartialUser | User>(typing.user);
-if (typing.user.partial) expectType<null>(typing.user.username);
-if (!typing.user.partial) expectType<string>(typing.user.tag);
+if (typing.user.partial) {
+  expectType<null>(typing.user.username);
+}
+
+if (!typing.user.partial) {
+  expectType<string>(typing.user.tag);
+}
 
 expectType<TextBasedChannel>(typing.channel);
-if (typing.channel.partial) expectType<undefined>(typing.channel.lastMessageId);
+if (typing.channel.partial) {
+  expectType<undefined>(typing.channel.lastMessageId);
+}
 
 expectType<GuildMember | null>(typing.member);
 expectType<Guild | null>(typing.guild);

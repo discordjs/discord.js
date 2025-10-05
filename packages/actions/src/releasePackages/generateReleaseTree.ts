@@ -29,7 +29,10 @@ export interface ReleaseEntry {
 async function fetchDevVersion(pkg: string) {
 	try {
 		const res = await fetch(`https://registry.npmjs.org/${pkg}/dev`);
-		if (!res.ok) return null;
+		if (!res.ok) {
+			return null;
+		}
+
 		const packument = (await res.json()) as PackumentVersion;
 		return packument.version;
 	} catch {
@@ -47,10 +50,18 @@ async function getReleaseEntries(dev: boolean, dry: boolean) {
 
 	for (const pkg of packageList) {
 		// Don't release private packages ever (npm will error anyways)
-		if (pkg.private) continue;
+		if (pkg.private) {
+			continue;
+		}
+
 		// Just in case
-		if (!pkg.version || !pkg.name) continue;
-		if (nonNodePackages.has(pkg.name)) continue;
+		if (!pkg.version || !pkg.name) {
+			continue;
+		}
+
+		if (nonNodePackages.has(pkg.name)) {
+			continue;
+		}
 
 		const release: ReleaseEntry = {
 			name: pkg.name,
@@ -198,7 +209,9 @@ export async function generateReleaseTree(dev: boolean, dry: boolean, packageNam
 				}
 			}
 
-			if (newThisBranch.length) excludedReleaseTree.unshift(newThisBranch);
+			if (newThisBranch.length) {
+				excludedReleaseTree.unshift(newThisBranch);
+			}
 		}
 
 		return excludedReleaseTree;
@@ -224,7 +237,9 @@ export async function generateReleaseTree(dev: boolean, dry: boolean, packageNam
 			}
 		}
 
-		if (newThisBranch.length) packageReleaseTree.unshift(newThisBranch);
+		if (newThisBranch.length) {
+			packageReleaseTree.unshift(newThisBranch);
+		}
 	}
 
 	return packageReleaseTree;

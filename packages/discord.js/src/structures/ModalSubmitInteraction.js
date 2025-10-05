@@ -148,9 +148,13 @@ class ModalSubmitInteraction extends BaseInteraction {
     };
 
     // Text display components do not have custom ids.
-    if ('custom_id' in rawComponent) data.customId = rawComponent.custom_id;
+    if ('custom_id' in rawComponent) {
+      data.customId = rawComponent.custom_id;
+    }
 
-    if ('value' in rawComponent) data.value = rawComponent.value;
+    if ('value' in rawComponent) {
+      data.value = rawComponent.value;
+    }
 
     if (rawComponent.values) {
       data.values = rawComponent.values;
@@ -167,19 +171,27 @@ class ModalSubmitInteraction extends BaseInteraction {
         };
 
         const users = resolveCollection(resolved.users, user => this.client.users._add(user));
-        if (users) data.users = users;
+        if (users) {
+          data.users = users;
+        }
 
         const channels = resolveCollection(
           resolved.channels,
           channel => this.client.channels._add(channel, this.guild) ?? channel,
         );
-        if (channels) data.channels = channels;
+        if (channels) {
+          data.channels = channels;
+        }
 
         const members = resolveCollection(resolved.members, member => this.guild?.members._add(member) ?? member);
-        if (members) data.members = members;
+        if (members) {
+          data.members = members;
+        }
 
         const roles = resolveCollection(resolved.roles, role => this.guild?.roles._add(role) ?? role);
-        if (roles) data.roles = roles;
+        if (roles) {
+          data.roles = roles;
+        }
       }
     }
 

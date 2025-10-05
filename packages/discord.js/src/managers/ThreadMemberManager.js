@@ -33,11 +33,19 @@ class ThreadMemberManager extends CachedManager {
 
   _add(data, cache = true) {
     const existing = this.cache.get(data.user_id);
-    if (cache) existing?._patch(data, { cache });
-    if (existing) return existing;
+    if (cache) {
+      existing?._patch(data, { cache });
+    }
+
+    if (existing) {
+      return existing;
+    }
 
     const member = new ThreadMember(this.thread, data, { cache });
-    if (cache) this.cache.set(data.user_id, member);
+    if (cache) {
+      this.cache.set(data.user_id, member);
+    }
+
     return member;
   }
 
@@ -77,9 +85,15 @@ class ThreadMemberManager extends CachedManager {
    */
   resolve(member) {
     const memberResolvable = super.resolve(member);
-    if (memberResolvable) return memberResolvable;
+    if (memberResolvable) {
+      return memberResolvable;
+    }
+
     const userId = this.client.users.resolveId(member);
-    if (userId) return super.cache.get(userId) ?? null;
+    if (userId) {
+      return super.cache.get(userId) ?? null;
+    }
+
     return null;
   }
 
@@ -91,7 +105,10 @@ class ThreadMemberManager extends CachedManager {
    */
   resolveId(member) {
     const memberResolvable = super.resolveId(member);
-    if (memberResolvable) return memberResolvable;
+    if (memberResolvable) {
+      return memberResolvable;
+    }
+
     const userResolvable = this.client.users.resolveId(member);
     return this.cache.has(userResolvable) ? userResolvable : null;
   }
@@ -104,7 +121,10 @@ class ThreadMemberManager extends CachedManager {
    */
   async add(member) {
     const id = member === '@me' ? member : this.client.users.resolveId(member);
-    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'member', 'UserResolvable');
+    if (!id) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'member', 'UserResolvable');
+    }
+
     await this.client.rest.put(Routes.threadMembers(this.thread.id, id));
     return id;
   }
@@ -117,7 +137,10 @@ class ThreadMemberManager extends CachedManager {
    */
   async remove(member) {
     const id = member === '@me' ? member : this.client.users.resolveId(member);
-    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'member', 'UserResolvable');
+    if (!id) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'member', 'UserResolvable');
+    }
+
     await this.client.rest.delete(Routes.threadMembers(this.thread.id, id));
     return id;
   }
@@ -165,17 +188,25 @@ class ThreadMemberManager extends CachedManager {
    * @returns {Promise<ThreadMember|Collection<Snowflake, ThreadMember>>}
    */
   async fetch(options) {
-    if (!options) return this._fetchMany();
+    if (!options) {
+      return this._fetchMany();
+    }
+
     const { member, withMember, cache, force } = options;
     const resolvedMember = this.resolveId(member ?? options);
-    if (resolvedMember) return this._fetchSingle({ member: resolvedMember, withMember, cache, force });
+    if (resolvedMember) {
+      return this._fetchSingle({ member: resolvedMember, withMember, cache, force });
+    }
+
     return this._fetchMany(options);
   }
 
   async _fetchSingle({ member, withMember, cache, force = false }) {
     if (!force) {
       const existing = this.cache.get(member);
-      if (existing) return existing;
+      if (existing) {
+        return existing;
+      }
     }
 
     const data = await this.client.rest.get(Routes.threadMembers(this.thread.id, member), {

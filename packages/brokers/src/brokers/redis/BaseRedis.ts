@@ -233,10 +233,14 @@ export abstract class BaseRedisBroker<
 
 			for (const [id, packet] of messages) {
 				const idx = packet.findIndex((value, idx) => value.toString('utf8') === 'data' && idx % 2 === 0);
-				if (idx < 0) continue;
+				if (idx < 0) {
+					continue;
+				}
 
 				const payload = packet[idx + 1];
-				if (!payload) continue;
+				if (!payload) {
+					continue;
+				}
 
 				this.emitEvent(id, this.group, eventName, this.options.decode(payload));
 			}

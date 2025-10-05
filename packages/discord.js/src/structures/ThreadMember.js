@@ -44,8 +44,13 @@ class ThreadMember extends Base {
   }
 
   _patch(data, extra = {}) {
-    if ('join_timestamp' in data) this.joinedTimestamp = Date.parse(data.join_timestamp);
-    if ('flags' in data) this.flags = new ThreadMemberFlagsBitField(data.flags).freeze();
+    if ('join_timestamp' in data) {
+      this.joinedTimestamp = Date.parse(data.join_timestamp);
+    }
+
+    if ('flags' in data) {
+      this.flags = new ThreadMemberFlagsBitField(data.flags).freeze();
+    }
 
     if ('member' in data) {
       /**

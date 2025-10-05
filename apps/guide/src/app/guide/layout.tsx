@@ -10,7 +10,9 @@ export default function Layout({ children }: { readonly children: ReactNode }) {
 				tabs: {
 					transform(option, node) {
 						const meta = source.getNodeMeta(node);
-						if (!meta || !node.icon) return option;
+						if (!meta || !node.icon) {
+							return option;
+						}
 
 						// category selection color based on path src/styles/base.css
 						const color = `var(--${meta.path.split('/')[0]}-color, var(--color-fd-foreground))`;

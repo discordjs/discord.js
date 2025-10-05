@@ -45,7 +45,10 @@ class ChannelManager extends CachedManager {
   _add(data, guild, { cache = true, allowUnknownGuild = false } = {}) {
     const existing = this.cache.get(data.id);
     if (existing) {
-      if (cache) existing._patch(data);
+      if (cache) {
+        existing._patch(data);
+      }
+
       guild?.channels?._add(existing);
       if (ThreadChannelTypes.includes(existing.type)) {
         existing.parent?.threads?._add(existing);
@@ -61,7 +64,9 @@ class ChannelManager extends CachedManager {
       return null;
     }
 
-    if (cache && !allowUnknownGuild) this.cache.set(channel.id, channel);
+    if (cache && !allowUnknownGuild) {
+      this.cache.set(channel.id, channel);
+    }
 
     return channel;
   }
@@ -71,7 +76,9 @@ class ChannelManager extends CachedManager {
     channel?.guild?.channels.cache.delete(id);
 
     for (const [code, invite] of channel?.guild?.invites.cache ?? []) {
-      if (invite.channelId === id) channel.guild.invites.cache.delete(code);
+      if (invite.channelId === id) {
+        channel.guild.invites.cache.delete(code);
+      }
     }
 
     channel?.parent?.threads?.cache.delete(id);
@@ -136,7 +143,9 @@ class ChannelManager extends CachedManager {
   async fetch(id, { allowUnknownGuild = false, cache = true, force = false } = {}) {
     if (!force) {
       const existing = this.cache.get(id);
-      if (existing && !existing.partial) return existing;
+      if (existing && !existing.partial) {
+        return existing;
+      }
     }
 
     const data = await this.client.rest.get(Routes.channel(id));

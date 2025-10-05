@@ -54,7 +54,9 @@ class ApplicationEmojiManager extends CachedManager {
    */
   async create({ attachment, name }) {
     const image = await resolveImage(attachment);
-    if (!image) throw new DiscordjsTypeError(ErrorCodes.ReqResourceType);
+    if (!image) {
+      throw new DiscordjsTypeError(ErrorCodes.ReqResourceType);
+    }
 
     const body = { image, name };
 
@@ -83,7 +85,9 @@ class ApplicationEmojiManager extends CachedManager {
     if (id) {
       if (!force) {
         const existing = this.cache.get(id);
-        if (existing) return existing;
+        if (existing) {
+          return existing;
+        }
       }
 
       const emoji = await this.client.rest.get(Routes.applicationEmoji(this.application.id, id));
@@ -92,7 +96,10 @@ class ApplicationEmojiManager extends CachedManager {
 
     const { items: data } = await this.client.rest.get(Routes.applicationEmojis(this.application.id));
     const emojis = new Collection();
-    for (const emoji of data) emojis.set(emoji.id, this._add(emoji, cache));
+    for (const emoji of data) {
+      emojis.set(emoji.id, this._add(emoji, cache));
+    }
+
     return emojis;
   }
 
@@ -104,7 +111,10 @@ class ApplicationEmojiManager extends CachedManager {
    */
   async delete(emoji) {
     const id = this.resolveId(emoji);
-    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
+    if (!id) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
+    }
+
     await this.client.rest.delete(Routes.applicationEmoji(this.application.id, id));
   }
 
@@ -117,7 +127,9 @@ class ApplicationEmojiManager extends CachedManager {
    */
   async edit(emoji, options) {
     const id = this.resolveId(emoji);
-    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
+    if (!id) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
+    }
 
     const newData = await this.client.rest.patch(Routes.applicationEmoji(this.application.id, id), {
       body: {
@@ -141,7 +153,9 @@ class ApplicationEmojiManager extends CachedManager {
    */
   async fetchAuthor(emoji) {
     const id = this.resolveId(emoji);
-    if (!id) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
+    if (!id) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'emoji', 'EmojiResolvable', true);
+    }
 
     const data = await this.client.rest.get(Routes.applicationEmoji(this.application.id, id));
 

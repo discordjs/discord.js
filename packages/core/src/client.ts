@@ -259,7 +259,9 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 			});
 
 			for await (const [{ data }] of iterator) {
-				if (data.nonce !== nonce) continue;
+				if (data.nonce !== nonce) {
+					continue;
+				}
 
 				clearTimeout(timer);
 				timer = undefined;
@@ -273,7 +275,9 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 					chunkCount: data.chunk_count,
 				};
 
-				if (data.chunk_index >= data.chunk_count - 1) break;
+				if (data.chunk_index >= data.chunk_count - 1) {
+					break;
+				}
 
 				timer = createTimer(controller, timeout);
 			}
@@ -310,8 +314,13 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 
 		for await (const data of this.requestGuildMembersIterator({ ...options, nonce }, timeout)) {
 			members.push(...data.members);
-			if (data.presences) presences.push(...data.presences);
-			if (data.notFound) notFound.push(...data.notFound);
+			if (data.presences) {
+				presences.push(...data.presences);
+			}
+
+			if (data.notFound) {
+				notFound.push(...data.notFound);
+			}
 		}
 
 		return { members, nonce, notFound, presences };
@@ -360,7 +369,9 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 			const guildIds = new Set(options.guild_ids);
 
 			for await (const [{ data }] of iterator) {
-				if (!guildIds.has(data.guild_id)) continue;
+				if (!guildIds.has(data.guild_id)) {
+					continue;
+				}
 
 				clearTimeout(timer);
 				timer = undefined;
@@ -372,7 +383,9 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 
 				guildIds.delete(data.guild_id);
 
-				if (guildIds.size === 0) break;
+				if (guildIds.size === 0) {
+					break;
+				}
 
 				timer = createTimer(controller, timeout);
 			}

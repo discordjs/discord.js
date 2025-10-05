@@ -413,7 +413,9 @@ export function ApiItemContainerMixin<TBaseClass extends IApiItemConstructor>(
 						default:
 							for (const child of node.getChildNodes()) {
 								const result = findPlainTextNode(child);
-								if (result) return result;
+								if (result) {
+									return result;
+								}
 							}
 					}
 
@@ -540,13 +542,14 @@ export function ApiItemContainerMixin<TBaseClass extends IApiItemConstructor>(
 					) {
 						for (const [index, key] of (apiItem as ApiClass | ApiInterface).typeParameters.entries() ?? []) {
 							const typeParameter = extendsType.typeParameters?.[index];
-							if (typeParameter)
+							if (typeParameter) {
 								mappedTypeParameters.set(key.name, { item: next.item as ApiDeclaredItem, range: typeParameter });
-							else if (key.defaultTypeExcerpt)
+							} else if (key.defaultTypeExcerpt) {
 								mappedTypeParameters.set(key.name, {
 									item: apiItem as ApiDeclaredItem,
 									range: key.defaultTypeExcerpt.tokenRange,
 								});
+							}
 						}
 					}
 

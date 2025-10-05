@@ -49,7 +49,10 @@ class GuildMemberRoleManager extends DataManager {
    */
   get hoist() {
     const hoistedRoles = this.cache.filter(role => role.hoist);
-    if (!hoistedRoles.size) return null;
+    if (!hoistedRoles.size) {
+      return null;
+    }
+
     return hoistedRoles.reduce((prev, role) => (role.comparePositionTo(prev) > 0 ? role : prev));
   }
 
@@ -61,7 +64,10 @@ class GuildMemberRoleManager extends DataManager {
    */
   get icon() {
     const iconRoles = this.cache.filter(role => role.icon ?? role.unicodeEmoji);
-    if (!iconRoles.size) return null;
+    if (!iconRoles.size) {
+      return null;
+    }
+
     return iconRoles.reduce((prev, role) => (role.comparePositionTo(prev) > 0 ? role : prev));
   }
 
@@ -73,7 +79,10 @@ class GuildMemberRoleManager extends DataManager {
    */
   get color() {
     const coloredRoles = this.cache.filter(role => role.colors.primaryColor);
-    if (!coloredRoles.size) return null;
+    if (!coloredRoles.size) {
+      return null;
+    }
+
     return coloredRoles.reduce((prev, role) => (role.comparePositionTo(prev) > 0 ? role : prev));
   }
 
@@ -105,7 +114,10 @@ class GuildMemberRoleManager extends DataManager {
    * @readonly
    */
   get botRole() {
-    if (!this.member.user.bot) return null;
+    if (!this.member.user.bot) {
+      return null;
+    }
+
     return this.cache.find(role => role.tags?.botId === this.member.user.id) ?? null;
   }
 

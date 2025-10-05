@@ -13,7 +13,10 @@ class GuildStickerCreateAction extends Action {
      * @event Client#stickerCreate
      * @param {Sticker} sticker The sticker that was created
      */
-    if (!already) this.client.emit(Events.GuildStickerCreate, sticker);
+    if (!already) {
+      this.client.emit(Events.GuildStickerCreate, sticker);
+    }
+
     return { sticker };
   }
 }

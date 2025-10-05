@@ -79,7 +79,9 @@ describe('demuxProbe', () => {
 	test('Detects WebM', async () => {
 		const stream = Readable.from(gen(10), { objectMode: false });
 		webmWrite.mockImplementation(function mock(data: Buffer) {
-			if (data[0] === 5) this.emit('head', validHead);
+			if (data[0] === 5) {
+				this.emit('head', validHead);
+			}
 		} as any);
 		const probe = await demuxProbe(stream);
 		expect(probe.type).toEqual(StreamType.WebmOpus);
@@ -89,7 +91,9 @@ describe('demuxProbe', () => {
 	test('Detects Ogg', async () => {
 		const stream = Readable.from(gen(10), { objectMode: false });
 		oggWrite.mockImplementation(function mock(data: Buffer) {
-			if (data[0] === 5) this.emit('head', validHead);
+			if (data[0] === 5) {
+				this.emit('head', validHead);
+			}
 		} as any);
 		const probe = await demuxProbe(stream);
 		expect(probe.type).toEqual(StreamType.OggOpus);
@@ -99,7 +103,9 @@ describe('demuxProbe', () => {
 	test('Rejects invalid OpusHead', async () => {
 		const stream = Readable.from(gen(10), { objectMode: false });
 		oggWrite.mockImplementation(function mock(data: Buffer) {
-			if (data[0] === 5) this.emit('head', invalidHead);
+			if (data[0] === 5) {
+				this.emit('head', invalidHead);
+			}
 		} as any);
 		const probe = await demuxProbe(stream);
 		expect(probe.type).toEqual(StreamType.Arbitrary);

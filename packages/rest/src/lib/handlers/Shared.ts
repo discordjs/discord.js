@@ -73,15 +73,21 @@ export async function makeNetworkRequest(
 		// If the user signal was aborted, abort the controller, else abort the local signal.
 		// The reason why we don't re-use the user's signal, is because users may use the same signal for multiple
 		// requests, and we do not want to cause unexpected side-effects.
-		if (requestData.signal.aborted) controller.abort();
-		else requestData.signal.addEventListener('abort', () => controller.abort());
+		if (requestData.signal.aborted) {
+			controller.abort();
+		} else {
+			requestData.signal.addEventListener('abort', () => controller.abort());
+		}
 	}
 
 	let res: ResponseLike;
 	try {
 		res = await manager.options.makeRequest(url, { ...options, signal: controller.signal });
 	} catch (error: unknown) {
-		if (!(error instanceof Error)) throw error;
+		if (!(error instanceof Error)) {
+			throw error;
+		}
+
 		// Retry the specified number of times if needed
 		if (shouldRetry(error) && retries !== manager.options.retries) {
 			const backoff = normalizeRetryBackoff(

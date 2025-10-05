@@ -27,7 +27,9 @@ class BaseGuildEmoji extends Emoji {
   }
 
   _patch(data) {
-    if ('name' in data) this.name = data.name;
+    if ('name' in data) {
+      this.name = data.name;
+    }
 
     if ('require_colons' in data) {
       /**

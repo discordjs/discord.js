@@ -99,14 +99,18 @@ export class SourceMapper {
 		}
 
 		const sourceMap: ISourceMap | null = this._getSourceMap(sourceFilePath);
-		if (!sourceMap) return;
+		if (!sourceMap) {
+			return;
+		}
 
 		const nearestMappingItem: MappingItem | undefined = SourceMapper._findNearestMappingItem(sourceMap.mappingItems, {
 			line: sourceFileLine,
 			column: sourceFileColumn,
 		});
 
-		if (!nearestMappingItem) return;
+		if (!nearestMappingItem) {
+			return;
+		}
 
 		const mappedFilePath: string = path.resolve(path.dirname(sourceFilePath), nearestMappingItem.source);
 
@@ -132,7 +136,9 @@ export class SourceMapper {
 		}
 
 		// Don't translate coordinates to a file that doesn't exist
-		if (!originalFileInfo.fileExists) return;
+		if (!originalFileInfo.fileExists) {
+			return;
+		}
 
 		// The nearestMappingItem anchor may be above/left of the real position, due to gaps in the mapping.  Calculate
 		// the delta and apply it to the original position.

@@ -27,7 +27,9 @@ class GuildMemberUpdateAction extends Action {
          * @param {GuildMember} oldMember The member before the update
          * @param {GuildMember} newMember The member after the update
          */
-        if (!member.equals(old)) client.emit(Events.GuildMemberUpdate, old, member);
+        if (!member.equals(old)) {
+          client.emit(Events.GuildMemberUpdate, old, member);
+        }
       } else {
         const newMember = guild.members._add(data);
         /**

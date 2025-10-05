@@ -5,12 +5,16 @@ const { Events } = require('../../../util/Events.js');
 
 module.exports = (client, { d: data }) => {
   const guild = client.guilds.cache.get(data.guild_id);
-  if (!guild) return;
+  if (!guild) {
+    return;
+  }
 
   if (data.channel_ids) {
     for (const id of data.channel_ids) {
       const channel = client.channels.cache.get(id);
-      if (channel) removeStaleThreads(client, channel);
+      if (channel) {
+        removeStaleThreads(client, channel);
+      }
     }
   } else {
     for (const channel of guild.channels.cache.values()) {
@@ -42,7 +46,9 @@ module.exports = (client, { d: data }) => {
 };
 
 function removeStaleThreads(client, channel) {
-  if (!channel.threads) return;
+  if (!channel.threads) {
+    return;
+  }
 
   for (const thread of channel.threads.cache.values()) {
     if (!thread.archived) {

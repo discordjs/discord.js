@@ -41,8 +41,14 @@ class DataManager extends BaseManager {
    * @returns {?Object} An instance from this Manager
    */
   resolve(idOrInstance) {
-    if (idOrInstance instanceof this.holds) return idOrInstance;
-    if (typeof idOrInstance === 'string') return this.cache.get(idOrInstance) ?? null;
+    if (idOrInstance instanceof this.holds) {
+      return idOrInstance;
+    }
+
+    if (typeof idOrInstance === 'string') {
+      return this.cache.get(idOrInstance) ?? null;
+    }
+
     return null;
   }
 
@@ -53,8 +59,14 @@ class DataManager extends BaseManager {
    * @returns {?Snowflake}
    */
   resolveId(idOrInstance) {
-    if (idOrInstance instanceof this.holds) return idOrInstance.id;
-    if (typeof idOrInstance === 'string') return idOrInstance;
+    if (idOrInstance instanceof this.holds) {
+      return idOrInstance.id;
+    }
+
+    if (typeof idOrInstance === 'string') {
+      return idOrInstance;
+    }
+
     return null;
   }
 

@@ -487,7 +487,10 @@ export class Networking extends EventEmitter {
 				.performIPDiscovery(ssrc)
 				// eslint-disable-next-line promise/prefer-await-to-then
 				.then((localConfig) => {
-					if (this.state.code !== NetworkingStatusCode.UdpHandshaking) return;
+					if (this.state.code !== NetworkingStatusCode.UdpHandshaking) {
+						return;
+					}
+
 					this.state.ws.sendPacket({
 						op: VoiceOpcodes.SelectProtocol,
 						d: {
@@ -551,9 +554,11 @@ export class Networking extends EventEmitter {
 				this.state.code === NetworkingStatusCode.Resuming)
 		) {
 			const { connectionData } = this.state;
-			if (packet.op === VoiceOpcodes.ClientsConnect)
-				for (const id of packet.d.user_ids) connectionData.connectedClients.add(id);
-			else {
+			if (packet.op === VoiceOpcodes.ClientsConnect) {
+				for (const id of packet.d.user_ids) {
+					connectionData.connectedClients.add(id);
+				}
+			} else {
 				connectionData.connectedClients.delete(packet.d.user_id);
 			}
 		} else if (
@@ -562,18 +567,24 @@ export class Networking extends EventEmitter {
 		) {
 			if (packet.op === VoiceOpcodes.DavePrepareTransition) {
 				const sendReady = this.state.dave.prepareTransition(packet.d);
-				if (sendReady)
+				if (sendReady) {
 					this.state.ws.sendPacket({
 						op: VoiceOpcodes.DaveTransitionReady,
 						d: { transition_id: packet.d.transition_id },
 					});
+				}
+
 				if (packet.d.transition_id === 0) {
 					this.emit('transitioned', 0);
 				}
 			} else if (packet.op === VoiceOpcodes.DaveExecuteTransition) {
 				const transitioned = this.state.dave.executeTransition(packet.d.transition_id);
-				if (transitioned) this.emit('transitioned', packet.d.transition_id);
-			} else if (packet.op === VoiceOpcodes.DavePrepareEpoch) this.state.dave.prepareEpoch(packet.d);
+				if (transitioned) {
+					this.emit('transitioned', packet.d.transition_id);
+				}
+			} else if (packet.op === VoiceOpcodes.DavePrepareEpoch) {
+				this.state.dave.prepareEpoch(packet.d);
+			}
 		}
 	}
 
@@ -588,26 +599,32 @@ export class Networking extends EventEmitter {
 				this.state.dave.setExternalSender(message.payload);
 			} else if (message.op === VoiceOpcodes.DaveMlsProposals) {
 				const payload = this.state.dave.processProposals(message.payload, this.state.connectionData.connectedClients);
-				if (payload) this.state.ws.sendBinaryMessage(VoiceOpcodes.DaveMlsCommitWelcome, payload);
+				if (payload) {
+					this.state.ws.sendBinaryMessage(VoiceOpcodes.DaveMlsCommitWelcome, payload);
+				}
 			} else if (message.op === VoiceOpcodes.DaveMlsAnnounceCommitTransition) {
 				const { transitionId, success } = this.state.dave.processCommit(message.payload);
 				if (success) {
-					if (transitionId === 0) this.emit('transitioned', transitionId);
-					else
+					if (transitionId === 0) {
+						this.emit('transitioned', transitionId);
+					} else {
 						this.state.ws.sendPacket({
 							op: VoiceOpcodes.DaveTransitionReady,
 							d: { transition_id: transitionId },
 						});
+					}
 				}
 			} else if (message.op === VoiceOpcodes.DaveMlsWelcome) {
 				const { transitionId, success } = this.state.dave.processWelcome(message.payload);
 				if (success) {
-					if (transitionId === 0) this.emit('transitioned', transitionId);
-					else
+					if (transitionId === 0) {
+						this.emit('transitioned', transitionId);
+					} else {
 						this.state.ws.sendPacket({
 							op: VoiceOpcodes.DaveTransitionReady,
 							d: { transition_id: transitionId },
 						});
+					}
 				}
 			}
 		}
@@ -619,8 +636,9 @@ export class Networking extends EventEmitter {
 	 * @param keyPackage - The new key package
 	 */
 	private onDaveKeyPackage(keyPackage: Buffer) {
-		if (this.state.code === NetworkingStatusCode.SelectingProtocol || this.state.code === NetworkingStatusCode.Ready)
+		if (this.state.code === NetworkingStatusCode.SelectingProtocol || this.state.code === NetworkingStatusCode.Ready) {
 			this.state.ws.sendBinaryMessage(VoiceOpcodes.DaveMlsKeyPackage, keyPackage);
+		}
 	}
 
 	/**
@@ -629,11 +647,12 @@ export class Networking extends EventEmitter {
 	 * @param transitionId - The transition to invalidate
 	 */
 	private onDaveInvalidateTransition(transitionId: number) {
-		if (this.state.code === NetworkingStatusCode.SelectingProtocol || this.state.code === NetworkingStatusCode.Ready)
+		if (this.state.code === NetworkingStatusCode.SelectingProtocol || this.state.code === NetworkingStatusCode.Ready) {
 			this.state.ws.sendPacket({
 				op: VoiceOpcodes.DaveMlsInvalidCommitWelcome,
 				d: { transition_id: transitionId },
 			});
+		}
 	}
 
 	/**
@@ -675,7 +694,10 @@ export class Networking extends EventEmitter {
 	 */
 	public prepareAudioPacket(opusPacket: Buffer) {
 		const state = this.state;
-		if (state.code !== NetworkingStatusCode.Ready) return;
+		if (state.code !== NetworkingStatusCode.Ready) {
+			return;
+		}
+
 		state.preparedPacket = this.createAudioPacket(opusPacket, state.connectionData, state.dave);
 		return state.preparedPacket;
 	}
@@ -686,7 +708,10 @@ export class Networking extends EventEmitter {
 	 */
 	public dispatchAudio() {
 		const state = this.state;
-		if (state.code !== NetworkingStatusCode.Ready) return false;
+		if (state.code !== NetworkingStatusCode.Ready) {
+			return false;
+		}
+
 		if (state.preparedPacket !== undefined) {
 			this.playAudioPacket(state.preparedPacket);
 			state.preparedPacket = undefined;
@@ -703,13 +728,22 @@ export class Networking extends EventEmitter {
 	 */
 	private playAudioPacket(audioPacket: Buffer) {
 		const state = this.state;
-		if (state.code !== NetworkingStatusCode.Ready) return;
+		if (state.code !== NetworkingStatusCode.Ready) {
+			return;
+		}
+
 		const { connectionData } = state;
 		connectionData.packetsPlayed++;
 		connectionData.sequence++;
 		connectionData.timestamp += TIMESTAMP_INC;
-		if (connectionData.sequence >= 2 ** 16) connectionData.sequence = 0;
-		if (connectionData.timestamp >= 2 ** 32) connectionData.timestamp = 0;
+		if (connectionData.sequence >= 2 ** 16) {
+			connectionData.sequence = 0;
+		}
+
+		if (connectionData.timestamp >= 2 ** 32) {
+			connectionData.timestamp = 0;
+		}
+
 		this.setSpeaking(true);
 		state.udp.send(audioPacket);
 	}
@@ -722,8 +756,14 @@ export class Networking extends EventEmitter {
 	 */
 	public setSpeaking(speaking: boolean) {
 		const state = this.state;
-		if (state.code !== NetworkingStatusCode.Ready) return;
-		if (state.connectionData.speaking === speaking) return;
+		if (state.code !== NetworkingStatusCode.Ready) {
+			return;
+		}
+
+		if (state.connectionData.speaking === speaking) {
+			return;
+		}
+
 		state.connectionData.speaking = speaking;
 		state.ws.sendPacket({
 			op: VoiceOpcodes.Speaking,
@@ -777,7 +817,10 @@ export class Networking extends EventEmitter {
 
 		// Both supported encryption methods want the nonce to be an incremental integer
 		connectionData.nonce++;
-		if (connectionData.nonce > MAX_NONCE_SIZE) connectionData.nonce = 0;
+		if (connectionData.nonce > MAX_NONCE_SIZE) {
+			connectionData.nonce = 0;
+		}
+
 		connectionData.nonceBuffer.writeUInt32BE(connectionData.nonce, 0);
 
 		// 4 extra bytes of padding on the end of the encrypted packet

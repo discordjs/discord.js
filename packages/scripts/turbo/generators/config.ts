@@ -9,7 +9,7 @@ interface LabelerData {
 
 function sortYAMLObject(yaml: Record<string, string[]>) {
 	const sortedYAML: typeof yaml = {};
-	for (const key of Object.keys(yaml).sort((a, b) => a.localeCompare(b))) sortedYAML[key] = yaml[key]!;
+	for (const key of Object.keys(yaml).sort((a, b) => a.localeCompare(b))) {sortedYAML[key] = yaml[key]!;}
 	return sortedYAML;
 }
 

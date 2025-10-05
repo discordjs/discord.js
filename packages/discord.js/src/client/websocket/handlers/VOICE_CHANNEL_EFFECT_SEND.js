@@ -5,7 +5,9 @@ const { Events } = require('../../../util/Events.js');
 
 module.exports = (client, { d: data }) => {
   const guild = client.guilds.cache.get(data.guild_id);
-  if (!guild) return;
+  if (!guild) {
+    return;
+  }
 
   /**
    * Emitted when someone sends an effect, such as an emoji reaction, in a voice channel the client is connected to.

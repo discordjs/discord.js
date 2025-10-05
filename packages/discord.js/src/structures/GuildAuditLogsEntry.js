@@ -402,24 +402,78 @@ class GuildAuditLogsEntry {
    * @returns {AuditLogTargetType}
    */
   static targetType(target) {
-    if (target < 10) return Targets.Guild;
-    if (target < 20) return Targets.Channel;
-    if (target < 30) return Targets.User;
-    if (target < 40) return Targets.Role;
-    if (target < 50) return Targets.Invite;
-    if (target < 60) return Targets.Webhook;
-    if (target < 70) return Targets.Emoji;
-    if (target < 80) return Targets.Message;
-    if (target < 83) return Targets.Integration;
-    if (target < 86) return Targets.StageInstance;
-    if (target < 100) return Targets.Sticker;
-    if (target < 110) return Targets.GuildScheduledEvent;
-    if (target < 120) return Targets.Thread;
-    if (target < 130) return Targets.ApplicationCommand;
-    if (target < 140) return Targets.SoundboardSound;
-    if (target < 143) return Targets.AutoModeration;
-    if (target < 146) return Targets.User;
-    if (target >= 163 && target <= 165) return Targets.GuildOnboardingPrompt;
+    if (target < 10) {
+      return Targets.Guild;
+    }
+
+    if (target < 20) {
+      return Targets.Channel;
+    }
+
+    if (target < 30) {
+      return Targets.User;
+    }
+
+    if (target < 40) {
+      return Targets.Role;
+    }
+
+    if (target < 50) {
+      return Targets.Invite;
+    }
+
+    if (target < 60) {
+      return Targets.Webhook;
+    }
+
+    if (target < 70) {
+      return Targets.Emoji;
+    }
+
+    if (target < 80) {
+      return Targets.Message;
+    }
+
+    if (target < 83) {
+      return Targets.Integration;
+    }
+
+    if (target < 86) {
+      return Targets.StageInstance;
+    }
+
+    if (target < 100) {
+      return Targets.Sticker;
+    }
+
+    if (target < 110) {
+      return Targets.GuildScheduledEvent;
+    }
+
+    if (target < 120) {
+      return Targets.Thread;
+    }
+
+    if (target < 130) {
+      return Targets.ApplicationCommand;
+    }
+
+    if (target < 140) {
+      return Targets.SoundboardSound;
+    }
+
+    if (target < 143) {
+      return Targets.AutoModeration;
+    }
+
+    if (target < 146) {
+      return Targets.User;
+    }
+
+    if (target >= 163 && target <= 165) {
+      return Targets.GuildOnboardingPrompt;
+    }
+
     return Targets.Unknown;
   }
 

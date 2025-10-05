@@ -11,11 +11,15 @@ const { BaseGuild } = require('./BaseGuild.js');
 class AnonymousGuild extends BaseGuild {
   constructor(client, data, immediatePatch = true) {
     super(client, data);
-    if (immediatePatch) this._patch(data);
+    if (immediatePatch) {
+      this._patch(data);
+    }
   }
 
   _patch(data) {
-    if ('features' in data) this.features = data.features;
+    if ('features' in data) {
+      this.features = data.features;
+    }
 
     if ('splash' in data) {
       /**

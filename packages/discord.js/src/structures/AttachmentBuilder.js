@@ -131,7 +131,9 @@ class AttachmentBuilder {
    * @returns {AttachmentBuilder} This attachment
    */
   setSpoiler(spoiler = true) {
-    if (spoiler === this.spoiler) return this;
+    if (spoiler === this.spoiler) {
+      return this;
+    }
 
     if (!spoiler) {
       while (this.spoiler) {

@@ -46,7 +46,9 @@ class GuildChannel extends BaseChannel {
      */
     this.permissionOverwrites = new PermissionOverwriteManager(this);
 
-    if (data && immediatePatch) this._patch(data);
+    if (data && immediatePatch) {
+      this._patch(data);
+    }
   }
 
   _patch(data) {
@@ -116,7 +118,9 @@ class GuildChannel extends BaseChannel {
    * @readonly
    */
   get permissionsLocked() {
-    if (!this.parent) return null;
+    if (!this.parent) {
+      return null;
+    }
 
     // Get all overwrites
     const overwriteIds = new Set([
@@ -163,10 +167,18 @@ class GuildChannel extends BaseChannel {
 
     let count = 0;
     for (const channel of this.guild.channels.cache.values()) {
-      if (!types.includes(channel.type)) continue;
-      if (!selfIsCategory && channel.parentId !== this.parentId) continue;
+      if (!types.includes(channel.type)) {
+        continue;
+      }
+
+      if (!selfIsCategory && channel.parentId !== this.parentId) {
+        continue;
+      }
+
       if (this.rawPosition === channel.rawPosition) {
-        if (Snowflake.compare(channel.id, this.id) === -1) count++;
+        if (Snowflake.compare(channel.id, this.id) === -1) {
+          count++;
+        }
       } else if (this.rawPosition > channel.rawPosition) {
         count++;
       }
@@ -185,14 +197,19 @@ class GuildChannel extends BaseChannel {
    */
   permissionsFor(memberOrRole, checkAdmin = true) {
     const member = this.guild.members.resolve(memberOrRole);
-    if (member) return this.memberPermissions(member, checkAdmin);
+    if (member) {
+      return this.memberPermissions(member, checkAdmin);
+    }
+
     const role = this.guild.roles.resolve(memberOrRole);
     return role && this.rolePermissions(role, checkAdmin);
   }
 
   overwritesFor(member, verified = false, roles = null) {
     const resolvedMember = verified ? member : this.guild.members.resolve(member);
-    if (!resolvedMember) return [];
+    if (!resolvedMember) {
+      return [];
+    }
 
     const resolvedRoles = roles ?? resolvedMember.roles.cache;
     const roleOverwrites = [];
@@ -281,7 +298,10 @@ class GuildChannel extends BaseChannel {
    * @returns {Promise<GuildChannel>}
    */
   async lockPermissions() {
-    if (!this.parent) throw new DiscordjsError(ErrorCodes.GuildChannelOrphan);
+    if (!this.parent) {
+      throw new DiscordjsError(ErrorCodes.GuildChannelOrphan);
+    }
+
     const permissionOverwrites = this.parent.permissionOverwrites.cache.map(overwrite => overwrite.toJSON());
     return this.edit({ permissionOverwrites });
   }
@@ -462,13 +482,23 @@ class GuildChannel extends BaseChannel {
    * @readonly
    */
   get manageable() {
-    if (this.client.user.id === this.guild.ownerId) return true;
+    if (this.client.user.id === this.guild.ownerId) {
+      return true;
+    }
+
     const permissions = this.permissionsFor(this.client.user);
-    if (!permissions) return false;
+    if (!permissions) {
+      return false;
+    }
 
     // This flag allows managing even if timed out
-    if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
-    if (this.guild.members.me.communicationDisabledUntilTimestamp > Date.now()) return false;
+    if (permissions.has(PermissionFlagsBits.Administrator, false)) {
+      return true;
+    }
+
+    if (this.guild.members.me.communicationDisabledUntilTimestamp > Date.now()) {
+      return false;
+    }
 
     const bitfield = VoiceBasedChannelTypes.includes(this.type)
       ? PermissionFlagsBits.ManageChannels | PermissionFlagsBits.Connect
@@ -483,9 +513,15 @@ class GuildChannel extends BaseChannel {
    * @readonly
    */
   get viewable() {
-    if (this.client.user.id === this.guild.ownerId) return true;
+    if (this.client.user.id === this.guild.ownerId) {
+      return true;
+    }
+
     const permissions = this.permissionsFor(this.client.user);
-    if (!permissions) return false;
+    if (!permissions) {
+      return false;
+    }
+
     return permissions.has(PermissionFlagsBits.ViewChannel, false);
   }
 
