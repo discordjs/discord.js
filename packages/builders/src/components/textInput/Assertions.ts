@@ -1,8 +1,9 @@
 import { ComponentType, TextInputStyle } from 'discord-api-types/v10';
 import { z } from 'zod';
-import { customIdPredicate } from '../../Assertions.js';
+import { customIdPredicate, idPredicate } from '../../Assertions.js';
 
 export const textInputPredicate = z.object({
+	id: idPredicate,
 	type: z.literal(ComponentType.TextInput),
 	custom_id: customIdPredicate,
 	style: z.enum(TextInputStyle),
