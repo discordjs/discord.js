@@ -105,29 +105,36 @@ export const selectMenuStringPredicate = selectMenuBasePredicate
 		options: selectMenuStringOptionPredicate.array().min(1).max(25),
 	})
 	.check((ctx) => {
-		if (ctx.value.max_values !== undefined && ctx.value.options.length > ctx.value.max_values) {
+		const addIssue = (name: string, minimum: number) =>
+			ctx.issues.push({
+				code: 'too_small',
+				message: `The number of options must be greater than or equal to ${name}`,
+				inclusive: true,
+				minimum,
+				type: 'number',
+				path: ['options'],
+				origin: 'number',
+				input: minimum,
+			});
+
+		if (ctx.value.min_values !== undefined && ctx.value.options.length < ctx.value.min_values) {
+			addIssue('min_values', ctx.value.min_values);
+		}
+
+		if (
+			ctx.value.min_values !== undefined &&
+			ctx.value.max_values !== undefined &&
+			ctx.value.min_values > ctx.value.max_values
+		) {
 			ctx.issues.push({
 				code: 'too_big',
-				message: `The number of options must be less than or equal to ${ctx.value.max_values}`,
+				message: `The maximum amount of options must be greater than or equal to the minimum amount of options`,
 				inclusive: true,
 				maximum: ctx.value.max_values,
 				type: 'number',
-				path: ['options'],
+				path: ['min_values'],
 				origin: 'number',
-				input: ctx.value.options.length,
-			});
-		}
-
-		if (ctx.value.min_values !== undefined && ctx.value.options.length < ctx.value.min_values) {
-			ctx.issues.push({
-				code: 'too_small',
-				message: `The number of options must be greater than or equal to ${ctx.value.min_values}`,
-				inclusive: true,
-				minimum: ctx.value.min_values,
-				type: 'number',
-				path: ['options'],
-				origin: 'number',
-				input: ctx.value.options.length,
+				input: ctx.value.min_values,
 			});
 		}
 	});
