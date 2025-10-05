@@ -29,8 +29,6 @@ import {
 	type RESTPostAPIChannelMessageResult,
 	type RESTPostAPIChannelThreadsJSONBody,
 	type RESTPostAPIChannelThreadsResult,
-	type RESTPostAPIChannelWebhookJSONBody,
-	type RESTPostAPIChannelWebhookResult,
 	type RESTPostAPIGuildForumThreadsJSONBody,
 	type RESTPostAPISendSoundboardSoundResult,
 	type RESTPostAPISoundboardSendSoundJSONBody,
@@ -566,7 +564,7 @@ export class ChannelsAPI {
 			body,
 			reason,
 			signal,
-		}) as Promise<APIThreadChannel>;
+		}) as Promise<RESTPostAPIChannelThreadsResult>;
 	}
 
 	/**
