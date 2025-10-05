@@ -72,6 +72,7 @@ export class ThreadsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/channel#get-thread-member}
 	 * @param threadId - The id of the thread to fetch the member from
 	 * @param userId - The id of the user
+	 * @param query - The query for fetching the member
 	 * @param options - The options for fetching the member
 	 */
 	public async getMember(
