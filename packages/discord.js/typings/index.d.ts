@@ -2609,7 +2609,7 @@ export class ModalComponentResolver<Cached extends CacheType = CacheType> {
     properties: string,
     required: boolean,
   ): ModalData;
-  public getTextInputValue(customId: string): string;
+  public getTextInputValue(customId: string, required?: boolean): string | null;
   public getStringSelectValues(customId: string): readonly string[];
   public getSelectedUsers(customId: string, required: true): ReadonlyCollection<Snowflake, User>;
   public getSelectedUsers(customId: string, required?: boolean): ReadonlyCollection<Snowflake, User> | null;

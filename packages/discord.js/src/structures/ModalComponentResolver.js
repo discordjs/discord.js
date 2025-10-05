@@ -104,10 +104,11 @@ class ModalComponentResolver {
    * Gets the value of a text input component
    *
    * @param {string} customId The custom id of the text input component
+   * @param {boolean} [required=true] Whether to throw an error if the component value is not found or empty
    * @returns {string}
    */
-  getTextInputValue(customId) {
-    return this._getTypedComponent(customId, [ComponentType.TextInput]).value;
+  getTextInputValue(customId, required = true) {
+    return this._getTypedComponent(customId, [ComponentType.TextInput], ['value'], required).value;
   }
 
   /**
