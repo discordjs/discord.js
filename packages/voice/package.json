@@ -87,7 +87,7 @@
 		"prettier": "^3.6.2",
 		"tsup": "^8.5.0",
 		"turbo": "^2.5.6",
-		"typescript": "~5.5.4",
+		"typescript": "~5.9.2",
 		"vitest": "^3.2.4",
 		"vitest-websocket-mock": "^0.5.0"
 	},
