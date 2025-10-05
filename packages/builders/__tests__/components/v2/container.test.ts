@@ -1,8 +1,8 @@
 import { type APIContainerComponent, ComponentType, SeparatorSpacingSize } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
-import { ButtonBuilder } from '../../../dist/index.mjs';
 import { ActionRowBuilder } from '../../../src/components/ActionRow.js';
 import { createComponentBuilder } from '../../../src/components/Components.js';
+import { ButtonBuilder } from '../../../src/components/button/Button.js';
 import { ContainerBuilder } from '../../../src/components/v2/Container.js';
 import { FileBuilder } from '../../../src/components/v2/File.js';
 import { MediaGalleryBuilder } from '../../../src/components/v2/MediaGallery.js';
