@@ -2,7 +2,6 @@ import { ComponentType } from 'discord-api-types/v10';
 import type { APIStringSelectComponent, APISelectMenuOption } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { jsonOptionValidator, optionsLengthValidator, validateRequiredSelectMenuParameters } from '../Assertions.js';
-import { requiredValidator } from '../textInput/Assertions.js';
 import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 import { StringSelectMenuOptionBuilder } from './StringSelectMenuOption.js';
 
@@ -127,17 +126,6 @@ export class StringSelectMenuBuilder extends BaseSelectMenuBuilder<APIStringSele
 
 		optionsLengthValidator.parse(clone.length);
 		this.options.splice(0, this.options.length, ...clone);
-		return this;
-	}
-
-	/**
-	 * Sets whether this string select menu is required.
-	 *
-	 * @remarks Only for use in modals.
-	 * @param required - Whether this string select menu is required
-	 */
-	public setRequired(required = true) {
-		this.data.required = requiredValidator.parse(required);
 		return this;
 	}
 
