@@ -713,6 +713,7 @@ export class ChannelsAPI {
 	/**
 	 * Adds a recipient to a group DM channel
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#group-dm-add-recipient}
 	 * @param channelId - The id of the channel to add the recipient to
 	 * @param userId - The id of the user to add as a recipient
 	 * @param body - The data for adding the recipient
@@ -734,11 +735,12 @@ export class ChannelsAPI {
 	/**
 	 * Removes a recipient from a group DM channel
 	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#group-dm-remove-recipient}
 	 * @param channelId - The id of the channel to remove the recipient from
 	 * @param userId - The id of the user to remove as a recipient
 	 * @param options - The options for removing the recipient
 	 */
-	public async deleteGroupDMRecipient(
+	public async removeGroupDMRecipient(
 		channelId: Snowflake,
 		userId: Snowflake,
 		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
