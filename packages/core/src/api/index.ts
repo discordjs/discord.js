@@ -2,6 +2,7 @@ import type { REST } from '@discordjs/rest';
 import { ApplicationCommandsAPI } from './applicationCommands.js';
 import { ApplicationsAPI } from './applications.js';
 import { ChannelsAPI } from './channel.js';
+import { GatewayAPI } from './gateway.js';
 import { GuildsAPI } from './guild.js';
 import { InteractionsAPI } from './interactions.js';
 import { InvitesAPI } from './invite.js';
@@ -20,6 +21,7 @@ import { WebhooksAPI } from './webhook.js';
 export * from './applicationCommands.js';
 export * from './applications.js';
 export * from './channel.js';
+export * from './gateway.js';
 export * from './guild.js';
 export * from './interactions.js';
 export * from './invite.js';
@@ -41,6 +43,8 @@ export class API {
 	public readonly applications: ApplicationsAPI;
 
 	public readonly channels: ChannelsAPI;
+
+	public readonly gateway: GatewayAPI;
 
 	public readonly guilds: GuildsAPI;
 
@@ -74,6 +78,7 @@ export class API {
 		this.applicationCommands = new ApplicationCommandsAPI(rest);
 		this.applications = new ApplicationsAPI(rest);
 		this.channels = new ChannelsAPI(rest);
+		this.gateway = new GatewayAPI(rest);
 		this.guilds = new GuildsAPI(rest);
 		this.invites = new InvitesAPI(rest);
 		this.monetization = new MonetizationAPI(rest);

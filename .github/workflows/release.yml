@@ -72,7 +72,35 @@ jobs:
       - name: Build dependencies
         run: pnpm run build
 
-      - name: Release packages
+      - name: Checkout main repository
+        if: ${{ inputs.ref && inputs.ref != 'main' }}
+        uses: actions/checkout@v5
+        with:
+          path: 'main'
+
+      - name: Install action deps (non-main ref only)
+        if: ${{ inputs.ref && inputs.ref != 'main' }}
+        shell: bash
+        working-directory: ./main
+        env:
+          COREPACK_ENABLE_STRICT: 0
+        run: |
+          pnpm self-update 10
+          pnpm install --filter @discordjs/actions --frozen-lockfile --prefer-offline --loglevel error
+
+      - name: Release packages (non-main ref)
+        if: ${{ inputs.ref && inputs.ref != 'main' }}
+        uses: ./main/packages/actions/src/releasePackages
+        with:
+          package: ${{ inputs.package }}
+          exclude: ${{ inputs.exclude }}
+          dry: ${{ inputs.dry_run }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Release packages (main ref)
+        if: ${{ !inputs.ref || inputs.ref == 'main' }}
         uses: ./packages/actions/src/releasePackages
         with:
           package: ${{ inputs.package }}
