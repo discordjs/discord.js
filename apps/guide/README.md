@@ -39,7 +39,7 @@ If you don't understand something in the documentation, you are experiencing pro
 [documentation]: https://discord.js.org/docs
 [guide]: https://discordjs.guide
 [guide-source]: https://github.com/discordjs/discord.js/tree/main/apps/guide
-[guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
+[guide-update]: https://discordjs.guide/guide/legacy/additional-info/changes-in-v14
 [discord]: https://discord.gg/djs
 [source]: https://github.com/discordjs/discord.js/tree/main/apps/guide
 [contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md
