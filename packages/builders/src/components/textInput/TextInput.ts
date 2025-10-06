@@ -62,7 +62,7 @@ export class TextInputBuilder
 	 * Sets the label for this text input.
 	 *
 	 * @param label - The label to use
-	 * @deprecated Use {@link TextInputBuilder.setPlaceholder} instead
+	 * @deprecated Use a label builder to create a label (and optionally a description) instead.
 	 */
 	public setLabel(label: string) {
 		this.data.label = labelValidator.parse(label);
