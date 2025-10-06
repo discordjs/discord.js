@@ -314,8 +314,9 @@ export class ActionRowBuilder<
     >,
   );
   public static from<ComponentType extends AnyComponentBuilder = AnyComponentBuilder>(
-    other:
-      | JSONEncodable<APIActionRowComponent<ReturnType<ComponentType['toJSON']>>>
+    other: // @ts-expect-error builders/1.x.
+    | JSONEncodable<APIActionRowComponent<ReturnType<ComponentType['toJSON']>>>
+      // @ts-expect-error builders/1.x.
       | APIActionRowComponent<ReturnType<ComponentType['toJSON']>>,
   ): ActionRowBuilder<ComponentType>;
 }
@@ -6461,6 +6462,7 @@ export interface BaseMessageOptions {
   )[];
   components?: readonly (
     | JSONEncodable<APIActionRowComponent<APIComponentInMessageActionRow>>
+    // @ts-expect-error builders/1.x.
     | ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>
     | APIActionRowComponent<APIComponentInMessageActionRow>
   )[];
