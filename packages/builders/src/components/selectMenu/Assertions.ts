@@ -1,7 +1,7 @@
 import { Result, s } from '@sapphire/shapeshift';
 import { ChannelType, ComponentType, SelectMenuDefaultValueType } from 'discord-api-types/v10';
 import { isValidationEnabled } from '../../util/validation.js';
-import { customIdValidator, emojiValidator, idValidator } from '../Assertions';
+import { customIdValidator, emojiValidator, idValidator } from '../Assertions.js';
 import { labelValidator } from '../textInput/Assertions.js';
 
 const selectMenuBasePredicate = s.object({
