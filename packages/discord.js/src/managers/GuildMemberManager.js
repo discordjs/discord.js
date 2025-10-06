@@ -1,5 +1,6 @@
 'use strict';
 
+const { process } = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
@@ -10,9 +11,12 @@ const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = 
 const BaseGuildVoiceChannel = require('../structures/BaseGuildVoiceChannel');
 const { GuildMember } = require('../structures/GuildMember');
 const { Role } = require('../structures/Role');
+const { resolveImage } = require('../util/DataResolver');
 const Events = require('../util/Events');
 const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField');
 const Partials = require('../util/Partials');
+
+let deprecatedEmittedForEditSoleNickname = false;
 
 /**
  * Manages API methods for GuildMembers and stores their cache.
@@ -336,8 +340,8 @@ class GuildMemberManager extends CachedManager {
    */
 
   /**
-   * Edits a member of the guild.
-   * <info>The user must be a member of the guild</info>
+   * Edits a member of a guild.
+   *
    * @param {UserResolvable} user The member to edit
    * @param {GuildMemberEditOptions} options The options to provide
    * @returns {Promise<GuildMember>}
@@ -372,18 +376,67 @@ class GuildMemberManager extends CachedManager {
     }
 
     let endpoint;
+
     if (id === this.client.user.id) {
       const keys = Object.keys(options);
-      if (keys.length === 1 && keys[0] === 'nick') endpoint = Routes.guildMember(this.guild.id);
-      else endpoint = Routes.guildMember(this.guild.id, id);
-    } else {
-      endpoint = Routes.guildMember(this.guild.id, id);
+
+      if (keys.length === 1 && keys[0] === 'nick') {
+        // For modifying the current application's nickname only, we use the /guilds/{guild.id}/members/@me endpoint.
+        // This endpoint only requires the CHANGE_NICKNAME permission.
+        // The other endpoint would require the MANAGE_NICKNAMES permission.
+        // In v15, this will be split out, so emit a deprecation.
+        endpoint = Routes.guildMember(this.guild.id, '@me');
+
+        if (!deprecatedEmittedForEditSoleNickname) {
+          process.emitWarning(
+            // eslint-disable-next-line max-len
+            "You should use GuildMemberManager#editMe() when changing your nickname. Due to Discord's API changes, GuildMemberManager#edit() will end up requiring MANAGE_NICKNAMES in v15.",
+            'DeprecationWarning',
+          );
+
+          deprecatedEmittedForEditSoleNickname = true;
+        }
+      }
     }
+
+    endpoint ??= Routes.guildMember(this.guild.id, id);
     const d = await this.client.rest.patch(endpoint, { body: options, reason });
 
     const clone = this.cache.get(id)?._clone();
     clone?._patch(d);
     return clone ?? this._add(d, false);
+  }
+
+  /**
+   * The data for editing the current application's guild member.
+   *
+   * @typedef {Object} GuildMemberEditMeOptions
+   * @property {?string} [nick] The nickname to set
+   * @property {?(BufferResolvable|Base64Resolvable)} [banner] The banner to set
+   * @property {?(BufferResolvable|Base64Resolvable)} [avatar] The avatar to set
+   * @property {?string} [bio] The bio to set
+   * @property {string} [reason] The reason to use
+   */
+
+  /**
+   * Edits the current application's guild member in a guild.
+   *
+   * @param {GuildMemberEditMeOptions} options The options to provide
+   * @returns {Promise<GuildMember>}
+   */
+  async editMe({ reason, ...options }) {
+    const data = await this.client.rest.patch(Routes.guildMember(this.guild.id, '@me'), {
+      body: {
+        ...options,
+        banner: options.banner && (await resolveImage(options.banner)),
+        avatar: options.avatar && (await resolveImage(options.avatar)),
+      },
+      reason,
+    });
+
+    const clone = this.me?._clone();
+    clone?._patch(data);
+    return clone ?? this._add(data, false);
   }
 
   /**
