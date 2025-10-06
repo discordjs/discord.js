@@ -62,7 +62,7 @@ export abstract class BaseSelectMenuBuilder<
 	}
 
 	/**
-	 * Sets whether this string select menu is required.
+	 * Sets whether this select menu is required.
 	 *
 	 * @remarks Only for use in modals.
 	 * @param required - Whether this select menu is required
