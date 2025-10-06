@@ -149,7 +149,7 @@ This will run the code given to `broadcastEval` on each shard and return the res
 
 ```js
 client.shard
-	.broadcastEval((c) => c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)) // [!code word:boradcastEval]
+	.broadcastEval((c) => c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)) // [!code word:broadcastEval]
 	.then((results) => {
 		return interaction.reply(`Total member count: ${results.reduce((acc, memberCount) => acc + memberCount, 0)}`);
 	})
@@ -192,7 +192,7 @@ client.on(Events.InteractionCreate, (interaction) => {
 		// [!code ++:12]
 		const promises = [
 			client.shard.fetchClientValues('guilds.cache.size'),
-			lient.shard.broadcastEval((c) => c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)),
+			client.shard.broadcastEval((c) => c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)),
 		];
 
 		return Promise.all(promises)
