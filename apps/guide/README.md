@@ -24,8 +24,7 @@
 
 ## Contributing
 
-Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the existing guide.  
-See [the contribution guide][./contributing] if you'd like to submit a PR.
+Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the existing guide. See [the contributing guide][contributing] if you'd like to submit a pull request.
 
 ## Local Development
 
