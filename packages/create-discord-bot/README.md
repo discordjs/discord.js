@@ -43,7 +43,7 @@ See [the contribution guide][contributing] if you'd like to submit a pull reques
 
 If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle nudge in the right direction, please don't hesitate to join our official [discord.js server][discord].
 
-[guide]: https://discordjs.guide/
+[guide]: https://discordjs.guide
 [guide-source]: https://github.com/discordjs/discord.js/tree/main/apps/guide
 [guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
 [discord]: https://discord.gg/djs

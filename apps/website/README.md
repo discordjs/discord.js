@@ -38,7 +38,7 @@ If you don't understand something in the documentation, you are experiencing pro
 [website]: https://discord.js.org
 [website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
 [documentation]: https://discord.js.org/docs
-[guide]: https://discordjs.guide/
+[guide]: https://discordjs.guide
 [guide-source]: https://github.com/discordjs/discord.js/tree/main/apps/guide
 [guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
 [discord]: https://discord.gg/djs
