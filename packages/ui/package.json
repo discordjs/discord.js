@@ -52,8 +52,8 @@
 	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
+		"@ariakit/react": "^0.4.19",
 		"@react-icons/all-files": "^4.1.0",
-		"ariakit": "2.0.0-next.44",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0"
 	},

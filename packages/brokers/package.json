@@ -69,7 +69,7 @@
 	"dependencies": {
 		"@msgpack/msgpack": "^3.1.2",
 		"@vladfrangu/async_event_emitter": "^2.4.7",
-		"ioredis": "^5.8.0"
+		"ioredis": "^5.8.1"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
