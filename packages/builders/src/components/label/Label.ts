@@ -55,7 +55,7 @@ export class LabelBuilder extends ComponentBuilder<LabelBuilderData> {
 	 * const label = new LabelBuilder({
 	 * 	label: 'label',
 	 * 	component,
-	 * }).setContent('new text');
+	 * }).setLabel('new text');
 	 * ```
 	 */
 	public constructor(data: Partial<APILabelComponent> = {}) {
