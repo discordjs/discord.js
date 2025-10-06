@@ -121,7 +121,7 @@ export class RPCRedisBroker<TEvents extends Record<string, any[]>, TResponses ex
 		const payload: { ack(): Promise<void>; data: unknown; reply(data: unknown): Promise<void> } = {
 			data,
 			ack: async () => {
-				await this.redisClient.xack(event, this.options.group, id);
+				await this.redisClient.xack(event, this.group, id);
 			},
 			reply: async (data) => {
 				await this.redisClient.publish(`${event}:${id.toString()}`, this.options.encode(data));
