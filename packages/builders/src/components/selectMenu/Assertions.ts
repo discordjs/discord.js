@@ -5,7 +5,7 @@ import { customIdValidator, emojiValidator, idValidator } from '../Assertions';
 import { labelValidator } from '../textInput/Assertions.js';
 
 const selectMenuBasePredicate = s.object({
-	id: idValidator,
+	id: idValidator.optional(),
 	placeholder: s.string().lengthLessThanOrEqual(150).optional(),
 	min_values: s.number().greaterThanOrEqual(0).lessThanOrEqual(25).optional(),
 	max_values: s.number().greaterThanOrEqual(0).lessThanOrEqual(25).optional(),

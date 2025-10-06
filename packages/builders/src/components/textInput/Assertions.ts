@@ -27,7 +27,7 @@ export const labelValidator = s
 
 export const textInputPredicate = s
 	.object({
-		id: idValidator,
+		id: idValidator.optional(),
 		type: s.literal(ComponentType.TextInput),
 		custom_id: customIdValidator,
 		style: textInputStyleValidator,

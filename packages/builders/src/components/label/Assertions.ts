@@ -13,7 +13,7 @@ import { textInputPredicate } from '../textInput/Assertions.js';
 
 export const labelPredicate = s
 	.object({
-		id: idValidator,
+		id: idValidator.optional(),
 		type: s.literal(ComponentType.Label),
 		label: s.string().lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(45),
 		description: s.string().lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100).optional(),
