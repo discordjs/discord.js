@@ -27,15 +27,15 @@ export const labelValidator = s
 
 export const textInputPredicate = s
 	.object({
-		id: idValidator.optional(),
 		type: s.literal(ComponentType.TextInput),
 		custom_id: customIdValidator,
 		style: textInputStyleValidator,
-		min_length: minLengthValidator,
-		max_length: maxLengthValidator,
-		placeholder: placeholderValidator,
-		value: valueValidator,
-		required: requiredValidator,
+		id: idValidator.optional(),
+		min_length: minLengthValidator.optional(),
+		max_length: maxLengthValidator.optional(),
+		placeholder: placeholderValidator.optional(),
+		value: valueValidator.optional(),
+		required: requiredValidator.optional(),
 	})
 	.setValidationEnabled(isValidationEnabled);
 
