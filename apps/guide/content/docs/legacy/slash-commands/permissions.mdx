@@ -28,7 +28,7 @@ const data = new SlashCommandBuilder()
 	.setDefaultMemberPermissions(PermissionFlagsBits.BanMembers); // [!code ++]
 ```
 
-For a kick command however, your can allow members with the `KickMembers` permission to execute the command, so that's why the flag is listed here here.
+For a kick command however, you can allow members with the `KickMembers` permission to execute the command, so that's why the flag is listed here here.
 
 <Callout>
 	You can require the user to have all of multiple permissions by merging them with the `|` bitwise OR operator (for example `PermissionFlagsBits.BanMembers | PermissionFlagsBits.KickMembers`).
