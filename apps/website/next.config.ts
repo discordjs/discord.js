@@ -39,8 +39,8 @@ export default {
 			},
 			{
 				source: '/guide/:path*',
-				destination: 'https://next.discordjs.guide/guide/:path*',
-				permanent: true,
+				destination: 'https://discordjs.guide/:path*',
+				permanent: false,
 			},
 		];
 	},
