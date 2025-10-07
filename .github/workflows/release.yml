@@ -109,11 +109,3 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-
-      - name: create-discord-bot -> create-discord-app
-        if: ${{ inputs.package == 'all' || inputs.package == 'create-discord-bot' }}
-        run: |
-          pnpm --filter=create-discord-bot run rename-to-app
-          pnpm --filter=create-discord-app publish --provenance --no-git-check
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
