@@ -25,8 +25,8 @@
 		"...oauth2",
 		"sharding"
 	],
-	"title": "Legacy Guide",
-	"description": "The legacy discord.js guide",
+	"title": "discord.js",
+	"description": "The discord.js guide",
 	"icon": "Book",
 	"root": true
 }
