@@ -64,7 +64,7 @@ If you don't understand something in the documentation, you are experiencing pro
 [documentation]: https://discord.js.org/docs/packages/builders/stable
 [guide]: https://discordjs.guide
 [guide-source]: https://github.com/discordjs/discord.js/tree/main/apps/guide
-[guide-update]: https://discordjs.guide/guide/legacy/additional-info/changes-in-v14
+[guide-update]: https://discordjs.guide/legacy/additional-info/changes-in-v14
 [discord]: https://discord.gg/djs
 [discord-developers]: https://discord.gg/discord-developers
 [source]: https://github.com/discordjs/discord.js/tree/main/packages/builders
