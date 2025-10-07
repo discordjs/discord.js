@@ -10,7 +10,7 @@
 		<a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/discordjs/discord.js/actions/workflows/tests.yml/badge.svg" alt="Tests status" /></a>
 		<a href="https://github.com/discordjs/discord.js/commits/main"><img src="https://img.shields.io/github/last-commit/discordjs/discord.js.svg?logo=github&logoColor=ffffff" alt="Last commit." /></a>
 		<a href="https://github.com/discordjs/discord.js/graphs/contributors"><img src="https://img.shields.io/github/contributors/discordjs/discord.js.svg?maxAge=3600&logo=github&logoColor=fff&color=00c7be" alt="contributors" /></a>
-		<a><img src="https://img.shields.io/opencollective/backers/discordjs?maxAge=3600&logo=opencollective" alt="backers" /></a>
+		<a href="https://opencollective.com/discordjs"><img src="https://img.shields.io/opencollective/backers/discordjs?maxAge=3600&logo=opencollective" alt="backers" /></a>
 		<a href="https://codecov.io/gh/discordjs/discord.js"><img src="https://codecov.io/gh/discordjs/discord.js/branch/main/graph/badge.svg?precision=2" alt="Code coverage" /></a>
 	</p>
 	<p>
