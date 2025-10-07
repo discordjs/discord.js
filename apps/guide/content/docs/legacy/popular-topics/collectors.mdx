@@ -24,9 +24,9 @@ collector.on('end', (collected) => {
 });
 ```
 
-You can provide a `filter` key to the object parameter of `createMessageCollector()`. The value to this key should be a function that returns a boolean value to indicate if this message should be collected or not. To check for multiple conditions in your filter you can connect them using [logical operators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_Operators#logical_operators). If you don't provide a filter all messages in the channel the collector was started on will be collected.
+You can provide a `filter` key to the object parameter of `createMessageCollector()`. The value to this key should be a function that returns a boolean value to indicate if this message should be collected or not. To check for multiple conditions in your filter you can connect them using [logical operators](https://developer.mozilla.org/docs/Web/JavaScript/Guide/Expressions_and_Operators#logical_operators). If you don't provide a filter all messages in the channel the collector was started on will be collected.
 
-Note that the above example uses [implicit return](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions#function_body) for the filter function and passes it to the options object using the [object property shorthand](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer#property_definitions) notation.
+Note that the above example uses [implicit return](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Functions/Arrow_functions#function_body) for the filter function and passes it to the options object using the [object property shorthand](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Operators/Object_initializer#property_definitions) notation.
 
 If a message passes through the filter, it will trigger the `collect` event for the `collector` you've created. This message is then passed into the event listener as `collected` and the provided function is executed. In the above example, you simply log the message. Once the collector finishes collecting based on the provided end conditions the `end` event emits.
 
@@ -81,7 +81,7 @@ interaction.reply({ content: item.question, withResponse: true }).then((response
 
 <Callout>
 	If you don't understand how `.some()` works, you can read about it in more detail
-	[here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
+	[here](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/some).
 </Callout>
 
 In this filter, you iterate through the answers to find what you want. You would like to ignore the case because simple typos can happen, so you convert each answer to its lowercase form and check if it's equal to the response in lowercase form as well. In the options section, you only want to allow one answer to pass through, hence the `max: 1` setting.
