@@ -3847,9 +3847,9 @@ export class Webhook<Type extends WebhookType = WebhookType> {
   public editMessage(
     message: MessageResolvable,
     options: MessagePayload | WebhookMessageEditOptions | string,
-  ): Promise<Message>;
-  public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<Message>;
-  public send(options: MessagePayload | WebhookMessageCreateOptions | string): Promise<Message>;
+  ): Promise<Message<true>>;
+  public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<Message<true>>;
+  public send(options: MessagePayload | WebhookMessageCreateOptions | string): Promise<Message<true>>;
 }
 
 export interface WebhookClient extends WebhookFields, BaseClient<{}> {}

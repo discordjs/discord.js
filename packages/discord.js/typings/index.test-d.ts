@@ -2687,9 +2687,9 @@ declare const webhookClient: WebhookClient;
 declare const interactionWebhook: InteractionWebhook;
 declare const snowflake: Snowflake;
 
-expectType<Promise<Message>>(webhook.send('content'));
-expectType<Promise<Message>>(webhook.editMessage(snowflake, 'content'));
-expectType<Promise<Message>>(webhook.fetchMessage(snowflake));
+expectType<Promise<Message<true>>>(webhook.send('content'));
+expectType<Promise<Message<true>>>(webhook.editMessage(snowflake, 'content'));
+expectType<Promise<Message<true>>>(webhook.fetchMessage(snowflake));
 expectType<Promise<Webhook>>(webhook.edit({ name: 'name' }));
 
 expectType<Promise<APIMessage>>(webhookClient.send('content'));
