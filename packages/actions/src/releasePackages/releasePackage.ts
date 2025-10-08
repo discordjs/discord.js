@@ -41,7 +41,7 @@ async function gitTagAndRelease(release: ReleaseEntry, dry: boolean) {
 	}
 }
 
-export async function releasePackage(release: ReleaseEntry, dev: boolean, dry: boolean) {
+export async function releasePackage(release: ReleaseEntry, dev: boolean, dry: boolean, doGitRelease = !dev) {
 	// Sanity check against the registry first
 	if (await checkRegistry(release)) {
 		info(`${release.name}@${release.version} already published, skipping.`);
@@ -54,7 +54,7 @@ export async function releasePackage(release: ReleaseEntry, dev: boolean, dry: b
 		await $`pnpm --filter=${release.name} publish --provenance --no-git-checks ${dev ? '--tag=dev' : ''}`;
 	}
 
-	if (!dev) await gitTagAndRelease(release, dry);
+	if (doGitRelease) await gitTagAndRelease(release, dry);
 
 	if (dry) return;
 
@@ -89,6 +89,6 @@ export async function releasePackage(release: ReleaseEntry, dev: boolean, dry: b
 		await $`pnpm --filter=create-discord-bot run rename-to-app`;
 		// eslint-disable-next-line require-atomic-updates
 		release.name = 'create-discord-app';
-		await releasePackage(release, dev, dry);
+		await releasePackage(release, dev, dry, false);
 	}
 }
