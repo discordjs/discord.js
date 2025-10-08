@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.12.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.11.3...@discordjs/builders@1.12.0) - (2025-10-08)
+
+## Features
+
+- **builders:** Modal select menus in builders v1 (#11138) ([ac683b9](https://github.com/discordjs/discord.js/commit/ac683b9d040635de8514c80a9d433d9c6d63701b))
+
 # [@discordjs/builders@1.11.3](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.11.2...@discordjs/builders@1.11.3) - (2025-08-10)
 
 ## Bug Fixes
