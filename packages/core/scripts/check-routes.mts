@@ -1,7 +1,7 @@
 import { Routes } from 'discord-api-types/v10';
 import { glob, readFile } from 'node:fs/promises';
 
-const usedRoutes = new Set();
+const usedRoutes = new Set<string>();
 
 const ignoredRoutes = new Set([
 	// Deprecated
@@ -20,7 +20,7 @@ for await (const file of glob('**/*.ts', { cwd })) {
 
 	const routes = content.matchAll(/Routes\.([\w\d_]+)/g);
 	for (const route of routes) {
-		usedRoutes.add(route[1]);
+		usedRoutes.add(route[1]!);
 	}
 }
 
