@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.12.1](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.12.0...@discordjs/builders@1.12.1) - (2025-10-08)
+
+## Bug Fixes
+
+- **builders:** Text display component support for modals (#11155) ([99b8436](https://github.com/discordjs/discord.js/commit/99b8436117bc12654278337abc4a23f5bdf4ba46))
+
 # [@discordjs/builders@1.12.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.11.3...@discordjs/builders@1.12.0) - (2025-10-08)
 
 ## Features
