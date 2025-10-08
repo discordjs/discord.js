@@ -80,7 +80,10 @@ class ModalSubmitInteraction extends BaseInteraction {
      * @type {Array<ActionRowModalData | LabelModalData | TextDisplayModalData>}
      */
     this.components = data.data.components?.map(component =>
-      ModalSubmitInteraction.transformComponent(component, data.data.resolved),
+      ModalSubmitInteraction.transformComponent(component, data.data.resolved, {
+        client: this.client,
+        guild: this.guild,
+      }),
     );
 
     /**
@@ -121,14 +124,17 @@ class ModalSubmitInteraction extends BaseInteraction {
    * Transforms component data to discord.js-compatible data
    * @param {*} rawComponent The data to transform
    * @param {APIInteractionDataResolved} [resolved] The resolved data for the interaction
+   * @param {*} [extra] Extra data required for the transformation
    * @returns {ModalData[]}
    */
-  static transformComponent(rawComponent, resolved) {
+  static transformComponent(rawComponent, resolved, { client, guild } = {}) {
     if ('components' in rawComponent) {
       return {
         type: rawComponent.type,
         id: rawComponent.id,
-        components: rawComponent.components.map(component => this.transformComponent(component, resolved)),
+        components: rawComponent.components.map(component =>
+          this.transformComponent(component, resolved, { client, guild }),
+        ),
       };
     }
 
@@ -136,7 +142,7 @@ class ModalSubmitInteraction extends BaseInteraction {
       return {
         type: rawComponent.type,
         id: rawComponent.id,
-        component: this.transformComponent(rawComponent.component, resolved),
+        component: this.transformComponent(rawComponent.component, resolved, { client, guild }),
       };
     }
 
@@ -164,19 +170,19 @@ class ModalSubmitInteraction extends BaseInteraction {
           return collection.size ? collection : null;
         };
 
-        const users = resolveCollection(resolved.users, user => this.client.users._add(user));
+        const users = resolveCollection(resolved.users, user => client.users._add(user));
         if (users) data.users = users;
 
         const channels = resolveCollection(
           resolved.channels,
-          channel => this.client.channels._add(channel, this.guild) ?? channel,
+          channel => client.channels._add(channel, guild) ?? channel,
         );
         if (channels) data.channels = channels;
 
-        const members = resolveCollection(resolved.members, member => this.guild?.members._add(member) ?? member);
+        const members = resolveCollection(resolved.members, member => guild?.members._add(member) ?? member);
         if (members) data.members = members;
 
-        const roles = resolveCollection(resolved.roles, role => this.guild?.roles._add(role) ?? role);
+        const roles = resolveCollection(resolved.roles, role => guild?.roles._add(role) ?? role);
         if (roles) data.roles = roles;
       }
     }
