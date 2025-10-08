@@ -32,7 +32,6 @@ jobs:
         with:
           app-id: ${{ vars.DISCORDJS_APP_ID }}
           private-key: ${{ secrets.DISCORDJS_APP_KEY_RELEASE }}
-          permission-contents: write
 
       - name: Decide ref
         id: ref
