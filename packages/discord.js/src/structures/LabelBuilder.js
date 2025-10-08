@@ -4,6 +4,10 @@ const { LabelBuilder: BuildersLabel } = require('@discordjs/builders');
 const { isJSONEncodable } = require('@discordjs/util');
 const { toSnakeCase } = require('../util/Transformers');
 
+/**
+ * Represents a label builder.
+ * @extends {BuildersLabel}
+ */
 class LabelBuilder extends BuildersLabel {
   constructor(data) {
     super(toSnakeCase(data));
