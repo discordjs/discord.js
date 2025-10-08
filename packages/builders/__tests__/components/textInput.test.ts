@@ -100,7 +100,7 @@ describe('Text Input Components', () => {
 				.setPlaceholder('hello')
 				.setStyle(TextInputStyle.Paragraph)
 				.toJSON();
-		}).toThrowError();
+		}).not.toThrowError();
 	});
 
 	test('GIVEN valid input THEN valid JSON outputs are given', () => {

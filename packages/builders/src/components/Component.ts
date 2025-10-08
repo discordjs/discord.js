@@ -5,6 +5,7 @@ import type {
 	APIBaseComponent,
 	ComponentType,
 	APIMessageComponent,
+	APIModalComponent,
 } from 'discord-api-types/v10';
 import { idValidator } from './Assertions';
 
@@ -14,7 +15,8 @@ import { idValidator } from './Assertions';
 export type AnyAPIActionRowComponent =
 	| APIActionRowComponent<APIComponentInActionRow>
 	| APIComponentInActionRow
-	| APIMessageComponent;
+	| APIMessageComponent
+	| APIModalComponent;
 
 /**
  * The base component builder that contains common symbols for all sorts of components.

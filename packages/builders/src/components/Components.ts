@@ -8,6 +8,7 @@ import {
 } from './ActionRow.js';
 import { ComponentBuilder } from './Component.js';
 import { ButtonBuilder } from './button/Button.js';
+import { LabelBuilder } from './label/Label.js';
 import { ChannelSelectMenuBuilder } from './selectMenu/ChannelSelectMenu.js';
 import { MentionableSelectMenuBuilder } from './selectMenu/MentionableSelectMenu.js';
 import { RoleSelectMenuBuilder } from './selectMenu/RoleSelectMenu.js';
@@ -100,6 +101,10 @@ export interface MappedComponentTypes {
 	 * The media gallery component type is associated with a {@link MediaGalleryBuilder}.
 	 */
 	[ComponentType.MediaGallery]: MediaGalleryBuilder;
+	/**
+	 * The label component type is associated with a {@link LabelBuilder}.
+	 */
+	[ComponentType.Label]: LabelBuilder;
 }
 
 /**
@@ -161,6 +166,8 @@ export function createComponentBuilder(
 			return new ThumbnailBuilder(data);
 		case ComponentType.MediaGallery:
 			return new MediaGalleryBuilder(data);
+		case ComponentType.Label:
+			return new LabelBuilder(data);
 		default:
 			// @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);
