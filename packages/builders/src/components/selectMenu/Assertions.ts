@@ -31,7 +31,7 @@ export const selectMenuMentionablePredicate = selectMenuBasePredicate
 		default_values: s
 			.object({
 				id: s.string(),
-				type: s.literal([SelectMenuDefaultValueType.Role, SelectMenuDefaultValueType.User]),
+				type: s.union([s.literal(SelectMenuDefaultValueType.Role), s.literal(SelectMenuDefaultValueType.User)]),
 			})
 			.array()
 			.lengthLessThanOrEqual(25)
