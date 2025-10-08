@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/core@2.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@2.2.2...@discordjs/core@2.3.0) - (2025-10-08)
+
+## Features
+
+- Add `{add,remove}GroupDMRecipient methods` (#11135) ([72771b7](https://github.com/discordjs/discord.js/commit/72771b79aa3a78967be92ea2e4c523755d0d2ec0))
+- **guild:** Support incident actions (#11131) ([63dbe48](https://github.com/discordjs/discord.js/commit/63dbe48055347413ec70f36bce4f645688776413))
+- Add gateway endpoints (#11130) ([a041723](https://github.com/discordjs/discord.js/commit/a04172325af5a3a9880253bb8dc7c057a0426d83))
+
 # [@discordjs/core@2.2.2](https://github.com/discordjs/discord.js/compare/@discordjs/core@2.2.1...@discordjs/core@2.2.2) - (2025-09-10)
 
 ## Bug Fixes
