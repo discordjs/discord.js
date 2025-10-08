@@ -7,6 +7,7 @@ import type {
 	APIComponentInModalActionRow,
 	APILabelComponent,
 	APIModalInteractionResponseCallbackData,
+	APITextDisplayComponent,
 } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
 import { ActionRowBuilder, type ModalActionRowComponentBuilder } from '../../components/ActionRow.js';
@@ -14,6 +15,7 @@ import { customIdValidator } from '../../components/Assertions.js';
 import { createComponentBuilder, resolveBuilder } from '../../components/Components.js';
 import { LabelBuilder } from '../../components/label/Label.js';
 import { TextInputBuilder } from '../../components/textInput/TextInput.js';
+import { TextDisplayBuilder } from '../../components/v2/TextDisplay.js';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { titleValidator, validateRequiredParameters } from './Assertions.js';
 
@@ -29,7 +31,8 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	/**
 	 * The components within this modal.
 	 */
-	public readonly components: (ActionRowBuilder<ModalActionRowComponentBuilder> | LabelBuilder)[] = [];
+	public readonly components: (ActionRowBuilder<ModalActionRowComponentBuilder> | LabelBuilder | TextDisplayBuilder)[] =
+		[];
 
 	/**
 	 * Creates a new modal from API data.
@@ -68,24 +71,31 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	 * Adds components to this modal.
 	 *
 	 * @param components - The components to add
-	 * @deprecated Use {@link ModalBuilder.addLabelComponents} or {@link ModalBuilder.addActionRowComponents} instead
+	 * @deprecated Use {@link ModalBuilder.addLabelComponents} or {@link ModalBuilder.addTextDisplayComponents} instead
 	 */
 	public addComponents(
 		...components: RestOrArray<
 			| ActionRowBuilder<ModalActionRowComponentBuilder>
 			| APIActionRowComponent<APIComponentInModalActionRow>
 			| APILabelComponent
+			| APITextDisplayComponent
 			| APITextInputComponent
 			| LabelBuilder
+			| TextDisplayBuilder
 			| TextInputBuilder
 		>
 	) {
 		this.components.push(
 			...normalizeArray(components).map((component, idx) => {
-				if (component instanceof ActionRowBuilder || component instanceof LabelBuilder) {
+				if (
+					component instanceof ActionRowBuilder ||
+					component instanceof LabelBuilder ||
+					component instanceof TextDisplayBuilder
+				) {
 					return component;
 				}
 
+				// Deprecated support
 				if (component instanceof TextInputBuilder) {
 					return new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(component);
 				}
@@ -99,6 +109,11 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 						return new LabelBuilder(component);
 					}
 
+					if (component.type === ComponentType.TextDisplay) {
+						return new TextDisplayBuilder(component);
+					}
+
+					// Deprecated, should go in a label component
 					if (component.type === ComponentType.TextInput) {
 						return new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(
 							new TextInputBuilder(component),
@@ -122,6 +137,24 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	) {
 		const normalized = normalizeArray(components);
 		const resolved = normalized.map((label) => resolveBuilder(label, LabelBuilder));
+
+		this.components.push(...resolved);
+
+		return this;
+	}
+
+	/**
+	 * Adds text display components to this modal.
+	 *
+	 * @param components - The components to add
+	 */
+	public addTextDisplayComponents(
+		...components: RestOrArray<
+			APITextDisplayComponent | TextDisplayBuilder | ((builder: TextDisplayBuilder) => TextDisplayBuilder)
+		>
+	) {
+		const normalized = normalizeArray(components);
+		const resolved = normalized.map((row) => resolveBuilder(row, TextDisplayBuilder));
 
 		this.components.push(...resolved);
 
@@ -211,7 +244,9 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	 * @param components - The components to set
 	 * @deprecated Use {@link ModalBuilder.setLabelComponents} instead
 	 */
-	public setComponents(...components: RestOrArray<ActionRowBuilder<ModalActionRowComponentBuilder> | LabelBuilder>) {
+	public setComponents(
+		...components: RestOrArray<ActionRowBuilder<ModalActionRowComponentBuilder> | LabelBuilder | TextDisplayBuilder>
+	) {
 		this.components.splice(0, this.components.length, ...normalizeArray(components));
 		return this;
 	}
