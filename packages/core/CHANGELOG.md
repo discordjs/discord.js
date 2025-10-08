@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ## Features
 
-- Add `{add,remove}GroupDMRecipient methods` (#11135) ([72771b7](https://github.com/discordjs/discord.js/commit/72771b79aa3a78967be92ea2e4c523755d0d2ec0))
+- Add `{add,remove}GroupDMRecipient` methods (#11135) ([72771b7](https://github.com/discordjs/discord.js/commit/72771b79aa3a78967be92ea2e4c523755d0d2ec0))
 - **guild:** Support incident actions (#11131) ([63dbe48](https://github.com/discordjs/discord.js/commit/63dbe48055347413ec70f36bce4f645688776413))
 - Add gateway endpoints (#11130) ([a041723](https://github.com/discordjs/discord.js/commit/a04172325af5a3a9880253bb8dc7c057a0426d83))
 
