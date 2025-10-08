@@ -179,8 +179,14 @@ class ModalSubmitInteraction extends BaseInteraction {
         );
         if (channels) data.channels = channels;
 
-        const members = resolveCollection(resolved.members, member => guild?.members._add(member) ?? member);
-        if (members) data.members = members;
+        const members = new Collection();
+
+        for (const [id, member] of Object.entries(resolved.members)) {
+          const user = users.get(id);
+          members.set(id, guild?.members._add({ user, ...member }) ?? member);
+        }
+
+        if (members.size > 0) data.members = members;
 
         const roles = resolveCollection(resolved.roles, role => guild?.roles._add(role) ?? role);
         if (roles) data.roles = roles;
