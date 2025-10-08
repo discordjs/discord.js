@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.23.1](https://github.com/discordjs/discord.js/compare/14.23.0...14.23.1) - (2025-10-08)
+
+## Bug Fixes
+
+- **ModalSubmitInteraction:** Resolve crash on handling populated select menus (#11158) ([11b236f](https://github.com/discordjs/discord.js/commit/11b236ff6539f91f11caa3d5a2cc7ae23070aaec))
+- Ending uncached polls (#11157) ([1d5b983](https://github.com/discordjs/discord.js/commit/1d5b9837de4036ca6f07f22f714f534463cc35ec))
+
 # [14.23.0](https://github.com/discordjs/discord.js/compare/14.22.1...14.23.0) - (2025-10-08)
 
 ## Bug Fixes
