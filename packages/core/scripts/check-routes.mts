@@ -13,8 +13,10 @@ const ignoredRoutes = new Set([
 	'nitroStickerPacks',
 ]);
 
-for await (const file of glob('src/api/*.ts')) {
-	const content = await readFile(file, 'utf-8');
+const cwd = new URL('../src/api/', import.meta.url);
+
+for await (const file of glob('**/*.ts', { cwd })) {
+	const content = await readFile(new URL(file, cwd), 'utf-8');
 
 	const routes = content.matchAll(/Routes\.([\w\d_]+)/g);
 	for (const route of routes) {

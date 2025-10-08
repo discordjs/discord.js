@@ -3,7 +3,6 @@
 import { makeURLSearchParams, type RawFile, type RequestData, type REST } from '@discordjs/rest';
 import {
 	Routes,
-	type APIThreadChannel,
 	type RESTDeleteAPIChannelResult,
 	type RESTGetAPIChannelInvitesResult,
 	type RESTGetAPIChannelMessageReactionUsersQuery,
@@ -29,6 +28,8 @@ import {
 	type RESTPostAPIChannelMessageResult,
 	type RESTPostAPIChannelThreadsJSONBody,
 	type RESTPostAPIChannelThreadsResult,
+	type RESTPostAPIChannelWebhookJSONBody,
+	type RESTPostAPIChannelWebhookResult,
 	type RESTPostAPIGuildForumThreadsJSONBody,
 	type RESTPostAPISendSoundboardSoundResult,
 	type RESTPostAPISoundboardSendSoundJSONBody,
