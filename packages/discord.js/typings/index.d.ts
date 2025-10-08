@@ -37,7 +37,15 @@ import {
 } from '@discordjs/formatters';
 import { Awaitable, JSONEncodable } from '@discordjs/util';
 import { Collection, ReadonlyCollection } from '@discordjs/collection';
-import { BaseImageURLOptions, EmojiURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
+import {
+  BaseImageURLOptions,
+  EmojiURLOptions,
+  ImageURLOptions,
+  RawFile,
+  REST,
+  RESTOptions,
+  ImageSize,
+} from '@discordjs/rest';
 import {
   WebSocketManager as WSWebSocketManager,
   IShardingStrategy,
@@ -361,7 +369,8 @@ export type ComponentInLabelData =
   | RoleSelectMenuComponentData
   | MentionableSelectMenuComponentData;
 
-export interface LabelData extends BaseComponentData {
+export interface LabelComponentData extends BaseComponentData {
+  type: ComponentType.Label;
   component: ComponentInLabelData;
   description?: string;
   label: string;
@@ -2780,7 +2789,7 @@ export interface ModalComponentData {
   components: readonly (
     | JSONEncodable<APIActionRowComponent<APIComponentInModalActionRow> | APILabelComponent>
     | ActionRowData<ModalActionRowComponentData>
-    | LabelData
+    | LabelComponentData
     | TextDisplayComponentData
   )[];
 }
@@ -4143,7 +4152,7 @@ export class Formatters extends null {
 export type ComponentData =
   | MessageActionRowComponentData
   | ModalActionRowComponentData
-  | LabelData
+  | LabelComponentData
   | ComponentInLabelData
   | ComponentInContainerData
   | ContainerComponentData
@@ -8003,3 +8012,6 @@ export * from '@discordjs/formatters';
 export * from '@discordjs/rest';
 export * from '@discordjs/util';
 export * from '@discordjs/ws';
+
+// Solve TS compile error
+export type { ImageSize };
