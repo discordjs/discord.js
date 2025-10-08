@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.23.0](https://github.com/discordjs/discord.js/compare/14.22.1...14.23.0) - (2025-10-08)
+
+## Bug Fixes
+
+- **ThreadMemberFlagsBitField:** Use `ThreadMemberFlags` enum in `Flags` (#11118) ([154c00d](https://github.com/discordjs/discord.js/commit/154c00ded932109c59ff0759609424fcb95140a0))
+- Backport in operator fix from main (#11127) ([fcce0d9](https://github.com/discordjs/discord.js/commit/fcce0d95bb6cd415f40f9f7a052e01ddcf625ed0))
+- Ensure discriminator detection respects webhooks too (#11062) ([d8ad181](https://github.com/discordjs/discord.js/commit/d8ad181c191e3a908e3c8e133ccb1d961d9d79e0))
+
+## Documentation
+
+- Use LocalizationMap where applicable (#11117) ([3b92744](https://github.com/discordjs/discord.js/commit/3b927449ae728175f04d67376642b20ba4a93069))
+- **GuildEditOptions:** Deprecate owner property ([fe025c0](https://github.com/discordjs/discord.js/commit/fe025c0a9f722c6225fff6501e9b3981cfe134ba))
+- Deprecate API related to guild ownership (#11054) ([3dd57c2](https://github.com/discordjs/discord.js/commit/3dd57c2eaf220b08f2b6f6562c34acf8524b5b17))
+- Deprecate setting owner ([740da4c](https://github.com/discordjs/discord.js/commit/740da4ce5e189391c7a0904da32a96fe1c8534e6))
+
+## Features
+
+- Bump builders in v14 (and fix runtime crashes) (#11153) ([67c8953](https://github.com/discordjs/discord.js/commit/67c8953a10d150074ba848cd8bfb30961d46b662))
+- **GuildMemberManager:** Add new modify self fields (#11112) ([9b821e5](https://github.com/discordjs/discord.js/commit/9b821e5dfcfb92a9d23ef96dd947c0bd11ee7b86))
+- Text display and more selects in modal for v14 (#11096) ([93e0f4c](https://github.com/discordjs/discord.js/commit/93e0f4cd10af6d85ccdcb6a6aeae3e1a9f14a8fe))
+- Guest invites (#11079) ([79d999e](https://github.com/discordjs/discord.js/commit/79d999e4c10e36330ee897065987ad99d558edca))
+- Polls overhaul (#11058) ([4a8aeb6](https://github.com/discordjs/discord.js/commit/4a8aeb6aee78b23a25e8d5be1309cc7c64b066fb))
+
+## Refactor
+
+- **ActionsManager:** Register actions without using class name (#11080) ([0dff969](https://github.com/discordjs/discord.js/commit/0dff969e16a8879a0fc889567bd540cb1b82a682))
+
+## Typings
+
+- **ClientEventTypes:** Fix `messageDeleteBulk` event arg (#11122) ([30e35d9](https://github.com/discordjs/discord.js/commit/30e35d909e0058db701c82744b13da26ddefcf0e))
+- **Webhook:** Specify message type (#11142) ([6a5707c](https://github.com/discordjs/discord.js/commit/6a5707c78669bb65d03ae76ab591e053787891f1))
+
 # [14.22.1](https://github.com/discordjs/discord.js/compare/14.22.0...14.22.1) - (2025-08-22)
 
 ## Bug Fixes
