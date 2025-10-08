@@ -41,7 +41,7 @@ async function gitTagAndRelease(release: ReleaseEntry, dry: boolean) {
 	}
 }
 
-export async function releasePackage(release: ReleaseEntry, dev: boolean, dry: boolean) {
+export async function releasePackage(release: ReleaseEntry, dev: boolean, dry: boolean, doGitRelease = !dev) {
 	// Sanity check against the registry first
 	if (await checkRegistry(release)) {
 		info(`${release.name}@${release.version} already published, skipping.`);
@@ -54,7 +54,8 @@ export async function releasePackage(release: ReleaseEntry, dev: boolean, dry: b
 		await $`pnpm --filter=${release.name} publish --provenance --no-git-checks ${dev ? '--tag=dev' : ''}`;
 	}
 
-	if (!dev) await gitTagAndRelease(release, dry);
+	// && !dev just to be sure
+	if (doGitRelease && !dev) await gitTagAndRelease(release, dry);
 
 	if (dry) return;
 
@@ -82,5 +83,13 @@ export async function releasePackage(release: ReleaseEntry, dev: boolean, dry: b
 			.nothrow()
 			// eslint-disable-next-line promise/prefer-await-to-then
 			.then(() => {});
+	}
+
+	// Evil, but I can't think of a cleaner mechanism
+	if (release.name === 'create-discord-bot') {
+		await $`pnpm --filter=create-discord-bot run rename-to-app`;
+		// eslint-disable-next-line require-atomic-updates
+		release.name = 'create-discord-app';
+		await releasePackage(release, dev, dry, false);
 	}
 }
