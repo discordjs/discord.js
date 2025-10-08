@@ -37,7 +37,15 @@ import {
 } from '@discordjs/formatters';
 import { Awaitable, JSONEncodable } from '@discordjs/util';
 import { Collection, ReadonlyCollection } from '@discordjs/collection';
-import { BaseImageURLOptions, EmojiURLOptions, ImageURLOptions, RawFile, REST, RESTOptions } from '@discordjs/rest';
+import {
+  BaseImageURLOptions,
+  EmojiURLOptions,
+  ImageURLOptions,
+  RawFile,
+  REST,
+  RESTOptions,
+  ImageSize,
+} from '@discordjs/rest';
 import {
   WebSocketManager as WSWebSocketManager,
   IShardingStrategy,
@@ -8006,5 +8014,4 @@ export * from '@discordjs/util';
 export * from '@discordjs/ws';
 
 // Solve TS compile error
-import type { ImageSize } from '@discordjs/rest';
 export type { ImageSize };
