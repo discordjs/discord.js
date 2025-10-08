@@ -1,7 +1,7 @@
 'use strict';
 
-const { Component } = require('./Component.js');
-const { createComponent } = require('../util/Components.js');
+const Component = require('./Component');
+const { createComponent } = require('../util/Components');
 
 /**
  * Represents a label component

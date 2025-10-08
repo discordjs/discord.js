@@ -12,6 +12,7 @@ import {
   SelectMenuOptionBuilder as BuildersSelectMenuOption,
   ModalActionRowComponentBuilder,
   ModalBuilder as BuildersModal,
+  LabelBuilder as BuilderLabelComponent,
   AnyComponentBuilder,
   type RestOrArray,
   ApplicationCommandOptionAllowedChannelTypes,
@@ -361,7 +362,8 @@ export type ComponentInLabelData =
   | RoleSelectMenuComponentData
   | MentionableSelectMenuComponentData;
 
-export interface LabelData extends BaseComponentData {
+export interface LabelComponentData extends BaseComponentData {
+  type: ComponentType.Label;
   component: ComponentInLabelData;
   description?: string;
   label: string;
@@ -925,6 +927,11 @@ export class TextInputBuilder extends BuilderTextInputComponent {
 export class TextInputComponent extends Component<APITextInputComponent> {
   public get customId(): string;
   public get value(): string;
+}
+
+export class LabelBuilder extends BuilderLabelComponent {
+  public constructor(data?: Partial<LabelComponentData | APILabelComponent>);
+  public static from(other: JSONEncodable<APILabelComponent> | APILabelComponent): LabelBuilder;
 }
 
 export class LabelComponent extends Component<APILabelComponent> {
@@ -2780,7 +2787,7 @@ export interface ModalComponentData {
   components: readonly (
     | JSONEncodable<APIActionRowComponent<APIComponentInModalActionRow> | APILabelComponent>
     | ActionRowData<ModalActionRowComponentData>
-    | LabelData
+    | LabelComponentData
     | TextDisplayComponentData
   )[];
 }
@@ -4143,7 +4150,7 @@ export class Formatters extends null {
 export type ComponentData =
   | MessageActionRowComponentData
   | ModalActionRowComponentData
-  | LabelData
+  | LabelComponentData
   | ComponentInLabelData
   | ComponentInContainerData
   | ContainerComponentData

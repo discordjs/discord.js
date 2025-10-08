@@ -163,6 +163,7 @@ exports.Invite = require('./structures/Invite');
 exports.InviteStageInstance = require('./structures/InviteStageInstance');
 exports.InviteGuild = require('./structures/InviteGuild');
 exports.LabelComponent = require('./structures/LabelComponent');
+exports.LabelBuilder = require('./structures/LabelBuilder');
 exports.Message = require('./structures/Message').Message;
 exports.Attachment = require('./structures/Attachment');
 exports.AttachmentBuilder = require('./structures/AttachmentBuilder');
