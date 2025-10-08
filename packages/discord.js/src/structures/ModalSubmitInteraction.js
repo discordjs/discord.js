@@ -181,7 +181,7 @@ class ModalSubmitInteraction extends BaseInteraction {
 
         const members = new Collection();
 
-        for (const [id, member] of Object.entries(resolved.members)) {
+        for (const [id, member] of Object.entries(resolved.members ?? {})) {
           const user = users.get(id);
           members.set(id, guild?.members._add({ user, ...member }) ?? member);
         }
