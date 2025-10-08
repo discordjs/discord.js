@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       pull:
-        description: 'The branch, tag or SHA to checkout'
+        description: 'The pull number to check out'
         required: false
         default: 'main'
       tag:
