@@ -95,6 +95,8 @@ import {
 	type RESTPostAPIGuildsMFAResult,
 	type RESTPostAPIGuildsResult,
 	type RESTPutAPIGuildBanJSONBody,
+	type RESTPutAPIGuildIncidentActionsJSONBody,
+	type RESTPutAPIGuildIncidentActionsResult,
 	type RESTPutAPIGuildMemberJSONBody,
 	type RESTPutAPIGuildMemberResult,
 	type RESTPutAPIGuildOnboardingJSONBody,
@@ -1358,5 +1360,24 @@ export class GuildsAPI {
 			body,
 			signal,
 		}) as Promise<RESTPutAPIGuildOnboardingResult>;
+	}
+
+	/**
+	 * Modifies incident actions for a guild.
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/guild#modify-guild-incident-actions}
+	 * @param guildId - The id of the guild
+	 * @param body - The data for modifying guild incident actions
+	 * @param options - The options for modifying guild incident actions
+	 */
+	public async editIncidentActions(
+		guildId: Snowflake,
+		body: RESTPutAPIGuildIncidentActionsJSONBody,
+		{ signal }: Pick<RequestData, 'signal'> = {},
+	) {
+		return this.rest.put(Routes.guildIncidentActions(guildId), {
+			body,
+			signal,
+		}) as Promise<RESTPutAPIGuildIncidentActionsResult>;
 	}
 }
