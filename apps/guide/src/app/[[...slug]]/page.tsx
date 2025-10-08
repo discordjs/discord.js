@@ -8,7 +8,7 @@ export async function generateStaticParams() {
 	return source.generateParams();
 }
 
-export async function generateMetadata(props: { params: Promise<{ slug?: string[] }> }) {
+export async function generateMetadata(props: { params: Promise<{ slug?: string[] }> }): Promise<Metadata> {
 	const params = await props.params;
 	const page = source.getPage(params.slug);
 
@@ -16,7 +16,7 @@ export async function generateMetadata(props: { params: Promise<{ slug?: string[
 		notFound();
 	}
 
-	const image = ['/docs-og', ...(params.slug ?? []), 'image.png'].join('/');
+	const image = ['/og', ...(params.slug ?? []), 'image.png'].join('/');
 	return {
 		title: page.data.title,
 		description: page.data.description,
@@ -27,7 +27,7 @@ export async function generateMetadata(props: { params: Promise<{ slug?: string[
 			card: 'summary_large_image',
 			images: image,
 		},
-	} satisfies Metadata;
+	};
 }
 
 export default async function Page(props: { readonly params: Promise<{ slug?: string[] }> }) {
