@@ -146,7 +146,7 @@ class ModalSubmitInteraction extends BaseInteraction {
       };
     }
 
-    const data = {
+    let data = {
       type: rawComponent.type,
       id: rawComponent.id,
     };
@@ -158,38 +158,45 @@ class ModalSubmitInteraction extends BaseInteraction {
 
     if (rawComponent.values) {
       data.values = rawComponent.values;
+
       if (resolved) {
-        const resolveCollection = (resolvedData, resolver) => {
-          const collection = new Collection();
-          for (const value of data.values) {
-            if (resolvedData?.[value]) {
-              collection.set(value, resolver(resolvedData[value]));
-            }
+        const { members, users, channels, roles } = resolved;
+        const result = {};
+
+        if (users) {
+          result.users = new Collection();
+
+          for (const user of Object.values(users)) {
+            result.users.set(user.id, client.users._add(user));
           }
-
-          return collection.size ? collection : null;
-        };
-
-        const users = resolveCollection(resolved.users, user => client.users._add(user));
-        if (users) data.users = users;
-
-        const channels = resolveCollection(
-          resolved.channels,
-          channel => client.channels._add(channel, guild) ?? channel,
-        );
-        if (channels) data.channels = channels;
-
-        const members = new Collection();
-
-        for (const [id, member] of Object.entries(resolved.members ?? {})) {
-          const user = users.get(id);
-          members.set(id, guild?.members._add({ user, ...member }) ?? member);
         }
 
-        if (members.size > 0) data.members = members;
+        if (channels) {
+          result.channels = new Collection();
 
-        const roles = resolveCollection(resolved.roles, role => guild?.roles._add(role) ?? role);
-        if (roles) data.roles = roles;
+          for (const apiChannel of Object.values(channels)) {
+            result.channels.set(apiChannel.id, client.channels._add(apiChannel, guild) ?? apiChannel);
+          }
+        }
+
+        if (members) {
+          result.members = new Collection();
+
+          for (const [id, member] of Object.entries(members)) {
+            const user = users[id];
+            result.members.set(id, guild?.members._add({ user, ...member }) ?? member);
+          }
+        }
+
+        if (roles) {
+          result.roles = new Collection();
+
+          for (const role of Object.values(roles)) {
+            result.roles.set(role.id, guild?.roles._add(role) ?? role);
+          }
+        }
+
+        data = { ...data, ...result };
       }
     }
 
