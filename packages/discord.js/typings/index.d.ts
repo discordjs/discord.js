@@ -12,7 +12,6 @@ import {
   SelectMenuOptionBuilder as BuildersSelectMenuOption,
   ModalActionRowComponentBuilder,
   ModalBuilder as BuildersModal,
-  LabelBuilder as BuilderLabelComponent,
   AnyComponentBuilder,
   type RestOrArray,
   ApplicationCommandOptionAllowedChannelTypes,
@@ -927,11 +926,6 @@ export class TextInputBuilder extends BuilderTextInputComponent {
 export class TextInputComponent extends Component<APITextInputComponent> {
   public get customId(): string;
   public get value(): string;
-}
-
-export class LabelBuilder extends BuilderLabelComponent {
-  public constructor(data?: Partial<LabelComponentData | APILabelComponent>);
-  public static from(other: JSONEncodable<APILabelComponent> | APILabelComponent): LabelBuilder;
 }
 
 export class LabelComponent extends Component<APILabelComponent> {
@@ -8010,3 +8004,7 @@ export * from '@discordjs/formatters';
 export * from '@discordjs/rest';
 export * from '@discordjs/util';
 export * from '@discordjs/ws';
+
+// Solve TS compile error
+import type { ImageSize } from '@discordjs/rest';
+export type { ImageSize };
