@@ -63,12 +63,14 @@ jobs:
       - name: Build dependencies
         run: pnpm run build
 
-      - name: Checkout main repository
+      - name: Checkout main repository (non-main ref)
+        if: ${{ steps.ref.outputs.ref != 'refs/heads/main' }}
         uses: actions/checkout@v5
         with:
           path: 'main'
 
-      - name: Install action deps
+      - name: Install action deps (non-main ref)
+        if: ${{ steps.ref.outputs.ref != 'refs/heads/main' }}
         shell: bash
         working-directory: ./main
         env:
@@ -77,8 +79,21 @@ jobs:
           pnpm self-update 10
           pnpm install --filter @discordjs/actions --frozen-lockfile --prefer-offline --loglevel error
 
-      - name: Publish packages
+      - name: Publish packages (non-main ref)
+        if: ${{ steps.ref.outputs.ref != 'refs/heads/main' }}
         uses: ./main/packages/actions/src/releasePackages
+        with:
+          exclude: '@discordjs/docgen'
+          dry: ${{ inputs.dry_run }}
+          dev: true
+          tag: ${{ inputs.tag || 'dev' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish packages (main ref)
+        if: ${{ steps.ref.outputs.ref == 'refs/heads/main' }}
+        uses: ./packages/actions/src/releasePackages
         with:
           exclude: '@discordjs/docgen'
           dry: ${{ inputs.dry_run }}
