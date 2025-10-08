@@ -63,8 +63,22 @@ jobs:
       - name: Build dependencies
         run: pnpm run build
 
+      - name: Checkout main repository
+        uses: actions/checkout@v5
+        with:
+          path: 'main'
+
+      - name: Install action deps
+        shell: bash
+        working-directory: ./main
+        env:
+          COREPACK_ENABLE_STRICT: 0
+        run: |
+          pnpm self-update 10
+          pnpm install --filter @discordjs/actions --frozen-lockfile --prefer-offline --loglevel error
+
       - name: Publish packages
-        uses: ./packages/actions/src/releasePackages
+        uses: ./main/packages/actions/src/releasePackages
         with:
           exclude: '@discordjs/docgen'
           dry: ${{ inputs.dry_run }}
