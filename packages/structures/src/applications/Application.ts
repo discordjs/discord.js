@@ -4,6 +4,7 @@ import { Structure } from '../Structure.js';
 import { kData, kPatch } from '../utils/symbols.js';
 import { isIdSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
+
 /**
  * Represents a Discord application
  *
@@ -111,10 +112,8 @@ export class Application<Omitted extends keyof APIApplication | '' = ''> extends
 	/**
 	 * When concatenated with a string, this automatically returns the application's name instead of the
 	 * Application object.
-	 *
-	 * @returns The application's name or an empty string if it doesn't have a name
 	 */
 	public override toString() {
-		return this.name ?? '';
+		return this.name;
 	}
 }
