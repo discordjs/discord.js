@@ -158,39 +158,55 @@ class ModalSubmitInteraction extends BaseInteraction {
 
     if (rawComponent.values) {
       data.values = rawComponent.values;
+
+      /* eslint-disable max-depth */
       if (resolved) {
-        const resolveCollection = (resolvedData, resolver) => {
-          const collection = new Collection();
-          for (const value of data.values) {
-            if (resolvedData?.[value]) {
-              collection.set(value, resolver(resolvedData[value]));
+        const { members, users, channels, roles } = resolved;
+        const valueSet = new Set(rawComponent.values);
+
+        if (users) {
+          data.users = new Collection();
+
+          for (const [id, user] of Object.entries(users)) {
+            if (valueSet.has(id)) {
+              data.users.set(id, client.users._add(user));
             }
           }
-
-          return collection.size ? collection : null;
-        };
-
-        const users = resolveCollection(resolved.users, user => client.users._add(user));
-        if (users) data.users = users;
-
-        const channels = resolveCollection(
-          resolved.channels,
-          channel => client.channels._add(channel, guild) ?? channel,
-        );
-        if (channels) data.channels = channels;
-
-        const members = new Collection();
-
-        for (const [id, member] of Object.entries(resolved.members ?? {})) {
-          const user = users.get(id);
-          members.set(id, guild?.members._add({ user, ...member }) ?? member);
         }
 
-        if (members.size > 0) data.members = members;
+        if (channels) {
+          data.channels = new Collection();
 
-        const roles = resolveCollection(resolved.roles, role => guild?.roles._add(role) ?? role);
-        if (roles) data.roles = roles;
+          for (const [id, apiChannel] of Object.entries(channels)) {
+            if (valueSet.has(id)) {
+              data.channels.set(id, client.channels._add(apiChannel, guild) ?? apiChannel);
+            }
+          }
+        }
+
+        if (members) {
+          data.members = new Collection();
+
+          for (const [id, member] of Object.entries(members)) {
+            if (valueSet.has(id)) {
+              const user = users?.[id];
+              data.members.set(id, guild?.members._add({ user, ...member }) ?? member);
+            }
+          }
+        }
+
+        if (roles) {
+          data.roles = new Collection();
+
+          for (const [id, role] of Object.entries(roles)) {
+            if (valueSet.has(id)) {
+              data.roles.set(id, guild?.roles._add(role) ?? role);
+            }
+          }
+        }
       }
+
+      /* eslint-enable max-depth */
     }
 
     return data;
