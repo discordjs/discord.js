@@ -159,45 +159,54 @@ class ModalSubmitInteraction extends BaseInteraction {
     if (rawComponent.values) {
       data.values = rawComponent.values;
 
+      /* eslint-disable max-depth */
       if (resolved) {
         const { members, users, channels, roles } = resolved;
-        const result = {};
+        const valueSet = new Set(rawComponent.values);
 
         if (users) {
-          result.users = new Collection();
+          data.users = new Collection();
 
-          for (const user of Object.values(users)) {
-            result.users.set(user.id, client.users._add(user));
+          for (const [id, user] of Object.entries(users)) {
+            if (valueSet.has(id)) {
+              data.users.set(id, client.users._add(user));
+            }
           }
         }
 
         if (channels) {
-          result.channels = new Collection();
+          data.channels = new Collection();
 
-          for (const apiChannel of Object.values(channels)) {
-            result.channels.set(apiChannel.id, client.channels._add(apiChannel, guild) ?? apiChannel);
+          for (const [id, apiChannel] of Object.entries(channels)) {
+            if (valueSet.has(id)) {
+              data.channels.set(id, client.channels._add(apiChannel, guild) ?? apiChannel);
+            }
           }
         }
 
         if (members) {
-          result.members = new Collection();
+          data.members = new Collection();
 
           for (const [id, member] of Object.entries(members)) {
-            const user = users[id];
-            result.members.set(id, guild?.members._add({ user, ...member }) ?? member);
+            if (valueSet.has(id)) {
+              const user = users?.[id];
+              data.members.set(id, guild?.members._add({ user, ...member }) ?? member);
+            }
           }
         }
 
         if (roles) {
-          result.roles = new Collection();
+          data.roles = new Collection();
 
-          for (const role of Object.values(roles)) {
-            result.roles.set(role.id, guild?.roles._add(role) ?? role);
+          for (const [id, role] of Object.entries(roles)) {
+            if (valueSet.has(id)) {
+              data.roles.set(id, guild?.roles._add(role) ?? role);
+            }
           }
         }
-
-        data = { ...data, ...result };
       }
+
+      /* eslint-enable max-depth */
     }
 
     return data;
