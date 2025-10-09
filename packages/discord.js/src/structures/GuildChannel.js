@@ -462,7 +462,6 @@ class GuildChannel extends BaseChannel {
    * @readonly
    */
   get manageable() {
-    if (this.client.user.id === this.guild.ownerId) return true;
     const permissions = this.permissionsFor(this.client.user);
     if (!permissions) return false;
 
@@ -483,7 +482,6 @@ class GuildChannel extends BaseChannel {
    * @readonly
    */
   get viewable() {
-    if (this.client.user.id === this.guild.ownerId) return true;
     const permissions = this.permissionsFor(this.client.user);
     if (!permissions) return false;
     return permissions.has(PermissionFlagsBits.ViewChannel, false);
