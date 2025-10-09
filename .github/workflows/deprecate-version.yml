@@ -11,6 +11,7 @@ on:
           - '@discordjs/builders'
           - '@discordjs/collection'
           - '@discordjs/core'
+          - 'create-discord-app'
           - 'create-discord-bot'
           - '@discordjs/formatters'
           - 'discord.js'
@@ -38,9 +39,10 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Install Node.js v22
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 22
+          package-manager-cache: false
 
       - name: Install dependencies
         uses: ./packages/actions/src/pnpmCache

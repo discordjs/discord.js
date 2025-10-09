@@ -3847,9 +3847,9 @@ export class Webhook<Type extends WebhookType = WebhookType> {
   public editMessage(
     message: MessageResolvable,
     options: MessagePayload | WebhookMessageEditOptions | string,
-  ): Promise<Message>;
-  public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<Message>;
-  public send(options: MessagePayload | WebhookMessageCreateOptions | string): Promise<Message>;
+  ): Promise<Message<true>>;
+  public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<Message<true>>;
+  public send(options: MessagePayload | WebhookMessageCreateOptions | string): Promise<Message<true>>;
 }
 
 export interface WebhookClient extends WebhookFields, BaseClient<{}> {}
@@ -5496,7 +5496,7 @@ export interface ClientEventTypes {
   messageCreate: [message: OmitPartialGroupDMChannel<Message>];
   messageDelete: [message: OmitPartialGroupDMChannel<Message | PartialMessage>];
   messageDeleteBulk: [
-    messages: ReadonlyCollection<Snowflake, OmitPartialGroupDMChannel<Message | PartialMessage>>,
+    messages: ReadonlyCollection<Snowflake, Message<true> | PartialMessage<true>>,
     channel: GuildTextBasedChannel,
   ];
   messagePollVoteAdd: [pollAnswer: PartialPollAnswer | PollAnswer, userId: Snowflake];
@@ -6934,8 +6934,8 @@ export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'las
 
 export interface PartialGuildMember extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp' | 'pending'> {}
 
-export interface PartialMessage
-  extends Partialize<Message, 'pinned' | 'system' | 'tts' | 'type', 'author' | 'cleanContent' | 'content'> {}
+export interface PartialMessage<InGuild extends boolean = boolean>
+  extends Partialize<Message<InGuild>, 'pinned' | 'system' | 'tts' | 'type', 'author' | 'cleanContent' | 'content'> {}
 
 export interface PartialMessageReaction extends Partialize<MessageReaction, 'count'> {}
 

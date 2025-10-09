@@ -7,7 +7,7 @@ package.json @discordjs/core
 pnpm-lock.yaml @discordjs/core
 
 /apps/guide/ @discordjs/website @discordjs/guide
-/apps/guide/src/content/ @discordjs/guide
+/apps/guide/content/ @discordjs/guide
 /apps/website/ @discordjs/website
 
 /packages/actions/ @discordjs/actions

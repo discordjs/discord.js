@@ -21,12 +21,12 @@ export default {
 	},
 	experimental: {
 		ppr: true,
-		reactCompiler: true,
 		dynamicOnHover: true,
 	},
 	eslint: {
 		ignoreDuringBuilds: true,
 	},
+	reactCompiler: true,
 	typescript: {
 		ignoreBuildErrors: true,
 	},
@@ -39,8 +39,8 @@ export default {
 			},
 			{
 				source: '/guide/:path*',
-				destination: 'https://next.discordjs.guide/guide/:path*',
-				permanent: true,
+				destination: 'https://discordjs.guide/:path*',
+				permanent: false,
 			},
 		];
 	},
