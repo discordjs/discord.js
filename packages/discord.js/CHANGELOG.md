@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.23.2](https://github.com/discordjs/discord.js/compare/14.23.1...14.23.2) - (2025-10-09)
+
+## Bug Fixes
+
+- **ModalSubmitInteraction:** Better resolving of components (#11162) ([5cc13b7](https://github.com/discordjs/discord.js/commit/5cc13b735c78384a3488da527985cded92f67d41))
+- Handle DM modals ([1e4d1dc](https://github.com/discordjs/discord.js/commit/1e4d1dc04f7dabfb0575441957a6278675f02871))
+
 # [14.23.1](https://github.com/discordjs/discord.js/compare/14.23.0...14.23.1) - (2025-10-08)
 
 ## Bug Fixes
