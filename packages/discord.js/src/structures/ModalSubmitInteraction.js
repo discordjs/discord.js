@@ -146,7 +146,7 @@ class ModalSubmitInteraction extends BaseInteraction {
       };
     }
 
-    let data = {
+    const data = {
       type: rawComponent.type,
       id: rawComponent.id,
     };
