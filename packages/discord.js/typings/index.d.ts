@@ -193,6 +193,7 @@ import {
   RESTPostAPIInteractionCallbackWithResponseResult,
   RESTPostAPIInteractionFollowupJSONBody,
   RESTPostAPIWebhookWithTokenJSONBody,
+  RESTPutAPIApplicationCommandPermissionsJSONBody,
   RoleFlags,
   SelectMenuDefaultValueType,
   SeparatorSpacingSize,
@@ -4162,6 +4163,11 @@ export type ApplicationCommandDataResolvable =
   | JSONEncodable<RESTPostAPIApplicationCommandsJSONBody>
   | RESTPostAPIApplicationCommandsJSONBody;
 
+export type ApplicationEditCommandDataResolvable =
+  | ApplicationCommandData
+  | JSONEncodable<RESTPutAPIApplicationCommandPermissionsJSONBody>
+  | RESTPutAPIApplicationCommandPermissionsJSONBody;
+
 export class ApplicationCommandManager<
   ApplicationCommandScope = ApplicationCommand<{ guild: GuildResolvable }>,
   PermissionsOptionsExtras = { guild: GuildResolvable },
@@ -4196,10 +4202,10 @@ export class ApplicationCommandManager<
     options?: Omit<FetchApplicationCommandOptions, 'id'>,
   ): Promise<Collection<Snowflake, ApplicationCommandScope>>;
   public set(
-    commands: readonly ApplicationCommandDataResolvable[],
+    commands: readonly ApplicationEditCommandDataResolvable[],
   ): Promise<Collection<Snowflake, ApplicationCommandScope>>;
   public set(
-    commands: readonly ApplicationCommandDataResolvable[],
+    commands: readonly ApplicationEditCommandDataResolvable[],
     guildId: Snowflake,
   ): Promise<Collection<Snowflake, ApplicationCommand>>;
   private static transformCommand(command: ApplicationCommandDataResolvable): RESTPostAPIApplicationCommandsJSONBody;
