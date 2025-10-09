@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.12.2](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.12.1...@discordjs/builders@1.12.2) - (2025-10-09)
+
+## Bug Fixes
+
+- **Assertions:** Literal default values ([43362c9](https://github.com/discordjs/discord.js/commit/43362c93525f98d72b894eb0fc6b358d30ec45b9))
+
 # [@discordjs/builders@1.12.1](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.12.0...@discordjs/builders@1.12.1) - (2025-10-08)
 
 ## Bug Fixes
