@@ -470,9 +470,11 @@ class GuildChannel extends BaseChannel {
     if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
     if (this.guild.members.me.communicationDisabledUntilTimestamp > Date.now()) return false;
 
+    const baseBitfield = PermissionFlagsBits.ViewChannel | PermissionFlagsBits.ManageChannels;
     const bitfield = VoiceBasedChannelTypes.includes(this.type)
-      ? PermissionFlagsBits.ManageChannels | PermissionFlagsBits.Connect
-      : PermissionFlagsBits.ViewChannel | PermissionFlagsBits.ManageChannels;
+      ? baseBitfield | PermissionFlagsBits.Connect
+      : baseBitfield;
+
     return permissions.has(bitfield, false);
   }
 
