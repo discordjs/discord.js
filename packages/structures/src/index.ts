@@ -1,3 +1,4 @@
+export * from './applications/index.js';
 export * from './bitfields/index.js';
 export * from './channels/index.js';
 export * from './invites/index.js';
