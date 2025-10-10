@@ -26,30 +26,7 @@ import {
 	SelectMenuDefaultValueType,
 } from 'discord-api-types/v10';
 import { describe, expect, test } from 'vitest';
-import {
-	ActionRowComponent,
-	Attachment,
-	ChannelSelectMenuComponent,
-	ContainerComponent,
-	dateToDiscordISOTimestamp,
-	Embed,
-	FileComponent,
-	InteractiveButtonComponent,
-	LinkButtonComponent,
-	MediaGalleryComponent,
-	MentionableSelectMenuComponent,
-	Message,
-	PremiumButtonComponent,
-	RoleSelectMenuComponent,
-	SectionComponent,
-	SeparatorComponent,
-	StringSelectMenuComponent,
-	TextDisplayComponent,
-	TextInputComponent,
-	ThumbnailComponent,
-	User,
-	UserSelectMenuComponent,
-} from '../src/index.js';
+import { Attachment, ContainerComponent, dateToDiscordISOTimestamp, Embed, Message, User } from '../src/index.js';
 
 const user: APIUser = {
 	username: 'user',
