@@ -1,4 +1,5 @@
 export * from './components/index.js';
+export * from './embeds/index.js';
 
 export * from './ApplicationCommandInteractionMetadata.js';
 export * from './Attachment.js';

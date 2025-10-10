@@ -1,1 +1,1 @@
-export * from './StickerItem.js';
+export * from './Sticker.js';
