@@ -59,34 +59,6 @@ const user: APIUser = {
 	id: '3',
 };
 
-const componentMap = {
-	[ComponentType.ActionRow]: () => ActionRowComponent,
-	[ComponentType.Button]: (button: APIButtonComponent) => {
-		// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
-		switch (button.style) {
-			case ButtonStyle.Link:
-				return LinkButtonComponent;
-			case ButtonStyle.Premium:
-				return PremiumButtonComponent;
-			default:
-				return InteractiveButtonComponent;
-		}
-	},
-	[ComponentType.ChannelSelect]: () => ChannelSelectMenuComponent,
-	[ComponentType.Container]: () => ContainerComponent,
-	[ComponentType.File]: () => FileComponent,
-	[ComponentType.MediaGallery]: () => MediaGalleryComponent,
-	[ComponentType.MentionableSelect]: () => MentionableSelectMenuComponent,
-	[ComponentType.RoleSelect]: () => RoleSelectMenuComponent,
-	[ComponentType.Section]: () => SectionComponent,
-	[ComponentType.Separator]: () => SeparatorComponent,
-	[ComponentType.StringSelect]: () => StringSelectMenuComponent,
-	[ComponentType.TextDisplay]: () => TextDisplayComponent,
-	[ComponentType.TextInput]: () => TextInputComponent,
-	[ComponentType.Thumbnail]: () => ThumbnailComponent,
-	[ComponentType.UserSelect]: () => UserSelectMenuComponent,
-} as const;
-
 describe('message with embeds and attachments', () => {
 	const timestamp = '2025-10-09T17:48:20.192000+00:00';
 	const data: APIMessage = {
