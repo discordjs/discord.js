@@ -19,14 +19,23 @@ export class ComponentEmoji<Omitted extends keyof APIMessageComponentEmoji | '' 
 		super(data);
 	}
 
+	/**
+	 * The id of the emoji
+	 */
 	public get id() {
 		return this[kData].id;
 	}
 
+	/**
+	 * The name of the emoji
+	 */
 	public get name() {
 		return this[kData].name;
 	}
 
+	/**
+	 * Whether this emoji is animated
+	 */
 	public get animated() {
 		return this[kData].animated;
 	}

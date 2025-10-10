@@ -19,18 +19,30 @@ export class EmbedThumbnail<Omitted extends keyof APIEmbedThumbnail | '' = ''> e
 		super(data);
 	}
 
+	/**
+	 * The height of the thumbnail
+	 */
 	public get height() {
 		return this[kData].height;
 	}
 
+	/**
+	 * The width of the thumnail
+	 */
 	public get width() {
 		return this[kData].width;
 	}
 
+	/**
+	 * A proxied url of the thumbnail
+	 */
 	public get proxyUrl() {
 		return this[kData].proxy_url;
 	}
 
+	/**
+	 * The source url of the thumbnail
+	 */
 	public get url() {
 		return this[kData].url;
 	}

@@ -19,10 +19,16 @@ export class EmbedProvider<Omitted extends keyof APIEmbedProvider | '' = ''> ext
 		super(data);
 	}
 
+	/**
+	 * The name of the provider
+	 */
 	public get name() {
 		return this[kData].name;
 	}
 
+	/**
+	 * The URL of the provider
+	 */
 	public get url() {
 		return this[kData].url;
 	}

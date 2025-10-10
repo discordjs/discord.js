@@ -25,18 +25,30 @@ export class StringSelectMenuOption<Omitted extends keyof APISelectMenuOption | 
 		super(data);
 	}
 
+	/**
+	 * Whether this option should be already-selected by default
+	 */
 	public get default() {
 		return this[kData].default;
 	}
 
+	/**
+	 * An additional description of the option
+	 */
 	public get description() {
 		return this[kData].description;
 	}
 
+	/**
+	 * The user-facing name of the option
+	 */
 	public get label() {
 		return this[kData].label;
 	}
 
+	/**
+	 * The dev-defined value of the option
+	 */
 	public get value() {
 		return this[kData].value;
 	}

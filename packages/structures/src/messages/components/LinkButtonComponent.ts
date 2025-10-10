@@ -24,6 +24,9 @@ export class LinkButtonComponent<Omitted extends keyof APIButtonComponentWithURL
 		super(data);
 	}
 
+	/**
+	 * The URL to direct users to when clicked
+	 */
 	public get url() {
 		return this[kData].url;
 	}

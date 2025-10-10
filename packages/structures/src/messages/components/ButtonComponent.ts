@@ -25,10 +25,16 @@ export abstract class ButtonComponent<
 		super(data);
 	}
 
+	/**
+	 * The style of the button
+	 */
 	public get style() {
 		return this[kData].style;
 	}
 
+	/**
+	 * The status of the button
+	 */
 	public get disabled() {
 		return typeof this[kData].disabled === 'boolean' ? this[kData].disabled : null;
 	}

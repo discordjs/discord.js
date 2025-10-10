@@ -17,26 +17,44 @@ export class Embed<Omitted extends keyof APIEmbed | '' = ''> extends Structure<A
 		super(data);
 	}
 
+	/**
+	 * The color code of the embed
+	 */
 	public get color() {
 		return this[kData].color;
 	}
 
+	/**
+	 * The description of the embed
+	 */
 	public get description() {
 		return this[kData].description;
 	}
 
+	/**
+	 * THe title of the embed
+	 */
 	public get title() {
 		return this[kData].title;
 	}
 
+	/**
+	 * The timestamp of the embed content
+	 */
 	public get timestamp() {
 		return this[kData].timestamp;
 	}
 
+	/**
+	 * The type of embed (always "rich" for webhook embeds)
+	 */
 	public get type() {
 		return this[kData].type;
 	}
 
+	/**
+	 * The URL of the embed
+	 */
 	public get url() {
 		return this[kData].url;
 	}

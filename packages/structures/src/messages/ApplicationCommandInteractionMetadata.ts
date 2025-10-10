@@ -24,6 +24,9 @@ export class ApplicationCommandInteractionMetadata<
 		super(data);
 	}
 
+	/**
+	 * The ID of the message the command was run on
+	 */
 	public get targetMessageId() {
 		return this[kData].target_message_id;
 	}

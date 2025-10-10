@@ -23,6 +23,9 @@ export class MessageComponentInteractionMetadata<
 		super(data);
 	}
 
+	/**
+	 * The id of the message that contained the interactive component
+	 */
 	public get interactedMessageId() {
 		return this[kData].interacted_message_id;
 	}

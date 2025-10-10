@@ -35,14 +35,23 @@ export abstract class InteractionMetadata<
 			: null;
 	}
 
+	/**
+	 * The id of the interaction
+	 */
 	public get id() {
 		return this[kData].id;
 	}
 
+	/**
+	 * The id of the original response message, present only on follow-up messages
+	 */
 	public get originalResponseMessageId() {
 		return this[kData].original_response_message_id;
 	}
 
+	/**
+	 * The type of interaction
+	 */
 	public get type() {
 		return this[kData].type;
 	}

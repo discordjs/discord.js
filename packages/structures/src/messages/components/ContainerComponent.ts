@@ -25,10 +25,16 @@ export class ContainerComponent<Omitted extends keyof APIContainerComponent | ''
 		super(data);
 	}
 
+	/**
+	 * Color for the accent on the container as RGB
+	 */
 	public get accentColor() {
 		return this[kData].accent_color;
 	}
 
+	/**
+	 * Whether the container should be a spoiler (or blurred out)
+	 */
 	public get spoiler() {
 		return this[kData].spoiler;
 	}

@@ -24,10 +24,16 @@ export class SeparatorComponent<Omitted extends keyof APISeparatorComponent | ''
 		super(data);
 	}
 
+	/**
+	 * Whether a visual divider should be displayed in the component
+	 */
 	public get divider() {
 		return this[kData].divider;
 	}
 
+	/**
+	 * The size of the separator padding
+	 */
 	public get spacing() {
 		return this[kData].spacing;
 	}

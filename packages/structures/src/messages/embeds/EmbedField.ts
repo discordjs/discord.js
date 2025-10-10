@@ -16,14 +16,23 @@ export class EmbedField<Omitted extends keyof APIEmbedField | '' = ''> extends S
 		super(data);
 	}
 
+	/**
+	 * The name of the field
+	 */
 	public get name() {
 		return this[kData].name;
 	}
 
+	/**
+	 * The value of the field
+	 */
 	public get value() {
 		return this[kData].value;
 	}
 
+	/**
+	 * Whether this field should display inline
+	 */
 	public get inline() {
 		return this[kData].inline;
 	}

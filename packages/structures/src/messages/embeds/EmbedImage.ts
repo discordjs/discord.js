@@ -16,18 +16,30 @@ export class EmbedImage<Omitted extends keyof APIEmbedImage | '' = ''> extends S
 		super(data);
 	}
 
+	/**
+	 * The height of the image
+	 */
 	public get height() {
 		return this[kData].height;
 	}
 
+	/**
+	 * The width of the image
+	 */
 	public get width() {
 		return this[kData].width;
 	}
 
+	/**
+	 * A proxied url of the image
+	 */
 	public get proxyUrl() {
 		return this[kData].proxy_url;
 	}
 
+	/**
+	 * Source url of the image
+	 */
 	public get url() {
 		return this[kData].url;
 	}

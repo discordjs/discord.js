@@ -25,10 +25,16 @@ export class MediaGalleryItem<Omitted extends keyof APIMediaGalleryItem | '' = '
 		super(data);
 	}
 
+	/**
+	 * Alt text for the media
+	 */
 	public get description() {
 		return this[kData].description;
 	}
 
+	/**
+	 * Whether the media should be a spoiler (or blurred out)
+	 */
 	public get spoiler() {
 		return this[kData].spoiler;
 	}

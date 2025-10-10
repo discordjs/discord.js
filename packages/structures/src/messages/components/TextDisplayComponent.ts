@@ -24,6 +24,9 @@ export class TextDisplayComponent<Omitted extends keyof APITextDisplayComponent 
 		super(data);
 	}
 
+	/**
+	 * Text that will be displayed similar to a message
+	 */
 	public get content() {
 		return this[kData].content;
 	}

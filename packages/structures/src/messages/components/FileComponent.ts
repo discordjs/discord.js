@@ -25,6 +25,9 @@ export class FileComponent<Omitted extends keyof APIFileComponent | '' = ''> ext
 		super(data);
 	}
 
+	/**
+	 * Whether the media should be a spoiler (or blurred out)
+	 */
 	public get spoiler() {
 		return this[kData].spoiler;
 	}

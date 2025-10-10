@@ -19,10 +19,16 @@ export class MessageActivity<Omitted extends keyof APIMessageActivity | '' = ''>
 		super(data);
 	}
 
+	/**
+	 * Theb party_id from a Rich Presence event
+	 */
 	public get partyId() {
 		return this[kData].party_id;
 	}
 
+	/**
+	 * The type of message activity
+	 */
 	public get type() {
 		return this[kData].type;
 	}

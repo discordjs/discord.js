@@ -16,14 +16,23 @@ export class EmbedFooter<Omitted extends keyof APIEmbedFooter | '' = ''> extends
 		super(data);
 	}
 
+	/**
+	 * The footer text
+	 */
 	public get text() {
 		return this[kData].text;
 	}
 
+	/**
+	 * The URL of the footer icon
+	 */
 	public get iconUrl() {
 		return this[kData].icon_url;
 	}
 
+	/**
+	 * A proxied url of the footer icon
+	 */
 	public get proxyIconUrl() {
 		return this[kData].proxy_icon_url;
 	}

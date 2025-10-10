@@ -25,10 +25,16 @@ export class ThumbnailComponent<Omitted extends keyof APIThumbnailComponent | ''
 		super(data);
 	}
 
+	/**
+	 * Alt text for the media
+	 */
 	public get description() {
 		return this[kData].description;
 	}
 
+	/**
+	 * Whether the thumbnail should be a spoiler (or blurred out)
+	 */
 	public get spoiler() {
 		return this[kData].spoiler;
 	}

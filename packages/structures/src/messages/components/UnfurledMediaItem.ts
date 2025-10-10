@@ -26,38 +26,44 @@ export class UnfurledMediaItem<Omitted extends keyof APIUnfurledMediaItem | '' =
 		super(data);
 	}
 
+	/**
+	 * The id of the uploaded attachment
+	 */
 	public get attachmentId() {
 		return this[kData].attachment_id;
 	}
 
+	/**
+	 * The media type of the content
+	 */
 	public get contentType() {
 		return this[kData].content_type;
 	}
 
+	/**
+	 * The height of the media item (if image)
+	 */
 	public get height() {
 		return this[kData].height;
 	}
 
-	public get loadingState() {
-		return this[kData].loading_state;
-	}
-
-	public get placeholder() {
-		return this[kData].placeholder;
-	}
-
-	public get placeholderVersion() {
-		return this[kData].placeholder_version;
-	}
-
+	/**
+	 * The proxied url of the media item
+	 */
 	public get proxyUrl() {
 		return this[kData].proxy_url;
 	}
 
+	/**
+	 * Supports arbitrary urls and attachment:// references
+	 */
 	public get url() {
 		return this[kData].url;
 	}
 
+	/**
+	 * The width of the media item (if image)
+	 */
 	public get width() {
 		return this[kData].width;
 	}

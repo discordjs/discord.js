@@ -16,18 +16,30 @@ export class EmbedAuthor<Omitted extends keyof APIEmbedAuthor | '' = ''> extends
 		super(data);
 	}
 
+	/**
+	 * The name of the author
+	 */
 	public get name() {
 		return this[kData].name;
 	}
 
+	/**
+	 * The URL of author icon
+	 */
 	public get iconUrl() {
 		return this[kData].icon_url;
 	}
 
+	/**
+	 * A proxied url of author icon
+	 */
 	public get proxyIconUrl() {
 		return this[kData].proxy_icon_url;
 	}
 
+	/**
+	 * The URL of the author
+	 */
 	public get url() {
 		return this[kData].url;
 	}

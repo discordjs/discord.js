@@ -21,6 +21,9 @@ export abstract class NonPremiumButton<
 		super(data);
 	}
 
+	/**
+	 * The label to be displayed on the button
+	 */
 	public get label() {
 		return this[kData].label;
 	}

@@ -16,18 +16,30 @@ export class EmbedVideo<Omitted extends keyof APIEmbedVideo | '' = ''> extends S
 		super(data);
 	}
 
+	/**
+	 * The height of the video
+	 */
 	public get height() {
 		return this[kData].height;
 	}
 
+	/**
+	 * The width of the video
+	 */
 	public get width() {
 		return this[kData].width;
 	}
 
+	/**
+	 * A proxied url of the video
+	 */
 	public get proxyUrl() {
 		return this[kData].proxy_url;
 	}
 
+	/**
+	 * The source url of the video
+	 */
 	public get url() {
 		return this[kData].url;
 	}

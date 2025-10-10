@@ -18,18 +18,30 @@ export abstract class RoleSubscriptionData<
 		super(data);
 	}
 
+	/**
+	 * The id of the SKU and listing the user is subscribed to
+	 */
 	public get roleSubscriptionListingId() {
 		return this[kData].role_subscription_listing_id;
 	}
 
+	/**
+	 * The name of the tier the user is subscribed to
+	 */
 	public get tierName() {
 		return this[kData].tier_name;
 	}
 
+	/**
+	 * The number of months the user has been subscribed for
+	 */
 	public get totalMonthsSubscribed() {
 		return this[kData].total_months_subscribed;
 	}
 
+	/**
+	 * Whether this notification is for a renewal
+	 */
 	public get isRenewal() {
 		return this[kData].is_renewal;
 	}

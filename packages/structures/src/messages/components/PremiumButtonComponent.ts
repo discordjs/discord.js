@@ -23,6 +23,9 @@ export class PremiumButtonComponent<
 		super(data);
 	}
 
+	/**
+	 * The id for a purchasable SKU
+	 */
 	public get skuId() {
 		return this[kData].sku_id;
 	}

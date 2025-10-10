@@ -20,10 +20,16 @@ export abstract class Component<
 		super(data as Type);
 	}
 
+	/**
+	 * 32 bit integer used as an optional identifier for component
+	 */
 	public get id() {
 		return this[kData].id;
 	}
 
+	/**
+	 * The type of the component
+	 */
 	public get type() {
 		return this[kData].type;
 	}
