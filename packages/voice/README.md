@@ -64,7 +64,7 @@ try installing another.
 **DAVE Protocol Libraries (e2ee)**
 
 > [!NOTE]
-> Some Discord clients may require the DAVE protocol for end-to-end encryption in voice chat and refuse to downgrade the connection in the future. Ensure you have `@snazzah/davey` installed to avoid compatibility issues, as `@snazzah/davey` is only set as a dev-dependency for `@discordjs/voice` and may not install in production environments without explicit installation.
+> Some Discord clients may require the DAVE protocol for end-to-end encryption in voice chat and refuse to downgrade the connection in the future. Ensure you have `@snazzah/davey` installed to avoid compatibility issues.
 
 - `@snazzah/davey`: ^0.1.6
 
