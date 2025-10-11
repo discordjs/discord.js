@@ -14,8 +14,8 @@ With modals you can create pop-up forms that allow users to provide you with for
 Unlike message components, modals aren't strictly components themselves. They're a callback structure used to respond to interactions.
 
 <Callout>
-	You can have a maximum of five `ActionRowBuilder`s per modal builder, and one `TextInputBuilder` within an
-	`ActionRowBuilder`. Currently, you can only use `TextInputBuilder`s in modal action rows builders.
+	You can have a maximum of five `Label` or `Text Display` components per modal builder, and one component within a
+	`Label`.
 </Callout>
 
 To create a modal you construct a new `ModalBuilder`. You can then use the setters to add the custom id and title.
@@ -35,26 +35,16 @@ client.on(Events.InteractionCreate, async (interaction) => {
 ```
 
 <Callout>
-	The custom id is a developer-defined string of up to 100 characters. Use this field to ensure you can uniquely define
-	all incoming interactions from your modals!
+	The `customId` is a developer-defined string of up to 100 characters. Use this field to ensure you can uniquely define
+	all incoming interactions from your modals.
 </Callout>
 
-The next step is to add the input fields in which users responding can enter free-text. Adding inputs is similar to adding components to messages.
+The next step is to add an Modal component to the modal. A in which users responding can enter free-text. Adding inputs is similar to adding components to messages.
 
 At the end, we then call `ChatInputCommandInteraction#showModal` to display the modal to the user.
 
-<Callout type="warn">
-If you're using typescript you'll need to specify the type of components your action row holds. This can be done by specifying the generic parameter in `ActionRowBuilder`:
-
-```diff
-- new ActionRowBuilder()
-+ new ActionRowBuilder<ModalActionRowComponentBuilder>()
-```
-
-</Callout>
-
 ```js
-const { ActionRowBuilder, Events, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+const { Events, LabelBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 
 client.on(Events.InteractionCreate, async (interaction) => {
 	if (!interaction.isChatInputCommand()) return;
@@ -63,29 +53,31 @@ client.on(Events.InteractionCreate, async (interaction) => {
 		// Create the modal
 		const modal = new ModalBuilder().setCustomId('myModal').setTitle('My Modal');
 
-		// Add components to modal
-
-		// Create the text input components
+		// Create the Text Input components
 		const favoriteColorInput = new TextInputBuilder()
 			.setCustomId('favoriteColorInput')
-			// The label is the prompt the user sees for this input
-			.setLabel("What's your favorite color?")
 			// Short means only a single line of text
 			.setStyle(TextInputStyle.Short);
 
 		const hobbiesInput = new TextInputBuilder()
 			.setCustomId('hobbiesInput')
-			.setLabel("What's some of your favorite hobbies?")
 			// Paragraph means multiple lines of text.
 			.setStyle(TextInputStyle.Paragraph);
 
-		// An action row only holds one text input,
-		// so you need one action row per text input.
-		const firstActionRow = new ActionRowBuilder().addComponents(favoriteColorInput);
-		const secondActionRow = new ActionRowBuilder().addComponents(hobbiesInput);
+		// Creating Labels for the Text Input components
+		const favoriteColorLabel = new LabelBuilder()
+			// The label is the prompt the user sees for this component
+			.setLabel("What's your favorite color?")
+			.setTextInputComponent(favoriteColorInput);
 
-		// Add inputs to the modal
-		modal.addComponents(firstActionRow, secondActionRow);
+		const hobbiesLabel = new LabelBuilder()
+			.setLabel("What's some of your favorite hobbies?")
+			// The Description is small text under the label above the interactive component
+			.setDescription('card game, film, book, etc.')
+			.setTextInputComponent(hobbiesInput);
+
+		// Add Labels to the Modal
+		modal.addLabelComponents(favoriteColorLabel, hobbiesLabel);
 
 		// Show the modal to the user
 		await interaction.showModal(modal); // [!code word:showModal]
@@ -98,34 +90,9 @@ Restart your bot and invoke the `/ping` command again. You should see a popup fo
 ![Modal Example](./images/modal-example.png)
 
 <Callout type="warn">
-	Showing a modal must be the first response to an interaction. You cannot `defer()` or `deferUpdate()` then show a
+	Showing a modal must be the first response to an interaction. You cannot `deferReply()` or `deferUpdate()` then show a
 	modal later.
 </Callout>
-
-### Input styles
-
-Currently there are two different input styles available:
-
-- `Short`, a single-line text entry;
-- `Paragraph`, a multi-line text entry similar to the HTML `<textarea>`;
-
-### Input properties
-
-In addition to the `customId`, `label` and `style`, a text input can be customised in a number of ways to apply validation, prompt the user, or set default values via the `TextInputBuilder` methods:
-
-```js
-const input = new TextInputBuilder()
-	// set the maximum number of characters to allow
-	.setMaxLength(1_000)
-	// set the minimum number of characters required for submission
-	.setMinLength(10)
-	// set a placeholder string to prompt the user
-	.setPlaceholder('Enter some text!')
-	// set a default value to pre-fill the input
-	.setValue('Default')
-	// require a value in this input field
-	.setRequired(true);
-```
 
 ## Receiving modal submissions
 
@@ -183,10 +150,50 @@ You'll most likely need to read the data sent by the user in the modal. You can 
 ```js
 client.on(Events.InteractionCreate, (interaction) => {
 	if (!interaction.isModalSubmit()) return;
+	if (interaction.customId === 'myModal') {
+		await interaction.reply({ content: 'Your submission was received successfully!' });
 
-	// Get the data entered by the user
-	const favoriteColor = interaction.fields.getTextInputValue('favoriteColorInput');
-	const hobbies = interaction.fields.getTextInputValue('hobbiesInput');
-	console.log({ favoriteColor, hobbies });
+		// Get the data entered by the user
+		const favoriteColor = interaction.fields.getTextInputValue('favoriteColorInput');
+		const hobbies = interaction.fields.getTextInputValue('hobbiesInput');
+		console.log({ favoriteColor, hobbies });
+	}
 });
 ```
+
+## Modal Component
+
+### Text Input
+
+### Input styles
+
+Currently there are two different input styles available:
+
+- `Short`, a single-line text entry;
+- `Paragraph`, a multi-line text entry similar to the HTML `<textarea>`;
+
+### Input properties
+
+In addition to the `customId` and `style`, a text input can be customised in a number of ways to apply validation, prompt the user, or set default values via the `TextInputBuilder` methods:
+
+```js
+const input = new TextInputBuilder()
+	// set the maximum number of characters to allow
+	.setMaxLength(1_000)
+	// set the minimum number of characters required for submission
+	.setMinLength(10)
+	// set a placeholder string to prompt the user
+	.setPlaceholder('Enter some text!')
+	// set a default value to pre-fill the input
+	.setValue('Default')
+	// require a value in this input field
+	.setRequired(true);
+```
+
+### Text Display
+
+{/* TODO: add information for Text Displays */}
+
+### Select Menus
+
+{/* TODO: add information for all support Select Menus */}
