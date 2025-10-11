@@ -16,6 +16,25 @@ const { ComponentType } = require('discord-api-types/v10');
  */
 
 /**
+ * @typedef {Object} ModalComponentData
+ * @property {string} title The title of the modal
+ * @property {string} customId The custom id of the modal
+ * @property {Array<TextDisplayComponentData|LabelData>} components The components within this modal
+ */
+
+/**
+ * @typedef {StringSelectMenuComponentData|TextInputComponentData|UserSelectMenuComponentData|
+ * RoleSelectMenuComponentData|MentionableSelectMenuComponentData|ChannelSelectMenuComponentData} ComponentInLabelData
+ */
+
+/**
+ * @typedef {BaseComponentData} LabelData
+ * @property {string} label The label to use
+ * @property {string} [description] The optional description for the label
+ * @property {ComponentInLabelData} component The component within the label
+ */
+
+/**
  * @typedef {BaseComponentData} ButtonComponentData
  * @property {ButtonStyle} style The style of the button
  * @property {boolean} [disabled] Whether this button is disabled
@@ -23,6 +42,42 @@ const { ComponentType } = require('discord-api-types/v10');
  * @property {APIMessageComponentEmoji} [emoji] The emoji on this button
  * @property {string} [customId] The custom id of the button
  * @property {string} [url] The URL of the button
+ */
+
+/**
+ * @typedef {BaseComponentData} BaseSelectMenuComponentData
+ * @property {string} customId The custom id of the select menu
+ * @property {boolean} [disabled] Whether the select menu is disabled or not
+ * @property {number} [maxValues] The maximum amount of options that can be selected
+ * @property {number} [minValues] The minimum amount of options that can be selected
+ * @property {string} [placeholder] The placeholder of the select menu
+ * @property {boolean} [required] Whether this component is required in modals
+ */
+
+/**
+ * @typedef {BaseSelectMenuComponentData} StringSelectMenuComponentData
+ * @property {SelectMenuComponentOptionData[]} [options] The options in this select menu
+ */
+
+/**
+ * @typedef {BaseSelectMenuComponentData} UserSelectMenuComponentData
+ * @property {APISelectMenuDefaultValue[]} [defaultValues] The default selected values in this select menu
+ */
+
+/**
+ * @typedef {BaseSelectMenuComponentData} RoleSelectMenuComponentData
+ * @property {APISelectMenuDefaultValue[]} [defaultValues] The default selected values in this select menu
+ */
+
+/**
+ * @typedef {BaseSelectMenuComponentData} MentionableSelectMenuComponentData
+ * @property {APISelectMenuDefaultValue[]} [defaultValues] The default selected values in this select menu
+ */
+
+/**
+ * @typedef {BaseSelectMenuComponentData} ChannelSelectMenuComponentData
+ * @property {APISelectMenuDefaultValue[]} [defaultValues] The default selected values in this select menu
+ * @property {ChannelType[]} [channelTypes] The types of channels that can be selected
  */
 
 /**
@@ -52,7 +107,6 @@ const { ComponentType } = require('discord-api-types/v10');
  * @typedef {BaseComponentData} TextInputComponentData
  * @property {string} customId The custom id of the text input
  * @property {TextInputStyle} style The style of the text input
- * @property {string} label The text that appears on top of the text input field
  * @property {number} [minLength] The minimum number of characters that can be entered in the text input
  * @property {number} [maxLength] The maximum number of characters that can be entered in the text input
  * @property {boolean} [required] Whether or not the text input is required or not
@@ -186,6 +240,7 @@ const { ChannelSelectMenuComponent } = require('../structures/ChannelSelectMenuC
 const { Component } = require('../structures/Component.js');
 const { ContainerComponent } = require('../structures/ContainerComponent.js');
 const { FileComponent } = require('../structures/FileComponent.js');
+const { LabelComponent } = require('../structures/LabelComponent.js');
 const { MediaGalleryComponent } = require('../structures/MediaGalleryComponent.js');
 const { MentionableSelectMenuComponent } = require('../structures/MentionableSelectMenuComponent.js');
 const { RoleSelectMenuComponent } = require('../structures/RoleSelectMenuComponent.js');
@@ -213,4 +268,5 @@ const ComponentTypeToClass = {
   [ComponentType.Section]: SectionComponent,
   [ComponentType.Separator]: SeparatorComponent,
   [ComponentType.Thumbnail]: ThumbnailComponent,
+  [ComponentType.Label]: LabelComponent,
 };

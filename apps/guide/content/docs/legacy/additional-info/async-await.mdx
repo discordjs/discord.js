@@ -143,7 +143,7 @@ client.on(Events.InteractionCreate, (interaction) => {
 });
 ```
 
-In this piece of code, the Promises are [chain resolved](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/then#Chaining) with each other, and if one of the Promises gets rejected, the function passed to `.catch()` gets called. Here's the same code but with async/await:
+In this piece of code, the Promises are [chain resolved](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise/then#Chaining) with each other, and if one of the Promises gets rejected, the function passed to `.catch()` gets called. Here's the same code but with async/await:
 
 ```js title="promise-example.js" lineNumbers=9
 client.on(Events.InteractionCreate, async (interaction) => {

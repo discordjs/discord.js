@@ -2,7 +2,13 @@ import type { RESTPatchAPIChannelJSONBody, Snowflake } from 'discord-api-types/v
 import type { REST } from '../REST.js';
 import { RateLimitError } from '../errors/RateLimitError.js';
 import { RequestMethod } from './types.js';
-import type { GetRateLimitOffsetFunction, RateLimitData, ResponseLike } from './types.js';
+import type {
+	GetRateLimitOffsetFunction,
+	GetRetryBackoffFunction,
+	GetTimeoutFunction,
+	RateLimitData,
+	ResponseLike,
+} from './types.js';
 
 function serializeSearchParam(value: unknown): string | null {
 	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
@@ -155,5 +161,41 @@ export function normalizeRateLimitOffset(offset: GetRateLimitOffsetFunction | nu
 	}
 
 	const result = offset(route);
+	return Math.max(0, result);
+}
+
+/**
+ * Normalizes the retry backoff used to add delay to retrying 5xx and aborted requests.
+ * Applies a Math.max(0, N) to prevent negative backoffs, also deals with callbacks.
+ *
+ * @internal
+ */
+export function normalizeRetryBackoff(
+	retryBackoff: GetRetryBackoffFunction | number,
+	route: string,
+	statusCode: number | null,
+	retryCount: number,
+	requestBody: unknown,
+): number | null {
+	if (typeof retryBackoff === 'number') {
+		return Math.max(0, retryBackoff) * (1 << retryCount);
+	}
+
+	// No need to Math.max as we'll only set the sleep timer if the value is > 0 (and not equal)
+	return retryBackoff(route, statusCode, retryCount, requestBody);
+}
+
+/**
+ * Normalizes the timeout for aborting requests. Applies a Math.max(0, N) to prevent negative timeouts,
+ * also deals with callbacks.
+ *
+ * @internal
+ */
+export function normalizeTimeout(timeout: GetTimeoutFunction | number, route: string, requestBody: unknown): number {
+	if (typeof timeout === 'number') {
+		return Math.max(0, timeout);
+	}
+
+	const result = timeout(route, requestBody);
 	return Math.max(0, result);
 }

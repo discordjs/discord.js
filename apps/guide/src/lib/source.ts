@@ -15,6 +15,6 @@ export const source = loader({
 
 		return undefined;
 	},
-	baseUrl: '/guide/',
+	baseUrl: '/',
 	source: docs.toFumadocsSource(),
 });

@@ -59,7 +59,6 @@
  * @property {'GuildVoiceChannelResolve'} GuildVoiceChannelResolve
  * @property {'GuildChannelOrphan'} GuildChannelOrphan
  * @property {'GuildChannelUnowned'} GuildChannelUnowned
- * @property {'GuildOwned'} GuildOwned
  * @property {'GuildMembersTimeout'} GuildMembersTimeout
  * @property {'GuildSoundboardSoundsTimeout'} GuildSoundboardSoundsTimeout
  * @property {'GuildUncachedMe'} GuildUncachedMe
@@ -114,8 +113,10 @@
  * @property {'CommandInteractionOptionInvalidChannelType'} CommandInteractionOptionInvalidChannelType
  * @property {'AutocompleteInteractionOptionNoFocusedOption'} AutocompleteInteractionOptionNoFocusedOption
  *
- * @property {'ModalSubmitInteractionFieldNotFound'} ModalSubmitInteractionFieldNotFound
- * @property {'ModalSubmitInteractionFieldType'} ModalSubmitInteractionFieldType
+ * @property {'ModalSubmitInteractionComponentNotFound'} ModalSubmitInteractionComponentNotFound
+ * @property {'ModalSubmitInteractionComponentType'} ModalSubmitInteractionComponentType
+ * @property {'ModalSubmitInteractionComponentEmpty'} ModalSubmitInteractionComponentEmpty
+ * @property {'ModalSubmitInteractionComponentInvalidChannelType'} ModalSubmitInteractionComponentInvalidChannelType
  *
  * @property {'InvalidMissingScopes'} InvalidMissingScopes
  * @property {'InvalidScopesWithPermissions'} InvalidScopesWithPermissions
@@ -193,7 +194,6 @@ const keys = [
   'GuildVoiceChannelResolve',
   'GuildChannelOrphan',
   'GuildChannelUnowned',
-  'GuildOwned',
   'GuildMembersTimeout',
   'GuildSoundboardSoundsTimeout',
   'GuildUncachedMe',
@@ -248,8 +248,10 @@ const keys = [
   'CommandInteractionOptionInvalidChannelType',
   'AutocompleteInteractionOptionNoFocusedOption',
 
-  'ModalSubmitInteractionFieldNotFound',
-  'ModalSubmitInteractionFieldType',
+  'ModalSubmitInteractionComponentNotFound',
+  'ModalSubmitInteractionComponentType',
+  'ModalSubmitInteractionComponentEmpty',
+  'ModalSubmitInteractionComponentInvalidChannelType',
 
   'InvalidMissingScopes',
   'InvalidScopesWithPermissions',

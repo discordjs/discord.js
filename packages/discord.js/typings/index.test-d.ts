@@ -2584,15 +2584,55 @@ await chatInputInteraction.showModal({
   custom_id: 'abc',
   components: [
     {
-      components: [
-        {
-          custom_id: 'aa',
-          label: 'label',
-          style: TextInputStyle.Short,
-          type: ComponentType.TextInput,
-        },
-      ],
-      type: ComponentType.ActionRow,
+      component: {
+        type: ComponentType.StringSelect,
+        id: 2,
+        custom_id: 'aa',
+        options: [{ label: 'a', value: 'b' }],
+      },
+      type: ComponentType.Label,
+      label: 'yo',
+    },
+  ],
+});
+
+await chatInputInteraction.showModal({
+  title: 'abc',
+  customId: 'abc',
+  components: [
+    {
+      type: ComponentType.Label,
+      component: {
+        type: ComponentType.TextInput,
+        style: TextInputStyle.Short,
+        customId: 'aa',
+      },
+      label: 'yo',
+    },
+    {
+      type: ComponentType.Label,
+      component: {
+        type: ComponentType.UserSelect,
+        customId: 'user',
+      },
+      label: 'aa',
+    },
+    {
+      type: ComponentType.Label,
+      component: {
+        type: ComponentType.RoleSelect,
+        customId: 'role',
+      },
+      label: 'bb',
+    },
+    {
+      type: ComponentType.Label,
+      component: {
+        type: ComponentType.ChannelSelect,
+        customId: 'channel',
+        channelTypes: [ChannelType.GuildText, ChannelType.GuildVoice],
+      },
+      label: 'cc',
     },
   ],
 });
@@ -2647,9 +2687,9 @@ declare const webhookClient: WebhookClient;
 declare const interactionWebhook: InteractionWebhook;
 declare const snowflake: Snowflake;
 
-expectType<Promise<Message>>(webhook.send('content'));
-expectType<Promise<Message>>(webhook.editMessage(snowflake, 'content'));
-expectType<Promise<Message>>(webhook.fetchMessage(snowflake));
+expectType<Promise<Message<true>>>(webhook.send('content'));
+expectType<Promise<Message<true>>>(webhook.editMessage(snowflake, 'content'));
+expectType<Promise<Message<true>>>(webhook.fetchMessage(snowflake));
 expectType<Promise<Webhook>>(webhook.edit({ name: 'name' }));
 
 expectType<Promise<APIMessage>>(webhookClient.send('content'));
@@ -3000,3 +3040,23 @@ await guildScheduledEventManager.edit(snowflake, { recurrenceRule: null });
     byMonth: [GuildScheduledEventRecurrenceRuleMonth.May],
   });
 }
+
+await textChannel.send({
+  files: [
+    new AttachmentBuilder('https://example.com/voice-message.ogg')
+      .setDuration(2)
+      .setWaveform('AFUqPDw3Eg2hh4+gopOYj4xthU4='),
+  ],
+  flags: MessageFlags.IsVoiceMessage,
+});
+
+await textChannel.send({
+  files: [
+    {
+      attachment: 'https://example.com/voice-message.ogg',
+      duration: 2,
+      waveform: 'AFUqPDw3Eg2hh4+gopOYj4xthU4=',
+    },
+  ],
+  flags: MessageFlags.IsVoiceMessage,
+});

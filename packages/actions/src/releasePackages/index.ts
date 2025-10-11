@@ -30,15 +30,29 @@ program
 	)
 	.option('--dry', 'skips actual publishing and outputs logs instead', dryInput)
 	.option('--dev', 'publishes development versions and skips tagging / github releases', devInput)
+	.option('--tag <tag>', 'tag to use for dev releases (defaults to "dev")', getInput('tag'))
 	.parse();
 
-const { exclude, dry, dev } = program.opts<{ dev: boolean; dry: boolean; exclude: string[] }>();
-const [packageName] = program.processedArgs as [string];
+const {
+	exclude,
+	dry,
+	dev,
+	tag: inputTag,
+} = program.opts<{ dev: boolean; dry: boolean; exclude: string[]; tag: string }>();
 
-const tree = await generateReleaseTree(dev, dry, packageName, exclude);
+// All this because getInput('tag') will return empty string when not set :P
+if (!dev && inputTag.length) {
+	throw new Error('The --tag option can only be used with --dev');
+}
+
+const tag = inputTag.length ? inputTag : dev ? 'dev' : undefined;
+
+const [packageName] = program.processedArgs as [string];
+const tree = await generateReleaseTree(dry, tag, packageName, exclude);
+
 for (const branch of tree) {
 	startGroup(`Releasing ${branch.map((entry) => `${entry.name}@${entry.version}`).join(', ')}`);
-	await Promise.all(branch.map(async (release) => releasePackage(release, dev, dry)));
+	await Promise.all(branch.map(async (release) => releasePackage(release, dry, tag)));
 	endGroup();
 }
 
