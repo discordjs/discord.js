@@ -84,7 +84,9 @@ class ModalSubmitInteraction extends BaseInteraction {
      */
     this.components = new ModalComponentResolver(
       this.client,
-      data.data.components?.map(component => this.transformComponent(component, data.data.resolved)),
+      data.data.components?.map(component =>
+        this.transformComponent({ client: this.client, guild: this.guild }, component, data.data.resolved),
+      ),
       transformResolved({ client: this.client, guild: this.guild, channel: this.channel }, data.data.resolved),
     );
 
@@ -120,17 +122,20 @@ class ModalSubmitInteraction extends BaseInteraction {
   /**
    * Transforms component data to discord.js-compatible data
    *
+   * @param {*} [supportingData] Data required for the transformation
    * @param {*} rawComponent The data to transform
    * @param {APIInteractionDataResolved} resolved The resolved data for the interaction
    * @returns {ModalData[]}
    * @private
    */
-  transformComponent(rawComponent, resolved) {
+  transformComponent(supportingData, rawComponent, resolved) {
     if ('components' in rawComponent) {
       return {
         type: rawComponent.type,
         id: rawComponent.id,
-        components: rawComponent.components.map(component => this.transformComponent(component, resolved)),
+        components: rawComponent.components.map(component =>
+          this.transformComponent(supportingData, component, resolved),
+        ),
       };
     }
 
@@ -138,7 +143,7 @@ class ModalSubmitInteraction extends BaseInteraction {
       return {
         type: rawComponent.type,
         id: rawComponent.id,
-        component: this.transformComponent(rawComponent.component, resolved),
+        component: this.transformComponent(supportingData, rawComponent.component, resolved),
       };
     }
 
@@ -155,31 +160,50 @@ class ModalSubmitInteraction extends BaseInteraction {
     if (rawComponent.values) {
       data.values = rawComponent.values;
       if (resolved) {
-        const resolveCollection = (resolvedData, resolver) => {
-          const collection = new Collection();
-          for (const value of data.values) {
-            if (resolvedData?.[value]) {
-              collection.set(value, resolver(resolvedData[value]));
+        const { client, guild } = supportingData;
+        const { members, users, channels, roles } = resolved;
+        const valueSet = new Set(rawComponent.values);
+
+        if (users) {
+          data.users = new Collection();
+
+          for (const [id, user] of Object.entries(users)) {
+            if (valueSet.has(id)) {
+              data.users.set(id, client.users._add(user));
             }
           }
+        }
 
-          return collection.size ? collection : null;
-        };
+        if (channels) {
+          data.channels = new Collection();
 
-        const users = resolveCollection(resolved.users, user => this.client.users._add(user));
-        if (users) data.users = users;
+          for (const [id, apiChannel] of Object.entries(channels)) {
+            if (valueSet.has(id)) {
+              data.channels.set(id, client.channels._add(apiChannel, guild) ?? apiChannel);
+            }
+          }
+        }
 
-        const channels = resolveCollection(
-          resolved.channels,
-          channel => this.client.channels._add(channel, this.guild) ?? channel,
-        );
-        if (channels) data.channels = channels;
+        if (members) {
+          data.members = new Collection();
 
-        const members = resolveCollection(resolved.members, member => this.guild?.members._add(member) ?? member);
-        if (members) data.members = members;
+          for (const [id, member] of Object.entries(members)) {
+            if (valueSet.has(id)) {
+              const user = users?.[id];
+              data.members.set(id, guild?.members._add({ user, ...member }) ?? member);
+            }
+          }
+        }
 
-        const roles = resolveCollection(resolved.roles, role => this.guild?.roles._add(role) ?? role);
-        if (roles) data.roles = roles;
+        if (roles) {
+          data.roles = new Collection();
+
+          for (const [id, role] of Object.entries(roles)) {
+            if (valueSet.has(id)) {
+              data.roles.set(id, guild?.roles._add(role) ?? role);
+            }
+          }
+        }
       }
     }
 
