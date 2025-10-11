@@ -91,13 +91,17 @@ class CommandInteraction extends BaseInteraction {
   }
 
   /**
-   * Represents the resolved data of a received command interaction.
-   *
-   * @typedef {Object} CommandInteractionResolvedData
+   * @typedef {Object} BaseInteractionResolvedData
    * @property {Collection<Snowflake, User>} [users] The resolved users
    * @property {Collection<Snowflake, GuildMember|APIGuildMember>} [members] The resolved guild members
    * @property {Collection<Snowflake, Role|APIRole>} [roles] The resolved roles
    * @property {Collection<Snowflake, BaseChannel|APIChannel>} [channels] The resolved channels
+   */
+
+  /**
+   * Represents the resolved data of a received command interaction.
+   *
+   * @typedef {BaseInteractionResolvedData} CommandInteractionResolvedData
    * @property {Collection<Snowflake, Message|APIMessage>} [messages] The resolved messages
    * @property {Collection<Snowflake, Attachment>} [attachments] The resolved attachments
    */

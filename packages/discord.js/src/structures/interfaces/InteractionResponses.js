@@ -10,13 +10,6 @@ const { InteractionCollector } = require('../InteractionCollector.js');
 const { MessagePayload } = require('../MessagePayload.js');
 
 /**
- * @typedef {Object} ModalComponentData
- * @property {string} title The title of the modal
- * @property {string} customId The custom id of the modal
- * @property {ActionRow[]} components The components within this modal
- */
-
-/**
  * Interface for classes that support shared interaction response types.
  *
  * @interface
@@ -45,8 +38,8 @@ class InteractionResponses {
    * @property {boolean} [tts=false] Whether the message should be spoken aloud
    * @property {boolean} [withResponse] Whether to return an {@link InteractionCallbackResponse} as the response
    * @property {MessageFlagsResolvable} [flags] Which flags to set for the message.
-   * <info>Only `MessageFlags.Ephemeral`, `MessageFlags.SuppressEmbeds`, and `MessageFlags.SuppressNotifications`
-   * can be set.</info>
+   * <info>Only {@link MessageFlags.Ephemeral}, {@link MessageFlags.SuppressEmbeds},
+   * {@link MessageFlags.SuppressNotifications}, and {@link MessageFlags.IsVoiceMessage} can be set.</info>
    */
 
   /**

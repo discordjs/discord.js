@@ -114,8 +114,10 @@
  * @property {'CommandInteractionOptionInvalidChannelType'} CommandInteractionOptionInvalidChannelType
  * @property {'AutocompleteInteractionOptionNoFocusedOption'} AutocompleteInteractionOptionNoFocusedOption
  *
- * @property {'ModalSubmitInteractionFieldNotFound'} ModalSubmitInteractionFieldNotFound
- * @property {'ModalSubmitInteractionFieldType'} ModalSubmitInteractionFieldType
+ * @property {'ModalSubmitInteractionComponentNotFound'} ModalSubmitInteractionComponentNotFound
+ * @property {'ModalSubmitInteractionComponentType'} ModalSubmitInteractionComponentType
+ * @property {'ModalSubmitInteractionComponentEmpty'} ModalSubmitInteractionComponentEmpty
+ * @property {'ModalSubmitInteractionComponentInvalidChannelType'} ModalSubmitInteractionComponentInvalidChannelType
  *
  * @property {'InvalidMissingScopes'} InvalidMissingScopes
  * @property {'InvalidScopesWithPermissions'} InvalidScopesWithPermissions
@@ -248,8 +250,10 @@ const keys = [
   'CommandInteractionOptionInvalidChannelType',
   'AutocompleteInteractionOptionNoFocusedOption',
 
-  'ModalSubmitInteractionFieldNotFound',
-  'ModalSubmitInteractionFieldType',
+  'ModalSubmitInteractionComponentNotFound',
+  'ModalSubmitInteractionComponentType',
+  'ModalSubmitInteractionComponentEmpty',
+  'ModalSubmitInteractionComponentInvalidChannelType',
 
   'InvalidMissingScopes',
   'InvalidScopesWithPermissions',

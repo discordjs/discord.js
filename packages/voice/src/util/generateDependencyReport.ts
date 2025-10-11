@@ -74,6 +74,11 @@ export function generateDependencyReport() {
 	addVersion('@noble/ciphers');
 	report.push('');
 
+	// dave
+	report.push('DAVE Libraries');
+	addVersion('@snazzah/davey');
+	report.push('');
+
 	// ffmpeg
 	report.push('FFmpeg');
 	try {

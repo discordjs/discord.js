@@ -2,9 +2,10 @@
 
 import { Buffer } from 'node:buffer';
 import crypto from 'node:crypto';
-import { VoiceOpcodes } from 'discord-api-types/voice/v4';
-import type { VoiceConnection } from '../VoiceConnection';
-import type { ConnectionData } from '../networking/Networking';
+import type { VoiceReceivePayload } from 'discord-api-types/voice/v8';
+import { VoiceOpcodes } from 'discord-api-types/voice/v8';
+import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection';
+import { NetworkingStatusCode, type ConnectionData } from '../networking/Networking';
 import { methods } from '../util/Secretbox';
 import {
 	AudioReceiveStream,
@@ -69,25 +70,11 @@ export class VoiceReceiver {
 	 * @param packet - The received packet
 	 * @internal
 	 */
-	public onWsPacket(packet: any) {
-		if (packet.op === VoiceOpcodes.ClientDisconnect && typeof packet.d?.user_id === 'string') {
+	public onWsPacket(packet: VoiceReceivePayload) {
+		if (packet.op === VoiceOpcodes.ClientDisconnect) {
 			this.ssrcMap.delete(packet.d.user_id);
-		} else if (
-			packet.op === VoiceOpcodes.Speaking &&
-			typeof packet.d?.user_id === 'string' &&
-			typeof packet.d?.ssrc === 'number'
-		) {
+		} else if (packet.op === VoiceOpcodes.Speaking) {
 			this.ssrcMap.update({ userId: packet.d.user_id, audioSSRC: packet.d.ssrc });
-		} else if (
-			packet.op === VoiceOpcodes.ClientConnect &&
-			typeof packet.d?.user_id === 'string' &&
-			typeof packet.d?.audio_ssrc === 'number'
-		) {
-			this.ssrcMap.update({
-				userId: packet.d.user_id,
-				audioSSRC: packet.d.audio_ssrc,
-				videoSSRC: packet.d.video_ssrc === 0 ? undefined : packet.d.video_ssrc,
-			});
 		}
 	}
 
@@ -143,17 +130,28 @@ export class VoiceReceiver {
 	 * @param mode - The encryption mode
 	 * @param nonce - The nonce buffer used by the connection for encryption
 	 * @param secretKey - The secret key used by the connection for encryption
+	 * @param userId - The user id that sent the packet
 	 * @returns The parsed Opus packet
 	 */
-	private parsePacket(buffer: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array) {
-		let packet = this.decrypt(buffer, mode, nonce, secretKey);
-		if (!packet) return;
+	private parsePacket(buffer: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array, userId: string) {
+		let packet: Buffer = this.decrypt(buffer, mode, nonce, secretKey);
+		if (!packet) throw new Error('Failed to parse packet');
 
 		// Strip decrypted RTP Header Extension if present
 		// The header is only indicated in the original data, so compare with buffer first
 		if (buffer.subarray(12, 14).compare(HEADER_EXTENSION_BYTE) === 0) {
 			const headerExtensionLength = buffer.subarray(14).readUInt16BE();
 			packet = packet.subarray(4 * headerExtensionLength);
+		}
+
+		// Decrypt packet if in a DAVE session.
+		if (
+			this.voiceConnection.state.status === VoiceConnectionStatus.Ready &&
+			(this.voiceConnection.state.networking.state.code === NetworkingStatusCode.Ready ||
+				this.voiceConnection.state.networking.state.code === NetworkingStatusCode.Resuming)
+		) {
+			const daveSession = this.voiceConnection.state.networking.state.dave;
+			if (daveSession) packet = daveSession.decrypt(packet, userId)!;
 		}
 
 		return packet;
@@ -178,16 +176,17 @@ export class VoiceReceiver {
 		if (!stream) return;
 
 		if (this.connectionData.encryptionMode && this.connectionData.nonceBuffer && this.connectionData.secretKey) {
-			const packet = this.parsePacket(
-				msg,
-				this.connectionData.encryptionMode,
-				this.connectionData.nonceBuffer,
-				this.connectionData.secretKey,
-			);
-			if (packet) {
-				stream.push(packet);
-			} else {
-				stream.destroy(new Error('Failed to parse packet'));
+			try {
+				const packet = this.parsePacket(
+					msg,
+					this.connectionData.encryptionMode,
+					this.connectionData.nonceBuffer,
+					this.connectionData.secretKey,
+					userData.userId,
+				);
+				if (packet) stream.push(packet);
+			} catch (error) {
+				stream.destroy(error as Error);
 			}
 		}
 	}

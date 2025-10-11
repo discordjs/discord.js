@@ -36,14 +36,15 @@ jobs:
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ inputs.ref || '' }}
 
       - name: Install Node.js v22
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 22
+          package-manager-cache: false
 
       - name: Install dependencies
         uses: ./packages/actions/src/pnpmCache
@@ -53,7 +54,7 @@ jobs:
 
       - name: Checkout main repository
         if: ${{ inputs.ref && inputs.ref != 'main' }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           path: 'main'
 
@@ -88,6 +89,11 @@ jobs:
         run: |
           declare -a PACKAGES=("brokers" "builders" "collection" "core" "discord.js" "formatters" "next" "proxy" "rest" "structures" "util" "voice" "ws")
           for PACKAGE in "${PACKAGES[@]}"; do
+            if [ ! -d "packages/${PACKAGE}" ]; then
+              echo "::notice::${PACKAGE} does not exist on this ref. Skipping..."
+              continue
+            fi
+
             cd "packages/${PACKAGE}"
             sed -i 's!https://github.com/discordjs/discord.js/tree/main!https://github.com/discordjs/discord.js/tree/${{ inputs.ref }}!' api-extractor.json
             ../../main/packages/api-extractor/bin/api-extractor run --local --minify
@@ -96,7 +102,7 @@ jobs:
           done
 
       - name: Checkout docs repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: 'discordjs/docs'
           token: ${{ secrets.DJS_DOCS }}
@@ -221,6 +227,11 @@ jobs:
         run: |
           declare -a PACKAGES=("brokers" "builders" "collection" "core" "discord.js" "formatters" "next" "proxy" "rest" "structures" "util" "voice" "ws")
           for PACKAGE in "${PACKAGES[@]}"; do
+            if [ ! -d "packages/${PACKAGE}" ]; then
+              echo "::notice::${PACKAGE} does not exist on this ref. Skipping..."
+              continue
+            fi
+
             if [[ "${PACKAGE}" == "discord.js" ]]; then
               mkdir -p "out/${PACKAGE}"
               mv "packages/${PACKAGE}/docs/docs.json" "out/${PACKAGE}/${GITHUB_REF_NAME}.json"
@@ -250,12 +261,13 @@ jobs:
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install Node.js v22
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 22
+          package-manager-cache: false
 
       - name: Install dependencies
         uses: ./packages/actions/src/pnpmCache

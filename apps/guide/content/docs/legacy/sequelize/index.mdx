@@ -42,7 +42,7 @@ bun add discord.js sequelize sqlite3
 <Callout>
 	This section will still work with any provider supported by sequelize. We recommend PostgreSQL for larger applications.
 
-    Do note that "large" here should be interpreted as absolutely massive. Sqlite is used at scale by many companies and products you use every single day. The slight overhead should not be noticable for the application of a Discord bot at all unless you are dealing with super complicated queries or are using specific features that do not exist in sqlite.
+    Do note that "large" here should be interpreted as absolutely massive. Sqlite is used at scale by many companies and products you use every single day. The slight overhead should not be noticeable for the application of a Discord bot at all unless you are dealing with super complicated queries or are using specific features that do not exist in sqlite.
 
     You can find out if sqlite might be a good choice for your project (it very likely is) by reading [their own article](https://www.sqlite.org/whentouse.html) on the topic.
 
@@ -106,7 +106,7 @@ In any relational database, you need to create tables to store your data. This s
 | bob       | is the best    | bob      | 0           |
 | tableflip | (╯°□°）╯︵ ┻━┻ | joe      | 8           |
 
-To do that in Sequelize, define a model based on this structure below the connection information, as shown below, after the `sequelize` initalisation.
+To do that in Sequelize, define a model based on this structure below the connection information, as shown below, after the `sequelize` initialization.
 
 ```js title="sequelize-example.js"
 // ...

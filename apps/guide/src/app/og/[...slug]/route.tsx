@@ -12,7 +12,7 @@ export function generateStaticParams() {
 export async function GET(_req: Request, { params }: { params: Promise<{ slug: string[] }> }) {
 	const { slug } = await params;
 	const page = source.getPage(slug.slice(0, -1));
-	// const fontData = await fetch(new URL('../../../assets/Geist-Regular.ttf', import.meta.url), {
+	// const fontData = await fetch(new URL('../../assets/Geist-Regular.ttf', import.meta.url), {
 	// next: { revalidate: 604_800 },
 	// }).then(async (res) => res.arrayBuffer());
 

@@ -25,13 +25,13 @@ export default withMDX({
 	},
 	experimental: {
 		ppr: true,
-		reactCompiler: true,
 		useCache: true,
 		dynamicOnHover: true,
 	},
 	eslint: {
 		ignoreDuringBuilds: true,
 	},
+	reactCompiler: true,
 	typescript: {
 		ignoreBuildErrors: true,
 	},

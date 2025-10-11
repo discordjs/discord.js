@@ -24,8 +24,7 @@
 
 ## Contributing
 
-Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the existing guide.  
-See [the contribution guide][./contributing] if you'd like to submit a PR.
+Before creating an issue, please ensure that it hasn't already been reported/suggested, and double-check the existing guide. See [the contributing guide][contributing] if you'd like to submit a pull request.
 
 ## Local Development
 
@@ -38,9 +37,9 @@ If you don't understand something in the documentation, you are experiencing pro
 [website]: https://discord.js.org
 [website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
 [documentation]: https://discord.js.org/docs
-[guide]: https://discord.js/guide
+[guide]: https://discordjs.guide
 [guide-source]: https://github.com/discordjs/discord.js/tree/main/apps/guide
-[guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
+[guide-update]: https://discordjs.guide/legacy/additional-info/changes-in-v14
 [discord]: https://discord.gg/djs
 [source]: https://github.com/discordjs/discord.js/tree/main/apps/guide
 [contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md

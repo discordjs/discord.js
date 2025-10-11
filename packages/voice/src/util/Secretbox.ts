@@ -5,13 +5,13 @@ interface Methods {
 		cipherText: Buffer,
 		additionalData: Buffer,
 		nonce: Buffer,
-		key: ArrayBufferLike,
+		key: Uint8Array,
 	): Buffer;
 	crypto_aead_xchacha20poly1305_ietf_encrypt(
 		plaintext: Buffer,
 		additionalData: Buffer,
 		nonce: Buffer,
-		key: ArrayBufferLike,
+		key: Uint8Array,
 	): Buffer;
 }
 
@@ -21,7 +21,7 @@ const libs = {
 			cipherText: Buffer,
 			additionalData: Buffer,
 			nonce: Buffer,
-			key: ArrayBufferLike,
+			key: Uint8Array,
 		) => {
 			const message = Buffer.alloc(cipherText.length - sodium.crypto_aead_xchacha20poly1305_ietf_ABYTES);
 			sodium.crypto_aead_xchacha20poly1305_ietf_decrypt(message, null, cipherText, additionalData, nonce, key);
@@ -31,7 +31,7 @@ const libs = {
 			plaintext: Buffer,
 			additionalData: Buffer,
 			nonce: Buffer,
-			key: ArrayBufferLike,
+			key: Uint8Array,
 		) => {
 			const cipherText = Buffer.alloc(plaintext.length + sodium.crypto_aead_xchacha20poly1305_ietf_ABYTES);
 			sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(cipherText, plaintext, additionalData, null, nonce, key);
@@ -43,13 +43,13 @@ const libs = {
 			cipherText: Buffer,
 			additionalData: Buffer,
 			nonce: Buffer,
-			key: ArrayBufferLike,
+			key: Uint8Array,
 		) => sodium.api.crypto_aead_xchacha20poly1305_ietf_decrypt(cipherText, additionalData, null, nonce, key),
 		crypto_aead_xchacha20poly1305_ietf_encrypt: (
 			plaintext: Buffer,
 			additionalData: Buffer,
 			nonce: Buffer,
-			key: ArrayBufferLike,
+			key: Uint8Array,
 		) => sodium.api.crypto_aead_xchacha20poly1305_ietf_encrypt(plaintext, additionalData, null, nonce, key),
 	}),
 	'libsodium-wrappers': (sodium: any): Methods => ({
@@ -57,13 +57,13 @@ const libs = {
 			cipherText: Buffer,
 			additionalData: Buffer,
 			nonce: Buffer,
-			key: ArrayBufferLike,
+			key: Uint8Array,
 		) => sodium.crypto_aead_xchacha20poly1305_ietf_decrypt(null, cipherText, additionalData, nonce, key),
 		crypto_aead_xchacha20poly1305_ietf_encrypt: (
 			plaintext: Buffer,
 			additionalData: Buffer,
 			nonce: Buffer,
-			key: ArrayBufferLike,
+			key: Uint8Array,
 		) => sodium.crypto_aead_xchacha20poly1305_ietf_encrypt(plaintext, additionalData, null, nonce, key),
 	}),
 	'@stablelib/xchacha20poly1305': (stablelib: any): Methods => ({

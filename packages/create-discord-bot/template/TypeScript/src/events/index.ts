@@ -5,17 +5,17 @@ import type { StructurePredicate } from '../util/loaders.[REPLACE_IMPORT_EXT]';
 /**
  * Defines the structure of an event.
  */
-export type Event<T extends keyof ClientEvents = keyof ClientEvents> = {
+export type Event<EventName extends keyof ClientEvents = keyof ClientEvents> = {
 	/**
 	 * The function to execute when the event is emitted.
 	 *
 	 * @param parameters - The parameters of the event
 	 */
-	execute(...parameters: ClientEvents[T]): Promise<void> | void;
+	execute(...parameters: ClientEvents[EventName]): Promise<void> | void;
 	/**
 	 * The name of the event to listen to
 	 */
-	name: T;
+	name: EventName;
 	/**
 	 * Whether or not the event should only be listened to once
 	 *

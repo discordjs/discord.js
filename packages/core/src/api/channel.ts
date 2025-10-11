@@ -1,24 +1,24 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import { makeURLSearchParams, type RawFile, type REST, type RequestData } from '@discordjs/rest';
+import { makeURLSearchParams, type RawFile, type RequestData, type REST } from '@discordjs/rest';
 import {
 	Routes,
-	type RESTPostAPIChannelWebhookJSONBody,
-	type RESTPostAPIChannelWebhookResult,
+	type APIThreadChannel,
 	type RESTDeleteAPIChannelResult,
 	type RESTGetAPIChannelInvitesResult,
 	type RESTGetAPIChannelMessageReactionUsersQuery,
 	type RESTGetAPIChannelMessageReactionUsersResult,
 	type RESTGetAPIChannelMessageResult,
+	type RESTGetAPIChannelMessagesPinsQuery,
+	type RESTGetAPIChannelMessagesPinsResult,
 	type RESTGetAPIChannelMessagesQuery,
 	type RESTGetAPIChannelMessagesResult,
-	type RESTGetAPIChannelPinsResult,
 	type RESTGetAPIChannelResult,
 	type RESTGetAPIChannelThreadsArchivedQuery,
 	type RESTGetAPIChannelUsersThreadsArchivedResult,
 	type RESTGetAPIChannelWebhooksResult,
-	type RESTPatchAPIChannelMessageJSONBody,
 	type RESTPatchAPIChannelJSONBody,
+	type RESTPatchAPIChannelMessageJSONBody,
 	type RESTPatchAPIChannelMessageResult,
 	type RESTPatchAPIChannelResult,
 	type RESTPostAPIChannelFollowersResult,
@@ -27,14 +27,16 @@ import {
 	type RESTPostAPIChannelMessageCrosspostResult,
 	type RESTPostAPIChannelMessageJSONBody,
 	type RESTPostAPIChannelMessageResult,
-	type RESTPutAPIChannelPermissionJSONBody,
-	type Snowflake,
 	type RESTPostAPIChannelThreadsJSONBody,
 	type RESTPostAPIChannelThreadsResult,
-	type APIThreadChannel,
+	type RESTPostAPIChannelWebhookJSONBody,
+	type RESTPostAPIChannelWebhookResult,
 	type RESTPostAPIGuildForumThreadsJSONBody,
-	type RESTPostAPISoundboardSendSoundJSONBody,
 	type RESTPostAPISendSoundboardSoundResult,
+	type RESTPostAPISoundboardSendSoundJSONBody,
+	type RESTPutAPIChannelPermissionJSONBody,
+	type RESTPutAPIChannelRecipientJSONBody,
+	type Snowflake,
 } from 'discord-api-types/v10';
 
 export interface StartForumThreadOptions extends RESTPostAPIGuildForumThreadsJSONBody {
@@ -340,20 +342,29 @@ export class ChannelsAPI {
 	}
 
 	/**
-	 * Fetches the pinned messages of a channel
+	 * Fetches pinned messages of a channel
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/channel#get-pinned-messages}
+	 * @see {@link https://discord.com/developers/docs/resources/message#get-channel-pins}
 	 * @param channelId - The id of the channel to fetch pinned messages from
-	 * @param options - The options for fetching the pinned messages
+	 * @param query - The query options for fetching pinned messages
+	 * @param options - The options for fetching pinned messages
 	 */
-	public async getPins(channelId: Snowflake, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
-		return this.rest.get(Routes.channelPins(channelId), { auth, signal }) as Promise<RESTGetAPIChannelPinsResult>;
+	public async getPins(
+		channelId: Snowflake,
+		query: RESTGetAPIChannelMessagesPinsQuery = {},
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+	) {
+		return this.rest.get(Routes.channelMessagesPins(channelId), {
+			auth,
+			query: makeURLSearchParams(query),
+			signal,
+		}) as Promise<RESTGetAPIChannelMessagesPinsResult>;
 	}
 
 	/**
 	 * Pins a message in a channel
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/channel#pin-message}
+	 * @see {@link https://discord.com/developers/docs/resources/message#pin-message}
 	 * @param channelId - The id of the channel to pin the message in
 	 * @param messageId - The id of the message to pin
 	 * @param options - The options for pinning the message
@@ -363,7 +374,7 @@ export class ChannelsAPI {
 		messageId: Snowflake,
 		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
-		await this.rest.put(Routes.channelPin(channelId, messageId), { auth, reason, signal });
+		await this.rest.put(Routes.channelMessagesPin(channelId, messageId), { auth, reason, signal });
 	}
 
 	/**
@@ -439,7 +450,7 @@ export class ChannelsAPI {
 	/**
 	 * Unpins a message in a channel
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/channel#unpin-message}
+	 * @see {@link https://discord.com/developers/docs/resources/message#unpin-message}
 	 * @param channelId - The id of the channel to unpin the message in
 	 * @param messageId - The id of the message to unpin
 	 * @param options - The options for unpinning the message
@@ -449,7 +460,7 @@ export class ChannelsAPI {
 		messageId: Snowflake,
 		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
-		await this.rest.delete(Routes.channelPin(channelId, messageId), { auth, reason, signal });
+		await this.rest.delete(Routes.channelMessagesPin(channelId, messageId), { auth, reason, signal });
 	}
 
 	/**
@@ -697,5 +708,46 @@ export class ChannelsAPI {
 			body,
 			signal,
 		}) as Promise<RESTPostAPISendSoundboardSoundResult>;
+	}
+
+	/**
+	 * Adds a recipient to a group DM channel
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#group-dm-add-recipient}
+	 * @param channelId - The id of the channel to add the recipient to
+	 * @param userId - The id of the user to add as a recipient
+	 * @param body - The data for adding the recipient
+	 * @param options - The options for adding the recipient
+	 */
+	public async addGroupDMRecipient(
+		channelId: Snowflake,
+		userId: Snowflake,
+		body: RESTPutAPIChannelRecipientJSONBody,
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+	) {
+		await this.rest.put(Routes.channelRecipient(channelId, userId), {
+			auth,
+			body,
+			signal,
+		});
+	}
+
+	/**
+	 * Removes a recipient from a group DM channel
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#group-dm-remove-recipient}
+	 * @param channelId - The id of the channel to remove the recipient from
+	 * @param userId - The id of the user to remove as a recipient
+	 * @param options - The options for removing the recipient
+	 */
+	public async removeGroupDMRecipient(
+		channelId: Snowflake,
+		userId: Snowflake,
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+	) {
+		await this.rest.delete(Routes.channelRecipient(channelId, userId), {
+			auth,
+			signal,
+		});
 	}
 }

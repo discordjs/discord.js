@@ -93,25 +93,6 @@ class PollAnswer extends Base {
   get partial() {
     return this.poll.partial || (this.text === null && this.emoji === null);
   }
-
-  /**
-   * Options used for fetching voters of a poll answer.
-   *
-   * @typedef {Object} BaseFetchPollAnswerVotersOptions
-   * @property {number} [limit] The maximum number of voters to fetch
-   * @property {Snowflake} [after] The user id to fetch voters after
-   */
-
-  /**
-   * Fetches the users that voted for this answer.
-   *
-   * @param {BaseFetchPollAnswerVotersOptions} [options={}] The options for fetching voters
-   * @returns {Promise<Collection<Snowflake, User>>}
-   * @deprecated Use {@link PollAnswerVoterManager#fetch} instead
-   */
-  async fetchVoters({ after, limit } = {}) {
-    return this.voters.fetch({ after, limit });
-  }
 }
 
 exports.PollAnswer = PollAnswer;

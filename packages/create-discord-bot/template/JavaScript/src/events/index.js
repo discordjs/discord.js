@@ -3,10 +3,10 @@ import { z } from 'zod';
 /**
  * Defines the structure of an event.
  *
- * @template {keyof import('discord.js').ClientEvents} [T=keyof import('discord.js').ClientEvents]
+ * @template {keyof import('discord.js').ClientEvents} [EventName=keyof import('discord.js').ClientEvents]
  * @typedef {object} Event
- * @property {(...parameters: import('discord.js').ClientEvents[T]) => Promise<void> | void} execute The function to execute the command
- * @property {T} name The name of the event to listen to
+ * @property {(...parameters: import('discord.js').ClientEvents[EventName]) => Promise<void> | void} execute The function to execute the command
+ * @property {EventName} name The name of the event to listen to
  * @property {boolean} [once] Whether or not the event should only be listened to once
  */
 

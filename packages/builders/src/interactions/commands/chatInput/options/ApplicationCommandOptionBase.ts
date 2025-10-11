@@ -4,7 +4,7 @@ import type {
 	APIApplicationCommandOption,
 	ApplicationCommandOptionType,
 } from 'discord-api-types/v10';
-import type { z } from 'zod/v4';
+import type { z } from 'zod';
 import { validate } from '../../../../util/validation.js';
 import type { SharedNameAndDescriptionData } from '../../SharedNameAndDescription.js';
 import { SharedNameAndDescription } from '../../SharedNameAndDescription.js';

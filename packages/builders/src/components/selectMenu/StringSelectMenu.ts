@@ -9,6 +9,7 @@ import { StringSelectMenuOptionBuilder } from './StringSelectMenuOption.js';
 
 export interface StringSelectMenuData extends Partial<Omit<APIStringSelectComponent, 'options'>> {
 	options: StringSelectMenuOptionBuilder[];
+	required?: boolean;
 }
 
 /**

@@ -17,6 +17,7 @@ import {
 } from './button/CustomIdButton.js';
 import { LinkButtonBuilder } from './button/LinkButton.js';
 import { PremiumButtonBuilder } from './button/PremiumButton.js';
+import { LabelBuilder } from './label/Label.js';
 import { ChannelSelectMenuBuilder } from './selectMenu/ChannelSelectMenu.js';
 import { MentionableSelectMenuBuilder } from './selectMenu/MentionableSelectMenu.js';
 import { RoleSelectMenuBuilder } from './selectMenu/RoleSelectMenu.js';
@@ -54,7 +55,7 @@ export type MessageComponentBuilder =
 /**
  * The builders that may be used for modals.
  */
-export type ModalComponentBuilder = ActionRowBuilder | ModalActionRowComponentBuilder;
+export type ModalComponentBuilder = ActionRowBuilder | LabelBuilder | ModalActionRowComponentBuilder;
 
 /**
  * Any button builder
@@ -87,6 +88,11 @@ export type ModalActionRowComponentBuilder = TextInputBuilder;
  * Any action row component builder.
  */
 export type AnyActionRowComponentBuilder = MessageActionRowComponentBuilder | ModalActionRowComponentBuilder;
+
+/**
+ * Any modal component builder.
+ */
+export type AnyModalComponentBuilder = LabelBuilder | TextDisplayBuilder;
 
 /**
  * Components here are mapped to their respective builder.
@@ -152,6 +158,10 @@ export interface MappedComponentTypes {
 	 * The container component type is associated with a {@link ContainerBuilder}.
 	 */
 	[ComponentType.Container]: ContainerBuilder;
+	/**
+	 * The label component type is associated with a {@link LabelBuilder}.
+	 */
+	[ComponentType.Label]: LabelBuilder;
 }
 
 /**
@@ -213,6 +223,8 @@ export function createComponentBuilder(
 			return new SectionBuilder(data);
 		case ComponentType.Container:
 			return new ContainerBuilder(data);
+		case ComponentType.Label:
+			return new LabelBuilder(data);
 		default:
 			// @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);

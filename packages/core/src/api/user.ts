@@ -10,9 +10,9 @@ import {
 	type RESTGetAPICurrentUserResult,
 	type RESTGetAPIUserResult,
 	type RESTGetCurrentUserGuildMemberResult,
+	type RESTPatchAPICurrentGuildMemberJSONBody,
 	type RESTPatchAPICurrentUserJSONBody,
 	type RESTPatchAPICurrentUserResult,
-	type RESTPatchAPIGuildMemberJSONBody,
 	type RESTPatchAPIGuildMemberResult,
 	type RESTPostAPICurrentUserCreateDMChannelResult,
 	type RESTPutAPICurrentUserApplicationRoleConnectionJSONBody,
@@ -111,7 +111,7 @@ export class UsersAPI {
 	 */
 	public async editCurrentGuildMember(
 		guildId: Snowflake,
-		body: RESTPatchAPIGuildMemberJSONBody = {},
+		body: RESTPatchAPICurrentGuildMemberJSONBody = {},
 		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
 		return this.rest.patch(Routes.guildMember(guildId, '@me'), {
