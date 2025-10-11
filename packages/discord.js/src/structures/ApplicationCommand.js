@@ -136,11 +136,11 @@ class ApplicationCommand extends Base {
       /**
        * The options of this command
        *
-       * @type {ApplicationCommandOption[]}
+       * @type {?ApplicationCommandOption[]}
        */
       this.options = data.options.map(option => this.constructor.transformOption(option, true));
     } else {
-      this.options ??= [];
+      this.options ??= null;
     }
 
     if ('default_member_permissions' in data) {
@@ -436,9 +436,7 @@ class ApplicationCommand extends Base {
       ('version' in command && command.version !== this.version) ||
       (command.type && command.type !== this.type) ||
       ('nsfw' in command && command.nsfw !== this.nsfw) ||
-      // Future proof for options being nullable
-      // TODO: remove ?? 0 on each when nullable
-      (command.options?.length ?? 0) !== (this.options?.length ?? 0) ||
+      command.options?.length !== this.options?.length ||
       defaultMemberPermissions !== (this.defaultMemberPermissions?.bitfield ?? null) ||
       !isEqual(command.nameLocalizations ?? command.name_localizations ?? {}, this.nameLocalizations ?? {}) ||
       !isEqual(
@@ -452,6 +450,7 @@ class ApplicationCommand extends Base {
       return false;
     }
 
+    // Don't need to check both because we already checked the lengths above
     if (command.options) {
       return this.constructor.optionsEqual(this.options, command.options, enforceOptionOrder);
     }
