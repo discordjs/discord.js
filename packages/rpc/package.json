@@ -1,0 +1,87 @@
+{
+	"$schema": "https://json.schemastore.org/package.json",
+	"name": "@discordjs/rpc",
+	"version": "0.1.0",
+	"description": "A simple RPC client for Discord",
+	"scripts": {
+		"build": "tsc --noEmit && tsup",
+		"build:docs": "tsc -p tsconfig.docs.json",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
+		"fmt": "pnpm run format",
+		"docs": "pnpm run build:docs && api-extractor run --local",
+		"prepack": "pnpm run build && pnpm run lint",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/rpc/*'",
+		"release": "cliff-jumper"
+	},
+	"exports": {
+		".": {
+			"require": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"import": {
+				"types": "./dist/index.d.mts",
+				"default": "./dist/index.mjs"
+			}
+		}
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"directories": {
+		"lib": "src"
+	},
+	"files": [
+		"dist"
+	],
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <me@vladfrangu.dev>",
+		"Aura Román <kyradiscord@gmail.com>"
+	],
+	"license": "MIT",
+	"keywords": [
+		"discord",
+		"rpc",
+		"rich presence",
+		"remote procedural call"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/rpc"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
+	"dependencies": {
+		"@vladfrangu/async_event_emitter": "^2.4.6",
+		"discord-api-types": "^0.38.22"
+	},
+	"devDependencies": {
+		"@discordjs/api-extractor": "workspace:^",
+		"@favware/cliff-jumper": "^4.1.0",
+		"@types/node": "^22.17.2",
+		"cross-env": "^10.0.0",
+		"esbuild-plugin-version-injector": "^1.2.1",
+		"eslint": "^9.33.0",
+		"eslint-config-neon": "^0.2.7",
+		"eslint-formatter-compact": "^8.40.0",
+		"eslint-formatter-pretty": "^6.0.1",
+		"prettier": "^3.6.2",
+		"tsup": "^8.5.0",
+		"turbo": "^2.5.6",
+		"typescript": "~5.9.2"
+	},
+	"engines": {
+		"node": ">=22.12.0"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	}
+}
