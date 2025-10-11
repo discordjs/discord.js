@@ -17,8 +17,7 @@ class GuildMemberRoleManager extends DataManager {
 
     /**
      * The GuildMember this manager belongs to
-     *
-     * @type {GuildMember}
+     * @type {GuildMember | PartialGuildMember}
      */
     this.member = member;
 
@@ -107,6 +106,15 @@ class GuildMemberRoleManager extends DataManager {
   get botRole() {
     if (!this.member.user.bot) return null;
     return this.cache.find(role => role.tags?.botId === this.member.user.id) ?? null;
+  }
+
+  /**
+   * Whether this GuildMemberRoleManager is a partial
+   * @type {boolean}
+   * @readonly
+   */
+  get partial() {
+    return this.member.partial;
   }
 
   /**
