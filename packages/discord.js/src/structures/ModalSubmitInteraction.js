@@ -84,9 +84,7 @@ class ModalSubmitInteraction extends BaseInteraction {
      */
     this.components = new ModalComponentResolver(
       this.client,
-      data.data.components?.map(component =>
-        this.transformComponent({ client: this.client, guild: this.guild }, component, data.data.resolved),
-      ),
+      data.data.components?.map(component => this.transformComponent(component, data.data.resolved)),
       transformResolved({ client: this.client, guild: this.guild, channel: this.channel }, data.data.resolved),
     );
 
@@ -122,20 +120,17 @@ class ModalSubmitInteraction extends BaseInteraction {
   /**
    * Transforms component data to discord.js-compatible data
    *
-   * @param {*} [supportingData] Data required for the transformation
    * @param {*} rawComponent The data to transform
    * @param {APIInteractionDataResolved} resolved The resolved data for the interaction
    * @returns {ModalData[]}
    * @private
    */
-  transformComponent(supportingData, rawComponent, resolved) {
+  transformComponent(rawComponent, resolved) {
     if ('components' in rawComponent) {
       return {
         type: rawComponent.type,
         id: rawComponent.id,
-        components: rawComponent.components.map(component =>
-          this.transformComponent(supportingData, component, resolved),
-        ),
+        components: rawComponent.components.map(component => this.transformComponent(component, resolved)),
       };
     }
 
@@ -143,7 +138,7 @@ class ModalSubmitInteraction extends BaseInteraction {
       return {
         type: rawComponent.type,
         id: rawComponent.id,
-        component: this.transformComponent(supportingData, rawComponent.component, resolved),
+        component: this.transformComponent(rawComponent.component, resolved),
       };
     }
 
@@ -160,7 +155,6 @@ class ModalSubmitInteraction extends BaseInteraction {
     if (rawComponent.values) {
       data.values = rawComponent.values;
       if (resolved) {
-        const { client, guild } = supportingData;
         const { members, users, channels, roles } = resolved;
         const valueSet = new Set(rawComponent.values);
 
@@ -169,7 +163,7 @@ class ModalSubmitInteraction extends BaseInteraction {
 
           for (const [id, user] of Object.entries(users)) {
             if (valueSet.has(id)) {
-              data.users.set(id, client.users._add(user));
+              data.users.set(id, this.client.users._add(user));
             }
           }
         }
@@ -179,7 +173,7 @@ class ModalSubmitInteraction extends BaseInteraction {
 
           for (const [id, apiChannel] of Object.entries(channels)) {
             if (valueSet.has(id)) {
-              data.channels.set(id, client.channels._add(apiChannel, guild) ?? apiChannel);
+              data.channels.set(id, this.client.channels._add(apiChannel, this.guild) ?? apiChannel);
             }
           }
         }
@@ -190,7 +184,7 @@ class ModalSubmitInteraction extends BaseInteraction {
           for (const [id, member] of Object.entries(members)) {
             if (valueSet.has(id)) {
               const user = users?.[id];
-              data.members.set(id, guild?.members._add({ user, ...member }) ?? member);
+              data.members.set(id, this.guild?.members._add({ user, ...member }) ?? member);
             }
           }
         }
@@ -200,7 +194,7 @@ class ModalSubmitInteraction extends BaseInteraction {
 
           for (const [id, role] of Object.entries(roles)) {
             if (valueSet.has(id)) {
-              data.roles.set(id, guild?.roles._add(role) ?? role);
+              data.roles.set(id, this.guild?.roles._add(role) ?? role);
             }
           }
         }
