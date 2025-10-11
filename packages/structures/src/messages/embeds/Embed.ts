@@ -25,6 +25,15 @@ export class Embed<Omitted extends keyof APIEmbed | '' = ''> extends Structure<A
 	}
 
 	/**
+	 * The hexadecimal version of the embed color, with a leading hash
+	 */
+	public get hexColor() {
+		const color = this.color;
+		if (typeof color !== 'number') return color;
+		return `#${color.toString(16).padStart(6, '0')}`;
+	}
+
+	/**
 	 * The description of the embed
 	 */
 	public get description() {

@@ -33,6 +33,15 @@ export class ContainerComponent<Omitted extends keyof APIContainerComponent | ''
 	}
 
 	/**
+	 * The hexadecimal version of the accent color, with a leading hash
+	 */
+	public get hexAccentColor() {
+		const accentColor = this.accentColor;
+		if (typeof accentColor !== 'number') return accentColor;
+		return `#${accentColor.toString(16).padStart(6, '0')}`;
+	}
+
+	/**
 	 * Whether the container should be a spoiler (or blurred out)
 	 */
 	public get spoiler() {
