@@ -154,7 +154,7 @@ module.exports = {
 		const modal = new ModalBuilder().setCustomId('myModal').setTitle('My Modal');
 
 		const favoriteStarterLabel = new LabelBuilder()
-			.setLabel("What's some of your favorite Gen 1 Pokémon starter?")
+			.setLabel("What's your favorite Gen 1 Pokémon starter?")
 			// The Description is small text under the label above the interactive component
 			.setStringSelectMenuComponent(favoriteStarterSelect);
 
@@ -165,6 +165,9 @@ module.exports = {
 	},
 };
 ```
+
+Image of what a select menu in modal
+![example of string select menu in a modal](./images/modal-select-menu-example.png)
 
 ### Extracting data from modal submissions
 

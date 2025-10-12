@@ -2,7 +2,7 @@
 title: Modals
 ---
 
-With modals you can create pop-up forms that allow users to provide you with formatted inputs through submissions. We'll cover how to create, show, and receive modal forms using discord.js!
+With modals you can create pop-up forms that allow users to provide you with formatted inputs through submissions. We'll cover how to create, show, and receive modals
 
 <Callout>
 	This page is a follow-up to the [interactions (slash commands) page](../slash-commands/advanced-creation). Please
@@ -14,7 +14,7 @@ With modals you can create pop-up forms that allow users to provide you with for
 Unlike message components, modals aren't strictly components themselves. They're a callback structure used to respond to interactions.
 
 <Callout>
-	You can have a maximum of five `Label` or `Text Display` components per Modal. Similarly a `Label` must only contain
+	You can have a maximum of five `Label` or `Text Display` components per modal. Similarly a `Label` must only contain
 	one component.
 </Callout>
 
@@ -35,7 +35,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 ```
 
 <Callout>
-	The `customId` is a developer-defined string of up to 100 characters. Use this field to ensure you can uniquely define
+	The custom id is a developer-defined string of up to 100 characters. Use this field to ensure you can uniquely define
 	all incoming interactions from your modals.
 </Callout>
 
@@ -53,7 +53,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
 		// Create the modal
 		const modal = new ModalBuilder().setCustomId('myModal').setTitle('My Modal');
 
-		// Create the Text Input components
+		// [!code focus:31]
+		// Create the text input components
 		const favoriteColorInput = new TextInputBuilder()
 			.setCustomId('favoriteColorInput')
 			// Short means only a single line of text
@@ -63,23 +64,23 @@ client.on(Events.InteractionCreate, async (interaction) => {
 			.setCustomId('hobbiesInput')
 			// Paragraph means multiple lines of text.
 			.setStyle(TextInputStyle.Paragraph)
-			// Uninteractable text inside of the Text Input
+			// Uninteractable text inside of the text input
 			.setPlaceholder('card games, films, books, etc.');
 
-		// Creating Labels for the Text Input components
+		// Creating labels for the text input components
 		const favoriteColorLabel = new LabelBuilder()
 			// The label is the prompt the user sees for this component
 			.setLabel("What's your favorite color?")
-			// Add the Text Input to the Label
+			// Add the text input to the label
 			.setTextInputComponent(favoriteColorInput);
 
 		const hobbiesLabel = new LabelBuilder()
 			.setLabel("What's some of your favorite hobbies?")
-			// The description is a small text under the Label and above the interactive component
+			// The description is a small text under the label and above the interactive component
 			.setDescription('Activities you like to participate in')
 			.setTextInputComponent(hobbiesInput);
 
-		// Add Labels to the Modal
+		// Add labels to the modal
 		modal.addLabelComponents(favoriteColorLabel, hobbiesLabel);
 
 		// Show the modal to the user
@@ -135,6 +136,7 @@ If the modal was shown from a `ButtonInteraction` or `StringSelectMenuInteractio
 ```js
 client.on(Events.InteractionCreate, async (interaction) => {
 	if (!interaction.isModalSubmit()) return;
+	// [!code focus:3]
 	if (interaction.customId === 'myModal') {
 		await interaction.reply({ content: 'Your submission was received successfully!' });
 	}
@@ -156,6 +158,7 @@ client.on(Events.InteractionCreate, (interaction) => {
 	if (interaction.customId === 'myModal') {
 		await interaction.reply({ content: 'Your submission was received successfully!' });
 
+		// [!code focus:5]
 		// Get the data entered by the user
 		const favoriteColor = interaction.fields.getTextInputValue('favoriteColorInput');
 		const hobbies = interaction.fields.getTextInputValue('hobbiesInput');
@@ -167,14 +170,35 @@ client.on(Events.InteractionCreate, (interaction) => {
 
 ## Modal Components
 
+Modals are built using components.
+
+<Callout>
+	Current supported component for modals are: - [Label](#label) - A layout component to add interactive components to
+	modals - [Text Display](#text-display) - A content component used to contain text
+</Callout>
+
+### Label
+
+A Layout component, labels are used to display a label and description ore interactive components in modals.
+
+<Callout type="warn">
+	`label` can be a max length of 45 characters `description` can be a max length of 100 characters
+</Callout>
+<Callout>
+	Labels need to have one interactive components. Current supported component for labels are: - [Text
+	Input](#text-input) - An interactive component allowing free form text input - [Select
+	Menus](../interactive-components/select-menus#using-select-menus-in-modals) - Interactive components allowing for
+	limiting user input to users, roles, channels, and preselected options
+</Callout>
+
 ### Text Input
 
 ### Input styles
 
 Currently there are two different input styles available:
 
-- `Short`, a single-line text entry;
-- `Paragraph`, a multi-line text entry;
+- `Short`, a single-line text entry
+- `Paragraph`, a multi-line text entry
 
 ### Input properties
 
@@ -188,89 +212,32 @@ const input = new TextInputBuilder()
 	.setMaxLength(1_000)
 	// Set the minimum number of characters required for submission
 	.setMinLength(10)
-	// Set a default value to pre-fill the Text Input
+	// Set a default value to pre-fill the text input
 	.setValue('Default')
-	// Require a value in this Text Input field (defaults to true)
+	// Require a value in this text input field (defaults to true)
 	.setRequired(true);
 ```
 
 ### Text Display
 
-Modals support adding a texts display. Unlike interactive components a Text Display is added to the modal builder, without being put in a Label first.
+Modals support adding a texts display. Unlike interactive components a text display is added to the modal builder, without being put in a label first.
 
 <Callout>
-	Adding Text Display components decrees the number of Labels that can be added to the Modal. The Modal only has maximum
+	Adding text display components decrees the number of labels that can be added to the modal. The modal only has maximum
 	of five `Label` or `Text Display` components.
 </Callout>
 
 ```js
 const modal = new ModalBuilder().setCustomId('myModal').setTitle('My Modal');
 
-// Set the content of the Text Display
+// Set the content of the text display
 const text = new TextDisplayBuilder().setContent(
 	"## Important Information\nAccording to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. The bee, of course, flies anyway because bees don't care what humans think is impossible.",
 );
 
-// Add the Text Display to the Modal
+// Add the text display to the Modal
 modal.addTextDisplayComponents(text);
 ```
 
-### Select Menus
-
-Select Menus behave similarly in a Modals when compared to when in [Message components](../interactive-components/select-menus.mdx). There are two difference that Select Menus have when used in Modals First the when a sure makes a selection no Interaction event occurs. Second, `setRequired()` is used to indicate if a value is required in the Select Menu for submission
-
-Follow example use a String Menu:
-
-```js
-const modal = new ModalBuilder().setCustomId('myModal').setTitle('My Modal');
-
-const favoriteStarterSelect = new StringSelectMenuBuilder()
-	.setCustomId('starter')
-	.setPlaceholder('Make a selection!')
-	.addOptions(
-		// String select menu options
-		new StringSelectMenuOptionBuilder()
-			// Label displayed to user
-			.setLabel('Bulbasaur')
-			// Description of option
-			.setDescription('The dual-type Grass/Poison Seed Pokémon.')
-			// Value returned to in modal submission
-			.setValue('bulbasaur'),
-		new StringSelectMenuOptionBuilder()
-			.setLabel('Charmander')
-			.setDescription('The Fire-type Lizard Pokémon.')
-			.setValue('charmander'),
-		new StringSelectMenuOptionBuilder()
-			.setLabel('Squirtle')
-			.setDescription('The Water-type Tiny Turtle Pokémon.')
-			.setValue('squirtle'),
-	);
-
-const favoriteStarterLabel = new LabelBuilder()
-	.setLabel("What's some of your favorite Gen 1 Pokémon starter?")
-	// The Description is small text under the label above the interactive component
-	.setStringSelectMenuComponent(favoriteStarterSelect);
-
-modal.setLabelComponents(favoriteStarterLabel);
-```
-
-### Extracting data from modal submissions
-
-Unlike when used in a message or interaction reply select menus in a modal to not cause a `Client#InteractionCreate` event. Instead the selected menu values with be in the fields property of the modal submission interaction
-
-<Callout>The get function will always return an array even if no values are selected</Callout>
-
-```js
-client.on(Events.InteractionCreate, (interaction) => {
-
-	// [!code focus:3]
-	if (!interaction.isModalSubmit()) return;
-	if (interaction.customId === 'myModal') {
-		const favoriteStarter = interaction.fields.getStringSelectValues('starter');
-
-		await interaction.reply({ content: 'Your submission was received successfully!' });
-		console.log(favoriteStarter);
-
-	}
-});
-```
+Below image is an example of a modal with only one text display in it:
+![Modal with on text display example](./images/modal-text-display-example.png)
