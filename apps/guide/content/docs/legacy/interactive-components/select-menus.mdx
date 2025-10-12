@@ -2,7 +2,7 @@
 title: Select Menus
 ---
 
-Select menus are one of the `MessageComponent` classes, which can be sent via messages or interaction responses.
+Select menus are Interactive components. which can be sent via messages, interaction responses, or in modals
 
 <Callout>
 	This page is a follow-up to the [slash commands](../slash-commands/advanced-creation) section and [action
@@ -22,13 +22,17 @@ const { StringSelectMenuBuilder, StringSelectMenuOptionBuilder, SlashCommandBuil
 module.exports = {
 	// data: new SlashCommandBuilder()...
 	async execute(interaction) {
-		const select = new StringSelectMenuBuilder()
+		const favoriteStarterSelect = new StringSelectMenuBuilder()
 			.setCustomId('starter')
 			.setPlaceholder('Make a selection!')
 			.addOptions(
+				// String select menu options
 				new StringSelectMenuOptionBuilder()
+					// Label displayed to user
 					.setLabel('Bulbasaur')
+					// Description of option
 					.setDescription('The dual-type Grass/Poison Seed Pokémon.')
+					// Value returned to in modal submission
 					.setValue('bulbasaur'),
 				new StringSelectMenuOptionBuilder()
 					.setLabel('Charmander')
@@ -59,17 +63,21 @@ const {
 	StringSelectMenuOptionBuilder,
 	SlashCommandBuilder,
 } = require('discord.js');
-// [!code focus:30]
+// [!code focus:33]
 module.exports = {
 	// data: new SlashCommandBuilder()...
 	async execute(interaction) {
-		const select = new StringSelectMenuBuilder()
+		const favoriteStarterSelect = new StringSelectMenuBuilder()
 			.setCustomId('starter')
 			.setPlaceholder('Make a selection!')
 			.addOptions(
+				// String select menu options
 				new StringSelectMenuOptionBuilder()
+					// Label displayed to user
 					.setLabel('Bulbasaur')
+					// Description of option
 					.setDescription('The dual-type Grass/Poison Seed Pokémon.')
+					// Value returned to in modal submission
 					.setValue('bulbasaur'),
 				new StringSelectMenuOptionBuilder()
 					.setLabel('Charmander')
@@ -81,9 +89,11 @@ module.exports = {
 					.setValue('squirtle'),
 			);
 
-		// [!code ++:6]
-		const row = new ActionRowBuilder().addComponents(select);
+		// [!code ++:8]
+		// Adding String select menu to action row
+		const row = new ActionRowBuilder().addComponents(favoriteStarterSelect);
 
+		// reply with action row
 		await interaction.reply({
 			content: 'Choose your starter!',
 			components: [row],
@@ -99,7 +109,85 @@ module.exports = {
 	components](../popular-topics/display-components) system.
 </Callout>
 
-### String select menu options
+## Using select menus in modals
+
+In modals Text inputs allow free from responses. Select menus allow you to limit user inputs to a preselected list of values
+
+```js
+const {
+	LabelBuilder,
+	ModalBuilder,
+	StringSelectMenuBuilder,
+	StringSelectMenuOptionBuilder,
+	SlashCommandBuilder,
+} = require('discord.js');
+module.exports = {
+	// data: new SlashCommandBuilder()...
+	async execute(interaction) {
+		// [!code focus:5]
+		const favoriteStarterSelect = new StringSelectMenuBuilder()
+			.setCustomId('starter')
+			.setPlaceholder('Make a selection!')
+			// [!code ++:2]
+			// Modal only property on select menus to prevent submission, defaults to true
+			.setRequired(true)
+			.addOptions(
+				// String select menu options
+				new StringSelectMenuOptionBuilder()
+					// Label displayed to user
+					.setLabel('Bulbasaur')
+					// Description of option
+					.setDescription('The dual-type Grass/Poison Seed Pokémon.')
+					// Value returned to in modal submission
+					.setValue('bulbasaur'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Charmander')
+					.setDescription('The Fire-type Lizard Pokémon.')
+					.setValue('charmander'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Squirtle')
+					.setDescription('The Water-type Tiny Turtle Pokémon.')
+					.setValue('squirtle'),
+			);
+		// [!code focus:11]
+		// [!code ++:11]
+		const modal = new ModalBuilder().setCustomId('myModal').setTitle('My Modal');
+
+		const favoriteStarterLabel = new LabelBuilder()
+			.setLabel("What's some of your favorite Gen 1 Pokémon starter?")
+			// The Description is small text under the label above the interactive component
+			.setStringSelectMenuComponent(favoriteStarterSelect);
+
+		modal.setLabelComponents(favoriteStarterLabel);
+
+		// Show modal to user
+		interaction.showModal(modal);
+	},
+};
+```
+
+### Extracting data from modal submissions
+
+Unlike when used in a message or interaction reply select menus in a modal to not cause a `Client#InteractionCreate` event. Instead the selected menu values with be in the fields property of the modal submission interaction
+
+<Callout>The get function will always return an array even if no values are selected</Callout>
+
+```js
+client.on(Events.InteractionCreate, (interaction) => {
+
+	// [!code focus:3]
+	if (!interaction.isModalSubmit()) return;
+	if (interaction.customId === 'myModal') {
+		const favoriteStarter = interaction.fields.getStringSelectValues('starter');
+
+		await interaction.reply({ content: 'Your submission was received successfully!' });
+		console.log(favoriteStarter);
+
+	}
+});
+```
+
+## String select menu options
 
 String select menu options are custom-defined by the user, as shown in the example above. At a minimum, each option must have it's `label` and `value` defined. The label is shown to the user, while the value is included in the interaction sent to the bot.
 
