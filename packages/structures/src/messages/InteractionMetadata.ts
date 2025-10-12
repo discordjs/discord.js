@@ -1,8 +1,4 @@
-import type {
-	APIAuthorizingIntegrationOwnersMap,
-	APIMessageInteractionMetadata,
-	InteractionType,
-} from 'discord-api-types/v10';
+import type { APIMessageInteractionMetadata, InteractionType } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
 import type { Partialize } from '../utils/types.js';
@@ -27,12 +23,6 @@ export abstract class InteractionMetadata<
 	 */
 	public constructor(data: Partialize<InteractionMetadataType<Type>, Omitted>) {
 		super(data as InteractionMetadataType<Type>);
-	}
-
-	public get authorizingIntegrationOwner(): Readonly<APIAuthorizingIntegrationOwnersMap> | null {
-		return typeof this[kData].authorizing_integration_owners === 'object'
-			? this[kData].authorizing_integration_owners
-			: null;
 	}
 
 	/**
