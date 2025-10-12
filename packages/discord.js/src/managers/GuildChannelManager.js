@@ -365,18 +365,18 @@ class GuildChannelManager extends CachedManager {
       snakeCaseBody.permission_overwrites = permissionOverwrites;
     }
 
-    if (snakeCaseBody.available_tags) {
-      snakeCaseBody.available_tags = snakeCaseBody.available_tags.map(availableTag =>
+    if (options.availableTags) {
+      snakeCaseBody.available_tags = options.availableTags.map(availableTag =>
         'emoji' in availableTag ? transformGuildForumTag(availableTag) : availableTag,
       );
     }
 
-    if (snakeCaseBody.default_reaction_emoji?.id || snakeCaseBody.default_reaction_emoji?.name) {
-      snakeCaseBody.default_reaction_emoji = transformGuildDefaultReaction(snakeCaseBody.default_reaction_emoji);
+    if (options.defaultReactionEmoji?.id || options.DefaultReactionEmoji?.name) {
+      snakeCaseBody.default_reaction_emoji = transformGuildDefaultReaction(options.defaultReactionEmoji);
     }
 
-    if (snakeCaseBody.flags) {
-      snakeCaseBody.flags = ChannelFlagsBitField.resolve(snakeCaseBody.flags);
+    if (options.flags) {
+      snakeCaseBody.flags = ChannelFlagsBitField.resolve(options.flags);
     }
 
     const newData = await this.client.rest.patch(Routes.channel(resolvedChannelId), {
