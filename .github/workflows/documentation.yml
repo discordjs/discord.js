@@ -89,6 +89,11 @@ jobs:
         run: |
           declare -a PACKAGES=("brokers" "builders" "collection" "core" "discord.js" "formatters" "next" "proxy" "rest" "structures" "util" "voice" "ws")
           for PACKAGE in "${PACKAGES[@]}"; do
+            if [ ! -d "packages/${PACKAGE}" ]; then
+              echo "::notice::${PACKAGE} does not exist on this ref. Skipping..."
+              continue
+            fi
+
             cd "packages/${PACKAGE}"
             sed -i 's!https://github.com/discordjs/discord.js/tree/main!https://github.com/discordjs/discord.js/tree/${{ inputs.ref }}!' api-extractor.json
             ../../main/packages/api-extractor/bin/api-extractor run --local --minify
@@ -222,6 +227,11 @@ jobs:
         run: |
           declare -a PACKAGES=("brokers" "builders" "collection" "core" "discord.js" "formatters" "next" "proxy" "rest" "structures" "util" "voice" "ws")
           for PACKAGE in "${PACKAGES[@]}"; do
+            if [ ! -d "packages/${PACKAGE}" ]; then
+              echo "::notice::${PACKAGE} does not exist on this ref. Skipping..."
+              continue
+            fi
+
             if [[ "${PACKAGE}" == "discord.js" ]]; then
               mkdir -p "out/${PACKAGE}"
               mv "packages/${PACKAGE}/docs/docs.json" "out/${PACKAGE}/${GITHUB_REF_NAME}.json"

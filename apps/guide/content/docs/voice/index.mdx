@@ -2,13 +2,17 @@
 title: Installation
 ---
 
-"Voice" refers to Discord bots being able to send audio in voice channels. This is supported in discord.js via @discordjs/voice](https://github.com/discordjs/discord.js/tree/main/packages/voice), a standalone library made by the developers of discord.js. While you can use it with any Node.js Discord API library, this guide will focus on using it with discord.js.
+"Voice" refers to Discord bots being able to send audio in voice channels. This is supported in discord.js via [@discordjs/voice](https://github.com/discordjs/discord.js/tree/main/packages/voice), a standalone library made by the developers of discord.js. While you can use it with any Node.js Discord API library, this guide will focus on using it with discord.js.
 
 ## Installation
 
 ### Barebones
 
-To add voice functionality to your discord.js bot, you will need the `@discordjs/voice` package, as well as one of the encryption packages listed below. For example:
+To add voice functionality to your discord.js bot, you will need the `@discordjs/voice` package. If your system does not support aes-256-gcm you also need one of the encryption packages listed below. For example:
+
+<Callout>
+	You can verify aes-256-gcm support by running `require('node:crypto').getCiphers().includes('aes-256-gcm')`.
+</Callout>
 
 ```sh tab="npm"
 npm install @discordjs/voice
@@ -58,6 +62,15 @@ After this, you'll be able to play Ogg and WebM Opus files without any other dep
 - [`@noble/ciphers`](https://www.npmjs.com/package/@noble/ciphers)
 - [`libsodium-wrappers`](https://www.npmjs.com/package/libsodium-wrappers)
 
+#### DAVE Protocol Support
+
+- [`@snazzah/davey`](https://www.npmjs.com/package/@snazzah/davey) - to enable end-to-end encryption with the DAVE protocol.
+
+<Callout>
+	Some Discord clients already require the DAVE protocol for end-to-end encryption in voice chat. Ensure you have
+	`@snazzah/davey` installed to avoid compatibility issues.
+</Callout>
+
 <Callout>
 	If you are facing issues when installing these dependencies, make sure you ticked the box to install optional build
 	tools when installing Node.js or try manually installing build tools and python: ```sh winget install "Visual Studio
@@ -91,6 +104,9 @@ Encryption Libraries
 FFmpeg
 - version: 4.2.4-1ubuntu0.1
 - libopus: yes
+
+DAVE Protocol
+- @snazzah/davey: 0.1.6
 --------------------------------------------------
 */
 ```
@@ -104,3 +120,5 @@ FFmpeg
 - **FFmpeg**
   - If you want to play audio from many different file types, you will need to have FFmpeg installed.
   - If `libopus` is enabled, you will be able to benefit from increased performance if real-time volume alteration is disabled.
+- **DAVE Protocol**
+  - Required for enabling end-to-end encryption in voice channels.
