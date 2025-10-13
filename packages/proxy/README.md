@@ -5,6 +5,7 @@
 	</p>
 	<br />
 	<p>
+		<a href="https://discord.gg/djs"><img src="https://img.shields.io/badge/join_us-on_discord-5865F2?logo=discord&logoColor=white" alt="Discord server" /></a>
 		<a href="https://www.npmjs.com/package/@discordjs/proxy"><img src="https://img.shields.io/npm/v/@discordjs/proxy.svg?maxAge=3600" alt="npm version" /></a>
 		<a href="https://www.npmjs.com/package/@discordjs/proxy"><img src="https://img.shields.io/npm/dt/@discordjs/proxy.svg?maxAge=3600" alt="npm downloads" /></a>
 		<a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/discordjs/discord.js/actions/workflows/tests.yml/badge.svg" alt="Build status" /></a>
