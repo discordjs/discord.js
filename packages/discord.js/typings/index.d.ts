@@ -2580,7 +2580,6 @@ export interface SelectMenuModalData<Cached extends CacheType = CacheType>
   values: readonly string[];
 }
 
-// @ts-expect-error https://github.com/discordjs/discord-api-types/pull/1372
 export interface FileUploadModalData extends BaseModalData<ComponentType.FileUpload> {
   customId: string;
   files: readonly Attachment[];
@@ -6851,7 +6850,6 @@ export interface FileUploadComponentData extends BaseComponentData {
   maxValues?: number;
   minValues?: number;
   required?: number;
-  // @ts-expect-error https://github.com/discordjs/discord-api-types/pull/1372
   type: ComponentType.FileUpload;
 }
 
