@@ -1,4 +1,5 @@
 {
+	"title": "Popular Topics",
 	"defaultOpen": true,
 	"pages": ["!faq", "...", "!display-components"]
 }

@@ -4038,7 +4038,6 @@ export enum DiscordjsErrorCodes {
   GuildVoiceChannelResolve = 'GuildVoiceChannelResolve',
   GuildChannelOrphan = 'GuildChannelOrphan',
   GuildChannelUnowned = 'GuildChannelUnowned',
-  GuildOwned = 'GuildOwned',
   GuildMembersTimeout = 'GuildMembersTimeout',
   GuildSoundboardSoundsTimeout = 'GuildSoundboardSoundsTimeout',
   GuildUncachedMe = 'GuildUncachedMe',
