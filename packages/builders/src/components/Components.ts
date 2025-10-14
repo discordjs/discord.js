@@ -201,8 +201,6 @@ export function createComponentBuilder(
 		return data;
 	}
 
-	// should be removed in https://github.com/discordjs/discord.js/pull/11108
-	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 	switch (data.type) {
 		case ComponentType.ActionRow:
 			return new ActionRowBuilder(data);
@@ -239,8 +237,7 @@ export function createComponentBuilder(
 		case ComponentType.FileUpload:
 			return new FileUploadBuilder(data);
 		default:
-			// should be uncommented in https://github.com/discordjs/discord.js/pull/11108
-			/* // @ts-expect-error This case can still occur if we get a newer unsupported component type */
+			// @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);
 	}
 }
