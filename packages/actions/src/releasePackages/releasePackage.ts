@@ -45,7 +45,7 @@ export async function releasePackage(release: ReleaseEntry, dry: boolean, devTag
 	// Sanity check against the registry first
 	if (await checkRegistry(release)) {
 		info(`${release.name}@${release.version} already published, skipping.`);
-		return;
+		return false;
 	}
 
 	if (dry) {
@@ -57,7 +57,7 @@ export async function releasePackage(release: ReleaseEntry, dry: boolean, devTag
 	// && !devTag just to be sure
 	if (doGitRelease && !devTag) await gitTagAndRelease(release, dry);
 
-	if (dry) return;
+	if (dry) return true;
 
 	const before = performance.now();
 
@@ -92,4 +92,6 @@ export async function releasePackage(release: ReleaseEntry, dry: boolean, devTag
 		release.name = 'create-discord-app';
 		await releasePackage(release, dry, devTag, false);
 	}
+
+	return true;
 }
