@@ -8,8 +8,8 @@ const ModalSubmitFields = require('./ModalSubmitFields');
 const InteractionResponses = require('./interfaces/InteractionResponses');
 const { transformResolved } = require('../util/Util');
 
-const getMessage = lazy(() => require('./Message.js').Message);
-const getAttachment = lazy(() => require('./Attachment.js').Attachment);
+const getMessage = lazy(() => require('./Message').Message);
+const getAttachment = lazy(() => require('./Attachment'));
 
 /**
  * @typedef {Object} BaseModalData
