@@ -23,7 +23,8 @@ const { ComponentType } = require('discord-api-types/v10');
 
 /**
  * @typedef {StringSelectMenuComponentData|TextInputComponentData|UserSelectMenuComponentData|
- * RoleSelectMenuComponentData|MentionableSelectMenuComponentData|ChannelSelectMenuComponentData} ComponentInLabelData
+ * RoleSelectMenuComponentData|MentionableSelectMenuComponentData|ChannelSelectMenuComponentData|
+ * FileUploadComponentData} ComponentInLabelData
  */
 
 /**
@@ -41,6 +42,14 @@ const { ComponentType } = require('discord-api-types/v10');
  * @property {APIMessageComponentEmoji} [emoji] The emoji on this button
  * @property {string} [customId] The custom id of the button
  * @property {string} [url] The URL of the button
+ */
+
+/**
+ * @typedef {BaseComponentData} FileUploadComponentData
+ * @property {string} customId The custom id of the file upload
+ * @property {number} [minValues] The minimum number of files that can be uploaded (0-10)
+ * @property {number} [maxValues] The maximum number of files that can be uploaded (1-10)
+ * @property {boolean} [required] Whether this component is required in modals
  */
 
 /**
