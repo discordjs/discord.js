@@ -9,6 +9,7 @@ import type { AnyModalComponentBuilder } from '../../components/Components.js';
 import { createComponentBuilder } from '../../components/Components.js';
 import { LabelBuilder } from '../../components/label/Label.js';
 import { TextDisplayBuilder } from '../../components/v2/TextDisplay.js';
+import { Refineable } from '../../mixins/Refineable.js';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { resolveBuilder } from '../../util/resolveBuilder.js';
 import { validate } from '../../util/validation.js';
@@ -21,7 +22,7 @@ export interface ModalBuilderData extends Partial<Omit<APIModalInteractionRespon
 /**
  * A builder that creates API-compatible JSON data for modals.
  */
-export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCallbackData> {
+export class ModalBuilder extends Refineable implements JSONEncodable<APIModalInteractionResponseCallbackData> {
 	/**
 	 * The API data associated with this modal.
 	 */
@@ -40,6 +41,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	 * @param data - The API data to create this modal with
 	 */
 	public constructor(data: Partial<APIModalInteractionResponseCallbackData> = {}) {
+		super();
 		const { components = [], ...rest } = data;
 
 		this.data = {

@@ -5,6 +5,7 @@ import type {
 	Permissions,
 	RESTPostAPIApplicationCommandsJSONBody,
 } from 'discord-api-types/v10';
+import { Refineable } from '../../mixins/Refineable.js';
 import type { RestOrArray } from '../../util/normalizeArray.js';
 import { normalizeArray } from '../../util/normalizeArray.js';
 
@@ -20,6 +21,7 @@ export interface CommandData
  * The base class for all command builders.
  */
 export abstract class CommandBuilder<Command extends RESTPostAPIApplicationCommandsJSONBody>
+	extends Refineable
 	implements JSONEncodable<Command>
 {
 	/**
