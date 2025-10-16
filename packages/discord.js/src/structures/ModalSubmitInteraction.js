@@ -9,6 +9,7 @@ const { ModalComponentResolver } = require('./ModalComponentResolver.js');
 const { InteractionResponses } = require('./interfaces/InteractionResponses.js');
 
 const getMessage = lazy(() => require('./Message.js').Message);
+const getAttachment = lazy(() => require('./Attachment.js').Attachment);
 
 /**
  * @typedef {Object} BaseModalData
@@ -27,6 +28,13 @@ const getMessage = lazy(() => require('./Message.js').Message);
  */
 
 /**
+ * @typedef {BaseModalData} FileUploadModalData
+ * @property {string} customId The custom id of the file upload
+ * @property {string[]} values The values of the file upload
+ * @property {Collection<string, Attachment>} [attachments] The resolved attachments
+ */
+
+/**
  * @typedef {BaseModalData} TextInputModalData
  * @property {string} customId The custom id of the component
  * @property {string} value The value of the component
@@ -37,7 +45,7 @@ const getMessage = lazy(() => require('./Message.js').Message);
  */
 
 /**
- * @typedef {SelectMenuModalData|TextInputModalData} ModalData
+ * @typedef {SelectMenuModalData|TextInputModalData|FileUploadModalData} ModalData
  */
 
 /**
@@ -155,7 +163,7 @@ class ModalSubmitInteraction extends BaseInteraction {
     if (rawComponent.values) {
       data.values = rawComponent.values;
       if (resolved) {
-        const { members, users, channels, roles } = resolved;
+        const { members, users, channels, roles, attachments } = resolved;
         const valueSet = new Set(rawComponent.values);
 
         if (users) {
@@ -195,6 +203,15 @@ class ModalSubmitInteraction extends BaseInteraction {
           for (const [id, role] of Object.entries(roles)) {
             if (valueSet.has(id)) {
               data.roles.set(id, this.guild?.roles._add(role) ?? role);
+            }
+          }
+        }
+
+        if (attachments) {
+          data.attachments = new Collection();
+          for (const [id, attachment] of Object.entries(attachments)) {
+            if (valueSet.has(id)) {
+              data.attachments.set(id, new (getAttachment())(attachment));
             }
           }
         }
