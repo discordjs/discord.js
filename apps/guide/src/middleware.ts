@@ -8,9 +8,16 @@ export function middleware(request: NextRequest) {
 		return NextResponse.redirect(new URL(newUrl.pathname, request.url));
 	}
 
-	return NextResponse.redirect(new URL('/legacy', request.url));
+	// Redirect old urls to /legacy
+	if (!request.nextUrl.pathname.startsWith('/legacy') && !request.nextUrl.pathname.startsWith('/voice')) {
+		const newUrl = request.nextUrl.clone();
+		newUrl.pathname = `/legacy${newUrl.pathname}`;
+		return NextResponse.redirect(new URL(newUrl.pathname, request.url));
+	}
+
+	return NextResponse.next();
 }
 
 export const config = {
-	matcher: ['/', '/guide/:path*'],
+	matcher: ['/((?!_next|api|og|.*\\..*|_static).*)'],
 };
