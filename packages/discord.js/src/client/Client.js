@@ -353,7 +353,7 @@ class Client extends BaseClient {
       if (this.user) {
         this.user._patch(data.user);
       } else {
-        ClientUser ??= require('../../../structures/ClientUser.js').ClientUser;
+        ClientUser ??= require('../structures/ClientUser.js').ClientUser;
         this.user = new ClientUser(this, data.user);
         this.users.cache.set(this.user.id, this.user);
       }
