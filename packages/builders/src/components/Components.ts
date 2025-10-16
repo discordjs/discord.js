@@ -17,6 +17,7 @@ import {
 } from './button/CustomIdButton.js';
 import { LinkButtonBuilder } from './button/LinkButton.js';
 import { PremiumButtonBuilder } from './button/PremiumButton.js';
+import { FileUploadBuilder } from './fileUpload/FileUpload.js';
 import { LabelBuilder } from './label/Label.js';
 import { ChannelSelectMenuBuilder } from './selectMenu/ChannelSelectMenu.js';
 import { MentionableSelectMenuBuilder } from './selectMenu/MentionableSelectMenu.js';
@@ -55,7 +56,11 @@ export type MessageComponentBuilder =
 /**
  * The builders that may be used for modals.
  */
-export type ModalComponentBuilder = ActionRowBuilder | LabelBuilder | ModalActionRowComponentBuilder;
+export type ModalComponentBuilder =
+	| ActionRowBuilder
+	| FileUploadBuilder
+	| LabelBuilder
+	| ModalActionRowComponentBuilder;
 
 /**
  * Any button builder
@@ -92,7 +97,7 @@ export type AnyActionRowComponentBuilder = MessageActionRowComponentBuilder | Mo
 /**
  * Any modal component builder.
  */
-export type AnyModalComponentBuilder = LabelBuilder | TextDisplayBuilder;
+export type AnyModalComponentBuilder = FileUploadBuilder | LabelBuilder | TextDisplayBuilder;
 
 /**
  * Components here are mapped to their respective builder.
@@ -162,6 +167,10 @@ export interface MappedComponentTypes {
 	 * The label component type is associated with a {@link LabelBuilder}.
 	 */
 	[ComponentType.Label]: LabelBuilder;
+	/**
+	 * The file upload component type is associated with a {@link FileUploadBuilder}.
+	 */
+	[ComponentType.FileUpload]: FileUploadBuilder;
 }
 
 /**
@@ -192,8 +201,6 @@ export function createComponentBuilder(
 		return data;
 	}
 
-	// should be removed in https://github.com/discordjs/discord.js/pull/11108
-	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 	switch (data.type) {
 		case ComponentType.ActionRow:
 			return new ActionRowBuilder(data);
@@ -227,9 +234,10 @@ export function createComponentBuilder(
 			return new ContainerBuilder(data);
 		case ComponentType.Label:
 			return new LabelBuilder(data);
+		case ComponentType.FileUpload:
+			return new FileUploadBuilder(data);
 		default:
-			// should be uncommented in https://github.com/discordjs/discord.js/pull/11108
-			/* // @ts-expect-error This case can still occur if we get a newer unsupported component type */
+			// @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);
 	}
 }
