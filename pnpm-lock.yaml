@@ -716,9 +716,15 @@ importers:
       '@discordjs/api-extractor':
         specifier: workspace:^
         version: link:../api-extractor
+      '@discordjs/core':
+        specifier: workspace:^
+        version: link:../core
       '@discordjs/scripts':
         specifier: workspace:^
         version: link:../scripts
+      '@discordjs/ws':
+        specifier: workspace:^
+        version: link:../ws
       '@favware/cliff-jumper':
         specifier: ^4.1.0
         version: 4.1.0
@@ -5017,6 +5023,7 @@ packages:
   '@smithy/middleware-endpoint@4.3.0':
     resolution: {integrity: sha512-jFVjuQeV8TkxaRlcCNg0GFVgg98tscsmIrIwRFeC74TIUyLE3jmY9xgc1WXrPQYRjQNK3aRoaIk6fhFRGOIoGw==}
     engines: {node: '>=18.0.0'}
+    deprecated: Please upgrade to @smithy/middleware-endpoint@4.1.15 or higher to fix a bug preventing the resolution of ENV and config file custom endpoints https://github.com/smithy-lang/smithy-typescript/issues/1645
 
   '@smithy/middleware-retry@4.4.0':
     resolution: {integrity: sha512-yaVBR0vQnOnzex45zZ8ZrPzUnX73eUC8kVFaAAbn04+6V7lPtxn56vZEBBAhgS/eqD6Zm86o6sJs6FuQVoX5qg==}
