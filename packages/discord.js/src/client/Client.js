@@ -11,6 +11,7 @@ const { ChannelManager } = require('../managers/ChannelManager.js');
 const { GuildManager } = require('../managers/GuildManager.js');
 const { UserManager } = require('../managers/UserManager.js');
 const { ShardClientUtil } = require('../sharding/ShardClientUtil.js');
+const { ClientApplication } = require('../structures/ClientApplication.js');
 const { ClientPresence } = require('../structures/ClientPresence.js');
 const { GuildPreview } = require('../structures/GuildPreview.js');
 const { GuildTemplate } = require('../structures/GuildTemplate.js');
@@ -32,7 +33,6 @@ const { BaseClient } = require('./BaseClient.js');
 const { ActionsManager } = require('./actions/ActionsManager.js');
 const { ClientVoiceManager } = require('./voice/ClientVoiceManager.js');
 const { PacketHandlers } = require('./websocket/handlers/index.js');
-const { ClientApplication } = require('../structures/ClientApplication.js');
 
 const WaitingForGuildEvents = [GatewayDispatchEvents.GuildCreate, GatewayDispatchEvents.GuildDelete];
 const BeforeReadyWhitelist = [
@@ -349,7 +349,7 @@ class Client extends BaseClient {
     );
     this.ws.on(WebSocketShardEvents.Dispatch, this._handlePacket.bind(this));
 
-    this.ws.on(WebSocketShardEvents.Ready, async data => {
+    this.ws.on(WebSocketShardEvents.Ready, async (data, shardId) => {
       if (this.user) {
         this.user._patch(data.user);
       } else {
