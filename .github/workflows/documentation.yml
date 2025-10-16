@@ -87,7 +87,7 @@ jobs:
       - name: Build docs with main api-extractor
         if: ${{ inputs.ref && inputs.ref != 'main' }}
         run: |
-          declare -a PACKAGES=("brokers" "builders" "collection" "core" "discord.js" "formatters" "next" "proxy" "rest" "structures" "util" "voice" "ws")
+          declare -a PACKAGES=("brokers" "builders" "collection" "core" "discord.js" "formatters" "next" "proxy" "rest" "rpc" "structures" "util" "voice" "ws")
           for PACKAGE in "${PACKAGES[@]}"; do
             if [ ! -d "packages/${PACKAGE}" ]; then
               echo "::notice::${PACKAGE} does not exist on this ref. Skipping..."
@@ -225,7 +225,7 @@ jobs:
       - name: Move docs to correct directory
         if: ${{ env.REF_TYPE == 'branch' }}
         run: |
-          declare -a PACKAGES=("brokers" "builders" "collection" "core" "discord.js" "formatters" "next" "proxy" "rest" "structures" "util" "voice" "ws")
+          declare -a PACKAGES=("brokers" "builders" "collection" "core" "discord.js" "formatters" "next" "proxy" "rest" "rpc" "structures" "util" "voice" "ws")
           for PACKAGE in "${PACKAGES[@]}"; do
             if [ ! -d "packages/${PACKAGE}" ]; then
               echo "::notice::${PACKAGE} does not exist on this ref. Skipping..."
