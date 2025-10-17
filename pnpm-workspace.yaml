@@ -18,9 +18,11 @@ onlyBuiltDependencies:
   - utf-8-validate
   - zlib-sync
 
+overrides:
+  use-sync-external-store: 1.4.0
+
 patchedDependencies:
   '@microsoft/tsdoc-config@0.17.1': patches/@microsoft__tsdoc-config@0.17.1.patch
-  eslint-config-neon@0.2.7: patches/eslint-config-neon@0.2.7.patch
 
 peerDependencyRules:
   allowAny:

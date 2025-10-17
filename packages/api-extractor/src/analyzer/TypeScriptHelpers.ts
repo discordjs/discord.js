@@ -176,7 +176,7 @@ export class TypeScriptHelpers {
 			}
 
 			// If we ran out of items, or if the kind doesn't match, then fail
-			if (!current || current.kind !== parentKind) {
+			if (current?.kind !== parentKind) {
 				return undefined;
 			}
 		}
