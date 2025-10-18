@@ -956,10 +956,8 @@ export class Collector {
 				declaration,
 				ts.SyntaxKind.VariableStatement,
 			) as ts.VariableStatement | undefined;
-			if (
-				statement !== undefined && // For a compound declaration, fall back to looking for C instead of A
-				statement.declarationList.declarations.length === 1
-			) {
+			// For a compound declaration, fall back to looking for C instead of A
+			if (statement?.declarationList.declarations.length === 1) {
 				nodeForComment = statement;
 			}
 		}

@@ -109,7 +109,6 @@ export class DocumentedClass extends DocumentedItem<Class | DeclarationReflectio
 					signature.comment?.blockTags?.some((block) => block.tag === '@private' || block.tag === '@internal')
 						? 'private'
 						: undefined,
-				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				abstract: signature.comment?.blockTags?.some((block) => block.tag === '@abstract') || undefined,
 				deprecated: signature.comment?.blockTags?.some((block) => block.tag === '@deprecated')
 					? (signature.comment.blockTags
