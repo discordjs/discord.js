@@ -9,7 +9,7 @@
 		"build:check": "tsc --noEmit",
 		"build:local": "cross-env NEXT_PUBLIC_LOCAL_DEV=true pnpm run build:prod",
 		"build:prod": "pnpm run build:copy_readme && pnpm run build:next",
-		"build:next": "next build",
+		"build:next": "next build --webpack",
 		"build:search_indices": "pnpm node scripts/generateAllIndices.js",
 		"build:analyze": "turbo run docs --filter='@discordjs/*' --concurrency=4 && cross-env ANALYZE=true NEXT_PUBLIC_LOCAL_DEV=true pnpm run build:prod",
 		"preview": "next start",
@@ -63,7 +63,7 @@
 		"lucide-react": "^0.546.0",
 		"meilisearch": "^0.50.0",
 		"motion": "^12.23.24",
-		"next": "15.6.0-canary.45",
+		"next": "15.6.0-canary.53",
 		"next-mdx-remote-client": "^2.1.7",
 		"next-themes": "^0.4.6",
 		"nuqs": "^2.7.2",
@@ -80,7 +80,6 @@
 		"usehooks-ts": "^3.1.1"
 	},
 	"devDependencies": {
-		"@next/env": "^15.5.6",
 		"@shikijs/rehype": "^3.13.0",
 		"@tailwindcss/postcss": "^4.1.14",
 		"@tailwindcss/typography": "^0.5.19",

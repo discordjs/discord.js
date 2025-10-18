@@ -18,9 +18,6 @@ onlyBuiltDependencies:
   - utf-8-validate
   - zlib-sync
 
-overrides:
-  use-sync-external-store: 1.4.0
-
 patchedDependencies:
   '@microsoft/tsdoc-config@0.17.1': patches/@microsoft__tsdoc-config@0.17.1.patch
 
