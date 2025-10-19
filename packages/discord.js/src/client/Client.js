@@ -11,7 +11,6 @@ const { ChannelManager } = require('../managers/ChannelManager.js');
 const { GuildManager } = require('../managers/GuildManager.js');
 const { UserManager } = require('../managers/UserManager.js');
 const { ShardClientUtil } = require('../sharding/ShardClientUtil.js');
-const { ClientApplication } = require('../structures/ClientApplication.js');
 const { ClientPresence } = require('../structures/ClientPresence.js');
 const { GuildPreview } = require('../structures/GuildPreview.js');
 const { GuildTemplate } = require('../structures/GuildTemplate.js');
@@ -44,8 +43,6 @@ const BeforeReadyWhitelist = [
   GatewayDispatchEvents.GuildMemberAdd,
   GatewayDispatchEvents.GuildMemberRemove,
 ];
-
-let ClientUser;
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
@@ -349,31 +346,6 @@ class Client extends BaseClient {
     );
     this.ws.on(WebSocketShardEvents.Dispatch, this._handlePacket.bind(this));
 
-    this.ws.on(WebSocketShardEvents.Ready, async (data, shardId) => {
-      if (this.user) {
-        this.user._patch(data.user);
-      } else {
-        ClientUser ??= require('../structures/ClientUser.js').ClientUser;
-        this.user = new ClientUser(this, data.user);
-        this.users.cache.set(this.user.id, this.user);
-      }
-
-      for (const guild of data.guilds) {
-        this.expectedGuilds.add(guild.id);
-        guild.shardId = shardId;
-        this.guilds._add(guild);
-      }
-
-      if (this.application) {
-        this.application._patch(data.application);
-      } else {
-        this.application = new ClientApplication(this, data.application);
-      }
-
-      this.status = Status.WaitingForGuilds;
-      await this._checkReady();
-    });
-
     this.ws.on(WebSocketShardEvents.HeartbeatComplete, ({ heartbeatAt, latency }, shardId) => {
       this.emit(Events.Debug, `[WS => Shard ${shardId}] Heartbeat acknowledged, latency of ${latency}ms.`);
       this.lastPingTimestamps.set(shardId, heartbeatAt);
@@ -400,7 +372,7 @@ class Client extends BaseClient {
       }
 
       if (PacketHandlers[packet.t]) {
-        PacketHandlers[packet.t](this, packet, shardId);
+        await PacketHandlers[packet.t](this, packet, shardId);
       }
 
       if (this.status === Status.WaitingForGuilds && WaitingForGuildEvents.includes(packet.t)) {
