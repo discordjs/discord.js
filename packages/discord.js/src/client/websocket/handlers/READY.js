@@ -5,7 +5,7 @@ const { Status } = require('../../../util/Status.js');
 
 let ClientUser;
 
-module.exports = async (client, { d: data }, shardId) => {
+module.exports = (client, { d: data }, shardId) => {
   if (client.user) {
     client.user._patch(data.user);
   } else {
@@ -27,5 +27,4 @@ module.exports = async (client, { d: data }, shardId) => {
   }
 
   client.status = Status.WaitingForGuilds;
-  await client._checkReady();
 };

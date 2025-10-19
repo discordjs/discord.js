@@ -372,10 +372,12 @@ class Client extends BaseClient {
       }
 
       if (PacketHandlers[packet.t]) {
-        await PacketHandlers[packet.t](this, packet, shardId);
+        PacketHandlers[packet.t](this, packet, shardId);
       }
 
-      if (this.status === Status.WaitingForGuilds && WaitingForGuildEvents.includes(packet.t)) {
+      if (packet.t === GatewayDispatchEvents.Ready) {
+        await this._checkReady();
+      } else if (this.status === Status.WaitingForGuilds && WaitingForGuildEvents.includes(packet.t)) {
         this.expectedGuilds.delete(packet.d.id);
         await this._checkReady();
       }
