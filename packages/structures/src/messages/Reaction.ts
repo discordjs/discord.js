@@ -65,4 +65,16 @@ export class Reaction<Omitted extends keyof APIReaction | '' = ''> extends Struc
 	public get burstColors() {
 		return this[kData].burst_colors;
 	}
+
+	/**
+	 * {@inheritDoc Structure.toJSON}
+	 */
+	public override toJSON() {
+		const clone = super.toJSON();
+		if (this[kBurstColors]) {
+			clone.burst_colors = this[kBurstColors].map((color) => `#${color.toString(16).padStart(6, '0')}`);
+		}
+
+		return clone;
+	}
 }
