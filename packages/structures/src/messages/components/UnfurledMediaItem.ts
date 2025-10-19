@@ -6,7 +6,7 @@ import type { Partialize } from '../../utils/types.js';
 // TODO: add `flags` as a BitField class and appropriate getter, once it gets properly documented
 
 /**
- * Represents an item in a media gallery on a message.
+ * Represents a media  item in a component on a message.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  */

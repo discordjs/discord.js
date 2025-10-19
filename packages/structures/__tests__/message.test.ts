@@ -81,6 +81,7 @@ describe('message with embeds and attachments', () => {
 					url: 'https://discord.js.org/static/logo.svg',
 				},
 				title: 'Title',
+				timestamp: '2025-10-19T21:39:40.193000+00:00',
 			},
 		],
 		mention_everyone: false,
@@ -127,7 +128,7 @@ describe('message with embeds and attachments', () => {
 		expect(instances?.map((embed) => embed.toJSON())).toEqual(data.embeds);
 		expect(instances?.[0]?.description).toBe(data.embeds?.[0]?.description);
 		expect(instances?.[0]?.color).toBe(data.embeds?.[0]?.color);
-		expect(instances?.[0]?.timestamp).toBe(data.embeds?.[0]?.timestamp);
+		expect(instances?.[0]?.timestamp).toBe(Date.parse(data.embeds![0]!.timestamp!));
 		expect(instances?.[0]?.title).toBe(data.embeds?.[0]?.title);
 		expect(instances?.[0]?.url).toBe(data.embeds?.[0]?.url);
 		expect(instances?.[0]?.type).toBe(data.embeds?.[0]?.type);

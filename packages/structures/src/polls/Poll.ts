@@ -1,5 +1,6 @@
 import type { APIPoll } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
+import { dateToDiscordISOTimestamp } from '../utils/optimization.js';
 import { kData, kExpiresTimestamp, kPatch } from '../utils/symbols.js';
 import type { Partialize } from '../utils/types.js';
 
@@ -80,5 +81,17 @@ export class Poll<Omitted extends keyof APIPoll | '' = ''> extends Structure<API
 	public get expiresAt() {
 		const expiresTimestamp = this.expiresTimestamp;
 		return expiresTimestamp ? new Date(expiresTimestamp) : null;
+	}
+
+	/**
+	 * {@inheritDoc Structure.toJSON}
+	 */
+	public override toJSON() {
+		const clone = super.toJSON();
+		if (this[kExpiresTimestamp]) {
+			clone.expiry = dateToDiscordISOTimestamp(new Date(this[kExpiresTimestamp]));
+		}
+
+		return clone;
 	}
 }

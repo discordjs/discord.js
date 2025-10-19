@@ -48,4 +48,11 @@ export abstract class SelectMenuComponent<
 	public get placeholder() {
 		return this[kData].placeholder;
 	}
+
+	/**
+	 * Whether a selection is required
+	 */
+	public get required() {
+		return this[kData].required;
+	}
 }

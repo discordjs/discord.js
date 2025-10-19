@@ -5,7 +5,7 @@ import type { ButtonDataType } from './ButtonComponent.js';
 import { ButtonComponent } from './ButtonComponent.js';
 
 /**
- * Base class for all buttons that can havre a label on a message.
+ * Base class for all buttons that can have a label on a message.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  * @remarks has a substructure `ComponentEmoji` which needs to be instantiated and stored by an extending class using it

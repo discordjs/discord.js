@@ -1,6 +1,6 @@
 import type { APIReaction } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
-import { kData } from '../utils/symbols.js';
+import { kBurstColors, kData } from '../utils/symbols.js';
 import type { Partialize } from '../utils/types.js';
 
 /**
@@ -13,13 +13,29 @@ export class Reaction<Omitted extends keyof APIReaction | '' = ''> extends Struc
 	/**
 	 * The template used for removing data from the raw data stored for each Reaction.
 	 */
-	public static override DataTemplate: Partial<APIReaction> = {};
+	public static override DataTemplate: Partial<APIReaction> = {
+		set burst_colors(_: string[]) {},
+	};
+
+	protected [kBurstColors]: number[] | null = null;
 
 	/**
 	 * @param data - The raw data received from the API for the reaction
 	 */
 	public constructor(data: Partialize<APIReaction, Omitted>) {
 		super(data);
+		this.optimizeData(data);
+	}
+
+	/**
+	 * {@inheritDoc Structure.optimizeData}
+	 *
+	 * @internal
+	 */
+	protected override optimizeData(data: Partial<APIReaction>) {
+		if (data.burst_colors) {
+			this[kBurstColors] = data.burst_colors.map((color) => Number.parseInt(color, 16));
+		}
 	}
 
 	/**
@@ -41,5 +57,12 @@ export class Reaction<Omitted extends keyof APIReaction | '' = ''> extends Struc
 	 */
 	public get meBurst() {
 		return this[kData].me_burst;
+	}
+
+	/**
+	 * Whether the current user has super-reacted using this emoji
+	 */
+	public get burstColors() {
+		return this[kData].burst_colors;
 	}
 }

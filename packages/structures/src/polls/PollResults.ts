@@ -7,7 +7,7 @@ import type { Partialize } from '../utils/types.js';
  * Represents the results of a poll on a message on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @remarks has a substructure `PollMedia` which need to be instantiated and stored by an extending class using it
+ * @remarks has a substructure `PollAnswerCount` which need to be instantiated and stored by an extending class using it
  */
 export class PollResults<Omitted extends keyof APIPollResults | '' = ''> extends Structure<APIPollResults, Omitted> {
 	/**

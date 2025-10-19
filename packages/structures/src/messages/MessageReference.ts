@@ -35,7 +35,7 @@ export class MessageReference<Omitted extends keyof APIMessageReference | '' = '
 	 * The id of the referenced message
 	 */
 	public get messageId() {
-		return 'message_id' in this[kData] && typeof this[kData].message_id === 'string' ? this[kData].message_id : null;
+		return this[kData].message_id;
 	}
 
 	/**
@@ -49,6 +49,6 @@ export class MessageReference<Omitted extends keyof APIMessageReference | '' = '
 	 * The id of the guild the referenced message was sent in
 	 */
 	public get guildId() {
-		return 'guild_id' in this[kData] && typeof this[kData].guild_id === 'string' ? this[kData].guild_id : null;
+		return this[kData].guild_id;
 	}
 }

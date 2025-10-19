@@ -10,6 +10,8 @@ export const kArchiveTimestamp = Symbol.for('djs.structures.archiveTimestamp');
 export const kAllow = Symbol.for('djs.structures.allow');
 export const kDeny = Symbol.for('djs.structures.deny');
 
+export const kBurstColors = Symbol.for('djs.structures.burstColors');
+
 export const kLastPinTimestamp = Symbol.for('djs.structures.lastPinTimestamp');
 
 export const kMixinConstruct = Symbol.for('djs.structures.mixin.construct');

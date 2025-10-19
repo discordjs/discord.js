@@ -1,4 +1,5 @@
-import type { APIChannelSelectComponent } from 'discord-api-types/v10';
+import type { APIChannelSelectComponent, ChannelType } from 'discord-api-types/v10';
+import { kData } from '../../utils/symbols.js';
 import type { Partialize } from '../../utils/types.js';
 import { SelectMenuComponent } from './SelectMenuComponent.js';
 
@@ -21,5 +22,12 @@ export class ChannelSelectMenuComponent<
 	 */
 	public constructor(data: Partialize<APIChannelSelectComponent, Omitted>) {
 		super(data);
+	}
+
+	/**
+	 * The timestamp this call ended at, or `null`if it didn't end yet
+	 */
+	public get channelTypes() {
+		return Array.isArray(this[kData].channel_types) ? (this[kData].channel_types as readonly ChannelType[]) : null;
 	}
 }
