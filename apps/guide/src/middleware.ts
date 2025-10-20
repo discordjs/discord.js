@@ -5,14 +5,14 @@ export function middleware(request: NextRequest) {
 	if (request.nextUrl.pathname.startsWith('/guide/')) {
 		const newUrl = request.nextUrl.clone();
 		newUrl.pathname = newUrl.pathname.replace('/guide/', '/');
-		return NextResponse.redirect(new URL(newUrl.pathname, request.url));
+		return NextResponse.redirect(newUrl);
 	}
 
 	// Redirect old urls to /legacy
 	if (!request.nextUrl.pathname.startsWith('/legacy') && !request.nextUrl.pathname.startsWith('/voice')) {
 		const newUrl = request.nextUrl.clone();
 		newUrl.pathname = `/legacy${newUrl.pathname}`;
-		return NextResponse.redirect(new URL(newUrl.pathname, request.url));
+		return NextResponse.redirect(newUrl);
 	}
 
 	return NextResponse.next();
