@@ -13,5 +13,4 @@ export * from './MessageReference.js';
 export * from './ModalSubmitInteractionMetadata.js';
 export * from './Reaction.js';
 export * from './ReactionCountDetails.js';
-export * from './ResolvedInteractionData.js';
 export * from './RoleSubscriptionData.js';
