@@ -80,7 +80,7 @@ export async function PropertyNode({
 									<DeprecatedNode deprecatedBlock={property.summary.deprecatedBlock} version={version} />
 								) : null}
 
-								{property.summary?.unstableBlock.length ? (
+								{property.summary?.unstableBlock?.length ? (
 									<UnstableNode unstableBlock={property.summary.unstableBlock} version={version} />
 								) : null}
 

@@ -69,7 +69,7 @@ async function EventBodyNode({
 					<DeprecatedNode deprecatedBlock={event.summary.deprecatedBlock} version={version} />
 				) : null}
 
-				{event.summary?.unstableBlock.length ? (
+				{event.summary?.unstableBlock?.length ? (
 					<UnstableNode unstableBlock={event.summary.unstableBlock} version={version} />
 				) : null}
 

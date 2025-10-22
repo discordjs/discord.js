@@ -71,7 +71,7 @@ async function MethodBodyNode({
 					<DeprecatedNode deprecatedBlock={method.summary.deprecatedBlock} version={version} />
 				) : null}
 
-				{method.summary?.unstableBlock.length ? (
+				{method.summary?.unstableBlock?.length ? (
 					<UnstableNode unstableBlock={method.summary.unstableBlock} version={version} />
 				) : null}
 
