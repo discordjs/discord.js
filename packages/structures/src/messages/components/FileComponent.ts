@@ -31,4 +31,18 @@ export class FileComponent<Omitted extends keyof APIFileComponent | '' = ''> ext
 	public get spoiler() {
 		return this[kData].spoiler;
 	}
+
+	/**
+	 * The name of the file
+	 */
+	public get name() {
+		return this[kData].name;
+	}
+
+	/**
+	 * The size of the file in bytes
+	 */
+	public get size() {
+		return this[kData].size;
+	}
 }

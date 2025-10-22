@@ -63,7 +63,7 @@
 	"dependencies": {
 		"@discordjs/formatters": "workspace:^",
 		"@sapphire/snowflake": "^3.5.5",
-		"discord-api-types": "^0.38.30"
+		"discord-api-types": "0.38.31-next.c5c0312.1761071226"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
