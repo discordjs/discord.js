@@ -82,7 +82,7 @@ export async function DocItem({
 				<DeprecatedNode deprecatedBlock={node.summary.deprecatedBlock} version={version} />
 			) : null}
 
-			{node.summary?.unstableBlock.length ? (
+			{node.summary?.unstableBlock?.length ? (
 				<UnstableNode unstableBlock={node.summary.unstableBlock} version={version} />
 			) : null}
 

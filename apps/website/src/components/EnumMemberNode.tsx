@@ -81,7 +81,7 @@ export async function EnumMemberNode({
 								<DeprecatedNode deprecatedBlock={enumMember.summary.deprecatedBlock} version={version} />
 							) : null}
 
-							{enumMember.summary?.unstableBlock.length ? (
+							{enumMember.summary?.unstableBlock?.length ? (
 								<UnstableNode unstableBlock={enumMember.summary.unstableBlock} version={version} />
 							) : null}
 
