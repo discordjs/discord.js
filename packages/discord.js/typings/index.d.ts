@@ -367,7 +367,8 @@ export type ComponentInLabelData =
   | UserSelectMenuComponentData
   | ChannelSelectMenuComponentData
   | RoleSelectMenuComponentData
-  | MentionableSelectMenuComponentData;
+  | MentionableSelectMenuComponentData
+  | FileUploadComponentData;
 
 export interface LabelComponentData extends BaseComponentData {
   type: ComponentType.Label;
