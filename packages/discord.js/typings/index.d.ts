@@ -278,7 +278,9 @@ export type ComponentInLabelData =
   | RoleSelectMenuComponentData
   | StringSelectMenuComponentData
   | TextInputComponentData
-  | UserSelectMenuComponentData;
+  | UserSelectMenuComponentData
+  | FileUploadComponentData;
+
 export interface LabelData extends BaseComponentData {
   component: ComponentInLabelData;
   description?: string;
