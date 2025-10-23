@@ -134,7 +134,7 @@ export class VoiceReceiver {
 	 * @returns The parsed Opus packet
 	 */
 	private parsePacket(buffer: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array, userId: string) {
-		let packet = this.decrypt(buffer, mode, nonce, secretKey);
+		let packet: Buffer = this.decrypt(buffer, mode, nonce, secretKey);
 		if (!packet) throw new Error('Failed to parse packet');
 
 		// Strip decrypted RTP Header Extension if present

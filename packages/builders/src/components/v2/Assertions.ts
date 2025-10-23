@@ -1,5 +1,6 @@
 import { ComponentType, SeparatorSpacingSize } from 'discord-api-types/v10';
 import { z } from 'zod';
+import { idPredicate } from '../../Assertions.js';
 import { actionRowPredicate } from '../Assertions.js';
 
 const unfurledMediaItemPredicate = z.object({
@@ -7,6 +8,8 @@ const unfurledMediaItemPredicate = z.object({
 });
 
 export const thumbnailPredicate = z.object({
+	type: z.literal(ComponentType.Thumbnail),
+	id: idPredicate,
 	media: unfurledMediaItemPredicate,
 	description: z.string().min(1).max(1_024).nullish(),
 	spoiler: z.boolean().optional(),
@@ -17,30 +20,41 @@ const unfurledMediaItemAttachmentOnlyPredicate = z.object({
 });
 
 export const filePredicate = z.object({
+	type: z.literal(ComponentType.File),
+	id: idPredicate,
 	file: unfurledMediaItemAttachmentOnlyPredicate,
 	spoiler: z.boolean().optional(),
 });
 
 export const separatorPredicate = z.object({
+	type: z.literal(ComponentType.Separator),
+	id: idPredicate,
 	divider: z.boolean().optional(),
 	spacing: z.enum(SeparatorSpacingSize).optional(),
 });
 
 export const textDisplayPredicate = z.object({
+	type: z.literal(ComponentType.TextDisplay),
+	id: idPredicate,
 	content: z.string().min(1).max(4_000),
 });
 
 export const mediaGalleryItemPredicate = z.object({
+	id: idPredicate,
 	media: unfurledMediaItemPredicate,
 	description: z.string().min(1).max(1_024).nullish(),
 	spoiler: z.boolean().optional(),
 });
 
 export const mediaGalleryPredicate = z.object({
+	type: z.literal(ComponentType.MediaGallery),
+	id: idPredicate,
 	items: z.array(mediaGalleryItemPredicate).min(1).max(10),
 });
 
 export const sectionPredicate = z.object({
+	type: z.literal(ComponentType.Section),
+	id: idPredicate,
 	components: z.array(textDisplayPredicate).min(1).max(3),
 	accessory: z.union([
 		z.object({ type: z.literal(ComponentType.Button) }),
@@ -49,6 +63,8 @@ export const sectionPredicate = z.object({
 });
 
 export const containerPredicate = z.object({
+	type: z.literal(ComponentType.Container),
+	id: idPredicate,
 	components: z
 		.array(
 			z.union([

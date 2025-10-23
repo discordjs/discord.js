@@ -90,6 +90,11 @@ export type ModalActionRowComponentBuilder = TextInputBuilder;
 export type AnyActionRowComponentBuilder = MessageActionRowComponentBuilder | ModalActionRowComponentBuilder;
 
 /**
+ * Any modal component builder.
+ */
+export type AnyModalComponentBuilder = LabelBuilder | TextDisplayBuilder;
+
+/**
  * Components here are mapped to their respective builder.
  */
 export interface MappedComponentTypes {
@@ -187,6 +192,8 @@ export function createComponentBuilder(
 		return data;
 	}
 
+	// should be removed in https://github.com/discordjs/discord.js/pull/11108
+	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 	switch (data.type) {
 		case ComponentType.ActionRow:
 			return new ActionRowBuilder(data);
@@ -221,7 +228,8 @@ export function createComponentBuilder(
 		case ComponentType.Label:
 			return new LabelBuilder(data);
 		default:
-			// @ts-expect-error This case can still occur if we get a newer unsupported component type
+			// should be uncommented in https://github.com/discordjs/discord.js/pull/11108
+			/* // @ts-expect-error This case can still occur if we get a newer unsupported component type */
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);
 	}
 }

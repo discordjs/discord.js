@@ -19,11 +19,12 @@ const { ComponentType } = require('discord-api-types/v10');
  * @typedef {Object} ModalComponentData
  * @property {string} title The title of the modal
  * @property {string} customId The custom id of the modal
- * @property {LabelData[]} components The components within this modal
+ * @property {Array<TextDisplayComponentData|LabelData>} components The components within this modal
  */
 
 /**
- * @typedef {StringSelectMenuComponentData|TextInputComponentData} ComponentInLabelData
+ * @typedef {StringSelectMenuComponentData|TextInputComponentData|UserSelectMenuComponentData|
+ * RoleSelectMenuComponentData|MentionableSelectMenuComponentData|ChannelSelectMenuComponentData} ComponentInLabelData
  */
 
 /**
@@ -44,14 +45,39 @@ const { ComponentType } = require('discord-api-types/v10');
  */
 
 /**
- * @typedef {BaseComponentData} StringSelectMenuComponentData
+ * @typedef {BaseComponentData} BaseSelectMenuComponentData
  * @property {string} customId The custom id of the select menu
  * @property {boolean} [disabled] Whether the select menu is disabled or not
  * @property {number} [maxValues] The maximum amount of options that can be selected
  * @property {number} [minValues] The minimum amount of options that can be selected
- * @property {SelectMenuComponentOptionData[]} [options] The options in this select menu
  * @property {string} [placeholder] The placeholder of the select menu
  * @property {boolean} [required] Whether this component is required in modals
+ */
+
+/**
+ * @typedef {BaseSelectMenuComponentData} StringSelectMenuComponentData
+ * @property {SelectMenuComponentOptionData[]} [options] The options in this select menu
+ */
+
+/**
+ * @typedef {BaseSelectMenuComponentData} UserSelectMenuComponentData
+ * @property {APISelectMenuDefaultValue[]} [defaultValues] The default selected values in this select menu
+ */
+
+/**
+ * @typedef {BaseSelectMenuComponentData} RoleSelectMenuComponentData
+ * @property {APISelectMenuDefaultValue[]} [defaultValues] The default selected values in this select menu
+ */
+
+/**
+ * @typedef {BaseSelectMenuComponentData} MentionableSelectMenuComponentData
+ * @property {APISelectMenuDefaultValue[]} [defaultValues] The default selected values in this select menu
+ */
+
+/**
+ * @typedef {BaseSelectMenuComponentData} ChannelSelectMenuComponentData
+ * @property {APISelectMenuDefaultValue[]} [defaultValues] The default selected values in this select menu
+ * @property {ChannelType[]} [channelTypes] The types of channels that can be selected
  */
 
 /**

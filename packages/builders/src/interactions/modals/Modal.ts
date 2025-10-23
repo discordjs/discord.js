@@ -1,15 +1,21 @@
 import type { JSONEncodable } from '@discordjs/util';
-import type { APILabelComponent, APIModalInteractionResponseCallbackData } from 'discord-api-types/v10';
+import type {
+	APILabelComponent,
+	APIModalInteractionResponseCallbackData,
+	APITextDisplayComponent,
+} from 'discord-api-types/v10';
 import type { ActionRowBuilder } from '../../components/ActionRow.js';
+import type { AnyModalComponentBuilder } from '../../components/Components.js';
 import { createComponentBuilder } from '../../components/Components.js';
 import { LabelBuilder } from '../../components/label/Label.js';
+import { TextDisplayBuilder } from '../../components/v2/TextDisplay.js';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { resolveBuilder } from '../../util/resolveBuilder.js';
 import { validate } from '../../util/validation.js';
 import { modalPredicate } from './Assertions.js';
 
 export interface ModalBuilderData extends Partial<Omit<APIModalInteractionResponseCallbackData, 'components'>> {
-	components: (ActionRowBuilder | LabelBuilder)[];
+	components: (ActionRowBuilder | AnyModalComponentBuilder)[];
 }
 
 /**
@@ -24,7 +30,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	/**
 	 * The components within this modal.
 	 */
-	public get components(): readonly (ActionRowBuilder | LabelBuilder)[] {
+	public get components(): readonly (ActionRowBuilder | AnyModalComponentBuilder)[] {
 		return this.data.components;
 	}
 
@@ -38,7 +44,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 
 		this.data = {
 			...structuredClone(rest),
-			// @ts-expect-error https://github.com/discordjs/discord.js/pull/11078
+			// @ts-expect-error fixed in https://github.com/discordjs/discord.js/pull/11108
 			components: components.map((component) => createComponentBuilder(component)),
 		};
 	}
@@ -80,56 +86,54 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	}
 
 	/**
-	 * Sets the labels for this modal.
+	 * Adds text display components to this modal.
 	 *
-	 * @param components - The components to set
+	 * @param components - The components to add
 	 */
-	public setLabelComponents(
-		...components: RestOrArray<APILabelComponent | LabelBuilder | ((builder: LabelBuilder) => LabelBuilder)>
+	public addTextDisplayComponents(
+		...components: RestOrArray<
+			APITextDisplayComponent | TextDisplayBuilder | ((builder: TextDisplayBuilder) => TextDisplayBuilder)
+		>
 	) {
 		const normalized = normalizeArray(components);
-		this.spliceLabelComponents(0, this.data.components.length, ...normalized);
+		const resolved = normalized.map((row) => resolveBuilder(row, TextDisplayBuilder));
+
+		this.data.components.push(...resolved);
 
 		return this;
 	}
 
 	/**
-	 * Removes, replaces, or inserts labels for this modal.
+	 * Removes, replaces, or inserts components for this modal.
 	 *
 	 * @remarks
 	 * This method behaves similarly
 	 * to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
-	 * The maximum amount of labels that can be added is 5.
+	 * The maximum amount of components that can be added is 5.
 	 *
-	 * It's useful for modifying and adjusting order of the already-existing labels of a modal.
+	 * It's useful for modifying and adjusting order of the already-existing components of a modal.
 	 * @example
-	 * Remove the first label:
+	 * Remove the first component:
 	 * ```ts
-	 * modal.spliceLabelComponents(0, 1);
+	 * modal.spliceComponents(0, 1);
 	 * ```
 	 * @example
-	 * Remove the first n labels:
+	 * Remove the first n components:
 	 * ```ts
 	 * const n = 4;
-	 * modal.spliceLabelComponents(0, n);
+	 * modal.spliceComponents(0, n);
 	 * ```
 	 * @example
-	 * Remove the last label:
+	 * Remove the last component:
 	 * ```ts
-	 * modal.spliceLabelComponents(-1, 1);
+	 * modal.spliceComponents(-1, 1);
 	 * ```
 	 * @param index - The index to start at
-	 * @param deleteCount - The number of labels to remove
-	 * @param labels - The replacing label objects
+	 * @param deleteCount - The number of components to remove
+	 * @param components - The replacing components
 	 */
-	public spliceLabelComponents(
-		index: number,
-		deleteCount: number,
-		...labels: (APILabelComponent | LabelBuilder | ((builder: LabelBuilder) => LabelBuilder))[]
-	): this {
-		const resolved = labels.map((label) => resolveBuilder(label, LabelBuilder));
-		this.data.components.splice(index, deleteCount, ...resolved);
-
+	public spliceComponents(index: number, deleteCount: number, ...components: AnyModalComponentBuilder[]): this {
+		this.data.components.splice(index, deleteCount, ...components);
 		return this;
 	}
 

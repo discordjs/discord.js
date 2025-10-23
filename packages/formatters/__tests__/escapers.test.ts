@@ -12,9 +12,11 @@ import {
 	escapeBulletedList,
 	escapeNumberedList,
 	escapeMarkdown,
+	escapeQuote,
+	escapeBlockQuote,
 } from '../src/index.js';
 
-const testString = "`_Behold!_`\n||___~~***```js\n`use strict`;\nrequire('discord.js');```***~~___||";
+const testString = "> `_Behold!_`\n||___~~***```js\n`use strict`;\nrequire('discord.js');```***~~___||";
 const testStringForums =
 	'# Title\n## Subtitle\n### Subsubtitle\n- Bullet list\n - # Title with bullet\n * Subbullet\n1. Number list\n 1. Sub number list';
 const testURLs = [
@@ -29,7 +31,7 @@ describe('Markdown escapers', () => {
 	describe('escapeCodeblock', () => {
 		test('shared', () => {
 			expect(escapeCodeBlock(testString)).toEqual(
-				"`_Behold!_`\n||___~~***\\`\\`\\`js\n`use strict`;\nrequire('discord.js');\\`\\`\\`***~~___||",
+				"> `_Behold!_`\n||___~~***\\`\\`\\`js\n`use strict`;\nrequire('discord.js');\\`\\`\\`***~~___||",
 			);
 		});
 
@@ -41,7 +43,7 @@ describe('Markdown escapers', () => {
 	describe('escapeInlineCode', () => {
 		test('shared', () => {
 			expect(escapeInlineCode(testString)).toEqual(
-				"\\`_Behold!_\\`\n||___~~***```js\n\\`use strict\\`;\nrequire('discord.js');```***~~___||",
+				"> \\`_Behold!_\\`\n||___~~***```js\n\\`use strict\\`;\nrequire('discord.js');```***~~___||",
 			);
 		});
 
@@ -53,7 +55,7 @@ describe('Markdown escapers', () => {
 	describe('escapeBold', () => {
 		test('shared', () => {
 			expect(escapeBold(testString)).toEqual(
-				"`_Behold!_`\n||___~~*\\*\\*```js\n`use strict`;\nrequire('discord.js');```\\*\\**~~___||",
+				"> `_Behold!_`\n||___~~*\\*\\*```js\n`use strict`;\nrequire('discord.js');```\\*\\**~~___||",
 			);
 		});
 
@@ -65,7 +67,7 @@ describe('Markdown escapers', () => {
 	describe('escapeItalic', () => {
 		test('shared', () => {
 			expect(escapeItalic(testString)).toEqual(
-				"`\\_Behold!\\_`\n||\\___~~\\***```js\n`use strict`;\nrequire('discord.js');```**\\*~~__\\_||",
+				"> `\\_Behold!\\_`\n||\\___~~\\***```js\n`use strict`;\nrequire('discord.js');```**\\*~~__\\_||",
 			);
 		});
 
@@ -92,7 +94,7 @@ describe('Markdown escapers', () => {
 	describe('escapeUnderline', () => {
 		test('shared', () => {
 			expect(escapeUnderline(testString)).toEqual(
-				"`_Behold!_`\n||_\\_\\_~~***```js\n`use strict`;\nrequire('discord.js');```***~~\\_\\__||",
+				"> `_Behold!_`\n||_\\_\\_~~***```js\n`use strict`;\nrequire('discord.js');```***~~\\_\\__||",
 			);
 		});
 
@@ -115,7 +117,7 @@ describe('Markdown escapers', () => {
 	describe('escapeStrikethrough', () => {
 		test('shared', () => {
 			expect(escapeStrikethrough(testString)).toEqual(
-				"`_Behold!_`\n||___\\~\\~***```js\n`use strict`;\nrequire('discord.js');```***\\~\\~___||",
+				"> `_Behold!_`\n||___\\~\\~***```js\n`use strict`;\nrequire('discord.js');```***\\~\\~___||",
 			);
 		});
 
@@ -127,7 +129,7 @@ describe('Markdown escapers', () => {
 	describe('escapeSpoiler', () => {
 		test('shared', () => {
 			expect(escapeSpoiler(testString)).toEqual(
-				"`_Behold!_`\n\\|\\|___~~***```js\n`use strict`;\nrequire('discord.js');```***~~___\\|\\|",
+				"> `_Behold!_`\n\\|\\|___~~***```js\n`use strict`;\nrequire('discord.js');```***~~___\\|\\|",
 			);
 		});
 
@@ -178,83 +180,166 @@ describe('Markdown escapers', () => {
 		});
 	});
 
+	describe('escapeQuote', () => {
+		test('basic', () => {
+			expect(escapeQuote('> yeet')).toEqual('\\> yeet');
+			expect(escapeQuote('>  test')).toEqual('\\>  test');
+			expect(escapeQuote(' > leading spaces')).toEqual(' \\> leading spaces');
+		});
+
+		test('not quotes', () => {
+			expect(escapeQuote('>')).toEqual('>');
+			expect(escapeQuote('>test')).toEqual('>test');
+			expect(escapeQuote('>> test')).toEqual('>> test');
+			expect(escapeQuote('not a > quote')).toEqual('not a > quote');
+			expect(escapeQuote('>>> yeet')).toEqual('>>> yeet');
+		});
+
+		test('multiple lines', () => {
+			const input = `> quote
+not a quote
+ > another quote
+>> not a quote`;
+
+			const expectedOutput = `\\> quote
+not a quote
+ \\> another quote
+>> not a quote`;
+			expect(escapeQuote(input)).toEqual(expectedOutput);
+		});
+	});
+
+	describe('escapeBlockQuote', () => {
+		test('basic', () => {
+			expect(escapeBlockQuote('>>> block quote')).toEqual('\\>>> block quote');
+			expect(escapeBlockQuote('   >>> leading spaces')).toEqual('   \\>>> leading spaces');
+		});
+
+		test('not block quotes', () => {
+			expect(escapeBlockQuote('>>>')).toEqual('>>>');
+			expect(escapeBlockQuote('>>>not block quote')).toEqual('>>>not block quote');
+			expect(escapeBlockQuote('>> not block quote')).toEqual('>> not block quote');
+			expect(escapeBlockQuote('not a block >>> quote')).toEqual('not a block >>> quote');
+			expect(escapeBlockQuote('> yeet')).toEqual('> yeet');
+		});
+
+		test('multiple lines', () => {
+			const input = `>>> block quote
+part of it
+
+	 >>> another one
+
+  >>>this is not`;
+
+			const expectedOutput = `\\>>> block quote
+part of it
+
+	 \\>>> another one
+
+  >>>this is not`;
+			expect(escapeBlockQuote(input)).toEqual(expectedOutput);
+		});
+	});
+
 	describe('escapeMarkdown', () => {
 		test('shared', () => {
 			expect(escapeMarkdown(testString)).toEqual(
-				"\\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
+				"\\> \\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
 			);
 		});
 
 		test('no codeBlock', () => {
 			expect(escapeMarkdown(testString, { codeBlock: false })).toEqual(
-				"\\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*```js\n\\`use strict\\`;\nrequire('discord.js');```\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
+				"\\> \\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*```js\n\\`use strict\\`;\nrequire('discord.js');```\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
 			);
 		});
 
 		test('no inlineCode', () => {
 			expect(escapeMarkdown(testString, { inlineCode: false })).toEqual(
-				"`\\_Behold!\\_`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
+				"\\> `\\_Behold!\\_`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
 			);
 		});
 
 		test('no bold', () => {
 			expect(escapeMarkdown(testString, { bold: false })).toEqual(
-				"\\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\***\\`\\`\\`js\n\\`use strict\\`;\nrequire('discord.js');\\`\\`\\`**\\*\\~\\~\\_\\_\\_\\|\\|",
+				"\\> \\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\***\\`\\`\\`js\n\\`use strict\\`;\nrequire('discord.js');\\`\\`\\`**\\*\\~\\~\\_\\_\\_\\|\\|",
 			);
 		});
 
 		test('no italic', () => {
 			expect(escapeMarkdown(testString, { italic: false })).toEqual(
-				"\\`_Behold!_\\`\n\\|\\|_\\_\\_\\~\\~*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire('discord.js');\\`\\`\\`\\*\\**\\~\\~\\_\\__\\|\\|",
+				"\\> \\`_Behold!_\\`\n\\|\\|_\\_\\_\\~\\~*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire('discord.js');\\`\\`\\`\\*\\**\\~\\~\\_\\__\\|\\|",
 			);
 		});
 
 		test('no underline', () => {
 			expect(escapeMarkdown(testString, { underline: false })).toEqual(
-				"\\`\\_Behold!\\_\\`\n\\|\\|\\___\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~__\\_\\|\\|",
+				"\\> \\`\\_Behold!\\_\\`\n\\|\\|\\___\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~__\\_\\|\\|",
 			);
 		});
 
 		test('no strikethrough', () => {
 			expect(escapeMarkdown(testString, { strikethrough: false })).toEqual(
-				"\\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_~~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*~~\\_\\_\\_\\|\\|",
+				"\\> \\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_~~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*~~\\_\\_\\_\\|\\|",
 			);
 		});
 
 		test('no spoiler', () => {
 			expect(escapeMarkdown(testString, { spoiler: false })).toEqual(
-				"\\`\\_Behold!\\_\\`\n||\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_||",
+				"\\> \\`\\_Behold!\\_\\`\n||\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_||",
 			);
+		});
+
+		test('no quote', () => {
+			expect(escapeMarkdown(testString, { quote: false })).toEqual(
+				"> \\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
+			);
+		});
+
+		describe('block quotes', () => {
+			test('blockQuote', () => {
+				const testStringWithBlockQuote = `>>${testString}`;
+				expect(escapeMarkdown(testStringWithBlockQuote)).toEqual(
+					"\\>>> \\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
+				);
+			});
+
+			test('no blockQuote', () => {
+				const testStringWithBlockQuote = `>>${testString}`;
+				expect(escapeMarkdown(testStringWithBlockQuote, { blockQuote: false })).toEqual(
+					">>> \\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
+				);
+			});
 		});
 
 		describe('code content', () => {
 			test('no code block content', () => {
 				expect(escapeMarkdown(testString, { codeBlockContent: false })).toEqual(
-					"\\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
+					"\\> \\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
 				);
 			});
 
 			test('no inline code content', () => {
 				expect(escapeMarkdown(testString, { inlineCodeContent: false })).toEqual(
-					"\\`_Behold!_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
+					"\\> \\`_Behold!_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
 				);
 			});
 
 			test('neither inline code or code block content', () => {
 				expect(escapeMarkdown(testString, { inlineCodeContent: false, codeBlockContent: false })).toEqual(
-					"\\`_Behold!_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
+					"\\> \\`_Behold!_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
 				);
 			});
 
 			test('neither code blocks or code block content', () => {
 				expect(escapeMarkdown(testString, { codeBlock: false, codeBlockContent: false })).toEqual(
-					"\\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*```js\n`use strict`;\nrequire('discord.js');```\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
+					"\\> \\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*```js\n`use strict`;\nrequire('discord.js');```\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
 				);
 			});
 
 			test('neither inline code or inline code content', () => {
 				expect(escapeMarkdown(testString, { inlineCode: false, inlineCodeContent: false })).toEqual(
-					"`_Behold!_`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
+					"\\> `_Behold!_`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n`use strict`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
 				);
 			});
 
