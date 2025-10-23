@@ -274,12 +274,12 @@ export interface ActionRowData<ComponentType extends ActionRowComponentData | JS
 
 export type ComponentInLabelData =
   | ChannelSelectMenuComponentData
+  | FileUploadComponentData
   | MentionableSelectMenuComponentData
   | RoleSelectMenuComponentData
   | StringSelectMenuComponentData
   | TextInputComponentData
-  | UserSelectMenuComponentData
-  | FileUploadComponentData;
+  | UserSelectMenuComponentData;
 
 export interface LabelData extends BaseComponentData {
   component: ComponentInLabelData;
