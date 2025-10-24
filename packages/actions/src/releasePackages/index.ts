@@ -70,4 +70,10 @@ for (const branch of tree) {
 
 const releasedPackages = released.length > 0 ? released.join(', ') : 'None';
 const skippedPackages = skipped.length > 0 ? skipped.join(', ') : 'None';
-notice(`Released: ${releasedPackages}\nSkipped: ${skippedPackages}`, { title: 'Release summary' });
+let message = `Released: ${releasedPackages}\nSkipped: ${skippedPackages}`;
+
+if (dry) {
+	message += '\n\nThis was a dry run.';
+}
+
+notice(message, { title: 'Release summary' });
