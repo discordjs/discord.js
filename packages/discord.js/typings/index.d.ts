@@ -5368,13 +5368,21 @@ export type OverriddenCaches =
   | 'GuildMessageManager'
   | 'GuildTextThreadManager';
 
+export interface CacheFactoryParams<Manager extends keyof Caches> {
+  holds: Caches[Manager][1];
+  manager: CacheConstructors[keyof Caches];
+  managerType: CacheConstructors[Exclude<keyof Caches, OverriddenCaches>];
+}
+
 // This doesn't actually work the way it looks 😢.
 // Narrowing the type of `manager.name` doesn't propagate type information to `holds` and the return type.
-export type CacheFactory = (
-  managerType: CacheConstructors[Exclude<keyof Caches, OverriddenCaches>],
-  holds: Caches[(typeof manager)['name']][1],
-  manager: CacheConstructors[keyof Caches],
-) => (typeof manager)['prototype'] extends DataManager<infer Key, infer Value, any> ? Collection<Key, Value> : never;
+export type CacheFactory = ({
+  holds,
+  manager,
+  managerType,
+}: CacheFactoryParams<keyof Caches>) => (typeof manager)['prototype'] extends DataManager<infer Key, infer Value, any>
+  ? Collection<Key, Value>
+  : never;
 
 export type CacheWithLimitsOptions = {
   [K in keyof Caches]?: Caches[K][0]['prototype'] extends DataManager<infer Key, infer Value, any>
