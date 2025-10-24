@@ -10,6 +10,8 @@ on:
       - '!packages/ui/**'
     tags:
       - '**'
+      - '!create-discord-app@*'
+      - '!create-discord-bot@*'
   workflow_dispatch:
     inputs:
       ref:
