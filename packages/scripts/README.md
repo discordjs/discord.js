@@ -5,8 +5,9 @@
 	</p>
 	<br />
 	<p>
-		<a href="https://discord.gg/djs"><img src="https://img.shields.io/discord/222078108977594368?color=5865F2&logo=discord&logoColor=white" alt="Discord server" /></a>
+		<a href="https://discord.gg/djs"><img src="https://img.shields.io/badge/join_us-on_discord-5865F2?logo=discord&logoColor=white" alt="Discord server" /></a>
 		<a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/discordjs/discord.js/actions/workflows/tests.yml/badge.svg" alt="Build status" /></a>
+		<a href="https://opencollective.com/discordjs"><img src="https://img.shields.io/opencollective/backers/discordjs?maxAge=3600&logo=opencollective" alt="backers" /></a>
 	</p>
 	<p>
 		<a href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-vercel.svg" alt="Vercel" /></a>
@@ -35,9 +36,9 @@ If you don't understand something in the documentation, you are experiencing pro
 
 [website]: https://discord.js.org
 [website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
-[guide]: https://discordjs.guide/
-[guide-source]: https://github.com/discordjs/guide
-[guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
+[guide]: https://discordjs.guide
+[guide-source]: https://github.com/discordjs/discord.js/tree/main/apps/guide
+[guide-update]: https://discordjs.guide/legacy/additional-info/changes-in-v14
 [discord]: https://discord.gg/djs
 [discord-developers]: https://discord.gg/discord-developers
 [source]: https://github.com/discordjs/discord.js/tree/main/packages/scripts

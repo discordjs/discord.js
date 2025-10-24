@@ -4,6 +4,14 @@ on:
     - cron: '0 */12 * * *'
   workflow_dispatch:
     inputs:
+      pull:
+        description: 'The pull number to check out'
+        required: false
+        default: 'main'
+      tag:
+        description: 'The tag to use, generally a feature name'
+        required: false
+        type: string
       dry_run:
         description: 'Perform a dry run that skips publishing and outputs logs indicating what would have happened'
         type: boolean
@@ -19,10 +27,27 @@ jobs:
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     if: github.repository_owner == 'discordjs'
     steps:
+      - uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ vars.DISCORDJS_APP_ID }}
+          private-key: ${{ secrets.DISCORDJS_APP_KEY_RELEASE }}
+
+      - name: Decide ref
+        id: ref
+        run: |
+          if [ -n "${{ github.event.inputs.pull }}" ]; then
+            echo "ref=refs/pull/${{ github.event.inputs.pull }}/head" >> $GITHUB_OUTPUT
+          else
+            echo "ref=refs/heads/main" >> $GITHUB_OUTPUT
+          fi
+
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+          ref: ${{ steps.ref.outputs.ref }}
 
       - name: Install Node.js v22
         uses: actions/setup-node@v5
@@ -37,12 +62,42 @@ jobs:
       - name: Build dependencies
         run: pnpm run build
 
-      - name: Publish packages
+      - name: Checkout main repository (non-main ref)
+        if: ${{ steps.ref.outputs.ref != 'refs/heads/main' }}
+        uses: actions/checkout@v5
+        with:
+          path: 'main'
+
+      - name: Install action deps (non-main ref)
+        if: ${{ steps.ref.outputs.ref != 'refs/heads/main' }}
+        shell: bash
+        working-directory: ./main
+        env:
+          COREPACK_ENABLE_STRICT: 0
+        run: |
+          pnpm self-update 10
+          pnpm install --filter @discordjs/actions --frozen-lockfile --prefer-offline --loglevel error
+
+      - name: Publish packages (non-main ref)
+        if: ${{ steps.ref.outputs.ref != 'refs/heads/main' }}
+        uses: ./main/packages/actions/src/releasePackages
+        with:
+          exclude: '@discordjs/docgen'
+          dry: ${{ inputs.dry_run }}
+          dev: true
+          tag: ${{ inputs.tag || 'dev' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish packages (main ref)
+        if: ${{ steps.ref.outputs.ref == 'refs/heads/main' }}
         uses: ./packages/actions/src/releasePackages
         with:
           exclude: '@discordjs/docgen'
           dry: ${{ inputs.dry_run }}
           dev: true
+          tag: ${{ inputs.tag || 'dev' }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

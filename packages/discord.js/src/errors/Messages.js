@@ -64,7 +64,6 @@ const Messages = {
   [ErrorCodes.GuildVoiceChannelResolve]: 'Could not resolve channel to a guild voice channel.',
   [ErrorCodes.GuildChannelOrphan]: 'Could not find a parent to this guild channel.',
   [ErrorCodes.GuildChannelUnowned]: "The fetched channel does not belong to this manager's guild.",
-  [ErrorCodes.GuildOwned]: 'Guild is owned by the client.',
   [ErrorCodes.GuildMembersTimeout]: "Members didn't arrive in time.",
   [ErrorCodes.GuildSoundboardSoundsTimeout]: "Soundboard sounds didn't arrive in time.",
   [ErrorCodes.GuildUncachedMe]: 'The client user as a member of this guild is uncached.',
