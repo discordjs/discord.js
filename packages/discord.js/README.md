@@ -143,6 +143,6 @@ If you don't understand something in the documentation, you are experiencing pro
 [source]: https://github.com/discordjs/discord.js/tree/main/packages/discord.js
 [npm]: https://www.npmjs.com/package/discord.js
 [related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
-[rpc]: https://www.npmjs.com/package/discord-rpc
-[rpc-source]: https://github.com/discordjs/RPC
+[rpc]: https://www.npmjs.com/package/@discordjs/rpc
+[rpc-source]: https://github.com/discordjs/discord.js/tree/main/packages/rpc
 [contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md

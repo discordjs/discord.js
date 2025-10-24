@@ -23,6 +23,7 @@ on:
           - '@discordjs/next'
           - '@discordjs/proxy'
           - '@discordjs/rest'
+          - '@discordjs/rpc'
           - '@discordjs/structures'
           - '@discordjs/util'
           - '@discordjs/voice'

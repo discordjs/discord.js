@@ -34,6 +34,7 @@ This repository contains multiple packages with separate [releases][github-relea
 - `@discordjs/formatters` ([source][formatters-source]) - A collection of functions for formatting strings
 - `@discordjs/proxy` ([source][proxy-source]) - A wrapper around `@discordjs/rest` for running an HTTP proxy
 - `@discordjs/rest` ([source][rest-source]) - A module for interacting with the Discord REST API
+- `@discordjs/rpc` ([source][rpc-source]) - A simple RPC client for Discord
 - `@discordjs/structures` ([source][structures-source]) - A wrapper around Discord's structures
 - `@discordjs/voice` ([source][voice-source]) - A module for interacting with the Discord Voice API
 - `@discordjs/util` ([source][util-source]) - A collection of utility functions
@@ -50,10 +51,6 @@ This repository contains multiple packages with separate [releases][github-relea
 - [GitHub][source]
 - [npm][npm]
 - [Related libraries][related-libs]
-
-### Extensions
-
-- [RPC][rpc] ([source][rpc-source])
 
 ## Contributing
 
@@ -74,8 +71,6 @@ If you don't understand something in the documentation, you are experiencing pro
 [source]: https://github.com/discordjs/discord.js/tree/main/packages/discord.js
 [npm]: https://www.npmjs.com/package/discord.js
 [related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
-[rpc]: https://www.npmjs.com/package/discord-rpc
-[rpc-source]: https://github.com/discordjs/RPC
 [contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md
 [github-releases]: https://github.com/discordjs/discord.js/releases
 [brokers-source]: https://github.com/discordjs/discord.js/tree/main/packages/brokers
@@ -85,6 +80,7 @@ If you don't understand something in the documentation, you are experiencing pro
 [formatters-source]: https://github.com/discordjs/discord.js/tree/main/packages/formatters
 [proxy-source]: https://github.com/discordjs/discord.js/tree/main/packages/proxy
 [rest-source]: https://github.com/discordjs/discord.js/tree/main/packages/rest
+[rpc-source]: https://github.com/discordjs/discord.js/tree/main/packages/rpc
 [structures-source]: https://github.com/discordjs/discord.js/tree/main/packages/structures
 [voice-source]: https://github.com/discordjs/discord.js/tree/main/packages/voice
 [util-source]: https://github.com/discordjs/discord.js/tree/main/packages/util
