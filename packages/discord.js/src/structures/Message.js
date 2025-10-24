@@ -807,7 +807,7 @@ class Message extends Base {
     const permissions = channel?.permissionsFor(this.client.user);
     if (!permissions) return false;
 
-    return permissions.has([PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.PinMessages]);
+    return permissions.has(PermissionFlagsBits.ReadMessageHistory | PermissionFlagsBits.PinMessages);
   }
 
   /**
