@@ -459,12 +459,6 @@ importers:
       '@discordjs/scripts':
         specifier: workspace:^
         version: link:../scripts
-      '@vercel/blob':
-        specifier: ^2.0.0
-        version: 2.0.0
-      '@vercel/postgres':
-        specifier: ^0.10.0
-        version: 0.10.0
       cloudflare:
         specifier: ^5.2.0
         version: 5.2.0(encoding@0.1.13)

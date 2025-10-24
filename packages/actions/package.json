@@ -46,8 +46,6 @@
 		"@actions/glob": "^0.5.0",
 		"@aws-sdk/client-s3": "^3.901.0",
 		"@discordjs/scripts": "workspace:^",
-		"@vercel/blob": "^2.0.0",
-		"@vercel/postgres": "^0.10.0",
 		"cloudflare": "^5.2.0",
 		"commander": "^14.0.1",
 		"meilisearch": "^0.38.0",
