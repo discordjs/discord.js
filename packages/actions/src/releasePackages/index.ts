@@ -50,12 +50,22 @@ const tag = inputTag.length ? inputTag : dev ? 'dev' : undefined;
 const [packageName] = program.processedArgs as [string];
 const tree = await generateReleaseTree(dry, tag, packageName, exclude);
 
+const released: string[] = [];
+const skipped: string[] = [];
+
 for (const branch of tree) {
 	startGroup(`Releasing ${branch.map((entry) => `${entry.name}@${entry.version}`).join(', ')}`);
-	await Promise.all(branch.map(async (release) => releasePackage(release, dry, tag)));
+	await Promise.all(
+		branch.map(async (release) => {
+			const result = await releasePackage(release, dry, tag);
+			if (result) {
+				released.push(`${release.name}@${release.version}`);
+			} else {
+				skipped.push(`${release.name}@${release.version}`);
+			}
+		}),
+	);
 	endGroup();
 }
 
-info(
-	`Successfully released ${tree.map((branch) => branch.map((entry) => `${entry.name}@${entry.version}`).join(', ')).join(', ')}`,
-);
+info(`Successfully released ${released.join(', ')}\nSkipped (already released) ${skipped.join(', ')}`);
