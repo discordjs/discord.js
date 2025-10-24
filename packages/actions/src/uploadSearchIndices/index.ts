@@ -1,10 +1,10 @@
 import process from 'node:process';
 import { setFailed } from '@actions/core';
 import { generateAllIndices } from '@discordjs/scripts';
+import Cloudflare from 'cloudflare';
 import { MeiliSearch } from 'meilisearch';
 import pLimit from 'p-limit';
 import { fetch } from 'undici';
-import Cloudflare from 'cloudflare';
 
 if (!(process.env.CF_D1_DOCS_API_KEY && process.env.CF_D1_DOCS_ID && process.env.CF_ACCOUNT_ID)) {
 	setFailed('Missing Cloudflare D1 environment variables.');
@@ -22,7 +22,7 @@ if (!process.env.SEARCH_API_KEY) {
 	setFailed('SEARCH_API_KEY is not set');
 }
 
-const r2 = new Cloudflare({
+const cf = new Cloudflare({
 	apiToken: process.env.CF_D1_DOCS_API_KEY!,
 });
 
@@ -40,7 +40,7 @@ try {
 		fetchPackageVersions: async (pkg) => {
 			console.info(`Fetching versions for ${pkg}...`);
 
-			const { result } = await r2.d1.database.query(process.env.CF_D1_DOCS_ID!, {
+			const { result } = await cf.d1.database.query(process.env.CF_D1_DOCS_ID!, {
 				account_id: process.env.CF_ACCOUNT_ID!,
 				sql: `select version from documentation where name = ? order by version desc;`,
 				params: [pkg],
@@ -51,7 +51,7 @@ try {
 		fetchPackageVersionDocs: async (pkg, version) => {
 			console.log(`Fetching data for ${pkg} ${version}...`);
 
-			const { result } = await r2.d1.database.query(process.env.CF_D1_DOCS_ID!, {
+			const { result } = await cf.d1.database.query(process.env.CF_D1_DOCS_ID!, {
 				account_id: process.env.CF_ACCOUNT_ID!,
 				sql: `select url from documentation where name = ? and version = ?;`,
 				params: [pkg, version],
