@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.24.0](https://github.com/discordjs/discord.js/compare/14.23.2...14.24.0) - (2025-10-24)
+
+## Bug Fixes
+
+- **Message:** Update `pinnable` to check for migrated guilds (#11189) ([ee988e3](https://github.com/discordjs/discord.js/commit/ee988e3e75d39e91a98a572e72a5981e0ef87dbc))
+
+## Features
+
+- Handle file upload component for v14 (#11179) ([104ad75](https://github.com/discordjs/discord.js/commit/104ad754f36933276f3acfd4164f7f19d50dfe2e))
+
 # [14.23.2](https://github.com/discordjs/discord.js/compare/14.23.1...14.23.2) - (2025-10-09)
 
 ## Bug Fixes
