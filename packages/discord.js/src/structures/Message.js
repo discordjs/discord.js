@@ -781,11 +781,17 @@ class Message extends Base {
    */
   get pinnable() {
     const { channel } = this;
-    return Boolean(
-      !this.system &&
-        (!this.guild ||
-          (channel?.viewable &&
-            channel?.permissionsFor(this.client.user)?.has(PermissionFlagsBits.ManageMessages, false))),
+
+    if (this.system) return false;
+    if (!this.guild) return true;
+    if (!channel?.viewable) return false;
+
+    const permissions = channel?.permissionsFor(this.client.user);
+    if (!permissions) return false;
+
+    return (
+      permissions.has([PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.PinMessages]) ||
+      permissions.has([PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.ManageMessages])
     );
   }
 
