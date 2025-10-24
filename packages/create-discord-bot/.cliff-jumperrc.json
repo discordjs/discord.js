@@ -2,5 +2,6 @@
 	"name": "create-discord-bot",
 	"packagePath": "packages/create-discord-bot",
 	"tagTemplate": "{{name}}@{{new-version}}",
-	"identifierBase": false
+	"identifierBase": false,
+	"monoRepo": true
 }
