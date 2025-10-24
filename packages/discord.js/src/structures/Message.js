@@ -10,7 +10,6 @@ const {
   MessageFlags,
   PermissionFlagsBits,
   MessageReferenceType,
-  GuildFeature,
 } = require('discord-api-types/v10');
 const Attachment = require('./Attachment');
 const Base = require('./Base');
@@ -789,10 +788,9 @@ class Message extends Base {
             (channel
               ?.permissionsFor(this.client.user)
               ?.has([PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.PinMessages], false) ||
-              (!this.guild.features.includes(GuildFeature.PinPermissionMigrationComplete) &&
-                channel
-                  ?.permissionsFor(this.client.user)
-                  ?.has([PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.ManageMessages], false))))),
+              channel
+                ?.permissionsFor(this.client.user)
+                ?.has([PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.ManageMessages], false)))),
     );
   }
 
