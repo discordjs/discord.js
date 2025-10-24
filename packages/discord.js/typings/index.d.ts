@@ -2661,7 +2661,7 @@ export class ModalComponentResolver<Cached extends CacheType = CacheType> {
   public getSelectedMentionables(customId: string, required: true): ModalSelectedMentionables<Cached>;
   public getSelectedMentionables(customId: string, required?: boolean): ModalSelectedMentionables<Cached> | null;
   public getUploadedFiles(customId: string, required: true): ReadonlyCollection<Snowflake, Attachment>;
-  public getUploadedFiles(customId: string, required?: boolean): ReadonlyCollection<string, Attachment> | null;
+  public getUploadedFiles(customId: string, required?: boolean): ReadonlyCollection<Snowflake, Attachment> | null;
 }
 
 export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = CacheType>
