@@ -66,7 +66,7 @@
   "homepage": "https://discord.js.org",
   "funding": "https://github.com/discordjs/discord.js?sponsor",
   "dependencies": {
-    "@discordjs/builders": "^1.12.2",
+    "@discordjs/builders": "^1.13.0",
     "@discordjs/collection": "1.5.3",
     "@discordjs/formatters": "^0.6.1",
     "@discordjs/rest": "workspace:^",
