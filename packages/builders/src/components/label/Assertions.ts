@@ -2,6 +2,7 @@ import { s } from '@sapphire/shapeshift';
 import { ComponentType } from 'discord-api-types/v10';
 import { isValidationEnabled } from '../../util/validation.js';
 import { idValidator } from '../Assertions.js';
+import { fileUploadPredicate } from '../fileUpload/Assertions.js';
 import {
 	selectMenuChannelPredicate,
 	selectMenuMentionablePredicate,
@@ -24,6 +25,7 @@ export const labelPredicate = s
 			selectMenuMentionablePredicate,
 			selectMenuChannelPredicate,
 			selectMenuStringPredicate,
+			fileUploadPredicate,
 		]),
 	})
 	.setValidationEnabled(isValidationEnabled);
