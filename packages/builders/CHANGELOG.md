@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.13.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.12.2...@discordjs/builders@1.13.0) - (2025-10-24)
+
+## Features
+
+- V1 builders file uploads support (#11196) ([1417c49](https://github.com/discordjs/discord.js/commit/1417c498a40b843d772ecf88dfff5f87a1665042))
+
+## Testing
+
+- Fix type error ([f780c6a](https://github.com/discordjs/discord.js/commit/f780c6a5500f7ea5c7a1ea7cd6720f6159d9d36e))
+
 # [@discordjs/builders@1.12.2](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.12.1...@discordjs/builders@1.12.2) - (2025-10-09)
 
 ## Bug Fixes
