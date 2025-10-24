@@ -1,4 +1,4 @@
-import { getInput, startGroup, endGroup, getBooleanInput, info } from '@actions/core';
+import { getInput, startGroup, endGroup, getBooleanInput, notice } from '@actions/core';
 import { program } from 'commander';
 import { generateReleaseTree } from './generateReleaseTree.js';
 import { releasePackage } from './releasePackage.js';
@@ -68,4 +68,6 @@ for (const branch of tree) {
 	endGroup();
 }
 
-info(`Successfully released ${released.join(', ')}\nSkipped (already released) ${skipped.join(', ')}`);
+const releasedPackages = released.length > 0 ? released.join(', ') : 'None';
+const skippedPackages = skipped.length > 0 ? skipped.join(', ') : 'None';
+notice(`Released: ${releasedPackages}\nSkipped: ${skippedPackages}`, { title: 'Release summary' });
