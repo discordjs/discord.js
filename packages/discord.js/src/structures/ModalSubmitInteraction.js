@@ -9,11 +9,19 @@ const InteractionResponses = require('./interfaces/InteractionResponses');
 const { transformResolved } = require('../util/Util');
 
 const getMessage = lazy(() => require('./Message').Message);
+const getAttachment = lazy(() => require('./Attachment'));
 
 /**
  * @typedef {Object} BaseModalData
  * @property {ComponentType} type The component type of the field
  * @property {number} id The id of the field
+ */
+
+/**
+ * @typedef {BaseModalData} FileUploadModalData
+ * @property {string} customId The custom id of the file upload
+ * @property {string[]} values The values of the file upload
+ * @property {Collection<string, Attachment>} [attachments] The resolved attachments
  */
 
 /**
@@ -37,7 +45,7 @@ const getMessage = lazy(() => require('./Message').Message);
  */
 
 /**
- * @typedef {SelectMenuModalData|TextInputModalData} ModalData
+ * @typedef {SelectMenuModalData|TextInputModalData|FileUploadModalData} ModalData
  */
 
 /**
@@ -161,7 +169,7 @@ class ModalSubmitInteraction extends BaseInteraction {
 
       /* eslint-disable max-depth */
       if (resolved) {
-        const { members, users, channels, roles } = resolved;
+        const { members, users, channels, roles, attachments } = resolved;
         const valueSet = new Set(rawComponent.values);
 
         if (users) {
@@ -201,6 +209,15 @@ class ModalSubmitInteraction extends BaseInteraction {
           for (const [id, role] of Object.entries(roles)) {
             if (valueSet.has(id)) {
               data.roles.set(id, guild?.roles._add(role) ?? role);
+            }
+          }
+        }
+
+        if (attachments) {
+          data.attachments = new Collection();
+          for (const [id, attachment] of Object.entries(attachments)) {
+            if (valueSet.has(id)) {
+              data.attachments.set(id, new (getAttachment())(attachment));
             }
           }
         }

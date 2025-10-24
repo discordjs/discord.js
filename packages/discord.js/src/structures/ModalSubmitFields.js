@@ -216,6 +216,17 @@ class ModalSubmitFields {
 
     return null;
   }
+
+  /**
+   * Gets file upload component
+   *
+   * @param {string} customId The custom id of the component
+   * @param {boolean} [required=false] Whether to throw an error if the component value is not found or empty
+   * @returns {?Collection<Snowflake, Attachment>} The uploaded files, or null if none were uploaded and not required
+   */
+  getUploadedFiles(customId, required = false) {
+    return this._getTypedComponent(customId, [ComponentType.FileUpload], ['attachments'], required).attachments ?? null;
+  }
 }
 
 module.exports = ModalSubmitFields;
