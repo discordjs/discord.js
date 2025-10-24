@@ -10,6 +10,7 @@ import type {
 import { ComponentType } from 'discord-api-types/v10';
 import { ComponentBuilder } from '../Component.js';
 import { createComponentBuilder, resolveBuilder } from '../Components.js';
+import type { FileUploadBuilder } from '../fileUpload/FileUpload.js';
 import { ChannelSelectMenuBuilder } from '../selectMenu/ChannelSelectMenu.js';
 import { MentionableSelectMenuBuilder } from '../selectMenu/MentionableSelectMenu.js';
 import { RoleSelectMenuBuilder } from '../selectMenu/RoleSelectMenu.js';
@@ -21,6 +22,7 @@ import { labelPredicate } from './Assertions.js';
 export interface LabelBuilderData extends Partial<Omit<APILabelComponent, 'component'>> {
 	component?:
 		| ChannelSelectMenuBuilder
+		| FileUploadBuilder
 		| MentionableSelectMenuBuilder
 		| RoleSelectMenuBuilder
 		| StringSelectMenuBuilder
