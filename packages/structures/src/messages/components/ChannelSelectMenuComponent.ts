@@ -25,7 +25,7 @@ export class ChannelSelectMenuComponent<
 	}
 
 	/**
-	 * The timestamp this call ended at, or `null`if it didn't end yet
+	 * The list of channel types to include in the channel select component
 	 */
 	public get channelTypes() {
 		return Array.isArray(this[kData].channel_types) ? (this[kData].channel_types as readonly ChannelType[]) : null;

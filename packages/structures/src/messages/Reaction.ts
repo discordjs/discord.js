@@ -60,10 +60,10 @@ export class Reaction<Omitted extends keyof APIReaction | '' = ''> extends Struc
 	}
 
 	/**
-	 * Whether the current user has super-reacted using this emoji
+	 * The colors used for super reaction
 	 */
 	public get burstColors() {
-		return this[kData].burst_colors;
+		return this[kBurstColors];
 	}
 
 	/**
