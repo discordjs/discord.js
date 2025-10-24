@@ -10,10 +10,6 @@ if (!(process.env.CF_D1_DOCS_API_KEY && process.env.CF_D1_DOCS_ID && process.env
 	setFailed('Missing Cloudflare D1 environment variables.');
 }
 
-if (!process.env.DATABASE_URL) {
-	setFailed('DATABASE_URL is not set');
-}
-
 if (!process.env.SEARCH_API_URL) {
 	setFailed('SEARCH_API_URL is not set');
 }

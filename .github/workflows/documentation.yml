@@ -277,7 +277,9 @@ jobs:
 
       - name: Upload search indices to meilisearch
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CF_D1_DOCS_API_KEY: ${{ secrets.CF_D1_DOCS_API_KEY }}
+          CF_D1_DOCS_ID: ${{ secrets.CF_D1_DOCS_ID }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           SEARCH_API_URL: ${{ secrets.SEARCH_API_URL }}
           SEARCH_API_KEY: ${{ secrets.SEARCH_API_KEY }}
         uses: ./packages/actions/src/uploadSearchIndices
