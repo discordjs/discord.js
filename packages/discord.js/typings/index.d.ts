@@ -274,11 +274,13 @@ export interface ActionRowData<ComponentType extends ActionRowComponentData | JS
 
 export type ComponentInLabelData =
   | ChannelSelectMenuComponentData
+  | FileUploadComponentData
   | MentionableSelectMenuComponentData
   | RoleSelectMenuComponentData
   | StringSelectMenuComponentData
   | TextInputComponentData
   | UserSelectMenuComponentData;
+
 export interface LabelData extends BaseComponentData {
   component: ComponentInLabelData;
   description?: string;
@@ -2580,7 +2582,12 @@ export interface SelectMenuModalData<Cached extends CacheType = CacheType>
   values: readonly string[];
 }
 
-export type ModalData = SelectMenuModalData | TextInputModalData;
+export interface FileUploadModalData extends BaseModalData<ComponentType.FileUpload> {
+  customId: string;
+  files: readonly Attachment[];
+}
+
+export type ModalData = FileUploadModalData | SelectMenuModalData | TextInputModalData;
 
 export interface LabelModalData extends BaseModalData<ComponentType.Label> {
   component: readonly ModalData[];
@@ -2653,6 +2660,8 @@ export class ModalComponentResolver<Cached extends CacheType = CacheType> {
 
   public getSelectedMentionables(customId: string, required: true): ModalSelectedMentionables<Cached>;
   public getSelectedMentionables(customId: string, required?: boolean): ModalSelectedMentionables<Cached> | null;
+  public getUploadedFiles(customId: string, required: true): ReadonlyCollection<Snowflake, Attachment>;
+  public getUploadedFiles(customId: string, required?: boolean): ReadonlyCollection<Snowflake, Attachment> | null;
 }
 
 export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = CacheType>
@@ -5359,13 +5368,21 @@ export type OverriddenCaches =
   | 'GuildMessageManager'
   | 'GuildTextThreadManager';
 
+export interface CacheFactoryParams<Manager extends keyof Caches> {
+  holds: Caches[Manager][1];
+  manager: CacheConstructors[keyof Caches];
+  managerType: CacheConstructors[Exclude<keyof Caches, OverriddenCaches>];
+}
+
 // This doesn't actually work the way it looks 😢.
 // Narrowing the type of `manager.name` doesn't propagate type information to `holds` and the return type.
-export type CacheFactory = (
-  managerType: CacheConstructors[Exclude<keyof Caches, OverriddenCaches>],
-  holds: Caches[(typeof manager)['name']][1],
-  manager: CacheConstructors[keyof Caches],
-) => (typeof manager)['prototype'] extends DataManager<infer Key, infer Value, any> ? Collection<Key, Value> : never;
+export type CacheFactory = ({
+  holds,
+  manager,
+  managerType,
+}: CacheFactoryParams<keyof Caches>) => (typeof manager)['prototype'] extends DataManager<infer Key, infer Value, any>
+  ? Collection<Key, Value>
+  : never;
 
 export type CacheWithLimitsOptions = {
   [K in keyof Caches]?: Caches[K][0]['prototype'] extends DataManager<infer Key, infer Value, any>
@@ -5621,6 +5638,7 @@ export interface CommandInteractionOption<Cached extends CacheType = CacheType> 
 }
 
 export interface BaseInteractionResolvedData<Cached extends CacheType = CacheType> {
+  attachments?: ReadonlyCollection<Snowflake, Attachment>;
   channels?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, Channel, APIInteractionDataResolvedChannel>>;
   members?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>>;
   roles?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
@@ -5629,7 +5647,6 @@ export interface BaseInteractionResolvedData<Cached extends CacheType = CacheTyp
 
 export interface CommandInteractionResolvedData<Cached extends CacheType = CacheType>
   extends BaseInteractionResolvedData<Cached> {
-  attachments?: ReadonlyCollection<Snowflake, Attachment>;
   messages?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, Message, APIMessage>>;
 }
 
@@ -6836,6 +6853,14 @@ export interface TextInputComponentData extends BaseComponentData {
   style: TextInputStyle;
   type: ComponentType.TextInput;
   value?: string;
+}
+
+export interface FileUploadComponentData extends BaseComponentData {
+  customId: string;
+  maxValues?: number;
+  minValues?: number;
+  required?: number;
+  type: ComponentType.FileUpload;
 }
 
 export type MessageTarget =
