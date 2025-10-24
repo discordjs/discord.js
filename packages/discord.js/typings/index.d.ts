@@ -419,7 +419,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public name: string;
   public nameLocalizations: LocalizationMap | null;
   public nameLocalized: string | null;
-  public options: (ApplicationCommandOption & { descriptionLocalized?: string; nameLocalized?: string })[];
+  public options: (ApplicationCommandOption & { descriptionLocalized?: string; nameLocalized?: string })[] | null;
   public permissions: ApplicationCommandPermissionsManager<
     PermissionsFetchType,
     PermissionsFetchType,
