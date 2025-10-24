@@ -1,5 +1,4 @@
-import type { APIFileUploadComponent } from 'discord-api-types/v10';
-import { ComponentType } from 'discord-api-types/v10';
+import { type APIFileUploadComponent, ComponentType } from 'discord-api-types/v10';
 import { ComponentBuilder } from '../Component.js';
 import { fileUploadPredicate } from './Assertions.js';
 
