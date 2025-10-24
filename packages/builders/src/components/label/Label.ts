@@ -1,5 +1,6 @@
 import type {
 	APIChannelSelectComponent,
+	APIFileUploadComponent,
 	APILabelComponent,
 	APIMentionableSelectComponent,
 	APIRoleSelectComponent,
@@ -12,6 +13,7 @@ import { resolveBuilder } from '../../util/resolveBuilder.js';
 import { validate } from '../../util/validation.js';
 import { ComponentBuilder } from '../Component.js';
 import { createComponentBuilder } from '../Components.js';
+import { FileUploadBuilder } from '../fileUpload/FileUpload.js';
 import { ChannelSelectMenuBuilder } from '../selectMenu/ChannelSelectMenu.js';
 import { MentionableSelectMenuBuilder } from '../selectMenu/MentionableSelectMenu.js';
 import { RoleSelectMenuBuilder } from '../selectMenu/RoleSelectMenu.js';
@@ -23,6 +25,7 @@ import { labelPredicate } from './Assertions.js';
 export interface LabelBuilderData extends Partial<Omit<APILabelComponent, 'component'>> {
 	component?:
 		| ChannelSelectMenuBuilder
+		| FileUploadBuilder
 		| MentionableSelectMenuBuilder
 		| RoleSelectMenuBuilder
 		| StringSelectMenuBuilder
@@ -178,6 +181,18 @@ export class LabelBuilder extends ComponentBuilder<APILabelComponent> {
 		input: APITextInputComponent | TextInputBuilder | ((builder: TextInputBuilder) => TextInputBuilder),
 	): this {
 		this.data.component = resolveBuilder(input, TextInputBuilder);
+		return this;
+	}
+
+	/**
+	 * Sets a file upload component to this label.
+	 *
+	 * @param input - A function that returns a component builder or an already built builder
+	 */
+	public setFileUploadComponent(
+		input: APIFileUploadComponent | FileUploadBuilder | ((builder: FileUploadBuilder) => FileUploadBuilder),
+	): this {
+		this.data.component = resolveBuilder(input, FileUploadBuilder);
 		return this;
 	}
 

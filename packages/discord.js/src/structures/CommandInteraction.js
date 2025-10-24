@@ -96,6 +96,7 @@ class CommandInteraction extends BaseInteraction {
    * @property {Collection<Snowflake, GuildMember|APIGuildMember>} [members] The resolved guild members
    * @property {Collection<Snowflake, Role|APIRole>} [roles] The resolved roles
    * @property {Collection<Snowflake, BaseChannel|APIChannel>} [channels] The resolved channels
+   * @property {Collection<Snowflake, Attachment>} [attachments] The resolved attachments
    */
 
   /**
@@ -103,7 +104,6 @@ class CommandInteraction extends BaseInteraction {
    *
    * @typedef {BaseInteractionResolvedData} CommandInteractionResolvedData
    * @property {Collection<Snowflake, Message|APIMessage>} [messages] The resolved messages
-   * @property {Collection<Snowflake, Attachment>} [attachments] The resolved attachments
    */
 
   /**

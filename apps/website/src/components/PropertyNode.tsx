@@ -9,6 +9,7 @@ import { ExcerptNode } from './ExcerptNode';
 import { InheritedFromNode } from './InheritedFromNode';
 import { SeeNode } from './SeeNode';
 import { SummaryNode } from './SummaryNode';
+import { UnstableNode } from './UnstableNode';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/Collapsible';
 
 export async function PropertyNode({
@@ -77,6 +78,10 @@ export async function PropertyNode({
 
 								{property.summary?.deprecatedBlock.length ? (
 									<DeprecatedNode deprecatedBlock={property.summary.deprecatedBlock} version={version} />
+								) : null}
+
+								{property.summary?.unstableBlock?.length ? (
+									<UnstableNode unstableBlock={property.summary.unstableBlock} version={version} />
 								) : null}
 
 								{property.summary?.summarySection.length ? (

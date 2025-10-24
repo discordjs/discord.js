@@ -12,6 +12,10 @@ describe('Text Input Components', () => {
 			}).not.toThrowError();
 
 			expect(() => {
+				textInputComponent().setCustomId('foobar').setValue('').setStyle(TextInputStyle.Paragraph).toJSON();
+			}).not.toThrowError();
+
+			expect(() => {
 				textInputComponent()
 					.setCustomId('foobar')
 					.setMaxLength(100)
