@@ -102,7 +102,7 @@
 		"typescript": "~5.5.4",
 		"undici": "6.21.1",
 		"vitest": "^2.0.5",
-		"zlib-sync": "^0.1.9"
+		"zlib-sync": "^0.1.10"
 	},
 	"engines": {
 		"node": ">=16.11.0"
