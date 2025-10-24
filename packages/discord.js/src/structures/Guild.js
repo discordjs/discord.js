@@ -1425,7 +1425,6 @@ class Guild extends AnonymousGuild {
    *   .catch(console.error);
    */
   async leave() {
-    if (this.ownerId === this.client.user.id) throw new DiscordjsError(ErrorCodes.GuildOwned);
     await this.client.rest.delete(Routes.userGuild(this.id));
     return this;
   }
