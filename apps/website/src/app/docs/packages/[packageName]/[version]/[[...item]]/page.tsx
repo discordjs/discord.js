@@ -62,8 +62,12 @@ export default async function Page({
 
 		try {
 			fileContent = await readFile(join(process.cwd(), `src/assets/readme/${packageName}/home-README.md`), 'utf8');
-		} catch {
-			notFound();
+		} catch (error) {
+			if ('code' in error && error.code === 'ENOENT') {
+				notFound();
+			}
+
+			throw error;
 		}
 
 		return (
