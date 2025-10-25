@@ -21,10 +21,10 @@ const getAttachment = lazy(() => require('./Attachment.js').Attachment);
  * @typedef {BaseModalData} SelectMenuModalData
  * @property {string} customId The custom id of the component
  * @property {string[]} values The values of the component
- * @property {Collection<string, GuildMember|APIGuildMember>} [members] The resolved members
- * @property {Collection<string, User|APIUser>} [users] The resolved users
- * @property {Collection<string, Role|APIRole>} [roles] The resolved roles
- * @property {Collection<string, BaseChannel|APIChannel>} [channels] The resolved channels
+ * @property {Collection<Snowflake, GuildMember|APIGuildMember>} [members] The resolved members
+ * @property {Collection<Snowflake, User|APIUser>} [users] The resolved users
+ * @property {Collection<Snowflake, Role|APIRole>} [roles] The resolved roles
+ * @property {Collection<Snowflake, BaseChannel|APIChannel>} [channels] The resolved channels
  */
 
 /**
