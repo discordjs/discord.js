@@ -1,12 +1,13 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { MessageReferenceType, RESTAPIMessageReference, Snowflake } from 'discord-api-types/v10';
+import { Refineable } from '../mixins/Refineable.js';
 import { validate } from '../util/validation.js';
 import { messageReferencePredicate } from './Assertions.js';
 
 /**
  * A builder that creates API-compatible JSON data for message references.
  */
-export class MessageReferenceBuilder implements JSONEncodable<RESTAPIMessageReference> {
+export class MessageReferenceBuilder extends Refineable implements JSONEncodable<RESTAPIMessageReference> {
 	/**
 	 * The API data associated with this message reference.
 	 */
@@ -18,6 +19,7 @@ export class MessageReferenceBuilder implements JSONEncodable<RESTAPIMessageRefe
 	 * @param data - The API data to create this message reference with
 	 */
 	public constructor(data: Partial<RESTAPIMessageReference> = {}) {
+		super();
 		this.data = structuredClone(data);
 	}
 

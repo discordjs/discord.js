@@ -28,6 +28,7 @@ import { MediaGalleryBuilder } from '../components/v2/MediaGallery.js';
 import { SectionBuilder } from '../components/v2/Section.js';
 import { SeparatorBuilder } from '../components/v2/Separator.js';
 import { TextDisplayBuilder } from '../components/v2/TextDisplay.js';
+import { Refineable } from '../mixins/Refineable.js';
 import { normalizeArray, type RestOrArray } from '../util/normalizeArray.js';
 import { resolveBuilder } from '../util/resolveBuilder.js';
 import { validate } from '../util/validation.js';
@@ -56,7 +57,7 @@ export interface MessageBuilderData
 /**
  * A builder that creates API-compatible JSON data for messages.
  */
-export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJSONBody> {
+export class MessageBuilder extends Refineable implements JSONEncodable<RESTPostAPIChannelMessageJSONBody> {
 	/**
 	 * The API data associated with this message.
 	 */
@@ -89,6 +90,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	 * @param data - The API data to create this message with
 	 */
 	public constructor(data: Partial<RESTPostAPIChannelMessageJSONBody> = {}) {
+		super();
 		const { attachments = [], embeds = [], components = [], message_reference, poll, allowed_mentions, ...rest } = data;
 
 		this.data = {

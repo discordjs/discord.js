@@ -1,12 +1,13 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { RESTAPIAttachment, Snowflake } from 'discord-api-types/v10';
+import { Refineable } from '../mixins/Refineable.js';
 import { validate } from '../util/validation.js';
 import { attachmentPredicate } from './Assertions.js';
 
 /**
  * A builder that creates API-compatible JSON data for attachments.
  */
-export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
+export class AttachmentBuilder extends Refineable implements JSONEncodable<RESTAPIAttachment> {
 	/**
 	 * The API data associated with this attachment.
 	 */
@@ -15,10 +16,11 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 	/**
 	 * Creates a new attachment builder.
 	 *
-	 * @param data - The API data to create this attachment with
+	 * @param attachment - The attachment to build from
 	 */
-	public constructor(data: Partial<RESTAPIAttachment> = {}) {
-		this.data = structuredClone(data);
+	public constructor(attachment: Partial<RESTAPIAttachment> = {}) {
+		super();
+		this.data = { ...structuredClone(attachment) };
 	}
 
 	/**

@@ -1,5 +1,6 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { RESTAPIPoll, APIPollMedia, PollLayoutType, APIPollAnswer } from 'discord-api-types/v10';
+import { Refineable } from '../../mixins/Refineable.js';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { resolveBuilder } from '../../util/resolveBuilder.js';
 import { validate } from '../../util/validation.js';
@@ -15,7 +16,7 @@ export interface PollData extends Omit<RESTAPIPoll, 'answers' | 'question'> {
 /**
  * A builder that creates API-compatible JSON data for polls.
  */
-export class PollBuilder implements JSONEncodable<RESTAPIPoll> {
+export class PollBuilder extends Refineable implements JSONEncodable<RESTAPIPoll> {
 	/**
 	 * The API data associated with this poll.
 	 */
@@ -34,6 +35,7 @@ export class PollBuilder implements JSONEncodable<RESTAPIPoll> {
 	 * @param data - The API data to create this poll with
 	 */
 	public constructor(data: Partial<RESTAPIPoll> = {}) {
+		super();
 		const { question, answers = [], ...rest } = data;
 
 		this.data = {

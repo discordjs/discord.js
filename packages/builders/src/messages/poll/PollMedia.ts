@@ -1,9 +1,10 @@
 import type { APIPollMedia } from 'discord-api-types/v10';
+import { Refineable } from '../../mixins/Refineable.js';
 
 /**
  * The base poll media builder that contains common symbols for poll media builders.
  */
-export abstract class PollMediaBuilder {
+export abstract class PollMediaBuilder extends Refineable {
 	/**
 	 * The API data associated with this poll media.
 	 *
@@ -17,6 +18,7 @@ export abstract class PollMediaBuilder {
 	 * @param data - The API data to create this poll media with
 	 */
 	public constructor(data: Partial<APIPollMedia> = {}) {
+		super();
 		this.data = structuredClone(data);
 	}
 
