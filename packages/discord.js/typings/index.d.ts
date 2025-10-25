@@ -7442,7 +7442,7 @@ export interface FileUploadComponentData extends BaseComponentData {
   customId: string;
   maxValues?: number;
   minValues?: number;
-  required?: number;
+  required?: boolean;
   type: ComponentType.FileUpload;
 }
 
