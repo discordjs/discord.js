@@ -19,13 +19,6 @@ export default {
 			fullUrl: true,
 		},
 	},
-	experimental: {
-		ppr: true,
-		dynamicOnHover: true,
-	},
-	eslint: {
-		ignoreDuringBuilds: true,
-	},
 	reactCompiler: true,
 	typescript: {
 		ignoreBuildErrors: true,
