@@ -2832,7 +2832,7 @@ export interface FileUploadModalData extends BaseModalData<ComponentType.FileUpl
 export type ModalData = FileUploadModalData | SelectMenuModalData | TextInputModalData;
 
 export interface LabelModalData extends BaseModalData<ComponentType.Label> {
-  component: readonly ModalData[];
+  component: ModalData;
 }
 export interface ActionRowModalData extends BaseModalData<ComponentType.ActionRow> {
   components: readonly TextInputModalData[];
