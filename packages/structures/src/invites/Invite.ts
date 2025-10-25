@@ -1,5 +1,6 @@
 import { type APIInvite, type APIExtendedInvite, RouteBases } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
+import { dateToDiscordISOTimestamp } from '../utils/optimization.js';
 import { kData, kExpiresTimestamp, kCreatedTimestamp, kPatch } from '../utils/symbols.js';
 import type { Partialize } from '../utils/types.js';
 
@@ -201,11 +202,11 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = 'created_at' | 
 	public override toJSON() {
 		const clone = super.toJSON();
 		if (this[kExpiresTimestamp]) {
-			clone.expires_at = new Date(this[kExpiresTimestamp]).toISOString();
+			clone.expires_at = dateToDiscordISOTimestamp(new Date(this[kExpiresTimestamp]));
 		}
 
 		if (this[kCreatedTimestamp]) {
-			clone.created_at = new Date(this[kCreatedTimestamp]).toISOString();
+			clone.created_at = dateToDiscordISOTimestamp(new Date(this[kCreatedTimestamp]));
 		}
 
 		return clone;
