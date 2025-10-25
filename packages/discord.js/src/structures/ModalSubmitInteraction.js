@@ -20,7 +20,7 @@ const getAttachment = lazy(() => require('./Attachment'));
 /**
  * @typedef {BaseModalData} FileUploadModalData
  * @property {string} customId The custom id of the file upload
- * @property {string[]} values The values of the file upload
+ * @property {Snowflake[]} values The values of the file upload
  * @property {Collection<string, Attachment>} [attachments] The resolved attachments
  */
 
