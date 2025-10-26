@@ -1,7 +1,11 @@
-import { getInput, startGroup, endGroup, getBooleanInput, info } from '@actions/core';
+import { getInput, startGroup, endGroup, getBooleanInput, summary } from '@actions/core';
 import { program } from 'commander';
 import { generateReleaseTree } from './generateReleaseTree.js';
 import { releasePackage } from './releasePackage.js';
+
+function npmPackageLink(packageName: string) {
+	return `https://npmjs.com/package/${packageName}` as const;
+}
 
 const excludeInput = getInput('exclude');
 let dryInput = false;
@@ -46,26 +50,68 @@ if (!dev && inputTag.length) {
 }
 
 const tag = inputTag.length ? inputTag : dev ? 'dev' : undefined;
-
 const [packageName] = program.processedArgs as [string];
 const tree = await generateReleaseTree(dry, tag, packageName, exclude);
 
-const released: string[] = [];
-const skipped: string[] = [];
+interface ReleaseResult {
+	identifier: string;
+	url: string;
+}
+
+const publishedPackages: ReleaseResult[] = [];
+const skippedPackages: ReleaseResult[] = [];
 
 for (const branch of tree) {
 	startGroup(`Releasing ${branch.map((entry) => `${entry.name}@${entry.version}`).join(', ')}`);
+
 	await Promise.all(
 		branch.map(async (release) => {
-			const result = await releasePackage(release, dry, tag);
-			if (result) {
-				released.push(`${release.name}@${release.version}`);
+			const published = await releasePackage(release, dry, tag);
+			const identifier = `${release.name}@${release.version}`;
+
+			if (published) {
+				publishedPackages.push({ identifier, url: npmPackageLink(release.name) });
 			} else {
-				skipped.push(`${release.name}@${release.version}`);
+				skippedPackages.push({ identifier, url: npmPackageLink(release.name) });
 			}
 		}),
 	);
+
 	endGroup();
 }
 
-info(`Successfully released ${released.join(', ')}\nSkipped (already released) ${skipped.join(', ')}`);
+const result = summary.addHeading('Release summary');
+
+if (dry) {
+	result.addRaw('\n\n> [!NOTE]\n> This is a dry run.\n\n');
+}
+
+result.addHeading('Released', 2);
+
+if (publishedPackages.length === 0) {
+	result.addRaw('\n_None_\n\n');
+} else {
+	result.addRaw('\n');
+
+	for (const { identifier, url } of publishedPackages) {
+		result.addRaw(`- [${identifier}](${url})\n`);
+	}
+
+	result.addRaw(`\n`);
+}
+
+result.addHeading('Skipped', 2);
+
+if (skippedPackages.length === 0) {
+	result.addRaw('\n_None_\n\n');
+} else {
+	result.addRaw('\n');
+
+	for (const { identifier, url } of skippedPackages) {
+		result.addRaw(`- [${identifier}](${url})\n`);
+	}
+
+	result.addRaw(`\n`);
+}
+
+await result.write();
