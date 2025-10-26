@@ -38,7 +38,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 	incoming interactions from your modals.
 </Callout>
 
-The next step is to add components to the `modalBuilder`. These modal components are used to create the form of the modal.
+The next step is to add components to the `modalBuilder`.
 
 ### Label
 
@@ -54,7 +54,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 		const modal = new ModalBuilder().setCustomId('myModal').setTitle('My Modal');
 
 		// [!code focus:12]
-		// TODO: Add interactive components
+		// TODO: Add more interactive components...
 
 		// [!code ++:5]
 		const hobbiesLabel = new LabelBuilder()
@@ -63,10 +63,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
 			// The description is optional small text under the label and above the interactive component
 			.setDescription('Activities you like to participate in');
 
-		// TODO: Add components to modal...
+		// TODO: Add more components...
 
 		// [!code ++:2]
-		// Add label to modal
+		// Add label to the modal
 		modal.addLabelComponents(hobbiesLabel);
 
 		// TODO: Respond with modal...
@@ -75,7 +75,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
 ```
 
 <Callout type="warn">
-	`label` can be a max length of 45 characters `description` can be a max length of 100 characters
+	`label` can be a max length of 45 characters
+
+    `description` can be a max length of 100 characters
+
 </Callout>
 
 ### Text Input
@@ -95,12 +98,12 @@ client.on(Events.InteractionCreate, async (interaction) => {
 		// [!code ++:6]
 		const hobbiesInput = new TextInputBuilder()
 			.setCustomId('hobbiesInput')
-			// Paragraph means multiple lines of text.
-			.setStyle(TextInputStyle.Paragraph)
-			// Uninteractable text inside of the text input
+			// Short means single lines of text
+			.setStyle(TextInputStyle.Short)
+			// Uninteractable text inside of the text input box
 			.setPlaceholder('card games, films, books, etc.');
 
-		// TODO: Add additional interactive components
+		// TODO: Add more interactive components
 
 		// [!code focus:8]
 		const hobbiesLabel = new LabelBuilder()
@@ -109,12 +112,12 @@ client.on(Events.InteractionCreate, async (interaction) => {
 			// The description is optional small text under the label and above the interactive component
 			.setDescription('Activities you like to participate in')
 			// [!code ++:2]
-			// set text input component of label
+			// Set text input component of the label
 			.setTextInputComponent(hobbiesInput);
 
-		// TODO: Add components to modal...
+		// TODO: Add more components...
 
-		// Add label to modal
+		// Add the label to the modal
 		modal.addLabelComponents(hobbiesLabel);
 
 		// TODO: Respond with modal...
@@ -149,13 +152,13 @@ const input = new TextInputBuilder()
 
 ### Select Menu
 
-Select menu is an interactive component that allows you to limit user inputs to a preselected list of values
+A select menu is an interactive component that allows you to limit user inputs to a preselected list of values.
 
-In addition to string select menus, menus for users, roles, mentionables(user and roles), and channels can be used in modals
+In addition to string select menus, menus for users, roles, mentionables (user and roles), and channels can be used in modals
 
 <Callout>
 	For more information on the configuration of [select menus](../interactive-components/select-menus) see the
-	interaction page
+	interaction page.
 </Callout>
 
 ```js
@@ -176,8 +179,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 		const hobbiesInput = new TextInputBuilder()
 			.setCustomId('hobbiesInput')
-			// Paragraph means multiple lines of text.
-			.setStyle(TextInputStyle.Paragraph)
+			// Short means single lines of text
+			.setStyle(TextInputStyle.Short)
 			// Uninteractable text inside of the text input
 			.setPlaceholder('card games, films, books, etc.');
 
@@ -212,20 +215,20 @@ client.on(Events.InteractionCreate, async (interaction) => {
 			.setLabel("What's some of your favorite hobbies?")
 			// The description is optional small text under the label and above the interactive component
 			.setDescription('Activities you like to participate in')
-			// set text input component of label
+			// Set text input as component of the label
 			.setTextInputComponent(hobbiesInput);
 
 		// [!code focus:4]
 		// [!code ++:4]
 		const favoriteStarterLabel = new LabelBuilder()
 			.setLabel("What's your favorite Gen 1 Pokémon starter?")
-			// The Description is small text under the label above the interactive component
+			// Set string select menu as component of the label
 			.setStringSelectMenuComponent(favoriteStarterSelect);
 
-		// TODO: Add components to modal...
+		// TODO: Add more components...
 
 		// [!code focus:3]
-		// Add label to modal
+		// Add labels to modal
 		modal.addLabelComponents(hobbiesLabel); // [!code --]
 		modal.addLabelComponents(hobbiesLabel, favoriteStarterLabel); // [!code ++]
 
@@ -236,7 +239,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 ### Text Display
 
-Text display components are used to display text to the user witch does not fit in Labels or other interactive components
+Text display components are used to display text to the user which does not fit into labels or other interactive components.
 
 ```js
 const {
@@ -256,8 +259,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 		const hobbiesInput = new TextInputBuilder()
 			.setCustomId('hobbiesInput')
-			// Paragraph means multiple lines of text.
-			.setStyle(TextInputStyle.Paragraph)
+			// Short means single lines of text
+			.setStyle(TextInputStyle.Short)
 			// Uninteractable text inside of the text input
 			.setPlaceholder('card games, films, books, etc.');
 
@@ -290,30 +293,141 @@ client.on(Events.InteractionCreate, async (interaction) => {
 			.setLabel("What's some of your favorite hobbies?")
 			// The description is optional small text under the label and above the interactive component
 			.setDescription('Activities you like to participate in')
-			// set text input component of label
+			// Set text input as component of the label
 			.setTextInputComponent(hobbiesInput);
 
 		const favoriteStarterLabel = new LabelBuilder()
 			.setLabel("What's your favorite Gen 1 Pokémon starter?")
-			// The Description is small text under the label above the interactive component
+			// Set string select menu as component of the label
 			.setStringSelectMenuComponent(favoriteStarterSelect);
 
-		// [!code focus:6]
+		// [!code focus:3]
 		// [!code ++:2]
-		const beeFact = new TextDisplayBuilder().setContent(
-			"## Important Information\nAccording to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. The bee, of course, flies anyway because bees don't care what humans think is impossible.",
+		const text = new TextDisplayBuilder().setContent(
+			'Text that could not fit in to a label or description\n-# Markdown can also be used',
 		);
 
-		// Add label to modal
+		// TODO: Add more components...
+
+		// [!code focus:4]
+		// Add components to modal
 		modal
 			.addLabelComponents(hobbiesLabel, favoriteStarterLabel)
 			// [!code ++:1]
-			.addTextDisplayComponents(beeFact);
+			.addTextDisplayComponents(text);
 
 		// TODO: Respond with modal...
 	}
 });
 ```
+
+### File Upload
+
+File upload is an interactive component that allows a user to upload files to a modal.
+
+```js
+const {
+	StringSelectMenuBuilder,
+	StringSelectMenuOptionBuilder,
+	LabelBuilder,
+	ModalBuilder,
+	TextInputBuilder,
+	TextInputStyle,
+} = require('discord.js');
+
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+	if (interaction.commandName === 'ping') {
+		// Create the modal
+		const modal = new ModalBuilder().setCustomId('myModal').setTitle('My Modal');
+
+		const hobbiesInput = new TextInputBuilder()
+			.setCustomId('hobbiesInput')
+			// Short means single lines of text
+			.setStyle(TextInputStyle.Short)
+			// Uninteractable text inside of the text input
+			.setPlaceholder('card games, films, books, etc.');
+
+		const favoriteStarterSelect = new StringSelectMenuBuilder()
+			.setCustomId('starter')
+			.setPlaceholder('Make a selection!')
+			// Modal only property on select menus to prevent submission, defaults to true
+			.setRequired(true)
+			.addOptions(
+				// String select menu options
+				new StringSelectMenuOptionBuilder()
+					// Label displayed to user
+					.setLabel('Bulbasaur')
+					// Description of option
+					.setDescription('The dual-type Grass/Poison Seed Pokémon.')
+					// Value returned to in modal submission
+					.setValue('bulbasaur'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Charmander')
+					.setDescription('The Fire-type Lizard Pokémon.')
+					.setValue('charmander'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Squirtle')
+					.setDescription('The Water-type Tiny Turtle Pokémon.')
+					.setValue('squirtle'),
+			);
+		// [!code focus:2]
+		// [!code ++:2]
+		const pictureOfTheWeekUpload = new FileUploadBuilder().setCustomId('picture');
+
+		const hobbiesLabel = new LabelBuilder()
+			// The Label is large text identifying the interactive component to the user
+			.setLabel("What's some of your favorite hobbies?")
+			// The description is optional small text under the label and above the interactive component
+			.setDescription('Activities you like to participate in')
+			// set text input component of label
+			.setTextInputComponent(hobbiesInput);
+
+		const favoriteStarterLabel = new LabelBuilder()
+			.setLabel("What's your favorite Gen 1 Pokémon starter?")
+			.setStringSelectMenuComponent(favoriteStarterSelect);
+
+		const text = new TextDisplayBuilder().setContent(
+			'Text that could not fit in to a label or description\n-# Markdown can also be used',
+		);
+
+		// [!code focus:10]
+		// [!code ++:5]
+		const pictureOfTheWeekLabel = new LabelBuilder()
+			.setLabel('Picture of the Week')
+			.setDescription('The best pictures you have taken this week')
+			// Set file upload as component of the label
+			.setFileUploadComponent(pictureOfTheWeekUpload);
+
+		// Add components to modal
+		modal
+			.addLabelComponents(hobbiesLabel, favoriteStarterLabel)
+			.addTextDisplayComponents(text)
+			// [!code ++:1]
+			.addLabelComponents(pictureOfTheWeekLabel);
+
+		// TODO: Respond with modal...
+	}
+});
+```
+
+#### file upload properties
+
+In addition to the `customId`, a file upload component can be customized via the `FileUploadBuilder` methods:
+
+```js
+const pictureOfTheWeekUpload = new FileUploadBuilder()
+	// Set the optional identifier for component
+	.setId(0)
+	// Minimum number of items that must be uploaded (defaults to 1); min 0, max 10
+	.setMinValues(1)
+	// Maximum number of items that can be uploaded (defaults to 1); max 10
+	.setMaxValues(1)
+	// Require a value in this text input field (defaults to true)
+	.setRequired(true);
+```
+
+<Callout>File upload component can not be customized to limit file size or file extension</Callout>
 
 ### Responding with modal
 
@@ -342,8 +456,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 		const hobbiesInput = new TextInputBuilder()
 			.setCustomId('hobbiesInput')
-			// Paragraph means multiple lines of text.
-			.setStyle(TextInputStyle.Paragraph)
+			// Short means single lines of text
+			.setStyle(TextInputStyle.Short)
 			// Uninteractable text inside of the text input
 			.setPlaceholder('card games, films, books, etc.');
 
@@ -371,6 +485,8 @@ client.on(Events.InteractionCreate, async (interaction) => {
 					.setValue('squirtle'),
 			);
 
+		const pictureOfTheWeekUpload = new FileUploadBuilder().setCustomId('picture');
+
 		const hobbiesLabel = new LabelBuilder()
 			// The Label is large text identifying the interactive component to the user
 			.setLabel("What's some of your favorite hobbies?")
@@ -384,16 +500,25 @@ client.on(Events.InteractionCreate, async (interaction) => {
 			// The Description is small text under the label above the interactive component
 			.setStringSelectMenuComponent(favoriteStarterSelect);
 
-		const beeFact = new TextDisplayBuilder().setContent(
-			"## Important Information\nAccording to all known laws of aviation, there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. The bee, of course, flies anyway because bees don't care what humans think is impossible.",
+		const text = new TextDisplayBuilder().setContent(
+			'Text that could not fit in to a label or description\n-# Markdown can also be used',
 		);
 
-		// Add label to modal
-		modal.addLabelComponents(hobbiesLabel, favoriteStarterLabel).addTextDisplayComponents(beeFact);
+		const pictureOfTheWeekLabel = new LabelBuilder()
+			.setLabel('Picture of the Week')
+			.setDescription('The best pictures you have taken this week')
+			// Set file upload as component of the label
+			.setFileUploadComponent(pictureOfTheWeekUpload);
+
+		// Add components to modal
+		modal
+			.addLabelComponents(hobbiesLabel, favoriteStarterLabel)
+			.addTextDisplayComponents(text)
+			.addLabelComponents(pictureOfTheWeekLabel);
 
 		// [!code focus:2]
 		// [!code ++:2]
-		// Show modal to user
+		// Show modal to the user
 		await interaction.showModal(modal);
 	}
 });
@@ -407,7 +532,7 @@ Restart your bot and invoke the `/ping` command again. You should see the modal 
 
 ### Interaction collectors
 
-Modal submissions can be collected within the scope of the interaction that showed it by utilising an `InteractionCollector`, or the `ChatInputCommandInteraction#awaitModalSubmit` promisified method. These both provide instances of the `ModalSubmitInteraction` class as collected items.
+Modal submissions can be collected within the scope of the interaction that showed it by utilizing an `InteractionCollector`, or the `ChatInputCommandInteraction#awaitModalSubmit` promisified method. These both provide instances of the `ModalSubmitInteraction` class as collected items.
 
 For a detailed guide on receiving message components via collectors, please refer to the [collectors guide](../popular-topics/collectors#interaction-collectors).
 
@@ -467,8 +592,9 @@ client.on(Events.InteractionCreate, (interaction) => {
 		// Get the data entered by the user
 		const hobbies = interaction.fields.getTextInputValue('hobbiesInput');
 		const starter = interaction.fields.getStringSelectValues('starter');
+		const picture = interaction.fields.getUploadedFiles('picture');
 
-		console.log({ hobbies, starter });
+		console.log({ hobbies, starter, picture });
 	}
 });
 ```
