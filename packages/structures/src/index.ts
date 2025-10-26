@@ -9,5 +9,5 @@ export * from './users/index.js';
 export * from './Structure.js';
 export * from './Mixin.js';
 export * from './utils/optimization.js';
-export type * from './utils/types.ts';
+export type * from './utils/types.js';
 export type * from './MixinTypes.d.ts';

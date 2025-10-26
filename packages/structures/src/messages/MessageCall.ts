@@ -36,7 +36,7 @@ export class MessageCall<Omitted extends keyof APIMessageCall | '' = 'ended_time
 	}
 
 	/**
-	 * The timestamp this call ended at, or `null`if it didn't end yet
+	 * The timestamp this call ended at, or `null` if it didn't end yet
 	 */
 	public get endedTimestamp() {
 		return this[kEndedTimestamp];

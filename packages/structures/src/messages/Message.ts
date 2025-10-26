@@ -92,7 +92,7 @@ export class Message<Omitted extends keyof APIMessage | '' = 'edited_timestamp' 
 	}
 
 	/**
-	 * The timestamp this message was last edited at, or `null`if it never was edited
+	 * The timestamp this message was last edited at, or `null` if it never was edited
 	 */
 	public get editedTimestamp() {
 		return this[kEditedTimestamp];
