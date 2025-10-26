@@ -27,6 +27,7 @@ This repository contains multiple packages with separate [releases][github-relea
 ## Packages
 
 - `discord.js` ([source][source]) - A powerful Node.js module for interacting with the Discord API
+- `create-discord-bot` ([source][create-discord-bot-source]) - A CLI tool to quickly scaffold a Discord bot project
 - `@discordjs/brokers` ([source][brokers-source]) - A collection of brokers for use with discord.js
 - `@discordjs/builders` ([source][builders-source]) - A utility package for easily building Discord API payloads
 - `@discordjs/collection` ([source][collection-source]) - A powerful utility data structure
@@ -35,9 +36,13 @@ This repository contains multiple packages with separate [releases][github-relea
 - `@discordjs/proxy` ([source][proxy-source]) - A wrapper around `@discordjs/rest` for running an HTTP proxy
 - `@discordjs/rest` ([source][rest-source]) - A module for interacting with the Discord REST API
 - `@discordjs/structures` ([source][structures-source]) - A wrapper around Discord's structures
-- `@discordjs/voice` ([source][voice-source]) - A module for interacting with the Discord Voice API
 - `@discordjs/util` ([source][util-source]) - A collection of utility functions
+- `@discordjs/voice` ([source][voice-source]) - A module for interacting with the Discord Voice API
 - `@discordjs/ws` ([source][ws-source]) - A wrapper around Discord's gateway
+
+## Containers
+
+- `discordjs/proxy` ([source][proxy-container-source]) - A lightweight HTTP proxy for Discord's API
 
 ## Links
 
@@ -78,6 +83,7 @@ If you don't understand something in the documentation, you are experiencing pro
 [rpc-source]: https://github.com/discordjs/RPC
 [contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md
 [github-releases]: https://github.com/discordjs/discord.js/releases
+[create-discord-bot-source]: https://github.com/discordjs/discord.js/tree/main/packages/create-discord-bot
 [brokers-source]: https://github.com/discordjs/discord.js/tree/main/packages/brokers
 [builders-source]: https://github.com/discordjs/discord.js/tree/main/packages/builders
 [collection-source]: https://github.com/discordjs/discord.js/tree/main/packages/collection
@@ -86,7 +92,8 @@ If you don't understand something in the documentation, you are experiencing pro
 [proxy-source]: https://github.com/discordjs/discord.js/tree/main/packages/proxy
 [rest-source]: https://github.com/discordjs/discord.js/tree/main/packages/rest
 [structures-source]: https://github.com/discordjs/discord.js/tree/main/packages/structures
-[voice-source]: https://github.com/discordjs/discord.js/tree/main/packages/voice
 [util-source]: https://github.com/discordjs/discord.js/tree/main/packages/util
+[voice-source]: https://github.com/discordjs/discord.js/tree/main/packages/voice
 [ws-source]: https://github.com/discordjs/discord.js/tree/main/packages/ws
+[proxy-container-source]: https://github.com/discordjs/discord.js/tree/main/packages/proxy-container
 [good-first-issue]: https://github.com/discordjs/discord.js/contribute
