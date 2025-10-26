@@ -391,7 +391,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 			'Text that could not fit in to a label or description\n-# Markdown can also be used',
 		);
 
-		// [!code focus:10]
+		// [!code focus:11]
 		// [!code ++:5]
 		const pictureOfTheWeekLabel = new LabelBuilder()
 			.setLabel('Picture of the Week')
@@ -588,7 +588,7 @@ client.on(Events.InteractionCreate, (interaction) => {
 	if (interaction.customId === 'myModal') {
 		await interaction.reply({ content: 'Your submission was received successfully!' });
 
-		// [!code focus:5]
+		// [!code focus:6]
 		// Get the data entered by the user
 		const hobbies = interaction.fields.getTextInputValue('hobbiesInput');
 		const starter = interaction.fields.getStringSelectValues('starter');
