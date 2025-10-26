@@ -14,7 +14,12 @@ const {
 const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { ReactionManager } = require('../managers/ReactionManager.js');
 const { createComponent, findComponentByCustomId } = require('../util/Components.js');
-const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, UndeletableMessageTypes } = require('../util/Constants.js');
+const {
+  NonSystemMessageTypes,
+  MaxBulkDeletableMessageAge,
+  UndeletableMessageTypes,
+  VoiceBasedChannelTypes,
+} = require('../util/Constants.js');
 const { MessageFlagsBitField } = require('../util/MessageFlagsBitField.js');
 const { PermissionsBitField } = require('../util/PermissionsBitField.js');
 const { _transformAPIMessageInteractionMetadata } = require('../util/Transformers.js');
@@ -802,7 +807,7 @@ class Message extends Base {
 
     if (this.system) return false;
     if (!this.guild) return true;
-    if (!channel?.viewable) return false;
+    if (VoiceBasedChannelTypes.includes(channel?.type) || !channel?.viewable) return false;
 
     const permissions = channel?.permissionsFor(this.client.user);
     if (!permissions) return false;
