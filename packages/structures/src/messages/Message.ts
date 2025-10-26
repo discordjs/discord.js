@@ -7,13 +7,13 @@ import { kData, kEditedTimestamp } from '../utils/symbols.js';
 import { isIdSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
 
-// TODO: missing substructures: resolved(?), application
+// TODO: missing substructures: application
 
 /**
  * Represents a message on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @remarks has substructures `Message`, `Channel`, `MessageActivity`, `MessageCall`, `MessageReference`, `Attachment`, `Application`, `ChannelMention`, `Reaction`, `Poll`, `RoleSubscriptionData`, `Sticker`, all the different `Component`s, ... which need to be instantiated and stored by an extending class using it
+ * @remarks has substructures `Message`, `Channel`, `MessageActivity`, `MessageCall`, `MessageReference`, `Attachment`, `Application`, `ChannelMention`, `Reaction`, `Poll`, `ResolvedInteractionData`, `RoleSubscriptionData`, `Sticker`, all the different `Component`s, ... which need to be instantiated and stored by an extending class using it
  */
 export class Message<Omitted extends keyof APIMessage | '' = 'edited_timestamp' | 'timestamp'> extends Structure<
 	APIMessage,
