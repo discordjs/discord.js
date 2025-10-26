@@ -3,14 +3,28 @@
 import { ImageResponse } from 'next/og';
 import { resolveKind } from '@/util/resolveNodeKind';
 
-export const runtime = 'edge';
-
 export const size = {
 	width: 1_200,
 	height: 630,
 };
 
 export const contentType = 'image/png';
+
+async function loadGoogleFont(font: string, text: string) {
+	const url = `https://fonts.googleapis.com/css2?family=${font}&text=${encodeURIComponent(text)}`;
+	const css = await (await fetch(url)).text();
+	// eslint-disable-next-line prefer-named-capture-group
+	const resource = /src: url\((.+)\) format\('(opentype|truetype)'\)/.exec(css);
+
+	if (resource) {
+		const response = await fetch(resource[1]!);
+		if (response.status === 200) {
+			return response.arrayBuffer();
+		}
+	}
+
+	throw new Error('failed to load font data');
+}
 
 export default async function Image({
 	params,
@@ -19,14 +33,6 @@ export default async function Image({
 }) {
 	const { item, packageName, version } = await params;
 
-	const [fontDataBold, fontDataBlack] = await Promise.all([
-		fetch(new URL('../../../../../../assets/Geist-Bold.ttf', import.meta.url), {
-			next: { revalidate: 604_800 },
-		}).then(async (res) => res.arrayBuffer()),
-		fetch(new URL('../../../../../../assets/Geist-Black.ttf', import.meta.url), {
-			next: { revalidate: 604_800 },
-		}).then(async (res) => res.arrayBuffer()),
-	]);
 	const normalizeItem = item.split(encodeURIComponent(':')).join('.').toLowerCase();
 
 	const isMain = version === 'main';
@@ -107,13 +113,13 @@ export default async function Image({
 			fonts: [
 				{
 					name: 'Geist',
-					data: fontDataBold,
+					data: await loadGoogleFont('Geist:wght@700', node.displayName),
 					weight: 700,
 					style: 'normal',
 				},
 				{
 					name: 'Geist',
-					data: fontDataBlack,
+					data: await loadGoogleFont('Geist:wght@900', node.displayName),
 					weight: 900,
 					style: 'normal',
 				},
