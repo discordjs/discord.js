@@ -24,7 +24,12 @@ const { Sticker } = require('./Sticker');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const { createComponent, findComponentByCustomId } = require('../util/Components');
-const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, UndeletableMessageTypes } = require('../util/Constants');
+const {
+  NonSystemMessageTypes,
+  MaxBulkDeletableMessageAge,
+  UndeletableMessageTypes,
+  VoiceBasedChannelTypes,
+} = require('../util/Constants');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const { _transformAPIMessageInteractionMetadata } = require('../util/Transformers.js');
@@ -784,14 +789,14 @@ class Message extends Base {
 
     if (this.system) return false;
     if (!this.guild) return true;
-    if (!channel?.viewable) return false;
+    if (VoiceBasedChannelTypes.includes(channel?.type) || !channel?.viewable) return false;
 
     const permissions = channel?.permissionsFor(this.client.user);
     if (!permissions) return false;
 
     return (
-      permissions.has([PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.PinMessages]) ||
-      permissions.has([PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.ManageMessages])
+      permissions.has(PermissionFlagsBits.ReadMessageHistory | PermissionFlagsBits.PinMessages) ||
+      permissions.has(PermissionFlagsBits.ReadMessageHistory | PermissionFlagsBits.ManageMessages)
     );
   }
 
