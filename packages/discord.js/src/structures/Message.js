@@ -803,7 +803,9 @@ class Message extends Base {
       !this.system &&
         (!this.guild ||
           (channel?.viewable &&
-            channel?.permissionsFor(this.client.user)?.has(PermissionFlagsBits.ManageMessages, false))),
+            channel
+              ?.permissionsFor(this.client.user)
+              ?.has([PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.ManageChannelMessages], false))),
     );
   }
 
