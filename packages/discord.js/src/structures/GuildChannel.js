@@ -131,12 +131,15 @@ class GuildChannel extends BaseChannel {
 
       // Handle empty overwrite
       if (
-        (!channelVal &&
+        ((!channelVal &&
           parentVal.deny.bitfield === PermissionsBitField.DefaultBit &&
-          parentVal.allow.bitfield === PermissionsBitField.DefaultBit) ||
-        (!parentVal &&
-          channelVal.deny.bitfield === PermissionsBitField.DefaultBit &&
-          channelVal.allow.bitfield === PermissionsBitField.DefaultBit)
+          parentVal.allow.bitfield === PermissionsBitField.DefaultBit &&
+          parentVal.id === this.guild.id) ||
+
+          (!parentVal &&
+            channelVal.deny.bitfield === PermissionsBitField.DefaultBit &&
+            channelVal.allow.bitfield === PermissionsBitField.DefaultBit &&
+            channelVal.id === this.guild.id))
       ) {
         return true;
       }
