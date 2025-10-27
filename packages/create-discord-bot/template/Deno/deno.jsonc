@@ -19,8 +19,8 @@
 		},
 	},
 	"imports": {
-		"@discordjs/core": "npm:@discordjs/core@^2.2.2",
-		"discord.js": "npm:discord.js@^14.22.1",
+		"@discordjs/core": "npm:@discordjs/core@^2.3.0",
+		"discord.js": "npm:discord.js@^14.24.0",
 		"zod": "npm:zod@^3.25.76",
 	},
 }
