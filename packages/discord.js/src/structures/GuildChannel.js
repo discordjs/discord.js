@@ -136,9 +136,9 @@ class GuildChannel extends BaseChannel {
         ((!channelVal &&
           parentVal.deny.bitfield === PermissionsBitField.DefaultBit &&
           parentVal.allow.bitfield === PermissionsBitField.DefaultBit) ||
-        (!parentVal &&
-          channelVal.deny.bitfield === PermissionsBitField.DefaultBit &&
-          channelVal.allow.bitfield === PermissionsBitField.DefaultBit))
+          (!parentVal &&
+            channelVal.deny.bitfield === PermissionsBitField.DefaultBit &&
+            channelVal.allow.bitfield === PermissionsBitField.DefaultBit))
       ) {
         return true;
       }
