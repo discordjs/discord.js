@@ -4,6 +4,7 @@ export * from './ChannelSelectMenuComponent.js';
 export * from './Component.js';
 export * from './ContainerComponent.js';
 export * from './FileComponent.js';
+export * from './FileUploadComponent.js';
 export * from './InteractiveButtonComponent.js';
 export * from './LinkButtonComponent.js';
 export * from './MediaGalleryComponent.js';
