@@ -130,14 +130,17 @@ class GuildChannel extends BaseChannel {
       const parentVal = this.parent.permissionOverwrites.cache.get(key);
 
       // Handle empty overwrite
-      if (key === this.guildId && (
-        (!channelVal &&
-          parentVal.deny.bitfield === PermissionsBitField.DefaultBit &&
-          parentVal.allow.bitfield === PermissionsBitField.DefaultBit) ||
-        (!parentVal &&
-          channelVal.deny.bitfield === PermissionsBitField.DefaultBit &&
-          channelVal.allow.bitfield === PermissionsBitField.DefaultBit)
-      )) {
+      if (
+        key === this.guildId &&
+        (
+          (!channelVal &&
+            parentVal.deny.bitfield === PermissionsBitField.DefaultBit &&
+            parentVal.allow.bitfield === PermissionsBitField.DefaultBit) ||
+          (!parentVal &&
+            channelVal.deny.bitfield === PermissionsBitField.DefaultBit &&
+            channelVal.allow.bitfield === PermissionsBitField.DefaultBit)
+        )
+      ) {
         return true;
       }
 
