@@ -809,7 +809,7 @@ class Message extends Base {
     if (!this.guild) return true;
     if (VoiceBasedChannelTypes.includes(channel?.type) || !channel?.viewable) return false;
 
-    const permissions = channel?.permissionsFor(this.client.user);
+    const permissions = channel.permissionsFor(this.client.user);
     if (!permissions) return false;
 
     return permissions.has(PermissionFlagsBits.ReadMessageHistory | PermissionFlagsBits.PinMessages);
