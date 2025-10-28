@@ -14,12 +14,7 @@ const {
 const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { ReactionManager } = require('../managers/ReactionManager.js');
 const { createComponent, findComponentByCustomId } = require('../util/Components.js');
-const {
-  NonSystemMessageTypes,
-  MaxBulkDeletableMessageAge,
-  UndeletableMessageTypes,
-  VoiceBasedChannelTypes,
-} = require('../util/Constants.js');
+const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, UndeletableMessageTypes } = require('../util/Constants.js');
 const { MessageFlagsBitField } = require('../util/MessageFlagsBitField.js');
 const { PermissionsBitField } = require('../util/PermissionsBitField.js');
 const { _transformAPIMessageInteractionMetadata } = require('../util/Transformers.js');
