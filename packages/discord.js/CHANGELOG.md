@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.24.1](https://github.com/discordjs/discord.js/compare/14.24.0...14.24.1) - (2025-10-28)
+
+## Bug Fixes
+
+- **Message:** Check if in voice based channel for `pinnable` (#11215) ([c2c8cce](https://github.com/discordjs/discord.js/commit/c2c8cce1d77d7afb9da3b0c6a1ee5787e922ec3c))
+
+## Documentation
+
+- **GuildMemberFlagsBitField:** Remove duplicate word ([abb84ce](https://github.com/discordjs/discord.js/commit/abb84ce88f7b9586740855085bb5abc6f0a6282c))
+
+## Typings
+
+- **FileUploadModalData:** Correct fields (#11209) ([d317ca1](https://github.com/discordjs/discord.js/commit/d317ca1053734d6fed651e1e8600750e4d8d16d4))
+- **LabelModalData:** Singular `ModalData` (#11207) ([072fbb2](https://github.com/discordjs/discord.js/commit/072fbb228a096e8cfb2a1f55c6170f68bc84345d))
+- **FileUploadComponentData:** `boolean` ([548c254](https://github.com/discordjs/discord.js/commit/548c25488a832f8aa274e7834ac57ad9c3e23890))
+
 # [14.24.0](https://github.com/discordjs/discord.js/compare/14.23.2...14.24.0) - (2025-10-24)
 
 ## Bug Fixes
