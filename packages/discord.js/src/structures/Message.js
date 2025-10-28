@@ -24,12 +24,7 @@ const { Sticker } = require('./Sticker');
 const { DiscordjsError, ErrorCodes } = require('../errors');
 const ReactionManager = require('../managers/ReactionManager');
 const { createComponent, findComponentByCustomId } = require('../util/Components');
-const {
-  NonSystemMessageTypes,
-  MaxBulkDeletableMessageAge,
-  UndeletableMessageTypes,
-  VoiceBasedChannelTypes,
-} = require('../util/Constants');
+const { NonSystemMessageTypes, MaxBulkDeletableMessageAge, UndeletableMessageTypes } = require('../util/Constants');
 const MessageFlagsBitField = require('../util/MessageFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
 const { _transformAPIMessageInteractionMetadata } = require('../util/Transformers.js');
@@ -786,10 +781,9 @@ class Message extends Base {
    */
   get pinnable() {
     const { channel } = this;
-
     if (this.system) return false;
     if (!this.guild) return true;
-    if (VoiceBasedChannelTypes.includes(channel?.type) || !channel?.viewable) return false;
+    if (!channel || channel.isVoiceBased() || !channel.viewable) return false;
 
     const permissions = channel?.permissionsFor(this.client.user);
     if (!permissions) return false;
