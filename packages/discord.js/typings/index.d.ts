@@ -66,7 +66,6 @@ import {
   APIMessageTopLevelComponent,
   APIMessageUserSelectInteractionData,
   APIModalComponent,
-  APIModalInteractionResponseCallbackComponent,
   APIModalInteractionResponseCallbackData,
   APIModalSubmitInteraction,
   APIOverwrite,
@@ -2583,14 +2582,15 @@ export interface SelectMenuModalData<Cached extends CacheType = CacheType>
 }
 
 export interface FileUploadModalData extends BaseModalData<ComponentType.FileUpload> {
+  attachments: ReadonlyCollection<Snowflake, Attachment>;
   customId: string;
-  files: readonly Attachment[];
+  values: readonly Snowflake[];
 }
 
 export type ModalData = FileUploadModalData | SelectMenuModalData | TextInputModalData;
 
 export interface LabelModalData extends BaseModalData<ComponentType.Label> {
-  component: readonly ModalData[];
+  component: ModalData;
 }
 export interface ActionRowModalData extends BaseModalData<ComponentType.ActionRow> {
   components: readonly TextInputModalData[];
@@ -6859,7 +6859,7 @@ export interface FileUploadComponentData extends BaseComponentData {
   customId: string;
   maxValues?: number;
   minValues?: number;
-  required?: number;
+  required?: boolean;
   type: ComponentType.FileUpload;
 }
 

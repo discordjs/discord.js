@@ -1,13 +1,13 @@
 import process from 'node:process';
 import { setFailed } from '@actions/core';
 import { generateAllIndices } from '@discordjs/scripts';
-import { createPool } from '@vercel/postgres';
+import Cloudflare from 'cloudflare';
 import { MeiliSearch } from 'meilisearch';
 import pLimit from 'p-limit';
 import { fetch } from 'undici';
 
-if (!process.env.DATABASE_URL) {
-	setFailed('DATABASE_URL is not set');
+if (!(process.env.CF_D1_DOCS_API_KEY && process.env.CF_D1_DOCS_ID && process.env.CF_ACCOUNT_ID)) {
+	setFailed('Missing Cloudflare D1 environment variables.');
 }
 
 if (!process.env.SEARCH_API_URL) {
@@ -18,8 +18,8 @@ if (!process.env.SEARCH_API_KEY) {
 	setFailed('SEARCH_API_KEY is not set');
 }
 
-const pool = createPool({
-	connectionString: process.env.DATABASE_URL,
+const cf = new Cloudflare({
+	apiToken: process.env.CF_D1_DOCS_API_KEY!,
 });
 
 const client = new MeiliSearch({
@@ -34,16 +34,26 @@ try {
 	console.log('Generating all indices...');
 	const indices = await generateAllIndices({
 		fetchPackageVersions: async (pkg) => {
-			console.log(`Fetching versions for ${pkg}...`);
-			const { rows } = await pool.sql`select version from documentation where name = ${pkg}`;
+			console.info(`Fetching versions for ${pkg}...`);
 
-			return rows.map((row) => row.version);
+			const { result } = await cf.d1.database.query(process.env.CF_D1_DOCS_ID!, {
+				account_id: process.env.CF_ACCOUNT_ID!,
+				sql: `select version from documentation where name = ? order by version desc;`,
+				params: [pkg],
+			});
+
+			return ((result[0]?.results as { version: string }[] | undefined) ?? []).map((row) => row.version);
 		},
 		fetchPackageVersionDocs: async (pkg, version) => {
 			console.log(`Fetching data for ${pkg} ${version}...`);
-			const { rows } = await pool.sql`select url from documentation where name = ${pkg} and version = ${version}`;
-			const res = await fetch(rows[0]?.url ?? '');
 
+			const { result } = await cf.d1.database.query(process.env.CF_D1_DOCS_ID!, {
+				account_id: process.env.CF_ACCOUNT_ID!,
+				sql: `select url from documentation where name = ? and version = ?;`,
+				params: [pkg, version],
+			});
+
+			const res = await fetch(((result[0]?.results as { url: string }[] | undefined) ?? [])[0]?.url ?? '');
 			return res.json();
 		},
 		writeToFile: false,
