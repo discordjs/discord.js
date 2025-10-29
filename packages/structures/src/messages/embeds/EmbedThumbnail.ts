@@ -34,14 +34,14 @@ export class EmbedThumbnail<Omitted extends keyof APIEmbedThumbnail | '' = ''> e
 	}
 
 	/**
-	 * A proxied url of the thumbnail
+	 * A proxied URL of the thumbnail
 	 */
-	public get proxyUrl() {
+	public get proxyURL() {
 		return this[kData].proxy_url;
 	}
 
 	/**
-	 * The source url of the thumbnail
+	 * The source URL of the thumbnail
 	 */
 	public get url() {
 		return this[kData].url;

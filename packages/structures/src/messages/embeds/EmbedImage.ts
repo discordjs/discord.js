@@ -31,14 +31,14 @@ export class EmbedImage<Omitted extends keyof APIEmbedImage | '' = ''> extends S
 	}
 
 	/**
-	 * A proxied url of the image
+	 * A proxied URL of the image
 	 */
-	public get proxyUrl() {
+	public get proxyURL() {
 		return this[kData].proxy_url;
 	}
 
 	/**
-	 * Source url of the image
+	 * Source URL of the image
 	 */
 	public get url() {
 		return this[kData].url;

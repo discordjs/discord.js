@@ -79,7 +79,6 @@
 		"eslint-formatter-compact": "^8.40.0",
 		"eslint-formatter-pretty": "^7.0.0",
 		"prettier": "^3.6.2",
-		"tsd": "^0.33.0",
 		"tsup": "^8.5.0",
 		"turbo": "^2.5.8",
 		"typescript": "~5.9.3",
@@ -91,8 +90,5 @@
 	"publishConfig": {
 		"access": "public",
 		"provenance": true
-	},
-	"tsd": {
-		"directory": "__tests__/types"
 	}
 }

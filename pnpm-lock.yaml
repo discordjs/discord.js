@@ -1607,9 +1607,6 @@ importers:
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
-      tsd:
-        specifier: ^0.33.0
-        version: 0.33.0
       tsup:
         specifier: ^8.5.0
         version: 8.5.0(@microsoft/api-extractor@7.53.0(@types/node@22.18.8))(jiti@2.6.1)(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.1)

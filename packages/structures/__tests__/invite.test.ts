@@ -1,7 +1,8 @@
 import type { APIExtendedInvite, APIInvite } from 'discord-api-types/v10';
 import { InviteTargetType, InviteType } from 'discord-api-types/v10';
 import { describe, expect, test } from 'vitest';
-import { dateToDiscordISOTimestamp, Invite } from '../src/index.js';
+import { Invite } from '../src/invites/Invite.js';
+import { dateToDiscordISOTimestamp } from '../src/utils/optimization.js';
 import { kPatch } from '../src/utils/symbols.js';
 
 describe('Invite', () => {

@@ -25,7 +25,7 @@ export class FileUploadComponent<Omitted extends keyof APIFileUploadComponent | 
 	}
 
 	/**
-	 * The customId to be sent in the interaction when the modal gets submitted
+	 * The custom id to be sent in the interaction when the modal gets submitted
 	 */
 	public get customId() {
 		return this[kData].custom_id;

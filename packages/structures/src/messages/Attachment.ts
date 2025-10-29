@@ -60,14 +60,14 @@ export class Attachment<Omitted extends keyof APIAttachment | '' = ''> extends S
 	}
 
 	/**
-	 * The source url of the file
+	 * The source URL of the file
 	 */
 	public get url() {
 		return this[kData].url;
 	}
 
 	/**
-	 * A proxied url of the file
+	 * A proxied URL of the file
 	 */
 	public get proxyURL() {
 		return this[kData].proxy_url;

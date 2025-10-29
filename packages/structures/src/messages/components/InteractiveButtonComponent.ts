@@ -26,7 +26,7 @@ export class InteractiveButtonComponent<
 	}
 
 	/**
-	 * The customId to be sent in the interaction when clicked
+	 * The custom id to be sent in the interaction when clicked
 	 */
 	public get customId() {
 		return this[kData].custom_id;

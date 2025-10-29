@@ -48,14 +48,14 @@ export class UnfurledMediaItem<Omitted extends keyof APIUnfurledMediaItem | '' =
 	}
 
 	/**
-	 * The proxied url of the media item
+	 * The proxied URL of the media item
 	 */
-	public get proxyUrl() {
+	public get proxyURL() {
 		return this[kData].proxy_url;
 	}
 
 	/**
-	 * Supports arbitrary urls and attachment:// references
+	 * Supports arbitrary URLs and attachment:// references
 	 */
 	public get url() {
 		return this[kData].url;

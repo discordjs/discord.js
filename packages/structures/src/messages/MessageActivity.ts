@@ -20,7 +20,7 @@ export class MessageActivity<Omitted extends keyof APIMessageActivity | '' = ''>
 	}
 
 	/**
-	 * Theb party_id from a Rich Presence event
+	 * The party id from a Rich Presence event
 	 */
 	public get partyId() {
 		return this[kData].party_id;

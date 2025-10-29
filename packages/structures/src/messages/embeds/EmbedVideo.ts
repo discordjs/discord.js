@@ -31,14 +31,14 @@ export class EmbedVideo<Omitted extends keyof APIEmbedVideo | '' = ''> extends S
 	}
 
 	/**
-	 * A proxied url of the video
+	 * A proxied URL of the video
 	 */
-	public get proxyUrl() {
+	public get proxyURL() {
 		return this[kData].proxy_url;
 	}
 
 	/**
-	 * The source url of the video
+	 * The source URL of the video
 	 */
 	public get url() {
 		return this[kData].url;

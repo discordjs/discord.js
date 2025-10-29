@@ -26,7 +26,12 @@ import {
 	SelectMenuDefaultValueType,
 } from 'discord-api-types/v10';
 import { describe, expect, test } from 'vitest';
-import { Attachment, ContainerComponent, dateToDiscordISOTimestamp, Embed, Message, User } from '../src/index.js';
+import { Attachment } from '../src/messages/Attachment.js';
+import { Message } from '../src/messages/Message.js';
+import { ContainerComponent } from '../src/messages/components/ContainerComponent.js';
+import { Embed } from '../src/messages/embeds/Embed.js';
+import { User } from '../src/users/User.js';
+import { dateToDiscordISOTimestamp } from '../src/utils/optimization.js';
 
 const user: APIUser = {
 	username: 'user',

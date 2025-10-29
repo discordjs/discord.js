@@ -26,14 +26,14 @@ export class EmbedAuthor<Omitted extends keyof APIEmbedAuthor | '' = ''> extends
 	/**
 	 * The URL of author icon
 	 */
-	public get iconUrl() {
+	public get iconURL() {
 		return this[kData].icon_url;
 	}
 
 	/**
-	 * A proxied url of author icon
+	 * A proxied URL of author icon
 	 */
-	public get proxyIconUrl() {
+	public get proxyIconURL() {
 		return this[kData].proxy_icon_url;
 	}
 
