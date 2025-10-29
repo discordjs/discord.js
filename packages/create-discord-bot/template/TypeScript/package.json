@@ -12,8 +12,8 @@
 		"start": "node --env-file=.env dist/index.js"
 	},
 	"dependencies": {
-		"@discordjs/core": "^2.2.2",
-		"discord.js": "^14.22.1"
+		"@discordjs/core": "^2.3.0",
+		"discord.js": "^14.24.0"
 	},
 	"devDependencies": {
 		"@sapphire/ts-config": "^5.0.1",
