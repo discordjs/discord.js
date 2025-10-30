@@ -99,7 +99,7 @@
 		"cpy-cli": "^6.0.0",
 		"cross-env": "^10.1.0",
 		"eslint": "^9.37.0",
-		"eslint-config-neon": "^0.2.7",
+		"eslint-config-neon": "^0.2.9",
 		"eslint-formatter-pretty": "^7.0.0",
 		"git-describe": "^4.1.1",
 		"postcss": "^8.5.6",
