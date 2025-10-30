@@ -16,8 +16,11 @@ pids
 .env*.local
 
 # Dist
+.open-next
 .next
+.wrangler
 public/searchIndex
+public/readme
 src/assets/readme
 src/styles/unocss.css
 

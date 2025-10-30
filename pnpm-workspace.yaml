@@ -14,8 +14,10 @@ onlyBuiltDependencies:
   - bufferutil
   - esbuild
   - protobufjs
+  - rclone.js
   - sharp
   - utf-8-validate
+  - workerd
   - zlib-sync
 
 patchedDependencies:

@@ -413,6 +413,8 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 					(block) => block.blockTag.tagNameWithUpperCase === StandardTags.defaultValue.tagNameWithUpperCase,
 				);
 
+				const unstableBlock = comment.customBlocks.find((block) => block.blockTag.tagNameWithUpperCase === '@UNSTABLE');
+
 				const mixesBlocks = comment.customBlocks.filter((block) => block.blockTag.tagNameWithUpperCase === '@MIXES');
 
 				return {
@@ -439,6 +441,11 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 						: [],
 					returnsBlock: comment.returnsBlock
 						? createNode(comment.returnsBlock.content)
+								.flat(1)
+								.filter((val: any) => val.kind !== DocNodeKind.SoftBreak)
+						: [],
+					unstableBlock: unstableBlock
+						? createNode(unstableBlock.content)
 								.flat(1)
 								.filter((val: any) => val.kind !== DocNodeKind.SoftBreak)
 						: [],

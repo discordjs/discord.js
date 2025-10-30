@@ -3,7 +3,6 @@
 import { makeURLSearchParams, type RawFile, type RequestData, type REST } from '@discordjs/rest';
 import {
 	Routes,
-	type APIThreadChannel,
 	type RESTDeleteAPIChannelResult,
 	type RESTGetAPIChannelInvitesResult,
 	type RESTGetAPIChannelMessageReactionUsersQuery,
@@ -566,7 +565,7 @@ export class ChannelsAPI {
 			body,
 			reason,
 			signal,
-		}) as Promise<APIThreadChannel>;
+		}) as Promise<RESTPostAPIChannelThreadsResult>;
 	}
 
 	/**
