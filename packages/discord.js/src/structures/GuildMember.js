@@ -25,12 +25,6 @@ class GuildMember extends Base {
     this.guild = guild;
 
     /**
-     * The timestamp the member joined the guild at
-     * @type {?number}
-     */
-    this.joinedTimestamp = null;
-
-    /**
      * The last timestamp this member started boosting the guild
      * @type {?number}
      */
@@ -95,7 +89,17 @@ class GuildMember extends Base {
       this.banner ??= null;
     }
 
-    if ('joined_at' in data) this.joinedTimestamp = Date.parse(data.joined_at);
+    if ('joined_at' in data) {
+      /**
+       * The timestamp the member joined the guild at
+       *
+       * @type {?number}
+       */
+      this.joinedTimestamp = data.joined_at && Date.parse(data.joined_at);
+    } else {
+      this.joinedTimestamp ??= null;
+    }
+
     if ('premium_since' in data) {
       this.premiumSinceTimestamp = data.premium_since ? Date.parse(data.premium_since) : null;
     }
