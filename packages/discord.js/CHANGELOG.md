@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.24.2](https://github.com/discordjs/discord.js/compare/14.24.1...14.24.2) - (2025-10-30)
+
+## Bug Fixes
+
+- **GuildMember:** JoinedAt possibly being NaN ([fb2b728](https://github.com/discordjs/discord.js/commit/fb2b7281e019de9dbd1eb307d9a2ed655c165187))
+
 # [14.24.1](https://github.com/discordjs/discord.js/compare/14.24.0...14.24.1) - (2025-10-28)
 
 ## Bug Fixes
