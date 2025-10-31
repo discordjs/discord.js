@@ -57,7 +57,7 @@ const { ComponentType } = require('discord-api-types/v10');
  * @property {string} customId The custom id of the select menu
  * @property {boolean} [disabled] Whether the select menu is disabled or not
  * @property {number} [maxValues] The maximum amount of options that can be selected
- * @property {number} [minValues] The minimum amount of options that can be selected
+ * @property {number} [minValues] The minimum amount of options that must be selected
  * @property {string} [placeholder] The placeholder of the select menu
  * @property {boolean} [required] Whether this component is required in modals
  */
