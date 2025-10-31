@@ -111,9 +111,9 @@ class MessageManager extends CachedManager {
     return this._add(data, cache);
   }
 
-  async _fetchMany({ after, before, around, cache, limit } = {}) {
+  async _fetchMany({ cache, ...apiOptions } = {}) {
     const data = await this.client.rest.get(Routes.channelMessages(this.channel.id), {
-      query: makeURLSearchParams({ after, before, around, limit }),
+      query: makeURLSearchParams(apiOptions),
     });
 
     return data.reduce((_data, message) => _data.set(message.id, this._add(message, cache)), new Collection());
@@ -158,11 +158,11 @@ class MessageManager extends CachedManager {
    *   .then(messages => console.log(`Received ${messages.items.length} messages`))
    *   .catch(console.error);
    */
-  async fetchPins(options = {}) {
+  async fetchPins({ cache, ...apiOptions } = {}) {
     const data = await this.client.rest.get(Routes.channelMessagesPins(this.channel.id), {
       query: makeURLSearchParams({
-        ...options,
-        before: options.before && new Date(options.before).toISOString(),
+        ...apiOptions,
+        before: apiOptions.before && new Date(apiOptions.before).toISOString(),
       }),
     });
 
@@ -172,7 +172,7 @@ class MessageManager extends CachedManager {
         get pinnedAt() {
           return new Date(this.pinnedTimestamp);
         },
-        message: this._add(item.message, options.cache),
+        message: this._add(item.message, cache),
       })),
       hasMore: data.has_more,
     };
