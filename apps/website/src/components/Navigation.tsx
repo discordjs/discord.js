@@ -37,6 +37,7 @@ export function Navigation() {
 	}
 
 	const groupedNodes = node?.reduce((acc: any, node: any) => {
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		(acc[node.kind.toLowerCase()] ||= []).push(node);
 		return acc;
 	}, {});

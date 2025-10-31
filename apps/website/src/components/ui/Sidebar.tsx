@@ -421,6 +421,7 @@ export function SidebarTrigger({ onPress, children, ...props }: ButtonProps) {
 				setOpen((open) => !open);
 			}}
 		>
+			{/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
 			{children || (
 				<>
 					<SidebarIcon aria-hidden className="hidden md:inline" data-slot="icon" size={18} />

@@ -36,6 +36,7 @@ export class DocumentedMember extends DocumentedItem<DeclarationReflection | Mem
 						? 'private'
 						: undefined,
 				readonly: data.flags.isReadonly,
+				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				abstract: signature.comment?.blockTags?.some((block) => block.tag === '@abstract') || undefined,
 				deprecated: signature.comment?.blockTags?.some((block) => block.tag === '@deprecated')
 					? (signature.comment.blockTags
@@ -88,6 +89,7 @@ export class DocumentedMember extends DocumentedItem<DeclarationReflection | Mem
 							? 'private'
 							: undefined,
 					readonly: base.readonly || !hasSetter,
+					// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 					abstract: getter.comment?.blockTags?.some((block) => block.tag === '@abstract') || undefined,
 					deprecated: getter.comment?.blockTags?.some((block) => block.tag === '@deprecated')
 						? (getter.comment.blockTags

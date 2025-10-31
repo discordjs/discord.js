@@ -55,7 +55,7 @@
 	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
-		"discord-api-types": "^0.38.31"
+		"discord-api-types": "^0.38.30"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
@@ -66,7 +66,7 @@
 		"cross-env": "^10.1.0",
 		"esbuild-plugin-version-injector": "^1.2.1",
 		"eslint": "^9.37.0",
-		"eslint-config-neon": "^0.2.9",
+		"eslint-config-neon": "^0.2.7",
 		"eslint-formatter-compact": "^8.40.0",
 		"eslint-formatter-pretty": "^7.0.0",
 		"prettier": "^3.6.2",
