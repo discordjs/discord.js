@@ -115,9 +115,9 @@ class MessageManager extends CachedManager {
     return this._add(data, cache);
   }
 
-  async _fetchMany({ after, before, around, cache, limit } = {}) {
+  async _fetchMany({ cache, ...apiOptions } = {}) {
     const data = await this.client.rest.get(Routes.channelMessages(this.channel.id), {
-      query: makeURLSearchParams({ after, around, before, limit }),
+      query: makeURLSearchParams(apiOptions),
     });
 
     return data.reduce((_data, message) => _data.set(message.id, this._add(message, cache)), new Collection());
