@@ -120,12 +120,12 @@ class GuildBanManager extends CachedManager {
     return this._add(data, cache);
   }
 
-  async _fetchMany(options = {}) {
+  async _fetchMany({ cache, ...apiOptions } = {}) {
     const data = await this.client.rest.get(Routes.guildBans(this.guild.id), {
-      query: makeURLSearchParams(options),
+      query: makeURLSearchParams(apiOptions),
     });
 
-    return data.reduce((col, ban) => col.set(ban.user.id, this._add(ban, options.cache)), new Collection());
+    return data.reduce((col, ban) => col.set(ban.user.id, this._add(ban, cache)), new Collection());
   }
 
   /**
