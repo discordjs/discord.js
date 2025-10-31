@@ -1,4 +1,5 @@
 import unocss from '@unocss/eslint-plugin';
+import { defineConfig } from 'eslint/config';
 import common from 'eslint-config-neon/common';
 import edge from 'eslint-config-neon/edge';
 import jsxa11y from 'eslint-config-neon/jsx-a11y';
@@ -11,7 +12,6 @@ import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescrip
 import reactCompiler from 'eslint-plugin-react-compiler';
 // import oxlint from 'eslint-plugin-oxlint';
 import merge from 'lodash.merge';
-import tseslint from 'typescript-eslint';
 
 const commonFiles = '{js,mjs,cjs,ts,mts,cts,jsx,tsx}';
 
@@ -78,7 +78,7 @@ const prettierRuleset = merge(...prettier, { files: [`**/*${commonFiles}`] });
 
 // const oxlintRuleset = merge({ rules: oxlint.rules }, { files: [`**/*${commonFiles}`] });
 
-export default tseslint.config(
+export default defineConfig(
 	{
 		ignores: [
 			'**/node_modules/',

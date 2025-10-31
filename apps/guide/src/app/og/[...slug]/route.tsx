@@ -1,5 +1,6 @@
 import { generateOGImage } from 'fumadocs-ui/og';
 import { notFound } from 'next/navigation';
+import pRetry, { AbortError } from 'p-retry';
 import { source } from '@/lib/source';
 
 export function generateStaticParams() {
@@ -10,19 +11,26 @@ export function generateStaticParams() {
 }
 
 async function loadGoogleFont(font: string, text: string) {
-	const url = `https://fonts.googleapis.com/css2?family=${font}&text=${encodeURIComponent(text)}`;
-	const css = await (await fetch(url)).text();
-	// eslint-disable-next-line prefer-named-capture-group
-	const resource = /src: url\((.+)\) format\('(opentype|truetype)'\)/.exec(css);
+	return pRetry(
+		async () => {
+			const url = `https://fonts.googleapis.com/css2?family=${font}&text=${encodeURIComponent(text)}`;
+			const css = await (await fetch(url)).text();
+			// eslint-disable-next-line prefer-named-capture-group
+			const resource = /src: url\((.+)\) format\('(opentype|truetype)'\)/.exec(css);
 
-	if (resource) {
-		const response = await fetch(resource[1]!);
-		if (response.status === 200) {
-			return response.arrayBuffer();
-		}
-	}
+			if (resource) {
+				const response = await fetch(resource[1]!);
+				if (response.status === 200) {
+					return response.arrayBuffer();
+				}
+			}
 
-	throw new Error('failed to load font data');
+			throw new AbortError('failed to load font data');
+		},
+		{
+			retries: 3,
+		},
+	);
 }
 
 export async function GET(_req: Request, { params }: { params: Promise<{ slug: string[] }> }) {
