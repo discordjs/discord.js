@@ -111,12 +111,12 @@ class MessageManager extends CachedManager {
     return this._add(data, cache);
   }
 
-  async _fetchMany(options = {}) {
+  async _fetchMany({ after, before, around, cache, limit } = {}) {
     const data = await this.client.rest.get(Routes.channelMessages(this.channel.id), {
-      query: makeURLSearchParams(options),
+      query: makeURLSearchParams({ after, before, around, limit }),
     });
 
-    return data.reduce((_data, message) => _data.set(message.id, this._add(message, options.cache)), new Collection());
+    return data.reduce((_data, message) => _data.set(message.id, this._add(message, cache)), new Collection());
   }
 
   /**
