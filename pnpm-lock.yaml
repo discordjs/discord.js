@@ -1619,9 +1619,6 @@ importers:
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
-      tsd:
-        specifier: ^0.33.0
-        version: 0.33.0
       tsup:
         specifier: ^8.5.0
         version: 8.5.0(@microsoft/api-extractor@7.53.3(@types/node@22.18.13))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.19.2)(typescript@5.9.3)(yaml@2.8.1)
@@ -8782,6 +8779,9 @@ packages:
   dir-glob@3.0.1:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
     engines: {node: '>=8'}
+
+  discord-api-types@0.38.31:
+    resolution: {integrity: sha512-kC94ANsk8ackj8ENTuO8joTNEL0KtymVhHy9dyEC/s4QAZ7GCx40dYEzQaadyo8w+oP0X8QydE/nzAWRylTGtQ==}
 
   discord-api-types@0.38.31:
     resolution: {integrity: sha512-kC94ANsk8ackj8ENTuO8joTNEL0KtymVhHy9dyEC/s4QAZ7GCx40dYEzQaadyo8w+oP0X8QydE/nzAWRylTGtQ==}
@@ -23280,6 +23280,8 @@ snapshots:
   dir-glob@3.0.1:
     dependencies:
       path-type: 4.0.0
+
+  discord-api-types@0.38.31: {}
 
   discord-api-types@0.38.31: {}
 
