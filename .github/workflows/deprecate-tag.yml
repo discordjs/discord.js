@@ -31,7 +31,8 @@ jobs:
         run: |
           pnpm exec npm-deprecate \
               --deprecate-dist-tag \
-              --name "*-${{inputs.tag}}-" \
+              # as in, e.g. 15.0.0-cool-tagged-feature.*
+              --name "*-${{inputs.tag}}.*" \
               --message "${{inputs.message || 'This version is deprecated. Please use a newer version.'}}" \
               --package '@discordjs/brokers' \
               --package '@discordjs/builders' \
