@@ -27,7 +27,7 @@ export class EmbedThumbnail<Omitted extends keyof APIEmbedThumbnail | '' = ''> e
 	}
 
 	/**
-	 * The width of the thumnail
+	 * The width of the thumbnail
 	 */
 	public get width() {
 		return this[kData].width;
