@@ -10,7 +10,7 @@ import { ButtonComponent } from './ButtonComponent.js';
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  * @remarks has a substructure `ComponentEmoji` which needs to be instantiated and stored by an extending class using it
  */
-export abstract class NonPremiumButton<
+export abstract class NonPremiumButtonComponent<
 	Style extends Exclude<ButtonStyle, ButtonStyle.Premium>,
 	Omitted extends keyof ButtonDataType<Style> | '' = '',
 > extends ButtonComponent<Style, Omitted> {

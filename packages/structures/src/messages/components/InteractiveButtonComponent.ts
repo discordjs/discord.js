@@ -2,7 +2,7 @@ import type { APIButtonComponentWithCustomId, ButtonStyle } from 'discord-api-ty
 import { kData } from '../../utils/symbols.js';
 import type { Partialize } from '../../utils/types.js';
 import type { ButtonDataType } from './ButtonComponent.js';
-import { NonPremiumButton } from './NonPremiumButton.js';
+import { NonPremiumButtonComponent } from './NonPremiumButtonComponent.js';
 
 /**
  * Represents a button causing a message component interaction on a message.
@@ -12,7 +12,7 @@ import { NonPremiumButton } from './NonPremiumButton.js';
 export class InteractiveButtonComponent<
 	Style extends ButtonStyle.Danger | ButtonStyle.Primary | ButtonStyle.Secondary | ButtonStyle.Success,
 	Omitted extends keyof APIButtonComponentWithCustomId | '' = '',
-> extends NonPremiumButton<Style, Omitted> {
+> extends NonPremiumButtonComponent<Style, Omitted> {
 	/**
 	 * The template used for removing data from the raw data stored for each InteractiveButtonComponent.
 	 */
