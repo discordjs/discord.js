@@ -1,7 +1,7 @@
 import type { APIPoll } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { dateToDiscordISOTimestamp } from '../utils/optimization.js';
-import { kData, kExpiresTimestamp, kPatch } from '../utils/symbols.js';
+import { kData, kExpiresTimestamp } from '../utils/symbols.js';
 import type { Partialize } from '../utils/types.js';
 
 /**
@@ -31,16 +31,6 @@ export class Poll<Omitted extends keyof APIPoll | '' = ''> extends Structure<API
 	public constructor(data: Partialize<APIPoll, Omitted>) {
 		super(data);
 		this.optimizeData(data);
-	}
-
-	/**
-	 * {@inheritDoc Structure.[kPatch]}
-	 *
-	 * @internal
-	 */
-	public override [kPatch](data: Partial<APIPoll>) {
-		super[kPatch](data);
-		return this;
 	}
 
 	/**
