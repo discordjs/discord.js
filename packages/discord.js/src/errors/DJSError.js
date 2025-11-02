@@ -16,7 +16,13 @@ function makeDiscordjsError(Base) {
     constructor(code, ...args) {
       super(message(code, args));
       this.code = code;
-      Error.captureStackTrace?.(this, DiscordjsError);
+
+      // Consistent stack trace capture across environments
+      if (Error.captureStackTrace) {
+        Error.captureStackTrace(this, this.constructor);
+      } else {
+        this.stack = new Error(this.message).stack;
+      }
     }
 
     get name() {
@@ -34,11 +40,23 @@ function makeDiscordjsError(Base) {
  * @ignore
  */
 function message(code, args) {
-  if (!(code in ErrorCodes)) throw new Error('Error code must be a valid DiscordjsErrorCodes');
+  if (typeof code !== 'string' || !(code in ErrorCodes)) {
+    throw new Error('Error code must be a valid DiscordjsErrorCodes');
+  }
+
   const msg = Messages[code];
-  if (!msg) throw new Error(`No message associated with error code: ${code}.`);
-  if (typeof msg === 'function') return msg(...args);
-  if (!args?.length) return msg;
+  if (!msg) {
+    throw new Error(`No message associated with error code: ${code}.`);
+  }
+
+  if (typeof msg === 'function') {
+    return msg(...args);
+  }
+
+  if (!args?.length) {
+    return msg;
+  }
+
   args.unshift(msg);
   return String(...args);
 }
