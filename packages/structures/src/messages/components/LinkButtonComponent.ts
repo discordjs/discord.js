@@ -1,7 +1,7 @@
 import type { APIButtonComponentWithURL, ButtonStyle } from 'discord-api-types/v10';
 import { kData } from '../../utils/symbols.js';
 import type { Partialize } from '../../utils/types.js';
-import { NonPremiumButtonComponent } from './NonPremiumButtonComponent.js';
+import { LabeledButtonComponent } from './LabeledButtonComponent.js';
 
 /**
  * Represents a button linking to an URL on a message.
@@ -10,7 +10,7 @@ import { NonPremiumButtonComponent } from './NonPremiumButtonComponent.js';
  */
 export class LinkButtonComponent<
 	Omitted extends keyof APIButtonComponentWithURL | '' = '',
-> extends NonPremiumButtonComponent<ButtonStyle.Link, Omitted> {
+> extends LabeledButtonComponent<ButtonStyle.Link, Omitted> {
 	/**
 	 * The template used for removing data from the raw data stored for each LinkButtonComponent.
 	 */

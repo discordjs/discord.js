@@ -9,7 +9,7 @@ export * from './InteractiveButtonComponent.js';
 export * from './LinkButtonComponent.js';
 export * from './MediaGalleryComponent.js';
 export * from './MentionableSelectMenuComponent.js';
-export * from './NonPremiumButtonComponent.js';
+export * from './LabeledButtonComponent.js';
 export * from './PremiumButtonComponent.js';
 export * from './RoleSelectMenuComponent.js';
 export * from './SectionComponent.js';
