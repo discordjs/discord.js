@@ -1,5 +1,6 @@
 import type { APIMessageCall } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
+import { dateToDiscordISOTimestamp } from '../utils/optimization.js';
 import { kEndedTimestamp } from '../utils/symbols.js';
 import type { Partialize } from '../utils/types.js';
 
@@ -48,5 +49,17 @@ export class MessageCall<Omitted extends keyof APIMessageCall | '' = 'ended_time
 	public get endedAt() {
 		const endedTimestamp = this.endedTimestamp;
 		return endedTimestamp ? new Date(endedTimestamp) : null;
+	}
+
+	/**
+	 * {@inheritDoc Structure.toJSON}
+	 */
+	public override toJSON() {
+		const clone = super.toJSON();
+		if (this[kEndedTimestamp]) {
+			clone.ended_timestamp = dateToDiscordISOTimestamp(new Date(this[kEndedTimestamp]));
+		}
+
+		return clone;
 	}
 }
