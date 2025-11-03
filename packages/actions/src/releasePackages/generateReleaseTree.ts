@@ -59,10 +59,9 @@ async function getReleaseEntries(dry: boolean, devTag?: string) {
 
 		if (devTag) {
 			// Replace workspace dependencies with * to pin to associated dev versions
-			const pkgJsonString = await file(`${pkg.path}/package.json`).text();
-			pkgJsonString.replaceAll(/workspace:[\^~]/g, 'workspace:*');
 			if (!dry) {
-				await write(`${pkg.path}/package.json`, pkgJsonString);
+				const pkgJsonString = await file(`${pkg.path}/package.json`).text();
+				await write(`${pkg.path}/package.json`, pkgJsonString.replaceAll(/workspace:[\^~]/g, 'workspace:*'));
 			}
 
 			const devVersion = await fetchDevVersion(pkg.name, devTag);
