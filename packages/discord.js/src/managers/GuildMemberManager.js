@@ -252,6 +252,8 @@ class GuildMemberManager extends CachedManager {
 
       const timeout = setTimeout(() => {
         // eslint-disable-next-line no-use-before-define
+        this.client.ws.off(WebSocketShardEvents.Dispatch, rateLimitHandler);
+        // eslint-disable-next-line no-use-before-define
         this.client.removeListener(Events.GuildMembersChunk, handler);
         this.client.decrementMaxListeners();
         reject(new DiscordjsError(ErrorCodes.GuildMembersTimeout));
@@ -268,6 +270,8 @@ class GuildMemberManager extends CachedManager {
 
         if (members.size < 1_000 || (limit && fetchedMembers.size >= limit) || index === chunk.count) {
           clearTimeout(timeout);
+          // eslint-disable-next-line no-use-before-define
+          this.client.ws.off(WebSocketShardEvents.Dispatch, rateLimitHandler);
           this.client.removeListener(Events.GuildMembersChunk, handler);
           this.client.decrementMaxListeners();
           resolve(users && !Array.isArray(users) && fetchedMembers.size ? fetchedMembers.first() : fetchedMembers);
