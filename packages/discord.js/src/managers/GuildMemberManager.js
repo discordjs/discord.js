@@ -4,7 +4,6 @@ const { process } = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
-const { WebSocketShardEvents } = require('@discordjs/ws');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes, GatewayOpcodes, GatewayDispatchEvents } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
@@ -246,7 +245,7 @@ class GuildMemberManager extends CachedManager {
       const timeout = setTimeout(() => {
         this.client.removeListener(Events.GuildMembersChunk, handler);
         this.client.decrementMaxListeners();
-        this.client.ws.off(WebSocketShardEvents.Dispatch, rateLimitHandler);
+        this.client.removeListener(Events.Raw, rateLimitHandler);
         reject(new DiscordjsError(ErrorCodes.GuildMembersTimeout));
       }, time).unref();
 
@@ -268,14 +267,14 @@ class GuildMemberManager extends CachedManager {
       const rateLimitHandler = payload => {
         if (payload.t === GatewayDispatchEvents.RateLimited && payload.d.meta.nonce === nonce) {
           clearTimeout(timeout);
-          this.client.ws.off(WebSocketShardEvents.Dispatch, rateLimitHandler);
+          this.client.removeListener(Events.Raw, rateLimitHandler);
           this.client.removeListener(Events.GuildMembersChunk, handler);
           this.client.decrementMaxListeners();
           reject(new DiscordjsError(ErrorCodes.GatewayRequestRateLimited, payload.d));
         }
       };
 
-      this.client.ws.on(WebSocketShardEvents.Dispatch, rateLimitHandler);
+      this.client.on(Events.Raw, rateLimitHandler);
 
       this.client.incrementMaxListeners();
       this.client.on(Events.GuildMembersChunk, handler);
