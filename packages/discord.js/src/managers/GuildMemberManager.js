@@ -246,6 +246,7 @@ class GuildMemberManager extends CachedManager {
         this.client.removeListener(Events.GuildMembersChunk, handler);
         this.client.decrementMaxListeners();
         this.client.removeListener(Events.Raw, rateLimitHandler);
+        this.client.decrementMaxListeners();
         reject(new DiscordjsError(ErrorCodes.GuildMembersTimeout));
       }, time).unref();
 
@@ -260,6 +261,8 @@ class GuildMemberManager extends CachedManager {
           clearTimeout(timeout);
           this.client.removeListener(Events.GuildMembersChunk, handler);
           this.client.decrementMaxListeners();
+          this.client.removeListener(Events.Raw, rateLimitHandler);
+          this.client.decrementMaxListeners();
           resolve(users && !Array.isArray(users) && fetchedMembers.size ? fetchedMembers.first() : fetchedMembers);
         }
       };
@@ -268,12 +271,14 @@ class GuildMemberManager extends CachedManager {
         if (payload.t === GatewayDispatchEvents.RateLimited && payload.d.meta.nonce === nonce) {
           clearTimeout(timeout);
           this.client.removeListener(Events.Raw, rateLimitHandler);
+          this.client.decrementMaxListeners();
           this.client.removeListener(Events.GuildMembersChunk, handler);
           this.client.decrementMaxListeners();
           reject(new DiscordjsError(ErrorCodes.GatewayRequestRateLimited, payload.d));
         }
       };
 
+      this.client.incrementMaxListeners();
       this.client.on(Events.Raw, rateLimitHandler);
 
       this.client.incrementMaxListeners();
