@@ -1,7 +1,7 @@
 import type { Readable } from 'node:stream';
 import type { ReadableStream } from 'node:stream/web';
 import type { Collection } from '@discordjs/collection';
-import type { Awaitable } from '@discordjs/util';
+import type { Awaitable, RawFile } from '@discordjs/util';
 import type { Agent, Dispatcher, RequestInit, BodyInit, Response } from 'undici';
 import type { IHandler } from '../interfaces/Handler.js';
 
@@ -276,29 +276,7 @@ export interface InvalidRequestWarningData {
 	remainingTime: number;
 }
 
-/**
- * Represents a file to be added to the request
- */
-export interface RawFile {
-	/**
-	 * Content-Type of the file
-	 */
-	contentType?: string;
-	/**
-	 * The actual data for the file
-	 */
-	data: Buffer | Uint8Array | boolean | number | string;
-	/**
-	 * An explicit key to use for key of the formdata field for this file.
-	 * When not provided, the index of the file in the files array is used in the form `files[${index}]`.
-	 * If you wish to alter the placeholder snowflake, you must provide this property in the same form (`files[${placeholder}]`)
-	 */
-	key?: string;
-	/**
-	 * The name of the file
-	 */
-	name: string;
-}
+export { type RawFile } from '@discordjs/util';
 
 export interface AuthData {
 	/**

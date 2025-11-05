@@ -1,9 +1,18 @@
+import { Buffer } from 'node:buffer';
 import { AllowedMentionsTypes, ComponentType, MessageFlags, MessageReferenceType } from 'discord-api-types/v10';
 import { z } from 'zod';
 import { embedPredicate } from './embed/Assertions.js';
 import { pollPredicate } from './poll/Assertions.js';
 
+export const rawFilePredicate = z.object({
+	data: z.union([z.instanceof(Buffer), z.instanceof(Uint8Array), z.boolean(), z.number(), z.string()]),
+	name: z.string().min(1),
+	contentType: z.string().optional(),
+	key: z.string().optional(),
+});
+
 export const attachmentPredicate = z.object({
+	// As a string it only makes sense for edits when we do have an attachment snowflake
 	id: z.union([z.string(), z.number()]),
 	description: z.string().max(1_024).optional(),
 	duration_secs: z
@@ -125,3 +134,21 @@ const messageComponentsV2Predicate = baseMessagePredicate.extend({
 });
 
 export const messagePredicate = z.union([messageNoComponentsV2Predicate, messageComponentsV2Predicate]);
+
+export const fileBodyMessagePredicate = z
+	.object({
+		body: messagePredicate,
+		// No min length to support message edits
+		files: rawFilePredicate.array(),
+	})
+	// Now to validate files <-> attachments are coherent. Namely, ids are in bounds
+	.refine((data) => {
+		// TODO(DD): Once I've fixed the stuff in REST
+		// eslint-disable-next-line sonarjs/prefer-single-boolean-return
+		if (!data.body.attachments?.length) {
+			return true;
+		}
+
+		// const keys = new Set(data.files.map((file) => file.key).filter((key): key is string => key !== undefined));
+		return true;
+	});

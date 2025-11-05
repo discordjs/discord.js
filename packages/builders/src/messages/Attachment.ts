@@ -1,4 +1,5 @@
-import type { JSONEncodable } from '@discordjs/util';
+import type { Buffer } from 'node:buffer';
+import type { JSONEncodable, RawFile } from '@discordjs/util';
 import type { RESTAPIAttachment, Snowflake } from 'discord-api-types/v10';
 import { validate } from '../util/validation.js';
 import { attachmentPredicate } from './Assertions.js';
@@ -13,12 +14,24 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 	private readonly data: Partial<RESTAPIAttachment>;
 
 	/**
+	 * This data not included in the output of `toJSON()`. For this class specifically, this refers to binary data
+	 * that will wind up being included in the multipart/form-data request, if using with the `MessageBuilder`.
+	 * To retrieve this data, use {@link getRawFile}.
+	 *
+	 * @remarks This cannot be set via the constructor, primarily because of the behavior described
+	 * {@link https://discord.com/developers/docs/reference#editing-message-attachments | here}.
+	 * That is, when editing a message's attachments, you should only be providing file data for new attachments.
+	 */
+	private readonly fileData: Partial<Pick<RawFile, 'contentType' | 'data'>>;
+
+	/**
 	 * Creates a new attachment builder.
 	 *
 	 * @param data - The API data to create this attachment with
 	 */
 	public constructor(data: Partial<RESTAPIAttachment> = {}) {
 		this.data = structuredClone(data);
+		this.fileData = {};
 	}
 
 	/**
@@ -26,7 +39,7 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 	 *
 	 * @param id - The id of the attachment
 	 */
-	public setId(id: Snowflake): this {
+	public setId(id: Snowflake | number): this {
 		this.data.id = id;
 		return this;
 	}
@@ -83,6 +96,59 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 	public clearFilename(): this {
 		this.data.filename = undefined;
 		return this;
+	}
+
+	/**
+	 * Sets the file data to upload with this attachment.
+	 *
+	 * @param data - The file data (Buffer, Uint8Array, or string)
+	 * @remarks Note that this data is NOT included in the `toJSON()` output. To retrieve, use {@link getRawFile}.
+	 */
+	public setFileData(data: Buffer | Uint8Array | boolean | number | string): this {
+		this.fileData.data = data;
+		return this;
+	}
+
+	/**
+	 * Clears the file data from this attachment.
+	 */
+	public clearFileData(): this {
+		this.fileData.data = undefined;
+		return this;
+	}
+
+	/**
+	 * Sets the content type of the file data to upload with this attachment.
+	 */
+	public setFileContentType(contentType: string): this {
+		this.fileData.contentType = contentType;
+		return this;
+	}
+
+	/**
+	 * Clears the content type of the file data from this attachment.
+	 */
+	public clearFileContentType(): this {
+		this.fileData.contentType = undefined;
+		return this;
+	}
+
+	/**
+	 * Converts this attachment to a RawFile for uploading.
+	 *
+	 * @param key - The key to use for the FormData field for this file. Defaults to this attachment's ID.
+	 * @returns A RawFile object, or undefined if no file data is set
+	 */
+	public getRawFile(key?: string): Partial<RawFile> | undefined {
+		if (!this.fileData) {
+			return;
+		}
+
+		return {
+			...this.fileData,
+			name: this.data.filename,
+			key: key ?? this.data.id?.toString() ?? undefined,
+		};
 	}
 
 	/**

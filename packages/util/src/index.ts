@@ -1,6 +1,7 @@
 export type * from './types.js';
 export * from './functions/index.js';
 export * from './JSONEncodable.js';
+export type * from './RawFile.js';
 export * from './Equatable.js';
 export * from './gatewayRateLimitError.js';
 

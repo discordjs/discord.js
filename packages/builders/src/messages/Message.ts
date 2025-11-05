@@ -1,4 +1,4 @@
-import type { JSONEncodable } from '@discordjs/util';
+import type { FileBodyEncodeable, FileBodyEncodeableResult, JSONEncodable, RawFile } from '@discordjs/util';
 import type {
 	APIActionRowComponent,
 	APIAllowedMentions,
@@ -32,7 +32,7 @@ import { normalizeArray, type RestOrArray } from '../util/normalizeArray.js';
 import { resolveBuilder } from '../util/resolveBuilder.js';
 import { validate } from '../util/validation.js';
 import { AllowedMentionsBuilder } from './AllowedMentions.js';
-import { messagePredicate } from './Assertions.js';
+import { fileBodyMessagePredicate, messagePredicate } from './Assertions.js';
 import { AttachmentBuilder } from './Attachment.js';
 import { MessageReferenceBuilder } from './MessageReference.js';
 import { EmbedBuilder } from './embed/Embed.js';
@@ -56,7 +56,9 @@ export interface MessageBuilderData
 /**
  * A builder that creates API-compatible JSON data for messages.
  */
-export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJSONBody> {
+export class MessageBuilder
+	implements JSONEncodable<RESTPostAPIChannelMessageJSONBody>, FileBodyEncodeable<RESTPostAPIChannelMessageJSONBody>
+{
 	/**
 	 * The API data associated with this message.
 	 */
@@ -660,5 +662,33 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 		validate(messagePredicate, data, validationOverride);
 
 		return data as RESTPostAPIChannelMessageJSONBody;
+	}
+
+	/**
+	 * Serializes this builder to both JSON body and file data for multipart/form-data requests.
+	 *
+	 * @param validationOverride - Force validation to run/not run regardless of your global preference
+	 * @remarks
+	 * This method extracts file data from attachments that have files set via {@link AttachmentBuilder.setFileData}.
+	 * The returned body includes attachment metadata, while files contains the binary data for upload.
+	 */
+	public toFileBody(validationOverride?: boolean): FileBodyEncodeableResult<RESTPostAPIChannelMessageJSONBody> {
+		const body = this.toJSON(false);
+
+		const files: RawFile[] = [];
+		for (const attachment of this.data.attachments) {
+			const rawFile = attachment.getRawFile();
+			// Only if data or content type are set, since that implies the intent is to send a new file.
+			// In case it's contentType but not data, a validation error will be thrown right after.
+			if (rawFile?.data || rawFile?.contentType) {
+				files.push(rawFile as RawFile);
+			}
+		}
+
+		console.log(files);
+		const combined = { body, files };
+		validate(fileBodyMessagePredicate, combined, validationOverride);
+
+		return combined as FileBodyEncodeableResult<RESTPostAPIChannelMessageJSONBody>;
 	}
 }

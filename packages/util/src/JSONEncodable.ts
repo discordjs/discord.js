@@ -1,3 +1,5 @@
+import type { RawFile } from './RawFile.js';
+
 /**
  * Represents an object capable of representing itself as a JSON object
  *
@@ -17,4 +19,50 @@ export interface JSONEncodable<Value> {
  */
 export function isJSONEncodable(maybeEncodable: unknown): maybeEncodable is JSONEncodable<unknown> {
 	return maybeEncodable !== null && typeof maybeEncodable === 'object' && 'toJSON' in maybeEncodable;
+}
+
+/**
+ * Result of encoding an object that includes file attachments
+ *
+ * @typeParam BodyValue - The JSON body type
+ */
+export interface FileBodyEncodeableResult<BodyValue> {
+	/**
+	 * The JSON body to send with the request
+	 */
+	body: BodyValue;
+	/**
+	 * The files to attach to the request
+	 */
+	files: RawFile[];
+}
+
+/**
+ * Represents an object capable of representing itself as a request body with file attachments.
+ * Objects implementing this interface can separate JSON body data from binary file data,
+ * which is necessary for multipart/form-data requests.
+ *
+ * @typeParam BodyValue - The JSON body type
+ */
+export interface FileBodyEncodeable<BodyValue> extends JSONEncodable<BodyValue> {
+	/**
+	 * Transforms this object to its file body format, separating the JSON body from file attachments.
+	 *
+	 * This method should generate the JSON extract file data into the RawFile format.
+	 */
+	toFileBody(): FileBodyEncodeableResult<BodyValue>;
+}
+
+/**
+ * Indicates if an object is file body encodable or not.
+ *
+ * @param maybeEncodable - The object to check against
+ */
+export function isFileBodyEncodeable(maybeEncodable: unknown): maybeEncodable is FileBodyEncodeable<unknown> {
+	return (
+		maybeEncodable !== null &&
+		typeof maybeEncodable === 'object' &&
+		'toJSON' in maybeEncodable &&
+		'toFileBody' in maybeEncodable
+	);
 }
