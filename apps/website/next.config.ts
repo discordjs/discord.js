@@ -1,7 +1,6 @@
 import type { NextConfig } from 'next';
 
 export default {
-	reactStrictMode: true,
 	images: {
 		dangerouslyAllowSVG: true,
 		contentDispositionType: 'attachment',
