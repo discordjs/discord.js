@@ -4,88 +4,89 @@ import { calculateShardId } from '@discordjs/util';
 import { WebSocketShardEvents } from '@discordjs/ws';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
-import {
-	GatewayDispatchEvents,
-	GatewayOpcodes,
-	type GatewayApplicationCommandPermissionsUpdateDispatchData,
-	type GatewayAutoModerationActionExecutionDispatchData,
-	type GatewayAutoModerationRuleCreateDispatchData,
-	type GatewayAutoModerationRuleDeleteDispatchData,
-	type GatewayAutoModerationRuleUpdateDispatchData,
-	type GatewayChannelCreateDispatchData,
-	type GatewayChannelDeleteDispatchData,
-	type GatewayChannelPinsUpdateDispatchData,
-	type GatewayChannelUpdateDispatchData,
-	type GatewayEntitlementCreateDispatchData,
-	type GatewayEntitlementDeleteDispatchData,
-	type GatewayEntitlementUpdateDispatchData,
-	type GatewayGuildAuditLogEntryCreateDispatchData,
-	type GatewayGuildBanAddDispatchData,
-	type GatewayGuildBanRemoveDispatchData,
-	type GatewayGuildCreateDispatchData,
-	type GatewayGuildDeleteDispatchData,
-	type GatewayGuildEmojisUpdateDispatchData,
-	type GatewayGuildIntegrationsUpdateDispatchData,
-	type GatewayGuildMemberAddDispatchData,
-	type GatewayGuildMemberRemoveDispatchData,
-	type GatewayGuildMemberUpdateDispatchData,
-	type GatewayGuildMembersChunkDispatchData,
-	type GatewayGuildRoleCreateDispatchData,
-	type GatewayGuildRoleDeleteDispatchData,
-	type GatewayGuildRoleUpdateDispatchData,
-	type GatewayGuildScheduledEventCreateDispatchData,
-	type GatewayGuildScheduledEventDeleteDispatchData,
-	type GatewayGuildScheduledEventUpdateDispatchData,
-	type GatewayGuildScheduledEventUserAddDispatchData,
-	type GatewayGuildScheduledEventUserRemoveDispatchData,
-	type GatewayGuildSoundboardSoundCreateDispatch,
-	type GatewayGuildSoundboardSoundDeleteDispatch,
-	type GatewayGuildSoundboardSoundUpdateDispatch,
-	type GatewayGuildSoundboardSoundsUpdateDispatch,
-	type GatewayGuildStickersUpdateDispatchData,
-	type GatewayGuildUpdateDispatchData,
-	type GatewayIntegrationCreateDispatchData,
-	type GatewayIntegrationDeleteDispatchData,
-	type GatewayIntegrationUpdateDispatchData,
-	type GatewayInteractionCreateDispatchData,
-	type GatewayInviteCreateDispatchData,
-	type GatewayInviteDeleteDispatchData,
-	type GatewayMessageCreateDispatchData,
-	type GatewayMessageDeleteBulkDispatchData,
-	type GatewayMessageDeleteDispatchData,
-	type GatewayMessagePollVoteDispatchData,
-	type GatewayMessageReactionAddDispatchData,
-	type GatewayMessageReactionRemoveAllDispatchData,
-	type GatewayMessageReactionRemoveDispatchData,
-	type GatewayMessageReactionRemoveEmojiDispatchData,
-	type GatewayMessageUpdateDispatchData,
-	type GatewayPresenceUpdateData,
-	type GatewayPresenceUpdateDispatchData,
-	type GatewayReadyDispatchData,
-	type GatewayRequestGuildMembersData,
-	type GatewayStageInstanceCreateDispatchData,
-	type GatewayStageInstanceDeleteDispatchData,
-	type GatewayStageInstanceUpdateDispatchData,
-	type GatewaySubscriptionCreateDispatchData,
-	type GatewaySubscriptionDeleteDispatchData,
-	type GatewaySubscriptionUpdateDispatchData,
-	type GatewayThreadCreateDispatchData,
-	type GatewayThreadDeleteDispatchData,
-	type GatewayThreadListSyncDispatchData,
-	type GatewayThreadMemberUpdateDispatchData,
-	type GatewayThreadMembersUpdateDispatchData,
-	type GatewayThreadUpdateDispatchData,
-	type GatewayTypingStartDispatchData,
-	type GatewayUserUpdateDispatchData,
-	type GatewayVoiceServerUpdateDispatchData,
-	type GatewayVoiceStateUpdateData,
-	type GatewayVoiceStateUpdateDispatchData,
-	type GatewayWebhooksUpdateDispatchData,
-	type GatewayRequestSoundboardSoundsData,
-	type GatewaySoundboardSoundsDispatchData,
+import type {
+	GatewayApplicationCommandPermissionsUpdateDispatchData,
+	GatewayAutoModerationActionExecutionDispatchData,
+	GatewayAutoModerationRuleCreateDispatchData,
+	GatewayAutoModerationRuleDeleteDispatchData,
+	GatewayAutoModerationRuleUpdateDispatchData,
+	GatewayChannelCreateDispatchData,
+	GatewayChannelDeleteDispatchData,
+	GatewayChannelPinsUpdateDispatchData,
+	GatewayChannelUpdateDispatchData,
+	GatewayEntitlementCreateDispatchData,
+	GatewayEntitlementDeleteDispatchData,
+	GatewayEntitlementUpdateDispatchData,
+	GatewayGuildAuditLogEntryCreateDispatchData,
+	GatewayGuildBanAddDispatchData,
+	GatewayGuildBanRemoveDispatchData,
+	GatewayGuildCreateDispatchData,
+	GatewayGuildDeleteDispatchData,
+	GatewayGuildEmojisUpdateDispatchData,
+	GatewayGuildIntegrationsUpdateDispatchData,
+	GatewayGuildMemberAddDispatchData,
+	GatewayGuildMemberRemoveDispatchData,
+	GatewayGuildMemberUpdateDispatchData,
+	GatewayGuildMembersChunkDispatchData,
+	GatewayGuildRoleCreateDispatchData,
+	GatewayGuildRoleDeleteDispatchData,
+	GatewayGuildRoleUpdateDispatchData,
+	GatewayGuildScheduledEventCreateDispatchData,
+	GatewayGuildScheduledEventDeleteDispatchData,
+	GatewayGuildScheduledEventUpdateDispatchData,
+	GatewayGuildScheduledEventUserAddDispatchData,
+	GatewayGuildScheduledEventUserRemoveDispatchData,
+	GatewayGuildSoundboardSoundCreateDispatch,
+	GatewayGuildSoundboardSoundDeleteDispatch,
+	GatewayGuildSoundboardSoundUpdateDispatch,
+	GatewayGuildSoundboardSoundsUpdateDispatch,
+	GatewayGuildStickersUpdateDispatchData,
+	GatewayGuildUpdateDispatchData,
+	GatewayIntegrationCreateDispatchData,
+	GatewayIntegrationDeleteDispatchData,
+	GatewayIntegrationUpdateDispatchData,
+	GatewayInteractionCreateDispatchData,
+	GatewayInviteCreateDispatchData,
+	GatewayInviteDeleteDispatchData,
+	GatewayMessageCreateDispatchData,
+	GatewayMessageDeleteBulkDispatchData,
+	GatewayMessageDeleteDispatchData,
+	GatewayMessagePollVoteDispatchData,
+	GatewayMessageReactionAddDispatchData,
+	GatewayMessageReactionRemoveAllDispatchData,
+	GatewayMessageReactionRemoveDispatchData,
+	GatewayMessageReactionRemoveEmojiDispatchData,
+	GatewayMessageUpdateDispatchData,
+	GatewayPresenceUpdateData,
+	GatewayPresenceUpdateDispatchData,
+	GatewayReadyDispatchData,
+	GatewayRequestGuildMembersData,
+	GatewayStageInstanceCreateDispatchData,
+	GatewayStageInstanceDeleteDispatchData,
+	GatewayStageInstanceUpdateDispatchData,
+	GatewaySubscriptionCreateDispatchData,
+	GatewaySubscriptionDeleteDispatchData,
+	GatewaySubscriptionUpdateDispatchData,
+	GatewayThreadCreateDispatchData,
+	GatewayThreadDeleteDispatchData,
+	GatewayThreadListSyncDispatchData,
+	GatewayThreadMemberUpdateDispatchData,
+	GatewayThreadMembersUpdateDispatchData,
+	GatewayThreadUpdateDispatchData,
+	GatewayTypingStartDispatchData,
+	GatewayUserUpdateDispatchData,
+	GatewayVoiceServerUpdateDispatchData,
+	GatewayVoiceStateUpdateData,
+	GatewayVoiceStateUpdateDispatchData,
+	GatewayWebhooksUpdateDispatchData,
+	GatewayRequestSoundboardSoundsData,
+	GatewaySoundboardSoundsDispatchData,
+	GatewayDispatchPayload,
 } from 'discord-api-types/v10';
+import { GatewayDispatchEvents, GatewayOpcodes } from 'discord-api-types/v10';
 import type { Gateway } from './Gateway.js';
 import { API } from './api/index.js';
+import { GatewayRateLimitError } from './util/index.js';
 
 export interface IntrinsicProps {
 	/**
@@ -244,6 +245,22 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 
 		let timer: NodeJS.Timeout | undefined = createTimer(controller, timeout);
 
+		const onRatelimit = (payload: GatewayDispatchPayload) => {
+			// We could verify meta.guild_id === options.guild_id as well, but really, there shouldn't be a point
+			if (payload.t === GatewayDispatchEvents.RateLimited && payload.d.meta.nonce === nonce) {
+				controller.abort(new GatewayRateLimitError(payload.d.retry_after, payload.d.opcode, payload.d.meta));
+			}
+		};
+
+		const cleanup = () => {
+			if (timer) {
+				clearTimeout(timer);
+			}
+
+			this.gateway.off(WebSocketShardEvents.Dispatch, onRatelimit);
+		};
+
+		this.gateway.on(WebSocketShardEvents.Dispatch, onRatelimit);
 		await this.gateway.send(shardId, {
 			op: GatewayOpcodes.RequestGuildMembers,
 			// eslint-disable-next-line id-length
@@ -275,18 +292,21 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 
 				if (data.chunk_index >= data.chunk_count - 1) break;
 
+				// eslint-disable-next-line require-atomic-updates
 				timer = createTimer(controller, timeout);
 			}
 		} catch (error) {
 			if (error instanceof Error && error.name === 'AbortError') {
+				if (error.cause instanceof GatewayRateLimitError) {
+					throw error.cause;
+				}
+
 				throw new Error('Request timed out');
 			}
 
 			throw error;
 		} finally {
-			if (timer) {
-				clearTimeout(timer);
-			}
+			cleanup();
 		}
 	}
 
