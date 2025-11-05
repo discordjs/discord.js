@@ -181,6 +181,9 @@ const Messages = {
   [DjsErrorCodes.BulkBanUsersOptionEmpty]: 'Option "users" array or collection is empty',
 
   [DjsErrorCodes.PollAlreadyExpired]: 'This poll has already expired.',
+
+  [DjsErrorCodes.GatewayRequestRateLimited]: data =>
+    `Request with opcode ${data.opcode} was rate limited. Retry after ${data.retry_after} seconds.`,
 };
 
 module.exports = Messages;
