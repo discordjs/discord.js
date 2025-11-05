@@ -156,7 +156,7 @@ const Messages = {
     `"overwrite.id" is a ${expected.toLowerCase()} object, ` +
     `but "overwrite.type" is defined and not equal to OverwriteType.${expected}`,
 
-  [ErrorCodes.GatewayReqestRateLimited]: data =>
+  [ErrorCodes.GatewayRequestRateLimited]: data =>
     `Request with opcode ${data.opcode} was rate limited. Retry after ${data.retry_after} seconds.`,
 };
 

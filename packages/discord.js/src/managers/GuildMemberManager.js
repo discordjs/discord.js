@@ -280,7 +280,7 @@ class GuildMemberManager extends CachedManager {
           this.client.ws.off(WebSocketShardEvents.Dispatch, rateLimitHandler);
           this.client.removeListener(Events.GuildMembersChunk, handler);
           this.client.decrementMaxListeners();
-          reject(new DiscordjsError(ErrorCodes.GatewayReqestRateLimited, payload.d));
+          reject(new DiscordjsError(ErrorCodes.GatewayRequestRateLimited, payload.d));
         }
       };
 
