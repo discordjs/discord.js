@@ -135,6 +135,8 @@
  *
  * @property {'PermissionOverwritesTypeMandatory'} PermissionOverwritesTypeMandatory
  * @property {'PermissionOverwritesTypeMismatch'} PermissionOverwritesTypeMismatch
+ *
+ * @property {'GatewayReqestRateLimited'} GatewayReqestRateLimited
  */
 
 const keys = [
@@ -270,6 +272,8 @@ const keys = [
 
   'PermissionOverwritesTypeMandatory',
   'PermissionOverwritesTypeMismatch',
+
+  'GatewayReqestRateLimited',
 ];
 
 // JSDoc for IntelliSense purposes

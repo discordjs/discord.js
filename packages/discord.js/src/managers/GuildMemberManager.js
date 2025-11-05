@@ -3,8 +3,9 @@
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
+const { WebSocketShardEvents } = require('@discordjs/ws');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Routes, GatewayOpcodes } = require('discord-api-types/v10');
+const { Routes, GatewayOpcodes, GatewayDispatchEvents } = require('discord-api-types/v10');
 const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
 const { BaseGuildVoiceChannel } = require('../structures/BaseGuildVoiceChannel.js');
 const { GuildMember } = require('../structures/GuildMember.js');
@@ -246,6 +247,48 @@ class GuildMemberManager extends CachedManager {
     const query = initialQuery ?? (users ? undefined : '');
 
     return new Promise((resolve, reject) => {
+      const fetchedMembers = new Collection();
+      let index = 0;
+
+      const timeout = setTimeout(() => {
+        // eslint-disable-next-line no-use-before-define
+        this.client.removeListener(Events.GuildMembersChunk, handler);
+        this.client.decrementMaxListeners();
+        reject(new DiscordjsError(ErrorCodes.GuildMembersTimeout));
+      }, time).unref();
+
+      const handler = (members, _, chunk) => {
+        if (chunk.nonce !== nonce) return;
+
+        timeout.refresh();
+        index++;
+        for (const member of members.values()) {
+          fetchedMembers.set(member.id, member);
+        }
+
+        if (members.size < 1_000 || (limit && fetchedMembers.size >= limit) || index === chunk.count) {
+          clearTimeout(timeout);
+          this.client.removeListener(Events.GuildMembersChunk, handler);
+          this.client.decrementMaxListeners();
+          resolve(users && !Array.isArray(users) && fetchedMembers.size ? fetchedMembers.first() : fetchedMembers);
+        }
+      };
+
+      const rateLimitHandler = payload => {
+        if (payload.t === GatewayDispatchEvents.RateLimited && payload.d.meta.nonce === nonce) {
+          clearTimeout(timeout);
+          this.client.ws.off(WebSocketShardEvents.Dispatch, rateLimitHandler);
+          this.client.removeListener(Events.GuildMembersChunk, handler);
+          this.client.decrementMaxListeners();
+          reject(new DiscordjsError(ErrorCodes.GatewayReqestRateLimited, payload.d));
+        }
+      };
+
+      this.client.ws.on(WebSocketShardEvents.Dispatch, rateLimitHandler);
+
+      this.client.incrementMaxListeners();
+      this.client.on(Events.GuildMembersChunk, handler);
+
       this.guild.client.ws.send(this.guild.shardId, {
         op: GatewayOpcodes.RequestGuildMembers,
         // eslint-disable-next-line id-length
@@ -258,34 +301,6 @@ class GuildMemberManager extends CachedManager {
           limit,
         },
       });
-      const fetchedMembers = new Collection();
-      let index = 0;
-      const handler = (members, _, chunk) => {
-        if (chunk.nonce !== nonce) return;
-
-        // eslint-disable-next-line no-use-before-define
-        timeout.refresh();
-        index++;
-        for (const member of members.values()) {
-          fetchedMembers.set(member.id, member);
-        }
-
-        if (members.size < 1_000 || (limit && fetchedMembers.size >= limit) || index === chunk.count) {
-          // eslint-disable-next-line no-use-before-define
-          clearTimeout(timeout);
-          this.client.removeListener(Events.GuildMembersChunk, handler);
-          this.client.decrementMaxListeners();
-          resolve(users && !Array.isArray(users) && fetchedMembers.size ? fetchedMembers.first() : fetchedMembers);
-        }
-      };
-
-      const timeout = setTimeout(() => {
-        this.client.removeListener(Events.GuildMembersChunk, handler);
-        this.client.decrementMaxListeners();
-        reject(new DiscordjsError(ErrorCodes.GuildMembersTimeout));
-      }, time).unref();
-      this.client.incrementMaxListeners();
-      this.client.on(Events.GuildMembersChunk, handler);
     });
   }
 
