@@ -4118,6 +4118,8 @@ export enum DiscordjsErrorCodes {
   BulkBanUsersOptionEmpty = 'BulkBanUsersOptionEmpty',
 
   PollAlreadyExpired = 'PollAlreadyExpired',
+
+  GatewayRequestRateLimited = 'GatewayRequestRateLimited',
 }
 /* eslint-enable typescript-sort-keys/string-enum */
 
