@@ -1,0 +1,52 @@
+name: Deprecate tag
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: The tag to deprecate
+        required: true
+        type: string
+      message:
+        description: Deprecation message
+        required: false
+        type: string
+jobs:
+  deprecate:
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'discordjs'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install Node.js v24
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Install dependencies
+        uses: ./packages/actions/src/pnpmCache
+
+      - name: Deprecate
+        run: |
+          pnpm exec npm-deprecate \
+              --deprecate-dist-tag \
+              --name "*-${{inputs.tag}}.*" \
+              --message "${{inputs.message || 'This version is deprecated. Please use a newer version.'}}" \
+              --package '@discordjs/brokers' \
+              --package '@discordjs/builders' \
+              --package '@discordjs/collection' \
+              --package '@discordjs/core' \
+              --package 'create-discord-app' \
+              --package 'create-discord-bot' \
+              --package '@discordjs/formatters' \
+              --package 'discord.js' \
+              --package '@discordjs/next' \
+              --package '@discordjs/proxy' \
+              --package '@discordjs/rest' \
+              --package '@discordjs/structures' \
+              --package '@discordjs/util' \
+              --package '@discordjs/voice' \
+              --package '@discordjs/ws'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
