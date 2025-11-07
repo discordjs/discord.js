@@ -124,7 +124,7 @@ export interface IApiPackageMetadataJson {
 	 *
 	 * @remarks
 	 *
-	 * The structure of this objet is defined by the `@microsoft/tsdoc-config` library.
+	 * The structure of this object is defined by the `@microsoft/tsdoc-config` library.
 	 * Normally this configuration is loaded from the project's tsdoc.json file.  It is stored
 	 * in the .api.json file so that doc comments can be parsed accurately when loading the file.
 	 */
