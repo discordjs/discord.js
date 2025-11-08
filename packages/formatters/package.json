@@ -1,7 +1,7 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/formatters",
-	"version": "0.5.0",
+	"version": "0.6.1",
 	"description": "A set of functions to format strings for Discord.",
 	"scripts": {
 		"test": "vitest run",
@@ -55,7 +55,7 @@
 	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
-		"discord-api-types": "^0.38.24"
+		"discord-api-types": "^0.38.16"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
@@ -75,7 +75,7 @@
 		"vitest": "^2.0.5"
 	},
 	"engines": {
-		"node": ">=18"
+		"node": ">=16.11.0"
 	},
 	"publishConfig": {
 		"access": "public",

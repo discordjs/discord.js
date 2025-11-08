@@ -83,7 +83,7 @@ export class StringSelectMenuBuilder extends BaseSelectMenuBuilder<APIStringSele
 	 *
 	 * @remarks
 	 * This method behaves similarly
-	 * to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/slice | Array.prototype.splice()}.
+	 * to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice | Array.prototype.splice()}.
 	 * It's useful for modifying and adjusting the order of existing options.
 	 * @example
 	 * Remove the first option:

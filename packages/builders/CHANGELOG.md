@@ -2,6 +2,52 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.13.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.12.2...@discordjs/builders@1.13.0) - (2025-10-24)
+
+## Features
+
+- V1 builders file uploads support (#11196) ([1417c49](https://github.com/discordjs/discord.js/commit/1417c498a40b843d772ecf88dfff5f87a1665042))
+
+## Testing
+
+- Fix type error ([f780c6a](https://github.com/discordjs/discord.js/commit/f780c6a5500f7ea5c7a1ea7cd6720f6159d9d36e))
+
+# [@discordjs/builders@1.12.2](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.12.1...@discordjs/builders@1.12.2) - (2025-10-09)
+
+## Bug Fixes
+
+- **Assertions:** Literal default values ([43362c9](https://github.com/discordjs/discord.js/commit/43362c93525f98d72b894eb0fc6b358d30ec45b9))
+
+# [@discordjs/builders@1.12.1](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.12.0...@discordjs/builders@1.12.1) - (2025-10-08)
+
+## Bug Fixes
+
+- **builders:** Text display component support for modals (#11155) ([99b8436](https://github.com/discordjs/discord.js/commit/99b8436117bc12654278337abc4a23f5bdf4ba46))
+
+# [@discordjs/builders@1.12.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.11.3...@discordjs/builders@1.12.0) - (2025-10-08)
+
+## Features
+
+- **builders:** Modal select menus in builders v1 (#11138) ([ac683b9](https://github.com/discordjs/discord.js/commit/ac683b9d040635de8514c80a9d433d9c6d63701b))
+
+# [@discordjs/builders@1.11.3](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.11.2...@discordjs/builders@1.11.3) - (2025-08-10)
+
+## Bug Fixes
+
+- **contextMenuCommands:** Remove regular expression validation (#10996) ([4906aae](https://github.com/discordjs/discord.js/commit/4906aaea4c0e6e868fa658d3359026eb662fbcb8))
+
+# [@discordjs/builders@1.11.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.10.1...@discordjs/builders@1.11.0) - (2025-04-25)
+
+## Features
+
+- Components v2 in builders v1 (#10787) ([118e682](https://github.com/discordjs/discord.js/commit/118e6826821b3b90f5923e40f167747e0658cfd1))
+
+# [@discordjs/builders@1.10.1](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.10.0...@discordjs/builders@1.10.1) - (2025-02-10)
+
+## Bug Fixes
+
+- **EmbedBuilder:** Allow empty `name` and `value` on fields (#10747) ([49ef3a8](https://github.com/discordjs/discord.js/commit/49ef3a833eab23d426d5c667e28aa493ddc9cb6c))
+
 # [@discordjs/builders@1.9.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.8.2...@discordjs/builders@1.9.0) - (2024-09-01)
 
 ## Features
