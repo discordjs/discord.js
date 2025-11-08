@@ -16,8 +16,8 @@ describe('Context Menu Commands', () => {
 			// Too short of a name
 			expect(() => ContextMenuCommandAssertions.validateName('')).toThrowError();
 
-			// Invalid characters used
-			expect(() => ContextMenuCommandAssertions.validateName('ABC123$%^&')).toThrowError();
+			// This should be fine, even with trailing and leading spaces (API trims it).
+			expect(() => ContextMenuCommandAssertions.validateName(' 🩵 ABC 123 $%^& ')).not.toThrowError();
 
 			// Too long of a name
 			expect(() =>
@@ -60,8 +60,6 @@ describe('Context Menu Commands', () => {
 			});
 
 			test('GIVEN invalid name THEN throw error', () => {
-				expect(() => getBuilder().setName('$$$')).toThrowError();
-
 				expect(() => getBuilder().setName(' ')).toThrowError();
 			});
 
@@ -166,7 +164,7 @@ describe('Context Menu Commands', () => {
 		});
 
 		describe('integration types', () => {
-			test('GIVEN a builder with valid integration types THEN does not throw an error', () => {
+			test('GIVEN a builder with valid integraton types THEN does not throw an error', () => {
 				expect(() =>
 					getBuilder().setIntegrationTypes([
 						ApplicationIntegrationType.GuildInstall,

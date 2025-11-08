@@ -30,7 +30,7 @@ export class TextInputBuilder
 	 * ```ts
 	 * const textInput = new TextInputBuilder({
 	 * 	custom_id: 'a cool text input',
-	 * 	label: 'Type something',
+	 * 	placeholder: 'Type something',
 	 * 	style: TextInputStyle.Short,
 	 * });
 	 * ```
@@ -38,7 +38,7 @@ export class TextInputBuilder
 	 * Creating a text input using setters and API data:
 	 * ```ts
 	 * const textInput = new TextInputBuilder({
-	 * 	label: 'Type something else',
+	 * 	placeholder: 'Type something else',
 	 * })
 	 * 	.setCustomId('woah')
 	 * 	.setStyle(TextInputStyle.Paragraph);
@@ -62,6 +62,7 @@ export class TextInputBuilder
 	 * Sets the label for this text input.
 	 *
 	 * @param label - The label to use
+	 * @deprecated Use a label builder to create a label (and optionally a description) instead.
 	 */
 	public setLabel(label: string) {
 		this.data.label = labelValidator.parse(label);
@@ -132,7 +133,7 @@ export class TextInputBuilder
 	 * {@inheritDoc ComponentBuilder.toJSON}
 	 */
 	public toJSON(): APITextInputComponent {
-		validateRequiredParameters(this.data.custom_id, this.data.style, this.data.label);
+		validateRequiredParameters(this.data.custom_id, this.data.style);
 
 		return {
 			...this.data,

@@ -2,7 +2,7 @@ import {
 	ButtonStyle,
 	ComponentType,
 	type APIActionRowComponent,
-	type APIMessageActionRowComponent,
+	type APIComponentInMessageActionRow,
 } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
@@ -13,7 +13,7 @@ import {
 	StringSelectMenuOptionBuilder,
 } from '../../src/index.js';
 
-const rowWithButtonData: APIActionRowComponent<APIMessageActionRowComponent> = {
+const rowWithButtonData: APIActionRowComponent<APIComponentInMessageActionRow> = {
 	type: ComponentType.ActionRow,
 	components: [
 		{
@@ -25,7 +25,7 @@ const rowWithButtonData: APIActionRowComponent<APIMessageActionRowComponent> = {
 	],
 };
 
-const rowWithSelectMenuData: APIActionRowComponent<APIMessageActionRowComponent> = {
+const rowWithSelectMenuData: APIActionRowComponent<APIComponentInMessageActionRow> = {
 	type: ComponentType.ActionRow,
 	components: [
 		{
@@ -57,7 +57,7 @@ describe('Action Row Components', () => {
 		});
 
 		test('GIVEN valid JSON input THEN valid JSON output is given', () => {
-			const actionRowData: APIActionRowComponent<APIMessageActionRowComponent> = {
+			const actionRowData: APIActionRowComponent<APIComponentInMessageActionRow> = {
 				type: ComponentType.ActionRow,
 				components: [
 					{
@@ -92,7 +92,7 @@ describe('Action Row Components', () => {
 		});
 
 		test('GIVEN valid builder options THEN valid JSON output is given', () => {
-			const rowWithButtonData: APIActionRowComponent<APIMessageActionRowComponent> = {
+			const rowWithButtonData: APIActionRowComponent<APIComponentInMessageActionRow> = {
 				type: ComponentType.ActionRow,
 				components: [
 					{
@@ -104,7 +104,7 @@ describe('Action Row Components', () => {
 				],
 			};
 
-			const rowWithSelectMenuData: APIActionRowComponent<APIMessageActionRowComponent> = {
+			const rowWithSelectMenuData: APIActionRowComponent<APIComponentInMessageActionRow> = {
 				type: ComponentType.ActionRow,
 				components: [
 					{

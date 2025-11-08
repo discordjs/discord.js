@@ -1,6 +1,7 @@
 import type { APISelectMenuComponent } from 'discord-api-types/v10';
 import { customIdValidator, disabledValidator, minMaxValidator, placeholderValidator } from '../Assertions.js';
 import { ComponentBuilder } from '../Component.js';
+import { requiredValidator } from '../textInput/Assertions.js';
 
 /**
  * The base select menu builder that contains common symbols for select menu builders.
@@ -31,9 +32,9 @@ export abstract class BaseSelectMenuBuilder<
 	}
 
 	/**
-	 * Sets the maximum values that must be selected in the select menu.
+	 * Sets the maximum values that can be selected in the select menu.
 	 *
-	 * @param maxValues - The maximum values that must be selected
+	 * @param maxValues - The maximum values that can be selected
 	 */
 	public setMaxValues(maxValues: number) {
 		this.data.max_values = minMaxValidator.parse(maxValues);
@@ -57,6 +58,17 @@ export abstract class BaseSelectMenuBuilder<
 	 */
 	public setDisabled(disabled = true) {
 		this.data.disabled = disabledValidator.parse(disabled);
+		return this;
+	}
+
+	/**
+	 * Sets whether this select menu is required.
+	 *
+	 * @remarks Only for use in modals.
+	 * @param required - Whether this select menu is required
+	 */
+	public setRequired(required = true) {
+		this.data.required = requiredValidator.parse(required);
 		return this;
 	}
 

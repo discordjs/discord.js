@@ -2,17 +2,9 @@ import { s } from '@sapphire/shapeshift';
 import type { APIEmbedField } from 'discord-api-types/v10';
 import { isValidationEnabled } from '../../util/validation.js';
 
-export const fieldNamePredicate = s
-	.string()
-	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(256)
-	.setValidationEnabled(isValidationEnabled);
+export const fieldNamePredicate = s.string().lengthLessThanOrEqual(256).setValidationEnabled(isValidationEnabled);
 
-export const fieldValuePredicate = s
-	.string()
-	.lengthGreaterThanOrEqual(1)
-	.lengthLessThanOrEqual(1_024)
-	.setValidationEnabled(isValidationEnabled);
+export const fieldValuePredicate = s.string().lengthLessThanOrEqual(1_024).setValidationEnabled(isValidationEnabled);
 
 export const fieldInlinePredicate = s.boolean().optional();
 
@@ -32,7 +24,10 @@ export function validateFieldLength(amountAdding: number, fields?: APIEmbedField
 	fieldLengthPredicate.parse((fields?.length ?? 0) + amountAdding);
 }
 
-export const authorNamePredicate = fieldNamePredicate.nullable().setValidationEnabled(isValidationEnabled);
+export const authorNamePredicate = fieldNamePredicate
+	.lengthGreaterThanOrEqual(1)
+	.nullable()
+	.setValidationEnabled(isValidationEnabled);
 
 export const imageURLPredicate = s
 	.string()
@@ -96,4 +91,7 @@ export const embedFooterPredicate = s
 
 export const timestampPredicate = s.union([s.number(), s.date()]).nullable().setValidationEnabled(isValidationEnabled);
 
-export const titlePredicate = fieldNamePredicate.nullable().setValidationEnabled(isValidationEnabled);
+export const titlePredicate = fieldNamePredicate
+	.lengthGreaterThanOrEqual(1)
+	.nullable()
+	.setValidationEnabled(isValidationEnabled);

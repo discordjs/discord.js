@@ -324,12 +324,16 @@ describe('Embed', () => {
 		test('GIVEN an embed using Embed#addFields THEN returns valid toJSON data', () => {
 			const embed = new EmbedBuilder();
 			embed.addFields({ name: 'foo', value: 'bar' });
-			embed.addFields([{ name: 'foo', value: 'bar' }]);
+			embed.addFields([
+				{ name: 'foo', value: 'bar' },
+				{ name: '', value: '' },
+			]);
 
 			expect(embed.toJSON()).toStrictEqual({
 				fields: [
 					{ name: 'foo', value: 'bar' },
 					{ name: 'foo', value: 'bar' },
+					{ name: '', value: '' },
 				],
 			});
 		});
@@ -381,38 +385,24 @@ describe('Embed', () => {
 			expect(() => embed.setFields(Array.from({ length: 26 }, () => ({ name: 'foo', value: 'bar' })))).toThrowError();
 		});
 
-		describe('GIVEN invalid field amount THEN throws error', () => {
-			test('1', () => {
-				const embed = new EmbedBuilder();
+		test('GIVEN invalid field amount THEN throws error', () => {
+			const embed = new EmbedBuilder();
 
-				expect(() =>
-					embed.addFields(...Array.from({ length: 26 }, () => ({ name: 'foo', value: 'bar' }))),
-				).toThrowError();
-			});
+			expect(() =>
+				embed.addFields(...Array.from({ length: 26 }, () => ({ name: 'foo', value: 'bar' }))),
+			).toThrowError();
 		});
 
-		describe('GIVEN invalid field name THEN throws error', () => {
-			test('2', () => {
-				const embed = new EmbedBuilder();
+		test('GIVEN invalid field name length THEN throws error', () => {
+			const embed = new EmbedBuilder();
 
-				expect(() => embed.addFields({ name: '', value: 'bar' })).toThrowError();
-			});
+			expect(() => embed.addFields({ name: 'a'.repeat(257), value: 'bar' })).toThrowError();
 		});
 
-		describe('GIVEN invalid field name length THEN throws error', () => {
-			test('3', () => {
-				const embed = new EmbedBuilder();
+		test('GIVEN invalid field value length THEN throws error', () => {
+			const embed = new EmbedBuilder();
 
-				expect(() => embed.addFields({ name: 'a'.repeat(257), value: 'bar' })).toThrowError();
-			});
-		});
-
-		describe('GIVEN invalid field value length THEN throws error', () => {
-			test('4', () => {
-				const embed = new EmbedBuilder();
-
-				expect(() => embed.addFields({ name: '', value: 'a'.repeat(1_025) })).toThrowError();
-			});
+			expect(() => embed.addFields({ name: '', value: 'a'.repeat(1_025) })).toThrowError();
 		});
 	});
 });
