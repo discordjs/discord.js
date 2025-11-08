@@ -30,8 +30,10 @@ body = """
 			{{ commit.message | upper_first }} ([{{ commit.id | truncate(length=7, end="") }}]({{ self::remote_url() }}/commit/{{ commit.id }}))\
 			{% if commit.github.username %} by @{{ commit.github.username }}{%- endif %}\
 		{% if commit.breaking %}\
-			{% for breakingChange in commit.footers %}\
-				\n{% raw %}  {% endraw %}- **{{ breakingChange.token }}{{ breakingChange.separator }}** {{ breakingChange.value }}\
+			{% for footer in commit.footers %}\
+				{% if footer.breaking %}\
+					\n{% raw %}  {% endraw %}- **{{ footer.token }}{{ footer.separator }}** {{ footer.value }}\
+				{% endif %}\
 			{% endfor %}\
 		{% endif %}\
 	{% endfor %}
