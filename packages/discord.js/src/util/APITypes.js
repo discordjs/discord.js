@@ -236,6 +236,11 @@
  */
 
 /**
+ * @external APISelectMenuDefaultValue
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISelectMenuDefaultValue}
+ */
+
+/**
  * @external APISectionComponent
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APISectionComponent}
  */
@@ -515,6 +520,11 @@
  */
 
 /**
+ * @external InviteFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InviteFlags}
+ */
+
+/**
  * @external InviteType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InviteType}
  */
@@ -527,6 +537,11 @@
 /**
  * @external Locale
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/Locale}
+ */
+
+/**
+ * @external LocalizationMap
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#LocalizationMap}
  */
 
 /**
@@ -642,6 +657,11 @@
 /**
  * @external ThreadAutoArchiveDuration
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ThreadAutoArchiveDuration}
+ */
+
+/**
+ * @external ThreadMemberFlags
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ThreadMemberFlags}
  */
 
 /**

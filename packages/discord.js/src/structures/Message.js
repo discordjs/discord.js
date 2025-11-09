@@ -634,7 +634,7 @@ class Message extends Base {
    * Resolves with a collection of reactions that pass the specified filter.
    *
    * @param {AwaitReactionsOptions} [options={}] Optional options to pass to the internal collector
-   * @returns {Promise<Collection<string | Snowflake, MessageReaction>>}
+   * @returns {Promise<Collection<string|Snowflake, MessageReaction>>}
    * @example
    * // Create a reaction collector
    * const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === 'someId'
@@ -799,12 +799,15 @@ class Message extends Base {
    */
   get pinnable() {
     const { channel } = this;
-    return Boolean(
-      !this.system &&
-        (!this.guild ||
-          (channel?.viewable &&
-            channel?.permissionsFor(this.client.user)?.has(PermissionFlagsBits.ManageMessages, false))),
-    );
+
+    if (this.system) return false;
+    if (!this.guild) return true;
+    if (!channel || channel.isVoiceBased() || !channel.viewable) return false;
+
+    const permissions = channel.permissionsFor(this.client.user);
+    if (!permissions) return false;
+
+    return permissions.has(PermissionFlagsBits.ReadMessageHistory | PermissionFlagsBits.PinMessages);
   }
 
   /**

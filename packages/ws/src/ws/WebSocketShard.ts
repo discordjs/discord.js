@@ -173,8 +173,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		try {
 			await promise;
-		} catch ({ error }: any) {
-			throw error;
 		} finally {
 			// cleanup hanging listeners
 			controller.abort();

@@ -1,6 +1,6 @@
 import { ButtonStyle, ChannelType, ComponentType, SelectMenuDefaultValueType } from 'discord-api-types/v10';
 import { z } from 'zod';
-import { customIdPredicate } from '../Assertions.js';
+import { idPredicate, customIdPredicate } from '../Assertions.js';
 
 const labelPredicate = z.string().min(1).max(80);
 
@@ -52,6 +52,7 @@ export const buttonPredicate = z.discriminatedUnion('style', [
 ]);
 
 const selectMenuBasePredicate = z.object({
+	id: idPredicate,
 	placeholder: z.string().max(150).optional(),
 	min_values: z.number().min(0).max(25).optional(),
 	max_values: z.number().min(0).max(25).optional(),
@@ -116,12 +117,25 @@ export const selectMenuStringPredicate = selectMenuBasePredicate
 				input: minimum,
 			});
 
-		if (ctx.value.max_values !== undefined && ctx.value.options.length < ctx.value.max_values) {
-			addIssue('max_values', ctx.value.max_values);
-		}
-
 		if (ctx.value.min_values !== undefined && ctx.value.options.length < ctx.value.min_values) {
 			addIssue('min_values', ctx.value.min_values);
+		}
+
+		if (
+			ctx.value.min_values !== undefined &&
+			ctx.value.max_values !== undefined &&
+			ctx.value.min_values > ctx.value.max_values
+		) {
+			ctx.issues.push({
+				code: 'too_big',
+				message: `The maximum amount of options must be greater than or equal to the minimum amount of options`,
+				inclusive: true,
+				maximum: ctx.value.max_values,
+				type: 'number',
+				path: ['min_values'],
+				origin: 'number',
+				input: ctx.value.min_values,
+			});
 		}
 	});
 
@@ -135,6 +149,7 @@ export const selectMenuUserPredicate = selectMenuBasePredicate.extend({
 });
 
 export const actionRowPredicate = z.object({
+	id: idPredicate,
 	type: z.literal(ComponentType.ActionRow),
 	components: z.union([
 		z

@@ -23,6 +23,7 @@ const selectMenuDataWithoutOptions = {
 	min_values: 1,
 	disabled: true,
 	placeholder: 'test',
+	required: false,
 } as const;
 
 const selectMenuData: APISelectMenuComponent = {

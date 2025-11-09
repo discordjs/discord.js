@@ -114,8 +114,8 @@ class TextBasedChannel {
    * that message will be returned and no new message will be created
    * @property {StickerResolvable[]} [stickers=[]] The stickers to send in the message
    * @property {MessageFlags} [flags] Which flags to set for the message.
-   * <info>Only {@link MessageFlags.SuppressEmbeds}, {@link MessageFlags.SuppressNotifications} and
-   * {@link MessageFlags.IsComponentsV2} can be set.</info>
+   * <info>Only {@link MessageFlags.SuppressEmbeds}, {@link MessageFlags.SuppressNotifications},
+   * {@link MessageFlags.IsComponentsV2}, and {@link MessageFlags.IsVoiceMessage} can be set.</info>
    * <info>{@link MessageFlags.IsComponentsV2} is required if passing components that aren't action rows</info>
    */
 

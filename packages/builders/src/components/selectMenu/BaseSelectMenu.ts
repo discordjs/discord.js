@@ -15,7 +15,7 @@ export abstract class BaseSelectMenuBuilder<Data extends APISelectMenuComponent>
 	 * @internal
 	 */
 	protected abstract override readonly data: Partial<
-		Pick<Data, 'custom_id' | 'disabled' | 'id' | 'max_values' | 'min_values' | 'placeholder'>
+		Pick<Data, 'custom_id' | 'disabled' | 'id' | 'max_values' | 'min_values' | 'placeholder' | 'required'>
 	>;
 
 	/**
@@ -47,9 +47,9 @@ export abstract class BaseSelectMenuBuilder<Data extends APISelectMenuComponent>
 	}
 
 	/**
-	 * Sets the maximum values that must be selected in the select menu.
+	 * Sets the maximum values that can be selected in the select menu.
 	 *
-	 * @param maxValues - The maximum values that must be selected
+	 * @param maxValues - The maximum values that can be selected
 	 */
 	public setMaxValues(maxValues: number) {
 		this.data.max_values = maxValues;
@@ -73,6 +73,17 @@ export abstract class BaseSelectMenuBuilder<Data extends APISelectMenuComponent>
 	 */
 	public setDisabled(disabled = true) {
 		this.data.disabled = disabled;
+		return this;
+	}
+
+	/**
+	 * Sets whether this select menu is required.
+	 *
+	 * @remarks Only for use in modals.
+	 * @param required - Whether this string select menu is required
+	 */
+	public setRequired(required = true) {
+		this.data.required = required;
 		return this;
 	}
 }

@@ -69,7 +69,7 @@ const { request } = require('undici');
 	showcase!
 </Callout>
 
-Random cat's API is available at [https://aws.random.cat/meow](https://aws.random.cat/meow) and returns a [JSON](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON) response. To actually fetch data from the API, you're going to do the following:
+Random cat's API is available at [https://aws.random.cat/meow](https://aws.random.cat/meow) and returns a [JSON](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/JSON) response. To actually fetch data from the API, you're going to do the following:
 
 ```js
 const catResult = await request('https://aws.random.cat/meow');
@@ -119,7 +119,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 });
 ```
 
-Here, you are using JavaScript's native [URLSearchParams class](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams) to create a [query string](https://en.wikipedia.org/wiki/Query_string) for the URL so that the Urban Dictionary server can parse it and know what you want to look up.
+Here, you are using JavaScript's native [URLSearchParams class](https://developer.mozilla.org/docs/Web/API/URLSearchParams) to create a [query string](https://en.wikipedia.org/wiki/Query_string) for the URL so that the Urban Dictionary server can parse it and know what you want to look up.
 
 If you were to do `/urban hello world`, then the URL would become https://api.urbandictionary.com/v0/define?term=hello%20world since the string `"hello world"` is encoded.
 

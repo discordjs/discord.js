@@ -50,6 +50,7 @@ import {
   APIInteractionDataResolvedChannel,
   APIInteractionDataResolvedGuildMember,
   APIInteractionGuildMember,
+  APILabelComponent,
   APIMediaGalleryComponent,
   APIMediaGalleryItem,
   APIMentionableSelectComponent,
@@ -159,6 +160,7 @@ import {
   InteractionContextType,
   InteractionResponseType,
   InteractionType,
+  InviteFlags,
   InviteTargetType,
   InviteType,
   Locale,
@@ -247,6 +249,7 @@ export class Activity {
 export type ActivityFlagsString = keyof typeof ActivityFlags;
 
 export interface BaseComponentData {
+  id?: number;
   type: ComponentType;
 }
 
@@ -259,15 +262,28 @@ export type MessageActionRowComponentData =
   | StringSelectMenuComponentData
   | UserSelectMenuComponentData;
 
-export type ModalActionRowComponentData = JSONEncodable<APIComponentInModalActionRow> | TextInputComponentData;
+export type ActionRowComponentData = MessageActionRowComponentData;
 
-export type ActionRowComponentData = MessageActionRowComponentData | ModalActionRowComponentData;
-
-export type ActionRowComponent = MessageActionRowComponent | ModalActionRowComponent;
+export type ActionRowComponent = MessageActionRowComponent;
 
 export interface ActionRowData<ComponentType extends ActionRowComponentData | JSONEncodable<APIComponentInActionRow>>
   extends BaseComponentData {
   components: readonly ComponentType[];
+}
+
+export type ComponentInLabelData =
+  | ChannelSelectMenuComponentData
+  | FileUploadComponentData
+  | MentionableSelectMenuComponentData
+  | RoleSelectMenuComponentData
+  | StringSelectMenuComponentData
+  | TextInputComponentData
+  | UserSelectMenuComponentData;
+
+export interface LabelData extends BaseComponentData {
+  component: ComponentInLabelData;
+  description?: string;
+  label: string;
 }
 
 export type MessageActionRowComponent =
@@ -277,12 +293,11 @@ export type MessageActionRowComponent =
   | RoleSelectMenuComponent
   | StringSelectMenuComponent
   | UserSelectMenuComponent;
-export type ModalActionRowComponent = TextInputComponent;
 
-export class ActionRow<ComponentType extends MessageActionRowComponent | ModalActionRowComponent> extends Component<
-  APIActionRowComponent<APIComponentInMessageActionRow | APIComponentInModalActionRow>
+export class ActionRow<ComponentType extends MessageActionRowComponent> extends Component<
+  APIActionRowComponent<APIComponentInMessageActionRow>
 > {
-  private constructor(data: APIActionRowComponent<APIComponentInMessageActionRow | APIComponentInModalActionRow>);
+  private constructor(data: APIActionRowComponent<APIComponentInMessageActionRow>);
   public readonly components: ComponentType[];
   public toJSON(): APIActionRowComponent<ReturnType<ComponentType['toJSON']>>;
 }
@@ -403,7 +418,7 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public name: string;
   public nameLocalizations: LocalizationMap | null;
   public nameLocalized: string | null;
-  public options: (ApplicationCommandOption & { descriptionLocalized?: string; nameLocalized?: string })[];
+  public options: (ApplicationCommandOption & { descriptionLocalized?: string; nameLocalized?: string })[] | null;
   public permissions: ApplicationCommandPermissionsManager<
     PermissionsFetchType,
     PermissionsFetchType,
@@ -737,6 +752,12 @@ export type ComponentEmojiResolvable = APIMessageComponentEmoji | string;
 export class TextInputComponent extends Component<APITextInputComponent> {
   public get customId(): string;
   public get value(): string;
+}
+
+export class LabelComponent extends Component<APILabelComponent> {
+  public component: StringSelectMenuComponent | TextInputComponent;
+  public get label(): string;
+  public get description(): string | null;
 }
 
 export class BaseSelectMenuComponent<Data extends APISelectMenuComponent> extends Component<Data> {
@@ -1477,7 +1498,6 @@ export class Guild extends AnonymousGuild {
   ): Promise<Guild>;
   public setIcon(icon: Base64Resolvable | BufferResolvable | null, reason?: string): Promise<Guild>;
   public setName(name: string, reason?: string): Promise<Guild>;
-  public setOwner(owner: UserResolvable, reason?: string): Promise<Guild>;
   public setPreferredLocale(preferredLocale: Locale | null, reason?: string): Promise<Guild>;
   public setPublicUpdatesChannel(publicUpdatesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
   public setRulesChannel(rulesChannel: TextChannelResolvable | null, reason?: string): Promise<Guild>;
@@ -2040,6 +2060,7 @@ export class BaseInvite<WithCounts extends boolean = boolean> extends Base {
 
 export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvite<WithCounts> {
   public readonly type: InviteType.Guild;
+  public flags: Readonly<InviteFlagsBitField>;
   public guild: Guild | InviteGuild | null;
   public readonly guildId: Snowflake;
   public channel: NonThreadGuildBasedChannel | null;
@@ -2053,6 +2074,13 @@ export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvit
   public approximatePresenceCount: WithCounts extends true ? number : null;
   public get deletable(): boolean;
   public delete(reason?: string): Promise<void>;
+}
+
+export type InviteFlagsString = keyof typeof InviteFlags;
+
+export class InviteFlagsBitField extends BitField<InviteFlagsString> {
+  public static Flags: typeof InviteFlags;
+  public static resolve(bit?: BitFieldResolvable<InviteFlagsString, number>): number;
 }
 
 export class GroupDMInvite<WithCounts extends boolean = boolean> extends BaseInvite<WithCounts> {
@@ -2241,10 +2269,16 @@ export class AttachmentBuilder {
   public attachment: BufferResolvable | Stream;
   public description: string | null;
   public name: string | null;
+  public title: string | null;
+  public waveform: string | null;
+  public duration: number | null;
   public get spoiler(): boolean;
   public setDescription(description: string): this;
   public setFile(attachment: BufferResolvable | Stream, name?: string): this;
   public setName(name: string): this;
+  public setTitle(title: string): this;
+  public setWaveform(waveform: string): this;
+  public setDuration(duration: number): this;
   public setSpoiler(spoiler?: boolean): this;
   public toJSON(): unknown;
   public static from(other: JSONEncodable<AttachmentPayload>): AttachmentBuilder;
@@ -2513,36 +2547,121 @@ export interface MessageReactionEventDetails {
 }
 
 export interface ModalComponentData {
-  components: readonly (
-    | ActionRowData<ModalActionRowComponentData>
-    | JSONEncodable<APIActionRowComponent<APIComponentInModalActionRow>>
-  )[];
+  components: readonly (LabelData | TextDisplayComponentData)[];
   customId: string;
   title: string;
 }
 
-export interface BaseModalData {
-  customId: string;
-  type: ComponentType;
+export interface BaseModalData<Type extends ComponentType> {
+  id: number;
+  type: Type;
 }
 
-export interface TextInputModalData extends BaseModalData {
-  type: ComponentType.TextInput;
+export interface TextInputModalData extends BaseModalData<ComponentType.TextInput> {
+  customId: string;
   value: string;
 }
 
-export interface ActionRowModalData {
-  components: readonly TextInputModalData[];
-  type: ComponentType.ActionRow;
+export interface SelectMenuModalData<Cached extends CacheType = CacheType>
+  extends BaseModalData<
+    | ComponentType.ChannelSelect
+    | ComponentType.MentionableSelect
+    | ComponentType.RoleSelect
+    | ComponentType.StringSelect
+    | ComponentType.UserSelect
+  > {
+  channels?: ReadonlyCollection<
+    Snowflake,
+    CacheTypeReducer<Cached, GuildBasedChannel, APIInteractionDataResolvedChannel>
+  >;
+  customId: string;
+  members?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>>;
+  roles?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
+  users?: ReadonlyCollection<Snowflake, User>;
+  values: readonly string[];
 }
 
-export class ModalSubmitFields {
-  private constructor(components: readonly (readonly ModalActionRowComponent[])[]);
-  public components: ActionRowModalData[];
-  public fields: Collection<string, TextInputModalData>;
-  public getField<Type extends ComponentType>(customId: string, type: Type): TextInputModalData & { type: Type };
-  public getField(customId: string, type?: ComponentType): TextInputModalData;
+export interface FileUploadModalData extends BaseModalData<ComponentType.FileUpload> {
+  attachments: ReadonlyCollection<Snowflake, Attachment>;
+  customId: string;
+  values: readonly Snowflake[];
+}
+
+export type ModalData = FileUploadModalData | SelectMenuModalData | TextInputModalData;
+
+export interface LabelModalData extends BaseModalData<ComponentType.Label> {
+  component: ModalData;
+}
+export interface ActionRowModalData extends BaseModalData<ComponentType.ActionRow> {
+  components: readonly TextInputModalData[];
+}
+
+export interface TextDisplayModalData extends BaseModalData<ComponentType.TextDisplay> {}
+
+export interface ModalSelectedMentionables<Cached extends CacheType = CacheType> {
+  members: NonNullable<SelectMenuModalData<Cached>['members']>;
+  roles: NonNullable<SelectMenuModalData<Cached>['roles']>;
+  users: NonNullable<SelectMenuModalData<Cached>['users']>;
+}
+export class ModalComponentResolver<Cached extends CacheType = CacheType> {
+  private constructor(client: Client<true>, components: readonly ModalData[], resolved: BaseInteractionResolvedData);
+  public readonly client: Client<true>;
+  public readonly data: readonly (ActionRowModalData | LabelModalData | TextDisplayModalData)[];
+  public readonly resolved: Readonly<BaseInteractionResolvedData<Cached>> | null;
+  public readonly hoistedComponents: ReadonlyCollection<string, ModalData>;
+  public getComponent(customId: string): ModalData;
+  private _getTypedComponent(
+    customId: string,
+    allowedTypes: readonly ComponentType[],
+    properties: string,
+    required: boolean,
+  ): ModalData;
   public getTextInputValue(customId: string): string;
+  public getStringSelectValues(customId: string): readonly string[];
+  public getSelectedUsers(customId: string, required: true): ReadonlyCollection<Snowflake, User>;
+  public getSelectedUsers(customId: string, required?: boolean): ReadonlyCollection<Snowflake, User> | null;
+  public getSelectedMembers(customId: string): NonNullable<SelectMenuModalData<Cached>['members']> | null;
+  public getSelectedChannels<const Type extends ChannelType = ChannelType>(
+    customId: string,
+    required: true,
+    channelTypes?: readonly Type[],
+  ): ReadonlyCollection<
+    Snowflake,
+    Extract<
+      NonNullable<CommandInteractionOption<Cached>['channel']>,
+      {
+        type: Type extends ChannelType.AnnouncementThread | ChannelType.PublicThread
+          ? ChannelType.AnnouncementThread | ChannelType.PublicThread
+          : Type;
+      }
+    >
+  >;
+  public getSelectedChannels<const Type extends ChannelType = ChannelType>(
+    customId: string,
+    required?: boolean,
+    channelTypes?: readonly Type[],
+  ): ReadonlyCollection<
+    Snowflake,
+    Extract<
+      NonNullable<CommandInteractionOption<Cached>['channel']>,
+      {
+        type: Type extends ChannelType.AnnouncementThread | ChannelType.PublicThread
+          ? ChannelType.AnnouncementThread | ChannelType.PublicThread
+          : Type;
+      }
+    >
+  > | null;
+
+  public getSelectedRoles(customId: string, required: true): NonNullable<SelectMenuModalData<Cached>['roles']>;
+  public getSelectedRoles(
+    customId: string,
+    required?: boolean,
+  ): NonNullable<SelectMenuModalData<Cached>['roles']> | null;
+
+  public getSelectedMentionables(customId: string, required: true): ModalSelectedMentionables<Cached>;
+  public getSelectedMentionables(customId: string, required?: boolean): ModalSelectedMentionables<Cached> | null;
+  public getUploadedFiles(customId: string, required: true): ReadonlyCollection<Snowflake, Attachment>;
+  public getUploadedFiles(customId: string, required?: boolean): ReadonlyCollection<Snowflake, Attachment> | null;
 }
 
 export interface ModalMessageModalSubmitInteraction<Cached extends CacheType = CacheType>
@@ -2565,8 +2684,7 @@ export class ModalSubmitInteraction<Cached extends CacheType = CacheType> extend
   private constructor(client: Client<true>, data: APIModalSubmitInteraction);
   public type: InteractionType.ModalSubmit;
   public readonly customId: string;
-  public readonly components: ActionRowModalData[];
-  public readonly fields: ModalSubmitFields;
+  public readonly components: ModalComponentResolver<Cached>;
   public deferred: boolean;
   public ephemeral: boolean | null;
   public message: Message<BooleanCache<Cached>> | null;
@@ -2745,6 +2863,11 @@ export interface PollQuestionMedia {
   text: string | null;
 }
 
+export interface BaseFetchPollAnswerVotersOptions {
+  after?: Snowflake;
+  limit?: number;
+}
+
 export class PollAnswerVoterManager extends CachedManager<Snowflake, User, UserResolvable> {
   private constructor(answer: PollAnswer);
   public answer: PollAnswer;
@@ -2769,11 +2892,6 @@ export class Poll extends Base {
   public end(): Promise<Message>;
 }
 
-export interface BaseFetchPollAnswerVotersOptions {
-  after?: Snowflake;
-  limit?: number;
-}
-
 export class PollAnswer extends Base {
   private constructor(client: Client<true>, data: APIPollAnswer & { count?: number }, poll: Poll);
   private readonly _emoji: APIPartialEmoji | null;
@@ -2784,10 +2902,6 @@ export class PollAnswer extends Base {
   public voters: PollAnswerVoterManager;
   public get emoji(): Emoji | GuildEmoji | null;
   public get partial(): false;
-  /**
-   * @deprecated Use {@link PollAnswerVoterManager.fetch} instead
-   */
-  public fetchVoters(options?: BaseFetchPollAnswerVotersOptions): Promise<Collection<Snowflake, User>>;
 }
 
 export interface ReactionCollectorEventTypes extends CollectorEventTypes<Snowflake | string, MessageReaction, [User]> {
@@ -3635,9 +3749,10 @@ export function verifyString(data: string, error?: typeof Error, errorMessage?: 
 
 export type ComponentData =
   | ComponentInContainerData
+  | ComponentInLabelData
   | ContainerComponentData
+  | LabelData
   | MessageActionRowComponentData
-  | ModalActionRowComponentData
   | ThumbnailComponentData;
 
 export interface SendSoundboardSoundOptions {
@@ -3741,9 +3856,9 @@ export class Webhook<Type extends WebhookType = WebhookType> {
   public editMessage(
     message: MessageResolvable,
     options: MessagePayload | WebhookMessageEditOptions | string,
-  ): Promise<Message>;
-  public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<Message>;
-  public send(options: MessagePayload | WebhookMessageCreateOptions | string): Promise<Message>;
+  ): Promise<Message<true>>;
+  public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<Message<true>>;
+  public send(options: MessagePayload | WebhookMessageCreateOptions | string): Promise<Message<true>>;
 }
 
 export interface WebhookClient extends WebhookFields, BaseClient<{}> {}
@@ -3932,7 +4047,6 @@ export enum DiscordjsErrorCodes {
   GuildVoiceChannelResolve = 'GuildVoiceChannelResolve',
   GuildChannelOrphan = 'GuildChannelOrphan',
   GuildChannelUnowned = 'GuildChannelUnowned',
-  GuildOwned = 'GuildOwned',
   GuildMembersTimeout = 'GuildMembersTimeout',
   GuildSoundboardSoundsTimeout = 'GuildSoundboardSoundsTimeout',
   GuildUncachedMe = 'GuildUncachedMe',
@@ -3985,8 +4099,10 @@ export enum DiscordjsErrorCodes {
   CommandInteractionOptionNoSubcommandGroup = 'CommandInteractionOptionNoSubcommandGroup',
   AutocompleteInteractionOptionNoFocusedOption = 'AutocompleteInteractionOptionNoFocusedOption',
 
-  ModalSubmitInteractionFieldNotFound = 'ModalSubmitInteractionFieldNotFound',
-  ModalSubmitInteractionFieldType = 'ModalSubmitInteractionFieldType',
+  ModalSubmitInteractionComponentNotFound = 'ModalSubmitInteractionComponentNotFound',
+  ModalSubmitInteractionComponentType = 'ModalSubmitInteractionComponentType',
+  ModalSubmitInteractionComponentEmpty = 'ModalSubmitInteractionComponentEmpty',
+  ModalSubmitInteractionComponentInvalidChannelType = 'ModalSubmitInteractionComponentInvalidChannelType',
 
   InvalidMissingScopes = 'InvalidMissingScopes',
   InvalidScopesWithPermissions = 'InvalidScopesWithPermissions',
@@ -4377,6 +4493,7 @@ export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, Us
     options?: BanOptions,
   ): Promise<BulkBanResult>;
   public edit(user: UserResolvable, options: GuildMemberEditOptions): Promise<GuildMember>;
+  public editMe(options: GuildMemberEditMeOptions): Promise<GuildMember>;
   public fetch(
     options: FetchMemberOptions | UserResolvable | (FetchMembersOptions & { user: UserResolvable }),
   ): Promise<GuildMember>;
@@ -4824,7 +4941,10 @@ export interface BaseApplicationCommandData {
 
 export interface AttachmentData {
   description?: string;
+  duration?: number;
   name?: string;
+  title?: string;
+  waveform?: string;
 }
 
 export type CommandOptionDataTypeResolvable = ApplicationCommandOptionType;
@@ -5248,13 +5368,21 @@ export type OverriddenCaches =
   | 'GuildMessageManager'
   | 'GuildTextThreadManager';
 
+export interface CacheFactoryParams<Manager extends keyof Caches> {
+  holds: Caches[Manager][1];
+  manager: CacheConstructors[keyof Caches];
+  managerType: CacheConstructors[Exclude<keyof Caches, OverriddenCaches>];
+}
+
 // This doesn't actually work the way it looks 😢.
 // Narrowing the type of `manager.name` doesn't propagate type information to `holds` and the return type.
-export type CacheFactory = (
-  managerType: CacheConstructors[Exclude<keyof Caches, OverriddenCaches>],
-  holds: Caches[(typeof manager)['name']][1],
-  manager: CacheConstructors[keyof Caches],
-) => (typeof manager)['prototype'] extends DataManager<infer Key, infer Value, any> ? Collection<Key, Value> : never;
+export type CacheFactory = ({
+  holds,
+  manager,
+  managerType,
+}: CacheFactoryParams<keyof Caches>) => (typeof manager)['prototype'] extends DataManager<infer Key, infer Value, any>
+  ? Collection<Key, Value>
+  : never;
 
 export type CacheWithLimitsOptions = {
   [K in keyof Caches]?: Caches[K][0]['prototype'] extends DataManager<infer Key, infer Value, any>
@@ -5384,7 +5512,7 @@ export interface ClientEventTypes {
   messageCreate: [message: OmitPartialGroupDMChannel<Message>];
   messageDelete: [message: OmitPartialGroupDMChannel<Message | PartialMessage>];
   messageDeleteBulk: [
-    messages: ReadonlyCollection<Snowflake, OmitPartialGroupDMChannel<Message | PartialMessage>>,
+    messages: ReadonlyCollection<Snowflake, Message<true> | PartialMessage<true>>,
     channel: GuildTextBasedChannel,
   ];
   messagePollVoteAdd: [pollAnswer: PartialPollAnswer | PollAnswer, userId: Snowflake];
@@ -5509,13 +5637,17 @@ export interface CommandInteractionOption<Cached extends CacheType = CacheType> 
   value?: boolean | number | string;
 }
 
-export interface CommandInteractionResolvedData<Cached extends CacheType = CacheType> {
+export interface BaseInteractionResolvedData<Cached extends CacheType = CacheType> {
   attachments?: ReadonlyCollection<Snowflake, Attachment>;
   channels?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, Channel, APIInteractionDataResolvedChannel>>;
   members?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>>;
-  messages?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, Message, APIMessage>>;
   roles?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
   users?: ReadonlyCollection<Snowflake, User>;
+}
+
+export interface CommandInteractionResolvedData<Cached extends CacheType = CacheType>
+  extends BaseInteractionResolvedData<Cached> {
+  messages?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, Message, APIMessage>>;
 }
 
 export interface AutocompleteFocusedOption {
@@ -5874,7 +6006,10 @@ export interface FetchThreadsOptions {
 export interface AttachmentPayload {
   attachment: BufferResolvable | Stream;
   description?: string;
+  duration?: number;
   name?: string;
+  title?: string;
+  waveform?: string;
 }
 
 export type GlobalSweepFilter<Key, Value> = () =>
@@ -6123,7 +6258,6 @@ export interface GuildEditOptions {
   features?: readonly `${GuildFeature}`[];
   icon?: Base64Resolvable | BufferResolvable | null;
   name?: string;
-  owner?: UserResolvable;
   preferredLocale?: Locale | null;
   premiumProgressBarEnabled?: boolean;
   publicUpdatesChannel?: TextChannelResolvable | null;
@@ -6173,6 +6307,14 @@ export interface GuildMemberEditOptions {
   nick?: string | null;
   reason?: string;
   roles?: ReadonlyCollection<Snowflake, Role> | readonly RoleResolvable[];
+}
+
+export interface GuildMemberEditMeOptions {
+  avatar?: Base64Resolvable | BufferResolvable | null;
+  banner?: Base64Resolvable | BufferResolvable | null;
+  bio?: string | null;
+  nick?: string | null;
+  reason?: string;
 }
 
 export type GuildResolvable =
@@ -6395,9 +6537,13 @@ export interface InteractionDeferUpdateOptions {
 export interface InteractionReplyOptions extends BaseMessageOptions, MessageOptionsPoll {
   flags?:
     | BitFieldResolvable<
-        Extract<MessageFlagsString, 'Ephemeral' | 'IsComponentsV2' | 'SuppressEmbeds' | 'SuppressNotifications'>,
+        Extract<
+          MessageFlagsString,
+          'Ephemeral' | 'IsComponentsV2' | 'IsVoiceMessage' | 'SuppressEmbeds' | 'SuppressNotifications'
+        >,
         | MessageFlags.Ephemeral
         | MessageFlags.IsComponentsV2
+        | MessageFlags.IsVoiceMessage
         | MessageFlags.SuppressEmbeds
         | MessageFlags.SuppressNotifications
       >
@@ -6574,8 +6720,11 @@ export interface MessageOptionsPoll {
 export interface MessageOptionsFlags {
   flags?:
     | BitFieldResolvable<
-        Extract<MessageFlagsString, 'IsComponentsV2' | 'SuppressEmbeds' | 'SuppressNotifications'>,
-        MessageFlags.IsComponentsV2 | MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications
+        Extract<MessageFlagsString, 'IsComponentsV2' | 'IsVoiceMessage' | 'SuppressEmbeds' | 'SuppressNotifications'>,
+        | MessageFlags.IsComponentsV2
+        | MessageFlags.IsVoiceMessage
+        | MessageFlags.SuppressEmbeds
+        | MessageFlags.SuppressNotifications
       >
     | undefined;
 }
@@ -6643,6 +6792,7 @@ export interface BaseSelectMenuComponentData extends BaseComponentData {
   maxValues?: number;
   minValues?: number;
   placeholder?: string;
+  required?: boolean;
 }
 
 export interface StringSelectMenuComponentData extends BaseSelectMenuComponentData {
@@ -6696,7 +6846,6 @@ export interface SelectMenuComponentOptionData {
 
 export interface TextInputComponentData extends BaseComponentData {
   customId: string;
-  label: string;
   maxLength?: number;
   minLength?: number;
   placeholder?: string;
@@ -6704,6 +6853,14 @@ export interface TextInputComponentData extends BaseComponentData {
   style: TextInputStyle;
   type: ComponentType.TextInput;
   value?: string;
+}
+
+export interface FileUploadComponentData extends BaseComponentData {
+  customId: string;
+  maxValues?: number;
+  minValues?: number;
+  required?: boolean;
+  type: ComponentType.FileUpload;
 }
 
 export type MessageTarget =
@@ -6801,8 +6958,8 @@ export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'las
 
 export interface PartialGuildMember extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp' | 'pending'> {}
 
-export interface PartialMessage
-  extends Partialize<Message, 'pinned' | 'system' | 'tts' | 'type', 'author' | 'cleanContent' | 'content'> {}
+export interface PartialMessage<InGuild extends boolean = boolean>
+  extends Partialize<Message<InGuild>, 'pinned' | 'system' | 'tts' | 'type', 'author' | 'cleanContent' | 'content'> {}
 
 export interface PartialMessageReaction extends Partialize<MessageReaction, 'count'> {}
 

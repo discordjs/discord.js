@@ -36,16 +36,16 @@
 		"@rushstack/node-core-library": "5.13.1"
 	},
 	"devDependencies": {
-		"@types/node": "^22.16.3",
-		"cross-env": "^7.0.3",
-		"eslint": "^9.30.1",
-		"eslint-config-neon": "^0.2.7",
-		"eslint-formatter-compact": "^8.40.0",
-		"eslint-formatter-pretty": "^6.0.1",
+		"@types/node": "^22.18.13",
+		"cross-env": "^10.1.0",
+		"eslint": "^9.38.0",
+		"eslint-config-neon": "^0.2.9",
+		"eslint-formatter-compact": "^9.0.1",
+		"eslint-formatter-pretty": "^7.0.0",
 		"prettier": "^3.6.2",
-		"terser": "^5.43.1",
+		"terser": "^5.44.0",
 		"tsup": "^8.5.0",
-		"turbo": "^2.5.4",
-		"typescript": "~5.8.3"
+		"turbo": "^2.5.8",
+		"typescript": "~5.9.3"
 	}
 }
