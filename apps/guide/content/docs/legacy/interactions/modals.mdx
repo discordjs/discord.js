@@ -34,7 +34,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 ```
 
 <Callout>
-	The `customId` is a developer-defined string of up to 100 characters. Use this field to uniquely identify of an
+	The `customId` is a developer-defined string of up to 100 characters. This field is the unique identify of the modal
 	incoming interactions from your modals.
 </Callout>
 
@@ -198,7 +198,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 					.setLabel('Bulbasaur')
 					// Description of option
 					.setDescription('The dual-type Grass/Poison Seed Pokémon.')
-					// Value returned to in modal submission
+					// Value returned to you in modal submission
 					.setValue('bulbasaur'),
 				new StringSelectMenuOptionBuilder()
 					.setLabel('Charmander')
@@ -276,7 +276,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 					.setLabel('Bulbasaur')
 					// Description of option
 					.setDescription('The dual-type Grass/Poison Seed Pokémon.')
-					// Value returned to in modal submission
+					// Value returned to you in modal submission
 					.setValue('bulbasaur'),
 				new StringSelectMenuOptionBuilder()
 					.setLabel('Charmander')
@@ -360,7 +360,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 					.setLabel('Bulbasaur')
 					// Description of option
 					.setDescription('The dual-type Grass/Poison Seed Pokémon.')
-					// Value returned to in modal submission
+					// Value returned to you in modal submission
 					.setValue('bulbasaur'),
 				new StringSelectMenuOptionBuilder()
 					.setLabel('Charmander')
@@ -411,7 +411,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 });
 ```
 
-#### file upload properties
+#### File Upload properties
 
 In addition to the `customId`, a file upload component can be customized via the `FileUploadBuilder` methods:
 
@@ -473,7 +473,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 					.setLabel('Bulbasaur')
 					// Description of option
 					.setDescription('The dual-type Grass/Poison Seed Pokémon.')
-					// Value returned to in modal submission
+					// Value returned to you in modal submission
 					.setValue('bulbasaur'),
 				new StringSelectMenuOptionBuilder()
 					.setLabel('Charmander')
@@ -600,6 +600,6 @@ client.on(Events.InteractionCreate, (interaction) => {
 ```
 
 <Callout>
-	when a empty text input is submitted it returns a empty string `""`. like wise when a select menu is submitted with no
-	selection made it has a empty array `[]`.
+	when a empty text input is submitted it returns an empty string `""`. like wise when a select menu is submitted with
+	no selection made it has an empty array `[]`.
 </Callout>
