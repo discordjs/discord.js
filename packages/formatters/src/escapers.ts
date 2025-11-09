@@ -212,15 +212,21 @@ export function escapeInlineCode(text: string): string {
  */
 export function escapeItalic(text: string): string {
 	let idx = 0;
-	const newText = text.replaceAll(/(?<=^|[^*])\*([^*]|\*\*|$)/g, (_, match) => {
-		if (match === '**') return ++idx % 2 ? `\\*${match}` : `${match}\\*`;
-		return `\\*${match}`;
-	});
+	const newText = text.replaceAll(
+		/(?<=^|[^*])(?<!(?<!<)https?:\/\/\S*|<[^\s:]+:\/[^\s>]*)\*([^*]|\*\*|$)/g,
+		(_, match) => {
+			if (match === '**') return ++idx % 2 ? `\\*${match}` : `${match}\\*`;
+			return `\\*${match}`;
+		},
+	);
 	idx = 0;
-	return newText.replaceAll(/(?<=^|[^_])(?<!<a?:.+|https?:\/\/\S+)_(?!:\d+>)([^_]|__|$)/g, (_, match) => {
-		if (match === '__') return ++idx % 2 ? `\\_${match}` : `${match}\\_`;
-		return `\\_${match}`;
-	});
+	return newText.replaceAll(
+		/(?<=^|[^_])(?<!<a?:.+|(?<!<)https?:\/\/\S*|<[^\s:]:\/[^\s>]*)_(?!:\d+>)([^_]|__|$)/g,
+		(_, match) => {
+			if (match === '__') return ++idx % 2 ? `\\_${match}` : `${match}\\_`;
+			return `\\_${match}`;
+		},
+	);
 }
 
 /**
