@@ -43,7 +43,6 @@ export const metadata: Metadata = {
 		siteName: 'discord.js',
 		type: 'website',
 		title: 'discord.js',
-		images: 'https://discordjs.dev/api/open-graph.png',
 	},
 
 	twitter: {
