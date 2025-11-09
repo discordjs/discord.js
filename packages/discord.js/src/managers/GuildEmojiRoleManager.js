@@ -31,7 +31,15 @@ class GuildEmojiRoleManager extends DataManager {
    * @readonly
    */
   get cache() {
-    return this.guild.roles.cache.filter(role => this.emoji._roles.includes(role.id));
+    const cache = new Collection();
+    for (const roleId of this.emoji._roles) {
+      const role = this.guild.roles.cache.get(roleId);
+      if (role !== undefined) {
+        cache.set(roleId, role);
+      }
+    }
+
+    return cache;
   }
 
   /**
