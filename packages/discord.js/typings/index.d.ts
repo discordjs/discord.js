@@ -493,11 +493,11 @@ export abstract class Base {
 }
 
 export class BaseClient<Events extends {}> extends AsyncEventEmitter<Events> implements AsyncDisposable {
-  public constructor(options?: ClientOptions | WebhookClientOptions);
+  public constructor(options?: ClientOptions);
   private decrementMaxListeners(): void;
   private incrementMaxListeners(): void;
 
-  public options: ClientOptions | WebhookClientOptions;
+  public options: ClientOptions;
   public rest: REST;
   public destroy(): void;
   public toJSON(...props: Record<string, boolean | string>[]): unknown;
@@ -3742,7 +3742,7 @@ export function fetchRecommendedShardCount(token: string, options?: FetchRecomme
 export function flatten(obj: unknown, ...props: Record<string, boolean | string>[]): unknown;
 
 export function parseEmoji(text: string): PartialEmoji | null;
-export function parseWebhookURL(url: string): WebhookClientDataIdWithToken | null;
+export function parseWebhookURL(url: string): WebhookDataIdWithToken | null;
 export function resolveColor(color: ColorResolvable): number;
 export function resolveSKUId(resolvable: SKUResolvable): Snowflake | null;
 export function verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
@@ -3828,7 +3828,7 @@ export class Webhook<Type extends WebhookType = WebhookType> {
   public readonly client: Client;
   public guildId: Snowflake;
   public name: string;
-  public owner: Type extends WebhookType.Incoming ? APIUser | User | null : APIUser | User;
+  public owner: Type extends WebhookType.Incoming ? User | null : User;
   public sourceGuild: Type extends WebhookType.ChannelFollower ? APIPartialGuild | Guild : null;
   public sourceChannel: Type extends WebhookType.ChannelFollower ? AnnouncementChannel | APIPartialChannel : null;
   public token: Type extends WebhookType.Incoming
@@ -3847,7 +3847,7 @@ export class Webhook<Type extends WebhookType = WebhookType> {
     | VoiceChannel
     | null;
   public isUserCreated(): this is Webhook<WebhookType.Incoming> & {
-    owner: APIUser | User;
+    owner: User;
   };
   public isApplicationCreated(): this is Webhook<WebhookType.Application>;
   public isIncoming(): this is Webhook<WebhookType.Incoming>;
@@ -3859,20 +3859,6 @@ export class Webhook<Type extends WebhookType = WebhookType> {
   ): Promise<Message<true>>;
   public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<Message<true>>;
   public send(options: MessagePayload | WebhookMessageCreateOptions | string): Promise<Message<true>>;
-}
-
-export interface WebhookClient extends WebhookFields, BaseClient<{}> {}
-export class WebhookClient extends BaseClient<{}> {
-  public constructor(data: WebhookClientData, options?: WebhookClientOptions);
-  public readonly client: this;
-  public options: WebhookClientOptions;
-  public token: string;
-  public editMessage(
-    message: MessageResolvable,
-    options: MessagePayload | WebhookMessageEditOptions | string,
-  ): Promise<APIMessage>;
-  public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<APIMessage>;
-  public send(options: MessagePayload | WebhookMessageCreateOptions | string): Promise<APIMessage>;
 }
 
 export class Widget extends Base {
@@ -5573,7 +5559,8 @@ export interface ClientFetchInviteOptions {
   withCounts?: boolean;
 }
 
-export interface ClientOptions extends WebhookClientOptions {
+export interface ClientOptions {
+  allowedMentions?: MessageMentionOptions;
   closeTimeout?: number;
   enforceNonce?: boolean;
   failIfNotExists?: boolean;
@@ -5582,6 +5569,7 @@ export interface ClientOptions extends WebhookClientOptions {
   makeCache?: CacheFactory;
   partials?: readonly Partials[];
   presence?: PresenceData;
+  rest?: Partial<RESTOptions>;
   sweepers?: SweeperOptions;
   waitGuildTimeout?: number;
   ws?: Partial<WebSocketManagerOptions>;
@@ -6870,8 +6858,7 @@ export type MessageTarget =
   | Message
   | MessageManager
   | TextBasedChannel
-  | Webhook<WebhookType.Incoming>
-  | WebhookClient;
+  | Webhook<WebhookType.Incoming>;
 
 export interface MultipleShardRespawnOptions {
   respawnDelay?: number;
@@ -7245,20 +7232,9 @@ export interface VoiceStateEditOptions {
   suppressed?: boolean;
 }
 
-export type WebhookClientData = WebhookClientDataIdWithToken | WebhookClientDataURL;
-
-export interface WebhookClientDataIdWithToken {
+export interface WebhookDataIdWithToken {
   id: Snowflake;
   token: string;
-}
-
-export interface WebhookClientDataURL {
-  url: string;
-}
-
-export interface WebhookClientOptions {
-  allowedMentions?: MessageMentionOptions;
-  rest?: Partial<RESTOptions>;
 }
 
 export interface WebhookDeleteOptions {
