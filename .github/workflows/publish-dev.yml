@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       ref:
-        description: 'The ref to check out'
+        description: 'The ref to check out. e.g. main, feat/new-feature, refs/pull/1234/head'
         required: false
         default: 'main'
       tag:
