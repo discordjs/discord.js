@@ -7,8 +7,6 @@
 	"scripts": {
 		"build": "turbo run build --concurrency=4",
 		"build:affected": "turbo run build --filter=...[origin/v14] --concurrency=4",
-		"build:apps": "turbo run build:local --filter=...{apps/*} --concurrency=4",
-		"build:apps:affected": "turbo run build:local --filter=...{apps/*}[origin/v14] --concurrency=4",
 		"test": "turbo run test --concurrency=4",
 		"test:affected": "turbo run test --filter=...[origin/v14] --concurrency=4",
 		"lint": "turbo run lint --concurrency=4",

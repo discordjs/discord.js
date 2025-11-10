@@ -17,73 +17,6 @@
 			"outputs": ["dist/**", "storybook-static/**"],
 			"outputLogs": "errors-only"
 		},
-		"@discordjs/guide#build:local": {
-			"dependsOn": ["^build"],
-			"inputs": [
-				"public/**",
-				"src/**",
-				"!src/styles/unocss.css",
-				"contentlayer.config.ts",
-				"next.config.js",
-				"package.json",
-				"tsconfig.json"
-			],
-			"outputs": [".next/**", ".next/cache/**", ".contentlayer/**"],
-			"outputLogs": "full"
-		},
-		"@discordjs/guide#build:prod": {
-			"dependsOn": ["^build"],
-			"inputs": [
-				"public/**",
-				"src/**",
-				"!src/styles/unocss.css",
-				"contentlayer.config.ts",
-				"next.config.js",
-				"package.json",
-				"tsconfig.json"
-			],
-			"outputs": [".next/**", ".next/cache/**", ".contentlayer/**"],
-			"outputLogs": "full"
-		},
-		"@discordjs/website#build:local": {
-			"env": ["VERCEL_ENV", "NEXT_PUBLIC_LOCAL_DEV"],
-			"dependsOn": ["^build", "^docs"],
-			"inputs": [
-				"../../packages/*/README.md",
-				"public/**",
-				"src/**",
-				"scripts/**",
-				"!src/assets/readme/**",
-				"scripts/**",
-				"next.config.mjs",
-				"package.json",
-				"tsconfig.json"
-			],
-			"outputs": [".next/**", ".next/cache/**", "src/assets/readme/**"],
-			"outputLogs": "full"
-		},
-		"@discordjs/website#build:prod": {
-			"env": ["VERCEL_ENV", "NEXT_PUBLIC_LOCAL_DEV"],
-			"dependsOn": ["^build"],
-			"inputs": [
-				"../../packages/*/README.md",
-				"public/**",
-				"src/**",
-				"scripts/**",
-				"!src/assets/readme/**",
-				"scripts/**",
-				"next.config.mjs",
-				"package.json",
-				"tsconfig.json"
-			],
-			"outputs": [".next/**", ".next/cache/**", "src/assets/readme/**"],
-			"outputLogs": "full"
-		},
-		"@discordjs/guide#generate:contentlayer": {
-			"inputs": ["src/**/*.mdx"],
-			"outputs": [".contentlayer/**"],
-			"outputLogs": "errors-only"
-		},
 		"test": {
 			"dependsOn": ["^build"],
 			"inputs": ["__mocks__/**", "__tests__/**", "src/**", "jest.config.js", "package.json", "tsconfig.json"],
@@ -106,34 +39,6 @@
 			"outputs": [],
 			"outputLogs": "errors-only"
 		},
-		"@discordjs/guide#lint": {
-			"dependsOn": ["^build", "build:local", "generate:contentlayer"],
-			"inputs": [
-				"../../eslint.config.js",
-				"../../.prettierrc.json",
-				"../../tsconfig.eslint.json",
-				".prettierrc.js",
-				"src/**",
-				"!src/styles/unocss.css",
-				"tsconfig.eslint.json"
-			],
-			"outputs": [],
-			"outputLogs": "errors-only"
-		},
-		"@discordjs/website#lint": {
-			"dependsOn": ["^build", "build:local"],
-			"inputs": [
-				"../../eslint.config.js",
-				"../../.prettierrc.json",
-				"../../tsconfig.eslint.json",
-				".prettierrc.js",
-				"src/**",
-				"!src/styles/unocss.css",
-				"tsconfig.eslint.json"
-			],
-			"outputs": [],
-			"outputLogs": "errors-only"
-		},
 		"format": {
 			"dependsOn": ["^build"],
 			"inputs": [
@@ -144,21 +49,6 @@
 				"bin/**",
 				"src/**",
 				"scripts/**",
-				"package.json",
-				"tsconfig.eslint.json"
-			],
-			"outputs": [],
-			"outputLogs": "errors-only"
-		},
-		"@discordjs/guide#format": {
-			"dependsOn": ["^build", "generate:contentlayer"],
-			"inputs": [
-				"../../eslint.config.js",
-				"../../.prettierrc.json",
-				"../../tsconfig.eslint.json",
-				".prettierrc.js",
-				"src/**",
-				"!src/styles/unocss.css",
 				"package.json",
 				"tsconfig.eslint.json"
 			],
@@ -197,19 +87,6 @@
 		},
 		"dev": {
 			"dependsOn": ["^build"],
-			"cache": false,
-			"persistent": true,
-			"outputLogs": "full"
-		},
-		"@discordjs/guide#dev": {
-			"dependsOn": ["^build"],
-			"cache": false,
-			"persistent": true,
-			"outputLogs": "full"
-		},
-		"@discordjs/website#dev": {
-			"env": ["VERCEL_ENV", "NEXT_PUBLIC_LOCAL_DEV"],
-			"dependsOn": ["^build", "^docs"],
 			"cache": false,
 			"persistent": true,
 			"outputLogs": "full"

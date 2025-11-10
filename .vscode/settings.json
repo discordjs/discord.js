@@ -1,11 +1,7 @@
 {
 	"eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
-	"eslint.experimental.useFlatConfig": true,
-	"eslint.workingDirectories": [
-		{ "directory": "${workspaceFolder}" },
-		{ "pattern": "./apps/*/" },
-		{ "pattern": "./packages/*/" }
-	],
+	"eslint.useFlatConfig": true,
+	"eslint.workingDirectories": [{ "directory": "${workspaceFolder}" }, { "pattern": "./packages/*/" }],
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
@@ -30,6 +26,6 @@
 	"deno.enable": false,
 	"deno.enablePaths": ["./packages/create-discord-bot/template/Deno"],
 	"deno.lint": false,
-	"deno.unstable": false,
+	"deno.unstable": [],
 	"deno.config": "./packages/create-discord-bot/template/Deno/deno.jsonc"
 }

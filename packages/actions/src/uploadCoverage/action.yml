@@ -7,24 +7,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Upload Guide Coverage
-      if: ${{ hashFiles('apps/guide/coverage/cobertura-coverage.xml') != '' }}
-      uses: codecov/codecov-action@v4
-      with:
-        files: ./apps/guide/coverage/cobertura-coverage.xml
-        disable_search: true
-        flags: guide
-        token: ${{ inputs.CODECOV_TOKEN }}
-
-    - name: Upload Website Coverage
-      if: ${{ hashFiles('apps/website/coverage/cobertura-coverage.xml') != '' }}
-      uses: codecov/codecov-action@v4
-      with:
-        files: ./apps/website/coverage/cobertura-coverage.xml
-        disable_search: true
-        flags: website
-        token: ${{ inputs.CODECOV_TOKEN }}
-
     - name: Upload Brokers Coverage
       if: ${{ hashFiles('packages/brokers/coverage/cobertura-coverage.xml') != '' }}
       uses: codecov/codecov-action@v4

@@ -22,7 +22,7 @@ const typeScriptRuleset = merge(...typescript, {
 		parserOptions: {
 			warnOnUnsupportedTypeScriptVersion: false,
 			allowAutomaticSingleRunInference: true,
-			project: ['tsconfig.eslint.json', 'apps/*/tsconfig.eslint.json', 'packages/*/tsconfig.eslint.json'],
+			project: ['tsconfig.eslint.json', 'packages/*/tsconfig.eslint.json'],
 		},
 	},
 	rules: {
@@ -42,24 +42,20 @@ const typeScriptRuleset = merge(...typescript, {
 	settings: {
 		'import/resolver': {
 			typescript: {
-				project: ['tsconfig.eslint.json', 'apps/*/tsconfig.eslint.json', 'packages/*/tsconfig.eslint.json'],
+				project: ['tsconfig.eslint.json', 'packages/*/tsconfig.eslint.json'],
 			},
 		},
 	},
 });
 
 const reactRuleset = merge(...react, {
-	files: [`apps/**/*${commonFiles}`, `packages/ui/**/*${commonFiles}`],
+	files: [`packages/ui/**/*${commonFiles}`],
 	rules: {
 		'@next/next/no-html-link-for-pages': 0,
 		'react/react-in-jsx-scope': 0,
 		'react/jsx-filename-extension': [1, { extensions: ['.tsx'] }],
 	},
 });
-
-const nextRuleset = merge(...next, { files: [`apps/**/*${commonFiles}`] });
-
-const edgeRuleset = merge(...edge, { files: [`apps/**/*${commonFiles}`] });
 
 const prettierRuleset = merge(...prettier, { files: [`**/*${commonFiles}`] });
 
@@ -128,14 +124,12 @@ export default tseslint.config(
 	},
 	reactRuleset,
 	{
-		files: [`apps/guide/**/*${commonFiles}`, `packages/ui/**/*${commonFiles}`],
+		files: [`packages/ui/**/*${commonFiles}`],
 		plugins: { '@unocss': unocss },
 		rules: {
 			'@unocss/order': 2,
 		},
 	},
-	nextRuleset,
-	edgeRuleset,
 	{
 		files: ['**/*{js,mjs,cjs,jsx}'],
 		rules: { 'tsdoc/syntax': 0 },

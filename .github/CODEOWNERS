@@ -3,10 +3,6 @@
 
 * @iCrawl
 
-/apps/guide/ @discordjs/website @discordjs/guide
-/apps/guide/src/content/ @discordjs/guide
-/apps/website/ @discordjs/website
-
 /packages/actions/ @discordjs/actions
 /packages/api-extractor-utils/ @discordjs/api-extractor-utils
 /packages/brokers/ @discordjs/brokers
