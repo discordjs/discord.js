@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/ws@2.0.4](https://github.com/discordjs/discord.js/compare/@discordjs/ws@2.0.3...@discordjs/ws@2.0.4) - (2025-11-10)
+
+## Bug Fixes
+
+- **WebSocketShard:** Bad error re-throw (#11151) ([6c781ed](https://github.com/discordjs/discord.js/commit/6c781ede30bd9625ef15eda5dcc166f3b97fb3cf))
+- **SimpleIdentifyThrottler:** Don't sleep negative amounts (#10669) ([be38128](https://github.com/discordjs/discord.js/commit/be38128ea17bfd1d0d0a8b298867ed5b179effda))
+
+## Refactor
+
+- **IContextFetchingStrategy:** Explicitly name forwarded properties (#10652) ([737a97d](https://github.com/discordjs/discord.js/commit/737a97d068a39094786d6ada42ca39a0c583ec2d))
+
 # [@discordjs/ws@2.0.3](https://github.com/discordjs/discord.js/compare/@discordjs/ws@2.0.2...@discordjs/ws@2.0.3) - (2025-06-16)
 
 ## Bug Fixes
