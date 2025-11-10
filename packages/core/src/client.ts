@@ -1,6 +1,6 @@
 import { clearTimeout, setTimeout } from 'node:timers';
 import type { REST } from '@discordjs/rest';
-import { calculateShardId } from '@discordjs/util';
+import { calculateShardId, GatewayRateLimitError } from '@discordjs/util';
 import { WebSocketShardEvents } from '@discordjs/ws';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
@@ -61,6 +61,7 @@ import {
 	type GatewayMessageUpdateDispatchData,
 	type GatewayPresenceUpdateData,
 	type GatewayPresenceUpdateDispatchData,
+	type GatewayRateLimitedDispatchData,
 	type GatewayReadyDispatchData,
 	type GatewayRequestGuildMembersData,
 	type GatewayStageInstanceCreateDispatchData,
@@ -83,11 +84,9 @@ import {
 	type GatewayWebhooksUpdateDispatchData,
 	type GatewayRequestSoundboardSoundsData,
 	type GatewaySoundboardSoundsDispatchData,
-	type GatewayDispatchPayload,
 } from 'discord-api-types/v10';
 import type { Gateway } from './Gateway.js';
 import { API } from './api/index.js';
-import { GatewayRateLimitError } from './util/index.js';
 
 export interface IntrinsicProps {
 	/**
@@ -166,6 +165,7 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.MessageReactionRemoveEmoji]: [ToEventProps<GatewayMessageReactionRemoveEmojiDispatchData>];
 	[GatewayDispatchEvents.MessageUpdate]: [ToEventProps<GatewayMessageUpdateDispatchData>];
 	[GatewayDispatchEvents.PresenceUpdate]: [ToEventProps<GatewayPresenceUpdateDispatchData>];
+	[GatewayDispatchEvents.RateLimited]: [ToEventProps<GatewayRateLimitedDispatchData>];
 	[GatewayDispatchEvents.Ready]: [ToEventProps<GatewayReadyDispatchData>];
 	[GatewayDispatchEvents.Resumed]: [ToEventProps<never>];
 	[GatewayDispatchEvents.StageInstanceCreate]: [ToEventProps<GatewayStageInstanceCreateDispatchData>];
@@ -246,11 +246,8 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 
 		let timer: NodeJS.Timeout | undefined = createTimer(controller, timeout);
 
-		const onRatelimit = (payload: GatewayDispatchPayload) => {
-			// We could verify meta.guild_id === options.guild_id as well, but really, the nonce check is enough
-			if (payload.t === GatewayDispatchEvents.RateLimited && payload.d.meta.nonce === nonce) {
-				controller.abort(new GatewayRateLimitError(payload.d));
-			}
+		const onRatelimit = ({ data }: ToEventProps<GatewayRateLimitedDispatchData>) => {
+			controller.abort(new GatewayRateLimitError(data, options));
 		};
 
 		const cleanup = () => {
@@ -258,10 +255,10 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 				clearTimeout(timer);
 			}
 
-			this.gateway.off(WebSocketShardEvents.Dispatch, onRatelimit);
+			this.off(GatewayDispatchEvents.RateLimited, onRatelimit);
 		};
 
-		this.gateway.on(WebSocketShardEvents.Dispatch, onRatelimit);
+		this.on(GatewayDispatchEvents.RateLimited, onRatelimit);
 		await this.gateway.send(shardId, {
 			op: GatewayOpcodes.RequestGuildMembers,
 			// eslint-disable-next-line id-length

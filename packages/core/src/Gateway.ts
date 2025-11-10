@@ -9,15 +9,7 @@ import type { GatewaySendPayload } from 'discord-api-types/v10';
  */
 export interface Gateway {
 	getShardCount(): Awaitable<number>;
-	off(
-		event: WebSocketShardEvents.Dispatch,
-		listener: (...params: ManagerShardEventsMap[WebSocketShardEvents.Dispatch]) => Awaitable<void>,
-	): this;
 	on(
-		event: WebSocketShardEvents.Dispatch,
-		listener: (...params: ManagerShardEventsMap[WebSocketShardEvents.Dispatch]) => Awaitable<void>,
-	): this;
-	once(
 		event: WebSocketShardEvents.Dispatch,
 		listener: (...params: ManagerShardEventsMap[WebSocketShardEvents.Dispatch]) => Awaitable<void>,
 	): this;
