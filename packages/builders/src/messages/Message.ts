@@ -685,7 +685,6 @@ export class MessageBuilder
 			}
 		}
 
-		console.log(files);
 		const combined = { body, files };
 		validate(fileBodyMessagePredicate, combined, validationOverride);
 

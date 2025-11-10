@@ -136,10 +136,9 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 	/**
 	 * Converts this attachment to a RawFile for uploading.
 	 *
-	 * @param key - The key to use for the FormData field for this file. Defaults to this attachment's ID.
 	 * @returns A RawFile object, or undefined if no file data is set
 	 */
-	public getRawFile(key?: string): Partial<RawFile> | undefined {
+	public getRawFile(): Partial<RawFile> | undefined {
 		if (!this.fileData) {
 			return;
 		}
@@ -147,7 +146,7 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 		return {
 			...this.fileData,
 			name: this.data.filename,
-			key: key ?? this.data.id?.toString() ?? undefined,
+			key: this.data.id ? `files[${this.data.id}]` : undefined,
 		};
 	}
 

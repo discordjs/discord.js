@@ -4,11 +4,13 @@ import { z } from 'zod';
 import { embedPredicate } from './embed/Assertions.js';
 import { pollPredicate } from './poll/Assertions.js';
 
+const fileKeyRegex = /^files\[(?<placeholder>.+?)]$/;
+
 export const rawFilePredicate = z.object({
 	data: z.union([z.instanceof(Buffer), z.instanceof(Uint8Array), z.boolean(), z.number(), z.string()]),
 	name: z.string().min(1),
 	contentType: z.string().optional(),
-	key: z.string().optional(),
+	key: z.string().regex(fileKeyRegex).optional(),
 });
 
 export const attachmentPredicate = z.object({
@@ -135,20 +137,10 @@ const messageComponentsV2Predicate = baseMessagePredicate.extend({
 
 export const messagePredicate = z.union([messageNoComponentsV2Predicate, messageComponentsV2Predicate]);
 
-export const fileBodyMessagePredicate = z
-	.object({
-		body: messagePredicate,
-		// No min length to support message edits
-		files: rawFilePredicate.array(),
-	})
-	// Now to validate files <-> attachments are coherent. Namely, ids are in bounds
-	.refine((data) => {
-		// TODO(DD): Once I've fixed the stuff in REST
-		// eslint-disable-next-line sonarjs/prefer-single-boolean-return
-		if (!data.body.attachments?.length) {
-			return true;
-		}
-
-		// const keys = new Set(data.files.map((file) => file.key).filter((key): key is string => key !== undefined));
-		return true;
-	});
+// This validator does not assert file.key <-> attachment.id coherence. This is fine, because the builders
+// should effectively guarantee that.
+export const fileBodyMessagePredicate = z.object({
+	body: messagePredicate,
+	// No min length to support message edits
+	files: rawFilePredicate.array(),
+});

@@ -14,7 +14,7 @@ test('AttachmentBuilder stores and exposes file data', () => {
 	expect(attachment.getRawFile()).toStrictEqual({
 		contentType: 'text/plain',
 		data,
-		key: '0',
+		key: 'files[0]',
 		name: 'greeting.txt',
 	});
 
@@ -24,7 +24,7 @@ test('AttachmentBuilder stores and exposes file data', () => {
 	expect(attachment.getRawFile()).toStrictEqual({
 		contentType: undefined,
 		data: undefined,
-		key: '0',
+		key: 'files[0]',
 		name: undefined,
 	});
 });
@@ -41,7 +41,7 @@ test('MessageBuilder.toFileBody returns JSON body and files', () => {
 	const { body, files } = msg.toFileBody();
 
 	// body should match toJSON()
-	expect(body).toEqual(msg.toJSON());
+	expect(body).toStrictEqual(msg.toJSON());
 
 	// files should contain the uploaded file
 	expect(files).toHaveLength(1);
