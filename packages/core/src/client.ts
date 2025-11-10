@@ -247,7 +247,10 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 		let timer: NodeJS.Timeout | undefined = createTimer(controller, timeout);
 
 		const onRatelimit = ({ data }: ToEventProps<GatewayRateLimitedDispatchData>) => {
-			controller.abort(new GatewayRateLimitError(data, options));
+			// We could verify meta.guild_id === options.guild_id as well, but really, the nonce check is enough
+			if (data.meta.nonce === nonce) {
+				controller.abort(new GatewayRateLimitError(data, options));
+			}
 		};
 
 		const cleanup = () => {
