@@ -119,6 +119,8 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 
 	/**
 	 * Sets the content type of the file data to upload with this attachment.
+	 *
+	 * @remarks Note that this data is NOT included in the `toJSON()` output. To retrieve, use {@link getRawFile}.
 	 */
 	public setFileContentType(contentType: string): this {
 		this.fileData.contentType = contentType;
