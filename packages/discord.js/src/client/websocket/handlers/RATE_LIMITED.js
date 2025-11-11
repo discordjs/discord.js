@@ -4,7 +4,7 @@ const process = require('node:process');
 const { GatewayOpcodes } = require('discord-api-types/v10');
 const { Events } = require('../../../util/Events.js');
 
-const emittedWarning = false;
+let emittedWarning = false;
 
 module.exports = (client, { d: data }) => {
   /**
@@ -46,6 +46,7 @@ module.exports = (client, { d: data }) => {
     default: {
       if (!emittedWarning) {
         process.emitWarning(`Received a rate limit for an unknown opcode: ${data.opcode}`);
+        emittedWarning = true;
       }
     }
   }
