@@ -12,12 +12,11 @@
 	},
 	"dependencies": {
 		"@discordjs/core": "^2.3.0",
-		"discord.js": "^14.24.0"
+		"discord.js": "^14.24.2"
 	},
 	"devDependencies": {
-		"eslint": "^9.37.0",
-		"eslint-config-neon": "^0.2.7",
-		"eslint-formatter-compact": "^8.40.0",
+		"eslint": "^9.38.0",
+		"eslint-config-neon": "^0.2.9",
 		"eslint-formatter-pretty": "^7.0.0",
 		"prettier": "^3.6.2",
 		"zod": "^3.25.76"
