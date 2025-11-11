@@ -131,6 +131,7 @@ import {
   GatewayIntentBits,
   GatewayInteractionCreateDispatchData,
   GatewayMessageUpdateDispatchData,
+  GatewayOpcodeRateLimitMetadataMap,
   GatewayPresenceUpdate,
   GatewaySendPayload,
   GatewayTypingStartDispatchData,
@@ -4118,8 +4119,6 @@ export enum DiscordjsErrorCodes {
   BulkBanUsersOptionEmpty = 'BulkBanUsersOptionEmpty',
 
   PollAlreadyExpired = 'PollAlreadyExpired',
-
-  GatewayRequestRateLimited = 'GatewayRequestRateLimited',
 }
 /* eslint-enable typescript-sort-keys/string-enum */
 
@@ -5441,6 +5440,12 @@ export interface WebhookCreateOptions extends ChannelWebhookCreateOptions {
   channel: AnnouncementChannel | ForumChannel | MediaChannel | Snowflake | StageChannel | TextChannel | VoiceChannel;
 }
 
+export interface GatewayRateLimitData {
+  meta?: GatewayOpcodeRateLimitMetadataMap[keyof GatewayOpcodeRateLimitMetadataMap];
+  opcode: keyof GatewayOpcodeRateLimitMetadataMap;
+  retryAfter: number;
+}
+
 export interface GuildMembersChunk {
   count: number;
   index: number;
@@ -5539,6 +5544,7 @@ export interface ClientEventTypes {
     newMessage: OmitPartialGroupDMChannel<Message>,
   ];
   presenceUpdate: [oldPresence: Presence | null, newPresence: Presence];
+  rateLimit: [rateLimitData: GatewayRateLimitData];
   roleCreate: [role: Role];
   roleDelete: [role: Role];
   roleUpdate: [oldRole: Role, newRole: Role];
