@@ -1,6 +1,6 @@
 import { clearTimeout, setTimeout } from 'node:timers';
 import type { REST } from '@discordjs/rest';
-import { calculateShardId } from '@discordjs/util';
+import { calculateShardId, GatewayRateLimitError } from '@discordjs/util';
 import { WebSocketShardEvents } from '@discordjs/ws';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
@@ -57,6 +57,7 @@ import {
 	type GatewayMessageUpdateDispatchData,
 	type GatewayPresenceUpdateData,
 	type GatewayPresenceUpdateDispatchData,
+	type GatewayRateLimitedDispatchData,
 	type GatewayReadyDispatchData,
 	type GatewayRequestGuildMembersData,
 	type GatewayStageInstanceCreateDispatchData,
@@ -150,6 +151,7 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.MessageReactionRemoveEmoji]: [ToEventProps<GatewayMessageReactionRemoveEmojiDispatchData>];
 	[GatewayDispatchEvents.MessageUpdate]: [ToEventProps<GatewayMessageUpdateDispatchData>];
 	[GatewayDispatchEvents.PresenceUpdate]: [ToEventProps<GatewayPresenceUpdateDispatchData>];
+	[GatewayDispatchEvents.RateLimited]: [ToEventProps<GatewayRateLimitedDispatchData>];
 	[GatewayDispatchEvents.Ready]: [ToEventProps<GatewayReadyDispatchData>];
 	[GatewayDispatchEvents.Resumed]: [ToEventProps<never>];
 	[GatewayDispatchEvents.StageInstanceCreate]: [ToEventProps<GatewayStageInstanceCreateDispatchData>];
@@ -180,6 +182,10 @@ export interface RequestGuildMembersResult {
 	nonce: NonNullable<GatewayGuildMembersChunkDispatchData['nonce']>;
 	notFound: NonNullable<GatewayGuildMembersChunkDispatchData['not_found']>;
 	presences: NonNullable<GatewayGuildMembersChunkDispatchData['presences']>;
+}
+
+function createTimer(controller: AbortController, timeout: number) {
+	return setTimeout(() => controller.abort(), timeout);
 }
 
 export class Client extends AsyncEventEmitter<MappedEvents> {
@@ -220,13 +226,24 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 
 		const controller = new AbortController();
 
-		const createTimer = () =>
-			setTimeout(() => {
-				controller.abort();
-			}, timeout);
+		let timer: NodeJS.Timeout | undefined = createTimer(controller, timeout);
 
-		let timer: NodeJS.Timeout | undefined = createTimer();
+		const onRatelimit = ({ data }: ToEventProps<GatewayRateLimitedDispatchData>) => {
+			// We could verify meta.guild_id === options.guild_id as well, but really, the nonce check is enough
+			if (data.meta.nonce === nonce) {
+				controller.abort(new GatewayRateLimitError(data, options));
+			}
+		};
 
+		const cleanup = () => {
+			if (timer) {
+				clearTimeout(timer);
+			}
+
+			this.off(GatewayDispatchEvents.RateLimited, onRatelimit);
+		};
+
+		this.on(GatewayDispatchEvents.RateLimited, onRatelimit);
 		await this.gateway.send(shardId, {
 			op: GatewayOpcodes.RequestGuildMembers,
 			// eslint-disable-next-line id-length
@@ -256,22 +273,23 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 					chunkCount: data.chunk_count,
 				};
 
-				if (data.chunk_index >= data.chunk_count - 1) {
-					break;
-				} else {
-					timer = createTimer();
-				}
+				if (data.chunk_index >= data.chunk_count - 1) break;
+
+				// eslint-disable-next-line require-atomic-updates
+				timer = createTimer(controller, timeout);
 			}
 		} catch (error) {
 			if (error instanceof Error && error.name === 'AbortError') {
+				if (error.cause instanceof GatewayRateLimitError) {
+					throw error.cause;
+				}
+
 				throw new Error('Request timed out');
 			}
 
 			throw error;
 		} finally {
-			if (timer) {
-				clearTimeout(timer);
-			}
+			cleanup();
 		}
 	}
 

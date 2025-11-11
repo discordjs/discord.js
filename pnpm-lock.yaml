@@ -1270,6 +1270,10 @@ importers:
         version: 2.1.9(@edge-runtime/vm@3.2.0)(@types/node@18.19.130)(terser@5.44.1)
 
   packages/util:
+    dependencies:
+      discord-api-types:
+        specifier: ^0.38.33
+        version: 0.38.33
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
