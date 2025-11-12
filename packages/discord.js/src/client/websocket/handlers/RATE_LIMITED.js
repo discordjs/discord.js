@@ -27,7 +27,7 @@ module.exports = (client, { d: data }) => {
    * @typedef {Object} GatewayRateLimitData
    * @property {GatewayOpCodes} opcode The opcode of the event that triggered the rate limit
    * @property {number} retryAfter The number of seconds to wait before submitting another request
-   * @property {GatewayRateLimitMetaData} [meta] Additional metadata for the event that was rate limited
+   * @property {GatewayRateLimitMetaData} [meta] Additional metadata for the event that was rate limited. Missing for unknown opcodes.
    */
 
   let meta;
@@ -44,8 +44,10 @@ module.exports = (client, { d: data }) => {
     }
 
     default: {
-      if (!emittedWarning) {
-        process.emitWarning(`Received a rate limit for an unknown opcode: ${data.opcode}`);
+      if (!emittedWarning && !client.listenerCount(Events.RateLimited)) {
+        process.emitWarning(
+          `Received a rate limit for an unknown opcode: ${data.opcode}. For additional information, listen to the Client#rateLimited event.`,
+        );
         emittedWarning = true;
       }
     }

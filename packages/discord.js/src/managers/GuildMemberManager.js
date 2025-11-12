@@ -255,7 +255,7 @@ class GuildMemberManager extends CachedManager {
         /* eslint-disable no-use-before-define */
         clearTimeout(timeout);
 
-        this.client.ws.off(WebSocketShardEvents.Dispatch, rateLimitHandler);
+        this.client.ws.removeListener(WebSocketShardEvents.Dispatch, rateLimitHandler);
         this.client.removeListener(Events.GuildMembersChunk, handler);
         this.client.decrementMaxListeners();
         /* eslint-enable no-use-before-define */

@@ -5440,8 +5440,13 @@ export interface WebhookCreateOptions extends ChannelWebhookCreateOptions {
   channel: AnnouncementChannel | ForumChannel | MediaChannel | Snowflake | StageChannel | TextChannel | VoiceChannel;
 }
 
+export interface GatewayRequestGuildMemberRateLimitMetaData {
+  guild: Guild;
+  nonce: string;
+}
+
 export interface GatewayRateLimitData {
-  meta?: GatewayOpcodeRateLimitMetadataMap[keyof GatewayOpcodeRateLimitMetadataMap];
+  meta?: GatewayRequestGuildMemberRateLimitMetaData;
   opcode: keyof GatewayOpcodeRateLimitMetadataMap;
   retryAfter: number;
 }
@@ -5765,6 +5770,7 @@ export enum Events {
   MessageReactionRemoveEmoji = 'messageReactionRemoveEmoji',
   MessageUpdate = 'messageUpdate',
   PresenceUpdate = 'presenceUpdate',
+  RateLimited = 'rateLimited',
   SoundboardSounds = 'soundboardSounds',
   StageInstanceCreate = 'stageInstanceCreate',
   StageInstanceDelete = 'stageInstanceDelete',
