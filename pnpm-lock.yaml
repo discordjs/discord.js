@@ -1736,6 +1736,10 @@ importers:
         version: 4.5.4(@types/node@22.18.13)(rollup@4.52.5)(typescript@5.9.3)(vite@7.1.12(@types/node@22.18.13)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.0)(tsx@4.19.2)(yaml@2.8.1))
 
   packages/util:
+    dependencies:
+      discord-api-types:
+        specifier: ^0.38.31
+        version: 0.38.31
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
