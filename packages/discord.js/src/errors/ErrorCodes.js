@@ -77,7 +77,6 @@
  *
  * @property {'WebhookMessage'} WebhookMessage
  * @property {'WebhookTokenUnavailable'} WebhookTokenUnavailable
- * @property {'WebhookURLInvalid'} WebhookURLInvalid
  * @property {'WebhookApplication'} WebhookApplication
  *
  * @property {'MessageReferenceMissing'} MessageReferenceMissing
@@ -212,7 +211,6 @@ const keys = [
 
   'WebhookMessage',
   'WebhookTokenUnavailable',
-  'WebhookURLInvalid',
   'WebhookApplication',
 
   'MessageReferenceMissing',
