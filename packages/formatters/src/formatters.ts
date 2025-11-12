@@ -735,9 +735,17 @@ export const TimestampStyles = {
 	ShortTime: 't',
 
 	/**
+	 * Medium time format, consisting of hours, minutes, and seconds.
+	 *
+	 * @example `16:20:30`
+	 */
+	MediumTime: 'T',
+
+	/**
 	 * Long time format, consisting of hours, minutes, and seconds.
 	 *
 	 * @example `16:20:30`
+	 * @deprecated Use {@link TimestampStyles.MediumTime} instead.
 	 */
 	LongTime: 'T',
 
@@ -751,23 +759,53 @@ export const TimestampStyles = {
 	/**
 	 * Long date format, consisting of day, month, and year.
 	 *
-	 * @example `20 April 2021`
+	 * @example `April 20, 2021`
 	 */
 	LongDate: 'D',
+
+	/**
+	 * Long date-short time format, consisting of long date and short time.
+	 *
+	 * @example `April 20, 2021 at 16:20`
+	 */
+	LongDateShortTime: 'f',
 
 	/**
 	 * Short date-time format, consisting of short date and short time formats.
 	 *
 	 * @example `20 April 2021 16:20`
+	 * @deprecated Use {@link TimestampStyles.LongDateShortTime} instead.
 	 */
 	ShortDateTime: 'f',
+
+	/**
+	 * Full date-short time format, consisting of full date and short time.
+	 *
+	 * @example `Tuesday, April 20, 2021 at 16:20`
+	 */
+	FullDateShortTime: 'F',
 
 	/**
 	 * Long date-time format, consisting of long date and short time formats.
 	 *
 	 * @example `Tuesday, 20 April 2021 16:20`
+	 * @deprecated Use {@link TimestampStyles.FullDateShortTime} instead.
 	 */
 	LongDateTime: 'F',
+
+	/**
+	 * Short date, short time format, consisting of short date and short time.
+	 *
+	 * @example `20/04/2021, 16:20`
+	 */
+	ShortDateShortTime: 's',
+
+	/**
+	 * Short date, medium time format, consisting of short date and medium time.
+	 *
+	 * @example `20/04/2021, 16:20:30`
+	 */
+	ShortDateMediumTime: 'S',
 
 	/**
 	 * Relative time format, consisting of a relative duration format.
