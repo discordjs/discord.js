@@ -1,5 +1,6 @@
 import { glob, stat } from 'node:fs/promises';
-import { fileURLToPath, resolve, URL } from 'node:url';
+import { resolve } from 'node:path';
+import { fileURLToPath, URL } from 'node:url';
 import { predicate as commandPredicate } from '../commands/index.js';
 import { predicate as eventPredicate } from '../events/index.js';
 
