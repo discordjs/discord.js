@@ -1,0 +1,45 @@
+const { Client, GatewayIntentBits, ActionRowBuilder, StringSelectMenuBuilder, Partials } = require('discord.js');
+const client = new Client({ 
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
+  partials: [Partials.Message, Partials.Channel, Partials.Reaction]
+});
+
+client.once('ready', () => {
+  console.log(`✅ Logado como ${client.user.tag}`);
+});
+
+// Comando para enviar o menu
+client.on('messageCreate', async (message) => {
+  if (message.content === '!idade') {
+    const menu = new StringSelectMenuBuilder()
+      .setCustomId('idade_select')
+      .setPlaceholder('Escolha sua idade')
+      .addOptions([
+        { label: '+18', value: 'mais18', emoji: '🔞' },
+        { label: '-18', value: 'menos18', emoji: '🧒' },
+      ]);
+
+    const row = new ActionRowBuilder().addComponents(menu);
+    await message.channel.send({ content: 'Selecione sua idade:', components: [row] });
+  }
+});
+
+// Quando o usuário escolhe
+client.on('interactionCreate', async (interaction) => {
+  if (!interaction.isStringSelectMenu()) return;
+
+  if (interaction.customId === 'idade_select') {
+    const roleMais18 = interaction.guild.roles.cache.find(r => r.name === '+18');
+    const roleMenos18 = interaction.guild.roles.cache.find(r => r.name === '-18');
+    
+    if (interaction.values[0] === 'mais18') {
+      await interaction.member.roles.add(roleMais18);
+      await interaction.reply({ content: '✅ Cargo +18 adicionado!', ephemeral: true });
+    } else {
+      await interaction.member.roles.add(roleMenos18);
+      await interaction.reply({ content: '🧒 Cargo -18 adicionado!', ephemeral: true });
+    }
+  }
+});
+
+client.login('king');
