@@ -216,8 +216,9 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 					if (semVer === 'workspace:^') {
 						this._dependencies[pack] =
 							PackageJsonLookup.instance.tryLoadPackageJsonFor(pathToPackage)?.version ?? 'unknown';
-					} else if (FileSystem.exists(pathToPackage)) {
-						this._dependencies[pack] = semVer;
+					} else {
+						// if (FileSystem.exists(pathToPackage))
+						this._dependencies[pack] = semVer.replace(/^[\^~]/, '');
 					}
 				}
 			}
