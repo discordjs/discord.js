@@ -1,11 +1,11 @@
 import type { ExecException } from 'node:child_process';
-import { cp, glob, mkdir, stat, readdir, readFile, writeFile } from 'node:fs/promises';
+import { cp, mkdir, stat, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { URL } from 'node:url';
 import { styleText } from 'node:util';
 import type { PackageManager } from './helpers/packageManager.js';
-import { install, isNodePackageManager } from './helpers/packageManager.js';
+import { install } from './helpers/packageManager.js';
 import { GUIDE_URL } from './util/constants.js';
 
 interface Options {
@@ -67,39 +67,18 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 
 	process.chdir(root);
 
-	const newVSCodeSettings = await readFile('./.vscode/settings.json', {
-		encoding: 'utf8',
-	}).then((str) => {
-		let newStr = str.replace('[REPLACE_ME]', deno || bun ? 'auto' : packageManager);
-		if (deno) {
-			// @ts-expect-error: This is fine
-			newStr = newStr.replaceAll('"[REPLACE_BOOL]"', true);
-		}
-
-		return newStr;
-	});
-	await writeFile('./.vscode/settings.json', newVSCodeSettings);
-
-	const globIterator = glob('./src/**/*.ts');
-	for await (const file of globIterator) {
-		const newData = await readFile(file, { encoding: 'utf8' }).then((str) =>
-			str.replaceAll('[REPLACE_IMPORT_EXT]', typescript && !isNodePackageManager(packageManager) ? 'ts' : 'js'),
-		);
-		await writeFile(file, newData);
-	}
+	const newVSCodeSettings = await readFile('./.vscode/settings.json', { encoding: 'utf8' });
+	await writeFile(
+		'./.vscode/settings.json',
+		newVSCodeSettings.replace(
+			/"npm\.packageManager":\s*"[^"]+"/,
+			`"npm.packageManager": "${deno || bun ? 'auto' : packageManager}"`,
+		),
+	);
 
 	if (!deno) {
-		const newPackageJSON = await readFile('./package.json', {
-			encoding: 'utf8',
-		}).then((str) => {
-			let newStr = str.replace('[REPLACE_ME]', directoryName);
-			newStr = newStr.replaceAll(
-				'[REPLACE_IMPORT_EXT]',
-				typescript && !isNodePackageManager(packageManager) ? 'ts' : 'js',
-			);
-			return newStr;
-		});
-		await writeFile('./package.json', newPackageJSON);
+		const newPackageJSON = await readFile('./package.json', { encoding: 'utf8' });
+		await writeFile('./package.json', newPackageJSON.replace(/"name":\s*"[^"]+"/, `"name": "${directoryName}"`));
 	}
 
 	if (installPackages) {
