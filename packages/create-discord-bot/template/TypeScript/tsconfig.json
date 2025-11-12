@@ -2,12 +2,15 @@
 	"$schema": "https://json.schemastore.org/tsconfig.json",
 	"extends": ["@sapphire/ts-config", "@sapphire/ts-config/extra-strict"],
 	"compilerOptions": {
+		"allowImportingTsExtensions": true,
+		"erasableSyntaxOnly": true,
 		"declaration": false,
 		"declarationMap": false,
+		"incremental": false,
 		"module": "NodeNext",
 		"moduleResolution": "NodeNext",
+		"noEmit": true,
 		"target": "ESNext",
-		"outDir": "dist",
 		"skipLibCheck": true
 	}
 }
