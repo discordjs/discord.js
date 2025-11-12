@@ -131,7 +131,6 @@ import {
   GatewayIntentBits,
   GatewayInteractionCreateDispatchData,
   GatewayMessageUpdateDispatchData,
-  GatewayOpcodeRateLimitMetadataMap,
   GatewayPresenceUpdate,
   GatewaySendPayload,
   GatewayTypingStartDispatchData,
@@ -5440,17 +5439,6 @@ export interface WebhookCreateOptions extends ChannelWebhookCreateOptions {
   channel: AnnouncementChannel | ForumChannel | MediaChannel | Snowflake | StageChannel | TextChannel | VoiceChannel;
 }
 
-export interface GatewayRequestGuildMemberRateLimitMetaData {
-  guild: Guild;
-  nonce: string;
-}
-
-export interface GatewayRateLimitData {
-  meta?: GatewayRequestGuildMemberRateLimitMetaData;
-  opcode: keyof GatewayOpcodeRateLimitMetadataMap;
-  retryAfter: number;
-}
-
 export interface GuildMembersChunk {
   count: number;
   index: number;
@@ -5549,7 +5537,6 @@ export interface ClientEventTypes {
     newMessage: OmitPartialGroupDMChannel<Message>,
   ];
   presenceUpdate: [oldPresence: Presence | null, newPresence: Presence];
-  rateLimit: [rateLimitData: GatewayRateLimitData];
   roleCreate: [role: Role];
   roleDelete: [role: Role];
   roleUpdate: [oldRole: Role, newRole: Role];
@@ -5770,7 +5757,6 @@ export enum Events {
   MessageReactionRemoveEmoji = 'messageReactionRemoveEmoji',
   MessageUpdate = 'messageUpdate',
   PresenceUpdate = 'presenceUpdate',
-  RateLimited = 'rateLimited',
   SoundboardSounds = 'soundboardSounds',
   StageInstanceCreate = 'stageInstanceCreate',
   StageInstanceDelete = 'stageInstanceDelete',
