@@ -1,4 +1,4 @@
-import type { FileBodyEncodeable, FileBodyEncodeableResult, JSONEncodable, RawFile } from '@discordjs/util';
+import type { FileBodyEncodable, FileBodyEncodableResult, JSONEncodable, RawFile } from '@discordjs/util';
 import type {
 	APIActionRowComponent,
 	APIAllowedMentions,
@@ -57,7 +57,7 @@ export interface MessageBuilderData
  * A builder that creates API-compatible JSON data for messages.
  */
 export class MessageBuilder
-	implements JSONEncodable<RESTPostAPIChannelMessageJSONBody>, FileBodyEncodeable<RESTPostAPIChannelMessageJSONBody>
+	implements JSONEncodable<RESTPostAPIChannelMessageJSONBody>, FileBodyEncodable<RESTPostAPIChannelMessageJSONBody>
 {
 	/**
 	 * The API data associated with this message.
@@ -672,7 +672,7 @@ export class MessageBuilder
 	 * This method extracts file data from attachments that have files set via {@link AttachmentBuilder.setFileData}.
 	 * The returned body includes attachment metadata, while files contains the binary data for upload.
 	 */
-	public toFileBody(validationOverride?: boolean): FileBodyEncodeableResult<RESTPostAPIChannelMessageJSONBody> {
+	public toFileBody(validationOverride?: boolean): FileBodyEncodableResult<RESTPostAPIChannelMessageJSONBody> {
 		const body = this.toJSON(false);
 
 		const files: RawFile[] = [];
@@ -688,6 +688,6 @@ export class MessageBuilder
 		const combined = { body, files };
 		validate(fileBodyMessagePredicate, combined, validationOverride);
 
-		return combined as FileBodyEncodeableResult<RESTPostAPIChannelMessageJSONBody>;
+		return combined as FileBodyEncodableResult<RESTPostAPIChannelMessageJSONBody>;
 	}
 }

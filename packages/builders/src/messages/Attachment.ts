@@ -14,8 +14,8 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 	private readonly data: Partial<RESTAPIAttachment>;
 
 	/**
-	 * This data not included in the output of `toJSON()`. For this class specifically, this refers to binary data
-	 * that will wind up being included in the multipart/form-data request, if using with the `MessageBuilder`.
+	 * This data is not included in the output of `toJSON()`. For this class specifically, this refers to binary data
+	 * that will wind up being included in the multipart/form-data request, if used with the `MessageBuilder`.
 	 * To retrieve this data, use {@link getRawFile}.
 	 *
 	 * @remarks This cannot be set via the constructor, primarily because of the behavior described
@@ -104,7 +104,7 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 	 * @param data - The file data (Buffer, Uint8Array, or string)
 	 * @remarks Note that this data is NOT included in the `toJSON()` output. To retrieve, use {@link getRawFile}.
 	 */
-	public setFileData(data: Buffer | Uint8Array | boolean | number | string): this {
+	public setFileData(data: Buffer | Uint8Array | string): this {
 		this.fileData.data = data;
 		return this;
 	}
