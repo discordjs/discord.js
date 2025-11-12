@@ -22,10 +22,11 @@ import {
 export type CreateWebhookMessageOptions = RESTPostAPIWebhookWithTokenJSONBody &
 	RESTPostAPIWebhookWithTokenQuery & { files?: RawFile[] };
 
-export type EditWebhookMessageOptions = RESTPatchAPIWebhookWithTokenMessageJSONBody & RESTPatchAPIWebhookWithTokenMessageQuery & {
-	files?: RawFile[];
-	thread_id?: string;
-};
+export type EditWebhookMessageOptions = RESTPatchAPIWebhookWithTokenMessageJSONBody &
+	RESTPatchAPIWebhookWithTokenMessageQuery & {
+		files?: RawFile[];
+		thread_id?: string;
+	};
 
 export class WebhooksAPI {
 	public constructor(private readonly rest: REST) {}
