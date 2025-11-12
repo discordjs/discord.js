@@ -3841,7 +3841,7 @@ export interface PrivateThreadChannel extends ThreadChannel<false> {
 export interface ThreadChannel<ThreadOnly extends boolean = boolean>
   extends Omit<TextBasedChannelFields<true>, 'fetchWebhooks' | 'createWebhook' | 'setNSFW'> {}
 export class ThreadChannel<ThreadOnly extends boolean = boolean> extends BaseChannel {
-  private constructor(guild: Guild, data?: RawThreadChannelData, client?: Client<true>);
+  private constructor(guild: Guild, data: RawThreadChannelData, client?: Client<true>);
   public archived: boolean | null;
   public get archivedAt(): Date | null;
   public archiveTimestamp: number | null;
@@ -4234,7 +4234,7 @@ export class VoiceState extends Base {
 // tslint:disable-next-line no-empty-interface
 export interface Webhook<Type extends WebhookType = WebhookType> extends WebhookFields {}
 export class Webhook<Type extends WebhookType = WebhookType> {
-  private constructor(client: Client<true>, data?: RawWebhookData);
+  private constructor(client: Client<true>, data: RawWebhookData);
   public avatar: string | null;
   public avatarURL(options?: ImageURLOptions): string | null;
   public channelId: Snowflake;

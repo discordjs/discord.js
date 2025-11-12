@@ -34,7 +34,7 @@ class Role extends Base {
      */
     this.unicodeEmoji = null;
 
-    if (data) this._patch(data);
+    this._patch(data);
   }
 
   _patch(data) {

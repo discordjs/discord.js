@@ -22,7 +22,7 @@ class PermissionOverwrites extends Base {
      */
     Object.defineProperty(this, 'channel', { value: channel });
 
-    if (data) this._patch(data);
+    this._patch(data);
   }
 
   _patch(data) {
