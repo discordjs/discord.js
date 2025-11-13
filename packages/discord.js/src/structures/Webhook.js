@@ -23,7 +23,7 @@ class Webhook {
      * @readonly
      */
     Object.defineProperty(this, 'client', { value: client });
-    if (data) this._patch(data);
+    this._patch(data);
   }
 
   _patch(data) {
