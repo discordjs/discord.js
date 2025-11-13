@@ -82,7 +82,6 @@ const Messages = {
 
   [ErrorCodes.WebhookMessage]: 'The message was not sent by a webhook.',
   [ErrorCodes.WebhookTokenUnavailable]: 'This action requires a webhook token, but none is available.',
-  [ErrorCodes.WebhookURLInvalid]: 'The provided webhook URL is not valid.',
   [ErrorCodes.WebhookApplication]: 'This message webhook belongs to an application and cannot be fetched.',
 
   [ErrorCodes.MessageReferenceMissing]: 'The message does not reference another message',
