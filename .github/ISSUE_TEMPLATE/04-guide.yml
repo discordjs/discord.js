@@ -15,7 +15,7 @@ body:
         - Requesting new content
         - Changing existing content
         - Correcting wrong information
-    validation:
+    validations:
       required: true
   - type: input
     id: section

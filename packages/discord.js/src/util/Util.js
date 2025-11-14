@@ -470,10 +470,18 @@ function cleanCodeBlockContent(text) {
 }
 
 /**
+ * Represents the credentials used for a webhook in the form of its id and token.
+ *
+ * @typedef {Object} WebhookDataIdWithToken
+ * @property {Snowflake} id The webhook's id
+ * @property {string} token The webhook's token
+ */
+
+/**
  * Parses a webhook URL for the id and token.
  *
  * @param {string} url The URL to parse
- * @returns {?WebhookClientDataIdWithToken} `null` if the URL is invalid, otherwise the id and the token
+ * @returns {?WebhookDataIdWithToken} `null` if the URL is invalid, otherwise the id and the token
  */
 function parseWebhookURL(url) {
   const matches =

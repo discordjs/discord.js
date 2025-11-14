@@ -8,7 +8,6 @@ exports.Client = require('./client/Client.js').Client;
 exports.Shard = require('./sharding/Shard.js').Shard;
 exports.ShardClientUtil = require('./sharding/ShardClientUtil.js').ShardClientUtil;
 exports.ShardingManager = require('./sharding/ShardingManager.js').ShardingManager;
-exports.WebhookClient = require('./client/WebhookClient.js').WebhookClient;
 
 // Errors
 exports.DiscordjsError = require('./errors/DJSError.js').DiscordjsError;
