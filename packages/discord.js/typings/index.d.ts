@@ -962,7 +962,7 @@ export class Client<Ready extends boolean = boolean>
   public generateInvite(options?: InviteGenerationOptions): string;
   public login(token?: string): Promise<string>;
   public isReady(): this is Client<true>;
-  public toJSON(...props: Record<string, boolean | string>[]): unknown;
+  public toJSON(): unknown;
   public [Symbol.asyncDispose](): Promise<void>;
 }
 

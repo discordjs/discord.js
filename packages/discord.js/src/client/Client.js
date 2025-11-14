@@ -54,7 +54,7 @@ class Client extends AsyncEventEmitter {
   /**
    * @param {ClientOptions} options Options for the client
    */
-  constructor(options = {}) {
+  constructor(options) {
     super();
 
     if (typeof options !== 'object' || options === null) {
@@ -101,14 +101,13 @@ class Client extends AsyncEventEmitter {
     this.rest.on(RESTEvents.Debug, message => this.emit(Events.Debug, message));
 
     const data = require('node:worker_threads').workerData ?? process.env;
-    const defaults = Options.createDefault();
 
-    if (this.options.ws.shardIds === defaults.ws.shardIds && 'SHARDS' in data) {
+    if (this.options.ws.shardIds === defaultOptions.ws.shardIds && 'SHARDS' in data) {
       const shards = JSON.parse(data.SHARDS);
       this.options.ws.shardIds = Array.isArray(shards) ? shards : [shards];
     }
 
-    if (this.options.ws.shardCount === defaults.ws.shardCount && 'SHARD_COUNT' in data) {
+    if (this.options.ws.shardCount === defaultOptions.ws.shardCount && 'SHARD_COUNT' in data) {
       this.options.ws.shardCount = Number(data.SHARD_COUNT);
     }
 
@@ -788,8 +787,8 @@ class Client extends AsyncEventEmitter {
     return `${this.options.rest.api}${Routes.oauth2Authorization()}?${query}`;
   }
 
-  toJSON(...props) {
-    return flatten(this, { actions: false, presence: false }, ...props);
+  toJSON() {
+    return flatten(this, { actions: false, presence: false });
   }
 
   /**
