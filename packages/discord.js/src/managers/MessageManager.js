@@ -146,8 +146,8 @@ class MessageManager extends CachedManager {
    */
 
   /**
-   * Fetches the pinned messages of this channel and returns a collection of them.
-   * <info>The returned Collection does not contain any reaction data of the messages.
+   * Fetches the pinned messages of this channel, returning a paginated result.
+   * <info>The returned messages do not contain any reaction data.
    * Those need to be fetched separately.</info>
    *
    * @param {FetchPinnedMessagesOptions} [options={}] Options for fetching pinned messages
