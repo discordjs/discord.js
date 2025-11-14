@@ -21,12 +21,7 @@ test('AttachmentBuilder stores and exposes file data', () => {
 	attachment.clearFileData();
 	attachment.clearFileContentType();
 	attachment.clearFilename();
-	expect(attachment.getRawFile()).toStrictEqual({
-		contentType: undefined,
-		data: undefined,
-		key: 'files[0]',
-		name: undefined,
-	});
+	expect(attachment.getRawFile()).toBe(undefined);
 });
 
 test('MessageBuilder.toFileBody returns JSON body and files', () => {

@@ -141,7 +141,7 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 	 * @returns A RawFile object, or undefined if no file data is set
 	 */
 	public getRawFile(): Partial<RawFile> | undefined {
-		if (!this.fileData) {
+		if (!this.fileData?.data) {
 			return;
 		}
 
