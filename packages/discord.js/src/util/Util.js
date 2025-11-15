@@ -2,12 +2,17 @@
 
 const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
+const { lazy } = require('@discordjs/util');
 const { ChannelType, RouteBases, Routes } = require('discord-api-types/v10');
 const { fetch } = require('undici');
-// eslint-disable-next-line import-x/order
 const { Colors } = require('./Colors.js');
 // eslint-disable-next-line import-x/order
 const { DiscordjsError, DiscordjsRangeError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+
+// Fixes circular dependencies.
+const getAttachment = lazy(() => require('../structures/Attachment.js').Attachment);
+const getGuildChannel = lazy(() => require('../structures/GuildChannel.js').GuildChannel);
+const getSKU = lazy(() => require('../structures/SKU.js').SKU);
 
 const isObject = data => typeof data === 'object' && data !== null;
 
@@ -352,8 +357,7 @@ function resolveColor(color) {
  * @returns {Collection}
  */
 function discordSort(collection) {
-  // eslint-disable-next-line no-use-before-define
-  const isGuildChannel = collection.first() instanceof GuildChannel;
+  const isGuildChannel = collection.first() instanceof getGuildChannel();
   return collection.toSorted(
     isGuildChannel
       ? (a, b) => a.rawPosition - b.rawPosition || Number(BigInt(a.id) - BigInt(b.id))
@@ -555,8 +559,7 @@ function transformResolved(
   if (attachments) {
     result.attachments = new Collection();
     for (const attachment of Object.values(attachments)) {
-      // eslint-disable-next-line no-use-before-define
-      const patched = new Attachment(attachment);
+      const patched = new (getAttachment())(attachment);
       result.attachments.set(attachment.id, patched);
     }
   }
@@ -572,8 +575,7 @@ function transformResolved(
  */
 function resolveSKUId(resolvable) {
   if (typeof resolvable === 'string') return resolvable;
-  // eslint-disable-next-line no-use-before-define
-  if (resolvable instanceof SKU) return resolvable.id;
+  if (resolvable instanceof getSKU()) return resolvable.id;
   return null;
 }
 
@@ -600,8 +602,3 @@ exports.setPosition = setPosition;
 exports.basename = basename;
 exports.findName = findName;
 exports.transformResolved = transformResolved;
-
-// Fixes Circular
-const { Attachment } = require('../structures/Attachment.js');
-const { GuildChannel } = require('../structures/GuildChannel.js');
-const { SKU } = require('../structures/SKU.js');
