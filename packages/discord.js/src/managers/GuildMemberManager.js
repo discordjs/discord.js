@@ -3,8 +3,10 @@
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
+const { GatewayRateLimitError } = require('@discordjs/util');
+const { WebSocketShardEvents } = require('@discordjs/ws');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { Routes, GatewayOpcodes } = require('discord-api-types/v10');
+const { Routes, GatewayOpcodes, GatewayDispatchEvents } = require('discord-api-types/v10');
 const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
 const { BaseGuildVoiceChannel } = require('../structures/BaseGuildVoiceChannel.js');
 const { GuildMember } = require('../structures/GuildMember.js');
@@ -246,24 +248,27 @@ class GuildMemberManager extends CachedManager {
     const query = initialQuery ?? (users ? undefined : '');
 
     return new Promise((resolve, reject) => {
-      this.guild.client.ws.send(this.guild.shardId, {
-        op: GatewayOpcodes.RequestGuildMembers,
-        // eslint-disable-next-line id-length
-        d: {
-          guild_id: this.guild.id,
-          presences,
-          user_ids: users,
-          query,
-          nonce,
-          limit,
-        },
-      });
       const fetchedMembers = new Collection();
       let index = 0;
+
+      const cleanup = () => {
+        /* eslint-disable no-use-before-define */
+        clearTimeout(timeout);
+
+        this.client.ws.removeListener(WebSocketShardEvents.Dispatch, rateLimitHandler);
+        this.client.removeListener(Events.GuildMembersChunk, handler);
+        this.client.decrementMaxListeners();
+        /* eslint-enable no-use-before-define */
+      };
+
+      const timeout = setTimeout(() => {
+        cleanup();
+        reject(new DiscordjsError(ErrorCodes.GuildMembersTimeout));
+      }, time).unref();
+
       const handler = (members, _, chunk) => {
         if (chunk.nonce !== nonce) return;
 
-        // eslint-disable-next-line no-use-before-define
         timeout.refresh();
         index++;
         for (const member of members.values()) {
@@ -271,21 +276,37 @@ class GuildMemberManager extends CachedManager {
         }
 
         if (members.size < 1_000 || (limit && fetchedMembers.size >= limit) || index === chunk.count) {
-          // eslint-disable-next-line no-use-before-define
-          clearTimeout(timeout);
-          this.client.removeListener(Events.GuildMembersChunk, handler);
-          this.client.decrementMaxListeners();
+          cleanup();
           resolve(users && !Array.isArray(users) && fetchedMembers.size ? fetchedMembers.first() : fetchedMembers);
         }
       };
 
-      const timeout = setTimeout(() => {
-        this.client.removeListener(Events.GuildMembersChunk, handler);
-        this.client.decrementMaxListeners();
-        reject(new DiscordjsError(ErrorCodes.GuildMembersTimeout));
-      }, time).unref();
+      const requestData = {
+        guild_id: this.guild.id,
+        presences,
+        user_ids: users,
+        query,
+        nonce,
+        limit,
+      };
+
+      const rateLimitHandler = payload => {
+        if (payload.t === GatewayDispatchEvents.RateLimited && payload.d.meta.nonce === nonce) {
+          cleanup();
+          reject(new GatewayRateLimitError(payload.d, requestData));
+        }
+      };
+
+      this.client.ws.on(WebSocketShardEvents.Dispatch, rateLimitHandler);
+
       this.client.incrementMaxListeners();
       this.client.on(Events.GuildMembersChunk, handler);
+
+      this.guild.client.ws.send(this.guild.shardId, {
+        op: GatewayOpcodes.RequestGuildMembers,
+        // eslint-disable-next-line id-length
+        d: requestData,
+      });
     });
   }
 

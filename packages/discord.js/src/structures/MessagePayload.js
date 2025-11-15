@@ -47,15 +47,14 @@ class MessagePayload {
   }
 
   /**
-   * Whether or not the target is a {@link Webhook} or a {@link WebhookClient}
+   * Whether or not the target is a {@link Webhook}
    *
    * @type {boolean}
    * @readonly
    */
   get isWebhook() {
     const { Webhook } = require('./Webhook.js');
-    const { WebhookClient } = require('../client/WebhookClient.js');
-    return this.target instanceof Webhook || this.target instanceof WebhookClient;
+    return this.target instanceof Webhook;
   }
 
   /**
@@ -302,7 +301,7 @@ exports.MessagePayload = MessagePayload;
 /**
  * A target for a message.
  *
- * @typedef {TextBasedChannels|ChannelManager|Webhook|WebhookClient|BaseInteraction|InteractionWebhook|
+ * @typedef {TextBasedChannels|ChannelManager|Webhook|BaseInteraction|InteractionWebhook|
  * Message|MessageManager} MessageTarget
  */
 
