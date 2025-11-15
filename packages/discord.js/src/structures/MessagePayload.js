@@ -1,12 +1,19 @@
 'use strict';
 
 const { Buffer } = require('node:buffer');
-const { isJSONEncodable } = require('@discordjs/util');
+const { isJSONEncodable, lazy } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
 const { resolveFile } = require('../util/DataResolver.js');
 const { MessageFlagsBitField } = require('../util/MessageFlagsBitField.js');
 const { findName, verifyString, resolvePartialEmoji } = require('../util/Util.js');
+
+// Fixes circular dependencies.
+const getWebhook = lazy(() => require('./Webhook.js').Webhook);
+const getUser = lazy(() => require('./User.js').User);
+const getGuildMember = lazy(() => require('./GuildMember.js').GuildMember);
+const getMessage = lazy(() => require('./Message.js').Message);
+const getMessageManager = lazy(() => require('../managers/MessageManager.js').MessageManager);
 
 /**
  * Represents a message to be sent to the API.
@@ -53,8 +60,7 @@ class MessagePayload {
    * @readonly
    */
   get isWebhook() {
-    const { Webhook } = require('./Webhook.js');
-    return this.target instanceof Webhook;
+    return this.target instanceof getWebhook();
   }
 
   /**
@@ -64,9 +70,7 @@ class MessagePayload {
    * @readonly
    */
   get isUser() {
-    const { User } = require('./User.js');
-    const { GuildMember } = require('./GuildMember.js');
-    return this.target instanceof User || this.target instanceof GuildMember;
+    return this.target instanceof getUser() || this.target instanceof getGuildMember();
   }
 
   /**
@@ -76,8 +80,7 @@ class MessagePayload {
    * @readonly
    */
   get isMessage() {
-    const { Message } = require('./Message.js');
-    return this.target instanceof Message;
+    return this.target instanceof getMessage();
   }
 
   /**
@@ -87,8 +90,7 @@ class MessagePayload {
    * @readonly
    */
   get isMessageManager() {
-    const { MessageManager } = require('../managers/MessageManager.js');
-    return this.target instanceof MessageManager;
+    return this.target instanceof getMessageManager();
   }
 
   /**
