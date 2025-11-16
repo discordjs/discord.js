@@ -23,7 +23,9 @@ export interface RawFile {
 	 * The name of the file. This is the actual filename that will be used when uploading to Discord.
 	 * This is also the name you'll use to reference the file with attachment:// URLs.
 	 *
-	 * @example 'image.png', 'document.pdf', 'SPOILER_secret.jpg'
+	 * @example 'image.png'
+	 * @example 'document.pdf'
+	 * @example 'SPOILER_secret.jpeg'
 	 */
 	name: string;
 }

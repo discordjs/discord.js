@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { embedPredicate } from './embed/Assertions.js';
 import { pollPredicate } from './poll/Assertions.js';
 
-const fileKeyRegex = /^files\[(?<placeholder>.+?)]$/;
+const fileKeyRegex = /^files\[(?<placeholder>\d+?)]$/;
 
 export const rawFilePredicate = z.object({
 	data: z.union([z.instanceof(Buffer), z.instanceof(Uint8Array), z.string()]),
