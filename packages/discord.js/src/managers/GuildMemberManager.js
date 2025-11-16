@@ -4,8 +4,8 @@ const { process } = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
-const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { GatewayRateLimitError } = require('@discordjs/util');
+const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { Routes, GatewayOpcodes, GatewayDispatchEvents } = require('discord-api-types/v10');
 const CachedManager = require('./CachedManager');
 const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors');
@@ -284,7 +284,7 @@ class GuildMemberManager extends CachedManager {
       const rateLimitHandler = payload => {
         if (payload.t === GatewayDispatchEvents.RateLimited && payload.d.meta.nonce === nonce) {
           cleanup();
-          reject(new DiscordjsError(ErrorCodes.GatewayRequestRateLimited, requestData));
+          reject(new GatewayRateLimitError(payload.d, requestData));
         }
       };
 
