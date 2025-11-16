@@ -185,8 +185,6 @@
  * @property {'BulkBanUsersOptionEmpty'} BulkBanUsersOptionEmpty
 
  * @property {'PollAlreadyExpired'} PollAlreadyExpired
- *
- * @property {'GatewayRequestRateLimited'} GatewayRequestRateLimited
  */
 
 const keys = [
@@ -348,8 +346,6 @@ const keys = [
   'BulkBanUsersOptionEmpty',
 
   'PollAlreadyExpired',
-
-  'GatewayRequestRateLimited',
 ];
 
 // JSDoc for IntelliSense purposes
