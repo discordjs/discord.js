@@ -1,6 +1,5 @@
 'use strict';
 
-const { Buffer } = require('node:buffer');
 const fs = require('node:fs');
 const path = require('node:path');
 const { setTimeout: sleep } = require('node:timers/promises');

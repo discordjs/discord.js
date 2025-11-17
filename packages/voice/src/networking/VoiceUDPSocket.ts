@@ -1,4 +1,3 @@
-import { Buffer } from 'node:buffer';
 import { createSocket, type Socket } from 'node:dgram';
 import { EventEmitter } from 'node:events';
 import { isIPv4 } from 'node:net';

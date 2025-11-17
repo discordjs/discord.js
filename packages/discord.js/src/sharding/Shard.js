@@ -2,7 +2,6 @@
 'use strict';
 
 const path = require('node:path');
-const process = require('node:process');
 const { setTimeout, clearTimeout } = require('node:timers');
 const { setTimeout: sleep } = require('node:timers/promises');
 const { SHARE_ENV } = require('node:worker_threads');

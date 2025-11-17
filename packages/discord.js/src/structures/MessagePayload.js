@@ -1,6 +1,5 @@
 'use strict';
 
-const { Buffer } = require('node:buffer');
 const { isJSONEncodable, lazy } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');

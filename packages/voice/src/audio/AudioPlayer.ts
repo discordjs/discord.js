@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/prefer-ts-expect-error, @typescript-eslint/method-signature-style */
-import { Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
 import { addAudioPlayer, deleteAudioPlayer } from '../DataStore';
 import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection';

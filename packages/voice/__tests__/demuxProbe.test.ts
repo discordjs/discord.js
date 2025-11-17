@@ -1,7 +1,5 @@
 // @ts-nocheck
-import { Buffer } from 'node:buffer';
 import EventEmitter, { once } from 'node:events';
-import process from 'node:process';
 import { Readable } from 'node:stream';
 import { opus as _opus } from 'prism-media';
 import { describe, test, expect, vitest, type Mock, beforeAll, beforeEach } from 'vitest';

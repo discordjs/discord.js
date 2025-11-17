@@ -1,5 +1,3 @@
-import { Buffer } from 'node:buffer';
-
 // The following constants are silence packets collected from various platforms because Discord did not previously send header extensions
 // The header extension (extra data in decrypted vs opusFrame) can be detected in the position of {encrypted.subarray(12,14)} if it is equal to 0xbe,0xde
 // The header extension length will then follow as an integer and can be removed from the decrypted data (see ../src/receive/VoiceReceiver.ts:parsePacket)

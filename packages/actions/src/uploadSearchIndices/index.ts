@@ -1,4 +1,3 @@
-import process from 'node:process';
 import { setFailed } from '@actions/core';
 import { generateAllIndices } from '@discordjs/scripts';
 import Cloudflare from 'cloudflare';

@@ -2,7 +2,6 @@
 // See LICENSE in the project root for license information.
 
 import * as os from 'node:os';
-import process from 'node:process';
 import { InternalError } from '@rushstack/node-core-library';
 import { CommandLineParser, type CommandLineFlagParameter } from '@rushstack/ts-command-line';
 import colors from 'colors';

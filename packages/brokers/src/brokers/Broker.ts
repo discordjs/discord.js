@@ -1,4 +1,3 @@
-import { Buffer } from 'node:buffer';
 import { encode, decode } from '@msgpack/msgpack';
 import type { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 

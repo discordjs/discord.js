@@ -1,4 +1,3 @@
-import type { Buffer } from 'node:buffer';
 import { randomBytes } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
