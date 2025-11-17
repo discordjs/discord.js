@@ -1,5 +1,4 @@
 /* eslint-disable no-template-curly-in-string */
-import { URL } from 'node:url';
 import { describe, test, expect, vitest } from 'vitest';
 import {
 	applicationDirectory,

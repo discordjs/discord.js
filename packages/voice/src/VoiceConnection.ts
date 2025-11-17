@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import type { Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
 import type { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdateDispatchData } from 'discord-api-types/v10';
 import type { JoinConfig } from './DataStore';

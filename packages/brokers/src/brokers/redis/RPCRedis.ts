@@ -1,4 +1,3 @@
-import type { Buffer } from 'node:buffer';
 import { clearTimeout, setTimeout } from 'node:timers';
 import type Redis from 'ioredis/built/Redis.js';
 import type { IRPCBroker } from '../Broker.js';

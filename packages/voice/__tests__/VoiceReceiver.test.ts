@@ -1,9 +1,7 @@
 /* eslint-disable id-length */
 /* eslint-disable @typescript-eslint/dot-notation */
 // @ts-nocheck
-import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
-import process from 'node:process';
 import { VoiceOpcodes } from 'discord-api-types/voice/v8';
 import { describe, test, expect, vitest, beforeEach } from 'vitest';
 import {
