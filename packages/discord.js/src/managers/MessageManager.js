@@ -2,6 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
+const { isFileBodyEncodable, isJSONEncodable } = require('@discordjs/util');
 const { Routes } = require('discord-api-types/v10');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 const { Message } = require('../structures/Message.js');
@@ -230,14 +231,18 @@ class MessageManager extends CachedManager {
     const messageId = this.resolveId(message);
     if (!messageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
-    const { body, files } = await (
-      options instanceof MessagePayload
-        ? options
-        : MessagePayload.create(message instanceof Message ? message : this, options)
-    )
-      .resolveBody()
-      .resolveFiles();
-    const data = await this.client.rest.patch(Routes.channelMessage(this.channel.id, messageId), { body, files });
+    let payload;
+    if (options instanceof MessagePayload) {
+      payload = await options.resolveBody().resolveFiles();
+    } else if (isFileBodyEncodable(options)) {
+      payload = options.toFileBody();
+    } else if (isJSONEncodable(options)) {
+      payload = { body: options.toJSON(), files: [] };
+    } else {
+      payload = await MessagePayload.create(this, options).resolveBody().resolveFiles();
+    }
+
+    const data = await this.client.rest.patch(Routes.channelMessage(this.channel.id, messageId), payload);
 
     const existing = this.cache.get(messageId);
     if (existing) {

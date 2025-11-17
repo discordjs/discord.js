@@ -156,7 +156,7 @@ class TextBasedChannel {
   /**
    * Sends a message to this channel.
    *
-   * @param {string|MessagePayload|MessageCreateOptions} options The options to provide
+   * @param {string|MessagePayload|MessageCreateOptions|JSONEncodable<RESTPostAPIChannelMessageJSONBody>|FileBodyEncodable<RESTPostAPIChannelMessageJSONBody>} options The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Send a basic message

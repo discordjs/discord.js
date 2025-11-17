@@ -5,7 +5,7 @@ import { MessagePort, Worker } from 'node:worker_threads';
 import { ApplicationCommandOptionAllowedChannelType, MessageActionRowComponentBuilder } from '@discordjs/builders';
 import { Collection, ReadonlyCollection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions, EmojiURLOptions } from '@discordjs/rest';
-import { Awaitable, JSONEncodable } from '@discordjs/util';
+import { Awaitable, FileBodyEncodable, JSONEncodable } from '@discordjs/util';
 import { WebSocketManager, WebSocketManagerOptions } from '@discordjs/ws';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -2234,7 +2234,12 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   ): InteractionCollector<MappedInteractionTypes<InGuild>[ComponentType]>;
   public delete(): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public edit(
-    content: MessageEditOptions | MessagePayload | string,
+    content:
+      | FileBodyEncodable<RESTPostAPIChannelMessageJSONBody>
+      | JSONEncodable<RESTPostAPIChannelMessageJSONBody>
+      | MessageEditOptions
+      | MessagePayload
+      | string,
   ): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public equals(message: Message, rawData: unknown): boolean;
   public fetchReference(): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
@@ -4258,7 +4263,12 @@ export class ChannelManager extends CachedManager<Snowflake, Channel, ChannelRes
   private constructor(client: Client<true>, iterable: Iterable<RawChannelData>);
   public createMessage(
     channel: Exclude<TextBasedChannelResolvable, PartialGroupDMChannel>,
-    options: MessageCreateOptions | MessagePayload | string,
+    options:
+      | FileBodyEncodable<RESTPostAPIChannelMessageJSONBody>
+      | JSONEncodable<RESTPostAPIChannelMessageJSONBody>
+      | MessageCreateOptions
+      | MessagePayload
+      | string,
   ): Promise<OmitPartialGroupDMChannel<Message>>;
   public fetch(id: Snowflake, options?: FetchChannelOptions): Promise<Channel | null>;
 }
@@ -4787,7 +4797,14 @@ export class VoiceStateManager extends CachedManager<Snowflake, VoiceState, type
 export type Constructable<Entity> = abstract new (...args: any[]) => Entity;
 
 export interface SendMethod<InGuild extends boolean = boolean> {
-  send(options: MessageCreateOptions | MessagePayload | string): Promise<Message<InGuild>>;
+  send(
+    options:
+      | FileBodyEncodable<RESTPostAPIChannelMessageJSONBody>
+      | JSONEncodable<RESTPostAPIChannelMessageJSONBody>
+      | MessageCreateOptions
+      | MessagePayload
+      | string,
+  ): Promise<Message<InGuild>>;
 }
 
 export interface PinnableChannelFields {
@@ -6250,7 +6267,7 @@ export interface GuildEmojiEditOptions {
 
 export interface GuildStickerCreateOptions {
   description?: string | null;
-  file: AttachmentPayload | BufferResolvable | JSONEncodable<AttachmentBuilder> | Stream;
+  file: AttachmentPayload | BufferResolvable | Stream;
   name: string;
   reason?: string;
   tags: string;
