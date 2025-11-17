@@ -1,5 +1,5 @@
+import { Buffer } from 'node:buffer';
 import { STATUS_CODES } from 'node:http';
-import { URLSearchParams } from 'node:url';
 import { types } from 'node:util';
 import { type RequestInit, request, Headers, FormData as UndiciFormData, Agent } from 'undici';
 import type { HeaderRecord } from 'undici/types/header.js';
