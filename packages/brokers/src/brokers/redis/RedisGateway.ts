@@ -1,7 +1,7 @@
 import type { Gateway, GatewayDispatchPayload, GatewayDispatchEvents, GatewaySendPayload } from '@discordjs/core';
 import type { ManagerShardEventsMap, WebSocketShardEvents } from '@discordjs/ws';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
-import type { PubSubRedisBroker } from '@discordjs/brokers';
+import type { PubSubRedisBroker } from './PubSubRedis.js';
 
 // need this to be its own type for some reason, the compiler doesn't behave the same way if we in-line it
 type _DiscordEvents = {
