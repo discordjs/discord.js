@@ -52,6 +52,7 @@ const handlers = Object.fromEntries([
   ['MESSAGE_REACTION_REMOVE_EMOJI', require('./MESSAGE_REACTION_REMOVE_EMOJI')],
   ['MESSAGE_UPDATE', require('./MESSAGE_UPDATE')],
   ['PRESENCE_UPDATE', require('./PRESENCE_UPDATE')],
+  ['RATE_LIMITED', require('./RATE_LIMITED')],
   ['READY', require('./READY')],
   ['RESUMED', require('./RESUMED')],
   ['SOUNDBOARD_SOUNDS', require('./SOUNDBOARD_SOUNDS')],
