@@ -2259,26 +2259,6 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public inGuild(): this is Message<true>;
 }
 
-export class AttachmentBuilder {
-  public constructor(attachment: BufferResolvable | Stream, data?: AttachmentData);
-  public attachment: BufferResolvable | Stream;
-  public description: string | null;
-  public name: string | null;
-  public title: string | null;
-  public waveform: string | null;
-  public duration: number | null;
-  public get spoiler(): boolean;
-  public setDescription(description: string): this;
-  public setFile(attachment: BufferResolvable | Stream, name?: string): this;
-  public setName(name: string): this;
-  public setTitle(title: string): this;
-  public setWaveform(waveform: string): this;
-  public setDuration(duration: number): this;
-  public setSpoiler(spoiler?: boolean): this;
-  public toJSON(): unknown;
-  public static from(other: JSONEncodable<AttachmentPayload>): AttachmentBuilder;
-}
-
 export class Attachment {
   private constructor(data: APIAttachment);
   private readonly attachment: BufferResolvable | Stream;
@@ -6688,14 +6668,7 @@ export interface BaseMessageOptions {
   )[];
   content?: string;
   embeds?: readonly (APIEmbed | JSONEncodable<APIEmbed>)[];
-  files?: readonly (
-    | Attachment
-    | AttachmentBuilder
-    | AttachmentPayload
-    | BufferResolvable
-    | JSONEncodable<APIAttachment>
-    | Stream
-  )[];
+  files?: readonly (Attachment | AttachmentPayload | BufferResolvable | JSONEncodable<APIAttachment> | Stream)[];
 }
 
 export interface MessageOptionsPoll {

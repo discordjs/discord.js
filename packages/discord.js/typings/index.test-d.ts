@@ -203,7 +203,6 @@ import type {
 } from './index.js';
 import {
   ActionRowBuilder,
-  AttachmentBuilder,
   ChannelSelectMenuBuilder,
   Client,
   Collection,
