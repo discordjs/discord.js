@@ -59,10 +59,5 @@ export interface FileBodyEncodable<BodyValue> extends JSONEncodable<BodyValue> {
  * @param maybeEncodable - The object to check against
  */
 export function isFileBodyEncodable(maybeEncodable: unknown): maybeEncodable is FileBodyEncodable<unknown> {
-	return (
-		maybeEncodable !== null &&
-		typeof maybeEncodable === 'object' &&
-		'toJSON' in maybeEncodable &&
-		'toFileBody' in maybeEncodable
-	);
+	return isJSONEncodable(maybeEncodable) && 'toFileBody' in maybeEncodable;
 }

@@ -5,8 +5,11 @@ import type { Buffer } from 'node:buffer';
  */
 export interface RawFile {
 	/**
-	 * Content-Type of the file (e.g., 'image/png', 'application/pdf')
+	 * Content-Type of the file.
 	 * If not provided, it will be inferred from the file data when possible
+	 *
+	 * @example 'image/png'
+	 * @example 'application/pdf'
 	 */
 	contentType?: string;
 	/**

@@ -142,5 +142,5 @@ export const messagePredicate = z.union([messageNoComponentsV2Predicate, message
 export const fileBodyMessagePredicate = z.object({
 	body: messagePredicate,
 	// No min length to support message edits
-	files: rawFilePredicate.array(),
+	files: rawFilePredicate.array().max(10),
 });

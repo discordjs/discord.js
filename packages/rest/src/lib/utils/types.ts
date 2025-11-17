@@ -276,7 +276,7 @@ export interface InvalidRequestWarningData {
 	remainingTime: number;
 }
 
-export { type RawFile } from '@discordjs/util';
+export type { RawFile } from '@discordjs/util';
 
 export interface AuthData {
 	/**

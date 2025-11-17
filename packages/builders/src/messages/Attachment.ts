@@ -101,8 +101,8 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 	/**
 	 * Sets the file data to upload with this attachment.
 	 *
-	 * @param data - The file data (Buffer, Uint8Array, or string)
-	 * @remarks Note that this data is NOT included in the `toJSON()` output. To retrieve, use {@link getRawFile}.
+	 * @param data - The file data
+	 * @remarks Note that this data is NOT included in the {@link toJSON} output. To retrieve it, use {@link getRawFile}.
 	 */
 	public setFileData(data: Buffer | Uint8Array | string): this {
 		this.fileData.data = data;
@@ -120,7 +120,7 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 	/**
 	 * Sets the content type of the file data to upload with this attachment.
 	 *
-	 * @remarks Note that this data is NOT included in the `toJSON()` output. To retrieve, use {@link getRawFile}.
+	 * @remarks Note that this data is NOT included in the {@link toJSON} output. To retrieve it, use {@link getRawFile}.
 	 */
 	public setFileContentType(contentType: string): this {
 		this.fileData.contentType = contentType;
@@ -136,9 +136,9 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 	}
 
 	/**
-	 * Converts this attachment to a RawFile for uploading.
+	 * Converts this attachment to a {@link RawFile} for uploading.
 	 *
-	 * @returns A RawFile object, or undefined if no file data is set
+	 * @returns A {@link RawFile} object, or `undefined` if no file data is set
 	 */
 	public getRawFile(): Partial<RawFile> | undefined {
 		if (!this.fileData?.data) {
