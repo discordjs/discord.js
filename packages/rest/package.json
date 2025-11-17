@@ -88,7 +88,7 @@
 		"@sapphire/async-queue": "^1.5.3",
 		"@sapphire/snowflake": "^3.5.3",
 		"@vladfrangu/async_event_emitter": "^2.4.6",
-		"discord-api-types": "^0.38.32",
+		"discord-api-types": "^0.38.33",
 		"magic-bytes.js": "^1.10.0",
 		"tslib": "^2.6.3",
 		"undici": "6.21.3"

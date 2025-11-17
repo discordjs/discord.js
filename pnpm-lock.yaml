@@ -399,7 +399,7 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0
       discord-api-types:
-        specifier: ^0.38.32
+        specifier: ^0.38.33
         version: 0.38.33
       fast-deep-equal:
         specifier: ^3.1.3
@@ -523,7 +523,7 @@ importers:
         specifier: ^2.4.6
         version: 2.4.7
       discord-api-types:
-        specifier: ^0.38.32
+        specifier: ^0.38.33
         version: 0.38.33
     devDependencies:
       '@discordjs/api-extractor':
@@ -660,7 +660,7 @@ importers:
         specifier: 3.5.3
         version: 3.5.3
       discord-api-types:
-        specifier: ^0.38.32
+        specifier: ^0.38.33
         version: 0.38.33
       fast-deep-equal:
         specifier: 3.1.3
@@ -782,7 +782,7 @@ importers:
   packages/formatters:
     dependencies:
       discord-api-types:
-        specifier: ^0.38.32
+        specifier: ^0.38.33
         version: 0.38.33
     devDependencies:
       '@discordjs/api-extractor':
@@ -855,7 +855,7 @@ importers:
         specifier: workspace:^
         version: link:../ws
       discord-api-types:
-        specifier: ^0.38.32
+        specifier: ^0.38.33
         version: 0.38.33
     devDependencies:
       '@discordjs/api-extractor':
@@ -1029,7 +1029,7 @@ importers:
         specifier: ^2.4.6
         version: 2.4.7
       discord-api-types:
-        specifier: ^0.38.32
+        specifier: ^0.38.33
         version: 0.38.33
       magic-bytes.js:
         specifier: ^1.10.0
@@ -1330,7 +1330,7 @@ importers:
         specifier: ^8.5.12
         version: 8.18.1
       discord-api-types:
-        specifier: ^0.38.32
+        specifier: ^0.38.33
         version: 0.38.33
       prism-media:
         specifier: ^1.3.5
@@ -1427,7 +1427,7 @@ importers:
         specifier: ^2.4.6
         version: 2.4.7
       discord-api-types:
-        specifier: ^0.38.32
+        specifier: ^0.38.33
         version: 0.38.33
       tslib:
         specifier: ^2.6.3
@@ -13970,7 +13970,7 @@ snapshots:
       request: 2.88.2
       retry: 0.12.0
       safe-buffer: 5.2.1
-      semver: 7.5.4
+      semver: 7.7.3
       slide: 1.1.6
       ssri: 8.0.1
     optionalDependencies:
@@ -18854,7 +18854,7 @@ snapshots:
       tinyglobby: 0.2.15
       unrs-resolver: 1.11.1
     optionalDependencies:
-      eslint-plugin-import: eslint-plugin-i@2.29.1(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.5.4))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
+      eslint-plugin-import: eslint-plugin-i@2.29.1(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-typescript@3.10.1)(eslint@8.57.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -18936,7 +18936,7 @@ snapshots:
       get-tsconfig: 4.13.0
       is-glob: 4.0.3
       minimatch: 3.1.2
-      semver: 7.5.4
+      semver: 7.7.3
     transitivePeerDependencies:
       - '@typescript-eslint/parser'
       - eslint-import-resolver-typescript
@@ -18953,7 +18953,7 @@ snapshots:
       get-tsconfig: 4.13.0
       is-glob: 4.0.3
       minimatch: 3.1.2
-      semver: 7.5.4
+      semver: 7.7.3
     transitivePeerDependencies:
       - '@typescript-eslint/parser'
       - eslint-import-resolver-typescript
@@ -21789,7 +21789,7 @@ snapshots:
   npm-package-arg@8.1.5:
     dependencies:
       hosted-git-info: 4.1.0
-      semver: 7.5.4
+      semver: 7.7.3
       validate-npm-package-name: 3.0.0
 
   npm-pick-manifest@9.1.0:

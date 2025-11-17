@@ -64,7 +64,7 @@
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@types/ws": "^8.5.12",
-		"discord-api-types": "^0.38.32",
+		"discord-api-types": "^0.38.33",
 		"prism-media": "^1.3.5",
 		"tslib": "^2.6.3",
 		"ws": "^8.18.0"
