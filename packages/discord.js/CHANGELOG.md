@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.25.0](https://github.com/discordjs/discord.js/compare/14.24.2...14.25.0) - (2025-11-18)
+
+## Bug Fixes
+
+- Remove data conditional check (#11250) ([84197a0](https://github.com/discordjs/discord.js/commit/84197a0ee0bbfc110caa8a3e7a5e82c4672be138))
+- Backport only passing relevant options to API when fetching (#11230) ([a7196dc](https://github.com/discordjs/discord.js/commit/a7196dc969b98ed622efcfd1cce8740e739780ac))
+
+## Documentation
+
+- **MessageManager:** Update `fetchPins()` wording ([492039c](https://github.com/discordjs/discord.js/commit/492039c4f6a84da12994d5ff62e481e85079dd3f))
+
+## Features
+
+- **GuildMemberManager:** Handle gateway request rate limit (#11253) ([a3c6bce](https://github.com/discordjs/discord.js/commit/a3c6bce3a81ef13d45efa4151e9182b38c066eca))
+- Optimize role manager cache getter (#11239) ([2da2fa0](https://github.com/discordjs/discord.js/commit/2da2fa01b2ef3135a22c024327270896297b07dd))
+
 # [14.24.2](https://github.com/discordjs/discord.js/compare/14.24.1...14.24.2) - (2025-10-30)
 
 ## Bug Fixes
