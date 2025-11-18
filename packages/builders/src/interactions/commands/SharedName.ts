@@ -1,4 +1,5 @@
 import type { Locale, RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v10';
+import { Refineable } from '../../mixins/Refineable.js';
 
 export interface SharedNameData
 	extends Partial<Pick<RESTPostAPIApplicationCommandsJSONBody, 'name_localizations' | 'name'>> {}
@@ -6,7 +7,7 @@ export interface SharedNameData
 /**
  * This mixin holds name and description symbols for chat input commands.
  */
-export class SharedName {
+export class SharedName extends Refineable {
 	/**
 	 * @internal
 	 */

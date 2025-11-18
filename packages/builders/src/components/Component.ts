@@ -1,5 +1,6 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { APIBaseComponent, ComponentType } from 'discord-api-types/v10';
+import { Refineable } from '../mixins/Refineable.js';
 
 export interface ComponentBuilderBaseData {
 	id?: number | undefined;
@@ -11,6 +12,7 @@ export interface ComponentBuilderBaseData {
  * @typeParam Component - The type of API data that is stored within the builder
  */
 export abstract class ComponentBuilder<Component extends APIBaseComponent<ComponentType>>
+	extends Refineable
 	implements JSONEncodable<Component>
 {
 	/**

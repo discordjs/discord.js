@@ -1,9 +1,10 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { APIMediaGalleryItem } from 'discord-api-types/v10';
+import { Refineable } from '../../mixins/Refineable.js';
 import { validate } from '../../util/validation.js';
 import { mediaGalleryItemPredicate } from './Assertions.js';
 
-export class MediaGalleryItemBuilder implements JSONEncodable<APIMediaGalleryItem> {
+export class MediaGalleryItemBuilder extends Refineable implements JSONEncodable<APIMediaGalleryItem> {
 	private readonly data: Partial<APIMediaGalleryItem>;
 
 	/**
@@ -32,6 +33,7 @@ export class MediaGalleryItemBuilder implements JSONEncodable<APIMediaGalleryIte
 	 * ```
 	 */
 	public constructor(data: Partial<APIMediaGalleryItem> = {}) {
+		super();
 		this.data = structuredClone(data);
 	}
 

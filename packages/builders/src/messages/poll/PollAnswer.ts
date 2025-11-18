@@ -1,5 +1,6 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { APIPollAnswer, APIPollMedia } from 'discord-api-types/v10';
+import { Refineable } from '../../mixins/Refineable.js';
 import { resolveBuilder } from '../../util/resolveBuilder';
 import { validate } from '../../util/validation';
 import { pollAnswerPredicate } from './Assertions';
@@ -12,7 +13,7 @@ export interface PollAnswerData extends Omit<APIPollAnswer, 'answer_id' | 'poll_
 /**
  * A builder that creates API-compatible JSON data for poll answers.
  */
-export class PollAnswerBuilder implements JSONEncodable<Omit<APIPollAnswer, 'answer_id'>> {
+export class PollAnswerBuilder extends Refineable implements JSONEncodable<Omit<APIPollAnswer, 'answer_id'>> {
 	/**
 	 * The API data associated with this poll answer.
 	 */
@@ -24,6 +25,7 @@ export class PollAnswerBuilder implements JSONEncodable<Omit<APIPollAnswer, 'ans
 	 * @param data - The API data to create this poll answer with
 	 */
 	public constructor(data: Partial<Omit<APIPollAnswer, 'answer_id'>> = {}) {
+		super();
 		const { poll_media, ...rest } = data;
 
 		this.data = {
