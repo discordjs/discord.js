@@ -2,7 +2,7 @@
 	"pages": [
 		"[MessageCircleQuestion][FAQ](/legacy/popular-topics/faq)",
 		"[ArrowDownToLine][Updating to v14](/legacy/additional-info/changes-in-v14)",
-		"[LibraryBig][Documentation](https://discord.js.org/docs)",
+		"external:[LibraryBig][Documentation](https://discord.js.org/docs)",
 		"[Info][Introduction](/legacy)",
 		"---Setup---",
 		"preparations",
