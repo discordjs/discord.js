@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/core@2.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@2.3.0...@discordjs/core@2.4.0) - (2025-11-18)
+
+## Bug Fixes
+
+- **interactions:** `options` should be optional (#10683) ([d4b0f4d](https://github.com/discordjs/discord.js/commit/d4b0f4de5fb171b57dfcb516a08d50cf593e2ebf))
+- **interactions:** Wrong return type and missing implementation of with_response in core (#10644) ([6f05c96](https://github.com/discordjs/discord.js/commit/6f05c96ab4ae64c2bbe261dc50ddfc44e1783a97))
+- `query` is optional for some endpoints (#10621) ([610b4bb](https://github.com/discordjs/discord.js/commit/610b4bbacba725d4c569cdf10a09feee7f6008fc))
+
+## Documentation
+
+- **guild:** Remove "all" for listing guild members (#10719) ([b14d8d9](https://github.com/discordjs/discord.js/commit/b14d8d970b015799e36662bd400ef6856eae80d3))
+
+## Features
+
+- **Client:** Add request soundboard sounds (#10608) ([33bfded](https://github.com/discordjs/discord.js/commit/33bfdedf3540e346573d97fcde7a46222ae3199f))
+- **interactions:** Add launchActivity method (#10646) ([caa7833](https://github.com/discordjs/discord.js/commit/caa7833ffbdf17a4d937d5561cd53dd3be59c350))
+- **monetization:** Add get entitlement endpoint (#10605) ([62f2ca5](https://github.com/discordjs/discord.js/commit/62f2ca5fbb9414d32b1df1b8bb7b47cdb7c1cfe1))
+- **interactions:** Support with_response query parameter in core (#10512) ([8469fb3](https://github.com/discordjs/discord.js/commit/8469fb3badbfeabcf3b16839240c455a51a9f5c6))
+- Add soundboard (#10536) ([d25ef43](https://github.com/discordjs/discord.js/commit/d25ef434aea3cc8f1ce20af7769adaf9af82acf5))
+- Add subscriptions (#10486) ([2deea25](https://github.com/discordjs/discord.js/commit/2deea25e97bae0231e61269666d3f0ec57de5dce))
+- **core:** Handle request all guild members rate limit (#11251) ([5c5b545](https://github.com/discordjs/discord.js/commit/5c5b545c38c0912e3a0a436f0cbe1dfe600ae82b))
+
+## Styling
+
+- ESLint ([b0542f3](https://github.com/discordjs/discord.js/commit/b0542f30e29b6faee2b56a650c1a22c841561833))
+
+## Typings
+
+- **interactions:** Fix overloads (#10702) ([d4d326b](https://github.com/discordjs/discord.js/commit/d4d326b70d0fe5d31aba9c1407989ef908c30da6))
+- Export some core-specific types (#10620) ([f040c6f](https://github.com/discordjs/discord.js/commit/f040c6f6a5afb68bd955c6068f9ff50df2732745))
+
 # [@discordjs/core@2.3.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@2.2.2...@discordjs/core@2.3.0) - (2025-10-08)
 
 ## Features
