@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/formatters@0.6.2](https://github.com/discordjs/discord.js/compare/@discordjs/formatters@0.6.1...@discordjs/formatters@0.6.2) - (2025-11-18)
+
+## Bug Fixes
+
+- Improve handling of italics in the presence of links (#11064) ([1c57016](https://github.com/discordjs/discord.js/commit/1c5701651ab344c81d69ca0efa31bd9df6e51f2e))
+
+## Features
+
+- Support new s/S timestamp styles in v14 (#11268) ([eeeef2a](https://github.com/discordjs/discord.js/commit/eeeef2ac500b771964a6c0552c68d80acbff879e))
+- Add linked roles formatters (#10461) ([b26af3c](https://github.com/discordjs/discord.js/commit/b26af3cf384ae15045737ffc3750b3613242bb39))
+- Add `email` and `phoneNumber` formatters (#11050) ([bf0430f](https://github.com/discordjs/discord.js/commit/bf0430f998435d93a5b5c9dfddf92a444762811f))
+
+## Refactor
+
+- **formatters:** Change `:_:` emoji name placeholder (#10567) ([169b05f](https://github.com/discordjs/discord.js/commit/169b05f3191a89528b93a07f24358991c2d91c0c))
+
+### New Contributors
+
+* @sdanialraza made their first contribution in #10488
+* @ckohen made their first contribution in #10471
+* @vladfrangu made their first contribution in #
+
 # [@discordjs/formatters@0.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/formatters@0.4.0...@discordjs/formatters@0.5.0) - (2024-09-01)
 
 ## Features
