@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/util@1.2.0](https://github.com/discordjs/discord.js/compare/@discordjs/util@1.1.1...@discordjs/util@1.2.0) - (2025-11-18)
+
+## Features
+
+- **core:** Handle request all guild members rate limit (#11251) ([5c5b545](https://github.com/discordjs/discord.js/commit/5c5b545c38c0912e3a0a436f0cbe1dfe600ae82b))
+
+### New Contributors
+
+* @ckohen made their first contribution in #10471
+
 # [@discordjs/util@1.1.1](https://github.com/discordjs/discord.js/compare/@discordjs/util@1.1.0...@discordjs/util@1.1.1) - (2024-09-01)
 
 # [@discordjs/util@1.1.0](https://github.com/discordjs/discord.js/compare/@discordjs/util@1.0.2...@discordjs/util@1.1.0) - (2024-05-04)
