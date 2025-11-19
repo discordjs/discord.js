@@ -1,4 +1,4 @@
-import type { FileBodyEncodable, FileBodyEncodableResult, RawFile } from '@discordjs/util';
+import type { FileBodyEncodable, FileBodyEncodableResult, JSONEncodable, RawFile } from '@discordjs/util';
 import type {
 	APIActionRowComponent,
 	APIAllowedMentions,
@@ -56,7 +56,9 @@ export interface MessageBuilderData
 /**
  * A builder that creates API-compatible JSON data for messages.
  */
-export class MessageBuilder implements FileBodyEncodable<RESTPostAPIChannelMessageJSONBody> {
+export class MessageBuilder
+	implements JSONEncodable<RESTPostAPIChannelMessageJSONBody>, FileBodyEncodable<RESTPostAPIChannelMessageJSONBody>
+{
 	/**
 	 * The API data associated with this message.
 	 */

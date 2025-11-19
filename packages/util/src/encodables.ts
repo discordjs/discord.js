@@ -44,11 +44,9 @@ export interface FileBodyEncodableResult<BodyValue> {
  *
  * @typeParam BodyValue - The JSON body type
  */
-export interface FileBodyEncodable<BodyValue> extends JSONEncodable<BodyValue> {
+export interface FileBodyEncodable<BodyValue> {
 	/**
 	 * Transforms this object to its file body format, separating the JSON body from file attachments.
-	 *
-	 * This method should generate the JSON extract file data into the RawFile format.
 	 */
 	toFileBody(): FileBodyEncodableResult<BodyValue>;
 }
@@ -59,5 +57,5 @@ export interface FileBodyEncodable<BodyValue> extends JSONEncodable<BodyValue> {
  * @param maybeEncodable - The object to check against
  */
 export function isFileBodyEncodable(maybeEncodable: unknown): maybeEncodable is FileBodyEncodable<unknown> {
-	return isJSONEncodable(maybeEncodable) && 'toFileBody' in maybeEncodable;
+	return maybeEncodable !== null && typeof maybeEncodable === 'object' && 'toFileBody' in maybeEncodable;
 }
