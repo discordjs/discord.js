@@ -4051,7 +4051,7 @@ export enum DiscordjsErrorCodes {
 
   EmojiType = 'EmojiType',
   EmojiManaged = 'EmojiManaged',
-  MissingManageGuildExpressionsPermission = 'MissingManageGuildExpressionsPermission',
+  MissingGuildExpressionsPermission = 'MissingGuildExpressionsPermission',
 
   NotGuildSoundboardSound = 'NotGuildSoundboardSound',
   NotGuildSticker = 'NotGuildSticker',
