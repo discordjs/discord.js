@@ -239,7 +239,9 @@ class MessageManager extends CachedManager {
     } else if (isJSONEncodable(options)) {
       payload = { body: options.toJSON(), files: [] };
     } else {
-      payload = await MessagePayload.create(message instanceof Message ? message : this, options).resolveBody().resolveFiles();
+      payload = await MessagePayload.create(message instanceof Message ? message : this, options)
+        .resolveBody()
+        .resolveFiles();
     }
 
     const data = await this.client.rest.patch(Routes.channelMessage(this.channel.id, messageId), payload);
