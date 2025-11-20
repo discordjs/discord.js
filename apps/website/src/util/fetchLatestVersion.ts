@@ -18,13 +18,32 @@ export async function fetchLatestVersion(packageName: string): Promise<string> {
 	}
 
 	try {
-		const { result } = await client.d1.database.query(process.env.CF_D1_DOCS_ID!, {
+		const data = await client.d1.database.query(process.env.CF_D1_DOCS_ID!, {
 			account_id: process.env.CF_ACCOUNT_ID!,
-			sql: `select version from documentation where name = ? and version != 'main' order by version desc limit 1;`,
+			sql: `WITH parsed AS (
+						SELECT
+							version,
+							CAST(substr(version, 1, instr(version, '.') - 1) AS INTEGER)            AS major,
+							substr(version, instr(version, '.') + 1)                                 AS rest
+						FROM documentation
+						WHERE name = ? AND version != 'main'
+						),
+						parsed2 AS (
+							SELECT
+								version,
+								major,
+								CAST(substr(rest, 1, instr(rest, '.') - 1) AS INTEGER)                   AS minor,
+								CAST(substr(rest, instr(rest, '.') + 1) AS INTEGER)                      AS patch
+							FROM parsed
+						)
+						SELECT version
+						FROM parsed2
+						ORDER BY major DESC, minor DESC, patch DESC
+						LIMIT 1;`,
 			params: [packageName],
 		});
 
-		return `${(result[0]?.results as { version: string }[] | undefined)?.[0]?.version ?? 'main'}${hasEntryPoints ? ['', ...DEFAULT_ENTRY_POINT].join('/') : ''}`;
+		return `${((data.result[0]?.results ?? []) as { version: string }[])[0]?.version ?? 'main'}${hasEntryPoints ? ['', ...DEFAULT_ENTRY_POINT].join('/') : ''}`;
 	} catch {
 		return '';
 	}
