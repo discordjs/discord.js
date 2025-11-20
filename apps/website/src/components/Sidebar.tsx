@@ -43,7 +43,10 @@ export function SidebarHeader() {
 		<BasSidebarHeader className="bg-[#f3f3f4] p-4 dark:bg-[#121214]">
 			<div className="flex flex-col gap-2">
 				<div className="flex place-content-between place-items-center p-1">
-					<Link className="text-xl font-bold" href={`/docs/packages/${params.packageName}/${params.version}`}>
+					<Link
+						className="text-xl font-bold"
+						href={`/docs/packages/${params.packageName}/${params.version}${hasEntryPoints ? `/${entryPoints?.[0]?.entryPoint ?? ''}` : ''}`}
+					>
 						{params.packageName}
 					</Link>
 					<div className="flex place-items-center gap-2">
