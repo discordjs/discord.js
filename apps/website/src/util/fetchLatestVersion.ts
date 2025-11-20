@@ -23,8 +23,8 @@ export async function fetchLatestVersion(packageName: string): Promise<string> {
 			sql: `WITH parsed AS (
 						SELECT
 							version,
-							CAST(substr(version, 1, instr(version, '.') - 1) AS INTEGER)            AS major,
-							substr(version, instr(version, '.') + 1)                                 AS rest
+							CAST(substr(version, 1, instr(version, '.') - 1) AS INTEGER) AS major,
+							substr(version, instr(version, '.') + 1) AS rest
 						FROM documentation
 						WHERE name = ? AND version != 'main'
 						),
@@ -32,8 +32,8 @@ export async function fetchLatestVersion(packageName: string): Promise<string> {
 							SELECT
 								version,
 								major,
-								CAST(substr(rest, 1, instr(rest, '.') - 1) AS INTEGER)                   AS minor,
-								CAST(substr(rest, instr(rest, '.') + 1) AS INTEGER)                      AS patch
+								CAST(substr(rest, 1, instr(rest, '.') - 1) AS INTEGER) AS minor,
+								CAST(substr(rest, instr(rest, '.') + 1) AS INTEGER) AS patch
 							FROM parsed
 						)
 						SELECT version
