@@ -6690,7 +6690,7 @@ export interface BaseMessageOptions {
   )[];
   content?: string;
   embeds?: readonly (APIEmbed | JSONEncodable<APIEmbed>)[];
-  files?: readonly (Attachment | AttachmentPayload | BufferResolvable | JSONEncodable<APIAttachment> | Stream)[];
+  files?: readonly (Attachment | AttachmentPayload | BufferResolvable | Stream)[];
 }
 
 export interface MessageOptionsPoll {
