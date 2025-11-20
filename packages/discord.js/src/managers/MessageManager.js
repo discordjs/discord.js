@@ -224,7 +224,7 @@ class MessageManager extends CachedManager {
    * Edits a message, even if it's not cached.
    *
    * @param {MessageResolvable} message The message to edit
-   * @param {string|MessageEditOptions|MessagePayload} options The options to edit the message
+   * @param {string|MessageEditOptions|MessagePayload|FileBodyEncodable<RESTPatchAPIChannelMessageJSONBody>|JSONEncodable<RESTPatchAPIChannelMessageJSONBody>} options The options to edit the message
    * @returns {Promise<Message>}
    */
   async edit(message, options) {

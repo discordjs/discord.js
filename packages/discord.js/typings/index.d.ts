@@ -2235,8 +2235,8 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public delete(): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public edit(
     content:
-      | FileBodyEncodable<RESTPostAPIChannelMessageJSONBody>
-      | JSONEncodable<RESTPostAPIChannelMessageJSONBody>
+      | FileBodyEncodable<RESTPatchAPIChannelMessageJSONBody>
+      | JSONEncodable<RESTPatchAPIChannelMessageJSONBody>
       | MessageEditOptions
       | MessagePayload
       | string,
@@ -4620,7 +4620,12 @@ export abstract class MessageManager<InGuild extends boolean = boolean> extends 
   public delete(message: MessageResolvable): Promise<void>;
   public edit(
     message: MessageResolvable,
-    options: MessageEditOptions | MessagePayload | string,
+    options:
+      | FileBodyEncodable<RESTPatchAPIChannelMessageJSONBody>
+      | JSONEncodable<RESTPatchAPIChannelMessageJSONBody>
+      | MessageEditOptions
+      | MessagePayload
+      | string,
   ): Promise<Message<InGuild>>;
   public fetch(options: FetchMessageOptions | MessageResolvable): Promise<Message<InGuild>>;
   public fetch(options?: FetchMessagesOptions): Promise<Collection<Snowflake, Message<InGuild>>>;
