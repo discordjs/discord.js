@@ -3031,7 +3031,7 @@ await guildScheduledEventManager.edit(snowflake, { recurrenceRule: null });
 await textChannel.send(
   new MessageBuilder()
     .setContent(':)')
-    .addAttachments(attachment => attachment.setFileData(':)').setFilename('smiley.txt')),
+    .addAttachments(attachment => attachment.setId(1).setFileData(':)').setFilename('smiley.txt')),
 );
 
 await textChannel.send({

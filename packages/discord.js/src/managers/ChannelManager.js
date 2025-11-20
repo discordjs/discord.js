@@ -181,7 +181,7 @@ class ChannelManager extends CachedManager {
     } else if (isFileBodyEncodable(options)) {
       payload = options.toFileBody();
     } else if (isJSONEncodable(options)) {
-      payload = { body: options.toJSON(), files: [] };
+      payload = { body: options.toJSON() };
     } else {
       payload = await MessagePayload.create(this, options).resolveBody().resolveFiles();
     }

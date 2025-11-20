@@ -237,7 +237,7 @@ class MessageManager extends CachedManager {
     } else if (isFileBodyEncodable(options)) {
       payload = options.toFileBody();
     } else if (isJSONEncodable(options)) {
-      payload = { body: options.toJSON(), files: [] };
+      payload = { body: options.toJSON() };
     } else {
       payload = await MessagePayload.create(message instanceof Message ? message : this, options)
         .resolveBody()
