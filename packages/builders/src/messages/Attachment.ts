@@ -32,7 +32,7 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 	 * ```ts
 	 * const attachment = new AttachmentBuilder().setId(1).setFileData(':)').setFilename('smiley.txt')
 	 * ```
-	 * @remarks <warn>Please note that the `id` field is required, it's rather easy to miss!</warn>
+	 * @remarks Please note that the `id` field is required, it's rather easy to miss!
 	 */
 	public constructor(data: Partial<RESTAPIAttachment> = {}) {
 		this.data = structuredClone(data);
