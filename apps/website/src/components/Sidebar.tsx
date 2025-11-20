@@ -12,6 +12,7 @@ import { VersionSelect } from '@/components/VersionSelect';
 import { SidebarHeader as BasSidebarHeader } from '@/components/ui/Sidebar';
 import { buttonStyles } from '@/styles/ui/button';
 import { PACKAGES_WITH_ENTRY_POINTS } from '@/util/constants';
+import type { EntryPoint } from '@/util/fetchEntryPoints';
 
 export function SidebarHeader() {
 	const params = useParams<{
@@ -21,7 +22,7 @@ export function SidebarHeader() {
 
 	const hasEntryPoints = PACKAGES_WITH_ENTRY_POINTS.includes(params.packageName);
 
-	const { data: entryPoints, isLoading: isLoadingEntryPoints } = useQuery({
+	const { data: entryPoints, isLoading: isLoadingEntryPoints } = useQuery<EntryPoint[]>({
 		queryKey: ['entryPoints', params.packageName, params.version],
 		queryFn: async () => {
 			const response = await fetch(`/api/docs/entrypoints?packageName=${params.packageName}&version=${params.version}`);
