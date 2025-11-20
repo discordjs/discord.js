@@ -19,6 +19,6 @@
 		"eslint-config-neon": "^0.2.9",
 		"eslint-formatter-pretty": "^7.0.0",
 		"prettier": "^3.6.2",
-		"zod": "^3.25.76"
+		"zod": "^4.1.12"
 	}
 }

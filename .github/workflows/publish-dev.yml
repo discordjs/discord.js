@@ -4,8 +4,8 @@ on:
     - cron: '0 */12 * * *'
   workflow_dispatch:
     inputs:
-      pull:
-        description: 'The pull number to check out'
+      ref:
+        description: 'The ref to check out. e.g. main, feat/new-feature, refs/pull/1234/head'
         required: false
         default: 'main'
       tag:
@@ -33,21 +33,12 @@ jobs:
           app-id: ${{ vars.DISCORDJS_APP_ID }}
           private-key: ${{ secrets.DISCORDJS_APP_KEY_RELEASE }}
 
-      - name: Decide ref
-        id: ref
-        run: |
-          if [ -n "${{ github.event.inputs.pull }}" ]; then
-            echo "ref=refs/pull/${{ github.event.inputs.pull }}/head" >> $GITHUB_OUTPUT
-          else
-            echo "ref=refs/heads/main" >> $GITHUB_OUTPUT
-          fi
-
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
-          ref: ${{ steps.ref.outputs.ref }}
+          ref: ${{ inputs.ref }}
 
       - name: Install Node.js v24
         uses: actions/setup-node@v6
@@ -63,13 +54,13 @@ jobs:
         run: pnpm run build
 
       - name: Checkout main repository (non-main ref)
-        if: ${{ steps.ref.outputs.ref != 'refs/heads/main' }}
+        if: ${{ inputs.ref != 'main' }}
         uses: actions/checkout@v5
         with:
           path: 'main'
 
       - name: Install action deps (non-main ref)
-        if: ${{ steps.ref.outputs.ref != 'refs/heads/main' }}
+        if: ${{ inputs.ref != 'main' }}
         shell: bash
         working-directory: ./main
         env:
@@ -79,7 +70,7 @@ jobs:
           pnpm install --filter @discordjs/actions --frozen-lockfile --prefer-offline --loglevel error
 
       - name: Publish packages (non-main ref)
-        if: ${{ steps.ref.outputs.ref != 'refs/heads/main' }}
+        if: ${{ inputs.ref != 'main' }}
         uses: ./main/packages/actions/src/releasePackages
         with:
           exclude: '@discordjs/docgen'
@@ -91,7 +82,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish packages (main ref)
-        if: ${{ steps.ref.outputs.ref == 'refs/heads/main' }}
+        if: ${{ inputs.ref == 'main' }}
         uses: ./packages/actions/src/releasePackages
         with:
           exclude: '@discordjs/docgen'

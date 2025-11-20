@@ -3,8 +3,9 @@
 const process = require('node:process');
 const { clearTimeout, setImmediate, setTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
-const { makeURLSearchParams } = require('@discordjs/rest');
+const { REST, RESTEvents, makeURLSearchParams } = require('@discordjs/rest');
 const { WebSocketManager, WebSocketShardEvents, WebSocketShardStatus } = require('@discordjs/ws');
+const { AsyncEventEmitter } = require('@vladfrangu/async_event_emitter');
 const { GatewayDispatchEvents, GatewayIntentBits, OAuth2Scopes, Routes } = require('discord-api-types/v10');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 const { ChannelManager } = require('../managers/ChannelManager.js');
@@ -28,7 +29,7 @@ const { Options } = require('../util/Options.js');
 const { PermissionsBitField } = require('../util/PermissionsBitField.js');
 const { Status } = require('../util/Status.js');
 const { Sweepers } = require('../util/Sweepers.js');
-const { BaseClient } = require('./BaseClient.js');
+const { flatten } = require('../util/Util.js');
 const { ActionsManager } = require('./actions/ActionsManager.js');
 const { ClientVoiceManager } = require('./voice/ClientVoiceManager.js');
 const { PacketHandlers } = require('./websocket/handlers/index.js');
@@ -47,24 +48,66 @@ const BeforeReadyWhitelist = [
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
  *
- * @extends {BaseClient}
+ * @extends {AsyncEventEmitter}
  */
-class Client extends BaseClient {
+class Client extends AsyncEventEmitter {
   /**
    * @param {ClientOptions} options Options for the client
    */
   constructor(options) {
-    super(options);
+    super();
+
+    if (typeof options !== 'object' || options === null) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
+    }
+
+    const defaultOptions = Options.createDefault();
+    /**
+     * The options the client was instantiated with
+     *
+     * @type {ClientOptions}
+     */
+    this.options = {
+      ...defaultOptions,
+      ...options,
+      presence: {
+        ...defaultOptions.presence,
+        ...options.presence,
+      },
+      sweepers: {
+        ...defaultOptions.sweepers,
+        ...options.sweepers,
+      },
+      ws: {
+        ...defaultOptions.ws,
+        ...options.ws,
+      },
+      rest: {
+        ...defaultOptions.rest,
+        ...options.rest,
+        userAgentAppendix: options.rest?.userAgentAppendix
+          ? `${Options.userAgentAppendix} ${options.rest.userAgentAppendix}`
+          : Options.userAgentAppendix,
+      },
+    };
+
+    /**
+     * The REST manager of the client
+     *
+     * @type {REST}
+     */
+    this.rest = new REST(this.options.rest);
+
+    this.rest.on(RESTEvents.Debug, message => this.emit(Events.Debug, message));
 
     const data = require('node:worker_threads').workerData ?? process.env;
-    const defaults = Options.createDefault();
 
-    if (this.options.ws.shardIds === defaults.ws.shardIds && 'SHARDS' in data) {
+    if (this.options.ws.shardIds === defaultOptions.ws.shardIds && 'SHARDS' in data) {
       const shards = JSON.parse(data.SHARDS);
       this.options.ws.shardIds = Array.isArray(shards) ? shards : [shards];
     }
 
-    if (this.options.ws.shardCount === defaults.ws.shardCount && 'SHARD_COUNT' in data) {
+    if (this.options.ws.shardCount === defaultOptions.ws.shardCount && 'SHARD_COUNT' in data) {
       this.options.ws.shardCount = Number(data.SHARD_COUNT);
     }
 
@@ -442,12 +485,56 @@ class Client extends BaseClient {
   }
 
   /**
-   * Logs out, terminates the connection to Discord, and destroys the client.
+   * Options used for deleting a webhook.
+   *
+   * @typedef {Object} WebhookDeleteOptions
+   * @property {string} [token] Token of the webhook
+   * @property {string} [reason] The reason for deleting the webhook
+   */
+
+  /**
+   * Deletes a webhook.
+   *
+   * @param {Snowflake} id The webhook's id
+   * @param {WebhookDeleteOptions} [options] Options for deleting the webhook
+   * @returns {Promise<void>}
+   */
+  async deleteWebhook(id, { token, reason } = {}) {
+    await this.rest.delete(Routes.webhook(id, token), { auth: !token, reason });
+  }
+
+  /**
+   * Increments max listeners by one, if they are not zero.
+   *
+   * @private
+   */
+  incrementMaxListeners() {
+    const maxListeners = this.getMaxListeners();
+    if (maxListeners !== 0) {
+      this.setMaxListeners(maxListeners + 1);
+    }
+  }
+
+  /**
+   * Decrements max listeners by one, if they are not zero.
+   *
+   * @private
+   */
+  decrementMaxListeners() {
+    const maxListeners = this.getMaxListeners();
+    if (maxListeners !== 0) {
+      this.setMaxListeners(maxListeners - 1);
+    }
+  }
+
+  /**
+   * Destroys all assets used by the client.
    *
    * @returns {Promise<void>}
    */
   async destroy() {
-    super.destroy();
+    this.rest.clearHashSweeper();
+    this.rest.clearHandlerSweeper();
 
     this.sweepers.destroy();
     await this.ws.destroy();
@@ -701,10 +788,7 @@ class Client extends BaseClient {
   }
 
   toJSON() {
-    return super.toJSON({
-      actions: false,
-      presence: false,
-    });
+    return flatten(this, { actions: false, presence: false });
   }
 
   /**
@@ -797,6 +881,10 @@ class Client extends BaseClient {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'jsonTransformer', 'a function');
     }
   }
+
+  async [Symbol.asyncDispose]() {
+    await this.destroy();
+  }
 }
 
 exports.Client = Client;
@@ -844,6 +932,11 @@ exports.Client = Client;
 /**
  * @external Collection
  * @see {@link https://discord.js.org/docs/packages/collection/stable/Collection:Class}
+ */
+
+/**
+ * @external REST
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/REST:Class}
  */
 
 /**
