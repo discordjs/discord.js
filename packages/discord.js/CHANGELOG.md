@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.25.1](https://github.com/discordjs/discord.js/compare/14.25.0...14.25.1) - (2025-11-21)
+
+## Bug Fixes
+
+- **GuildEmojiManager:** Allow `CreateGuildExpressions` for retrieving author data (#11288) ([0d64ea0](https://github.com/discordjs/discord.js/commit/0d64ea0528b1591ef9b856b9bcad52e88e2cbd05))
+
 # [14.25.0](https://github.com/discordjs/discord.js/compare/14.24.2...14.25.0) - (2025-11-18)
 
 ## Bug Fixes
