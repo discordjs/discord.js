@@ -3,12 +3,10 @@
 const { __exportStar } = require('tslib');
 
 // "Root" classes (starting points)
-exports.BaseClient = require('./client/BaseClient.js').BaseClient;
 exports.Client = require('./client/Client.js').Client;
 exports.Shard = require('./sharding/Shard.js').Shard;
 exports.ShardClientUtil = require('./sharding/ShardClientUtil.js').ShardClientUtil;
 exports.ShardingManager = require('./sharding/ShardingManager.js').ShardingManager;
-exports.WebhookClient = require('./client/WebhookClient.js').WebhookClient;
 
 // Errors
 exports.DiscordjsError = require('./errors/DJSError.js').DiscordjsError;
@@ -29,6 +27,7 @@ exports.Constants = require('./util/Constants.js');
 exports.Events = require('./util/Events.js').Events;
 exports.GuildMemberFlagsBitField = require('./util/GuildMemberFlagsBitField.js').GuildMemberFlagsBitField;
 exports.IntentsBitField = require('./util/IntentsBitField.js').IntentsBitField;
+exports.InviteFlagsBitField = require('./util/InviteFlagsBitField.js').InviteFlagsBitField;
 exports.LimitedCollection = require('./util/LimitedCollection.js').LimitedCollection;
 exports.MessageFlagsBitField = require('./util/MessageFlagsBitField.js').MessageFlagsBitField;
 exports.Options = require('./util/Options.js').Options;
@@ -124,6 +123,7 @@ exports.BaseGuildEmoji = require('./structures/BaseGuildEmoji.js').BaseGuildEmoj
 exports.BaseGuildTextChannel = require('./structures/BaseGuildTextChannel.js').BaseGuildTextChannel;
 exports.BaseGuildVoiceChannel = require('./structures/BaseGuildVoiceChannel.js').BaseGuildVoiceChannel;
 exports.BaseInteraction = require('./structures/BaseInteraction.js').BaseInteraction;
+exports.BaseInvite = require('./structures/BaseInvite.js').BaseInvite;
 exports.BaseSelectMenuComponent = require('./structures/BaseSelectMenuComponent.js').BaseSelectMenuComponent;
 exports.ButtonComponent = require('./structures/ButtonComponent.js').ButtonComponent;
 exports.ButtonInteraction = require('./structures/ButtonInteraction.js').ButtonInteraction;
@@ -144,18 +144,21 @@ exports.Component = require('./structures/Component.js').Component;
 exports.ContainerComponent = require('./structures/ContainerComponent.js').ContainerComponent;
 exports.ContextMenuCommandInteraction =
   require('./structures/ContextMenuCommandInteraction.js').ContextMenuCommandInteraction;
+exports.DirectoryChannel = require('./structures/DirectoryChannel.js').DirectoryChannel;
 exports.DMChannel = require('./structures/DMChannel.js').DMChannel;
 exports.Embed = require('./structures/Embed.js').Embed;
 exports.Emoji = require('./structures/Emoji.js').Emoji;
 exports.Entitlement = require('./structures/Entitlement.js').Entitlement;
 exports.FileComponent = require('./structures/FileComponent.js').FileComponent;
 exports.ForumChannel = require('./structures/ForumChannel.js').ForumChannel;
+exports.GroupDMInvite = require('./structures/GroupDMInvite.js').GroupDMInvite;
 exports.Guild = require('./structures/Guild.js').Guild;
 exports.GuildAuditLogs = require('./structures/GuildAuditLogs.js').GuildAuditLogs;
 exports.GuildAuditLogsEntry = require('./structures/GuildAuditLogsEntry.js').GuildAuditLogsEntry;
 exports.GuildBan = require('./structures/GuildBan.js').GuildBan;
 exports.GuildChannel = require('./structures/GuildChannel.js').GuildChannel;
 exports.GuildEmoji = require('./structures/GuildEmoji.js').GuildEmoji;
+exports.GuildInvite = require('./structures/GuildInvite.js').GuildInvite;
 exports.GuildMember = require('./structures/GuildMember.js').GuildMember;
 exports.GuildOnboarding = require('./structures/GuildOnboarding.js').GuildOnboarding;
 exports.GuildOnboardingPrompt = require('./structures/GuildOnboardingPrompt.js').GuildOnboardingPrompt;
@@ -174,8 +177,8 @@ exports.InteractionCallbackResponse =
   require('./structures/InteractionCallbackResponse.js').InteractionCallbackResponse;
 exports.InteractionCollector = require('./structures/InteractionCollector.js').InteractionCollector;
 exports.InteractionWebhook = require('./structures/InteractionWebhook.js').InteractionWebhook;
-exports.Invite = require('./structures/Invite.js').Invite;
 exports.InviteGuild = require('./structures/InviteGuild.js').InviteGuild;
+exports.LabelComponent = require('./structures/LabelComponent.js').LabelComponent;
 exports.MediaChannel = require('./structures/MediaChannel.js').MediaChannel;
 exports.MediaGalleryComponent = require('./structures/MediaGalleryComponent.js').MediaGalleryComponent;
 exports.MediaGalleryItem = require('./structures/MediaGalleryItem.js').MediaGalleryItem;
@@ -194,7 +197,7 @@ exports.MessageContextMenuCommandInteraction =
 exports.MessageMentions = require('./structures/MessageMentions.js').MessageMentions;
 exports.MessagePayload = require('./structures/MessagePayload.js').MessagePayload;
 exports.MessageReaction = require('./structures/MessageReaction.js').MessageReaction;
-exports.ModalSubmitFields = require('./structures/ModalSubmitFields.js').ModalSubmitFields;
+exports.ModalComponentResolver = require('./structures/ModalComponentResolver.js').ModalComponentResolver;
 exports.ModalSubmitInteraction = require('./structures/ModalSubmitInteraction.js').ModalSubmitInteraction;
 exports.OAuth2Guild = require('./structures/OAuth2Guild.js').OAuth2Guild;
 exports.PartialGroupDMChannel = require('./structures/PartialGroupDMChannel.js').PartialGroupDMChannel;

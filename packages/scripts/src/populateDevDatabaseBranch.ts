@@ -20,7 +20,7 @@ for await (const file of globber.globGenerator()) {
 			const { name } = JSON.parse(data);
 			const { url } = await put(`${name.replace('@discordjs/', '')}/${parsed.groups.semver}.json`, data, {
 				access: 'public',
-				addRandomSuffix: false,
+				allowOverwrite: true,
 			});
 			await pool.sql`insert into documentation (name, version, url) values (${name.replace('@discordjs/', '')}, ${
 				parsed.groups.semver
@@ -34,7 +34,7 @@ for await (const file of globber.globGenerator()) {
 			const { name } = JSON.parse(data);
 			const { url } = await put(`${name.replace('@discordjs/', '')}/main.json`, data, {
 				access: 'public',
-				addRandomSuffix: false,
+				allowOverwrite: true,
 			});
 			await pool.sql`insert into documentation (name, version, url) values (${name.replace(
 				'@discordjs/',

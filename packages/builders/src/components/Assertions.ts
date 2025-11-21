@@ -1,21 +1,20 @@
 import { ButtonStyle, ChannelType, ComponentType, SelectMenuDefaultValueType } from 'discord-api-types/v10';
 import { z } from 'zod';
-import { customIdPredicate, refineURLPredicate } from '../Assertions.js';
+import { idPredicate, customIdPredicate } from '../Assertions.js';
 
 const labelPredicate = z.string().min(1).max(80);
 
 export const emojiPredicate = z
-	.object({
+	.strictObject({
 		id: z.string().optional(),
 		name: z.string().min(2).max(32).optional(),
 		animated: z.boolean().optional(),
 	})
-	.strict()
 	.refine((data) => data.id !== undefined || data.name !== undefined, {
-		message: "Either 'id' or 'name' must be provided",
+		error: "Either 'id' or 'name' must be provided",
 	});
 
-const buttonPredicateBase = z.object({
+const buttonPredicateBase = z.strictObject({
 	type: z.literal(ComponentType.Button),
 	disabled: z.boolean().optional(),
 });
@@ -26,31 +25,22 @@ const buttonCustomIdPredicateBase = buttonPredicateBase.extend({
 	label: labelPredicate,
 });
 
-const buttonPrimaryPredicate = buttonCustomIdPredicateBase.extend({ style: z.literal(ButtonStyle.Primary) }).strict();
-const buttonSecondaryPredicate = buttonCustomIdPredicateBase
-	.extend({ style: z.literal(ButtonStyle.Secondary) })
-	.strict();
-const buttonSuccessPredicate = buttonCustomIdPredicateBase.extend({ style: z.literal(ButtonStyle.Success) }).strict();
-const buttonDangerPredicate = buttonCustomIdPredicateBase.extend({ style: z.literal(ButtonStyle.Danger) }).strict();
+const buttonPrimaryPredicate = buttonCustomIdPredicateBase.extend({ style: z.literal(ButtonStyle.Primary) });
+const buttonSecondaryPredicate = buttonCustomIdPredicateBase.extend({ style: z.literal(ButtonStyle.Secondary) });
+const buttonSuccessPredicate = buttonCustomIdPredicateBase.extend({ style: z.literal(ButtonStyle.Success) });
+const buttonDangerPredicate = buttonCustomIdPredicateBase.extend({ style: z.literal(ButtonStyle.Danger) });
 
-const buttonLinkPredicate = buttonPredicateBase
-	.extend({
-		style: z.literal(ButtonStyle.Link),
-		url: z
-			.string()
-			.url()
-			.refine(refineURLPredicate(['http:', 'https:', 'discord:'])),
-		emoji: emojiPredicate.optional(),
-		label: labelPredicate,
-	})
-	.strict();
+const buttonLinkPredicate = buttonPredicateBase.extend({
+	style: z.literal(ButtonStyle.Link),
+	url: z.url({ protocol: /^(?:https?|discord)$/ }).max(512),
+	emoji: emojiPredicate.optional(),
+	label: labelPredicate,
+});
 
-const buttonPremiumPredicate = buttonPredicateBase
-	.extend({
-		style: z.literal(ButtonStyle.Premium),
-		sku_id: z.string(),
-	})
-	.strict();
+const buttonPremiumPredicate = buttonPredicateBase.extend({
+	style: z.literal(ButtonStyle.Premium),
+	sku_id: z.string(),
+});
 
 export const buttonPredicate = z.discriminatedUnion('style', [
 	buttonLinkPredicate,
@@ -62,6 +52,7 @@ export const buttonPredicate = z.discriminatedUnion('style', [
 ]);
 
 const selectMenuBasePredicate = z.object({
+	id: idPredicate,
 	placeholder: z.string().max(150).optional(),
 	min_values: z.number().min(0).max(25).optional(),
 	max_values: z.number().min(0).max(25).optional(),
@@ -71,7 +62,7 @@ const selectMenuBasePredicate = z.object({
 
 export const selectMenuChannelPredicate = selectMenuBasePredicate.extend({
 	type: z.literal(ComponentType.ChannelSelect),
-	channel_types: z.nativeEnum(ChannelType).array().optional(),
+	channel_types: z.enum(ChannelType).array().optional(),
 	default_values: z
 		.object({ id: z.string(), type: z.literal(SelectMenuDefaultValueType.Channel) })
 		.array()
@@ -84,7 +75,7 @@ export const selectMenuMentionablePredicate = selectMenuBasePredicate.extend({
 	default_values: z
 		.object({
 			id: z.string(),
-			type: z.union([z.literal(SelectMenuDefaultValueType.Role), z.literal(SelectMenuDefaultValueType.User)]),
+			type: z.literal([SelectMenuDefaultValueType.Role, SelectMenuDefaultValueType.User]),
 		})
 		.array()
 		.max(25)
@@ -113,23 +104,38 @@ export const selectMenuStringPredicate = selectMenuBasePredicate
 		type: z.literal(ComponentType.StringSelect),
 		options: selectMenuStringOptionPredicate.array().min(1).max(25),
 	})
-	.superRefine((menu, ctx) => {
+	.check((ctx) => {
 		const addIssue = (name: string, minimum: number) =>
-			ctx.addIssue({
+			ctx.issues.push({
 				code: 'too_small',
 				message: `The number of options must be greater than or equal to ${name}`,
 				inclusive: true,
 				minimum,
 				type: 'number',
 				path: ['options'],
+				origin: 'number',
+				input: minimum,
 			});
 
-		if (menu.max_values !== undefined && menu.options.length < menu.max_values) {
-			addIssue('max_values', menu.max_values);
+		if (ctx.value.min_values !== undefined && ctx.value.options.length < ctx.value.min_values) {
+			addIssue('min_values', ctx.value.min_values);
 		}
 
-		if (menu.min_values !== undefined && menu.options.length < menu.min_values) {
-			addIssue('min_values', menu.min_values);
+		if (
+			ctx.value.min_values !== undefined &&
+			ctx.value.max_values !== undefined &&
+			ctx.value.min_values > ctx.value.max_values
+		) {
+			ctx.issues.push({
+				code: 'too_big',
+				message: `The maximum amount of options must be greater than or equal to the minimum amount of options`,
+				inclusive: true,
+				maximum: ctx.value.max_values,
+				type: 'number',
+				path: ['min_values'],
+				origin: 'number',
+				input: ctx.value.min_values,
+			});
 		}
 	});
 
@@ -143,6 +149,7 @@ export const selectMenuUserPredicate = selectMenuBasePredicate.extend({
 });
 
 export const actionRowPredicate = z.object({
+	id: idPredicate,
 	type: z.literal(ComponentType.ActionRow),
 	components: z.union([
 		z
@@ -152,14 +159,13 @@ export const actionRowPredicate = z.object({
 			.max(5),
 		z
 			.object({
-				type: z.union([
-					z.literal(ComponentType.ChannelSelect),
-					z.literal(ComponentType.MentionableSelect),
-					z.literal(ComponentType.RoleSelect),
-					z.literal(ComponentType.StringSelect),
-					z.literal(ComponentType.UserSelect),
-					// And this!
-					z.literal(ComponentType.TextInput),
+				type: z.literal([
+					ComponentType.ChannelSelect,
+					ComponentType.MentionableSelect,
+					ComponentType.StringSelect,
+					ComponentType.RoleSelect,
+					ComponentType.TextInput,
+					ComponentType.UserSelect,
 				]),
 			})
 			.array()

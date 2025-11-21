@@ -25,13 +25,6 @@ class GuildMember extends Base {
     this.guild = guild;
 
     /**
-     * The timestamp the member joined the guild at
-     *
-     * @type {?number}
-     */
-    this.joinedTimestamp = null;
-
-    /**
      * The last timestamp this member started boosting the guild
      *
      * @type {?number}
@@ -68,7 +61,7 @@ class GuildMember extends Base {
      */
     Object.defineProperty(this, '_roles', { value: [], writable: true });
 
-    if (data) this._patch(data);
+    this._patch(data);
   }
 
   _patch(data) {
@@ -104,7 +97,17 @@ class GuildMember extends Base {
       this.banner ??= null;
     }
 
-    if ('joined_at' in data) this.joinedTimestamp = Date.parse(data.joined_at);
+    if ('joined_at' in data) {
+      /**
+       * The timestamp the member joined the guild at
+       *
+       * @type {?number}
+       */
+      this.joinedTimestamp = data.joined_at && Date.parse(data.joined_at);
+    } else {
+      this.joinedTimestamp ??= null;
+    }
+
     if ('premium_since' in data) {
       this.premiumSinceTimestamp = data.premium_since ? Date.parse(data.premium_since) : null;
     }
@@ -132,6 +135,20 @@ class GuildMember extends Base {
       this.flags = new GuildMemberFlagsBitField(data.flags).freeze();
     } else {
       this.flags ??= new GuildMemberFlagsBitField().freeze();
+    }
+
+    if (data.avatar_decoration_data) {
+      /**
+       * The member avatar decoration's data
+       *
+       * @type {?AvatarDecorationData}
+       */
+      this.avatarDecorationData = {
+        asset: data.avatar_decoration_data.asset,
+        skuId: data.avatar_decoration_data.sku_id,
+      };
+    } else {
+      this.avatarDecorationData = null;
     }
   }
 
@@ -182,6 +199,15 @@ class GuildMember extends Base {
   }
 
   /**
+   * A link to the member's avatar decoration.
+   *
+   * @returns {?string}
+   */
+  avatarDecorationURL() {
+    return this.avatarDecorationData ? this.client.rest.cdn.avatarDecoration(this.avatarDecorationData.asset) : null;
+  }
+
+  /**
    * A link to the member's banner.
    *
    * @param {ImageURLOptions} [options={}] Options for the banner URL
@@ -211,6 +237,16 @@ class GuildMember extends Base {
    */
   displayBannerURL(options) {
     return this.bannerURL(options) ?? this.user.bannerURL(options);
+  }
+
+  /**
+   * A link to the member's guild avatar decoration if they have one.
+   * Otherwise, a link to their {@link User#avatarDecorationURL} will be returned.
+   *
+   * @returns {?string}
+   */
+  displayAvatarDecorationURL() {
+    return this.avatarDecorationURL() ?? this.user.avatarDecorationURL();
   }
 
   /**
@@ -260,7 +296,7 @@ class GuildMember extends Base {
    * @readonly
    */
   get displayColor() {
-    return this.roles.color?.color ?? 0;
+    return this.roles.color?.colors.primaryColor ?? 0;
   }
 
   /**
@@ -324,7 +360,6 @@ class GuildMember extends Base {
   get manageable() {
     if (this.user.id === this.guild.ownerId) return false;
     if (this.user.id === this.client.user.id) return false;
-    if (this.client.user.id === this.guild.ownerId) return true;
     if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
     return this.guild.members.me.roles.highest.comparePositionTo(this.roles.highest) > 0;
   }
@@ -426,7 +461,9 @@ class GuildMember extends Base {
    *   .catch(console.error);
    */
   async setNickname(nick, reason) {
-    return this.edit({ nick, reason });
+    return this.user.id === this.client.user.id
+      ? this.guild.members.editMe({ nick, reason })
+      : this.edit({ nick, reason });
   }
 
   /**
@@ -560,7 +597,9 @@ class GuildMember extends Base {
       this.flags.bitfield === member.flags.bitfield &&
       (this._roles === member._roles ||
         (this._roles.length === member._roles.length &&
-          this._roles.every((role, index) => role === member._roles[index])))
+          this._roles.every((role, index) => role === member._roles[index]))) &&
+      this.avatarDecorationData?.asset === member.avatarDecorationData?.asset &&
+      this.avatarDecorationData?.skuId === member.avatarDecorationData?.skuId
     );
   }
 
@@ -587,6 +626,7 @@ class GuildMember extends Base {
     json.bannerURL = this.bannerURL();
     json.displayAvatarURL = this.displayAvatarURL();
     json.displayBannerURL = this.displayBannerURL();
+    json.avatarDecorationURL = this.avatarDecorationURL();
     return json;
   }
 }

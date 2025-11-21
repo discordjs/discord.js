@@ -23,7 +23,7 @@ class Webhook {
      * @readonly
      */
     Object.defineProperty(this, 'client', { value: client });
-    if (data) this._patch(data);
+    this._patch(data);
   }
 
   _patch(data) {
@@ -95,9 +95,9 @@ class Webhook {
       /**
        * The owner of the webhook
        *
-       * @type {?(User|APIUser)}
+       * @type {?User}
        */
-      this.owner = this.client.users?._add(data.user) ?? data.user;
+      this.owner = this.client.users._add(data.user);
     } else {
       this.owner ??= null;
     }
@@ -119,7 +119,7 @@ class Webhook {
        *
        * @type {?(Guild|APIGuild)}
        */
-      this.sourceGuild = this.client.guilds?.cache.get(data.source_guild.id) ?? data.source_guild;
+      this.sourceGuild = this.client.guilds.cache.get(data.source_guild.id) ?? data.source_guild;
     } else {
       this.sourceGuild ??= null;
     }
@@ -130,7 +130,7 @@ class Webhook {
        *
        * @type {?(AnnouncementChannel|APIChannel)}
        */
-      this.sourceChannel = this.client.channels?.cache.get(data.source_channel?.id) ?? data.source_channel;
+      this.sourceChannel = this.client.channels.cache.get(data.source_channel?.id) ?? data.source_channel;
     } else {
       this.sourceChannel ??= null;
     }
@@ -142,7 +142,7 @@ class Webhook {
    * @typedef {BaseMessageOptionsWithPoll} WebhookMessageCreateOptions
    * @property {boolean} [tts=false] Whether the message should be spoken aloud
    * @property {MessageFlags} [flags] Which flags to set for the message.
-   * <info>Only the {@link MessageFlags.SuppressEmbeds} flag can be set.</info>
+   * <info>Only {@link MessageFlags.SuppressEmbeds} and {@link MessageFlags.IsVoiceMessage} can be set.</info>
    * @property {string} [username=this.name] Username override for the message
    * @property {string} [avatarURL] Avatar URL override for the message
    * @property {Snowflake} [threadId] The id of the thread in the channel to send to.
@@ -248,7 +248,6 @@ class Webhook {
       auth: false,
     });
 
-    if (!this.client.channels) return data;
     return (
       this.client.channels.cache.get(data.channel_id)?.messages._add(data, false) ??
       new (getMessage())(this.client, data)
@@ -345,7 +344,6 @@ class Webhook {
       auth: false,
     });
 
-    if (!this.client.channels) return data;
     return (
       this.client.channels.cache.get(data.channel_id)?.messages._add(data, false) ??
       new (getMessage())(this.client, data)
@@ -384,10 +382,7 @@ class Webhook {
       },
     );
 
-    const channelManager = this.client.channels;
-    if (!channelManager) return data;
-
-    const messageManager = channelManager.cache.get(data.channel_id)?.messages;
+    const messageManager = this.client.channels.cache.get(data.channel_id)?.messages;
     if (!messageManager) return new (getMessage())(this.client, data);
 
     const existing = messageManager.cache.get(data.id);

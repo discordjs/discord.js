@@ -344,7 +344,11 @@ describe('VoiceConnection#configureNetworking', () => {
 				sessionId: state.session_id,
 				userId: state.user_id,
 			},
-			false,
+			{
+				daveEncryption: true,
+				debug: false,
+				decryptionFailureTolerance: undefined,
+			},
 		);
 		expect(voiceConnection.state).toMatchObject({
 			status: VoiceConnectionStatus.Connecting,

@@ -1,4 +1,5 @@
 import unocss from '@unocss/eslint-plugin';
+import { defineConfig } from 'eslint/config';
 import common from 'eslint-config-neon/common';
 import edge from 'eslint-config-neon/edge';
 import jsxa11y from 'eslint-config-neon/jsx-a11y';
@@ -11,7 +12,6 @@ import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescrip
 import reactCompiler from 'eslint-plugin-react-compiler';
 // import oxlint from 'eslint-plugin-oxlint';
 import merge from 'lodash.merge';
-import tseslint from 'typescript-eslint';
 
 const commonFiles = '{js,mjs,cjs,ts,mts,cts,jsx,tsx}';
 
@@ -78,7 +78,7 @@ const prettierRuleset = merge(...prettier, { files: [`**/*${commonFiles}`] });
 
 // const oxlintRuleset = merge({ rules: oxlint.rules }, { files: [`**/*${commonFiles}`] });
 
-export default tseslint.config(
+export default defineConfig(
 	{
 		ignores: [
 			'**/node_modules/',
@@ -245,6 +245,14 @@ export default tseslint.config(
 		},
 	},
 	{
+		files: [`packages/structures/**/*${commonFiles}`],
+		rules: {
+			'@typescript-eslint/no-empty-interface': 0,
+			'@typescript-eslint/no-empty-object-type': 0,
+			'@typescript-eslint/no-unsafe-declaration-merging': 0,
+		},
+	},
+	{
 		files: [`packages/voice/**/*${commonFiles}`],
 		rules: {
 			'no-restricted-globals': 0,
@@ -255,7 +263,7 @@ export default tseslint.config(
 	reactRuleset,
 	jsxa11yRuleset,
 	{
-		files: [`apps/guide/**/*${commonFiles}`, `packages/ui/**/*${commonFiles}`],
+		files: [`packages/ui/**/*${commonFiles}`],
 		plugins: { '@unocss': unocss },
 		rules: {
 			'@unocss/order': 2,

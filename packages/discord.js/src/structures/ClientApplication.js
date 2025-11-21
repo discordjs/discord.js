@@ -98,6 +98,7 @@ class ClientApplication extends Application {
      * Scopes and permissions regarding the installation context
      */
 
+    /* eslint-disable jsdoc/valid-types */
     /**
      * The application's supported installation context data.
      *
@@ -107,6 +108,7 @@ class ClientApplication extends Application {
      * @property {IntegrationTypesConfigurationContext} [1] Scopes and permissions
      * regarding the user-installation context
      */
+    /* eslint-enable jsdoc/valid-types */
 
     if ('integration_types_config' in data) {
       /**
@@ -176,6 +178,17 @@ class ClientApplication extends Application {
       this.approximateUserInstallCount = data.approximate_user_install_count;
     } else {
       this.approximateUserInstallCount ??= null;
+    }
+
+    if ('approximate_user_authorization_count' in data) {
+      /**
+       * An approximate amount of users that have OAuth2 authorizations for this application.
+       *
+       * @type {?number}
+       */
+      this.approximateUserAuthorizationCount = data.approximate_user_authorization_count;
+    } else {
+      this.approximateUserAuthorizationCount ??= null;
     }
 
     if ('guild_id' in data) {
@@ -396,9 +409,9 @@ class ClientApplication extends Application {
    *
    * @typedef {Object} ApplicationRoleConnectionMetadataEditOptions
    * @property {string} name The name of the metadata field
-   * @property {?Object<Locale, string>} [nameLocalizations] The name localizations for the metadata field
+   * @property {?LocalizationMap} [nameLocalizations] The name localizations for the metadata field
    * @property {string} description The description of the metadata field
-   * @property {?Object<Locale, string>} [descriptionLocalizations] The description localizations for the metadata field
+   * @property {?LocalizationMap} [descriptionLocalizations] The description localizations for the metadata field
    * @property {string} key The dictionary key of the metadata field
    * @property {ApplicationRoleConnectionMetadataType} type The type of the metadata field
    */

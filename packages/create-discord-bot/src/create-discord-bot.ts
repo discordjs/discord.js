@@ -1,10 +1,9 @@
 import type { ExecException } from 'node:child_process';
-import { cp, stat, mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
+import { cp, glob, mkdir, stat, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { URL } from 'node:url';
-import glob from 'fast-glob';
-import picocolors from 'picocolors';
+import { styleText } from 'node:util';
 import type { PackageManager } from './helpers/packageManager.js';
 import { install, isNodePackageManager } from './helpers/packageManager.js';
 import { GUIDE_URL } from './util/constants.js';
@@ -35,15 +34,16 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 	// If the directory is actually a file or if it's not empty, throw an error.
 	if (!directoryStats.isDirectory() || (await readdir(root)).length > 0) {
 		console.error(
-			picocolors.red(
-				`The directory ${picocolors.yellow(`"${directoryName}"`)} is either not a directory or is not empty.`,
+			styleText(
+				'red',
+				`The directory ${styleText('yellow', `"${directoryName}"`)} is either not a directory or is not empty.`,
 			),
 		);
-		console.error(picocolors.red(`Please specify an empty directory.`));
+		console.error(styleText('red', `Please specify an empty directory.`));
 		process.exit(1);
 	}
 
-	console.log(`Creating ${directoryName} in ${picocolors.green(root)}.`);
+	console.log(`Creating ${directoryName} in ${styleText('green', root)}.`);
 	const deno = packageManager === 'deno';
 	await cp(new URL(`../template/${deno ? 'Deno' : typescript ? 'TypeScript' : 'JavaScript'}`, import.meta.url), root, {
 		recursive: true,
@@ -80,8 +80,8 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 	});
 	await writeFile('./.vscode/settings.json', newVSCodeSettings);
 
-	const globStream = glob.stream('./src/**/*.ts');
-	for await (const file of globStream) {
+	const globIterator = glob('./src/**/*.ts');
+	for await (const file of globIterator) {
 		const newData = await readFile(file, { encoding: 'utf8' }).then((str) =>
 			str.replaceAll('[REPLACE_IMPORT_EXT]', typescript && !isNodePackageManager(packageManager) ? 'ts' : 'js'),
 		);
@@ -109,15 +109,15 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 			console.log();
 			const err = error as ExecException;
 			if (err.signal === 'SIGINT') {
-				console.log(picocolors.red('Installation aborted.'));
+				console.log(styleText('red', 'Installation aborted.'));
 			} else {
-				console.error(picocolors.red('Installation failed.'));
+				console.error(styleText('red', 'Installation failed.'));
 				process.exit(1);
 			}
 		}
 	}
 
 	console.log();
-	console.log(picocolors.green('All done! Be sure to read through the discord.js guide for help on your journey.'));
-	console.log(`Link: ${picocolors.cyan(GUIDE_URL)}`);
+	console.log(styleText('green', 'All done! Be sure to read through the discord.js guide for help on your journey.'));
+	console.log(`Link: ${styleText('cyan', GUIDE_URL)}`);
 }

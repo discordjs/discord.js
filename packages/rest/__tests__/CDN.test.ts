@@ -8,7 +8,7 @@ const hash = 'abcdef';
 const animatedHash = 'a_bcdef';
 const defaultAvatar = 1_234 % 5;
 
-const cdn = new CDN(baseCDN, baseMedia);
+const cdn = new CDN({ cdn: baseCDN, mediaProxy: baseMedia });
 
 test('appAsset default', () => {
 	expect(cdn.appAsset(id, hash)).toEqual(`${baseCDN}/app-assets/${id}/${hash}.webp`);
@@ -134,8 +134,11 @@ test('soundboardSound', () => {
 	expect(cdn.soundboardSound(id)).toEqual(`${baseCDN}/soundboard-sounds/${id}`);
 });
 
+test('guildTagBadge', () => {
+	expect(cdn.guildTagBadge(id, hash)).toEqual(`${baseCDN}/guild-tag-badges/${id}/${hash}.webp`);
+});
+
 test('makeURL throws on invalid size', () => {
-	// @ts-expect-error: Invalid size
 	expect(() => cdn.avatar(id, animatedHash, { size: 5 })).toThrow(RangeError);
 });
 

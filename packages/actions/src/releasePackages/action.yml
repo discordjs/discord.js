@@ -1,0 +1,27 @@
+name: 'Release Packages'
+description: 'Tags and releases any unreleased packages'
+inputs:
+  dev:
+    description: 'Releases development versions of packages (skips tagging and github releases)'
+    default: 'false'
+  dry:
+    description: 'Perform a dry run that skips publishing and outputs logs indicating what would have happened'
+    default: 'false'
+  package:
+    description: 'The published name of a single package to release'
+  exclude:
+    description: 'Comma separated list of packages to exclude from release (if not depended upon)'
+  tag:
+    description: 'The tag to use, generally a feature name'
+runs:
+  using: composite
+  steps:
+    - uses: oven-sh/setup-bun@v2
+    - run: bun $GITHUB_ACTION_PATH/index.ts
+      shell: bash
+      env:
+        INPUT_DEV: ${{ inputs.dev }}
+        INPUT_DRY: ${{ inputs.dry }}
+        INPUT_PACKAGE: ${{ inputs.package }}
+        INPUT_EXCLUDE: ${{ inputs.exclude }}
+        INPUT_TAG: ${{ inputs.tag }}

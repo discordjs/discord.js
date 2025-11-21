@@ -1,6 +1,6 @@
 import { Blob, Buffer } from 'node:buffer';
 import { URLSearchParams } from 'node:url';
-import { MockAgent, setGlobalDispatcher } from 'undici';
+import { MockAgent, setGlobalDispatcher, FormData as UndiciFormData } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor.js';
 import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
 import { REST } from '../src/index.js';
@@ -76,6 +76,26 @@ test('resolveBody', async () => {
 		},
 	};
 	await expect(resolveBody(asyncIterable)).resolves.toStrictEqual(Buffer.from([1, 2, 3, 1, 2, 3, 1, 2, 3]));
+
+	{
+		const fd = new globalThis.FormData();
+		fd.append('key', 'value');
+
+		const resolved = await resolveBody(fd);
+
+		expect(resolved).toBeInstanceOf(UndiciFormData);
+		expect([...(resolved as UndiciFormData).entries()]).toStrictEqual([['key', 'value']]);
+	}
+
+	{
+		const ufd = new UndiciFormData();
+		ufd.append('key', 'value');
+
+		const resolved = await resolveBody(ufd);
+
+		expect(resolved).toBeInstanceOf(UndiciFormData);
+		expect([...(resolved as UndiciFormData).entries()]).toStrictEqual([['key', 'value']]);
+	}
 
 	// Unknown type
 	// @ts-expect-error: This test is ensuring that this throws

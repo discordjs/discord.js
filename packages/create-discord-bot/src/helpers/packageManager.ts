@@ -1,6 +1,6 @@
 import { execSync } from 'node:child_process';
 import process from 'node:process';
-import picocolors from 'picocolors';
+import { styleText } from 'node:util';
 import { DEFAULT_PACKAGE_MANAGER, NODE_PACKAGE_MANAGERS } from '../util/constants.js';
 
 /**
@@ -13,6 +13,11 @@ export type PackageManager = 'bun' | 'deno' | 'npm' | 'pnpm' | 'yarn';
  */
 export function resolvePackageManager(): PackageManager {
 	const npmConfigUserAgent = process.env.npm_config_user_agent;
+
+	// @ts-expect-error: We're not using Deno's types, so its global is not declared
+	if (typeof Deno !== 'undefined') {
+		return 'deno';
+	}
 
 	// If this is not present, return the default package manager.
 	if (!npmConfigUserAgent) {
@@ -36,7 +41,8 @@ export function resolvePackageManager(): PackageManager {
 	}
 
 	console.error(
-		picocolors.yellow(
+		styleText(
+			'yellow',
 			`Detected an unsupported package manager (${npmConfigUserAgent}). Falling back to ${DEFAULT_PACKAGE_MANAGER}.`,
 		),
 	);

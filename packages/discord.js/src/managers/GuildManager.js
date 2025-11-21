@@ -10,16 +10,12 @@ const { ShardClientUtil } = require('../sharding/ShardClientUtil.js');
 const { Guild } = require('../structures/Guild.js');
 const { GuildChannel } = require('../structures/GuildChannel.js');
 const { GuildEmoji } = require('../structures/GuildEmoji.js');
+const { GuildInvite } = require('../structures/GuildInvite.js');
 const { GuildMember } = require('../structures/GuildMember.js');
-const { Invite } = require('../structures/Invite.js');
 const { OAuth2Guild } = require('../structures/OAuth2Guild.js');
 const { Role } = require('../structures/Role.js');
-const { resolveImage } = require('../util/DataResolver.js');
 const { Events } = require('../util/Events.js');
-const { PermissionsBitField } = require('../util/PermissionsBitField.js');
-const { SystemChannelFlagsBitField } = require('../util/SystemChannelFlagsBitField.js');
 const { _transformAPIIncidentsData } = require('../util/Transformers.js');
-const { resolveColor } = require('../util/Util.js');
 const { CachedManager } = require('./CachedManager.js');
 
 let cacheWarningEmitted = false;
@@ -61,50 +57,6 @@ class GuildManager extends CachedManager {
    */
 
   /**
-   * Partial data for a Role.
-   *
-   * @typedef {Object} PartialRoleData
-   * @property {Snowflake|number} [id] The role's id, used to set channel overrides.
-   * This is a placeholder and will be replaced by the API after consumption
-   * @property {string} [name] The name of the role
-   * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number
-   * @property {boolean} [hoist] Whether the role should be hoisted
-   * @property {number} [position] The position of the role
-   * @property {PermissionResolvable} [permissions] The permissions of the role
-   * @property {boolean} [mentionable] Whether the role should be mentionable
-   */
-
-  /**
-   * Partial overwrite data.
-   *
-   * @typedef {Object} PartialOverwriteData
-   * @property {Snowflake|number} id The id of the {@link Role} or {@link User} this overwrite belongs to
-   * @property {OverwriteType} [type] The type of this overwrite
-   * @property {PermissionResolvable} [allow] The permissions to allow
-   * @property {PermissionResolvable} [deny] The permissions to deny
-   */
-
-  /**
-   * Partial data for a Channel.
-   *
-   * @typedef {Object} PartialChannelData
-   * @property {Snowflake|number} [id] The channel's id, used to set its parent.
-   * This is a placeholder and will be replaced by the API after consumption
-   * @property {Snowflake|number} [parentId] The parent id for this channel
-   * @property {ChannelType.GuildText|ChannelType.GuildVoice|ChannelType.GuildCategory} [type] The type of the channel
-   * @property {string} name The name of the channel
-   * @property {?string} [topic] The topic of the text channel
-   * @property {boolean} [nsfw] Whether the channel is NSFW
-   * @property {number} [bitrate] The bitrate of the voice channel
-   * @property {number} [userLimit] The user limit of the channel
-   * @property {?string} [rtcRegion] The RTC region of the channel
-   * @property {VideoQualityMode} [videoQualityMode] The camera video quality mode of the channel
-   * @property {PartialOverwriteData[]} [permissionOverwrites]
-   * Overwrites of the channel
-   * @property {number} [rateLimitPerUser] The rate limit per user (slowmode) of the channel in seconds
-   */
-
-  /**
    * Resolves a {@link GuildResolvable} to a {@link Guild} object.
    *
    * @method resolve
@@ -119,7 +71,7 @@ class GuildManager extends CachedManager {
       guild instanceof GuildMember ||
       guild instanceof GuildEmoji ||
       guild instanceof Role ||
-      (guild instanceof Invite && guild.guild)
+      (guild instanceof GuildInvite && guild.guild)
     ) {
       return super.resolve(guild.guild);
     }
@@ -142,118 +94,12 @@ class GuildManager extends CachedManager {
       guild instanceof GuildMember ||
       guild instanceof GuildEmoji ||
       guild instanceof Role ||
-      (guild instanceof Invite && guild.guild)
+      (guild instanceof GuildInvite && guild.guild)
     ) {
       return super.resolveId(guild.guild.id);
     }
 
     return super.resolveId(guild);
-  }
-
-  /**
-   * Options used to create a guild.
-   *
-   * @typedef {Object} GuildCreateOptions
-   * @property {string} name The name of the guild
-   * @property {?(BufferResolvable|Base64Resolvable)} [icon=null] The icon for the guild
-   * @property {GuildVerificationLevel} [verificationLevel] The verification level for the guild
-   * @property {GuildDefaultMessageNotifications} [defaultMessageNotifications] The default message notifications
-   * for the guild
-   * @property {GuildExplicitContentFilter} [explicitContentFilter] The explicit content filter level for the guild
-   * @property {PartialRoleData[]} [roles=[]] The roles for this guild,
-   * @property {PartialChannelData[]} [channels=[]] The channels for this guild
-   * @property {Snowflake|number} [afkChannelId] The AFK channel's id
-   * @property {number} [afkTimeout] The AFK timeout in seconds
-   * the first element of this array is used to change properties of the guild's everyone role.
-   * @property {Snowflake|number} [systemChannelId] The system channel's id
-   * @property {SystemChannelFlagsResolvable} [systemChannelFlags] The flags of the system channel
-   */
-
-  /**
-   * Creates a guild.
-   * <warn>This is only available to bots in fewer than 10 guilds.</warn>
-   *
-   * @param {GuildCreateOptions} options Options for creating the guild
-   * @returns {Promise<Guild>} The guild that was created
-   */
-  async create({
-    name,
-    icon = null,
-    verificationLevel,
-    defaultMessageNotifications,
-    explicitContentFilter,
-    roles = [],
-    channels = [],
-    afkChannelId,
-    afkTimeout,
-    systemChannelId,
-    systemChannelFlags,
-  }) {
-    const data = await this.client.rest.post(Routes.guilds(), {
-      body: {
-        name,
-        icon: icon && (await resolveImage(icon)),
-        verification_level: verificationLevel,
-        default_message_notifications: defaultMessageNotifications,
-        explicit_content_filter: explicitContentFilter,
-        roles: roles.map(({ color, permissions, ...options }) => ({
-          ...options,
-          color: color && resolveColor(color),
-          permissions: permissions === undefined ? undefined : PermissionsBitField.resolve(permissions).toString(),
-        })),
-        channels: channels.map(
-          ({
-            parentId,
-            userLimit,
-            rtcRegion,
-            videoQualityMode,
-            permissionOverwrites,
-            rateLimitPerUser,
-            ...options
-          }) => ({
-            ...options,
-            parent_id: parentId,
-            user_limit: userLimit,
-            rtc_region: rtcRegion,
-            video_quality_mode: videoQualityMode,
-            permission_overwrites: permissionOverwrites?.map(({ allow, deny, ...permissionOverwriteOptions }) => ({
-              ...permissionOverwriteOptions,
-              allow: allow === undefined ? undefined : PermissionsBitField.resolve(allow).toString(),
-              deny: deny === undefined ? undefined : PermissionsBitField.resolve(deny).toString(),
-            })),
-            rate_limit_per_user: rateLimitPerUser,
-          }),
-        ),
-        afk_channel_id: afkChannelId,
-        afk_timeout: afkTimeout,
-        system_channel_id: systemChannelId,
-        system_channel_flags:
-          systemChannelFlags === undefined ? undefined : SystemChannelFlagsBitField.resolve(systemChannelFlags),
-      },
-    });
-
-    return (
-      this.client.guilds.cache.get(data.id) ??
-      new Promise(resolve => {
-        const handleGuild = guild => {
-          if (guild.id === data.id) {
-            // eslint-disable-next-line no-use-before-define
-            clearTimeout(timeout);
-            this.client.decrementMaxListeners();
-            resolve(guild);
-          }
-        };
-
-        this.client.incrementMaxListeners();
-        this.client.once(Events.GuildCreate, handleGuild);
-
-        const timeout = setTimeout(() => {
-          this.client.removeListener(Events.GuildCreate, handleGuild);
-          this.client.decrementMaxListeners();
-          resolve(this.client.guilds._add(data));
-        }, 10_000).unref();
-      })
-    );
   }
 
   /**

@@ -5,7 +5,7 @@
  */
 export type ReadonlyCollection<Key, Value> = Omit<
 	Collection<Key, Value>,
-	'clear' | 'delete' | 'ensure' | 'forEach' | 'get' | 'reverse' | 'set' | 'sort' | 'sweep'
+	keyof Map<Key, Value> | 'ensure' | 'reverse' | 'sort' | 'sweep'
 > &
 	ReadonlyMap<Key, Value>;
 

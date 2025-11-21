@@ -1,3 +1,7 @@
+packages:
+  - apps/*
+  - packages/*
+
 autoInstallPeers: false
 
 ignoredBuiltDependencies:
@@ -6,21 +10,23 @@ ignoredBuiltDependencies:
 
 onlyBuiltDependencies:
   - '@discordjs/opus'
+  - '@tailwindcss/oxide'
   - bufferutil
   - esbuild
   - protobufjs
+  - rclone.js
   - sharp
   - utf-8-validate
+  - workerd
   - zlib-sync
 
-packages:
-  - apps/*
-  - packages/*
+patchedDependencies:
+  '@microsoft/tsdoc-config@0.17.1': patches/@microsoft__tsdoc-config@0.17.1.patch
 
 peerDependencyRules:
-  ignoreMissing:
-    - '*'
   allowAny:
+    - '*'
+  ignoreMissing:
     - '*'
 
 publicHoistPattern:
@@ -29,5 +35,7 @@ publicHoistPattern:
   - '*@rushstack/node-core-library*'
   - '*jju*'
 
-patchedDependencies:
-  '@microsoft/tsdoc-config@0.17.1': patches/@microsoft__tsdoc-config@0.17.1.patch
+updateConfig:
+  ignoreDependencies:
+    - jsdoc-to-markdown
+    - typedoc

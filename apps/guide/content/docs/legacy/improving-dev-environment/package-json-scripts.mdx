@@ -1,0 +1,200 @@
+---
+title: Package Scripts
+---
+
+## Setting up package.json scripts
+
+An easy way to run scripts like a script to start your bot, a script to lint your bot's files, or whatever scripts you use is by storing them in your `package.json` file. After you store these scripts in your `package.json` file, you can run the `start` script to start your bot or the `lint` script to lint your code for errors.
+
+```sh tab="npm"
+npm run start
+npm run lint
+```
+
+```sh tab="yarn"
+yarn run start
+yarn run lint
+```
+
+```sh tab="pnpm"
+pnpm run start
+pnpm run lint
+```
+
+```sh tab="bun"
+bun run start
+bun run lint
+```
+
+## Getting started
+
+<Callout>
+Before getting started, you'll need to have a `package.json` file. If you don't have a `package.json` file yet, you can run the following command in the console to generate one.
+
+```sh tab="npm"
+npm init -y
+```
+
+```sh tab="yarn"
+yarn init -y
+```
+
+```sh tab="pnpm"
+pnpm init
+```
+
+```sh tab="bun"
+bun init -y
+```
+
+</Callout>
+
+If you haven't touched your `package.json` file yet (excluding installing dependencies), your `package.json` file should look similar to the following:
+
+```json title="package.json"
+{
+	"name": "my-bot",
+	"version": "1.0.0",
+	"description": "A Discord bot!",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC"
+}
+```
+
+Let's zoom in more. Below `main`, you'll see `scripts`. You can specify your scripts there. In this guide, we'll show how to start and lint your bot using a `package.json` script.
+
+## Adding your first script
+
+<Callout>
+	We'll assume you have finished the [creating your app](../app-creation/project-setup) section of the guide. If you
+	haven't, ensure to follow it first!
+</Callout>
+
+Over at your `package.json` file, add the following line to the `scripts`:
+
+```json title="package.json"
+{
+	"name": "my-bot",
+	"version": "1.0.0",
+	"description": "A Discord bot!",
+	"main": "index.js",
+	"scripts": { // [!code focus:5]
+		"test": "echo \"Error: no test specified\" && exit 1" // needs a comma // [!code --]
+		"test": "echo \"Error: no test specified\" && exit 1", // [!code ++]
+		"start": "node ." // [!code ++]
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC"
+}
+```
+
+<Callout>
+	The `node .` script will run the file you have specified at the `main` entry in your `package.json` file. If you don't
+	have it set yet, make sure to select your bot's main file as `main`!
+</Callout>
+
+Now, whenever you run the `start` script in your bot's directory, it will run the `node .` command.
+
+```sh tab="npm"
+npm run start
+```
+
+```sh tab="yarn"
+yarn run start
+```
+
+```sh tab="pnpm"
+pnpm run start
+```
+
+```sh tab="bun"
+bun run start
+```
+
+Let's create another script to lint your code via the command line. Add the following line to your scripts:
+
+```json title="package.json"
+{
+	"name": "my-bot",
+	"version": "1.0.0",
+	"description": "A Discord bot!",
+	"main": "index.js",
+	"scripts": { // [!code focus:6]
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node ." // needs a comma // [!code --]
+		"start": "node .", // [!code ++]
+		"lint": "eslint ." // [!code ++]
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC"
+}
+```
+
+Now, whenever you run the `lint` script, ESLint will lint your `index.js` file.
+
+```sh tab="npm"
+npm run lint
+```
+
+```sh tab="yarn"
+yarn run lint
+```
+
+```sh tab="pnpm"
+pnpm run lint
+```
+
+```sh tab="bun"
+bun run lint
+```
+
+Your `package.json` file should now look similar to the following:
+
+```json
+{
+	"name": "my-bot",
+	"version": "1.0.0",
+	"description": "A Discord bot!",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node .",
+		"lint": "eslint ."
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC"
+}
+```
+
+And that's it! You can always add more scripts now, running them with:
+
+```sh tab="npm"
+npm run <script-name>
+```
+
+```sh tab="yarn"
+yarn run <script-name>
+```
+
+```sh tab="pnpm"
+pnpm run <script-name>
+```
+
+```sh tab="bun"
+bun run <script-name>
+```
+
+<Cards>
+	<Card title="Package Scripts" href="https://docs.npmjs.com/cli/v7/using-npm/scripts">
+		Package scripts allow some more configuration (like pre-, post- and lifecycle scripts) than we can cover in this
+		guide. Check out the official documentation on for more information.
+	</Card>
+</Cards>

@@ -4,7 +4,7 @@
 import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
 import process from 'node:process';
-import { VoiceOpcodes } from 'discord-api-types/voice/v4';
+import { VoiceOpcodes } from 'discord-api-types/voice/v8';
 import { describe, test, expect, vitest, beforeEach } from 'vitest';
 import {
 	RTP_PACKET_DESKTOP,
@@ -138,36 +138,6 @@ describe('VoiceReceiver', () => {
 			});
 			expect(spy).toHaveBeenCalledWith({
 				audioSSRC: 123,
-				userId: '123abc',
-			});
-		});
-
-		test('CLIENT_CONNECT packet', () => {
-			const spy = vitest.spyOn(receiver.ssrcMap, 'update');
-			receiver['onWsPacket']({
-				op: VoiceOpcodes.ClientConnect,
-				d: {
-					audio_ssrc: 123,
-					video_ssrc: 43,
-					user_id: '123abc',
-				},
-			});
-			expect(spy).toHaveBeenCalledWith({
-				audioSSRC: 123,
-				videoSSRC: 43,
-				userId: '123abc',
-			});
-			receiver['onWsPacket']({
-				op: VoiceOpcodes.ClientConnect,
-				d: {
-					audio_ssrc: 123,
-					video_ssrc: 0,
-					user_id: '123abc',
-				},
-			});
-			expect(spy).toHaveBeenCalledWith({
-				audioSSRC: 123,
-				videoSSRC: undefined,
 				userId: '123abc',
 			});
 		});

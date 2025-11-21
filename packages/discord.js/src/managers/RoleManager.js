@@ -61,7 +61,7 @@ class RoleManager extends CachedManager {
    * @example
    * // Fetch a single role
    * message.guild.roles.fetch('222078108977594368')
-   *   .then(role => console.log(`The role color is: ${role.color}`))
+   *   .then(role => console.log(`The role color is: ${role.colors.primaryColor}`))
    *   .catch(console.error);
    */
   async fetch(id, { cache = true, force = false } = {}) {
@@ -110,11 +110,21 @@ class RoleManager extends CachedManager {
    */
 
   /**
+   * @typedef {Object} RoleColorsResolvable
+   * @property {ColorResolvable} primaryColor The primary color of the role
+   * @property {ColorResolvable} [secondaryColor] The secondary color of the role.
+   * This will make the role a gradient between the other provided colors
+   * @property {ColorResolvable} [tertiaryColor] The tertiary color of the role.
+   * When sending `tertiaryColor` the API enforces the role color to be a holographic style with values of `primaryColor = 11127295`, `secondaryColor = 16759788`, and `tertiaryColor = 16761760`.
+   * These values are available as a constant: `Constants.HolographicStyle`
+   */
+
+  /**
    * Options used to create a new role.
    *
    * @typedef {Object} RoleCreateOptions
    * @property {string} [name] The name of the new role
-   * @property {ColorResolvable} [color] The data to create the role with
+   * @property {RoleColorsResolvable} [colors] The colors to create the role with
    * @property {boolean} [hoist] Whether or not the new role should be hoisted
    * @property {PermissionResolvable} [permissions] The permissions for the new role
    * @property {number} [position] The position of the new role
@@ -141,16 +151,30 @@ class RoleManager extends CachedManager {
    * // Create a new role with data and a reason
    * guild.roles.create({
    *   name: 'Super Cool Blue People',
-   *   color: Colors.Blue,
    *   reason: 'we needed a role for Super Cool People',
+   *   colors: {
+   *     primaryColor: Colors.Blue,
+   *   },
+   * })
+   *   .then(console.log)
+   *   .catch(console.error);
+   * @example
+   * // Create a role with holographic colors
+   * guild.roles.create({
+   *   name: 'Holographic Role',
+   *   reason: 'Creating a role with holographic effect',
+   *   colors: {
+   *     primaryColor: Constants.HolographicStyle.Primary,
+   *     secondaryColor: Constants.HolographicStyle.Secondary,
+   *     tertiaryColor: Constants.HolographicStyle.Tertiary,
+   *   },
    * })
    *   .then(console.log)
    *   .catch(console.error);
    */
   async create(options = {}) {
-    let { color, permissions, icon } = options;
+    let { permissions, icon } = options;
     const { name, hoist, position, mentionable, reason, unicodeEmoji } = options;
-    color &&= resolveColor(color);
     if (permissions !== undefined) permissions = new PermissionsBitField(permissions);
     if (icon) {
       const guildEmojiURL = this.guild.emojis.resolve(icon)?.imageURL();
@@ -158,10 +182,16 @@ class RoleManager extends CachedManager {
       if (typeof icon !== 'string') icon = undefined;
     }
 
+    const colors = options.colors && {
+      primary_color: resolveColor(options.colors.primaryColor),
+      secondary_color: options.colors.secondaryColor && resolveColor(options.colors.secondaryColor),
+      tertiary_color: options.colors.tertiaryColor && resolveColor(options.colors.tertiaryColor),
+    };
+
     const data = await this.client.rest.post(Routes.guildRoles(this.guild.id), {
       body: {
         name,
-        color,
+        colors,
         hoist,
         permissions,
         mentionable,
@@ -212,9 +242,15 @@ class RoleManager extends CachedManager {
       if (typeof icon !== 'string') icon = undefined;
     }
 
+    const colors = options.colors && {
+      primary_color: resolveColor(options.colors.primaryColor),
+      secondary_color: options.colors.secondaryColor && resolveColor(options.colors.secondaryColor),
+      tertiary_color: options.colors.tertiaryColor && resolveColor(options.colors.tertiaryColor),
+    };
+
     const body = {
       name: options.name,
-      color: options.color === undefined ? undefined : resolveColor(options.color),
+      colors,
       hoist: options.hoist,
       permissions: options.permissions === undefined ? undefined : new PermissionsBitField(options.permissions),
       mentionable: options.mentionable,

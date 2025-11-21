@@ -10,6 +10,7 @@ export const PACKAGES = [
 	'next',
 	'proxy',
 	'rest',
+	'structures',
 	'util',
 	'voice',
 	'ws',
@@ -17,11 +18,11 @@ export const PACKAGES = [
 ];
 
 export async function fetchVersions(pkg: string) {
-	const response = await request(`https://docs.discordjs.dev/api/info?package=${pkg}`);
+	const response = await request(`https://discord.js.org/api/docs/versions?packageName=${pkg}`);
 	return response.body.json() as Promise<string[]>;
 }
 
 export async function fetchVersionDocs(pkg: string, version: string) {
-	const response = await request(`https://docs.discordjs.dev/docs/${pkg}/${version}.api.json`);
+	const response = await request(`https://r2-docs.discordjs.dev/${pkg}/${version}.json`);
 	return response.body.json();
 }

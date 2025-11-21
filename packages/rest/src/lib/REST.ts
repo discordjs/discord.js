@@ -78,7 +78,7 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 
 	public constructor(options: Partial<RESTOptions> = {}) {
 		super();
-		this.cdn = new CDN(options.cdn ?? DefaultRestOptions.cdn, options.mediaProxy ?? DefaultRestOptions.mediaProxy);
+		this.cdn = new CDN(options);
 		this.options = { ...DefaultRestOptions, ...options };
 		this.globalRemaining = Math.max(1, this.options.globalRequestsPerSecond);
 		this.agent = options.agent ?? null;

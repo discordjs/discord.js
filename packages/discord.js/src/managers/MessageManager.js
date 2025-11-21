@@ -115,32 +115,71 @@ class MessageManager extends CachedManager {
     return this._add(data, cache);
   }
 
-  async _fetchMany(options = {}) {
+  async _fetchMany({ cache, ...apiOptions } = {}) {
     const data = await this.client.rest.get(Routes.channelMessages(this.channel.id), {
-      query: makeURLSearchParams(options),
+      query: makeURLSearchParams(apiOptions),
     });
 
-    return data.reduce((_data, message) => _data.set(message.id, this._add(message, options.cache)), new Collection());
+    return data.reduce((_data, message) => _data.set(message.id, this._add(message, cache)), new Collection());
   }
 
   /**
-   * Fetches the pinned messages of this channel and returns a collection of them.
-   * <info>The returned Collection does not contain any reaction data of the messages.
+   * Options used to fetch pinned messages.
+   *
+   * @typedef {Object} FetchPinnedMessagesOptions
+   * @property {DateResolvable} [before] Consider only pinned messages before this time
+   * @property {number} [limit] The maximum number of pinned messages to return
+   * @property {boolean} [cache] Whether to cache the pinned messages
+   */
+
+  /**
+   * Data returned from fetching pinned messages.
+   *
+   * @typedef {Object} FetchPinnedMessagesResponse
+   * @property {MessagePin[]} items The pinned messages
+   * @property {boolean} hasMore Whether there are additional pinned messages that require a subsequent call
+   */
+
+  /**
+   * Pinned message data returned from fetching pinned messages.
+   *
+   * @typedef {Object} MessagePin
+   * @property {Date} pinnedAt The time the message was pinned at
+   * @property {number} pinnedTimestamp The timestamp the message was pinned at
+   * @property {Message} message The pinned message
+   */
+
+  /**
+   * Fetches the pinned messages of this channel, returning a paginated result.
+   * <info>The returned messages do not contain any reaction data.
    * Those need to be fetched separately.</info>
    *
-   * @param {boolean} [cache=true] Whether to cache the message(s)
-   * @returns {Promise<Collection<Snowflake, Message>>}
+   * @param {FetchPinnedMessagesOptions} [options={}] Options for fetching pinned messages
+   * @returns {Promise<FetchPinnedMessagesResponse>}
    * @example
    * // Get pinned messages
-   * channel.messages.fetchPinned()
-   *   .then(messages => console.log(`Received ${messages.size} messages`))
+   * channel.messages.fetchPins()
+   *   .then(messages => console.log(`Received ${messages.items.length} messages`))
    *   .catch(console.error);
    */
-  async fetchPinned(cache = true) {
-    const data = await this.client.rest.get(Routes.channelPins(this.channel.id));
-    const messages = new Collection();
-    for (const message of data) messages.set(message.id, this._add(message, cache));
-    return messages;
+  async fetchPins({ cache, ...apiOptions } = {}) {
+    const data = await this.client.rest.get(Routes.channelMessagesPins(this.channel.id), {
+      query: makeURLSearchParams({
+        ...apiOptions,
+        before: apiOptions.before && new Date(apiOptions.before).toISOString(),
+      }),
+    });
+
+    return {
+      items: data.items.map(item => ({
+        pinnedTimestamp: Date.parse(item.pinned_at),
+        get pinnedAt() {
+          return new Date(this.pinnedTimestamp);
+        },
+        message: this._add(item.message, cache),
+      })),
+      hasMore: data.has_more,
+    };
   }
 
   /**
@@ -221,7 +260,7 @@ class MessageManager extends CachedManager {
     const messageId = this.resolveId(message);
     if (!messageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
-    await this.client.rest.put(Routes.channelPin(this.channel.id, messageId), { reason });
+    await this.client.rest.put(Routes.channelMessagesPin(this.channel.id, messageId), { reason });
   }
 
   /**
@@ -235,7 +274,7 @@ class MessageManager extends CachedManager {
     const messageId = this.resolveId(message);
     if (!messageId) throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'message', 'MessageResolvable');
 
-    await this.client.rest.delete(Routes.channelPin(this.channel.id, messageId), { reason });
+    await this.client.rest.delete(Routes.channelMessagesPin(this.channel.id, messageId), { reason });
   }
 
   /**

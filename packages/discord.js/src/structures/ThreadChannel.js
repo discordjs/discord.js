@@ -55,7 +55,7 @@ class ThreadChannel extends BaseChannel {
      * @type {ThreadMemberManager}
      */
     this.members = new ThreadMemberManager(this);
-    if (data) this._patch(data);
+    this._patch(data);
   }
 
   _patch(data) {
@@ -375,7 +375,7 @@ class ThreadChannel extends BaseChannel {
   async edit(options) {
     const newData = await this.client.rest.patch(Routes.channel(this.id), {
       body: {
-        name: (options.name ?? this.name).trim(),
+        name: options.name,
         archived: options.archived,
         auto_archive_duration: options.autoArchiveDuration,
         rate_limit_per_user: options.rateLimitPerUser,
@@ -582,7 +582,6 @@ class ThreadChannel extends BaseChannel {
    * @readonly
    */
   get viewable() {
-    if (this.client.user.id === this.guild.ownerId) return true;
     const permissions = this.permissionsFor(this.client.user);
     if (!permissions) return false;
     return permissions.has(PermissionFlagsBits.ViewChannel, false);

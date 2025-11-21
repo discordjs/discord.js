@@ -1,24 +1,61 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const { lazy } = require('@discordjs/util');
+const { transformResolved } = require('../util/Util.js');
 const { BaseInteraction } = require('./BaseInteraction.js');
 const { InteractionWebhook } = require('./InteractionWebhook.js');
-const { ModalSubmitFields } = require('./ModalSubmitFields.js');
+const { ModalComponentResolver } = require('./ModalComponentResolver.js');
 const { InteractionResponses } = require('./interfaces/InteractionResponses.js');
 
 const getMessage = lazy(() => require('./Message.js').Message);
+const getAttachment = lazy(() => require('./Attachment.js').Attachment);
 
 /**
- * @typedef {Object} ModalData
- * @property {string} value The value of the field
- * @property {ComponentType} type The component type of the field
- * @property {string} customId The custom id of the field
+ * @typedef {Object} BaseModalData
+ * @property {ComponentType} type The component type of the component
+ * @property {number} id The id of the component
  */
 
 /**
- * @typedef {Object} ActionRowModalData
- * @property {ModalData[]} components The components of this action row
- * @property {ComponentType} type The component type of the action row
+ * @typedef {BaseModalData} SelectMenuModalData
+ * @property {string} customId The custom id of the component
+ * @property {string[]} values The values of the component
+ * @property {Collection<Snowflake, GuildMember|APIGuildMember>} [members] The resolved members
+ * @property {Collection<Snowflake, User|APIUser>} [users] The resolved users
+ * @property {Collection<Snowflake, Role|APIRole>} [roles] The resolved roles
+ * @property {Collection<Snowflake, BaseChannel|APIChannel>} [channels] The resolved channels
+ */
+
+/**
+ * @typedef {BaseModalData} FileUploadModalData
+ * @property {string} customId The custom id of the file upload
+ * @property {Snowflake[]} values The values of the file upload
+ * @property {Collection<Snowflake, Attachment>} [attachments] The resolved attachments
+ */
+
+/**
+ * @typedef {BaseModalData} TextInputModalData
+ * @property {string} customId The custom id of the component
+ * @property {string} value The value of the component
+ */
+
+/**
+ * @typedef {BaseModalData} TextDisplayModalData
+ */
+
+/**
+ * @typedef {SelectMenuModalData|TextInputModalData|FileUploadModalData} ModalData
+ */
+
+/**
+ * @typedef {BaseModalData} LabelModalData
+ * @property {ModalData} component The component within the label
+ */
+
+/**
+ * @typedef {BaseModalData} ActionRowModalData
+ * @property {TextInputModalData[]} components The components of this action row
  */
 
 /**
@@ -51,16 +88,13 @@ class ModalSubmitInteraction extends BaseInteraction {
     /**
      * The components within the modal
      *
-     * @type {ActionRowModalData[]}
+     * @type {ModalComponentResolver}
      */
-    this.components = data.data.components?.map(component => ModalSubmitInteraction.transformComponent(component));
-
-    /**
-     * The fields within the modal
-     *
-     * @type {ModalSubmitFields}
-     */
-    this.fields = new ModalSubmitFields(this.components);
+    this.components = new ModalComponentResolver(
+      this.client,
+      data.data.components?.map(component => this.transformComponent(component, data.data.resolved)),
+      transformResolved({ client: this.client, guild: this.guild, channel: this.channel }, data.data.resolved),
+    );
 
     /**
      * Whether the reply to this interaction has been deferred
@@ -95,19 +129,96 @@ class ModalSubmitInteraction extends BaseInteraction {
    * Transforms component data to discord.js-compatible data
    *
    * @param {*} rawComponent The data to transform
+   * @param {APIInteractionDataResolved} resolved The resolved data for the interaction
    * @returns {ModalData[]}
+   * @private
    */
-  static transformComponent(rawComponent) {
-    return rawComponent.components
-      ? {
-          type: rawComponent.type,
-          components: rawComponent.components.map(component => this.transformComponent(component)),
+  transformComponent(rawComponent, resolved) {
+    if ('components' in rawComponent) {
+      return {
+        type: rawComponent.type,
+        id: rawComponent.id,
+        components: rawComponent.components.map(component => this.transformComponent(component, resolved)),
+      };
+    }
+
+    if ('component' in rawComponent) {
+      return {
+        type: rawComponent.type,
+        id: rawComponent.id,
+        component: this.transformComponent(rawComponent.component, resolved),
+      };
+    }
+
+    const data = {
+      type: rawComponent.type,
+      id: rawComponent.id,
+    };
+
+    // Text display components do not have custom ids.
+    if ('custom_id' in rawComponent) data.customId = rawComponent.custom_id;
+
+    if ('value' in rawComponent) data.value = rawComponent.value;
+
+    if (rawComponent.values) {
+      data.values = rawComponent.values;
+      if (resolved) {
+        const { members, users, channels, roles, attachments } = resolved;
+        const valueSet = new Set(rawComponent.values);
+
+        if (users) {
+          data.users = new Collection();
+
+          for (const [id, user] of Object.entries(users)) {
+            if (valueSet.has(id)) {
+              data.users.set(id, this.client.users._add(user));
+            }
+          }
         }
-      : {
-          value: rawComponent.value,
-          type: rawComponent.type,
-          customId: rawComponent.custom_id,
-        };
+
+        if (channels) {
+          data.channels = new Collection();
+
+          for (const [id, apiChannel] of Object.entries(channels)) {
+            if (valueSet.has(id)) {
+              data.channels.set(id, this.client.channels._add(apiChannel, this.guild) ?? apiChannel);
+            }
+          }
+        }
+
+        if (members) {
+          data.members = new Collection();
+
+          for (const [id, member] of Object.entries(members)) {
+            if (valueSet.has(id)) {
+              const user = users?.[id];
+              data.members.set(id, this.guild?.members._add({ user, ...member }) ?? member);
+            }
+          }
+        }
+
+        if (roles) {
+          data.roles = new Collection();
+
+          for (const [id, role] of Object.entries(roles)) {
+            if (valueSet.has(id)) {
+              data.roles.set(id, this.guild?.roles._add(role) ?? role);
+            }
+          }
+        }
+
+        if (attachments) {
+          data.attachments = new Collection();
+          for (const [id, attachment] of Object.entries(attachments)) {
+            if (valueSet.has(id)) {
+              data.attachments.set(id, new (getAttachment())(attachment));
+            }
+          }
+        }
+      }
+    }
+
+    return data;
   }
 
   /**

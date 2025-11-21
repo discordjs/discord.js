@@ -1,8 +1,36 @@
-/* eslint-disable no-use-before-define */
 'use strict';
 
-// eslint-disable-next-line import-x/order
+const { lazy } = require('@discordjs/util');
 const { ComponentType } = require('discord-api-types/v10');
+
+// Fixes circular dependencies.
+const getActionRow = lazy(() => require('../structures/ActionRow.js').ActionRow);
+const getButtonComponent = lazy(() => require('../structures/ButtonComponent.js').ButtonComponent);
+const getChannelSelectMenuComponent = lazy(
+  () => require('../structures/ChannelSelectMenuComponent.js').ChannelSelectMenuComponent,
+);
+const getComponent = lazy(() => require('../structures/Component.js').Component);
+const getContainerComponent = lazy(() => require('../structures/ContainerComponent.js').ContainerComponent);
+const getFileComponent = lazy(() => require('../structures/FileComponent.js').FileComponent);
+const getLabelComponent = lazy(() => require('../structures/LabelComponent.js').LabelComponent);
+const getMediaGalleryComponent = lazy(() => require('../structures/MediaGalleryComponent.js').MediaGalleryComponent);
+const getMentionableSelectMenuComponent = lazy(
+  () => require('../structures/MentionableSelectMenuComponent.js').MentionableSelectMenuComponent,
+);
+const getRoleSelectMenuComponent = lazy(
+  () => require('../structures/RoleSelectMenuComponent.js').RoleSelectMenuComponent,
+);
+const getSectionComponent = lazy(() => require('../structures/SectionComponent.js').SectionComponent);
+const getSeparatorComponent = lazy(() => require('../structures/SeparatorComponent.js').SeparatorComponent);
+const getStringSelectMenuComponent = lazy(
+  () => require('../structures/StringSelectMenuComponent.js').StringSelectMenuComponent,
+);
+const getTextDisplayComponent = lazy(() => require('../structures/TextDisplayComponent.js').TextDisplayComponent);
+const getTextInputComponent = lazy(() => require('../structures/TextInputComponent.js').TextInputComponent);
+const getThumbnailComponent = lazy(() => require('../structures/ThumbnailComponent.js').ThumbnailComponent);
+const getUserSelectMenuComponent = lazy(
+  () => require('../structures/UserSelectMenuComponent.js').UserSelectMenuComponent,
+);
 
 /**
  * @typedef {Object} BaseComponentData
@@ -16,6 +44,25 @@ const { ComponentType } = require('discord-api-types/v10');
  */
 
 /**
+ * @typedef {Object} ModalComponentData
+ * @property {string} title The title of the modal
+ * @property {string} customId The custom id of the modal
+ * @property {Array<TextDisplayComponentData|LabelData>} components The components within this modal
+ */
+
+/**
+ * @typedef {StringSelectMenuComponentData|TextInputComponentData|UserSelectMenuComponentData|
+ * RoleSelectMenuComponentData|MentionableSelectMenuComponentData|ChannelSelectMenuComponentData|FileUploadComponentData} ComponentInLabelData
+ */
+
+/**
+ * @typedef {BaseComponentData} LabelData
+ * @property {string} label The label to use
+ * @property {string} [description] The optional description for the label
+ * @property {ComponentInLabelData} component The component within the label
+ */
+
+/**
  * @typedef {BaseComponentData} ButtonComponentData
  * @property {ButtonStyle} style The style of the button
  * @property {boolean} [disabled] Whether this button is disabled
@@ -23,6 +70,50 @@ const { ComponentType } = require('discord-api-types/v10');
  * @property {APIMessageComponentEmoji} [emoji] The emoji on this button
  * @property {string} [customId] The custom id of the button
  * @property {string} [url] The URL of the button
+ */
+
+/**
+ * @typedef {BaseComponentData} FileUploadComponentData
+ * @property {string} customId The custom id of the file upload
+ * @property {number} [minValues] The minimum number of files that must be uploaded (0-10)
+ * @property {number} [maxValues] The maximum number of files that can be uploaded (1-10)
+ * @property {boolean} [required] Whether this component is required in modals
+ */
+
+/**
+ * @typedef {BaseComponentData} BaseSelectMenuComponentData
+ * @property {string} customId The custom id of the select menu
+ * @property {boolean} [disabled] Whether the select menu is disabled or not
+ * @property {number} [maxValues] The maximum amount of options that can be selected
+ * @property {number} [minValues] The minimum amount of options that must be selected
+ * @property {string} [placeholder] The placeholder of the select menu
+ * @property {boolean} [required] Whether this component is required in modals
+ */
+
+/**
+ * @typedef {BaseSelectMenuComponentData} StringSelectMenuComponentData
+ * @property {SelectMenuComponentOptionData[]} [options] The options in this select menu
+ */
+
+/**
+ * @typedef {BaseSelectMenuComponentData} UserSelectMenuComponentData
+ * @property {APISelectMenuDefaultValue[]} [defaultValues] The default selected values in this select menu
+ */
+
+/**
+ * @typedef {BaseSelectMenuComponentData} RoleSelectMenuComponentData
+ * @property {APISelectMenuDefaultValue[]} [defaultValues] The default selected values in this select menu
+ */
+
+/**
+ * @typedef {BaseSelectMenuComponentData} MentionableSelectMenuComponentData
+ * @property {APISelectMenuDefaultValue[]} [defaultValues] The default selected values in this select menu
+ */
+
+/**
+ * @typedef {BaseSelectMenuComponentData} ChannelSelectMenuComponentData
+ * @property {APISelectMenuDefaultValue[]} [defaultValues] The default selected values in this select menu
+ * @property {ChannelType[]} [channelTypes] The types of channels that can be selected
  */
 
 /**
@@ -52,7 +143,6 @@ const { ComponentType } = require('discord-api-types/v10');
  * @typedef {BaseComponentData} TextInputComponentData
  * @property {string} customId The custom id of the text input
  * @property {TextInputStyle} style The style of the text input
- * @property {string} label The text that appears on top of the text input field
  * @property {number} [minLength] The minimum number of characters that can be entered in the text input
  * @property {number} [maxLength] The maximum number of characters that can be entered in the text input
  * @property {boolean} [required] Whether or not the text input is required or not
@@ -130,6 +220,25 @@ const { ComponentType } = require('discord-api-types/v10');
  * SectionComponent|SeparatorComponent|TextDisplayComponent} MessageTopLevelComponent
  */
 
+const ComponentTypeToClass = {
+  [ComponentType.ActionRow]: getActionRow,
+  [ComponentType.Button]: getButtonComponent,
+  [ComponentType.StringSelect]: getStringSelectMenuComponent,
+  [ComponentType.TextInput]: getTextInputComponent,
+  [ComponentType.UserSelect]: getUserSelectMenuComponent,
+  [ComponentType.RoleSelect]: getRoleSelectMenuComponent,
+  [ComponentType.MentionableSelect]: getMentionableSelectMenuComponent,
+  [ComponentType.ChannelSelect]: getChannelSelectMenuComponent,
+  [ComponentType.Container]: getContainerComponent,
+  [ComponentType.TextDisplay]: getTextDisplayComponent,
+  [ComponentType.File]: getFileComponent,
+  [ComponentType.MediaGallery]: getMediaGalleryComponent,
+  [ComponentType.Section]: getSectionComponent,
+  [ComponentType.Separator]: getSeparatorComponent,
+  [ComponentType.Thumbnail]: getThumbnailComponent,
+  [ComponentType.Label]: getLabelComponent,
+};
+
 /**
  * Transforms API data into a component
  *
@@ -138,7 +247,7 @@ const { ComponentType } = require('discord-api-types/v10');
  * @ignore
  */
 function createComponent(data) {
-  return data instanceof Component ? data : new (ComponentTypeToClass[data.type] ?? Component)(data);
+  return data instanceof getComponent() ? data : new (ComponentTypeToClass[data.type]?.() ?? getComponent())(data);
 }
 
 /**
@@ -179,38 +288,3 @@ function findComponentByCustomId(components, customId) {
 
 exports.createComponent = createComponent;
 exports.findComponentByCustomId = findComponentByCustomId;
-
-const { ActionRow } = require('../structures/ActionRow.js');
-const { ButtonComponent } = require('../structures/ButtonComponent.js');
-const { ChannelSelectMenuComponent } = require('../structures/ChannelSelectMenuComponent.js');
-const { Component } = require('../structures/Component.js');
-const { ContainerComponent } = require('../structures/ContainerComponent.js');
-const { FileComponent } = require('../structures/FileComponent.js');
-const { MediaGalleryComponent } = require('../structures/MediaGalleryComponent.js');
-const { MentionableSelectMenuComponent } = require('../structures/MentionableSelectMenuComponent.js');
-const { RoleSelectMenuComponent } = require('../structures/RoleSelectMenuComponent.js');
-const { SectionComponent } = require('../structures/SectionComponent.js');
-const { SeparatorComponent } = require('../structures/SeparatorComponent.js');
-const { StringSelectMenuComponent } = require('../structures/StringSelectMenuComponent.js');
-const { TextDisplayComponent } = require('../structures/TextDisplayComponent.js');
-const { TextInputComponent } = require('../structures/TextInputComponent.js');
-const { ThumbnailComponent } = require('../structures/ThumbnailComponent.js');
-const { UserSelectMenuComponent } = require('../structures/UserSelectMenuComponent.js');
-
-const ComponentTypeToClass = {
-  [ComponentType.ActionRow]: ActionRow,
-  [ComponentType.Button]: ButtonComponent,
-  [ComponentType.StringSelect]: StringSelectMenuComponent,
-  [ComponentType.TextInput]: TextInputComponent,
-  [ComponentType.UserSelect]: UserSelectMenuComponent,
-  [ComponentType.RoleSelect]: RoleSelectMenuComponent,
-  [ComponentType.MentionableSelect]: MentionableSelectMenuComponent,
-  [ComponentType.ChannelSelect]: ChannelSelectMenuComponent,
-  [ComponentType.Container]: ContainerComponent,
-  [ComponentType.TextDisplay]: TextDisplayComponent,
-  [ComponentType.File]: FileComponent,
-  [ComponentType.MediaGallery]: MediaGalleryComponent,
-  [ComponentType.Section]: SectionComponent,
-  [ComponentType.Separator]: SeparatorComponent,
-  [ComponentType.Thumbnail]: ThumbnailComponent,
-};

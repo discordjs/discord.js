@@ -10,7 +10,6 @@ import type {
   APIInteractionDataResolvedChannel,
   APIInteractionDataResolvedGuildMember,
   APIInteractionGuildMember,
-  APIMessage,
   APIPartialChannel,
   APIPartialGuild,
   APIRole,
@@ -99,6 +98,7 @@ import type {
   Entitlement,
   FetchedThreads,
   FetchedThreadsMore,
+  FetchPinnedMessagesResponse,
   FileComponentData,
   ForumChannel,
   Guild,
@@ -152,7 +152,6 @@ import type {
   PartialMessageReaction,
   PartialPoll,
   PartialPollAnswer,
-  PartialTextBasedChannelFields,
   PartialThreadMember,
   PartialUser,
   Poll,
@@ -171,6 +170,7 @@ import type {
   SectionComponentData,
   SelectMenuInteraction,
   SendableChannels,
+  SendMethod,
   SeparatorComponentData,
   Serialized,
   Shard,
@@ -184,7 +184,6 @@ import type {
   StringSelectMenuComponent,
   StringSelectMenuComponentData,
   StringSelectMenuInteraction,
-  TextBasedChannelFields,
   TextBasedChannel,
   TextBasedChannelTypes,
   ThreadManager,
@@ -199,6 +198,8 @@ import type {
   User,
   VoiceBasedChannel,
   VoiceChannel,
+  Invite,
+  GuildInvite,
 } from './index.js';
 import {
   ActionRowBuilder,
@@ -229,7 +230,6 @@ import {
   UserSelectMenuComponent,
   UserSelectMenuInteraction,
   Webhook,
-  WebhookClient,
 } from './index.js';
 
 // Test type transformation:
@@ -261,6 +261,10 @@ if (client.isReady()) {
 } else {
   expectType<Client>(client);
 }
+
+expectType<Promise<Invite>>(client.fetchInvite('https://discord.gg/djs'));
+expectType<Promise<Invite<true>>>(client.fetchInvite('https://discord.gg/djs', { withCounts: true }));
+expectNotType<Promise<Invite<true>>>(client.fetchInvite('https://discord.gg/djs', { withCounts: false }));
 
 const testGuildId = '222078108977594368'; // DJS
 const testUserId = '987654321098765432'; // example id
@@ -407,8 +411,15 @@ client.on('interactionCreate', async interaction => {
   }
 });
 
-client.on('inviteCreate', ({ client }) => expectType<Client<true>>(client));
-client.on('inviteDelete', ({ client }) => expectType<Client<true>>(client));
+client.on('inviteCreate', invite => {
+  expectType<GuildInvite>(invite);
+  expectType<Client<true>>(invite.client);
+});
+
+client.on('inviteDelete', invite => {
+  expectType<GuildInvite>(invite);
+  expectType<Client<true>>(invite.client);
+});
 
 // This is to check that stuff is the right type
 declare const assertIsMessage: (m: Promise<Message>) => void;
@@ -1519,13 +1530,13 @@ expectType<ForumChannel | MediaChannel | null>(threadChannelFromForum.parent);
 expectType<AnnouncementChannel | TextChannel | null>(threadChannelNotFromForum.parent);
 
 // Test whether the structures implement send
-expectType<TextBasedChannelFields<false>['send']>(dmChannel.send);
-expectType<TextBasedChannelFields<true>['send']>(threadChannel.send);
-expectType<TextBasedChannelFields<true>['send']>(announcementChannel.send);
-expectType<TextBasedChannelFields<true>['send']>(textChannel.send);
-expectType<TextBasedChannelFields<true>['send']>(voiceChannel.send);
-expectAssignable<PartialTextBasedChannelFields>(user);
-expectAssignable<PartialTextBasedChannelFields>(guildMember);
+expectType<SendMethod<false>['send']>(dmChannel.send);
+expectType<SendMethod<true>['send']>(threadChannel.send);
+expectType<SendMethod<true>['send']>(announcementChannel.send);
+expectType<SendMethod<true>['send']>(textChannel.send);
+expectType<SendMethod<true>['send']>(voiceChannel.send);
+expectAssignable<SendMethod>(user);
+expectAssignable<SendMethod>(guildMember);
 
 expectType<Promise<AnnouncementChannel>>(textChannel.setType(ChannelType.GuildAnnouncement));
 expectType<Promise<TextChannel>>(announcementChannel.setType(ChannelType.GuildText));
@@ -1757,7 +1768,7 @@ declare const guildChannelManager: GuildChannelManager;
     expectType<Promise<Message<true>>>(messages.crosspost('1234567890'));
     expectType<Promise<Message<true>>>(messages.edit('1234567890', 'text'));
     expectType<Promise<Message<true>>>(messages.fetch('1234567890'));
-    expectType<Promise<Collection<Snowflake, Message<true>>>>(messages.fetchPinned());
+    expectType<Promise<FetchPinnedMessagesResponse<true>>>(messages.fetchPins());
     expectType<Guild>(message.guild);
     expectType<Snowflake>(message.guildId);
     expectType<GuildTextBasedChannel>(message.channel.messages.channel);
@@ -1770,7 +1781,7 @@ declare const guildChannelManager: GuildChannelManager;
   expectType<DMMessageManager>(messages);
   expectType<Promise<Message>>(messages.edit('1234567890', 'text'));
   expectType<Promise<Message>>(messages.fetch('1234567890'));
-  expectType<Promise<Collection<Snowflake, Message>>>(messages.fetchPinned());
+  expectType<Promise<FetchPinnedMessagesResponse>>(messages.fetchPins());
   expectType<Guild | null>(message.guild);
   expectType<Snowflake | null>(message.guildId);
   expectType<DMChannel | GuildTextBasedChannel | PartialGroupDMChannel>(message.channel.messages.channel);
@@ -2571,15 +2582,55 @@ await chatInputInteraction.showModal({
   custom_id: 'abc',
   components: [
     {
-      components: [
-        {
-          custom_id: 'aa',
-          label: 'label',
-          style: TextInputStyle.Short,
-          type: ComponentType.TextInput,
-        },
-      ],
-      type: ComponentType.ActionRow,
+      component: {
+        type: ComponentType.StringSelect,
+        id: 2,
+        custom_id: 'aa',
+        options: [{ label: 'a', value: 'b' }],
+      },
+      type: ComponentType.Label,
+      label: 'yo',
+    },
+  ],
+});
+
+await chatInputInteraction.showModal({
+  title: 'abc',
+  customId: 'abc',
+  components: [
+    {
+      type: ComponentType.Label,
+      component: {
+        type: ComponentType.TextInput,
+        style: TextInputStyle.Short,
+        customId: 'aa',
+      },
+      label: 'yo',
+    },
+    {
+      type: ComponentType.Label,
+      component: {
+        type: ComponentType.UserSelect,
+        customId: 'user',
+      },
+      label: 'aa',
+    },
+    {
+      type: ComponentType.Label,
+      component: {
+        type: ComponentType.RoleSelect,
+        customId: 'role',
+      },
+      label: 'bb',
+    },
+    {
+      type: ComponentType.Label,
+      component: {
+        type: ComponentType.ChannelSelect,
+        customId: 'channel',
+        channelTypes: [ChannelType.GuildText, ChannelType.GuildVoice],
+      },
+      label: 'cc',
     },
   ],
 });
@@ -2630,18 +2681,13 @@ expectType<UserMention>(user.toString());
 expectType<UserMention>(guildMember.toString());
 
 declare const webhook: Webhook;
-declare const webhookClient: WebhookClient;
 declare const interactionWebhook: InteractionWebhook;
 declare const snowflake: Snowflake;
 
-expectType<Promise<Message>>(webhook.send('content'));
-expectType<Promise<Message>>(webhook.editMessage(snowflake, 'content'));
-expectType<Promise<Message>>(webhook.fetchMessage(snowflake));
+expectType<Promise<Message<true>>>(webhook.send('content'));
+expectType<Promise<Message<true>>>(webhook.editMessage(snowflake, 'content'));
+expectType<Promise<Message<true>>>(webhook.fetchMessage(snowflake));
 expectType<Promise<Webhook>>(webhook.edit({ name: 'name' }));
-
-expectType<Promise<APIMessage>>(webhookClient.send('content'));
-expectType<Promise<APIMessage>>(webhookClient.editMessage(snowflake, 'content'));
-expectType<Promise<APIMessage>>(webhookClient.fetchMessage(snowflake));
 
 expectType<Client<true>>(interactionWebhook.client);
 expectType<Promise<Message>>(interactionWebhook.send('content'));
@@ -2987,3 +3033,23 @@ await guildScheduledEventManager.edit(snowflake, { recurrenceRule: null });
     byMonth: [GuildScheduledEventRecurrenceRuleMonth.May],
   });
 }
+
+await textChannel.send({
+  files: [
+    new AttachmentBuilder('https://example.com/voice-message.ogg')
+      .setDuration(2)
+      .setWaveform('AFUqPDw3Eg2hh4+gopOYj4xthU4='),
+  ],
+  flags: MessageFlags.IsVoiceMessage,
+});
+
+await textChannel.send({
+  files: [
+    {
+      attachment: 'https://example.com/voice-message.ogg',
+      duration: 2,
+      waveform: 'AFUqPDw3Eg2hh4+gopOYj4xthU4=',
+    },
+  ],
+  flags: MessageFlags.IsVoiceMessage,
+});

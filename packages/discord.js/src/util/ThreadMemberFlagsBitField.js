@@ -1,6 +1,7 @@
 /* eslint-disable jsdoc/check-values */
 'use strict';
 
+const { ThreadMemberFlags } = require('discord-api-types/v10');
 const { BitField } = require('./BitField.js');
 
 /**
@@ -12,10 +13,10 @@ class ThreadMemberFlagsBitField extends BitField {
   /**
    * Numeric thread member flags. There are currently no bitflags relevant to bots for this.
    *
-   * @type {Object<string, number>}
+   * @type {ThreadMemberFlags}
    * @memberof ThreadMemberFlagsBitField
    */
-  static Flags = {};
+  static Flags = ThreadMemberFlags;
 }
 
 /**

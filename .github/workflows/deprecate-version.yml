@@ -11,12 +11,14 @@ on:
           - '@discordjs/builders'
           - '@discordjs/collection'
           - '@discordjs/core'
+          - 'create-discord-app'
           - 'create-discord-bot'
           - '@discordjs/formatters'
           - 'discord.js'
           - '@discordjs/next'
           - '@discordjs/proxy'
           - '@discordjs/rest'
+          - '@discordjs/structures'
           - '@discordjs/util'
           - '@discordjs/voice'
           - '@discordjs/ws'
@@ -34,17 +36,21 @@ jobs:
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Install Node.js v22
-        uses: actions/setup-node@v4
+      - name: Install Node.js v24
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
+          package-manager-cache: false
 
       - name: Install dependencies
         uses: ./packages/actions/src/pnpmCache
 
       - name: Deprecate
-        run: pnpm exec npm-deprecate --name "${{inputs.version}}" --message "${{inputs.message || 'This version is deprecated. Please use a newer version.'}}" --package ${{inputs.package}}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+        uses: ./packages/actions/src/deprecateVersion
+        with:
+          package: ${{ inputs.package }}
+          version: ${{ inputs.version }}
+          message: ${{ inputs.message }}
+          node-auth-token: ${{ secrets.NPM_PUBLISH_TOKEN }}

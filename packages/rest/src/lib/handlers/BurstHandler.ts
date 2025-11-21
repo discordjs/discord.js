@@ -141,7 +141,7 @@ export class BurstHandler implements IHandler {
 			// Since this is not a server side issue, the next request should pass, so we don't bump the retries counter
 			return this.runRequest(routeId, url, options, requestData, retries);
 		} else {
-			const handled = await handleErrors(this.manager, res, method, url, requestData, retries);
+			const handled = await handleErrors(this.manager, res, method, url, requestData, retries, routeId);
 			if (handled === null) {
 				// eslint-disable-next-line no-param-reassign
 				return this.runRequest(routeId, url, options, requestData, ++retries);

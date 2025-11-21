@@ -1,18 +1,21 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type {
-	APIActionRowComponent,
-	APIComponentInModalActionRow,
+	APILabelComponent,
 	APIModalInteractionResponseCallbackData,
+	APITextDisplayComponent,
 } from 'discord-api-types/v10';
-import { ActionRowBuilder } from '../../components/ActionRow.js';
+import type { ActionRowBuilder } from '../../components/ActionRow.js';
+import type { AnyModalComponentBuilder } from '../../components/Components.js';
 import { createComponentBuilder } from '../../components/Components.js';
+import { LabelBuilder } from '../../components/label/Label.js';
+import { TextDisplayBuilder } from '../../components/v2/TextDisplay.js';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { resolveBuilder } from '../../util/resolveBuilder.js';
 import { validate } from '../../util/validation.js';
 import { modalPredicate } from './Assertions.js';
 
 export interface ModalBuilderData extends Partial<Omit<APIModalInteractionResponseCallbackData, 'components'>> {
-	components: ActionRowBuilder[];
+	components: (ActionRowBuilder | AnyModalComponentBuilder)[];
 }
 
 /**
@@ -27,7 +30,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	/**
 	 * The components within this modal.
 	 */
-	public get components(): readonly ActionRowBuilder[] {
+	public get components(): readonly (ActionRowBuilder | AnyModalComponentBuilder)[] {
 		return this.data.components;
 	}
 
@@ -66,19 +69,15 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	}
 
 	/**
-	 * Adds action rows to this modal.
+	 * Adds label components to this modal.
 	 *
 	 * @param components - The components to add
 	 */
-	public addActionRows(
-		...components: RestOrArray<
-			| ActionRowBuilder
-			| APIActionRowComponent<APIComponentInModalActionRow>
-			| ((builder: ActionRowBuilder) => ActionRowBuilder)
-		>
+	public addLabelComponents(
+		...components: RestOrArray<APILabelComponent | LabelBuilder | ((builder: LabelBuilder) => LabelBuilder)>
 	) {
 		const normalized = normalizeArray(components);
-		const resolved = normalized.map((row) => resolveBuilder(row, ActionRowBuilder));
+		const resolved = normalized.map((label) => resolveBuilder(label, LabelBuilder));
 
 		this.data.components.push(...resolved);
 
@@ -86,64 +85,54 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	}
 
 	/**
-	 * Sets the action rows for this modal.
+	 * Adds text display components to this modal.
 	 *
-	 * @param components - The components to set
+	 * @param components - The components to add
 	 */
-	public setActionRows(
+	public addTextDisplayComponents(
 		...components: RestOrArray<
-			| ActionRowBuilder
-			| APIActionRowComponent<APIComponentInModalActionRow>
-			| ((builder: ActionRowBuilder) => ActionRowBuilder)
+			APITextDisplayComponent | TextDisplayBuilder | ((builder: TextDisplayBuilder) => TextDisplayBuilder)
 		>
 	) {
 		const normalized = normalizeArray(components);
-		this.spliceActionRows(0, this.data.components.length, ...normalized);
+		const resolved = normalized.map((row) => resolveBuilder(row, TextDisplayBuilder));
+
+		this.data.components.push(...resolved);
 
 		return this;
 	}
 
 	/**
-	 * Removes, replaces, or inserts action rows for this modal.
+	 * Removes, replaces, or inserts components for this modal.
 	 *
 	 * @remarks
 	 * This method behaves similarly
 	 * to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
-	 * The maximum amount of action rows that can be added is 5.
+	 * The maximum amount of components that can be added is 5.
 	 *
-	 * It's useful for modifying and adjusting order of the already-existing action rows of a modal.
+	 * It's useful for modifying and adjusting order of the already-existing components of a modal.
 	 * @example
-	 * Remove the first action row:
+	 * Remove the first component:
 	 * ```ts
-	 * embed.spliceActionRows(0, 1);
+	 * modal.spliceComponents(0, 1);
 	 * ```
 	 * @example
-	 * Remove the first n action rows:
+	 * Remove the first n components:
 	 * ```ts
 	 * const n = 4;
-	 * embed.spliceActionRows(0, n);
+	 * modal.spliceComponents(0, n);
 	 * ```
 	 * @example
-	 * Remove the last action row:
+	 * Remove the last component:
 	 * ```ts
-	 * embed.spliceActionRows(-1, 1);
+	 * modal.spliceComponents(-1, 1);
 	 * ```
 	 * @param index - The index to start at
-	 * @param deleteCount - The number of action rows to remove
-	 * @param rows - The replacing action row objects
+	 * @param deleteCount - The number of components to remove
+	 * @param components - The replacing components
 	 */
-	public spliceActionRows(
-		index: number,
-		deleteCount: number,
-		...rows: (
-			| ActionRowBuilder
-			| APIActionRowComponent<APIComponentInModalActionRow>
-			| ((builder: ActionRowBuilder) => ActionRowBuilder)
-		)[]
-	): this {
-		const resolved = rows.map((row) => resolveBuilder(row, ActionRowBuilder));
-		this.data.components.splice(index, deleteCount, ...resolved);
-
+	public spliceComponents(index: number, deleteCount: number, ...components: AnyModalComponentBuilder[]): this {
+		this.data.components.splice(index, deleteCount, ...components);
 		return this;
 	}
 
