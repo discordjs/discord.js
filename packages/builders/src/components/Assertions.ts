@@ -62,7 +62,7 @@ const selectMenuBasePredicate = z.strictObject({
 
 export const selectMenuChannelPredicate = selectMenuBasePredicate.extend({
 	type: z.literal(ComponentType.ChannelSelect),
-	channel_types: z.nativeEnum(ChannelType).array().optional(),
+	channel_types: z.enum(ChannelType).array().optional(),
 	default_values: z
 		.strictObject({ id: snowflakePredicate, type: z.literal(SelectMenuDefaultValueType.Channel) })
 		.array()
@@ -75,10 +75,7 @@ export const selectMenuMentionablePredicate = selectMenuBasePredicate.extend({
 	default_values: z
 		.strictObject({
 			id: snowflakePredicate,
-			type: z.union([
-				z.literal(SelectMenuDefaultValueType.Role),
-				z.literal(SelectMenuDefaultValueType.User),
-			]),
+			type: z.literal([SelectMenuDefaultValueType.Role, SelectMenuDefaultValueType.User]),
 		})
 		.array()
 		.max(25)
@@ -148,13 +145,13 @@ export const actionRowPredicate = z.strictObject({
 			.max(5),
 		z
 			.strictObject({
-				type: z.union([
-					z.literal(ComponentType.ChannelSelect),
-					z.literal(ComponentType.MentionableSelect),
-					z.literal(ComponentType.StringSelect),
-					z.literal(ComponentType.RoleSelect),
-					z.literal(ComponentType.TextInput),
-					z.literal(ComponentType.UserSelect),
+				type: z.literal([
+					ComponentType.ChannelSelect,
+					ComponentType.MentionableSelect,
+					ComponentType.StringSelect,
+					ComponentType.RoleSelect,
+					ComponentType.TextInput,
+					ComponentType.UserSelect,
 				]),
 			})
 			.array()
