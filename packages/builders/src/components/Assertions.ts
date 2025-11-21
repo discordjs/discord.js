@@ -1,12 +1,12 @@
 import { ButtonStyle, ChannelType, ComponentType, SelectMenuDefaultValueType } from 'discord-api-types/v10';
 import { z } from 'zod';
-import { idPredicate, customIdPredicate } from '../Assertions.js';
+import { customIdPredicate, idPredicate, snowflakePredicate } from '../Assertions.js';
 
 const labelPredicate = z.string().min(1).max(80);
 
 export const emojiPredicate = z
 	.strictObject({
-		id: z.string().optional(),
+		id: snowflakePredicate.optional(),
 		name: z.string().min(2).max(32).optional(),
 		animated: z.boolean().optional(),
 	})
@@ -39,7 +39,7 @@ const buttonLinkPredicate = buttonPredicateBase.extend({
 
 const buttonPremiumPredicate = buttonPredicateBase.extend({
 	style: z.literal(ButtonStyle.Premium),
-	sku_id: z.string(),
+	sku_id: snowflakePredicate,
 });
 
 export const buttonPredicate = z.discriminatedUnion('style', [
@@ -51,7 +51,7 @@ export const buttonPredicate = z.discriminatedUnion('style', [
 	buttonPremiumPredicate,
 ]);
 
-const selectMenuBasePredicate = z.object({
+const selectMenuBasePredicate = z.strictObject({
 	id: idPredicate,
 	placeholder: z.string().max(150).optional(),
 	min_values: z.number().min(0).max(25).optional(),
@@ -62,9 +62,9 @@ const selectMenuBasePredicate = z.object({
 
 export const selectMenuChannelPredicate = selectMenuBasePredicate.extend({
 	type: z.literal(ComponentType.ChannelSelect),
-	channel_types: z.enum(ChannelType).array().optional(),
+	channel_types: z.nativeEnum(ChannelType).array().optional(),
 	default_values: z
-		.object({ id: z.string(), type: z.literal(SelectMenuDefaultValueType.Channel) })
+		.strictObject({ id: snowflakePredicate, type: z.literal(SelectMenuDefaultValueType.Channel) })
 		.array()
 		.max(25)
 		.optional(),
@@ -73,9 +73,12 @@ export const selectMenuChannelPredicate = selectMenuBasePredicate.extend({
 export const selectMenuMentionablePredicate = selectMenuBasePredicate.extend({
 	type: z.literal(ComponentType.MentionableSelect),
 	default_values: z
-		.object({
-			id: z.string(),
-			type: z.literal([SelectMenuDefaultValueType.Role, SelectMenuDefaultValueType.User]),
+		.strictObject({
+			id: snowflakePredicate,
+			type: z.union([
+				z.literal(SelectMenuDefaultValueType.Role),
+				z.literal(SelectMenuDefaultValueType.User),
+			]),
 		})
 		.array()
 		.max(25)
@@ -85,13 +88,13 @@ export const selectMenuMentionablePredicate = selectMenuBasePredicate.extend({
 export const selectMenuRolePredicate = selectMenuBasePredicate.extend({
 	type: z.literal(ComponentType.RoleSelect),
 	default_values: z
-		.object({ id: z.string(), type: z.literal(SelectMenuDefaultValueType.Role) })
+		.strictObject({ id: snowflakePredicate, type: z.literal(SelectMenuDefaultValueType.Role) })
 		.array()
 		.max(25)
 		.optional(),
 });
 
-export const selectMenuStringOptionPredicate = z.object({
+export const selectMenuStringOptionPredicate = z.strictObject({
 	label: labelPredicate,
 	value: z.string().min(1).max(100),
 	description: z.string().min(1).max(100).optional(),
@@ -104,37 +107,23 @@ export const selectMenuStringPredicate = selectMenuBasePredicate
 		type: z.literal(ComponentType.StringSelect),
 		options: selectMenuStringOptionPredicate.array().min(1).max(25),
 	})
-	.check((ctx) => {
-		const addIssue = (name: string, minimum: number) =>
-			ctx.issues.push({
-				code: 'too_small',
-				message: `The number of options must be greater than or equal to ${name}`,
+	.superRefine((value, ctx) => {
+		if (value.min_values !== undefined && value.options.length < value.min_values) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.too_small,
+				minimum: value.min_values,
+				type: 'array',
 				inclusive: true,
-				minimum,
-				type: 'number',
 				path: ['options'],
-				origin: 'number',
-				input: minimum,
+				message: `The number of options must be greater than or equal to min_values`,
 			});
-
-		if (ctx.value.min_values !== undefined && ctx.value.options.length < ctx.value.min_values) {
-			addIssue('min_values', ctx.value.min_values);
 		}
 
-		if (
-			ctx.value.min_values !== undefined &&
-			ctx.value.max_values !== undefined &&
-			ctx.value.min_values > ctx.value.max_values
-		) {
-			ctx.issues.push({
-				code: 'too_big',
-				message: `The maximum amount of options must be greater than or equal to the minimum amount of options`,
-				inclusive: true,
-				maximum: ctx.value.max_values,
-				type: 'number',
+		if (value.min_values !== undefined && value.max_values !== undefined && value.min_values > value.max_values) {
+			ctx.addIssue({
+				code: z.ZodIssueCode.custom,
 				path: ['min_values'],
-				origin: 'number',
-				input: ctx.value.min_values,
+				message: `The maximum amount of options must be greater than or equal to the minimum amount of options`,
 			});
 		}
 	});
@@ -142,30 +131,30 @@ export const selectMenuStringPredicate = selectMenuBasePredicate
 export const selectMenuUserPredicate = selectMenuBasePredicate.extend({
 	type: z.literal(ComponentType.UserSelect),
 	default_values: z
-		.object({ id: z.string(), type: z.literal(SelectMenuDefaultValueType.User) })
+		.strictObject({ id: snowflakePredicate, type: z.literal(SelectMenuDefaultValueType.User) })
 		.array()
 		.max(25)
 		.optional(),
 });
 
-export const actionRowPredicate = z.object({
+export const actionRowPredicate = z.strictObject({
 	id: idPredicate,
 	type: z.literal(ComponentType.ActionRow),
 	components: z.union([
 		z
-			.object({ type: z.literal(ComponentType.Button) })
+			.strictObject({ type: z.literal(ComponentType.Button) })
 			.array()
 			.min(1)
 			.max(5),
 		z
-			.object({
-				type: z.literal([
-					ComponentType.ChannelSelect,
-					ComponentType.MentionableSelect,
-					ComponentType.StringSelect,
-					ComponentType.RoleSelect,
-					ComponentType.TextInput,
-					ComponentType.UserSelect,
+			.strictObject({
+				type: z.union([
+					z.literal(ComponentType.ChannelSelect),
+					z.literal(ComponentType.MentionableSelect),
+					z.literal(ComponentType.StringSelect),
+					z.literal(ComponentType.RoleSelect),
+					z.literal(ComponentType.TextInput),
+					z.literal(ComponentType.UserSelect),
 				]),
 			})
 			.array()
