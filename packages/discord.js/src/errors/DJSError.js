@@ -20,7 +20,7 @@ function makeDiscordjsError(Base) {
     constructor(code, ...args) {
       super(message(code, args));
       this.code = code;
-      Error.captureStackTrace?.(this, this.constructor);
+      Error.captureStackTrace(this, this.constructor);
     }
 
     get name() {
