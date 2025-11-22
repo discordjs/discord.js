@@ -1,4 +1,3 @@
-import process from 'node:process';
 import { Collection } from '@discordjs/collection';
 import { lazy } from '@discordjs/util';
 import { APIVersion, GatewayOpcodes } from 'discord-api-types/v10';

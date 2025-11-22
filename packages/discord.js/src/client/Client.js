@@ -1,6 +1,5 @@
 'use strict';
 
-const process = require('node:process');
 const { clearTimeout, setImmediate, setTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
 const { REST, RESTEvents, makeURLSearchParams } = require('@discordjs/rest');

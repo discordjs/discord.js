@@ -27,7 +27,6 @@ export class OAuth2API {
 	 * @param options - The options for creating the authorization URL
 	 */
 	public generateAuthorizationURL(options: RESTOAuth2AuthorizationQuery) {
-		// eslint-disable-next-line n/prefer-global/url
 		const url = new URL(`${RouteBases.api}${Routes.oauth2Authorization()}`);
 		url.search = makeURLSearchParams(options).toString();
 		return url.toString();

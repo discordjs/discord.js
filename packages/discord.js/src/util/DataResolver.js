@@ -1,6 +1,5 @@
 'use strict';
 
-const { Buffer } = require('node:buffer');
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const { lazy } = require('@discordjs/util');

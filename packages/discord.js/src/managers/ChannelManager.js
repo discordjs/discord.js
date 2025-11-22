@@ -1,6 +1,5 @@
 'use strict';
 
-const process = require('node:process');
 const { lazy } = require('@discordjs/util');
 const { Routes } = require('discord-api-types/v10');
 const { BaseChannel } = require('../structures/BaseChannel.js');

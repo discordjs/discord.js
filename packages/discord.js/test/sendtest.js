@@ -1,15 +1,13 @@
 'use strict';
 
-const { Buffer } = require('node:buffer');
 const fs = require('node:fs');
 const path = require('node:path');
-const process = require('node:process');
 const { setTimeout: sleep } = require('node:timers/promises');
 const util = require('node:util');
 const { GatewayIntentBits } = require('discord-api-types/v10');
 const { fetch } = require('undici');
-const { owner, token } = require('./auth.js');
 const { Client, MessageAttachment, Embed, Events } = require('../src/index.js');
+const { owner, token } = require('./auth.js');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 
@@ -93,23 +91,20 @@ client.on(Events.MessageCreate, async message => {
   if (message.author.id !== owner) return;
   const match = message.content.match(/^do (.+)$/);
   if (match?.[1] === 'it') {
-    /* eslint-disable no-await-in-loop */
     for (const [i, test] of tests.entries()) {
       await message.channel.send(`**#${i}**\n\`\`\`js\n${test.toString()}\`\`\``);
-      await test(message).catch(e => message.channel.send(`Error!\n\`\`\`\n${e}\`\`\``));
+      await test(message).catch(error => message.channel.send(`Error!\n\`\`\`\n${error}\`\`\``));
       await sleep(1_000);
     }
-    /* eslint-enable no-await-in-loop */
   } else if (match) {
-    const n = parseInt(match[1]) || 0;
+    const n = Number.parseInt(match[1]) || 0;
     const test = tests.slice(n)[0];
     const i = tests.indexOf(test);
     await message.channel.send(`**#${i}**\n\`\`\`js\n${test.toString()}\`\`\``);
-    await test(message).catch(e => message.channel.send(`Error!\n\`\`\`\n${e}\`\`\``));
+    await test(message).catch(error => message.channel.send(`Error!\n\`\`\`\n${error}\`\`\``));
   }
 });
 
 client.login(token);
 
-// eslint-disable-next-line no-console
 process.on('unhandledRejection', console.error);
