@@ -81,7 +81,7 @@ const resource = createAudioResource('/home/user/voice/music.mp3', {
 	},
 });
 
-// Not recommended - listen to errors from the audio player instead for most usecases!
+// Not recommended - listen to errors from the audio player instead for most use cases!
 resource.playStream.on('error', (error) => {
 	console.error('Error:', error.message, 'with track', resource.metadata.title);
 });
