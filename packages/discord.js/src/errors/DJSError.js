@@ -20,7 +20,7 @@ function makeDiscordjsError(Base) {
     }
 
     get name() {
-      return `${super.name} [${this.code}]`;
+      return `${this.constructor.name} [${this.code}]`;
     }
   };
 }
