@@ -389,15 +389,6 @@ class Client extends AsyncEventEmitter {
     );
     this.ws.on(WebSocketShardEvents.Dispatch, this._handlePacket.bind(this));
 
-    this.ws.on(WebSocketShardEvents.Ready, async data => {
-      for (const guild of data.guilds) {
-        this.expectedGuilds.add(guild.id);
-      }
-
-      this.status = Status.WaitingForGuilds;
-      await this._checkReady();
-    });
-
     this.ws.on(WebSocketShardEvents.HeartbeatComplete, ({ heartbeatAt, latency }, shardId) => {
       this.emit(Events.Debug, `[WS => Shard ${shardId}] Heartbeat acknowledged, latency of ${latency}ms.`);
       this.lastPingTimestamps.set(shardId, heartbeatAt);
@@ -427,7 +418,9 @@ class Client extends AsyncEventEmitter {
         PacketHandlers[packet.t](this, packet, shardId);
       }
 
-      if (this.status === Status.WaitingForGuilds && WaitingForGuildEvents.includes(packet.t)) {
+      if (packet.t === GatewayDispatchEvents.Ready) {
+        await this._checkReady();
+      } else if (this.status === Status.WaitingForGuilds && WaitingForGuildEvents.includes(packet.t)) {
         this.expectedGuilds.delete(packet.d.id);
         await this._checkReady();
       }
