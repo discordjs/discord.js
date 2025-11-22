@@ -1,7 +1,8 @@
 import type { APIExtendedInvite, APIInvite } from 'discord-api-types/v10';
 import { InviteTargetType, InviteType } from 'discord-api-types/v10';
 import { describe, expect, test } from 'vitest';
-import { Invite } from '../src/index.js';
+import { Invite } from '../src/invites/Invite.js';
+import { dateToDiscordISOTimestamp } from '../src/utils/optimization.js';
 import { kPatch } from '../src/utils/symbols.js';
 
 describe('Invite', () => {
@@ -22,7 +23,7 @@ describe('Invite', () => {
 
 	const dataExtended: Omit<APIExtendedInvite, 'expires_at'> = {
 		...data,
-		created_at: '2020-10-10T13:50:17.209Z',
+		created_at: '2020-10-10T13:50:17.209000+00:00',
 		max_age: 12,
 		max_uses: 34,
 		temporary: false,
@@ -54,7 +55,7 @@ describe('Invite', () => {
 		const instance = new Invite(dataExtended);
 		expect(instance.type).toBe(data.type);
 		expect(instance.code).toBe(dataExtended.code);
-		expect(instance.createdAt?.toISOString()).toBe(dataExtended.created_at);
+		expect(dateToDiscordISOTimestamp(instance.createdAt!)).toBe(dataExtended.created_at);
 		expect(instance.createdTimestamp).toBe(Date.parse(dataExtended.created_at));
 		expect(instance.maxAge).toBe(dataExtended.max_age);
 		expect(instance.maxUses).toBe(dataExtended.max_uses);
@@ -63,10 +64,10 @@ describe('Invite', () => {
 		expect(instance.targetType).toBe(dataExtended.target_type);
 		expect(instance.temporary).toBe(dataExtended.temporary);
 		expect(instance.uses).toBe(dataExtended.uses);
-		expect(instance.expiresTimestamp).toStrictEqual(Date.parse('2020-10-10T13:50:29.209Z'));
-		expect(instance.expiresAt).toStrictEqual(new Date('2020-10-10T13:50:29.209Z'));
+		expect(instance.expiresTimestamp).toStrictEqual(Date.parse('2020-10-10T13:50:29.209000+00:00'));
+		expect(instance.expiresAt).toStrictEqual(new Date('2020-10-10T13:50:29.209000+00:00'));
 		expect(instance.url).toBe('https://discord.gg/123');
-		expect(instance.toJSON()).toEqual({ ...dataExtended, expires_at: '2020-10-10T13:50:29.209Z' });
+		expect(instance.toJSON()).toEqual({ ...dataExtended, expires_at: '2020-10-10T13:50:29.209000+00:00' });
 	});
 
 	test('Invite with omitted properties', () => {
@@ -79,8 +80,8 @@ describe('Invite', () => {
 	});
 
 	test('Invite with expiration', () => {
-		const instance = new Invite({ ...dataExtended, expires_at: '2020-10-10T13:50:29.209Z' });
-		expect(instance.toJSON()).toEqual({ ...dataExtended, expires_at: '2020-10-10T13:50:29.209Z' });
+		const instance = new Invite({ ...dataExtended, expires_at: '2020-10-10T13:50:29.209000+00:00' });
+		expect(instance.toJSON()).toEqual({ ...dataExtended, expires_at: '2020-10-10T13:50:29.209000+00:00' });
 	});
 
 	test('Patching Invite works in place', () => {

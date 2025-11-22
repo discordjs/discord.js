@@ -1,6 +1,6 @@
 import type { APIConnection } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
-import { kData, kPatch } from '../utils/symbols.js';
+import { kData } from '../utils/symbols.js';
 import type { Partialize } from '../utils/types.js';
 
 /**
@@ -19,15 +19,6 @@ export class Connection<Omitted extends keyof APIConnection | '' = ''> extends S
 	 */
 	public constructor(data: Partialize<APIConnection, Omitted>) {
 		super(data);
-	}
-
-	/**
-	 * {@inheritDoc Structure.[kPatch]}
-	 *
-	 * @internal
-	 */
-	public override [kPatch](data: Partial<APIConnection>) {
-		return super[kPatch](data);
 	}
 
 	/**
