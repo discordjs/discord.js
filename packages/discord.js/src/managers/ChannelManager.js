@@ -1,7 +1,7 @@
 'use strict';
 
 const process = require('node:process');
-const { lazy } = require('@discordjs/util');
+const { lazy, isFileBodyEncodable, isJSONEncodable } = require('@discordjs/util');
 const { Routes } = require('discord-api-types/v10');
 const { BaseChannel } = require('../structures/BaseChannel.js');
 const { MessagePayload } = require('../structures/MessagePayload.js');
@@ -147,7 +147,7 @@ class ChannelManager extends CachedManager {
    * Creates a message in a channel.
    *
    * @param {TextChannelResolvable} channel The channel to send the message to
-   * @param {string|MessagePayload|MessageCreateOptions} options The options to provide
+   * @param {string|MessagePayload|MessageCreateOptions|JSONEncodable<RESTPostAPIChannelMessageJSONBody>|FileBodyEncodable<RESTPostAPIChannelMessageJSONBody>} options The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Send a basic message
@@ -174,18 +174,21 @@ class ChannelManager extends CachedManager {
    *   .catch(console.error);
    */
   async createMessage(channel, options) {
-    let messagePayload;
+    let payload;
 
     if (options instanceof MessagePayload) {
-      messagePayload = options.resolveBody();
+      payload = await options.resolveBody().resolveFiles();
+    } else if (isFileBodyEncodable(options)) {
+      payload = options.toFileBody();
+    } else if (isJSONEncodable(options)) {
+      payload = { body: options.toJSON() };
     } else {
-      messagePayload = MessagePayload.create(this, options).resolveBody();
+      payload = await MessagePayload.create(this, options).resolveBody().resolveFiles();
     }
 
     const resolvedChannelId = this.resolveId(channel);
     const resolvedChannel = this.resolve(channel);
-    const { body, files } = await messagePayload.resolveFiles();
-    const data = await this.client.rest.post(Routes.channelMessages(resolvedChannelId), { body, files });
+    const data = await this.client.rest.post(Routes.channelMessages(resolvedChannelId), payload);
 
     return resolvedChannel?.messages._add(data) ?? new (getMessage())(this.client, data);
   }
