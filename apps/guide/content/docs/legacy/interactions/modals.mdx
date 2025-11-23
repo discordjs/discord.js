@@ -34,15 +34,15 @@ client.on(Events.InteractionCreate, async (interaction) => {
 ```
 
 <Callout>
-	The `customId` is a developer-defined string of up to 100 characters. This field is the unique identify of the modal
-	incoming interactions from your modals.
+	The `customId` is a developer-defined string of up to 100 characters. This field is the unique identifier of the
+	modal, it is used to differentiate incoming modal interactions. incoming interactions from your modals.
 </Callout>
 
-The next step is to add components to the `modalBuilder`.
+The next step is to add components to the `ModalBuilder`.
 
 ### Label
 
-Label components are used to add a label and description to interactive modal components.(text input, select menus, etc.)
+Label components are used to add labels and descriptions to interactive modal components (text input, select menus, etc).
 
 ```js
 const { LabelBuilder, ModalBuilder } = require('discord.js');
@@ -58,9 +58,9 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 		// [!code ++:5]
 		const hobbiesLabel = new LabelBuilder()
-			// The Label is large text identifying the interactive component to the user
+			// The label is a large header text that identifies the interactive component for the user.
 			.setLabel("What's some of your favorite hobbies?")
-			// The description is optional small text under the label and above the interactive component
+			// The description is optional small text beneath the label that provides additional information about the interactive component.
 			.setDescription('Activities you like to participate in');
 
 		// TODO: Add more components...
@@ -75,15 +75,15 @@ client.on(Events.InteractionCreate, async (interaction) => {
 ```
 
 <Callout type="warn">
-	`label` can be a max length of 45 characters
+	`label` has a max length of 45 characters.
 
-    `description` can be a max length of 100 characters
+    `description` has a max length of 100 characters.
 
 </Callout>
 
 ### Text Input
 
-Text input is an interactive component used to accept free-form text.
+A text input is an interactive component used to receive free-form text.
 
 ```js
 const { LabelBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
@@ -98,21 +98,21 @@ client.on(Events.InteractionCreate, async (interaction) => {
 		// [!code ++:6]
 		const hobbiesInput = new TextInputBuilder()
 			.setCustomId('hobbiesInput')
-			// Short means single lines of text
+			// Short means a single line of text.
 			.setStyle(TextInputStyle.Short)
-			// Uninteractable text inside of the text input box
+			// Placeholder text displayed inside the text input box
 			.setPlaceholder('card games, films, books, etc.');
 
 		// TODO: Add more interactive components
 
 		// [!code focus:8]
 		const hobbiesLabel = new LabelBuilder()
-			// The Label is large text identifying the interactive component to the user
+			// The label is a large header that identifies the interactive component for the user.
 			.setLabel("What's some of your favorite hobbies?")
-			// The description is optional small text under the label and above the interactive component
+			// The description is optional small text beneath the label that provides additional information about the interactive component.
 			.setDescription('Activities you like to participate in')
 			// [!code ++:2]
-			// Set text input component of the label
+			// Set text input as the component of the label
 			.setTextInputComponent(hobbiesInput);
 
 		// TODO: Add more components...
@@ -138,9 +138,9 @@ In addition to the `customId` and `style`, a text input can be customized in a n
 
 ```js
 const input = new TextInputBuilder()
-	// set the component id (this is not the custom id)
+	// Set the component id (this is not the custom id)
 	.setId(0)
-	// Set the maximum number of characters to allowed
+	// Set the maximum number of characters allowed
 	.setMaxLength(1_000)
 	// Set the minimum number of characters required for submission
 	.setMinLength(10)
@@ -154,11 +154,11 @@ const input = new TextInputBuilder()
 
 A select menu is an interactive component that allows you to limit user inputs to a preselected list of values.
 
-In addition to string select menus, menus for users, roles, mentionables (user and roles), and channels can be used in modals
+In addition to string select menus, menus for users, roles, mentionables (user and roles), and channels can be used in modals.
 
 <Callout>
-	For more information on the configuration of [select menus](../interactive-components/select-menus) see the
-	interaction page.
+	For more information on configuring select menus, see the [corresponding
+	page](../interactive-components/select-menus). interaction page.
 </Callout>
 
 ```js
@@ -179,9 +179,9 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 		const hobbiesInput = new TextInputBuilder()
 			.setCustomId('hobbiesInput')
-			// Short means single lines of text
+			// Short means a single line of text.
 			.setStyle(TextInputStyle.Short)
-			// Uninteractable text inside of the text input
+			// Placeholder text displayed inside the text input box
 			.setPlaceholder('card games, films, books, etc.');
 
 		// [!code focus:24]
@@ -211,9 +211,9 @@ client.on(Events.InteractionCreate, async (interaction) => {
 			);
 
 		const hobbiesLabel = new LabelBuilder()
-			// The Label is large text identifying the interactive component to the user
+			// The label is a large header that identifies the interactive component for the user.
 			.setLabel("What's some of your favorite hobbies?")
-			// The description is optional small text under the label and above the interactive component
+			// The description is optional small text beneath the label that provides additional information about the interactive component.
 			.setDescription('Activities you like to participate in')
 			// Set text input as component of the label
 			.setTextInputComponent(hobbiesInput);
@@ -259,9 +259,9 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 		const hobbiesInput = new TextInputBuilder()
 			.setCustomId('hobbiesInput')
-			// Short means single lines of text
+			// Short means a single line of text.
 			.setStyle(TextInputStyle.Short)
-			// Uninteractable text inside of the text input
+			// Placeholder text displayed inside the text input box
 			.setPlaceholder('card games, films, books, etc.');
 
 		const favoriteStarterSelect = new StringSelectMenuBuilder()
@@ -289,9 +289,9 @@ client.on(Events.InteractionCreate, async (interaction) => {
 			);
 
 		const hobbiesLabel = new LabelBuilder()
-			// The Label is large text identifying the interactive component to the user
+			// The label is a large header that identifies the interactive component for the user.
 			.setLabel("What's some of your favorite hobbies?")
-			// The description is optional small text under the label and above the interactive component
+			// The description is optional small text beneath the label that provides additional information about the interactive component.
 			.setDescription('Activities you like to participate in')
 			// Set text input as component of the label
 			.setTextInputComponent(hobbiesInput);
@@ -343,9 +343,9 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 		const hobbiesInput = new TextInputBuilder()
 			.setCustomId('hobbiesInput')
-			// Short means single lines of text
+			// Short means a single line of text.
 			.setStyle(TextInputStyle.Short)
-			// Uninteractable text inside of the text input
+			// Placeholder text displayed inside the text input box
 			.setPlaceholder('card games, films, books, etc.');
 
 		const favoriteStarterSelect = new StringSelectMenuBuilder()
@@ -376,9 +376,9 @@ client.on(Events.InteractionCreate, async (interaction) => {
 		const pictureOfTheWeekUpload = new FileUploadBuilder().setCustomId('picture');
 
 		const hobbiesLabel = new LabelBuilder()
-			// The Label is large text identifying the interactive component to the user
+			// The label is a large header that identifies the interactive component for the user.
 			.setLabel("What's some of your favorite hobbies?")
-			// The description is optional small text under the label and above the interactive component
+			// The description is optional small text beneath the label that provides additional information about the interactive component.
 			.setDescription('Activities you like to participate in')
 			// set text input component of label
 			.setTextInputComponent(hobbiesInput);
@@ -456,9 +456,9 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 		const hobbiesInput = new TextInputBuilder()
 			.setCustomId('hobbiesInput')
-			// Short means single lines of text
+			// Short means a single line of text.
 			.setStyle(TextInputStyle.Short)
-			// Uninteractable text inside of the text input
+			// Placeholder text displayed inside the text input box
 			.setPlaceholder('card games, films, books, etc.');
 
 		const favoriteStarterSelect = new StringSelectMenuBuilder()
@@ -488,16 +488,15 @@ client.on(Events.InteractionCreate, async (interaction) => {
 		const pictureOfTheWeekUpload = new FileUploadBuilder().setCustomId('picture');
 
 		const hobbiesLabel = new LabelBuilder()
-			// The Label is large text identifying the interactive component to the user
+			// The label is a large header that identifies the interactive component for the user.
 			.setLabel("What's some of your favorite hobbies?")
-			// The description is optional small text under the label and above the interactive component
+			// The description is optional small text beneath the label that provides additional information about the interactive component.
 			.setDescription('Activities you like to participate in')
 			// set text input component of label
 			.setTextInputComponent(hobbiesInput);
 
 		const favoriteStarterLabel = new LabelBuilder()
 			.setLabel("What's your favorite Gen 1 Pokémon starter?")
-			// The Description is small text under the label above the interactive component
 			.setStringSelectMenuComponent(favoriteStarterSelect);
 
 		const text = new TextDisplayBuilder().setContent(
