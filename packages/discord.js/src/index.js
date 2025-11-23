@@ -3,12 +3,10 @@
 const { __exportStar } = require('tslib');
 
 // "Root" classes (starting points)
-exports.BaseClient = require('./client/BaseClient.js').BaseClient;
 exports.Client = require('./client/Client.js').Client;
 exports.Shard = require('./sharding/Shard.js').Shard;
 exports.ShardClientUtil = require('./sharding/ShardClientUtil.js').ShardClientUtil;
 exports.ShardingManager = require('./sharding/ShardingManager.js').ShardingManager;
-exports.WebhookClient = require('./client/WebhookClient.js').WebhookClient;
 
 // Errors
 exports.DiscordjsError = require('./errors/DJSError.js').DiscordjsError;

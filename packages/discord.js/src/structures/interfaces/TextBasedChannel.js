@@ -1,13 +1,16 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { lazy } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { InteractionType, Routes } = require('discord-api-types/v10');
 const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../../errors/index.js');
 const { MaxBulkDeletableMessageAge } = require('../../util/Constants.js');
 const { InteractionCollector } = require('../InteractionCollector.js');
-// eslint-disable-next-line import-x/order
 const { MessageCollector } = require('../MessageCollector.js');
+
+// Fixes circular dependencies.
+const getGuildMessageManager = lazy(() => require('../../managers/GuildMessageManager.js').GuildMessageManager);
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -21,8 +24,7 @@ class TextBasedChannel {
      *
      * @type {GuildMessageManager}
      */
-    // eslint-disable-next-line no-use-before-define
-    this.messages = new GuildMessageManager(this);
+    this.messages = new (getGuildMessageManager())(this);
 
     /**
      * The channel's last message id, if one was sent
@@ -427,7 +429,3 @@ class TextBasedChannel {
 }
 
 exports.TextBasedChannel = TextBasedChannel;
-
-// Fixes Circular
-// eslint-disable-next-line import-x/order
-const { GuildMessageManager } = require('../../managers/GuildMessageManager.js');

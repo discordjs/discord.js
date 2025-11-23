@@ -14,13 +14,14 @@ onlyBuiltDependencies:
   - bufferutil
   - esbuild
   - protobufjs
+  - rclone.js
   - sharp
   - utf-8-validate
+  - workerd
   - zlib-sync
 
 patchedDependencies:
   '@microsoft/tsdoc-config@0.17.1': patches/@microsoft__tsdoc-config@0.17.1.patch
-  eslint-config-neon@0.2.7: patches/eslint-config-neon@0.2.7.patch
 
 peerDependencyRules:
   allowAny:

@@ -10,7 +10,6 @@ import type {
   APIInteractionDataResolvedChannel,
   APIInteractionDataResolvedGuildMember,
   APIInteractionGuildMember,
-  APIMessage,
   APIPartialChannel,
   APIPartialGuild,
   APIRole,
@@ -231,7 +230,6 @@ import {
   UserSelectMenuComponent,
   UserSelectMenuInteraction,
   Webhook,
-  WebhookClient,
 } from './index.js';
 
 // Test type transformation:
@@ -2683,7 +2681,6 @@ expectType<UserMention>(user.toString());
 expectType<UserMention>(guildMember.toString());
 
 declare const webhook: Webhook;
-declare const webhookClient: WebhookClient;
 declare const interactionWebhook: InteractionWebhook;
 declare const snowflake: Snowflake;
 
@@ -2691,10 +2688,6 @@ expectType<Promise<Message<true>>>(webhook.send('content'));
 expectType<Promise<Message<true>>>(webhook.editMessage(snowflake, 'content'));
 expectType<Promise<Message<true>>>(webhook.fetchMessage(snowflake));
 expectType<Promise<Webhook>>(webhook.edit({ name: 'name' }));
-
-expectType<Promise<APIMessage>>(webhookClient.send('content'));
-expectType<Promise<APIMessage>>(webhookClient.editMessage(snowflake, 'content'));
-expectType<Promise<APIMessage>>(webhookClient.fetchMessage(snowflake));
 
 expectType<Client<true>>(interactionWebhook.client);
 expectType<Promise<Message>>(interactionWebhook.send('content'));
