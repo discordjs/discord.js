@@ -37,6 +37,12 @@ export interface ContainerBuilderData extends Partial<Omit<APIContainerComponent
 
 /**
  * A builder that creates API-compatible JSON data for containers.
+ *
+ * @example
+ * // Correct example of adding components:
+ * container
+ *   .addSeparatorComponents(separator)
+ *   .addSectionComponents(section);
  */
 export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
 	/**
@@ -103,7 +109,7 @@ export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
 	 */
 	public addActionRowComponents(
 		...input: RestOrArray<
-			| ActionRowBuilder
+			ActionRowBuilder
 			| APIActionRowComponent<APIComponentInMessageActionRow>
 			| ((builder: ActionRowBuilder) => ActionRowBuilder)
 		>
@@ -198,29 +204,16 @@ export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
 	 * Removes, replaces, or inserts components for this container
 	 *
 	 * @remarks
-	 * This method behaves similarly
-	 * to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
+	 * This behaves like Array.prototype.splice()
 	 *
-	 * It's useful for modifying and adjusting order of the already-existing components of a container.
 	 * @example
-	 * Remove the first component:
-	 * ```ts
 	 * container.spliceComponents(0, 1);
-	 * ```
+	 *
 	 * @example
-	 * Remove the first n components:
-	 * ```ts
-	 * const n = 4;
 	 * container.spliceComponents(0, n);
-	 * ```
+	 *
 	 * @example
-	 * Remove the last component:
-	 * ```ts
 	 * container.spliceComponents(-1, 1);
-	 * ```
-	 * @param index - The index to start at
-	 * @param deleteCount - The number of components to remove
-	 * @param components - The replacing component objects
 	 */
 	public spliceComponents(
 		index: number,
