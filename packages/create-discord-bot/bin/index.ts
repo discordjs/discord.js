@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { styleText } from 'node:util';
 import { Option, program } from 'commander';
 import prompts from 'prompts';

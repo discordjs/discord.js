@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable n/shebang */
+
 import { createCommand } from 'commander';
 import packageFile from '../package.json';
 import { build } from '../src/index.js';

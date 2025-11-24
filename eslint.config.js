@@ -30,6 +30,13 @@ const nodeRuleset = merge(...node, {
 	},
 });
 
+const nodeBinRuleset = {
+	files: [`**/bin/*{js,mjs,cjs,ts,mts,cts}`],
+	rules: {
+		'n/shebang': [0],
+	},
+};
+
 const typeScriptRuleset = merge(...typescript, {
 	files: [`**/*${commonFiles}`],
 	ignores: [`packages/discord.js/**/*.{js,mjs,cjs}`],
@@ -104,6 +111,7 @@ export default defineConfig(
 	},
 	commonRuleset,
 	nodeRuleset,
+	nodeBinRuleset,
 	typeScriptRuleset,
 	{
 		files: ['**/*{ts,mts,cts,tsx}'],
