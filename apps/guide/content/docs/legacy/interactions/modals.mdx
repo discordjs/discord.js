@@ -2,7 +2,7 @@
 title: Modals
 ---
 
-Modals are pop-up forms that allow you to prompt users for additional input. This form-like interaction response blocks the user from interacting with Discord until the modal is submitted or dismissed. In this section we will cover how to create, show, and receive modals using discord.js!
+Modals are pop-up forms that allow you to prompt users for additional input. This form-like interaction response blocks the user from interacting with Discord until the modal is submitted or dismissed. In this section, we will cover how to create, show, and receive modals using discord.js!
 
 <Callout>
 	This page is a follow-up to the [interactions (slash commands) page](../slash-commands/advanced-creation). Reading
@@ -123,12 +123,12 @@ A text input field can be customized in a number of ways to apply validation or 
 ```js
 const input = new TextInputBuilder()
 	// Set the component id (this is not the custom id)
-	.setId(0)
+	.setId(1)
 	// Set the maximum number of characters allowed
 	.setMaxLength(1_000)
 	// Set the minimum number of characters required for submission
 	.setMinLength(10)
-	// Set a default value to pre-fill the text input
+	// Set a default value to prefill the text input
 	.setValue('Default')
 	// Require a value in this text input field (defaults to true)
 	.setRequired(true);
@@ -142,7 +142,7 @@ const input = new TextInputBuilder()
 ### Select menu
 
 Select menus allow you to limit user input to a preselected list of values. Discord also offers selections for Discord-specific concepts like users, roles, and channels.
-Since they behave very similar as in messages, please refer to the [corresponding guide page](../interactive-components/select-menus) for more information on configuring select menus.
+Since they behave very similarly to how they do in messages, please refer to the [corresponding guide page](../interactive-components/select-menus) for more information on configuring select menus.
 
 Here again, you wrap the select menu with a label component to add context to the selection and add the label to the modal:
 
@@ -291,7 +291,7 @@ const pictureOfTheWeekUpload = new FileUploadBuilder()
 	.setMinValues(1)
 	// Maximum number of items that can be uploaded (defaults to 1); max 10
 	.setMaxValues(1)
-	// Require a value in this text input field (defaults to true)
+	// Require a value in this file upload component (defaults to true)
 	.setRequired(true);
 ```
 
@@ -299,16 +299,16 @@ const pictureOfTheWeekUpload = new FileUploadBuilder()
  The `id` field is used to differentiate components within interactions (which text input, selection, etc.).   
  In contrast, the `customId` covered earlier identifies the interaction (which modal, command, etc.).
 
-You **cannot** limit and validate **file size** or **file extension**.
+You **cannot** limit and validate the **file size** or the **file extension**.
 
 </Callout>
 
 ### Responding with a modal
 
-With the modal built call `ChatInputCommandInteraction#showModal` to send the interaction response to Discord an display the modal to the user.
+With the modal built, call `ChatInputCommandInteraction#showModal()` to send the interaction response to Discord and display the modal to the user.
 
 <Callout type="warn">
-	Showing a modal must be the first response to an interaction. You **cannot defer modals**.
+	Showing a modal must be the first response to an interaction. You **cannot** defer modals.
 </Callout>
 
 ```js
@@ -346,7 +346,7 @@ Restart your bot and invoke the `/ping` command again. You should see the modal 
 
 Modal submissions can be collected within the scope of the interaction that sent the modal by utilizing an `InteractionCollector`, or the `ChatInputCommandInteraction#awaitModalSubmit` promisified version. These both provide instances of the `ModalSubmitInteraction` class as collected items.
 
-For a detailed guide on receiving handling interactions with collectors, please refer to the [collectors guide](../popular-topics/collectors#interaction-collectors).
+For a detailed guide on handling interactions with collectors, please refer to the [collectors guide](../popular-topics/collectors#interaction-collectors).
 
 ### The interactionCreate event
 
@@ -389,14 +389,13 @@ client.on(Events.InteractionCreate, async (interaction) => {
 ```
 
 <Callout>
-	If you're using typescript, you can use the `ModalSubmitInteraction#isFromMessage` type guard, to make sure the
-	received interaction originated from a `MessageComponentInteraction` and the underlying message can be updated as a
-	modal submit response.
+	If you're using TypeScript, you can use the `ModalSubmitInteraction#isFromMessage()` type guard to make sure the
+	received interaction originated from a `MessageComponentInteraction`.
 </Callout>
 
 ## Extracting data from modal submissions
 
-You can process the user submitted input fields through the use of convenience getters on `ModalSubmitInteraction#fields`. The library provides getters for all modal components with user submitted data:
+You can process the submitted input fields through the use of convenience getters on `ModalSubmitInteraction#fields`. The library provides getters for all modal components with user submitted data:
 
 ```js
 client.on(Events.InteractionCreate, (interaction) => {
