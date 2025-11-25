@@ -14,8 +14,7 @@ Modals are pop-up forms that allow you to prompt users for additional input. Thi
 Modals are a way to respond to a user interaction. Submitting the modal in turn will send a new interaction you can respond to. Discord.js offers the `ModalBuilder` class as a convenient way to build modals step by step using setters and callbacks.
 
 <Callout>
-	You can have a maximum of five `Label` or `Text Display` components per modal. Similarly a `Label` may only contain
-	one component.
+	You can have a maximum of five components per modal, each of which can be a label or a text display component.
 </Callout>
 
 ```js
@@ -141,7 +140,7 @@ const input = new TextInputBuilder()
 
 ### Select menu
 
-Select menus allow you to limit user input to a preselected list of values. Discord also offers selections for Discord-specific concepts like users, roles, and channels.
+Select menus allow you to limit user input to a preselected list of values. Discord also offers select menus linked directly to native Discord entities like users, roles, and channels.
 Since they behave very similarly to how they do in messages, please refer to the [corresponding guide page](../interactive-components/select-menus) for more information on configuring select menus.
 
 Here again, you wrap the select menu with a label component to add context to the selection and add the label to the modal:
@@ -286,7 +285,7 @@ A file upload component can be customized to apply validation via the following 
 ```js
 const pictureOfTheWeekUpload = new FileUploadBuilder()
 	// Set the optional identifier for component
-	.setId(0)
+	.setId(1)
 	// Minimum number of items that must be uploaded (defaults to 1); min 0, max 10
 	.setMinValues(1)
 	// Maximum number of items that can be uploaded (defaults to 1); max 10
