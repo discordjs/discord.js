@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 export const idPredicate = z.int().min(0).max(2_147_483_647).optional();
 export const customIdPredicate = z.string().min(1).max(100);
-export const snowflakePredicate = z.string().regex(/^\d{17,20}$/);
+export const snowflakePredicate = z.string().regex(/^[1-9]\d{16,18}$/);
 
 export const memberPermissionsPredicate = z.coerce.bigint();
 
