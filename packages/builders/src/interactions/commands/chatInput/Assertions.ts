@@ -117,6 +117,48 @@ export const stringOptionPredicate = basicOptionPredicate
 	})
 	.and(autocompleteOrStringChoicesMixinOptionPredicate);
 
+// Full predicate for all basic option types (used for nested validation in subcommands)
+// This validates all possible properties that any basic option might have
+const fullBasicOptionPredicate = sharedNameAndDescriptionPredicate
+	.extend({
+		type: basicOptionTypesPredicate,
+		required: z.boolean().optional(),
+		// String option properties
+		max_length: z.number().min(0).max(6_000).optional(),
+		min_length: z.number().min(1).max(6_000).optional(),
+		// Number/Integer option properties
+		max_value: z.union([z.int(), z.float32()]).optional(),
+		min_value: z.union([z.int(), z.float32()]).optional(),
+		// Channel option properties
+		channel_types: z.literal(ApplicationCommandOptionAllowedChannelTypes).array().optional(),
+		// Choice/Autocomplete properties (shared by String, Number, Integer)
+		autocomplete: z.boolean().optional(),
+		choices: z
+			.union([choiceStringPredicate.array().max(25), choiceNumberPredicate.array().max(25)])
+			.optional(),
+	})
+	.refine(
+		(data) => {
+			// Validate autocomplete and choices are mutually exclusive
+			if (data.autocomplete === true && data.choices && data.choices.length > 0) {
+				return false;
+			}
+			return true;
+		},
+		{ message: 'Autocomplete and choices are mutually exclusive' },
+	)
+	.refine(
+		(data) => {
+			// Validate integer min/max are integers
+			if (data.type === ApplicationCommandOptionType.Integer) {
+				if (data.max_value !== undefined && !Number.isInteger(data.max_value)) return false;
+				if (data.min_value !== undefined && !Number.isInteger(data.min_value)) return false;
+			}
+			return true;
+		},
+		{ message: 'Integer options must have integer min/max values' },
+	);
+
 const baseChatInputCommandPredicate = sharedNameAndDescriptionPredicate.extend({
 	contexts: z.array(z.enum(InteractionContextType)).optional(),
 	default_member_permissions: memberPermissionsPredicate.optional(),
@@ -124,26 +166,35 @@ const baseChatInputCommandPredicate = sharedNameAndDescriptionPredicate.extend({
 	nsfw: z.boolean().optional(),
 });
 
-// Because you can only add options via builders, there's no need to validate whole objects here otherwise
-const chatInputCommandOptionsPredicate = z.union([
-	z.object({ type: basicOptionTypesPredicate }).array(),
-	z.object({ type: z.literal(ApplicationCommandOptionType.Subcommand) }).array(),
-	z.object({ type: z.literal(ApplicationCommandOptionType.SubcommandGroup) }).array(),
+// Full predicate for subcommand (used for nested validation in subcommand groups)
+const fullSubcommandPredicate = sharedNameAndDescriptionPredicate.extend({
+	type: z.literal(ApplicationCommandOptionType.Subcommand),
+	options: z.array(fullBasicOptionPredicate).max(25).optional(),
+});
+
+// Full predicate for subcommand group (used for nested validation in chat input commands)
+const fullSubcommandGroupPredicate = sharedNameAndDescriptionPredicate.extend({
+	type: z.literal(ApplicationCommandOptionType.SubcommandGroup),
+	options: z.array(fullSubcommandPredicate).min(1).max(25),
+});
+
+// Full options predicate for chat input commands (validates complete nested structure)
+const fullChatInputCommandOptionsPredicate = z.union([
+	z.array(fullBasicOptionPredicate),
+	z.array(fullSubcommandPredicate),
+	z.array(fullSubcommandGroupPredicate),
 ]);
 
 export const chatInputCommandPredicate = baseChatInputCommandPredicate.extend({
-	options: chatInputCommandOptionsPredicate.optional(),
+	options: fullChatInputCommandOptionsPredicate.optional(),
 });
 
 export const chatInputCommandSubcommandGroupPredicate = sharedNameAndDescriptionPredicate.extend({
 	type: z.literal(ApplicationCommandOptionType.SubcommandGroup),
-	options: z
-		.array(z.object({ type: z.literal(ApplicationCommandOptionType.Subcommand) }))
-		.min(1)
-		.max(25),
+	options: z.array(fullSubcommandPredicate).min(1).max(25),
 });
 
 export const chatInputCommandSubcommandPredicate = sharedNameAndDescriptionPredicate.extend({
 	type: z.literal(ApplicationCommandOptionType.Subcommand),
-	options: z.array(z.object({ type: basicOptionTypesPredicate })).max(25),
+	options: z.array(fullBasicOptionPredicate).max(25).optional(),
 });
