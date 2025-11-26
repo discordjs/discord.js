@@ -1,12 +1,22 @@
-name: Deprecate version
+name: Remove tag
 on:
   workflow_dispatch:
     inputs:
-      package:
-        description: Package
+      tag:
+        description: The tag to remove
         required: true
-        type: choice
-        options:
+        type: string
+      message:
+        description: Deprecation message
+        required: false
+        type: string
+jobs:
+  removal:
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'discordjs'
+    strategy:
+      matrix:
+        package:
           - '@discordjs/brokers'
           - '@discordjs/builders'
           - '@discordjs/collection'
@@ -22,35 +32,29 @@ on:
           - '@discordjs/util'
           - '@discordjs/voice'
           - '@discordjs/ws'
-      version:
-        description: Version(s)
-        required: true
-        type: string
-      message:
-        description: Deprecation message
-        required: false
-        type: string
-jobs:
-  deprecate:
-    runs-on: ubuntu-latest
-    if: github.repository_owner == 'discordjs'
+      fail-fast: false
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Install Node.js v24
+      - name: Install Node.js
         uses: actions/setup-node@v6
         with:
           node-version: 24
-          package-manager-cache: false
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         uses: ./packages/actions/src/pnpmCache
 
-      - name: Deprecate
+      - name: Remove tag
+        run: pnpm dist-tag rm "${{ matrix.package }}" "${{ inputs.tag }}"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+
+      - name: Deprecate version
         uses: ./packages/actions/src/deprecateVersion
         with:
-          package: ${{ inputs.package }}
-          version: ${{ inputs.version }}
+          package: ${{ matrix.package }}
+          version: '*-${{ inputs.tag }}.*'
           message: ${{ inputs.message }}
           node-auth-token: ${{ secrets.NPM_PUBLISH_TOKEN }}

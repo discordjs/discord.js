@@ -97,6 +97,9 @@ export * from './util/ValidationError.js';
 
 export * from './Assertions.js';
 
+// We expose this type in our public API. We shouldn't assume every user of builders is also using REST
+export type { RawFile } from '@discordjs/util';
+
 /**
  * The {@link https://github.com/discordjs/discord.js/blob/main/packages/builders#readme | @discordjs/builders} version
  * that you are currently using.
