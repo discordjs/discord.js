@@ -2,6 +2,7 @@ import {
 	ApplicationIntegrationType,
 	InteractionContextType,
 	ApplicationCommandOptionType,
+	ApplicationCommandType,
 } from 'discord-api-types/v10';
 import { z } from 'zod';
 import { localeMapPredicate, memberPermissionsPredicate } from '../../../Assertions.js';
@@ -163,7 +164,7 @@ export const chatInputCommandSubcommandGroupPredicate = z.object({
 	options: z.array(chatInputCommandSubcommandPredicate).min(1).max(25),
 });
 
-export const chatInputCommandPredicate = z.object({
+export const chatInputCommandPredicate = z.strictObject({
 	...sharedNameAndDescriptionPredicate.shape,
 	contexts: z.array(z.enum(InteractionContextType)).optional(),
 	default_member_permissions: memberPermissionsPredicate.optional(),
@@ -175,4 +176,5 @@ export const chatInputCommandPredicate = z.object({
 			z.array(z.union([chatInputCommandSubcommandPredicate, chatInputCommandSubcommandGroupPredicate])).max(25),
 		])
 		.optional(),
+	type: z.literal(ApplicationCommandType.ChatInput).optional(),
 });
