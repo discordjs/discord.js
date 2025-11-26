@@ -30,7 +30,7 @@ export class ChatInputCommandBuilder extends Mixin(
 		const data: RESTPostAPIChatInputApplicationCommandsJSONBody = {
 			...structuredClone(rest as Omit<RESTPostAPIChatInputApplicationCommandsJSONBody, 'options'>),
 			type: ApplicationCommandType.ChatInput,
-			options: options?.map((option) => option.toJSON(validationOverride)),
+			options: options?.map((option) => option.toJSON(false)),
 		};
 
 		validate(chatInputCommandPredicate, data, validationOverride);
