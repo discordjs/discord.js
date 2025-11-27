@@ -48,7 +48,7 @@ test('MessageBuilder.toFileBody returns JSON body and files', () => {
 
 test('MessageBuilder.toFileBody returns empty files when attachments reference existing uploads', () => {
 	const msg = new MessageBuilder().addAttachments(
-		new AttachmentBuilder().setId('12345678901234567890').setFilename('existing.png'),
+		new AttachmentBuilder().setId('1234567890123456789').setFilename('existing.png'),
 	);
 
 	const { body, files } = msg.toFileBody();
