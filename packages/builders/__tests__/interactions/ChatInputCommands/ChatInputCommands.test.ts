@@ -237,9 +237,9 @@ describe('ChatInput Commands', () => {
 			});
 
 			test('GIVEN valid names THEN does not throw error', () => {
-				expect(() => getBuilder().setName('hi_there').setDescription(':3')).not.toThrowError();
-				expect(() => getBuilder().setName('o_comandă').setDescription(':3')).not.toThrowError();
-				expect(() => getBuilder().setName('どうも').setDescription(':3')).not.toThrowError();
+				expect(() => getBuilder().setName('hi_there').setDescription(':3').toJSON()).not.toThrowError();
+				expect(() => getBuilder().setName('o_comandă').setDescription(':3').toJSON()).not.toThrowError();
+				expect(() => getBuilder().setName('どうも').setDescription(':3').toJSON()).not.toThrowError();
 			});
 
 			test('GIVEN invalid returns for builder THEN throw error', () => {
@@ -384,8 +384,12 @@ describe('ChatInput Commands', () => {
 			};
 
 			test('GIVEN valid name localizations THEN does not throw error', () => {
-				expect(() => getBuilder().setNameLocalization(Locale.EnglishUS, 'foobar')).not.toThrowError();
-				expect(() => getBuilder().setNameLocalizations({ [Locale.EnglishUS]: 'foobar' })).not.toThrowError();
+				expect(() => getNamedBuilder().setNameLocalization(Locale.EnglishUS, 'foobar').toJSON()).not.toThrowError();
+				expect(() =>
+					getNamedBuilder()
+						.setNameLocalizations({ [Locale.EnglishUS]: 'foobar' })
+						.toJSON(),
+				).not.toThrowError();
 			});
 
 			test('GIVEN invalid name localizations THEN does throw error', () => {
@@ -451,19 +455,19 @@ describe('ChatInput Commands', () => {
 
 		describe('permissions', () => {
 			test('GIVEN valid permission string THEN does not throw error', () => {
-				expect(() => getNamedBuilder().setDefaultMemberPermissions('1')).not.toThrowError();
+				expect(() => getNamedBuilder().setDefaultMemberPermissions('1').toJSON()).not.toThrowError();
 			});
 
 			test('GIVEN valid permission bitfield THEN does not throw error', () => {
 				expect(() =>
-					getNamedBuilder().setDefaultMemberPermissions(
-						PermissionFlagsBits.AddReactions | PermissionFlagsBits.AttachFiles,
-					),
+					getNamedBuilder()
+						.setDefaultMemberPermissions(PermissionFlagsBits.AddReactions | PermissionFlagsBits.AttachFiles)
+						.toJSON(),
 				).not.toThrowError();
 			});
 
 			test('GIVEN null permissions THEN does not throw error', () => {
-				expect(() => getNamedBuilder().clearDefaultMemberPermissions()).not.toThrowError();
+				expect(() => getNamedBuilder().clearDefaultMemberPermissions().toJSON()).not.toThrowError();
 			});
 
 			test('GIVEN invalid inputs THEN does throw error', () => {
@@ -476,7 +480,7 @@ describe('ChatInput Commands', () => {
 					getNamedBuilder().addBooleanOptions(getBooleanOption()).setDefaultMemberPermissions('1').toJSON(),
 				).not.toThrowError();
 
-				expect(() => getNamedBuilder().addChannelOptions(getChannelOption())).not.toThrowError();
+				expect(() => getNamedBuilder().addChannelOptions(getChannelOption()).toJSON()).not.toThrowError();
 			});
 		});
 
