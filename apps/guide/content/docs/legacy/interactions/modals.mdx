@@ -57,7 +57,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 		const hobbiesLabel = new LabelBuilder()
 			// The label is a large header text that identifies the interactive component for the user.
 			.setLabel('What are some of your favorite hobbies?')
-			// The description is optional small text beneath the label that provides additional information about the interactive component.
+			// The description is an additional optional subtext that aids the label.
 			.setDescription('Activities you like to participate in');
 
 		// [!code ++:2]
@@ -97,7 +97,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 		const hobbiesLabel = new LabelBuilder()
 			// The label is a large header that identifies the interactive component for the user.
 			.setLabel("What's some of your favorite hobbies?")
-			// The description is optional small text beneath the label that provides additional information about the interactive component.
+			// The description is an additional optional subtext that aids the label.
 			.setDescription('Activities you like to participate in')
 			// [!code ++:2]
 			// Set text input as the component of the label
