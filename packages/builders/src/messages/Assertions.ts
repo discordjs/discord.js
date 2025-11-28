@@ -1,6 +1,7 @@
 import { Buffer } from 'node:buffer';
 import { AllowedMentionsTypes, ComponentType, MessageFlags, MessageReferenceType } from 'discord-api-types/v10';
 import { z } from 'zod';
+import { snowflakePredicate } from '../Assertions.js';
 import { embedPredicate } from './embed/Assertions.js';
 import { pollPredicate } from './poll/Assertions.js';
 
@@ -15,7 +16,7 @@ export const rawFilePredicate = z.object({
 
 export const attachmentPredicate = z.object({
 	// As a string it only makes sense for edits when we do have an attachment snowflake
-	id: z.union([z.string(), z.number()]),
+	id: z.union([snowflakePredicate, z.number()]),
 	description: z.string().max(1_024).optional(),
 	duration_secs: z
 		.number()

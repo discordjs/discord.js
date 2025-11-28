@@ -6,7 +6,7 @@ import { AttachmentBuilder, MessageBuilder } from '../../src/index.js';
 test('AttachmentBuilder stores and exposes file data', () => {
 	const data = Buffer.from('hello world');
 	const attachment = new AttachmentBuilder()
-		.setId('0')
+		.setId(1)
 		.setFilename('greeting.txt')
 		.setFileData(data)
 		.setFileContentType('text/plain');
@@ -14,7 +14,7 @@ test('AttachmentBuilder stores and exposes file data', () => {
 	expect(attachment.getRawFile()).toStrictEqual({
 		contentType: 'text/plain',
 		data,
-		key: 'files[0]',
+		key: 'files[1]',
 		name: 'greeting.txt',
 	});
 
@@ -27,7 +27,7 @@ test('AttachmentBuilder stores and exposes file data', () => {
 test('MessageBuilder.toFileBody returns JSON body and files', () => {
 	const msg = new MessageBuilder().setContent('here is a file').addAttachments(
 		new AttachmentBuilder()
-			.setId('0')
+			.setId(0)
 			.setFilename('file.bin')
 			.setFileData(Buffer.from([1, 2, 3]))
 			.setFileContentType('application/octet-stream'),
@@ -47,7 +47,9 @@ test('MessageBuilder.toFileBody returns JSON body and files', () => {
 });
 
 test('MessageBuilder.toFileBody returns empty files when attachments reference existing uploads', () => {
-	const msg = new MessageBuilder().addAttachments(new AttachmentBuilder().setId('123').setFilename('existing.png'));
+	const msg = new MessageBuilder().addAttachments(
+		new AttachmentBuilder().setId('1234567890123456789').setFilename('existing.png'),
+	);
 
 	const { body, files } = msg.toFileBody();
 	expect(body).toEqual(msg.toJSON());
