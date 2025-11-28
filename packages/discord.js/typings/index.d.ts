@@ -6356,18 +6356,27 @@ export interface GuildListMembersOptions {
   limit?: number;
 }
 
-// TODO: use conditional types for better TS support
-export interface GuildScheduledEventCreateOptions {
-  channel?: GuildVoiceChannelResolvable;
+export interface BaseGuildScheduledEventOptions {
+  channel?: GuildVoiceChannelResolvable | null;
   description?: string;
   entityMetadata?: GuildScheduledEventEntityMetadataOptions;
-  entityType: GuildScheduledEventEntityType;
+  entityType?: GuildScheduledEventEntityType;
   image?: Base64Resolvable | BufferResolvable | null;
+  name?: string;
+  privacyLevel?: GuildScheduledEventPrivacyLevel;
+  reason?: string;
+  recurrenceRule?: GuildScheduledEventRecurrenceRuleOptions | null;
+  scheduledEndTime?: DateResolvable;
+  scheduledStartTime?: DateResolvable;
+}
+
+// TODO: use conditional types for better TS support
+export interface GuildScheduledEventCreateOptions extends BaseGuildScheduledEventOptions {
+  channel?: GuildVoiceChannelResolvable;
+  entityType: GuildScheduledEventEntityType;
   name: string;
   privacyLevel: GuildScheduledEventPrivacyLevel;
-  reason?: string;
   recurrenceRule?: GuildScheduledEventRecurrenceRuleOptions;
-  scheduledEndTime?: DateResolvable;
   scheduledStartTime: DateResolvable;
 }
 
@@ -6404,9 +6413,7 @@ export type BaseGuildScheduledEventRecurrenceRuleOptions<
 export interface GuildScheduledEventEditOptions<
   Status extends GuildScheduledEventStatus,
   AcceptableStatus extends GuildScheduledEventSetStatusArg<Status>,
-> extends Omit<Partial<GuildScheduledEventCreateOptions>, 'channel' | 'recurrenceRule'> {
-  channel?: GuildVoiceChannelResolvable | null;
-  recurrenceRule?: GuildScheduledEventRecurrenceRuleOptions | null;
+> extends BaseGuildScheduledEventOptions {
   status?: AcceptableStatus;
 }
 
