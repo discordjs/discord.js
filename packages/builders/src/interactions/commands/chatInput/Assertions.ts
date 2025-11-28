@@ -127,8 +127,14 @@ const baseChatInputCommandPredicate = sharedNameAndDescriptionPredicate.extend({
 // Because you can only add options via builders, there's no need to validate whole objects here otherwise
 const chatInputCommandOptionsPredicate = z.union([
 	z.object({ type: basicOptionTypesPredicate }).array(),
-	z.object({ type: z.literal(ApplicationCommandOptionType.Subcommand) }).array(),
-	z.object({ type: z.literal(ApplicationCommandOptionType.SubcommandGroup) }).array(),
+	z
+		.object({
+			type: z.union([
+				z.literal(ApplicationCommandOptionType.Subcommand),
+				z.literal(ApplicationCommandOptionType.SubcommandGroup),
+			]),
+		})
+		.array(),
 ]);
 
 export const chatInputCommandPredicate = baseChatInputCommandPredicate.extend({

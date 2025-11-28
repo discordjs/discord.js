@@ -376,6 +376,29 @@ describe('ChatInput Commands', () => {
 			});
 		});
 
+		describe('Subcommand builder and subcommand group builder', () => {
+			test('GIVEN both types THEN does not throw error', () => {
+				expect(() =>
+					getBuilder()
+						.setName('test')
+						.setDescription('Test command')
+						.addSubcommands((subcommand) =>
+							subcommand.setName('subcommand').setDescription('Description of subcommand'),
+						)
+						.addSubcommandGroups((subcommandGroup) =>
+							subcommandGroup
+								.setName('group')
+								.setDescription('Description of group')
+
+								.addSubcommands((subcommand) =>
+									subcommand.setName('subcommand').setDescription('Description of group subcommand'),
+								),
+						)
+						.toJSON(),
+				).not.toThrowError();
+			});
+		});
+
 		describe('ChatInput command localizations', () => {
 			const expectedSingleLocale = { [Locale.EnglishUS]: 'foobar' };
 			const expectedMultipleLocales = {
