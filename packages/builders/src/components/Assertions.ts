@@ -34,12 +34,16 @@ const buttonSecondaryPredicate = buttonCustomIdPredicateBase.safeExtend({ style:
 const buttonSuccessPredicate = buttonCustomIdPredicateBase.safeExtend({ style: z.literal(ButtonStyle.Success) });
 const buttonDangerPredicate = buttonCustomIdPredicateBase.safeExtend({ style: z.literal(ButtonStyle.Danger) });
 
-const buttonLinkPredicate = buttonPredicateBase.extend({
-	style: z.literal(ButtonStyle.Link),
-	url: z.url({ protocol: /^(?:https?|discord)$/ }).max(512),
-	emoji: emojiPredicate.optional(),
-	label: buttonLabelPredicate.optional(),
-});
+const buttonLinkPredicate = buttonPredicateBase
+	.extend({
+		style: z.literal(ButtonStyle.Link),
+		url: z.url({ protocol: /^(?:https?|discord)$/ }).max(512),
+		emoji: emojiPredicate.optional(),
+		label: buttonLabelPredicate.optional(),
+	})
+	.refine((data) => data.emoji !== undefined || data.label !== undefined, {
+		message: 'Link buttons must have either an emoji or a label.',
+	});
 
 const buttonPremiumPredicate = buttonPredicateBase.extend({
 	style: z.literal(ButtonStyle.Premium),
