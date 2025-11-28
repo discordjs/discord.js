@@ -1,7 +1,8 @@
 import { ComponentType } from 'discord-api-types/v10';
 import type { APIStringSelectComponent, APISelectMenuOption } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
-import { jsonOptionValidator, optionsLengthValidator, validateRequiredSelectMenuParameters } from '../Assertions.js';
+import { optionsLengthValidator, validateRequiredSelectMenuParameters } from '../Assertions.js';
+import { selectMenuStringOptionPredicate } from './Assertions.js';
 import { BaseSelectMenuBuilder } from './BaseSelectMenu.js';
 import { StringSelectMenuOptionBuilder } from './StringSelectMenuOption.js';
 
@@ -63,7 +64,7 @@ export class StringSelectMenuBuilder extends BaseSelectMenuBuilder<APIStringSele
 			...normalizedOptions.map((normalizedOption) =>
 				normalizedOption instanceof StringSelectMenuOptionBuilder
 					? normalizedOption
-					: new StringSelectMenuOptionBuilder(jsonOptionValidator.parse(normalizedOption)),
+					: new StringSelectMenuOptionBuilder(selectMenuStringOptionPredicate.parse(normalizedOption)),
 			),
 		);
 		return this;
@@ -120,7 +121,7 @@ export class StringSelectMenuBuilder extends BaseSelectMenuBuilder<APIStringSele
 			...normalizedOptions.map((normalizedOption) =>
 				normalizedOption instanceof StringSelectMenuOptionBuilder
 					? normalizedOption
-					: new StringSelectMenuOptionBuilder(jsonOptionValidator.parse(normalizedOption)),
+					: new StringSelectMenuOptionBuilder(selectMenuStringOptionPredicate.parse(normalizedOption)),
 			),
 		);
 
