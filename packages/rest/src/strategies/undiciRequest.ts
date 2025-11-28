@@ -1,7 +1,15 @@
 import { STATUS_CODES } from 'node:http';
 import { URLSearchParams } from 'node:url';
 import { types } from 'node:util';
-import { type RequestInit, request, Headers, FormData as UndiciFormData, Agent } from 'undici';
+import {
+	type RequestInit,
+	request,
+	Headers,
+	FormData as UndiciFormData,
+	Agent,
+	getGlobalDispatcher,
+	Dispatcher,
+} from 'undici';
 import type { HeaderRecord } from 'undici/types/header.js';
 import type { ResponseLike } from '../shared.js';
 
@@ -15,9 +23,11 @@ export async function makeRequest(url: string, init: RequestInit): Promise<Respo
 		body: await resolveBody(init.body),
 	} as RequestOptions;
 
-	// Not setting a dispatcher makes requests fail whenever files are involved. So we set a default one.
+	// Mismatched dispatchers from the Node.js-bundled undici and package-installed undici breaks file uploads.
 	// https://github.com/nodejs/node/issues/59012
-	options.dispatcher ??= new Agent();
+	if (!options.dispatcher && !(getGlobalDispatcher() instanceof Dispatcher)) {
+		options.dispatcher = new Agent();
+	}
 
 	const res = await request(url, options);
 	return {
