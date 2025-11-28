@@ -1,4 +1,3 @@
-import type { Buffer } from 'node:buffer';
 import { pipeline, type Readable } from 'node:stream';
 import prism from 'prism-media';
 import { noop } from '../util/util';

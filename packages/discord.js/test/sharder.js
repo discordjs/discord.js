@@ -1,6 +1,5 @@
 'use strict';
 
-const process = require('node:process');
 const { token } = require('./auth.js');
 const { ShardingManager } = require('../src/index.js');
 

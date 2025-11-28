@@ -1,8 +1,6 @@
 import type { ExecException } from 'node:child_process';
 import { cp, glob, mkdir, stat, readdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import process from 'node:process';
-import { URL } from 'node:url';
 import { styleText } from 'node:util';
 import type { PackageManager } from './helpers/packageManager.js';
 import { install, isNodePackageManager } from './helpers/packageManager.js';

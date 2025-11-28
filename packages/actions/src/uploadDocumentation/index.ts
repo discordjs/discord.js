@@ -1,5 +1,4 @@
 import { readFile } from 'node:fs/promises';
-import process from 'node:process';
 import { getInput, setFailed } from '@actions/core';
 import { create } from '@actions/glob';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';

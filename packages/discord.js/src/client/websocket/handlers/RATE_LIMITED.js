@@ -1,6 +1,5 @@
 'use strict';
 
-const process = require('node:process');
 const { GatewayOpcodes } = require('discord-api-types/v10');
 
 const emittedFor = new Set();

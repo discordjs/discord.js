@@ -1,7 +1,6 @@
 /* eslint-disable jsdoc/check-param-names */
 /* eslint-disable id-length */
 /* eslint-disable @typescript-eslint/unbound-method */
-import { Buffer } from 'node:buffer';
 import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import type { VoiceReceivePayload, VoiceSpeakingFlags } from 'discord-api-types/voice/v8';
