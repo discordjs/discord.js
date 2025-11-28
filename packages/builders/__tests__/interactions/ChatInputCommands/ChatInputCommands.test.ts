@@ -376,6 +376,17 @@ describe('ChatInput Commands', () => {
 			});
 		});
 
+		describe('Subcommand builder and subcommand group builder', () => {
+			test('GIVEN both types THEN does not throw error', () => {
+				expect(() =>
+					getNamedBuilder()
+						.addSubcommands(getSubcommand())
+						.addSubcommandGroups(getSubcommandGroup().addSubcommands(getSubcommand()))
+						.toJSON(),
+				).not.toThrowError();
+			});
+		});
+
 		describe('ChatInput command localizations', () => {
 			const expectedSingleLocale = { [Locale.EnglishUS]: 'foobar' };
 			const expectedMultipleLocales = {
