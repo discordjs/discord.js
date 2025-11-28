@@ -5,7 +5,7 @@ import {
 	type APIButtonComponentWithURL,
 } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
-import { PrimaryButtonBuilder, PremiumButtonBuilder, LinkButtonBuilder } from '../../src/index.js';
+import { PrimaryButtonBuilder, PremiumButtonBuilder, LinkButtonBuilder, DangerButtonBuilder } from '../../src/index.js';
 
 const longStr =
 	'looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong';
@@ -22,6 +22,16 @@ describe('Button Components', () => {
 					.setDisabled(true)
 					.setEmoji({ name: 'test' });
 
+				button.toJSON();
+			}).not.toThrowError();
+
+			expect(() => {
+				const button = new DangerButtonBuilder().setCustomId('custom').setLabel('a'.repeat(80));
+				button.toJSON();
+			}).not.toThrowError();
+
+			expect(() => {
+				const button = new DangerButtonBuilder().setCustomId('custom').setEmoji({ name: 'ok' });
 				button.toJSON();
 			}).not.toThrowError();
 
