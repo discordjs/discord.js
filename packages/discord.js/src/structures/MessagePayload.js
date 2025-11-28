@@ -197,8 +197,13 @@ class MessagePayload {
       waveform: file.waveform,
       duration_secs: file.duration,
     }));
+
+    // Only passable during edits
     if (Array.isArray(this.options.attachments)) {
-      this.options.attachments.push(...(attachments ?? []));
+      this.options.attachments = this.options.attachments
+        // Note how we don't check for file body encodable, since we aren't expecting file data here
+        .map(attachment => (isJSONEncodable(attachment) ? attachment.toJSON() : attachment))
+        .concat(attachments ?? []);
     } else {
       this.options.attachments = attachments;
     }

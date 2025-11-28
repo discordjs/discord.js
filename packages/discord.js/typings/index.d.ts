@@ -6690,7 +6690,7 @@ export interface BaseMessageOptions {
   )[];
   content?: string;
   embeds?: readonly (APIEmbed | JSONEncodable<APIEmbed>)[];
-  files?: readonly (Attachment | AttachmentPayload | BufferResolvable | Stream)[];
+  files?: readonly (Attachment | AttachmentPayload | BufferResolvable | FileBodyEncodable<APIAttachment> | Stream)[];
 }
 
 export interface MessageOptionsPoll {
@@ -6736,12 +6736,8 @@ export interface GuildForumThreadMessageCreateOptions
     MessageOptionsFlags,
     MessageOptionsStickers {}
 
-export interface MessageEditAttachmentData {
-  id: Snowflake;
-}
-
 export interface MessageEditOptions extends Omit<BaseMessageOptions, 'content'> {
-  attachments?: readonly (Attachment | MessageEditAttachmentData)[];
+  attachments?: readonly (Attachment | JSONEncodable<APIAttachment>)[];
   content?: string | null;
   flags?:
     | BitFieldResolvable<
