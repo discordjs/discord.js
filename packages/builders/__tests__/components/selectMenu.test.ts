@@ -6,6 +6,9 @@ const selectMenu = () => new StringSelectMenuBuilder();
 const selectMenuOption = () => new StringSelectMenuOptionBuilder();
 
 const longStr = 'a'.repeat(256);
+const selectMenuOptionLabelAboveLimit = 'a'.repeat(101);
+const selectMenuOptionValueAboveLimit = 'a'.repeat(101);
+const selectMenuOptionDescriptionAboveLimit = 'a'.repeat(101);
 
 const selectMenuOptionData: APISelectMenuOption = {
 	label: 'test',
@@ -53,12 +56,12 @@ describe('Select Menu Components', () => {
 			expect(() => selectMenu().setDisabled()).not.toThrowError();
 			expect(() => selectMenu().setPlaceholder('description')).not.toThrowError();
 			const option = selectMenuOption()
-				.setLabel('test')
+				.setLabel('a'.repeat(100))
 				.setValue('test')
 				.setDefault(true)
 				.setEmoji({ name: 'test' })
 				.setDescription('description');
-			expect(() => selectMenu().addOptions(option)).not.toThrowError();
+			expect(() => selectMenu().setCustomId('customId').addOptions(option).toJSON()).not.toThrowError();
 			expect(() => selectMenu().setOptions(option)).not.toThrowError();
 			expect(() => selectMenu().setOptions({ label: 'test', value: 'test' })).not.toThrowError();
 			expect(() => selectMenu().addOptions([option])).not.toThrowError();
@@ -156,13 +159,13 @@ describe('Select Menu Components', () => {
 
 			expect(() => {
 				selectMenuOption()
-					.setLabel(longStr)
-					.setValue(longStr)
+					.setLabel(selectMenuOptionLabelAboveLimit)
+					.setValue(selectMenuOptionValueAboveLimit)
 					// @ts-expect-error: Invalid default value
 					.setDefault(-1)
 					// @ts-expect-error: Invalid emoji
 					.setEmoji({ name: 1 })
-					.setDescription(longStr);
+					.setDescription(selectMenuOptionDescriptionAboveLimit);
 			}).toThrowError();
 		});
 

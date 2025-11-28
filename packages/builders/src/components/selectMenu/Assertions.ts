@@ -2,7 +2,6 @@ import { Result, s } from '@sapphire/shapeshift';
 import { ChannelType, ComponentType, SelectMenuDefaultValueType } from 'discord-api-types/v10';
 import { isValidationEnabled } from '../../util/validation.js';
 import { customIdValidator, emojiValidator, idValidator } from '../Assertions.js';
-import { labelValidator } from '../textInput/Assertions.js';
 
 const selectMenuBasePredicate = s.object({
 	id: idValidator.optional(),
@@ -63,7 +62,7 @@ export const selectMenuUserPredicate = selectMenuBasePredicate
 
 export const selectMenuStringOptionPredicate = s
 	.object({
-		label: labelValidator,
+		label: s.string().lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100),
 		value: s.string().lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100),
 		description: s.string().lengthGreaterThanOrEqual(1).lengthLessThanOrEqual(100).optional(),
 		emoji: emojiValidator.optional(),
