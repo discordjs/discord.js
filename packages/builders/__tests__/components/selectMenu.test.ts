@@ -7,6 +7,9 @@ const selectMenuWithId = () => new StringSelectMenuBuilder({ custom_id: 'hi' });
 const selectMenuOption = () => new StringSelectMenuOptionBuilder();
 
 const longStr = 'a'.repeat(256);
+const selectMenuOptionLabelAboveLimit = 'a'.repeat(101);
+const selectMenuOptionValueAboveLimit = 'a'.repeat(101);
+const selectMenuOptionDescriptionAboveLimit = 'a'.repeat(101);
 
 const selectMenuOptionData: APISelectMenuOption = {
 	label: 'test',
@@ -196,13 +199,13 @@ describe('Select Menu Components', () => {
 
 			expect(() => {
 				selectMenuOption()
-					.setLabel(longStr)
-					.setValue(longStr)
+					.setLabel(selectMenuOptionLabelAboveLimit)
+					.setValue(selectMenuOptionValueAboveLimit)
 					// @ts-expect-error: Invalid default value
 					.setDefault(-1)
 					// @ts-expect-error: Invalid emoji
 					.setEmoji({ name: 1 })
-					.setDescription(longStr)
+					.setDescription(selectMenuOptionDescriptionAboveLimit)
 					.toJSON();
 			}).toThrowError();
 		});

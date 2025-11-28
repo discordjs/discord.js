@@ -2,8 +2,6 @@ import { ButtonStyle, ChannelType, ComponentType, SelectMenuDefaultValueType } f
 import { z } from 'zod';
 import { idPredicate, customIdPredicate } from '../Assertions.js';
 
-const labelPredicate = z.string().min(1).max(80);
-
 export const emojiPredicate = z
 	.strictObject({
 		id: z.string().optional(),
@@ -19,11 +17,13 @@ const buttonPredicateBase = z.strictObject({
 	disabled: z.boolean().optional(),
 });
 
+const buttonLabelPredicate = z.string().min(1).max(80);
+
 const buttonCustomIdPredicateBase = buttonPredicateBase
 	.extend({
 		custom_id: customIdPredicate,
 		emoji: emojiPredicate.optional(),
-		label: z.string().min(1).max(80).optional(),
+		label: buttonLabelPredicate.optional(),
 	})
 	.refine((data) => data.emoji !== undefined || data.label !== undefined, {
 		message: 'Buttons with a custom id must have either an emoji or a label.',
@@ -38,7 +38,7 @@ const buttonLinkPredicate = buttonPredicateBase.extend({
 	style: z.literal(ButtonStyle.Link),
 	url: z.url({ protocol: /^(?:https?|discord)$/ }).max(512),
 	emoji: emojiPredicate.optional(),
-	label: labelPredicate,
+	label: buttonLabelPredicate.optional(),
 });
 
 const buttonPremiumPredicate = buttonPredicateBase.extend({
@@ -96,7 +96,7 @@ export const selectMenuRolePredicate = selectMenuBasePredicate.extend({
 });
 
 export const selectMenuStringOptionPredicate = z.object({
-	label: labelPredicate,
+	label: z.string().min(1).max(100),
 	value: z.string().min(1).max(100),
 	description: z.string().min(1).max(100).optional(),
 	emoji: emojiPredicate.optional(),
