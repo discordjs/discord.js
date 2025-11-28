@@ -1,3 +1,4 @@
+import { URL } from 'node:url';
 import { Events } from 'discord.js';
 import { loadCommands } from '../util/loaders.js';
 

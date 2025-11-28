@@ -492,18 +492,6 @@ export abstract class Base {
   public valueOf(): string;
 }
 
-export class BaseClient<Events extends {}> extends AsyncEventEmitter<Events> implements AsyncDisposable {
-  public constructor(options?: ClientOptions | WebhookClientOptions);
-  private decrementMaxListeners(): void;
-  private incrementMaxListeners(): void;
-
-  public options: ClientOptions | WebhookClientOptions;
-  public rest: REST;
-  public destroy(): void;
-  public toJSON(...props: Record<string, boolean | string>[]): unknown;
-  public [Symbol.asyncDispose](): Promise<void>;
-}
-
 export type GuildCacheMessage<Cached extends CacheType> = CacheTypeReducer<
   Cached,
   Message<true>,
@@ -913,7 +901,10 @@ export type If<Value extends boolean, TrueResult, FalseResult = null> = Value ex
     ? FalseResult
     : FalseResult | TrueResult;
 
-export class Client<Ready extends boolean = boolean> extends BaseClient<ClientEventTypes> {
+export class Client<Ready extends boolean = boolean>
+  extends AsyncEventEmitter<ClientEventTypes>
+  implements AsyncDisposable
+{
   public constructor(options: ClientOptions);
   private readonly actions: unknown;
   private readonly expectedGuilds: Set<Snowflake>;
@@ -928,6 +919,8 @@ export class Client<Ready extends boolean = boolean> extends BaseClient<ClientEv
   private _triggerClientReady(): void;
   private _validateOptions(options: ClientOptions): void;
   private get _censoredToken(): string | null;
+  private decrementMaxListeners(): void;
+  private incrementMaxListeners(): void;
   // This a technique used to brand the ready state. Or else we'll get `never` errors on typeguard checks.
   private readonly _ready: Ready;
 
@@ -939,6 +932,7 @@ export class Client<Ready extends boolean = boolean> extends BaseClient<ClientEv
   public get ping(): number | null;
   public get readyAt(): If<Ready, Date>;
   public readyTimestamp: If<Ready, number>;
+  public rest: REST;
   public sweepers: Sweepers;
   public shard: ShardClientUtil | null;
   public status: Status;
@@ -969,6 +963,7 @@ export class Client<Ready extends boolean = boolean> extends BaseClient<ClientEv
   public login(token?: string): Promise<string>;
   public isReady(): this is Client<true>;
   public toJSON(): unknown;
+  public [Symbol.asyncDispose](): Promise<void>;
 }
 
 export interface StickerPackFetchOptions {
@@ -3525,7 +3520,7 @@ export interface ThreadChannel<ThreadOnly extends boolean = boolean>
     MessageChannelFields,
     SendMethod<true> {}
 export class ThreadChannel<ThreadOnly extends boolean = boolean> extends BaseChannel {
-  private constructor(guild: Guild, data?: RawThreadChannelData, client?: Client<true>);
+  private constructor(guild: Guild, data: RawThreadChannelData, client?: Client<true>);
   public archived: boolean | null;
   public get archivedAt(): Date | null;
   public archiveTimestamp: number | null;
@@ -3742,7 +3737,7 @@ export function fetchRecommendedShardCount(token: string, options?: FetchRecomme
 export function flatten(obj: unknown, ...props: Record<string, boolean | string>[]): unknown;
 
 export function parseEmoji(text: string): PartialEmoji | null;
-export function parseWebhookURL(url: string): WebhookClientDataIdWithToken | null;
+export function parseWebhookURL(url: string): WebhookDataIdWithToken | null;
 export function resolveColor(color: ColorResolvable): number;
 export function resolveSKUId(resolvable: SKUResolvable): Snowflake | null;
 export function verifyString(data: string, error?: typeof Error, errorMessage?: string, allowEmpty?: boolean): string;
@@ -3821,14 +3816,14 @@ export class VoiceState extends Base {
 
 export interface Webhook<Type extends WebhookType = WebhookType> extends WebhookFields {}
 export class Webhook<Type extends WebhookType = WebhookType> {
-  private constructor(client: Client<true>, data?: unknown);
+  private constructor(client: Client<true>, data: unknown);
   public avatar: string | null;
   public avatarURL(options?: ImageURLOptions): string | null;
   public channelId: Snowflake;
   public readonly client: Client;
   public guildId: Snowflake;
   public name: string;
-  public owner: Type extends WebhookType.Incoming ? APIUser | User | null : APIUser | User;
+  public owner: Type extends WebhookType.Incoming ? User | null : User;
   public sourceGuild: Type extends WebhookType.ChannelFollower ? APIPartialGuild | Guild : null;
   public sourceChannel: Type extends WebhookType.ChannelFollower ? AnnouncementChannel | APIPartialChannel : null;
   public token: Type extends WebhookType.Incoming
@@ -3847,7 +3842,7 @@ export class Webhook<Type extends WebhookType = WebhookType> {
     | VoiceChannel
     | null;
   public isUserCreated(): this is Webhook<WebhookType.Incoming> & {
-    owner: APIUser | User;
+    owner: User;
   };
   public isApplicationCreated(): this is Webhook<WebhookType.Application>;
   public isIncoming(): this is Webhook<WebhookType.Incoming>;
@@ -3859,20 +3854,6 @@ export class Webhook<Type extends WebhookType = WebhookType> {
   ): Promise<Message<true>>;
   public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<Message<true>>;
   public send(options: MessagePayload | WebhookMessageCreateOptions | string): Promise<Message<true>>;
-}
-
-export interface WebhookClient extends WebhookFields, BaseClient<{}> {}
-export class WebhookClient extends BaseClient<{}> {
-  public constructor(data: WebhookClientData, options?: WebhookClientOptions);
-  public readonly client: this;
-  public options: WebhookClientOptions;
-  public token: string;
-  public editMessage(
-    message: MessageResolvable,
-    options: MessagePayload | WebhookMessageEditOptions | string,
-  ): Promise<APIMessage>;
-  public fetchMessage(message: Snowflake, options?: WebhookFetchMessageOptions): Promise<APIMessage>;
-  public send(options: MessagePayload | WebhookMessageCreateOptions | string): Promise<APIMessage>;
 }
 
 export class Widget extends Base {
@@ -4064,14 +4045,13 @@ export enum DiscordjsErrorCodes {
 
   WebhookMessage = 'WebhookMessage',
   WebhookTokenUnavailable = 'WebhookTokenUnavailable',
-  WebhookURLInvalid = 'WebhookURLInvalid',
   WebhookApplication = 'WebhookApplication',
 
   MessageReferenceMissing = 'MessageReferenceMissing',
 
   EmojiType = 'EmojiType',
   EmojiManaged = 'EmojiManaged',
-  MissingManageGuildExpressionsPermission = 'MissingManageGuildExpressionsPermission',
+  MissingGuildExpressionsPermission = 'MissingGuildExpressionsPermission',
 
   NotGuildSoundboardSound = 'NotGuildSoundboardSound',
   NotGuildSticker = 'NotGuildSticker',
@@ -4118,6 +4098,9 @@ export enum DiscordjsErrorCodes {
   BulkBanUsersOptionEmpty = 'BulkBanUsersOptionEmpty',
 
   PollAlreadyExpired = 'PollAlreadyExpired',
+
+  PermissionOverwritesTypeMandatory = 'PermissionOverwritesTypeMandatory',
+  PermissionOverwritesTypeMismatch = 'PermissionOverwritesTypeMismatch',
 }
 /* eslint-enable typescript-sort-keys/string-enum */
 
@@ -5573,7 +5556,8 @@ export interface ClientFetchInviteOptions {
   withCounts?: boolean;
 }
 
-export interface ClientOptions extends WebhookClientOptions {
+export interface ClientOptions {
+  allowedMentions?: MessageMentionOptions;
   closeTimeout?: number;
   enforceNonce?: boolean;
   failIfNotExists?: boolean;
@@ -5582,6 +5566,7 @@ export interface ClientOptions extends WebhookClientOptions {
   makeCache?: CacheFactory;
   partials?: readonly Partials[];
   presence?: PresenceData;
+  rest?: Partial<RESTOptions>;
   sweepers?: SweeperOptions;
   waitGuildTimeout?: number;
   ws?: Partial<WebSocketManagerOptions>;
@@ -6870,8 +6855,7 @@ export type MessageTarget =
   | Message
   | MessageManager
   | TextBasedChannel
-  | Webhook<WebhookType.Incoming>
-  | WebhookClient;
+  | Webhook<WebhookType.Incoming>;
 
 export interface MultipleShardRespawnOptions {
   respawnDelay?: number;
@@ -7245,20 +7229,9 @@ export interface VoiceStateEditOptions {
   suppressed?: boolean;
 }
 
-export type WebhookClientData = WebhookClientDataIdWithToken | WebhookClientDataURL;
-
-export interface WebhookClientDataIdWithToken {
+export interface WebhookDataIdWithToken {
   id: Snowflake;
   token: string;
-}
-
-export interface WebhookClientDataURL {
-  url: string;
-}
-
-export interface WebhookClientOptions {
-  allowedMentions?: MessageMentionOptions;
-  rest?: Partial<RESTOptions>;
 }
 
 export interface WebhookDeleteOptions {

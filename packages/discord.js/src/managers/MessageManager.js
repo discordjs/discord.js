@@ -115,12 +115,12 @@ class MessageManager extends CachedManager {
     return this._add(data, cache);
   }
 
-  async _fetchMany(options = {}) {
+  async _fetchMany({ cache, ...apiOptions } = {}) {
     const data = await this.client.rest.get(Routes.channelMessages(this.channel.id), {
-      query: makeURLSearchParams(options),
+      query: makeURLSearchParams(apiOptions),
     });
 
-    return data.reduce((_data, message) => _data.set(message.id, this._add(message, options.cache)), new Collection());
+    return data.reduce((_data, message) => _data.set(message.id, this._add(message, cache)), new Collection());
   }
 
   /**
@@ -150,8 +150,8 @@ class MessageManager extends CachedManager {
    */
 
   /**
-   * Fetches the pinned messages of this channel and returns a collection of them.
-   * <info>The returned Collection does not contain any reaction data of the messages.
+   * Fetches the pinned messages of this channel, returning a paginated result.
+   * <info>The returned messages do not contain any reaction data.
    * Those need to be fetched separately.</info>
    *
    * @param {FetchPinnedMessagesOptions} [options={}] Options for fetching pinned messages
@@ -162,11 +162,11 @@ class MessageManager extends CachedManager {
    *   .then(messages => console.log(`Received ${messages.items.length} messages`))
    *   .catch(console.error);
    */
-  async fetchPins(options = {}) {
+  async fetchPins({ cache, ...apiOptions } = {}) {
     const data = await this.client.rest.get(Routes.channelMessagesPins(this.channel.id), {
       query: makeURLSearchParams({
-        ...options,
-        before: options.before && new Date(options.before).toISOString(),
+        ...apiOptions,
+        before: apiOptions.before && new Date(apiOptions.before).toISOString(),
       }),
     });
 
@@ -176,7 +176,7 @@ class MessageManager extends CachedManager {
         get pinnedAt() {
           return new Date(this.pinnedTimestamp);
         },
-        message: this._add(item.message, options.cache),
+        message: this._add(item.message, cache),
       })),
       hasMore: data.has_more,
     };

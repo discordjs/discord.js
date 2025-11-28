@@ -55,7 +55,7 @@ class ThreadChannel extends BaseChannel {
      * @type {ThreadMemberManager}
      */
     this.members = new ThreadMemberManager(this);
-    if (data) this._patch(data);
+    this._patch(data);
   }
 
   _patch(data) {

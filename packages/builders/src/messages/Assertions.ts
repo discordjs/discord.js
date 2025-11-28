@@ -1,9 +1,20 @@
+import { Buffer } from 'node:buffer';
 import { AllowedMentionsTypes, ComponentType, MessageFlags, MessageReferenceType } from 'discord-api-types/v10';
 import { z } from 'zod';
 import { embedPredicate } from './embed/Assertions.js';
 import { pollPredicate } from './poll/Assertions.js';
 
+const fileKeyRegex = /^files\[(?<placeholder>\d+?)]$/;
+
+export const rawFilePredicate = z.object({
+	data: z.union([z.instanceof(Buffer), z.instanceof(Uint8Array), z.string()]),
+	name: z.string().min(1),
+	contentType: z.string().optional(),
+	key: z.string().regex(fileKeyRegex).optional(),
+});
+
 export const attachmentPredicate = z.object({
+	// As a string it only makes sense for edits when we do have an attachment snowflake
 	id: z.union([z.string(), z.number()]),
 	description: z.string().max(1_024).optional(),
 	duration_secs: z
@@ -125,3 +136,11 @@ const messageComponentsV2Predicate = baseMessagePredicate.extend({
 });
 
 export const messagePredicate = z.union([messageNoComponentsV2Predicate, messageComponentsV2Predicate]);
+
+// This validator does not assert file.key <-> attachment.id coherence. This is fine, because the builders
+// should effectively guarantee that.
+export const fileBodyMessagePredicate = z.object({
+	body: messagePredicate,
+	// No min length to support message edits
+	files: rawFilePredicate.array().max(10),
+});
