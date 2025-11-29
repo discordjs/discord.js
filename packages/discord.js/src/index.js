@@ -111,7 +111,6 @@ exports.ApplicationEmoji = require('./structures/ApplicationEmoji.js').Applicati
 exports.ApplicationRoleConnectionMetadata =
   require('./structures/ApplicationRoleConnectionMetadata.js').ApplicationRoleConnectionMetadata;
 exports.Attachment = require('./structures/Attachment.js').Attachment;
-exports.AttachmentBuilder = require('./structures/AttachmentBuilder.js').AttachmentBuilder;
 exports.AutocompleteInteraction = require('./structures/AutocompleteInteraction.js').AutocompleteInteraction;
 exports.AutoModerationActionExecution =
   require('./structures/AutoModerationActionExecution.js').AutoModerationActionExecution;
