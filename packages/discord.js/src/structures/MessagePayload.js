@@ -200,12 +200,10 @@ class MessagePayload {
 
     // Only passable during edits
     if (Array.isArray(this.options.attachments)) {
-      this.options.attachments = this.options.attachments
+      attachments.push(
         // Note how we don't check for file body encodable, since we aren't expecting file data here
-        .map(attachment => (isJSONEncodable(attachment) ? attachment.toJSON() : attachment))
-        .concat(attachments ?? []);
-    } else {
-      this.options.attachments = attachments;
+        ...this.options.attachments.map(attachment => (isJSONEncodable(attachment) ? attachment.toJSON() : attachment)),
+      );
     }
 
     let poll;
@@ -242,7 +240,7 @@ class MessagePayload {
           : allowedMentions,
       flags,
       message_reference,
-      attachments: this.options.attachments,
+      attachments,
       sticker_ids: this.options.stickers?.map(sticker => sticker.id ?? sticker),
       thread_name: threadName,
       applied_tags: appliedTags,
