@@ -1126,9 +1126,6 @@ importers:
         specifier: ^0.25.13
         version: 0.25.13(typescript@5.9.3)
     devDependencies:
-      '@favware/cliff-jumper':
-        specifier: ^6.0.0
-        version: 6.0.0
       '@types/jsdoc-to-markdown':
         specifier: ^7.0.6
         version: 7.0.6
