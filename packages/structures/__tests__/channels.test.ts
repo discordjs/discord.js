@@ -38,7 +38,7 @@ import {
 	TextChannel,
 	ThreadMetadata,
 	VoiceChannel,
-} from '../src/index.js';
+} from '../src/channels/index.js';
 import { kData } from '../src/utils/symbols.js';
 
 describe('text channel', () => {
