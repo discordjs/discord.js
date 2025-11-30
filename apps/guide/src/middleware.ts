@@ -9,7 +9,11 @@ export function middleware(request: NextRequest) {
 	}
 
 	// Redirect old urls to /legacy
-	if (!request.nextUrl.pathname.startsWith('/legacy') && !request.nextUrl.pathname.startsWith('/voice')) {
+	if (
+		!request.nextUrl.pathname.startsWith('/legacy') &&
+		!request.nextUrl.pathname.startsWith('/voice') &&
+		!request.nextUrl.pathname.startsWith('/v15')
+	) {
 		const newUrl = request.nextUrl.clone();
 		newUrl.pathname = `/legacy${newUrl.pathname}`;
 		return NextResponse.redirect(newUrl);
