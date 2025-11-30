@@ -50,6 +50,9 @@ export const labelValueDescriptionValidator = s
 	.lengthLessThanOrEqual(100)
 	.setValidationEnabled(isValidationEnabled);
 
+/**
+ * @deprecated Replaced with selectMenuStringOptionPredicate.
+ */
 export const jsonOptionValidator = s
 	.object({
 		label: labelValueDescriptionValidator,
