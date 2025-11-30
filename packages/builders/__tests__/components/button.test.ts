@@ -19,7 +19,7 @@ const longStr =
 describe('Button Components', () => {
 	describe('Assertion Tests', () => {
 		test('GIVEN valid fields THEN builder does not throw', () => {
-			expect(() => new PrimaryButtonBuilder().setCustomId('custom').setLabel('test')).not.toThrowError();
+			expect(() => new PrimaryButtonBuilder().setCustomId('custom').setLabel('test').toJSON()).not.toThrowError();
 
 			expect(() => {
 				const button = new PrimaryButtonBuilder()
