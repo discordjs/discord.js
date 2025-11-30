@@ -1,10 +1,10 @@
 import { ButtonStyle, ChannelType, ComponentType, SelectMenuDefaultValueType } from 'discord-api-types/v10';
 import { z } from 'zod';
-import { idPredicate, customIdPredicate } from '../Assertions.js';
+import { idPredicate, customIdPredicate, snowflakePredicate } from '../Assertions.js';
 
 export const emojiPredicate = z
 	.strictObject({
-		id: z.string().optional(),
+		id: snowflakePredicate.optional(),
 		name: z.string().min(2).max(32).optional(),
 		animated: z.boolean().optional(),
 	})
@@ -47,7 +47,7 @@ const buttonLinkPredicate = buttonPredicateBase
 
 const buttonPremiumPredicate = buttonPredicateBase.extend({
 	style: z.literal(ButtonStyle.Premium),
-	sku_id: z.string(),
+	sku_id: snowflakePredicate,
 });
 
 export const buttonPredicate = z.discriminatedUnion('style', [
@@ -72,7 +72,7 @@ export const selectMenuChannelPredicate = selectMenuBasePredicate.extend({
 	type: z.literal(ComponentType.ChannelSelect),
 	channel_types: z.enum(ChannelType).array().optional(),
 	default_values: z
-		.object({ id: z.string(), type: z.literal(SelectMenuDefaultValueType.Channel) })
+		.object({ id: snowflakePredicate, type: z.literal(SelectMenuDefaultValueType.Channel) })
 		.array()
 		.max(25)
 		.optional(),
@@ -82,7 +82,7 @@ export const selectMenuMentionablePredicate = selectMenuBasePredicate.extend({
 	type: z.literal(ComponentType.MentionableSelect),
 	default_values: z
 		.object({
-			id: z.string(),
+			id: snowflakePredicate,
 			type: z.literal([SelectMenuDefaultValueType.Role, SelectMenuDefaultValueType.User]),
 		})
 		.array()
@@ -93,7 +93,7 @@ export const selectMenuMentionablePredicate = selectMenuBasePredicate.extend({
 export const selectMenuRolePredicate = selectMenuBasePredicate.extend({
 	type: z.literal(ComponentType.RoleSelect),
 	default_values: z
-		.object({ id: z.string(), type: z.literal(SelectMenuDefaultValueType.Role) })
+		.object({ id: snowflakePredicate, type: z.literal(SelectMenuDefaultValueType.Role) })
 		.array()
 		.max(25)
 		.optional(),
@@ -150,7 +150,7 @@ export const selectMenuStringPredicate = selectMenuBasePredicate
 export const selectMenuUserPredicate = selectMenuBasePredicate.extend({
 	type: z.literal(ComponentType.UserSelect),
 	default_values: z
-		.object({ id: z.string(), type: z.literal(SelectMenuDefaultValueType.User) })
+		.object({ id: snowflakePredicate, type: z.literal(SelectMenuDefaultValueType.User) })
 		.array()
 		.max(25)
 		.optional(),
