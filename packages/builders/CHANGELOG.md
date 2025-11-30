@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.13.1](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.13.0...@discordjs/builders@1.13.1) - (2025-11-30)
+
+## Bug Fixes
+
+- Adjust label predicates (#11318) ([61251cf](https://github.com/discordjs/discord.js/commit/61251cfcb842cc468aca7a581f54be4fd28c2721))
+
+## Documentation
+
+- **Container:** Update example usage ([e777938](https://github.com/discordjs/discord.js/commit/e77793898ac36320eeee8b999c618918526ab9c2))
+
 # [@discordjs/builders@1.13.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.12.2...@discordjs/builders@1.13.0) - (2025-10-24)
 
 ## Features
