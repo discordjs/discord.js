@@ -6,6 +6,7 @@ const selectMenu = () => new StringSelectMenuBuilder();
 const selectMenuOption = () => new StringSelectMenuOptionBuilder();
 
 const longStr = 'a'.repeat(256);
+const selectMenuOptionLabelAtLimit = 'a'.repeat(100);
 const selectMenuOptionLabelAboveLimit = 'a'.repeat(101);
 const selectMenuOptionValueAboveLimit = 'a'.repeat(101);
 const selectMenuOptionDescriptionAboveLimit = 'a'.repeat(101);
@@ -56,7 +57,7 @@ describe('Select Menu Components', () => {
 			expect(() => selectMenu().setDisabled()).not.toThrowError();
 			expect(() => selectMenu().setPlaceholder('description')).not.toThrowError();
 			const option = selectMenuOption()
-				.setLabel('a'.repeat(100))
+				.setLabel(selectMenuOptionLabelAtLimit)
 				.setValue('test')
 				.setDefault(true)
 				.setEmoji({ name: 'test' })
