@@ -66,7 +66,6 @@
 		"typedoc": "^0.25.13"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^4.1.0",
 		"@types/jsdoc-to-markdown": "^7.0.6",
 		"@types/node": "^22.18.13",
 		"cross-env": "^10.1.0",

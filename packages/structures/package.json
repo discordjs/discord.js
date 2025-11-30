@@ -68,7 +68,7 @@
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
-		"@favware/cliff-jumper": "^4.1.0",
+		"@favware/cliff-jumper": "^6.0.0",
 		"@types/node": "^22.18.13",
 		"@vitest/coverage-v8": "^3.2.4",
 		"cpy-cli": "^6.0.0",
