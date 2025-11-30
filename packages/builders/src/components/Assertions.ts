@@ -2,8 +2,6 @@ import { ButtonStyle, ChannelType, ComponentType, SelectMenuDefaultValueType } f
 import { z } from 'zod';
 import { idPredicate, customIdPredicate, snowflakePredicate } from '../Assertions.js';
 
-const labelPredicate = z.string().min(1).max(80);
-
 export const emojiPredicate = z
 	.strictObject({
 		id: snowflakePredicate.optional(),
@@ -19,23 +17,33 @@ const buttonPredicateBase = z.strictObject({
 	disabled: z.boolean().optional(),
 });
 
-const buttonCustomIdPredicateBase = buttonPredicateBase.extend({
-	custom_id: customIdPredicate,
-	emoji: emojiPredicate.optional(),
-	label: labelPredicate,
-});
+const buttonLabelPredicate = z.string().min(1).max(80);
 
-const buttonPrimaryPredicate = buttonCustomIdPredicateBase.extend({ style: z.literal(ButtonStyle.Primary) });
-const buttonSecondaryPredicate = buttonCustomIdPredicateBase.extend({ style: z.literal(ButtonStyle.Secondary) });
-const buttonSuccessPredicate = buttonCustomIdPredicateBase.extend({ style: z.literal(ButtonStyle.Success) });
-const buttonDangerPredicate = buttonCustomIdPredicateBase.extend({ style: z.literal(ButtonStyle.Danger) });
+const buttonCustomIdPredicateBase = buttonPredicateBase
+	.extend({
+		custom_id: customIdPredicate,
+		emoji: emojiPredicate.optional(),
+		label: buttonLabelPredicate.optional(),
+	})
+	.refine((data) => data.emoji !== undefined || data.label !== undefined, {
+		message: 'Buttons with a custom id must have either an emoji or a label.',
+	});
 
-const buttonLinkPredicate = buttonPredicateBase.extend({
-	style: z.literal(ButtonStyle.Link),
-	url: z.url({ protocol: /^(?:https?|discord)$/ }).max(512),
-	emoji: emojiPredicate.optional(),
-	label: labelPredicate,
-});
+const buttonPrimaryPredicate = buttonCustomIdPredicateBase.safeExtend({ style: z.literal(ButtonStyle.Primary) });
+const buttonSecondaryPredicate = buttonCustomIdPredicateBase.safeExtend({ style: z.literal(ButtonStyle.Secondary) });
+const buttonSuccessPredicate = buttonCustomIdPredicateBase.safeExtend({ style: z.literal(ButtonStyle.Success) });
+const buttonDangerPredicate = buttonCustomIdPredicateBase.safeExtend({ style: z.literal(ButtonStyle.Danger) });
+
+const buttonLinkPredicate = buttonPredicateBase
+	.extend({
+		style: z.literal(ButtonStyle.Link),
+		url: z.url({ protocol: /^(?:https?|discord)$/ }).max(512),
+		emoji: emojiPredicate.optional(),
+		label: buttonLabelPredicate.optional(),
+	})
+	.refine((data) => data.emoji !== undefined || data.label !== undefined, {
+		message: 'Link buttons must have either an emoji or a label.',
+	});
 
 const buttonPremiumPredicate = buttonPredicateBase.extend({
 	style: z.literal(ButtonStyle.Premium),
@@ -92,7 +100,7 @@ export const selectMenuRolePredicate = selectMenuBasePredicate.extend({
 });
 
 export const selectMenuStringOptionPredicate = z.object({
-	label: labelPredicate,
+	label: z.string().min(1).max(100),
 	value: z.string().min(1).max(100),
 	description: z.string().min(1).max(100).optional(),
 	emoji: emojiPredicate.optional(),
