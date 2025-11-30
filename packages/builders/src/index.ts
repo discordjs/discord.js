@@ -31,6 +31,7 @@ export {
 	 */
 	StringSelectMenuOptionBuilder as SelectMenuOptionBuilder,
 } from './components/selectMenu/StringSelectMenuOption.js';
+export { selectMenuStringOptionPredicate } from './components/selectMenu/Assertions.js';
 export * from './components/selectMenu/StringSelectMenuOption.js';
 export * from './components/selectMenu/UserSelectMenu.js';
 
