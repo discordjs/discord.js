@@ -71,7 +71,8 @@ export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
 	 * 		},
 	 * 	],
 	 * })
-	 * 	.addComponents(separator, section);
+	 *  .addSeparatorComponents(separator)
+	 *  .addSectionComponents(section);
 	 * ```
 	 */
 	public constructor({ components, ...data }: Partial<APIContainerComponent> = {}) {
