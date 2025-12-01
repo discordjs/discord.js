@@ -1453,6 +1453,7 @@ export class Guild extends AnonymousGuild {
   public widgetChannelId: Snowflake | null;
   public widgetEnabled: boolean | null;
   public get maximumBitrate(): number;
+  public get maximummaximumStageBitrate(): number;
   public createTemplate(name: string, description?: string): Promise<GuildTemplate>;
   public discoverySplashURL(options?: ImageURLOptions): string | null;
   public edit(options: GuildEditOptions): Promise<Guild>;
