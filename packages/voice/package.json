@@ -73,7 +73,7 @@
 		"@discordjs/api-extractor": "workspace:^",
 		"@discordjs/opus": "^0.9.0",
 		"@discordjs/scripts": "workspace:^",
-		"@favware/cliff-jumper": "^4.1.0",
+		"@favware/cliff-jumper": "^6.0.0",
 		"@noble/ciphers": "^1.3.0",
 		"@snazzah/davey": "^0.1.7",
 		"@types/node": "^22.18.13",

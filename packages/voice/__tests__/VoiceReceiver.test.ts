@@ -157,7 +157,7 @@ describe('VoiceReceiver', () => {
 			);
 
 			const expectedNonce = Buffer.concat([
-				XCHACHA20_SAMPLE.encrypted.slice(XCHACHA20_SAMPLE.encrypted.length - 4),
+				XCHACHA20_SAMPLE.encrypted.subarray(XCHACHA20_SAMPLE.encrypted.length - 4),
 				Buffer.alloc(20),
 			]);
 

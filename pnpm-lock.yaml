@@ -20,8 +20,8 @@ importers:
         specifier: ^20.0.0
         version: 20.0.0
       '@favware/cliff-jumper':
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^6.0.0
+        version: 6.0.0
       '@favware/npm-deprecate':
         specifier: ^2.0.0
         version: 2.0.0
@@ -732,8 +732,8 @@ importers:
         specifier: workspace:^
         version: link:../scripts
       '@favware/cliff-jumper':
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^6.0.0
+        version: 6.0.0
       '@types/node':
         specifier: ^22.18.13
         version: 22.18.13
@@ -799,8 +799,8 @@ importers:
         specifier: workspace:^
         version: link:../scripts
       '@favware/cliff-jumper':
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^6.0.0
+        version: 6.0.0
       '@types/node':
         specifier: ^22.18.13
         version: 22.18.13
@@ -850,8 +850,8 @@ importers:
         specifier: workspace:^
         version: link:../scripts
       '@favware/cliff-jumper':
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^6.0.0
+        version: 6.0.0
       '@types/node':
         specifier: ^22.18.13
         version: 22.18.13
@@ -920,8 +920,8 @@ importers:
         specifier: workspace:^
         version: link:../scripts
       '@favware/cliff-jumper':
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^6.0.0
+        version: 6.0.0
       '@types/node':
         specifier: ^22.18.13
         version: 22.18.13
@@ -978,8 +978,8 @@ importers:
         specifier: workspace:^
         version: link:../api-extractor
       '@favware/cliff-jumper':
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^6.0.0
+        version: 6.0.0
       '@types/node':
         specifier: ^22.18.13
         version: 22.18.13
@@ -1072,8 +1072,8 @@ importers:
         specifier: workspace:^
         version: link:../scripts
       '@favware/cliff-jumper':
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^6.0.0
+        version: 6.0.0
       '@types/node':
         specifier: ^22.18.13
         version: 22.18.13
@@ -1126,9 +1126,6 @@ importers:
         specifier: ^0.25.13
         version: 0.25.13(typescript@5.9.3)
     devDependencies:
-      '@favware/cliff-jumper':
-        specifier: ^4.1.0
-        version: 4.1.0
       '@types/jsdoc-to-markdown':
         specifier: ^7.0.6
         version: 7.0.6
@@ -1179,8 +1176,8 @@ importers:
         specifier: workspace:^
         version: link:../scripts
       '@favware/cliff-jumper':
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^6.0.0
+        version: 6.0.0
       '@types/node':
         specifier: ^22.18.13
         version: 22.18.13
@@ -1255,8 +1252,8 @@ importers:
         specifier: workspace:^
         version: link:../scripts
       '@favware/cliff-jumper':
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^6.0.0
+        version: 6.0.0
       '@types/node':
         specifier: ^22.18.13
         version: 22.18.13
@@ -1319,8 +1316,8 @@ importers:
         specifier: workspace:^
         version: link:../scripts
       '@favware/cliff-jumper':
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^6.0.0
+        version: 6.0.0
       '@types/node':
         specifier: ^22.18.13
         version: 22.18.13
@@ -1453,8 +1450,8 @@ importers:
         specifier: workspace:^
         version: link:../scripts
       '@favware/cliff-jumper':
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^6.0.0
+        version: 6.0.0
       '@types/node':
         specifier: ^22.18.13
         version: 22.18.13
@@ -1587,8 +1584,8 @@ importers:
         specifier: workspace:^
         version: link:../scripts
       '@favware/cliff-jumper':
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^6.0.0
+        version: 6.0.0
       '@types/node':
         specifier: ^22.18.13
         version: 22.18.13
@@ -1619,9 +1616,6 @@ importers:
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
-      tsd:
-        specifier: ^0.33.0
-        version: 0.33.0
       tsup:
         specifier: ^8.5.0
         version: 8.5.0(@microsoft/api-extractor@7.53.3(@types/node@22.18.13))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.19.2)(typescript@5.9.3)(yaml@2.8.1)
@@ -1651,8 +1645,8 @@ importers:
         version: 19.2.0(react@19.2.0)
     devDependencies:
       '@favware/cliff-jumper':
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^6.0.0
+        version: 6.0.0
       '@storybook/addon-essentials':
         specifier: ^8.6.14
         version: 8.6.14(@types/react@19.2.2)(storybook@8.6.14(bufferutil@4.0.9)(prettier@3.6.2))
@@ -1751,8 +1745,8 @@ importers:
         specifier: workspace:^
         version: link:../scripts
       '@favware/cliff-jumper':
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^6.0.0
+        version: 6.0.0
       '@types/node':
         specifier: ^22.18.13
         version: 22.18.13
@@ -1821,8 +1815,8 @@ importers:
         specifier: workspace:^
         version: link:../scripts
       '@favware/cliff-jumper':
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^6.0.0
+        version: 6.0.0
       '@noble/ciphers':
         specifier: ^1.3.0
         version: 1.3.0
@@ -1906,8 +1900,8 @@ importers:
         specifier: workspace:^
         version: link:../scripts
       '@favware/cliff-jumper':
-        specifier: ^4.1.0
-        version: 4.1.0
+        specifier: ^6.0.0
+        version: 6.0.0
       '@types/node':
         specifier: ^22.18.13
         version: 22.18.13
@@ -3389,8 +3383,8 @@ packages:
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
 
-  '@favware/cliff-jumper@4.1.0':
-    resolution: {integrity: sha512-z8U6XecZr3F7nkq2d+dg+QXaHcBh+DugUuVQGwIEo2vpAPOFkZ0Xnz3YbnTu0zPlr9lDEWL/rbnGEr0lwCaGOA==}
+  '@favware/cliff-jumper@6.0.0':
+    resolution: {integrity: sha512-9uXg/fGHFLh4AnG3HCtlrrrmDvUnmr5vrbs7H9pet3WlUCsGGGqeNT0bFb8LG0M0GatYUi9RM/F60p1yn2ndEA==}
     engines: {node: '>=v18'}
     hasBin: true
 
@@ -5581,12 +5575,16 @@ packages:
     resolution: {integrity: sha512-oCAZidlTVJg1smmfEsJEHT587j7iwsjdffaoQo26+Xyx0NGePnM787bhcWVXNakjQFoQwk92W6cLEs/tykjw5g==}
     engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
 
+  '@sapphire/result@2.8.0':
+    resolution: {integrity: sha512-693yWouX+hR9uJm1Jgq0uSSjbSD3UrblMaxiuGbHPjSwzLCSZTcm0h3kvdVhq3o/yl4+oeAWW3hiaJ0TELuRJQ==}
+    engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
+
   '@sapphire/snowflake@3.5.5':
     resolution: {integrity: sha512-xzvBr1Q1c4lCe7i6sRnrofxeO1QTP/LKQ6A6qy0iB4x5yfiSfARMEQEghojzTNALDTcv8En04qYNIco9/K9eZQ==}
     engines: {node: '>=v14.0.0', npm: '>=7.0.0'}
 
-  '@sapphire/utilities@3.17.0':
-    resolution: {integrity: sha512-bbqjnKKrCgyT0C3+KOjIBzE6z6/v764EFuV7Uxw9WeIdkqGhwepl6tuNEzgiek/JdtEcODaPeX0K1aCt53yCcA==}
+  '@sapphire/utilities@3.18.1':
+    resolution: {integrity: sha512-zyEyQOQb2/t2mKRmu8T+M4r1Ulb+54BjwDS5pfzf6abGzTAcUg4VDWjHeKX7p3IgiZTcpN4Ij77b9k+K1KV4Lg==}
     engines: {node: '>=v14.0.0'}
 
   '@sapphire/utilities@3.18.2':
@@ -8143,6 +8141,10 @@ packages:
     resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
     engines: {node: '>=18'}
 
+  commander@13.1.0:
+    resolution: {integrity: sha512-/rFeCpNJQbhSZjGVwO9RFV3xPqbnERS8MmIQzCtD/zl6gpJuV/bMLuN92oG3F7d8oDEHHRrujSXNUr8fpjntKw==}
+    engines: {node: '>=18'}
+
   commander@14.0.2:
     resolution: {integrity: sha512-TywoWNNRbhoD0BXs1P3ZEScW8W5iKrnbithIl0YH+uCmBd0QpPOA8yc82DS3BIE5Ma6FnBVUsJ7wVUDz4dvOWQ==}
     engines: {node: '>=20'}
@@ -9511,8 +9513,8 @@ packages:
     resolution: {integrity: sha512-8uSpZZocAZRBAPIEINJj3Lo9HyGitllczc27Eh5YYojjMFMn8yHMDMaUHE2Jqfq05D/wucwI4JGURyXt1vchyg==}
     engines: {node: '>=10'}
 
-  execa@9.6.0:
-    resolution: {integrity: sha512-jpWzZ1ZhwUmeWRhS7Qv3mhpOhLfwI+uAX4e5fOcXqwMR7EcJ0pj2kV1CVzHVMX/LphnKWD3LObjZCoJ71lKpHw==}
+  execa@9.6.1:
+    resolution: {integrity: sha512-9Be3ZoN4LmYR90tUoVu2te2BsbzHfhJyfEiAVfz7N5/zv+jduIfLrV2xdQXOHbaD6KgpGdO9PRPM1Y4Q9QkPkA==}
     engines: {node: ^18.19.0 || >=20.5.0}
 
   exit-hook@2.2.1:
@@ -10664,6 +10666,10 @@ packages:
 
   js-yaml@4.1.0:
     resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
+    hasBin: true
+
+  js-yaml@4.1.1:
+    resolution: {integrity: sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==}
     hasBin: true
 
   js2xmlparser@4.0.2:
@@ -13023,8 +13029,8 @@ packages:
     resolution: {integrity: sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==}
     engines: {node: '>= 6.0.0', npm: '>= 3.0.0'}
 
-  smol-toml@1.4.2:
-    resolution: {integrity: sha512-rInDH6lCNiEyn3+hH8KVGFdbjc099j47+OSgbMrfDYX1CmXLfdKd7qi6IfcWj2wFxvSVkuI46M+wPGYfEOEj6g==}
+  smol-toml@1.5.2:
+    resolution: {integrity: sha512-QlaZEqcAH3/RtNyet1IPIYPsEWAaYyXXv1Krsi+1L/QHppjX4Ifm8MQsBISz9vE8cHicIq3clogsheili5vhaQ==}
     engines: {node: '>= 18'}
 
   snake-case@2.1.0:
@@ -16386,22 +16392,22 @@ snapshots:
 
   '@fastify/busboy@2.1.1': {}
 
-  '@favware/cliff-jumper@4.1.0':
+  '@favware/cliff-jumper@6.0.0':
     dependencies:
       '@favware/colorette-spinner': 1.0.1
       '@octokit/auth-token': 5.1.2
       '@octokit/core': 6.1.6
       '@octokit/plugin-retry': 7.2.1(@octokit/core@6.1.6)
-      '@sapphire/result': 2.7.3
-      '@sapphire/utilities': 3.17.0
+      '@sapphire/result': 2.8.0
+      '@sapphire/utilities': 3.18.1
       colorette: 2.0.20
-      commander: 12.1.0
+      commander: 13.1.0
       conventional-recommended-bump: 10.0.0
-      execa: 9.6.0
+      execa: 9.6.1
       git-cliff: 2.10.1
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       semver: 7.7.3
-      smol-toml: 1.4.2
+      smol-toml: 1.5.2
 
   '@favware/colorette-spinner@1.0.1':
     dependencies:
@@ -19116,9 +19122,11 @@ snapshots:
 
   '@sapphire/result@2.7.3': {}
 
+  '@sapphire/result@2.8.0': {}
+
   '@sapphire/snowflake@3.5.5': {}
 
-  '@sapphire/utilities@3.17.0': {}
+  '@sapphire/utilities@3.18.1': {}
 
   '@sapphire/utilities@3.18.2': {}
 
@@ -22641,6 +22649,8 @@ snapshots:
 
   commander@12.1.0: {}
 
+  commander@13.1.0: {}
+
   commander@14.0.2: {}
 
   commander@2.20.3: {}
@@ -24564,7 +24574,7 @@ snapshots:
       signal-exit: 3.0.7
       strip-final-newline: 2.0.0
 
-  execa@9.6.0:
+  execa@9.6.1:
     dependencies:
       '@sindresorhus/merge-streams': 4.0.0
       cross-spawn: 7.0.6
@@ -25072,7 +25082,7 @@ snapshots:
 
   git-cliff@2.10.1:
     dependencies:
-      execa: 9.6.0
+      execa: 9.6.1
     optionalDependencies:
       git-cliff-darwin-arm64: 2.10.1
       git-cliff-darwin-x64: 2.10.1
@@ -25842,6 +25852,10 @@ snapshots:
   js-tokens@9.0.1: {}
 
   js-yaml@4.1.0:
+    dependencies:
+      argparse: 2.0.1
+
+  js-yaml@4.1.1:
     dependencies:
       argparse: 2.0.1
 
@@ -28696,7 +28710,7 @@ snapshots:
 
   smart-buffer@4.2.0: {}
 
-  smol-toml@1.4.2: {}
+  smol-toml@1.5.2: {}
 
   snake-case@2.1.0:
     dependencies:
