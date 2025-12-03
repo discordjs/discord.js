@@ -849,7 +849,7 @@ class Message extends Base {
   /**
    * Edits the content of the message.
    *
-   * @param {string|MessagePayload|MessageEditOptions} options The options to provide
+   * @param {string|MessageEditOptions|MessagePayload|FileBodyEncodable<RESTPatchAPIChannelMessageJSONBody>|JSONEncodable<RESTPatchAPIChannelMessageJSONBody>} options The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Update the content of a message
