@@ -1453,6 +1453,7 @@ export class Guild extends AnonymousGuild {
   public widgetChannelId: Snowflake | null;
   public widgetEnabled: boolean | null;
   public get maximumBitrate(): number;
+  public get maximumStageBitrate(): number;
   public createTemplate(name: string, description?: string): Promise<GuildTemplate>;
   public discoverySplashURL(options?: ImageURLOptions): string | null;
   public edit(options: GuildEditOptions): Promise<Guild>;
@@ -4036,7 +4037,7 @@ export enum DiscordjsErrorCodes {
 
   EmojiType = 'EmojiType',
   EmojiManaged = 'EmojiManaged',
-  MissingManageGuildExpressionsPermission = 'MissingManageGuildExpressionsPermission',
+  MissingGuildExpressionsPermission = 'MissingGuildExpressionsPermission',
 
   NotGuildSoundboardSound = 'NotGuildSoundboardSound',
   NotGuildSticker = 'NotGuildSticker',
