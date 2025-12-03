@@ -114,6 +114,10 @@ jobs:
           CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
           CF_R2_DOCS_BUCKET: ${{ secrets.CF_R2_DOCS_BUCKET }}
           CF_R2_DOCS_BUCKET_URL: ${{ secrets.CF_R2_DOCS_BUCKET_URL }}
+          CF_R2_READMES_ACCESS_KEY_ID: ${{ secrets.CF_R2_READMES_ACCESS_KEY_ID }}
+          CF_R2_READMES_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_READMES_SECRET_ACCESS_KEY }}
+          CF_R2_READMES_BUCKET: ${{ secrets.CF_R2_READMES_BUCKET }}
+          CF_R2_READMES_URL: ${{ secrets.CF_R2_READMES_URL }}
         uses: ./packages/actions/src/uploadDocumentation
         with:
           package: ${{ steps.extract-tag.outputs.package }}

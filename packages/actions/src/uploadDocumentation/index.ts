@@ -14,7 +14,11 @@ if (
 	!process.env.CF_R2_DOCS_BUCKET_URL ||
 	!process.env.CF_D1_DOCS_API_KEY ||
 	!process.env.CF_D1_DOCS_ID ||
-	!process.env.CF_ACCOUNT_ID
+	!process.env.CF_ACCOUNT_ID ||
+	!process.env.CF_R2_READMES_ACCESS_KEY_ID ||
+	!process.env.CF_R2_READMES_SECRET_ACCESS_KEY ||
+	!process.env.CF_R2_READMES_BUCKET ||
+	!process.env.CF_R2_READMES_URL
 ) {
 	setFailed('Missing environment variables');
 }
@@ -22,7 +26,7 @@ if (
 const pkg = getInput('package') || '*';
 const version = getInput('version') || 'main';
 
-const S3 = new S3Client({
+const S3Docs = new S3Client({
 	region: 'auto',
 	endpoint: process.env.CF_R2_DOCS_URL!,
 	credentials: {
@@ -53,7 +57,7 @@ for await (const file of globber.globGenerator()) {
 
 				const key = `${name.replace('@discordjs/', '')}/${version}.json`;
 
-				await S3.send(
+				await S3Docs.send(
 					new PutObjectCommand({
 						Bucket: process.env.CF_R2_DOCS_BUCKET,
 						Key: key,
