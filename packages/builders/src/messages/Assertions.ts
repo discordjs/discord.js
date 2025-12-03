@@ -1,4 +1,3 @@
-import { Buffer } from 'node:buffer';
 import { AllowedMentionsTypes, ComponentType, MessageFlags, MessageReferenceType } from 'discord-api-types/v10';
 import { z } from 'zod';
 import { snowflakePredicate } from '../Assertions.js';

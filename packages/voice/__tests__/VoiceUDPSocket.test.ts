@@ -1,5 +1,4 @@
 // @ts-nocheck
-import { Buffer } from 'node:buffer';
 import { createSocket as _createSocket } from 'node:dgram';
 import { EventEmitter } from 'node:events';
 import { describe, test, expect, vitest, beforeEach, afterEach } from 'vitest';

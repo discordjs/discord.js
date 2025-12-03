@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
-import { Buffer } from 'node:buffer';
 import path from 'node:path';
 import util from 'node:util';
 import { TSDocConfiguration } from '@microsoft/tsdoc';

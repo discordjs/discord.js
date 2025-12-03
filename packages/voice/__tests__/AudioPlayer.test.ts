@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/dot-notation */
 
-import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
-import process from 'node:process';
 import { Readable } from 'node:stream';
 import { describe, test, expect, vitest, type Mock, beforeEach, afterEach } from 'vitest';
 import { addAudioPlayer, deleteAudioPlayer } from '../src/DataStore';

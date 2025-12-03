@@ -1,4 +1,3 @@
-import { Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
 import type { VoiceDavePrepareEpochData, VoiceDavePrepareTransitionData } from 'discord-api-types/voice/v8';
 import { SILENCE_FRAME } from '../audio/AudioPlayer';

@@ -1,5 +1,3 @@
-import { Buffer } from 'node:buffer';
-
 interface Methods {
 	crypto_aead_xchacha20poly1305_ietf_decrypt(
 		cipherText: Buffer,

@@ -1,4 +1,3 @@
-import type { Buffer } from 'node:buffer';
 import type { JSONEncodable, RawFile } from '@discordjs/util';
 import type { RESTAPIAttachment, Snowflake } from 'discord-api-types/v10';
 import { validate } from '../util/validation.js';

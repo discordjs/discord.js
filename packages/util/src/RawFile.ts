@@ -1,5 +1,3 @@
-import type { Buffer } from 'node:buffer';
-
 /**
  * Represents a file to be added to a request with multipart/form-data encoding
  */

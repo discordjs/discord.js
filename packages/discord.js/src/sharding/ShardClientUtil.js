@@ -1,7 +1,6 @@
 /* eslint-disable promise/prefer-await-to-callbacks, promise/prefer-await-to-then */
 'use strict';
 
-const process = require('node:process');
 const { calculateShardId } = require('@discordjs/util');
 const { WebSocketShardEvents } = require('@discordjs/ws');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');

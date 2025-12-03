@@ -1,5 +1,4 @@
-import { Buffer, File as NativeFile } from 'node:buffer';
-import { URLSearchParams } from 'node:url';
+import { File as NativeFile } from 'node:buffer';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { Snowflake } from 'discord-api-types/v10';
 import { Routes } from 'discord-api-types/v10';
