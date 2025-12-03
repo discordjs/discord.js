@@ -1109,7 +1109,7 @@ class Message extends Base {
    * method allows you to see if there are differences in content, embeds, attachments, nonce and tts properties.
    *
    * @param {Message} message The message to compare it to
-   * @param {APIMessage} rawData Raw data passed through the WebSocket about this message
+   * @param {APIMessage} [rawData] Raw data passed through the WebSocket about this message
    * @returns {boolean}
    */
   equals(message, rawData) {
