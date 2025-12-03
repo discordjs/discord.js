@@ -587,6 +587,8 @@ test('perm server outage', async () => {
 test('server responding too slow', async () => {
 	const api2 = new REST({ timeout: 1 }).setToken('A-Very-Really-Real-Token');
 
+	api2.setAgent(mockAgent);
+
 	mockPool
 		.intercept({
 			path: genPath('/slow'),

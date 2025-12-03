@@ -1,10 +1,12 @@
 import { STATUS_CODES } from 'node:http';
 import { URLSearchParams } from 'node:url';
 import { types } from 'node:util';
-import { type RequestInit, request, Headers } from 'undici';
+import { type RequestInit, request, Headers, Agent } from 'undici';
 import type { ResponseLike } from '../shared.js';
 
 export type RequestOptions = Exclude<Parameters<typeof request>[1], undefined>;
+
+let localAgent: Agent | null = null;
 
 export async function makeRequest(url: string, init: RequestInit): Promise<ResponseLike> {
 	// The cast is necessary because `headers` and `method` are narrower types in `undici.request`
@@ -13,6 +15,15 @@ export async function makeRequest(url: string, init: RequestInit): Promise<Respo
 		...init,
 		body: await resolveBody(init.body),
 	} as RequestOptions;
+
+	// Mismatched dispatchers from the Node.js-bundled undici and package-installed undici breaks file uploads.
+	// So we ensure that we always pass an Agent to request()
+	// https://github.com/nodejs/node/issues/59012
+	if (!options.dispatcher) {
+		localAgent ??= new Agent();
+		options.dispatcher = localAgent;
+	}
+
 	const res = await request(url, options);
 	return {
 		body: res.body,
