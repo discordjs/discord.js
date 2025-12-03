@@ -1,17 +1,16 @@
-// @ts-nocheck
 import { Buffer } from 'node:buffer';
 import EventEmitter, { once } from 'node:events';
 import process from 'node:process';
 import { Readable } from 'node:stream';
 import { opus as _opus } from 'prism-media';
-import { describe, test, expect, vitest, type Mock, beforeAll, beforeEach } from 'vitest';
+import { describe, test, expect, vitest, type Mock, beforeAll, beforeEach, type Mocked } from 'vitest';
 import { StreamType } from '../src/audio/index';
 import { demuxProbe } from '../src/util/demuxProbe';
 
 vitest.mock('prism-media');
 
-const WebmDemuxer = _opus.WebmDemuxer as unknown as Mock<_opus.WebmDemuxer>;
-const OggDemuxer = _opus.OggDemuxer as unknown as Mock<_opus.OggDemuxer>;
+const WebmDemuxer = _opus.WebmDemuxer as unknown as Mocked<typeof _opus.WebmDemuxer>;
+const OggDemuxer = _opus.OggDemuxer as unknown as Mocked<typeof _opus.OggDemuxer>;
 
 async function nextTick() {
 	// eslint-disable-next-line no-promise-executor-return
@@ -52,12 +51,12 @@ describe('demuxProbe', () => {
 	const oggWrite: Mock<(buffer: Buffer) => void> = vitest.fn();
 
 	beforeAll(() => {
-		WebmDemuxer.prototype = {
+		(WebmDemuxer as any).prototype = {
 			...WebmDemuxer,
 			...EventEmitter.prototype,
 			write: webmWrite,
 		};
-		OggDemuxer.prototype = {
+		(OggDemuxer as any).prototype = {
 			...OggDemuxer,
 			...EventEmitter.prototype,
 			write: oggWrite,
@@ -78,9 +77,9 @@ describe('demuxProbe', () => {
 
 	test('Detects WebM', async () => {
 		const stream = Readable.from(gen(10), { objectMode: false });
-		webmWrite.mockImplementation(function mock(data: Buffer) {
+		webmWrite.mockImplementation(function mock(this: EventEmitter, data: Buffer) {
 			if (data[0] === 5) this.emit('head', validHead);
-		} as any);
+		});
 		const probe = await demuxProbe(stream);
 		expect(probe.type).toEqual(StreamType.WebmOpus);
 		await expect(collectStream(probe.stream)).resolves.toEqual(range(10));
@@ -88,9 +87,9 @@ describe('demuxProbe', () => {
 
 	test('Detects Ogg', async () => {
 		const stream = Readable.from(gen(10), { objectMode: false });
-		oggWrite.mockImplementation(function mock(data: Buffer) {
+		oggWrite.mockImplementation(function mock(this: EventEmitter, data: Buffer) {
 			if (data[0] === 5) this.emit('head', validHead);
-		} as any);
+		});
 		const probe = await demuxProbe(stream);
 		expect(probe.type).toEqual(StreamType.OggOpus);
 		await expect(collectStream(probe.stream)).resolves.toEqual(range(10));
@@ -98,9 +97,9 @@ describe('demuxProbe', () => {
 
 	test('Rejects invalid OpusHead', async () => {
 		const stream = Readable.from(gen(10), { objectMode: false });
-		oggWrite.mockImplementation(function mock(data: Buffer) {
+		oggWrite.mockImplementation(function mock(this: EventEmitter, data: Buffer) {
 			if (data[0] === 5) this.emit('head', invalidHead);
-		} as any);
+		});
 		const probe = await demuxProbe(stream);
 		expect(probe.type).toEqual(StreamType.Arbitrary);
 		await expect(collectStream(probe.stream)).resolves.toEqual(range(10));

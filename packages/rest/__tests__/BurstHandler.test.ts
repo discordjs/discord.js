@@ -1,6 +1,5 @@
 /* eslint-disable id-length */
 /* eslint-disable promise/prefer-await-to-then */
-// @ts-nocheck
 import { performance } from 'node:perf_hooks';
 import { MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
@@ -137,7 +136,7 @@ test('Handle unexpected 429', async () => {
 		});
 
 	expect(await unexpectedLimit).toStrictEqual({ test: true });
-	expect(performance.now()).toBeGreaterThanOrEqual(previous + 1_000);
+	expect(firstResolvedTime!).toBeGreaterThanOrEqual(previous + 1_000);
 });
 
 test('server responding too slow', async () => {
