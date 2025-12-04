@@ -24,6 +24,17 @@ test('AttachmentBuilder stores and exposes file data', () => {
 	expect(attachment.getRawFile()).toBe(undefined);
 });
 
+test('AttachmentBuilder handles 0 as a valid ID', () => {
+	const data = Buffer.from('test data');
+	const attachment = new AttachmentBuilder().setId(0).setFilename('test.txt').setFileData(data);
+
+	expect(attachment.getRawFile()).toStrictEqual({
+		data,
+		key: 'files[0]',
+		name: 'test.txt',
+	});
+});
+
 test('MessageBuilder.toFileBody returns JSON body and files', () => {
 	const msg = new MessageBuilder().setContent('here is a file').addAttachments(
 		new AttachmentBuilder()
