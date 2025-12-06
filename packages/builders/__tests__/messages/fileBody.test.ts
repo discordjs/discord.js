@@ -24,7 +24,7 @@ test('AttachmentBuilder stores and exposes file data', () => {
 	expect(attachment.getRawFile()).toBe(undefined);
 });
 
-test('AttachmentBuilder handles 0 as a valid ID', () => {
+test('AttachmentBuilder handles 0 as a valid id', () => {
 	const data = Buffer.from('test data');
 	const attachment = new AttachmentBuilder().setId(0).setFilename('test.txt').setFileData(data);
 
