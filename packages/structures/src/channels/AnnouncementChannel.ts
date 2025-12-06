@@ -10,18 +10,17 @@ import { ChannelSlowmodeMixin } from './mixins/ChannelSlowmodeMixin.js';
 import { ChannelTopicMixin } from './mixins/ChannelTopicMixin.js';
 import { TextChannelMixin } from './mixins/TextChannelMixin.js';
 
-export interface AnnouncementChannel<Omitted extends keyof APINewsChannel | '' = ''>
-	extends MixinTypes<
-		Channel<ChannelType.GuildAnnouncement>,
-		[
-			TextChannelMixin<ChannelType.GuildAnnouncement>,
-			ChannelParentMixin<ChannelType.GuildAnnouncement>,
-			ChannelPermissionMixin<ChannelType.GuildAnnouncement>,
-			ChannelPinMixin<ChannelType.GuildAnnouncement>,
-			ChannelSlowmodeMixin<ChannelType.GuildAnnouncement>,
-			ChannelTopicMixin<ChannelType.GuildAnnouncement>,
-		]
-	> {}
+export interface AnnouncementChannel<Omitted extends keyof APINewsChannel | '' = ''> extends MixinTypes<
+	Channel<ChannelType.GuildAnnouncement>,
+	[
+		TextChannelMixin<ChannelType.GuildAnnouncement>,
+		ChannelParentMixin<ChannelType.GuildAnnouncement>,
+		ChannelPermissionMixin<ChannelType.GuildAnnouncement>,
+		ChannelPinMixin<ChannelType.GuildAnnouncement>,
+		ChannelSlowmodeMixin<ChannelType.GuildAnnouncement>,
+		ChannelTopicMixin<ChannelType.GuildAnnouncement>,
+	]
+> {}
 
 /**
  * Sample Implementation of a structure for announcement channels, usable by direct end consumers.
