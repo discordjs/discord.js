@@ -56,7 +56,7 @@
 		"fumadocs-core": "^16.2.3",
 		"fumadocs-mdx": "^14.1.0",
 		"fumadocs-twoslash": "^3.1.10",
-		"fumadocs-ui": "^16.2.3",
+		"fumadocs-ui": "16.1.0",
 		"geist": "^1.5.1",
 		"immer": "^10.2.0",
 		"jotai": "^2.15.2",
