@@ -11,8 +11,8 @@
 		"deploy": "node --env-file=.env src/util/deploy.js"
 	},
 	"dependencies": {
-		"@discordjs/core": "^2.3.0",
-		"discord.js": "^14.24.2"
+		"@discordjs/core": "^2.4.0",
+		"discord.js": "^14.25.1"
 	},
 	"devDependencies": {
 		"eslint": "^9.38.1",

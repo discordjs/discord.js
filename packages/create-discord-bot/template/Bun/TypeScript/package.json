@@ -11,8 +11,8 @@
 		"start": "bun run src/index.[REPLACE_IMPORT_EXT]"
 	},
 	"dependencies": {
-		"@discordjs/core": "^2.3.0",
-		"discord.js": "^14.24.2"
+		"@discordjs/core": "^2.4.0",
+		"discord.js": "^14.25.1"
 	},
 	"devDependencies": {
 		"@sapphire/ts-config": "^5.0.3",
