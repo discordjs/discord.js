@@ -1,14 +1,14 @@
 import { Buffer } from 'node:buffer';
 import { createSocket as _createSocket } from 'node:dgram';
 import { EventEmitter } from 'node:events';
-import type { Mock } from 'vitest';
+import type { MockedFunction } from 'vitest';
 import { describe, test, expect, vitest, beforeEach, afterEach } from 'vitest';
 import { VoiceUDPSocket } from '../src/networking/VoiceUDPSocket';
 
 vitest.mock('node:dgram');
 vitest.useFakeTimers();
 
-const createSocket = _createSocket as unknown as Mock<typeof _createSocket>;
+const createSocket = _createSocket as unknown as MockedFunction<typeof _createSocket>;
 
 beforeEach(() => {
 	createSocket.mockReset();
