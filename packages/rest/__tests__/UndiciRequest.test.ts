@@ -82,7 +82,7 @@ test('resolveBody', async () => {
 		const fd = new globalThis.FormData();
 		fd.append('key', 'value');
 
-		const resolved = await resolveBody(fd);
+		const resolved = await resolveBody(fd as UndiciFormData);
 
 		expect(resolved).toBeInstanceOf(UndiciFormData);
 		expect([...(resolved as UndiciFormData).entries()]).toStrictEqual([['key', 'value']]);
