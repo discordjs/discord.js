@@ -1097,7 +1097,23 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		items: Iterable<Item>,
 		keySelector: (item: Item, index: number) => Key,
 	): Collection<Key, Item[]> {
-		return new this[Symbol.species]<Key, Item[]>(Map.groupBy(items, keySelector));
+		if (typeof Map.groupBy === 'function') {
+			return new this[Symbol.species]<Key, Item[]>(Map.groupBy(items, keySelector));
+		}
+
+		const collection = new this[Symbol.species]<Key, Item[]>();
+		let index = 0;
+		for (const item of items) {
+			const key = keySelector(item, index++);
+			const group = collection.get(key);
+			if (group) {
+				group.push(item);
+			} else {
+				collection.set(key, [item]);
+			}
+		}
+
+		return collection;
 	}
 
 	/**
