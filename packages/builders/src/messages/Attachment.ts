@@ -148,7 +148,7 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 		return {
 			...this.fileData,
 			name: this.data.filename,
-			key: 'id' in this.data ? `files[${this.data.id}]` : undefined,
+			key: this.data.id !== undefined ? `files[${this.data.id}]` : undefined,
 		};
 	}
 
