@@ -1,21 +1,21 @@
-// @ts-nocheck
 import { Buffer } from 'node:buffer';
 import { createSocket as _createSocket } from 'node:dgram';
 import { EventEmitter } from 'node:events';
+import type { MockedFunction } from 'vitest';
 import { describe, test, expect, vitest, beforeEach, afterEach } from 'vitest';
 import { VoiceUDPSocket } from '../src/networking/VoiceUDPSocket';
 
 vitest.mock('node:dgram');
 vitest.useFakeTimers();
 
-const createSocket = _createSocket as unknown as vitest.Mock<typeof _createSocket>;
+const createSocket = _createSocket as unknown as MockedFunction<typeof _createSocket>;
 
 beforeEach(() => {
 	createSocket.mockReset();
 });
 
 class FakeSocket extends EventEmitter {
-	public send(buffer: Buffer, port: number, address: string) {}
+	public send(_buffer: Buffer, _port: number, _address: string) {}
 
 	public close() {
 		this.emit('close');
@@ -49,10 +49,10 @@ describe('VoiceUDPSocket#performIPDiscovery', () => {
 	*/
 	test('Resolves and cleans up with a successful flow', async () => {
 		const fake = new FakeSocket();
-		fake.send = vitest.fn().mockImplementation((buffer: Buffer, port: number, address: string) => {
+		fake.send = vitest.fn().mockImplementation((_buffer: Buffer, _port: number, _address: string) => {
 			fake.emit('message', VALID_RESPONSE);
 		});
-		createSocket.mockImplementation((type) => fake as any);
+		createSocket.mockImplementation((_type) => fake as any);
 		socket = new VoiceUDPSocket({ ip: '1.2.3.4', port: 25_565 });
 
 		expect(createSocket).toHaveBeenCalledWith('udp4');
@@ -72,7 +72,7 @@ describe('VoiceUDPSocket#performIPDiscovery', () => {
 	test('Waits for a valid response in an unexpected flow', async () => {
 		const fake = new FakeSocket();
 		const fakeResponse = Buffer.from([1, 2, 3, 4, 5]);
-		fake.send = vitest.fn().mockImplementation(async (buffer: Buffer, port: number, address: string) => {
+		fake.send = vitest.fn().mockImplementation(async (_buffer: Buffer, _port: number, _address: string) => {
 			fake.emit('message', fakeResponse);
 			await wait();
 			fake.emit('message', VALID_RESPONSE);
@@ -92,7 +92,7 @@ describe('VoiceUDPSocket#performIPDiscovery', () => {
 
 	test('Rejects if socket closes before IP discovery can be completed', async () => {
 		const fake = new FakeSocket();
-		fake.send = vitest.fn().mockImplementation(async (buffer: Buffer, port: number, address: string) => {
+		fake.send = vitest.fn().mockImplementation(async (_buffer: Buffer, _port: number, _address: string) => {
 			await wait();
 			fake.close();
 		});
