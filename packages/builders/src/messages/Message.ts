@@ -239,7 +239,7 @@ export class MessageBuilder
 		allowedMentions:
 			| AllowedMentionsBuilder
 			| APIAllowedMentions
-			| ((builder: AllowedMentionsBuilder) => AllowedMentionsBuilder),
+			| ((builder: AllowedMentionsBuilder) => AllowedMentionsBuilder) = new AllowedMentionsBuilder(),
 	): this {
 		this.data.allowed_mentions = resolveBuilder(allowedMentions, AllowedMentionsBuilder);
 		return this;
