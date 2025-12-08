@@ -34,7 +34,7 @@ jobs:
           private-key: ${{ secrets.DISCORDJS_APP_KEY_RELEASE }}
 
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           token: ${{ steps.app-token.outputs.token }}
@@ -55,7 +55,7 @@ jobs:
 
       - name: Checkout main repository (non-main ref)
         if: ${{ inputs.ref != 'main' }}
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           path: 'main'
 
