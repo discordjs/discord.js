@@ -37,7 +37,10 @@ const AudioPlayer = _AudioPlayer as unknown as Mocked<typeof _AudioPlayer>;
 const PlayerSubscription = _PlayerSubscription as unknown as Mocked<typeof _PlayerSubscription>;
 
 const _NetworkingClass = Networking.Networking;
-vitest.spyOn(Networking, 'Networking').mockImplementation((...args) => new _NetworkingClass(...args));
+// eslint-disable-next-line prefer-arrow-callback
+vitest.spyOn(Networking, 'Networking').mockImplementation(function Networking(...args) {
+	return new _NetworkingClass(...args);
+});
 
 function createFakeAdapter() {
 	const sendPayload = vitest.fn();
