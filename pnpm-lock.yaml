@@ -1377,8 +1377,8 @@ importers:
         version: 2.8.1
     devDependencies:
       '@types/node':
-        specifier: ^22.19.1
-        version: 22.19.1
+        specifier: ^24.10.1
+        version: 24.10.1
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
@@ -1402,7 +1402,7 @@ importers:
         version: 5.44.1
       tsup:
         specifier: ^8.5.1
-        version: 8.5.1(@microsoft/api-extractor@7.55.2(@types/node@22.19.1))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.19.2)(typescript@5.9.3)(yaml@2.8.2)
+        version: 8.5.1(@microsoft/api-extractor@7.55.2(@types/node@24.10.1))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.19.2)(typescript@5.9.3)(yaml@2.8.2)
       turbo:
         specifier: ^2.6.3
         version: 2.6.3
