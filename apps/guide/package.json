@@ -58,10 +58,8 @@
 		"fumadocs-twoslash": "^3.1.10",
 		"fumadocs-ui": "^16.2.3",
 		"geist": "^1.5.1",
-		"immer": "^10.2.0",
 		"jotai": "^2.15.2",
-		"jotai-immer": "^0.4.1",
-		"lucide-react": "^0.548.0",
+		"lucide-react": "^0.556.0",
 		"mermaid": "^11.12.2",
 		"motion": "^12.23.25",
 		"next": "^16.0.7",
@@ -109,7 +107,7 @@
 		"tailwindcss-react-aria-components": "^2.0.1",
 		"turbo": "^2.6.3",
 		"typescript": "^5.9.3",
-		"vercel": "^48.12.1",
+		"vercel": "^49.1.2",
 		"wrangler": "^4.53.0"
 	},
 	"engines": {
