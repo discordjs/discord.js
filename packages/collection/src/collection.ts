@@ -822,7 +822,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (this === collection) return true;
 		if (this.size !== collection.size) return false;
 		for (const [key, value] of this) {
-			if (!collection.has(key) || value !== collection.get(key)) {
+			const otherValue = collection.get(key);
+			if (otherValue !== value || (otherValue === undefined && !collection.has(key))) {
 				return false;
 			}
 		}
