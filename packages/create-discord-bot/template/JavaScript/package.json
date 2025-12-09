@@ -1,6 +1,6 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
-	"name": "[REPLACE_ME]",
+	"name": "@discordjs/template-javascript",
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",

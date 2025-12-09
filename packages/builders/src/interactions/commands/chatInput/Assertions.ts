@@ -112,8 +112,8 @@ export const numberOptionPredicate = z
 
 export const stringOptionPredicate = basicOptionPredicate
 	.extend({
-		max_length: z.number().min(0).max(6_000).optional(),
-		min_length: z.number().min(1).max(6_000).optional(),
+		max_length: z.number().min(1).max(6_000).optional(),
+		min_length: z.number().min(0).max(6_000).optional(),
 	})
 	.and(autocompleteOrStringChoicesMixinOptionPredicate);
 
