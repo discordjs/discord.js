@@ -82,6 +82,17 @@ class RoleManager extends CachedManager {
   }
 
   /**
+   * Fetches the number of members that have each role in the guild.
+   * <info>This does not include the `@everyone` role.</info>
+   *
+   * @returns {Promise<Collection<Snowflake, number>>} A collection mapping role ids to their respective member counts.
+   */
+  async fetchMemberCounts() {
+    const data = await this.client.rest.get(Routes.guildRoleMemberCounts(this.guild.id));
+    return new Collection(Object.entries(data));
+  }
+
+  /**
    * Data that can be resolved to a Role object. This can be:
    * - A Role
    * - A Snowflake
