@@ -36,10 +36,7 @@ describe('GuildMemberFlagsBitField', () => {
 	});
 
 	test('should serialize flags', () => {
-		const bitfield = new GuildMemberFlagsBitField([
-			GuildMemberFlags.DidRejoin,
-			GuildMemberFlags.CompletedOnboarding,
-		]);
+		const bitfield = new GuildMemberFlagsBitField([GuildMemberFlags.DidRejoin, GuildMemberFlags.CompletedOnboarding]);
 		const serialized = bitfield.serialize();
 		expect(serialized).toBeDefined();
 		expect(Object.keys(serialized).length).toBeGreaterThan(0);
