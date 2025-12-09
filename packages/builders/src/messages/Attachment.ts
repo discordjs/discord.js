@@ -28,6 +28,11 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 	 * Creates a new attachment builder.
 	 *
 	 * @param data - The API data to create this attachment with
+	 * @example
+	 * ```ts
+	 * const attachment = new AttachmentBuilder().setId(1).setFileData(':)').setFilename('smiley.txt')
+	 * ```
+	 * @remarks Please note that the `id` field is required, it's rather easy to miss!
 	 */
 	public constructor(data: Partial<RESTAPIAttachment> = {}) {
 		this.data = structuredClone(data);
@@ -148,7 +153,7 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 		return {
 			...this.fileData,
 			name: this.data.filename,
-			key: this.data.id ? `files[${this.data.id}]` : undefined,
+			key: this.data.id === undefined ? undefined : `files[${this.data.id}]`,
 		};
 	}
 

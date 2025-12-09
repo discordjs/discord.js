@@ -1,24 +1,24 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
-	"name": "[REPLACE_ME]",
+	"name": "@discordjs/template-bun-javascript",
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"lint": "prettier --check . && eslint --ext .[REPLACE_IMPORT_EXT] --format=pretty src",
-		"deploy": "bun run src/util/deploy.[REPLACE_IMPORT_EXT]",
-		"format": "prettier --write . && eslint --ext .[REPLACE_IMPORT_EXT] --fix --format=pretty src",
-		"start": "bun run src/index.[REPLACE_IMPORT_EXT]"
+		"lint": "prettier --check . && eslint --ext .js --format=pretty src",
+		"deploy": "bun run src/util/deploy.js",
+		"format": "prettier --write . && eslint --ext .js --fix --format=pretty src",
+		"start": "bun run src/index.js"
 	},
 	"dependencies": {
-		"@discordjs/core": "^2.3.0",
-		"discord.js": "^14.24.2"
+		"@discordjs/core": "^2.4.0",
+		"discord.js": "^14.25.1"
 	},
 	"devDependencies": {
-		"eslint": "^9.38.0",
+		"eslint": "^9.38.1",
 		"eslint-config-neon": "^0.2.9",
 		"eslint-formatter-pretty": "^7.0.0",
-		"prettier": "^3.6.2",
-		"zod": "^4.1.12"
+		"prettier": "^3.7.4",
+		"zod": "^4.1.13"
 	}
 }

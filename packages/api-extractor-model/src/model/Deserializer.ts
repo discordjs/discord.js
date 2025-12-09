@@ -267,7 +267,8 @@ function mapParam(
 }
 
 interface IApiMethodJson
-	extends IApiAbstractMixinJson,
+	extends
+		IApiAbstractMixinJson,
 		IApiDeclaredItemJson,
 		IApiNameMixinJson,
 		IApiOptionalMixinJson,
@@ -279,10 +280,7 @@ interface IApiMethodJson
 		IApiTypeParameterListMixinJson {}
 
 interface IApiConstructorJson
-	extends IApiParameterListJson,
-		IApiProtectedMixinJson,
-		IApiReleaseTagMixinJson,
-		IApiDeclaredItemJson {}
+	extends IApiParameterListJson, IApiProtectedMixinJson, IApiReleaseTagMixinJson, IApiDeclaredItemJson {}
 
 function mapMethod(method: DocgenMethodJson, _package: string, parent?: DocgenClassJson): IApiMethodJson {
 	const excerptTokens: IExcerptToken[] = [];
