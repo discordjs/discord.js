@@ -73,7 +73,7 @@ try {
 			} catch {}
 
 			if (task) {
-				await client.tasks.waitForTask(task);
+				await client.tasks.waitForTask(task, { timeout: 10_000 });
 			}
 
 			const searchIndex = client.index(index.index);
