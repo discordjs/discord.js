@@ -30,7 +30,7 @@ const client = new MeiliSearch({
 	apiKey: process.env.SEARCH_API_KEY,
 });
 
-const limit = pLimit(10);
+const limit = pLimit(5);
 
 try {
 	console.log('Generating all indices...');
@@ -73,7 +73,7 @@ try {
 			} catch {}
 
 			if (task) {
-				await client.tasks.waitForTask(task);
+				await client.tasks.waitForTask(task, { timeout: 10_000 });
 			}
 
 			const searchIndex = client.index(index.index);
