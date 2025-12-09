@@ -7,8 +7,8 @@
 		"declaration": false,
 		"declarationMap": false,
 		"incremental": false,
-		"module": "NodeNext",
-		"moduleResolution": "NodeNext",
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
 		"noEmit": true,
 		"target": "ESNext",
 		"skipLibCheck": true
