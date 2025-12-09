@@ -1,11 +1,9 @@
 import type { PathLike } from 'node:fs';
 import { glob, stat } from 'node:fs/promises';
-import { resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import type { Command } from '../commands/index.[REPLACE_IMPORT_EXT]';
-import { predicate as commandPredicate } from '../commands/index.[REPLACE_IMPORT_EXT]';
-import type { Event } from '../events/index.[REPLACE_IMPORT_EXT]';
-import { predicate as eventPredicate } from '../events/index.[REPLACE_IMPORT_EXT]';
+import { basename, resolve } from 'node:path';
+import { fileURLToPath, URL } from 'node:url';
+import { predicate as commandPredicate, type Command } from '../commands/index.ts';
+import { predicate as eventPredicate, type Event } from '../events/index.ts';
 
 /**
  * A predicate to check if the structure is valid
@@ -36,14 +34,14 @@ export async function loadStructures<Structure>(
 	// Create an empty array to store the structures
 	const structures: Structure[] = [];
 
-	// Create a glob pattern to match the .[REPLACE_IMPORT_EXT] files
+	// Create a glob pattern to match the .ts files
 	const basePath = dir instanceof URL ? fileURLToPath(dir) : dir.toString();
-	const pattern = resolve(basePath, recursive ? '**/*.[REPLACE_IMPORT_EXT]' : '*.[REPLACE_IMPORT_EXT]');
+	const pattern = resolve(basePath, recursive ? '**/*.ts' : '*.ts');
 
 	// Loop through all the matching files in the directory
 	for await (const file of glob(pattern)) {
-		// If the file is index.[REPLACE_IMPORT_EXT], skip the file
-		if (file.endsWith('/index.[REPLACE_IMPORT_EXT]')) {
+		// If the file is index.ts, skip the file
+		if (basename(file) === 'index.ts') {
 			continue;
 		}
 

@@ -1,15 +1,15 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
-	"name": "[REPLACE_ME]",
+	"name": "@discordjs/template-typescript",
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
 	"scripts": {
 		"build": "tsc",
 		"lint": "prettier --check . && eslint --ext .ts --format=pretty src",
-		"deploy": "node --env-file=.env dist/util/deploy.js",
+		"deploy": "node --env-file=.env src/util/deploy.ts",
 		"format": "prettier --write . && eslint --ext .ts --fix --format=pretty src",
-		"start": "node --env-file=.env dist/index.js"
+		"start": "node --env-file=.env src/index.ts"
 	},
 	"dependencies": {
 		"@discordjs/core": "^2.4.0",
