@@ -31,7 +31,7 @@ jobs:
         uses: ./packages/actions/src/pnpmCache
 
       - name: Build dependencies
-        run: pnpm run build
+        run: pnpm --filter @discordjs/actions... run build
 
       - name: Upload README.md files
         env:
