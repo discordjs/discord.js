@@ -82,15 +82,14 @@ const Messages = {
 
   [ErrorCodes.WebhookMessage]: 'The message was not sent by a webhook.',
   [ErrorCodes.WebhookTokenUnavailable]: 'This action requires a webhook token, but none is available.',
-  [ErrorCodes.WebhookURLInvalid]: 'The provided webhook URL is not valid.',
   [ErrorCodes.WebhookApplication]: 'This message webhook belongs to an application and cannot be fetched.',
 
   [ErrorCodes.MessageReferenceMissing]: 'The message does not reference another message',
 
   [ErrorCodes.EmojiType]: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
   [ErrorCodes.EmojiManaged]: 'Emoji is managed and has no Author.',
-  [ErrorCodes.MissingManageGuildExpressionsPermission]: guild =>
-    `Client must have Manage Guild Expressions permission in guild ${guild} to see emoji authors.`,
+  [ErrorCodes.MissingGuildExpressionsPermission]: guild =>
+    `Client must have Create Guild Expressions or Manage Guild Expressions permission in guild ${guild} to see emoji authors.`,
 
   [ErrorCodes.NotGuildSoundboardSound]: action =>
     `Soundboard sound is a default (non-guild) soundboard sound and can't be ${action}.`,

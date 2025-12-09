@@ -725,8 +725,8 @@ class Message extends Base {
   get editable() {
     const precheck = Boolean(
       this.author.id === this.client.user.id &&
-        (!this.guild || this.channel?.viewable) &&
-        this.reference?.type !== MessageReferenceType.Forward,
+      (!this.guild || this.channel?.viewable) &&
+      this.reference?.type !== MessageReferenceType.Forward,
     );
 
     // Regardless of permissions thread messages cannot be edited if
@@ -799,12 +799,15 @@ class Message extends Base {
    */
   get pinnable() {
     const { channel } = this;
-    return Boolean(
-      !this.system &&
-        (!this.guild ||
-          (channel?.viewable &&
-            channel?.permissionsFor(this.client.user)?.has(PermissionFlagsBits.ManageMessages, false))),
-    );
+
+    if (this.system) return false;
+    if (!this.guild) return true;
+    if (!channel || channel.isVoiceBased() || !channel.viewable) return false;
+
+    const permissions = channel.permissionsFor(this.client.user);
+    if (!permissions) return false;
+
+    return permissions.has(PermissionFlagsBits.ReadMessageHistory | PermissionFlagsBits.PinMessages);
   }
 
   /**
@@ -834,19 +837,19 @@ class Message extends Base {
     const { channel } = this;
     return Boolean(
       channel?.type === ChannelType.GuildAnnouncement &&
-        !this.flags.has(MessageFlags.Crossposted) &&
-        this.reference?.type !== MessageReferenceType.Forward &&
-        this.type === MessageType.Default &&
-        !this.poll &&
-        channel.viewable &&
-        channel.permissionsFor(this.client.user)?.has(bitfield, false),
+      !this.flags.has(MessageFlags.Crossposted) &&
+      this.reference?.type !== MessageReferenceType.Forward &&
+      this.type === MessageType.Default &&
+      !this.poll &&
+      channel.viewable &&
+      channel.permissionsFor(this.client.user)?.has(bitfield, false),
     );
   }
 
   /**
    * Edits the content of the message.
    *
-   * @param {string|MessagePayload|MessageEditOptions} options The options to provide
+   * @param {string|MessageEditOptions|MessagePayload|FileBodyEncodable<RESTPatchAPIChannelMessageJSONBody>|JSONEncodable<RESTPatchAPIChannelMessageJSONBody>} options The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Update the content of a message

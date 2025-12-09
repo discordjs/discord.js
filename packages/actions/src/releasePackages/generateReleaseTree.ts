@@ -58,6 +58,12 @@ async function getReleaseEntries(dry: boolean, devTag?: string) {
 		};
 
 		if (devTag) {
+			// Replace workspace dependencies with * to pin to associated dev versions
+			if (!dry) {
+				const pkgJsonString = await file(`${pkg.path}/package.json`).text();
+				await write(`${pkg.path}/package.json`, pkgJsonString.replaceAll(/workspace:[\^~]/g, 'workspace:*'));
+			}
+
 			const devVersion = await fetchDevVersion(pkg.name, devTag);
 			if (devVersion?.endsWith(commitHash)) {
 				// Write the currently released dev version so when pnpm publish runs on dependents they depend on the dev versions

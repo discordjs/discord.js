@@ -1,16 +1,14 @@
-import { Buffer, File as NativeFile } from 'node:buffer';
+import { Buffer, File } from 'node:buffer';
 import { URLSearchParams } from 'node:url';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { Snowflake } from 'discord-api-types/v10';
 import { Routes } from 'discord-api-types/v10';
 import { type FormData, fetch } from 'undici';
-import { File as UndiciFile, MockAgent, setGlobalDispatcher } from 'undici';
+import { MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor.js';
 import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
 import { REST } from '../src/index.js';
 import { genPath } from './util.js';
-
-const File = NativeFile ?? UndiciFile;
 
 const newSnowflake: Snowflake = DiscordSnowflake.generate().toString();
 
@@ -37,6 +35,8 @@ beforeEach(() => {
 	setGlobalDispatcher(mockAgent); // enabled the mock client to intercept requests
 
 	mockPool = mockAgent.get('https://discord.com');
+	api.setAgent(mockAgent);
+	fetchApi.setAgent(mockAgent);
 });
 
 afterEach(async () => {

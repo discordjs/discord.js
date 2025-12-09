@@ -4,6 +4,9 @@ export * from './components/button/CustomIdButton.js';
 export * from './components/button/LinkButton.js';
 export * from './components/button/PremiumButton.js';
 
+export * from './components/fileUpload/FileUpload.js';
+export * from './components/fileUpload/Assertions.js';
+
 export * from './components/label/Label.js';
 export * from './components/label/Assertions.js';
 
@@ -93,6 +96,9 @@ export { disableValidators, enableValidators, isValidationEnabled } from './util
 export * from './util/ValidationError.js';
 
 export * from './Assertions.js';
+
+// We expose this type in our public API. We shouldn't assume every user of builders is also using REST
+export type { RawFile } from '@discordjs/util';
 
 /**
  * The {@link https://github.com/discordjs/discord.js/blob/main/packages/builders#readme | @discordjs/builders} version

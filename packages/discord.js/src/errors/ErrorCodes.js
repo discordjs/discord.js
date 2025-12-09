@@ -77,14 +77,13 @@
  *
  * @property {'WebhookMessage'} WebhookMessage
  * @property {'WebhookTokenUnavailable'} WebhookTokenUnavailable
- * @property {'WebhookURLInvalid'} WebhookURLInvalid
  * @property {'WebhookApplication'} WebhookApplication
  *
  * @property {'MessageReferenceMissing'} MessageReferenceMissing
  *
  * @property {'EmojiType'} EmojiType
  * @property {'EmojiManaged'} EmojiManaged
- * @property {'MissingManageGuildExpressionsPermission'} MissingManageGuildExpressionsPermission
+ * @property {'MissingGuildExpressionsPermission'} MissingGuildExpressionsPermission
  *
  * @property {'NotGuildSoundboardSound'} NotGuildSoundboardSound
  * @property {'NotGuildSticker'} NotGuildSticker
@@ -212,14 +211,13 @@ const keys = [
 
   'WebhookMessage',
   'WebhookTokenUnavailable',
-  'WebhookURLInvalid',
   'WebhookApplication',
 
   'MessageReferenceMissing',
 
   'EmojiType',
   'EmojiManaged',
-  'MissingManageGuildExpressionsPermission',
+  'MissingGuildExpressionsPermission',
 
   'NotGuildSoundboardSound',
   'NotGuildSticker',

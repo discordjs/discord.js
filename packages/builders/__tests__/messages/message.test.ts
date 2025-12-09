@@ -24,6 +24,19 @@ describe('Message', () => {
 		expect(() => message.toJSON()).toThrow();
 	});
 
+	test('GIVEN empty allowed mentions THEN return valid toJSON data', () => {
+		const allowedMentions = new AllowedMentionsBuilder();
+		expect(allowedMentions.toJSON()).toStrictEqual({});
+
+		const message = new MessageBuilder().setContent('test').setAllowedMentions();
+
+		expect(message.toJSON()).toStrictEqual({
+			...base,
+			allowed_mentions: {},
+			content: 'test',
+		});
+	});
+
 	test('GIVEN parse: [users] and empty users THEN return valid toJSON data', () => {
 		const allowedMentions = new AllowedMentionsBuilder();
 		allowedMentions.setUsers();
@@ -64,7 +77,7 @@ describe('Message', () => {
 				row.addPrimaryButtonComponents((button) => button.setCustomId('abc').setLabel('def')),
 			)
 			.setStickerIds('123', '456')
-			.addAttachments((attachment) => attachment.setId('hi!').setFilename('abc'))
+			.addAttachments((attachment) => attachment.setId(0).setFilename('abc'))
 			.setFlags(MessageFlags.Ephemeral)
 			.setEnforceNonce(false)
 			.updatePoll((poll) => poll.addAnswers({ poll_media: { text: 'foo' } }).setQuestion({ text: 'foo' }));
@@ -83,7 +96,7 @@ describe('Message', () => {
 				},
 			],
 			sticker_ids: ['123', '456'],
-			attachments: [{ id: 'hi!', filename: 'abc' }],
+			attachments: [{ id: 0, filename: 'abc' }],
 			flags: 64,
 			enforce_nonce: false,
 			poll: {
