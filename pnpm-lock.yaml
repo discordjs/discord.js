@@ -1825,7 +1825,7 @@ importers:
         version: 0.38.36
       prism-media:
         specifier: ^1.3.5
-        version: 1.3.5(@discordjs/opus@0.9.0(encoding@0.1.13))
+        version: 1.3.5(@discordjs/opus@0.10.0(encoding@0.1.13))
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
@@ -1837,8 +1837,8 @@ importers:
         specifier: workspace:^
         version: link:../api-extractor
       '@discordjs/opus':
-        specifier: ^0.9.0
-        version: 0.9.0(encoding@0.1.13)
+        specifier: ^0.10.0
+        version: 0.10.0(encoding@0.1.13)
       '@discordjs/scripts':
         specifier: workspace:^
         version: link:../scripts
@@ -2760,8 +2760,8 @@ packages:
     resolution: {integrity: sha512-YJOVVZ545x24mHzANfYoy0BJX5PDyeZlpiJjDkUBM/V/Ao7TFX9lcUvCN4nr0tbr5ubeaXxtEBILUrHtTphVeQ==}
     hasBin: true
 
-  '@discordjs/opus@0.9.0':
-    resolution: {integrity: sha512-NEE76A96FtQ5YuoAVlOlB3ryMPrkXbUCTQICHGKb8ShtjXyubGicjRMouHtP1RpuDdm16cDa+oI3aAMo1zQRUQ==}
+  '@discordjs/opus@0.10.0':
+    resolution: {integrity: sha512-HHEnSNrSPmFEyndRdQBJN2YE6egyXS9JUnJWyP6jficK0Y+qKMEZXyYTgmzpjrxXP1exM/hKaNP7BRBUEWkU5w==}
     engines: {node: '>=12.0.0'}
 
   '@discordjs/rest@2.6.0':
@@ -11134,8 +11134,9 @@ packages:
   no-case@2.3.2:
     resolution: {integrity: sha512-rmTZ9kz+f3rCvK2TD1Ue/oZlns7OGoIWP4fc3llxxRXlOkHKoWPPWJOfFYpITabSow43QJbRIoHQXtt10VldyQ==}
 
-  node-addon-api@5.1.0:
-    resolution: {integrity: sha512-eh0GgfEkpnoWDq+VY8OyvYhFEzBk6jIYbRKdIlyTiAXIVJ8PyBaKb0rp7oDtoddbdoHWhq8wwr+XZ81F1rpNdA==}
+  node-addon-api@8.5.0:
+    resolution: {integrity: sha512-/bRZty2mXUIFY/xU5HLvveNHlswNJej+RnxBjOMkidWfwZzgTbPG1E3K5TOxRLOR+5hX7bSofy8yf1hZevMS8A==}
+    engines: {node: ^18 || ^20 || >= 21}
 
   node-domexception@1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}
@@ -15515,10 +15516,10 @@ snapshots:
       - encoding
       - supports-color
 
-  '@discordjs/opus@0.9.0(encoding@0.1.13)':
+  '@discordjs/opus@0.10.0(encoding@0.1.13)':
     dependencies:
       '@discordjs/node-pre-gyp': 0.4.5(encoding@0.1.13)
-      node-addon-api: 5.1.0
+      node-addon-api: 8.5.0
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -25779,7 +25780,7 @@ snapshots:
     dependencies:
       lower-case: 1.1.4
 
-  node-addon-api@5.1.0: {}
+  node-addon-api@8.5.0: {}
 
   node-domexception@1.0.0: {}
 
@@ -26381,9 +26382,9 @@ snapshots:
     dependencies:
       parse-ms: 4.0.0
 
-  prism-media@1.3.5(@discordjs/opus@0.9.0(encoding@0.1.13)):
+  prism-media@1.3.5(@discordjs/opus@0.10.0(encoding@0.1.13)):
     optionalDependencies:
-      '@discordjs/opus': 0.9.0(encoding@0.1.13)
+      '@discordjs/opus': 0.10.0(encoding@0.1.13)
 
   proc-log@4.2.0: {}
 
