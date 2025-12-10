@@ -1,9 +1,6 @@
 import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
-import { clearInterval, clearTimeout, setInterval, setTimeout } from 'node:timers';
 import { setTimeout as sleep } from 'node:timers/promises';
-import { URLSearchParams } from 'node:url';
-import { TextDecoder } from 'node:util';
 import type * as nativeZlib from 'node:zlib';
 import { Collection } from '@discordjs/collection';
 import { lazy, shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';

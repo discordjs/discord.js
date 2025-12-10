@@ -1,7 +1,7 @@
 import type { APIEmbed } from 'discord-api-types/v10';
 
 /**
- * Calculates the length of the embed.
+ * Calculates the length of an embed.
  *
  * @param data - The embed data to check
  */
