@@ -2,7 +2,7 @@ import { Buffer } from 'node:buffer';
 import { test, expect, vitest } from 'vitest';
 import { methods, secretboxLoadPromise } from '../src/util/Secretbox';
 
-vitest.mock('@noble/ciphers/chacha');
+vitest.mock('@noble/ciphers/chacha.js');
 
 // TODO: what is this even testing exactly?
 test.skip('Does not throw error with a package installed', async () => {
