@@ -12,7 +12,7 @@ async function getRepoStarsAndForks(
 ): Promise<{
 	forks: number;
 	stars: number;
-}> {
+} | null> {
 	const endpoint = `https://api.github.com/repos/${owner}/${repo}`;
 	const headers = new Headers({
 		'Content-Type': 'application/json',
@@ -24,14 +24,14 @@ async function getRepoStarsAndForks(
 	const response = await fetch(endpoint, {
 		headers,
 		next: {
-			revalidate: 60,
+			revalidate: 24 * 60 * 60,
 		},
-	} as RequestInit);
+	});
 
 	if (!response.ok) {
 		const message = await response.text();
-
-		throw new Error(`Failed to fetch repository data: ${message}`);
+		console.warn('Failed to fetch repository data:', message);
+		return null;
 	}
 
 	const data = await response.json();
@@ -51,8 +51,7 @@ export async function GithubInfo({
 	readonly repo: string;
 	readonly token?: string;
 }) {
-	const { stars } = await getRepoStarsAndForks(owner, repo, token);
-	const humanizedStars = humanizeNumber(stars);
+	const repoData = await getRepoStarsAndForks(owner, repo, token);
 
 	return (
 		<a
@@ -72,10 +71,12 @@ export async function GithubInfo({
 				</svg>
 				{owner}/{repo}
 			</p>
-			<p className="text-fd-muted-foreground flex items-center gap-1 text-xs">
-				<Star className="size-3" />
-				{humanizedStars}
-			</p>
+			{repoData ? (
+				<p className="text-fd-muted-foreground flex items-center gap-1 text-xs">
+					<Star className="size-3" />
+					{humanizeNumber(repoData.stars)}
+				</p>
+			) : null}
 		</a>
 	);
 }
