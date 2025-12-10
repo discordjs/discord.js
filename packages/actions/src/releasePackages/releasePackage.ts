@@ -1,5 +1,4 @@
 import process from 'node:process';
-import { setInterval, clearInterval } from 'node:timers';
 import { info, warning } from '@actions/core';
 import { getOctokit, context } from '@actions/github';
 import { $ } from 'bun';
