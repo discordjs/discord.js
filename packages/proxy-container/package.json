@@ -50,7 +50,7 @@
 		"tslib": "^2.8.1"
 	},
 	"devDependencies": {
-		"@types/node": "^24.10.1",
+		"@types/node": "^24.10.2",
 		"cross-env": "^10.1.0",
 		"eslint": "^9.39.1",
 		"eslint-config-neon": "^0.2.9",
