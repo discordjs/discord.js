@@ -82,7 +82,7 @@ class RoleManager extends CachedManager {
   }
 
   /**
-   * Fetches the number of members that have each role in the guild.
+   * Fetches the member count of each role in the guild.
    * <info>This does not include the `@everyone` role.</info>
    *
    * @returns {Promise<Collection<Snowflake, number>>} A collection mapping role ids to their respective member counts.
