@@ -111,7 +111,7 @@ export class RedisGateway
 	}
 
 	public async send(shardId: number, payload: GatewaySendPayload): Promise<void> {
-		await this.broker.publish('gateway_send', { payload, shardId });
+		await this.broker.publish(RedisGateway.GatewaySendEvent, { payload, shardId });
 	}
 
 	public async init(events: GatewayDispatchEvents[]) {
@@ -127,8 +127,7 @@ export class RedisGateway
 					ack: () => Promise<void>;
 					data: BrokerIntrinsicProps & { payload: any };
 				}) => {
-					// @ts-expect-error - Union shenanigans
-					this.emit('dispatch', { shardId, data: payload });
+					this.emit('dispatch', payload, shardId);
 					void ack();
 				},
 			);
