@@ -1,6 +1,6 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
-	"name": "[REPLACE_ME]",
+	"name": "@discordjs/template-javascript",
 	"version": "0.1.0",
 	"private": true,
 	"type": "module",
@@ -15,7 +15,7 @@
 		"discord.js": "^14.25.1"
 	},
 	"devDependencies": {
-		"eslint": "^9.38.1",
+		"eslint": "^9.39.1",
 		"eslint-config-neon": "^0.2.9",
 		"eslint-formatter-pretty": "^7.0.0",
 		"prettier": "^3.7.4",

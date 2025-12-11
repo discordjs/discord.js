@@ -92,13 +92,13 @@
 		"magic-bytes.js": "^1.12.1",
 		"tslib": "^2.8.1",
 		"undici": "7.16.0",
-		"uuid": "^11.1.0"
+		"uuid": "^13.0.0"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^6.0.0",
-		"@types/node": "^22.19.1",
+		"@types/node": "^22.19.2",
 		"@vitest/coverage-v8": "^4.0.15",
 		"cross-env": "^10.1.0",
 		"esbuild-plugin-version-injector": "^1.2.1",

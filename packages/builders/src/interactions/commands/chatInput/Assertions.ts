@@ -134,8 +134,8 @@ export const numberOptionPredicate = z
 export const stringOptionPredicate = z
 	.object({
 		...baseBasicOptionPredicate.shape,
-		max_length: z.number().min(0).max(6_000).optional(),
-		min_length: z.number().min(1).max(6_000).optional(),
+		max_length: z.number().min(1).max(6_000).optional(),
+		min_length: z.number().min(0).max(6_000).optional(),
 		type: z.literal(ApplicationCommandOptionType.String),
 	})
 	.and(autocompleteOrStringChoicesMixinOptionPredicate);
