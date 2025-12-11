@@ -2,7 +2,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
-import { InternalError, Sort } from '@rushstack/node-core-library';
+import { InternalError, Sort, Text } from '@rushstack/node-core-library';
 import * as ts from 'typescript';
 import { IndentedWriter } from '../generators/IndentedWriter.js';
 
@@ -664,13 +664,7 @@ export class Span {
 	}
 
 	private _getTrimmed(text: string): string {
-		const trimmed: string = text.replaceAll(/\r?\n/g, '\\n');
-
-		if (trimmed.length > 100) {
-			return trimmed.slice(0, 97) + '...';
-		}
-
-		return trimmed;
+		return Text.truncateWithEllipsis(Text.convertToLf(text), 100);
 	}
 
 	private _getSubstring(startIndex: number, endIndex: number): string {

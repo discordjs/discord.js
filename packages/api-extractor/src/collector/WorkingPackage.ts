@@ -9,9 +9,14 @@ import type * as ts from 'typescript';
  * Constructor options for WorkingPackage
  */
 export interface IWorkingPackageOptions {
-	entryPointSourceFile: ts.SourceFile;
+	entryPoints: IWorkingPackageEntryPoint[];
 	packageFolder: string;
 	packageJson: INodePackageJson;
+}
+
+export interface IWorkingPackageEntryPoint {
+	modulePath: string;
+	sourceFile: ts.SourceFile;
 }
 
 /**
@@ -51,7 +56,7 @@ export class WorkingPackage {
 	 * only processes a single entry point during an invocation.  This will be improved
 	 * in the future.
 	 */
-	public readonly entryPointSourceFile: ts.SourceFile;
+	public readonly entryPoints: IWorkingPackageEntryPoint[];
 
 	/**
 	 * The `@packageDocumentation` comment, if any, for the working package.
@@ -66,7 +71,7 @@ export class WorkingPackage {
 	public constructor(options: IWorkingPackageOptions) {
 		this.packageFolder = options.packageFolder;
 		this.packageJson = options.packageJson;
-		this.entryPointSourceFile = options.entryPointSourceFile;
+		this.entryPoints = options.entryPoints;
 	}
 
 	/**
@@ -74,5 +79,9 @@ export class WorkingPackage {
 	 */
 	public get name(): string {
 		return this.packageJson.name;
+	}
+
+	public isDefaultEntryPoint(entryPoint: IWorkingPackageEntryPoint): boolean {
+		return entryPoint.modulePath === '';
 	}
 }

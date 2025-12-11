@@ -1,9 +1,6 @@
 import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
-import { clearInterval, clearTimeout, setInterval, setTimeout } from 'node:timers';
 import { setTimeout as sleep } from 'node:timers/promises';
-import { URLSearchParams } from 'node:url';
-import { TextDecoder } from 'node:util';
 import type * as nativeZlib from 'node:zlib';
 import { Collection } from '@discordjs/collection';
 import { lazy, shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
@@ -173,8 +170,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		try {
 			await promise;
-		} catch ({ error }: any) {
-			throw error;
 		} finally {
 			// cleanup hanging listeners
 			controller.abort();
@@ -698,10 +693,23 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 				this.zLibSyncInflate.push(Buffer.from(decompressable), flush ? zLibSync.Z_SYNC_FLUSH : zLibSync.Z_NO_FLUSH);
 
 				if (this.zLibSyncInflate.err) {
-					this.emit(
-						WebSocketShardEvents.Error,
-						new Error(`${this.zLibSyncInflate.err}${this.zLibSyncInflate.msg ? `: ${this.zLibSyncInflate.msg}` : ''}`),
-					);
+					// Must be here because zlib-sync is lazily loaded
+					const ZlibErrorCodes = {
+						[zLibSync.Z_NEED_DICT]: 'Z_NEED_DICT',
+						[zLibSync.Z_STREAM_END]: 'Z_STREAM_END',
+						[zLibSync.Z_ERRNO]: 'Z_ERRNO',
+						[zLibSync.Z_STREAM_ERROR]: 'Z_STREAM_ERROR',
+						[zLibSync.Z_DATA_ERROR]: 'Z_DATA_ERROR',
+						[zLibSync.Z_MEM_ERROR]: 'Z_MEM_ERROR',
+						[zLibSync.Z_BUF_ERROR]: 'Z_BUF_ERROR',
+						[zLibSync.Z_VERSION_ERROR]: 'Z_VERSION_ERROR',
+					} as const satisfies Record<number, string>;
+
+					// Try to match nodejs zlib errors as much as possible
+					const error: NodeJS.ErrnoException = new Error(this.zLibSyncInflate.msg ?? undefined);
+					error.errno = this.zLibSyncInflate.err;
+					error.code = ZlibErrorCodes[this.zLibSyncInflate.err];
+					this.emit(WebSocketShardEvents.Error, error);
 				}
 
 				if (!flush) {

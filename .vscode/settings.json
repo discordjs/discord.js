@@ -52,6 +52,6 @@
 	"deno.enable": false,
 	"deno.enablePaths": ["./packages/create-discord-bot/template/Deno"],
 	"deno.lint": false,
-	"deno.unstable": false,
+	"deno.unstable": [],
 	"deno.config": "./packages/create-discord-bot/template/Deno/deno.jsonc"
 }

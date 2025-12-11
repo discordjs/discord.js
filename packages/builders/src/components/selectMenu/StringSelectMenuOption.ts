@@ -10,7 +10,7 @@ export class StringSelectMenuOptionBuilder implements JSONEncodable<APISelectMen
 	private readonly data: Partial<APISelectMenuOption>;
 
 	/**
-	 * Creates a new string select menu option from API data.
+	 * Creates a new string select menu option.
 	 *
 	 * @param data - The API data to create this string select menu option with
 	 * @example

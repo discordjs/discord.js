@@ -1,4 +1,5 @@
-import type { JSONEncodable } from '@discordjs/util';
+import type { Buffer } from 'node:buffer';
+import type { JSONEncodable, RawFile } from '@discordjs/util';
 import type { RESTAPIAttachment, Snowflake } from 'discord-api-types/v10';
 import { validate } from '../util/validation.js';
 import { attachmentPredicate } from './Assertions.js';
@@ -7,15 +8,35 @@ import { attachmentPredicate } from './Assertions.js';
  * A builder that creates API-compatible JSON data for attachments.
  */
 export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
+	/**
+	 * The API data associated with this attachment.
+	 */
 	private readonly data: Partial<RESTAPIAttachment>;
 
 	/**
-	 * Creates a new attachment builder from API data.
+	 * This data is not included in the output of `toJSON()`. For this class specifically, this refers to binary data
+	 * that will wind up being included in the multipart/form-data request, if used with the `MessageBuilder`.
+	 * To retrieve this data, use {@link getRawFile}.
 	 *
-	 * @param data - The API data to create this attachment builder with
+	 * @remarks This cannot be set via the constructor, primarily because of the behavior described
+	 * {@link https://discord.com/developers/docs/reference#editing-message-attachments | here}.
+	 * That is, when editing a message's attachments, you should only be providing file data for new attachments.
+	 */
+	private readonly fileData: Partial<Pick<RawFile, 'contentType' | 'data'>>;
+
+	/**
+	 * Creates a new attachment builder.
+	 *
+	 * @param data - The API data to create this attachment with
+	 * @example
+	 * ```ts
+	 * const attachment = new AttachmentBuilder().setId(1).setFileData(':)').setFilename('smiley.txt')
+	 * ```
+	 * @remarks Please note that the `id` field is required, it's rather easy to miss!
 	 */
 	public constructor(data: Partial<RESTAPIAttachment> = {}) {
 		this.data = structuredClone(data);
+		this.fileData = {};
 	}
 
 	/**
@@ -23,7 +44,7 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 	 *
 	 * @param id - The id of the attachment
 	 */
-	public setId(id: Snowflake): this {
+	public setId(id: Snowflake | number): this {
 		this.data.id = id;
 		return this;
 	}
@@ -80,6 +101,60 @@ export class AttachmentBuilder implements JSONEncodable<RESTAPIAttachment> {
 	public clearFilename(): this {
 		this.data.filename = undefined;
 		return this;
+	}
+
+	/**
+	 * Sets the file data to upload with this attachment.
+	 *
+	 * @param data - The file data
+	 * @remarks Note that this data is NOT included in the {@link toJSON} output. To retrieve it, use {@link getRawFile}.
+	 */
+	public setFileData(data: Buffer | Uint8Array | string): this {
+		this.fileData.data = data;
+		return this;
+	}
+
+	/**
+	 * Clears the file data from this attachment.
+	 */
+	public clearFileData(): this {
+		this.fileData.data = undefined;
+		return this;
+	}
+
+	/**
+	 * Sets the content type of the file data to upload with this attachment.
+	 *
+	 * @remarks Note that this data is NOT included in the {@link toJSON} output. To retrieve it, use {@link getRawFile}.
+	 */
+	public setFileContentType(contentType: string): this {
+		this.fileData.contentType = contentType;
+		return this;
+	}
+
+	/**
+	 * Clears the content type of the file data from this attachment.
+	 */
+	public clearFileContentType(): this {
+		this.fileData.contentType = undefined;
+		return this;
+	}
+
+	/**
+	 * Converts this attachment to a {@link RawFile} for uploading.
+	 *
+	 * @returns A {@link RawFile} object, or `undefined` if no file data is set
+	 */
+	public getRawFile(): Partial<RawFile> | undefined {
+		if (!this.fileData?.data) {
+			return;
+		}
+
+		return {
+			...this.fileData,
+			name: this.data.filename,
+			key: this.data.id === undefined ? undefined : `files[${this.data.id}]`,
+		};
 	}
 
 	/**

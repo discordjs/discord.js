@@ -3,12 +3,13 @@
 const { channelLink, channelMention } = require('@discordjs/formatters');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { ChannelType, Routes } = require('discord-api-types/v10');
-const { Base } = require('./Base.js');
 const { ChannelFlagsBitField } = require('../util/ChannelFlagsBitField.js');
 const { ThreadChannelTypes } = require('../util/Constants.js');
+const { Base } = require('./Base.js');
 
 /**
  * Represents any channel on Discord.
+ *
  * @extends {Base}
  * @abstract
  */
@@ -18,6 +19,7 @@ class BaseChannel extends Base {
 
     /**
      * The type of the channel
+     *
      * @type {ChannelType}
      */
     this.type = data.type;
@@ -30,6 +32,7 @@ class BaseChannel extends Base {
       /**
        * The flags that are applied to the channel.
        * <info>This is only `null` in a {@link PartialGroupDMChannel}. In all other cases, it is not `null`.</info>
+       *
        * @type {?Readonly<ChannelFlagsBitField>}
        */
       this.flags = new ChannelFlagsBitField(data.flags).freeze();
@@ -39,6 +42,7 @@ class BaseChannel extends Base {
 
     /**
      * The channel's id
+     *
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -46,6 +50,7 @@ class BaseChannel extends Base {
 
   /**
    * The timestamp the channel was created at
+   *
    * @type {number}
    * @readonly
    */
@@ -55,6 +60,7 @@ class BaseChannel extends Base {
 
   /**
    * The time the channel was created at
+   *
    * @type {Date}
    * @readonly
    */
@@ -64,6 +70,7 @@ class BaseChannel extends Base {
 
   /**
    * The URL to the channel
+   *
    * @type {string}
    * @readonly
    */
@@ -74,6 +81,7 @@ class BaseChannel extends Base {
   /**
    * Whether this Channel is a partial
    * <info>This is always false outside of DM channels.</info>
+   *
    * @type {boolean}
    * @readonly
    */
@@ -83,6 +91,7 @@ class BaseChannel extends Base {
 
   /**
    * When concatenated with a string, this automatically returns the channel's mention instead of the Channel object.
+   *
    * @returns {string}
    * @example
    * // Logs: Hello from <#123456789012345678>!
@@ -94,6 +103,7 @@ class BaseChannel extends Base {
 
   /**
    * Deletes this channel.
+   *
    * @returns {Promise<BaseChannel>}
    * @example
    * // Delete the channel
@@ -108,15 +118,17 @@ class BaseChannel extends Base {
 
   /**
    * Fetches this channel.
+   *
    * @param {boolean} [force=true] Whether to skip the cache check and request the API
    * @returns {Promise<BaseChannel>}
    */
-  fetch(force = true) {
+  async fetch(force = true) {
     return this.client.channels.fetch(this.id, { force });
   }
 
   /**
    * Indicates whether this channel is a {@link ThreadChannel}.
+   *
    * @returns {boolean}
    */
   isThread() {
@@ -125,6 +137,7 @@ class BaseChannel extends Base {
 
   /**
    * Indicates whether this channel is {@link TextBasedChannels text-based}.
+   *
    * @returns {boolean}
    */
   isTextBased() {
@@ -133,6 +146,7 @@ class BaseChannel extends Base {
 
   /**
    * Indicates whether this channel is DM-based (either a {@link DMChannel} or a {@link PartialGroupDMChannel}).
+   *
    * @returns {boolean}
    */
   isDMBased() {
@@ -141,6 +155,7 @@ class BaseChannel extends Base {
 
   /**
    * Indicates whether this channel is {@link BaseGuildVoiceChannel voice-based}.
+   *
    * @returns {boolean}
    */
   isVoiceBased() {
@@ -149,6 +164,7 @@ class BaseChannel extends Base {
 
   /**
    * Indicates whether this channel is {@link ThreadOnlyChannel thread-only}.
+   *
    * @returns {boolean}
    */
   isThreadOnly() {
@@ -157,6 +173,7 @@ class BaseChannel extends Base {
 
   /**
    * Indicates whether this channel is sendable.
+   *
    * @returns {boolean}
    */
   isSendable() {

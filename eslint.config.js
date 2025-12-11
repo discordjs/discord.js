@@ -1,4 +1,5 @@
 import unocss from '@unocss/eslint-plugin';
+import { defineConfig } from 'eslint/config';
 import common from 'eslint-config-neon/common';
 import edge from 'eslint-config-neon/edge';
 import jsxa11y from 'eslint-config-neon/jsx-a11y';
@@ -11,16 +12,35 @@ import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescrip
 import reactCompiler from 'eslint-plugin-react-compiler';
 // import oxlint from 'eslint-plugin-oxlint';
 import merge from 'lodash.merge';
-import tseslint from 'typescript-eslint';
 
 const commonFiles = '{js,mjs,cjs,ts,mts,cts,jsx,tsx}';
 
 const commonRuleset = merge(...common, { files: [`**/*${commonFiles}`] });
 
-const nodeRuleset = merge(...node, { files: [`**/*${commonFiles}`] });
+const nodeRuleset = merge(...node, {
+	files: [`**/*${commonFiles}`],
+	rules: {
+		'no-restricted-globals': 0,
+		'n/prefer-global/buffer': [2, 'never'],
+		'n/prefer-global/console': [2, 'always'],
+		'n/prefer-global/process': [2, 'never'],
+		'n/prefer-global/text-decoder': [2, 'always'],
+		'n/prefer-global/text-encoder': [2, 'always'],
+		'n/prefer-global/url-search-params': [2, 'always'],
+		'n/prefer-global/url': [2, 'always'],
+	},
+});
+
+const nodeBinRuleset = {
+	files: [`**/bin/*{js,mjs,cjs,ts,mts,cts}`],
+	rules: {
+		'n/shebang': [0],
+	},
+};
 
 const typeScriptRuleset = merge(...typescript, {
 	files: [`**/*${commonFiles}`],
+	ignores: [`packages/discord.js/**/*.{js,mjs,cjs}`],
 	languageOptions: {
 		parserOptions: {
 			warnOnUnsupportedTypeScriptVersion: false,
@@ -77,7 +97,7 @@ const prettierRuleset = merge(...prettier, { files: [`**/*${commonFiles}`] });
 
 // const oxlintRuleset = merge({ rules: oxlint.rules }, { files: [`**/*${commonFiles}`] });
 
-export default tseslint.config(
+export default defineConfig(
 	{
 		ignores: [
 			'**/node_modules/',
@@ -88,11 +108,11 @@ export default tseslint.config(
 			'**/storybook-static/',
 			'**/.next/',
 			'**/shiki.bundle.ts',
-			'packages/discord.js/',
 		],
 	},
 	commonRuleset,
 	nodeRuleset,
+	nodeBinRuleset,
 	typeScriptRuleset,
 	{
 		files: ['**/*{ts,mts,cts,tsx}'],
@@ -123,7 +143,6 @@ export default tseslint.config(
 	{
 		files: [`packages/{api-extractor,api-extractor-model,api-extractor-utils}/**/*${commonFiles}`],
 		rules: {
-			'n/prefer-global/process': 0,
 			'@typescript-eslint/naming-convention': 0,
 			'@typescript-eslint/no-empty-interface': 0,
 			'@typescript-eslint/no-empty-object-type': 0,
@@ -135,31 +154,128 @@ export default tseslint.config(
 		files: [`packages/builders/**/*${commonFiles}`],
 		rules: {
 			'@typescript-eslint/no-empty-object-type': 0,
+			'jsdoc/valid-types': 0,
+		},
+	},
+	{
+		files: [`packages/discord.js/**/*.{js,cjs}`],
+		languageOptions: {
+			sourceType: 'commonjs',
+			parserOptions: {
+				ecmaFeatures: {
+					impliedStrict: false,
+				},
+			},
+		},
+		settings: {
+			jsdoc: {
+				tagNamePreference: {
+					augments: 'extends',
+					fires: 'emits',
+					function: 'method',
+				},
+				preferredTypes: {
+					object: 'Object',
+					null: 'void',
+				},
+			},
+		},
+		rules: {
+			'jsdoc/no-undefined-types': 0,
+			'jsdoc/no-defaults': 0,
+			'no-eq-null': 0,
+			strict: ['error', 'global'],
+
+			'no-restricted-syntax': [
+				'error',
+				{
+					selector: "AssignmentExpression[left.object.name='module'][left.property.name='exports']",
+					message: 'Use named exports instead of module.exports',
+				},
+				{
+					selector:
+						"VariableDeclarator[init.callee.name='require'][init.arguments.0.value=/^\\./]:not([id.type='ObjectPattern'])",
+					message: 'Use object destructuring when requiring local modules',
+				},
+			],
+		},
+	},
+	{
+		files: [`packages/discord.js/src/client/websocket/handlers/*.js`],
+		rules: {
+			'no-restricted-syntax': [
+				'error',
+				{
+					selector:
+						"VariableDeclarator[init.callee.name='require'][init.arguments.0.value=/^\\./]:not([id.type='ObjectPattern'])",
+					message: 'Use object destructuring when requiring local modules',
+				},
+			],
+		},
+	},
+	{
+		files: [`packages/discord.js/typings/*{d.ts,test-d.ts,d.mts,test-d.mts}`],
+		rules: {
+			'@typescript-eslint/no-unsafe-declaration-merging': 0,
+			'@typescript-eslint/no-empty-object-type': 0,
+			'@typescript-eslint/no-use-before-define': 0,
+			'@typescript-eslint/consistent-type-imports': 0,
+			'@stylistic/ts/lines-between-class-members': 0,
+			'no-restricted-syntax': [
+				2,
+				{
+					selector:
+						'MethodDefinition[key.name!=on][key.name!=once][key.name!=off] > TSEmptyBodyFunctionExpression > Identifier :not(TSTypeOperator[operator=readonly]) > TSArrayType',
+					message: 'Array parameters on methods must be readonly',
+				},
+				{
+					selector:
+						'MethodDefinition > TSEmptyBodyFunctionExpression > Identifier TSTypeReference > Identifier[name=Collection]',
+					message: 'Parameters of type Collection on methods must use ReadonlyCollection',
+				},
+				{
+					selector: 'TSDeclareFunction > Identifier :not(TSTypeOperator[operator=readonly]) > TSArrayType',
+					message: 'Array parameters on functions must be readonly',
+				},
+				{
+					selector: 'TSDeclareFunction Identifier TSTypeReference > Identifier[name=Collection]',
+					message: 'Parameters of type Collection on functions must use ReadonlyCollection',
+				},
+				{
+					selector: 'TSInterfaceDeclaration TSPropertySignature :not(TSTypeOperator[operator=readonly]) > TSArrayType',
+					message: 'Array properties on interfaces must be readonly',
+				},
+				{
+					selector: 'TSInterfaceDeclaration TSPropertySignature TSTypeReference > Identifier[name=Collection]',
+					message: 'Interface properties of type Collection must use ReadonlyCollection',
+				},
+			],
 		},
 	},
 	{
 		files: [`packages/rest/**/*${commonFiles}`],
 		rules: {
-			'n/prefer-global/url': 0,
-			'n/prefer-global/url-search-params': 0,
-			'n/prefer-global/buffer': 0,
-			'n/prefer-global/process': 0,
-			'no-restricted-globals': 0,
 			'unicorn/prefer-node-protocol': 0,
+		},
+	},
+	{
+		files: [`packages/structures/**/*${commonFiles}`],
+		rules: {
+			'@typescript-eslint/no-empty-interface': 0,
+			'@typescript-eslint/no-empty-object-type': 0,
+			'@typescript-eslint/no-unsafe-declaration-merging': 0,
 		},
 	},
 	{
 		files: [`packages/voice/**/*${commonFiles}`],
 		rules: {
-			'no-restricted-globals': 0,
-			'n/prefer-global/buffer': 0,
 			'@typescript-eslint/no-unsafe-declaration-merging': 0,
 		},
 	},
 	reactRuleset,
 	jsxa11yRuleset,
 	{
-		files: [`apps/guide/**/*${commonFiles}`, `packages/ui/**/*${commonFiles}`],
+		files: [`packages/ui/**/*${commonFiles}`],
 		plugins: { '@unocss': unocss },
 		rules: {
 			'@unocss/order': 2,

@@ -28,9 +28,7 @@ import { DeserializerContext, ApiJsonSchemaVersion } from './DeserializerContext
  * @public
  */
 export interface IApiPackageOptions
-	extends IApiItemContainerMixinOptions,
-		IApiNameMixinOptions,
-		IApiDocumentedItemOptions {
+	extends IApiItemContainerMixinOptions, IApiNameMixinOptions, IApiDocumentedItemOptions {
 	dependencies?: Record<string, string> | undefined;
 	projectFolderUrl?: string | undefined;
 	tsdocConfiguration: TSDocConfiguration;
@@ -216,8 +214,9 @@ export class ApiPackage extends ApiItemContainerMixin(ApiNameMixin(ApiDocumented
 					if (semVer === 'workspace:^') {
 						this._dependencies[pack] =
 							PackageJsonLookup.instance.tryLoadPackageJsonFor(pathToPackage)?.version ?? 'unknown';
-					} else if (FileSystem.exists(pathToPackage)) {
-						this._dependencies[pack] = semVer;
+					} else {
+						// if (FileSystem.exists(pathToPackage))
+						this._dependencies[pack] = semVer.replace(/^[\^~]/, '');
 					}
 				}
 			}

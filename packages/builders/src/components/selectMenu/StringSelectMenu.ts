@@ -1,5 +1,3 @@
-/* eslint-disable jsdoc/check-param-names */
-
 import { ComponentType } from 'discord-api-types/v10';
 import type { APIStringSelectComponent, APISelectMenuOption } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
@@ -11,6 +9,7 @@ import { StringSelectMenuOptionBuilder } from './StringSelectMenuOption.js';
 
 export interface StringSelectMenuData extends Partial<Omit<APIStringSelectComponent, 'options'>> {
 	options: StringSelectMenuOptionBuilder[];
+	required?: boolean;
 }
 
 /**
@@ -27,9 +26,9 @@ export class StringSelectMenuBuilder extends BaseSelectMenuBuilder<APIStringSele
 	}
 
 	/**
-	 * Creates a new select menu from API data.
+	 * Creates a new string select menu.
 	 *
-	 * @param data - The API data to create this select menu with
+	 * @param data - The API data to create this string select menu with
 	 * @example
 	 * Creating a select menu from an API data object:
 	 * ```ts
@@ -57,10 +56,13 @@ export class StringSelectMenuBuilder extends BaseSelectMenuBuilder<APIStringSele
 	 * 	});
 	 * ```
 	 */
-	public constructor({ options = [], ...data }: Partial<APIStringSelectComponent> = {}) {
+	public constructor(data: Partial<APIStringSelectComponent> = {}) {
 		super();
+
+		const { options = [], ...rest } = data;
+
 		this.data = {
-			...structuredClone(data),
+			...structuredClone(rest),
 			options: options.map((option) => new StringSelectMenuOptionBuilder(option)),
 			type: ComponentType.StringSelect,
 		};

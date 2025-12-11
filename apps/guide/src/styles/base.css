@@ -24,3 +24,21 @@
 @utility scrollbar-hidden {
 	scrollbar-width: none;
 }
+
+:root {
+	--legacy-color: hsl(153, 48%, 41%);
+	--voice-color: hsl(211.3, 66.1%, 65.3%);
+	--v15-color: oklch(70.4% 0.191 22.216);
+}
+
+.legacy {
+	--color-fd-primary: var(--legacy-color);
+}
+
+.voice {
+	--color-fd-primary: var(--voice-color);
+}
+
+.v15 {
+	--color-fd-primary: var(--v15-color);
+}

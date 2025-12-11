@@ -2,12 +2,12 @@
 
 const { Snowflake } = require('@sapphire/snowflake');
 const { PermissionFlagsBits, ChannelType } = require('discord-api-types/v10');
-const { BaseChannel } = require('./BaseChannel.js');
 const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { PermissionOverwriteManager } = require('../managers/PermissionOverwriteManager.js');
 const { VoiceBasedChannelTypes } = require('../util/Constants.js');
 const { PermissionsBitField } = require('../util/PermissionsBitField.js');
 const { getSortableGroupTypes } = require('../util/Util.js');
+const { BaseChannel } = require('./BaseChannel.js');
 
 /**
  * Represents a guild channel from any of the following:
@@ -18,6 +18,7 @@ const { getSortableGroupTypes } = require('../util/Util.js');
  * - {@link StageChannel}
  * - {@link ForumChannel}
  * - {@link MediaChannel}
+ *
  * @extends {BaseChannel}
  * @abstract
  */
@@ -27,17 +28,20 @@ class GuildChannel extends BaseChannel {
 
     /**
      * The guild the channel is in
+     *
      * @type {Guild}
      */
     this.guild = guild;
 
     /**
      * The id of the guild the channel is in
+     *
      * @type {Snowflake}
      */
     this.guildId = guild?.id ?? data.guild_id;
     /**
      * A manager of permission overwrites that belong to this channel
+     *
      * @type {PermissionOverwriteManager}
      */
     this.permissionOverwrites = new PermissionOverwriteManager(this);
@@ -51,6 +55,7 @@ class GuildChannel extends BaseChannel {
     if ('name' in data) {
       /**
        * The name of the guild channel
+       *
        * @type {string}
        */
       this.name = data.name;
@@ -59,6 +64,7 @@ class GuildChannel extends BaseChannel {
     if ('position' in data) {
       /**
        * The raw position of the channel from Discord
+       *
        * @type {number}
        */
       this.rawPosition = data.position;
@@ -71,6 +77,7 @@ class GuildChannel extends BaseChannel {
     if ('parent_id' in data) {
       /**
        * The id of the category parent of this channel
+       *
        * @type {?Snowflake}
        */
       this.parentId = data.parent_id;
@@ -94,6 +101,7 @@ class GuildChannel extends BaseChannel {
 
   /**
    * The category parent of this channel
+   *
    * @type {?CategoryChannel}
    * @readonly
    */
@@ -103,6 +111,7 @@ class GuildChannel extends BaseChannel {
 
   /**
    * If the permissionOverwrites match the parent channel, null if no parent
+   *
    * @type {?boolean}
    * @readonly
    */
@@ -144,6 +153,7 @@ class GuildChannel extends BaseChannel {
 
   /**
    * The position of the channel
+   *
    * @type {number}
    * @readonly
    */
@@ -167,6 +177,7 @@ class GuildChannel extends BaseChannel {
 
   /**
    * Gets the overall set of permissions for a member or role in this channel, taking into account channel overwrites.
+   *
    * @param {UserResolvable|RoleResolvable} memberOrRole The member or role to obtain the overall permissions for
    * @param {boolean} [checkAdmin=true] Whether having the {@link PermissionFlagsBits.Administrator} permission
    * will return all permissions
@@ -207,6 +218,7 @@ class GuildChannel extends BaseChannel {
 
   /**
    * Gets the overall set of permissions for a member in this channel, taking into account channel overwrites.
+   *
    * @param {GuildMember} member The member to obtain the overall permissions for
    * @param {boolean} checkAdmin Whether having the {@link PermissionFlagsBits.Administrator} permission
    * will return all permissions
@@ -239,6 +251,7 @@ class GuildChannel extends BaseChannel {
 
   /**
    * Gets the overall set of permissions for a role in this channel, taking into account channel overwrites.
+   *
    * @param {Role} role The role to obtain the overall permissions for
    * @param {boolean} checkAdmin Whether having the {@link PermissionFlagsBits.Administrator} permission
    * will return all permissions
@@ -250,10 +263,11 @@ class GuildChannel extends BaseChannel {
       return new PermissionsBitField(PermissionsBitField.All).freeze();
     }
 
+    const basePermissions = new PermissionsBitField([role.permissions, role.guild.roles.everyone.permissions]);
     const everyoneOverwrites = this.permissionOverwrites.cache.get(this.guild.id);
     const roleOverwrites = this.permissionOverwrites.cache.get(role.id);
 
-    return role.permissions
+    return basePermissions
       .remove(everyoneOverwrites?.deny ?? PermissionsBitField.DefaultBit)
       .add(everyoneOverwrites?.allow ?? PermissionsBitField.DefaultBit)
       .remove(roleOverwrites?.deny ?? PermissionsBitField.DefaultBit)
@@ -263,6 +277,7 @@ class GuildChannel extends BaseChannel {
 
   /**
    * Locks in the permission overwrites from the parent channel.
+   *
    * @returns {Promise<GuildChannel>}
    */
   async lockPermissions() {
@@ -275,6 +290,7 @@ class GuildChannel extends BaseChannel {
    * A collection of cached members of this channel, mapped by their ids.
    * Members that can view this channel, if the channel is text-based.
    * Members in the channel, if the channel is voice-based.
+   *
    * @type {Collection<Snowflake, GuildMember>}
    * @readonly
    */
@@ -286,6 +302,7 @@ class GuildChannel extends BaseChannel {
 
   /**
    * Edits the channel.
+   *
    * @param {GuildChannelEditOptions} options The options to provide
    * @returns {Promise<GuildChannel>}
    * @example
@@ -294,12 +311,13 @@ class GuildChannel extends BaseChannel {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  edit(options) {
+  async edit(options) {
     return this.guild.channels.edit(this, options);
   }
 
   /**
    * Sets a new name for the guild channel.
+   *
    * @param {string} name The new name for the guild channel
    * @param {string} [reason] Reason for changing the guild channel's name
    * @returns {Promise<GuildChannel>}
@@ -309,12 +327,13 @@ class GuildChannel extends BaseChannel {
    *   .then(newChannel => console.log(`Channel's new name is ${newChannel.name}`))
    *   .catch(console.error);
    */
-  setName(name, reason) {
+  async setName(name, reason) {
     return this.edit({ name, reason });
   }
 
   /**
    * Options used to set the parent of a channel.
+   *
    * @typedef {Object} SetParentOptions
    * @property {boolean} [lockPermissions=false] Whether to lock the permissions to what the parent's permissions are
    * @property {string} [reason] The reason for modifying the parent of the channel
@@ -322,6 +341,7 @@ class GuildChannel extends BaseChannel {
 
   /**
    * Sets the parent of this channel.
+   *
    * @param {?CategoryChannelResolvable} channel The category channel to set as the parent
    * @param {SetParentOptions} [options={}] The options for setting the parent
    * @returns {Promise<GuildChannel>}
@@ -336,7 +356,7 @@ class GuildChannel extends BaseChannel {
    *   .then(channel => console.log(`Moved ${message.channel.name} to ${channel.parent.name}`))
    *   .catch(console.error);
    */
-  setParent(channel, { lockPermissions = false, reason } = {}) {
+  async setParent(channel, { lockPermissions = false, reason } = {}) {
     return this.edit({
       parent: channel ?? null,
       lockPermissions,
@@ -346,6 +366,7 @@ class GuildChannel extends BaseChannel {
 
   /**
    * Options used to set the position of a channel.
+   *
    * @typedef {Object} SetChannelPositionOptions
    * @property {boolean} [relative=false] Whether or not to change the position relative to its current value
    * @property {string} [reason] The reason for changing the position
@@ -353,6 +374,7 @@ class GuildChannel extends BaseChannel {
 
   /**
    * Sets a new position for the guild channel.
+   *
    * @param {number} position The new position for the guild channel
    * @param {SetChannelPositionOptions} [options] Options for setting position
    * @returns {Promise<GuildChannel>}
@@ -362,22 +384,24 @@ class GuildChannel extends BaseChannel {
    *   .then(newChannel => console.log(`Channel's new position is ${newChannel.position}`))
    *   .catch(console.error);
    */
-  setPosition(position, options = {}) {
+  async setPosition(position, options = {}) {
     return this.guild.channels.setPosition(this, position, options);
   }
 
   /**
    * Options used to clone a guild channel.
+   *
    * @typedef {GuildChannelCreateOptions} GuildChannelCloneOptions
    * @property {string} [name=this.name] Name of the new channel
    */
 
   /**
    * Clones this channel.
+   *
    * @param {GuildChannelCloneOptions} [options] The options for cloning this channel
    * @returns {Promise<GuildChannel>}
    */
-  clone(options = {}) {
+  async clone(options = {}) {
     return this.guild.channels.create({
       name: options.name ?? this.name,
       permissionOverwrites: this.permissionOverwrites.cache,
@@ -397,6 +421,7 @@ class GuildChannel extends BaseChannel {
   /**
    * Checks if this channel has the same type, topic, position, name, overwrites, and id as another channel.
    * In most cases, a simple `channel.id === channel2.id` will do, and is much faster too.
+   *
    * @param {GuildChannel} channel Channel to compare with
    * @returns {boolean}
    */
@@ -422,6 +447,7 @@ class GuildChannel extends BaseChannel {
 
   /**
    * Whether the channel is deletable by the client user
+   *
    * @type {boolean}
    * @readonly
    */
@@ -431,11 +457,11 @@ class GuildChannel extends BaseChannel {
 
   /**
    * Whether the channel is manageable by the client user
+   *
    * @type {boolean}
    * @readonly
    */
   get manageable() {
-    if (this.client.user.id === this.guild.ownerId) return true;
     const permissions = this.permissionsFor(this.client.user);
     if (!permissions) return false;
 
@@ -443,19 +469,21 @@ class GuildChannel extends BaseChannel {
     if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
     if (this.guild.members.me.communicationDisabledUntilTimestamp > Date.now()) return false;
 
+    const baseBitfield = PermissionFlagsBits.ViewChannel | PermissionFlagsBits.ManageChannels;
     const bitfield = VoiceBasedChannelTypes.includes(this.type)
-      ? PermissionFlagsBits.ManageChannels | PermissionFlagsBits.Connect
-      : PermissionFlagsBits.ViewChannel | PermissionFlagsBits.ManageChannels;
+      ? baseBitfield | PermissionFlagsBits.Connect
+      : baseBitfield;
+
     return permissions.has(bitfield, false);
   }
 
   /**
    * Whether the channel is viewable by the client user
+   *
    * @type {boolean}
    * @readonly
    */
   get viewable() {
-    if (this.client.user.id === this.guild.ownerId) return true;
     const permissions = this.permissionsFor(this.client.user);
     if (!permissions) return false;
     return permissions.has(PermissionFlagsBits.ViewChannel, false);
@@ -463,6 +491,7 @@ class GuildChannel extends BaseChannel {
 
   /**
    * Deletes this channel.
+   *
    * @param {string} [reason] Reason for deleting this channel
    * @returns {Promise<GuildChannel>}
    * @example

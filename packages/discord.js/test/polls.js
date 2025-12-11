@@ -16,7 +16,7 @@ client.on(Events.ClientReady, async () => {
   // console.dir(message.poll, { depth: Infinity });
 
   // const answer = message.poll.answers.first();
-  // const voters = await answer.fetchVoters();
+  // const voters = await answer.voters.fetch();
   // console.dir(voters);
 
   const message = await channel.send({

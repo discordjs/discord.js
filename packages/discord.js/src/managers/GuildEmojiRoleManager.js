@@ -1,12 +1,13 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { DataManager } = require('./DataManager.js');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 const { Role } = require('../structures/Role.js');
+const { DataManager } = require('./DataManager.js');
 
 /**
  * Manages API methods for roles belonging to emojis and stores their cache.
+ *
  * @extends {DataManager}
  */
 class GuildEmojiRoleManager extends DataManager {
@@ -15,11 +16,13 @@ class GuildEmojiRoleManager extends DataManager {
 
     /**
      * The emoji belonging to this manager
+     *
      * @type {GuildEmoji}
      */
     this.emoji = emoji;
     /**
      * The guild belonging to this manager
+     *
      * @type {Guild}
      */
     this.guild = emoji.guild;
@@ -27,15 +30,25 @@ class GuildEmojiRoleManager extends DataManager {
 
   /**
    * The cache of roles belonging to this emoji
+   *
    * @type {Collection<Snowflake, Role>}
    * @readonly
    */
   get cache() {
-    return this.guild.roles.cache.filter(role => this.emoji._roles.includes(role.id));
+    const cache = new Collection();
+    for (const roleId of this.emoji._roles) {
+      const role = this.guild.roles.cache.get(roleId);
+      if (role !== undefined) {
+        cache.set(roleId, role);
+      }
+    }
+
+    return cache;
   }
 
   /**
    * Adds a role (or multiple roles) to the list of roles that can use this emoji.
+   *
    * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} roleOrRoles The role or roles to add
    * @returns {Promise<GuildEmoji>}
    */
@@ -48,6 +61,7 @@ class GuildEmojiRoleManager extends DataManager {
       if (!roleId) {
         throw new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array or Collection', 'roles', role);
       }
+
       resolvedRoleIds.push(roleId);
     }
 
@@ -57,6 +71,7 @@ class GuildEmojiRoleManager extends DataManager {
 
   /**
    * Removes a role (or multiple roles) from the list of roles that can use this emoji.
+   *
    * @param {RoleResolvable|RoleResolvable[]|Collection<Snowflake, Role>} roleOrRoles The role or roles to remove
    * @returns {Promise<GuildEmoji>}
    */
@@ -69,6 +84,7 @@ class GuildEmojiRoleManager extends DataManager {
       if (!roleId) {
         throw new DiscordjsTypeError(ErrorCodes.InvalidElement, 'Array or Collection', 'roles', role);
       }
+
       resolvedRoleIds.push(roleId);
     }
 
@@ -78,6 +94,7 @@ class GuildEmojiRoleManager extends DataManager {
 
   /**
    * Sets the role(s) that can use this emoji.
+   *
    * @param {Collection<Snowflake, Role>|RoleResolvable[]} roles The roles or role ids to apply
    * @returns {Promise<GuildEmoji>}
    * @example
@@ -91,7 +108,7 @@ class GuildEmojiRoleManager extends DataManager {
    *    .then(console.log)
    *    .catch(console.error);
    */
-  set(roles) {
+  async set(roles) {
     return this.emoji.edit({ roles });
   }
 
@@ -103,6 +120,7 @@ class GuildEmojiRoleManager extends DataManager {
 
   /**
    * Patches the roles for this manager's cache
+   *
    * @param {Snowflake[]} roles The new roles
    * @private
    */

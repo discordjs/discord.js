@@ -2,7 +2,7 @@
 // See LICENSE in the project root for license information.
 
 import * as os from 'node:os';
-import * as process from 'node:process';
+import process from 'node:process';
 import colors from 'colors';
 import { Extractor } from './api/Extractor.js';
 import { ApiExtractorCommandLine } from './cli/ApiExtractorCommandLine.js';
@@ -14,7 +14,7 @@ console.log(
 const parser: ApiExtractorCommandLine = new ApiExtractorCommandLine();
 
 // eslint-disable-next-line promise/prefer-await-to-callbacks
-parser.execute().catch((error) => {
+parser.executeAsync().catch((error) => {
 	console.error(colors.red(`An unexpected error occurred:`), error);
 	process.exit(1);
 });

@@ -5,9 +5,12 @@ const { basename, flatten } = require('../util/Util.js');
 
 /**
  * @typedef {Object} AttachmentPayload
- * @property {?string} name The name of the attachment
  * @property {Stream|BufferResolvable} attachment The attachment in this payload
- * @property {?string} description The description of the attachment
+ * @property {string} [name] The name of the attachment
+ * @property {string} [description] The description of the attachment
+ * @property {title} [title] The title of the attachment
+ * @property {string} [waveform] The base64 encoded byte array representing a sampled waveform (from voice message attachments)
+ * @property {number} [duration] The duration of the attachment in seconds (from voice message attachments)
  */
 
 /**
@@ -18,6 +21,7 @@ class Attachment {
     this.attachment = data.url;
     /**
      * The name of this attachment
+     *
      * @type {string}
      */
     this.name = data.filename;
@@ -27,6 +31,7 @@ class Attachment {
   _patch(data) {
     /**
      * The attachment's id
+     *
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -34,6 +39,7 @@ class Attachment {
     if ('size' in data) {
       /**
        * The size of this attachment in bytes
+       *
        * @type {number}
        */
       this.size = data.size;
@@ -42,6 +48,7 @@ class Attachment {
     if ('url' in data) {
       /**
        * The URL to this attachment
+       *
        * @type {string}
        */
       this.url = data.url;
@@ -50,6 +57,7 @@ class Attachment {
     if ('proxy_url' in data) {
       /**
        * The Proxy URL to this attachment
+       *
        * @type {string}
        */
       this.proxyURL = data.proxy_url;
@@ -58,6 +66,7 @@ class Attachment {
     if ('height' in data) {
       /**
        * The height of this attachment (if an image or video)
+       *
        * @type {?number}
        */
       this.height = data.height;
@@ -68,6 +77,7 @@ class Attachment {
     if ('width' in data) {
       /**
        * The width of this attachment (if an image or video)
+       *
        * @type {?number}
        */
       this.width = data.width;
@@ -78,6 +88,7 @@ class Attachment {
     if ('content_type' in data) {
       /**
        * The media (MIME) type of this attachment
+       *
        * @type {?string}
        * @see {@link https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types}
        */
@@ -89,6 +100,7 @@ class Attachment {
     if ('description' in data) {
       /**
        * The description (alt text) of this attachment
+       *
        * @type {?string}
        */
       this.description = data.description;
@@ -98,6 +110,7 @@ class Attachment {
 
     /**
      * Whether this attachment is ephemeral
+     *
      * @type {boolean}
      */
     this.ephemeral = data.ephemeral ?? false;
@@ -105,7 +118,8 @@ class Attachment {
     if ('duration_secs' in data) {
       /**
        * The duration of this attachment in seconds
-       * <info>This will only be available if the attachment is an audio file.</info>
+       * <info>This will only be available if the attachment is the audio file from a voice message.</info>
+       *
        * @type {?number}
        */
       this.duration = data.duration_secs;
@@ -116,7 +130,8 @@ class Attachment {
     if ('waveform' in data) {
       /**
        * The base64 encoded byte array representing a sampled waveform
-       * <info>This will only be available if the attachment is an audio file.</info>
+       * <info>This will only be available if this attachment is the audio file from a voice message.</info>
+       *
        * @type {?string}
        */
       this.waveform = data.waveform;
@@ -127,6 +142,7 @@ class Attachment {
     if ('flags' in data) {
       /**
        * The flags of this attachment
+       *
        * @type {Readonly<AttachmentFlagsBitField>}
        */
       this.flags = new AttachmentFlagsBitField(data.flags).freeze();
@@ -138,6 +154,7 @@ class Attachment {
       /**
        * The title of this attachment
        * <info>This will only be available if the attachment name contains special characters.</info>
+       *
        * @type {?string}
        */
       this.title = data.title;
@@ -148,6 +165,7 @@ class Attachment {
 
   /**
    * Whether or not this attachment has been marked as a spoiler
+   *
    * @type {boolean}
    * @readonly
    */

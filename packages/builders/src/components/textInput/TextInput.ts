@@ -7,10 +7,13 @@ import { textInputPredicate } from './Assertions.js';
  * A builder that creates API-compatible JSON data for text inputs.
  */
 export class TextInputBuilder extends ComponentBuilder<APITextInputComponent> {
+	/**
+	 * @internal
+	 */
 	protected readonly data: Partial<APITextInputComponent>;
 
 	/**
-	 * Creates a new text input from API data.
+	 * Creates a new text input.
 	 *
 	 * @param data - The API data to create this text input with
 	 * @example
@@ -18,7 +21,7 @@ export class TextInputBuilder extends ComponentBuilder<APITextInputComponent> {
 	 * ```ts
 	 * const textInput = new TextInputBuilder({
 	 * 	custom_id: 'a cool text input',
-	 * 	label: 'Type something',
+	 * 	placeholder: 'Type something',
 	 * 	style: TextInputStyle.Short,
 	 * });
 	 * ```
@@ -26,7 +29,7 @@ export class TextInputBuilder extends ComponentBuilder<APITextInputComponent> {
 	 * Creating a text input using setters and API data:
 	 * ```ts
 	 * const textInput = new TextInputBuilder({
-	 * 	label: 'Type something else',
+	 * 	placeholder: 'Type something else',
 	 * })
 	 * 	.setCustomId('woah')
 	 * 	.setStyle(TextInputStyle.Paragraph);
@@ -44,16 +47,6 @@ export class TextInputBuilder extends ComponentBuilder<APITextInputComponent> {
 	 */
 	public setCustomId(customId: string) {
 		this.data.custom_id = customId;
-		return this;
-	}
-
-	/**
-	 * Sets the label for this text input.
-	 *
-	 * @param label - The label to use
-	 */
-	public setLabel(label: string) {
-		this.data.label = label;
 		return this;
 	}
 

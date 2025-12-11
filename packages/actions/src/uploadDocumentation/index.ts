@@ -3,13 +3,10 @@ import process from 'node:process';
 import { getInput, setFailed } from '@actions/core';
 import { create } from '@actions/glob';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import { put } from '@vercel/blob';
-import { createPool } from '@vercel/postgres';
 import Cloudflare from 'cloudflare';
 import pLimit from 'p-limit';
 
 if (
-	!process.env.DATABASE_URL ||
 	!process.env.CF_R2_DOCS_URL ||
 	!process.env.CF_R2_DOCS_ACCESS_KEY_ID ||
 	!process.env.CF_R2_DOCS_SECRET_ACCESS_KEY ||
@@ -24,10 +21,6 @@ if (
 
 const pkg = getInput('package') || '*';
 const version = getInput('version') || 'main';
-
-const pool = createPool({
-	connectionString: process.env.DATABASE_URL,
-});
 
 const S3 = new S3Client({
 	region: 'auto',
@@ -59,15 +52,6 @@ for await (const file of globber.globGenerator()) {
 				const name = json.name ?? json.n;
 
 				const key = `${name.replace('@discordjs/', '')}/${version}.json`;
-
-				const { url } = await put(key, data, {
-					access: 'public',
-					addRandomSuffix: false,
-				});
-				await pool.sql`insert into documentation (name, version, url) values (${name.replace(
-					'@discordjs/',
-					'',
-				)}, ${version}, ${url}) on conflict (name, version) do update set url = EXCLUDED.url`;
 
 				await S3.send(
 					new PutObjectCommand({

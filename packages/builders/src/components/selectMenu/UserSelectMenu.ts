@@ -16,9 +16,9 @@ export class UserSelectMenuBuilder extends BaseSelectMenuBuilder<APIUserSelectCo
 	protected override readonly data: Partial<APIUserSelectComponent>;
 
 	/**
-	 * Creates a new select menu from API data.
+	 * Creates a new user select menu.
 	 *
-	 * @param data - The API data to create this select menu with
+	 * @param data - The API data to create this user select menu with
 	 * @example
 	 * Creating a select menu from an API data object:
 	 * ```ts

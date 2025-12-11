@@ -1,11 +1,12 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const { MessageComponentInteraction } = require('./MessageComponentInteraction.js');
 const { Events } = require('../util/Events.js');
+const { MessageComponentInteraction } = require('./MessageComponentInteraction.js');
 
 /**
  * Represents a {@link ComponentType.UserSelect} select menu interaction.
+ *
  * @extends {MessageComponentInteraction}
  */
 class UserSelectMenuInteraction extends MessageComponentInteraction {
@@ -15,18 +16,21 @@ class UserSelectMenuInteraction extends MessageComponentInteraction {
 
     /**
      * An array of the selected user ids
+     *
      * @type {Snowflake[]}
      */
     this.values = values ?? [];
 
     /**
      * Collection of the selected users
+     *
      * @type {Collection<Snowflake, User>}
      */
     this.users = new Collection();
 
     /**
      * Collection of the selected members
+     *
      * @type {Collection<Snowflake, GuildMember|APIGuildMember>}
      */
     this.members = new Collection();

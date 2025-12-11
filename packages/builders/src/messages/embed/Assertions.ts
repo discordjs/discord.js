@@ -1,20 +1,11 @@
+import { embedLength } from '@discordjs/util';
 import { z } from 'zod';
-import { refineURLPredicate } from '../../Assertions.js';
-import { embedLength } from '../../util/componentUtil.js';
 
 const namePredicate = z.string().max(256);
 
-const URLPredicate = z
-	.string()
-	.url()
-	.refine(refineURLPredicate(['http:', 'https:']), { message: 'Invalid protocol for URL. Must be http: or https:' });
+const URLPredicate = z.url({ protocol: /^https?$/ });
 
-const URLWithAttachmentProtocolPredicate = z
-	.string()
-	.url()
-	.refine(refineURLPredicate(['http:', 'https:', 'attachment:']), {
-		message: 'Invalid protocol for URL. Must be http:, https:, or attachment:',
-	});
+const URLWithAttachmentProtocolPredicate = z.url({ protocol: /^(?:https?|attachment)$/ });
 
 export const embedFieldPredicate = z.object({
 	name: namePredicate,
@@ -39,7 +30,7 @@ export const embedPredicate = z
 		description: z.string().min(1).max(4_096).optional(),
 		url: URLPredicate.optional(),
 		timestamp: z.string().optional(),
-		color: z.number().int().min(0).max(0xffffff).optional(),
+		color: z.int().min(0).max(0xffffff).optional(),
 		footer: embedFooterPredicate.optional(),
 		image: z.object({ url: URLWithAttachmentProtocolPredicate }).optional(),
 		thumbnail: z.object({ url: URLWithAttachmentProtocolPredicate }).optional(),
@@ -56,7 +47,7 @@ export const embedPredicate = z
 			embed.image !== undefined ||
 			embed.thumbnail !== undefined,
 		{
-			message: 'Embed must have at least a title, description, a field, a footer, an author, an image, OR a thumbnail.',
+			error: 'Embed must have at least a title, description, a field, a footer, an author, an image, OR a thumbnail.',
 		},
 	)
-	.refine((embed) => embedLength(embed) <= 6_000, { message: 'Embeds must not exceed 6000 characters in total.' });
+	.refine((embed) => embedLength(embed) <= 6_000, { error: 'Embeds must not exceed 6000 characters in total.' });

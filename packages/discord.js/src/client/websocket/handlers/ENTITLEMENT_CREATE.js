@@ -7,6 +7,7 @@ module.exports = (client, { d: data }) => {
 
   /**
    * Emitted whenever an entitlement is created.
+   *
    * @event Client#entitlementCreate
    * @param {Entitlement} entitlement The entitlement that was created
    */

@@ -3,13 +3,14 @@
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes, EntitlementOwnerType } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager.js');
 const { ErrorCodes, DiscordjsTypeError } = require('../errors/index.js');
 const { Entitlement } = require('../structures/Entitlement.js');
 const { resolveSKUId } = require('../util/Util.js');
+const { CachedManager } = require('./CachedManager.js');
 
 /**
  * Manages API methods for entitlements and stores their cache.
+ *
  * @extends {CachedManager}
  */
 class EntitlementManager extends CachedManager {
@@ -19,32 +20,37 @@ class EntitlementManager extends CachedManager {
 
   /**
    * The cache of this manager
+   *
    * @type {Collection<Snowflake, Entitlement>}
    * @name EntitlementManager#cache
    */
 
   /**
    * Data that resolves to give an Entitlement object. This can be:
-   * * An Entitlement object
-   * * A Snowflake
+   * - An Entitlement object
+   * - A Snowflake
+   *
    * @typedef {Entitlement|Snowflake} EntitlementResolvable
    */
 
   /**
    * Data that resolves to give a SKU object. This can be:
-   * * A SKU object
-   * * A Snowflake
+   * - A SKU object
+   * - A Snowflake
+   *
    * @typedef {SKU|Snowflake} SKUResolvable
    */
 
   /**
    * Options used to fetch an entitlement
+   *
    * @typedef {BaseFetchOptions} FetchEntitlementOptions
    * @property {EntitlementResolvable} entitlement The entitlement to fetch
    */
 
   /**
    * Options used to fetch entitlements
+   *
    * @typedef {Object} FetchEntitlementsOptions
    * @property {number} [limit] The maximum number of entitlements to fetch
    * @property {GuildResolvable} [guild] The guild to fetch entitlements for
@@ -60,6 +66,7 @@ class EntitlementManager extends CachedManager {
 
   /**
    * Fetches entitlements for this application
+   *
    * @param {EntitlementResolvable|FetchEntitlementOptions|FetchEntitlementsOptions} [options]
    * Options for fetching the entitlements
    * @returns {Promise<Entitlement|Collection<Snowflake, Entitlement>>}
@@ -112,6 +119,7 @@ class EntitlementManager extends CachedManager {
   /**
    * Options used to create a test entitlement
    * <info>Either `guild` or `user` must be provided, but not both</info>
+   *
    * @typedef {Object} EntitlementCreateOptions
    * @property {SKUResolvable} sku The id of the SKU to create the entitlement for
    * @property {GuildResolvable} [guild] The guild to create the entitlement for
@@ -120,6 +128,7 @@ class EntitlementManager extends CachedManager {
 
   /**
    * Creates a test entitlement
+   *
    * @param {EntitlementCreateOptions} options Options for creating the test entitlement
    * @returns {Promise<Entitlement>}
    */
@@ -150,6 +159,7 @@ class EntitlementManager extends CachedManager {
 
   /**
    * Deletes a test entitlement
+   *
    * @param {EntitlementResolvable} entitlement The entitlement to delete
    * @returns {Promise<void>}
    */
@@ -163,6 +173,7 @@ class EntitlementManager extends CachedManager {
   /**
    * Marks an entitlement as consumed
    * <info>Only available for One-Time Purchase consumable SKUs.</info>
+   *
    * @param {Snowflake} entitlementId The id of the entitlement to consume
    * @returns {Promise<void>}
    */

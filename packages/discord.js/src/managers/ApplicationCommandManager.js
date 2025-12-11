@@ -4,14 +4,15 @@ const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { isJSONEncodable } = require('@discordjs/util');
 const { Routes } = require('discord-api-types/v10');
-const { ApplicationCommandPermissionsManager } = require('./ApplicationCommandPermissionsManager.js');
-const { CachedManager } = require('./CachedManager.js');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 const { ApplicationCommand } = require('../structures/ApplicationCommand.js');
 const { PermissionsBitField } = require('../util/PermissionsBitField.js');
+const { ApplicationCommandPermissionsManager } = require('./ApplicationCommandPermissionsManager.js');
+const { CachedManager } = require('./CachedManager.js');
 
 /**
  * Manages API methods for application commands and stores their cache.
+ *
  * @extends {CachedManager}
  */
 class ApplicationCommandManager extends CachedManager {
@@ -20,6 +21,7 @@ class ApplicationCommandManager extends CachedManager {
 
     /**
      * The manager for permissions of arbitrary commands on arbitrary guilds
+     *
      * @type {ApplicationCommandPermissionsManager}
      */
     this.permissions = new ApplicationCommandPermissionsManager(this);
@@ -27,6 +29,7 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * The cache of this manager
+   *
    * @type {Collection<Snowflake, ApplicationCommand>}
    * @name ApplicationCommandManager#cache
    */
@@ -37,6 +40,8 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * The APIRouter path to the commands
+   *
+   * @param {Object} [options] The options
    * @param {Snowflake} [options.id] The application command's id
    * @param {Snowflake} [options.guildId] The guild's id to use in the path,
    * ignored when using a {@link GuildApplicationCommandManager}
@@ -61,18 +66,21 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Data that resolves to give an ApplicationCommand object. This can be:
-   * * An ApplicationCommand object
-   * * A Snowflake
+   * - An ApplicationCommand object
+   * - A Snowflake
+   *
    * @typedef {ApplicationCommand|Snowflake} ApplicationCommandResolvable
    */
 
   /**
    * Data that resolves to the data of an ApplicationCommand
+   *
    * @typedef {ApplicationCommandData|APIApplicationCommand} ApplicationCommandDataResolvable
    */
 
   /**
    * Options used to fetch data from Discord
+   *
    * @typedef {Object} BaseFetchOptions
    * @property {boolean} [cache=true] Whether to cache the fetched data if it wasn't already
    * @property {boolean} [force=false] Whether to skip the cache check and request the API
@@ -80,6 +88,7 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Options used to fetch Application Commands from Discord
+   *
    * @typedef {BaseFetchOptions} FetchApplicationCommandOptions
    * @property {Snowflake} [id] The command's id to fetch
    * @property {Snowflake} [guildId] The guild's id to fetch commands for, for when the guild is not cached
@@ -89,6 +98,7 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Obtains one or multiple application commands from Discord, or the cache if it's already available.
+   *
    * @param {Snowflake|FetchApplicationCommandOptions} [options] Options for fetching application command(s)
    * @returns {Promise<ApplicationCommand|Collection<Snowflake, ApplicationCommand>>}
    * @example
@@ -147,6 +157,7 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Creates an application command.
+   *
    * @param {ApplicationCommandDataResolvable} command The command
    * @param {Snowflake} [guildId] The guild's id to create this command in,
    * ignored when using a {@link GuildApplicationCommandManager}
@@ -169,6 +180,7 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Sets all the commands for this application or guild.
+   *
    * @param {ApplicationCommandDataResolvable[]} commands The commands
    * @param {Snowflake} [guildId] The guild's id to create the commands in,
    * ignored when using a {@link GuildApplicationCommandManager}
@@ -201,6 +213,7 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Edits an application command.
+   *
    * @param {ApplicationCommandResolvable} command The command to edit
    * @param {Partial<ApplicationCommandDataResolvable>} data The data to update the command with
    * @param {Snowflake} [guildId] The guild's id where the command registered,
@@ -226,6 +239,7 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Deletes an application command.
+   *
    * @param {ApplicationCommandResolvable} command The command to delete
    * @param {Snowflake} [guildId] The guild's id where the command is registered,
    * ignored when using a {@link GuildApplicationCommandManager}
@@ -249,6 +263,7 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Transforms an {@link ApplicationCommandData} object into something that can be used with the API.
+   *
    * @param {ApplicationCommandDataResolvable} command The command to transform
    * @returns {APIApplicationCommand}
    * @private
@@ -266,9 +281,9 @@ class ApplicationCommandManager extends CachedManager {
 
     if ('defaultMemberPermissions' in command) {
       default_member_permissions =
-        command.defaultMemberPermissions !== null
-          ? new PermissionsBitField(command.defaultMemberPermissions).bitfield.toString()
-          : command.defaultMemberPermissions;
+        command.defaultMemberPermissions === null
+          ? command.defaultMemberPermissions
+          : new PermissionsBitField(command.defaultMemberPermissions).bitfield.toString();
     }
 
     return {

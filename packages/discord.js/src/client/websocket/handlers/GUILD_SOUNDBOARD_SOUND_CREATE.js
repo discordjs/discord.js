@@ -11,6 +11,7 @@ module.exports = (client, { d: data }) => {
 
   /**
    * Emitted whenever a guild soundboard sound is created.
+   *
    * @event Client#guildSoundboardSoundCreate
    * @param {SoundboardSound} soundboardSound The created guild soundboard sound
    */

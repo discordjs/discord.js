@@ -7,6 +7,7 @@ const { WelcomeChannel } = require('./WelcomeChannel.js');
 
 /**
  * Represents a welcome screen.
+ *
  * @extends {Base}
  */
 class WelcomeScreen extends Base {
@@ -15,18 +16,21 @@ class WelcomeScreen extends Base {
 
     /**
      * The guild for this welcome screen
+     *
      * @type {Guild}
      */
     this.guild = guild;
 
     /**
      * The description of this welcome screen
+     *
      * @type {?string}
      */
     this.description = data.description ?? null;
 
     /**
      * Collection of welcome channels belonging to this welcome screen
+     *
      * @type {Collection<Snowflake, WelcomeChannel>}
      */
     this.welcomeChannels = new Collection();
@@ -39,6 +43,7 @@ class WelcomeScreen extends Base {
 
   /**
    * Whether the welcome screen is enabled on the guild
+   *
    * @type {boolean}
    */
   get enabled() {

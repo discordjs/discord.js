@@ -17,15 +17,20 @@ export const ApplicationCommandOptionAllowedChannelTypes = [
 /**
  * Allowed channel types used for a channel option.
  */
-export type ApplicationCommandOptionAllowedChannelTypes = (typeof ApplicationCommandOptionAllowedChannelTypes)[number];
+export type ApplicationCommandOptionAllowedChannelType = (typeof ApplicationCommandOptionAllowedChannelTypes)[number];
 
-export interface ApplicationCommandOptionChannelTypesData
-	extends Pick<APIApplicationCommandChannelOption, 'channel_types'> {}
+export interface ApplicationCommandOptionChannelTypesData extends Pick<
+	APIApplicationCommandChannelOption,
+	'channel_types'
+> {}
 
 /**
  * This mixin holds channel type symbols used for options.
  */
 export class ApplicationCommandOptionChannelTypesMixin {
+	/**
+	 * @internal
+	 */
 	declare protected readonly data: ApplicationCommandOptionChannelTypesData;
 
 	/**
@@ -33,7 +38,7 @@ export class ApplicationCommandOptionChannelTypesMixin {
 	 *
 	 * @param channelTypes - The channel types
 	 */
-	public addChannelTypes(...channelTypes: RestOrArray<ApplicationCommandOptionAllowedChannelTypes>) {
+	public addChannelTypes(...channelTypes: RestOrArray<ApplicationCommandOptionAllowedChannelType>) {
 		this.data.channel_types ??= [];
 		this.data.channel_types.push(...normalizeArray(channelTypes));
 
@@ -45,7 +50,7 @@ export class ApplicationCommandOptionChannelTypesMixin {
 	 *
 	 * @param channelTypes - The channel types
 	 */
-	public setChannelTypes(...channelTypes: RestOrArray<ApplicationCommandOptionAllowedChannelTypes>) {
+	public setChannelTypes(...channelTypes: RestOrArray<ApplicationCommandOptionAllowedChannelType>) {
 		this.data.channel_types = normalizeArray(channelTypes);
 		return this;
 	}

@@ -4,6 +4,25 @@ export * from './util/index';
 export * from './receive/index';
 
 export {
+	Networking,
+	type ConnectionData,
+	type ConnectionOptions,
+	type NetworkingState,
+	type NetworkingResumingState,
+	type NetworkingSelectingProtocolState,
+	type NetworkingUdpHandshakingState,
+	type NetworkingClosedState,
+	type NetworkingIdentifyingState,
+	type NetworkingOpeningWsState,
+	type NetworkingReadyState,
+	NetworkingStatusCode,
+	VoiceUDPSocket,
+	VoiceWebSocket,
+	type SocketConfig,
+	DAVESession,
+} from './networking/index.js';
+
+export {
 	VoiceConnection,
 	type VoiceConnectionState,
 	VoiceConnectionStatus,

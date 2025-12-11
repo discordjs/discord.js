@@ -1,12 +1,19 @@
 'use strict';
 
 const { Buffer } = require('node:buffer');
-const { isJSONEncodable } = require('@discordjs/util');
+const { isJSONEncodable, lazy } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
 const { resolveFile } = require('../util/DataResolver.js');
 const { MessageFlagsBitField } = require('../util/MessageFlagsBitField.js');
-const { basename, verifyString, resolvePartialEmoji } = require('../util/Util.js');
+const { findName, verifyString, resolvePartialEmoji } = require('../util/Util.js');
+
+// Fixes circular dependencies.
+const getWebhook = lazy(() => require('./Webhook.js').Webhook);
+const getUser = lazy(() => require('./User.js').User);
+const getGuildMember = lazy(() => require('./GuildMember.js').GuildMember);
+const getMessage = lazy(() => require('./Message.js').Message);
+const getMessageManager = lazy(() => require('../managers/MessageManager.js').MessageManager);
 
 /**
  * Represents a message to be sent to the API.
@@ -19,73 +26,76 @@ class MessagePayload {
   constructor(target, options) {
     /**
      * The target for this message to be sent to
+     *
      * @type {MessageTarget}
      */
     this.target = target;
 
     /**
      * The payload of this message.
+     *
      * @type {MessagePayloadOption}
      */
     this.options = options;
 
     /**
      * Body sendable to the API
+     *
      * @type {?APIMessage}
      */
     this.body = null;
 
     /**
      * Files sendable to the API
+     *
      * @type {?RawFile[]}
      */
     this.files = null;
   }
 
   /**
-   * Whether or not the target is a {@link Webhook} or a {@link WebhookClient}
+   * Whether or not the target is a {@link Webhook}
+   *
    * @type {boolean}
    * @readonly
    */
   get isWebhook() {
-    const { Webhook } = require('./Webhook.js');
-    const { WebhookClient } = require('../client/WebhookClient.js');
-    return this.target instanceof Webhook || this.target instanceof WebhookClient;
+    return this.target instanceof getWebhook();
   }
 
   /**
    * Whether or not the target is a {@link User}
+   *
    * @type {boolean}
    * @readonly
    */
   get isUser() {
-    const { User } = require('./User.js');
-    const { GuildMember } = require('./GuildMember.js');
-    return this.target instanceof User || this.target instanceof GuildMember;
+    return this.target instanceof getUser() || this.target instanceof getGuildMember();
   }
 
   /**
    * Whether or not the target is a {@link Message}
+   *
    * @type {boolean}
    * @readonly
    */
   get isMessage() {
-    const { Message } = require('./Message.js');
-    return this.target instanceof Message;
+    return this.target instanceof getMessage();
   }
 
   /**
    * Whether or not the target is a {@link MessageManager}
+   *
    * @type {boolean}
    * @readonly
    */
   get isMessageManager() {
-    const { MessageManager } = require('../managers/MessageManager.js');
-    return this.target instanceof MessageManager;
+    return this.target instanceof getMessageManager();
   }
 
   /**
    * Makes the content of this message.
+   *
    * @returns {?string}
    */
   makeContent() {
@@ -101,6 +111,7 @@ class MessagePayload {
 
   /**
    * Resolves the body.
+   *
    * @returns {MessagePayload}
    */
   resolveBody() {
@@ -182,11 +193,17 @@ class MessagePayload {
     const attachments = this.options.files?.map((file, index) => ({
       id: index.toString(),
       description: file.description,
+      title: file.title,
+      waveform: file.waveform,
+      duration_secs: file.duration,
     }));
+
+    // Only passable during edits
     if (Array.isArray(this.options.attachments)) {
-      this.options.attachments.push(...(attachments ?? []));
-    } else {
-      this.options.attachments = attachments;
+      attachments.push(
+        // Note how we don't check for file body encodable, since we aren't expecting file data here
+        ...this.options.attachments.map(attachment => (isJSONEncodable(attachment) ? attachment.toJSON() : attachment)),
+      );
     }
 
     let poll;
@@ -217,10 +234,13 @@ class MessagePayload {
       components,
       username,
       avatar_url: avatarURL,
-      allowed_mentions: content === undefined && message_reference === undefined ? undefined : allowedMentions,
+      allowed_mentions:
+        this.isMessage && message_reference === undefined && this.target.author.id !== this.target.client.user.id
+          ? undefined
+          : allowedMentions,
       flags,
       message_reference,
-      attachments: this.options.attachments,
+      attachments,
       sticker_ids: this.options.stickers?.map(sticker => sticker.id ?? sticker),
       thread_name: threadName,
       applied_tags: appliedTags,
@@ -231,6 +251,7 @@ class MessagePayload {
 
   /**
    * Resolves files.
+   *
    * @returns {Promise<MessagePayload>}
    */
   async resolveFiles() {
@@ -242,24 +263,13 @@ class MessagePayload {
 
   /**
    * Resolves a single file into an object sendable to the API.
+   *
    * @param {AttachmentPayload|BufferResolvable|Stream} fileLike Something that could be resolved to a file
    * @returns {Promise<RawFile>}
    */
   static async resolveFile(fileLike) {
     let attachment;
     let name;
-
-    const findName = thing => {
-      if (typeof thing === 'string') {
-        return basename(thing);
-      }
-
-      if (thing.path) {
-        return basename(thing.path);
-      }
-
-      return 'file.jpg';
-    };
 
     const ownAttachment =
       typeof fileLike === 'string' || fileLike instanceof Buffer || typeof fileLike.pipe === 'function';
@@ -277,6 +287,7 @@ class MessagePayload {
 
   /**
    * Creates a {@link MessagePayload} from user-level arguments.
+   *
    * @param {MessageTarget} target Target to send to
    * @param {string|MessagePayloadOption} options Options or content to use
    * @param {MessagePayloadOption} [extra={}] Extra options to add onto specified options
@@ -294,12 +305,14 @@ exports.MessagePayload = MessagePayload;
 
 /**
  * A target for a message.
- * @typedef {TextBasedChannels|ChannelManager|Webhook|WebhookClient|BaseInteraction|InteractionWebhook|
+ *
+ * @typedef {TextBasedChannels|ChannelManager|Webhook|BaseInteraction|InteractionWebhook|
  * Message|MessageManager} MessageTarget
  */
 
 /**
  * A possible payload option.
+ *
  * @typedef {MessageCreateOptions|MessageEditOptions|WebhookMessageCreateOptions|WebhookMessageEditOptions|
  * InteractionReplyOptions|InteractionUpdateOptions} MessagePayloadOption
  */

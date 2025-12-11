@@ -5,6 +5,21 @@ import type { EnumMemberOrder } from '@discordjs/api-extractor-model';
 import type { ExtractorLogLevel } from './ExtractorLogLevel.js';
 
 /**
+ * Represents an entry point in the package
+ * Example:
+ * ```
+ * {
+ *   modulePath: 'Shape/Square',
+ *   filePath: './dist/Shape/Square/index.d.ts'
+ * }
+ * ```
+ */
+export interface IConfigEntryPoint {
+	filePath: string;
+	modulePath: string;
+}
+
+/**
  * Determines how the TypeScript compiler engine will be invoked by API Extractor.
  *
  * @remarks
@@ -48,6 +63,13 @@ export interface IConfigCompiler {
 }
 
 /**
+ * The allowed variations of API reports.
+ *
+ * @public
+ */
+export type ApiReportVariant = 'alpha' | 'beta' | 'complete' | 'public';
+
+/**
  * Configures how the API report files (*.api.md) will be generated.
  *
  * @remarks
@@ -71,11 +93,19 @@ export interface IConfigApiReport {
 	includeForgottenExports?: boolean;
 
 	/**
-	 * The filename for the API report files.  It will be combined with `reportFolder` or `reportTempFolder` to produce
-	 * a full output filename.
+	 * The base filename for the API report files, to be combined with {@link IConfigApiReport.reportFolder} or
+	 * {@link IConfigApiReport.reportTempFolder} to produce the full file path.
 	 *
 	 * @remarks
-	 * The file extension should be ".api.md", and the string should not contain a path separator such as `\` or `/`.
+	 * The `reportFileName` should not include any path separators such as `\` or `/`.  The `reportFileName` should
+	 * not include a file extension, since API Extractor will automatically append an appropriate file extension such
+	 * as `.api.md`.  If the {@link IConfigApiReport.reportVariants} setting is used, then the file extension includes
+	 * the variant name, for example `my-report.public.api.md` or `my-report.beta.api.md`. The `complete` variant always
+	 * uses the simple extension `my-report.api.md`.
+	 *
+	 * Previous versions of API Extractor required `reportFileName` to include the `.api.md` extension explicitly;
+	 * for backwards compatibility, that is still accepted but will be discarded before applying the above rules.
+	 * @defaultValue `<unscopedPackageName>`
 	 */
 	reportFileName?: string;
 
@@ -104,7 +134,61 @@ export interface IConfigApiReport {
 	 * prepend a folder token such as `<projectFolder>`.
 	 */
 	reportTempFolder?: string;
+
+	/**
+	 * The set of report variants to generate.
+	 *
+	 * @remarks
+	 * To support different approval requirements for different API levels, multiple "variants" of the API report can
+	 * be generated.  The `reportVariants` setting specifies a list of variants to be generated.  If omitted,
+	 * by default only the `complete` variant will be generated, which includes all `@internal`, `@alpha`, `@beta`,
+	 * and `@public` items.  Other possible variants are `alpha` (`@alpha` + `@beta` + `@public`),
+	 * `beta` (`@beta` + `@public`), and `public` (`@public only`).
+	 *
+	 * The resulting API report file names will be derived from the {@link IConfigApiReport.reportFileName}.
+	 * @defaultValue `[ "complete" ]`
+	 */
+	reportVariants?: ApiReportVariant[];
+
+	/**
+	 * Specifies a list of {@link https://tsdoc.org/ | TSDoc} tags that should be reported in the API report file for
+	 * items whose documentation contains them.
+	 *
+	 * @remarks
+	 * Tag names must begin with `@`.
+	 *
+	 * This list may include standard TSDoc tags as well as custom ones.
+	 * For more information on defining custom TSDoc tags, see
+	 * {@link https://api-extractor.com/pages/configs/tsdoc_json/#defining-your-own-tsdoc-tags | here}.
+	 *
+	 * Note that an item's release tag will always reported; this behavior cannot be overridden.
+	 * @defaultValue `@sealed`, `@virtual`, `@override`, `@eventProperty`, and `@deprecated`
+	 * @example Omitting default tags
+	 * To omit the `@sealed` and `@virtual` tags from API reports, you would specify `tagsToReport` as follows:
+	 * ```json
+	 * "tagsToReport": {
+	 *  "@sealed": false,
+	 *  "@virtual": false
+	 * }
+	 * ```
+	 * @example Including additional tags
+	 * To include additional tags to the set included in API reports, you could specify `tagsToReport` like this:
+	 * ```json
+	 * "tagsToReport": {
+	 *  "@customTag": true
+	 * }
+	 * ```
+	 * This will result in `@customTag` being included in addition to the default tags.
+	 */
+	tagsToReport?: Readonly<Record<`@${string}`, boolean>>;
 }
+
+/**
+ * The allowed release tags that can be used to mark API items.
+ *
+ * @public
+ */
+export type ReleaseTagForTrim = '@alpha' | '@beta' | '@internal' | '@public';
 
 /**
  * Configures how the doc model file (*.api.json) will be generated.
@@ -151,6 +235,13 @@ export interface IConfigDocModel {
 	 * Can be omitted if you don't need source code links in your API documentation reference.
 	 */
 	projectFolderUrl?: string;
+
+	/**
+	 * Specifies a list of release tags that will be trimmed from the doc model.
+	 *
+	 * @defaultValue `["@internal"]`
+	 */
+	releaseTagsToTrim?: ReleaseTagForTrim[];
 }
 
 /**
@@ -323,6 +414,11 @@ export interface IExtractorMessagesConfig {
  */
 export interface IConfigFile {
 	/**
+	 * support multiple entry points.
+	 */
+	additionalEntryPoints: IConfigEntryPoint[];
+
+	/**
 	 * {@inheritDoc IConfigApiReport}
 	 */
 	apiReport?: IConfigApiReport;
@@ -394,6 +490,11 @@ export interface IConfigFile {
 	 * The path is resolved relative to the "projectFolder" location.
 	 */
 	mainEntryPointFilePath: string;
+
+	/**
+	 * Specifies the import path of the entrypoint used as the starting point for analysis.
+	 */
+	mainEntryPointName: string;
 
 	/**
 	 * {@inheritDoc IExtractorMessagesConfig}

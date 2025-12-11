@@ -10,6 +10,7 @@ module.exports = (client, { d: data }) => {
   /**
    * Emitted whenever an auto moderation rule is triggered.
    * <info>This event requires the {@link PermissionFlagsBits.ManageGuild} permission.</info>
+   *
    * @event Client#autoModerationActionExecution
    * @param {AutoModerationActionExecution} autoModerationActionExecution The data of the execution
    */

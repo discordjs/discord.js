@@ -6,10 +6,12 @@ import { PACKAGES } from '@/util/constants';
 
 export function PackageSelect() {
 	const router = useRouter();
-	const params = useParams();
+	const params = useParams<{
+		packageName: string;
+	}>();
 
 	return (
-		<Select aria-label="Select a package" defaultSelectedKey={params.packageName as string}>
+		<Select aria-label="Select a package" defaultSelectedKey={params.packageName} key={params.packageName}>
 			<SelectTrigger className="bg-[#f3f3f4] dark:bg-[#121214]" />
 			<SelectList classNames={{ popover: 'bg-[#f3f3f4] dark:bg-[#28282d]' }} items={PACKAGES}>
 				{(item) => (

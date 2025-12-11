@@ -9,6 +9,7 @@ import {
 	type RESTPatchAPIWebhookJSONBody,
 	type RESTPatchAPIWebhookResult,
 	type RESTPatchAPIWebhookWithTokenMessageJSONBody,
+	type RESTPatchAPIWebhookWithTokenMessageQuery,
 	type RESTPatchAPIWebhookWithTokenMessageResult,
 	type RESTPostAPIWebhookWithTokenGitHubQuery,
 	type RESTPostAPIWebhookWithTokenJSONBody,
@@ -21,10 +22,10 @@ import {
 export type CreateWebhookMessageOptions = RESTPostAPIWebhookWithTokenJSONBody &
 	RESTPostAPIWebhookWithTokenQuery & { files?: RawFile[] };
 
-export type EditWebhookMessageOptions = RESTPatchAPIWebhookWithTokenMessageJSONBody & {
-	files?: RawFile[];
-	thread_id?: string;
-};
+export type EditWebhookMessageOptions = RESTPatchAPIWebhookWithTokenMessageJSONBody &
+	RESTPatchAPIWebhookWithTokenMessageQuery & {
+		files?: RawFile[];
+	};
 
 export class WebhooksAPI {
 	public constructor(private readonly rest: REST) {}
@@ -132,11 +133,11 @@ export class WebhooksAPI {
 	public async execute(
 		id: Snowflake,
 		token: string,
-		{ wait, thread_id, files, ...body }: CreateWebhookMessageOptions,
+		{ wait, thread_id, with_components, files, ...body }: CreateWebhookMessageOptions,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.post(Routes.webhook(id, token), {
-			query: makeURLSearchParams({ wait, thread_id }),
+			query: makeURLSearchParams({ wait, thread_id, with_components }),
 			files,
 			body,
 			auth: false,
@@ -232,11 +233,11 @@ export class WebhooksAPI {
 		id: Snowflake,
 		token: string,
 		messageId: Snowflake,
-		{ thread_id, files, ...body }: EditWebhookMessageOptions,
+		{ thread_id, with_components, files, ...body }: EditWebhookMessageOptions,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		return this.rest.patch(Routes.webhookMessage(id, token, messageId), {
-			query: makeURLSearchParams({ thread_id }),
+			query: makeURLSearchParams({ thread_id, with_components }),
 			auth: false,
 			body,
 			signal,

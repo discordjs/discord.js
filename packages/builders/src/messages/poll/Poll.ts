@@ -29,15 +29,17 @@ export class PollBuilder implements JSONEncodable<RESTAPIPoll> {
 	}
 
 	/**
-	 * Creates a new poll from API data.
+	 * Creates a new poll.
 	 *
 	 * @param data - The API data to create this poll with
 	 */
 	public constructor(data: Partial<RESTAPIPoll> = {}) {
+		const { question, answers = [], ...rest } = data;
+
 		this.data = {
-			...structuredClone(data),
-			question: new PollQuestionBuilder(data.question),
-			answers: data.answers?.map((answer) => new PollAnswerBuilder(answer)) ?? [],
+			...structuredClone(rest),
+			question: new PollQuestionBuilder(question),
+			answers: answers.map((answer) => new PollAnswerBuilder(answer)),
 		};
 	}
 

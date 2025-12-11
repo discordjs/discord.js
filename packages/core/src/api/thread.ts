@@ -1,9 +1,10 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import type { RequestData, REST } from '@discordjs/rest';
+import { makeURLSearchParams, type RequestData, type REST } from '@discordjs/rest';
 import {
 	Routes,
-	type APIThreadMember,
+	type RESTGetAPIChannelThreadMemberQuery,
+	type RESTGetAPIChannelThreadMemberResult,
 	type RESTGetAPIChannelThreadMembersResult,
 	type Snowflake,
 } from 'discord-api-types/v10';
@@ -71,14 +72,43 @@ export class ThreadsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/channel#get-thread-member}
 	 * @param threadId - The id of the thread to fetch the member from
 	 * @param userId - The id of the user
+	 * @param query - The query for fetching the member
 	 * @param options - The options for fetching the member
 	 */
 	public async getMember(
 		threadId: Snowflake,
 		userId: Snowflake,
+		query: RESTGetAPIChannelThreadMemberQuery & { with_member: true },
+		options?: Pick<RequestData, 'auth' | 'signal'>,
+	): Promise<Required<Pick<RESTGetAPIChannelThreadMemberResult, 'member'>> & RESTGetAPIChannelThreadMemberResult>;
+
+	/**
+	 * Fetches a member of a thread
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#get-thread-member}
+	 * @param threadId - The id of the thread to fetch the member from
+	 * @param userId - The id of the user
+	 * @param query - The query for fetching the member
+	 * @param options - The options for fetching the member
+	 */
+	public async getMember(
+		threadId: Snowflake,
+		userId: Snowflake,
+		query?: RESTGetAPIChannelThreadMemberQuery,
+		options?: Pick<RequestData, 'auth' | 'signal'>,
+	): Promise<RESTGetAPIChannelThreadMemberResult>;
+
+	public async getMember(
+		threadId: Snowflake,
+		userId: Snowflake,
+		query: RESTGetAPIChannelThreadMemberQuery = {},
 		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
-		return this.rest.get(Routes.threadMembers(threadId, userId), { auth, signal }) as Promise<APIThreadMember>;
+		return this.rest.get(Routes.threadMembers(threadId, userId), {
+			auth,
+			signal,
+			query: makeURLSearchParams(query),
+		});
 	}
 
 	/**

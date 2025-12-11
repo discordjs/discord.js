@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/valid-types */
 import { ApplicationCommandType, type RESTPostAPIChatInputApplicationCommandsJSONBody } from 'discord-api-types/v10';
 import { Mixin } from 'ts-mixer';
 import { validate } from '../../../util/validation.js';

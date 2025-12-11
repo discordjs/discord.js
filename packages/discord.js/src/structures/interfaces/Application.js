@@ -5,6 +5,7 @@ const { Base } = require('../Base.js');
 
 /**
  * Represents an OAuth2 Application.
+ *
  * @extends {Base}
  * @abstract
  */
@@ -17,6 +18,7 @@ class Application extends Base {
   _patch(data) {
     /**
      * The application's id
+     *
      * @type {Snowflake}
      */
     this.id = data.id;
@@ -24,6 +26,7 @@ class Application extends Base {
     if ('name' in data) {
       /**
        * The name of the application
+       *
        * @type {?string}
        */
       this.name = data.name;
@@ -34,6 +37,7 @@ class Application extends Base {
     if ('description' in data) {
       /**
        * The application's description
+       *
        * @type {?string}
        */
       this.description = data.description;
@@ -44,6 +48,7 @@ class Application extends Base {
     if ('icon' in data) {
       /**
        * The application's icon hash
+       *
        * @type {?string}
        */
       this.icon = data.icon;
@@ -54,6 +59,7 @@ class Application extends Base {
     if ('terms_of_service_url' in data) {
       /**
        * The URL of the application's terms of service
+       *
        * @type {?string}
        */
       this.termsOfServiceURL = data.terms_of_service_url;
@@ -64,6 +70,7 @@ class Application extends Base {
     if ('privacy_policy_url' in data) {
       /**
        * The URL of the application's privacy policy
+       *
        * @type {?string}
        */
       this.privacyPolicyURL = data.privacy_policy_url;
@@ -74,6 +81,7 @@ class Application extends Base {
     if ('rpc_origins' in data) {
       /**
        * The application's RPC origins, if enabled
+       *
        * @type {string[]}
        */
       this.rpcOrigins = data.rpc_origins;
@@ -84,6 +92,7 @@ class Application extends Base {
     if ('cover_image' in data) {
       /**
        * The hash of the application's cover image
+       *
        * @type {?string}
        */
       this.cover = data.cover_image;
@@ -94,6 +103,7 @@ class Application extends Base {
     if ('verify_key' in data) {
       /**
        * The hex-encoded key for verification in interactions and the GameSDK's GetTicket
+       *
        * @type {?string}
        */
       this.verifyKey = data.verify_key;
@@ -104,6 +114,7 @@ class Application extends Base {
 
   /**
    * The timestamp the application was created at
+   *
    * @type {number}
    * @readonly
    */
@@ -113,6 +124,7 @@ class Application extends Base {
 
   /**
    * The time the application was created at
+   *
    * @type {Date}
    * @readonly
    */
@@ -122,6 +134,7 @@ class Application extends Base {
 
   /**
    * A link to the application's icon.
+   *
    * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
@@ -131,6 +144,7 @@ class Application extends Base {
 
   /**
    * A link to this application's cover image.
+   *
    * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
@@ -141,6 +155,7 @@ class Application extends Base {
   /**
    * When concatenated with a string, this automatically returns the application's name instead of the
    * Application object.
+   *
    * @returns {?string}
    * @example
    * // Logs: Application name: My App

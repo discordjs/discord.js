@@ -2,14 +2,23 @@
 
 const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
+const { lazy } = require('@discordjs/util');
 const { ChannelType, RouteBases, Routes } = require('discord-api-types/v10');
 const { fetch } = require('undici');
 const { Colors } = require('./Colors.js');
+// eslint-disable-next-line import-x/order
 const { DiscordjsError, DiscordjsRangeError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-const isObject = d => typeof d === 'object' && d !== null;
+
+// Fixes circular dependencies.
+const getAttachment = lazy(() => require('../structures/Attachment.js').Attachment);
+const getGuildChannel = lazy(() => require('../structures/GuildChannel.js').GuildChannel);
+const getSKU = lazy(() => require('../structures/SKU.js').SKU);
+
+const isObject = data => typeof data === 'object' && data !== null;
 
 /**
  * Flatten an object. Any properties that are collections will get converted to an array of keys.
+ *
  * @param {Object} obj The object to flatten.
  * @param {...Object<string, boolean|string>} [props] Specific properties to include/exclude.
  * @returns {Object}
@@ -25,6 +34,7 @@ function flatten(obj, ...props) {
 
   const out = {};
 
+  // eslint-disable-next-line prefer-const
   for (let [prop, newProp] of Object.entries(mergedProps)) {
     if (!newProp) continue;
     newProp = newProp === true ? prop : newProp;
@@ -61,6 +71,7 @@ function flatten(obj, ...props) {
 
 /**
  * Gets the recommended shard count from Discord.
+ *
  * @param {string} token Discord auth token
  * @param {FetchRecommendedShardCountOptions} [options] Options for fetching the recommended shard count
  * @returns {Promise<number>} The recommended number of shards
@@ -69,18 +80,20 @@ async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multi
   if (!token) throw new DiscordjsError(ErrorCodes.TokenMissing);
   const response = await fetch(RouteBases.api + Routes.gatewayBot(), {
     method: 'GET',
-    headers: { Authorization: `Bot ${token.replace(/^Bot\s*/i, '')}` },
+    headers: { Authorization: `Bot ${token.replace(/^bot\s*/i, '')}` },
   });
   if (!response.ok) {
     if (response.status === 401) throw new DiscordjsError(ErrorCodes.TokenInvalid);
     throw response;
   }
+
   const { shards } = await response.json();
   return Math.ceil((shards * (1_000 / guildsPerShard)) / multipleOf) * multipleOf;
 }
 
 /**
  * A partial emoji object.
+ *
  * @typedef {Object} PartialEmoji
  * @property {boolean} animated Whether the emoji is animated
  * @property {Snowflake|undefined} id The id of the emoji
@@ -89,27 +102,30 @@ async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multi
 
 /**
  * Parses emoji info out of a string. The string must be one of:
- * * A UTF-8 emoji (no id)
- * * A URL-encoded UTF-8 emoji (no id)
- * * A Discord custom emoji (`<:name:id>` or `<a:name:id>`)
+ * - A UTF-8 emoji (no id)
+ * - A URL-encoded UTF-8 emoji (no id)
+ * - A Discord custom emoji (`<:name:id>` or `<a:name:id>`)
+ *
  * @param {string} text Emoji string to parse
  * @returns {?PartialEmoji}
  */
 function parseEmoji(text) {
   const decodedText = text.includes('%') ? decodeURIComponent(text) : text;
   if (!decodedText.includes(':')) return { animated: false, name: decodedText, id: undefined };
-  const match = decodedText.match(/<?(?:(a):)?(\w{2,32}):(\d{17,19})?>?/);
-  return match && { animated: Boolean(match[1]), name: match[2], id: match[3] };
+  const match = /<?(?:(?<animated>a):)?(?<name>\w{2,32}):(?<id>\d{17,19})?>?/.exec(decodedText);
+  return match && { animated: Boolean(match.groups.animated), name: match.groups.name, id: match.groups.id };
 }
 
 /**
  * A partial emoji object with only an id.
+ *
  * @typedef {Object} PartialEmojiOnlyId
  * @property {Snowflake} id The id of the emoji
  */
 
 /**
  * Resolves a partial emoji object from an {@link EmojiIdentifierResolvable}, without checking a Client.
+ *
  * @param {Emoji|EmojiIdentifierResolvable} emoji Emoji identifier to resolve
  * @returns {?(PartialEmoji|PartialEmojiOnlyId)} Supplying a snowflake yields `PartialEmojiOnlyId`.
  */
@@ -123,6 +139,7 @@ function resolvePartialEmoji(emoji) {
 
 /**
  * Resolves a {@link GuildEmoji} from an emoji id.
+ *
  * @param {Client} client The client to use to resolve the emoji
  * @param {Snowflake} emojiId The emoji id to resolve
  * @returns {?GuildEmoji}
@@ -146,6 +163,7 @@ function resolveGuildEmoji(client, emojiId) {
 
 /**
  * Options used to make an error object.
+ *
  * @typedef {Object} MakeErrorOptions
  * @property {string} name Error type
  * @property {string} message Message for the error
@@ -155,6 +173,7 @@ function resolveGuildEmoji(client, emojiId) {
 
 /**
  * Makes an Error from a plain info object.
+ *
  * @param {MakeErrorOptions} obj Error info
  * @returns {Error}
  * @private
@@ -168,6 +187,7 @@ function makeError(obj) {
 
 /**
  * Makes a plain error info object from an Error.
+ *
  * @param {Error} err Error to get info from
  * @returns {MakeErrorOptions}
  * @private
@@ -195,6 +215,7 @@ const CategorySortableGroupTypes = [ChannelType.GuildCategory];
  * return an array containing the types that can be ordered within the text channels (always at the top), and a voice
  * channel would return an array containing the types that can be ordered within the voice channels (always at the
  * bottom).
+ *
  * @param {ChannelType} type The type of the channel
  * @returns {ChannelType[]}
  * @private
@@ -218,6 +239,7 @@ function getSortableGroupTypes(type) {
 
 /**
  * Moves an element in an array *in place*.
+ *
  * @param {Array<*>} array Array to modify
  * @param {*} element Element to move
  * @param {number} newIndex Index or offset to move the element to
@@ -232,14 +254,16 @@ function moveElementInArray(array, element, newIndex, offset = false) {
     const removedElement = array.splice(index, 1)[0];
     array.splice(targetIndex, 0, removedElement);
   }
+
   return array.indexOf(element);
 }
 
 /**
  * Verifies the provided data is a string, otherwise throws provided error.
+ *
  * @param {string} data The string resolvable to resolve
- * @param {Function} [error] The Error constructor to instantiate. Defaults to Error
- * @param {string} [errorMessage] The error message to throw with. Defaults to "Expected string, got <data> instead."
+ * @param {Function} [error=Error] The Error constructor to instantiate. Defaults to Error
+ * @param {string} [errorMessage="Expected string, got <data> instead."] The error message to throw with. Defaults to "Expected string, got <data> instead."
  * @param {boolean} [allowEmpty=true] Whether an empty string should be allowed
  * @returns {string}
  */
@@ -291,11 +315,13 @@ function verifyString(
  * - `DarkButNotBlack`
  * - `NotQuiteBlack`
  * - `Random`
+ *
  * @typedef {string|number|number[]} ColorResolvable
  */
 
 /**
  * Resolves a ColorResolvable into a color number.
+ *
  * @param {ColorResolvable} color Color to resolve
  * @returns {number} A color
  */
@@ -305,7 +331,7 @@ function resolveColor(color) {
   if (typeof color === 'string') {
     if (color === 'Random') return Math.floor(Math.random() * (0xffffff + 1));
     if (color === 'Default') return 0;
-    if (/^#?[\da-f]{6}$/i.test(color)) return parseInt(color.replace('#', ''), 16);
+    if (/^#?[\da-f]{6}$/i.test(color)) return Number.parseInt(color.replace('#', ''), 16);
     resolvedColor = Colors[color];
   } else if (Array.isArray(color)) {
     resolvedColor = (color[0] << 16) + (color[1] << 8) + color[2];
@@ -326,11 +352,12 @@ function resolveColor(color) {
 
 /**
  * Sorts by Discord's position and id.
+ *
  * @param {Collection} collection Collection of objects to sort
  * @returns {Collection}
  */
 function discordSort(collection) {
-  const isGuildChannel = collection.first() instanceof GuildChannel;
+  const isGuildChannel = collection.first() instanceof getGuildChannel();
   return collection.toSorted(
     isGuildChannel
       ? (a, b) => a.rawPosition - b.rawPosition || Number(BigInt(a.id) - BigInt(b.id))
@@ -340,6 +367,7 @@ function discordSort(collection) {
 
 /**
  * Sets the position of a Channel or Role.
+ *
  * @param {BaseChannel|Role} item Object to set the position of
  * @param {number} position New position for the object
  * @param {boolean} relative Whether `position` is relative to its current position
@@ -353,13 +381,14 @@ function discordSort(collection) {
 async function setPosition(item, position, relative, sorted, client, route, reason) {
   let updatedItems = [...sorted.values()];
   moveElementInArray(updatedItems, item, position, relative);
-  updatedItems = updatedItems.map((r, i) => ({ id: r.id, position: i }));
+  updatedItems = updatedItems.map((innerItem, index) => ({ id: innerItem.id, position: index }));
   await client.rest.patch(route, { body: updatedItems, reason });
   return updatedItems;
 }
 
 /**
  * Alternative to Node's `path.basename`, removing query string after the extension if it exists.
+ *
  * @param {string} path Path to get the basename of
  * @param {string} [ext] File extension to remove
  * @returns {string} Basename of the path
@@ -371,14 +400,32 @@ function basename(path, ext) {
 }
 
 /**
+ * Find the filename to use for attachments.
+ *
+ * @param {BufferResolvable|Stream} thing The thing to attach as attachment
+ * @returns {string} filename to use
+ */
+function findName(thing) {
+  if (typeof thing === 'string') {
+    return basename(thing);
+  }
+
+  if (thing.path) {
+    return basename(thing.path);
+  }
+
+  return 'file.jpg';
+}
+
+/**
  * The content to have all mentions replaced by the equivalent text.
+ *
  * @param {string} str The string to be converted
  * @param {TextBasedChannels} channel The channel the string was sent in
  * @returns {string}
  */
 function cleanContent(str, channel) {
   return str.replaceAll(
-    /* eslint-disable max-len */
     /<(?:(?<type>@[!&]?|#)|(?:\/(?<commandName>[-_\p{L}\p{N}\p{sc=Deva}\p{sc=Thai} ]+):)|(?:a?:(?<emojiName>[\w]+):))(?<id>\d{17,19})>/gu,
     (match, type, commandName, emojiName, id) => {
       if (commandName) return `/${commandName}`;
@@ -396,15 +443,18 @@ function cleanContent(str, channel) {
           const user = channel.client.users.cache.get(id);
           return user ? `@${user.displayName}` : match;
         }
+
         case '@&': {
           if (channel.type === ChannelType.DM) return match;
           const role = channel.guild.roles.cache.get(id);
           return role ? `@${role.name}` : match;
         }
+
         case '#': {
           const mentionedChannel = channel.client.channels.cache.get(id);
           return mentionedChannel ? `#${mentionedChannel.name}` : match;
         }
+
         default: {
           return match;
         }
@@ -415,34 +465,40 @@ function cleanContent(str, channel) {
 
 /**
  * The content to put in a code block with all code block fences replaced by the equivalent backticks.
+ *
  * @param {string} text The string to be converted
  * @returns {string}
  */
 function cleanCodeBlockContent(text) {
-  return text.replaceAll('```', '`\u200b``');
+  return text.replaceAll('```', '`\u200B``');
 }
 
 /**
+ * Represents the credentials used for a webhook in the form of its id and token.
+ *
+ * @typedef {Object} WebhookDataIdWithToken
+ * @property {Snowflake} id The webhook's id
+ * @property {string} token The webhook's token
+ */
+
+/**
  * Parses a webhook URL for the id and token.
+ *
  * @param {string} url The URL to parse
- * @returns {?WebhookClientDataIdWithToken} `null` if the URL is invalid, otherwise the id and the token
+ * @returns {?WebhookDataIdWithToken} `null` if the URL is invalid, otherwise the id and the token
  */
 function parseWebhookURL(url) {
-  const matches = url.match(
-    /https?:\/\/(?:ptb\.|canary\.)?discord\.com\/api(?:\/v\d{1,2})?\/webhooks\/(\d{17,19})\/([\w-]{68})/i,
-  );
+  const matches =
+    /https?:\/\/(?:ptb\.|canary\.)?discord\.com\/api(?:\/v\d{1,2})?\/webhooks\/(?<id>\d{17,19})\/(?<token>[\w-]{68})/i.exec(
+      url,
+    );
 
-  if (!matches || matches.length <= 2) return null;
-
-  const [, id, token] = matches;
-  return {
-    id,
-    token,
-  };
+  return matches && { id: matches.groups.id, token: matches.groups.token };
 }
 
 /**
  * Supportive data for interaction resolved data.
+ *
  * @typedef {Object} SupportingInteractionResolvedData
  * @property {Client} client The client
  * @property {Guild} [guild] A guild
@@ -452,6 +508,7 @@ function parseWebhookURL(url) {
 
 /**
  * Transforms the resolved data received from the API.
+ *
  * @param {SupportingInteractionResolvedData} supportingData Data to support the transformation
  * @param {APIInteractionDataResolved} [data] The received resolved objects
  * @returns {CommandInteractionResolvedData}
@@ -502,7 +559,7 @@ function transformResolved(
   if (attachments) {
     result.attachments = new Collection();
     for (const attachment of Object.values(attachments)) {
-      const patched = new Attachment(attachment);
+      const patched = new (getAttachment())(attachment);
       result.attachments.set(attachment.id, patched);
     }
   }
@@ -512,36 +569,36 @@ function transformResolved(
 
 /**
  * Resolves a SKU id from a SKU resolvable.
+ *
  * @param {SKUResolvable} resolvable The SKU resolvable to resolve
  * @returns {?Snowflake} The resolved SKU id, or `null` if the resolvable was invalid
  */
 function resolveSKUId(resolvable) {
   if (typeof resolvable === 'string') return resolvable;
-  if (resolvable instanceof SKU) return resolvable.id;
+  if (resolvable instanceof getSKU()) return resolvable.id;
   return null;
 }
 
-exports.flatten = flatten;
+// Public
+exports.cleanCodeBlockContent = cleanCodeBlockContent;
+exports.cleanContent = cleanContent;
+exports.discordSort = discordSort;
 exports.fetchRecommendedShardCount = fetchRecommendedShardCount;
+exports.flatten = flatten;
 exports.parseEmoji = parseEmoji;
+exports.parseWebhookURL = parseWebhookURL;
+exports.resolveColor = resolveColor;
+exports.resolveSKUId = resolveSKUId;
+exports.verifyString = verifyString;
+
+// Private
 exports.resolvePartialEmoji = resolvePartialEmoji;
 exports.resolveGuildEmoji = resolveGuildEmoji;
 exports.makeError = makeError;
 exports.makePlainError = makePlainError;
 exports.getSortableGroupTypes = getSortableGroupTypes;
 exports.moveElementInArray = moveElementInArray;
-exports.verifyString = verifyString;
-exports.resolveColor = resolveColor;
-exports.discordSort = discordSort;
 exports.setPosition = setPosition;
 exports.basename = basename;
-exports.cleanContent = cleanContent;
-exports.cleanCodeBlockContent = cleanCodeBlockContent;
-exports.parseWebhookURL = parseWebhookURL;
+exports.findName = findName;
 exports.transformResolved = transformResolved;
-exports.resolveSKUId = resolveSKUId;
-
-// Fixes Circular
-const { Attachment } = require('../structures/Attachment.js');
-const { GuildChannel } = require('../structures/GuildChannel.js');
-const { SKU } = require('../structures/SKU.js');

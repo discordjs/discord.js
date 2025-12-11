@@ -7,6 +7,7 @@ module.exports = (client, { d: data }) => {
 
   /**
    * Emitted whenever a subscription is created.
+   *
    * @event Client#subscriptionCreate
    * @param {Subscription} subscription The subscription that was created
    */

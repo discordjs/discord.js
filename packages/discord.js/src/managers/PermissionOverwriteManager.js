@@ -3,15 +3,16 @@
 const process = require('node:process');
 const { Collection } = require('@discordjs/collection');
 const { OverwriteType, Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager.js');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 const { PermissionOverwrites } = require('../structures/PermissionOverwrites.js');
 const { Role } = require('../structures/Role.js');
+const { CachedManager } = require('./CachedManager.js');
 
 let cacheWarningEmitted = false;
 
 /**
  * Manages API methods for guild channel permission overwrites and stores their cache.
+ *
  * @extends {CachedManager}
  */
 class PermissionOverwriteManager extends CachedManager {
@@ -27,6 +28,7 @@ class PermissionOverwriteManager extends CachedManager {
 
     /**
      * The channel of the permission overwrite this manager belongs to
+     *
      * @type {GuildChannel}
      */
     this.channel = channel;
@@ -40,6 +42,7 @@ class PermissionOverwriteManager extends CachedManager {
 
   /**
    * The cache of this Manager
+   *
    * @type {Collection<Snowflake, PermissionOverwrites>}
    * @name PermissionOverwriteManager#cache
    */
@@ -50,6 +53,7 @@ class PermissionOverwriteManager extends CachedManager {
 
   /**
    * Replaces the permission overwrites in this channel.
+   *
    * @param {OverwriteResolvable[]|Collection<Snowflake, OverwriteResolvable>} overwrites
    * Permission overwrites the channel gets updated with
    * @param {string} [reason] Reason for updating the channel overwrites
@@ -71,11 +75,13 @@ class PermissionOverwriteManager extends CachedManager {
         true,
       );
     }
+
     return this.channel.edit({ permissionOverwrites: overwrites, reason });
   }
 
   /**
    * Extra information about the overwrite.
+   *
    * @typedef {Object} GuildChannelOverwriteOptions
    * @property {string} [reason] The reason for creating/editing this overwrite
    * @property {OverwriteType} [type] The type of overwrite. Use this to bypass automatic resolution of `type`
@@ -84,6 +90,7 @@ class PermissionOverwriteManager extends CachedManager {
 
   /**
    * Creates or edits permission overwrites for a user or role in this channel.
+   *
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The options for the update
    * @param {GuildChannelOverwriteOptions} [overwriteOptions] The extra information for the update
@@ -91,7 +98,7 @@ class PermissionOverwriteManager extends CachedManager {
    * @returns {Promise<GuildChannel>}
    * @private
    */
-  async upsert(userOrRole, options, { reason, type } = {}, existing) {
+  async upsert(userOrRole, options, { reason, type } = {}, existing = undefined) {
     const userOrRoleId = this.channel.guild.roles.resolveId(userOrRole) ?? this.client.users.resolveId(userOrRole);
 
     let resolvedType = type;
@@ -112,6 +119,7 @@ class PermissionOverwriteManager extends CachedManager {
 
   /**
    * Creates permission overwrites for a user or role in this channel, or replaces them if already present.
+   *
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The options for the update
    * @param {GuildChannelOverwriteOptions} [overwriteOptions] The extra information for the update
@@ -124,12 +132,13 @@ class PermissionOverwriteManager extends CachedManager {
    *   .then(channel => console.log(channel.permissionOverwrites.cache.get(message.author.id)))
    *   .catch(console.error);
    */
-  create(userOrRole, options, overwriteOptions) {
+  async create(userOrRole, options, overwriteOptions) {
     return this.upsert(userOrRole, options, overwriteOptions);
   }
 
   /**
    * Edits permission overwrites for a user or role in this channel, or creates an entry if not already present.
+   *
    * @param {RoleResolvable|UserResolvable} userOrRole The user or role to update
    * @param {PermissionOverwriteOptions} options The options for the update
    * @param {GuildChannelOverwriteOptions} [overwriteOptions] The extra information for the update
@@ -142,7 +151,7 @@ class PermissionOverwriteManager extends CachedManager {
    *   .then(channel => console.log(channel.permissionOverwrites.cache.get(message.author.id)))
    *   .catch(console.error);
    */
-  edit(userOrRole, options, overwriteOptions) {
+  async edit(userOrRole, options, overwriteOptions) {
     const existing = this.cache.get(
       this.channel.guild.roles.resolveId(userOrRole) ?? this.client.users.resolveId(userOrRole),
     );
@@ -151,6 +160,7 @@ class PermissionOverwriteManager extends CachedManager {
 
   /**
    * Deletes permission overwrites for a user or role in this channel.
+   *
    * @param {UserResolvable|RoleResolvable} userOrRole The user or role to delete
    * @param {string} [reason] The reason for deleting the overwrite
    * @returns {Promise<GuildChannel>}

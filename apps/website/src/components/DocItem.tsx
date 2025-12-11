@@ -15,6 +15,7 @@ import { SummaryNode } from './SummaryNode';
 import { SyntaxHighlighter } from './SyntaxHighlighter';
 import { TypeParameterNode } from './TypeParameterNode';
 import { UnionMember } from './UnionMember';
+import { UnstableNode } from './UnstableNode';
 import { Tab, TabList, TabPanel, Tabs } from './ui/Tabs';
 
 async function OverloadNode({
@@ -26,8 +27,6 @@ async function OverloadNode({
 	readonly packageName: string;
 	readonly version: string;
 }) {
-	'use cache';
-
 	return (
 		<Tabs className="flex flex-col gap-4">
 			<TabList className="flex flex-wrap gap-2">
@@ -63,8 +62,6 @@ export async function DocItem({
 	readonly packageName: string;
 	readonly version: string;
 }) {
-	'use cache';
-
 	if (node.overloads?.length) {
 		return <OverloadNode node={node} packageName={packageName} version={version} />;
 	}
@@ -83,6 +80,10 @@ export async function DocItem({
 
 			{node.summary?.deprecatedBlock.length ? (
 				<DeprecatedNode deprecatedBlock={node.summary.deprecatedBlock} version={version} />
+			) : null}
+
+			{node.summary?.unstableBlock?.length ? (
+				<UnstableNode unstableBlock={node.summary.unstableBlock} version={version} />
 			) : null}
 
 			{node.summary?.summarySection ? <SummaryNode node={node.summary.summarySection} version={version} /> : null}

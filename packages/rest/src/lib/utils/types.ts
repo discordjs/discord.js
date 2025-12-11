@@ -1,7 +1,7 @@
 import type { Readable } from 'node:stream';
 import type { ReadableStream } from 'node:stream/web';
 import type { Collection } from '@discordjs/collection';
-import type { Awaitable } from '@discordjs/util';
+import type { Awaitable, RawFile } from '@discordjs/util';
 import type { Agent, Dispatcher, RequestInit, BodyInit, Response } from 'undici';
 import type { IHandler } from '../interfaces/Handler.js';
 
@@ -115,11 +115,17 @@ export interface RESTOptions {
 	 */
 	retries: number;
 	/**
+	 * The time to exponentially add before retrying a 5xx or aborted request
+	 *
+	 * @defaultValue `0`
+	 */
+	retryBackoff: GetRetryBackoffFunction | number;
+	/**
 	 * The time to wait in milliseconds before a request is aborted
 	 *
 	 * @defaultValue `15_000`
 	 */
-	timeout: number;
+	timeout: GetTimeoutFunction | number;
 	/**
 	 * Extra information to add to the user agent
 	 *
@@ -203,6 +209,30 @@ export type RateLimitQueueFilter = (rateLimitData: RateLimitData) => Awaitable<b
  */
 export type GetRateLimitOffsetFunction = (route: string) => number;
 
+/**
+ * A function that determines the backoff for a retry for a given request.
+ *
+ * @param route - The route that has encountered a server-side error
+ * @param statusCode - The status code received or `null` if aborted
+ * @param retryCount - The number of retries that have been attempted so far. The first call will be `0`
+ * @param requestBody - The body that was sent with the request
+ * @returns The delay for the current request or `null` to throw an error instead of retrying
+ */
+export type GetRetryBackoffFunction = (
+	route: string,
+	statusCode: number | null,
+	retryCount: number,
+	requestBody: unknown,
+) => number | null;
+
+/**
+ * A function that determines the timeout for a given request.
+ *
+ * @param route - The route that is being processed
+ * @param body - The body that will be sent with the request
+ */
+export type GetTimeoutFunction = (route: string, body: unknown) => number;
+
 export interface APIRequest {
 	/**
 	 * The data that was used to form the body of this request
@@ -230,8 +260,10 @@ export interface APIRequest {
 	route: string;
 }
 
-export interface ResponseLike
-	extends Pick<Response, 'arrayBuffer' | 'bodyUsed' | 'headers' | 'json' | 'ok' | 'status' | 'statusText' | 'text'> {
+export interface ResponseLike extends Pick<
+	Response,
+	'arrayBuffer' | 'bodyUsed' | 'headers' | 'json' | 'ok' | 'status' | 'statusText' | 'text'
+> {
 	body: Readable | ReadableStream | null;
 }
 
@@ -246,29 +278,7 @@ export interface InvalidRequestWarningData {
 	remainingTime: number;
 }
 
-/**
- * Represents a file to be added to the request
- */
-export interface RawFile {
-	/**
-	 * Content-Type of the file
-	 */
-	contentType?: string;
-	/**
-	 * The actual data for the file
-	 */
-	data: Buffer | Uint8Array | boolean | number | string;
-	/**
-	 * An explicit key to use for key of the formdata field for this file.
-	 * When not provided, the index of the file in the files array is used in the form `files[${index}]`.
-	 * If you wish to alter the placeholder snowflake, you must provide this property in the same form (`files[${placeholder}]`)
-	 */
-	key?: string;
-	/**
-	 * The name of the file
-	 */
-	name: string;
-}
+export type { RawFile } from '@discordjs/util';
 
 export interface AuthData {
 	/**
@@ -292,7 +302,9 @@ export interface RequestData {
 	 */
 	appendToFormData?: boolean;
 	/**
-	 * Alternate authorization data to use for this request only, or `false` to disable the Authorization header
+	 * Alternate authorization data to use for this request only, or `false` to disable the Authorization header.
+	 * When making a request to a route that includes a token (such as interactions or webhooks), set to `false`
+	 * to avoid accidentally unsetting the instance token if a 401 is encountered.
 	 *
 	 * @defaultValue `true`
 	 */
@@ -363,8 +375,6 @@ export type RouteLike = `/${string}`;
 
 /**
  * Internal request options
- *
- * @internal
  */
 export interface InternalRequest extends RequestData {
 	fullRoute: RouteLike;
@@ -377,8 +387,6 @@ export interface HandlerRequestData extends Pick<InternalRequest, 'body' | 'file
 
 /**
  * Parsed route data for an endpoint
- *
- * @internal
  */
 export interface RouteData {
 	bucketRoute: string;
@@ -388,8 +396,6 @@ export interface RouteData {
 
 /**
  * Represents a hash and its associated fields
- *
- * @internal
  */
 export interface HashData {
 	lastAccess: number;

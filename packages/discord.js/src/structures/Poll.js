@@ -1,12 +1,13 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { Base } = require('./Base.js');
 const { PollAnswer } = require('./PollAnswer.js');
-const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 
 /**
  * Represents a Poll
+ *
  * @extends {Base}
  */
 class Poll extends Base {
@@ -15,12 +16,14 @@ class Poll extends Base {
 
     /**
      * The id of the channel that this poll is in
+     *
      * @type {Snowflake}
      */
     this.channelId = data.channel_id ?? channel.id;
 
     /**
      * The channel that this poll is in
+     *
      * @name Poll#channel
      * @type {TextBasedChannel}
      * @readonly
@@ -30,12 +33,14 @@ class Poll extends Base {
 
     /**
      * The id of the message that started this poll
+     *
      * @type {Snowflake}
      */
     this.messageId = data.message_id ?? message.id;
 
     /**
      * The message that started this poll
+     *
      * @name Poll#message
      * @type {Message}
      * @readonly
@@ -45,6 +50,7 @@ class Poll extends Base {
 
     /**
      * The answers of this poll
+     *
      * @type {Collection<number, PollAnswer|PartialPollAnswer>}
      */
     this.answers = new Collection();
@@ -67,6 +73,7 @@ class Poll extends Base {
     if (data.results) {
       /**
        * Whether this poll's results have been precisely counted
+       *
        * @type {boolean}
        */
       this.resultsFinalized = data.results.is_finalized;
@@ -82,6 +89,7 @@ class Poll extends Base {
     if ('allow_multiselect' in data) {
       /**
        * Whether this poll allows multiple answers
+       *
        * @type {boolean}
        */
       this.allowMultiselect = data.allow_multiselect;
@@ -92,6 +100,7 @@ class Poll extends Base {
     if ('layout_type' in data) {
       /**
        * The layout type of this poll
+       *
        * @type {PollLayoutType}
        */
       this.layoutType = data.layout_type;
@@ -102,6 +111,7 @@ class Poll extends Base {
     if ('expiry' in data) {
       /**
        * The timestamp when this poll expires
+       *
        * @type {?number}
        */
       this.expiresTimestamp = data.expiry && Date.parse(data.expiry);
@@ -112,12 +122,14 @@ class Poll extends Base {
     if (data.question) {
       /**
        * The media for a poll's question
+       *
        * @typedef {Object} PollQuestionMedia
        * @property {?string} text The text of this question
        */
 
       /**
        * The media for this poll's question
+       *
        * @type {PollQuestionMedia}
        */
       this.question = {
@@ -132,6 +144,7 @@ class Poll extends Base {
 
   /**
    * The date when this poll expires
+   *
    * @type {?Date}
    * @readonly
    */
@@ -141,6 +154,7 @@ class Poll extends Base {
 
   /**
    * Whether this poll is a partial
+   *
    * @type {boolean}
    * @readonly
    */
@@ -150,6 +164,7 @@ class Poll extends Base {
 
   /**
    * Fetches the message that started this poll, then updates the poll from the fetched message.
+   *
    * @returns {Promise<Poll>}
    */
   async fetch() {
@@ -160,10 +175,11 @@ class Poll extends Base {
 
   /**
    * Ends this poll.
+   *
    * @returns {Promise<Message>}
    */
   async end() {
-    if (Date.now() > this.expiresTimestamp) {
+    if (this.expiresTimestamp !== null && Date.now() > this.expiresTimestamp) {
       throw new DiscordjsError(ErrorCodes.PollAlreadyExpired);
     }
 

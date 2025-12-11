@@ -1,0 +1,124 @@
+---
+title: Installation
+---
+
+"Voice" refers to Discord bots being able to send audio in voice channels. This is supported in discord.js via [@discordjs/voice](https://github.com/discordjs/discord.js/tree/main/packages/voice), a standalone library made by the developers of discord.js. While you can use it with any Node.js Discord API library, this guide will focus on using it with discord.js.
+
+## Installation
+
+### Barebones
+
+To add voice functionality to your discord.js bot, you will need the `@discordjs/voice` package. If your system does not support aes-256-gcm you also need one of the encryption packages listed below. For example:
+
+<Callout>
+	You can verify aes-256-gcm support by running `require('node:crypto').getCiphers().includes('aes-256-gcm')`.
+</Callout>
+
+```sh tab="npm"
+npm install @discordjs/voice
+```
+
+```sh tab="yarn"
+yarn add @discordjs/voice
+```
+
+```sh tab="pnpm"
+pnpm add @discordjs/voice
+```
+
+```sh tab="bun"
+bun add @discordjs/voice
+```
+
+After this, you'll be able to play Ogg and WebM Opus files without any other dependencies. If you want to play audio from other sources, or want to improve performance, consider installing some of the extra dependencies listed below.
+
+<Callout>
+	This guide assumes you have installed at least FFmpeg for all the examples to work. You can find more information
+	about extra dependencies in the next section.
+</Callout>
+
+### Extra Dependencies
+
+#### Opus encoding
+
+- [`@discordjs/opus`](https://github.com/discordjs/opus) (best performance)
+- [`opusscript`](https://github.com/abalabahaha/opusscript/)
+
+#### FFmpeg – allows you to play a range of media (e.g. MP3s).
+
+- [`ffmpeg`](https://ffmpeg.org/) - install and add to your system environment
+- [`ffmpeg-static`](https://www.npmjs.com/package/ffmpeg-static) - to install FFmpeg via npm
+
+#### Encryption libraries
+
+<Callout>
+	You only need to install one of these libraries if your system does not support `aes-256-gcm`. You can verify this by
+	running `require('node:crypto').getCiphers().includes('aes-256-gcm')`
+</Callout>
+
+- [`sodium-native`](https://www.npmjs.com/package/sodium-native)
+- [`sodium`](https://www.npmjs.com/package/sodium) (best performance)
+- [`@stablelib/xchacha20poly1305`](https://www.npmjs.com/package/@stablelib/xchacha20poly1305)
+- [`@noble/ciphers`](https://www.npmjs.com/package/@noble/ciphers)
+- [`libsodium-wrappers`](https://www.npmjs.com/package/libsodium-wrappers)
+
+#### DAVE Protocol Support
+
+- [`@snazzah/davey`](https://www.npmjs.com/package/@snazzah/davey) - to enable end-to-end encryption with the DAVE protocol.
+
+<Callout>
+	Some Discord clients already require the DAVE protocol for end-to-end encryption in voice chat. Ensure you have
+	`@snazzah/davey` installed to avoid compatibility issues.
+</Callout>
+
+<Callout>
+	If you are facing issues when installing these dependencies, make sure you ticked the box to install optional build
+	tools when installing Node.js or try manually installing build tools and python: ```sh winget install "Visual Studio
+	Community 2022" --override "--add Microsoft.VisualStudio.Workload.NativeDesktop " -s msstore ```
+</Callout>
+
+## Debugging Dependencies
+
+The library includes a helper function that helps you to find out which dependencies you've successfully installed. This information is also very helpful if you ever need to submit an issue on the `@discordjs/voice` issue tracker.
+
+```js
+const { generateDependencyReport } = require('@discordjs/voice');
+
+console.log(generateDependencyReport());
+
+/*
+--------------------------------------------------
+Core Dependencies
+- @discordjs/voice: 0.3.1
+- prism-media: 1.2.9
+
+Opus Libraries
+- @discordjs/opus: 0.5.3
+- opusscript: not found
+
+Encryption Libraries
+- sodium: 3.0.2
+- libsodium-wrappers: not found
+- tweetnacl: not found
+
+FFmpeg
+- version: 4.2.4-1ubuntu0.1
+- libopus: yes
+
+DAVE Protocol
+- @snazzah/davey: 0.1.6
+--------------------------------------------------
+*/
+```
+
+- **Core Dependencies**
+  - These are dependencies that should definitely be available.
+- **Opus Libraries**
+  - If you want to play audio from many different file types, or alter volume in real-time, you will need to have one of these.
+- **Encryption Libraries**
+  - You should have at least one encryption library installed to use `@discordjs/voice`.
+- **FFmpeg**
+  - If you want to play audio from many different file types, you will need to have FFmpeg installed.
+  - If `libopus` is enabled, you will be able to benefit from increased performance if real-time volume alteration is disabled.
+- **DAVE Protocol**
+  - Required for enabling end-to-end encryption in voice channels.

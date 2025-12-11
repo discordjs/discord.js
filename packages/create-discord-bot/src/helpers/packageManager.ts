@@ -1,18 +1,23 @@
 import { execSync } from 'node:child_process';
 import process from 'node:process';
-import picocolors from 'picocolors';
-import { DEFAULT_PACKAGE_MANAGER, NODE_PACKAGE_MANAGERS } from '../util/constants.js';
+import { styleText } from 'node:util';
+import { DEFAULT_PACKAGE_MANAGER, type PACKAGE_MANAGERS } from '../util/constants.js';
 
 /**
  * A union of supported package managers.
  */
-export type PackageManager = 'bun' | 'deno' | 'npm' | 'pnpm' | 'yarn';
+export type PackageManager = (typeof PACKAGE_MANAGERS)[number];
 
 /**
  * Resolves the package manager from `npm_config_user_agent`.
  */
 export function resolvePackageManager(): PackageManager {
 	const npmConfigUserAgent = process.env.npm_config_user_agent;
+
+	// @ts-expect-error: We're not using Deno's types, so its global is not declared
+	if (typeof Deno !== 'undefined') {
+		return 'deno';
+	}
 
 	// If this is not present, return the default package manager.
 	if (!npmConfigUserAgent) {
@@ -36,7 +41,8 @@ export function resolvePackageManager(): PackageManager {
 	}
 
 	console.error(
-		picocolors.yellow(
+		styleText(
+			'yellow',
 			`Detected an unsupported package manager (${npmConfigUserAgent}). Falling back to ${DEFAULT_PACKAGE_MANAGER}.`,
 		),
 	);
@@ -110,13 +116,4 @@ export function install(packageManager: PackageManager) {
 		stdio: 'inherit',
 		env,
 	});
-}
-
-/**
- * Whether the provided package manager is a Node package manager.
- *
- * @param packageManager - The package manager to check
- */
-export function isNodePackageManager(packageManager: PackageManager): packageManager is 'npm' | 'pnpm' | 'yarn' {
-	return NODE_PACKAGE_MANAGERS.includes(packageManager as any);
 }

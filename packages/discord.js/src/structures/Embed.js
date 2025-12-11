@@ -1,6 +1,6 @@
 'use strict';
 
-const { embedLength } = require('@discordjs/builders');
+const { embedLength } = require('@discordjs/util');
 const isEqual = require('fast-deep-equal');
 
 /**
@@ -10,6 +10,7 @@ class Embed {
   constructor(data) {
     /**
      * The API embed data.
+     *
      * @type {APIEmbed}
      * @readonly
      */
@@ -18,6 +19,7 @@ class Embed {
 
   /**
    * An array of fields of this embed.
+   *
    * @type {Array<APIEmbedField>}
    * @readonly
    */
@@ -27,6 +29,7 @@ class Embed {
 
   /**
    * The title of this embed.
+   *
    * @type {?string}
    * @readonly
    */
@@ -36,6 +39,7 @@ class Embed {
 
   /**
    * The description of this embed.
+   *
    * @type {?string}
    * @readonly
    */
@@ -45,6 +49,7 @@ class Embed {
 
   /**
    * The URL of this embed.
+   *
    * @type {?string}
    * @readonly
    */
@@ -54,6 +59,7 @@ class Embed {
 
   /**
    * The color of this embed.
+   *
    * @type {?number}
    * @readonly
    */
@@ -63,6 +69,7 @@ class Embed {
 
   /**
    * The timestamp of this embed. This is in an ISO 8601 format.
+   *
    * @type {?string}
    * @readonly
    */
@@ -80,6 +87,7 @@ class Embed {
 
   /**
    * The thumbnail of this embed.
+   *
    * @type {?EmbedAssetData}
    * @readonly
    */
@@ -95,6 +103,7 @@ class Embed {
 
   /**
    * The image of this embed.
+   *
    * @type {?EmbedAssetData}
    * @readonly
    */
@@ -110,6 +119,7 @@ class Embed {
 
   /**
    * The video of this embed.
+   *
    * @type {?EmbedAssetData}
    * @readonly
    */
@@ -133,6 +143,7 @@ class Embed {
 
   /**
    * The author of this embed.
+   *
    * @type {?EmbedAuthorData}
    * @readonly
    */
@@ -148,6 +159,7 @@ class Embed {
 
   /**
    * The provider of this embed.
+   *
    * @type {?APIEmbedProvider}
    * @readonly
    */
@@ -164,6 +176,7 @@ class Embed {
 
   /**
    * The footer of this embed.
+   *
    * @type {?EmbedFooterData}
    * @readonly
    */
@@ -178,6 +191,7 @@ class Embed {
 
   /**
    * The accumulated length for the embed title, description, fields, footer text, and author name.
+   *
    * @type {number}
    * @readonly
    */
@@ -187,6 +201,7 @@ class Embed {
 
   /**
    * The hex color of this embed.
+   *
    * @type {?string}
    * @readonly
    */
@@ -198,6 +213,7 @@ class Embed {
 
   /**
    * Returns the API-compatible JSON for this embed.
+   *
    * @returns {APIEmbed}
    */
   toJSON() {
@@ -206,6 +222,7 @@ class Embed {
 
   /**
    * Whether the given embeds are equal.
+   *
    * @param {Embed|APIEmbed} other The embed to compare against
    * @returns {boolean}
    */

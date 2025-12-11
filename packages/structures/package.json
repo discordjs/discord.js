@@ -1,0 +1,94 @@
+{
+	"$schema": "https://json.schemastore.org/package.json",
+	"name": "@discordjs/structures",
+	"version": "0.1.0",
+	"description": "Wrapper around Discord's structures",
+	"scripts": {
+		"build": "tsc --noEmit && tsup",
+		"build:docs": "tsc -p tsconfig.docs.json && cpy \"./src/*.d.ts\" \"./dist-docs\"",
+		"test": "vitest run --config ../../vitest.config.ts",
+		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
+		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
+		"fmt": "pnpm run format",
+		"docs": "pnpm run build:docs && api-extractor run --local --minify && generate-split-documentation",
+		"prepack": "pnpm run build && pnpm run lint",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/structures/*'",
+		"release": "cliff-jumper"
+	},
+	"exports": {
+		".": {
+			"require": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			},
+			"import": {
+				"types": "./dist/index.d.mts",
+				"default": "./dist/index.mjs"
+			}
+		}
+	},
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"directories": {
+		"lib": "src",
+		"test": "__tests__"
+	},
+	"files": [
+		"dist"
+	],
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <me@vladfrangu.dev>",
+		"Aura Román <kyradiscord@gmail.com>",
+		"Chai Kohen <chaikohen@gmail.com>"
+	],
+	"license": "Apache-2.0",
+	"keywords": [
+		"discord",
+		"api",
+		"discordapp",
+		"discordjs"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/structures"
+	},
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"homepage": "https://discord.js.org",
+	"dependencies": {
+		"@discordjs/formatters": "workspace:^",
+		"@sapphire/snowflake": "^3.5.5",
+		"discord-api-types": "^0.38.36"
+	},
+	"devDependencies": {
+		"@discordjs/api-extractor": "workspace:^",
+		"@discordjs/scripts": "workspace:^",
+		"@favware/cliff-jumper": "^6.0.0",
+		"@types/node": "^22.19.2",
+		"@vitest/coverage-v8": "^4.0.15",
+		"cpy-cli": "^6.0.0",
+		"cross-env": "^10.1.0",
+		"esbuild-plugin-version-injector": "^1.2.1",
+		"eslint": "^9.39.1",
+		"eslint-config-neon": "^0.2.9",
+		"eslint-formatter-compact": "^9.0.1",
+		"eslint-formatter-pretty": "^7.0.0",
+		"prettier": "^3.7.4",
+		"tsup": "^8.5.1",
+		"turbo": "^2.6.3",
+		"typescript": "~5.9.3",
+		"vitest": "^4.0.15"
+	},
+	"engines": {
+		"node": ">=22.12.0"
+	},
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	}
+}

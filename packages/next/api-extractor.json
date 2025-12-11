@@ -3,4 +3,25 @@
 	"docModel": {
 		"projectFolderUrl": "https://github.com/discordjs/discord.js/tree/main/packages/next"
 	}
+	// We probably don't want to generate docs here for these and instead link to the other modules
+	// "additionalEntryPoints": [
+	// 	{ "modulePath": "discord-api-types", "filePath": "<projectFolder>/dist-docs/exports/discord-api-types.d.ts" },
+	// 	{ "modulePath": "builders", "filePath": "<projectFolder>/dist-docs/exports/builders.d.ts" },
+	// 	{ "modulePath": "collection", "filePath": "<projectFolder>/dist-docs/exports/collection.d.ts" },
+	// 	{ "modulePath": "core", "filePath": "<projectFolder>/dist-docs/exports/core.d.ts" },
+	// 	{ "modulePath": "formatters", "filePath": "<projectFolder>/dist-docs/exports/formatters.d.ts" },
+	// 	{ "modulePath": "rest", "filePath": "<projectFolder>/dist-docs/exports/rest.d.ts" },
+	// 	{ "modulePath": "util", "filePath": "<projectFolder>/dist-docs/exports/util.d.ts" },
+	// 	{ "modulePath": "ws", "filePath": "<projectFolder>/dist-docs/exports/ws.d.ts" }
+	// ],
+	// "bundledPackages": [
+	// 	"discord-api-types",
+	// 	"@discordjs/builders",
+	// 	"@discordjs/collection",
+	// 	"@discordjs/core",
+	// 	"@discordjs/formatters",
+	// 	"@discordjs/rest",
+	// 	"@discordjs/util",
+	// 	"@discordjs/ws"
+	// ]
 }

@@ -1,7 +1,6 @@
 import type { NextConfig } from 'next';
 
 export default {
-	reactStrictMode: true,
 	images: {
 		dangerouslyAllowSVG: true,
 		contentDispositionType: 'attachment',
@@ -19,15 +18,7 @@ export default {
 			fullUrl: true,
 		},
 	},
-	experimental: {
-		ppr: true,
-		reactCompiler: true,
-		useCache: true,
-		dynamicOnHover: true,
-	},
-	eslint: {
-		ignoreDuringBuilds: true,
-	},
+	reactCompiler: true,
 	typescript: {
 		ignoreBuildErrors: true,
 	},
@@ -40,8 +31,8 @@ export default {
 			},
 			{
 				source: '/guide/:path*',
-				destination: 'https://next.discordjs.guide/guide/:path*',
-				permanent: true,
+				destination: 'https://discordjs.guide/:path*',
+				permanent: false,
 			},
 		];
 	},

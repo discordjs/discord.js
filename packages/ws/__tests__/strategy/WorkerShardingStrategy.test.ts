@@ -1,10 +1,7 @@
 /* eslint-disable id-length */
-import { setImmediate } from 'node:timers';
-import { REST } from '@discordjs/rest';
-import type { RESTGetAPIGatewayBotResult, GatewayDispatchPayload, GatewaySendPayload } from 'discord-api-types/v10';
-import { GatewayDispatchEvents, GatewayOpcodes, Routes } from 'discord-api-types/v10';
-import { MockAgent, type Interceptable } from 'undici';
-import { beforeEach, test, vi, expect, afterEach } from 'vitest';
+import type { GatewayDispatchPayload, GatewaySendPayload } from 'discord-api-types/v10';
+import { GatewayDispatchEvents, GatewayOpcodes } from 'discord-api-types/v10';
+import { test, vi, expect, afterEach } from 'vitest';
 import {
 	WebSocketManager,
 	WorkerSendPayloadOp,
@@ -15,9 +12,7 @@ import {
 	type WorkerSendPayload,
 	type SessionInfo,
 } from '../../src/index.js';
-
-let mockAgent: MockAgent;
-let mockPool: Interceptable;
+import { mockGatewayInformation } from '../gateway.mock.js';
 
 const mockConstructor = vi.fn();
 const mockSend = vi.fn();
@@ -135,12 +130,6 @@ vi.mock('node:worker_threads', async () => {
 	};
 });
 
-beforeEach(() => {
-	mockAgent = new MockAgent();
-	mockAgent.disableNetConnect();
-	mockPool = mockAgent.get('https://discord.com');
-});
-
 afterEach(() => {
 	mockConstructor.mockClear();
 	mockSend.mockClear();
@@ -148,15 +137,13 @@ afterEach(() => {
 });
 
 test('spawn, connect, send a message, session info, and destroy', async () => {
-	const rest = new REST().setAgent(mockAgent).setToken('A-Very-Fake-Token');
-
 	const mockRetrieveSessionInfo = vi.fn();
 	const mockUpdateSessionInfo = vi.fn();
 	const manager = new WebSocketManager({
 		token: 'A-Very-Fake-Token',
 		intents: 0,
 		async fetchGatewayInformation() {
-			return rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
+			return mockGatewayInformation;
 		},
 		shardIds: [0, 1],
 		retrieveSessionInfo: mockRetrieveSessionInfo,
@@ -165,30 +152,6 @@ test('spawn, connect, send a message, session info, and destroy', async () => {
 	});
 
 	const managerEmitSpy = vi.spyOn(manager, 'emit');
-
-	mockPool
-		.intercept({
-			path: '/api/v10/gateway/bot',
-			method: 'GET',
-		})
-		.reply(() => ({
-			data: {
-				shards: 1,
-				session_start_limit: {
-					max_concurrency: 3,
-					reset_after: 60,
-					remaining: 3,
-					total: 3,
-				},
-				url: 'wss://gateway.discord.gg',
-			},
-			statusCode: 200,
-			responseOptions: {
-				headers: {
-					'content-type': 'application/json',
-				},
-			},
-		}));
 
 	await manager.connect();
 	expect(mockConstructor).toHaveBeenCalledWith(

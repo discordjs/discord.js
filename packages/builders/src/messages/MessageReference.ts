@@ -7,12 +7,15 @@ import { messageReferencePredicate } from './Assertions.js';
  * A builder that creates API-compatible JSON data for message references.
  */
 export class MessageReferenceBuilder implements JSONEncodable<RESTAPIMessageReference> {
+	/**
+	 * The API data associated with this message reference.
+	 */
 	private readonly data: Partial<RESTAPIMessageReference>;
 
 	/**
-	 * Creates a new message reference builder from API data.
+	 * Creates a new message reference builder.
 	 *
-	 * @param data - The API data to create this message reference builder with
+	 * @param data - The API data to create this message reference with
 	 */
 	public constructor(data: Partial<RESTAPIMessageReference> = {}) {
 		this.data = structuredClone(data);

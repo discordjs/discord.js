@@ -5,6 +5,7 @@ const snakeCase = require('lodash.snakecase');
 
 /**
  * Transforms camel-cased keys into snake cased keys
+ *
  * @param {*} obj The object to transform
  * @returns {*}
  */
@@ -18,6 +19,7 @@ function toSnakeCase(obj) {
 
 /**
  * Transforms an API auto moderation action object to a camel-cased variant.
+ *
  * @param {APIAutoModerationAction} autoModerationAction The action to transform
  * @returns {AutoModerationAction}
  * @ignore
@@ -35,6 +37,7 @@ function _transformAPIAutoModerationAction(autoModerationAction) {
 
 /**
  * Transforms an API message interaction metadata object to a camel-cased variant.
+ *
  * @param {Client} client The client
  * @param {APIMessageInteractionMetadata} messageInteractionMetadata The metadata to transform
  * @returns {MessageInteractionMetadata}
@@ -56,6 +59,7 @@ function _transformAPIMessageInteractionMetadata(client, messageInteractionMetad
 
 /**
  * Transforms a guild scheduled event recurrence rule object to a snake-cased variant.
+ *
  * @param {GuildScheduledEventRecurrenceRuleOptions} recurrenceRule The recurrence rule to transform
  * @returns {APIGuildScheduledEventRecurrenceRule}
  * @ignore
@@ -74,6 +78,7 @@ function _transformGuildScheduledEventRecurrenceRule(recurrenceRule) {
 
 /**
  * Transforms API incidents data to a camel-cased variant.
+ *
  * @param {APIIncidentsData} data The incidents data to transform
  * @returns {IncidentActions}
  * @ignore
@@ -87,8 +92,29 @@ function _transformAPIIncidentsData(data) {
   };
 }
 
+/**
+ * Transforms a collectibles object to a camel-cased variant.
+ *
+ * @param {APICollectibles} collectibles The collectibles to transform
+ * @returns {Collectibles}
+ * @ignore
+ */
+function _transformCollectibles(collectibles) {
+  if (!collectibles.nameplate) return { nameplate: null };
+
+  return {
+    nameplate: {
+      skuId: collectibles.nameplate.sku_id,
+      asset: collectibles.nameplate.asset,
+      label: collectibles.nameplate.label,
+      palette: collectibles.nameplate.palette,
+    },
+  };
+}
+
 exports.toSnakeCase = toSnakeCase;
 exports._transformAPIAutoModerationAction = _transformAPIAutoModerationAction;
 exports._transformAPIMessageInteractionMetadata = _transformAPIMessageInteractionMetadata;
 exports._transformGuildScheduledEventRecurrenceRule = _transformGuildScheduledEventRecurrenceRule;
 exports._transformAPIIncidentsData = _transformAPIIncidentsData;
+exports._transformCollectibles = _transformCollectibles;

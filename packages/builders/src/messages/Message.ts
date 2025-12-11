@@ -1,6 +1,4 @@
-/* eslint-disable jsdoc/check-param-names */
-
-import type { JSONEncodable } from '@discordjs/util';
+import type { FileBodyEncodable, FileBodyEncodableResult, JSONEncodable, RawFile } from '@discordjs/util';
 import type {
 	APIActionRowComponent,
 	APIAllowedMentions,
@@ -34,19 +32,18 @@ import { normalizeArray, type RestOrArray } from '../util/normalizeArray.js';
 import { resolveBuilder } from '../util/resolveBuilder.js';
 import { validate } from '../util/validation.js';
 import { AllowedMentionsBuilder } from './AllowedMentions.js';
-import { messagePredicate } from './Assertions.js';
+import { fileBodyMessagePredicate, messagePredicate } from './Assertions.js';
 import { AttachmentBuilder } from './Attachment.js';
 import { MessageReferenceBuilder } from './MessageReference.js';
 import { EmbedBuilder } from './embed/Embed.js';
 import { PollBuilder } from './poll/Poll.js';
 
-export interface MessageBuilderData
-	extends Partial<
-		Omit<
-			RESTPostAPIChannelMessageJSONBody,
-			'allowed_mentions' | 'attachments' | 'components' | 'embeds' | 'message_reference' | 'poll'
-		>
-	> {
+export interface MessageBuilderData extends Partial<
+	Omit<
+		RESTPostAPIChannelMessageJSONBody,
+		'allowed_mentions' | 'attachments' | 'components' | 'embeds' | 'message_reference' | 'poll'
+	>
+> {
 	allowed_mentions?: AllowedMentionsBuilder;
 	attachments: AttachmentBuilder[];
 	components: MessageTopLevelComponentBuilder[];
@@ -58,7 +55,9 @@ export interface MessageBuilderData
 /**
  * A builder that creates API-compatible JSON data for messages.
  */
-export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJSONBody> {
+export class MessageBuilder
+	implements JSONEncodable<RESTPostAPIChannelMessageJSONBody>, FileBodyEncodable<RESTPostAPIChannelMessageJSONBody>
+{
 	/**
 	 * The API data associated with this message.
 	 */
@@ -86,21 +85,15 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 	}
 
 	/**
-	 * Creates a new message builder from API data.
+	 * Creates a new message builder.
 	 *
-	 * @param data - The API data to create this message builder with
+	 * @param data - The API data to create this message with
 	 */
-	public constructor({
-		attachments = [],
-		embeds = [],
-		components = [],
-		message_reference,
-		poll,
-		allowed_mentions,
-		...data
-	}: Partial<RESTPostAPIChannelMessageJSONBody> = {}) {
+	public constructor(data: Partial<RESTPostAPIChannelMessageJSONBody> = {}) {
+		const { attachments = [], embeds = [], components = [], message_reference, poll, allowed_mentions, ...rest } = data;
+
 		this.data = {
-			...structuredClone(data),
+			...structuredClone(rest),
 			allowed_mentions: allowed_mentions && new AllowedMentionsBuilder(allowed_mentions),
 			attachments: attachments.map((attachment) => new AttachmentBuilder(attachment)),
 			embeds: embeds.map((embed) => new EmbedBuilder(embed)),
@@ -246,7 +239,7 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 		allowedMentions:
 			| AllowedMentionsBuilder
 			| APIAllowedMentions
-			| ((builder: AllowedMentionsBuilder) => AllowedMentionsBuilder),
+			| ((builder: AllowedMentionsBuilder) => AllowedMentionsBuilder) = new AllowedMentionsBuilder(),
 	): this {
 		this.data.allowed_mentions = resolveBuilder(allowedMentions, AllowedMentionsBuilder);
 		return this;
@@ -668,5 +661,32 @@ export class MessageBuilder implements JSONEncodable<RESTPostAPIChannelMessageJS
 		validate(messagePredicate, data, validationOverride);
 
 		return data as RESTPostAPIChannelMessageJSONBody;
+	}
+
+	/**
+	 * Serializes this builder to both JSON body and file data for multipart/form-data requests.
+	 *
+	 * @param validationOverride - Force validation to run/not run regardless of your global preference
+	 * @remarks
+	 * This method extracts file data from attachments that have files set via {@link AttachmentBuilder.setFileData}.
+	 * The returned body includes attachment metadata, while files contains the binary data for upload.
+	 */
+	public toFileBody(validationOverride?: boolean): FileBodyEncodableResult<RESTPostAPIChannelMessageJSONBody> {
+		const body = this.toJSON(false);
+
+		const files: RawFile[] = [];
+		for (const attachment of this.data.attachments) {
+			const rawFile = attachment.getRawFile();
+			// Only if data or content type are set, since that implies the intent is to send a new file.
+			// In case it's contentType but not data, a validation error will be thrown right after.
+			if (rawFile?.data || rawFile?.contentType) {
+				files.push(rawFile as RawFile);
+			}
+		}
+
+		const combined = { body, files };
+		validate(fileBodyMessagePredicate, combined, validationOverride);
+
+		return combined as FileBodyEncodableResult<RESTPostAPIChannelMessageJSONBody>;
 	}
 }

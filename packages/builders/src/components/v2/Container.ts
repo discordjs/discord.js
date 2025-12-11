@@ -1,14 +1,15 @@
-import type {
-	APIActionRowComponent,
-	APIFileComponent,
-	APITextDisplayComponent,
-	APIContainerComponent,
-	APIComponentInContainer,
-	APIMediaGalleryComponent,
-	APISectionComponent,
+import {
+	type APIComponentInMessageActionRow,
+	type APISeparatorComponent,
+	type APIActionRowComponent,
+	type APIFileComponent,
+	type APITextDisplayComponent,
+	type APIContainerComponent,
+	type APIComponentInContainer,
+	type APIMediaGalleryComponent,
+	type APISectionComponent,
+	ComponentType,
 } from 'discord-api-types/v10';
-import { ComponentType } from 'discord-api-types/v10';
-import type { APIComponentInMessageActionRow, APISeparatorComponent } from 'discord-api-types/v9';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
 import { resolveBuilder } from '../../util/resolveBuilder';
 import { validate } from '../../util/validation';
@@ -34,11 +35,32 @@ export interface ContainerBuilderData extends Partial<Omit<APIContainerComponent
 	components: ContainerComponentBuilders[];
 }
 
+/**
+ * A builder that creates API-compatible JSON data for containers.
+ */
 export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
+	/**
+	 * @internal
+	 */
 	protected readonly data: ContainerBuilderData;
 
-	public constructor({ components = [], ...rest }: Partial<APIContainerComponent> = {}) {
+	/**
+	 * Gets the components within this container.
+	 */
+	public get components(): readonly ContainerComponentBuilders[] {
+		return this.data.components;
+	}
+
+	/**
+	 * Creates a new container builder.
+	 *
+	 * @param data - The API data to create the container with
+	 */
+	public constructor(data: Partial<APIContainerComponent> = {}) {
 		super();
+
+		const { components = [], ...rest } = data;
+
 		this.data = {
 			...structuredClone(rest),
 			components: components.map((component) => createComponentBuilder(component)),

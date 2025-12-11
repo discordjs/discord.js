@@ -16,10 +16,13 @@ pids
 .env*.local
 
 # Dist
+.open-next
 .next
+.wrangler
 .source
 
 # Miscellaneous
 .tmp
 .vscode
 .vercel
+next-env.d.ts

@@ -1,7 +1,7 @@
 'use strict';
 
-const { Action } = require('./Action.js');
 const { Events } = require('../../util/Events.js');
+const { Action } = require('./Action.js');
 
 class MessagePollVoteAddAction extends Action {
   handle(data) {
@@ -27,6 +27,7 @@ class MessagePollVoteAddAction extends Action {
 
     /**
      * Emitted whenever a user votes in a poll.
+     *
      * @event Client#messagePollVoteAdd
      * @param {PollAnswer} pollAnswer The answer that was voted on
      * @param {Snowflake} userId The id of the user that voted

@@ -3,13 +3,15 @@ import type { SharedNameData } from './SharedName.js';
 import { SharedName } from './SharedName.js';
 
 export interface SharedNameAndDescriptionData
-	extends SharedNameData,
-		Partial<Pick<APIApplicationCommand, 'description_localizations' | 'description'>> {}
+	extends SharedNameData, Partial<Pick<APIApplicationCommand, 'description_localizations' | 'description'>> {}
 
 /**
  * This mixin holds name and description symbols for chat input commands.
  */
 export class SharedNameAndDescription extends SharedName {
+	/**
+	 * @internal
+	 */
 	protected override readonly data: SharedNameAndDescriptionData = {};
 
 	/**

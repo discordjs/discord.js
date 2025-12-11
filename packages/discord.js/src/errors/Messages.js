@@ -64,7 +64,6 @@ const Messages = {
   [ErrorCodes.GuildVoiceChannelResolve]: 'Could not resolve channel to a guild voice channel.',
   [ErrorCodes.GuildChannelOrphan]: 'Could not find a parent to this guild channel.',
   [ErrorCodes.GuildChannelUnowned]: "The fetched channel does not belong to this manager's guild.",
-  [ErrorCodes.GuildOwned]: 'Guild is owned by the client.',
   [ErrorCodes.GuildMembersTimeout]: "Members didn't arrive in time.",
   [ErrorCodes.GuildSoundboardSoundsTimeout]: "Soundboard sounds didn't arrive in time.",
   [ErrorCodes.GuildUncachedMe]: 'The client user as a member of this guild is uncached.',
@@ -83,14 +82,14 @@ const Messages = {
 
   [ErrorCodes.WebhookMessage]: 'The message was not sent by a webhook.',
   [ErrorCodes.WebhookTokenUnavailable]: 'This action requires a webhook token, but none is available.',
-  [ErrorCodes.WebhookURLInvalid]: 'The provided webhook URL is not valid.',
   [ErrorCodes.WebhookApplication]: 'This message webhook belongs to an application and cannot be fetched.',
+
   [ErrorCodes.MessageReferenceMissing]: 'The message does not reference another message',
 
   [ErrorCodes.EmojiType]: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
   [ErrorCodes.EmojiManaged]: 'Emoji is managed and has no Author.',
-  [ErrorCodes.MissingManageGuildExpressionsPermission]: guild =>
-    `Client must have Manage Guild Expressions permission in guild ${guild} to see emoji authors.`,
+  [ErrorCodes.MissingGuildExpressionsPermission]: guild =>
+    `Client must have Create Guild Expressions or Manage Guild Expressions permission in guild ${guild} to see emoji authors.`,
 
   [ErrorCodes.NotGuildSoundboardSound]: action =>
     `Soundboard sound is a default (non-guild) soundboard sound and can't be ${action}.`,
@@ -99,7 +98,6 @@ const Messages = {
   [ErrorCodes.ReactionResolveUser]: "Couldn't resolve the user id to remove from the reaction.",
 
   [ErrorCodes.InviteResolveCode]: 'Could not resolve the code to fetch the invite.',
-
   [ErrorCodes.InviteNotFound]: 'Could not find the requested invite.',
 
   [ErrorCodes.DeleteGroupDMChannel]: "Bots don't have access to Group DM Channels and cannot delete them",
@@ -127,10 +125,14 @@ const Messages = {
     `The type of channel of the option "${name}" is: ${type}; expected ${expected}.`,
   [ErrorCodes.AutocompleteInteractionOptionNoFocusedOption]: 'No focused option for autocomplete interaction.',
 
-  [ErrorCodes.ModalSubmitInteractionFieldNotFound]: customId =>
-    `Required field with custom id "${customId}" not found.`,
-  [ErrorCodes.ModalSubmitInteractionFieldType]: (customId, type, expected) =>
-    `Field with custom id "${customId}" is of type: ${type}; expected ${expected}.`,
+  [ErrorCodes.ModalSubmitInteractionComponentNotFound]: customId =>
+    `Required component with custom id "${customId}" not found.`,
+  [ErrorCodes.ModalSubmitInteractionComponentType]: (customId, type, expected) =>
+    `Component with custom id "${customId}" is of type: ${type}; expected ${expected}.`,
+  [ErrorCodes.ModalSubmitInteractionComponentEmpty]: (customId, type) =>
+    `Required component with custom id "${customId}" is of type: ${type}; expected a non-empty value.`,
+  [ErrorCodes.ModalSubmitInteractionComponentInvalidChannelType]: (customId, type, expected) =>
+    `The type of channel of the component with custom id "${customId}" is: ${type}; expected ${expected}.`,
 
   [ErrorCodes.InvalidMissingScopes]: 'At least one valid scope must be provided for the invite',
   [ErrorCodes.InvalidScopesWithPermissions]: 'Permissions cannot be set without the bot scope.',

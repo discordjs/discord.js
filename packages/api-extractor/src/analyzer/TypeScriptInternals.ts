@@ -12,12 +12,6 @@ export interface IGlobalVariableAnalyzer {
 }
 
 export class TypeScriptInternals {
-	public static getImmediateAliasedSymbol(symbol: ts.Symbol, typeChecker: ts.TypeChecker): ts.Symbol {
-		// Compiler internal:
-		// https://github.com/microsoft/TypeScript/blob/v3.2.2/src/compiler/checker.ts
-		return (typeChecker as any).getImmediateAliasedSymbol(symbol);
-	}
-
 	/**
 	 * Returns the Symbol for the provided Declaration.  This is a workaround for a missing
 	 * feature of the TypeScript Compiler API.   It is the only apparent way to reach
@@ -88,19 +82,6 @@ export class TypeScriptInternals {
 			mode,
 		);
 		return result?.resolvedModule;
-	}
-
-	/**
-	 * Gets the mode required for module resolution required with the addition of Node16/nodenext
-	 */
-	public static getModeForUsageLocation(
-		file: { impliedNodeFormat?: ts.SourceFile['impliedNodeFormat'] },
-		usage: ts.StringLiteralLike | undefined,
-	): ts.ModuleKind.CommonJS | ts.ModuleKind.ESNext | undefined {
-		// Compiler internal:
-		// https://github.com/microsoft/TypeScript/blob/v4.7.2/src/compiler/program.ts#L568
-
-		return (ts as any).getModeForUsageLocation?.(file, usage);
 	}
 
 	/**

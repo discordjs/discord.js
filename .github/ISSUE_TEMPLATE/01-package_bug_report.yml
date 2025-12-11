@@ -24,6 +24,7 @@ body:
         - proxy
         - proxy-container
         - rest
+        - structures
         - ui
         - util
         - voice
@@ -61,9 +62,9 @@ body:
       label: Versions
       description: List necessary versions here. This includes your package version, runtime version, operating system etc.
       placeholder: |
-        - discord.js 14.12.1 (`npm ls discord.js` or another package)
-        - Node.js 22.12.0 (`node --version`)
-        - TypeScript 5.1.6 (`npm ls typescript` if you use it)
+        - discord.js 14.24.2 (`npm ls discord.js` or another package)
+        - Node.js 24.11.0 (`node --version`)
+        - TypeScript 5.9.3 (`npm ls typescript` if you use it)
         - macOS Ventura 13.3.1
     validations:
       required: true
@@ -93,6 +94,9 @@ body:
         - Reaction
         - GuildScheduledEvent
         - ThreadMember
+        - Poll
+        - PollAnswer
+        - SoundboardSound
       multiple: true
     validations:
       required: true

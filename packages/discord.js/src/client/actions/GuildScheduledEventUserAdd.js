@@ -1,7 +1,7 @@
 'use strict';
 
-const { Action } = require('./Action.js');
 const { Events } = require('../../util/Events.js');
+const { Action } = require('./Action.js');
 
 class GuildScheduledEventUserAddAction extends Action {
   handle(data) {
@@ -15,6 +15,7 @@ class GuildScheduledEventUserAddAction extends Action {
       if (guildScheduledEvent && user) {
         /**
          * Emitted whenever a user subscribes to a guild scheduled event
+         *
          * @event Client#guildScheduledEventUserAdd
          * @param {GuildScheduledEvent} guildScheduledEvent The guild scheduled event
          * @param {User} user The user who subscribed

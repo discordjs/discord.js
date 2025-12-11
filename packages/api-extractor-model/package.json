@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/api-extractor-model",
-	"version": "7.28.2",
+	"version": "7.30.6",
 	"description": "A helper library for loading and saving the .api.json files created by API Extractor",
 	"private": true,
 	"repository": {
@@ -31,23 +31,21 @@
 		}
 	},
 	"dependencies": {
-		"@microsoft/tsdoc": "0.14.2",
-		"@microsoft/tsdoc-config": "0.16.2",
-		"@rushstack/node-core-library": "4.1.0"
+		"@microsoft/tsdoc": "~0.15.1",
+		"@microsoft/tsdoc-config": "~0.17.1",
+		"@rushstack/node-core-library": "5.13.1"
 	},
 	"devDependencies": {
-		"@types/jest": "^29.5.14",
-		"@types/node": "^22.15.2",
-		"cross-env": "^7.0.3",
-		"eslint": "^9.25.1",
-		"eslint-config-neon": "^0.2.7",
-		"eslint-formatter-compact": "^8.40.0",
-		"eslint-formatter-pretty": "^6.0.1",
-		"jest": "^29.7.0",
-		"prettier": "^3.5.3",
-		"terser": "^5.39.0",
-		"tsup": "^8.4.0",
-		"turbo": "^2.5.2",
-		"typescript": "~5.8.3"
+		"@types/node": "^24.10.2",
+		"cross-env": "^10.1.0",
+		"eslint": "^9.39.1",
+		"eslint-config-neon": "^0.2.9",
+		"eslint-formatter-compact": "^9.0.1",
+		"eslint-formatter-pretty": "^7.0.0",
+		"prettier": "^3.7.4",
+		"terser": "^5.44.1",
+		"tsup": "^8.5.1",
+		"turbo": "^2.6.3",
+		"typescript": "~5.9.3"
 	}
 }

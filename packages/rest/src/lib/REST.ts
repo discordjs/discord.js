@@ -70,15 +70,15 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 
 	#token: string | null = null;
 
-	private hashTimer!: NodeJS.Timer | number;
+	private hashTimer!: NodeJS.Timeout | number;
 
-	private handlerTimer!: NodeJS.Timer | number;
+	private handlerTimer!: NodeJS.Timeout | number;
 
 	public readonly options: RESTOptions;
 
 	public constructor(options: Partial<RESTOptions> = {}) {
 		super();
-		this.cdn = new CDN(options.cdn ?? DefaultRestOptions.cdn, options.mediaProxy ?? DefaultRestOptions.mediaProxy);
+		this.cdn = new CDN(options);
 		this.options = { ...DefaultRestOptions, ...options };
 		this.globalRemaining = Math.max(1, this.options.globalRequestsPerSecond);
 		this.agent = options.agent ?? null;

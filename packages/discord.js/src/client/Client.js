@@ -3,13 +3,10 @@
 const process = require('node:process');
 const { clearTimeout, setImmediate, setTimeout } = require('node:timers');
 const { Collection } = require('@discordjs/collection');
-const { makeURLSearchParams } = require('@discordjs/rest');
+const { REST, RESTEvents, makeURLSearchParams } = require('@discordjs/rest');
 const { WebSocketManager, WebSocketShardEvents, WebSocketShardStatus } = require('@discordjs/ws');
+const { AsyncEventEmitter } = require('@vladfrangu/async_event_emitter');
 const { GatewayDispatchEvents, GatewayIntentBits, OAuth2Scopes, Routes } = require('discord-api-types/v10');
-const { BaseClient } = require('./BaseClient.js');
-const { ActionsManager } = require('./actions/ActionsManager.js');
-const { ClientVoiceManager } = require('./voice/ClientVoiceManager.js');
-const { PacketHandlers } = require('./websocket/handlers/index.js');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 const { ChannelManager } = require('../managers/ChannelManager.js');
 const { GuildManager } = require('../managers/GuildManager.js');
@@ -18,7 +15,6 @@ const { ShardClientUtil } = require('../sharding/ShardClientUtil.js');
 const { ClientPresence } = require('../structures/ClientPresence.js');
 const { GuildPreview } = require('../structures/GuildPreview.js');
 const { GuildTemplate } = require('../structures/GuildTemplate.js');
-const { Invite } = require('../structures/Invite.js');
 const { SoundboardSound } = require('../structures/SoundboardSound.js');
 const { Sticker } = require('../structures/Sticker.js');
 const { StickerPack } = require('../structures/StickerPack.js');
@@ -28,10 +24,15 @@ const { Widget } = require('../structures/Widget.js');
 const { resolveInviteCode, resolveGuildTemplateCode } = require('../util/DataResolver.js');
 const { Events } = require('../util/Events.js');
 const { IntentsBitField } = require('../util/IntentsBitField.js');
+const { createInvite } = require('../util/Invites.js');
 const { Options } = require('../util/Options.js');
 const { PermissionsBitField } = require('../util/PermissionsBitField.js');
 const { Status } = require('../util/Status.js');
 const { Sweepers } = require('../util/Sweepers.js');
+const { flatten } = require('../util/Util.js');
+const { ActionsManager } = require('./actions/ActionsManager.js');
+const { ClientVoiceManager } = require('./voice/ClientVoiceManager.js');
+const { PacketHandlers } = require('./websocket/handlers/index.js');
 
 const WaitingForGuildEvents = [GatewayDispatchEvents.GuildCreate, GatewayDispatchEvents.GuildDelete];
 const BeforeReadyWhitelist = [
@@ -46,29 +47,73 @@ const BeforeReadyWhitelist = [
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
- * @extends {BaseClient}
+ *
+ * @extends {AsyncEventEmitter}
  */
-class Client extends BaseClient {
+class Client extends AsyncEventEmitter {
   /**
    * @param {ClientOptions} options Options for the client
    */
   constructor(options) {
-    super(options);
+    super();
+
+    if (typeof options !== 'object' || options === null) {
+      throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
+    }
+
+    const defaultOptions = Options.createDefault();
+    /**
+     * The options the client was instantiated with
+     *
+     * @type {ClientOptions}
+     */
+    this.options = {
+      ...defaultOptions,
+      ...options,
+      presence: {
+        ...defaultOptions.presence,
+        ...options.presence,
+      },
+      sweepers: {
+        ...defaultOptions.sweepers,
+        ...options.sweepers,
+      },
+      ws: {
+        ...defaultOptions.ws,
+        ...options.ws,
+      },
+      rest: {
+        ...defaultOptions.rest,
+        ...options.rest,
+        userAgentAppendix: options.rest?.userAgentAppendix
+          ? `${Options.userAgentAppendix} ${options.rest.userAgentAppendix}`
+          : Options.userAgentAppendix,
+      },
+    };
+
+    /**
+     * The REST manager of the client
+     *
+     * @type {REST}
+     */
+    this.rest = new REST(this.options.rest);
+
+    this.rest.on(RESTEvents.Debug, message => this.emit(Events.Debug, message));
 
     const data = require('node:worker_threads').workerData ?? process.env;
-    const defaults = Options.createDefault();
 
-    if (this.options.ws.shardIds === defaults.ws.shardIds && 'SHARDS' in data) {
+    if (this.options.ws.shardIds === defaultOptions.ws.shardIds && 'SHARDS' in data) {
       const shards = JSON.parse(data.SHARDS);
       this.options.ws.shardIds = Array.isArray(shards) ? shards : [shards];
     }
 
-    if (this.options.ws.shardCount === defaults.ws.shardCount && 'SHARD_COUNT' in data) {
+    if (this.options.ws.shardCount === defaultOptions.ws.shardCount && 'SHARD_COUNT' in data) {
       this.options.ws.shardCount = Number(data.SHARD_COUNT);
     }
 
     /**
      * The presence of the Client
+     *
      * @private
      * @type {ClientPresence}
      */
@@ -78,6 +123,7 @@ class Client extends BaseClient {
 
     /**
      * The current status of this Client
+     *
      * @type {Status}
      * @private
      */
@@ -85,6 +131,7 @@ class Client extends BaseClient {
 
     /**
      * A set of guild ids this Client expects to receive
+     *
      * @name Client#expectedGuilds
      * @type {Set<string>}
      * @private
@@ -93,6 +140,7 @@ class Client extends BaseClient {
 
     /**
      * The ready timeout
+     *
      * @name Client#readyTimeout
      * @type {?NodeJS.Timeout}
      * @private
@@ -101,6 +149,7 @@ class Client extends BaseClient {
 
     /**
      * The action manager of the client
+     *
      * @type {ActionsManager}
      * @private
      */
@@ -108,6 +157,7 @@ class Client extends BaseClient {
 
     /**
      * The user manager of this client
+     *
      * @type {UserManager}
      */
     this.users = new UserManager(this);
@@ -115,6 +165,7 @@ class Client extends BaseClient {
     /**
      * A manager of all the guilds the client is currently handling -
      * as long as sharding isn't being used, this will be *every* guild the bot is a member of
+     *
      * @type {GuildManager}
      */
     this.guilds = new GuildManager(this);
@@ -124,12 +175,14 @@ class Client extends BaseClient {
      * as long as sharding isn't being used, this will be *every* channel in *every* guild the bot
      * is a member of. Note that DM channels will not be initially cached, and thus not be present
      * in the Manager without their explicit fetching or use.
+     *
      * @type {ChannelManager}
      */
     this.channels = new ChannelManager(this);
 
     /**
      * The sweeping functions and their intervals used to periodically sweep caches
+     *
      * @type {Sweepers}
      */
     this.sweepers = new Sweepers(this, this.options.sweepers);
@@ -140,6 +193,7 @@ class Client extends BaseClient {
        * Authorization token for the logged in bot.
        * If present, this defaults to `process.env.DISCORD_TOKEN` when instantiating the client
        * <warn>This should be kept private at all times.</warn>
+       *
        * @type {?string}
        */
       this.token = process.env.DISCORD_TOKEN;
@@ -152,19 +206,21 @@ class Client extends BaseClient {
     const wsOptions = {
       ...this.options.ws,
       intents: this.options.intents.bitfield,
-      rest: this.rest,
+      fetchGatewayInformation: () => this.rest.get(Routes.gatewayBot()),
       // Explicitly nulled to always be set using `setToken` in `login`
       token: null,
     };
 
     /**
      * The WebSocket manager of the client
+     *
      * @type {WebSocketManager}
      */
     this.ws = new WebSocketManager(wsOptions);
 
     /**
      * Shard helpers for the client (only if the process was spawned from a {@link ShardingManager})
+     *
      * @type {?ShardClientUtil}
      */
     this.shard = process.env.SHARDING_MANAGER
@@ -173,42 +229,49 @@ class Client extends BaseClient {
 
     /**
      * The voice manager of the client
+     *
      * @type {ClientVoiceManager}
      */
     this.voice = new ClientVoiceManager(this);
 
     /**
      * User that the client is logged in as
+     *
      * @type {?ClientUser}
      */
     this.user = null;
 
     /**
      * The application of this bot
+     *
      * @type {?ClientApplication}
      */
     this.application = null;
 
     /**
      * The latencies of the WebSocketShard connections
+     *
      * @type {Collection<number, number>}
      */
     this.pings = new Collection();
 
     /**
      * The last time a ping was sent (a timestamp) for each WebSocketShard connection
+     *
      * @type {Collection<number, number>}
      */
     this.lastPingTimestamps = new Collection();
 
     /**
      * Timestamp of the time the client was last {@link Status.Ready} at
+     *
      * @type {?number}
      */
     this.readyTimestamp = null;
 
     /**
      * An array of queued events before this Client became ready
+     *
      * @type {Object[]}
      * @private
      * @name Client#incomingPacketQueue
@@ -221,6 +284,7 @@ class Client extends BaseClient {
   /**
    * Time at which the client was last regarded as being in the {@link Status.Ready} state
    * (each time the client disconnects and successfully reconnects, this will be overwritten)
+   *
    * @type {?Date}
    * @readonly
    */
@@ -230,6 +294,7 @@ class Client extends BaseClient {
 
   /**
    * How long it has been since the client last entered the {@link Status.Ready} state in milliseconds
+   *
    * @type {?number}
    * @readonly
    */
@@ -239,6 +304,7 @@ class Client extends BaseClient {
 
   /**
    * Logs the client in, establishing a WebSocket connection to Discord.
+   *
    * @param {string} [token=this.token] Token of the account to log in with
    * @returns {Promise<string>} Token of the account used
    * @example
@@ -246,7 +312,7 @@ class Client extends BaseClient {
    */
   async login(token = this.token) {
     if (!token || typeof token !== 'string') throw new DiscordjsError(ErrorCodes.TokenInvalid);
-    this.token = token.replace(/^(Bot|Bearer)\s*/i, '');
+    this.token = token.replace(/^bot\s*/i, '');
 
     this.rest.setToken(this.token);
 
@@ -266,6 +332,7 @@ class Client extends BaseClient {
 
   /**
    * Checks if the client can be marked as ready
+   *
    * @private
    */
   async _checkReady() {
@@ -274,6 +341,7 @@ class Client extends BaseClient {
       clearTimeout(this.readyTimeout);
       this.readyTimeout = null;
     }
+
     // Step 1. If we don't have any other guilds pending, we are ready
     if (
       !this.expectedGuilds.size &&
@@ -284,6 +352,7 @@ class Client extends BaseClient {
       this._triggerClientReady();
       return;
     }
+
     const hasGuildsIntent = this.options.intents.has(GatewayIntentBits.Guilds);
     // Step 2. Create a timeout that will mark the client as ready if there are still unavailable guilds
     // * The timeout is 15 seconds by default
@@ -311,6 +380,7 @@ class Client extends BaseClient {
 
   /**
    * Attaches event handlers to the WebSocketShardManager from `@discordjs/ws`.
+   *
    * @private
    */
   _attachEvents() {
@@ -318,14 +388,6 @@ class Client extends BaseClient {
       this.emit(Events.Debug, `[WS => ${typeof shardId === 'number' ? `Shard ${shardId}` : 'Manager'}] ${message}`),
     );
     this.ws.on(WebSocketShardEvents.Dispatch, this._handlePacket.bind(this));
-
-    this.ws.on(WebSocketShardEvents.Ready, data => {
-      for (const guild of data.guilds) {
-        this.expectedGuilds.add(guild.id);
-      }
-      this.status = Status.WaitingForGuilds;
-      this._checkReady();
-    });
 
     this.ws.on(WebSocketShardEvents.HeartbeatComplete, ({ heartbeatAt, latency }, shardId) => {
       this.emit(Events.Debug, `[WS => Shard ${shardId}] Heartbeat acknowledged, latency of ${latency}ms.`);
@@ -336,18 +398,19 @@ class Client extends BaseClient {
 
   /**
    * Processes a packet and queues it if this WebSocketManager is not ready.
+   *
    * @param {GatewayDispatchPayload} packet The packet to be handled
    * @param {number} shardId The shardId that received this packet
    * @private
    */
-  _handlePacket(packet, shardId) {
+  async _handlePacket(packet, shardId) {
     if (this.status !== Status.Ready && !BeforeReadyWhitelist.includes(packet.t)) {
       this.incomingPacketQueue.push({ packet, shardId });
     } else {
       if (this.incomingPacketQueue.length) {
         const item = this.incomingPacketQueue.shift();
-        setImmediate(() => {
-          this._handlePacket(item.packet, item.shardId);
+        setImmediate(async () => {
+          await this._handlePacket(item.packet, item.shardId);
         }).unref();
       }
 
@@ -355,15 +418,18 @@ class Client extends BaseClient {
         PacketHandlers[packet.t](this, packet, shardId);
       }
 
-      if (this.status === Status.WaitingForGuilds && WaitingForGuildEvents.includes(packet.t)) {
+      if (packet.t === GatewayDispatchEvents.Ready) {
+        await this._checkReady();
+      } else if (this.status === Status.WaitingForGuilds && WaitingForGuildEvents.includes(packet.t)) {
         this.expectedGuilds.delete(packet.d.id);
-        this._checkReady();
+        await this._checkReady();
       }
     }
   }
 
   /**
    * Broadcasts a packet to every shard of this client handles.
+   *
    * @param {Object} packet The packet to send
    * @private
    */
@@ -374,6 +440,7 @@ class Client extends BaseClient {
 
   /**
    * Causes the client to be marked as ready and emits the ready event.
+   *
    * @private
    */
   _triggerClientReady() {
@@ -383,6 +450,7 @@ class Client extends BaseClient {
 
     /**
      * Emitted when the client becomes ready to start working.
+     *
      * @event Client#clientReady
      * @param {Client} client The client
      */
@@ -392,6 +460,7 @@ class Client extends BaseClient {
   /**
    * Returns whether the client has logged in, indicative of being able to access
    * properties such as `user` and `application`.
+   *
    * @returns {boolean}
    */
   isReady() {
@@ -400,6 +469,7 @@ class Client extends BaseClient {
 
   /**
    * The average ping of all WebSocketShards
+   *
    * @type {?number}
    * @readonly
    */
@@ -408,11 +478,56 @@ class Client extends BaseClient {
   }
 
   /**
-   * Logs out, terminates the connection to Discord, and destroys the client.
+   * Options used for deleting a webhook.
+   *
+   * @typedef {Object} WebhookDeleteOptions
+   * @property {string} [token] Token of the webhook
+   * @property {string} [reason] The reason for deleting the webhook
+   */
+
+  /**
+   * Deletes a webhook.
+   *
+   * @param {Snowflake} id The webhook's id
+   * @param {WebhookDeleteOptions} [options] Options for deleting the webhook
+   * @returns {Promise<void>}
+   */
+  async deleteWebhook(id, { token, reason } = {}) {
+    await this.rest.delete(Routes.webhook(id, token), { auth: !token, reason });
+  }
+
+  /**
+   * Increments max listeners by one, if they are not zero.
+   *
+   * @private
+   */
+  incrementMaxListeners() {
+    const maxListeners = this.getMaxListeners();
+    if (maxListeners !== 0) {
+      this.setMaxListeners(maxListeners + 1);
+    }
+  }
+
+  /**
+   * Decrements max listeners by one, if they are not zero.
+   *
+   * @private
+   */
+  decrementMaxListeners() {
+    const maxListeners = this.getMaxListeners();
+    if (maxListeners !== 0) {
+      this.setMaxListeners(maxListeners - 1);
+    }
+  }
+
+  /**
+   * Destroys all assets used by the client.
+   *
    * @returns {Promise<void>}
    */
   async destroy() {
-    super.destroy();
+    this.rest.clearHashSweeper();
+    this.rest.clearHandlerSweeper();
 
     this.sweepers.destroy();
     await this.ws.destroy();
@@ -422,13 +537,16 @@ class Client extends BaseClient {
 
   /**
    * Options used when fetching an invite from Discord.
+   *
    * @typedef {Object} ClientFetchInviteOptions
+   * @property {boolean} [withCounts] Whether to include approximate member counts
    * @property {Snowflake} [guildScheduledEventId] The id of the guild scheduled event to include with
    * the invite
    */
 
   /**
    * Obtains an invite from Discord.
+   *
    * @param {InviteResolvable} invite Invite code or URL
    * @param {ClientFetchInviteOptions} [options] Options for fetching the invite
    * @returns {Promise<Invite>}
@@ -437,18 +555,21 @@ class Client extends BaseClient {
    *   .then(invite => console.log(`Obtained invite with code: ${invite.code}`))
    *   .catch(console.error);
    */
-  async fetchInvite(invite, options) {
+  async fetchInvite(invite, { withCounts, guildScheduledEventId } = {}) {
     const code = resolveInviteCode(invite);
+
     const query = makeURLSearchParams({
-      with_counts: true,
-      guild_scheduled_event_id: options?.guildScheduledEventId,
+      with_counts: withCounts,
+      guild_scheduled_event_id: guildScheduledEventId,
     });
+
     const data = await this.rest.get(Routes.invite(code), { query });
-    return new Invite(this, data);
+    return createInvite(this, data);
   }
 
   /**
    * Obtains a template from Discord.
+   *
    * @param {GuildTemplateResolvable} template Template code or URL
    * @returns {Promise<GuildTemplate>}
    * @example
@@ -464,6 +585,7 @@ class Client extends BaseClient {
 
   /**
    * Obtains a webhook from Discord.
+   *
    * @param {Snowflake} id The webhook's id
    * @param {string} [token] Token for the webhook
    * @returns {Promise<Webhook>}
@@ -479,6 +601,7 @@ class Client extends BaseClient {
 
   /**
    * Obtains the available voice regions from Discord.
+   *
    * @returns {Promise<Collection<string, VoiceRegion>>}
    * @example
    * client.fetchVoiceRegions()
@@ -494,6 +617,7 @@ class Client extends BaseClient {
 
   /**
    * Obtains a sticker from Discord.
+   *
    * @param {Snowflake} id The sticker's id
    * @returns {Promise<Sticker>}
    * @example
@@ -508,12 +632,14 @@ class Client extends BaseClient {
 
   /**
    * Options for fetching sticker packs.
+   *
    * @typedef {Object} StickerPackFetchOptions
    * @property {Snowflake} [packId] The id of the sticker pack to fetch
    */
 
   /**
    * Obtains the list of available sticker packs.
+   *
    * @param {StickerPackFetchOptions} [options={}] Options for fetching sticker packs
    * @returns {Promise<Collection<Snowflake, StickerPack>|StickerPack>}
    * A collection of sticker packs, or a single sticker pack if a packId was provided
@@ -528,8 +654,8 @@ class Client extends BaseClient {
    */
   async fetchStickerPacks({ packId } = {}) {
     if (packId) {
-      const data = await this.rest.get(Routes.stickerPack(packId));
-      return new StickerPack(this, data);
+      const innerData = await this.rest.get(Routes.stickerPack(packId));
+      return new StickerPack(this, innerData);
     }
 
     const data = await this.rest.get(Routes.stickerPacks());
@@ -538,6 +664,7 @@ class Client extends BaseClient {
 
   /**
    * Obtains the list of default soundboard sounds.
+   *
    * @returns {Promise<Collection<string, SoundboardSound>>}
    * @example
    * client.fetchDefaultSoundboardSounds()
@@ -551,6 +678,7 @@ class Client extends BaseClient {
 
   /**
    * Obtains a guild preview from Discord, available for all guilds the bot is in and all Discoverable guilds.
+   *
    * @param {GuildResolvable} guild The guild to fetch the preview for
    * @returns {Promise<GuildPreview>}
    */
@@ -563,6 +691,7 @@ class Client extends BaseClient {
 
   /**
    * Obtains the widget data of a guild from Discord, available for guilds with the widget enabled.
+   *
    * @param {GuildResolvable} guild The guild to fetch the widget data for
    * @returns {Promise<Widget>}
    */
@@ -575,6 +704,7 @@ class Client extends BaseClient {
 
   /**
    * Options for {@link Client#generateInvite}.
+   *
    * @typedef {Object} InviteGenerationOptions
    * @property {OAuth2Scopes[]} scopes Scopes that should be requested
    * @property {PermissionResolvable} [permissions] Permissions to request
@@ -584,6 +714,7 @@ class Client extends BaseClient {
 
   /**
    * Generates a link that can be used to invite the bot to a guild.
+   *
    * @param {InviteGenerationOptions} [options={}] Options for the invite
    * @returns {string}
    * @example
@@ -610,15 +741,19 @@ class Client extends BaseClient {
     if (scopes === undefined) {
       throw new DiscordjsTypeError(ErrorCodes.InvalidMissingScopes);
     }
+
     if (!Array.isArray(scopes)) {
       throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'scopes', 'Array of Invite Scopes', true);
     }
+
     if (!scopes.some(scope => [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands].includes(scope))) {
       throw new DiscordjsTypeError(ErrorCodes.InvalidMissingScopes);
     }
+
     if (!scopes.includes(OAuth2Scopes.Bot) && options.permissions) {
       throw new DiscordjsTypeError(ErrorCodes.InvalidScopesWithPermissions);
     }
+
     const validScopes = Object.values(OAuth2Scopes);
     const invalidScope = scopes.find(scope => !validScopes.includes(scope));
     if (invalidScope) {
@@ -646,14 +781,12 @@ class Client extends BaseClient {
   }
 
   toJSON() {
-    return super.toJSON({
-      actions: false,
-      presence: false,
-    });
+    return flatten(this, { actions: false, presence: false });
   }
 
   /**
    * Partially censored client token for debug logging purposes.
+   *
    * @type {?string}
    * @readonly
    * @private
@@ -663,23 +796,26 @@ class Client extends BaseClient {
 
     return this.token
       .split('.')
-      .map((val, i) => (i > 1 ? val.replace(/./g, '*') : val))
+      .map((val, index) => (index > 1 ? val.replaceAll(/./g, '*') : val))
       .join('.');
   }
 
   /**
    * Calls {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/eval} on a script
    * with the client as `this`.
+   *
    * @param {string} script Script to eval
    * @returns {*}
    * @private
    */
   _eval(script) {
+    // eslint-disable-next-line no-eval
     return eval(script);
   }
 
   /**
    * Validates the client options.
+   *
    * @param {ClientOptions} [options=this.options] Options to validate
    * @private
    */
@@ -689,30 +825,38 @@ class Client extends BaseClient {
     } else {
       options.intents = new IntentsBitField(options.intents ?? options.ws.intents).freeze();
     }
+
     if (typeof options.sweepers !== 'object' || options.sweepers === null) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'sweepers', 'an object');
     }
+
     if (!Array.isArray(options.partials)) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'partials', 'an Array');
     }
-    if (typeof options.waitGuildTimeout !== 'number' || isNaN(options.waitGuildTimeout)) {
+
+    if (typeof options.waitGuildTimeout !== 'number' || Number.isNaN(options.waitGuildTimeout)) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'waitGuildTimeout', 'a number');
     }
+
     if (typeof options.failIfNotExists !== 'boolean') {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'failIfNotExists', 'a boolean');
     }
+
     if (typeof options.enforceNonce !== 'boolean') {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'enforceNonce', 'a boolean');
     }
+
     if (
       (typeof options.allowedMentions !== 'object' && options.allowedMentions !== undefined) ||
       options.allowedMentions === null
     ) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'allowedMentions', 'an object');
     }
+
     if (typeof options.ws !== 'object' || options.ws === null) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'ws', 'an object');
     }
+
     if (
       (typeof options.presence !== 'object' || options.presence === null) &&
       options.ws.initialPresence === undefined
@@ -721,12 +865,18 @@ class Client extends BaseClient {
     } else {
       options.ws.initialPresence = options.ws.initialPresence ?? this.presence._parse(this.options.presence);
     }
+
     if (typeof options.rest !== 'object' || options.rest === null) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'rest', 'an object');
     }
+
     if (typeof options.jsonTransformer !== 'function') {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'jsonTransformer', 'a function');
     }
+  }
+
+  async [Symbol.asyncDispose]() {
+    await this.destroy();
   }
 }
 
@@ -754,17 +904,20 @@ exports.Client = Client;
  *  000000111011000111100001101001000101000000  00001  00000  000000000000
  *  number of milliseconds since Discord epoch  worker  pid    increment
  * ```
+ *
  * @typedef {string} Snowflake
  */
 
 /**
  * Emitted for general debugging information.
+ *
  * @event Client#debug
  * @param {string} info The debug information
  */
 
 /**
  * Emitted for general warnings.
+ *
  * @event Client#warn
  * @param {string} info The warning
  */
@@ -775,8 +928,18 @@ exports.Client = Client;
  */
 
 /**
+ * @external REST
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/REST:Class}
+ */
+
+/**
  * @external ImageURLOptions
  * @see {@link https://discord.js.org/docs/packages/rest/stable/ImageURLOptions:Interface}
+ */
+
+/**
+ * @external EmojiURLOptions
+ * @see {@link https://discord.js.org/docs/packages/rest/stable/EmojiURLOptions:TypeAlias}
  */
 
 /**

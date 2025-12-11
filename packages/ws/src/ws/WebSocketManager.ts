@@ -1,21 +1,20 @@
-import type { REST } from '@discordjs/rest';
+import type { Collection } from '@discordjs/collection';
 import { range, type Awaitable } from '@discordjs/util';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
-import {
-	Routes,
-	type APIGatewayBotInfo,
-	type GatewayIdentifyProperties,
-	type GatewayPresenceUpdateData,
-	type RESTGetAPIGatewayBotResult,
-	type GatewayIntentBits,
-	type GatewaySendPayload,
-	type GatewayDispatchPayload,
-	type GatewayReadyDispatchData,
+import type {
+	APIGatewayBotInfo,
+	GatewayIdentifyProperties,
+	GatewayPresenceUpdateData,
+	RESTGetAPIGatewayBotResult,
+	GatewayIntentBits,
+	GatewaySendPayload,
+	GatewayDispatchPayload,
+	GatewayReadyDispatchData,
 } from 'discord-api-types/v10';
 import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy.js';
 import type { IIdentifyThrottler } from '../throttling/IIdentifyThrottler.js';
 import { DefaultWebSocketManagerOptions, type CompressionMethod, type Encoding } from '../utils/constants.js';
-import type { WebSocketShardDestroyOptions, WebSocketShardEvents } from './WebSocketShard.js';
+import type { WebSocketShardDestroyOptions, WebSocketShardEvents, WebSocketShardStatus } from './WebSocketShard.js';
 
 /**
  * Represents a range of shard ids
@@ -56,6 +55,22 @@ export interface SessionInfo {
  */
 export interface RequiredWebSocketManagerOptions {
 	/**
+	 * Function for retrieving the information returned by the `/gateway/bot` endpoint.
+	 * We recommend using a REST client that respects Discord's rate limits, such as `@discordjs/rest`.
+	 *
+	 * @example
+	 * ```ts
+	 * const rest = new REST().setToken(process.env.DISCORD_TOKEN);
+	 * const manager = new WebSocketManager({
+	 *  token: process.env.DISCORD_TOKEN,
+	 *  fetchGatewayInformation() {
+	 *    return rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
+	 *  },
+	 * });
+	 * ```
+	 */
+	fetchGatewayInformation(): Awaitable<RESTGetAPIGatewayBotResult>;
+	/**
 	 * The intents to request
 	 */
 	intents: GatewayIntentBits | 0;
@@ -74,10 +89,13 @@ export interface OptionalWebSocketManagerOptions {
 	 *
 	 * @example
 	 * ```ts
+	 * const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 	 * const manager = new WebSocketManager({
 	 *  token: process.env.DISCORD_TOKEN,
 	 *  intents: 0, // for no intents
-	 *  rest,
+	 *  fetchGatewayInformation() {
+	 *    return rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
+	 *  },
 	 *  buildStrategy: (manager) => new WorkerShardingStrategy(manager, { shardsPerWorker: 2 }),
 	 * });
 	 * ```
@@ -95,21 +113,6 @@ export interface OptionalWebSocketManagerOptions {
 	 * @defaultValue `'json'`
 	 */
 	encoding: Encoding;
-	/**
-	 * Fetches the initial gateway URL used to connect to Discord. When missing, this will default to the gateway URL
-	 * that Discord returns from the `/gateway/bot` route.
-	 *
-	 * @example
-	 * ```ts
-	 * const manager = new WebSocketManager({
-	 *  token: process.env.DISCORD_TOKEN,
-	 *  fetchGatewayInformation() {
-	 *    return rest.get(Routes.gatewayBot());
-	 *  },
-	 * })
-	 * ```
-	 */
-	fetchGatewayInformation(): Awaitable<RESTGetAPIGatewayBotResult>;
 	/**
 	 * How long to wait for a shard to connect before giving up
 	 */
@@ -134,12 +137,6 @@ export interface OptionalWebSocketManagerOptions {
 	 * How long to wait for a shard's READY packet before giving up
 	 */
 	readyTimeout: number | null;
-	/**
-	 * The REST instance to use for fetching gateway information
-	 *
-	 * @deprecated Providing a REST instance is deprecated. Provide the `fetchGatewayInformation` function instead.
-	 */
-	rest?: REST;
 	/**
 	 * Function used to retrieve session information (and attempt to resume) for a given shard
 	 *
@@ -208,8 +205,7 @@ export interface OptionalWebSocketManagerOptions {
 export interface WebSocketManagerOptions extends OptionalWebSocketManagerOptions, RequiredWebSocketManagerOptions {}
 
 export interface CreateWebSocketManagerOptions
-	extends Partial<OptionalWebSocketManagerOptions>,
-		RequiredWebSocketManagerOptions {}
+	extends Partial<OptionalWebSocketManagerOptions>, RequiredWebSocketManagerOptions {}
 
 export interface ManagerShardEventsMap {
 	[WebSocketShardEvents.Closed]: [code: number, shardId: number];
@@ -270,22 +266,13 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 	}
 
 	public constructor(options: CreateWebSocketManagerOptions) {
-		if (!options.rest && !options.fetchGatewayInformation) {
-			throw new RangeError('Either a REST instance or a fetchGatewayInformation function must be provided');
+		if (typeof options.fetchGatewayInformation !== 'function') {
+			throw new TypeError('fetchGatewayInformation is required');
 		}
 
 		super();
 		this.options = {
 			...DefaultWebSocketManagerOptions,
-			fetchGatewayInformation:
-				options.fetchGatewayInformation ??
-				(async () => {
-					if (!options.rest) {
-						throw new RangeError('A REST instance must be provided if no fetchGatewayInformation function is provided');
-					}
-
-					return options.rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
-				}),
 			...options,
 		};
 		this.strategy = this.options.buildStrategy(this);
@@ -400,7 +387,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 		return this.strategy.send(shardId, payload);
 	}
 
-	public fetchStatus() {
+	public fetchStatus(): Awaitable<Collection<number, WebSocketShardStatus>> {
 		return this.strategy.fetchStatus();
 	}
 

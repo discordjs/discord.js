@@ -1,9 +1,9 @@
-/* eslint-disable no-restricted-globals */
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
 import * as os from 'node:os';
 import * as path from 'node:path';
+import process from 'node:process';
 import { PackageJsonLookup, FileSystem, type IPackageJson, Path } from '@rushstack/node-core-library';
 import {
 	CommandLineAction,
@@ -83,8 +83,7 @@ export class RunAction extends CommandLineAction {
 		});
 	}
 
-	protected async onExecute(): Promise<void> {
-		// override
+	protected override async onExecuteAsync(): Promise<void> {
 		const lookup: PackageJsonLookup = new PackageJsonLookup();
 		let configFilename: string;
 

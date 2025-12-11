@@ -1,11 +1,12 @@
 'use strict';
 
 const { Routes } = require('discord-api-types/v10');
-const { CachedManager } = require('./CachedManager.js');
 const { VoiceState } = require('../structures/VoiceState.js');
+const { CachedManager } = require('./CachedManager.js');
 
 /**
  * Manages API methods for VoiceStates and stores their cache.
+ *
  * @extends {CachedManager}
  */
 class VoiceStateManager extends CachedManager {
@@ -14,6 +15,7 @@ class VoiceStateManager extends CachedManager {
 
     /**
      * The guild this manager belongs to
+     *
      * @type {Guild}
      */
     this.guild = guild;
@@ -21,6 +23,7 @@ class VoiceStateManager extends CachedManager {
 
   /**
    * The cache of this manager
+   *
    * @type {Collection<Snowflake, VoiceState>}
    * @name VoiceStateManager#cache
    */
@@ -36,6 +39,7 @@ class VoiceStateManager extends CachedManager {
 
   /**
    * Obtains a user's voice state from discord or from the cache if it's already available.
+   *
    * @param {UserResolvable|'@me'} member The member whose voice state is to be fetched
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<VoiceState>}
@@ -51,6 +55,7 @@ class VoiceStateManager extends CachedManager {
       const existing = this.cache.get(id === '@me' ? this.client.user.id : id);
       if (existing) return existing;
     }
+
     const data = await this.client.rest.get(Routes.guildVoiceState(this.guild.id, id));
     return this._add(data, cache);
   }

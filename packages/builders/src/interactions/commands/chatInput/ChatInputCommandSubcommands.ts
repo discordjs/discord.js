@@ -26,8 +26,16 @@ export class ChatInputCommandSubcommandGroupBuilder
 	extends SharedNameAndDescription
 	implements JSONEncodable<APIApplicationCommandSubcommandGroupOption>
 {
+	/**
+	 * The API data associated with this subcommand group.
+	 *
+	 * @internal
+	 */
 	declare protected readonly data: ChatInputCommandSubcommandGroupData & SharedNameAndDescriptionData;
 
+	/**
+	 * The options within this subcommand group.
+	 */
 	public get options(): readonly ChatInputCommandSubcommandBuilder[] {
 		return (this.data.options ??= []);
 	}
@@ -78,6 +86,8 @@ export class ChatInputCommandSubcommandGroupBuilder
 /**
  * A builder that creates API-compatible JSON data for chat input command subcommands.
  *
+ * @mixes {@link SharedNameAndDescription}
+ * @mixes {@link SharedChatInputCommandOptions}
  * @see {@link https://discord.com/developers/docs/interactions/application-commands#subcommands-and-subcommand-groups}
  */
 export class ChatInputCommandSubcommandBuilder

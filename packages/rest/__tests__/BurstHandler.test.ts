@@ -1,7 +1,5 @@
 /* eslint-disable id-length */
 /* eslint-disable promise/prefer-await-to-then */
-// @ts-nocheck
-import { performance } from 'node:perf_hooks';
 import { MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
 import { beforeEach, afterEach, test, expect } from 'vitest';
@@ -16,6 +14,7 @@ const api = new REST();
 
 let mockAgent: MockAgent;
 let mockPool: Interceptable;
+let serverOutage = true;
 
 beforeEach(() => {
 	mockAgent = new MockAgent();
@@ -136,5 +135,59 @@ test('Handle unexpected 429', async () => {
 		});
 
 	expect(await unexpectedLimit).toStrictEqual({ test: true });
-	expect(performance.now()).toBeGreaterThanOrEqual(previous + 1_000);
+	expect(firstResolvedTime!).toBeGreaterThanOrEqual(previous + 1_000);
+});
+
+test('server responding too slow', async () => {
+	const api2 = new REST({ timeout: 1 }).setToken('A-Very-Really-Real-Token');
+
+	api2.setAgent(mockAgent);
+
+	mockPool
+		.intercept({
+			path: callbackPath,
+			method: 'POST',
+		})
+		.reply(200, '')
+		.delay(100)
+		.times(10);
+
+	const promise = api2.post('/interactions/1234567890123456789/totallyarealtoken/callback', {
+		auth: false,
+		body: { type: 4, data: { content: 'Reply' } },
+	});
+
+	await expect(promise).rejects.toThrowError('aborted');
+}, 1_000);
+
+test('Handle temp server outage', async () => {
+	mockPool
+		.intercept({
+			path: callbackPath,
+			method: 'POST',
+		})
+		.reply(() => {
+			if (serverOutage) {
+				serverOutage = false;
+
+				return {
+					statusCode: 500,
+					data: '',
+				};
+			}
+
+			return {
+				statusCode: 200,
+				data: { test: true },
+				responseOptions,
+			};
+		})
+		.times(2);
+
+	expect(
+		await api.post('/interactions/1234567890123456789/totallyarealtoken/callback', {
+			auth: false,
+			body: { type: 4, data: { content: 'Reply' } },
+		}),
+	).toStrictEqual({ test: true });
 });

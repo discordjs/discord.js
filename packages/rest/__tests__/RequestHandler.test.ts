@@ -1,7 +1,5 @@
 /* eslint-disable id-length */
 /* eslint-disable promise/prefer-await-to-then */
-import { performance } from 'node:perf_hooks';
-import { setInterval, clearInterval } from 'node:timers';
 import { MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor.js';
 import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
@@ -47,8 +45,8 @@ let serverOutage = true;
 let unexpected429 = true;
 let unexpected429cf = true;
 const sublimitIntervals: {
-	reset: NodeJS.Timer | null;
-	retry: NodeJS.Timer | null;
+	reset: NodeJS.Timeout | null;
+	retry: NodeJS.Timeout | null;
 } = {
 	reset: null,
 	retry: null,
@@ -480,6 +478,8 @@ test('perm server outage', async () => {
 
 test('server responding too slow', async () => {
 	const api2 = new REST({ timeout: 1 }).setToken('A-Very-Really-Real-Token');
+
+	api2.setAgent(mockAgent);
 
 	mockPool
 		.intercept({

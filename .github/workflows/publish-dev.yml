@@ -3,82 +3,92 @@ on:
   schedule:
     - cron: '0 */12 * * *'
   workflow_dispatch:
+    inputs:
+      ref:
+        description: 'The ref to check out. e.g. main, feat/new-feature, refs/pull/1234/head'
+        required: false
+        default: 'main'
+      tag:
+        description: 'The tag to use, generally a feature name'
+        required: false
+        type: string
+      dry_run:
+        description: 'Perform a dry run that skips publishing and outputs logs indicating what would have happened'
+        type: boolean
+        default: false
 jobs:
   npm-publish:
     name: npm publish
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - package: '@discordjs/brokers'
-            folder: 'brokers'
-          - package: '@discordjs/builders'
-            folder: 'builders'
-          - package: '@discordjs/collection'
-            folder: 'collection'
-          - package: '@discordjs/core'
-            folder: 'core'
-          - package: '@discordjs/formatters'
-            folder: 'formatters'
-          - package: 'discord.js'
-            folder: 'discord.js'
-          - package: '@discordjs/next'
-            folder: 'next'
-          - package: '@discordjs/proxy'
-            folder: 'proxy'
-          - package: '@discordjs/rest'
-            folder: 'rest'
-          - package: '@discordjs/util'
-            folder: 'util'
-          - package: '@discordjs/voice'
-            folder: 'voice'
-          - package: '@discordjs/ws'
-            folder: 'ws'
     runs-on: ubuntu-latest
     permissions:
       id-token: write
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     if: github.repository_owner == 'discordjs'
     steps:
+      - uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ vars.DISCORDJS_APP_ID }}
+          private-key: ${{ secrets.DISCORDJS_APP_KEY_RELEASE }}
+
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          token: ${{ steps.app-token.outputs.token }}
+          ref: ${{ inputs.ref }}
 
-      - name: Install Node.js v22
-        uses: actions/setup-node@v4
+      - name: Install Node.js v24
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
+          package-manager-cache: false
           registry-url: https://registry.npmjs.org/
 
-      - name: Check the current development version
-        id: release-check
-        run: |
-          if [[ $(npm view ${{ matrix.package }}@dev version | grep -e "$(git rev-parse --short HEAD)") ]]; \
-            then echo "RELEASE=0" >> "$GITHUB_OUTPUT"; \
-            else echo "RELEASE=1" >> "$GITHUB_OUTPUT"; \
-          fi
-
       - name: Install dependencies
-        if: steps.release-check.outputs.release == '1'
         uses: ./packages/actions/src/pnpmCache
 
       - name: Build dependencies
-        if: steps.release-check.outputs.release == '1'
         run: pnpm run build
 
-      - name: Publish package
-        if: steps.release-check.outputs.release == '1'
-        run: |
-          pnpm --filter=${{ matrix.package }} run release --preid "dev.$(date +%s)-$(git rev-parse --short HEAD)" --skip-changelog
-          pnpm --filter=${{ matrix.package }} publish --provenance --no-git-checks --tag dev || true
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+      - name: Checkout main repository (non-main ref)
+        if: ${{ inputs.ref != 'main' }}
+        uses: actions/checkout@v6
+        with:
+          path: 'main'
 
-      - name: Deprecate prior development releases
-        if: steps.release-check.outputs.release == '1'
-        run: pnpm exec npm-deprecate --name "*dev*" --message "This version is deprecated. Please use a newer version." --package ${{ matrix.package }}
+      - name: Install action deps (non-main ref)
+        if: ${{ inputs.ref != 'main' }}
+        shell: bash
+        working-directory: ./main
+        env:
+          COREPACK_ENABLE_STRICT: 0
+        run: |
+          pnpm self-update 10
+          pnpm install --filter @discordjs/actions --frozen-lockfile --prefer-offline --loglevel error
+
+      - name: Publish packages (non-main ref)
+        if: ${{ inputs.ref != 'main' }}
+        uses: ./main/packages/actions/src/releasePackages
+        with:
+          exclude: '@discordjs/docgen'
+          dry: ${{ inputs.dry_run }}
+          dev: true
+          tag: ${{ inputs.tag || 'dev' }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish packages (main ref)
+        if: ${{ inputs.ref == 'main' }}
+        uses: ./packages/actions/src/releasePackages
+        with:
+          exclude: '@discordjs/docgen'
+          dry: ${{ inputs.dry_run }}
+          dev: true
+          tag: ${{ inputs.tag || 'dev' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

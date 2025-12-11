@@ -17,9 +17,9 @@ export class ChannelSelectMenuBuilder extends BaseSelectMenuBuilder<APIChannelSe
 	protected override readonly data: Partial<APIChannelSelectComponent>;
 
 	/**
-	 * Creates a new select menu from API data.
+	 * Creates a new channel select menu.
 	 *
-	 * @param data - The API data to create this select menu with
+	 * @param data - The API data to create this channel select menu with
 	 * @example
 	 * Creating a select menu from an API data object:
 	 * ```ts

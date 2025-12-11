@@ -8,6 +8,7 @@ const { flatten } = require('../../util/Util.js');
 
 /**
  * Filter to be applied to the collector.
+ *
  * @typedef {Function} CollectorFilter
  * @param {...*} args Any arguments received by the listener
  * @param {Collection} collection The items collected by this collector
@@ -16,6 +17,7 @@ const { flatten } = require('../../util/Util.js');
 
 /**
  * Options to be applied to the collector.
+ *
  * @typedef {Object} CollectorOptions
  * @property {CollectorFilter} [filter] The filter applied to this collector
  * @property {number} [time] How long to run the collector for in milliseconds
@@ -25,6 +27,7 @@ const { flatten } = require('../../util/Util.js');
 
 /**
  * Abstract class for defining a new Collector.
+ *
  * @extends {AsyncEventEmitter}
  * @abstract
  */
@@ -34,6 +37,7 @@ class Collector extends AsyncEventEmitter {
 
     /**
      * The client that instantiated this Collector
+     *
      * @name Collector#client
      * @type {Client}
      * @readonly
@@ -42,6 +46,7 @@ class Collector extends AsyncEventEmitter {
 
     /**
      * The filter applied to this collector
+     *
      * @type {CollectorFilter}
      * @returns {boolean|Promise<boolean>}
      */
@@ -49,24 +54,28 @@ class Collector extends AsyncEventEmitter {
 
     /**
      * The options of this collector
+     *
      * @type {CollectorOptions}
      */
     this.options = options;
 
     /**
      * The items collected by this collector
+     *
      * @type {Collection}
      */
     this.collected = new Collection();
 
     /**
      * Whether this collector has finished collecting
+     *
      * @type {boolean}
      */
     this.ended = false;
 
     /**
      * Timeout for cleanup
+     *
      * @type {?Timeout}
      * @private
      */
@@ -74,6 +83,7 @@ class Collector extends AsyncEventEmitter {
 
     /**
      * Timeout for cleanup due to inactivity
+     *
      * @type {?Timeout}
      * @private
      */
@@ -81,6 +91,7 @@ class Collector extends AsyncEventEmitter {
 
     /**
      * The reason the collector ended
+     *
      * @type {?string}
      * @private
      */
@@ -98,6 +109,7 @@ class Collector extends AsyncEventEmitter {
 
     /**
      * The timestamp at which this collector last collected an item
+     *
      * @type {?number}
      */
     this.lastCollectedTimestamp = null;
@@ -105,6 +117,7 @@ class Collector extends AsyncEventEmitter {
 
   /**
    * The Date at which this collector last collected an item
+   *
    * @type {?Date}
    */
   get lastCollectedAt() {
@@ -113,6 +126,7 @@ class Collector extends AsyncEventEmitter {
 
   /**
    * Call this to handle an event as a collectable element. Accepts any event data as parameters.
+   *
    * @param {...*} args The arguments emitted by the listener
    * @returns {Promise<void>}
    * @emits Collector#collect
@@ -127,6 +141,7 @@ class Collector extends AsyncEventEmitter {
 
         /**
          * Emitted whenever an element is collected.
+         *
          * @event Collector#collect
          * @param {...*} args The arguments emitted by the listener
          */
@@ -140,17 +155,20 @@ class Collector extends AsyncEventEmitter {
       } else {
         /**
          * Emitted whenever an element is not collected by the collector.
+         *
          * @event Collector#ignore
          * @param {...*} args The arguments emitted by the listener
          */
         this.emit('ignore', ...args);
       }
     }
+
     this.checkEnd();
   }
 
   /**
    * Call this to remove an element from the collection. Accepts any event data as parameters.
+   *
    * @param {...*} args The arguments emitted by the listener
    * @returns {Promise<void>}
    * @emits Collector#dispose
@@ -164,6 +182,7 @@ class Collector extends AsyncEventEmitter {
 
     /**
      * Emitted whenever an element is disposed of.
+     *
      * @event Collector#dispose
      * @param {...*} args The arguments emitted by the listener
      */
@@ -174,6 +193,7 @@ class Collector extends AsyncEventEmitter {
   /**
    * Returns a promise that resolves with the next collected element;
    * rejects with collected elements if the collector finishes without receiving a next element
+   *
    * @type {Promise}
    * @readonly
    */
@@ -185,7 +205,9 @@ class Collector extends AsyncEventEmitter {
       }
 
       const cleanup = () => {
+        // eslint-disable-next-line no-use-before-define
         this.removeListener('collect', onCollect);
+        // eslint-disable-next-line no-use-before-define
         this.removeListener('end', onEnd);
       };
 
@@ -206,6 +228,7 @@ class Collector extends AsyncEventEmitter {
 
   /**
    * Stops this collector and emits the `end` event.
+   *
    * @param {string} [reason='user'] The reason this collector is ending
    * @emits Collector#end
    */
@@ -216,6 +239,7 @@ class Collector extends AsyncEventEmitter {
       clearTimeout(this._timeout);
       this._timeout = null;
     }
+
     if (this._idletimeout) {
       clearTimeout(this._idletimeout);
       this._idletimeout = null;
@@ -226,6 +250,7 @@ class Collector extends AsyncEventEmitter {
 
     /**
      * Emitted when the collector is finished collecting.
+     *
      * @event Collector#end
      * @param {Collection} collected The elements collected by the collector
      * @param {string} reason The reason the collector ended
@@ -235,6 +260,7 @@ class Collector extends AsyncEventEmitter {
 
   /**
    * Options used to reset the timeout and idle timer of a {@link Collector}.
+   *
    * @typedef {Object} CollectorResetTimerOptions
    * @property {number} [time] How long to run the collector for (in milliseconds)
    * @property {number} [idle] How long to wait to stop the collector after inactivity (in milliseconds)
@@ -242,6 +268,7 @@ class Collector extends AsyncEventEmitter {
 
   /**
    * Resets the collector's timeout and idle timer.
+   *
    * @param {CollectorResetTimerOptions} [options] Options for resetting
    */
   resetTimer({ time, idle } = {}) {
@@ -249,6 +276,7 @@ class Collector extends AsyncEventEmitter {
       clearTimeout(this._timeout);
       this._timeout = setTimeout(() => this.stop('time'), time ?? this.options.time).unref();
     }
+
     if (this._idletimeout) {
       clearTimeout(this._idletimeout);
       this._idletimeout = setTimeout(() => this.stop('idle'), idle ?? this.options.idle).unref();
@@ -257,6 +285,7 @@ class Collector extends AsyncEventEmitter {
 
   /**
    * Checks whether the collector should end, and if so, ends it.
+   *
    * @returns {boolean} Whether the collector ended or not
    */
   checkEnd() {
@@ -267,6 +296,7 @@ class Collector extends AsyncEventEmitter {
 
   /**
    * Allows collectors to be consumed with for-await-of loops
+   *
    * @see {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/for-await...of}
    */
   async *[Symbol.asyncIterator]() {
@@ -279,13 +309,13 @@ class Collector extends AsyncEventEmitter {
         if (queue.length) {
           yield queue.shift();
         } else {
-          // eslint-disable-next-line no-await-in-loop
           await new Promise(resolve => {
             const tick = () => {
               this.removeListener('collect', tick);
               this.removeListener('end', tick);
-              return resolve();
+              resolve();
             };
+
             this.on('collect', tick);
             this.on('end', tick);
           });
@@ -300,9 +330,9 @@ class Collector extends AsyncEventEmitter {
     return flatten(this);
   }
 
-  /* eslint-disable no-empty-function */
   /**
    * The reason this collector has ended with, or null if it hasn't ended yet
+   *
    * @type {?string}
    * @readonly
    */
@@ -313,23 +343,26 @@ class Collector extends AsyncEventEmitter {
   /**
    * Handles incoming events from the `handleCollect` function. Returns null if the event should not
    * be collected, or returns an object describing the data that should be stored.
+   *
    * @see Collector#handleCollect
    * @param {...*} args Any args the event listener emits
    * @returns {?(*|Promise<?*>)} Data to insert into collection, if any
    * @abstract
    */
-  collect() {}
+  // eslint-disable-next-line no-unused-vars
+  collect(...args) {}
 
   /**
    * Handles incoming events from the `handleDispose`. Returns null if the event should not
    * be disposed, or returns the key that should be removed.
+   *
    * @see Collector#handleDispose
    * @param {...*} args Any args the event listener emits
    * @returns {?*} Key to remove from the collection, if any
    * @abstract
    */
-  dispose() {}
-  /* eslint-enable no-empty-function */
+  // eslint-disable-next-line no-unused-vars
+  dispose(...args) {}
 }
 
 exports.Collector = Collector;

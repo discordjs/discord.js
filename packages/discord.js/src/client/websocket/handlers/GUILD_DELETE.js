@@ -11,6 +11,7 @@ module.exports = (client, { d: data }) => {
 
     /**
      * Emitted whenever a guild becomes unavailable, likely due to a server outage.
+     *
      * @event Client#guildUnavailable
      * @param {Guild} guild The guild that has become unavailable
      */
@@ -28,6 +29,7 @@ module.exports = (client, { d: data }) => {
 
   /**
    * Emitted whenever a guild kicks the client or the guild is deleted/left.
+   *
    * @event Client#guildDelete
    * @param {Guild} guild The guild that was deleted
    */

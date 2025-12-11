@@ -1,0 +1,11 @@
+{
+	"extends": "../../api-extractor.json",
+	"docModel": {
+		"projectFolderUrl": "https://github.com/discordjs/discord.js/tree/main/packages/structures"
+	},
+	"compiler": {
+		"overrideTsconfig": {
+			"exclude": ["src/**/*.d.ts"]
+		}
+	}
+}

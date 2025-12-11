@@ -10,6 +10,7 @@ module.exports = (client, { d: data }) => {
 
   /**
    * Emitted whenever a guild scheduled event is created.
+   *
    * @event Client#guildScheduledEventCreate
    * @param {GuildScheduledEvent} guildScheduledEvent The created guild scheduled event
    */
