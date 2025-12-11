@@ -30,6 +30,7 @@ import {
 	type RESTGetAPIGuildPruneCountResult,
 	type RESTGetAPIGuildQuery,
 	type RESTGetAPIGuildResult,
+	type RESTGetAPIGuildRoleMemberCountsResult,
 	type RESTGetAPIGuildRoleResult,
 	type RESTGetAPIGuildRolesResult,
 	type RESTGetAPIGuildScheduledEventQuery,
@@ -1499,5 +1500,18 @@ export class GuildsAPI {
 			body,
 			signal,
 		}) as Promise<RESTPutAPIGuildIncidentActionsResult>;
+	}
+
+	/**
+	 * Fetches role member counts for a guild.
+	 *
+	 * @see {@link https://docs.discord.com/developers/resources/guild#get-guild-role-member-counts}
+	 * @param guildId - The id of the guild to fetch role member counts for
+	 * @param options - The options for fetching role member counts
+	 */
+	public async getRoleMemberCounts(guildId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+		return this.rest.get(Routes.guildRoleMemberCounts(guildId), {
+			signal,
+		}) as Promise<RESTGetAPIGuildRoleMemberCountsResult>;
 	}
 }
