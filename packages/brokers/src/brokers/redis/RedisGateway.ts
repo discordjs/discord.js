@@ -1,17 +1,13 @@
-import type { Gateway, GatewayDispatchPayload, GatewayDispatchEvents, GatewaySendPayload } from '@discordjs/core';
+import type { Gateway, GatewayDispatchPayload, GatewaySendPayload, GatewayDispatchEvents } from '@discordjs/core';
 import type { ManagerShardEventsMap, WebSocketShardEvents } from '@discordjs/ws';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import type { PubSubRedisBroker } from './PubSubRedis.js';
 
 // need this to be its own type for some reason, the compiler doesn't behave the same way if we in-line it
-type _DiscordEvents = {
+export type DiscordEvents = {
 	[K in GatewayDispatchEvents]: GatewayDispatchPayload & {
 		t: K;
 	};
-};
-
-export type DiscordEvents = {
-	[K in keyof _DiscordEvents]: _DiscordEvents[K]['d'];
 };
 
 interface BrokerIntrinsicProps {
@@ -50,7 +46,7 @@ export type RedisBrokerDiscordEvents = {
  * const gateway = new WebSocketManager(gatewayOptionsHere); // see @discordjs/ws for examples.
  *
  * // emit events over the broker
- * gateway.on(WebSocketShardEvents.Dispatch, (...data) => void broker.publish(RedisGateway.toPublishArgs(data));
+ * gateway.on(WebSocketShardEvents.Dispatch, (...data) => void broker.publish(...RedisGateway.toPublishArgs(data));
  *
  * // listen to payloads we should send to Discord
  * broker.on(RedisGateway.GatewaySendEvent, async ({ data: { payload, shardId }, ack }) => {
@@ -94,9 +90,9 @@ export class RedisGateway
 	 */
 	public static toPublishArgs(
 		data: [payload: GatewayDispatchPayload, shardId: number],
-	): [GatewayDispatchEvents, BrokerIntrinsicProps & { payload: GatewayDispatchPayload['d'] }] {
+	): [GatewayDispatchEvents, BrokerIntrinsicProps & { payload: GatewayDispatchPayload }] {
 		const [payload, shardId] = data;
-		return [payload.t, { shardId, payload: payload.d }];
+		return [payload.t, { shardId, payload }];
 	}
 
 	public constructor(
@@ -125,7 +121,7 @@ export class RedisGateway
 				}: {
 					// eslint-disable-next-line @typescript-eslint/method-signature-style
 					ack: () => Promise<void>;
-					data: BrokerIntrinsicProps & { payload: any };
+					data: BrokerIntrinsicProps & { payload: GatewayDispatchPayload };
 				}) => {
 					this.emit('dispatch', payload, shardId);
 					void ack();
