@@ -10,7 +10,6 @@ import type {
   APIInteractionDataResolvedChannel,
   APIInteractionDataResolvedGuildMember,
   APIInteractionGuildMember,
-  APIMessage,
   APIPartialChannel,
   APIPartialGuild,
   APIRole,
@@ -204,7 +203,6 @@ import type {
 } from './index.js';
 import {
   ActionRowBuilder,
-  AttachmentBuilder,
   ChannelSelectMenuBuilder,
   Client,
   Collection,
@@ -231,7 +229,7 @@ import {
   UserSelectMenuComponent,
   UserSelectMenuInteraction,
   Webhook,
-  WebhookClient,
+  MessageBuilder,
 } from './index.js';
 
 // Test type transformation:
@@ -455,15 +453,9 @@ client.on('messageCreate', async message => {
   assertIsMessage(client.channels.createMessage(channel, {}));
   assertIsMessage(client.channels.createMessage(channel, { embeds: [] }));
 
-  const attachment = new AttachmentBuilder('file.png');
   const embed = new EmbedBuilder();
-  assertIsMessage(channel.send({ files: [attachment] }));
   assertIsMessage(channel.send({ embeds: [embed] }));
-  assertIsMessage(channel.send({ embeds: [embed], files: [attachment] }));
-
-  assertIsMessage(client.channels.createMessage(channel, { files: [attachment] }));
   assertIsMessage(client.channels.createMessage(channel, { embeds: [embed] }));
-  assertIsMessage(client.channels.createMessage(channel, { embeds: [embed], files: [attachment] }));
 
   if (message.inGuild()) {
     expectAssignable<Message<true>>(message);
@@ -2683,7 +2675,6 @@ expectType<UserMention>(user.toString());
 expectType<UserMention>(guildMember.toString());
 
 declare const webhook: Webhook;
-declare const webhookClient: WebhookClient;
 declare const interactionWebhook: InteractionWebhook;
 declare const snowflake: Snowflake;
 
@@ -2691,10 +2682,6 @@ expectType<Promise<Message<true>>>(webhook.send('content'));
 expectType<Promise<Message<true>>>(webhook.editMessage(snowflake, 'content'));
 expectType<Promise<Message<true>>>(webhook.fetchMessage(snowflake));
 expectType<Promise<Webhook>>(webhook.edit({ name: 'name' }));
-
-expectType<Promise<APIMessage>>(webhookClient.send('content'));
-expectType<Promise<APIMessage>>(webhookClient.editMessage(snowflake, 'content'));
-expectType<Promise<APIMessage>>(webhookClient.fetchMessage(snowflake));
 
 expectType<Client<true>>(interactionWebhook.client);
 expectType<Promise<Message>>(interactionWebhook.send('content'));
@@ -3041,14 +3028,11 @@ await guildScheduledEventManager.edit(snowflake, { recurrenceRule: null });
   });
 }
 
-await textChannel.send({
-  files: [
-    new AttachmentBuilder('https://example.com/voice-message.ogg')
-      .setDuration(2)
-      .setWaveform('AFUqPDw3Eg2hh4+gopOYj4xthU4='),
-  ],
-  flags: MessageFlags.IsVoiceMessage,
-});
+await textChannel.send(
+  new MessageBuilder()
+    .setContent(':)')
+    .addAttachments(attachment => attachment.setId(1).setFileData(':)').setFilename('smiley.txt')),
+);
 
 await textChannel.send({
   files: [

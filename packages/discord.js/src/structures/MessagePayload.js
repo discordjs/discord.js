@@ -1,12 +1,19 @@
 'use strict';
 
 const { Buffer } = require('node:buffer');
-const { isJSONEncodable } = require('@discordjs/util');
+const { isJSONEncodable, lazy } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
 const { resolveFile } = require('../util/DataResolver.js');
 const { MessageFlagsBitField } = require('../util/MessageFlagsBitField.js');
 const { findName, verifyString, resolvePartialEmoji } = require('../util/Util.js');
+
+// Fixes circular dependencies.
+const getWebhook = lazy(() => require('./Webhook.js').Webhook);
+const getUser = lazy(() => require('./User.js').User);
+const getGuildMember = lazy(() => require('./GuildMember.js').GuildMember);
+const getMessage = lazy(() => require('./Message.js').Message);
+const getMessageManager = lazy(() => require('../managers/MessageManager.js').MessageManager);
 
 /**
  * Represents a message to be sent to the API.
@@ -47,15 +54,13 @@ class MessagePayload {
   }
 
   /**
-   * Whether or not the target is a {@link Webhook} or a {@link WebhookClient}
+   * Whether or not the target is a {@link Webhook}
    *
    * @type {boolean}
    * @readonly
    */
   get isWebhook() {
-    const { Webhook } = require('./Webhook.js');
-    const { WebhookClient } = require('../client/WebhookClient.js');
-    return this.target instanceof Webhook || this.target instanceof WebhookClient;
+    return this.target instanceof getWebhook();
   }
 
   /**
@@ -65,9 +70,7 @@ class MessagePayload {
    * @readonly
    */
   get isUser() {
-    const { User } = require('./User.js');
-    const { GuildMember } = require('./GuildMember.js');
-    return this.target instanceof User || this.target instanceof GuildMember;
+    return this.target instanceof getUser() || this.target instanceof getGuildMember();
   }
 
   /**
@@ -77,8 +80,7 @@ class MessagePayload {
    * @readonly
    */
   get isMessage() {
-    const { Message } = require('./Message.js');
-    return this.target instanceof Message;
+    return this.target instanceof getMessage();
   }
 
   /**
@@ -88,8 +90,7 @@ class MessagePayload {
    * @readonly
    */
   get isMessageManager() {
-    const { MessageManager } = require('../managers/MessageManager.js');
-    return this.target instanceof MessageManager;
+    return this.target instanceof getMessageManager();
   }
 
   /**
@@ -196,10 +197,13 @@ class MessagePayload {
       waveform: file.waveform,
       duration_secs: file.duration,
     }));
+
+    // Only passable during edits
     if (Array.isArray(this.options.attachments)) {
-      this.options.attachments.push(...(attachments ?? []));
-    } else {
-      this.options.attachments = attachments;
+      attachments.push(
+        // Note how we don't check for file body encodable, since we aren't expecting file data here
+        ...this.options.attachments.map(attachment => (isJSONEncodable(attachment) ? attachment.toJSON() : attachment)),
+      );
     }
 
     let poll;
@@ -236,7 +240,7 @@ class MessagePayload {
           : allowedMentions,
       flags,
       message_reference,
-      attachments: this.options.attachments,
+      attachments,
       sticker_ids: this.options.stickers?.map(sticker => sticker.id ?? sticker),
       thread_name: threadName,
       applied_tags: appliedTags,
@@ -302,7 +306,7 @@ exports.MessagePayload = MessagePayload;
 /**
  * A target for a message.
  *
- * @typedef {TextBasedChannels|ChannelManager|Webhook|WebhookClient|BaseInteraction|InteractionWebhook|
+ * @typedef {TextBasedChannels|ChannelManager|Webhook|BaseInteraction|InteractionWebhook|
  * Message|MessageManager} MessageTarget
  */
 

@@ -1,4 +1,5 @@
 import unocss from '@unocss/eslint-plugin';
+import { defineConfig } from 'eslint/config';
 import common from 'eslint-config-neon/common';
 import edge from 'eslint-config-neon/edge';
 import jsxa11y from 'eslint-config-neon/jsx-a11y';
@@ -11,13 +12,31 @@ import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescrip
 import reactCompiler from 'eslint-plugin-react-compiler';
 // import oxlint from 'eslint-plugin-oxlint';
 import merge from 'lodash.merge';
-import tseslint from 'typescript-eslint';
 
 const commonFiles = '{js,mjs,cjs,ts,mts,cts,jsx,tsx}';
 
 const commonRuleset = merge(...common, { files: [`**/*${commonFiles}`] });
 
-const nodeRuleset = merge(...node, { files: [`**/*${commonFiles}`] });
+const nodeRuleset = merge(...node, {
+	files: [`**/*${commonFiles}`],
+	rules: {
+		'no-restricted-globals': 0,
+		'n/prefer-global/buffer': [2, 'never'],
+		'n/prefer-global/console': [2, 'always'],
+		'n/prefer-global/process': [2, 'never'],
+		'n/prefer-global/text-decoder': [2, 'always'],
+		'n/prefer-global/text-encoder': [2, 'always'],
+		'n/prefer-global/url-search-params': [2, 'always'],
+		'n/prefer-global/url': [2, 'always'],
+	},
+});
+
+const nodeBinRuleset = {
+	files: [`**/bin/*{js,mjs,cjs,ts,mts,cts}`],
+	rules: {
+		'n/shebang': [0],
+	},
+};
 
 const typeScriptRuleset = merge(...typescript, {
 	files: [`**/*${commonFiles}`],
@@ -78,7 +97,7 @@ const prettierRuleset = merge(...prettier, { files: [`**/*${commonFiles}`] });
 
 // const oxlintRuleset = merge({ rules: oxlint.rules }, { files: [`**/*${commonFiles}`] });
 
-export default tseslint.config(
+export default defineConfig(
 	{
 		ignores: [
 			'**/node_modules/',
@@ -93,6 +112,7 @@ export default tseslint.config(
 	},
 	commonRuleset,
 	nodeRuleset,
+	nodeBinRuleset,
 	typeScriptRuleset,
 	{
 		files: ['**/*{ts,mts,cts,tsx}'],
@@ -123,7 +143,6 @@ export default tseslint.config(
 	{
 		files: [`packages/{api-extractor,api-extractor-model,api-extractor-utils}/**/*${commonFiles}`],
 		rules: {
-			'n/prefer-global/process': 0,
 			'@typescript-eslint/naming-convention': 0,
 			'@typescript-eslint/no-empty-interface': 0,
 			'@typescript-eslint/no-empty-object-type': 0,
@@ -236,11 +255,6 @@ export default tseslint.config(
 	{
 		files: [`packages/rest/**/*${commonFiles}`],
 		rules: {
-			'n/prefer-global/url': 0,
-			'n/prefer-global/url-search-params': 0,
-			'n/prefer-global/buffer': 0,
-			'n/prefer-global/process': 0,
-			'no-restricted-globals': 0,
 			'unicorn/prefer-node-protocol': 0,
 		},
 	},
@@ -255,8 +269,6 @@ export default tseslint.config(
 	{
 		files: [`packages/voice/**/*${commonFiles}`],
 		rules: {
-			'no-restricted-globals': 0,
-			'n/prefer-global/buffer': 0,
 			'@typescript-eslint/no-unsafe-declaration-merging': 0,
 		},
 	},

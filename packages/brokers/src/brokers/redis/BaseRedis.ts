@@ -81,9 +81,9 @@ export const DefaultRedisBrokerOptions = {
  * Helper class with shared Redis logic
  */
 export abstract class BaseRedisBroker<
-		TEvents extends Record<string, any[]>,
-		TResponses extends Record<keyof TEvents, any> | undefined = undefined,
-	>
+	TEvents extends Record<string, any[]>,
+	TResponses extends Record<keyof TEvents, any> | undefined = undefined,
+>
 	extends AsyncEventEmitter<ToEventMap<TEvents, TResponses>>
 	implements IBaseBroker<TEvents>
 {

@@ -9,6 +9,7 @@ const { ModalComponentResolver } = require('./ModalComponentResolver.js');
 const { InteractionResponses } = require('./interfaces/InteractionResponses.js');
 
 const getMessage = lazy(() => require('./Message.js').Message);
+const getAttachment = lazy(() => require('./Attachment.js').Attachment);
 
 /**
  * @typedef {Object} BaseModalData
@@ -20,10 +21,17 @@ const getMessage = lazy(() => require('./Message.js').Message);
  * @typedef {BaseModalData} SelectMenuModalData
  * @property {string} customId The custom id of the component
  * @property {string[]} values The values of the component
- * @property {Collection<string, GuildMember|APIGuildMember>} [members] The resolved members
- * @property {Collection<string, User|APIUser>} [users] The resolved users
- * @property {Collection<string, Role|APIRole>} [roles] The resolved roles
- * @property {Collection<string, BaseChannel|APIChannel>} [channels] The resolved channels
+ * @property {Collection<Snowflake, GuildMember|APIGuildMember>} [members] The resolved members
+ * @property {Collection<Snowflake, User|APIUser>} [users] The resolved users
+ * @property {Collection<Snowflake, Role|APIRole>} [roles] The resolved roles
+ * @property {Collection<Snowflake, BaseChannel|APIChannel>} [channels] The resolved channels
+ */
+
+/**
+ * @typedef {BaseModalData} FileUploadModalData
+ * @property {string} customId The custom id of the file upload
+ * @property {Snowflake[]} values The values of the file upload
+ * @property {Collection<Snowflake, Attachment>} [attachments] The resolved attachments
  */
 
 /**
@@ -37,7 +45,7 @@ const getMessage = lazy(() => require('./Message.js').Message);
  */
 
 /**
- * @typedef {SelectMenuModalData|TextInputModalData} ModalData
+ * @typedef {SelectMenuModalData|TextInputModalData|FileUploadModalData} ModalData
  */
 
 /**
@@ -155,7 +163,7 @@ class ModalSubmitInteraction extends BaseInteraction {
     if (rawComponent.values) {
       data.values = rawComponent.values;
       if (resolved) {
-        const { members, users, channels, roles } = resolved;
+        const { members, users, channels, roles, attachments } = resolved;
         const valueSet = new Set(rawComponent.values);
 
         if (users) {
@@ -195,6 +203,15 @@ class ModalSubmitInteraction extends BaseInteraction {
           for (const [id, role] of Object.entries(roles)) {
             if (valueSet.has(id)) {
               data.roles.set(id, this.guild?.roles._add(role) ?? role);
+            }
+          }
+        }
+
+        if (attachments) {
+          data.attachments = new Collection();
+          for (const [id, attachment] of Object.entries(attachments)) {
+            if (valueSet.has(id)) {
+              data.attachments.set(id, new (getAttachment())(attachment));
             }
           }
         }
