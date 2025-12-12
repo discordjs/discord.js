@@ -67,14 +67,14 @@
 	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
+		"@discordjs/core": "workspace:^",
+		"@discordjs/ws": "workspace:^",
 		"@msgpack/msgpack": "^3.1.3",
 		"@vladfrangu/async_event_emitter": "^2.4.7",
 		"ioredis": "^5.9.3"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
-		"@discordjs/core": "workspace:^",
-		"@discordjs/ws": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^6.0.0",
 		"@types/node": "^22.19.11",
