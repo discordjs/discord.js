@@ -200,6 +200,7 @@ import type {
   VoiceChannel,
   Invite,
   GuildInvite,
+  ApplicationCommandPermissions,
 } from './index.js';
 import {
   ActionRowBuilder,
@@ -1718,6 +1719,16 @@ declare const guildApplicationCommandManager: GuildApplicationCommandManager;
 expectType<Promise<ApplicationCommand>>(guildApplicationCommandManager.fetch('0'));
 expectType<Promise<ApplicationCommand>>(guildApplicationCommandManager.fetch({ id: '0' }));
 expectType<Promise<Collection<Snowflake, ApplicationCommand>>>(guildApplicationCommandManager.fetch());
+expectType<Promise<ApplicationCommandPermissions[]>>(
+  guildApplicationCommandManager.permissions.fetch({ command: '0' }),
+);
+expectType<Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>>(
+  guildApplicationCommandManager.permissions.fetch({}),
+);
+// https://github.com/discordjs/discord.js/issues/8096
+expectType<Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>>(
+  guildApplicationCommandManager.permissions.fetch(),
+);
 
 declare const categoryChannelChildManager: CategoryChannelChildManager;
 {
