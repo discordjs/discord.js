@@ -107,7 +107,7 @@ class UserManager extends CachedManager {
    *
    * @param {UserResolvable} user The UserResolvable to identify
    * @param {string|MessagePayload|MessageCreateOptions} options The options to provide
-   * @returns {Promise<Message>}
+   * @returns {Promise<Message<false>>}
    */
   async send(user, options) {
     return (await this.createDM(user)).send(options);

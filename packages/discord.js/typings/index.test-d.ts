@@ -1532,6 +1532,12 @@ expectType<SendMethod<true>['send']>(voiceChannel.send);
 expectAssignable<SendMethod>(user);
 expectAssignable<SendMethod>(guildMember);
 
+// Test UserManager.send() returns Promise<Message<false>> (DM)
+{
+  const readyClient: Client<true> = {} as Client<true>;
+  expectType<Promise<Message<false>>>(readyClient.users.send(user, 'test'));
+}
+
 expectType<Promise<AnnouncementChannel>>(textChannel.setType(ChannelType.GuildAnnouncement));
 expectType<Promise<TextChannel>>(announcementChannel.setType(ChannelType.GuildText));
 
