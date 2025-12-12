@@ -1,7 +1,23 @@
 /* eslint-disable no-lone-blocks, @typescript-eslint/unbound-method, @typescript-eslint/ban-ts-comment, no-param-reassign, id-length */
 import type { ChildProcess } from 'node:child_process';
 import type { Worker } from 'node:worker_threads';
-import type { ChatInputCommandBuilder, ContextMenuCommandBuilder } from '@discordjs/builders';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ChannelSelectMenuBuilder,
+  createComponentBuilder,
+  EmbedBuilder,
+  MentionableSelectMenuBuilder,
+  MessageBuilder,
+  ModalBuilder,
+  PrimaryButtonBuilder,
+  RoleSelectMenuBuilder,
+  StringSelectMenuBuilder,
+  TextInputBuilder,
+  UserSelectMenuBuilder,
+  type ChatInputCommandBuilder,
+  type ContextMenuCommandBuilder,
+} from '@discordjs/builders';
 import type { ReadonlyCollection } from '@discordjs/collection';
 import type {
   APIButtonComponent,
@@ -66,7 +82,6 @@ import type {
   AutoModerationRule,
   AutoModerationRuleManager,
   Awaitable,
-  ButtonBuilder,
   ButtonComponent,
   ButtonComponentData,
   ButtonInteraction,
@@ -142,7 +157,6 @@ import type {
   MessageManager,
   MessageMentions,
   MessageReaction,
-  ModalBuilder,
   ModalSubmitInteraction,
   NonThreadGuildBasedChannel,
   PartialDMChannel,
@@ -202,34 +216,23 @@ import type {
   GuildInvite,
 } from './index.js';
 import {
-  ActionRowBuilder,
-  ChannelSelectMenuBuilder,
   Client,
   Collection,
-  createComponentBuilder,
-  EmbedBuilder,
   Events,
   IntentsBitField,
-  MentionableSelectMenuBuilder,
   Options,
   PermissionsBitField,
-  PrimaryButtonBuilder,
   Status,
-  StringSelectMenuBuilder,
-  TextInputBuilder,
   resolveColor,
-  RoleSelectMenuBuilder,
   ShardEvents,
   TextDisplayComponentData,
   ThumbnailComponentData,
   UnfurledMediaItemData,
   UserContextMenuCommandInteraction,
   UserMention,
-  UserSelectMenuBuilder,
   UserSelectMenuComponent,
   UserSelectMenuInteraction,
   Webhook,
-  MessageBuilder,
 } from './index.js';
 
 // Test type transformation:
