@@ -418,12 +418,12 @@ class GuildChannelManager extends CachedManager {
    *   .catch(console.error);
    */
   async fetch(id, { cache = true, force = false } = {}) {
-    if (id && !force) {
+    if (id !== undefined && !force) {
       const existing = this.cache.get(id);
       if (existing) return existing;
     }
 
-    if (id) {
+    if (id !== undefined) {
       const innerData = await this.client.rest.get(Routes.channel(id));
       // Since this is the guild manager, throw if on a different guild
       if (this.guild.id !== innerData.guild_id) throw new DiscordjsError(ErrorCodes.GuildChannelUnowned);
