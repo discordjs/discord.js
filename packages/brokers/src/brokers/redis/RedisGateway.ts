@@ -3,7 +3,6 @@ import type { ManagerShardEventsMap, WebSocketShardEvents } from '@discordjs/ws'
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import type { PubSubRedisBroker } from './PubSubRedis.js';
 
-// need this to be its own type for some reason, the compiler doesn't behave the same way if we in-line it
 export type DiscordEvents = {
 	[K in GatewayDispatchEvents]: GatewayDispatchPayload & {
 		t: K;
