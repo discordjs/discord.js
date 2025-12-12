@@ -252,8 +252,6 @@ exports.WidgetMember = require('./structures/WidgetMember.js').WidgetMember;
 
 // External
 __exportStar(require('discord-api-types/v10'), exports);
-__exportStar(require('@discordjs/builders'), exports);
-__exportStar(require('@discordjs/formatters'), exports);
 __exportStar(require('@discordjs/rest'), exports);
 __exportStar(require('@discordjs/util'), exports);
 __exportStar(require('@discordjs/ws'), exports);
