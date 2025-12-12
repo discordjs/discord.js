@@ -27,12 +27,16 @@ export type RedisBrokerDiscordEvents = {
  * RedisGateway is an implementation for core's Gateway interface built on top of our Redis brokers.
  *
  * Some important notes:
- * - Instances for this class are for your consumers/services that need the gateway. naturally, the events passed into
+ * - Instances for this class are for your consumers/services that need the gateway. Naturally, the events passed into
  * `init` are the only ones the core client will be able to emit
  * - You can also opt to use the class as-is without `@discordjs/core`, if you so desire. Events are properly typed
  * - You need to implement your own gateway service. Refer to the example below for how that would look like. This class
  * offers some static methods and properties that help in this errand. It is extremely important that you `publish`
  * events as the receiving service expects, and also that you handle GatewaySend events.
+ * - One drawback to using this directly with `@discordjs/core` is that you lose granular control over when to `ack`
+ * events. This implementation `ack`s as soon as the event is emitted to listeners. In practice, this means that if your
+ * service crashes while handling an event, it's pretty arbitrary wether that event gets re-processed on restart or not.
+ * (Mostly dependant on if your handler is async or not, and also if the `ack` call has time to go through).
  *
  * @example
  * ```ts
