@@ -569,6 +569,63 @@ export function unorderedList(list: RecursiveArray<string>): string {
 }
 
 /**
+ * Options for formatting a table.
+ */
+export interface TableOptions {
+	/**
+	 * The columns to include in the table
+	 */
+	columns?: readonly string[];
+	/**
+	 * Whether to include a header row
+	 */
+	header?: boolean;
+}
+
+/**
+ * Formats an array of objects into a markdown table.
+ *
+ * @param data - The array of objects to format into a table
+ * @param options - The options for formatting the table
+ */
+export function table(data: readonly (readonly string[])[], options?: TableOptions): string {
+	if (data.length === 0) {
+		return '';
+	}
+
+	const { header = true, columns } = options ?? {};
+	const headers = columns ?? (data.length > 0 ? data[0] : undefined);
+
+	if (!headers || headers.length === 0) {
+		return '';
+	}
+
+	const rows = header && columns ? data : data.slice(header ? 1 : 0);
+
+	const widths = Array.from(headers).map((headerCell, columnIndex) => {
+		let maxWidth = headerCell.length;
+		for (const row of rows) {
+			const cell = row[columnIndex];
+			if (cell) {
+				maxWidth = Math.max(maxWidth, cell.length);
+			}
+		}
+
+		return maxWidth;
+	});
+
+	const headerRow = `| ${Array.from(headers)
+		.map((headerCell, columnIndex) => headerCell.padEnd(widths[columnIndex] ?? 0))
+		.join(' | ')} |`;
+	const separatorRow = `|${widths.map((width) => '-'.repeat(width + 2)).join('|')}|`;
+	const dataRows = rows.map(
+		(row) => `| ${row.map((cell, columnIndex) => (cell ?? '').padEnd(widths[columnIndex] ?? 0)).join(' | ')} |`,
+	);
+
+	return [headerRow, separatorRow, ...dataRows].join('\n');
+}
+
+/**
  * Formats the content into a subtext.
  *
  * @typeParam Content - This is inferred by the supplied content

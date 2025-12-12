@@ -31,6 +31,7 @@ import {
 	userMention,
 	email,
 	phoneNumber,
+	table,
 } from '../src/index.js';
 
 describe('Message formatters', () => {
@@ -397,6 +398,25 @@ describe('Message formatters', () => {
 
 		test('GIVEN Faces.Unflip THEN returns "┬─┬ノ( º _ ºノ)"', () => {
 			expect<'┬─┬ノ( º _ ºノ)'>(Faces.Unflip).toEqual('┬─┬ノ( º _ ºノ)');
+		});
+	});
+	describe('table', () => {
+		test('GIVEN a 2D array THEN returns a markdown table', () => {
+			const data = [
+				['Name', 'Age', 'City'],
+				['Alice', '30', 'New York'],
+				['Bob', '25', 'Los Angeles'],
+				['Charlie', '35', 'Chicago'],
+			];
+
+			const expectedTable =
+				'| Name    | Age | City        |\n' +
+				'|---------|-----|-------------|\n' +
+				'| Alice   | 30  | New York    |\n' +
+				'| Bob     | 25  | Los Angeles |\n' +
+				'| Charlie | 35  | Chicago     |';
+
+			expect(table(data)).toEqual(expectedTable);
 		});
 	});
 });
