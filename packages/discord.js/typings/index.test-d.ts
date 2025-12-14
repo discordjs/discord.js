@@ -100,6 +100,7 @@ import type {
   FetchedThreadsMore,
   FetchPinnedMessagesResponse,
   FileComponentData,
+  FileUploadModalData,
   ForumChannel,
   Guild,
   GuildApplicationCommandManager,
@@ -3044,3 +3045,7 @@ await textChannel.send({
   ],
   flags: MessageFlags.IsVoiceMessage,
 });
+
+// FileUploadModalData.attachments should be optional (issue #11359)
+declare const fileUploadModalData: FileUploadModalData;
+expectType<ReadonlyCollection<Snowflake, Attachment> | undefined>(fileUploadModalData.attachments);
