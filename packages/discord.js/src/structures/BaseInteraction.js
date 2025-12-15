@@ -124,7 +124,7 @@ class BaseInteraction extends Base {
     );
 
     /**
-     * Mapping of installation contexts that the interaction was authorized for the related user or guild ids
+     * Mapping of installation contexts that the integration was authorized for the related user or guild ids
      *
      * @type {AuthorizingIntegrationOwners}
      * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-authorizing-integration-owners-object}
