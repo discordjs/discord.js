@@ -1927,7 +1927,7 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   private readonly _cacheType: Cached;
   protected constructor(client: Client<true>, data: GatewayInteractionCreateDispatchData);
   public applicationId: Snowflake;
-  public authorizingIntegrationOwners: APIAuthorizingIntegrationOwnersMap;
+  public authorizingIntegrationOwners: AuthorizingIntegrationOwners;
   public get channel(): CacheTypeReducer<
     Cached,
     GuildTextBasedChannel | null,
@@ -2263,6 +2263,22 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public toString(): string;
   public unpin(reason?: string): Promise<OmitPartialGroupDMChannel<Message<InGuild>>>;
   public inGuild(): this is Message<true>;
+}
+
+export class AuthorizingIntegrationOwners extends Base {
+  private constructor(client: Client<true>, data: APIAuthorizingIntegrationOwnersMap);
+  private readonly data: APIAuthorizingIntegrationOwnersMap;
+
+  // Getters from types
+  public readonly [ApplicationIntegrationType.GuildInstall]?: Snowflake;
+  public readonly [ApplicationIntegrationType.UserInstall]?: Snowflake;
+
+  public readonly guildId: Snowflake | null;
+  public readonly guild: Guild | null;
+  public readonly userId: Snowflake | null;
+  public readonly user: User | null;
+
+  public toJSON(): APIAuthorizingIntegrationOwnersMap;
 }
 
 export class Attachment {
@@ -6642,7 +6658,7 @@ export interface MessageChannelComponentCollectorOptions<
 }
 
 export interface MessageInteractionMetadata {
-  authorizingIntegrationOwners: APIAuthorizingIntegrationOwnersMap;
+  authorizingIntegrationOwners: AuthorizingIntegrationOwners;
   id: Snowflake;
   interactedMessageId: Snowflake | null;
   originalResponseMessageId: Snowflake | null;

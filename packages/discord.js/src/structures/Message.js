@@ -414,7 +414,7 @@ class Message extends Base {
        * @property {Snowflake} id The interaction's id
        * @property {InteractionType} type The type of the interaction
        * @property {User} user The user that invoked the interaction
-       * @property {APIAuthorizingIntegrationOwnersMap} authorizingIntegrationOwners
+       * @property {AuthorizingIntegrationOwners} authorizingIntegrationOwners
        * Ids for installation context(s) related to an interaction
        * @property {?Snowflake} originalResponseMessageId
        * Id of the original response message. Present only on follow-up messages
