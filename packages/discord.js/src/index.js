@@ -105,6 +105,8 @@ exports.ActionRow = require('./structures/ActionRow.js').ActionRow;
 exports.Activity = require('./structures/Presence.js').Activity;
 exports.AnnouncementChannel = require('./structures/AnnouncementChannel.js').AnnouncementChannel;
 exports.AnonymousGuild = require('./structures/AnonymousGuild.js').AnonymousGuild;
+exports.AuthorizingIntegrationOwners =
+  require('./structures/AuthorizingIntegrationOwners.js').AuthorizingIntegrationOwners;
 exports.Application = require('./structures/interfaces/Application.js').Application;
 exports.ApplicationCommand = require('./structures/ApplicationCommand.js').ApplicationCommand;
 exports.ApplicationEmoji = require('./structures/ApplicationEmoji.js').ApplicationEmoji;
