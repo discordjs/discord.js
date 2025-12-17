@@ -822,7 +822,11 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (this === collection) return true;
 		if (this.size !== collection.size) return false;
 		for (const [key, value] of this) {
-			if (!collection.has(key) || value !== collection.get(key)) {
+			const otherValue = collection.get(key);
+			// If values differ, collections aren't equal.
+			// For undefined values, we must also verify the key exists in the other collection,
+			// since get() returns undefined for both missing keys and keys with undefined values.
+			if (otherValue !== value || (otherValue === undefined && !collection.has(key))) {
 				return false;
 			}
 		}

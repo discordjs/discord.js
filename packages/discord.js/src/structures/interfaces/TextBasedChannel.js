@@ -1,13 +1,16 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
+const { lazy } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { InteractionType, Routes } = require('discord-api-types/v10');
 const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../../errors/index.js');
 const { MaxBulkDeletableMessageAge } = require('../../util/Constants.js');
 const { InteractionCollector } = require('../InteractionCollector.js');
-// eslint-disable-next-line import-x/order
 const { MessageCollector } = require('../MessageCollector.js');
+
+// Fixes circular dependencies.
+const getGuildMessageManager = lazy(() => require('../../managers/GuildMessageManager.js').GuildMessageManager);
 
 /**
  * Interface for classes that have text-channel-like features.
@@ -21,8 +24,7 @@ class TextBasedChannel {
      *
      * @type {GuildMessageManager}
      */
-    // eslint-disable-next-line no-use-before-define
-    this.messages = new GuildMessageManager(this);
+    this.messages = new (getGuildMessageManager())(this);
 
     /**
      * The channel's last message id, if one was sent
@@ -86,7 +88,7 @@ class TextBasedChannel {
    * @property {Array<(EmbedBuilder|Embed|APIEmbed)>} [embeds] The embeds for the message
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * (see {@link https://discord.com/developers/docs/resources/message#allowed-mentions-object here} for more details)
-   * @property {Array<(AttachmentBuilder|Attachment|AttachmentPayload|BufferResolvable)>} [files]
+   * @property {Array<(Attachment|AttachmentPayload|BufferResolvable|FileBodyEncodable<APIAttachment>|Stream)>} [files]
    * The files to send with the message.
    * @property {Array<(ActionRowBuilder|MessageTopLevelComponent|APIMessageTopLevelComponent)>} [components]
    * Action rows containing interactive components for the message (buttons, select menus) and other
@@ -154,7 +156,7 @@ class TextBasedChannel {
   /**
    * Sends a message to this channel.
    *
-   * @param {string|MessagePayload|MessageCreateOptions} options The options to provide
+   * @param {string|MessagePayload|MessageCreateOptions|JSONEncodable<RESTPostAPIChannelMessageJSONBody>|FileBodyEncodable<RESTPostAPIChannelMessageJSONBody>} options The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Send a basic message
@@ -427,7 +429,3 @@ class TextBasedChannel {
 }
 
 exports.TextBasedChannel = TextBasedChannel;
-
-// Fixes Circular
-// eslint-disable-next-line import-x/order
-const { GuildMessageManager } = require('../../managers/GuildMessageManager.js');

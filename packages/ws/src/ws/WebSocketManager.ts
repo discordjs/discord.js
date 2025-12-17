@@ -205,8 +205,7 @@ export interface OptionalWebSocketManagerOptions {
 export interface WebSocketManagerOptions extends OptionalWebSocketManagerOptions, RequiredWebSocketManagerOptions {}
 
 export interface CreateWebSocketManagerOptions
-	extends Partial<OptionalWebSocketManagerOptions>,
-		RequiredWebSocketManagerOptions {}
+	extends Partial<OptionalWebSocketManagerOptions>, RequiredWebSocketManagerOptions {}
 
 export interface ManagerShardEventsMap {
 	[WebSocketShardEvents.Closed]: [code: number, shardId: number];

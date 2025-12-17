@@ -1,6 +1,6 @@
 import { mkdir, stat, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { cwd } from 'node:process';
+import process from 'node:process';
 import {
 	type ApiClass,
 	type ApiConstructor,
@@ -413,6 +413,8 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 					(block) => block.blockTag.tagNameWithUpperCase === StandardTags.defaultValue.tagNameWithUpperCase,
 				);
 
+				const unstableBlock = comment.customBlocks.find((block) => block.blockTag.tagNameWithUpperCase === '@UNSTABLE');
+
 				const mixesBlocks = comment.customBlocks.filter((block) => block.blockTag.tagNameWithUpperCase === '@MIXES');
 
 				return {
@@ -439,6 +441,11 @@ function itemTsDoc(item: DocNode, apiItem: ApiItem) {
 						: [],
 					returnsBlock: comment.returnsBlock
 						? createNode(comment.returnsBlock.content)
+								.flat(1)
+								.filter((val: any) => val.kind !== DocNodeKind.SoftBreak)
+						: [],
+					unstableBlock: unstableBlock
+						? createNode(unstableBlock.content)
 								.flat(1)
 								.filter((val: any) => val.kind !== DocNodeKind.SoftBreak)
 						: [],
@@ -994,14 +1001,14 @@ async function writeSplitDocsToFileSystem({
 	const dir = 'split';
 
 	try {
-		(await stat(join(cwd(), 'docs', packageName, dir))).isDirectory();
+		(await stat(join(process.cwd(), 'docs', packageName, dir))).isDirectory();
 	} catch {
-		await mkdir(join(cwd(), 'docs', packageName, dir), { recursive: true });
+		await mkdir(join(process.cwd(), 'docs', packageName, dir), { recursive: true });
 	}
 
 	await writeFile(
 		join(
-			cwd(),
+			process.cwd(),
 			'docs',
 			packageName,
 			dir,
