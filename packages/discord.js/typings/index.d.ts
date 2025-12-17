@@ -4205,7 +4205,9 @@ export class ApplicationCommandPermissionsManager<
     },
   ): Promise<boolean>;
   public fetch(options: FetchSingleOptions): Promise<ApplicationCommandPermissions[]>;
-  public fetch(options: BaseOptions): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
+  public fetch(
+    ...args: {} extends BaseOptions ? [] | [BaseOptions] : [BaseOptions]
+  ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
   public remove(
     options:
       | (FetchSingleOptions & {
