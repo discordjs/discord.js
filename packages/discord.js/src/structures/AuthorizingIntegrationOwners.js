@@ -1,7 +1,7 @@
 'use strict';
 
 const { ApplicationIntegrationType } = require('discord-api-types/v10');
-const { Base } = require('./Base');
+const { Base } = require('./Base.js');
 
 /**
  * Represents the owners of an authorizing integration.
@@ -44,7 +44,7 @@ class AuthorizingIntegrationOwners extends Base {
    * @type {?Guild}
    */
   get guild() {
-    return this.guildId && this.client.guilds.cache.get(this.guildId);
+    return (this.guildId && this.client.guilds.cache.get(this.guildId)) ?? null;
   }
 
   /**
@@ -53,7 +53,7 @@ class AuthorizingIntegrationOwners extends Base {
    * @type {?User}
    */
   get user() {
-    return this.userId && this.client.users.cache.get(this.userId);
+    return (this.userId && this.client.users.cache.get(this.userId)) ?? null;
   }
 
   toJSON() {

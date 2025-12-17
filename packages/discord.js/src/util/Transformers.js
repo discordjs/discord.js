@@ -2,7 +2,7 @@
 
 const { isJSONEncodable } = require('@discordjs/util');
 const snakeCase = require('lodash.snakecase');
-const { AuthorizingIntegrationOwners } = require('../structures/AuthorizingIntegrationOwners');
+const { AuthorizingIntegrationOwners } = require('../structures/AuthorizingIntegrationOwners.js');
 
 /**
  * Transforms camel-cased keys into snake cased keys

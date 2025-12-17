@@ -2274,9 +2274,9 @@ export class AuthorizingIntegrationOwners extends Base {
   public readonly [ApplicationIntegrationType.UserInstall]?: Snowflake;
 
   public readonly guildId: Snowflake | null;
-  public readonly guild: Guild | null;
+  public get guild(): Guild | null;
   public readonly userId: Snowflake | null;
-  public readonly user: User | null;
+  public get user(): User | null;
 
   public toJSON(): APIAuthorizingIntegrationOwnersMap;
 }
