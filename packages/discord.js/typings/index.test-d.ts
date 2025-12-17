@@ -48,6 +48,9 @@ import type {
   ApplicationCommandChannelOption,
   ApplicationCommandChannelOptionData,
   ApplicationCommandChoicesData,
+  Attachment,
+  Collection,
+  FileUploadModalData,
   ApplicationCommandChoicesOption,
   ApplicationCommandData,
   ApplicationCommandManager,
@@ -3044,3 +3047,37 @@ await textChannel.send({
   ],
   flags: MessageFlags.IsVoiceMessage,
 });
+
+// Test for ModalSubmitInteraction FileUploadModalData attachments property fix
+{
+  // Test that FileUploadModalData can be created without attachments (now optional)
+  const fileUploadDataWithoutAttachments: FileUploadModalData = {
+    type: ComponentType.FileUpload,
+    id: 123,
+    customId: 'test-upload',
+    values: ['attachment1', 'attachment2'],
+    // attachments is now optional, so this should compile
+  };
+
+  // Test that FileUploadModalData can still be created with attachments
+  const fileUploadDataWithAttachments: FileUploadModalData = {
+    type: ComponentType.FileUpload,
+    id: 124,
+    customId: 'test-upload-with-attachments',
+    values: ['attachment3'],
+    attachments: new Collection(), // This would be a Collection in real usage
+  };
+
+  // Test the actual use case from the issue - accessing attachments with optional chaining
+  declare const modalInteraction: ModalSubmitInteraction;
+  
+  // This should now compile without errors because attachments is optional
+  for (const field of modalInteraction.fields.components.filter((c) => c.type === ComponentType.Label)) {
+    const component = field.component;
+    if (component.type === ComponentType.FileUpload) {
+      // This line should compile successfully with the fix
+      const fieldAttachments = component.attachments?.values().toArray() || [];
+      expectType<readonly Attachment[]>(fieldAttachments);
+    }
+  }
+}
