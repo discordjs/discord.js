@@ -1,5 +1,4 @@
 import process from 'node:process';
-import { URL } from 'node:url';
 import { Client, GatewayIntentBits } from 'discord.js';
 import { loadEvents } from './util/loaders.ts';
 
