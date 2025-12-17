@@ -111,6 +111,7 @@ exports.AutocompleteInteraction = require('./structures/AutocompleteInteraction'
 exports.AutoModerationActionExecution = require('./structures/AutoModerationActionExecution');
 exports.AutoModerationRule = require('./structures/AutoModerationRule');
 exports.Base = require('./structures/Base');
+exports.AuthorizingIntegrationOwners = require('./structures/AuthorizingIntegrationOwners');
 exports.BaseGuild = require('./structures/BaseGuild');
 exports.BaseGuildEmoji = require('./structures/BaseGuildEmoji');
 exports.BaseGuildTextChannel = require('./structures/BaseGuildTextChannel');

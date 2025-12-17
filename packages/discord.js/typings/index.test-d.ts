@@ -12,6 +12,7 @@ import {
   ApplicationCommandOptionType,
   ComponentType,
   ApplicationCommandPermissionType,
+  ApplicationIntegrationType,
   ChannelType,
   InteractionType,
   GatewayIntentBits,
@@ -203,6 +204,7 @@ import {
   SKU,
   UserSelectMenuBuilder,
   VoiceServerUpdateData,
+  AuthorizingIntegrationOwners,
   RoleSelectMenuBuilder,
   ChannelSelectMenuBuilder,
   MentionableSelectMenuBuilder,
@@ -3070,4 +3072,13 @@ await guildScheduledEventManager.edit(snowflake, { recurrenceRule: null });
     // Invalid property
     byMonth: [GuildScheduledEventRecurrenceRuleMonth.May],
   });
+}
+
+declare const authorizingIntegrationOwners: AuthorizingIntegrationOwners;
+{
+  expectType<Snowflake | null>(authorizingIntegrationOwners.guildId);
+  expectType<Guild | null>(authorizingIntegrationOwners.guild);
+  expectType<Snowflake | null>(authorizingIntegrationOwners.userId);
+  expectType<User | null>(authorizingIntegrationOwners.user);
+  expectType<Snowflake | undefined>(authorizingIntegrationOwners[ApplicationIntegrationType.GuildInstall]);
 }

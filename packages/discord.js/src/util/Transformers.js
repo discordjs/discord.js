@@ -3,6 +3,7 @@
 const { isJSONEncodable } = require('@discordjs/util');
 const snakeCase = require('lodash.snakecase');
 const { resolvePartialEmoji } = require('./Util');
+const AuthorizingIntegrationOwners = require('../structures/AuthorizingIntegrationOwners');
 
 /**
  * Transforms camel-cased keys into snake cased keys
@@ -53,7 +54,10 @@ function _transformAPIMessageInteractionMetadata(client, messageInteractionMetad
     id: messageInteractionMetadata.id,
     type: messageInteractionMetadata.type,
     user: client.users._add(messageInteractionMetadata.user),
-    authorizingIntegrationOwners: messageInteractionMetadata.authorizing_integration_owners,
+    authorizingIntegrationOwners: new AuthorizingIntegrationOwners(
+      client,
+      messageInteractionMetadata.authorizing_integration_owners,
+    ),
     originalResponseMessageId: messageInteractionMetadata.original_response_message_id ?? null,
     interactedMessageId: messageInteractionMetadata.interacted_message_id ?? null,
     triggeringInteractionMetadata: messageInteractionMetadata.triggering_interaction_metadata
