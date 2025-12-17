@@ -3058,6 +3058,7 @@ await textChannel.send({
     values: ['attachment1', 'attachment2'],
     // attachments is now optional, so this should compile
   };
+  expectAssignable<FileUploadModalData>(fileUploadDataWithoutAttachments);
 
   // Test that FileUploadModalData can still be created with attachments
   const fileUploadDataWithAttachments: FileUploadModalData = {
@@ -3065,8 +3066,9 @@ await textChannel.send({
     id: 124,
     customId: 'test-upload-with-attachments',
     values: ['attachment3'],
-    attachments: new Collection(), // This would be a Collection in real usage
+    attachments: new Collection<Snowflake, Attachment>(),
   };
+  expectAssignable<FileUploadModalData>(fileUploadDataWithAttachments);
 
   // Test the actual use case from the issue - accessing attachments with optional chaining
   declare const modalInteraction: ModalSubmitInteraction;
