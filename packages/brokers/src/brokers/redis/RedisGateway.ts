@@ -9,7 +9,8 @@ export type DiscordEvents = {
 	};
 };
 
-interface BrokerIntrinsicProps {
+interface BrokerProps<Payload> {
+	payload: Payload;
 	shardId: number;
 }
 
@@ -19,7 +20,7 @@ interface Events extends DiscordEvents {
 }
 
 export type RedisBrokerDiscordEvents = {
-	[K in keyof Events]: BrokerIntrinsicProps & { payload: Events[K] };
+	[K in keyof Events]: BrokerProps<Events[K]>;
 };
 
 /**
@@ -92,8 +93,8 @@ export class RedisGateway
 	 * Converts a dispatch event from `@discordjs/ws` to arguments for a `broker.publish` call.
 	 */
 	public static toPublishArgs(
-		data: [payload: GatewayDispatchPayload, shardId: number],
-	): [GatewayDispatchEvents, BrokerIntrinsicProps & { payload: GatewayDispatchPayload }] {
+		data: ManagerShardEventsMap[WebSocketShardEvents.Dispatch],
+	): [GatewayDispatchEvents, BrokerProps<GatewayDispatchPayload>] {
 		const [payload, shardId] = data;
 		return [payload.t, { shardId, payload }];
 	}
@@ -124,7 +125,7 @@ export class RedisGateway
 				}: {
 					// eslint-disable-next-line @typescript-eslint/method-signature-style
 					ack: () => Promise<void>;
-					data: BrokerIntrinsicProps & { payload: GatewayDispatchPayload };
+					data: BrokerProps<GatewayDispatchPayload>;
 				}) => {
 					this.emit('dispatch', payload, shardId);
 					void ack();
