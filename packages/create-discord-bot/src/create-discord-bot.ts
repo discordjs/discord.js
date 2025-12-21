@@ -31,7 +31,7 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 		throw error;
 	});
 
-	// If the directory is actually a file throw an error.
+	// If the directory is actually a file or if it's not empty, throw an error.
 	if (!directoryStats.isDirectory() || !isFolderEmpty(root, directoryName)) {
 		console.error(
 			styleText(
