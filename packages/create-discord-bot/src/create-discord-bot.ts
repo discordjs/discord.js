@@ -1,11 +1,12 @@
 import type { ExecException } from 'node:child_process';
-import { cp, mkdir, stat, readdir, readFile, writeFile } from 'node:fs/promises';
+import { cp, mkdir, stat, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { styleText } from 'node:util';
 import type { PackageManager } from './helpers/packageManager.js';
 import { install } from './helpers/packageManager.js';
 import { GUIDE_URL } from './util/constants.js';
+import { isFolderEmpty } from './util/isFolderEmpty.js';
 
 interface Options {
 	directory: string;
@@ -37,17 +38,10 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 		process.exit(1);
 	}
 
-	const directoryList = await readdir(root);
-	const isEmptyGitRepo =
-		directoryList.length === 1 && directoryList[0] === '.git' && (await stat(path.join(root, '.git'))).isDirectory();
-
-	// If the directory is not empty and is not an empty git repository, throw an error.
-	if (directoryList.length > 0 && !isEmptyGitRepo) {
+	// If the directory is not empty, throw an error.
+	if (!isFolderEmpty(root, directoryName)) {
 		console.error(
-			styleText(
-				'red',
-				`The directory ${styleText('yellow', `"${directoryName}"`)} is not an empty directory or an empty git repository.`,
-			),
+			styleText('red', `The directory ${styleText('yellow', `"${directoryName}"`)} is not an empty directory.`),
 		);
 		console.error(styleText('red', `Please specify an empty directory.`));
 		process.exit(1);
@@ -105,9 +99,6 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 			}
 		}
 	}
-
-	// Create a .gitignore for git repositories
-	if (isEmptyGitRepo) await writeFile('./.gitignore', '# Packages\n\nnode_modules');
 
 	console.log();
 	console.log(styleText('green', 'All done! Be sure to read through the discord.js guide for help on your journey.'));
