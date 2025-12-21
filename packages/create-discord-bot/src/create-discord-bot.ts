@@ -103,6 +103,9 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 		}
 	}
 
+	// Create a .gitignore for git repositories
+	if (directoryList[0] === '.git') await writeFile('./.gitignore', '# Packages\n\nnode_modules');
+
 	console.log();
 	console.log(styleText('green', 'All done! Be sure to read through the discord.js guide for help on your journey.'));
 	console.log(`Link: ${styleText('cyan', GUIDE_URL)}`);
