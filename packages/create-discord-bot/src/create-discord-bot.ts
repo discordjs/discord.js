@@ -30,12 +30,20 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 		throw error;
 	});
 
-	// If the directory is actually a file or if it's not empty, throw an error.
-	if (!directoryStats.isDirectory() || (await readdir(root)).length > 0) {
+	// If the directory is actually a file throw an error.
+	if (!directoryStats.isDirectory()) {
+		console.error(styleText('red', `The directory ${styleText('yellow', `"${directoryName}"`)} is not a directory.`));
+		console.error(styleText('red', `Please specify a directory.`));
+		process.exit(1);
+	}
+
+	// If the directory is not empty and is not an empty git repository, throw an error.
+	const directoryList = await readdir(root);
+	if (directoryList.length > 0 && !(directoryList.length === 1 && directoryList[0] === '.git')) {
 		console.error(
 			styleText(
 				'red',
-				`The directory ${styleText('yellow', `"${directoryName}"`)} is either not a directory or is not empty.`,
+				`The directory ${styleText('yellow', `"${directoryName}"`)} is not an empty directory or an empty git repository.`,
 			),
 		);
 		console.error(styleText('red', `Please specify an empty directory.`));
