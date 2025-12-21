@@ -37,9 +37,12 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 		process.exit(1);
 	}
 
-	// If the directory is not empty and is not an empty git repository, throw an error.
 	const directoryList = await readdir(root);
-	if (directoryList.length > 0 && !(directoryList.length === 1 && directoryList[0] === '.git')) {
+	const isEmptyGitRepo =
+		directoryList.length === 1 && directoryList[0] === '.git' && (await stat(path.join(root, '.git'))).isDirectory();
+
+	// If the directory is not empty and is not an empty git repository, throw an error.
+	if (directoryList.length > 0 && !isEmptyGitRepo) {
 		console.error(
 			styleText(
 				'red',
@@ -104,7 +107,7 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 	}
 
 	// Create a .gitignore for git repositories
-	if (directoryList[0] === '.git') await writeFile('./.gitignore', '# Packages\n\nnode_modules');
+	if (isEmptyGitRepo) await writeFile('./.gitignore', '# Packages\n\nnode_modules');
 
 	console.log();
 	console.log(styleText('green', 'All done! Be sure to read through the discord.js guide for help on your journey.'));
