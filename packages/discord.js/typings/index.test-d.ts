@@ -24,6 +24,7 @@ import {
   ApplicationCommandOptionType,
   ApplicationCommandPermissionType,
   ApplicationCommandType,
+  ApplicationIntegrationType,
   AuditLogEvent,
   ButtonStyle,
   ChannelType,
@@ -200,6 +201,7 @@ import type {
   VoiceChannel,
   Invite,
   GuildInvite,
+  AuthorizingIntegrationOwners,
 } from './index.js';
 import {
   ActionRowBuilder,
@@ -3044,3 +3046,12 @@ await textChannel.send({
   ],
   flags: MessageFlags.IsVoiceMessage,
 });
+
+declare const authorizingIntegrationOwners: AuthorizingIntegrationOwners;
+{
+  expectType<Snowflake | null>(authorizingIntegrationOwners.guildId);
+  expectType<Guild | null>(authorizingIntegrationOwners.guild);
+  expectType<Snowflake | null>(authorizingIntegrationOwners.userId);
+  expectType<User | null>(authorizingIntegrationOwners.user);
+  expectType<Snowflake | undefined>(authorizingIntegrationOwners[ApplicationIntegrationType.GuildInstall]);
+}
