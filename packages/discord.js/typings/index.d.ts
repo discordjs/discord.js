@@ -2578,7 +2578,7 @@ export interface SelectMenuModalData<Cached extends CacheType = CacheType> exten
 }
 
 export interface FileUploadModalData extends BaseModalData<ComponentType.FileUpload> {
-  attachments: ReadonlyCollection<Snowflake, Attachment>;
+  attachments?: ReadonlyCollection<Snowflake, Attachment>;
   customId: string;
   values: readonly Snowflake[];
 }
