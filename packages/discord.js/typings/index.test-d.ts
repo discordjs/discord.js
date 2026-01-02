@@ -1517,6 +1517,8 @@ expectType<TextBasedChannelFields<true>['send']>(voiceChannel.send);
 expectAssignable<PartialTextBasedChannelFields>(user);
 expectAssignable<PartialTextBasedChannelFields>(guildMember);
 
+expectType<Promise<Message<false>>>(client.users.send(user, 'test'));
+
 expectType<Promise<NewsChannel>>(textChannel.setType(ChannelType.GuildAnnouncement));
 expectType<Promise<TextChannel>>(newsChannel.setType(ChannelType.GuildText));
 

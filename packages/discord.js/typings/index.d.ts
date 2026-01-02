@@ -5426,7 +5426,7 @@ export class UserManager extends CachedManager<Snowflake, User, UserResolvable> 
   public fetch(user: UserResolvable, options?: BaseFetchOptions): Promise<User>;
   /** @deprecated This method is deprecated and will be removed in the next major version. Flags may still be retrieved via {@link UserManager.fetch} */
   public fetchFlags(user: UserResolvable, options?: BaseFetchOptions): Promise<UserFlagsBitField>;
-  public send(user: UserResolvable, options: string | MessagePayload | MessageCreateOptions): Promise<Message>;
+  public send(user: UserResolvable, options: string | MessagePayload | MessageCreateOptions): Promise<Message<false>>;
 }
 
 export class VoiceStateManager extends CachedManager<Snowflake, VoiceState, typeof VoiceState> {
