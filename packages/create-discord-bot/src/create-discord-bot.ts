@@ -1,11 +1,12 @@
 import type { ExecException } from 'node:child_process';
-import { cp, mkdir, stat, readdir, readFile, writeFile } from 'node:fs/promises';
+import { cp, mkdir, stat, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { styleText } from 'node:util';
 import type { PackageManager } from './helpers/packageManager.js';
 import { install } from './helpers/packageManager.js';
 import { GUIDE_URL } from './util/constants.js';
+import { isFolderEmpty } from './util/isFolderEmpty.js';
 
 interface Options {
 	directory: string;
@@ -31,7 +32,7 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 	});
 
 	// If the directory is actually a file or if it's not empty, throw an error.
-	if (!directoryStats.isDirectory() || (await readdir(root)).length > 0) {
+	if (!directoryStats.isDirectory() || !isFolderEmpty(root, directoryName)) {
 		console.error(
 			styleText(
 				'red',
