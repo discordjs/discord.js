@@ -1,6 +1,12 @@
 import { Client, GatewayIntentBits } from 'discord.js';
 import { loadEvents } from './util/loaders.ts';
 
+const token = Bun.env.DISCORD_TOKEN;
+
+if (!token) {
+	throw new Error('The DISCORD_TOKEN environment variable is required.');
+}
+
 // Initialize the client
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -19,4 +25,9 @@ for (const event of events) {
 }
 
 // Login to the client
-void client.login(Bun.env.DISCORD_TOKEN);
+try {
+	await client.login(token);
+} catch (error) {
+	console.error('Failed to login:', error);
+	process.exitCode = 1;
+}

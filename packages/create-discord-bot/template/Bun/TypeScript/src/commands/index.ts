@@ -22,7 +22,10 @@ export type Command = {
  * Defines the schema for a command
  */
 export const schema = z.object({
-	data: z.record(z.string(), z.any()),
+	data: z.object({
+		name: z.string(),
+		description: z.string(),
+	}),
 	execute: z.function(),
 });
 

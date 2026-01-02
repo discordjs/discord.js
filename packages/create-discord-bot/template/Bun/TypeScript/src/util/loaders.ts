@@ -16,7 +16,7 @@ export type StructurePredicate<Structure> = (structure: unknown) => structure is
  * @param dir - The directory to load the structures from
  * @param predicate - The predicate to check if the structure is valid
  * @param recursive - Whether to recursively load the structures in the directory
- * @returns
+ * @returns The loaded structures
  */
 export async function loadStructures<Structure>(
 	dir: PathLike,
