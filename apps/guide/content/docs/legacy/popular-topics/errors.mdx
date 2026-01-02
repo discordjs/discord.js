@@ -189,11 +189,17 @@ This error originates from an invalid call to `bulkDelete()`. Make sure you are 
 
 This error happens when fetching multiple members via `GuildMemberManager#fetch()` and:
 
-- The `GuildMembers` intent is not specified or enabled in the dev dashboard
+- The `GuildMembers` intent is not specified or enabled in the [developer portal](https://discord.com/developers/applications).
 - The internet connection is somewhat bad
-- The amount of members fetched is large (about 50 thousand and upwards)
 
 You can specify the time to wait for with the `time` option in the `.fetch()` call. Another solution could be to move your bot to a faster infrastructure, if available.
+
+### Request with opcode 8 was rate limited.
+
+You are requesting all guild members too frequently on the same guild.
+
+- Look for instances of `GuildMemberManager#fetch()` that do not specify users.
+- Make sure to handle the returned promise gracefully. Discord may change the exact values of this rate limit in the future. You can find all relevant details in the caught error.
 
 ### MaxListenersExceededWarning: Possible EventEmitter memory leak detected...
 
