@@ -1,5 +1,4 @@
 import { Blob, Buffer } from 'node:buffer';
-import { URLSearchParams } from 'node:url';
 import { MockAgent, setGlobalDispatcher, FormData as UndiciFormData } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor.js';
 import { beforeEach, afterEach, test, expect, vitest } from 'vitest';

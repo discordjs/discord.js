@@ -67,7 +67,7 @@
 	},
 	"devDependencies": {
 		"@types/jsdoc-to-markdown": "^7.0.6",
-		"@types/node": "^22.19.1",
+		"@types/node": "^24.10.2",
 		"cross-env": "^10.1.0",
 		"eslint": "^9.39.1",
 		"eslint-config-neon": "^0.2.9",
