@@ -20,10 +20,14 @@ export default {
 				await command.execute(interaction);
 			} catch (error) {
 				console.error(`Error executing command '${interaction.commandName}':`, error);
-				if (interaction.replied || interaction.deferred) {
-					await interaction.followUp({ content: 'There was an error while executing this command.', ephemeral: true });
-				} else {
-					await interaction.reply({ content: 'There was an error while executing this command.', ephemeral: true });
+				try {
+					if (interaction.replied || interaction.deferred) {
+						await interaction.followUp({ content: 'There was an error while executing this command.', ephemeral: true });
+					} else {
+						await interaction.reply({ content: 'There was an error while executing this command.', ephemeral: true });
+					}
+				} catch {
+					// Failed to send error response, interaction may have timed out
 				}
 			}
 		}

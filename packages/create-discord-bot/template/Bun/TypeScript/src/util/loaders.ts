@@ -1,6 +1,6 @@
 import type { PathLike } from 'node:fs';
 import { stat } from 'node:fs/promises';
-import { basename, resolve } from 'node:path';
+import { basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { predicate as commandPredicate, type Command } from '../commands/index.ts';
 import { predicate as eventPredicate, type Event } from '../events/index.ts';
