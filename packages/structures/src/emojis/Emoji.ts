@@ -6,32 +6,32 @@ import { isIdSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
 
 /**
- * Represents any Emoji on Discord.
+ * Represents any emoji on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  */
 export class Emoji<Omitted extends keyof APIEmoji | '' = ''> extends Structure<APIEmoji, Omitted> {
 	/**
-	 * The template used for removing data from the raw data stored for each Emoji
+	 * The template used for removing data from the raw data stored for each emoji
 	 */
 	public static override readonly DataTemplate: Partial<APIEmoji> = {};
 
 	/**
-	 * @param data - The raw data received from the API for the Emoji
+	 * @param data - The raw data received from the API for the emoji
 	 */
 	public constructor(data: Partialize<APIEmoji, Omitted>) {
 		super(data);
 	}
 
 	/**
-	 * The Emoji's id
+	 * The emoji's id
 	 */
 	public get id() {
 		return this[kData].id;
 	}
 
 	/**
-	 * The name of the Emoji
+	 * The name of the emoji
 	 *
 	 * @remarks can be null only in reaction emoji objects
 	 */
@@ -40,7 +40,7 @@ export class Emoji<Omitted extends keyof APIEmoji | '' = ''> extends Structure<A
 	}
 
 	/**
-	 * The roles allowed to use this Emoji
+	 * The roles allowed to use this emoji
 	 */
 	public get roles() {
 		return this[kData].roles;
@@ -61,37 +61,37 @@ export class Emoji<Omitted extends keyof APIEmoji | '' = ''> extends Structure<A
 	}
 
 	/**
-	 * Whether the Emoji is managed
+	 * Whether the emoji is managed
 	 */
 	public get managed() {
 		return this[kData].managed;
 	}
 
 	/**
-	 * Whether the Emoji is animated
+	 * Whether the emoji is animated
 	 */
 	public get animated() {
 		return this[kData].animated;
 	}
 
 	/**
-	 * Whether the Emoji can be used
+	 * Whether the emoji can be used
 	 *
-	 * @remarks May be false due to loss of Server Boosts
+	 * @remarks May be false due to loss of server boosts
 	 */
 	public get available() {
 		return this[kData].available;
 	}
 
 	/**
-	 * The timestamp the Emoji was created at
+	 * The timestamp the emoji was created at
 	 */
 	public get createdTimestamp() {
 		return isIdSet(this.id) ? DiscordSnowflake.timestampFrom(this.id) : null;
 	}
 
 	/**
-	 * The time the Emoji was created at
+	 * The time the emoji was created at
 	 */
 	public get createdAt() {
 		const createdTimestamp = this.createdTimestamp;
