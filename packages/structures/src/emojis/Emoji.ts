@@ -40,20 +40,6 @@ export class Emoji<Omitted extends keyof APIEmoji | '' = ''> extends Structure<A
 	}
 
 	/**
-	 * The roles allowed to use this emoji
-	 */
-	public get roles() {
-		return this[kData].roles;
-	}
-
-	/**
-	 * User that created this emoji
-	 */
-	public get user() {
-		return this[kData].user;
-	}
-
-	/**
 	 * Whether this emoji must be wrapped in colons
 	 */
 	public get requireColons() {
