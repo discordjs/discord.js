@@ -61,7 +61,7 @@ export class Entitlement<Omitted extends keyof APIEntitlement | '' = ''> extends
 	}
 
 	/**
-	 * Entitlement was deleted
+	 * Whether the entitlement was deleted
 	 */
 	public get deleted() {
 		return this[kData].deleted;
