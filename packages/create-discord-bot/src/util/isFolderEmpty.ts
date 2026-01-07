@@ -1,5 +1,5 @@
 /**
- * The MIT License (MIT)
+ * @license MIT
  *
  * Copyright (c) 2025 Vercel, Inc.
  *
