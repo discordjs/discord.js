@@ -5,7 +5,7 @@ import { idPredicate, customIdPredicate, snowflakePredicate } from '../Assertion
 export const emojiPredicate = z
 	.strictObject({
 		id: snowflakePredicate.optional(),
-		name: z.string().min(2).max(32).optional(),
+		name: z.string().min(1).max(32).optional(),
 		animated: z.boolean().optional(),
 	})
 	.refine((data) => data.id !== undefined || data.name !== undefined, {
