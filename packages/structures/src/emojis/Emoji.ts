@@ -9,7 +9,7 @@ import type { Partialize } from '../utils/types.js';
  * Represents any emoji on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @remarks has substructures `User`, `Roles` which need to be instantiated and stored by an extending class using it
+ * @remarks has substructure `User` which needs to be instantiated and stored by an extending class using it
  */
 export class Emoji<Omitted extends keyof APIEmoji | '' = ''> extends Structure<APIEmoji, Omitted> {
 	/**
