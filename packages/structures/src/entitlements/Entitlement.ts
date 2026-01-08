@@ -1,7 +1,7 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APIEntitlement } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
-import { kData } from '../utils/symbols.js';
+import { kData, kStartsAtTimestamp, kEndsAtTimestamp } from '../utils/symbols.js';
 import { isIdSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
 
@@ -16,11 +16,29 @@ export class Entitlement<Omitted extends keyof APIEntitlement | '' = ''> extends
 	 */
 	public static override readonly DataTemplate: Partial<APIEntitlement> = {};
 
+	protected [kStartsAtTimestamp]: number | null = null;
+
+	protected [kEndsAtTimestamp]: number | null = null;
+
 	/**
 	 * @param data - The raw data received from the API for the entitlement
 	 */
 	public constructor(data: Partialize<APIEntitlement, Omitted>) {
 		super(data);
+		this.optimizeData(data);
+	}
+
+	/**
+	 * {@inheritDoc Structure.optimizeData}
+	 */
+	protected override optimizeData(data: Partial<APIEntitlement>) {
+		if (data.starts_at) {
+			this[kStartsAtTimestamp] = Date.parse(data.starts_at);
+		}
+
+		if (data.ends_at) {
+			this[kEndsAtTimestamp] = Date.parse(data.ends_at);
+		}
 	}
 
 	/**
@@ -71,14 +89,14 @@ export class Entitlement<Omitted extends keyof APIEntitlement | '' = ''> extends
 	 * Start date at which the entitlement is valid
 	 */
 	public get startsAt() {
-		return this[kData].starts_at;
+		return this[kStartsAtTimestamp];
 	}
 
 	/**
 	 * Date at which the entitlement is no longer valid
 	 */
 	public get endsAt() {
-		return this[kData].ends_at;
+		return this[kEndsAtTimestamp];
 	}
 
 	/**
