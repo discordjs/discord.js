@@ -34,7 +34,7 @@ export class Entitlement<Omitted extends keyof APIEntitlement | '' = ''> extends
 	 */
 	protected override optimizeData(data: Partial<APIEntitlement>) {
 		const clone = super.toJSON();
-		
+
 		if (data.starts_at) {
 			this[kStartsTimestamp] = Date.parse(data.starts_at);
 		}
@@ -42,7 +42,7 @@ export class Entitlement<Omitted extends keyof APIEntitlement | '' = ''> extends
 		if (data.ends_at) {
 			this[kEndsTimestamp] = Date.parse(data.ends_at);
 		}
-		
+
 		return clone;
 	}
 
@@ -148,20 +148,20 @@ export class Entitlement<Omitted extends keyof APIEntitlement | '' = ''> extends
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
-	
+
 	/**
 	 * {@inheritDoc Structure.toJSON}
 	 */
 	public override toJSON() {
 		const clone = super.toJSON();
-		
+
 		const startsAtTimestamp = this[kStartsTimestamp];
 		const endsAtTimestamp = this[kEndsTimestamp];
-		
+
 		if (startsAtTimestamp) {
 			clone.starts_at = dateToDiscordISOTimestamp(new Date(startsAtTimestamp));
 		}
-		
+
 		if (endsAtTimestamp) {
 			clone.ends_at = dateToDiscordISOTimestamp(new Date(endsAtTimestamp));
 		}
