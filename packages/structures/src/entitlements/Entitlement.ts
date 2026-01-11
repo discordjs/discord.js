@@ -15,7 +15,10 @@ export class Entitlement<Omitted extends keyof APIEntitlement | '' = ''> extends
 	/**
 	 * The template used for removing data from the raw data stored for each entitlement
 	 */
-	public static override readonly DataTemplate: Partial<APIEntitlement> = {};
+	public static override readonly DataTemplate: Partial<APIEntitlement> = {
+		set starts_at(_: string) {},
+		set ends_at(_: string) {},
+	};
 
 	protected [kStartsTimestamp]: number | null = null;
 
