@@ -178,6 +178,7 @@ class GuildBanManager extends CachedManager {
     const id = this.client.users.resolveId(user);
     if (!id) throw new DiscordjsError(ErrorCodes.BanResolveId);
     await this.client.rest.delete(Routes.guildBan(this.guild.id, id), { reason });
+    this.cache.delete(id);
   }
 
   /**
