@@ -2,7 +2,7 @@ import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APIEntitlement } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { dateToDiscordISOTimestamp } from '../utils/optimization.js';
-import { kData, kStartsAtTimestamp, kEndsAtTimestamp } from '../utils/symbols.js';
+import { kData, kStartsTimestamp, kEndsTimestamp } from '../utils/symbols.js';
 import { isIdSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
 
@@ -17,9 +17,9 @@ export class Entitlement<Omitted extends keyof APIEntitlement | '' = ''> extends
 	 */
 	public static override readonly DataTemplate: Partial<APIEntitlement> = {};
 
-	protected [kStartsAtTimestamp]: number | null = null;
+	protected [kStartsTimestamp]: number | null = null;
 
-	protected [kEndsAtTimestamp]: number | null = null;
+	protected [kEndsTimestamp]: number | null = null;
 
 	/**
 	 * @param data - The raw data received from the API for the entitlement
@@ -34,11 +34,11 @@ export class Entitlement<Omitted extends keyof APIEntitlement | '' = ''> extends
 	 */
 	protected override optimizeData(data: Partial<APIEntitlement>) {
 		if (data.starts_at) {
-			this[kStartsAtTimestamp] = Date.parse(data.starts_at);
+			this[kStartsTimestamp] = Date.parse(data.starts_at);
 		}
 
 		if (data.ends_at) {
-			this[kEndsAtTimestamp] = Date.parse(data.ends_at);
+			this[kEndsTimestamp] = Date.parse(data.ends_at);
 		}
 	}
 
@@ -90,30 +90,30 @@ export class Entitlement<Omitted extends keyof APIEntitlement | '' = ''> extends
 	 * Start date at which the entitlement is valid
 	 */
 	public get startsAt() {
-		const timestamp = this.startsAtTimestamp;
+		const timestamp = this.startsTimestamp;
 		return timestamp ? new Date(timestamp) : null;
 	}
 
 	/**
 	 * Timestamp of the start date at which the entitlement is valid
 	 */
-	public get startsAtTimestamp() {
-		return this[kStartsAtTimestamp];
+	public get startsTimestamp() {
+		return this[kStartsTimestamp];
 	}
 
 	/**
 	 * End date at which the entitlement is valid
 	 */
 	public get endsAt() {
-		const timestamp = this.endsAtTimestamp;
+		const timestamp = this.endsTimestamp;
 		return timestamp ? new Date(timestamp) : null;
 	}
 
 	/**
 	 * Timestamp of the end date at which the entitlement is valid
 	 */
-	public get endsAtTimestamp() {
-		return this[kEndsAtTimestamp];
+	public get endsTimestamp() {
+		return this[kEndsTimestamp];
 	}
 
 	/**
@@ -151,8 +151,8 @@ export class Entitlement<Omitted extends keyof APIEntitlement | '' = ''> extends
 	public override toJSON() {
 		const clone = super.toJSON();
 		
-		const startsAtTimestamp = this[kStartsAtTimestamp];
-		const endsAtTimestamp = this[kEndsAtTimestamp];
+		const startsAtTimestamp = this[kStartsTimestamp];
+		const endsAtTimestamp = this[kEndsTimestamp];
 		
 		if (startsAtTimestamp) {
 			clone.starts_at = dateToDiscordISOTimestamp(new Date(startsAtTimestamp));
