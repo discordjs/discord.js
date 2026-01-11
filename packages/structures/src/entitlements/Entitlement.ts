@@ -33,8 +33,6 @@ export class Entitlement<Omitted extends keyof APIEntitlement | '' = ''> extends
 	 * {@inheritDoc Structure.optimizeData}
 	 */
 	protected override optimizeData(data: Partial<APIEntitlement>) {
-		const clone = super.toJSON();
-
 		if (data.starts_at) {
 			this[kStartsTimestamp] = Date.parse(data.starts_at);
 		}
@@ -42,8 +40,6 @@ export class Entitlement<Omitted extends keyof APIEntitlement | '' = ''> extends
 		if (data.ends_at) {
 			this[kEndsTimestamp] = Date.parse(data.ends_at);
 		}
-
-		return clone;
 	}
 
 	/**
