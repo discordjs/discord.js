@@ -1,6 +1,7 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APIEntitlement } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
+import { dateToDiscordISOTimestamp } from '../utils/optimization.js';
 import { kData, kStartsAtTimestamp, kEndsAtTimestamp } from '../utils/symbols.js';
 import { isIdSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
@@ -84,18 +85,34 @@ export class Entitlement<Omitted extends keyof APIEntitlement | '' = ''> extends
 	public get deleted() {
 		return this[kData].deleted;
 	}
-
+	
 	/**
 	 * Start date at which the entitlement is valid
 	 */
 	public get startsAt() {
+		const timestamp = this.startsAtTimestamp;
+		return timestamp ? new Date(timestamp) : null;
+	}
+
+	/**
+	 * Timestamp of the start date at which the entitlement is valid
+	 */
+	public get startsAtTimestamp() {
 		return this[kStartsAtTimestamp];
 	}
 
 	/**
-	 * Date at which the entitlement is no longer valid
+	 * End date at which the entitlement is valid
 	 */
 	public get endsAt() {
+		const timestamp = this.endsAtTimestamp;
+		return timestamp ? new Date(timestamp) : null;
+	}
+
+	/**
+	 * Timestamp of the end date at which the entitlement is valid
+	 */
+	public get endsAtTimestamp() {
 		return this[kEndsAtTimestamp];
 	}
 
@@ -126,5 +143,25 @@ export class Entitlement<Omitted extends keyof APIEntitlement | '' = ''> extends
 	public get createdAt() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
+	}
+	
+	/**
+	 * {@inheritDoc Structure.toJSON}
+	 */
+	public override toJSON() {
+		const clone = super.toJSON();
+		
+		const startsAtTimestamp = this[kStartsAtTimestamp];
+		const endsAtTimestamp = this[kEndsAtTimestamp];
+		
+		if (startsAtTimestamp) {
+			clone.starts_at = dateToDiscordISOTimestamp(new Date(startsAtTimestamp));
+		}
+		
+		if (endsAtTimestamp) {
+			clone.ends_at = dateToDiscordISOTimestamp(new Date(endsAtTimestamp));
+		}
+
+		return clone;
 	}
 }
