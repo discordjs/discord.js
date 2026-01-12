@@ -1,5 +1,3 @@
-import process from 'node:process';
-import { URL } from 'node:url';
 import { Client, GatewayIntentBits } from 'discord.js';
 import { loadEvents } from './util/loaders.js';
 
@@ -21,4 +19,4 @@ for (const event of events) {
 }
 
 // Login to the client
-void client.login(process.env.DISCORD_TOKEN);
+void client.login(Bun.env.DISCORD_TOKEN);

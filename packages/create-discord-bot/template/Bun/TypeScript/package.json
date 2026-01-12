@@ -6,9 +6,9 @@
 	"type": "module",
 	"scripts": {
 		"lint": "tsc && prettier --check . && eslint --ext .ts --format=pretty src",
-		"deploy": "bun run src/util/deploy.ts",
+		"deploy": "bun --env-file=.env src/util/deploy.ts",
 		"format": "prettier --write . && eslint --ext .ts --fix --format=pretty src",
-		"start": "bun run src/index.ts"
+		"start": "bun --env-file=.env src/index.ts"
 	},
 	"dependencies": {
 		"@discordjs/core": "^2.4.0",

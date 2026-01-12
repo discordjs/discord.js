@@ -43,26 +43,16 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 	}
 
 	console.log(`Creating ${directoryName} in ${styleText('green', root)}.`);
+
 	const deno = packageManager === 'deno';
-	await cp(new URL(`../template/${deno ? 'Deno' : typescript ? 'TypeScript' : 'JavaScript'}`, import.meta.url), root, {
+	const bun = packageManager === 'bun';
+
+	const lang = typescript ? 'TypeScript' : 'JavaScript';
+	const templateBasePath = deno ? 'Deno' : bun ? `Bun/${lang}` : lang;
+
+	await cp(new URL(`../template/${templateBasePath}`, import.meta.url), root, {
 		recursive: true,
 	});
-
-	const bun = packageManager === 'bun';
-	if (bun) {
-		await cp(
-			new URL(`../template/Bun/${typescript ? 'TypeScript' : 'JavaScript'}/package.json`, import.meta.url),
-			`${root}/package.json`,
-		);
-
-		if (typescript) {
-			await cp(
-				new URL('../template/Bun/TypeScript/tsconfig.eslint.json', import.meta.url),
-				`${root}/tsconfig.eslint.json`,
-			);
-			await cp(new URL('../template/Bun/TypeScript/tsconfig.json', import.meta.url), `${root}/tsconfig.json`);
-		}
-	}
 
 	process.chdir(root);
 

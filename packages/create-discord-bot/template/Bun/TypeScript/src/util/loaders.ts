@@ -1,7 +1,8 @@
 import type { PathLike } from 'node:fs';
-import { glob, stat } from 'node:fs/promises';
+import { stat } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
-import { fileURLToPath, URL } from 'node:url';
+import { fileURLToPath } from 'node:url';
+import { Glob } from 'bun';
 import { predicate as commandPredicate, type Command } from '../commands/index.ts';
 import { predicate as eventPredicate, type Event } from '../events/index.ts';
 
@@ -37,9 +38,10 @@ export async function loadStructures<Structure>(
 	// Create a glob pattern to match the .ts files
 	const basePath = dir instanceof URL ? fileURLToPath(dir) : dir.toString();
 	const pattern = resolve(basePath, recursive ? '**/*.ts' : '*.ts');
+	const glob = new Glob(pattern);
 
 	// Loop through all the matching files in the directory
-	for await (const file of glob(pattern)) {
+	for await (const file of glob.scan('.')) {
 		// If the file is index.ts, skip the file
 		if (basename(file) === 'index.ts') {
 			continue;

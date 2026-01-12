@@ -1,6 +1,7 @@
-import { glob, stat } from 'node:fs/promises';
+import { stat } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
-import { fileURLToPath, URL } from 'node:url';
+import { fileURLToPath } from 'node:url';
+import { Glob } from 'bun';
 import { predicate as commandPredicate } from '../commands/index.js';
 import { predicate as eventPredicate } from '../events/index.js';
 
@@ -36,9 +37,10 @@ export async function loadStructures(dir, predicate, recursive = true) {
 	// Create a glob pattern to match the .js files
 	const basePath = dir instanceof URL ? fileURLToPath(dir) : dir.toString();
 	const pattern = resolve(basePath, recursive ? '**/*.js' : '*.js');
+	const glob = new Glob(pattern);
 
 	// Loop through all the matching files in the directory
-	for await (const file of glob(pattern)) {
+	for await (const file of glob.scan('.')) {
 		// If the file is index.js, skip the file
 		if (basename(file) === 'index.js') {
 			continue;
