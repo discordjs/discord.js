@@ -11,9 +11,15 @@ import type { Partialize } from '../utils/types.js';
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  */
-export class Entitlement<Omitted extends keyof APIEntitlement | '' = ''> extends Structure<APIEntitlement, Omitted> {
+export class Entitlement<Omitted extends keyof APIEntitlement | '' = 'ends_at' | 'starts_at'> extends Structure<
+	APIEntitlement,
+	Omitted
+> {
 	/**
 	 * The template used for removing data from the raw data stored for each entitlement
+	 *
+	 * @remarks This template has defaults, if you want to remove additional data and keep the defaults,
+	 * use `Object.defineProperties`. To override the defaults, set this value directly.
 	 */
 	public static override readonly DataTemplate: Partial<APIEntitlement> = {
 		set starts_at(_: string) {},
