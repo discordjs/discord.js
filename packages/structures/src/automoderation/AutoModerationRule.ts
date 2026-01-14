@@ -68,7 +68,7 @@ export class AutoModerationRule<Omitted extends keyof APIAutoModerationRule | ''
 	}
 
 	/**
-	 * Wether the rule is enabled
+	 * Whether the rule is enabled
 	 */
 	public get enabled() {
 		return this[kData].enabled;
