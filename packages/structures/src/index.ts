@@ -1,5 +1,6 @@
 export * from './bitfields/index.js';
 export * from './channels/index.js';
+export * from './emojis/index.js';
 export * from './entitlements/index.js';
 export * from './interactions/index.js';
 export * from './invites/index.js';
