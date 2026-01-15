@@ -82,7 +82,7 @@ export class Entitlement<Omitted extends keyof APIEntitlement | '' = 'ends_at' |
 	/**
 	 * Type of entitlement
 	 *
-	 * @see https://discord.com/developers/docs/resources/entitlement#entitlement-object-entitlement-types
+	 * @see {@link https://discord.com/developers/docs/resources/entitlement#entitlement-object-entitlement-types}
 	 */
 	public get type() {
 		return this[kData].type;
@@ -133,7 +133,7 @@ export class Entitlement<Omitted extends keyof APIEntitlement | '' = 'ends_at' |
 	}
 
 	/**
-	 * For consumable items, whether or not the entitlement has been consumed
+	 * For consumable items, whether the entitlement has been consumed
 	 */
 	public get consumed() {
 		return this[kData].consumed;
