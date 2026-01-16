@@ -402,7 +402,7 @@ class GuildMemberManager extends CachedManager {
 
     let endpoint;
 
-    if (id === this.client.user.id) {
+    if (id === this.client.user?.id) {
       const keys = Object.keys(options);
 
       if (keys.length === 1 && keys[0] === 'nick') {
