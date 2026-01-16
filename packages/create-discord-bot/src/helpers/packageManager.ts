@@ -19,6 +19,10 @@ export function resolvePackageManager(): PackageManager {
 		return 'deno';
 	}
 
+	if (process.versions.bun) {
+		return 'bun';
+	}
+
 	// If this is not present, return the default package manager.
 	if (!npmConfigUserAgent) {
 		return DEFAULT_PACKAGE_MANAGER;
