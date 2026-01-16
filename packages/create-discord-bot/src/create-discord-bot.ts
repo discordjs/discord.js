@@ -1,11 +1,12 @@
 import type { ExecException } from 'node:child_process';
-import { cp, mkdir, stat, readdir, readFile, writeFile } from 'node:fs/promises';
+import { cp, mkdir, stat, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 import { styleText } from 'node:util';
 import type { PackageManager } from './helpers/packageManager.js';
 import { install } from './helpers/packageManager.js';
 import { GUIDE_URL } from './util/constants.js';
+import { isFolderEmpty } from './util/isFolderEmpty.js';
 
 interface Options {
 	directory: string;
@@ -31,7 +32,7 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 	});
 
 	// If the directory is actually a file or if it's not empty, throw an error.
-	if (!directoryStats.isDirectory() || (await readdir(root)).length > 0) {
+	if (!directoryStats.isDirectory() || !isFolderEmpty(root, directoryName)) {
 		console.error(
 			styleText(
 				'red',
@@ -43,26 +44,16 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 	}
 
 	console.log(`Creating ${directoryName} in ${styleText('green', root)}.`);
+
 	const deno = packageManager === 'deno';
-	await cp(new URL(`../template/${deno ? 'Deno' : typescript ? 'TypeScript' : 'JavaScript'}`, import.meta.url), root, {
+	const bun = packageManager === 'bun';
+
+	const lang = typescript ? 'TypeScript' : 'JavaScript';
+	const templateBasePath = deno ? 'Deno' : bun ? `Bun/${lang}` : lang;
+
+	await cp(new URL(`../template/${templateBasePath}`, import.meta.url), root, {
 		recursive: true,
 	});
-
-	const bun = packageManager === 'bun';
-	if (bun) {
-		await cp(
-			new URL(`../template/Bun/${typescript ? 'TypeScript' : 'JavaScript'}/package.json`, import.meta.url),
-			`${root}/package.json`,
-		);
-
-		if (typescript) {
-			await cp(
-				new URL('../template/Bun/TypeScript/tsconfig.eslint.json', import.meta.url),
-				`${root}/tsconfig.eslint.json`,
-			);
-			await cp(new URL('../template/Bun/TypeScript/tsconfig.json', import.meta.url), `${root}/tsconfig.json`);
-		}
-	}
 
 	process.chdir(root);
 

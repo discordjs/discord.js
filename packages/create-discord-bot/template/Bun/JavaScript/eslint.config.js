@@ -10,7 +10,20 @@ const config = [
 	...node,
 	...prettier,
 	{
+		languageOptions: {
+			globals: {
+				Bun: 'readonly',
+			},
+		},
 		rules: {
+			'no-restricted-globals': 0,
+			'n/prefer-global/buffer': [2, 'never'],
+			'n/prefer-global/console': [2, 'always'],
+			'n/prefer-global/process': [2, 'never'],
+			'n/prefer-global/text-decoder': [2, 'always'],
+			'n/prefer-global/text-encoder': [2, 'always'],
+			'n/prefer-global/url-search-params': [2, 'always'],
+			'n/prefer-global/url': [2, 'always'],
 			'jsdoc/check-tag-names': 0,
 			'jsdoc/no-undefined-types': 0,
 			'jsdoc/valid-types': 0,
