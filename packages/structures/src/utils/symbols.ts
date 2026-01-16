@@ -7,6 +7,9 @@ export const kCreatedTimestamp = Symbol.for('djs.structures.createdTimestamp');
 export const kEditedTimestamp = Symbol.for('djs.structures.editedTimestamp');
 export const kArchiveTimestamp = Symbol.for('djs.structures.archiveTimestamp');
 
+export const kStartsTimestamp = Symbol.for('djs.structures.startsTimestamp');
+export const kEndsTimestamp = Symbol.for('djs.structures.endsTimestamp');
+
 export const kAllow = Symbol.for('djs.structures.allow');
 export const kDeny = Symbol.for('djs.structures.deny');
 
