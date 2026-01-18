@@ -63,6 +63,7 @@
 	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
+		"@snazzah/davey": "^0.1.8",
 		"@types/ws": "^8.18.1",
 		"discord-api-types": "^0.38.36",
 		"prism-media": "^1.3.5",
@@ -75,7 +76,6 @@
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^6.0.0",
 		"@noble/ciphers": "^2.1.1",
-		"@snazzah/davey": "^0.1.8",
 		"@types/node": "^22.19.2",
 		"@vitest/coverage-v8": "^4.0.15",
 		"cross-env": "^10.1.0",
