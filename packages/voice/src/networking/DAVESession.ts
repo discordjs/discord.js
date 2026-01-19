@@ -58,7 +58,7 @@ export interface DAVESessionOptions {
 /**
  * The maximum DAVE protocol version supported.
  */
-export function getMaxProtocolVersion(): number | null {
+export function getMaxProtocolVersion(): number {
 	return Davey.DAVE_PROTOCOL_VERSION;
 }
 
