@@ -14,9 +14,6 @@ import type { Partialize } from '../utils/types.js';
 export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<APIUser, Omitted> {
 	/**
 	 * The template used for removing data from the raw data stored for each User.
-	 *
-	 * @remarks This template has defaults, if you want to remove additional data and keep the defaults,
-	 * use `Object.defineProperties`. To override the defaults, set this value directly.
 	 */
 	public static override readonly DataTemplate: Partial<APIUser> = {};
 
