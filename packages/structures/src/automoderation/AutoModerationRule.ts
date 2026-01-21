@@ -8,6 +8,7 @@ import type { Partialize } from '../utils/types.js';
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  * @remarks has substructure `TriggerMetadata` which needs to be instantiated and stored by an extending class using it
+ * @remarks intentionally does not export `exemptRoles` and `exemptChannels` so that extending classes can resolve `Snowflake[]` to `Role[]` and `Channel[]`, respectively
  */
 export class AutoModerationRule<Omitted extends keyof APIAutoModerationRule | '' = ''> extends Structure<
 	APIAutoModerationRule,
@@ -72,19 +73,5 @@ export class AutoModerationRule<Omitted extends keyof APIAutoModerationRule | ''
 	 */
 	public get enabled() {
 		return this[kData].enabled;
-	}
-
-	/**
-	 * The role ids that should not be affected by this rule (Maximum of 20)
-	 */
-	public get exemptRoles() {
-		return this[kData].exempt_roles;
-	}
-
-	/**
-	 * The channel ids that should not be affected by this rule (Maximum of 50)
-	 */
-	public get exemptChannels() {
-		return this[kData].exempt_channels;
 	}
 }
