@@ -5,10 +5,10 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"lint": "prettier --check . && eslint --ext .js --format=pretty src",
-		"deploy": "bun run src/util/deploy.js",
-		"format": "prettier --write . && eslint --ext .js --fix --format=pretty src",
-		"start": "bun run src/index.js"
+		"lint": "prettier --check . && eslint --ext .js,.mjs,.cjs --format=pretty src",
+		"deploy": "bun --env-file=.env src/util/deploy.js",
+		"format": "prettier --write . && eslint --ext .js,.mjs,.cjs --fix --format=pretty src",
+		"start": "bun --env-file=.env src/index.js"
 	},
 	"dependencies": {
 		"@discordjs/core": "^2.4.0",

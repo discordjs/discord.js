@@ -2,6 +2,7 @@ import {
 	ApplicationIntegrationType,
 	InteractionContextType,
 	ApplicationCommandOptionType,
+	ApplicationCommandType,
 } from 'discord-api-types/v10';
 import { z } from 'zod';
 import { localeMapPredicate, memberPermissionsPredicate } from '../../../Assertions.js';
@@ -47,38 +48,55 @@ const choiceBasePredicate = z.object({
 	name: choiceValueStringPredicate,
 	name_localizations: localeMapPredicate.optional(),
 });
-const choiceStringPredicate = choiceBasePredicate.extend({
+const choiceStringPredicate = z.object({
+	...choiceBasePredicate.shape,
 	value: choiceValueStringPredicate,
 });
-const choiceNumberPredicate = choiceBasePredicate.extend({
+const choiceNumberPredicate = z.object({
+	...choiceBasePredicate.shape,
 	value: choiceValueNumberPredicate,
 });
 
 const choiceBaseMixinPredicate = z.object({
 	autocomplete: z.literal(false).optional(),
 });
-const choiceStringMixinPredicate = choiceBaseMixinPredicate.extend({
+const choiceStringMixinPredicate = z.object({
+	...choiceBaseMixinPredicate.shape,
 	choices: choiceStringPredicate.array().max(25).optional(),
 });
-const choiceNumberMixinPredicate = choiceBaseMixinPredicate.extend({
+const choiceNumberMixinPredicate = z.object({
+	...choiceBaseMixinPredicate.shape,
 	choices: choiceNumberPredicate.array().max(25).optional(),
 });
 
-const basicOptionTypesPredicate = z.literal([
-	ApplicationCommandOptionType.Attachment,
-	ApplicationCommandOptionType.Boolean,
-	ApplicationCommandOptionType.Channel,
-	ApplicationCommandOptionType.Integer,
-	ApplicationCommandOptionType.Mentionable,
-	ApplicationCommandOptionType.Number,
-	ApplicationCommandOptionType.Role,
-	ApplicationCommandOptionType.String,
-	ApplicationCommandOptionType.User,
-]);
-
-export const basicOptionPredicate = sharedNameAndDescriptionPredicate.extend({
+export const baseBasicOptionPredicate = z.object({
+	...sharedNameAndDescriptionPredicate.shape,
 	required: z.boolean().optional(),
-	type: basicOptionTypesPredicate,
+});
+
+export const attachmentOptionPredicate = z.object({
+	...baseBasicOptionPredicate.shape,
+	type: z.literal(ApplicationCommandOptionType.Attachment),
+});
+
+export const booleanOptionPredicate = z.object({
+	...baseBasicOptionPredicate.shape,
+	type: z.literal(ApplicationCommandOptionType.Boolean),
+});
+
+export const mentionableOptionPredicate = z.object({
+	...baseBasicOptionPredicate.shape,
+	type: z.literal(ApplicationCommandOptionType.Mentionable),
+});
+
+export const roleOptionPredicate = z.object({
+	...baseBasicOptionPredicate.shape,
+	type: z.literal(ApplicationCommandOptionType.Role),
+});
+
+export const userOptionPredicate = z.object({
+	...baseBasicOptionPredicate.shape,
+	type: z.literal(ApplicationCommandOptionType.User),
 });
 
 const autocompleteOrStringChoicesMixinOptionPredicate = z.discriminatedUnion('autocomplete', [
@@ -92,64 +110,71 @@ const autocompleteOrNumberChoicesMixinOptionPredicate = z.discriminatedUnion('au
 ]);
 
 export const channelOptionPredicate = z.object({
-	...basicOptionPredicate.shape,
+	...baseBasicOptionPredicate.shape,
 	...channelMixinOptionPredicate.shape,
+	type: z.literal(ApplicationCommandOptionType.Channel),
 });
 
 export const integerOptionPredicate = z
 	.object({
-		...basicOptionPredicate.shape,
+		...baseBasicOptionPredicate.shape,
 		...numericMixinIntegerOptionPredicate.shape,
+		type: z.literal(ApplicationCommandOptionType.Integer),
 	})
 	.and(autocompleteOrNumberChoicesMixinOptionPredicate);
 
 export const numberOptionPredicate = z
 	.object({
-		...basicOptionPredicate.shape,
+		...baseBasicOptionPredicate.shape,
 		...numericMixinNumberOptionPredicate.shape,
+		type: z.literal(ApplicationCommandOptionType.Number),
 	})
 	.and(autocompleteOrNumberChoicesMixinOptionPredicate);
 
-export const stringOptionPredicate = basicOptionPredicate
-	.extend({
+export const stringOptionPredicate = z
+	.object({
+		...baseBasicOptionPredicate.shape,
 		max_length: z.number().min(1).max(6_000).optional(),
 		min_length: z.number().min(0).max(6_000).optional(),
+		type: z.literal(ApplicationCommandOptionType.String),
 	})
 	.and(autocompleteOrStringChoicesMixinOptionPredicate);
 
-const baseChatInputCommandPredicate = sharedNameAndDescriptionPredicate.extend({
+const basicOptionPredicates = [
+	attachmentOptionPredicate,
+	booleanOptionPredicate,
+	channelOptionPredicate,
+	integerOptionPredicate,
+	mentionableOptionPredicate,
+	numberOptionPredicate,
+	roleOptionPredicate,
+	stringOptionPredicate,
+	userOptionPredicate,
+];
+
+export const chatInputCommandSubcommandPredicate = z.object({
+	...sharedNameAndDescriptionPredicate.shape,
+	type: z.literal(ApplicationCommandOptionType.Subcommand),
+	options: z.array(z.union(basicOptionPredicates)).max(25).optional(),
+});
+
+export const chatInputCommandSubcommandGroupPredicate = z.object({
+	...sharedNameAndDescriptionPredicate.shape,
+	type: z.literal(ApplicationCommandOptionType.SubcommandGroup),
+	options: z.array(chatInputCommandSubcommandPredicate).min(1).max(25),
+});
+
+export const chatInputCommandPredicate = z.object({
+	...sharedNameAndDescriptionPredicate.shape,
 	contexts: z.array(z.enum(InteractionContextType)).optional(),
 	default_member_permissions: memberPermissionsPredicate.optional(),
 	integration_types: z.array(z.enum(ApplicationIntegrationType)).optional(),
 	nsfw: z.boolean().optional(),
-});
-
-// Because you can only add options via builders, there's no need to validate whole objects here otherwise
-const chatInputCommandOptionsPredicate = z.union([
-	z.object({ type: basicOptionTypesPredicate }).array(),
-	z
-		.object({
-			type: z.union([
-				z.literal(ApplicationCommandOptionType.Subcommand),
-				z.literal(ApplicationCommandOptionType.SubcommandGroup),
-			]),
-		})
-		.array(),
-]);
-
-export const chatInputCommandPredicate = baseChatInputCommandPredicate.extend({
-	options: chatInputCommandOptionsPredicate.optional(),
-});
-
-export const chatInputCommandSubcommandGroupPredicate = sharedNameAndDescriptionPredicate.extend({
-	type: z.literal(ApplicationCommandOptionType.SubcommandGroup),
 	options: z
-		.array(z.object({ type: z.literal(ApplicationCommandOptionType.Subcommand) }))
-		.min(1)
-		.max(25),
-});
-
-export const chatInputCommandSubcommandPredicate = sharedNameAndDescriptionPredicate.extend({
-	type: z.literal(ApplicationCommandOptionType.Subcommand),
-	options: z.array(z.object({ type: basicOptionTypesPredicate })).max(25),
+		.union([
+			z.array(z.union(basicOptionPredicates)).max(25),
+			z.array(z.union([chatInputCommandSubcommandPredicate, chatInputCommandSubcommandGroupPredicate])).max(25),
+		])
+		.optional(),
+	type: z.literal(ApplicationCommandType.ChatInput).optional(),
 });
