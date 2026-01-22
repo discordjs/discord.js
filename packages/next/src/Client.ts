@@ -4,7 +4,7 @@ import { Client as CoreClient, Routes, GatewayDispatchEvents } from '@discordjs/
 import { REST } from '@discordjs/rest';
 import type { Structure } from '@discordjs/structures';
 import { WebSocketManager } from '@discordjs/ws';
-import { CollectionCache, type CacheConstructor, type StructureCache } from './util/cache.js';
+import { CollectionCache, type StructureCreator, type CacheConstructor, type StructureCache } from './util/cache.js';
 import { container } from './util/container.js';
 
 export class Client {
@@ -14,11 +14,8 @@ export class Client {
 
 	#token: string;
 
-	public CacheConstructor<
-		Value extends Structure<{ id: Snowflake }>,
-		Raw extends { id: Snowflake } = Value extends Structure<infer Type> ? Type : never,
-	>() {
-		return new this.cacheConstructor() as StructureCache<Raw, Value>;
+	public CacheConstructor<Value extends Structure<{ id: Snowflake }>>(structureCreator: StructureCreator<Value>) {
+		return new this.cacheConstructor(structureCreator) as StructureCache<Value>;
 	}
 
 	protected cacheConstructor: CacheConstructor;
