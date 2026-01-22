@@ -187,7 +187,7 @@ class GuildInvite extends BaseInvite {
        *
        * @type {Collection|null}
        */
-      this.roles = new Collection(data.roles.map(role => [role.id, new Role(this.client, data, this.guild)]));
+      this.roles = new Collection(data.roles.map(role => [role.id, new Role(this.client, role, this.guild)]));
     } else {
       this.roles ??= null;
     }
@@ -224,7 +224,7 @@ class GuildInvite extends BaseInvite {
    *
    * @param {UserResolvable[]|BufferResolvable} targetUsersFile An array of users or a csv file with a single column of user IDs
    * for all the users able to accept this invite
-   * @returns {Promes<unknown>}
+   * @returns {Promise<unknown>}
    */
   updateTargetUsers(targetUsersFile) {
     return this.guild.invites.updateTargetUsers(this.code, targetUsersFile);

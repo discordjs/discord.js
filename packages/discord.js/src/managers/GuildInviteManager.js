@@ -297,7 +297,7 @@ class GuildInviteManager extends CachedManager {
    * Get status of the job processing target users of an invite
    *
    * @param {InviteResolvable} invite The invite to get the target users for
-   * @returns {TargetUsersJobStatusForInvite[]} The target users
+   * @returns {Promise<TargetUsersJobStatusForInvite[]>} The target users
    */
   async fetchTargetUsersJobStatus(invite) {
     const code = resolveInviteCode(invite);
