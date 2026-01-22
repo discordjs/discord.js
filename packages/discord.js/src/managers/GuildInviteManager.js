@@ -214,7 +214,18 @@ class GuildInviteManager extends CachedManager {
    */
   async create(
     channel,
-    { temporary, maxAge, maxUses, unique, targetUser, targetApplication, targetType, roles, targetUsers, reason } = {},
+    {
+      temporary,
+      maxAge,
+      maxUses,
+      unique,
+      targetUser,
+      targetApplication,
+      targetType,
+      roles,
+      targetUsersFile,
+      reason,
+    } = {},
   ) {
     const id = this.guild.channels.resolveId(channel);
     if (!id) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
@@ -230,9 +241,9 @@ class GuildInviteManager extends CachedManager {
     };
     console.log(this.guild.roles.resolveId(roles));
     const invite = await this.client.rest.post(Routes.channelInvites(id), {
-      body: targetUsers ? await this._createInviteFormData({ targetUsers, ...options }) : options,
+      body: targetUsersFile ? await this._createInviteFormData({ targetUsersFile, ...options }) : options,
       // This is necessary otherwise rest stringifies the body
-      passThroughBody: Boolean(targetUsers),
+      passThroughBody: Boolean(targetUsersFile),
       reason,
     });
 
@@ -269,15 +280,15 @@ class GuildInviteManager extends CachedManager {
    * Updates target users for an invite
    *
    * @param {InviteResolvable} invite The invite to update the target users
-   * @param {UserResolvable[]|BufferResolvable} targetUsers An array of users or a csv file with a single column of user IDs
+   * @param {UserResolvable[]|BufferResolvable} targetUsersFile An array of users or a csv file with a single column of user IDs
    * for all the users able to accept this invite
    * @returns {Promise<unknown>}
    */
-  async updateTargetUsers(invite, targetUsers) {
+  async updateTargetUsers(invite, targetUsersFile) {
     const code = resolveInviteCode(invite);
 
     return this.client.rest.put(Routes.inviteTargetUsers(code), {
-      body: await this._createInviteFormData({ targetUsers }),
+      body: await this._createInviteFormData({ targetUsersFile }),
       // This is necessary otherwise rest stringifies the body
       passThroughBody: true,
     });
@@ -309,13 +320,13 @@ class GuildInviteManager extends CachedManager {
    * @returns {Promise<FormData>}
    * @private
    */
-  async _createInviteFormData({ targetUsers, ...rest } = {}) {
+  async _createInviteFormData({ targetUsersFile, ...rest } = {}) {
     const formData = new FormData();
     let usersCsv;
-    if (Array.isArray(targetUsers)) {
-      usersCsv = targetUsers.map(user => this.client.users.resolveId(user)).join('\n');
+    if (Array.isArray(targetUsersFile)) {
+      usersCsv = targetUsersFile.map(user => this.client.users.resolveId(user)).join('\n');
     } else {
-      const resolved = await resolveFile(targetUsers);
+      const resolved = await resolveFile(targetUsersFile);
       usersCsv = resolved.data.toString('utf8');
     }
 

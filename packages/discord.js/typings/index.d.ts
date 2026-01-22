@@ -2061,6 +2061,7 @@ export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvit
   public guild: Guild | InviteGuild | null;
   public readonly guildId: Snowflake;
   public channel: NonThreadGuildBasedChannel | null;
+  public roles: Collection<Snowflake, Role> | null;
   public targetType: InviteTargetType | null;
   public targetUser: User | null;
   public targetApplication: IntegrationApplication | null;
@@ -2071,7 +2072,7 @@ export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvit
   public approximatePresenceCount: WithCounts extends true ? number : null;
   public get deletable(): boolean;
   public delete(reason?: string): Promise<void>;
-  public updateTargetUsers(targetUsers: BufferResolvable | readonly UserResolvable[]): Promise<unknown>;
+  public updateTargetUsers(targetUsersFile: BufferResolvable | readonly UserResolvable[]): Promise<unknown>;
   public fetchTargetUsersJobStatus(): Promise<TargetUsersJobStatusForInvite>;
   public fetchTargetUsers(): Promise<Buffer>;
 }
@@ -4531,7 +4532,7 @@ export class GuildInviteManager extends DataManager<string, GuildInvite, GuildIn
   public create(channel: GuildInvitableChannelResolvable, options?: InviteCreateOptions): Promise<GuildInvite>;
   public updateTargetUsers(
     invite: InviteResolvable,
-    targetUsers: BufferResolvable | readonly UserResolvable[],
+    targetUsersFile: BufferResolvable | readonly UserResolvable[],
   ): Promise<unknown>;
   public fetchTargetUsers(invite: InviteResolvable): Promise<Buffer>;
   public fetchTargetUsersJobStatus(invite: InviteResolvable): Promise<TargetUsersJobStatusForInvite>;
@@ -6605,7 +6606,7 @@ export interface InviteCreateOptions {
   targetApplication?: ApplicationResolvable;
   targetType?: InviteTargetType;
   targetUser?: UserResolvable;
-  targetUsers?: BufferResolvable | readonly UserResolvable[];
+  targetUsersFile?: BufferResolvable | readonly UserResolvable[];
   temporary?: boolean;
   unique?: boolean;
 }

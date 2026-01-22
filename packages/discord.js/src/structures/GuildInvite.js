@@ -222,12 +222,12 @@ class GuildInvite extends BaseInvite {
   /**
    * Update target users of this invite.
    *
-   * @param {UserResolvable[]|BufferResolvable} targetUsers An array of users or a csv file with a single column of user IDs
+   * @param {UserResolvable[]|BufferResolvable} targetUsersFile An array of users or a csv file with a single column of user IDs
    * for all the users able to accept this invite
    * @returns {Promes<unknown>}
    */
-  updateTargetUsers(targetUsers) {
-    return this.guild.invites.updateTargetUsers(this.code, targetUsers);
+  updateTargetUsers(targetUsersFile) {
+    return this.guild.invites.updateTargetUsers(this.code, targetUsersFile);
   }
 
   /**
@@ -242,7 +242,7 @@ class GuildInvite extends BaseInvite {
   /**
    * Get status of the job processing target users of this invite
    *
-   * @returns {TargetUsersJobStatusForInvite}
+   * @returns {Promise<TargetUsersJobStatusForInvite>}
    */
   fetchTargetUsersJobStatus() {
     return this.guild.invites.fetchTargetUsersJobStatus(this.code);
