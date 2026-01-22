@@ -239,7 +239,6 @@ class GuildInviteManager extends CachedManager {
       role_ids: roles?.map(role => this.guild.roles.resolveId(role)),
       target_type: targetType,
     };
-    console.log(this.guild.roles.resolveId(roles));
     const invite = await this.client.rest.post(Routes.channelInvites(id), {
       body: targetUsersFile ? await this._createInviteFormData({ targetUsersFile, ...options }) : options,
       // This is necessary otherwise rest stringifies the body
