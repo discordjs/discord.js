@@ -20,7 +20,7 @@ export class SoundboardSound<Omitted extends keyof APISoundboardSound | '' = ''>
 	public static override readonly DataTemplate: Partial<APISoundboardSound> = {};
 
 	/**
-	 * @param data - The raw data received from the API for the emoji
+	 * @param data - The raw data received from the API for the soundboard sound
 	 */
 	public constructor(data: Partialize<APISoundboardSound, Omitted>) {
 		super(data);
