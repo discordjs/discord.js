@@ -10,6 +10,11 @@ export const kArchiveTimestamp = Symbol.for('djs.structures.archiveTimestamp');
 export const kStartsTimestamp = Symbol.for('djs.structures.startsTimestamp');
 export const kEndsTimestamp = Symbol.for('djs.structures.endsTimestamp');
 
+export const kDmsDisabledUntil = Symbol.for('djs.structures.dmsDisabledUntil');
+export const kDmSpamDetectedAt = Symbol.for('djs.structures.dmSpamDetectedAt');
+export const kInvitesDisabledUntil = Symbol.for('djs.structures.invitesDisabledUntil');
+export const kRaidDetectedAt = Symbol.for('djs.structures.raidDetectedAt');
+
 export const kAllow = Symbol.for('djs.structures.allow');
 export const kDeny = Symbol.for('djs.structures.deny');
 

@@ -1,0 +1,28 @@
+import type { APIGuildWelcomeScreen } from 'discord-api-types/v10';
+import { Structure } from '../Structure';
+import { kData } from '../utils/symbols';
+import type { Partialize } from '../utils/types';
+
+/**
+ * Represents a welcome screen on Discord.
+ *
+ * @remarks has substructure GuildWelcomeScreenChannel, which needs to be instantiated and stored by any extending classes using it.
+ */
+export class GuildWelcomeScreen<Omitted extends keyof APIGuildWelcomeScreen | '' = ''> extends Structure<
+	APIGuildWelcomeScreen,
+	Omitted
+> {
+	/**
+	 * @param data - The raw data from the API for the welcome screen.
+	 */
+	public constructor(data: Partialize<APIGuildWelcomeScreen, Omitted>) {
+		super(data);
+	}
+
+	/**
+	 * The description of the welcome screen.
+	 */
+	public get description() {
+		return this[kData].description;
+	}
+}
