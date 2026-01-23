@@ -79,10 +79,9 @@ export class SoundboardSound<Omitted extends keyof APISoundboardSound | '' = ''>
 	 * The timestamp this sound was created at
 	 */
 	public get createdTimestamp() {
-		const id = this[kData].sound_id;
 		const inGuild = this[kData].guild_id && typeof this[kData].guild_id === 'string';
 
-		return inGuild ? DiscordSnowflake.timestampFrom(id as string) : null;
+		return inGuild ? DiscordSnowflake.timestampFrom(this[kData].sound_id as string) : null;
 	}
 
 	/**
