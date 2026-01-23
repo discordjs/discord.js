@@ -1,2 +1,2 @@
-export * from './Action.js';
-export * from './ActionMetadata.js';
+export * from './AutoModerationAction.js';
+export * from './AutoModerationActionMetadata.js';
