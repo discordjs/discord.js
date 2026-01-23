@@ -220,7 +220,7 @@ export class Application<Omitted extends keyof APIApplication | '' = ''> extends
 	/**
 	 * If webhook events are enabled for the app
 	 */
-	public get eventsWebhookStatus() {
+	public get eventsWebhooksStatus() {
 		return this[kData].event_webhooks_status;
 	}
 
