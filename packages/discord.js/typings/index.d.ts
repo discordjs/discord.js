@@ -274,8 +274,11 @@ export interface ActionRowData<
 
 export type ComponentInLabelData =
   | ChannelSelectMenuComponentData
+  | CheckboxActionComponentData
+  | CheckboxGroupActionComponentData
   | FileUploadComponentData
   | MentionableSelectMenuComponentData
+  | RadioGroupActionComponentData
   | RoleSelectMenuComponentData
   | StringSelectMenuComponentData
   | TextInputComponentData
@@ -2583,7 +2586,28 @@ export interface FileUploadModalData extends BaseModalData<ComponentType.FileUpl
   values: readonly Snowflake[];
 }
 
-export type ModalData = FileUploadModalData | SelectMenuModalData | TextInputModalData;
+export interface RadioGroupActionModalData extends BaseModalData<ComponentType.RadioGroupAction> {
+  customId: string;
+  value: string;
+}
+
+export interface CheckboxGroupActionModalData extends BaseModalData<ComponentType.CheckboxGroupAction> {
+  customId: string;
+  values: readonly string[];
+}
+
+export interface CheckboxActionModalData extends BaseModalData<ComponentType.CheckboxAction> {
+  customId: string;
+  value: boolean;
+}
+
+export type ModalData =
+  | CheckboxActionModalData
+  | CheckboxGroupActionModalData
+  | FileUploadModalData
+  | RadioGroupActionModalData
+  | SelectMenuModalData
+  | TextInputModalData;
 
 export interface LabelModalData extends BaseModalData<ComponentType.Label> {
   component: ModalData;
@@ -6862,6 +6886,39 @@ export interface FileUploadComponentData extends BaseComponentData {
   minValues?: number;
   required?: boolean;
   type: ComponentType.FileUpload;
+}
+
+export interface RadioGroupOption {
+  default?: boolean;
+  description?: string;
+  label: string;
+  value: string;
+}
+export interface RadioGroupActionComponentData extends BaseComponentData {
+  customId: string;
+  options: readonly RadioGroupOption[];
+  required?: boolean;
+  type: ComponentType.RadioGroupAction;
+}
+
+export interface CheckboxGroupOption {
+  default?: boolean;
+  description?: string;
+  label: string;
+  value: string;
+}
+export interface CheckboxGroupActionComponentData extends BaseComponentData {
+  customId: string;
+  maxValues?: number;
+  minValues?: number;
+  options: readonly CheckboxGroupOption[];
+  required?: boolean;
+  type: ComponentType.CheckboxGroupAction;
+}
+
+export interface CheckboxActionComponentData extends BaseComponentData {
+  customId: string;
+  default?: boolean;
 }
 
 export type MessageTarget =

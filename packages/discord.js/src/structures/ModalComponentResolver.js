@@ -233,6 +233,38 @@ class ModalComponentResolver {
   getUploadedFiles(customId, required = false) {
     return this._getTypedComponent(customId, [ComponentType.FileUpload], ['attachments'], required).attachments ?? null;
   }
+
+  /**
+   * Get radio group action component
+   *
+   * @param {string} customId The custom id of the component
+   * @param {boolean} [required=false] Whether to throw an error if the component value is not found or empty
+   * @returns {?string} The selected radio group action option value, or null if none were selected and not required
+   */
+  getRadioGroupAction(customId, required = false) {
+    return this._getTypedComponent(customId, [ComponentType.RadioGroupAction], ['value'], required).value ?? null;
+  }
+
+  /**
+   * Get checkbox group action component
+   *
+   * @param {string} customId The custom id of the component
+   * @param {boolean} [required=false] Whether to throw an error if the component value is not found or empty
+   * @returns {?string[]} The selected checkbox group action option values, or null if none were selected and not required
+   */
+  getCheckboxGroupAction(customId, required = false) {
+    return this._getTypedComponent(customId, [ComponentType.CheckboxGroupAction], ['values'], required).values ?? null;
+  }
+
+  /**
+   * Get checkbox action component
+   *
+   * @param {string} customId The custom id of the component
+   * @returns {boolean} Whther this checkbox action was selected
+   */
+  getCheckboxAction(customId) {
+    return this._getTypedComponent(customId, [ComponentType.CheckboxAction], ['values']).value ?? false;
+  }
 }
 
 exports.ModalComponentResolver = ModalComponentResolver;
