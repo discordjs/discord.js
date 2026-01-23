@@ -20,7 +20,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	}
 
 	/**
-	 * The ID of the guild.
+	 * The id of the guild.
 	 */
 	public get id() {
 		return this[kData].id;
@@ -78,7 +78,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	}
 
 	/**
-	 * The ID of the owner of the guild.
+	 * The id of the owner of the guild.
 	 */
 	public get ownerId() {
 		return this[kData].owner_id;
@@ -95,7 +95,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	}
 
 	/**
-	 * The ID of the afk channel.
+	 * The id of the afk channel.
 	 */
 	public get afkChannelId() {
 		return this[kData].afk_channel_id;
@@ -160,14 +160,14 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	}
 
 	/**
-	 * Application ID of the guild creator, if it is bot-created.
+	 * Application id of the guild creator, if it is bot-created.
 	 */
 	public get applicationId() {
 		return this[kData].application_id;
 	}
 
 	/**
-	 * The ID of the channel where guild notices (such as welcome messages and boost events) are posted.
+	 * The id of the channel where guild notices (such as welcome messages and boost events) are posted.
 	 */
 	public get systemChannelId() {
 		return this[kData].system_channel_id;
@@ -255,7 +255,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	}
 
 	/**
-	 * The ID of the channel where admins and moderators of Community guilds receive notices from Discord.
+	 * The id of the channel where admins and moderators of Community guilds receive notices from Discord.
 	 */
 	public get publicUpdatesChannelId() {
 		return this[kData].public_updates_channel_id;
@@ -306,7 +306,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	}
 
 	/**
-	 * The ID of the channel where admins and moderators of Community guilds receive safety alerts from discord.
+	 * The id of the channel where admins and moderators of Community guilds receive safety alerts from discord.
 	 */
 	public get safetyAlertsChannelId() {
 		return this[kData].safety_alerts_channel_id;
