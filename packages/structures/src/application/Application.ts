@@ -4,7 +4,8 @@ import { ApplicationFlagsBitField } from '../bitfields';
 import { kData } from '../utils/symbols';
 import type { Partialize } from '../utils/types';
 
-// TODO: missing "Team" substructure
+// TODO: missing "team" substructure
+
 /**
  * Represents an application on Discord.
  *
@@ -95,15 +96,6 @@ export class Application<Omitted extends keyof APIApplication | '' = ''> extends
 	 */
 	public get verifyKey() {
 		return this[kData].verify_key;
-	}
-
-	/**
-	 * The team this application belongs to.
-	 *
-	 * @see https://discord.com/developers/docs/topics/teams#data-models-team-object
-	 */
-	public get team() {
-		return this[kData].team;
 	}
 
 	/**
