@@ -247,7 +247,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public reverse() {
 		const entries = [...this.entries()].reverse();
 		this.clear();
-		for (const [key, value] of entries) this.set(key, value);
+		for (const { 0: key, 1: value } of entries) this.set(key, value);
 		return this;
 	}
 
@@ -280,8 +280,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public find(fn: (value: Value, key: Key, collection: this) => unknown, thisArg?: unknown): Value | undefined {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
-		for (const [key, val] of this) {
-			if (fn(val, key, this)) return val;
+		for (const { 0: key, 1: value } of this) {
+			if (fn(value, key, this)) return value;
 		}
 
 		return undefined;
@@ -314,8 +314,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public findKey(fn: (value: Value, key: Key, collection: this) => unknown, thisArg?: unknown): Key | undefined {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
-		for (const [key, val] of this) {
-			if (fn(val, key, this)) return key;
+		for (const { 0: key, 1: value } of this) {
+			if (fn(value, key, this)) return key;
 		}
 
 		return undefined;
@@ -345,9 +345,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
 		const entries = [...this.entries()];
 		for (let index = entries.length - 1; index >= 0; index--) {
-			const val = entries[index]![1];
-			const key = entries[index]![0];
-			if (fn(val, key, this)) return val;
+			const { 0: key, 1: value } = entries[index]!;
+			if (fn(value, key, this)) return value;
 		}
 
 		return undefined;
@@ -378,9 +377,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
 		const entries = [...this.entries()];
 		for (let index = entries.length - 1; index >= 0; index--) {
-			const key = entries[index]![0];
-			const val = entries[index]![1];
-			if (fn(val, key, this)) return key;
+			const { 0: key, 1: value } = entries[index]!;
+			if (fn(value, key, this)) return key;
 		}
 
 		return undefined;
@@ -399,8 +397,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
 		const previousSize = this.size;
-		for (const [key, val] of this) {
-			if (fn(val, key, this)) this.delete(key);
+		for (const { 0: key, 1: value } of this) {
+			if (fn(value, key, this)) this.delete(key);
 		}
 
 		return previousSize - this.size;
@@ -441,8 +439,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
 		const results = new this.constructor[Symbol.species]<Key, Value>();
-		for (const [key, val] of this) {
-			if (fn(val, key, this)) results.set(key, val);
+		for (const { 0: key, 1: value } of this) {
+			if (fn(value, key, this)) results.set(key, value);
 		}
 
 		return results;
@@ -490,11 +488,11 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 			new this.constructor[Symbol.species]<Key, Value>(),
 			new this.constructor[Symbol.species]<Key, Value>(),
 		];
-		for (const [key, val] of this) {
-			if (fn(val, key, this)) {
-				results[0].set(key, val);
+		for (const { 0: key, 1: value } of this) {
+			if (fn(value, key, this)) {
+				results[0].set(key, value);
 			} else {
-				results[1].set(key, val);
+				results[1].set(key, value);
 			}
 		}
 
@@ -551,7 +549,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		// eslint-disable-next-line unicorn/no-new-array
 		const results: NewValue[] = new Array(this.size);
 		for (let index = 0; index < this.size; index++) {
-			const [key, value] = iter.next().value!;
+			const { 0: key, 1: value } = iter.next().value!;
 			results[index] = fn(value, key, this);
 		}
 
@@ -581,7 +579,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
 		const coll = new this.constructor[Symbol.species]<Key, NewValue>();
-		for (const [key, val] of this) coll.set(key, fn(val, key, this));
+		for (const { 0: key, 1: value } of this) coll.set(key, fn(value, key, this));
 		return coll;
 	}
 
@@ -601,8 +599,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public some(fn: (value: Value, key: Key, collection: this) => unknown, thisArg?: unknown): boolean {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
-		for (const [key, val] of this) {
-			if (fn(val, key, this)) return true;
+		for (const { 0: key, 1: value } of this) {
+			if (fn(value, key, this)) return true;
 		}
 
 		return false;
@@ -638,8 +636,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public every(fn: (value: Value, key: Key, collection: this) => unknown, thisArg?: unknown): boolean {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
-		for (const [key, val] of this) {
-			if (!fn(val, key, this)) return false;
+		for (const { 0: key, 1: value } of this) {
+			if (!fn(value, key, this)) return false;
 		}
 
 		return true;
@@ -680,7 +678,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 			accumulator = initialValue;
 		}
 
-		for (const [key, value] of iterator) {
+		for (const { 0: key, 1: value } of iterator) {
 			accumulator = fn(accumulator, value, key, this);
 		}
 
@@ -721,9 +719,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		}
 
 		while (--index >= 0) {
-			const key = entries[index]![0];
-			const val = entries[index]![1];
-			accumulator = fn(accumulator, val, key, this);
+			const { 0: key, 1: value } = entries[index]!;
+			accumulator = fn(accumulator, value, key, this);
 		}
 
 		return accumulator;
@@ -750,7 +747,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
 
-		for (const [key, value] of this) {
+		for (const { 0: key, 1: value } of this) {
 			fn(value, key, this);
 		}
 
@@ -803,7 +800,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public concat(...collections: ReadonlyCollection<Key, Value>[]) {
 		const newColl = this.clone();
 		for (const coll of collections) {
-			for (const [key, val] of coll) newColl.set(key, val);
+			for (const { 0: key, 1: value } of coll) newColl.set(key, value);
 		}
 
 		return newColl;
@@ -821,7 +818,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (!collection) return false; // runtime check
 		if (this === collection) return true;
 		if (this.size !== collection.size) return false;
-		for (const [key, value] of this) {
+		for (const { 0: key, 1: value } of this) {
 			const otherValue = collection.get(key);
 			// If values differ, collections aren't equal.
 			// For undefined values, we must also verify the key exists in the other collection,
@@ -854,7 +851,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		super.clear();
 
 		// Set the new entries
-		for (const [key, value] of entries) {
+		for (const { 0: key, 1: value } of entries) {
 			super.set(key, value);
 		}
 
@@ -877,7 +874,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public intersection(other: ReadonlyCollection<Key, any>): Collection<Key, Value> {
 		const coll = new this.constructor[Symbol.species]<Key, Value>();
 
-		for (const [key, value] of this) {
+		for (const { 0: key, 1: value } of this) {
 			if (other.has(key)) coll.set(key, value);
 		}
 
@@ -903,7 +900,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public union<OtherValue>(other: ReadonlyCollection<Key, OtherValue>): Collection<Key, OtherValue | Value> {
 		const coll = new this.constructor[Symbol.species]<Key, OtherValue | Value>(this);
 
-		for (const [key, value] of other) {
+		for (const { 0: key, 1: value } of other) {
 			if (!coll.has(key)) coll.set(key, value);
 		}
 
@@ -927,7 +924,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public difference(other: ReadonlyCollection<Key, any>): Collection<Key, Value> {
 		const coll = new this.constructor[Symbol.species]<Key, Value>();
 
-		for (const [key, value] of this) {
+		for (const { 0: key, 1: value } of this) {
 			if (!other.has(key)) coll.set(key, value);
 		}
 
@@ -952,11 +949,11 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	): Collection<Key, OtherValue | Value> {
 		const coll = new this.constructor[Symbol.species]<Key, OtherValue | Value>();
 
-		for (const [key, value] of this) {
+		for (const { 0: key, 1: value } of this) {
 			if (!other.has(key)) coll.set(key, value);
 		}
 
-		for (const [key, value] of other) {
+		for (const { 0: key, 1: value } of other) {
 			if (!this.has(key)) coll.set(key, value);
 		}
 
@@ -1082,7 +1079,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		combine: (firstValue: Value, secondValue: Value, key: Key) => Value,
 	): Collection<Key, Value> {
 		const coll = new this[Symbol.species]<Key, Value>();
-		for (const [key, value] of entries) {
+		for (const { 0: key, 1: value } of entries) {
 			if (coll.has(key)) {
 				coll.set(key, combine(coll.get(key)!, value, key));
 			} else {
