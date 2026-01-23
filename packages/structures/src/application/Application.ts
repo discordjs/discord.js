@@ -1,7 +1,9 @@
+import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APIApplication, ApplicationFlags } from 'discord-api-types/v10';
 import { Structure } from '../Structure';
 import { ApplicationFlagsBitField } from '../bitfields';
 import { kData } from '../utils/symbols';
+import { isIdSet } from '../utils/type-guards';
 import type { Partialize } from '../utils/types';
 
 // TODO: missing "team" substructure
@@ -228,5 +230,20 @@ export class Application<Omitted extends keyof APIApplication | '' = ''> extends
 	 */
 	public get customInstallURL() {
 		return this[kData].custom_install_url;
+	}
+
+	/**
+	 * The timestamp the application was created at.
+	 */
+	public get createdTimestamp() {
+		return isIdSet(this.id) ? DiscordSnowflake.timestampFrom(this.id) : null;
+	}
+
+	/**
+	 * The time the application was created at
+	 */
+	public get createdAt() {
+		const createdTimestamp = this.createdTimestamp;
+		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
 }
