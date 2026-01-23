@@ -37,7 +37,7 @@ const getAttachment = lazy(() => require('./Attachment.js').Attachment);
 /**
  * @typedef {BaseModalData} RadioGroupActionModalData
  * @property {string} customId The custom id of the radio group action
- * @property {string} value The value selected for the radio group
+ * @property {string} [value] The value selected for the radio group
  */
 
 /**

@@ -2588,7 +2588,7 @@ export interface FileUploadModalData extends BaseModalData<ComponentType.FileUpl
 
 export interface RadioGroupActionModalData extends BaseModalData<ComponentType.RadioGroupAction> {
   customId: string;
-  value: string;
+  value?: string;
 }
 
 export interface CheckboxGroupActionModalData extends BaseModalData<ComponentType.CheckboxGroupAction> {
