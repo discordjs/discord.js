@@ -4,10 +4,12 @@ import { ApplicationFlagsBitField } from '../bitfields';
 import { kData } from '../utils/symbols';
 import type { Partialize } from '../utils/types';
 
+// TODO: missing "Team" substructure
 /**
  * Represents an application on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
+ * @remarks Has substructure `User`, `Guild` and `Team`, which need to be instantiated and stored by an extending class using it.
  */
 export class Application<Omitted extends keyof APIApplication | '' = ''> extends Structure<APIApplication, Omitted> {
 	/**
@@ -18,7 +20,7 @@ export class Application<Omitted extends keyof APIApplication | '' = ''> extends
 	}
 
 	/**
-	 * The ID of the application.
+	 * The id of the application.
 	 */
 	public get id() {
 		return this[kData].id;
@@ -73,33 +75,17 @@ export class Application<Omitted extends keyof APIApplication | '' = ''> extends
 	}
 
 	/**
-	 * Partial user object for the bot user associated with the application.
-	 */
-	public get bot() {
-		return this[kData].bot;
-	}
-
-	/**
-	 * The URL of the app's Terms and Service.
+	 * The URL of the app's terms and service.
 	 */
 	public get termsOfServiceURL() {
 		return this[kData].terms_of_service_url;
 	}
 
 	/**
-	 * The URL of the app's Privacy Policy.
+	 * The URL of the app's privacy policy.
 	 */
 	public get privacyPolicyURL() {
 		return this[kData].privacy_policy_url;
-	}
-
-	/**
-	 * Partial user object containing the owner of the application.
-	 *
-	 * @see https://discord.com/developers/docs/resources/user#user-object
-	 */
-	public get owner() {
-		return this[kData].owner;
 	}
 
 	/**
@@ -121,17 +107,10 @@ export class Application<Omitted extends keyof APIApplication | '' = ''> extends
 	}
 
 	/**
-	 * The ID of the guild associated with the app.
+	 * The id of the guild associated with the app.
 	 */
 	public get guildId() {
 		return this[kData].guild_id;
-	}
-
-	/**
-	 * A partial object of the guild associated with the app.
-	 */
-	public get guild() {
-		return this[kData].guild;
 	}
 
 	/**
@@ -220,7 +199,7 @@ export class Application<Omitted extends keyof APIApplication | '' = ''> extends
 	/**
 	 * If webhook events are enabled for the app
 	 */
-	public get eventsWebhooksStatus() {
+	public get eventWebhooksStatus() {
 		return this[kData].event_webhooks_status;
 	}
 
