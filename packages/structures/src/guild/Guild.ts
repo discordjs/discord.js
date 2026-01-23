@@ -7,6 +7,7 @@ import type { Partialize } from '../utils/types';
 /**
  * Represents a guild on Discord.
  *
+ * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  * @remarks Intentionally does not export `roles`, `emojis`, `features`, or `stickers`,
  *  so extending classes can map each array to `Role[]`, `Emoji[]`, `GuildFeature[]`, and `Sticker[]` respectively.
  * @remarks has substructure GuildWelcomeScreen and GuildIncidentsData, which needs to be instantiated and stored by any extending classes using it.

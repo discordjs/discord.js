@@ -15,6 +15,10 @@ export const kDmSpamDetectedAt = Symbol.for('djs.structures.dmSpamDetectedAt');
 export const kInvitesDisabledUntil = Symbol.for('djs.structures.invitesDisabledUntil');
 export const kRaidDetectedAt = Symbol.for('djs.structures.raidDetectedAt');
 
+export const kJoinedAt = Symbol.for('djs.structures.joinedAt');
+export const kCommunicationDisabledUntil = Symbol.for('djs.structures.communicationDisabledUntil');
+export const kPremiumSince = Symbol.for('djs.structures.premiumSince');
+
 export const kAllow = Symbol.for('djs.structures.allow');
 export const kDeny = Symbol.for('djs.structures.deny');
 

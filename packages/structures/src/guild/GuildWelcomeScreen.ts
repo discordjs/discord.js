@@ -6,6 +6,7 @@ import type { Partialize } from '../utils/types';
 /**
  * Represents a welcome screen on Discord.
  *
+ * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  * @remarks has substructure GuildWelcomeScreenChannel, which needs to be instantiated and stored by any extending classes using it.
  */
 export class GuildWelcomeScreen<Omitted extends keyof APIGuildWelcomeScreen | '' = ''> extends Structure<
