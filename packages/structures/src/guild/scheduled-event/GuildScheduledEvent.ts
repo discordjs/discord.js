@@ -126,6 +126,37 @@ export class GuildScheduledEvent<
 	}
 
 	/**
+	 *  The time the guild scheduled event will start at.
+	 */
+	public get scheduledStartAt() {
+		const timestamp = this.scheduledStartTimestamp;
+		return timestamp ? new Date(timestamp) : null;
+	}
+
+	/**
+	 * The timestamp the guild scheduled event will start it.
+	 */
+	public get scheduledStartTimestamp() {
+		return this[kScheduledStartTime];
+	}
+
+	/**
+	 * The time the guild scheduled event will end at.
+	 */
+	public get scheduledEndAt() {
+		const timestamp = this.scheduledEndTimestamp;
+		return timestamp ? new Date(timestamp) : null;
+	}
+
+	/**
+	 * The time at which the guild event will end, or `null` if the event does not have a scheduled time to end.
+	 *
+	 */
+	public get scheduledEndTimestamp() {
+		return this[kScheduledEndTime];
+	}
+
+	/**
 	 * The timestamp the scheduled event was created at.
 	 */
 	public get createdTimestamp() {

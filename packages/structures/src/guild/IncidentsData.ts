@@ -38,6 +38,66 @@ export class IncidentsData<
 	protected [kRaidDetectedAt]: number | null = null;
 
 	/**
+	 * When direct message spam was detected.
+	 */
+	public get dmSpamDetectedAt() {
+		const timestamp = this.dmSpamDetectedTimestamp;
+		return timestamp ? new Date(timestamp) : null;
+	}
+
+	/**
+	 * The timestamp direct message spam was detected.
+	 */
+	public get dmSpamDetectedTimestamp() {
+		return this[kDmSpamDetectedAt];
+	}
+
+	/**
+	 * When direct messages will be enabled again.
+	 */
+	public get dmsDisabledUntil() {
+		const timestamp = this.dmsDisabledUntilTimestamp;
+		return timestamp ? new Date(timestamp) : null;
+	}
+
+	/**
+	 * The timestamp direct messages will be enabled again.
+	 */
+	public get dmsDisabledUntilTimestamp() {
+		return this[kDmsDisabledUntil];
+	}
+
+	/**
+	 * When invites will be enabled again.
+	 */
+	public get invitesDisabledUntil() {
+		const timestamp = this.invitesDisabledUntilTimestamp;
+		return timestamp ? new Date(timestamp) : null;
+	}
+
+	/**
+	 * The timestamp invites will be enabled again.
+	 */
+	public get invitesDisabledUntilTimestamp() {
+		return this[kInvitesDisabledUntil];
+	}
+
+	/**
+	 * When a raid was detected.
+	 */
+	public get raidDetectedAt() {
+		const timestamp = this.raidDetectedTimestamp;
+		return timestamp ? new Date(timestamp) : null;
+	}
+
+	/**
+	 * The timestamp a raid was detected.
+	 */
+	public get raidDetectedTimestamp() {
+		return this[kRaidDetectedAt];
+	}
+
+	/**
 	 * @param data - The raw data from the API for the incidents data.
 	 */
 	public constructor(data: Partialize<APIIncidentsData, Omitted>) {

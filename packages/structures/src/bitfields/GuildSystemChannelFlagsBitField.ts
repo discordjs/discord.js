@@ -1,5 +1,5 @@
 import { GuildSystemChannelFlags } from 'discord-api-types/v10';
-import { BitField } from './BitField';
+import { BitField } from './BitField.js';
 
 /**
  * Data structure that makes it easy to interact with a {@link Guild#systemChannelFlags} bitfield.

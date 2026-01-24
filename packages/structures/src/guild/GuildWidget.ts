@@ -12,7 +12,7 @@ import type { Partialize } from '../utils/types';
  *  @remarks Intentionally does not export `channels`, or `members`,
  *  so extending classes can map each array to `GuildWidgetChannel[]`, and `GuildWidgetMember[]` respectively.
  */
-export class GuildWidget<Omitted extends keyof APIGuildWidget | ''> extends Structure<APIGuildWidget, Omitted> {
+export class GuildWidget<Omitted extends keyof APIGuildWidget | '' = ''> extends Structure<APIGuildWidget, Omitted> {
 	/**
 	 * @param data - The raw data from the API for the guild widget.
 	 */

@@ -74,6 +74,21 @@ export class GuildIntegration<Omitted extends keyof APIGuildIntegration | '' = '
 	}
 
 	/**
+	 * The date at which this integration was last synced at.
+	 */
+	public get syncedAt() {
+		const timestamp = this.syncedTimestamp;
+		return timestamp ? new Date(timestamp) : null;
+	}
+
+	/**
+	 * The timestamp at which this integration was last synced at.
+	 */
+	public get syncedTimestamp() {
+		return this[kSyncedAt];
+	}
+
+	/**
 	 * ID that this integration uses for "subscribers".
 	 * #### This field is not provided for `discord` bot integration.
 	 */

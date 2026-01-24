@@ -90,6 +90,36 @@ export class GuildScheduledEventRecurrenceRule<
 	}
 
 	/**
+	 *  The time the recurrence rule interval starts at.
+	 */
+	public get startAt() {
+		const timestamp = this.startTimestamp;
+		return timestamp ? new Date(timestamp) : null;
+	}
+
+	/**
+	 * The timestamp the recurrence rule interval starts at.
+	 */
+	public get startTimestamp() {
+		return this[kStart];
+	}
+
+	/**
+	 * The time the recurrence rule interval ends at.
+	 */
+	public get endAt() {
+		const timestamp = this.endTimestamp;
+		return timestamp ? new Date(timestamp) : null;
+	}
+
+	/**
+	 * The timestamp the recurrence rule interval ends at.
+	 */
+	public get endTimestamp() {
+		return this[kEnd];
+	}
+
+	/**
 	 * {@inheritDoc Structure.optimizeData}
 	 */
 	protected override optimizeData(data: Partial<APIGuildScheduledEventRecurrenceRule>) {

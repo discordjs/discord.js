@@ -88,6 +88,36 @@ export class GuildTemplate<Omitted extends keyof APITemplate | '' = 'created_at'
 	}
 
 	/**
+	 * The time when this template was created at.
+	 */
+	public get createdAt() {
+		const timestamp = this.createdTimestamp;
+		return timestamp ? new Date(timestamp) : null;
+	}
+
+	/**
+	 * The timestamp when this template was created at.
+	 */
+	public get createdTimestamp() {
+		return this[kCreatedAt];
+	}
+
+	/**
+	 * The time when this template was last synced to the guild
+	 */
+	public get updatedAt() {
+		const timestamp = this.updatedTimestamp;
+		return timestamp ? new Date(timestamp) : null;
+	}
+
+	/**
+	 * The timestamp when this template was last synced to the guild.
+	 */
+	public get updatedTimestamp() {
+		return this[kUpdatedAt];
+	}
+
+	/**
 	 * {@inheritDoc Structure.optimizeData}
 	 */
 	protected override optimizeData(data: Partial<APITemplate>) {

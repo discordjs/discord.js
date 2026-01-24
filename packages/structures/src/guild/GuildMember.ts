@@ -92,6 +92,51 @@ export class GuildMember<
 	}
 
 	/**
+	 * The time this member's timeout will be removed.
+	 */
+	public get communicationsDisabledUntil() {
+		const timestamp = this.communicationsDisabledUntilTimestamp;
+		return timestamp ? new Date(timestamp) : null;
+	}
+
+	/**
+	 * The timestamp this member's timeout will be removed.
+	 */
+	public get communicationsDisabledUntilTimestamp() {
+		return this[kCommunicationDisabledUntil];
+	}
+
+	/**
+	 * The time this member joined the guild.
+	 */
+	public get joinedAt() {
+		const timestamp = this.joinedTimestamp;
+		return timestamp ? new Date(timestamp) : null;
+	}
+
+	/**
+	 * The timestamp this member joined the guild at.
+	 */
+	public get joinedTimestamp() {
+		return this[kJoinedAt];
+	}
+
+	/**
+	 * The last time this member started boosting the guild.
+	 */
+	public get premiumSince() {
+		const timestamp = this.premiumSinceTimestamp;
+		return timestamp ? new Date(timestamp) : null;
+	}
+
+	/**
+	 * The last timestamp this member started boosting the guild.
+	 */
+	public get premiumSinceTimestamp() {
+		return this[kPremiumSince];
+	}
+
+	/**
 	 * {@inheritDoc Structure.optimizeData}
 	 */
 	protected override optimizeData(data: Partial<APIGuildMember>): void {

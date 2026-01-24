@@ -12,7 +12,7 @@ import type { Partialize } from '../utils/types';
  * @remarks Intentionally does not export `emojis`, `features`, or `stickers`,
  *  so extending classes can map each array to `Emoji[]`, `GuildFeature[]`, and `Sticker[]` respectively.
  */
-export class GuildPreview<Omitted extends keyof APIGuildPreview | ''> extends Structure<APIGuildPreview, Omitted> {
+export class GuildPreview<Omitted extends keyof APIGuildPreview | '' = ''> extends Structure<APIGuildPreview, Omitted> {
 	/**
 	 * @param data - The raw data from the API for the guild preview.
 	 */

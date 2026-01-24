@@ -4,7 +4,7 @@ import { kData } from '../../utils/symbols';
 import type { Partialize } from '../../utils/types';
 
 /**
- * Represents the addition entity metadata of a scheduled event on Discord.
+ * Represents the additional entity metadata of a scheduled event on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  */
