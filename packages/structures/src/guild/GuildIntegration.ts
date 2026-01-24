@@ -93,7 +93,7 @@ export class GuildIntegration<Omitted extends keyof APIGuildIntegration | '' = '
 	 * The behavior of expiring subscribers.
 	 * #### This field is not provided for `discord` bot integration.
 	 *
-	 * @see — https://discord.com/developers/docs/resources/guild#integration-object-integration-expire-behaviors
+	 * @see {@link https://discord.com/developers/docs/resources/guild#integration-object-integration-expire-behaviors}
 	 */
 	public get expireBehavior() {
 		return this[kData].expire_behavior;

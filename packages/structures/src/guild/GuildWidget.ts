@@ -9,7 +9,7 @@ import type { Partialize } from '../utils/types';
  * Represents a guild widget on Discord.
  *
  *  @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @remarks Intentionally does not export `channels`, or `members`,
+ *  @remarks Intentionally does not export `channels`, or `members`,
  *  so extending classes can map each array to `GuildWidgetChannel[]`, and `GuildWidgetMember[]` respectively.
  */
 export class GuildWidget<Omitted extends keyof APIGuildWidget | ''> extends Structure<APIGuildWidget, Omitted> {

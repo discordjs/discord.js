@@ -39,7 +39,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	/**
 	 * The icon hash of the guild.
 	 *
-	 * @see https://discord.com/developers/docs/reference#image-formatting
+	 * @see {@link https://discord.com/developers/docs/reference#image-formatting}
 	 */
 	public get icon() {
 		return this[kData].icon;
@@ -48,7 +48,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	/**
 	 * The icon hash of the guild, when returned in the template object
 	 *
-	 * @see https://discord.com/developers/docs/reference#image-formatting
+	 * @see {@link https://discord.com/developers/docs/reference#image-formatting}
 	 */
 	public get iconHash() {
 		return this[kData].icon_hash;
@@ -57,7 +57,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	/**
 	 * The splash hash of the guild.
 	 *
-	 * @see https://discord.com/developers/docs/reference#image-formatting
+	 * @see {@link https://discord.com/developers/docs/reference#image-formatting}
 	 */
 	public get splash() {
 		return this[kData].splash;
@@ -66,7 +66,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	/**
 	 * The discovery splash hash of the guild. Only present for guilds with the "DISCOVERABLE" feature.
 	 *
-	 * @see https://discord.com/developers/docs/reference#image-formatting
+	 * @see {@link https://discord.com/developers/docs/reference#image-formatting}
 	 */
 	public get discoverySplash() {
 		return this[kData].discovery_splash;
@@ -91,7 +91,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	 * Total permissions for the user in the guild (excluding overwrites)
 	 * #### This field is only received from https://discord.com/developers/docs/resources/user#get-current-user-guilds
 	 *
-	 * @see https://en.wikipedia.org/wiki/Bit_field
+	 * @see {@link https://en.wikipedia.org/wiki/Bit_field}
 	 */
 	public get permissions() {
 		return this[kData].permissions;
@@ -129,7 +129,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	/**
 	 * The verification level required for the guild.
 	 *
-	 * @see https://discord.com/developers/docs/resources/guild#guild-object-verification-level
+	 * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-verification-level}
 	 */
 	public get verificationLevel() {
 		return this[kData].verification_level;
@@ -138,7 +138,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	/**
 	 * The default message notifications level.
 	 *
-	 * @see https://discord.com/developers/docs/resources/guild#guild-object-default-message-notification-level
+	 * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-default-message-notification-level}
 	 */
 	public get defaultMessageNotifications() {
 		return this[kData].default_message_notifications;
@@ -147,7 +147,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	/**
 	 * The explicit content filter level.
 	 *
-	 * @see https://discord.com/developers/docs/resources/guild#guild-object-explicit-content-filter-level
+	 * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-explicit-content-filter-level}
 	 */
 	public get explicitContentFilter() {
 		return this[kData].explicit_content_filter;
@@ -156,7 +156,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	/**
 	 * The required MFA level for the guild.
 	 *
-	 * @see https://discord.com/developers/docs/resources/guild#guild-object-mfa-level
+	 * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-mfa-level}
 	 */
 	public get mfaLevel() {
 		return this[kData].mfa_level;
@@ -179,7 +179,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	/**
 	 * The system channel flags
 	 *
-	 * @see https://discord.com/developers/docs/resources/guild#guild-object-system-channel-flags
+	 * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-system-channel-flags}
 	 */
 	public get systemChannelFlags() {
 		const flags = this[kData].system_channel_flags;
@@ -226,7 +226,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	/**
 	 * The banner hash for the guild.
 	 *
-	 * @see https://discord.com/developers/docs/reference#image-formatting
+	 * @see {@link https://discord.com/developers/docs/reference#image-formatting}
 	 */
 	public get banner() {
 		return this[kData].banner;
@@ -235,7 +235,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	/**
 	 * The premium tier (server boost level) for the guild.
 	 *
-	 * @see https://discord.com/developers/docs/resources/guild#guild-object-premium-tier
+	 * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-premium-tier}
 	 */
 	public get premiumTier() {
 		return this[kData].premium_tier;
@@ -295,7 +295,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	/**
 	 * The guild's NSFW level.
 	 *
-	 * @see https://discord.com/developers/docs/resources/guild#guild-object-guild-nsfw-level
+	 * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-guild-nsfw-level}
 	 */
 	public get nsfwLevel() {
 		return this[kData].nsfw_level;

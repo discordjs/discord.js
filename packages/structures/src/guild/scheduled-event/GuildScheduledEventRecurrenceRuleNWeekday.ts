@@ -8,7 +8,7 @@ import type { Partialize } from '../../utils/types';
  * Represents the N_Weekday structure of a scheduled event's recurrence rule.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @see https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-recurrence-rule-object-guild-scheduled-event-recurrence-rule-nweekday-structure
+ * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-recurrence-rule-object-guild-scheduled-event-recurrence-rule-nweekday-structure}
  */
 export class GuildScheduledEventRecurrenceRuleNWeekday<
 	Omitted extends keyof APIGuildScheduledEventRecurrenceRuleNWeekday | '' = '' | '',

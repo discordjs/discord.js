@@ -56,7 +56,7 @@ export class GuildScheduledEvent<
 	 *
 	 * The channel id in which the scheduled event will be hosted, or `null` if entity type is `EXTERNAL`.
 	 *
-	 * @see https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-field-requirements-by-entity-type
+	 * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-field-requirements-by-entity-type}
 	 */
 	public get channelId() {
 		return this[kData].channel_id;

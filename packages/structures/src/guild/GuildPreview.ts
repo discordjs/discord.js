@@ -37,7 +37,7 @@ export class GuildPreview<Omitted extends keyof APIGuildPreview | ''> extends St
 	/**
 	 * The icon hash of the guild.
 	 *
-	 * @see https://discord.com/developers/docs/reference#image-formatting
+	 * @see {@link https://discord.com/developers/docs/reference#image-formatting}
 	 */
 	public get icon() {
 		return this[kData].icon;
@@ -46,7 +46,7 @@ export class GuildPreview<Omitted extends keyof APIGuildPreview | ''> extends St
 	/**
 	 * The splash hash of the guild.
 	 *
-	 * @see https://discord.com/developers/docs/reference#image-formatting
+	 * @see {@link https://discord.com/developers/docs/reference#image-formatting}
 	 */
 	public get splash() {
 		return this[kData].splash;
@@ -55,7 +55,7 @@ export class GuildPreview<Omitted extends keyof APIGuildPreview | ''> extends St
 	/**
 	 * The discovery splash hash of the guild. Only present for guilds with the "DISCOVERABLE" feature.
 	 *
-	 * @see https://discord.com/developers/docs/reference#image-formatting
+	 * @see {@link https://discord.com/developers/docs/reference#image-formatting}
 	 */
 	public get discoverySplash() {
 		return this[kData].discovery_splash;
