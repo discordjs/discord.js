@@ -1,6 +1,8 @@
+import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APIGuildPreview } from 'discord-api-types/v10';
 import { Structure } from '../Structure';
 import { kData } from '../utils/symbols';
+import { isIdSet } from '../utils/type-guards';
 import type { Partialize } from '../utils/types';
 
 /**
@@ -78,5 +80,20 @@ export class GuildPreview<Omitted extends keyof APIGuildPreview | ''> extends St
 	 */
 	public get description() {
 		return this[kData].description;
+	}
+
+	/**
+	 * The timestamp the guild was created at.
+	 */
+	public get createdTimestamp() {
+		return isIdSet(this.id) ? DiscordSnowflake.timestampFrom(this.id) : null;
+	}
+
+	/**
+	 * The time the guild was created at.
+	 */
+	public get createdAt() {
+		const createdTimestamp = this.createdTimestamp;
+		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
 }

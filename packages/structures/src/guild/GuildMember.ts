@@ -11,7 +11,7 @@ import type { Partialize } from '../utils/types';
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  * @remarks Intentionally does not export `roles`
  *  so extending classes can map each array to `Role[]`.
- * @remarks has substructure `User` and `AvatarDecorationData`, which needs to be instantiated and stored by any extending classes using it.
+ * @remarks has substructures `User` and `AvatarDecorationData`, which needs to be instantiated and stored by any extending classes using it.
  */
 export class GuildMember<
 	Omitted extends keyof APIGuildMember | '' = 'communication_disabled_until' | 'joined_at' | 'premium_since',

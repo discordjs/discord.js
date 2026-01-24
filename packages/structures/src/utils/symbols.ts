@@ -19,6 +19,8 @@ export const kJoinedAt = Symbol.for('djs.structures.joinedAt');
 export const kCommunicationDisabledUntil = Symbol.for('djs.structures.communicationDisabledUntil');
 export const kPremiumSince = Symbol.for('djs.structures.premiumSince');
 
+export const kSyncedAt = Symbol.for('djs.structures.syncedAt');
+
 export const kAllow = Symbol.for('djs.structures.allow');
 export const kDeny = Symbol.for('djs.structures.deny');
 

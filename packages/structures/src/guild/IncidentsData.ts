@@ -9,7 +9,7 @@ import type { Partialize } from '../utils/types';
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  */
-export class GuildIncidentsData<
+export class IncidentsData<
 	Omitted extends keyof APIIncidentsData | '' =
 		| 'dm_spam_detected_at'
 		| 'dms_disabled_until'
@@ -38,7 +38,7 @@ export class GuildIncidentsData<
 	protected [kRaidDetectedAt]: number | null = null;
 
 	/**
-	 * @param data - The raw data from the API for the incident data.
+	 * @param data - The raw data from the API for the incidents data.
 	 */
 	public constructor(data: Partialize<APIIncidentsData, Omitted>) {
 		super(data);
