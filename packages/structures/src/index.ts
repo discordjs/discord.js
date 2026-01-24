@@ -7,6 +7,7 @@ export * from './invites/index.js';
 export * from './messages/index.js';
 export * from './polls/index.js';
 export * from './stickers/index.js';
+export * from './teams/index.js';
 export * from './users/index.js';
 export * from './Structure.js';
 export * from './Mixin.js';
