@@ -8,7 +8,6 @@ import type { Partialize } from '../utils/types.js';
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  * @remarks has substructure `User` which needs to be instantiated and stored by an extending class using it
- * @remarks intentionally does not export `teamId` so that extending classes can resolve `Snowflake` to `Team`
  */
 export class TeamMember<Omitted extends keyof APITeamMember | '' = ''> extends Structure<APITeamMember, Omitted> {
 	/**
@@ -30,6 +29,13 @@ export class TeamMember<Omitted extends keyof APITeamMember | '' = ''> extends S
 	 */
 	public get membershipState() {
 		return this[kData].membership_state;
+	}
+
+	/**
+	 * Id of the parent team of which they are a member
+	 */
+	public get teamId() {
+		return this[kData].team_id;
 	}
 
 	/**
