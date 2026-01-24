@@ -10,7 +10,7 @@ import type { Partialize } from '../utils/types';
  * Represents a guild integration on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @remarks Intentionally does not export `scopes`, so extending classes can map the array to OAuth2Scopes[].
+ * @remarks Intentionally does not export `scopes`, so extending classes can map the array to `OAuth2Scopes[]`.
  * @remarks has substructures `User`, `IntegrationAccount`, and `Application`, which needs to be instantiated and stored by any extending classes using it.
  */
 export class GuildIntegration<Omitted extends keyof APIGuildIntegration | '' = 'synced_at'> extends Structure<
@@ -18,7 +18,7 @@ export class GuildIntegration<Omitted extends keyof APIGuildIntegration | '' = '
 	Omitted
 > {
 	/**
-	 * The template used for removing data from the raw data stored for each GuildIntegration
+	 * The template used for removing data from the raw data stored for each `GuildIntegration`
 	 *
 	 * @remarks This template has defaults, if you want to remove additional data and keep the defaults,
 	 * use `Object.defineProperties`. To override the defaults, set this value directly.
@@ -67,15 +67,15 @@ export class GuildIntegration<Omitted extends keyof APIGuildIntegration | '' = '
 
 	/**
 	 * Whether the integration is syncing.
-	 * #### This field is not provided for `discord` bot integration
+	 * #### This field is not provided for `discord` bot integration.
 	 */
 	public get syncing() {
 		return this[kData].syncing;
 	}
 
 	/**
-	 * ID that this integration uses for "subscribers"
-	 * #### This field is not provided for `discord` bot integration
+	 * ID that this integration uses for "subscribers".
+	 * #### This field is not provided for `discord` bot integration.
 	 */
 	public get roleId() {
 		return this[kData].role_id;
@@ -83,7 +83,7 @@ export class GuildIntegration<Omitted extends keyof APIGuildIntegration | '' = '
 
 	/**
 	 * Whether emoticons should be synced for this integration. (`twitch` only currently.)
-	 * #### This field is not provided for `discord` bot integration
+	 * #### This field is not provided for `discord` bot integration.
 	 */
 	public get enableEmoticons() {
 		return this[kData].enable_emoticons;
@@ -91,7 +91,7 @@ export class GuildIntegration<Omitted extends keyof APIGuildIntegration | '' = '
 
 	/**
 	 * The behavior of expiring subscribers.
-	 * #### This field is not provided for `discord` bot integration
+	 * #### This field is not provided for `discord` bot integration.
 	 *
 	 * @see — https://discord.com/developers/docs/resources/guild#integration-object-integration-expire-behaviors
 	 */
@@ -101,7 +101,7 @@ export class GuildIntegration<Omitted extends keyof APIGuildIntegration | '' = '
 
 	/**
 	 * The grace period (in days) before expiring subscribers
-	 * #### This field is not provided for `discord` bot integration
+	 * #### This field is not provided for `discord` bot integration.
 	 */
 	public get expireGracePeriod() {
 		return this[kData].expire_grace_period;
@@ -109,7 +109,7 @@ export class GuildIntegration<Omitted extends keyof APIGuildIntegration | '' = '
 
 	/**
 	 * How many subscribers this integration has.
-	 * #### This field is not provided for `discord` bot integration
+	 * #### This field is not provided for `discord` bot integration.
 	 */
 	public get subscriberCount() {
 		return this[kData].subscriber_count;
@@ -117,7 +117,7 @@ export class GuildIntegration<Omitted extends keyof APIGuildIntegration | '' = '
 
 	/**
 	 * Whether the integration has been revoked.
-	 * #### This field is not provided for `discord` bot integration
+	 * #### This field is not provided for `discord` bot integration.
 	 */
 	public get revoked() {
 		return this[kData].revoked;

@@ -21,6 +21,15 @@ export const kPremiumSince = Symbol.for('djs.structures.premiumSince');
 
 export const kSyncedAt = Symbol.for('djs.structures.syncedAt');
 
+export const kCreatedAt = Symbol.for('djs.structures.createdAt');
+export const kUpdatedAt = Symbol.for('djs.structures.updatedAt');
+
+export const kScheduledEndTime = Symbol.for('djs.structures.scheduledEndTime');
+export const kScheduledStartTime = Symbol.for('djs.structures.scheduledStartTime');
+
+export const kStart = Symbol.for('djs.structures.start');
+export const kEnd = Symbol.for('djs.structures.end');
+
 export const kAllow = Symbol.for('djs.structures.allow');
 export const kDeny = Symbol.for('djs.structures.deny');
 
