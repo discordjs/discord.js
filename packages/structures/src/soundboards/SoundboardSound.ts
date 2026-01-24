@@ -2,6 +2,7 @@ import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APISoundboardSound } from 'discord-api-types/v10';
 import { Structure } from '../Structure';
 import { kData } from '../utils/symbols';
+import { isIdSet } from '../utils/type-guards';
 import type { Partialize } from '../utils/types';
 
 /**
@@ -79,17 +80,17 @@ export class SoundboardSound<Omitted extends keyof APISoundboardSound | '' = ''>
 	 * The timestamp this sound was created at
 	 */
 	public get createdTimestamp() {
-		const inGuild = this[kData].guild_id && typeof this[kData].guild_id === 'string';
-
-		return inGuild ? DiscordSnowflake.timestampFrom(this[kData].sound_id as string) : null;
+		return isIdSet(this[kData].sound_id) && isIdSet(this[kData].guild_id)
+			? DiscordSnowflake.timestampFrom(this[kData].sound_id)
+			: null;
 	}
 
 	/**
 	 * The time this sound was created at
 	 */
 	public get createdAt() {
-		const timestamp = this.createdTimestamp;
+		const createdTimestamp = this.createdTimestamp;
 
-		return timestamp ? new Date(timestamp) : null;
+		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
 }
