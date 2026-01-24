@@ -4,7 +4,7 @@ import { BitField } from './BitField.js';
 /**
  * Data structure that makes it easy to interact with an {@link SKUFlags} bitfield.
  */
-export class SKUFlagsBitField extends BitField<keyof SKUFlags> {
+export class SKUFlagsBitField extends BitField<keyof typeof SKUFlags> {
 	/**
 	 * Numeric SKU flags.
 	 */
