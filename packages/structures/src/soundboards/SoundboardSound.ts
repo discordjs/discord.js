@@ -78,6 +78,8 @@ export class SoundboardSound<Omitted extends keyof APISoundboardSound | '' = ''>
 
 	/**
 	 * The timestamp this sound was created at
+	 *
+	 * @remarks only available for guild soundboard sounds
 	 */
 	public get createdTimestamp() {
 		return isIdSet(this[kData].sound_id) && isIdSet(this[kData].guild_id)
@@ -87,6 +89,8 @@ export class SoundboardSound<Omitted extends keyof APISoundboardSound | '' = ''>
 
 	/**
 	 * The time this sound was created at
+	 *
+	 * @remarks only available for guild soundboard sounds
 	 */
 	public get createdAt() {
 		const createdTimestamp = this.createdTimestamp;
