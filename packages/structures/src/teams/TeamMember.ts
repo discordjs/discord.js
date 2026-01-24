@@ -1,4 +1,4 @@
-import type { APITeamMember, TeamMemberMembershipState, TeamMemberRole } from 'discord-api-types/v10';
+import type { APITeamMember } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
 import type { Partialize } from '../utils/types.js';
@@ -23,9 +23,9 @@ export class TeamMember<Omitted extends keyof APITeamMember | '' = ''> extends S
 	}
 
 	/**
-	 * User's {@link https://discord.com/developers/docs/topics/teams#data-models-membership-state-enum | membership state} on the team
+	 * User's membership state on the team
 	 *
-	 * @see {@link TeamMemberMembershipState}
+	 * @see {@link https://discord.com/developers/docs/topics/teams#data-models-membership-state-enum}
 	 */
 	public get membershipState() {
 		return this[kData].membership_state;
@@ -39,9 +39,9 @@ export class TeamMember<Omitted extends keyof APITeamMember | '' = ''> extends S
 	}
 
 	/**
-	 * {@link https://discord.com/developers/docs/topics/teams#team-member-roles-team-member-role-types | Role} of the team member
+	 * Role of the team member
 	 *
-	 * @see {@link TeamMemberRole}
+	 * @see {@link https://discord.com/developers/docs/topics/teams#team-member-roles-team-member-role-types}
 	 */
 	public get role() {
 		return this[kData].role;
