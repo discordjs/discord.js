@@ -1,3 +1,4 @@
+export * from './automoderation/index.js';
 export * from './bitfields/index.js';
 export * from './channels/index.js';
 export * from './emojis/index.js';
