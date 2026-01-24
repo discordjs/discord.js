@@ -61,9 +61,6 @@ export class SKU<Omitted extends keyof APISKU | '' = ''> extends Structure<APISK
 
 	/**
 	 * SKU flags combined as a bitfield
-	 *
-	 * @see {@link SKUFlags}
-	 * @see {@link https://en.wikipedia.org/wiki/Bit_field}
 	 */
 	public get flags() {
 		const flags = this[kData].flags;
