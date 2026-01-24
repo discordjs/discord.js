@@ -30,7 +30,9 @@ export class SKU<Omitted extends keyof APISKU | '' = ''> extends Structure<APISK
 	}
 
 	/**
-	 * {@link https://discord.com/developers/docs/resources/sku#sku-object-sku-types | Type of SKU}
+	 * Type of SKU
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/sku#sku-object-sku-types}
 	 */
 	public get type() {
 		return this[kData].type;
@@ -58,7 +60,10 @@ export class SKU<Omitted extends keyof APISKU | '' = ''> extends Structure<APISK
 	}
 
 	/**
-	 * {@link SKUFlags | SKU flags} combined as a {@link https://en.wikipedia.org/wiki/Bit_field | bitfield}
+	 * SKU flags combined as a bitfield
+	 *
+	 * @see {@link SKUFlags}
+	 * @see {@link https://en.wikipedia.org/wiki/Bit_field}
 	 */
 	public get flags() {
 		const flags = this[kData].flags;
