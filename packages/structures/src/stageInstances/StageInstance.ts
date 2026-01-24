@@ -1,5 +1,5 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import type { APIStageInstance, StageInstancePrivacyLevel } from 'discord-api-types/v10';
+import type { APIStageInstance } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
 import { isIdSet } from '../utils/type-guards.js';
@@ -55,22 +55,10 @@ export class StageInstance<Omitted extends keyof APIStageInstance | '' = ''> ext
 	}
 
 	/**
-	 * The {@link https://discord.com/developers/docs/resources/stage-instance#stage-instance-object-privacy-level | privacy level} of the stage instance
-	 *
-	 * @see {@link StageInstancePrivacyLevel}
+	 * The privacy level of the stage instance
 	 */
 	public get privacyLevel() {
 		return this[kData].privacy_level;
-	}
-
-	/**
-	 * Whether the stage discovery is disabled (deprecated)
-	 *
-	 * @deprecated
-	 * {@link https://github.com/discord/discord-api-docs/pull/4296 | discord-api-docs#4296}
-	 */
-	public get discoverableDisabled() {
-		return this[kData].discoverable_disabled;
 	}
 
 	/**
