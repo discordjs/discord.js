@@ -39,7 +39,7 @@ export class Application<Omitted extends keyof APIApplication | '' = ''> extends
 	/**
 	 * The icon hash of the application.
 	 *
-	 * @see https://discord.com/developers/docs/reference#image-formatting
+	 * @see {@link https://discord.com/developers/docs/reference#image-formatting}
 	 */
 	public get icon() {
 		return this[kData].icon;
@@ -94,7 +94,7 @@ export class Application<Omitted extends keyof APIApplication | '' = ''> extends
 	/**
 	 * Hexadecimal encoded key for verification in interactions and the GameSDK's GetTicket function.
 	 *
-	 * @see https://discord.com/developers/docs/game-sdk/applications#getticket
+	 * @see {@link https://discord.com/developers/docs/game-sdk/applications#getticket}
 	 */
 	public get verifyKey() {
 		return this[kData].verify_key;
@@ -124,7 +124,7 @@ export class Application<Omitted extends keyof APIApplication | '' = ''> extends
 	/**
 	 * The application's default rich presence invite cover image hash.
 	 *
-	 * @see https://discord.com/developers/docs/reference#image-formatting
+	 * @see {@link https://discord.com/developers/docs/reference#image-formatting}
 	 */
 	public get coverImage() {
 		return this[kData].cover_image;
@@ -133,7 +133,7 @@ export class Application<Omitted extends keyof APIApplication | '' = ''> extends
 	/**
 	 * The application's public flags.
 	 *
-	 * @see https://discord.com/developers/docs/resources/application#application-object-application-flags
+	 * @see {@link https://discord.com/developers/docs/resources/application#application-object-application-flags}
 	 */
 	public get flags() {
 		const flags = this[kData].flags;

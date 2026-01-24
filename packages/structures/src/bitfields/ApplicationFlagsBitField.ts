@@ -4,7 +4,7 @@ import { BitField } from './BitField';
 /**
  * Data structure that makes it easy to interact with a {@link Application#flags} bitfield.
  */
-export class ApplicationFlagsBitField extends BitField<keyof ApplicationFlags> {
+export class ApplicationFlagsBitField extends BitField<keyof typeof ApplicationFlags> {
 	/**
 	 * Numeric application flags.
 	 */
