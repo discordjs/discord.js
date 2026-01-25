@@ -1,7 +1,9 @@
+import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APISKU, SKUFlags } from 'discord-api-types/v10';
 import { Structure } from '../Structure';
 import { SKUFlagsBitField } from '../bitfields';
 import { kData } from '../utils/symbols';
+import { isIdSet } from '../utils/type-guards';
 import type { Partialize } from '../utils/types';
 
 /**
@@ -60,5 +62,20 @@ export class SKU<Omitted extends keyof APISKU | '' = ''> extends Structure<APISK
 	public get flags() {
 		const flags = this[kData].flags;
 		return flags ? new SKUFlagsBitField(this[kData].flags as SKUFlags) : null;
+	}
+
+	/**
+	 * The timestamp this SKU was created at
+	 */
+	public get createdTimestamp() {
+		return isIdSet(this.id) ? DiscordSnowflake.timestampFrom(this.id) : null;
+	}
+
+	/**
+	 * The time the SKU was created at
+	 */
+	public get createdAt() {
+		const createdTimestamp = this.createdTimestamp;
+		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
 }
