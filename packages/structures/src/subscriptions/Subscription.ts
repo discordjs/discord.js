@@ -16,7 +16,7 @@ import type { Partialize } from '../utils/types.js';
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  */
 export class Subscription<
-	Omitted extends keyof APISubscription | '' = 'current_period_end' | 'current_period_start',
+	Omitted extends keyof APISubscription | '' = 'canceled_at' | 'current_period_end' | 'current_period_start',
 > extends Structure<APISubscription, Omitted> {
 	/**
 	 * The template used for removing data from the raw data stored for each subscription
@@ -24,6 +24,7 @@ export class Subscription<
 	public static override readonly DataTemplate: Partial<APISubscription> = {
 		set current_period_start(_: string) {},
 		set current_period_end(_: string) {},
+		set canceled_at(_: string) {},
 	};
 
 	protected [kCurrentPeriodStartTimestamp]: number | null = null;
