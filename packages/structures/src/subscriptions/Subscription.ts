@@ -17,7 +17,9 @@ import type { Partialize } from '../utils/types.js';
  * @remarks intentionally does not export `skuIds`, `entitlementIds`, and `renewalSkuIds` so that extending classes can resolve
  * `Snowflake[]` to `SKU[]`, `Entitlement[]`, and `?SKU[]`, respectively
  */
-export class Subscription<Omitted extends keyof APISubscription | '' = ''> extends Structure<APISubscription, Omitted> {
+export class Subscription<
+	Omitted extends keyof APISubscription | '' = 'current_period_end' | 'current_period_start',
+> extends Structure<APISubscription, Omitted> {
 	/**
 	 * The template used for removing data from the raw data stored for each subscription
 	 */
