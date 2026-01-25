@@ -11,12 +11,12 @@ export class BaseChannelMixin<Type extends ChannelType = ChannelType> {
 	declare public readonly client: Client;
 
 	public async delete() {
-		await container.get('client')['core'].api.channels.delete(this.id);
+		await container.client['core'].api.channels.delete(this.id);
 		return this;
 	}
 
 	public async fetch() {
-		const data = await container.get('client')['core'].api.channels.get(this.id);
+		const data = await container.client['core'].api.channels.get(this.id);
 
 		equal(data.type, this.type);
 		return this[kPatch](data as ChannelDataType<Type>);

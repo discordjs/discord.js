@@ -8,9 +8,9 @@ import { CollectionCache, type StructureCreator, type CacheConstructor, type Str
 import { container } from './util/container.js';
 
 export class Client {
-	private core!: CoreClient;
+	protected core!: CoreClient;
 
-	public options: { token: string | undefined };
+	public readonly options: { token: string | undefined };
 
 	#token: string;
 
@@ -27,7 +27,7 @@ export class Client {
 		this.options = { token };
 		this.#token = token!;
 		this.cacheConstructor = cache;
-		container.set('client', this);
+		Object.defineProperty(container, 'client', { value: this, writable: false });
 	}
 
 	public async login(token?: string) {
