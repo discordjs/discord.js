@@ -14,8 +14,6 @@ import type { Partialize } from '../utils/types.js';
  * Represents any subscription on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @remarks intentionally does not export `skuIds`, `entitlementIds`, and `renewalSkuIds` so that extending classes can resolve
- * `Snowflake[]` to `SKU[]`, `Entitlement[]`, and `?SKU[]`, respectively
  */
 export class Subscription<
 	Omitted extends keyof APISubscription | '' = 'current_period_end' | 'current_period_start',
@@ -77,6 +75,27 @@ export class Subscription<
 	 */
 	public get userId() {
 		return this[kData].user_id;
+	}
+
+	/**
+	 * List of SKUs subscribed to
+	 */
+	public get skuIds() {
+		return this[kData].sku_ids;
+	}
+
+	/**
+	 * List of entitlements granted for this subscription
+	 */
+	public get entitlementIds() {
+		return this[kData].entitlement_ids;
+	}
+
+	/**
+	 * List of SKUs that this user will be subscribed to at renewal
+	 */
+	public get renewalSkuIds() {
+		return this[kData].renewal_sku_ids;
 	}
 
 	/**
