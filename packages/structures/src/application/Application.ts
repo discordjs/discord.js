@@ -94,7 +94,7 @@ export class Application<Omitted extends keyof APIApplication | '' = ''> extends
 	/**
 	 * Hexadecimal encoded key for verification in interactions and the GameSDK's GetTicket function.
 	 *
-	 * @see {@link https://discord.com/developers/docs/game-sdk/applications#getticket}
+	 * @see {@link https://github.com/discord/discord-api-docs/blob/legacy-gamesdk/docs/game_sdk/Applications.md#getticket}
 	 */
 	public get verifyKey() {
 		return this[kData].verify_key;
@@ -110,7 +110,7 @@ export class Application<Omitted extends keyof APIApplication | '' = ''> extends
 	/**
 	 * The id of the "Game SKU" that is created, if this application is a game sold on Discord, .
 	 */
-	public get primarySKUId() {
+	public get primarySkuId() {
 		return this[kData].primary_sku_id;
 	}
 
