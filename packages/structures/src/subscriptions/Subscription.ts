@@ -78,7 +78,7 @@ export class Subscription<Omitted extends keyof APISubscription | '' = ''> exten
 	}
 
 	/**
-	 * Tmestamp of start of the current subscription period
+	 * Timestamp of start of the current subscription period
 	 */
 	public get currentPeriodStartTimestamp() {
 		return this[kCurrentPeriodStartTimestamp];
@@ -108,7 +108,7 @@ export class Subscription<Omitted extends keyof APISubscription | '' = ''> exten
 	}
 
 	/**
-	 * The {@link SubscriptionStatus} of the current application
+	 * The {@link SubscriptionStatus} of the current subscription
 	 */
 	public get status() {
 		return this[kData].status;
