@@ -1,5 +1,5 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import type { APIGuildPreview } from 'discord-api-types/v10';
+import { CDNRoutes, ImageFormat, type APIGuildPreview } from 'discord-api-types/v10';
 import { Structure } from '../Structure';
 import { kData } from '../utils/symbols';
 import { isIdSet } from '../utils/type-guards';
@@ -9,10 +9,15 @@ import type { Partialize } from '../utils/types';
  * Represents a guild preview on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @remarks Intentionally does not export `emojis`, `features`, or `stickers`,
- *  so extending classes can map each array to `Emoji[]`, `GuildFeature[]`, and `Sticker[]` respectively.
+ * @remarks Intentionally does not export `emojis` or `stickers`,
+ *  so extending classes can map each array to `Emoji[]` and `Sticker[]` respectively.
  */
 export class GuildPreview<Omitted extends keyof APIGuildPreview | '' = ''> extends Structure<APIGuildPreview, Omitted> {
+	/**
+	 * The template used for removing data from the raw data stored for each preview.
+	 */
+	public static override readonly DataTemplate: Partial<APIGuildPreview> = {};
+
 	/**
 	 * @param data - The raw data from the API for the guild preview.
 	 */

@@ -1,21 +1,20 @@
-import type { APIGuildMember, GuildMemberFlags } from 'discord-api-types/v10';
+import type { APIInteractionGuildMember, GuildMemberFlags } from 'discord-api-types/v10';
 import { Structure } from '../Structure';
 import { GuildMemberFlagsBitField } from '../bitfields';
 import { dateToDiscordISOTimestamp } from '../utils/optimization';
-import { kCommunicationDisabledUntil, kData, kJoinedAt, kPremiumSince } from '../utils/symbols';
+import { kCommunicationDisabledUntil, kData, kJoinedAt, kPermissions, kPremiumSince } from '../utils/symbols';
 import type { Partialize } from '../utils/types';
 
 /**
  * Represents a guild member on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @remarks Intentionally does not export `roles`
- *  so extending classes can map each array to `Role[]`.
+ * @remarks Intentionally does not export `roles`so extending classes can map this array to `Role[]`.
  * @remarks has substructures `User` and `AvatarDecorationData`, which needs to be instantiated and stored by any extending classes using it.
  */
 export class GuildMember<
-	Omitted extends keyof APIGuildMember | '' = 'communication_disabled_until' | 'joined_at' | 'premium_since',
-> extends Structure<APIGuildMember, Omitted> {
+	Omitted extends keyof APIInteractionGuildMember | '' = 'communication_disabled_until' | 'joined_at' | 'premium_since',
+> extends Structure<APIInteractionGuildMember, Omitted> {
 	/**
 	 * @param data - The raw data from the API for the guild member.
 	 */
@@ -24,12 +23,13 @@ export class GuildMember<
 	 * The template used for removing data from the raw data stored for each `GuildMember`
 	 *
 	 * @remarks This template has defaults, if you want to remove additional data and keep the defaults,
-	 * use `Object.defineProperties`. To override the defaults, set this value directly.
+	 * use `Object.defineProperties`.
 	 */
-	public static override readonly DataTemplate: Partial<APIGuildMember> = {
+	public static override readonly DataTemplate: Partial<APIInteractionGuildMember> = {
 		set communication_disabled_until(_: string) {},
 		set joined_at(_: string) {},
 		set premium_since(_: string) {},
+		set permissions(_: string) {},
 	};
 
 	protected [kCommunicationDisabledUntil]: number | null = null;
@@ -38,10 +38,12 @@ export class GuildMember<
 
 	protected [kPremiumSince]: number | null = null;
 
+	protected [kPermissions]: bigint | null = null;
+
 	/**
 	 * @param data - The raw data from the API for the guild member.
 	 */
-	public constructor(data: Partialize<APIGuildMember, Omitted>) {
+	public constructor(data: Partialize<APIInteractionGuildMember, Omitted>) {
 		super(data);
 		this.optimizeData(data);
 	}
@@ -84,11 +86,15 @@ export class GuildMember<
 	/**
 	 * Guild member flags represented as a bit set.
 	 *
-	 * @defaultValue `0`
 	 */
 	public get flags() {
-		const flags = this[kData].flags;
-		return new GuildMemberFlagsBitField(flags as GuildMemberFlags);
+		return 'flags' in this[kData] && typeof this[kData].flags === 'number'
+			? new GuildMemberFlagsBitField(this[kData].flags as GuildMemberFlags)
+			: null;
+	}
+
+	public get permissions() {
+		return this[kData].permissions;
 	}
 
 	/**
@@ -139,7 +145,7 @@ export class GuildMember<
 	/**
 	 * {@inheritDoc Structure.optimizeData}
 	 */
-	protected override optimizeData(data: Partial<APIGuildMember>): void {
+	protected override optimizeData(data: Partial<APIInteractionGuildMember>): void {
 		if (data.communication_disabled_until) {
 			this[kCommunicationDisabledUntil] = Date.parse(data.communication_disabled_until);
 		}
@@ -150,6 +156,10 @@ export class GuildMember<
 
 		if (data.premium_since) {
 			this[kPremiumSince] = Date.parse(data.premium_since);
+		}
+
+		if (data.permissions) {
+			this[kPermissions] = BigInt(data.permissions);
 		}
 	}
 
@@ -162,7 +172,7 @@ export class GuildMember<
 		const communicationDisabledUntil = this[kCommunicationDisabledUntil];
 		const joinedAt = this[kJoinedAt];
 		const premiumSince = this[kPremiumSince];
-
+		const permissions = this[kPermissions];
 		if (communicationDisabledUntil) {
 			clone.communication_disabled_until = dateToDiscordISOTimestamp(new Date(communicationDisabledUntil));
 		}
@@ -173,6 +183,10 @@ export class GuildMember<
 
 		if (premiumSince) {
 			clone.premium_since = dateToDiscordISOTimestamp(new Date(premiumSince));
+		}
+
+		if (permissions) {
+			clone.permissions = permissions.toString();
 		}
 
 		return clone;

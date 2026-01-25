@@ -12,6 +12,11 @@ export class GuildScheduledEventEntityMetadata<
 	Omitted extends keyof APIGuildScheduledEventEntityMetadata | '' = '',
 > extends Structure<APIGuildScheduledEventEntityMetadata, Omitted> {
 	/**
+	 * The template used for removing data from the entity metadata.
+	 */
+	public static override readonly DataTemplate: Partial<APIGuildScheduledEventEntityMetadata> = {};
+
+	/**
 	 * @param data - The raw data from the API for the entity metadata.
 	 */
 	public constructor(data: Partialize<APIGuildScheduledEventEntityMetadata, Omitted>) {

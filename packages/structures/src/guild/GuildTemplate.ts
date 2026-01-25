@@ -18,7 +18,7 @@ export class GuildTemplate<Omitted extends keyof APITemplate | '' = 'created_at'
 	 * The template used for removing data from the raw data stored for each `GuildTemplate`
 	 *
 	 * @remarks This template has defaults, if you want to remove additional data and keep the defaults,
-	 * use `Object.defineProperties`. To override the defaults, set this value directly.
+	 * use `Object.defineProperties`.
 	 */
 	public static override readonly DataTemplate: Partial<APITemplate> = {
 		set created_at(_: string) {},

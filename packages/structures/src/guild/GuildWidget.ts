@@ -14,6 +14,11 @@ import type { Partialize } from '../utils/types';
  */
 export class GuildWidget<Omitted extends keyof APIGuildWidget | '' = ''> extends Structure<APIGuildWidget, Omitted> {
 	/**
+	 * The template used for removing data from the raw data stored for each guild widget.
+	 */
+	public static override readonly DataTemplate: Partial<APIGuildWidget> = {};
+
+	/**
 	 * @param data - The raw data from the API for the guild widget.
 	 */
 	public constructor(data: Partialize<APIGuildWidget, Omitted>) {

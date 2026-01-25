@@ -20,7 +20,7 @@ export class IncidentsData<
 	 * The template used for removing data from the raw data stored for each `IncidentsData`
 	 *
 	 * @remarks This template has defaults, if you want to remove additional data and keep the defaults,
-	 * use `Object.defineProperties`. To override the defaults, set this value directly.
+	 * use `Object.defineProperties`.
 	 */
 	public static override readonly DataTemplate: Partial<APIIncidentsData> = {
 		set dm_spam_detected_at(_: string) {},
@@ -36,6 +36,14 @@ export class IncidentsData<
 	protected [kInvitesDisabledUntil]: number | null = null;
 
 	protected [kRaidDetectedAt]: number | null = null;
+
+	/**
+	 * @param data - The raw data from the API for the incidents data.
+	 */
+	public constructor(data: Partialize<APIIncidentsData, Omitted>) {
+		super(data);
+		this.optimizeData(data);
+	}
 
 	/**
 	 * When direct message spam was detected.
@@ -95,14 +103,6 @@ export class IncidentsData<
 	 */
 	public get raidDetectedTimestamp() {
 		return this[kRaidDetectedAt];
-	}
-
-	/**
-	 * @param data - The raw data from the API for the incidents data.
-	 */
-	public constructor(data: Partialize<APIIncidentsData, Omitted>) {
-		super(data);
-		this.optimizeData(data);
 	}
 
 	/**

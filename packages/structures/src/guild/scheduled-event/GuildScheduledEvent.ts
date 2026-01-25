@@ -10,7 +10,7 @@ import type { Partialize } from '../../utils/types';
  * Represents a guild scheduled event on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @remarks has substructures `User` and `GuildScheduledEventEntityMetadata`, which need to be instantiated and stored by any extending classes using it.
+ * @remarks has substructures `User`, `GuildScheduledEventRecurrenceRule` and `GuildScheduledEventEntityMetadata`, which need to be instantiated and stored by any extending classes using it.
  */
 export class GuildScheduledEvent<
 	Omitted extends keyof APIGuildScheduledEvent | '' = 'scheduled_end_time' | 'scheduled_start_time',
@@ -54,7 +54,7 @@ export class GuildScheduledEvent<
 
 	/**
 	 *
-	 * The channel id in which the scheduled event will be hosted, or `null` if entity type is `EXTERNAL`.
+	 *  The channel id in which the scheduled event will be hosted, or `null` if {@link entityType} is {@link GuildScheduledEventEntityType.External}
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-field-requirements-by-entity-type}
 	 */

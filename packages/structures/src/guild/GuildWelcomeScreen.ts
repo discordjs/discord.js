@@ -14,6 +14,11 @@ export class GuildWelcomeScreen<Omitted extends keyof APIGuildWelcomeScreen | ''
 	Omitted
 > {
 	/**
+	 * The template used for removing data from the raw data stored for each welcome screen.
+	 */
+	public static override readonly DataTemplate: Partial<APIGuildWelcomeScreen> = {};
+
+	/**
 	 * @param data - The raw data from the API for the welcome screen.
 	 */
 	public constructor(data: Partialize<APIGuildWelcomeScreen, Omitted>) {

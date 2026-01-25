@@ -11,6 +11,11 @@ import type { Partialize } from '../utils/types';
  */
 export class Ban<Omitted extends keyof APIBan | '' = ''> extends Structure<APIBan, Omitted> {
 	/**
+	 * The template used for removing data from the raw data stored for each ban.
+	 */
+	public static override readonly DataTemplate: Partial<APIBan> = {};
+
+	/**
 	 * @param data - The raw data from the API for the ban.
 	 */
 	public constructor(data: Partialize<APIBan, Omitted>) {

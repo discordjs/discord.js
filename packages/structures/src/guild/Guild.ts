@@ -1,8 +1,9 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APIGuild, GuildSystemChannelFlags } from 'discord-api-types/v10';
 import { Structure } from '../Structure';
+import { PermissionsBitField } from '../bitfields';
 import { GuildSystemChannelFlagsBitField } from '../bitfields/GuildSystemChannelFlagsBitField';
-import { kData } from '../utils/symbols';
+import { kData, kPermissions } from '../utils/symbols';
 import { isIdSet } from '../utils/type-guards';
 import type { Partialize } from '../utils/types';
 
@@ -10,17 +11,28 @@ import type { Partialize } from '../utils/types';
  * Represents a guild on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @remarks Intentionally does not export `roles`, `emojis`, `features`, or `stickers`,
- *  so extending classes can map each array to `Role[]`, `Emoji[]`, `GuildFeature[]`, and `Sticker[]` respectively.
- * @remarks has substructures `GuildWelcomeScreen` and `GuildIncidentsData`, which needs to be instantiated and stored by any extending classes using it.
+ * @remarks has substructures `GuildWelcomeScreen`, `GuildIncidentsData`, `Role`, `Emoji` and `Sticker` which needs to be instantiated and stored by any extending classes using it.
  */
 export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<APIGuild, Omitted> {
+	protected [kPermissions]: bigint | null = null;
+
 	/**
 	 * @param data - The raw data from the API for the guild.
 	 */
 	public constructor(data: Partialize<APIGuild, Omitted>) {
 		super(data);
+		this.optimizeData(data);
 	}
+
+	/**
+	 * The template used for removing data from the raw data stored for each `Guild`
+	 *
+	 * @remarks This template has defaults, if you want to remove additional data and keep the defaults,
+	 * use `Object.defineProperties`.
+	 */
+	public static override readonly DataTemplate: Partial<APIGuild> = {
+		set permissions(_: string) {},
+	};
 
 	/**
 	 * The id of the guild.
@@ -74,7 +86,8 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 
 	/**
 	 *  Returns `true` if the user is the owner of the guild.
-	 *  #### This field is only received from https://discord.com/developers/docs/resources/user#get-current-user-guilds
+	 *
+	 *  @remarks This field is only received from https://discord.com/developers/docs/resources/user#get-current-user-guilds
 	 */
 	public get owner() {
 		return this[kData].owner;
@@ -89,12 +102,13 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 
 	/**
 	 * Total permissions for the user in the guild (excluding overwrites)
-	 * #### This field is only received from https://discord.com/developers/docs/resources/user#get-current-user-guilds
 	 *
+	 * @remarks This field is only received from https://discord.com/developers/docs/resources/user#get-current-user-guilds
 	 * @see {@link https://en.wikipedia.org/wiki/Bit_field}
 	 */
 	public get permissions() {
-		return this[kData].permissions;
+		const permissions = this[kPermissions];
+		return typeof permissions === 'bigint' ? new PermissionsBitField(permissions) : null;
 	}
 
 	/**
@@ -182,8 +196,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	 * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-system-channel-flags}
 	 */
 	public get systemChannelFlags() {
-		const flags = this[kData].system_channel_flags;
-		return flags
+		return 'system_channel_flags' in this[kData] && typeof this[kData].system_channel_flags === 'number'
 			? new GuildSystemChannelFlagsBitField(this[kData].system_channel_flags as GuildSystemChannelFlags)
 			: null;
 	}
@@ -251,7 +264,6 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	/**
 	 * The preferred locale of a community guild. Used in server discover and notices in discord.
 	 *
-	 * @defaultValue "en-US"
 	 */
 	public get preferredLocale() {
 		return this[kData].preferred_locale;
@@ -328,5 +340,27 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	public get createdAt() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
+	}
+
+	/**
+	 * {@inheritDoc Structure.optimizeData}
+	 */
+	protected override optimizeData(data: Partial<APIGuild>): void {
+		if (data.permissions) {
+			this[kPermissions] = BigInt(data.permissions);
+		}
+	}
+
+	/**
+	 * {@inheritDoc Structure.toJSON}
+	 */
+	public override toJSON() {
+		const clone = super.toJSON();
+		const permissions = this[kPermissions];
+		if (permissions) {
+			clone.permissions = permissions.toString();
+		}
+
+		return clone;
 	}
 }
