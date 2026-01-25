@@ -13,7 +13,7 @@ import type { Partialize } from '../utils/types';
  */
 export class SKU<Omitted extends keyof APISKU | '' = ''> extends Structure<APISKU, Omitted> {
 	/**
-	 * param data - The raw data received from the API for the SKU.
+	 * @param data - The raw data received from the API for the SKU.
 	 */
 	public constructor(data: Partialize<APISKU, Omitted>) {
 		super(data);
@@ -61,7 +61,7 @@ export class SKU<Omitted extends keyof APISKU | '' = ''> extends Structure<APISK
 	 */
 	public get flags() {
 		const flags = this[kData].flags;
-		return flags ? new SKUFlagsBitField(this[kData].flags as SKUFlags) : null;
+		return flags ? new SKUFlagsBitField(flags as SKUFlags) : null;
 	}
 
 	/**
