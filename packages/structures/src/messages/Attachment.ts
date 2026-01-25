@@ -112,7 +112,8 @@ export class Attachment<Omitted extends keyof APIAttachment | '' = ''> extends S
 	 * Attachment flags combined as a bitfield
 	 */
 	public get flags() {
-		const flags = this[kData].flags;
-		return flags ? new AttachmentFlagsBitField(this[kData].flags as AttachmentFlags) : null;
+		return 'flags' in this[kData] && typeof this[kData].flags === 'number'
+			? new AttachmentFlagsBitField(this[kData].flags as AttachmentFlags)
+			: null;
 	}
 }

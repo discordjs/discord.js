@@ -82,9 +82,9 @@ export class Channel<
 	 * to null, respecting Omit behaviors
 	 */
 	public get flags() {
-		const flags =
-			'flags' in this[kData] && typeof this[kData].flags === 'number' ? (this[kData].flags as ChannelFlags) : null;
-		return flags ? new ChannelFlagsBitField(flags) : null;
+		return 'flags' in this[kData] && typeof this[kData].flags === 'number'
+			? new ChannelFlagsBitField(this[kData].flags as ChannelFlags)
+			: null;
 	}
 
 	/**

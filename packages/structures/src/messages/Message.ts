@@ -110,8 +110,9 @@ export class Message<Omitted extends keyof APIMessage | '' = 'edited_timestamp' 
 	 * The flags of this message as a bit field
 	 */
 	public get flags() {
-		const flags = this[kData].flags;
-		return flags ? new MessageFlagsBitField(this[kData].flags as MessageFlags) : null;
+		return 'flags' in this[kData] && typeof this[kData].flags === 'number'
+			? new MessageFlagsBitField(this[kData].flags as MessageFlags)
+			: null;
 	}
 
 	/**
