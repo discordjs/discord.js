@@ -14,7 +14,7 @@ export class AuditLogOptions<Omitted extends keyof APIAuditLogOptions | '' = ''>
 	Omitted
 > {
 	/**
-	 * @param data - The raw data received from the API for the audit log entry.
+	 * @param data - The raw data received from the API for the audit log options.
 	 */
 	public constructor(data: Partialize<APIAuditLogOptions, Omitted>) {
 		super(data);
