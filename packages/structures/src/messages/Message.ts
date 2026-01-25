@@ -4,7 +4,7 @@ import { Structure } from '../Structure.js';
 import { MessageFlagsBitField } from '../bitfields/MessageFlagsBitField.js';
 import { dateToDiscordISOTimestamp } from '../utils/optimization.js';
 import { kData, kEditedTimestamp } from '../utils/symbols.js';
-import { isIdSet } from '../utils/type-guards.js';
+import { isFieldSet, isIdSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
 
 // TODO: missing substructures: application
@@ -110,7 +110,7 @@ export class Message<Omitted extends keyof APIMessage | '' = 'edited_timestamp' 
 	 * The flags of this message as a bit field
 	 */
 	public get flags() {
-		return 'flags' in this[kData] && typeof this[kData].flags === 'number'
+		return isFieldSet(this[kData], 'flags', 'number')
 			? new MessageFlagsBitField(this[kData].flags as MessageFlags)
 			: null;
 	}

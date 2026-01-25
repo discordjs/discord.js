@@ -2,6 +2,7 @@ import type { APIAttachment, AttachmentFlags } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { AttachmentFlagsBitField } from '../bitfields/AttachmentFlagsBitField.js';
 import { kData } from '../utils/symbols.js';
+import { isFieldSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
 
 export class Attachment<Omitted extends keyof APIAttachment | '' = ''> extends Structure<APIAttachment, Omitted> {
@@ -112,7 +113,7 @@ export class Attachment<Omitted extends keyof APIAttachment | '' = ''> extends S
 	 * Attachment flags combined as a bitfield
 	 */
 	public get flags() {
-		return 'flags' in this[kData] && typeof this[kData].flags === 'number'
+		return isFieldSet(this[kData], 'flags', 'number')
 			? new AttachmentFlagsBitField(this[kData].flags as AttachmentFlags)
 			: null;
 	}
