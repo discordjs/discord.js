@@ -1,5 +1,6 @@
 import { Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
+import Davey from '@snazzah/davey';
 import type { VoiceDavePrepareEpochData, VoiceDavePrepareTransitionData } from 'discord-api-types/voice/v8';
 import { SILENCE_FRAME } from '../audio/AudioPlayer';
 
@@ -25,8 +26,6 @@ interface ProposalsResult {
 	welcome?: Buffer;
 }
 
-let Davey: any = null;
-
 /**
  * The amount of seconds that a previous transition should be valid for.
  */
@@ -45,16 +44,6 @@ const TRANSITION_EXPIRY_PENDING_DOWNGRADE = 24;
  */
 export const DEFAULT_DECRYPTION_FAILURE_TOLERANCE = 36;
 
-// eslint-disable-next-line no-async-promise-executor
-export const daveLoadPromise = new Promise<void>(async (resolve) => {
-	try {
-		const lib = await import('@snazzah/davey');
-		Davey = lib;
-	} catch {}
-
-	resolve();
-});
-
 interface TransitionResult {
 	success: boolean;
 	transitionId: number;
@@ -69,8 +58,8 @@ export interface DAVESessionOptions {
 /**
  * The maximum DAVE protocol version supported.
  */
-export function getMaxProtocolVersion(): number | null {
-	return Davey?.DAVE_PROTOCOL_VERSION;
+export function getMaxProtocolVersion(): number {
+	return Davey.DAVE_PROTOCOL_VERSION;
 }
 
 export interface DAVESession extends EventEmitter {
@@ -135,12 +124,6 @@ export class DAVESession extends EventEmitter {
 	public session: SessionMethods | undefined;
 
 	public constructor(protocolVersion: number, userId: string, channelId: string, options: DAVESessionOptions) {
-		if (Davey === null)
-			throw new Error(
-				`Cannot utilize the DAVE protocol as the @snazzah/davey package has not been installed.
-- Use the generateDependencyReport() function for more information.\n`,
-			);
-
 		super();
 
 		this.protocolVersion = protocolVersion;
@@ -379,6 +362,7 @@ export class DAVESession extends EventEmitter {
 		const canDecrypt = this.session?.ready && (this.protocolVersion !== 0 || this.session?.canPassthrough(userId));
 		if (packet.equals(SILENCE_FRAME) || !canDecrypt || !this.session) return packet;
 		try {
+			// @ts-expect-error - const enum is exported and works (todo: drop const modifier on Davey end)
 			const buffer = this.session.decrypt(userId, Davey.MediaType.AUDIO, packet);
 			this.consecutiveFailures = 0;
 			return buffer;
