@@ -1,3 +1,4 @@
+export * from './automoderation/index.js';
 export * from './bitfields/index.js';
 export * from './channels/index.js';
 export * from './emojis/index.js';
@@ -10,6 +11,7 @@ export * from './stickers/index.js';
 export * from './teams/index.js';
 export * from './users/index.js';
 export * from './Structure.js';
+export * from './subscriptions/index.js';
 export * from './Mixin.js';
 export * from './utils/optimization.js';
 export type * from './utils/types.js';
