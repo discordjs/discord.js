@@ -146,7 +146,7 @@ export class Subscription<
 	/**
 	 * The time when the subscription was canceled
 	 *
-	 * @remarks If the user cancels the subscription, the subscription will enter the {@link SubscriptionStatus.Ending} status and the `canceled_at` timestamp will reflect the time of the cancellation.
+ * @remarks This is populated when the {@link Subscription#status} transitions to {@link SubscriptionStatus.Ending}.
 	 */
 	public get canceledAt() {
 		const canceledTimestamp = this.canceledTimestamp;
