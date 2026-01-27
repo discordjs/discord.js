@@ -10,6 +10,7 @@ export * from './polls/index.js';
 export * from './stickers/index.js';
 export * from './users/index.js';
 export * from './Structure.js';
+export * from './subscriptions/index.js';
 export * from './Mixin.js';
 export * from './utils/optimization.js';
 export type * from './utils/types.js';
