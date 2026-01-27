@@ -363,7 +363,6 @@ export class Networking extends EventEmitter {
 	 */
 	private createDaveSession(protocolVersion: number) {
 		if (
-			getMaxProtocolVersion() === null ||
 			this.options.daveEncryption === false ||
 			(this.state.code !== NetworkingStatusCode.SelectingProtocol &&
 				this.state.code !== NetworkingStatusCode.Ready &&
@@ -412,7 +411,7 @@ export class Networking extends EventEmitter {
 					user_id: this.state.connectionOptions.userId,
 					session_id: this.state.connectionOptions.sessionId,
 					token: this.state.connectionOptions.token,
-					max_dave_protocol_version: this.options.daveEncryption === false ? 0 : (getMaxProtocolVersion() ?? 0),
+					max_dave_protocol_version: this.options.daveEncryption === false ? 0 : getMaxProtocolVersion(),
 				},
 			});
 			this.state = {
