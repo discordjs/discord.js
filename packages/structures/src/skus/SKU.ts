@@ -2,6 +2,7 @@ import type { SKUFlags, APISKU } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { SKUFlagsBitField } from '../bitfields/SKUFlagsBitField.js';
 import { kData } from '../utils/symbols.js';
+import { isFieldSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
 
 /**
@@ -63,8 +64,6 @@ export class SKU<Omitted extends keyof APISKU | '' = ''> extends Structure<APISK
 	 * SKU flags combined as a bitfield
 	 */
 	public get flags() {
-		const flags = this[kData].flags;
-
-		return flags ? new SKUFlagsBitField(this[kData].flags as SKUFlags) : null;
+		return isFieldSet(this[kData], 'flags', 'number') ? new SKUFlagsBitField(this[kData].flags as SKUFlags) : null;
 	}
 }
