@@ -1,6 +1,8 @@
+import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APISticker } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
+import { isIdSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
 
 /**
@@ -68,5 +70,20 @@ export class Sticker<Omitted extends keyof APISticker | '' = ''> extends Structu
 	 */
 	public get type() {
 		return this[kData].type;
+	}
+
+	/**
+	 * The timestamp the sticker was created at
+	 */
+	public get createdTimestamp() {
+		return isIdSet(this.id) ? DiscordSnowflake.timestampFrom(this.id) : null;
+	}
+
+	/**
+	 * The time the sticker was created at
+	 */
+	public get createdAt() {
+		const createdTimestamp = this.createdTimestamp;
+		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
 }
