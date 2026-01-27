@@ -90,9 +90,9 @@ const getUserSelectMenuComponent = lazy(
  */
 
 /**
- * @typedef {BaseComponentData} RadioGroupActionComponentData
- * @property {string} customId The custom id of the radio group action
- * @property {RadioGroupOption[]} options The options in this radio group action (2-10)
+ * @typedef {BaseComponentData} RadioGroupComponentData
+ * @property {string} customId The custom id of the radio group
+ * @property {RadioGroupOption[]} options The options in this radio group (2-10)
  * @property {boolean} [required] Whether this component is required in modals
  */
 
@@ -105,17 +105,17 @@ const getUserSelectMenuComponent = lazy(
  */
 
 /**
- * @typedef {BaseComponentData} CheckboxGroupActionComponentData
- * @property {string} customId The custom id of the checkbox group action
- * @property {RadioGroupOption[]} options The options in this checkbox group action
- * @property {number} [minValues] The minimum number of options that must be selected (1-10)
+ * @typedef {BaseComponentData} CheckboxGroupComponentData
+ * @property {string} customId The custom id of the checkbox group
+ * @property {CheckboxGroupOption[]} options The options in this checkbox group
+ * @property {number} [minValues] The minimum number of options that must be selected (0-10)
  * @property {number} [maxValues] The maximum number of options that can be selected (defaults to options length)
  * @property {boolean} [required] Whether this component is required in modals
  */
 
 /**
- * @typedef {BaseComponentData} CheckboxActionComponentData
- * @property {string} customId The custom id of the checkbox action
+ * @typedef {BaseComponentData} CheckboxComponentData
+ * @property {string} customId The custom id of the checkbox
  * @property {boolean} [default] Whether this component is default selected in modals
  */
 

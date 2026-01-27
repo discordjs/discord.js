@@ -235,34 +235,34 @@ class ModalComponentResolver {
   }
 
   /**
-   * Get radio group action component
+   * Get radio group component
    *
    * @param {string} customId The custom id of the component
    * @param {boolean} [required=false] Whether to throw an error if the component value is not found or empty
-   * @returns {?string} The selected radio group action option value, or null if none were selected and not required
+   * @returns {?string} The selected radio group option value, or null if none were selected and not required
    */
-  getRadioGroupAction(customId, required = false) {
-    return this._getTypedComponent(customId, [ComponentType.RadioGroupAction], ['value'], required).value ?? null;
+  getRadioGroup(customId, required = false) {
+    return this._getTypedComponent(customId, [ComponentType.RadioGroup], ['value'], required).value ?? null;
   }
 
   /**
-   * Get checkbox group action component
+   * Get checkbox group component
    *
    * @param {string} customId The custom id of the component
-   * @returns {string[]} The selected checkbox group action option values
+   * @returns {string[]} The selected checkbox group option values
    */
-  getCheckboxGroupAction(customId) {
-    return this._getTypedComponent(customId, [ComponentType.CheckboxGroupAction]).values;
+  getCheckboxGroup(customId) {
+    return this._getTypedComponent(customId, [ComponentType.CheckboxGroup]).values;
   }
 
   /**
-   * Get checkbox action component
+   * Get checkbox component
    *
    * @param {string} customId The custom id of the component
-   * @returns {boolean} Whther this checkbox action was selected
+   * @returns {boolean} Whether this checkbox was selected
    */
-  getCheckboxAction(customId) {
-    return this._getTypedComponent(customId, [ComponentType.CheckboxAction]).value;
+  getCheckbox(customId) {
+    return this._getTypedComponent(customId, [ComponentType.Checkbox]).value;
   }
 }
 

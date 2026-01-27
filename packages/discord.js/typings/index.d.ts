@@ -274,11 +274,11 @@ export interface ActionRowData<
 
 export type ComponentInLabelData =
   | ChannelSelectMenuComponentData
-  | CheckboxActionComponentData
-  | CheckboxGroupActionComponentData
+  | CheckboxComponentData
+  | CheckboxGroupComponentData
   | FileUploadComponentData
   | MentionableSelectMenuComponentData
-  | RadioGroupActionComponentData
+  | RadioGroupComponentData
   | RoleSelectMenuComponentData
   | StringSelectMenuComponentData
   | TextInputComponentData
@@ -2586,26 +2586,26 @@ export interface FileUploadModalData extends BaseModalData<ComponentType.FileUpl
   values: readonly Snowflake[];
 }
 
-export interface RadioGroupActionModalData extends BaseModalData<ComponentType.RadioGroupAction> {
+export interface RadioGroupModalData extends BaseModalData<ComponentType.RadioGroup> {
   customId: string;
   value?: string;
 }
 
-export interface CheckboxGroupActionModalData extends BaseModalData<ComponentType.CheckboxGroupAction> {
+export interface CheckboxGroupModalData extends BaseModalData<ComponentType.CheckboxGroup> {
   customId: string;
   values: readonly string[];
 }
 
-export interface CheckboxActionModalData extends BaseModalData<ComponentType.CheckboxAction> {
+export interface CheckboxModalData extends BaseModalData<ComponentType.Checkbox> {
   customId: string;
   value: boolean;
 }
 
 export type ModalData =
-  | CheckboxActionModalData
-  | CheckboxGroupActionModalData
+  | CheckboxGroupModalData
+  | CheckboxModalData
   | FileUploadModalData
-  | RadioGroupActionModalData
+  | RadioGroupModalData
   | SelectMenuModalData
   | TextInputModalData;
 
@@ -2682,10 +2682,10 @@ export class ModalComponentResolver<Cached extends CacheType = CacheType> {
   public getSelectedMentionables(customId: string, required?: boolean): ModalSelectedMentionables<Cached> | null;
   public getUploadedFiles(customId: string, required: true): ReadonlyCollection<Snowflake, Attachment>;
   public getUploadedFiles(customId: string, required?: boolean): ReadonlyCollection<Snowflake, Attachment> | null;
-  public getRadioGroupAction(customId: string, required: true): string;
-  public getRadioGroupAction(customId: string, required?: boolean): string | null;
-  public getCheckboxGroupAction(customId: string): readonly string[];
-  public getCheckboxAction(customId: string): boolean;
+  public getRadioGroup(customId: string, required: true): string;
+  public getRadioGroup(customId: string, required?: boolean): string | null;
+  public getCheckboxGroup(customId: string): readonly string[];
+  public getCheckbox(customId: string): boolean;
 }
 
 export interface ModalMessageModalSubmitInteraction<
@@ -6898,11 +6898,11 @@ export interface RadioGroupOption {
   label: string;
   value: string;
 }
-export interface RadioGroupActionComponentData extends BaseComponentData {
+export interface RadioGroupComponentData extends BaseComponentData {
   customId: string;
   options: readonly RadioGroupOption[];
   required?: boolean;
-  type: ComponentType.RadioGroupAction;
+  type: ComponentType.RadioGroup;
 }
 
 export interface CheckboxGroupOption {
@@ -6911,16 +6911,16 @@ export interface CheckboxGroupOption {
   label: string;
   value: string;
 }
-export interface CheckboxGroupActionComponentData extends BaseComponentData {
+export interface CheckboxGroupComponentData extends BaseComponentData {
   customId: string;
   maxValues?: number;
   minValues?: number;
   options: readonly CheckboxGroupOption[];
   required?: boolean;
-  type: ComponentType.CheckboxGroupAction;
+  type: ComponentType.CheckboxGroup;
 }
 
-export interface CheckboxActionComponentData extends BaseComponentData {
+export interface CheckboxComponentData extends BaseComponentData {
   customId: string;
   default?: boolean;
 }
