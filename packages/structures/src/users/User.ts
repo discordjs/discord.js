@@ -1,8 +1,16 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import type { APIUser } from 'discord-api-types/v10';
+import {
+	CDNRoutes,
+	ImageFormat,
+	RouteBases,
+	type APIUser,
+	type DefaultUserAvatarAssets,
+	type UserAvatarFormat,
+	type UserBannerFormat,
+} from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
-import { isIdSet } from '../utils/type-guards.js';
+import { isFieldSet, isIdSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
 
 /**
@@ -67,6 +75,37 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	}
 
 	/**
+	 * Get the URL to the user avatar
+	 *
+	 * @param format - the file format to use
+	 */
+	public avatarURL(format: UserAvatarFormat = ImageFormat.WebP) {
+		return isIdSet(this[kData].id) && isFieldSet(this[kData], 'avatar', 'string')
+			? `${RouteBases.cdn}${CDNRoutes.userAvatar(this[kData].id.toString(), this[kData].avatar, format)}`
+			: null;
+	}
+
+	/**
+	 * Get the URL to the user's default avatar
+	 */
+	public get defaultAvatarURL() {
+		return isIdSet(this[kData].id)
+			? `${RouteBases.cdn}${CDNRoutes.defaultUserAvatar(
+					(isFieldSet(this[kData], 'discriminator', 'string') && this[kData].discriminator.length === 4
+						? Number(this[kData].discriminator) % 5
+						: Number(BigInt(this[kData].id) >> 22n) % 6) as DefaultUserAvatarAssets,
+				)}`
+			: null;
+	}
+
+	/**
+	 * Get the URL to the user avatar or their default avatar, if none is set
+	 */
+	public displayAvatarURL(format: UserAvatarFormat = ImageFormat.WebP) {
+		return this.avatarURL(format) ?? this.defaultAvatarURL;
+	}
+
+	/**
 	 * Whether the user is a bot
 	 */
 	public get bot() {
@@ -96,6 +135,17 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	 */
 	public get banner() {
 		return this[kData].banner;
+	}
+
+	/**
+	 * Get the URL to the user banner
+	 *
+	 * @param format - the file format to use
+	 */
+	public bannerURL(format: UserBannerFormat = ImageFormat.WebP) {
+		return isIdSet(this[kData].id) && isFieldSet(this[kData], 'banner', 'string')
+			? `${RouteBases.cdn}${CDNRoutes.userBanner(this[kData].id.toString(), this[kData].banner, format)}`
+			: null;
 	}
 
 	/**

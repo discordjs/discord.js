@@ -1,5 +1,5 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import type { APIEmoji } from 'discord-api-types/v10';
+import { CDNRoutes, ImageFormat, RouteBases, type APIEmoji, type EmojiFormat } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
 import { isIdSet } from '../utils/type-guards.js';
@@ -84,5 +84,14 @@ export class Emoji<Omitted extends keyof APIEmoji | '' = ''> extends Structure<A
 	public get createdAt() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
+	}
+
+	/**
+	 * Get the URL to the emoji
+	 *
+	 * @param format - the file format to use
+	 */
+	public url(format: EmojiFormat = ImageFormat.WebP) {
+		return isIdSet(this[kData].id) ? `${RouteBases.cdn}${CDNRoutes.emoji(this[kData].id.toString(), format)}` : null;
 	}
 }

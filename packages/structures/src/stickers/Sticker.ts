@@ -1,6 +1,7 @@
-import type { APISticker } from 'discord-api-types/v10';
+import { CDNRoutes, ImageFormat, RouteBases, type APISticker, type StickerFormat } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
+import { isIdSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
 
 /**
@@ -68,5 +69,14 @@ export class Sticker<Omitted extends keyof APISticker | '' = ''> extends Structu
 	 */
 	public get type() {
 		return this[kData].type;
+	}
+
+	/**
+	 * Get the URL to the sticker
+	 *
+	 * @param format - the file format to use
+	 */
+	public url(format: StickerFormat = ImageFormat.PNG) {
+		return isIdSet(this[kData].id) ? `${RouteBases.cdn}${CDNRoutes.sticker(this[kData].id.toString(), format)}` : null;
 	}
 }
