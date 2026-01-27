@@ -146,7 +146,7 @@ export class Subscription<
 	/**
 	 * The time when the subscription was canceled
 	 *
- * @remarks This is populated when the {@link Subscription#status} transitions to {@link SubscriptionStatus.Ending}.
+	 * @remarks This is populated when the {@link Subscription#status} transitions to {@link SubscriptionStatus.Ending}.
 	 */
 	public get canceledAt() {
 		const canceledTimestamp = this.canceledTimestamp;
