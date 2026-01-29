@@ -16,15 +16,6 @@ import {
 } from '../src/automoderation/index.js';
 import { kPatch } from '../src/utils/symbols';
 
-/**
- * For tests they should check
- *
- * correct values of all getters,
- * equality of the result of toJSON to the api data used to construct the structure,
- * expected return value of helper methods like url(), createdAt, flags, etc.
- * maybe for nullable fields patch() working as expected
- */
-
 const ruleTriggerMetadataData: APIAutoModerationRuleTriggerMetadata = {
 	mention_total_limit: 5,
 };
