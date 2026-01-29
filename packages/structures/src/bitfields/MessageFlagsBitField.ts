@@ -4,7 +4,7 @@ import { BitField } from './BitField.js';
 /**
  * Data structure that makes it easy to interact with a {@link Message#flags} bitfield.
  */
-export class MessageFlagsBitField extends BitField<keyof MessageFlags> {
+export class MessageFlagsBitField extends BitField<keyof typeof MessageFlags> {
 	/**
 	 * Numeric message flags.
 	 */
