@@ -1,10 +1,10 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APIApplication, ApplicationFlags } from 'discord-api-types/v10';
-import { Structure } from '../Structure';
-import { ApplicationFlagsBitField } from '../bitfields';
-import { kData } from '../utils/symbols';
-import { isIdSet } from '../utils/type-guards';
-import type { Partialize } from '../utils/types';
+import { Structure } from '../Structure.js';
+import { ApplicationFlagsBitField } from '../bitfields/ApplicationFlagsBitField.js';
+import { kData } from '../utils/symbols.js';
+import { isIdSet } from '../utils/type-guards.js';
+import type { Partialize } from '../utils/types.js';
 
 // TODO: missing "team" substructure
 
@@ -108,7 +108,7 @@ export class Application<Omitted extends keyof APIApplication | '' = ''> extends
 	}
 
 	/**
-	 * The id of the "Game SKU" that is created, if this application is a game sold on Discord, .
+	 * The id of the "Game SKU" that is created, if this application is a game sold on Discord.
 	 */
 	public get primarySkuId() {
 		return this[kData].primary_sku_id;
@@ -136,8 +136,9 @@ export class Application<Omitted extends keyof APIApplication | '' = ''> extends
 	 * @see {@link https://discord.com/developers/docs/resources/application#application-object-application-flags}
 	 */
 	public get flags() {
-		const flags = this[kData].flags;
-		return flags ? new ApplicationFlagsBitField(this[kData].flags as ApplicationFlags) : null;
+		return 'flags' in this[kData] && typeof this[kData].flags === 'number'
+			? new ApplicationFlagsBitField(this[kData].flags as ApplicationFlags)
+			: null;
 	}
 
 	/**
