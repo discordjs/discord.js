@@ -47,6 +47,8 @@ describe('Emoji structure', () => {
 			available: false,
 		});
 
+		expect(patched.available).toEqual(false);
+
 		expect(patched.toJSON()).not.toEqual(data);
 		expect(patched).toBe(instance);
 	});

@@ -47,7 +47,6 @@ describe('Entitlement structure', () => {
 		});
 
 		expect(patched.guildId).toBe(instance.guildId);
-		expect(patched.guildId).toBe(instance.guildId);
 
 		expect(patched.guildId).toEqual(guildId);
 		expect(patched.consumed).toEqual(consumed);
