@@ -58,7 +58,7 @@ export class Application<Omitted extends keyof APIApplication | '' = ''> extends
 	 */
 	public iconURL(format: ApplicationIconFormat = ImageFormat.WebP) {
 		return isIdSet(this[kData].id) && isFieldSet(this[kData], 'icon', 'string')
-			? `${RouteBases.cdn}${CDNRoutes.applicationCover(this[kData].id.toString(), this[kData].icon, format)}`
+			? `${RouteBases.cdn}${CDNRoutes.applicationIcon(this[kData].id.toString(), this[kData].icon, format)}`
 			: null;
 	}
 
