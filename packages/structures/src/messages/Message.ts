@@ -4,7 +4,7 @@ import { Structure } from '../Structure.js';
 import { MessageFlagsBitField } from '../bitfields/MessageFlagsBitField.js';
 import { dateToDiscordISOTimestamp } from '../utils/optimization.js';
 import { kData, kEditedTimestamp } from '../utils/symbols.js';
-import { isIdSet } from '../utils/type-guards.js';
+import { isFieldSet, isIdSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
 
 /**
@@ -108,8 +108,9 @@ export class Message<Omitted extends keyof APIMessage | '' = 'edited_timestamp' 
 	 * The flags of this message as a bit field
 	 */
 	public get flags() {
-		const flags = this[kData].flags;
-		return flags ? new MessageFlagsBitField(this[kData].flags as MessageFlags) : null;
+		return isFieldSet(this[kData], 'flags', 'number')
+			? new MessageFlagsBitField(this[kData].flags as MessageFlags)
+			: null;
 	}
 
 	/**
