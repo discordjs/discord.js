@@ -1,12 +1,18 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import type { APIApplication, ApplicationFlags } from 'discord-api-types/v10';
+import {
+	type ApplicationIconFormat,
+	type APIApplication,
+	type ApplicationCoverFormat,
+	type ApplicationFlags,
+	CDNRoutes,
+	ImageFormat,
+	RouteBases,
+} from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { ApplicationFlagsBitField } from '../bitfields/ApplicationFlagsBitField.js';
 import { kData } from '../utils/symbols.js';
-import { isIdSet } from '../utils/type-guards.js';
+import { isFieldSet, isIdSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
-
-// TODO: missing "team" substructure
 
 /**
  * Represents an application on Discord.
@@ -43,6 +49,17 @@ export class Application<Omitted extends keyof APIApplication | '' = ''> extends
 	 */
 	public get icon() {
 		return this[kData].icon;
+	}
+
+	/**
+	 * Get the URL to the icon.
+	 *
+	 * @param format - the file format to use
+	 */
+	public iconURL(format: ApplicationIconFormat = ImageFormat.WebP) {
+		return isIdSet(this[kData].id) && isFieldSet(this[kData], 'icon', 'string')
+			? `${RouteBases.cdn}${CDNRoutes.applicationCover(this[kData].id.toString(), this[kData].icon, format)}`
+			: null;
 	}
 
 	/**
@@ -131,12 +148,23 @@ export class Application<Omitted extends keyof APIApplication | '' = ''> extends
 	}
 
 	/**
+	 * Get the URL to the cover image.
+	 *
+	 * @param format - the file format to use
+	 */
+	public coverImageURL(format: ApplicationCoverFormat = ImageFormat.WebP) {
+		return isIdSet(this[kData].id) && isFieldSet(this[kData], 'cover_image', 'string')
+			? `${RouteBases.cdn}${CDNRoutes.applicationCover(this[kData].id.toString(), this[kData].cover_image, format)}`
+			: null;
+	}
+
+	/**
 	 * The application's public flags.
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/application#application-object-application-flags}
 	 */
 	public get flags() {
-		return 'flags' in this[kData] && typeof this[kData].flags === 'number'
+		return isFieldSet(this[kData], 'flags', 'number')
 			? new ApplicationFlagsBitField(this[kData].flags as ApplicationFlags)
 			: null;
 	}
