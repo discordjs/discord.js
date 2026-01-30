@@ -8,7 +8,7 @@ import type { Partialize } from '../utils/types.js';
  * Represents a guild template on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @remarks has substructures User and Guild, which need to be instantiated and stored by any extending classes using it.
+ * @remarks has substructures `User` and `Guild`, which need to be instantiated and stored by any extending classes using it.
  */
 export class GuildTemplate<Omitted extends keyof APITemplate | '' = 'created_at' | 'updated_at'> extends Structure<
 	APITemplate,

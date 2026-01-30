@@ -13,6 +13,11 @@ export class IntegrationAccount<Omitted extends keyof APIIntegrationAccount | ''
 	Omitted
 > {
 	/**
+	 * The template used for removing data from the raw data stored for each integration account.
+	 */
+	public static override readonly DataTemplate: Partial<APIIntegrationAccount> = {};
+
+	/**
 	 * @param data - The raw data from the API for the integration account.
 	 */
 	public constructor(data: Partialize<APIIntegrationAccount, Omitted>) {
