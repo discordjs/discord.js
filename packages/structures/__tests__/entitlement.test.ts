@@ -26,8 +26,8 @@ describe('Entitlement structure', () => {
 		expect(instance.applicationId).toBe(data.application_id);
 		expect(instance.userId).toBe(data.user_id);
 		expect(instance.type).toBe(data.type);
-		expect(instance.guildId).toBe(data.guild_id);
 		expect(instance.consumed).toBe(data.consumed);
+		expect(instance.guildId).toBeUndefined();
 
 		expect(instance.createdTimestamp).toBe(DiscordSnowflake.timestampFrom(instance.id!));
 		expect(instance.createdAt).toEqual(new Date(instance.createdTimestamp!));
@@ -45,8 +45,6 @@ describe('Entitlement structure', () => {
 			guild_id: guildId,
 			consumed,
 		});
-
-		expect(patched.guildId).toBe(instance.guildId);
 
 		expect(patched.guildId).toEqual(guildId);
 		expect(patched.consumed).toEqual(consumed);
