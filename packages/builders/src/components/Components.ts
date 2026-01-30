@@ -8,6 +8,9 @@ import {
 } from './ActionRow.js';
 import { ComponentBuilder } from './Component.js';
 import { ButtonBuilder } from './button/Button.js';
+import { CheckboxBuilder } from './checkbox/Checkbox.js';
+import { CheckboxGroupBuilder } from './checkbox/CheckboxGroup.js';
+import { RadioGroupBuilder } from './checkbox/RadioGroup.js';
 import { FileUploadBuilder } from './fileUpload/FileUpload.js';
 import { LabelBuilder } from './label/Label.js';
 import { ChannelSelectMenuBuilder } from './selectMenu/ChannelSelectMenu.js';
@@ -110,6 +113,18 @@ export interface MappedComponentTypes {
 	 * The file upload component type is associated with a {@link FileUploadBuilder}.
 	 */
 	[ComponentType.FileUpload]: FileUploadBuilder;
+	/**
+	 * The checkbox component type is associated with a {@link CheckboxBuilder}.
+	 */
+	[ComponentType.Checkbox]: CheckboxBuilder;
+	/**
+	 * The checkbox group component type is associated with a {@link CheckboxGroupBuilder}.
+	 */
+	[ComponentType.CheckboxGroup]: CheckboxGroupBuilder;
+	/**
+	 * The radio group component type is associated with a {@link RadioGroupBuilder}.
+	 */
+	[ComponentType.RadioGroup]: RadioGroupBuilder;
 }
 
 /**
@@ -175,6 +190,12 @@ export function createComponentBuilder(
 			return new LabelBuilder(data);
 		case ComponentType.FileUpload:
 			return new FileUploadBuilder(data);
+		case ComponentType.Checkbox:
+			return new CheckboxBuilder(data);
+		case ComponentType.CheckboxGroup:
+			return new CheckboxGroupBuilder(data);
+		case ComponentType.RadioGroup:
+			return new RadioGroupBuilder(data);
 		default:
 			// @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);

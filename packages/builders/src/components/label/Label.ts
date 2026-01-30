@@ -1,8 +1,11 @@
 import type {
 	APIChannelSelectComponent,
+	APICheckboxComponent,
+	APICheckboxGroupComponent,
 	APIFileUploadComponent,
 	APILabelComponent,
 	APIMentionableSelectComponent,
+	APIRadioGroupComponent,
 	APIRoleSelectComponent,
 	APIStringSelectComponent,
 	APITextInputComponent,
@@ -11,6 +14,9 @@ import type {
 import { ComponentType } from 'discord-api-types/v10';
 import { ComponentBuilder } from '../Component.js';
 import { createComponentBuilder, resolveBuilder } from '../Components.js';
+import { CheckboxBuilder } from '../checkbox/Checkbox.js';
+import { CheckboxGroupBuilder } from '../checkbox/CheckboxGroup.js';
+import { RadioGroupBuilder } from '../checkbox/RadioGroup.js';
 import { FileUploadBuilder } from '../fileUpload/FileUpload.js';
 import { ChannelSelectMenuBuilder } from '../selectMenu/ChannelSelectMenu.js';
 import { MentionableSelectMenuBuilder } from '../selectMenu/MentionableSelectMenu.js';
@@ -23,8 +29,11 @@ import { labelPredicate } from './Assertions.js';
 export interface LabelBuilderData extends Partial<Omit<APILabelComponent, 'component'>> {
 	component?:
 		| ChannelSelectMenuBuilder
+		| CheckboxBuilder
+		| CheckboxGroupBuilder
 		| FileUploadBuilder
 		| MentionableSelectMenuBuilder
+		| RadioGroupBuilder
 		| RoleSelectMenuBuilder
 		| StringSelectMenuBuilder
 		| TextInputBuilder
@@ -191,6 +200,42 @@ export class LabelBuilder extends ComponentBuilder<LabelBuilderData> {
 		input: APIFileUploadComponent | FileUploadBuilder | ((builder: FileUploadBuilder) => FileUploadBuilder),
 	): this {
 		this.data.component = resolveBuilder(input, FileUploadBuilder);
+		return this;
+	}
+
+	/**
+	 * Sets a checkbox component to this label.
+	 *
+	 * @param input - A function that returns a component builder or an already built builder
+	 */
+	public setCheckboxComponent(
+		input: APICheckboxComponent | CheckboxBuilder | ((builder: CheckboxBuilder) => CheckboxBuilder),
+	): this {
+		this.data.component = resolveBuilder(input, CheckboxBuilder);
+		return this;
+	}
+
+	/**
+	 * Sets a checkbox group component to this label.
+	 *
+	 * @param input - A function that returns a component builder or an already built builder
+	 */
+	public setCheckboxGroupComponent(
+		input: APICheckboxGroupComponent | CheckboxGroupBuilder | ((builder: CheckboxGroupBuilder) => CheckboxGroupBuilder),
+	): this {
+		this.data.component = resolveBuilder(input, CheckboxGroupBuilder);
+		return this;
+	}
+
+	/**
+	 * Sets a radio group component to this label.
+	 *
+	 * @param input - A function that returns a component builder or an already built builder
+	 */
+	public setRadioGroupComponent(
+		input: APIRadioGroupComponent | RadioGroupBuilder | ((builder: RadioGroupBuilder) => RadioGroupBuilder),
+	): this {
+		this.data.component = resolveBuilder(input, RadioGroupBuilder);
 		return this;
 	}
 
