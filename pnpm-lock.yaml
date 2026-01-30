@@ -1817,6 +1817,9 @@ importers:
 
   packages/voice:
     dependencies:
+      '@snazzah/davey':
+        specifier: ^0.1.8
+        version: 0.1.8
       '@types/ws':
         specifier: ^8.18.1
         version: 8.18.1
@@ -1848,9 +1851,6 @@ importers:
       '@noble/ciphers':
         specifier: ^2.1.1
         version: 2.1.1
-      '@snazzah/davey':
-        specifier: ^0.1.8
-        version: 0.1.8
       '@types/node':
         specifier: ^22.19.2
         version: 22.19.2
