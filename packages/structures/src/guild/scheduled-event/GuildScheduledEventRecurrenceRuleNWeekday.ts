@@ -1,8 +1,8 @@
 /* eslint-disable id-length */
 import type { APIGuildScheduledEventRecurrenceRuleNWeekday } from 'discord-api-types/v10';
-import { Structure } from '../../Structure';
-import { kData } from '../../utils/symbols';
-import type { Partialize } from '../../utils/types';
+import { Structure } from '../../Structure.js';
+import { kData } from '../../utils/symbols.js';
+import type { Partialize } from '../../utils/types.js';
 
 /**
  * Represents the N_Weekday structure of a scheduled event's recurrence rule.

@@ -1,10 +1,15 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import type { APIGuildScheduledEvent } from 'discord-api-types/v10';
-import { Structure } from '../../Structure';
-import { dateToDiscordISOTimestamp } from '../../utils/optimization';
-import { kData, kScheduledEndTime, kScheduledStartTime } from '../../utils/symbols';
-import { isIdSet } from '../../utils/type-guards';
-import type { Partialize } from '../../utils/types';
+import {
+	CDNRoutes,
+	RouteBases,
+	type APIGuildScheduledEvent,
+	type GuildScheduledEventCoverFormat,
+} from 'discord-api-types/v10';
+import { Structure } from '../../Structure.js';
+import { dateToDiscordISOTimestamp } from '../../utils/optimization.js';
+import { kData, kScheduledEndTime, kScheduledStartTime } from '../../utils/symbols.js';
+import { isFieldSet, isIdSet } from '../../utils/type-guards.js';
+import type { Partialize } from '../../utils/types.js';
 
 /**
  * Represents a guild scheduled event on Discord.
@@ -123,6 +128,17 @@ export class GuildScheduledEvent<
 	 */
 	public get image() {
 		return this[kData].image;
+	}
+
+	/**
+	 * Get the URL to the scheduled event cover image.
+	 *
+	 * @param format - the file format to use.
+	 */
+	public imageURL(format: GuildScheduledEventCoverFormat) {
+		return isIdSet(this[kData].id) && isFieldSet(this[kData], 'image', 'string')
+			? `${RouteBases.cdn}${CDNRoutes.guildScheduledEventCover(this[kData].id.toString(), this[kData].image, format)}`
+			: null;
 	}
 
 	/**

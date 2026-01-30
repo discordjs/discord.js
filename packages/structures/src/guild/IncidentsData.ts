@@ -1,8 +1,8 @@
 import type { APIIncidentsData } from 'discord-api-types/v10';
-import { Structure } from '../Structure';
-import { dateToDiscordISOTimestamp } from '../utils/optimization';
-import { kDmSpamDetectedAt, kDmsDisabledUntil, kInvitesDisabledUntil, kRaidDetectedAt } from '../utils/symbols';
-import type { Partialize } from '../utils/types';
+import { Structure } from '../Structure.js';
+import { dateToDiscordISOTimestamp } from '../utils/optimization.js';
+import { kDmSpamDetectedAt, kDmsDisabledUntil, kInvitesDisabledUntil, kRaidDetectedAt } from '../utils/symbols.js';
+import type { Partialize } from '../utils/types.js';
 
 /**
  * Represents incident data on Discord.

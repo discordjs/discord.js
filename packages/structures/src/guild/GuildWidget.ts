@@ -1,9 +1,9 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APIGuildWidget } from 'discord-api-types/v10';
-import { Structure } from '../Structure';
-import { kData } from '../utils/symbols';
-import { isIdSet } from '../utils/type-guards';
-import type { Partialize } from '../utils/types';
+import { Structure } from '../Structure.js';
+import { kData } from '../utils/symbols.js';
+import { isIdSet } from '../utils/type-guards.js';
+import type { Partialize } from '../utils/types.js';
 
 /**
  * Represents a guild widget on Discord.

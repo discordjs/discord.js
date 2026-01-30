@@ -31,6 +31,9 @@ export const kScheduledStartTime = Symbol.for('djs.structures.scheduledStartTime
 
 export const kStart = Symbol.for('djs.structures.start');
 export const kEnd = Symbol.for('djs.structures.end');
+export const kCurrentPeriodStartTimestamp = Symbol.for('djs.structures.currentPeriodStartTimestamp');
+export const kCurrentPeriodEndTimestamp = Symbol.for('djs.structures.currentPeriodEndTimestamp');
+export const kCanceledTimestamp = Symbol.for('djs.structures.canceledTimestamp');
 
 export const kAllow = Symbol.for('djs.structures.allow');
 export const kDeny = Symbol.for('djs.structures.deny');

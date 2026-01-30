@@ -1,10 +1,10 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APIGuildIntegration } from 'discord-api-types/v10';
-import { Structure } from '../Structure';
-import { dateToDiscordISOTimestamp } from '../utils/optimization';
-import { kData, kSyncedAt } from '../utils/symbols';
-import { isIdSet } from '../utils/type-guards';
-import type { Partialize } from '../utils/types';
+import { Structure } from '../Structure.js';
+import { dateToDiscordISOTimestamp } from '../utils/optimization.js';
+import { kData, kSyncedAt } from '../utils/symbols.js';
+import { isIdSet } from '../utils/type-guards.js';
+import type { Partialize } from '../utils/types.js';
 
 /**
  * Represents a guild integration on Discord..

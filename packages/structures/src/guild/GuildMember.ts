@@ -1,9 +1,10 @@
 import type { APIInteractionGuildMember, GuildMemberFlags } from 'discord-api-types/v10';
-import { Structure } from '../Structure';
-import { GuildMemberFlagsBitField } from '../bitfields';
-import { dateToDiscordISOTimestamp } from '../utils/optimization';
-import { kCommunicationDisabledUntil, kData, kJoinedAt, kPermissions, kPremiumSince } from '../utils/symbols';
-import type { Partialize } from '../utils/types';
+import { Structure } from '../Structure.js';
+import { GuildMemberFlagsBitField } from '../bitfields/GuildMemberFlagsBitField.js';
+import { dateToDiscordISOTimestamp } from '../utils/optimization.js';
+import { kCommunicationDisabledUntil, kData, kJoinedAt, kPermissions, kPremiumSince } from '../utils/symbols.js';
+import { isFieldSet } from '../utils/type-guards.js';
+import type { Partialize } from '../utils/types.js';
 
 /**
  * Represents a guild member on Discord.
@@ -88,7 +89,7 @@ export class GuildMember<
 	 *
 	 */
 	public get flags() {
-		return 'flags' in this[kData] && typeof this[kData].flags === 'number'
+		return isFieldSet(this[kData], 'flags', 'number')
 			? new GuildMemberFlagsBitField(this[kData].flags as GuildMemberFlags)
 			: null;
 	}

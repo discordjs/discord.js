@@ -2,10 +2,10 @@ import type {
 	APIGuildScheduledEventRecurrenceRule,
 	GuildScheduledEventRecurrenceRuleFrequency,
 } from 'discord-api-types/v10';
-import { Structure } from '../../Structure';
-import { dateToDiscordISOTimestamp } from '../../utils/optimization';
-import { kData, kEnd, kStart } from '../../utils/symbols';
-import type { Partialize } from '../../utils/types';
+import { Structure } from '../../Structure.js';
+import { dateToDiscordISOTimestamp } from '../../utils/optimization.js';
+import { kData, kEnd, kStart } from '../../utils/symbols.js';
+import type { Partialize } from '../../utils/types.js';
 
 /**
  * Represents the recurrence rule of a scheduled event on Discord.

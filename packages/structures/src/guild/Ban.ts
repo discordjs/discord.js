@@ -1,7 +1,7 @@
 import type { APIBan } from 'discord-api-types/v10';
-import { Structure } from '../Structure';
-import { kData } from '../utils/symbols';
-import type { Partialize } from '../utils/types';
+import { Structure } from '../Structure.js';
+import { kData } from '../utils/symbols.js';
+import type { Partialize } from '../utils/types.js';
 
 /**
  * Represents a ban on Discord.

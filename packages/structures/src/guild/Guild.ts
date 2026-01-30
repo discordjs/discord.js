@@ -1,11 +1,21 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import type { APIGuild, GuildSystemChannelFlags } from 'discord-api-types/v10';
-import { Structure } from '../Structure';
-import { PermissionsBitField } from '../bitfields';
-import { GuildSystemChannelFlagsBitField } from '../bitfields/GuildSystemChannelFlagsBitField';
-import { kData, kPermissions } from '../utils/symbols';
-import { isIdSet } from '../utils/type-guards';
-import type { Partialize } from '../utils/types';
+import {
+	CDNRoutes,
+	ImageFormat,
+	RouteBases,
+	type APIGuild,
+	type GuildBannerFormat,
+	type GuildDiscoverySplashFormat,
+	type GuildIconFormat,
+	type GuildSystemChannelFlags,
+	type GuildSplashFormat,
+} from 'discord-api-types/v10';
+import { Structure } from '../Structure.js';
+import { GuildSystemChannelFlagsBitField } from '../bitfields/GuildSystemChannelFlagsBitField.js';
+import { PermissionsBitField } from '../bitfields/PermissionsBitField.js';
+import { kData, kPermissions } from '../utils/symbols.js';
+import { isFieldSet, isIdSet } from '../utils/type-guards.js';
+import type { Partialize } from '../utils/types.js';
 
 /**
  * Represents a guild on Discord.
@@ -58,6 +68,17 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	}
 
 	/**
+	 * Get the URL to the guild icon.
+	 *
+	 * @param format - the file format to use
+	 */
+	public iconURL(format: GuildIconFormat = ImageFormat.WebP) {
+		return isIdSet(this[kData].id) && isFieldSet(this[kData], 'icon', 'string')
+			? `${RouteBases.cdn}${CDNRoutes.guildIcon(this[kData].id.toString(), this[kData].icon, format)}`
+			: null;
+	}
+
+	/**
 	 * The icon hash of the guild, when returned in the template object
 	 *
 	 * @see {@link https://discord.com/developers/docs/reference#image-formatting}
@@ -76,12 +97,34 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	}
 
 	/**
+	 * Get the URL to the guild splash.
+	 *
+	 * @param format - the file format to use
+	 */
+	public splashURL(format: GuildSplashFormat = ImageFormat.WebP) {
+		return isIdSet(this[kData].id) && isFieldSet(this[kData], 'splash', 'string')
+			? `${RouteBases.cdn}${CDNRoutes.guildSplash(this[kData].id.toString(), this[kData].splash, format)}`
+			: null;
+	}
+
+	/**
 	 * The discovery splash hash of the guild. Only present for guilds with the "DISCOVERABLE" feature.
 	 *
 	 * @see {@link https://discord.com/developers/docs/reference#image-formatting}
 	 */
 	public get discoverySplash() {
 		return this[kData].discovery_splash;
+	}
+
+	/**
+	 * Get the URL to the guild discovery splash.
+	 *
+	 * @param format - the file format to use
+	 */
+	public discoverySplashURL(format: GuildDiscoverySplashFormat = ImageFormat.WebP) {
+		return isIdSet(this[kData].id) && isFieldSet(this[kData], 'discovery_splash', 'string')
+			? `${RouteBases.cdn}${CDNRoutes.guildDiscoverySplash(this[kData].id.toString(), this[kData].discovery_splash, format)}`
+			: null;
 	}
 
 	/**
@@ -196,7 +239,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	 * @see {@link https://discord.com/developers/docs/resources/guild#guild-object-system-channel-flags}
 	 */
 	public get systemChannelFlags() {
-		return 'system_channel_flags' in this[kData] && typeof this[kData].system_channel_flags === 'number'
+		return isFieldSet(this[kData], 'system_channel_flags', 'number')
 			? new GuildSystemChannelFlagsBitField(this[kData].system_channel_flags as GuildSystemChannelFlags)
 			: null;
 	}
@@ -243,6 +286,17 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	 */
 	public get banner() {
 		return this[kData].banner;
+	}
+
+	/**
+	 * Get the URL to the guild banner.
+	 *
+	 * @param format - the file format to use
+	 */
+	public bannerURL(format: GuildBannerFormat = ImageFormat.WebP) {
+		return isIdSet(this[kData].id) && isFieldSet(this[kData], 'banner', 'string')
+			? `${RouteBases.cdn}${CDNRoutes.guildBanner(this[kData].id.toString(), this[kData].banner, format)}`
+			: null;
 	}
 
 	/**

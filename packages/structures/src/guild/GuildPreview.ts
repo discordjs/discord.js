@@ -1,9 +1,17 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import { CDNRoutes, ImageFormat, type APIGuildPreview } from 'discord-api-types/v10';
-import { Structure } from '../Structure';
-import { kData } from '../utils/symbols';
-import { isIdSet } from '../utils/type-guards';
-import type { Partialize } from '../utils/types';
+import {
+	CDNRoutes,
+	ImageFormat,
+	RouteBases,
+	type APIGuildPreview,
+	type GuildDiscoverySplashFormat,
+	type GuildIconFormat,
+	type GuildSplashFormat,
+} from 'discord-api-types/v10';
+import { Structure } from '../Structure.js';
+import { kData } from '../utils/symbols.js';
+import { isFieldSet, isIdSet } from '../utils/type-guards.js';
+import type { Partialize } from '../utils/types.js';
 
 /**
  * Represents a guild preview on Discord.
@@ -64,6 +72,39 @@ export class GuildPreview<Omitted extends keyof APIGuildPreview | '' = ''> exten
 	 */
 	public get discoverySplash() {
 		return this[kData].discovery_splash;
+	}
+
+	/**
+	 *et the URL to the guild icon.
+	 *
+	 *param format - the file format to use
+	 */
+	public iconURL(format: GuildIconFormat = ImageFormat.WebP) {
+		return isIdSet(this[kData].id) && isFieldSet(this[kData], 'icon', 'string')
+			? `${RouteBases.cdn}${CDNRoutes.guildIcon(this[kData].id.toString(), this[kData].icon, format)}`
+			: null;
+	}
+
+	/**
+	 * Get the URL to the guild discovery splash.
+	 *
+	 * @param format - the file format to use
+	 */
+	public discoverySplashURL(format: GuildDiscoverySplashFormat = ImageFormat.WebP) {
+		return isIdSet(this[kData].id) && isFieldSet(this[kData], 'discovery_splash', 'string')
+			? `${RouteBases.cdn}${CDNRoutes.guildDiscoverySplash(this[kData].id.toString(), this[kData].discovery_splash, format)}`
+			: null;
+	}
+
+	/**
+	 * Get the URL to the guild splash.
+	 *
+	 * @param format - the file format to use
+	 */
+	public splashURL(format: GuildSplashFormat = ImageFormat.WebP) {
+		return isIdSet(this[kData].id) && isFieldSet(this[kData], 'splash', 'string')
+			? `${RouteBases.cdn}${CDNRoutes.guildSplash(this[kData].id.toString(), this[kData].splash, format)}`
+			: null;
 	}
 
 	/**
