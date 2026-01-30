@@ -24,7 +24,7 @@ export class GuildScheduledEvent<
 	 * The template used for removing data from the raw data stored for each `GuildScheduledEvent`
 	 *
 	 * @remarks This template has defaults, if you want to remove additional data and keep the defaults,
-	 * use `Object.defineProperties`. To override the defaults, set this value directly.
+	 * use `Object.defineProperties`.
 	 */
 	public static override readonly DataTemplate: Partial<APIGuildScheduledEvent> = {
 		set scheduled_end_time(_: string) {},

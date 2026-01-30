@@ -20,7 +20,7 @@ export class GuildScheduledEventRecurrenceRule<
 	 * The template used for removing data from the raw data stored for each `GuildScheduledEventRecurrenceRule`
 	 *
 	 * @remarks This template has defaults, if you want to remove additional data and keep the defaults,
-	 * use `Object.defineProperties`. To override the defaults, set this value directly.
+	 * use `Object.defineProperties`.
 	 */
 	public static override readonly DataTemplate: Partial<APIGuildScheduledEventRecurrenceRule> = {
 		set start(_: string) {},
