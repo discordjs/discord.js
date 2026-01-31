@@ -1,4 +1,4 @@
-export * from './GatewayActivity/index.js';
+export * from './Activity/index.js';
 
-export * from './ClientStatus.js';
-export * from './GatewayPresence.js';
+export * from './GatewayPresenceClientStatus.js';
+export * from './GatewayPresenceUpdate.js';
