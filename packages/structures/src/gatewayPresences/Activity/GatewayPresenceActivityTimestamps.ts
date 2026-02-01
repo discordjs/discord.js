@@ -1,8 +1,6 @@
-// import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { GatewayActivityTimestamps } from 'discord-api-types/v10';
 import { Structure } from '../../Structure.js';
 import { kData } from '../../utils/symbols.js';
-// import { isIdSet } from '../../utils/type-guards.js';
 import type { Partialize } from '../../utils/types.js';
 
 /**
@@ -33,9 +31,27 @@ export class GatewayPresenceActivityTimestamps<
 	}
 
 	/**
+	 * Time of when the activity started.
+	 */
+	public get startAt() {
+		const timestamp = this[kData].start;
+
+		return timestamp ? new Date(timestamp as number) : null;
+	}
+
+	/**
 	 * Unix time (in milliseconds) of when the activity ends.
 	 */
 	public get end() {
 		return this[kData].end;
+	}
+
+	/**
+	 * Time of when the activity ended.
+	 */
+	public get endAt() {
+		const timestamp = this[kData].end;
+
+		return timestamp ? new Date(timestamp as string) : null;
 	}
 }
