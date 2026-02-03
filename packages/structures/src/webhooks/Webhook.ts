@@ -78,7 +78,7 @@ export class Webhook<Omitted extends keyof APIWebhook | '' = ''> extends Structu
 	}
 
 	/**
-	 * The bot/OAuth2 application that created this webhook
+	 * The id of the bot/OAuth2 application that created this webhook
 	 */
 	public get applicationId() {
 		return this[kData].application_id;
