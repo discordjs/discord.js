@@ -5435,134 +5435,121 @@ export type OmitPartialGroupDMChannel<Structure extends { channel: Channel }> = 
 };
 
 export interface ClientEventTypes {
-  [Events.ApplicationCommandPermissionsUpdate]: [data: ApplicationCommandPermissionsUpdateData];
-  [Events.AutoModerationActionExecution]: [autoModerationActionExecution: AutoModerationActionExecution];
-  [Events.AutoModerationRuleCreate]: [autoModerationRule: AutoModerationRule];
-  [Events.AutoModerationRuleDelete]: [autoModerationRule: AutoModerationRule];
-  [Events.AutoModerationRuleUpdate]: [
+  applicationCommandPermissionsUpdate: [data: ApplicationCommandPermissionsUpdateData];
+  autoModerationActionExecution: [autoModerationActionExecution: AutoModerationActionExecution];
+  autoModerationRuleCreate: [autoModerationRule: AutoModerationRule];
+  autoModerationRuleDelete: [autoModerationRule: AutoModerationRule];
+  autoModerationRuleUpdate: [
     oldAutoModerationRule: AutoModerationRule | null,
     newAutoModerationRule: AutoModerationRule,
   ];
-  [Events.CacheSweep]: [message: string];
-  [Events.ChannelCreate]: [channel: NonThreadGuildBasedChannel];
-  [Events.ChannelDelete]: [channel: DMChannel | NonThreadGuildBasedChannel];
-  [Events.ChannelPinsUpdate]: [channel: TextBasedChannel, date: Date];
-  [Events.ChannelUpdate]: [
+  cacheSweep: [message: string];
+  channelCreate: [channel: NonThreadGuildBasedChannel];
+  channelDelete: [channel: DMChannel | NonThreadGuildBasedChannel];
+  channelPinsUpdate: [channel: TextBasedChannel, date: Date];
+  channelUpdate: [
     oldChannel: DMChannel | NonThreadGuildBasedChannel,
     newChannel: DMChannel | NonThreadGuildBasedChannel,
   ];
-  [Events.ClientReady]: [client: Client<true>];
-  [Events.Debug]: [message: string];
-  [Events.GuildEmojiCreate]: [emoji: GuildEmoji];
-  [Events.GuildEmojiDelete]: [emoji: GuildEmoji];
-  [Events.GuildEmojiUpdate]: [oldEmoji: GuildEmoji, newEmoji: GuildEmoji];
-  [Events.EntitlementCreate]: [entitlement: Entitlement];
-  [Events.EntitlementDelete]: [entitlement: Entitlement];
-  [Events.EntitlementUpdate]: [oldEntitlement: Entitlement | null, newEntitlement: Entitlement];
-  [Events.Error]: [error: Error];
-  [Events.GuildAuditLogEntryCreate]: [auditLogEntry: GuildAuditLogsEntry, guild: Guild];
-  [Events.GuildAvailable]: [guild: Guild];
-  [Events.GuildBanAdd]: [ban: GuildBan];
-  [Events.GuildBanRemove]: [ban: GuildBan];
-  [Events.GuildCreate]: [guild: Guild];
-  [Events.GuildDelete]: [guild: Guild];
-  [Events.GuildIntegrationsUpdate]: [guild: Guild];
-  [Events.GuildMemberAdd]: [member: GuildMember];
-  [Events.GuildMemberAvailable]: [member: GuildMember | PartialGuildMember];
-  [Events.GuildMemberRemove]: [member: GuildMember | PartialGuildMember];
-  [Events.GuildMemberUpdate]: [oldMember: GuildMember | PartialGuildMember, newMember: GuildMember];
-  [Events.GuildMembersChunk]: [
-    members: ReadonlyCollection<Snowflake, GuildMember>,
-    guild: Guild,
-    data: GuildMembersChunk,
-  ];
-  [Events.GuildScheduledEventCreate]: [guildScheduledEvent: GuildScheduledEvent];
-  [Events.GuildScheduledEventDelete]: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent];
-  [Events.GuildScheduledEventUpdate]: [
+  clientReady: [client: Client<true>];
+  debug: [message: string];
+  emojiCreate: [emoji: GuildEmoji];
+  emojiDelete: [emoji: GuildEmoji];
+  emojiUpdate: [oldEmoji: GuildEmoji, newEmoji: GuildEmoji];
+  entitlementCreate: [entitlement: Entitlement];
+  entitlementDelete: [entitlement: Entitlement];
+  entitlementUpdate: [oldEntitlement: Entitlement | null, newEntitlement: Entitlement];
+  error: [error: Error];
+  guildAuditLogEntryCreate: [auditLogEntry: GuildAuditLogsEntry, guild: Guild];
+  guildAvailable: [guild: Guild];
+  guildBanAdd: [ban: GuildBan];
+  guildBanRemove: [ban: GuildBan];
+  guildCreate: [guild: Guild];
+  guildDelete: [guild: Guild];
+  guildIntegrationsUpdate: [guild: Guild];
+  guildMemberAdd: [member: GuildMember];
+  guildMemberAvailable: [member: GuildMember | PartialGuildMember];
+  guildMemberRemove: [member: GuildMember | PartialGuildMember];
+  guildMemberUpdate: [oldMember: GuildMember | PartialGuildMember, newMember: GuildMember];
+  guildMembersChunk: [members: ReadonlyCollection<Snowflake, GuildMember>, guild: Guild, data: GuildMembersChunk];
+  guildScheduledEventCreate: [guildScheduledEvent: GuildScheduledEvent];
+  guildScheduledEventDelete: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent];
+  guildScheduledEventUpdate: [
     oldGuildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent | null,
     newGuildScheduledEvent: GuildScheduledEvent,
   ];
-  [Events.GuildScheduledEventUserAdd]: [
-    guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent,
-    user: User,
-  ];
-  [Events.GuildScheduledEventUserRemove]: [
-    guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent,
-    user: User,
-  ];
-  [Events.GuildSoundboardSoundCreate]: [soundboardSound: GuildSoundboardSound];
-  [Events.GuildSoundboardSoundDelete]: [soundboardSound: GuildSoundboardSound | PartialSoundboardSound];
-  [Events.GuildSoundboardSoundUpdate]: [
+  guildScheduledEventUserAdd: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent, user: User];
+  guildScheduledEventUserRemove: [guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent, user: User];
+  guildSoundboardSoundCreate: [soundboardSound: GuildSoundboardSound];
+  guildSoundboardSoundDelete: [soundboardSound: GuildSoundboardSound | PartialSoundboardSound];
+  guildSoundboardSoundUpdate: [
     oldSoundboardSound: GuildSoundboardSound | null,
     newSoundboardSound: GuildSoundboardSound,
   ];
-  [Events.GuildSoundboardSoundsUpdate]: [
-    soundboardSounds: ReadonlyCollection<Snowflake, GuildSoundboardSound>,
-    guild: Guild,
-  ];
-  [Events.GuildUnavailable]: [guild: Guild];
-  [Events.GuildUpdate]: [oldGuild: Guild, newGuild: Guild];
-  [Events.InteractionCreate]: [interaction: Interaction];
-  [Events.Invalidated]: [];
-  [Events.InviteCreate]: [invite: GuildInvite];
-  [Events.InviteDelete]: [invite: GuildInvite];
-  [Events.MessageCreate]: [message: OmitPartialGroupDMChannel<Message>];
-  [Events.MessageDelete]: [message: OmitPartialGroupDMChannel<Message | PartialMessage>];
-  [Events.MessageBulkDelete]: [
+  guildSoundboardSoundsUpdate: [soundboardSounds: ReadonlyCollection<Snowflake, GuildSoundboardSound>, guild: Guild];
+  guildUnavailable: [guild: Guild];
+  guildUpdate: [oldGuild: Guild, newGuild: Guild];
+  interactionCreate: [interaction: Interaction];
+  invalidated: [];
+  inviteCreate: [invite: GuildInvite];
+  inviteDelete: [invite: GuildInvite];
+  messageCreate: [message: OmitPartialGroupDMChannel<Message>];
+  messageDelete: [message: OmitPartialGroupDMChannel<Message | PartialMessage>];
+  messageDeleteBulk: [
     messages: ReadonlyCollection<Snowflake, OmitPartialGroupDMChannel<Message | PartialMessage>>,
     channel: GuildTextBasedChannel,
   ];
-  [Events.MessagePollVoteAdd]: [pollAnswer: PartialPollAnswer | PollAnswer, userId: Snowflake];
-  [Events.MessagePollVoteRemove]: [pollAnswer: PartialPollAnswer | PollAnswer, userId: Snowflake];
-  [Events.MessageReactionAdd]: [
+  messagePollVoteAdd: [pollAnswer: PartialPollAnswer | PollAnswer, userId: Snowflake];
+  messagePollVoteRemove: [pollAnswer: PartialPollAnswer | PollAnswer, userId: Snowflake];
+  messageReactionAdd: [
     reaction: MessageReaction | PartialMessageReaction,
     user: PartialUser | User,
     details: MessageReactionEventDetails,
   ];
-  [Events.MessageReactionRemove]: [
+  messageReactionRemove: [
     reaction: MessageReaction | PartialMessageReaction,
     user: PartialUser | User,
     details: MessageReactionEventDetails,
   ];
-  [Events.MessageReactionRemoveAll]: [
+  messageReactionRemoveAll: [
     message: OmitPartialGroupDMChannel<Message | PartialMessage>,
     reactions: ReadonlyCollection<Snowflake | string, MessageReaction>,
   ];
-  [Events.MessageReactionRemoveEmoji]: [reaction: MessageReaction | PartialMessageReaction];
-  [Events.MessageUpdate]: [
+  messageReactionRemoveEmoji: [reaction: MessageReaction | PartialMessageReaction];
+  messageUpdate: [
     oldMessage: OmitPartialGroupDMChannel<Message | PartialMessage>,
     newMessage: OmitPartialGroupDMChannel<Message>,
   ];
-  [Events.PresenceUpdate]: [oldPresence: Presence | null, newPresence: Presence];
-  [Events.GuildRoleCreate]: [role: Role];
-  [Events.GuildRoleDelete]: [role: Role];
-  [Events.GuildRoleUpdate]: [oldRole: Role, newRole: Role];
-  [Events.SoundboardSounds]: [soundboardSounds: ReadonlyCollection<Snowflake, GuildSoundboardSound>, guild: Guild];
-  [Events.StageInstanceCreate]: [stageInstance: StageInstance];
-  [Events.StageInstanceDelete]: [stageInstance: StageInstance];
-  [Events.StageInstanceUpdate]: [oldStageInstance: StageInstance | null, newStageInstance: StageInstance];
-  [Events.GuildStickerCreate]: [sticker: Sticker];
-  [Events.GuildStickerDelete]: [sticker: Sticker];
-  [Events.GuildStickerUpdate]: [oldSticker: Sticker, newSticker: Sticker];
-  [Events.SubscriptionCreate]: [subscription: Subscription];
-  [Events.SubscriptionDelete]: [subscription: Subscription];
-  [Events.SubscriptionUpdate]: [oldSubscription: Subscription | null, newSubscription: Subscription];
-  [Events.ThreadCreate]: [thread: AnyThreadChannel, newlyCreated: boolean];
-  [Events.ThreadDelete]: [thread: AnyThreadChannel];
-  [Events.ThreadListSync]: [threads: ReadonlyCollection<Snowflake, AnyThreadChannel>, guild: Guild];
-  [Events.ThreadMemberUpdate]: [oldMember: ThreadMember, newMember: ThreadMember];
-  [Events.ThreadMembersUpdate]: [
+  presenceUpdate: [oldPresence: Presence | null, newPresence: Presence];
+  roleCreate: [role: Role];
+  roleDelete: [role: Role];
+  roleUpdate: [oldRole: Role, newRole: Role];
+  soundboardSounds: [soundboardSounds: ReadonlyCollection<Snowflake, GuildSoundboardSound>, guild: Guild];
+  stageInstanceCreate: [stageInstance: StageInstance];
+  stageInstanceDelete: [stageInstance: StageInstance];
+  stageInstanceUpdate: [oldStageInstance: StageInstance | null, newStageInstance: StageInstance];
+  stickerCreate: [sticker: Sticker];
+  stickerDelete: [sticker: Sticker];
+  stickerUpdate: [oldSticker: Sticker, newSticker: Sticker];
+  subscriptionCreate: [subscription: Subscription];
+  subscriptionDelete: [subscription: Subscription];
+  subscriptionUpdate: [oldSubscription: Subscription | null, newSubscription: Subscription];
+  threadCreate: [thread: AnyThreadChannel, newlyCreated: boolean];
+  threadDelete: [thread: AnyThreadChannel];
+  threadListSync: [threads: ReadonlyCollection<Snowflake, AnyThreadChannel>, guild: Guild];
+  threadMemberUpdate: [oldMember: ThreadMember, newMember: ThreadMember];
+  threadMembersUpdate: [
     addedMembers: ReadonlyCollection<Snowflake, ThreadMember>,
     removedMembers: ReadonlyCollection<Snowflake, PartialThreadMember | ThreadMember>,
     thread: AnyThreadChannel,
   ];
-  [Events.ThreadUpdate]: [oldThread: AnyThreadChannel, newThread: AnyThreadChannel];
-  [Events.TypingStart]: [typing: Typing];
-  [Events.UserUpdate]: [oldUser: PartialUser | User, newUser: User];
-  [Events.VoiceChannelEffectSend]: [voiceChannelEffect: VoiceChannelEffect];
-  [Events.VoiceStateUpdate]: [oldState: VoiceState, newState: VoiceState];
-  [Events.Warn]: [message: string];
-  [Events.WebhooksUpdate]: [channel: AnnouncementChannel | ForumChannel | MediaChannel | TextChannel | VoiceChannel];
+  threadUpdate: [oldThread: AnyThreadChannel, newThread: AnyThreadChannel];
+  typingStart: [typing: Typing];
+  userUpdate: [oldUser: PartialUser | User, newUser: User];
+  voiceChannelEffectSend: [voiceChannelEffect: VoiceChannelEffect];
+  voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
+  warn: [message: string];
+  webhooksUpdate: [channel: AnnouncementChannel | ForumChannel | MediaChannel | TextChannel | VoiceChannel];
 }
 
 export interface ClientFetchInviteOptions {
