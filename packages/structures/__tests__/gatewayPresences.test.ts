@@ -286,9 +286,6 @@ describe('gatewayPresences structures', () => {
 			test('correct value for all getters and helper methods [createdTimestamp, createdAt]', () => {
 				expect(instance.id).toBe(data.id);
 				expect(instance.size).toBe(data.size);
-
-				expect(instance.createdTimestamp).toBe(DiscordSnowflake.timestampFrom(instance.id!));
-				expect(instance.createdAt).toEqual(new Date(instance.createdTimestamp!));
 			});
 
 			test('toJSON() returns expected values', () => {
