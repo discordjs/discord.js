@@ -227,7 +227,7 @@ describe('gatewayPresences structures', () => {
 
 			test('correct value for all getters', () => {
 				expect(instance.label).toBe(data.label);
-				expect(instance.url).toBe(instance.url);
+				expect(instance.url).toBe(data.url);
 			});
 
 			test('toJSON() returns expected values', () => {
