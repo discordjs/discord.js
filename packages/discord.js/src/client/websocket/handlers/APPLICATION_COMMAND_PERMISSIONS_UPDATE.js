@@ -4,7 +4,7 @@ const { Events } = require('../../../util/Events.js');
 
 module.exports = (client, { d: data }) => {
   /**
-   * Represents the properties of a application command permissions update
+   * Represents the properties of an application command permissions update
    *
    * @typedef {Object} ApplicationCommandPermissionsUpdateData
    * @property {ApplicationCommandPermissions[]} permissions The permissions for the command
