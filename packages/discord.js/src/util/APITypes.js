@@ -36,11 +36,6 @@
  */
 
 /**
- * @external APIAuthorizingIntegrationOwnersMap
- * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#APIAuthorizingIntegrationOwnersMap}
- */
-
-/**
  * @external APIAutoModerationAction
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/APIAutoModerationAction}
  */
@@ -682,4 +677,14 @@
 /**
  * @external WebhookType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/WebhookType}
+ */
+
+/**
+ * @external RESTPatchAPIChannelMessageJSONBody
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/RESTPatchAPIChannelMessageJSONBody}
+ */
+
+/**
+ * @external RESTPostAPIChannelMessageJSONBody
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/interface/RESTPostAPIChannelMessageJSONBody}
  */

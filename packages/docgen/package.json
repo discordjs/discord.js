@@ -60,25 +60,24 @@
 	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
-		"commander": "^14.0.0",
+		"commander": "^14.0.2",
 		"jsdoc-to-markdown": "^8.0.3",
 		"tslib": "^2.8.1",
 		"typedoc": "^0.25.13"
 	},
 	"devDependencies": {
-		"@favware/cliff-jumper": "^4.1.0",
 		"@types/jsdoc-to-markdown": "^7.0.6",
-		"@types/node": "^22.17.2",
-		"cross-env": "^10.0.0",
-		"eslint": "^9.33.0",
-		"eslint-config-neon": "^0.2.7",
-		"eslint-formatter-compact": "^8.40.0",
-		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.6.2",
-		"terser": "^5.43.1",
-		"tsup": "^8.5.0",
-		"turbo": "^2.5.6",
-		"typescript": "~5.9.2"
+		"@types/node": "^24.10.2",
+		"cross-env": "^10.1.0",
+		"eslint": "^9.39.1",
+		"eslint-config-neon": "^0.2.9",
+		"eslint-formatter-compact": "^9.0.1",
+		"eslint-formatter-pretty": "^7.0.0",
+		"prettier": "^3.7.4",
+		"terser": "^5.44.1",
+		"tsup": "^8.5.1",
+		"turbo": "^2.6.3",
+		"typescript": "~5.9.3"
 	},
 	"engines": {
 		"node": ">=22.12.0"

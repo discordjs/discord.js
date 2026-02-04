@@ -3,12 +3,10 @@
 const { __exportStar } = require('tslib');
 
 // "Root" classes (starting points)
-exports.BaseClient = require('./client/BaseClient.js').BaseClient;
 exports.Client = require('./client/Client.js').Client;
 exports.Shard = require('./sharding/Shard.js').Shard;
 exports.ShardClientUtil = require('./sharding/ShardClientUtil.js').ShardClientUtil;
 exports.ShardingManager = require('./sharding/ShardingManager.js').ShardingManager;
-exports.WebhookClient = require('./client/WebhookClient.js').WebhookClient;
 
 // Errors
 exports.DiscordjsError = require('./errors/DJSError.js').DiscordjsError;
@@ -107,13 +105,14 @@ exports.ActionRow = require('./structures/ActionRow.js').ActionRow;
 exports.Activity = require('./structures/Presence.js').Activity;
 exports.AnnouncementChannel = require('./structures/AnnouncementChannel.js').AnnouncementChannel;
 exports.AnonymousGuild = require('./structures/AnonymousGuild.js').AnonymousGuild;
+exports.AuthorizingIntegrationOwners =
+  require('./structures/AuthorizingIntegrationOwners.js').AuthorizingIntegrationOwners;
 exports.Application = require('./structures/interfaces/Application.js').Application;
 exports.ApplicationCommand = require('./structures/ApplicationCommand.js').ApplicationCommand;
 exports.ApplicationEmoji = require('./structures/ApplicationEmoji.js').ApplicationEmoji;
 exports.ApplicationRoleConnectionMetadata =
   require('./structures/ApplicationRoleConnectionMetadata.js').ApplicationRoleConnectionMetadata;
 exports.Attachment = require('./structures/Attachment.js').Attachment;
-exports.AttachmentBuilder = require('./structures/AttachmentBuilder.js').AttachmentBuilder;
 exports.AutocompleteInteraction = require('./structures/AutocompleteInteraction.js').AutocompleteInteraction;
 exports.AutoModerationActionExecution =
   require('./structures/AutoModerationActionExecution.js').AutoModerationActionExecution;

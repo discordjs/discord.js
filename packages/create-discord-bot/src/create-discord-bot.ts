@@ -1,12 +1,12 @@
 import type { ExecException } from 'node:child_process';
-import { cp, glob, mkdir, stat, readdir, readFile, writeFile } from 'node:fs/promises';
+import { cp, mkdir, stat, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
-import { URL } from 'node:url';
 import { styleText } from 'node:util';
 import type { PackageManager } from './helpers/packageManager.js';
-import { install, isNodePackageManager } from './helpers/packageManager.js';
+import { install } from './helpers/packageManager.js';
 import { GUIDE_URL } from './util/constants.js';
+import { isFolderEmpty } from './util/isFolderEmpty.js';
 
 interface Options {
 	directory: string;
@@ -32,7 +32,7 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 	});
 
 	// If the directory is actually a file or if it's not empty, throw an error.
-	if (!directoryStats.isDirectory() || (await readdir(root)).length > 0) {
+	if (!directoryStats.isDirectory() || !isFolderEmpty(root, directoryName)) {
 		console.error(
 			styleText(
 				'red',
@@ -44,62 +44,31 @@ export async function createDiscordBot({ directory, installPackages, typescript,
 	}
 
 	console.log(`Creating ${directoryName} in ${styleText('green', root)}.`);
+
 	const deno = packageManager === 'deno';
-	await cp(new URL(`../template/${deno ? 'Deno' : typescript ? 'TypeScript' : 'JavaScript'}`, import.meta.url), root, {
+	const bun = packageManager === 'bun';
+
+	const lang = typescript ? 'TypeScript' : 'JavaScript';
+	const templateBasePath = deno ? 'Deno' : bun ? `Bun/${lang}` : lang;
+
+	await cp(new URL(`../template/${templateBasePath}`, import.meta.url), root, {
 		recursive: true,
 	});
 
-	const bun = packageManager === 'bun';
-	if (bun) {
-		await cp(
-			new URL(`../template/Bun/${typescript ? 'TypeScript' : 'JavaScript'}/package.json`, import.meta.url),
-			`${root}/package.json`,
-		);
-
-		if (typescript) {
-			await cp(
-				new URL('../template/Bun/TypeScript/tsconfig.eslint.json', import.meta.url),
-				`${root}/tsconfig.eslint.json`,
-			);
-			await cp(new URL('../template/Bun/TypeScript/tsconfig.json', import.meta.url), `${root}/tsconfig.json`);
-		}
-	}
-
 	process.chdir(root);
 
-	const newVSCodeSettings = await readFile('./.vscode/settings.json', {
-		encoding: 'utf8',
-	}).then((str) => {
-		let newStr = str.replace('[REPLACE_ME]', deno || bun ? 'auto' : packageManager);
-		if (deno) {
-			// @ts-expect-error: This is fine
-			newStr = newStr.replaceAll('"[REPLACE_BOOL]"', true);
-		}
-
-		return newStr;
-	});
-	await writeFile('./.vscode/settings.json', newVSCodeSettings);
-
-	const globIterator = glob('./src/**/*.ts');
-	for await (const file of globIterator) {
-		const newData = await readFile(file, { encoding: 'utf8' }).then((str) =>
-			str.replaceAll('[REPLACE_IMPORT_EXT]', typescript && !isNodePackageManager(packageManager) ? 'ts' : 'js'),
-		);
-		await writeFile(file, newData);
-	}
+	const newVSCodeSettings = await readFile('./.vscode/settings.json', { encoding: 'utf8' });
+	await writeFile(
+		'./.vscode/settings.json',
+		newVSCodeSettings.replace(
+			/"npm\.packageManager":\s*"[^"]+"/,
+			`"npm.packageManager": "${deno || bun ? 'auto' : packageManager}"`,
+		),
+	);
 
 	if (!deno) {
-		const newPackageJSON = await readFile('./package.json', {
-			encoding: 'utf8',
-		}).then((str) => {
-			let newStr = str.replace('[REPLACE_ME]', directoryName);
-			newStr = newStr.replaceAll(
-				'[REPLACE_IMPORT_EXT]',
-				typescript && !isNodePackageManager(packageManager) ? 'ts' : 'js',
-			);
-			return newStr;
-		});
-		await writeFile('./package.json', newPackageJSON);
+		const newPackageJSON = await readFile('./package.json', { encoding: 'utf8' });
+		await writeFile('./package.json', newPackageJSON.replace(/"name":\s*"[^"]+"/, `"name": "${directoryName}"`));
 	}
 
 	if (installPackages) {

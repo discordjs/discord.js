@@ -16,7 +16,7 @@ import { resolveKind } from '@/util/resolveNodeKind';
 
 const client = new MeiliSearch({
 	host: 'https://search.discordjs.dev',
-	apiKey: 'b51923c6abb574b1e97be9a03dc6414b6c69fb0c5696d0ef01a82b0f77d223db',
+	apiKey: 'f3482b8e976a8b1092394aafbfb91f391242f40b0a6f45a008a5a72b354fb07e',
 });
 
 export function CmdK({ dependencies }: { readonly dependencies: string[] }) {
@@ -43,12 +43,12 @@ export function CmdK({ dependencies }: { readonly dependencies: string[] }) {
 				value={item.id}
 			>
 				{resolveKind(item.kind)}
-				<div className="flex flex-grow flex-col">
+				<div className="flex grow flex-col">
 					<span className="font-semibold wrap-anywhere">{item.name}</span>
 					<span className={cx('truncate text-sm', isMobile ? 'max-w-[30ch]' : 'max-w-[40ch]')}>{item.summary}</span>
 					<span className={cx('truncate text-xs', isMobile ? 'max-w-[30ch]' : 'max-w-[40ch]')}>{item.path}</span>
 				</div>
-				<ArrowRight aria-hidden className="flex-shrink-0" />
+				<ArrowRight aria-hidden className="shrink-0" />
 			</Command.Item>
 		)) ?? [];
 

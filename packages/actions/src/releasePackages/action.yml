@@ -11,6 +11,8 @@ inputs:
     description: 'The published name of a single package to release'
   exclude:
     description: 'Comma separated list of packages to exclude from release (if not depended upon)'
+  tag:
+    description: 'The tag to use, generally a feature name'
 runs:
   using: composite
   steps:
@@ -22,3 +24,4 @@ runs:
         INPUT_DRY: ${{ inputs.dry }}
         INPUT_PACKAGE: ${{ inputs.package }}
         INPUT_EXCLUDE: ${{ inputs.exclude }}
+        INPUT_TAG: ${{ inputs.tag }}

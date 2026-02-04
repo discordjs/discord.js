@@ -25,13 +25,6 @@ class GuildMember extends Base {
     this.guild = guild;
 
     /**
-     * The timestamp the member joined the guild at
-     *
-     * @type {?number}
-     */
-    this.joinedTimestamp = null;
-
-    /**
      * The last timestamp this member started boosting the guild
      *
      * @type {?number}
@@ -68,7 +61,7 @@ class GuildMember extends Base {
      */
     Object.defineProperty(this, '_roles', { value: [], writable: true });
 
-    if (data) this._patch(data);
+    this._patch(data);
   }
 
   _patch(data) {
@@ -104,7 +97,17 @@ class GuildMember extends Base {
       this.banner ??= null;
     }
 
-    if ('joined_at' in data) this.joinedTimestamp = Date.parse(data.joined_at);
+    if ('joined_at' in data) {
+      /**
+       * The timestamp the member joined the guild at
+       *
+       * @type {?number}
+       */
+      this.joinedTimestamp = data.joined_at && Date.parse(data.joined_at);
+    } else {
+      this.joinedTimestamp ??= null;
+    }
+
     if ('premium_since' in data) {
       this.premiumSinceTimestamp = data.premium_since ? Date.parse(data.premium_since) : null;
     }
@@ -357,7 +360,6 @@ class GuildMember extends Base {
   get manageable() {
     if (this.user.id === this.guild.ownerId) return false;
     if (this.user.id === this.client.user.id) return false;
-    if (this.client.user.id === this.guild.ownerId) return true;
     if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
     return this.guild.members.me.roles.highest.comparePositionTo(this.roles.highest) > 0;
   }

@@ -1,10 +1,8 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import { makeURLSearchParams, type RawFile, type REST, type RequestData } from '@discordjs/rest';
+import { makeURLSearchParams, type RawFile, type RequestData, type REST } from '@discordjs/rest';
 import {
 	Routes,
-	type RESTPostAPIChannelWebhookJSONBody,
-	type RESTPostAPIChannelWebhookResult,
 	type RESTDeleteAPIChannelResult,
 	type RESTGetAPIChannelInvitesResult,
 	type RESTGetAPIChannelMessageReactionUsersQuery,
@@ -18,8 +16,8 @@ import {
 	type RESTGetAPIChannelThreadsArchivedQuery,
 	type RESTGetAPIChannelUsersThreadsArchivedResult,
 	type RESTGetAPIChannelWebhooksResult,
-	type RESTPatchAPIChannelMessageJSONBody,
 	type RESTPatchAPIChannelJSONBody,
+	type RESTPatchAPIChannelMessageJSONBody,
 	type RESTPatchAPIChannelMessageResult,
 	type RESTPatchAPIChannelResult,
 	type RESTPostAPIChannelFollowersResult,
@@ -28,14 +26,16 @@ import {
 	type RESTPostAPIChannelMessageCrosspostResult,
 	type RESTPostAPIChannelMessageJSONBody,
 	type RESTPostAPIChannelMessageResult,
-	type RESTPutAPIChannelPermissionJSONBody,
-	type Snowflake,
 	type RESTPostAPIChannelThreadsJSONBody,
 	type RESTPostAPIChannelThreadsResult,
-	type APIThreadChannel,
+	type RESTPostAPIChannelWebhookJSONBody,
+	type RESTPostAPIChannelWebhookResult,
 	type RESTPostAPIGuildForumThreadsJSONBody,
-	type RESTPostAPISoundboardSendSoundJSONBody,
 	type RESTPostAPISendSoundboardSoundResult,
+	type RESTPostAPISoundboardSendSoundJSONBody,
+	type RESTPutAPIChannelPermissionJSONBody,
+	type RESTPutAPIChannelRecipientJSONBody,
+	type Snowflake,
 } from 'discord-api-types/v10';
 
 export interface StartForumThreadOptions extends RESTPostAPIGuildForumThreadsJSONBody {
@@ -565,7 +565,7 @@ export class ChannelsAPI {
 			body,
 			reason,
 			signal,
-		}) as Promise<APIThreadChannel>;
+		}) as Promise<RESTPostAPIChannelThreadsResult>;
 	}
 
 	/**
@@ -707,5 +707,46 @@ export class ChannelsAPI {
 			body,
 			signal,
 		}) as Promise<RESTPostAPISendSoundboardSoundResult>;
+	}
+
+	/**
+	 * Adds a recipient to a group DM channel
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#group-dm-add-recipient}
+	 * @param channelId - The id of the channel to add the recipient to
+	 * @param userId - The id of the user to add as a recipient
+	 * @param body - The data for adding the recipient
+	 * @param options - The options for adding the recipient
+	 */
+	public async addGroupDMRecipient(
+		channelId: Snowflake,
+		userId: Snowflake,
+		body: RESTPutAPIChannelRecipientJSONBody,
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+	) {
+		await this.rest.put(Routes.channelRecipient(channelId, userId), {
+			auth,
+			body,
+			signal,
+		});
+	}
+
+	/**
+	 * Removes a recipient from a group DM channel
+	 *
+	 * @see {@link https://discord.com/developers/docs/resources/channel#group-dm-remove-recipient}
+	 * @param channelId - The id of the channel to remove the recipient from
+	 * @param userId - The id of the user to remove as a recipient
+	 * @param options - The options for removing the recipient
+	 */
+	public async removeGroupDMRecipient(
+		channelId: Snowflake,
+		userId: Snowflake,
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+	) {
+		await this.rest.delete(Routes.channelRecipient(channelId, userId), {
+			auth,
+			signal,
+		});
 	}
 }
