@@ -1,0 +1,42 @@
+name: Upload README.md files
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'packages/*/README.md'
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+jobs:
+  upload-readmes:
+    name: Upload README.md files
+    runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+    if: github.repository_owner == 'discordjs'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Install dependencies
+        uses: ./packages/actions/src/pnpmCache
+
+      - name: Build dependencies
+        run: pnpm --filter @discordjs/actions... run build
+
+      - name: Upload README.md files
+        env:
+          CF_R2_READMES_ACCESS_KEY_ID: ${{ secrets.CF_R2_READMES_ACCESS_KEY_ID }}
+          CF_R2_READMES_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_READMES_SECRET_ACCESS_KEY }}
+          CF_R2_READMES_BUCKET: ${{ secrets.CF_R2_READMES_BUCKET }}
+          CF_R2_READMES_URL: ${{ secrets.CF_R2_READMES_URL }}
+        uses: ./packages/actions/src/uploadReadmeFiles

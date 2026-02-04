@@ -44,7 +44,7 @@ jobs:
       id-token: write
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     if: github.repository_owner == 'discordjs'
     steps:
       - uses: actions/create-github-app-token@v2
@@ -55,15 +55,16 @@ jobs:
           permission-contents: write
 
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           token: ${{ steps.app-token.outputs.token }}
           ref: ${{ inputs.ref || '' }}
 
-      - name: Install Node.js v22
-        uses: actions/setup-node@v4
+      - name: Install Node.js v24
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
+          package-manager-cache: false
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
@@ -72,7 +73,35 @@ jobs:
       - name: Build dependencies
         run: pnpm run build
 
-      - name: Release packages
+      - name: Checkout main repository
+        if: ${{ inputs.ref && inputs.ref != 'main' }}
+        uses: actions/checkout@v6
+        with:
+          path: 'main'
+
+      - name: Install action deps (non-main ref only)
+        if: ${{ inputs.ref && inputs.ref != 'main' }}
+        shell: bash
+        working-directory: ./main
+        env:
+          COREPACK_ENABLE_STRICT: 0
+        run: |
+          pnpm self-update 10
+          pnpm install --filter @discordjs/actions --frozen-lockfile --prefer-offline --loglevel error
+
+      - name: Release packages (non-main ref)
+        if: ${{ inputs.ref && inputs.ref != 'main' }}
+        uses: ./main/packages/actions/src/releasePackages
+        with:
+          package: ${{ inputs.package }}
+          exclude: ${{ inputs.exclude }}
+          dry: ${{ inputs.dry_run }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Release packages (main ref)
+        if: ${{ !inputs.ref || inputs.ref == 'main' }}
         uses: ./packages/actions/src/releasePackages
         with:
           package: ${{ inputs.package }}

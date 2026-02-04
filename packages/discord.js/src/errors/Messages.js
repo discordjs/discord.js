@@ -64,7 +64,6 @@ const Messages = {
   [ErrorCodes.GuildVoiceChannelResolve]: 'Could not resolve channel to a guild voice channel.',
   [ErrorCodes.GuildChannelOrphan]: 'Could not find a parent to this guild channel.',
   [ErrorCodes.GuildChannelUnowned]: "The fetched channel does not belong to this manager's guild.",
-  [ErrorCodes.GuildOwned]: 'Guild is owned by the client.',
   [ErrorCodes.GuildMembersTimeout]: "Members didn't arrive in time.",
   [ErrorCodes.GuildSoundboardSoundsTimeout]: "Soundboard sounds didn't arrive in time.",
   [ErrorCodes.GuildUncachedMe]: 'The client user as a member of this guild is uncached.',
@@ -83,15 +82,14 @@ const Messages = {
 
   [ErrorCodes.WebhookMessage]: 'The message was not sent by a webhook.',
   [ErrorCodes.WebhookTokenUnavailable]: 'This action requires a webhook token, but none is available.',
-  [ErrorCodes.WebhookURLInvalid]: 'The provided webhook URL is not valid.',
   [ErrorCodes.WebhookApplication]: 'This message webhook belongs to an application and cannot be fetched.',
 
   [ErrorCodes.MessageReferenceMissing]: 'The message does not reference another message',
 
   [ErrorCodes.EmojiType]: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
   [ErrorCodes.EmojiManaged]: 'Emoji is managed and has no Author.',
-  [ErrorCodes.MissingManageGuildExpressionsPermission]: guild =>
-    `Client must have Manage Guild Expressions permission in guild ${guild} to see emoji authors.`,
+  [ErrorCodes.MissingGuildExpressionsPermission]: guild =>
+    `Client must have Create Guild Expressions or Manage Guild Expressions permission in guild ${guild} to see emoji authors.`,
 
   [ErrorCodes.NotGuildSoundboardSound]: action =>
     `Soundboard sound is a default (non-guild) soundboard sound and can't be ${action}.`,

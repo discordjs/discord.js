@@ -65,27 +65,26 @@
 		"@discordjs/api-extractor-utils": "workspace:^",
 		"@microsoft/tsdoc": "~0.15.1",
 		"@microsoft/tsdoc-config": "~0.17.1",
-		"@vercel/blob": "^1.1.1",
+		"@vercel/blob": "^2.0.0",
 		"@vercel/postgres": "^0.10.0",
-		"commander": "^14.0.0",
+		"commander": "^14.0.2",
 		"tslib": "^2.8.1",
-		"undici": "7.11.0",
-		"yaml": "^2.8.1"
+		"undici": "7.16.0",
+		"yaml": "^2.8.2"
 	},
 	"devDependencies": {
-		"@turbo/gen": "^2.5.6",
-		"@types/node": "^22.17.2",
-		"cross-env": "^10.0.0",
-		"env-cmd": "^10.1.0",
-		"eslint": "^9.33.0",
-		"eslint-config-neon": "^0.2.7",
-		"eslint-formatter-compact": "^8.40.0",
-		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.6.2",
-		"terser": "^5.43.1",
-		"tsup": "^8.5.0",
-		"turbo": "^2.5.6",
-		"typescript": "~5.9.2"
+		"@turbo/gen": "^2.6.3",
+		"@types/node": "^24.10.2",
+		"cross-env": "^10.1.0",
+		"eslint": "^9.39.1",
+		"eslint-config-neon": "^0.2.9",
+		"eslint-formatter-compact": "^9.0.1",
+		"eslint-formatter-pretty": "^7.0.0",
+		"prettier": "^3.7.4",
+		"terser": "^5.44.1",
+		"tsup": "^8.5.1",
+		"turbo": "^2.6.3",
+		"typescript": "~5.9.3"
 	},
 	"engines": {
 		"node": ">=22.12.0"

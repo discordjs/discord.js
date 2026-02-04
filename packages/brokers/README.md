@@ -5,11 +5,12 @@
 	</p>
 	<br />
 	<p>
-		<a href="https://discord.gg/djs"><img src="https://img.shields.io/discord/222078108977594368?color=5865F2&logo=discord&logoColor=white" alt="Discord server" /></a>
+		<a href="https://discord.gg/djs"><img src="https://img.shields.io/badge/join_us-on_discord-5865F2?logo=discord&logoColor=white" alt="Discord server" /></a>
 		<a href="https://www.npmjs.com/package/@discordjs/brokers"><img src="https://img.shields.io/npm/v/@discordjs/brokers.svg?maxAge=3600" alt="npm version" /></a>
 		<a href="https://www.npmjs.com/package/@discordjs/brokers"><img src="https://img.shields.io/npm/dt/@discordjs/brokers.svg?maxAge=3600" alt="npm downloads" /></a>
 		<a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/discordjs/discord.js/actions/workflows/tests.yml/badge.svg" alt="Build status" /></a>
 		<a href="https://github.com/discordjs/discord.js/commits/main/packages/brokers"><img alt="Last commit." src="https://img.shields.io/github/last-commit/discordjs/discord.js?logo=github&logoColor=ffffff&path=packages%2Fbrokers" /></a>
+		<a href="https://opencollective.com/discordjs"><img src="https://img.shields.io/opencollective/backers/discordjs?maxAge=3600&logo=opencollective" alt="backers" /></a>
 		<a href="https://codecov.io/gh/discordjs/discord.js"><img src="https://codecov.io/gh/discordjs/discord.js/branch/main/graph/badge.svg?precision=2&flag=brokers" alt="Code coverage" /></a>
 	</p>
 	<p>
@@ -43,7 +44,8 @@ These examples use [ES modules](https://nodejs.org/api/esm.html#enabling).
 import { PubSubRedisBroker } from '@discordjs/brokers';
 import Redis from 'ioredis';
 
-const broker = new PubSubRedisBroker(new Redis());
+// Considering this only pushes events, the group and name are not important.
+const broker = new PubSubRedisBroker(new Redis(), { group: 'noop', name: 'noop' });
 
 await broker.publish('test', 'Hello World!');
 await broker.destroy();
@@ -52,13 +54,22 @@ await broker.destroy();
 import { PubSubRedisBroker } from '@discordjs/brokers';
 import Redis from 'ioredis';
 
-const broker = new PubSubRedisBroker(new Redis());
+const broker = new PubSubRedisBroker(new Redis(), {
+	// This is the consumer group name. You should make sure to not re-use this
+	// across different applications in your stack, unless you absolutely know
+	// what you're doing.
+	group: 'subscribers',
+	// With the assumption that this service will scale to more than one instance,
+	// you MUST ensure `UNIQUE_CONSUMER_ID` is unique across all of them and
+	// also deterministic (i.e. if instance-1 restarts, it should still be instance-1)
+	name: `consumer-${UNIQUE_CONSUMER_ID}`,
+});
 broker.on('test', ({ data, ack }) => {
 	console.log(data);
 	void ack();
 });
 
-await broker.subscribe('subscribers', ['test']);
+await broker.subscribe(['test']);
 ```
 
 ### RPC
@@ -68,7 +79,7 @@ await broker.subscribe('subscribers', ['test']);
 import { RPCRedisBroker } from '@discordjs/brokers';
 import Redis from 'ioredis';
 
-const broker = new RPCRedisBroker(new Redis());
+const broker = new RPCRedisBroker(new Redis(), { group: 'noop', name: 'noop' });
 
 console.log(await broker.call('testcall', 'Hello World!'));
 await broker.destroy();
@@ -77,14 +88,18 @@ await broker.destroy();
 import { RPCRedisBroker } from '@discordjs/brokers';
 import Redis from 'ioredis';
 
-const broker = new RPCRedisBroker(new Redis());
+const broker = new RPCRedisBroker(new Redis(), {
+	// Equivalent to the group/name in pubsub, refer to the previous example.
+	group: 'responders',
+	name: `consumer-${UNIQUE_ID}`,
+});
 broker.on('testcall', ({ data, ack, reply }) => {
 	console.log('responder', data);
 	void ack();
 	void reply(`Echo: ${data}`);
 });
 
-await broker.subscribe('responders', ['testcall']);
+await broker.subscribe(['testcall']);
 ```
 
 ## Links
@@ -112,9 +127,9 @@ If you don't understand something in the documentation, you are experiencing pro
 [website]: https://discord.js.org
 [website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
 [documentation]: https://discord.js.org/docs/packages/brokers/stable
-[guide]: https://discordjs.guide/
-[guide-source]: https://github.com/discordjs/guide
-[guide-update]: https://discordjs.guide/additional-info/changes-in-v14.html
+[guide]: https://discordjs.guide
+[guide-source]: https://github.com/discordjs/discord.js/tree/main/apps/guide
+[guide-update]: https://discordjs.guide/legacy/additional-info/changes-in-v14
 [discord]: https://discord.gg/djs
 [discord-developers]: https://discord.gg/discord-developers
 [source]: https://github.com/discordjs/discord.js/tree/main/packages/brokers

@@ -9,16 +9,15 @@ import { ChannelPermissionMixin } from './mixins/ChannelPermissionMixin.js';
 import { ChannelTopicMixin } from './mixins/ChannelTopicMixin.js';
 import { ThreadOnlyChannelMixin } from './mixins/ThreadOnlyChannelMixin.js';
 
-export interface ForumChannel<Omitted extends keyof APIGuildForumChannel | '' = ''>
-	extends MixinTypes<
-		Channel<ChannelType.GuildForum>,
-		[
-			ChannelParentMixin<ChannelType.GuildForum>,
-			ChannelPermissionMixin<ChannelType.GuildForum>,
-			ChannelTopicMixin<ChannelType.GuildForum>,
-			ThreadOnlyChannelMixin<ChannelType.GuildForum>,
-		]
-	> {}
+export interface ForumChannel<Omitted extends keyof APIGuildForumChannel | '' = ''> extends MixinTypes<
+	Channel<ChannelType.GuildForum>,
+	[
+		ChannelParentMixin<ChannelType.GuildForum>,
+		ChannelPermissionMixin<ChannelType.GuildForum>,
+		ChannelTopicMixin<ChannelType.GuildForum>,
+		ThreadOnlyChannelMixin<ChannelType.GuildForum>,
+	]
+> {}
 
 /**
  * Sample Implementation of a structure for forum channels, usable by direct end consumers.

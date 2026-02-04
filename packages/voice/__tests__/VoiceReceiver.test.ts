@@ -1,6 +1,5 @@
 /* eslint-disable id-length */
 /* eslint-disable @typescript-eslint/dot-notation */
-// @ts-nocheck
 import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
 import process from 'node:process';
@@ -15,7 +14,6 @@ import {
 } from '../__mocks__/rtp';
 import { VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
 import { VoiceReceiver } from '../src/receive/VoiceReceiver';
-import { methods } from '../src/util/Secretbox';
 
 vitest.mock('../src/VoiceConnection', async (importOriginal) => {
 	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
@@ -33,18 +31,8 @@ async function nextTick() {
 	return new Promise((resolve) => process.nextTick(resolve));
 }
 
-function* rangeIter(start: number, end: number) {
-	for (let i = start; i <= end; i++) {
-		yield i;
-	}
-}
-
-function range(start: number, end: number) {
-	return Buffer.from([...rangeIter(start, end)]);
-}
-
 describe('VoiceReceiver', () => {
-	let voiceConnection: _VoiceConnection;
+	let voiceConnection: VoiceConnection;
 	let receiver: VoiceReceiver;
 
 	beforeEach(() => {
@@ -64,7 +52,7 @@ describe('VoiceReceiver', () => {
 		['RTP Packet Desktop', RTP_PACKET_DESKTOP],
 		['RTP Packet Chrome', RTP_PACKET_CHROME],
 		['RTP Packet Android', RTP_PACKET_ANDROID],
-	])('onUdpMessage: decrypt from %s', async (testName, RTP_PACKET) => {
+	])('onUdpMessage: decrypt from %s', async (_testName, RTP_PACKET) => {
 		receiver['decrypt'] = vitest.fn().mockImplementationOnce(() => RTP_PACKET.decrypted);
 
 		const spy = vitest.spyOn(receiver.ssrcMap, 'get');
@@ -144,8 +132,6 @@ describe('VoiceReceiver', () => {
 	});
 
 	describe('decrypt', () => {
-		const secretKey = new Uint8Array([1, 2, 3, 4]);
-
 		test('decrypt: aead_xchacha20_poly1305_rtpsize', () => {
 			const nonceSpace = Buffer.alloc(24);
 
@@ -157,7 +143,7 @@ describe('VoiceReceiver', () => {
 			);
 
 			const expectedNonce = Buffer.concat([
-				XCHACHA20_SAMPLE.encrypted.slice(XCHACHA20_SAMPLE.encrypted.length - 4),
+				XCHACHA20_SAMPLE.encrypted.subarray(XCHACHA20_SAMPLE.encrypted.length - 4),
 				Buffer.alloc(20),
 			]);
 

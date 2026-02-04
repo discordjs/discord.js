@@ -50,7 +50,7 @@ The above code utilizes the discord.js sharding manager to spawn the recommended
 <Callout>
 	You can find the methods available for the ShardingManager class `ShardingManager`. Though, you may not be making much
 	use of this section, unlike the next feature we will explore, which you may learn about by clicking [this
-	link](./additional-information).
+	link](./sharding/additional-information).
 </Callout>
 
 ## Getting started
@@ -91,12 +91,12 @@ Take the following snippet of code:
 client.shard.fetchClientValues('guilds.cache.size').then(console.log); // [!code word:fetchClientValues]
 ```
 
-If you run it, you will notice an output like `[898, 901, 900, 901]`. You will be correct in assuming that that's the total number of guilds per shard stored in an array in the Promise. This probably isn't the ideal output for guild count, so let's use [Array.reduce()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce) to provide a better output.
+If you run it, you will notice an output like `[898, 901, 900, 901]`. You will be correct in assuming that that's the total number of guilds per shard stored in an array in the Promise. This probably isn't the ideal output for guild count, so let's use [Array.reduce()](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce) to provide a better output.
 
 <Callout>
 	It's highly recommended for you to visit [the
-	documentation](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce) to
-	understand how the `reduce()` method works, as you will probably find great use of it in sharding.
+	documentation](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce) to understand
+	how the `reduce()` method works, as you will probably find great use of it in sharding.
 </Callout>
 
 In this case, this method iterates through the array and adds each current value to the total amount:
@@ -149,7 +149,7 @@ This will run the code given to `broadcastEval` on each shard and return the res
 
 ```js
 client.shard
-	.broadcastEval((c) => c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)) // [!code word:boradcastEval]
+	.broadcastEval((c) => c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)) // [!code word:broadcastEval]
 	.then((results) => {
 		return interaction.reply(`Total member count: ${results.reduce((acc, memberCount) => acc + memberCount, 0)}`);
 	})
@@ -158,7 +158,7 @@ client.shard
 
 ## Putting them together
 
-You'd likely want to output both pieces of information in the stats command. You can combine these two results with [Promise.all()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all):
+You'd likely want to output both pieces of information in the stats command. You can combine these two results with [Promise.all()](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise/all):
 
 ```js
 const promises = [
@@ -192,7 +192,7 @@ client.on(Events.InteractionCreate, (interaction) => {
 		// [!code ++:12]
 		const promises = [
 			client.shard.fetchClientValues('guilds.cache.size'),
-			lient.shard.broadcastEval((c) => c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)),
+			client.shard.broadcastEval((c) => c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0)),
 		];
 
 		return Promise.all(promises)

@@ -1,4 +1,21 @@
 {
+	"title": "Popular Topics",
 	"defaultOpen": true,
-	"pages": ["!faq", "...", "!display-components"]
+	"pages": [
+		"!faq",
+		"!display-components",
+		"audit-logs",
+		"canvas",
+		"collectors",
+		"errors",
+		"formatters",
+		"intents",
+		"embeds",
+		"partials",
+		"permissions",
+		"permissions-extended",
+		"reactions",
+		"threads",
+		"webhooks"
+	]
 }

@@ -59,7 +59,6 @@
  * @property {'GuildVoiceChannelResolve'} GuildVoiceChannelResolve
  * @property {'GuildChannelOrphan'} GuildChannelOrphan
  * @property {'GuildChannelUnowned'} GuildChannelUnowned
- * @property {'GuildOwned'} GuildOwned
  * @property {'GuildMembersTimeout'} GuildMembersTimeout
  * @property {'GuildSoundboardSoundsTimeout'} GuildSoundboardSoundsTimeout
  * @property {'GuildUncachedMe'} GuildUncachedMe
@@ -78,14 +77,13 @@
  *
  * @property {'WebhookMessage'} WebhookMessage
  * @property {'WebhookTokenUnavailable'} WebhookTokenUnavailable
- * @property {'WebhookURLInvalid'} WebhookURLInvalid
  * @property {'WebhookApplication'} WebhookApplication
  *
  * @property {'MessageReferenceMissing'} MessageReferenceMissing
  *
  * @property {'EmojiType'} EmojiType
  * @property {'EmojiManaged'} EmojiManaged
- * @property {'MissingManageGuildExpressionsPermission'} MissingManageGuildExpressionsPermission
+ * @property {'MissingGuildExpressionsPermission'} MissingGuildExpressionsPermission
  *
  * @property {'NotGuildSoundboardSound'} NotGuildSoundboardSound
  * @property {'NotGuildSticker'} NotGuildSticker
@@ -195,7 +193,6 @@ const keys = [
   'GuildVoiceChannelResolve',
   'GuildChannelOrphan',
   'GuildChannelUnowned',
-  'GuildOwned',
   'GuildMembersTimeout',
   'GuildSoundboardSoundsTimeout',
   'GuildUncachedMe',
@@ -214,14 +211,13 @@ const keys = [
 
   'WebhookMessage',
   'WebhookTokenUnavailable',
-  'WebhookURLInvalid',
   'WebhookApplication',
 
   'MessageReferenceMissing',
 
   'EmojiType',
   'EmojiManaged',
-  'MissingManageGuildExpressionsPermission',
+  'MissingGuildExpressionsPermission',
 
   'NotGuildSoundboardSound',
   'NotGuildSticker',
