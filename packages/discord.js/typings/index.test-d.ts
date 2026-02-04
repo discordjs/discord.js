@@ -16,6 +16,7 @@ import type {
   APISelectMenuComponent,
   APIStringSelectComponent,
   APITextInputComponent,
+  GatewayVoiceServerUpdateDispatchData,
   Locale,
   ThreadChannelType,
   WebhookType,
@@ -1382,6 +1383,10 @@ client.on('userUpdate', ({ client: oldClient }, { client: newClient }) => {
 client.on('voiceStateUpdate', ({ client: oldClient }, { client: newClient }) => {
   expectType<Client<true>>(oldClient);
   expectType<Client<true>>(newClient);
+});
+
+client.on('voiceServerUpdate', payload => {
+  expectType<GatewayVoiceServerUpdateDispatchData>(payload);
 });
 
 client.on('webhooksUpdate', ({ client }) => expectType<Client<true>>(client));

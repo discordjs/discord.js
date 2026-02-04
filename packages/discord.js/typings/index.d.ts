@@ -5571,6 +5571,7 @@ export interface ClientEventTypes {
   typingStart: [typing: Typing];
   userUpdate: [oldUser: PartialUser | User, newUser: User];
   voiceChannelEffectSend: [voiceChannelEffect: VoiceChannelEffect];
+  voiceServerUpdate: [payload: GatewayVoiceServerUpdateDispatchData];
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
   warn: [message: string];
   webhooksUpdate: [channel: AnnouncementChannel | ForumChannel | MediaChannel | TextChannel | VoiceChannel];
