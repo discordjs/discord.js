@@ -59,6 +59,7 @@ class Presence extends Base {
     if (this.guild) {
       /**
        * The partial member of this presence
+       *
        * @type {?PartialGuildMember}
        */
       this.member = this.guild.members._add({ user: data.user, guild: data.guild }, false);

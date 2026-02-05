@@ -4625,8 +4625,8 @@ export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleRes
 }
 
 export interface PartialGuildMemberRoleManager extends Partialize<GuildMemberRoleManager, null, null, 'member'> {
-  get partial(): true;
   member: PartialGuildMember;
+  get partial(): true;
 }
 
 export interface FetchPollAnswerVotersOptions extends BaseFetchPollAnswerVotersOptions {
@@ -6340,8 +6340,8 @@ export type GuildResolvable =
   | GuildEmoji
   | GuildInvite
   | GuildMember
-  | PartialGuildMember
   | NonThreadGuildBasedChannel
+  | PartialGuildMember
   | Role
   | Snowflake;
 
@@ -6957,8 +6957,12 @@ export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'las
   lastMessageId: undefined;
 }
 
-export interface PartialGuildMember
-  extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp' | 'pending', null, 'roles'> {
+export interface PartialGuildMember extends Partialize<
+  GuildMember,
+  'joinedAt' | 'joinedTimestamp' | 'pending',
+  null,
+  'roles'
+> {
   get partial(): true;
   get roles(): PartialGuildMemberRoleManager;
 }
@@ -7239,7 +7243,7 @@ export type ThreadMemberResolvable = ThreadMember | UserResolvable;
 
 export type UserMention = `<@${Snowflake}>`;
 
-export type UserResolvable = GuildMember | PartialGuildMember | Message | Snowflake | ThreadMember | User;
+export type UserResolvable = GuildMember | Message | PartialGuildMember | Snowflake | ThreadMember | User;
 
 export interface Vanity {
   code: string | null;

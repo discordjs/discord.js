@@ -17,6 +17,7 @@ class GuildMemberRoleManager extends DataManager {
 
     /**
      * The GuildMember this manager belongs to
+     *
      * @type {GuildMember | PartialGuildMember}
      */
     this.member = member;
@@ -119,6 +120,7 @@ class GuildMemberRoleManager extends DataManager {
 
   /**
    * Whether this GuildMemberRoleManager is a partial
+   *
    * @type {boolean}
    * @readonly
    */
