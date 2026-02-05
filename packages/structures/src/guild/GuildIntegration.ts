@@ -10,7 +10,6 @@ import type { Partialize } from '../utils/types.js';
  * Represents a guild integration on Discord..
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @remarks Intentionally does not export `scopes`, so extending classes can map the array to `OAuth2Scopes[]`.
  * @remarks has substructures `User`, `IntegrationAccount`, and `Application`, which needs to be instantiated and stored by any extending classes using it.
  */
 export class GuildIntegration<Omitted extends keyof APIGuildIntegration | '' = 'synced_at'> extends Structure<
