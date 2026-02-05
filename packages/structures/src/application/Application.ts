@@ -21,6 +21,8 @@ import type { Partialize } from '../utils/types.js';
  * @remarks Has substructure `User`, `Guild` and `Team`, which need to be instantiated and stored by an extending class using it.
  */
 export class Application<Omitted extends keyof APIApplication | '' = ''> extends Structure<APIApplication, Omitted> {
+	public static override readonly DataTemplate: Partial<APIApplication> = {};
+
 	/**
 	 * @param data - The raw data from the API for the application.
 	 */
