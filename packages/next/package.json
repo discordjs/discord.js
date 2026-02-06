@@ -70,6 +70,7 @@
 		"@discordjs/core": "workspace:^",
 		"@discordjs/formatters": "workspace:^",
 		"@discordjs/rest": "workspace:^",
+		"@discordjs/structures": "workspace:^",
 		"@discordjs/util": "workspace:^",
 		"@discordjs/ws": "workspace:^",
 		"discord-api-types": "^0.38.36"
