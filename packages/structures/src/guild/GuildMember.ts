@@ -1,0 +1,195 @@
+import type { APIInteractionGuildMember, GuildMemberFlags } from 'discord-api-types/v10';
+import { Structure } from '../Structure.js';
+import { GuildMemberFlagsBitField } from '../bitfields/GuildMemberFlagsBitField.js';
+import { dateToDiscordISOTimestamp } from '../utils/optimization.js';
+import { kCommunicationDisabledUntil, kData, kJoinedAt, kPermissions, kPremiumSince } from '../utils/symbols.js';
+import { isFieldSet } from '../utils/type-guards.js';
+import type { Partialize } from '../utils/types.js';
+
+/**
+ * Represents a guild member on Discord.
+ *
+ * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
+ * @remarks Intentionally does not export `roles`so extending classes can map this array to `Role[]`.
+ * @remarks has substructures `User` and `AvatarDecorationData`, which needs to be instantiated and stored by any extending classes using it.
+ */
+export class GuildMember<
+	Omitted extends keyof APIInteractionGuildMember | '' = 'communication_disabled_until' | 'joined_at' | 'premium_since',
+> extends Structure<APIInteractionGuildMember, Omitted> {
+	/**
+	 * @param data - The raw data from the API for the guild member.
+	 */
+
+	/**
+	 * The template used for removing data from the raw data stored for each `GuildMember`
+	 *
+	 * @remarks This template has defaults, if you want to remove additional data and keep the defaults,
+	 * use `Object.defineProperties`.
+	 */
+	public static override readonly DataTemplate: Partial<APIInteractionGuildMember> = {
+		set communication_disabled_until(_: string) {},
+		set joined_at(_: string) {},
+		set premium_since(_: string) {},
+		set permissions(_: string) {},
+	};
+
+	protected [kCommunicationDisabledUntil]: number | null = null;
+
+	protected [kJoinedAt]: number | null = null;
+
+	protected [kPremiumSince]: number | null = null;
+
+	protected [kPermissions]: bigint | null = null;
+
+	/**
+	 * @param data - The raw data from the API for the guild member.
+	 */
+	public constructor(data: Partialize<APIInteractionGuildMember, Omitted>) {
+		super(data);
+		this.optimizeData(data);
+	}
+
+	/**
+	 * The user's guild nickname.
+	 */
+	public get nick() {
+		return this[kData].nick;
+	}
+
+	/**
+	 * The member's guild avatar hash.
+	 */
+	public get avatar() {
+		return this[kData].avatar;
+	}
+
+	/**
+	 * The member's guild banner hash.
+	 */
+	public get banner() {
+		return this[kData].banner;
+	}
+
+	/**
+	 * Whether the user is deafened in voice channels.
+	 */
+	public get deaf() {
+		return this[kData].deaf;
+	}
+
+	/**
+	 * Whether the user is muted in voice channels.
+	 */
+	public get mute() {
+		return this[kData].mute;
+	}
+
+	/**
+	 * Guild member flags represented as a bit set.
+	 *
+	 */
+	public get flags() {
+		return isFieldSet(this[kData], 'flags', 'number')
+			? new GuildMemberFlagsBitField(this[kData].flags as GuildMemberFlags)
+			: null;
+	}
+
+	public get permissions() {
+		return this[kData].permissions;
+	}
+
+	/**
+	 * The time this member's timeout will be removed.
+	 */
+	public get communicationsDisabledUntil() {
+		const timestamp = this.communicationsDisabledUntilTimestamp;
+		return timestamp ? new Date(timestamp) : null;
+	}
+
+	/**
+	 * The timestamp this member's timeout will be removed.
+	 */
+	public get communicationsDisabledUntilTimestamp() {
+		return this[kCommunicationDisabledUntil];
+	}
+
+	/**
+	 * The time this member joined the guild.
+	 */
+	public get joinedAt() {
+		const timestamp = this.joinedTimestamp;
+		return timestamp ? new Date(timestamp) : null;
+	}
+
+	/**
+	 * The timestamp this member joined the guild at.
+	 */
+	public get joinedTimestamp() {
+		return this[kJoinedAt];
+	}
+
+	/**
+	 * The last time this member started boosting the guild.
+	 */
+	public get premiumSince() {
+		const timestamp = this.premiumSinceTimestamp;
+		return timestamp ? new Date(timestamp) : null;
+	}
+
+	/**
+	 * The last timestamp this member started boosting the guild.
+	 */
+	public get premiumSinceTimestamp() {
+		return this[kPremiumSince];
+	}
+
+	/**
+	 * {@inheritDoc Structure.optimizeData}
+	 */
+	protected override optimizeData(data: Partial<APIInteractionGuildMember>): void {
+		if (data.communication_disabled_until) {
+			this[kCommunicationDisabledUntil] = Date.parse(data.communication_disabled_until);
+		}
+
+		if (data.joined_at) {
+			this[kJoinedAt] = Date.parse(data.joined_at);
+		}
+
+		if (data.premium_since) {
+			this[kPremiumSince] = Date.parse(data.premium_since);
+		}
+
+		if (data.permissions) {
+			this[kPermissions] = BigInt(data.permissions);
+		}
+	}
+
+	/**
+	 * {@inheritDoc Structure.toJSON}
+	 */
+	public override toJSON() {
+		const clone = super.toJSON();
+
+		const communicationDisabledUntil = this[kCommunicationDisabledUntil];
+		const joinedAt = this[kJoinedAt];
+		const premiumSince = this[kPremiumSince];
+		const permissions = this[kPermissions];
+		if (communicationDisabledUntil) {
+			clone.communication_disabled_until = dateToDiscordISOTimestamp(new Date(communicationDisabledUntil));
+		}
+
+		if (joinedAt) {
+			clone.joined_at = dateToDiscordISOTimestamp(new Date(joinedAt));
+		}
+
+		if (premiumSince) {
+			clone.premium_since = dateToDiscordISOTimestamp(new Date(premiumSince));
+		}
+
+		if (permissions) {
+			clone.permissions = permissions.toString();
+		}
+
+		return clone;
+	}
+}
