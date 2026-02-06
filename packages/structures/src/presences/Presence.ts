@@ -38,7 +38,7 @@ export class Presence<Omitted extends keyof PresenceData | '' = ''> extends Stru
 	}
 
 	/**
-	 * User's new status
+	 * The user's new status
 	 *
 	 * @see {@link https://discord.com/developers/docs/events/gateway-events#update-presence-status-types}
 	 */
