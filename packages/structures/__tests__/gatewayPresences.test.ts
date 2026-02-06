@@ -1,4 +1,3 @@
-import { DiscordSnowflake } from '@sapphire/snowflake';
 import {
 	type GatewayActivity,
 	type GatewayActivityTimestamps,
@@ -13,19 +12,17 @@ import {
 	StatusDisplayType,
 	ActivityFlags,
 	PresenceUpdateStatus,
-	ImageFormat,
 } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
-	GatewayPresenceActivity,
-	GatewayPresenceActivityAssets,
-	GatewayPresenceActivityButton,
-	GatewayPresenceActivityEmoji,
-	GatewayPresenceActivityParty,
-	GatewayPresenceActivitySecrets,
-	GatewayPresenceActivityTimestamps,
-	GatewayPresenceClientStatus,
-	GatewayPresenceUpdate,
+	Activity,
+	ActivityAssets,
+	ActivityButton,
+	ActivityParty,
+	ActivitySecrets,
+	ActivityTimestamps,
+	ClientStatus,
+	Presence,
 	type Partialize,
 } from '../src/index.js';
 import { kPatch } from '../src/utils/symbols.js';
@@ -98,7 +95,7 @@ const gatewayPresenceClientStatusData: GatewayPresenceClientStatusTypedef = {
 describe('gatewayPresences structures', () => {
 	describe('GatewayPresenceClientStatus sub-structure', () => {
 		const data = gatewayPresenceClientStatusData;
-		const instance = new GatewayPresenceClientStatus(data);
+		const instance = new ClientStatus(data);
 
 		test('correct value for all getters', () => {
 			expect(instance.desktop).toBe(data.desktop);
@@ -126,7 +123,7 @@ describe('gatewayPresences structures', () => {
 
 	describe('GatewayPresenceUpdate sub-structure', () => {
 		const data = gatewayPresenceUpdateData;
-		const instance = new GatewayPresenceUpdate(data);
+		const instance = new Presence(data);
 
 		test('correct value for all getters', () => {
 			expect(instance.afk).toBe(data.afk);
@@ -156,7 +153,7 @@ describe('gatewayPresences structures', () => {
 	describe('gatewayPresences sub-structures', () => {
 		describe('GatewayPresenceActivity sub-structure', () => {
 			const data = gatewayPresenceActivityData;
-			const instance = new GatewayPresenceActivity(data);
+			const instance = new Activity(data);
 
 			test('correct value for all getters and helper method [createdAt]', () => {
 				expect(instance.name).toBe(data.name);
@@ -194,7 +191,7 @@ describe('gatewayPresences structures', () => {
 
 		describe('GatewayPresenceActivityAssets sub-structure', () => {
 			const data = gatewayPresenceActivityAssetsData;
-			const instance = new GatewayPresenceActivityAssets(data);
+			const instance = new ActivityAssets(data);
 
 			test('correct value for all getters', () => {
 				expect(instance.largeImage).toBe(data.large_image);
@@ -223,7 +220,7 @@ describe('gatewayPresences structures', () => {
 
 		describe('GatewayPresenceActivityButton sub-structure', () => {
 			const data = gatewayPresenceActivityButtonData;
-			const instance = new GatewayPresenceActivityButton(data);
+			const instance = new ActivityButton(data);
 
 			test('correct value for all getters', () => {
 				expect(instance.label).toBe(data.label);
@@ -244,44 +241,9 @@ describe('gatewayPresences structures', () => {
 			});
 		});
 
-		describe('GatewayPresenceActivityEmoji sub-structure', () => {
-			const data = gatewayPresenceActivityEmojiData;
-			const instance = new GatewayPresenceActivityEmoji(data);
-
-			test('correct value for all getters and helper method [url]', () => {
-				expect(instance.name).toBe(data.name);
-				expect(instance.animated).toBe(data.animated);
-
-				expect(instance.id).toBeUndefined();
-				expect(instance.createdAt).toBeNull();
-				expect(instance.createdTimestamp).toBeNull();
-				expect(instance.url()).toBeNull();
-			});
-
-			test('toJSON() returns expected values', () => {
-				expect(instance.toJSON()).toStrictEqual(data);
-			});
-
-			test('patching the structure works in-place and helper method [url]', () => {
-				const patched = instance[kPatch]({
-					id: '1',
-					name: 'djs://[PATCHED]-emoji-name',
-					animated: true,
-				});
-
-				expect(instance.url(ImageFormat.WebP)).toEqual('https://cdn.discordapp.com/emojis/1.webp');
-
-				expect(instance.createdTimestamp).toBe(DiscordSnowflake.timestampFrom(instance.id!));
-				expect(instance.createdAt).toEqual(new Date(instance.createdTimestamp!));
-
-				expect(patched.toJSON()).not.toEqual(data);
-				expect(patched.toJSON()).toStrictEqual(instance.toJSON());
-			});
-		});
-
 		describe('GatewayPresenceActivityParty sub-structure', () => {
 			const data = gatewayPresenceActivityPartyData;
-			const instance = new GatewayPresenceActivityParty(data);
+			const instance = new ActivityParty(data);
 
 			test('correct value for all getters and helper methods [createdTimestamp, createdAt]', () => {
 				expect(instance.id).toBe(data.id);
@@ -306,7 +268,7 @@ describe('gatewayPresences structures', () => {
 
 		describe('GatewayPresenceActivitySecrets sub-structure', () => {
 			const data = gatewayPresenceActivitySecretsData;
-			const instance = new GatewayPresenceActivitySecrets(data);
+			const instance = new ActivitySecrets(data);
 
 			test('correct value for all getters', () => {
 				expect(instance.join).toBe(data.join);
@@ -332,7 +294,7 @@ describe('gatewayPresences structures', () => {
 
 		describe('GatewayPresenceActivityTimestamps sub-structure', () => {
 			const data = gatewayPresenceActivityTimestampsData;
-			const instance = new GatewayPresenceActivityTimestamps(data);
+			const instance = new ActivityTimestamps(data);
 
 			test('correct value for all getters', () => {
 				expect(instance.start).toBe(data.start);
