@@ -297,10 +297,10 @@ describe('gatewayPresences structures', () => {
 			const instance = new ActivityTimestamps(data);
 
 			test('correct value for all getters', () => {
-				expect(instance.start).toBe(data.start);
+				expect(instance.startTimestamp).toBe(data.start);
 				expect(instance.startAt).toStrictEqual(new Date(data.start as number));
 
-				expect(instance.end).toBeUndefined();
+				expect(instance.endTimestamp).toBeUndefined();
 				expect(instance.endAt).toBeNull();
 			});
 
@@ -313,7 +313,7 @@ describe('gatewayPresences structures', () => {
 					end: 10_000_000,
 				});
 
-				expect(patched.endAt).toStrictEqual(new Date(patched.end as number));
+				expect(patched.endAt).toStrictEqual(new Date(patched.endTimestamp as number));
 
 				expect(patched.toJSON()).not.toEqual(data);
 				expect(patched.toJSON()).toStrictEqual(instance.toJSON());
