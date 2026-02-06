@@ -13,7 +13,7 @@ import type { Partialize } from '../utils/types.js';
  */
 export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<APIUser, Omitted> {
 	/**
-	 * The template used for removing data from the raw data stored for each User
+	 * The template used for removing data from the raw data stored for each User.
 	 */
 	public static override readonly DataTemplate: Partial<APIUser> = {};
 
