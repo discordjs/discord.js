@@ -1059,9 +1059,6 @@ importers:
 
   packages/discord.js:
     dependencies:
-      '@discordjs/builders':
-        specifier: workspace:^
-        version: link:../builders
       '@discordjs/collection':
         specifier: workspace:^
         version: link:../collection
@@ -1105,6 +1102,9 @@ importers:
       '@discordjs/api-extractor':
         specifier: workspace:^
         version: link:../api-extractor
+      '@discordjs/builders':
+        specifier: workspace:^
+        version: link:../builders
       '@discordjs/docgen':
         specifier: workspace:^
         version: link:../docgen
