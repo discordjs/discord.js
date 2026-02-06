@@ -5458,7 +5458,7 @@ export type OmitPartialGroupDMChannel<Structure extends { channel: Channel }> = 
   channel: Exclude<Structure['channel'], PartialGroupDMChannel>;
 };
 
-export interface ClientEventTypes {
+export interface ClientEventTypes extends Record<Events, any[]> {
   applicationCommandPermissionsUpdate: [data: ApplicationCommandPermissionsUpdateData];
   autoModerationActionExecution: [autoModerationActionExecution: AutoModerationActionExecution];
   autoModerationRuleCreate: [autoModerationRule: AutoModerationRule];
