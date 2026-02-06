@@ -1,6 +1,7 @@
 import type { GatewayActivityTimestamps } from 'discord-api-types/v10';
 import { Structure } from '../../Structure.js';
 import { kData } from '../../utils/symbols.js';
+import { isFieldSet } from '../../utils/type-guards.js';
 import type { Partialize } from '../../utils/types.js';
 
 /**
@@ -35,9 +36,7 @@ export class ActivityTimestamps<Omitted extends keyof GatewayActivityTimestamps 
 	 * Time of when the activity started.
 	 */
 	public get startAt() {
-		const timestamp = this[kData].start;
-
-		return timestamp ? new Date(timestamp as number) : null;
+		return isFieldSet(this[kData], 'start', 'number') ? new Date(this[kData].start) : null;
 	}
 
 	/**
@@ -51,8 +50,6 @@ export class ActivityTimestamps<Omitted extends keyof GatewayActivityTimestamps 
 	 * Time of when the activity ended.
 	 */
 	public get endAt() {
-		const timestamp = this[kData].end;
-
-		return timestamp ? new Date(timestamp as number) : null;
+		return isFieldSet(this[kData], 'end', 'number') ? new Date(this[kData].end) : null;
 	}
 }
