@@ -13,6 +13,7 @@ export * from './stageInstances/index.js';
 export * from './stickers/index.js';
 export * from './teams/index.js';
 export * from './users/index.js';
+export * from './webhooks/index.js';
 export * from './voice/index.js';
 export * from './Structure.js';
 export * from './subscriptions/index.js';
