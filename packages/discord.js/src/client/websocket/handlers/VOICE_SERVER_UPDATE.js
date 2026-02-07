@@ -3,7 +3,12 @@
 const { Events } = require('../../../util/Events.js');
 
 module.exports = (client, { d: data }) => {
-  client.emit(Events.Debug, `[VOICE] received voice server: ${JSON.stringify(data)}`);
+  client.emit(
+    Events.Debug,
+    `[VOICE] received voice server: ${JSON.stringify({ ...data, token: '*'.repeat(data.token.length) })}`,
+  );
+
+  client.voice.onVoiceServer(data);
 
   /**
    * Represents the properties of a voice server update
@@ -25,6 +30,4 @@ module.exports = (client, { d: data }) => {
     endpoint: data.endpoint,
     token: data.token,
   });
-
-  client.voice.onVoiceServer(data);
 };
