@@ -23,7 +23,7 @@ module.exports = (client, { d: data }) => {
 
   // Emit event
   if (member?.user.id === client.user.id) {
-    client.emit('debug', `[VOICE] received voice state update: ${JSON.stringify(data)}`);
+    client.emit(Events.Debug, `[VOICE] received voice state update: ${JSON.stringify(data)}`);
     client.voice.onVoiceStateUpdate(data);
   }
 
