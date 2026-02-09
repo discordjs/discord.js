@@ -157,7 +157,7 @@ describe('gatewayPresences structures', () => {
 			const data = gatewayPresenceActivityData;
 			const instance = new Activity(data);
 
-			test('correct value for all getters and helper method [createdAt]', () => {
+			test('correct value for all getters and helper method [createdDate]', () => {
 				expect(instance.name).toBe(data.name);
 				expect(instance.type).toBe(data.type);
 				expect(instance.url).toBe(data.url);
@@ -171,7 +171,7 @@ describe('gatewayPresences structures', () => {
 				expect(instance.flags!.bitField).toBe(BigInt(data.flags!));
 				expect(instance.createdTimestamp).toBe(data.created_at);
 
-				expect(instance.createdAt).toEqual(new Date(instance.createdTimestamp));
+				expect(instance.createdDate).toEqual(new Date(instance.createdTimestamp));
 			});
 
 			test('toJSON() returns expected values', () => {
@@ -247,7 +247,7 @@ describe('gatewayPresences structures', () => {
 			const data = gatewayPresenceActivityPartyData;
 			const instance = new ActivityParty(data);
 
-			test('correct value for all getters and helper methods [createdTimestamp, createdAt]', () => {
+			test('correct value for all getters and helper methods [createdTimestamp, createdDate]', () => {
 				expect(instance.id).toBe(data.id);
 				expect(instance.currentSize).toBe(data.size![0]);
 
@@ -303,10 +303,10 @@ describe('gatewayPresences structures', () => {
 
 			test('correct value for all getters', () => {
 				expect(instance.startTimestamp).toBe(data.start);
-				expect(instance.startAt).toStrictEqual(new Date(data.start as number));
+				expect(instance.startDate).toStrictEqual(new Date(data.start as number));
 
 				expect(instance.endTimestamp).toBeUndefined();
-				expect(instance.endAt).toBeNull();
+				expect(instance.endDate).toBeNull();
 			});
 
 			test('toJSON() returns expected values', () => {
@@ -318,7 +318,7 @@ describe('gatewayPresences structures', () => {
 					end: 10_000_000,
 				});
 
-				expect(patched.endAt).toStrictEqual(new Date(patched.endTimestamp as number));
+				expect(patched.endDate).toStrictEqual(new Date(patched.endTimestamp as number));
 
 				expect(patched.toJSON()).not.toEqual(data);
 				expect(patched.toJSON()).toStrictEqual(instance.toJSON());
