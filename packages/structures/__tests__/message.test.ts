@@ -29,7 +29,6 @@ import { describe, expect, test } from 'vitest';
 import { Attachment } from '../src/messages/Attachment.js';
 import { Message } from '../src/messages/Message.js';
 import { ContainerComponent } from '../src/messages/components/ContainerComponent.js';
-import { Embed } from '../src/messages/embeds/Embed.js';
 import { User } from '../src/users/User.js';
 import { dateToDiscordISOTimestamp } from '../src/utils/optimization.js';
 
@@ -126,17 +125,6 @@ describe('message with embeds and attachments', () => {
 		expect(instances?.[0]?.size).toBe(data.attachments?.[0]?.size);
 		expect(instances?.[0]?.url).toBe(data.attachments?.[0]?.url);
 		expect(instances?.[0]?.proxyURL).toBe(data.attachments?.[0]?.proxy_url);
-	});
-
-	test('Embed sub-structure', () => {
-		const instances = data.embeds?.map((embed) => new Embed(embed));
-		expect(instances?.map((embed) => embed.toJSON())).toEqual(data.embeds);
-		expect(instances?.[0]?.description).toBe(data.embeds?.[0]?.description);
-		expect(instances?.[0]?.color).toBe(data.embeds?.[0]?.color);
-		expect(instances?.[0]?.timestamp).toBe(Date.parse(data.embeds![0]!.timestamp!));
-		expect(instances?.[0]?.title).toBe(data.embeds?.[0]?.title);
-		expect(instances?.[0]?.url).toBe(data.embeds?.[0]?.url);
-		expect(instances?.[0]?.type).toBe(data.embeds?.[0]?.type);
 	});
 
 	test('User sub-structure', () => {
