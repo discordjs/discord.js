@@ -27,10 +27,17 @@ describe('Entitlement structure', () => {
 		expect(instance.userId).toBe(data.user_id);
 		expect(instance.type).toBe(data.type);
 		expect(instance.consumed).toBe(data.consumed);
+		expect(instance.deleted).toBe(data.deleted);
 		expect(instance.guildId).toBeUndefined();
 
 		expect(instance.createdTimestamp).toBe(DiscordSnowflake.timestampFrom(instance.id!));
 		expect(instance.createdAt).toEqual(new Date(instance.createdTimestamp!));
+
+		expect(instance.startsTimestamp).toBe(new Date(data.starts_at!).getTime());
+		expect(instance.startsAt).toEqual(new Date(instance.startsTimestamp!));
+
+		expect(instance.endsTimestamp).toBe(new Date(data.ends_at!).getTime());
+		expect(instance.endsAt).toEqual(new Date(instance.endsTimestamp!));
 	});
 
 	test('toJSON() is accurate', () => {
