@@ -26,6 +26,7 @@ describe('Webhook structure', () => {
 		expect(instance.name).toBe(data.name);
 		expect(instance.avatar).toBe(data.avatar);
 		expect(instance.applicationId).toBe(data.application_id);
+		expect(instance.url).toBe(data.url);
 
 		expect(instance.createdTimestamp).toBe(DiscordSnowflake.timestampFrom(instance.id!));
 		expect(instance.createdAt).toEqual(new Date(instance.createdTimestamp!));
