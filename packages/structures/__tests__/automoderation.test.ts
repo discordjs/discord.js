@@ -57,6 +57,7 @@ describe('AutoModerationRule structure', () => {
 		expect(instance.creatorId).toBe(data.creator_id);
 		expect(instance.eventType).toBe(data.event_type);
 		expect(instance.enabled).toBe(data.enabled);
+		expect(instance.triggerType).toBe(data.trigger_type);
 	});
 
 	test('toJSON() correctly mirrors API data', () => {
