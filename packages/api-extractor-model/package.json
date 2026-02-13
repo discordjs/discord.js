@@ -33,7 +33,7 @@
 	"dependencies": {
 		"@microsoft/tsdoc": "~0.15.1",
 		"@microsoft/tsdoc-config": "~0.17.1",
-		"@rushstack/node-core-library": "5.19.1"
+		"@rushstack/node-core-library": "5.13.1"
 	},
 	"devDependencies": {
 		"@types/node": "^24.10.13",
