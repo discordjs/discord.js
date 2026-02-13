@@ -50,16 +50,16 @@
 		"tslib": "^2.8.1"
 	},
 	"devDependencies": {
-		"@types/node": "^24.10.2",
+		"@types/node": "^24.10.13",
 		"cross-env": "^10.1.0",
-		"eslint": "^9.39.1",
+		"eslint": "^9.39.2",
 		"eslint-config-neon": "^0.2.9",
 		"eslint-formatter-compact": "^9.0.1",
 		"eslint-formatter-pretty": "^7.0.0",
-		"prettier": "^3.7.4",
-		"terser": "^5.44.1",
+		"prettier": "^3.8.1",
+		"terser": "^5.46.0",
 		"tsup": "^8.5.1",
-		"turbo": "^2.6.3",
+		"turbo": "^2.8.7",
 		"typescript": "~5.9.3"
 	},
 	"engines": {

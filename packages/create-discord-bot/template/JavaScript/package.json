@@ -15,11 +15,11 @@
 		"discord.js": "^14.25.1"
 	},
 	"devDependencies": {
-		"eslint": "^9.39.1",
+		"eslint": "^9.39.2",
 		"eslint-config-neon": "^0.2.9",
 		"eslint-formatter-pretty": "^7.0.0",
-		"prettier": "^3.7.4",
-		"zod": "^4.1.13"
+		"prettier": "^3.8.1",
+		"zod": "^4.3.6"
 	},
 	"engines": {
 		"node": ">=22.12.0"
