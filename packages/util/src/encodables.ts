@@ -64,7 +64,7 @@ export function isFileBodyEncodable(maybeEncodable: unknown): maybeEncodable is 
 /**
  * Represents an object capable of representing itself as a raw file attachment.
  * Objects implementing this interface can return binary file data to be sent as part of
- * mutipart/form-data requests.
+ * multipart/form-data requests.
  */
 export interface RawFileEncodable extends JSONEncodable<RESTAPIAttachment> {
 	/**
