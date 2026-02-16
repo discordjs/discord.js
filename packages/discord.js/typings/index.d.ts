@@ -5427,24 +5427,8 @@ export interface BaseCategoryCreateChannelOptions {
 }
 
 export interface CategoryCreateChannelOptions extends BaseCategoryCreateChannelOptions {
-  availableTags?: readonly GuildForumTagData[];
-  bitrate?: number;
-  defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
-  defaultForumLayout?: ForumLayoutType;
-  defaultReactionEmoji?: DefaultReactionEmoji;
-  defaultSortOrder?: SortOrderType;
-  defaultThreadRateLimitPerUser?: number;
   name: string;
-  nsfw?: boolean;
-  permissionOverwrites?: ReadonlyCollection<Snowflake, OverwriteResolvable> | readonly OverwriteResolvable[];
-  position?: number;
-  rateLimitPerUser?: number;
-  reason?: string;
-  rtcRegion?: string;
-  topic?: string;
   type?: CategoryChannelChildTypes;
-  userLimit?: number;
-  videoQualityMode?: VideoQualityMode;
 }
 
 export interface ChannelCreationOverwrites {
@@ -6780,11 +6764,7 @@ export interface MessageOptionsStickers {
 }
 
 export interface BaseMessageCreateOptions
-  extends BaseMessageSendOptions,
-    MessageOptionsPoll,
-    MessageOptionsFlags,
-    MessageOptionsTTS,
-    MessageOptionsStickers {
+  extends BaseMessageSendOptions, MessageOptionsPoll, MessageOptionsFlags, MessageOptionsTTS, MessageOptionsStickers {
   enforceNonce?: boolean;
   nonce?: number | string;
 }
@@ -6794,9 +6774,7 @@ export interface MessageCreateOptions extends BaseMessageCreateOptions {
 }
 
 export interface GuildForumThreadMessageCreateOptions
-  extends BaseMessageSendOptions,
-    MessageOptionsFlags,
-    MessageOptionsStickers {}
+  extends BaseMessageSendOptions, MessageOptionsFlags, MessageOptionsStickers {}
 
 export interface MessageEditOptions extends BaseMessageOptions {
   attachments?: readonly (Attachment | JSONEncodable<APIAttachment>)[];
@@ -7318,10 +7296,7 @@ export interface WebhookFetchMessageOptions {
 }
 
 export interface WebhookMessageCreateOptions
-  extends BaseMessageSendOptions,
-    MessageOptionsPoll,
-    MessageOptionsFlags,
-    MessageOptionsTTS {
+  extends BaseMessageSendOptions, MessageOptionsPoll, MessageOptionsFlags, MessageOptionsTTS {
   appliedTags?: readonly Snowflake[];
   avatarURL?: string;
   threadId?: Snowflake;
