@@ -1,4 +1,3 @@
-import { clearTimeout, setTimeout } from 'node:timers';
 import type { REST } from '@discordjs/rest';
 import { calculateShardId, GatewayRateLimitError } from '@discordjs/util';
 import { WebSocketShardEvents } from '@discordjs/ws';

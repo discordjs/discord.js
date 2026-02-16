@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* eslint-disable n/shebang */
+
 import { readFile } from 'node:fs/promises';
 import process from 'node:process';
 import { createCommand } from 'commander';
@@ -20,11 +20,8 @@ void generateSplitDocumentation(
 	opts.all
 		? {}
 		: {
-				fetchPackageVersions: async (_) => {
-					return ['main'];
-				},
-				fetchPackageVersionDocs: async (_, __) => {
-					return JSON.parse(await readFile(`${process.cwd()}/docs/docs.api.json`, 'utf8'));
-				},
+				fetchPackageVersions: async (_) => ['main'],
+				fetchPackageVersionDocs: async (_, __) =>
+					JSON.parse(await readFile(`${process.cwd()}/docs/docs.api.json`, 'utf8')),
 			},
 ).then(() => console.log('Generated split documentation.'));

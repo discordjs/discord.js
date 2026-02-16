@@ -16,7 +16,7 @@ import { resolveKind } from '@/util/resolveNodeKind';
 
 const client = new MeiliSearch({
 	host: 'https://search.discordjs.dev',
-	apiKey: 'b51923c6abb574b1e97be9a03dc6414b6c69fb0c5696d0ef01a82b0f77d223db',
+	apiKey: 'f3482b8e976a8b1092394aafbfb91f391242f40b0a6f45a008a5a72b354fb07e',
 });
 
 export function CmdK({ dependencies }: { readonly dependencies: string[] }) {

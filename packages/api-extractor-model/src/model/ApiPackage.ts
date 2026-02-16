@@ -28,9 +28,7 @@ import { DeserializerContext, ApiJsonSchemaVersion } from './DeserializerContext
  * @public
  */
 export interface IApiPackageOptions
-	extends IApiItemContainerMixinOptions,
-		IApiNameMixinOptions,
-		IApiDocumentedItemOptions {
+	extends IApiItemContainerMixinOptions, IApiNameMixinOptions, IApiDocumentedItemOptions {
 	dependencies?: Record<string, string> | undefined;
 	projectFolderUrl?: string | undefined;
 	tsdocConfiguration: TSDocConfiguration;

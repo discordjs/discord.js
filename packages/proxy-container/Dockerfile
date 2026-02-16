@@ -1,4 +1,4 @@
-FROM node:22-alpine AS base
+FROM node:24-alpine AS base
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -12,14 +12,14 @@ RUN corepack install
 
 FROM base AS builder
 
-RUN pnpm install --frozen-lockfile --ignore-scripts
-RUN pnpm exec turbo run build --filter='@discordjs/proxy-container...'
+RUN pnpm --filter='@discordjs/proxy-container...' install --frozen-lockfile --ignore-scripts
+RUN pnpm exec turbo run build --filter='@discordjs/proxy-container...' --output-logs=full
 
 FROM builder AS pruned
 
 RUN pnpm --filter='@discordjs/proxy-container' --prod deploy --legacy pruned
 
-FROM node:22-alpine AS proxy
+FROM node:24-alpine AS proxy
 
 WORKDIR /usr/proxy-container
 

@@ -414,8 +414,8 @@ class Message extends Base {
        * @property {Snowflake} id The interaction's id
        * @property {InteractionType} type The type of the interaction
        * @property {User} user The user that invoked the interaction
-       * @property {APIAuthorizingIntegrationOwnersMap} authorizingIntegrationOwners
-       * Ids for installation context(s) related to an interaction
+       * @property {AuthorizingIntegrationOwners} authorizingIntegrationOwners
+       * Mapping of integration types that the application was authorized for the related user or guild ids
        * @property {?Snowflake} originalResponseMessageId
        * Id of the original response message. Present only on follow-up messages
        * @property {?Snowflake} interactedMessageId
@@ -725,8 +725,8 @@ class Message extends Base {
   get editable() {
     const precheck = Boolean(
       this.author.id === this.client.user.id &&
-        (!this.guild || this.channel?.viewable) &&
-        this.reference?.type !== MessageReferenceType.Forward,
+      (!this.guild || this.channel?.viewable) &&
+      this.reference?.type !== MessageReferenceType.Forward,
     );
 
     // Regardless of permissions thread messages cannot be edited if
@@ -837,19 +837,19 @@ class Message extends Base {
     const { channel } = this;
     return Boolean(
       channel?.type === ChannelType.GuildAnnouncement &&
-        !this.flags.has(MessageFlags.Crossposted) &&
-        this.reference?.type !== MessageReferenceType.Forward &&
-        this.type === MessageType.Default &&
-        !this.poll &&
-        channel.viewable &&
-        channel.permissionsFor(this.client.user)?.has(bitfield, false),
+      !this.flags.has(MessageFlags.Crossposted) &&
+      this.reference?.type !== MessageReferenceType.Forward &&
+      this.type === MessageType.Default &&
+      !this.poll &&
+      channel.viewable &&
+      channel.permissionsFor(this.client.user)?.has(bitfield, false),
     );
   }
 
   /**
    * Edits the content of the message.
    *
-   * @param {string|MessagePayload|MessageEditOptions} options The options to provide
+   * @param {string|MessageEditOptions|MessagePayload|FileBodyEncodable<RESTPatchAPIChannelMessageJSONBody>|JSONEncodable<RESTPatchAPIChannelMessageJSONBody>} options The options to provide
    * @returns {Promise<Message>}
    * @example
    * // Update the content of a message
@@ -1109,7 +1109,7 @@ class Message extends Base {
    * method allows you to see if there are differences in content, embeds, attachments, nonce and tts properties.
    *
    * @param {Message} message The message to compare it to
-   * @param {APIMessage} rawData Raw data passed through the WebSocket about this message
+   * @param {APIMessage} [rawData] Raw data passed through the WebSocket about this message
    * @returns {boolean}
    */
   equals(message, rawData) {

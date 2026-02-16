@@ -62,6 +62,13 @@ try installing another.
 - `@noble/ciphers`: ^1.0.0
 - `libsodium-wrappers`: ^0.7.9
 
+**DAVE Protocol Libraries (e2ee)**
+
+> [!NOTE]
+> At this time, `@snazzah/davey` is the only supported DAVE protocol library in this package, and comes pre-installed. In the future, we may support other libraries once they are created.
+
+- `@snazzah/davey`: ^0.1.6
+
 **Opus Libraries (npm install):**
 
 - `@discordjs/opus`: ^0.4.0

@@ -38,13 +38,12 @@ import { MessageReferenceBuilder } from './MessageReference.js';
 import { EmbedBuilder } from './embed/Embed.js';
 import { PollBuilder } from './poll/Poll.js';
 
-export interface MessageBuilderData
-	extends Partial<
-		Omit<
-			RESTPostAPIChannelMessageJSONBody,
-			'allowed_mentions' | 'attachments' | 'components' | 'embeds' | 'message_reference' | 'poll'
-		>
-	> {
+export interface MessageBuilderData extends Partial<
+	Omit<
+		RESTPostAPIChannelMessageJSONBody,
+		'allowed_mentions' | 'attachments' | 'components' | 'embeds' | 'message_reference' | 'poll'
+	>
+> {
 	allowed_mentions?: AllowedMentionsBuilder;
 	attachments: AttachmentBuilder[];
 	components: MessageTopLevelComponentBuilder[];
@@ -240,7 +239,7 @@ export class MessageBuilder
 		allowedMentions:
 			| AllowedMentionsBuilder
 			| APIAllowedMentions
-			| ((builder: AllowedMentionsBuilder) => AllowedMentionsBuilder),
+			| ((builder: AllowedMentionsBuilder) => AllowedMentionsBuilder) = new AllowedMentionsBuilder(),
 	): this {
 		this.data.allowed_mentions = resolveBuilder(allowedMentions, AllowedMentionsBuilder);
 		return this;
