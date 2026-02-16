@@ -1,3 +1,4 @@
+import type { RESTAPIAttachment } from 'discord-api-types/v10';
 import type { RawFile } from './RawFile.js';
 
 /**
@@ -58,4 +59,25 @@ export interface FileBodyEncodable<BodyValue> {
  */
 export function isFileBodyEncodable(maybeEncodable: unknown): maybeEncodable is FileBodyEncodable<unknown> {
 	return maybeEncodable !== null && typeof maybeEncodable === 'object' && 'toFileBody' in maybeEncodable;
+}
+
+/**
+ * Represents an object capable of representing itself as a raw file attachment.
+ * Objects implementing this interface can return binary file data to be sent as part of
+ * mutipart/form-data requests.
+ */
+export interface RawFileEncodable extends JSONEncodable<RESTAPIAttachment> {
+	/**
+	 * Returns the raw file of an attachment.
+	 */
+	getRawFile(): Partial<RawFile> | undefined;
+}
+
+/**
+ * Indicates if an object is raw file encodable or not.
+ *
+ * @param maybeEncodable - The object to check against
+ */
+export function isRawFileEncodable(maybeEncodable: unknown): maybeEncodable is RawFileEncodable {
+	return isJSONEncodable(maybeEncodable) && 'getRawFile' in maybeEncodable;
 }
