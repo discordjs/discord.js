@@ -5414,14 +5414,7 @@ export interface BaseCategoryCreateChannelOptions {
   reason?: string;
   rtcRegion?: string;
   topic?: string;
-  type?: Exclude<
-    ChannelType,
-    | ChannelType.AnnouncementThread
-    | ChannelType.DM
-    | ChannelType.GroupDM
-    | ChannelType.PrivateThread
-    | ChannelType.PublicThread
-  >;
+  type?: GuildChannelTypes;
   userLimit?: number;
   videoQualityMode?: VideoQualityMode;
 }
