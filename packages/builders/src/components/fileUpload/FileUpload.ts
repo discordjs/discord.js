@@ -72,7 +72,7 @@ export class FileUploadBuilder extends ComponentBuilder<APIFileUploadComponent> 
 	/**
 	 * Sets the maximum number of file uploads required.
 	 *
-	 * @param maxValues - The maximum values that must be uploaded
+	 * @param maxValues - The maximum values that can be uploaded
 	 */
 	public setMaxValues(maxValues: number) {
 		this.data.max_values = maxValues;

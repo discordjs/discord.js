@@ -1,4 +1,3 @@
-import type { URL } from 'node:url';
 import type { Snowflake } from 'discord-api-types/globals';
 
 /**
@@ -687,7 +686,6 @@ export function email<Email extends string>(
  */
 export function email<Email extends string>(email: Email, headers?: Record<string, string | readonly string[]>) {
 	if (headers) {
-		// eslint-disable-next-line n/prefer-global/url-search-params
 		const searchParams = new URLSearchParams(
 			Object.fromEntries(Object.entries(headers).map(([key, value]) => [key.toLowerCase(), value])),
 		);
@@ -725,11 +723,11 @@ export const TimestampStyles = {
 	ShortTime: 't',
 
 	/**
-	 * Long time format, consisting of hours, minutes, and seconds.
+	 * Medium time format, consisting of hours, minutes, and seconds.
 	 *
 	 * @example `16:20:30`
 	 */
-	LongTime: 'T',
+	MediumTime: 'T',
 
 	/**
 	 * Short date format, consisting of day, month, and year.
@@ -741,23 +739,37 @@ export const TimestampStyles = {
 	/**
 	 * Long date format, consisting of day, month, and year.
 	 *
-	 * @example `20 April 2021`
+	 * @example `April 20, 2021`
 	 */
 	LongDate: 'D',
 
 	/**
-	 * Short date-time format, consisting of short date and short time formats.
+	 * Long date-short time format, consisting of long date and short time.
 	 *
-	 * @example `20 April 2021 16:20`
+	 * @example `April 20, 2021 at 16:20`
 	 */
-	ShortDateTime: 'f',
+	LongDateShortTime: 'f',
 
 	/**
-	 * Long date-time format, consisting of long date and short time formats.
+	 * Full date-short time format, consisting of full date and short time.
 	 *
-	 * @example `Tuesday, 20 April 2021 16:20`
+	 * @example `Tuesday, April 20, 2021 at 16:20`
 	 */
-	LongDateTime: 'F',
+	FullDateShortTime: 'F',
+
+	/**
+	 * Short date, short time format, consisting of short date and short time.
+	 *
+	 * @example `20/04/2021, 16:20`
+	 */
+	ShortDateShortTime: 's',
+
+	/**
+	 * Short date, medium time format, consisting of short date and medium time.
+	 *
+	 * @example `20/04/2021, 16:20:30`
+	 */
+	ShortDateMediumTime: 'S',
 
 	/**
 	 * Relative time format, consisting of a relative duration format.

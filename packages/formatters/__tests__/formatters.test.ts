@@ -1,5 +1,4 @@
 /* eslint-disable no-template-curly-in-string */
-import { URL } from 'node:url';
 import { describe, test, expect, vitest } from 'vitest';
 import {
 	applicationDirectory,
@@ -331,8 +330,18 @@ describe('Message formatters', () => {
 			expect<'<t:1867424897:d>'>(time(1_867_424_897, 'd')).toEqual('<t:1867424897:d>');
 		});
 
-		test('GIVEN a date and a format from enum THEN returns "<t:${time}:${style}>"', () => {
-			expect<'<t:1867424897:R>'>(time(1_867_424_897, TimestampStyles.RelativeTime)).toEqual('<t:1867424897:R>');
+		test.each([
+			[TimestampStyles.ShortTime, 't'],
+			[TimestampStyles.MediumTime, 'T'],
+			[TimestampStyles.ShortDate, 'd'],
+			[TimestampStyles.LongDate, 'D'],
+			[TimestampStyles.LongDateShortTime, 'f'],
+			[TimestampStyles.FullDateShortTime, 'F'],
+			[TimestampStyles.ShortDateShortTime, 's'],
+			[TimestampStyles.ShortDateMediumTime, 'S'],
+			[TimestampStyles.RelativeTime, 'R'],
+		])('GIVEN a date and style from enum THEN returns "<t:${time}:${style}>"', (style, expectedStyle) => {
+			expect<`<t:1867424897:${typeof style}>`>(time(1_867_424_897, style)).toEqual(`<t:1867424897:${expectedStyle}>`);
 		});
 	});
 

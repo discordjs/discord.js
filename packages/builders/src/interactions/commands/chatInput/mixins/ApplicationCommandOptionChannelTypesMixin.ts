@@ -19,8 +19,10 @@ export const ApplicationCommandOptionAllowedChannelTypes = [
  */
 export type ApplicationCommandOptionAllowedChannelType = (typeof ApplicationCommandOptionAllowedChannelTypes)[number];
 
-export interface ApplicationCommandOptionChannelTypesData
-	extends Pick<APIApplicationCommandChannelOption, 'channel_types'> {}
+export interface ApplicationCommandOptionChannelTypesData extends Pick<
+	APIApplicationCommandChannelOption,
+	'channel_types'
+> {}
 
 /**
  * This mixin holds channel type symbols used for options.
