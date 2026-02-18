@@ -14,6 +14,8 @@ export const kCurrentPeriodStartTimestamp = Symbol.for('djs.structures.currentPe
 export const kCurrentPeriodEndTimestamp = Symbol.for('djs.structures.currentPeriodEndTimestamp');
 export const kCanceledTimestamp = Symbol.for('djs.structures.canceledTimestamp');
 
+export const kRequestToSpeakTimestamp = Symbol.for('djs.structures.requestToSpeakTimestamp');
+
 export const kAllow = Symbol.for('djs.structures.allow');
 export const kDeny = Symbol.for('djs.structures.deny');
 
