@@ -14,8 +14,11 @@ export class Client {
 
 	#token: string;
 
-	public CacheConstructor<Value extends Structure<{ id: Snowflake }>>(structureCreator: StructureCreator<Value>) {
-		return new this.cacheConstructor(structureCreator) as StructureCache<Value>;
+	public CacheConstructor<Value extends Structure<{ id: Snowflake }>>(
+		structureCreator: StructureCreator<Value>,
+		name: string,
+	) {
+		return new this.cacheConstructor(structureCreator, name) as StructureCache<Value>;
 	}
 
 	protected cacheConstructor: CacheConstructor;

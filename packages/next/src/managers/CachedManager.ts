@@ -14,9 +14,9 @@ export abstract class CachedManager<
 
 	protected abstract createStructure(data: Partial<RawAPIType<Value>>, ...extras: unknown[]): Value;
 
-	public constructor(client: Client) {
+	public constructor(client: Client, name: string) {
 		this.client = client;
-		this.cache = client.CacheConstructor<Value>(this.createStructure.bind(this));
+		this.cache = client.CacheConstructor<Value>(this.createStructure.bind(this), name);
 	}
 
 	protected async _add(data: Raw, cache = true, { id, extras = [] }: { extras?: unknown[]; id?: Snowflake } = {}) {

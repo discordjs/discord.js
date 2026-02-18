@@ -32,7 +32,7 @@ export type Channel =
 
 export class ChannelManager extends CachedManager<Channel> {
 	public constructor(data: APIChannel[], client: Client) {
-		super(client);
+		super(client, 'channel');
 
 		for (const channel of data) {
 			this.cache.set(channel.id, this.createStructure(channel));
