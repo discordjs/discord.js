@@ -186,7 +186,6 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		const { version, encoding, compression, useIdentifyCompression } = this.strategy.options;
 		this.identifyCompressionEnabled = useIdentifyCompression;
 
-		// eslint-disable-next-line id-length
 		const params = new URLSearchParams({ v: version, encoding });
 		if (compression !== null) {
 			if (useIdentifyCompression) {
