@@ -74,7 +74,7 @@
     "@discordjs/ws": "workspace:^",
     "@sapphire/snowflake": "3.5.5",
     "@vladfrangu/async_event_emitter": "^2.4.7",
-    "discord-api-types": "^0.38.39",
+    "discord-api-types": "^0.38.40",
     "fast-deep-equal": "3.1.3",
     "lodash.snakecase": "4.1.1",
     "magic-bytes.js": "^1.13.0",
