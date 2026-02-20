@@ -188,7 +188,6 @@ type DocgenInterfaceJson = DocgenClassJson;
 type DocgenContainerJson =
 	| DocgenClassJson
 	| DocgenConstructorJson
-	// eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
 	| DocgenInterfaceJson
 	| DocgenJson
 	| DocgenMethodJson
@@ -500,7 +499,6 @@ export class ApiModelGenerator {
 			});
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
 		for (const method of (context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | undefined)?.methods ??
 			[]) {
 			switch (context.parentApiItem.kind) {
@@ -519,7 +517,6 @@ export class ApiModelGenerator {
 			}
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
 		for (const property of (context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | undefined)?.props ??
 			[]) {
 			switch (context.parentApiItem.kind) {
@@ -597,7 +594,6 @@ export class ApiModelGenerator {
 			const constructorDeclaration: ts.ConstructorDeclaration = astDeclaration.declaration as ts.ConstructorDeclaration;
 
 			const nodesToCapture: IExcerptBuilderNodeToCapture[] = [];
-			// eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
 			const parent = context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | undefined;
 
 			const parameters: IApiParameterOptions[] = this._captureParameters(
@@ -753,7 +749,6 @@ export class ApiModelGenerator {
 				astDeclaration.declaration as ts.ConstructSignatureDeclaration;
 
 			const nodesToCapture: IExcerptBuilderNodeToCapture[] = [];
-			// eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
 			const parent = context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | undefined;
 
 			const returnTypeTokenRange: IExcerptTokenRange = ExcerptBuilder.createEmptyTokenRange();
@@ -1074,7 +1069,6 @@ export class ApiModelGenerator {
 
 	private _processApiMethod(astDeclaration: AstDeclaration | null, context: IProcessAstEntityContext): void {
 		const { entryPoint, name, parentApiItem } = context;
-		// eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
 		const parent = context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | undefined;
 		const jsDoc = parent?.methods?.find((method) => method.name === name);
 		const isStatic: boolean = astDeclaration
@@ -1180,7 +1174,6 @@ export class ApiModelGenerator {
 		let apiMethodSignature: ApiMethodSignature | undefined = parentApiItem.tryGetMemberByKey(
 			containerKey,
 		) as ApiMethodSignature;
-		// eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
 		const parent = context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | undefined;
 		const jsDoc = parent?.methods?.find((method) => method.name === name);
 
@@ -1285,7 +1278,6 @@ export class ApiModelGenerator {
 
 	private _processApiProperty(astDeclaration: AstDeclaration | null, context: IProcessAstEntityContext): void {
 		const { entryPoint, name, parentApiItem } = context;
-		// eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
 		const parent = context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | DocgenTypedefJson | undefined;
 		const jsDoc = parent?.props?.find((prop) => prop.name === name);
 		const isStatic: boolean = astDeclaration
@@ -1300,7 +1292,6 @@ export class ApiModelGenerator {
 		if (
 			apiProperty === undefined &&
 			(astDeclaration ||
-				// eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
 				!this._isInherited(parent as DocgenClassJson | DocgenInterfaceJson, jsDoc!, parentApiItem.kind))
 		) {
 			if (astDeclaration) {
@@ -1570,7 +1561,6 @@ export class ApiModelGenerator {
 		const containerKey: string = ApiProperty.getContainerKey(name, false);
 
 		let apiEvent: ApiEvent | undefined = parentApiItem.tryGetMemberByKey(containerKey) as ApiEvent;
-		// eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
 		const parent = context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | undefined;
 		const jsDoc = parent?.events?.find((prop) => prop.name === name);
 
@@ -1738,7 +1728,6 @@ export class ApiModelGenerator {
 	}
 
 	private _isInherited(
-		// eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
 		container: DocgenClassJson | DocgenInterfaceJson,
 		jsDoc: DocgenParamJson | DocgenPropertyJson,
 		containerKind: ApiItemKind,

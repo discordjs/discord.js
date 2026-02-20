@@ -52,9 +52,8 @@ export interface IAstSymbolOptions {
  * ```
  */
 export class AstSymbol extends AstEntity {
-	// eslint-disable-next-line jsdoc/valid-types
 	/**
-	 * {@inheritdoc}
+	 * {@inheritdoc AstEntity.localName}
 	 */
 	public readonly localName: string; // abstract
 

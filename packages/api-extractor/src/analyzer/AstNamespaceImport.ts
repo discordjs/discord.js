@@ -80,9 +80,8 @@ export class AstNamespaceImport extends AstSyntheticEntity {
 		this.symbol = options.symbol;
 	}
 
-	// eslint-disable-next-line jsdoc/valid-types
 	/**
-	 * {@inheritdoc}
+	 * {@inheritdoc AstEntity.localName}
 	 */
 	public get localName(): string {
 		// abstract

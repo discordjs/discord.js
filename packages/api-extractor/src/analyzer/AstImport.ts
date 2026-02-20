@@ -131,9 +131,8 @@ export class AstImport extends AstSyntheticEntity {
 		this.key = AstImport.getKey(options);
 	}
 
-	// eslint-disable-next-line jsdoc/valid-types
 	/**
-	 * {@inheritdoc}
+	 * {@inheritdoc AstEntity.localName}
 	 */
 	public get localName(): string {
 		// abstract

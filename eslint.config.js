@@ -127,6 +127,7 @@ export default defineConfig(
 		rules: {
 			'consistent-this': 0,
 			'unicorn/no-this-assignment': 0,
+			'@typescript-eslint/no-duplicate-type-constituents': 0,
 			'@typescript-eslint/no-this-alias': 0,
 		},
 	},
