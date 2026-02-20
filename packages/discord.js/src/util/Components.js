@@ -53,7 +53,7 @@ const getUserSelectMenuComponent = lazy(
 /**
  * @typedef {StringSelectMenuComponentData|TextInputComponentData|UserSelectMenuComponentData|
  * RoleSelectMenuComponentData|MentionableSelectMenuComponentData|ChannelSelectMenuComponentData|FileUploadComponentData|
- * RadioGroupActionComponentData|CheckboxGroupActionComponentData|CheckboxActionComponentData} ComponentInLabelData
+ * RadioGroupComponentData|CheckboxGroupComponentData|CheckboxComponentData} ComponentInLabelData
  */
 
 /**
