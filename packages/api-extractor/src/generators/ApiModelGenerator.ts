@@ -185,13 +185,7 @@ interface DocgenClassJson {
 	see?: string[];
 }
 type DocgenInterfaceJson = DocgenClassJson;
-type DocgenContainerJson =
-	| DocgenClassJson
-	| DocgenConstructorJson
-	| DocgenInterfaceJson
-	| DocgenJson
-	| DocgenMethodJson
-	| DocgenTypedefJson;
+type DocgenContainerJson = DocgenClassJson | DocgenConstructorJson | DocgenJson | DocgenMethodJson | DocgenTypedefJson;
 
 export interface DocgenJson {
 	classes: DocgenClassJson[];
@@ -499,8 +493,7 @@ export class ApiModelGenerator {
 			});
 		}
 
-		for (const method of (context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | undefined)?.methods ??
-			[]) {
+		for (const method of (context.parentDocgenJson as DocgenClassJson | undefined)?.methods ?? []) {
 			switch (context.parentApiItem.kind) {
 				case ApiItemKind.Class:
 					this._processApiMethod(null, { ...context, name: method.name });
@@ -517,8 +510,7 @@ export class ApiModelGenerator {
 			}
 		}
 
-		for (const property of (context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | undefined)?.props ??
-			[]) {
+		for (const property of (context.parentDocgenJson as DocgenClassJson | undefined)?.props ?? []) {
 			switch (context.parentApiItem.kind) {
 				case ApiItemKind.Class:
 					this._processApiProperty(null, { ...context, name: property.name });
@@ -594,7 +586,7 @@ export class ApiModelGenerator {
 			const constructorDeclaration: ts.ConstructorDeclaration = astDeclaration.declaration as ts.ConstructorDeclaration;
 
 			const nodesToCapture: IExcerptBuilderNodeToCapture[] = [];
-			const parent = context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | undefined;
+			const parent = context.parentDocgenJson as DocgenClassJson | undefined;
 
 			const parameters: IApiParameterOptions[] = this._captureParameters(
 				nodesToCapture,
@@ -749,7 +741,7 @@ export class ApiModelGenerator {
 				astDeclaration.declaration as ts.ConstructSignatureDeclaration;
 
 			const nodesToCapture: IExcerptBuilderNodeToCapture[] = [];
-			const parent = context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | undefined;
+			const parent = context.parentDocgenJson as DocgenClassJson | undefined;
 
 			const returnTypeTokenRange: IExcerptTokenRange = ExcerptBuilder.createEmptyTokenRange();
 			nodesToCapture.push({ node: constructSignature.type, tokenRange: returnTypeTokenRange });
@@ -1069,7 +1061,7 @@ export class ApiModelGenerator {
 
 	private _processApiMethod(astDeclaration: AstDeclaration | null, context: IProcessAstEntityContext): void {
 		const { entryPoint, name, parentApiItem } = context;
-		const parent = context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | undefined;
+		const parent = context.parentDocgenJson as DocgenClassJson | undefined;
 		const jsDoc = parent?.methods?.find((method) => method.name === name);
 		const isStatic: boolean = astDeclaration
 			? (astDeclaration.modifierFlags & ts.ModifierFlags.Static) !== 0
@@ -1174,7 +1166,7 @@ export class ApiModelGenerator {
 		let apiMethodSignature: ApiMethodSignature | undefined = parentApiItem.tryGetMemberByKey(
 			containerKey,
 		) as ApiMethodSignature;
-		const parent = context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | undefined;
+		const parent = context.parentDocgenJson as DocgenClassJson | undefined;
 		const jsDoc = parent?.methods?.find((method) => method.name === name);
 
 		if (apiMethodSignature === undefined) {
@@ -1278,7 +1270,7 @@ export class ApiModelGenerator {
 
 	private _processApiProperty(astDeclaration: AstDeclaration | null, context: IProcessAstEntityContext): void {
 		const { entryPoint, name, parentApiItem } = context;
-		const parent = context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | DocgenTypedefJson | undefined;
+		const parent = context.parentDocgenJson as DocgenClassJson | DocgenTypedefJson | undefined;
 		const jsDoc = parent?.props?.find((prop) => prop.name === name);
 		const isStatic: boolean = astDeclaration
 			? (astDeclaration.modifierFlags & ts.ModifierFlags.Static) !== 0
@@ -1291,8 +1283,7 @@ export class ApiModelGenerator {
 
 		if (
 			apiProperty === undefined &&
-			(astDeclaration ||
-				!this._isInherited(parent as DocgenClassJson | DocgenInterfaceJson, jsDoc!, parentApiItem.kind))
+			(astDeclaration || !this._isInherited(parent as DocgenClassJson, jsDoc!, parentApiItem.kind))
 		) {
 			if (astDeclaration) {
 				const declaration: ts.Declaration = astDeclaration.declaration;
@@ -1561,7 +1552,7 @@ export class ApiModelGenerator {
 		const containerKey: string = ApiProperty.getContainerKey(name, false);
 
 		let apiEvent: ApiEvent | undefined = parentApiItem.tryGetMemberByKey(containerKey) as ApiEvent;
-		const parent = context.parentDocgenJson as DocgenClassJson | DocgenInterfaceJson | undefined;
+		const parent = context.parentDocgenJson as DocgenClassJson | undefined;
 		const jsDoc = parent?.events?.find((prop) => prop.name === name);
 
 		if (apiEvent === undefined && jsDoc) {
@@ -1707,7 +1698,7 @@ export class ApiModelGenerator {
 	private _captureParameters(
 		nodesToCapture: IExcerptBuilderNodeToCapture[],
 		parameterNodes: ts.NodeArray<ts.ParameterDeclaration>,
-		jsDoc?: DocgenParamJson[] | undefined,
+		jsDoc?: DocgenParamJson[],
 	): IApiParameterOptions[] {
 		const parameters: IApiParameterOptions[] = [];
 		for (const parameter of parameterNodes) {
@@ -1728,7 +1719,7 @@ export class ApiModelGenerator {
 	}
 
 	private _isInherited(
-		container: DocgenClassJson | DocgenInterfaceJson,
+		container: DocgenClassJson,
 		jsDoc: DocgenParamJson | DocgenPropertyJson,
 		containerKind: ApiItemKind,
 	): boolean {

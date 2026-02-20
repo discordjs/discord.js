@@ -79,7 +79,7 @@
     "lodash.snakecase": "4.1.1",
     "magic-bytes.js": "^1.13.0",
     "tslib": "^2.8.1",
-    "undici": "7.21.0"
+    "undici": "7.22.0"
   },
   "devDependencies": {
     "@discordjs/api-extractor": "workspace:^",
@@ -89,12 +89,12 @@
     "@types/node": "^22.19.11",
     "cross-env": "^10.1.0",
     "eslint": "^9.39.2",
-    "eslint-config-neon": "^0.2.9",
+    "eslint-config-neon": "^0.3.2",
     "eslint-formatter-compact": "^9.0.1",
     "eslint-formatter-pretty": "^7.0.0",
     "prettier": "^3.8.1",
     "tsd": "^0.33.0",
-    "turbo": "^2.8.7",
+    "turbo": "^2.8.10",
     "typescript": "~5.9.3"
   },
   "engines": {

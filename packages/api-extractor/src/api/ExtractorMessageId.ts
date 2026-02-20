@@ -96,6 +96,7 @@ export const enum ExtractorMessageId {
 	 */
 	Undocumented = 'ae-undocumented',
 
+	/* eslint-disable jsdoc/valid-types */
 	/**
 	 * "The `@inheritDoc` tag needs a TSDoc declaration reference; signature matching is not supported yet."
 	 *
@@ -104,6 +105,7 @@ export const enum ExtractorMessageId {
 	 * will find a corresponding member from a base class (or implemented interface).  Until then, the tag
 	 * always needs an explicit declaration reference such as `{@inhertDoc MyBaseClass.sameMethod}`.
 	 */
+	/* eslint-enable jsdoc/valid-types */
 	UnresolvedInheritDocBase = 'ae-unresolved-inheritdoc-base',
 
 	/**

@@ -214,7 +214,7 @@ function mapVarType(type: DocgenVarTypeJson, _package: string): IExcerptToken[] 
 function mapProp(
 	prop: DocgenPropertyJson,
 	_package: string,
-	parent: DocgenClassJson | DocgenInterfaceJson,
+	parent: DocgenClassJson,
 ): IApiNameMixinJson & IApiOptionalMixinJson & IApiPropertyItemJson & IApiReadonlyMixinJson & IApiReleaseTagMixinJson {
 	const mappedVarType = mapVarType(prop.type, _package);
 	return {
