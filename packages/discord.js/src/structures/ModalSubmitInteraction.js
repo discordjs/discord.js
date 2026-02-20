@@ -1,4 +1,3 @@
-
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
