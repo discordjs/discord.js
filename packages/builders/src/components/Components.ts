@@ -238,7 +238,7 @@ export function createComponentBuilder(
 		case ComponentType.FileUpload:
 			return new FileUploadBuilder(data);
 		default:
-			// This directive should be here: @ts-expect-error This case can still occur if we get a newer unsupported component type
+			// TODO: add back @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);
 	}
 }
