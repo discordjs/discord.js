@@ -75,7 +75,7 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	}
 
 	/**
-	 * Get the URL to the user avatar
+	 * Get the URL to the user's avatar
 	 *
 	 * @param format - the file format to use
 	 */
@@ -138,7 +138,7 @@ export class User<Omitted extends keyof APIUser | '' = ''> extends Structure<API
 	}
 
 	/**
-	 * Get the URL to the user banner
+	 * Get the URL to the user's banner
 	 *
 	 * @param format - the file format to use
 	 */
