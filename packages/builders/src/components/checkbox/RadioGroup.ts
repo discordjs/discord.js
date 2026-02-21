@@ -3,7 +3,7 @@ import { ComponentType } from 'discord-api-types/v10';
 import type { RestOrArray } from '../../util/normalizeArray';
 import { normalizeArray } from '../../util/normalizeArray';
 import { ComponentBuilder } from '../Component';
-import { radioGroupOptionPredicate, radioGroupOptionsLengthValidator, radioGroupPredicate } from './Assertions';
+import { radioGroupOptionPredicate, radioGroupPredicate } from './Assertions';
 import { RadioGroupOptionBuilder } from './RadioGroupOption';
 
 /**
@@ -65,7 +65,6 @@ export class RadioGroupBuilder extends ComponentBuilder<APIRadioGroupComponent> 
 	public addOptions(...options: RestOrArray<APIRadioGroupOption | RadioGroupOptionBuilder>) {
 		const normalizedOptions = normalizeArray(options);
 
-		radioGroupOptionsLengthValidator.parse(this.options.length + normalizedOptions.length);
 		this.options.push(
 			...normalizedOptions.map((normalizedOption) => {
 				// I do this because TS' duck typing causes issues,
@@ -123,7 +122,6 @@ export class RadioGroupBuilder extends ComponentBuilder<APIRadioGroupComponent> 
 			}),
 		);
 
-		radioGroupOptionsLengthValidator.parse(clone.length);
 		this.options.splice(0, this.options.length, ...clone);
 		return this;
 	}

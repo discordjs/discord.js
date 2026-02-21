@@ -3,11 +3,7 @@ import { ComponentType } from 'discord-api-types/v10';
 import type { RestOrArray } from '../../util/normalizeArray';
 import { normalizeArray } from '../../util/normalizeArray';
 import { ComponentBuilder } from '../Component';
-import {
-	checkboxGroupOptionPredicate,
-	checkboxGroupOptionsLengthValidator,
-	checkboxGroupPredicate,
-} from './Assertions';
+import { checkboxGroupOptionPredicate, checkboxGroupPredicate } from './Assertions';
 import { CheckboxGroupOptionBuilder } from './CheckboxGroupOption';
 
 /**
@@ -71,7 +67,6 @@ export class CheckboxGroupBuilder extends ComponentBuilder<APICheckboxGroupCompo
 	public addOptions(...options: RestOrArray<APICheckboxGroupOption | CheckboxGroupOptionBuilder>) {
 		const normalizedOptions = normalizeArray(options);
 
-		checkboxGroupOptionsLengthValidator.parse(this.options.length + normalizedOptions.length);
 		this.options.push(
 			...normalizedOptions.map((normalizedOption) => {
 				// I do this because TS' duck typing causes issues,
@@ -129,7 +124,6 @@ export class CheckboxGroupBuilder extends ComponentBuilder<APICheckboxGroupCompo
 			}),
 		);
 
-		checkboxGroupOptionsLengthValidator.parse(clone.length);
 		this.options.splice(0, this.options.length, ...clone);
 		return this;
 	}

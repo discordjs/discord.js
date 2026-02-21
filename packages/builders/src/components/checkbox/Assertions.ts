@@ -96,17 +96,3 @@ export const radioGroupPredicate = s
 		return Result.ok(data);
 	})
 	.setValidationEnabled(isValidationEnabled);
-
-export const checkboxGroupOptionsLengthValidator = s
-	.number()
-	.int()
-	.greaterThanOrEqual(1)
-	.lessThanOrEqual(10)
-	.setValidationEnabled(isValidationEnabled);
-
-export const radioGroupOptionsLengthValidator = s
-	.number()
-	.int()
-	.greaterThanOrEqual(2)
-	.lessThanOrEqual(10)
-	.setValidationEnabled(isValidationEnabled);
