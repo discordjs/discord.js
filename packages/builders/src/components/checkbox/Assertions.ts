@@ -83,7 +83,7 @@ export const radioGroupPredicate = s
 		// Ensure there is exactly one default option
 		const defaultCount = data.options.filter((option) => option.default === true).length;
 		if (defaultCount > 1) {
-			throw new RangeError('There must be exactly one default option in a radio group');
+			throw new RangeError('There can be at most one default option in a radio group');
 		}
 
 		// Ensure each option's value is unique
