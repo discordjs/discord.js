@@ -1,4 +1,3 @@
-/* eslint-disable tsdoc/syntax */
 import type { APIAuditLogOptions } from 'discord-api-types/v10';
 import { Structure } from '../Structure';
 import { kData } from '../utils/symbols';
@@ -35,7 +34,7 @@ export class AuditLogOptions<Omitted extends keyof APIAuditLogOptions | '' = ''>
 	}
 
 	/**
-	 * The channel in which the entities were targeted.
+	 * The id of the channel in which the entities were targeted.
 	 */
 	public get channelId() {
 		return this[kData].channel_id;
@@ -78,7 +77,8 @@ export class AuditLogOptions<Omitted extends keyof APIAuditLogOptions | '' = ''>
 
 	/**
 	 * Name of the role.
-	 * #### Only present if the {@link AuditLogOptions.type} is set to `0`
+	 *
+	 * @remarks Only present if the {@link AuditLogOptions.type} is set to `0`
 	 */
 	public get roleName() {
 		return this[kData].role_name;

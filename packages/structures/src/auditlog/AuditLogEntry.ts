@@ -66,9 +66,9 @@ export class AuditLogEntry<Omitted extends keyof APIAuditLogEntry | '' = ''> ext
 	}
 
 	/**
-	 * The time the entry was created at.
+	 * The date the entry was created at.
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}

@@ -6,8 +6,8 @@ import type { Partialize } from '../utils/types';
  * Represents an audit log on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @remarks Intentionally does not export `application_commands`, `audit_log_entries`, `auto_moderation_rules`, `guild_scheduled_events`, `integrations`, `threads`, `users`, and `webhooks`,
- * so that extending classes can resolve objects to `ApplicationCommand[]`, `AuditLogEntry[]`, `AutoModerationRule[]`, `GuildScheduledEvent[]`, `GuildIntegration[]`, `ThreadChannel[]`, `User[]`, and `Webhook[]`, respectively.
+ * @remarks Has substructures `ApplicationCommand`, `AuditLogEntry`, `AutoModerationRule`, `GuildScheduledEvent`, `GuildIntegration`, `ThreadChannel`, `User`, and `Webhook`,
+ * which need to be instantiated and stored by an extending class using it
  */
 export class AuditLog<Omitted extends keyof APIAuditLog | '' = ''> extends Structure<APIAuditLog, Omitted> {
 	/**
