@@ -1,7 +1,7 @@
 import type { GatewayActivityParty } from 'discord-api-types/v10';
 import { Structure } from '../../Structure.js';
 import { kData } from '../../utils/symbols.js';
-import { isFieldSet } from '../../utils/type-guards.js';
+import { isArrayFieldSet } from '../../utils/type-guards.js';
 import type { Partialize } from '../../utils/types.js';
 
 /**
@@ -38,17 +38,17 @@ export class ActivityParty<Omitted extends keyof GatewayActivityParty | '' = ''>
 	 * The current size of the party
 	 */
 	public get currentSize() {
-		const sizeArray = this[kData].size;
+		const array = this[kData].size as number[];
 
-		return sizeArray && isFieldSet(sizeArray, '0', 'number') ? (sizeArray[0] as number) : null;
+		return array ? (isArrayFieldSet(array, 0, 'number') ? array[0] : null) : null;
 	}
 
 	/**
 	 * The maximum size of the party
 	 */
 	public get maximumSize() {
-		const sizeArray = this[kData].size;
+		const array = this[kData].size as number[];
 
-		return sizeArray && isFieldSet(sizeArray, '1', 'number') ? (sizeArray[1] as number) : null;
+		return array ? (isArrayFieldSet(array, 1, 'number') ? array[1] : null) : null;
 	}
 }
