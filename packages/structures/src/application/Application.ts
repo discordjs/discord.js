@@ -271,9 +271,9 @@ export class Application<Omitted extends keyof APIApplication | '' = ''> extends
 	}
 
 	/**
-	 * The time the application was created at
+	 * The date the application was created on
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
