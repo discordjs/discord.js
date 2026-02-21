@@ -328,7 +328,7 @@ export class ApiReportGenerator {
 					replacedModifiers = 'export ' + replacedModifiers;
 				}
 
-				if (previousSpan && previousSpan.kind === ts.SyntaxKind.SyntaxList) {
+				if (previousSpan?.kind === ts.SyntaxKind.SyntaxList) {
 					// If there is a previous span of type SyntaxList, then apply it before any other modifiers
 					// (e.g. "abstract") that appear there.
 					previousSpan.modification.prefix = replacedModifiers + previousSpan.modification.prefix;
