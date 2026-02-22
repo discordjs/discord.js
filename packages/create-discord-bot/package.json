@@ -50,23 +50,23 @@
 	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
-		"commander": "^14.0.2",
+		"commander": "^14.0.3",
 		"prompts": "^2.4.2",
-		"validate-npm-package-name": "^7.0.0"
+		"validate-npm-package-name": "^7.0.2"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
 		"@favware/cliff-jumper": "^6.0.0",
-		"@types/node": "^22.19.2",
+		"@types/node": "^22.19.11",
 		"@types/prompts": "^2.4.9",
 		"@types/validate-npm-package-name": "^4.0.2",
 		"cross-env": "^10.1.0",
-		"eslint": "^9.39.1",
-		"eslint-config-neon": "^0.2.9",
+		"eslint": "^9.39.2",
+		"eslint-config-neon": "^0.3.2",
 		"eslint-formatter-compact": "^9.0.1",
 		"eslint-formatter-pretty": "^7.0.0",
-		"prettier": "^3.7.4",
-		"terser": "^5.44.1",
+		"prettier": "^3.8.1",
+		"terser": "^5.46.0",
 		"tsup": "^8.5.1",
 		"typescript": "~5.9.3"
 	},
