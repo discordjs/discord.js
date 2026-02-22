@@ -69,5 +69,4 @@ export class SlashCommandStringOption extends ApplicationCommandOptionBase {
 }
 
 export interface SlashCommandStringOption
-	extends ApplicationCommandOptionWithChoicesMixin<string>,
-		ApplicationCommandOptionWithAutocompleteMixin {}
+	extends ApplicationCommandOptionWithChoicesMixin<string>, ApplicationCommandOptionWithAutocompleteMixin {}

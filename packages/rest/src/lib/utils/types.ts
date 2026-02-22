@@ -229,8 +229,10 @@ export interface APIRequest {
 	route: string;
 }
 
-export interface ResponseLike
-	extends Pick<Response, 'arrayBuffer' | 'bodyUsed' | 'headers' | 'json' | 'ok' | 'status' | 'statusText' | 'text'> {
+export interface ResponseLike extends Pick<
+	Response,
+	'arrayBuffer' | 'bodyUsed' | 'headers' | 'json' | 'ok' | 'status' | 'statusText' | 'text'
+> {
 	body: Readable | ReadableStream | null;
 }
 
