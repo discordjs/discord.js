@@ -85,7 +85,7 @@
 		"prop-types": "^15.8.1",
 		"storybook": "^8.6.17",
 		"turbo": "^2.8.10",
-		"typescript": "~5.5.4",
+		"typescript": "~5.8.3",
 		"unocss": "^0.60.4",
 		"vite": "^5.2.12",
 		"vite-plugin-dts": "^3.9.1",
