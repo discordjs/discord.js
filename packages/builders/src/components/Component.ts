@@ -25,8 +25,7 @@ export type AnyAPIActionRowComponent =
  */
 export abstract class ComponentBuilder<
 	DataType extends Partial<APIBaseComponent<ComponentType>> = APIBaseComponent<ComponentType>,
-> implements JSONEncodable<AnyAPIActionRowComponent>
-{
+> implements JSONEncodable<AnyAPIActionRowComponent> {
 	/**
 	 * The API data associated with this component.
 	 */

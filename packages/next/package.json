@@ -72,23 +72,23 @@
 		"@discordjs/rest": "workspace:^",
 		"@discordjs/util": "workspace:^",
 		"@discordjs/ws": "workspace:^",
-		"discord-api-types": "^0.38.33"
+		"discord-api-types": "^0.38.40"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^4.1.0",
-		"@types/node": "^18.19.45",
+		"@types/node": "^18.19.130",
 		"@vitest/coverage-v8": "^2.0.5",
 		"cross-env": "^7.0.3",
 		"esbuild-plugin-version-injector": "^1.2.1",
-		"eslint": "^8.57.0",
+		"eslint": "^8.57.1",
 		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.3.3",
-		"tsup": "^8.2.4",
-		"turbo": "^2.0.14",
-		"typescript": "~5.5.4",
+		"prettier": "^3.8.1",
+		"tsup": "^8.5.1",
+		"turbo": "^2.8.10",
+		"typescript": "~5.8.3",
 		"vitest": "^2.0.5"
 	},
 	"engines": {

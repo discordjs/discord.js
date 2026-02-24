@@ -62,6 +62,7 @@ export class SlashCommandNumberOption
 }
 
 export interface SlashCommandNumberOption
-	extends ApplicationCommandNumericOptionMinMaxValueMixin,
+	extends
+		ApplicationCommandNumericOptionMinMaxValueMixin,
 		ApplicationCommandOptionWithChoicesMixin<number>,
 		ApplicationCommandOptionWithAutocompleteMixin {}

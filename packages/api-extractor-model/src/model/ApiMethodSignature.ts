@@ -18,7 +18,8 @@ import {
  * @public
  */
 export interface IApiMethodSignatureOptions
-	extends IApiNameMixinOptions,
+	extends
+		IApiNameMixinOptions,
 		IApiTypeParameterListMixinOptions,
 		IApiParameterListMixinOptions,
 		IApiReleaseTagMixinOptions,

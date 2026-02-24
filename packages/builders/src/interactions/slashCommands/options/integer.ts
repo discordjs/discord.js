@@ -62,6 +62,7 @@ export class SlashCommandIntegerOption
 }
 
 export interface SlashCommandIntegerOption
-	extends ApplicationCommandNumericOptionMinMaxValueMixin,
+	extends
+		ApplicationCommandNumericOptionMinMaxValueMixin,
 		ApplicationCommandOptionWithChoicesMixin<number>,
 		ApplicationCommandOptionWithAutocompleteMixin {}
