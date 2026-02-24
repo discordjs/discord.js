@@ -77,7 +77,6 @@ export class LabelBuilder extends ComponentBuilder<LabelBuilderData> {
 
 		this.data = {
 			...rest,
-			// @ts-expect-error https://github.com/discordjs/discord.js/pull/11410
 			component: component ? createComponentBuilder(component) : undefined,
 			type: ComponentType.Label,
 		};

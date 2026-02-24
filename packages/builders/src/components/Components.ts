@@ -197,7 +197,7 @@ export function createComponentBuilder(
 		case ComponentType.RadioGroup:
 			return new RadioGroupBuilder(data);
 		default:
-			// https://github.com/discordjs/discord.js/pull/11410
+			// @ts-expect-error This case can still occur if we get a newer unsupported component type
 			throw new Error(`Cannot properly serialize component type: ${data.type}`);
 	}
 }
