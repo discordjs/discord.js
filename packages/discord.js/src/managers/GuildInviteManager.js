@@ -266,7 +266,7 @@ class GuildInviteManager extends CachedManager {
    * Get target users for an invite
    *
    * @param {InviteResolvable} invite The invite to get the target users
-   * @returns {Buffer} The csv file containing target users
+   * @returns {Promise<Buffer>} The csv file containing target users
    */
   async fetchTargetUsers(invite) {
     const code = resolveInviteCode(invite);
