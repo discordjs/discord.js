@@ -80,7 +80,8 @@ export class SlashCommandBuilder {
 }
 
 export interface SlashCommandBuilder
-	extends SharedNameAndDescription,
+	extends
+		SharedNameAndDescription,
 		SharedSlashCommandOptions<SlashCommandOptionsOnlyBuilder>,
 		SharedSlashCommandSubcommands<SlashCommandSubcommandsOnlyBuilder>,
 		SharedSlashCommand {}
@@ -89,7 +90,8 @@ export interface SlashCommandBuilder
  * An interface specifically for slash command subcommands.
  */
 export interface SlashCommandSubcommandsOnlyBuilder
-	extends SharedNameAndDescription,
+	extends
+		SharedNameAndDescription,
 		SharedSlashCommandSubcommands<SlashCommandSubcommandsOnlyBuilder>,
 		SharedSlashCommand {}
 
@@ -97,9 +99,7 @@ export interface SlashCommandSubcommandsOnlyBuilder
  * An interface specifically for slash command options.
  */
 export interface SlashCommandOptionsOnlyBuilder
-	extends SharedNameAndDescription,
-		SharedSlashCommandOptions<SlashCommandOptionsOnlyBuilder>,
-		SharedSlashCommand {}
+	extends SharedNameAndDescription, SharedSlashCommandOptions<SlashCommandOptionsOnlyBuilder>, SharedSlashCommand {}
 
 /**
  * An interface that ensures the `toJSON()` call will return something

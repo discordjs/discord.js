@@ -256,7 +256,7 @@ class Invite extends Base {
     if (!guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
     return Boolean(
       this.channel?.permissionsFor(this.client.user).has(PermissionFlagsBits.ManageChannels, false) ||
-        guild.members.me.permissions.has(PermissionFlagsBits.ManageGuild),
+      guild.members.me.permissions.has(PermissionFlagsBits.ManageGuild),
     );
   }
 

@@ -697,7 +697,6 @@ export function email<Email extends string>(
  */
 export function email<Email extends string>(email: Email, headers?: Record<string, string | readonly string[]>) {
 	if (headers) {
-		// eslint-disable-next-line n/prefer-global/url-search-params
 		const searchParams = new URLSearchParams(
 			Object.fromEntries(Object.entries(headers).map(([key, value]) => [key.toLowerCase(), value])),
 		);

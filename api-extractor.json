@@ -107,7 +107,7 @@
 				"allowArbitraryExtensions": false,
 				"allowImportingTsExtensions": false,
 				"module": "ESNext",
-				"moduleResolution": "nodenext",
+				"moduleResolution": "Bundler",
 				"resolveJsonModule": true,
 				"resolvePackageJsonExports": false,
 				"resolvePackageJsonImports": false,
