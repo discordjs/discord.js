@@ -32,9 +32,9 @@ export class CheckboxBuilder extends ComponentBuilder<APICheckboxComponent> {
 	}
 
 	/**
-	 * Sets the custom ID of this checkbox.
+	 * Sets the custom id of this checkbox.
 	 *
-	 * @param customId - The custom ID to use
+	 * @param customId - The custom id to use
 	 */
 	public setCustomId(customId: string) {
 		this.data.custom_id = customId;

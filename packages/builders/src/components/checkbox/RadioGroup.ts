@@ -48,9 +48,9 @@ export class RadioGroupBuilder extends ComponentBuilder<APIRadioGroupComponent> 
 	}
 
 	/**
-	 * Sets the custom ID of this radio group.
+	 * Sets the custom id of this radio group.
 	 *
-	 * @param customId - The custom ID to use
+	 * @param customId - The custom id to use
 	 */
 	public setCustomId(customId: string) {
 		this.data.custom_id = customId;
@@ -93,7 +93,7 @@ export class RadioGroupBuilder extends ComponentBuilder<APIRadioGroupComponent> 
 	 *
 	 * @remarks
 	 * This method behaves similarly
-	 * to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice | Array.prototype.splice()}.
+	 * to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
 	 * It's useful for modifying and adjusting the order of existing options.
 	 * @param index - The index to start at
 	 * @param deleteCount - The number of options to remove
@@ -114,7 +114,7 @@ export class RadioGroupBuilder extends ComponentBuilder<APIRadioGroupComponent> 
 			...normalizedOptions.map((normalizedOption) => {
 				// I do this because TS' duck typing causes issues,
 				// if I put in a CheckboxGroupOption, TS lets it pass but
-				// it fails to convert to a checkbox group option at runtime
+				// it fails to convert to a radio group option at runtime
 				const json = 'toJSON' in normalizedOption ? normalizedOption.toJSON() : normalizedOption;
 				const option = new RadioGroupOptionBuilder(json);
 				radioGroupOptionPredicate.parse(option.toJSON());

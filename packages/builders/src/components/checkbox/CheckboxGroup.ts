@@ -50,9 +50,9 @@ export class CheckboxGroupBuilder extends ComponentBuilder<APICheckboxGroupCompo
 	}
 
 	/**
-	 * Sets the custom ID of this checkbox group.
+	 * Sets the custom id of this checkbox group.
 	 *
-	 * @param customId - The custom ID to use
+	 * @param customId - The custom id to use
 	 */
 	public setCustomId(customId: string) {
 		this.data.custom_id = customId;
@@ -95,7 +95,7 @@ export class CheckboxGroupBuilder extends ComponentBuilder<APICheckboxGroupCompo
 	 *
 	 * @remarks
 	 * This method behaves similarly
-	 * to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice | Array.prototype.splice()}.
+	 * to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
 	 * It's useful for modifying and adjusting the order of existing options.
 	 * @param index - The index to start at
 	 * @param deleteCount - The number of options to remove
