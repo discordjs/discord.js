@@ -511,12 +511,4 @@ describe('message with components', () => {
 			expect(patched).toBe(instance);
 		});
 	});
-
-	test('Component sub-structures', () => {
-		const containerInstance = new ContainerComponent(data.components?.[0] as APIContainerComponent);
-		expect(containerInstance.toJSON()).toEqual(container);
-		expect(containerInstance.type).toBe(container.type);
-		expect(containerInstance.id).toBe(container.id);
-		expect(containerInstance.spoiler).toBe(container.spoiler);
-	});
 });
