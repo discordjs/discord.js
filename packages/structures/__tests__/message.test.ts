@@ -30,7 +30,6 @@ import {
 import { describe, expect, test } from 'vitest';
 import { Attachment } from '../src/messages/Attachment.js';
 import { Message } from '../src/messages/Message.js';
-import { ContainerComponent } from '../src/messages/components/ContainerComponent.js';
 import { User } from '../src/users/User.js';
 import { dateToDiscordISOTimestamp } from '../src/utils/optimization.js';
 import { kPatch } from '../src/utils/symbols.js';
