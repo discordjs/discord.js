@@ -1,6 +1,7 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import type {
 	APIActionRowComponent,
+	APIAttachment,
 	APIButtonComponent,
 	APIChannelSelectComponent,
 	APIContainerComponent,
@@ -24,6 +25,7 @@ import {
 	SeparatorSpacingSize,
 	ChannelType,
 	SelectMenuDefaultValueType,
+	AttachmentFlags,
 } from 'discord-api-types/v10';
 import { describe, expect, test } from 'vitest';
 import { Attachment } from '../src/messages/Attachment.js';
@@ -31,6 +33,7 @@ import { Message } from '../src/messages/Message.js';
 import { ContainerComponent } from '../src/messages/components/ContainerComponent.js';
 import { User } from '../src/users/User.js';
 import { dateToDiscordISOTimestamp } from '../src/utils/optimization.js';
+import { kPatch } from '../src/utils/symbols.js';
 
 const user: APIUser = {
 	username: 'user',
@@ -445,15 +448,68 @@ describe('message with components', () => {
 		expect(instance.toJSON()).toEqual(data);
 	});
 
-	test('Attachment sub-structure', () => {
-		const instances = data.attachments?.map((attachment) => new Attachment(attachment));
-		expect(instances?.map((attachment) => attachment.toJSON())).toEqual(data.attachments);
-		expect(instances?.[0]?.description).toBe(data.attachments?.[0]?.description);
-		expect(instances?.[0]?.filename).toBe(data.attachments?.[0]?.filename);
-		expect(instances?.[0]?.id).toBe(data.attachments?.[0]?.id);
-		expect(instances?.[0]?.size).toBe(data.attachments?.[0]?.size);
-		expect(instances?.[0]?.url).toBe(data.attachments?.[0]?.url);
-		expect(instances?.[0]?.proxyURL).toBe(data.attachments?.[0]?.proxy_url);
+	describe('attachment sub-structure', () => {
+		const data: APIAttachment = {
+			id: '1230',
+			filename: 'the name of a file, it is',
+			title: 'title',
+			description: 'a very big attachment',
+			content_type: 'content/type',
+			size: 123,
+			url: 'https://discord.com/',
+			proxy_url: 'https://printer.discord.com/',
+			height: 10,
+			width: 10,
+			ephemeral: true,
+			duration_secs: 98,
+			waveform: 'ofjrjpfprenfo2npj3f034fpn43jf43;3ff5g2597y480f8u4jndoduie3f&====',
+		};
+
+		const attachmentWithFlagsData = {
+			...data,
+			flags: AttachmentFlags.IsRemix,
+		};
+
+		const instance = new Attachment(data);
+		const attachmentWithFlags = new Attachment(attachmentWithFlagsData);
+
+		test('has expected values for all getters', () => {
+			expect(instance.description).toBe(data.description);
+			expect(instance.filename).toBe(data.filename);
+			expect(instance.id).toBe(data.id);
+			expect(instance.size).toBe(data.size);
+			expect(instance.url).toBe(data.url);
+			expect(instance.proxyURL).toBe(data.proxy_url);
+			expect(instance.height).toBe(data.height);
+			expect(instance.width).toBe(data.width);
+			expect(instance.contentType).toBe(data.content_type);
+			expect(instance.ephemeral).toBe(data.ephemeral);
+			expect(instance.title).toBe(data.title);
+			expect(instance.durationSecs).toBe(data.duration_secs);
+			expect(instance.waveform).toBe(data.waveform);
+			expect(attachmentWithFlags.flags?.valueOf()).toBe(BigInt(attachmentWithFlagsData.flags));
+			expect(instance.flags).toBeNull();
+		});
+
+		test('toJSON() is accurate', () => {
+			expect(instance.toJSON()).toStrictEqual(data);
+		});
+
+		test('Patching the Entitlement works in place', () => {
+			const filename = 'new filename';
+			const size = 1_000_000;
+
+			const patched = instance[kPatch]({
+				filename,
+				size,
+			});
+
+			expect(patched.filename).toEqual(filename);
+			expect(patched.size).toEqual(size);
+
+			expect(patched.toJSON()).not.toEqual(data);
+			expect(patched).toBe(instance);
+		});
 	});
 
 	test('Component sub-structures', () => {
