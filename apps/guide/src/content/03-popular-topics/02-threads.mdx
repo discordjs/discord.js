@@ -1,0 +1,222 @@
+---
+title: Threads
+category: Popular topics
+---
+
+# Threads
+
+Threads can be thought of as temporary sub-channels inside an existing channel, to help better organize conversation in a busy channel.
+
+## Thread related gateway events
+
+<Alert title="Tip" type="info">
+	You can use the <DocsLink type="class" parent="ThreadChannel" symbol="isThread" brackets /> type guard to make sure a
+	channel is a <DocsLink type="class" parent="ThreadChannel" />!
+</Alert>
+
+Threads introduce a number of new gateway events, which are listed below:
+
+- <DocsLink type="class" parent="Client" symbol="e-threadCreate" />: Emitted whenever a thread is created or when the
+  client user is added to a thread.
+- <DocsLink type="class" parent="Client" symbol="e-threadDelete" />: Emitted whenever a thread is deleted.
+- <DocsLink type="class" parent="Client" symbol="e-threadUpdate" />: Emitted whenever a thread is updated (e.g. name
+  change, archive state change, locked state change).
+- <DocsLink type="class" parent="Client" symbol="e-threadListSync" />: Emitted whenever the client user gains access to
+  a text or news channel that contains threads.
+- <DocsLink type="class" parent="Client" symbol="e-threadMembersUpdate" />: Emitted whenever members are added or
+  removed from a thread. Requires <code>GuildMembers</code> privileged intent.
+- <DocsLink type="class" parent="Client" symbol="e-threadMemberUpdate" />: Emitted whenever the client user's thread
+  member is updated.
+
+## Creating and deleting threads
+
+Threads are created and deleted using the <DocsLink type="class" parent="GuildTextThreadManager" /> of a text or news channel.
+To create a thread, you call the <DocsLink type="class" parent="GuildTextThreadManager" symbol="create" brackets /> method:
+
+<CH.Code>
+
+```js
+import { ThreadAutoArchiveDuration } from 'discord.js';
+
+const thread = await channel.threads.create({
+	name: 'food-talk',
+	autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
+	reason: 'Needed a separate thread for food',
+});
+
+console.log(`Created thread: ${thread.name}`);
+```
+
+</CH.Code>
+
+To delete a thread, use the <DocsLink type="class" parent="ThreadChannel" symbol="delete" brackets /> method:
+
+<CH.Code>
+
+```js
+const thread = channel.threads.cache.find((x) => x.name === 'food-talk');
+await thread.delete();
+```
+
+</CH.Code>
+
+## Joining and leaving threads
+
+To join your client to a thread, use the <DocsLink type="class" parent="ThreadChannel" symbol="join" brackets /> method:
+
+<CH.Code>
+
+```js focus=2
+const thread = channel.threads.cache.find((x) => x.name === 'food-talk');
+if (thread.joinable) await thread.join();
+```
+
+</CH.Code>
+
+And to leave one, use <DocsLink type="class" parent="ThreadChannel" symbol="leave" brackets />;
+
+<CH.Code>
+
+```js focus=2
+const thread = channel.threads.cache.find((x) => x.name === 'food-talk');
+await thread.leave();
+```
+
+</CH.Code>
+
+## Archiving, unarchiving, and locking threads
+
+A thread can be either active or archived. Changing a thread from archived to active is referred to as unarchiving the thread. Threads that have _`locked`_ set to _`true`_ can only be unarchived by a member with the _`ManageThreads`_ permission.
+
+Threads are automatically archived after inactivity. "Activity" is defined as sending a message, unarchiving a thread, or changing the auto-archive time.
+
+To archive or unarchive a thread, use the <DocsLink type="class" parent="ThreadChannel" symbol="setArchived" brackets /> method and pass in a boolean parameter:
+
+<CH.Code>
+
+```js focus=2,3
+const thread = channel.threads.cache.find((x) => x.name === 'food-talk');
+await thread.setArchived(true); // Archived.
+await thread.setArchived(false); // Unarchived.
+```
+
+</CH.Code>
+
+This same principle applies to locking and unlocking a thread via the <DocsLink type="class" parent="ThreadChannel" symbol="setLocked" brackets /> method:
+
+<CH.Code>
+
+```js focus=2,3
+const thread = channel.threads.cache.find((x) => x.name === 'food-talk');
+await thread.setLocked(true); // Locked.
+await thread.setLocked(false); // Unlocked.
+```
+
+</CH.Code>
+
+## Public and private threads
+
+Public threads are viewable by everyone who can view the parent channel of the thread. Public threads can be created with the <DocsLink type="class" parent="GuildTextThreadManager" symbol="create" brackets /> method.
+
+<CH.Code>
+
+```js
+import { ThreadAutoArchiveDuration } from 'discord.js';
+
+const thread = await channel.threads.create({
+	name: 'food-talk',
+	autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
+	reason: 'Needed a separate thread for food',
+});
+
+console.log(`Created thread: ${thread.name}`);
+```
+
+</CH.Code>
+
+They can also be created from an existing message with the <DocsLink type="class" parent="Message" symbol="startThread" brackets /> method, but will be "orphaned" if that message is deleted.
+
+<CH.Code>
+
+```js focus=3[22:42]
+import { ThreadAutoArchiveDuration } from 'discord.js';
+
+const thread = await message.startThread({
+	name: 'food-talk',
+	autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
+	reason: 'Needed a separate thread for food',
+});
+
+console.log(`Created thread: ${thread.name}`);
+```
+
+</CH.Code>
+
+The created thread and the message it originated from will share the same id. The type of thread created matches the parent channel's type.
+
+Private threads behave similar to Group DMs, but in a Guild. Private threads can only be created on text channels.
+
+To create a private thread, use <DocsLink type="class" parent="GuildTextThreadManager" symbol="create" brackets /> and pass in _`ChannelType.PrivateThread`_ as the _`type`_:
+
+<CH.Code>
+
+```js focus=1[10:21],6
+import { ChannelType, ThreadAutoArchiveDuration } from 'discord.js';
+
+const thread = await channel.threads.create({
+	name: 'mod-talk',
+	autoArchiveDuration: ThreadAutoArchiveDuration.OneHour,
+	type: ChannelType.PrivateThread,
+	reason: 'Needed a separate thread for moderation',
+});
+
+console.log(`Created thread: ${thread.name}`);
+```
+
+</CH.Code>
+
+## Adding and removing members
+
+You can add and remove members to and from a thread channel.
+
+To add a member to a thread, use the <DocsLink type="class" parent="ThreadMemberManager" symbol="add" brackets /> method:
+
+<CH.Code>
+
+```js focus=2
+const thread = channel.threads.cache.find((x) => x.name === 'food-talk');
+await thread.members.add('140214425276776449');
+```
+
+</CH.Code>
+
+And to remove a member from a thread, use <DocsLink type="class" parent="ThreadMemberManager" symbol="remove" brackets />:
+
+<CH.Code>
+
+```js focus=2
+const thread = channel.threads.cache.find((x) => x.name === 'food-talk');
+await thread.members.remove('140214425276776449');
+```
+
+</CH.Code>
+
+## Sending messages to threads with webhooks
+
+It is possible for a webhook built on the parent channel to send messages to the channel's threads. For the purpose of this example, it is assumed a single webhook already exists for that channel. If you wish to learn more about webhooks, see our [webhook guide](./webhooks).
+
+<CH.Code>
+
+```js
+const webhooks = await channel.fetchWebhooks();
+const webhook = webhooks.first();
+
+await webhook.send({
+	content: "Look ma! I'm in a thread!",
+	threadId: '123456789012345678',
+});
+```
+
+</CH.Code>
+
+And that's it! Now you know all there is to know on working with threads using discord.js!
