@@ -135,7 +135,14 @@ export class VoiceReceiver {
 	 * @param ssrc - already-parsed SSRC (Synchronization Source Identifier) from the RTP Header
 	 * @returns The parsed Opus packet
 	 */
-	private parsePacket(buffer: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array, userId: string, ssrc: number) {
+	private parsePacket(
+		buffer: Buffer,
+		mode: string,
+		nonce: Buffer,
+		secretKey: Uint8Array,
+		userId: string,
+		ssrc: number,
+	) {
 		// Parse key RTP Header fields
 		const sequence = buffer.readUInt16BE(2);
 		const timestamp = buffer.readUInt32BE(4);
@@ -208,8 +215,8 @@ export class VoiceReceiver {
 					this.connectionData.nonceBuffer,
 					this.connectionData.secretKey,
 					userData.userId,
-					ssrc
-			);
+					ssrc,
+				);
 				if (packet) stream.push(packet);
 			} catch (error) {
 				stream.destroy(error as Error);
