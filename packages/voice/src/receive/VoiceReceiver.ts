@@ -11,6 +11,7 @@ import { RTP_OPUS_PAYLOAD_TYPE } from '../util/constants';
 import {
 	AudioReceiveStream,
 	createDefaultAudioReceiveStreamOptions,
+	type AudioPacket,
 	type AudioReceiveStreamOptions,
 } from './AudioReceiveStream';
 import { SSRCMap } from './SSRCMap';
@@ -19,6 +20,15 @@ import { SpeakingMap } from './SpeakingMap';
 const HEADER_EXTENSION_BYTE = Buffer.from([0xbe, 0xde]);
 const UNPADDED_NONCE_LENGTH = 4;
 const AUTH_TAG_LENGTH = 16;
+
+function createAudioPacket(buffer: Buffer, sequence: number, timestamp: number, ssrc: number): AudioPacket {
+	Object.defineProperties(buffer, {
+		sequence: { value: sequence, writable: false, enumerable: false, configurable: false },
+		timestamp: { value: timestamp, writable: false, enumerable: false, configurable: false },
+		ssrc: { value: ssrc, writable: false, enumerable: false, configurable: false },
+	});
+	return buffer as AudioPacket;
+}
 
 /**
  * Attaches to a VoiceConnection, allowing you to receive audio packets from other
@@ -175,6 +185,8 @@ export class VoiceReceiver {
 	 */
 	public onUdpMessage(msg: Buffer) {
 		if (msg.length <= 8) return;
+		const sequence = msg.readUInt16BE(2);
+		const timestamp = msg.readUInt32BE(4);
 		const ssrc = msg.readUInt32BE(8);
 
 		const userData = this.ssrcMap.get(ssrc);
@@ -201,7 +213,7 @@ export class VoiceReceiver {
 					this.connectionData.secretKey,
 					userData.userId,
 				);
-				if (packet) stream.push(packet);
+				if (packet) stream.push(createAudioPacket(packet, sequence, timestamp, ssrc));
 			} catch (error) {
 				stream.destroy(error as Error);
 			}
