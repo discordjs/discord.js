@@ -37,7 +37,7 @@ export interface AudioReceiveStreamOptions extends ReadableOptions {
 }
 
 /**
- * A Buffer containing a decoded Opus packet with RTP header metadata.
+ * A Buffer containing encoded Opus packet data and key RTP Header metadata.
  */
 export interface AudioPacket extends Buffer {
 	/**
@@ -46,16 +46,16 @@ export interface AudioPacket extends Buffer {
 	readonly sequence: number;
 
 	/**
+	 * The synchronization source identifier for this packet (32-bit).
+	 * A change in SSRC indicates a new RTP stream, so any associated
+	 * decoder should be reset.
+	 */
+	readonly ssrc: number;
+
+	/**
 	 * The RTP timestamp of this packet (32-bit, wraps at 2^32 - 1).
 	 */
 	readonly timestamp: number;
-
-	/**
-	 * The synchronization source identifier for this packet (32-bit).
-	 * A change in SSRC indicates a new RTP stream, and any stateful
-	 * codec (e.g. Opus) decoder should be reset.
-	 */
-	readonly ssrc: number;
 }
 
 export function createDefaultAudioReceiveStreamOptions(): AudioReceiveStreamOptions {

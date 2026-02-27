@@ -20,15 +20,6 @@ const HEADER_EXTENSION_BYTE = Buffer.from([0xbe, 0xde]);
 const UNPADDED_NONCE_LENGTH = 4;
 const AUTH_TAG_LENGTH = 16;
 
-function createAudioPacket(buffer: Buffer, sequence: number, timestamp: number, ssrc: number): AudioPacket {
-	Object.defineProperties(buffer, {
-		sequence: { value: sequence, writable: false, enumerable: false, configurable: false },
-		timestamp: { value: timestamp, writable: false, enumerable: false, configurable: false },
-		ssrc: { value: ssrc, writable: false, enumerable: false, configurable: false },
-	});
-	return buffer as AudioPacket;
-}
-
 /**
  * Attaches to a VoiceConnection, allowing you to receive audio packets from other
  * users that are speaking.
@@ -141,9 +132,14 @@ export class VoiceReceiver {
 	 * @param nonce - The nonce buffer used by the connection for encryption
 	 * @param secretKey - The secret key used by the connection for encryption
 	 * @param userId - The user id that sent the packet
+	 * @param ssrc - already-parsed SSRC (Synchronization Source Identifier) from the RTP Header
 	 * @returns The parsed Opus packet
 	 */
-	private parsePacket(buffer: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array, userId: string) {
+	private parsePacket(buffer: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array, userId: string, ssrc: number) {
+		// Parse key RTP Header fields
+		const sequence = buffer.readUInt16BE(2);
+		const timestamp = buffer.readUInt32BE(4);
+
 		let packet: Buffer = this.decrypt(buffer, mode, nonce, secretKey);
 		if (!packet) throw new Error('Failed to parse packet');
 
@@ -164,7 +160,26 @@ export class VoiceReceiver {
 			if (daveSession) packet = daveSession.decrypt(packet, userId)!;
 		}
 
-		return packet;
+		// Extend packet with RTP header information
+		return VoiceReceiver.addPacketHeaders(packet, sequence, timestamp, ssrc);
+	}
+
+	/**
+	 * Extends the Buffer for Opus audio data with RTP Header information
+	 *
+	 * @param buffer the opus packet data to extend
+	 * @param sequence the sequence number of the packet
+	 * @param timestamp see definition in
+	 * @param ssrc x
+	 * @returns the input buffer, with RTP header information added
+	 */
+	private static addPacketHeaders(buffer: Buffer, sequence: number, timestamp: number, ssrc: number): AudioPacket {
+		Object.defineProperties(buffer, {
+			sequence: { value: sequence, writable: false, enumerable: false, configurable: false },
+			timestamp: { value: timestamp, writable: false, enumerable: false, configurable: false },
+			ssrc: { value: ssrc, writable: false, enumerable: false, configurable: false },
+		});
+		return buffer as AudioPacket;
 	}
 
 	/**
@@ -174,9 +189,7 @@ export class VoiceReceiver {
 	 * @internal
 	 */
 	public onUdpMessage(msg: Buffer) {
-		if (msg.length <= 8) return;
-		const sequence = msg.readUInt16BE(2);
-		const timestamp = msg.readUInt32BE(4);
+		if (msg.length <= 12) return;
 		const ssrc = msg.readUInt32BE(8);
 
 		const userData = this.ssrcMap.get(ssrc);
@@ -195,8 +208,9 @@ export class VoiceReceiver {
 					this.connectionData.nonceBuffer,
 					this.connectionData.secretKey,
 					userData.userId,
-				);
-				if (packet) stream.push(createAudioPacket(packet, sequence, timestamp, ssrc));
+					ssrc
+			);
+				if (packet) stream.push(packet);
 			} catch (error) {
 				stream.destroy(error as Error);
 			}
