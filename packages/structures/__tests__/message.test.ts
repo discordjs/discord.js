@@ -45,6 +45,7 @@ const user: APIUser = {
 describe('message with embeds and attachments', () => {
 	const timestamp = '2025-10-09T17:48:20.192000+00:00';
 	const data: APIMessage = {
+		application_id: '1231242356787654',
 		id: DiscordSnowflake.generate({ timestamp: Date.parse(timestamp) }).toString(),
 		type: MessageType.Default,
 		position: 10,
@@ -102,6 +103,7 @@ describe('message with embeds and attachments', () => {
 	test('Message has all properties', () => {
 		const instance = new Message(data);
 		expect(instance.id).toBe(data.id);
+		expect(instance.applicationId).toBe(data.application_id);
 		expect(instance.channelId).toBe(data.channel_id);
 		expect(instance.position).toBe(data.position);
 		expect(instance.content).toBe(data.content);
@@ -494,7 +496,7 @@ describe('message with components', () => {
 			expect(instance.toJSON()).toStrictEqual(data);
 		});
 
-		test('Patching the Entitlement works in place', () => {
+		test('Patching the attachment works in place', () => {
 			const filename = 'new filename';
 			const size = 1_000_000;
 
@@ -510,4 +512,6 @@ describe('message with components', () => {
 			expect(patched).toBe(instance);
 		});
 	});
+
+	describe('');
 });
