@@ -68,6 +68,47 @@ describe('VoiceReceiver', () => {
 		expect(stream.read()).toEqual(RTP_PACKET.opusFrame);
 	});
 
+	test.each([
+		['Desktop', RTP_PACKET_DESKTOP, 10_217, 4_157_324_497],
+		['Chrome', RTP_PACKET_CHROME, 18_143, 660_155_095],
+		['Android', RTP_PACKET_ANDROID, 14_800, 3_763_991_879],
+	])('onUdpMessage: RTP header metadata from %s', async (_testName, RTP_PACKET, expectedSeq, expectedTs) => {
+		receiver['decrypt'] = vitest.fn().mockImplementationOnce(() => RTP_PACKET.decrypted);
+
+		const spy = vitest.spyOn(receiver.ssrcMap, 'get');
+		spy.mockImplementation(() => ({
+			audioSSRC: RTP_PACKET.ssrc,
+			userId: '123',
+		}));
+
+		const stream = receiver.subscribe('123');
+
+		receiver['onUdpMessage'](RTP_PACKET.packet);
+		await nextTick();
+		const packet = stream.read();
+		expect(packet.sequence).toEqual(expectedSeq);
+		expect(packet.timestamp).toEqual(expectedTs);
+		expect(packet.ssrc).toEqual(RTP_PACKET.ssrc);
+	});
+
+	test('onUdpMessage: AudioPacket is backwards compatible', async () => {
+		receiver['decrypt'] = vitest.fn().mockImplementationOnce(() => RTP_PACKET_DESKTOP.decrypted);
+
+		const spy = vitest.spyOn(receiver.ssrcMap, 'get');
+		spy.mockImplementation(() => ({
+			audioSSRC: RTP_PACKET_DESKTOP.ssrc,
+			userId: '123',
+		}));
+
+		const stream = receiver.subscribe('123');
+
+		receiver['onUdpMessage'](RTP_PACKET_DESKTOP.packet);
+		await nextTick();
+		const packet = stream.read();
+		expect(Buffer.isBuffer(packet)).toBe(true);
+		expect(packet).toEqual(RTP_PACKET_DESKTOP.opusFrame);
+	});
+
 	test('onUdpMessage: <8 bytes packet', () => {
 		expect(() => receiver['onUdpMessage'](Buffer.alloc(4))).not.toThrow();
 	});
