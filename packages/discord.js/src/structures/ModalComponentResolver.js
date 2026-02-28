@@ -242,7 +242,7 @@ class ModalComponentResolver {
    * @returns {?string} The selected radio group option value, or null if none were selected and not required
    */
   getRadioGroup(customId, required = false) {
-    return this._getTypedComponent(customId, [ComponentType.RadioGroup], ['value'], required).value ?? null;
+    return this._getTypedComponent(customId, [ComponentType.RadioGroup], ['value'], required).value;
   }
 
   /**
