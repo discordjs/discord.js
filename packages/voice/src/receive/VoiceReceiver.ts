@@ -168,7 +168,11 @@ export class VoiceReceiver {
 		}
 
 		// Extend packet with RTP header information
-		return VoiceReceiver.addPacketHeaders(packet, sequence, timestamp, ssrc);
+		if (packet) {
+			return VoiceReceiver.addPacketHeaders(packet, sequence, timestamp, ssrc);
+		} else {
+			return null;
+		}
 	}
 
 	/**
