@@ -172,15 +172,17 @@ describe('VoiceReceiver', () => {
 		});
 	});
 
-	describe('decrypt', () => {
-		test('decrypt: aead_xchacha20_poly1305_rtpsize', () => {
+	describe('parsePacket', () => {
+		test('parsePacket: aead_xchacha20_poly1305_rtpsize', () => {
 			const nonceSpace = Buffer.alloc(24);
 
-			const decrypted = receiver['decrypt'](
+			const packet = receiver['parsePacket'](
 				XCHACHA20_SAMPLE.encrypted,
 				'aead_xchacha20_poly1305_rtpsize',
 				nonceSpace,
 				XCHACHA20_SAMPLE.key,
+				'123',
+				48_921,
 			);
 
 			const expectedNonce = Buffer.concat([
@@ -189,17 +191,24 @@ describe('VoiceReceiver', () => {
 			]);
 
 			expect(nonceSpace.equals(expectedNonce)).toEqual(true);
-			expect(decrypted.equals(XCHACHA20_SAMPLE.decrypted)).toEqual(true);
+			// Extension data (8 bytes) should be stripped from the 61-byte decrypted payload
+			expect(packet).toHaveLength(53);
+			expect(packet!.equals(XCHACHA20_SAMPLE.decrypted.subarray(8))).toEqual(true);
+			expect(packet!.sequence).toEqual(22_118);
+			expect(packet!.timestamp).toEqual(3_220_386_864);
+			expect(packet!.ssrc).toEqual(48_921);
 		});
 
-		test('decrypt: aead_aes256gcm_rtpsize', () => {
+		test('parsePacket: aead_aes256gcm_rtpsize', () => {
 			const nonceSpace = Buffer.alloc(12);
 
-			const decrypted = receiver['decrypt'](
+			const packet = receiver['parsePacket'](
 				AES256GCM_SAMPLE.encrypted,
 				'aead_aes256_gcm_rtpsize',
 				nonceSpace,
 				AES256GCM_SAMPLE.key,
+				'123',
+				50_615,
 			);
 
 			const expectedNonce = Buffer.concat([
@@ -208,7 +217,11 @@ describe('VoiceReceiver', () => {
 			]);
 
 			expect(nonceSpace.equals(expectedNonce)).toEqual(true);
-			expect(decrypted.equals(AES256GCM_SAMPLE.decrypted)).toEqual(true);
+			// No extension (X=0), so decrypted payload is the opus frame directly
+			expect(packet!.equals(AES256GCM_SAMPLE.decrypted)).toEqual(true);
+			expect(packet!.sequence).toEqual(41_884);
+			expect(packet!.timestamp).toEqual(2_668_332_016);
+			expect(packet!.ssrc).toEqual(50_615);
 		});
 	});
 });
