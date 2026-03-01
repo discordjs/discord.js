@@ -3,6 +3,7 @@
 	"name": "@discordjs/docgen",
 	"version": "0.12.1",
 	"description": "The docs.json generator for discord.js and its related projects",
+	"private": true,
 	"scripts": {
 		"build": "tsup",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
