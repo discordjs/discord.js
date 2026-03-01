@@ -1,126 +1,139 @@
-- name: api changes
-  color: '5663e9'
-- name: api support
-  color: '5663e9'
-- name: apps:guide
+- name: a:api-extractor
+  description: Affects @discordjs/api-extractor.
   color: fbca04
-- name: apps:website
+- name: a:api-extractor-model
+  description: Affects @discordjs/api-extractor-model.
   color: fbca04
-- name: backlog
-  color: 7ef7ef
-- name: backport
-  color: 88aabb
-- name: backport-candidate
-  color: 0075ca
-- name: blocked
-  color: fc1423
-- name: bug
-  color: d73a4a
-- name: caching
-  color: 80c042
-- name: chore
-  color: ffffff
-- name: ci
-  color: 0075ca
-- name: dependencies
-  color: 276bd1
-- name: discord
-  color: '5663e9'
-- name: discussion
+- name: a:brokers
+  description: Affects @discordjs/brokers.
+  color: fbca04
+- name: a:builders
+  description: Affects @discordjs/builders.
+  color: fbca04
+- name: a:collection
+  description: Affects @discordjs/collection.
+  color: fbca04
+- name: a:core
+  description: Affects @discordjs/core.
+  color: fbca04
+- name: a:create-discord-bot
+  description: Affects create-discord-bot.
+  color: fbca04
+- name: a:discord.js
+  description: Affects discord.js.
+  color: fbca04
+- name: a:docgen
+  description: Affects @discordjs/docgen.
+  color: fbca04
+- name: a:formatters
+  description: Affects @discordjs/formatters.
+  color: fbca04
+- name: a:guide
+  description: Affects @discordjs/guide.
+  color: fbca04
+- name: a:next
+  description: Affects @discordjs/next.
+  color: fbca04
+- name: a:proxy
+  description: Affects @discordjs/proxy.
+  color: fbca04
+- name: a:proxy-container
+  description: Affects @discordjs/proxy-container.
+  color: fbca04
+- name: a:rest
+  description: Affects @discordjs/rest.
+  color: fbca04
+- name: a:structures
+  description: Affects @discordjs/structures.
+  color: fbca04
+- name: a:ui
+  description: Affects @discordjs/ui.
+  color: fbca04
+- name: a:util
+  description: Affects @discordjs/util.
+  color: fbca04
+- name: a:voice
+  description: Affects @discordjs/voice.
+  color: fbca04
+- name: a:website
+  description: Affects @discordjs/website.
+  color: fbca04
+- name: a:ws
+  description: Affects @discordjs/ws.
+  color: fbca04
+- name: f:application commands
+  description: Related to the application commands feature.
   color: b6b1f9
-- name: documentation
+- name: f:applications
+  description: Related to the applications feature.
+  color: b6b1f9
+- name: f:channel
+  description: Related to the channel feature.
+  color: b6b1f9
+- name: f:guild
+  description: Related to the guild feature.
+  color: b6b1f9
+- name: f:interactions
+  description: Related to the interactions feature.
+  color: b6b1f9
+- name: f:invite
+  description: Related to the invite feature.
+  color: b6b1f9
+- name: f:monetization
+  description: Related to the monetization feature.
+  color: b6b1f9
+- name: f:poll
+  description: Related to the poll feature.
+  color: b6b1f9
+- name: f:role connections
+  description: Related to the role connections feature.
+  color: b6b1f9
+- name: f:stage instances
+  description: Related to the stage instances feature.
+  color: b6b1f9
+- name: f:stickers
+  description: Related to the stickers feature.
+  color: b6b1f9
+- name: f:threads
+  description: Related to the threads feature.
+  color: b6b1f9
+- name: f:user
+  description: Related to the user feature.
+  color: b6b1f9
+- name: f:voice
+  description: Related to the voice feature.
+  color: b6b1f9
+- name: f:webhook
+  description: Related to the webhook feature.
+  color: b6b1f9
+- name: s:major
+  description: This is a major change.
+  color: c10f47
+- name: s:minor
+  description: This is a minor change.
+  color: e4f486
+- name: s:patch
+  description: This is a patch change.
+  color: e8be8b
+- name: t:backport
+  color: 88aabb
+- name: t:backport-candidate
   color: 0075ca
-- name: duplicate
+- name: t:need reproduction
+  color: c66037
+- name: t:won't fix
+  description: No work will be done towards this issue.
   color: cfd3d7
-- name: error handling
-  color: 80c042
-- name: feature request
-  color: fcf95a
-- name: gateway
-  color: 80c042
+- name: blocked
+  description: Generic label to stop Kodiak from merging a pull request.
+  color: fc1423
+- name: discord
+  description: This is a Discord-related issue.
+  color: 5865f2
 - name: good first issue
   color: 7057ff
 - name: help wanted
   color: '008672'
-- name: in progress
-  color: ffccd7
 - name: in review
+  description: This pull request is currently in review; halts Kodiak.
   color: aed5fc
-- name: interactions
-  color: 80c042
-- name: invalid
-  color: e4e669
-- name: need repro
-  color: c66037
-- name: packages:api-extractor
-  color: fbca04
-- name: packages:api-extractor-model
-  color: fbca04
-- name: packages:brokers
-  color: fbca04
-- name: packages:builders
-  color: fbca04
-- name: packages:collection
-  color: fbca04
-- name: packages:core
-  color: fbca04
-- name: packages:create-discord-bot
-  color: fbca04
-- name: packages:discord.js
-  color: fbca04
-- name: packages:docgen
-  color: fbca04
-- name: packages:formatters
-  color: fbca04
-- name: packages:next
-  color: fbca04
-- name: packages:proxy
-  color: fbca04
-- name: packages:proxy-container
-  color: fbca04
-- name: packages:rest
-  color: fbca04
-- name: packages:structures
-  color: fbca04
-- name: packages:ui
-  color: fbca04
-- name: packages:util
-  color: fbca04
-- name: packages:voice
-  color: fbca04
-- name: packages:ws
-  color: fbca04
-- name: performance
-  color: 80c042
-- name: permissions
-  color: 80c042
-- name: priority:high
-  color: fc1423
-- name: question (please use Discord instead)
-  color: d876e3
-- name: ratelimits
-  color: 80c042
-- name: refactor
-  color: 1d637f
-- name: regression
-  color: ea8785
-- name: REST
-  color: 80c042
-- name: semver:major
-  color: c10f47
-- name: semver:minor
-  color: e4f486
-- name: semver:patch
-  color: e8be8b
-- name: sharding
-  color: 80c042
-- name: tests
-  color: f06dff
-- name: threads
-  color: 80c042
-- name: typings
-  color: 80c042
-- name: utility
-  color: 80c042
-- name: wontfix
-  color: ffffff
