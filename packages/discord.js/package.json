@@ -66,7 +66,6 @@
   "homepage": "https://discord.js.org",
   "funding": "https://github.com/discordjs/discord.js?sponsor",
   "dependencies": {
-    "@discordjs/builders": "workspace:^",
     "@discordjs/collection": "workspace:^",
     "@discordjs/formatters": "workspace:^",
     "@discordjs/rest": "workspace:^",
@@ -83,6 +82,7 @@
   },
   "devDependencies": {
     "@discordjs/api-extractor": "workspace:^",
+    "@discordjs/builders": "workspace:^",
     "@discordjs/docgen": "workspace:^",
     "@discordjs/scripts": "workspace:^",
     "@favware/cliff-jumper": "^6.0.0",
