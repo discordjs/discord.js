@@ -65,7 +65,8 @@ describe('VoiceReceiver', () => {
 
 		receiver['onUdpMessage'](RTP_PACKET.packet);
 		await nextTick();
-		expect(stream.read()).toEqual(RTP_PACKET.opusFrame);
+		const packet = stream.read();
+		expect(packet.payload).toEqual(RTP_PACKET.opusFrame);
 	});
 
 	test.each([
@@ -91,7 +92,7 @@ describe('VoiceReceiver', () => {
 		expect(packet.ssrc).toEqual(RTP_PACKET.ssrc);
 	});
 
-	test('onUdpMessage: AudioPacket is backwards compatible', async () => {
+	test('onUdpMessage: AudioPacket has payload and header fields', async () => {
 		receiver['decrypt'] = vitest.fn().mockImplementationOnce(() => RTP_PACKET_DESKTOP.decrypted);
 
 		const spy = vitest.spyOn(receiver.ssrcMap, 'get');
@@ -105,8 +106,11 @@ describe('VoiceReceiver', () => {
 		receiver['onUdpMessage'](RTP_PACKET_DESKTOP.packet);
 		await nextTick();
 		const packet = stream.read();
-		expect(Buffer.isBuffer(packet)).toBe(true);
-		expect(packet).toEqual(RTP_PACKET_DESKTOP.opusFrame);
+		expect(Buffer.isBuffer(packet.payload)).toBe(true);
+		expect(packet.payload).toEqual(RTP_PACKET_DESKTOP.opusFrame);
+		expect(typeof packet.sequence).toBe('number');
+		expect(typeof packet.timestamp).toBe('number');
+		expect(typeof packet.ssrc).toBe('number');
 	});
 
 	test('onUdpMessage: <8 bytes packet', () => {
@@ -192,8 +196,8 @@ describe('VoiceReceiver', () => {
 
 			expect(nonceSpace.equals(expectedNonce)).toEqual(true);
 			// Extension data (8 bytes) should be stripped from the 61-byte decrypted payload
-			expect(packet).toHaveLength(53);
-			expect(packet!.equals(XCHACHA20_SAMPLE.decrypted.subarray(8))).toEqual(true);
+			expect(packet!.payload).toHaveLength(53);
+			expect(packet!.payload.equals(XCHACHA20_SAMPLE.decrypted.subarray(8))).toEqual(true);
 			expect(packet!.sequence).toEqual(22_118);
 			expect(packet!.timestamp).toEqual(3_220_386_864);
 			expect(packet!.ssrc).toEqual(48_921);
@@ -218,7 +222,7 @@ describe('VoiceReceiver', () => {
 
 			expect(nonceSpace.equals(expectedNonce)).toEqual(true);
 			// No extension (X=0), so decrypted payload is the opus frame directly
-			expect(packet!.equals(AES256GCM_SAMPLE.decrypted)).toEqual(true);
+			expect(packet!.payload.equals(AES256GCM_SAMPLE.decrypted)).toEqual(true);
 			expect(packet!.sequence).toEqual(41_884);
 			expect(packet!.timestamp).toEqual(2_668_332_016);
 			expect(packet!.ssrc).toEqual(50_615);
