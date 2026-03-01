@@ -138,9 +138,16 @@ export class VoiceReceiver {
 	 * @param secretKey - The secret key used by the connection for encryption
 	 * @param userId - The user id that sent the packet
 	 * @param ssrc - already-parsed SSRC (Synchronization Source Identifier) from the RTP Header
-	 * @returns The parsed Opus packet
+	 * @returns Decrypted Opus payload and RTP header information, or null if DAVE decrypt failed in a way that should be ignored
 	 */
-	private parsePacket(rtp: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array, userId: string, ssrc: number) {
+	private parsePacket(
+		rtp: Buffer,
+		mode: string,
+		nonce: Buffer,
+		secretKey: Uint8Array,
+		userId: string,
+		ssrc: number,
+	): AudioPacket | null {
 		// Parse key RTP Header fields
 		const first = rtp.readUint8();
 		const hasHeaderExtension = Boolean((first >> 4) & 0x01); // X field
@@ -171,15 +178,15 @@ export class VoiceReceiver {
 				this.voiceConnection.state.networking.state.code === NetworkingStatusCode.Resuming)
 		) {
 			const daveSession = this.voiceConnection.state.networking.state.dave;
-			if (daveSession) payload = daveSession.decrypt(payload, userId)!;
+			if (daveSession) {
+				payload = daveSession.decrypt(payload, userId)!;
+
+				if (!payload) return null; // decryption failed but should be ignored
+			}
 		}
 
-		// Return Opus packet data Buffer, enriched with RTP header information
-		if (payload) {
-			return addPacketHeaders(payload, sequence, timestamp, ssrc);
-		} else {
-			return null;
-		}
+		// Construct AudioPacket with Opus payload and RTP header information
+		return { payload, sequence, timestamp, ssrc };
 	}
 
 	/**
@@ -236,22 +243,4 @@ export class VoiceReceiver {
 		this.subscriptions.set(userId, stream);
 		return stream;
 	}
-}
-
-/**
- * Extends the Buffer for Opus audio data with RTP Header information
- *
- * @param buffer - the opus packet data to extend
- * @param sequence - RTP Header sequence value for the packet
- * @param timestamp - RTP Header timestamp value for the packet
- * @param ssrc - RTP Header synchronization source identifier (SSRC) for the packet
- * @returns the input buffer, with RTP header information added
- */
-function addPacketHeaders(buffer: Buffer, sequence: number, timestamp: number, ssrc: number): AudioPacket {
-	Object.defineProperties(buffer, {
-		sequence: { value: sequence, writable: false, enumerable: false, configurable: false },
-		timestamp: { value: timestamp, writable: false, enumerable: false, configurable: false },
-		ssrc: { value: ssrc, writable: false, enumerable: false, configurable: false },
-	});
-	return buffer as AudioPacket;
 }
