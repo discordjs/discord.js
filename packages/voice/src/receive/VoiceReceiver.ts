@@ -169,28 +169,10 @@ export class VoiceReceiver {
 
 		// Extend packet with RTP header information
 		if (packet) {
-			return VoiceReceiver.addPacketHeaders(packet, sequence, timestamp, ssrc);
+			return addPacketHeaders(packet, sequence, timestamp, ssrc);
 		} else {
 			return null;
 		}
-	}
-
-	/**
-	 * Extends the Buffer for Opus audio data with RTP Header information
-	 *
-	 * @param buffer - the opus packet data to extend
-	 * @param sequence - the sequence number of the packet
-	 * @param timestamp see definition in
-	 * @param ssrc x
-	 * @returns the input buffer, with RTP header information added
-	 */
-	private static addPacketHeaders(buffer: Buffer, sequence: number, timestamp: number, ssrc: number): AudioPacket {
-		Object.defineProperties(buffer, {
-			sequence: { value: sequence, writable: false, enumerable: false, configurable: false },
-			timestamp: { value: timestamp, writable: false, enumerable: false, configurable: false },
-			ssrc: { value: ssrc, writable: false, enumerable: false, configurable: false },
-		});
-		return buffer as AudioPacket;
 	}
 
 	/**
@@ -247,4 +229,22 @@ export class VoiceReceiver {
 		this.subscriptions.set(userId, stream);
 		return stream;
 	}
+}
+
+/**
+ * Extends the Buffer for Opus audio data with RTP Header information
+ *
+ * @param buffer - the opus packet data to extend
+ * @param sequence - NTP Header sequence value for the packet
+ * @param timestamp - NTP Header timestamp value for the packet
+ * @param ssrc - NTP Header synchronization source identifier (SSRC) for the packet
+ * @returns the input buffer, with RTP header information added
+ */
+function addPacketHeaders(buffer: Buffer, sequence: number, timestamp: number, ssrc: number): AudioPacket {
+	Object.defineProperties(buffer, {
+		sequence: { value: sequence, writable: false, enumerable: false, configurable: false },
+		timestamp: { value: timestamp, writable: false, enumerable: false, configurable: false },
+		ssrc: { value: ssrc, writable: false, enumerable: false, configurable: false },
+	});
+	return buffer as AudioPacket;
 }
