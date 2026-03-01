@@ -637,6 +637,12 @@ importers:
 
   packages/brokers:
     dependencies:
+      '@discordjs/core':
+        specifier: workspace:^
+        version: link:../core
+      '@discordjs/ws':
+        specifier: workspace:^
+        version: link:../ws
       '@msgpack/msgpack':
         specifier: ^3.1.3
         version: 3.1.3
@@ -5737,6 +5743,7 @@ packages:
   '@smithy/middleware-endpoint@4.4.16':
     resolution: {integrity: sha512-L5GICFCSsNhbJ5JSKeWFGFy16Q2OhoBizb3X2DrxaJwXSEujVvjG9Jt386dpQn2t7jINglQl0b4K/Su69BdbMA==}
     engines: {node: '>=18.0.0'}
+    deprecated: Please upgrade to @smithy/middleware-endpoint@4.1.15 or higher to fix a bug preventing the resolution of ENV and config file custom endpoints https://github.com/smithy-lang/smithy-typescript/issues/1645
 
   '@smithy/middleware-retry@4.4.33':
     resolution: {integrity: sha512-jLqZOdJhtIL4lnA9hXnAG6GgnJlo1sD3FqsTxm9wSfjviqgWesY/TMBVnT84yr4O0Vfe0jWoXlfFbzsBVph3WA==}
