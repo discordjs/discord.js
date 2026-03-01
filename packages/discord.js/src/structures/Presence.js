@@ -56,6 +56,17 @@ class Presence extends Base {
      */
     this.guild = data.guild ?? null;
 
+    if (this.guild) {
+      /**
+       * The partial member of this presence
+       *
+       * @type {?PartialGuildMember}
+       */
+      this.member = this.guild.members._add({ user: data.user, guild: data.guild }, false);
+    } else {
+      this.member = null;
+    }
+
     this._patch(data);
   }
 
@@ -67,16 +78,6 @@ class Presence extends Base {
    */
   get user() {
     return this.client.users.resolve(this.userId);
-  }
-
-  /**
-   * The member of this presence
-   *
-   * @type {?GuildMember}
-   * @readonly
-   */
-  get member() {
-    return this.guild.members.resolve(this.userId);
   }
 
   _patch(data) {

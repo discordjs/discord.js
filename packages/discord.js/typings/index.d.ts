@@ -1645,8 +1645,8 @@ export class GuildMember extends Base {
   public get communicationDisabledUntil(): Date | null;
   public communicationDisabledUntilTimestamp: number | null;
   public flags: Readonly<GuildMemberFlagsBitField>;
-  public get joinedAt(): Date | null;
-  public joinedTimestamp: number | null;
+  public get joinedAt(): Date;
+  public joinedTimestamp: number;
   public get kickable(): boolean;
   public get manageable(): boolean;
   public get moderatable(): boolean;
@@ -2849,7 +2849,7 @@ export class Presence extends Base {
   public activities: Activity[];
   public clientStatus: ClientPresenceStatusData | null;
   public guild: Guild | null;
-  public get member(): GuildMember | null;
+  public member: PartialGuildMember | null;
   public status: PresenceStatus;
   public get user(): User | null;
   public userId: Snowflake;
@@ -4472,7 +4472,7 @@ export interface AddOrRemoveGuildMemberRoleOptions {
 export class GuildMemberManager extends CachedManager<Snowflake, GuildMember, UserResolvable> {
   private constructor(guild: Guild, iterable?: Iterable<unknown>);
   public guild: Guild;
-  public get me(): GuildMember | null;
+  public get me(): GuildMember | PartialGuildMember | null;
   public add(
     user: UserResolvable,
     options: AddGuildMemberOptions & { fetchWhenExisting: false },
@@ -4606,6 +4606,7 @@ export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleRes
   public get highest(): Role;
   public get premiumSubscriberRole(): Role | null;
   public get botRole(): Role | null;
+  public get partial(): false;
   public member: GuildMember;
   public guild: Guild;
 
@@ -4621,6 +4622,11 @@ export class GuildMemberRoleManager extends DataManager<Snowflake, Role, RoleRes
     roleOrRoles: ReadonlyCollection<Snowflake, Role> | RoleResolvable | readonly RoleResolvable[],
     reason?: string,
   ): Promise<GuildMember>;
+}
+
+export interface PartialGuildMemberRoleManager extends Partialize<GuildMemberRoleManager, null, null, 'member'> {
+  member: PartialGuildMember;
+  get partial(): true;
 }
 
 export interface FetchPollAnswerVotersOptions extends BaseFetchPollAnswerVotersOptions {
@@ -4921,6 +4927,7 @@ export interface AddGuildMemberOptions {
 export type AllowedPartial =
   | Channel
   | GuildMember
+  | GuildMemberRoleManager
   | GuildScheduledEvent
   | Message
   | MessageReaction
@@ -6341,6 +6348,7 @@ export type GuildResolvable =
   | GuildInvite
   | GuildMember
   | NonThreadGuildBasedChannel
+  | PartialGuildMember
   | Role
   | Snowflake;
 
@@ -6956,7 +6964,15 @@ export interface PartialDMChannel extends Partialize<DMChannel, null, null, 'las
   lastMessageId: undefined;
 }
 
-export interface PartialGuildMember extends Partialize<GuildMember, 'joinedAt' | 'joinedTimestamp' | 'pending'> {}
+export interface PartialGuildMember extends Partialize<
+  GuildMember,
+  'joinedAt' | 'joinedTimestamp' | 'pending',
+  null,
+  'roles'
+> {
+  get partial(): true;
+  get roles(): PartialGuildMemberRoleManager;
+}
 
 export interface PartialMessage<InGuild extends boolean = boolean> extends Partialize<
   Message<InGuild>,
@@ -7234,7 +7250,7 @@ export type ThreadMemberResolvable = ThreadMember | UserResolvable;
 
 export type UserMention = `<@${Snowflake}>`;
 
-export type UserResolvable = GuildMember | Message | Snowflake | ThreadMember | User;
+export type UserResolvable = GuildMember | Message | PartialGuildMember | Snowflake | ThreadMember | User;
 
 export interface Vanity {
   code: string | null;
