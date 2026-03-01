@@ -43,7 +43,7 @@ const getAttachment = lazy(() => require('./Attachment.js').Attachment);
 /**
  * @typedef {BaseModalData} CheckboxGroupModalData
  * @property {string} customId The custom id of the checkbox group
- * @property {string[]} values The value selected for the checkbox group
+ * @property {string[]} values The values selected for the checkbox group
  */
 
 /**
