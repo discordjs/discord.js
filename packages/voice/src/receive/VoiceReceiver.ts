@@ -10,12 +10,12 @@ import { methods } from '../util/Secretbox';
 import {
 	AudioReceiveStream,
 	createDefaultAudioReceiveStreamOptions,
+	type AudioPacket,
 	type AudioReceiveStreamOptions,
 } from './AudioReceiveStream';
 import { SSRCMap } from './SSRCMap';
 import { SpeakingMap } from './SpeakingMap';
 
-const HEADER_EXTENSION_BYTE = Buffer.from([0xbe, 0xde]);
 const UNPADDED_NONCE_LENGTH = 4;
 const AUTH_TAG_LENGTH = 16;
 
@@ -78,18 +78,24 @@ export class VoiceReceiver {
 		}
 	}
 
-	private decrypt(buffer: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array) {
+	/**
+	 * Decrypt RTP packet payload
+	 *
+	 * @param buffer - RTP packet buffer
+	 * @param mode - cipher mode
+	 * @param nonce - encryption nonce
+	 * @param secretKey - encryption key
+	 * @param headerSize - size of the unencrypted RTP header (fixed header + CSRC + extension header)
+	 * @returns decrypted packet payload
+	 */
+	private decrypt(buffer: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array, headerSize: number) {
 		// Copy the last 4 bytes of unpadded nonce to the padding of (12 - 4) or (24 - 4) bytes
 		buffer.copy(nonce, 0, buffer.length - UNPADDED_NONCE_LENGTH);
 
-		let headerSize = 12;
-		const first = buffer.readUint8();
-		if ((first >> 4) & 0x01) headerSize += 4;
-
-		// The unencrypted RTP header contains 12 bytes, HEADER_EXTENSION and the extension size
+		// The unencrypted RTP header is used as AAD (authenticated but not encrypted)
 		const header = buffer.subarray(0, headerSize);
 
-		// Encrypted contains the extension, if any, the opus packet, and the auth tag
+		// Encrypted contains the extension data, if any, the opus packet, and the auth tag
 		const encrypted = buffer.subarray(headerSize, buffer.length - AUTH_TAG_LENGTH - UNPADDED_NONCE_LENGTH);
 		const authTag = buffer.subarray(
 			buffer.length - AUTH_TAG_LENGTH - UNPADDED_NONCE_LENGTH,
@@ -126,35 +132,61 @@ export class VoiceReceiver {
 	/**
 	 * Parses an audio packet, decrypting it to yield an Opus packet.
 	 *
-	 * @param buffer - The buffer to parse
+	 * @param rtp - The incoming RTP packet buffer to be parsed
 	 * @param mode - The encryption mode
 	 * @param nonce - The nonce buffer used by the connection for encryption
 	 * @param secretKey - The secret key used by the connection for encryption
 	 * @param userId - The user id that sent the packet
-	 * @returns The parsed Opus packet
+	 * @param ssrc - already-parsed SSRC (Synchronization Source Identifier) from the RTP Header
+	 * @returns Decrypted Opus payload and RTP header information, or null if DAVE decrypt failed in a way that should be ignored
 	 */
-	private parsePacket(buffer: Buffer, mode: string, nonce: Buffer, secretKey: Uint8Array, userId: string) {
-		let packet: Buffer = this.decrypt(buffer, mode, nonce, secretKey);
-		if (!packet) throw new Error('Failed to parse packet');
+	private parsePacket(
+		rtp: Buffer,
+		mode: string,
+		nonce: Buffer,
+		secretKey: Uint8Array,
+		userId: string,
+		ssrc: number,
+	): AudioPacket | null {
+		// Parse key RTP Header fields
+		const first = rtp.readUint8();
+		const hasHeaderExtension = Boolean((first >> 4) & 0x01); // X field
+		const cc = first & 0x0f; // CSRC Count field
+		const sequence = rtp.readUInt16BE(2);
+		const timestamp = rtp.readUInt32BE(4);
 
-		// Strip decrypted RTP Header Extension if present
-		// The header is only indicated in the original data, so compare with buffer first
-		if (buffer.subarray(12, 14).compare(HEADER_EXTENSION_BYTE) === 0) {
-			const headerExtensionLength = buffer.subarray(14).readUInt16BE();
-			packet = packet.subarray(4 * headerExtensionLength);
+		// Compute unencrypted header size: fixed header + CSRC Identifiers + extension header if present
+		let headerSize = 12 + 4 * cc;
+		const extensionHeaderOffset = headerSize; // where the extension header starts, if present
+		if (hasHeaderExtension) headerSize += 4; // extension header (profile ID + length)
+
+		// Decrypt the RTP Payload
+		let payload: Buffer = this.decrypt(rtp, mode, nonce, secretKey, headerSize);
+		if (!payload) throw new Error('Failed to parse packet');
+
+		// Skip the decrypted RTP Header Extension data if present
+		if (hasHeaderExtension) {
+			// Extension Header Length field
+			const headerExtensionLength = rtp.readUInt16BE(extensionHeaderOffset + 2);
+			payload = payload.subarray(4 * headerExtensionLength);
 		}
 
-		// Decrypt packet if in a DAVE session.
+		// Decrypt payload if in a DAVE session.
 		if (
 			this.voiceConnection.state.status === VoiceConnectionStatus.Ready &&
 			(this.voiceConnection.state.networking.state.code === NetworkingStatusCode.Ready ||
 				this.voiceConnection.state.networking.state.code === NetworkingStatusCode.Resuming)
 		) {
 			const daveSession = this.voiceConnection.state.networking.state.dave;
-			if (daveSession) packet = daveSession.decrypt(packet, userId)!;
+			if (daveSession) {
+				payload = daveSession.decrypt(payload, userId)!;
+
+				if (!payload) return null; // decryption failed but should be ignored
+			}
 		}
 
-		return packet;
+		// Construct AudioPacket with Opus payload and RTP header information
+		return { payload, sequence, timestamp, ssrc };
 	}
 
 	/**
@@ -164,7 +196,7 @@ export class VoiceReceiver {
 	 * @internal
 	 */
 	public onUdpMessage(msg: Buffer) {
-		if (msg.length <= 8) return;
+		if (msg.length <= 12) return;
 		const ssrc = msg.readUInt32BE(8);
 
 		const userData = this.ssrcMap.get(ssrc);
@@ -183,6 +215,7 @@ export class VoiceReceiver {
 					this.connectionData.nonceBuffer,
 					this.connectionData.secretKey,
 					userData.userId,
+					ssrc,
 				);
 				if (packet) stream.push(packet);
 			} catch (error) {

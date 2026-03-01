@@ -36,6 +36,33 @@ export interface AudioReceiveStreamOptions extends ReadableOptions {
 	end: EndBehavior;
 }
 
+/**
+ * An audio packet containing encoded Opus payload data and key RTP Header metadata.
+ */
+export interface AudioPacket {
+	/**
+	 * The encoded Opus payload data.
+	 */
+	readonly payload: Buffer;
+
+	/**
+	 * The RTP sequence number of this packet (16-bit, wraps at 65535).
+	 */
+	readonly sequence: number;
+
+	/**
+	 * The RTP synchronization source identifier for this packet (32-bit).
+	 * A change in SSRC indicates a new RTP stream, so any associated
+	 * decoder should be reset.
+	 */
+	readonly ssrc: number;
+
+	/**
+	 * The RTP timestamp of this packet (32-bit, wraps at 2^32 - 1).
+	 */
+	readonly timestamp: number;
+}
+
 export function createDefaultAudioReceiveStreamOptions(): AudioReceiveStreamOptions {
 	return {
 		end: {
@@ -67,22 +94,22 @@ export class AudioReceiveStream extends Readable {
 		this.end = end;
 	}
 
-	public override push(buffer: Buffer | null) {
+	public override push(packet: AudioPacket | null) {
 		if (
-			buffer &&
+			packet &&
 			(this.end.behavior === EndBehaviorType.AfterInactivity ||
 				(this.end.behavior === EndBehaviorType.AfterSilence &&
-					(buffer.compare(SILENCE_FRAME) !== 0 || this.endTimeout === undefined)))
+					(packet.payload.compare(SILENCE_FRAME) !== 0 || this.endTimeout === undefined)))
 		) {
 			this.renewEndTimeout(this.end);
 		}
 
-		if (buffer === null) {
+		if (packet === null) {
 			// null marks EOF for stream
 			process.nextTick(() => this.destroy());
 		}
 
-		return super.push(buffer);
+		return super.push(packet);
 	}
 
 	private renewEndTimeout(end: EndBehavior & { duration: number }) {
