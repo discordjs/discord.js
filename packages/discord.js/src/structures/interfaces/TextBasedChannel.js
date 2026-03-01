@@ -88,7 +88,7 @@ class TextBasedChannel {
    * @property {Array<(EmbedBuilder|Embed|APIEmbed)>} [embeds] The embeds for the message
    * @property {MessageMentionOptions} [allowedMentions] Which mentions should be parsed from the message content
    * (see {@link https://discord.com/developers/docs/resources/message#allowed-mentions-object here} for more details)
-   * @property {Array<(Attachment|AttachmentPayload|BufferResolvable|FileBodyEncodable<APIAttachment>|Stream)>} [files]
+   * @property {Array<(Attachment|AttachmentPayload|BufferResolvable|RawFileEncodable|Stream)>} [files]
    * The files to send with the message.
    * @property {Array<(ActionRowBuilder|MessageTopLevelComponent|APIMessageTopLevelComponent)>} [components]
    * Action rows containing interactive components for the message (buttons, select menus) and other
