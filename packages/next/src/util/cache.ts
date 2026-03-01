@@ -6,12 +6,47 @@ import { createClient } from 'redis';
 
 export type RawAPIType<Value extends Structure<{}>> = Value extends Structure<infer Type> ? Type : never;
 
-export interface StructureCache<
-	Value extends Structure<{ id: Snowflake }>,
-	Raw extends RawAPIType<Value> = RawAPIType<Value>,
-> {
-	add(key: Snowflake, data: Partial<Raw>): Awaitable<Value>;
+export interface Cache<Value extends Structure<{ id: Snowflake }>, Raw extends RawAPIType<Value> = RawAPIType<Value>> {
+	/**
+	 * Adds or updates data in the cache, returning the instantiated structure.
+	 * If the item exists, it patches it with the new data unless `overwrite` is true.
+	 * If it does not exist, it constructs a new instance and stores it.
+	 */
+	add(data: Partial<Raw> & { id: Snowflake }, overwrite?: boolean): Awaitable<Value>;
+
+	/**
+	 * Clears all items from the cache.
+	 */
+	clear(): Awaitable<void>;
+
+	/**
+	 * The function used to construct instances of the structure this cache holds.
+	 */
+	readonly construct: StructureCreator<Value, Raw>;
+
+	/**
+	 * Deletes an item from the cache.
+	 */
+	delete(key: Snowflake): Awaitable<boolean>;
+
+	/**
+	 * Retrieves an item from the cache.
+	 */
 	get(key: Snowflake): Awaitable<Value | undefined>;
+
+	/**
+	 * Gets the number of items in the cache.
+	 */
+	getSize(): Awaitable<number>;
+
+	/**
+	 * Checks if an item exists in the cache.
+	 */
+	has(key: Snowflake): Awaitable<boolean>;
+
+	/**
+	 * Sets an item in the cache.
+	 */
 	set(key: Snowflake, value: Value): Awaitable<this>;
 }
 
@@ -19,7 +54,7 @@ export type CacheConstructor = new <Value extends Structure<{ id: Snowflake }>>(
 	creator: StructureCreator<Value>,
 	name: string,
 	...args: any[]
-) => StructureCache<Value>;
+) => Cache<Value>;
 
 export type StructureCreator<
 	Value extends Structure<{ id: Snowflake }>,
@@ -31,9 +66,9 @@ export class CollectionCache<
 	Raw extends RawAPIType<Value> = RawAPIType<Value>,
 >
 	extends Collection<Snowflake, Value>
-	implements StructureCache<Value, Raw>
+	implements Cache<Value, Raw>
 {
-	private readonly structureCreator: StructureCreator<Value>;
+	public readonly construct: StructureCreator<Value>;
 
 	public constructor(
 		creator: StructureCreator<Value>,
@@ -41,17 +76,21 @@ export class CollectionCache<
 		...args: ConstructorParameters<typeof Collection<Snowflake, Value>>
 	) {
 		super(...args);
-		this.structureCreator = creator;
+		this.construct = creator;
 	}
 
-	public add(_key: Snowflake, _data: Partial<Raw>): Value {
-		const value = this.structureCreator(_data);
-		this.set(_key, value);
-		return value;
+	public add(_data: Partial<Raw> & { id: Snowflake }, overwrite: boolean = false) {
+		if (!overwrite && this.has(_data.id)) {
+			return this.get(_data.id)![kPatch](_data);
+		} else {
+			const value = this.construct(_data);
+			this.set(_data.id, value);
+			return value;
+		}
 	}
 
-	public patch(key: Snowflake, data: Partial<Raw>): Value {
-		return this.get(key)?.[kPatch](data) ?? this.add(key, data);
+	public getSize() {
+		return this.size;
 	}
 }
 
@@ -60,44 +99,59 @@ const redis = createClient();
 export class RedisCache<
 	Value extends Structure<{ id: Snowflake }>,
 	Raw extends RawAPIType<Value> = RawAPIType<Value>,
-> implements StructureCache<Value, Raw> {
-	private readonly structureCreator: StructureCreator<Value>;
+> implements Cache<Value, Raw> {
+	public readonly construct: StructureCreator<Value>;
 
 	private readonly name: string;
 
 	public constructor(creator: StructureCreator<Value>, name: string) {
-		this.structureCreator = creator;
+		this.construct = creator;
 		this.name = name;
 	}
 
-	public async add(_key: Snowflake, _data: Partial<Raw>) {
-		const value = this.structureCreator(_data);
-		await this.set(_key, value);
-		return value;
+	public async clear() {
+		return void redis.del(this.name);
+	}
+
+	public async delete(key: Snowflake) {
+		return (await redis.hDel(this.name, key)) === 1;
+	}
+
+	public async getSize() {
+		return redis.hLen(this.name);
+	}
+
+	public async has(key: Snowflake) {
+		return (await redis.hExists(this.name, key)) === 1;
+	}
+
+	public async add(_data: Partial<Raw> & { id: Snowflake }, overwrite: boolean = false) {
+		const value = await this.get(_data.id);
+		if (!overwrite && value) {
+			value[kPatch](_data);
+			await this.set(_data.id, value);
+			return value;
+		} else {
+			const value = this.construct(_data);
+			await this.set(_data.id, value);
+			return value;
+		}
 	}
 
 	public async get(key: Snowflake) {
-		const data = await redis.json.get(`${this.name}:${key}`);
-		if (data && typeof data === 'object' && !Array.isArray(data)) {
-			return this.structureCreator(data as Raw);
+		const data = await redis.hGet(this.name, key);
+		if (data) {
+			const parsed = JSON.parse(data);
+			if (typeof parsed === 'object' && !Array.isArray(parsed)) {
+				return this.construct(parsed as Raw);
+			}
 		}
 
 		return undefined;
 	}
 
-	public async patch(key: Snowflake, data: Partial<Raw>): Promise<Value> {
-		const value = await this.get(key);
-		if (value) {
-			value[kPatch](data);
-			await this.set(key, value);
-			return value;
-		} else {
-			return this.add(key, data);
-		}
-	}
-
 	public async set(key: Snowflake, value: Value) {
-		await redis.json.set(`${this.name}:${key}`, '$', value.toJSON());
+		await redis.hSet(this.name, key, JSON.stringify(value.toJSON()));
 		return this;
 	}
 }

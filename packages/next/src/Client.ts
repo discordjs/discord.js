@@ -4,7 +4,7 @@ import { Client as CoreClient, Routes, GatewayDispatchEvents } from '@discordjs/
 import { REST } from '@discordjs/rest';
 import type { Structure } from '@discordjs/structures';
 import { WebSocketManager } from '@discordjs/ws';
-import { CollectionCache, type StructureCreator, type CacheConstructor, type StructureCache } from './util/cache.js';
+import { CollectionCache, type StructureCreator, type CacheConstructor, type Cache } from './util/cache.js';
 import { container } from './util/container.js';
 
 export class Client {
@@ -18,7 +18,7 @@ export class Client {
 		structureCreator: StructureCreator<Value>,
 		name: string,
 	) {
-		return new this.cacheConstructor(structureCreator, name) as StructureCache<Value>;
+		return new this.cacheConstructor(structureCreator, name) as Cache<Value>;
 	}
 
 	protected cacheConstructor: CacheConstructor;

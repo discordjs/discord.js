@@ -2,7 +2,7 @@ import type { Structure } from '@discordjs/structures';
 import { kClone, kPatch } from '@discordjs/structures';
 import type { Snowflake } from 'discord-api-types/globals';
 import type { Client } from '../Client.js';
-import type { RawAPIType, StructureCache } from '../util/cache.js';
+import type { RawAPIType, Cache } from '../util/cache.js';
 
 export abstract class CachedManager<
 	Value extends Structure<{ id: Snowflake }> & { get id(): Snowflake },
@@ -10,7 +10,7 @@ export abstract class CachedManager<
 > {
 	public client: Client;
 
-	public cache: StructureCache<Value>;
+	public cache: Cache<Value>;
 
 	protected abstract createStructure(data: Partial<RawAPIType<Value>>, ...extras: unknown[]): Value;
 
