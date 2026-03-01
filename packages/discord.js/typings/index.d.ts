@@ -162,6 +162,7 @@ import {
   InteractionType,
   InviteFlags,
   InviteTargetType,
+  InviteTargetUsersJobStatus,
   InviteType,
   Locale,
   LocalizationMap,
@@ -2060,6 +2061,7 @@ export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvit
   public guild: Guild | InviteGuild | null;
   public readonly guildId: Snowflake;
   public channel: NonThreadGuildBasedChannel | null;
+  public roles: Collection<Snowflake, Role> | null;
   public targetType: InviteTargetType | null;
   public targetUser: User | null;
   public targetApplication: IntegrationApplication | null;
@@ -2070,6 +2072,9 @@ export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvit
   public approximatePresenceCount: WithCounts extends true ? number : null;
   public get deletable(): boolean;
   public delete(reason?: string): Promise<void>;
+  public updateTargetUsers(targetUsersFile: BufferResolvable | readonly UserResolvable[]): Promise<unknown>;
+  public fetchTargetUsersJobStatus(): Promise<TargetUsersJobStatusForInvite>;
+  public fetchTargetUsers(): Promise<Buffer>;
 }
 
 export type InviteFlagsString = keyof typeof InviteFlags;
@@ -4513,13 +4518,28 @@ export class GuildBanManager extends CachedManager<Snowflake, GuildBan, GuildBan
   ): Promise<BulkBanResult>;
 }
 
+export interface TargetUsersJobStatusForInvite {
+  completedAt: Date | null;
+  createdAt: Date | null;
+  errorMessage: string | null;
+  processedUsers: number;
+  status: InviteTargetUsersJobStatus;
+  totalUsers: number;
+}
 export class GuildInviteManager extends DataManager<string, GuildInvite, GuildInviteResolvable> {
   private constructor(guild: Guild, iterable?: Iterable<unknown>);
   public guild: Guild;
   public create(channel: GuildInvitableChannelResolvable, options?: InviteCreateOptions): Promise<GuildInvite>;
+  public updateTargetUsers(
+    invite: InviteResolvable,
+    targetUsersFile: BufferResolvable | readonly UserResolvable[],
+  ): Promise<unknown>;
+  public fetchTargetUsers(invite: InviteResolvable): Promise<Buffer>;
+  public fetchTargetUsersJobStatus(invite: InviteResolvable): Promise<TargetUsersJobStatusForInvite>;
   public fetch(options: FetchInviteOptions | InviteResolvable): Promise<GuildInvite>;
   public fetch(options?: FetchInvitesOptions): Promise<Collection<string, GuildInvite>>;
   public delete(invite: InviteResolvable, reason?: string): Promise<void>;
+  private _createInviteFormData(options: InviteCreateOptions): Promise<FormData>;
 }
 
 export class GuildScheduledEventManager extends CachedManager<
@@ -6589,9 +6609,11 @@ export interface InviteCreateOptions {
   maxAge?: number;
   maxUses?: number;
   reason?: string;
+  roles?: readonly RoleResolvable[];
   targetApplication?: ApplicationResolvable;
   targetType?: InviteTargetType;
   targetUser?: UserResolvable;
+  targetUsersFile?: BufferResolvable | readonly UserResolvable[];
   temporary?: boolean;
   unique?: boolean;
 }
