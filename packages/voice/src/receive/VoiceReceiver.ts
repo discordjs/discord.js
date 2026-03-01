@@ -178,8 +178,8 @@ export class VoiceReceiver {
 	/**
 	 * Extends the Buffer for Opus audio data with RTP Header information
 	 *
-	 * @param buffer the opus packet data to extend
-	 * @param sequence the sequence number of the packet
+	 * @param buffer - the opus packet data to extend
+	 * @param sequence - the sequence number of the packet
 	 * @param timestamp see definition in
 	 * @param ssrc x
 	 * @returns the input buffer, with RTP header information added
