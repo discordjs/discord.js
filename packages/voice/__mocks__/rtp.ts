@@ -1,8 +1,8 @@
 import { Buffer } from 'node:buffer';
 
 // The following constants are silence packets collected from various platforms because Discord did not previously send header extensions
-// The header extension (extra data in decrypted vs opusFrame) can be detected in the position of {encrypted.subarray(12,14)} if it is equal to 0xbe,0xde
-// The header extension length will then follow as an integer and can be removed from the decrypted data (see ../src/receive/VoiceReceiver.ts:parsePacket)
+// The header extension (extra data in decrypted vs opusFrame) is indicated by the X bit (4th bit of byte 0) in the RTP header
+// The header extension length follows the CSRC identifiers and can be removed from the decrypted data (see ../src/receive/VoiceReceiver.ts:parsePacket)
 
 export const RTP_PACKET_DESKTOP = {
 	ssrc: 341_124,
@@ -48,6 +48,7 @@ export const XCHACHA20_SAMPLE = {
 		133, 174, 108, 144, 251, 110,
 	]),
 
+	// First 8 bytes are Header Extension payload
 	decrypted: Buffer.from([
 		0x32, 0x64, 0xe6, 0x62, 0x10, 0xe3, 0x90, 0x02, 0x78, 0x07, 0xd6, 0x2f, 0x52, 0x23, 0x20, 0x9a, 0xab, 0x2c, 0xcc,
 		0x1c, 0x88, 0x8e, 0xcb, 0xd9, 0x4d, 0xe5, 0x33, 0x7a, 0x4b, 0x2b, 0xed, 0xa7, 0xaf, 0x5f, 0x8d, 0xb2, 0x59, 0x99,
