@@ -1,4 +1,5 @@
 import { createServer } from 'node:http';
+import process from 'node:process';
 import { proxyRequests } from '@discordjs/proxy';
 import { REST } from '@discordjs/rest';
 
