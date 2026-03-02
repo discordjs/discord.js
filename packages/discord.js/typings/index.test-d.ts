@@ -202,6 +202,7 @@ import type {
   Invite,
   GuildInvite,
   AuthorizingIntegrationOwners,
+  VoiceServerUpdateData,
 } from './index.js';
 import {
   ActionRowBuilder,
@@ -1377,6 +1378,10 @@ client.on('typingStart', ({ client }) => expectType<Client<true>>(client));
 client.on('userUpdate', ({ client: oldClient }, { client: newClient }) => {
   expectType<Client<true>>(oldClient);
   expectType<Client<true>>(newClient);
+});
+
+client.on('voiceServerUpdate', data => {
+  expectType<VoiceServerUpdateData>(data);
 });
 
 client.on('voiceStateUpdate', ({ client: oldClient }, { client: newClient }) => {

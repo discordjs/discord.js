@@ -132,7 +132,7 @@ export class AstImport extends AstSyntheticEntity {
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * {@inheritdoc AstEntity.localName}
 	 */
 	public get localName(): string {
 		// abstract
