@@ -18,7 +18,7 @@ on:
           - '@discordjs/collection'
           - '@discordjs/core'
           - 'create-discord-bot'
-          - '@discordjs/docgen'
+          # - '@discordjs/docgen'
           - '@discordjs/formatters'
           - '@discordjs/next'
           - '@discordjs/proxy'
