@@ -14,6 +14,7 @@ body:
       label: Which package is this bug report for?
       options:
         - discord.js
+        - Proxy Container
         - brokers
         - builders
         - collection
@@ -22,7 +23,6 @@ body:
         - formatters
         - next
         - proxy
-        - proxy-container
         - rest
         - structures
         - ui

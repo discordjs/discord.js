@@ -4,6 +4,8 @@
   color: '5663e9'
 - name: apps:guide
   color: fbca04
+- name: apps:proxy-container
+  color: fbca04
 - name: apps:website
   color: fbca04
 - name: backlog
@@ -75,8 +77,6 @@
 - name: packages:next
   color: fbca04
 - name: packages:proxy
-  color: fbca04
-- name: packages:proxy-container
   color: fbca04
 - name: packages:rest
   color: fbca04
