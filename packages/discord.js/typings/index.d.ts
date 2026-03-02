@@ -6771,7 +6771,6 @@ export interface GuildForumThreadMessageCreateOptions
 
 export interface MessageEditOptions extends BaseMessageOptions {
   attachments?: readonly (Attachment | JSONEncodable<APIAttachment>)[];
-  content?: string | null;
   flags?:
     | BitFieldResolvable<
         Extract<MessageFlagsString, 'IsComponentsV2' | 'SuppressEmbeds'>,
