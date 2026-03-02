@@ -5426,7 +5426,7 @@ export type CacheWithLimitsOptions = {
     : never;
 };
 
-export interface CategoryCreateChannelOptions {
+export interface BaseCategoryCreateChannelOptions {
   availableTags?: readonly GuildForumTagData[];
   bitrate?: number;
   defaultAutoArchiveDuration?: ThreadAutoArchiveDuration;
@@ -5434,7 +5434,7 @@ export interface CategoryCreateChannelOptions {
   defaultReactionEmoji?: DefaultReactionEmoji;
   defaultSortOrder?: SortOrderType;
   defaultThreadRateLimitPerUser?: number;
-  name: string;
+  name?: string;
   nsfw?: boolean;
   permissionOverwrites?: ReadonlyCollection<Snowflake, OverwriteResolvable> | readonly OverwriteResolvable[];
   position?: number;
@@ -5442,9 +5442,14 @@ export interface CategoryCreateChannelOptions {
   reason?: string;
   rtcRegion?: string;
   topic?: string;
-  type?: CategoryChannelChildTypes;
+  type?: GuildChannelTypes;
   userLimit?: number;
   videoQualityMode?: VideoQualityMode;
+}
+
+export interface CategoryCreateChannelOptions extends BaseCategoryCreateChannelOptions {
+  name: string;
+  type?: CategoryChannelChildTypes;
 }
 
 export interface ChannelCreationOverwrites {
@@ -6243,20 +6248,12 @@ export interface AutoModerationActionMetadataOptions extends BaseAutoModerationA
   channel?: GuildTextChannelResolvable | ThreadChannel;
 }
 
-export interface GuildChannelCreateOptions extends Omit<CategoryCreateChannelOptions, 'type'> {
-  parent?: CategoryChannelResolvable | null;
-  type?: Exclude<
-    ChannelType,
-    | ChannelType.AnnouncementThread
-    | ChannelType.DM
-    | ChannelType.GroupDM
-    | ChannelType.PrivateThread
-    | ChannelType.PublicThread
-  >;
+export interface GuildChannelCreateOptions extends BaseCategoryCreateChannelOptions {
+  name: string;
 }
 
-export interface GuildChannelCloneOptions extends Omit<GuildChannelCreateOptions, 'name'> {
-  name?: string;
+export interface GuildChannelCloneOptions extends BaseCategoryCreateChannelOptions {
+  parent?: CategoryChannelResolvable | null;
 }
 
 export interface GuildChannelEditOptions {
@@ -6397,18 +6394,27 @@ export interface GuildListMembersOptions {
   limit?: number;
 }
 
-// TODO: use conditional types for better TS support
-export interface GuildScheduledEventCreateOptions {
-  channel?: GuildVoiceChannelResolvable;
+export interface BaseGuildScheduledEventOptions {
+  channel?: GuildVoiceChannelResolvable | null;
   description?: string;
   entityMetadata?: GuildScheduledEventEntityMetadataOptions;
-  entityType: GuildScheduledEventEntityType;
+  entityType?: GuildScheduledEventEntityType;
   image?: Base64Resolvable | BufferResolvable | null;
+  name?: string;
+  privacyLevel?: GuildScheduledEventPrivacyLevel;
+  reason?: string;
+  recurrenceRule?: GuildScheduledEventRecurrenceRuleOptions | null;
+  scheduledEndTime?: DateResolvable;
+  scheduledStartTime?: DateResolvable;
+}
+
+// TODO: use conditional types for better TS support
+export interface GuildScheduledEventCreateOptions extends BaseGuildScheduledEventOptions {
+  channel?: GuildVoiceChannelResolvable;
+  entityType: GuildScheduledEventEntityType;
   name: string;
   privacyLevel: GuildScheduledEventPrivacyLevel;
-  reason?: string;
   recurrenceRule?: GuildScheduledEventRecurrenceRuleOptions;
-  scheduledEndTime?: DateResolvable;
   scheduledStartTime: DateResolvable;
 }
 
@@ -6445,9 +6451,7 @@ export type BaseGuildScheduledEventRecurrenceRuleOptions<
 export interface GuildScheduledEventEditOptions<
   Status extends GuildScheduledEventStatus,
   AcceptableStatus extends GuildScheduledEventSetStatusArg<Status>,
-> extends Omit<Partial<GuildScheduledEventCreateOptions>, 'channel' | 'recurrenceRule'> {
-  channel?: GuildVoiceChannelResolvable | null;
-  recurrenceRule?: GuildScheduledEventRecurrenceRuleOptions | null;
+> extends BaseGuildScheduledEventOptions {
   status?: AcceptableStatus;
 }
 
@@ -6580,7 +6584,7 @@ export interface InteractionDeferUpdateOptions {
   withResponse?: boolean;
 }
 
-export interface InteractionReplyOptions extends BaseMessageOptions, MessageOptionsPoll {
+export interface InteractionReplyOptions extends BaseMessageSendOptions, MessageOptionsPoll {
   flags?:
     | BitFieldResolvable<
         Extract<
@@ -6747,9 +6751,13 @@ export interface BaseMessageOptions {
     | JSONEncodable<APIMessageTopLevelComponent>
     | TopLevelComponentData
   )[];
-  content?: string;
+  content?: string | null;
   embeds?: readonly (APIEmbed | JSONEncodable<APIEmbed>)[];
   files?: readonly (Attachment | AttachmentPayload | BufferResolvable | FileBodyEncodable<APIAttachment> | Stream)[];
+}
+
+export interface BaseMessageSendOptions extends BaseMessageOptions {
+  content?: string;
 }
 
 export interface MessageOptionsPoll {
@@ -6777,7 +6785,7 @@ export interface MessageOptionsStickers {
 }
 
 export interface BaseMessageCreateOptions
-  extends BaseMessageOptions, MessageOptionsPoll, MessageOptionsFlags, MessageOptionsTTS, MessageOptionsStickers {
+  extends BaseMessageSendOptions, MessageOptionsPoll, MessageOptionsFlags, MessageOptionsTTS, MessageOptionsStickers {
   enforceNonce?: boolean;
   nonce?: number | string;
 }
@@ -6787,11 +6795,10 @@ export interface MessageCreateOptions extends BaseMessageCreateOptions {
 }
 
 export interface GuildForumThreadMessageCreateOptions
-  extends BaseMessageOptions, MessageOptionsFlags, MessageOptionsStickers {}
+  extends BaseMessageSendOptions, MessageOptionsFlags, MessageOptionsStickers {}
 
-export interface MessageEditOptions extends Omit<BaseMessageOptions, 'content'> {
+export interface MessageEditOptions extends BaseMessageOptions {
   attachments?: readonly (Attachment | JSONEncodable<APIAttachment>)[];
-  content?: string | null;
   flags?:
     | BitFieldResolvable<
         Extract<MessageFlagsString, 'IsComponentsV2' | 'SuppressEmbeds'>,
@@ -7343,7 +7350,7 @@ export interface WebhookFetchMessageOptions {
 }
 
 export interface WebhookMessageCreateOptions
-  extends BaseMessageOptions, MessageOptionsPoll, MessageOptionsFlags, MessageOptionsTTS {
+  extends BaseMessageSendOptions, MessageOptionsPoll, MessageOptionsFlags, MessageOptionsTTS {
   appliedTags?: readonly Snowflake[];
   avatarURL?: string;
   threadId?: Snowflake;
