@@ -363,6 +363,9 @@ export class ActionRowBuilder<
 }
 
 export type ComponentInLabelData =
+  | CheckboxComponentData
+  | CheckboxGroupComponentData
+  | RadioGroupComponentData
   | StringSelectMenuComponentData
   | TextInputComponentData
   | UserSelectMenuComponentData
@@ -2828,7 +2831,28 @@ export interface FileUploadModalData extends BaseModalData<ComponentType.FileUpl
   attachments: ReadonlyCollection<Snowflake, Attachment>;
 }
 
-export type ModalData = FileUploadModalData | SelectMenuModalData | TextInputModalData;
+export interface RadioGroupModalData extends BaseModalData<ComponentType.RadioGroup> {
+  customId: string;
+  value: string | null;
+}
+
+export interface CheckboxGroupModalData extends BaseModalData<ComponentType.CheckboxGroup> {
+  customId: string;
+  values: readonly string[];
+}
+
+export interface CheckboxModalData extends BaseModalData<ComponentType.Checkbox> {
+  customId: string;
+  value: boolean;
+}
+
+export type ModalData =
+  | CheckboxGroupModalData
+  | CheckboxModalData
+  | FileUploadModalData
+  | RadioGroupModalData
+  | SelectMenuModalData
+  | TextInputModalData;
 
 export interface LabelModalData extends BaseModalData<ComponentType.Label> {
   component: ModalData;
@@ -2907,6 +2931,10 @@ export class ModalSubmitFields<Cached extends CacheType = CacheType> {
   public getSelectedMentionables(customId: string, required?: boolean): ModalSelectedMentionables<Cached> | null;
   public getUploadedFiles(customId: string, required: true): ReadonlyCollection<Snowflake, Attachment>;
   public getUploadedFiles(customId: string, required?: boolean): ReadonlyCollection<Snowflake, Attachment> | null;
+  public getRadioGroup(customId: string, required: true): string;
+  public getRadioGroup(customId: string, required?: boolean): string | null;
+  public getCheckboxGroup(customId: string): readonly string[];
+  public getCheckbox(customId: string): boolean;
 }
 
 export interface ModalMessageModalSubmitInteraction<
@@ -7467,6 +7495,40 @@ export interface FileUploadComponentData extends BaseComponentData {
   minValues?: number;
   required?: boolean;
   type: ComponentType.FileUpload;
+}
+
+export interface RadioGroupOption {
+  default?: boolean;
+  description?: string;
+  label: string;
+  value: string;
+}
+export interface RadioGroupComponentData extends BaseComponentData {
+  customId: string;
+  options: readonly RadioGroupOption[];
+  required?: boolean;
+  type: ComponentType.RadioGroup;
+}
+
+export interface CheckboxGroupOption {
+  default?: boolean;
+  description?: string;
+  label: string;
+  value: string;
+}
+export interface CheckboxGroupComponentData extends BaseComponentData {
+  customId: string;
+  maxValues?: number;
+  minValues?: number;
+  options: readonly CheckboxGroupOption[];
+  required?: boolean;
+  type: ComponentType.CheckboxGroup;
+}
+
+export interface CheckboxComponentData extends BaseComponentData {
+  customId: string;
+  default?: boolean;
+  type: ComponentType.Checkbox;
 }
 
 export type MessageTarget =
