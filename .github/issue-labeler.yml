@@ -1,6 +1,9 @@
 apps:guide:
   - "### Which (application|package|application or package) is this (bug
     report|feature request) for\\?\\n\\nGuide\\n"
+apps:proxy-container:
+  - "### Which (application|package|application or package) is this (bug
+    report|feature request) for\\?\\n\\nProxy Container\\n"
 apps:website:
   - "### Which (application|package|application or package) is this (bug
     report|feature request) for\\?\\n\\nDocumentation\\n"
@@ -31,9 +34,6 @@ packages:next:
 packages:proxy:
   - "### Which (application|package|application or package) is this (bug
     report|feature request) for\\?\\n\\nproxy\\n"
-packages:proxy-container:
-  - "### Which (application|package|application or package) is this (bug
-    report|feature request) for\\?\\n\\nproxy-container\\n"
 packages:rest:
   - "### Which (application|package|application or package) is this (bug
     report|feature request) for\\?\\n\\nrest\\n"

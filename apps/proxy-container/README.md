@@ -19,7 +19,7 @@
 
 ## About
 
-`@discordjs/proxy-container` - Lightweight HTTP proxy for Discord's API, brought to you as a container 📦
+`discordjs/proxy` - Lightweight HTTP proxy for Discord's API, brought to you as a container 📦
 
 ## Usage
 
@@ -79,6 +79,6 @@ If you don't understand something in the documentation, you are experiencing pro
 [guide-update]: https://discordjs.guide/legacy/additional-info/changes-in-v14
 [discord]: https://discord.gg/djs
 [discord-developers]: https://discord.gg/discord-developers
-[source]: https://github.com/discordjs/discord.js/tree/main/packages/proxy-container
+[source]: https://github.com/discordjs/discord.js/tree/main/apps/proxy-container
 [related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
 [contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md
