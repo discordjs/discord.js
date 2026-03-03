@@ -38,7 +38,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: packages/proxy-container/Dockerfile
+          file: apps/proxy-container/Dockerfile
           platforms: ${{ matrix.platform }}
           outputs: type=image,name=${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
 
@@ -74,7 +74,7 @@ jobs:
       - name: Get Major Version
         id: version
         run: |
-          FULL_VER=$(jq --raw-output '.version' packages/proxy-container/package.json)
+          FULL_VER=$(jq --raw-output '.version' apps/proxy-container/package.json)
           MAJOR=$(echo $FULL_VER | cut -d '.' -f1)
           echo "major=$MAJOR" >> $GITHUB_OUTPUT
 

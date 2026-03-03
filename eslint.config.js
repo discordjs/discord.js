@@ -72,8 +72,10 @@ const typeScriptRuleset = merge(...typescript, {
 	},
 });
 
+const nextAppsGlob = `apps/{guide,website}/**/*${commonFiles}`;
+
 const reactRuleset = merge(...react, {
-	files: [`apps/**/*${commonFiles}`, `packages/ui/**/*${commonFiles}`],
+	files: [nextAppsGlob, `packages/ui/**/*${commonFiles}`],
 	plugins: {
 		'react-compiler': reactCompiler,
 	},
@@ -87,11 +89,11 @@ const reactRuleset = merge(...react, {
 	},
 });
 
-const jsxa11yRuleset = merge(...jsxa11y, { files: [`apps/**/*${commonFiles}`, `packages/ui/**/*${commonFiles}`] });
+const jsxa11yRuleset = merge(...jsxa11y, { files: [nextAppsGlob, `packages/ui/**/*${commonFiles}`] });
 
-const nextRuleset = merge(...next, { files: [`apps/**/*${commonFiles}`] });
+const nextRuleset = merge(...next, { files: [nextAppsGlob] });
 
-const edgeRuleset = merge(...edge, { files: [`apps/**/*${commonFiles}`] });
+const edgeRuleset = merge(...edge, { files: [nextAppsGlob] });
 
 const prettierRuleset = merge(...prettier, { files: [`**/*${commonFiles}`] });
 
