@@ -39,28 +39,44 @@ export interface AudioReceiveStreamOptions extends ReadableOptions {
 /**
  * An audio packet containing encoded Opus payload data and key RTP Header metadata.
  */
-export interface AudioPacket {
+export class AudioPacket {
 	/**
-	 * The encoded Opus payload data.
+	 * Encoded Opus payload data.
 	 */
-	readonly payload: Buffer;
+	public readonly payload: Buffer;
 
 	/**
-	 * The RTP sequence number of this packet (16-bit, wraps at 65535).
+	 * RTP sequence number of this packet (16-bit, wraps at 65535).
 	 */
-	readonly sequence: number;
+	public readonly sequence: number;
 
 	/**
-	 * The RTP synchronization source identifier for this packet (32-bit).
+	 * RTP synchronization source identifier for this packet (32-bit).
 	 * A change in SSRC indicates a new RTP stream, so any associated
 	 * decoder should be reset.
 	 */
-	readonly ssrc: number;
+	public readonly ssrc: number;
 
 	/**
-	 * The RTP timestamp of this packet (32-bit, wraps at 2^32 - 1).
+	 * RTP timestamp of this packet (32-bit, wraps at 2^32 - 1, 48kHz clock).
 	 */
-	readonly timestamp: number;
+	public readonly timestamp: number;
+
+	/**
+	 * Construct a new AudioPacket.
+	 * **This is not a stable public API.**
+	 *
+	 * @param payload - Opus payload
+	 * @param sequence - RTP Sequence Number
+	 * @param timestamp - RTP Timestamp
+	 * @param ssrc - RTP Synchronization Source Identifier
+	 */
+	public constructor(payload: Buffer, sequence: number, timestamp: number, ssrc: number) {
+		this.payload = payload;
+		this.sequence = sequence;
+		this.timestamp = timestamp;
+		this.ssrc = ssrc;
+	}
 }
 
 export function createDefaultAudioReceiveStreamOptions(): AudioReceiveStreamOptions {

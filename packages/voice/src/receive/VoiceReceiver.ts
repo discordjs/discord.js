@@ -11,7 +11,7 @@ import { RTP_OPUS_PAYLOAD_TYPE } from '../util/constants';
 import {
 	AudioReceiveStream,
 	createDefaultAudioReceiveStreamOptions,
-	type AudioPacket,
+	AudioPacket,
 	type AudioReceiveStreamOptions,
 } from './AudioReceiveStream';
 import { SSRCMap } from './SSRCMap';
@@ -196,7 +196,7 @@ export class VoiceReceiver {
 		}
 
 		// Construct AudioPacket with Opus payload and RTP header information
-		return { payload, sequence, timestamp, ssrc };
+		return new AudioPacket(payload, sequence, timestamp, ssrc);
 	}
 
 	/**
