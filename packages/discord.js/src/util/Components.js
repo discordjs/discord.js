@@ -52,7 +52,8 @@ const getUserSelectMenuComponent = lazy(
 
 /**
  * @typedef {StringSelectMenuComponentData|TextInputComponentData|UserSelectMenuComponentData|
- * RoleSelectMenuComponentData|MentionableSelectMenuComponentData|ChannelSelectMenuComponentData|FileUploadComponentData} ComponentInLabelData
+ * RoleSelectMenuComponentData|MentionableSelectMenuComponentData|ChannelSelectMenuComponentData|FileUploadComponentData|
+ * RadioGroupComponentData|CheckboxGroupComponentData|CheckboxComponentData} ComponentInLabelData
  */
 
 /**
@@ -78,6 +79,44 @@ const getUserSelectMenuComponent = lazy(
  * @property {number} [minValues] The minimum number of files that must be uploaded (0-10)
  * @property {number} [maxValues] The maximum number of files that can be uploaded (1-10)
  * @property {boolean} [required] Whether this component is required in modals
+ */
+
+/**
+ * @typedef {Object} RadioGroupOption
+ * @property {string} value The value of the radio group option
+ * @property {string} label The label to use
+ * @property {string} [description] The optional description for the radio group option
+ * @property {boolean} [default] Whether this option is default selected
+ */
+
+/**
+ * @typedef {BaseComponentData} RadioGroupComponentData
+ * @property {string} customId The custom id of the radio group
+ * @property {RadioGroupOption[]} options The options in this radio group (2-10)
+ * @property {boolean} [required] Whether this component is required in modals
+ */
+
+/**
+ * @typedef {Object} CheckboxGroupOption
+ * @property {string} value The value of the checkbox group option
+ * @property {string} label The label to use
+ * @property {string} [description] The optional description for the checkbox group option
+ * @property {boolean} [default] Whether this option is default selected
+ */
+
+/**
+ * @typedef {BaseComponentData} CheckboxGroupComponentData
+ * @property {string} customId The custom id of the checkbox group
+ * @property {CheckboxGroupOption[]} options The options in this checkbox group
+ * @property {number} [minValues] The minimum number of options that must be selected (0-10)
+ * @property {number} [maxValues] The maximum number of options that can be selected (defaults to options length)
+ * @property {boolean} [required] Whether this component is required in modals
+ */
+
+/**
+ * @typedef {BaseComponentData} CheckboxComponentData
+ * @property {string} customId The custom id of the checkbox
+ * @property {boolean} [default] Whether this component is default selected in modals
  */
 
 /**

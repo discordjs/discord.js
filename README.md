@@ -95,5 +95,5 @@ If you don't understand something in the documentation, you are experiencing pro
 [util-source]: https://github.com/discordjs/discord.js/tree/main/packages/util
 [voice-source]: https://github.com/discordjs/discord.js/tree/main/packages/voice
 [ws-source]: https://github.com/discordjs/discord.js/tree/main/packages/ws
-[proxy-container-source]: https://github.com/discordjs/discord.js/tree/main/packages/proxy-container
+[proxy-container-source]: https://github.com/discordjs/discord.js/tree/main/apps/proxy-container
 [good-first-issue]: https://github.com/discordjs/discord.js/contribute

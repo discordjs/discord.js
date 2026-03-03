@@ -3,6 +3,11 @@ apps:guide:
       - any-glob-to-any-file:
           - apps/guide/*
           - apps/guide/**/*
+apps:proxy-container:
+  - changed-files:
+      - any-glob-to-any-file:
+          - apps/proxy-container/*
+          - apps/proxy-container/**/*
 apps:website:
   - changed-files:
       - any-glob-to-any-file:
@@ -68,11 +73,6 @@ packages:proxy:
       - any-glob-to-any-file:
           - packages/proxy/*
           - packages/proxy/**/*
-packages:proxy-container:
-  - changed-files:
-      - any-glob-to-any-file:
-          - packages/proxy-container/*
-          - packages/proxy-container/**/*
 packages:rest:
   - changed-files:
       - any-glob-to-any-file:
