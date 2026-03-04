@@ -64,7 +64,6 @@ export class AudioPacket {
 
 	/**
 	 * Construct a new AudioPacket.
-	 * **This is not a stable public API.**
 	 *
 	 * @param payload - Opus payload
 	 * @param sequence - RTP Sequence Number
