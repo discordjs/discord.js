@@ -340,7 +340,7 @@ export class Networking extends EventEmitter {
 	 * @param lastSequence - The last sequence to set for this WebSocket
 	 */
 	private createWebSocket(endpoint: string, lastSequence?: number) {
-		const ws = new VoiceWebSocket(`wss://${endpoint}?v=8`, Boolean(this.debug));
+		const ws = new VoiceWebSocket(`wss://${endpoint}/?v=8`, Boolean(this.debug));
 
 		if (lastSequence !== undefined) {
 			ws.sequence = lastSequence;
