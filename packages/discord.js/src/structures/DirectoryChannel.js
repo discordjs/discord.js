@@ -1,9 +1,10 @@
 'use strict';
 
-const { BaseChannel } = require('./BaseChannel');
+const { BaseChannel } = require('./BaseChannel.js');
 
 /**
  * Represents a channel that displays a directory of guilds.
+ *
  * @extends {BaseChannel}
  */
 class DirectoryChannel extends BaseChannel {
@@ -12,12 +13,14 @@ class DirectoryChannel extends BaseChannel {
 
     /**
      * The guild the channel is in
+     *
      * @type {InviteGuild}
      */
     this.guild = guild;
 
     /**
      * The id of the guild the channel is in
+     *
      * @type {Snowflake}
      */
     this.guildId = guild.id;
@@ -27,10 +30,11 @@ class DirectoryChannel extends BaseChannel {
     super._patch(data);
     /**
      * The channel's name
+     *
      * @type {string}
      */
     this.name = data.name;
   }
 }
 
-module.exports = DirectoryChannel;
+exports.DirectoryChannel = DirectoryChannel;

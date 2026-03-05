@@ -1,0 +1,101 @@
+---
+title: Project Setup
+---
+
+## Configuration files
+
+Once you [add your bot to a server](../preparations/adding-your-app), the next step is to start coding and get it online! Let's start by creating a config file for your client token and a main file for your bot application.
+
+As explained in the ["What is a token, anyway?"](../preparations/app-setup#what-is-a-token-anyway) section, your token is essentially your bot's password, and you should protect it as best as possible. This can be done through a `config.json` file or by using environment variables.
+
+Open your application in the [Discord Developer Portal](https://discord.com/developers/applications) and go to the "Bot" page to copy your token.
+
+## Using `config.json`
+
+Storing data in a `config.json` file is a common way of keeping your sensitive values safe. Create a `config.json` file in your project directory and paste in your token. You can access your token inside other files by using `require()`.
+
+```json tab="Config" title="config.json"
+{
+	"token": "your-token-goes-here"
+}
+```
+
+```js tab="Usage"
+const { token } = require('./config.json');
+
+console.log(token);
+```
+
+<Callout title="Danger" type="error">
+	If you're using Git, you should not commit files containing secrets. Read on to find out how to [exclude them from
+	versioning by using `.gitignore`](#git-and-gitignore).
+</Callout>
+
+## Using environment variables
+
+Environment variables are, as the name suggests, values you can pass to your environment (e.g. terminal session, Docker container, node process). This has the benefit that you can keep your code the same for different execution contexts.
+
+```txt title=".env"
+A=Hello World
+B=123
+DISCORD_TOKEN=MTI3NDMxMjA3PDQ3ODIxNzIzNg.G6uEbl.IpA3-9YeScYr9pu9K1utMlpP4p-KJwNxcIAbi8
+```
+
+<Callout title="Danger" type="error">
+	If you're using Git, you should not commit `.env` or other environment files containing secrets. Read on to find out
+	how to [exclude them from versioning by using `.gitignore`](#git-and-gitignore).
+</Callout>
+
+To use environment variables in Node.js, we recommend you use the command line interface flag `--env-file` to point to the `.env` file you want to use. Note that the file name `.env` is just a convention. You could for example have a `.env.development` and `.env.production` file with different values depending on the Discord application you want to run your code.
+
+You can also read multiple environment files by using the `--env-file` flag multiple times.
+
+```sh
+node --env-file=.env index.js
+```
+
+<Callout>You don't need to pass any special flags when using Bun! Bun reads `.env` files automatically.</Callout>
+
+The values you specify in `.env` files this way are exposed through the `process.env` global variable in any file. Note that values passed this way will always be strings. If you want to do calculations on environment numbers, you will have to parse them:
+
+```js title="index.js"
+// [!code word:env]
+console.log(process.env.A);
+console.log(process.env.B + 9); // 1239 (this concatenates the number to the string!)
+console.log(Number(process.env.C) + 9); // 132
+console.log(process.env.DISCORD_TOKEN);
+```
+
+## Online editors
+
+While we generally do not recommend using online editors as hosting solutions, but rather invest in a proper virtual private server, these services do offer ways to keep your credentials safe as well! Please see the respective service's documentation and help articles for more information on how to keep sensitive values safe:
+
+<Cards>
+	<Card title="Glitch" href="https://help.glitch.com/s/article/Adding-Private-Data">
+		Learn more about storing secrets in `.env` files using Glitch
+	</Card>
+	<Card title="Heroku" href="https://devcenter.heroku.com/articles/config-vars">
+		Learn more about configuration variables in Heroku
+	</Card>
+	<Card title="Replit" href="https://docs.replit.com/replit-workspace/workspace-features/secrets#secrets">
+		Learn more about secrets and environment variables in Replit
+	</Card>
+</Cards>
+
+## Git and `.gitignore`
+
+Git is a fantastic tool to keep track of your code changes and allows you to upload progress to services like [GitHub](https://github.com/), [GitLab](https://about.gitlab.com/), or [Bitbucket](https://bitbucket.org/product). While this is super useful to share code with other developers, it also bears the risk of uploading your configuration files with sensitive values!
+
+You can specify files that Git should ignore in its versioning systems with a `.gitignore` file. Create a `.gitignore` file in your project directory and add the names of the files and folders you want to ignore. The following example ignores the `config.json` and `.env` files as well as the `node_modules` directory:
+
+```txt title=".gitignore"
+node_modules
+.env
+config.json
+```
+
+<Callout>
+	`.gitignore` files can specify intricate patterns and help with your general development flow. Apart from keeping your
+	credentials safe, you should exclude `node_modules` from version control as well, its contents can be restored from
+	the entries in your `package.json` and `package-lock.json` files.
+</Callout>

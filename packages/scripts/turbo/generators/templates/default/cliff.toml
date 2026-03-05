@@ -57,7 +57,6 @@ commit_parsers = [
 	{ message = "^docs", group = "Documentation"},
 	{ message = "^perf", group = "Performance"},
 	{ message = "^refactor", group = "Refactor"},
-	{ message = "^typings", group = "Typings"},
 	{ message = "^types", group = "Typings"},
 	{ message = ".*deprecated", body = ".*deprecated", group = "Deprecation"},
 	{ message = "^revert", skip = true},
@@ -69,6 +68,7 @@ commit_parsers = [
 	{ body = ".*security", group = "Security"},
 ]
 filter_commits = true
+protect_breaking_commits = true
 tag_pattern = "@discordjs/{{name}}@[0-9]*"
 ignore_tags = ""
 topo_order = false

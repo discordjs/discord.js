@@ -3,13 +3,13 @@
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
-const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../errors');
-const GuildBan = require('../structures/GuildBan');
-const { GuildMember } = require('../structures/GuildMember');
+const { DiscordjsTypeError, DiscordjsError, ErrorCodes } = require('../errors/index.js');
+const { GuildBan } = require('../structures/GuildBan.js');
+const { CachedManager } = require('./CachedManager.js');
 
 /**
  * Manages API methods for guild bans and stores their cache.
+ *
  * @extends {CachedManager}
  */
 class GuildBanManager extends CachedManager {
@@ -18,6 +18,7 @@ class GuildBanManager extends CachedManager {
 
     /**
      * The guild this Manager belongs to
+     *
      * @type {Guild}
      */
     this.guild = guild;
@@ -25,6 +26,7 @@ class GuildBanManager extends CachedManager {
 
   /**
    * The cache of this Manager
+   *
    * @type {Collection<Snowflake, GuildBan>}
    * @name GuildBanManager#cache
    */
@@ -35,13 +37,15 @@ class GuildBanManager extends CachedManager {
 
   /**
    * Data that resolves to give a GuildBan object. This can be:
-   * * A GuildBan object
-   * * A User resolvable
+   * - A GuildBan object
+   * - A User resolvable
+   *
    * @typedef {GuildBan|UserResolvable} GuildBanResolvable
    */
 
   /**
    * Resolves a GuildBanResolvable to a GuildBan object.
+   *
    * @param {GuildBanResolvable} ban The ban that is in the guild
    * @returns {?GuildBan}
    */
@@ -51,12 +55,14 @@ class GuildBanManager extends CachedManager {
 
   /**
    * Options used to fetch a single ban from a guild.
+   *
    * @typedef {BaseFetchOptions} FetchBanOptions
    * @property {UserResolvable} user The ban to fetch
    */
 
   /**
    * Options used to fetch multiple bans from a guild.
+   *
    * @typedef {Object} FetchBansOptions
    * @property {number} [limit] The maximum number of bans to return
    * @property {Snowflake} [before] Consider only bans before this id
@@ -66,6 +72,7 @@ class GuildBanManager extends CachedManager {
 
   /**
    * Fetches ban(s) from Discord.
+   *
    * @param {UserResolvable|FetchBanOptions|FetchBansOptions} [options] Options for fetching guild ban(s)
    * @returns {Promise<GuildBan|Collection<Snowflake, GuildBan>>}
    * @example
@@ -94,14 +101,14 @@ class GuildBanManager extends CachedManager {
    *   .then(console.log)
    *   .catch(console.error);
    */
-  fetch(options) {
+  async fetch(options) {
     if (!options) return this._fetchMany();
     const { user, cache, force, limit, before, after } = options;
     const resolvedUser = this.client.users.resolveId(user ?? options);
     if (resolvedUser) return this._fetchSingle({ user: resolvedUser, cache, force });
 
     if (!before && !after && !limit && cache === undefined) {
-      return Promise.reject(new DiscordjsError(ErrorCodes.FetchBanResolveId));
+      throw new DiscordjsError(ErrorCodes.FetchBanResolveId);
     }
 
     return this._fetchMany(options);
@@ -117,16 +124,17 @@ class GuildBanManager extends CachedManager {
     return this._add(data, cache);
   }
 
-  async _fetchMany(options = {}) {
+  async _fetchMany({ cache, ...apiOptions } = {}) {
     const data = await this.client.rest.get(Routes.guildBans(this.guild.id), {
-      query: makeURLSearchParams(options),
+      query: makeURLSearchParams(apiOptions),
     });
 
-    return data.reduce((col, ban) => col.set(ban.user.id, this._add(ban, options.cache)), new Collection());
+    return data.reduce((col, ban) => col.set(ban.user.id, this._add(ban, cache)), new Collection());
   }
 
   /**
    * Options used to ban a user from a guild.
+   *
    * @typedef {Object} BanOptions
    * @property {number} [deleteMessageSeconds] Number of seconds of messages to delete,
    * must be between 0 and 604800 (7 days), inclusive
@@ -135,16 +143,13 @@ class GuildBanManager extends CachedManager {
 
   /**
    * Bans a user from the guild.
+   *
    * @param {UserResolvable} user The user to ban
-   * @param {BanOptions} [options] Options for the ban
-   * @returns {Promise<GuildMember|User|Snowflake>} Result object will be resolved as specifically as possible.
-   * If the GuildMember cannot be resolved, the User will instead be attempted to be resolved. If that also cannot
-   * be resolved, the user id will be the result.
+   * @param {BanOptions} [options={}] Options for the ban
+   * @returns {Promise<void>}
    * @example
    * // Ban a user by id (or with a user/guild member object)
-   * guild.bans.create('84484653687267328')
-   *   .then(banInfo => console.log(`Banned ${banInfo.user?.tag ?? banInfo.tag ?? banInfo}`))
-   *   .catch(console.error);
+   * await guild.bans.create('84484653687267328');
    */
   async create(user, options = {}) {
     if (typeof options !== 'object') throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
@@ -157,34 +162,27 @@ class GuildBanManager extends CachedManager {
       },
       reason: options.reason,
     });
-    if (user instanceof GuildMember) return user;
-    const _user = this.client.users.cache.get(id);
-    if (_user) {
-      return this.guild.members.resolve(_user) ?? _user;
-    }
-    return id;
   }
 
   /**
    * Unbans a user from the guild.
+   *
    * @param {UserResolvable} user The user to unban
    * @param {string} [reason] Reason for unbanning user
-   * @returns {Promise<?User>}
+   * @returns {Promise<void>}
    * @example
    * // Unban a user by id (or with a user/guild member object)
-   * guild.bans.remove('84484653687267328')
-   *   .then(user => console.log(`Unbanned ${user.username} from ${guild.name}`))
-   *   .catch(console.error);
+   * await guild.bans.remove('84484653687267328');
    */
   async remove(user, reason) {
     const id = this.client.users.resolveId(user);
     if (!id) throw new DiscordjsError(ErrorCodes.BanResolveId);
     await this.client.rest.delete(Routes.guildBan(this.guild.id, id), { reason });
-    return this.client.users.resolve(user);
   }
 
   /**
    * Result of bulk banning users from a guild.
+   *
    * @typedef {Object} BulkBanResult
    * @property {Snowflake[]} bannedUsers IDs of the banned users
    * @property {Snowflake[]} failedUsers IDs of the users that could not be banned or were already banned
@@ -192,6 +190,7 @@ class GuildBanManager extends CachedManager {
 
   /**
    * Bulk ban users from a guild, and optionally delete previous messages sent by them.
+   *
    * @param {Collection<Snowflake, UserResolvable>|UserResolvable[]} users The users to ban
    * @param {BanOptions} [options] The options for bulk banning users
    * @returns {Promise<BulkBanResult>} Returns an object with `bannedUsers` key containing the IDs of the banned users
@@ -208,6 +207,7 @@ class GuildBanManager extends CachedManager {
     if (!users || !(Array.isArray(users) || users instanceof Collection)) {
       throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'users', 'Array or Collection of UserResolvable', true);
     }
+
     if (typeof options !== 'object') throw new DiscordjsTypeError(ErrorCodes.InvalidType, 'options', 'object', true);
 
     const userIds = users.map(user => this.client.users.resolveId(user));
@@ -221,4 +221,4 @@ class GuildBanManager extends CachedManager {
   }
 }
 
-module.exports = GuildBanManager;
+exports.GuildBanManager = GuildBanManager;

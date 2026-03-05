@@ -8,9 +8,14 @@ export interface ApplicationCommandOptionWithChoicesData {
 
 /**
  * This mixin holds choices and autocomplete symbols used for options.
+ *
+ * @typeParam ChoiceType - The type of the choices within this option
  */
 export class ApplicationCommandOptionWithChoicesMixin<ChoiceType extends number | string> {
-	protected declare readonly data: ApplicationCommandOptionWithChoicesData;
+	/**
+	 * @internal
+	 */
+	declare protected readonly data: ApplicationCommandOptionWithChoicesData;
 
 	/**
 	 * Adds multiple choices to this option.

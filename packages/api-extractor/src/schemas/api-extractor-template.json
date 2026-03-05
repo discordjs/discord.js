@@ -48,6 +48,11 @@
 	"mainEntryPointFilePath": "<projectFolder>/lib/index.d.ts",
 
 	/**
+	 * Specifies the import path of the entrypoint used as the starting point for analysis.
+	 */
+	// "mainEntryPointName": "",
+
+	/**
 	 * A list of NPM package names whose exports should be treated as part of this package.
 	 *
 	 * For example, suppose that Webpack is used to generate a distributed bundle for the project "library1",
@@ -138,15 +143,31 @@
 		"enabled": true
 
 		/**
-		 * The filename for the API report files.  It will be combined with "reportFolder" or "reportTempFolder" to produce
-		 * a full file path.
+		 * The base filename for the API report files, to be combined with "reportFolder" or "reportTempFolder"
+		 * to produce the full file path.  The "reportFileName" should not include any path separators such as
+		 * "\" or "/".  The "reportFileName" should not include a file extension, since API Extractor will automatically
+		 * append an appropriate file extension such as ".api.md".  If the "reportVariants" setting is used, then the
+		 * file extension includes the variant name, for example "my-report.public.api.md" or "my-report.beta.api.md".
+		 * The "complete" variant always uses the simple extension "my-report.api.md".
 		 *
-		 * The file extension should be ".api.md", and the string should not contain a path separator such as "\" or "/".
+		 * Previous versions of API Extractor required "reportFileName" to include the ".api.md" extension explicitly;
+		 * for backwards compatibility, that is still accepted but will be discarded before applying the above rules.
 		 *
 		 * SUPPORTED TOKENS: <packageName>, <unscopedPackageName>
-		 * DEFAULT VALUE: "<unscopedPackageName>.api.md"
+		 * DEFAULT VALUE: "<unscopedPackageName>"
 		 */
-		// "reportFileName": "<unscopedPackageName>.api.md",
+		// "reportFileName": "<unscopedPackageName>",
+
+		/**
+		 * To support different approval requirements for different API levels, multiple "variants" of the API report can
+		 * be generated.  The "reportVariants" setting specifies a list of variants to be generated.  If omitted,
+		 * by default only the "complete" variant will be generated, which includes all @internal, @alpha, @beta,
+		 * and @public items.  Other possible variants are "alpha" (@alpha + @beta + @public), "beta" (@beta + @public),
+		 * and "public" (@public only).
+		 *
+		 * DEFAULT VALUE: [ "complete" ]
+		 */
+		// "reportVariants": ["public", "beta"],
 
 		/**
 		 * Specifies the folder where the API report file is written.  The file name portion is determined by
@@ -159,9 +180,9 @@
 		 * prepend a folder token such as "<projectFolder>".
 		 *
 		 * SUPPORTED TOKENS: <projectFolder>, <packageName>, <unscopedPackageName>
-		 * DEFAULT VALUE: "<projectFolder>/temp/"
+		 * DEFAULT VALUE: "<projectFolder>/etc/"
 		 */
-		// "reportFolder": "<projectFolder>/temp/",
+		// "reportFolder": "<projectFolder>/etc/",
 
 		/**
 		 * Specifies the folder where the temporary report file is written.  The file name portion is determined by
@@ -226,7 +247,7 @@
 		 * item's file path is "api/ExtractorConfig.ts", the full URL file path would be
 		 * "https://github.com/microsoft/rushstack/tree/main/apps/api-extractor/api/ExtractorConfig.js".
 		 *
-		 * Can be omitted if you don't need source code links in your API documentation reference.
+		 * This setting can be omitted if you don't need source code links in your API documentation reference.
 		 *
 		 * SUPPORTED TOKENS: none
 		 * DEFAULT VALUE: ""
@@ -261,6 +282,8 @@
 		 * Specifies the output path for a .d.ts rollup file to be generated with trimming for an "alpha" release.
 		 * This file will include only declarations that are marked as "@public", "@beta", or "@alpha".
 		 *
+		 * If the path is an empty string, then this file will not be written.
+		 *
 		 * The path is resolved relative to the folder of the config file that contains the setting; to change this,
 		 * prepend a folder token such as "<projectFolder>".
 		 *
@@ -272,6 +295,8 @@
 		/**
 		 * Specifies the output path for a .d.ts rollup file to be generated with trimming for a "beta" release.
 		 * This file will include only declarations that are marked as "@public" or "@beta".
+		 *
+		 * If the path is an empty string, then this file will not be written.
 		 *
 		 * The path is resolved relative to the folder of the config file that contains the setting; to change this,
 		 * prepend a folder token such as "<projectFolder>".

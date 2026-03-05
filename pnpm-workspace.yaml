@@ -1,3 +1,42 @@
 packages:
-  - 'apps/*'
-  - 'packages/*'
+  - apps/*
+  - packages/*
+  - packages/create-discord-bot/template/**/*
+
+autoInstallPeers: false
+
+ignoredBuiltDependencies:
+  - core-js-pure
+  - unrs-resolver
+
+onlyBuiltDependencies:
+  - '@discordjs/opus'
+  - '@tailwindcss/oxide'
+  - bufferutil
+  - esbuild
+  - protobufjs
+  - rclone.js
+  - sharp
+  - utf-8-validate
+  - workerd
+  - zlib-sync
+
+patchedDependencies:
+  '@microsoft/tsdoc-config@0.17.1': patches/@microsoft__tsdoc-config@0.17.1.patch
+
+peerDependencyRules:
+  allowAny:
+    - '*'
+  ignoreMissing:
+    - '*'
+
+publicHoistPattern:
+  - '*eslint*'
+  - '*prettier*'
+  - '*@rushstack/node-core-library*'
+  - '*jju*'
+
+updateConfig:
+  ignoreDependencies:
+    - jsdoc-to-markdown
+    - typedoc

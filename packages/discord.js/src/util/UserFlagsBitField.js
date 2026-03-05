@@ -1,15 +1,18 @@
+/* eslint-disable jsdoc/check-values */
 'use strict';
 
 const { UserFlags } = require('discord-api-types/v10');
-const BitField = require('./BitField');
+const { BitField } = require('./BitField.js');
 
 /**
  * Data structure that makes it easy to interact with a {@link User#flags} bitfield.
+ *
  * @extends {BitField}
  */
 class UserFlagsBitField extends BitField {
   /**
    * Numeric user flags.
+   *
    * @type {UserFlags}
    * @memberof UserFlagsBitField
    */
@@ -25,8 +28,9 @@ class UserFlagsBitField extends BitField {
 
 /**
  * Bitfield of the packed bits
+ *
  * @type {number}
  * @name UserFlagsBitField#bitfield
  */
 
-module.exports = UserFlagsBitField;
+exports.UserFlagsBitField = UserFlagsBitField;

@@ -4,6 +4,7 @@
   "bundledPackages": [
     "discord-api-types",
     "@discordjs/builders",
+    "@discordjs/collection",
     "@discordjs/formatters",
     "@discordjs/rest",
     "@discordjs/util",

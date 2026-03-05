@@ -41,6 +41,10 @@
  * @property {string} GuildScheduledEventUpdate guildScheduledEventUpdate
  * @property {string} GuildScheduledEventUserAdd guildScheduledEventUserAdd
  * @property {string} GuildScheduledEventUserRemove guildScheduledEventUserRemove
+ * @property {string} GuildSoundboardSoundCreate guildSoundboardSoundCreate
+ * @property {string} GuildSoundboardSoundDelete guildSoundboardSoundDelete
+ * @property {string} GuildSoundboardSoundsUpdate guildSoundboardSoundsUpdate
+ * @property {string} GuildSoundboardSoundUpdate guildSoundboardSoundUpdate
  * @property {string} GuildStickerCreate stickerCreate
  * @property {string} GuildStickerDelete stickerDelete
  * @property {string} GuildStickerUpdate stickerUpdate
@@ -61,6 +65,7 @@
  * @property {string} MessageReactionRemoveEmoji messageReactionRemoveEmoji
  * @property {string} MessageUpdate messageUpdate
  * @property {string} PresenceUpdate presenceUpdate
+ * @property {string} SoundboardSounds soundboardSounds
  * @property {string} StageInstanceCreate stageInstanceCreate
  * @property {string} StageInstanceDelete stageInstanceDelete
  * @property {string} StageInstanceUpdate stageInstanceUpdate
@@ -87,7 +92,7 @@
  * @type {Events}
  * @ignore
  */
-module.exports = {
+exports.Events = {
   ApplicationCommandPermissionsUpdate: 'applicationCommandPermissionsUpdate',
   AutoModerationActionExecution: 'autoModerationActionExecution',
   AutoModerationRuleCreate: 'autoModerationRuleCreate',
@@ -101,8 +106,8 @@ module.exports = {
   ClientReady: 'clientReady',
   Debug: 'debug',
   EntitlementCreate: 'entitlementCreate',
-  EntitlementUpdate: 'entitlementUpdate',
   EntitlementDelete: 'entitlementDelete',
+  EntitlementUpdate: 'entitlementUpdate',
   Error: 'error',
   GuildAuditLogEntryCreate: 'guildAuditLogEntryCreate',
   GuildAvailable: 'guildAvailable',
@@ -127,6 +132,10 @@ module.exports = {
   GuildScheduledEventUpdate: 'guildScheduledEventUpdate',
   GuildScheduledEventUserAdd: 'guildScheduledEventUserAdd',
   GuildScheduledEventUserRemove: 'guildScheduledEventUserRemove',
+  GuildSoundboardSoundCreate: 'guildSoundboardSoundCreate',
+  GuildSoundboardSoundDelete: 'guildSoundboardSoundDelete',
+  GuildSoundboardSoundsUpdate: 'guildSoundboardSoundsUpdate',
+  GuildSoundboardSoundUpdate: 'guildSoundboardSoundUpdate',
   GuildStickerCreate: 'stickerCreate',
   GuildStickerDelete: 'stickerDelete',
   GuildStickerUpdate: 'stickerUpdate',
@@ -147,12 +156,13 @@ module.exports = {
   MessageReactionRemoveEmoji: 'messageReactionRemoveEmoji',
   MessageUpdate: 'messageUpdate',
   PresenceUpdate: 'presenceUpdate',
+  SoundboardSounds: 'soundboardSounds',
   StageInstanceCreate: 'stageInstanceCreate',
   StageInstanceDelete: 'stageInstanceDelete',
   StageInstanceUpdate: 'stageInstanceUpdate',
   SubscriptionCreate: 'subscriptionCreate',
-  SubscriptionUpdate: 'subscriptionUpdate',
   SubscriptionDelete: 'subscriptionDelete',
+  SubscriptionUpdate: 'subscriptionUpdate',
   ThreadCreate: 'threadCreate',
   ThreadDelete: 'threadDelete',
   ThreadListSync: 'threadListSync',

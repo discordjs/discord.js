@@ -1,12 +1,13 @@
 'use strict';
 
-const Events = require('../../../util/Events');
+const { Events } = require('../../../util/Events.js');
 
 module.exports = (client, { d: data }) => {
   const subscription = client.application.subscriptions._add(data);
 
   /**
    * Emitted whenever a subscription is created.
+   *
    * @event Client#subscriptionCreate
    * @param {Subscription} subscription The subscription that was created
    */

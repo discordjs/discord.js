@@ -1,4 +1,5 @@
 import type { Buffer } from 'node:buffer';
+import process from 'node:process';
 import { Readable, type ReadableOptions } from 'node:stream';
 import { SILENCE_FRAME } from '../audio/AudioPlayer';
 
@@ -55,9 +56,11 @@ export class AudioReceiveStream extends Readable {
 
 	private endTimeout?: NodeJS.Timeout;
 
-	public constructor({ end, ...options }: AudioReceiveStreamOptions) {
+	public constructor(options: AudioReceiveStreamOptions) {
+		const { end, ...rest } = options;
+
 		super({
-			...options,
+			...rest,
 			objectMode: true,
 		});
 
@@ -72,6 +75,11 @@ export class AudioReceiveStream extends Readable {
 					(buffer.compare(SILENCE_FRAME) !== 0 || this.endTimeout === undefined)))
 		) {
 			this.renewEndTimeout(this.end);
+		}
+
+		if (buffer === null) {
+			// null marks EOF for stream
+			process.nextTick(() => this.destroy());
 		}
 
 		return super.push(buffer);

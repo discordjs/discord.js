@@ -17,4 +17,4 @@ export { AudioResource, type CreateAudioResourceOptions, createAudioResource } f
 
 export { PlayerSubscription } from './PlayerSubscription';
 
-export { StreamType } from './TransformerGraph';
+export { StreamType, type Edge, TransformerType, Node } from './TransformerGraph';

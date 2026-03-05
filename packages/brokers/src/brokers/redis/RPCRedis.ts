@@ -1,5 +1,4 @@
 import type { Buffer } from 'node:buffer';
-import { clearTimeout, setTimeout } from 'node:timers';
 import type Redis from 'ioredis/built/Redis.js';
 import type { IRPCBroker } from '../Broker.js';
 import type { RedisBrokerOptions } from './BaseRedis.js';
@@ -24,7 +23,7 @@ export interface RPCRedisBrokerOptions extends RedisBrokerOptions {
 export const DefaultRPCRedisBrokerOptions = {
 	...DefaultRedisBrokerOptions,
 	timeout: 5_000,
-} as const satisfies Required<Omit<RPCRedisBrokerOptions, 'group'>>;
+} as const satisfies Required<Omit<RPCRedisBrokerOptions, 'group' | 'name'>>;
 
 /**
  * RPC broker powered by Redis
@@ -63,6 +62,9 @@ export class RPCRedisBroker<TEvents extends Record<string, any[]>, TResponses ex
 	 */
 	protected override readonly options: Required<RPCRedisBrokerOptions>;
 
+	/**
+	 * @internal
+	 */
 	protected readonly promises = new Map<string, InternalPromise>();
 
 	public constructor(redisClient: Redis, options: RPCRedisBrokerOptions) {
@@ -118,7 +120,7 @@ export class RPCRedisBroker<TEvents extends Record<string, any[]>, TResponses ex
 		const payload: { ack(): Promise<void>; data: unknown; reply(data: unknown): Promise<void> } = {
 			data,
 			ack: async () => {
-				await this.redisClient.xack(event, this.options.group, id);
+				await this.redisClient.xack(event, this.group, id);
 			},
 			reply: async (data) => {
 				await this.redisClient.publish(`${event}:${id.toString()}`, this.options.encode(data));

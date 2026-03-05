@@ -14,10 +14,7 @@ import { ApiReleaseTagMixin, type IApiReleaseTagMixinOptions } from '../mixins/A
  * @public
  */
 export interface IApiEnumMemberOptions
-	extends IApiNameMixinOptions,
-		IApiReleaseTagMixinOptions,
-		IApiDeclaredItemOptions,
-		IApiInitializerMixinOptions {}
+	extends IApiNameMixinOptions, IApiReleaseTagMixinOptions, IApiDeclaredItemOptions, IApiInitializerMixinOptions {}
 
 /**
  * Options for customizing the sort order of {@link ApiEnum} members.

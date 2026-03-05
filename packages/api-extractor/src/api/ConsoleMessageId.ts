@@ -71,6 +71,11 @@ export const enum ConsoleMessageId {
 	UsingCustomTSDocConfig = 'console-using-custom-tsdoc-config',
 
 	/**
+	 * "Generating ___ API report: ___"
+	 */
+	WritingApiReport = 'console-writing-api-report',
+
+	/**
 	 * "Writing: ___"
 	 */
 	WritingDocModelFile = 'console-writing-doc-model-file',

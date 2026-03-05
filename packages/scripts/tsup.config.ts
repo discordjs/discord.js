@@ -6,7 +6,7 @@ export default [
 		minify: 'terser',
 	}),
 	createTsupConfig({
-		entry: ['src/populateDevDatabaseBranch.ts'],
+		entry: ['src/populateDevDatabaseBranch.ts', 'bin/sortLabels.ts'],
 		format: 'esm',
 		minify: 'terser',
 	}),

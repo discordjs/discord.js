@@ -15,6 +15,7 @@ beforeEach(() => {
 	setGlobalDispatcher(mockAgent);
 
 	mockPool = mockAgent.get('https://discord.com');
+	api.setAgent(mockAgent);
 });
 
 afterEach(async () => {

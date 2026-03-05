@@ -20,6 +20,7 @@ export enum Encoding {
 export enum CompressionMethod {
 	ZlibNative,
 	ZlibSync,
+	ZstdNative,
 }
 
 export const DefaultDeviceProperty = `@discordjs/ws [VI]{{inject}}[/VI]` as `@discordjs/ws ${string}`;
@@ -29,6 +30,7 @@ const getDefaultSessionStore = lazy(() => new Collection<number, SessionInfo | n
 export const CompressionParameterMap = {
 	[CompressionMethod.ZlibNative]: 'zlib-stream',
 	[CompressionMethod.ZlibSync]: 'zlib-stream',
+	[CompressionMethod.ZstdNative]: 'zstd-stream',
 } as const satisfies Record<CompressionMethod, string>;
 
 /**
@@ -68,7 +70,7 @@ export const DefaultWebSocketManagerOptions = {
 	handshakeTimeout: 30_000,
 	helloTimeout: 60_000,
 	readyTimeout: 15_000,
-} as const satisfies Omit<OptionalWebSocketManagerOptions, 'token'>;
+} as const satisfies Omit<OptionalWebSocketManagerOptions, 'fetchGatewayInformation' | 'token'>;
 
 export const ImportantGatewayOpcodes = new Set([
 	GatewayOpcodes.Heartbeat,

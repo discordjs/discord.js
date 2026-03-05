@@ -52,14 +52,14 @@ export function Alert({ title, type, children }: PropsWithChildren<IAlert>) {
 			<div className="relative flex">
 				<div className="p-4">{children}</div>
 				<div className="pointer-events-none absolute h-full w-full flex">
-					<div className={`rounded-tl-1.5 rounded-bl-1.5 w-4 shrink-0 border-b-2 border-l-2 border-t-2 ${border}`} />
+					<div className={`w-4 shrink-0 border-b-2 border-l-2 border-t-2 rounded-bl-1.5 rounded-tl-1.5 ${border}`} />
 					<div className={`relative border-b-2 ${border}`}>
-						<div className={`-translate-y-50% pointer-events-auto flex place-items-center gap-2 px-2 ${text}`}>
+						<div className={`pointer-events-auto flex place-items-center gap-2 px-2 -translate-y-50% ${text}`}>
 							{icon}
 							{title ? <span className={`font-semibold ${text}`}>{title}</span> : null}
 						</div>
 					</div>
-					<div className={`rounded-tr-1.5 rounded-br-1.5 flex-1 border-b-2 border-r-2 border-t-2 ${border}`} />
+					<div className={`flex-1 border-b-2 border-r-2 border-t-2 rounded-br-1.5 rounded-tr-1.5 ${border}`} />
 				</div>
 			</div>
 		</div>

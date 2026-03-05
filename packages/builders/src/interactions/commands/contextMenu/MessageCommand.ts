@@ -3,6 +3,9 @@ import { validate } from '../../../util/validation.js';
 import { messageCommandPredicate } from './Assertions.js';
 import { ContextMenuCommandBuilder } from './ContextMenuCommand.js';
 
+/**
+ * A builder that creates API-compatible JSON data for message context menu commands.
+ */
 export class MessageContextCommandBuilder extends ContextMenuCommandBuilder {
 	/**
 	 * {@inheritDoc CommandBuilder.toJSON}

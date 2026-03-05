@@ -1,0 +1,11 @@
+{
+	"title": "Creating Your App",
+	"pages": [
+		"project-setup",
+		"main-file",
+		"creating-commands",
+		"handling-commands",
+		"deploying-commands",
+		"handling-events"
+	]
+}

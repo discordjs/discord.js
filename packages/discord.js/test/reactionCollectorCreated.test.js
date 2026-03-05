@@ -2,7 +2,7 @@
 
 const { GatewayIntentBits } = require('discord-api-types/v10');
 const { token, guildId, channelId, messageId } = require('./auth.js');
-const { Client, Events, ReactionCollector } = require('../src');
+const { Client, Events, ReactionCollector } = require('../src/index.js');
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],

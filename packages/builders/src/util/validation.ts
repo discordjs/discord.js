@@ -1,5 +1,5 @@
 import type { z } from 'zod';
-import { fromZodError } from 'zod-validation-error';
+import { ValidationError } from './ValidationError.js';
 
 let validationEnabled = true;
 
@@ -35,21 +35,23 @@ export function isValidationEnabled() {
  * @param value - The value to parse
  * @param validationOverride - Force validation to run/not run regardless of your global preference
  * @returns The result from parsing
+ * @throws {@link ValidationError}
+ * Throws if the value does not pass validation, if enabled.
  * @internal
  */
-export function validate<Validator extends z.ZodTypeAny>(
+export function validate<Validator extends z.ZodType>(
 	validator: Validator,
 	value: unknown,
 	validationOverride?: boolean,
 ): z.output<Validator> {
-	if (validationOverride === false || !isValidationEnabled()) {
-		return value;
+	if (validationOverride === false || (validationOverride === undefined && !isValidationEnabled())) {
+		return value as z.output<Validator>;
 	}
 
 	const result = validator.safeParse(value);
 
 	if (!result.success) {
-		throw fromZodError(result.error);
+		throw new ValidationError(result.error);
 	}
 
 	return result.data;

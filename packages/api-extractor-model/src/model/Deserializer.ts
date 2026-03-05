@@ -214,6 +214,7 @@ function mapVarType(type: DocgenVarTypeJson, _package: string): IExcerptToken[] 
 function mapProp(
 	prop: DocgenPropertyJson,
 	_package: string,
+	// eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
 	parent: DocgenClassJson | DocgenInterfaceJson,
 ): IApiNameMixinJson & IApiOptionalMixinJson & IApiPropertyItemJson & IApiReadonlyMixinJson & IApiReleaseTagMixinJson {
 	const mappedVarType = mapVarType(prop.type, _package);
@@ -267,7 +268,8 @@ function mapParam(
 }
 
 interface IApiMethodJson
-	extends IApiAbstractMixinJson,
+	extends
+		IApiAbstractMixinJson,
 		IApiDeclaredItemJson,
 		IApiNameMixinJson,
 		IApiOptionalMixinJson,
@@ -279,10 +281,7 @@ interface IApiMethodJson
 		IApiTypeParameterListMixinJson {}
 
 interface IApiConstructorJson
-	extends IApiParameterListJson,
-		IApiProtectedMixinJson,
-		IApiReleaseTagMixinJson,
-		IApiDeclaredItemJson {}
+	extends IApiParameterListJson, IApiProtectedMixinJson, IApiReleaseTagMixinJson, IApiDeclaredItemJson {}
 
 function mapMethod(method: DocgenMethodJson, _package: string, parent?: DocgenClassJson): IApiMethodJson {
 	const excerptTokens: IExcerptToken[] = [];

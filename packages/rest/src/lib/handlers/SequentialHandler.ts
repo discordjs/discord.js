@@ -216,6 +216,7 @@ export class SequentialHandler implements IHandler {
 				limit = this.manager.options.globalRequestsPerSecond;
 				timeout = this.manager.globalReset + offset - Date.now();
 				// If this is the first task to reach the global timeout, set the global delay
+				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				if (!this.manager.globalDelay) {
 					// The global delay function clears the global delay state when it is resolved
 					this.manager.globalDelay = this.globalDelayFor(timeout);
@@ -304,11 +305,16 @@ export class SequentialHandler implements IHandler {
 			// Let library users know when rate limit buckets have been updated
 			this.debug(['Received bucket hash update', `  Old Hash  : ${this.hash}`, `  New Hash  : ${hash}`].join('\n'));
 			// This queue will eventually be eliminated via attrition
-			this.manager.hashes.set(`${method}:${routeId.bucketRoute}`, { value: hash, lastAccess: Date.now() });
+			this.manager.hashes.set(
+				`${method}:${routeId.bucketRoute}${typeof requestData.auth === 'string' ? `:${requestData.auth}` : ''}`,
+				{ value: hash, lastAccess: Date.now() },
+			);
 		} else if (hash) {
 			// Handle the case where hash value doesn't change
 			// Fetch the hash data from the manager
-			const hashData = this.manager.hashes.get(`${method}:${routeId.bucketRoute}`);
+			const hashData = this.manager.hashes.get(
+				`${method}:${routeId.bucketRoute}${typeof requestData.auth === 'string' ? `:${requestData.auth}` : ''}`,
+			);
 
 			// When fetched, update the last access of the hash
 			if (hashData) {
@@ -414,7 +420,7 @@ export class SequentialHandler implements IHandler {
 			// Since this is not a server side issue, the next request should pass, so we don't bump the retries counter
 			return this.runRequest(routeId, url, options, requestData, retries);
 		} else {
-			const handled = await handleErrors(this.manager, res, method, url, requestData, retries);
+			const handled = await handleErrors(this.manager, res, method, url, requestData, retries, routeId);
 			if (handled === null) {
 				// eslint-disable-next-line no-param-reassign
 				return this.runRequest(routeId, url, options, requestData, ++retries);

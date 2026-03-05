@@ -1,7 +1,7 @@
 'use strict';
 
-const VoiceChannelEffect = require('../../../structures/VoiceChannelEffect');
-const Events = require('../../../util/Events');
+const { VoiceChannelEffect } = require('../../../structures/VoiceChannelEffect.js');
+const { Events } = require('../../../util/Events.js');
 
 module.exports = (client, { d: data }) => {
   const guild = client.guilds.cache.get(data.guild_id);
@@ -9,6 +9,7 @@ module.exports = (client, { d: data }) => {
 
   /**
    * Emitted when someone sends an effect, such as an emoji reaction, in a voice channel the client is connected to.
+   *
    * @event Client#voiceChannelEffectSend
    * @param {VoiceChannelEffect} voiceChannelEffect The sent voice channel effect
    */

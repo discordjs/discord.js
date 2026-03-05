@@ -5,7 +5,7 @@ import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
 import process from 'node:process';
 import { Readable } from 'node:stream';
-import { describe, test, expect, vitest, type Mock, beforeEach, afterEach } from 'vitest';
+import { describe, test, expect, vitest, type MockedFunction, beforeEach, afterEach } from 'vitest';
 import { addAudioPlayer, deleteAudioPlayer } from '../src/DataStore';
 import { VoiceConnection, VoiceConnectionStatus } from '../src/VoiceConnection';
 import type { AudioPlayer } from '../src/audio/AudioPlayer';
@@ -14,12 +14,10 @@ import { AudioPlayerError } from '../src/audio/AudioPlayerError';
 import { AudioResource } from '../src/audio/AudioResource';
 import { NoSubscriberBehavior } from '../src/index';
 
-vitest.mock('../src/DataStore', () => {
-	return {
-		addAudioPlayer: vitest.fn(),
-		deleteAudioPlayer: vitest.fn(),
-	};
-});
+vitest.mock('../src/DataStore', () => ({
+	addAudioPlayer: vitest.fn(),
+	deleteAudioPlayer: vitest.fn(),
+}));
 
 vitest.mock('../src/VoiceConnection', async (importOriginal) => {
 	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
@@ -34,11 +32,9 @@ vitest.mock('../src/VoiceConnection', async (importOriginal) => {
 	};
 });
 
-vitest.mock('../src/audio/AudioPlayerError', () => {
-	return {
-		AudioPlayerError: vitest.fn(),
-	};
-});
+vitest.mock('../src/audio/AudioPlayerError', () => ({
+	AudioPlayerError: vitest.fn(),
+}));
 
 function* silence() {
 	while (true) {
@@ -256,12 +252,11 @@ describe('State transitions', () => {
 		expect(connection.dispatchAudio).toHaveBeenCalledTimes(6);
 		await wait();
 		player['_stepPrepare']();
-		const prepareAudioPacket = connection.prepareAudioPacket as unknown as Mock<
-			[Buffer],
+		const prepareAudioPacket = connection.prepareAudioPacket as unknown as MockedFunction<
 			typeof connection.prepareAudioPacket
 		>;
 		expect(prepareAudioPacket).toHaveBeenCalledTimes(6);
-		expect(prepareAudioPacket.mock.calls[5][0]).toEqual(silence().next().value);
+		expect(prepareAudioPacket.mock.calls[5]![0]).toEqual(silence().next().value);
 
 		player.stop(true);
 		expect(player.state.status).toEqual(AudioPlayerStatus.Idle);
@@ -314,8 +309,7 @@ describe('State transitions', () => {
 
 		await wait();
 		expect(player.checkPlayable()).toEqual(false);
-		const prepareAudioPacket = connection.prepareAudioPacket as unknown as Mock<
-			[Buffer],
+		const prepareAudioPacket = connection.prepareAudioPacket as unknown as MockedFunction<
 			typeof connection.prepareAudioPacket
 		>;
 		expect(prepareAudioPacket).toHaveBeenCalledTimes(5);
@@ -348,8 +342,7 @@ describe('State transitions', () => {
 		expect(addAudioPlayer).toBeCalledTimes(1);
 		expect(player.checkPlayable()).toEqual(true);
 
-		const prepareAudioPacket = connection.prepareAudioPacket as unknown as Mock<
-			[Buffer],
+		const prepareAudioPacket = connection.prepareAudioPacket as unknown as MockedFunction<
 			typeof connection.prepareAudioPacket
 		>;
 
@@ -363,7 +356,7 @@ describe('State transitions', () => {
 			expect(connection.dispatchAudio).toHaveBeenCalledTimes(index);
 			player['_stepPrepare']();
 			expect(prepareAudioPacket).toHaveBeenCalledTimes(index);
-			expect(prepareAudioPacket.mock.calls[index - 1][0]).toEqual(silence().next().value);
+			expect(prepareAudioPacket.mock.calls[index - 1]![0]).toEqual(silence().next().value);
 		}
 
 		expect(player.state.status).toEqual(AudioPlayerStatus.Idle);

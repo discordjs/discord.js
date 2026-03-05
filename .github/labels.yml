@@ -4,12 +4,16 @@
   color: '5663e9'
 - name: apps:guide
   color: fbca04
+- name: apps:proxy-container
+  color: fbca04
 - name: apps:website
   color: fbca04
 - name: backlog
   color: 7ef7ef
 - name: backport
   color: 88aabb
+- name: backport-candidate
+  color: 0075ca
 - name: blocked
   color: fc1423
 - name: bug
@@ -38,8 +42,6 @@
   color: 80c042
 - name: good first issue
   color: 7057ff
-- name: has PR
-  color: 4b1f8e
 - name: help wanted
   color: '008672'
 - name: in progress
@@ -76,9 +78,9 @@
   color: fbca04
 - name: packages:proxy
   color: fbca04
-- name: packages:proxy-container
-  color: fbca04
 - name: packages:rest
+  color: fbca04
+- name: packages:structures
   color: fbca04
 - name: packages:ui
   color: fbca04

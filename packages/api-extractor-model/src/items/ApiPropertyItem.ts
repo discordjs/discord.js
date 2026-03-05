@@ -15,7 +15,8 @@ import { type IApiDeclaredItemOptions, ApiDeclaredItem, type IApiDeclaredItemJso
  * @public
  */
 export interface IApiPropertyItemOptions
-	extends IApiNameMixinOptions,
+	extends
+		IApiNameMixinOptions,
 		IApiReleaseTagMixinOptions,
 		IApiOptionalMixinOptions,
 		IApiReadonlyMixinOptions,

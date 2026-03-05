@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
-
-import * as path from 'node:path';
+/* eslint-disable sonarjs/no-nested-switch */
+import path from 'node:path';
 import {
 	type PackageJsonLookup,
 	FileSystem,
@@ -9,7 +9,9 @@ import {
 	type NewlineKind,
 	type INodePackageJson,
 	type JsonObject,
+	type IPackageJsonExports,
 } from '@rushstack/node-core-library';
+import semver from 'semver';
 import { ConsoleMessageId } from '../api/ConsoleMessageId.js';
 import { Extractor } from '../api/Extractor.js';
 import type { MessageRouter } from '../collector/MessageRouter.js';
@@ -43,6 +45,136 @@ export class PackageMetadata {
 	}
 }
 
+const TSDOC_METADATA_FILENAME = 'tsdoc-metadata.json' as const;
+
+/**
+ * 1. If package.json a `"tsdocMetadata": "./path1/path2/tsdoc-metadata.json"` field
+ * then that takes precedence. This convention will be rarely needed, since the other rules below generally
+ * produce a good result.
+ */
+function _tryResolveTsdocMetadataFromTsdocMetadataField({ tsdocMetadata }: INodePackageJson): string | undefined {
+	return tsdocMetadata;
+}
+
+/**
+ * 2. If package.json contains a `"exports": { ".": { "types": "./path1/path2/index.d.ts" } }` field,
+ * then we look for the file under "./path1/path2/tsdoc-metadata.json"
+ *
+ * This always looks for a "." and then a "*" entry in the exports field, and then evaluates for
+ * a "types" field in that entry.
+ */
+
+function _tryResolveTsdocMetadataFromExportsField({ exports }: INodePackageJson): string | undefined {
+	switch (typeof exports) {
+		case 'string': {
+			return `${path.dirname(exports)}/${TSDOC_METADATA_FILENAME}`;
+		}
+
+		case 'object': {
+			if (Array.isArray(exports)) {
+				const [firstExport] = exports;
+				// Take the first entry in the array
+				if (firstExport) {
+					return `${path.dirname(firstExport)}/${TSDOC_METADATA_FILENAME}`;
+				}
+			} else {
+				const rootExport: IPackageJsonExports | string | null | undefined = exports['.'] ?? exports['*'];
+				switch (typeof rootExport) {
+					case 'string': {
+						return `${path.dirname(rootExport)}/${TSDOC_METADATA_FILENAME}`;
+					}
+
+					case 'object': {
+						let typesExport: IPackageJsonExports | string | undefined = rootExport?.types;
+						while (typesExport) {
+							switch (typeof typesExport) {
+								case 'string': {
+									return `${path.dirname(typesExport)}/${TSDOC_METADATA_FILENAME}`;
+								}
+
+								case 'object': {
+									typesExport = typesExport?.types;
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			break;
+		}
+	}
+
+	return undefined;
+}
+
+/**
+ * 3. If package.json contains a `typesVersions` field, look for the version
+ * matching the highest minimum version that either includes a "." or "*" entry.
+ */
+function _tryResolveTsdocMetadataFromTypesVersionsField({ typesVersions }: INodePackageJson): string | undefined {
+	if (typesVersions) {
+		let highestMinimumMatchingSemver: semver.SemVer | undefined;
+		let latestMatchingPath: string | undefined;
+		for (const [version, paths] of Object.entries(typesVersions)) {
+			let range: semver.Range;
+			try {
+				range = new semver.Range(version);
+			} catch {
+				continue;
+			}
+
+			const minimumMatchingSemver: semver.SemVer | null = semver.minVersion(range);
+			if (
+				minimumMatchingSemver &&
+				(!highestMinimumMatchingSemver || semver.gt(minimumMatchingSemver, highestMinimumMatchingSemver))
+			) {
+				const pathEntry: string[] | undefined = paths['.'] ?? paths['*'];
+				const firstPath: string | undefined = pathEntry?.[0];
+				if (firstPath) {
+					highestMinimumMatchingSemver = minimumMatchingSemver;
+					latestMatchingPath = firstPath;
+				}
+			}
+		}
+
+		if (latestMatchingPath) {
+			return `${path.dirname(latestMatchingPath)}/${TSDOC_METADATA_FILENAME}`;
+		}
+	}
+
+	return undefined;
+}
+
+/**
+ * 4. If package.json contains a `"types": "./path1/path2/index.d.ts"` or a `"typings": "./path1/path2/index.d.ts"`
+ * field, then we look for the file under "./path1/path2/tsdoc-metadata.json".
+ *
+ * @remarks
+ * `types` takes precedence over `typings`.
+ */
+function _tryResolveTsdocMetadataFromTypesOrTypingsFields({ typings, types }: INodePackageJson): string | undefined {
+	const typesField: string | undefined = types ?? typings;
+	if (typesField) {
+		return `${path.dirname(typesField)}/${TSDOC_METADATA_FILENAME}`;
+	}
+
+	return undefined;
+}
+
+/**
+ * 5. If package.json contains a `"main": "./path1/path2/index.js"` field, then we look for the file under
+ * "./path1/path2/tsdoc-metadata.json".
+ */
+function _tryResolveTsdocMetadataFromMainField({ main }: INodePackageJson): string | undefined {
+	if (main) {
+		return `${path.dirname(main)}/${TSDOC_METADATA_FILENAME}`;
+	}
+
+	return undefined;
+}
+
 /**
  * This class maintains a cache of analyzed information obtained from package.json
  * files.  It is built on top of the PackageJsonLookup class.
@@ -57,7 +189,7 @@ export class PackageMetadata {
  * Use ts.program.isSourceFileFromExternalLibrary() to test source files before passing the to PackageMetadataManager.
  */
 export class PackageMetadataManager {
-	public static tsdocMetadataFilename: string = 'tsdoc-metadata.json';
+	public static tsdocMetadataFilename: string = TSDOC_METADATA_FILENAME;
 
 	private readonly _packageJsonLookup: PackageJsonLookup;
 
@@ -70,37 +202,30 @@ export class PackageMetadataManager {
 		this._messageRouter = messageRouter;
 	}
 
-	// This feature is still being standardized: https://github.com/microsoft/tsdoc/issues/7
-	// In the future we will use the @microsoft/tsdoc library to read this file.
+	/**
+	 * This feature is still being standardized: https://github.com/microsoft/tsdoc/issues/7
+	 * In the future we will use the \@microsoft/tsdoc library to read this file.
+	 */
 	private static _resolveTsdocMetadataPathFromPackageJson(
 		packageFolder: string,
 		packageJson: INodePackageJson,
 	): string {
-		const tsdocMetadataFilename: string = PackageMetadataManager.tsdocMetadataFilename;
-
-		let tsdocMetadataRelativePath: string;
-
-		if (packageJson.tsdocMetadata) {
-			// 1. If package.json contains a field such as "tsdocMetadata": "./path1/path2/tsdoc-metadata.json",
-			// then that takes precedence.  This convention will be rarely needed, since the other rules below generally
-			// produce a good result.
-			tsdocMetadataRelativePath = packageJson.tsdocMetadata;
-		} else if (packageJson.typings) {
-			// 2. If package.json contains a field such as "typings": "./path1/path2/index.d.ts", then we look
-			// for the file under "./path1/path2/tsdoc-metadata.json"
-			tsdocMetadataRelativePath = path.join(path.dirname(packageJson.typings), tsdocMetadataFilename);
-		} else if (packageJson.main) {
-			// 3. If package.json contains a field such as "main": "./path1/path2/index.js", then we look for
-			// the file under "./path1/path2/tsdoc-metadata.json"
-			tsdocMetadataRelativePath = path.join(path.dirname(packageJson.main), tsdocMetadataFilename);
-		} else {
-			// 4. If none of the above rules apply, then by default we look for the file under "./tsdoc-metadata.json"
-			// since the default entry point is "./index.js"
-			tsdocMetadataRelativePath = tsdocMetadataFilename;
-		}
+		const tsdocMetadataRelativePath: string =
+			_tryResolveTsdocMetadataFromTsdocMetadataField(packageJson) ??
+			_tryResolveTsdocMetadataFromExportsField(packageJson) ??
+			_tryResolveTsdocMetadataFromTypesVersionsField(packageJson) ??
+			_tryResolveTsdocMetadataFromTypesOrTypingsFields(packageJson) ??
+			_tryResolveTsdocMetadataFromMainField(packageJson) ??
+			// As a final fallback, place the file in the root of the package.
+			TSDOC_METADATA_FILENAME;
 
 		// Always resolve relative to the package folder.
-		const tsdocMetadataPath: string = path.resolve(packageFolder, tsdocMetadataRelativePath);
+		const tsdocMetadataPath: string = path.resolve(
+			packageFolder,
+			// This non-null assertion is safe because the last entry in TSDOC_METADATA_RESOLUTION_FUNCTIONS
+			// returns a non-undefined value.
+			tsdocMetadataRelativePath!,
+		);
 		return tsdocMetadataPath;
 	}
 

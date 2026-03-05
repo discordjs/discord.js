@@ -2,13 +2,14 @@
 
 const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
-const CachedManager = require('./CachedManager');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const ApplicationEmoji = require('../structures/ApplicationEmoji');
-const { resolveImage } = require('../util/DataResolver');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { ApplicationEmoji } = require('../structures/ApplicationEmoji.js');
+const { resolveImage } = require('../util/DataResolver.js');
+const { CachedManager } = require('./CachedManager.js');
 
 /**
  * Manages API methods for ApplicationEmojis and stores their cache.
+ *
  * @extends {CachedManager}
  */
 class ApplicationEmojiManager extends CachedManager {
@@ -17,6 +18,7 @@ class ApplicationEmojiManager extends CachedManager {
 
     /**
      * The application this manager belongs to
+     *
      * @type {ClientApplication}
      */
     this.application = application;
@@ -28,6 +30,7 @@ class ApplicationEmojiManager extends CachedManager {
 
   /**
    * Options used for creating an emoji of the application
+   *
    * @typedef {Object} ApplicationEmojiCreateOptions
    * @property {BufferResolvable|Base64Resolvable} attachment The image for the emoji
    * @property {string} name The name for the emoji
@@ -35,6 +38,7 @@ class ApplicationEmojiManager extends CachedManager {
 
   /**
    * Creates a new custom emoji of the application.
+   *
    * @param {ApplicationEmojiCreateOptions} options Options for creating the emoji
    * @returns {Promise<Emoji>} The created emoji
    * @example
@@ -49,10 +53,10 @@ class ApplicationEmojiManager extends CachedManager {
    *   .catch(console.error);
    */
   async create({ attachment, name }) {
-    attachment = await resolveImage(attachment);
-    if (!attachment) throw new DiscordjsTypeError(ErrorCodes.ReqResourceType);
+    const image = await resolveImage(attachment);
+    if (!image) throw new DiscordjsTypeError(ErrorCodes.ReqResourceType);
 
-    const body = { image: attachment, name };
+    const body = { image, name };
 
     const emoji = await this.client.rest.post(Routes.applicationEmojis(this.application.id), { body });
     return this._add(emoji);
@@ -60,6 +64,7 @@ class ApplicationEmojiManager extends CachedManager {
 
   /**
    * Obtains one or more emojis from Discord, or the emoji cache if they're already available.
+   *
    * @param {Snowflake} [id] The emoji's id
    * @param {BaseFetchOptions} [options] Additional options for this fetch
    * @returns {Promise<ApplicationEmoji|Collection<Snowflake, ApplicationEmoji>>}
@@ -80,6 +85,7 @@ class ApplicationEmojiManager extends CachedManager {
         const existing = this.cache.get(id);
         if (existing) return existing;
       }
+
       const emoji = await this.client.rest.get(Routes.applicationEmoji(this.application.id, id));
       return this._add(emoji, cache);
     }
@@ -92,6 +98,7 @@ class ApplicationEmojiManager extends CachedManager {
 
   /**
    * Deletes an emoji.
+   *
    * @param {EmojiResolvable} emoji The Emoji resolvable to delete
    * @returns {Promise<void>}
    */
@@ -103,6 +110,7 @@ class ApplicationEmojiManager extends CachedManager {
 
   /**
    * Edits an emoji.
+   *
    * @param {EmojiResolvable} emoji The Emoji resolvable to edit
    * @param {ApplicationEmojiEditOptions} options The options to provide
    * @returns {Promise<ApplicationEmoji>}
@@ -121,11 +129,13 @@ class ApplicationEmojiManager extends CachedManager {
       existing._patch(newData);
       return existing;
     }
+
     return this._add(newData);
   }
 
   /**
    * Fetches the author for this emoji
+   *
    * @param {EmojiResolvable} emoji The emoji to fetch the author of
    * @returns {Promise<User>}
    */
@@ -139,4 +149,4 @@ class ApplicationEmojiManager extends CachedManager {
   }
 }
 
-module.exports = ApplicationEmojiManager;
+exports.ApplicationEmojiManager = ApplicationEmojiManager;

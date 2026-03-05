@@ -1,0 +1,355 @@
+---
+title: Sequelize
+---
+
+Sequelize is an object-relational-mapper, which means you can write a query using objects and have it run on almost any other database system that Sequelize supports.
+
+### Why use an ORM?
+
+The main benefit of using an ORM like Sequelize is that it allows you to write code that virtually looks like native JavaScript. As a side benefit, an ORM will enable you to write code that can run in almost every database system. Although databases generally adhere very closely to SQL, they each have their slight nuances and differences. You can create a database-agnostic query using an ORM that works on multiple database systems.
+
+## A simple tag system
+
+For this tutorial, we will create a simple tag system that will allow you to add a tag, output a tag, edit a tag, show tag info, list tags, and delete a tag.  
+To begin, you should install Sequelize into your discord.js project. We will explain SQlite as the first storage engine and show how to use other databases later. Note that you will need Node 7.6 or above to utilize the `async/await` operators.
+
+### Installing and using Sequelize
+
+Create a new project folder and run the following:
+
+```sh tab="npm"
+npm install discord.js sequelize sqlite3
+```
+
+```sh tab="yarn"
+yarn add discord.js sequelize sqlite3
+```
+
+```sh tab="pnpm"
+pnpm install discord.js sequelize sqlite3
+```
+
+```sh tab="bun"
+bun add discord.js sequelize sqlite3
+```
+
+<Callout type="error" title="Attention! Security Risk!">
+	**Make sure you use version 5 or later of Sequelize!** As used in this guide, version 4 and earlier will pose a
+	security threat. You can read more about this issue on the [Sequelize issue
+	tracker](https://github.com/sequelize/sequelize/issues/7310).
+</Callout>
+
+<Callout>
+	This section will still work with any provider supported by sequelize. We recommend PostgreSQL for larger applications.
+
+    Do note that "large" here should be interpreted as absolutely massive. Sqlite is used at scale by many companies and products you use every single day. The slight overhead should not be noticeable for the application of a Discord bot at all unless you are dealing with super complicated queries or are using specific features that do not exist in sqlite.
+
+    You can find out if sqlite might be a good choice for your project (it very likely is) by reading [their own article](https://www.sqlite.org/whentouse.html) on the topic.
+
+</Callout>
+
+After you have installed discord.js and Sequelize, you can start with the following skeleton code. The comment labels will tell you where to insert code later on.
+
+```js title="sequelize-example.js"
+// Require Sequelize
+const Sequelize = require('sequelize');
+// Require the necessary discord.js classes
+const { Client, Events, GatewayIntentBits } = require('discord.js');
+
+// Create a new client instance
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+
+// When the client is ready, run this code (only once)
+client.once(Events.ClientReady, (readyClient) => {
+	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+});
+
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+
+	const { commandName } = interaction;
+	// ...
+});
+
+// Login to Discord with your client's token
+client.login('your-token-goes-here');
+```
+
+### Connection information
+
+The first step is to define the connection information. It should look something like this:
+
+```js title="sequelize-example.js"
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+
+// [!code ++:7]
+const sequelize = new Sequelize('database', 'user', 'password', {
+	host: 'localhost',
+	dialect: 'sqlite',
+	logging: false,
+	// SQLite only
+	storage: 'database.sqlite',
+});
+```
+
+- `host` tells Sequelize where to look for the database. For most systems, the host will be localhost, as the database usually resides with the application. If you have a remote database, however, then you can set it to that connection address. Otherwise, don't touch this unless you know what you're doing.
+- `dialect` refers to the database engine you are going to use. For this tutorial, it will be sqlite.
+- `logging` enables verbose output from Sequelize–useful for when you are trying to debug. You can disable it by setting it to `false`.
+- `storage` is a sqlite-only setting because sqlite is the only database that stores all its data to a single file.
+
+### Creating the model
+
+In any relational database, you need to create tables to store your data. This simple tag system will use four fields. The table in the database will look something like this:
+
+| name      | description    | username | usage_count |
+| --------- | -------------- | -------- | ----------- |
+| bob       | is the best    | bob      | 0           |
+| tableflip | (╯°□°）╯︵ ┻━┻ | joe      | 8           |
+
+To do that in Sequelize, define a model based on this structure below the connection information, as shown below, after the `sequelize` initialization.
+
+```js title="sequelize-example.js"
+// ...
+
+const sequelize = new Sequelize('database', 'user', 'password', {
+	host: 'localhost',
+	dialect: 'sqlite',
+	logging: false,
+	storage: 'database.sqlite',
+});
+
+// [!code ++:21] [!code focus:24]
+/*
+ * equivalent to: CREATE TABLE tags(
+ * name VARCHAR(255) UNIQUE,
+ * description TEXT,
+ * username VARCHAR(255),
+ * usage_count  INT NOT NULL DEFAULT 0
+ * );
+ */
+// [!code word:define]
+const Tags = sequelize.define('tags', {
+	name: {
+		type: Sequelize.STRING,
+		unique: true,
+	},
+	description: Sequelize.TEXT,
+	username: Sequelize.STRING,
+	usage_count: {
+		type: Sequelize.INTEGER,
+		defaultValue: 0,
+		allowNull: false,
+	},
+});
+
+// ...
+```
+
+The model mirrors very closely what the database defines. There will be a table with four fields called `name`, `description`, `username`, and `usage_count`.
+
+`sequelize.define()` takes two parameters. `'tags'` are passed as the name of our table, and an object that represents the table's schema in key-value pairs. Keys in the object become the model's attributes, and the values describe the attributes.
+
+- `type` refers to what kind of data this attribute should hold. The most common types are number, string, and date, but other data types are available depending on the database.
+- `unique: true` will ensure that this field will never have duplicated entries. Duplicate tag names are disallowed in this database.
+- `defaultValue` allows you to set a fallback value if there's no initial value during the insert.
+- `allowNull` is not all that important, but this will guarantee in the database that the attribute is never unset. You could potentially set it to be a blank or empty string, but it has to be _something_.
+
+<Callout>
+	`Sequelize.STRING` vs. `Sequelize.TEXT`: In most database systems, the string's length is a fixed length for
+	performance reasons. Sequelize defaults this to 255. Use STRING if your input has a max length, and use TEXT if it
+	does not. For sqlite, there is no unbounded string type, so it will not matter which one you pick.
+</Callout>
+
+### Syncing the model
+
+Now that your structure is defined, you need to make sure the model exists in the database. To make sure the bot is ready and all the data you might need has arrived, add this line in your code.
+
+```js title="sequelizeexample.ts"
+client.once(Events.ClientReady, (readyClient) => {
+	Tags.sync(); // [!code ++] [!code word:sync]
+	console.log(`Logged in as ${readyClient.user.tag}!`);
+});
+```
+
+The table does not get created until you `sync` it. The schema you defined before was building the model that lets Sequelize know how the data should look. For testing, you can use `Tags.sync({ force: true })` to recreate the table every time on startup. This way, you can get a blank slate each time.
+
+### Adding a tag
+
+After all this preparation, you can now write your first command! Let's start with the ability to add a tag.
+
+```js title="sequelize-example.js"
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+
+	const { commandName } = interaction;
+
+	// [!code ++:21]
+	if (commandName === 'addtag') {
+		const tagName = interaction.options.getString('name');
+		const tagDescription = interaction.options.getString('description');
+
+		try {
+			// equivalent to: INSERT INTO tags (name, description, username) values (?, ?, ?);
+			const tag = await Tags.create({
+				name: tagName,
+				description: tagDescription,
+				username: interaction.user.username,
+			});
+
+			return interaction.reply(`Tag ${tag.name} added.`);
+		} catch (error) {
+			if (error.name === 'SequelizeUniqueConstraintError') {
+				return interaction.reply('That tag already exists.');
+			}
+
+			return interaction.reply('Something went wrong with adding a tag.');
+		}
+	}
+});
+```
+
+`Tags.create()` uses the models that you created previously. The `.create()` method inserts some data into the model. You are going to insert a tag name, description, and the author name into the database.
+
+The `catch (error)` section is necessary for the insert because it will offload checking for duplicates to the database to notify you if an attempt to create a tag that already exists occurs. The alternative is to query the database before adding data and checking if a result returns. If there are no errors or no identical tag is found, only then would you add the data. Of the two methods, it is clear that catching the error is less work for you.
+
+Although `if (error.name === 'SequelizeUniqueConstraintError')` was mostly for doing less work, it is always good to handle your errors, especially if you know what types of errors you will receive. This error comes up if your unique constraint is violated, i.e., duplicate values are inserted.
+
+<Callout type="warn">
+	Do not use catch for inserting new data. Only use it for gracefully handling things that go wrong in your code or
+	logging errors.
+</Callout>
+
+### Fetching a tag
+
+Next, let's fetch the inserted tag.
+
+```js title="sequelize-example.js"
+if (commandName === 'addtag') {
+	// ...
+} // [!code --]
+} else if (command === 'tag') { // [!code ++:15]
+	const tagName = interaction.options.getString('name');
+
+	// equivalent to: SELECT * FROM tags WHERE name = 'tagName' LIMIT 1;
+	const tag = await Tags.findOne({ where: { name: tagName } }); // [!code word:findOne]
+
+	if (tag) {
+		// equivalent to: UPDATE tags SET usage_count = usage_count + 1 WHERE name = 'tagName';
+		tag.increment('usage_count'); // [!code word:increment]
+
+		return interaction.reply(tag.get('description')); // [!code word:get]
+	}
+
+	return interaction.reply(`Could not find tag: ${tagName}`);
+}
+```
+
+This is your first query. You are finally doing something with your data; yay!  
+`.findOne()` is how you fetch a single row of data. The `where: { name: tagName }` makes sure you only get the row with the desired tag. Since the queries are asynchronous, you will need to use `await` to fetch it. After receiving the data, you can use `.get()` on that object to grab the data. If no data is received, then you can tell the user that the query returned no data.
+
+### Editing a tag
+
+```js title="sequelize-example.js"
+if (commandName === 'addtag') {
+	// ...
+} else if (command === 'tag') { // [!code focus:16]
+	// ...
+} // [!code --]
+} else if (command === 'edittag') { // [!code ++:13]
+	const tagName = interaction.options.getString('name');
+	const tagDescription = interaction.options.getString('description');
+
+	// equivalent to: UPDATE tags (description) values (?) WHERE name='?';
+	const affectedRows = await Tags.update({ description: tagDescription }, { where: { name: tagName } }); // [!code word:update]
+
+	if (affectedRows > 0) {
+		return interaction.reply(`Tag ${tagName} was edited.`);
+	}
+
+	return interaction.reply(`Could not find a tag with name ${tagName}.`);
+}
+```
+
+It is possible to edit a record by using the `.update()` function. An update returns the number of rows that the `where` condition changed. Since you can only have tags with unique names, you do not have to worry about how many rows may change. Should you get that the query didn't alter any rows, you can conclude that the tag did not exist.
+
+### Display info on a specific tag
+
+```js title="sequelize-example.js"
+if (commandName === 'addtag') {
+	// ...
+} else if (command === 'tag') {
+	// ...
+} else if (command === 'edittag') { // [!code focus:15]
+	// ...
+} // [!code --]
+} else if (commandName == 'taginfo') { // [!code ++:12]
+	const tagName = interaction.options.getString('name');
+
+	// equivalent to: SELECT * FROM tags WHERE name = 'tagName' LIMIT 1;
+	const tag = await Tags.findOne({ where: { name: tagName } });
+
+	if (tag) {
+		return interaction.reply(`${tagName} was created by ${tag.username} at ${tag.createdAt} and has been used ${tag.usage_count} times.`);
+	}
+
+	return interaction.reply(`Could not find tag: ${tagName}`);
+}
+```
+
+This section is very similar to the previous command, except you will be showing the tag metadata. `tag` contains your tag object. Notice two things: firstly, it is possible to access the object's properties without the `.get()` function. This is because the object is an instance of a Tag, which you can treat as an object and not just a row of data.
+
+Second, you can access a property that was not defined explicitly, `createdAt`. This is because Sequelize automatically adds that column to all tables. Passing another object into the model with `{ createdAt: false }` can disable this feature, but in this case, it was useful to have.
+
+### Listing all tags
+
+The next command will enable you to fetch a list of all the created tags.
+
+```js title="sequelize-example.js"
+if (commandName === 'addtag') {
+	// ...
+} else if (command === 'tag') {
+	// ...
+} else if (command === 'edittag') {
+	// ...
+} else if (commandName == 'taginfo') { // [!code focus:10]
+	// ...
+} // [!code --]
+} else if (command === 'showtags') { // [!code ++:7]
+	// equivalent to: SELECT name FROM tags;
+	const tagList = await Tags.findAll({ attributes: ['name'] }); // [!code word:attributes]
+	const tagString = tagList.map(t => t.name).join(', ') || 'No tags set.';
+
+	return interaction.reply(`List of tags: ${tagString}`);
+}
+```
+
+Here, you can use the `.findAll()` method to grab all the tag names. Notice that instead of having `where`, the optional field, `attributes`, is set. Setting attributes to name will let you get _only_ the names of tags. If you tried to access other fields, like the tag author, you would get an error.
+
+If left blank, it will fetch _all_ of the associated column data. It will not affect the results returned, but from a performance perspective, you should only grab the necessary data. If no results return, `tagString` will default to 'No tags set'.
+
+### Deleting a tag
+
+```js title="sequelize-example.js"
+if (commandName === 'addtag') {
+	// ...
+} else if (command === 'tag') {
+	// ...
+} else if (command === 'edittag') {
+	// ...
+} else if (commandName == 'taginfo') {
+	// ...
+} else if (command === 'showtags') { // [!code focus:11]
+	// ...
+}// [!code --]
+} else if (command === 'deletetag') { // [!code ++:9]
+	const tagName = interaction.options.getString('name');
+	// equivalent to: DELETE from tags WHERE name = ?;
+	const rowCount = await Tags.destroy({ where: { name: tagName } }); // [!code word:destroy]
+
+	if (!rowCount) return interaction.reply('That tag doesn\'t exist.');
+
+	return interaction.reply('Tag deleted.');
+}
+```
+
+`.destroy()` runs the delete operation. The operation returns a count of the number of affected rows. If it returns with a value of 0, then nothing was deleted, and that tag did not exist in the database in the first place.

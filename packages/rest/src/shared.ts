@@ -2,6 +2,7 @@ export * from './lib/CDN.js';
 export * from './lib/errors/DiscordAPIError.js';
 export * from './lib/errors/HTTPError.js';
 export * from './lib/errors/RateLimitError.js';
+export type * from './lib/interfaces/Handler.js';
 export * from './lib/REST.js';
 export * from './lib/utils/constants.js';
 export * from './lib/utils/types.js';

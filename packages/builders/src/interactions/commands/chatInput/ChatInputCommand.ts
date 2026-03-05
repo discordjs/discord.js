@@ -10,10 +10,10 @@ import { SharedChatInputCommandSubcommands } from './mixins/SharedSubcommands.js
 /**
  * A builder that creates API-compatible JSON data for chat input commands.
  *
- * @mixes CommandBuilder<RESTPostAPIChatInputApplicationCommandsJSONBody>
- * @mixes SharedChatInputCommandOptions
- * @mixes SharedNameAndDescription
- * @mixes SharedChatInputCommandSubcommands
+ * @mixes {@link CommandBuilder}\<{@link discord-api-types/v10#(RESTPostAPIChatInputApplicationCommandsJSONBody:interface)}\>
+ * @mixes {@link SharedChatInputCommandOptions}
+ * @mixes {@link SharedNameAndDescription}
+ * @mixes {@link SharedChatInputCommandSubcommands}
  */
 export class ChatInputCommandBuilder extends Mixin(
 	CommandBuilder<RESTPostAPIChatInputApplicationCommandsJSONBody>,
@@ -30,7 +30,7 @@ export class ChatInputCommandBuilder extends Mixin(
 		const data: RESTPostAPIChatInputApplicationCommandsJSONBody = {
 			...structuredClone(rest as Omit<RESTPostAPIChatInputApplicationCommandsJSONBody, 'options'>),
 			type: ApplicationCommandType.ChatInput,
-			options: options?.map((option) => option.toJSON(validationOverride)),
+			options: options?.map((option) => option.toJSON(false)),
 		};
 
 		validate(chatInputCommandPredicate, data, validationOverride);

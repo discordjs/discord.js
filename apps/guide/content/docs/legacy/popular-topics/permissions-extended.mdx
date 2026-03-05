@@ -1,0 +1,89 @@
+---
+title: Permissions (extended)
+---
+
+## Discord's permission system
+
+Discord permissions are stored in a 53-bit integer and calculated using bitwise operations. If you want to dive deeper into what's happening behind the curtains, check the [Wikipedia](https://en.wikipedia.org/wiki/Bit_field) and [MDN](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Operators#binary_bitwise_operators) articles on the topic.
+
+In discord.js, permission bit fields are represented as either the decimal value of said bit field or its referenced flags.
+Every position in a permissions bit field represents one of these flags and its state (either referenced `1` or not referenced `0`).
+
+Before we get into actually assigning permissions, let's quickly go over the method Discord uses to determine a guild member's final permissions:
+
+1. Take all permissions for all roles the guild member has and add them up.
+2. Apply all denies for the default role (`@everyone`).
+3. Apply all allows for the default role (`@everyone`).
+4. Apply all denies for all additional roles the guild member has at once.
+5. Apply all allows for all additional roles the guild member has at once.
+6. Apply all denies for the specific guild member if they exist.
+7. Apply all allows for the specific guild member if they exist.
+
+Due to this system, you cannot deny base permissions. If you grant `SendMessages` to `@everyone` and don't grant it for a muted members role, muted members will still be able to send messages unless you specify channel-based overwrites.
+
+All additional roles allow overwrites are applied after all additional roles denies! If any of a member's roles have an overwrite to allow a permission explicitly, the member can execute the associated actions in this channel regardless of the role hierarchy.
+
+Placing an overwrite to allow `SendMessages` on a role will result in members with this role not being mutable via role assignment in this channel.
+
+## Elevated permissions
+
+If the guild owner enables the server's two-factor authentication option, everyone executing a specific subset of actions will need to have 2FA enabled on their account. As bots do not have 2FA themselves, you, as the application owner, will need to enable it on your account for your bot to work on those servers.
+Check out [Discord's help article](https://support.discord.com/hc/articles/219576828) if you need assistance with this.
+
+The permissions assigned to these actions are called "elevated permissions" and are:
+`KickMembers`, `BanMembers`, `Administrator`, `ManageChannels`, `ManageGuild`, `ManageMessages`, `ManageRoles`, `ManageWebhooks`, `ManageThreads`, and `ManageGuildExpressions`.
+
+## Implicit permissions
+
+Some Discord permissions apply implicitly based on logical use, which can cause unwanted behavior if you are not aware of this fact.
+
+The prime example for implicit permissions is `ViewChannel`. If this flag is missing in the final permissions, you can't do anything on that channel. It makes sense, right? If you can't view the channel, you can't read or send messages in it, set the topic, or change its name.
+The library does not handle implicit permissions for you, so understanding how the system works is vital for you as a bot developer.
+
+Let's say you want to send a message to a channel. To prevent unnecessary API calls, you want to make sure your bot's permissions in this channel include `SendMessages` (more on how to achieve this [here](./permissions#checking-for-permissions)). The check passes, but you still can't send the message and are greeted with `DiscordAPIError: Missing Access`.
+
+This error means your bot is missing `ViewChannel`, and as such, can't send messages either.
+
+One possible scenario causing this: the channel has permission overwrites for the default role `@everyone` to grant `SendMessages` so everyone who can see the channel can also write in it, but at the same time has an overwrite to deny `ViewChannel` to make it only accessible to a subset of members.
+
+As you only check for `SendMessages`, the bot will try to execute the send, but since `ViewChannel` is missing, the API denies the request.
+
+{/* prettier-ignore */}
+<Callout title='Causes for "Missing Access"'>
+	- Text Channels require `ViewChannel` as detailed above.
+	- Voice Channels require `Connect` in the same way.
+	- Reacting to a message requires `ReadMessageHistory` in the channel the message was sent.
+	- When deploying slash commands: Enable the `applications.commands` scope (for more information see the [adding your bot](../preparations/adding-your-app) section).
+	- Timing out a member requires `ModerateMembers`.
+	- Editing threads (tags, locking, closing, renaming etc.) requires `SendMessagesInThreads`.
+	- Adding a member to a thread requires `ViewChannel` in the parent channel for the member being added.
+</Callout>
+
+## Limitations and oddities
+
+- Your bot needs `ManageRoles` in its base permissions to change base permissions.
+- It needs `ManageRoles` in its final permissions to change permission overwrites.
+- It cannot edit permissions for roles that are higher than or equal to its highest role.
+- It cannot grant permissions it doesn't have.
+- It can manage overwrites for roles or users with higher roles than its own highest role.
+- It can manage overwrites for permissions it doesn't have.
+- Members with the `Administrator` permission are not affected by overwrites at all.
+
+## Missing permissions
+
+During your development, you will likely run into `DiscordAPIError: Missing Permissions` at some point. One of the following can cause this error:
+
+- Your bot is missing the needed permission to execute this action in its calculated base or final permissions (requirement changes based on the type of action you are trying to perform).
+- You provided an invalid permission number while trying to create overwrites. (The calculator on the apps page returns decimal values while the developer documentation lists the flags in hex. Make sure you are not mixing the two and don't use the hex prefix `0x` where not applicable).
+- Your bot is currently timed out.
+- It is trying to execute an action on a guild member with a role higher than or equal to your bot's highest role.
+- It is trying to modify or assign a role higher than or equal to its highest role.
+- It is trying to add a managed role to a member.
+- It is trying to remove a managed role from a member.
+- It is trying to timeout a member with the `Administrator` permission.
+- It is trying to execute a forbidden action on the server owner.
+- It is trying to execute an action based on another unfulfilled factor (for example, reserved for partnered guilds).
+- It is trying to execute an action on a voice channel without the `ViewChannel` permission.
+- It is trying to create a channel or channel overwrite including the `ManageRoles` flag but does not have the `Administrator` permission or an explicit `ManageRoles` overwrite on this channel (note that the global permission does not count).
+
+<Callout type="warn">Granting the `Administrator` permission does not skip any **hierarchical** check!</Callout>

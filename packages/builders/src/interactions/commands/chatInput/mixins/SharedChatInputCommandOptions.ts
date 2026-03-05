@@ -17,12 +17,16 @@ export interface SharedChatInputCommandOptionsData {
 
 /**
  * This mixin holds symbols that can be shared in chat input command options.
- *
- * @typeParam TypeAfterAddingOptions - The type this class should return after adding an option.
  */
 export class SharedChatInputCommandOptions {
-	protected declare readonly data: SharedChatInputCommandOptionsData;
+	/**
+	 * @internal
+	 */
+	declare protected readonly data: SharedChatInputCommandOptionsData;
 
+	/**
+	 * The options within this command.
+	 */
 	public get options(): readonly ApplicationCommandOptionBase[] {
 		return (this.data.options ??= []);
 	}
@@ -151,7 +155,7 @@ export class SharedChatInputCommandOptions {
 	 *
 	 * @remarks
 	 * This method behaves similarly
-	 * to {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
+	 * to {@link https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/splice | Array.prototype.splice()}.
 	 *
 	 * It's useful for modifying and adjusting order of the already-existing options for this command.
 	 * @example

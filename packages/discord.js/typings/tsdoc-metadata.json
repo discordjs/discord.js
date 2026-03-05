@@ -5,7 +5,7 @@
   "toolPackages": [
     {
       "packageName": "@discordjs/api-extractor",
-      "packageVersion": "7.38.1"
+      "packageVersion": "7.52.7"
     }
   ]
 }

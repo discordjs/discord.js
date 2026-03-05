@@ -1,8 +1,8 @@
 'use strict';
 
-const { token, owner, skuId } = require('./auth.js');
-const { Client, Events, codeBlock, GatewayIntentBits, ActionRowBuilder, ButtonBuilder } = require('../src');
 const { ButtonStyle } = require('discord-api-types/v10');
+const { token, owner, skuId } = require('./auth.js');
+const { Client, Events, codeBlock, GatewayIntentBits, ActionRowBuilder, ButtonBuilder } = require('../src/index.js');
 
 const client = new Client({ intents: GatewayIntentBits.Guilds | GatewayIntentBits.GuildMessages });
 

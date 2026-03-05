@@ -1,0 +1,157 @@
+---
+title: Audio Resources
+---
+
+Audio resources contain audio that can be played by an audio player to voice connections.
+
+## Cheat sheet
+
+### Creation
+
+There are many ways to create an audio resource. Below are some example scenarios:
+
+```js
+const { createReadStream } = require('node:fs');
+const { join } = require('node:path');
+const { createAudioResource, StreamType } = require('@discordjs/voice');
+
+// Basic, default options are:
+// Input type is unknown, so will use FFmpeg to convert to Opus under-the-hood
+// Inline volume is opt-in to improve performance
+let resource = createAudioResource(join(__dirname, 'file.mp3'));
+
+// Will use FFmpeg with volume control enabled
+resource = createAudioResource(join(__dirname, 'file.mp3'), { inlineVolume: true });
+resource.volume.setVolume(0.5);
+
+// Will play .ogg or .webm Opus files without FFmpeg for better performance
+// Remember, inline volume is still disabled
+resource = createAudioResource(
+	createReadStream(join(__dirname, 'file.ogg'), {
+		inputType: StreamType.OggOpus,
+	}),
+);
+
+// Will play with FFmpeg due to inline volume being enabled.
+resource = createAudioResource(
+	createReadStream(join(__dirname, 'file.webm'), {
+		inputType: StreamType.WebmOpus,
+		inlineVolume: true,
+	}),
+);
+
+player.play(resource);
+```
+
+### Deletion
+
+The underlying streams of an audio resource are destroyed and flushed once an audio player is done playing their audio. Make sure to remove any references you've created to the resource to prevent memory leaks.
+
+## Handling errors
+
+For most scenarios, you will create an audio resource for immediate use by an audio player. The audio player will propagate errors from the resource for you, so you can attach `error` handlers to the player instead of the resource.
+
+```js
+const { createAudioResource, createAudioPlayer } = require('@discordjs/voice');
+
+const player = createAudioPlayer();
+// An AudioPlayer will always emit an "error" event with a .resource property
+player.on('error', (error) => {
+	console.error('Error:', error.message, 'with track', error.resource.metadata.title);
+});
+
+const resource = createAudioResource('/home/user/voice/music.mp3', {
+	metadata: {
+		title: 'A good song!',
+	},
+});
+player.play(resource);
+```
+
+However, you can also attach an error handler specifically to the audio resource if you'd like to. This is **not recommended**, as you are not allowed to change the state of an audio player from the error handlers of an audio resource (on the other hand, you are allowed to do this from the error handle of an audio player, as shown above.)
+
+```js
+const { createAudioResource, createAudioPlayer } = require('@discordjs/voice');
+
+const player = createAudioPlayer();
+
+const resource = createAudioResource('/home/user/voice/music.mp3', {
+	metadata: {
+		title: 'A good song!',
+	},
+});
+
+// Not recommended - listen to errors from the audio player instead for most use cases!
+resource.playStream.on('error', (error) => {
+	console.error('Error:', error.message, 'with track', resource.metadata.title);
+});
+
+player.play(resource);
+```
+
+## Optimizations
+
+To improve performance, you can consider the following methods. They reduce the computational demand required to play audio, and could help to reduce jitter in the audio stream.
+
+### Not using inline volume
+
+By default, inline volume is disabled for performance reasons. Enabling it will allow you to modify the volume of your stream in realtime. This comes at a performance cost, even if you aren't actually modifying the volume of your stream.
+
+Make sure you consider whether it is worth enabling for your use case.
+
+### Playing Opus streams
+
+If you are repeatedly playing the same resource, you may consider converting it to Ogg opus or WebM opus. Alternatively, if you are fetching an external resource and are able to specify a format that you'd like to stream the resource in, you should consider specifying Ogg opus or WebM opus.
+
+The reason for this is that you can remove FFmpeg from the process of streaming audio. FFmpeg is used to convert unknown inputs into Opus audio which can be streamed to Discord. If your audio is already in the Opus format, this removes one of the most computationally demanding parts of the audio pipeline from the streaming process, which would surely improve performance.
+
+Both of the examples below will skip the FFmpeg component of the pipeline to improve performance.
+
+```js
+const { createReadStream } = require('node:fs');
+const { createAudioResource, StreamType } = require('@discordjs/voice');
+
+let resource = createAudioResource(createReadStream('my_file.ogg'), {
+	inputType: StreamType.OggOpus,
+});
+
+resource = createAudioResource(createReadStream('my_file.webm'), {
+	inputType: StreamType.WebmOpus,
+});
+```
+
+<Callout type="warn">
+	This optimization is useful if you do not want to use inline volume. Enabling inline volume will disable the
+	optimization.
+</Callout>
+
+### Probing to determine stream type
+
+The voice library is also able to determine whether a readable stream is an Ogg/Opus or WebM/Opus stream. This means
+that you can still gain the performance benefits that come with playing an Opus stream, even if you aren't sure in
+advance what type of audio stream you'll be playing.
+
+This is achieved by probing a small chunk of the beginning of the audio stream to see if it is suitable for demuxing:
+
+```js
+const { createReadStream } = require('node:fs');
+const { demuxProbe, createAudioResource } = require('@discordjs/voice');
+
+async function probeAndCreateResource(readableStream) {
+	const { stream, type } = await demuxProbe(readableStream);
+	return createAudioResource(stream, { inputType: type });
+}
+
+async function createResources() {
+	// Creates an audio resource with inputType = StreamType.Arbitrary
+	const mp3Stream = await probeAndCreateResource(createReadStream('file.mp3'));
+
+	// Creates an audio resource with inputType = StreamType.OggOpus
+	const oggStream = await probeAndCreateResource(createReadStream('file.ogg'));
+
+	// Creates an audio resource with inputType = StreamType.WebmOpus
+	const webmStream = await probeAndCreateResource(createReadStream('file.webm'));
+}
+
+createResources();
+```

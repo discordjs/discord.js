@@ -1,84 +1,97 @@
 import { Analytics } from '@vercel/analytics/react';
+import { DocsLayout } from 'fumadocs-ui/layouts/docs';
+import { RootProvider } from 'fumadocs-ui/provider/next';
+import { GeistMono } from 'geist/font/mono';
+import { GeistSans } from 'geist/font/sans';
 import type { Metadata, Viewport } from 'next';
-import type { PropsWithChildren } from 'react';
-import { DESCRIPTION } from '~/util/constants';
-import { inter, jetBrainsMono } from '~/util/fonts';
-import { Providers } from './providers';
+import type { CSSProperties, PropsWithChildren } from 'react';
+import { Body } from '@/app/layout.client';
+import { source } from '@/lib/source';
+import { ENV } from '@/util/env';
+import { baseOptions } from './layout.config';
 
-import '~/styles/cmdk.css';
-import '@code-hike/mdx/styles.css';
-import '~/styles/ch.css';
-import '~/styles/main.css';
+import '@/styles/base.css';
 
 export const viewport: Viewport = {
 	themeColor: [
-		{ media: '(prefers-color-scheme: light)', color: '#f1f3f5' },
-		{ media: '(prefers-color-scheme: dark)', color: '#181818' },
+		{ media: '(prefers-color-scheme: light)', color: '#fbfbfb' },
+		{ media: '(prefers-color-scheme: dark)', color: '#1a1a1e' },
 	],
 	colorScheme: 'light dark',
 };
 
 export const metadata: Metadata = {
-	metadataBase: new URL(
-		process.env.METADATA_BASE_URL ? process.env.METADATA_BASE_URL : `http://localhost:${process.env.PORT ?? 3_000}`,
-	),
-	title: 'discord.js',
-	description: DESCRIPTION,
+	metadataBase: new URL(ENV.IS_LOCAL_DEV ? `http://localhost:${ENV.PORT}` : 'https://discordjs.guide'),
+	title: {
+		template: '%s | discord.js',
+		default: 'discord.js',
+	},
 	icons: {
 		other: [
 			{
-				url: '/favicon-32x32.png',
-				sizes: '32x32',
-				type: 'image/png',
-			},
-			{
-				url: '/favicon-16x16.png',
-				sizes: '16x16',
+				url: '/favicon-96x96.png',
+				sizes: '96x96',
 				type: 'image/png',
 			},
 		],
-		apple: [
-			'/apple-touch-icon.png',
-			{
-				url: '/safari-pinned-tab.svg',
-				rel: 'mask-icon',
-			},
-		],
+		apple: ['/apple-touch-icon.png'],
 	},
 
 	manifest: '/site.webmanifest',
-
-	appleWebApp: {
-		title: 'discord.js',
-	},
-
-	applicationName: 'discord.js',
 
 	openGraph: {
 		siteName: 'discord.js',
 		type: 'website',
 		title: 'discord.js',
-		description: DESCRIPTION,
-		images: 'https://discordjs.dev/api/open-graph.png',
 	},
 
 	twitter: {
 		card: 'summary_large_image',
 		creator: '@iCrawlToGo',
 	},
-
-	other: {
-		'msapplication-TileColor': '#090a16',
-	},
 };
 
-export default function RootLayout({ children }: PropsWithChildren) {
+export default async function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<html className={`${inter.variable} ${jetBrainsMono.variable}`} lang="en" suppressHydrationWarning>
-			<body className="bg-light-600 dark:bg-dark-600 dark:text-light-900">
-				<Providers>{children}</Providers>
+		<html className={`${GeistSans.variable} ${GeistMono.variable} antialiased`} lang="en" suppressHydrationWarning>
+			<Body>
+				<RootProvider>
+					<DocsLayout
+						sidebar={{
+							tabs: {
+								transform(option, node) {
+									const meta = source.getNodeMeta(node);
+									if (!meta || !node.icon) return option;
+
+									// category selection color based on path src/styles/base.css
+									const color = `var(--${meta.path.split('/')[0]}-color, var(--color-fd-foreground))`;
+
+									return {
+										...option,
+										icon: (
+											<div
+												className="size-full rounded-lg text-(--tab-color) max-md:border max-md:bg-(--tab-color)/10 max-md:p-1.5 [&_svg]:size-full"
+												style={
+													{
+														'--tab-color': color,
+													} as CSSProperties
+												}
+											>
+												{node.icon}
+											</div>
+										),
+									};
+								},
+							},
+						}}
+						tree={source.pageTree}
+						{...baseOptions}
+					>
+						{children}
+					</DocsLayout>
+				</RootProvider>
 				<Analytics />
-			</body>
+			</Body>
 		</html>
 	);
 }

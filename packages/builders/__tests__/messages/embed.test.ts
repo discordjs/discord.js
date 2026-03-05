@@ -1,5 +1,6 @@
+import { embedLength } from '@discordjs/util';
 import { describe, test, expect } from 'vitest';
-import { EmbedBuilder, embedLength } from '../../src/index.js';
+import { EmbedBuilder } from '../../src/index.js';
 
 const alpha = 'abcdefghijklmnopqrstuvwxyz';
 
@@ -207,6 +208,12 @@ describe('Embed', () => {
 			expect(embed.toJSON()).toStrictEqual({ ...base, thumbnail: { url: 'https://discord.js.org/static/logo.svg' } });
 		});
 
+		test('GIVEN an embed using Embed#setThumbnail with attachment protocol THEN returns valid toJSON data', () => {
+			const embed = new EmbedBuilder();
+			embed.setThumbnail('attachment://discordjs.webp');
+			expect(embed.toJSON()).toStrictEqual({ ...base, thumbnail: { url: 'attachment://discordjs.webp' } });
+		});
+
 		test('GIVEN an embed with a pre-defined thumbnail THEN unset thumbnail THEN return valid toJSON data', () => {
 			const embed = new EmbedBuilder({ thumbnail: { url: 'https://discord.js.org/static/logo.svg' }, ...dummy });
 			embed.clearThumbnail();
@@ -226,6 +233,12 @@ describe('Embed', () => {
 		test('GIVEN an embed with a pre-defined image THEN returns valid toJSON data', () => {
 			const embed = new EmbedBuilder({ image: { url: 'https://discord.js.org/static/logo.svg' } });
 			expect(embed.toJSON()).toStrictEqual({ ...base, image: { url: 'https://discord.js.org/static/logo.svg' } });
+		});
+
+		test('GIVEN an embed using Embed#setImage with attachment protocol THEN returns valid toJSON data', () => {
+			const embed = new EmbedBuilder();
+			embed.setImage('attachment://discordjs.webp');
+			expect(embed.toJSON()).toStrictEqual({ ...base, image: { url: 'attachment://discordjs.webp' } });
 		});
 
 		test('GIVEN an embed using Embed#setImage THEN returns valid toJSON data', () => {
@@ -341,13 +354,17 @@ describe('Embed', () => {
 		test('GIVEN an embed using Embed#addFields THEN returns valid toJSON data', () => {
 			const embed = new EmbedBuilder();
 			embed.addFields({ name: 'foo', value: 'bar' });
-			embed.addFields([{ name: 'foo', value: 'bar' }]);
+			embed.addFields([
+				{ name: 'foo', value: 'bar' },
+				{ name: '', value: '' },
+			]);
 
 			expect(embed.toJSON()).toStrictEqual({
 				...base,
 				fields: [
 					{ name: 'foo', value: 'bar' },
 					{ name: 'foo', value: 'bar' },
+					{ name: '', value: '' },
 				],
 			});
 		});
@@ -395,40 +412,25 @@ describe('Embed', () => {
 			expect(() => embed.toJSON()).toThrowError();
 		});
 
-		describe('GIVEN invalid field amount THEN throws error', () => {
-			test('1', () => {
-				const embed = new EmbedBuilder();
+		test('GIVEN invalid field amount THEN throws error', () => {
+			const embed = new EmbedBuilder();
 
-				embed.addFields(...Array.from({ length: 26 }, () => ({ name: 'foo', value: 'bar' })));
-				expect(() => embed.toJSON()).toThrowError();
-			});
+			embed.addFields(...Array.from({ length: 26 }, () => ({ name: 'foo', value: 'bar' })));
+			expect(() => embed.toJSON()).toThrowError();
 		});
 
-		describe('GIVEN invalid field name THEN throws error', () => {
-			test('2', () => {
-				const embed = new EmbedBuilder();
+		test('GIVEN invalid field name length THEN throws error', () => {
+			const embed = new EmbedBuilder();
 
-				embed.addFields({ name: '', value: 'bar' });
-				expect(() => embed.toJSON()).toThrowError();
-			});
+			embed.addFields({ name: 'a'.repeat(257), value: 'bar' });
+			expect(() => embed.toJSON()).toThrowError();
 		});
 
-		describe('GIVEN invalid field name length THEN throws error', () => {
-			test('3', () => {
-				const embed = new EmbedBuilder();
+		test('GIVEN invalid field value length THEN throws error', () => {
+			const embed = new EmbedBuilder();
 
-				embed.addFields({ name: 'a'.repeat(257), value: 'bar' });
-				expect(() => embed.toJSON()).toThrowError();
-			});
-		});
-
-		describe('GIVEN invalid field value length THEN throws error', () => {
-			test('4', () => {
-				const embed = new EmbedBuilder();
-
-				embed.addFields({ name: '', value: 'a'.repeat(1_025) });
-				expect(() => embed.toJSON()).toThrowError();
-			});
+			embed.addFields({ name: '', value: 'a'.repeat(1_025) });
+			expect(() => embed.toJSON()).toThrowError();
 		});
 	});
 });

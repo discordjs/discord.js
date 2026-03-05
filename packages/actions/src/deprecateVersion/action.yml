@@ -1,0 +1,25 @@
+name: Deprecate package version
+description: Deprecates package versions.
+inputs:
+  package:
+    description: Package name
+    required: true
+  version:
+    description: Version to deprecate
+    required: true
+  message:
+    description: Deprecation message
+    required: false
+    default: This version is deprecated. Please use a newer version.
+  node-auth-token:
+    description: npm authentication token
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Deprecate version
+      shell: bash
+      run: |
+        pnpm exec npm-deprecate --name "${{ inputs.version }}" --message "${{ inputs.message }}" --package "${{ inputs.package }}"
+      env:
+        NODE_AUTH_TOKEN: ${{ inputs.node-auth-token }}

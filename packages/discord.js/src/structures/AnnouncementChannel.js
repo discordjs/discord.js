@@ -1,19 +1,19 @@
 'use strict';
 
-const { Routes } = require('discord-api-types/v10');
-const BaseGuildTextChannel = require('./BaseGuildTextChannel');
-const { DiscordjsError, ErrorCodes } = require('../errors');
+const { BaseGuildTextChannel } = require('./BaseGuildTextChannel.js');
 
 /**
  * Represents a guild announcement channel on Discord.
+ *
  * @extends {BaseGuildTextChannel}
  */
 class AnnouncementChannel extends BaseGuildTextChannel {
   /**
    * Adds the target to this channel's followers.
+   *
    * @param {TextChannelResolvable} channel The channel where the webhook should be created
    * @param {string} [reason] Reason for creating the webhook
-   * @returns {Promise<AnnouncementChannel>}
+   * @returns {Promise<FollowedChannelData>} Returns the data for the followed channel
    * @example
    * if (channel.type === ChannelType.GuildAnnouncement) {
    *   channel.addFollower('222197033908436994', 'Important announcements')
@@ -22,11 +22,8 @@ class AnnouncementChannel extends BaseGuildTextChannel {
    * }
    */
   async addFollower(channel, reason) {
-    const channelId = this.guild.channels.resolveId(channel);
-    if (!channelId) throw new DiscordjsError(ErrorCodes.GuildChannelResolve);
-    await this.client.rest.post(Routes.channelFollowers(this.id), { body: { webhook_channel_id: channelId }, reason });
-    return this;
+    return this.guild.channels.addFollower(this, channel, reason);
   }
 }
 
-module.exports = AnnouncementChannel;
+exports.AnnouncementChannel = AnnouncementChannel;

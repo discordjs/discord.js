@@ -19,7 +19,6 @@ jobs:
           sync-labels: true
   validate-title:
     name: Validate title
-    if: github.event.action != 'synchronize'
     runs-on: ubuntu-latest
     steps:
       - name: Validate pull request title

@@ -1,6 +1,5 @@
-import { clearTimeout, setTimeout } from 'node:timers';
 import type { REST } from '@discordjs/rest';
-import { calculateShardId } from '@discordjs/util';
+import { calculateShardId, GatewayRateLimitError } from '@discordjs/util';
 import { WebSocketShardEvents } from '@discordjs/ws';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
@@ -61,6 +60,7 @@ import {
 	type GatewayMessageUpdateDispatchData,
 	type GatewayPresenceUpdateData,
 	type GatewayPresenceUpdateDispatchData,
+	type GatewayRateLimitedDispatchData,
 	type GatewayReadyDispatchData,
 	type GatewayRequestGuildMembersData,
 	type GatewayStageInstanceCreateDispatchData,
@@ -81,6 +81,8 @@ import {
 	type GatewayVoiceStateUpdateData,
 	type GatewayVoiceStateUpdateDispatchData,
 	type GatewayWebhooksUpdateDispatchData,
+	type GatewayRequestSoundboardSoundsData,
+	type GatewaySoundboardSoundsDispatchData,
 } from 'discord-api-types/v10';
 import type { Gateway } from './Gateway.js';
 import { API } from './api/index.js';
@@ -142,6 +144,7 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.GuildSoundboardSoundDelete]: [ToEventProps<GatewayGuildSoundboardSoundDeleteDispatch>];
 	[GatewayDispatchEvents.GuildSoundboardSoundUpdate]: [ToEventProps<GatewayGuildSoundboardSoundUpdateDispatch>];
 	[GatewayDispatchEvents.GuildSoundboardSoundsUpdate]: [ToEventProps<GatewayGuildSoundboardSoundsUpdateDispatch>];
+	[GatewayDispatchEvents.SoundboardSounds]: [ToEventProps<GatewaySoundboardSoundsDispatchData>];
 	[GatewayDispatchEvents.GuildStickersUpdate]: [ToEventProps<GatewayGuildStickersUpdateDispatchData>];
 	[GatewayDispatchEvents.GuildUpdate]: [ToEventProps<GatewayGuildUpdateDispatchData>];
 	[GatewayDispatchEvents.IntegrationCreate]: [ToEventProps<GatewayIntegrationCreateDispatchData>];
@@ -161,6 +164,7 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.MessageReactionRemoveEmoji]: [ToEventProps<GatewayMessageReactionRemoveEmojiDispatchData>];
 	[GatewayDispatchEvents.MessageUpdate]: [ToEventProps<GatewayMessageUpdateDispatchData>];
 	[GatewayDispatchEvents.PresenceUpdate]: [ToEventProps<GatewayPresenceUpdateDispatchData>];
+	[GatewayDispatchEvents.RateLimited]: [ToEventProps<GatewayRateLimitedDispatchData>];
 	[GatewayDispatchEvents.Ready]: [ToEventProps<GatewayReadyDispatchData>];
 	[GatewayDispatchEvents.Resumed]: [ToEventProps<never>];
 	[GatewayDispatchEvents.StageInstanceCreate]: [ToEventProps<GatewayStageInstanceCreateDispatchData>];
@@ -182,6 +186,7 @@ export interface MappedEvents {
 	[GatewayDispatchEvents.WebhooksUpdate]: [ToEventProps<GatewayWebhooksUpdateDispatchData>];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ManagerShardEventsMap extends MappedEvents {}
 
 export interface ClientOptions {
@@ -196,6 +201,10 @@ export interface RequestGuildMembersResult {
 	presences: NonNullable<GatewayGuildMembersChunkDispatchData['presences']>;
 }
 
+function createTimer(controller: AbortController, timeout: number) {
+	return setTimeout(() => controller.abort(), timeout);
+}
+
 export class Client extends AsyncEventEmitter<MappedEvents> {
 	public readonly rest: REST;
 
@@ -203,11 +212,11 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 
 	public readonly api: API;
 
-	public constructor({ rest, gateway }: ClientOptions) {
+	public constructor(options: ClientOptions) {
 		super();
-		this.rest = rest;
-		this.gateway = gateway;
-		this.api = new API(rest);
+		this.rest = options.rest;
+		this.gateway = options.gateway;
+		this.api = new API(this.rest);
 
 		this.gateway.on(WebSocketShardEvents.Dispatch, (dispatch, shardId) => {
 			this.emit(dispatch.t, this.toEventProps(dispatch.d, shardId));
@@ -234,13 +243,24 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 
 		const controller = new AbortController();
 
-		const createTimer = () =>
-			setTimeout(() => {
-				controller.abort();
-			}, timeout);
+		let timer: NodeJS.Timeout | undefined = createTimer(controller, timeout);
 
-		let timer: NodeJS.Timeout | undefined = createTimer();
+		const onRatelimit = ({ data }: ToEventProps<GatewayRateLimitedDispatchData>) => {
+			// We could verify meta.guild_id === options.guild_id as well, but really, the nonce check is enough
+			if (data.meta.nonce === nonce) {
+				controller.abort(new GatewayRateLimitError(data, options));
+			}
+		};
 
+		const cleanup = () => {
+			if (timer) {
+				clearTimeout(timer);
+			}
+
+			this.off(GatewayDispatchEvents.RateLimited, onRatelimit);
+		};
+
+		this.on(GatewayDispatchEvents.RateLimited, onRatelimit);
 		await this.gateway.send(shardId, {
 			op: GatewayOpcodes.RequestGuildMembers,
 			// eslint-disable-next-line id-length
@@ -270,22 +290,23 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 					chunkCount: data.chunk_count,
 				};
 
-				if (data.chunk_index >= data.chunk_count - 1) {
-					break;
-				} else {
-					timer = createTimer();
-				}
+				if (data.chunk_index >= data.chunk_count - 1) break;
+
+				// eslint-disable-next-line require-atomic-updates
+				timer = createTimer(controller, timeout);
 			}
 		} catch (error) {
 			if (error instanceof Error && error.name === 'AbortError') {
+				if (error.cause instanceof GatewayRateLimitError) {
+					throw error.cause;
+				}
+
 				throw new Error('Request timed out');
 			}
 
 			throw error;
 		} finally {
-			if (timer) {
-				clearTimeout(timer);
-			}
+			cleanup();
 		}
 	}
 
@@ -314,6 +335,105 @@ export class Client extends AsyncEventEmitter<MappedEvents> {
 		}
 
 		return { members, nonce, notFound, presences };
+	}
+
+	/**
+	 * Requests soundboard sounds from the gateway and returns an async iterator that yields the data from each soundboard sounds event.
+	 *
+	 * @see {@link https://discord.com/developers/docs/topics/gateway-events#request-soundboard-sounds}
+	 * @param options - The options for the request
+	 * @param timeout - The timeout for waiting for each soundboard sounds
+	 * @example
+	 * Requesting soundboard sounds for specific guilds
+	 * ```ts
+	 * for await (const { guildId, soundboardSounds } of this.requestSoundboardSoundsIterator({
+	 *	guild_ids: ['1234567890', '9876543210'],
+	 * })) {
+	 *	console.log(`Soundboard sounds for guild ${guildId}:`, soundboardSounds);
+	 * }
+	 * ```
+	 */
+	public async *requestSoundboardSoundsIterator(options: GatewayRequestSoundboardSoundsData, timeout = 10_000) {
+		const shardCount = await this.gateway.getShardCount();
+		const shardIds = Map.groupBy(options.guild_ids, (guildId) => calculateShardId(guildId, shardCount));
+
+		const controller = new AbortController();
+
+		let timer: NodeJS.Timeout | undefined = createTimer(controller, timeout);
+
+		for (const [shardId, guildIds] of shardIds) {
+			await this.gateway.send(shardId, {
+				op: GatewayOpcodes.RequestSoundboardSounds,
+				// eslint-disable-next-line id-length
+				d: {
+					...options,
+					guild_ids: guildIds,
+				},
+			});
+		}
+
+		try {
+			const iterator = AsyncEventEmitter.on(this, GatewayDispatchEvents.SoundboardSounds, {
+				signal: controller.signal,
+			});
+
+			const guildIds = new Set(options.guild_ids);
+
+			for await (const [{ data }] of iterator) {
+				if (!guildIds.has(data.guild_id)) continue;
+
+				clearTimeout(timer);
+				timer = undefined;
+
+				yield {
+					guildId: data.guild_id,
+					soundboardSounds: data.soundboard_sounds,
+				};
+
+				guildIds.delete(data.guild_id);
+
+				if (guildIds.size === 0) break;
+
+				timer = createTimer(controller, timeout);
+			}
+		} catch (error) {
+			if (error instanceof Error && error.name === 'AbortError') {
+				throw new Error('Request timed out');
+			}
+
+			throw error;
+		} finally {
+			if (timer) {
+				clearTimeout(timer);
+			}
+		}
+	}
+
+	/**
+	 * Requests soundboard sounds from the gateway.
+	 *
+	 * @see {@link https://discord.com/developers/docs/topics/gateway-events#request-soundboard-sounds}
+	 * @param options - The options for the request
+	 * @param timeout - The timeout for waiting for each soundboard sounds event
+	 * @example
+	 * Requesting soundboard sounds for specific guilds
+	 * ```ts
+	 * const soundboardSounds = await client.requestSoundboardSounds({ guild_ids: ['1234567890', '9876543210'], });
+	 *
+	 * console.log(soundboardSounds.get('1234567890'));
+	 * ```
+	 */
+	public async requestSoundboardSounds(options: GatewayRequestSoundboardSoundsData, timeout = 10_000) {
+		const soundboardSounds = new Map<
+			GatewaySoundboardSoundsDispatchData['guild_id'],
+			GatewaySoundboardSoundsDispatchData['soundboard_sounds']
+		>();
+
+		for await (const data of this.requestSoundboardSoundsIterator(options, timeout)) {
+			soundboardSounds.set(data.guildId, data.soundboardSounds);
+		}
+
+		return soundboardSounds;
 	}
 
 	/**

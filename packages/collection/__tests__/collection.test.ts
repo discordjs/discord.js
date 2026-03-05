@@ -207,6 +207,23 @@ describe('equals() tests', () => {
 		const coll3 = createCollectionFrom(['a', 2], ['b', 3], ['c', 3]);
 		expect(coll2.equals(coll3)).toBeFalsy();
 	});
+
+	test('collections with undefined values should be compared correctly', () => {
+		const collWithUndefined1 = new Collection<string, number | undefined>([
+			['a', 1],
+			['b', undefined],
+		]);
+		const collWithUndefined2 = new Collection<string, number | undefined>([
+			['a', 1],
+			['b', undefined],
+		]);
+		const collWithDifferentKeys = new Collection<string, number | undefined>([
+			['a', 1],
+			['c', undefined],
+		]);
+		expect(collWithUndefined1.equals(collWithUndefined2)).toBeTruthy();
+		expect(collWithUndefined1.equals(collWithDifferentKeys)).toBeFalsy();
+	});
 });
 
 describe('every() tests', () => {
@@ -944,6 +961,29 @@ describe('union() tests', () => {
 	});
 });
 
+describe('groupBy() tests', () => {
+	test('returns a collection of grouped items', () => {
+		const items = [
+			{ name: 'Alice', age: 20 },
+			{ name: 'Bob', age: 20 },
+			{ name: 'Charlie', age: 30 },
+		];
+
+		expect<Collection<number, typeof items>>(Collection.groupBy(items, (item) => item.age)).toStrictEqual(
+			new Collection<number, typeof items>([
+				[
+					20,
+					[
+						{ name: 'Alice', age: 20 },
+						{ name: 'Bob', age: 20 },
+					],
+				],
+				[30, [{ name: 'Charlie', age: 30 }]],
+			]),
+		);
+	});
+});
+
 describe('toReversed() tests', () => {
 	test('reverses a collection', () => {
 		const coll = createTestCollection();
@@ -1097,5 +1137,63 @@ describe('findLastKey() tests', () => {
 			expect(this).toBeNull();
 			return true;
 		}, null);
+	});
+});
+
+describe('subclassing tests', () => {
+	class DerivedCollection<Key, Value> extends Collection<Key, Value> {}
+
+	test('constructor[Symbol.species]', () => {
+		expect(DerivedCollection[Symbol.species]).toStrictEqual(DerivedCollection);
+	});
+
+	describe('methods that construct new collections return subclassed objects', () => {
+		const coll = new DerivedCollection();
+
+		test('filter()', () => {
+			expect(coll.filter(Boolean)).toBeInstanceOf(DerivedCollection);
+		});
+		test('partition()', () => {
+			for (const partition of coll.partition(Boolean)) {
+				expect(partition).toBeInstanceOf(DerivedCollection);
+			}
+		});
+		test('flatMap()', () => {
+			expect(coll.flatMap(() => new Collection())).toBeInstanceOf(DerivedCollection);
+		});
+		test('mapValues()', () => {
+			expect(coll.mapValues(Object)).toBeInstanceOf(DerivedCollection);
+		});
+		test('clone()', () => {
+			expect(coll.clone()).toBeInstanceOf(DerivedCollection);
+		});
+		test('intersection()', () => {
+			expect(coll.intersection(new Collection())).toBeInstanceOf(DerivedCollection);
+		});
+		test('union()', () => {
+			expect(coll.union(new Collection())).toBeInstanceOf(DerivedCollection);
+		});
+		test('difference()', () => {
+			expect(coll.difference(new Collection())).toBeInstanceOf(DerivedCollection);
+		});
+		test('symmetricDifference()', () => {
+			expect(coll.symmetricDifference(new Collection())).toBeInstanceOf(DerivedCollection);
+		});
+		test('merge()', () => {
+			const fn = () => ({ keep: false }) as const; // eslint-disable-line unicorn/consistent-function-scoping
+			expect(coll.merge(new Collection(), fn, fn, fn)).toBeInstanceOf(DerivedCollection);
+		});
+		test('toReversed()', () => {
+			expect(coll.toReversed()).toBeInstanceOf(DerivedCollection);
+		});
+		test('toSorted()', () => {
+			expect(coll.toSorted()).toBeInstanceOf(DerivedCollection);
+		});
+		test('Collection.combineEntries()', () => {
+			expect(DerivedCollection.combineEntries([], Object)).toBeInstanceOf(DerivedCollection);
+		});
+		test('Collection.groupBy()', () => {
+			expect(DerivedCollection.groupBy([], Object)).toBeInstanceOf(DerivedCollection);
+		});
 	});
 });

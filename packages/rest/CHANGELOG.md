@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/rest@2.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.4.3...@discordjs/rest@2.5.0) - (2025-04-25)
+
+## Features
+
+- Components v2 in v14 (#10781) ([edace17](https://github.com/discordjs/discord.js/commit/edace17a131f857547163a3acf4bb6fec0c1e415))
+- Add soundboard in v14 (#10843) ([d3154cf](https://github.com/discordjs/discord.js/commit/d3154cf8f1eb027b5b4921d4048a32f464a3cd85))
+
+# [@discordjs/rest@2.4.2](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.4.1...@discordjs/rest@2.4.2) - (2025-01-01)
+
+## Bug Fixes
+
+- Correct guild member banner URL ([8d69b24](https://github.com/discordjs/discord.js/commit/8d69b24b5c83249dffa5899a417a9dcbc6f3f30c))
+
+# [@discordjs/rest@2.4.2](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.4.1...@discordjs/rest@2.4.2) - (2025-01-01)
+
+## Bug Fixes
+
+- Correct guild member banner URL ([8d69b24](https://github.com/discordjs/discord.js/commit/8d69b24b5c83249dffa5899a417a9dcbc6f3f30c))
+
 # [@discordjs/rest@2.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.3.0...@discordjs/rest@2.4.0) - (2024-09-01)
 
 ## Bug Fixes

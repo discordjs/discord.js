@@ -15,16 +15,14 @@ import { ApiPackage } from './ApiPackage.js';
 export interface IApiEntryPointOptions extends IApiItemContainerMixinOptions, IApiNameMixinOptions {}
 
 /**
- * Represents the entry point for an NPM package.
+ * Represents an entry point for an NPM package.
  *
  * @remarks
  *
  * This is part of the {@link ApiModel} hierarchy of classes, which are serializable representations of
  * API declarations.
  *
- * `ApiEntryPoint` represents the entry point to an NPM package.  API Extractor does not currently support
- * analysis of multiple entry points, but the `ApiEntryPoint` object is included to support a future feature.
- * In the current implementation, `ApiEntryPoint.importPath` is always the empty string.
+ * `ApiEntryPoint` represents an entry point to an NPM package.
  *
  * For example, suppose the package.json file looks like this:
  *
@@ -37,7 +35,7 @@ export interface IApiEntryPointOptions extends IApiItemContainerMixinOptions, IA
  * }
  * ```
  *
- * In this example, the `ApiEntryPoint` would represent the TypeScript module for `./lib/index.js`.
+ * In this example, the main `ApiEntryPoint` would represent the TypeScript module for `./lib/index.js`.
  * @public
  */
 export class ApiEntryPoint extends ApiItemContainerMixin(ApiNameMixin(ApiItem)) {
@@ -62,12 +60,7 @@ export class ApiEntryPoint extends ApiItemContainerMixin(ApiNameMixin(ApiItem)) 
 
 	/**
 	 * The module path for this entry point, relative to the parent `ApiPackage`.  In the current implementation,
-	 * this is always the empty string, indicating the default entry point.
-	 *
-	 * @remarks
-	 *
-	 * API Extractor does not currently support analysis of multiple entry points.  If that feature is implemented
-	 * in the future, then the `ApiEntryPoint.importPath` will be used to distinguish different entry points,
+	 * this is used to distinguish different entry points,
 	 * for example: `controls/Button` in `import { Button } from "example-package/controls/Button";`.
 	 *
 	 * The `ApiEntryPoint.name` property stores the same value as `ApiEntryPoint.importPath`.

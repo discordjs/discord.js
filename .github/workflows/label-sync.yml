@@ -15,7 +15,7 @@ jobs:
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Label sync
         uses: crazy-max/ghaction-github-labeler@v5

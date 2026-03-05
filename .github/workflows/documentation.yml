@@ -6,10 +6,11 @@ on:
     paths:
       - 'packages/*/src/**'
       - '!packages/create-discord-bot/**'
-      - '!packages/proxy-container/**'
       - '!packages/ui/**'
     tags:
       - '**'
+      - '!create-discord-app@*'
+      - '!create-discord-bot@*'
   workflow_dispatch:
     inputs:
       ref:
@@ -31,19 +32,20 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
       REF_TYPE: ${{ inputs.ref_type || github.ref_type }}
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ inputs.ref || '' }}
 
-      - name: Install Node.js v20
-        uses: actions/setup-node@v4
+      - name: Install Node.js v24
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
+          package-manager-cache: false
 
       - name: Install dependencies
         uses: ./packages/actions/src/pnpmCache
@@ -53,7 +55,7 @@ jobs:
 
       - name: Checkout main repository
         if: ${{ inputs.ref && inputs.ref != 'main' }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: 'main'
 
@@ -64,6 +66,7 @@ jobs:
           COREPACK_ENABLE_STRICT: 0
         run: |
           cd main
+          pnpm self-update 10
           pnpm install --frozen-lockfile --prefer-offline --loglevel error
           pnpm run build
           cd ..
@@ -85,8 +88,13 @@ jobs:
       - name: Build docs with main api-extractor
         if: ${{ inputs.ref && inputs.ref != 'main' }}
         run: |
-          declare -a PACKAGES=("brokers" "builders" "collection" "core" "discord.js" "formatters" "next" "proxy" "rest" "util" "voice" "ws")
+          declare -a PACKAGES=("brokers" "builders" "collection" "core" "discord.js" "formatters" "next" "proxy" "rest" "structures" "util" "voice" "ws")
           for PACKAGE in "${PACKAGES[@]}"; do
+            if [ ! -d "packages/${PACKAGE}" ]; then
+              echo "::notice::${PACKAGE} does not exist on this ref. Skipping..."
+              continue
+            fi
+
             cd "packages/${PACKAGE}"
             sed -i 's!https://github.com/discordjs/discord.js/tree/main!https://github.com/discordjs/discord.js/tree/${{ inputs.ref }}!' api-extractor.json
             ../../main/packages/api-extractor/bin/api-extractor run --local --minify
@@ -94,18 +102,17 @@ jobs:
             cd ../..
           done
 
-      - name: Checkout docs repository
-        uses: actions/checkout@v4
-        with:
-          repository: 'discordjs/docs'
-          token: ${{ secrets.DJS_DOCS }}
-          path: 'out'
-
       - name: Upload documentation to database
         if: ${{ env.REF_TYPE == 'tag' && (!inputs.ref || inputs.ref == 'main') }}
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          CF_D1_DOCS_API_KEY: ${{ secrets.CF_D1_DOCS_API_KEY }}
+          CF_D1_DOCS_ID: ${{ secrets.CF_D1_DOCS_ID }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
+          CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
+          CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
+          CF_R2_DOCS_BUCKET: ${{ secrets.CF_R2_DOCS_BUCKET }}
+          CF_R2_DOCS_BUCKET_URL: ${{ secrets.CF_R2_DOCS_BUCKET_URL }}
         uses: ./packages/actions/src/uploadDocumentation
         with:
           package: ${{ steps.extract-tag.outputs.package }}
@@ -114,8 +121,14 @@ jobs:
       - name: Upload documentation to database
         if: ${{ env.REF_TYPE == 'tag' && inputs.ref && inputs.ref != 'main' }}
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          CF_D1_DOCS_API_KEY: ${{ secrets.CF_D1_DOCS_API_KEY }}
+          CF_D1_DOCS_ID: ${{ secrets.CF_D1_DOCS_ID }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
+          CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
+          CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
+          CF_R2_DOCS_BUCKET: ${{ secrets.CF_R2_DOCS_BUCKET }}
+          CF_R2_DOCS_BUCKET_URL: ${{ secrets.CF_R2_DOCS_BUCKET_URL }}
         uses: ./main/packages/actions/src/uploadDocumentation
         with:
           package: ${{ steps.extract-tag.outputs.package }}
@@ -124,7 +137,10 @@ jobs:
       - name: Upload split documentation to blob storage
         if: ${{ env.REF_TYPE == 'tag' && (!inputs.ref || inputs.ref == 'main') }}
         env:
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
+          CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
+          CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
+          CF_R2_DOCS_BUCKET: ${{ secrets.CF_R2_DOCS_BUCKET }}
         uses: ./packages/actions/src/uploadSplitDocumentation
         with:
           package: ${{ steps.extract-tag.outputs.package }}
@@ -133,75 +149,58 @@ jobs:
       - name: Upload split documentation to blob storage
         if: ${{ env.REF_TYPE == 'tag' && inputs.ref && inputs.ref != 'main' }}
         env:
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
+          CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
+          CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
+          CF_R2_DOCS_BUCKET: ${{ secrets.CF_R2_DOCS_BUCKET }}
         uses: ./main/packages/actions/src/uploadSplitDocumentation
         with:
           package: ${{ steps.extract-tag.outputs.package }}
           version: ${{ steps.extract-tag.outputs.semver }}
 
-      - name: Move docs to correct directory
-        if: ${{ env.REF_TYPE == 'tag' }}
-        env:
-          PACKAGE: ${{ steps.extract-tag.outputs.package }}
-          SEMVER: ${{ steps.extract-tag.outputs.semver }}
-        run: |
-          mkdir -p "out/${PACKAGE}"
-          if [[ "${PACKAGE}" == "discord.js" ]]; then
-            mv "packages/${PACKAGE}/docs/docs.json" "out/${PACKAGE}/${SEMVER}.json"
-            mv "packages/${PACKAGE}/docs/docs.api.json" "out/${PACKAGE}/${SEMVER}.api.json"
-          else
-            mv "packages/${PACKAGE}/docs/docs.api.json" "out/${PACKAGE}/${SEMVER}.api.json"
-          fi
-
       - name: Upload documentation to database
         if: ${{ env.REF_TYPE == 'branch' && (!inputs.ref || inputs.ref == 'main') }}
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          CF_D1_DOCS_API_KEY: ${{ secrets.CF_D1_DOCS_API_KEY }}
+          CF_D1_DOCS_ID: ${{ secrets.CF_D1_DOCS_ID }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
+          CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
+          CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
+          CF_R2_DOCS_BUCKET: ${{ secrets.CF_R2_DOCS_BUCKET }}
+          CF_R2_DOCS_BUCKET_URL: ${{ secrets.CF_R2_DOCS_BUCKET_URL }}
         uses: ./packages/actions/src/uploadDocumentation
 
       - name: Upload documentation to database
         if: ${{ env.REF_TYPE == 'branch' && inputs.ref && inputs.ref != 'main' }}
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          CF_D1_DOCS_API_KEY: ${{ secrets.CF_D1_DOCS_API_KEY }}
+          CF_D1_DOCS_ID: ${{ secrets.CF_D1_DOCS_ID }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
+          CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
+          CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
+          CF_R2_DOCS_BUCKET: ${{ secrets.CF_R2_DOCS_BUCKET }}
+          CF_R2_DOCS_BUCKET_URL: ${{ secrets.CF_R2_DOCS_BUCKET_URL }}
         uses: ./main/packages/actions/src/uploadDocumentation
 
       - name: Upload split documentation to blob storage
         if: ${{ env.REF_TYPE == 'branch' && (!inputs.ref || inputs.ref == 'main') }}
         env:
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
+          CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
+          CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
+          CF_R2_DOCS_BUCKET: ${{ secrets.CF_R2_DOCS_BUCKET }}
         uses: ./packages/actions/src/uploadSplitDocumentation
 
       - name: Upload split documentation to blob storage
         if: ${{ env.REF_TYPE == 'branch' && inputs.ref && inputs.ref != 'main' }}
         env:
-          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+          CF_R2_DOCS_URL: ${{ secrets.CF_R2_DOCS_URL }}
+          CF_R2_DOCS_ACCESS_KEY_ID: ${{ secrets.CF_R2_DOCS_ACCESS_KEY_ID }}
+          CF_R2_DOCS_SECRET_ACCESS_KEY: ${{ secrets.CF_R2_DOCS_SECRET_ACCESS_KEY }}
+          CF_R2_DOCS_BUCKET: ${{ secrets.CF_R2_DOCS_BUCKET }}
         uses: ./main/packages/actions/src/uploadSplitDocumentation
-
-      - name: Move docs to correct directory
-        if: ${{ env.REF_TYPE == 'branch' }}
-        run: |
-          declare -a PACKAGES=("brokers" "builders" "collection" "core" "discord.js" "formatters" "next" "proxy" "rest" "util" "voice" "ws")
-          for PACKAGE in "${PACKAGES[@]}"; do
-            if [[ "${PACKAGE}" == "discord.js" ]]; then
-              mkdir -p "out/${PACKAGE}"
-              mv "packages/${PACKAGE}/docs/docs.json" "out/${PACKAGE}/${GITHUB_REF_NAME}.json"
-              mv "packages/${PACKAGE}/docs/docs.api.json" "out/${PACKAGE}/${GITHUB_REF_NAME}.api.json"
-            else
-              mkdir -p "out/${PACKAGE}"
-              mv "packages/${PACKAGE}/docs/docs.api.json" "out/${PACKAGE}/${GITHUB_REF_NAME}.api.json"
-            fi
-          done
-
-      - name: Commit and push
-        run: |
-          cd out
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add .
-          git commit -m "Docs build for ${GITHUB_REF_TYPE} ${GITHUB_REF_NAME}: ${GITHUB_SHA}" || true
-          git push
 
   build-indices:
     needs: build-docs
@@ -209,16 +208,17 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     if: github.repository_owner == 'discordjs'
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: Install Node.js v20
-        uses: actions/setup-node@v4
+      - name: Install Node.js v24
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
+          package-manager-cache: false
 
       - name: Install dependencies
         uses: ./packages/actions/src/pnpmCache
@@ -228,7 +228,9 @@ jobs:
 
       - name: Upload search indices to meilisearch
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CF_D1_DOCS_API_KEY: ${{ secrets.CF_D1_DOCS_API_KEY }}
+          CF_D1_DOCS_ID: ${{ secrets.CF_D1_DOCS_ID }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           SEARCH_API_URL: ${{ secrets.SEARCH_API_URL }}
           SEARCH_API_KEY: ${{ secrets.SEARCH_API_KEY }}
         uses: ./packages/actions/src/uploadSearchIndices

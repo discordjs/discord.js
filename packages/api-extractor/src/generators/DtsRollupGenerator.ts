@@ -8,7 +8,7 @@ import * as ts from 'typescript';
 import { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstEntity } from '../analyzer/AstEntity.js';
 import { AstImport } from '../analyzer/AstImport.js';
-import type { AstModuleExportInfo } from '../analyzer/AstModule.js';
+import type { IAstModuleExportInfo } from '../analyzer/AstModule.js';
 import { AstNamespaceImport } from '../analyzer/AstNamespaceImport.js';
 import { AstSymbol } from '../analyzer/AstSymbol.js';
 import { SourceFileLocationFormatter } from '../analyzer/SourceFileLocationFormatter.js';
@@ -103,8 +103,10 @@ export class DtsRollupGenerator {
 
 		writer.ensureSkippedLine();
 
+		// dtsRollup doesn't support multiple entry points. We throw error if dtsRollup is enabled while more than one entry points are specified.
+		// So at this point, we can safely assume there is only one entry point in collector.entities
 		// Emit the imports
-		for (const entity of collector.entities) {
+		for (const entity of [...collector.entities.values()][0]!) {
 			if (entity.astEntity instanceof AstImport) {
 				const astImport: AstImport = entity.astEntity;
 
@@ -124,7 +126,7 @@ export class DtsRollupGenerator {
 		writer.ensureSkippedLine();
 
 		// Emit the regular declarations
-		for (const entity of collector.entities) {
+		for (const entity of [...collector.entities.values()][0]!) {
 			const astEntity: AstEntity = entity.astEntity;
 			const symbolMetadata: SymbolMetadata | undefined = collector.tryFetchMetadataForAstEntity(astEntity);
 			const maxEffectiveReleaseTag: ReleaseTag = symbolMetadata
@@ -159,7 +161,7 @@ export class DtsRollupGenerator {
 			}
 
 			if (astEntity instanceof AstNamespaceImport) {
-				const astModuleExportInfo: AstModuleExportInfo = astEntity.fetchAstModuleExportInfo(collector);
+				const astModuleExportInfo: IAstModuleExportInfo = astEntity.fetchAstModuleExportInfo(collector);
 
 				if (entity.nameForEmit === undefined) {
 					// This should never happen
@@ -292,7 +294,7 @@ export class DtsRollupGenerator {
 					replacedModifiers = 'export ' + replacedModifiers;
 				}
 
-				if (previousSpan && previousSpan.kind === ts.SyntaxKind.SyntaxList) {
+				if (previousSpan?.kind === ts.SyntaxKind.SyntaxList) {
 					// If there is a previous span of type SyntaxList, then apply it before any other modifiers
 					// (e.g. "abstract") that appear there.
 					previousSpan.modification.prefix = replacedModifiers + previousSpan.modification.prefix;
@@ -424,11 +426,9 @@ export class DtsRollupGenerator {
 							modification.suffix = nodeToTrim.children[nodeToTrim.children.length - 1]!.separator;
 						}
 
-						if (
-							nodeToTrim.nextSibling && // If the thing we are trimming is followed by a comma, then trim the comma also.
-							// An example would be an enum member.
-							nodeToTrim.nextSibling.kind === ts.SyntaxKind.CommaToken
-						) {
+						// If the thing we are trimming is followed by a comma, then trim the comma also.
+						// An example would be an enum member.
+						if (nodeToTrim.nextSibling?.kind === ts.SyntaxKind.CommaToken) {
 							// Keep its separator since it often has useful whitespace
 							modification.suffix += nodeToTrim.nextSibling.separator;
 							nodeToTrim.nextSibling.modification.skipAll();

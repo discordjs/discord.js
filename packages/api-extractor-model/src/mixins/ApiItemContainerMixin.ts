@@ -490,9 +490,7 @@ export function ApiItemContainerMixin<TBaseClass extends IApiItemConstructor>(
 						//                        ^^^
 						// ```
 						const firstReferenceToken: ExcerptToken | undefined = extendsType.excerpt.spannedTokens.find(
-							(token: ExcerptToken) => {
-								return token.kind === ExcerptTokenKind.Reference && token.canonicalReference;
-							},
+							(token: ExcerptToken) => token.kind === ExcerptTokenKind.Reference && token.canonicalReference,
 						);
 
 						if (!firstReferenceToken) {

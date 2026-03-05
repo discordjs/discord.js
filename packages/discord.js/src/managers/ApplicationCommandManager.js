@@ -4,14 +4,15 @@ const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { isJSONEncodable } = require('@discordjs/util');
 const { Routes } = require('discord-api-types/v10');
-const ApplicationCommandPermissionsManager = require('./ApplicationCommandPermissionsManager');
-const CachedManager = require('./CachedManager');
-const { DiscordjsTypeError, ErrorCodes } = require('../errors');
-const ApplicationCommand = require('../structures/ApplicationCommand');
-const PermissionsBitField = require('../util/PermissionsBitField');
+const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { ApplicationCommand } = require('../structures/ApplicationCommand.js');
+const { PermissionsBitField } = require('../util/PermissionsBitField.js');
+const { ApplicationCommandPermissionsManager } = require('./ApplicationCommandPermissionsManager.js');
+const { CachedManager } = require('./CachedManager.js');
 
 /**
  * Manages API methods for application commands and stores their cache.
+ *
  * @extends {CachedManager}
  */
 class ApplicationCommandManager extends CachedManager {
@@ -20,6 +21,7 @@ class ApplicationCommandManager extends CachedManager {
 
     /**
      * The manager for permissions of arbitrary commands on arbitrary guilds
+     *
      * @type {ApplicationCommandPermissionsManager}
      */
     this.permissions = new ApplicationCommandPermissionsManager(this);
@@ -27,6 +29,7 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * The cache of this manager
+   *
    * @type {Collection<Snowflake, ApplicationCommand>}
    * @name ApplicationCommandManager#cache
    */
@@ -37,6 +40,8 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * The APIRouter path to the commands
+   *
+   * @param {Object} [options] The options
    * @param {Snowflake} [options.id] The application command's id
    * @param {Snowflake} [options.guildId] The guild's id to use in the path,
    * ignored when using a {@link GuildApplicationCommandManager}
@@ -61,18 +66,21 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Data that resolves to give an ApplicationCommand object. This can be:
-   * * An ApplicationCommand object
-   * * A Snowflake
+   * - An ApplicationCommand object
+   * - A Snowflake
+   *
    * @typedef {ApplicationCommand|Snowflake} ApplicationCommandResolvable
    */
 
   /**
    * Data that resolves to the data of an ApplicationCommand
+   *
    * @typedef {ApplicationCommandData|APIApplicationCommand} ApplicationCommandDataResolvable
    */
 
   /**
    * Options used to fetch data from Discord
+   *
    * @typedef {Object} BaseFetchOptions
    * @property {boolean} [cache=true] Whether to cache the fetched data if it wasn't already
    * @property {boolean} [force=false] Whether to skip the cache check and request the API
@@ -80,7 +88,9 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Options used to fetch Application Commands from Discord
+   *
    * @typedef {BaseFetchOptions} FetchApplicationCommandOptions
+   * @property {Snowflake} [id] The command's id to fetch
    * @property {Snowflake} [guildId] The guild's id to fetch commands for, for when the guild is not cached
    * @property {Locale} [locale] The locale to use when fetching this command
    * @property {boolean} [withLocalizations] Whether to fetch all localization data
@@ -88,8 +98,8 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Obtains one or multiple application commands from Discord, or the cache if it's already available.
-   * @param {Snowflake|FetchApplicationCommandOptions} [id] Options for fetching application command(s)
-   * @param {FetchApplicationCommandOptions} [options] Additional options for this fetch
+   *
+   * @param {Snowflake|FetchApplicationCommandOptions} [options] Options for fetching application command(s)
    * @returns {Promise<ApplicationCommand|Collection<Snowflake, ApplicationCommand>>}
    * @example
    * // Fetch a single command
@@ -98,33 +108,56 @@ class ApplicationCommandManager extends CachedManager {
    *   .catch(console.error);
    * @example
    * // Fetch all commands
+   * client.application.commands.fetch()
+   *   .then(commands => console.log(`Fetched ${commands.size} commands`))
+   *   .catch(console.error);
+   * @example
+   * // Fetch all commands in a guild
    * guild.commands.fetch()
    *   .then(commands => console.log(`Fetched ${commands.size} commands`))
    *   .catch(console.error);
+   * @example
+   * // Fetch a single command without checking cache
+   * guild.commands.fetch({ id: '123456789012345678', force: true })
+   *   .then(command => console.log(`Fetched command ${command.name}`))
+   *   .catch(console.error)
    */
-  async fetch(id, { guildId, cache = true, force = false, locale, withLocalizations } = {}) {
-    if (typeof id === 'object') {
-      ({ guildId, cache = true, locale, withLocalizations } = id);
-    } else if (id) {
-      if (!force) {
-        const existing = this.cache.get(id);
-        if (existing) return existing;
-      }
-      const command = await this.client.rest.get(this.commandPath({ id, guildId }));
-      return this._add(command, cache);
+  async fetch(options) {
+    if (!options) return this._fetchMany();
+
+    if (typeof options === 'string') return this._fetchSingle({ id: options });
+
+    const { cache, force, guildId, id, locale, withLocalizations } = options;
+
+    if (id) return this._fetchSingle({ cache, force, guildId, id });
+
+    return this._fetchMany({ cache, guildId, locale, withLocalizations });
+  }
+
+  async _fetchSingle({ cache, force = false, guildId, id }) {
+    if (!force) {
+      const existing = this.cache.get(id);
+      if (existing) return existing;
     }
 
+    const command = await this.client.rest.get(this.commandPath({ id, guildId }));
+    return this._add(command, cache);
+  }
+
+  async _fetchMany({ cache, guildId, locale, withLocalizations } = {}) {
     const data = await this.client.rest.get(this.commandPath({ guildId }), {
       headers: {
         'X-Discord-Locale': locale,
       },
       query: makeURLSearchParams({ with_localizations: withLocalizations }),
     });
+
     return data.reduce((coll, command) => coll.set(command.id, this._add(command, cache, guildId)), new Collection());
   }
 
   /**
    * Creates an application command.
+   *
    * @param {ApplicationCommandDataResolvable} command The command
    * @param {Snowflake} [guildId] The guild's id to create this command in,
    * ignored when using a {@link GuildApplicationCommandManager}
@@ -147,6 +180,7 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Sets all the commands for this application or guild.
+   *
    * @param {ApplicationCommandDataResolvable[]} commands The commands
    * @param {Snowflake} [guildId] The guild's id to create the commands in,
    * ignored when using a {@link GuildApplicationCommandManager}
@@ -179,6 +213,7 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Edits an application command.
+   *
    * @param {ApplicationCommandResolvable} command The command to edit
    * @param {Partial<ApplicationCommandDataResolvable>} data The data to update the command with
    * @param {Snowflake} [guildId] The guild's id where the command registered,
@@ -204,6 +239,7 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Deletes an application command.
+   *
    * @param {ApplicationCommandResolvable} command The command to delete
    * @param {Snowflake} [guildId] The guild's id where the command is registered,
    * ignored when using a {@link GuildApplicationCommandManager}
@@ -227,6 +263,7 @@ class ApplicationCommandManager extends CachedManager {
 
   /**
    * Transforms an {@link ApplicationCommandData} object into something that can be used with the API.
+   *
    * @param {ApplicationCommandDataResolvable} command The command to transform
    * @returns {APIApplicationCommand}
    * @private
@@ -244,9 +281,9 @@ class ApplicationCommandManager extends CachedManager {
 
     if ('defaultMemberPermissions' in command) {
       default_member_permissions =
-        command.defaultMemberPermissions !== null
-          ? new PermissionsBitField(command.defaultMemberPermissions).bitfield.toString()
-          : command.defaultMemberPermissions;
+        command.defaultMemberPermissions === null
+          ? command.defaultMemberPermissions
+          : new PermissionsBitField(command.defaultMemberPermissions).bitfield.toString();
     }
 
     return {
@@ -260,8 +297,9 @@ class ApplicationCommandManager extends CachedManager {
       default_member_permissions,
       integration_types: command.integrationTypes ?? command.integration_types,
       contexts: command.contexts,
+      handler: command.handler,
     };
   }
 }
 
-module.exports = ApplicationCommandManager;
+exports.ApplicationCommandManager = ApplicationCommandManager;

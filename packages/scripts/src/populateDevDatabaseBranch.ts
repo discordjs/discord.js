@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import process, { cwd } from 'node:process';
+import process from 'node:process';
 import { create } from '@actions/glob';
 import { put } from '@vercel/blob';
 import { createPool } from '@vercel/postgres';
@@ -8,7 +8,7 @@ const pool = createPool({
 	connectionString: process.env.DATABASE_URL,
 });
 
-process.chdir(`${cwd()}/../../`);
+process.chdir(`${process.cwd()}/../../`);
 const globber = await create(`packages/*/docs/*.api.json`);
 for await (const file of globber.globGenerator()) {
 	const parsed = /(?<semver>\d+.\d+.\d+)-?.*/.exec(file);
@@ -20,7 +20,7 @@ for await (const file of globber.globGenerator()) {
 			const { name } = JSON.parse(data);
 			const { url } = await put(`${name.replace('@discordjs/', '')}/${parsed.groups.semver}.json`, data, {
 				access: 'public',
-				addRandomSuffix: false,
+				allowOverwrite: true,
 			});
 			await pool.sql`insert into documentation (name, version, url) values (${name.replace('@discordjs/', '')}, ${
 				parsed.groups.semver
@@ -34,7 +34,7 @@ for await (const file of globber.globGenerator()) {
 			const { name } = JSON.parse(data);
 			const { url } = await put(`${name.replace('@discordjs/', '')}/main.json`, data, {
 				access: 'public',
-				addRandomSuffix: false,
+				allowOverwrite: true,
 			});
 			await pool.sql`insert into documentation (name, version, url) values (${name.replace(
 				'@discordjs/',

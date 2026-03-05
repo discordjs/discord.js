@@ -15,7 +15,10 @@ export interface ApplicationCommandOptionWithAutocompleteData extends Pick<Autoc
  * This mixin holds choices and autocomplete symbols used for options.
  */
 export class ApplicationCommandOptionWithAutocompleteMixin {
-	protected declare readonly data: ApplicationCommandOptionWithAutocompleteData;
+	/**
+	 * @internal
+	 */
+	declare protected readonly data: ApplicationCommandOptionWithAutocompleteData;
 
 	/**
 	 * Whether this option uses autocomplete.

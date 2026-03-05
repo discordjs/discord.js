@@ -1,8 +1,8 @@
 'use strict';
 
 const { Collection } = require('@discordjs/collection');
-const Action = require('./Action');
-const Events = require('../../util/Events');
+const { Events } = require('../../util/Events.js');
+const { Action } = require('./Action.js');
 
 class ThreadMembersUpdateAction extends Action {
   handle(data) {
@@ -33,6 +33,7 @@ class ThreadMembersUpdateAction extends Action {
       /**
        * Emitted whenever members are added or removed from a thread.
        * <info>This event requires the {@link GatewayIntentBits.GuildMembers} privileged gateway intent.</info>
+       *
        * @event Client#threadMembersUpdate
        * @param {Collection<Snowflake, ThreadMember>} addedMembers The members that were added
        * @param {Collection<Snowflake, ThreadMember>} removedMembers The members that were removed
@@ -40,8 +41,9 @@ class ThreadMembersUpdateAction extends Action {
        */
       client.emit(Events.ThreadMembersUpdate, addedMembers, removedMembers, thread);
     }
+
     return {};
   }
 }
 
-module.exports = ThreadMembersUpdateAction;
+exports.ThreadMembersUpdateAction = ThreadMembersUpdateAction;

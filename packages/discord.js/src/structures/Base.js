@@ -1,15 +1,17 @@
 'use strict';
 
-const { flatten } = require('../util/Util');
+const { flatten } = require('../util/Util.js');
 
 /**
  * Represents a data model that is identifiable by a Snowflake (i.e. Discord API data models).
+ *
  * @abstract
  */
 class Base {
   constructor(client) {
     /**
      * The client that instantiated this
+     *
      * @name Base#client
      * @type {Client}
      * @readonly
@@ -40,4 +42,4 @@ class Base {
   }
 }
 
-module.exports = Base;
+exports.Base = Base;

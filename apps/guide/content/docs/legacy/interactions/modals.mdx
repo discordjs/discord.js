@@ -1,0 +1,419 @@
+---
+title: Modals
+---
+
+Modals are pop-up forms that allow you to prompt users for additional input. This form-like interaction response blocks the user from interacting with Discord until the modal is submitted or dismissed. In this section, we will cover how to create, show, and receive modals using discord.js!
+
+<Callout>
+	This page is a follow-up to the [interactions (slash commands) page](../slash-commands/advanced-creation). Reading
+	that page first will help you understand the concepts introduced in this page.
+</Callout>
+
+## Building and responding with modals
+
+With the `ModalBuilder` class, discord.js offers a convenient way to build modals step by step using setters and callbacks.
+
+<Callout>
+	You can have a maximum of five top-level components per modal, each of which can be a label or a text display
+	component.
+</Callout>
+
+```js
+const { Events, ModalBuilder } = require('discord.js');
+
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+	if (interaction.commandName === 'ping') {
+		const modal = new ModalBuilder().setCustomId('myModal').setTitle('My Modal');
+
+		// TODO: Add components to modal...
+	}
+});
+```
+
+<Callout>
+	The `customId` is a developer-defined string of up to 100 characters and uniquely identifies this modal instance. You
+	can use it to differentiate incoming interactions.
+</Callout>
+
+The next step is adding components to the modal, which may either request input or present information.
+
+### Label
+
+Label components wrap around other modal components (text input, select menus, etc.) to add a label and description to it.
+Since labels are not stand-alone components, we will use this example label to wrap a text input component in the next section:
+
+```js
+const { LabelBuilder, ModalBuilder } = require('discord.js');
+
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+	if (interaction.commandName === 'ping') {
+		// [!code focus:11]
+		// Create the modal
+		const modal = new ModalBuilder().setCustomId('myModal').setTitle('My Modal');
+
+		// [!code ++:5]
+		const hobbiesLabel = new LabelBuilder()
+			// The label is a large header text that identifies the interactive component for the user.
+			.setLabel('What are some of your favorite hobbies?')
+			// The description is an additional optional subtext that aids the label.
+			.setDescription('Activities you like to participate in');
+
+		// [!code ++:2]
+		// Add label to the modal
+		modal.addLabelComponents(hobbiesLabel);
+	}
+});
+```
+
+<Callout>
+	The `label` field has a max length of 45 characters. The `description` field has a max length of 100 characters.
+</Callout>
+
+### Text input
+
+Text input components prompt users for single or multi line free-form text.
+
+```js
+const { LabelBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+	if (interaction.commandName === 'ping') {
+		// [!code focus:10]
+		// Create the modal
+		const modal = new ModalBuilder().setCustomId('myModal').setTitle('My Modal');
+
+		// [!code ++:6]
+		const hobbiesInput = new TextInputBuilder()
+			.setCustomId('hobbiesInput')
+			// Short means a single line of text.
+			.setStyle(TextInputStyle.Short)
+			// Placeholder text displayed inside the text input box
+			.setPlaceholder('card games, films, books, etc.');
+
+		// [!code focus:10]
+		const hobbiesLabel = new LabelBuilder()
+			// The label is a large header that identifies the interactive component for the user.
+			.setLabel("What's some of your favorite hobbies?")
+			// The description is an additional optional subtext that aids the label.
+			.setDescription('Activities you like to participate in')
+			// [!code ++:2]
+			// Set text input as the component of the label
+			.setTextInputComponent(hobbiesInput);
+
+		// Add the label to the modal
+		modal.addLabelComponents(hobbiesLabel);
+	}
+});
+```
+
+#### Input styles
+
+Discord offers two different input styles:
+
+- `Short`, a single-line text entry
+- `Paragraph`, a multi-line text entry
+
+#### Input properties
+
+A text input field can be customized in a number of ways to apply validation or set default values via the following `TextInputBuilder` methods:
+
+```js
+const input = new TextInputBuilder()
+	// Set the component id (this is not the custom id)
+	.setId(1)
+	// Set the maximum number of characters allowed
+	.setMaxLength(1_000)
+	// Set the minimum number of characters required for submission
+	.setMinLength(10)
+	// Set a default value to prefill the text input
+	.setValue('Default')
+	// Require a value in this text input field (defaults to true)
+	.setRequired(true);
+```
+
+<Callout>
+	The `id` field is used to differentiate components within interactions (which text input, selection, etc.). In
+	contrast, the `customId` covered earlier identifies the interaction (which modal, command, etc.).
+</Callout>
+
+### Select menu
+
+Select menus allow you to limit user input to a preselected list of values. Discord also offers select menus linked directly to native Discord entities like users, roles, and channels.
+Since they behave very similarly to how they do in messages, please refer to the [corresponding guide page](../interactive-components/select-menus) for more information on configuring select menus.
+
+Here again, you wrap the select menu with a label component to add context to the selection and add the label to the modal:
+
+```js
+// ...
+
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+	if (interaction.commandName === 'ping') {
+		// Create the modal
+		const modal = new ModalBuilder().setCustomId('myModal').setTitle('My Modal');
+
+		// ...
+
+		// [!code focus:24]
+		// [!code ++:23]
+		const favoriteStarterSelect = new StringSelectMenuBuilder()
+			.setCustomId('starter')
+			.setPlaceholder('Make a selection!')
+			// Modal only property on select menus to prevent submission, defaults to true
+			.setRequired(true)
+			.addOptions(
+				// String select menu options
+				new StringSelectMenuOptionBuilder()
+					// Label displayed to user
+					.setLabel('Bulbasaur')
+					// Description of option
+					.setDescription('The dual-type Grass/Poison Seed Pokémon.')
+					// Value returned to you in modal submission
+					.setValue('bulbasaur'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Charmander')
+					.setDescription('The Fire-type Lizard Pokémon.')
+					.setValue('charmander'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Squirtle')
+					.setDescription('The Water-type Tiny Turtle Pokémon.')
+					.setValue('squirtle'),
+			);
+
+		// ...
+
+		// [!code focus:4]
+		// [!code ++:4]
+		const favoriteStarterLabel = new LabelBuilder()
+			.setLabel("What's your favorite Gen 1 Pokémon starter?")
+			// Set string select menu as component of the label
+			.setStringSelectMenuComponent(favoriteStarterSelect);
+
+		// [!code focus:3]
+		// Add labels to modal
+		modal.addLabelComponents(hobbiesLabel); // [!code --]
+		modal.addLabelComponents(hobbiesLabel, favoriteStarterLabel); // [!code ++]
+	}
+});
+```
+
+### Text display
+
+Text display components offer you a way to give additional context to the user that doesn't fit into labels or isn't directly connected to any specific input field.
+
+```js
+// ...
+
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+	if (interaction.commandName === 'ping') {
+		// Create the modal
+		const modal = new ModalBuilder().setCustomId('myModal').setTitle('My Modal');
+
+		// ...
+
+		// [!code focus:3]
+		// [!code ++:3]
+		const text = new TextDisplayBuilder().setContent(
+			'Text that could not fit in to a label or description\n-# Markdown can also be used',
+		);
+
+		// [!code focus:5]
+		// Add components to modal
+		modal
+			// [!code --]
+			.addLabelComponents(hobbiesLabel, favoriteStarterLabel);
+			// [!code ++:2]
+			.addLabelComponents(hobbiesLabel, favoriteStarterLabel)
+			.addTextDisplayComponents(text);
+	}
+});
+```
+
+### File upload
+
+File upload components allow you to prompt the user to upload a file from their system.
+
+<Callout type="warn">
+	Discord **does not send the file data** itself in the resulting interaction. You will have to download it from
+	Discords CDN to process and validate it. Do not execute arbitrary code people upload via your app!
+</Callout>
+
+```js
+// ...
+
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+	if (interaction.commandName === 'ping') {
+		// Create the modal
+		const modal = new ModalBuilder().setCustomId('myModal').setTitle('My Modal');
+
+		// ...
+
+		// [!code focus:2]
+		// [!code ++]
+		const pictureOfTheWeekUpload = new FileUploadBuilder().setCustomId('picture');
+
+		// ...
+
+		// [!code focus:12]
+		// [!code ++:5]
+		const pictureOfTheWeekLabel = new LabelBuilder()
+			.setLabel('Picture of the Week')
+			.setDescription('The best pictures you have taken this week')
+			// Set file upload as component of the label
+			.setFileUploadComponent(pictureOfTheWeekUpload);
+
+		// Add components to modal
+		modal
+			.addLabelComponents(hobbiesLabel, favoriteStarterLabel)
+			// [!code --]
+			.addTextDisplayComponents(text);
+			// [!code ++:2]
+			.addTextDisplayComponents(text)
+			.addLabelComponents(pictureOfTheWeekLabel);
+	}
+});
+```
+
+#### File upload properties
+
+A file upload component can be customized to apply validation via the following `FileUploadBuilder` methods:
+
+```js
+const pictureOfTheWeekUpload = new FileUploadBuilder()
+	// Set the optional identifier for component
+	.setId(1)
+	// Minimum number of items that must be uploaded (defaults to 1); min 0, max 10
+	.setMinValues(1)
+	// Maximum number of items that can be uploaded (defaults to 1); max 10
+	.setMaxValues(1)
+	// Require a value in this file upload component (defaults to true)
+	.setRequired(true);
+```
+
+<Callout>
+ The `id` field is used to differentiate components within interactions (which text input, selection, etc.).   
+ In contrast, the `customId` covered earlier identifies the interaction (which modal, command, etc.).
+
+You **cannot** limit and validate the **file size** or the **file extension**.
+
+</Callout>
+
+### Responding with a modal
+
+With the modal built, call `ChatInputCommandInteraction#showModal()` to send the interaction response to Discord and display the modal to the user.
+
+<Callout type="warn">
+	Showing a modal must be the first response to an interaction. You **cannot** defer modals.
+</Callout>
+
+```js
+// ...
+// [!code focus:5]
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+	if (interaction.commandName === 'ping') {
+		// Create the modal
+		const modal = new ModalBuilder().setCustomId('myModal').setTitle('My Modal');
+
+		// ...
+
+		// [!code focus:9]
+		// Add components to modal
+		modal
+			.addLabelComponents(hobbiesLabel, favoriteStarterLabel)
+			.addTextDisplayComponents(text)
+			.addLabelComponents(pictureOfTheWeekLabel);
+
+		// [!code ++:2]
+		// Show modal to the user
+		await interaction.showModal(modal);
+	}
+});
+```
+
+Restart your bot and invoke the `/ping` command again. You should see the modal as shown below:
+
+![Modal Example](./images/modal-example.png)
+
+## Receiving modal submissions
+
+### Interaction collectors
+
+Modal submissions can be collected within the scope of the interaction that sent the modal by utilizing an `InteractionCollector`, or the `ChatInputCommandInteraction#awaitModalSubmit` promisified version. These both provide instances of the `ModalSubmitInteraction` class as collected items.
+
+For a detailed guide on handling interactions with collectors, please refer to the [collectors guide](../popular-topics/collectors#interaction-collectors).
+
+### The interactionCreate event
+
+To receive a `ModalSubmitInteraction` event, attach an `Client#interactionCreate` event listener to your client and use the `BaseInteraction#isModalSubmit` type guard to make sure you only receive modals:
+
+```js
+client.on(Events.InteractionCreate, (interaction) => {
+	// ...
+	// [!code word:isModalSubmit] [!code highlight:2]
+	if (!interaction.isModalSubmit()) return;
+	console.log(interaction);
+});
+```
+
+## Responding to modal submissions
+
+The `ModalSubmitInteraction` class provides the same methods as the `ChatInputCommandInteraction` class. These methods behave equally:
+
+- `reply()`
+- `editReply()`
+- `deferReply()`
+- `fetchReply()`
+- `deleteReply()`
+- `followUp()`
+
+If the modal was prompted through a button or select menu interaction, these methods may be used to update the underlying message:
+
+- `update()`
+- `deferUpdate()`
+
+```js
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isModalSubmit()) return;
+	console.log(interaction);
+	if (interaction.customId === 'myModal') {
+		// [!code highlight] [!code word:reply]
+		await interaction.reply({ content: 'Your submission was received successfully!' });
+	}
+});
+```
+
+<Callout>
+	If you're using TypeScript, you can use the `ModalSubmitInteraction#isFromMessage()` type guard to make sure the
+	received interaction originated from a `MessageComponentInteraction`.
+</Callout>
+
+## Extracting data from modal submissions
+
+You can process the submitted input fields through the use of convenience getters on `ModalSubmitInteraction#fields`. The library provides getters for all modal components with user submitted data:
+
+```js
+client.on(Events.InteractionCreate, (interaction) => {
+	if (!interaction.isModalSubmit()) return;
+	if (interaction.customId === 'myModal') {
+		await interaction.reply({ content: 'Your submission was received successfully!' });
+
+		// [!code focus:6]
+		// Get the data entered by the user
+		const hobbies = interaction.fields.getTextInputValue('hobbiesInput');
+		const starter = interaction.fields.getStringSelectValues('starter');
+		const picture = interaction.fields.getUploadedFiles('picture');
+
+		console.log({ hobbies, starter, picture });
+	}
+});
+```
+
+<Callout>
+	Empty text input submissions return an empty string `""`. Select menus without a selection return an empty array `[]`.
+</Callout>

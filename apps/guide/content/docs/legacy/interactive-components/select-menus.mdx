@@ -1,0 +1,168 @@
+---
+title: Select Menus
+---
+
+Select menus are interactive components which can be sent via messages, interaction responses, or in modals.
+
+<Callout>
+	This page is a follow-up to the [slash commands](../slash-commands/advanced-creation) section and [action
+	rows](../interactive-components/action-rows) page. Please carefully read those pages first so that you can understand
+	the methods used here.
+</Callout>
+<Callout>
+	This page is for using select menus in messages. For using [select menus in
+	modals](../interactions/modals#select-menu) visit the modal page
+</Callout>
+
+## Building string select menus
+
+The "standard" and most customizable type of select menu is the string select menu. To create a string select menu, use the `StringSelectMenuBuilder` and `StringSelectMenuOptionBuilder` classes.
+
+If you're a Pokémon fan, you've probably made a selection pretty similar to this example at some point in your life!
+
+```js
+const { StringSelectMenuBuilder, StringSelectMenuOptionBuilder, SlashCommandBuilder } = require('discord.js');
+
+module.exports = {
+	// data: new SlashCommandBuilder()...
+	async execute(interaction) {
+		const favoriteStarterSelect = new StringSelectMenuBuilder()
+			.setCustomId('starter')
+			.setPlaceholder('Make a selection!')
+			.addOptions(
+				// String select menu options
+				new StringSelectMenuOptionBuilder()
+					// Label displayed to user
+					.setLabel('Bulbasaur')
+					// Description of option
+					.setDescription('The dual-type Grass/Poison Seed Pokémon.')
+					// Value returned in select menu interaction
+					.setValue('bulbasaur'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Charmander')
+					.setDescription('The Fire-type Lizard Pokémon.')
+					.setValue('charmander'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Squirtle')
+					.setDescription('The Water-type Tiny Turtle Pokémon.')
+					.setValue('squirtle'),
+			);
+	},
+};
+```
+
+<Callout>
+	The custom id is a developer-defined string of up to 100 characters. Use this field to ensure you can uniquely define
+	all incoming interactions from your select menus!
+</Callout>
+
+## Sending select menus
+
+To send your select menu, create an action row and add the buttons as components. Then, send the row in the `components` property of `InteractionReplyOptions` (extends `BaseMessageOptions`).
+
+```js
+const {
+	ActionRowBuilder,
+	StringSelectMenuBuilder,
+	StringSelectMenuOptionBuilder,
+	SlashCommandBuilder,
+} = require('discord.js');
+// [!code focus:33]
+module.exports = {
+	// data: new SlashCommandBuilder()...
+	async execute(interaction) {
+		const favoriteStarterSelect = new StringSelectMenuBuilder()
+			.setCustomId('starter')
+			.setPlaceholder('Make a selection!')
+			.addOptions(
+				// String select menu options
+				new StringSelectMenuOptionBuilder()
+					// Label displayed to user
+					.setLabel('Bulbasaur')
+					// Description of option
+					.setDescription('The dual-type Grass/Poison Seed Pokémon.')
+					// Value returned in select menu interaction
+					.setValue('bulbasaur'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Charmander')
+					.setDescription('The Fire-type Lizard Pokémon.')
+					.setValue('charmander'),
+				new StringSelectMenuOptionBuilder()
+					.setLabel('Squirtle')
+					.setDescription('The Water-type Tiny Turtle Pokémon.')
+					.setValue('squirtle'),
+			);
+
+		// [!code ++:8]
+		// Adding a string select menu to an action row
+		const row = new ActionRowBuilder().addComponents(favoriteStarterSelect);
+
+		// Reply with the action row
+		await interaction.reply({
+			content: 'Choose your starter!',
+			components: [row],
+		});
+	},
+};
+```
+
+<Callout>Remember that if you have more than one select menu, each one will need its own action row.</Callout>
+
+<Callout>
+	You can also send action rows inside containers or between other components, when using the [display
+	components](../popular-topics/display-components) system.
+</Callout>
+
+## String select menu options
+
+String select menu options are custom-defined by the user, as shown in the example above. At a minimum, each option must have it's `label` and `value` defined. The label is shown to the user, while the value is included in the interaction sent to the bot.
+
+In addition to these, each option can be enhanced with a `description` or `emoji`, or can be set to be selected by default.
+
+```js
+const select = new StringSelectMenuBuilder().setCustomId('select').addOptions(
+	// [!code focus:6]
+	new StringSelectMenuOptionBuilder()
+		.setLabel('Option')
+		.setValue('option')
+		.setDescription('A selectable option') // [!code word:setDescription]
+		.setEmoji('123456789012345678') // [!code word:setEmoji]
+		.setDefault(true), // [!code word:setDefault]
+);
+```
+
+## Auto-populating select menus
+
+Although the String select menu with its user-defined options is the most customizable, there are four other types of select menu that auto-populate with their corresponding Discord entities, much like slash command options. These are:
+
+- `UserSelectMenuBuilder`
+- `RoleSelectMenuBuilder`
+- `MentionableSelectMenuBuilder`
+- `ChannelSelectMenuBuilder`
+
+The `ChannelSelectMenuBuilder` can be configured to only show specific channel types using `ChannelSelectMenuBuilder#setChannelTypes`.
+
+## Multi-selects
+
+Where slash command options fall behind is in their single-select limitation on User, Role and Channel option types. Select menus can support this use case via `BaseSelectMenuBuilder#setMinValues` and `BaseSelectMenuBuilder#setMaxValues`. When these values are set, users can select multiple items, and the interaction will be sent with all selected values only when the user clicks outside the select menu.
+
+```js
+module.exports = {
+	// data: new SlashCommandBuilder()...
+	async execute(interaction) {
+		// [!code focus:5]
+		const userSelect = new UserSelectMenuBuilder()
+			.setCustomId('users')
+			.setPlaceholder('Select multiple users.')
+			.setMinValues(1) // [!code word:setMinValues]
+			.setMaxValues(10); // [!code word:setMaxValues]
+
+		const row1 = new ActionRowBuilder().addComponents(userSelect);
+
+		await interaction.reply({
+			content: 'Select users:',
+			components: [row1],
+		});
+	},
+};
+```

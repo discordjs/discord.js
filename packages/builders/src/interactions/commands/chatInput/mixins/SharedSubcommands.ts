@@ -12,11 +12,12 @@ export interface SharedChatInputCommandSubcommandsData {
 
 /**
  * This mixin holds symbols that can be shared in chat input subcommands.
- *
- * @typeParam TypeAfterAddingSubcommands - The type this class should return after adding a subcommand or subcommand group.
  */
 export class SharedChatInputCommandSubcommands {
-	protected declare readonly data: SharedChatInputCommandSubcommandsData;
+	/**
+	 * @internal
+	 */
+	declare protected readonly data: SharedChatInputCommandSubcommandsData;
 
 	/**
 	 * Adds subcommand groups to this command.
