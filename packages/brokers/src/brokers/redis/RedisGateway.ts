@@ -50,7 +50,7 @@ export type RedisBrokerDiscordEvents = {
  * const gateway = new WebSocketManager(gatewayOptionsHere); // see @discordjs/ws for examples.
  *
  * // emit events over the broker
- * gateway.on(WebSocketShardEvents.Dispatch, (...data) => void broker.publish(...RedisGateway.toPublishArgs(data));
+ * gateway.on(WebSocketShardEvents.Dispatch, (...data) => void broker.publish(...RedisGateway.toPublishArgs(data)));
  *
  * // listen to payloads we should send to Discord
  * broker.on(RedisGateway.GatewaySendEvent, async ({ data: { payload, shardId }, ack }) => {
