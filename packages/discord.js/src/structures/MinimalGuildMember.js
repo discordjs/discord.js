@@ -2,12 +2,10 @@
 
 const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField');
 const { Base } = require('./Base.js');
-const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
 
 /**
  * Represents a member of a guild on Discord. Used in interactions from guilds that aren't cached.
  *
- * @implements {TextBasedChannel}
  * @extends {Base}
  */
 class MinimalGuildMember extends Base {
@@ -385,22 +383,5 @@ class MinimalGuildMember extends Base {
     return json;
   }
 }
-
-/**
- * Sends a message to this user.
- *
- * @method send
- * @memberof MinimalGuildMember
- * @instance
- * @param {string|MessagePayload|MessageCreateOptions} options The options to provide
- * @returns {Promise<Message>}
- * @example
- * // Send a direct message
- * guildMember.send('Hello!')
- *   .then(message => console.log(`Sent message: ${message.content} to ${guildMember.displayName}`))
- *   .catch(console.error);
- */
-
-TextBasedChannel.applyToClass(MinimalGuildMember);
 
 exports.MinimalGuildMember = MinimalGuildMember;
