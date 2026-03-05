@@ -304,6 +304,7 @@ class GuildMember extends MinimalGuildMember {
       this.partial === member.partial &&
       this.guild.id === member.guild.id &&
       this.joinedTimestamp === member.joinedTimestamp &&
+      this.premiumSinceTimestamp === member.premiumSinceTimestamp &&
       this.nickname === member.nickname &&
       this.avatar === member.avatar &&
       this.banner === member.banner &&

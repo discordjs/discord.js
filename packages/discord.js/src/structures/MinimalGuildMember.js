@@ -344,14 +344,18 @@ class MinimalGuildMember extends Base {
       this.partial === member.partial &&
       this.guildId === member.guildId &&
       this.joinedTimestamp === member.joinedTimestamp &&
+      this.premiumSinceTimestamp === member.premiumSinceTimestamp &&
       this.nickname === member.nickname &&
       this.avatar === member.avatar &&
+      this.banner === member.banner &&
       this.pending === member.pending &&
       this.communicationDisabledUntilTimestamp === member.communicationDisabledUntilTimestamp &&
       this.flags.bitfield === member.flags.bitfield &&
       (this.roleIds === member.roleIds ||
         (this.roleIds.length === member.roleIds.length &&
-          this.roleIds.every((role, index) => role === member.roleIds[index])))
+          this.roleIds.every((role, index) => role === member.roleIds[index]))) &&
+      this.avatarDecorationData?.asset === member.avatarDecorationData?.asset &&
+      this.avatarDecorationData?.skuId === member.avatarDecorationData?.skuId
     );
   }
 
@@ -372,7 +376,7 @@ class MinimalGuildMember extends Base {
       guildId: true,
       user: 'userId',
       displayName: true,
-      roles: true,
+      roleIds: 'roles',
     });
     json.avatarURL = this.avatarURL();
     json.bannerURL = this.bannerURL();

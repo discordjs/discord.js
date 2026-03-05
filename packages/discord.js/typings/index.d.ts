@@ -1636,7 +1636,7 @@ export class MinimalGuildMember extends Base {
   public banner: string | null;
   public get dmChannel(): DMChannel | null;
   public get displayName(): string;
-  public guildId: string;
+  public guildId: Snowflake;
   public get id(): Snowflake;
   public pending: boolean;
   public get communicationDisabledUntil(): Date | null;
