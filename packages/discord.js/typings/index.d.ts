@@ -3088,7 +3088,13 @@ export class UserSelectMenuInteraction<
   public users: Collection<Snowflake, User>;
   public members: Collection<
     Snowflake,
-    CacheTypeReducer<Cached, GuildMember, MinimalGuildMember, GuildMember | MinimalGuildMember, GuildMember | MinimalGuildMember>
+    CacheTypeReducer<
+      Cached,
+      GuildMember,
+      MinimalGuildMember,
+      GuildMember | MinimalGuildMember,
+      GuildMember | MinimalGuildMember
+    >
   >;
   public inGuild(): this is UserSelectMenuInteraction<'cached' | 'raw'>;
   public inCachedGuild(): this is UserSelectMenuInteraction<'cached'>;
@@ -3130,7 +3136,13 @@ export class MentionableSelectMenuInteraction<
   public users: Collection<Snowflake, User>;
   public members: Collection<
     Snowflake,
-    CacheTypeReducer<Cached, GuildMember, MinimalGuildMember, GuildMember | MinimalGuildMember, GuildMember | MinimalGuildMember>
+    CacheTypeReducer<
+      Cached,
+      GuildMember,
+      MinimalGuildMember,
+      GuildMember | MinimalGuildMember,
+      GuildMember | MinimalGuildMember
+    >
   >;
   public roles: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole, APIRole | Role, APIRole | Role>>;
   public inGuild(): this is MentionableSelectMenuInteraction<'cached' | 'raw'>;

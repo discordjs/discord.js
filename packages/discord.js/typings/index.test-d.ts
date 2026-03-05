@@ -2055,7 +2055,7 @@ client.on('interactionCreate', async interaction => {
   } else if (interaction.inGuild()) {
     expectType<Locale>(interaction.guildLocale);
   } else {
-    expectType<MinimalGuildMember | GuildMember | null>(interaction.member);
+    expectType<GuildMember | MinimalGuildMember | null>(interaction.member);
     expectNotAssignable<Interaction<'cached'>>(interaction);
     expectType<string | null>(interaction.guildId);
   }
@@ -2269,7 +2269,7 @@ client.on('interactionCreate', async interaction => {
     } else {
       expectType<ChatInputCommandInteraction>(interaction);
       expectType<Promise<InteractionCallbackResponse>>(interaction.reply({ withResponse: true }));
-      expectType<MinimalGuildMember | GuildMember | null>(interaction.options.getMember('test'));
+      expectType<GuildMember | MinimalGuildMember | null>(interaction.options.getMember('test'));
 
       expectType<APIInteractionDataResolvedChannel | GuildBasedChannel>(interaction.options.getChannel('test', true));
       expectType<APIRole | Role>(interaction.options.getRole('test', true));

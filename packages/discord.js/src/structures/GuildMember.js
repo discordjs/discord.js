@@ -1,10 +1,10 @@
 'use strict';
 
 const { PermissionFlagsBits } = require('discord-api-types/v10');
-const { MinimalGuildMember } = require('./MinimalGuildMember.js');
 const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { GuildMemberRoleManager } = require('../managers/GuildMemberRoleManager.js');
 const { PermissionsBitField } = require('../util/PermissionsBitField.js');
+const { MinimalGuildMember } = require('./MinimalGuildMember.js');
 const { VoiceState } = require('./VoiceState.js');
 
 /**
@@ -57,6 +57,7 @@ class GuildMember extends MinimalGuildMember {
   get voice() {
     return this.guild.voiceStates.cache.get(this.id) ?? new VoiceState(this.guild, { user_id: this.id });
   }
+
   /**
    * A link to the member's guild banner if they have one.
    * Otherwise, a link to their {@link User#bannerURL} will be returned.

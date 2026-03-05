@@ -1,11 +1,12 @@
 'use strict';
 
-const Base = require('./Base');
-const TextBasedChannel = require('./interfaces/TextBasedChannel');
 const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField');
+const { Base } = require('./Base.js');
+const { TextBasedChannel } = require('./interfaces/TextBasedChannel.js');
 
 /**
  * Represents a member of a guild on Discord. Used in interactions from guilds that aren't cached.
+ *
  * @implements {TextBasedChannel}
  * @extends {Base}
  */
@@ -15,63 +16,80 @@ class MinimalGuildMember extends Base {
 
     /**
      * The ID of the guild that this member is part of
+     *
      * @type {string}
      */
     this.guildId = guildId;
 
     /**
      * The nickname of this member, if they have one
+     *
      * @type {?string}
      */
     this.nickname = null;
 
     /**
      * The guild member's avatar hash
+     *
      * @type {?string}
      */
     this.avatar = null;
 
     /**
      * The guild member's banner hash
+     *
      * @type {?string}
      */
     this.banner = null;
 
     /**
      * The role ids of the member
+     *
      * @type {Snowflake[]}
      */
     this.roleIds = [];
 
     /**
      * The timestamp the member joined the guild at
+     *
      * @type {?number}
      */
     this.joinedTimestamp = null;
 
     /**
      * The last timestamp this member started boosting the guild
+     *
      * @type {?number}
      */
     this.premiumSinceTimestamp = null;
 
     /**
      * The flags of this member
+     *
      * @type {Readonly<GuildMemberFlagsBitField>}
      */
     this.flags = new GuildMemberFlagsBitField().freeze();
 
     /**
      * Whether this member has yet to pass the guild's membership gate
+     *
      * @type {?boolean}
      */
     this.pending = null;
 
     /**
      * The timestamp this member's timeout will be removed
+     *
      * @type {?number}
      */
     this.communicationDisabledUntilTimestamp = null;
+
+    /**
+     * The member avatar decoration's data
+     *
+     * @type {?AvatarDecorationData}
+     */
+    this.avatarDecorationData = null;
 
     if (data) this._patch(data);
   }
@@ -80,6 +98,7 @@ class MinimalGuildMember extends Base {
     if ('user' in data) {
       /**
        * The user that this guild member instance represents
+       *
        * @type {User}
        */
       this.user = this.client.users._add(data.user, true);
@@ -110,6 +129,15 @@ class MinimalGuildMember extends Base {
       this.communicationDisabledUntilTimestamp =
         data.communication_disabled_until && Date.parse(data.communication_disabled_until);
     }
+
+    if (data.avatar_decoration_data) {
+      this.avatarDecorationData = {
+        asset: data.avatar_decoration_data.asset,
+        skuId: data.avatar_decoration_data.sku_id,
+      };
+    } else {
+      this.avatarDecorationData = null;
+    }
   }
 
   _clone() {
@@ -120,6 +148,7 @@ class MinimalGuildMember extends Base {
 
   /**
    * Whether this member is in a cached guild (true for GuildMembers, false for MinimalGuildMembers)
+   *
    * @returns {boolean}
    */
   isInCachedGuild() {
@@ -128,6 +157,7 @@ class MinimalGuildMember extends Base {
 
   /**
    * Whether this member is a partial (always true for MinimalGuildMembers, as they are partial GuildMembers)
+   *
    * @type {boolean}
    * @readonly
    */
@@ -137,6 +167,7 @@ class MinimalGuildMember extends Base {
 
   /**
    * A link to the member's guild avatar.
+   *
    * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
@@ -145,7 +176,17 @@ class MinimalGuildMember extends Base {
   }
 
   /**
+   * A link to the member's avatar decoration.
+   *
+   * @returns {?string}
+   */
+  avatarDecorationURL() {
+    return this.avatarDecorationData ? this.client.rest.cdn.avatarDecoration(this.avatarDecorationData.asset) : null;
+  }
+
+  /**
    * A link to the member's banner.
+   *
    * @param {ImageURLOptions} [options={}] Options for the banner URL
    * @returns {?string}
    */
@@ -156,6 +197,7 @@ class MinimalGuildMember extends Base {
   /**
    * A link to the member's guild avatar if they have one.
    * Otherwise, a link to their {@link User#displayAvatarURL} will be returned.
+   *
    * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {string}
    */
@@ -164,8 +206,19 @@ class MinimalGuildMember extends Base {
   }
 
   /**
+   * A link to the member's guild avatar decoration if they have one.
+   * Otherwise, a link to their {@link User#avatarDecorationURL} will be returned.
+   *
+   * @returns {?string}
+   */
+  displayAvatarDecorationURL() {
+    return this.avatarDecorationURL() ?? this.user.avatarDecorationURL();
+  }
+
+  /**
    * A link to the member's guild banner if they have one.
    * Otherwise, a link to their {@link User#bannerURL} will be returned.
+   *
    * @param {ImageURLOptions} [options={}] Options for the image URL
    * @returns {?string}
    */
@@ -175,6 +228,7 @@ class MinimalGuildMember extends Base {
 
   /**
    * The time this member joined the guild
+   *
    * @type {?Date}
    * @readonly
    */
@@ -184,6 +238,7 @@ class MinimalGuildMember extends Base {
 
   /**
    * The time this member's timeout will be removed
+   *
    * @type {?Date}
    * @readonly
    */
@@ -193,6 +248,7 @@ class MinimalGuildMember extends Base {
 
   /**
    * The last time this member started boosting the guild
+   *
    * @type {?Date}
    * @readonly
    */
@@ -202,6 +258,7 @@ class MinimalGuildMember extends Base {
 
   /**
    * The member's id
+   *
    * @type {Snowflake}
    * @readonly
    */
@@ -211,6 +268,7 @@ class MinimalGuildMember extends Base {
 
   /**
    * The DM between the client's user and this member
+   *
    * @type {?DMChannel}
    * @readonly
    */
@@ -220,6 +278,7 @@ class MinimalGuildMember extends Base {
 
   /**
    * The nickname of this member, or their user display name if they don't have one
+   *
    * @type {string}
    * @readonly
    */
@@ -229,6 +288,7 @@ class MinimalGuildMember extends Base {
 
   /**
    * Whether this member is currently timed out
+   *
    * @returns {boolean}
    */
   isCommunicationDisabled() {
@@ -237,6 +297,7 @@ class MinimalGuildMember extends Base {
 
   /**
    * Creates a DM channel between the client and this member.
+   *
    * @param {boolean} [force=false] Whether to skip the cache check and request the API
    * @returns {Promise<DMChannel>}
    */
@@ -246,6 +307,7 @@ class MinimalGuildMember extends Base {
 
   /**
    * Deletes a DM channel (if one exists) between the client and the member. Resolves with the channel if successful.
+   *
    * @returns {Promise<DMChannel>}
    */
   deleteDM() {
@@ -253,9 +315,27 @@ class MinimalGuildMember extends Base {
   }
 
   /**
+   * Sends a message to this user.
+   *
+   * @param {string|MessagePayload|MessageCreateOptions} options The options to provide
+   * @returns {Promise<Message>}
+   * @example
+   * // Send a direct message
+   * guildMember.send('Hello!')
+   *   .then(message => console.log(`Sent message: ${message.content} to ${guildMember.displayName}`))
+   *   .catch(console.error);
+   */
+  async send(options) {
+    const dmChannel = await this.createDM();
+
+    return this.client.channels.createMessage(dmChannel, options);
+  }
+
+  /**
    * Whether this guild member equals another guild member. It compares all properties, so for most
    * comparison it is advisable to just compare `member.id === member2.id` as it is significantly faster
    * and is often what most users need.
+   *
    * @param {MinimalGuildMember} member The member to compare with
    * @returns {boolean}
    */
@@ -272,12 +352,14 @@ class MinimalGuildMember extends Base {
       this.communicationDisabledUntilTimestamp === member.communicationDisabledUntilTimestamp &&
       this.flags.bitfield === member.flags.bitfield &&
       (this.roleIds === member.roleIds ||
-        (this.roleIds.length === member.roleIds.length && this.roleIds.every((role, i) => role === member.roleIds[i])))
+        (this.roleIds.length === member.roleIds.length &&
+          this.roleIds.every((role, index) => role === member.roleIds[index])))
     );
   }
 
   /**
    * When concatenated with a string, this automatically returns the user's mention instead of the GuildMember object.
+   *
    * @returns {string}
    * @example
    * // Logs: Hello from <@123456789012345678>!
@@ -298,12 +380,15 @@ class MinimalGuildMember extends Base {
     json.bannerURL = this.bannerURL();
     json.displayAvatarURL = this.displayAvatarURL();
     json.displayBannerURL = this.displayBannerURL();
+    json.avatarDecorationURL = this.avatarDecorationURL();
+    json.displayAvatarDecorationURL = this.displayAvatarDecorationURL();
     return json;
   }
 }
 
 /**
  * Sends a message to this user.
+ *
  * @method send
  * @memberof MinimalGuildMember
  * @instance
@@ -318,4 +403,4 @@ class MinimalGuildMember extends Base {
 
 TextBasedChannel.applyToClass(MinimalGuildMember);
 
-module.exports = MinimalGuildMember;
+exports.MinimalGuildMember = MinimalGuildMember;
