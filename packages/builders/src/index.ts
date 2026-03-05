@@ -51,6 +51,13 @@ export * from './components/v2/Separator.js';
 export * from './components/v2/TextDisplay.js';
 export * from './components/v2/Thumbnail.js';
 
+export * from './components/checkbox/Checkbox.js';
+export * from './components/checkbox/CheckboxGroup.js';
+export * from './components/checkbox/CheckboxGroupOption.js';
+export * from './components/checkbox/RadioGroup.js';
+export * from './components/checkbox/RadioGroupOption.js';
+export * as CheckboxAssertions from './components/checkbox/Assertions.js';
+
 export * as SlashCommandAssertions from './interactions/slashCommands/Assertions.js';
 export * from './interactions/slashCommands/SlashCommandBuilder.js';
 export * from './interactions/slashCommands/SlashCommandSubcommands.js';
