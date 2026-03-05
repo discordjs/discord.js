@@ -2,7 +2,6 @@ import { Buffer } from 'node:buffer';
 import { ChildProcess } from 'node:child_process';
 import { Stream } from 'node:stream';
 import { MessagePort, Worker } from 'node:worker_threads';
-import { ApplicationCommandOptionAllowedChannelType } from '@discordjs/builders';
 import { Collection, ReadonlyCollection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions, EmojiURLOptions } from '@discordjs/rest';
 import { Awaitable, FileBodyEncodable, JSONEncodable } from '@discordjs/util';
@@ -99,6 +98,7 @@ import {
   APIUser,
   APIUserSelectComponent,
   APIVoiceRegion,
+  ApplicationCommandOptionAllowedChannelType,
   ApplicationCommandOptionType,
   ApplicationCommandPermissionType,
   ApplicationCommandType,
