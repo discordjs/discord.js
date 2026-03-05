@@ -2,8 +2,6 @@ import { info, warning } from '@actions/core';
 import type { PackageJSON, PackumentVersion } from '@npm/types';
 import { $, file, write } from 'bun';
 
-const nonNodePackages = new Set(['@discordjs/proxy-container']);
-
 interface pnpmTreeDependency {
 	from: string;
 	path: string;
@@ -50,7 +48,6 @@ async function getReleaseEntries(dry: boolean, devTag?: string) {
 		if (pkg.private) continue;
 		// Just in case
 		if (!pkg.version || !pkg.name) continue;
-		if (nonNodePackages.has(pkg.name)) continue;
 
 		const release: ReleaseEntry = {
 			name: pkg.name,

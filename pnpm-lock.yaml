@@ -219,6 +219,52 @@ importers:
         specifier: ^4.67.0
         version: 4.67.0(bufferutil@4.1.0)
 
+  apps/proxy-container:
+    dependencies:
+      '@discordjs/proxy':
+        specifier: workspace:^
+        version: link:../../packages/proxy
+      '@discordjs/rest':
+        specifier: workspace:^
+        version: link:../../packages/rest
+      tslib:
+        specifier: ^2.8.1
+        version: 2.8.1
+    devDependencies:
+      '@types/node':
+        specifier: ^24.10.13
+        version: 24.10.13
+      cross-env:
+        specifier: ^10.1.0
+        version: 10.1.0
+      eslint:
+        specifier: ^9.39.2
+        version: 9.39.2(jiti@2.6.1)
+      eslint-config-neon:
+        specifier: ^0.3.2
+        version: 0.3.2(@typescript-eslint/types@8.56.0)(@typescript-eslint/utils@8.56.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
+      eslint-formatter-compact:
+        specifier: ^9.0.1
+        version: 9.0.1
+      eslint-formatter-pretty:
+        specifier: ^7.0.0
+        version: 7.0.0
+      prettier:
+        specifier: ^3.8.1
+        version: 3.8.1
+      terser:
+        specifier: ^5.46.0
+        version: 5.46.0
+      tsup:
+        specifier: ^8.5.1
+        version: 8.5.1(@microsoft/api-extractor@7.57.1(@types/node@24.10.13))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.19.2)(typescript@5.9.3)(yaml@2.8.2)
+      turbo:
+        specifier: ^2.8.10
+        version: 2.8.10
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+
   apps/website:
     dependencies:
       '@opennextjs/cloudflare':
@@ -1403,52 +1449,6 @@ importers:
       vitest:
         specifier: ^4.0.18
         version: 4.0.18(@edge-runtime/vm@3.2.0)(@types/node@22.19.11)(jiti@2.6.1)(lightningcss@1.31.1)(terser@5.46.0)(tsx@4.19.2)(yaml@2.8.2)
-
-  packages/proxy-container:
-    dependencies:
-      '@discordjs/proxy':
-        specifier: workspace:^
-        version: link:../proxy
-      '@discordjs/rest':
-        specifier: workspace:^
-        version: link:../rest
-      tslib:
-        specifier: ^2.8.1
-        version: 2.8.1
-    devDependencies:
-      '@types/node':
-        specifier: ^24.10.13
-        version: 24.10.13
-      cross-env:
-        specifier: ^10.1.0
-        version: 10.1.0
-      eslint:
-        specifier: ^9.39.2
-        version: 9.39.2(jiti@2.6.1)
-      eslint-config-neon:
-        specifier: ^0.3.2
-        version: 0.3.2(@typescript-eslint/types@8.56.0)(@typescript-eslint/utils@8.56.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
-      eslint-formatter-compact:
-        specifier: ^9.0.1
-        version: 9.0.1
-      eslint-formatter-pretty:
-        specifier: ^7.0.0
-        version: 7.0.0
-      prettier:
-        specifier: ^3.8.1
-        version: 3.8.1
-      terser:
-        specifier: ^5.46.0
-        version: 5.46.0
-      tsup:
-        specifier: ^8.5.1
-        version: 8.5.1(@microsoft/api-extractor@7.57.1(@types/node@24.10.13))(jiti@2.6.1)(postcss@8.5.6)(tsx@4.19.2)(typescript@5.9.3)(yaml@2.8.2)
-      turbo:
-        specifier: ^2.8.10
-        version: 2.8.10
-      typescript:
-        specifier: ~5.9.3
-        version: 5.9.3
 
   packages/rest:
     dependencies:
@@ -18846,7 +18846,7 @@ snapshots:
 
   '@types/concat-stream@2.0.3':
     dependencies:
-      '@types/node': 22.19.11
+      '@types/node': 24.10.13
 
   '@types/cookiejar@2.1.5': {}
 
@@ -19075,7 +19075,7 @@ snapshots:
 
   '@types/prompts@2.4.9':
     dependencies:
-      '@types/node': 22.19.11
+      '@types/node': 24.10.13
       kleur: 3.0.3
 
   '@types/react-dom@19.2.3(@types/react@19.2.14)':
@@ -19094,7 +19094,7 @@ snapshots:
     dependencies:
       '@types/cookiejar': 2.1.5
       '@types/methods': 1.1.4
-      '@types/node': 22.19.11
+      '@types/node': 24.10.13
       form-data: 4.0.5
 
   '@types/supertest@6.0.3':
@@ -19119,7 +19119,7 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 22.19.11
+      '@types/node': 24.10.13
 
   '@types/yargs-parser@21.0.3': {}
 
