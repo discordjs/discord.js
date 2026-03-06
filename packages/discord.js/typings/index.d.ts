@@ -6745,7 +6745,7 @@ export interface MessageSnapshot extends Partialize<
 export interface BaseMessageOptions {
   allowedMentions?: MessageMentionOptions;
   components?: readonly (
-    | ActionRowData<JSONEncodable<APIComponentInActionRow> | MessageActionRowComponentData>
+    | ActionRowData<JSONEncodable<APIComponentInMessageActionRow> | MessageActionRowComponentData>
     | APIMessageTopLevelComponent
     | JSONEncodable<APIActionRowComponent<APIComponentInActionRow>>
     | JSONEncodable<APIMessageTopLevelComponent>
