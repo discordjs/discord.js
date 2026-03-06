@@ -1707,7 +1707,7 @@ export class ApiModelGenerator {
 	private _captureParameters(
 		nodesToCapture: IExcerptBuilderNodeToCapture[],
 		parameterNodes: ts.NodeArray<ts.ParameterDeclaration>,
-		jsDoc?: DocgenParamJson[] | undefined,
+		jsDoc?: DocgenParamJson[],
 	): IApiParameterOptions[] {
 		const parameters: IApiParameterOptions[] = [];
 		for (const parameter of parameterNodes) {

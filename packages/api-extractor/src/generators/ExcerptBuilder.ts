@@ -301,8 +301,7 @@ export class ExcerptBuilder {
 				// There are two types of merges that can occur. We only perform these merges if they are
 				// compatible with all of our token ranges.
 				if (
-					prevPrevToken &&
-					prevPrevToken.kind === ExcerptTokenKind.Reference &&
+					prevPrevToken?.kind === ExcerptTokenKind.Reference &&
 					prevToken.kind === ExcerptTokenKind.Content &&
 					prevToken.text.trim() === '.' &&
 					currentToken.kind === ExcerptTokenKind.Reference &&

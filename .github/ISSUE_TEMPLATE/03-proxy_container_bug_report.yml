@@ -1,0 +1,51 @@
+name: Proxy Container bug report
+description: Report an issue with the proxy container.
+labels: [bug, need repro, apps:proxy-container]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for filing an issue! If you are here to ask a question, use Discord instead: https://discord.gg/djs
+
+        This issue form is for the proxy container.
+  - type: textarea
+    id: description
+    attributes:
+      label: Issue description
+      description: Describe the issue in as much detail as possible.
+    validations:
+      required: true
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: What steps must be taken to reproduce this issue?
+      placeholder: |
+        1. Pull the container image
+        2. Run the container with specific configuration
+        3. Send a request
+        4. Observe behavior
+    validations:
+      required: true
+  - type: textarea
+    id: versions
+    attributes:
+      label: Versions
+      description: List necessary versions here. This includes the container image tag, Docker version, operating system etc.
+      placeholder: |
+        - discordjs/proxy 1.0.0
+        - Docker 27.5.1
+        - Linux 6.1.0
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Issue priority
+      description: Please be realistic. If you need to elaborate on your reasoning, please use the issue description field above.
+      options:
+        - Low (slightly annoying)
+        - Medium (should be fixed soon)
+        - High (immediate attention needed)
+    validations:
+      required: true
