@@ -40,7 +40,7 @@ class GuildMemberRoleManager extends DataManager {
     const cache = new Collection();
     cache.set(this.guild.id, this.guild.roles.everyone);
 
-    for (const roleId of this.member._roles) {
+    for (const roleId of this.member.roleIds) {
       const role = this.guild.roles.cache.get(roleId);
       if (role !== undefined) {
         cache.set(roleId, role);
@@ -154,7 +154,7 @@ class GuildMemberRoleManager extends DataManager {
       await this.client.rest.put(Routes.guildMemberRole(this.guild.id, this.member.id, resolvedRoleId), { reason });
 
       const clone = this.member._clone();
-      clone._roles = [...this.cache.keys(), resolvedRoleId];
+      clone.roleIds = [...this.cache.keys(), resolvedRoleId];
       return clone;
     }
   }
@@ -196,7 +196,7 @@ class GuildMemberRoleManager extends DataManager {
 
       const clone = this.member._clone();
       const newRoles = this.cache.filter(role => role.id !== resolvedRoleId);
-      clone._roles = [...newRoles.keys()];
+      clone.roleIds = [...newRoles.keys()];
       return clone;
     }
   }
@@ -224,7 +224,7 @@ class GuildMemberRoleManager extends DataManager {
 
   clone() {
     const clone = new this.constructor(this.member);
-    clone.member._roles = [...this.cache.keys()];
+    clone.member.roleIds = [...this.cache.keys()];
     return clone;
   }
 }
