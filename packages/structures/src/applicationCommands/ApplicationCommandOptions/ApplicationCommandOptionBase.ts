@@ -1,4 +1,4 @@
-import type { APIApplicationCommandOption, ApplicationCommandOptionType } from 'discord-api-types/v10';
+import type { APIApplicationCommandOptionBase, ApplicationCommandOptionType } from 'discord-api-types/v10';
 import { Structure } from '../../Structure.js';
 import { kData } from '../../utils/symbols.js';
 import type { Partialize } from '../../utils/types.js';
@@ -7,27 +7,21 @@ import type { Partialize } from '../../utils/types.js';
  * Represents any application command option on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @remarks has substructure `ApplicationCommandOptionChoice` which needs to be instantiated and stored by an extending class using it
- * @remarks intentionally does not export `options` so that extending classes can resolve to `ApplicationCommandOption[]`
  * @remarks required options must be listed before optional options
  */
-export class ApplicationCommandOptionBase<
-	Omitted extends keyof APIApplicationCommandOption | '' = '',
-> extends Structure<APIApplicationCommandOption, Omitted> {
-	/**
-	 * The template used for removing data from the raw data stored for each application command option
-	 */
-	public static override readonly DataTemplate: Partial<APIApplicationCommandOption> = {};
-
+export abstract class ApplicationCommandOptionBase<
+	CommandOptionType extends ApplicationCommandOptionType,
+	Omitted extends keyof APIApplicationCommandOptionBase<CommandOptionType> | '' = '',
+> extends Structure<APIApplicationCommandOptionBase<CommandOptionType>, Omitted> {
 	/**
 	 * @param data - The raw data received from the API for the application command option
 	 */
-	public constructor(data: Partialize<APIApplicationCommandOption, Omitted>) {
+	public constructor(data: Partialize<APIApplicationCommandOptionBase<CommandOptionType>, Omitted>) {
 		super(data);
 	}
 
 	/**
-	 * Type of option
+	 * Type of this option
 	 *
 	 * @remarks Valid option types: ALL
 	 * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-type}
@@ -86,14 +80,5 @@ export class ApplicationCommandOptionBase<
 	 */
 	public get required() {
 		return this[kData].required;
-	}
-
-	/**
-	 * The channels shown will be restricted to these types
-	 *
-	 * @remarks Valid option types: {@link ApplicationCommandOptionType.Channel}
-	 */
-	public get channelTypes() {
-		return this[kData];
 	}
 }
