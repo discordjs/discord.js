@@ -4,6 +4,19 @@ import { kData } from '../../utils/symbols.js';
 import type { Partialize } from '../../utils/types.js';
 
 /**
+ * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure}
+ * export type APIApplicationCommandBasicOption = APIApplicationCommandAttachmentOption | APIApplicationCommandBooleanOption | APIApplicationCommandChannelOption | APIApplicationCommandIntegerOption | APIApplicationCommandMentionableOption | APIApplicationCommandNumberOption | APIApplicationCommandRoleOption | APIApplicationCommandStringOption | APIApplicationCommandUserOption;
+ * /**
+ * @see {@link https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure}
+ * export type APIApplicationCommandOption = APIApplicationCommandBasicOption | APIApplicationCommandSubcommandGroupOption | APIApplicationCommandSubcommandOption;
+ */
+
+export type ApplicationCommandOptionTypeType<Type extends ApplicationCommandOptionType> = Extract<
+	APIApplicationCommandOptionBase<Type>,
+	{ type: Type }
+>;
+
+/**
  * Represents any application command option on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
@@ -11,12 +24,12 @@ import type { Partialize } from '../../utils/types.js';
  */
 export abstract class ApplicationCommandOptionBase<
 	CommandOptionType extends ApplicationCommandOptionType,
-	Omitted extends keyof APIApplicationCommandOptionBase<CommandOptionType> | '' = '',
-> extends Structure<APIApplicationCommandOptionBase<CommandOptionType>, Omitted> {
+	Omitted extends keyof Omitted | '' = '',
+> extends Structure<ApplicationCommandOptionTypeType<CommandOptionType>, Omitted> {
 	/**
 	 * @param data - The raw data received from the API for the application command option
 	 */
-	public constructor(data: Partialize<APIApplicationCommandOptionBase<CommandOptionType>, Omitted>) {
+	public constructor(data: Partialize<ApplicationCommandOptionTypeType<CommandOptionType>, Omitted>) {
 		super(data);
 	}
 
