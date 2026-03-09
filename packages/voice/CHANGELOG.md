@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-# [@discordjs/voice@1.0.0](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.19.0...@discordjs/voice@1.0.0) - (2026-03-09)
+# [@discordjs/voice@0.19.1](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.19.0...@discordjs/voice@0.19.1) - (2026-03-09)
 
 ## Bug Fixes
 
@@ -20,7 +20,6 @@ All notable changes to this project will be documented in this file.
 ## Refactor
 
 - Remove builders and formatters re-export (#11361) ([84b85f4](https://github.com/discordjs/discord.js/commit/84b85f4c91e83b40eb2bd74d61304fcfdcabf6d5)) by @didinele
-  - **BREAKING CHANGE:** removed builders and formatters re-export
 
 ## Testing
 
