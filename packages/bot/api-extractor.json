@@ -1,0 +1,16 @@
+{
+  "extends": "../../api-extractor.json",
+  "mainEntryPointFilePath": "<projectFolder>/typings/index.d.ts",
+  "bundledPackages": [
+    "discord-api-types",
+    "@discordjs/builders",
+    "@discordjs/collection",
+    "@discordjs/formatters",
+    "@discord-selfbot-sdk/rest",
+    "@discord-selfbot-sdk/util",
+    "@discord-selfbot-sdk/ws"
+  ],
+  "docModel": {
+    "projectFolderUrl": "https://github.com/Dijnie/discord.js-self/tree/main/packages/bot"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "$schema": "./node_modules/@favware/cliff-jumper/assets/cliff-jumper.schema.json",
+  "name": "@discord-selfbot-sdk/bot",
+  "packagePath": "packages/bot",
+  "tagTemplate": "{{new-version}}",
+  "identifierBase": false
+}

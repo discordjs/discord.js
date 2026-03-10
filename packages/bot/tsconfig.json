@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig.json",
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    // Output Formatting
+    "pretty": false,
+
+    // Completeness
+    "skipDefaultLibCheck": true,
+
+    "types": [
+      "@discordjs/builders",
+      "@discord-selfbot-sdk/util",
+      "@discordjs/collection",
+      "@discord-selfbot-sdk/rest",
+      "@discord-selfbot-sdk/ws",
+      "discord-api-types/v10",
+      "node",
+      "tsd",
+      "undici",
+      "@sapphire/snowflake"
+    ]
+  }
+}
