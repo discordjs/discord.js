@@ -40,7 +40,7 @@ const nodeBinRuleset = {
 
 const typeScriptRuleset = merge(...typescript, {
 	files: [`**/*${commonFiles}`],
-	ignores: [`packages/discord.js/**/*.{js,mjs,cjs}`],
+	ignores: [`packages/bot/**/*.{js,mjs,cjs}`],
 	languageOptions: {
 		parserOptions: {
 			warnOnUnsupportedTypeScriptVersion: false,
@@ -161,7 +161,7 @@ export default defineConfig(
 		},
 	},
 	{
-		files: [`packages/discord.js/**/*.{js,cjs}`],
+		files: [`packages/bot/**/*.{js,cjs}`],
 		languageOptions: {
 			sourceType: 'commonjs',
 			parserOptions: {
@@ -204,7 +204,7 @@ export default defineConfig(
 		},
 	},
 	{
-		files: [`packages/discord.js/src/client/websocket/handlers/*.js`],
+		files: [`packages/bot/src/client/websocket/handlers/*.js`],
 		rules: {
 			'no-restricted-syntax': [
 				'error',
@@ -217,7 +217,7 @@ export default defineConfig(
 		},
 	},
 	{
-		files: [`packages/discord.js/typings/*{d.ts,test-d.ts,d.mts,test-d.mts}`],
+		files: [`packages/bot/typings/*{d.ts,test-d.ts,d.mts,test-d.mts}`],
 		rules: {
 			'@typescript-eslint/no-unsafe-declaration-merging': 0,
 			'@typescript-eslint/no-empty-object-type': 0,

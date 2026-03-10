@@ -1,7 +1,6 @@
 packages:
   - apps/*
   - packages/*
-  - packages/create-discord-bot/template/**/*
 
 autoInstallPeers: false
 
@@ -10,7 +9,6 @@ ignoredBuiltDependencies:
   - unrs-resolver
 
 onlyBuiltDependencies:
-  - '@discordjs/opus'
   - '@tailwindcss/oxide'
   - bufferutil
   - esbuild
@@ -20,9 +18,6 @@ onlyBuiltDependencies:
   - utf-8-validate
   - workerd
   - zlib-sync
-
-patchedDependencies:
-  '@microsoft/tsdoc-config@0.17.1': patches/@microsoft__tsdoc-config@0.17.1.patch
 
 peerDependencyRules:
   allowAny:

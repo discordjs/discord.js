@@ -1,6 +1,6 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
-	"name": "@discordjs/discord.js",
+	"name": "@discord-selfbot-sdk/bot",
 	"version": "0.0.0",
 	"description": "A powerful library for interacting with the Discord API",
 	"private": true,
@@ -43,13 +43,13 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/discordjs/discord.js.git"
+		"url": "https://github.com/Dijnie/discord.js-self.git"
 	},
 	"bugs": {
-		"url": "https://github.com/discordjs/discord.js/issues"
+		"url": "https://github.com/Dijnie/discord.js-self/issues"
 	},
 	"homepage": "https://discord.js.org",
-	"funding": "https://github.com/discordjs/discord.js?sponsor",
+	"funding": "https://github.com/Dijnie/discord.js-self?sponsor",
 	"devDependencies": {
 		"@commitlint/cli": "^20.4.2",
 		"@commitlint/config-angular": "^20.4.2",

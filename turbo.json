@@ -11,86 +11,6 @@
 			"outputs": ["dist/**"],
 			"outputLogs": "errors-only"
 		},
-		"@discordjs/ui#build-storybook": {
-			"dependsOn": ["build"],
-			"inputs": [".storybook/**/*", "src/**", "package.json", "tsconfig.json", "vite.config.ts"],
-			"outputs": ["dist/**", "storybook-static/**"],
-			"outputLogs": "errors-only"
-		},
-		"@discordjs/guide#build:local": {
-			"dependsOn": ["^build"],
-			"inputs": ["public/**", "src/**", "next.config.ts", "package.json", "tsconfig.json"],
-			"outputs": [".next/**", ".next/cache/**", ".source/**"],
-			"outputLogs": "full"
-		},
-		"@discordjs/guide#build:prod": {
-			"dependsOn": ["^build"],
-			"inputs": ["public/**", "src/**", "next.config.ts", "package.json", "tsconfig.json"],
-			"outputs": [".next/**", ".next/cache/**", ".source/**"],
-			"outputLogs": "full"
-		},
-		"@discordjs/website#build:local": {
-			"env": [
-				"VERCEL_ENV",
-				"NEXT_PUBLIC_LOCAL_DEV",
-				"EDGE_CONFIG",
-				"MAX_FETCH_SIZE",
-				"CF_ACCOUNT_ID",
-				"CF_R2_DOCS_URL",
-				"CF_R2_DOCS_ACCESS_KEY_ID",
-				"CF_R2_DOCS_SECRET_ACCESS_KEY",
-				"CF_R2_DOCS_TOKEN",
-				"CF_R2_DOCS_BUCKET",
-				"CF_R2_DOCS_BUCKET_URL",
-				"CF_D1_DOCS_ID",
-				"CF_D1_DOCS_API_KEY"
-			],
-			"dependsOn": ["^build", "^docs"],
-			"inputs": [
-				"../../packages/*/README.md",
-				"public/**",
-				"src/**",
-				"scripts/**",
-				"!src/assets/readme/**",
-				"scripts/**",
-				"next.config.ts",
-				"package.json",
-				"tsconfig.json"
-			],
-			"outputs": [".next/**", ".next/cache/**", "src/assets/readme/**"],
-			"outputLogs": "full"
-		},
-		"@discordjs/website#build:prod": {
-			"env": [
-				"VERCEL_ENV",
-				"NEXT_PUBLIC_LOCAL_DEV",
-				"EDGE_CONFIG",
-				"MAX_FETCH_SIZE",
-				"CF_ACCOUNT_ID",
-				"CF_R2_DOCS_URL",
-				"CF_R2_DOCS_ACCESS_KEY_ID",
-				"CF_R2_DOCS_SECRET_ACCESS_KEY",
-				"CF_R2_DOCS_TOKEN",
-				"CF_R2_DOCS_BUCKET",
-				"CF_R2_DOCS_BUCKET_URL",
-				"CF_D1_DOCS_ID",
-				"CF_D1_DOCS_API_KEY"
-			],
-			"dependsOn": ["^build"],
-			"inputs": [
-				"../../packages/*/README.md",
-				"public/**",
-				"src/**",
-				"scripts/**",
-				"!src/assets/readme/**",
-				"scripts/**",
-				"next.config.ts",
-				"package.json",
-				"tsconfig.json"
-			],
-			"outputs": [".next/**", ".next/cache/**", "src/assets/readme/**"],
-			"outputLogs": "full"
-		},
 		"test": {
 			"dependsOn": ["^build"],
 			"inputs": [
@@ -121,34 +41,6 @@
 			"outputs": [],
 			"outputLogs": "errors-only"
 		},
-		"@discordjs/guide#lint": {
-			"dependsOn": ["^build", "build:local"],
-			"inputs": [
-				"../../eslint.config.js",
-				"../../.prettierrc.json",
-				"../../tsconfig.eslint.json",
-				".prettierrc.js",
-				"src/**",
-				"!src/styles/unocss.css",
-				"tsconfig.eslint.json"
-			],
-			"outputs": [],
-			"outputLogs": "errors-only"
-		},
-		"@discordjs/website#lint": {
-			"dependsOn": ["^build", "build:local"],
-			"inputs": [
-				"../../eslint.config.js",
-				"../../.prettierrc.json",
-				"../../tsconfig.eslint.json",
-				".prettierrc.js",
-				"src/**",
-				"!src/styles/unocss.css",
-				"tsconfig.eslint.json"
-			],
-			"outputs": [],
-			"outputLogs": "errors-only"
-		},
 		"format": {
 			"dependsOn": ["^build"],
 			"inputs": [
@@ -165,40 +57,6 @@
 			"outputs": [],
 			"outputLogs": "errors-only"
 		},
-		"@discordjs/guide#format": {
-			"dependsOn": ["^build"],
-			"inputs": [
-				"../../eslint.config.js",
-				"../../.prettierrc.json",
-				"../../tsconfig.eslint.json",
-				".prettierrc.js",
-				"src/**",
-				"!src/styles/unocss.css",
-				"package.json",
-				"tsconfig.eslint.json"
-			],
-			"outputs": [],
-			"outputLogs": "errors-only"
-		},
-		"docs": {
-			"dependsOn": ["build"],
-			"inputs": [
-				"../api-extractor/src/**",
-				"../api-extractor-model/src/**",
-				"../api-extractor-utils/src/**",
-				"../../api-extractor.json",
-				"../../tsconfig.docs.json",
-				"api-extractor.json",
-				"docs/**",
-				"!docs/docs.json",
-				"!docs/docs.api.json",
-				"!docs/*/split/**",
-				"tsconfig.docs.json"
-			],
-			"outputs": ["dist-docs/**", "docs/docs.json", "docs/docs.api.json", "docs/*/split/**"],
-			"cache": false,
-			"outputLogs": "errors-only"
-		},
 		"changelog": {
 			"inputs": ["cliff.toml"],
 			"outputs": ["CHANGELOG.md"],
@@ -212,19 +70,6 @@
 		},
 		"dev": {
 			"dependsOn": ["^build"],
-			"cache": false,
-			"persistent": true,
-			"outputLogs": "full"
-		},
-		"@discordjs/guide#dev": {
-			"dependsOn": ["^build"],
-			"cache": false,
-			"persistent": true,
-			"outputLogs": "full"
-		},
-		"@discordjs/website#dev": {
-			"env": ["VERCEL_ENV", "NEXT_PUBLIC_LOCAL_DEV"],
-			"dependsOn": ["^build", "^docs"],
 			"cache": false,
 			"persistent": true,
 			"outputLogs": "full"

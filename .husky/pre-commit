@@ -1,1 +1,1 @@
-pnpm run build:affected && pnpm exec lint-staged
+pnpm run build:affected && pnpm exec lint-staged --concurrent false
