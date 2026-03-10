@@ -37,7 +37,7 @@ class DMChannel extends BaseChannel {
        *
        * @type {Snowflake[]}
        */
-      this.recipientIds ??= [
+      this.recipientIds = [
         ...new Set([...(this.recipientIds ?? []), ...data.recipients.map(recipient => recipient.id)]),
       ];
 
