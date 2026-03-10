@@ -14,7 +14,7 @@ Autocomplete allows you to dynamically provide a selection of values to the user
 To use autocomplete with your commands, _instead_ of listing static choices, the option must be set to use autocompletion using `SlashCommandStringOption#setAutocomplete`:
 
 ```js title="commands/utility/guide".js
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require('@discord-selfbot-sdk/bot');
 
 const data = new SlashCommandBuilder()
 	.setName('guide')

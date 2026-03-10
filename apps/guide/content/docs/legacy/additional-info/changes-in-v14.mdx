@@ -26,7 +26,7 @@ pnpm remove @discordjs/builders @discordjs/formatters @discordjs/rest discord-ap
 
 ### API version
 
-discord.js v14 makes the switch to Discord API v10!
+@discord-selfbot-sdk/bot v14 makes the switch to Discord API v10!
 
 ### Common Breakages
 
@@ -34,11 +34,11 @@ discord.js v14 makes the switch to Discord API v10!
 
 Any areas that used to accept a `string` or `number` type for an enum parameter will now only accept exclusively `number`s.
 
-In addition, the old enums exported by discord.js v13 and lower are replaced with new enums from [discord-api-types](https://discord-api-types.dev/api/discord-api-types-v10).
+In addition, the old enums exported by @discord-selfbot-sdk/bot v13 and lower are replaced with new enums from [discord-api-types](https://discord-api-types.dev/api/discord-api-types-v10).
 
 #### New enum differences
 
-Most of the difference between enums from discord.js and discord-api-types can be summarized as so:
+Most of the difference between enums from @discord-selfbot-sdk/bot and discord-api-types can be summarized as so:
 
 1. Enums are singular, i.e., `ApplicationCommandOptionTypes` -> `ApplicationCommandOptionType`
 2. Enums that are prefixed with `Message` no longer have the `Message` prefix, i.e., `MessageButtonStyles` -> `ButtonStyle`
@@ -55,8 +55,8 @@ Areas like `Client` initialization, JSON slash commands and JSON message compone
 ##### Common Client Initialization Changes
 
 ```js
-const { Client, Intents } = require('discord.js'); // [!code --]
-const { Client, GatewayIntentBits, Partials } = require('discord.js'); // [!code ++]
+const { Client, Intents } = require('@discord-selfbot-sdk/bot'); // [!code --]
+const { Client, GatewayIntentBits, Partials } = require('@discord-selfbot-sdk/bot'); // [!code ++]
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS], partials: ['CHANNEL'] }); // [!code --]
 const client = new Client({ intents: [GatewayIntentBits.Guilds], partials: [Partials.Channel] }); // [!code ++]
@@ -65,7 +65,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds], partials: [Part
 ##### Common Application Command Data changes
 
 ```js
-const { ApplicationCommandType, ApplicationCommandOptionType } = require('discord.js'); // [!code ++]
+const { ApplicationCommandType, ApplicationCommandOptionType } = require('@discord-selfbot-sdk/bot'); // [!code ++]
 
 const command = {
 	name: 'ping',
@@ -85,7 +85,7 @@ const command = {
 ##### Common Button Data changes
 
 ```js
-const { ButtonStyle } = require('discord.js'); // [!code ++]
+const { ButtonStyle } = require('@discord-selfbot-sdk/bot'); // [!code ++]
 
 const button = {
 	label: 'test',
@@ -102,7 +102,7 @@ const button = {
 Some channel type guard methods that narrowed to one channel type have been removed. Instead compare the `type` property against a [ChannelType](https://discord-api-types.dev/api/discord-api-types-v10/enum/ChannelType) enum member to narrow channels.
 
 ```js
-const { ChannelType } = require('discord.js'); // [!code ++]
+const { ChannelType } = require('@discord-selfbot-sdk/bot'); // [!code ++]
 
 channel.isText(); // [!code --]
 channel.type === ChannelType.GuildText; // [!code ++]
@@ -232,9 +232,9 @@ The `restWsBridgeTimeout` client option has been removed.
 - Many constant objects and key arrays are now top-level exports for example:
 
 ```js
-const { Constants } = require('discord.js'); // [!code --]
+const { Constants } = require('@discord-selfbot-sdk/bot'); // [!code --]
 const { Colors } = Constants; // [!code --]
-const { Colors } = require('discord.js'); // [!code ++]
+const { Colors } = require('@discord-selfbot-sdk/bot'); // [!code ++]
 ```
 
 - The refactored constants structures have `PascalCase` member names as opposed to `SCREAMING_SNAKE_CASE` member names.
@@ -345,7 +345,7 @@ const textInput = new TextInputBuilder(); // [!code ++]
 ```js
 const editedButton = receivedButton // [!code --]
 	.setDisabled(true); // [!code --]
-const { ButtonBuilder } = require('discord.js'); // [!code ++]
+const { ButtonBuilder } = require('@discord-selfbot-sdk/bot'); // [!code ++]
 const editedButton = ButtonBuilder.from(receivedButton) // [!code ++]
 	.setDisabled(true); // [!code ++]
 ```
@@ -408,7 +408,7 @@ Overwrites are now keyed by the `PascalCase` permission key rather than the `SCR
 
 #### apiRequest
 
-This REST event has been removed as discord.js now uses [Undici](https://github.com/nodejs/undici) as the underlying request handler. You must now use a [Diagnostics Channel](https://undici.nodejs.org/#/docs/api/DiagnosticsChannel). Here is a simple example:
+This REST event has been removed as @discord-selfbot-sdk/bot now uses [Undici](https://github.com/nodejs/undici) as the underlying request handler. You must now use a [Diagnostics Channel](https://undici.nodejs.org/#/docs/api/DiagnosticsChannel). Here is a simple example:
 
 ```js
 import diagnosticsChannel from 'node:diagnostics_channel';
@@ -490,12 +490,12 @@ threadMemberManager.fetch({ cache: false }); // [!code ++]
 
 `Util.resolveAutoArchiveMaxLimit()` has been removed. Discord has since allowed any guild to use any auto archive time which makes this method redundant.
 
-Other functions in `Util` have been moved to top-level exports so you can directly import them from `discord.js`.
+Other functions in `Util` have been moved to top-level exports so you can directly import them from `@discord-selfbot-sdk/bot`.
 
 ```js
-import { Util } from 'discord.js'; // [!code --]
+import { Util } from '@discord-selfbot-sdk/bot'; // [!code --]
 Util.escapeMarkdown(message); // [!code --]
-import { escapeMarkdown } from 'discord.js'; // [!code ++]
+import { escapeMarkdown } from '@discord-selfbot-sdk/bot'; // [!code ++]
 escapeMarkdown(message); // [!code ++]
 ```
 
@@ -563,7 +563,7 @@ A new `ignore` event has been added which is emitted whenever an element is not 
 Component collector options now use the `ComponentType` enum values:
 
 ```js
-const { ComponentType } = require('discord.js'); // [!code ++]
+const { ComponentType } = require('@discord-selfbot-sdk/bot'); // [!code ++]
 
 const collector = interaction.channel.createMessageComponentCollector({
 	filter: collectorFilter,
@@ -671,4 +671,4 @@ Added the `threadName` property in `Webhook#send()` options which allows a webho
 
 ### WebSocketManager
 
-discord.js uses `@discordjs/ws` internally
+@discord-selfbot-sdk/bot uses `@discordjs/ws` internally

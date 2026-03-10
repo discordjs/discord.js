@@ -17,7 +17,7 @@ discord.js features the `EmbedBuilder` utility class for easy construction and m
 
 ```js
 // at the top of your file
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder } = require('@discord-selfbot-sdk/bot');
 
 // inside a command, event listener, etc.
 const exampleEmbed = new EmbedBuilder()
@@ -144,7 +144,7 @@ You can then reference and use the images inside the embed itself with `attachme
 ### Using the EmbedBuilder
 
 ```js
-const { AttachmentBuilder, EmbedBuilder } = require('discord.js');
+const { AttachmentBuilder, EmbedBuilder } = require('@discord-selfbot-sdk/bot');
 // ...
 const file = new AttachmentBuilder('../assets/discordjs.png');
 const exampleEmbed = new EmbedBuilder().setTitle('Some title').setImage('attachment://discordjs.png');
@@ -155,7 +155,7 @@ channel.send({ embeds: [exampleEmbed], files: [file] });
 ### Using an embed object
 
 ```js
-const { AttachmentBuilder } = require('discord.js');
+const { AttachmentBuilder } = require('@discord-selfbot-sdk/bot');
 // ...
 const file = new AttachmentBuilder('../assets/discordjs.png');
 

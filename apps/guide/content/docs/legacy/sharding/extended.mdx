@@ -143,7 +143,7 @@ function findEmoji(c, { nameOrId }) {
 	const emoji =
 		c.emojis.cache.get(nameOrId) || c.emojis.cache.find((e) => e.name.toLowerCase() === nameOrId.toLowerCase());
 	if (!emoji) return null;
-	// If you wanted to delete the emoji with discord.js, this is where you would do it. Otherwise, don't include this code.
+	// If you wanted to delete the emoji with @discord-selfbot-sdk/bot, this is where you would do it. Otherwise, don't include this code.
 	emoji.delete();
 	return emoji;
 }

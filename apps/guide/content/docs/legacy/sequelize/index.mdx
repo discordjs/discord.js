@@ -11,26 +11,26 @@ The main benefit of using an ORM like Sequelize is that it allows you to write c
 ## A simple tag system
 
 For this tutorial, we will create a simple tag system that will allow you to add a tag, output a tag, edit a tag, show tag info, list tags, and delete a tag.  
-To begin, you should install Sequelize into your discord.js project. We will explain SQlite as the first storage engine and show how to use other databases later. Note that you will need Node 7.6 or above to utilize the `async/await` operators.
+To begin, you should install Sequelize into your @discord-selfbot-sdk/bot project. We will explain SQlite as the first storage engine and show how to use other databases later. Note that you will need Node 7.6 or above to utilize the `async/await` operators.
 
 ### Installing and using Sequelize
 
 Create a new project folder and run the following:
 
 ```sh tab="npm"
-npm install discord.js sequelize sqlite3
+npm install @discord-selfbot-sdk/bot sequelize sqlite3
 ```
 
 ```sh tab="yarn"
-yarn add discord.js sequelize sqlite3
+yarn add @discord-selfbot-sdk/bot sequelize sqlite3
 ```
 
 ```sh tab="pnpm"
-pnpm install discord.js sequelize sqlite3
+pnpm install @discord-selfbot-sdk/bot sequelize sqlite3
 ```
 
 ```sh tab="bun"
-bun add discord.js sequelize sqlite3
+bun add @discord-selfbot-sdk/bot sequelize sqlite3
 ```
 
 <Callout type="error" title="Attention! Security Risk!">
@@ -48,13 +48,13 @@ bun add discord.js sequelize sqlite3
 
 </Callout>
 
-After you have installed discord.js and Sequelize, you can start with the following skeleton code. The comment labels will tell you where to insert code later on.
+After you have installed @discord-selfbot-sdk/bot and Sequelize, you can start with the following skeleton code. The comment labels will tell you where to insert code later on.
 
 ```js title="sequelize-example.js"
 // Require Sequelize
 const Sequelize = require('sequelize');
-// Require the necessary discord.js classes
-const { Client, Events, GatewayIntentBits } = require('discord.js');
+// Require the necessary @discord-selfbot-sdk/bot classes
+const { Client, Events, GatewayIntentBits } = require('@discord-selfbot-sdk/bot');
 
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });

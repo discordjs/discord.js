@@ -245,7 +245,7 @@ Create an `app.js` file in the base directory with the following skeleton code t
 
 ```js title="app.js" lineNumbers
 const { Op } = require('sequelize');
-const { Client, codeBlock, Collection, Events, GatewayIntentBits } = require('discord.js');
+const { Client, codeBlock, Collection, Events, GatewayIntentBits } = require('@discord-selfbot-sdk/bot');
 const { Users, CurrencyShop } = require('./dbObjects.js');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
@@ -270,7 +270,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 client.login('your-token-goes-here');
 ```
 
-Nothing special about this skeleton. You import the Users and CurrencyShop models from our `dbObjects.js` file and add a currency Collection. Every time someone talks, add 1 to their currency count. The rest is just standard discord.js code and a simple if/else command handler. A Collection is used for the `currency` variable to cache individual users' currency, so you don't have to hit the database for every lookup. An if/else handler is used here, but you can put it in a framework or command handler as long as you maintain a reference to the models and the currency collection.
+Nothing special about this skeleton. You import the Users and CurrencyShop models from our `dbObjects.js` file and add a currency Collection. Every time someone talks, add 1 to their currency count. The rest is just standard @discord-selfbot-sdk/bot code and a simple if/else command handler. A Collection is used for the `currency` variable to cache individual users' currency, so you don't have to hit the database for every lookup. An if/else handler is used here, but you can put it in a framework or command handler as long as you maintain a reference to the models and the currency collection.
 
 ### Helper methods
 

@@ -11,7 +11,7 @@ Spam is something you generally want to avoid, especially if one of your command
 First, add a cooldown property to your command. This will determine how long the user would have to wait (in seconds) before using the command again.
 
 ```js title="commands/utility/ping.js"
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require('@discord-selfbot-sdk/bot');
 
 module.exports = {
 	cooldown: 5, // [!code ++]

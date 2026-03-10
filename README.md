@@ -6,8 +6,8 @@
 	<br />
 	<p>
 		<a href="https://discord.gg/djs"><img src="https://img.shields.io/badge/join_us-on_discord-5865F2?logo=discord&logoColor=white" alt="Discord server" /></a>
-		<a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/v/discord.js.svg?maxAge=3600" alt="npm version" /></a>
-		<a href="https://www.npmjs.com/package/discord.js"><img src="https://img.shields.io/npm/dt/discord.js.svg?maxAge=3600" alt="npm downloads" /></a>
+		<a href="https://www.npmjs.com/package/@discord-selfbot-sdk/bot"><img src="https://img.shields.io/npm/v/@discord-selfbot-sdk/bot.svg?maxAge=3600" alt="npm version" /></a>
+		<a href="https://www.npmjs.com/package/@discord-selfbot-sdk/bot"><img src="https://img.shields.io/npm/dt/@discord-selfbot-sdk/bot.svg?maxAge=3600" alt="npm downloads" /></a>
 		<a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/discordjs/discord.js/actions/workflows/tests.yml/badge.svg" alt="Tests status" /></a>
 		<a href="https://github.com/discordjs/discord.js/commits/main"><img src="https://img.shields.io/github/last-commit/discordjs/discord.js.svg?logo=github&logoColor=ffffff" alt="Last commit." /></a>
 		<a href="https://github.com/discordjs/discord.js/graphs/contributors"><img src="https://img.shields.io/github/contributors/discordjs/discord.js.svg?maxAge=3600&logo=github&logoColor=fff&color=00c7be" alt="contributors" /></a>
@@ -22,27 +22,20 @@
 
 ## About
 
-This repository contains multiple packages with separate [releases][github-releases]. You can find the assembled Discord API wrapper at [`discord.js`][source]. It is a powerful [Node.js](https://nodejs.org/en) module that allows you to easily interact with the [Discord API](https://discord.com/developers/docs/intro).
+This repository contains multiple packages with separate [releases][github-releases]. You can find the assembled Discord API wrapper at [`@discord-selfbot-sdk/bot`][source]. It is a powerful [Node.js](https://nodejs.org/en) module that allows you to easily interact with the [Discord API](https://discord.com/developers/docs/intro).
 
 ## Packages
 
-- `discord.js` ([source][source]) - A powerful Node.js module for interacting with the Discord API
-- `create-discord-bot` ([source][create-discord-bot-source]) - A CLI tool to quickly scaffold a Discord bot project
-- `@discordjs/brokers` ([source][brokers-source]) - A collection of brokers for use with discord.js
+- `@discord-selfbot-sdk/bot` ([source][source]) - A powerful Node.js module for interacting with the Discord API
 - `@discordjs/builders` ([source][builders-source]) - A utility package for easily building Discord API payloads
 - `@discordjs/collection` ([source][collection-source]) - A powerful utility data structure
 - `@discordjs/core` ([source][core-source]) - A thinly abstracted wrapper around the core components of the Discord API
 - `@discordjs/formatters` ([source][formatters-source]) - A collection of functions for formatting strings
-- `@discordjs/proxy` ([source][proxy-source]) - A wrapper around `@discordjs/rest` for running an HTTP proxy
 - `@discordjs/rest` ([source][rest-source]) - A module for interacting with the Discord REST API
 - `@discordjs/structures` ([source][structures-source]) - A wrapper around Discord's structures
 - `@discordjs/util` ([source][util-source]) - A collection of utility functions
 - `@discordjs/voice` ([source][voice-source]) - A module for interacting with the Discord Voice API
 - `@discordjs/ws` ([source][ws-source]) - A wrapper around Discord's gateway
-
-## Containers
-
-- `discordjs/proxy` ([source][proxy-container-source]) - A lightweight HTTP proxy for Discord's API
 
 ## Links
 
@@ -76,24 +69,20 @@ If you don't understand something in the documentation, you are experiencing pro
 [guide-update]: https://discordjs.guide/legacy/additional-info/changes-in-v14
 [discord]: https://discord.gg/djs
 [discord-developers]: https://discord.gg/discord-developers
-[source]: https://github.com/discordjs/discord.js/tree/main/packages/discord.js
-[npm]: https://www.npmjs.com/package/discord.js
+[source]: https://github.com/Dijnie/discord.js-self/tree/main/packages/bot
+[npm]: https://www.npmjs.com/package/@discord-selfbot-sdk/bot
 [related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
 [rpc]: https://www.npmjs.com/package/discord-rpc
 [rpc-source]: https://github.com/discordjs/RPC
 [contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md
 [github-releases]: https://github.com/discordjs/discord.js/releases
-[create-discord-bot-source]: https://github.com/discordjs/discord.js/tree/main/packages/create-discord-bot
-[brokers-source]: https://github.com/discordjs/discord.js/tree/main/packages/brokers
 [builders-source]: https://github.com/discordjs/discord.js/tree/main/packages/builders
 [collection-source]: https://github.com/discordjs/discord.js/tree/main/packages/collection
 [core-source]: https://github.com/discordjs/discord.js/tree/main/packages/core
 [formatters-source]: https://github.com/discordjs/discord.js/tree/main/packages/formatters
-[proxy-source]: https://github.com/discordjs/discord.js/tree/main/packages/proxy
 [rest-source]: https://github.com/discordjs/discord.js/tree/main/packages/rest
 [structures-source]: https://github.com/discordjs/discord.js/tree/main/packages/structures
 [util-source]: https://github.com/discordjs/discord.js/tree/main/packages/util
 [voice-source]: https://github.com/discordjs/discord.js/tree/main/packages/voice
 [ws-source]: https://github.com/discordjs/discord.js/tree/main/packages/ws
-[proxy-container-source]: https://github.com/discordjs/discord.js/tree/main/apps/proxy-container
 [good-first-issue]: https://github.com/discordjs/discord.js/contribute

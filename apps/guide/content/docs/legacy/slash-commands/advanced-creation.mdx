@@ -16,7 +16,7 @@ Application commands can have additional `options`. Think of these options as ar
 Options require at minimum a name and description. The same restrictions apply to option names as slash command names - 1-32 characters containing no capital letters, spaces, or symbols other than `-` and `_`. You can specify them as shown in the `echo` command below, which prompt the user to enter a String for the `input` option.
 
 ```js title="commands/utility/echo.js"
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require('@discord-selfbot-sdk/bot');
 
 const data = new SlashCommandBuilder()
 	.setName('echo')
@@ -31,7 +31,7 @@ By specifying the `type` of an `ApplicationCommandOption` using the correspondin
 The example above uses `addStringOption`, the simplest form of standard text input with no additional validation. By leveraging additional option types, you could change the behavior of this command in many ways, such as using a Channel option to direct the response to a specific channel:
 
 ```js title="commands/utility/echo.js"
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require('@discord-selfbot-sdk/bot');
 
 const data = new SlashCommandBuilder()
 	.setName('echo')
@@ -44,7 +44,7 @@ const data = new SlashCommandBuilder()
 Or a Boolean option to give the user control over making the response ephemeral so only the command author can see the response.
 
 ```js title="commands/utility/echo.js"
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require('@discord-selfbot-sdk/bot');
 
 const data = new SlashCommandBuilder()
 	.setName('echo')
@@ -77,7 +77,7 @@ With option types covered, you can start looking at additional forms of validati
 Review the `echo` example again and use `setRequired(true)` to mark the `input` option as required.
 
 ```js title="commands/utility/echo.js"
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require('@discord-selfbot-sdk/bot');
 
 const data = new SlashCommandBuilder()
 	.setName('echo')
@@ -101,7 +101,7 @@ Specify choices by using the `addChoices()` method from within the option builde
 The `gif` command example below allows users to select from predetermined categories of gifs to send:
 
 ```js title="commands/fun/gif.js"
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require('@discord-selfbot-sdk/bot');
 
 const data = new SlashCommandBuilder()
 	.setName('gif')
@@ -133,7 +133,7 @@ Even without predetermined choices, additional restrictions can still be applied
 We'll use these to show you how to enhance your `echo` command from earlier with extra validation to ensure it won't (or at least shouldn't) break when used:
 
 ```js title="commands/utility/echo.js"
-const { SlashCommandBuilder, ChannelType } = require('discord.js');
+const { SlashCommandBuilder, ChannelType } = require('@discord-selfbot-sdk/bot');
 
 const data = new SlashCommandBuilder()
 	.setName('echo')
@@ -165,7 +165,7 @@ Subcommands are available with the `.addSubcommand()` method. This allows you to
 With this approach, you can merge the `user` and `server` information commands from the previous section into a single `info` command with two subcommands. Additionally, the `user` subcommand has a `User` type option for targeting other users, while the `server` subcommand has no need for this, and would just show info for the current guild.
 
 ```js title="commands/utility/info.js"
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require('@discord-selfbot-sdk/bot');
 
 const data = new SlashCommandBuilder()
 	.setName('info')
@@ -187,7 +187,7 @@ The names and descriptions of slash commands can be localized to the user's sele
 Setting localizations with `setNameLocalizations()` and `setDescriptionLocalizations()` takes the format of an object, mapping location codes (e.g. `pl` and `de`) to their localized strings.
 
 ```js title="commands/fun/dog.js"
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require('@discord-selfbot-sdk/bot');
 
 const data = new SlashCommandBuilder()
 	.setName('dog')

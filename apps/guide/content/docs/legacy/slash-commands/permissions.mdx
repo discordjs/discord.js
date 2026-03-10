@@ -19,7 +19,7 @@ You can use `SlashCommandBuilder#setDefaultMemberPermissions` to set the default
 For this, you'll introduce two common and simple moderation commands: `ban` and `kick`. For a ban command, a sensible default is to ensure that users already have the Discord permission `BanMembers` in order to use it.
 
 ```js title="commands/moderation/ban.js"
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits } = require('@discord-selfbot-sdk/bot');
 
 const data = new SlashCommandBuilder()
 	.setName('ban')
@@ -39,7 +39,7 @@ For a kick command however, you can allow members with the `KickMembers` permiss
 </Callout>
 
 ```js title="commands/moderation/kick.js"
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits } = require('@discord-selfbot-sdk/bot');
 
 const data = new SlashCommandBuilder()
 	.setName('kick')
@@ -57,7 +57,7 @@ By default, globally-deployed commands are also available for use in DMs. You ca
 It doesn't make much sense for your `ban` command to be available in DMs, so you can add `setContexts(InteractionContextType.Guild)` to the builder so that it is only available in guilds:
 
 ```js title="commands/moderation/ban.js"
-const { InteractionContextType, PermissionFlagsBits, SlashCommandBuilder } = require('discord.js');
+const { InteractionContextType, PermissionFlagsBits, SlashCommandBuilder } = require('@discord-selfbot-sdk/bot');
 
 const data = new SlashCommandBuilder()
 	.setName('ban')

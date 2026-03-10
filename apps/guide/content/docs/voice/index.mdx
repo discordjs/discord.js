@@ -2,13 +2,13 @@
 title: Installation
 ---
 
-"Voice" refers to Discord bots being able to send audio in voice channels. This is supported in discord.js via [@discordjs/voice](https://github.com/discordjs/discord.js/tree/main/packages/voice), a standalone library made by the developers of discord.js. While you can use it with any Node.js Discord API library, this guide will focus on using it with discord.js.
+"Voice" refers to Discord bots being able to send audio in voice channels. This is supported in @discord-selfbot-sdk/bot via [@discordjs/voice](https://github.com/discordjs/discord.js/tree/main/packages/voice), a standalone library made by the developers of @discord-selfbot-sdk/bot. While you can use it with any Node.js Discord API library, this guide will focus on using it with @discord-selfbot-sdk/bot.
 
 ## Installation
 
 ### Barebones
 
-To add voice functionality to your discord.js bot, you will need the `@discordjs/voice` package. If your system does not support aes-256-gcm you also need one of the encryption packages listed below. For example:
+To add voice functionality to your @discord-selfbot-sdk/bot bot, you will need the `@discordjs/voice` package. If your system does not support aes-256-gcm you also need one of the encryption packages listed below. For example:
 
 <Callout>
 	You can verify aes-256-gcm support by running `require('node:crypto').getCiphers().includes('aes-256-gcm')`.

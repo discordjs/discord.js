@@ -86,7 +86,7 @@ Put these two together by creating a `ping.js` file in the `commands/utility` fo
 These are placed inside `module.exports` so they can be read by other files; namely the command loader and command deployment scripts mentioned earlier.
 
 ```js title="commands/utility/ping.js"
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require('@discord-selfbot-sdk/bot');
 
 module.exports = {
 	data: new SlashCommandBuilder().setName('ping').setDescription('Replies with Pong!'),
@@ -106,7 +106,7 @@ module.exports = {
 That's it for your basic ping command. Below are examples of two more commands we're going to build upon throughout the guide, so create two more files for these before you continue reading.
 
 ```js tab="User" title="commands/utility/user.js"
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require('@discord-selfbot-sdk/bot');
 
 module.exports = {
 	data: new SlashCommandBuilder().setName('user').setDescription('Provides information about the user.'),
@@ -121,7 +121,7 @@ module.exports = {
 ```
 
 ```js tab="Server" title="commands/utility/server.js"
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require('@discord-selfbot-sdk/bot');
 
 module.exports = {
 	data: new SlashCommandBuilder().setName('server').setDescription('Provides information about the server.'),

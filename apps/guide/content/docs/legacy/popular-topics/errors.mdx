@@ -87,7 +87,7 @@ As the error message tells you `[object Object]` is not a valid id, so you now k
 
 The code is another partial representation of the message, in this case, `Invalid Form Body`. You can find a full list of codes [here](https://discord.com/developers/docs/topics/opcodes-and-status-codes#json-json-error-codes)
 
-The code is also handy if you want only to handle a specific error. Say you're trying to delete a message which may or may not be there, and wanted to ignore unknown message errors. This can be done by checking the code, either manually or using discord.js constants.
+The code is also handy if you want only to handle a specific error. Say you're trying to delete a message which may or may not be there, and wanted to ignore unknown message errors. This can be done by checking the code, either manually or using @discord-selfbot-sdk/bot constants.
 
 ```js
 message.delete().catch((error) => {
@@ -101,7 +101,7 @@ message.delete().catch((error) => {
 Or using Constants:
 
 ```js
-const { RESTJSONErrorCodes } = require('discord.js');
+const { RESTJSONErrorCodes } = require('@discord-selfbot-sdk/bot');
 
 message.delete().catch((error) => {
 	if (error.code !== RESTJSONErrorCodes.UnknownMessage) {
@@ -126,7 +126,7 @@ DELETE - Used to delete a piece of data completely
 
 In this particular example, you can see you are trying to access a piece of data, specifically, a message.
 
-## Common discord.js and API errors
+## Common @discord-selfbot-sdk/bot and API errors
 
 ### An invalid token was provided.
 
@@ -149,7 +149,7 @@ This error originates from the client attempting to execute an action that requi
 This error is also caused by attempting to use a client that has not logged in. Both of the examples below will throw errors.
 
 ```js
-const { Client, GatewayIntentBits } = require('discord.js');
+const { Client, GatewayIntentBits } = require('@discord-selfbot-sdk/bot');
 
 // Should not be here!
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -164,7 +164,7 @@ module.exports = (interaction) => {
 ```
 
 ```js
-const { Client, Events, GatewayIntentBits } = require('discord.js');
+const { Client, Events, GatewayIntentBits } = require('@discord-selfbot-sdk/bot');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 

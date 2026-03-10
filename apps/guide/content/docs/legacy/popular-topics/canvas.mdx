@@ -42,7 +42,7 @@ bun add @napi-rs/canvas
 Here is the base code you'll be using to get started:
 
 ```js lineNumbers title="index.js"
-const { AttachmentBuilder, Client, Events, GatewayIntentBits } = require('discord.js');
+const { AttachmentBuilder, Client, Events, GatewayIntentBits } = require('@discord-selfbot-sdk/bot');
 const Canvas = require('@napi-rs/canvas');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });

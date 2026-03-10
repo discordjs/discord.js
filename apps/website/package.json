@@ -1,19 +1,19 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
-	"name": "@discordjs/website",
+	"name": "@discord-selfbot-sdk/website",
 	"version": "0.1.0",
 	"description": "Imagine a bot... the most popular way to build discord bots",
 	"private": true,
 	"scripts": {
 		"cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
-		"build:copy_readme": "cpy \"../../packages/(discord.js|brokers|builders|collection|core|formatters|next|proxy|rest|structures|util|voice|ws)/README.md\" \"src/assets/readme\" --rename='home-{{basename}}'",
+		"build:copy_readme": "cpy \"../../packages/(bot|brokers|builders|collection|core|formatters|next|proxy|rest|structures|util|voice|ws)/README.md\" \"src/assets/readme\" --rename='home-{{basename}}'",
 		"build:check": "tsc --noEmit",
 		"build:local": "cross-env NEXT_PUBLIC_LOCAL_DEV=true pnpm run build:prod",
 		"build:prod": "pnpm run build:copy_readme && pnpm run build:next",
 		"build:next": "next build",
 		"build": "pnpm run build:copy_readme && next build --webpack",
 		"build:search_indices": "pnpm node scripts/generateAllIndices.js",
-		"build:analyze": "turbo run docs --filter='@discordjs/*' --concurrency=4 && cross-env ANALYZE=true NEXT_PUBLIC_LOCAL_DEV=true pnpm run build:prod",
+		"build:analyze": "turbo run docs --filter='@discord-selfbot-sdk/*' --concurrency=4 && cross-env ANALYZE=true NEXT_PUBLIC_LOCAL_DEV=true pnpm run build:prod",
 		"preview": "next start",
 		"preview:cf": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
 		"deploy:cf": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
@@ -42,14 +42,14 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/discordjs/discord.js.git",
+		"url": "https://github.com/Dijnie/discord.js-self.git",
 		"directory": "apps/website"
 	},
 	"bugs": {
-		"url": "https://github.com/discordjs/discord.js/issues"
+		"url": "https://github.com/Dijnie/discord.js-self/issues"
 	},
 	"homepage": "https://discord.js.org",
-	"funding": "https://github.com/discordjs/discord.js?sponsor",
+	"funding": "https://github.com/Dijnie/discord.js-self?sponsor",
 	"dependencies": {
 		"@opennextjs/cloudflare": "^1.16.5",
 		"@radix-ui/react-collapsible": "^1.1.12",

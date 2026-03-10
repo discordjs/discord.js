@@ -8,7 +8,7 @@ If you aren't very familiar with ECMAScript 2017, you may not know about async/a
 
 Before we can get into async/await, you should know what Promises are and how they work because async/await is just a way to handle Promises. If you know what Promises are and how to deal with them, you can skip this part.
 
-Promises are a way to handle asynchronous tasks in JavaScript; they are the newer alternative to callbacks. A Promise has many similarities to a progress bar; they represent an unfinished and ongoing process. An excellent example of this is a request to a server (e.g., discord.js sends requests to Discord's API).
+Promises are a way to handle asynchronous tasks in JavaScript; they are the newer alternative to callbacks. A Promise has many similarities to a progress bar; they represent an unfinished and ongoing process. An excellent example of this is a request to a server (e.g., @discord-selfbot-sdk/bot sends requests to Discord's API).
 
 A Promise can have three states; pending, resolved, and rejected.
 
@@ -80,12 +80,12 @@ client.on('event', async (first, last) => {
 
 An important thing to know is that a function declared as `async` will always return a Promise. In addition to this, if you return something, the Promise will resolve with that value, and if you throw an error, it will reject the Promise with that error.
 
-### Execution with discord.js code
+### Execution with @discord-selfbot-sdk/bot code
 
-Now that you know how Promises work and what they are used for, let's look at an example that handles multiple Promises. Let's say you want to react with letters (regional indicators) in a specific order. For this example, here's a basic template for a discord.js bot with some ES6 adjustments.
+Now that you know how Promises work and what they are used for, let's look at an example that handles multiple Promises. Let's say you want to react with letters (regional indicators) in a specific order. For this example, here's a basic template for a @discord-selfbot-sdk/bot bot with some ES6 adjustments.
 
 ```js title="promise-example.js" lineNumbers
-const { Client, Events, GatewayIntentBits } = require('discord.js');
+const { Client, Events, GatewayIntentBits } = require('@discord-selfbot-sdk/bot');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 

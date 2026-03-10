@@ -1,6 +1,6 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
-	"name": "@discordjs/guide",
+	"name": "@discord-selfbot-sdk/guide",
 	"version": "0.1.0",
 	"description": "Imagine a bot... the most popular way to build discord bots",
 	"private": true,
@@ -39,14 +39,14 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/discordjs/discord.js.git",
+		"url": "https://github.com/Dijnie/discord.js-self.git",
 		"directory": "apps/website"
 	},
 	"bugs": {
-		"url": "https://github.com/discordjs/discord.js/issues"
+		"url": "https://github.com/Dijnie/discord.js-self/issues"
 	},
 	"homepage": "https://discord.js.org",
-	"funding": "https://github.com/discordjs/discord.js?sponsor",
+	"funding": "https://github.com/Dijnie/discord.js-self?sponsor",
 	"dependencies": {
 		"@opennextjs/cloudflare": "^1.16.5",
 		"@vercel/analytics": "^1.6.1",

@@ -2,9 +2,9 @@
 title: Using a Proxy
 ---
 
-This guide will show you how to set up a proxy with discord.js. This may be necessary if you are deploying your bot to a server with a firewall only allowing outside traffic through the proxy.
+This guide will show you how to set up a proxy with @discord-selfbot-sdk/bot. This may be necessary if you are deploying your bot to a server with a firewall only allowing outside traffic through the proxy.
 
-Proxying discord.js requires two components: a REST proxy and a WebSocket proxy.
+Proxying @discord-selfbot-sdk/bot requires two components: a REST proxy and a WebSocket proxy.
 
 ## Prerequisites
 
@@ -28,11 +28,11 @@ bun add undici global-agent
 
 ## Setting up the proxy for REST calls
 
-The `@discordjs/rest` package handling HTTP requests in discord.js uses the `undici` package. Accordingly, you can provide a custom `ProxyAgent` configuration to the client constructor:
+The `@discordjs/rest` package handling HTTP requests in @discord-selfbot-sdk/bot uses the `undici` package. Accordingly, you can provide a custom `ProxyAgent` configuration to the client constructor:
 
 ```js title="index.js" lineNumbers
 const { ProxyAgent } = require('undici'); // [!code word:ProxyAgent]
-const { Client } = require('discord.js');
+const { Client } = require('@discord-selfbot-sdk/bot');
 
 const client = new Client({
 	// ...other client options
@@ -55,7 +55,7 @@ To set up a proxy for WebSocket, you can use the `global-agent` package. You wil
 
 ```js title="index.js" lineNumbers
 const { ProxyAgent } = require('undici');
-const { Client } = require('discord.js');
+const { Client } = require('@discord-selfbot-sdk/bot');
 const { bootstrap } = require('global-agent'); // [!code ++:5]
 
 bootstrap(); // [!code word:bootstrap]

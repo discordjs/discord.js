@@ -9,7 +9,7 @@ One of the first things many people want to know is how to react with emojis, bo
 Here's the base code we'll be using:
 
 ```js title="reactionsample.js" lineNumbers
-const { Client, Events, GatewayIntentBits } = require('discord.js');
+const { Client, Events, GatewayIntentBits } = require('@discord-selfbot-sdk/bot');
 
 const client = new Client({
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],
@@ -292,7 +292,7 @@ Make sure you enable partial structures for `Message`, `Channel`, and `Reaction`
 </Callout>
 
 ```js title="old-reactions.js"
-const { Client, Events, GatewayIntentBits, Partials } = require('discord.js');
+const { Client, Events, GatewayIntentBits, Partials } = require('@discord-selfbot-sdk/bot');
 
 const client = new Client({
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions],

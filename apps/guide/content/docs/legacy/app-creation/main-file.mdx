@@ -14,8 +14,8 @@ Open your code editor and create a new file. We suggest that you save the file a
 Here's the base code to get you started:
 
 ```js title="index.js"
-// Require the necessary discord.js classes
-const { Client, Events, GatewayIntentBits } = require('discord.js');
+// Require the necessary @discord-selfbot-sdk/bot classes
+const { Client, Events, GatewayIntentBits } = require('@discord-selfbot-sdk/bot');
 const { token } = require('./config.json');
 
 // Create a new client instance
@@ -32,9 +32,11 @@ client.once(Events.ClientReady, (readyClient) => {
 client.login(token);
 ```
 
-This is how you create a client instance for your Discord bot and log in to Discord. The `GatewayIntentBits.Guilds` intents option is necessary for the discord.js client to work as you expect it to, as it ensures that the caches for guilds, channels, and roles are populated and available for internal use.
+This is how you create a client instance for your Discord bot and log in to Discord. The `GatewayIntentBits.Guilds` intents option is necessary for @discord-selfbot-sdk/bot client to work as you expect it to, as it ensures that the caches for guilds, channels, and roles are populated and available for internal use.
 
-<Callout>The term "guild" is used by the Discord API and in discord.js to refer to a Discord server.</Callout>
+<Callout>
+	The term "guild" is used by the Discord API and in @discord-selfbot-sdk/bot to refer to a Discord server.
+</Callout>
 
 Intents also define which events Discord should send to your bot, and you may wish to enable more than just the minimum. You can read more about the other intents in the [Intents topic](../popular-topics/intents).
 

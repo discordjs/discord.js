@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import { generateAllIndices } from '@discordjs/scripts';
+import { generateAllIndices } from '@discord-selfbot-sdk/scripts';
 
 console.info('Generating all indices...');
 

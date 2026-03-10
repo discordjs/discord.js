@@ -176,11 +176,11 @@ emoji.imageURL();
 
 ### Formatters
 
-This utility has been removed. Everything in this class is redundant as all methods of the class can be imported from discord.js directly.
+This utility has been removed. Everything in this class is redundant as all methods of the class can be imported from @discord-selfbot-sdk/bot directly.
 
 ```js
-import { Formatters } from 'discord.js'; // [!code --]
-import { userMention } from 'discord.js'; // [!code ++]
+import { Formatters } from '@discord-selfbot-sdk/bot'; // [!code --]
+import { userMention } from '@discord-selfbot-sdk/bot'; // [!code ++]
 
 Formatters.userMention('123456789012345678'); // [!code --]
 userMention('123456789012345678'); // [!code ++]

@@ -123,7 +123,7 @@ Third and finally, you may wish to have a listener setup to respond to permanent
 If your event handling has been setup in multiple files as per our [event handling](../app-creation/handling-events) guide, you should already have an `events/interactionCreate.js` file that looks something like this.
 
 ```js title="events/interactionCreate.js"
-const { Events } = require('discord.js');
+const { Events } = require('@discord-selfbot-sdk/bot');
 
 module.exports = {
 	name: Events.InteractionCreate,
@@ -150,7 +150,7 @@ module.exports = {
 The way this was previously set up returns from the `execute` function whenever it encounters an interaction that is not a `ChatInputCommandInteraction`, as shown on the highlighted line above. The first change that needs to be made is to invert this logic, without actually changing the functionality.
 
 ```js title="events/interactionCreate.js"
-const { Events } = require('discord.js');
+const { Events } = require('@discord-selfbot-sdk/bot');
 
 // [!code focus:22]
 module.exports = {
@@ -180,7 +180,7 @@ module.exports = {
 Now that the logic is setup to run code when something _is_ a `ChatInputCommandInteraction`, rather than to stop and exit when it isn't, you can add handling for additional interaction types via simple `if...else` logic.
 
 ```js
-const { Events } = require('discord.js');
+const { Events } = require('@discord-selfbot-sdk/bot');
 
 module.exports = {
 	name: Events.InteractionCreate,

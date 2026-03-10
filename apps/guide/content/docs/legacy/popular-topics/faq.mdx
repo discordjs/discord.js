@@ -102,7 +102,7 @@ client.user.setActivity('activity');
 ### How do I set my status to "Watching/Listening to/Competing in ..."?
 
 ```js
-const { ActivityType } = require('discord.js');
+const { ActivityType } = require('@discord-selfbot-sdk/bot');
 
 client.user.setActivity('activity', { type: ActivityType.Watching });
 client.user.setActivity('activity', { type: ActivityType.Listening });
@@ -117,7 +117,7 @@ client.user.setActivity('activity', { type: ActivityType.Competing });
 ### How do I make my bot display online/idle/dnd/invisible?
 
 ```js
-const { PresenceUpdateStatus } = require('discord.js');
+const { PresenceUpdateStatus } = require('@discord-selfbot-sdk/bot');
 
 client.user.setStatus(PresenceUpdateStatus.Online);
 client.user.setStatus(PresenceUpdateStatus.Idle);
@@ -128,7 +128,7 @@ client.user.setStatus(PresenceUpdateStatus.Invisible);
 ### How do I set both status and activity in one go?
 
 ```js
-const { PresenceUpdateStatus } = require('discord.js');
+const { PresenceUpdateStatus } = require('@discord-selfbot-sdk/bot');
 
 client.user.setPresence({ activities: [{ name: 'activity' }], status: PresenceUpdateStatus.Idle });
 ```

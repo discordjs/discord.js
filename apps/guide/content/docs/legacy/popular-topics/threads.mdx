@@ -113,7 +113,7 @@ Private threads can only be created on text channels. Private threads can initia
 To create a private thread, use `GuildTextThreadManager#create` and pass in `ChannelType.PrivateThread` as the `type`. Public channels are the default, hence passing `ChannelType.PublicThread` is not required in the example above:
 
 ```js
-const { ChannelType, ThreadAutoArchiveDuration } = require('discord.js');
+const { ChannelType, ThreadAutoArchiveDuration } = require('@discord-selfbot-sdk/bot');
 
 const thread = await channel.threads.create({
 	name: 'mod-talk',
@@ -159,4 +159,4 @@ await webhook.send({
 });
 ```
 
-And that's it! Now you know all there is to know on working with threads using discord.js!
+And that's it! Now you know all there is to know on working with threads using @discord-selfbot-sdk/bot!

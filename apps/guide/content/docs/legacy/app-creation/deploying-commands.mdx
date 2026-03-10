@@ -63,7 +63,7 @@ Add two more properties to your `config.json` file, which we'll need in the depl
 With these defined, you can use the deployment script below:
 
 ```js title="deploy-commands.js" lineNumbers
-const { REST, Routes } = require('discord.js');
+const { REST, Routes } = require('@discord-selfbot-sdk/bot');
 const { clientId, guildId, token } = require('./config.json');
 const fs = require('node:fs');
 const path = require('node:path');

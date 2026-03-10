@@ -7,7 +7,7 @@ title: Parsing Options
 In this section, we'll cover how to access the values of a command's options. Consider the following `ban` command example with two options:
 
 ```js title="commands/moderation/ban.js"
-const { InteractionContextType, PermissionFlagsBits, SlashCommandBuilder } = require('discord.js');
+const { InteractionContextType, PermissionFlagsBits, SlashCommandBuilder } = require('@discord-selfbot-sdk/bot');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -52,7 +52,7 @@ In the same way as the above examples, you can get values of any type using the 
 If you specified preset choices for your String, Integer, or Number option, getting the selected choice is exactly the same as the free-entry options above. Consider the [gif command](./advanced-creation#choices) example you looked at earlier:
 
 ```js title="commands/fun/gif.js"
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require('@discord-selfbot-sdk/bot');
 
 module.exports = {
 	data: new SlashCommandBuilder()

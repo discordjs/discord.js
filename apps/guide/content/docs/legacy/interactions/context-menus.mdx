@@ -14,7 +14,7 @@ Context Menus are application commands which appear when right clicking or tappi
 To create a context menu command, use the `ContextMenuCommandBuilder` class. You can then set the type of the context menu (user or message) using the `setType()` method.
 
 ```js
-const { ContextMenuCommandBuilder, ApplicationCommandType } = require('discord.js');
+const { ContextMenuCommandBuilder, ApplicationCommandType } = require('@discord-selfbot-sdk/bot');
 
 const data = new ContextMenuCommandBuilder().setName('User Information').setType(ApplicationCommandType.User);
 ```

@@ -2,7 +2,7 @@
 title: Modals
 ---
 
-Modals are pop-up forms that allow you to prompt users for additional input. This form-like interaction response blocks the user from interacting with Discord until the modal is submitted or dismissed. In this section, we will cover how to create, show, and receive modals using discord.js!
+Modals are pop-up forms that allow you to prompt users for additional input. This form-like interaction response blocks the user from interacting with Discord until the modal is submitted or dismissed. In this section, we will cover how to create, show, and receive modals using @discord-selfbot-sdk/bot!
 
 <Callout>
 	This page is a follow-up to the [interactions (slash commands) page](../slash-commands/advanced-creation). Reading
@@ -11,7 +11,7 @@ Modals are pop-up forms that allow you to prompt users for additional input. Thi
 
 ## Building and responding with modals
 
-With the `ModalBuilder` class, discord.js offers a convenient way to build modals step by step using setters and callbacks.
+With the `ModalBuilder` class, @discord-selfbot-sdk/bot offers a convenient way to build modals step by step using setters and callbacks.
 
 <Callout>
 	You can have a maximum of five top-level components per modal, each of which can be a label or a text display
@@ -19,7 +19,7 @@ With the `ModalBuilder` class, discord.js offers a convenient way to build modal
 </Callout>
 
 ```js
-const { Events, ModalBuilder } = require('discord.js');
+const { Events, ModalBuilder } = require('@discord-selfbot-sdk/bot');
 
 client.on(Events.InteractionCreate, async (interaction) => {
 	if (!interaction.isChatInputCommand()) return;
@@ -44,7 +44,7 @@ Label components wrap around other modal components (text input, select menus, e
 Since labels are not stand-alone components, we will use this example label to wrap a text input component in the next section:
 
 ```js
-const { LabelBuilder, ModalBuilder } = require('discord.js');
+const { LabelBuilder, ModalBuilder } = require('@discord-selfbot-sdk/bot');
 
 client.on(Events.InteractionCreate, async (interaction) => {
 	if (!interaction.isChatInputCommand()) return;
@@ -76,7 +76,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 Text input components prompt users for single or multi line free-form text.
 
 ```js
-const { LabelBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+const { LabelBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } = require('@discord-selfbot-sdk/bot');
 
 client.on(Events.InteractionCreate, async (interaction) => {
 	if (!interaction.isChatInputCommand()) return;

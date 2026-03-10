@@ -46,7 +46,7 @@ To include permission checks like `Administrator` or `ManageGuild`, keep reading
 Base permissions are set on roles, not the guild member itself. To change them, you access a Role object (for example via `member.roles.cache.first()` or `guild.roles.cache.random()`) and use the `.setPermissions()` method. This is how you'd change the base permissions for the `@everyone` role, for example:
 
 ```js
-const { PermissionsBitField } = require('discord.js');
+const { PermissionsBitField } = require('@discord-selfbot-sdk/bot');
 
 guild.roles.everyone.setPermissions([PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.ViewChannel]);
 ```
@@ -63,7 +63,7 @@ Any permission not referenced in the flag array or bit field is not granted to t
 Alternatively you can provide permissions as a property of `RoleCreateOptions` during role creation as an array of flag strings or a permission number:
 
 ```js
-const { PermissionsBitField } = require('discord.js');
+const { PermissionsBitField } = require('@discord-selfbot-sdk/bot');
 
 guild.roles.create({
 	name: 'Mod',
@@ -76,7 +76,7 @@ guild.roles.create({
 To know if one of a member's roles has a permission enabled, you can use the `.has()` method on `GuildMember#permissions` and provide a permission flag, array, or number to check for. You can also specify if you want to allow the `Administrator` permission or the guild owner status to override this check with the following parameters.
 
 ```js
-const { PermissionsBitField } = require('discord.js');
+const { PermissionsBitField } = require('@discord-selfbot-sdk/bot');
 
 if (member.permissions.has(PermissionsBitField.Flags.KickMembers)) {
 	console.log('This member can kick');
@@ -120,7 +120,7 @@ Any permission flags not specified get neither an explicit allow nor deny overwr
 You can also provide an array of overwrites during channel creation, as shown below:
 
 ```js
-const { ChannelType, PermissionsBitField } = require('discord.js');
+const { ChannelType, PermissionsBitField } = require('@discord-selfbot-sdk/bot');
 
 guild.channels.create({
 	name: 'new-channel',
@@ -155,7 +155,7 @@ channel.permissionOverwrites.edit(user.id, { ViewChannel: true });
 To replace all permission overwrites on the channel with a provided set of new overwrites, you can use the `.set()` method. This is extremely handy if you want to copy a channel's full set of overwrites to another one, as this method also allows passing an array or Collection of `PermissionOverwrites`.
 
 ```js
-const { PermissionsBitField } = require('discord.js');
+const { PermissionsBitField } = require('@discord-selfbot-sdk/bot');
 // copying overwrites from another channel
 channel.permissionOverwrites.set(otherChannel.permissionOverwrites.cache);
 
@@ -236,7 +236,7 @@ Remember that using these methods will not manipulate permissions, but rather cr
 
 ### Displaying permission flags
 
-discord.js provides a `toArray()` method, which can be used to convert a `Permissions` object into an array containing permission flags. This is useful if you want to display/list them and it enables you to use other array manipulation methods. For example:
+@discord-selfbot-sdk/bot provides a `toArray()` method, which can be used to convert a `Permissions` object into an array containing permission flags. This is useful if you want to display/list them and it enables you to use other array manipulation methods. For example:
 
 ```js
 const memberPermissions = member.permissions.toArray();
@@ -265,11 +265,11 @@ const rolePermissions = role.permissions.serialize();
 
 ### Converting permission numbers
 
-Some methods and properties in discord.js return permission decimals rather than a Permissions object, making it hard to manipulate or read them if you don't want to use bitwise operations.
+Some methods and properties in @discord-selfbot-sdk/bot return permission decimals rather than a Permissions object, making it hard to manipulate or read them if you don't want to use bitwise operations.
 However, you can pass these decimals to the Permissions constructor to convert them, as shown below.
 
 ```js
-const { PermissionsBitField } = require('discord.js');
+const { PermissionsBitField } = require('@discord-selfbot-sdk/bot');
 
 const permissions = new PermissionsBitField(268_550_160n);
 ```
@@ -277,7 +277,7 @@ const permissions = new PermissionsBitField(268_550_160n);
 You can also use this approach for other `PermissionResolvable` like flag arrays or flags.
 
 ```js
-const { PermissionsBitField } = require('discord.js');
+const { PermissionsBitField } = require('@discord-selfbot-sdk/bot');
 
 const flags = [
 	PermissionsBitField.Flags.ViewChannel,
@@ -298,7 +298,7 @@ The `.has()` method takes two parameters: the first being either a permission nu
 Let's say you want to know if the decimal bit field representation `268_550_160` has `ManageChannels` referenced:
 
 ```js
-const { PermissionsBitField } = require('discord.js');
+const { PermissionsBitField } = require('@discord-selfbot-sdk/bot');
 
 const bitPermissions = new PermissionsBitField(268_550_160n);
 
@@ -345,7 +345,7 @@ console.log(adminPermissions.has(PermissionsBitField.Flags.ManageChannels, false
 The Permissions object enables you to easily add or remove individual permissions from an existing bit field without worrying about bitwise operations. Both `.add()` and `.remove()` can take a single permission flag or number, an array of permission flags or numbers, or multiple permission flags or numbers as multiple parameters.
 
 ```js
-const { PermissionsBitField } = require('discord.js');
+const { PermissionsBitField } = require('@discord-selfbot-sdk/bot');
 
 const permissions = new PermissionsBitField([
 	PermissionsBitField.Flags.ViewChannel,

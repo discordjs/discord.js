@@ -26,7 +26,7 @@ const firstEntry = fetchedLogs.entries.first();
 Simple, right? Now, let's look at utilizing its options:
 
 ```js
-const { AuditLogEvent } = require('discord.js');
+const { AuditLogEvent } = require('@discord-selfbot-sdk/bot');
 
 const fetchedLogs = await guild.fetchAuditLogs({
 	type: AuditLogEvent.InviteCreate,
@@ -47,7 +47,7 @@ Audit logs may be received via the gateway event `guildAuditLogEntryCreate`. Thi
 One of the most common use cases for audit logs is understanding who deleted a message in a Discord server. If a user deleted another user's message, you can find out who did that as soon as you receive the corresponding audit log event.
 
 ```js
-const { AuditLogEvent, Events } = require('discord.js');
+const { AuditLogEvent, Events } = require('@discord-selfbot-sdk/bot');
 
 client.on(Events.GuildAuditLogEntryCreate, async (auditLog) => {
 	// Define your variables.
@@ -75,7 +75,7 @@ With this, you now have a very simple logger telling you who deleted a message a
 This is very similar to the example above.
 
 ```js
-const { AuditLogEvent, Events } = require('discord.js');
+const { AuditLogEvent, Events } = require('@discord-selfbot-sdk/bot');
 
 client.on(Events.GuildAuditLogEntryCreate, async (auditLog) => {
 	// Define your variables.

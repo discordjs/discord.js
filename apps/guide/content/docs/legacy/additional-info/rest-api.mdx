@@ -27,7 +27,7 @@ pnpm add undici
 To start off, you will be using the following skeleton code. Since both the commands you will be adding in this section require an interaction with external APIs, you will defer the reply, so your application responds with a "thinking..." state. You can then edit the reply once you got the data you need:
 
 ```js title="rest-examples.js" lineNumbers
-const { Client, EmbedBuilder, Events, GatewayIntentBits } = require('discord.js');
+const { Client, EmbedBuilder, Events, GatewayIntentBits } = require('@discord-selfbot-sdk/bot');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 

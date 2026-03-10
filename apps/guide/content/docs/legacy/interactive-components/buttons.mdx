@@ -18,7 +18,7 @@ For this example, you're going to expand on the `ban` command that was previousl
 To create your buttons, use the `ButtonBuilder` class, defining at least the `customId`, `style` and `label`.
 
 ```js
-const { ButtonBuilder, ButtonStyle, SlashCommandBuilder } = require('discord.js');
+const { ButtonBuilder, ButtonStyle, SlashCommandBuilder } = require('@discord-selfbot-sdk/bot');
 
 module.exports = {
 	// data: new SlashCommandBuilder()...
@@ -43,7 +43,7 @@ module.exports = {
 To send your buttons, create an action row and add the buttons as components. Then, send the row in the `components` property of `InteractionReplyOptions` (extends `BaseMessageOptions`).
 
 ```js
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder } = require('discord.js');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBuilder } = require('@discord-selfbot-sdk/bot');
 
 module.exports = {
 	// data: new SlashCommandBuilder()...

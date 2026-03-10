@@ -2,8 +2,8 @@
 title: Cache Customization
 ---
 
-Sometimes, you would like to be able to customize discord.js's caching behavior in order to reduce memory usage.
-To this end, discord.js provides you with two ways to do so:
+Sometimes, you would like to be able to customize @discord-selfbot-sdk/bot's caching behavior in order to reduce memory usage.
+To this end, @discord-selfbot-sdk/bot provides you with two ways to do so:
 
 1. Limiting the size of caches.
 2. Periodically removing old items from caches.
@@ -20,7 +20,7 @@ When creating a new `Client`, you can limit the size of caches, which are specif
 Below is the default settings, which will limit message caches.
 
 ```js
-const { Client, Options } = require('discord.js');
+const { Client, Options } = require('@discord-selfbot-sdk/bot');
 
 const client = new Client({
 	makeCache: Options.cacheWithLimits(Options.DefaultMakeCacheSettings),
@@ -68,7 +68,7 @@ In addition to limiting caches, you can also periodically sweep and remove old i
 Below is the default settings, which will occasionally sweep threads.
 
 ```js
-const { Client, Options } = require('discord.js');
+const { Client, Options } = require('@discord-selfbot-sdk/bot');
 
 const client = new Client({
 	sweepers: Options.DefaultSweeperSettings,
