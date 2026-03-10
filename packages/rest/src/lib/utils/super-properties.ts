@@ -90,8 +90,8 @@ export class SuperProperties {
 	static async fetchBuildNumber(fallback = DEFAULT_BUILD_NUMBER): Promise<number> {
 		try {
 			const res = await fetch(BUILD_NUMBER_API);
-			const json = (await res.json()) as { properties?: { client_build_number?: number } };
-			const bn = json.properties?.client_build_number;
+			const json = (await res.json()) as { client?: { build_number?: number } };
+			const bn = json.client?.build_number;
 			if (typeof bn === 'number' && bn > 0) return bn;
 		} catch {
 			// Silently fall back
