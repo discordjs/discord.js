@@ -68,7 +68,7 @@
   color: fbca04
 - name: packages:create-discord-bot
   color: fbca04
-- name: packages:discord.js
+- name: packages:bot
   color: fbca04
 - name: packages:docgen
   color: fbca04

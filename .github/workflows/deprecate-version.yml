@@ -7,21 +7,11 @@ on:
         required: true
         type: choice
         options:
-          - '@discordjs/brokers'
-          - '@discordjs/builders'
-          - '@discordjs/collection'
-          - '@discordjs/core'
-          - 'create-discord-app'
-          - 'create-discord-bot'
-          - '@discordjs/formatters'
-          - 'discord.js'
-          - '@discordjs/next'
-          - '@discordjs/proxy'
-          - '@discordjs/rest'
-          - '@discordjs/structures'
-          - '@discordjs/util'
-          - '@discordjs/voice'
-          - '@discordjs/ws'
+          - '@discord-selfbot-sdk/core'
+          - '@discord-selfbot-sdk/bot'
+          - '@discord-selfbot-sdk/rest'
+          - '@discord-selfbot-sdk/util'
+          - '@discord-selfbot-sdk/ws'
       version:
         description: Version(s)
         required: true
@@ -33,24 +23,15 @@ on:
 jobs:
   deprecate:
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'discordjs'
+    if: github.repository_owner == 'Dijnie'
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
       - name: Install Node.js v24
         uses: actions/setup-node@v6
         with:
           node-version: 24
-          package-manager-cache: false
-
-      - name: Install dependencies
-        uses: ./packages/actions/src/pnpmCache
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Deprecate
-        uses: ./packages/actions/src/deprecateVersion
-        with:
-          package: ${{ inputs.package }}
-          version: ${{ inputs.version }}
-          message: ${{ inputs.message }}
-          node-auth-token: ${{ secrets.NPM_PUBLISH_TOKEN }}
+        run: npm deprecate "${{ inputs.package }}@${{ inputs.version }}" "${{ inputs.message || 'This version has been deprecated.' }}"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

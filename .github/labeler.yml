@@ -48,11 +48,11 @@ packages:create-discord-bot:
       - any-glob-to-any-file:
           - packages/create-discord-bot/*
           - packages/create-discord-bot/**/*
-packages:discord.js:
+packages:bot:
   - changed-files:
       - any-glob-to-any-file:
-          - packages/discord.js/*
-          - packages/discord.js/**/*
+          - packages/bot/*
+          - packages/bot/**/*
 packages:docgen:
   - changed-files:
       - any-glob-to-any-file:

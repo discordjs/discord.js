@@ -1,5 +1,5 @@
 name: Feature request
-description: Request a new feature (discord.js accepts documented features of the official Discord developer API only!)
+description: Request a new feature (@discord-selfbot-sdk/bot accepts documented features of the official Discord developer API only!)
 labels: [feature request]
 body:
   - type: markdown
@@ -13,7 +13,7 @@ body:
     attributes:
       label: Which application or package is this feature request for?
       options:
-        - discord.js
+        - '@discord-selfbot-sdk/bot'
         - Documentation
         - Guide
         - Proxy Container

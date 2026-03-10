@@ -2,36 +2,17 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
-      ref:
-        description: 'The branch, tag or SHA to checkout'
-        required: true
-        default: 'main'
       package:
         description: 'The published name of a single package to release'
         type: choice
         required: false
         options:
           - all
-          - discord.js
-          - '@discordjs/brokers'
-          - '@discordjs/builders'
-          - '@discordjs/collection'
-          - '@discordjs/core'
-          - 'create-discord-bot'
-          # - '@discordjs/docgen'
-          - '@discordjs/formatters'
-          - '@discordjs/next'
-          - '@discordjs/proxy'
-          - '@discordjs/rest'
-          - '@discordjs/structures'
-          - '@discordjs/util'
-          - '@discordjs/voice'
-          - '@discordjs/ws'
-      exclude:
-        description: 'Comma separated list of packages to exclude from release (if not depended upon)'
-        required: false
-        type: string
-        default: '@discordjs/docgen,@discordjs/next'
+          - '@discord-selfbot-sdk/bot'
+          - '@discord-selfbot-sdk/core'
+          - '@discord-selfbot-sdk/rest'
+          - '@discord-selfbot-sdk/util'
+          - '@discord-selfbot-sdk/ws'
       dry_run:
         description: Perform a dry run?
         type: boolean
@@ -42,71 +23,48 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
-    env:
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-    if: github.repository_owner == 'discordjs'
+      contents: write
+    if: github.repository_owner == 'Dijnie'
     steps:
-      - uses: actions/create-github-app-token@v2
-        id: app-token
-        with:
-          app-id: ${{ vars.DISCORDJS_APP_ID }}
-          private-key: ${{ secrets.DISCORDJS_APP_KEY_RELEASE }}
-          permission-contents: write
-
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
-          token: ${{ steps.app-token.outputs.token }}
-          ref: ${{ inputs.ref || '' }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
 
       - name: Install Node.js v24
         uses: actions/setup-node@v6
         with:
           node-version: 24
-          package-manager-cache: false
+          cache: pnpm
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
-        uses: ./packages/actions/src/pnpmCache
+        run: pnpm install --frozen-lockfile
 
-      - name: Build dependencies
+      - name: Build
         run: pnpm run build
 
-      - name: Checkout main repository
-        if: ${{ inputs.ref && inputs.ref != 'main' }}
-        uses: actions/checkout@v6
-        with:
-          path: 'main'
-
-      - name: Install action deps (non-main ref only)
-        if: ${{ inputs.ref && inputs.ref != 'main' }}
-        shell: bash
-        working-directory: ./main
-        env:
-          COREPACK_ENABLE_STRICT: 0
+      - name: Publish (dry run)
+        if: ${{ inputs.dry_run }}
         run: |
-          pnpm self-update 10
-          pnpm install --filter @discordjs/actions --frozen-lockfile --prefer-offline --loglevel error
-
-      - name: Release packages (non-main ref)
-        if: ${{ inputs.ref && inputs.ref != 'main' }}
-        uses: ./main/packages/actions/src/releasePackages
-        with:
-          package: ${{ inputs.package }}
-          exclude: ${{ inputs.exclude }}
-          dry: ${{ inputs.dry_run }}
+          if [ "${{ inputs.package }}" = "all" ]; then
+            pnpm -r --filter "./packages/*" exec pnpm publish --dry-run --no-git-checks --access public
+          else
+            pnpm --filter "${{ inputs.package }}" exec pnpm publish --dry-run --no-git-checks --access public
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 
-      - name: Release packages (main ref)
-        if: ${{ !inputs.ref || inputs.ref == 'main' }}
-        uses: ./packages/actions/src/releasePackages
-        with:
-          package: ${{ inputs.package }}
-          exclude: ${{ inputs.exclude }}
-          dry: ${{ inputs.dry_run }}
+      - name: Publish
+        if: ${{ !inputs.dry_run }}
+        run: |
+          if [ "${{ inputs.package }}" = "all" ]; then
+            pnpm -r --filter "./packages/*" exec pnpm publish --no-git-checks --access public
+          else
+            pnpm --filter "${{ inputs.package }}" exec pnpm publish --no-git-checks --access public
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}

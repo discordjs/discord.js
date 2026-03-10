@@ -2,7 +2,7 @@
 
 **The issue tracker is only for bug reports and enhancement suggestions. If you have a question, please ask it in the [Discord server](https://discord.gg/djs) instead of opening an issue – you will get redirected there anyway.**
 
-If you wish to contribute to the discord.js codebase or documentation, feel free to fork the repository and submit a
+If you wish to contribute to the @discord-selfbot-sdk/bot codebase or documentation, feel free to fork the repository and submit a
 pull request. We use ESLint to enforce a consistent coding style, so having that set up in your editor of choice
 is a great boon to your development process.
 
@@ -19,7 +19,7 @@ To get ready to work on the codebase, please do the following:
 
 ## Testing changes locally
 
-If you want to test changes you've made locally, you can do so by using `pnpm link <package-you-want-to-link-to-your-current-package>`. This will create a symlink to your local copy of the discord.js libraries.
+If you want to test changes you've made locally, you can do so by using `pnpm link <package-you-want-to-link-to-your-current-package>`. This will create a symlink to your local copy of the @discord-selfbot-sdk/bot libraries.
 
 1. Create a new directory `mkdir discordjs-test` and move into it `cd discordjs-test`
 2. Initialize a new pnpm project `pnpm init`
