@@ -1,88 +1,123 @@
 <div align="center">
-	<br />
-	<p>
-		<a href="https://discord.js.org"><img src="https://discord.js.org/static/logo.svg" width="546" alt="discord.js" /></a>
-	</p>
-	<br />
-	<p>
-		<a href="https://discord.gg/djs"><img src="https://img.shields.io/badge/join_us-on_discord-5865F2?logo=discord&logoColor=white" alt="Discord server" /></a>
-		<a href="https://www.npmjs.com/package/@discord-selfbot-sdk/bot"><img src="https://img.shields.io/npm/v/@discord-selfbot-sdk/bot.svg?maxAge=3600" alt="npm version" /></a>
-		<a href="https://www.npmjs.com/package/@discord-selfbot-sdk/bot"><img src="https://img.shields.io/npm/dt/@discord-selfbot-sdk/bot.svg?maxAge=3600" alt="npm downloads" /></a>
-		<a href="https://github.com/discordjs/discord.js/actions"><img src="https://github.com/discordjs/discord.js/actions/workflows/tests.yml/badge.svg" alt="Tests status" /></a>
-		<a href="https://github.com/discordjs/discord.js/commits/main"><img src="https://img.shields.io/github/last-commit/discordjs/discord.js.svg?logo=github&logoColor=ffffff" alt="Last commit." /></a>
-		<a href="https://github.com/discordjs/discord.js/graphs/contributors"><img src="https://img.shields.io/github/contributors/discordjs/discord.js.svg?maxAge=3600&logo=github&logoColor=fff&color=00c7be" alt="contributors" /></a>
-		<a href="https://opencollective.com/discordjs"><img src="https://img.shields.io/opencollective/backers/discordjs?maxAge=3600&logo=opencollective" alt="backers" /></a>
-		<a href="https://codecov.io/gh/discordjs/discord.js"><img src="https://codecov.io/gh/discordjs/discord.js/branch/main/graph/badge.svg?precision=2" alt="Code coverage" /></a>
-	</p>
-	<p>
-		<a href="https://vercel.com/?utm_source=discordjs&utm_campaign=oss"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-vercel.svg" alt="Vercel" /></a>
-		<a href="https://www.cloudflare.com"><img src="https://raw.githubusercontent.com/discordjs/discord.js/main/.github/powered-by-workers.png" alt="Cloudflare Workers" height="44" /></a>
-	</p>
+  <br />
+  <p>
+    <a href="https://discord.js.org"><img src="https://discord.js.org/static/logo.svg" width="546" alt="discord.js" /></a>
+  </p>
 </div>
+
+> [!CAUTION]
+> **The use of this module under a different name on NPM (or another source besides this GitHub) is not associated with this library.**
+> **When using these libraries, you accept the risk of exposing your Discord Token.**
 
 ## About
 
-This repository contains multiple packages with separate [releases][github-releases]. You can find the assembled Discord API wrapper at [`@discord-selfbot-sdk/bot`][source]. It is a powerful [Node.js](https://nodejs.org/en) module that allows you to easily interact with the [Discord API](https://discord.com/developers/docs/intro).
+<strong>Welcome to `@discord-selfbot-sdk/bot`, based on `discord.js@14` monorepo architecture</strong>
+
+- A [Node.js](https://nodejs.org) module that allows user accounts to interact with the Discord API.
+
+<div align="center">
+  <p>
+    <a href="https://www.npmjs.com/package/@discord-selfbot-sdk/bot"><img src="https://img.shields.io/npm/v/@discord-selfbot-sdk/bot.svg" alt="npm version" /></a>
+    <a href="https://www.npmjs.com/package/@discord-selfbot-sdk/bot"><img src="https://img.shields.io/npm/dt/@discord-selfbot-sdk/bot.svg" alt="npm downloads" /></a>
+    <a href="https://github.com/Dijnie/discord.js-self/actions"><img src="https://github.com/Dijnie/discord.js-self/actions/workflows/tests.yml/badge.svg" alt="Tests status" /></a>
+  </p>
+</div>
+
+> [!WARNING]
+> **I don't take any responsibility for blocked Discord accounts that used this module.**
+
+> [!CAUTION]
+> **Using this on a user account is prohibited by the [Discord TOS](https://discord.com/terms) and can lead to the account block.**
+
+## Key Differences from discord.js
+
+- **Auth**: Raw user token — no "Bot " prefix
+- **Gateway**: Uses `/gateway` instead of `/gateway/bot`, capabilities instead of intents
+- **Headers**: Browser-like headers (X-Super-Properties, Sec-CH-UA, Chrome User-Agent)
+- **Identify**: Super properties + capabilities bitfield, no intents/shard array
+- **Sharding**: Disabled — user accounts are single-shard only
 
 ## Packages
 
-- `@discord-selfbot-sdk/bot` ([source][source]) - A powerful Node.js module for interacting with the Discord API
-- `@discordjs/builders` ([source][builders-source]) - A utility package for easily building Discord API payloads
-- `@discordjs/collection` ([source][collection-source]) - A powerful utility data structure
-- `@discordjs/core` ([source][core-source]) - A thinly abstracted wrapper around the core components of the Discord API
-- `@discordjs/formatters` ([source][formatters-source]) - A collection of functions for formatting strings
-- `@discordjs/rest` ([source][rest-source]) - A module for interacting with the Discord REST API
-- `@discordjs/structures` ([source][structures-source]) - A wrapper around Discord's structures
-- `@discordjs/util` ([source][util-source]) - A collection of utility functions
-- `@discordjs/voice` ([source][voice-source]) - A module for interacting with the Discord Voice API
-- `@discordjs/ws` ([source][ws-source]) - A wrapper around Discord's gateway
+- `@discord-selfbot-sdk/bot` ([source][bot-source]) - Main client library (replaces `discord.js`)
+- `@discord-selfbot-sdk/core` ([source][core-source]) - Core utilities
+- `@discord-selfbot-sdk/rest` ([source][rest-source]) - REST client with selfbot auth and browser headers
+- `@discord-selfbot-sdk/util` ([source][util-source]) - Shared utilities
+- `@discord-selfbot-sdk/ws` ([source][ws-source]) - Gateway WebSocket with user-style IDENTIFY
 
-## Links
+## Installation
 
-- [Website][website] ([source][website-source])
-- [Documentation][documentation]
-- [Guide][guide] ([source][guide-source])
-  Also see the v13 to v14 [Update Guide][guide-update], which includes updated and removed items from the library.
-- [discord.js Discord server][discord]
-- [Discord Developers Discord server][discord-developers]
-- [GitHub][source]
-- [npm][npm]
-- [Related libraries][related-libs]
+> [!NOTE]
+> **Node.js 20.18.0 or newer is required**
 
-### Extensions
+```sh-session
+npm install @discord-selfbot-sdk/bot@latest
+```
 
-- [RPC][rpc] ([source][rpc-source])
+## Example
+
+```js
+const { Client } = require('@discord-selfbot-sdk/bot');
+const client = new Client();
+
+client.on('ready', async () => {
+	console.log(`${client.user.username} is ready!`);
+});
+
+client.login('token');
+```
+
+## Get Token ?
+
+<strong>Run code (Discord Console - [Ctrl + Shift + I])</strong>
+
+```js
+window.webpackChunkdiscord_app.push([
+	[Symbol()],
+	{},
+	(req) => {
+		if (!req.c) return;
+		for (let m of Object.values(req.c)) {
+			try {
+				if (!m.exports || m.exports === window) continue;
+				if (m.exports?.getToken) return copy(m.exports.getToken());
+				for (let ex in m.exports) {
+					if (m.exports?.[ex]?.getToken && m.exports[ex][Symbol.toStringTag] !== 'IntlMessagesProxy')
+						return copy(m.exports[ex].getToken());
+				}
+			} catch {}
+		}
+	},
+]);
+
+window.webpackChunkdiscord_app.pop();
+console.log('%cWorked!', 'font-size: 50px');
+console.log(`%cYou now have your token in the clipboard!`, 'font-size: 16px');
+```
 
 ## Contributing
 
-Please read through our [contribution guidelines][contributing] before starting a pull request. We welcome contributions of all kinds, not just code! If you're stuck for ideas, look for the [good first issue][good-first-issue] label on issues in the repository. If you have any questions about the project, feel free to ask them on [Discord][discord]. Before creating your own issue or pull request, always check to see if one already exists! Don't rush contributions, take your time and ensure you're doing it correctly.
+- Before creating an issue, please ensure that it hasn't already been reported/suggested.
+- See [the contribution guide][contributing] if you'd like to submit a PR.
 
-## Help
+## Need help?
 
-If you don't understand something in the documentation, you are experiencing problems, or you just need a gentle nudge in the right direction, please join our [Discord server][discord].
+GitHub Discussion: [Here](https://github.com/Dijnie/discord.js-self/discussions)
 
-[website]: https://discord.js.org
-[website-source]: https://github.com/discordjs/discord.js/tree/main/apps/website
-[documentation]: https://discord.js.org/docs
-[guide]: https://discordjs.guide
-[guide-source]: https://github.com/discordjs/discord.js/tree/main/apps/guide
-[guide-update]: https://discordjs.guide/legacy/additional-info/changes-in-v14
-[discord]: https://discord.gg/djs
-[discord-developers]: https://discord.gg/discord-developers
-[source]: https://github.com/Dijnie/discord.js-self/tree/main/packages/bot
-[npm]: https://www.npmjs.com/package/@discord-selfbot-sdk/bot
-[related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
-[rpc]: https://www.npmjs.com/package/discord-rpc
-[rpc-source]: https://github.com/discordjs/RPC
-[contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md
-[github-releases]: https://github.com/discordjs/discord.js/releases
-[builders-source]: https://github.com/discordjs/discord.js/tree/main/packages/builders
-[collection-source]: https://github.com/discordjs/discord.js/tree/main/packages/collection
-[core-source]: https://github.com/discordjs/discord.js/tree/main/packages/core
-[formatters-source]: https://github.com/discordjs/discord.js/tree/main/packages/formatters
-[rest-source]: https://github.com/discordjs/discord.js/tree/main/packages/rest
-[structures-source]: https://github.com/discordjs/discord.js/tree/main/packages/structures
-[util-source]: https://github.com/discordjs/discord.js/tree/main/packages/util
-[voice-source]: https://github.com/discordjs/discord.js/tree/main/packages/voice
-[ws-source]: https://github.com/discordjs/discord.js/tree/main/packages/ws
-[good-first-issue]: https://github.com/discordjs/discord.js/contribute
+## Credits
+
+- [discord.js](https://github.com/discordjs/discord.js) — original bot library
+- [discord.py-self](https://github.com/dolfies/discord.py-self) — protocol details (super properties, capabilities, identify payload)
+- [discord.js-selfbot-v13](https://github.com/aiko-chan-ai/discord.js-selfbot-v13) — Node.js selfbot patterns
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=Dijnie/discord.js-self&type=Date)](https://star-history.com/#Dijnie/discord.js-self&Date)
+
+[source]: https://github.com/Dijnie/discord.js-self
+[contributing]: https://github.com/Dijnie/discord.js-self/blob/main/.github/CONTRIBUTING.md
+[bot-source]: https://github.com/Dijnie/discord.js-self/tree/main/packages/bot
+[core-source]: https://github.com/Dijnie/discord.js-self/tree/main/packages/core
+[rest-source]: https://github.com/Dijnie/discord.js-self/tree/main/packages/rest
+[util-source]: https://github.com/Dijnie/discord.js-self/tree/main/packages/util
+[ws-source]: https://github.com/Dijnie/discord.js-self/tree/main/packages/ws
