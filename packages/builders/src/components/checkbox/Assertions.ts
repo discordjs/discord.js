@@ -34,35 +34,35 @@ export const checkboxGroupPredicate = s
 	.reshape((data) => {
 		// Ensure min_values is not greater than max_values
 		if (data.min_values !== undefined && data.max_values !== undefined && data.min_values > data.max_values) {
-			throw new RangeError('min_values cannot be greater than max_values');
+			return Result.err(new RangeError('min_values cannot be greater than max_values'));
 		}
 
 		// Ensure max_values is not greater than the number of options
 		if (data.max_values !== undefined && data.max_values > data.options.length) {
-			throw new RangeError('max_values cannot be greater than the number of options');
+			return Result.err(new RangeError('max_values cannot be greater than the number of options'));
 		}
 
 		// Ensure min_values is not greater than the number of options
 		if (data.min_values !== undefined && data.min_values > data.options.length) {
-			throw new RangeError('min_values cannot be greater than the number of options');
+			return Result.err(new RangeError('min_values cannot be greater than the number of options'));
 		}
 
 		// Ensure required is consistent with min_values
 		if (data.required === true && data.min_values === 0) {
-			throw new RangeError('If required is true, min_values must be at least 1');
+			return Result.err(new RangeError('If required is true, min_values must be at least 1'));
 		}
 
 		// Ensure there are not more default values than max_values
 		const defaultCount = data.options.filter((option) => option.default === true).length;
 		if (data.max_values !== undefined && defaultCount > data.max_values) {
-			throw new RangeError('The number of default options cannot be greater than max_values');
+			return Result.err(new RangeError('The number of default options cannot be greater than max_values'));
 		}
 
 		// Ensure each option's value is unique
 		const values = data.options.map((option) => option.value);
 		const uniqueValues = new Set(values);
 		if (uniqueValues.size !== values.length) {
-			throw new RangeError('Each option in a checkbox group must have a unique value');
+			return Result.err(new RangeError('Each option in a checkbox group must have a unique value'));
 		}
 
 		return Result.ok(data);
@@ -83,14 +83,14 @@ export const radioGroupPredicate = s
 		// Ensure there is exactly one default option
 		const defaultCount = data.options.filter((option) => option.default === true).length;
 		if (defaultCount > 1) {
-			throw new RangeError('There can be at most one default option in a radio group');
+			return Result.err(new RangeError('There can be at most one default option in a radio group'));
 		}
 
 		// Ensure each option's value is unique
 		const values = data.options.map((option) => option.value);
 		const uniqueValues = new Set(values);
 		if (uniqueValues.size !== values.length) {
-			throw new RangeError('Each option in a radio group must have a unique value');
+			return Result.err(new RangeError('Each option in a radio group must have a unique value'));
 		}
 
 		return Result.ok(data);
