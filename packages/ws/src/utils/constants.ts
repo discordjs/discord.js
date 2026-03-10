@@ -1,11 +1,12 @@
-import process from 'node:process';
+import { SuperProperties, type SuperPropertiesData } from '@discord-selfbot-sdk/rest';
+import { lazy } from '@discord-selfbot-sdk/util';
 import { Collection } from '@discordjs/collection';
-import { lazy } from '@discordjs/util';
 import { APIVersion, GatewayOpcodes } from 'discord-api-types/v10';
 import { SimpleShardingStrategy } from '../strategies/sharding/SimpleShardingStrategy.js';
 import { SimpleIdentifyThrottler } from '../throttling/SimpleIdentifyThrottler.js';
 import type { SessionInfo, OptionalWebSocketManagerOptions, WebSocketManager } from '../ws/WebSocketManager.js';
 import type { SendRateLimitState } from '../ws/WebSocketShard.js';
+import { DefaultCapabilities } from './capabilities.js';
 
 /**
  * Valid encoding types
@@ -23,9 +24,15 @@ export enum CompressionMethod {
 	ZstdNative,
 }
 
-export const DefaultDeviceProperty = `@discordjs/ws [VI]{{inject}}[/VI]` as `@discordjs/ws ${string}`;
+export const DefaultDeviceProperty =
+	`@discord-selfbot-sdk/ws [VI]{{inject}}[/VI]` as `@discord-selfbot-sdk/ws ${string}`;
 
 const getDefaultSessionStore = lazy(() => new Collection<number, SessionInfo | null>());
+
+/**
+ * Default super properties instance for gateway IDENTIFY
+ */
+const defaultSuperProps = new SuperProperties();
 
 export const CompressionParameterMap = {
 	[CompressionMethod.ZlibNative]: 'zlib-stream',
@@ -34,23 +41,48 @@ export const CompressionParameterMap = {
 } as const satisfies Record<CompressionMethod, string>;
 
 /**
+ * Presence data for the user-style IDENTIFY payload
+ */
+export interface UserPresenceData {
+	activities: unknown[];
+	afk: boolean;
+	since: number;
+	status: string;
+}
+
+/**
+ * User-style IDENTIFY payload (replaces bot GatewayIdentifyData)
+ */
+export interface UserIdentifyData {
+	capabilities: number;
+	client_state: { guild_versions: Record<string, never> };
+	compress: boolean;
+	large_threshold?: number;
+	presence: UserPresenceData;
+	properties: SuperPropertiesData;
+	token: string;
+}
+
+/**
  * Default options used by the manager
  */
 export const DefaultWebSocketManagerOptions = {
-	async buildIdentifyThrottler(manager: WebSocketManager) {
-		const info = await manager.fetchGatewayInformation();
-		return new SimpleIdentifyThrottler(info.session_start_limit.max_concurrency);
+	async buildIdentifyThrottler(_manager: WebSocketManager) {
+		// User accounts don't need identify throttling (single shard)
+		return new SimpleIdentifyThrottler(1);
 	},
 	buildStrategy: (manager) => new SimpleShardingStrategy(manager),
 	shardCount: null,
 	shardIds: null,
 	largeThreshold: null,
-	initialPresence: null,
-	identifyProperties: {
-		browser: DefaultDeviceProperty,
-		device: DefaultDeviceProperty,
-		os: process.platform,
+	initialPresence: {
+		status: 'online' as const,
+		activities: [] as unknown[],
+		afk: false,
+		since: 0,
 	},
+	identifyProperties: defaultSuperProps.properties,
+	capabilities: DefaultCapabilities,
 	version: APIVersion,
 	encoding: Encoding.JSON,
 	compression: null,

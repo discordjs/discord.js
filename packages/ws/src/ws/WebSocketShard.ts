@@ -2,8 +2,8 @@ import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
 import { setTimeout as sleep } from 'node:timers/promises';
 import type * as nativeZlib from 'node:zlib';
+import { lazy, shouldUseGlobalFetchAndWebSocket } from '@discord-selfbot-sdk/util';
 import { Collection } from '@discordjs/collection';
-import { lazy, shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -11,7 +11,6 @@ import {
 	GatewayDispatchEvents,
 	GatewayOpcodes,
 	type GatewayDispatchPayload,
-	type GatewayIdentifyData,
 	type GatewayReadyDispatchData,
 	type GatewayReceivePayload,
 	type GatewaySendPayload,
@@ -24,6 +23,7 @@ import {
 	CompressionParameterMap,
 	ImportantGatewayOpcodes,
 	getInitialSendRateLimitState,
+	type UserIdentifyData,
 } from '../utils/constants.js';
 import type { SessionInfo } from './WebSocketManager.js';
 
@@ -546,33 +546,38 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		this.debug([
 			'Identifying',
-			`shard id: ${this.id.toString()}`,
-			`shard count: ${this.strategy.options.shardCount}`,
-			`intents: ${this.strategy.options.intents}`,
+			`capabilities: ${this.strategy.options.capabilities}`,
 			`compression: ${this.transportCompressionEnabled ? CompressionParameterMap[this.strategy.options.compression!] : this.identifyCompressionEnabled ? 'identify' : 'none'}`,
 		]);
 
-		const data: GatewayIdentifyData = {
+		// User-style identify payload — no intents, no shard array
+		const data: UserIdentifyData = {
 			token: this.strategy.options.token,
+			capabilities: this.strategy.options.capabilities,
 			properties: this.strategy.options.identifyProperties,
-			intents: this.strategy.options.intents,
+			presence: this.strategy.options.initialPresence ?? {
+				status: 'online',
+				activities: [],
+				afk: false,
+				since: 0,
+			},
 			compress: this.identifyCompressionEnabled,
-			shard: [this.id, this.strategy.options.shardCount],
+			client_state: {
+				guild_versions: {},
+			},
 		};
 
 		if (this.strategy.options.largeThreshold) {
 			data.large_threshold = this.strategy.options.largeThreshold;
 		}
 
-		if (this.strategy.options.initialPresence) {
-			data.presence = this.strategy.options.initialPresence;
-		}
-
+		// User accounts use capabilities instead of intents, so the identify payload
+		// doesn't match GatewayIdentifyData — cast through unknown to bypass TS check
 		await this.send({
 			op: GatewayOpcodes.Identify,
 			// eslint-disable-next-line id-length
 			d: data,
-		});
+		} as unknown as GatewaySendPayload);
 
 		await this.waitForEvent(WebSocketShardEvents.Ready, this.strategy.options.readyTimeout);
 	}

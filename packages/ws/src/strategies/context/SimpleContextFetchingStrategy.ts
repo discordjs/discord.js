@@ -1,4 +1,4 @@
-import type { Awaitable } from '@discordjs/util';
+import type { Awaitable } from '@discord-selfbot-sdk/util';
 import type { IIdentifyThrottler } from '../../throttling/IIdentifyThrottler.js';
 import type { SessionInfo, WebSocketManager } from '../../ws/WebSocketManager.js';
 import type { FetchingStrategyOptions, IContextFetchingStrategy } from './IContextFetchingStrategy.js';

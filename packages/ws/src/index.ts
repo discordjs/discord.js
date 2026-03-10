@@ -11,12 +11,13 @@ export * from './throttling/SimpleIdentifyThrottler.js';
 
 export * from './utils/constants.js';
 export * from './utils/WorkerBootstrapper.js';
+export * from './utils/capabilities.js';
 
 export * from './ws/WebSocketManager.js';
 export * from './ws/WebSocketShard.js';
 
 /**
- * The {@link https://github.com/discordjs/discord.js/blob/main/packages/ws#readme | @discordjs/ws} version
+ * The {@link https://github.com/discordjs/discord.js/blob/main/packages/ws#readme | @discord-selfbot-sdk/ws} version
  * that you are currently using.
  */
 // This needs to explicitly be `string` so it is not typed as a "const string" that gets injected by esbuild

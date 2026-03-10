@@ -14,7 +14,6 @@ test('fetch gateway information', async () => {
 
 	const manager = new WebSocketManager({
 		token: 'A-Very-Fake-Token',
-		intents: 0,
 		fetchGatewayInformation,
 	});
 
@@ -46,7 +45,6 @@ describe('get shard count', () => {
 	test('with shard count', async () => {
 		const manager = new WebSocketManager({
 			token: 'A-Very-Fake-Token',
-			intents: 0,
 			shardCount: 2,
 			async fetchGatewayInformation() {
 				return mockGatewayInformation;
@@ -60,7 +58,6 @@ describe('get shard count', () => {
 		const shardIds = [5, 9];
 		const manager = new WebSocketManager({
 			token: 'A-Very-Fake-Token',
-			intents: 0,
 			shardIds,
 			async fetchGatewayInformation() {
 				return mockGatewayInformation;
@@ -74,7 +71,6 @@ describe('get shard count', () => {
 		const shardIds = { start: 5, end: 9 };
 		const manager = new WebSocketManager({
 			token: 'A-Very-Fake-Token',
-			intents: 0,
 			shardIds,
 			async fetchGatewayInformation() {
 				return mockGatewayInformation;
@@ -90,7 +86,6 @@ test('update shard count', async () => {
 
 	const manager = new WebSocketManager({
 		token: 'A-Very-Fake-Token',
-		intents: 0,
 		shardCount: 2,
 		fetchGatewayInformation,
 	});
@@ -109,7 +104,6 @@ test('it handles passing in both shardIds and shardCount', async () => {
 	const shardIds = { start: 2, end: 3 };
 	const manager = new WebSocketManager({
 		token: 'A-Very-Fake-Token',
-		intents: 0,
 		shardIds,
 		shardCount: 4,
 		async fetchGatewayInformation() {
@@ -140,7 +134,6 @@ test('strategies', async () => {
 
 	const manager = new WebSocketManager({
 		token: 'A-Very-Fake-Token',
-		intents: 0,
 		shardIds,
 		async fetchGatewayInformation() {
 			return mockGatewayInformation;

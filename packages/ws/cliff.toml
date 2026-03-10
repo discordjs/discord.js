@@ -75,5 +75,5 @@ topo_order = false
 sort_commits = "newest"
 
 [remote.github]
-owner = "discordjs"
-repo = "discord.js"
+owner = "Dijnie"
+repo = "discord.js-self"

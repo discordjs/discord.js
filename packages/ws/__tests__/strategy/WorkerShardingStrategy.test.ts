@@ -141,7 +141,6 @@ test('spawn, connect, send a message, session info, and destroy', async () => {
 	const mockUpdateSessionInfo = vi.fn();
 	const manager = new WebSocketManager({
 		token: 'A-Very-Fake-Token',
-		intents: 0,
 		async fetchGatewayInformation() {
 			return mockGatewayInformation;
 		},
