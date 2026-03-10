@@ -4,6 +4,7 @@ import type { Collection } from '@discordjs/collection';
 import type { Awaitable, RawFile } from '@discordjs/util';
 import type { Agent, Dispatcher, RequestInit, BodyInit, Response } from 'undici';
 import type { IHandler } from '../interfaces/Handler.js';
+import type { SuperProperties } from './super-properties.js';
 
 export interface RestEvents {
 	handlerSweep: [sweptHandlers: Collection<string, IHandler>];
@@ -37,7 +38,7 @@ export interface RESTOptions {
 	 *
 	 * @defaultValue `'Bot'`
 	 */
-	authPrefix: 'Bearer' | 'Bot';
+	authPrefix: '' | 'Bearer' | 'Bot';
 	/**
 	 * The cdn path
 	 *
@@ -126,6 +127,11 @@ export interface RESTOptions {
 	 * @defaultValue `15_000`
 	 */
 	timeout: GetTimeoutFunction | number;
+	/**
+	 * Super properties instance for browser fingerprinting.
+	 * Used to generate X-Super-Properties header and User-Agent.
+	 */
+	superProperties: SuperProperties;
 	/**
 	 * Extra information to add to the user agent
 	 *
@@ -286,7 +292,7 @@ export interface AuthData {
 	 *
 	 * @defaultValue `REST.options.authPrefix`
 	 */
-	prefix?: 'Bearer' | 'Bot';
+	prefix?: '' | 'Bearer' | 'Bot';
 	/**
 	 * The authorization token to use for this request
 	 */
@@ -358,6 +364,7 @@ export interface RequestHeaders {
 	Authorization?: string;
 	'User-Agent': string;
 	'X-Audit-Log-Reason'?: string;
+	[key: string]: string | undefined;
 }
 
 /**
