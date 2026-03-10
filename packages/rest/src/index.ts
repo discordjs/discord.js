@@ -1,4 +1,4 @@
-import { shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
+import { shouldUseGlobalFetchAndWebSocket } from '@discord-selfbot-sdk/util';
 import { setDefaultStrategy } from './environment.js';
 import { makeRequest } from './strategies/undiciRequest.js';
 

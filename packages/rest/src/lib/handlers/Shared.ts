@@ -183,7 +183,7 @@ export async function handleErrors(
 			// If we receive this status code, it means the token we had is no longer valid.
 			if (status === 401 && requestData.auth === true) {
 				if (isDiscordError && data.code !== 0 && !authFalseWarningEmitted) {
-					const errorText = `Encountered HTTP 401 with error ${data.code}: ${data.message}. Your token will be removed from this REST instance. If you are using @discordjs/rest directly, consider adding 'auth: false' to the request. Open an issue with your library if not.`;
+					const errorText = `Encountered HTTP 401 with error ${data.code}: ${data.message}. Your token will be removed from this REST instance. If you are using @discord-selfbot-sdk/rest directly, consider adding 'auth: false' to the request. Open an issue with your library if not.`;
 					// Use emitWarning if possible, probably not available in edge / web
 					if (typeof globalThis.process !== 'undefined' && typeof globalThis.process.emitWarning === 'function') {
 						globalThis.process.emitWarning(errorText);

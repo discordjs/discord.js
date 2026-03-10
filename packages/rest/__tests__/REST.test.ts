@@ -17,7 +17,7 @@ const makeRequestMock = vitest.fn(fetch);
 
 const fetchApi = new REST({ makeRequest: makeRequestMock }).setToken('A-Very-Fake-Token');
 
-// @discordjs/rest uses the `content-type` header to detect whether to parse
+// @discord-selfbot-sdk/rest uses the `content-type` header to detect whether to parse
 // the response as JSON or as an ArrayBuffer.
 const responseOptions: MockInterceptor.MockResponseOptions = {
 	headers: {
@@ -186,7 +186,7 @@ test('getAuth', async () => {
 		.times(5);
 
 	// default
-	expect(await api.get('/getAuth')).toStrictEqual({ auth: 'Bot A-Very-Fake-Token' });
+	expect(await api.get('/getAuth')).toStrictEqual({ auth: 'A-Very-Fake-Token' });
 
 	// unauthorized
 	expect(
@@ -200,14 +200,14 @@ test('getAuth', async () => {
 		await api.get('/getAuth', {
 			auth: true,
 		}),
-	).toStrictEqual({ auth: 'Bot A-Very-Fake-Token' });
+	).toStrictEqual({ auth: 'A-Very-Fake-Token' });
 
-	// Custom Bot Auth
+	// Custom Auth (no prefix for selfbot)
 	expect(
 		await api.get('/getAuth', {
 			auth: { token: 'A-Very-Different-Fake-Token' },
 		}),
-	).toStrictEqual({ auth: 'Bot A-Very-Different-Fake-Token' });
+	).toStrictEqual({ auth: 'A-Very-Different-Fake-Token' });
 
 	// Custom Bearer Auth
 	expect(

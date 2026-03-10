@@ -1,9 +1,10 @@
 import type { Readable } from 'node:stream';
 import type { ReadableStream } from 'node:stream/web';
+import type { Awaitable, RawFile } from '@discord-selfbot-sdk/util';
 import type { Collection } from '@discordjs/collection';
-import type { Awaitable, RawFile } from '@discordjs/util';
 import type { Agent, Dispatcher, RequestInit, BodyInit, Response } from 'undici';
 import type { IHandler } from '../interfaces/Handler.js';
+import type { SuperProperties } from './super-properties.js';
 
 export interface RestEvents {
 	handlerSweep: [sweptHandlers: Collection<string, IHandler>];
@@ -37,7 +38,7 @@ export interface RESTOptions {
 	 *
 	 * @defaultValue `'Bot'`
 	 */
-	authPrefix: 'Bearer' | 'Bot';
+	authPrefix: '' | 'Bearer' | 'Bot';
 	/**
 	 * The cdn path
 	 *
@@ -120,6 +121,11 @@ export interface RESTOptions {
 	 * @defaultValue `0`
 	 */
 	retryBackoff: GetRetryBackoffFunction | number;
+	/**
+	 * Super properties instance for browser fingerprinting.
+	 * Used to generate X-Super-Properties header and User-Agent.
+	 */
+	superProperties: SuperProperties;
 	/**
 	 * The time to wait in milliseconds before a request is aborted
 	 *
@@ -278,7 +284,7 @@ export interface InvalidRequestWarningData {
 	remainingTime: number;
 }
 
-export type { RawFile } from '@discordjs/util';
+export type { RawFile } from '@discord-selfbot-sdk/util';
 
 export interface AuthData {
 	/**
@@ -286,7 +292,7 @@ export interface AuthData {
 	 *
 	 * @defaultValue `REST.options.authPrefix`
 	 */
-	prefix?: 'Bearer' | 'Bot';
+	prefix?: '' | 'Bearer' | 'Bot';
 	/**
 	 * The authorization token to use for this request
 	 */
@@ -355,6 +361,7 @@ export interface RequestData {
  * Possible headers for an API call
  */
 export interface RequestHeaders {
+	[key: string]: string | undefined;
 	Authorization?: string;
 	'User-Agent': string;
 	'X-Audit-Log-Reason'?: string;

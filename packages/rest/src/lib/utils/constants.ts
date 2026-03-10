@@ -1,13 +1,18 @@
-import { getUserAgentAppendix } from '@discordjs/util';
+import { getUserAgentAppendix } from '@discord-selfbot-sdk/util';
 import type { ImageSize } from 'discord-api-types/v10';
 import { APIVersion } from 'discord-api-types/v10';
 import { getDefaultStrategy } from '../../environment.js';
+import { SuperProperties } from './super-properties.js';
 import type { RESTOptions, ResponseLike } from './types.js';
 
 export type { ImageSize } from 'discord-api-types/v10';
 
-export const DefaultUserAgent =
-	`DiscordBot (https://discord.js.org, [VI]{{inject}}[/VI])` as `DiscordBot (https://discord.js.org, ${string})`;
+/**
+ * Shared SuperProperties instance used by REST and available for gateway
+ */
+const defaultSuperProps = new SuperProperties();
+
+export const DefaultUserAgent: string = defaultSuperProps.userAgent;
 
 /**
  * The default string to append onto the user agent.
@@ -17,7 +22,8 @@ export const DefaultUserAgentAppendix = getUserAgentAppendix();
 export const DefaultRestOptions = {
 	agent: null,
 	api: 'https://discord.com/api',
-	authPrefix: 'Bot',
+	authPrefix: '',
+	superProperties: defaultSuperProps,
 	cdn: 'https://cdn.discordapp.com',
 	headers: {},
 	invalidRequestWarningInterval: 0,

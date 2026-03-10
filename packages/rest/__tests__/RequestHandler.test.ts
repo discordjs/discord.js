@@ -28,7 +28,7 @@ afterEach(async () => {
 	await mockAgent.close();
 });
 
-// @discordjs/rest uses the `content-type` header to detect whether to parse
+// @discord-selfbot-sdk/rest uses the `content-type` header to detect whether to parse
 // the response as JSON or as an ArrayBuffer.
 const responseOptions: MockInterceptor.MockResponseOptions = {
 	headers: {

@@ -8,6 +8,7 @@ import { CDN } from './CDN.js';
 import { BurstHandler } from './handlers/BurstHandler.js';
 import { SequentialHandler } from './handlers/SequentialHandler.js';
 import type { IHandler } from './interfaces/Handler.js';
+import { generateBrowserHeaders } from './utils/browser-headers.js';
 import {
 	AUTH_UUID_NAMESPACE,
 	BurstHandlerMajorIdKey,
@@ -305,23 +306,28 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 			}
 		}
 
-		// Create the required headers
+		// Create the required headers with browser fingerprinting
+		const browserHeaders = this.options.superProperties ? generateBrowserHeaders(this.options.superProperties) : {};
 		const headers: RequestHeaders = {
+			...browserHeaders,
 			...this.options.headers,
-			'User-Agent': `${DefaultUserAgent} ${options.userAgentAppendix}`.trim(),
+			'User-Agent': this.options.superProperties
+				? this.options.superProperties.userAgent
+				: `${DefaultUserAgent} ${options.userAgentAppendix}`.trim(),
 		};
 
 		// If this request requires authorization (allowing non-"authorized" requests for webhooks)
 		if (request.auth !== false) {
 			if (typeof request.auth === 'object') {
-				headers.Authorization = `${request.auth.prefix ?? this.options.authPrefix} ${request.auth.token}`;
+				const prefix = request.auth.prefix ?? this.options.authPrefix;
+				headers.Authorization = prefix ? `${prefix} ${request.auth.token}` : request.auth.token;
 			} else {
 				// If we haven't received a token, throw an error
 				if (!this.#token) {
 					throw new Error('Expected token to be set for this request, but none was present');
 				}
 
-				headers.Authorization = `${this.options.authPrefix} ${this.#token}`;
+				headers.Authorization = this.options.authPrefix ? `${this.options.authPrefix} ${this.#token}` : this.#token;
 			}
 		}
 
