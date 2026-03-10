@@ -1,15 +1,13 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
-	"name": "@discordjs/core",
+	"name": "@discord-selfbot-sdk/core",
 	"version": "2.1.0",
 	"description": "A thinly abstracted wrapper around the rest API, and gateway.",
 	"scripts": {
 		"test": "vitest run --config ../../vitest.config.ts",
 		"build": "tsc --noEmit && tsup",
-		"build:docs": "tsc -p tsconfig.docs.json",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
-		"docs": "pnpm run build:docs && api-extractor run --local --minify && generate-split-documentation",
 		"prepack": "pnpm run build && pnpm run lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/core/*'",
 		"release": "cliff-jumper"
@@ -56,25 +54,23 @@
 	"keywords": [],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/discordjs/discord.js.git",
+		"url": "https://github.com/Dijnie/discord.js-self.git",
 		"directory": "packages/core"
 	},
 	"bugs": {
-		"url": "https://github.com/discordjs/discord.js/issues"
+		"url": "https://github.com/Dijnie/discord.js-self/issues"
 	},
 	"homepage": "https://discord.js.org",
-	"funding": "https://github.com/discordjs/discord.js?sponsor",
+	"funding": "https://github.com/Dijnie/discord.js-self?sponsor",
 	"dependencies": {
-		"@discordjs/rest": "workspace:^",
-		"@discordjs/util": "workspace:^",
-		"@discordjs/ws": "workspace:^",
+		"@discord-selfbot-sdk/rest": "workspace:^",
+		"@discord-selfbot-sdk/util": "workspace:^",
+		"@discord-selfbot-sdk/ws": "workspace:^",
 		"@sapphire/snowflake": "^3.5.5",
 		"@vladfrangu/async_event_emitter": "^2.4.7",
 		"discord-api-types": "^0.38.41"
 	},
 	"devDependencies": {
-		"@discordjs/api-extractor": "workspace:^",
-		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^6.0.0",
 		"@types/node": "^22.19.11",
 		"@vitest/coverage-v8": "^4.0.18",

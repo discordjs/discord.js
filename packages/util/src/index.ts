@@ -6,7 +6,7 @@ export * from './Equatable.js';
 export * from './gatewayRateLimitError.js';
 
 /**
- * The {@link https://github.com/discordjs/discord.js/blob/main/packages/util#readme | @discordjs/util} version
+ * The {@link https://github.com/discordjs/discord.js/blob/main/packages/util#readme | @discord-selfbot-sdk/util} version
  * that you are currently using.
  *
  * @privateRemarks This needs to explicitly be `string` so it is not typed as a "const string" that gets injected by esbuild.
