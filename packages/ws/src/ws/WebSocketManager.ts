@@ -2,18 +2,14 @@ import type { Collection } from '@discordjs/collection';
 import { range, type Awaitable } from '@discordjs/util';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import type {
-	APIGatewayBotInfo,
-	GatewayIdentifyProperties,
-	GatewayPresenceUpdateData,
-	RESTGetAPIGatewayBotResult,
-	GatewayIntentBits,
 	GatewaySendPayload,
 	GatewayDispatchPayload,
 	GatewayReadyDispatchData,
 } from 'discord-api-types/v10';
+import type { SuperPropertiesData } from '@discordjs/rest';
 import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy.js';
 import type { IIdentifyThrottler } from '../throttling/IIdentifyThrottler.js';
-import { DefaultWebSocketManagerOptions, type CompressionMethod, type Encoding } from '../utils/constants.js';
+import { DefaultWebSocketManagerOptions, type CompressionMethod, type Encoding, type UserPresenceData } from '../utils/constants.js';
 import type { WebSocketShardDestroyOptions, WebSocketShardEvents, WebSocketShardStatus } from './WebSocketShard.js';
 
 /**
@@ -55,8 +51,8 @@ export interface SessionInfo {
  */
 export interface RequiredWebSocketManagerOptions {
 	/**
-	 * Function for retrieving the information returned by the `/gateway/bot` endpoint.
-	 * We recommend using a REST client that respects Discord's rate limits, such as `@discordjs/rest`.
+	 * Function for retrieving the gateway URL.
+	 * For user tokens, use `/gateway` (returns `{ url }` only).
 	 *
 	 * @example
 	 * ```ts
@@ -64,16 +60,12 @@ export interface RequiredWebSocketManagerOptions {
 	 * const manager = new WebSocketManager({
 	 *  token: process.env.DISCORD_TOKEN,
 	 *  fetchGatewayInformation() {
-	 *    return rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
+	 *    return rest.get(Routes.gateway()) as Promise<{ url: string }>;
 	 *  },
 	 * });
 	 * ```
 	 */
-	fetchGatewayInformation(): Awaitable<RESTGetAPIGatewayBotResult>;
-	/**
-	 * The intents to request
-	 */
-	intents: GatewayIntentBits | 0;
+	fetchGatewayInformation(): Awaitable<{ url: string }>;
 }
 
 /**
@@ -86,21 +78,15 @@ export interface OptionalWebSocketManagerOptions {
 	buildIdentifyThrottler(manager: WebSocketManager): Awaitable<IIdentifyThrottler>;
 	/**
 	 * Builds the strategy to use for sharding
-	 *
-	 * @example
-	 * ```ts
-	 * const rest = new REST().setToken(process.env.DISCORD_TOKEN);
-	 * const manager = new WebSocketManager({
-	 *  token: process.env.DISCORD_TOKEN,
-	 *  intents: 0, // for no intents
-	 *  fetchGatewayInformation() {
-	 *    return rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
-	 *  },
-	 *  buildStrategy: (manager) => new WorkerShardingStrategy(manager, { shardsPerWorker: 2 }),
-	 * });
-	 * ```
 	 */
 	buildStrategy(manager: WebSocketManager): IShardingStrategy;
+	/**
+	 * Capabilities bitfield for the user IDENTIFY payload.
+	 * Controls what data the gateway includes in READY.
+	 *
+	 * @defaultValue DefaultCapabilities (from capabilities.ts)
+	 */
+	capabilities: number;
 	/**
 	 * The transport compression method to use - mutually exclusive with `useIdentifyCompression`
 	 *
@@ -122,13 +108,15 @@ export interface OptionalWebSocketManagerOptions {
 	 */
 	helloTimeout: number | null;
 	/**
-	 * Properties to send to the gateway when identifying
+	 * Super properties to send in the gateway IDENTIFY payload.
+	 * Full browser-like properties object (not the bot-style {browser, device, os}).
 	 */
-	identifyProperties: GatewayIdentifyProperties;
+	identifyProperties: SuperPropertiesData;
 	/**
-	 * Initial presence data to send to the gateway when identifying
+	 * Initial presence data to send to the gateway when identifying.
+	 * For user accounts, presence is always required (default: online).
 	 */
-	initialPresence: GatewayPresenceUpdateData | null;
+	initialPresence: UserPresenceData | null;
 	/**
 	 * Value between 50 and 250, total number of members where the gateway will stop sending offline members in the guild member list
 	 */
@@ -231,10 +219,10 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 	public readonly options: Omit<WebSocketManagerOptions, 'token'>;
 
 	/**
-	 * Internal cache for a GET /gateway/bot result
+	 * Internal cache for a GET /gateway result
 	 */
 	private gatewayInformation: {
-		data: APIGatewayBotInfo;
+		data: { url: string };
 		expiresAt: number;
 	} | null = null;
 
@@ -295,8 +283,8 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 
 		const data = await this.options.fetchGatewayInformation();
 
-		// For single sharded bots session_start_limit.reset_after will be 0, use 5 seconds as a minimum expiration time
-		this.gatewayInformation = { data, expiresAt: Date.now() + (data.session_start_limit.reset_after || 5_000) };
+		// Cache for 5 seconds (/gateway response has no session_start_limit)
+		this.gatewayInformation = { data, expiresAt: Date.now() + 5_000 };
 		return this.gatewayInformation.data;
 	}
 
@@ -344,8 +332,8 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 				shardIds = [...range({ start, end: end + 1 })];
 			}
 		} else {
-			const data = await this.fetchGatewayInformation();
-			shardIds = [...range(this.options.shardCount ?? data.shards)];
+			// User accounts are single-shard; /gateway doesn't return shard count
+			shardIds = [...range(this.options.shardCount ?? 1)];
 		}
 
 		this.shardIds = shardIds;
@@ -357,25 +345,11 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 		// Spawn shards and adjust internal state
 		await this.updateShardCount(shardCount);
 
-		const shardIds = await this.getShardIds();
-		const data = await this.fetchGatewayInformation();
-
-		if (data.session_start_limit.remaining < shardIds.length) {
-			throw new Error(
-				`Not enough sessions remaining to spawn ${shardIds.length} shards; only ${
-					data.session_start_limit.remaining
-				} remaining; resets at ${new Date(Date.now() + data.session_start_limit.reset_after).toISOString()}`,
-			);
-		}
-
+		// /gateway doesn't return session_start_limit, just connect directly
 		await this.strategy.connect();
 	}
 
 	public setToken(token: string): void {
-		if (this.#token) {
-			throw new Error('Token has already been set');
-		}
-
 		this.#token = token;
 	}
 

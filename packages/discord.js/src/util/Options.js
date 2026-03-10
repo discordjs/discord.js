@@ -89,6 +89,7 @@ class Options extends null {
       partials: [],
       failIfNotExists: true,
       enforceNonce: false,
+      presence: { status: 'online' },
       sweepers: this.DefaultSweeperSettings,
       ws: {
         ...DefaultWebSocketManagerOptions,
@@ -97,7 +98,6 @@ class Options extends null {
       },
       rest: {
         ...DefaultRestOptions,
-        userAgentAppendix: this.userAgentAppendix,
       },
       jsonTransformer: toSnakeCase,
     };

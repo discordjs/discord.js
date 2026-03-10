@@ -6,12 +6,12 @@ const { Collection } = require('@discordjs/collection');
 const { REST, RESTEvents, makeURLSearchParams } = require('@discordjs/rest');
 const { WebSocketManager, WebSocketShardEvents, WebSocketShardStatus } = require('@discordjs/ws');
 const { AsyncEventEmitter } = require('@vladfrangu/async_event_emitter');
-const { GatewayDispatchEvents, GatewayIntentBits, OAuth2Scopes, Routes } = require('discord-api-types/v10');
+const { GatewayDispatchEvents, OAuth2Scopes, Routes } = require('discord-api-types/v10');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 const { ChannelManager } = require('../managers/ChannelManager.js');
 const { GuildManager } = require('../managers/GuildManager.js');
 const { UserManager } = require('../managers/UserManager.js');
-const { ShardClientUtil } = require('../sharding/ShardClientUtil.js');
+// ShardClientUtil removed — user accounts don't support sharding
 const { ClientPresence } = require('../structures/ClientPresence.js');
 const { GuildPreview } = require('../structures/GuildPreview.js');
 const { GuildTemplate } = require('../structures/GuildTemplate.js');
@@ -23,7 +23,7 @@ const { Webhook } = require('../structures/Webhook.js');
 const { Widget } = require('../structures/Widget.js');
 const { resolveInviteCode, resolveGuildTemplateCode } = require('../util/DataResolver.js');
 const { Events } = require('../util/Events.js');
-const { IntentsBitField } = require('../util/IntentsBitField.js');
+// IntentsBitField removed — user accounts use capabilities instead of intents
 const { createInvite } = require('../util/Invites.js');
 const { Options } = require('../util/Options.js');
 const { PermissionsBitField } = require('../util/PermissionsBitField.js');
@@ -52,9 +52,9 @@ const BeforeReadyWhitelist = [
  */
 class Client extends AsyncEventEmitter {
   /**
-   * @param {ClientOptions} options Options for the client
+   * @param {ClientOptions} [options={}] Options for the client
    */
-  constructor(options) {
+  constructor(options = {}) {
     super();
 
     if (typeof options !== 'object' || options === null) {
@@ -85,9 +85,6 @@ class Client extends AsyncEventEmitter {
       rest: {
         ...defaultOptions.rest,
         ...options.rest,
-        userAgentAppendix: options.rest?.userAgentAppendix
-          ? `${Options.userAgentAppendix} ${options.rest.userAgentAppendix}`
-          : Options.userAgentAppendix,
       },
     };
 
@@ -205,8 +202,7 @@ class Client extends AsyncEventEmitter {
 
     const wsOptions = {
       ...this.options.ws,
-      intents: this.options.intents.bitfield,
-      fetchGatewayInformation: () => this.rest.get(Routes.gatewayBot()),
+      fetchGatewayInformation: () => this.rest.get(Routes.gateway()),
       // Explicitly nulled to always be set using `setToken` in `login`
       token: null,
     };
@@ -219,13 +215,11 @@ class Client extends AsyncEventEmitter {
     this.ws = new WebSocketManager(wsOptions);
 
     /**
-     * Shard helpers for the client (only if the process was spawned from a {@link ShardingManager})
+     * Shard helpers (always null — user accounts don't support sharding)
      *
-     * @type {?ShardClientUtil}
+     * @type {null}
      */
-    this.shard = process.env.SHARDING_MANAGER
-      ? ShardClientUtil.singleton(this, process.env.SHARDING_MANAGER_MODE)
-      : null;
+    this.shard = null;
 
     /**
      * The voice manager of the client
@@ -312,7 +306,7 @@ class Client extends AsyncEventEmitter {
    */
   async login(token = this.token) {
     if (!token || typeof token !== 'string') throw new DiscordjsError(ErrorCodes.TokenInvalid);
-    this.token = token.replace(/^bot\s*/i, '');
+    this.token = token;
 
     this.rest.setToken(this.token);
 
@@ -353,28 +347,19 @@ class Client extends AsyncEventEmitter {
       return;
     }
 
-    const hasGuildsIntent = this.options.intents.has(GatewayIntentBits.Guilds);
-    // Step 2. Create a timeout that will mark the client as ready if there are still unavailable guilds
-    // * The timeout is 15 seconds by default
-    // * This can be optionally changed in the client options via the `waitGuildTimeout` option
-    // * a timeout time of zero will skip this timeout, which potentially could cause the Client to miss guilds.
-
+    // User accounts always receive guild data; wait for guilds or timeout
     this.readyTimeout = setTimeout(
       () => {
         this.emit(
           Events.Debug,
-          `${
-            hasGuildsIntent
-              ? `Client did not receive any guild packets in ${this.options.waitGuildTimeout} ms.`
-              : 'Client will not receive anymore guild packets.'
-          }\nUnavailable guild count: ${this.expectedGuilds.size}`,
+          `Client did not receive all guild packets in ${this.options.waitGuildTimeout} ms.\nUnavailable guild count: ${this.expectedGuilds.size}`,
         );
 
         this.readyTimeout = null;
 
         this._triggerClientReady();
       },
-      hasGuildsIntent ? this.options.waitGuildTimeout : 0,
+      this.options.waitGuildTimeout,
     ).unref();
   }
 
@@ -820,11 +805,7 @@ class Client extends AsyncEventEmitter {
    * @private
    */
   _validateOptions(options = this.options) {
-    if (options.intents === undefined && options.ws?.intents === undefined) {
-      throw new DiscordjsTypeError(ErrorCodes.ClientMissingIntents);
-    } else {
-      options.intents = new IntentsBitField(options.intents ?? options.ws.intents).freeze();
-    }
+    // No intents required — user accounts use capabilities instead
 
     if (typeof options.sweepers !== 'object' || options.sweepers === null) {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'sweepers', 'an object');
@@ -857,13 +838,9 @@ class Client extends AsyncEventEmitter {
       throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'ws', 'an object');
     }
 
-    if (
-      (typeof options.presence !== 'object' || options.presence === null) &&
-      options.ws.initialPresence === undefined
-    ) {
-      throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'presence', 'an object');
-    } else {
-      options.ws.initialPresence = options.ws.initialPresence ?? this.presence._parse(this.options.presence);
+    // Presence is optional; default provided by WS manager
+    if (options.presence && typeof options.presence === 'object') {
+      options.ws.initialPresence = options.ws.initialPresence ?? this.presence._parse(options.presence);
     }
 
     if (typeof options.rest !== 'object' || options.rest === null) {

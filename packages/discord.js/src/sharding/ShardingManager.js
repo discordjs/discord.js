@@ -8,7 +8,7 @@ const { Collection } = require('@discordjs/collection');
 const { range } = require('@discordjs/util');
 const { AsyncEventEmitter } = require('@vladfrangu/async_event_emitter');
 const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
-const { fetchRecommendedShardCount } = require('../util/Util.js');
+// fetchRecommendedShardCount removed — user accounts don't support sharding
 const { Shard } = require('./Shard.js');
 
 /**
@@ -217,7 +217,7 @@ class ShardingManager extends AsyncEventEmitter {
     let shardAmount = amount;
     if (shardAmount === 'auto') {
       // eslint-disable-next-line require-atomic-updates
-      shardAmount = await fetchRecommendedShardCount(this.token);
+      throw new DiscordjsError(ErrorCodes.ClientInvalidOption, 'Sharding', 'not supported for user accounts');
     } else {
       if (typeof shardAmount !== 'number' || Number.isNaN(shardAmount)) {
         throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'a number.');

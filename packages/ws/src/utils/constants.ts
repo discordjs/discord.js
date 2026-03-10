@@ -1,9 +1,10 @@
-import process from 'node:process';
 import { Collection } from '@discordjs/collection';
 import { lazy } from '@discordjs/util';
+import { SuperProperties, type SuperPropertiesData } from '@discordjs/rest';
 import { APIVersion, GatewayOpcodes } from 'discord-api-types/v10';
 import { SimpleShardingStrategy } from '../strategies/sharding/SimpleShardingStrategy.js';
 import { SimpleIdentifyThrottler } from '../throttling/SimpleIdentifyThrottler.js';
+import { DefaultCapabilities } from './capabilities.js';
 import type { SessionInfo, OptionalWebSocketManagerOptions, WebSocketManager } from '../ws/WebSocketManager.js';
 import type { SendRateLimitState } from '../ws/WebSocketShard.js';
 
@@ -27,30 +28,54 @@ export const DefaultDeviceProperty = `@discordjs/ws [VI]{{inject}}[/VI]` as `@di
 
 const getDefaultSessionStore = lazy(() => new Collection<number, SessionInfo | null>());
 
+/** Default super properties instance for gateway IDENTIFY */
+const defaultSuperProps = new SuperProperties();
+
 export const CompressionParameterMap = {
 	[CompressionMethod.ZlibNative]: 'zlib-stream',
 	[CompressionMethod.ZlibSync]: 'zlib-stream',
 	[CompressionMethod.ZstdNative]: 'zstd-stream',
 } as const satisfies Record<CompressionMethod, string>;
 
+/** Presence data for the user-style IDENTIFY payload */
+export interface UserPresenceData {
+	status: string;
+	activities: unknown[];
+	afk: boolean;
+	since: number;
+}
+
+/** User-style IDENTIFY payload (replaces bot GatewayIdentifyData) */
+export interface UserIdentifyData {
+	token: string;
+	capabilities: number;
+	properties: SuperPropertiesData;
+	presence: UserPresenceData;
+	compress: boolean;
+	client_state: { guild_versions: Record<string, never> };
+	large_threshold?: number;
+}
+
 /**
  * Default options used by the manager
  */
 export const DefaultWebSocketManagerOptions = {
-	async buildIdentifyThrottler(manager: WebSocketManager) {
-		const info = await manager.fetchGatewayInformation();
-		return new SimpleIdentifyThrottler(info.session_start_limit.max_concurrency);
+	async buildIdentifyThrottler(_manager: WebSocketManager) {
+		// User accounts don't need identify throttling (single shard)
+		return new SimpleIdentifyThrottler(1);
 	},
 	buildStrategy: (manager) => new SimpleShardingStrategy(manager),
 	shardCount: null,
 	shardIds: null,
 	largeThreshold: null,
-	initialPresence: null,
-	identifyProperties: {
-		browser: DefaultDeviceProperty,
-		device: DefaultDeviceProperty,
-		os: process.platform,
+	initialPresence: {
+		status: 'online' as const,
+		activities: [] as unknown[],
+		afk: false,
+		since: 0,
 	},
+	identifyProperties: defaultSuperProps.properties,
+	capabilities: DefaultCapabilities,
 	version: APIVersion,
 	encoding: Encoding.JSON,
 	compression: null,

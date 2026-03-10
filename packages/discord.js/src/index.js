@@ -48,7 +48,6 @@ __exportStar(require('./util/DataResolver.js'), exports);
 exports.cleanCodeBlockContent = require('./util/Util.js').cleanCodeBlockContent;
 exports.cleanContent = require('./util/Util.js').cleanContent;
 exports.discordSort = require('./util/Util.js').discordSort;
-exports.fetchRecommendedShardCount = require('./util/Util.js').fetchRecommendedShardCount;
 exports.flatten = require('./util/Util.js').flatten;
 exports.parseEmoji = require('./util/Util.js').parseEmoji;
 exports.parseWebhookURL = require('./util/Util.js').parseWebhookURL;
