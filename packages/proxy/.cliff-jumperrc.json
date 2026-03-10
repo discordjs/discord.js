@@ -1,7 +1,0 @@
-{
-	"$schema": "./node_modules/@favware/cliff-jumper/assets/cliff-jumper.schema.json",
-	"name": "proxy",
-	"org": "discordjs",
-	"packagePath": "packages/proxy",
-	"identifierBase": false
-}
