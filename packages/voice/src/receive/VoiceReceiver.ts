@@ -185,6 +185,14 @@ export class VoiceReceiver {
 		if (!stream) return;
 
 		if (this.connectionData.encryptionMode && this.connectionData.nonceBuffer && this.connectionData.secretKey) {
+			// As a guard, we shouldn't parse packets that (1) aren't voice packets and (2) are not in the right RTP version
+			// 0x78 (120) is the default Opus payload type, the marker bit is (largely) unused here by Discord
+			if (msg[1] !== 0x78) return;
+
+			// Ignore packets not in RTP version 2
+			const rtpVersion = msg[0]! >> 6;
+			if (rtpVersion !== 2) return;
+
 			try {
 				const packet = this.parsePacket(
 					msg,
