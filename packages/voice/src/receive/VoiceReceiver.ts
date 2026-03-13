@@ -6,6 +6,7 @@ import type { VoiceReceivePayload } from 'discord-api-types/voice/v8';
 import { VoiceOpcodes } from 'discord-api-types/voice/v8';
 import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection';
 import { NetworkingStatusCode, type ConnectionData } from '../networking/Networking';
+import { RTP_OPUS_PAYLOAD_TYPE } from '../util/constants';
 import { methods } from '../util/Secretbox';
 import {
 	AudioReceiveStream,
@@ -186,8 +187,7 @@ export class VoiceReceiver {
 
 		if (this.connectionData.encryptionMode && this.connectionData.nonceBuffer && this.connectionData.secretKey) {
 			// As a guard, we shouldn't parse packets that (1) aren't voice packets and (2) are not in the right RTP version
-			// 0x78 (120) is the default Opus payload type, the marker bit is (largely) unused here by Discord
-			if (msg[1] !== 0x78) return;
+			if ((msg[1]! & 0x7f) !== RTP_OPUS_PAYLOAD_TYPE) return;
 
 			// Ignore packets not in RTP version 2
 			const rtpVersion = msg[0]! >> 6;

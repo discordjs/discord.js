@@ -7,6 +7,7 @@ import { EventEmitter } from 'node:events';
 import type { VoiceReceivePayload, VoiceSpeakingFlags } from 'discord-api-types/voice/v8';
 import { VoiceEncryptionMode, VoiceOpcodes } from 'discord-api-types/voice/v8';
 import type { CloseEvent } from 'ws';
+import { RTP_OPUS_PAYLOAD_TYPE } from '../util/constants';
 import * as secretbox from '../util/Secretbox';
 import { noop } from '../util/util';
 import { DAVESession, getMaxProtocolVersion } from './DAVESession';
@@ -745,7 +746,7 @@ export class Networking extends EventEmitter {
 	private createAudioPacket(opusPacket: Buffer, connectionData: ConnectionData, daveSession?: DAVESession) {
 		const rtpHeader = Buffer.alloc(12);
 		rtpHeader[0] = 0x80;
-		rtpHeader[1] = 0x78;
+		rtpHeader[1] = RTP_OPUS_PAYLOAD_TYPE;
 
 		const { sequence, timestamp, ssrc } = connectionData;
 
