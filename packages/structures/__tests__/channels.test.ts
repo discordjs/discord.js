@@ -1,3 +1,4 @@
+import { DiscordSnowflake } from '@sapphire/snowflake';
 import type {
 	APIAnnouncementThreadChannel,
 	APIDMChannel,
@@ -85,6 +86,8 @@ describe('text channel', () => {
 		expect(instance.topic).toBe(data.topic);
 		expect(instance.type).toBe(ChannelType.GuildText);
 		expect(instance.url).toBe('https://discord.com/channels/2/1');
+		expect(instance.createdTimestamp).toBe(DiscordSnowflake.timestampFrom(instance.id!));
+		expect(instance.createdAt).toEqual(new Date(instance.createdTimestamp!));
 		expect(instance.toJSON()).toEqual(data);
 	});
 
