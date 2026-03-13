@@ -1,7 +1,7 @@
 'use strict';
 
 const { Buffer } = require('node:buffer');
-const { isJSONEncodable, lazy } = require('@discordjs/util');
+const { isJSONEncodable, isRawFileEncodable, lazy } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
 const { resolveFile } = require('../util/DataResolver.js');
@@ -190,13 +190,20 @@ class MessagePayload {
       }
     }
 
-    const attachments = this.options.files?.map((file, index) => ({
-      id: index.toString(),
-      description: file.description,
-      title: file.title,
-      waveform: file.waveform,
-      duration_secs: file.duration,
-    }));
+    const attachments = this.options.files?.map((file, index) =>
+      isRawFileEncodable(file)
+        ? {
+            id: index.toString(),
+            ...file.toJSON(),
+          }
+        : {
+            id: index.toString(),
+            description: file.description,
+            title: file.title,
+            waveform: file.waveform,
+            duration_secs: file.duration,
+          },
+    );
 
     // Only passable during edits
     if (Array.isArray(this.options.attachments)) {
@@ -276,6 +283,8 @@ class MessagePayload {
     if (ownAttachment) {
       attachment = fileLike;
       name = findName(attachment);
+    } else if (isRawFileEncodable(fileLike)) {
+      return fileLike.getRawFile();
     } else {
       attachment = fileLike.attachment;
       name = fileLike.name ?? findName(attachment);
