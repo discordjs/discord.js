@@ -97,7 +97,7 @@ export class Channel<
 	/**
 	 * The time the channel was created at
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
