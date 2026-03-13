@@ -37,7 +37,6 @@ import {
   APIFileComponent,
   APIGuild,
   APIGuildIntegration,
-  APIGuildMember,
   APIGuildOnboardingPrompt,
   APIGuildOnboardingPromptOption,
   APIGuildPreview,
@@ -47,8 +46,6 @@ import {
   APIGuildWidget,
   APIGuildWidgetMember,
   APIInteractionDataResolvedChannel,
-  APIInteractionDataResolvedGuildMember,
-  APIInteractionGuildMember,
   APILabelComponent,
   APIMediaGalleryComponent,
   APIMediaGalleryItem,
@@ -1630,19 +1627,16 @@ export class GuildMemberFlagsBitField extends BitField<GuildMemberFlagsString> {
   public static resolve(bit?: BitFieldResolvable<GuildMemberFlagsString, GuildMemberFlags>): number;
 }
 
-export interface GuildMember extends SendMethod<false> {}
-export class GuildMember extends Base {
-  private constructor(client: Client<true>, data: unknown, guild: Guild);
+export interface MinimalGuildMember extends SendMethod<false> {}
+export class MinimalGuildMember extends Base {
+  protected constructor(client: Client<true>, data: unknown, guildId: Snowflake);
   private readonly _roles: Snowflake[];
   public avatar: string | null;
   public avatarDecorationData: AvatarDecorationData | null;
   public banner: string | null;
-  public get bannable(): boolean;
   public get dmChannel(): DMChannel | null;
-  public get displayColor(): number;
-  public get displayHexColor(): HexColorString;
   public get displayName(): string;
-  public guild: Guild;
+  public guildId: Snowflake;
   public get id(): Snowflake;
   public pending: boolean;
   public get communicationDisabledUntil(): Date | null;
@@ -1650,42 +1644,54 @@ export class GuildMember extends Base {
   public flags: Readonly<GuildMemberFlagsBitField>;
   public get joinedAt(): Date | null;
   public joinedTimestamp: number | null;
-  public get kickable(): boolean;
-  public get manageable(): boolean;
-  public get moderatable(): boolean;
   public nickname: string | null;
-  public get partial(): false;
-  public get permissions(): Readonly<PermissionsBitField>;
+  public get partial(): boolean;
   public get premiumSince(): Date | null;
   public premiumSinceTimestamp: number | null;
-  public get presence(): Presence | null;
-  public get roles(): GuildMemberRoleManager;
+  public roleIds: Snowflake[];
   public user: User;
-  public get voice(): VoiceState;
   public avatarURL(options?: ImageURLOptions): string | null;
   public avatarDecorationURL(): string | null;
   public bannerURL(options?: ImageURLOptions): string | null;
-  public ban(options?: BanOptions): Promise<void>;
-  public disableCommunicationUntil(timeout: DateResolvable | null, reason?: string): Promise<GuildMember>;
-  public timeout(timeout: number | null, reason?: string): Promise<GuildMember>;
-  public fetch(force?: boolean): Promise<GuildMember>;
   public createDM(force?: boolean): Promise<DMChannel>;
   public deleteDM(): Promise<DMChannel>;
   public displayAvatarURL(options?: ImageURLOptions): string;
   public displayBannerURL(options?: ImageURLOptions): string | null;
   public displayAvatarDecorationURL(): string | null;
-  public edit(options: GuildMemberEditOptions): Promise<GuildMember>;
-  public isCommunicationDisabled(): this is GuildMember & {
+  public isCommunicationDisabled(): this is MinimalGuildMember & {
     readonly communicationDisabledUntil: Date;
     communicationDisabledUntilTimestamp: number;
   };
+  public isInCachedGuild(): this is GuildMember;
+  public toJSON(): unknown;
+  public toString(): UserMention;
+  public valueOf(): string;
+}
+
+export interface GuildMember extends SendMethod<false> {}
+export class GuildMember extends MinimalGuildMember {
+  private constructor(client: Client<true>, data: unknown, guild: Guild);
+  public get bannable(): boolean;
+  public get displayColor(): number;
+  public get displayHexColor(): HexColorString;
+  public guild: Guild;
+  public get kickable(): boolean;
+  public get manageable(): boolean;
+  public get moderatable(): boolean;
+  public get partial(): false;
+  public get permissions(): Readonly<PermissionsBitField>;
+  public get presence(): Presence | null;
+  public get roles(): GuildMemberRoleManager;
+  public get voice(): VoiceState;
+  public ban(options?: BanOptions): Promise<void>;
+  public disableCommunicationUntil(timeout: DateResolvable | null, reason?: string): Promise<GuildMember>;
+  public timeout(timeout: number | null, reason?: string): Promise<GuildMember>;
+  public fetch(force?: boolean): Promise<GuildMember>;
+  public edit(options: GuildMemberEditOptions): Promise<GuildMember>;
   public kick(reason?: string): Promise<void>;
   public permissionsIn(channel: GuildChannelResolvable): Readonly<PermissionsBitField>;
   public setFlags(flags: GuildMemberFlagsResolvable, reason?: string): Promise<GuildMember>;
   public setNickname(nickname: string | null, reason?: string): Promise<GuildMember>;
-  public toJSON(): unknown;
-  public toString(): UserMention;
-  public valueOf(): string;
 }
 
 export class GuildOnboarding extends Base {
@@ -1945,7 +1951,7 @@ export class BaseInteraction<Cached extends CacheType = CacheType> extends Base 
   public get guild(): CacheTypeReducer<Cached, Guild, null>;
   public guildId: CacheTypeReducer<Cached, Snowflake>;
   public id: Snowflake;
-  public member: CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember>;
+  public member: CacheTypeReducer<Cached, GuildMember, MinimalGuildMember>;
   public readonly token: string;
   public type: InteractionType;
   public user: User;
@@ -2574,7 +2580,7 @@ export interface SelectMenuModalData<Cached extends CacheType = CacheType> exten
     CacheTypeReducer<Cached, GuildBasedChannel, APIInteractionDataResolvedChannel>
   >;
   customId: string;
-  members?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>>;
+  members?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, GuildMember, MinimalGuildMember>>;
   roles?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
   users?: ReadonlyCollection<Snowflake, User>;
   values: readonly string[];
@@ -3082,7 +3088,13 @@ export class UserSelectMenuInteraction<
   public users: Collection<Snowflake, User>;
   public members: Collection<
     Snowflake,
-    CacheTypeReducer<Cached, GuildMember, APIGuildMember, APIGuildMember | GuildMember, APIGuildMember | GuildMember>
+    CacheTypeReducer<
+      Cached,
+      GuildMember,
+      MinimalGuildMember,
+      GuildMember | MinimalGuildMember,
+      GuildMember | MinimalGuildMember
+    >
   >;
   public inGuild(): this is UserSelectMenuInteraction<'cached' | 'raw'>;
   public inCachedGuild(): this is UserSelectMenuInteraction<'cached'>;
@@ -3124,7 +3136,13 @@ export class MentionableSelectMenuInteraction<
   public users: Collection<Snowflake, User>;
   public members: Collection<
     Snowflake,
-    CacheTypeReducer<Cached, GuildMember, APIGuildMember, APIGuildMember | GuildMember, APIGuildMember | GuildMember>
+    CacheTypeReducer<
+      Cached,
+      GuildMember,
+      MinimalGuildMember,
+      GuildMember | MinimalGuildMember,
+      GuildMember | MinimalGuildMember
+    >
   >;
   public roles: Collection<Snowflake, CacheTypeReducer<Cached, Role, APIRole, APIRole | Role, APIRole | Role>>;
   public inGuild(): this is MentionableSelectMenuInteraction<'cached' | 'raw'>;
@@ -3746,7 +3764,7 @@ export class UserContextMenuCommandInteraction<
     | 'getSubcommandGroup'
   >;
   public get targetUser(): User;
-  public get targetMember(): CacheTypeReducer<Cached, GuildMember, APIInteractionGuildMember> | null;
+  public get targetMember(): CacheTypeReducer<Cached, GuildMember, MinimalGuildMember> | null;
   public inGuild(): this is UserContextMenuCommandInteraction<'cached' | 'raw'>;
   public inCachedGuild(): this is UserContextMenuCommandInteraction<'cached'>;
   public inRawGuild(): this is UserContextMenuCommandInteraction<'raw'>;
@@ -5677,7 +5695,7 @@ export interface CommandInteractionOption<Cached extends CacheType = CacheType> 
   autocomplete?: boolean;
   channel?: CacheTypeReducer<Cached, GuildBasedChannel, APIInteractionDataResolvedChannel>;
   focused?: boolean;
-  member?: CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>;
+  member?: CacheTypeReducer<Cached, GuildMember, MinimalGuildMember>;
   message?: Message<BooleanCache<Cached>>;
   name: string;
   options?: readonly CommandInteractionOption[];
@@ -5690,7 +5708,7 @@ export interface CommandInteractionOption<Cached extends CacheType = CacheType> 
 export interface BaseInteractionResolvedData<Cached extends CacheType = CacheType> {
   attachments?: ReadonlyCollection<Snowflake, Attachment>;
   channels?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, Channel, APIInteractionDataResolvedChannel>>;
-  members?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, GuildMember, APIInteractionDataResolvedGuildMember>>;
+  members?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, GuildMember, MinimalGuildMember>>;
   roles?: ReadonlyCollection<Snowflake, CacheTypeReducer<Cached, Role, APIRole>>;
   users?: ReadonlyCollection<Snowflake, User>;
 }
