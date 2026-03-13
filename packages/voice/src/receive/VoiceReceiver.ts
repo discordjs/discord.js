@@ -6,8 +6,8 @@ import type { VoiceReceivePayload } from 'discord-api-types/voice/v8';
 import { VoiceOpcodes } from 'discord-api-types/voice/v8';
 import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection';
 import { NetworkingStatusCode, type ConnectionData } from '../networking/Networking';
-import { RTP_OPUS_PAYLOAD_TYPE } from '../util/constants';
 import { methods } from '../util/Secretbox';
+import { RTP_OPUS_PAYLOAD_TYPE } from '../util/constants';
 import {
 	AudioReceiveStream,
 	createDefaultAudioReceiveStreamOptions,
