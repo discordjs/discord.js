@@ -142,7 +142,10 @@ class GuildInviteManager extends CachedManager {
    *   .catch(console.error);
    */
   async fetch(options) {
-    if (!options) return this._fetchMany();
+    if (options === undefined) {
+      return this._fetchMany();
+    }
+
     if (typeof options === 'string') {
       const code = resolveInviteCode(options);
       if (!code) throw new DiscordjsError(ErrorCodes.InviteResolveCode);
