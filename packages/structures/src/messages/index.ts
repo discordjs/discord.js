@@ -10,6 +10,7 @@ export * from './MessageActivity.js';
 export * from './MessageCall.js';
 export * from './MessageComponentInteractionMetadata.js';
 export * from './MessageReference.js';
+export * from './MessageSharedClientTheme.js';
 export * from './ModalSubmitInteractionMetadata.js';
 export * from './Reaction.js';
 export * from './ReactionCountDetails.js';

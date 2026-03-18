@@ -1,6 +1,6 @@
-import { AllowedMentionsTypes, MessageFlags } from 'discord-api-types/v10';
+import { AllowedMentionsTypes, BaseThemeType, MessageFlags } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
-import { AllowedMentionsBuilder, EmbedBuilder, MessageBuilder } from '../../src/index.js';
+import { AllowedMentionsBuilder, EmbedBuilder, MessageBuilder, SharedClientThemeBuilder } from '../../src/index.js';
 
 const base = {
 	allowed_mentions: undefined,
@@ -9,6 +9,7 @@ const base = {
 	embeds: [],
 	message_reference: undefined,
 	poll: undefined,
+	shared_client_theme: undefined,
 };
 
 describe('Message', () => {
@@ -103,6 +104,88 @@ describe('Message', () => {
 				question: { text: 'foo' },
 				answers: [{ poll_media: { text: 'foo' } }],
 			},
+			shared_client_theme: undefined,
+		});
+	});
+
+	describe('SharedClientTheme', () => {
+		test('GIVEN a message with a shared client theme THEN return valid toJSON data', () => {
+			const message = new MessageBuilder().setSharedClientTheme(
+				new SharedClientThemeBuilder()
+					.setColors(['5865F2', '7258F2'])
+					.setGradientAngle(0)
+					.setBaseMix(58)
+					.setBaseTheme(BaseThemeType.Dark),
+			);
+
+			expect(message.toJSON()).toStrictEqual({
+				...base,
+				shared_client_theme: {
+					colors: ['5865F2', '7258F2'],
+					gradient_angle: 0,
+					base_mix: 58,
+					base_theme: 1,
+				},
+			});
+		});
+
+		test('GIVEN a message with a function to update shared client theme THEN return valid toJSON data', () => {
+			const message = new MessageBuilder().updateSharedClientTheme((theme) =>
+				theme.setColors(['5865F2']).setGradientAngle(90).setBaseMix(100),
+			);
+
+			expect(message.toJSON()).toStrictEqual({
+				...base,
+				shared_client_theme: {
+					colors: ['5865F2'],
+					gradient_angle: 90,
+					base_mix: 100,
+					base_theme: undefined,
+				},
+			});
+		});
+
+		test('GIVEN a message with a shared client theme then cleared THEN shared_client_theme is undefined', () => {
+			const message = new MessageBuilder()
+				.setSharedClientTheme(new SharedClientThemeBuilder().setColors(['5865F2']).setGradientAngle(0).setBaseMix(50))
+				.clearSharedClientTheme();
+
+			expect(message.toJSON()).toStrictEqual(base);
+		});
+
+		test('GIVEN a SharedClientThemeBuilder with too many colors THEN it throws', () => {
+			const theme = new SharedClientThemeBuilder()
+				.setColors(['111111', '222222', '333333', '444444', '555555', '666666'])
+				.setGradientAngle(0)
+				.setBaseMix(50);
+
+			expect(() => theme.toJSON()).toThrow();
+		});
+
+		test('GIVEN a SharedClientThemeBuilder with out of range gradient angle THEN it throws', () => {
+			const theme = new SharedClientThemeBuilder().setColors(['5865F2']).setGradientAngle(400).setBaseMix(50);
+			expect(() => theme.toJSON()).toThrow();
+		});
+
+		test('GIVEN a SharedClientThemeBuilder with out of range base mix THEN it throws', () => {
+			const theme = new SharedClientThemeBuilder().setColors(['5865F2']).setGradientAngle(0).setBaseMix(150);
+			expect(() => theme.toJSON()).toThrow();
+		});
+
+		test('GIVEN a shared client theme with base_theme set THEN clearBaseTheme works correctly', () => {
+			const theme = new SharedClientThemeBuilder()
+				.setColors(['5865F2'])
+				.setGradientAngle(0)
+				.setBaseMix(50)
+				.setBaseTheme(BaseThemeType.Light)
+				.clearBaseTheme();
+
+			expect(theme.toJSON(false)).toStrictEqual({
+				colors: ['5865F2'],
+				gradient_angle: 0,
+				base_mix: 50,
+				base_theme: undefined,
+			});
 		});
 	});
 });

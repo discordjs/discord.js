@@ -499,6 +499,34 @@ class Message extends Base {
     } else {
       this.call ??= null;
     }
+
+    /**
+     * The shared client theme sent with this message
+     *
+     * @typedef {Object} MessageSharedClientTheme
+     * @property {string[]} colors The hexadecimal-encoded colors of the theme (max of 5)
+     * @property {number} gradientAngle The direction of the theme's colors (0–360)
+     * @property {number} baseMix The intensity of the theme's colors (0–100)
+     * @property {?BaseThemeType} [baseTheme] The mode of the theme
+     */
+    if (data.shared_client_theme) {
+      /**
+       * The shared client theme sent with this message
+       *
+       * @type {?MessageSharedClientTheme}
+       */
+      this.sharedClientTheme = {
+        colors: data.shared_client_theme.colors,
+        gradientAngle: data.shared_client_theme.gradient_angle,
+        baseMix: data.shared_client_theme.base_mix,
+      };
+      
+      if ('base_theme' in data.shared_client_theme) {
+        this.sharedClientTheme.baseTheme = data.shared_client_theme.baseTheme;
+      }
+    } else {
+      this.sharedClientTheme ??= null;
+    }
   }
 
   /**
