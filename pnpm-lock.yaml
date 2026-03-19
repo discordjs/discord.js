@@ -23,7 +23,7 @@ importers:
     devDependencies:
       '@commitlint/cli':
         specifier: ^19.4.0
-        version: 19.8.1(@types/node@25.3.0)(typescript@5.8.3)
+        version: 19.8.1(@types/node@25.5.0)(typescript@5.8.3)
       '@commitlint/config-angular':
         specifier: ^19.3.0
         version: 19.8.1
@@ -41,7 +41,7 @@ importers:
         version: 0.59.4(eslint@8.57.1)(typescript@5.8.3)
       '@vitest/coverage-v8':
         specifier: ^2.0.5
-        version: 2.1.9(vitest@2.1.9(@edge-runtime/vm@3.2.0)(@types/node@25.3.0)(terser@5.46.0))
+        version: 2.1.9(vitest@2.1.9(@edge-runtime/vm@3.2.0)(@types/node@25.5.0)(terser@5.46.0))
       conventional-changelog-cli:
         specifier: ^4.1.0
         version: 4.1.0
@@ -68,7 +68,7 @@ importers:
         version: 3.8.1
       tsup:
         specifier: ^8.5.1
-        version: 8.5.1(@microsoft/api-extractor@7.43.0(@types/node@25.3.0))(jiti@2.6.1)(postcss@8.5.6)(typescript@5.8.3)(yaml@2.8.2)
+        version: 8.5.1(@microsoft/api-extractor@7.43.0(@types/node@25.5.0))(jiti@2.6.1)(postcss@8.5.6)(typescript@5.8.3)(yaml@2.8.2)
       turbo:
         specifier: ^2.8.10
         version: 2.8.10
@@ -80,13 +80,13 @@ importers:
         version: 8.56.0(eslint@8.57.1)(typescript@5.8.3)
       unocss:
         specifier: ^0.60.4
-        version: 0.60.4(rollup@4.59.0)(vite@5.4.21(@types/node@25.3.0)(terser@5.46.0))
+        version: 0.60.4(rollup@4.59.0)(vite@5.4.21(@types/node@25.5.0)(terser@5.46.0))
       vercel:
         specifier: ^37.0.0
         version: 37.14.0(encoding@0.1.13)
       vitest:
         specifier: ^2.0.5
-        version: 2.1.9(@edge-runtime/vm@3.2.0)(@types/node@25.3.0)(terser@5.46.0)
+        version: 2.1.9(@edge-runtime/vm@3.2.0)(@types/node@25.5.0)(terser@5.46.0)
 
   packages/actions:
     dependencies:
@@ -675,8 +675,8 @@ importers:
         specifier: ^2.6.3
         version: 2.8.1
       undici:
-        specifier: 6.23.0
-        version: 6.23.0
+        specifier: 6.24.1
+        version: 6.24.1
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -916,8 +916,8 @@ importers:
         specifier: ^2.6.3
         version: 2.8.1
       undici:
-        specifier: 6.23.0
-        version: 6.23.0
+        specifier: 6.24.1
+        version: 6.24.1
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1038,8 +1038,8 @@ importers:
         specifier: ^2.6.3
         version: 2.8.1
       undici:
-        specifier: 6.23.0
-        version: 6.23.0
+        specifier: 6.24.1
+        version: 6.24.1
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1117,8 +1117,8 @@ importers:
         specifier: ^2.6.3
         version: 2.8.1
       undici:
-        specifier: 6.23.0
-        version: 6.23.0
+        specifier: 6.24.1
+        version: 6.24.1
       yaml:
         specifier: ^2.8.2
         version: 2.8.2
@@ -1485,8 +1485,8 @@ importers:
         specifier: ~5.8.3
         version: 5.8.3
       undici:
-        specifier: 6.23.0
-        version: 6.23.0
+        specifier: 6.24.1
+        version: 6.24.1
       vitest:
         specifier: ^2.0.5
         version: 2.1.9(@edge-runtime/vm@3.2.0)(@types/node@18.19.130)(terser@5.46.0)
@@ -2440,16 +2440,16 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@definitelytyped/header-parser@0.2.24':
-    resolution: {integrity: sha512-p7zzgmqhCZPeT2wRkSjM0CXZdhi5AB96wcd5afEJwTMIulLyEO71ZGOk2x7bihdxMMYNSKGuBbSCRoz6KCDZKw==}
+  '@definitelytyped/header-parser@0.2.25':
+    resolution: {integrity: sha512-T5hVZCiOOjBNLZlw+MF8CRxNqEYCUptZDfix02DMfdLPgMIgidS2b1mtfk8cwf1Efk8Zm+AKuL5SCSbPbgvFgA==}
     engines: {node: '>=20.17.0'}
 
   '@definitelytyped/typescript-versions@0.1.10':
     resolution: {integrity: sha512-4aBop464n0PUxrlzj1FpAfiNa5P5ENycB0K/Ho22Ay8xAGEGXUpLkaWtFsn2R+Jfn4ldd7lJqfqw0z29sAingQ==}
     engines: {node: '>=20.17.0'}
 
-  '@definitelytyped/utils@0.1.12':
-    resolution: {integrity: sha512-jaFGcmCMWOcHxAkk3U73cO5ve27fJaHh/JtjoNBbMI+c/cjOeiCPVlbt4eR6U1dQl0Gn5a98RWA6oOZTFScK2w==}
+  '@definitelytyped/utils@0.1.13':
+    resolution: {integrity: sha512-B9+yLpGZbNHXofccDGOKujBimXrrKTK7NO41QhRwmRar/Z9/t5HdG5IpwdEpiioAbYd1Fju/FCLrI/3KzGweQw==}
     engines: {node: '>=20.17.0'}
 
   '@discordjs/collection@1.5.3':
@@ -5000,8 +5000,8 @@ packages:
   '@types/node@22.19.11':
     resolution: {integrity: sha512-BH7YwL6rA93ReqeQS1c4bsPpcfOmJasG+Fkr6Y59q83f9M1WcBRHR2vM+P9eOisYRcN3ujQoiZY8uk5W+1WL8w==}
 
-  '@types/node@25.3.0':
-    resolution: {integrity: sha512-4K3bqJpXpqfg2XKGK9bpDTc6xO/xoUP/RBWS7AtRMug6zZFaRekiLzjVtAoZMquxoAbzBvy5nxQ7veS5eYzf8A==}
+  '@types/node@25.5.0':
+    resolution: {integrity: sha512-jp2P3tQMSxWugkCUKLRPVUpGaL5MVFwF8RDuSRztfwgN1wmqJeMSbKlnEtQqU8UrhTmzEmZdu2I6v2dpp7XIxw==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -6047,6 +6047,36 @@ packages:
     peerDependenciesMeta:
       bare-abort-controller:
         optional: true
+
+  bare-fs@4.5.5:
+    resolution: {integrity: sha512-XvwYM6VZqKoqDll8BmSww5luA5eflDzY0uEFfBJtFKe4PAAtxBjU3YIxzIBzhyaEQBy1VXEQBto4cpN5RZJw+w==}
+    engines: {bare: '>=1.16.0'}
+    peerDependencies:
+      bare-buffer: '*'
+    peerDependenciesMeta:
+      bare-buffer:
+        optional: true
+
+  bare-os@3.8.0:
+    resolution: {integrity: sha512-Dc9/SlwfxkXIGYhvMQNUtKaXCaGkZYGcd1vuNUUADVqzu4/vQfvnMkYYOUnt2VwQ2AqKr/8qAVFRtwETljgeFg==}
+    engines: {bare: '>=1.14.0'}
+
+  bare-path@3.0.0:
+    resolution: {integrity: sha512-tyfW2cQcB5NN8Saijrhqn0Zh7AnFNsnczRcuWODH0eYAXBsJ5gVxAUuNr7tsHSC6IZ77cA0SitzT+s47kot8Mw==}
+
+  bare-stream@2.9.0:
+    resolution: {integrity: sha512-l/sVySZU942Akx6jxFC0IekU8V1mwM/fJ6tf6rK4/mBtSESF9lOktANLszMpB89k2qdDQB5uD4q3DWyjfT1Mug==}
+    peerDependencies:
+      bare-buffer: '*'
+      bare-events: '*'
+    peerDependenciesMeta:
+      bare-buffer:
+        optional: true
+      bare-events:
+        optional: true
+
+  bare-url@2.3.2:
+    resolution: {integrity: sha512-ZMq4gd9ngV5aTMa5p9+UfY0b3skwhHELaDkhEHetMdX0LRkW9kzaym4oo/Eh+Ghm0CCDuMTsRIGM/ytUc1ZYmw==}
 
   baseline-browser-mapping@2.10.0:
     resolution: {integrity: sha512-lIyg0szRfYbiy67j9KN8IyeD7q7hcmqnJ1ddWmNt19ItGpNN64mnllmxUNFIOdOm6by97jlL6wfpTTJrmnjWAA==}
@@ -9142,6 +9172,10 @@ packages:
     resolution: {integrity: sha512-+G4CpNBxa5MprY+04MbgOw1v7So6n5JY166pFi9KfYwT78fxScCeSNQSNzp6dpPSW2rONOps6Ocam1wFhCgoVw==}
     engines: {node: 18 || 20 || >=22}
 
+  minimatch@10.2.4:
+    resolution: {integrity: sha512-oRjTw/97aTBN0RHbYCdtF1MQfvusSIBQM0IZEgzl6426+8jSC0nF1a/GmnVLpfB9yyr6g6FTqWqiZVbxrtaCIg==}
+    engines: {node: 18 || 20 || >=22}
+
   minimatch@3.0.8:
     resolution: {integrity: sha512-6FsRAQsxQ61mw+qP1ZzbL9Bc78x2p5OqNgNpnoAFLTrX8n5Kxph0CsnhmKKNXTWjXqU5L0pGPR7hYk+XWZr60Q==}
 
@@ -10738,8 +10772,8 @@ packages:
     resolution: {integrity: sha512-zTvf0mcggrGeTe/2jJ6ECkJHAQPIYEwDoqsiqBjI24mvRmQbInK5jq33fyypaCBxX08hMkfmdOqj6haT33EqWw==}
     engines: {node: '>=4.0.0'}
 
-  tar-stream@3.1.7:
-    resolution: {integrity: sha512-qJj60CXt7IU1Ffyc3NJMjh6EkuCFej46zUqJ4J7pqYlThyd9bO0XBTmcOIhSzZJVWfsLks0+nle/j538YAW9RQ==}
+  tar-stream@3.1.8:
+    resolution: {integrity: sha512-U6QpVRyCGHva435KoNWy9PRoi2IFYCgtEhq9nmrPPpbRacPs9IH4aJ3gbrFC8dPcXvdSZ4XXfXT5Fshbp2MtlQ==}
 
   tar@4.4.18:
     resolution: {integrity: sha512-ZuOtqqmkV9RE1+4odd+MhBpibmCxNP6PJhH/h2OqNuotTX7/XHPZQJv2pKvWMplFH9SIZZhitehh6vBH6LO8Pg==}
@@ -10754,6 +10788,9 @@ packages:
   tar@7.5.9:
     resolution: {integrity: sha512-BTLcK0xsDh2+PUe9F6c2TlRp4zOOBMTkoQHQIWSIzI0R7KG46uEwq4OPk2W7bZcprBMsuaeFsqwYr7pjh6CuHg==}
     engines: {node: '>=18'}
+
+  teex@1.0.1:
+    resolution: {integrity: sha512-eYE6iEI62Ni1H8oIa7KlDU6uQBtqr4Eajni3wX7rpfXD8ysFx8z0+dri+KWEPWpBsxXfxu58x/0jvTVT1ekOSg==}
 
   telejson@7.2.0:
     resolution: {integrity: sha512-1QTEcJkJEhc8OnStBx/ILRu5J2p0GjvWsBx56bmZRqnrkdBMUe+nX92jxV+p3dB4CP6PZCdJMQJwCggkNBMzkQ==}
@@ -11208,8 +11245,8 @@ packages:
     resolution: {integrity: sha512-gBLkYIlEnSp8pFbT64yFgGE6UIB9tAkhukC23PmMDCe5Nd+cRqKxSjw5y54MK2AZMgZfJWMaNE4nYUHgi1XEOw==}
     engines: {node: '>=18.17'}
 
-  undici@6.23.0:
-    resolution: {integrity: sha512-VfQPToRA5FZs/qJxLIinmU59u0r7LXqoJkCzinq3ckNJp3vKEh7jTWN589YQ5+aoAC/TGRLyJLCPKcLQbM8r9g==}
+  undici@6.24.1:
+    resolution: {integrity: sha512-sC+b0tB1whOCzbtlx20fx3WgCXwkW627p4EA9uM+/tNNPkSS+eSEld6pAs9nDv7WbY1UUljBMYPtu9BCOrCWKA==}
     engines: {node: '>=18.17'}
 
   undici@7.22.0:
@@ -11796,7 +11833,7 @@ snapshots:
   '@actions/http-client@3.0.2':
     dependencies:
       tunnel: 0.0.6
-      undici: 6.23.0
+      undici: 6.24.1
 
   '@actions/io@1.1.3': {}
 
@@ -13167,11 +13204,11 @@ snapshots:
 
   '@bcoe/v8-coverage@1.0.2': {}
 
-  '@commitlint/cli@19.8.1(@types/node@25.3.0)(typescript@5.8.3)':
+  '@commitlint/cli@19.8.1(@types/node@25.5.0)(typescript@5.8.3)':
     dependencies:
       '@commitlint/format': 19.8.1
       '@commitlint/lint': 19.8.1
-      '@commitlint/load': 19.8.1(@types/node@25.3.0)(typescript@5.8.3)
+      '@commitlint/load': 19.8.1(@types/node@25.5.0)(typescript@5.8.3)
       '@commitlint/read': 19.8.1
       '@commitlint/types': 19.8.1
       tinyexec: 1.0.2
@@ -13219,7 +13256,7 @@ snapshots:
       '@commitlint/rules': 19.8.1
       '@commitlint/types': 19.8.1
 
-  '@commitlint/load@19.8.1(@types/node@25.3.0)(typescript@5.8.3)':
+  '@commitlint/load@19.8.1(@types/node@25.5.0)(typescript@5.8.3)':
     dependencies:
       '@commitlint/config-validator': 19.8.1
       '@commitlint/execute-rule': 19.8.1
@@ -13227,7 +13264,7 @@ snapshots:
       '@commitlint/types': 19.8.1
       chalk: 5.6.2
       cosmiconfig: 9.0.0(typescript@5.8.3)
-      cosmiconfig-typescript-loader: 6.2.0(@types/node@25.3.0)(cosmiconfig@9.0.0(typescript@5.8.3))(typescript@5.8.3)
+      cosmiconfig-typescript-loader: 6.2.0(@types/node@25.5.0)(cosmiconfig@9.0.0(typescript@5.8.3))(typescript@5.8.3)
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       lodash.uniq: 4.5.0
@@ -13290,31 +13327,33 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@definitelytyped/header-parser@0.2.24':
+  '@definitelytyped/header-parser@0.2.25':
     dependencies:
       '@definitelytyped/typescript-versions': 0.1.10
-      '@definitelytyped/utils': 0.1.12
+      '@definitelytyped/utils': 0.1.13
       semver: 7.7.4
     transitivePeerDependencies:
       - bare-abort-controller
+      - bare-buffer
       - react-native-b4a
       - supports-color
 
   '@definitelytyped/typescript-versions@0.1.10': {}
 
-  '@definitelytyped/utils@0.1.12':
+  '@definitelytyped/utils@0.1.13':
     dependencies:
-      '@types/node': 25.3.0
+      '@types/node': 25.5.0
       cachedir: 2.4.0
       charm: 1.0.2
       libnpmpublish: 11.1.3
-      minimatch: 10.2.2
+      minimatch: 10.2.4
       npm-registry-fetch: 19.1.1
       tar: 7.5.9
-      tar-stream: 3.1.7
+      tar-stream: 3.1.8
       which: 6.0.1
     transitivePeerDependencies:
       - bare-abort-controller
+      - bare-buffer
       - react-native-b4a
       - supports-color
 
@@ -14270,11 +14309,11 @@ snapshots:
       - '@types/node'
     optional: true
 
-  '@microsoft/api-extractor-model@7.28.13(@types/node@25.3.0)':
+  '@microsoft/api-extractor-model@7.28.13(@types/node@25.5.0)':
     dependencies:
       '@microsoft/tsdoc': 0.14.2
       '@microsoft/tsdoc-config': 0.16.2(patch_hash=35av6rrndvjtr2u2jso66jatbu)
-      '@rushstack/node-core-library': 4.0.2(@types/node@25.3.0)
+      '@rushstack/node-core-library': 4.0.2(@types/node@25.5.0)
     transitivePeerDependencies:
       - '@types/node'
     optional: true
@@ -14354,15 +14393,15 @@ snapshots:
       - '@types/node'
     optional: true
 
-  '@microsoft/api-extractor@7.43.0(@types/node@25.3.0)':
+  '@microsoft/api-extractor@7.43.0(@types/node@25.5.0)':
     dependencies:
-      '@microsoft/api-extractor-model': 7.28.13(@types/node@25.3.0)
+      '@microsoft/api-extractor-model': 7.28.13(@types/node@25.5.0)
       '@microsoft/tsdoc': 0.14.2
       '@microsoft/tsdoc-config': 0.16.2(patch_hash=35av6rrndvjtr2u2jso66jatbu)
-      '@rushstack/node-core-library': 4.0.2(@types/node@25.3.0)
+      '@rushstack/node-core-library': 4.0.2(@types/node@25.5.0)
       '@rushstack/rig-package': 0.5.2
-      '@rushstack/terminal': 0.10.0(@types/node@25.3.0)
-      '@rushstack/ts-command-line': 4.19.1(@types/node@25.3.0)
+      '@rushstack/terminal': 0.10.0(@types/node@25.5.0)
+      '@rushstack/ts-command-line': 4.19.1(@types/node@25.5.0)
       lodash: 4.17.23
       minimatch: 3.0.8
       resolve: 1.22.11
@@ -15102,7 +15141,7 @@ snapshots:
       '@types/node': 22.19.11
     optional: true
 
-  '@rushstack/node-core-library@4.0.2(@types/node@25.3.0)':
+  '@rushstack/node-core-library@4.0.2(@types/node@25.5.0)':
     dependencies:
       fs-extra: 7.0.1
       import-lazy: 4.0.0
@@ -15111,7 +15150,7 @@ snapshots:
       semver: 7.5.4
       z-schema: 5.0.5
     optionalDependencies:
-      '@types/node': 25.3.0
+      '@types/node': 25.5.0
     optional: true
 
   '@rushstack/node-core-library@4.1.0(@types/node@18.19.130)':
@@ -15166,12 +15205,12 @@ snapshots:
       '@types/node': 22.19.11
     optional: true
 
-  '@rushstack/terminal@0.10.0(@types/node@25.3.0)':
+  '@rushstack/terminal@0.10.0(@types/node@25.5.0)':
     dependencies:
-      '@rushstack/node-core-library': 4.0.2(@types/node@25.3.0)
+      '@rushstack/node-core-library': 4.0.2(@types/node@25.5.0)
       supports-color: 8.1.1
     optionalDependencies:
-      '@types/node': 25.3.0
+      '@types/node': 25.5.0
     optional: true
 
   '@rushstack/ts-command-line@4.17.1':
@@ -15220,9 +15259,9 @@ snapshots:
       - '@types/node'
     optional: true
 
-  '@rushstack/ts-command-line@4.19.1(@types/node@25.3.0)':
+  '@rushstack/ts-command-line@4.19.1(@types/node@25.5.0)':
     dependencies:
-      '@rushstack/terminal': 0.10.0(@types/node@25.3.0)
+      '@rushstack/terminal': 0.10.0(@types/node@25.5.0)
       '@types/argparse': 1.0.38
       argparse: 1.0.10
       string-argv: 0.3.2
@@ -16170,7 +16209,7 @@ snapshots:
   '@tufjs/models@4.1.0':
     dependencies:
       '@tufjs/canonical-json': 2.0.0
-      minimatch: 10.2.2
+      minimatch: 10.2.4
 
   '@turbo/gen-darwin-64@2.8.10':
     optional: true
@@ -16387,7 +16426,7 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
-  '@types/node@25.3.0':
+  '@types/node@25.5.0':
     dependencies:
       undici-types: 7.18.2
 
@@ -16905,13 +16944,13 @@ snapshots:
     transitivePeerDependencies:
       - rollup
 
-  '@unocss/astro@0.60.4(rollup@4.59.0)(vite@5.4.21(@types/node@25.3.0)(terser@5.46.0))':
+  '@unocss/astro@0.60.4(rollup@4.59.0)(vite@5.4.21(@types/node@25.5.0)(terser@5.46.0))':
     dependencies:
       '@unocss/core': 0.60.4
       '@unocss/reset': 0.60.4
-      '@unocss/vite': 0.60.4(rollup@4.59.0)(vite@5.4.21(@types/node@25.3.0)(terser@5.46.0))
+      '@unocss/vite': 0.60.4(rollup@4.59.0)(vite@5.4.21(@types/node@25.5.0)(terser@5.46.0))
     optionalDependencies:
-      vite: 5.4.21(@types/node@25.3.0)(terser@5.46.0)
+      vite: 5.4.21(@types/node@25.5.0)(terser@5.46.0)
     transitivePeerDependencies:
       - rollup
 
@@ -17089,7 +17128,7 @@ snapshots:
     transitivePeerDependencies:
       - rollup
 
-  '@unocss/vite@0.60.4(rollup@4.59.0)(vite@5.4.21(@types/node@25.3.0)(terser@5.46.0))':
+  '@unocss/vite@0.60.4(rollup@4.59.0)(vite@5.4.21(@types/node@25.5.0)(terser@5.46.0))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@rollup/pluginutils': 5.3.0(rollup@4.59.0)
@@ -17101,7 +17140,7 @@ snapshots:
       chokidar: 3.6.0
       fast-glob: 3.3.3
       magic-string: 0.30.21
-      vite: 5.4.21(@types/node@25.3.0)(terser@5.46.0)
+      vite: 5.4.21(@types/node@25.5.0)(terser@5.46.0)
     transitivePeerDependencies:
       - rollup
 
@@ -17400,7 +17439,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@2.1.9(vitest@2.1.9(@edge-runtime/vm@3.2.0)(@types/node@25.3.0)(terser@5.46.0))':
+  '@vitest/coverage-v8@2.1.9(vitest@2.1.9(@edge-runtime/vm@3.2.0)(@types/node@25.5.0)(terser@5.46.0))':
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@bcoe/v8-coverage': 0.2.3
@@ -17414,7 +17453,7 @@ snapshots:
       std-env: 3.10.0
       test-exclude: 7.0.1
       tinyrainbow: 1.2.0
-      vitest: 2.1.9(@edge-runtime/vm@3.2.0)(@types/node@25.3.0)(terser@5.46.0)
+      vitest: 2.1.9(@edge-runtime/vm@3.2.0)(@types/node@25.5.0)(terser@5.46.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -17483,13 +17522,13 @@ snapshots:
     optionalDependencies:
       vite: 5.4.21(@types/node@18.19.130)(terser@5.46.0)
 
-  '@vitest/mocker@2.1.9(vite@5.4.21(@types/node@25.3.0)(terser@5.46.0))':
+  '@vitest/mocker@2.1.9(vite@5.4.21(@types/node@25.5.0)(terser@5.46.0))':
     dependencies:
       '@vitest/spy': 2.1.9
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 5.4.21(@types/node@25.3.0)(terser@5.46.0)
+      vite: 5.4.21(@types/node@25.5.0)(terser@5.46.0)
 
   '@vitest/mocker@3.2.4(vite@5.4.21(@types/node@22.19.11)(terser@5.46.0))':
     dependencies:
@@ -18027,6 +18066,37 @@ snapshots:
   balanced-match@4.0.3: {}
 
   bare-events@2.8.2: {}
+
+  bare-fs@4.5.5:
+    dependencies:
+      bare-events: 2.8.2
+      bare-path: 3.0.0
+      bare-stream: 2.9.0(bare-events@2.8.2)
+      bare-url: 2.3.2
+      fast-fifo: 1.3.2
+    transitivePeerDependencies:
+      - bare-abort-controller
+      - react-native-b4a
+
+  bare-os@3.8.0: {}
+
+  bare-path@3.0.0:
+    dependencies:
+      bare-os: 3.8.0
+
+  bare-stream@2.9.0(bare-events@2.8.2):
+    dependencies:
+      streamx: 2.23.0
+      teex: 1.0.1
+    optionalDependencies:
+      bare-events: 2.8.2
+    transitivePeerDependencies:
+      - bare-abort-controller
+      - react-native-b4a
+
+  bare-url@2.3.2:
+    dependencies:
+      bare-path: 3.0.0
 
   baseline-browser-mapping@2.10.0: {}
 
@@ -18591,9 +18661,9 @@ snapshots:
 
   core-js-pure@3.48.0: {}
 
-  cosmiconfig-typescript-loader@6.2.0(@types/node@25.3.0)(cosmiconfig@9.0.0(typescript@5.8.3))(typescript@5.8.3):
+  cosmiconfig-typescript-loader@6.2.0(@types/node@25.5.0)(cosmiconfig@9.0.0(typescript@5.8.3))(typescript@5.8.3):
     dependencies:
-      '@types/node': 25.3.0
+      '@types/node': 25.5.0
       cosmiconfig: 9.0.0(typescript@5.8.3)
       jiti: 2.6.1
       typescript: 5.8.3
@@ -18918,7 +18988,7 @@ snapshots:
 
   dts-critic@3.3.11(typescript@5.8.3):
     dependencies:
-      '@definitelytyped/header-parser': 0.2.24
+      '@definitelytyped/header-parser': 0.2.25
       command-exists: 1.2.9
       rimraf: 3.0.2
       semver: 6.3.1
@@ -18927,14 +18997,15 @@ snapshots:
       yargs: 15.4.1
     transitivePeerDependencies:
       - bare-abort-controller
+      - bare-buffer
       - react-native-b4a
       - supports-color
 
   dtslint@4.2.1(typescript@5.8.3):
     dependencies:
-      '@definitelytyped/header-parser': 0.2.24
+      '@definitelytyped/header-parser': 0.2.25
       '@definitelytyped/typescript-versions': 0.1.10
-      '@definitelytyped/utils': 0.1.12
+      '@definitelytyped/utils': 0.1.13
       dts-critic: 3.3.11(typescript@5.8.3)
       fs-extra: 6.0.1
       json-stable-stringify: 1.3.0
@@ -18945,6 +19016,7 @@ snapshots:
       yargs: 15.4.1
     transitivePeerDependencies:
       - bare-abort-controller
+      - bare-buffer
       - react-native-b4a
       - supports-color
 
@@ -20399,7 +20471,7 @@ snapshots:
 
   glob@13.0.6:
     dependencies:
-      minimatch: 10.2.2
+      minimatch: 10.2.4
       minipass: 7.1.3
       path-scurry: 2.0.2
 
@@ -22301,6 +22373,10 @@ snapshots:
     dependencies:
       brace-expansion: 5.0.2
 
+  minimatch@10.2.4:
+    dependencies:
+      brace-expansion: 5.0.2
+
   minimatch@3.0.8:
     dependencies:
       brace-expansion: 1.1.12
@@ -23968,13 +24044,15 @@ snapshots:
       typical: 2.6.1
       wordwrapjs: 3.0.0
 
-  tar-stream@3.1.7:
+  tar-stream@3.1.8:
     dependencies:
       b4a: 1.8.0
+      bare-fs: 4.5.5
       fast-fifo: 1.3.2
       streamx: 2.23.0
     transitivePeerDependencies:
       - bare-abort-controller
+      - bare-buffer
       - react-native-b4a
 
   tar@4.4.18:
@@ -24003,6 +24081,13 @@ snapshots:
       minipass: 7.1.3
       minizlib: 3.1.0
       yallist: 5.0.0
+
+  teex@1.0.1:
+    dependencies:
+      streamx: 2.23.0
+    transitivePeerDependencies:
+      - bare-abort-controller
+      - react-native-b4a
 
   telejson@7.2.0:
     dependencies:
@@ -24422,7 +24507,7 @@ snapshots:
       - tsx
       - yaml
 
-  tsup@8.5.1(@microsoft/api-extractor@7.43.0(@types/node@25.3.0))(jiti@2.6.1)(postcss@8.5.6)(typescript@5.8.3)(yaml@2.8.2):
+  tsup@8.5.1(@microsoft/api-extractor@7.43.0(@types/node@25.5.0))(jiti@2.6.1)(postcss@8.5.6)(typescript@5.8.3)(yaml@2.8.2):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.27.3)
       cac: 6.7.14
@@ -24442,7 +24527,7 @@ snapshots:
       tinyglobby: 0.2.15
       tree-kill: 1.2.2
     optionalDependencies:
-      '@microsoft/api-extractor': 7.43.0(@types/node@25.3.0)
+      '@microsoft/api-extractor': 7.43.0(@types/node@25.5.0)
       postcss: 8.5.6
       typescript: 5.8.3
     transitivePeerDependencies:
@@ -24671,7 +24756,7 @@ snapshots:
 
   undici@6.21.3: {}
 
-  undici@6.23.0: {}
+  undici@6.24.1: {}
 
   undici@7.22.0: {}
 
@@ -24804,9 +24889,9 @@ snapshots:
       - rollup
       - supports-color
 
-  unocss@0.60.4(rollup@4.59.0)(vite@5.4.21(@types/node@25.3.0)(terser@5.46.0)):
+  unocss@0.60.4(rollup@4.59.0)(vite@5.4.21(@types/node@25.5.0)(terser@5.46.0)):
     dependencies:
-      '@unocss/astro': 0.60.4(rollup@4.59.0)(vite@5.4.21(@types/node@25.3.0)(terser@5.46.0))
+      '@unocss/astro': 0.60.4(rollup@4.59.0)(vite@5.4.21(@types/node@25.5.0)(terser@5.46.0))
       '@unocss/cli': 0.60.4(rollup@4.59.0)
       '@unocss/core': 0.60.4
       '@unocss/extractor-arbitrary-variants': 0.60.4
@@ -24825,9 +24910,9 @@ snapshots:
       '@unocss/transformer-compile-class': 0.60.4
       '@unocss/transformer-directives': 0.60.4
       '@unocss/transformer-variant-group': 0.60.4
-      '@unocss/vite': 0.60.4(rollup@4.59.0)(vite@5.4.21(@types/node@25.3.0)(terser@5.46.0))
+      '@unocss/vite': 0.60.4(rollup@4.59.0)(vite@5.4.21(@types/node@25.5.0)(terser@5.46.0))
     optionalDependencies:
-      vite: 5.4.21(@types/node@25.3.0)(terser@5.46.0)
+      vite: 5.4.21(@types/node@25.5.0)(terser@5.46.0)
     transitivePeerDependencies:
       - rollup
       - supports-color
@@ -25049,13 +25134,13 @@ snapshots:
       - supports-color
       - terser
 
-  vite-node@2.1.9(@types/node@25.3.0)(terser@5.46.0):
+  vite-node@2.1.9(@types/node@25.5.0)(terser@5.46.0):
     dependencies:
       cac: 6.7.14
       debug: 4.4.3
       es-module-lexer: 1.7.0
       pathe: 1.1.2
-      vite: 5.4.21(@types/node@25.3.0)(terser@5.46.0)
+      vite: 5.4.21(@types/node@25.5.0)(terser@5.46.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -25142,13 +25227,13 @@ snapshots:
       fsevents: 2.3.3
       terser: 5.46.0
 
-  vite@5.4.21(@types/node@25.3.0)(terser@5.46.0):
+  vite@5.4.21(@types/node@25.5.0)(terser@5.46.0):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.5.6
       rollup: 4.59.0
     optionalDependencies:
-      '@types/node': 25.3.0
+      '@types/node': 25.5.0
       fsevents: 2.3.3
       terser: 5.46.0
 
@@ -25260,10 +25345,10 @@ snapshots:
       - supports-color
       - terser
 
-  vitest@2.1.9(@edge-runtime/vm@3.2.0)(@types/node@25.3.0)(terser@5.46.0):
+  vitest@2.1.9(@edge-runtime/vm@3.2.0)(@types/node@25.5.0)(terser@5.46.0):
     dependencies:
       '@vitest/expect': 2.1.9
-      '@vitest/mocker': 2.1.9(vite@5.4.21(@types/node@25.3.0)(terser@5.46.0))
+      '@vitest/mocker': 2.1.9(vite@5.4.21(@types/node@25.5.0)(terser@5.46.0))
       '@vitest/pretty-format': 2.1.9
       '@vitest/runner': 2.1.9
       '@vitest/snapshot': 2.1.9
@@ -25279,12 +25364,12 @@ snapshots:
       tinyexec: 0.3.2
       tinypool: 1.1.1
       tinyrainbow: 1.2.0
-      vite: 5.4.21(@types/node@25.3.0)(terser@5.46.0)
-      vite-node: 2.1.9(@types/node@25.3.0)(terser@5.46.0)
+      vite: 5.4.21(@types/node@25.5.0)(terser@5.46.0)
+      vite-node: 2.1.9(@types/node@25.5.0)(terser@5.46.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@edge-runtime/vm': 3.2.0
-      '@types/node': 25.3.0
+      '@types/node': 25.5.0
     transitivePeerDependencies:
       - less
       - lightningcss
