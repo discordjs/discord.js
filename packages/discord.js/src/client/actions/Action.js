@@ -36,8 +36,9 @@ class Action {
     if ('recipients' in data) {
       // Try to resolve the recipient, but do not add if already existing in recipients.
       const recipient = data.author ?? data.user ?? { id: data.user_id };
-      if (data.recipients.every(existingRecipient => recipient.id !== existingRecipient.id))
+      if (!data.recipients.some(existingRecipient => recipient.id === existingRecipient.id)) {
         payloadData.recipients = [...data.recipients, recipient];
+      }
     } else {
       // Try to resolve the recipient.
       const recipient = data.author ?? data.user ?? { id: data.user_id };
