@@ -169,6 +169,10 @@ import {
   MessageFlags,
   MessageReferenceType,
   MessageType,
+  MessageSearchAuthorType,
+  MessageSearchEmbedType,
+  MessageSearchHasType,
+  MessageSearchSortMode,
   NameplatePalette,
   OAuth2Scopes,
   OverwriteType,
@@ -1479,6 +1483,7 @@ export class Guild extends AnonymousGuild {
   public widgetImageURL(style?: GuildWidgetStyle): string;
   public leave(): Promise<Guild>;
   public disableInvites(disabled?: boolean): Promise<Guild>;
+  public searchMessages(options?: GuildSearchMessagesOptions): Promise<GuildSearchMessagesResult>;
   public setIncidentActions(incidentActions: IncidentActionsEditOptions): Promise<IncidentActions>;
   public setAFKChannel(afkChannel: VoiceChannelResolvable | null, reason?: string): Promise<Guild>;
   public setAFKTimeout(afkTimeout: number, reason?: string): Promise<Guild>;
@@ -6386,6 +6391,39 @@ export interface GuildSearchMembersOptions {
   cache?: boolean;
   limit?: number;
   query: string;
+}
+
+export interface GuildSearchMessagesOptions {
+  attachmentExtension?: readonly string[];
+  attachmentFilename?: readonly string[];
+  authorId?: readonly Snowflake[];
+  authorType?: readonly MessageSearchAuthorType[];
+  cache?: boolean;
+  channelId?: readonly Snowflake[];
+  content?: string;
+  embedProvider?: readonly string[];
+  embedType?: readonly MessageSearchEmbedType[];
+  has?: readonly MessageSearchHasType[];
+  includeNsfw?: boolean;
+  limit?: number;
+  linkHostname?: readonly string[];
+  maxId?: Snowflake;
+  mentionEveryone?: boolean;
+  mentions?: readonly Snowflake[];
+  mentionsRoleId?: readonly Snowflake[];
+  minId?: Snowflake;
+  offset?: number;
+  pinned?: boolean;
+  repliedToMessageId?: readonly Snowflake[];
+  repliedToUserId?: readonly Snowflake[];
+  slop?: number;
+  sortBy?: MessageSearchSortMode;
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface GuildSearchMessagesResult {
+  messages: ReadonlyCollection<Snowflake, Message>;
+  totalResults: number;
 }
 
 export interface GuildListMembersOptions {
