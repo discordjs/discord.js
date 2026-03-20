@@ -225,11 +225,14 @@ class ModalSubmitInteraction extends BaseInteraction {
           }
         }
 
-        if (attachments) {
+        // Always create a Collection for attachments, even if empty
+        if (this.client.ComponentType?.FileUpload === rawComponent.type || rawComponent.type === 19) {
           data.attachments = new Collection();
-          for (const [id, attachment] of Object.entries(attachments)) {
-            if (valueSet.has(id)) {
-              data.attachments.set(id, new (getAttachment())(attachment));
+          if (attachments) {
+            for (const [id, attachment] of Object.entries(attachments)) {
+              if (valueSet.has(id)) {
+                data.attachments.set(id, new (getAttachment())(attachment));
+              }
             }
           }
         }
