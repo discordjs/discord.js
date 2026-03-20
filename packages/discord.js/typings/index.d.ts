@@ -1514,7 +1514,8 @@ export interface DMChannel extends Omit<
 export class DMChannel extends BaseChannel {
   private constructor(client: Client<true>, data?: RawDMChannelData);
   public flags: Readonly<ChannelFlagsBitField>;
-  public recipientId: Snowflake;
+  public get recipientId(): Snowflake;
+  public recipientIds: Snowflake[];
   public get recipient(): User | null;
   public type: ChannelType.DM;
   public fetch(force?: boolean): Promise<this>;

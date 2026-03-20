@@ -42,8 +42,11 @@ class UserManager extends CachedManager {
    */
   dmChannel(userId) {
     return (
-      this.client.channels.cache.find(channel => channel.type === ChannelType.DM && channel.recipientId === userId) ??
-      null
+      this.client.channels.cache.find(
+        channel =>
+          channel.type === ChannelType.DM &&
+          channel.recipientIds.every(id => [userId, this.client.user.id].includes(id)),
+      ) ?? null
     );
   }
 
