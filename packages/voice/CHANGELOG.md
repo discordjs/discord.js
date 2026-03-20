@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/voice@0.19.2](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.19.1...@discordjs/voice@0.19.2) - (2026-03-13)
+
+## Bug Fixes
+
+- **voice:** Strip padding from packets and add guards (#11449) ([c486fb8](https://github.com/discordjs/discord.js/commit/c486fb81274a33baa22bcbd18bb5ff1dd6b58875)) by @Snazzah
+
 # [@discordjs/voice@0.19.1](https://github.com/discordjs/discord.js/compare/@discordjs/voice@0.19.0...@discordjs/voice@0.19.1) - (2026-03-09)
 
 ## Bug Fixes
