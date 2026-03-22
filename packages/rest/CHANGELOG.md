@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/rest@2.6.1](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.6.0...@discordjs/rest@2.6.1) - (2026-03-22)
+
 # [@discordjs/rest@2.6.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.5.1...@discordjs/rest@2.6.0) - (2025-08-20)
 
 ## Documentation
