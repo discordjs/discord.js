@@ -75,6 +75,8 @@ class DMChannel extends BaseChannel {
 
   /**
    * The recipient's id.
+   * <info>For DMChannel the client user is not a part of this might return a wrong id.
+   * This will return `null` in the next major version.</info>
    * @type {Snowflake}
    * @readonly
    */
