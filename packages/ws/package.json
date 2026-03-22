@@ -1,7 +1,7 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/ws",
-	"version": "1.2.3",
+	"version": "1.2.4",
 	"description": "Wrapper around Discord's gateway",
 	"scripts": {
 		"test": "vitest run",
@@ -74,7 +74,7 @@
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@discordjs/collection": "workspace:^",
-		"@discordjs/rest": "^2.5.1",
+		"@discordjs/rest": "^2.6.1",
 		"@discordjs/util": "workspace:^",
 		"@sapphire/async-queue": "^1.5.2",
 		"@types/ws": "^8.5.10",
