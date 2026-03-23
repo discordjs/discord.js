@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.14.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.13.1...@discordjs/builders@1.14.0) - (2026-03-22)
+
+## Documentation
+
+- **builders:** Edited docs to correctly link to splice (#11430) ([ec5d921](https://github.com/discordjs/discord.js/commit/ec5d921b75255cf28fd572a91e715b37305f4cf8))
+
+## Features
+
+- **builders:** Add checkbox, checkboxgroup, and radiogroup builders (#11410) ([ca7719e](https://github.com/discordjs/discord.js/commit/ca7719e822e02a83e5a7b769de3c5fd615dc24fd))
+
 # [@discordjs/builders@1.13.1](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.13.0...@discordjs/builders@1.13.1) - (2025-11-30)
 
 ## Bug Fixes
