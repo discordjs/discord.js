@@ -190,7 +190,7 @@ class MessagePayload {
       }
     }
 
-    const attachments = this.options.files?.map((file, index) =>
+    let attachments = this.options.files?.map((file, index) =>
       isRawFileEncodable(file)
         ? {
             id: index.toString(),
@@ -207,6 +207,7 @@ class MessagePayload {
 
     // Only passable during edits
     if (Array.isArray(this.options.attachments)) {
+      attachments ??= [];
       attachments.push(
         // Note how we don't check for file body encodable, since we aren't expecting file data here
         ...this.options.attachments.map(attachment => (isJSONEncodable(attachment) ? attachment.toJSON() : attachment)),
