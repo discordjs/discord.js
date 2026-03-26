@@ -24,8 +24,6 @@ import type {
   APIButtonComponentWithCustomId,
   APIEmbed,
   APIInteractionDataResolvedChannel,
-  APIInteractionDataResolvedGuildMember,
-  APIInteractionGuildMember,
   APIPartialChannel,
   APIPartialGuild,
   APIRole,
@@ -217,6 +215,7 @@ import type {
   GuildInvite,
   AuthorizingIntegrationOwners,
   VoiceServerUpdateData,
+  MinimalGuildMember,
 } from './index.js';
 import {
   Client,
@@ -362,7 +361,7 @@ client.on('interactionCreate', async interaction => {
   expectType<Client<true>>(interaction.client);
   expectType<Snowflake | null>(interaction.guildId);
   expectType<Snowflake | null>(interaction.channelId);
-  expectType<APIInteractionGuildMember | GuildMember | null>(interaction.member);
+  expectType<GuildMember | MinimalGuildMember | null>(interaction.member);
 
   if (interaction.type === InteractionType.MessageComponent) {
     expectType<Snowflake>(interaction.channelId);
@@ -2053,13 +2052,13 @@ client.on('interactionCreate', async interaction => {
     expectAssignable<Interaction>(interaction);
     expectType<Locale>(interaction.guildLocale);
   } else if (interaction.inRawGuild()) {
-    expectAssignable<APIInteractionGuildMember>(interaction.member);
+    expectAssignable<MinimalGuildMember>(interaction.member);
     expectNotAssignable<Interaction<'cached'>>(interaction);
     expectType<Locale>(interaction.guildLocale);
   } else if (interaction.inGuild()) {
     expectType<Locale>(interaction.guildLocale);
   } else {
-    expectType<APIInteractionGuildMember | GuildMember | null>(interaction.member);
+    expectType<GuildMember | MinimalGuildMember | null>(interaction.member);
     expectNotAssignable<Interaction<'cached'>>(interaction);
     expectType<string | null>(interaction.guildId);
   }
@@ -2165,18 +2164,18 @@ client.on('interactionCreate', async interaction => {
     interaction.commandType === ApplicationCommandType.User
   ) {
     expectType<User>(interaction.targetUser);
-    expectType<APIInteractionGuildMember | GuildMember | null>(interaction.targetMember);
+    expectType<GuildMember | MinimalGuildMember | null>(interaction.targetMember);
     expectType<User | null>(interaction.options.getUser('user'));
-    expectType<APIInteractionDataResolvedGuildMember | GuildMember | null>(interaction.options.getMember('user'));
+    expectType<GuildMember | MinimalGuildMember | null>(interaction.options.getMember('user'));
     if (interaction.inCachedGuild()) {
       expectType<GuildMember | null>(interaction.targetMember);
       expectType<GuildMember | null>(interaction.options.getMember('user'));
     } else if (interaction.inRawGuild()) {
-      expectType<APIInteractionGuildMember | null>(interaction.targetMember);
-      expectType<APIInteractionDataResolvedGuildMember | null>(interaction.options.getMember('user'));
+      expectType<MinimalGuildMember | null>(interaction.targetMember);
+      expectType<MinimalGuildMember | null>(interaction.options.getMember('user'));
     } else if (interaction.inGuild()) {
-      expectType<APIInteractionGuildMember | GuildMember | null>(interaction.targetMember);
-      expectType<APIInteractionDataResolvedGuildMember | GuildMember | null>(interaction.options.getMember('user'));
+      expectType<GuildMember | MinimalGuildMember | null>(interaction.targetMember);
+      expectType<GuildMember | MinimalGuildMember | null>(interaction.options.getMember('user'));
     }
   }
 
@@ -2241,7 +2240,7 @@ client.on('interactionCreate', async interaction => {
       expectNotAssignable<Interaction<'cached'>>(interaction);
       expectAssignable<ChatInputCommandInteraction>(interaction);
       expectType<Promise<InteractionCallbackResponse<false>>>(interaction.reply({ withResponse: true }));
-      expectType<APIInteractionDataResolvedGuildMember | null>(interaction.options.getMember('test'));
+      expectType<MinimalGuildMember | null>(interaction.options.getMember('test'));
 
       expectType<APIInteractionDataResolvedChannel>(interaction.options.getChannel('test', true));
       expectType<APIRole>(interaction.options.getRole('test', true));
@@ -2273,7 +2272,7 @@ client.on('interactionCreate', async interaction => {
     } else {
       expectType<ChatInputCommandInteraction>(interaction);
       expectType<Promise<InteractionCallbackResponse>>(interaction.reply({ withResponse: true }));
-      expectType<APIInteractionDataResolvedGuildMember | GuildMember | null>(interaction.options.getMember('test'));
+      expectType<GuildMember | MinimalGuildMember | null>(interaction.options.getMember('test'));
 
       expectType<APIInteractionDataResolvedChannel | GuildBasedChannel>(interaction.options.getChannel('test', true));
       expectType<APIRole | Role>(interaction.options.getRole('test', true));
