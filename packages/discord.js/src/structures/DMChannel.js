@@ -30,16 +30,18 @@ class DMChannel extends BaseChannel {
     super._patch(data);
 
     if (data.recipients) {
-      const recipient = data.recipients[0];
-
       /**
-       * The recipient's id
-       * @type {Snowflake}
+       * The recipients' ids
+       * @type {Snowflake[]}
        */
-      this.recipientId = recipient.id;
+      this.recipientIds = [
+        ...new Set([...(this.recipientIds ?? []), ...data.recipients.map(recipient => recipient.id)]),
+      ];
 
-      if ('username' in recipient || this.client.options.partials.includes(Partials.User)) {
-        this.client.users._add(recipient);
+      for (const recipient of data.recipients) {
+        if ('username' in recipient || this.client.options.partials.includes(Partials.User)) {
+          this.client.users._add(recipient);
+        }
       }
     }
 
@@ -69,6 +71,18 @@ class DMChannel extends BaseChannel {
    */
   get partial() {
     return this.lastMessageId === undefined;
+  }
+
+  /**
+   * The recipient's id.
+   * <info>For DMChannel the client user is not a part of this might return a wrong id.
+   * This will return `null` in the next major version.</info>
+   * @type {Snowflake}
+   * @readonly
+   */
+  get recipientId() {
+    // To not be a breaking change this returns the arbitrary first id if this is not a DMChannel with the client user
+    return this.recipientIds.find(recipientId => recipientId !== this.client.user.id) ?? this.recipientIds[0];
   }
 
   /**
