@@ -8,6 +8,7 @@ const { DiscordjsError, ErrorCodes } = require('../errors');
 const GuildMemberRoleManager = require('../managers/GuildMemberRoleManager');
 const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField');
 const PermissionsBitField = require('../util/PermissionsBitField');
+const { _transformCollectibles } = require('../util/Transformers.js');
 
 /**
  * Represents a member of a guild on Discord.
@@ -139,6 +140,17 @@ class GuildMember extends Base {
       };
     } else {
       this.avatarDecorationData = null;
+    }
+
+    if ('collectibles' in data) {
+      /**
+       * The member's collectibles
+       *
+       * @type {?Collectibles}
+       */
+      this.collectibles = data.collectibles ? _transformCollectibles(data.collectibles) : null;
+    } else {
+      this.collectibles ??= null;
     }
   }
 
@@ -541,7 +553,11 @@ class GuildMember extends Base {
         (this._roles.length === member._roles.length &&
           this._roles.every((role, index) => role === member._roles[index]))) &&
       this.avatarDecorationData?.asset === member.avatarDecorationData?.asset &&
-      this.avatarDecorationData?.skuId === member.avatarDecorationData?.skuId
+      this.avatarDecorationData?.skuId === member.avatarDecorationData?.skuId &&
+      this.collectibles?.nameplate?.skuId === member.collectibles?.nameplate?.skuId &&
+      this.collectibles?.nameplate?.asset === member.collectibles?.nameplate?.asset &&
+      this.collectibles?.nameplate?.label === member.collectibles?.nameplate?.label &&
+      this.collectibles?.nameplate?.palette === member.collectibles?.nameplate?.palette
     );
   }
 
