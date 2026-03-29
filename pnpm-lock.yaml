@@ -304,8 +304,8 @@ importers:
         specifier: ^1.7.0
         version: 1.7.0(react@19.2.4)
       meilisearch:
-        specifier: ^0.54.0
-        version: 0.54.0
+        specifier: ^0.56.0
+        version: 0.56.0
       next:
         specifier: ^16.2.1
         version: 16.2.1(@babel/core@7.29.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -452,8 +452,8 @@ importers:
         specifier: ^14.0.3
         version: 14.0.3
       meilisearch:
-        specifier: ^0.54.0
-        version: 0.54.0
+        specifier: ^0.56.0
+        version: 0.56.0
       p-limit:
         specifier: ^7.3.0
         version: 7.3.0
@@ -10795,8 +10795,8 @@ packages:
     resolution: {integrity: sha512-aisnrDP4GNe06UcKFnV5bfMNPBUw4jsLGaWwWfnH3v02GnBuXX2MCVn5RbrWo0j3pczUilYblq7fQ7Nw2t5XKw==}
     engines: {node: '>= 0.8'}
 
-  meilisearch@0.54.0:
-    resolution: {integrity: sha512-b1bwJAEfj8C6hgSN88+/LvW3pe3nWC+thBS2seAbPZGakf/vzsLqppgZquiomzCr2GhU7U7H289625qhYe3rbw==}
+  meilisearch@0.56.0:
+    resolution: {integrity: sha512-kBXba8DcSrLWHYqopCm2JL90oBy97VdIfHkP1ii7/eHufeEEEk9Zu5Vv/IFQpNzmhEpWszVFVlGvZoI6QJeGzA==}
 
   meow@13.2.0:
     resolution: {integrity: sha512-pxQJQzB6djGPXh08dacEloMFopsOqGVRKFPYvPOt9XDZ1HasbgDZA74CJGreSU4G3Ak7EFJGoiH2auq+yXISgA==}
@@ -24521,7 +24521,7 @@ snapshots:
 
   media-typer@1.1.0: {}
 
-  meilisearch@0.54.0: {}
+  meilisearch@0.56.0: {}
 
   meow@13.2.0: {}
 
