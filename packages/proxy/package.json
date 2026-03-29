@@ -75,7 +75,7 @@
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^6.0.0",
 		"@types/node": "^22.19.15",
-		"@types/supertest": "^6.0.3",
+		"@types/supertest": "^7.2.0",
 		"@vitest/coverage-v8": "^4.1.2",
 		"cross-env": "^10.1.0",
 		"esbuild-plugin-version-injector": "^1.2.1",
