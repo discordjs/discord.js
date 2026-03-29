@@ -68,7 +68,7 @@
 		"twoslash": "^0.3.6"
 	},
 	"devDependencies": {
-		"@shikijs/rehype": "^3.23.0",
+		"@shikijs/rehype": "^4.0.2",
 		"@tailwindcss/postcss": "^4.2.2",
 		"@types/mdx": "^2.0.13",
 		"@types/node": "^24.12.0",
@@ -87,7 +87,7 @@
 		"prettier-plugin-tailwindcss": "^0.7.2",
 		"remark-gfm": "^4.0.1",
 		"remark-rehype": "^11.1.2",
-		"shiki": "^3.23.0",
+		"shiki": "^4.0.2",
 		"tailwindcss": "^4.2.2",
 		"turbo": "^2.8.21",
 		"typescript": "~5.9.3",
