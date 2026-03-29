@@ -60,7 +60,7 @@
 	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
-		"@actions/glob": "^0.5.1",
+		"@actions/glob": "^0.6.1",
 		"@discordjs/api-extractor-model": "workspace:^",
 		"@discordjs/api-extractor-utils": "workspace:^",
 		"@microsoft/tsdoc": "~0.15.1",

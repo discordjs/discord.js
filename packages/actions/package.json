@@ -41,9 +41,9 @@
 	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
-		"@actions/core": "^2.0.3",
-		"@actions/github": "^6.0.1",
-		"@actions/glob": "^0.5.1",
+		"@actions/core": "^3.0.0",
+		"@actions/github": "^9.0.0",
+		"@actions/glob": "^0.6.1",
 		"@aws-sdk/client-s3": "^3.1019.0",
 		"@discordjs/scripts": "workspace:^",
 		"cloudflare": "^5.2.0",
