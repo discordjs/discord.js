@@ -34,7 +34,6 @@ import {
 	type RESTPutAPIChannelRecipientJSONBody,
 	type Snowflake,
 	type RESTPostAPISoundboardSendSoundJSONBody,
-	type RESTPostAPISendSoundboardSoundResult,
 } from 'discord-api-types/v10';
 
 export interface StartForumThreadOptions extends RESTPostAPIGuildForumThreadsJSONBody {
@@ -617,10 +616,10 @@ export class ChannelsAPI {
 		body: RESTPostAPISoundboardSendSoundJSONBody,
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
-		return this.rest.post(Routes.sendSoundboardSound(channelId), {
+		await this.rest.post(Routes.sendSoundboardSound(channelId), {
 			body,
 			signal,
-		}) as Promise<RESTPostAPISendSoundboardSoundResult>;
+		});
 	}
 
 	/**
