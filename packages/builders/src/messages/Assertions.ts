@@ -92,7 +92,7 @@ const messageNoComponentsV2Predicate = baseMessagePredicate
 		embeds: embedPredicate.array().max(10).optional(),
 		sticker_ids: z.array(z.string()).max(3).optional(),
 		poll: pollPredicate.optional(),
-		shared_client_theme: sharedClientThemePredicate.nullish(),
+		shared_client_theme: sharedClientThemePredicate.optional(),
 		components: basicActionRowPredicate.array().max(5).optional(),
 		flags: z
 			.int()
