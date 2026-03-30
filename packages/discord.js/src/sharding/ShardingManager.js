@@ -177,7 +177,7 @@ class ShardingManager extends AsyncEventEmitter {
     /**
      * The API version to use
      *
-     * @type {?string}
+     * @type {string}
      */
     this.version = _options.version ?? APIVersion;
 
