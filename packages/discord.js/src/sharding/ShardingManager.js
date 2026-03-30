@@ -7,6 +7,7 @@ const { setTimeout: sleep } = require('node:timers/promises');
 const { Collection } = require('@discordjs/collection');
 const { range } = require('@discordjs/util');
 const { AsyncEventEmitter } = require('@vladfrangu/async_event_emitter');
+const { APIVersion, RouteBases } = require('discord-api-types/v10');
 const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
 const { fetchRecommendedShardCount } = require('../util/Util.js');
 const { Shard } = require('./Shard.js');
@@ -43,6 +44,8 @@ class ShardingManager extends AsyncEventEmitter {
    * @property {string[]} [shardArgs=[]] Arguments to pass to the shard script when spawning
    * @property {string[]} [execArgv=[]] Arguments to pass to the shard script executable when spawning
    * @property {string} [token] Token to use for automatic shard count and passing to shards
+   * @property {string} [api='https://discord.com/api'] The base API URL
+   * @property {string} [version='10'] The API version to use
    */
 
   /**
@@ -165,6 +168,20 @@ class ShardingManager extends AsyncEventEmitter {
     this.token = _options.token?.replace(/^bot\s*/i, '') ?? null;
 
     /**
+     * The base API URL
+     *
+     * @type {string}
+     */
+    this.api = _options.api ?? RouteBases.api;
+
+    /**
+     * The API version to use
+     *
+     * @type {?string}
+     */
+    this.version = _options.version ?? APIVersion;
+
+    /**
      * A collection of shards that this manager has spawned
      *
      * @type {Collection<number, Shard>}
@@ -217,7 +234,10 @@ class ShardingManager extends AsyncEventEmitter {
     let shardAmount = amount;
     if (shardAmount === 'auto') {
       // eslint-disable-next-line require-atomic-updates
-      shardAmount = await fetchRecommendedShardCount(this.token);
+      shardAmount = await fetchRecommendedShardCount(this.token, {
+        api: this.api,
+        version: this.version,
+      });
     } else {
       if (typeof shardAmount !== 'number' || Number.isNaN(shardAmount)) {
         throw new DiscordjsTypeError(ErrorCodes.ClientInvalidOption, 'Amount of shards', 'a number.');
