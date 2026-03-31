@@ -1640,6 +1640,7 @@ export class GuildMember extends Base {
   public avatarDecorationData: AvatarDecorationData | null;
   public banner: string | null;
   public get bannable(): boolean;
+  public collectibles: Collectibles | null;
   public get dmChannel(): DMChannel | null;
   public get displayColor(): number;
   public get displayHexColor(): HexColorString;
