@@ -84,7 +84,7 @@ export class RadioGroupBuilder extends ComponentBuilder<APIRadioGroupComponent> 
 	 *
 	 * @param options - The options to use
 	 */
-	public setOptions(options: RestOrArray<APIRadioGroupOption | RadioGroupOptionBuilder>) {
+	public setOptions(...options: RestOrArray<APIRadioGroupOption | RadioGroupOptionBuilder>) {
 		return this.spliceOptions(0, this.options.length, ...options);
 	}
 
