@@ -133,24 +133,28 @@ describe('Message', () => {
 			const message = new MessageBuilder().updateSharedClientTheme((theme) =>
 				theme.setColors(['5865F2']).setGradientAngle(90).setBaseMix(100),
 			);
-
+			
 			expect(message.toJSON()).toStrictEqual({
 				...base,
 				shared_client_theme: {
 					colors: ['5865F2'],
 					gradient_angle: 90,
 					base_mix: 100,
-					base_theme: undefined,
 				},
 			});
 		});
 
 		test('GIVEN a message with a shared client theme then cleared THEN shared_client_theme is undefined', () => {
 			const message = new MessageBuilder()
+				.setContent('foo')
 				.setSharedClientTheme(new SharedClientThemeBuilder().setColors(['5865F2']).setGradientAngle(0).setBaseMix(50))
 				.clearSharedClientTheme();
 
-			expect(message.toJSON()).toStrictEqual(base);
+			expect(message.toJSON()).toStrictEqual({
+				...base,
+				content: 'foo',
+				shared_client_theme: undefined,
+			});
 		});
 
 		test('GIVEN a SharedClientThemeBuilder with too many colors THEN it throws', () => {
