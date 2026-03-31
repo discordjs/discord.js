@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.26.0](https://github.com/discordjs/discord.js/compare/14.25.1...14.26.0) - (2026-03-31)
+
+## Bug Fixes
+
+- Remove manage messages check for pinnable (#11453) ([1a0da18](https://github.com/discordjs/discord.js/commit/1a0da18b3611a31553fd5250b6f882b755d8d003))
+- **DJSError:** Differentiate error type (#11295) ([f5b3f84](https://github.com/discordjs/discord.js/commit/f5b3f842e39ec1f211a0017fadb683ae3b372e02))
+
+## Features
+
+- Allow partial DMChannel without client user (#11462) ([45bd430](https://github.com/discordjs/discord.js/commit/45bd430c0d55ddb98380ea320fab9dc56211e07a))
+- Modal radio group and checkbox components for v14 (#11437) ([b42e499](https://github.com/discordjs/discord.js/commit/b42e4994109ee83f3e329e810cc8733cf4176dbe))
+
+## Refactor
+
+- **DJSError:** Prefer `this.constructor.name` (#11294) ([e32f0c1](https://github.com/discordjs/discord.js/commit/e32f0c141a4ef17383f7a868e26c26a2878fb4f2))
+
+## Typings
+
+- BroadcastEval overload order (#11422) ([16d70b9](https://github.com/discordjs/discord.js/commit/16d70b9232559f505f4d6c1a5b1122ebbac5e35d))
+
 # [14.25.1](https://github.com/discordjs/discord.js/compare/14.25.0...14.25.1) - (2025-11-21)
 
 ## Bug Fixes
