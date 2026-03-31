@@ -86,7 +86,7 @@ export class CheckboxGroupBuilder extends ComponentBuilder<APICheckboxGroupCompo
 	 *
 	 * @param options - The options to use
 	 */
-	public setOptions(options: RestOrArray<APICheckboxGroupOption | CheckboxGroupOptionBuilder>) {
+	public setOptions(...options: RestOrArray<APICheckboxGroupOption | CheckboxGroupOptionBuilder>) {
 		return this.spliceOptions(0, this.options.length, ...options);
 	}
 
