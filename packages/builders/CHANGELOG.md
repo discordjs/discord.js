@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/builders@1.14.1](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.14.0...@discordjs/builders@1.14.1) - (2026-03-31)
+
+## Bug Fixes
+
+- Actually accept rest in RadioGroup/CheckBoxGroupBuilder#setOptions (#11472) ([6e45ddc](https://github.com/discordjs/discord.js/commit/6e45ddc067816b01d6676f04faea54d34469fefc))
+
 # [@discordjs/builders@1.14.0](https://github.com/discordjs/discord.js/compare/@discordjs/builders@1.13.1...@discordjs/builders@1.14.0) - (2026-03-22)
 
 ## Documentation
