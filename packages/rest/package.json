@@ -88,29 +88,29 @@
 		"@sapphire/async-queue": "^1.5.5",
 		"@sapphire/snowflake": "^3.5.5",
 		"@vladfrangu/async_event_emitter": "^2.4.7",
-		"discord-api-types": "^0.38.41",
+		"discord-api-types": "^0.38.43",
 		"magic-bytes.js": "^1.13.0",
 		"tslib": "^2.8.1",
-		"undici": "7.22.0",
+		"undici": "7.24.6",
 		"uuid": "^13.0.0"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^6.0.0",
-		"@types/node": "^22.19.11",
-		"@vitest/coverage-v8": "^4.0.18",
+		"@types/node": "^22.19.15",
+		"@vitest/coverage-v8": "^4.1.2",
 		"cross-env": "^10.1.0",
 		"esbuild-plugin-version-injector": "^1.2.1",
-		"eslint": "^9.39.2",
+		"eslint": "^9.39.4",
 		"eslint-config-neon": "^0.3.2",
 		"eslint-formatter-compact": "^9.0.1",
 		"eslint-formatter-pretty": "^7.0.0",
 		"prettier": "^3.8.1",
 		"tsup": "^8.5.1",
-		"turbo": "^2.8.10",
+		"turbo": "^2.8.21",
 		"typescript": "~5.9.3",
-		"vitest": "^4.0.18"
+		"vitest": "^4.1.2"
 	},
 	"engines": {
 		"node": ">=22.12.0"
