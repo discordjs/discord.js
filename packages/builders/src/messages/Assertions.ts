@@ -1,5 +1,11 @@
 import { Buffer } from 'node:buffer';
-import { AllowedMentionsTypes, BaseThemeType, ComponentType, MessageFlags, MessageReferenceType } from 'discord-api-types/v10';
+import {
+	AllowedMentionsTypes,
+	BaseThemeType,
+	ComponentType,
+	MessageFlags,
+	MessageReferenceType,
+} from 'discord-api-types/v10';
 import { z } from 'zod';
 import { snowflakePredicate } from '../Assertions.js';
 import { embedPredicate } from './embed/Assertions.js';
@@ -80,7 +86,10 @@ const basicActionRowPredicate = z.object({
 });
 
 export const sharedClientThemePredicate = z.object({
-	colors: z.array(z.string().regex(/^[\da-f]{6}$/i)).min(1).max(5),
+	colors: z
+		.array(z.string().regex(/^[\da-f]{6}$/i))
+		.min(1)
+		.max(5),
 	gradient_angle: z.int().min(0).max(360),
 	base_mix: z.int().min(0).max(100),
 	base_theme: z.enum(BaseThemeType).nullish(),
@@ -110,7 +119,9 @@ const messageNoComponentsV2Predicate = baseMessagePredicate
 			(data.components !== undefined && data.components.length > 0) ||
 			(data.sticker_ids !== undefined && data.sticker_ids.length > 0) ||
 			data.shared_client_theme !== undefined,
-		{ error: 'Messages must have content, embeds, a poll, attachments, components, stickers, or a shared client theme' },
+		{
+			error: 'Messages must have content, embeds, a poll, attachments, components, stickers, or a shared client theme',
+		},
 	);
 
 const allTopLevelComponentsPredicate = z

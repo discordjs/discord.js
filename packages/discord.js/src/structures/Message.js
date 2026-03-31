@@ -520,7 +520,7 @@ class Message extends Base {
         gradientAngle: data.shared_client_theme.gradient_angle,
         baseMix: data.shared_client_theme.base_mix,
       };
-      
+
       if ('base_theme' in data.shared_client_theme) {
         this.sharedClientTheme.baseTheme = data.shared_client_theme.baseTheme;
       }

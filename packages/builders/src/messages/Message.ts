@@ -17,7 +17,7 @@ import type {
 	APISeparatorComponent,
 	APITextDisplayComponent,
 	APIMessageTopLevelComponent,
-	APIMessageSharedClientTheme
+	APIMessageSharedClientTheme,
 } from 'discord-api-types/v10';
 import { ActionRowBuilder } from '../components/ActionRow.js';
 import { ComponentBuilder } from '../components/Component.js';
@@ -93,7 +93,16 @@ export class MessageBuilder
 	 * @param data - The API data to create this message with
 	 */
 	public constructor(data: Partial<RESTPostAPIChannelMessageJSONBody> = {}) {
-		const { attachments = [], embeds = [], components = [], message_reference, poll, allowed_mentions, shared_client_theme, ...rest } = data;
+		const {
+			attachments = [],
+			embeds = [],
+			components = [],
+			message_reference,
+			poll,
+			allowed_mentions,
+			shared_client_theme,
+			...rest
+		} = data;
 
 		this.data = {
 			...structuredClone(rest),
@@ -681,7 +690,8 @@ export class MessageBuilder
 	 * @param validationOverride - Force validation to run/not run regardless of your global preference
 	 */
 	public toJSON(validationOverride?: boolean): RESTPostAPIChannelMessageJSONBody {
-		const { poll, allowed_mentions, attachments, embeds, components, message_reference, shared_client_theme, ...rest } = this.data;
+		const { poll, allowed_mentions, attachments, embeds, components, message_reference, shared_client_theme, ...rest } =
+			this.data;
 
 		const data = {
 			...structuredClone(rest),

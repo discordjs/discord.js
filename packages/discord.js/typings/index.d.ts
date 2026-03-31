@@ -2131,10 +2131,10 @@ export interface MessageCall {
 }
 
 export interface SharedClientTheme {
-  colors: readonly string[];
-  gradientAngle: number;
   baseMix: number;
   baseTheme?: BaseThemeType | null;
+  colors: readonly string[];
+  gradientAngle: number;
 }
 
 export type MessageComponentType =

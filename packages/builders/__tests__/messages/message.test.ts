@@ -133,7 +133,7 @@ describe('Message', () => {
 			const message = new MessageBuilder().updateSharedClientTheme((theme) =>
 				theme.setColors(['5865F2']).setGradientAngle(90).setBaseMix(100),
 			);
-			
+
 			expect(message.toJSON()).toStrictEqual({
 				...base,
 				shared_client_theme: {

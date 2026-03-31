@@ -5,10 +5,9 @@ import type { Partialize } from '../utils/types.js';
 
 /**
  * Represents the shared client theme sent with a Discord message.
- * 
+ *
  * @remarks
  * Consuming classes are expected to instantiate this as a `SharedClientTheme`.
- * 
  * @see {@link https://discord.com/developers/docs/resources/message#shared-client-theme-object}
  */
 export class SharedClientTheme<Omitted extends keyof APIMessageSharedClientTheme | '' = ''> extends Structure<
