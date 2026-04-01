@@ -223,6 +223,18 @@ class MessagePayload {
           };
     }
 
+    let shared_client_theme;
+    if (this.options.sharedClientTheme) {
+      shared_client_theme = isJSONEncodable(this.options.sharedClientTheme)
+        ? this.options.sharedClientTheme.toJSON()
+        : {
+            colors: this.options.sharedClientTheme.colors,
+            gradient_angle: this.options.sharedClientTheme.gradientAngle,
+            base_mix: this.options.sharedClientTheme.baseMix,
+            base_theme: this.options.sharedClientTheme.baseTheme,
+          };
+    }
+
     this.body = {
       content,
       tts,
@@ -245,6 +257,7 @@ class MessagePayload {
       thread_name: threadName,
       applied_tags: appliedTags,
       poll,
+      shared_client_theme,
     };
     return this;
   }
