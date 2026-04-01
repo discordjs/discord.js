@@ -76,7 +76,7 @@ export async function makeNetworkRequest(
 		// The reason why we don't re-use the user's signal, is because users may use the same signal for multiple
 		// requests, and we do not want to cause unexpected side-effects.
 		if (requestData.signal.aborted) controller.abort();
-		else requestData.signal.addEventListener('abort', () => controller.abort());
+		else requestData.signal.addEventListener('abort', () => controller.abort(), { once: true });
 	}
 
 	let res: ResponseLike;
