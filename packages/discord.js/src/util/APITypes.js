@@ -550,6 +550,26 @@
  */
 
 /**
+ * @external MessageSearchAuthorType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/MessageSearchAuthorType}
+ */
+
+/**
+ * @external MessageSearchEmbedType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/MessageSearchEmbedType}
+ */
+
+/**
+ * @external MessageSearchHasType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/MessageSearchHasType}
+ */
+
+/**
+ * @external MessageSearchSortMode
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/MessageSearchSortMode}
+ */
+
+/**
  * @external MessageType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/MessageType}
  */
