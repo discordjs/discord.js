@@ -190,13 +190,14 @@ class MessagePayload {
       }
     }
 
-    const attachments = this.options.files?.map((file, index) => ({
-      id: index.toString(),
-      description: file.description,
-      title: file.title,
-      waveform: file.waveform,
-      duration_secs: file.duration,
-    }));
+    const attachments =
+      this.options.files?.map((file, index) => ({
+        id: index.toString(),
+        description: file.description,
+        title: file.title,
+        waveform: file.waveform,
+        duration_secs: file.duration,
+      })) ?? [];
 
     // Only passable during edits
     if (Array.isArray(this.options.attachments)) {
