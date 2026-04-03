@@ -40,7 +40,7 @@ class GenericAction {
       if (!data.recipients.some(existingRecipient => recipient.id === existingRecipient.id)) {
         payloadData.recipients = [...data.recipients, recipient];
       }
-    } else if ([ChannelType.DM, ChannelType.GroupDM].includes(data.type)) {
+    } else if (data.type === ChannelType.DM || data.type === ChannelType.GroupDM) {
       // Try to resolve the recipient.
       const recipient = data.author ?? data.user ?? { id: data.user_id };
       payloadData.recipients = [recipient];
