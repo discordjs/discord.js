@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.26.2](https://github.com/discordjs/discord.js/compare/14.26.1...14.26.2) - (2026-04-03)
+
+## Bug Fixes
+
+- **Action:** Don't add recipients to guild channels (#11479) ([b86573d](https://github.com/discordjs/discord.js/commit/b86573db3c13fe0292bdf6756bcd4351f84e2950))
+
 # [14.26.1](https://github.com/discordjs/discord.js/compare/14.26.0...14.26.1) - (2026-04-03)
 
 ## Bug Fixes
