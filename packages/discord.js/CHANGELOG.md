@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.26.1](https://github.com/discordjs/discord.js/compare/14.26.0...14.26.1) - (2026-04-03)
+
+## Bug Fixes
+
+- Only return DMChannel that have the user as known recipient (#11478) ([67566d0](https://github.com/discordjs/discord.js/commit/67566d0b0efd64012088e3357ad9cd6bacc23930))
+
 # [14.26.0](https://github.com/discordjs/discord.js/compare/14.25.1...14.26.0) - (2026-03-31)
 
 ## Bug Fixes
