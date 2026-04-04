@@ -52,7 +52,7 @@ describe('Subscription structure', () => {
 		// equivalent to null. Hence this is used as a workaround.
 		delete expectedData.canceled_at;
 
-		expect(instance.toJSON()).toStrictEqual(data);
+		expect(instance.toJSON()).toStrictEqual(expectedData);
 	});
 
 	test('patching the structure works in-place', () => {
