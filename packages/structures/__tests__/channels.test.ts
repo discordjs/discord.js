@@ -1,3 +1,4 @@
+import { DiscordSnowflake } from '@sapphire/snowflake';
 import type {
 	APIAnnouncementThreadChannel,
 	APIDMChannel,
@@ -68,6 +69,11 @@ describe('text channel', () => {
 
 	test('TextChannel has all properties', () => {
 		const instance = new TextChannel(data);
+
+		const createdTimestamp = DiscordSnowflake.timestampFrom(data.id!);
+		expect(instance.createdTimestamp).toBe(createdTimestamp);
+		expect(instance.createdAt!.valueOf()).toBe(createdTimestamp);
+
 		expect(instance.id).toBe(data.id);
 		expect(instance.name).toBe(data.name);
 		expect(instance.position).toBe(data.position);

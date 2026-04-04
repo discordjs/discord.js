@@ -1,5 +1,6 @@
 import type { APIButtonComponent, APIButtonComponentWithCustomId, ButtonStyle } from 'discord-api-types/v10';
 import { kData } from '../../utils/symbols.js';
+import { isFieldSet } from '../../utils/type-guards.js';
 import type { Partialize } from '../../utils/types.js';
 import { Component } from './Component.js';
 
@@ -36,6 +37,6 @@ export abstract class ButtonComponent<
 	 * The status of the button
 	 */
 	public get disabled() {
-		return typeof this[kData].disabled === 'boolean' ? this[kData].disabled : null;
+		return isFieldSet(this[kData], 'disabled', 'boolean') ? this[kData].disabled : null;
 	}
 }

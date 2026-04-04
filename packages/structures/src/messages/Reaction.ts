@@ -34,7 +34,7 @@ export class Reaction<Omitted extends keyof APIReaction | '' = ''> extends Struc
 	 */
 	protected override optimizeData(data: Partial<APIReaction>) {
 		if (data.burst_colors) {
-			this[kBurstColors] = data.burst_colors.map((color) => Number.parseInt(color, 16));
+			this[kBurstColors] = data.burst_colors.map((color) => Number.parseInt(color.replace('#', ''), 16));
 		}
 	}
 
