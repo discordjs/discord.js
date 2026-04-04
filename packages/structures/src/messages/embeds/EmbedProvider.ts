@@ -13,7 +13,7 @@ export class EmbedProvider<Omitted extends keyof APIEmbedProvider | '' = ''> ext
 	Omitted
 > {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * @param data - The raw data received from the API for the embed provider
 	 */
 	public constructor(data: Partialize<APIEmbedProvider, Omitted>) {
 		super(data);
