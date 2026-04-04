@@ -102,7 +102,6 @@ const channelSelectComponent: APIChannelSelectComponent = {
 	required: true,
 };
 
-/* todo: could this be a partial Emoji instead? */
 const emojiComponent: APIMessageComponentEmoji = {
 	id: '1',
 	name: 'djs://emoji-name',
@@ -185,7 +184,6 @@ const sectionComponent: APISectionComponent = {
 
 const selectMenuDefaultValue: APISelectMenuDefaultValue<SelectMenuDefaultValueType.User> = {
 	id: '1',
-	/* todo as the above id is a snowflake, are we missing created[Date/Timestamp] on the getters? */
 	type: SelectMenuDefaultValueType.User,
 };
 

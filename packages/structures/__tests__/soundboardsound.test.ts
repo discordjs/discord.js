@@ -4,11 +4,6 @@ import { describe, expect, test } from 'vitest';
 import { SoundboardSound } from '../src';
 import { kPatch } from '../src/utils/symbols';
 
-/**
- * @todo - do we want to potentially not expose these getters and just have
- * a partial Emoji structure for this structure?
- * I think either way it could be beneficial to expose an Emoji for this structure
- */
 const emoji_id = '1';
 const emoji_name = 'djs://emoji-name';
 
