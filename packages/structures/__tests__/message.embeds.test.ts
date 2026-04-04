@@ -285,7 +285,7 @@ describe('embed structure', () => {
 
 	describe('embed field sub-structure', () => {
 		const data = fields[0]!;
-		const instance = new EmbedField(data)!;
+		const instance = new EmbedField(data);
 
 		test('correct values for all getters', () => {
 			expect(instance.name).toBe(data.name);
