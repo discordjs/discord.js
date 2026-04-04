@@ -122,7 +122,7 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = 'created_at' | 
 	/**
 	 * The time the invite will expire at
 	 */
-	public get expiresAt() {
+	public get expiresDate() {
 		const expiresTimestamp = this.expiresTimestamp;
 		return expiresTimestamp ? new Date(expiresTimestamp) : null;
 	}
@@ -165,7 +165,7 @@ export class Invite<Omitted extends keyof APIActualInvite | '' = 'created_at' | 
 	/**
 	 * The time the invite was created at
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
