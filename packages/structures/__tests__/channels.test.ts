@@ -69,6 +69,11 @@ describe('text channel', () => {
 
 	test('TextChannel has all properties', () => {
 		const instance = new TextChannel(data);
+
+		const createdTimestamp = DiscordSnowflake.timestampFrom(data.id!);
+		expect(instance.createdTimestamp).toBe(createdTimestamp);
+		expect(instance.createdAt!.valueOf()).toBe(createdTimestamp);
+
 		expect(instance.id).toBe(data.id);
 		expect(instance.name).toBe(data.name);
 		expect(instance.position).toBe(data.position);
@@ -86,8 +91,6 @@ describe('text channel', () => {
 		expect(instance.topic).toBe(data.topic);
 		expect(instance.type).toBe(ChannelType.GuildText);
 		expect(instance.url).toBe('https://discord.com/channels/2/1');
-		expect(instance.createdTimestamp).toBe(DiscordSnowflake.timestampFrom(instance.id!));
-		expect(instance.createdAt).toEqual(new Date(instance.createdTimestamp!));
 		expect(instance.toJSON()).toEqual(data);
 	});
 

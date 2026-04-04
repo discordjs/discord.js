@@ -114,8 +114,7 @@ describe('embed structure', () => {
 		expect(instance.description).toBe(embedData.description);
 		expect(instance.type).toBe(embedData.type);
 
-		/* * @todo - there is no timestampDate getter on Embed. Is this intentional? */
-		expect(instance.timestamp).toBe(new Date(embedData.timestamp!).getTime());
+		expect(instance.timestamp).toBe(Date.parse(embedData.timestamp!));
 		expect(instance.hexColor).toEqual(`#${embedData.color!.toString(16)}`);
 	});
 
