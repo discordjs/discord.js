@@ -115,7 +115,7 @@ describe('embed structure', () => {
 		expect(instance.type).toBe(embedData.type);
 
 		expect(instance.timestamp).toBe(Date.parse(embedData.timestamp!));
-		expect(instance.hexColor).toEqual(`#${embedData.color!.toString(16)}`);
+		expect(instance.hexColor).toEqual(`#${embedData.color!.toString(16).padStart(6, '0')}`);
 	});
 
 	test('toJSON() returns expected values', () => {
@@ -242,12 +242,12 @@ describe('embed structure', () => {
 
 		test('patching the structure works in-place', () => {
 			const patched = instance[kPatch]({
-				proxy_url: 'djs://[PATCHED]-embed-thumbnail-proxy-url',
+				proxy_url: 'djs://[PATCHED]-embed-proxy-url',
 				height: 22,
 				width: 33,
 			});
 
-			expect(patched.proxyURL).toEqual('djs://[PATCHED]-embed-thumbnail-proxy-url');
+			expect(patched.proxyURL).toEqual('djs://[PATCHED]-embed-proxy-url');
 			expect(patched.height).toEqual(22);
 			expect(patched.width).toEqual(33);
 
