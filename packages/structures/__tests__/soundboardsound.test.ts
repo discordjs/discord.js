@@ -44,8 +44,9 @@ describe('SoundboardSound structure', () => {
 		expect(guildSound.soundId).toBe(soundboardSoundInGuild.sound_id);
 		expect(guildSound.volume).toBe(soundboardSoundInGuild.volume);
 
-		expect(guildSound.createdTimestamp).toBe(DiscordSnowflake.timestampFrom(guildSound.soundId!));
-		expect(guildSound.createdAt).toEqual(new Date(guildSound.createdTimestamp!));
+		const createdTimestamp = DiscordSnowflake.timestampFrom(guildSound.soundId!);
+		expect(guildSound.createdTimestamp).toBe(createdTimestamp);
+		expect(guildSound.createdAt!.valueOf()).toBe(createdTimestamp);
 	});
 
 	test('only sounds in guilds have the created[At|Timestamp] getters exposed', () => {

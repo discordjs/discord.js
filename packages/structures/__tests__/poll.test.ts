@@ -48,8 +48,9 @@ describe('Poll structure and substructures', () => {
 		expect(instance.layoutType).toBe(data.layout_type);
 		expect(instance.allowMultiselect).toBe(data.allow_multiselect);
 
-		expect(instance.expiresTimestamp).toBe(new Date(data.expiry!).getTime());
-		expect(instance.expiresAt).toEqual(new Date(instance.expiresTimestamp!));
+		const expiresTimestamp = Date.parse(data.expiry!);
+		expect(instance.expiresTimestamp).toBe(expiresTimestamp);
+		expect(instance.expiresAt!.valueOf()).toEqual(expiresTimestamp);
 	});
 
 	test('toJSON() returns expected values', () => {

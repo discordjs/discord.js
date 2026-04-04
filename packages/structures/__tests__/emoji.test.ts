@@ -34,8 +34,9 @@ describe('Emoji structure', () => {
 		expect(instance.animated).toBe(data.animated);
 		expect(instance.available).toBe(data.available);
 
-		expect(instance.createdTimestamp).toBe(DiscordSnowflake.timestampFrom(instance.id!));
-		expect(instance.createdAt).toEqual(new Date(instance.createdTimestamp!));
+		const createdTimestamp = DiscordSnowflake.timestampFrom(data.id!);
+		expect(instance.createdTimestamp).toBe(createdTimestamp);
+		expect(instance.createdAt!.valueOf()).toBe(createdTimestamp);
 	});
 
 	test('toJSON() is accurate', () => {
@@ -47,7 +48,7 @@ describe('Emoji structure', () => {
 			available: false,
 		});
 
-		expect(patched.available).toEqual(false);
+		expect(patched.available).toBeFalsy();
 
 		expect(patched.toJSON()).not.toEqual(data);
 		expect(patched).toBe(instance);
