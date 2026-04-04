@@ -161,6 +161,61 @@ class Attachment {
     } else {
       this.title ??= null;
     }
+
+    if ('placeholder' in data) {
+      /**
+       * The thumbhash placeholder for this attachment (if image or video)
+       *
+       * @type {?string}
+       */
+      this.placeholder = data.placeholder;
+    } else {
+      this.placeholder ??= null;
+    }
+
+    if ('placeholder_version' in data) {
+      /**
+       * The version of the placeholder (if image or video)
+       *
+       * @type {?number}
+       */
+      this.placeholderVersion = data.placeholder_version;
+    } else {
+      this.placeholderVersion ??= null;
+    }
+
+    if ('clip_participants' in data) {
+      /**
+       * For clips, the users who were in the stream
+       *
+       * @type {?Array<APIUser>}
+       */
+      this.clipParticipants = data.clip_participants;
+    } else {
+      this.clipParticipants ??= null;
+    }
+
+    if ('clip_created_at' in data) {
+      /**
+       * For clips, when the clip was created
+       *
+       * @type {?Date}
+       */
+      this.clipCreatedAt = data.clip_created_at ? new Date(data.clip_created_at) : null;
+    } else {
+      this.clipCreatedAt ??= null;
+    }
+
+    if ('application' in data) {
+      /**
+       * For clips, the application in the stream, if recognized
+       *
+       * @type {?APIApplication}
+       */
+      this.application = data.application;
+    } else {
+      this.application ??= null;
+    }
   }
 
   /**
