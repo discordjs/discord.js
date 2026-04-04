@@ -5,6 +5,7 @@ const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { GuildMemberRoleManager } = require('../managers/GuildMemberRoleManager.js');
 const { GuildMemberFlagsBitField } = require('../util/GuildMemberFlagsBitField.js');
 const { PermissionsBitField } = require('../util/PermissionsBitField.js');
+const { _transformCollectibles } = require('../util/Transformers.js');
 const { Base } = require('./Base.js');
 const { VoiceState } = require('./VoiceState.js');
 
@@ -149,6 +150,17 @@ class GuildMember extends Base {
       };
     } else {
       this.avatarDecorationData = null;
+    }
+
+    if ('collectibles' in data) {
+      /**
+       * The member's collectibles
+       *
+       * @type {?Collectibles}
+       */
+      this.collectibles = data.collectibles ? _transformCollectibles(data.collectibles) : null;
+    } else {
+      this.collectibles ??= null;
     }
   }
 
@@ -599,7 +611,11 @@ class GuildMember extends Base {
         (this._roles.length === member._roles.length &&
           this._roles.every((role, index) => role === member._roles[index]))) &&
       this.avatarDecorationData?.asset === member.avatarDecorationData?.asset &&
-      this.avatarDecorationData?.skuId === member.avatarDecorationData?.skuId
+      this.avatarDecorationData?.skuId === member.avatarDecorationData?.skuId &&
+      this.collectibles?.nameplate?.skuId === member.collectibles?.nameplate?.skuId &&
+      this.collectibles?.nameplate?.asset === member.collectibles?.nameplate?.asset &&
+      this.collectibles?.nameplate?.label === member.collectibles?.nameplate?.label &&
+      this.collectibles?.nameplate?.palette === member.collectibles?.nameplate?.palette
     );
   }
 
