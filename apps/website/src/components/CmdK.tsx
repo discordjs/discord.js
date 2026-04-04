@@ -3,7 +3,7 @@
 import { Command } from 'cmdk';
 import { useAtom, useSetAtom } from 'jotai';
 import { ArrowRight } from 'lucide-react';
-import MeiliSearch from 'meilisearch';
+import { MeiliSearch } from 'meilisearch';
 import dynamic from 'next/dynamic';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
