@@ -45,7 +45,7 @@ describe('Subscription structure', () => {
 	});
 
 	test('toJSON() is accurate', () => {
-		const expectedData = data;
+		const expectedData = { ...data };
 
 		// @ts-expect-error the dapi-types type here does not allow canceled_at to be
 		// optional and the toJSON() on Structures is written to omit values that are
@@ -64,9 +64,9 @@ describe('Subscription structure', () => {
 			country,
 		});
 
-		const canceledTimestamp = Date.parse(data.current_period_end!);
-		expect(instance.canceledTimestamp).toBe(canceledTimestamp);
-		expect(instance.canceledAt!.valueOf()).toBe(canceledTimestamp);
+		const canceledTimestamp = Date.parse(canceled_at);
+		expect(patched.canceledTimestamp).toBe(canceledTimestamp);
+		expect(patched.canceledAt!.valueOf()).toBe(canceledTimestamp);
 
 		expect(patched.country).toEqual(country);
 

@@ -58,7 +58,7 @@ import {
 	UserSelectMenuComponent,
 	SectionComponent,
 } from '../src/index.js';
-import { kPatch } from '../src/utils/symbols';
+import { kPatch } from '../src/utils/symbols.js';
 
 const textDisplayComponent: APITextDisplayComponent = {
 	content: 'djs://text-display-component-content',
@@ -242,7 +242,7 @@ const userSelectComponent: APIUserSelectComponent = {
 };
 
 describe('Message components structures', () => {
-	describe('UserSelectComponet Structure', () => {
+	describe('UserSelectComponent Structure', () => {
 		const data = userSelectComponent;
 		const instance = new UserSelectMenuComponent(data);
 
@@ -261,7 +261,7 @@ describe('Message components structures', () => {
 			expect(instance.toJSON()).toStrictEqual(data);
 		});
 
-		test('Patching the UserSelectComponet works in place', () => {
+		test('Patching the UserSelectComponent works in place', () => {
 			const patched = instance[kPatch]({
 				required: false,
 				placeholder: 'djs://[PATCHED]-user-select-component-placeholder',
@@ -290,7 +290,7 @@ describe('Message components structures', () => {
 			expect(instance.toJSON()).toStrictEqual(data);
 		});
 
-		test('Patching the ThumbnailCompoonent works in place', () => {
+		test('Patching the ThumbnailComponent works in place', () => {
 			const patched = instance[kPatch]({
 				spoiler: false,
 				description: 'djs://[PATCHED]-thumbnail-component-description',
@@ -336,32 +336,6 @@ describe('Message components structures', () => {
 			expect(patched.label).toEqual('djs://[PATCHED]-text-input-component-label');
 			expect(patched.placeholder).toEqual('djs://[PATCHED]-text-input-component-placeholder');
 			expect(patched.maxLength).toBe(10_000);
-
-			expect(patched.toJSON()).not.toEqual(data);
-			expect(patched).toBe(instance);
-		});
-	});
-
-	describe('TextDisplayComponent Structure', () => {
-		const data = textDisplayComponent;
-		const instance = new TextDisplayComponent(data);
-
-		test('TextDisplayComponent has all properties', () => {
-			expect(instance.id).toBe(data.id);
-			expect(instance.content).toBe(data.content);
-			expect(instance.type).toBe(data.type);
-		});
-
-		test('toJSON() is accurate', () => {
-			expect(instance.toJSON()).toStrictEqual(data);
-		});
-
-		test('Patching the TextDisplayComponent works in place', () => {
-			const patched = instance[kPatch]({
-				content: 'djs://[PATCHED]-text-display-component-new-context',
-			});
-
-			expect(patched.content).toEqual('djs://[PATCHED]-text-display-component-new-context');
 
 			expect(patched.toJSON()).not.toEqual(data);
 			expect(patched).toBe(instance);

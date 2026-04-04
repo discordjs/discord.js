@@ -836,7 +836,7 @@ describe('message with components', () => {
 		});
 	});
 
-	describe('ApplicationCommandInteraction sub-structure', () => {
+	describe('APIApplicationCommandInteractionMetadata sub-structure', () => {
 		const authorizing_integration_owners: APIAuthorizingIntegrationOwnersMap = {};
 		const data: APIApplicationCommandInteractionMetadata = {
 			user,

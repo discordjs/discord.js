@@ -14,7 +14,7 @@ import {
 	AutoModerationRule,
 	AutoModerationRuleTriggerMetadata,
 } from '../src/automoderation/index.js';
-import { kPatch } from '../src/utils/symbols';
+import { kPatch } from '../src/utils/symbols.js';
 
 const ruleTriggerMetadataData: APIAutoModerationRuleTriggerMetadata = {
 	mention_total_limit: 5,
@@ -96,7 +96,7 @@ describe('AutoModerationRule structure', () => {
 				mention_total_limit: 10,
 			});
 
-			expect(patched.mentionTotalLimit).toBe(patched.mentionTotalLimit);
+			expect(patched.mentionTotalLimit).toBe(10);
 
 			expect(patched.toJSON()).toEqual(instance.toJSON());
 		});
@@ -119,7 +119,7 @@ describe('AutoModerationRule structure', () => {
 				type: AutoModerationActionType.Timeout,
 			});
 
-			expect(instance.type).toBe(patched.type);
+			expect(instance.type).toBe(AutoModerationActionType.Timeout);
 
 			expect(patched.toJSON()).toEqual(instance.toJSON());
 		});
