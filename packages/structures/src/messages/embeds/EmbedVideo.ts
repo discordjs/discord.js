@@ -1,6 +1,8 @@
-import type { APIEmbedVideo } from 'discord-api-types/v10';
+import type { APIEmbedVideo, EmbedMediaFlags } from 'discord-api-types/v10';
 import { Structure } from '../../Structure.js';
+import { EmbedMediaFlagsBitField } from '../../bitfields/EmbedMediaFlagsBitField.js';
 import { kData } from '../../utils/symbols.js';
+import { isFieldSet } from '../../utils/type-guards.js';
 import type { Partialize } from '../../utils/types.js';
 
 /**
@@ -10,7 +12,7 @@ import type { Partialize } from '../../utils/types.js';
  */
 export class EmbedVideo<Omitted extends keyof APIEmbedVideo | '' = ''> extends Structure<APIEmbedVideo, Omitted> {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * @param data - The raw data received from the API for the embed video
 	 */
 	public constructor(data: Partialize<APIEmbedVideo, Omitted>) {
 		super(data);
@@ -42,5 +44,42 @@ export class EmbedVideo<Omitted extends keyof APIEmbedVideo | '' = ''> extends S
 	 */
 	public get url() {
 		return this[kData].url;
+	}
+
+	/**
+	 * The video's media type
+	 */
+	public get contentType() {
+		return this[kData].content_type;
+	}
+
+	/**
+	 * ThumbHash placeholder of the video
+	 */
+	public get placeholder() {
+		return this[kData].placeholder;
+	}
+
+	/**
+	 * Version of the placeholder
+	 */
+	public get placeholderVersion() {
+		return this[kData].placeholder_version;
+	}
+
+	/**
+	 * Description (alt text) for the video
+	 */
+	public get description() {
+		return this[kData].description;
+	}
+
+	/**
+	 * Embed media flags combined as a bitfield
+	 */
+	public get flags() {
+		return isFieldSet(this[kData], 'flags', 'number')
+			? new EmbedMediaFlagsBitField(this[kData].flags as EmbedMediaFlags)
+			: null;
 	}
 }

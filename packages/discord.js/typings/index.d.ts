@@ -11,6 +11,7 @@ import {
   ActivityFlags,
   ActivityType,
   APIActionRowComponent,
+  APIApplication,
   APIApplicationCommand,
   APIApplicationCommandInteractionData,
   APIApplicationCommandOption,
@@ -119,6 +120,8 @@ import {
   ChannelFlags,
   ChannelType,
   ComponentType,
+  EmbedFlags,
+  EmbedMediaFlags,
   EmbedType,
   EntitlementType,
   EntryPointCommandHandlerType,
@@ -777,6 +780,16 @@ export class ChannelSelectMenuComponent extends BaseSelectMenuComponent<APIChann
   public getChannelTypes(): ChannelType[] | null;
 }
 
+export class EmbedFlagsBitField extends BitField<EmbedFlagsString> {
+  public static Flags: typeof EmbedFlags;
+  public static resolve(bit?: BitFieldResolvable<EmbedFlagsString, number>): number;
+}
+
+export class EmbedMediaFlagsBitField extends BitField<EmbedMediaFlagsString> {
+  public static Flags: typeof EmbedMediaFlags;
+  public static resolve(bit?: BitFieldResolvable<EmbedMediaFlagsString, number>): number;
+}
+
 export interface EmbedData {
   author?: EmbedAuthorData;
   color?: number;
@@ -808,7 +821,12 @@ export interface EmbedFooterData extends IconData {
 }
 
 export interface EmbedAssetData {
+  contentType?: string;
+  description?: string;
+  flags?: Readonly<EmbedMediaFlagsBitField>;
   height?: number;
+  placeholder?: string;
+  placeholderVersion?: number;
   proxyURL?: string;
   url: string;
   width?: number;
@@ -831,6 +849,7 @@ export class Embed {
   public get provider(): APIEmbedProvider | null;
   public get video(): EmbedAssetData | null;
   public get length(): number;
+  public get flags(): EmbedFlagsBitField | null;
   public equals(other: APIEmbed | Embed): boolean;
   public toJSON(): APIEmbed;
 }
@@ -2288,6 +2307,9 @@ export class AuthorizingIntegrationOwners extends Base {
 export class Attachment {
   private constructor(data: APIAttachment);
   private readonly attachment: BufferResolvable | Stream;
+  public application: APIApplication | null;
+  public clipCreatedAt: number | null;
+  public clipParticipants: readonly APIUser[] | null;
   public contentType: string | null;
   public description: string | null;
   public duration: number | null;
@@ -2296,6 +2318,8 @@ export class Attachment {
   public height: number | null;
   public id: Snowflake;
   public name: string;
+  public placeholder: string | null;
+  public placeholderVersion: number | null;
   public proxyURL: string;
   public size: number;
   public get spoiler(): boolean;
@@ -5885,6 +5909,10 @@ export interface GuildTemplateEditOptions {
   description?: string;
   name?: string;
 }
+
+export type EmbedFlagsString = keyof typeof EmbedFlags;
+
+export type EmbedMediaFlagsString = keyof typeof EmbedMediaFlags;
 
 export interface EmbedField {
   inline: boolean;

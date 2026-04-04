@@ -10,7 +10,7 @@ import type { Partialize } from '../../utils/types.js';
  */
 export class EmbedAuthor<Omitted extends keyof APIEmbedAuthor | '' = ''> extends Structure<APIEmbedAuthor, Omitted> {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * @param data - The raw data received from the API for the embed author
 	 */
 	public constructor(data: Partialize<APIEmbedAuthor, Omitted>) {
 		super(data);
