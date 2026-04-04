@@ -694,19 +694,14 @@ describe('message with components', () => {
 		const instance = new Reaction(data);
 
 		test('correct value for all getters', () => {
-			expect(instance.burstColors).toEqual(data.burst_colors.map((x) => Number.parseInt(x, 16)));
+			expect(instance.burstColors).toEqual(data.burst_colors.map((x) => Number.parseInt(x.replace('#', ''), 16)));
 			expect(instance.count).toBe(data.count);
 			expect(instance.me).toBe(data.me);
 			expect(instance.meBurst).toBe(data.me_burst);
 		});
 
 		test('toJSON() is accurate', () => {
-			/**
-			 * todo: the data for this structure does not accept "#color"
-			 * but the toJSON here outputs it as "#color" and therefore
-			 * does not pass.
-			 */
-			// expect(instance.toJSON()).toStrictEqual(data);
+			expect(instance.toJSON()).toStrictEqual(data);
 		});
 
 		test('patching the structure works in-place', () => {
