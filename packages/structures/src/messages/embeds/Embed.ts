@@ -1,14 +1,16 @@
-import type { APIEmbed } from 'discord-api-types/v10';
+import type { APIEmbed, EmbedFlags } from 'discord-api-types/v10';
 import { Structure } from '../../Structure.js';
+import { EmbedFlagsBitField } from '../../bitfields/EmbedFlagsBitField.js';
 import { dateToDiscordISOTimestamp } from '../../utils/optimization.js';
 import { kCreatedTimestamp, kData } from '../../utils/symbols.js';
+import { isFieldSet } from '../../utils/type-guards.js';
 import type { Partialize } from '../../utils/types.js';
 
 /**
  * Represents an embed on a message.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @remarks has substructures `EmbedAuthor`, `EmbedFooter`, `EmbedField`, `EmbedImage`, `EmbedThumbnail`, `EmbedProvider`, `EmbedVideo` which need to be instantiated and stored by an extending class using it
+ * @remarks has substructures `EmbedAuthor`, `EmbedFooter`, `EmbedField`, `EmbedImage`, `EmbedProvider`, `EmbedVideo` which need to be instantiated and stored by an extending class using it
  */
 export class Embed<Omitted extends keyof APIEmbed | '' = ''> extends Structure<APIEmbed, Omitted> {
 	/**
@@ -63,7 +65,14 @@ export class Embed<Omitted extends keyof APIEmbed | '' = ''> extends Structure<A
 	}
 
 	/**
-	 * THe title of the embed
+	 * Embed flags combined as a bitfield
+	 */
+	public get flags() {
+		return isFieldSet(this[kData], 'flags', 'number') ? new EmbedFlagsBitField(this[kData].flags as EmbedFlags) : null;
+	}
+
+	/**
+	 * The title of the embed
 	 */
 	public get title() {
 		return this[kData].title;
