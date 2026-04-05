@@ -9,6 +9,7 @@ import { WebSocketManager, WebSocketManagerOptions } from '@discordjs/ws';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
   ActivityFlags,
+  ActivityLocationKind,
   ActivityType,
   APIActionRowComponent,
   APIApplicationCommand,
@@ -1004,6 +1005,7 @@ export class ClientApplication extends Application {
   public roleConnectionsVerificationURL: string | null;
   public edit(options: ClientApplicationEditOptions): Promise<ClientApplication>;
   public fetch(): Promise<ClientApplication>;
+  public fetchActivityInstance(instanceId: string): Promise<ActivityInstanceData>;
   public fetchRoleConnectionMetadataRecords(): Promise<ApplicationRoleConnectionMetadata[]>;
   public fetchSKUs(): Promise<Collection<Snowflake, SKU>>;
   public editRoleConnectionMetadataRecords(
@@ -7400,6 +7402,21 @@ export interface ClientApplicationEditOptions {
 export interface ClientApplicationInstallParams {
   permissions: Readonly<PermissionsBitField>;
   scopes: readonly OAuth2Scopes[];
+}
+
+export interface ActivityLocation {
+  channelId: Snowflake;
+  guildId: Snowflake | null;
+  id: string;
+  kind: ActivityLocationKind;
+}
+
+export interface ActivityInstanceData {
+  applicationId: Snowflake;
+  instanceId: string;
+  launchId: Snowflake;
+  location: ActivityLocation;
+  users: readonly Snowflake[];
 }
 
 export type Serialized<Value> = Value extends bigint | symbol | (() => any)
