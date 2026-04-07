@@ -9,6 +9,7 @@ const { SubscriptionManager } = require('../managers/SubscriptionManager.js');
 const { ApplicationFlagsBitField } = require('../util/ApplicationFlagsBitField.js');
 const { resolveImage } = require('../util/DataResolver.js');
 const { PermissionsBitField } = require('../util/PermissionsBitField.js');
+const { ActivityInstance } = require('./ActivityInstance.js');
 const { ApplicationRoleConnectionMetadata } = require('./ApplicationRoleConnectionMetadata.js');
 const { SKU } = require('./SKU.js');
 const { Team } = require('./Team.js');
@@ -448,46 +449,14 @@ class ClientApplication extends Application {
   }
 
   /**
-   * Represents the location of an activity instance.
-   *
-   * @typedef {Object} ActivityLocation
-   * @property {string} id Unique identifier for the location
-   * @property {ActivityLocationKind} kind The kind of location
-   * @property {Snowflake} channelId The id of the channel
-   * @property {?Snowflake} guildId The id of the guild
-   */
-
-  /**
-   * Represents an activity instance.
-   *
-   * @typedef {Object} ActivityInstanceData
-   * @property {Snowflake} applicationId The application id
-   * @property {string} instanceId The activity instance id
-   * @property {Snowflake} launchId Unique identifier for the launch
-   * @property {ActivityLocation} location The location the instance is running in
-   * @property {Snowflake[]} users The ids of the users connected to the instance
-   */
-
-  /**
    * Fetches an activity instance for this application.
    *
    * @param {string} instanceId The id of the activity instance
-   * @returns {Promise<ActivityInstanceData>}
+   * @returns {Promise<ActivityInstance>}
    */
   async fetchActivityInstance(instanceId) {
     const data = await this.client.rest.get(Routes.applicationActivityInstance(this.id, instanceId));
-    return {
-      applicationId: data.application_id,
-      instanceId: data.instance_id,
-      launchId: data.launch_id,
-      location: {
-        id: data.location.id,
-        kind: data.location.kind,
-        channelId: data.location.channel_id,
-        guildId: data.location.guild_id ?? null,
-      },
-      users: data.users,
-    };
+    return new ActivityInstance(this.client, data);
   }
 }
 

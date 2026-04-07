@@ -103,6 +103,8 @@ exports.VoiceStateManager = require('./managers/VoiceStateManager.js').VoiceStat
 // Structures
 exports.ActionRow = require('./structures/ActionRow.js').ActionRow;
 exports.Activity = require('./structures/Presence.js').Activity;
+exports.ActivityInstance = require('./structures/ActivityInstance.js').ActivityInstance;
+exports.ActivityLocation = require('./structures/ActivityLocation.js').ActivityLocation;
 exports.AnnouncementChannel = require('./structures/AnnouncementChannel.js').AnnouncementChannel;
 exports.AnonymousGuild = require('./structures/AnonymousGuild.js').AnonymousGuild;
 exports.AuthorizingIntegrationOwners =

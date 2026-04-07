@@ -9,6 +9,8 @@ import { WebSocketManager, WebSocketManagerOptions } from '@discordjs/ws';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
   ActivityFlags,
+  APIActivityInstance,
+  APIActivityLocation,
   ActivityLocationKind,
   ActivityType,
   APIActionRowComponent,
@@ -245,6 +247,25 @@ export class Activity {
   public url: string | null;
   public equals(activity: Activity): boolean;
   public toString(): string;
+}
+
+export class ActivityInstance extends Base {
+  private constructor(client: Client<true>, data: APIActivityInstance);
+  public applicationId: Snowflake;
+  public instanceId: string;
+  public launchId: Snowflake;
+  public location: ActivityLocation;
+  public users: Snowflake[];
+}
+
+export class ActivityLocation extends Base {
+  private constructor(client: Client<true>, data: APIActivityLocation);
+  public id: string;
+  public kind: ActivityLocationKind;
+  public channelId: Snowflake;
+  public guildId: Snowflake | null;
+  public get channel(): Channel | null;
+  public get guild(): Guild | null;
 }
 
 export type ActivityFlagsString = keyof typeof ActivityFlags;
@@ -1005,7 +1026,7 @@ export class ClientApplication extends Application {
   public roleConnectionsVerificationURL: string | null;
   public edit(options: ClientApplicationEditOptions): Promise<ClientApplication>;
   public fetch(): Promise<ClientApplication>;
-  public fetchActivityInstance(instanceId: string): Promise<ActivityInstanceData>;
+  public fetchActivityInstance(instanceId: string): Promise<ActivityInstance>;
   public fetchRoleConnectionMetadataRecords(): Promise<ApplicationRoleConnectionMetadata[]>;
   public fetchSKUs(): Promise<Collection<Snowflake, SKU>>;
   public editRoleConnectionMetadataRecords(
@@ -7402,21 +7423,6 @@ export interface ClientApplicationEditOptions {
 export interface ClientApplicationInstallParams {
   permissions: Readonly<PermissionsBitField>;
   scopes: readonly OAuth2Scopes[];
-}
-
-export interface ActivityLocation {
-  channelId: Snowflake;
-  guildId: Snowflake | null;
-  id: string;
-  kind: ActivityLocationKind;
-}
-
-export interface ActivityInstanceData {
-  applicationId: Snowflake;
-  instanceId: string;
-  launchId: Snowflake;
-  location: ActivityLocation;
-  users: readonly Snowflake[];
 }
 
 export type Serialized<Value> = Value extends bigint | symbol | (() => any)
