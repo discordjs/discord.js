@@ -1,6 +1,6 @@
 import type { APIVoiceState, APIVoiceRegion } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
-import { VoiceState, VoiceRegion, dateToDiscordISOTimestamp } from '../src/index.js';
+import { VoiceState, VoiceRegion } from '../src/index.js';
 import { kPatch } from '../src/utils/symbols.js';
 
 const voiceState: APIVoiceState = {
@@ -45,7 +45,7 @@ describe('VoiceState structure', () => {
 		expect(instance.selfStream).toBeFalsy();
 
 		const requestToSpeakTimestamp = Date.parse(data.request_to_speak_timestamp!);
-		expect(instance.requestToSpeakTimestamp).toBe(dateToDiscordISOTimestamp(new Date(requestToSpeakTimestamp)));
+		expect(instance.requestToSpeakTimestamp).toBe(requestToSpeakTimestamp);
 		expect(instance.requestToSpeakAt!.valueOf()).toBe(requestToSpeakTimestamp);
 	});
 

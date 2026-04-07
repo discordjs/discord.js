@@ -121,7 +121,7 @@ export class VoiceState<Omitted extends keyof APIVoiceState | '' = 'request_to_s
 	 * The timestamp at which the user requested to speak
 	 */
 	public get requestToSpeakTimestamp() {
-		return this[kRequestToSpeakTimestamp] ? dateToDiscordISOTimestamp(new Date(this[kRequestToSpeakTimestamp])) : null;
+		return this[kRequestToSpeakTimestamp];
 	}
 
 	/**
