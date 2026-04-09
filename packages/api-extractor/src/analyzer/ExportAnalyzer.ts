@@ -476,7 +476,7 @@ export class ExportAnalyzer {
 			const followedSymbolNode: ts.ImportTypeNode | ts.Node | undefined =
 				followedSymbol.declarations && (followedSymbol.declarations[0] as ts.Node | undefined);
 
-			if (followedSymbolNode && followedSymbolNode.kind === ts.SyntaxKind.ImportType) {
+			if (followedSymbolNode?.kind === ts.SyntaxKind.ImportType) {
 				return this.fetchReferencedAstEntityFromImportTypeNode(
 					followedSymbolNode as ts.ImportTypeNode,
 					referringModuleIsExternal,

@@ -214,6 +214,7 @@ function mapVarType(type: DocgenVarTypeJson, _package: string): IExcerptToken[] 
 function mapProp(
 	prop: DocgenPropertyJson,
 	_package: string,
+	// eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
 	parent: DocgenClassJson | DocgenInterfaceJson,
 ): IApiNameMixinJson & IApiOptionalMixinJson & IApiPropertyItemJson & IApiReadonlyMixinJson & IApiReleaseTagMixinJson {
 	const mappedVarType = mapVarType(prop.type, _package);

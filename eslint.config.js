@@ -72,8 +72,10 @@ const typeScriptRuleset = merge(...typescript, {
 	},
 });
 
+const nextAppsGlob = `apps/{guide,website}/**/*${commonFiles}`;
+
 const reactRuleset = merge(...react, {
-	files: [`apps/**/*${commonFiles}`, `packages/ui/**/*${commonFiles}`],
+	files: [nextAppsGlob, `packages/ui/**/*${commonFiles}`],
 	plugins: {
 		'react-compiler': reactCompiler,
 	},
@@ -87,11 +89,11 @@ const reactRuleset = merge(...react, {
 	},
 });
 
-const jsxa11yRuleset = merge(...jsxa11y, { files: [`apps/**/*${commonFiles}`, `packages/ui/**/*${commonFiles}`] });
+const jsxa11yRuleset = merge(...jsxa11y, { files: [nextAppsGlob, `packages/ui/**/*${commonFiles}`] });
 
-const nextRuleset = merge(...next, { files: [`apps/**/*${commonFiles}`] });
+const nextRuleset = merge(...next, { files: [nextAppsGlob] });
 
-const edgeRuleset = merge(...edge, { files: [`apps/**/*${commonFiles}`] });
+const edgeRuleset = merge(...edge, { files: [nextAppsGlob] });
 
 const prettierRuleset = merge(...prettier, { files: [`**/*${commonFiles}`] });
 
@@ -127,6 +129,7 @@ export default defineConfig(
 		rules: {
 			'consistent-this': 0,
 			'unicorn/no-this-assignment': 0,
+			'@typescript-eslint/no-duplicate-type-constituents': 0,
 			'@typescript-eslint/no-this-alias': 0,
 		},
 	},
@@ -220,7 +223,8 @@ export default defineConfig(
 			'@typescript-eslint/no-empty-object-type': 0,
 			'@typescript-eslint/no-use-before-define': 0,
 			'@typescript-eslint/consistent-type-imports': 0,
-			'@stylistic/ts/lines-between-class-members': 0,
+			'@stylistic/lines-between-class-members': 0,
+			'@typescript-eslint/no-duplicate-type-constituents': 0,
 			'no-restricted-syntax': [
 				2,
 				{
