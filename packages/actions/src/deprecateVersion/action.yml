@@ -20,7 +20,7 @@ runs:
     - name: Deprecate version
       shell: bash
       env:
-        MESSAGE: ${{ inputs.message }}
+        MESSAGE: ${{ inputs.message || 'This version is deprecated. Please use a newer version.' }}
         NODE_AUTH_TOKEN: ${{ inputs.node-auth-token }}
       run: |
-        pnpm exec npm-deprecate --name "${{ inputs.version }}" --message "${MESSAGE:-This version is deprecated. Please use a newer version.}" --package "${{ inputs.package }}"
+        pnpm exec npm-deprecate --name "${{ inputs.version }}" --message "$MESSAGE" --package "${{ inputs.package }}"
