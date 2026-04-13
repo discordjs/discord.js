@@ -65,7 +65,7 @@
 		"@discordjs/api-extractor-utils": "workspace:^",
 		"@microsoft/tsdoc": "~0.15.1",
 		"@microsoft/tsdoc-config": "~0.17.1",
-		"@vercel/blob": "^2.3.2",
+		"@vercel/blob": "^2.3.3",
 		"@vercel/postgres": "^0.10.0",
 		"commander": "^14.0.3",
 		"tslib": "^2.8.1",
@@ -73,17 +73,17 @@
 		"yaml": "^2.8.3"
 	},
 	"devDependencies": {
-		"@turbo/gen": "^2.8.21",
-		"@types/node": "^24.12.0",
+		"@turbo/gen": "^2.9.6",
+		"@types/node": "^24.12.2",
 		"cross-env": "^10.1.0",
 		"eslint": "^9.39.4",
 		"eslint-config-neon": "^0.3.2",
 		"eslint-formatter-compact": "^9.0.1",
 		"eslint-formatter-pretty": "^7.0.0",
-		"prettier": "^3.8.1",
+		"prettier": "^3.8.2",
 		"terser": "^5.46.1",
 		"tsup": "^8.5.1",
-		"turbo": "^2.8.21",
+		"turbo": "^2.9.6",
 		"typescript": "~5.9.3"
 	},
 	"engines": {
