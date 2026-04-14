@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.26.3](https://github.com/discordjs/discord.js/compare/14.26.2...14.26.3) - (2026-04-14)
+
+## Bug Fixes
+
+- **TeamMember:** Allow a default `permissions` ([dced197](https://github.com/discordjs/discord.js/commit/dced1970ebb481ae7c5cf46ec5fadee4b05215bb))
+
 # [14.26.2](https://github.com/discordjs/discord.js/compare/14.26.1...14.26.2) - (2026-04-03)
 
 ## Bug Fixes
