@@ -27,6 +27,9 @@ class TeamMember extends Base {
        * @deprecated Use {@link TeamMember#role} instead.
        */
       this.permissions = data.permissions;
+    } else {
+      // Discord stopped sending this field at some point on or before 2026-04-14.
+      this.permissions ??= [];
     }
 
     if ('membership_state' in data) {
