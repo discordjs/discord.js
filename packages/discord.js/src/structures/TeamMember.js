@@ -29,6 +29,7 @@ class TeamMember extends Base {
       this.permissions = data.permissions;
     } else {
       // Discord stopped sending this field at some point on or before 2026-04-14.
+      // Later on the same day, Discord started sending it again, which resulted in this code path.
       this.permissions ??= [];
     }
 
