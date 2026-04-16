@@ -3082,3 +3082,23 @@ declare const authorizingIntegrationOwners: AuthorizingIntegrationOwners;
   expectType<User | null>(authorizingIntegrationOwners.user);
   expectType<Snowflake | undefined>(authorizingIntegrationOwners[ApplicationIntegrationType.GuildInstall]);
 }
+
+await textChannel.send({
+  files: [
+    new AttachmentBuilder('https://example.com/voice-message.ogg')
+      .setDuration(2)
+      .setWaveform('AFUqPDw3Eg2hh4+gopOYj4xthU4='),
+  ],
+  flags: MessageFlags.IsVoiceMessage,
+});
+
+await textChannel.send({
+  files: [
+    {
+      attachment: 'https://example.com/voice-message.ogg',
+      duration: 2,
+      waveform: 'AFUqPDw3Eg2hh4+gopOYj4xthU4=',
+    },
+  ],
+  flags: MessageFlags.IsVoiceMessage,
+});
