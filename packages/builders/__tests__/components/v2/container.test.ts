@@ -178,6 +178,9 @@ describe('Container Components', () => {
 			expect(new ContainerBuilder(containerWithTextDisplay).setAccentColor('#ff00ff').toJSON().accent_color).toBe(
 				0xff00ff,
 			);
+			expect(new ContainerBuilder(containerWithTextDisplay).setAccentColor('#FF00FF').toJSON().accent_color).toBe(
+				0xff00ff,
+			);
 			expect(new ContainerBuilder(containerWithTextDisplay).setAccentColor('#000000').toJSON().accent_color).toBe(0);
 			expect(new ContainerBuilder(containerWithTextDisplay).setAccentColor([255, 0, 255]).toJSON().accent_color).toBe(
 				0xff00ff,
