@@ -188,9 +188,30 @@ describe('Container Components', () => {
 		test('GIVEN invalid accent color input THEN throws', () => {
 			expect(() => new ContainerBuilder(containerWithTextDisplay).setAccentColor('red' as any)).toThrowError();
 			expect(() => new ContainerBuilder(containerWithTextDisplay).setAccentColor('#fff' as any)).toThrowError();
-			expect(() => new ContainerBuilder(containerWithTextDisplay).setAccentColor([300, 0, 0] as any)).toThrowError();
 			expect(() => new ContainerBuilder(containerWithTextDisplay).setAccentColor(-1 as any)).toThrowError();
 			expect(() => new ContainerBuilder(containerWithTextDisplay).setAccentColor(0x1_00_00_00 as any)).toThrowError();
+		});
+
+		test('GIVEN out-of-range RGB components THEN throws', () => {
+			// Each channel must be an integer within [0, 255].
+			expect(() => new ContainerBuilder(containerWithTextDisplay).setAccentColor([0, 0, 300] as any)).toThrowError(
+				RangeError,
+			);
+			expect(() => new ContainerBuilder(containerWithTextDisplay).setAccentColor([0, 256, 0] as any)).toThrowError(
+				RangeError,
+			);
+			expect(() => new ContainerBuilder(containerWithTextDisplay).setAccentColor([300, 0, 0] as any)).toThrowError(
+				RangeError,
+			);
+			expect(() => new ContainerBuilder(containerWithTextDisplay).setAccentColor([-1, 0, 0] as any)).toThrowError(
+				RangeError,
+			);
+			expect(() => new ContainerBuilder(containerWithTextDisplay).setAccentColor([1.9, 0, 0] as any)).toThrowError(
+				RangeError,
+			);
+			expect(() => new ContainerBuilder(containerWithTextDisplay).setAccentColor([0, 0] as any)).toThrowError(
+				TypeError,
+			);
 		});
 
 		test('GIVEN valid method parameters THEN valid JSON is given', () => {
