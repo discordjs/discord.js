@@ -14,6 +14,7 @@ import {
 	escapeMarkdown,
 	escapeQuote,
 	escapeBlockQuote,
+	escapeHideLinkEmbed,
 } from '../src/index.js';
 
 const testString = "> `_Behold!_`\n||___~~***```js\n`use strict`;\nrequire('discord.js');```***~~___||";
@@ -218,6 +219,28 @@ not a quote
  \\> another quote
 >> not a quote`;
 			expect(escapeQuote(input)).toEqual(expectedOutput);
+		});
+	});
+
+	describe('escapeHideLinkEmbed', () => {
+		test('basic', () => {
+			expect(escapeHideLinkEmbed('<https://discord.js.org/>')).toEqual('\\<https://discord.js.org/>');
+			expect(escapeHideLinkEmbed('<a:/b>')).toEqual('\\<a:/b>');
+			expect(escapeHideLinkEmbed('</:/:>')).toEqual('\\</:/:>');
+		});
+
+		test('does not affect unrelated text', () => {
+			expect(escapeHideLinkEmbed('no angle brackets here')).toEqual('no angle brackets here');
+			expect(escapeHideLinkEmbed('<https://example.com>')).toEqual('\\<https://example.com>');
+			expect(escapeHideLinkEmbed('plain https://example.com url')).toEqual('plain https://example.com url');
+			expect(escapeHideLinkEmbed('<@123456>')).toEqual('<@123456>');
+			expect(escapeHideLinkEmbed('<#123456>')).toEqual('<#123456>');
+		});
+
+		test('multiple occurrences', () => {
+			expect(escapeHideLinkEmbed('see <https://a.example/> and <https://b.example/>')).toEqual(
+				'see \\<https://a.example/> and \\<https://b.example/>',
+			);
 		});
 	});
 
