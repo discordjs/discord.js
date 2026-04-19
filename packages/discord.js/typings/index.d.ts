@@ -622,7 +622,6 @@ export class BaseGuildTextChannel extends GuildChannel {
   public rateLimitPerUser: number | null;
   public nsfw: boolean;
   public threads: GuildTextThreadManager<AllowedThreadTypeForAnnouncementChannel | AllowedThreadTypeForTextChannel>;
-  public get threadable(): boolean;
   public topic: string | null;
   public createInvite(options?: InviteCreateOptions): Promise<GuildInvite>;
   public fetchInvites(cache?: boolean): Promise<Collection<string, GuildInvite>>;
