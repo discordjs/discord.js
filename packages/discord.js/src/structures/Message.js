@@ -811,6 +811,23 @@ class Message extends Base {
   }
 
   /**
+   * Whether a thread can be started from this message by the client user.
+   *
+   * @type {boolean}
+   * @readonly
+   */
+  get threadable() {
+    const { channel } = this;
+    if (!channel) return false;
+    if (![ChannelType.GuildText, ChannelType.GuildAnnouncement].includes(channel.type)) return false;
+    if (this.hasThread) return false;
+    if (!channel.viewable) return false;
+
+    const permissions = channel.permissionsFor(this.client.user);
+    return permissions?.has(PermissionFlagsBits.CreatePublicThreads, false) ?? false;
+  }
+
+  /**
    * Fetches the Message this crosspost/reply/pin-add references, if available to the client
    *
    * @returns {Promise<Message>}

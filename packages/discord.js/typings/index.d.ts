@@ -622,6 +622,7 @@ export class BaseGuildTextChannel extends GuildChannel {
   public rateLimitPerUser: number | null;
   public nsfw: boolean;
   public threads: GuildTextThreadManager<AllowedThreadTypeForAnnouncementChannel | AllowedThreadTypeForTextChannel>;
+  public get threadable(): boolean;
   public topic: string | null;
   public createInvite(options?: InviteCreateOptions): Promise<GuildInvite>;
   public fetchInvites(cache?: boolean): Promise<Collection<string, GuildInvite>>;
@@ -2220,6 +2221,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public resolved: CommandInteractionResolvedData | null;
   public system: boolean;
   public get thread(): AnyThreadChannel | null;
+  public get threadable(): boolean;
   public tts: boolean;
   public poll: Poll | null;
   public call: MessageCall | null;
