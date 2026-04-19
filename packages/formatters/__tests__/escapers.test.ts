@@ -237,6 +237,19 @@ not a quote
 			expect(escapeHideLinkEmbed('<#123456>')).toEqual('<#123456>');
 		});
 
+		test('does not touch other discord angle-bracket syntaxes', () => {
+			// Timestamps
+			expect(escapeHideLinkEmbed('<t:1700000000>')).toEqual('<t:1700000000>');
+			expect(escapeHideLinkEmbed('<t:1700000000:R>')).toEqual('<t:1700000000:R>');
+			// Custom emoji
+			expect(escapeHideLinkEmbed('<:name:123>')).toEqual('<:name:123>');
+			expect(escapeHideLinkEmbed('<a:name:123>')).toEqual('<a:name:123>');
+			// Role mention
+			expect(escapeHideLinkEmbed('<@&123456>')).toEqual('<@&123456>');
+			// Slash-command mention
+			expect(escapeHideLinkEmbed('</cmd:123>')).toEqual('</cmd:123>');
+		});
+
 		test('multiple occurrences', () => {
 			expect(escapeHideLinkEmbed('see <https://a.example/> and <https://b.example/>')).toEqual(
 				'see \\<https://a.example/> and \\<https://b.example/>',
@@ -329,6 +342,26 @@ part of it
 			expect(escapeMarkdown(testString, { quote: false })).toEqual(
 				"> \\`\\_Behold!\\_\\`\n\\|\\|\\_\\_\\_\\~\\~\\*\\*\\*\\`\\`\\`js\n\\`use strict\\`;\nrequire('discord.js');\\`\\`\\`\\*\\*\\*\\~\\~\\_\\_\\_\\|\\|",
 			);
+		});
+
+		describe('hideLinkEmbed option', () => {
+			const input = 'prefix <https://example.com> suffix';
+
+			test('escapes the sequence by default', () => {
+				expect(escapeMarkdown(input)).toEqual('prefix \\<https://example.com> suffix');
+			});
+
+			test('leaves the sequence untouched when disabled', () => {
+				expect(escapeMarkdown(input, { hideLinkEmbed: false })).toEqual(input);
+			});
+
+			test('still applies inside the codeBlockContent recursion', () => {
+				const codeInput = '```\n<https://example.com>\n```\n<https://example.org>';
+				expect(escapeMarkdown(codeInput, { codeBlockContent: false })).toContain('\\<https://example.org>');
+				expect(escapeMarkdown(codeInput, { codeBlockContent: false, hideLinkEmbed: false })).toContain(
+					'<https://example.org>',
+				);
+			});
 		});
 
 		describe('block quotes', () => {
