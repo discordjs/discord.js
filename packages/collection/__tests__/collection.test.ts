@@ -938,13 +938,20 @@ describe('tap() tests', () => {
 	test('preserves ReadonlyCollection through chainable methods', () => {
 		const readonly: ReadonlyCollection<string, number> = createCollectionFrom(['a', 1]);
 
-		// Chaining on a ReadonlyCollection must not expose Map mutation methods.
-		// @ts-expect-error `set` is not exposed on ReadonlyCollection.
-		readonly.tap(() => {}).set('b', 2);
-		// @ts-expect-error `delete` is not exposed on ReadonlyCollection.
-		readonly.each(() => {}).delete('a');
+		// Compile-time-only check: the chained result of tap/each on a ReadonlyCollection
+		// must not expose Map mutation methods. The `if (false)` guard keeps the assertions
+		// purely type-level so Vitest does not actually mutate the backing collection at
+		// runtime (otherwise `set` + `delete` would silently cancel out numerically).
+
+		if (false as boolean) {
+			// @ts-expect-error `set` is not exposed on ReadonlyCollection.
+			readonly.tap(() => {}).set('b', 2);
+			// @ts-expect-error `delete` is not exposed on ReadonlyCollection.
+			readonly.each(() => {}).delete('a');
+		}
 
 		expect(readonly.size).toBe(1);
+		expect(readonly.get('a')).toBe(1);
 	});
 });
 
