@@ -377,6 +377,11 @@ export function escapeBlockQuote(text: string): string {
  * `<a:/b>`) as a directive to suppress embeds or otherwise consume the surrounding
  * angle brackets. This escaper prepends a backslash to the leading `<`, so the sequence
  * renders as literal text in the client.
+ *
+ * Note that escaping the leading `<` drops the embed-suppression directive. To display
+ * literal angle brackets while still suppressing the embed, wrap the escaped output in
+ * another pair of angle brackets at the call site, e.g.
+ * `` `<${escapeHideLinkEmbed(text)}>` ``.
  * @param text - Content to escape
  */
 export function escapeHideLinkEmbed(text: string): string {
