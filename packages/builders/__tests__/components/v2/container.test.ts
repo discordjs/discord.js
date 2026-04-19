@@ -174,6 +174,25 @@ describe('Container Components', () => {
 			);
 		});
 
+		test('GIVEN hex string or RGB tuple for accent color THEN resolves to integer', () => {
+			expect(new ContainerBuilder(containerWithTextDisplay).setAccentColor('#ff00ff').toJSON().accent_color).toBe(
+				0xff00ff,
+			);
+			expect(new ContainerBuilder(containerWithTextDisplay).setAccentColor('#000000').toJSON().accent_color).toBe(0);
+			expect(new ContainerBuilder(containerWithTextDisplay).setAccentColor([255, 0, 255]).toJSON().accent_color).toBe(
+				0xff00ff,
+			);
+			expect(new ContainerBuilder(containerWithTextDisplay).setAccentColor([0, 0, 0]).toJSON().accent_color).toBe(0);
+		});
+
+		test('GIVEN invalid accent color input THEN throws', () => {
+			expect(() => new ContainerBuilder(containerWithTextDisplay).setAccentColor('red' as any)).toThrowError();
+			expect(() => new ContainerBuilder(containerWithTextDisplay).setAccentColor('#fff' as any)).toThrowError();
+			expect(() => new ContainerBuilder(containerWithTextDisplay).setAccentColor([300, 0, 0] as any)).toThrowError();
+			expect(() => new ContainerBuilder(containerWithTextDisplay).setAccentColor(-1 as any)).toThrowError();
+			expect(() => new ContainerBuilder(containerWithTextDisplay).setAccentColor(0x1_00_00_00 as any)).toThrowError();
+		});
+
 		test('GIVEN valid method parameters THEN valid JSON is given', () => {
 			expect(
 				new ContainerBuilder()
