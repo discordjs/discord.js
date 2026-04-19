@@ -1,7 +1,7 @@
 /* eslint-disable unicorn/no-array-method-this-argument */
 /* eslint-disable id-length */
 import { describe, test, expect } from 'vitest';
-import { Collection } from '../src/index.js';
+import { Collection, type ReadonlyCollection } from '../src/index.js';
 
 type TestCollection<Value> = Collection<string, Value>;
 
@@ -933,6 +933,18 @@ describe('tap() tests', () => {
 
 	test('the collection should be the same', () => {
 		coll.tap((c) => expect(c).toStrictEqual(coll));
+	});
+
+	test('preserves ReadonlyCollection through chainable methods', () => {
+		const readonly: ReadonlyCollection<string, number> = createCollectionFrom(['a', 1]);
+
+		// Chaining on a ReadonlyCollection must not expose Map mutation methods.
+		// @ts-expect-error `set` is not exposed on ReadonlyCollection.
+		readonly.tap(() => {}).set('b', 2);
+		// @ts-expect-error `delete` is not exposed on ReadonlyCollection.
+		readonly.each(() => {}).delete('a');
+
+		expect(readonly.size).toBe(1);
 	});
 });
 
