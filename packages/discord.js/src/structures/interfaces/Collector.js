@@ -272,14 +272,25 @@ class Collector extends AsyncEventEmitter {
    * @param {CollectorResetTimerOptions} [options] Options for resetting
    */
   resetTimer({ time, idle } = {}) {
+    if (time !== undefined) this.options.time = time;
+    if (idle !== undefined) this.options.idle = idle;
+
     if (this._timeout) {
       clearTimeout(this._timeout);
-      this._timeout = setTimeout(() => this.stop('time'), time ?? this.options.time).unref();
+      this._timeout = null;
+    }
+
+    if (this.options.time) {
+      this._timeout = setTimeout(() => this.stop('time'), this.options.time).unref();
     }
 
     if (this._idletimeout) {
       clearTimeout(this._idletimeout);
-      this._idletimeout = setTimeout(() => this.stop('idle'), idle ?? this.options.idle).unref();
+      this._idletimeout = null;
+    }
+
+    if (this.options.idle) {
+      this._idletimeout = setTimeout(() => this.stop('idle'), this.options.idle).unref();
     }
   }
 
