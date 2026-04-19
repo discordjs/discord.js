@@ -34,9 +34,11 @@ export class VoiceState<Omitted extends keyof APIVoiceState | '' = 'request_to_s
 	/**
 	 * {@inheritDoc Structure.optimizeData}
 	 */
-	protected override optimizeData(data: Partial<APIVoiceState>) {
-		if (data.request_to_speak_timestamp) {
-			this[kRequestToSpeakTimestamp] = Date.parse(data.request_to_speak_timestamp);
+	public override optimizeData(data: Partial<APIVoiceState>) {
+		if ('request_to_speak_timestamp' in data) {
+			this[kRequestToSpeakTimestamp] = data.request_to_speak_timestamp
+				? Date.parse(data.request_to_speak_timestamp)
+				: null;
 		}
 	}
 

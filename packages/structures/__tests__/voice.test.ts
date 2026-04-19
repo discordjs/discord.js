@@ -68,6 +68,15 @@ describe('VoiceState structure', () => {
 		expect(patched.toJSON()).not.toEqual(data);
 		expect(patched).toBe(instance);
 	});
+
+	test('patching request_to_speak_timestamp with null correctly removes the property', () => {
+		const patched = instance[kPatch]({
+			request_to_speak_timestamp: null,
+		});
+
+		expect(patched.requestToSpeakTimestamp).toBeNull();
+		expect(patched.requestToSpeakAt).toBeNull();
+	});
 });
 
 describe('VoiceRegion structure', () => {
