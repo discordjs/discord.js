@@ -1,6 +1,5 @@
 'use strict';
 
-const { PermissionFlagsBits } = require('discord-api-types/v10');
 const { GuildMessageManager } = require('../managers/GuildMessageManager.js');
 const { GuildTextThreadManager } = require('../managers/GuildTextThreadManager.js');
 const { GuildChannel } = require('./GuildChannel.js');
@@ -97,18 +96,6 @@ class BaseGuildTextChannel extends GuildChannel {
     if ('messages' in data) {
       for (const message of data.messages) this.messages._add(message);
     }
-  }
-
-  /**
-   * Whether the client user can start a new thread in this channel.
-   *
-   * @type {boolean}
-   * @readonly
-   */
-  get threadable() {
-    if (!this.viewable) return false;
-    const permissions = this.permissionsFor(this.client.user);
-    return permissions?.has(PermissionFlagsBits.CreatePublicThreads, false) ?? false;
   }
 
   /**
