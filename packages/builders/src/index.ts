@@ -91,6 +91,7 @@ export * from './messages/MessageReference.js';
 
 export * from './util/normalizeArray.js';
 export * from './util/resolveBuilder.js';
+export * from './util/resolveColor.js';
 export { disableValidators, enableValidators, isValidationEnabled } from './util/validation.js';
 export * from './util/ValidationError.js';
 
