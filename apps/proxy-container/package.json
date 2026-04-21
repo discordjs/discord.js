@@ -4,7 +4,7 @@
 	"version": "1.0.0",
 	"description": "Lightweight HTTP proxy for Discord's API, brought to you as a container 📦",
 	"scripts": {
-		"build": "tsc --noEmit && tsup",
+		"build": "tsc --noEmit && tsdown",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
 		"fmt": "pnpm run format",
@@ -58,7 +58,7 @@
 		"eslint-formatter-pretty": "^7.0.0",
 		"prettier": "^3.8.1",
 		"terser": "^5.46.1",
-		"tsup": "^8.5.1",
+		"tsdown": "^0.21.9",
 		"turbo": "^2.8.21",
 		"typescript": "~5.9.3"
 	},

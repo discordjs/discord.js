@@ -5,7 +5,7 @@
 	"description": "A set of functions to format strings for Discord.",
 	"scripts": {
 		"test": "vitest run --config ../../vitest.config.ts",
-		"build": "tsc --noEmit && tsup",
+		"build": "tsc --noEmit && tsdown",
 		"build:docs": "tsc -p tsconfig.docs.json",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
@@ -64,15 +64,15 @@
 		"@types/node": "^22.19.15",
 		"@vitest/coverage-v8": "^4.1.2",
 		"cross-env": "^10.1.0",
-		"esbuild-plugin-version-injector": "^1.2.1",
 		"eslint": "^9.39.4",
 		"eslint-config-neon": "^0.3.2",
 		"eslint-formatter-compact": "^9.0.1",
 		"eslint-formatter-pretty": "^7.0.0",
 		"prettier": "^3.8.1",
-		"tsup": "^8.5.1",
+		"tsdown": "^0.21.9",
 		"turbo": "^2.8.21",
 		"typescript": "~5.9.3",
+		"unplugin-replace": "^0.8.0",
 		"vitest": "^4.1.2"
 	},
 	"engines": {
