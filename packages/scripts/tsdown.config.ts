@@ -1,13 +1,11 @@
-import { createTsupConfig } from '../../tsup.config.js';
+import { createTsdownConfig } from '../../tsdown.config.js';
 
 export default [
-	createTsupConfig({
+	createTsdownConfig({
 		entry: ['src/index.ts', 'bin/generateSplitDocumentation.ts'],
-		minify: 'terser',
 	}),
-	createTsupConfig({
+	createTsdownConfig({
 		entry: ['src/populateDevDatabaseBranch.ts', 'bin/sortLabels.ts'],
 		format: 'esm',
-		minify: 'terser',
 	}),
 ];
