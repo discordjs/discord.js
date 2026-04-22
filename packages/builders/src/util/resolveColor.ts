@@ -27,7 +27,7 @@ export function resolveColor(color: ColorResolvable): number {
 	if (typeof color === 'string' && /^#?[\da-f]{6}$/i.test(color)) {
 		resolved = Number.parseInt(color.replace('#', ''), 16);
 	} else if (Array.isArray(color)) {
-		if (color.length !== 3 || color.some((component) => typeof component !== 'number')) {
+		if (color.length !== 3) {
 			throw new TypeError('Invalid color tuple: expected [red, green, blue] with numeric components.');
 		}
 
