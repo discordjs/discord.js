@@ -21,20 +21,20 @@ class AttachmentBuilder {
      * The name of this attachment
      * @type {?string}
      */
-    this.name = data.name;
+    this.name = data.name ?? null;
 
     /**
      * The description of the attachment
      * @type {?string}
      */
-    this.description = data.description;
+    this.description = data.description ?? null;
 
     /**
      * The title of the attachment
      *
      * @type {?string}
      */
-    this.title = data.title;
+    this.title = data.title ?? null;
 
     /**
      * The base64 encoded byte array representing a sampled waveform
@@ -42,7 +42,7 @@ class AttachmentBuilder {
      *
      * @type {?string}
      */
-    this.waveform = data.waveform;
+    this.waveform = data.waveform ?? null;
 
     /**
      * The duration of the attachment in seconds
@@ -50,7 +50,7 @@ class AttachmentBuilder {
      *
      * @type {?number}
      */
-    this.duration = data.duration;
+    this.duration = data.duration ?? null;
   }
 
   /**
