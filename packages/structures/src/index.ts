@@ -1,3 +1,4 @@
+export * from './auditlog/index.js';
 export * from './automoderation/index.js';
 export * from './bitfields/index.js';
 export * from './channels/index.js';
