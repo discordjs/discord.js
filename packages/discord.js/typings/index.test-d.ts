@@ -320,7 +320,7 @@ client.on('guildMemberRemove', member => {
     return;
   }
 
-  expectType<Date | null>(member.joinedAt);
+  expectType<Date>(member.joinedAt);
 });
 
 client.on('guildMembersChunk', (members, { client }) => {
