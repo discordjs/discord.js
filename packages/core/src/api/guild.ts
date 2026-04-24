@@ -1237,7 +1237,7 @@ export class GuildsAPI {
 		userId: Snowflake,
 		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
-		return this.rest.delete(Routes.guildMember(guildId, userId), { auth, reason, signal });
+		await this.rest.delete(Routes.guildMember(guildId, userId), { auth, reason, signal });
 	}
 
 	/**
