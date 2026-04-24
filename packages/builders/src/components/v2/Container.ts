@@ -12,6 +12,7 @@ import {
 } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
 import { resolveBuilder } from '../../util/resolveBuilder';
+import { resolveColor, type ColorResolvable } from '../../util/resolveColor';
 import { validate } from '../../util/validation';
 import { ActionRowBuilder } from '../ActionRow.js';
 import { ComponentBuilder } from '../Component.js';
@@ -71,10 +72,12 @@ export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
 	/**
 	 * Sets the accent color of this container.
 	 *
+	 * @remarks
+	 * Accepts either an integer, a `#rrggbb` hex string, or an `[r, g, b]` tuple.
 	 * @param color - The color to use
 	 */
-	public setAccentColor(color: number) {
-		this.data.accent_color = color;
+	public setAccentColor(color: ColorResolvable) {
+		this.data.accent_color = resolveColor(color);
 		return this;
 	}
 
