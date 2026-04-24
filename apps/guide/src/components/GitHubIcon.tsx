@@ -5,9 +5,9 @@ export function GitHubIcon(props: ComponentProps<'svg'>) {
 		<svg
 			aria-hidden
 			fill="none"
-			height={96}
+			height="1em"
 			viewBox="0 0 98 96"
-			width={98}
+			width="1em"
 			xmlns="http://www.w3.org/2000/svg"
 			{...props}
 		>
