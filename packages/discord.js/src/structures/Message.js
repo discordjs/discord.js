@@ -766,10 +766,10 @@ class Message extends Base {
     if (permissions.has(PermissionFlagsBits.Administrator, false)) return true;
 
     // The auto moderation action message author is the reference message author
-    return (
-      (this.type !== MessageType.AutoModerationAction && this.author.id === this.client.user.id) ||
-      (permissions.has(PermissionFlagsBits.ManageMessages, false) && !this.guild.members.me.isCommunicationDisabled())
-    );
+    if (this.type !== MessageType.AutoModerationAction && this.author.id === this.client.user.id) return true;
+    if (!permissions.has(PermissionFlagsBits.ManageMessages, false)) return false;
+    if (!this.guild.members.me) throw new DiscordjsError(ErrorCodes.GuildUncachedMe);
+    return !this.guild.members.me.isCommunicationDisabled();
   }
 
   /**
