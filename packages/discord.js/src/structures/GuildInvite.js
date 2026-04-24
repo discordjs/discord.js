@@ -1,5 +1,6 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const { Routes, PermissionFlagsBits, InviteType } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { InviteFlagsBitField } = require('../util/InviteFlagsBitField.js');
@@ -7,6 +8,7 @@ const { BaseInvite } = require('./BaseInvite.js');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent.js');
 const { IntegrationApplication } = require('./IntegrationApplication.js');
 const { InviteGuild } = require('./InviteGuild.js');
+const { Role } = require('./Role.js');
 
 /**
  * A channel invite leading to a guild.
@@ -178,6 +180,17 @@ class GuildInvite extends BaseInvite {
     } else {
       this.approximatePresenceCount ??= null;
     }
+
+    if ('roles' in data) {
+      /**
+       * The roles assigned to the user upon accepting the invite.
+       *
+       * @type {Collection|null}
+       */
+      this.roles = new Collection(data.roles.map(role => [role.id, new Role(this.client, role, this.guild)]));
+    } else {
+      this.roles ??= null;
+    }
   }
 
   /**
@@ -206,6 +219,35 @@ class GuildInvite extends BaseInvite {
     await this.client.rest.delete(Routes.invite(this.code), { reason });
   }
 
+  /**
+   * Update target users of this invite.
+   *
+   * @param {UserResolvable[]|BufferResolvable} targetUsersFile An array of users or a csv file with a single column of user IDs
+   * for all the users able to accept this invite
+   * @returns {Promise<unknown>}
+   */
+  updateTargetUsers(targetUsersFile) {
+    return this.guild.invites.updateTargetUsers(this.code, targetUsersFile);
+  }
+
+  /**
+   * Get target users of this invite
+   *
+   * @returns {Promise<Buffer>}
+   */
+  fetchTargetUsers() {
+    return this.guild.invites.fetchTargetUsers(this.code);
+  }
+
+  /**
+   * Get status of the job processing target users of this invite
+   *
+   * @returns {Promise<TargetUsersJobStatusForInvite>}
+   */
+  fetchTargetUsersJobStatus() {
+    return this.guild.invites.fetchTargetUsersJobStatus(this.code);
+  }
+
   toJSON() {
     return super.toJSON({
       url: true,
@@ -216,6 +258,7 @@ class GuildInvite extends BaseInvite {
       channel: 'channelId',
       inviter: 'inviterId',
       guild: 'guildId',
+      roles: 'roles',
     });
   }
 }
