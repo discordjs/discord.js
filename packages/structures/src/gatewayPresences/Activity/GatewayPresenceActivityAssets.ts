@@ -1,12 +1,8 @@
-// import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { GatewayActivityAssets } from 'discord-api-types/v10';
 import { Structure } from '../../Structure.js';
-// import { kData } from '../../utils/symbols.js';
-// import { isIdSet } from '../../utils/type-guards.js';
+import { kData } from '../../utils/symbols.js';
 import type { Partialize } from '../../utils/types.js';
-/**
- * @todo
- */
+
 /**
  * Represents any activity assets on Discord.
  *
@@ -27,4 +23,68 @@ export class GatewayPresenceActivityAssets<Omitted extends keyof GatewayActivity
 	public constructor(data: Partialize<GatewayActivityAssets, Omitted>) {
 		super(data);
 	}
+
+	/**
+	 * @see {@link https://discord.com/developers/docs/events/gateway-events#activity-object-activity-asset-image}
+	 */
+	public get largeImage() {
+		return this[kData].large_image;
+	}
+
+	/**
+	 * Text displayed when hovering over the large image of the activity
+	 */
+	public get largeText() {
+		return this[kData].large_text;
+	}
+
+	/**
+	 * URL that is opened when clicking on the large image
+	 */
+	public get largeURL() {
+		return this[kData].large_url;
+	}
+
+	/**
+	 * @see {@link https://discord.com/developers/docs/events/gateway-events#activity-object-activity-asset-image}
+	 */
+	public get smallImage() {
+		return this[kData].small_image;
+	}
+
+	/**
+	 * Text displayed when hovering over the small image of the activity
+	 */
+	public get smallText() {
+		return this[kData].small_text;
+	}
+
+	/**
+	 * URL that is opened when clicking on the small image
+	 */
+	public get smallURL() {
+		return this[kData].small_url;
+	}
+
+	/**
+	 * `discord-api-types` does not provide `invite_cover_image`.
+	 *
+	 * @example
+	 * ```ts
+	 * (from discord-api-tyes) =>
+	 * **
+	 * @see {@link https://discord.com/developers/docs/topics/gateway-events#activity-object-activity-assets}
+	 * export type GatewayActivityAssets = Partial<Record<'large_image' | 'large_text' | 'large_url' | 'small_image' | 'small_text' | 'small_url', string>>;
+	 * ```
+	 * It does not export that property. If you go to the @see link, then it
+	 * shows `invite_cover_image` there!! Was this missed? Give me a shout when you
+	 * are reviewing this PR and your opinions; I don't mind opening a PR on dapi-types
+	 * and trying to resolve it myself
+	 */
+	/**
+	 * See Activity Asset Image. Displayed as a banner on a Game Invite.
+	 */
+	// public get inviteCoverImage() {
+	// 	return this[kData].
+	// }
 }
