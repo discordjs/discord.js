@@ -28,7 +28,7 @@ export class ActivityTimestamps<Omitted extends keyof GatewayActivityTimestamps 
 	/**
 	 * Unix time (in milliseconds) of when the activity started.
 	 */
-	public get start() {
+	public get startTimestamp() {
 		return this[kData].start;
 	}
 
@@ -42,7 +42,7 @@ export class ActivityTimestamps<Omitted extends keyof GatewayActivityTimestamps 
 	/**
 	 * Unix time (in milliseconds) of when the activity ends.
 	 */
-	public get end() {
+	public get endTimestamp() {
 		return this[kData].end;
 	}
 
