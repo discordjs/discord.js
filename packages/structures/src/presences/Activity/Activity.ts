@@ -52,7 +52,7 @@ export class Activity<Omitted extends keyof GatewayActivity | '' = ''> extends S
 	/**
 	 * Time of when the activity was added to the user's session
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		return isFieldSet(this[kData], 'created_at', 'number') ? new Date(this[kData].created_at) : null;
 	}
 

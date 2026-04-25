@@ -35,7 +35,7 @@ export class ActivityTimestamps<Omitted extends keyof GatewayActivityTimestamps 
 	/**
 	 * Time of when the activity started.
 	 */
-	public get startAt() {
+	public get startDate() {
 		return isFieldSet(this[kData], 'start', 'number') ? new Date(this[kData].start) : null;
 	}
 
@@ -49,7 +49,7 @@ export class ActivityTimestamps<Omitted extends keyof GatewayActivityTimestamps 
 	/**
 	 * Time of when the activity ended.
 	 */
-	public get endAt() {
+	public get endDate() {
 		return isFieldSet(this[kData], 'end', 'number') ? new Date(this[kData].end) : null;
 	}
 }

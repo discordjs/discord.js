@@ -89,7 +89,7 @@ export class ThreadMetadata<
 	/**
 	 * The time the thread was archived at
 	 */
-	public get archivedAt() {
+	public get archivedDate() {
 		const archivedTimestamp = this.archivedTimestamp;
 		return archivedTimestamp ? new Date(archivedTimestamp) : null;
 	}
@@ -97,7 +97,7 @@ export class ThreadMetadata<
 	/**
 	 * The time the thread was created at
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
