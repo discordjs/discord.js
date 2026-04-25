@@ -344,7 +344,7 @@ describe('gatewayPresences structures', () => {
 					end: newTimestamp,
 				});
 
-				expect(patched.endDate?.valueOf()).toStrictEqual(patched.endTimestamp);
+				expect(patched.endDate?.valueOf()).toStrictEqual(newTimestamp);
 
 				expect(patched).toEqual(instance);
 				expect(patched.toJSON()).not.toEqual(data);
