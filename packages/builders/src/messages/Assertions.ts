@@ -1,5 +1,11 @@
 import { Buffer } from 'node:buffer';
-import { AllowedMentionsTypes, ComponentType, MessageFlags, MessageReferenceType } from 'discord-api-types/v10';
+import {
+	AllowedMentionsTypes,
+	BaseThemeType,
+	ComponentType,
+	MessageFlags,
+	MessageReferenceType,
+} from 'discord-api-types/v10';
 import { z } from 'zod';
 import { snowflakePredicate } from '../Assertions.js';
 import { embedPredicate } from './embed/Assertions.js';
@@ -79,18 +85,29 @@ const basicActionRowPredicate = z.object({
 		.array(),
 });
 
+export const sharedClientThemePredicate = z.object({
+	colors: z
+		.array(z.string().regex(/^[\da-f]{6}$/i))
+		.min(1)
+		.max(5),
+	gradient_angle: z.int().min(0).max(360),
+	base_mix: z.int().min(0).max(100),
+	base_theme: z.enum(BaseThemeType).nullish(),
+});
+
 const messageNoComponentsV2Predicate = baseMessagePredicate
 	.extend({
 		content: z.string().max(2_000).optional(),
 		embeds: embedPredicate.array().max(10).optional(),
 		sticker_ids: z.array(z.string()).max(3).optional(),
 		poll: pollPredicate.optional(),
+		shared_client_theme: sharedClientThemePredicate.optional(),
 		components: basicActionRowPredicate.array().max(5).optional(),
 		flags: z
 			.int()
 			.optional()
 			.refine((flags) => !flags || (flags & MessageFlags.IsComponentsV2) === 0, {
-				error: 'Cannot set content, embeds, stickers, or poll with IsComponentsV2 flag set',
+				error: 'Cannot set content, embeds, stickers, poll or shared client theme with IsComponentsV2 flag set',
 			}),
 	})
 	.refine(
@@ -100,8 +117,11 @@ const messageNoComponentsV2Predicate = baseMessagePredicate
 			data.poll !== undefined ||
 			(data.attachments !== undefined && data.attachments.length > 0) ||
 			(data.components !== undefined && data.components.length > 0) ||
-			(data.sticker_ids !== undefined && data.sticker_ids.length > 0),
-		{ error: 'Messages must have content, embeds, a poll, attachments, components or stickers' },
+			(data.sticker_ids !== undefined && data.sticker_ids.length > 0) ||
+			data.shared_client_theme !== undefined,
+		{
+			error: 'Messages must have content, embeds, a poll, attachments, components, stickers, or a shared client theme',
+		},
 	);
 
 const allTopLevelComponentsPredicate = z
@@ -134,6 +154,7 @@ const messageComponentsV2Predicate = baseMessagePredicate.extend({
 	embeds: z.array(z.never()).nullish(),
 	sticker_ids: z.array(z.never()).nullish(),
 	poll: z.null().optional(),
+	shared_client_theme: z.null().optional(),
 });
 
 export const messagePredicate = z.union([messageNoComponentsV2Predicate, messageComponentsV2Predicate]);
