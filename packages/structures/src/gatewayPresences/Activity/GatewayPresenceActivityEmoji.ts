@@ -1,5 +1,5 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import type { EmojiFormat, CDNRoutes, ImageFormat, RouteBases, type GatewayActivityEmoji } from 'discord-api-types/v10';
+import { CDNRoutes, ImageFormat, RouteBases, type GatewayActivityEmoji, type EmojiFormat } from 'discord-api-types/v10';
 import { Structure } from '../../Structure.js';
 import { kData } from '../../utils/symbols.js';
 import { isIdSet } from '../../utils/type-guards.js';
