@@ -67,24 +67,9 @@ export class ActivityAssets<Omitted extends keyof GatewayActivityAssets | '' = '
 	}
 
 	/**
-	 * `discord-api-types` does not provide `invite_cover_image`.
-	 *
-	 * @example
-	 * ```ts
-	 * (from discord-api-tyes) =>
-	 * **
-	 * @see {@link https://discord.com/developers/docs/topics/gateway-events#activity-object-activity-assets}
-	 * export type GatewayActivityAssets = Partial<Record<'large_image' | 'large_text' | 'large_url' | 'small_image' | 'small_text' | 'small_url', string>>;
-	 * ```
-	 * It does not export that property. If you go to the @see link, then it
-	 * shows `invite_cover_image` there!! Was this missed? Give me a shout when you
-	 * are reviewing this PR and your opinions; I don't mind opening a PR on dapi-types
-	 * and trying to resolve it myself
+	 * URL of the image which is displayed as a banner on a Game Invite
 	 */
-	/**
-	 * See Activity Asset Image. Displayed as a banner on a Game Invite.
-	 */
-	// public get inviteCoverImage() {
-	// 	return this[kData].
-	// }
+	public get inviteCoverImage() {
+		return this[kData].invite_cover_image;
+	}
 }

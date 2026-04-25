@@ -65,6 +65,7 @@ const gatewayPresenceActivityAssetsData: GatewayActivityAssets = {
 	large_url: 'activity-asset/large-url/',
 	small_image: 'djs://small-image',
 	small_text: 'djs://activity-asset/smallText',
+	invite_cover_image: 'djs://activity-asset/invite-cover-image',
 };
 
 const gatewayPresenceActivityData: GatewayActivity = {
@@ -201,6 +202,7 @@ describe('gatewayPresences structures', () => {
 				expect(instance.largeURL).toBe(data.large_url);
 				expect(instance.smallImage).toBe(data.small_image);
 				expect(instance.smallText).toBe(data.small_text);
+				expect(instance.inviteCoverImage).toBe(data.invite_cover_image);
 
 				expect(instance.smallURL).toBeUndefined();
 			});
