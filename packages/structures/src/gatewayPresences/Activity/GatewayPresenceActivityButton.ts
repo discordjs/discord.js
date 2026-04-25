@@ -6,7 +6,9 @@ import type { Partialize } from '../../utils/types.js';
 /**
  * Represents any activity button on Discord.
  *
- * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
+ * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`.
+ * @remarks When received over the gateway, the `buttons` field is an array of strings, which are the `button` labels. Bots cannot
+ * access a user's activity button URLs. When sending, the buttons field must be an array of this structure.
  */
 export class GatewayPresenceActivityButton<Omitted extends keyof GatewayActivityButton | '' = ''> extends Structure<
 	GatewayActivityButton,
