@@ -28,15 +28,16 @@ import {
 import { kPatch } from '../src/utils/symbols.js';
 
 const user: APIUser = {
-	username: 'djs://username',
-	avatar: 'djs://user-avatar',
+	username: 'username',
+	avatar:
+		'https://images-ext-1.discordapp.net/external/sdfjkhsdf/%3Fsize%3D4096/https/cdn.discordapp.com/guilds/1/users/1/avatars/54a38112404a550eab14e01fb7f77c9c.png?format=webp&quality=lossless&width=1356&height=1356',
 	global_name: 'User',
-	discriminator: '0',
+	discriminator: '0000',
 	id: '3',
 };
 
 const gatewayPresenceActivityTimestampsData: GatewayActivityTimestamps = {
-	start: 1_000,
+	start: 1_771_670_132,
 };
 
 const gatewayPresenceActivitySecretsData: GatewayActivitySecrets = {
@@ -50,13 +51,13 @@ const gatewayPresenceActivityPartyData: GatewayActivityParty = {
 };
 
 const gatewayPresenceActivityEmojiData: GatewayActivityEmoji = {
-	name: 'djs://emoji-name',
+	name: 'emoji_name',
 	animated: false,
 };
 
 const gatewayPresenceActivityButtonData: GatewayActivityButton = {
-	label: 'djs://label',
-	url: '/gatewayPresenceActivityButtonUrl',
+	label: 'label',
+	url: 'https://github.com//discordjs/discord.js',
 };
 
 const gatewayPresenceActivityAssetsData: GatewayActivityAssets = {
@@ -70,17 +71,17 @@ const gatewayPresenceActivityAssetsData: GatewayActivityAssets = {
 
 const gatewayPresenceActivityData: GatewayActivity = {
 	id: '1',
-	name: 'djs://activity-name',
+	name: 'activity-name',
 	type: ActivityType.Playing,
-	url: 'djs://activity-url',
-	created_at: 1,
+	url: 'https://github.com//discordjs/discord.js',
+	created_at: 1_540_381_143_572,
 	timestamps: gatewayPresenceActivityTimestampsData,
-	application_id: 'djs://application-id',
+	application_id: '121212',
 	status_display_type: StatusDisplayType.Details,
-	details: 'djs://activity-details',
-	details_url: 'djs://activity-details-url',
-	state: 'djs://activity-state',
-	state_url: 'djs://activity-state-url',
+	details: 'activity-details',
+	details_url: 'activity-details-url',
+	state: 'activity-state',
+	state_url: 'activity-state-url',
 	emoji: gatewayPresenceActivityEmojiData,
 	party: gatewayPresenceActivityPartyData,
 	assets: gatewayPresenceActivityAssetsData,
@@ -124,9 +125,10 @@ describe('gatewayPresences structures', () => {
 			});
 
 			expect(patched.toJSON()).toStrictEqual(instance.toJSON());
+			expect(patched.toJSON()).not.toEqual(data);
 
-			expect(instance.web).not.toEqual(data.web);
-			expect(instance.mobile).not.toEqual(data.mobile);
+			expect(instance.web).toEqual(patched.web);
+			expect(instance.mobile).toEqual(instance.mobile);
 		});
 	});
 
@@ -147,9 +149,11 @@ describe('gatewayPresences structures', () => {
 				status: PresenceUpdateStatus.Online,
 			});
 
+			expect(patched).toBe(instance);
 			expect(patched.toJSON()).toStrictEqual(instance.toJSON());
+			expect(patched.toJSON()).not.toEqual(data);
 
-			expect(patched.status).not.toBe(data.status);
+			expect(patched.status).toEqual(PresenceUpdateStatus.Online);
 		});
 	});
 
@@ -171,8 +175,7 @@ describe('gatewayPresences structures', () => {
 				expect(instance.instance).toBe(data.instance);
 				expect(instance.flags!.bitField).toBe(BigInt(data.flags!));
 				expect(instance.createdTimestamp).toBe(data.created_at);
-
-				expect(instance.createdDate).toEqual(new Date(instance.createdTimestamp));
+				expect(instance.createdDate!.valueOf()).toEqual(data.created_at);
 			});
 
 			test('toJSON() returns expected values', () => {
@@ -182,11 +185,17 @@ describe('gatewayPresences structures', () => {
 			test('patching the structure works in-place', () => {
 				const patched = instance[kPatch]({
 					status_display_type: StatusDisplayType.Name,
-					state: 'djs://[PATCHED]-activity-state',
+					state: '[PATCHED]-activity-state',
 					state_url: null,
 					type: ActivityType.Custom,
 				});
 
+				expect(patched.statusDisplayType).toEqual(StatusDisplayType.Name);
+				expect(patched.state).toEqual('[PATCHED]-activity-state');
+				expect(patched.stateURL).toBeNull();
+				expect(patched.type).toEqual(ActivityType.Custom);
+
+				expect(patched).toBe(instance);
 				expect(patched.toJSON()).not.toEqual(data);
 				expect(patched.toJSON()).toStrictEqual(instance.toJSON());
 			});
@@ -217,6 +226,10 @@ describe('gatewayPresences structures', () => {
 					small_url: 'djs://small-url',
 				});
 
+				expect(patched.largeText).toEqual('djs://PATCHED-LARGE-TEXT');
+				expect(patched.smallURL).toEqual('djs://small-url');
+
+				expect(patched).toBe(instance);
 				expect(patched.toJSON()).not.toEqual(data);
 				expect(patched.toJSON()).toStrictEqual(instance.toJSON());
 			});
@@ -237,9 +250,12 @@ describe('gatewayPresences structures', () => {
 
 			test('patching the structure works in-place', () => {
 				const patched = instance[kPatch]({
-					label: 'djs://[PATCHED]-button-label',
+					label: '[PATCHED]-button-label',
 				});
 
+				expect(patched.label).toEqual('[PATCHED]-button-label');
+
+				expect(patched).toEqual(instance);
 				expect(patched.toJSON()).not.toEqual(data);
 				expect(patched.toJSON()).toStrictEqual(instance.toJSON());
 			});
@@ -268,6 +284,7 @@ describe('gatewayPresences structures', () => {
 				expect(instance.maximumSize).toBe(999);
 				expect(instance.currentSize).toBe(1);
 
+				expect(patched).toBe(instance);
 				expect(patched.toJSON()).not.toEqual(data);
 				expect(patched.toJSON()).toStrictEqual(instance.toJSON());
 			});
@@ -294,6 +311,10 @@ describe('gatewayPresences structures', () => {
 					spectate: 'djs://[PATCHED-[ADD-PROPERTY]]-spectate',
 				});
 
+				expect(patched.match).toEqual('djs://[PATCHED]-activity-party-match');
+				expect(patched.spectate).toEqual('djs://[PATCHED-[ADD-PROPERTY]]-spectate');
+
+				expect(patched).toBe(instance);
 				expect(patched.toJSON()).not.toEqual(data);
 				expect(patched.toJSON()).toStrictEqual(instance.toJSON());
 			});
@@ -316,12 +337,14 @@ describe('gatewayPresences structures', () => {
 			});
 
 			test('patching the structure works in-place', () => {
+				const newTimestamp = 1_771_670_132;
 				const patched = instance[kPatch]({
-					end: 10_000_000,
+					end: newTimestamp,
 				});
 
-				expect(patched.endDate).toStrictEqual(new Date(patched.endTimestamp as number));
+				expect(patched.endDate?.valueOf()).toStrictEqual(patched.endTimestamp);
 
+				expect(patched).toEqual(instance);
 				expect(patched.toJSON()).not.toEqual(data);
 				expect(patched.toJSON()).toStrictEqual(instance.toJSON());
 			});
