@@ -1,6 +1,6 @@
 import type { ActivityFlags, GatewayActivity, ActivityType } from 'discord-api-types/v10';
 import { Structure } from '../../Structure.js';
-import { GatewayPresenceActivityFlagsBitField } from '../../bitfields/GatewayPresenceActivityFlagsBitField.js';
+import { ActivityFlagsBitField } from '../../bitfields/ActivityFlagsBitField.js';
 import { kData } from '../../utils/symbols.js';
 import { isFieldSet } from '../../utils/type-guards.js';
 import type { Partialize } from '../../utils/types.js';
@@ -9,15 +9,11 @@ import type { Partialize } from '../../utils/types.js';
  * Represents any activity on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`.
- * @remarks has substructures `GatewayPresenceActivityTimestamps`, `GatewayPresenceActivityEmoji`, `GatewayPresenceActivityParty`,
- * `GatewayPresenceActivityAssets`, `GatewayPresenceActivitySecrets` which need to be instantiated and stored by an extending class
- * using it.
- * @remarks intentionally does not export `buttons` so that extending classes can resolve `string[]` to `GatewayPresenceActivityButton[]`
+ * @remarks has substructures `ActivityTimestamps`, `ActivityParty`,`ActivityAssets`, `ActivitySecrets` which need to be instantiated
+ * and stored by an extending class using it.
+ * @remarks intentionally does not export `buttons` so that extending classes can resolve `string[]` to `ActivityButton[]`
  */
-export class GatewayPresenceActivity<Omitted extends keyof GatewayActivity | '' = ''> extends Structure<
-	GatewayActivity,
-	Omitted
-> {
+export class Activity<Omitted extends keyof GatewayActivity | '' = ''> extends Structure<GatewayActivity, Omitted> {
 	/**
 	 * The template used for removing data from the raw data stored for each activity
 	 */
@@ -127,7 +123,7 @@ export class GatewayPresenceActivity<Omitted extends keyof GatewayActivity | '' 
 	 */
 	public get flags() {
 		return isFieldSet(this[kData], 'flags', 'number')
-			? new GatewayPresenceActivityFlagsBitField(this[kData].flags as ActivityFlags)
+			? new ActivityFlagsBitField(this[kData].flags as ActivityFlags)
 			: null;
 	}
 }
