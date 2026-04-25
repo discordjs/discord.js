@@ -1,12 +1,8 @@
-// import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { GatewayActivitySecrets } from 'discord-api-types/v10';
 import { Structure } from '../../Structure.js';
-// import { kData } from '../../utils/symbols.js';
-// import { isIdSet } from '../../utils/type-guards.js';
+import { kData } from '../../utils/symbols.js';
 import type { Partialize } from '../../utils/types.js';
-/**
- * @todo
- */
+
 /**
  * Represents any activity secrets on Discord.
  *
@@ -17,14 +13,35 @@ export class GatewayPresenceActivitySecrets<Omitted extends keyof GatewayActivit
 	Omitted
 > {
 	/**
-	 * The template used for removing data from the raw data stored for each activity secrets.
+	 * The template used for removing data from the raw data stored for each activity's secrets.
 	 */
 	public static override readonly DataTemplate: Partial<GatewayActivitySecrets> = {};
 
 	/**
-	 * @param data - The raw data received from the API for the activity secrets.
+	 * @param data - The raw data received from the API for the activity's secrets.
 	 */
 	public constructor(data: Partialize<GatewayActivitySecrets, Omitted>) {
 		super(data);
+	}
+
+	/**
+	 * Secret for joining a party.
+	 */
+	public get join() {
+		return this[kData].join;
+	}
+
+	/**
+	 * Secret for spectating a game.
+	 */
+	public get spectate() {
+		return this[kData].spectate;
+	}
+
+	/**
+	 * Secret for a specific instanced match
+	 */
+	public get match() {
+		return this[kData].join;
 	}
 }
