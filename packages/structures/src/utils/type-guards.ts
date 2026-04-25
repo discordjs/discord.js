@@ -30,3 +30,21 @@ export function isFieldSet<Value extends object, Key extends string, Type extend
 	// eslint-disable-next-line valid-typeof
 	return hasProperty(data, fieldName) && typeof data[fieldName] === type;
 }
+
+/**
+ * This typeguard will determine whether a specified array field is the specified
+ * type.
+ *
+ * @internal
+ * @param array - The target array from which the target index will be narrowed
+ * @param targetIndex - The target index of the element whose type to narrow
+ * @param type - The type to compare against
+ */
+export function isArrayFieldSet(array: unknown[], targetIndex: number, type: TypeofType): boolean {
+	return Array.isArray(array)
+		? array.length >= targetIndex
+			? // eslint-disable-next-line valid-typeof
+				typeof array[targetIndex] === type
+			: false
+		: false;
+}
