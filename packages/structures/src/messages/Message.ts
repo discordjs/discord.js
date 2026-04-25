@@ -79,7 +79,7 @@ export class Message<Omitted extends keyof APIMessage | '' = 'edited_timestamp' 
 	/**
 	 * The time the message was created at
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
@@ -101,7 +101,7 @@ export class Message<Omitted extends keyof APIMessage | '' = 'edited_timestamp' 
 	/**
 	 * The time the message was last edited at, or `null` if it never was edited
 	 */
-	public get editedAt() {
+	public get editedDate() {
 		const editedTimestamp = this.editedTimestamp;
 		return editedTimestamp ? new Date(editedTimestamp) : null;
 	}
@@ -169,9 +169,8 @@ export class Message<Omitted extends keyof APIMessage | '' = 'edited_timestamp' 
 			clone.edited_timestamp = dateToDiscordISOTimestamp(new Date(this[kEditedTimestamp]));
 		}
 
-		const createdAt = this.createdAt;
-		if (createdAt) {
-			clone.timestamp = dateToDiscordISOTimestamp(createdAt);
+		if (this.createdDate) {
+			clone.timestamp = dateToDiscordISOTimestamp(this.createdDate);
 		}
 
 		return clone;

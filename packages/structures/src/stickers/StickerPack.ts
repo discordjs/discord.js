@@ -78,7 +78,7 @@ export class StickerPack<Omitted extends keyof APIStickerPack | '' = ''> extends
 	/**
 	 * The time the sticker pack was created at
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}

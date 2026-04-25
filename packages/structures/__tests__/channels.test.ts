@@ -77,7 +77,7 @@ describe('text channel', () => {
 		expect(instance.guildId).toBe(data.guild_id);
 		expect(instance.lastMessageId).toBe(data.last_message_id);
 		expect(instance.lastPinTimestamp).toBe(Date.parse(data.last_pin_timestamp!));
-		expect(instance.lastPinAt?.toISOString()).toBe(data.last_pin_timestamp);
+		expect(instance.lastPinDate?.toISOString()).toBe(data.last_pin_timestamp);
 		expect(instance.nsfw).toBe(data.nsfw);
 		expect(instance.parentId).toBe(data.parent_id);
 		expect(instance[kData].permission_overwrites).toEqual(data.permission_overwrites);
@@ -138,7 +138,7 @@ describe('announcement channel', () => {
 		expect(instance.guildId).toBe(data.guild_id);
 		expect(instance.lastMessageId).toBe(data.last_message_id);
 		expect(instance.lastPinTimestamp).toBe(null);
-		expect(instance.lastPinAt).toBe(data.last_pin_timestamp);
+		expect(instance.lastPinDate).toBe(data.last_pin_timestamp);
 		expect(instance.nsfw).toBe(data.nsfw);
 		expect(instance.parentId).toBe(data.parent_id);
 		expect(instance[kData].permission_overwrites).toEqual(data.permission_overwrites);
@@ -234,7 +234,7 @@ describe('DM channel', () => {
 		expect(instance.flags?.toJSON()).toBe(data.flags);
 		expect(instance.lastMessageId).toBe(data.last_message_id);
 		expect(instance.lastPinTimestamp).toBe(Date.parse(data.last_pin_timestamp!));
-		expect(instance.lastPinAt?.toISOString()).toBe(data.last_pin_timestamp);
+		expect(instance.lastPinDate?.toISOString()).toBe(data.last_pin_timestamp);
 		expect(instance[kData].recipients).toEqual(data.recipients);
 		expect(instance.type).toBe(ChannelType.DM);
 		expect(instance.url).toBe('https://discord.com/channels/@me/1');
@@ -730,9 +730,9 @@ describe('thread channels', () => {
 		const instance = new ThreadMetadata(dataPrivate.thread_metadata!);
 		expect(instance.toJSON()).toEqual(dataPrivate.thread_metadata);
 		expect(instance.archived).toBe(dataPrivate.thread_metadata?.archived);
-		expect(instance.archivedAt?.toISOString()).toBe(dataPrivate.thread_metadata?.archive_timestamp);
+		expect(instance.archivedDate?.toISOString()).toBe(dataPrivate.thread_metadata?.archive_timestamp);
 		expect(instance.archivedTimestamp).toBe(Date.parse(dataPrivate.thread_metadata!.archive_timestamp));
-		expect(instance.createdAt?.toISOString()).toBe(dataPrivate.thread_metadata?.create_timestamp);
+		expect(instance.createdDate?.toISOString()).toBe(dataPrivate.thread_metadata?.create_timestamp);
 		expect(instance.createdTimestamp).toBe(Date.parse(dataPrivate.thread_metadata!.create_timestamp!));
 		expect(instance.autoArchiveDuration).toBe(dataPrivate.thread_metadata?.auto_archive_duration);
 		expect(instance.invitable).toBe(dataPrivate.thread_metadata?.invitable);
