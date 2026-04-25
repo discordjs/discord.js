@@ -1,12 +1,13 @@
 import {
+	type APIUser,
 	type GatewayActivity,
 	type GatewayActivityTimestamps,
 	type GatewayActivityAssets,
 	type GatewayActivityButton,
-	type GatewayActivityEmoji,
 	type GatewayActivityParty,
 	type GatewayActivitySecrets,
-	type GatewayPresenceUpdateData,
+	type GatewayActivityEmoji,
+	type GatewayGuildMembersChunkPresence,
 	type GatewayPresenceClientStatus as GatewayPresenceClientStatusTypedef,
 	ActivityType,
 	StatusDisplayType,
@@ -23,9 +24,16 @@ import {
 	ActivityTimestamps,
 	ClientStatus,
 	Presence,
-	type Partialize,
 } from '../src/index.js';
 import { kPatch } from '../src/utils/symbols.js';
+
+const user: APIUser = {
+	username: 'djs://username',
+	avatar: 'djs://user-avatar',
+	global_name: 'User',
+	discriminator: '0',
+	id: '3',
+};
 
 const gatewayPresenceActivityTimestampsData: GatewayActivityTimestamps = {
 	start: 1_000,
@@ -38,7 +46,7 @@ const gatewayPresenceActivitySecretsData: GatewayActivitySecrets = {
 
 const gatewayPresenceActivityPartyData: GatewayActivityParty = {
 	id: '1',
-	size: [1, null as unknown as number],
+	size: [11, null as unknown as number],
 };
 
 const gatewayPresenceActivityEmojiData: GatewayActivityEmoji = {
@@ -59,7 +67,8 @@ const gatewayPresenceActivityAssetsData: GatewayActivityAssets = {
 	small_text: 'djs://activity-asset/smallText',
 };
 
-const gatewayPresenceActivityData: Partialize<GatewayActivity, 'id'> = {
+const gatewayPresenceActivityData: GatewayActivity = {
+	id: '1',
 	name: 'djs://activity-name',
 	type: ActivityType.Playing,
 	url: 'djs://activity-url',
@@ -80,11 +89,10 @@ const gatewayPresenceActivityData: Partialize<GatewayActivity, 'id'> = {
 	buttons: [gatewayPresenceActivityButtonData],
 };
 
-const gatewayPresenceUpdateData: GatewayPresenceUpdateData = {
-	since: 1,
+const gatewayPresenceUpdateData: GatewayGuildMembersChunkPresence = {
+	user,
 	activities: [gatewayPresenceActivityData],
 	status: PresenceUpdateStatus.DoNotDisturb,
-	afk: false,
 };
 
 const gatewayPresenceClientStatusData: GatewayPresenceClientStatusTypedef = {
@@ -126,11 +134,7 @@ describe('gatewayPresences structures', () => {
 		const instance = new Presence(data);
 
 		test('correct value for all getters', () => {
-			expect(instance.afk).toBe(data.afk);
-			expect(instance.sinceTimestamp).toBe(data.since);
 			expect(instance.status).toBe(data.status);
-
-			expect(instance.since).toStrictEqual(new Date(data.since as number));
 		});
 
 		test('toJSON() returns expected values', () => {
@@ -139,13 +143,11 @@ describe('gatewayPresences structures', () => {
 
 		test('patching the structure works in-place', () => {
 			const patched = instance[kPatch]({
-				afk: true,
 				status: PresenceUpdateStatus.Online,
 			});
 
 			expect(patched.toJSON()).toStrictEqual(instance.toJSON());
 
-			expect(patched.afk).not.toBe(data.afk);
 			expect(patched.status).not.toBe(data.status);
 		});
 	});
@@ -247,7 +249,9 @@ describe('gatewayPresences structures', () => {
 
 			test('correct value for all getters and helper methods [createdTimestamp, createdAt]', () => {
 				expect(instance.id).toBe(data.id);
-				expect(instance.size).toBe(data.size);
+				expect(instance.currentSize).toBe(data.size![0]);
+
+				expect(instance.maximumSize).toBeNull();
 			});
 
 			test('toJSON() returns expected values', () => {
@@ -259,7 +263,8 @@ describe('gatewayPresences structures', () => {
 					size: [1, 999],
 				});
 
-				expect(instance.size![1]).toBe(999);
+				expect(instance.maximumSize).toBe(999);
+				expect(instance.currentSize).toBe(1);
 
 				expect(patched.toJSON()).not.toEqual(data);
 				expect(patched.toJSON()).toStrictEqual(instance.toJSON());
