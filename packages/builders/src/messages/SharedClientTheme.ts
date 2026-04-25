@@ -1,12 +1,11 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { APIMessageSharedClientTheme, BaseThemeType } from 'discord-api-types/v10';
+import { normalizeArray, type RestOrArray } from '../util/normalizeArray.js';
 import { validate } from '../util/validation.js';
 import { sharedClientThemePredicate } from './Assertions.js';
 
 /**
  * A builder that creates API-compatible JSON data for shared client themes.
- *
- * @see {@link https://discord.com/developers/docs/resources/message#shared-client-theme-object}
  */
 export class SharedClientThemeBuilder implements JSONEncodable<APIMessageSharedClientTheme> {
 	/**
@@ -30,8 +29,8 @@ export class SharedClientThemeBuilder implements JSONEncodable<APIMessageSharedC
 	 * A maximum of 5 hexadecimal-encoded colors may be provided.
 	 * @param colors - The hexadecimal-encoded colors to set (e.g. `'5865F2'`)
 	 */
-	public setColors(colors: readonly string[]): this {
-		this.data.colors = [...colors];
+	public setColors(...colors: RestOrArray<string>): this {
+		this.data.colors = normalizeArray(colors);
 		return this;
 	}
 
@@ -62,9 +61,9 @@ export class SharedClientThemeBuilder implements JSONEncodable<APIMessageSharedC
 	/**
 	 * Sets the base theme (mode) of this theme.
 	 *
-	 * @param baseTheme - The base theme mode, or `null` to clear
+	 * @param baseTheme - The base theme mode
 	 */
-	public setBaseTheme(baseTheme: BaseThemeType | null): this {
+	public setBaseTheme(baseTheme: BaseThemeType): this {
 		this.data.base_theme = baseTheme;
 		return this;
 	}

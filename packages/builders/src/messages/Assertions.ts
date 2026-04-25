@@ -107,7 +107,7 @@ const messageNoComponentsV2Predicate = baseMessagePredicate
 			.int()
 			.optional()
 			.refine((flags) => !flags || (flags & MessageFlags.IsComponentsV2) === 0, {
-				error: 'Cannot set content, embeds, stickers, or poll with IsComponentsV2 flag set',
+				error: 'Cannot set content, embeds, stickers, poll, or shared client theme with IsComponentsV2 flag set',
 			}),
 	})
 	.refine(
