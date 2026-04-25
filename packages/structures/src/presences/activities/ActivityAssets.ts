@@ -1,6 +1,13 @@
-import type { GatewayActivityAssets } from 'discord-api-types/v10';
+import {
+	CDNRoutes,
+	ImageFormat,
+	RouteBases,
+	type GatewayActivityAssets,
+	type ApplicationAssetFormat,
+} from 'discord-api-types/v10';
 import { Structure } from '../../Structure.js';
 import { kData } from '../../utils/symbols.js';
+import { isFieldSet } from '../../utils/type-guards.js';
 import type { Partialize } from '../../utils/types.js';
 
 /**
@@ -32,6 +39,18 @@ export class ActivityAssets<Omitted extends keyof GatewayActivityAssets | '' = '
 	}
 
 	/**
+	 * Returns the large image URL of this `largeImage`
+	 *
+	 * @param applicationId - The id of the application to whom this asset belongs to
+	 * @param imageFormat - The desired format of the returned image URL
+	 */
+	public largeImageURL(applicationId: string, imageFormat: ApplicationAssetFormat = ImageFormat.PNG) {
+		return isFieldSet(this, 'largeImage', 'string')
+			? `${RouteBases.cdn}${CDNRoutes.applicationAsset(applicationId, this.largeImage, imageFormat)}`
+			: null;
+	}
+
+	/**
 	 * Text displayed when hovering over the large image of the activity
 	 */
 	public get largeText() {
@@ -50,6 +69,18 @@ export class ActivityAssets<Omitted extends keyof GatewayActivityAssets | '' = '
 	 */
 	public get smallImage() {
 		return this[kData].small_image;
+	}
+
+	/**
+	 * Returns the small image URL of this `smallImage`
+	 *
+	 * @param applicationId - The id of the application to whom this asset belongs to
+	 * @param imageFormat - The desired format of the returned image URL
+	 */
+	public smallImageURL(applicationId: string, imageFormat: ApplicationAssetFormat = ImageFormat.PNG) {
+		return isFieldSet(this, 'smallImage', 'string')
+			? `${RouteBases.cdn}${CDNRoutes.applicationAsset(applicationId, this.smallImage, imageFormat)}`
+			: null;
 	}
 
 	/**

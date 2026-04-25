@@ -38,7 +38,7 @@ export class ActivityParty<Omitted extends keyof GatewayActivityParty | '' = ''>
 	 * The current size of the party
 	 */
 	public get currentSize() {
-		const array = this[kData].size as number[];
+		const array = this[kData].size;
 
 		return array ? (isArrayFieldSet(array, 0, 'number') ? array[0] : null) : null;
 	}
@@ -47,7 +47,7 @@ export class ActivityParty<Omitted extends keyof GatewayActivityParty | '' = ''>
 	 * The maximum size of the party
 	 */
 	public get maximumSize() {
-		const array = this[kData].size as number[];
+		const array = this[kData].size;
 
 		return array ? (isArrayFieldSet(array, 1, 'number') ? array[1] : null) : null;
 	}
