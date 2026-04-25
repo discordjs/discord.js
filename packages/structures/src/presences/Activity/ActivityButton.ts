@@ -10,7 +10,7 @@ import type { Partialize } from '../../utils/types.js';
  * @remarks When received over the gateway, the `buttons` field is an array of strings, which are the `button` labels. Bots cannot
  * access a user's activity button URLs. When sending, the buttons field must be an array of this structure.
  */
-export class GatewayPresenceActivityButton<Omitted extends keyof GatewayActivityButton | '' = ''> extends Structure<
+export class ActivityButton<Omitted extends keyof GatewayActivityButton | '' = ''> extends Structure<
 	GatewayActivityButton,
 	Omitted
 > {
