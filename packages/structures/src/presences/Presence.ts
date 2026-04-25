@@ -27,8 +27,6 @@ export class Presence<Omitted extends keyof GatewayGuildMembersChunkPresence | '
 
 	/**
 	 * The user's new status
-	 *
-	 * @see {@link https://discord.com/developers/docs/events/gateway-events#update-presence-status-types}
 	 */
 	public get status() {
 		return this[kData].status;

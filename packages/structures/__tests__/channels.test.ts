@@ -39,6 +39,7 @@ import {
 	ThreadMetadata,
 	VoiceChannel,
 } from '../src/channels/index.js';
+import { dateToDiscordISOTimestamp } from '../src/index.js';
 import { kData } from '../src/utils/symbols.js';
 
 describe('text channel', () => {
@@ -49,7 +50,7 @@ describe('text channel', () => {
 		position: 0,
 		guild_id: '2',
 		last_message_id: '3',
-		last_pin_timestamp: '2020-10-10T13:50:17.209Z',
+		last_pin_timestamp: '2020-10-10T13:50:17.209000+00:00',
 		nsfw: true,
 		parent_id: '4',
 		permission_overwrites: [
@@ -77,7 +78,7 @@ describe('text channel', () => {
 		expect(instance.guildId).toBe(data.guild_id);
 		expect(instance.lastMessageId).toBe(data.last_message_id);
 		expect(instance.lastPinTimestamp).toBe(Date.parse(data.last_pin_timestamp!));
-		expect(instance.lastPinDate?.toISOString()).toBe(data.last_pin_timestamp);
+		expect(dateToDiscordISOTimestamp(instance.lastPinDate!)).toBe(data.last_pin_timestamp);
 		expect(instance.nsfw).toBe(data.nsfw);
 		expect(instance.parentId).toBe(data.parent_id);
 		expect(instance[kData].permission_overwrites).toEqual(data.permission_overwrites);
@@ -137,8 +138,8 @@ describe('announcement channel', () => {
 		expect(instance.flags?.toJSON()).toBe(data.flags);
 		expect(instance.guildId).toBe(data.guild_id);
 		expect(instance.lastMessageId).toBe(data.last_message_id);
-		expect(instance.lastPinTimestamp).toBe(null);
-		expect(instance.lastPinDate).toBe(data.last_pin_timestamp);
+		expect(instance.lastPinTimestamp).toBeNull();
+		expect(instance.lastPinDate).toBeNull();
 		expect(instance.nsfw).toBe(data.nsfw);
 		expect(instance.parentId).toBe(data.parent_id);
 		expect(instance[kData].permission_overwrites).toEqual(data.permission_overwrites);
@@ -210,7 +211,7 @@ describe('DM channel', () => {
 		id: '1',
 		type: ChannelType.DM,
 		last_message_id: '3',
-		last_pin_timestamp: '2020-10-10T13:50:17.209Z',
+		last_pin_timestamp: '2020-10-10T13:50:17.209000+00:00',
 		name: null,
 	};
 
@@ -234,7 +235,7 @@ describe('DM channel', () => {
 		expect(instance.flags?.toJSON()).toBe(data.flags);
 		expect(instance.lastMessageId).toBe(data.last_message_id);
 		expect(instance.lastPinTimestamp).toBe(Date.parse(data.last_pin_timestamp!));
-		expect(instance.lastPinDate?.toISOString()).toBe(data.last_pin_timestamp);
+		expect(dateToDiscordISOTimestamp(instance.lastPinDate!)).toBe(data.last_pin_timestamp);
 		expect(instance[kData].recipients).toEqual(data.recipients);
 		expect(instance.type).toBe(ChannelType.DM);
 		expect(instance.url).toBe('https://discord.com/channels/@me/1');
@@ -614,7 +615,7 @@ describe('thread channels', () => {
 	const dataAnnounce: APIAnnouncementThreadChannel = {
 		...dataPublic,
 		thread_metadata: {
-			archive_timestamp: '2024-09-08T12:01:02.345Z',
+			archive_timestamp: '2024-09-08T12:01:02.345000+00:00',
 			archived: false,
 			auto_archive_duration: ThreadAutoArchiveDuration.ThreeDays,
 			locked: true,
@@ -627,7 +628,7 @@ describe('thread channels', () => {
 		...dataPublic,
 		thread_metadata: {
 			...dataAnnounce.thread_metadata!,
-			create_timestamp: '2023-01-02T15:13:11.987Z',
+			create_timestamp: '2023-01-02T15:13:11.987000+00:00',
 			invitable: true,
 		},
 		type: ChannelType.PrivateThread,
@@ -730,9 +731,9 @@ describe('thread channels', () => {
 		const instance = new ThreadMetadata(dataPrivate.thread_metadata!);
 		expect(instance.toJSON()).toEqual(dataPrivate.thread_metadata);
 		expect(instance.archived).toBe(dataPrivate.thread_metadata?.archived);
-		expect(instance.archivedDate?.toISOString()).toBe(dataPrivate.thread_metadata?.archive_timestamp);
+		expect(dateToDiscordISOTimestamp(instance.archivedDate!)).toBe(dataPrivate.thread_metadata?.archive_timestamp);
 		expect(instance.archivedTimestamp).toBe(Date.parse(dataPrivate.thread_metadata!.archive_timestamp));
-		expect(instance.createdDate?.toISOString()).toBe(dataPrivate.thread_metadata?.create_timestamp);
+		expect(dateToDiscordISOTimestamp(instance.createdDate!)).toBe(dataPrivate.thread_metadata?.create_timestamp);
 		expect(instance.createdTimestamp).toBe(Date.parse(dataPrivate.thread_metadata!.create_timestamp!));
 		expect(instance.autoArchiveDuration).toBe(dataPrivate.thread_metadata?.auto_archive_duration);
 		expect(instance.invitable).toBe(dataPrivate.thread_metadata?.invitable);
