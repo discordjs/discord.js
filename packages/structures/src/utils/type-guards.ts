@@ -46,7 +46,7 @@ export function isArrayFieldSet<Type extends TypeofType, Index extends number>(
 	type: Type,
 ): array is Record<Index, Type> & unknown[] {
 	return Array.isArray(array)
-		? array.length >= targetIndex
+		? array.length > targetIndex
 			? // eslint-disable-next-line valid-typeof
 				typeof array[targetIndex] === type
 			: false

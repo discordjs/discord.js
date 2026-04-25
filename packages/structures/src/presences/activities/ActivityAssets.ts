@@ -45,8 +45,8 @@ export class ActivityAssets<Omitted extends keyof GatewayActivityAssets | '' = '
 	 * @param imageFormat - The desired format of the returned image URL
 	 */
 	public largeImageURL(applicationId: string, imageFormat: ApplicationAssetFormat = ImageFormat.PNG) {
-		return isFieldSet(this, 'largeImage', 'string')
-			? `${RouteBases.cdn}${CDNRoutes.applicationAsset(applicationId, this.largeImage, imageFormat)}`
+		return isFieldSet(this[kData], 'largeImage', 'string')
+			? `${RouteBases.cdn}${CDNRoutes.applicationAsset(applicationId, this[kData].largeImage, imageFormat)}`
 			: null;
 	}
 
