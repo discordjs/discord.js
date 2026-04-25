@@ -40,7 +40,11 @@ export function isFieldSet<Value extends object, Key extends string, Type extend
  * @param targetIndex - The target index of the element whose type to narrow
  * @param type - The type to compare against
  */
-export function isArrayFieldSet(array: unknown[], targetIndex: number, type: TypeofType): boolean {
+export function isArrayFieldSet<Type extends TypeofType, Index extends number>(
+	array: unknown,
+	targetIndex: Index,
+	type: Type,
+): array is Record<Index, Type> & unknown[] {
 	return Array.isArray(array)
 		? array.length >= targetIndex
 			? // eslint-disable-next-line valid-typeof
