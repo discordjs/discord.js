@@ -33,9 +33,6 @@ export class GatewayPresenceUpdate<Omitted extends keyof APIGatewayPresenceUpdat
 
 	/**
 	 * Time of when the client went idle, or null if the client is not idle
-	 *
-	 * @todo [!!!!] - does this name make sense? I didn't think `sinceAt` would sound right. Is it
-	 * clear enough that this returns a Date object?
 	 */
 	public get since() {
 		const timestamp = this.sinceTimestamp;
