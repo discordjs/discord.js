@@ -1,4 +1,5 @@
 import type { ChannelType, ThreadChannelType } from 'discord-api-types/v10';
+import { dateToDiscordISOTimestamp } from '../../utils/optimization.js';
 import { kLastPinTimestamp, kMixinConstruct, kMixinToJSON } from '../../utils/symbols.js';
 import type { Channel, ChannelDataType } from '../Channel.js';
 
@@ -57,6 +58,8 @@ export class ChannelPinMixin<
 	 * @param data - the result of {@link (Structure:class).toJSON}
 	 */
 	protected [kMixinToJSON](data: Partial<ChannelDataType<Type>>) {
-		data.last_pin_timestamp = this[kLastPinTimestamp] ? new Date(this[kLastPinTimestamp]).toISOString() : null;
+		data.last_pin_timestamp = this[kLastPinTimestamp]
+			? dateToDiscordISOTimestamp(new Date(this[kLastPinTimestamp]))
+			: null;
 	}
 }
