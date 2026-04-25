@@ -29,8 +29,7 @@ import { kPatch } from '../src/utils/symbols.js';
 
 const user: APIUser = {
 	username: 'username',
-	avatar:
-		'https://images-ext-1.discordapp.net/external/sdfjkhsdf/%3Fsize%3D4096/https/cdn.discordapp.com/guilds/1/users/1/avatars/54a38112404a550eab14e01fb7f77c9c.png?format=webp&quality=lossless&width=1356&height=1356',
+	avatar: '54a38112404a550eab14e01fb7f77c9c',
 	global_name: 'User',
 	discriminator: '0000',
 	id: '3',
@@ -47,7 +46,7 @@ const gatewayPresenceActivitySecretsData: GatewayActivitySecrets = {
 
 const gatewayPresenceActivityPartyData: GatewayActivityParty = {
 	id: '1',
-	size: [11, null as unknown as number],
+	size: [11, 40],
 };
 
 const gatewayPresenceActivityEmojiData: GatewayActivityEmoji = {
@@ -61,12 +60,12 @@ const gatewayPresenceActivityButtonData: GatewayActivityButton = {
 };
 
 const gatewayPresenceActivityAssetsData: GatewayActivityAssets = {
-	large_image: 'djs://some-real-big-image-init',
-	large_text: 'djs://large-text',
-	large_url: 'activity-asset/large-url/',
-	small_image: 'djs://small-image',
-	small_text: 'djs://activity-asset/smallText',
-	invite_cover_image: 'djs://activity-asset/invite-cover-image',
+	large_image: '123456789012345678',
+	large_text: 'large-text',
+	large_url: 'https://discord.js.org',
+	small_image: '123456789012345678',
+	small_text: 'activity-asset/smallText',
+	invite_cover_image: '123456789012345670',
 };
 
 const gatewayPresenceActivityData: GatewayActivity = {
@@ -79,9 +78,9 @@ const gatewayPresenceActivityData: GatewayActivity = {
 	application_id: '121212',
 	status_display_type: StatusDisplayType.Details,
 	details: 'activity-details',
-	details_url: 'activity-details-url',
+	details_url: 'https://github.com//discordjs/discord.js',
 	state: 'activity-state',
-	state_url: 'activity-state-url',
+	state_url: 'https://github.com//discordjs/discord.js',
 	emoji: gatewayPresenceActivityEmojiData,
 	party: gatewayPresenceActivityPartyData,
 	assets: gatewayPresenceActivityAssetsData,
@@ -223,7 +222,7 @@ describe('gatewayPresences structures', () => {
 			test('patching the structure works in-place', () => {
 				const patched = instance[kPatch]({
 					large_text: 'djs://PATCHED-LARGE-TEXT',
-					small_url: 'djs://small-url',
+					small_url: 'https://discord.js.org/docs/packages/structures/main',
 				});
 
 				expect(patched.largeText).toEqual('djs://PATCHED-LARGE-TEXT');
@@ -326,7 +325,7 @@ describe('gatewayPresences structures', () => {
 
 			test('correct value for all getters', () => {
 				expect(instance.startTimestamp).toBe(data.start);
-				expect(instance.startDate).toStrictEqual(new Date(data.start as number));
+				expect(instance.startDate?.valueOf()).toStrictEqual(data.start);
 
 				expect(instance.endTimestamp).toBeUndefined();
 				expect(instance.endDate).toBeNull();
