@@ -4,7 +4,7 @@ import { BitField } from './BitField.js';
 /**
  * Data structure that makes it easy to interact with an {@link ActivityFlags} bitfield.
  */
-export class GatewayPresenceActivityFlagsBitField extends BitField<keyof typeof ActivityFlags> {
+export class ActivityFlagsBitField extends BitField<keyof typeof ActivityFlags> {
 	/**
 	 * Numeric gateway presence activity flags.
 	 */
