@@ -1,8 +1,6 @@
-import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { GatewayActivityParty } from 'discord-api-types/v10';
 import { Structure } from '../../Structure.js';
 import { kData } from '../../utils/symbols.js';
-import { isIdSet } from '../../utils/type-guards.js';
 import type { Partialize } from '../../utils/types.js';
 
 /**
@@ -28,6 +26,8 @@ export class GatewayPresenceActivityParty<Omitted extends keyof GatewayActivityP
 
 	/**
 	 * The id of the party.
+	 *
+	 * @remarks This is an application-defined id and is not a Discord snowflake.
 	 */
 	public get id() {
 		return this[kData].id;
@@ -40,20 +40,5 @@ export class GatewayPresenceActivityParty<Omitted extends keyof GatewayActivityP
 	 */
 	public get size() {
 		return this[kData].size;
-	}
-
-	/**
-	 * The timestamp the activity party was created at
-	 */
-	public get createdTimestamp() {
-		return isIdSet(this.id) ? DiscordSnowflake.timestampFrom(this.id) : null;
-	}
-
-	/**
-	 * The time the activity party was created at
-	 */
-	public get createdAt() {
-		const createdTimestamp = this.createdTimestamp;
-		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
 }
