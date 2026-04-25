@@ -46,7 +46,7 @@ export class ChannelPinMixin<
 	/**
 	 * The Date of when the last pin in the channel happened
 	 */
-	public get lastPinAt() {
+	public get lastPinDate() {
 		const lastPinTimestamp = this.lastPinTimestamp;
 		return lastPinTimestamp ? new Date(lastPinTimestamp) : null;
 	}

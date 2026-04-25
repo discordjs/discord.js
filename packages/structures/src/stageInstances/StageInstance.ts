@@ -78,7 +78,7 @@ export class StageInstance<Omitted extends keyof APIStageInstance | '' = ''> ext
 	/**
 	 * The time the stage instance was created at
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
