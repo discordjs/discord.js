@@ -42,6 +42,6 @@ export class GatewayPresenceActivitySecrets<Omitted extends keyof GatewayActivit
 	 * Secret for a specific instanced match
 	 */
 	public get match() {
-		return this[kData].join;
+		return this[kData].match;
 	}
 }
