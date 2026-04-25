@@ -121,7 +121,7 @@ export class GatewayPresenceActivity<Omitted extends keyof GatewayActivity | '' 
 	}
 
 	/**
-	 * Activity flags `OR` d together, describes what the payload includes
+	 * Activity flags `OR`d together, describes what the payload includes
 	 *
 	 * @see {@link https://discord.com/developers/docs/events/gateway-events#activity-object-activity-flags}
 	 */
