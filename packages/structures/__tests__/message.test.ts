@@ -29,7 +29,7 @@ import {
 import { describe, expect, test } from 'vitest';
 import { Attachment } from '../src/messages/Attachment.js';
 import { Message } from '../src/messages/Message.js';
-import { SharedClientTheme } from '../src/messages/MessageSharedClientTheme.js';
+import { SharedClientTheme } from '../src/messages/SharedClientTheme.js';
 import { ContainerComponent } from '../src/messages/components/ContainerComponent.js';
 import { Embed } from '../src/messages/embeds/Embed.js';
 import { User } from '../src/users/User.js';

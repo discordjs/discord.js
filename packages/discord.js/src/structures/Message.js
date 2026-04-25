@@ -503,7 +503,7 @@ class Message extends Base {
     /**
      * The shared client theme sent with this message
      *
-     * @typedef {Object} MessageSharedClientTheme
+     * @typedef {Object} SharedClientTheme
      * @property {string[]} colors The hexadecimal-encoded colors of the theme (max of 5)
      * @property {number} gradientAngle The direction of the theme's colors (0–360)
      * @property {number} baseMix The intensity of the theme's colors (0–100)
@@ -513,7 +513,7 @@ class Message extends Base {
       /**
        * The shared client theme sent with this message
        *
-       * @type {?MessageSharedClientTheme}
+       * @type {?SharedClientTheme}
        */
       this.sharedClientTheme = {
         colors: data.shared_client_theme.colors,
@@ -522,7 +522,7 @@ class Message extends Base {
       };
 
       if ('base_theme' in data.shared_client_theme) {
-        this.sharedClientTheme.baseTheme = data.shared_client_theme.baseTheme;
+        this.sharedClientTheme.baseTheme = data.shared_client_theme.base_theme;
       }
     } else {
       this.sharedClientTheme ??= null;

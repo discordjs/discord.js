@@ -6,14 +6,18 @@ import type { Partialize } from '../utils/types.js';
 /**
  * Represents the shared client theme sent with a Discord message.
  *
- * @remarks
- * Consuming classes are expected to instantiate this as a `SharedClientTheme`.
+ * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  * @see {@link https://discord.com/developers/docs/resources/message#shared-client-theme-object}
  */
 export class SharedClientTheme<Omitted extends keyof APIMessageSharedClientTheme | '' = ''> extends Structure<
 	APIMessageSharedClientTheme,
 	Omitted
 > {
+	/**
+	 * The template used for removing data from the raw data stored for each SharedClientTheme.
+	 */
+	public static override DataTemplate: Partial<APIMessageSharedClientTheme> = {};
+
 	/**
 	 * @param data - The raw data received from the API for the shared client theme
 	 */
