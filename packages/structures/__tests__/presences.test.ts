@@ -13,6 +13,7 @@ import {
 	StatusDisplayType,
 	ActivityFlags,
 	PresenceUpdateStatus,
+	ImageFormat,
 } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
@@ -203,14 +204,17 @@ describe('gatewayPresences structures', () => {
 		describe('GatewayPresenceActivityAssets sub-structure', () => {
 			const data = gatewayPresenceActivityAssetsData;
 			const instance = new ActivityAssets(data);
+			const applicationId = '23498573429574598';
 
-			test('correct value for all getters', () => {
+			test('correct value for all getters and helper methods [largeImageURL, smallImageURL]', () => {
 				expect(instance.largeImage).toBe(data.large_image);
 				expect(instance.largeText).toBe(data.large_text);
 				expect(instance.largeURL).toBe(data.large_url);
 				expect(instance.smallImage).toBe(data.small_image);
 				expect(instance.smallText).toBe(data.small_text);
 				expect(instance.inviteCoverImage).toBe(data.invite_cover_image);
+				expect(instance.largeImageURL(applicationId, ImageFormat.JPEG));
+				expect(instance.smallImageURL(applicationId, ImageFormat.JPEG));
 
 				expect(instance.smallURL).toBeUndefined();
 			});
@@ -226,7 +230,7 @@ describe('gatewayPresences structures', () => {
 				});
 
 				expect(patched.largeText).toEqual('djs://PATCHED-LARGE-TEXT');
-				expect(patched.smallURL).toEqual('djs://small-url');
+				expect(patched.smallURL).toEqual('https://discord.js.org/docs/packages/structures/main');
 
 				expect(patched).toBe(instance);
 				expect(patched.toJSON()).not.toEqual(data);
@@ -267,8 +271,7 @@ describe('gatewayPresences structures', () => {
 			test('correct value for all getters and helper methods [createdTimestamp, createdDate]', () => {
 				expect(instance.id).toBe(data.id);
 				expect(instance.currentSize).toBe(data.size![0]);
-
-				expect(instance.maximumSize).toBeNull();
+				expect(instance.maximumSize).toEqual(data.size![1]);
 			});
 
 			test('toJSON() returns expected values', () => {
