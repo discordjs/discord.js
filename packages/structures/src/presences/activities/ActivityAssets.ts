@@ -45,8 +45,8 @@ export class ActivityAssets<Omitted extends keyof GatewayActivityAssets | '' = '
 	 * @param imageFormat - The desired format of the returned image URL
 	 */
 	public largeImageURL(applicationId: string, imageFormat: ApplicationAssetFormat = ImageFormat.PNG) {
-		return isFieldSet(this, 'largeImage', 'string')
-			? `${RouteBases.cdn}${CDNRoutes.applicationAsset(applicationId, this.largeImage, imageFormat)}`
+		return isFieldSet(this[kData], 'large_image', 'string')
+			? `${RouteBases.cdn}${CDNRoutes.applicationAsset(applicationId, this[kData].large_image, imageFormat)}`
 			: null;
 	}
 
@@ -78,8 +78,8 @@ export class ActivityAssets<Omitted extends keyof GatewayActivityAssets | '' = '
 	 * @param imageFormat - The desired format of the returned image URL
 	 */
 	public smallImageURL(applicationId: string, imageFormat: ApplicationAssetFormat = ImageFormat.PNG) {
-		return isFieldSet(this, 'smallImage', 'string')
-			? `${RouteBases.cdn}${CDNRoutes.applicationAsset(applicationId, this.smallImage, imageFormat)}`
+		return isFieldSet(this[kData], 'small_image', 'string')
+			? `${RouteBases.cdn}${CDNRoutes.applicationAsset(applicationId, this[kData].small_image, imageFormat)}`
 			: null;
 	}
 
