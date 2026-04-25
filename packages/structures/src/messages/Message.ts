@@ -165,12 +165,16 @@ export class Message<Omitted extends keyof APIMessage | '' = 'edited_timestamp' 
 	 */
 	public override toJSON() {
 		const clone = super.toJSON();
-		if (this[kEditedTimestamp]) {
-			clone.edited_timestamp = dateToDiscordISOTimestamp(new Date(this[kEditedTimestamp]));
+
+		const editedTimestamp = this[kEditedTimestamp];
+		const createdDate = this.createdDate;
+
+		if (editedTimestamp) {
+			clone.edited_timestamp = dateToDiscordISOTimestamp(new Date(editedTimestamp));
 		}
 
-		if (this.createdDate) {
-			clone.timestamp = dateToDiscordISOTimestamp(this.createdDate);
+		if (createdDate) {
+			clone.timestamp = dateToDiscordISOTimestamp(createdDate);
 		}
 
 		return clone;

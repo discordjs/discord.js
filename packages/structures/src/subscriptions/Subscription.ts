@@ -110,7 +110,7 @@ export class Subscription<
 	/**
 	 * The time at which the current subscription period will start
 	 */
-	public get currentPeriodstartDate() {
+	public get currentPeriodStartDate() {
 		const startTimestamp = this.currentPeriodStartTimestamp;
 		return startTimestamp ? new Date(startTimestamp) : null;
 	}
@@ -125,7 +125,7 @@ export class Subscription<
 	/**
 	 * The time at which the current subscription period will end
 	 */
-	public get currentPeriodendsDate() {
+	public get currentPeriodEndDate() {
 		const endTimestamp = this.currentPeriodEndTimestamp;
 		return endTimestamp ? new Date(endTimestamp) : null;
 	}

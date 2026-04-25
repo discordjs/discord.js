@@ -14,6 +14,8 @@ import {
 	ActivityFlags,
 	PresenceUpdateStatus,
 	ImageFormat,
+	RouteBases,
+	CDNRoutes,
 } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import {
@@ -41,8 +43,8 @@ const gatewayPresenceActivityTimestampsData: GatewayActivityTimestamps = {
 };
 
 const gatewayPresenceActivitySecretsData: GatewayActivitySecrets = {
-	join: 'djs://join',
-	match: 'djs://match',
+	join: '105ed05c71f639de8bfaa0d679d7c94b2fdce12f',
+	match: '205ed05c71f3425258bfaa0d679d7cfef897987',
 };
 
 const gatewayPresenceActivityPartyData: GatewayActivityParty = {
@@ -213,8 +215,13 @@ describe('gatewayPresences structures', () => {
 				expect(instance.smallImage).toBe(data.small_image);
 				expect(instance.smallText).toBe(data.small_text);
 				expect(instance.inviteCoverImage).toBe(data.invite_cover_image);
-				expect(instance.largeImageURL(applicationId, ImageFormat.JPEG));
-				expect(instance.smallImageURL(applicationId, ImageFormat.JPEG));
+
+				expect(instance.largeImageURL(applicationId, ImageFormat.JPEG)).toEqual(
+					`${RouteBases.cdn}${CDNRoutes.applicationAsset(applicationId, data.large_image!, ImageFormat.JPEG)}`,
+				);
+				expect(instance.smallImageURL(applicationId, ImageFormat.JPEG)).toEqual(
+					`${RouteBases.cdn}${CDNRoutes.applicationAsset(applicationId, data.small_image!, ImageFormat.JPEG)}`,
+				);
 
 				expect(instance.smallURL).toBeUndefined();
 			});
@@ -344,7 +351,7 @@ describe('gatewayPresences structures', () => {
 					end: newTimestamp,
 				});
 
-				expect(patched.endDate?.valueOf()).toStrictEqual(patched.endTimestamp);
+				expect(patched.endDate?.valueOf()).toStrictEqual(newTimestamp);
 
 				expect(patched).toEqual(instance);
 				expect(patched.toJSON()).not.toEqual(data);
