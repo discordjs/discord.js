@@ -8,7 +8,7 @@ import type { Partialize } from '../../utils/types.js';
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  */
-export class GatewayPresenceActivityParty<Omitted extends keyof GatewayActivityParty | '' = ''> extends Structure<
+export class ActivityParty<Omitted extends keyof GatewayActivityParty | '' = ''> extends Structure<
 	GatewayActivityParty,
 	Omitted
 > {
