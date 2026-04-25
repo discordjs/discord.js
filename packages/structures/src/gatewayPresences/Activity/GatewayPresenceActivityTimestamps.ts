@@ -52,6 +52,6 @@ export class GatewayPresenceActivityTimestamps<
 	public get endAt() {
 		const timestamp = this[kData].end;
 
-		return timestamp ? new Date(timestamp as string) : null;
+		return timestamp ? new Date(timestamp as number) : null;
 	}
 }
