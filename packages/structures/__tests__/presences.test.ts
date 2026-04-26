@@ -43,8 +43,8 @@ const gatewayPresenceActivityTimestampsData: GatewayActivityTimestamps = {
 };
 
 const gatewayPresenceActivitySecretsData: GatewayActivitySecrets = {
-	join: '105ed05c71f639de8bfaa0d679d7c94b2fdce12f',
-	match: '205ed05c71f3425258bfaa0d679d7cfef897987',
+	join: '025ed05c71f639de8bfaa0d679d7c94b2fdce12f',
+	match: '4b2fdce12f639de8bfa7e3591b71a0d679d7c93f',
 };
 
 const gatewayPresenceActivityPartyData: GatewayActivityParty = {
@@ -315,13 +315,16 @@ describe('gatewayPresences structures', () => {
 			});
 
 			test('patching the structure works in-place', () => {
+				const spectate = 'e7eb30d2ee025ed05c71ea495f770b76454ee4e0';
+				const match = '025ed05c71f639de8bfaa0d679d7c94b2fdce12f-new-match';
+
 				const patched = instance[kPatch]({
-					match: 'djs://[PATCHED]-activity-party-match',
-					spectate: 'djs://[PATCHED-[ADD-PROPERTY]]-spectate',
+					match,
+					spectate,
 				});
 
-				expect(patched.match).toEqual('djs://[PATCHED]-activity-party-match');
-				expect(patched.spectate).toEqual('djs://[PATCHED-[ADD-PROPERTY]]-spectate');
+				expect(patched.match).toEqual(match);
+				expect(patched.spectate).toEqual(spectate);
 
 				expect(patched).toBe(instance);
 				expect(patched.toJSON()).not.toEqual(data);
