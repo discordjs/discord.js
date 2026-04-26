@@ -417,3 +417,167 @@ client.on(Events.InteractionCreate, (interaction) => {
 <Callout>
 	Empty text input submissions return an empty string `""`. Select menus without a selection return an empty array `[]`.
 </Callout>
+
+## Additional Modal Components
+
+### Radio Group
+
+Radio Group is an interactive component for selecting one option from a list of up to ten options.
+
+<Callout>Radio Groups require two options to be sent</Callout>
+
+```js
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+	if (interaction.commandName === 'ping') {
+		// Create the modal
+		const modal = new ModalBuilder().setCustomId('myModal').setTitle('My Modal');
+
+		// [!code focus:12]
+		// [!code ++:9]
+		const radioGroupLabel = new LabelBuilder().setLabel('Radio Group').setRadioGroupComponent((radioGroup) =>
+			radioGroup.setCustomId('checkboxes').addOptions([
+				{ label: 'Option 1', value: 'option_1', description: 'The first option' },
+				{ label: 'Option 2', value: 'option_2', description: 'The default option', default: true },
+				{ label: 'Option 3', value: 'option_3' },
+			]),
+		);
+
+		// Add components to modal
+		// [!code ++:1]
+		modal.addLabelComponents(radioGroupLabel);
+
+		// Show modal to the user
+		await interaction.showModal(modal);
+	}
+});
+```
+
+#### Radio Group properties
+
+A Radio Group component can be customized to apply validation via the following `RadioGroupBuilder` methods:
+
+```js
+const radioGroupLabel = new FileUploadBuilder()
+	// Set the optional identifier for component
+	.setId(1)
+	// Require a option to be selected in this component (defaults to true)
+	.setRequired(true);
+```
+
+### Checkbox Group
+
+Checkbox Group is an interactive component for selecting one to ten options.
+
+```js
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+	if (interaction.commandName === 'ping') {
+		// Create the modal
+		const modal = new ModalBuilder().setCustomId('myModal').setTitle('My Modal');
+
+		// ...
+
+		// [!code focus:13]
+		// [!code ++:9]
+		const checkBoxesLabel = new LabelBuilder().setLabel('CheckBox Group').setCheckboxGroupComponent((checkBoxes) =>
+			checkboxes.setCustomId('checkboxes').addOptions([
+				{ label: 'Option A', value: 'option_a', description: 'The first option' },
+				{ label: 'Option B', value: 'option_b', description: 'The default option', default: true },
+				{ label: 'Option C', value: 'option_c' },
+			]),
+		);
+
+		// Add components to modal
+		// [!code --:1]
+		modal.addLabelComponents(radioGroupLabel);
+		// [!code ++:1]
+		modal.addLabelComponents(radioGroupLabel, checkBoxesLabel);
+
+		// Show modal to the user
+		await interaction.showModal(modal);
+	}
+});
+```
+
+#### Checkbox Group properties
+
+A Checkbox Group component can be customized to apply validation via the following `CheckBoxGroupBuilder` methods:
+
+```js
+const checkBoxesLabel = new CheckboxGroupBuilder()
+	// Set the optional identifier for component
+	.setId(1)
+	// Minimum number of boxes that must be checked (defaults to 1); min 0, max 10
+	.setMinValues(1)
+	// Maximum number of boxes that can be checked (defaults to 1); max 10
+	.setMaxValues(1)
+	// Require a box to be check in this component (defaults to true)
+	.setRequired(true);
+```
+
+### Checkbox
+
+Checkbox is a single interactive component for simple yes/no style questions.
+
+<Callout>
+	Checkbox components can not be required. If a checkbox is to be required a Checkbox Group component needs to be used
+	instead.
+</Callout>
+
+```js
+client.on(Events.InteractionCreate, async (interaction) => {
+	if (!interaction.isChatInputCommand()) return;
+	if (interaction.commandName === 'ping') {
+		// Create the modal
+		const modal = new ModalBuilder().setCustomId('myModal').setTitle('My Modal');
+
+		// ...
+
+		// [!code focus:7]
+		// [!code ++:3]
+		const checkBoxLabel = new LabelBuilder()
+			.setLabel('Did you enjoy this modal?')
+			.setCheckboxComponent((checkbox) => checkbox.setCustomId('checkbox'));
+
+		// Add components to modal
+		// [!code --:1]
+		modal.addLabelComponents(radioGroupLabel, checkBoxesLabel);
+		// [!code ++:1]
+		modal.addLabelComponents(radioGroupLabel, checkBoxesLabel, checkBoxLabel);
+
+		// Show modal to the user
+		await interaction.showModal(modal);
+	}
+});
+```
+
+#### Checkbox properties
+
+A Checkbox component can be customized to apply validation via the following `CheckBoxGroupBuilder` method:
+
+```js
+const checkBoxesLabel = new CheckboxBuilder()
+	// Set the optional identifier for component
+	.setId(1);
+```
+
+### Receiving Additional Modal Components
+
+```js
+client.on(Events.InteractionCreate, (interaction) => {
+	if (!interaction.isModalSubmit()) return;
+	if (interaction.customId === 'myModal') {
+		await interaction.reply({ content: 'Your submission was received successfully!' });
+
+		// [!code focus:4]
+		// Get the data entered by the user
+		const radioGroup = interaction.fields.getRadioGroup('radiogroup');
+		const checkBoxes = interaction.fields.getCheckboxGroup('checkboxes');
+		const checkbox = interaction.fields.getCheckbox('checkbox');
+
+		console.log({ radioGroup, checkBoxes, checkbox });
+	}
+});
+
+```
