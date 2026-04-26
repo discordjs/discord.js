@@ -104,8 +104,8 @@ const gatewayPresenceClientStatusData: GatewayPresenceClientStatusTypedef = {
 	mobile: PresenceUpdateStatus.Online,
 };
 
-describe('gatewayPresences structures', () => {
-	describe('GatewayPresenceClientStatus sub-structure', () => {
+describe('Presences structures', () => {
+	describe('PresenceClientStatus sub-structure', () => {
 		const data = gatewayPresenceClientStatusData;
 		const instance = new ClientStatus(data);
 
@@ -134,7 +134,7 @@ describe('gatewayPresences structures', () => {
 		});
 	});
 
-	describe('GatewayPresenceUpdate sub-structure', () => {
+	describe('PresenceUpdate sub-structure', () => {
 		const data = gatewayPresenceUpdateData;
 		const instance = new Presence(data);
 
@@ -159,8 +159,8 @@ describe('gatewayPresences structures', () => {
 		});
 	});
 
-	describe('gatewayPresences sub-structures', () => {
-		describe('GatewayPresenceActivity sub-structure', () => {
+	describe('Presences sub-structures', () => {
+		describe('PresenceActivity sub-structure', () => {
 			const data = gatewayPresenceActivityData;
 			const instance = new Activity(data);
 
@@ -203,7 +203,7 @@ describe('gatewayPresences structures', () => {
 			});
 		});
 
-		describe('GatewayPresenceActivityAssets sub-structure', () => {
+		describe('PresenceActivityAssets sub-structure', () => {
 			const data = gatewayPresenceActivityAssetsData;
 			const instance = new ActivityAssets(data);
 			const applicationId = '23498573429574598';
@@ -245,7 +245,7 @@ describe('gatewayPresences structures', () => {
 			});
 		});
 
-		describe('GatewayPresenceActivityButton sub-structure', () => {
+		describe('PresenceActivityButton sub-structure', () => {
 			const data = gatewayPresenceActivityButtonData;
 			const instance = new ActivityButton(data);
 
@@ -271,7 +271,7 @@ describe('gatewayPresences structures', () => {
 			});
 		});
 
-		describe('GatewayPresenceActivityParty sub-structure', () => {
+		describe('PresenceActivityParty sub-structure', () => {
 			const data = gatewayPresenceActivityPartyData;
 			const instance = new ActivityParty(data);
 
@@ -299,7 +299,7 @@ describe('gatewayPresences structures', () => {
 			});
 		});
 
-		describe('GatewayPresenceActivitySecrets sub-structure', () => {
+		describe('PresenceActivitySecrets sub-structure', () => {
 			const data = gatewayPresenceActivitySecretsData;
 			const instance = new ActivitySecrets(data);
 
@@ -332,7 +332,7 @@ describe('gatewayPresences structures', () => {
 			});
 		});
 
-		describe('GatewayPresenceActivityTimestamps sub-structure', () => {
+		describe('PresenceActivityTimestamps sub-structure', () => {
 			const data = gatewayPresenceActivityTimestampsData;
 			const instance = new ActivityTimestamps(data);
 
