@@ -458,7 +458,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 A Radio Group component can be customized to apply validation via the following `RadioGroupBuilder` methods:
 
 ```js
-const radioGroupLabel = new FileUploadBuilder()
+const radioGroup = new RadioGroupBuilder()
 	// Set the optional identifier for component
 	.setId(1)
 	// Require a option to be selected in this component (defaults to true)
@@ -480,7 +480,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 		// [!code focus:13]
 		// [!code ++:9]
-		const checkBoxesLabel = new LabelBuilder().setLabel('CheckBox Group').setCheckboxGroupComponent((checkBoxes) =>
+		const checkboxGroupLabel = new LabelBuilder().setLabel('Checkbox Group').setCheckboxGroupComponent((checkboxes) =>
 			checkboxes.setCustomId('checkboxes').addOptions([
 				{ label: 'Option A', value: 'option_a', description: 'The first option' },
 				{ label: 'Option B', value: 'option_b', description: 'The default option', default: true },
@@ -492,7 +492,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 		// [!code --:1]
 		modal.addLabelComponents(radioGroupLabel);
 		// [!code ++:1]
-		modal.addLabelComponents(radioGroupLabel, checkBoxesLabel);
+		modal.addLabelComponents(radioGroupLabel, checkboxGroupLabel);
 
 		// Show modal to the user
 		await interaction.showModal(modal);
@@ -505,7 +505,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 A Checkbox Group component can be customized to apply validation via the following `CheckBoxGroupBuilder` methods:
 
 ```js
-const checkBoxesLabel = new CheckboxGroupBuilder()
+const checkboxes = new CheckboxGroupBuilder()
 	// Set the optional identifier for component
 	.setId(1)
 	// Minimum number of boxes that must be checked (defaults to 1); min 0, max 10
@@ -536,7 +536,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 		// [!code focus:7]
 		// [!code ++:3]
-		const checkBoxLabel = new LabelBuilder()
+		const checkboxLabel = new LabelBuilder()
 			.setLabel('Did you enjoy this modal?')
 			.setCheckboxComponent((checkbox) => checkbox.setCustomId('checkbox'));
 
@@ -544,7 +544,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
 		// [!code --:1]
 		modal.addLabelComponents(radioGroupLabel, checkBoxesLabel);
 		// [!code ++:1]
-		modal.addLabelComponents(radioGroupLabel, checkBoxesLabel, checkBoxLabel);
+		modal.addLabelComponents(radioGroupLabel, checkboxGroupLabel, checkboxLabel);
 
 		// Show modal to the user
 		await interaction.showModal(modal);
@@ -554,10 +554,10 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
 #### Checkbox properties
 
-A Checkbox component can be customized to apply validation via the following `CheckBoxGroupBuilder` method:
+A Checkbox component can be customized to apply validation via the following `CheckBoxBuilder` method:
 
 ```js
-const checkBoxesLabel = new CheckboxBuilder()
+const checkbox = new CheckboxBuilder()
 	// Set the optional identifier for component
 	.setId(1);
 ```
@@ -573,10 +573,10 @@ client.on(Events.InteractionCreate, (interaction) => {
 		// [!code focus:4]
 		// Get the data entered by the user
 		const radioGroup = interaction.fields.getRadioGroup('radiogroup');
-		const checkBoxes = interaction.fields.getCheckboxGroup('checkboxes');
+		const checkboxes = interaction.fields.getCheckboxGroup('checkboxes');
 		const checkbox = interaction.fields.getCheckbox('checkbox');
 
-		console.log({ radioGroup, checkBoxes, checkbox });
+		console.log({ radioGroup, checkboxes, checkbox });
 	}
 });
 
