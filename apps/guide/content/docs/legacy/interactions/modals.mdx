@@ -422,9 +422,9 @@ client.on(Events.InteractionCreate, (interaction) => {
 
 ### Radio Group
 
-Radio Group is an interactive component for selecting one option from a list of up to ten options.
+Radio groups are an interactive component for selecting one option from a list of up to ten options.
 
-<Callout>Radio Groups require two options to be sent</Callout>
+<Callout>Radio groups require at least two options to be sent</Callout>
 
 ```js
 client.on(Events.InteractionCreate, async (interaction) => {
@@ -467,7 +467,7 @@ const radioGroup = new RadioGroupBuilder()
 
 ### Checkbox Group
 
-Checkbox Group is an interactive component for selecting one to ten options.
+Checkbox groups are an interactive component for selecting up to ten options.
 
 ```js
 client.on(Events.InteractionCreate, async (interaction) => {
@@ -579,5 +579,4 @@ client.on(Events.InteractionCreate, (interaction) => {
 		console.log({ radioGroup, checkboxes, checkbox });
 	}
 });
-
 ```
