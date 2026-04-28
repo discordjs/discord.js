@@ -218,6 +218,7 @@ import {
   ThreadAutoArchiveDuration,
   ThreadChannelType,
   ThreadMemberFlags,
+  UnfurledMediaItemFlags,
   UserFlags,
   VideoQualityMode,
   VoiceChannelEffectSendAnimationType,
@@ -847,7 +848,7 @@ export interface EmbedFooterData extends IconData {
 export interface EmbedAssetData {
   contentType?: string;
   description?: string;
-  flags?: Readonly<EmbedMediaFlagsBitField>;
+  flags: Readonly<EmbedMediaFlagsBitField>;
   height?: number;
   placeholder?: string;
   placeholderVersion?: number;
@@ -873,7 +874,7 @@ export class Embed {
   public get provider(): APIEmbedProvider | null;
   public get video(): EmbedAssetData | null;
   public get length(): number;
-  public get flags(): EmbedFlagsBitField | null;
+  public get flags(): EmbedFlagsBitField;
   public equals(other: APIEmbed | Embed): boolean;
   public toJSON(): APIEmbed;
 }
@@ -2339,11 +2340,12 @@ export class AuthorizingIntegrationOwners extends Base {
 }
 
 export class Attachment {
-  private constructor(data: APIAttachment);
+  private constructor(client: Client<true>, data: APIAttachment);
   private readonly attachment: BufferResolvable | Stream;
-  public application: APIApplication | null;
-  public clipCreatedAt: number | null;
-  public clipParticipants: readonly APIUser[] | null;
+  public application: ClientApplication | null;
+  public clipCreatedAt: Date | null;
+  public clipParticipantIds: readonly Snowflake[] | null;
+  public clipParticipants: Collection<Snowflake, User> | null;
   public contentType: string | null;
   public description: string | null;
   public duration: number | null;
@@ -3751,9 +3753,17 @@ export interface UnfurledMediaItemData {
   url: string;
 }
 
+export class UnfurledMediaItemFlagsBitField extends BitField<UnfurledMediaItemFlagsString> {
+  public static Flags: typeof UnfurledMediaItemFlags;
+  public static resolve(bit?: BitFieldResolvable<UnfurledMediaItemFlagsString, number>): number;
+}
+
 export class UnfurledMediaItem {
   private constructor(data: APIUnfurledMediaItem);
   public readonly data: APIUnfurledMediaItem;
+  public get flags(): UnfurledMediaItemFlagsBitField;
+  public get placeholder(): string | null;
+  public get placeholderVersion(): number | null;
   public get url(): string;
 }
 
@@ -7252,6 +7262,8 @@ export interface StartThreadOptions {
   rateLimitPerUser?: number;
   reason?: string;
 }
+
+export type UnfurledMediaItemFlagsString = keyof typeof UnfurledMediaItemFlags;
 
 export type ClientStatus = number;
 

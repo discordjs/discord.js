@@ -1,5 +1,7 @@
 'use strict';
 
+const { UnfurledMediaItemFlagsBitField } = require('../util/UnfurledMediaItemFlagsBitField.js');
+
 /**
  * Represents a media item in a component
  */
@@ -11,6 +13,36 @@ class UnfurledMediaItem {
      * @type {APIUnfurledMediaItem}
      */
     this.data = data;
+  }
+
+  /**
+   * The flags of this media item.
+   *
+   * @type {Readonly<UnfurledMediaItemFlagsBitField>}
+   * @readonly
+   */
+  get flags() {
+    return new UnfurledMediaItemFlagsBitField(this.data.flags ?? 0).freeze();
+  }
+
+  /**
+   * ThumbHash placeholder (if image or video)
+   *
+   * @type {?string}
+   * @readonly
+   */
+  get placeholder() {
+    return this.data.placeholder ?? null;
+  }
+
+  /**
+   * Version of the placeholder (if image or video)
+   *
+   * @type {?number}
+   * @readonly
+   */
+  get placeholderVersion() {
+    return this.data.placeholder_version ?? null;
   }
 
   /**

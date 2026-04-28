@@ -1,7 +1,10 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const { AttachmentFlagsBitField } = require('../util/AttachmentFlagsBitField.js');
 const { basename, flatten } = require('../util/Util.js');
+const { Base } = require('./Base.js');
+const { ClientApplication } = require('./ClientApplication.js');
 
 /**
  * @typedef {Object} AttachmentPayload
@@ -16,8 +19,10 @@ const { basename, flatten } = require('../util/Util.js');
 /**
  * Represents an attachment
  */
-class Attachment {
-  constructor(data) {
+class Attachment extends Base {
+  constructor(client, data) {
+    super(client);
+
     this.attachment = data.url;
     /**
      * The name of this attachment
@@ -186,13 +191,13 @@ class Attachment {
 
     if ('clip_participants' in data) {
       /**
-       * For clips, the users who were in the stream
+       * For clips, the ids of the users who were in the stream
        *
-       * @type {?Array<APIUser>}
+       * @type {?Snowflake[]}
        */
-      this.clipParticipants = data.clip_participants;
+      this.clipParticipantIds = data.clip_participants.map(user => user.id);
     } else {
-      this.clipParticipants ??= null;
+      this.clipParticipantIds ??= null;
     }
 
     if ('clip_created_at' in data) {
@@ -201,7 +206,7 @@ class Attachment {
        *
        * @type {?Date}
        */
-      this.clipCreatedAt = data.clip_created_at ? new Date(data.clip_created_at) : null;
+      this.clipCreatedAt = new Date(data.clip_created_at);
     } else {
       this.clipCreatedAt ??= null;
     }
@@ -210,12 +215,25 @@ class Attachment {
       /**
        * For clips, the application in the stream, if recognized
        *
-       * @type {?APIApplication}
+       * @type {?ClientApplication}
        */
-      this.application = data.application;
+      this.application = new ClientApplication(this.client, data.application);
     } else {
       this.application ??= null;
     }
+  }
+
+  /**
+   * For clips, the users who were in the stream
+   *
+   * @type {?Collection<Snowflake, User>}
+   * @readonly
+   */
+  get clipParticipants() {
+    return this.clipParticipantIds?.reduce((collection, participantId) => {
+      const user = this.client.users._add({ id: participantId });
+      return collection.set(user.id, user);
+    }, new Collection());
   }
 
   /**

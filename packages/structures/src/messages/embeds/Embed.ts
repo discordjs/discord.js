@@ -10,7 +10,7 @@ import type { Partialize } from '../../utils/types.js';
  * Represents an embed on a message.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @remarks has substructures `EmbedAuthor`, `EmbedFooter`, `EmbedField`, `EmbedImage`, `EmbedThumbnail`, `EmbedProvider`, `EmbedVideo` which need to be instantiated and stored by an extending class using it
+ * @remarks has substructures `EmbedAuthor`, `EmbedFooter`, `EmbedField`, `EmbedImage`, `EmbedProvider`, `EmbedVideo` which need to be instantiated and stored by an extending class using it
  */
 export class Embed<Omitted extends keyof APIEmbed | '' = ''> extends Structure<APIEmbed, Omitted> {
 	/**
