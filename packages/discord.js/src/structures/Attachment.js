@@ -1,7 +1,10 @@
 'use strict';
 
+const { Collection } = require('@discordjs/collection');
 const { AttachmentFlagsBitField } = require('../util/AttachmentFlagsBitField.js');
 const { basename, flatten } = require('../util/Util.js');
+const { Base } = require('./Base.js');
+const { ClientApplication } = require('./ClientApplication.js');
 
 /**
  * @typedef {Object} AttachmentPayload
@@ -16,8 +19,10 @@ const { basename, flatten } = require('../util/Util.js');
 /**
  * Represents an attachment
  */
-class Attachment {
-  constructor(data) {
+class Attachment extends Base {
+  constructor(client, data) {
+    super(client);
+
     this.attachment = data.url;
     /**
      * The name of this attachment
@@ -161,6 +166,74 @@ class Attachment {
     } else {
       this.title ??= null;
     }
+
+    if ('placeholder' in data) {
+      /**
+       * The thumbhash placeholder for this attachment (if image or video)
+       *
+       * @type {?string}
+       */
+      this.placeholder = data.placeholder;
+    } else {
+      this.placeholder ??= null;
+    }
+
+    if ('placeholder_version' in data) {
+      /**
+       * The version of the placeholder (if image or video)
+       *
+       * @type {?number}
+       */
+      this.placeholderVersion = data.placeholder_version;
+    } else {
+      this.placeholderVersion ??= null;
+    }
+
+    if ('clip_participants' in data) {
+      /**
+       * For clips, the ids of the users who were in the stream
+       *
+       * @type {?Snowflake[]}
+       */
+      this.clipParticipantIds = data.clip_participants.map(user => user.id);
+    } else {
+      this.clipParticipantIds ??= null;
+    }
+
+    if ('clip_created_at' in data) {
+      /**
+       * For clips, when the clip was created
+       *
+       * @type {?Date}
+       */
+      this.clipCreatedAt = new Date(data.clip_created_at);
+    } else {
+      this.clipCreatedAt ??= null;
+    }
+
+    if ('application' in data) {
+      /**
+       * For clips, the application in the stream, if recognized
+       *
+       * @type {?ClientApplication}
+       */
+      this.application = new ClientApplication(this.client, data.application);
+    } else {
+      this.application ??= null;
+    }
+  }
+
+  /**
+   * For clips, the users who were in the stream
+   *
+   * @type {?Collection<Snowflake, User>}
+   * @readonly
+   */
+  get clipParticipants() {
+    return this.clipParticipantIds?.reduce((collection, participantId) => {
+      const user = this.client.users._add({ id: participantId });
+      return collection.set(user.id, user);
+    }, new Collection());
   }
 
   /**
