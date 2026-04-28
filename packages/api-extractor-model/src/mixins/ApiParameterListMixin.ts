@@ -132,7 +132,7 @@ export function ApiParameterListMixin<TBaseClass extends IApiItemConstructor>(
 					}
 				}
 			} else {
-				throw new InternalError('ApiReturnTypeMixin expects a base class that inherits from ApiDeclaredItem');
+				throw new InternalError('ApiParameterListMixin expects a base class that inherits from ApiDeclaredItem');
 			}
 		}
 

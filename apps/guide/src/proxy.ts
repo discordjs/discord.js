@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
 	// TODO: Remove this eventually
 	if (request.nextUrl.pathname.startsWith('/guide/')) {
 		const newUrl = request.nextUrl.clone();
