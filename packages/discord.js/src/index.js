@@ -43,6 +43,8 @@ exports.Status = require('./util/Status.js').Status;
 exports.Sweepers = require('./util/Sweepers.js').Sweepers;
 exports.SystemChannelFlagsBitField = require('./util/SystemChannelFlagsBitField.js').SystemChannelFlagsBitField;
 exports.ThreadMemberFlagsBitField = require('./util/ThreadMemberFlagsBitField.js').ThreadMemberFlagsBitField;
+exports.UnfurledMediaItemFlagsBitField =
+  require('./util/UnfurledMediaItemFlagsBitField.js').UnfurledMediaItemFlagsBitField;
 exports.UserFlagsBitField = require('./util/UserFlagsBitField.js').UserFlagsBitField;
 
 __exportStar(require('./util/DataResolver.js'), exports);

@@ -1,11 +1,22 @@
 import type { APIAttachment, AttachmentFlags } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { AttachmentFlagsBitField } from '../bitfields/AttachmentFlagsBitField.js';
+import { dateToDiscordISOTimestamp } from '../utils/optimization.js';
 import { kClipCreatedAt, kData } from '../utils/symbols.js';
 import { isFieldSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
 
-export class Attachment<Omitted extends keyof APIAttachment | '' = ''> extends Structure<APIAttachment, Omitted> {
+/**
+ * Represents an attachment on Discord.
+ *
+ * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
+ * @remarks has substructure `Application` which needs to be instantiated and stored by an extending class using it
+ * @remarks intentionally does not export `clipParticipants` so that extending classes can resolve `Snowflake[]` to `User[]`
+ */
+export class Attachment<Omitted extends keyof APIAttachment | '' = 'clip_created_at'> extends Structure<
+	APIAttachment,
+	Omitted
+> {
 	/**
 	 * The template used for removing data from the raw data stored for each Attachment.
 	 */
@@ -154,23 +165,21 @@ export class Attachment<Omitted extends keyof APIAttachment | '' = ''> extends S
 	}
 
 	/**
-	 * For Clips, array of users who were in the stream
-	 */
-	public get clipParticipants() {
-		return this[kData].clip_participants;
-	}
-
-	/**
-	 * For Clips, when the clip was created
+	 * For clips, when the clip was created
 	 */
 	public get clipCreatedAt() {
 		return this[kClipCreatedAt];
 	}
 
 	/**
-	 * For Clips, the application in the stream, if recognized
+	 * {@inheritDoc Structure.toJSON}
 	 */
-	public get application() {
-		return this[kData].application;
+	public override toJSON() {
+		const clone = super.toJSON();
+		if (this[kClipCreatedAt]) {
+			clone.clip_created_at = dateToDiscordISOTimestamp(new Date(this[kClipCreatedAt]));
+		}
+
+		return clone;
 	}
 }
