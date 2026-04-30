@@ -13,7 +13,7 @@
 		"rename-to-app": "node scripts/rename-to-app.mjs"
 	},
 	"type": "module",
-	"bin": "./dist/index.js",
+	"bin": "./dist/index.mjs",
 	"directories": {
 		"bin": "bin",
 		"lib": "src"

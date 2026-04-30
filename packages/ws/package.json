@@ -16,29 +16,17 @@
 	},
 	"exports": {
 		".": {
-			"require": {
-				"types": "./dist/index.d.ts",
-				"default": "./dist/index.js"
-			},
-			"import": {
-				"types": "./dist/index.d.mts",
-				"default": "./dist/index.mjs"
-			}
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
 		},
 		"./defaultWorker": {
-			"require": {
-				"types": null,
-				"default": "./dist/defaultWorker.js"
-			},
-			"import": {
-				"types": null,
-				"default": "./dist/defaultWorker.mjs"
-			}
+			"types": null,
+			"default": "./dist/defaultWorker.js"
 		}
 	},
 	"main": "./dist/index.js",
-	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
+	"type": "module",
 	"directories": {
 		"lib": "src",
 		"test": "__tests__"

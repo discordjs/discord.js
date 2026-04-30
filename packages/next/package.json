@@ -16,29 +16,17 @@
 	},
 	"exports": {
 		".": {
-			"require": {
-				"types": "./dist/index.d.ts",
-				"default": "./dist/index.js"
-			},
-			"import": {
-				"types": "./dist/index.d.mts",
-				"default": "./dist/index.mjs"
-			}
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
 		},
 		"./*": {
-			"require": {
-				"types": "./dist/exports/*.d.ts",
-				"default": "./dist/exports/*.js"
-			},
-			"import": {
-				"types": "./dist/exports/*.d.mts",
-				"default": "./dist/exports/*.mjs"
-			}
+			"types": "./dist/exports/*.d.ts",
+			"default": "./dist/exports/*.js"
 		}
 	},
 	"main": "./dist/index.js",
-	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
+	"type": "module",
 	"directories": {
 		"lib": "src",
 		"test": "__tests__"
