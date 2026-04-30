@@ -4,7 +4,7 @@
 	"version": "0.19.2",
 	"description": "Implementation of the Discord Voice API for Node.js",
 	"scripts": {
-		"build": "tsc --noEmit && tsdown && node scripts/postbuild.mjs",
+		"build": "tsc --noEmit && tsdown && node scripts/postbuild.js",
 		"build:docs": "tsc -p tsconfig.docs.json",
 		"test": "vitest run --config ../../vitest.config.ts",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
@@ -17,19 +17,13 @@
 	},
 	"exports": {
 		".": {
-			"require": {
-				"types": "./dist/index.d.ts",
-				"default": "./dist/index.js"
-			},
-			"import": {
-				"types": "./dist/index.d.mts",
-				"default": "./dist/index.mjs"
-			}
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
 		}
 	},
 	"main": "./dist/index.js",
-	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
+	"type": "module",
 	"directories": {
 		"lib": "src",
 		"test": "__tests__"

@@ -18,38 +18,21 @@
 	"exports": {
 		".": {
 			"node": {
-				"require": {
-					"types": "./dist/index.d.ts",
-					"default": "./dist/index.js"
-				},
-				"import": {
-					"types": "./dist/index.d.mts",
-					"default": "./dist/index.mjs"
-				}
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
 			},
 			"default": {
-				"require": {
-					"types": "./dist/web.d.ts",
-					"default": "./dist/web.js"
-				},
-				"import": {
-					"types": "./dist/web.d.mts",
-					"default": "./dist/web.mjs"
-				}
+				"types": "./dist/web.d.ts",
+				"default": "./dist/web.js"
 			}
 		},
 		"./*": {
-			"require": {
-				"types": "./dist/strategies/*.d.ts",
-				"default": "./dist/strategies/*.js"
-			},
-			"import": {
-				"types": "./dist/strategies/*.d.mts",
-				"default": "./dist/strategies/*.mjs"
-			}
+			"types": "./dist/strategies/*.d.ts",
+			"default": "./dist/strategies/*.js"
 		}
 	},
 	"types": "./dist/index.d.ts",
+	"type": "module",
 	"directories": {
 		"lib": "src",
 		"test": "__tests__"

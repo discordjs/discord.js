@@ -16,19 +16,15 @@
 	},
 	"exports": {
 		".": {
-			"require": {
+			"import": {
 				"types": "./dist/src/index.d.ts",
 				"default": "./dist/src/index.js"
-			},
-			"import": {
-				"types": "./dist/src/index.d.mts",
-				"default": "./dist/src/index.mjs"
 			}
 		}
 	},
 	"main": "./dist/src/index.js",
-	"module": "./dist/src/index.mjs",
 	"types": "./dist/src/index.d.ts",
+	"type": "module",
 	"directories": {
 		"bin": "bin",
 		"lib": "src",
