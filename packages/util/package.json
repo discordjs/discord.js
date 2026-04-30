@@ -4,7 +4,7 @@
 	"version": "1.1.1",
 	"description": "Utilities shared across Discord.js packages",
 	"scripts": {
-		"build": "tsc --noEmit && tsdown",
+		"build": "tsc --noEmit && tsdown --config-loader unrun",
 		"build:docs": "tsc -p tsconfig.docs.json",
 		"test": "vitest run --config ../../vitest.config.ts",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",

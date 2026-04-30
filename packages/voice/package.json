@@ -4,7 +4,7 @@
 	"version": "0.19.2",
 	"description": "Implementation of the Discord Voice API for Node.js",
 	"scripts": {
-		"build": "tsc --noEmit && tsdown && node scripts/postbuild.js",
+		"build": "tsc --noEmit && tsdown --config-loader unrun && node scripts/postbuild.js",
 		"build:docs": "tsc -p tsconfig.docs.json",
 		"test": "vitest run --config ../../vitest.config.ts",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
