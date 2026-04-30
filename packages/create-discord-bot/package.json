@@ -4,7 +4,7 @@
 	"version": "4.1.0",
 	"description": "A simple way to create a startup Discord bot.",
 	"scripts": {
-		"build": "tsc --noEmit && tsdown",
+		"build": "tsc --noEmit && tsdown --config-loader unrun",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
 		"prepack": "pnpm run build && pnpm run lint",

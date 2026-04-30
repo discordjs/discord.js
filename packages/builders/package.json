@@ -5,7 +5,7 @@
 	"description": "A set of builders that you can use when creating your bot",
 	"scripts": {
 		"test": "vitest run --config ../../vitest.config.ts",
-		"build": "tsc --noEmit && tsdown",
+		"build": "tsc --noEmit && tsdown --config-loader unrun",
 		"build:docs": "tsc -p tsconfig.docs.json",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",

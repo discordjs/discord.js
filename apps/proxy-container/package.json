@@ -4,7 +4,7 @@
 	"version": "1.0.0",
 	"description": "Lightweight HTTP proxy for Discord's API, brought to you as a container 📦",
 	"scripts": {
-		"build": "tsc --noEmit && tsdown",
+		"build": "tsc --noEmit && tsdown --config-loader unrun",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
 		"fmt": "pnpm run format",

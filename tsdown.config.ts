@@ -42,5 +42,5 @@ export function createTsdownConfig({
 }
 
 export const versionInjectOptions = (version: string) => ({
-	values: [{ find: /\[VI\]\{\{inject\}\}\[\/VI\]/, replacement: version }],
+	values: [{ find: /\[VI]{{inject}}\[\/VI]/, replacement: version }],
 });
