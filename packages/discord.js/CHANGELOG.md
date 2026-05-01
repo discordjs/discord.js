@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.26.4](https://github.com/discordjs/discord.js/compare/14.26.3...14.26.4) - (2026-05-01)
+
+## Bug Fixes
+
+- **MessageCreateAction:** Receive DMs in uncached DMChannels again (#11495) ([b8d8812](https://github.com/discordjs/discord.js/commit/b8d8812a05c14a93cc40b2839e19be38ed928cb7))
+
 # [14.26.3](https://github.com/discordjs/discord.js/compare/14.26.2...14.26.3) - (2026-04-14)
 
 ## Bug Fixes
