@@ -232,16 +232,16 @@ export class DtsEmitHelpers {
 				// Examples:
 				//
 				//      function f({ y, z }: { y: string, z: string })
-				// ---> function f(input: { y: string, z: string })
+				// ---> function f(options: { y: string, z: string })
 				//
 				//      function f(x: number, [a, b]: [number, number])
-				// ---> function f(x: number, input: [number, number])
+				// ---> function f(x: number, options: [number, number])
 				//
 				// Example of a naming collision:
 				//
-				//      function f({ a }: { a: string }, { b }: { b: string }, input2: string)
-				// ---> function f(input: { a: string }, input3: { b: string }, input2: string)
-				const baseName = 'input';
+				//      function f({ a }: { a: string }, { b }: { b: string }, options2: string)
+				// ---> function f(options: { a: string }, options3: { b: string }, options2: string)
+				const baseName = 'options';
 				let counter = 2;
 
 				let syntheticName: string = baseName;
