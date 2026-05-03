@@ -66,22 +66,30 @@ export async function makeNetworkRequest(
 	requestData: HandlerRequestData,
 	retries: number,
 ) {
-	const controller = new AbortController();
-	const timeout = setTimeout(
-		() => controller.abort(),
-		normalizeTimeout(manager.options.timeout, routeId.bucketRoute, requestData.body),
-	);
-	if (requestData.signal) {
-		// If the user signal was aborted, abort the controller, else abort the local signal.
-		// The reason why we don't re-use the user's signal, is because users may use the same signal for multiple
-		// requests, and we do not want to cause unexpected side-effects.
-		if (requestData.signal.aborted) controller.abort();
-		else requestData.signal.addEventListener('abort', () => controller.abort());
+	const timeoutDuration = normalizeTimeout(manager.options.timeout, routeId.bucketRoute, requestData.body);
+	const needsAbort = timeoutDuration > 0 || requestData.signal !== undefined;
+
+	let controller: AbortController | undefined;
+	let timeout: ReturnType<typeof setTimeout> | undefined;
+
+	if (needsAbort) {
+		controller = new AbortController();
+		if (timeoutDuration > 0) {
+			timeout = setTimeout(() => controller!.abort(), timeoutDuration);
+		}
+
+		if (requestData.signal) {
+			// If the user signal was aborted, abort the controller, else abort the local signal.
+			// The reason why we don't re-use the user's signal, is because users may use the same signal for multiple
+			// requests, and we do not want to cause unexpected side-effects.
+			if (requestData.signal.aborted) controller.abort();
+			else requestData.signal.addEventListener('abort', () => controller!.abort());
+		}
 	}
 
 	let res: ResponseLike;
 	try {
-		res = await manager.options.makeRequest(url, { ...options, signal: controller.signal });
+		res = await manager.options.makeRequest(url, needsAbort ? { ...options, signal: controller!.signal } : options);
 	} catch (error: unknown) {
 		if (!(error instanceof Error)) throw error;
 		// Retry the specified number of times if needed
@@ -107,7 +115,7 @@ export async function makeNetworkRequest(
 
 		throw error;
 	} finally {
-		clearTimeout(timeout);
+		if (timeout) clearTimeout(timeout);
 	}
 
 	if (manager.listenerCount(RESTEvents.Response)) {
