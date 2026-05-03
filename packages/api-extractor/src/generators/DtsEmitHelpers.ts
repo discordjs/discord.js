@@ -194,11 +194,12 @@ export class DtsEmitHelpers {
 				continue;
 			}
 
-			action(parameter, undefined);
 			if (ts.isObjectBindingPattern(parameter.name) || ts.isArrayBindingPattern(parameter.name)) {
 				// Our optimistic assumption was not true; we'll need to stop and calculate alreadyUsedNames
 				break;
 			}
+
+			action(parameter, undefined);
 		}
 
 		if (actionIndex === nodes.length) {
