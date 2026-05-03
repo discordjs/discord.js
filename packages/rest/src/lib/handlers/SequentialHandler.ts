@@ -104,9 +104,9 @@ export class SequentialHandler implements IHandler {
 	/**
 	 * The time until queued requests can continue
 	 */
-	private getTimeToReset(routeId: RouteData): number {
+	private getTimeToReset(routeId: RouteData, now = Date.now()): number {
 		const offset = normalizeRateLimitOffset(this.manager.options.offset, routeId.bucketRoute);
-		return this.reset + offset - Date.now();
+		return this.reset + offset - now;
 	}
 
 	/**
@@ -203,8 +203,12 @@ export class SequentialHandler implements IHandler {
 		 * After calculations have been done, pre-emptively stop further requests
 		 * Potentially loop until this task can run if e.g. the global rate limit is hit twice
 		 */
-		while (this.limited) {
-			const isGlobal = this.globalLimited;
+		let now = Date.now();
+		let globalLimited = this.manager.globalRemaining <= 0 && now < this.manager.globalReset;
+		let localLimited = this.remaining <= 0 && now < this.reset;
+
+		while (globalLimited || localLimited) {
+			const isGlobal = globalLimited;
 			let limit: number;
 			let timeout: number;
 			let delay: Promise<void>;
@@ -214,7 +218,7 @@ export class SequentialHandler implements IHandler {
 
 				// Set RateLimitData based on the global limit
 				limit = this.manager.options.globalRequestsPerSecond;
-				timeout = this.manager.globalReset + offset - Date.now();
+				timeout = this.manager.globalReset + offset - now;
 				// If this is the first task to reach the global timeout, set the global delay
 				// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 				if (!this.manager.globalDelay) {
@@ -226,7 +230,7 @@ export class SequentialHandler implements IHandler {
 			} else {
 				// Set RateLimitData based on the route-specific limit
 				limit = this.limit;
-				timeout = this.getTimeToReset(routeId);
+				timeout = this.getTimeToReset(routeId, now);
 				delay = sleep(timeout);
 			}
 
@@ -258,11 +262,14 @@ export class SequentialHandler implements IHandler {
 
 			// Wait the remaining time left before the rate limit resets
 			await delay;
+			now = Date.now();
+			globalLimited = this.manager.globalRemaining <= 0 && now < this.manager.globalReset;
+			localLimited = this.remaining <= 0 && now < this.reset;
 		}
 
 		// As the request goes out, update the global usage information
-		if (!this.manager.globalReset || this.manager.globalReset < Date.now()) {
-			this.manager.globalReset = Date.now() + 1_000;
+		if (!this.manager.globalReset || this.manager.globalReset < now) {
+			this.manager.globalReset = now + 1_000;
 			this.manager.globalRemaining = this.manager.options.globalRequestsPerSecond;
 		}
 
@@ -300,21 +307,19 @@ export class SequentialHandler implements IHandler {
 		// Amount of time in milliseconds until we should retry if rate limited (globally or otherwise)
 		if (retry) retryAfter = Number(retry) * 1_000 + offset;
 
+		const hashKeyBase = `${method}:${routeId.bucketRoute}`;
+		const hashAuthSuffix = typeof requestData.auth === 'string' ? `:${requestData.auth}` : '';
+
 		// Handle buckets via the hash header retroactively
 		if (hash && hash !== this.hash) {
 			// Let library users know when rate limit buckets have been updated
 			this.debug(['Received bucket hash update', `  Old Hash  : ${this.hash}`, `  New Hash  : ${hash}`].join('\n'));
 			// This queue will eventually be eliminated via attrition
-			this.manager.hashes.set(
-				`${method}:${routeId.bucketRoute}${typeof requestData.auth === 'string' ? `:${requestData.auth}` : ''}`,
-				{ value: hash, lastAccess: Date.now() },
-			);
+			this.manager.hashes.set(hashKeyBase + hashAuthSuffix, { value: hash, lastAccess: Date.now() });
 		} else if (hash) {
 			// Handle the case where hash value doesn't change
 			// Fetch the hash data from the manager
-			const hashData = this.manager.hashes.get(
-				`${method}:${routeId.bucketRoute}${typeof requestData.auth === 'string' ? `:${requestData.auth}` : ''}`,
-			);
+			const hashData = this.manager.hashes.get(hashKeyBase + hashAuthSuffix);
 
 			// When fetched, update the last access of the hash
 			if (hashData) {

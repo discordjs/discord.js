@@ -246,8 +246,10 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 		const customAuth = typeof request.auth === 'object' && request.auth.token !== this.#token;
 		const auth = customAuth ? uuidV5((request.auth as AuthData).token, AUTH_UUID_NAMESPACE) : request.auth !== false;
 		// Get the bucket hash for the generic route, or point to a global route otherwise
-		const hash = this.hashes.get(`${request.method}:${routeId.bucketRoute}${customAuth ? `:${auth}` : ''}`) ?? {
-			value: `Global(${request.method}:${routeId.bucketRoute}${customAuth ? `:${auth}` : ''})`,
+		const hashKeyBase = `${request.method}:${routeId.bucketRoute}`;
+		const hashAuthSuffix = customAuth ? `:${auth}` : '';
+		const hash = this.hashes.get(hashKeyBase + hashAuthSuffix) ?? {
+			value: `Global(${hashKeyBase}${hashAuthSuffix})`,
 			lastAccess: -1,
 		};
 
