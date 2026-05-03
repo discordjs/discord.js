@@ -172,6 +172,10 @@ class Options extends null {
   static get DefaultMakeCacheSettings() {
     return {
       MessageManager: 200,
+      GuildMemberManager: 1_000,
+      UserManager: 5_000,
+      ChannelManager: 500,
+      RoleManager: 500,
     };
   }
 
@@ -189,6 +193,14 @@ class Options extends null {
       threads: {
         interval: 3_600,
         lifetime: 14_400,
+      },
+      messages: {
+        interval: 3_600,
+        lifetime: 86_400,
+      },
+      users: {
+        interval: 3_600,
+        lifetime: 43_200,
       },
     };
   }
