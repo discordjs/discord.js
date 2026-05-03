@@ -55,12 +55,20 @@ class LimitedCollection extends Collection {
   set(key, value) {
     if (this.maxSize === 0 && !this.keepOverLimit?.(value, key, this)) return this;
     if (this.size >= this.maxSize && !this.has(key)) {
+      let evicted = false;
       for (const [iteratedKey, iteratedValue] of this.entries()) {
         const keep = this.keepOverLimit?.(iteratedValue, iteratedKey, this) ?? false;
         if (!keep) {
           this.delete(iteratedKey);
+          evicted = true;
           break;
         }
+      }
+
+      if (!evicted) {
+        // All entries are protected; force-evict the oldest (first) entry
+        const oldestKey = this.keys().next().value;
+        this.delete(oldestKey);
       }
     }
 
