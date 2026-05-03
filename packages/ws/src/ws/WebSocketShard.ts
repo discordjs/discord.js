@@ -130,6 +130,8 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 	public readonly id: number;
 
+	private sessionInfo: SessionInfo | null = null;
+
 	#status: WebSocketShardStatus = WebSocketShardStatus.Idle;
 
 	private identifyCompressionEnabled = false;
@@ -277,6 +279,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		}
 
 		const session = await this.strategy.retrieveSessionInfo(this.id);
+		this.sessionInfo = session ?? null;
 
 		const url = `${session?.resumeURL ?? this.strategy.options.gatewayInformation.url}?${params.toString()}`;
 
@@ -361,6 +364,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		// Clear session state if applicable
 		if (options.recover !== WebSocketShardDestroyRecovery.Resume) {
+			this.sessionInfo = null;
 			await this.strategy.updateSessionInfo(this.id, null);
 		}
 
@@ -603,7 +607,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			return this.destroy({ reason: 'Zombie connection', recover: WebSocketShardDestroyRecovery.Resume });
 		}
 
-		const session = await this.strategy.retrieveSessionInfo(this.id);
+		const session = this.sessionInfo ?? await this.strategy.retrieveSessionInfo(this.id);
 
 		await this.send({
 			op: GatewayOpcodes.Heartbeat,
@@ -638,19 +642,18 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		// Deal with identify compress
 		if (this.identifyCompressionEnabled) {
-			// eslint-disable-next-line no-async-promise-executor
-			return new Promise(async (resolve, reject) => {
-				const zlib = (await getNativeZlib())!;
-				// eslint-disable-next-line promise/prefer-await-to-callbacks
+			const zlib = await getNativeZlib();
+			const result = await new Promise<Buffer>((resolve, reject) => {
 				zlib.inflate(decompressable, { chunkSize: 65_535 }, (err, result) => {
 					if (err) {
 						reject(err);
 						return;
 					}
 
-					resolve(JSON.parse(this.textDecoder.decode(result)) as GatewayReceivePayload);
+					resolve(result);
 				});
 			});
+			return JSON.parse(this.textDecoder.decode(result)) as GatewayReceivePayload;
 		}
 
 		// Deal with transport compression
@@ -755,6 +758,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 							resumeURL: payload.d.resume_gateway_url,
 						};
 
+						this.sessionInfo = session;
 						await this.strategy.updateSessionInfo(this.id, session);
 
 						this.emit(WebSocketShardEvents.Ready, payload.d);
@@ -773,15 +777,18 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 					}
 				}
 
-				const session = await this.strategy.retrieveSessionInfo(this.id);
-				if (session) {
-					if (payload.s > session.sequence) {
-						await this.strategy.updateSessionInfo(this.id, { ...session, sequence: payload.s });
+				if (payload.s !== null) {
+					const session = this.sessionInfo ?? await this.strategy.retrieveSessionInfo(this.id);
+					if (session) {
+						if (payload.s > session.sequence) {
+							this.sessionInfo = { ...session, sequence: payload.s };
+							void this.strategy.updateSessionInfo(this.id, this.sessionInfo);
+						}
+					} else {
+						this.debug([
+							`Received a ${payload.t} event but no session is available. Session information cannot be re-constructed in this state without a full reconnect`,
+						]);
 					}
-				} else {
-					this.debug([
-						`Received a ${payload.t} event but no session is available. Session information cannot be re-constructed in this state without a full reconnect`,
-					]);
 				}
 
 				this.emit(WebSocketShardEvents.Dispatch, payload);
