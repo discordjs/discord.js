@@ -61,6 +61,7 @@ import {
   APIMessageComponentInteraction,
   APIMessageMentionableSelectInteractionData,
   APIMessageRoleSelectInteractionData,
+  APIMessageSharedClientTheme,
   APIMessageStringSelectInteractionData,
   APIMessageTopLevelComponent,
   APIMessageUserSelectInteractionData,
@@ -115,6 +116,7 @@ import {
   AutoModerationRuleEventType,
   AutoModerationRuleKeywordPresetType,
   AutoModerationRuleTriggerType,
+  BaseThemeType,
   ButtonStyle,
   ChannelFlags,
   ChannelType,
@@ -2128,6 +2130,13 @@ export interface MessageCall {
   participants: readonly Snowflake[];
 }
 
+export interface SharedClientTheme {
+  baseMix: number;
+  baseTheme?: BaseThemeType | null;
+  colors: readonly string[];
+  gradientAngle: number;
+}
+
 export type MessageComponentType =
   | ComponentType.Button
   | ComponentType.ChannelSelect
@@ -2223,6 +2232,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public tts: boolean;
   public poll: Poll | null;
   public call: MessageCall | null;
+  public sharedClientTheme: SharedClientTheme | null;
   public type: MessageType;
   public get url(): string;
   public webhookId: Snowflake | null;
@@ -6789,6 +6799,7 @@ export interface BaseMessageCreateOptions
   extends BaseMessageSendOptions, MessageOptionsPoll, MessageOptionsFlags, MessageOptionsTTS, MessageOptionsStickers {
   enforceNonce?: boolean;
   nonce?: number | string;
+  sharedClientTheme?: JSONEncodable<APIMessageSharedClientTheme> | SharedClientTheme;
 }
 
 export interface MessageCreateOptions extends BaseMessageCreateOptions {

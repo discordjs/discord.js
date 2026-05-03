@@ -14,3 +14,4 @@ export * from './ModalSubmitInteractionMetadata.js';
 export * from './Reaction.js';
 export * from './ReactionCountDetails.js';
 export * from './RoleSubscriptionData.js';
+export * from './SharedClientTheme.js';
