@@ -51,7 +51,8 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	 * ```
 	 */
 	public ensure(key: Key, defaultValueGenerator: (key: Key, collection: this) => Value): Value {
-		if (this.has(key)) return this.get(key)!;
+		const existing = this.get(key);
+		if (existing !== undefined || this.has(key)) return existing as Value;
 		if (typeof defaultValueGenerator !== 'function') throw new TypeError(`${defaultValueGenerator} is not a function`);
 		const defaultValue = defaultValueGenerator(key, this);
 		this.set(key, defaultValue);
@@ -138,9 +139,19 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (amount === undefined) return this.at(-1);
 		if (!amount) return [];
 		if (amount < 0) return this.first(amount * -1);
+		if (amount >= this.size) return [...this.values()];
 
-		const arr = [...this.values()];
-		return arr.slice(amount * -1);
+		const skip = this.size - amount;
+		const iter = this.values();
+		for (let index = 0; index < skip; index++) iter.next();
+
+		// eslint-disable-next-line unicorn/no-new-array
+		const results: Value[] = new Array(amount);
+		for (let index = 0; index < amount; index++) {
+			results[index] = iter.next().value!;
+		}
+
+		return results;
 	}
 
 	/**
@@ -156,9 +167,19 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 		if (amount === undefined) return this.keyAt(-1);
 		if (!amount) return [];
 		if (amount < 0) return this.firstKey(amount * -1);
+		if (amount >= this.size) return [...this.keys()];
 
-		const arr = [...this.keys()];
-		return arr.slice(amount * -1);
+		const skip = this.size - amount;
+		const iter = this.keys();
+		for (let index = 0; index < skip; index++) iter.next();
+
+		// eslint-disable-next-line unicorn/no-new-array
+		const results: Key[] = new Array(amount);
+		for (let index = 0; index < amount; index++) {
+			results[index] = iter.next().value!;
+		}
+
+		return results;
 	}
 
 	/**
@@ -218,7 +239,19 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public random(): Value | undefined;
 	public random(amount: number): Value[];
 	public random(amount?: number): Value | Value[] | undefined {
-		if (amount === undefined) return this.at(Math.floor(Math.random() * this.size));
+		if (amount === undefined) {
+			if (this.size === 0) return undefined;
+			let result: Value;
+			let index = 0;
+			for (const value of this.values()) {
+				if (Math.random() < 1 / ++index) {
+					result = value;
+				}
+			}
+
+			return result!;
+		}
+
 		amount = Math.min(this.size, amount);
 		if (!amount) return [];
 
@@ -240,7 +273,19 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public randomKey(): Key | undefined;
 	public randomKey(amount: number): Key[];
 	public randomKey(amount?: number): Key | Key[] | undefined {
-		if (amount === undefined) return this.keyAt(Math.floor(Math.random() * this.size));
+		if (amount === undefined) {
+			if (this.size === 0) return undefined;
+			let result: Key;
+			let index = 0;
+			for (const key of this.keys()) {
+				if (Math.random() < 1 / ++index) {
+					result = key;
+				}
+			}
+
+			return result!;
+		}
+
 		amount = Math.min(this.size, amount);
 		if (!amount) return [];
 
@@ -356,7 +401,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public findLast(fn: (value: Value, key: Key, collection: this) => unknown, thisArg?: unknown): Value | undefined {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
-		const entries = [...this.entries()];
+		const entries = Array.from(this.entries());
 		for (let index = entries.length - 1; index >= 0; index--) {
 			const { 0: key, 1: value } = entries[index]!;
 			if (fn(value, key, this)) return value;
@@ -388,7 +433,7 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	public findLastKey(fn: (value: Value, key: Key, collection: this) => unknown, thisArg?: unknown): Key | undefined {
 		if (typeof fn !== 'function') throw new TypeError(`${fn} is not a function`);
 		if (thisArg !== undefined) fn = fn.bind(thisArg);
-		const entries = [...this.entries()];
+		const entries = Array.from(this.entries());
 		for (let index = entries.length - 1; index >= 0; index--) {
 			const { 0: key, 1: value } = entries[index]!;
 			if (fn(value, key, this)) return key;
