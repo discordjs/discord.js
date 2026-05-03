@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/api-extractor",
-	"version": "7.52.7",
+	"version": "7.58.7",
 	"description": "Analyze the exported API for a TypeScript library and generate reviews, documentation, and .d.ts rollups",
 	"private": true,
 	"keywords": [
@@ -51,19 +51,18 @@
 	},
 	"dependencies": {
 		"@discordjs/api-extractor-model": "workspace:^",
-		"@microsoft/tsdoc": "~0.15.1",
-		"@microsoft/tsdoc-config": "~0.17.1",
-		"@rushstack/node-core-library": "5.13.1",
-		"@rushstack/ts-command-line": "5.0.1",
+		"@microsoft/tsdoc": "~0.16.0",
+		"@microsoft/tsdoc-config": "~0.18.1",
+		"@rushstack/node-core-library": "5.23.1",
+		"@rushstack/ts-command-line": "5.3.9",
 		"colors": "~1.4.0",
-		"lodash": "~4.17.21",
+		"diff": "~8.0.2",
 		"resolve": "~1.22.11",
-		"semver": "~7.6.3",
+		"semver": "~7.7.4",
 		"source-map": "~0.6.1",
-		"typescript": "~5.5.4"
+		"typescript": "~5.9.3"
 	},
 	"devDependencies": {
-		"@types/lodash": "^4.17.24",
 		"@types/node": "^24.12.0",
 		"@types/resolve": "^1.20.6",
 		"@types/semver": "^7.7.1",
