@@ -1,8 +1,20 @@
 'use strict';
 
 const { isJSONEncodable } = require('@discordjs/util');
-const snakeCase = require('lodash.snakecase');
 const { AuthorizingIntegrationOwners } = require('../structures/AuthorizingIntegrationOwners.js');
+
+/**
+ * Lightweight snake_case converter replacing lodash.snakecase
+ *
+ * @param {string} str The string to convert
+ * @returns {string}
+ */
+function customSnakeCase(str) {
+  return str
+    .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+    .replace(/([A-Z]+)([A-Z][a-z0-9])/g, '$1_$2')
+    .toLowerCase();
+}
 
 /**
  * Transforms camel-cased keys into snake cased keys
@@ -15,7 +27,7 @@ function toSnakeCase(obj) {
   if (obj instanceof Date) return obj;
   if (isJSONEncodable(obj)) return toSnakeCase(obj.toJSON());
   if (Array.isArray(obj)) return obj.map(toSnakeCase);
-  return Object.fromEntries(Object.entries(obj).map(([key, value]) => [snakeCase(key), toSnakeCase(value)]));
+  return Object.fromEntries(Object.entries(obj).map(([key, value]) => [customSnakeCase(key), toSnakeCase(value)]));
 }
 
 /**
