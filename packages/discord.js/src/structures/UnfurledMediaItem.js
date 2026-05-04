@@ -16,6 +16,28 @@ class UnfurledMediaItem {
   }
 
   /**
+   * The id of the uploaded attachment
+   * <info>Only present if the media item was uploaded as an attachment.</info>
+   *
+   * @type {?Snowflake}
+   * @readonly
+   */
+  get attachmentId() {
+    return this.data.attachment_id ?? null;
+  }
+
+  /**
+   * The media (MIME) type of the content
+   *
+   * @type {?string}
+   * @readonly
+   * @see {@link https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types}
+   */
+  get contentType() {
+    return this.data.content_type ?? null;
+  }
+
+  /**
    * The flags of this media item.
    *
    * @type {Readonly<UnfurledMediaItemFlagsBitField>}
@@ -23,6 +45,16 @@ class UnfurledMediaItem {
    */
   get flags() {
     return new UnfurledMediaItemFlagsBitField(this.data.flags ?? 0).freeze();
+  }
+
+  /**
+   * 	The height of this media item (if image or video)
+   *
+   * @type {?number}
+   * @readonly
+   */
+  get height() {
+    return this.data.height ?? null;
   }
 
   /**
@@ -46,6 +78,16 @@ class UnfurledMediaItem {
   }
 
   /**
+   * The proxied URL of this media item
+   *
+   * @type {?string}
+   * @readonly
+   */
+  get proxyURL() {
+    return this.data.proxy_url ?? null;
+  }
+
+  /**
    * The URL of this media item
    *
    * @type {string}
@@ -53,6 +95,16 @@ class UnfurledMediaItem {
    */
   get url() {
     return this.data.url;
+  }
+
+  /**
+   * The width of this media item (if image or video)
+   *
+   * @type {?number}
+   * @readonly
+   */
+  get width() {
+    return this.data.width ?? null;
   }
 
   /**

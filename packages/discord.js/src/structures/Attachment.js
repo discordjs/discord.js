@@ -4,7 +4,7 @@ const { Collection } = require('@discordjs/collection');
 const { AttachmentFlagsBitField } = require('../util/AttachmentFlagsBitField.js');
 const { basename, flatten } = require('../util/Util.js');
 const { Base } = require('./Base.js');
-const { ClientApplication } = require('./ClientApplication.js');
+const { ClipApplication } = require('./ClipApplication.js');
 
 /**
  * @typedef {Object} AttachmentPayload
@@ -195,7 +195,7 @@ class Attachment extends Base {
        *
        * @type {?Snowflake[]}
        */
-      this.clipParticipantIds = data.clip_participants.map(user => user.id);
+      this.clipParticipantIds = data.clip_participants.map(rawUser => this.client.users._add(rawUser).id);
     } else {
       this.clipParticipantIds ??= null;
     }
@@ -215,9 +215,9 @@ class Attachment extends Base {
       /**
        * For clips, the application in the stream, if recognized
        *
-       * @type {?ClientApplication}
+       * @type {?ClipApplication}
        */
-      this.application = new ClientApplication(this.client, data.application);
+      this.application = new ClipApplication(this.client, data.application);
     } else {
       this.application ??= null;
     }
@@ -230,10 +230,10 @@ class Attachment extends Base {
    * @readonly
    */
   get clipParticipants() {
-    return this.clipParticipantIds?.reduce((collection, participantId) => {
-      const user = this.client.users._add({ id: participantId });
-      return collection.set(user.id, user);
-    }, new Collection());
+    return this.clipParticipantIds.reduce(
+      (collection, id) => collection.set(id, this.client.users.cache.get(id)),
+      new Collection(),
+    );
   }
 
   /**

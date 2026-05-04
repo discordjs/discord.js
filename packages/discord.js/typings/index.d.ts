@@ -1056,6 +1056,33 @@ export class ClientApplication extends Application {
   ): Promise<ApplicationRoleConnectionMetadata[]>;
 }
 
+export class ClipApplication extends Application {
+  private constructor(client: Client<true>, data: unknown);
+  public botPublic: boolean | null;
+  public botRequireCodeGrant: boolean | null;
+  public bot: User | null;
+  public guildId: Snowflake | null;
+  public get guild(): Guild | null;
+  public flags: Readonly<ApplicationFlagsBitField>;
+  public approximateGuildCount: number | null;
+  public approximateUserInstallCount: number | null;
+  public approximateUserAuthorizationCount: number | null;
+  public tags: string[];
+  public installParams: ClipApplicationInstallParams | null;
+  public integrationTypesConfig: IntegrationTypesConfiguration | null;
+  public customInstallURL: string | null;
+  public owner: Team | User | null;
+  public get partial(): boolean;
+  public interactionsEndpointURL: string | null;
+  public eventWebhooksURL: string | null;
+  public eventWebhooksStatus: ApplicationWebhookEventStatus | null;
+  public eventWebhooksTypes: ApplicationWebhookEventType[] | null;
+  public primarySKUId: Snowflake | null;
+  public redirectURIs: string[];
+  public roleConnectionsVerificationURL: string | null;
+  public slug: string | null;
+}
+
 export class ClientPresence extends Presence {
   private constructor(client: Client<true>, data: GatewayPresenceUpdate);
   private _parse(data: PresenceData): GatewayPresenceUpdate;
@@ -3761,10 +3788,15 @@ export class UnfurledMediaItemFlagsBitField extends BitField<UnfurledMediaItemFl
 export class UnfurledMediaItem {
   private constructor(data: APIUnfurledMediaItem);
   public readonly data: APIUnfurledMediaItem;
+  public get attachmentId(): Snowflake | null;
+  public get contentType(): string | null;
+  public get height(): number | null;
   public get flags(): UnfurledMediaItemFlagsBitField;
   public get placeholder(): string | null;
   public get placeholderVersion(): number | null;
+  public get proxyURL(): string | null;
   public get url(): string;
+  public get width(): number | null;
 }
 
 export interface User extends SendMethod<false> {}
@@ -7489,6 +7521,8 @@ export interface ClientApplicationInstallParams {
   permissions: Readonly<PermissionsBitField>;
   scopes: readonly OAuth2Scopes[];
 }
+
+export interface ClipApplicationInstallParams extends ClientApplicationInstallParams {}
 
 export type Serialized<Value> = Value extends bigint | symbol | (() => any)
   ? never
