@@ -75,15 +75,15 @@ const gatewayPresenceActivityData: GatewayActivity = {
 	id: '1',
 	name: 'activity-name',
 	type: ActivityType.Playing,
-	url: 'https://github.com//discordjs/discord.js',
+	url: 'https://github.com/discordjs/discord.js',
 	created_at: 1_540_381_143_572,
 	timestamps: gatewayPresenceActivityTimestampsData,
 	application_id: '121212',
 	status_display_type: StatusDisplayType.Details,
 	details: 'activity-details',
-	details_url: 'https://github.com//discordjs/discord.js',
+	details_url: 'https://github.com/discordjs/discord.js',
 	state: 'activity-state',
-	state_url: 'https://github.com//discordjs/discord.js',
+	state_url: 'https://github.com/discordjs/discord.js',
 	emoji: gatewayPresenceActivityEmojiData,
 	party: gatewayPresenceActivityPartyData,
 	assets: gatewayPresenceActivityAssetsData,
@@ -121,16 +121,19 @@ describe('Presences structures', () => {
 		});
 
 		test('patching the structure works in-place', () => {
+			const web = PresenceUpdateStatus.DoNotDisturb;
+			const mobile = PresenceUpdateStatus.Idle;
+
 			const patched = instance[kPatch]({
-				web: PresenceUpdateStatus.DoNotDisturb,
-				mobile: PresenceUpdateStatus.Idle,
+				web,
+				mobile,
 			});
 
-			expect(patched.toJSON()).toStrictEqual(instance.toJSON());
-			expect(patched.toJSON()).not.toEqual(data);
+			expect(instance.web).toEqual(web);
+			expect(instance.mobile).toEqual(mobile);
 
-			expect(instance.web).toEqual(patched.web);
-			expect(instance.mobile).toEqual(instance.mobile);
+			expect(patched.toJSON()).not.toEqual(data);
+			expect(patched).toBe(instance);
 		});
 	});
 
@@ -151,11 +154,10 @@ describe('Presences structures', () => {
 				status: PresenceUpdateStatus.Online,
 			});
 
-			expect(patched).toBe(instance);
-			expect(patched.toJSON()).toStrictEqual(instance.toJSON());
-			expect(patched.toJSON()).not.toEqual(data);
-
 			expect(patched.status).toEqual(PresenceUpdateStatus.Online);
+
+			expect(patched.toJSON()).not.toEqual(data);
+			expect(patched).toBe(instance);
 		});
 	});
 
@@ -196,10 +198,8 @@ describe('Presences structures', () => {
 				expect(patched.state).toEqual('[PATCHED]-activity-state');
 				expect(patched.stateURL).toBeNull();
 				expect(patched.type).toEqual(ActivityType.Custom);
-
-				expect(patched).toBe(instance);
 				expect(patched.toJSON()).not.toEqual(data);
-				expect(patched.toJSON()).toStrictEqual(instance.toJSON());
+				expect(patched).toBe(instance);
 			});
 		});
 
@@ -231,17 +231,19 @@ describe('Presences structures', () => {
 			});
 
 			test('patching the structure works in-place', () => {
+				const large_text = 'large_text_patched_str';
+				const small_url = 'https://discord.js.org/docs/packages/structures/main';
+
 				const patched = instance[kPatch]({
-					large_text: 'djs://PATCHED-LARGE-TEXT',
-					small_url: 'https://discord.js.org/docs/packages/structures/main',
+					large_text,
+					small_url,
 				});
 
-				expect(patched.largeText).toEqual('djs://PATCHED-LARGE-TEXT');
-				expect(patched.smallURL).toEqual('https://discord.js.org/docs/packages/structures/main');
+				expect(patched.largeText).toEqual(large_text);
+				expect(patched.smallURL).toEqual(small_url);
 
 				expect(patched).toBe(instance);
 				expect(patched.toJSON()).not.toEqual(data);
-				expect(patched.toJSON()).toStrictEqual(instance.toJSON());
 			});
 		});
 
@@ -267,7 +269,6 @@ describe('Presences structures', () => {
 
 				expect(patched).toEqual(instance);
 				expect(patched.toJSON()).not.toEqual(data);
-				expect(patched.toJSON()).toStrictEqual(instance.toJSON());
 			});
 		});
 
@@ -295,7 +296,6 @@ describe('Presences structures', () => {
 
 				expect(patched).toBe(instance);
 				expect(patched.toJSON()).not.toEqual(data);
-				expect(patched.toJSON()).toStrictEqual(instance.toJSON());
 			});
 		});
 
@@ -328,7 +328,6 @@ describe('Presences structures', () => {
 
 				expect(patched).toBe(instance);
 				expect(patched.toJSON()).not.toEqual(data);
-				expect(patched.toJSON()).toStrictEqual(instance.toJSON());
 			});
 		});
 
@@ -358,7 +357,6 @@ describe('Presences structures', () => {
 
 				expect(patched).toEqual(instance);
 				expect(patched.toJSON()).not.toEqual(data);
-				expect(patched.toJSON()).toStrictEqual(instance.toJSON());
 			});
 		});
 	});
