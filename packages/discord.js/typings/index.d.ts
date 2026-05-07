@@ -2878,8 +2878,17 @@ export class ModalSubmitFields<Cached extends CacheType = CacheType> {
   public components: (ActionRowModalData | LabelModalData | TextDisplayModalData)[];
   public resolved: Readonly<BaseInteractionResolvedData<Cached>> | null;
   public fields: Collection<string, ModalData>;
-  public getField<Type extends ComponentType>(customId: string, type: Type): Extract<ModalData, { type: Type }>;
-  public getField(customId: string, type?: ComponentType): ModalData;
+  public getField<Type extends ComponentType>(
+    customId: string,
+    type: Type,
+    required: true,
+  ): Extract<ModalData, { type: Type }>;
+  public getField<Type extends ComponentType>(
+    customId: string,
+    type: Type,
+    required?: boolean,
+  ): Extract<ModalData, { type: Type }> | null;
+  public getField(customId: string, type?: ComponentType, required?: boolean): ModalData | null;
   private _getTypedComponent(
     customId: string,
     allowedTypes: readonly ComponentType[],

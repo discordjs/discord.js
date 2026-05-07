@@ -54,11 +54,17 @@ class ModalSubmitFields {
    * Gets a field given a custom id from a component
    * @param {string} customId The custom id of the component
    * @param {ComponentType} [type] The type of the component
-   * @returns {ModalData}
+   * @param {boolean} [required=false] Whether to throw an error if the field is not found.
+   * @returns {?ModalData} The field, if found.
    */
-  getField(customId, type) {
+  getField(customId, type, required = false) {
     const field = this.fields.get(customId);
-    if (!field) throw new DiscordjsTypeError(ErrorCodes.ModalSubmitInteractionFieldNotFound, customId);
+    if (!field) {
+      if (required) {
+        throw new DiscordjsTypeError(ErrorCodes.ModalSubmitInteractionFieldNotFound, customId);
+      }
+      return null;
+    }
 
     if (type !== undefined && type !== field.type) {
       throw new DiscordjsTypeError(ErrorCodes.ModalSubmitInteractionFieldType, customId, field.type, type);
@@ -79,7 +85,9 @@ class ModalSubmitFields {
    */
   _getTypedComponent(customId, allowedTypes, properties, required) {
     const component = this.getField(customId);
-    if (!allowedTypes.includes(component.type)) {
+    if (!component) {
+      return null;
+    } else if (!allowedTypes.includes(component.type)) {
       throw new DiscordjsTypeError(
         ErrorCodes.ModalSubmitInteractionFieldNotFound,
         customId,
