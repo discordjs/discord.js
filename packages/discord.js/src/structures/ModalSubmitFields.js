@@ -54,10 +54,10 @@ class ModalSubmitFields {
    * Gets a field given a custom id from a component
    * @param {string} customId The custom id of the component
    * @param {ComponentType} [type] The type of the component
-   * @param {boolean} [required=false] Whether to throw an error if the field is not found.
+   * @param {boolean} [required=true] Whether to throw an error if the field is not found.
    * @returns {?ModalData} The field, if found.
    */
-  getField(customId, type, required = false) {
+  getField(customId, type, required = true) {
     const field = this.fields.get(customId);
     if (!field) {
       if (required) {

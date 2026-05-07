@@ -2881,13 +2881,13 @@ export class ModalSubmitFields<Cached extends CacheType = CacheType> {
   public getField<Type extends ComponentType>(
     customId: string,
     type: Type,
-    required: true,
-  ): Extract<ModalData, { type: Type }>;
+    required: false,
+  ): Extract<ModalData, { type: Type }> | null;
   public getField<Type extends ComponentType>(
     customId: string,
     type: Type,
     required?: boolean,
-  ): Extract<ModalData, { type: Type }> | null;
+  ): Extract<ModalData, { type: Type }>;
   public getField(customId: string, type?: ComponentType, required?: boolean): ModalData | null;
   private _getTypedComponent(
     customId: string,
