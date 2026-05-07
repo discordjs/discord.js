@@ -2,7 +2,7 @@ import { SKUFlags } from 'discord-api-types/v10';
 import { BitField } from './BitField.js';
 
 /**
- * Data structure that makes it easy to interact with an {@link SKUFlags} bitfield.
+ * Data structure that makes it easy to interact with an {@link discord-api-types/v10#SKUFlags} bitfield.
  */
 export class SKUFlagsBitField extends BitField<keyof typeof SKUFlags> {
 	/**

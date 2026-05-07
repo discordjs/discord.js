@@ -9,12 +9,12 @@ export type DiscordEvents = {
 	};
 };
 
-interface BrokerProps<Payload> {
+export interface BrokerProps<Payload> {
 	payload: Payload;
 	shardId: number;
 }
 
-interface Events extends DiscordEvents {
+export interface Events extends DiscordEvents {
 	// eslint-disable-next-line @typescript-eslint/no-use-before-define
 	[RedisGateway.GatewaySendEvent]: GatewaySendPayload;
 }

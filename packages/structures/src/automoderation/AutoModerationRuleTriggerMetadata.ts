@@ -1,4 +1,4 @@
-import type { APIAutoModerationRuleTriggerMetadata, AutoModerationRuleTriggerType } from 'discord-api-types/v10';
+import type { APIAutoModerationRuleTriggerMetadata } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
 import type { Partialize } from '../utils/types.js';
@@ -32,7 +32,7 @@ export class AutoModerationRuleTriggerMetadata<
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-keyword-matching-strategies | Keyword matching strategies}
 	 *
-	 * Associated trigger types: {@link AutoModerationRuleTriggerType.Keyword}, {@link AutoModerationRuleTriggerType.MemberProfile}
+	 * Associated trigger types: {@link discord-api-types/v10#AutoModerationRuleTriggerType.Keyword}, {@link discord-api-types/v10#AutoModerationRuleTriggerType.MemberProfile}
 	 */
 	public get keywordFilter() {
 		return this[kData].keyword_filter;
@@ -45,7 +45,7 @@ export class AutoModerationRuleTriggerMetadata<
 	 *
 	 * Each regex pattern must be 260 characters or less.
 	 *
-	 * Associated trigger types: {@link AutoModerationRuleTriggerType.Keyword}, {@link AutoModerationRuleTriggerType.MemberProfile}
+	 * Associated trigger types: {@link discord-api-types/v10#AutoModerationRuleTriggerType.Keyword}, {@link discord-api-types/v10#AutoModerationRuleTriggerType.MemberProfile}
 	 */
 	public get regexPatterns() {
 		return this[kData].regex_patterns;
@@ -56,7 +56,7 @@ export class AutoModerationRuleTriggerMetadata<
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-keyword-preset-types | Keyword preset types}
 	 *
-	 * Associated trigger types: {@link AutoModerationRuleTriggerType.KeywordPreset}
+	 * Associated trigger types: {@link discord-api-types/v10#AutoModerationRuleTriggerType.KeywordPreset}
 	 */
 	public get presets() {
 		return this[kData].presets;
@@ -76,7 +76,7 @@ export class AutoModerationRuleTriggerMetadata<
 	 * @see {@link https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types | triggerType}
 	 * @see {@link https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-keyword-matching-strategies | Keyword matching strategies}
 	 *
-	 * Associated trigger types: {@link AutoModerationRuleTriggerType.Keyword}, {@link AutoModerationRuleTriggerType.KeywordPreset}, {@link AutoModerationRuleTriggerType.MemberProfile}
+	 * Associated trigger types: {@link discord-api-types/v10#AutoModerationRuleTriggerType.Keyword}, {@link discord-api-types/v10#AutoModerationRuleTriggerType.KeywordPreset}, {@link discord-api-types/v10#AutoModerationRuleTriggerType.MemberProfile}
 	 */
 	public get allowList() {
 		return this[kData].allow_list;
@@ -85,7 +85,7 @@ export class AutoModerationRuleTriggerMetadata<
 	/**
 	 * Total number of unique role and user mentions allowed per message (Maximum of 50)
 	 *
-	 * Associated trigger types: {@link AutoModerationRuleTriggerType.MentionSpam}
+	 * Associated trigger types: {@link discord-api-types/v10#AutoModerationRuleTriggerType.MentionSpam}
 	 */
 	public get mentionTotalLimit() {
 		return this[kData].mention_total_limit;
@@ -94,7 +94,7 @@ export class AutoModerationRuleTriggerMetadata<
 	/**
 	 * Whether to automatically detect mention raids
 	 *
-	 * Associated trigger types: {@link AutoModerationRuleTriggerType.MentionSpam}
+	 * Associated trigger types: {@link discord-api-types/v10#AutoModerationRuleTriggerType.MentionSpam}
 	 */
 	public get mentionRaidProtectionEnabled() {
 		return this[kData].mention_raid_protection_enabled;
