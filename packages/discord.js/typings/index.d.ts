@@ -2888,7 +2888,11 @@ export class ModalSubmitFields<Cached extends CacheType = CacheType> {
     type: Type,
     required?: boolean,
   ): Extract<ModalData, { type: Type }>;
-  public getField(customId: string, type?: ComponentType, required?: boolean): ModalData | null;
+  public getField<Required extends boolean = true>(
+    customId: string,
+    type?: ComponentType,
+    required?: Required,
+  ): Required extends true ? ModalData : ModalData | null;
   private _getTypedComponent(
     customId: string,
     allowedTypes: readonly ComponentType[],
