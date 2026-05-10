@@ -4,7 +4,7 @@ import { Stream } from 'node:stream';
 import { MessagePort, Worker } from 'node:worker_threads';
 import { Collection, ReadonlyCollection } from '@discordjs/collection';
 import { BaseImageURLOptions, ImageURLOptions, RawFile, REST, RESTOptions, EmojiURLOptions } from '@discordjs/rest';
-import { Awaitable, FileBodyEncodable, JSONEncodable } from '@discordjs/util';
+import { Awaitable, FileBodyEncodable, JSONEncodable, RawFileEncodable } from '@discordjs/util';
 import { WebSocketManager, WebSocketManagerOptions } from '@discordjs/ws';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -1639,6 +1639,7 @@ export class GuildMember extends Base {
   public avatarDecorationData: AvatarDecorationData | null;
   public banner: string | null;
   public get bannable(): boolean;
+  public collectibles: Collectibles | null;
   public get dmChannel(): DMChannel | null;
   public get displayColor(): number;
   public get displayHexColor(): HexColorString;
@@ -6754,7 +6755,7 @@ export interface BaseMessageOptions {
   )[];
   content?: string | null;
   embeds?: readonly (APIEmbed | JSONEncodable<APIEmbed>)[];
-  files?: readonly (Attachment | AttachmentPayload | BufferResolvable | FileBodyEncodable<APIAttachment> | Stream)[];
+  files?: readonly (Attachment | AttachmentPayload | BufferResolvable | RawFileEncodable | Stream)[];
 }
 
 export interface BaseMessageSendOptions extends BaseMessageOptions {

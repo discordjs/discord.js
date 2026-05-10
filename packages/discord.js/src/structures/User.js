@@ -170,15 +170,15 @@ class User extends Base {
      * @property {?NameplateData} nameplate The user's nameplate data
      */
 
-    if (data.collectibles) {
+    if ('collectibles' in data) {
       /**
        * The user's collectibles
        *
        * @type {?Collectibles}
        */
-      this.collectibles = _transformCollectibles(data.collectibles);
+      this.collectibles = data.collectibles ? _transformCollectibles(data.collectibles) : null;
     } else {
-      this.collectibles = null;
+      this.collectibles ??= null;
     }
 
     /**
