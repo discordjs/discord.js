@@ -288,8 +288,8 @@ export function chatInputApplicationCommandMention<
 >(
 	commandId: CommandId,
 	commandName: CommandName,
-	subcommandName?: SubcommandName | undefined,
-	subcommandGroupName?: SubcommandGroupName | undefined,
+	subcommandName?: SubcommandName,
+	subcommandGroupName?: SubcommandGroupName,
 ):
 	| `</${CommandName} ${SubcommandGroupName} ${SubcommandName}:${CommandId}>`
 	| `</${CommandName} ${SubcommandName}:${CommandId}>`

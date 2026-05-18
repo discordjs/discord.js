@@ -85,7 +85,7 @@ export class TypeScriptHelpers {
 				firstDeclaration,
 				ts.SyntaxKind.ModuleDeclaration,
 			);
-			if (highestModuleDeclaration && highestModuleDeclaration.name.getText().trim() === 'global') {
+			if (highestModuleDeclaration?.name.getText().trim() === 'global') {
 				return true;
 			}
 

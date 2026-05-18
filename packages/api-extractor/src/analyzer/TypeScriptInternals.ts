@@ -25,7 +25,7 @@ export class TypeScriptInternals {
 		checker: ts.TypeChecker,
 	): ts.Symbol | undefined {
 		let symbol: ts.Symbol | undefined = (declaration as any).symbol;
-		if (symbol && symbol.escapedName === ts.InternalSymbolName.Computed) {
+		if (symbol?.escapedName === ts.InternalSymbolName.Computed) {
 			const name: ts.DeclarationName | undefined = ts.getNameOfDeclaration(declaration);
 			symbol = (name && checker.getSymbolAtLocation(name)) || symbol;
 		}
