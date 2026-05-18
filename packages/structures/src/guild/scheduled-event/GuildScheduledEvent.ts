@@ -58,7 +58,6 @@ export class GuildScheduledEvent<
 	}
 
 	/**
-	 *
 	 *  The channel id in which the scheduled event will be hosted, or `null` if {@link entityType} is {@link GuildScheduledEventEntityType.External}
 	 *
 	 * @see {@link https://discord.com/developers/docs/resources/guild-scheduled-event#guild-scheduled-event-object-field-requirements-by-entity-type}

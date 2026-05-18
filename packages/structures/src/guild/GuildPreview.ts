@@ -18,7 +18,7 @@ import type { Partialize } from '../utils/types.js';
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  * @remarks Intentionally does not export `emojis` or `stickers`,
- *  so extending classes can map each array to `Emoji[]` and `Sticker[]` respectively.
+ * so extending classes can map each array to `Emoji[]` and `Sticker[]` respectively.
  */
 export class GuildPreview<Omitted extends keyof APIGuildPreview | '' = ''> extends Structure<APIGuildPreview, Omitted> {
 	/**
@@ -66,7 +66,7 @@ export class GuildPreview<Omitted extends keyof APIGuildPreview | '' = ''> exten
 	}
 
 	/**
-	 * The discovery splash hash of the guild. Only present for guilds with the "DISCOVERABLE" feature.
+	 * The discovery splash hash of the guild. Only present for guilds with the {@link GuildFeature.Discoverable} feature.
 	 *
 	 * @see {@link https://discord.com/developers/docs/reference#image-formatting}
 	 */
@@ -75,9 +75,9 @@ export class GuildPreview<Omitted extends keyof APIGuildPreview | '' = ''> exten
 	}
 
 	/**
-	 *et the URL to the guild icon.
+	 * Get the URL to the guild icon.
 	 *
-	 *param format - the file format to use
+	 * @param format - the file format to use
 	 */
 	public iconURL(format: GuildIconFormat = ImageFormat.WebP) {
 		return isIdSet(this[kData].id) && isFieldSet(this[kData], 'icon', 'string')

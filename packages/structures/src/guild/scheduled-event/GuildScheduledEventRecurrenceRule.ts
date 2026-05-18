@@ -11,7 +11,7 @@ import type { Partialize } from '../../utils/types.js';
  * Represents the recurrence rule of a scheduled event on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @remarks has substructure `GuildScheduledEventRecurenceRuleNWeekday` which needs to be instantiated and stored by an extending class using it.
+ * @remarks has substructure `GuildScheduledEventRecurrenceRuleNWeekday` which needs to be instantiated and stored by an extending class using it.
  */
 export class GuildScheduledEventRecurrenceRule<
 	Omitted extends keyof APIGuildScheduledEventRecurrenceRule | '' = 'end' | 'start',

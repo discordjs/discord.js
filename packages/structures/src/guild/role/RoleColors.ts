@@ -36,7 +36,7 @@ export class RoleColors<Omitted extends keyof APIRoleColors | '' = ''> extends S
 	}
 
 	/**
-	 * the tertiary color for the role, this will turn the gradient into a holographic style
+	 * The tertiary color for the role, this will turn the gradient into a holographic style
 	 *
 	 * @remarks When sending `tertiary_color` the API enforces the role color to be a holographic style with values of `primary_color = 11127295`, `secondary_color = 16759788`, and `tertiary_color = 16761760`.
 	 */

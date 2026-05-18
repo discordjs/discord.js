@@ -21,7 +21,7 @@ import type { Partialize } from '../utils/types.js';
  * Represents a guild on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @remarks has substructures `GuildWelcomeScreen`, `GuildIncidentsData`, `Role`, `Emoji` and `Sticker` which needs to be instantiated and stored by any extending classes using it.
+ * @remarks has substructures `GuildWelcomeScreen`, `IncidentsData`, `Role`, `Emoji` and `Sticker` which needs to be instantiated and stored by any extending classes using it.
  */
 export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<APIGuild, Omitted> {
 	protected [kPermissions]: bigint | null = null;
@@ -108,7 +108,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	}
 
 	/**
-	 * The discovery splash hash of the guild. Only present for guilds with the "DISCOVERABLE" feature.
+	 * The discovery splash hash of the guild. Only present for guilds with the {@link GuildFeature.Discoverable} feature.
 	 *
 	 * @see {@link https://discord.com/developers/docs/reference#image-formatting}
 	 */
@@ -117,7 +117,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	}
 
 	/**
-	 * Get the URL to the guild discovery splash.
+	 * Get the URL to the guild discovery splash.z`
 	 *
 	 * @param format - the file format to use
 	 */
