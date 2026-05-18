@@ -9,4 +9,5 @@ export * from './GuildWelcomeScreenChannel.js';
 export * from './GuildWidget.js';
 export * from './IncidentsData.js';
 export * from './IntegrationAccount.js';
+export * from './role/index.js';
 export * from './scheduled-event/index.js';

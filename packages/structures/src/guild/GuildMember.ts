@@ -1,6 +1,6 @@
 import type { APIInteractionGuildMember, GuildMemberFlags } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
-import { GuildMemberFlagsBitField } from '../bitfields/GuildMemberFlagsBitField.js';
+import { PermissionsBitField, GuildMemberFlagsBitField } from '../bitfields';
 import { dateToDiscordISOTimestamp } from '../utils/optimization.js';
 import { kCommunicationDisabledUntil, kData, kJoinedAt, kPermissions, kPremiumSince } from '../utils/symbols.js';
 import { isFieldSet } from '../utils/type-guards.js';
@@ -10,7 +10,7 @@ import type { Partialize } from '../utils/types.js';
  * Represents a guild member on Discord.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
- * @remarks Intentionally does not export `roles`so extending classes can map this array to `Role[]`.
+ * @remarks Intentionally does not export `roles` so extending classes can map this array to `Role[]`.
  * @remarks has substructures `User` and `AvatarDecorationData`, which needs to be instantiated and stored by any extending classes using it.
  */
 export class GuildMember<
@@ -86,7 +86,6 @@ export class GuildMember<
 
 	/**
 	 * Guild member flags represented as a bit set.
-	 *
 	 */
 	public get flags() {
 		return isFieldSet(this[kData], 'flags', 'number')
@@ -95,10 +94,12 @@ export class GuildMember<
 	}
 
 	/**
-	 * 
+	 * Total permissions of the member in the channel, including overwrites, returned when in the interaction object.
 	 */
 	public get permissions() {
-		return this[kData].permissions;
+		const permissions = this[kData].permissions;
+
+		return typeof permissions === 'bigint' ? new PermissionsBitField(permissions) : null;
 	}
 
 	/**

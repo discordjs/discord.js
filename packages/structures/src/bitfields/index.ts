@@ -6,4 +6,5 @@ export * from './GuildMemberFlagsBitField.js';
 export * from './GuildSystemChannelFlagsBitField.js';
 export * from './MessageFlagsBitField.js';
 export * from './PermissionsBitField.js';
+export * from './RoleFlagsBitField.js';
 export * from './SKUFlagsBitField.js';
