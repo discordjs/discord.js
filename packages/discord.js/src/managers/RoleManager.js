@@ -123,9 +123,11 @@ class RoleManager extends CachedManager {
   /**
    * @typedef {Object} RoleColorsResolvable
    * @property {ColorResolvable} primaryColor The primary color of the role
-   * @property {ColorResolvable} [secondaryColor] The secondary color of the role.
+   * @property {?ColorResolvable} [secondaryColor] The secondary color of the role.
+   * Pass `null` to clear it.
    * This will make the role a gradient between the other provided colors
-   * @property {ColorResolvable} [tertiaryColor] The tertiary color of the role.
+   * @property {?ColorResolvable} [tertiaryColor] The tertiary color of the role.
+   * Pass `null` to clear it.
    * When sending `tertiaryColor` the API enforces the role color to be a holographic style with values of `primaryColor = 11127295`, `secondaryColor = 16759788`, and `tertiaryColor = 16761760`.
    * These values are available as a constant: `Constants.HolographicStyle`
    */
