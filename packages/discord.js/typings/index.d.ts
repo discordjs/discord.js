@@ -2982,8 +2982,8 @@ export interface RoleColors {
 
 export interface RoleColorsResolvable {
   primaryColor: ColorResolvable;
-  secondaryColor?: ColorResolvable;
-  tertiaryColor?: ColorResolvable;
+  secondaryColor?: ColorResolvable | null;
+  tertiaryColor?: ColorResolvable | null;
 }
 
 export class Role extends Base {
