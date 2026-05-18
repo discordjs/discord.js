@@ -46,9 +46,9 @@ export class IncidentsData<
 	}
 
 	/**
-	 * When direct message spam was detected.
+	 * The date direct message spam was detected.
 	 */
-	public get dmSpamDetectedAt() {
+	public get dmSpamDetectedDate() {
 		const timestamp = this.dmSpamDetectedTimestamp;
 		return timestamp ? new Date(timestamp) : null;
 	}
@@ -91,9 +91,9 @@ export class IncidentsData<
 	}
 
 	/**
-	 * When a raid was detected.
+	 * The date a raid was detected.
 	 */
-	public get raidDetectedAt() {
+	public get raidDetectedDate() {
 		const timestamp = this.raidDetectedTimestamp;
 		return timestamp ? new Date(timestamp) : null;
 	}

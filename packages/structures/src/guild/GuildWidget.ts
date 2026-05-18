@@ -61,9 +61,9 @@ export class GuildWidget<Omitted extends keyof APIGuildWidget | '' = ''> extends
 	}
 
 	/**
-	 * The time the guild was created at.
+	 * The date the guild was created on.
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}

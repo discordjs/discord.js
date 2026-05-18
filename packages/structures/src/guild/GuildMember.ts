@@ -94,6 +94,9 @@ export class GuildMember<
 			: null;
 	}
 
+	/**
+	 * 
+	 */
 	public get permissions() {
 		return this[kData].permissions;
 	}
@@ -114,9 +117,9 @@ export class GuildMember<
 	}
 
 	/**
-	 * The time this member joined the guild.
+	 * The date this member joined the guild.
 	 */
-	public get joinedAt() {
+	public get joinedDate() {
 		const timestamp = this.joinedTimestamp;
 		return timestamp ? new Date(timestamp) : null;
 	}

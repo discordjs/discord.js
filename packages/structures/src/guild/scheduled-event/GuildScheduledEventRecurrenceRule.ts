@@ -90,9 +90,9 @@ export class GuildScheduledEventRecurrenceRule<
 	}
 
 	/**
-	 *  The time the recurrence rule interval starts at.
+	 *  The date the recurrence rule interval starts on.
 	 */
-	public get startAt() {
+	public get startDate() {
 		const timestamp = this.startTimestamp;
 		return timestamp ? new Date(timestamp) : null;
 	}
@@ -105,9 +105,9 @@ export class GuildScheduledEventRecurrenceRule<
 	}
 
 	/**
-	 * The time the recurrence rule interval ends at.
+	 * The date the recurrence rule interval ends on.
 	 */
-	public get endAt() {
+	public get endDate() {
 		const timestamp = this.endTimestamp;
 		return timestamp ? new Date(timestamp) : null;
 	}

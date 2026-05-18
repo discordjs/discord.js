@@ -36,7 +36,7 @@ export class GuildScheduledEvent<
 	protected [kScheduledStartTime]: number | null = null;
 
 	/**
-	 *param data - The raw data from the API for the scheduled event.
+	 * @param data - The raw data from the API for the scheduled event.
 	 */
 	public constructor(data: Partialize<APIGuildScheduledEvent, Omitted>) {
 		super(data);
@@ -142,24 +142,24 @@ export class GuildScheduledEvent<
 	}
 
 	/**
-	 *  The time the guild scheduled event will start at.
+	 *  The date the guild scheduled event will start on.
 	 */
-	public get scheduledStartAt() {
+	public get scheduledStartDate() {
 		const timestamp = this.scheduledStartTimestamp;
 		return timestamp ? new Date(timestamp) : null;
 	}
 
 	/**
-	 * The timestamp the guild scheduled event will start it.
+	 * The timestamp the guild scheduled event will start at.
 	 */
 	public get scheduledStartTimestamp() {
 		return this[kScheduledStartTime];
 	}
 
 	/**
-	 * The time the guild scheduled event will end at.
+	 * The date the guild scheduled event will end on.
 	 */
-	public get scheduledEndAt() {
+	public get scheduledEndDate() {
 		const timestamp = this.scheduledEndTimestamp;
 		return timestamp ? new Date(timestamp) : null;
 	}
@@ -180,9 +180,9 @@ export class GuildScheduledEvent<
 	}
 
 	/**
-	 * The time the scheduled event was created at.
+	 * The date the scheduled event was created on.
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}

@@ -88,9 +88,9 @@ export class GuildTemplate<Omitted extends keyof APITemplate | '' = 'created_at'
 	}
 
 	/**
-	 * The time when this template was created at.
+	 * The date when this template was created on.
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const timestamp = this.createdTimestamp;
 		return timestamp ? new Date(timestamp) : null;
 	}
@@ -103,9 +103,9 @@ export class GuildTemplate<Omitted extends keyof APITemplate | '' = 'created_at'
 	}
 
 	/**
-	 * The time when this template was last synced to the guild
+	 * The date when this template was last synced to the guild.
 	 */
-	public get updatedAt() {
+	public get updatedDate() {
 		const timestamp = this.updatedTimestamp;
 		return timestamp ? new Date(timestamp) : null;
 	}

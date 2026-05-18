@@ -128,9 +128,9 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	}
 
 	/**
-	 *  Returns `true` if the user is the owner of the guild.
+	 * Returns `true` if the user is the owner of the guild.
 	 *
-	 *  @remarks This field is only received from https://discord.com/developers/docs/resources/user#get-current-user-guilds
+	 * @remarks This field is only received from {@link https://discord.com/developers/docs/resources/user#get-current-user-guilds}
 	 */
 	public get owner() {
 		return this[kData].owner;
@@ -316,8 +316,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	}
 
 	/**
-	 * The preferred locale of a community guild. Used in server discover and notices in discord.
-	 *
+	 * The preferred locale of a community guild. Used in server discover and notices from Discord.
 	 */
 	public get preferredLocale() {
 		return this[kData].preferred_locale;
@@ -389,9 +388,9 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	}
 
 	/**
-	 * The time the guild was created at.
+	 * The date the guild was created on.
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}

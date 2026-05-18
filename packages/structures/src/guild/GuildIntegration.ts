@@ -76,7 +76,7 @@ export class GuildIntegration<Omitted extends keyof APIGuildIntegration | '' = '
 	/**
 	 * The date at which this integration was last synced at.
 	 */
-	public get syncedAt() {
+	public get syncedDate() {
 		const timestamp = this.syncedTimestamp;
 		return timestamp ? new Date(timestamp) : null;
 	}
@@ -151,9 +151,9 @@ export class GuildIntegration<Omitted extends keyof APIGuildIntegration | '' = '
 	}
 
 	/**
-	 * The time the integration was created at.
+	 * The date the integration was created on.
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}
