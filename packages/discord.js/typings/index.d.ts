@@ -2982,6 +2982,12 @@ export interface RoleColors {
 
 export interface RoleColorsResolvable {
   primaryColor: ColorResolvable;
+  secondaryColor?: ColorResolvable;
+  tertiaryColor?: ColorResolvable;
+}
+
+export interface RoleColorsEditResolvable {
+  primaryColor: ColorResolvable;
   secondaryColor?: ColorResolvable | null;
   tertiaryColor?: ColorResolvable | null;
 }
@@ -5861,7 +5867,8 @@ export interface RoleCreateOptions extends RoleData {
   reason?: string;
 }
 
-export interface RoleEditOptions extends RoleData {
+export interface RoleEditOptions extends Omit<RoleData, 'colors'> {
+  colors?: RoleColorsEditResolvable;
   reason?: string;
 }
 
