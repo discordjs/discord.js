@@ -5864,10 +5864,11 @@ export interface GuildScheduledEventInviteURLCreateOptions extends InviteCreateO
 }
 
 export interface RoleCreateOptions extends RoleData {
+  colors?: RoleColorsResolvable;
   reason?: string;
 }
 
-export interface RoleEditOptions extends Omit<RoleData, 'colors'> {
+export interface RoleEditOptions extends RoleData {
   colors?: RoleColorsEditResolvable;
   reason?: string;
 }
@@ -7104,7 +7105,6 @@ export interface ResolvedOverwriteOptions {
 }
 
 export interface RoleData {
-  colors?: RoleColorsResolvable;
   hoist?: boolean;
   icon?: Base64Resolvable | BufferResolvable | EmojiResolvable | null;
   mentionable?: boolean;
