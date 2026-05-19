@@ -2980,7 +2980,7 @@ export interface RoleColors {
   tertiaryColor: number | null;
 }
 
-export interface RoleColorsResolvable {
+export interface RoleColorsResolvable extends RoleColorsEditResolvable {
   primaryColor: ColorResolvable;
   secondaryColor?: ColorResolvable;
   tertiaryColor?: ColorResolvable;
