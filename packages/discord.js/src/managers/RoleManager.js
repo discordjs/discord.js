@@ -129,7 +129,7 @@ class RoleManager extends CachedManager {
    * When sending `tertiaryColor` the API enforces the role color to be a holographic style with values of `primaryColor = 11127295`, `secondaryColor = 16759788`, and `tertiaryColor = 16761760`.
    * These values are available as a constant: `Constants.HolographicStyle`
    */
-  
+
   /**
    * @typedef {Object} RoleColorsEditResolvable
    * @property {ColorResolvable} primaryColor The primary color of the role
