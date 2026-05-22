@@ -2,6 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
+const { ActivityInstance } = require('./ActivityInstance');
 const { ApplicationRoleConnectionMetadata } = require('./ApplicationRoleConnectionMetadata');
 const { SKU } = require('./SKU');
 const Team = require('./Team');
@@ -409,6 +410,17 @@ class ClientApplication extends Application {
   async fetchSKUs() {
     const skus = await this.client.rest.get(Routes.skus(this.id));
     return skus.reduce((coll, sku) => coll.set(sku.id, new SKU(this.client, sku)), new Collection());
+  }
+
+  /**
+   * Fetches an activity instance for this application.
+   *
+   * @param {string} instanceId The id of the activity instance
+   * @returns {Promise<ActivityInstance>}
+   */
+  async fetchActivityInstance(instanceId) {
+    const data = await this.client.rest.get(Routes.applicationActivityInstance(this.id, instanceId));
+    return new ActivityInstance(this.client, data);
   }
 }
 

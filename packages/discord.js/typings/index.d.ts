@@ -53,6 +53,9 @@ import {
   SessionInfo,
 } from '@discordjs/ws';
 import {
+  APIActivityInstance,
+  APIActivityLocation,
+  ActivityLocationKind,
   APIActionRowComponent,
   APIApplicationCommandInteractionData,
   APIApplicationCommandOption,
@@ -316,6 +319,25 @@ export class Activity {
   public url: string | null;
   public equals(activity: Activity): boolean;
   public toString(): string;
+}
+
+export class ActivityInstance extends Base {
+  private constructor(client: Client<true>, data: APIActivityInstance);
+  public applicationId: Snowflake;
+  public instanceId: string;
+  public launchId: Snowflake;
+  public location: ActivityLocation;
+  public users: Snowflake[];
+}
+
+export class ActivityLocation extends Base {
+  private constructor(client: Client<true>, data: APIActivityLocation);
+  public id: string;
+  public kind: ActivityLocationKind;
+  public channelId: Snowflake;
+  public guildId: Snowflake | null;
+  public get channel(): Channel | null;
+  public get guild(): Guild | null;
 }
 
 export type ActivityFlagsString = keyof typeof ActivityFlags;
@@ -1217,6 +1239,7 @@ export class ClientApplication extends Application {
   public roleConnectionsVerificationURL: string | null;
   public edit(options: ClientApplicationEditOptions): Promise<ClientApplication>;
   public fetch(): Promise<ClientApplication>;
+  public fetchActivityInstance(instanceId: string): Promise<ActivityInstance>;
   public fetchRoleConnectionMetadataRecords(): Promise<ApplicationRoleConnectionMetadata[]>;
   public fetchSKUs(): Promise<Collection<Snowflake, SKU>>;
   public editRoleConnectionMetadataRecords(
