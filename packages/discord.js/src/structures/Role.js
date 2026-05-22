@@ -67,14 +67,19 @@ class Role extends BaseRole {
     }
 
     /**
-     * The tags this role has
-     * @type {?Object}
+     * The tags a role has
+     * @typedef {Object} RoleTagData
      * @property {Snowflake} [botId] The id of the bot this role belongs to
      * @property {Snowflake|string} [integrationId] The id of the integration this role belongs to
      * @property {true} [premiumSubscriberRole] Whether this is the guild's premium subscription role
      * @property {Snowflake} [subscriptionListingId] The id of this role's subscription SKU and listing
      * @property {true} [availableForPurchase] Whether this role is available for purchase
      * @property {true} [guildConnections] Whether this role is a guild's linked role
+     */
+
+    /**
+     * The tags this role has
+     * @type {?RoleTagData}
      */
     this.tags = data.tags ? {} : null;
     if (data.tags) {
