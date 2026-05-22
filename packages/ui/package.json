@@ -72,7 +72,7 @@
 		"@unocss/eslint-plugin": "^66.7.0",
 		"@unocss/reset": "^66.7.0",
 		"@vitejs/plugin-react": "^6.0.2",
-		"chromatic": "^16.10.1",
+		"chromatic": "^17.0.0",
 		"cross-env": "^10.1.0",
 		"eslint": "^9.39.4",
 		"eslint-config-neon": "^0.3.2",
