@@ -3,7 +3,7 @@
 const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
 const { lazy } = require('@discordjs/util');
-const { ChannelType, RouteBases, Routes } = require('discord-api-types/v10');
+const { APIVersion, ChannelType, Routes, RouteBases } = require('discord-api-types/v10');
 const { fetch } = require('undici');
 const { Colors } = require('./Colors.js');
 // eslint-disable-next-line import-x/order
@@ -67,6 +67,8 @@ function flatten(obj, ...props) {
  * @typedef {Object} FetchRecommendedShardCountOptions
  * @property {number} [guildsPerShard=1000] Number of guilds assigned per shard
  * @property {number} [multipleOf=1] The multiple the shard count should round up to. (16 for large bot sharding)
+ * @property {string} [api='https://discord.com/api'] The base API URL
+ * @property {string} [version='10'] The API version to use
  */
 
 /**
@@ -76,9 +78,12 @@ function flatten(obj, ...props) {
  * @param {FetchRecommendedShardCountOptions} [options] Options for fetching the recommended shard count
  * @returns {Promise<number>} The recommended number of shards
  */
-async function fetchRecommendedShardCount(token, { guildsPerShard = 1_000, multipleOf = 1 } = {}) {
+async function fetchRecommendedShardCount(
+  token,
+  { guildsPerShard = 1_000, multipleOf = 1, api = RouteBases.api, version = APIVersion } = {},
+) {
   if (!token) throw new DiscordjsError(ErrorCodes.TokenMissing);
-  const response = await fetch(RouteBases.api + Routes.gatewayBot(), {
+  const response = await fetch(`${api}/v${version}${Routes.gatewayBot()}`, {
     method: 'GET',
     headers: { Authorization: `Bot ${token.replace(/^bot\s*/i, '')}` },
   });
