@@ -9,6 +9,42 @@ const { BaseGuildVoiceChannel } = require('./BaseGuildVoiceChannel.js');
  * @extends {BaseGuildVoiceChannel}
  */
 class VoiceChannel extends BaseGuildVoiceChannel {
+  _patch(data) {
+    super._patch(data);
+
+    if ('status' in data) {
+      /**
+       * The voice channel status, or `null` if none is set.
+       *
+       * @type {?string}
+       */
+      this.status = data.status;
+    } else {
+      this.status ??= null;
+    }
+
+    if ('voice_start_time' in data) {
+      /**
+       * The timestamp when the current voice session started, or `null` if no session is active.
+       *
+       * @type {?number}
+       */
+      this.voiceStartTimestamp = data.voice_start_time && data.voice_start_time * 1_000;
+    } else {
+      this.voiceStartTimestamp ??= null;
+    }
+  }
+
+  /**
+   * The time when the current voice session started, or `null` if no session is active.
+   *
+   * @type {?Date}
+   * @readonly
+   */
+  get voiceStartAt() {
+    return this.voiceStartTimestamp && new Date(this.voiceStartTimestamp);
+  }
+
   /**
    * Whether the channel is joinable by the client user
    *
@@ -56,6 +92,32 @@ class VoiceChannel extends BaseGuildVoiceChannel {
         sound_id: sound.soundId,
         source_guild_id: sound.guildId ?? undefined,
       },
+    });
+  }
+
+  /**
+   * Sets the status of the voice channel.
+   * Requires the {@link PermissionFlagsBits.SetVoiceChannelStatus} permission.
+   * If the client user is not connected to the channel, {@link PermissionFlagsBits.ManageChannels} is also required.
+   *
+   * @param {?string} status The new status (up to 500 characters), or `null` to clear it
+   * @param {string} [reason] The reason for changing the voice channel status
+   * @returns {Promise<void>}
+   * @example
+   * // Set a voice channel status
+   * channel.setStatus('Playing music!')
+   *   .then(() => console.log('Voice channel status set'))
+   *   .catch(console.error);
+   * @example
+   * // Clear a voice channel status
+   * channel.setStatus(null)
+   *   .then(() => console.log('Voice channel status cleared'))
+   *   .catch(console.error);
+   */
+  async setStatus(status, reason) {
+    await this.client.rest.put(Routes.channelVoiceStatus(this.id), {
+      body: { status },
+      reason,
     });
   }
 }
