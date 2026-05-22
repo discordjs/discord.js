@@ -69,6 +69,7 @@ import {
   APILabelComponent,
   APIMessage,
   APIMessageComponent,
+  APIMessageSharedClientTheme,
   APIOverwrite,
   APIPartialChannel,
   APIPartialEmoji,
@@ -77,6 +78,7 @@ import {
   APISelectMenuComponent,
   APITemplateSerializedSourceGuild,
   APIUser,
+  BaseThemeType,
   ButtonStyle,
   ChannelType,
   ComponentType,
@@ -2393,6 +2395,13 @@ export interface MessageCall {
   participants: readonly Snowflake[];
 }
 
+export interface SharedClientTheme {
+  baseMix: number;
+  baseTheme?: BaseThemeType | null;
+  colors: readonly string[];
+  gradientAngle: number;
+}
+
 export type MessageComponentType =
   | ComponentType.Button
   | ComponentType.ChannelSelect
@@ -2493,6 +2502,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public tts: boolean;
   public poll: Poll | null;
   public call: MessageCall | null;
+  public sharedClientTheme: SharedClientTheme | null;
   public type: MessageType;
   public get url(): string;
   public webhookId: Snowflake | null;
@@ -7414,6 +7424,7 @@ export interface MessageCreateOptions extends BaseMessageOptionsWithPoll {
   reply?: ReplyOptions;
   forward?: ForwardOptions;
   stickers?: readonly StickerResolvable[];
+  sharedClientTheme?: JSONEncodable<APIMessageSharedClientTheme> | SharedClientTheme;
   flags?:
     | BitFieldResolvable<
         Extract<MessageFlagsString, 'SuppressEmbeds' | 'SuppressNotifications' | 'IsComponentsV2'>,
