@@ -56,7 +56,6 @@
 		"@react-icons/all-files": "^4.1.0",
 		"@tanstack/react-query": "^5.100.13",
 		"@vercel/analytics": "^2.0.1",
-		"@vercel/postgres": "^0.10.0",
 		"cloudflare": "^5.2.0",
 		"cmdk": "^1.1.1",
 		"cva": "1.0.0-beta.3",
@@ -104,7 +103,7 @@
 		"tailwindcss-react-aria-components": "^2.1.0",
 		"turbo": "^2.9.14",
 		"typescript": "~5.9.3",
-		"vercel": "^50.44.0",
+		"vercel": "^54.4.1",
 		"wrangler": "^4.94.0"
 	},
 	"engines": {
