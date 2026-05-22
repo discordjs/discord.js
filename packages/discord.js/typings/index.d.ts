@@ -3300,6 +3300,8 @@ export class ShardingManager extends AsyncEventEmitter<ShardingManagerEventTypes
   public token: string | null;
   public totalShards: number | 'auto';
   public shardList: number[] | 'auto';
+  public api: string;
+  public version: string;
   public broadcast(message: unknown): Promise<Shard[]>;
   public broadcastEval<Result>(fn: (client: Client) => Awaitable<Result>): Promise<Serialized<Result>[]>;
   public broadcastEval<Result, Context>(
@@ -3322,8 +3324,10 @@ export class ShardingManager extends AsyncEventEmitter<ShardingManagerEventTypes
 }
 
 export interface FetchRecommendedShardCountOptions {
+  api?: string;
   guildsPerShard?: number;
   multipleOf?: number;
+  version?: string;
 }
 
 export {
@@ -7185,6 +7189,7 @@ export interface SetRolePositionOptions {
 export type ShardingManagerMode = 'process' | 'worker';
 
 export interface ShardingManagerOptions {
+  api?: string;
   execArgv?: readonly string[];
   mode?: ShardingManagerMode;
   respawn?: boolean;
@@ -7193,6 +7198,7 @@ export interface ShardingManagerOptions {
   silent?: boolean;
   token?: string;
   totalShards?: number | 'auto';
+  version?: string;
 }
 
 export interface ShowModalOptions {
