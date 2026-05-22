@@ -51,8 +51,8 @@
 	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"devDependencies": {
-		"@commitlint/cli": "^20.5.3",
-		"@commitlint/config-angular": "^20.5.3",
+		"@commitlint/cli": "^21.0.1",
+		"@commitlint/config-angular": "^21.0.1",
 		"@favware/cliff-jumper": "^6.1.0",
 		"@favware/npm-deprecate": "^2.0.0",
 		"@types/lodash.merge": "^4.6.9",
