@@ -137,6 +137,7 @@ import {
   GatewayInteractionCreateDispatchData,
   GatewayMessageUpdateDispatchData,
   GatewayPresenceUpdate,
+  GatewayRequestChannelInfoField,
   GatewaySendPayload,
   GatewayTypingStartDispatchData,
   GatewayVoiceChannelEffectSendDispatchData,
@@ -1417,6 +1418,11 @@ export class FileComponent extends Component<APIFileComponent> {
   public get spoiler(): boolean;
 }
 
+export interface RequestChannelInfoOptions {
+  fields: readonly GatewayRequestChannelInfoField[];
+  time?: number;
+}
+
 export class Guild extends AnonymousGuild {
   private constructor(client: Client<true>, data: APIGuild | APIUnavailableGuild);
   private _sortedRoles(): Collection<Snowflake, Role>;
@@ -1533,6 +1539,7 @@ export class Guild extends AnonymousGuild {
   public setVerificationLevel(verificationLevel: GuildVerificationLevel | null, reason?: string): Promise<Guild>;
   public setPremiumProgressBarEnabled(enabled?: boolean, reason?: string): Promise<Guild>;
   public setWidgetSettings(settings: GuildWidgetSettingsData, reason?: string): Promise<Guild>;
+  public requestChannelInfo(options: RequestChannelInfoOptions): Promise<Collection<Snowflake, VoiceChannel>>;
   public toJSON(): unknown;
 }
 
@@ -3834,7 +3841,10 @@ export interface SendSoundboardSoundOptions {
 export class VoiceChannel extends BaseGuildVoiceChannel {
   public get speakable(): boolean;
   public type: ChannelType.GuildVoice;
+  public status: string | null;
+  public voiceStartTimestamp: number | null;
   public sendSoundboardSound(sound: SendSoundboardSoundOptions | SoundboardSound): Promise<void>;
+  public setStatus(status: string | null): Promise<void>;
 }
 
 export class VoiceChannelEffect {
@@ -4104,6 +4114,7 @@ export enum DiscordjsErrorCodes {
   GuildVoiceChannelResolve = 'GuildVoiceChannelResolve',
   GuildChannelOrphan = 'GuildChannelOrphan',
   GuildChannelUnowned = 'GuildChannelUnowned',
+  GuildChannelInfoTimeout = 'GuildChannelInfoTimeout',
   GuildMembersTimeout = 'GuildMembersTimeout',
   GuildSoundboardSoundsTimeout = 'GuildSoundboardSoundsTimeout',
   GuildUncachedMe = 'GuildUncachedMe',
@@ -5554,6 +5565,7 @@ export interface ClientEventTypes {
   cacheSweep: [message: string];
   channelCreate: [channel: NonThreadGuildBasedChannel];
   channelDelete: [channel: DMChannel | NonThreadGuildBasedChannel];
+  channelInfo: [channelInfo: ReadonlyCollection<Snowflake, VoiceChannel>];
   channelPinsUpdate: [channel: TextBasedChannel, date: Date];
   channelUpdate: [
     oldChannel: DMChannel | NonThreadGuildBasedChannel,
@@ -5655,6 +5667,8 @@ export interface ClientEventTypes {
   typingStart: [typing: Typing];
   userUpdate: [oldUser: PartialUser | User, newUser: User];
   voiceChannelEffectSend: [voiceChannelEffect: VoiceChannelEffect];
+  voiceChannelStartTimeUpdate: [oldChannel: VoiceChannel, newChannel: VoiceChannel];
+  voiceChannelStatusUpdate: [oldChannel: VoiceChannel, newChannel: VoiceChannel];
   voiceServerUpdate: [data: VoiceServerUpdateData];
   voiceStateUpdate: [oldState: VoiceState, newState: VoiceState];
   warn: [message: string];
@@ -5798,6 +5812,7 @@ export enum Events {
   CacheSweep = 'cacheSweep',
   ChannelCreate = 'channelCreate',
   ChannelDelete = 'channelDelete',
+  ChannelInfo = 'channelInfo',
   ChannelPinsUpdate = 'channelPinsUpdate',
   ChannelUpdate = 'channelUpdate',
   ClientReady = 'clientReady',
@@ -5869,6 +5884,8 @@ export enum Events {
   TypingStart = 'typingStart',
   UserUpdate = 'userUpdate',
   VoiceChannelEffectSend = 'voiceChannelEffectSend',
+  VoiceChannelStartTimeUpdate = 'voiceChannelStartTimeUpdate',
+  VoiceChannelStatusUpdate = 'voiceChannelStatusUpdate',
   VoiceServerUpdate = 'voiceServerUpdate',
   VoiceStateUpdate = 'voiceStateUpdate',
   Warn = 'warn',

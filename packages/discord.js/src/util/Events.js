@@ -10,6 +10,7 @@
  * @property {string} CacheSweep cacheSweep
  * @property {string} ChannelCreate channelCreate
  * @property {string} ChannelDelete channelDelete
+ * @property {string} ChannelInfo channelInfo
  * @property {string} ChannelPinsUpdate channelPinsUpdate
  * @property {string} ChannelUpdate channelUpdate
  * @property {string} ClientReady clientReady
@@ -81,6 +82,8 @@
  * @property {string} TypingStart typingStart
  * @property {string} UserUpdate userUpdate
  * @property {string} VoiceChannelEffectSend voiceChannelEffectSend
+ * @property {string} VoiceChannelStartTimeUpdate voiceChannelStartTimeUpdate
+ * @property {string} VoiceChannelStatusUpdate voiceChannelStatusUpdate
  * @property {string} VoiceServerUpdate voiceServerUpdate
  * @property {string} VoiceStateUpdate voiceStateUpdate
  * @property {string} Warn warn
@@ -101,6 +104,7 @@ exports.Events = {
   CacheSweep: 'cacheSweep',
   ChannelCreate: 'channelCreate',
   ChannelDelete: 'channelDelete',
+  ChannelInfo: 'channelInfo',
   ChannelPinsUpdate: 'channelPinsUpdate',
   ChannelUpdate: 'channelUpdate',
   ClientReady: 'clientReady',
@@ -171,6 +175,8 @@ exports.Events = {
   ThreadUpdate: 'threadUpdate',
   TypingStart: 'typingStart',
   UserUpdate: 'userUpdate',
+  VoiceChannelStartTimeUpdate: 'voiceChannelStartTimeUpdate',
+  VoiceChannelStatusUpdate: 'voiceChannelStatusUpdate',
   VoiceChannelEffectSend: 'voiceChannelEffectSend',
   VoiceServerUpdate: 'voiceServerUpdate',
   VoiceStateUpdate: 'voiceStateUpdate',
