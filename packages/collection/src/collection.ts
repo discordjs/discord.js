@@ -5,9 +5,22 @@
  */
 export type ReadonlyCollection<Key, Value> = Omit<
 	Collection<Key, Value>,
-	keyof Map<Key, Value> | 'ensure' | 'reverse' | 'sort' | 'sweep'
+	keyof Map<Key, Value> | 'each' | 'ensure' | 'reverse' | 'sort' | 'sweep' | 'tap'
 > &
-	ReadonlyMap<Key, Value>;
+	ReadonlyMap<Key, Value> & {
+		each(
+			fn: (value: Value, key: Key, collection: ReadonlyCollection<Key, Value>) => void,
+		): ReadonlyCollection<Key, Value>;
+		each<This>(
+			fn: (this: This, value: Value, key: Key, collection: ReadonlyCollection<Key, Value>) => void,
+			thisArg: This,
+		): ReadonlyCollection<Key, Value>;
+		tap(fn: (collection: ReadonlyCollection<Key, Value>) => void): ReadonlyCollection<Key, Value>;
+		tap<This>(
+			fn: (this: This, collection: ReadonlyCollection<Key, Value>) => void,
+			thisArg: This,
+		): ReadonlyCollection<Key, Value>;
+	};
 
 export interface Collection<Key, Value> {
 	/**
@@ -1023,7 +1036,10 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	 * but returns a Collection instead of an Array.
 	 */
 	public toReversed() {
-		return new this.constructor[Symbol.species](this).reverse();
+		const entries = [...this.entries()];
+		entries.reverse();
+
+		return new this.constructor[Symbol.species](entries);
 	}
 
 	/**
@@ -1039,7 +1055,10 @@ export class Collection<Key, Value> extends Map<Key, Value> {
 	 * ```
 	 */
 	public toSorted(compareFunction: Comparator<Key, Value> = Collection.defaultSort): Collection<Key, Value> {
-		return new this.constructor[Symbol.species](this).sort(compareFunction);
+		const entries = [...this.entries()];
+		entries.sort((a, b): number => compareFunction(a[1], b[1], a[0], b[0]));
+
+		return new this.constructor[Symbol.species](entries);
 	}
 
 	public toJSON() {
