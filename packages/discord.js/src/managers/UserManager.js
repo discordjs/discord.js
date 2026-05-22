@@ -66,7 +66,14 @@ class UserManager extends CachedManager {
     }
 
     const data = await this.client.rest.post(Routes.userChannels(), { body: { recipient_id: id } });
-    return this.client.channels._add(data, null, { cache });
+    return this.client.channels._add(
+      {
+        ...data,
+        ...('recipients' in data ? { recipients: [...data.recipients, { id: this.client.user.id }] } : undefined),
+      },
+      null,
+      { cache },
+    );
   }
 
   /**
