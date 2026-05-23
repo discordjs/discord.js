@@ -56,7 +56,7 @@
 		"@react-icons/all-files": "^4.1.0",
 		"@tanstack/react-query": "^5.100.13",
 		"@vercel/analytics": "^2.0.1",
-		"cloudflare": "^5.2.0",
+		"cloudflare": "^6.3.0",
 		"cmdk": "^1.1.1",
 		"cva": "1.0.0-beta.3",
 		"geist": "^1.7.1",
