@@ -3,7 +3,7 @@
 import { Command } from 'cmdk';
 import { useAtom, useSetAtom } from 'jotai';
 import { ArrowRight } from 'lucide-react';
-import { MeiliSearch } from 'meilisearch';
+import { Meilisearch } from 'meilisearch';
 import dynamic from 'next/dynamic';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -14,7 +14,7 @@ import { isDrawerOpenAtom } from '@/stores/drawer';
 import { cx } from '@/styles/cva';
 import { resolveKind } from '@/util/resolveNodeKind';
 
-const client = new MeiliSearch({
+const client = new Meilisearch({
 	host: 'https://search.discordjs.dev',
 	apiKey: 'f3482b8e976a8b1092394aafbfb91f391242f40b0a6f45a008a5a72b354fb07e',
 });
