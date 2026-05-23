@@ -6,6 +6,11 @@
  */
 
 /**
+ * @external ActivityLocationKind
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ActivityLocationKind}
+ */
+
+/**
  * @external ActivityType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ActivityType}
  */
@@ -338,6 +343,11 @@
 /**
  * @external AuditLogEvent
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/AuditLogEvent}
+ */
+
+/**
+ * @external BaseThemeType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/BaseThemeType}
  */
 
 /**

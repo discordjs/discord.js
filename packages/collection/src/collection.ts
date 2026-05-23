@@ -5,9 +5,22 @@
  */
 export type ReadonlyCollection<Key, Value> = Omit<
 	Collection<Key, Value>,
-	keyof Map<Key, Value> | 'ensure' | 'reverse' | 'sort' | 'sweep'
+	keyof Map<Key, Value> | 'each' | 'ensure' | 'reverse' | 'sort' | 'sweep' | 'tap'
 > &
-	ReadonlyMap<Key, Value>;
+	ReadonlyMap<Key, Value> & {
+		each(
+			fn: (value: Value, key: Key, collection: ReadonlyCollection<Key, Value>) => void,
+		): ReadonlyCollection<Key, Value>;
+		each<This>(
+			fn: (this: This, value: Value, key: Key, collection: ReadonlyCollection<Key, Value>) => void,
+			thisArg: This,
+		): ReadonlyCollection<Key, Value>;
+		tap(fn: (collection: ReadonlyCollection<Key, Value>) => void): ReadonlyCollection<Key, Value>;
+		tap<This>(
+			fn: (this: This, collection: ReadonlyCollection<Key, Value>) => void,
+			thisArg: This,
+		): ReadonlyCollection<Key, Value>;
+	};
 
 export interface Collection<Key, Value> {
 	/**

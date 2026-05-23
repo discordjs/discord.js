@@ -16,6 +16,7 @@ import type {
 	APIUserSelectComponent,
 } from 'discord-api-types/v10';
 import {
+	BaseThemeType,
 	MessageReferenceType,
 	MessageType,
 	MessageFlags,
@@ -28,6 +29,7 @@ import {
 import { describe, expect, test } from 'vitest';
 import { Attachment } from '../src/messages/Attachment.js';
 import { Message } from '../src/messages/Message.js';
+import { SharedClientTheme } from '../src/messages/SharedClientTheme.js';
 import { ContainerComponent } from '../src/messages/components/ContainerComponent.js';
 import { Embed } from '../src/messages/embeds/Embed.js';
 import { User } from '../src/users/User.js';
@@ -474,5 +476,34 @@ describe('message with components', () => {
 		expect(containerInstance.type).toBe(container.type);
 		expect(containerInstance.id).toBe(container.id);
 		expect(containerInstance.spoiler).toBe(container.spoiler);
+	});
+});
+
+describe('SharedClientTheme structure', () => {
+	const rawTheme = {
+		colors: ['5865F2', '7258F2', '9858F2'],
+		gradient_angle: 45,
+		base_mix: 58,
+		base_theme: BaseThemeType.Dark,
+	};
+
+	test('GIVEN a shared client theme THEN exposes all getters correctly', () => {
+		const instance = new SharedClientTheme(rawTheme);
+		expect(instance.colors).toStrictEqual(rawTheme.colors);
+		expect(instance.gradientAngle).toBe(rawTheme.gradient_angle);
+		expect(instance.baseMix).toBe(rawTheme.base_mix);
+		expect(instance.baseTheme).toBe(BaseThemeType.Dark);
+		expect(instance.toJSON()).toEqual(rawTheme);
+	});
+
+	test('GIVEN a shared client theme without base_theme THEN baseTheme is undefined', () => {
+		const { base_theme: _, ...withoutTheme } = rawTheme;
+		const instance = new SharedClientTheme(withoutTheme);
+		expect(instance.baseTheme).toBeUndefined();
+	});
+
+	test('GIVEN a shared client theme with null base_theme THEN baseTheme is null', () => {
+		const instance = new SharedClientTheme({ ...rawTheme, base_theme: null });
+		expect(instance.baseTheme).toBeNull();
 	});
 });
