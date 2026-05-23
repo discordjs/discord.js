@@ -35,8 +35,8 @@ export type RedisBrokerDiscordEvents = {
  * events as the receiving service expects, and also that you handle GatewaySend events.
  * - One drawback to using this directly with `@discordjs/core` is that you lose granular control over when to `ack`
  * events. This implementation `ack`s as soon as the event is emitted to listeners. In practice, this means that if your
- * service crashes while handling an event, it's pretty arbitrary wether that event gets re-processed on restart or not.
- * (Mostly dependant on if your handler is async or not, and also if the `ack` call has time to go through).
+ * service crashes while handling an event, it's pretty arbitrary whether that event gets re-processed on restart or not.
+ * (Mostly dependent on if your handler is async or not, and also if the `ack` call has time to go through).
  *
  * @example
  * ```ts
