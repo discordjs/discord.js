@@ -39,7 +39,7 @@ const channelMixinOptionPredicate = z.object({
 
 const autocompleteMixinOptionPredicate = z.object({
 	autocomplete: z.literal(true),
-	choices: z.union([z.never(), z.never().array(), z.undefined()]),
+	choices: z.array(z.any()).length(0).optional(),
 });
 
 const choiceValueStringPredicate = z.string().min(1).max(100);
