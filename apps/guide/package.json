@@ -51,7 +51,7 @@
 		"@opennextjs/cloudflare": "^1.19.11",
 		"@vercel/analytics": "^2.0.1",
 		"fumadocs-core": "^16.9.0",
-		"fumadocs-mdx": "^14.3.2",
+		"fumadocs-mdx": "^15.0.7",
 		"fumadocs-twoslash": "^3.2.0",
 		"fumadocs-ui": "^16.9.0",
 		"geist": "^1.7.1",
