@@ -1108,7 +1108,7 @@ export class ContainerComponent extends Component<APIContainerComponent> {
   public readonly components: ComponentInContainer[];
 }
 
-export { Collection, type ReadonlyCollection } from '@discordjs/collection';
+export { Collection, type ReadonlyCollection, type Comparator, type Keep } from '@discordjs/collection';
 
 export interface CollectorEventTypes<Key, Value, Extras extends unknown[] = []> {
   collect: [Value, ...Extras];
