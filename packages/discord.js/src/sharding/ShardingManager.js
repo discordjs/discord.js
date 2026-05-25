@@ -7,7 +7,7 @@ const { setTimeout: sleep } = require('node:timers/promises');
 const { Collection } = require('@discordjs/collection');
 const { range } = require('@discordjs/util');
 const { AsyncEventEmitter } = require('@vladfrangu/async_event_emitter');
-const { APIVersion, RouteBases } = require('discord-api-types/v10');
+const { APIVersion } = require('discord-api-types/v10');
 const { DiscordjsError, DiscordjsTypeError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
 const { fetchRecommendedShardCount } = require('../util/Util.js');
 const { Shard } = require('./Shard.js');
@@ -172,7 +172,7 @@ class ShardingManager extends AsyncEventEmitter {
      *
      * @type {string}
      */
-    this.api = _options.api ?? RouteBases.api;
+    this.api = _options.api ?? 'https://discord.com/api';
 
     /**
      * The API version to use
