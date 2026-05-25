@@ -9,6 +9,9 @@ import { WebSocketManager, WebSocketManagerOptions } from '@discordjs/ws';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
   ActivityFlags,
+  APIActivityInstance,
+  APIActivityLocation,
+  ActivityLocationKind,
   ActivityType,
   APIActionRowComponent,
   APIApplicationCommand,
@@ -61,6 +64,7 @@ import {
   APIMessageComponentInteraction,
   APIMessageMentionableSelectInteractionData,
   APIMessageRoleSelectInteractionData,
+  APIMessageSharedClientTheme,
   APIMessageStringSelectInteractionData,
   APIMessageTopLevelComponent,
   APIMessageUserSelectInteractionData,
@@ -115,6 +119,7 @@ import {
   AutoModerationRuleEventType,
   AutoModerationRuleKeywordPresetType,
   AutoModerationRuleTriggerType,
+  BaseThemeType,
   ButtonStyle,
   ChannelFlags,
   ChannelType,
@@ -244,6 +249,25 @@ export class Activity {
   public url: string | null;
   public equals(activity: Activity): boolean;
   public toString(): string;
+}
+
+export class ActivityInstance extends Base {
+  private constructor(client: Client<true>, data: APIActivityInstance);
+  public applicationId: Snowflake;
+  public instanceId: string;
+  public launchId: Snowflake;
+  public location: ActivityLocation;
+  public users: Snowflake[];
+}
+
+export class ActivityLocation extends Base {
+  private constructor(client: Client<true>, data: APIActivityLocation);
+  public id: string;
+  public kind: ActivityLocationKind;
+  public channelId: Snowflake;
+  public guildId: Snowflake | null;
+  public get channel(): Channel | null;
+  public get guild(): Guild | null;
 }
 
 export type ActivityFlagsString = keyof typeof ActivityFlags;
@@ -1004,6 +1028,7 @@ export class ClientApplication extends Application {
   public roleConnectionsVerificationURL: string | null;
   public edit(options: ClientApplicationEditOptions): Promise<ClientApplication>;
   public fetch(): Promise<ClientApplication>;
+  public fetchActivityInstance(instanceId: string): Promise<ActivityInstance>;
   public fetchRoleConnectionMetadataRecords(): Promise<ApplicationRoleConnectionMetadata[]>;
   public fetchSKUs(): Promise<Collection<Snowflake, SKU>>;
   public editRoleConnectionMetadataRecords(
@@ -1083,7 +1108,7 @@ export class ContainerComponent extends Component<APIContainerComponent> {
   public readonly components: ComponentInContainer[];
 }
 
-export { Collection, type ReadonlyCollection } from '@discordjs/collection';
+export { Collection, type ReadonlyCollection, type Comparator, type Keep } from '@discordjs/collection';
 
 export interface CollectorEventTypes<Key, Value, Extras extends unknown[] = []> {
   collect: [Value, ...Extras];
@@ -1292,7 +1317,8 @@ export interface DMChannel
 export class DMChannel extends BaseChannel {
   private constructor(client: Client<true>, data?: RawDMChannelData);
   public flags: Readonly<ChannelFlagsBitField>;
-  public recipientId: Snowflake;
+  public get recipientId(): Snowflake | null;
+  public recipientIds: Snowflake[];
   public get recipient(): User | null;
   public type: ChannelType.DM;
   public fetch(force?: boolean): Promise<this>;
@@ -2128,6 +2154,13 @@ export interface MessageCall {
   participants: readonly Snowflake[];
 }
 
+export interface SharedClientTheme {
+  baseMix: number;
+  baseTheme?: BaseThemeType | null;
+  colors: readonly string[];
+  gradientAngle: number;
+}
+
 export type MessageComponentType =
   | ComponentType.Button
   | ComponentType.ChannelSelect
@@ -2223,6 +2256,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public tts: boolean;
   public poll: Poll | null;
   public call: MessageCall | null;
+  public sharedClientTheme: SharedClientTheme | null;
   public type: MessageType;
   public get url(): string;
   public webhookId: Snowflake | null;
@@ -3272,6 +3306,8 @@ export class ShardingManager extends AsyncEventEmitter<ShardingManagerEventTypes
   public token: string | null;
   public totalShards: number | 'auto';
   public shardList: number[] | 'auto';
+  public api: string;
+  public version: string;
   public broadcast(message: unknown): Promise<Shard[]>;
   public broadcastEval<Result>(fn: (client: Client) => Awaitable<Result>): Promise<Serialized<Result>[]>;
   public broadcastEval<Result, Context>(
@@ -3294,8 +3330,10 @@ export class ShardingManager extends AsyncEventEmitter<ShardingManagerEventTypes
 }
 
 export interface FetchRecommendedShardCountOptions {
+  api?: string;
   guildsPerShard?: number;
   multipleOf?: number;
+  version?: string;
 }
 
 export {
@@ -6797,6 +6835,7 @@ export interface BaseMessageCreateOptions
   extends BaseMessageSendOptions, MessageOptionsPoll, MessageOptionsFlags, MessageOptionsTTS, MessageOptionsStickers {
   enforceNonce?: boolean;
   nonce?: number | string;
+  sharedClientTheme?: JSONEncodable<APIMessageSharedClientTheme> | SharedClientTheme;
 }
 
 export interface MessageCreateOptions extends BaseMessageCreateOptions {
@@ -7157,6 +7196,7 @@ export interface SetRolePositionOptions {
 export type ShardingManagerMode = 'process' | 'worker';
 
 export interface ShardingManagerOptions {
+  api?: string;
   execArgv?: readonly string[];
   mode?: ShardingManagerMode;
   respawn?: boolean;
@@ -7165,6 +7205,7 @@ export interface ShardingManagerOptions {
   silent?: boolean;
   token?: string;
   totalShards?: number | 'auto';
+  version?: string;
 }
 
 export interface ShowModalOptions {
