@@ -1,6 +1,6 @@
 import process from 'node:process';
 import { Collection } from '@discordjs/collection';
-import { lazy } from '@discordjs/util';
+import { lazy, shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
 import { APIVersion, GatewayOpcodes } from 'discord-api-types/v10';
 import { SimpleShardingStrategy } from '../strategies/sharding/SimpleShardingStrategy.js';
 import { SimpleIdentifyThrottler } from '../throttling/SimpleIdentifyThrottler.js';
@@ -55,7 +55,9 @@ export const DefaultWebSocketManagerOptions = {
 	encoding: Encoding.JSON,
 	compression: null,
 	useIdentifyCompression: false,
-	useNativeWebSocket: false,
+	get useNativeWebSocket() {
+		return shouldUseGlobalFetchAndWebSocket();
+	},
 	retrieveSessionInfo(shardId) {
 		const store = getDefaultSessionStore();
 		return store.get(shardId) ?? null;
@@ -71,7 +73,7 @@ export const DefaultWebSocketManagerOptions = {
 	handshakeTimeout: 30_000,
 	helloTimeout: 60_000,
 	readyTimeout: 15_000,
-} as const satisfies Omit<OptionalWebSocketManagerOptions, 'fetchGatewayInformation' | 'token'>;
+} satisfies Omit<OptionalWebSocketManagerOptions, 'fetchGatewayInformation' | 'token'>;
 
 export const ImportantGatewayOpcodes = new Set([
 	GatewayOpcodes.Heartbeat,
