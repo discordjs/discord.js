@@ -117,7 +117,7 @@ export class Guild<Omitted extends keyof APIGuild | '' = ''> extends Structure<A
 	}
 
 	/**
-	 * Get the URL to the guild discovery splash.z`
+	 * Get the URL to the guild discovery splash.
 	 *
 	 * @param format - the file format to use
 	 */
