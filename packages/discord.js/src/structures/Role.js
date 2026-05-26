@@ -258,7 +258,6 @@ class Role extends Base {
    * @property {string} [name] The name of the role
    * @property {ColorResolvable} [color] The color of the role, either a hex string or a base 10 number
    * <warn>This property is deprecated. Use `colors` instead.</warn>
-   * @property {RoleColorsResolvable} [colors] The colors of the role
    * @property {boolean} [hoist] Whether or not the role should be hoisted
    * @property {number} [position] The position of the role
    * @property {PermissionResolvable} [permissions] The permissions of the role

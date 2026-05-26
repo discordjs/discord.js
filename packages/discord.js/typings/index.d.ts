@@ -3272,10 +3272,16 @@ export interface RoleColors {
   tertiaryColor: number | null;
 }
 
-export interface RoleColorsResolvable {
+export interface RoleColorsResolvable extends RoleColorsEditResolvable {
   primaryColor: ColorResolvable;
   secondaryColor?: ColorResolvable;
   tertiaryColor?: ColorResolvable;
+}
+
+export interface RoleColorsEditResolvable {
+  primaryColor: ColorResolvable;
+  secondaryColor?: ColorResolvable | null;
+  tertiaryColor?: ColorResolvable | null;
 }
 
 export class Role extends Base {
@@ -6425,10 +6431,12 @@ export interface GuildScheduledEventInviteURLCreateOptions extends InviteCreateO
 }
 
 export interface RoleCreateOptions extends RoleData {
+  colors?: RoleColorsResolvable;
   reason?: string;
 }
 
 export interface RoleEditOptions extends RoleData {
+  colors?: RoleColorsEditResolvable;
   reason?: string;
 }
 
@@ -7736,9 +7744,8 @@ export interface ResolvedOverwriteOptions {
 
 export interface RoleData {
   name?: string;
-  /** @deprecated Use {@link RoleData.colors} instead. */
+  /** @deprecated Use `colors` instead. */
   color?: ColorResolvable;
-  colors?: RoleColorsResolvable;
   hoist?: boolean;
   position?: number;
   permissions?: PermissionResolvable;
