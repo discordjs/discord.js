@@ -277,7 +277,6 @@ class Role extends Base {
    *
    * @typedef {Object} RoleData
    * @property {string} [name] The name of the role
-   * @property {RoleColorsResolvable} [colors] The colors of the role
    * @property {boolean} [hoist] Whether or not the role should be hoisted
    * @property {number} [position] The position of the role
    * @property {PermissionResolvable} [permissions] The permissions of the role
