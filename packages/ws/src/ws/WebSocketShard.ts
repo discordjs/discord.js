@@ -382,7 +382,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			// Prevent a reconnection loop by unbinding the main close event
 			this.connection.onclose = null;
 
-			const shouldClose = this.connection.readyState === 1;
+			const shouldClose = this.connection.readyState === WebSocket.OPEN;
 
 			this.debug([
 				'Connection status during destroy',
