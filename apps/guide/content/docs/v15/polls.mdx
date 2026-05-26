@@ -1,0 +1,132 @@
+---
+title: Polls
+---
+
+Polls let you collect feedback or opinions from members directly within a message.
+
+## Sending a poll
+
+Polls are sent as part of a message using the `poll` option. Each poll requires a question and at least one answer.
+
+```js
+const { PollLayoutType } = require('discord.js');
+
+const message = await channel.send({
+	content: 'Cast your vote!',
+	poll: {
+		question: { text: 'What is your favorite color?' },
+		answers: [
+			{ text: 'Red', emoji: { name: '🔴' } },
+			{ text: 'Blue', emoji: { name: '🔵' } },
+			{ text: 'Green', emoji: { name: '🟢' } },
+		],
+		layoutType: PollLayoutType.Default,
+	},
+});
+```
+
+## Multi-select polls
+
+Allow members to select multiple answers by setting `allowMultiselect` to `true`:
+
+```js
+const message = await channel.send({
+	poll: {
+		question: { text: 'Which languages do you know?' },
+		answers: [
+			{ text: 'JavaScript' },
+			{ text: 'Python' },
+			{ text: 'Rust' },
+			{ text: 'Go' },
+		],
+		allowMultiselect: true,
+		layoutType: PollLayoutType.Default,
+	},
+});
+```
+
+## Duration
+
+You can control how long a poll runs. If not specified, the default is 24 hours. The maximum duration is 7 days (168 hours).
+
+```js
+// Poll expires in 1 hour
+const message = await channel.send({
+	poll: {
+		question: { text: 'Quick poll!' },
+		answers: [{ text: 'Yes' }, { text: 'No' }],
+		duration: 1,
+	},
+});
+
+// Poll expires in 3 days
+const message = await channel.send({
+	poll: {
+		question: { text: 'Weekend plans?' },
+		answers: [{ text: 'Stay in' }, { text: 'Go out' }],
+		duration: 72,
+	},
+});
+```
+
+## Accessing poll data
+
+Once a poll is sent, you can access its data from the message:
+
+```js
+const poll = message.poll;
+
+console.log(`Question: ${poll.question.text}`);
+console.log(`Multi-select: ${poll.allowMultiselect}`);
+console.log(`Expires: ${poll.expiresAt}`);
+
+for (const [id, answer] of poll.answers) {
+	console.log(`Answer ${id}: ${answer.text} — ${answer.voteCount} votes`);
+}
+```
+
+## Ending a poll early
+
+You can end a poll before its natural expiry:
+
+```js
+await message.poll.end();
+```
+
+## Poll events
+
+Listen for vote events using the client:
+
+```js
+client.on('messagePollVoteAdd', (pollAnswer, userId) => {
+	console.log(`User ${userId} voted for ${pollAnswer.text}`);
+});
+
+client.on('messagePollVoteRemove', (pollAnswer, userId) => {
+	console.log(`User ${userId} removed their vote for ${pollAnswer.text}`);
+});
+```
+
+## Polls in other message types
+
+Polls can also be sent in interaction replies and webhook messages:
+
+```js
+// In an interaction reply
+await interaction.reply({
+	content: 'Vote now!',
+	poll: {
+		question: { text: 'Option A or B?' },
+		answers: [{ text: 'A' }, { text: 'B' }],
+	},
+});
+
+// In a webhook message
+await webhook.send({
+	content: 'Cast your vote!',
+	poll: {
+		question: { text: 'Choose wisely' },
+		answers: [{ text: 'Option 1' }, { text: 'Option 2' }],
+	},
+});
+```

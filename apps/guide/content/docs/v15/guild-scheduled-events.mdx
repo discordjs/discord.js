@@ -1,0 +1,157 @@
+---
+title: Guild Scheduled Events
+---
+
+Scheduled events allow you to create, manage, and list events in a guild.
+
+## Creating a scheduled event
+
+You can create scheduled events using `GuildScheduledEventManager#create()`. There are three entity types you can use:
+
+- `GuildScheduledEventEntityType.StageInstance` — for stage channel events
+- `GuildScheduledEventEntityType.Voice` — for voice channel events
+- `GuildScheduledEventEntityType.External` — for external events (requires a location)
+
+```js
+const { GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel } = require('discord.js');
+
+// Create a voice channel event
+const voiceEvent = await guild.scheduledEvents.create({
+	name: 'Game Night',
+	scheduledStartTime: new Date('2026-06-01T20:00:00Z'),
+	scheduledEndTime: new Date('2026-06-01T23:00:00Z'),
+	privacyLevel: GuildScheduledEventPrivacyLevel.GuildOnly,
+	entityType: GuildScheduledEventEntityType.Voice,
+	channel: '123456789012345678',
+	description: 'Come hang out and play games!',
+});
+
+// Create an external event
+const externalEvent = await guild.scheduledEvents.create({
+	name: 'Community Meetup',
+	scheduledStartTime: new Date('2026-06-15T14:00:00Z'),
+	scheduledEndTime: new Date('2026-06-15T17:00:00Z'),
+	privacyLevel: GuildScheduledEventPrivacyLevel.GuildOnly,
+	entityType: GuildScheduledEventEntityType.External,
+	entityMetadata: { location: 'Central Park, NYC' },
+	description: 'Annual community meetup!',
+});
+```
+
+### Recurring events
+
+You can also create recurring events using the `recurrenceRule` option:
+
+```js
+const recurringEvent = await guild.scheduledEvents.create({
+	name: 'Weekly Standup',
+	scheduledStartTime: new Date('2026-06-01T09:00:00Z'),
+	scheduledEndTime: new Date('2026-06-01T10:00:00Z'),
+	privacyLevel: GuildScheduledEventPrivacyLevel.GuildOnly,
+	entityType: GuildScheduledEventEntityType.Voice,
+	channel: '123456789012345678',
+	recurrenceRule: {
+		startAt: new Date('2026-06-01T09:00:00Z'),
+		frequency: GuildScheduledEventRecurrenceRuleFrequency.Weekly,
+		interval: 1,
+		byWeekday: [GuildScheduledEventRecurrenceRuleWeekday.Monday],
+		count: 10,
+	},
+});
+```
+
+## Fetching scheduled events
+
+Retrieve one or all scheduled events for a guild:
+
+```js
+// Fetch a single event
+const event = await guild.scheduledEvents.fetch('123456789012345678');
+
+// Fetch all events
+const allEvents = await guild.scheduledEvents.fetch();
+
+// Fetch with user count
+const eventsWithCounts = await guild.scheduledEvents.fetch({ withUserCount: true });
+```
+
+## Editing a scheduled event
+
+Modify an existing event's properties using `GuildScheduledEventManager#edit()`:
+
+```js
+const updatedEvent = await guild.scheduledEvents.edit('123456789012345678', {
+	name: 'Updated Event Name',
+	description: 'New description for the event',
+	scheduledStartTime: new Date('2026-07-01T18:00:00Z'),
+});
+```
+
+You can also use the helper methods on the `GuildScheduledEvent` instance directly:
+
+```js
+await event.setName('New Name');
+await event.setDescription('New Description');
+await event.setScheduledStartTime('2026-07-01T18:00:00Z');
+await event.setScheduledEndTime('2026-07-01T21:00:00Z');
+await event.setLocation('New Location');
+await event.setStatus(GuildScheduledEventStatus.Active);
+```
+
+## Deleting a scheduled event
+
+```js
+await guild.scheduledEvents.delete('123456789012345678');
+
+// Or on the event instance
+await event.delete();
+```
+
+## Event subscribers
+
+Fetch the list of users subscribed to an event:
+
+```js
+const subscribers = await event.fetchSubscribers({ limit: 100 });
+for (const [userId, subscriber] of subscribers) {
+	console.log(`${subscriber.user.tag} is attending`);
+}
+```
+
+## Cover images
+
+You can set or update the cover image of a scheduled event:
+
+```js
+const eventWithImage = await guild.scheduledEvents.create({
+	name: 'Big Event',
+	scheduledStartTime: new Date('2026-08-01T12:00:00Z'),
+	privacyLevel: GuildScheduledEventPrivacyLevel.GuildOnly,
+	entityType: GuildScheduledEventEntityType.External,
+	entityMetadata: { location: 'Online' },
+	image: './path/to/banner.png',
+});
+```
+
+## Listening to events
+
+The client emits events when users subscribe or unsubscribe from scheduled events:
+
+```js
+client.on('guildScheduledEventUserAdd', (event, user) => {
+	console.log(`${user.tag} subscribed to ${event.name}`);
+});
+
+client.on('guildScheduledEventUserRemove', (event, user) => {
+	console.log(`${user.tag} unsubscribed from ${event.name}`);
+});
+```
+
+## Invite URLs
+
+Generate an invite URL for a scheduled event:
+
+```js
+const inviteURL = await event.createInviteURL();
+console.log(`Share this: ${inviteURL}`);
+```
