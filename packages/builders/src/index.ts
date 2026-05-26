@@ -90,6 +90,7 @@ export * from './messages/Message.js';
 export * from './messages/MessageReference.js';
 export * from './messages/SharedClientTheme.js';
 
+export * from './util/colors.js';
 export * from './util/normalizeArray.js';
 export * from './util/resolveBuilder.js';
 export { disableValidators, enableValidators, isValidationEnabled } from './util/validation.js';

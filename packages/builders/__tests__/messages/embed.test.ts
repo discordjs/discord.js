@@ -148,13 +148,23 @@ describe('Embed', () => {
 		test('GIVEN an embed with an invalid color THEN throws error', () => {
 			const embed = new EmbedBuilder();
 
-			// @ts-expect-error: Invalid color
 			embed.setColor('RED');
 			expect(() => embed.toJSON()).toThrowError();
 
-			// @ts-expect-error: Invalid color
+			// @ts-expect-error: Too few elements for RGB tuple
 			embed.setColor([42, 36]);
 			expect(() => embed.toJSON()).toThrowError();
+		});
+
+		test('GIVEN ColorResolvable inputs with setColor THEN they are resolved correctly', () => {
+			expect(new EmbedBuilder().setColor(0x00ff00).toJSON().color).toBe(0x00ff00);
+			expect(new EmbedBuilder().setColor('#00ff00').toJSON().color).toBe(0x00ff00);
+			expect(new EmbedBuilder().setColor('00ff00').toJSON().color).toBe(0x00ff00);
+			expect(new EmbedBuilder().setColor([0, 255, 0] as const).toJSON().color).toBe(0x00ff00);
+			expect(new EmbedBuilder().setColor('Default').toJSON().color).toBe(0);
+			const random = new EmbedBuilder().setColor('Random').toJSON().color;
+			expect(random).toBeGreaterThanOrEqual(0);
+			expect(random).toBeLessThanOrEqual(0xffffff);
 		});
 	});
 

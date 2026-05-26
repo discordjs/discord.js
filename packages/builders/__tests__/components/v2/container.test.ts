@@ -174,6 +174,27 @@ describe('Container Components', () => {
 			);
 		});
 
+		test('GIVEN ColorResolvable inputs THEN they are resolved correctly', () => {
+			const base = () => new ContainerBuilder().addSeparatorComponents(new SeparatorBuilder().setId(1).setSpacing(SeparatorSpacingSize.Small));
+
+			expect(base().setAccentColor(0x00ff00).toJSON().accent_color).toBe(0x00ff00);
+			expect(base().setAccentColor('#00ff00').toJSON().accent_color).toBe(0x00ff00);
+			expect(base().setAccentColor('00ff00').toJSON().accent_color).toBe(0x00ff00);
+			expect(base().setAccentColor([0, 255, 0] as const).toJSON().accent_color).toBe(0x00ff00);
+
+			const random = base().setAccentColor('Random').toJSON().accent_color;
+			expect(random).toBeGreaterThanOrEqual(0);
+			expect(random).toBeLessThanOrEqual(0xffffff);
+
+			expect(base().setAccentColor('Default').toJSON().accent_color).toBe(0);
+		});
+
+		test('GIVEN invalid color resolvable THEN throws', () => {
+			expect(() => new ContainerBuilder().addSeparatorComponents(new SeparatorBuilder()).setAccentColor('not-a-color' as any).toJSON()).toThrowError();
+			expect(() => new ContainerBuilder().addSeparatorComponents(new SeparatorBuilder()).setAccentColor(-1 as any).toJSON()).toThrowError();
+			expect(() => new ContainerBuilder().addSeparatorComponents(new SeparatorBuilder()).setAccentColor(0x1000000).toJSON()).toThrowError();
+		});
+
 		test('GIVEN valid method parameters THEN valid JSON is given', () => {
 			expect(
 				new ContainerBuilder()

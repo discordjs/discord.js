@@ -12,6 +12,7 @@ import {
 } from 'discord-api-types/v10';
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray';
 import { resolveBuilder } from '../../util/resolveBuilder';
+import { type ColorResolvable, resolveColor } from '../../util/colors';
 import { validate } from '../../util/validation';
 import { ActionRowBuilder } from '../ActionRow.js';
 import { ComponentBuilder } from '../Component.js';
@@ -73,8 +74,8 @@ export class ContainerBuilder extends ComponentBuilder<APIContainerComponent> {
 	 *
 	 * @param color - The color to use
 	 */
-	public setAccentColor(color: number) {
-		this.data.accent_color = color;
+	public setAccentColor(color: ColorResolvable) {
+		this.data.accent_color = resolveColor(color);
 		return this;
 	}
 

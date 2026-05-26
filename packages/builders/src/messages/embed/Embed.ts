@@ -3,6 +3,7 @@ import type { APIEmbed, APIEmbedAuthor, APIEmbedField, APIEmbedFooter } from 'di
 import type { RestOrArray } from '../../util/normalizeArray.js';
 import { normalizeArray } from '../../util/normalizeArray.js';
 import { resolveBuilder } from '../../util/resolveBuilder.js';
+import { type ColorResolvable, resolveColor } from '../../util/colors';
 import { validate } from '../../util/validation.js';
 import { embedPredicate } from './Assertions.js';
 import { EmbedAuthorBuilder } from './EmbedAuthor.js';
@@ -176,8 +177,8 @@ export class EmbedBuilder implements JSONEncodable<APIEmbed> {
 	 *
 	 * @param color - The color to use
 	 */
-	public setColor(color: number): this {
-		this.data.color = color;
+	public setColor(color: ColorResolvable): this {
+		this.data.color = resolveColor(color);
 		return this;
 	}
 
