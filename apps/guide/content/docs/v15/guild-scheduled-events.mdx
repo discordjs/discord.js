@@ -55,7 +55,6 @@ const recurringEvent = await guild.scheduledEvents.create({
 		frequency: GuildScheduledEventRecurrenceRuleFrequency.Weekly,
 		interval: 1,
 		byWeekday: [GuildScheduledEventRecurrenceRuleWeekday.Monday],
-		count: 10,
 	},
 });
 ```
@@ -123,13 +122,15 @@ for (const [userId, subscriber] of subscribers) {
 You can set or update the cover image of a scheduled event:
 
 ```js
+const fs = require('fs');
+
 const eventWithImage = await guild.scheduledEvents.create({
 	name: 'Big Event',
 	scheduledStartTime: new Date('2026-08-01T12:00:00Z'),
 	privacyLevel: GuildScheduledEventPrivacyLevel.GuildOnly,
 	entityType: GuildScheduledEventEntityType.External,
 	entityMetadata: { location: 'Online' },
-	image: './path/to/banner.png',
+	image: fs.readFileSync('./path/to/banner.png'),
 });
 ```
 

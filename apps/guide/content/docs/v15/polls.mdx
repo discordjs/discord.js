@@ -20,6 +20,8 @@ const message = await channel.send({
 			{ text: 'Blue', emoji: { name: '🔵' } },
 			{ text: 'Green', emoji: { name: '🟢' } },
 		],
+		duration: 24,
+		allowMultiselect: false,
 		layoutType: PollLayoutType.Default,
 	},
 });
@@ -39,6 +41,7 @@ const message = await channel.send({
 			{ text: 'Rust' },
 			{ text: 'Go' },
 		],
+		duration: 24,
 		allowMultiselect: true,
 		layoutType: PollLayoutType.Default,
 	},
@@ -47,7 +50,7 @@ const message = await channel.send({
 
 ## Duration
 
-You can control how long a poll runs. If not specified, the default is 24 hours. The maximum duration is 7 days (168 hours).
+You can control how long a poll runs. If not specified, the default is 24 hours. The maximum duration is 32 days (768 hours).
 
 ```js
 // Poll expires in 1 hour
@@ -118,6 +121,8 @@ await interaction.reply({
 	poll: {
 		question: { text: 'Option A or B?' },
 		answers: [{ text: 'A' }, { text: 'B' }],
+		duration: 24,
+		allowMultiselect: false,
 	},
 });
 
@@ -127,6 +132,8 @@ await webhook.send({
 	poll: {
 		question: { text: 'Choose wisely' },
 		answers: [{ text: 'Option 1' }, { text: 'Option 2' }],
+		duration: 24,
+		allowMultiselect: false,
 	},
 });
 ```
