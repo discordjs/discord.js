@@ -89,7 +89,7 @@ function getWebSocketConstructor(useNative: boolean): typeof WebSocket {
 		if (typeof globalThis.WebSocket === 'undefined') {
 			throw new Error(
 				'useNativeWebSocket is set to true, but the native WebSocket is not available in this environment. ' +
-					'Use Node.js 22.12.0 or later, or set the --experimental-websocket flag on Node.js 21.',
+					'Use Node.js 22.12.0 or later, or set the "--experimental-websocket" flag on previous Node.js versions.',
 			);
 		}
 

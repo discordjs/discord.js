@@ -197,7 +197,7 @@ export interface OptionalWebSocketManagerOptions {
 	/**
 	 * Whether to use the native Node.js WebSocket (`globalThis.WebSocket`) instead of the `ws` package
 	 *
-	 * @defaultValue `false`
+	 * Auto-detected using `shouldUseGlobalFetchAndWebSocket()`
 	 */
 	useNativeWebSocket: boolean;
 	/**
