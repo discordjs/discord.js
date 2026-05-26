@@ -7,6 +7,7 @@ import { VoiceOpcodes } from 'discord-api-types/voice/v8';
 import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection';
 import { NetworkingStatusCode, type ConnectionData } from '../networking/Networking';
 import { methods } from '../util/Secretbox';
+import { RTP_OPUS_PAYLOAD_TYPE } from '../util/constants';
 import {
 	AudioReceiveStream,
 	createDefaultAudioReceiveStreamOptions,
@@ -137,6 +138,15 @@ export class VoiceReceiver {
 		let packet: Buffer = this.decrypt(buffer, mode, nonce, secretKey);
 		if (!packet) throw new Error('Failed to parse packet');
 
+		// Strip padding (RFC3550 5.1)
+		const hasPadding = buffer[0] && Boolean(buffer[0] & 0b100000);
+		if (hasPadding) {
+			const paddingAmount = packet[packet.length - 1]!;
+			if (paddingAmount < packet.length) {
+				packet = packet.subarray(0, packet.length - paddingAmount);
+			}
+		}
+
 		// Strip decrypted RTP Header Extension if present
 		// The header is only indicated in the original data, so compare with buffer first
 		if (buffer.subarray(12, 14).compare(HEADER_EXTENSION_BYTE) === 0) {
@@ -176,6 +186,13 @@ export class VoiceReceiver {
 		if (!stream) return;
 
 		if (this.connectionData.encryptionMode && this.connectionData.nonceBuffer && this.connectionData.secretKey) {
+			// As a guard, we shouldn't parse packets that (1) aren't voice packets and (2) are not in the right RTP version
+			if ((msg[1]! & 0x7f) !== RTP_OPUS_PAYLOAD_TYPE) return;
+
+			// Ignore packets not in RTP version 2
+			const rtpVersion = msg[0]! >> 6;
+			if (rtpVersion !== 2) return;
+
 			try {
 				const packet = this.parsePacket(
 					msg,

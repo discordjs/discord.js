@@ -3,6 +3,7 @@
 import type { RequestData, REST } from '@discordjs/rest';
 import {
 	Routes,
+	type RESTGetAPIApplicationActivityInstanceResult,
 	type RESTGetAPIApplicationEmojiResult,
 	type RESTGetAPIApplicationEmojisResult,
 	type RESTGetCurrentApplicationResult,
@@ -135,5 +136,24 @@ export class ApplicationsAPI {
 		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
 		await this.rest.delete(Routes.applicationEmoji(applicationId, emojiId), { auth, signal });
+	}
+
+	/**
+	 * Fetches an activity instance of an application
+	 *
+	 * @see {@link https://docs.discord.com/developers/resources/application#get-application-activity-instance}
+	 * @param applicationId - The id of the application to fetch the activity instance of
+	 * @param instanceId - The id of the activity instance to fetch
+	 * @param options - The options for fetching the activity instance
+	 */
+	public async getActivityInstance(
+		applicationId: Snowflake,
+		instanceId: string,
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+	) {
+		return this.rest.get(Routes.applicationActivityInstance(applicationId, instanceId), {
+			auth,
+			signal,
+		}) as Promise<RESTGetAPIApplicationActivityInstanceResult>;
 	}
 }

@@ -10,6 +10,7 @@ pnpm-lock.yaml @discordjs/core
 
 /apps/guide/ @discordjs/website @discordjs/guide
 /apps/guide/content/ @discordjs/guide
+/apps/proxy-container/ @discordjs/proxy
 /apps/website/ @discordjs/website
 
 /packages/actions/ @discordjs/actions
@@ -26,7 +27,6 @@ pnpm-lock.yaml @discordjs/core
 /packages/formatters/ @discordjs/formatters
 /packages/next/ @discordjs/core
 /packages/proxy/ @discordjs/proxy
-/packages/proxy-container/ @discordjs/proxy
 /packages/rest/ @discordjs/rest
 /packages/scripts/ @discordjs/scripts
 /packages/structures/ @discordjs/structures

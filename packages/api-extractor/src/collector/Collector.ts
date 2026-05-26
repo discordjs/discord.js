@@ -493,7 +493,7 @@ export class Collector {
 	private _createCollectorEntity(
 		astEntity: AstEntity,
 		entryPoint: IWorkingPackageEntryPoint,
-		exportName?: string | undefined,
+		exportName?: string,
 		parent?: CollectorEntity,
 	): void {
 		let entity: CollectorEntity | undefined = this._entitiesByAstEntity.get(astEntity);

@@ -3,23 +3,21 @@ packages:
   - packages/*
   - packages/create-discord-bot/template/**/*
 
+allowBuilds:
+  '@discordjs/opus': true
+  '@tailwindcss/oxide': true
+  bufferutil: true
+  core-js-pure: false
+  esbuild: true
+  protobufjs: true
+  rclone.js: true
+  sharp: true
+  unrs-resolver: false
+  utf-8-validate: true
+  workerd: true
+  zlib-sync: true
+
 autoInstallPeers: false
-
-ignoredBuiltDependencies:
-  - core-js-pure
-  - unrs-resolver
-
-onlyBuiltDependencies:
-  - '@discordjs/opus'
-  - '@tailwindcss/oxide'
-  - bufferutil
-  - esbuild
-  - protobufjs
-  - rclone.js
-  - sharp
-  - utf-8-validate
-  - workerd
-  - zlib-sync
 
 patchedDependencies:
   '@microsoft/tsdoc-config@0.17.1': patches/@microsoft__tsdoc-config@0.17.1.patch

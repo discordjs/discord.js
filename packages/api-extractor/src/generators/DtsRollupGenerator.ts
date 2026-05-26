@@ -294,7 +294,7 @@ export class DtsRollupGenerator {
 					replacedModifiers = 'export ' + replacedModifiers;
 				}
 
-				if (previousSpan && previousSpan.kind === ts.SyntaxKind.SyntaxList) {
+				if (previousSpan?.kind === ts.SyntaxKind.SyntaxList) {
 					// If there is a previous span of type SyntaxList, then apply it before any other modifiers
 					// (e.g. "abstract") that appear there.
 					previousSpan.modification.prefix = replacedModifiers + previousSpan.modification.prefix;
@@ -426,11 +426,9 @@ export class DtsRollupGenerator {
 							modification.suffix = nodeToTrim.children[nodeToTrim.children.length - 1]!.separator;
 						}
 
-						if (
-							nodeToTrim.nextSibling && // If the thing we are trimming is followed by a comma, then trim the comma also.
-							// An example would be an enum member.
-							nodeToTrim.nextSibling.kind === ts.SyntaxKind.CommaToken
-						) {
+						// If the thing we are trimming is followed by a comma, then trim the comma also.
+						// An example would be an enum member.
+						if (nodeToTrim.nextSibling?.kind === ts.SyntaxKind.CommaToken) {
 							// Keep its separator since it often has useful whitespace
 							modification.suffix += nodeToTrim.nextSibling.separator;
 							nodeToTrim.nextSibling.modification.skipAll();
