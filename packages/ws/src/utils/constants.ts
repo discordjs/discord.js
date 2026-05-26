@@ -55,6 +55,7 @@ export const DefaultWebSocketManagerOptions = {
 	encoding: Encoding.JSON,
 	compression: null,
 	useIdentifyCompression: false,
+	useNativeWebSocket: false,
 	retrieveSessionInfo(shardId) {
 		const store = getDefaultSessionStore();
 		return store.get(shardId) ?? null;

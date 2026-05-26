@@ -3,7 +3,7 @@ import { once } from 'node:events';
 import { setTimeout as sleep } from 'node:timers/promises';
 import type * as nativeZlib from 'node:zlib';
 import { Collection } from '@discordjs/collection';
-import { lazy, shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
+import { lazy } from '@discordjs/util';
 import { AsyncQueue } from '@sapphire/async-queue';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
@@ -84,9 +84,20 @@ export interface SendRateLimitState {
 	sent: number;
 }
 
-const WebSocketConstructor: typeof WebSocket = shouldUseGlobalFetchAndWebSocket()
-	? (globalThis as any).WebSocket
-	: WebSocket;
+function getWebSocketConstructor(useNative: boolean): typeof WebSocket {
+	if (useNative) {
+		if (typeof globalThis.WebSocket === 'undefined') {
+			throw new Error(
+				'useNativeWebSocket is set to true, but the native WebSocket is not available in this environment. ' +
+					'Use Node.js 22.12.0 or later, or set the --experimental-websocket flag on Node.js 21.',
+			);
+		}
+
+		return globalThis.WebSocket as unknown as typeof WebSocket;
+	}
+
+	return WebSocket;
+}
 
 export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 	private connection: WebSocket | null = null;
@@ -282,6 +293,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 
 		this.debug([`Connecting to ${url}`]);
 
+		const WebSocketConstructor = getWebSocketConstructor(this.strategy.options.useNativeWebSocket);
 		const connection = new WebSocketConstructor(url, [], {
 			handshakeTimeout: this.strategy.options.handshakeTimeout ?? undefined,
 		});
@@ -370,7 +382,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 			// Prevent a reconnection loop by unbinding the main close event
 			this.connection.onclose = null;
 
-			const shouldClose = this.connection.readyState === WebSocket.OPEN;
+			const shouldClose = this.connection.readyState === 1;
 
 			this.debug([
 				'Connection status during destroy',

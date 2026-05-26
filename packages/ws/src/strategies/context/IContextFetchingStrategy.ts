@@ -15,6 +15,7 @@ export interface FetchingStrategyOptions extends Pick<
 	| 'readyTimeout'
 	| 'token'
 	| 'useIdentifyCompression'
+	| 'useNativeWebSocket'
 	| 'version'
 > {
 	readonly gatewayInformation: APIGatewayBotInfo;
@@ -49,6 +50,7 @@ export async function managerToFetchingStrategyOptions(manager: WebSocketManager
 		readyTimeout: manager.options.readyTimeout,
 		token: manager.token,
 		useIdentifyCompression: manager.options.useIdentifyCompression,
+		useNativeWebSocket: manager.options.useNativeWebSocket,
 		version: manager.options.version,
 
 		gatewayInformation: await manager.fetchGatewayInformation(),

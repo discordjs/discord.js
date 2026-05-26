@@ -195,6 +195,12 @@ export interface OptionalWebSocketManagerOptions {
 	 */
 	useIdentifyCompression: boolean;
 	/**
+	 * Whether to use the native Node.js WebSocket (`globalThis.WebSocket`) instead of the `ws` package
+	 *
+	 * @defaultValue `false`
+	 */
+	useNativeWebSocket: boolean;
+	/**
 	 * The gateway version to use
 	 *
 	 * @defaultValue `'10'`
