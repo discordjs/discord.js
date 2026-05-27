@@ -195,20 +195,6 @@ export interface OptionalWebSocketManagerOptions {
 	 */
 	useIdentifyCompression: boolean;
 	/**
-	 * Custom WebSocket factory function. If provided, this is used to create the WebSocket connection
-	 * instead of the default logic.
-	 *
-	 * When set, `useNativeWebSocket` is ignored.
-	 *
-	 * @example
-	 * ```ts
-	 * buildWebSocket(url) {
-	 *   return new WebSocket(url);
-	 * }
-	 * ```
-	 */
-	buildWebSocket(url: string): WebSocket;
-	/**
 	 * Whether to use the native Node.js WebSocket (`globalThis.WebSocket`) instead of the `ws` package
 	 *
 	 * Auto-detected using `shouldUseGlobalFetchAndWebSocket()`

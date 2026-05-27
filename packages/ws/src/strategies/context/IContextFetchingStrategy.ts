@@ -4,7 +4,6 @@ import type { SessionInfo, WebSocketManager, WebSocketManagerOptions } from '../
 
 export interface FetchingStrategyOptions extends Pick<
 	WebSocketManagerOptions,
-	| 'buildWebSocket'
 	| 'compression'
 	| 'encoding'
 	| 'handshakeTimeout'
@@ -52,7 +51,6 @@ export async function managerToFetchingStrategyOptions(manager: WebSocketManager
 		token: manager.token,
 		useIdentifyCompression: manager.options.useIdentifyCompression,
 		useNativeWebSocket: manager.options.useNativeWebSocket,
-		buildWebSocket: manager.options.buildWebSocket,
 		version: manager.options.version,
 
 		gatewayInformation: await manager.fetchGatewayInformation(),

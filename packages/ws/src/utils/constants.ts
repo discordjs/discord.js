@@ -58,7 +58,6 @@ export const DefaultWebSocketManagerOptions = {
 	get useNativeWebSocket() {
 		return shouldUseGlobalFetchAndWebSocket();
 	},
-	buildWebSocket: undefined as any,
 	retrieveSessionInfo(shardId) {
 		const store = getDefaultSessionStore();
 		return store.get(shardId) ?? null;
