@@ -21,10 +21,9 @@ module.exports = (client, { d: data }, shardId) => {
     client.guilds._add(guild);
   }
 
-  for (const guildId of client.guilds.cache.keys()) {
-    if (client.expectedGuilds.has(guildId)) continue;
-    // Temp
-    client.guilds.cache.delete(guildId);
+  for (const guild of client.guilds.cache.values()) {
+    if (client.expectedGuilds.has(guild.id)) continue;
+    client.actions.GuildDelete.handle(guild);
   }
 
   if (client.application) {
