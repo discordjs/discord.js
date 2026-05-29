@@ -1,5 +1,6 @@
 'use strict';
 
+const { Events } = require('../../util/Events.js');
 const { Action } = require('./Action.js');
 
 class GuildDeleteAction extends Action {
@@ -10,6 +11,14 @@ class GuildDeleteAction extends Action {
     client.voice.adapters.get(guild.id)?.destroy();
 
     client.guilds.cache.delete(guild.id);
+
+    /**
+     * Emitted whenever a guild kicks the client or the guild is deleted/left.
+     *
+     * @event Client#guildDelete
+     * @param {Guild} guild The guild that was deleted
+     */
+    client.emit(Events.GuildDelete, guild);
   }
 }
 

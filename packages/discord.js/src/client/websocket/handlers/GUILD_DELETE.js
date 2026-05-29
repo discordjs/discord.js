@@ -23,12 +23,4 @@ module.exports = (client, { d: data }) => {
   }
 
   client.actions.GuildDelete.handle(guild);
-
-  /**
-   * Emitted whenever a guild kicks the client or the guild is deleted/left.
-   *
-   * @event Client#guildDelete
-   * @param {Guild} guild The guild that was deleted
-   */
-  client.emit(Events.GuildDelete, guild);
 };
