@@ -133,10 +133,10 @@ class Client extends AsyncEventEmitter {
      * A set of guild ids this Client expects to receive
      *
      * @name Client#expectedGuilds
-     * @type {Set<string>}
+     * @type {Collection<number, Set<string>>}
      * @private
      */
-    Object.defineProperty(this, 'expectedGuilds', { value: new Set(), writable: true });
+    Object.defineProperty(this, 'expectedGuilds', { value: new Collection(), writable: true });
 
     /**
      * The ready timeout
@@ -363,11 +363,10 @@ class Client extends AsyncEventEmitter {
       () => {
         this.emit(
           Events.Debug,
-          `${
-            hasGuildsIntent
-              ? `Client did not receive any guild packets in ${this.options.waitGuildTimeout} ms.`
-              : 'Client will not receive anymore guild packets.'
-          }\nUnavailable guild count: ${this.expectedGuilds.size}`,
+          `${hasGuildsIntent
+            ? `Client did not receive any guild packets in ${this.options.waitGuildTimeout} ms.`
+            : 'Client will not receive anymore guild packets.'
+          }\nUnavailable guild count: ${this.expectedGuilds.reduce((count, guilds) => count + guilds.size, 0)}`,
         );
 
         this.readyTimeout = null;
@@ -421,7 +420,13 @@ class Client extends AsyncEventEmitter {
       if (packet.t === GatewayDispatchEvents.Ready) {
         await this._checkReady();
       } else if (this.status === Status.WaitingForGuilds && WaitingForGuildEvents.includes(packet.t)) {
-        this.expectedGuilds.delete(packet.d.id);
+        const expectedGuilds = this.expectedGuilds.get(shardId);
+        if (expectedGuilds) {
+          expectedGuilds.delete(packet.d.id);
+          if (!expectedGuilds.size) {
+            this.expectedGuilds.delete(shardId);
+          }
+        }
         await this._checkReady();
       }
     }

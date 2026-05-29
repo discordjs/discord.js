@@ -14,15 +14,16 @@ module.exports = (client, { d: data }, shardId) => {
     client.users.cache.set(client.user.id, client.user);
   }
 
-  client.expectedGuilds.clear();
+  const expectedGuilds = new Set();
   for (const guild of data.guilds) {
-    client.expectedGuilds.add(guild.id);
+    expectedGuilds.add(guild.id);
     guild.shardId = shardId;
     client.guilds._add(guild);
   }
+  client.expectedGuilds.set(shardId, expectedGuilds)
 
   for (const guild of client.guilds.cache.values()) {
-    if (client.expectedGuilds.has(guild.id)) continue;
+    if (guild.shardId !== shardId || expectedGuilds.has(guild.id)) continue;
     client.actions.GuildDelete.handle(guild);
   }
 
