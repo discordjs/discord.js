@@ -428,6 +428,7 @@ class Client extends AsyncEventEmitter {
             this.expectedGuilds.delete(shardId);
           }
         }
+
         await this._checkReady();
       }
     }

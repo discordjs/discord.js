@@ -20,6 +20,7 @@ module.exports = (client, { d: data }, shardId) => {
     guild.shardId = shardId;
     client.guilds._add(guild);
   }
+
   if (expectedGuilds.size) client.expectedGuilds.set(shardId, expectedGuilds);
 
   for (const guild of client.guilds.cache.values()) {
