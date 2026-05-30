@@ -71,12 +71,14 @@ export async function makeNetworkRequest(
 		() => controller.abort(),
 		normalizeTimeout(manager.options.timeout, routeId.bucketRoute, requestData.body),
 	);
-	if (requestData.signal) {
+	const userSignal = requestData.signal;
+	const onUserAbort = () => controller.abort();
+	if (userSignal) {
 		// If the user signal was aborted, abort the controller, else abort the local signal.
 		// The reason why we don't re-use the user's signal, is because users may use the same signal for multiple
 		// requests, and we do not want to cause unexpected side-effects.
-		if (requestData.signal.aborted) controller.abort();
-		else requestData.signal.addEventListener('abort', () => controller.abort(), { once: true });
+		if (userSignal.aborted) controller.abort();
+		else userSignal.addEventListener('abort', onUserAbort);
 	}
 
 	let res: ResponseLike;
@@ -108,6 +110,7 @@ export async function makeNetworkRequest(
 		throw error;
 	} finally {
 		clearTimeout(timeout);
+		userSignal?.removeEventListener('abort', onUserAbort);
 	}
 
 	if (manager.listenerCount(RESTEvents.Response)) {
