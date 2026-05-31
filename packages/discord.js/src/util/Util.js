@@ -83,7 +83,7 @@ async function fetchRecommendedShardCount(
   { guildsPerShard = 1_000, multipleOf = 1, api = RouteBases.api, version = APIVersion } = {},
 ) {
   if (!token) throw new DiscordjsError(ErrorCodes.TokenMissing);
-  const response = await fetch(`${api}/v${version}${Routes.gatewayBot()}`, {
+  const response = await fetch(`${api}${Routes.gatewayBot()}`, {
     method: 'GET',
     headers: { Authorization: `Bot ${token.replace(/^bot\s*/i, '')}` },
   });
