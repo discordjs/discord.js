@@ -1,7 +1,12 @@
 /* eslint-disable jsdoc/check-param-names */
 
 import { makeURLSearchParams, type RequestData, type REST } from '@discordjs/rest';
-import { Routes, type RESTGetAPIInviteQuery, type RESTGetAPIInviteResult } from 'discord-api-types/v10';
+import {
+	Routes,
+	type RESTDeleteAPIInviteResult,
+	type RESTGetAPIInviteQuery,
+	type RESTGetAPIInviteResult,
+} from 'discord-api-types/v10';
 
 export class InvitesAPI {
 	public constructor(private readonly rest: REST) {}
@@ -29,6 +34,6 @@ export class InvitesAPI {
 	 * @param options - The options for deleting the invite
 	 */
 	public async delete(code: string, { reason, signal }: Pick<RequestData, 'reason' | 'signal'> = {}) {
-		await this.rest.delete(Routes.invite(code), { reason, signal });
+		return this.rest.delete(Routes.invite(code), { reason, signal }) as Promise<RESTDeleteAPIInviteResult>;
 	}
 }
