@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/core@2.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@2.4.0...@discordjs/core@2.5.0) - (2026-06-13)
+
+## Bug Fixes
+
+- **invite:** Return `RESTDeleteAPIInviteResult` on delete (#11551) ([f28753b](https://github.com/discordjs/discord.js/commit/f28753b5bcbbd8eb1203e561347cb747da56bb1b))
+
+## Features
+
+- **guild:** Support message search (#11552) ([32c3371](https://github.com/discordjs/discord.js/commit/32c33710bb1f6c9abab5487c09f9497204d7c255))
+
 # [@discordjs/core@2.4.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@2.3.0...@discordjs/core@2.4.0) - (2025-11-18)
 
 ## Bug Fixes
