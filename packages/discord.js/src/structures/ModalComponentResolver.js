@@ -79,7 +79,7 @@ class ModalComponentResolver {
    *
    * @param {string} customId The custom id of the component.
    * @param {ComponentType[]} allowedTypes The allowed types of the component.
-   * @param {string[]} properties The properties to check for for `required`.
+   * @param {string[]} properties The properties to check for `required`.
    * @param {boolean} required Whether to throw an error if the component value(s) are not found.
    * @returns {ModalData} The option, if found.
    * @private
