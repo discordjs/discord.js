@@ -50,8 +50,8 @@ class InteractionResponses {
    * @property {boolean} [fetchReply] Whether to fetch the reply
    * <warn>This option is deprecated. Use `withResponse` or fetch the response instead.</warn>
    * @property {MessageFlagsResolvable} [flags] Which flags to set for the message.
-   * <info>Only `MessageFlags.Ephemeral`, `MessageFlags.SuppressEmbeds`, and `MessageFlags.SuppressNotifications`
-   * can be set.</info>
+   * <info>Only {@link MessageFlags.Ephemeral}, {@link MessageFlags.SuppressEmbeds},
+   * {@link MessageFlags.SuppressNotifications}, and {@link MessageFlags.IsVoiceMessage} can be set.</info>
    */
 
   /**
