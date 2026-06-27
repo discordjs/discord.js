@@ -99,10 +99,16 @@ class MessageManager extends CachedManager {
    *   .catch(console.error);
    */
   async fetch(options) {
-    if (!options) return this._fetchMany();
+    if (options === undefined) {
+      return this._fetchMany();
+    }
+
     const { message, cache, force } = options;
     const resolvedMessage = this.resolveId(message ?? options);
-    if (resolvedMessage) return this._fetchSingle({ message: resolvedMessage, cache, force });
+    if (resolvedMessage !== null) {
+      return this._fetchSingle({ message: resolvedMessage, cache, force });
+    }
+
     return this._fetchMany(options);
   }
 
