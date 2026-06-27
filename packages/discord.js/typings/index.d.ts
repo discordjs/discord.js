@@ -5542,7 +5542,7 @@ export interface VoiceServerUpdateData {
   token: string;
 }
 
-export interface ClientEventTypes {
+export interface ClientEventTypes extends Record<Events, any[]> {
   applicationCommandPermissionsUpdate: [data: ApplicationCommandPermissionsUpdateData];
   autoModerationActionExecution: [autoModerationActionExecution: AutoModerationActionExecution];
   autoModerationRuleCreate: [autoModerationRule: AutoModerationRule];
