@@ -3,7 +3,7 @@
 const { Collection } = require('@discordjs/collection');
 const { makeURLSearchParams } = require('@discordjs/rest');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
-const { ChannelType, GuildPremiumTier, Routes, GuildFeature } = require('discord-api-types/v10');
+const { ChannelType, GuildFeature, GuildPremiumTier, Routes, RESTJSONErrorCodes } = require('discord-api-types/v10');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 const { AutoModerationRuleManager } = require('../managers/AutoModerationRuleManager.js');
 const { GuildApplicationCommandManager } = require('../managers/GuildApplicationCommandManager.js');
@@ -29,6 +29,7 @@ const { GuildOnboarding } = require('./GuildOnboarding.js');
 const { GuildPreview } = require('./GuildPreview.js');
 const { GuildTemplate } = require('./GuildTemplate.js');
 const { Integration } = require('./Integration.js');
+const { Message } = require('./Message.js');
 const { Webhook } = require('./Webhook.js');
 const { WelcomeScreen } = require('./WelcomeScreen.js');
 
@@ -1076,6 +1077,146 @@ class Guild extends AnonymousGuild {
     });
 
     return new GuildOnboarding(this.client, newData);
+  }
+
+  /**
+   * Options used to search messages in a guild.
+   *
+   * @typedef {Object} GuildSearchMessagesOptions
+   * @property {string} [content] Filter messages by given content (max 1024 characters)
+   * @property {Snowflake} [maxId] Get messages before a given message ID
+   * @property {Snowflake} [minId] Get messages after a given message ID
+   * @property {Snowflake[]} [channelId] Filter messages by given channel IDs (max 500)
+   * @property {MessageSearchAuthorType[]} [authorType] Filter messages by author type.
+   * @property {Snowflake[]} [authorId] Filter messages by given author IDs (max 100)
+   * @property {Snowflake[]} [mentions] Filter messages that mention given user IDs (max 100)
+   * @property {Snowflake[]} [mentionsRoleId] Filter messages that mention given role IDs (max 100)
+   * @property {boolean} [mentionEveryone] Filter messages by whether they mention @everyone
+   * @property {Snowflake[]} [repliedToUserId] Filter messages that reply to given user IDs (max 100)
+   * @property {Snowflake[]} [repliedToMessageId] Filter messages that reply to given message IDs (max 100)
+   * @property {boolean} [pinned] Filter messages by whether they are pinned
+   * @property {MessageSearchHasType[]} [has] Filter messages by whether they contain specific content types.
+   * @property {MessageSearchEmbedType[]} [embedType] Filter messages by embed type.
+   * @property {string[]} [embedProvider] Filter messages by embed provider, case-sensitive (e.g. `'Tenor'`) (max 100)
+   * @property {string[]} [linkHostname] Filter messages by link hostname (e.g. `'discord.com'`) (max 100)
+   * @property {string[]} [attachmentFilename] Filter messages by attachment filename (max 100)
+   * @property {string[]} [attachmentExtension] Filter messages by attachment extension (e.g. `'png'`) (max 100)
+   * @property {MessageSearchSortMode} [sortBy] The sorting algorithm to use.
+   * @property {string} [sortOrder] The direction to sort. One of `'asc'` or `'desc'` (default).
+   * <info>Sort order is not respected when sorting by relevance.</info>
+   * @property {boolean} [includeNsfw=false] Whether to include results from age-restricted channels
+   * @property {number} [limit=25] Max number of messages to return (1–25)
+   * @property {number} [offset] Number to offset the returned messages by (max 9975)
+   * @property {number} [slop=2] Max number of words to skip between matching tokens in the `content` filter (max 100)
+   * @property {boolean} [cache=true] Whether to cache the fetched messages
+   */
+
+  /**
+   * Result returned from searching guild messages.
+   *
+   * @typedef {Object} GuildSearchMessagesResult
+   * @property {number} totalResults The total number of messages that match the query
+   * @property {Collection<Snowflake, Message>} messages A collection of the matched messages
+   */
+
+  /**
+   * Returns a collection of messages without the `reactions` property that match a search query in the guild. Requires the {@link PermissionFlagsBits.ReadMessageHistory} permission.
+   * <warn>This is restricted according to whether the {@link GatewayIntentBits.MessageContent} Privileged Intent is enabled for your application.</warn>
+   * <info>Due to speed optimizations, search may return slightly fewer results than the limit specified when messages have not been accessed for a long time.
+   * Clients should not rely on the length of the `messages` array to paginate results.
+   *
+   * Additionally, when messages are actively being created or deleted, the `totalResults` property may not be accurate.</info>
+   *
+   * @param {GuildSearchMessagesOptions} [options={}] Options for searching messages
+   * @returns {Promise<GuildSearchMessagesResult>}
+   * @example
+   * // Search for messages containing 'hello'
+   * guild.searchMessages({ content: 'hello', limit: 10 })
+   *   .then(result => console.log(`Found ${result.totalResults} total results, received ${result.messages.size}`))
+   *   .catch(console.error);
+   * @example
+   * // Search for messages with images, excluding bots, sorted by oldest first
+   * guild.searchMessages({ has: ['image'], authorType: ['-bot'], sortOrder: 'asc' })
+   *   .then(result => result.messages.forEach(message => console.log(message.url)))
+   *   .catch(console.error);
+   */
+  async searchMessages({
+    cache = true,
+    content,
+    maxId,
+    minId,
+    channelId,
+    authorType,
+    authorId,
+    mentions,
+    mentionsRoleId,
+    mentionEveryone,
+    repliedToUserId,
+    repliedToMessageId,
+    pinned,
+    has,
+    embedType,
+    embedProvider,
+    linkHostname,
+    attachmentFilename,
+    attachmentExtension,
+    sortBy,
+    sortOrder,
+    includeNsfw,
+    limit,
+    offset,
+    slop,
+  } = {}) {
+    const query = makeURLSearchParams({
+      content,
+      max_id: maxId,
+      min_id: minId,
+      mention_everyone: mentionEveryone,
+      pinned,
+      sort_by: sortBy,
+      sort_order: sortOrder,
+      include_nsfw: includeNsfw,
+      limit,
+      offset,
+      slop,
+    });
+
+    const arrayParams = [
+      ['channel_id', channelId],
+      ['author_type', authorType],
+      ['author_id', authorId],
+      ['mentions', mentions],
+      ['mentions_role_id', mentionsRoleId],
+      ['replied_to_user_id', repliedToUserId],
+      ['replied_to_message_id', repliedToMessageId],
+      ['has', has],
+      ['embed_type', embedType],
+      ['embed_provider', embedProvider],
+      ['link_hostname', linkHostname],
+      ['attachment_filename', attachmentFilename],
+      ['attachment_extension', attachmentExtension],
+    ];
+
+    for (const [key, values] of arrayParams) {
+      if (values) {
+        for (const value of values) {
+          query.append(key, value);
+        }
+      }
+    }
+
+    const data = await this.client.rest.get(Routes.guildMessagesSearch(this.id), { query });
+
+    if (data.code === RESTJSONErrorCodes.IndexNotYetAvailable) {
+      const messages = data.messages.flat().reduce((collection, message) => {
+        const channel = this.client.channels.cache.get(message.channel_id);
+        return collection.set(message.id, channel?.messages._add(message, cache) ?? new Message(this.client, message));
+      }, new Collection());
+
+      return { totalResults: data.total_results, messages };
+    } else {
+      return { totalResults: 0, messages: [] };
+    }
   }
 
   /**
