@@ -530,6 +530,11 @@
  */
 
 /**
+ * @external InviteTargetUsersJobStatus
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InviteTargetUsersJobStatus}
+ */
+
+/**
  * @external InviteType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/InviteType}
  */
