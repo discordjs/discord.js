@@ -25,6 +25,7 @@ import {
 	SeparatorSpacingSize,
 	ChannelType,
 	SelectMenuDefaultValueType,
+	UnfurledMediaItemFlags,
 } from 'discord-api-types/v10';
 import { describe, expect, test } from 'vitest';
 import { Attachment } from '../src/messages/Attachment.js';
@@ -197,7 +198,7 @@ describe('message with components', () => {
 			url: 'attachment://file.txt',
 			attachment_id: '0',
 			content_type: 'text/plain',
-			flags: 0,
+			flags: UnfurledMediaItemFlags.IsAnimated,
 		},
 		id: 9,
 		spoiler: true,

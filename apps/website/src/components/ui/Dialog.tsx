@@ -13,7 +13,7 @@ export function Dialog(props: ComponentProps<typeof RACDialog>) {
 		<RACDialog
 			{...props}
 			className={cx(
-				'peer/dialog group/dialog relative flex max-h-[inherit] flex-col overflow-hidden outline-hidden [scrollbar-width:thin]',
+				'peer/dialog group/dialog relative flex max-h-[inherit] [scrollbar-width:thin] flex-col overflow-hidden outline-hidden',
 				props.className,
 			)}
 			role={props.role!}

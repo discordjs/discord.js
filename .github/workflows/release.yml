@@ -47,7 +47,7 @@ jobs:
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     if: github.repository_owner == 'discordjs'
     steps:
-      - uses: actions/create-github-app-token@v2
+      - uses: actions/create-github-app-token@v3
         id: app-token
         with:
           app-id: ${{ vars.DISCORDJS_APP_ID }}
@@ -86,7 +86,7 @@ jobs:
         env:
           COREPACK_ENABLE_STRICT: 0
         run: |
-          pnpm self-update 10
+          pnpm self-update 11
           pnpm install --filter @discordjs/actions --frozen-lockfile --prefer-offline --loglevel error
 
       - name: Release packages (non-main ref)
