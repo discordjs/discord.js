@@ -16,6 +16,9 @@ export class ChannelPinMixin<
 
 	/**
 	 * The template used for removing data from the raw data stored for each Channel.
+	 *
+	 * @remarks This template has defaults, if you want to remove additional data and keep the defaults,
+	 * use `Object.defineProperties`. To override the defaults, set this value directly.
 	 */
 	public static readonly DataTemplate: Partial<
 		ChannelDataType<ChannelType.DM | ChannelType.GuildAnnouncement | ChannelType.GuildText | ThreadChannelType>
