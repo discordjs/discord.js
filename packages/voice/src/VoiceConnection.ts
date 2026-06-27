@@ -233,6 +233,8 @@ export class VoiceConnection extends EventEmitter {
 	/**
 	 * The receiver of this voice connection. You should join the voice channel with `selfDeaf` set
 	 * to false for this feature to work properly.
+	 *
+	 * @beta
 	 */
 	public readonly receiver: VoiceReceiver;
 

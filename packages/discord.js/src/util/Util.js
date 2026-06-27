@@ -3,7 +3,7 @@
 const { parse } = require('node:path');
 const { Collection } = require('@discordjs/collection');
 const { lazy } = require('@discordjs/util');
-const { APIVersion, ChannelType, Routes, RouteBases } = require('discord-api-types/v10');
+const { APIVersion, ChannelType, Routes } = require('discord-api-types/v10');
 const { fetch } = require('undici');
 const { Colors } = require('./Colors.js');
 // eslint-disable-next-line import-x/order
@@ -80,7 +80,7 @@ function flatten(obj, ...props) {
  */
 async function fetchRecommendedShardCount(
   token,
-  { guildsPerShard = 1_000, multipleOf = 1, api = RouteBases.api, version = APIVersion } = {},
+  { guildsPerShard = 1_000, multipleOf = 1, api = 'https://discord.com/api', version = APIVersion } = {},
 ) {
   if (!token) throw new DiscordjsError(ErrorCodes.TokenMissing);
   const response = await fetch(`${api}/v${version}${Routes.gatewayBot()}`, {
