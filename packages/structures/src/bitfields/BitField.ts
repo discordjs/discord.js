@@ -138,7 +138,8 @@ export abstract class BitField<Flags extends string> {
 	public serialize(...hasParams: readonly unknown[]) {
 		const serialized: Partial<Record<keyof Flags, boolean>> = {};
 		for (const [flag, bit] of Object.entries(this.constructor.Flags)) {
-			if (Number.isNaN(Number(flag))) serialized[flag as keyof Flags] = this.has(bit as bigint | number, ...hasParams);
+			if (Number.isNaN(Number(flag)) && (bit as bigint | number) > 0)
+				serialized[flag as keyof Flags] = this.has(bit as bigint | number, ...hasParams);
 		}
 
 		return serialized;
@@ -173,8 +174,9 @@ export abstract class BitField<Flags extends string> {
 	}
 
 	public *[Symbol.iterator](...hasParams: unknown[]) {
-		for (const bitName of Object.keys(this.constructor.Flags)) {
-			if (Number.isNaN(Number(bitName)) && this.has(bitName as Flags, ...hasParams)) yield bitName as Flags;
+		for (const [bitName, value] of Object.entries(this.constructor.Flags)) {
+			if (Number.isNaN(Number(bitName) && (value as bigint | number) > 0) && this.has(bitName as Flags, ...hasParams))
+				yield bitName as Flags;
 		}
 	}
 
