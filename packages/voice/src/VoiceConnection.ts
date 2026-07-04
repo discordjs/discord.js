@@ -464,8 +464,8 @@ export class VoiceConnection extends EventEmitter {
 	private onNetworkingClose(code: number) {
 		if (this.state.status === VoiceConnectionStatus.Destroyed) return;
 		// If networking closes, try to connect to the voice channel again.
-		if (code === 4_014) {
-			// Disconnected - networking is already destroyed here
+		if (code === 4_014 || code === 4_021 || code === 4_022) {
+			// Disconnected - these close codes should not trigger a reconnect
 			this.state = {
 				...this.state,
 				status: VoiceConnectionStatus.Disconnected,
