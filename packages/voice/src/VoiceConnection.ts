@@ -451,14 +451,16 @@ export class VoiceConnection extends EventEmitter {
 	}
 
 	/**
-	 * Called when the networking instance for this connection closes. If the close code is 4014 (do not reconnect),
-	 * the voice connection will transition to the Disconnected state which will store the close code. You can
-	 * decide whether or not to reconnect when this occurs by listening for the state change and calling reconnect().
+	 * Called when the networking instance for this connection closes. If the close code is 4014, 4021, or 4022
+	 * (do not reconnect), the voice connection will transition to the Disconnected state which will store the
+	 * close code. You can decide whether or not to reconnect when this occurs by listening for the state change
+	 * and calling reconnect().
 	 *
 	 * @remarks
-	 * If the close code was anything other than 4014, it is likely that the closing was not intended, and so the
-	 * VoiceConnection will signal to Discord that it would like to rejoin the channel. This automatically attempts
-	 * to re-establish the connection. This would be seen as a transition from the Ready state to the Signalling state.
+	 * If the close code was anything other than 4014, 4021, or 4022, it is likely that the closing was not intended,
+	 * and so the VoiceConnection will signal to Discord that it would like to rejoin the channel. This automatically
+	 * attempts to re-establish the connection. This would be seen as a transition from the Ready state to the
+	 * Signalling state.
 	 * @param code - The close code
 	 */
 	private onNetworkingClose(code: number) {
