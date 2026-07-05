@@ -21,7 +21,9 @@ class InteractionCreateAction extends Action {
     const client = this.client;
 
     // Resolve and cache partial channels for Interaction#channel getter
-    const channel = data.channel && this.getChannel(data.channel);
+    const channel =
+      data.channel &&
+      this.getChannel({ ...data.channel, ...('recipients' in data.channel ? { user: data.user } : undefined) });
 
     // Do not emit this for interactions that cache messages that are non-text-based.
     let InteractionClass;
