@@ -1,6 +1,6 @@
-import { createTsupConfig } from '../../tsup.config.js';
+import { createTsdownConfig } from '../../tsdown.config.js';
 
-export default createTsupConfig({
+export default createTsdownConfig({
 	entry: [
 		'src/index.ts',
 		'src/formatTag/index.ts',
@@ -12,6 +12,5 @@ export default createTsupConfig({
 	],
 	dts: false,
 	format: 'esm',
-	minify: 'terser',
 	target: 'esnext',
 });

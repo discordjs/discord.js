@@ -13,21 +13,16 @@
 	"license": "MIT",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
+	"type": "module",
 	"scripts": {
-		"build": "tsc --noEmit && tsup",
+		"build": "tsc --noEmit && tsdown --config-loader unrun",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src"
 	},
 	"exports": {
 		".": {
-			"require": {
-				"types": "./dist/index.d.ts",
-				"default": "./dist/index.js"
-			},
-			"import": {
-				"types": "./dist/index.d.mts",
-				"default": "./dist/index.mjs"
-			}
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
 		}
 	},
 	"dependencies": {
@@ -44,7 +39,7 @@
 		"eslint-formatter-pretty": "^7.0.0",
 		"prettier": "^3.8.1",
 		"terser": "^5.46.1",
-		"tsup": "^8.5.1",
+		"tsdown": "^0.21.9",
 		"turbo": "^2.8.21",
 		"typescript": "~5.9.3"
 	}

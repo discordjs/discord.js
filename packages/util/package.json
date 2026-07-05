@@ -4,7 +4,7 @@
 	"version": "1.1.1",
 	"description": "Utilities shared across Discord.js packages",
 	"scripts": {
-		"build": "tsc --noEmit && tsup",
+		"build": "tsc --noEmit && tsdown --config-loader unrun",
 		"build:docs": "tsc -p tsconfig.docs.json",
 		"test": "vitest run --config ../../vitest.config.ts",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
@@ -17,19 +17,13 @@
 	},
 	"exports": {
 		".": {
-			"require": {
-				"types": "./dist/index.d.ts",
-				"default": "./dist/index.js"
-			},
-			"import": {
-				"types": "./dist/index.d.mts",
-				"default": "./dist/index.mjs"
-			}
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
 		}
 	},
 	"main": "./dist/index.js",
-	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
+	"type": "module",
 	"directories": {
 		"lib": "src"
 	},
@@ -71,15 +65,15 @@
 		"@types/node": "^22.19.15",
 		"@vitest/coverage-v8": "^4.1.2",
 		"cross-env": "^10.1.0",
-		"esbuild-plugin-version-injector": "^1.2.1",
 		"eslint": "^9.39.4",
 		"eslint-config-neon": "^0.3.2",
 		"eslint-formatter-compact": "^9.0.1",
 		"eslint-formatter-pretty": "^7.0.0",
 		"prettier": "^3.8.1",
-		"tsup": "^8.5.1",
+		"tsdown": "^0.21.9",
 		"turbo": "^2.8.21",
 		"typescript": "~5.9.3",
+		"unplugin-replace": "^0.8.0",
 		"vitest": "^4.1.2"
 	},
 	"engines": {
