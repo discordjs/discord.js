@@ -2,6 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { lazy } = require('@discordjs/util');
+const { ComponentType } = require('discord-api-types/v10');
 const { transformResolved } = require('../util/Util.js');
 const { BaseInteraction } = require('./BaseInteraction.js');
 const { InteractionWebhook } = require('./InteractionWebhook.js');
@@ -31,7 +32,7 @@ const getAttachment = lazy(() => require('./Attachment.js').Attachment);
  * @typedef {BaseModalData} FileUploadModalData
  * @property {string} customId The custom id of the file upload
  * @property {Snowflake[]} values The values of the file upload
- * @property {Collection<Snowflake, Attachment>} [attachments] The resolved attachments
+ * @property {Collection<Snowflake, Attachment>} attachments The resolved attachments
  */
 
 /**
@@ -180,11 +181,20 @@ class ModalSubmitInteraction extends BaseInteraction {
 
     if (rawComponent.values) {
       data.values = rawComponent.values;
+
+      const isUserSelect = [ComponentType.UserSelect, ComponentType.MentionableSelect].includes(rawComponent.type);
+      const isRoleSelect = [ComponentType.RoleSelect, ComponentType.MentionableSelect].includes(rawComponent.type);
+      const isChannelSelect = rawComponent.type === ComponentType.ChannelSelect;
+      const isFileUpload = rawComponent.type === ComponentType.FileUpload;
+
+      // Attachments must always be present (even empty) on FileUpload components.
+      if (isFileUpload) data.attachments = new Collection();
+
       if (resolved) {
         const { members, users, channels, roles, attachments } = resolved;
         const valueSet = new Set(rawComponent.values);
 
-        if (users) {
+        if (isUserSelect && users) {
           data.users = new Collection();
 
           for (const [id, user] of Object.entries(users)) {
@@ -194,7 +204,7 @@ class ModalSubmitInteraction extends BaseInteraction {
           }
         }
 
-        if (channels) {
+        if (isChannelSelect && channels) {
           data.channels = new Collection();
 
           for (const [id, apiChannel] of Object.entries(channels)) {
@@ -204,7 +214,7 @@ class ModalSubmitInteraction extends BaseInteraction {
           }
         }
 
-        if (members) {
+        if (isUserSelect && members) {
           data.members = new Collection();
 
           for (const [id, member] of Object.entries(members)) {
@@ -215,7 +225,7 @@ class ModalSubmitInteraction extends BaseInteraction {
           }
         }
 
-        if (roles) {
+        if (isRoleSelect && roles) {
           data.roles = new Collection();
 
           for (const [id, role] of Object.entries(roles)) {
@@ -225,8 +235,7 @@ class ModalSubmitInteraction extends BaseInteraction {
           }
         }
 
-        if (attachments) {
-          data.attachments = new Collection();
+        if (isFileUpload && attachments) {
           for (const [id, attachment] of Object.entries(attachments)) {
             if (valueSet.has(id)) {
               data.attachments.set(id, new (getAttachment())(attachment));
