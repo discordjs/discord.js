@@ -100,7 +100,7 @@ async function setActivity(): Promise<void> {
   })
 }
 
-client.once(Events.Ready, async () => {
+client.once(Events.ApplicationReady, async () => {
   await setActivity()
 
   // Activity can only be set every 15 seconds

@@ -179,7 +179,6 @@ export class IPCTransport extends AsyncEventEmitter {
 
 		socket.write(
 			encode(OPCodes.Handshake, {
-				// eslint-disable-next-line id-length
 				v: 1,
 				client_id: this.client.clientId!,
 			}),
