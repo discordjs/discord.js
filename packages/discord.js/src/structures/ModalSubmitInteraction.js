@@ -32,7 +32,7 @@ const getAttachment = lazy(() => require('./Attachment.js').Attachment);
  * @typedef {BaseModalData} FileUploadModalData
  * @property {string} customId The custom id of the file upload
  * @property {Snowflake[]} values The values of the file upload
- * @property {Collection<Snowflake, Attachment>} attachments The resolved attachments
+ * @property {Collection<Snowflake, Attachment>} [attachments] The resolved attachments
  */
 
 /**
@@ -187,9 +187,6 @@ class ModalSubmitInteraction extends BaseInteraction {
       const isChannelSelect = rawComponent.type === ComponentType.ChannelSelect;
       const isFileUpload = rawComponent.type === ComponentType.FileUpload;
 
-      // Attachments must always be present (even empty) on FileUpload components.
-      if (isFileUpload) data.attachments = new Collection();
-
       if (resolved) {
         const { members, users, channels, roles, attachments } = resolved;
         const valueSet = new Set(rawComponent.values);
@@ -236,6 +233,8 @@ class ModalSubmitInteraction extends BaseInteraction {
         }
 
         if (isFileUpload && attachments) {
+          data.attachments = new Collection();
+
           for (const [id, attachment] of Object.entries(attachments)) {
             if (valueSet.has(id)) {
               data.attachments.set(id, new (getAttachment())(attachment));

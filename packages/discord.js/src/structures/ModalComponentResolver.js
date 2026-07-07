@@ -231,15 +231,7 @@ class ModalComponentResolver {
    * @returns {?Collection<Snowflake, Attachment>} The uploaded files, or null if none were uploaded and not required
    */
   getUploadedFiles(customId, required = false) {
-    // `attachments` is always a (possibly empty) Collection once the type check passes, so the generic
-    // null/undefined emptiness check in `_getTypedComponent` can't detect "nothing uploaded" here.
-    const { attachments, type } = this._getTypedComponent(customId, [ComponentType.FileUpload], ['attachments'], false);
-
-    if (required && !attachments.size) {
-      throw new DiscordjsTypeError(ErrorCodes.ModalSubmitInteractionComponentEmpty, customId, type);
-    }
-
-    return attachments.size ? attachments : null;
+    return this._getTypedComponent(customId, [ComponentType.FileUpload], ['attachments'], required).attachments ?? null;
   }
 
   /**
