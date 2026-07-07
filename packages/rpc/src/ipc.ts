@@ -1,9 +1,8 @@
 import { Buffer } from 'node:buffer';
 import { randomUUID } from 'node:crypto';
-import type { Dirent } from 'node:fs';
-import { readdir, realpath } from 'node:fs/promises';
-import { createConnection, type Socket } from 'node:net';
-import { resolve } from 'node:path';
+import fs from 'node:fs/promises';
+import { createConnection, Socket } from 'node:net';
+import path from 'node:path';
 import process from 'node:process';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import type { RPCMessagePayload } from 'discord-api-types/v10';
@@ -22,72 +21,40 @@ interface HandshakePayload {
 	v: number;
 }
 
-function isDiscordIPCDirectory(rootParent: string, parent: string, directory: string) {
-	if (parent !== rootParent) {
+async function canOpenFile(path: string): Promise<boolean> {
+	try {
+		await fs.access(path);
 		return true;
+	} catch {
+		return false;
 	}
-
-	return ['snap.', '.flatpak'].some((prefix) => directory.startsWith(prefix));
-}
-
-function discordIpcFilePredicate(entry: Dirent): boolean {
-	return (
-		entry.isSocket() &&
-		entry.name.startsWith('discord-ipc-') &&
-		!Number.isNaN(Number.parseInt(entry.name.slice('discord-ipc-'.length), 10))
-	);
 }
 
 async function getIPCPath(id: number) {
 	if (process.platform === 'win32') {
-		return `\\\\?\\pipe\\discord-ipc-${id}`;
+		return String.raw`\\?\pipe\discord-ipc-${id}`;
 	}
 
-	const { XDG_RUNTIME_DIR, TMPDIR, TMP, TEMP } = process.env;
-	const tempPath = await realpath(XDG_RUNTIME_DIR ?? TMPDIR ?? TMP ?? TEMP ?? '/tmp');
+	// Unix: check XDG_RUNTIME_DIR, TMPDIR, TMP, TEMP, then /tmp.
+	const prefix = process.env.XDG_RUNTIME_DIR ?? process.env.TMPDIR ?? process.env.TMP ?? process.env.TEMP ?? '/tmp';
 
-	// iterate recursively over directories to find 'snap.' or '.flatpak' pipe
-	if (process.platform === 'linux') {
-		const directoryQueue = [];
-		let directory = await readdir(tempPath, { withFileTypes: true });
-		while (directory.length > 0) {
-			for (const entry of directory) {
-				if (entry.isDirectory()) {
-					if (entry.name === '.' || entry.name === '..') {
-						continue;
-					}
+	// Flatpak/Snap sandboxes nest the socket under app subdirs.
+	const bases = [prefix, path.join(prefix, 'app', 'com.discordapp.Discord'), path.join(prefix, 'snap.discord')];
 
-					const dirPath = resolve(entry.parentPath, entry.name);
-					if (!isDiscordIPCDirectory(tempPath, dirPath, entry.name)) {
-						continue;
-					}
-
-					directoryQueue.push(dirPath);
-					continue;
-				}
-
-				if (discordIpcFilePredicate(entry)) {
-					return resolve(entry.parentPath, entry.name);
-				}
-			}
-
-			while (directory.length === 0 && directoryQueue.length > 0) {
-				directory = await readdir(directoryQueue.shift()!, { withFileTypes: true });
-			}
-		}
+	for (const base of bases) {
+		const candidate = path.join(base, `discord-ipc-${id}`);
+		if (await canOpenFile(candidate)) return candidate;
 	}
 
-	return `${tempPath.replace(/\/$/, '')}/discord-ipc-${id}`;
+	return path.join(prefix, `discord-ipc-${id}`);
 }
 
-async function getIPC(id = 0): Promise<Socket> {
-	const { promise, resolve, reject } = Promise.withResolvers<Socket>();
-
+async function getIPC(id = 0, { promise, resolve, reject } = Promise.withResolvers<Socket>()): Promise<Socket> {
 	const path = await getIPCPath(id);
 
 	const onError = async () => {
 		if (id < 10) {
-			return getIPC(id + 1);
+			return getIPC(id + 1, { promise, resolve, reject });
 		}
 
 		reject(new Error('Could not connect'));
@@ -117,54 +84,16 @@ export function encode(op: number, data: HandshakePayload | Record<string, never
 	return packet;
 }
 
-interface WorkingData {
-	full: string;
-	op: number | undefined;
-}
-
-const working: WorkingData = {
-	full: '',
-	op: undefined,
-};
-
-// eslint-disable-next-line promise/prefer-await-to-callbacks
-export function decode(socket: Socket, callback: (data: { data: RPCMessagePayload; op: OPCodes }) => void) {
-	const packet = socket.read();
-	if (!packet) {
-		return;
-	}
-
-	let raw;
-	if (working.full === '') {
-		working.op = packet.readInt32LE(0);
-		const len = packet.readInt32LE(4);
-		raw = packet.slice(8, len + 8);
-	} else {
-		raw = packet.toString();
-	}
-
-	try {
-		const { op } = working;
-		const data = JSON.parse(working.full + raw);
-		working.full = '';
-		working.op = undefined;
-		// eslint-disable-next-line promise/prefer-await-to-callbacks
-		callback({ op: op!, data });
-		return;
-	} catch {
-		working.full += raw;
-	}
-
-	decode(socket, callback);
-}
-
 export class IPCTransport extends AsyncEventEmitter {
-	private socket: Socket | null;
+	private socket: Socket;
+
+	private working: Buffer[];
 
 	public constructor(public readonly client: RPCClient) {
 		super();
 
-		this.socket = null;
+		this.socket = new Socket();
+		this.working = [];
 	}
 
 	public async connect() {
@@ -180,38 +109,53 @@ export class IPCTransport extends AsyncEventEmitter {
 		socket.write(
 			encode(OPCodes.Handshake, {
 				v: 1,
-				client_id: this.client.clientId!,
+				client_id: this.client.clientId,
 			}),
 		);
 
 		socket.pause();
 
-		socket.on('readable', () => {
-			decode(socket, ({ op, data }) => {
-				// Pong and Handshake is done from the client
-				// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
-				switch (op) {
-					case OPCodes.Ping:
-						this.send(data, OPCodes.Pong);
-						break;
-					case OPCodes.Frame:
-						if (!data) {
-							return;
-						}
+		socket.on('readable', this.decode.bind(this));
 
-						this.emit('message', data);
-						break;
-					case OPCodes.Close:
-						this.emit('close', data);
-						break;
-					default:
-						break;
-				}
-			});
+		socket.on('end', () => {
+			const packets = Buffer.concat(this.working);
+			const op = packets.readInt32LE(0);
+			const len = packets.readInt32LE(4);
+			const data = JSON.parse(packets.subarray(8, len + 8).toString());
+			this.working = [];
+
+			// Pong and Handshake is done from the client
+			switch (op) {
+				case OPCodes.Ping:
+					this.send(data, OPCodes.Pong);
+					break;
+				case OPCodes.Frame:
+					if (!data) {
+						return;
+					}
+
+					this.emit('message', data);
+					break;
+				case OPCodes.Close:
+					this.emit('close', data);
+					break;
+				default:
+					break;
+			}
 		});
 	}
 
+	private async decode() {
+		let packet: Buffer;
+		while ((packet = this.socket.read()) !== null) {
+			this.working.push(packet);
+		}
+	}
+
 	public onClose(error: boolean) {
+		this.socket.removeAllListeners();
+		this.socket = new Socket();
+		this.working = [];
 		this.emit('close', error);
 	}
 
@@ -219,15 +163,23 @@ export class IPCTransport extends AsyncEventEmitter {
 	public send(data: RPCMessagePayload, op?: OPCodes.Frame | OPCodes.Pong): void;
 	public send(data: Record<string, never>, op: OPCodes.Close): void;
 	public send(data: Record<string, never> | RPCMessagePayload | string, op = OPCodes.Frame) {
-		this.socket!.write(encode(op, data));
+		this.socket.write(encode(op, data));
 	}
 
 	public async close() {
-		const { promise, resolve } = Promise.withResolvers();
+		const { promise, resolve, reject } = Promise.withResolvers();
 
-		this.once('close', resolve);
+		this.once('close', (error) => {
+			// eslint-disable-next-line @typescript-eslint/no-use-before-define
+			timeout.close();
+			resolve(error);
+		});
+
+		const timeout = setTimeout(reject, 10e3);
+		timeout.unref();
+
 		this.send({}, OPCodes.Close);
-		this.socket?.end();
+		this.socket.end();
 
 		return promise;
 	}

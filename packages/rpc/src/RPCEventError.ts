@@ -8,12 +8,12 @@ export class RPCEventError extends Error {
 	public constructor(data: RPCErrorDispatchData | string) {
 		if (typeof data === 'string') {
 			super(data);
-			return;
+		} else {
+			super(data.message);
+			this.code = data.code;
+			this.data = data;
 		}
 
-		super(data.message);
 		this.name = 'RPCEventError';
-		this.code = data.code;
-		this.data = data;
 	}
 }

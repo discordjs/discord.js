@@ -30,6 +30,8 @@ import type {
 	OAuth2Scopes,
 	Snowflake,
 	RPCAuthorizeArgs,
+	RPCCommandSubscribePayload,
+	RPCSubscribeResultData,
 } from 'discord-api-types/v10';
 import { RPCEvents, RPCCommands, Routes } from 'discord-api-types/v10';
 import { RPCEventError } from './RPCEventError.js';
@@ -38,7 +40,6 @@ import type {
 	MappedRPCCommandsArgs,
 	MappedRPCCommandsResultsData,
 	MappedRPCEventsDispatchData,
-	NullableFields,
 	RPCCallableCommands,
 } from './constants.js';
 import { Events } from './constants.js';
@@ -95,6 +96,12 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 
 	public clientSecret: string;
 
+	public ready: boolean;
+
+	public readonly readyAt: Date;
+
+	public readyTimestamp: number;
+
 	public application: RPCOAuth2Application | null;
 
 	public user: APIUser | null;
@@ -109,11 +116,6 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		{ reject(this: void, reason?: unknown): void; resolve(this: void, value: unknown): void }
 	>;
 
-	/**
-	 * Promise for connection
-	 */
-	#connectPromise: Promise<RPCClient> | undefined;
-
 	public constructor(options: RPCClientOptions) {
 		super();
 
@@ -122,6 +124,9 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		this.accessToken = '';
 		this.clientId = '';
 		this.clientSecret = '';
+		this.ready = false;
+		this.readyAt = new Date();
+		this.readyTimestamp = 0;
 		this.application = null;
 		this.user = null;
 
@@ -129,44 +134,56 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		this.transport.on('message', this.#onRpcMessage.bind(this));
 
 		this.#expected_nonces = new Map();
-
-		this.#connectPromise = undefined;
 	}
 
 	/**
 	 * Search and connect to RPC
 	 */
-	public async connect(clientId: string): Promise<RPCClient> {
-		if (this.#connectPromise) {
-			return this.#connectPromise;
-		}
-
+	public async connect() {
 		const { promise, resolve, reject } = Promise.withResolvers<RPCClient>();
-		this.#connectPromise = promise;
-		this.clientId = clientId;
-		const timeout = setTimeout(() => reject(new Error('RPC_CONNECTION_TIMEOUT')), 10e3);
-		timeout.unref();
-		this.once(RPCEvents.Ready, () => {
-			clearTimeout(timeout);
-			resolve(this);
-		});
 
-		this.transport.once('close', () => {
+		const onReady = () => {
+			// eslint-disable-next-line @typescript-eslint/no-use-before-define
+			clearTimeout(timeout);
+			this.ready = true;
+			resolve(this);
+		};
+
+		const onClose = () => {
 			for (const exp_nonce of this.#expected_nonces.values()) {
 				exp_nonce.reject(new RPCEventError('connection closed'));
 			}
 
+			this.#expected_nonces.clear();
+
+			this.ready = false;
+
 			this.emit(Events.Disconnected);
 			reject(new Error('connection closed'));
-		});
+		};
+
+		this.once(RPCEvents.Ready, onReady);
+
+		this.transport.once('close', onClose);
+
+		const timeout = setTimeout(() => {
+			this.removeListener(RPCEvents.Ready, onReady);
+			this.transport.removeListener('close', onClose);
+
+			reject(new Error('RPC_CONNECTION_TIMEOUT'));
+		}, 10e3);
+		timeout.unref();
 
 		try {
 			await this.transport.connect();
 		} catch (error) {
+			this.ready = false;
+			this.removeListener(RPCEvents.Ready, onReady);
+			this.transport.removeListener('close', onClose);
 			reject(error);
 		}
 
-		return this.#connectPromise;
+		return promise;
 	}
 
 	/**
@@ -189,7 +206,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 
 		this.clientId = clientId;
 
-		await this.connect(clientId);
+		await this.connect();
 
 		if (!this.options.scopes) {
 			this.emit(Events.ApplicationReady);
@@ -219,6 +236,16 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * @param args - Arguments
 	 * @param evt - Event
 	 */
+	async #request<Cmd extends RPCCallableCommands = RPCCallableCommands>(
+		cmd: Cmd,
+		args?: MappedRPCCommandsArgs[Cmd],
+		evt?: RPCEvents,
+	): Promise<MappedRPCCommandsResultsData[Cmd]>;
+	async #request(
+		cmd: RPCCommands.Subscribe | RPCCommands.Unsubscribe,
+		args: RPCCommandSubscribePayload['args'],
+		evt: RPCEvents,
+	): Promise<RPCSubscribeResultData | RPCUnsubscribeResultData>;
 	async #request<Cmd extends RPCCallableCommands = RPCCallableCommands>(
 		cmd: Cmd,
 		args: MappedRPCCommandsArgs[Cmd] = {} as MappedRPCCommandsArgs[Cmd],
@@ -469,37 +496,21 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		activity: RPCSetActivityArgs['activity'] = {},
 		pid: number | null = getPid(),
 	): Promise<unknown> {
-		const newActivity: NullableFields<RPCSetActivityArgs['activity']> = {
-			...activity,
-			instance: Boolean(activity.instance),
-		};
+		activity.instance = Boolean(activity.instance);
 
 		if (activity.timestamps) {
-			newActivity.timestamps = activity.timestamps;
-			if ('start' in newActivity.timestamps && newActivity.timestamps.start > 2_147_483_647_000) {
+			if ('start' in activity.timestamps && activity.timestamps.start > 2_147_483_647_000) {
 				throw new RangeError('timestamps.start must fit into a unix timestamp');
 			}
 
-			if ('end' in newActivity.timestamps && newActivity.timestamps.end > 2_147_483_647_000) {
+			if ('end' in activity.timestamps && activity.timestamps.end > 2_147_483_647_000) {
 				throw new RangeError('timestamps.end must fit into a unix timestamp');
 			}
 		}
 
-		if ('assets' in activity) {
-			newActivity.assets = activity.assets;
-		}
-
-		if ('party' in activity) {
-			newActivity.party = activity.party;
-		}
-
-		if ('secrets' in activity) {
-			newActivity.secrets = activity.secrets;
-		}
-
 		return this.#request(RPCCommands.SetActivity, {
 			pid: pid ?? 0,
-			activity: newActivity as Exclude<RPCSetActivityArgs['activity'], undefined>,
+			activity,
 		});
 	}
 

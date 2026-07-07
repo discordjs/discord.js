@@ -144,6 +144,7 @@ import type {
 	RPCSubscribeVoiceStateCreateArgs,
 	RPCSubscribeVoiceStateDeleteArgs,
 	RPCSubscribeVoiceStateUpdateArgs,
+	RPCUnsubscribeResultData,
 	RPCValidateApplicationArgs,
 	RPCValidateApplicationResultData,
 	RPCVoiceChannelSelectDispatchData,
@@ -174,7 +175,7 @@ export interface MappedRPCCommandsResultsData {
 	[RPCCommands.SetActivity]: RPCSetActivityResultData;
 	[RPCCommands.SetVoiceSettings]: RPCSetVoiceSettingsResultData;
 	[RPCCommands.Subscribe]: RPCSubscribeResultData;
-	[RPCCommands.Unsubscribe]: RPCSubscribeResultData;
+	[RPCCommands.Unsubscribe]: RPCUnsubscribeResultData;
 	[RPCCommands.AcceptActivityInvite]: RPCAcceptActivityInviteResultData;
 	[RPCCommands.ActivityInviteUser]: RPCActivityInviteUserResultData;
 	[RPCCommands.BraintreePopupBridgeCallback]: RPCBraintreePopupBridgeCallbackResultData;
@@ -332,9 +333,3 @@ export interface MappedRPCEventsDispatchData {
 
 export type EventAndArgsParameters<Evt extends RPCEvents> =
 	MappedRPCSubscribeEventsArgs[Evt] extends Record<string, never> ? [Evt] : [Evt, MappedRPCSubscribeEventsArgs[Evt]];
-
-export type Nullable<Type> = Type | null | undefined;
-
-export type NullableFields<Type> = {
-	[FieldKey in keyof Type]: Nullable<Type[FieldKey]>;
-};
