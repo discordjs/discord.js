@@ -188,8 +188,17 @@ describe('Application Command toJSON() results', () => {
 			type: ApplicationCommandOptionType.String,
 			required: true,
 			autocomplete: true,
-			// TODO
 			choices: [],
+		});
+
+		// Starting with zod 4.4.0 (potentially lower), this usecase was broken prior to #11532
+		// (i.e. choices not present at all with autocomplete: true)
+		expect(getStringOption().setAutocomplete(true).toJSON()).toEqual<APIApplicationCommandStringOption>({
+			name: 'owo',
+			description: 'Testing 123',
+			type: ApplicationCommandOptionType.String,
+			required: true,
+			autocomplete: true,
 		});
 
 		expect(

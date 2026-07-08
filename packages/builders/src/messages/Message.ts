@@ -17,6 +17,7 @@ import type {
 	APISeparatorComponent,
 	APITextDisplayComponent,
 	APIMessageTopLevelComponent,
+	APIMessageSharedClientTheme,
 } from 'discord-api-types/v10';
 import { ActionRowBuilder } from '../components/ActionRow.js';
 import { ComponentBuilder } from '../components/Component.js';
@@ -35,13 +36,14 @@ import { AllowedMentionsBuilder } from './AllowedMentions.js';
 import { fileBodyMessagePredicate, messagePredicate } from './Assertions.js';
 import { AttachmentBuilder } from './Attachment.js';
 import { MessageReferenceBuilder } from './MessageReference.js';
+import { SharedClientThemeBuilder } from './SharedClientTheme.js';
 import { EmbedBuilder } from './embed/Embed.js';
 import { PollBuilder } from './poll/Poll.js';
 
 export interface MessageBuilderData extends Partial<
 	Omit<
 		RESTPostAPIChannelMessageJSONBody,
-		'allowed_mentions' | 'attachments' | 'components' | 'embeds' | 'message_reference' | 'poll'
+		'allowed_mentions' | 'attachments' | 'components' | 'embeds' | 'message_reference' | 'poll' | 'shared_client_theme'
 	>
 > {
 	allowed_mentions?: AllowedMentionsBuilder;
@@ -50,6 +52,7 @@ export interface MessageBuilderData extends Partial<
 	embeds: EmbedBuilder[];
 	message_reference?: MessageReferenceBuilder;
 	poll?: PollBuilder;
+	shared_client_theme?: SharedClientThemeBuilder;
 }
 
 /**
@@ -90,7 +93,16 @@ export class MessageBuilder
 	 * @param data - The API data to create this message with
 	 */
 	public constructor(data: Partial<RESTPostAPIChannelMessageJSONBody> = {}) {
-		const { attachments = [], embeds = [], components = [], message_reference, poll, allowed_mentions, ...rest } = data;
+		const {
+			attachments = [],
+			embeds = [],
+			components = [],
+			message_reference,
+			poll,
+			allowed_mentions,
+			shared_client_theme,
+			...rest
+		} = data;
 
 		this.data = {
 			...structuredClone(rest),
@@ -100,6 +112,7 @@ export class MessageBuilder
 			poll: poll && new PollBuilder(poll),
 			components: components.map((component) => createComponentBuilder(component)),
 			message_reference: message_reference && new MessageReferenceBuilder(message_reference),
+			shared_client_theme: shared_client_theme && new SharedClientThemeBuilder(shared_client_theme),
 		};
 	}
 
@@ -637,6 +650,39 @@ export class MessageBuilder
 	}
 
 	/**
+	 * Sets the shared client theme for this message.
+	 *
+	 * @param theme - The shared client theme to set
+	 */
+	public setSharedClientTheme(
+		theme:
+			| APIMessageSharedClientTheme
+			| SharedClientThemeBuilder
+			| ((builder: SharedClientThemeBuilder) => SharedClientThemeBuilder),
+	): this {
+		this.data.shared_client_theme = resolveBuilder(theme, SharedClientThemeBuilder);
+		return this;
+	}
+
+	/**
+	 * Updates the shared client theme for this message (and creates it if it doesn't exist).
+	 *
+	 * @param updater - The function to update the shared client theme with
+	 */
+	public updateSharedClientTheme(updater: (builder: SharedClientThemeBuilder) => void): this {
+		updater((this.data.shared_client_theme ??= new SharedClientThemeBuilder()));
+		return this;
+	}
+
+	/**
+	 * Clears the shared client theme for this message.
+	 */
+	public clearSharedClientTheme(): this {
+		this.data.shared_client_theme = undefined;
+		return this;
+	}
+
+	/**
 	 * Serializes this builder to API-compatible JSON data.
 	 *
 	 * Note that by disabling validation, there is no guarantee that the resulting object will be valid.
@@ -644,7 +690,8 @@ export class MessageBuilder
 	 * @param validationOverride - Force validation to run/not run regardless of your global preference
 	 */
 	public toJSON(validationOverride?: boolean): RESTPostAPIChannelMessageJSONBody {
-		const { poll, allowed_mentions, attachments, embeds, components, message_reference, ...rest } = this.data;
+		const { poll, allowed_mentions, attachments, embeds, components, message_reference, shared_client_theme, ...rest } =
+			this.data;
 
 		const data = {
 			...structuredClone(rest),
@@ -656,6 +703,7 @@ export class MessageBuilder
 			// Here, the messagePredicate does specific constraints rather than using the componentPredicate
 			components: components.map((component) => component.toJSON(validationOverride)),
 			message_reference: message_reference?.toJSON(false),
+			shared_client_theme: shared_client_theme?.toJSON(false),
 		};
 
 		validate(messagePredicate, data, validationOverride);
