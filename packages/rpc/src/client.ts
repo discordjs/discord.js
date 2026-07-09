@@ -333,7 +333,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		}).then(async (res) => res.json())) as RESTPostOAuth2AccessTokenResult;
 
 		if (!('access_token' in response)) {
-			throw new Error(response);
+			throw new Error(JSON.stringify(response));
 		}
 
 		return response.access_token;

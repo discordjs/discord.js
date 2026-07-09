@@ -1,4 +1,4 @@
-export const register: (scheme: string) => boolean = (() => {
+export const register: unknown = (() => {
 	try {
 		// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 		const { app } = require('electron');
@@ -7,7 +7,9 @@ export const register: (scheme: string) => boolean = (() => {
 		try {
 			// eslint-disable-next-line @typescript-eslint/no-require-imports
 			return require('register-scheme');
-		} catch {}
+		} catch {
+			return false;
+		}
 	}
 })();
 

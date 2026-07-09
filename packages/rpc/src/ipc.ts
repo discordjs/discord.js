@@ -75,7 +75,7 @@ async function getIPC(id = 0, { promise, resolve, reject } = Promise.withResolve
 export function encode(op: number, data: HandshakePayload | Record<string, never> | RPCMessagePayload | string) {
 	const stringifiedData = JSON.stringify(data);
 	const length = Buffer.byteLength(stringifiedData);
-	const packet = Buffer.alloc(8 + length);
+	const packet = Buffer.allocUnsafe(8 + length);
 
 	packet.writeInt32LE(op, 0);
 	packet.writeInt32LE(length, 4);
@@ -102,7 +102,7 @@ export class IPCTransport extends AsyncEventEmitter {
 		const socket = this.socket;
 
 		socket.on('close', this.onClose.bind(this));
-		socket.on('error', this.onClose.bind(this));
+		socket.on('error', this.onError.bind(this));
 
 		this.emit('open');
 
@@ -152,11 +152,16 @@ export class IPCTransport extends AsyncEventEmitter {
 		}
 	}
 
-	public onClose(error: boolean) {
+	public onClose(data: unknown) {
 		this.socket.removeAllListeners();
 		this.socket = new Socket();
 		this.working = [];
+		const error = typeof data === 'boolean' ? new Error('socket closed') : data;
 		this.emit('close', error);
+	}
+
+	public onError(error: unknown) {
+		this.emit('error', error);
 	}
 
 	public send(data: string, op: OPCodes.Ping): void;
