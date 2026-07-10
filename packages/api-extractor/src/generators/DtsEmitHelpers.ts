@@ -7,6 +7,7 @@ import { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import { AstImport, AstImportKind } from '../analyzer/AstImport.js';
 import { SourceFileLocationFormatter } from '../analyzer/SourceFileLocationFormatter.js';
 import type { Span } from '../analyzer/Span.js';
+import { TypeScriptHelpers } from '../analyzer/TypeScriptHelpers.js';
 import type { Collector } from '../collector/Collector.js';
 import type { CollectorEntity } from '../collector/CollectorEntity.js';
 import type { IndentedWriter } from './IndentedWriter.js';
@@ -154,6 +155,130 @@ export class DtsEmitHelpers {
 				span.modification.skipAll();
 				span.modification.prefix = `${referencedEntity.nameForEmit}${typeArgumentsText}${separatorAfter}`;
 			}
+		}
+	}
+
+	/**
+	 * Checks if an export keyword is part of an ExportDeclaration inside a namespace
+	 * (e.g., "export \{ Foo, Bar \};" inside "declare namespace SDK \{ ... \}").
+	 * In that case, the export keyword must be preserved, otherwise the output is invalid TypeScript.
+	 */
+	public static isExportKeywordInNamespaceExportDeclaration(node: ts.Node): boolean {
+		if (node.parent && ts.isExportDeclaration(node.parent)) {
+			const moduleBlock: ts.ModuleBlock | undefined = TypeScriptHelpers.findFirstParent(
+				node,
+				ts.SyntaxKind.ModuleBlock,
+			);
+			if (moduleBlock) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Given an array that includes some parameter nodes, this returns an array of the same length;
+	 * elements that are not undefined correspond to a parameter that should be renamed.
+	 */
+	public static forEachParameterToNormalize(
+		nodes: readonly ts.Node[],
+		action: (parameter: ts.ParameterDeclaration, syntheticName: string | undefined) => void,
+	): void {
+		let actionIndex = 0;
+
+		// Optimistically assume that no parameters need to be normalized
+		for (actionIndex = 0; actionIndex < nodes.length; ++actionIndex) {
+			const parameter: ts.Node = nodes[actionIndex]!;
+			if (!ts.isParameter(parameter)) {
+				continue;
+			}
+
+			if (ts.isObjectBindingPattern(parameter.name) || ts.isArrayBindingPattern(parameter.name)) {
+				// Our optimistic assumption was not true; we'll need to stop and calculate alreadyUsedNames
+				break;
+			}
+
+			action(parameter, undefined);
+		}
+
+		if (actionIndex === nodes.length) {
+			// Our optimistic assumption was true
+			return;
+		}
+
+		// First, calculate alreadyUsedNames
+		const alreadyUsedNames: string[] = [];
+
+		for (const node of nodes) {
+			const parameter: ts.Node = node!;
+			if (!ts.isParameter(parameter)) {
+				continue;
+			}
+
+			if (!(ts.isObjectBindingPattern(parameter.name) || ts.isArrayBindingPattern(parameter.name))) {
+				alreadyUsedNames.push(parameter.name.text.trim());
+			}
+		}
+
+		// Now continue with the rest of the actions
+		for (; actionIndex < nodes.length; ++actionIndex) {
+			const parameter: ts.Node = nodes[actionIndex]!;
+			if (!ts.isParameter(parameter)) {
+				continue;
+			}
+
+			if (ts.isObjectBindingPattern(parameter.name) || ts.isArrayBindingPattern(parameter.name)) {
+				// Examples:
+				//
+				//      function f({ y, z }: { y: string, z: string })
+				// ---> function f(options: { y: string, z: string })
+				//
+				//      function f(x: number, [a, b]: [number, number])
+				// ---> function f(x: number, options: [number, number])
+				//
+				// Example of a naming collision:
+				//
+				//      function f({ a }: { a: string }, { b }: { b: string }, options2: string)
+				// ---> function f(options: { a: string }, options3: { b: string }, options2: string)
+				const baseName = 'options';
+				let counter = 2;
+
+				let syntheticName: string = baseName;
+				while (alreadyUsedNames.includes(syntheticName)) {
+					syntheticName = `${baseName}${counter++}`;
+				}
+
+				alreadyUsedNames.push(syntheticName);
+
+				action(parameter, syntheticName);
+			} else {
+				action(parameter, undefined);
+			}
+		}
+	}
+
+	public static normalizeParameterNames(signatureSpan: Span): void {
+		const syntheticNamesByNode: Map<ts.Node, string> = new Map();
+
+		DtsEmitHelpers.forEachParameterToNormalize(
+			signatureSpan.node.getChildren(),
+			(parameter: ts.ParameterDeclaration, syntheticName: string | undefined): void => {
+				if (syntheticName !== undefined) {
+					syntheticNamesByNode.set(parameter.name, syntheticName);
+				}
+			},
+		);
+
+		if (syntheticNamesByNode.size > 0) {
+			signatureSpan.forEach((childSpan: Span): void => {
+				const syntheticName: string | undefined = syntheticNamesByNode.get(childSpan.node);
+				if (syntheticName !== undefined) {
+					childSpan.modification.prefix = syntheticName;
+					childSpan.modification.suffix = '';
+					childSpan.modification.omitChildren = true;
+				}
+			});
 		}
 	}
 }
