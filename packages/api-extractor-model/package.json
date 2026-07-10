@@ -1,6 +1,6 @@
 {
 	"name": "@discordjs/api-extractor-model",
-	"version": "7.30.6",
+	"version": "7.33.8",
 	"description": "A helper library for loading and saving the .api.json files created by API Extractor",
 	"private": true,
 	"repository": {
@@ -31,9 +31,9 @@
 		}
 	},
 	"dependencies": {
-		"@microsoft/tsdoc": "~0.15.1",
-		"@microsoft/tsdoc-config": "~0.17.1",
-		"@rushstack/node-core-library": "5.13.1"
+		"@microsoft/tsdoc": "~0.16.0",
+		"@microsoft/tsdoc-config": "~0.18.1",
+		"@rushstack/node-core-library": "5.23.1"
 	},
 	"devDependencies": {
 		"@types/node": "^24.12.0",
