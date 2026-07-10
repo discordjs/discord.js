@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.26.5](https://github.com/discordjs/discord.js/compare/14.26.4...14.26.5) - (2026-07-10)
+
+## Bug Fixes
+
+- Detect spoiler attachments with flag (v14) (#11561) ([ce29ae9](https://github.com/discordjs/discord.js/commit/ce29ae9815efcaf0ecfaad318709aa9bc8e7bd82))
+
 # [14.26.4](https://github.com/discordjs/discord.js/compare/14.26.3...14.26.4) - (2026-05-01)
 
 ## Bug Fixes
