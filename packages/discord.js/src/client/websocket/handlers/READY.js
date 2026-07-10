@@ -28,8 +28,9 @@ module.exports = (client, { d: data }, shardId) => {
   }
 
   for (const guild of client.guilds.cache.values()) {
-    if (guild.shardId !== shardId || expectedGuilds.has(guild.id)) continue;
-    client.actions.GuildDelete.handle(guild);
+    if (guild.shardId === shardId && !expectedGuilds.has(guild.id)) {
+      client.actions.GuildDelete.handle(guild);
+    }
   }
 
   if (client.application) {

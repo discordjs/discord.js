@@ -130,7 +130,7 @@ class Client extends AsyncEventEmitter {
     this.status = Status.Idle;
 
     /**
-     * A set of guild ids this Client expects to receive
+     * A set of guild ids, sorted into collections by shardId, that this Client expects to receive
      *
      * @name Client#expectedGuilds
      * @type {Collection<number, Set<string>>}
