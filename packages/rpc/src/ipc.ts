@@ -6,8 +6,7 @@ import path from 'node:path';
 import process from 'node:process';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import type { RPCMessagePayload } from 'discord-api-types/v10';
-import type { RPCClient } from './client.js';
-import { RequestOptions } from 'node:http';
+import type { RequestOptions, RPCClient } from './client.js';
 
 enum OPCodes {
 	Handshake,
@@ -114,6 +113,7 @@ export class IPCTransport extends AsyncEventEmitter {
 			}),
 		);
 
+		// paused for manual read management in this.decode()
 		socket.pause();
 
 		socket.on('readable', this.decode.bind(this));
