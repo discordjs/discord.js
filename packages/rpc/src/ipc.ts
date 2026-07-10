@@ -7,6 +7,7 @@ import process from 'node:process';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import type { RPCMessagePayload } from 'discord-api-types/v10';
 import type { RPCClient } from './client.js';
+import { RequestOptions } from 'node:http';
 
 enum OPCodes {
 	Handshake,
@@ -171,17 +172,18 @@ export class IPCTransport extends AsyncEventEmitter {
 		this.socket.write(encode(op, data));
 	}
 
-	public async close() {
+	public async close(options?: RequestOptions) {
 		const { promise, resolve, reject } = Promise.withResolvers();
+		const signal = options?.signal ?? AbortSignal.timeout(10e3);
 
 		this.once('close', (error) => {
-			// eslint-disable-next-line @typescript-eslint/no-use-before-define
-			timeout.close();
 			resolve(error);
 		});
 
-		const timeout = setTimeout(reject, 10e3);
-		timeout.unref();
+		signal.addEventListener('abort', (_: Event, reason?: string) => {
+			if (this.listenerCount('close') === 0) return;
+			reject(reason);
+		});
 
 		this.send({}, OPCodes.Close);
 		this.socket.end();

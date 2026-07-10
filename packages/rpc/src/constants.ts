@@ -155,6 +155,7 @@ import type {
 	RPCVoiceStateDeleteDispatchData,
 	RPCVoiceStateUpdateDispatchData,
 } from 'discord-api-types/v10';
+import type { RequestOptions } from './client';
 
 export enum Events {
 	ApplicationReady = 'ready',
@@ -332,4 +333,6 @@ export interface MappedRPCEventsDispatchData {
 }
 
 export type EventAndArgsParameters<Evt extends RPCEvents> =
-	MappedRPCSubscribeEventsArgs[Evt] extends Record<string, never> ? [Evt] : [Evt, MappedRPCSubscribeEventsArgs[Evt]];
+	MappedRPCSubscribeEventsArgs[Evt] extends Record<string, never>
+		? [Evt]
+		: [Evt, MappedRPCSubscribeEventsArgs[Evt], RequestOptions];

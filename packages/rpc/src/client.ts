@@ -1,6 +1,5 @@
 /* eslint-disable tsdoc/syntax */
 import { randomUUID } from 'node:crypto';
-import { clearTimeout, setTimeout } from 'node:timers';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import type {
 	RESTPostOAuth2AccessTokenResult,
@@ -84,6 +83,10 @@ export interface RPCLoginOptions {
 	clientSecret: string;
 }
 
+export interface RequestOptions {
+	signal?: AbortSignal;
+}
+
 /**
  * The client for interacting with Discord RPC
  */
@@ -96,11 +99,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 
 	public clientSecret: string;
 
-	public ready: boolean;
-
-	public readonly readyAt: Date;
-
-	public readyTimestamp: number;
+	public readyTimestamp: number | null;
 
 	public application: RPCOAuth2Application | null;
 
@@ -111,7 +110,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	/**
 	 * Map of nonces being expected from the transport
 	 */
-	readonly #expected_nonces: Map<
+	readonly #expectedNonces: Map<
 		string,
 		{ reject(this: void, reason?: unknown): void; resolve(this: void, value: unknown): void }
 	>;
@@ -124,60 +123,66 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		this.accessToken = '';
 		this.clientId = '';
 		this.clientSecret = '';
-		this.ready = false;
-		this.readyAt = new Date();
-		this.readyTimestamp = 0;
+		this.readyTimestamp = null;
 		this.application = null;
 		this.user = null;
 
 		this.transport = new IPCTransport(this);
 		this.transport.on('message', this.#onRpcMessage.bind(this));
 
-		this.#expected_nonces = new Map();
+		this.#expectedNonces = new Map();
+	}
+
+	public get readyAt() {
+		if (this.readyTimestamp === null) return null;
+		return new Date(this.readyTimestamp);
+	}
+
+	public get ready() {
+		return this.readyTimestamp !== null;
 	}
 
 	/**
 	 * Search and connect to RPC
 	 */
-	public async connect() {
+	public async connect(options?: RequestOptions) {
 		const { promise, resolve, reject } = Promise.withResolvers<RPCClient>();
+		const signal = options?.signal ?? AbortSignal.timeout(10e3);
 
 		const onReady = () => {
-			// eslint-disable-next-line @typescript-eslint/no-use-before-define
-			clearTimeout(timeout);
-			this.ready = true;
+			this.readyTimestamp = Date.now();
 			resolve(this);
 		};
 
 		const onClose = () => {
-			for (const exp_nonce of this.#expected_nonces.values()) {
+			for (const exp_nonce of this.#expectedNonces.values()) {
 				exp_nonce.reject(new RPCEventError('connection closed'));
 			}
 
-			this.#expected_nonces.clear();
+			this.#expectedNonces.clear();
 
-			this.ready = false;
+			this.readyTimestamp = null;
 
 			this.emit(Events.Disconnected);
 			reject(new Error('connection closed'));
 		};
 
+		signal.addEventListener('abort', (_: Event, reason?: string) => {
+			if (this.listenerCount(RPCEvents.Ready) === 0) return;
+			this.removeListener(RPCEvents.Ready, onReady);
+			this.transport.removeListener('close', onClose);
+
+			reject(new Error(reason));
+		});
+
 		this.once(RPCEvents.Ready, onReady);
 
 		this.transport.once('close', onClose);
 
-		const timeout = setTimeout(() => {
-			this.removeListener(RPCEvents.Ready, onReady);
-			this.transport.removeListener('close', onClose);
-
-			reject(new Error('RPC_CONNECTION_TIMEOUT'));
-		}, 10e3);
-		timeout.unref();
-
 		try {
 			await this.transport.connect();
 		} catch (error) {
-			this.ready = false;
+			this.readyTimestamp = null;
 			this.removeListener(RPCEvents.Ready, onReady);
 			this.transport.removeListener('close', onClose);
 			reject(error);
@@ -199,14 +204,17 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * client.login({ clientId: '1234567', clientSecret: 'abcdef123' });
 	 * ```
 	 */
-	public async login({ clientId, clientSecret, accessToken }: RPCLoginOptions): Promise<RPCClient> {
+	public async login(
+		{ clientId, clientSecret, accessToken }: RPCLoginOptions,
+		options?: RequestOptions,
+	): Promise<RPCClient> {
 		if (!clientId) {
 			throw new Error('A client id must be provided to login');
 		}
 
 		this.clientId = clientId;
 
-		await this.connect();
+		await this.connect(options);
 
 		if (!this.options.scopes) {
 			this.emit(Events.ApplicationReady);
@@ -214,7 +222,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		}
 
 		if (accessToken) {
-			return this.authenticate(accessToken);
+			return this.authenticate(accessToken, options);
 		}
 
 		if (!clientSecret) {
@@ -226,7 +234,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		const authorizeArgs: RPCAuthorizeArgs = { client_id: this.clientId, scopes: this.options.scopes };
 		if (this.options.username) authorizeArgs.username = this.options.username;
 
-		return this.authenticate(await this.authorize(authorizeArgs));
+		return this.authenticate(await this.authorize(authorizeArgs, options), options);
 	}
 
 	/**
@@ -239,16 +247,19 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	async #request<Cmd extends RPCCallableCommands = RPCCallableCommands>(
 		cmd: Cmd,
 		args?: MappedRPCCommandsArgs[Cmd],
+		options?: RequestOptions,
 		evt?: RPCEvents,
 	): Promise<MappedRPCCommandsResultsData[Cmd]>;
 	async #request(
 		cmd: RPCCommands.Subscribe | RPCCommands.Unsubscribe,
 		args: RPCCommandSubscribePayload['args'],
+		options: RequestOptions | undefined,
 		evt: RPCEvents,
 	): Promise<RPCSubscribeResultData | RPCUnsubscribeResultData>;
 	async #request<Cmd extends RPCCallableCommands = RPCCallableCommands>(
 		cmd: Cmd,
 		args: MappedRPCCommandsArgs[Cmd] = {} as MappedRPCCommandsArgs[Cmd],
+		options?: RequestOptions,
 		evt?: RPCEvents,
 	) {
 		return new Promise(
@@ -264,7 +275,10 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 				}
 
 				this.transport.send(payload as RPCMessagePayload);
-				this.#expected_nonces.set(nonce, { resolve, reject });
+				this.#expectedNonces.set(nonce, { resolve, reject });
+				options?.signal?.addEventListener('abort', (_: Event, reason?: string) =>
+					reject(new RPCEventError(`${reason}`)),
+				);
 			},
 		);
 	}
@@ -276,8 +290,9 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		cmd: Cmd,
 		args: MappedRPCCommandsArgs[Cmd],
 		evt?: RPCEvents,
+		options?: RequestOptions,
 	): Promise<MappedRPCCommandsResultsData[Cmd]> {
-		return this.#request(cmd, args, evt);
+		return this.#request(cmd, args, options, evt);
 	}
 
 	/**
@@ -295,18 +310,18 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		} else if (message.cmd === RPCCommands.Dispatch) {
 			this.emit(message.evt, message.data);
 		} else {
-			if (!this.#expected_nonces.has(message.nonce)) {
+			if (!this.#expectedNonces.has(message.nonce)) {
 				return;
 			}
 
-			const { resolve, reject } = this.#expected_nonces.get(message.nonce)!;
+			const { resolve, reject } = this.#expectedNonces.get(message.nonce)!;
 			if ('evt' in message && message.evt === RPCEvents.Error) {
 				reject(new RPCEventError(message.data));
 			} else {
 				resolve(message.data);
 			}
 
-			this.#expected_nonces.delete(message.nonce);
+			this.#expectedNonces.delete(message.nonce);
 		}
 	}
 
@@ -315,8 +330,8 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 *
 	 * @param args - authorize args
 	 */
-	private async authorize(args: RPCAuthorizeArgs): Promise<string> {
-		const { code } = await this.#request(RPCCommands.Authorize, args);
+	private async authorize(args: RPCAuthorizeArgs, options?: RequestOptions): Promise<string> {
+		const { code } = await this.#request(RPCCommands.Authorize, args, options);
 
 		const response = (await fetch(`https://discord.com/api${Routes.oauth2TokenExchange()}`, {
 			method: 'POST',
@@ -330,6 +345,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 				grant_type: 'authorization_code',
 				redirect_uri: this.options.redirectUri!,
 			} satisfies RESTPostOAuth2AccessTokenURLEncodedData),
+			...options,
 		}).then(async (res) => res.json())) as RESTPostOAuth2AccessTokenResult;
 
 		if (!('access_token' in response)) {
@@ -344,8 +360,8 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 *
 	 * @param accessToken - access token
 	 */
-	public async authenticate(accessToken: string): Promise<this> {
-		const { application, user } = await this.#request(RPCCommands.Authenticate, { access_token: accessToken });
+	public async authenticate(accessToken: string, options?: RequestOptions): Promise<this> {
+		const { application, user } = await this.#request(RPCCommands.Authenticate, { access_token: accessToken }, options);
 		this.accessToken = accessToken;
 		this.application = application;
 		this.user = user;
@@ -359,8 +375,8 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * @param id - Guild id
 	 * @param timeout - Timeout request
 	 */
-	public async getGuild(id: Snowflake, timeout: number): Promise<RPCGetGuildResultData> {
-		return this.#request(RPCCommands.GetGuild, { guild_id: id, timeout });
+	public async getGuild(id: Snowflake, timeout: number, options?: RequestOptions): Promise<RPCGetGuildResultData> {
+		return this.#request(RPCCommands.GetGuild, { guild_id: id, timeout }, options);
 	}
 
 	/**
@@ -368,8 +384,8 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 *
 	 * @param timeout - Timeout request
 	 */
-	public async getGuilds(timeout: number): Promise<RPCGetGuildsResultData> {
-		return this.#request(RPCCommands.GetGuilds, { timeout });
+	public async getGuilds(timeout: number, options?: RequestOptions): Promise<RPCGetGuildsResultData> {
+		return this.#request(RPCCommands.GetGuilds, { timeout }, options);
 	}
 
 	/**
@@ -377,8 +393,8 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 *
 	 * @param id - Channel id
 	 */
-	public async getChannel(id: Snowflake): Promise<RPCGetChannelResultData> {
-		return this.#request(RPCCommands.GetChannel, { channel_id: id });
+	public async getChannel(id: Snowflake, options?: RequestOptions): Promise<RPCGetChannelResultData> {
+		return this.#request(RPCCommands.GetChannel, { channel_id: id }, options);
 	}
 
 	/**
@@ -386,8 +402,8 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 *
 	 * @param id - Guild id
 	 */
-	public async getChannels(id: Snowflake): Promise<RPCGetChannelsResultData['channels']> {
-		const { channels } = await this.#request(RPCCommands.GetChannels, { guild_id: id });
+	public async getChannels(id: Snowflake, options?: RequestOptions): Promise<RPCGetChannelsResultData['channels']> {
+		const { channels } = await this.#request(RPCCommands.GetChannels, { guild_id: id }, options);
 		return channels;
 	}
 
@@ -396,8 +412,8 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 *
 	 * @param id - Channel id
 	 */
-	public async createChannelInvite(id: Snowflake): Promise<RPCCreateChannelInviteResultData> {
-		return this.#request(RPCCommands.CreateChannelInvite, { channel_id: id });
+	public async createChannelInvite(id: Snowflake, options?: RequestOptions): Promise<RPCCreateChannelInviteResultData> {
+		return this.#request(RPCCommands.CreateChannelInvite, { channel_id: id }, options);
 	}
 
 	/**
@@ -405,10 +421,17 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 *
 	 * @param devices - Certified devices to send to discord
 	 */
-	public async setCertifiedDevices(devices: RPCCertifiedDevice[]): Promise<RPCSetCertifiedDevicesResultData> {
-		return this.#request(RPCCommands.SetCertifiedDevices, {
-			devices,
-		});
+	public async setCertifiedDevices(
+		devices: RPCCertifiedDevice[],
+		options?: RequestOptions,
+	): Promise<RPCSetCertifiedDevicesResultData> {
+		return this.#request(
+			RPCCommands.SetCertifiedDevices,
+			{
+				devices,
+			},
+			options,
+		);
 	}
 
 	/**
@@ -420,11 +443,16 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	public async setUserVoiceSettings(
 		id: Snowflake,
 		settings: Omit<Partial<RPCSetUserVoiceSettingsArgs>, 'user_id'>,
+		options?: RequestOptions,
 	): Promise<RPCSetUserVoiceSettingsResultData> {
-		return this.#request(RPCCommands.SetUserVoiceSettings, {
-			user_id: id,
-			...settings,
-		});
+		return this.#request(
+			RPCCommands.SetUserVoiceSettings,
+			{
+				user_id: id,
+				...settings,
+			},
+			options,
+		);
 	}
 
 	/**
@@ -439,13 +467,14 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	public async selectVoiceChannel(
 		id: Snowflake,
 		{ timeout, force = false }: Omit<RPCSelectVoiceChannelArgs, 'channel_id'> = {},
+		options?: RequestOptions,
 	): Promise<RPCSelectVoiceChannelResultData> {
 		const args: RPCSelectVoiceChannelArgs = { channel_id: id, force };
 		if (timeout) {
 			args.timeout = timeout;
 		}
 
-		return this.#request(RPCCommands.SelectVoiceChannel, args);
+		return this.#request(RPCCommands.SelectVoiceChannel, args, options);
 	}
 
 	/**
@@ -459,21 +488,22 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	public async selectTextChannel(
 		id: Snowflake,
 		{ timeout }: Omit<RPCSelectTextChannelArgs, 'channel_id'> = {},
+		options?: RequestOptions,
 	): Promise<RPCSelectTextChannelResultData> {
 		const args: RPCSelectTextChannelArgs = { channel_id: id };
 		if (timeout) {
 			args.timeout = timeout;
 		}
 
-		return this.#request(RPCCommands.SelectTextChannel, args);
+		return this.#request(RPCCommands.SelectTextChannel, args, options);
 	}
 
 	/**
 	 * Get current voice settings
 	 *
 	 */
-	public async getVoiceSettings(): Promise<RPCGetVoiceSettingsResultData> {
-		return this.#request(RPCCommands.GetVoiceSettings);
+	public async getVoiceSettings(options?: RequestOptions): Promise<RPCGetVoiceSettingsResultData> {
+		return this.#request(RPCCommands.GetVoiceSettings, options);
 	}
 
 	/**
@@ -482,8 +512,8 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 *
 	 * @param args - Settings
 	 */
-	public async setVoiceSettings(args: RPCSetVoiceSettingsArgs): Promise<unknown> {
-		return this.#request(RPCCommands.SetVoiceSettings, args);
+	public async setVoiceSettings(args: RPCSetVoiceSettingsArgs, options?: RequestOptions): Promise<unknown> {
+		return this.#request(RPCCommands.SetVoiceSettings, args, options);
 	}
 
 	/**
@@ -495,6 +525,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	public async setActivity(
 		activity: RPCSetActivityArgs['activity'] = {},
 		pid: number | null = getPid(),
+		options?: RequestOptions,
 	): Promise<unknown> {
 		activity.instance = Boolean(activity.instance);
 
@@ -508,10 +539,14 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 			}
 		}
 
-		return this.#request(RPCCommands.SetActivity, {
-			pid: pid ?? 0,
-			activity,
-		});
+		return this.#request(
+			RPCCommands.SetActivity,
+			{
+				pid: pid ?? 0,
+				activity,
+			},
+			options,
+		);
 	}
 
 	/**
@@ -520,10 +555,14 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 *
 	 * @param pid - The application's process ID. Defaults to the executing process' PID.
 	 */
-	public async clearActivity(pid: number | null = getPid()): Promise<unknown> {
-		return this.#request(RPCCommands.SetActivity, {
-			pid: pid ?? 0,
-		});
+	public async clearActivity(pid: number | null = getPid(), options?: RequestOptions): Promise<unknown> {
+		return this.#request(
+			RPCCommands.SetActivity,
+			{
+				pid: pid ?? 0,
+			},
+			options,
+		);
 	}
 
 	/**
@@ -531,10 +570,14 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 *
 	 * @param userId - The id of the user to invite
 	 */
-	public async sendJoinInvite(userId: Snowflake): Promise<unknown> {
-		return this.#request(RPCCommands.SendActivityJoinInvite, {
-			user_id: userId,
-		});
+	public async sendJoinInvite(userId: Snowflake, options?: RequestOptions): Promise<unknown> {
+		return this.#request(
+			RPCCommands.SendActivityJoinInvite,
+			{
+				user_id: userId,
+			},
+			options,
+		);
 	}
 
 	/**
@@ -542,31 +585,38 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 *
 	 * @param userId - The id of the user whose request you wish to reject
 	 */
-	public async closeJoinRequest(userId: Snowflake): Promise<unknown> {
-		return this.#request(RPCCommands.CloseActivityJoinRequest, {
-			user_id: userId,
-		});
+	public async closeJoinRequest(userId: Snowflake, options?: RequestOptions): Promise<unknown> {
+		return this.#request(
+			RPCCommands.CloseActivityJoinRequest,
+			{
+				user_id: userId,
+			},
+			options,
+		);
 	}
 
 	/**
 	 * requires `relationships.read` scope
 	 */
-	public async getRelationships() {
-		return this.#request(RPCCommands.GetRelationships);
+	public async getRelationships(options?: RequestOptions) {
+		return this.#request(RPCCommands.GetRelationships, options);
 	}
 
 	/**
 	 * Fetches a user
 	 */
-	public async getUser(id: Snowflake) {
-		return this.#request(RPCCommands.GetUser, { id });
+	public async getUser(id: Snowflake, options?: RequestOptions) {
+		return this.#request(RPCCommands.GetUser, { id }, options);
 	}
 
 	/**
 	 * Fetches a user's profile picture
 	 */
-	public async getImage({ id, format, size }: Omit<RPCGetImageArgs, 'type'>): Promise<string> {
-		return (await this.#request(RPCCommands.GetImage, { type: 'user', id, format, size })).data_url;
+	public async getImage(
+		{ id, format, size }: Omit<RPCGetImageArgs, 'type'>,
+		options?: RequestOptions,
+	): Promise<string> {
+		return (await this.#request(RPCCommands.GetImage, { type: 'user', id, format, size }, options)).data_url;
 	}
 
 	/**
@@ -576,11 +626,26 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * @param args - Args for event e.g. `{ channel_id: '1234' }`
 	 */
 	public async subscribe<Evt extends RPCEvents>(
-		...[event, args]: EventAndArgsParameters<Evt>
+		...[event, args, options]: EventAndArgsParameters<Evt>
 	): Promise<{ unsubscribe(): Promise<RPCUnsubscribeResultData> }> {
-		await this.#request(RPCCommands.Subscribe, args, event);
+		await this.#request(RPCCommands.Subscribe, args, options, event);
 		return {
-			unsubscribe: async () => this.#request(RPCCommands.Unsubscribe, args, event),
+			unsubscribe: async () => this.#request(RPCCommands.Unsubscribe, args, options, event),
+		};
+	}
+
+	/**
+	 * Unsubscribe from an event
+	 *
+	 * @param event - Name of event e.g. `MESSAGE_CREATE`
+	 * @param args - Args for event e.g. `{ channel_id: '1234' }`
+	 */
+	public async unsubscribe<Evt extends RPCEvents>(
+		...[event, args, options]: EventAndArgsParameters<Evt>
+	): Promise<{ subscribe(): Promise<RPCSubscribeResultData> }> {
+		await this.#request(RPCCommands.Subscribe, args, options, event);
+		return {
+			subscribe: async () => this.#request(RPCCommands.Subscribe, args, options, event),
 		};
 	}
 

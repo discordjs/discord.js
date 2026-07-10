@@ -76,8 +76,6 @@ If you don't understand something in the documentation, you are experiencing pro
 [source]: https://github.com/discordjs/discord.js/tree/main/packages/discord.js
 [npm]: https://www.npmjs.com/package/discord.js
 [related-libs]: https://docs.discord.com/developers/developer-tools/community-resources#libraries
-[rpc]: https://www.npmjs.com/package/discord-rpc
-[rpc-source]: https://github.com/discordjs/RPC
 [contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md
 [github-releases]: https://github.com/discordjs/discord.js/releases
 [create-discord-bot-source]: https://github.com/discordjs/discord.js/tree/main/packages/create-discord-bot
