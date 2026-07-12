@@ -123,13 +123,19 @@ class ApplicationCommandManager extends CachedManager {
    *   .catch(console.error)
    */
   async fetch(options) {
-    if (!options) return this._fetchMany();
+    if (options === undefined) {
+      return this._fetchMany();
+    }
 
-    if (typeof options === 'string') return this._fetchSingle({ id: options });
+    if (typeof options === 'string') {
+      return this._fetchSingle({ id: options });
+    }
 
     const { cache, force, guildId, id, locale, withLocalizations } = options;
 
-    if (id) return this._fetchSingle({ cache, force, guildId, id });
+    if (id !== undefined) {
+      return this._fetchSingle({ cache, force, guildId, id });
+    }
 
     return this._fetchMany({ cache, guildId, locale, withLocalizations });
   }
