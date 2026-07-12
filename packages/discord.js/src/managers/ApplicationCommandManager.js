@@ -50,14 +50,14 @@ class ApplicationCommandManager extends CachedManager {
    */
   commandPath({ id, guildId } = {}) {
     if (this.guild ?? guildId) {
-      if (id) {
+      if (id !== undefined) {
         return Routes.applicationGuildCommand(this.client.application.id, this.guild?.id ?? guildId, id);
       }
 
       return Routes.applicationGuildCommands(this.client.application.id, this.guild?.id ?? guildId);
     }
 
-    if (id) {
+    if (id !== undefined) {
       return Routes.applicationCommand(this.client.application.id, id);
     }
 
