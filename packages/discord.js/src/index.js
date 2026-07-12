@@ -103,15 +103,18 @@ exports.VoiceStateManager = require('./managers/VoiceStateManager.js').VoiceStat
 // Structures
 exports.ActionRow = require('./structures/ActionRow.js').ActionRow;
 exports.Activity = require('./structures/Presence.js').Activity;
+exports.ActivityInstance = require('./structures/ActivityInstance.js').ActivityInstance;
+exports.ActivityLocation = require('./structures/ActivityLocation.js').ActivityLocation;
 exports.AnnouncementChannel = require('./structures/AnnouncementChannel.js').AnnouncementChannel;
 exports.AnonymousGuild = require('./structures/AnonymousGuild.js').AnonymousGuild;
+exports.AuthorizingIntegrationOwners =
+  require('./structures/AuthorizingIntegrationOwners.js').AuthorizingIntegrationOwners;
 exports.Application = require('./structures/interfaces/Application.js').Application;
 exports.ApplicationCommand = require('./structures/ApplicationCommand.js').ApplicationCommand;
 exports.ApplicationEmoji = require('./structures/ApplicationEmoji.js').ApplicationEmoji;
 exports.ApplicationRoleConnectionMetadata =
   require('./structures/ApplicationRoleConnectionMetadata.js').ApplicationRoleConnectionMetadata;
 exports.Attachment = require('./structures/Attachment.js').Attachment;
-exports.AttachmentBuilder = require('./structures/AttachmentBuilder.js').AttachmentBuilder;
 exports.AutocompleteInteraction = require('./structures/AutocompleteInteraction.js').AutocompleteInteraction;
 exports.AutoModerationActionExecution =
   require('./structures/AutoModerationActionExecution.js').AutoModerationActionExecution;
@@ -253,8 +256,6 @@ exports.WidgetMember = require('./structures/WidgetMember.js').WidgetMember;
 
 // External
 __exportStar(require('discord-api-types/v10'), exports);
-__exportStar(require('@discordjs/builders'), exports);
-__exportStar(require('@discordjs/formatters'), exports);
 __exportStar(require('@discordjs/rest'), exports);
 __exportStar(require('@discordjs/util'), exports);
 __exportStar(require('@discordjs/ws'), exports);

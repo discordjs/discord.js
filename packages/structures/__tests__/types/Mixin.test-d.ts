@@ -1,4 +1,3 @@
-import { expectNotType, expectType } from 'tsd';
 import { expectTypeOf } from 'vitest';
 import type { MixinTypes } from '../../src/MixinTypes.d.ts';
 import type { kMixinConstruct } from '../../src/utils/symbols.js';
@@ -16,22 +15,26 @@ declare const extendsBothOmitBoth: Omit<
 	keyof Base | typeof kMixinConstruct
 >;
 
-expectType<MixinTypes<Base, [MixinProperty1]>>(extendsNoOmit);
-expectType<MixinTypes<Base<'property1'>, [MixinProperty1<'property1'>]>>(extendsOmitProperty1);
-expectNotType<MixinTypes<Base, [MixinProperty1]>>(extendsOmitProperty1);
-expectNotType<MixinTypes<Base<'property1'>, [MixinProperty1<'property1'>]>>(extendsNoOmit);
+expectTypeOf(extendsNoOmit).toEqualTypeOf<MixinTypes<Base, [MixinProperty1]>>();
+expectTypeOf(extendsOmitProperty1).toEqualTypeOf<MixinTypes<Base<'property1'>, [MixinProperty1<'property1'>]>>();
+expectTypeOf(extendsOmitProperty1).not.toEqualTypeOf<MixinTypes<Base, [MixinProperty1]>>();
+expectTypeOf(extendsNoOmit).not.toEqualTypeOf<MixinTypes<Base<'property1'>, [MixinProperty1<'property1'>]>>();
 
-expectType<MixinTypes<Base, [MixinProperty1, MixinProperty2]>>(extendsBothNoOmit);
+expectTypeOf(extendsBothNoOmit).toEqualTypeOf<MixinTypes<Base, [MixinProperty1, MixinProperty2]>>();
 // Since MixinProperty2 doesn't utilize the type of property1 in kData, this works and is ok
-expectType<MixinTypes<Base<'property1'>, [MixinProperty1<'property1'>, MixinProperty2]>>(extendsBothOmitProperty1);
-expectNotType<MixinTypes<Base, [MixinProperty1, MixinProperty2]>>(extendsBothOmitProperty1);
+expectTypeOf(extendsBothOmitProperty1).toEqualTypeOf<
+	MixinTypes<Base<'property1'>, [MixinProperty1<'property1'>, MixinProperty2]>
+>();
+expectTypeOf(extendsBothOmitProperty1).not.toEqualTypeOf<MixinTypes<Base, [MixinProperty1, MixinProperty2]>>();
 // Since MixinProperty2 doesn't utilize the type of property1 in kData, this works and is ok
-expectNotType<MixinTypes<Base<'property1'>, [MixinProperty1<'property1'>, MixinProperty2]>>(extendsBothNoOmit);
+expectTypeOf(extendsBothNoOmit).not.toEqualTypeOf<
+	MixinTypes<Base<'property1'>, [MixinProperty1<'property1'>, MixinProperty2]>
+>();
 
 // Earlier mixins in the list must specify all properties because of the way merging works
-expectType<
+expectTypeOf(extendsBothOmitBoth).toEqualTypeOf<
 	MixinTypes<Base<'property1' | 'property2'>, [MixinProperty1<'property1' | 'property2'>, MixinProperty2<'property2'>]>
->(extendsBothOmitBoth);
+>();
 
 expectTypeOf<MixinTypes<Base<'property1'>, [MixinProperty1]>>().toBeNever();
 // @ts-expect-error Shouldn't be able to assign non identical omits

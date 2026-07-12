@@ -83,7 +83,7 @@
  *
  * @property {'EmojiType'} EmojiType
  * @property {'EmojiManaged'} EmojiManaged
- * @property {'MissingManageGuildExpressionsPermission'} MissingManageGuildExpressionsPermission
+ * @property {'MissingGuildExpressionsPermission'} MissingGuildExpressionsPermission
  *
  * @property {'NotGuildSoundboardSound'} NotGuildSoundboardSound
  * @property {'NotGuildSticker'} NotGuildSticker
@@ -217,7 +217,7 @@ const keys = [
 
   'EmojiType',
   'EmojiManaged',
-  'MissingManageGuildExpressionsPermission',
+  'MissingGuildExpressionsPermission',
 
   'NotGuildSoundboardSound',
   'NotGuildSticker',

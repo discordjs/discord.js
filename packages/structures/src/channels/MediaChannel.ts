@@ -8,16 +8,15 @@ import { ChannelPermissionMixin } from './mixins/ChannelPermissionMixin.js';
 import { ChannelTopicMixin } from './mixins/ChannelTopicMixin.js';
 import { ThreadOnlyChannelMixin } from './mixins/ThreadOnlyChannelMixin.js';
 
-export interface MediaChannel<Omitted extends keyof APIGuildMediaChannel | '' = ''>
-	extends MixinTypes<
-		Channel<ChannelType.GuildMedia>,
-		[
-			ChannelParentMixin<ChannelType.GuildMedia>,
-			ChannelPermissionMixin<ChannelType.GuildMedia>,
-			ChannelTopicMixin<ChannelType.GuildMedia>,
-			ThreadOnlyChannelMixin<ChannelType.GuildMedia>,
-		]
-	> {}
+export interface MediaChannel<Omitted extends keyof APIGuildMediaChannel | '' = ''> extends MixinTypes<
+	Channel<ChannelType.GuildMedia>,
+	[
+		ChannelParentMixin<ChannelType.GuildMedia>,
+		ChannelPermissionMixin<ChannelType.GuildMedia>,
+		ChannelTopicMixin<ChannelType.GuildMedia>,
+		ThreadOnlyChannelMixin<ChannelType.GuildMedia>,
+	]
+> {}
 
 /**
  * Sample Implementation of a structure for media channels, usable by direct end consumers.

@@ -22,7 +22,6 @@ body:
         - formatters
         - next
         - proxy
-        - proxy-container
         - rest
         - structures
         - ui

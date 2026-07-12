@@ -76,7 +76,7 @@ const libs = {
 			return crypto.seal(nonce, cipherText, additionalData);
 		},
 	}),
-	'@noble/ciphers/chacha': (noble: any): Methods => ({
+	'@noble/ciphers/chacha.js': (noble: any): Methods => ({
 		crypto_aead_xchacha20poly1305_ietf_decrypt(cipherText, additionalData, nonce, key) {
 			const chacha = noble.xchacha20poly1305(key, nonce, additionalData);
 			return chacha.decrypt(cipherText);

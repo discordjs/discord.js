@@ -2,8 +2,8 @@ import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APIChannel, APIPartialChannel, ChannelType, ChannelFlags } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { ChannelFlagsBitField } from '../bitfields/ChannelFlagsBitField.js';
-import { kData, kPatch } from '../utils/symbols.js';
-import { isIdSet } from '../utils/type-guards.js';
+import { kData } from '../utils/symbols.js';
+import { isFieldSet, isIdSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
 import type { ChannelPermissionMixin } from './mixins/ChannelPermissionMixin.js';
 import type { ChannelWebhookMixin } from './mixins/ChannelWebhookMixin.js';
@@ -51,15 +51,6 @@ export class Channel<
 	}
 
 	/**
-	 * {@inheritDoc Structure.[kPatch]}
-	 *
-	 * @internal
-	 */
-	public override [kPatch](data: Partial<ChannelDataType<Type>>) {
-		return super[kPatch](data);
-	}
-
-	/**
 	 * The id of the channel
 	 */
 	public get id() {
@@ -91,9 +82,9 @@ export class Channel<
 	 * to null, respecting Omit behaviors
 	 */
 	public get flags() {
-		const flags =
-			'flags' in this[kData] && typeof this[kData].flags === 'number' ? (this[kData].flags as ChannelFlags) : null;
-		return flags ? new ChannelFlagsBitField(flags) : null;
+		return isFieldSet(this[kData], 'flags', 'number')
+			? new ChannelFlagsBitField(this[kData].flags as ChannelFlags)
+			: null;
 	}
 
 	/**

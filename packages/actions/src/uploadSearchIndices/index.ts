@@ -2,33 +2,35 @@ import process from 'node:process';
 import { setFailed } from '@actions/core';
 import { generateAllIndices } from '@discordjs/scripts';
 import Cloudflare from 'cloudflare';
-import { MeiliSearch } from 'meilisearch';
+import { type EnqueuedTask, MeiliSearch } from 'meilisearch';
 import pLimit from 'p-limit';
 import { fetch } from 'undici';
 
-if (!(process.env.CF_D1_DOCS_API_KEY && process.env.CF_D1_DOCS_ID && process.env.CF_ACCOUNT_ID)) {
+if (!process.env.CF_D1_DOCS_API_KEY || !process.env.CF_D1_DOCS_ID || !process.env.CF_ACCOUNT_ID) {
 	setFailed('Missing Cloudflare D1 environment variables.');
+	process.exit(1);
 }
 
 if (!process.env.SEARCH_API_URL) {
 	setFailed('SEARCH_API_URL is not set');
+	process.exit(1);
 }
 
 if (!process.env.SEARCH_API_KEY) {
 	setFailed('SEARCH_API_KEY is not set');
+	process.exit(1);
 }
 
 const cf = new Cloudflare({
-	apiToken: process.env.CF_D1_DOCS_API_KEY!,
+	apiToken: process.env.CF_D1_DOCS_API_KEY,
 });
 
 const client = new MeiliSearch({
-	host: process.env.SEARCH_API_URL!,
-	apiKey: process.env.SEARCH_API_KEY!,
+	host: process.env.SEARCH_API_URL,
+	apiKey: process.env.SEARCH_API_KEY,
 });
 
-const limit = pLimit(10);
-let promises: Promise<any>[] = [];
+const limit = pLimit(5);
 
 try {
 	console.log('Generating all indices...');
@@ -62,35 +64,31 @@ try {
 
 	console.log('Uploading indices...');
 
-	try {
-		promises = indices.map(async (index) =>
-			limit(async () => {
-				console.log(`Uploading ${index.index}...`);
-				let task;
-				try {
-					task = await client.createIndex(index.index);
-				} catch {}
+	const promises = indices.map(async (index) =>
+		limit(async () => {
+			console.log(`Uploading ${index.index}...`);
+			let task: EnqueuedTask | undefined;
+			try {
+				task = await client.createIndex(index.index);
+			} catch {}
 
-				if (task) {
-					await client.waitForTask(task.taskUid);
-				}
+			if (task) {
+				await client.tasks.waitForTask(task, { timeout: 10_000 });
+			}
 
-				const searchIndex = client.index(index.index);
-				await searchIndex.updateSettings({ sortableAttributes: ['type'] });
+			const searchIndex = client.index(index.index);
+			await searchIndex.updateSettings({ sortableAttributes: ['type'] });
 
-				await searchIndex.addDocuments(index.data);
-			}),
-		);
-	} catch {}
+			await searchIndex.addDocuments(index.data);
+		}),
+	);
+
+	await Promise.all(promises);
 
 	console.log('Uploaded all indices.');
 } catch (error) {
 	const err = error as Error;
+	console.error(err);
 	setFailed(err.message);
-}
-
-try {
-	await Promise.all(promises);
-} catch (error) {
-	console.log(error);
+	process.exit(1);
 }

@@ -7,6 +7,9 @@ const selectMenuWithId = () => new StringSelectMenuBuilder({ custom_id: 'hi' });
 const selectMenuOption = () => new StringSelectMenuOptionBuilder();
 
 const longStr = 'a'.repeat(256);
+const selectMenuOptionLabelAboveLimit = 'a'.repeat(101);
+const selectMenuOptionValueAboveLimit = 'a'.repeat(101);
+const selectMenuOptionDescriptionAboveLimit = 'a'.repeat(101);
 
 const selectMenuOptionData: APISelectMenuOption = {
 	label: 'test',
@@ -48,26 +51,49 @@ function mapStringSelectMenuOptionBuildersToJson(selectMenu: StringSelectMenuBui
 describe('Select Menu Components', () => {
 	describe('Assertion Tests', () => {
 		test('GIVEN valid inputs THEN Select Menu does not throw', () => {
-			expect(() => selectMenu().setCustomId('foo')).not.toThrowError();
-			expect(() => selectMenu().setMaxValues(10)).not.toThrowError();
-			expect(() => selectMenu().setMinValues(3)).not.toThrowError();
-			expect(() => selectMenu().setDisabled(true)).not.toThrowError();
-			expect(() => selectMenu().setDisabled()).not.toThrowError();
-			expect(() => selectMenu().setPlaceholder('description')).not.toThrowError();
+			expect(() =>
+				selectMenu().setCustomId('foo').addOptions({ label: 'test', value: 'test' }).toJSON(),
+			).not.toThrowError();
+			expect(() =>
+				selectMenuWithId().setMaxValues(10).addOptions({ label: 'test', value: 'test' }).toJSON(),
+			).not.toThrowError();
+			expect(() =>
+				selectMenuWithId()
+					.setMinValues(3)
+					.addOptions(
+						{ label: 'test1', value: 'test1' },
+						{ label: 'test2', value: 'test2' },
+						{ label: 'test3', value: 'test3' },
+					)
+					.toJSON(),
+			).not.toThrowError();
+			expect(() =>
+				selectMenuWithId().setDisabled(true).addOptions({ label: 'test', value: 'test' }).toJSON(),
+			).not.toThrowError();
+			expect(() =>
+				selectMenuWithId().setDisabled().addOptions({ label: 'test', value: 'test' }).toJSON(),
+			).not.toThrowError();
+			expect(() =>
+				selectMenuWithId().setPlaceholder('description').addOptions({ label: 'test', value: 'test' }).toJSON(),
+			).not.toThrowError();
 			const option = selectMenuOption()
 				.setLabel('test')
 				.setValue('test')
 				.setDefault(true)
 				.setEmoji({ name: 'test' })
 				.setDescription('description');
-			expect(() => selectMenu().addOptions(option)).not.toThrowError();
-			expect(() => selectMenu().setOptions(option)).not.toThrowError();
-			expect(() => selectMenu().setOptions({ label: 'test', value: 'test' })).not.toThrowError();
-			expect(() => selectMenu().addOptions([option])).not.toThrowError();
-			expect(() => selectMenu().setOptions([option])).not.toThrowError();
-			expect(() => selectMenu().setOptions([{ label: 'test', value: 'test' }])).not.toThrowError();
+			expect(() => selectMenuWithId().addOptions(option).toJSON()).not.toThrowError();
+			expect(() => selectMenuWithId().setOptions(option).toJSON()).not.toThrowError();
+			expect(() => selectMenuWithId().setOptions({ label: 'test', value: 'test' }).toJSON()).not.toThrowError();
+			expect(() => selectMenuWithId().addOptions([option]).toJSON()).not.toThrowError();
+			expect(() => selectMenuWithId().setOptions([option]).toJSON()).not.toThrowError();
 			expect(() =>
-				selectMenu()
+				selectMenuWithId()
+					.setOptions([{ label: 'test', value: 'test' }])
+					.toJSON(),
+			).not.toThrowError();
+			expect(() =>
+				selectMenuWithId()
 					.addOptions({
 						label: 'test',
 						value: 'test',
@@ -87,26 +113,37 @@ describe('Select Menu Components', () => {
 								animated: true,
 							},
 						},
-					]),
+					])
+					.toJSON(),
 			).not.toThrowError();
 
 			const options = Array.from<APISelectMenuOption>({ length: 25 }).fill({ label: 'test', value: 'test' });
 
-			expect(() => selectMenu().addOptions(...options)).not.toThrowError();
-			expect(() => selectMenu().setOptions(...options)).not.toThrowError();
-			expect(() => selectMenu().addOptions(options)).not.toThrowError();
-			expect(() => selectMenu().setOptions(options)).not.toThrowError();
-
 			expect(() =>
-				selectMenu()
-					.addOptions({ label: 'test', value: 'test' })
-
-					.addOptions(...Array.from<APISelectMenuOption>({ length: 24 }).fill({ label: 'test', value: 'test' })),
+				selectMenuWithId()
+					.addOptions(...options)
+					.toJSON(),
 			).not.toThrowError();
 			expect(() =>
-				selectMenu()
+				selectMenuWithId()
+					.setOptions(...options)
+					.toJSON(),
+			).not.toThrowError();
+			expect(() => selectMenuWithId().addOptions(options).toJSON()).not.toThrowError();
+			expect(() => selectMenuWithId().setOptions(options).toJSON()).not.toThrowError();
+
+			expect(() =>
+				selectMenuWithId()
+					.addOptions({ label: 'test', value: 'test' })
+
+					.addOptions(...Array.from<APISelectMenuOption>({ length: 24 }).fill({ label: 'test', value: 'test' }))
+					.toJSON(),
+			).not.toThrowError();
+			expect(() =>
+				selectMenuWithId()
 					.addOptions([{ label: 'test', value: 'test' }])
-					.addOptions(Array.from<APISelectMenuOption>({ length: 24 }).fill({ label: 'test', value: 'test' })),
+					.addOptions(Array.from<APISelectMenuOption>({ length: 24 }).fill({ label: 'test', value: 'test' }))
+					.toJSON(),
 			).not.toThrowError();
 		});
 
@@ -196,26 +233,30 @@ describe('Select Menu Components', () => {
 
 			expect(() => {
 				selectMenuOption()
-					.setLabel(longStr)
-					.setValue(longStr)
+					.setLabel(selectMenuOptionLabelAboveLimit)
+					.setValue(selectMenuOptionValueAboveLimit)
 					// @ts-expect-error: Invalid default value
 					.setDefault(-1)
 					// @ts-expect-error: Invalid emoji
 					.setEmoji({ name: 1 })
-					.setDescription(longStr)
+					.setDescription(selectMenuOptionDescriptionAboveLimit)
 					.toJSON();
 			}).toThrowError();
 		});
 
 		test('GIVEN valid option types THEN does not throw', () => {
 			expect(() =>
-				selectMenu().addOptions({
-					label: 'test',
-					value: 'test',
-				}),
+				selectMenuWithId()
+					.addOptions({
+						label: 'test',
+						value: 'test',
+					})
+					.toJSON(),
 			).not.toThrowError();
 
-			expect(() => selectMenu().addOptions(selectMenuOption().setLabel('test').setValue('test'))).not.toThrowError();
+			expect(() =>
+				selectMenuWithId().addOptions(selectMenuOption().setLabel('test').setValue('test')).toJSON(),
+			).not.toThrowError();
 		});
 
 		test('GIVEN valid JSON input THEN valid JSON history is correct', () => {

@@ -11,19 +11,18 @@ import { ChannelSlowmodeMixin } from './mixins/ChannelSlowmodeMixin.js';
 import { TextChannelMixin } from './mixins/TextChannelMixin.js';
 import { ThreadChannelMixin } from './mixins/ThreadChannelMixin.js';
 
-export interface PublicThreadChannel<Omitted extends keyof APIPublicThreadChannel | '' = ''>
-	extends MixinTypes<
-		Channel<ChannelType.PublicThread>,
-		[
-			TextChannelMixin<ChannelType.PublicThread>,
-			ChannelOwnerMixin<ChannelType.PublicThread>,
-			ChannelParentMixin<ChannelType.PublicThread>,
-			ChannelPinMixin<ChannelType.PublicThread>,
-			ChannelSlowmodeMixin<ChannelType.PublicThread>,
-			ThreadChannelMixin<ChannelType.PublicThread>,
-			AppliedTagsMixin,
-		]
-	> {}
+export interface PublicThreadChannel<Omitted extends keyof APIPublicThreadChannel | '' = ''> extends MixinTypes<
+	Channel<ChannelType.PublicThread>,
+	[
+		TextChannelMixin<ChannelType.PublicThread>,
+		ChannelOwnerMixin<ChannelType.PublicThread>,
+		ChannelParentMixin<ChannelType.PublicThread>,
+		ChannelPinMixin<ChannelType.PublicThread>,
+		ChannelSlowmodeMixin<ChannelType.PublicThread>,
+		ThreadChannelMixin<ChannelType.PublicThread>,
+		AppliedTagsMixin,
+	]
+> {}
 
 /**
  * Sample Implementation of a structure for public thread channels, usable by direct end consumers.

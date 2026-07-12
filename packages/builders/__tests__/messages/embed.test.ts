@@ -1,5 +1,6 @@
+import { embedLength } from '@discordjs/util';
 import { describe, test, expect } from 'vitest';
-import { EmbedBuilder, embedLength } from '../../src/index.js';
+import { EmbedBuilder } from '../../src/index.js';
 
 const alpha = 'abcdefghijklmnopqrstuvwxyz';
 

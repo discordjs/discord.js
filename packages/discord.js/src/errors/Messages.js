@@ -88,8 +88,8 @@ const Messages = {
 
   [ErrorCodes.EmojiType]: 'Emoji must be a string or GuildEmoji/ReactionEmoji',
   [ErrorCodes.EmojiManaged]: 'Emoji is managed and has no Author.',
-  [ErrorCodes.MissingManageGuildExpressionsPermission]: guild =>
-    `Client must have Manage Guild Expressions permission in guild ${guild} to see emoji authors.`,
+  [ErrorCodes.MissingGuildExpressionsPermission]: guild =>
+    `Client must have Create Guild Expressions or Manage Guild Expressions permission in guild ${guild} to see emoji authors.`,
 
   [ErrorCodes.NotGuildSoundboardSound]: action =>
     `Soundboard sound is a default (non-guild) soundboard sound and can't be ${action}.`,

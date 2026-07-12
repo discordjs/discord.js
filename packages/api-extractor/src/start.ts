@@ -2,7 +2,7 @@
 // See LICENSE in the project root for license information.
 
 import * as os from 'node:os';
-import * as process from 'node:process';
+import process from 'node:process';
 import colors from 'colors';
 import { Extractor } from './api/Extractor.js';
 import { ApiExtractorCommandLine } from './cli/ApiExtractorCommandLine.js';

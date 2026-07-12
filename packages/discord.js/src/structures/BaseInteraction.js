@@ -5,6 +5,7 @@ const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { InteractionType, ApplicationCommandType, ComponentType } = require('discord-api-types/v10');
 const { SelectMenuTypes } = require('../util/Constants.js');
 const { PermissionsBitField } = require('../util/PermissionsBitField.js');
+const { AuthorizingIntegrationOwners } = require('./AuthorizingIntegrationOwners.js');
 const { Base } = require('./Base.js');
 
 /**
@@ -123,12 +124,15 @@ class BaseInteraction extends Base {
     );
 
     /**
-     * Mapping of installation contexts that the interaction was authorized for the related user or guild ids
+     * Mapping of integration types that the application was authorized for the related user or guild ids
      *
-     * @type {APIAuthorizingIntegrationOwnersMap}
+     * @type {AuthorizingIntegrationOwners}
      * @see {@link https://discord.com/developers/docs/interactions/receiving-and-responding#interaction-object-authorizing-integration-owners-object}
      */
-    this.authorizingIntegrationOwners = data.authorizing_integration_owners;
+    this.authorizingIntegrationOwners = new AuthorizingIntegrationOwners(
+      this.client,
+      data.authorizing_integration_owners,
+    );
 
     /**
      * Context where the interaction was triggered from

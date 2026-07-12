@@ -1,11 +1,10 @@
 import type { Buffer } from 'node:buffer';
-import { clearTimeout, setTimeout } from 'node:timers';
 import type Redis from 'ioredis/built/Redis.js';
 import type { IRPCBroker } from '../Broker.js';
 import type { RedisBrokerOptions } from './BaseRedis.js';
 import { BaseRedisBroker, DefaultRedisBrokerOptions } from './BaseRedis.js';
 
-interface InternalPromise {
+export interface InternalPromise {
 	reject(error: any): void;
 	resolve(data: any): void;
 	timeout: NodeJS.Timeout;

@@ -641,7 +641,7 @@ class Guild extends AnonymousGuild {
   }
 
   /**
-   * The maximum bitrate available for this guild
+   * The maximum bitrate available for a voice channel in this guild
    *
    * @type {number}
    * @readonly
@@ -661,6 +661,16 @@ class Guild extends AnonymousGuild {
       default:
         return 96_000;
     }
+  }
+
+  /**
+   * The maximum bitrate available for a stage channel in this guild
+   *
+   * @type {number}
+   * @readonly
+   */
+  get maximumStageBitrate() {
+    return 64_000;
   }
 
   /**

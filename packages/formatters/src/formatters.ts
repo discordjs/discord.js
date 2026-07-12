@@ -1,4 +1,3 @@
-import type { URL } from 'node:url';
 import type { Snowflake } from 'discord-api-types/globals';
 
 /**
@@ -289,8 +288,8 @@ export function chatInputApplicationCommandMention<
 >(
 	commandId: CommandId,
 	commandName: CommandName,
-	subcommandName?: SubcommandName | undefined,
-	subcommandGroupName?: SubcommandGroupName | undefined,
+	subcommandName?: SubcommandName,
+	subcommandGroupName?: SubcommandGroupName,
 ):
 	| `</${CommandName} ${SubcommandGroupName} ${SubcommandName}:${CommandId}>`
 	| `</${CommandName} ${SubcommandName}:${CommandId}>`
@@ -687,7 +686,6 @@ export function email<Email extends string>(
  */
 export function email<Email extends string>(email: Email, headers?: Record<string, string | readonly string[]>) {
 	if (headers) {
-		// eslint-disable-next-line n/prefer-global/url-search-params
 		const searchParams = new URLSearchParams(
 			Object.fromEntries(Object.entries(headers).map(([key, value]) => [key.toLowerCase(), value])),
 		);

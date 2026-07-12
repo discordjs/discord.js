@@ -35,6 +35,24 @@ const getAttachment = lazy(() => require('./Attachment.js').Attachment);
  */
 
 /**
+ * @typedef {BaseModalData} RadioGroupModalData
+ * @property {string} customId The custom id of the radio group
+ * @property {?string} value The value selected for the radio group
+ */
+
+/**
+ * @typedef {BaseModalData} CheckboxGroupModalData
+ * @property {string} customId The custom id of the checkbox group
+ * @property {string[]} values The values selected for the checkbox group
+ */
+
+/**
+ * @typedef {BaseModalData} CheckboxModalData
+ * @property {string} customId The custom id of the checkbox
+ * @property {boolean} value Whether this checkbox was selected
+ */
+
+/**
  * @typedef {BaseModalData} TextInputModalData
  * @property {string} customId The custom id of the component
  * @property {string} value The value of the component
@@ -45,7 +63,7 @@ const getAttachment = lazy(() => require('./Attachment.js').Attachment);
  */
 
 /**
- * @typedef {SelectMenuModalData|TextInputModalData|FileUploadModalData} ModalData
+ * @typedef {SelectMenuModalData|TextInputModalData|FileUploadModalData|RadioGroupModalData|CheckboxGroupModalData|CheckboxModalData} ModalData
  */
 
 /**

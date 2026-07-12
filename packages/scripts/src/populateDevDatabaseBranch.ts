@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import process, { cwd } from 'node:process';
+import process from 'node:process';
 import { create } from '@actions/glob';
 import { put } from '@vercel/blob';
 import { createPool } from '@vercel/postgres';
@@ -8,7 +8,7 @@ const pool = createPool({
 	connectionString: process.env.DATABASE_URL,
 });
 
-process.chdir(`${cwd()}/../../`);
+process.chdir(`${process.cwd()}/../../`);
 const globber = await create(`packages/*/docs/*.api.json`);
 for await (const file of globber.globGenerator()) {
 	const parsed = /(?<semver>\d+.\d+.\d+)-?.*/.exec(file);

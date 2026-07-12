@@ -78,7 +78,7 @@ If you don't understand something in the documentation, you are experiencing pro
 [discord-developers]: https://discord.gg/discord-developers
 [source]: https://github.com/discordjs/discord.js/tree/main/packages/discord.js
 [npm]: https://www.npmjs.com/package/discord.js
-[related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
+[related-libs]: https://docs.discord.com/developers/developer-tools/community-resources#libraries
 [rpc]: https://www.npmjs.com/package/discord-rpc
 [rpc-source]: https://github.com/discordjs/RPC
 [contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md
@@ -95,5 +95,5 @@ If you don't understand something in the documentation, you are experiencing pro
 [util-source]: https://github.com/discordjs/discord.js/tree/main/packages/util
 [voice-source]: https://github.com/discordjs/discord.js/tree/main/packages/voice
 [ws-source]: https://github.com/discordjs/discord.js/tree/main/packages/ws
-[proxy-container-source]: https://github.com/discordjs/discord.js/tree/main/packages/proxy-container
+[proxy-container-source]: https://github.com/discordjs/discord.js/tree/main/apps/proxy-container
 [good-first-issue]: https://github.com/discordjs/discord.js/contribute

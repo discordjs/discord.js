@@ -93,7 +93,7 @@ const thread = await channel.threads.create({
 console.log(`Created thread: ${thread.name}`);
 ```
 
-They can also be created from an existing message with the `Message#startThread` method, but will be "orphaned" if that message is deleted. The thread is not deleted along with the message and will still be available through the hcannels thread list!
+They can also be created from an existing message with the `Message#startThread` method, but will be "orphaned" if that message is deleted. The thread is not deleted along with the message and will still be available through the channels thread list!
 
 ```js
 // [!code word:startThread]

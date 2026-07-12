@@ -8,20 +8,16 @@ import type {
 import type { RestOrArray } from '../../util/normalizeArray.js';
 import { normalizeArray } from '../../util/normalizeArray.js';
 
-export interface CommandData
-	extends Partial<
-		Pick<
-			RESTPostAPIApplicationCommandsJSONBody,
-			'contexts' | 'default_member_permissions' | 'integration_types' | 'nsfw'
-		>
-	> {}
+export interface CommandData extends Partial<
+	Pick<RESTPostAPIApplicationCommandsJSONBody, 'contexts' | 'default_member_permissions' | 'integration_types' | 'nsfw'>
+> {}
 
 /**
  * The base class for all command builders.
  */
-export abstract class CommandBuilder<Command extends RESTPostAPIApplicationCommandsJSONBody>
-	implements JSONEncodable<Command>
-{
+export abstract class CommandBuilder<
+	Command extends RESTPostAPIApplicationCommandsJSONBody,
+> implements JSONEncodable<Command> {
 	/**
 	 * The API data associated with this command.
 	 *

@@ -1,7 +1,7 @@
 'use strict';
 
 const { Buffer } = require('node:buffer');
-const { isJSONEncodable, lazy } = require('@discordjs/util');
+const { isJSONEncodable, isRawFileEncodable, lazy } = require('@discordjs/util');
 const { DiscordSnowflake } = require('@sapphire/snowflake');
 const { DiscordjsError, DiscordjsRangeError, ErrorCodes } = require('../errors/index.js');
 const { resolveFile } = require('../util/DataResolver.js');
@@ -190,17 +190,28 @@ class MessagePayload {
       }
     }
 
-    const attachments = this.options.files?.map((file, index) => ({
-      id: index.toString(),
-      description: file.description,
-      title: file.title,
-      waveform: file.waveform,
-      duration_secs: file.duration,
-    }));
+    let attachments = this.options.files?.map((file, index) =>
+      isRawFileEncodable(file)
+        ? {
+            id: index.toString(),
+            ...file.toJSON(),
+          }
+        : {
+            id: index.toString(),
+            description: file.description,
+            title: file.title,
+            waveform: file.waveform,
+            duration_secs: file.duration,
+          },
+    );
+
+    // Only passable during edits
     if (Array.isArray(this.options.attachments)) {
-      this.options.attachments.push(...(attachments ?? []));
-    } else {
-      this.options.attachments = attachments;
+      attachments ??= [];
+      attachments.push(
+        // Note how we don't check for file body encodable, since we aren't expecting file data here
+        ...this.options.attachments.map(attachment => (isJSONEncodable(attachment) ? attachment.toJSON() : attachment)),
+      );
     }
 
     let poll;
@@ -217,6 +228,18 @@ class MessagePayload {
             duration: this.options.poll.duration,
             allow_multiselect: this.options.poll.allowMultiselect,
             layout_type: this.options.poll.layoutType,
+          };
+    }
+
+    let shared_client_theme;
+    if (this.options.sharedClientTheme) {
+      shared_client_theme = isJSONEncodable(this.options.sharedClientTheme)
+        ? this.options.sharedClientTheme.toJSON()
+        : {
+            colors: this.options.sharedClientTheme.colors,
+            gradient_angle: this.options.sharedClientTheme.gradientAngle,
+            base_mix: this.options.sharedClientTheme.baseMix,
+            base_theme: this.options.sharedClientTheme.baseTheme,
           };
     }
 
@@ -237,11 +260,12 @@ class MessagePayload {
           : allowedMentions,
       flags,
       message_reference,
-      attachments: this.options.attachments,
+      attachments,
       sticker_ids: this.options.stickers?.map(sticker => sticker.id ?? sticker),
       thread_name: threadName,
       applied_tags: appliedTags,
       poll,
+      shared_client_theme,
     };
     return this;
   }
@@ -273,6 +297,8 @@ class MessagePayload {
     if (ownAttachment) {
       attachment = fileLike;
       name = findName(attachment);
+    } else if (isRawFileEncodable(fileLike)) {
+      return fileLike.getRawFile();
     } else {
       attachment = fileLike.attachment;
       name = fileLike.name ?? findName(attachment);

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { describe, test, expect, vitest, beforeAll, beforeEach } from 'vitest';
 import * as VoiceConnection from '../src/VoiceConnection';
 import { joinVoiceChannel } from '../src/joinVoiceChannel';
@@ -21,7 +20,7 @@ describe('joinVoiceChannel', () => {
 			guildId: '456',
 			adapterCreator,
 		});
-		expect(createVoiceConnection.mock.calls[0][0]).toMatchObject({
+		expect(createVoiceConnection.mock.calls[0]?.[0]).toMatchObject({
 			channelId: '123',
 			guildId: '456',
 			group: 'default',
@@ -35,7 +34,7 @@ describe('joinVoiceChannel', () => {
 			group: 'abc',
 			adapterCreator,
 		});
-		expect(createVoiceConnection.mock.calls[0][0]).toMatchObject({
+		expect(createVoiceConnection.mock.calls[0]?.[0]).toMatchObject({
 			channelId: '123',
 			guildId: '456',
 			group: 'abc',

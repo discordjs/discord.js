@@ -1,4 +1,5 @@
 {
+	"$schema": "./node_modules/@favware/cliff-jumper/assets/cliff-jumper.schema.json",
 	"name": "create-discord-bot",
 	"packagePath": "packages/create-discord-bot",
 	"tagTemplate": "{{name}}@{{new-version}}",

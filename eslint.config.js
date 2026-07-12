@@ -17,7 +17,27 @@ const commonFiles = '{js,mjs,cjs,ts,mts,cts,jsx,tsx}';
 
 const commonRuleset = merge(...common, { files: [`**/*${commonFiles}`] });
 
-const nodeRuleset = merge(...node, { files: [`**/*${commonFiles}`] });
+const nodeRuleset = merge(...node, {
+	files: [`**/*${commonFiles}`],
+	rules: {
+		'no-restricted-globals': 0,
+		'n/prefer-global/buffer': [2, 'never'],
+		'n/prefer-global/console': [2, 'always'],
+		'n/prefer-global/process': [2, 'never'],
+		'n/prefer-global/text-decoder': [2, 'always'],
+		'n/prefer-global/text-encoder': [2, 'always'],
+		'n/prefer-global/url-search-params': [2, 'always'],
+		'n/prefer-global/url': [2, 'always'],
+		'unicorn/better-regex': 1,
+	},
+});
+
+const nodeBinRuleset = {
+	files: [`**/bin/*{js,mjs,cjs,ts,mts,cts}`],
+	rules: {
+		'n/shebang': [0],
+	},
+};
 
 const typeScriptRuleset = merge(...typescript, {
 	files: [`**/*${commonFiles}`],
@@ -53,8 +73,10 @@ const typeScriptRuleset = merge(...typescript, {
 	},
 });
 
+const nextAppsGlob = `apps/{guide,website}/**/*${commonFiles}`;
+
 const reactRuleset = merge(...react, {
-	files: [`apps/**/*${commonFiles}`, `packages/ui/**/*${commonFiles}`],
+	files: [nextAppsGlob, `packages/ui/**/*${commonFiles}`],
 	plugins: {
 		'react-compiler': reactCompiler,
 	},
@@ -68,11 +90,11 @@ const reactRuleset = merge(...react, {
 	},
 });
 
-const jsxa11yRuleset = merge(...jsxa11y, { files: [`apps/**/*${commonFiles}`, `packages/ui/**/*${commonFiles}`] });
+const jsxa11yRuleset = merge(...jsxa11y, { files: [nextAppsGlob, `packages/ui/**/*${commonFiles}`] });
 
-const nextRuleset = merge(...next, { files: [`apps/**/*${commonFiles}`] });
+const nextRuleset = merge(...next, { files: [nextAppsGlob] });
 
-const edgeRuleset = merge(...edge, { files: [`apps/**/*${commonFiles}`] });
+const edgeRuleset = merge(...edge, { files: [nextAppsGlob] });
 
 const prettierRuleset = merge(...prettier, { files: [`**/*${commonFiles}`] });
 
@@ -93,6 +115,7 @@ export default defineConfig(
 	},
 	commonRuleset,
 	nodeRuleset,
+	nodeBinRuleset,
 	typeScriptRuleset,
 	{
 		files: ['**/*{ts,mts,cts,tsx}'],
@@ -107,6 +130,7 @@ export default defineConfig(
 		rules: {
 			'consistent-this': 0,
 			'unicorn/no-this-assignment': 0,
+			'@typescript-eslint/no-duplicate-type-constituents': 0,
 			'@typescript-eslint/no-this-alias': 0,
 		},
 	},
@@ -123,7 +147,6 @@ export default defineConfig(
 	{
 		files: [`packages/{api-extractor,api-extractor-model,api-extractor-utils}/**/*${commonFiles}`],
 		rules: {
-			'n/prefer-global/process': 0,
 			'@typescript-eslint/naming-convention': 0,
 			'@typescript-eslint/no-empty-interface': 0,
 			'@typescript-eslint/no-empty-object-type': 0,
@@ -201,7 +224,8 @@ export default defineConfig(
 			'@typescript-eslint/no-empty-object-type': 0,
 			'@typescript-eslint/no-use-before-define': 0,
 			'@typescript-eslint/consistent-type-imports': 0,
-			'@stylistic/ts/lines-between-class-members': 0,
+			'@stylistic/lines-between-class-members': 0,
+			'@typescript-eslint/no-duplicate-type-constituents': 0,
 			'no-restricted-syntax': [
 				2,
 				{
@@ -236,11 +260,6 @@ export default defineConfig(
 	{
 		files: [`packages/rest/**/*${commonFiles}`],
 		rules: {
-			'n/prefer-global/url': 0,
-			'n/prefer-global/url-search-params': 0,
-			'n/prefer-global/buffer': 0,
-			'n/prefer-global/process': 0,
-			'no-restricted-globals': 0,
 			'unicorn/prefer-node-protocol': 0,
 		},
 	},
@@ -255,8 +274,6 @@ export default defineConfig(
 	{
 		files: [`packages/voice/**/*${commonFiles}`],
 		rules: {
-			'no-restricted-globals': 0,
-			'n/prefer-global/buffer': 0,
 			'@typescript-eslint/no-unsafe-declaration-merging': 0,
 		},
 	},

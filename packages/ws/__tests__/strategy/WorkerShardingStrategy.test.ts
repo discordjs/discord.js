@@ -1,5 +1,4 @@
 /* eslint-disable id-length */
-import { setImmediate } from 'node:timers';
 import type { GatewayDispatchPayload, GatewaySendPayload } from 'discord-api-types/v10';
 import { GatewayDispatchEvents, GatewayOpcodes } from 'discord-api-types/v10';
 import { test, vi, expect, afterEach } from 'vitest';

@@ -45,7 +45,7 @@ export default async function Page(props: { readonly params: Promise<{ slug?: st
 			<DocsTitle>{page.data.title}</DocsTitle>
 			<DocsDescription>{page.data.description}</DocsDescription>
 			<DocsBody>
-				{/* eslint-disable-next-line @stylistic/jsx/jsx-pascal-case */}
+				{/* eslint-disable-next-line @stylistic/jsx-pascal-case */}
 				<MDX components={getMDXComponents()} />
 			</DocsBody>
 		</DocsPage>

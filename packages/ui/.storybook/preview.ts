@@ -1,5 +1,5 @@
 import type { Preview } from '@storybook/react';
-import { withThemeByClassName } from '@storybook/addon-styling';
+import { withThemeByClassName } from '@storybook/addon-themes';
 
 import '@unocss/reset/tailwind-compat.css';
 import './preview.css';

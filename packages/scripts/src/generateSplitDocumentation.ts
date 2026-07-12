@@ -1,6 +1,6 @@
 import { mkdir, stat, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { cwd } from 'node:process';
+import process from 'node:process';
 import {
 	type ApiClass,
 	type ApiConstructor,
@@ -537,10 +537,15 @@ function resolveFileUrl(item: ApiDeclaredItem) {
 				sourceURL: `/docs/packages/${pkgName}/${version}/${(currentItem.parent as ApiEntryPoint).importPath}/${currentItem.displayName}:${currentItem.kind}`,
 			};
 		}
-	} else if (fileUrl?.includes('/dist/') && fileUrl.includes('/main/packages/')) {
-		const [, pkg] = fileUrl.split('/main/packages/');
+	} else if (fileUrl?.includes('/dist/') && fileUrl.includes('/packages/')) {
+		const [dir, pkg] = fileUrl.split('/packages/');
 		const pkgName = pkg!.split('/')[0];
-		const version = 'main';
+		const prefix = pkgName === 'discord.js' ? '' : '@discordjs/';
+		const version =
+			dir?.split('/').at(-1) === 'main'
+				? 'main'
+				: // eslint-disable-next-line unicorn/better-regex
+					item.getAssociatedPackage()?.dependencies?.[`${prefix}${pkgName}`]?.replace(/[~^]/, '');
 
 		// https://github.com/discordjs/discord.js/tree/main/packages/builders/dist/index.d.ts
 		let currentItem = item;
@@ -1001,14 +1006,14 @@ async function writeSplitDocsToFileSystem({
 	const dir = 'split';
 
 	try {
-		(await stat(join(cwd(), 'docs', packageName, dir))).isDirectory();
+		(await stat(join(process.cwd(), 'docs', packageName, dir))).isDirectory();
 	} catch {
-		await mkdir(join(cwd(), 'docs', packageName, dir), { recursive: true });
+		await mkdir(join(process.cwd(), 'docs', packageName, dir), { recursive: true });
 	}
 
 	await writeFile(
 		join(
-			cwd(),
+			process.cwd(),
 			'docs',
 			packageName,
 			dir,

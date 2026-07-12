@@ -16,8 +16,7 @@ import {
 import type { WebhooksAPI } from './webhook.js';
 
 export interface CreateInteractionResponseOptions
-	extends APIInteractionResponseCallbackData,
-		RESTPostAPIInteractionCallbackQuery {
+	extends APIInteractionResponseCallbackData, RESTPostAPIInteractionCallbackQuery {
 	files?: RawFile[];
 }
 
