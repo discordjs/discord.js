@@ -5,7 +5,8 @@ const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { GuildInvite } = require('../structures/GuildInvite.js');
-const { resolveInviteCode, resolveFile } = require('../util/DataResolver.js');
+const { resolveInviteCode, createInviteFormData } = require('../util/DataResolver.js');
+const { _transformAPIInviteTargetUsersJobStatus } = require('../util/Transformers.js');
 const { CachedManager } = require('./CachedManager.js');
 /**
  * Manages API methods for GuildInvites and stores their cache.
@@ -240,7 +241,7 @@ class GuildInviteManager extends CachedManager {
       target_type: targetType,
     };
     const invite = await this.client.rest.post(Routes.channelInvites(id), {
-      body: targetUsersFile ? await this._createInviteFormData({ targetUsersFile, ...options }) : options,
+      body: targetUsersFile ? await createInviteFormData(this.client, { targetUsersFile, ...options }) : options,
       // This is necessary otherwise rest stringifies the body
       passThroughBody: Boolean(targetUsersFile),
       reason,
@@ -287,7 +288,7 @@ class GuildInviteManager extends CachedManager {
     const code = resolveInviteCode(invite);
 
     return this.client.rest.put(Routes.inviteTargetUsers(code), {
-      body: await this._createInviteFormData({ targetUsersFile }),
+      body: await createInviteFormData(this.client, { targetUsersFile }),
       // This is necessary otherwise rest stringifies the body
       passThroughBody: true,
     });
@@ -302,36 +303,7 @@ class GuildInviteManager extends CachedManager {
   async fetchTargetUsersJobStatus(invite) {
     const code = resolveInviteCode(invite);
     const job = await this.client.rest.get(Routes.inviteTargetUsersJobStatus(code));
-    return {
-      status: job.status,
-      totalUsers: job.total_users,
-      processedUsers: job.processed_users,
-      createdAt: job.created_at ? new Date(job.created_at) : null,
-      completedAt: job.completed_at ? new Date(job.completed_at) : null,
-      errorMessage: job.error_message ?? null,
-    };
-  }
-
-  /**
-   * Creates form data body payload for invite
-   *
-   * @param {InviteCreateOptions} options The options for creating invite
-   * @returns {Promise<FormData>}
-   * @private
-   */
-  async _createInviteFormData({ targetUsersFile, ...rest } = {}) {
-    const formData = new FormData();
-    let usersCsv;
-    if (Array.isArray(targetUsersFile)) {
-      usersCsv = targetUsersFile.map(user => this.client.users.resolveId(user)).join('\n');
-    } else {
-      const resolved = await resolveFile(targetUsersFile);
-      usersCsv = resolved.data.toString('utf8');
-    }
-
-    formData.append('target_users_file', new Blob([usersCsv], { type: 'text/csv' }), 'users.csv');
-    formData.append('payload_json', JSON.stringify(rest));
-    return formData;
+    return _transformAPIInviteTargetUsersJobStatus(job);
   }
 }
 

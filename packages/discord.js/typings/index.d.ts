@@ -2094,7 +2094,7 @@ export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvit
   public guild: Guild | InviteGuild | null;
   public readonly guildId: Snowflake;
   public channel: NonThreadGuildBasedChannel | null;
-  public roles: Collection<Snowflake, Role> | null;
+  public roles: Collection<Snowflake, InviteRole | Role> | null;
   public targetType: InviteTargetType | null;
   public targetUser: User | null;
   public targetApplication: IntegrationApplication | null;
@@ -3034,32 +3034,40 @@ export interface RoleColorsEditResolvable {
   tertiaryColor?: ColorResolvable | null;
 }
 
-export class Role extends Base {
-  private constructor(client: Client<true>, data: APIRole, guild: Guild);
+export class BaseRole extends Base {
+  protected constructor(client: Client<true>, data: APIRole);
   public colors: RoleColors;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
+  public get hexColor(): HexColorString;
+  public id: Snowflake;
+  public name: string;
+  public rawPosition: number;
+  public icon: string | null;
+  public unicodeEmoji: string | null;
+  public iconURL(options?: ImageURLOptions): string | null;
+  public toJSON(): unknown;
+  public toString(): RoleMention;
+}
+
+export class InviteRole extends BaseRole {}
+
+export class Role extends BaseRole {
+  private constructor(client: Client<true>, data: APIRole, guild: Guild);
   public get editable(): boolean;
   public flags: RoleFlagsBitField;
   public guild: Guild;
-  public get hexColor(): HexColorString;
   public hoist: boolean;
-  public id: Snowflake;
   public managed: boolean;
   public get members(): Collection<Snowflake, GuildMember>;
   public mentionable: boolean;
-  public name: string;
   public permissions: Readonly<PermissionsBitField>;
   public get position(): number;
-  public rawPosition: number;
   public tags: RoleTagData | null;
   public comparePositionTo(role: RoleResolvable): number;
-  public icon: string | null;
-  public unicodeEmoji: string | null;
   public delete(reason?: string): Promise<Role>;
   public edit(options: RoleEditOptions): Promise<Role>;
   public equals(role: Role): boolean;
-  public iconURL(options?: ImageURLOptions): string | null;
   public permissionsIn(
     channel: NonThreadGuildBasedChannel | Snowflake,
     checkAdmin?: boolean,
@@ -3072,8 +3080,6 @@ export class Role extends Base {
   public setIcon(icon: Base64Resolvable | BufferResolvable | EmojiResolvable | null, reason?: string): Promise<Role>;
   public setPosition(position: number, options?: SetRolePositionOptions): Promise<Role>;
   public setUnicodeEmoji(unicodeEmoji: string | null, reason?: string): Promise<Role>;
-  public toJSON(): unknown;
-  public toString(): RoleMention;
 }
 
 export type RoleFlagsString = keyof typeof RoleFlags;
@@ -4615,7 +4621,6 @@ export class GuildInviteManager extends DataManager<string, GuildInvite, GuildIn
   public fetch(options: FetchInviteOptions | InviteResolvable): Promise<GuildInvite>;
   public fetch(options?: FetchInvitesOptions): Promise<Collection<string, GuildInvite>>;
   public delete(invite: InviteResolvable, reason?: string): Promise<void>;
-  private _createInviteFormData(options: InviteCreateOptions): Promise<FormData>;
 }
 
 export class GuildScheduledEventManager extends CachedManager<

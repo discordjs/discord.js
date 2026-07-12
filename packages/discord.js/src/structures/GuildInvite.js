@@ -1,14 +1,19 @@
 'use strict';
 
+const { Buffer } = require('node:buffer');
 const { Collection } = require('@discordjs/collection');
+const { lazy } = require('@discordjs/util');
 const { Routes, PermissionFlagsBits, InviteType } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
+const { createInviteFormData } = require('../util/DataResolver.js');
 const { InviteFlagsBitField } = require('../util/InviteFlagsBitField.js');
+const { _transformAPIInviteTargetUsersJobStatus } = require('../util/Transformers.js');
 const { BaseInvite } = require('./BaseInvite.js');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent.js');
 const { IntegrationApplication } = require('./IntegrationApplication.js');
 const { InviteGuild } = require('./InviteGuild.js');
-const { Role } = require('./Role.js');
+
+const getInviteRole = lazy(() => require('./InviteRole.js').InviteRole);
 
 /**
  * A channel invite leading to a guild.
@@ -185,9 +190,14 @@ class GuildInvite extends BaseInvite {
       /**
        * The roles assigned to the user upon accepting the invite.
        *
-       * @type {Collection|null}
+       * @type {?Collection<Snowflake, Role|InviteRole>}
        */
-      this.roles = new Collection(data.roles.map(role => [role.id, new Role(this.client, role, this.guild)]));
+      this.roles = new Collection(
+        data.roles.map(role => [
+          role.id,
+          this.guild?.roles?._add(role, false) ?? new (getInviteRole())(this.client, role),
+        ]),
+      );
     } else {
       this.roles ??= null;
     }
@@ -226,8 +236,12 @@ class GuildInvite extends BaseInvite {
    * for all the users able to accept this invite
    * @returns {Promise<unknown>}
    */
-  updateTargetUsers(targetUsersFile) {
-    return this.guild.invites.updateTargetUsers(this.code, targetUsersFile);
+  async updateTargetUsers(targetUsersFile) {
+    return this.client.rest.put(Routes.inviteTargetUsers(this.code), {
+      body: await createInviteFormData(this.client, { targetUsersFile }),
+      // This is necessary otherwise rest stringifies the body
+      passThroughBody: true,
+    });
   }
 
   /**
@@ -235,8 +249,10 @@ class GuildInvite extends BaseInvite {
    *
    * @returns {Promise<Buffer>}
    */
-  fetchTargetUsers() {
-    return this.guild.invites.fetchTargetUsers(this.code);
+  async fetchTargetUsers() {
+    const arrayBuff = await this.client.rest.get(Routes.inviteTargetUsers(this.code));
+
+    return Buffer.from(arrayBuff);
   }
 
   /**
@@ -244,8 +260,9 @@ class GuildInvite extends BaseInvite {
    *
    * @returns {Promise<TargetUsersJobStatusForInvite>}
    */
-  fetchTargetUsersJobStatus() {
-    return this.guild.invites.fetchTargetUsersJobStatus(this.code);
+  async fetchTargetUsersJobStatus() {
+    const job = await this.client.rest.get(Routes.inviteTargetUsersJobStatus(this.code));
+    return _transformAPIInviteTargetUsersJobStatus(job);
   }
 
   toJSON() {
