@@ -42,8 +42,7 @@ export class ModalBuilder implements JSONEncodable<APIModalInteractionResponseCa
 	public constructor({ components, ...data }: Partial<APIModalInteractionResponseCallbackData> = {}) {
 		this.data = { ...data };
 		this.components = (components?.map((component) => createComponentBuilder(component)) ?? []) as (
-			| ActionRowBuilder<ModalActionRowComponentBuilder>
-			| LabelBuilder
+			ActionRowBuilder<ModalActionRowComponentBuilder> | LabelBuilder
 		)[];
 	}
 

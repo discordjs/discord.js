@@ -61,16 +61,16 @@
 		"@types/node": "^18.19.130",
 		"@types/prompts": "^2.4.9",
 		"@types/validate-npm-package-name": "^4.0.2",
-		"@vitest/coverage-v8": "^2.0.5",
+		"@vitest/coverage-v8": "^2.1.9",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.57.1",
 		"eslint-config-neon": "^0.1.62",
 		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.8.1",
-		"terser": "^5.46.0",
+		"prettier": "^3.9.5",
+		"terser": "^5.49.0",
 		"tsup": "^8.5.1",
 		"typescript": "~5.8.3",
-		"vitest": "^2.0.5"
+		"vitest": "^2.1.9"
 	},
 	"engines": {
 		"node": ">=18"
