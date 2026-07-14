@@ -2565,10 +2565,16 @@ export class AttachmentBuilder {
   public attachment: BufferResolvable | Stream;
   public description: string | null;
   public name: string | null;
+  public title: string | null;
+  public waveform: string | null;
+  public duration: number | null;
   public get spoiler(): boolean;
   public setDescription(description: string): this;
   public setFile(attachment: BufferResolvable | Stream, name?: string): this;
   public setName(name: string): this;
+  public setTitle(title: string): this;
+  public setWaveform(waveform: string): this;
+  public setDuration(duration: number): this;
   public setSpoiler(spoiler?: boolean): this;
   public toJSON(): unknown;
   public static from(other: JSONEncodable<AttachmentPayload>): AttachmentBuilder;
@@ -5572,6 +5578,9 @@ export interface BaseApplicationCommandData {
 export interface AttachmentData {
   name?: string;
   description?: string;
+  duration?: number;
+  title?: string;
+  waveform?: string;
 }
 
 export type CommandOptionDataTypeResolvable = ApplicationCommandOptionType;
@@ -6695,6 +6704,9 @@ export interface AttachmentPayload {
   attachment: BufferResolvable | Stream;
   name?: string;
   description?: string;
+  duration?: number;
+  title?: string;
+  waveform?: string;
 }
 
 export type GlobalSweepFilter<Key, Value> = () =>
@@ -7244,8 +7256,12 @@ export interface InteractionReplyOptions extends BaseMessageOptionsWithPoll {
   fetchReply?: boolean;
   flags?:
     | BitFieldResolvable<
-        Extract<MessageFlagsString, 'Ephemeral' | 'SuppressEmbeds' | 'SuppressNotifications' | 'IsComponentsV2'>,
+        Extract<
+          MessageFlagsString,
+          'Ephemeral' | 'IsVoiceMessage' | 'SuppressEmbeds' | 'SuppressNotifications' | 'IsComponentsV2'
+        >,
         | MessageFlags.Ephemeral
+        | MessageFlags.IsVoiceMessage
         | MessageFlags.SuppressEmbeds
         | MessageFlags.SuppressNotifications
         | MessageFlags.IsComponentsV2
@@ -7453,8 +7469,11 @@ export interface MessageCreateOptions extends BaseMessageOptionsWithPoll {
   sharedClientTheme?: JSONEncodable<APIMessageSharedClientTheme> | SharedClientTheme;
   flags?:
     | BitFieldResolvable<
-        Extract<MessageFlagsString, 'SuppressEmbeds' | 'SuppressNotifications' | 'IsComponentsV2'>,
-        MessageFlags.SuppressEmbeds | MessageFlags.SuppressNotifications | MessageFlags.IsComponentsV2
+        Extract<MessageFlagsString, 'IsVoiceMessage' | 'SuppressEmbeds' | 'SuppressNotifications' | 'IsComponentsV2'>,
+        | MessageFlags.IsVoiceMessage
+        | MessageFlags.SuppressEmbeds
+        | MessageFlags.SuppressNotifications
+        | MessageFlags.IsComponentsV2
       >
     | undefined;
 }
