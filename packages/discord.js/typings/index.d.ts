@@ -1305,8 +1305,7 @@ export type ComponentInContainerData =
 
 export interface ContainerComponentData<
   ComponentType extends JSONEncodable<APIComponentInContainer> | ComponentInContainerData =
-    | JSONEncodable<APIComponentInContainer>
-    | ComponentInContainerData,
+    JSONEncodable<APIComponentInContainer> | ComponentInContainerData,
 > extends BaseComponentData {
   components: readonly ComponentType[];
   accentColor?: number;
@@ -4514,10 +4513,7 @@ export class WelcomeScreen extends Base {
 //#region Constants
 
 export type NonSystemMessageType =
-  | MessageType.Default
-  | MessageType.Reply
-  | MessageType.ChatInputCommand
-  | MessageType.ContextMenuCommand;
+  MessageType.Default | MessageType.Reply | MessageType.ChatInputCommand | MessageType.ContextMenuCommand;
 
 export type UndeletableMessageType =
   | MessageType.RecipientAdd
@@ -5588,16 +5584,13 @@ export type CommandOptionDataTypeResolvable = ApplicationCommandOptionType;
 export type CommandOptionChannelResolvableType = ApplicationCommandOptionType.Channel;
 
 export type CommandOptionChoiceResolvableType =
-  | ApplicationCommandOptionType.String
-  | CommandOptionNumericResolvableType;
+  ApplicationCommandOptionType.String | CommandOptionNumericResolvableType;
 
 export type CommandOptionNumericResolvableType =
-  | ApplicationCommandOptionType.Number
-  | ApplicationCommandOptionType.Integer;
+  ApplicationCommandOptionType.Number | ApplicationCommandOptionType.Integer;
 
 export type CommandOptionSubOptionResolvableType =
-  | ApplicationCommandOptionType.Subcommand
-  | ApplicationCommandOptionType.SubcommandGroup;
+  ApplicationCommandOptionType.Subcommand | ApplicationCommandOptionType.SubcommandGroup;
 
 export type CommandOptionNonChoiceResolvableType = Exclude<
   CommandOptionDataTypeResolvable,
@@ -5867,11 +5860,7 @@ export type ChannelPermissionConstant = Snowflake;
 export type RolePermissionConstant = Snowflake;
 
 export type ApplicationCommandPermissionIdResolvable =
-  | GuildChannelResolvable
-  | RoleResolvable
-  | UserResolvable
-  | ChannelPermissionConstant
-  | RolePermissionConstant;
+  GuildChannelResolvable | RoleResolvable | UserResolvable | ChannelPermissionConstant | RolePermissionConstant;
 
 export type ApplicationCommandResolvable = ApplicationCommand | Snowflake;
 
@@ -6021,10 +6010,7 @@ export type CacheConstructors = {
 };
 
 type OverriddenCaches =
-  | 'DMMessageManager'
-  | 'GuildForumThreadManager'
-  | 'GuildMessageManager'
-  | 'GuildTextThreadManager';
+  'DMMessageManager' | 'GuildForumThreadManager' | 'GuildMessageManager' | 'GuildTextThreadManager';
 
 // This doesn't actually work the way it looks 😢.
 // Narrowing the type of `manager.name` doesn't propagate type information to `holds` and the return type.
@@ -6293,11 +6279,7 @@ export interface CollectorResetTimerOptions {
 }
 
 export type ColorResolvable =
-  | keyof typeof Colors
-  | 'Random'
-  | readonly [red: number, green: number, blue: number]
-  | number
-  | HexColorString;
+  keyof typeof Colors | 'Random' | readonly [red: number, green: number, blue: number] | number | HexColorString;
 
 export interface CommandInteractionOption<Cached extends CacheType = CacheType> {
   name: string;
@@ -6331,9 +6313,7 @@ export interface CommandInteractionResolvedData<
 export interface AutocompleteFocusedOption extends Pick<CommandInteractionOption, 'name'> {
   focused: true;
   type:
-    | ApplicationCommandOptionType.String
-    | ApplicationCommandOptionType.Integer
-    | ApplicationCommandOptionType.Number;
+    ApplicationCommandOptionType.String | ApplicationCommandOptionType.Integer | ApplicationCommandOptionType.Number;
   value: string;
 }
 
@@ -6536,10 +6516,7 @@ export interface EmbedField {
 }
 
 export type EmojiIdentifierResolvable =
-  | EmojiResolvable
-  | `${'' | 'a:'}${string}:${Snowflake}`
-  | `<${'' | 'a'}:${string}:${Snowflake}>`
-  | string;
+  EmojiResolvable | `${'' | 'a:'}${string}:${Snowflake}` | `<${'' | 'a'}:${string}:${Snowflake}>` | string;
 
 export type EmojiResolvable = Snowflake | GuildEmoji | ReactionEmoji | ApplicationEmoji;
 
@@ -6693,8 +6670,7 @@ export interface FetchThreadMembersWithoutGuildMemberDataOptions {
 }
 
 export type FetchThreadMembersOptions =
-  | FetchThreadMembersWithGuildMemberDataOptions
-  | FetchThreadMembersWithoutGuildMemberDataOptions;
+  FetchThreadMembersWithGuildMemberDataOptions | FetchThreadMembersWithoutGuildMemberDataOptions;
 
 export interface FetchThreadsOptions {
   archived?: FetchArchivedThreadOptions;
@@ -6710,8 +6686,7 @@ export interface AttachmentPayload {
 }
 
 export type GlobalSweepFilter<Key, Value> = () =>
-  | ((value: Value, key: Key, collection: Collection<Key, Value>) => boolean)
-  | null;
+  ((value: Value, key: Key, collection: Collection<Key, Value>) => boolean) | null;
 
 interface GuildAuditLogsTypes {
   [AuditLogEvent.GuildUpdate]: ['Guild', 'Update'];
@@ -7283,13 +7258,7 @@ export interface InviteGenerationOptions {
 }
 
 export type GuildInvitableChannelResolvable =
-  | TextChannel
-  | VoiceChannel
-  | NewsChannel
-  | StageChannel
-  | ForumChannel
-  | MediaChannel
-  | Snowflake;
+  TextChannel | VoiceChannel | NewsChannel | StageChannel | ForumChannel | MediaChannel | Snowflake;
 
 export interface InviteCreateOptions {
   temporary?: boolean;
@@ -7440,12 +7409,7 @@ export interface BaseMessageOptions {
   embeds?: readonly (JSONEncodable<APIEmbed> | APIEmbed)[];
   allowedMentions?: MessageMentionOptions;
   files?: readonly (
-    | BufferResolvable
-    | Stream
-    | JSONEncodable<APIAttachment>
-    | Attachment
-    | AttachmentBuilder
-    | AttachmentPayload
+    BufferResolvable | Stream | JSONEncodable<APIAttachment> | Attachment | AttachmentBuilder | AttachmentPayload
   )[];
   components?: readonly (
     | JSONEncodable<APIMessageTopLevelComponent>

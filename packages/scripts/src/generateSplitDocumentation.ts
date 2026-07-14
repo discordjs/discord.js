@@ -866,8 +866,7 @@ export function itemHierarchyText({
 
 function itemClass(item: ApiClass) {
 	const constructor = item.members.find((member) => member.kind === ApiItemKind.Constructor) as
-		| ApiConstructor
-		| undefined;
+		ApiConstructor | undefined;
 
 	return {
 		...itemInfo(item),

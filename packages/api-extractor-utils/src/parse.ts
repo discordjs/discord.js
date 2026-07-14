@@ -21,8 +21,7 @@ import { createCommentNode } from './tsdoc/index.js';
 
 export function findPackage(model: ApiModel, name: string): ApiPackage | undefined {
 	return (model.findMembersByName(name)[0] ?? model.findMembersByName(`@discordjs/${name}`)[0]) as
-		| ApiPackage
-		| undefined;
+		ApiPackage | undefined;
 }
 
 function hasOverloadIndex(item: ApiItem): item is ApiFunction | ApiMethod | ApiMethodSignature {

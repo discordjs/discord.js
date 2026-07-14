@@ -13,10 +13,7 @@ import { idValidator } from './Assertions';
  * Any action row component data represented as an object.
  */
 export type AnyAPIActionRowComponent =
-	| APIActionRowComponent<APIComponentInActionRow>
-	| APIComponentInActionRow
-	| APIMessageComponent
-	| APIModalComponent;
+	APIActionRowComponent<APIComponentInActionRow> | APIComponentInActionRow | APIMessageComponent | APIModalComponent;
 
 /**
  * The base component builder that contains common symbols for all sorts of components.
