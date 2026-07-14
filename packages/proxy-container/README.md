@@ -79,5 +79,5 @@ If you don't understand something in the documentation, you are experiencing pro
 [discord]: https://discord.gg/djs
 [discord-api]: https://discord.gg/discord-api
 [source]: https://github.com/discordjs/discord.js/tree/main/packages/proxy-container
-[related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
+[related-libs]: https://docs.discord.com/developers/developer-tools/community-resources#libraries
 [contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md
