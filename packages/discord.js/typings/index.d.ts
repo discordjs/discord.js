@@ -6111,7 +6111,7 @@ export interface ClientEvents {
     newMessage: OmitPartialGroupDMChannel<Message>,
   ];
   presenceUpdate: [oldPresence: Presence | null, newPresence: Presence];
-  /** @deprecated Use {@link ClientEvents.ClientReady} instead. */
+  /** @deprecated Use {@link ClientEvents.clientReady} instead. */
   ready: [client: Client<true>];
   invalidated: [];
   roleCreate: [role: Role];
