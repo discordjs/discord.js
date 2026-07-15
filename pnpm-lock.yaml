@@ -411,8 +411,8 @@ importers:
         specifier: ^2.6.2
         version: 2.6.2
       undici:
-        specifier: 6.24.1
-        version: 6.24.1
+        specifier: ^6.27.0
+        version: 6.27.0
     devDependencies:
       '@types/node':
         specifier: 18.18.8
@@ -953,8 +953,8 @@ importers:
         specifier: 2.6.2
         version: 2.6.2
       undici:
-        specifier: 6.24.1
-        version: 6.24.1
+        specifier: ^6.27.0
+        version: 6.27.0
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1316,8 +1316,8 @@ importers:
         specifier: ^2.6.2
         version: 2.6.2
       undici:
-        specifier: 6.24.1
-        version: 6.24.1
+        specifier: ^6.27.0
+        version: 6.27.0
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1395,8 +1395,8 @@ importers:
         specifier: ^2.6.2
         version: 2.6.2
       undici:
-        specifier: 6.24.1
-        version: 6.24.1
+        specifier: ^6.27.0
+        version: 6.27.0
       yaml:
         specifier: 2.4.3
         version: 2.4.3
@@ -1759,8 +1759,8 @@ importers:
         specifier: ^5.4.5
         version: 5.4.5
       undici:
-        specifier: 6.24.1
-        version: 6.24.1
+        specifier: ^6.27.0
+        version: 6.27.0
       vitest:
         specifier: ^1.6.0
         version: 1.6.0(@edge-runtime/vm@3.2.0)(@types/node@18.17.9)(happy-dom@14.12.0)(terser@5.31.0)
@@ -2755,16 +2755,16 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@definitelytyped/header-parser@0.2.25':
-    resolution: {integrity: sha512-T5hVZCiOOjBNLZlw+MF8CRxNqEYCUptZDfix02DMfdLPgMIgidS2b1mtfk8cwf1Efk8Zm+AKuL5SCSbPbgvFgA==}
+  '@definitelytyped/header-parser@0.2.29':
+    resolution: {integrity: sha512-w2oVQ+VX8zVTXco3NInGwg94SHmoqqfKN5jXkibTrjwevrYTAvxs9OxLZOyO5BdMSF/SIL5L6nJN6C+652mC7w==}
     engines: {node: '>=20.17.0'}
 
-  '@definitelytyped/typescript-versions@0.1.10':
-    resolution: {integrity: sha512-4aBop464n0PUxrlzj1FpAfiNa5P5ENycB0K/Ho22Ay8xAGEGXUpLkaWtFsn2R+Jfn4ldd7lJqfqw0z29sAingQ==}
+  '@definitelytyped/typescript-versions@0.1.12':
+    resolution: {integrity: sha512-sbdf3l4MEhnwGCP0ZxkSdOZH4wtiG7J7YEMwd/i34uAw/yeZkPDhFwORPqdTknzAUmcbIg81aPr6sVk7ZDCgcw==}
     engines: {node: '>=20.17.0'}
 
-  '@definitelytyped/utils@0.1.13':
-    resolution: {integrity: sha512-B9+yLpGZbNHXofccDGOKujBimXrrKTK7NO41QhRwmRar/Z9/t5HdG5IpwdEpiioAbYd1Fju/FCLrI/3KzGweQw==}
+  '@definitelytyped/utils@0.1.14':
+    resolution: {integrity: sha512-dh6J1DPR2WbczPP5/eFeeVh0tXiYTnfM0FTl6NzVqpummcqSzbo9gB2ySXQaK7Xr4bJskz/lszSBuDrz9bFWcw==}
     engines: {node: '>=20.17.0'}
 
   '@discordjs/collection@1.5.3':
@@ -11481,10 +11481,6 @@ packages:
   path-parse@1.0.7:
     resolution: {integrity: sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==}
 
-  path-scurry@1.10.1:
-    resolution: {integrity: sha512-MkhCqzzBEpPvxxQ71Md0b1Kk51W01lrYvlMzSUaIzNsODdd7mqhiimSZlr+VegAz5Z6Vzt9Xg2ttE//XBhH3EQ==}
-    engines: {node: '>=16 || 14 >=14.17'}
-
   path-scurry@1.10.2:
     resolution: {integrity: sha512-7xTavNy5RQXnsjANvVvMkEjvloOinkAjv/Z6Ildz9v2RinZ4SBKTWFOVRbaF8p0vpHnyjV/UwNDdKuUv6M5qcA==}
     engines: {node: '>=16 || 14 >=14.17'}
@@ -13439,6 +13435,10 @@ packages:
     resolution: {integrity: sha512-sC+b0tB1whOCzbtlx20fx3WgCXwkW627p4EA9uM+/tNNPkSS+eSEld6pAs9nDv7WbY1UUljBMYPtu9BCOrCWKA==}
     engines: {node: '>=18.17'}
 
+  undici@6.27.0:
+    resolution: {integrity: sha512-YmfV3YnEDzXRC5lZ2jWtWWHKGUm1zIt8AhesR1tens+HTNv+YZlN/dp6G727LOvMJ8xjP9Be7Y2Sdr96LDm+pg==}
+    engines: {node: '>=18.17'}
+
   unicode-canonical-property-names-ecmascript@2.0.0:
     resolution: {integrity: sha512-yY5PpDlfVIU5+y/BSCxAJRBIS1Zc2dDG3Ujq+sR0U+JjUevW2JhocOF+soROYDSaAezOzOKuyyixhD6mBknSmQ==}
     engines: {node: '>=4'}
@@ -15085,7 +15085,7 @@ snapshots:
       '@babel/helper-split-export-declaration': 7.24.6
       '@babel/parser': 7.24.6
       '@babel/types': 7.24.6
-      debug: 4.4.0
+      debug: 4.4.3
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -15341,19 +15341,19 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@definitelytyped/header-parser@0.2.25':
+  '@definitelytyped/header-parser@0.2.29':
     dependencies:
-      '@definitelytyped/typescript-versions': 0.1.10
-      '@definitelytyped/utils': 0.1.13
+      '@definitelytyped/typescript-versions': 0.1.12
+      '@definitelytyped/utils': 0.1.14
       semver: 7.7.4
     transitivePeerDependencies:
       - bare-abort-controller
       - bare-buffer
       - supports-color
 
-  '@definitelytyped/typescript-versions@0.1.10': {}
+  '@definitelytyped/typescript-versions@0.1.12': {}
 
-  '@definitelytyped/utils@0.1.13':
+  '@definitelytyped/utils@0.1.14':
     dependencies:
       '@types/node': 25.5.0
       cachedir: 2.4.0
@@ -19806,7 +19806,7 @@ snapshots:
 
   '@types/node-fetch@2.6.11':
     dependencies:
-      '@types/node': 18.18.8
+      '@types/node': 18.19.74
       form-data: 4.0.0
 
   '@types/node@16.18.11': {}
@@ -22460,7 +22460,7 @@ snapshots:
 
   dts-critic@3.3.11(typescript@5.4.5):
     dependencies:
-      '@definitelytyped/header-parser': 0.2.25
+      '@definitelytyped/header-parser': 0.2.29
       command-exists: 1.2.9
       rimraf: 3.0.2
       semver: 6.3.1
@@ -22474,9 +22474,9 @@ snapshots:
 
   dtslint@4.2.1(typescript@5.4.5):
     dependencies:
-      '@definitelytyped/header-parser': 0.2.25
-      '@definitelytyped/typescript-versions': 0.1.10
-      '@definitelytyped/utils': 0.1.13
+      '@definitelytyped/header-parser': 0.2.29
+      '@definitelytyped/typescript-versions': 0.1.12
+      '@definitelytyped/utils': 0.1.14
       dts-critic: 3.3.11(typescript@5.4.5)
       fs-extra: 6.0.1
       json-stable-stringify: 1.0.2
@@ -23923,8 +23923,8 @@ snapshots:
       foreground-child: 3.1.1
       jackspeak: 2.3.6
       minimatch: 9.0.5
-      minipass: 7.0.4
-      path-scurry: 1.10.1
+      minipass: 7.1.3
+      path-scurry: 1.11.1
 
   glob@10.3.12:
     dependencies:
@@ -27606,11 +27606,6 @@ snapshots:
 
   path-parse@1.0.7: {}
 
-  path-scurry@1.10.1:
-    dependencies:
-      lru-cache: 10.0.1
-      minipass: 7.0.4
-
   path-scurry@1.10.2:
     dependencies:
       lru-cache: 10.2.2
@@ -30077,6 +30072,8 @@ snapshots:
   undici@6.21.1: {}
 
   undici@6.24.1: {}
+
+  undici@6.27.0: {}
 
   unicode-canonical-property-names-ecmascript@2.0.0: {}
 
