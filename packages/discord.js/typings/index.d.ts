@@ -8062,7 +8062,7 @@ export interface WebhookFetchMessageOptions {
 
 export interface WebhookMessageCreateOptions extends Omit<
   MessageCreateOptions,
-  'nonce' | 'reply' | 'stickers' | 'forward'
+  'nonce' | 'reply' | 'stickers' | 'forward' | 'sharedClientTheme'
 > {
   username?: string;
   avatarURL?: string;
