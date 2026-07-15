@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file.
 
+# [14.27.0](https://github.com/discordjs/discord.js/compare/14.26.5...14.27.0) - (2026-07-15)
+
+## Bug Fixes
+
+- Update `clientReady` event name references (#10632) ([9592aea](https://github.com/discordjs/discord.js/commit/9592aea673df43561d8f7a23d86a29c9e17610cb))
+- **InteractionResponses:** Optional parameter for update() (#10797) ([fbda4fe](https://github.com/discordjs/discord.js/commit/fbda4fe5256802abf3ae4d74e5df8961e7950603))
+- **guide:** Miscellaneous fixes (#11147) ([c53c8c2](https://github.com/discordjs/discord.js/commit/c53c8c276e2aa3b93d2b5b945508be575b291c0b))
+- **GuildChannel:** Manageable perm check (#11166) ([8b342a1](https://github.com/discordjs/discord.js/commit/8b342a14a3d848ba221aed7ec652caf547a2dd78))
+- **StageInstanceManager#create:** Correctly resolve `guildScheduledEvent` (#11540) ([0aabb6c](https://github.com/discordjs/discord.js/commit/0aabb6cde24a10218bd97f452dd9ab112f17c833))
+- **RoleManager:** Allow null in RoleColorsResolvable to clear gradient colors (#11536) ([221680d](https://github.com/discordjs/discord.js/commit/221680dbd13f7610dc95d39a4527ec39854330b6))
+- **GuildChannel:** Handle empty overwrite must only handle @everyone (#11221) ([1e2fdf4](https://github.com/discordjs/discord.js/commit/1e2fdf4a657afd797d633d30b54fea53892f32d1))
+
+## Documentation
+
+- **Attachment:** `string` property ([d646a13](https://github.com/discordjs/discord.js/commit/d646a13d2c086aada7602c92a1b14d86a733a761))
+- Fix close tags (#10756) ([4349e10](https://github.com/discordjs/discord.js/commit/4349e103e25aabc3971a3e6bda3a71301c2d9dd9))
+- Replace Discord API with Discord Developers (#10968) ([538457c](https://github.com/discordjs/discord.js/commit/538457c1d74130f987cd805964bb66a6c2ba75c9))
+- Clarify wording for maximum values (#11231) ([9ec73fa](https://github.com/discordjs/discord.js/commit/9ec73fa687570cc07673df7b12b6b2218ece911f))
+- Fix incorrect casing in the ready event deprecation (#11574) ([0df0628](https://github.com/discordjs/discord.js/commit/0df0628d468df998c775b35e4139800bcf04ce32))
+- Fix typos and duplicated words in comments and guide (#11502) ([63cd992](https://github.com/discordjs/discord.js/commit/63cd9926bb048713e5828a986d92ea1976c792ee))
+
+## Features
+
+- Send voice messages (#11493) ([fed811a](https://github.com/discordjs/discord.js/commit/fed811a66905a2548dcaf70010ea1a0fc1661b98))
+- **Guild:** Add `maximumStageBitrate` (#11313) ([6d2cd99](https://github.com/discordjs/discord.js/commit/6d2cd9952632edbf9ed80eed8c7d018b59c7dfa3))
+- Proper authorizing integration owners structure (#11366) ([b6db455](https://github.com/discordjs/discord.js/commit/b6db455b9963c68864d2f505b728f6d4bac7f888))
+- **RoleManager:** Add `fetchMemberCounts` (#11352) ([3b738ee](https://github.com/discordjs/discord.js/commit/3b738eef58bfd2c8d05a025ada89011627102b7a))
+- Emit voiceServerUpdate event (#11414) ([74a42bf](https://github.com/discordjs/discord.js/commit/74a42bfd108c4e20cc560d700a28282856bdbd86))
+- **GuildMember:** Add collectibles (#11468) ([b0e6aff](https://github.com/discordjs/discord.js/commit/b0e6aff8561d8cc3c1d3726b35b687d147892eda))
+- Add shared client theme support (#11454) ([16fd248](https://github.com/discordjs/discord.js/commit/16fd248c64d056cae7a627b0fca910a96183acc5))
+- **ClientApplication:** Add fetchActivityInstance method (#11481) ([24a0606](https://github.com/discordjs/discord.js/commit/24a0606a744d0d6dc4d080b400d0d8c9795bf4da))
+
+## Refactor
+
+- Reorder imports ([40b7a60](https://github.com/discordjs/discord.js/commit/40b7a60f26332f26abab3e53e5aa72a2325d6196))
+
+## Typings
+
+- **WebhookMessageCreateOptions:** Omit `sharedClientTheme` ([b816b79](https://github.com/discordjs/discord.js/commit/b816b795fc740a57f51cdcf98dddaf7442b61d5c))
+- **Message:** Specify `rawData` arg type (#11123) ([c4531d4](https://github.com/discordjs/discord.js/commit/c4531d45a00dcab94f38adf0ca8273221569ed4b))
+- **UserManager:** Fix send() return type to Promise<Message<false>> (#11337) ([07c4127](https://github.com/discordjs/discord.js/commit/07c412791d3916ce9f62fbd834a2a104453b3cbe))
+
 # [14.26.5](https://github.com/discordjs/discord.js/compare/14.26.4...14.26.5) - (2026-07-10)
 
 ## Bug Fixes
