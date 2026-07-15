@@ -9,7 +9,7 @@ const { flatten } = require('../util/Util');
  * @property {Stream|BufferResolvable} attachment The attachment in this payload
  * @property {string} [name] The name of the attachment
  * @property {string} [description] The description of the attachment
- * @property {title} [title] The title of the attachment
+ * @property {string} [title] The title of the attachment
  * @property {string} [waveform] The base64 encoded bytearray representing a sampled waveform (for voice messages)
  * @property {number} [duration] The duration of the attachment in seconds (for voice messages)
  */
