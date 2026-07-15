@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/rest@2.6.2](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.6.1...@discordjs/rest@2.6.2) - (2026-07-15)
+
+## Bug Fixes
+
+- **guide:** Miscellaneous fixes (#11147) ([c53c8c2](https://github.com/discordjs/discord.js/commit/c53c8c276e2aa3b93d2b5b945508be575b291c0b))
+
+## Documentation
+
+- Fix close tags (#10756) ([4349e10](https://github.com/discordjs/discord.js/commit/4349e103e25aabc3971a3e6bda3a71301c2d9dd9))
+- Replace Discord API with Discord Developers (#10968) ([538457c](https://github.com/discordjs/discord.js/commit/538457c1d74130f987cd805964bb66a6c2ba75c9))
+
 # [@discordjs/rest@2.6.1](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.6.0...@discordjs/rest@2.6.1) - (2026-03-22)
 
 # [@discordjs/rest@2.6.0](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.5.1...@discordjs/rest@2.6.0) - (2025-08-20)
