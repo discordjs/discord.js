@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/core@2.6.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@2.5.0...@discordjs/core@2.6.0) - (2026-07-15)
+
+## Bug Fixes
+
+- SendSoundboardSound return type (#11452) ([85a84ec](https://github.com/discordjs/discord.js/commit/85a84ec65bab3350330e0b5cfbd6cd1721e71441))
+- **guide:** Miscellaneous fixes (#11147) ([c53c8c2](https://github.com/discordjs/discord.js/commit/c53c8c276e2aa3b93d2b5b945508be575b291c0b))
+
+## Documentation
+
+- Fix close tags (#10756) ([4349e10](https://github.com/discordjs/discord.js/commit/4349e103e25aabc3971a3e6bda3a71301c2d9dd9))
+- Replace Discord API with Discord Developers (#10968) ([538457c](https://github.com/discordjs/discord.js/commit/538457c1d74130f987cd805964bb66a6c2ba75c9))
+
+## Features
+
+- **ApplicationsAPI:** Add getActivityInstance method (#11482) ([cc7f65a](https://github.com/discordjs/discord.js/commit/cc7f65a850f296310263b5102f92096ef6a4d916))
+- **GuildsAPI:** Add `getRoleMemberCounts` (#11353) ([7b37177](https://github.com/discordjs/discord.js/commit/7b37177bcf4c53f97b054bc0eb29cebc2982c200))
+
+## Typings
+
+- **core:** Use result types instead of direct types (#11140) ([a51c224](https://github.com/discordjs/discord.js/commit/a51c2248da671a6e9bc1a097a8b33bb97bf6db73))
+
 # [@discordjs/core@2.5.0](https://github.com/discordjs/discord.js/compare/@discordjs/core@2.4.0...@discordjs/core@2.5.0) - (2026-06-13)
 
 ## Bug Fixes
