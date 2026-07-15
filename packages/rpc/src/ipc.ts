@@ -124,7 +124,6 @@ export class IPCTransport extends AsyncEventEmitter {
 			const len = packets.readInt32LE(4);
 			const data = JSON.parse(packets.subarray(8, len + 8).toString());
 			this.working = [];
-
 			// Pong and Handshake is done from the client
 			switch (op) {
 				case OPCodes.Ping:
@@ -151,6 +150,8 @@ export class IPCTransport extends AsyncEventEmitter {
 		while ((packet = this.socket.read()) !== null) {
 			this.working.push(packet);
 		}
+
+		this.socket.emit('end');
 	}
 
 	public onClose(data: unknown) {

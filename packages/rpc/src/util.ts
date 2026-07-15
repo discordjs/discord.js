@@ -1,4 +1,4 @@
-export const register: unknown = (() => {
+export const register: () => unknown = () => {
 	try {
 		// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 		const { app } = require('electron');
@@ -11,7 +11,7 @@ export const register: unknown = (() => {
 			return false;
 		}
 	}
-})();
+};
 
 export function getPid() {
 	// eslint-disable-next-line n/prefer-global/process

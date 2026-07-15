@@ -61,7 +61,7 @@ export interface RPCClientOptions {
 	/**
 	 * An array of scopes
 	 */
-	scopes: OAuth2Scopes[];
+	scopes?: OAuth2Scopes[];
 	/**
 	 * the client username
 	 */
@@ -80,7 +80,7 @@ export interface RPCLoginOptions {
 	/**
 	 * Client Secret
 	 */
-	clientSecret: string;
+	clientSecret?: string;
 }
 
 export interface RequestOptions {
@@ -115,7 +115,8 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		{ reject(this: void, reason?: unknown): void; resolve(this: void, value: unknown): void }
 	>;
 
-	public constructor(options: RPCClientOptions) {
+	public constructor(options?: RPCClientOptions);
+	public constructor(options: RPCClientOptions = {}) {
 		super();
 
 		this.options = options;
@@ -154,7 +155,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 			resolve(this);
 		};
 
-		const onClose = () => {
+		const onClose = (data: unknown) => {
 			for (const exp_nonce of this.#expectedNonces.values()) {
 				exp_nonce.reject(new RPCEventError('connection closed'));
 			}
@@ -164,16 +165,18 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 			this.readyTimestamp = null;
 
 			this.emit(Events.Disconnected);
-			reject(new Error('connection closed'));
+			reject(new RPCEventError(JSON.stringify(data)));
 		};
 
-		signal.addEventListener('abort', (_: Event, reason?: string) => {
+		const onAbort = (_: Event, reason?: string) => {
 			if (this.listenerCount(RPCEvents.Ready) === 0) return;
 			this.removeListener(RPCEvents.Ready, onReady);
 			this.transport.removeListener('close', onClose);
 
 			reject(new Error(reason));
-		});
+		};
+
+		signal.addEventListener('abort', onAbort);
 
 		this.once(RPCEvents.Ready, onReady);
 
@@ -181,6 +184,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 
 		try {
 			await this.transport.connect();
+			signal.removeEventListener('abort', onAbort);
 		} catch (error) {
 			this.readyTimestamp = null;
 			this.removeListener(RPCEvents.Ready, onReady);
@@ -196,8 +200,8 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 *
 	 * @param options - login options.
 	 * @param options.clientId - client Id.
-	 * @param options.clientSecret - client Secret.
-	 * @param options.accessToken - Access Token.
+	 * @param options.clientSecret - client Secret (required if scopes are specified in constructor).
+	 * @param options.accessToken - Access Token (skips authorization steps).
 	 * @example
 	 * logging in with a client id and secret
 	 * ```ts
@@ -226,7 +230,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		}
 
 		if (!clientSecret) {
-			throw new Error('A client secret must be provided for authorization if no access token is provided');
+			throw new Error('A client secret must be provided for authorization if scopes are included');
 		}
 
 		this.clientSecret = clientSecret;
@@ -333,18 +337,23 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	private async authorize(args: RPCAuthorizeArgs, options?: RequestOptions): Promise<string> {
 		const { code } = await this.#request(RPCCommands.Authorize, args, options);
 
+		const jsonBody: RESTPostOAuth2AccessTokenURLEncodedData = {
+			client_id: this.clientId,
+			client_secret: this.clientSecret,
+			code,
+			grant_type: 'authorization_code',
+		};
+
+		if (this.options.redirectUri) {
+			jsonBody.redirect_uri = this.options.redirectUri;
+		}
+
 		const response = (await fetch(`https://discord.com/api${Routes.oauth2TokenExchange()}`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
-			body: new URLSearchParams({
-				client_id: this.clientId,
-				client_secret: this.clientSecret,
-				code,
-				grant_type: 'authorization_code',
-				redirect_uri: this.options.redirectUri!,
-			} satisfies RESTPostOAuth2AccessTokenURLEncodedData),
+			body: new URLSearchParams(jsonBody),
 			...options,
 		}).then(async (res) => res.json())) as RESTPostOAuth2AccessTokenResult;
 

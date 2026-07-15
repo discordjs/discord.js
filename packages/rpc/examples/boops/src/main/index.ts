@@ -75,10 +75,10 @@ app.on('window-all-closed', () => {
 // code. You can also put them in separate files and require them here.
 
 // Set this to your Client ID.
-const clientId = '280984871685062656'
+const clientId = '1100471145871966258'
 
 // Only needed if you want to use spectate, join, or ask to join
-register(clientId)
+register()
 
 const client = new RPCClient()
 const startTimestamp = new Date().getTime()
@@ -88,12 +88,12 @@ async function setActivity(): Promise<void> {
     return
   }
 
-  const boops = await mainWindow.webContents.executeJavaScript(
+  const boops: string = await mainWindow.webContents.executeJavaScript(
     'document.querySelector("#boops").innerText'
   )
 
   await client.setActivity({
-    details: `booped ${boops} times`,
+    details: `booped ${boops.replace(' BOOPS', '')} times`,
     state: 'in slither party',
     timestamps: { start: startTimestamp },
     instance: false
