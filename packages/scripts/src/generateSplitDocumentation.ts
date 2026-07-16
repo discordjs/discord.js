@@ -537,10 +537,15 @@ function resolveFileUrl(item: ApiDeclaredItem) {
 				sourceURL: `/docs/packages/${pkgName}/${version}/${(currentItem.parent as ApiEntryPoint).importPath}/${currentItem.displayName}:${currentItem.kind}`,
 			};
 		}
-	} else if (fileUrl?.includes('/dist/') && fileUrl.includes('/main/packages/')) {
-		const [, pkg] = fileUrl.split('/main/packages/');
+	} else if (fileUrl?.includes('/dist/') && fileUrl.includes('/packages/')) {
+		const [dir, pkg] = fileUrl.split('/packages/');
 		const pkgName = pkg!.split('/')[0];
-		const version = 'main';
+		const prefix = pkgName === 'discord.js' ? '' : '@discordjs/';
+		const version =
+			dir?.split('/').at(-1) === 'main'
+				? 'main'
+				: // eslint-disable-next-line unicorn/better-regex
+					item.getAssociatedPackage()?.dependencies?.[`${prefix}${pkgName}`]?.replace(/[~^]/, '');
 
 		// https://github.com/discordjs/discord.js/tree/main/packages/builders/dist/index.d.ts
 		let currentItem = item;
