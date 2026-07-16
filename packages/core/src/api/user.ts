@@ -138,7 +138,7 @@ export class UsersAPI {
 	/**
 	 * Gets the current user's active application role connection
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/user#get-user-application-role-connection}
+	 * @see {@link https://docs.discord.com/developers/resources/user#get-current-user-application-role-connection}
 	 * @param applicationId - The id of the application
 	 * @param options - The options for fetching the role connections
 	 */
@@ -151,7 +151,7 @@ export class UsersAPI {
 	/**
 	 * Updates the current user's application role connection
 	 *
-	 * @see {@link https://discord.com/developers/docs/resources/user#update-user-application-role-connection}
+	 * @see {@link https://docs.discord.com/developers/resources/user#update-current-user-application-role-connection}
 	 * @param applicationId - The id of the application
 	 * @param body - The data for updating the application role connection
 	 * @param options - The options for updating the application role connection
@@ -165,5 +165,18 @@ export class UsersAPI {
 			body,
 			signal,
 		}) as Promise<RESTPutAPICurrentUserApplicationRoleConnectionResult>;
+	}
+
+	/**
+	 * Deletes the current user's application role connection
+	 *
+	 * @see {@link https://docs.discord.com/developers/resources/user#delete-current-user-application-role-connection}
+	 * @param applicationId - The id of the application
+	 * @param options - The options for deleting the application role connection
+	 */
+	public async deleteApplicationRoleConnection(applicationId: Snowflake, { signal }: Pick<RequestData, 'signal'> = {}) {
+		await this.rest.delete(Routes.userApplicationRoleConnection(applicationId), {
+			signal,
+		});
 	}
 }
