@@ -115,6 +115,6 @@ If you don't understand something in the documentation, you are experiencing pro
 [discord-developers]: https://discord.gg/discord-developers
 [source]: https://github.com/discordjs/discord.js/tree/main/packages/voice
 [npm]: https://www.npmjs.com/package/@discordjs/voice
-[related-libs]: https://discord.com/developers/docs/topics/community-resources#libraries
+[related-libs]: https://docs.discord.com/developers/developer-tools/community-resources#libraries
 [contributing]: https://github.com/discordjs/discord.js/blob/main/.github/CONTRIBUTING.md
 [voice-examples]: https://github.com/discordjs/voice-examples

@@ -21,6 +21,8 @@ import {
 	type RESTGetAPIGuildMembersResult,
 	type RESTGetAPIGuildMembersSearchQuery,
 	type RESTGetAPIGuildMembersSearchResult,
+	type RESTGetAPIGuildMessagesSearchQuery,
+	type RESTGetAPIGuildMessagesSearchResult,
 	type RESTGetAPIGuildOnboardingResult,
 	type RESTGetAPIGuildPreviewResult,
 	type RESTGetAPIGuildPruneCountQuery,
@@ -1199,6 +1201,26 @@ export class GuildsAPI {
 			query: makeURLSearchParams(query),
 			signal,
 		}) as Promise<RESTGetAPIGuildMembersSearchResult>;
+	}
+
+	/**
+	 * Searches for messages.
+	 *
+	 * @see {@link https://docs.discord.com/developers/resources/message#search-guild-messages}
+	 * @param guildId - The id of the guild to search in
+	 * @param query - The query to search for
+	 * @param options - The options for searching for messages
+	 */
+	public async searchForMessages(
+		guildId: Snowflake,
+		query: RESTGetAPIGuildMessagesSearchQuery,
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
+	) {
+		return this.rest.get(Routes.guildMessagesSearch(guildId), {
+			auth,
+			query: makeURLSearchParams(query),
+			signal,
+		}) as Promise<RESTGetAPIGuildMessagesSearchResult>;
 	}
 
 	/**
