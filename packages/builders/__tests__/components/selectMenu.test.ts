@@ -115,6 +115,7 @@ describe('Select Menu Components', () => {
 		test('GIVEN invalid inputs THEN Select Menu does throw', () => {
 			expect(() => selectMenu().setCustomId(longStr)).toThrowError();
 			expect(() => selectMenu().setMaxValues(30)).toThrowError();
+			expect(() => selectMenu().setMaxValues(0)).toThrowError();
 			expect(() => selectMenu().setMinValues(-20)).toThrowError();
 			// @ts-expect-error: Invalid disabled value
 			expect(() => selectMenu().setDisabled(0)).toThrowError();

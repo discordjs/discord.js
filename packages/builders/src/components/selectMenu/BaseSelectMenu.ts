@@ -1,5 +1,11 @@
 import type { APISelectMenuComponent } from 'discord-api-types/v10';
-import { customIdValidator, disabledValidator, minMaxValidator, placeholderValidator } from '../Assertions.js';
+import {
+	customIdValidator,
+	disabledValidator,
+	maxValuesValidator,
+	minMaxValidator,
+	placeholderValidator,
+} from '../Assertions.js';
 import { ComponentBuilder } from '../Component.js';
 import { requiredValidator } from '../textInput/Assertions.js';
 
@@ -37,7 +43,7 @@ export abstract class BaseSelectMenuBuilder<
 	 * @param maxValues - The maximum values that can be selected
 	 */
 	public setMaxValues(maxValues: number) {
-		this.data.max_values = minMaxValidator.parse(maxValues);
+		this.data.max_values = maxValuesValidator.parse(maxValues);
 		return this;
 	}
 

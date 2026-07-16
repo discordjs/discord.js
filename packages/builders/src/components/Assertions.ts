@@ -43,6 +43,12 @@ export const minMaxValidator = s
 	.greaterThanOrEqual(0)
 	.lessThanOrEqual(25)
 	.setValidationEnabled(isValidationEnabled);
+export const maxValuesValidator = s
+	.number()
+	.int()
+	.greaterThanOrEqual(1)
+	.lessThanOrEqual(25)
+	.setValidationEnabled(isValidationEnabled);
 
 export const labelValueDescriptionValidator = s
 	.string()

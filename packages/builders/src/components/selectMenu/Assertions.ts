@@ -7,7 +7,7 @@ const selectMenuBasePredicate = s.object({
 	id: idValidator.optional(),
 	placeholder: s.string().lengthLessThanOrEqual(150).optional(),
 	min_values: s.number().greaterThanOrEqual(0).lessThanOrEqual(25).optional(),
-	max_values: s.number().greaterThanOrEqual(0).lessThanOrEqual(25).optional(),
+	max_values: s.number().greaterThanOrEqual(1).lessThanOrEqual(25).optional(),
 	custom_id: customIdValidator,
 	disabled: s.boolean().optional(),
 });
