@@ -444,8 +444,8 @@ importers:
         specifier: ^7.0.0
         version: 7.0.0
       commander:
-        specifier: ^14.0.3
-        version: 14.0.3
+        specifier: ^15.0.0
+        version: 15.0.0
       meilisearch:
         specifier: ^0.59.0
         version: 0.59.0
@@ -931,8 +931,8 @@ importers:
   packages/create-discord-bot:
     dependencies:
       commander:
-        specifier: ^14.0.3
-        version: 14.0.3
+        specifier: ^15.0.0
+        version: 15.0.0
       prompts:
         specifier: ^2.4.2
         version: 2.4.2
@@ -1192,8 +1192,8 @@ importers:
   packages/docgen:
     dependencies:
       commander:
-        specifier: ^14.0.3
-        version: 14.0.3
+        specifier: ^15.0.0
+        version: 15.0.0
       jsdoc-to-markdown:
         specifier: ^8.0.3
         version: 8.0.3
@@ -1548,8 +1548,8 @@ importers:
         specifier: ^0.10.0
         version: 0.10.0
       commander:
-        specifier: ^14.0.3
-        version: 14.0.3
+        specifier: ^15.0.0
+        version: 15.0.0
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
@@ -7726,6 +7726,10 @@ packages:
   commander@14.0.3:
     resolution: {integrity: sha512-H+y0Jo/T1RZ9qPP4Eh1pkcQcLRglraJaSLoyOtHxu6AapkjWVCy2Sit1QQ4x3Dng8qDlSsZEet7g5Pq06MvTgw==}
     engines: {node: '>=20'}
+
+  commander@15.0.0:
+    resolution: {integrity: sha512-z67u4ZhzCL/Tydu1lJARtEZYWbWaN7oYLHbsuzocr6y4N6WZAagG3RQ4FW61V1/0+jImpj293XfrcYnd1qxtPg==}
+    engines: {node: '>=22.12.0'}
 
   commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
@@ -19231,6 +19235,8 @@ snapshots:
   commander@12.1.0: {}
 
   commander@14.0.3: {}
+
+  commander@15.0.0: {}
 
   commander@2.20.3: {}
 
