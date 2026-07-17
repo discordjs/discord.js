@@ -78,7 +78,7 @@ importers:
         specifier: ^66.7.5
         version: 66.7.5(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
       vercel:
-        specifier: ^56.2.1
+        specifier: ^54.21.1
         version: 56.2.1(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(bufferutil@4.1.0)(encoding@0.1.13)(rollup@4.62.2)
       vitest:
         specifier: ^4.1.10
@@ -211,7 +211,7 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vercel:
-        specifier: ^56.2.1
+        specifier: ^54.21.1
         version: 56.2.1(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(bufferutil@4.1.0)(encoding@0.1.13)(rollup@4.62.2)
       wrangler:
         specifier: ^4.111.0
@@ -417,7 +417,7 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vercel:
-        specifier: ^56.2.1
+        specifier: ^54.21.1
         version: 56.2.1(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(bufferutil@4.1.0)(encoding@0.1.13)(rollup@4.62.2)
       wrangler:
         specifier: ^4.111.0
@@ -1716,8 +1716,8 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3(babel-plugin-react-compiler@1.0.0)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
       chromatic:
-        specifier: ^17.8.0
-        version: 17.8.0
+        specifier: ^18.0.1
+        version: 18.0.1
       cross-env:
         specifier: ^10.1.0
         version: 10.1.0
@@ -7596,8 +7596,8 @@ packages:
     resolution: {integrity: sha512-+IxzY9BZOQd/XuYPRmrvEVjF/nqj5kgT4kEq7VofrDoM1MxoRjEWkrCC3EtLi59TVawxTAn+orJwFQcrqEN1+g==}
     engines: {node: '>=18'}
 
-  chromatic@17.8.0:
-    resolution: {integrity: sha512-xcn2TGdbrKHQbGAo3wZc5qoKaPe+CEvhAEcky9OCpofGd3DJucLFEYpk8wYgHKgR5XAI9X8Op1C6fWlvdjxE/g==}
+  chromatic@18.0.1:
+    resolution: {integrity: sha512-GlTYrZ4ui5ZW8Jzut6SAo5bMH3sIugYZ37Nq2DyVHBfPINeEzGA8eG5xNo4N/I2aRdM9Xnqw0SCls7wgf2llvA==}
     engines: {node: '>=22.0.0'}
     hasBin: true
     peerDependencies:
@@ -19119,7 +19119,7 @@ snapshots:
 
   chownr@3.0.0: {}
 
-  chromatic@17.8.0:
+  chromatic@18.0.1:
     dependencies:
       semver: 7.7.4
 
