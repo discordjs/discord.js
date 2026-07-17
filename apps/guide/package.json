@@ -91,7 +91,7 @@
 		"tailwindcss": "^4.3.3",
 		"turbo": "^2.10.5",
 		"typescript": "~5.9.3",
-		"vercel": "^54.21.1",
+		"vercel": "^56.2.1",
 		"wrangler": "^4.111.0"
 	},
 	"engines": {

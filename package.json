@@ -73,7 +73,7 @@
 		"typescript": "~5.9.3",
 		"typescript-eslint": "^8.64.0",
 		"unocss": "^66.7.5",
-		"vercel": "^54.21.1",
+		"vercel": "^56.2.1",
 		"vitest": "^4.1.10"
 	},
 	"engines": {
