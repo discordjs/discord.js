@@ -207,12 +207,10 @@ export class DocCommentEnhancer {
 		}
 
 		// Is it referring to the working package?
-		if (
-			!(
-				inheritDocTag.declarationReference.packageName === undefined ||
-				inheritDocTag.declarationReference.packageName === this._collector.workingPackage.name
-			)
-		) {
+		if (!(
+			inheritDocTag.declarationReference.packageName === undefined ||
+			inheritDocTag.declarationReference.packageName === this._collector.workingPackage.name
+		)) {
 			// It's referencing an external package, so skip this inheritDoc tag, since AstReferenceResolver doesn't
 			// support it yet.  As a workaround, this tag will get handled later by api-documenter.
 			// Tracked by:  https://github.com/microsoft/rushstack/issues/1195

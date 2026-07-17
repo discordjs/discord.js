@@ -5,14 +5,12 @@ import { TextChannelMixin } from './TextChannelMixin.js';
 
 export interface VoiceChannelMixin<
 	Type extends ChannelType.GuildStageVoice | ChannelType.GuildVoice =
-		| ChannelType.GuildStageVoice
-		| ChannelType.GuildVoice,
+		ChannelType.GuildStageVoice | ChannelType.GuildVoice,
 > extends Channel<Type> {}
 
 export class VoiceChannelMixin<
 	Type extends ChannelType.GuildStageVoice | ChannelType.GuildVoice =
-		| ChannelType.GuildStageVoice
-		| ChannelType.GuildVoice,
+		ChannelType.GuildStageVoice | ChannelType.GuildVoice,
 > extends TextChannelMixin<Type> {
 	/**
 	 * The bitrate (in bits) of the voice channel.

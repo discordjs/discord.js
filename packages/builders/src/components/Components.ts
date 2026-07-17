@@ -49,18 +49,13 @@ export type MessageTopLevelComponentBuilder =
  * The builders that may be used for messages.
  */
 export type MessageComponentBuilder =
-	| MessageActionRowComponentBuilder
-	| MessageTopLevelComponentBuilder
-	| ThumbnailBuilder;
+	MessageActionRowComponentBuilder | MessageTopLevelComponentBuilder | ThumbnailBuilder;
 
 /**
  * The builders that may be used for modals.
  */
 export type ModalComponentBuilder =
-	| ActionRowBuilder
-	| FileUploadBuilder
-	| LabelBuilder
-	| ModalActionRowComponentBuilder;
+	ActionRowBuilder | FileUploadBuilder | LabelBuilder | ModalActionRowComponentBuilder;
 
 /**
  * Any button builder

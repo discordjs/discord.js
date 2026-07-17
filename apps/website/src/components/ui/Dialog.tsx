@@ -59,7 +59,11 @@ export function DialogHeader({ hasBorder = false, ...props }: DialogHeaderProps)
 		>
 			{props.title && <DialogTitle>{props.title}</DialogTitle>}
 			{props.description && <DialogDescription>{props.description}</DialogDescription>}
-			{!props.title && typeof props.children === 'string' ? <DialogTitle {...props} /> : props.children}
+			{!props.title && typeof props.children === 'string' ? (
+				<DialogTitle>{props.children}</DialogTitle>
+			) : (
+				props.children
+			)}
 		</div>
 	);
 }

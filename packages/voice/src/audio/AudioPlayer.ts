@@ -147,10 +147,7 @@ export interface AudioPlayerPausedState {
  * The various states that the player can be in.
  */
 export type AudioPlayerState =
-	| AudioPlayerBufferingState
-	| AudioPlayerIdleState
-	| AudioPlayerPausedState
-	| AudioPlayerPlayingState;
+	AudioPlayerBufferingState | AudioPlayerIdleState | AudioPlayerPausedState | AudioPlayerPlayingState;
 
 export interface AudioPlayer extends EventEmitter {
 	/**

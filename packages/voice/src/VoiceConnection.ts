@@ -119,8 +119,7 @@ export interface VoiceConnectionDisconnectedWebSocketState extends VoiceConnecti
  * it attempting to connect. You can manually attempt to connect using VoiceConnection#reconnect.
  */
 export type VoiceConnectionDisconnectedState =
-	| VoiceConnectionDisconnectedOtherState
-	| VoiceConnectionDisconnectedWebSocketState;
+	VoiceConnectionDisconnectedOtherState | VoiceConnectionDisconnectedWebSocketState;
 
 /**
  * The state that a VoiceConnection will be in when it is establishing a connection to a Discord

@@ -24,12 +24,7 @@ import { SeparatorBuilder } from './Separator.js';
 import { TextDisplayBuilder } from './TextDisplay';
 
 export type ContainerComponentBuilders =
-	| ActionRowBuilder
-	| FileBuilder
-	| MediaGalleryBuilder
-	| SectionBuilder
-	| SeparatorBuilder
-	| TextDisplayBuilder;
+	ActionRowBuilder | FileBuilder | MediaGalleryBuilder | SectionBuilder | SeparatorBuilder | TextDisplayBuilder;
 
 export interface ContainerBuilderData extends Partial<Omit<APIContainerComponent, 'components'>> {
 	components: ContainerComponentBuilders[];
