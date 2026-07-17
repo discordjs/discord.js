@@ -40,7 +40,9 @@ export async function makeRequest(url: string, init: RequestInit): Promise<Respo
 		get bodyUsed() {
 			return res.body.bodyUsed;
 		},
-		headers: new Headers(res.headers as HeaderRecord),
+		// Over HTTP/2, Node's http2 attaches a `sensitiveHeaders` symbol key to the response headers,
+		// which the `Headers` constructor rejects
+		headers: new Headers(Object.fromEntries(Object.entries(res.headers)) as HeaderRecord),
 		status: res.statusCode,
 		statusText: STATUS_CODES[res.statusCode]!,
 		ok: res.statusCode >= 200 && res.statusCode < 300,
