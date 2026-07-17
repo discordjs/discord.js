@@ -174,8 +174,8 @@ export abstract class BitField<Flags extends string> {
 	}
 
 	public *[Symbol.iterator](...hasParams: unknown[]) {
-		for (const [bitName, value] of Object.entries(this.constructor.Flags)) {
-			if (Number.isNaN(Number(bitName)) && (value as bigint | number) > 0 && this.has(bitName as Flags, ...hasParams))
+		for (const [bitName, bit] of Object.entries(this.constructor.Flags)) {
+			if (Number.isNaN(Number(bitName)) && (bit as bigint | number) > 0 && this.has(bit as Flags, ...hasParams))
 				yield bitName as Flags;
 		}
 	}

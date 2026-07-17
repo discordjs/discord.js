@@ -156,8 +156,8 @@ class BitField {
   }
 
   *[Symbol.iterator](...hasParams) {
-    for (const [bitName, value] of Object.entries(this.constructor.Flags)) {
-      if (isNaN(bitName) && value > 0 && this.has(bitName, ...hasParams)) yield bitName;
+    for (const [bitName, bit] of Object.entries(this.constructor.Flags)) {
+      if (isNaN(bitName) && bit > 0 && this.has(bit, ...hasParams)) yield bitName;
     }
   }
 
