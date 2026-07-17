@@ -89,7 +89,7 @@
 		"turbo": "^2.10.5",
 		"typescript": "~5.9.3",
 		"vitest": "^4.1.10",
-		"vitest-websocket-mock": "^0.5.0"
+		"vitest-websocket-mock": "^0.7.0"
 	},
 	"engines": {
 		"node": ">=24.17.0"
