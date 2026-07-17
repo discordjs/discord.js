@@ -11,14 +11,14 @@
 		"start": "bun --env-file=.env src/index.js"
 	},
 	"dependencies": {
-		"@discordjs/core": "^2.4.0",
-		"discord.js": "^14.26.4"
+		"@discordjs/core": "^2.6.0",
+		"discord.js": "^14.27.0"
 	},
 	"devDependencies": {
-		"eslint": "^9.39.4",
+		"eslint": "^9.39.5",
 		"eslint-config-neon": "^0.3.2",
 		"eslint-formatter-pretty": "^7.1.0",
-		"prettier": "^3.8.3",
+		"prettier": "^3.9.5",
 		"zod": "^4.4.3"
 	}
 }

@@ -56,25 +56,25 @@
 		"@rushstack/node-core-library": "5.23.1",
 		"@rushstack/ts-command-line": "5.3.9",
 		"colors": "~1.4.0",
-		"diff": "~8.0.2",
-		"resolve": "~1.22.11",
+		"diff": "~8.0.4",
+		"resolve": "~1.22.12",
 		"semver": "~7.7.4",
 		"source-map": "~0.6.1",
 		"typescript": "~5.9.3"
 	},
 	"devDependencies": {
-		"@types/node": "^24.13.2",
+		"@types/node": "^24.13.3",
 		"@types/resolve": "^1.20.6",
 		"@types/semver": "^7.7.1",
 		"cpy-cli": "^7.0.0",
 		"cross-env": "^10.1.0",
-		"eslint": "^9.39.4",
+		"eslint": "^9.39.5",
 		"eslint-config-neon": "^0.2.9",
 		"eslint-formatter-compact": "^9.0.1",
 		"eslint-formatter-pretty": "^7.1.0",
-		"prettier": "^3.8.3",
-		"terser": "^5.48.0",
+		"prettier": "^3.9.5",
+		"terser": "^5.49.0",
 		"tsup": "^8.5.1",
-		"turbo": "^2.9.14"
+		"turbo": "^2.10.5"
 	}
 }
