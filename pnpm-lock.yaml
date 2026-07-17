@@ -281,8 +281,8 @@ importers:
         specifier: ^2.0.1
         version: 2.0.1(next@16.2.10(@babel/core@7.29.7)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)
       cloudflare:
-        specifier: ^6.5.0
-        version: 6.5.0(encoding@0.1.13)
+        specifier: ^7.0.0
+        version: 7.0.0
       cmdk:
         specifier: ^1.1.1
         version: 1.1.1(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -441,8 +441,8 @@ importers:
         specifier: workspace:^
         version: link:../scripts
       cloudflare:
-        specifier: ^6.5.0
-        version: 6.5.0(encoding@0.1.13)
+        specifier: ^7.0.0
+        version: 7.0.0
       commander:
         specifier: ^14.0.3
         version: 14.0.3
@@ -7646,8 +7646,9 @@ packages:
   cloudflare@4.5.0:
     resolution: {integrity: sha512-fPcbPKx4zF45jBvQ0z7PCdgejVAPBBCZxwqk1k7krQNfpM07Cfj97/Q6wBzvYqlWXx/zt1S9+m8vnfCe06umbQ==}
 
-  cloudflare@6.5.0:
-    resolution: {integrity: sha512-PS3rQM9AZrYK/nuoQ3q1Je9kpQ1FIC6aUiNuRGybDGHJ21W7zfqXG6ubVhkD8xDpeFFdWQXEBFh92raVfkIGXg==}
+  cloudflare@7.0.0:
+    resolution: {integrity: sha512-ZU8Yp1biaRRf+i1Hlap/VUwSBeKnOa4kkygIU9naE07JILnHdgLr9Wq/iPEeEf2in0N5m1giTp1ohY+cNQZEGQ==}
+    hasBin: true
 
   clsx@2.1.1:
     resolution: {integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==}
@@ -19156,17 +19157,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  cloudflare@6.5.0(encoding@0.1.13):
-    dependencies:
-      '@types/node': 18.19.130
-      '@types/node-fetch': 2.6.13
-      abort-controller: 3.0.0
-      agentkeepalive: 4.6.0
-      form-data-encoder: 1.7.2
-      formdata-node: 4.4.1
-      node-fetch: 2.7.0(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
+  cloudflare@7.0.0: {}
 
   clsx@2.1.1: {}
 
