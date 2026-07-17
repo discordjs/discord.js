@@ -60,7 +60,7 @@ importers:
         specifier: ^4.6.2
         version: 4.6.2
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       tsup:
         specifier: ^8.5.1
@@ -78,7 +78,7 @@ importers:
         specifier: ^66.7.5
         version: 66.7.5(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
       vercel:
-        specifier: ^54.21.1
+        specifier: ^56.2.1
         version: 56.2.1(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(bufferutil@4.1.0)(encoding@0.1.13)(rollup@4.62.2)
       vitest:
         specifier: ^4.1.10
@@ -187,7 +187,7 @@ importers:
         specifier: ^8.5.19
         version: 8.5.19
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       prettier-plugin-tailwindcss:
         specifier: ^0.8.1
@@ -211,7 +211,7 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vercel:
-        specifier: ^54.21.1
+        specifier: ^56.2.1
         version: 56.2.1(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(bufferutil@4.1.0)(encoding@0.1.13)(rollup@4.62.2)
       wrangler:
         specifier: ^4.111.0
@@ -248,7 +248,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       terser:
         specifier: ^5.49.0
@@ -390,7 +390,7 @@ importers:
         specifier: ^8.5.19
         version: 8.5.19
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       prettier-plugin-tailwindcss:
         specifier: ^0.8.1
@@ -417,7 +417,7 @@ importers:
         specifier: ~5.9.3
         version: 5.9.3
       vercel:
-        specifier: ^54.21.1
+        specifier: ^56.2.1
         version: 56.2.1(@emnapi/core@1.11.2)(@emnapi/runtime@1.11.2)(bufferutil@4.1.0)(encoding@0.1.13)(rollup@4.62.2)
       wrangler:
         specifier: ^4.111.0
@@ -490,7 +490,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       terser:
         specifier: ^5.49.0
@@ -572,7 +572,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       terser:
         specifier: ^5.49.0
@@ -615,7 +615,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       terser:
         specifier: ^5.49.0
@@ -658,7 +658,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       terser:
         specifier: ^5.49.0
@@ -725,7 +725,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       tsup:
         specifier: ^8.5.1
@@ -792,7 +792,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       tsup:
         specifier: ^8.5.1
@@ -843,7 +843,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       tsup:
         specifier: ^8.5.1
@@ -913,7 +913,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       tsup:
         specifier: ^8.5.1
@@ -971,7 +971,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       terser:
         specifier: ^5.49.0
@@ -1002,7 +1002,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       zod:
         specifier: ^4.4.3
@@ -1033,7 +1033,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       typescript:
         specifier: ~5.9.3
@@ -1061,7 +1061,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       zod:
         specifier: ^4.4.3
@@ -1092,7 +1092,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       typescript:
         specifier: ~5.9.3
@@ -1177,7 +1177,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       tsd:
         specifier: ^0.33.0
@@ -1226,7 +1226,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       terser:
         specifier: ^5.49.0
@@ -1281,7 +1281,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       tsup:
         specifier: ^8.5.1
@@ -1357,7 +1357,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       tsup:
         specifier: ^8.5.1
@@ -1424,7 +1424,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       supertest:
         specifier: ^7.2.2
@@ -1509,7 +1509,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       tsup:
         specifier: ^8.5.1
@@ -1582,7 +1582,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       terser:
         specifier: ^5.49.0
@@ -1646,7 +1646,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       tsup:
         specifier: ^8.5.1
@@ -1734,7 +1734,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       prop-types:
         specifier: ^15.8.1
@@ -1798,7 +1798,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       tsup:
         specifier: ^8.5.1
@@ -1874,7 +1874,7 @@ importers:
         specifier: ^7.1.0
         version: 7.1.0
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       tsup:
         specifier: ^8.5.1
@@ -1956,7 +1956,7 @@ importers:
         specifier: ^9.3.1
         version: 9.3.1
       prettier:
-        specifier: ^3.9.5
+        specifier: ~3.9.5
         version: 3.9.5
       tsup:
         specifier: ^8.5.1

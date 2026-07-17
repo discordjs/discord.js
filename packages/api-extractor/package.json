@@ -72,7 +72,7 @@
 		"eslint-config-neon": "^0.2.9",
 		"eslint-formatter-compact": "^9.0.1",
 		"eslint-formatter-pretty": "^7.1.0",
-		"prettier": "^3.9.5",
+		"prettier": "~3.9.5",
 		"terser": "^5.49.0",
 		"tsup": "^8.5.1",
 		"turbo": "^2.10.5"

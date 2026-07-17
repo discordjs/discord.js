@@ -5,9 +5,7 @@ import type {
 } from 'discord-api-types/v10';
 
 export type AutocompletableOptions =
-	| APIApplicationCommandIntegerOption
-	| APIApplicationCommandNumberOption
-	| APIApplicationCommandStringOption;
+	APIApplicationCommandIntegerOption | APIApplicationCommandNumberOption | APIApplicationCommandStringOption;
 
 export interface ApplicationCommandOptionWithAutocompleteData extends Pick<AutocompletableOptions, 'autocomplete'> {}
 

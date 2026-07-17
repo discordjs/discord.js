@@ -915,10 +915,7 @@ export abstract class BaseChannel extends Base {
 }
 
 export type RawChannelData =
-  | RawDMChannelData
-  | RawGuildChannelData
-  | RawPartialGroupDMChannelData
-  | RawThreadChannelData;
+  RawDMChannelData | RawGuildChannelData | RawPartialGroupDMChannelData | RawThreadChannelData;
 
 export type RawGuildChannelData = APIChannel | APIInteractionDataResolvedChannel | Required<APIPartialChannel>;
 export type RawThreadChannelData = APIChannel | APIInteractionDataResolvedChannel;
@@ -1092,8 +1089,7 @@ export type ComponentInContainerData =
 
 export interface ContainerComponentData<
   ComponentType extends ComponentInContainerData | JSONEncodable<APIComponentInContainer> =
-    | ComponentInContainerData
-    | JSONEncodable<APIComponentInContainer>,
+    ComponentInContainerData | JSONEncodable<APIComponentInContainer>,
 > extends BaseComponentData {
   accentColor?: number;
   components: readonly ComponentType[];
@@ -1473,12 +1469,7 @@ export class Guild extends AnonymousGuild {
   public get voiceAdapterCreator(): InternalDiscordGatewayAdapterCreator;
   public voiceStates: VoiceStateManager;
   public get widgetChannel():
-    | AnnouncementChannel
-    | ForumChannel
-    | MediaChannel
-    | TextChannel
-    | VoiceBasedChannel
-    | null;
+    AnnouncementChannel | ForumChannel | MediaChannel | TextChannel | VoiceBasedChannel | null;
   public widgetChannelId: Snowflake | null;
   public widgetEnabled: boolean | null;
   public get maximumBitrate(): number;
@@ -3910,13 +3901,7 @@ export class Webhook<Type extends WebhookType = WebhookType> {
   public type: Type;
   public applicationId: Type extends WebhookType.Application ? Snowflake : null;
   public get channel():
-    | AnnouncementChannel
-    | ForumChannel
-    | MediaChannel
-    | StageChannel
-    | TextChannel
-    | VoiceChannel
-    | null;
+    AnnouncementChannel | ForumChannel | MediaChannel | StageChannel | TextChannel | VoiceChannel | null;
   public isUserCreated(): this is Webhook<WebhookType.Incoming> & {
     owner: User;
   };
@@ -4009,10 +3994,7 @@ export class WelcomeScreen extends Base {
 // #region Constants
 
 export type NonSystemMessageType =
-  | MessageType.ChatInputCommand
-  | MessageType.ContextMenuCommand
-  | MessageType.Default
-  | MessageType.Reply;
+  MessageType.ChatInputCommand | MessageType.ContextMenuCommand | MessageType.Default | MessageType.Reply;
 
 export type UndeletableMessageType =
   | MessageType.Call
@@ -5029,16 +5011,13 @@ export type CommandOptionDataTypeResolvable = ApplicationCommandOptionType;
 export type CommandOptionChannelResolvableType = ApplicationCommandOptionType.Channel;
 
 export type CommandOptionChoiceResolvableType =
-  | ApplicationCommandOptionType.String
-  | CommandOptionNumericResolvableType;
+  ApplicationCommandOptionType.String | CommandOptionNumericResolvableType;
 
 export type CommandOptionNumericResolvableType =
-  | ApplicationCommandOptionType.Integer
-  | ApplicationCommandOptionType.Number;
+  ApplicationCommandOptionType.Integer | ApplicationCommandOptionType.Number;
 
 export type CommandOptionSubOptionResolvableType =
-  | ApplicationCommandOptionType.Subcommand
-  | ApplicationCommandOptionType.SubcommandGroup;
+  ApplicationCommandOptionType.Subcommand | ApplicationCommandOptionType.SubcommandGroup;
 
 export type CommandOptionNonChoiceResolvableType = Exclude<
   CommandOptionDataTypeResolvable,
@@ -5295,11 +5274,7 @@ export type ChannelPermissionConstant = Snowflake;
 export type RolePermissionConstant = Snowflake;
 
 export type ApplicationCommandPermissionIdResolvable =
-  | ChannelPermissionConstant
-  | GuildChannelResolvable
-  | RolePermissionConstant
-  | RoleResolvable
-  | UserResolvable;
+  ChannelPermissionConstant | GuildChannelResolvable | RolePermissionConstant | RoleResolvable | UserResolvable;
 
 export type ApplicationCommandResolvable = ApplicationCommand | Snowflake;
 
@@ -5444,10 +5419,7 @@ export type CacheConstructors = {
 };
 
 export type OverriddenCaches =
-  | 'DMMessageManager'
-  | 'GuildForumThreadManager'
-  | 'GuildMessageManager'
-  | 'GuildTextThreadManager';
+  'DMMessageManager' | 'GuildForumThreadManager' | 'GuildMessageManager' | 'GuildTextThreadManager';
 
 export interface CacheFactoryParams<Manager extends keyof Caches> {
   holds: Caches[Manager][1];
@@ -5711,11 +5683,7 @@ export interface CollectorResetTimerOptions {
 }
 
 export type ColorResolvable =
-  | HexColorString
-  | number
-  | keyof typeof Colors
-  | readonly [red: number, green: number, blue: number]
-  | 'Random';
+  HexColorString | number | keyof typeof Colors | readonly [red: number, green: number, blue: number] | 'Random';
 
 export interface CommandInteractionOption<Cached extends CacheType = CacheType> {
   attachment?: Attachment;
@@ -5750,9 +5718,7 @@ export interface AutocompleteFocusedOption {
   focused: true;
   name: string;
   type:
-    | ApplicationCommandOptionType.Integer
-    | ApplicationCommandOptionType.Number
-    | ApplicationCommandOptionType.String;
+    ApplicationCommandOptionType.Integer | ApplicationCommandOptionType.Number | ApplicationCommandOptionType.String;
   value: string;
 }
 
@@ -5939,10 +5905,7 @@ export interface EmbedField {
 }
 
 export type EmojiIdentifierResolvable =
-  | EmojiResolvable
-  | string
-  | `<${'' | 'a'}:${string}:${Snowflake}>`
-  | `${'' | 'a:'}${string}:${Snowflake}`;
+  EmojiResolvable | string | `<${'' | 'a'}:${string}:${Snowflake}>` | `${'' | 'a:'}${string}:${Snowflake}`;
 
 export type EmojiResolvable = ApplicationEmoji | GuildEmoji | ReactionEmoji | Snowflake;
 
@@ -6094,8 +6057,7 @@ export interface FetchThreadMembersWithoutGuildMemberDataOptions {
 }
 
 export type FetchThreadMembersOptions =
-  | FetchThreadMembersWithGuildMemberDataOptions
-  | FetchThreadMembersWithoutGuildMemberDataOptions;
+  FetchThreadMembersWithGuildMemberDataOptions | FetchThreadMembersWithoutGuildMemberDataOptions;
 
 export interface FetchThreadsOptions {
   archived?: FetchArchivedThreadOptions;
@@ -6111,8 +6073,7 @@ export interface AttachmentPayload {
 }
 
 export type GlobalSweepFilter<Key, Value> = () =>
-  | ((value: Value, key: Key, collection: Collection<Key, Value>) => boolean)
-  | null;
+  ((value: Value, key: Key, collection: Collection<Key, Value>) => boolean) | null;
 
 export interface GuildAuditLogsTypes {
   [AuditLogEvent.GuildUpdate]: ['Guild', 'Update'];
@@ -6408,13 +6369,7 @@ export interface GuildMemberEditMeOptions {
 }
 
 export type GuildResolvable =
-  | Guild
-  | GuildEmoji
-  | GuildInvite
-  | GuildMember
-  | NonThreadGuildBasedChannel
-  | Role
-  | Snowflake;
+  Guild | GuildEmoji | GuildInvite | GuildMember | NonThreadGuildBasedChannel | Role | Snowflake;
 
 export interface GuildPruneMembersOptions {
   count?: boolean;

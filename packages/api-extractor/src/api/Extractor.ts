@@ -476,10 +476,10 @@ export class Extractor {
 							actualApiReportContent,
 						);
 						const logFunction:
-							| (typeof MessageRouter.prototype)['logVerbose']
-							| (typeof MessageRouter.prototype)['logWarning'] = printApiReportDiff
-							? messageRouter.logWarning.bind(messageRouter)
-							: messageRouter.logVerbose.bind(messageRouter);
+							(typeof MessageRouter.prototype)['logVerbose'] | (typeof MessageRouter.prototype)['logWarning'] =
+							printApiReportDiff
+								? messageRouter.logWarning.bind(messageRouter)
+								: messageRouter.logVerbose.bind(messageRouter);
 
 						logFunction(ConsoleMessageId.ApiReportDiff, 'Changes to the API report:\n\n' + formatPatch(patch));
 					}

@@ -283,9 +283,7 @@ export class MessageBuilder
 	 */
 	public setMessageReference(
 		reference:
-			| APIMessageReference
-			| MessageReferenceBuilder
-			| ((builder: MessageReferenceBuilder) => MessageReferenceBuilder),
+			APIMessageReference | MessageReferenceBuilder | ((builder: MessageReferenceBuilder) => MessageReferenceBuilder),
 	): this {
 		this.data.message_reference = resolveBuilder(reference, MessageReferenceBuilder);
 		return this;
