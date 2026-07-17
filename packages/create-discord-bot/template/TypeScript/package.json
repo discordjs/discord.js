@@ -17,7 +17,7 @@
 	},
 	"devDependencies": {
 		"@sapphire/ts-config": "^5.0.3",
-		"@types/node": "^22.19.15",
+		"@types/node": "^24.13.2",
 		"eslint": "^9.39.4",
 		"eslint-config-neon": "^0.3.2",
 		"eslint-formatter-pretty": "^7.0.0",
@@ -26,6 +26,6 @@
 		"zod": "^4.3.6"
 	},
 	"engines": {
-		"node": ">=22.12.0"
+		"node": ">=24.17.0"
 	}
 }
