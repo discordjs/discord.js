@@ -49,17 +49,11 @@ async function getIPCPath(id: number) {
 	return path.join(prefix, `discord-ipc-${id}`);
 }
 
-async function getIPC(id = 0, { promise, resolve, reject } = Promise.withResolvers<Socket>()): Promise<Socket> {
+async function getIPC(id: number): Promise<Socket> {
+	const { promise, resolve, reject } = Promise.withResolvers<Socket>();
 	const path = await getIPCPath(id);
 
-	const onError = async () => {
-		if (id < 10) {
-			return getIPC(id + 1, { promise, resolve, reject });
-		}
-
-		reject(new Error('Could not connect'));
-		return undefined;
-	};
+	const onError = async () => reject(new Error('Could not connect'));
 
 	const socket = createConnection(path, () => {
 		socket.removeListener('error', onError);
@@ -97,9 +91,18 @@ export class IPCTransport extends AsyncEventEmitter {
 	}
 
 	public async connect() {
-		this.socket = await getIPC();
+		let socket: Error | Socket | undefined;
+		for (let id = 0; id < 10; id++) {
+			socket = await getIPC(id).catch((error: Error) => error);
+			if (socket instanceof Socket) break;
+		}
 
-		const socket = this.socket;
+		// NOTE: I wouldn't need to do this if TS' type-checker could understand that socket IS being asigned to before use,
+		// but unfortunately, `undefined` has to be included in the variable's type.
+		// eslint-disable-next-line @typescript-eslint/only-throw-error
+		if (!(socket instanceof Socket)) throw socket;
+
+		this.socket = socket;
 
 		socket.on('close', this.onClose.bind(this));
 		socket.on('error', this.onError.bind(this));
@@ -177,14 +180,14 @@ export class IPCTransport extends AsyncEventEmitter {
 		const { promise, resolve, reject } = Promise.withResolvers();
 		const signal = options?.signal ?? AbortSignal.timeout(10e3);
 
+		const onAbort = (_: Event, reason?: string) => reject(reason);
+
 		this.once('close', (error) => {
+			signal.removeEventListener('abort', onAbort);
 			resolve(error);
 		});
 
-		signal.addEventListener('abort', (_: Event, reason?: string) => {
-			if (this.listenerCount('close') === 0) return;
-			reject(reason);
-		});
+		signal.addEventListener('abort', onAbort);
 
 		this.send({}, OPCodes.Close);
 		this.socket.end();

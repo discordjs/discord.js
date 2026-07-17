@@ -7,7 +7,7 @@ function init(): void {
 
     function boop(): void {
       boops += 1
-      counter.innerHTML = `${boops} BOOPS`
+      counter.textContent = `${boops} BOOPS`
     }
 
     snek.onmousedown = (): void => {

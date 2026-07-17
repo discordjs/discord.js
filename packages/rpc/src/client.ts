@@ -32,7 +32,7 @@ import type {
 	RPCCommandSubscribePayload,
 	RPCSubscribeResultData,
 } from 'discord-api-types/v10';
-import { RPCEvents, RPCCommands, Routes } from 'discord-api-types/v10';
+import { RPCEvents, RPCCommands, Routes, RouteBases } from 'discord-api-types/v10';
 import { RPCEventError } from './RPCEventError.js';
 import type {
 	EventAndArgsParameters,
@@ -149,15 +149,20 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	public async connect(options?: RequestOptions) {
 		const { promise, resolve, reject } = Promise.withResolvers<RPCClient>();
 		const signal = options?.signal ?? AbortSignal.timeout(10e3);
+		// NOTE: I have no clue why it thinks this value is never reassigned
+		// eslint-disable-next-line prefer-const
+		let onAbort: (_: Event, reason?: string) => void;
 
 		const onReady = () => {
+			signal.removeEventListener('abort', onAbort);
 			this.readyTimestamp = Date.now();
 			resolve(this);
 		};
 
 		const onClose = (data: unknown) => {
-			for (const exp_nonce of this.#expectedNonces.values()) {
-				exp_nonce.reject(new RPCEventError('connection closed'));
+			signal.removeEventListener('abort', onAbort);
+			for (const expNonce of this.#expectedNonces.values()) {
+				expNonce.reject(new RPCEventError('connection closed'));
 			}
 
 			this.#expectedNonces.clear();
@@ -168,8 +173,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 			reject(new RPCEventError(JSON.stringify(data)));
 		};
 
-		const onAbort = (_: Event, reason?: string) => {
-			if (this.listenerCount(RPCEvents.Ready) === 0) return;
+		onAbort = (_: Event, reason?: string) => {
 			this.removeListener(RPCEvents.Ready, onReady);
 			this.transport.removeListener('close', onClose);
 
@@ -184,7 +188,6 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 
 		try {
 			await this.transport.connect();
-			signal.removeEventListener('abort', onAbort);
 		} catch (error) {
 			this.readyTimestamp = null;
 			this.removeListener(RPCEvents.Ready, onReady);
@@ -248,19 +251,19 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * @param args - Arguments
 	 * @param evt - Event
 	 */
-	async #request<Cmd extends RPCCallableCommands = RPCCallableCommands>(
+	public async request<Cmd extends RPCCallableCommands = RPCCallableCommands>(
 		cmd: Cmd,
 		args?: MappedRPCCommandsArgs[Cmd],
 		options?: RequestOptions,
 		evt?: RPCEvents,
 	): Promise<MappedRPCCommandsResultsData[Cmd]>;
-	async #request(
+	public async request(
 		cmd: RPCCommands.Subscribe | RPCCommands.Unsubscribe,
 		args: RPCCommandSubscribePayload['args'],
 		options: RequestOptions | undefined,
 		evt: RPCEvents,
 	): Promise<RPCSubscribeResultData | RPCUnsubscribeResultData>;
-	async #request<Cmd extends RPCCallableCommands = RPCCallableCommands>(
+	public async request<Cmd extends RPCCallableCommands = RPCCallableCommands>(
 		cmd: Cmd,
 		args: MappedRPCCommandsArgs[Cmd] = {} as MappedRPCCommandsArgs[Cmd],
 		options?: RequestOptions,
@@ -285,18 +288,6 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 				);
 			},
 		);
-	}
-
-	/**
-	 * Request but public
-	 */
-	public async request<Cmd extends RPCCallableCommands>(
-		cmd: Cmd,
-		args: MappedRPCCommandsArgs[Cmd],
-		evt?: RPCEvents,
-		options?: RequestOptions,
-	): Promise<MappedRPCCommandsResultsData[Cmd]> {
-		return this.#request(cmd, args, options, evt);
 	}
 
 	/**
@@ -335,7 +326,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * @param args - authorize args
 	 */
 	private async authorize(args: RPCAuthorizeArgs, options?: RequestOptions): Promise<string> {
-		const { code } = await this.#request(RPCCommands.Authorize, args, options);
+		const { code } = await this.request(RPCCommands.Authorize, args, options);
 
 		const jsonBody: RESTPostOAuth2AccessTokenURLEncodedData = {
 			client_id: this.clientId,
@@ -348,7 +339,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 			jsonBody.redirect_uri = this.options.redirectUri;
 		}
 
-		const response = (await fetch(`https://discord.com/api${Routes.oauth2TokenExchange()}`, {
+		const response = (await fetch(`${RouteBases.api}${Routes.oauth2TokenExchange()}`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
@@ -370,7 +361,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * @param accessToken - access token
 	 */
 	public async authenticate(accessToken: string, options?: RequestOptions): Promise<this> {
-		const { application, user } = await this.#request(RPCCommands.Authenticate, { access_token: accessToken }, options);
+		const { application, user } = await this.request(RPCCommands.Authenticate, { access_token: accessToken }, options);
 		this.accessToken = accessToken;
 		this.application = application;
 		this.user = user;
@@ -385,7 +376,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * @param timeout - Timeout request
 	 */
 	public async getGuild(id: Snowflake, timeout: number, options?: RequestOptions): Promise<RPCGetGuildResultData> {
-		return this.#request(RPCCommands.GetGuild, { guild_id: id, timeout }, options);
+		return this.request(RPCCommands.GetGuild, { guild_id: id, timeout }, options);
 	}
 
 	/**
@@ -394,7 +385,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * @param timeout - Timeout request
 	 */
 	public async getGuilds(timeout: number, options?: RequestOptions): Promise<RPCGetGuildsResultData> {
-		return this.#request(RPCCommands.GetGuilds, { timeout }, options);
+		return this.request(RPCCommands.GetGuilds, { timeout }, options);
 	}
 
 	/**
@@ -403,7 +394,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * @param id - Channel id
 	 */
 	public async getChannel(id: Snowflake, options?: RequestOptions): Promise<RPCGetChannelResultData> {
-		return this.#request(RPCCommands.GetChannel, { channel_id: id }, options);
+		return this.request(RPCCommands.GetChannel, { channel_id: id }, options);
 	}
 
 	/**
@@ -412,7 +403,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * @param id - Guild id
 	 */
 	public async getChannels(id: Snowflake, options?: RequestOptions): Promise<RPCGetChannelsResultData['channels']> {
-		const { channels } = await this.#request(RPCCommands.GetChannels, { guild_id: id }, options);
+		const { channels } = await this.request(RPCCommands.GetChannels, { guild_id: id }, options);
 		return channels;
 	}
 
@@ -422,7 +413,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * @param id - Channel id
 	 */
 	public async createChannelInvite(id: Snowflake, options?: RequestOptions): Promise<RPCCreateChannelInviteResultData> {
-		return this.#request(RPCCommands.CreateChannelInvite, { channel_id: id }, options);
+		return this.request(RPCCommands.CreateChannelInvite, { channel_id: id }, options);
 	}
 
 	/**
@@ -434,7 +425,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		devices: RPCCertifiedDevice[],
 		options?: RequestOptions,
 	): Promise<RPCSetCertifiedDevicesResultData> {
-		return this.#request(
+		return this.request(
 			RPCCommands.SetCertifiedDevices,
 			{
 				devices,
@@ -454,7 +445,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		settings: Omit<Partial<RPCSetUserVoiceSettingsArgs>, 'user_id'>,
 		options?: RequestOptions,
 	): Promise<RPCSetUserVoiceSettingsResultData> {
-		return this.#request(
+		return this.request(
 			RPCCommands.SetUserVoiceSettings,
 			{
 				user_id: id,
@@ -483,7 +474,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 			args.timeout = timeout;
 		}
 
-		return this.#request(RPCCommands.SelectVoiceChannel, args, options);
+		return this.request(RPCCommands.SelectVoiceChannel, args, options);
 	}
 
 	/**
@@ -504,7 +495,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 			args.timeout = timeout;
 		}
 
-		return this.#request(RPCCommands.SelectTextChannel, args, options);
+		return this.request(RPCCommands.SelectTextChannel, args, options);
 	}
 
 	/**
@@ -512,7 +503,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 *
 	 */
 	public async getVoiceSettings(options?: RequestOptions): Promise<RPCGetVoiceSettingsResultData> {
-		return this.#request(RPCCommands.GetVoiceSettings, options);
+		return this.request(RPCCommands.GetVoiceSettings, options);
 	}
 
 	/**
@@ -522,7 +513,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * @param args - Settings
 	 */
 	public async setVoiceSettings(args: RPCSetVoiceSettingsArgs, options?: RequestOptions): Promise<unknown> {
-		return this.#request(RPCCommands.SetVoiceSettings, args, options);
+		return this.request(RPCCommands.SetVoiceSettings, args, options);
 	}
 
 	/**
@@ -539,16 +530,24 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		activity.instance = Boolean(activity.instance);
 
 		if (activity.timestamps) {
-			if ('start' in activity.timestamps && activity.timestamps.start > 2_147_483_647_000) {
+			if (
+				'start' in activity.timestamps &&
+				Number.isInteger(activity.timestamps.start) &&
+				Math.min(Math.max(0, activity.timestamps.start), 2_147_483_647_000)
+			) {
 				throw new RangeError('timestamps.start must fit into a unix timestamp');
 			}
 
-			if ('end' in activity.timestamps && activity.timestamps.end > 2_147_483_647_000) {
+			if (
+				'end' in activity.timestamps &&
+				Number.isInteger(activity.timestamps.end) &&
+				Math.min(Math.max(0, activity.timestamps.end), 2_147_483_647_000)
+			) {
 				throw new RangeError('timestamps.end must fit into a unix timestamp');
 			}
 		}
 
-		return this.#request(
+		return this.request(
 			RPCCommands.SetActivity,
 			{
 				pid: pid ?? 0,
@@ -565,7 +564,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * @param pid - The application's process ID. Defaults to the executing process' PID.
 	 */
 	public async clearActivity(pid: number | null = getPid(), options?: RequestOptions): Promise<unknown> {
-		return this.#request(
+		return this.request(
 			RPCCommands.SetActivity,
 			{
 				pid: pid ?? 0,
@@ -580,7 +579,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * @param userId - The id of the user to invite
 	 */
 	public async sendJoinInvite(userId: Snowflake, options?: RequestOptions): Promise<unknown> {
-		return this.#request(
+		return this.request(
 			RPCCommands.SendActivityJoinInvite,
 			{
 				user_id: userId,
@@ -595,7 +594,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * @param userId - The id of the user whose request you wish to reject
 	 */
 	public async closeJoinRequest(userId: Snowflake, options?: RequestOptions): Promise<unknown> {
-		return this.#request(
+		return this.request(
 			RPCCommands.CloseActivityJoinRequest,
 			{
 				user_id: userId,
@@ -608,14 +607,14 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * requires `relationships.read` scope
 	 */
 	public async getRelationships(options?: RequestOptions) {
-		return this.#request(RPCCommands.GetRelationships, options);
+		return this.request(RPCCommands.GetRelationships, options);
 	}
 
 	/**
 	 * Fetches a user
 	 */
 	public async getUser(id: Snowflake, options?: RequestOptions) {
-		return this.#request(RPCCommands.GetUser, { id }, options);
+		return this.request(RPCCommands.GetUser, { id }, options);
 	}
 
 	/**
@@ -625,7 +624,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		{ id, format, size }: Omit<RPCGetImageArgs, 'type'>,
 		options?: RequestOptions,
 	): Promise<string> {
-		return (await this.#request(RPCCommands.GetImage, { type: 'user', id, format, size }, options)).data_url;
+		return (await this.request(RPCCommands.GetImage, { type: 'user', id, format, size }, options)).data_url;
 	}
 
 	/**
@@ -637,9 +636,9 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	public async subscribe<Evt extends RPCEvents>(
 		...[event, args, options]: EventAndArgsParameters<Evt>
 	): Promise<{ unsubscribe(): Promise<RPCUnsubscribeResultData> }> {
-		await this.#request(RPCCommands.Subscribe, args, options, event);
+		await this.request(RPCCommands.Subscribe, args, options, event);
 		return {
-			unsubscribe: async () => this.#request(RPCCommands.Unsubscribe, args, options, event),
+			unsubscribe: async () => this.request(RPCCommands.Unsubscribe, args, options, event),
 		};
 	}
 
@@ -652,9 +651,9 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	public async unsubscribe<Evt extends RPCEvents>(
 		...[event, args, options]: EventAndArgsParameters<Evt>
 	): Promise<{ subscribe(): Promise<RPCSubscribeResultData> }> {
-		await this.#request(RPCCommands.Subscribe, args, options, event);
+		await this.request(RPCCommands.Subscribe, args, options, event);
 		return {
-			subscribe: async () => this.#request(RPCCommands.Subscribe, args, options, event),
+			subscribe: async () => this.request(RPCCommands.Subscribe, args, options, event),
 		};
 	}
 
