@@ -459,8 +459,8 @@ importers:
         specifier: ^2.8.1
         version: 2.8.1
       undici:
-        specifier: 7.24.6
-        version: 7.24.6
+        specifier: ^8.7.0
+        version: 8.7.0
     devDependencies:
       '@npm/types':
         specifier: ^2.1.0
@@ -1140,8 +1140,8 @@ importers:
         specifier: ^2.8.1
         version: 2.8.1
       undici:
-        specifier: 7.24.6
-        version: 7.24.6
+        specifier: ^8.7.0
+        version: 8.7.0
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1384,8 +1384,8 @@ importers:
         specifier: ^2.8.1
         version: 2.8.1
       undici:
-        specifier: 7.24.6
-        version: 7.24.6
+        specifier: ^8.7.0
+        version: 8.7.0
     devDependencies:
       '@discordjs/api-extractor':
         specifier: workspace:^
@@ -1469,8 +1469,8 @@ importers:
         specifier: ^2.8.1
         version: 2.8.1
       undici:
-        specifier: 7.24.6
-        version: 7.24.6
+        specifier: ^8.7.0
+        version: 8.7.0
       uuid:
         specifier: ^14.0.1
         version: 14.0.1
@@ -1554,8 +1554,8 @@ importers:
         specifier: ^2.8.1
         version: 2.8.1
       undici:
-        specifier: 7.24.6
-        version: 7.24.6
+        specifier: ^8.7.0
+        version: 8.7.0
       yaml:
         specifier: ^2.9.0
         version: 2.9.0
@@ -12939,13 +12939,13 @@ packages:
     resolution: {integrity: sha512-YmfV3YnEDzXRC5lZ2jWtWWHKGUm1zIt8AhesR1tens+HTNv+YZlN/dp6G727LOvMJ8xjP9Be7Y2Sdr96LDm+pg==}
     engines: {node: '>=18.17'}
 
-  undici@7.24.6:
-    resolution: {integrity: sha512-Xi4agocCbRzt0yYMZGMA6ApD7gvtUFaxm4ZmeacWI4cZxaF6C+8I8QfofC20NAePiB/IcvZmzkJ7XPa471AEtA==}
-    engines: {node: '>=20.18.1'}
-
   undici@7.28.0:
     resolution: {integrity: sha512-cRZYrTDwWznlnRiPjggAGxZXanty6M8RV1ff8Wm4LWXBp7/IG8v5DnOm74DtUBp9OONpK75YlPnIjQqX0dBDtA==}
     engines: {node: '>=20.18.1'}
+
+  undici@8.7.0:
+    resolution: {integrity: sha512-N7iQtfyLhIMOFgQubvmLV26svHpO0bqKnAiWotTQCVKCmWrcGbBotPuW1x+xwYZ2VHdSTVUfPQQnlEt1/LouTQ==}
+    engines: {node: '>=22.19.0'}
 
   unenv@2.0.0-rc.24:
     resolution: {integrity: sha512-i7qRCmY42zmCwnYlh9H2SvLEypEFGye5iRmEMKjcGi7zk9UquigRjFtTLz0TYqr0ZGLZhaMHl/foy1bZR+Cwlw==}
@@ -25696,9 +25696,9 @@ snapshots:
 
   undici@6.27.0: {}
 
-  undici@7.24.6: {}
-
   undici@7.28.0: {}
+
+  undici@8.7.0: {}
 
   unenv@2.0.0-rc.24:
     dependencies:

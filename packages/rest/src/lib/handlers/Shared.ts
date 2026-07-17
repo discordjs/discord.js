@@ -121,7 +121,8 @@ export async function makeNetworkRequest(
 				data: requestData,
 				retries,
 			},
-			res instanceof Response ? res.clone() : { ...res },
+			// This cast is needed because of a mismatch between the version of undici-types provided by @types/node and undici
+			res instanceof Response ? (res.clone() as unknown as ResponseLike) : { ...res },
 		);
 	}
 
