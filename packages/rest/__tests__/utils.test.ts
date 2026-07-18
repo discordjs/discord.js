@@ -42,6 +42,23 @@ describe('makeURLSearchParams', () => {
 		]);
 	});
 
+	describe('arrays', () => {
+		test('GIVEN an array THEN defaults to repeated URLSearchParams without nullish values', () => {
+			const params = makeURLSearchParams({ foo: ['bar', null, undefined, 'baz'], empty: [] });
+
+			expect([...params.entries()]).toEqual([
+				['foo', 'bar'],
+				['foo', 'baz'],
+			]);
+		});
+
+		test('GIVEN an array and comma array format THEN returns a comma-separated value without nullish values', () => {
+			const params = makeURLSearchParams({ foo: ['bar', null, undefined, 'baz'], empty: [] }, { arrayFormat: 'comma' });
+
+			expect([...params.entries()]).toEqual([['foo', 'bar,baz']]);
+		});
+	});
+
 	describe('objects', () => {
 		test('GIVEN a record of date values THEN URLSearchParams with ISO string values', () => {
 			const params = makeURLSearchParams({ before: new Date('2022-04-04T15:43:05.108Z'), after: new Date(Number.NaN) });

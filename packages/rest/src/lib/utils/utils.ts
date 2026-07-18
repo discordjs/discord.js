@@ -35,17 +35,59 @@ function serializeSearchParam(value: unknown): string | null {
 }
 
 /**
+ * Options for serializing URL search parameters.
+ */
+export interface MakeURLSearchParamsOptions {
+	/**
+	 * How array values should be serialized.
+	 *
+	 * @defaultValue `'repeat'`
+	 * @see {@link https://docs.discord.com/developers/reference#array-query-strings}
+	 */
+	arrayFormat?: 'comma' | 'repeat';
+}
+
+/**
  * Creates and populates an URLSearchParams instance from an object, stripping
  * out null and undefined values, while also coercing non-strings to strings.
  *
- * @param options - The options to use
+ * @param parameters - The parameters to use
+ * @param options - The options for serializing URL search parameters
  * @returns A populated URLSearchParams instance
  */
-export function makeURLSearchParams<OptionsType extends object>(options?: Readonly<OptionsType>) {
+export function makeURLSearchParams<ParametersType extends object>(
+	parameters?: Readonly<ParametersType>,
+	options: MakeURLSearchParamsOptions = {},
+) {
 	const params = new URLSearchParams();
-	if (!options) return params;
+	if (!parameters) return params;
+	const { arrayFormat = 'repeat' } = options;
 
-	for (const [key, value] of Object.entries(options)) {
+	for (const [key, value] of Object.entries(parameters)) {
+		if (Array.isArray(value)) {
+			const commaSeparatedElements: string[] | null = arrayFormat === 'comma' ? [] : null;
+
+			for (const element of value) {
+				const serialized = serializeSearchParam(element);
+
+				if (serialized === null) {
+					continue;
+				}
+
+				if (commaSeparatedElements) {
+					commaSeparatedElements.push(serialized);
+				} else {
+					params.append(key, serialized);
+				}
+			}
+
+			if (commaSeparatedElements?.length) {
+				params.append(key, commaSeparatedElements.toString());
+			}
+
+			continue;
+		}
+
 		const serialized = serializeSearchParam(value);
 		if (serialized !== null) params.append(key, serialized);
 	}
