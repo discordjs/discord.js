@@ -148,10 +148,16 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 */
 	public async connect(options?: RequestOptions) {
 		const { promise, resolve, reject } = Promise.withResolvers<RPCClient>();
+
+		if (this.ready) {
+			resolve(this);
+			return promise;
+		}
+
 		const signal = options?.signal ?? AbortSignal.timeout(10e3);
 		// NOTE: I have no clue why it thinks this value is never reassigned
 		// eslint-disable-next-line prefer-const
-		let onAbort: (_: Event, reason?: string) => void;
+		let onAbort: (_: Event) => void;
 
 		const onReady = () => {
 			signal.removeEventListener('abort', onAbort);
@@ -161,6 +167,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 
 		const onClose = (data: unknown) => {
 			signal.removeEventListener('abort', onAbort);
+			this.removeListener(RPCEvents.Ready, onReady);
 			for (const expNonce of this.#expectedNonces.values()) {
 				expNonce.reject(new RPCEventError('connection closed'));
 			}
@@ -173,11 +180,12 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 			reject(new RPCEventError(JSON.stringify(data)));
 		};
 
-		onAbort = (_: Event, reason?: string) => {
+		onAbort = (_: Event) => {
 			this.removeListener(RPCEvents.Ready, onReady);
 			this.transport.removeListener('close', onClose);
 
-			reject(new Error(reason));
+			const reason = signal.reason instanceof Error ? signal.reason : new Error(String(signal.reason));
+			reject(reason);
 		};
 
 		signal.addEventListener('abort', onAbort);
@@ -190,6 +198,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 			await this.transport.connect();
 		} catch (error) {
 			this.readyTimestamp = null;
+			signal.removeEventListener('abort', onAbort);
 			this.removeListener(RPCEvents.Ready, onReady);
 			this.transport.removeListener('close', onClose);
 			reject(error);
@@ -254,21 +263,20 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	public async request<Cmd extends RPCCallableCommands = RPCCallableCommands>(
 		cmd: Cmd,
 		args?: MappedRPCCommandsArgs[Cmd],
-		options?: RequestOptions,
-		evt?: RPCEvents,
+		options?: RequestOptions & { evt?: RPCEvents },
 	): Promise<MappedRPCCommandsResultsData[Cmd]>;
 	public async request(
 		cmd: RPCCommands.Subscribe | RPCCommands.Unsubscribe,
 		args: RPCCommandSubscribePayload['args'],
-		options: RequestOptions | undefined,
-		evt: RPCEvents,
+		options: RequestOptions & { evt: RPCEvents },
 	): Promise<RPCSubscribeResultData | RPCUnsubscribeResultData>;
 	public async request<Cmd extends RPCCallableCommands = RPCCallableCommands>(
 		cmd: Cmd,
 		args: MappedRPCCommandsArgs[Cmd] = {} as MappedRPCCommandsArgs[Cmd],
-		options?: RequestOptions,
-		evt?: RPCEvents,
+		options?: RequestOptions & { evt?: RPCEvents },
 	) {
+		const signal = options?.signal ?? AbortSignal.timeout(10e3);
+		signal.throwIfAborted();
 		return new Promise(
 			(resolve: (value: MappedRPCCommandsResultsData[Cmd]) => void, reject: (reason: RPCEventError) => void) => {
 				const nonce = randomUUID();
@@ -278,13 +286,20 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 					nonce,
 				};
 				if (cmd === RPCCommands.Subscribe || cmd === RPCCommands.Unsubscribe) {
-					payload.evt = evt!;
+					// eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+					payload.evt = options?.evt!;
 				}
 
 				this.transport.send(payload as RPCMessagePayload);
 				this.#expectedNonces.set(nonce, { resolve, reject });
-				options?.signal?.addEventListener('abort', (_: Event, reason?: string) =>
-					reject(new RPCEventError(`${reason}`)),
+				signal.addEventListener(
+					'abort',
+					(_: Event) => {
+						this.#expectedNonces.delete(nonce);
+						const reason = signal.reason instanceof Error ? signal.reason : new Error(String(signal.reason));
+						reject(reason);
+					},
+					{ once: true },
 				);
 			},
 		);
@@ -339,20 +354,26 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 			jsonBody.redirect_uri = this.options.redirectUri;
 		}
 
-		const response = (await fetch(`${RouteBases.api}${Routes.oauth2TokenExchange()}`, {
+		const response = await fetch(`${RouteBases.api}${Routes.oauth2TokenExchange()}`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/x-www-form-urlencoded',
 			},
 			body: new URLSearchParams(jsonBody),
 			...options,
-		}).then(async (res) => res.json())) as RESTPostOAuth2AccessTokenResult;
+		});
 
-		if (!('access_token' in response)) {
+		if (!response.ok) {
+			throw new Error(response.statusText);
+		}
+
+		const data = (await response.json()) as RESTPostOAuth2AccessTokenResult;
+
+		if (!('access_token' in data)) {
 			throw new Error(JSON.stringify(response));
 		}
 
-		return response.access_token;
+		return data.access_token;
 	}
 
 	/**
@@ -480,10 +501,9 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	/**
 	 * Move the user to a text channel
 	 *
-	 * @param id - Id of the voice channel
+	 * @param id - Id of the text channel
 	 * @param options - Options
 	 * @param options.timeout - Timeout for the command
-	 * have explicit permission from the user.
 	 */
 	public async selectTextChannel(
 		id: Snowflake,
@@ -503,7 +523,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 *
 	 */
 	public async getVoiceSettings(options?: RequestOptions): Promise<RPCGetVoiceSettingsResultData> {
-		return this.request(RPCCommands.GetVoiceSettings, options);
+		return this.request(RPCCommands.GetVoiceSettings, {}, options);
 	}
 
 	/**
@@ -533,7 +553,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 			if (
 				'start' in activity.timestamps &&
 				Number.isInteger(activity.timestamps.start) &&
-				Math.min(Math.max(0, activity.timestamps.start), 2_147_483_647_000)
+				Math.min(Math.max(0, activity.timestamps.start), 2_147_483_647_000) !== activity.timestamps.start
 			) {
 				throw new RangeError('timestamps.start must fit into a unix timestamp');
 			}
@@ -541,7 +561,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 			if (
 				'end' in activity.timestamps &&
 				Number.isInteger(activity.timestamps.end) &&
-				Math.min(Math.max(0, activity.timestamps.end), 2_147_483_647_000)
+				Math.min(Math.max(0, activity.timestamps.end), 2_147_483_647_000) !== activity.timestamps.end
 			) {
 				throw new RangeError('timestamps.end must fit into a unix timestamp');
 			}
@@ -607,7 +627,7 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * requires `relationships.read` scope
 	 */
 	public async getRelationships(options?: RequestOptions) {
-		return this.request(RPCCommands.GetRelationships, options);
+		return this.request(RPCCommands.GetRelationships, {}, options);
 	}
 
 	/**
@@ -636,9 +656,9 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	public async subscribe<Evt extends RPCEvents>(
 		...[event, args, options]: EventAndArgsParameters<Evt>
 	): Promise<{ unsubscribe(): Promise<RPCUnsubscribeResultData> }> {
-		await this.request(RPCCommands.Subscribe, args, options, event);
+		await this.request(RPCCommands.Subscribe, args, { evt: event, ...options });
 		return {
-			unsubscribe: async () => this.request(RPCCommands.Unsubscribe, args, options, event),
+			unsubscribe: async () => this.request(RPCCommands.Unsubscribe, args, { evt: event, ...options }),
 		};
 	}
 
@@ -651,9 +671,9 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	public async unsubscribe<Evt extends RPCEvents>(
 		...[event, args, options]: EventAndArgsParameters<Evt>
 	): Promise<{ subscribe(): Promise<RPCSubscribeResultData> }> {
-		await this.request(RPCCommands.Subscribe, args, options, event);
+		await this.request(RPCCommands.Unsubscribe, args, { evt: event, ...options });
 		return {
-			subscribe: async () => this.request(RPCCommands.Subscribe, args, options, event),
+			subscribe: async () => this.request(RPCCommands.Subscribe, args, { evt: event, ...options }),
 		};
 	}
 

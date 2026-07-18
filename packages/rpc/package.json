@@ -60,7 +60,7 @@
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@vladfrangu/async_event_emitter": "^2.4.6",
-		"discord-api-types": "^0.38.49"
+		"discord-api-types": "^0.38.50"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",

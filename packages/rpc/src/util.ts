@@ -1,11 +1,12 @@
-export const register: () => unknown = () => {
+import { createRequire } from 'node:module';
+
+export const register: () => Promise<boolean | unknown> = async () => {
+	const require = createRequire(import.meta.url);
 	try {
-		// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 		const { app } = require('electron');
 		return app.setAsDefaultProtocolClient.bind(app);
 	} catch {
 		try {
-			// eslint-disable-next-line @typescript-eslint/no-require-imports
 			return require('register-scheme');
 		} catch {
 			return false;

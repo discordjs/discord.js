@@ -36,7 +36,7 @@ async function getIPCPath(id: number) {
 	}
 
 	// Unix: check XDG_RUNTIME_DIR, TMPDIR, TMP, TEMP, then /tmp.
-	const prefix = process.env.XDG_RUNTIME_DIR ?? process.env.TMPDIR ?? process.env.TMP ?? process.env.TEMP ?? '/tmp';
+	const prefix = process.env.XDG_RUNTIME_DIR ?? process.env.TMPDIR ?? '/tmp';
 
 	// Flatpak/Snap sandboxes nest the socket under app subdirs.
 	const bases = [prefix, path.join(prefix, 'app', 'com.discordapp.Discord'), path.join(prefix, 'snap.discord')];
@@ -78,16 +78,26 @@ export function encode(op: number, data: HandshakePayload | Record<string, never
 	return packet;
 }
 
+interface Working {
+	buffer: Buffer;
+	len: number;
+	op: number;
+}
+
 export class IPCTransport extends AsyncEventEmitter {
 	private socket: Socket;
 
-	private working: Buffer[];
+	private readonly working: Working;
 
 	public constructor(public readonly client: RPCClient) {
 		super();
 
 		this.socket = new Socket();
-		this.working = [];
+		this.working = {
+			op: 0,
+			len: 0,
+			buffer: Buffer.from([]),
+		};
 	}
 
 	public async connect() {
@@ -120,47 +130,60 @@ export class IPCTransport extends AsyncEventEmitter {
 		socket.pause();
 
 		socket.on('readable', this.decode.bind(this));
-
-		socket.on('end', () => {
-			const packets = Buffer.concat(this.working);
-			const op = packets.readInt32LE(0);
-			const len = packets.readInt32LE(4);
-			const data = JSON.parse(packets.subarray(8, len + 8).toString());
-			this.working = [];
-			// Pong and Handshake is done from the client
-			switch (op) {
-				case OPCodes.Ping:
-					this.send(data, OPCodes.Pong);
-					break;
-				case OPCodes.Frame:
-					if (!data) {
-						return;
-					}
-
-					this.emit('message', data);
-					break;
-				case OPCodes.Close:
-					this.emit('close', data);
-					break;
-				default:
-					break;
-			}
-		});
 	}
 
 	private async decode() {
 		let packet: Buffer;
+		const chunks = [];
 		while ((packet = this.socket.read()) !== null) {
-			this.working.push(packet);
+			chunks.push(packet);
 		}
 
-		this.socket.emit('end');
+		if (chunks.length === 0) return;
+
+		const packets = Buffer.concat([this.working.buffer, ...chunks]);
+
+		if (this.working.buffer.byteLength === 0) {
+			this.working.op = packets.readInt32LE(0);
+			this.working.len = packets.readInt32LE(4);
+		}
+
+		this.working.buffer = packets;
+
+		const { op, len } = this.working;
+		let data;
+		try {
+			data = JSON.parse(packets.subarray(8, len + 8).toString());
+		} catch {
+			return;
+		}
+
+		this.working.buffer = Buffer.from([]);
+
+		// Pong and Handshake is done from the client
+		switch (op) {
+			case OPCodes.Ping:
+				this.send(data, OPCodes.Pong);
+				break;
+			case OPCodes.Frame:
+				if (!data) {
+					return;
+				}
+
+				this.emit('message', data);
+				break;
+			case OPCodes.Close:
+				this.emit('close', data);
+				break;
+			default:
+				break;
+		}
 	}
 
 	public onClose(data: unknown) {
 		this.socket.removeAllListeners();
 		this.socket = new Socket();
-		this.working = [];
+		this.working.buffer = Buffer.from([]);
 		const error = typeof data === 'boolean' ? new Error('socket closed') : data;
 		this.emit('close', error);
 	}
@@ -180,7 +203,8 @@ export class IPCTransport extends AsyncEventEmitter {
 		const { promise, resolve, reject } = Promise.withResolvers();
 		const signal = options?.signal ?? AbortSignal.timeout(10e3);
 
-		const onAbort = (_: Event, reason?: string) => reject(reason);
+		const onAbort = (_: Event) =>
+			reject(signal.reason instanceof Error ? signal.reason : new Error(String(signal.reason)));
 
 		this.once('close', (error) => {
 			signal.removeEventListener('abort', onAbort);
@@ -195,6 +219,9 @@ export class IPCTransport extends AsyncEventEmitter {
 		return promise;
 	}
 
+	/**
+	 * Manual ping method
+	 */
 	public ping() {
 		this.send(randomUUID(), OPCodes.Ping);
 	}

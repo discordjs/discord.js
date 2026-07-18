@@ -155,11 +155,11 @@ import type {
 	RPCVoiceStateDeleteDispatchData,
 	RPCVoiceStateUpdateDispatchData,
 } from 'discord-api-types/v10';
-import type { RequestOptions } from './client';
+import type { RequestOptions } from './client.js';
 
 export enum Events {
-	ApplicationReady = 'ready',
-	Disconnected = 'disconnected',
+	ApplicationReady = 'APPLICATION_READY',
+	Disconnected = 'DISCONNECTED',
 }
 
 export interface MappedRPCCommandsResultsData {
@@ -267,8 +267,6 @@ export interface MappedRPCCommandsArgs {
 export type RPCCallableCommands = Exclude<RPCCommands, RPCCommands.Dispatch>;
 
 export interface MappedRPCSubscribeEventsArgs {
-	[RPCEvents.Ready]: Record<string, never>;
-	[RPCEvents.Error]: Record<string, never>;
 	[RPCEvents.ActivityInvite]: RPCSubscribeActivityInviteArgs;
 	[RPCEvents.ActivityJoin]: RPCSubscribeActivityJoinArgs;
 	[RPCEvents.ActivityJoinRequest]: RPCSubscribeActivityJoinRequestArgs;
@@ -332,7 +330,11 @@ export interface MappedRPCEventsDispatchData {
 	[RPCEvents.VoiceStateUpdate]: [RPCVoiceStateUpdateDispatchData];
 }
 
-export type EventAndArgsParameters<Evt extends RPCEvents> =
-	MappedRPCSubscribeEventsArgs[Evt] extends Record<string, never>
-		? [Evt]
-		: [Evt, MappedRPCSubscribeEventsArgs[Evt], RequestOptions];
+export interface MappedEvents {
+	[Events.ApplicationReady]: [];
+	[Events.Disconnected]: [];
+}
+
+export type EventAndArgsParameters<Evt extends RPCEvents> = Evt extends RPCEvents.Error | RPCEvents.Ready
+	? never
+	: [Evt, MappedRPCSubscribeEventsArgs[Exclude<Evt, RPCEvents.Error | RPCEvents.Ready>], RequestOptions?];
