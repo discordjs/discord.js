@@ -251,7 +251,7 @@ describe('Application Command toJSON() results', () => {
 			getAttachmentOption()
 				.setFileTypes(Array.from({ length: 11 }, () => '.txt' as const))
 				.toJSON(),
-		).toThrowError();
+		).toThrow();
 	});
 
 	test.each(['document', 'pdf', '.'])(
@@ -261,7 +261,7 @@ describe('Application Command toJSON() results', () => {
 				getAttachmentOption()
 					.setFileTypes(fileType as FileUploadType)
 					.toJSON(),
-			).toThrowError();
+			).toThrow();
 		},
 	);
 });

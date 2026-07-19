@@ -18,7 +18,7 @@ describe('File Upload Components', () => {
 
 			expect(() => {
 				fileUploadComponent().setCustomId('foobar').setFileTypes('audio', 'image', 'video', '.pdf').toJSON();
-			}).not.toThrowError();
+			}).not.toThrow();
 		});
 
 		test('GIVEN file types THEN they can be added', () => {
@@ -50,7 +50,7 @@ describe('File Upload Components', () => {
 				.setCustomId('a')
 				.setFileTypes(Array.from({ length: 11 }, () => '.txt' as const))
 				.toJSON();
-		}).toThrowError();
+		}).toThrow();
 
 		for (const invalidFileType of ['document', 'pdf', '.']) {
 			expect(() => {
@@ -58,7 +58,7 @@ describe('File Upload Components', () => {
 					.setCustomId('a')
 					.setFileTypes(invalidFileType as FileUploadType)
 					.toJSON();
-			}).toThrowError();
+			}).toThrow();
 		}
 
 		expect(() => {
@@ -67,7 +67,7 @@ describe('File Upload Components', () => {
 				custom_id: 'a',
 				file_types: ['document' as FileUploadType],
 			}).toJSON();
-		}).toThrowError();
+		}).toThrow();
 	});
 
 	test('GIVEN valid input THEN valid JSON outputs are given', () => {
