@@ -1,6 +1,6 @@
 import { ComponentType } from 'discord-api-types/v10';
 import { z } from 'zod';
-import { customIdPredicate, fileUploadTypesPredicate, idPredicate } from '../../Assertions';
+import { customIdPredicate, fileUploadTypesPredicate, idPredicate } from '../../Assertions.js';
 
 export const fileUploadPredicate = z.object({
 	type: z.literal(ComponentType.FileUpload),
