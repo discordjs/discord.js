@@ -5244,7 +5244,7 @@ export interface ApplicationCommandNonOptionsData extends BaseApplicationCommand
 }
 
 export interface ApplicationCommandNonOptions extends BaseApplicationCommandOptionsData {
-  type: Exclude<CommandOptionNonChoiceResolvableType, ApplicationCommandOptionType>;
+  type: Exclude<CommandOptionNonChoiceResolvableType, ApplicationCommandOptionType.Attachment>;
 }
 
 export type ApplicationCommandOptionData =
