@@ -2225,6 +2225,10 @@ client.on('interactionCreate', async interaction => {
         interaction.options.getChannel('test', false, [ChannelType.GuildForum, ChannelType.GuildVoice]),
       );
       expectType<MediaChannel>(interaction.options.getChannel('test', true, [ChannelType.GuildMedia]));
+
+      const resolvedChannel = interaction.options.getChannel('test', true);
+      expectType<Readonly<PermissionsBitField> | null>(resolvedChannel.permissions);
+      expectType<Readonly<PermissionsBitField> | null>(resolvedChannel.appPermissions);
     } else {
       expectType<ChatInputCommandInteraction>(interaction);
       expectType<Promise<Message>>(interaction.reply({ fetchReply: true }));

@@ -6,6 +6,7 @@ const { ChannelType, Routes } = require('discord-api-types/v10');
 const Base = require('./Base');
 const ChannelFlagsBitField = require('../util/ChannelFlagsBitField');
 const { ThreadChannelTypes } = require('../util/Constants');
+const PermissionsBitField = require('../util/PermissionsBitField');
 
 /**
  * Represents any channel on Discord.
@@ -42,6 +43,31 @@ class BaseChannel extends Base {
      * @type {Snowflake}
      */
     this.id = data.id;
+
+    if ('permissions' in data) {
+      /**
+       * The computed permissions of the user who invoked the interaction in this channel, including overwrites.
+       * <info>This is only present on channels received through an interaction's resolved data.</info>
+       *
+       * @type {?Readonly<PermissionsBitField>}
+       */
+      this.permissions = new PermissionsBitField(data.permissions).freeze();
+    } else {
+      this.permissions ??= null;
+    }
+
+    if ('app_permissions' in data) {
+      /**
+       * The computed permissions of the application in this channel, including overwrites.
+       * <info>This is only present on channels received through an interaction's resolved data, and only when the
+       * application's bot user is in the guild.</info>
+       *
+       * @type {?Readonly<PermissionsBitField>}
+       */
+      this.appPermissions = new PermissionsBitField(data.app_permissions).freeze();
+    } else {
+      this.appPermissions ??= null;
+    }
   }
 
   /**
