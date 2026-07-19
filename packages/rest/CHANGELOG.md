@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+# [@discordjs/rest@2.6.3](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.6.2...@discordjs/rest@2.6.3) - (2026-07-19)
+
+## Bug Fixes
+
+- **makeURLSearchParams:** Allow arrays (#11578) ([de1be50](https://github.com/discordjs/discord.js/commit/de1be5016eea9f79346e6aeb16eaea7e0add9857))
+
 # [@discordjs/rest@2.6.2](https://github.com/discordjs/discord.js/compare/@discordjs/rest@2.6.1...@discordjs/rest@2.6.2) - (2026-07-15)
 
 ## Bug Fixes
