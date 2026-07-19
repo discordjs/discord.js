@@ -132,7 +132,6 @@ class BaseRole extends Base {
    * console.log(`Role: ${role}`);
    */
   toString() {
-    if (this.id === this.guild.id) return '@everyone';
     return roleMention(this.id);
   }
 

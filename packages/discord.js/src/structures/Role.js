@@ -408,6 +408,11 @@ class Role extends BaseRole {
     );
   }
 
+  toString() {
+    if (this.id === this.guild.id) return '@everyone';
+    return super.toString();
+  }
+
   toJSON() {
     return {
       ...super.toJSON(),

@@ -3035,7 +3035,7 @@ export interface RoleColorsEditResolvable {
 }
 
 export class BaseRole extends Base {
-  protected constructor(client: Client<true>, data: APIRole);
+  protected constructor(client: Client<true>, data: Partial<APIRole>);
   public colors: RoleColors;
   public get createdAt(): Date;
   public get createdTimestamp(): number;

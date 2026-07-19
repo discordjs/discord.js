@@ -186,17 +186,19 @@ class GuildInvite extends BaseInvite {
       this.approximatePresenceCount ??= null;
     }
 
-    if ('roles' in data) {
+    if ('roles' in data || 'role_ids' in data) {
       /**
        * The roles assigned to the user upon accepting the invite.
        *
        * @type {?Collection<Snowflake, Role|InviteRole>}
        */
       this.roles = new Collection(
-        data.roles.map(role => [
+        data.roles?.map(role => [
           role.id,
           this.guild?.roles?._add(role, false) ?? new (getInviteRole())(this.client, role),
-        ]),
+        ]) ??
+          // `role_ids` is only received from gateway `INVITE_CREATE` event, so `this.guild` should be "Guild" instance
+          data.role_ids?.map(roleId => [roleId, this.guild.roles.resolve(roleId)]),
       );
     } else {
       this.roles ??= null;
