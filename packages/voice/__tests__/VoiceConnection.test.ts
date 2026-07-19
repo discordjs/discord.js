@@ -377,17 +377,17 @@ describe('VoiceConnection#onNetworkingClose', () => {
 		expect(adapter.sendPayload).not.toHaveBeenCalled();
 	});
 
-	test('Disconnects for code 4014', () => {
+	test.each([4_014, 4_021, 4_022])('Disconnects for close code %i', (code) => {
 		const { voiceConnection, adapter } = createFakeVoiceConnection();
-		voiceConnection['onNetworkingClose'](4_014);
+		voiceConnection['onNetworkingClose'](code);
 		expect(voiceConnection.state).toMatchObject({
 			status: VoiceConnectionStatus.Disconnected,
-			closeCode: 4_014,
+			closeCode: code,
 		});
 		expect(adapter.sendPayload).not.toHaveBeenCalled();
 	});
 
-	test('Attempts rejoin for codes != 4014', () => {
+	test('Attempts rejoin for close codes that should reconnect', () => {
 		const dummyPayload = Symbol('dummy') as any;
 		const { voiceConnection, adapter, joinConfig } = createFakeVoiceConnection();
 		DataStore.createJoinVoiceChannelPayload.mockImplementation((config) =>
@@ -399,7 +399,7 @@ describe('VoiceConnection#onNetworkingClose', () => {
 		expect(voiceConnection.rejoinAttempts).toEqual(1);
 	});
 
-	test('Attempts rejoin for codes != 4014 (with adapter failure)', () => {
+	test('Attempts rejoin for close codes that should reconnect (with adapter failure)', () => {
 		const dummyPayload = Symbol('dummy') as any;
 		const { voiceConnection, adapter, joinConfig } = createFakeVoiceConnection();
 		DataStore.createJoinVoiceChannelPayload.mockImplementation((config) =>
