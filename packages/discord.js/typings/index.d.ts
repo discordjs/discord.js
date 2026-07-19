@@ -900,6 +900,8 @@ export abstract class BaseChannel extends Base {
   public get createdTimestamp(): number | null;
   public id: Snowflake;
   public flags: Readonly<ChannelFlagsBitField> | null;
+  public permissions: Readonly<PermissionsBitField> | null;
+  public appPermissions: Readonly<PermissionsBitField> | null;
   public get partial(): false;
   public type: ChannelType;
   public get url(): string;
