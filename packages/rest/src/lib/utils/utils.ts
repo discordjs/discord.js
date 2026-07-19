@@ -82,7 +82,7 @@ export function makeURLSearchParams<ParametersType extends object>(
 			}
 
 			if (commaSeparatedElements?.length) {
-				params.append(key, commaSeparatedElements.toString());
+				params.append(key, commaSeparatedElements.join(','));
 			}
 
 			continue;
