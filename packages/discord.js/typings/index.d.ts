@@ -127,6 +127,7 @@ import {
   EmbedType,
   EntitlementType,
   EntryPointCommandHandlerType,
+  FileUploadType,
   FormattingPatterns,
   ForumLayoutType,
   GatewayActivity,
@@ -5120,7 +5121,14 @@ export interface ApplicationCommandMentionableOption extends BaseApplicationComm
   type: ApplicationCommandOptionType.Mentionable;
 }
 
+export interface ApplicationCommandAttachmentOptionData extends BaseApplicationCommandOptionsData {
+  fileTypes?: readonly FileUploadType[];
+  file_types?: readonly FileUploadType[];
+  type: ApplicationCommandOptionType.Attachment;
+}
+
 export interface ApplicationCommandAttachmentOption extends BaseApplicationCommandOptionsData {
+  fileTypes?: readonly FileUploadType[];
   type: ApplicationCommandOptionType.Attachment;
 }
 
@@ -5232,7 +5240,7 @@ export interface ApplicationCommandSubCommand extends CommonBaseApplicationComma
 }
 
 export interface ApplicationCommandNonOptionsData extends BaseApplicationCommandOptionsData {
-  type: CommandOptionNonChoiceResolvableType;
+  type: Exclude<CommandOptionNonChoiceResolvableType, ApplicationCommandOptionType.Attachment>;
 }
 
 export interface ApplicationCommandNonOptions extends BaseApplicationCommandOptionsData {
@@ -5240,6 +5248,7 @@ export interface ApplicationCommandNonOptions extends BaseApplicationCommandOpti
 }
 
 export type ApplicationCommandOptionData =
+  | ApplicationCommandAttachmentOptionData
   | ApplicationCommandAutocompleteNumericOptionData
   | ApplicationCommandAutocompleteStringOptionData
   | ApplicationCommandBooleanOptionData
@@ -6943,6 +6952,7 @@ export interface TextInputComponentData extends BaseComponentData {
 
 export interface FileUploadComponentData extends BaseComponentData {
   customId: string;
+  fileTypes?: readonly FileUploadType[];
   maxValues?: number;
   minValues?: number;
   required?: boolean;
