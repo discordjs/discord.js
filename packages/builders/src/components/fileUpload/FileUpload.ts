@@ -1,5 +1,6 @@
-import type { APIFileUploadComponent } from 'discord-api-types/v10';
+import type { APIFileUploadComponent, FileUploadType } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
+import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { validate } from '../../util/validation.js';
 import { ComponentBuilder } from '../Component.js';
 import { fileUploadPredicate } from './Assertions.js';
@@ -24,6 +25,7 @@ export class FileUploadBuilder extends ComponentBuilder<APIFileUploadComponent> 
 	 * 	custom_id: "file_upload",
 	 *  min_values: 2,
 	 *  max_values: 5,
+	 *  file_types: ["image", ".pdf"],
 	 * });
 	 * ```
 	 * @example
@@ -33,7 +35,9 @@ export class FileUploadBuilder extends ComponentBuilder<APIFileUploadComponent> 
 	 * 	custom_id: "file_upload",
 	 *  min_values: 2,
 	 *  max_values: 5,
-	 * }).setRequired();
+	 * })
+	 * 	.setFileTypes("image", ".pdf")
+	 * 	.setRequired();
 	 * ```
 	 */
 	public constructor(data: Partial<APIFileUploadComponent> = {}) {
@@ -84,6 +88,27 @@ export class FileUploadBuilder extends ComponentBuilder<APIFileUploadComponent> 
 	 */
 	public clearMaxValues() {
 		this.data.max_values = undefined;
+		return this;
+	}
+
+	/**
+	 * Sets the file types allowed in this file upload.
+	 *
+	 * @remarks
+	 * When specifying only extensions, include `.jpg` for image uploads and both `.mp4` and `.mov`
+	 * for video uploads due to mobile platform limitations.
+	 * @param fileTypes - The file groups or dot-prefixed extensions to allow
+	 */
+	public setFileTypes(...fileTypes: RestOrArray<FileUploadType>) {
+		this.data.file_types = normalizeArray(fileTypes);
+		return this;
+	}
+
+	/**
+	 * Clears the file types allowed in this file upload.
+	 */
+	public clearFileTypes() {
+		this.data.file_types = undefined;
 		return this;
 	}
 

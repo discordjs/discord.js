@@ -5,7 +5,7 @@ import {
 	ApplicationCommandType,
 } from 'discord-api-types/v10';
 import { z } from 'zod';
-import { localeMapPredicate, memberPermissionsPredicate } from '../../../Assertions.js';
+import { fileUploadTypesPredicate, localeMapPredicate, memberPermissionsPredicate } from '../../../Assertions.js';
 import { ApplicationCommandOptionAllowedChannelTypes } from './mixins/ApplicationCommandOptionChannelTypesMixin.js';
 
 const namePredicate = z
@@ -77,6 +77,7 @@ export const baseBasicOptionPredicate = z.object({
 export const attachmentOptionPredicate = z.object({
 	...baseBasicOptionPredicate.shape,
 	type: z.literal(ApplicationCommandOptionType.Attachment),
+	file_types: fileUploadTypesPredicate.optional(),
 });
 
 export const booleanOptionPredicate = z.object({

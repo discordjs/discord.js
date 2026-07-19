@@ -1,4 +1,4 @@
-import type { APIFileUploadComponent } from 'discord-api-types/v10';
+import type { APIFileUploadComponent, FileUploadType } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
 import { FileUploadBuilder } from '../../src/components/fileUpload/FileUpload.js';
@@ -14,6 +14,10 @@ describe('File Upload Components', () => {
 
 			expect(() => {
 				fileUploadComponent().setCustomId('foobar').setMinValues(2).setMaxValues(9).toJSON();
+			}).not.toThrowError();
+
+			expect(() => {
+				fileUploadComponent().setCustomId('foobar').setFileTypes('audio', 'image', 'video', '.pdf').toJSON();
 			}).not.toThrowError();
 		});
 	});
@@ -34,6 +38,30 @@ describe('File Upload Components', () => {
 		expect(() => {
 			fileUploadComponent().setCustomId('a').setMinValues(-1).toJSON();
 		}).toThrowError();
+
+		expect(() => {
+			fileUploadComponent()
+				.setCustomId('a')
+				.setFileTypes(Array.from({ length: 11 }, () => '.txt' as const))
+				.toJSON();
+		}).toThrowError();
+
+		for (const invalidFileType of ['document', 'pdf', '.']) {
+			expect(() => {
+				fileUploadComponent()
+					.setCustomId('a')
+					.setFileTypes(invalidFileType as FileUploadType)
+					.toJSON();
+			}).toThrowError();
+		}
+
+		expect(() => {
+			new FileUploadBuilder({
+				type: ComponentType.FileUpload,
+				custom_id: 'a',
+				file_types: ['document' as FileUploadType],
+			}).toJSON();
+		}).toThrowError();
 	});
 
 	test('GIVEN valid input THEN valid JSON outputs are given', () => {
@@ -42,6 +70,7 @@ describe('File Upload Components', () => {
 			custom_id: 'custom id',
 			min_values: 5,
 			max_values: 6,
+			file_types: ['image', '.pdf'],
 			required: false,
 		} satisfies APIFileUploadComponent;
 
@@ -52,8 +81,11 @@ describe('File Upload Components', () => {
 				.setCustomId(fileUploadData.custom_id)
 				.setMaxValues(fileUploadData.max_values)
 				.setMinValues(fileUploadData.min_values)
+				.setFileTypes(fileUploadData.file_types)
 				.setRequired(fileUploadData.required)
 				.toJSON(),
 		).toEqual(fileUploadData);
+
+		expect(new FileUploadBuilder(fileUploadData).clearFileTypes().toJSON().file_types).toBeUndefined();
 	});
 });
