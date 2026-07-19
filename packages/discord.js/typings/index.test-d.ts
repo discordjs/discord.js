@@ -41,6 +41,8 @@ import {
 } from 'discord-api-types/v10';
 import {
   ApplicationCommand,
+  ApplicationCommandAttachmentOption,
+  ApplicationCommandAttachmentOptionData,
   ApplicationCommandData,
   ApplicationCommandManager,
   ApplicationCommandOptionData,
@@ -62,6 +64,7 @@ import {
   CommandOptionNonChoiceResolvableType,
   ContextMenuCommandInteraction,
   DMChannel,
+  FileUploadComponentData,
   Guild,
   GuildApplicationCommandManager,
   GuildChannelManager,
@@ -1641,6 +1644,21 @@ declare const applicationCommandChannelOption: ApplicationCommandChannelOption;
   applicationCommandChannelOption.channelTypes = [] as const;
 }
 
+declare const applicationCommandAttachmentOptionData: ApplicationCommandAttachmentOptionData;
+declare const applicationCommandAttachmentOption: ApplicationCommandAttachmentOption;
+{
+  applicationCommandAttachmentOptionData.fileTypes = ['image', '.pdf'] as const;
+  applicationCommandAttachmentOptionData.file_types = ['video', '.mov'] as const;
+  applicationCommandAttachmentOption.fileTypes = ['audio', '.flac'] as const;
+
+  expectNotAssignable<ApplicationCommandOptionData>({
+    description: 'Upload a file',
+    fileTypes: ['pdf'],
+    name: 'file',
+    type: ApplicationCommandOptionType.Attachment,
+  });
+}
+
 declare const applicationNonChoiceOptionData: ApplicationCommandOptionData & {
   type: CommandOptionNonChoiceResolvableType;
 };
@@ -2579,6 +2597,15 @@ chatInputInteraction.showModal({
       ],
       type: ComponentType.ActionRow,
     },
+    {
+      component: {
+        type: ComponentType.FileUpload,
+        custom_id: 'upload',
+        file_types: ['image', '.pdf'],
+      },
+      type: ComponentType.Label,
+      label: 'upload',
+    },
   ],
 });
 
@@ -2632,6 +2659,15 @@ chatInputInteraction.showModal({
         type: ComponentType.RoleSelect,
       },
     },
+    {
+      type: ComponentType.Label,
+      component: {
+        type: ComponentType.FileUpload,
+        customId: 'upload',
+        fileTypes: ['video', '.mp4', '.mov'],
+      },
+      label: 'upload',
+    },
   ],
 });
 
@@ -2649,6 +2685,12 @@ ChannelSelectMenuBuilder.from(channelSelectMenuData);
 
 declare const mentionableSelectMenuData: APIMentionableSelectComponent;
 MentionableSelectMenuBuilder.from(mentionableSelectMenuData);
+
+expectNotAssignable<FileUploadComponentData>({
+  customId: 'upload',
+  fileTypes: ['pdf'],
+  type: ComponentType.FileUpload,
+});
 
 declare const stringSelectMenuComp: StringSelectMenuComponent;
 StringSelectMenuBuilder.from(stringSelectMenuComp);

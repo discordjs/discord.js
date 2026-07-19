@@ -82,6 +82,7 @@ import {
   ButtonStyle,
   ChannelType,
   ComponentType,
+  FileUploadType,
   GatewayDispatchEvents,
   GatewayVoiceServerUpdateDispatchData,
   GatewayVoiceStateUpdateDispatchData,
@@ -5671,7 +5672,14 @@ export interface ApplicationCommandMentionableOption extends BaseApplicationComm
   type: ApplicationCommandOptionType.Mentionable;
 }
 
+export interface ApplicationCommandAttachmentOptionData extends BaseApplicationCommandOptionsData {
+  fileTypes?: readonly FileUploadType[];
+  file_types?: readonly FileUploadType[];
+  type: ApplicationCommandOptionType.Attachment;
+}
+
 export interface ApplicationCommandAttachmentOption extends BaseApplicationCommandOptionsData {
+  fileTypes?: readonly FileUploadType[];
   type: ApplicationCommandOptionType.Attachment;
 }
 
@@ -5797,15 +5805,16 @@ export interface ApplicationCommandSubCommand extends Omit<BaseApplicationComman
 }
 
 export interface ApplicationCommandNonOptionsData extends BaseApplicationCommandOptionsData {
-  type: CommandOptionNonChoiceResolvableType;
+  type: Exclude<CommandOptionNonChoiceResolvableType, ApplicationCommandOptionType.Attachment>;
 }
 
 export interface ApplicationCommandNonOptions extends BaseApplicationCommandOptionsData {
-  type: Exclude<CommandOptionNonChoiceResolvableType, ApplicationCommandOptionType>;
+  type: Exclude<CommandOptionNonChoiceResolvableType, ApplicationCommandOptionType.Attachment>;
 }
 
 export type ApplicationCommandOptionData =
   | ApplicationCommandSubGroupData
+  | ApplicationCommandAttachmentOptionData
   | ApplicationCommandNonOptionsData
   | ApplicationCommandChannelOptionData
   | ApplicationCommandAutocompleteNumericOptionData
@@ -7545,6 +7554,7 @@ export interface TextInputComponentData extends BaseComponentData {
 
 export interface FileUploadComponentData extends BaseComponentData {
   customId: string;
+  fileTypes?: readonly FileUploadType[];
   maxValues?: number;
   minValues?: number;
   required?: boolean;
