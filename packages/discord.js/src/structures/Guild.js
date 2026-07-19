@@ -1171,8 +1171,21 @@ class Guild extends AnonymousGuild {
       content,
       max_id: maxId,
       min_id: minId,
+      channel_id: channelId,
+      author_type: authorType,
+      author_id: authorId,
+      mentions,
+      mentions_role_id: mentionsRoleId,
       mention_everyone: mentionEveryone,
+      replied_to_user_id: repliedToUserId,
+      replied_to_message_id: repliedToMessageId,
       pinned,
+      has,
+      embed_type: embedType,
+      embed_provider: embedProvider,
+      link_hostname: linkHostname,
+      attachment_filename: attachmentFilename,
+      attachment_extension: attachmentExtension,
       sort_by: sortBy,
       sort_order: sortOrder,
       include_nsfw: includeNsfw,
@@ -1180,30 +1193,6 @@ class Guild extends AnonymousGuild {
       offset,
       slop,
     });
-
-    const arrayParams = [
-      ['channel_id', channelId],
-      ['author_type', authorType],
-      ['author_id', authorId],
-      ['mentions', mentions],
-      ['mentions_role_id', mentionsRoleId],
-      ['replied_to_user_id', repliedToUserId],
-      ['replied_to_message_id', repliedToMessageId],
-      ['has', has],
-      ['embed_type', embedType],
-      ['embed_provider', embedProvider],
-      ['link_hostname', linkHostname],
-      ['attachment_filename', attachmentFilename],
-      ['attachment_extension', attachmentExtension],
-    ];
-
-    for (const [key, values] of arrayParams) {
-      if (values) {
-        for (const value of values) {
-          query.append(key, value);
-        }
-      }
-    }
 
     const data = await this.client.rest.get(Routes.guildMessagesSearch(this.id), { query });
 
