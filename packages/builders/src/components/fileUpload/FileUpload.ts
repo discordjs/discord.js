@@ -92,6 +92,20 @@ export class FileUploadBuilder extends ComponentBuilder<APIFileUploadComponent> 
 	}
 
 	/**
+	 * Adds file types allowed in this file upload.
+	 *
+	 * @remarks
+	 * When specifying only extensions, include `.jpg` for image uploads and both `.mp4` and `.mov`
+	 * for video uploads due to mobile platform limitations.
+	 * @param fileTypes - The file groups or dot-prefixed extensions to allow
+	 */
+	public addFileTypes(...fileTypes: RestOrArray<FileUploadType>) {
+		this.data.file_types ??= [];
+		this.data.file_types.push(...normalizeArray(fileTypes));
+		return this;
+	}
+
+	/**
 	 * Sets the file types allowed in this file upload.
 	 *
 	 * @remarks

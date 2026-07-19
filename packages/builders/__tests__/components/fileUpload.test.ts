@@ -20,6 +20,12 @@ describe('File Upload Components', () => {
 				fileUploadComponent().setCustomId('foobar').setFileTypes('audio', 'image', 'video', '.pdf').toJSON();
 			}).not.toThrowError();
 		});
+
+		test('GIVEN file types THEN they can be added', () => {
+			expect(
+				fileUploadComponent().setCustomId('foobar').addFileTypes('image').addFileTypes(['.pdf']).toJSON().file_types,
+			).toEqual(['image', '.pdf']);
+		});
 	});
 
 	test('GIVEN invalid fields THEN builder throws', () => {

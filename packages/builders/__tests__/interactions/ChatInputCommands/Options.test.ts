@@ -234,6 +234,13 @@ describe('Application Command toJSON() results', () => {
 		});
 	});
 
+	test('GIVEN attachment option file types THEN they can be added', () => {
+		expect(getAttachmentOption().addFileTypes('image').addFileTypes(['.pdf']).toJSON().file_types).toEqual([
+			'image',
+			'.pdf',
+		]);
+	});
+
 	test('GIVEN attachment option file types THEN they can be cleared', () => {
 		expect(
 			Reflect.get(getAttachmentOption().setFileTypes('audio', '.ogg').clearFileTypes().toJSON(), 'file_types'),
