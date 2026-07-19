@@ -280,7 +280,7 @@ class GuildInviteManager extends CachedManager {
    * Updates target users for an invite
    *
    * @param {InviteResolvable} invite The invite to update the target users
-   * @param {UserResolvable[]|BufferResolvable} targetUsersFile An array of users or a csv file with a single column of user IDs
+   * @param {UserResolvable[]|BufferResolvable} targetUsersFile An array of users or a CSV file with a single column of user ids
    * for all the users able to accept this invite
    * @returns {Promise<unknown>}
    */

@@ -234,7 +234,7 @@ class GuildInvite extends BaseInvite {
   /**
    * Update target users of this invite.
    *
-   * @param {UserResolvable[]|BufferResolvable} targetUsersFile An array of users or a csv file with a single column of user IDs
+   * @param {UserResolvable[]|BufferResolvable} targetUsersFile An array of users or a CSV file with a single column of user ids
    * for all the users able to accept this invite
    * @returns {Promise<unknown>}
    */
