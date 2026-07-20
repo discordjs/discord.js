@@ -269,15 +269,9 @@ class GuildInvite extends BaseInvite {
 
   toJSON() {
     return super.toJSON({
-      url: true,
-      expiresTimestamp: true,
       presenceCount: false,
       memberCount: false,
-      uses: false,
-      channel: 'channelId',
-      inviter: 'inviterId',
       guild: 'guildId',
-      roles: 'roles',
     });
   }
 }
