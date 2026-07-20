@@ -169,7 +169,7 @@ class BaseInvite extends Base {
     return this.url;
   }
 
-  toJSON(...props) {
+  toJSON({ ...props } = {}) {
     return super.toJSON({
       url: true,
       expiresTimestamp: true,

@@ -2085,7 +2085,7 @@ export class BaseInvite<WithCounts extends boolean = boolean> extends Base {
   public get url(): string;
   public static InvitesPattern: RegExp;
   public toString(): string;
-  public toJSON(...props: Record<string, boolean | string>[]): unknown;
+  public toJSON(props?: Record<string, boolean | string>): unknown;
 }
 
 export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvite<WithCounts> {
