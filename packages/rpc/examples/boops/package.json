@@ -4,8 +4,8 @@
   "description": "A minimal Electron application using @discordjs/rpc",
   "main": "./out/main/index.js",
   "scripts": {
-    "format": "prettier --write .",
-    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
+    "lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
+    "format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json --composite false",
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
     "typecheck": "npm run typecheck:node && npm run typecheck:web",

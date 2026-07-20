@@ -101,25 +101,25 @@ export class IPCTransport extends AsyncEventEmitter {
 	}
 
 	public async connect() {
-		let socket: Error | Socket | undefined;
+		let socket: Socket | undefined;
 		for (let id = 0; id < 10; id++) {
-			socket = await getIPC(id).catch((error: Error) => error);
-			if (socket instanceof Socket) break;
+			try {
+				socket = await getIPC(id);
+			} catch (error: unknown) {
+				if (id === 9) throw error;
+			}
 		}
 
 		// NOTE: I wouldn't need to do this if TS' type-checker could understand that socket IS being asigned to before use,
 		// but unfortunately, `undefined` has to be included in the variable's type.
-		// eslint-disable-next-line @typescript-eslint/only-throw-error
-		if (!(socket instanceof Socket)) throw socket;
+		this.socket = socket as Socket;
 
-		this.socket = socket;
-
-		socket.on('close', this.onClose.bind(this));
-		socket.on('error', this.onError.bind(this));
+		this.socket.on('close', this.onClose.bind(this));
+		this.socket.on('error', this.onError.bind(this));
 
 		this.emit('open');
 
-		socket.write(
+		this.socket.write(
 			encode(OPCodes.Handshake, {
 				v: 1,
 				client_id: this.client.clientId,
@@ -127,9 +127,9 @@ export class IPCTransport extends AsyncEventEmitter {
 		);
 
 		// paused for manual read management in this.decode()
-		socket.pause();
+		this.socket.pause();
 
-		socket.on('readable', this.decode.bind(this));
+		this.socket.on('readable', this.decode.bind(this));
 	}
 
 	private async decode() {

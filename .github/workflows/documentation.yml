@@ -202,30 +202,6 @@ jobs:
           CF_R2_DOCS_BUCKET: ${{ secrets.CF_R2_DOCS_BUCKET }}
         uses: ./main/packages/actions/src/uploadSplitDocumentation
 
-      - name: Move docs to correct directory
-        if: ${{ env.REF_TYPE == 'branch' }}
-        run: |
-          declare -a PACKAGES=("brokers" "builders" "collection" "core" "discord.js" "formatters" "next" "proxy" "rest" "rpc" "structures" "util" "voice" "ws")
-          for PACKAGE in "${PACKAGES[@]}"; do
-            if [[ "${PACKAGE}" == "discord.js" ]]; then
-              mkdir -p "out/${PACKAGE}"
-              mv "packages/${PACKAGE}/docs/docs.json" "out/${PACKAGE}/${GITHUB_REF_NAME}.json"
-              mv "packages/${PACKAGE}/docs/docs.api.json" "out/${PACKAGE}/${GITHUB_REF_NAME}.api.json"
-            else
-              mkdir -p "out/${PACKAGE}"
-              mv "packages/${PACKAGE}/docs/docs.api.json" "out/${PACKAGE}/${GITHUB_REF_NAME}.api.json"
-            fi
-          done
-
-      - name: Commit and push
-        run: |
-          cd out
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add .
-          git commit -m "Docs build for ${GITHUB_REF_TYPE} ${GITHUB_REF_NAME}: ${GITHUB_SHA}" || true
-          git push
-
   build-indices:
     needs: build-docs
     name: Build & upload search indices

@@ -1,3 +1,22 @@
 {
-  "include": [".eslintrc.js", "src"]
+	"$schema": "https://json.schemastore.org/tsconfig.json",
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"allowJs": true
+	},
+	"include": [
+		"*.ts",
+		"*.js",
+		"*.cjs",
+		"*.mjs",
+		"src/**/*.ts",
+		"src/**/*.js",
+		"src/**/*.cjs",
+		"src/**/*.mjs",
+		"bin",
+		"scripts",
+		"__tests__",
+		"__mocks__"
+	],
+	"exclude": ["node_modules"]
 }
