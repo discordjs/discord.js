@@ -34,7 +34,7 @@
 
 ## Installation
 
-**Node.js 22.12.0 or newer is required.**
+**Node.js 24.17.0 or newer is required.**
 
 ```sh
 npm install @discordjs/voice

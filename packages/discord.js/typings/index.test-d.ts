@@ -62,6 +62,8 @@ import type {
   AnnouncementChannel,
   AnyThreadChannel,
   ApplicationCommand,
+  ApplicationCommandAttachmentOption,
+  ApplicationCommandAttachmentOptionData,
   ApplicationCommandChannelOption,
   ApplicationCommandChannelOptionData,
   ApplicationCommandChoicesData,
@@ -116,6 +118,7 @@ import type {
   FetchedThreadsMore,
   FetchPinnedMessagesResponse,
   FileComponentData,
+  FileUploadComponentData,
   ForumChannel,
   Guild,
   GuildApplicationCommandManager,
@@ -1668,6 +1671,21 @@ declare const applicationCommandChannelOption: ApplicationCommandChannelOption;
   applicationCommandChannelOption.channelTypes = [] as const;
 }
 
+declare const applicationCommandAttachmentOptionData: ApplicationCommandAttachmentOptionData;
+declare const applicationCommandAttachmentOption: ApplicationCommandAttachmentOption;
+{
+  applicationCommandAttachmentOptionData.fileTypes = ['image', '.pdf'] as const;
+  applicationCommandAttachmentOptionData.file_types = ['video', '.mov'] as const;
+  applicationCommandAttachmentOption.fileTypes = ['audio', '.flac'] as const;
+
+  expectNotAssignable<ApplicationCommandOptionData>({
+    description: 'Upload a file',
+    fileTypes: ['pdf'],
+    name: 'file',
+    type: ApplicationCommandOptionType.Attachment,
+  });
+}
+
 declare const applicationNonChoiceOptionData: ApplicationCommandOptionData & {
   type: CommandOptionNonChoiceResolvableType;
 };
@@ -2270,6 +2288,10 @@ client.on('interactionCreate', async interaction => {
         interaction.options.getChannel('test', false, [ChannelType.GuildForum, ChannelType.GuildVoice]),
       );
       expectType<MediaChannel>(interaction.options.getChannel('test', true, [ChannelType.GuildMedia]));
+
+      const resolvedChannel = interaction.options.getChannel('test', true);
+      expectType<Readonly<PermissionsBitField> | null>(resolvedChannel.permissions);
+      expectType<Readonly<PermissionsBitField> | null>(resolvedChannel.appPermissions);
     } else {
       expectType<ChatInputCommandInteraction>(interaction);
       expectType<Promise<InteractionCallbackResponse>>(interaction.reply({ withResponse: true }));
@@ -2597,6 +2619,15 @@ await chatInputInteraction.showModal({
       type: ComponentType.Label,
       label: 'yo',
     },
+    {
+      component: {
+        type: ComponentType.FileUpload,
+        custom_id: 'upload',
+        file_types: ['image', '.pdf'],
+      },
+      type: ComponentType.Label,
+      label: 'upload',
+    },
   ],
 });
 
@@ -2638,7 +2669,22 @@ await chatInputInteraction.showModal({
       },
       label: 'cc',
     },
+    {
+      type: ComponentType.Label,
+      component: {
+        type: ComponentType.FileUpload,
+        customId: 'upload',
+        fileTypes: ['video', '.mp4', '.mov'],
+      },
+      label: 'upload',
+    },
   ],
+});
+
+expectNotAssignable<FileUploadComponentData>({
+  customId: 'upload',
+  fileTypes: ['pdf'],
+  type: ComponentType.FileUpload,
 });
 
 declare const stringSelectMenuComp: StringSelectMenuComponent;

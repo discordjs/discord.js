@@ -71,7 +71,7 @@
 		"@shikijs/rehype": "^4.0.2",
 		"@tailwindcss/postcss": "^4.2.2",
 		"@types/mdx": "^2.0.13",
-		"@types/node": "^24.12.0",
+		"@types/node": "^24.13.2",
 		"@types/react": "^19.2.14",
 		"@types/react-dom": "^19.2.3",
 		"autoprefixer": "^10.4.27",
@@ -95,6 +95,6 @@
 		"wrangler": "^4.78.0"
 	},
 	"engines": {
-		"node": ">=22.12.0"
+		"node": ">=24.17.0"
 	}
 }

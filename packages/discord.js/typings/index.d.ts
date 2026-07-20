@@ -9,6 +9,9 @@ import { WebSocketManager, WebSocketManagerOptions } from '@discordjs/ws';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import {
   ActivityFlags,
+  APIActivityInstance,
+  APIActivityLocation,
+  ActivityLocationKind,
   ActivityType,
   APIActionRowComponent,
   APIApplicationCommand,
@@ -61,6 +64,7 @@ import {
   APIMessageComponentInteraction,
   APIMessageMentionableSelectInteractionData,
   APIMessageRoleSelectInteractionData,
+  APIMessageSharedClientTheme,
   APIMessageStringSelectInteractionData,
   APIMessageTopLevelComponent,
   APIMessageUserSelectInteractionData,
@@ -115,6 +119,7 @@ import {
   AutoModerationRuleEventType,
   AutoModerationRuleKeywordPresetType,
   AutoModerationRuleTriggerType,
+  BaseThemeType,
   ButtonStyle,
   ChannelFlags,
   ChannelType,
@@ -122,6 +127,7 @@ import {
   EmbedType,
   EntitlementType,
   EntryPointCommandHandlerType,
+  FileUploadType,
   FormattingPatterns,
   ForumLayoutType,
   GatewayActivity,
@@ -244,6 +250,25 @@ export class Activity {
   public url: string | null;
   public equals(activity: Activity): boolean;
   public toString(): string;
+}
+
+export class ActivityInstance extends Base {
+  private constructor(client: Client<true>, data: APIActivityInstance);
+  public applicationId: Snowflake;
+  public instanceId: string;
+  public launchId: Snowflake;
+  public location: ActivityLocation;
+  public users: Snowflake[];
+}
+
+export class ActivityLocation extends Base {
+  private constructor(client: Client<true>, data: APIActivityLocation);
+  public id: string;
+  public kind: ActivityLocationKind;
+  public channelId: Snowflake;
+  public guildId: Snowflake | null;
+  public get channel(): Channel | null;
+  public get guild(): Guild | null;
 }
 
 export type ActivityFlagsString = keyof typeof ActivityFlags;
@@ -876,6 +901,8 @@ export abstract class BaseChannel extends Base {
   public get createdTimestamp(): number | null;
   public id: Snowflake;
   public flags: Readonly<ChannelFlagsBitField> | null;
+  public permissions: Readonly<PermissionsBitField> | null;
+  public appPermissions: Readonly<PermissionsBitField> | null;
   public get partial(): false;
   public type: ChannelType;
   public get url(): string;
@@ -1004,6 +1031,7 @@ export class ClientApplication extends Application {
   public roleConnectionsVerificationURL: string | null;
   public edit(options: ClientApplicationEditOptions): Promise<ClientApplication>;
   public fetch(): Promise<ClientApplication>;
+  public fetchActivityInstance(instanceId: string): Promise<ActivityInstance>;
   public fetchRoleConnectionMetadataRecords(): Promise<ApplicationRoleConnectionMetadata[]>;
   public fetchSKUs(): Promise<Collection<Snowflake, SKU>>;
   public editRoleConnectionMetadataRecords(
@@ -1083,7 +1111,7 @@ export class ContainerComponent extends Component<APIContainerComponent> {
   public readonly components: ComponentInContainer[];
 }
 
-export { Collection, type ReadonlyCollection } from '@discordjs/collection';
+export { Collection, type ReadonlyCollection, type Comparator, type Keep } from '@discordjs/collection';
 
 export interface CollectorEventTypes<Key, Value, Extras extends unknown[] = []> {
   collect: [Value, ...Extras];
@@ -1292,7 +1320,8 @@ export interface DMChannel
 export class DMChannel extends BaseChannel {
   private constructor(client: Client<true>, data?: RawDMChannelData);
   public flags: Readonly<ChannelFlagsBitField>;
-  public recipientId: Snowflake;
+  public get recipientId(): Snowflake | null;
+  public recipientIds: Snowflake[];
   public get recipient(): User | null;
   public type: ChannelType.DM;
   public fetch(force?: boolean): Promise<this>;
@@ -2128,6 +2157,13 @@ export interface MessageCall {
   participants: readonly Snowflake[];
 }
 
+export interface SharedClientTheme {
+  baseMix: number;
+  baseTheme?: BaseThemeType | null;
+  colors: readonly string[];
+  gradientAngle: number;
+}
+
 export type MessageComponentType =
   | ComponentType.Button
   | ComponentType.ChannelSelect
@@ -2223,6 +2259,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public tts: boolean;
   public poll: Poll | null;
   public call: MessageCall | null;
+  public sharedClientTheme: SharedClientTheme | null;
   public type: MessageType;
   public get url(): string;
   public webhookId: Snowflake | null;
@@ -2980,10 +3017,16 @@ export interface RoleColors {
   tertiaryColor: number | null;
 }
 
-export interface RoleColorsResolvable {
+export interface RoleColorsResolvable extends RoleColorsEditResolvable {
   primaryColor: ColorResolvable;
   secondaryColor?: ColorResolvable;
   tertiaryColor?: ColorResolvable;
+}
+
+export interface RoleColorsEditResolvable {
+  primaryColor: ColorResolvable;
+  secondaryColor?: ColorResolvable | null;
+  tertiaryColor?: ColorResolvable | null;
 }
 
 export class Role extends Base {
@@ -3266,6 +3309,8 @@ export class ShardingManager extends AsyncEventEmitter<ShardingManagerEventTypes
   public token: string | null;
   public totalShards: number | 'auto';
   public shardList: number[] | 'auto';
+  public api: string;
+  public version: string;
   public broadcast(message: unknown): Promise<Shard[]>;
   public broadcastEval<Result>(fn: (client: Client) => Awaitable<Result>): Promise<Serialized<Result>[]>;
   public broadcastEval<Result, Context>(
@@ -3288,8 +3333,10 @@ export class ShardingManager extends AsyncEventEmitter<ShardingManagerEventTypes
 }
 
 export interface FetchRecommendedShardCountOptions {
+  api?: string;
   guildsPerShard?: number;
   multipleOf?: number;
+  version?: string;
 }
 
 export {
@@ -5074,7 +5121,14 @@ export interface ApplicationCommandMentionableOption extends BaseApplicationComm
   type: ApplicationCommandOptionType.Mentionable;
 }
 
+export interface ApplicationCommandAttachmentOptionData extends BaseApplicationCommandOptionsData {
+  fileTypes?: readonly FileUploadType[];
+  file_types?: readonly FileUploadType[];
+  type: ApplicationCommandOptionType.Attachment;
+}
+
 export interface ApplicationCommandAttachmentOption extends BaseApplicationCommandOptionsData {
+  fileTypes?: readonly FileUploadType[];
   type: ApplicationCommandOptionType.Attachment;
 }
 
@@ -5186,14 +5240,15 @@ export interface ApplicationCommandSubCommand extends CommonBaseApplicationComma
 }
 
 export interface ApplicationCommandNonOptionsData extends BaseApplicationCommandOptionsData {
-  type: CommandOptionNonChoiceResolvableType;
+  type: Exclude<CommandOptionNonChoiceResolvableType, ApplicationCommandOptionType.Attachment>;
 }
 
 export interface ApplicationCommandNonOptions extends BaseApplicationCommandOptionsData {
-  type: Exclude<CommandOptionNonChoiceResolvableType, ApplicationCommandOptionType>;
+  type: Exclude<CommandOptionNonChoiceResolvableType, ApplicationCommandOptionType.Attachment>;
 }
 
 export type ApplicationCommandOptionData =
+  | ApplicationCommandAttachmentOptionData
   | ApplicationCommandAutocompleteNumericOptionData
   | ApplicationCommandAutocompleteStringOptionData
   | ApplicationCommandBooleanOptionData
@@ -5858,10 +5913,12 @@ export interface GuildScheduledEventInviteURLCreateOptions extends InviteCreateO
 }
 
 export interface RoleCreateOptions extends RoleData {
+  colors?: RoleColorsResolvable;
   reason?: string;
 }
 
 export interface RoleEditOptions extends RoleData {
+  colors?: RoleColorsEditResolvable;
   reason?: string;
 }
 
@@ -6789,6 +6846,7 @@ export interface BaseMessageCreateOptions
   extends BaseMessageSendOptions, MessageOptionsPoll, MessageOptionsFlags, MessageOptionsTTS, MessageOptionsStickers {
   enforceNonce?: boolean;
   nonce?: number | string;
+  sharedClientTheme?: JSONEncodable<APIMessageSharedClientTheme> | SharedClientTheme;
 }
 
 export interface MessageCreateOptions extends BaseMessageCreateOptions {
@@ -6894,6 +6952,7 @@ export interface TextInputComponentData extends BaseComponentData {
 
 export interface FileUploadComponentData extends BaseComponentData {
   customId: string;
+  fileTypes?: readonly FileUploadType[];
   maxValues?: number;
   minValues?: number;
   required?: boolean;
@@ -7097,7 +7156,6 @@ export interface ResolvedOverwriteOptions {
 }
 
 export interface RoleData {
-  colors?: RoleColorsResolvable;
   hoist?: boolean;
   icon?: Base64Resolvable | BufferResolvable | EmojiResolvable | null;
   mentionable?: boolean;
@@ -7150,6 +7208,7 @@ export interface SetRolePositionOptions {
 export type ShardingManagerMode = 'process' | 'worker';
 
 export interface ShardingManagerOptions {
+  api?: string;
   execArgv?: readonly string[];
   mode?: ShardingManagerMode;
   respawn?: boolean;
@@ -7158,6 +7217,7 @@ export interface ShardingManagerOptions {
   silent?: boolean;
   token?: string;
   totalShards?: number | 'auto';
+  version?: string;
 }
 
 export interface ShowModalOptions {

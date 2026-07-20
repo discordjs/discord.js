@@ -6,6 +6,11 @@
  */
 
 /**
+ * @external ActivityLocationKind
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ActivityLocationKind}
+ */
+
+/**
  * @external ActivityType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ActivityType}
  */
@@ -341,6 +346,11 @@
  */
 
 /**
+ * @external BaseThemeType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/BaseThemeType}
+ */
+
+/**
  * @external ButtonStyle
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/ButtonStyle}
  */
@@ -368,6 +378,11 @@
 /**
  * @external EntryPointCommandHandlerType
  * @see {@link https://discord-api-types.dev/api/discord-api-types-v10/enum/EntryPointCommandHandlerType}
+ */
+
+/**
+ * @external FileUploadType
+ * @see {@link https://discord-api-types.dev/api/discord-api-types-v10#FileUploadType}
  */
 
 /**
