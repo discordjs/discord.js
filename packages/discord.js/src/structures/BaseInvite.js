@@ -176,7 +176,7 @@ class BaseInvite extends Base {
       uses: false,
       channel: 'channelId',
       inviter: 'inviterId',
-      ...props
+      ...props,
     });
   }
 
