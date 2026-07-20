@@ -1,5 +1,6 @@
 import { s } from '@sapphire/shapeshift';
 import { ComponentType } from 'discord-api-types/v10';
+import { fileUploadTypesValidator } from '../../util/fileUpload.js';
 import { customIdValidator, idValidator } from '../Assertions.js';
 
 export const fileUploadPredicate = s.object({
@@ -8,5 +9,6 @@ export const fileUploadPredicate = s.object({
 	custom_id: customIdValidator,
 	min_values: s.number().greaterThanOrEqual(0).lessThanOrEqual(10).optional(),
 	max_values: s.number().greaterThanOrEqual(1).lessThanOrEqual(10).optional(),
+	file_types: fileUploadTypesValidator.optional(),
 	required: s.boolean().optional(),
 });
