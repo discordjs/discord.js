@@ -1221,7 +1221,9 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
    * The `type` property of the {@link PublicThreadChannel} interface is typed as `ChannelType.PublicThread | ChannelType.AnnouncementThread`.
    * If the user were to pass only one of those channel types, the `Extract<>` would resolve to `never`.
    */
-  public getChannel<const Type extends ChannelType = ChannelType>(
+  public getChannel<
+    const Type extends ApplicationCommandOptionAllowedChannelType = ApplicationCommandOptionAllowedChannelType,
+  >(
     name: string,
     required: true,
     channelTypes?: readonly Type[],
@@ -1239,7 +1241,9 @@ export class CommandInteractionOptionResolver<Cached extends CacheType = CacheTy
    * The `type` property of the {@link PublicThreadChannel} interface is typed as `ChannelType.PublicThread | ChannelType.AnnouncementThread`.
    * If the user were to pass only one of those channel types, the `Extract<>` would resolve to `never`.
    */
-  public getChannel<const Type extends ChannelType = ChannelType>(
+  public getChannel<
+    const Type extends ApplicationCommandOptionAllowedChannelType = ApplicationCommandOptionAllowedChannelType,
+  >(
     name: string,
     required?: boolean,
     channelTypes?: readonly Type[],
