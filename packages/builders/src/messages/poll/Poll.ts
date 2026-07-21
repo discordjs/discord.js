@@ -112,9 +112,7 @@ export class PollBuilder implements JSONEncodable<RESTAPIPoll> {
 		index: number,
 		deleteCount: number,
 		...answers: (
-			| Omit<APIPollAnswer, 'answer_id'>
-			| PollAnswerBuilder
-			| ((builder: PollAnswerBuilder) => PollAnswerBuilder)
+			Omit<APIPollAnswer, 'answer_id'> | PollAnswerBuilder | ((builder: PollAnswerBuilder) => PollAnswerBuilder)
 		)[]
 	): this {
 		const normalizedAnswers = normalizeArray(answers);
@@ -149,9 +147,7 @@ export class PollBuilder implements JSONEncodable<RESTAPIPoll> {
 	 */
 	public setQuestion(
 		options:
-			| Omit<APIPollMedia, 'emoji'>
-			| PollQuestionBuilder
-			| ((builder: PollQuestionBuilder) => PollQuestionBuilder),
+			Omit<APIPollMedia, 'emoji'> | PollQuestionBuilder | ((builder: PollQuestionBuilder) => PollQuestionBuilder),
 	): this {
 		this.data.question = resolveBuilder(options, PollQuestionBuilder);
 		return this;

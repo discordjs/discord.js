@@ -382,8 +382,9 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 				}
 			}
 
-			// Set the final body to the form data
-			finalBody = formData;
+			// Set the final body to the form data.
+			// This cast is needed because of a mismatch between the version of undici-types provided by @types/node and undici
+			finalBody = formData as unknown as BodyInit;
 
 			// eslint-disable-next-line no-eq-null, eqeqeq
 		} else if (request.body != null) {
