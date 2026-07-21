@@ -384,7 +384,7 @@ export class VoiceConnection extends EventEmitter {
 			stuck in signalling state
 			gh issue #11553
 		*/
-		if (packet.channel_id && this.packets.server?.endpoint) {
+		if (packet.channel_id && this.state.status === VoiceConnectionStatus.Signalling) {
 			this.configureNetworking();
 		}
 	}
