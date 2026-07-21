@@ -150,13 +150,13 @@ class ClientApplication extends Application {
       this.customInstallURL = null;
     }
 
-    if ('flags' in data) {
+    if ('flags_new' in data) {
       /**
        * The flags this application has
        *
        * @type {ApplicationFlagsBitField}
        */
-      this.flags = new ApplicationFlagsBitField(data.flags).freeze();
+      this.flags = new ApplicationFlagsBitField(data.flags_new).freeze();
     }
 
     if ('approximate_guild_count' in data) {
@@ -369,7 +369,8 @@ class ClientApplication extends Application {
         description,
         role_connections_verification_url: roleConnectionsVerificationURL,
         install_params: installParams,
-        flags: flags === undefined ? undefined : ApplicationFlagsBitField.resolve(flags),
+        // `flags` is still documented to be a `number`.
+        flags: flags === undefined ? undefined : Number(ApplicationFlagsBitField.resolve(flags)),
         icon: icon && (await resolveImage(icon)),
         cover_image: coverImage && (await resolveImage(coverImage)),
         interactions_endpoint_url: interactionsEndpointURL,
@@ -457,6 +458,12 @@ class ClientApplication extends Application {
   async fetchActivityInstance(instanceId) {
     const data = await this.client.rest.get(Routes.applicationActivityInstance(this.id, instanceId));
     return new ActivityInstance(this.client, data);
+  }
+
+  toJSON() {
+    const application = super.toJSON();
+    if (this.flags) application.flags = this.flags.toJSON();
+    return application;
   }
 }
 
