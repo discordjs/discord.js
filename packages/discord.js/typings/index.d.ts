@@ -505,12 +505,12 @@ export class ApplicationRoleConnectionMetadata {
 
 export type ApplicationResolvable = Activity | Application | Snowflake;
 
-export class ApplicationFlagsBitField extends BitField<ApplicationFlagsString> {
+export class ApplicationFlagsBitField extends BitField<ApplicationFlagsString, bigint> {
   public static Flags: typeof ApplicationFlags;
-  public static resolve(bit?: BitFieldResolvable<ApplicationFlagsString, number>): number;
+  public static resolve(bit?: ApplicationFlagsResolvable): bigint;
 }
 
-export type ApplicationFlagsResolvable = BitFieldResolvable<ApplicationFlagsString, number>;
+export type ApplicationFlagsResolvable = BitFieldResolvable<ApplicationFlagsString, ApplicationFlags | bigint>;
 
 export type AutoModerationRuleResolvable = AutoModerationRule | Snowflake;
 
