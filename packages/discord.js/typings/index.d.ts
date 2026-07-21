@@ -2256,6 +2256,7 @@ export class Message<InGuild extends boolean = boolean> extends Base {
   public resolved: CommandInteractionResolvedData | null;
   public system: boolean;
   public get thread(): AnyThreadChannel | null;
+  public get threadable(): boolean;
   public tts: boolean;
   public poll: Poll | null;
   public call: MessageCall | null;
