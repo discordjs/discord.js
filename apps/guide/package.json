@@ -5,6 +5,8 @@
 	"description": "Imagine a bot... the most popular way to build discord bots",
 	"private": true,
 	"scripts": {
+		"sitemap:bun": "bun run src/scripts/sitemap.ts",
+		"sitemap": "pnpm run sitemap:bun",
 		"cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
 		"build:check": "tsc --noEmit",
 		"build:local": "cross-env NEXT_PUBLIC_LOCAL_DEV=true pnpm run build:prod",
@@ -70,12 +72,14 @@
 	"devDependencies": {
 		"@shikijs/rehype": "^4.0.2",
 		"@tailwindcss/postcss": "^4.2.2",
+		"@types/cheerio": "^1.0.0",
 		"@types/mdx": "^2.0.13",
 		"@types/node": "^24.13.2",
 		"@types/react": "^19.2.14",
 		"@types/react-dom": "^19.2.3",
 		"autoprefixer": "^10.4.27",
 		"babel-plugin-react-compiler": "^1.0.0",
+		"cheerio": "^1.2.0",
 		"cpy-cli": "^7.0.0",
 		"cross-env": "^10.1.0",
 		"eslint": "^9.39.4",

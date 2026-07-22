@@ -1,0 +1,18 @@
+User-agent: *
+
+# Allow crawling
+Allow: /
+
+# Block internal/framework files
+Disallow: /api/
+Disallow: /_next/
+Disallow: /private/
+Disallow: /admin/
+Disallow: /draft/
+Disallow: /tmp/
+
+# Sitemap
+Sitemap: https://discord.js.org/sitemap.xml
+
+# Preferred host (optional)
+Host: https://discord.js.org

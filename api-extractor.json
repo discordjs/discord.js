@@ -9,7 +9,8 @@
 	 * standard settings to be shared across multiple projects.
 	 *
 	 * If the path starts with "./" or "../", the path is resolved relative to the folder of the file that contains
-	 * the "extends" field.  Otherwise, the first path segment is interpreted as an NPM package name, and will be
+	 * the "extends" field.  Other
+	 wise, the first path segment is interpreted as an NPM package name, and will be
 	 * resolved using NodeJS require().
 	 *
 	 * SUPPORTED TOKENS: none
