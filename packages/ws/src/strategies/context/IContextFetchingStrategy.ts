@@ -4,6 +4,7 @@ import type { SessionInfo, WebSocketManager, WebSocketManagerOptions } from '../
 
 export interface FetchingStrategyOptions extends Pick<
 	WebSocketManagerOptions,
+	| 'agent'
 	| 'compression'
 	| 'encoding'
 	| 'handshakeTimeout'
@@ -38,6 +39,7 @@ export interface IContextFetchingStrategy {
 
 export async function managerToFetchingStrategyOptions(manager: WebSocketManager): Promise<FetchingStrategyOptions> {
 	return {
+		agent: manager.options.agent,
 		compression: manager.options.compression,
 		encoding: manager.options.encoding,
 		handshakeTimeout: manager.options.handshakeTimeout,

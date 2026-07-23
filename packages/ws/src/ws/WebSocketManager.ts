@@ -1,3 +1,4 @@
+import type { Agent } from 'node:http';
 import type { Collection } from '@discordjs/collection';
 import { range, type Awaitable } from '@discordjs/util';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
@@ -80,6 +81,10 @@ export interface RequiredWebSocketManagerOptions {
  * Optional additional configuration for the WebSocketManager
  */
 export interface OptionalWebSocketManagerOptions {
+	/**
+	 * HTTP proxy agent
+	 */
+	agent?: Agent | undefined;
 	/**
 	 * Builds an identify throttler to use for this manager's shards
 	 */
