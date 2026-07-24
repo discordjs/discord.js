@@ -453,7 +453,7 @@ class GuildScheduledEvent extends Base {
   /**
    * Sets a new time to end the event at.
    *
-   * @param {DateResolvable|null} scheduledEndTime The time to end the event at, or null to reset/remove the end time
+   * @param {DateResolvable|null} scheduledEndTime The time to end the event at, or null to reset/remove the end time (only for non-external events)
    * @param {string} [reason] The reason for changing the scheduled end time
    * @returns {Promise<GuildScheduledEvent>}
    * @example
