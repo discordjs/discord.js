@@ -450,11 +450,10 @@ class GuildScheduledEvent extends Base {
     return this.edit({ scheduledStartTime, reason });
   }
 
-  // TODO: scheduledEndTime gets reset on passing null but it hasn't been documented
   /**
    * Sets a new time to end the event at.
    *
-   * @param {DateResolvable} scheduledEndTime The time to end the event at
+   * @param {DateResolvable|null} scheduledEndTime The time to end the event at, or null to reset/remove the end time
    * @param {string} [reason] The reason for changing the scheduled end time
    * @returns {Promise<GuildScheduledEvent>}
    * @example
