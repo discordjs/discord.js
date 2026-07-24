@@ -193,7 +193,7 @@ class GuildScheduledEventManager extends CachedManager {
    * @typedef {Object} GuildScheduledEventEditOptions
    * @property {string} [name] The name of the guild scheduled event
    * @property {DateResolvable} [scheduledStartTime] The time to schedule the event at
-   * @property {DateResolvable} [scheduledEndTime] The time to end the event at
+   * @property {DateResolvable|null} [scheduledEndTime] The time to end the event at
    * @property {GuildScheduledEventPrivacyLevel} [privacyLevel] The privacy level of the guild scheduled event
    * @property {GuildScheduledEventEntityType} [entityType] The scheduled entity type of the event
    * @property {string} [description] The description of the guild scheduled event
