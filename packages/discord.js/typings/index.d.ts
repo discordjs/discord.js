@@ -1817,7 +1817,10 @@ export class GuildScheduledEvent<Status extends GuildScheduledEventStatus = Guil
     scheduledStartTime: DateResolvable,
     reason?: string,
   ): Promise<GuildScheduledEvent<Status>>;
-  public setScheduledEndTime(scheduledEndTime: DateResolvable, reason?: string): Promise<GuildScheduledEvent<Status>>;
+  public setScheduledEndTime(
+    scheduledEndTime: DateResolvable | null,
+    reason?: string,
+  ): Promise<GuildScheduledEvent<Status>>;
   public setDescription(description: string, reason?: string): Promise<GuildScheduledEvent<Status>>;
   public setStatus<AcceptableStatus extends GuildScheduledEventSetStatusArg<Status>>(
     status: AcceptableStatus,
@@ -6462,7 +6465,7 @@ export interface BaseGuildScheduledEventOptions {
   privacyLevel?: GuildScheduledEventPrivacyLevel;
   reason?: string;
   recurrenceRule?: GuildScheduledEventRecurrenceRuleOptions | null;
-  scheduledEndTime?: DateResolvable;
+  scheduledEndTime?: DateResolvable | null;
   scheduledStartTime?: DateResolvable;
 }
 
@@ -7512,3 +7515,4 @@ export * from '@discordjs/rest';
 export * from '@discordjs/util';
 export * from '@discordjs/ws';
 export * from 'discord-api-types/v10';
+
