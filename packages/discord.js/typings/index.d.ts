@@ -6476,6 +6476,7 @@ export interface GuildScheduledEventCreateOptions extends BaseGuildScheduledEven
   name: string;
   privacyLevel: GuildScheduledEventPrivacyLevel;
   recurrenceRule?: GuildScheduledEventRecurrenceRuleOptions;
+  scheduledEndTime?: DateResolvable;
   scheduledStartTime: DateResolvable;
 }
 
@@ -7515,4 +7516,3 @@ export * from '@discordjs/rest';
 export * from '@discordjs/util';
 export * from '@discordjs/ws';
 export * from 'discord-api-types/v10';
-
