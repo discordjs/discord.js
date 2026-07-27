@@ -48,7 +48,7 @@
 		"@discordjs/scripts": "workspace:^",
 		"cloudflare": "^7.0.0",
 		"commander": "^15.0.0",
-		"meilisearch": "^0.59.0",
+		"meilisearch": "^0.60.0",
 		"p-limit": "^7.3.1",
 		"p-queue": "^9.3.3",
 		"tslib": "^2.8.1",
