@@ -2,7 +2,7 @@ import { Buffer } from 'node:buffer';
 import { STATUS_CODES } from 'node:http';
 import { types } from 'node:util';
 import { type RequestInit, request, Headers, FormData as UndiciFormData, Agent } from 'undici';
-import type { HeaderRecord } from 'undici/types/header.js';
+import type { IncomingHttpHeaders } from 'undici/types/header.js';
 import type { ResponseLike } from '../shared.js';
 
 export type RequestOptions = Exclude<Parameters<typeof request>[1], undefined>;
@@ -40,9 +40,7 @@ export async function makeRequest(url: string, init: RequestInit): Promise<Respo
 		get bodyUsed() {
 			return res.body.bodyUsed;
 		},
-		// Over HTTP/2, Node's http2 attaches a `sensitiveHeaders` symbol key to the response headers,
-		// which the `Headers` constructor rejects
-		headers: new Headers(Object.fromEntries(Object.entries(res.headers)) as HeaderRecord),
+		headers: buildHeaders(res.headers),
 		status: res.statusCode,
 		statusText: STATUS_CODES[res.statusCode]!,
 		ok: res.statusCode >= 200 && res.statusCode < 300,
@@ -84,6 +82,28 @@ export async function resolveBody(body: RequestInit['body']): Promise<Exclude<Re
 	}
 
 	throw new TypeError(`Unable to resolve body.`);
+}
+
+/**
+ * @privateRemarks
+ *
+ * Under HTTP/2, Node.js attaches the symbol `sensitiveHeaders` to the headers object,
+ * which the `Headers` constructor rejects. Hence the manual construction of the `Headers` object here.
+ */
+export function buildHeaders(headers: IncomingHttpHeaders): Headers {
+	const result = new Headers();
+
+	for (const [name, value] of Object.entries(headers)) {
+		if (Array.isArray(value)) {
+			for (const entry of value) {
+				result.append(name, `${entry}`);
+			}
+		} else {
+			result.append(name, `${value}`);
+		}
+	}
+
+	return result;
 }
 
 function globalToUndiciFormData(fd: globalThis.FormData): UndiciFormData {
