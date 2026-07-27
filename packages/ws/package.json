@@ -78,7 +78,7 @@
 		"@sapphire/async-queue": "^1.5.5",
 		"@types/ws": "^8.18.1",
 		"@vladfrangu/async_event_emitter": "^2.4.7",
-		"discord-api-types": "^0.38.50",
+		"discord-api-types": "^0.38.51",
 		"tslib": "^2.8.1",
 		"ws": "^8.21.1"
 	},
@@ -95,9 +95,9 @@
 		"eslint-formatter-compact": "^9.0.1",
 		"eslint-formatter-pretty": "^7.1.0",
 		"mock-socket": "^9.3.1",
-		"prettier": "~3.9.5",
+		"prettier": "~3.9.6",
 		"tsup": "^8.5.1",
-		"turbo": "^2.10.5",
+		"turbo": "^2.10.7",
 		"typescript": "~5.9.3",
 		"vitest": "^4.1.10",
 		"zlib-sync": "^0.1.10"
