@@ -32,7 +32,7 @@ export class ActivityAssets<Omitted extends keyof GatewayActivityAssets | '' = '
 	}
 
 	/**
-	 * @see {@link https://discord.com/developers/docs/events/gateway-events#activity-object-activity-asset-image}
+	 * @see {@link https://docs.discord.com/developers/events/gateway-events#activity-object-activity-asset-image}
 	 */
 	public get largeImage() {
 		return this[kData].large_image;
@@ -65,7 +65,7 @@ export class ActivityAssets<Omitted extends keyof GatewayActivityAssets | '' = '
 	}
 
 	/**
-	 * @see {@link https://discord.com/developers/docs/events/gateway-events#activity-object-activity-asset-image}
+	 * @see {@link https://docs.discord.com/developers/events/gateway-events#activity-object-activity-asset-image}
 	 */
 	public get smallImage() {
 		return this[kData].small_image;

@@ -36,7 +36,7 @@ export class Activity<Omitted extends keyof GatewayActivity | '' = ''> extends S
 	/**
 	 * The type of this activity
 	 *
-	 * @see {@link https://discord.com/developers/docs/events/gateway-events#activity-object-activity-types}
+	 * @see {@link https://docs.discord.com/developers/events/gateway-events#activity-object-activity-types}
 	 */
 	public get type() {
 		return this[kData].type;
@@ -73,7 +73,7 @@ export class Activity<Omitted extends keyof GatewayActivity | '' = ''> extends S
 	/**
 	 * Controls which field is displayed in the user's status text in the member list
 	 *
-	 * @see {@link https://discord.com/developers/docs/events/gateway-events#activity-object-status-display-types}
+	 * @see {@link https://docs.discord.com/developers/events/gateway-events#activity-object-status-display-types}
 	 */
 	public get statusDisplayType() {
 		return this[kData].status_display_type;
@@ -117,7 +117,7 @@ export class Activity<Omitted extends keyof GatewayActivity | '' = ''> extends S
 	/**
 	 * Activity flags `OR`d together, describes what the payload includes
 	 *
-	 * @see {@link https://discord.com/developers/docs/events/gateway-events#activity-object-activity-flags}
+	 * @see {@link https://docs.discord.com/developers/events/gateway-events#activity-object-activity-flags}
 	 */
 	public get flags() {
 		return isFieldSet(this[kData], 'flags', 'number')
