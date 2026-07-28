@@ -83,9 +83,9 @@
 		"eslint-formatter-pretty": "^7.0.0",
 		"mock-socket": "^9.3.1",
 		"prettier": "^3.8.1",
-		"tsdown": "^0.21.9",
+		"tsdown": "^0.22.14",
 		"turbo": "^2.8.21",
-		"typescript": "~5.9.3",
+		"typescript": "~6.0.3",
 		"unplugin-replace": "^0.8.0",
 		"vitest": "^4.1.2",
 		"zlib-sync": "^0.1.10"

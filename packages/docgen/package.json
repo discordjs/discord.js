@@ -70,9 +70,9 @@
 		"eslint-formatter-pretty": "^7.0.0",
 		"prettier": "^3.8.1",
 		"terser": "^5.46.1",
-		"tsdown": "^0.21.9",
+		"tsdown": "^0.22.14",
 		"turbo": "^2.8.21",
-		"typescript": "~5.9.3"
+		"typescript": "~6.0.3"
 	},
 	"engines": {
 		"node": ">=24.17.0"

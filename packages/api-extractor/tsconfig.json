@@ -4,6 +4,7 @@
 	"compilerOptions": {
 		"types": ["node"],
 		"isolatedModules": false,
+		"rootDir": "./src",
 		"outDir": "./dist",
 		"esModuleInterop": true
 	},

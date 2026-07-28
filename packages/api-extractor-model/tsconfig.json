@@ -3,6 +3,7 @@
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
 		"types": ["node"],
+		"rootDir": "./src",
 		"isolatedModules": false
 	},
 	"include": ["src/**/*.ts"],

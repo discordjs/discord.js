@@ -247,7 +247,7 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		const path = this.options.workerPath;
 
 		if (!path) {
-			return join(__dirname, 'defaultWorker.js');
+			return join(import.meta.dirname, 'defaultWorker.js');
 		}
 
 		if (isAbsolute(path)) {

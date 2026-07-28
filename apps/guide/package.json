@@ -90,7 +90,7 @@
 		"shiki": "^4.0.2",
 		"tailwindcss": "^4.2.2",
 		"turbo": "^2.8.21",
-		"typescript": "~5.9.3",
+		"typescript": "~6.0.3",
 		"vercel": "^50.37.3",
 		"wrangler": "^4.78.0"
 	},

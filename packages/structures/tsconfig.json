@@ -4,6 +4,8 @@
 	"include": ["src/**/*.ts", "src/**/*.js", "src/**/*.cjs", "src/**/*.mjs", "bin"],
 	"exclude": ["node_modules"],
 	"compilerOptions": {
-		"experimentalDecorators": false
+		"experimentalDecorators": false,
+		"types": ["node"],
+		"rootDir": "./src"
 	}
 }
