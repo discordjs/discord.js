@@ -5,6 +5,9 @@
 	},
 	"compiler": {
 		"overrideTsconfig": {
+			"compilerOptions": {
+				"types": ["node"]
+			},
 			"exclude": ["src/**/*.d.ts"]
 		}
 	}

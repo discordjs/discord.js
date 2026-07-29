@@ -5,7 +5,7 @@
 	"description": "The docs.json generator for discord.js and its related projects",
 	"private": true,
 	"scripts": {
-		"build": "tsup",
+		"build": "tsc",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
 		"fmt": "pnpm run format",
@@ -14,19 +14,13 @@
 	"bin": "./bin/index.js",
 	"exports": {
 		".": {
-			"require": {
-				"types": "./dist/src/index.d.ts",
-				"default": "./dist/src/index.js"
-			},
-			"import": {
-				"types": "./dist/src/index.d.mts",
-				"default": "./dist/src/index.mjs"
-			}
+			"types": "./dist/src/index.d.ts",
+			"default": "./dist/src/index.js"
 		}
 	},
 	"main": "./dist/src/index.js",
-	"module": "./dist/src/index.mjs",
 	"types": "./dist/src/index.d.ts",
+	"type": "module",
 	"directories": {
 		"bin": "bin",
 		"lib": "src"
@@ -76,9 +70,8 @@
 		"eslint-formatter-pretty": "^7.1.0",
 		"prettier": "~3.8.1",
 		"terser": "^5.51.2",
-		"tsup": "^8.5.1",
 		"turbo": "^2.10.12",
-		"typescript": "~5.9.3"
+		"typescript": "~6.0.3"
 	},
 	"engines": {
 		"node": ">=24.17.0"

@@ -1,7 +1,8 @@
 {
 	"$schema": "https://json.schemastore.org/tsconfig.json",
-	"extends": "../../tsconfig.json",
+	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
+		"rootDir": "./src",
 		"skipDefaultLibCheck": true,
 		"skipLibCheck": true
 	},

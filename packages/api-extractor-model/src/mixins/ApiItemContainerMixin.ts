@@ -2,6 +2,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT license.
 // See LICENSE in the project root for license information.
 
+import { createRequire } from 'node:module';
 import {
 	type DocNode,
 	type DocPlainText,
@@ -349,8 +350,9 @@ export function ApiItemContainerMixin<TBaseClass extends IApiItemConstructor>(
 					tsdocConfiguration: new TSDocConfiguration(),
 				}; // */
 
-				// eslint-disable-next-line @typescript-eslint/consistent-type-imports, @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-				const deserializerModule: typeof import('../model/Deserializer') = require('../model/Deserializer');
+				const require = createRequire(import.meta.url);
+				// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+				const deserializerModule: typeof import('../model/Deserializer.js') = require('../model/Deserializer');
 
 				// For each member, check to see if we've already seen a member with the same name
 				// previously in the inheritance tree. If so, we know we won't inherit it, and thus

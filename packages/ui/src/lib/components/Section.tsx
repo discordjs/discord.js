@@ -1,7 +1,7 @@
 'use client';
 
 import { Disclosure, DisclosureContent, useDisclosureStore } from '@ariakit/react/disclosure';
-import { VscChevronDown } from '@react-icons/all-files/vsc/VscChevronDown';
+import { VscChevronDown } from '@react-icons/all-files/vsc/VscChevronDown.js';
 import type { JSX, PropsWithChildren } from 'react';
 
 export interface SectionOptions {

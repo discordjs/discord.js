@@ -3,8 +3,8 @@
 
 import * as path from 'node:path';
 import { FileSystem } from '@rushstack/node-core-library';
+import { Colorize } from '@rushstack/terminal';
 import { CommandLineAction } from '@rushstack/ts-command-line';
-import colors from 'colors';
 import { ExtractorConfig } from '../api/ExtractorConfig.js';
 import type { ApiExtractorCommandLine } from './ApiExtractorCommandLine.js';
 
@@ -21,16 +21,16 @@ export class InitAction extends CommandLineAction {
 	}
 
 	protected override async onExecuteAsync(): Promise<void> {
-		const inputFilePath: string = path.resolve(__dirname, './schemas/api-extractor-template.json');
+		const inputFilePath: string = path.resolve(import.meta.dirname, './schemas/api-extractor-template.json');
 		const outputFilePath: string = path.resolve(ExtractorConfig.FILENAME);
 
 		if (FileSystem.exists(outputFilePath)) {
-			console.log(colors.red('The output file already exists:'));
+			console.log(Colorize.red('The output file already exists:'));
 			console.log('\n  ' + outputFilePath + '\n');
 			throw new Error('Unable to write output file');
 		}
 
-		console.log(colors.green('Writing file: ') + outputFilePath);
+		console.log(Colorize.green('Writing file: ') + outputFilePath);
 		FileSystem.copyFile({
 			sourcePath: inputFilePath,
 			destinationPath: outputFilePath,

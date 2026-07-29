@@ -4,19 +4,6 @@
 	"compilerOptions": {
 		"allowJs": true
 	},
-	"include": [
-		"*.ts",
-		"*.js",
-		"*.cjs",
-		"*.mjs",
-		"src/**/*.ts",
-		"src/**/*.js",
-		"src/**/*.cjs",
-		"src/**/*.mjs",
-		"bin",
-		"scripts",
-		"__tests__",
-		"__mocks__"
-	],
+	"include": ["*.ts", "*.js", "*.cjs", "*.mjs", "src/**/*.ts", "__tests__"],
 	"exclude": ["node_modules"]
 }

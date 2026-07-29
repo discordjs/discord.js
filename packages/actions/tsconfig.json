@@ -1,9 +1,13 @@
 {
 	"$schema": "https://json.schemastore.org/tsconfig.json",
-	"extends": "../../tsconfig.json",
+	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
 		"types": ["node"],
-		"skipLibCheck": true
+		"lib": ["DOM", "ESNext"],
+		"skipLibCheck": true,
+		"rootDir": "./src",
+		"declaration": false,
+		"declarationMap": false
 	},
 	"include": ["src/**/*.ts", "src/**/*.js", "src/**/*.cjs", "src/**/*.mjs", "bin"],
 	"exclude": ["node_modules"]

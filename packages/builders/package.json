@@ -5,7 +5,7 @@
 	"description": "A set of builders that you can use when creating your bot",
 	"scripts": {
 		"test": "vitest run --config ../../vitest.config.ts",
-		"build": "tsc --noEmit && tsup",
+		"build": "tsc && inject-version",
 		"build:docs": "tsc -p tsconfig.docs.json",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
@@ -17,19 +17,13 @@
 	},
 	"exports": {
 		".": {
-			"require": {
-				"types": "./dist/index.d.ts",
-				"default": "./dist/index.js"
-			},
-			"import": {
-				"types": "./dist/index.d.mts",
-				"default": "./dist/index.mjs"
-			}
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
 		}
 	},
 	"main": "./dist/index.js",
-	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
+	"type": "module",
 	"directories": {
 		"lib": "src",
 		"test": "__tests__"
@@ -78,15 +72,13 @@
 		"@types/node": "^24.13.3",
 		"@vitest/coverage-v8": "^4.1.11",
 		"cross-env": "^10.1.0",
-		"esbuild-plugin-version-injector": "^1.2.1",
 		"eslint": "^9.39.5",
 		"eslint-config-neon": "^0.3.2",
 		"eslint-formatter-compact": "^9.0.1",
 		"eslint-formatter-pretty": "^7.1.0",
 		"prettier": "~3.8.1",
-		"tsup": "^8.5.1",
 		"turbo": "^2.10.12",
-		"typescript": "~5.9.3",
+		"typescript": "~6.0.3",
 		"vitest": "^4.1.11"
 	},
 	"engines": {
