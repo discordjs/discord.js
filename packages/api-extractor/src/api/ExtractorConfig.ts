@@ -267,10 +267,10 @@ export class ExtractorConfig {
 	 *
 	 * @internal
 	 */
-	public static readonly _tsdocBaseFilePath: string = path.resolve(import.meta.dirname, './extends/tsdoc-base.json');
+	public static readonly _tsdocBaseFilePath: string = path.resolve(import.meta.dirname, '../extends/tsdoc-base.json');
 
 	private static readonly _defaultConfig: Partial<IConfigFile> = JsonFile.load(
-		path.join(import.meta.dirname, './schemas/api-extractor-defaults.json'),
+		path.join(import.meta.dirname, '../schemas/api-extractor-defaults.json'),
 	);
 
 	private static readonly _declarationFileExtensionRegExp: RegExp = /\.d\.[cm]?ts$/i;
