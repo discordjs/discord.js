@@ -84,7 +84,8 @@
 		"mock-socket": "^9.3.1",
 		"prettier": "~3.8.1",
 		"turbo": "^2.10.12",
-		"typescript": "~6.0.3",
+		"typescript": "npm:@typescript/typescript6@~6.0.2",
+		"typescript-native": "npm:typescript@~7.0.2",
 		"vitest": "^4.1.11",
 		"zlib-sync": "^0.1.10"
 	},
