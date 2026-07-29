@@ -259,7 +259,7 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		}
 
 		try {
-			return require.resolve(path);
+			return import.meta.resolve(path);
 		} catch {
 			return resolve(path);
 		}

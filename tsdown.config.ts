@@ -4,7 +4,7 @@ import { defineConfig } from 'tsdown';
 export function createTsdownConfig({
 	entry = ['src/index.ts'],
 	deps = {
-		skipNodeModulesBundle: true,
+		neverBundle: true,
 	},
 	platform = 'node',
 	format = 'esm',

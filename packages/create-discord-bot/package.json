@@ -13,7 +13,7 @@
 		"rename-to-app": "node scripts/rename-to-app.mjs"
 	},
 	"type": "module",
-	"bin": "./dist/index.mjs",
+	"bin": "./dist/index.js",
 	"directories": {
 		"bin": "bin",
 		"lib": "src"
@@ -68,7 +68,8 @@
 		"prettier": "^3.8.1",
 		"terser": "^5.46.1",
 		"tsdown": "^0.22.14",
-		"typescript": "~6.0.3"
+		"typescript": "~6.0.3",
+		"unrun": "^0.3.1"
 	},
 	"engines": {
 		"node": ">=24.17.0"

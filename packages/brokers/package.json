@@ -83,6 +83,7 @@
 		"turbo": "^2.8.21",
 		"typescript": "~6.0.3",
 		"unplugin-replace": "^0.8.0",
+		"unrun": "^0.3.1",
 		"vitest": "^4.1.2"
 	},
 	"engines": {

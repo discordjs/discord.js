@@ -17,19 +17,15 @@
 	},
 	"exports": {
 		".": {
-			"require": {
+			"import": {
 				"types": "./dist/index.d.ts",
 				"default": "./dist/index.js"
-			},
-			"import": {
-				"types": "./dist/index.d.mts",
-				"default": "./dist/index.mjs"
 			}
 		}
 	},
 	"main": "./dist/index.js",
-	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
+	"type": "module",
 	"directories": {
 		"lib": "src",
 		"test": "__tests__"
@@ -62,7 +58,6 @@
 		"@types/node": "^24.13.2",
 		"@vitest/coverage-v8": "^4.1.2",
 		"cross-env": "^10.1.0",
-		"esbuild-plugin-version-injector": "^1.2.1",
 		"eslint": "^9.39.4",
 		"eslint-config-neon": "^0.3.2",
 		"eslint-formatter-compact": "^9.0.1",
@@ -71,6 +66,8 @@
 		"tsdown": "^0.22.14",
 		"turbo": "^2.8.21",
 		"typescript": "~6.0.3",
+		"unplugin-replace": "^0.8.0",
+		"unrun": "^0.3.1",
 		"vitest": "^4.1.2"
 	},
 	"engines": {

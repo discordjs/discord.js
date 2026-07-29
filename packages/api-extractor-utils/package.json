@@ -54,7 +54,8 @@
 		"terser": "^5.46.1",
 		"tsdown": "^0.22.14",
 		"turbo": "^2.8.21",
-		"typescript": "~6.0.3"
+		"typescript": "~6.0.3",
+		"unrun": "^0.3.1"
 	},
 	"engines": {
 		"node": ">=24.17.0"
