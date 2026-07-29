@@ -19,7 +19,7 @@
 		"@sapphire/ts-config": "^5.0.3",
 		"@types/node": "^24.13.3",
 		"eslint": "^9.39.5",
-		"eslint-config-neon": "^0.3.2",
+		"eslint-config-neon": "^0.5.4",
 		"eslint-formatter-pretty": "^7.1.0",
 		"prettier": "~3.8.1",
 		"typescript": "npm:@typescript/typescript6@~6.0.2",

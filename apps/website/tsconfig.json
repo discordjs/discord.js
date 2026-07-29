@@ -8,6 +8,9 @@
 		"noEmit": true,
 		"outDir": "dist",
 
+		"module": "esnext",
+		"moduleResolution": "bundler",
+
 		// Interop Constraints
 		"esModuleInterop": true,
 		"allowJs": true,
@@ -26,7 +29,9 @@
 
 		"paths": {
 			"@/*": ["./src/*"]
-		}
+		},
+		"rootDirs": ["./src", "./.next/types"],
+		"rootDir": null
 	},
 	"include": [
 		"src/**/*.ts",

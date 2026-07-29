@@ -77,7 +77,6 @@ describe('DataStore', () => {
 		expect(DataStore.hasAudioPlayer(player)).toEqual(true);
 		expect(DataStore.addAudioPlayer(player)).toEqual(player);
 		DataStore.deleteAudioPlayer(player);
-		// eslint-disable-next-line @typescript-eslint/no-confusing-void-expression
 		expect(DataStore.deleteAudioPlayer(player)).toBeUndefined();
 		expect(DataStore.hasAudioPlayer(player)).toEqual(false);
 		// Tests audio cycle with nextTime === -1

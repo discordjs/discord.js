@@ -60,7 +60,7 @@
 		"@vitest/coverage-v8": "^4.1.11",
 		"conventional-changelog-cli": "^5.0.0",
 		"eslint": "^9.39.5",
-		"eslint-config-neon": "^0.3.2",
+		"eslint-config-neon": "^0.5.4",
 		"eslint-import-resolver-typescript": "^4.4.5",
 		"eslint-plugin-react-compiler": "19.1.0-rc.2",
 		"husky": "^9.1.7",
