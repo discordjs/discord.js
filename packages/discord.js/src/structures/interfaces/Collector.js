@@ -274,12 +274,22 @@ class Collector extends AsyncEventEmitter {
   resetTimer({ time, idle } = {}) {
     if (this._timeout) {
       clearTimeout(this._timeout);
-      this._timeout = setTimeout(() => this.stop('time'), time ?? this.options.time).unref();
+      this._timeout = null;
+    }
+
+    const timeValue = time ?? this.options.time;
+    if (timeValue) {
+      this._timeout = setTimeout(() => this.stop('time'), timeValue).unref();
     }
 
     if (this._idletimeout) {
       clearTimeout(this._idletimeout);
-      this._idletimeout = setTimeout(() => this.stop('idle'), idle ?? this.options.idle).unref();
+      this._idletimeout = null;
+    }
+
+    const idleValue = idle ?? this.options.idle;
+    if (idleValue) {
+      this._idletimeout = setTimeout(() => this.stop('idle'), idleValue).unref();
     }
   }
 
