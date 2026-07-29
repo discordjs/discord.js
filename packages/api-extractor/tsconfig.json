@@ -3,8 +3,7 @@
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
 		"types": ["node"],
-		"rootDir": "./src",
-		"esModuleInterop": true
+		"rootDir": "./src"
 	},
 	"include": ["src/**/*.ts"],
 	"exclude": ["node_modules"]
