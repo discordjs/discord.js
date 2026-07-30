@@ -5,7 +5,7 @@
   "description": "A powerful library for interacting with the Discord API",
   "scripts": {
     "test": "pnpm run docs:test && pnpm run test:typescript",
-    "test:typescript": "tsc --noEmit && tsd",
+    "test:typescript": "tsc --noEmit && tstyche",
     "lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty scripts src typings",
     "format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty scripts src typings",
     "fmt": "pnpm run format",
