@@ -20,7 +20,6 @@
       "@discordjs/ws",
       "discord-api-types/v10",
       "node",
-      "tsd",
       "undici",
       "@sapphire/snowflake"
     ]
