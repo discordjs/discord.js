@@ -5,7 +5,6 @@
 		"rootDirs": ["src", "bin"],
 		"rootDir": null,
 		"declaration": false,
-		"declarationMap": false,
 		"sourceMap": false
 	},
 	"include": ["src/**/*.ts", "src/**/*.js", "src/**/*.cjs", "src/**/*.mjs", "bin"],

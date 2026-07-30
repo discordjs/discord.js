@@ -8,7 +8,9 @@
 		"skipLibCheck": true,
 		"paths": {
 			"~/*": ["./src/*"]
-		}
+		},
+		"module": "esnext",
+		"moduleResolution": "bundler"
 	},
 	"include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx", "src/**/*.cjs", "src/**/*.mjs", "bin"],
 	"exclude": ["node_modules"]

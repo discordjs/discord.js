@@ -1,6 +1,6 @@
-import { VscFlame } from '@react-icons/all-files/vsc/VscFlame.js';
-import { VscInfo } from '@react-icons/all-files/vsc/VscInfo.js';
-import { VscWarning } from '@react-icons/all-files/vsc/VscWarning.js';
+import { VscFlame } from '@react-icons/all-files/vsc/VscFlame';
+import { VscInfo } from '@react-icons/all-files/vsc/VscInfo';
+import { VscWarning } from '@react-icons/all-files/vsc/VscWarning';
 import type { PropsWithChildren } from 'react';
 
 export interface IAlert {

@@ -3,11 +3,9 @@
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
 		"types": ["node"],
-		"lib": ["DOM", "ESNext"],
 		"skipLibCheck": true,
 		"rootDir": "./src",
-		"declaration": false,
-		"declarationMap": false
+		"declaration": false
 	},
 	"include": ["src/**/*.ts", "src/**/*.js", "src/**/*.cjs", "src/**/*.mjs", "bin"],
 	"exclude": ["node_modules"]

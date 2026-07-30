@@ -27,7 +27,7 @@
 
 		// Emit
 		"declaration": true,
-		"declarationMap": true,
+		"declarationMap": false,
 		"importHelpers": false,
 		"newLine": "lf",
 		"noEmitHelpers": true,
@@ -43,7 +43,7 @@
 		// Language and Environment
 		"experimentalDecorators": true,
 		"lib": ["ESNext", "esnext.disposable"],
-		"target": "ES2024",
+		"target": "ES2025",
 		"useDefineForClassFields": true
 	},
 	"exclude": ["node_modules"]

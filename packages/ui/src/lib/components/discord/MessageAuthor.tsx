@@ -1,4 +1,4 @@
-import { FiCheck } from '@react-icons/all-files/fi/FiCheck.js';
+import { FiCheck } from '@react-icons/all-files/fi/FiCheck';
 
 export interface IDiscordMessageAuthor {
 	readonly avatar: string;
