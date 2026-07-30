@@ -1405,12 +1405,14 @@ client.on('guildCreate', async g => {
         { type: ComponentType.Button, style: ButtonStyle.Link, label: 'test', url: 'test' },
         { type: ComponentType.StringSelect, customId: 'foo', options: [{ label: 'label', value: 'value' }] },
         new StringSelectMenuBuilder(),
-        // @ts-expect-error Type 'ComponentType.TextInput' is not assignable to type 'ComponentType...'.
-        { type: ComponentType.TextInput, style: TextInputStyle.Paragraph, customId: 'foo', label: 'test' },
         // @ts-expect-error Type 'TextInputBuilder' is not assignable to type '...'.
         new TextInputBuilder(),
       ],
     };
+
+    expect(row.components).type.not.toBeAssignableFrom([
+      { type: ComponentType.TextInput, style: TextInputStyle.Paragraph, customId: 'foo', label: 'test' },
+    ]);
 
     const row2 = new ActionRowBuilder({
       type: ComponentType.ActionRow,

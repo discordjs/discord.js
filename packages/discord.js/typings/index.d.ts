@@ -273,9 +273,9 @@ export class ActivityLocation extends Base {
 
 export type ActivityFlagsString = keyof typeof ActivityFlags;
 
-export interface BaseComponentData {
+export interface BaseComponentData<Type extends ComponentType> {
   id?: number;
-  type: ComponentType;
+  type: Type;
 }
 
 export type MessageActionRowComponentData =
@@ -293,7 +293,7 @@ export type ActionRowComponent = MessageActionRowComponent;
 
 export interface ActionRowData<
   ComponentType extends ActionRowComponentData | JSONEncodable<APIComponentInActionRow>,
-> extends BaseComponentData {
+> extends BaseComponentData<ComponentType.ActionRow> {
   components: readonly ComponentType[];
 }
 
@@ -309,7 +309,7 @@ export type ComponentInLabelData =
   | TextInputComponentData
   | UserSelectMenuComponentData;
 
-export interface LabelData extends BaseComponentData {
+export interface LabelData extends BaseComponentData<ComponentType.Label> {
   component: ComponentInLabelData;
   description?: string;
   label: string;
@@ -1096,7 +1096,7 @@ export interface ContainerComponentData<
   ComponentType extends ComponentInContainerData | JSONEncodable<APIComponentInContainer> =
     | ComponentInContainerData
     | JSONEncodable<APIComponentInContainer>,
-> extends BaseComponentData {
+> extends BaseComponentData<ComponentType.Container> {
   accentColor?: number;
   components: readonly ComponentType[];
   spoiler?: boolean;
@@ -1409,7 +1409,7 @@ export class Entitlement extends Base {
   public isGuildSubscription(): this is this & { guild: Guild; guildId: Snowflake };
 }
 
-export interface FileComponentData extends BaseComponentData {
+export interface FileComponentData extends BaseComponentData<ComponentType.File> {
   file: UnfurledMediaItemData;
   spoiler?: boolean;
 }
@@ -2129,7 +2129,7 @@ export class LimitedCollection<Key, Value> extends Collection<Key, Value> {
   public keepOverLimit: ((value: Value, key: Key, collection: this) => boolean) | null;
 }
 
-export interface MediaGalleryComponentData extends BaseComponentData {
+export interface MediaGalleryComponentData extends BaseComponentData<ComponentType.MediaGallery> {
   items: readonly MediaGalleryItemData[];
 }
 export class MediaGalleryComponent extends Component<APIMediaGalleryComponent> {
@@ -3077,7 +3077,7 @@ export class RoleFlagsBitField extends BitField<RoleFlagsString> {
   public static resolve(bit?: BitFieldResolvable<RoleFlagsString, number>): number;
 }
 
-export interface SectionComponentData extends BaseComponentData {
+export interface SectionComponentData extends BaseComponentData<ComponentType.Section> {
   accessory: ButtonComponentData | ThumbnailComponentData;
   components: readonly TextDisplayComponentData[];
 }
@@ -3206,7 +3206,7 @@ export type SelectMenuInteraction<Cached extends CacheType = CacheType> =
 
 export type SelectMenuType = APISelectMenuComponent['type'];
 
-export interface SeparatorComponentData extends BaseComponentData {
+export interface SeparatorComponentData extends BaseComponentData<ComponentType.Separator> {
   divider?: boolean;
   spacing?: SeparatorSpacingSize;
 }
@@ -3566,7 +3566,7 @@ export class TextChannel extends BaseGuildTextChannel {
   public type: ChannelType.GuildText;
 }
 
-export interface TextDisplayComponentData extends BaseComponentData {
+export interface TextDisplayComponentData extends BaseComponentData<ComponentType.TextDisplay> {
   content: string;
 }
 
@@ -3675,7 +3675,7 @@ export class ThreadMemberFlagsBitField extends BitField<ThreadMemberFlagsString>
   public static resolve(bit?: BitFieldResolvable<ThreadMemberFlagsString, number>): number;
 }
 
-export interface ThumbnailComponentData extends BaseComponentData {
+export interface ThumbnailComponentData extends BaseComponentData<ComponentType.Thumbnail> {
   description?: string;
   media: UnfurledMediaItemData;
   spoiler?: boolean;
@@ -6709,7 +6709,7 @@ export interface MessageActivity {
   type: MessageActivityType;
 }
 
-export interface BaseButtonComponentData extends BaseComponentData {
+export interface BaseButtonComponentData extends BaseComponentData<ComponentType.Button> {
   disabled?: boolean;
   emoji?: ComponentEmojiResolvable;
   label?: string;
@@ -6880,7 +6880,7 @@ export interface MessageReferenceOptions extends MessageReference {
 
 export type MessageResolvable = Message | Snowflake;
 
-export interface BaseSelectMenuComponentData extends BaseComponentData {
+export interface BaseSelectMenuComponentData<Type extends SelectMenuType> extends BaseComponentData<Type> {
   customId: string;
   disabled?: boolean;
   maxValues?: number;
@@ -6889,29 +6889,29 @@ export interface BaseSelectMenuComponentData extends BaseComponentData {
   required?: boolean;
 }
 
-export interface StringSelectMenuComponentData extends BaseSelectMenuComponentData {
+export interface StringSelectMenuComponentData extends BaseSelectMenuComponentData<ComponentType.StringSelect> {
   options: readonly SelectMenuComponentOptionData[];
   type: ComponentType.StringSelect;
 }
 
-export interface UserSelectMenuComponentData extends BaseSelectMenuComponentData {
+export interface UserSelectMenuComponentData extends BaseSelectMenuComponentData<ComponentType.UserSelect> {
   defaultValues?: readonly APISelectMenuDefaultValue<SelectMenuDefaultValueType.User>[];
   type: ComponentType.UserSelect;
 }
 
-export interface RoleSelectMenuComponentData extends BaseSelectMenuComponentData {
+export interface RoleSelectMenuComponentData extends BaseSelectMenuComponentData<ComponentType.RoleSelect> {
   defaultValues?: readonly APISelectMenuDefaultValue<SelectMenuDefaultValueType.Role>[];
   type: ComponentType.RoleSelect;
 }
 
-export interface MentionableSelectMenuComponentData extends BaseSelectMenuComponentData {
+export interface MentionableSelectMenuComponentData extends BaseSelectMenuComponentData<ComponentType.MentionableSelect> {
   defaultValues?: readonly APISelectMenuDefaultValue<
     SelectMenuDefaultValueType.Role | SelectMenuDefaultValueType.User
   >[];
   type: ComponentType.MentionableSelect;
 }
 
-export interface ChannelSelectMenuComponentData extends BaseSelectMenuComponentData {
+export interface ChannelSelectMenuComponentData extends BaseSelectMenuComponentData<ComponentType.ChannelSelect> {
   channelTypes?: readonly ChannelType[];
   defaultValues?: readonly APISelectMenuDefaultValue<SelectMenuDefaultValueType.Channel>[];
   type: ComponentType.ChannelSelect;
@@ -6938,7 +6938,7 @@ export interface SelectMenuComponentOptionData {
   value: string;
 }
 
-export interface TextInputComponentData extends BaseComponentData {
+export interface TextInputComponentData extends BaseComponentData<ComponentType.TextInput> {
   customId: string;
   maxLength?: number;
   minLength?: number;
@@ -6949,7 +6949,7 @@ export interface TextInputComponentData extends BaseComponentData {
   value?: string;
 }
 
-export interface FileUploadComponentData extends BaseComponentData {
+export interface FileUploadComponentData extends BaseComponentData<ComponentType.FileUpload> {
   customId: string;
   fileTypes?: readonly FileUploadType[];
   maxValues?: number;
@@ -6964,7 +6964,7 @@ export interface RadioGroupOption {
   label: string;
   value: string;
 }
-export interface RadioGroupComponentData extends BaseComponentData {
+export interface RadioGroupComponentData extends BaseComponentData<ComponentType.RadioGroup> {
   customId: string;
   options: readonly RadioGroupOption[];
   required?: boolean;
@@ -6977,7 +6977,7 @@ export interface CheckboxGroupOption {
   label: string;
   value: string;
 }
-export interface CheckboxGroupComponentData extends BaseComponentData {
+export interface CheckboxGroupComponentData extends BaseComponentData<ComponentType.CheckboxGroup> {
   customId: string;
   maxValues?: number;
   minValues?: number;
@@ -6986,7 +6986,7 @@ export interface CheckboxGroupComponentData extends BaseComponentData {
   type: ComponentType.CheckboxGroup;
 }
 
-export interface CheckboxComponentData extends BaseComponentData {
+export interface CheckboxComponentData extends BaseComponentData<ComponentType.Checkbox> {
   customId: string;
   default?: boolean;
   type: ComponentType.Checkbox;
