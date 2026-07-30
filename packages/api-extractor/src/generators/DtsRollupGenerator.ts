@@ -13,6 +13,7 @@ import { AstNamespaceImport } from '../analyzer/AstNamespaceImport.js';
 import { AstSymbol } from '../analyzer/AstSymbol.js';
 import { SourceFileLocationFormatter } from '../analyzer/SourceFileLocationFormatter.js';
 import { IndentDocCommentScope, Span, type SpanModification } from '../analyzer/Span.js';
+import { SyntaxHelpers } from '../analyzer/SyntaxHelpers.js';
 import { TypeScriptHelpers } from '../analyzer/TypeScriptHelpers.js';
 import type { ApiItemMetadata } from '../collector/ApiItemMetadata.js';
 import type { Collector } from '../collector/Collector.js';
@@ -108,18 +109,12 @@ export class DtsRollupGenerator {
 		// Emit the imports
 		for (const entity of [...collector.entities.values()][0]!) {
 			if (entity.astEntity instanceof AstImport) {
+				// Note: it isn't valid to trim imports based on their release tags.
+				// E.g. class Foo (`@public`) extends interface Bar (`@beta`) from some external library.
+				// API-Extractor cannot trim `import { Bar } from "external-library"` when generating its public rollup,
+				// or the export of `Foo` would include a broken reference to `Bar`.
 				const astImport: AstImport = entity.astEntity;
-
-				// For example, if the imported API comes from an external package that supports AEDoc,
-				// and it was marked as `@internal`, then don't emit it.
-				const symbolMetadata: SymbolMetadata | undefined = collector.tryFetchMetadataForAstEntity(astImport);
-				const maxEffectiveReleaseTag: ReleaseTag = symbolMetadata
-					? symbolMetadata.maxEffectiveReleaseTag
-					: ReleaseTag.None;
-
-				if (this._shouldIncludeReleaseTag(maxEffectiveReleaseTag, dtsKind)) {
-					DtsEmitHelpers.emitImport(writer, entity, astImport);
-				}
+				DtsEmitHelpers.emitImport(writer, entity, astImport);
 			}
 		}
 
@@ -211,10 +206,24 @@ export class DtsRollupGenerator {
 						);
 					}
 
+					// If the entity's declaration won't be included, then neither should the namespace export it
+					// This fixes the issue encountered here: https://github.com/microsoft/rushstack/issues/2791
+					const exportedSymbolMetadata: SymbolMetadata | undefined =
+						collector.tryFetchMetadataForAstEntity(exportedEntity);
+					const exportedMaxEffectiveReleaseTag: ReleaseTag = exportedSymbolMetadata
+						? exportedSymbolMetadata.maxEffectiveReleaseTag
+						: ReleaseTag.None;
+					if (!DtsRollupGenerator._shouldIncludeReleaseTag(exportedMaxEffectiveReleaseTag, dtsKind)) {
+						continue;
+					}
+
 					if (collectorEntity.nameForEmit === exportedName) {
 						exportClauses.push(collectorEntity.nameForEmit);
 					} else {
-						exportClauses.push(`${collectorEntity.nameForEmit} as ${exportedName}`);
+						const safeExportedName: string = SyntaxHelpers.isSafeUnquotedMemberIdentifier(exportedName)
+							? exportedName
+							: JSON.stringify(exportedName);
+						exportClauses.push(`${collectorEntity.nameForEmit} as ${safeExportedName}`);
 					}
 				}
 
@@ -255,9 +264,11 @@ export class DtsRollupGenerator {
 	): void {
 		const previousSpan: Span | undefined = span.previousSibling;
 
+		const metadata = collector.fetchApiItemMetadata(astDeclaration);
+
 		let recurseChildren = true;
 		switch (span.kind) {
-			case ts.SyntaxKind.JSDocComment:
+			case ts.SyntaxKind.JSDoc:
 				// If the @packageDocumentation comment seems to be attached to one of the regular API items,
 				// omit it.  It gets explictly emitted at the top of the file.
 				if (/[\s*]@packagedocumentation[\s*]/gi.test(span.node.getText())) {
@@ -389,6 +400,31 @@ export class DtsRollupGenerator {
 				});
 				break;
 
+			case ts.SyntaxKind.ClassDeclaration:
+			case ts.SyntaxKind.Constructor:
+			case ts.SyntaxKind.ConstructSignature:
+			case ts.SyntaxKind.EnumDeclaration:
+			case ts.SyntaxKind.EnumMember:
+			case ts.SyntaxKind.FunctionDeclaration:
+			case ts.SyntaxKind.GetAccessor:
+			case ts.SyntaxKind.InterfaceDeclaration:
+			case ts.SyntaxKind.MethodDeclaration:
+			case ts.SyntaxKind.MethodSignature:
+			case ts.SyntaxKind.PropertyDeclaration:
+			case ts.SyntaxKind.PropertySignature:
+			case ts.SyntaxKind.TypeAliasDeclaration:
+				if (metadata.artificialDocComment && metadata.tsdocComment) {
+					span.modification.prefix = metadata.tsdocComment.emitAsTsdoc() + (span.modification.prefix ?? '');
+					span.modification.indentDocComment = IndentDocCommentScope.PrefixOnly;
+				}
+
+				if (span.kind === ts.SyntaxKind.TypeAliasDeclaration) {
+					// TODO: find out why TypeAlias has no linebreak by default
+					span.modification.suffix = (span.modification.suffix ?? '') + '\n';
+				}
+
+				break;
+
 			default:
 				break;
 		}
@@ -451,6 +487,10 @@ export class DtsRollupGenerator {
 
 						trimmed = true;
 					}
+				} else if (metadata.artificialDocComment && child.kind === ts.SyntaxKind.JSDoc) {
+					// we replace the existing JSDocComment with the artificial one
+					child.modification.skipAll();
+					trimmed = true;
 				}
 
 				if (!trimmed) {

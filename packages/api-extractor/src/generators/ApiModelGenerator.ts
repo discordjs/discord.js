@@ -615,6 +615,11 @@ export class ApiModelGenerator {
 						} */`,
 					).docComment
 				: apiItemMetadata.tsdocComment;
+			if (parent?.construct) {
+				apiItemMetadata.tsdocComment = docComment;
+				apiItemMetadata.artificialDocComment = true;
+			}
+
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const isProtected: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Protected) !== 0;
 			const sourceLocation: ISourceLocation = this._getSourceLocation(constructorDeclaration);
@@ -705,6 +710,11 @@ export class ApiModelGenerator {
 						} */`,
 					).docComment
 				: apiItemMetadata.tsdocComment;
+			if (jsDoc) {
+				apiItemMetadata.tsdocComment = docComment;
+				apiItemMetadata.artificialDocComment = true;
+			}
+
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const isAbstract: boolean = (ts.getCombinedModifierFlags(classDeclaration) & ts.ModifierFlags.Abstract) !== 0;
 			const sourceLocation: ISourceLocation = this._getSourceLocation(classDeclaration);
@@ -777,6 +787,11 @@ export class ApiModelGenerator {
 						} */`,
 					).docComment
 				: apiItemMetadata.tsdocComment;
+			if (parent?.construct) {
+				apiItemMetadata.tsdocComment = docComment;
+				apiItemMetadata.artificialDocComment = true;
+			}
+
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const sourceLocation: ISourceLocation = this._getSourceLocation(constructSignature);
 
@@ -926,6 +941,11 @@ export class ApiModelGenerator {
 						} */`,
 					).docComment
 				: apiItemMetadata.tsdocComment;
+			if (jsDoc) {
+				apiItemMetadata.tsdocComment = docComment;
+				apiItemMetadata.artificialDocComment = true;
+			}
+
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const sourceLocation: ISourceLocation = this._getSourceLocation(functionDeclaration);
 
@@ -1048,6 +1068,11 @@ export class ApiModelGenerator {
 						} */`,
 					).docComment
 				: apiItemMetadata.tsdocComment;
+			if (jsDoc) {
+				apiItemMetadata.tsdocComment = docComment;
+				apiItemMetadata.artificialDocComment = true;
+			}
+
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const sourceLocation: ISourceLocation = this._getSourceLocation(interfaceDeclaration);
 
@@ -1131,6 +1156,11 @@ export class ApiModelGenerator {
 							} */`,
 						).docComment
 					: apiItemMetadata.tsdocComment;
+				if (jsDoc) {
+					apiItemMetadata.tsdocComment = docComment;
+					apiItemMetadata.artificialDocComment = true;
+				}
+
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 				if (releaseTag === ReleaseTag.Internal || releaseTag === ReleaseTag.Alpha) {
 					return; // trim out items marked as "@internal" or "@alpha"
@@ -1229,6 +1259,11 @@ export class ApiModelGenerator {
 							} */`,
 						).docComment
 					: apiItemMetadata.tsdocComment;
+				if (jsDoc) {
+					apiItemMetadata.tsdocComment = docComment;
+					apiItemMetadata.artificialDocComment = true;
+				}
+
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
 				const sourceLocation: ISourceLocation = this._getSourceLocation(methodSignature);
@@ -1333,19 +1368,25 @@ export class ApiModelGenerator {
 
 				const excerptTokens: IExcerptToken[] = this._buildExcerptTokens(astDeclaration, nodeTransforms, entryPoint);
 				const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
-				const docComment: tsdoc.DocComment | undefined = jsDoc
-					? this._tsDocParser.parseString(
-							`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}${jsDoc.default === undefined ? '' : ` (default: ${this._escapeSpecialChars(jsDoc.default)})`}\n${
-								'see' in jsDoc ? jsDoc.see.map((see) => ` * @see ${see}\n`).join('') : ''
-							}${'readonly' in jsDoc && jsDoc.readonly ? ' * @readonly\n' : ''}${
-								'deprecated' in jsDoc && jsDoc.deprecated
-									? ` * @deprecated ${
-											typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
-										}\n`
-									: ''
-							} */`,
-						).docComment
-					: apiItemMetadata.tsdocComment;
+				const docComment: tsdoc.DocComment | undefined =
+					jsDoc && !ts.isSetAccessorDeclaration(declaration)
+						? this._tsDocParser.parseString(
+								`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}${jsDoc.default === undefined ? '' : ` (default: ${this._escapeSpecialChars(jsDoc.default)})`}\n${
+									'see' in jsDoc ? jsDoc.see.map((see) => ` * @see ${see}\n`).join('') : ''
+								}${'readonly' in jsDoc && jsDoc.readonly ? ' * @readonly\n' : ''}${
+									'deprecated' in jsDoc && jsDoc.deprecated
+										? ` * @deprecated ${
+												typeof jsDoc.deprecated === 'string' ? this._fixLinkTags(jsDoc.deprecated) : jsDoc.deprecated
+											}\n`
+										: ''
+								} */`,
+							).docComment
+						: apiItemMetadata.tsdocComment;
+				if (jsDoc && !ts.isSetAccessorDeclaration(declaration)) {
+					apiItemMetadata.tsdocComment = docComment;
+					apiItemMetadata.artificialDocComment = true;
+				}
+
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
 				const isProtected: boolean = (astDeclaration.modifierFlags & ts.ModifierFlags.Protected) !== 0;
@@ -1426,6 +1467,11 @@ export class ApiModelGenerator {
 							} */`,
 						).docComment
 					: apiItemMetadata.tsdocComment;
+				if (jsDoc) {
+					apiItemMetadata.tsdocComment = docComment;
+					apiItemMetadata.artificialDocComment = true;
+				}
+
 				const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 				const isOptional: boolean = (astDeclaration.astSymbol.followedSymbol.flags & ts.SymbolFlags.Optional) !== 0;
 				const isReadonly: boolean = this._isReadonly(astDeclaration);
@@ -1504,6 +1550,11 @@ export class ApiModelGenerator {
 						} */`,
 					).docComment
 				: apiItemMetadata.tsdocComment;
+			if (jsDoc) {
+				apiItemMetadata.tsdocComment = docComment;
+				apiItemMetadata.artificialDocComment = true;
+			}
+
 			const releaseTag: ReleaseTag = apiItemMetadata.effectiveReleaseTag;
 			const sourceLocation: ISourceLocation = this._getSourceLocation(typeAliasDeclaration);
 
