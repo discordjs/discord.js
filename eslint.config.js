@@ -28,6 +28,7 @@ const nodeRuleset = merge(...node, {
 		'n/prefer-global/text-encoder': [2, 'always'],
 		'n/prefer-global/url-search-params': [2, 'always'],
 		'n/prefer-global/url': [2, 'always'],
+		'unicorn/better-regex': 1,
 	},
 });
 

@@ -197,6 +197,8 @@ describe('message with components', () => {
 			url: 'attachment://file.txt',
 			attachment_id: '0',
 			content_type: 'text/plain',
+			// TODO: Eventually, this should allow `0`.
+			// @ts-expect-error: Eventually, this should allow `0`.
 			flags: 0,
 		},
 		id: 9,
