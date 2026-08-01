@@ -3,6 +3,7 @@
 import { makeURLSearchParams, type RawFile, type RequestData, type REST } from '@discordjs/rest';
 import {
 	Routes,
+	type RESTPostAPIChannelInviteFormDataBody,
 	type RESTDeleteAPIChannelResult,
 	type RESTGetAPIChannelInvitesResult,
 	type RESTGetAPIChannelMessageReactionUsersQuery,
@@ -492,7 +493,7 @@ export class ChannelsAPI {
 	 */
 	public async createInvite(
 		channelId: Snowflake,
-		body: RESTPostAPIChannelInviteJSONBody,
+		body: RESTPostAPIChannelInviteFormDataBody | RESTPostAPIChannelInviteJSONBody,
 		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
 		return this.rest.post(Routes.channelInvites(channelId), {
