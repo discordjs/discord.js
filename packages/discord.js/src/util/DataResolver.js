@@ -5,7 +5,29 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const { fetch } = require('undici');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
-const Invite = require('../structures/Invite');
+
+/**
+ * Creates form data body payload for invite
+ *
+ * @param {Client} client The client
+ * @param {InviteCreateOptions} options The options for creating invite
+ * @returns {Promise<FormData>}
+ * @ignore
+ */
+async function createInviteFormData(client, { targetUsersFile, ...rest } = {}) {
+  const formData = new FormData();
+  let usersCsv;
+  if (Array.isArray(targetUsersFile)) {
+    usersCsv = targetUsersFile.map(user => client.users.resolveId(user)).join('\n');
+  } else {
+    const resolved = await resolveFile(targetUsersFile);
+    usersCsv = resolved.data.toString('utf8');
+  }
+
+  formData.append('target_users_file', new Blob([usersCsv], { type: 'text/csv' }), 'users.csv');
+  formData.append('payload_json', JSON.stringify(rest));
+  return formData;
+}
 
 /**
  * Data that can be resolved to give an invite code. This can be:
@@ -139,4 +161,15 @@ async function resolveImage(image) {
   return resolveBase64(file.data);
 }
 
-module.exports = { resolveCode, resolveInviteCode, resolveGuildTemplateCode, resolveImage, resolveBase64, resolveFile };
+module.exports = {
+  resolveCode,
+  resolveInviteCode,
+  resolveGuildTemplateCode,
+  resolveImage,
+  resolveBase64,
+  resolveFile,
+  createInviteFormData,
+};
+
+// Fixes circular
+const Invite = require('../structures/Invite');

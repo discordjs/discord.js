@@ -94,6 +94,7 @@ import {
   Locale,
   InteractionType,
   InviteTargetType,
+  InviteTargetUsersJobStatus,
   MessageType,
   NameplatePalette,
   OAuth2Scopes,
@@ -2311,6 +2312,7 @@ export class Invite extends Base {
   private constructor(client: Client<true>, data: RawInviteData);
   public channel: NonThreadGuildBasedChannel | PartialGroupDMChannel | null;
   public channelId: Snowflake | null;
+  public roles: Collection<Snowflake, InviteRole | Role> | null;
   public code: string;
   public get deletable(): boolean;
   public get createdAt(): Date | null;
@@ -2332,6 +2334,9 @@ export class Invite extends Base {
   public get url(): string;
   public uses: number | null;
   public delete(reason?: string): Promise<Invite>;
+  public updateTargetUsers(targetUsersFile: BufferResolvable | readonly UserResolvable[]): Promise<unknown>;
+  public fetchTargetUsersJobStatus(): Promise<TargetUsersJobStatusForInvite>;
+  public fetchTargetUsers(): Promise<Buffer>;
   public toJSON(): unknown;
   public toString(): string;
   public static InvitesPattern: RegExp;
@@ -3343,34 +3348,40 @@ export interface RoleColorsEditResolvable {
   tertiaryColor?: ColorResolvable | null;
 }
 
-export class Role extends Base {
-  private constructor(client: Client<true>, data: RawRoleData, guild: Guild);
-  /** @deprecated Use {@link Role.colors} instead. */
-  public color: number;
+export class BaseRole extends Base {
+  protected constructor(client: Client<true>, data: Partial<APIRole>);
   public colors: RoleColors;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
+  public get hexColor(): HexColorString;
+  public id: Snowflake;
+  public name: string;
+  public rawPosition: number;
+  public icon: string | null;
+  public unicodeEmoji: string | null;
+  public iconURL(options?: ImageURLOptions): string | null;
+  public toJSON(): unknown;
+  public toString(): RoleMention;
+}
+
+export class InviteRole extends BaseRole {}
+
+export class Role extends BaseRole {
+  private constructor(client: Client<true>, data: APIRole, guild: Guild);
   public get editable(): boolean;
   public flags: RoleFlagsBitField;
   public guild: Guild;
-  public get hexColor(): HexColorString;
   public hoist: boolean;
-  public id: Snowflake;
   public managed: boolean;
   public get members(): Collection<Snowflake, GuildMember>;
   public mentionable: boolean;
-  public name: string;
   public permissions: Readonly<PermissionsBitField>;
   public get position(): number;
-  public rawPosition: number;
   public tags: RoleTagData | null;
   public comparePositionTo(role: RoleResolvable): number;
-  public icon: string | null;
-  public unicodeEmoji: string | null;
   public delete(reason?: string): Promise<Role>;
   public edit(options: RoleEditOptions): Promise<Role>;
   public equals(role: Role): boolean;
-  public iconURL(options?: ImageURLOptions): string | null;
   public permissionsIn(
     channel: NonThreadGuildBasedChannel | Snowflake,
     checkAdmin?: boolean,
@@ -3385,8 +3396,6 @@ export class Role extends Base {
   public setIcon(icon: BufferResolvable | Base64Resolvable | EmojiResolvable | null, reason?: string): Promise<Role>;
   public setPosition(position: number, options?: SetRolePositionOptions): Promise<Role>;
   public setUnicodeEmoji(unicodeEmoji: string | null, reason?: string): Promise<Role>;
-  public toJSON(): unknown;
-  public toString(): RoleMention;
 }
 
 export type RoleFlagsString = keyof typeof RoleFlags;
@@ -5154,10 +5163,24 @@ export class GuildBanManager extends CachedManager<Snowflake, GuildBan, GuildBan
   ): Promise<BulkBanResult>;
 }
 
+export interface TargetUsersJobStatusForInvite {
+  completedAt: Date | null;
+  createdAt: Date | null;
+  errorMessage: string | null;
+  processedUsers: number;
+  status: InviteTargetUsersJobStatus;
+  totalUsers: number;
+}
 export class GuildInviteManager extends DataManager<string, Invite, InviteResolvable> {
   private constructor(guild: Guild, iterable?: Iterable<RawInviteData>);
   public guild: Guild;
   public create(channel: GuildInvitableChannelResolvable, options?: InviteCreateOptions): Promise<Invite>;
+  public updateTargetUsers(
+    invite: InviteResolvable,
+    targetUsersFile: BufferResolvable | readonly UserResolvable[],
+  ): Promise<unknown>;
+  public fetchTargetUsers(invite: InviteResolvable): Promise<Buffer>;
+  public fetchTargetUsersJobStatus(invite: InviteResolvable): Promise<TargetUsersJobStatusForInvite>;
   public fetch(options: InviteResolvable | FetchInviteOptions): Promise<Invite>;
   public fetch(options?: FetchInvitesOptions): Promise<Collection<string, Invite>>;
   public delete(invite: InviteResolvable, reason?: string): Promise<Invite>;
@@ -7277,9 +7300,10 @@ export interface InviteCreateOptions {
   maxUses?: number;
   unique?: boolean;
   reason?: string;
+  roles?: readonly RoleResolvable[];
   targetApplication?: ApplicationResolvable;
   targetUser?: UserResolvable;
-  targetType?: InviteTargetType;
+  targetUsersFile?: BufferResolvable | readonly UserResolvable[];
 }
 
 export type InviteResolvable = string;
