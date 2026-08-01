@@ -16,6 +16,7 @@ import {
 	type RESTPostAPIWebhookWithTokenQuery,
 	type RESTPostAPIWebhookWithTokenSlackQuery,
 	type RESTPostAPIWebhookWithTokenWaitResult,
+	type RESTDeleteAPIWebhookWithTokenMessageQuery,
 	type Snowflake,
 } from 'discord-api-types/v10';
 
@@ -259,7 +260,7 @@ export class WebhooksAPI {
 		id: Snowflake,
 		token: string,
 		messageId: Snowflake,
-		query: { thread_id?: Snowflake } = {},
+		query: RESTDeleteAPIWebhookWithTokenMessageQuery = {},
 		{ signal }: Pick<RequestData, 'signal'> = {},
 	) {
 		await this.rest.delete(Routes.webhookMessage(id, token, messageId), {

@@ -725,9 +725,7 @@ export class MessageBuilder
 		const files: RawFile[] = [];
 		for (const attachment of this.data.attachments) {
 			const rawFile = attachment.getRawFile();
-			// Only if data or content type are set, since that implies the intent is to send a new file.
-			// In case it's contentType but not data, a validation error will be thrown right after.
-			if (rawFile?.data || rawFile?.contentType) {
+			if (rawFile !== undefined) {
 				files.push(rawFile as RawFile);
 			}
 		}
