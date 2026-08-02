@@ -1,6 +1,5 @@
 'use strict';
 
-const { GatewayIntentBits } = require('discord-api-types/v10');
 const { ClientApplication } = require('../../../structures/ClientApplication.js');
 const { Status } = require('../../../util/Status.js');
 
@@ -28,11 +27,9 @@ module.exports = (client, { d: data }, shardId) => {
     client.expectedGuilds.delete(shardId);
   }
 
-  if (client.options.intents.has(GatewayIntentBits.Guilds)) {
-    for (const guild of client.guilds.cache.values()) {
-      if (guild.shardId === shardId && !expectedGuilds.has(guild.id)) {
-        client.actions.GuildDelete.handle(guild);
-      }
+  for (const guild of client.guilds.cache.values()) {
+    if (guild.shardId === shardId && !expectedGuilds.has(guild.id)) {
+      client.actions.GuildDelete.handle(guild);
     }
   }
 
