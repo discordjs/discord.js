@@ -204,7 +204,7 @@ class GuildInviteManager extends CachedManager {
   /**
    * Create an invite to the guild from the provided channel.
    *
-   * @param {GuildInvitableChannelResolvable} channel The channel where invite should be created.
+   * @param {GuildInvitableChannelResolvable} channel The channel where the invite should be created.
    * @param {InviteCreateOptions} [options={}] The options for creating the invite from a channel.
    * @returns {Promise<GuildInvite>}
    * @example
