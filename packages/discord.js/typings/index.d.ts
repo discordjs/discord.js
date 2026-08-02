@@ -940,7 +940,7 @@ export class Client<Ready extends boolean = boolean>
 {
   public constructor(options: ClientOptions);
   private readonly actions: unknown;
-  private readonly expectedGuilds: Set<Snowflake>;
+  private readonly expectedGuilds: Collection<number, Set<Snowflake>>;
   private readonly packetQueue: unknown[];
   private readonly presence: ClientPresence;
   private readonly pings: Collection<number, number>;
