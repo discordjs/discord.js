@@ -386,6 +386,13 @@ class Role extends BaseRole {
     );
   }
 
+  /**
+   * When concatenated with a string, this automatically returns the role's mention instead of the Role object.
+   * @returns {string}
+   * @example
+   * // Logs: Role: <@&123456789012345678>
+   * console.log(`Role: ${role}`);
+   */
   toString() {
     if (this.id === this.guild.id) return '@everyone';
     return super.toString();
