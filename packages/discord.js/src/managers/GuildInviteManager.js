@@ -258,12 +258,12 @@ class GuildInviteManager extends CachedManager {
    * @param {InviteResolvable} invite The invite to update the target users
    * @param {UserResolvable[]|BufferResolvable} targetUsersFile An array of users or a CSV file
    * with a single column of user ids for all the users able to accept this invite
-   * @returns {Promise<unknown>}
+   * @returns {Promise<void>}
    */
   async updateTargetUsers(invite, targetUsersFile) {
     const code = resolveInviteCode(invite);
 
-    return this.client.rest.put(Routes.inviteTargetUsers(code), {
+    await this.client.rest.put(Routes.inviteTargetUsers(code), {
       body: await createInviteFormData(this.client, { targetUsersFile }),
       // This is necessary otherwise rest stringifies the body
       passThroughBody: true,

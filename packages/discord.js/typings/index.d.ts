@@ -3349,7 +3349,9 @@ export interface RoleColorsEditResolvable {
 }
 
 export class BaseRole extends Base {
-  protected constructor(client: Client<true>, data: Partial<APIRole>);
+  protected constructor(client: Client<true>, data: Partial<RawRoleData>);
+  /** @deprecated Use {@link Role.colors} instead. */
+  public color: number;
   public colors: RoleColors;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
@@ -3367,7 +3369,7 @@ export class BaseRole extends Base {
 export class InviteRole extends BaseRole {}
 
 export class Role extends BaseRole {
-  private constructor(client: Client<true>, data: APIRole, guild: Guild);
+  private constructor(client: Client<true>, data: RawRoleData, guild: Guild);
   public get editable(): boolean;
   public flags: RoleFlagsBitField;
   public guild: Guild;
@@ -7303,6 +7305,7 @@ export interface InviteCreateOptions {
   roles?: readonly RoleResolvable[];
   targetApplication?: ApplicationResolvable;
   targetUser?: UserResolvable;
+  targetType?: InviteTargetType;
   targetUsersFile?: BufferResolvable | readonly UserResolvable[];
 }
 

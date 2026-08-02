@@ -46,6 +46,16 @@ class BaseRole extends Base {
       this.name = data.name;
     }
 
+    if ('color' in data) {
+      /**
+       * The base 10 color of the role
+       *
+       * @type {number}
+       * @deprecated Use {@link BaseRole#colors} instead.
+       */
+      this.color = data.color;
+    }
+
     /**
      * @typedef {Object} RoleColors
      * @property {number} primaryColor The primary color of the role
