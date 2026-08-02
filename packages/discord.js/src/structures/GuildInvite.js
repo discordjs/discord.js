@@ -236,10 +236,10 @@ class GuildInvite extends BaseInvite {
    *
    * @param {UserResolvable[]|BufferResolvable} targetUsersFile An array of users or a CSV file with a single column of user ids
    * for all the users able to accept this invite
-   * @returns {Promise<unknown>}
+   * @returns {Promise<void>}
    */
   async updateTargetUsers(targetUsersFile) {
-    return this.client.rest.put(Routes.inviteTargetUsers(this.code), {
+    await this.client.rest.put(Routes.inviteTargetUsers(this.code), {
       body: await createInviteFormData(this.client, { targetUsersFile }),
       // This is necessary otherwise rest stringifies the body
       passThroughBody: true,
@@ -247,7 +247,7 @@ class GuildInvite extends BaseInvite {
   }
 
   /**
-   * Get target users of this invite
+   * Get target users of this invite.
    *
    * @returns {Promise<Buffer>}
    */
@@ -258,7 +258,7 @@ class GuildInvite extends BaseInvite {
   }
 
   /**
-   * Get status of the job processing target users of this invite
+   * Get status of the job processing target users of this invite.
    *
    * @returns {Promise<TargetUsersJobStatusForInvite>}
    */

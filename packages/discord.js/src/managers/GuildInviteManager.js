@@ -264,7 +264,7 @@ class GuildInviteManager extends CachedManager {
   }
 
   /**
-   * Get target users for an invite
+   * Get target users for an invite.
    *
    * @param {InviteResolvable} invite The invite to get the target users
    * @returns {Promise<Buffer>} The csv file containing target users
@@ -277,17 +277,17 @@ class GuildInviteManager extends CachedManager {
   }
 
   /**
-   * Updates target users for an invite
+   * Updates target users for an invite.
    *
    * @param {InviteResolvable} invite The invite to update the target users
    * @param {UserResolvable[]|BufferResolvable} targetUsersFile An array of users or a CSV file with a single column of user ids
    * for all the users able to accept this invite
-   * @returns {Promise<unknown>}
+   * @returns {Promise<void>}
    */
   async updateTargetUsers(invite, targetUsersFile) {
     const code = resolveInviteCode(invite);
 
-    return this.client.rest.put(Routes.inviteTargetUsers(code), {
+    await this.client.rest.put(Routes.inviteTargetUsers(code), {
       body: await createInviteFormData(this.client, { targetUsersFile }),
       // This is necessary otherwise rest stringifies the body
       passThroughBody: true,
@@ -295,7 +295,7 @@ class GuildInviteManager extends CachedManager {
   }
 
   /**
-   * Get status of the job processing target users of an invite
+   * Get status of the job processing target users of an invite.
    *
    * @param {InviteResolvable} invite The invite to get the target users for
    * @returns {Promise<TargetUsersJobStatusForInvite[]>} The target users
