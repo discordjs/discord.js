@@ -182,7 +182,7 @@ class GuildInviteManager extends CachedManager {
 
   /**
    * Create an invite to the guild from the provided channel.
-   * @param {GuildInvitableChannelResolvable} channel The channel where invite should be created.
+   * @param {GuildInvitableChannelResolvable} channel The channel where the invite should be created.
    * @param {InviteCreateOptions} [options={}] The options for creating the invite from a channel.
    * @returns {Promise<Invite>}
    * @example
@@ -240,7 +240,7 @@ class GuildInviteManager extends CachedManager {
   }
 
   /**
-   * Get target users for an invite
+   * Get target users for an invite.
    *
    * @param {InviteResolvable} invite The invite to get the target users
    * @returns {Promise<Buffer>} The csv file containing target users
@@ -253,7 +253,7 @@ class GuildInviteManager extends CachedManager {
   }
 
   /**
-   * Updates target users for an invite
+   * Updates target users for an invite.
    *
    * @param {InviteResolvable} invite The invite to update the target users
    * @param {UserResolvable[]|BufferResolvable} targetUsersFile An array of users or a CSV file
@@ -271,7 +271,7 @@ class GuildInviteManager extends CachedManager {
   }
 
   /**
-   * Get status of the job processing target users of an invite
+   * Get status of the job processing target users of an invite.
    *
    * @param {InviteResolvable} invite The invite to get the target users for
    * @returns {Promise<TargetUsersJobStatusForInvite[]>} The target users
