@@ -2334,7 +2334,7 @@ export class Invite extends Base {
   public get url(): string;
   public uses: number | null;
   public delete(reason?: string): Promise<Invite>;
-  public updateTargetUsers(targetUsersFile: BufferResolvable | readonly UserResolvable[]): Promise<unknown>;
+  public updateTargetUsers(targetUsersFile: BufferResolvable | readonly UserResolvable[]): Promise<void>;
   public fetchTargetUsersJobStatus(): Promise<TargetUsersJobStatusForInvite>;
   public fetchTargetUsers(): Promise<Buffer>;
   public toJSON(): unknown;
@@ -5180,7 +5180,7 @@ export class GuildInviteManager extends DataManager<string, Invite, InviteResolv
   public updateTargetUsers(
     invite: InviteResolvable,
     targetUsersFile: BufferResolvable | readonly UserResolvable[],
-  ): Promise<unknown>;
+  ): Promise<void>;
   public fetchTargetUsers(invite: InviteResolvable): Promise<Buffer>;
   public fetchTargetUsersJobStatus(invite: InviteResolvable): Promise<TargetUsersJobStatusForInvite>;
   public fetch(options: InviteResolvable | FetchInviteOptions): Promise<Invite>;
