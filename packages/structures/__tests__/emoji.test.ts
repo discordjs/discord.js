@@ -6,7 +6,7 @@ import { kPatch } from '../src/utils/symbols.js';
 
 describe('Emoji structure', () => {
 	const user: APIUser = {
-		id: '1',
+		id: '1028645863041548409',
 		username: 'username',
 		discriminator: '0000',
 		global_name: 'User',
@@ -14,9 +14,9 @@ describe('Emoji structure', () => {
 	};
 
 	const data: APIEmoji = {
-		id: '1',
+		id: '300390514065276939',
 		name: 'name',
-		roles: ['1', '2', '3'],
+		roles: ['222089694387765248'],
 		user,
 		require_colons: true,
 		managed: true,
