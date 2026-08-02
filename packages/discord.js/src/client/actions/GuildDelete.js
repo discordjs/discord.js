@@ -12,15 +12,13 @@ class GuildDeleteAction extends Action {
 
     client.guilds.cache.delete(guild.id);
 
-    if (guild.name !== undefined) {
-      /**
-       * Emitted whenever a guild kicks the client or the guild is deleted/left.
-       *
-       * @event Client#guildDelete
-       * @param {Guild} guild The guild that was deleted
-       */
-      client.emit(Events.GuildDelete, guild);
-    }
+    /**
+     * Emitted whenever a guild kicks the client or the guild is deleted/left.
+     *
+     * @event Client#guildDelete
+     * @param {Guild} guild The guild that was deleted
+     */
+    client.emit(Events.GuildDelete, guild);
   }
 }
 
