@@ -2105,7 +2105,7 @@ export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvit
   public approximatePresenceCount: WithCounts extends true ? number : null;
   public get deletable(): boolean;
   public delete(reason?: string): Promise<void>;
-  public updateTargetUsers(targetUsersFile: BufferResolvable | readonly UserResolvable[]): Promise<unknown>;
+  public updateTargetUsers(targetUsersFile: BufferResolvable | readonly UserResolvable[]): Promise<void>;
   public fetchTargetUsersJobStatus(): Promise<TargetUsersJobStatusForInvite>;
   public fetchTargetUsers(): Promise<Buffer>;
 }
@@ -4615,7 +4615,7 @@ export class GuildInviteManager extends DataManager<string, GuildInvite, GuildIn
   public updateTargetUsers(
     invite: InviteResolvable,
     targetUsersFile: BufferResolvable | readonly UserResolvable[],
-  ): Promise<unknown>;
+  ): Promise<void>;
   public fetchTargetUsers(invite: InviteResolvable): Promise<Buffer>;
   public fetchTargetUsersJobStatus(invite: InviteResolvable): Promise<TargetUsersJobStatusForInvite>;
   public fetch(options: FetchInviteOptions | InviteResolvable): Promise<GuildInvite>;
