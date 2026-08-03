@@ -17,7 +17,7 @@ import {
 	RouteBases,
 	CDNRoutes,
 } from 'discord-api-types/v10';
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, beforeEach } from 'vitest';
 import {
 	Activity,
 	ActivityAssets,
@@ -35,7 +35,7 @@ const user: APIUser = {
 	avatar: '54a38112404a550eab14e01fb7f77c9c',
 	global_name: 'User',
 	discriminator: '0000',
-	id: '3',
+	id: '1091287989151342622',
 };
 
 const gatewayPresenceActivityTimestampsData: GatewayActivityTimestamps = {
@@ -48,7 +48,7 @@ const gatewayPresenceActivitySecretsData: GatewayActivitySecrets = {
 };
 
 const gatewayPresenceActivityPartyData: GatewayActivityParty = {
-	id: '1',
+	id: '676544578976545764',
 	size: [11, 40],
 };
 
@@ -72,13 +72,13 @@ const gatewayPresenceActivityAssetsData: GatewayActivityAssets = {
 };
 
 const gatewayPresenceActivityData: GatewayActivity = {
-	id: '1',
+	id: '1006883369382064179',
 	name: 'activity-name',
 	type: ActivityType.Playing,
 	url: 'https://github.com/discordjs/discord.js',
 	created_at: 1_540_381_143_572,
 	timestamps: gatewayPresenceActivityTimestampsData,
-	application_id: '121212',
+	application_id: '222078108977594368',
 	status_display_type: StatusDisplayType.Details,
 	details: 'activity-details',
 	details_url: 'https://github.com/discordjs/discord.js',
@@ -107,7 +107,11 @@ const gatewayPresenceClientStatusData: GatewayPresenceClientStatusTypedef = {
 describe('Presences structures', () => {
 	describe('PresenceClientStatus sub-structure', () => {
 		const data = gatewayPresenceClientStatusData;
-		const instance = new ClientStatus(data);
+		let instance: ClientStatus;
+
+		beforeEach(() => {
+			instance = new ClientStatus(data);
+		});
 
 		test('correct value for all getters', () => {
 			expect(instance.desktop).toBe(data.desktop);
@@ -132,14 +136,23 @@ describe('Presences structures', () => {
 			expect(instance.web).toEqual(web);
 			expect(instance.mobile).toEqual(mobile);
 
-			expect(patched.toJSON()).not.toEqual(data);
+			expect(patched.toJSON()).toEqual({
+				...data,
+				web,
+				mobile,
+			});
+
 			expect(patched).toBe(instance);
 		});
 	});
 
 	describe('PresenceUpdate sub-structure', () => {
 		const data = gatewayPresenceUpdateData;
-		const instance = new Presence(data);
+		let instance: Presence;
+
+		beforeEach(() => {
+			instance = new Presence(data);
+		});
 
 		test('correct value for all getters', () => {
 			expect(instance.status).toBe(data.status);
@@ -150,13 +163,19 @@ describe('Presences structures', () => {
 		});
 
 		test('patching the structure works in-place', () => {
+			const status = PresenceUpdateStatus.Online;
+
 			const patched = instance[kPatch]({
-				status: PresenceUpdateStatus.Online,
+				status,
 			});
 
 			expect(patched.status).toEqual(PresenceUpdateStatus.Online);
 
-			expect(patched.toJSON()).not.toEqual(data);
+			expect(patched.toJSON()).toEqual({
+				...data,
+				status,
+			});
+
 			expect(patched).toBe(instance);
 		});
 	});
@@ -164,7 +183,11 @@ describe('Presences structures', () => {
 	describe('Presences sub-structures', () => {
 		describe('PresenceActivity sub-structure', () => {
 			const data = gatewayPresenceActivityData;
-			const instance = new Activity(data);
+			let instance: Activity;
+
+			beforeEach(() => {
+				instance = new Activity(data);
+			});
 
 			test('correct value for all getters and helper method [createdDate]', () => {
 				expect(instance.name).toBe(data.name);
@@ -187,26 +210,38 @@ describe('Presences structures', () => {
 			});
 
 			test('patching the structure works in-place', () => {
+				const status_display_type = StatusDisplayType.Name;
+				const state = '[PATCHED]-activity-state';
+				const state_url = null;
+				const type = ActivityType.Custom;
+
 				const patched = instance[kPatch]({
-					status_display_type: StatusDisplayType.Name,
-					state: '[PATCHED]-activity-state',
-					state_url: null,
-					type: ActivityType.Custom,
+					status_display_type,
+					state,
+					state_url,
+					type,
 				});
 
-				expect(patched.statusDisplayType).toEqual(StatusDisplayType.Name);
-				expect(patched.state).toEqual('[PATCHED]-activity-state');
-				expect(patched.stateURL).toBeNull();
-				expect(patched.type).toEqual(ActivityType.Custom);
-				expect(patched.toJSON()).not.toEqual(data);
+				expect(patched.toJSON()).toEqual({
+					...data,
+					status_display_type,
+					state,
+					state_url,
+					type,
+				});
+
 				expect(patched).toBe(instance);
 			});
 		});
 
 		describe('PresenceActivityAssets sub-structure', () => {
 			const data = gatewayPresenceActivityAssetsData;
-			const instance = new ActivityAssets(data);
 			const applicationId = '23498573429574598';
+			let instance: ActivityAssets;
+
+			beforeEach(() => {
+				instance = new ActivityAssets(data);
+			});
 
 			test('correct value for all getters and helper methods [largeImageURL, smallImageURL]', () => {
 				expect(instance.largeImage).toBe(data.large_image);
@@ -243,13 +278,21 @@ describe('Presences structures', () => {
 				expect(patched.smallURL).toEqual(small_url);
 
 				expect(patched).toBe(instance);
-				expect(patched.toJSON()).not.toEqual(data);
+				expect(patched.toJSON()).toEqual({
+					...data,
+					large_text,
+					small_url,
+				});
 			});
 		});
 
 		describe('PresenceActivityButton sub-structure', () => {
 			const data = gatewayPresenceActivityButtonData;
-			const instance = new ActivityButton(data);
+			let instance: ActivityButton;
+
+			beforeEach(() => {
+				instance = new ActivityButton(data);
+			});
 
 			test('correct value for all getters', () => {
 				expect(instance.label).toBe(data.label);
@@ -261,20 +304,30 @@ describe('Presences structures', () => {
 			});
 
 			test('patching the structure works in-place', () => {
+				const label = '[PATCHED]-button-label';
+
 				const patched = instance[kPatch]({
-					label: '[PATCHED]-button-label',
+					label,
 				});
 
-				expect(patched.label).toEqual('[PATCHED]-button-label');
+				expect(patched.label).toEqual(label);
 
 				expect(patched).toEqual(instance);
-				expect(patched.toJSON()).not.toEqual(data);
+
+				expect(patched.toJSON()).toEqual({
+					...data,
+					label,
+				});
 			});
 		});
 
 		describe('PresenceActivityParty sub-structure', () => {
 			const data = gatewayPresenceActivityPartyData;
-			const instance = new ActivityParty(data);
+			let instance: ActivityParty;
+
+			beforeEach(() => {
+				instance = new ActivityParty(data);
+			});
 
 			test('correct value for all getters and helper methods [createdTimestamp, createdDate]', () => {
 				expect(instance.id).toBe(data.id);
@@ -287,21 +340,31 @@ describe('Presences structures', () => {
 			});
 
 			test('patching the structure works in-place', () => {
+				const size: [current_size: number, max_size: number] = [1, 999];
+
 				const patched = instance[kPatch]({
-					size: [1, 999],
+					size,
 				});
 
-				expect(instance.maximumSize).toBe(999);
-				expect(instance.currentSize).toBe(1);
+				expect(instance.currentSize).toBe(size[0]);
+				expect(instance.maximumSize).toBe(size[1]);
 
 				expect(patched).toBe(instance);
-				expect(patched.toJSON()).not.toEqual(data);
+
+				expect(patched.toJSON()).toEqual({
+					...data,
+					size,
+				});
 			});
 		});
 
 		describe('PresenceActivitySecrets sub-structure', () => {
 			const data = gatewayPresenceActivitySecretsData;
-			const instance = new ActivitySecrets(data);
+			let instance: ActivitySecrets;
+
+			beforeEach(() => {
+				instance = new ActivitySecrets(data);
+			});
 
 			test('correct value for all getters', () => {
 				expect(instance.join).toBe(data.join);
@@ -327,13 +390,21 @@ describe('Presences structures', () => {
 				expect(patched.spectate).toEqual(spectate);
 
 				expect(patched).toBe(instance);
-				expect(patched.toJSON()).not.toEqual(data);
+				expect(patched.toJSON()).toEqual({
+					...data,
+					match,
+					spectate,
+				});
 			});
 		});
 
 		describe('PresenceActivityTimestamps sub-structure', () => {
 			const data = gatewayPresenceActivityTimestampsData;
-			const instance = new ActivityTimestamps(data);
+			let instance: ActivityTimestamps;
+
+			beforeEach(() => {
+				instance = new ActivityTimestamps(data);
+			});
 
 			test('correct value for all getters', () => {
 				expect(instance.startTimestamp).toBe(data.start);
@@ -348,15 +419,19 @@ describe('Presences structures', () => {
 			});
 
 			test('patching the structure works in-place', () => {
-				const newTimestamp = 1_771_670_132;
+				const end = 1_771_670_132;
 				const patched = instance[kPatch]({
-					end: newTimestamp,
+					end,
 				});
 
-				expect(patched.endDate?.valueOf()).toStrictEqual(newTimestamp);
+				expect(patched.endDate?.valueOf()).toStrictEqual(end);
 
 				expect(patched).toEqual(instance);
-				expect(patched.toJSON()).not.toEqual(data);
+
+				expect(patched.toJSON()).toEqual({
+					...data,
+					end,
+				});
 			});
 		});
 	});
