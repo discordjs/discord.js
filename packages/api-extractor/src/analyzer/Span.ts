@@ -447,7 +447,7 @@ export class Span {
 	}
 
 	/**
-	 * Returns a diagnostic dump of the tree, showing the SpanModification settings for each nodde.
+	 * Returns a diagnostic dump of the tree, showing the SpanModification settings for each node.
 	 */
 	public getModifiedDump(indent: string = ''): string {
 		let result: string = indent + ts.SyntaxKind[this.node.kind] + ': ';

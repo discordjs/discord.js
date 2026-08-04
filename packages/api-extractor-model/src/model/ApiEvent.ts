@@ -27,7 +27,7 @@ export interface IApiEventOptions
  * `ApiEvent` represents a emittable event such as the `ready` event in this example:
  *
  * ```ts
- * export class Cliet extends EventEmitter {
+ * export class Client extends EventEmitter {
  *   on(event: 'ready', ...args: [Client]): this { }
  * }
  * ```

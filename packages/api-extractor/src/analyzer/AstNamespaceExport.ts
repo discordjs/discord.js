@@ -32,7 +32,7 @@ export interface IAstNamespaceExportOptions extends IAstNamespaceImportOptions {
  *
  * The current implementation does not attempt to relocate f1()/f2() to be inside the `namespace`
  * because other type signatures may reference them directly (without using the namespace qualifier).
- * The AstNamespaceExports behaves the same as AstNamespaceImport, it just also has the inline export for the craeted namespace.
+ * The AstNamespaceExports behaves the same as AstNamespaceImport, it just also has the inline export for the created namespace.
  */
 
 export class AstNamespaceExport extends AstNamespaceImport {

@@ -262,7 +262,7 @@ export class Collector {
 				this._entitiesByAstEntryPoint.set(entryPoint, []);
 			}
 
-			// Process pacakgeDocComment only for the default entry point
+			// Process packageDocComment only for the default entry point
 			if (this.workingPackage.isDefaultEntryPoint(entryPoint)) {
 				const packageDocCommentTextRange: ts.TextRange | undefined = PackageDocComment.tryFindInSourceFile(
 					entryPointSourceFile,

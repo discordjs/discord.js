@@ -618,10 +618,10 @@ export class ExportAnalyzer {
 		declarationSymbol: ts.Symbol,
 		declaration: ts.Declaration,
 	): AstNamespaceExport {
-		const imoprtNamespace: AstNamespaceImport = this._getAstNamespaceImport(astModule, declarationSymbol, declaration);
+		const importNamespace: AstNamespaceImport = this._getAstNamespaceImport(astModule, declarationSymbol, declaration);
 
 		return new AstNamespaceExport({
-			namespaceName: imoprtNamespace.localName,
+			namespaceName: importNamespace.localName,
 			astModule,
 			declaration,
 			symbol: declarationSymbol,
