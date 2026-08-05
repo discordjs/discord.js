@@ -57,4 +57,14 @@ describe('Emoji structure', () => {
 		expect(patched.toJSON()).toEqual({ ...data, available: false });
 		expect(patched).toBe(instance);
 	});
+
+	test('createdTimestamp returns null if id is not set', () => {
+		const instanceWithNoId = new Emoji({ ...data, id: null });
+		expect(instanceWithNoId.createdTimestamp).toBeNull();
+	});
+
+	test('createdDate returns null if createdTimestamp is not set', () => {
+		const instanceWithNoId = new Emoji({ ...data, id: null });
+		expect(instanceWithNoId.createdAt).toBeNull();
+	});
 });
