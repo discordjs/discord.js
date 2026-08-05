@@ -23,3 +23,7 @@ export function getPid() {
 
 	return null;
 }
+
+export function isValidTimestamp(timestamp: number) {
+	return Number.isInteger(timestamp) && timestamp >= 0 && timestamp <= 2_147_483_647_000;
+}

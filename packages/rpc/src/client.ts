@@ -43,7 +43,7 @@ import type {
 } from './constants.js';
 import { Events } from './constants.js';
 import { IPCTransport } from './ipc.js';
-import { getPid } from './util.js';
+import { getPid, isValidTimestamp } from './util.js';
 
 export interface RPCClientOptions {
 	/**
@@ -105,6 +105,9 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 
 	public user: APIUser | null;
 
+	/**
+	 * The transport for the IPC
+	 */
 	public transport: IPCTransport;
 
 	/**
@@ -134,11 +137,17 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		this.#expectedNonces = new Map();
 	}
 
+	/**
+	 * Returns the Date for when the client became ready
+	 */
 	public get readyAt() {
 		if (this.readyTimestamp === null) return null;
 		return new Date(this.readyTimestamp);
 	}
 
+	/**
+	 * Returns true if the client is currently ready
+	 */
 	public get ready() {
 		return this.readyTimestamp !== null;
 	}
@@ -277,32 +286,33 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	) {
 		const signal = options?.signal ?? AbortSignal.timeout(10e3);
 		signal.throwIfAborted();
-		return new Promise(
-			(resolve: (value: MappedRPCCommandsResultsData[Cmd]) => void, reject: (reason: RPCEventError) => void) => {
-				const nonce = randomUUID();
-				const payload: { args: MappedRPCCommandsArgs[Cmd]; cmd: Cmd; evt?: RPCEvents; nonce: string } = {
-					cmd,
-					args,
-					nonce,
-				};
-				if (cmd === RPCCommands.Subscribe || cmd === RPCCommands.Unsubscribe) {
-					// eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
-					payload.evt = options?.evt!;
-				}
+		const { promise, resolve, reject } = Promise.withResolvers<MappedRPCCommandsResultsData[Cmd]>();
+		const nonce = randomUUID();
+		const payload: { args: MappedRPCCommandsArgs[Cmd]; cmd: Cmd; evt?: RPCEvents; nonce: string } = {
+			cmd,
+			args,
+			nonce,
+		};
+		if (cmd === RPCCommands.Subscribe || cmd === RPCCommands.Unsubscribe) {
+			// eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+			payload.evt = options?.evt!;
+		}
 
-				this.transport.send(payload as RPCMessagePayload);
-				this.#expectedNonces.set(nonce, { resolve, reject });
-				signal.addEventListener(
-					'abort',
-					(_: Event) => {
-						this.#expectedNonces.delete(nonce);
-						const reason = signal.reason instanceof Error ? signal.reason : new Error(String(signal.reason));
-						reject(reason);
-					},
-					{ once: true },
-				);
-			},
-		);
+		this.transport.send(payload as RPCMessagePayload);
+		this.#expectedNonces.set(nonce, { resolve, reject });
+		const onAbort = (_: Event) => {
+			this.#expectedNonces.delete(nonce);
+			const reason = signal.reason instanceof Error ? signal.reason : new Error(String(signal.reason));
+			reject(reason);
+		};
+
+		signal.addEventListener('abort', onAbort, { once: true });
+
+		try {
+			return await promise;
+		} finally {
+			signal.removeEventListener('abort', onAbort);
+		}
 	}
 
 	/**
@@ -550,19 +560,11 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		activity.instance = Boolean(activity.instance);
 
 		if (activity.timestamps) {
-			if (
-				'start' in activity.timestamps &&
-				Number.isInteger(activity.timestamps.start) &&
-				Math.min(Math.max(0, activity.timestamps.start), 2_147_483_647_000) !== activity.timestamps.start
-			) {
+			if ('start' in activity.timestamps && isValidTimestamp(activity.timestamps.start)) {
 				throw new RangeError('timestamps.start must fit into a unix timestamp');
 			}
 
-			if (
-				'end' in activity.timestamps &&
-				Number.isInteger(activity.timestamps.end) &&
-				Math.min(Math.max(0, activity.timestamps.end), 2_147_483_647_000) !== activity.timestamps.end
-			) {
+			if ('end' in activity.timestamps && isValidTimestamp(activity.timestamps.end)) {
 				throw new RangeError('timestamps.end must fit into a unix timestamp');
 			}
 		}
