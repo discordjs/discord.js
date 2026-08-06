@@ -44,7 +44,7 @@
 		"@actions/core": "^3.0.1",
 		"@actions/github": "^9.1.1",
 		"@actions/glob": "^0.7.0",
-		"@aws-sdk/client-s3": "^3.1095.0",
+		"@aws-sdk/client-s3": "^3.1103.0",
 		"@discordjs/scripts": "workspace:^",
 		"cloudflare": "^7.0.0",
 		"commander": "^15.0.0",
@@ -52,7 +52,7 @@
 		"p-limit": "^7.3.1",
 		"p-queue": "^9.3.3",
 		"tslib": "^2.8.1",
-		"undici": "^8.9.0"
+		"undici": "^8.10.0"
 	},
 	"devDependencies": {
 		"@npm/types": "^2.1.0",
@@ -65,9 +65,9 @@
 		"eslint-formatter-compact": "^9.0.1",
 		"eslint-formatter-pretty": "^7.1.0",
 		"prettier": "~3.8.1",
-		"terser": "^5.49.0",
+		"terser": "^5.49.2",
 		"tsup": "^8.5.1",
-		"turbo": "^2.10.7",
+		"turbo": "^2.10.8",
 		"typescript": "~5.9.3",
 		"vitest": "^4.1.10"
 	},

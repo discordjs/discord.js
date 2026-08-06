@@ -70,7 +70,7 @@
 		"@discordjs/ws": "workspace:^",
 		"@sapphire/snowflake": "^3.5.5",
 		"@vladfrangu/async_event_emitter": "^2.4.7",
-		"discord-api-types": "^0.38.51"
+		"discord-api-types": "^0.38.52"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
@@ -86,7 +86,7 @@
 		"eslint-formatter-pretty": "^7.1.0",
 		"prettier": "~3.8.1",
 		"tsup": "^8.5.1",
-		"turbo": "^2.10.7",
+		"turbo": "^2.10.8",
 		"typescript": "~5.9.3",
 		"vitest": "^4.1.10"
 	},

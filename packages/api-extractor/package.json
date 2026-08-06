@@ -65,7 +65,7 @@
 	"devDependencies": {
 		"@types/node": "^24.13.3",
 		"@types/resolve": "^1.20.6",
-		"@types/semver": "^7.7.1",
+		"@types/semver": "^7.8.0",
 		"cpy-cli": "^7.0.0",
 		"cross-env": "^10.1.0",
 		"eslint": "^9.39.5",
@@ -73,8 +73,8 @@
 		"eslint-formatter-compact": "^9.0.1",
 		"eslint-formatter-pretty": "^7.1.0",
 		"prettier": "~3.8.1",
-		"terser": "^5.49.0",
+		"terser": "^5.49.2",
 		"tsup": "^8.5.1",
-		"turbo": "^2.10.7"
+		"turbo": "^2.10.8"
 	}
 }
