@@ -134,7 +134,8 @@ export class Documentation {
 						break;
 					}
 
-					case ReflectionKind.Property: {
+					case ReflectionKind.Property:
+					case ReflectionKind.Accessor: {
 						item = new DocumentedMember(member, this.config);
 						break;
 					}

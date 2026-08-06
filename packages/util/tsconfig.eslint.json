@@ -2,7 +2,8 @@
 	"$schema": "https://json.schemastore.org/tsconfig.json",
 	"extends": "./tsconfig.json",
 	"compilerOptions": {
-		"allowJs": true
+		"allowJs": true,
+		"rootDir": "."
 	},
 	"include": ["*.ts", "*.js", "*.cjs", "*.mjs", "src/**/*.ts", "__tests__"],
 	"exclude": ["node_modules"]

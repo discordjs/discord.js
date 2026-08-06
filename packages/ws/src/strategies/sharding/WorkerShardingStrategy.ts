@@ -1,5 +1,6 @@
 import { once } from 'node:events';
 import { join, isAbsolute, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Worker } from 'node:worker_threads';
 import { Collection } from '@discordjs/collection';
 import type { GatewaySendPayload } from 'discord-api-types/v10';
@@ -259,7 +260,7 @@ export class WorkerShardingStrategy implements IShardingStrategy {
 		}
 
 		try {
-			return import.meta.resolve(path);
+			return fileURLToPath(import.meta.resolve(path));
 		} catch {
 			return resolve(path);
 		}

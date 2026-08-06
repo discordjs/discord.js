@@ -273,7 +273,7 @@ export class ActivityLocation extends Base {
 
 export type ActivityFlagsString = keyof typeof ActivityFlags;
 
-export interface BaseComponentData<Type extends ComponentType> {
+export interface BaseComponentData<Type extends ComponentType = ComponentType> {
   id?: number;
   type: Type;
 }
@@ -292,9 +292,9 @@ export type ActionRowComponentData = MessageActionRowComponentData;
 export type ActionRowComponent = MessageActionRowComponent;
 
 export interface ActionRowData<
-  ComponentType extends ActionRowComponentData | JSONEncodable<APIComponentInActionRow>,
+  Type extends ActionRowComponentData | JSONEncodable<APIComponentInActionRow>,
 > extends BaseComponentData<ComponentType.ActionRow> {
-  components: readonly ComponentType[];
+  components: readonly Type[];
 }
 
 export type ComponentInLabelData =

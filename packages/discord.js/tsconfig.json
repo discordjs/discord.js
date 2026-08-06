@@ -8,8 +8,8 @@
     // Completeness
     "skipDefaultLibCheck": true,
 
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "rootDir": "./typings",
 
     "types": [
