@@ -1456,7 +1456,7 @@ export class ApiModelGenerator {
 				const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
 				const docComment: tsdoc.DocComment | undefined = jsDoc
 					? this._tsDocParser.parseString(
-							`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}${jsDoc.default === undefined ? '' : `\n * @defaultValue ${this._escapeSpecialChars(jsDoc.default)}`}\n${
+							`/**\n * ${this._fixLinkTags(jsDoc.description) ?? ''}${jsDoc.default === undefined ? '' : `\n * @defaultValue \`${this._escapeSpecialChars(jsDoc.default)}\``}\n${
 								'see' in jsDoc ? jsDoc.see.map((see) => ` * @see ${see}\n`).join('') : ''
 							}${'readonly' in jsDoc && jsDoc.readonly ? ' * @readonly\n' : ''}${
 								'deprecated' in jsDoc && jsDoc.deprecated
@@ -1907,7 +1907,7 @@ export class ApiModelGenerator {
 			return input;
 		}
 
-		return input.replaceAll(/(?<char>[@{}])/g, '\\$<char>');
+		return input.replaceAll(/(?<char>[@`{}])/g, '\\$<char>');
 	}
 
 	private _fixLinkTags(input?: string): string | undefined {
@@ -1919,9 +1919,7 @@ export class ApiModelGenerator {
 					external?.see?.[0] ?? '',
 				);
 				if (match) {
-					target = `discord-api-types#(${match.groups!.name}:${
-						/^v\d+$/.test(match.groups!.type!) ? match.groups!.kind : 'type'
-					})`;
+					target = `discord-api-types#${match.groups!.name}`;
 				}
 
 				return `{@link ${target}${groups.prop ? `.${groups.prop}` : ''}${groups.name ? ` |${groups.name}` : ''}}`;
@@ -2011,7 +2009,7 @@ export class ApiModelGenerator {
 			isOptional: Boolean(prop.nullable),
 			isReadonly: Boolean(prop.readonly),
 			docComment: this._tsDocParser.parseString(
-				`/**\n * ${this._fixLinkTags(prop.description) ?? ''}\n${prop.default ? ` * @defaultValue ${this._escapeSpecialChars(prop.default)}\n` : ''}${
+				`/**\n * ${this._fixLinkTags(prop.description) ?? ''}\n${prop.default ? ` * @defaultValue \`${this._escapeSpecialChars(prop.default)}\`\n` : ''}${
 					prop.see?.map((see) => ` * @see ${see}\n`).join('') ?? ''
 				}${prop.readonly ? ' * @readonly\n' : ''} */`,
 			).docComment,
