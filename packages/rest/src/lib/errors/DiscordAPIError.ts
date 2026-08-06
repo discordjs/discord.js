@@ -10,7 +10,10 @@ export interface DiscordErrorGroupWrapper {
 }
 
 export type DiscordError =
-	DiscordErrorFieldInformation | DiscordErrorGroupWrapper | string | { [k: string]: DiscordError };
+	| DiscordErrorFieldInformation
+	| DiscordErrorGroupWrapper
+	| string
+	| { [k: string]: DiscordError };
 
 export interface DiscordErrorData {
 	code: number;

@@ -187,7 +187,12 @@ interface DocgenClassJson {
 }
 type DocgenInterfaceJson = DocgenClassJson;
 type DocgenContainerJson =
-	DocgenClassJson | DocgenConstructorJson | DocgenInterfaceJson | DocgenJson | DocgenMethodJson | DocgenTypedefJson;
+	| DocgenClassJson
+	| DocgenConstructorJson
+	| DocgenInterfaceJson
+	| DocgenJson
+	| DocgenMethodJson
+	| DocgenTypedefJson;
 
 export interface DocgenJson {
 	classes: DocgenClassJson[];

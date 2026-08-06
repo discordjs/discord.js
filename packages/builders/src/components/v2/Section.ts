@@ -188,7 +188,9 @@ export class SectionBuilder extends ComponentBuilder<APISectionComponent> {
 	 */
 	public setPremiumButtonAccessory(
 		input:
-			APIButtonComponentWithSKUId | PremiumButtonBuilder | ((builder: PremiumButtonBuilder) => PremiumButtonBuilder),
+			| APIButtonComponentWithSKUId
+			| PremiumButtonBuilder
+			| ((builder: PremiumButtonBuilder) => PremiumButtonBuilder),
 	): this {
 		const builder = resolveBuilder(input, PremiumButtonBuilder);
 

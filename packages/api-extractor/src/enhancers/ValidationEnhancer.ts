@@ -22,11 +22,13 @@ export class ValidationEnhancer {
 
 		for (const [entryPoint, entities] of collector.entities) {
 			for (const entity of entities) {
-				if (!(
-					entity.consumable ||
-					collector.extractorConfig.apiReportIncludeForgottenExports ||
-					collector.extractorConfig.docModelIncludeForgottenExports
-				)) {
+				if (
+					!(
+						entity.consumable ||
+						collector.extractorConfig.apiReportIncludeForgottenExports ||
+						collector.extractorConfig.docModelIncludeForgottenExports
+					)
+				) {
 					continue;
 				}
 
