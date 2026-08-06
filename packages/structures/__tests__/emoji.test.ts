@@ -40,7 +40,7 @@ describe('Emoji structure', () => {
 
 		const createdTimestamp = DiscordSnowflake.timestampFrom(data.id!);
 		expect(instance.createdTimestamp).toBe(createdTimestamp);
-		expect(instance.createdAt!.valueOf()).toBe(createdTimestamp);
+		expect(instance.createdDate!.valueOf()).toBe(createdTimestamp);
 	});
 
 	test('toJSON() is accurate', () => {
@@ -58,13 +58,9 @@ describe('Emoji structure', () => {
 		expect(patched).toBe(instance);
 	});
 
-	test('createdTimestamp returns null if id is not set', () => {
+	test('createdTimestamp/createdAt returns null if id is not set', () => {
 		const instanceWithNoId = new Emoji({ ...data, id: null });
 		expect(instanceWithNoId.createdTimestamp).toBeNull();
-	});
-
-	test('createdDate returns null if createdTimestamp is not set', () => {
-		const instanceWithNoId = new Emoji({ ...data, id: null });
-		expect(instanceWithNoId.createdAt).toBeNull();
+		expect(instanceWithNoId.createdDate).toBeNull();
 	});
 });
