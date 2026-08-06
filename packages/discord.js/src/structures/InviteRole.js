@@ -1,6 +1,6 @@
 'use strict';
 
-const { BaseRole } = require('./BaseRole');
+const { BaseRole } = require('./BaseRole.js');
 
 /**
  * Represents a role received from an invite
