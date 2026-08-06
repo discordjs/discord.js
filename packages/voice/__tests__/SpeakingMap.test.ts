@@ -1,4 +1,5 @@
 import { describe, test, expect, vitest } from 'vitest';
+
 import { SpeakingMap } from '../src/receive/SpeakingMap';
 import { noop } from '../src/util/util';
 

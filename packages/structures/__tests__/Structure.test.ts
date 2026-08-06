@@ -1,4 +1,5 @@
 import { describe, test, expect, beforeEach } from 'vitest';
+
 import { DataTemplatePropertyName, OptimizeDataPropertyName, Structure } from '../src/Structure.js';
 import { kData, kPatch } from '../src/utils/symbols.js';
 

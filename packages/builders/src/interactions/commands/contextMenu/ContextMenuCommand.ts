@@ -1,5 +1,6 @@
 import type { ApplicationCommandType, RESTPostAPIContextMenuApplicationCommandsJSONBody } from 'discord-api-types/v10';
 import { Mixin } from 'ts-mixer';
+
 import { CommandBuilder } from '../Command.js';
 import { SharedName } from '../SharedName.js';
 

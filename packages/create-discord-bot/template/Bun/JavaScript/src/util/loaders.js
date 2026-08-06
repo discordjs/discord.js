@@ -1,7 +1,9 @@
 import { stat } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
 import { Glob } from 'bun';
+
 import { predicate as commandPredicate } from '../commands/index.js';
 import { predicate as eventPredicate } from '../events/index.js';
 

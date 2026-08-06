@@ -1,5 +1,7 @@
 import { parse } from 'node:path';
+
 import type { DeclarationReflection } from 'typedoc';
+
 import type { Class, Config } from '../interfaces/index.js';
 import { parseType } from '../util/parseType.js';
 import { DocumentedConstructor } from './constructor.js';

@@ -8,6 +8,7 @@ import dynamic from 'next/dynamic';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useDebounceValue, useMediaQuery } from 'usehooks-ts';
+
 import { Scrollbars } from '@/components/OverlayScrollbars';
 import { isCmdKOpenAtom } from '@/stores/cmdk';
 import { isDrawerOpenAtom } from '@/stores/drawer';

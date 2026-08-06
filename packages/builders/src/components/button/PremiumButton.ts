@@ -1,5 +1,6 @@
 import type { APIButtonComponentWithSKUId, Snowflake } from 'discord-api-types/v10';
 import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
+
 import { BaseButtonBuilder } from './Button.js';
 
 /**

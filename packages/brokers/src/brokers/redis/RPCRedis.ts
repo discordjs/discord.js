@@ -1,5 +1,7 @@
 import type { Buffer } from 'node:buffer';
+
 import type Redis from 'ioredis/built/Redis.js';
+
 import type { IRPCBroker } from '../Broker.js';
 import type { RedisBrokerOptions } from './BaseRedis.js';
 import { BaseRedisBroker, DefaultRedisBrokerOptions } from './BaseRedis.js';

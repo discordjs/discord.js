@@ -50,6 +50,4 @@ bun.lockb
 !.yarn/versions
 
 # Cache
-.prettiercache
-.eslintcache
 .vercel

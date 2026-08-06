@@ -2,6 +2,7 @@
 // See LICENSE in the project root for license information.
 
 import { dirname } from 'node:path';
+
 import { Navigation, Meaning } from '@discordjs/api-extractor-model';
 import {
 	DeclarationReference,
@@ -10,6 +11,7 @@ import {
 } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { type INodePackageJson, InternalError } from '@rushstack/node-core-library';
 import * as ts from 'typescript';
+
 import { AstNamespaceImport } from '../analyzer/AstNamespaceImport.js';
 import { TypeScriptHelpers } from '../analyzer/TypeScriptHelpers.js';
 import { TypeScriptInternals } from '../analyzer/TypeScriptInternals.js';

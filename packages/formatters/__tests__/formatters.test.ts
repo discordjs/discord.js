@@ -1,5 +1,6 @@
 /* eslint-disable no-template-curly-in-string */
 import { describe, test, expect, vitest } from 'vitest';
+
 import {
 	applicationDirectory,
 	chatInputApplicationCommandMention,

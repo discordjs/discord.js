@@ -1,6 +1,7 @@
 /* eslint-disable no-lone-blocks, @typescript-eslint/unbound-method, @typescript-eslint/ban-ts-comment, no-param-reassign, id-length */
 import type { ChildProcess } from 'node:child_process';
 import type { Worker } from 'node:worker_threads';
+
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -55,6 +56,7 @@ import {
   TextInputStyle,
 } from 'discord-api-types/v10';
 import { expectAssignable, expectNotAssignable, expectNotType, expectType } from 'tsd';
+
 import type {
   ActionRow,
   ActionRowComponent,

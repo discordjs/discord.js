@@ -1,6 +1,8 @@
 import type { Buffer } from 'node:buffer';
 import { pipeline, type Readable } from 'node:stream';
+
 import prism from 'prism-media';
+
 import { noop } from '../util/util';
 import { SILENCE_FRAME, type AudioPlayer } from './AudioPlayer';
 import { findPipeline, StreamType, TransformerType, type Edge } from './TransformerGraph';

@@ -3,20 +3,19 @@
 	"name": "@discordjs/proxy-container",
 	"version": "1.0.0",
 	"description": "Lightweight HTTP proxy for Discord's API, brought to you as a container 📦",
-	"scripts": {
-		"build": "tsc --noEmit && tsup",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
-		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
-		"fmt": "pnpm run format",
-		"prepack": "pnpm run lint && pnpm run build"
-	},
-	"type": "module",
-	"directories": {
-		"lib": "src"
-	},
-	"files": [
-		"dist"
+	"keywords": [
+		"api",
+		"discord",
+		"discordapp",
+		"discordjs",
+		"proxy",
+		"rest"
 	],
+	"homepage": "https://discord.js.org",
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"license": "Apache-2.0",
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>",
 		"Amish Shah <amishshah.2k@gmail.com>",
@@ -25,25 +24,30 @@
 		"Aura Román <kyradiscord@gmail.com>",
 		"DD <didinele.dev@gmail.com>"
 	],
-	"license": "Apache-2.0",
-	"keywords": [
-		"discord",
-		"api",
-		"rest",
-		"proxy",
-		"discordapp",
-		"discordjs"
-	],
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/discordjs/discord.js.git",
 		"directory": "apps/proxy-container"
 	},
-	"bugs": {
-		"url": "https://github.com/discordjs/discord.js/issues"
-	},
-	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
+	"directories": {
+		"lib": "src"
+	},
+	"files": [
+		"dist"
+	],
+	"type": "module",
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"scripts": {
+		"build": "tsc --noEmit && tsup",
+		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src",
+		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src --fix --fix-suggestions",
+		"fmt": "pnpm run format",
+		"prepack": "pnpm run lint && pnpm run build"
+	},
 	"dependencies": {
 		"@discordjs/proxy": "workspace:^",
 		"@discordjs/rest": "workspace:^",
@@ -51,12 +55,9 @@
 	},
 	"devDependencies": {
 		"@types/node": "^24.13.2",
-		"cross-env": "^10.1.0",
-		"eslint": "^9.39.4",
-		"eslint-config-neon": "^0.3.2",
-		"eslint-formatter-compact": "^9.0.1",
-		"eslint-formatter-pretty": "^7.0.0",
-		"prettier": "^3.8.1",
+		"eslint-config-neon": "^0.5.4",
+		"oxfmt": "^0.62.0",
+		"oxlint": "^1.77.0",
 		"terser": "^5.46.1",
 		"tsup": "^8.5.1",
 		"turbo": "^2.8.21",
@@ -64,9 +65,5 @@
 	},
 	"engines": {
 		"node": ">=24.17.0"
-	},
-	"publishConfig": {
-		"access": "public",
-		"provenance": true
 	}
 }

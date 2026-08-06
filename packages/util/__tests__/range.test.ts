@@ -1,4 +1,5 @@
 import { describe, test, expect } from 'vitest';
+
 import { range } from '../src/index.js';
 
 describe('range', () => {

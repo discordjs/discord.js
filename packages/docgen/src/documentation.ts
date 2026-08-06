@@ -1,5 +1,7 @@
 import { dirname, join, relative } from 'node:path';
+
 import type { DeclarationReflection } from 'typedoc';
+
 import packageFile from '../package.json';
 import type { ChildTypes, Class, Config, CustomDocs, RootTypes } from './interfaces/index.js';
 import { DocumentedClass } from './types/class.js';

@@ -1,5 +1,6 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { APIPollAnswer, APIPollMedia } from 'discord-api-types/v10';
+
 import { resolveBuilder } from '../../util/resolveBuilder';
 import { validate } from '../../util/validation';
 import { pollAnswerPredicate } from './Assertions';

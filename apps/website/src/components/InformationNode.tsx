@@ -1,4 +1,5 @@
 import { FileCode2 } from 'lucide-react';
+
 import { Badges } from './Badges';
 import { DocKind } from './DocKind';
 import { InheritanceNode } from './InheritanceNode';

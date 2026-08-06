@@ -5,6 +5,7 @@
 import { ReleaseTag } from '@discordjs/api-extractor-model';
 import { FileSystem, type NewlineKind, InternalError } from '@rushstack/node-core-library';
 import * as ts from 'typescript';
+
 import { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstEntity } from '../analyzer/AstEntity.js';
 import { AstImport } from '../analyzer/AstImport.js';

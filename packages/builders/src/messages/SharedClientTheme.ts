@@ -1,5 +1,6 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { APIMessageSharedClientTheme, BaseThemeType } from 'discord-api-types/v10';
+
 import { normalizeArray, type RestOrArray } from '../util/normalizeArray.js';
 import { validate } from '../util/validation.js';
 import { sharedClientThemePredicate } from './Assertions.js';

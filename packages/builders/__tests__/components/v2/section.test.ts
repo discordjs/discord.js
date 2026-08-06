@@ -1,5 +1,6 @@
 import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
 import { describe, expect, test } from 'vitest';
+
 import { PrimaryButtonBuilder } from '../../../src/components/button/CustomIdButton';
 import { SectionBuilder } from '../../../src/components/v2/Section';
 import { TextDisplayBuilder } from '../../../src/components/v2/TextDisplay';

@@ -1,4 +1,5 @@
 import { expectTypeOf } from 'vitest';
+
 import { isEquatable, type Equatable } from '../../src/index.js';
 
 declare const unknownObj: unknown;

@@ -5,6 +5,7 @@ import type * as tsdoc from '@microsoft/tsdoc';
 import { Sort, InternalError } from '@rushstack/node-core-library';
 import colors from 'colors';
 import * as ts from 'typescript';
+
 import { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstSymbol } from '../analyzer/AstSymbol.js';
 import { ConsoleMessageId } from '../api/ConsoleMessageId.js';

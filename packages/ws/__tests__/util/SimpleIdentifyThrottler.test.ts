@@ -1,5 +1,7 @@
 import * as timers from 'node:timers/promises';
+
 import { expect, test, vi, beforeEach, afterEach } from 'vitest';
+
 import { SimpleIdentifyThrottler } from '../../src/index.js';
 
 vi.mock('node:timers/promises', () => ({

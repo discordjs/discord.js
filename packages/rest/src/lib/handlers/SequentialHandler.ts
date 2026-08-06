@@ -1,7 +1,8 @@
 import { AsyncQueue } from '@sapphire/async-queue';
 import type { RequestInit } from 'undici';
-import type { REST } from '../REST.js';
+
 import type { IHandler } from '../interfaces/Handler.js';
+import type { REST } from '../REST.js';
 import { RESTEvents } from '../utils/constants.js';
 import type { RateLimitData, ResponseLike, HandlerRequestData, RouteData } from '../utils/types.js';
 import { hasSublimit, normalizeRateLimitOffset, onRateLimit, sleep } from '../utils/utils.js';

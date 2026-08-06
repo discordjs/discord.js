@@ -2,8 +2,10 @@
 // See LICENSE in the project root for license information.
 
 import * as path from 'node:path';
+
 import { ReleaseTag, releaseTagCompare, releaseTagGetTagName } from '@discordjs/api-extractor-model';
 import * as ts from 'typescript';
+
 import type { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import type { AstEntity } from '../analyzer/AstEntity.js';
 import type { IAstModuleExportInfo } from '../analyzer/AstModule.js';

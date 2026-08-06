@@ -1,7 +1,8 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APIMessage, MessageFlags } from 'discord-api-types/v10';
-import { Structure } from '../Structure.js';
+
 import { MessageFlagsBitField } from '../bitfields/MessageFlagsBitField.js';
+import { Structure } from '../Structure.js';
 import { dateToDiscordISOTimestamp } from '../utils/optimization.js';
 import { kData, kEditedTimestamp } from '../utils/symbols.js';
 import { isFieldSet, isIdSet } from '../utils/type-guards.js';

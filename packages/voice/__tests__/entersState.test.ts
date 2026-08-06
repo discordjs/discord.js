@@ -1,8 +1,10 @@
 import { EventEmitter } from 'node:events';
 import process from 'node:process';
+
 import { describe, test, expect, vitest, beforeEach } from 'vitest';
-import { VoiceConnectionStatus, type VoiceConnection } from '../src/VoiceConnection';
+
 import { entersState } from '../src/util/entersState';
+import { VoiceConnectionStatus, type VoiceConnection } from '../src/VoiceConnection';
 
 function createFakeVoiceConnection(status = VoiceConnectionStatus.Signalling) {
 	const vc = new EventEmitter() as any;

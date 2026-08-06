@@ -22,6 +22,7 @@ import {
 	ChannelFlags,
 } from 'discord-api-types/v10';
 import { describe, expect, test } from 'vitest';
+
 import {
 	AnnouncementChannel,
 	AnnouncementThreadChannel,

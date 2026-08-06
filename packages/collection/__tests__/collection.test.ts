@@ -1,6 +1,7 @@
 /* eslint-disable unicorn/no-array-method-this-argument */
 /* eslint-disable id-length */
 import { describe, test, expect } from 'vitest';
+
 import { Collection } from '../src/index.js';
 
 type TestCollection<Value> = Collection<string, Value>;

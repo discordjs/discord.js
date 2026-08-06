@@ -2,6 +2,7 @@
 // See LICENSE in the project root for license information.
 
 import type * as ts from 'typescript';
+
 import type { Collector } from '../collector/Collector.js';
 import { AstSyntheticEntity } from './AstEntity.js';
 import type { AstModule, IAstModuleExportInfo } from './AstModule.js';

@@ -6,9 +6,11 @@ import { GeistMono } from 'geist/font/mono';
 import { GeistSans } from 'geist/font/sans';
 import type { Metadata, Viewport } from 'next';
 import type { CSSProperties, PropsWithChildren } from 'react';
+
 import { Body } from '@/app/layout.client';
 import { source } from '@/lib/source';
 import { ENV } from '@/util/env';
+
 import { baseOptions } from './layout.config';
 
 import '@/styles/base.css';

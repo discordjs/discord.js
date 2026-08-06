@@ -1,4 +1,5 @@
 import type { APIApplicationCommand, Locale } from 'discord-api-types/v10';
+
 import type { SharedNameData } from './SharedName.js';
 import { SharedName } from './SharedName.js';
 

@@ -1,6 +1,7 @@
 import type { GatewaySendPayload } from 'discord-api-types/v10';
 import { GatewayOpcodes } from 'discord-api-types/v10';
 import { describe, expect, test, vi } from 'vitest';
+
 import { WebSocketManager, type IShardingStrategy } from '../../src/index.js';
 import { mockGatewayInformation } from '../gateway.mock.js';
 

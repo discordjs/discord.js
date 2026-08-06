@@ -3,6 +3,7 @@
 
 import { InternalError } from '@rushstack/node-core-library';
 import * as ts from 'typescript';
+
 import { SourceFileLocationFormatter } from './SourceFileLocationFormatter.js';
 import { TypeScriptInternals } from './TypeScriptInternals.js';
 

@@ -1,4 +1,5 @@
 import { describe, test, expect } from 'vitest';
+
 import { findPipeline, StreamType, TransformerType, type Edge } from '../src/audio/TransformerGraph';
 
 const noConstraint = () => true;

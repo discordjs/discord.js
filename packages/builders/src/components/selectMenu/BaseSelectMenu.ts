@@ -1,5 +1,6 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { APISelectMenuComponent } from 'discord-api-types/v10';
+
 import { ComponentBuilder } from '../Component.js';
 
 /**

@@ -6,8 +6,8 @@ import type {
 	APISectionAccessoryComponent,
 } from 'discord-api-types/v10';
 import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
+
 import { ActionRowBuilder } from './ActionRow.js';
-import { ComponentBuilder } from './Component.js';
 import type { BaseButtonBuilder } from './button/Button.js';
 import {
 	DangerButtonBuilder,
@@ -17,6 +17,7 @@ import {
 } from './button/CustomIdButton.js';
 import { LinkButtonBuilder } from './button/LinkButton.js';
 import { PremiumButtonBuilder } from './button/PremiumButton.js';
+import { ComponentBuilder } from './Component.js';
 import { FileUploadBuilder } from './fileUpload/FileUpload.js';
 import { LabelBuilder } from './label/Label.js';
 import { ChannelSelectMenuBuilder } from './selectMenu/ChannelSelectMenu.js';

@@ -84,8 +84,9 @@ import {
 	type GatewayRequestSoundboardSoundsData,
 	type GatewaySoundboardSoundsDispatchData,
 } from 'discord-api-types/v10';
-import type { Gateway } from './Gateway.js';
+
 import { API } from './api/index.js';
+import type { Gateway } from './Gateway.js';
 
 export interface IntrinsicProps {
 	/**

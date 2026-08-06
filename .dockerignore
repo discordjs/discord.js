@@ -39,23 +39,17 @@
 !.yarn/versions
 
 # Cache
-**/.prettiercache
-**/.eslintcache
 **/.vercel
 
 # Docker specific
 **/.cliff-jumperrc.json
 **/api-extractor.json
 **/api-extractor-docs.json
-**/.eslintignore
-**/.eslintrc.json
 **/.lintstagedrc.js
 **/.lintstagedrc.cjs
 **/.lintstagedrc.json
-**/.prettierignore
-**/.prettierrc.js
-**/.prettierrc.cjs
-**/.prettierrc.json
+**/oxfmt.config.ts
+**/oxlint.config.ts
 **/cliff.toml
 **/CHANGELOG.md
 **/README.md
@@ -64,4 +58,3 @@
 **/tsconfig.docs.json
 **/docs/
 **/vitest.config.ts
-

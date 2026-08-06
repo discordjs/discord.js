@@ -1,4 +1,5 @@
 import type { RESTAPIAttachment } from 'discord-api-types/v10';
+
 import type { RawFile } from './RawFile.js';
 
 /**

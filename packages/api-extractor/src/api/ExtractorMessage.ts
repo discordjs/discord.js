@@ -2,6 +2,7 @@
 // See LICENSE in the project root for license information.
 
 import type * as tsdoc from '@microsoft/tsdoc';
+
 import { SourceFileLocationFormatter } from '../analyzer/SourceFileLocationFormatter.js';
 import type { ConsoleMessageId } from './ConsoleMessageId.js';
 import { ExtractorLogLevel } from './ExtractorLogLevel.js';

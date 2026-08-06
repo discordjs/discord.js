@@ -1,4 +1,5 @@
 import type { APIButtonComponent } from 'discord-api-types/v10';
+
 import { validate } from '../../util/validation.js';
 import { buttonPredicate } from '../Assertions.js';
 import { ComponentBuilder } from '../Component.js';

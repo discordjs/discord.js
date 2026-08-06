@@ -1,5 +1,6 @@
 import { ComponentType } from 'discord-api-types/v10';
 import { describe, expect, test } from 'vitest';
+
 import { ThumbnailBuilder } from '../../../src/components/v2/Thumbnail';
 
 const dummy = {

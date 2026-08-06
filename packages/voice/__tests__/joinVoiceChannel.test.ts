@@ -1,6 +1,7 @@
 import { describe, test, expect, vitest, beforeAll, beforeEach } from 'vitest';
-import * as VoiceConnection from '../src/VoiceConnection';
+
 import { joinVoiceChannel } from '../src/joinVoiceChannel';
+import * as VoiceConnection from '../src/VoiceConnection';
 
 const adapterCreator = () => ({ destroy: vitest.fn(), send: vitest.fn() }) as any;
 const createVoiceConnection = vitest.spyOn(VoiceConnection, 'createVoiceConnection');

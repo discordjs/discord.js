@@ -1,4 +1,5 @@
 import type Cloudflare from 'cloudflare';
+
 import { ENV } from './env';
 
 export async function fetchVersions(packageName: string) {

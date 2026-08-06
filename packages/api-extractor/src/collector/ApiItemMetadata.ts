@@ -3,6 +3,7 @@
 
 import type { ReleaseTag } from '@discordjs/api-extractor-model';
 import type * as tsdoc from '@microsoft/tsdoc';
+
 import { VisitorState } from './VisitorState.js';
 
 /**

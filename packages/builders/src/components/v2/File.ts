@@ -1,4 +1,5 @@
 import { ComponentType, type APIFileComponent } from 'discord-api-types/v10';
+
 import { validate } from '../../util/validation.js';
 import { ComponentBuilder } from '../Component.js';
 import { filePredicate } from './Assertions.js';

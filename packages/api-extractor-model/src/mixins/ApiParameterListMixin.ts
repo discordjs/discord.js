@@ -2,6 +2,7 @@
 // See LICENSE in the project root for license information.
 
 import { InternalError } from '@rushstack/node-core-library';
+
 import { ApiDeclaredItem } from '../items/ApiDeclaredItem.js';
 import type { ApiItem, IApiItemJson, IApiItemConstructor, IApiItemOptions } from '../items/ApiItem.js';
 import type { DeserializerContext } from '../model/DeserializerContext.js';

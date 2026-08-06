@@ -1,4 +1,5 @@
 import type { APIMessageSharedClientTheme } from 'discord-api-types/v10';
+
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
 import type { Partialize } from '../utils/types.js';

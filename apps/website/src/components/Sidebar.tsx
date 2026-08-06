@@ -4,12 +4,13 @@ import { VscGithubInverted } from '@react-icons/all-files/vsc/VscGithubInverted'
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+
 import { EntryPointSelect } from '@/components/EntrypointSelect';
 import { PackageSelect } from '@/components/PackageSelect';
 import { SearchButton } from '@/components/SearchButton';
 import { ThemeSwitchNoSRR } from '@/components/ThemeSwitch';
-import { VersionSelect } from '@/components/VersionSelect';
 import { SidebarHeader as BasSidebarHeader } from '@/components/ui/Sidebar';
+import { VersionSelect } from '@/components/VersionSelect';
 import { buttonStyles } from '@/styles/ui/button';
 import { PACKAGES_WITH_ENTRY_POINTS } from '@/util/constants';
 import type { EntryPoint } from '@/util/fetchEntryPoints';

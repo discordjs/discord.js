@@ -1,5 +1,7 @@
 import { basename, relative } from 'node:path';
+
 import type { SourceReference } from 'typedoc';
+
 import type { Meta } from '../interfaces/index.js';
 import { DocumentedItem } from './item.js';
 

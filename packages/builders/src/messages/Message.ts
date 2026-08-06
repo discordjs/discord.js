@@ -19,6 +19,7 @@ import type {
 	APIMessageTopLevelComponent,
 	APIMessageSharedClientTheme,
 } from 'discord-api-types/v10';
+
 import { ActionRowBuilder } from '../components/ActionRow.js';
 import { ComponentBuilder } from '../components/Component.js';
 import type { MessageTopLevelComponentBuilder } from '../components/Components.js';
@@ -35,10 +36,10 @@ import { validate } from '../util/validation.js';
 import { AllowedMentionsBuilder } from './AllowedMentions.js';
 import { fileBodyMessagePredicate, messagePredicate } from './Assertions.js';
 import { AttachmentBuilder } from './Attachment.js';
-import { MessageReferenceBuilder } from './MessageReference.js';
-import { SharedClientThemeBuilder } from './SharedClientTheme.js';
 import { EmbedBuilder } from './embed/Embed.js';
+import { MessageReferenceBuilder } from './MessageReference.js';
 import { PollBuilder } from './poll/Poll.js';
+import { SharedClientThemeBuilder } from './SharedClientTheme.js';
 
 export interface MessageBuilderData extends Partial<
 	Omit<

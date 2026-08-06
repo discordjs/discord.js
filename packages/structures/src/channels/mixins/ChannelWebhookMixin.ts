@@ -1,4 +1,5 @@
 import type { ChannelType, GuildTextChannelType, ThreadChannelType } from 'discord-api-types/v10';
+
 import type { Channel } from '../Channel.js';
 
 export interface ChannelWebhookMixin<

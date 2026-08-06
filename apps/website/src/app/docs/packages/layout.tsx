@@ -1,5 +1,6 @@
 // import Link from 'next/link';
 import type { PropsWithChildren } from 'react';
+
 import { Footer } from '@/components/Footer';
 import { Navigation } from '@/components/Navigation';
 import { Scrollbars } from '@/components/OverlayScrollbars';

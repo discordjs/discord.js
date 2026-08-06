@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+
 import { Alert } from './Alert.jsx';
 
 export default {

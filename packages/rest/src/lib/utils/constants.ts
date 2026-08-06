@@ -1,6 +1,7 @@
 import { getUserAgentAppendix } from '@discordjs/util';
 import type { ImageSize } from 'discord-api-types/v10';
 import { APIVersion } from 'discord-api-types/v10';
+
 import { getDefaultStrategy } from '../../environment.js';
 import type { RESTOptions, ResponseLike } from './types.js';
 

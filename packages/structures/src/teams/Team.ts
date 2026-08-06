@@ -1,5 +1,6 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APITeam } from 'discord-api-types/v10';
+
 import { Structure } from '../Structure.js';
 import { kData } from '../utils/symbols.js';
 import { isIdSet } from '../utils/type-guards.js';

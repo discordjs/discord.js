@@ -5,6 +5,7 @@ import type {
 } from 'discord-api-types/v10';
 import { ApplicationCommandOptionType } from 'discord-api-types/v10';
 import { Mixin } from 'ts-mixer';
+
 import { normalizeArray, type RestOrArray } from '../../../util/normalizeArray.js';
 import { resolveBuilder } from '../../../util/resolveBuilder.js';
 import { validate } from '../../../util/validation.js';

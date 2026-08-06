@@ -4,6 +4,7 @@
 
 import { InternalError, Sort, Text } from '@rushstack/node-core-library';
 import * as ts from 'typescript';
+
 import { IndentedWriter } from '../generators/IndentedWriter.js';
 
 interface IWriteModifiedTextOptions {

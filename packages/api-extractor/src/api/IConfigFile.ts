@@ -2,6 +2,7 @@
 // See LICENSE in the project root for license information.
 
 import type { EnumMemberOrder } from '@discordjs/api-extractor-model';
+
 import type { ExtractorLogLevel } from './ExtractorLogLevel.js';
 
 /**

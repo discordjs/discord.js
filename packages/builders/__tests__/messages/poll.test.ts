@@ -1,5 +1,6 @@
 import { PollLayoutType, type RESTAPIPoll } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
+
 import { PollAnswerMediaBuilder, PollBuilder, PollQuestionBuilder } from '../../src/index.js';
 
 const dummyData = {

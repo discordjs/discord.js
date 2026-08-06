@@ -1,5 +1,7 @@
 import Link from 'next/link';
+
 import { BuiltinDocumentationLinks } from '@/util/builtinDocumentationLinks';
+
 import { Scrollbars } from './OverlayScrollbars';
 import { SyntaxHighlighter } from './SyntaxHighlighter';
 

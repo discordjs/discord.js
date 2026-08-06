@@ -1,4 +1,5 @@
 import { describe, test, expect } from 'vitest';
+
 import { isEquatable } from '../src/index.js';
 
 describe('isEquatable', () => {

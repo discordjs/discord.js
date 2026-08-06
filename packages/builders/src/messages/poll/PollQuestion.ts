@@ -1,4 +1,5 @@
 import type { APIPollMedia } from 'discord-api-types/v10';
+
 import { validate } from '../../util/validation.js';
 import { pollQuestionPredicate } from './Assertions.js';
 import { PollMediaBuilder } from './PollMedia.js';

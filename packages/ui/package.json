@@ -1,21 +1,37 @@
 {
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/ui",
-	"private": true,
 	"version": "0.1.0",
+	"private": true,
 	"description": "",
-	"scripts": {
-		"build": "tsc --noEmit && vite build",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
-		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
-		"prepack": "pnpm run build && pnpm run lint",
-		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/ui/*'",
-		"release": "cliff-jumper",
-		"storybook": "storybook dev -p 6006",
-		"build-storybook": "storybook build",
-		"chromatic": "chromatic"
+	"keywords": [],
+	"homepage": "https://discord.js.org",
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
 	},
+	"license": "Apache-2.0",
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <me@vladfrangu.dev>",
+		"Aura Román <kyradiscord@gmail.com>"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/ui"
+	},
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
+	"directories": {
+		"lib": "src"
+	},
+	"files": [
+		"dist"
+	],
 	"type": "module",
+	"sideEffects": false,
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
 			"import": {
@@ -24,33 +40,21 @@
 			}
 		}
 	},
-	"module": "./dist/index.js",
-	"types": "./dist/index.d.ts",
-	"sideEffects": false,
-	"directories": {
-		"lib": "src"
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
 	},
-	"files": [
-		"dist"
-	],
-	"contributors": [
-		"Crawl <icrawltogo@gmail.com>",
-		"SpaceEEC <spaceeec@yahoo.com>",
-		"Vlad Frangu <me@vladfrangu.dev>",
-		"Aura Román <kyradiscord@gmail.com>"
-	],
-	"license": "Apache-2.0",
-	"keywords": [],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/discordjs/discord.js.git",
-		"directory": "packages/ui"
+	"scripts": {
+		"build": "tsc --noEmit && vite build",
+		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src",
+		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src --fix --fix-suggestions",
+		"prepack": "pnpm run build && pnpm run lint",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/ui/*'",
+		"release": "cliff-jumper",
+		"storybook": "storybook dev -p 6006",
+		"build-storybook": "storybook build",
+		"chromatic": "chromatic"
 	},
-	"bugs": {
-		"url": "https://github.com/discordjs/discord.js/issues"
-	},
-	"homepage": "https://discord.js.org",
-	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@ariakit/react": "^0.4.24",
 		"@react-icons/all-files": "^4.1.0",
@@ -69,16 +73,12 @@
 		"@types/node": "^24.13.2",
 		"@types/react": "^19.2.14",
 		"@types/react-dom": "^19.2.3",
-		"@unocss/eslint-plugin": "^66.6.7",
 		"@unocss/reset": "^66.6.7",
 		"@vitejs/plugin-react": "^5.2.0",
 		"chromatic": "^16.0.0",
-		"cross-env": "^10.1.0",
-		"eslint": "^9.39.4",
-		"eslint-config-neon": "^0.3.2",
-		"eslint-formatter-compact": "^9.0.1",
-		"eslint-formatter-pretty": "^7.0.0",
-		"prettier": "^3.8.1",
+		"eslint-config-neon": "^0.5.4",
+		"oxfmt": "^0.62.0",
+		"oxlint": "^1.77.0",
 		"prop-types": "^15.8.1",
 		"storybook": "^10.3.3",
 		"turbo": "^2.8.21",
@@ -89,9 +89,5 @@
 	},
 	"engines": {
 		"node": ">=24.17.0"
-	},
-	"publishConfig": {
-		"access": "public",
-		"provenance": true
 	}
 }

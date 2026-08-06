@@ -1,5 +1,6 @@
 import type Redis from 'ioredis';
 import { test, expect, vi } from 'vitest';
+
 import { PubSubRedisBroker } from '../src/index.js';
 
 vi.mock('node:fs', () => ({

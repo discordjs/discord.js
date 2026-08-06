@@ -1,4 +1,5 @@
 import type { ChannelType } from 'discord-api-types/v10';
+
 import { kData } from '../../utils/symbols.js';
 import type { Channel } from '../Channel.js';
 

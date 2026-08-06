@@ -5,6 +5,7 @@ import {
 	type APIButtonComponentWithURL,
 } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
+
 import {
 	PrimaryButtonBuilder,
 	PremiumButtonBuilder,

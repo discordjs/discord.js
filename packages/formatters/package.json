@@ -3,17 +3,34 @@
 	"name": "@discordjs/formatters",
 	"version": "0.6.1",
 	"description": "A set of functions to format strings for Discord.",
-	"scripts": {
-		"test": "vitest run --config ../../vitest.config.ts",
-		"build": "tsc --noEmit && tsup",
-		"build:docs": "tsc -p tsconfig.docs.json",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
-		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
-		"docs": "pnpm run build:docs && api-extractor run --local --minify && generate-split-documentation",
-		"prepack": "pnpm run build && pnpm run lint",
-		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/formatters/*'",
-		"release": "cliff-jumper"
+	"keywords": [],
+	"homepage": "https://discord.js.org",
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
 	},
+	"license": "Apache-2.0",
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"SpaceEEC <spaceeec@yahoo.com>",
+		"Vlad Frangu <me@vladfrangu.dev>",
+		"Aura Román <kyradiscord@gmail.com>"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/formatters"
+	},
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
+	"directories": {
+		"lib": "src",
+		"test": "__tests__"
+	},
+	"files": [
+		"dist"
+	],
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
 			"require": {
@@ -26,34 +43,21 @@
 			}
 		}
 	},
-	"main": "./dist/index.js",
-	"module": "./dist/index.mjs",
-	"types": "./dist/index.d.ts",
-	"directories": {
-		"lib": "src",
-		"test": "__tests__"
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
 	},
-	"files": [
-		"dist"
-	],
-	"contributors": [
-		"Crawl <icrawltogo@gmail.com>",
-		"SpaceEEC <spaceeec@yahoo.com>",
-		"Vlad Frangu <me@vladfrangu.dev>",
-		"Aura Román <kyradiscord@gmail.com>"
-	],
-	"license": "Apache-2.0",
-	"keywords": [],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/discordjs/discord.js.git",
-		"directory": "packages/formatters"
+	"scripts": {
+		"test": "vitest run --config ../../vitest.config.ts",
+		"build": "tsc --noEmit && tsup",
+		"build:docs": "tsc -p tsconfig.docs.json",
+		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src __tests__",
+		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src __tests__ --fix --fix-suggestions",
+		"docs": "pnpm run build:docs && api-extractor run --local --minify && generate-split-documentation",
+		"prepack": "pnpm run build && pnpm run lint",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/formatters/*'",
+		"release": "cliff-jumper"
 	},
-	"bugs": {
-		"url": "https://github.com/discordjs/discord.js/issues"
-	},
-	"homepage": "https://discord.js.org",
-	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"discord-api-types": "^0.38.50"
 	},
@@ -63,13 +67,10 @@
 		"@favware/cliff-jumper": "^6.0.0",
 		"@types/node": "^24.13.2",
 		"@vitest/coverage-v8": "^4.1.2",
-		"cross-env": "^10.1.0",
 		"esbuild-plugin-version-injector": "^1.2.1",
-		"eslint": "^9.39.4",
-		"eslint-config-neon": "^0.3.2",
-		"eslint-formatter-compact": "^9.0.1",
-		"eslint-formatter-pretty": "^7.0.0",
-		"prettier": "^3.8.1",
+		"eslint-config-neon": "^0.5.4",
+		"oxfmt": "^0.62.0",
+		"oxlint": "^1.77.0",
 		"tsup": "^8.5.1",
 		"turbo": "^2.8.21",
 		"typescript": "~5.9.3",
@@ -77,9 +78,5 @@
 	},
 	"engines": {
 		"node": ">=24.17.0"
-	},
-	"publishConfig": {
-		"access": "public",
-		"provenance": true
 	}
 }

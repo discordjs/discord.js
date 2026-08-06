@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Fragment } from 'react';
+
 import { BuiltinDocumentationLinks } from '@/util/builtinDocumentationLinks';
 
 export async function ExcerptNode({ node, version }: { readonly node?: any; readonly version: string }) {

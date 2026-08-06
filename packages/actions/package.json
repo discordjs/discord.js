@@ -2,16 +2,29 @@
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/actions",
 	"version": "0.1.0",
-	"description": "A set of actions that we use for our workflows",
 	"private": true,
-	"scripts": {
-		"test": "vitest run --config ../../vitest.config.ts",
-		"build": "tsc --noEmit --lib ESNext,DOM && tsup",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
-		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
-		"fmt": "pnpm run format"
+	"description": "A set of actions that we use for our workflows",
+	"keywords": [
+		"api",
+		"bot",
+		"client",
+		"discordjs",
+		"node"
+	],
+	"homepage": "https://discord.js.org",
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
 	},
-	"type": "module",
+	"license": "Apache-2.0",
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/actions"
+	},
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"directories": {
 		"lib": "src",
 		"test": "__tests__"
@@ -19,27 +32,14 @@
 	"files": [
 		"dist"
 	],
-	"contributors": [
-		"Crawl <icrawltogo@gmail.com>"
-	],
-	"license": "Apache-2.0",
-	"keywords": [
-		"api",
-		"bot",
-		"client",
-		"node",
-		"discordjs"
-	],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/discordjs/discord.js.git",
-		"directory": "packages/actions"
+	"type": "module",
+	"scripts": {
+		"test": "vitest run --config ../../vitest.config.ts",
+		"build": "tsc --noEmit --lib ESNext,DOM && tsup",
+		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src __tests__",
+		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src __tests__ --fix --fix-suggestions",
+		"fmt": "pnpm run format"
 	},
-	"bugs": {
-		"url": "https://github.com/discordjs/discord.js/issues"
-	},
-	"homepage": "https://discord.js.org",
-	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@actions/core": "^3.0.0",
 		"@actions/github": "^9.0.0",
@@ -59,12 +59,9 @@
 		"@types/bun": "^1.3.11",
 		"@types/node": "^24.13.2",
 		"@vitest/coverage-v8": "^4.1.2",
-		"cross-env": "^10.1.0",
-		"eslint": "^9.39.4",
-		"eslint-config-neon": "^0.3.2",
-		"eslint-formatter-compact": "^9.0.1",
-		"eslint-formatter-pretty": "^7.0.0",
-		"prettier": "^3.8.1",
+		"eslint-config-neon": "^0.5.4",
+		"oxfmt": "^0.62.0",
+		"oxlint": "^1.77.0",
 		"terser": "^5.46.1",
 		"tsup": "^8.5.1",
 		"turbo": "^2.8.21",

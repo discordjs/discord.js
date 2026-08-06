@@ -1,5 +1,6 @@
 import type { JSONEncodable } from '@discordjs/util';
 import type { APIEmbedAuthor } from 'discord-api-types/v10';
+
 import { validate } from '../../util/validation.js';
 import { embedAuthorPredicate } from './Assertions.js';
 

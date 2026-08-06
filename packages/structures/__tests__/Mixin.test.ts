@@ -1,4 +1,5 @@
 import { describe, test, expect } from 'vitest';
+
 import { kData, kPatch } from '../src/utils/symbols.js';
 import type { APIData } from './mixinClasses.js';
 import { Base, Mixed, MixedWithExtended } from './mixinClasses.js';

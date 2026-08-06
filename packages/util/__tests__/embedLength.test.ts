@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+
 import { embedLength } from '../src/functions/embedLength.js';
 
 describe('embedLength', () => {

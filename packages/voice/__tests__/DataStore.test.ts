@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 import { GatewayOpcodes } from 'discord-api-types/v10';
 import { describe, test, expect, vitest, type Mocked, beforeEach } from 'vitest';
+
+import * as _AudioPlayer from '../src/audio/AudioPlayer';
 import * as DataStore from '../src/DataStore';
 import type { VoiceConnection } from '../src/VoiceConnection';
-import * as _AudioPlayer from '../src/audio/AudioPlayer';
 
 vitest.mock('../src/VoiceConnection');
 vitest.mock('../src/audio/AudioPlayer');

@@ -1,5 +1,6 @@
 import { ComponentType } from 'discord-api-types/v10';
 import { describe, expect, test } from 'vitest';
+
 import { MediaGalleryBuilder } from '../../../src/components/v2/MediaGallery';
 import { MediaGalleryItemBuilder } from '../../../src/components/v2/MediaGalleryItem';
 

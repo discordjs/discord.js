@@ -1,4 +1,5 @@
 import { expectTypeOf, test } from 'vitest';
+
 import { Collection, type ReadonlyCollection } from '../src/index.js';
 
 test('ReadonlyCollection#tap preserves the readonly type', () => {

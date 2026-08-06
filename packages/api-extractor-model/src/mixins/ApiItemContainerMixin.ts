@@ -13,6 +13,7 @@ import {
 } from '@microsoft/tsdoc';
 import type { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { InternalError } from '@rushstack/node-core-library';
+
 import type { IExcerptToken, IExcerptTokenRange } from '../index.js';
 import { ApiDeclaredItem } from '../index.js';
 import type { IApiDeclaredItemJson } from '../items/ApiDeclaredItem.js';

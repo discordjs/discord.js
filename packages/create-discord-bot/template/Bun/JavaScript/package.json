@@ -5,9 +5,9 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"lint": "prettier --check . && eslint --ext .js,.mjs,.cjs --format=pretty src",
+		"lint": "oxfmt --check && oxlint src",
 		"deploy": "bun --env-file=.env src/util/deploy.js",
-		"format": "prettier --write . && eslint --ext .js,.mjs,.cjs --fix --format=pretty src",
+		"format": "oxfmt && oxlint src --fix --fix-suggestions",
 		"start": "bun --env-file=.env src/index.js"
 	},
 	"dependencies": {
@@ -15,10 +15,9 @@
 		"discord.js": "^14.25.1"
 	},
 	"devDependencies": {
-		"eslint": "^9.39.4",
-		"eslint-config-neon": "^0.3.2",
-		"eslint-formatter-pretty": "^7.0.0",
-		"prettier": "^3.8.1",
+		"eslint-config-neon": "^0.5.4",
+		"oxfmt": "^0.62.0",
+		"oxlint": "^1.77.0",
 		"zod": "^4.3.6"
 	}
 }

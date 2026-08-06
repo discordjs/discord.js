@@ -3,7 +3,7 @@
 	"remoteCache": {
 		"enabled": true
 	},
-	"globalDependencies": ["tsconfig.json"],
+	"globalDependencies": ["oxfmt.config.ts", "oxlint.config.ts", "tsconfig.json"],
 	"tasks": {
 		"build": {
 			"dependsOn": ["^build"],
@@ -108,10 +108,9 @@
 		"lint": {
 			"dependsOn": ["^build"],
 			"inputs": [
-				"../../eslint.config.js",
-				"../../.prettierrc.json",
+				"../../oxfmt.config.ts",
+				"../../oxlint.config.ts",
 				"../../tsconfig.eslint.json",
-				".prettierrc.js",
 				"bin/**",
 				"src/**",
 				"scripts/**",
@@ -124,10 +123,10 @@
 		"@discordjs/guide#lint": {
 			"dependsOn": ["^build", "build:local"],
 			"inputs": [
-				"../../eslint.config.js",
-				"../../.prettierrc.json",
+				"../../oxfmt.config.ts",
+				"../../oxlint.config.ts",
 				"../../tsconfig.eslint.json",
-				".prettierrc.js",
+				"oxlint.config.ts",
 				"src/**",
 				"!src/styles/unocss.css",
 				"tsconfig.eslint.json"
@@ -138,10 +137,10 @@
 		"@discordjs/website#lint": {
 			"dependsOn": ["^build", "build:local"],
 			"inputs": [
-				"../../eslint.config.js",
-				"../../.prettierrc.json",
+				"../../oxfmt.config.ts",
+				"../../oxlint.config.ts",
 				"../../tsconfig.eslint.json",
-				".prettierrc.js",
+				"oxlint.config.ts",
 				"src/**",
 				"!src/styles/unocss.css",
 				"tsconfig.eslint.json"
@@ -152,10 +151,9 @@
 		"format": {
 			"dependsOn": ["^build"],
 			"inputs": [
-				"../../eslint.config.js",
-				"../../.prettierrc.json",
+				"../../oxfmt.config.ts",
+				"../../oxlint.config.ts",
 				"../../tsconfig.eslint.json",
-				".prettierrc.js",
 				"bin/**",
 				"src/**",
 				"scripts/**",
@@ -168,10 +166,10 @@
 		"@discordjs/guide#format": {
 			"dependsOn": ["^build"],
 			"inputs": [
-				"../../eslint.config.js",
-				"../../.prettierrc.json",
+				"../../oxfmt.config.ts",
+				"../../oxlint.config.ts",
 				"../../tsconfig.eslint.json",
-				".prettierrc.js",
+				"oxlint.config.ts",
 				"src/**",
 				"!src/styles/unocss.css",
 				"package.json",

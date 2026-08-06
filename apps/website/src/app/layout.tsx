@@ -3,8 +3,10 @@ import { GeistMono } from 'geist/font/mono';
 import { GeistSans } from 'geist/font/sans';
 import type { Metadata, Viewport } from 'next';
 import type { PropsWithChildren } from 'react';
+
 import { DESCRIPTION } from '@/util/constants';
 import { ENV } from '@/util/env';
+
 import { Providers } from './providers';
 
 import '@/styles/base.css';
