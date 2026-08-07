@@ -31,7 +31,6 @@ tsconfig.tsbuildinfo
 coverage
 out
 package.tgz
-tsup.config.bundled*
 vitest.config.ts.timestamp*
 
 # Deno

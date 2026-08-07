@@ -7,7 +7,7 @@
 	"tasks": {
 		"build": {
 			"dependsOn": ["^build"],
-			"inputs": ["bin/**", "src/**", "scripts/**", "package.json", "tsconfig.json", "tsup.config.ts", "vite.config.ts"],
+			"inputs": ["bin/**", "src/**", "scripts/**", "package.json", "tsconfig.json", "vite.config.ts"],
 			"outputs": ["dist/**"],
 			"outputLogs": "errors-only"
 		},
