@@ -551,6 +551,8 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 *
 	 * @param activity - The rich presence to pass.
 	 * @param pid - The application's process ID. Defaults to the executing process' PID.
+	 * @remarks
+	 * Clients may only update their activity 5 times per 20 seconds.
 	 */
 	public async setActivity(
 		activity: RPCSetActivityArgs['activity'] = {},

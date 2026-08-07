@@ -1,0 +1,64 @@
+---
+title: Usage
+---
+
+## Authorization
+
+Authorizing your client:
+
+```ts
+const client = new RPCClient();
+
+client.login({ clientId: env.CLIENT_ID, clientSecret: env.CLIENT_SECRET });
+```
+
+If the current user has already been authorized recently:
+
+```ts
+const client = new RPCClient();
+
+client.login({ clientId: env.CLIENT_ID, accessToken: env.ACCESS_TOKEN });
+```
+
+Optionally, if you aren't requesting for any scopes, you can exclude the client secret:
+
+```ts
+const client = new RPCClient();
+
+client.login({ clientId: env.CLIENT_ID });
+```
+
+## Examples
+
+### Legend
+
+- assume `client` to be an `RPCClient` instantiated class that is logged in
+
+Update a user's activity:
+
+```ts
+let updatesDoneSinceStart = 0;
+
+setInterval(async () => {
+	await client.setActivity({
+		details: 'Doing silly things: ${updatesDoneSinceStart}',
+		state: 'Silly stuff :3',
+		name: 'Silly',
+		type: 1,
+	});
+
+	updatesDoneSinceStart++;
+}, 15_000);
+```
+
+Listen for messages on the current user's discord client:
+
+<Callout>
+	Listening for messages requires the scope `messages.read` or `Oauth2Scopes.MessagesRead` from `discord-api-types`
+</Callout>
+
+```ts
+client.on(RPCEvents.MessageCreate, (data: RPCMessageCreateDispatchData) =>
+	console.log(`${data.message.author.username} posted ${data.message.content}`),
+);
+```
