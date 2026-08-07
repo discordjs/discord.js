@@ -221,6 +221,7 @@ import {
   VideoQualityMode,
   VoiceChannelEffectSendAnimationType,
   WebhookType,
+  APIInviteRole,
 } from 'discord-api-types/v10';
 
 // #region Classes
@@ -3035,7 +3036,7 @@ export interface RoleColorsEditResolvable {
 }
 
 export class BaseRole extends Base {
-  protected constructor(client: Client<true>, data: Partial<APIRole>);
+  protected constructor(client: Client<true>, data: APIInviteRole | APIRole);
   public colors: RoleColors;
   public get createdAt(): Date;
   public get createdTimestamp(): number;
@@ -3050,7 +3051,9 @@ export class BaseRole extends Base {
   public toString(): RoleMention;
 }
 
-export class InviteRole extends BaseRole {}
+export class InviteRole extends BaseRole {
+  private constructor(client: Client<true>, data: APIInviteRole);
+}
 
 export class Role extends BaseRole {
   private constructor(client: Client<true>, data: APIRole, guild: Guild);

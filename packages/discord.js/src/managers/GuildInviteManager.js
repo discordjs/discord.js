@@ -5,7 +5,7 @@ const { Collection } = require('@discordjs/collection');
 const { Routes } = require('discord-api-types/v10');
 const { DiscordjsError, ErrorCodes } = require('../errors/index.js');
 const { GuildInvite } = require('../structures/GuildInvite.js');
-const { resolveInviteCode, createInviteFormData } = require('../util/DataResolver.js');
+const { resolveInviteCode, resolveInviteTargetUsersFile } = require('../util/DataResolver.js');
 const { _transformAPIInviteTargetUsersJobStatus } = require('../util/Transformers.js');
 const { CachedManager } = require('./CachedManager.js');
 /**
@@ -241,10 +241,18 @@ class GuildInviteManager extends CachedManager {
       target_type: targetType,
     };
     const invite = await this.client.rest.post(Routes.channelInvites(id), {
-      body: targetUsersFile ? await createInviteFormData(this.client, { targetUsersFile, ...options }) : options,
-      // This is necessary otherwise rest stringifies the body
-      passThroughBody: Boolean(targetUsersFile),
+      body: options,
       reason,
+      files: targetUsersFile
+        ? [
+            {
+              key: 'target_users_file',
+              data: await resolveInviteTargetUsersFile(this.client, targetUsersFile),
+              name: 'users.csv',
+              contentType: 'text/csv',
+            },
+          ]
+        : [],
     });
 
     return new GuildInvite(this.client, invite);
@@ -288,9 +296,14 @@ class GuildInviteManager extends CachedManager {
     const code = resolveInviteCode(invite);
 
     await this.client.rest.put(Routes.inviteTargetUsers(code), {
-      body: await createInviteFormData(this.client, { targetUsersFile }),
-      // This is necessary otherwise rest stringifies the body
-      passThroughBody: true,
+      files: [
+        {
+          key: 'target_users_file',
+          data: await resolveInviteTargetUsersFile(this.client, targetUsersFile),
+          name: 'users.csv',
+          contentType: 'text/csv',
+        },
+      ],
     });
   }
 

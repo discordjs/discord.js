@@ -1,9 +1,8 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import { makeURLSearchParams, type RequestData, type REST } from '@discordjs/rest';
+import { makeURLSearchParams, type RawFile, type RequestData, type REST } from '@discordjs/rest';
 import {
 	Routes,
-	type RESTPutAPIInviteTargetUsersFormDataBody,
 	type RESTGetAPIInviteTargetUsersResult,
 	type RESTDeleteAPIInviteResult,
 	type RESTGetAPIInviteQuery,
@@ -54,8 +53,11 @@ export class InvitesAPI {
 	 * @param options - The options for fetching the invite target users
 	 * @returns
 	 */
-	public async getTargetUsers(code: string, { signal }: Pick<RequestData, 'signal'> = {}) {
-		return this.rest.get(Routes.inviteTargetUsers(code), { signal }) as Promise<RESTGetAPIInviteTargetUsersResult>;
+	public async getTargetUsers(code: string, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
+		return this.rest.get(Routes.inviteTargetUsers(code), {
+			signal,
+			auth,
+		}) as Promise<RESTGetAPIInviteTargetUsersResult>;
 	}
 
 	/**
@@ -63,18 +65,22 @@ export class InvitesAPI {
 	 *
 	 * @see {@link https://docs.discord.com/developers/resources/invite#update-target-users}
 	 * @param code - The invite code
-	 * @param body - The data for updating target users
+	 * @param targetUsersFile - A CSV file with a single column of user ids
+	 * for all the users able to accept this invite
+	 *
+	 * - {@link RawFile.key|key} must be `target_users_file`
 	 * @param options - The options for updating the invite target users
 	 * @returns
 	 */
 	public async updateTargetUsers(
 		code: string,
-		body: RESTPutAPIInviteTargetUsersFormDataBody,
-		{ signal }: Pick<RequestData, 'signal'> = {},
+		targetUsersFile: RawFile,
+		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
 		return this.rest.put(Routes.inviteTargetUsers(code), {
-			body,
+			files: [targetUsersFile],
 			signal,
+			auth,
 		}) as Promise<RESTPutAPIInviteTargetUsersResult>;
 	}
 
@@ -86,9 +92,10 @@ export class InvitesAPI {
 	 * @param options - The options for fetching the invite target users job status
 	 * @returns
 	 */
-	public async getTargetUsersJobStatus(code: string, { signal }: Pick<RequestData, 'signal'> = {}) {
+	public async getTargetUsersJobStatus(code: string, { auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {}) {
 		return this.rest.get(Routes.inviteTargetUsersJobStatus(code), {
 			signal,
+			auth,
 		}) as Promise<RESTGetAPIInviteTargetUsersJobStatusResult>;
 	}
 }

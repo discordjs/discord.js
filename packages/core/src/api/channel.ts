@@ -3,7 +3,6 @@
 import { makeURLSearchParams, type RawFile, type RequestData, type REST } from '@discordjs/rest';
 import {
 	Routes,
-	type RESTPostAPIChannelInviteFormDataBody,
 	type RESTDeleteAPIChannelResult,
 	type RESTGetAPIChannelInvitesResult,
 	type RESTGetAPIChannelMessageReactionUsersQuery,
@@ -489,17 +488,23 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/channel#create-channel-invite}
 	 * @param channelId - The id of the channel to create an invite for
 	 * @param body - The data for creating the invite
+	 * @param targetUsersFile - A CSV file with a single column of user ids
+	 * for all the users able to accept this invite
+	 *
+	 * - {@link RawFile.key|key} must be `target_users_file`
 	 * @param options - The options for creating the invite
 	 */
 	public async createInvite(
 		channelId: Snowflake,
-		body: RESTPostAPIChannelInviteFormDataBody | RESTPostAPIChannelInviteJSONBody,
+		body: RESTPostAPIChannelInviteJSONBody,
+		targetUsersFile?: RawFile,
 		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
 		return this.rest.post(Routes.channelInvites(channelId), {
 			auth,
 			reason,
 			body,
+			files: targetUsersFile ? [targetUsersFile] : [],
 			signal,
 		}) as Promise<RESTPostAPIChannelInviteResult>;
 	}

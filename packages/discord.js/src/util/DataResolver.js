@@ -11,17 +11,15 @@ const { BaseInvite } = require('../structures/BaseInvite.js');
 // Fixes circular dependencies.
 const getGuildTemplate = lazy(() => require('../structures/GuildTemplate.js').GuildTemplate);
 
-// Ideally this should be placed in `Invite.js` util file, but causes circular dependency there.
 /**
- * Creates form data body payload for invite
+ * Resolves target users file to CSV.
  *
  * @param {Client} client The client
- * @param {InviteCreateOptions} options The options for creating invite
- * @returns {Promise<FormData>}
+ * @param {UserResolvable[]|BufferResolvable} targetUsersFile The target users file for invite
+ * @returns {Promise<string>}
  * @ignore
  */
-async function createInviteFormData(client, { targetUsersFile, ...rest } = {}) {
-  const formData = new FormData();
+async function resolveInviteTargetUsersFile(client, targetUsersFile) {
   let usersCsv;
   if (Array.isArray(targetUsersFile)) {
     usersCsv = targetUsersFile.map(user => client.users.resolveId(user)).join('\n');
@@ -30,9 +28,7 @@ async function createInviteFormData(client, { targetUsersFile, ...rest } = {}) {
     usersCsv = resolved.data.toString('utf8');
   }
 
-  formData.append('target_users_file', new Blob([usersCsv], { type: 'text/csv' }), 'users.csv');
-  formData.append('payload_json', JSON.stringify(rest));
-  return formData;
+  return usersCsv;
 }
 
 /**
@@ -183,4 +179,4 @@ exports.resolveGuildTemplateCode = resolveGuildTemplateCode;
 exports.resolveImage = resolveImage;
 exports.resolveBase64 = resolveBase64;
 exports.resolveFile = resolveFile;
-exports.createInviteFormData = createInviteFormData;
+exports.resolveInviteTargetUsersFile = resolveInviteTargetUsersFile;
