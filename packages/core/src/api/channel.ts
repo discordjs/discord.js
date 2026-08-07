@@ -49,6 +49,13 @@ export interface EditMessageOptions extends RESTPatchAPIChannelMessageJSONBody {
 	files?: RawFile[];
 }
 
+export interface CreateInviteOptions extends RESTPostAPIChannelInviteJSONBody {
+	/**
+	 * A CSV file with a single column of user ids for all the users able to accept this invite
+	 */
+	targetUsersFile?: RawFile;
+}
+
 export class ChannelsAPI {
 	public constructor(private readonly rest: REST) {}
 
@@ -488,23 +495,18 @@ export class ChannelsAPI {
 	 * @see {@link https://discord.com/developers/docs/resources/channel#create-channel-invite}
 	 * @param channelId - The id of the channel to create an invite for
 	 * @param body - The data for creating the invite
-	 * @param targetUsersFile - A CSV file with a single column of user ids
-	 * for all the users able to accept this invite
-	 *
-	 * - {@link RawFile.key|key} must be `target_users_file`
 	 * @param options - The options for creating the invite
 	 */
 	public async createInvite(
 		channelId: Snowflake,
-		body: RESTPostAPIChannelInviteJSONBody,
-		targetUsersFile?: RawFile,
+		{ targetUsersFile, ...body }: CreateInviteOptions,
 		{ auth, reason, signal }: Pick<RequestData, 'auth' | 'reason' | 'signal'> = {},
 	) {
 		return this.rest.post(Routes.channelInvites(channelId), {
 			auth,
 			reason,
 			body,
-			files: targetUsersFile ? [targetUsersFile] : [],
+			files: targetUsersFile ? [{ key: 'target_users_file', contentType: 'text/csv', ...targetUsersFile }] : [],
 			signal,
 		}) as Promise<RESTPostAPIChannelInviteResult>;
 	}

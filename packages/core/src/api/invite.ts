@@ -67,8 +67,6 @@ export class InvitesAPI {
 	 * @param code - The invite code
 	 * @param targetUsersFile - A CSV file with a single column of user ids
 	 * for all the users able to accept this invite
-	 *
-	 * - {@link RawFile.key|key} must be `target_users_file`
 	 * @param options - The options for updating the invite target users
 	 * @returns
 	 */
@@ -78,7 +76,7 @@ export class InvitesAPI {
 		{ auth, signal }: Pick<RequestData, 'auth' | 'signal'> = {},
 	) {
 		return this.rest.put(Routes.inviteTargetUsers(code), {
-			files: [targetUsersFile],
+			files: [{ key: 'target_users_file', contentType: 'text/csv', ...targetUsersFile }],
 			signal,
 			auth,
 		}) as Promise<RESTPutAPIInviteTargetUsersResult>;
