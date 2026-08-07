@@ -2,37 +2,31 @@
 title: Usage
 ---
 
-## Authorization
+### Legend
+
+- `client` is a placeholder for the `Client` object, such as const `client = new RPCClient({ scopes: [Oauth2Scopes.MessagesRead] });`.
+
+### Authorization
 
 Authorizing your client:
 
 ```ts
-const client = new RPCClient();
-
 client.login({ clientId: env.CLIENT_ID, clientSecret: env.CLIENT_SECRET });
 ```
 
 If the current user has already been authorized recently:
 
 ```ts
-const client = new RPCClient();
-
 client.login({ clientId: env.CLIENT_ID, accessToken: env.ACCESS_TOKEN });
 ```
 
 Optionally, if you aren't requesting for any scopes, you can exclude the client secret:
 
 ```ts
-const client = new RPCClient();
-
 client.login({ clientId: env.CLIENT_ID });
 ```
 
-## Examples
-
-### Legend
-
-- assume `client` to be an `RPCClient` instantiated class that is logged in
+### RPC Commands
 
 Update a user's activity:
 
@@ -50,6 +44,8 @@ setInterval(async () => {
 	updatesDoneSinceStart++;
 }, 15_000);
 ```
+
+### RPC Events
 
 Listen for messages on the current user's discord client:
 
