@@ -587,7 +587,6 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   ): boolean;
   private static transformOption(option: ApplicationCommandOptionData, received?: boolean): unknown;
   private static transformCommand(command: ApplicationCommandData): RESTPostAPIApplicationCommandsJSONBody;
-  private static isAPICommandData(command: object): command is RESTPostAPIApplicationCommandsJSONBody;
 }
 
 export class ApplicationRoleConnectionMetadata {
