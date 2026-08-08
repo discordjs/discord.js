@@ -411,3 +411,22 @@ test('Propagates errors from streams', async () => {
 	expect(AudioPlayerError).toHaveBeenCalledWith(error, resource);
 	expect(player.state.status).toEqual(AudioPlayerStatus.Idle);
 });
+
+describe('Buffering cleanup', () => {
+	test('should remove AudioPlayer from DataStore when stopped during Buffering state', async () => {
+		const player = createAudioPlayer();
+		const readable = new Readable({
+			read() {},
+		});
+
+		const resource = new AudioResource([], [readable], null, 5);
+		player.play(resource);
+
+		expect(player.state.status).toEqual(AudioPlayerStatus.Buffering);
+
+		player.stop();
+
+		expect(player.state.status).toEqual(AudioPlayerStatus.Idle);
+		expect(deleteAudioPlayer).toHaveBeenCalledTimes(1);
+	});
+});
