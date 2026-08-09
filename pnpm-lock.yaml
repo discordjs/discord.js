@@ -424,6 +424,9 @@ importers:
       vercel:
         specifier: ^50.37.3
         version: 50.37.3(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(encoding@0.1.13)(rollup@4.60.0)(typescript@5.9.3)
+      vitest:
+        specifier: ^4.1.2
+        version: 4.1.2(@edge-runtime/vm@3.2.0)(@types/node@24.13.3)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3)
       wrangler:
         specifier: ^4.78.0
         version: 4.78.0(bufferutil@4.1.0)

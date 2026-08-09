@@ -18,14 +18,16 @@
 		"preview:cf": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
 		"deploy:cf": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
 		"dev": "next dev --turbopack",
-		"lint": "pnpm run build:check && prettier --check . && cross-env TIMING=1 eslint --format=pretty src ",
-		"format": "pnpm run build:check && prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src ",
+		"test": "vitest run --config ../../vitest.config.ts",
+		"lint": "pnpm run build:check && prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
+		"format": "pnpm run build:check && prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
 		"fmt": "pnpm run format",
 		"postinstall": "next typegen"
 	},
 	"type": "module",
 	"directories": {
-		"lib": "src"
+		"lib": "src",
+		"test": "__tests__"
 	},
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>"
@@ -105,6 +107,7 @@
 		"turbo": "^2.8.21",
 		"typescript": "~5.9.3",
 		"vercel": "^50.37.3",
+		"vitest": "^4.1.2",
 		"wrangler": "^4.78.0"
 	},
 	"engines": {
