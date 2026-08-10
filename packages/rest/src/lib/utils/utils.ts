@@ -7,6 +7,7 @@ import type {
 	GetRateLimitOffsetFunction,
 	GetRetryBackoffFunction,
 	GetTimeoutFunction,
+	HandlerRequestData,
 	RateLimitData,
 	ResponseLike,
 } from './types.js';
@@ -150,15 +151,14 @@ export function shouldRetry(error: Error | NodeJS.ErrnoException) {
  *
  * @internal
  */
-export async function onRateLimit(manager: REST, rateLimitData: RateLimitData) {
-	const { options } = manager;
-	if (!options.rejectOnRateLimit) return;
+export async function onRateLimit(manager: REST, rateLimitData: RateLimitData, requestData: HandlerRequestData) {
+	// Explicit false/null opts out of `REST` level `rejectOnRateLimit`, so we compare with `undefined`.
+	const policy =
+		requestData.rejectOnRateLimit === undefined ? manager.options.rejectOnRateLimit : requestData.rejectOnRateLimit;
 
-	const shouldThrow =
-		typeof options.rejectOnRateLimit === 'function'
-			? await options.rejectOnRateLimit(rateLimitData)
-			: options.rejectOnRateLimit.some((route) => rateLimitData.route.startsWith(route.toLowerCase()));
-	if (shouldThrow) {
+	if (!policy) return;
+
+	if ((typeof policy === 'boolean' && policy) || (await policy(rateLimitData))) {
 		throw new RateLimitError(rateLimitData);
 	}
 }

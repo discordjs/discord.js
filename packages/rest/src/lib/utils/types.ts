@@ -99,14 +99,16 @@ export interface RESTOptions {
 	 */
 	offset: GetRateLimitOffsetFunction | number;
 	/**
-	 * Determines how rate limiting and pre-emptive throttling should be handled.
-	 * When an array of strings, each element is treated as a prefix for the request route
-	 * (e.g. `/channels` to match any route starting with `/channels` such as `/channels/:id/messages`)
-	 * for which to throw {@link RateLimitError}s. All other request routes will be queued normally
+	 * The default policy determining how rate limiting and pre-emptive throttling should be handled.
+	 *
+	 * Pass `true` to throw a {@link RateLimitError} on every rate limit, `false` or `null` to wait every
+	 * rate limit out, or a filter to decide per rate limit.
+	 *
+	 * This is only consulted for requests that do not provide their own {@link RequestData.rejectOnRateLimit | rejectOnRateLimit}.
 	 *
 	 * @defaultValue `null`
 	 */
-	rejectOnRateLimit: RateLimitQueueFilter | string[] | null;
+	rejectOnRateLimit: RateLimitQueueFilter | boolean | null;
 	/**
 	 * The number of retries for errors with the 500 code, or errors
 	 * that timeout
@@ -340,6 +342,32 @@ export interface RequestData {
 	 */
 	reason?: string | undefined;
 	/**
+	 * Determines how a rate limit encountered while making this request should be handled.
+	 *
+	 * Pass `true` to throw a {@link RateLimitError} rather than wait, `false` (or `null`) to wait it out, or
+	 * a filter to decide per rate limit. Takes precedence over {@link RESTOptions.rejectOnRateLimit}, so
+	 * `false` opts this request out of an instance-wide policy. Leave it unset to inherit.
+	 *
+	 * @example
+	 * ```ts
+	 * // Fail rather than wait, no matter the rate limit
+	 * await rest.get(Routes.channel(channelId), { rejectOnRateLimit: true });
+	 *
+	 * // Give up rather than wait out a sublimit, which may be several minutes long
+	 * await rest.patch(Routes.channel(channelId), {
+	 * 	body: { name },
+	 * 	rejectOnRateLimit: (rateLimitData) => rateLimitData.sublimitTimeout > 0,
+	 * });
+	 *
+	 * // Spend at most 10 seconds waiting on rate limits
+	 * const deadline = Date.now() + 10_000;
+	 * await rest.get(Routes.channel(channelId), {
+	 * 	rejectOnRateLimit: (rateLimitData) => Date.now() + rateLimitData.retryAfter > deadline,
+	 * });
+	 * ```
+	 */
+	rejectOnRateLimit?: RateLimitQueueFilter | boolean | null | undefined;
+	/**
 	 * The signal to abort the queue entry or the REST call, where applicable
 	 */
 	signal?: AbortSignal | undefined;
@@ -381,7 +409,7 @@ export interface InternalRequest extends RequestData {
 	method: RequestMethod;
 }
 
-export interface HandlerRequestData extends Pick<InternalRequest, 'body' | 'files' | 'signal'> {
+export interface HandlerRequestData extends Pick<InternalRequest, 'body' | 'files' | 'rejectOnRateLimit' | 'signal'> {
 	auth: boolean | string;
 }
 
