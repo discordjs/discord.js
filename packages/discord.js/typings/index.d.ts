@@ -448,12 +448,9 @@ export class ApplicationCommand<PermissionsFetchType = {}> extends Base {
   public nameLocalizations: LocalizationMap | null;
   public nameLocalized: string | null;
   public options: (ApplicationCommandOption & { descriptionLocalized?: string; nameLocalized?: string })[] | null;
-  public permissions: ApplicationCommandPermissionsManager<
-    PermissionsFetchType,
-    PermissionsFetchType,
-    Guild | null,
-    Snowflake
-  >;
+  public permissions: {} extends PermissionsFetchType
+    ? GuildApplicationCommandPermissionsManager<Snowflake>
+    : ApplicationCommandPermissionsManager<Snowflake>;
   public type: ApplicationCommandType;
   public version: Snowflake;
   public nsfw: boolean;
@@ -4233,18 +4230,13 @@ export type ApplicationCommandDataResolvable =
 
 export class ApplicationCommandManager<
   ApplicationCommandScope = ApplicationCommand<{ guild: GuildResolvable }>,
-  PermissionsOptionsExtras = { guild: GuildResolvable },
-  PermissionsGuildType = null,
+  PermissionsManager = ApplicationCommandPermissionsManager<null>,
 > extends CachedManager<Snowflake, ApplicationCommandScope, ApplicationCommandResolvable> {
   protected constructor(client: Client<true>, iterable?: Iterable<unknown>);
-  public permissions: ApplicationCommandPermissionsManager<
-    PermissionsOptionsExtras & { command?: ApplicationCommandResolvable },
-    PermissionsOptionsExtras & { command: ApplicationCommandResolvable },
-    PermissionsGuildType,
-    null
-  >;
+  public permissions: PermissionsManager;
   private commandPath({ id, guildId }: { guildId?: Snowflake; id?: Snowflake }): string;
-  public create(command: ApplicationCommandDataResolvable, guildId?: Snowflake): Promise<ApplicationCommandScope>;
+  public create(command: ApplicationCommandDataResolvable): Promise<ApplicationCommandScope>;
+  public create(command: ApplicationCommandDataResolvable, guildId: Snowflake): Promise<ApplicationCommand>;
   public delete(command: ApplicationCommandResolvable, guildId?: Snowflake): Promise<ApplicationCommandScope | null>;
   public edit(
     command: ApplicationCommandResolvable,
@@ -4274,46 +4266,52 @@ export class ApplicationCommandManager<
   private static transformCommand(command: ApplicationCommandDataResolvable): RESTPostAPIApplicationCommandsJSONBody;
 }
 
-export class ApplicationCommandPermissionsManager<
-  BaseOptions,
-  FetchSingleOptions,
-  GuildType,
-  CommandIdType,
-> extends BaseManager {
-  private constructor(manager: ApplicationCommand | ApplicationCommandManager | GuildApplicationCommandManager);
-  private readonly manager: ApplicationCommand | ApplicationCommandManager | GuildApplicationCommandManager;
+export type ApplicationCommandPermissionsCommandOptions<CommandIdType extends Snowflake | null> =
+  CommandIdType extends null ? { command: ApplicationCommandResolvable } : {};
+
+export type ApplicationCommandPermissionsFetchAllOptions<CommandIdType extends Snowflake | null> =
+  CommandIdType extends null ? { command?: ApplicationCommandResolvable } : {};
+
+export type ApplicationCommandPermissionsFetchAllResult<CommandIdType extends Snowflake | null> =
+  CommandIdType extends null ? Collection<Snowflake, ApplicationCommandPermissions[]> : ApplicationCommandPermissions[];
+
+export class GuildApplicationCommandPermissionsManager<CommandIdType extends Snowflake | null> extends BaseManager {
+  private constructor(manager: ApplicationCommand | GuildApplicationCommandManager);
+  private readonly manager: ApplicationCommand | GuildApplicationCommandManager;
 
   public commandId: CommandIdType;
-  public guild: GuildType;
-  public guildId: Snowflake | null;
+  public guild: CommandIdType extends null ? Guild : Guild | null;
+  public guildId: Snowflake;
   public add(
-    options: EditApplicationCommandPermissionsMixin & FetchSingleOptions,
+    options: ApplicationCommandPermissionsCommandOptions<CommandIdType> & EditApplicationCommandPermissionsMixin,
   ): Promise<ApplicationCommandPermissions[]>;
   public has(
-    options: FetchSingleOptions & {
+    options: ApplicationCommandPermissionsCommandOptions<CommandIdType> & {
       permissionId: ApplicationCommandPermissionIdResolvable;
       permissionType?: ApplicationCommandPermissionType;
     },
   ): Promise<boolean>;
-  public fetch(options: FetchSingleOptions): Promise<ApplicationCommandPermissions[]>;
   public fetch(
-    ...args: {} extends BaseOptions ? [] | [BaseOptions] : [BaseOptions]
-  ): Promise<Collection<Snowflake, ApplicationCommandPermissions[]>>;
+    options: ApplicationCommandPermissionsCommandOptions<CommandIdType>,
+  ): Promise<ApplicationCommandPermissions[]>;
+  public fetch(
+    options?: ApplicationCommandPermissionsFetchAllOptions<CommandIdType>,
+  ): Promise<ApplicationCommandPermissionsFetchAllResult<CommandIdType>>;
   public remove(
     options:
-      | (FetchSingleOptions & {
+      | (ApplicationCommandPermissionsCommandOptions<CommandIdType> & {
           channels: readonly (ChannelPermissionConstant | GuildChannelResolvable)[];
           roles?: readonly (RolePermissionConstant | RoleResolvable)[];
           token: string;
           users?: readonly UserResolvable[];
         })
-      | (FetchSingleOptions & {
+      | (ApplicationCommandPermissionsCommandOptions<CommandIdType> & {
           channels?: readonly (ChannelPermissionConstant | GuildChannelResolvable)[];
           roles: readonly (RolePermissionConstant | RoleResolvable)[];
           token: string;
           users?: readonly UserResolvable[];
         })
-      | (FetchSingleOptions & {
+      | (ApplicationCommandPermissionsCommandOptions<CommandIdType> & {
           channels?: readonly (ChannelPermissionConstant | GuildChannelResolvable)[];
           roles?: readonly (RolePermissionConstant | RoleResolvable)[];
           token: string;
@@ -4321,7 +4319,62 @@ export class ApplicationCommandPermissionsManager<
         }),
   ): Promise<ApplicationCommandPermissions[]>;
   public set(
-    options: EditApplicationCommandPermissionsMixin & FetchSingleOptions,
+    options: ApplicationCommandPermissionsCommandOptions<CommandIdType> & EditApplicationCommandPermissionsMixin,
+  ): Promise<ApplicationCommandPermissions[]>;
+  private permissionsPath(guildId: Snowflake, commandId?: Snowflake): string;
+}
+
+export class ApplicationCommandPermissionsManager<CommandIdType extends Snowflake | null> extends BaseManager {
+  private constructor(manager: ApplicationCommand | ApplicationCommandManager);
+  private readonly manager: ApplicationCommand | ApplicationCommandManager;
+
+  public commandId: CommandIdType;
+  public guild: null;
+  public guildId: null;
+  public add(
+    options: ApplicationCommandPermissionsCommandOptions<CommandIdType> &
+      EditApplicationCommandPermissionsMixin & { guild: GuildResolvable },
+  ): Promise<ApplicationCommandPermissions[]>;
+  public has(
+    options: ApplicationCommandPermissionsCommandOptions<CommandIdType> & {
+      guild: GuildResolvable;
+      permissionId: ApplicationCommandPermissionIdResolvable;
+      permissionType?: ApplicationCommandPermissionType;
+    },
+  ): Promise<boolean>;
+  public fetch(
+    options: ApplicationCommandPermissionsCommandOptions<CommandIdType> & { guild: GuildResolvable },
+  ): Promise<ApplicationCommandPermissions[]>;
+  public fetch(
+    options: ApplicationCommandPermissionsFetchAllOptions<CommandIdType> & { guild: GuildResolvable },
+  ): Promise<ApplicationCommandPermissionsFetchAllResult<CommandIdType>>;
+  public remove(
+    options:
+      | (ApplicationCommandPermissionsCommandOptions<CommandIdType> & {
+          channels: readonly (ChannelPermissionConstant | GuildChannelResolvable)[];
+          guild: GuildResolvable;
+          roles?: readonly (RolePermissionConstant | RoleResolvable)[];
+          token: string;
+          users?: readonly UserResolvable[];
+        })
+      | (ApplicationCommandPermissionsCommandOptions<CommandIdType> & {
+          channels?: readonly (ChannelPermissionConstant | GuildChannelResolvable)[];
+          guild: GuildResolvable;
+          roles: readonly (RolePermissionConstant | RoleResolvable)[];
+          token: string;
+          users?: readonly UserResolvable[];
+        })
+      | (ApplicationCommandPermissionsCommandOptions<CommandIdType> & {
+          channels?: readonly (ChannelPermissionConstant | GuildChannelResolvable)[];
+          guild: GuildResolvable;
+          roles?: readonly (RolePermissionConstant | RoleResolvable)[];
+          token: string;
+          users: readonly UserResolvable[];
+        }),
+  ): Promise<ApplicationCommandPermissions[]>;
+  public set(
+    options: ApplicationCommandPermissionsCommandOptions<CommandIdType> &
+      EditApplicationCommandPermissionsMixin & { guild: GuildResolvable },
   ): Promise<ApplicationCommandPermissions[]>;
   private permissionsPath(guildId: Snowflake, commandId?: Snowflake): string;
 }
@@ -4432,7 +4485,10 @@ export interface FetchGuildApplicationCommandFetchOptions extends BaseFetchOptio
   withLocalizations?: boolean;
 }
 
-export class GuildApplicationCommandManager extends ApplicationCommandManager<ApplicationCommand, {}, Guild> {
+export class GuildApplicationCommandManager extends ApplicationCommandManager<
+  ApplicationCommand,
+  GuildApplicationCommandPermissionsManager<null>
+> {
   private constructor(guild: Guild, iterable?: Iterable<APIApplicationCommand>);
   public guild: Guild;
   public create(command: ApplicationCommandDataResolvable): Promise<ApplicationCommand>;
