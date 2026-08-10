@@ -4,7 +4,7 @@ title: Usage
 
 ### Legend
 
-- `client` is a placeholder for the `Client` object, such as const `client = new RPCClient({ scopes: [Oauth2Scopes.MessagesRead] });`.
+- `client` is a placeholder for the `RPCClient` object, such as `const client = new RPCClient({ scopes: [Oauth2Scopes.MessagesRead] });`.
 
 ### Authorization
 
@@ -49,9 +49,7 @@ setInterval(async () => {
 
 Listen for messages on the current user's discord client:
 
-<Callout>
-	Listening for messages requires the scope `messages.read` or `Oauth2Scopes.MessagesRead` from `discord-api-types`
-</Callout>
+<Callout>Listening for messages requires the scope `messages.read`</Callout>
 
 ```ts
 client.on(RPCEvents.MessageCreate, (data: RPCMessageCreateDispatchData) =>

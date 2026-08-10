@@ -4,7 +4,7 @@
 	"version": "0.1.0",
 	"description": "A simple RPC client for Discord",
 	"scripts": {
-		"build": "tsc --noEmit && tsup",
+		"build": "tsc",
 		"build:docs": "tsc -p tsconfig.docs.json",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
@@ -16,18 +16,13 @@
 	},
 	"exports": {
 		".": {
-			"require": {
+			"import": {
 				"types": "./dist/index.d.ts",
 				"default": "./dist/index.js"
-			},
-			"import": {
-				"types": "./dist/index.d.mts",
-				"default": "./dist/index.mjs"
 			}
 		}
 	},
 	"main": "./dist/index.js",
-	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
 	"directories": {
 		"lib": "src"
@@ -79,7 +74,7 @@
 		"typescript": "~5.9.2"
 	},
 	"engines": {
-		"node": ">=22.12.0"
+		"node": ">=24.17.0"
 	},
 	"publishConfig": {
 		"access": "public",

@@ -1,4 +1,3 @@
-/* eslint-disable tsdoc/syntax */
 import { randomUUID } from 'node:crypto';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import type {
@@ -219,10 +218,6 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	/**
 	 * Performs authentication flow. Automatically calls Client#connect if needed.
 	 *
-	 * @param options - login options.
-	 * @param options.clientId - client Id.
-	 * @param options.clientSecret - client Secret (required if scopes are specified in constructor).
-	 * @param options.accessToken - Access Token (skips authorization steps).
 	 * @example
 	 * logging in with a client id and secret
 	 * ```ts
@@ -490,42 +485,34 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 	 * Move the user to a voice channel
 	 *
 	 * @param id - Id of the voice channel
-	 * @param options - Options
-	 * @param options.timeout - Timeout for the command
-	 * @param options.force - Force this move. This should only be done if you
-	 * have explicit permission from the user.
+	 * @param args - select voice channel args
+	 * @param options - request options
 	 */
 	public async selectVoiceChannel(
 		id: Snowflake,
-		{ timeout, force = false }: Omit<RPCSelectVoiceChannelArgs, 'channel_id'> = {},
+		args: Omit<RPCSelectVoiceChannelArgs, 'channel_id'> = {},
 		options?: RequestOptions,
 	): Promise<RPCSelectVoiceChannelResultData> {
-		const args: RPCSelectVoiceChannelArgs = { channel_id: id, force };
-		if (timeout) {
-			args.timeout = timeout;
-		}
+		const svcArgs: RPCSelectVoiceChannelArgs = { ...args, channel_id: id };
 
-		return this.request(RPCCommands.SelectVoiceChannel, args, options);
+		return this.request(RPCCommands.SelectVoiceChannel, svcArgs, options);
 	}
 
 	/**
 	 * Move the user to a text channel
 	 *
 	 * @param id - Id of the text channel
-	 * @param options - Options
-	 * @param options.timeout - Timeout for the command
+	 * @param args - select text channel args
+	 * @param options - request options
 	 */
 	public async selectTextChannel(
 		id: Snowflake,
-		{ timeout }: Omit<RPCSelectTextChannelArgs, 'channel_id'> = {},
+		args: Omit<RPCSelectTextChannelArgs, 'channel_id'> = {},
 		options?: RequestOptions,
 	): Promise<RPCSelectTextChannelResultData> {
-		const args: RPCSelectTextChannelArgs = { channel_id: id };
-		if (timeout) {
-			args.timeout = timeout;
-		}
+		const stcArgs: RPCSelectTextChannelArgs = { ...args, channel_id: id };
 
-		return this.request(RPCCommands.SelectTextChannel, args, options);
+		return this.request(RPCCommands.SelectTextChannel, stcArgs, options);
 	}
 
 	/**
