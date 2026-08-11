@@ -4,7 +4,6 @@
 	"compilerOptions": {
 		"types": ["node"],
 		"skipLibCheck": true,
-		"rootDir": "./src",
 		"declaration": false
 	},
 	"include": ["src/**/*.ts", "src/**/*.js", "src/**/*.cjs", "src/**/*.mjs", "bin"],
