@@ -2109,6 +2109,7 @@ export class GuildInvite<WithCounts extends boolean = boolean> extends BaseInvit
   public updateTargetUsers(targetUsersFile: BufferResolvable | readonly UserResolvable[]): Promise<void>;
   public fetchTargetUsersJobStatus(): Promise<TargetUsersJobStatusForInvite>;
   public fetchTargetUsers(): Promise<Buffer>;
+  public toJSON(): unknown;
 }
 
 export type InviteFlagsString = keyof typeof InviteFlags;
@@ -2121,6 +2122,7 @@ export class InviteFlagsBitField extends BitField<InviteFlagsString> {
 export class GroupDMInvite<WithCounts extends boolean = boolean> extends BaseInvite<WithCounts> {
   public readonly type: InviteType.GroupDM;
   public channel: PartialGroupDMChannel | null;
+  public toJSON(): unknown;
 }
 
 export type Invite<WithCounts extends boolean = boolean> = GroupDMInvite<WithCounts> | GuildInvite<WithCounts>;
