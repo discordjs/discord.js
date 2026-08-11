@@ -7,15 +7,14 @@ const { fetch } = require('undici');
 const { DiscordjsError, DiscordjsTypeError, ErrorCodes } = require('../errors');
 
 /**
- * Creates form data body payload for invite
+ * Resolves target users file to CSV.
  *
  * @param {Client} client The client
- * @param {InviteCreateOptions} options The options for creating invite
- * @returns {Promise<FormData>}
+ * @param {UserResolvable[]|BufferResolvable} targetUsersFile The target users file for invite
+ * @returns {Promise<string>}
  * @ignore
  */
-async function createInviteFormData(client, { targetUsersFile, ...rest } = {}) {
-  const formData = new FormData();
+async function resolveInviteTargetUsersFile(client, targetUsersFile) {
   let usersCsv;
   if (Array.isArray(targetUsersFile)) {
     usersCsv = targetUsersFile.map(user => client.users.resolveId(user)).join('\n');
@@ -24,9 +23,7 @@ async function createInviteFormData(client, { targetUsersFile, ...rest } = {}) {
     usersCsv = resolved.data.toString('utf8');
   }
 
-  formData.append('target_users_file', new Blob([usersCsv], { type: 'text/csv' }), 'users.csv');
-  formData.append('payload_json', JSON.stringify(rest));
-  return formData;
+  return usersCsv;
 }
 
 /**
@@ -168,7 +165,7 @@ module.exports = {
   resolveImage,
   resolveBase64,
   resolveFile,
-  createInviteFormData,
+  resolveInviteTargetUsersFile,
 };
 
 // Fixes circular

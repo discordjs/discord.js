@@ -1,9 +1,8 @@
 /* eslint-disable jsdoc/check-param-names */
 
-import { makeURLSearchParams, type RequestData, type REST } from '@discordjs/rest';
+import { makeURLSearchParams, type RawFile, type RequestData, type REST } from '@discordjs/rest';
 import {
 	Routes,
-	type RESTPutAPIInviteTargetUsersFormDataBody,
 	type RESTGetAPIInviteTargetUsersResult,
 	type RESTDeleteAPIInviteResult,
 	type RESTGetAPIInviteQuery,
@@ -58,17 +57,14 @@ export class InvitesAPI {
 	 *
 	 * @see {@link https://docs.discord.com/developers/resources/invite#update-target-users}
 	 * @param code - The invite code
-	 * @param body - The data for updating target users
+	 * @param targetUsersFile - A CSV file with a single column of user ids
+	 * for all the users able to accept this invite
 	 * @param options - The options for updating the invite target users
 	 * @returns
 	 */
-	public async updateTargetUsers(
-		code: string,
-		body: RESTPutAPIInviteTargetUsersFormDataBody,
-		{ signal }: Pick<RequestData, 'signal'> = {},
-	) {
+	public async updateTargetUsers(code: string, targetUsersFile: RawFile, { signal }: Pick<RequestData, 'signal'> = {}) {
 		return this.rest.put(Routes.inviteTargetUsers(code), {
-			body,
+			files: [{ key: 'target_users_file', contentType: 'text/csv', ...targetUsersFile }],
 			signal,
 		}) as Promise<RESTPutAPIInviteTargetUsersResult>;
 	}

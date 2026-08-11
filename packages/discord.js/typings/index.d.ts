@@ -232,6 +232,7 @@ import {
   APIMessageTopLevelComponent,
   EntryPointCommandHandlerType,
   InviteFlags,
+  APIInviteRole,
 } from 'discord-api-types/v10';
 import { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
@@ -3349,7 +3350,7 @@ export interface RoleColorsEditResolvable {
 }
 
 export class BaseRole extends Base {
-  protected constructor(client: Client<true>, data: Partial<RawRoleData>);
+  protected constructor(client: Client<true>, data: APIInviteRole | APIRole);
   /** @deprecated Use {@link Role.colors} instead. */
   public color: number;
   public colors: RoleColors;
@@ -3366,10 +3367,12 @@ export class BaseRole extends Base {
   public toString(): RoleMention;
 }
 
-export class InviteRole extends BaseRole {}
+export class InviteRole extends BaseRole {
+  private constructor(client: Client<true>, data: APIInviteRole);
+}
 
 export class Role extends BaseRole {
-  private constructor(client: Client<true>, data: RawRoleData, guild: Guild);
+  private constructor(client: Client<true>, data: APIRole, guild: Guild);
   public get editable(): boolean;
   public flags: RoleFlagsBitField;
   public guild: Guild;

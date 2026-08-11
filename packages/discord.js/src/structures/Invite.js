@@ -9,7 +9,7 @@ const { GuildScheduledEvent } = require('./GuildScheduledEvent');
 const IntegrationApplication = require('./IntegrationApplication');
 const InviteStageInstance = require('./InviteStageInstance');
 const { DiscordjsError, ErrorCodes } = require('../errors');
-const { createInviteFormData } = require('../util/DataResolver');
+const { resolveInviteTargetUsersFile } = require('../util/DataResolver');
 const { InviteFlagsBitField } = require('../util/InviteFlagsBitField.js');
 const { _transformAPIInviteTargetUsersJobStatus } = require('../util/Transformers');
 
@@ -343,9 +343,14 @@ class Invite extends Base {
    */
   async updateTargetUsers(targetUsersFile) {
     await this.client.rest.put(Routes.inviteTargetUsers(this.code), {
-      body: await createInviteFormData(this.client, { targetUsersFile }),
-      // This is necessary otherwise rest stringifies the body
-      passThroughBody: true,
+      files: [
+        {
+          key: 'target_users_file',
+          data: await resolveInviteTargetUsersFile(this.client, targetUsersFile),
+          name: 'users.csv',
+          contentType: 'text/csv',
+        },
+      ],
     });
   }
 
