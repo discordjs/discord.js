@@ -101,18 +101,14 @@ export class IPCTransport extends AsyncEventEmitter {
 	}
 
 	public async connect() {
-		let socket: Socket | undefined;
 		for (let id = 0; id < 10; id++) {
 			try {
-				socket = await getIPC(id);
+				this.socket = await getIPC(id);
+				break;
 			} catch (error: unknown) {
 				if (id === 9) throw error;
 			}
 		}
-
-		// NOTE: I wouldn't need to do this if TS' type-checker could understand that socket IS being asigned to before use,
-		// but unfortunately, `undefined` has to be included in the variable's type.
-		this.socket = socket as Socket;
 
 		this.socket.on('close', this.onClose.bind(this));
 		this.socket.on('error', this.onError.bind(this));
