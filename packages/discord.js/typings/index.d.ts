@@ -7470,7 +7470,7 @@ export type Serialized<Value> = Value extends bigint | symbol | (() => any)
       : Value extends readonly (infer ItemType)[]
         ? Serialized<ItemType>[]
         : Value extends ReadonlyMap<unknown, unknown> | ReadonlySet<unknown>
-          ? {}
+          ? Record<string, never>
           : { [K in keyof Value]: Serialized<Value[K]> };
 
 // #endregion
