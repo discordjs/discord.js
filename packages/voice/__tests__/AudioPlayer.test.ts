@@ -423,10 +423,29 @@ describe('Buffering cleanup', () => {
 		player.play(resource);
 
 		expect(player.state.status).toEqual(AudioPlayerStatus.Buffering);
+		expect(addAudioPlayer).toHaveBeenCalledWith(player);
 
 		player.stop();
 
 		expect(player.state.status).toEqual(AudioPlayerStatus.Idle);
 		expect(deleteAudioPlayer).toHaveBeenCalledTimes(1);
+		expect(deleteAudioPlayer).toHaveBeenCalledWith(player);
+	});
+
+	test('does not remain stuck in Buffering after stop() when stream never becomes readable', async () => {
+		const player = createAudioPlayer();
+		const readable = new Readable({ read() {} });
+		const resource = new AudioResource([], [readable], null, 5);
+
+		player.play(resource);
+		expect(player.state.status).toEqual(AudioPlayerStatus.Buffering);
+
+		player.stop();
+
+		await wait();
+		await wait();
+
+		expect(player.state.status).toEqual(AudioPlayerStatus.Idle);
+		expect(player.state.status).not.toEqual(AudioPlayerStatus.Buffering);
 	});
 });
