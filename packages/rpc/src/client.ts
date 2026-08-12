@@ -117,7 +117,6 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		{ reject(this: void, reason?: unknown): void; resolve(this: void, value: unknown): void }
 	>;
 
-	public constructor(options?: RPCClientOptions);
 	public constructor(options: RPCClientOptions = {}) {
 		super();
 
@@ -163,9 +162,15 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		}
 
 		const signal = options?.signal ?? AbortSignal.timeout(10e3);
-		// NOTE: I have no clue why it thinks this value is never reassigned
-		// eslint-disable-next-line prefer-const
-		let onAbort: (_: Event) => void;
+		const onAbort: (_: Event) => void = (_: Event) => {
+			// eslint-disable-next-line @typescript-eslint/no-use-before-define
+			this.removeListener(RPCEvents.Ready, onReady);
+			// eslint-disable-next-line @typescript-eslint/no-use-before-define
+			this.transport.removeListener('close', onClose);
+
+			const reason = signal.reason instanceof Error ? signal.reason : new Error(String(signal.reason));
+			reject(reason);
+		};
 
 		const onReady = () => {
 			signal.removeEventListener('abort', onAbort);
@@ -186,14 +191,6 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 
 			this.emit(Events.Disconnected);
 			reject(new RPCEventError(JSON.stringify(data)));
-		};
-
-		onAbort = (_: Event) => {
-			this.removeListener(RPCEvents.Ready, onReady);
-			this.transport.removeListener('close', onClose);
-
-			const reason = signal.reason instanceof Error ? signal.reason : new Error(String(signal.reason));
-			reject(reason);
 		};
 
 		signal.addEventListener('abort', onAbort);
