@@ -552,7 +552,7 @@ client.on('messageCreate', async message => {
   // Verify that additional options don't affect default collector types.
   const semiDefaultCollector = message.createMessageComponentCollector({ time: 10_000 });
   expect(semiDefaultCollector).type.toBe<InteractionCollector<CollectedMessageInteraction>>();
-  const semiDefaultCollectorChannel = message.createMessageComponentCollector({ time: 10_000 });
+  const semiDefaultCollectorChannel = channel.createMessageComponentCollector({ time: 10_000 });
   expect(semiDefaultCollectorChannel).type.toBe<InteractionCollector<CollectedMessageInteraction>>();
 
   // Verify that interaction collector options can't be used.
