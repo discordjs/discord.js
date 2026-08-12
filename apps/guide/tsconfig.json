@@ -4,6 +4,7 @@
 	"compilerOptions": {
 		// Emit
 		"declaration": false,
+		"declarationMap": false,
 		"noEmit": true,
 		"outDir": "dist",
 

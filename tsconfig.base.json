@@ -27,7 +27,7 @@
 
 		// Emit
 		"declaration": true,
-		"declarationMap": false,
+		"declarationMap": true,
 		"importHelpers": false,
 		"newLine": "lf",
 		"noEmitHelpers": true,

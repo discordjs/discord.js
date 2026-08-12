@@ -489,7 +489,10 @@ client.on('messageCreate', async message => {
     expect(message.mentions.members).type.toBe<Collection<Snowflake, GuildMember>>();
   }
 
-  expect(message.channel).type.toBe<Exclude<TextBasedChannel, PartialGroupDMChannel>>();
+  // TODO: uncomment once tstyche supports the test this way
+  // expect(message.channel).type.toBe<Exclude<TextBasedChannel, PartialGroupDMChannel>>();
+  expect(message.channel).type.toBeAssignableFrom<Exclude<TextBasedChannel, PartialGroupDMChannel>>();
+  expect(message.channel).type.toBeAssignableTo<Exclude<TextBasedChannel, PartialGroupDMChannel>>();
   expect(message.channel).type.not.toBe<GuildTextBasedChannel>();
 
   expect(channel.send).type.not.toBeCallableWith();
@@ -541,9 +544,10 @@ client.on('messageCreate', async message => {
 
   defaultCollector.on('collect', (...args) => expect(args).type.toBe<[ButtonInteraction | SelectMenuInteraction]>());
   defaultCollector.on('dispose', (...args) => expect(args).type.toBe<[ButtonInteraction | SelectMenuInteraction]>());
-  // defaultCollector.on('end', (...args) =>
-  // expect(args).type.toBe<[ReadonlyCollection<Snowflake, ButtonInteraction | SelectMenuInteraction>, string]>(),
-  // );
+  // TODO: uncomment once tstyche supports this test
+  /* defaultCollector.on('end', (...args) =>
+    expect(args).type.toBe<[ReadonlyCollection<Snowflake, ButtonInteraction | SelectMenuInteraction>, string]>(),
+  ); */
 
   // Verify that additional options don't affect default collector types.
   const semiDefaultCollector = message.createMessageComponentCollector({ time: 10_000 });

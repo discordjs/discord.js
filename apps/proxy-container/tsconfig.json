@@ -2,7 +2,8 @@
 	"$schema": "https://json.schemastore.org/tsconfig.json",
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"declaration": false
+		"declaration": false,
+		"declarationMap": false
 	},
 	"include": ["src/**/*.ts", "src/**/*.js", "src/**/*.cjs", "src/**/*.mjs", "bin"],
 	"exclude": ["node_modules"]
