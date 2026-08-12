@@ -2,8 +2,7 @@
 	"$schema": "https://json.schemastore.org/tsconfig.json",
 	"extends": "./tsconfig.base.json",
 	"compilerOptions": {
-		"emitDeclarationOnly": true,
-		"declarationMap": true
+		"emitDeclarationOnly": true
 	},
 	"exclude": ["node_modules"]
 }
