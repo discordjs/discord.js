@@ -203,20 +203,14 @@ class Client extends AsyncEventEmitter {
       this.token = null;
     }
 
-    const wsOptions = {
-      ...this.options.ws,
-      intents: this.options.intents.bitfield,
-      fetchGatewayInformation: () => this.rest.get(Routes.gatewayBot()),
-      // Explicitly nulled to always be set using `setToken` in `login`
-      token: null,
-    };
-
     /**
-     * The WebSocket manager of the client
+     * The WebSocket manager of the client.
+     * <info>This is only available after {@link Client#login} has been called, as the manager requires the
+     * information returned by the `/gateway/bot` endpoint, which in turn requires a token.</info>
      *
-     * @type {WebSocketManager}
+     * @type {?WebSocketManager}
      */
-    this.ws = new WebSocketManager(wsOptions);
+    this.ws = null;
 
     /**
      * Shard helpers for the client (only if the process was spawned from a {@link ShardingManager})
@@ -277,8 +271,6 @@ class Client extends AsyncEventEmitter {
      * @name Client#incomingPacketQueue
      */
     Object.defineProperty(this, 'incomingPacketQueue', { value: [] });
-
-    this._attachEvents();
   }
 
   /**
@@ -319,9 +311,16 @@ class Client extends AsyncEventEmitter {
     this.emit(Events.Debug, `Provided token: ${this._censoredToken}`);
     this.emit(Events.Debug, 'Preparing to connect to the gateway...');
 
-    this.ws.setToken(this.token);
-
     try {
+      this.ws = new WebSocketManager({
+        ...this.options.ws,
+        intents: this.options.intents.bitfield,
+        gatewayInformation: await this.rest.get(Routes.gatewayBot()),
+        token: this.token,
+      });
+
+      this._attachEvents();
+
       await this.ws.connect();
       return this.token;
     } catch (error) {
@@ -394,6 +393,9 @@ class Client extends AsyncEventEmitter {
       this.lastPingTimestamps.set(shardId, heartbeatAt);
       this.pings.set(shardId, latency);
     });
+
+    this.voice._attachEvents();
+    this.shard?._attachEvents();
   }
 
   /**
@@ -434,7 +436,7 @@ class Client extends AsyncEventEmitter {
    * @private
    */
   async _broadcast(packet) {
-    const shardIds = await this.ws.getShardIds();
+    const shardIds = this.ws.getShardIds();
     return Promise.all(shardIds.map(shardId => this.ws.send(shardId, packet)));
   }
 
@@ -530,7 +532,7 @@ class Client extends AsyncEventEmitter {
     this.rest.clearHandlerSweeper();
 
     this.sweepers.destroy();
-    await this.ws.destroy();
+    await this.ws?.destroy();
     this.token = null;
     this.rest.setToken(null);
   }

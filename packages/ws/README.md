@@ -49,13 +49,13 @@ import { REST } from '@discordjs/rest';
 import type { RESTGetAPIGatewayBotResult } from 'discord-api-types/v10';
 
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);
+const gatewayInformation = (await rest.get(Routes.gatewayBot())) as RESTGetAPIGatewayBotResult;
+
 // This example will spawn Discord's recommended shard count, all under the current process.
 const manager = new WebSocketManager({
 	token: process.env.DISCORD_TOKEN,
 	intents: 0, // for no intents
-	fetchGatewayInformation() {
-		return rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
-	},
+	gatewayInformation,
 	// uncomment if you have zlib-sync installed and want to use compression
 	// compression: CompressionMethod.ZlibSync,
 
@@ -78,9 +78,7 @@ const manager = new WebSocketManager({
 	token: process.env.DISCORD_TOKEN,
 	intents: 0,
 	shardCount: 4,
-	fetchGatewayInformation() {
-		return rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
-	},
+	gatewayInformation,
 });
 
 // The manager also supports being responsible for only a subset of your shards:
@@ -92,9 +90,7 @@ const manager = new WebSocketManager({
 	intents: 0,
 	shardCount: 8,
 	shardIds: [0, 2, 4, 6],
-	fetchGatewayInformation() {
-		return rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
-	},
+	gatewayInformation,
 });
 
 // Alternatively, if your shards are consecutive, you can pass in a range
@@ -106,9 +102,7 @@ const manager = new WebSocketManager({
 		start: 0,
 		end: 4,
 	},
-	fetchGatewayInformation() {
-		return rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
-	},
+	gatewayInformation,
 });
 ```
 
@@ -121,13 +115,13 @@ import { WebSocketManager, WorkerShardingStrategy } from '@discordjs/ws';
 import { REST } from '@discordjs/rest';
 
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);
+const gatewayInformation = (await rest.get(Routes.gatewayBot())) as RESTGetAPIGatewayBotResult;
+
 const manager = new WebSocketManager({
 	token: process.env.DISCORD_TOKEN,
 	intents: 0,
 	shardCount: 6,
-	fetchGatewayInformation() {
-		return rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
-	},
+	gatewayInformation,
 	// This will cause 3 workers to spawn, 2 shards per each
 	buildStrategy: (manager) => new WorkerShardingStrategy(manager, { shardsPerWorker: 2 }),
 	// Or maybe you want all your shards under a single worker
@@ -142,12 +136,12 @@ import { WebSocketManager, WorkerShardingStrategy } from '@discordjs/ws';
 import { REST } from '@discordjs/rest';
 
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);
+const gatewayInformation = (await rest.get(Routes.gatewayBot())) as RESTGetAPIGatewayBotResult;
+
 const manager = new WebSocketManager({
 	token: process.env.DISCORD_TOKEN,
 	intents: 0,
-	fetchGatewayInformation() {
-		return rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
-	},
+	gatewayInformation,
 	buildStrategy: (manager) =>
 		new WorkerShardingStrategy(manager, {
 			shardsPerWorker: 2,

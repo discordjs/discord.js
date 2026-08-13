@@ -142,9 +142,7 @@ test('spawn, connect, send a message, session info, and destroy', async () => {
 	const manager = new WebSocketManager({
 		token: 'A-Very-Fake-Token',
 		intents: 0,
-		async fetchGatewayInformation() {
-			return mockGatewayInformation;
-		},
+		gatewayInformation: mockGatewayInformation,
 		shardIds: [0, 1],
 		retrieveSessionInfo: mockRetrieveSessionInfo,
 		updateSessionInfo: mockUpdateSessionInfo,

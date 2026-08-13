@@ -55,7 +55,7 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 const gateway = new WebSocketManager({
 	token: process.env.DISCORD_TOKEN,
 	intents: GatewayIntentBits.GuildMessages | GatewayIntentBits.MessageContent,
-	fetchGatewayInformation: () => rest.get('/gateway/bot') as Promise<RESTGetAPIGatewayBotResult>,
+	gatewayInformation: (await rest.get('/gateway/bot')) as RESTGetAPIGatewayBotResult,
 });
 
 // Create a client to emit relevant events.

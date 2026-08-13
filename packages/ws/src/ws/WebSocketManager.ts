@@ -2,7 +2,6 @@ import type { Collection } from '@discordjs/collection';
 import { range, type Awaitable } from '@discordjs/util';
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import type {
-	APIGatewayBotInfo,
 	GatewayIdentifyProperties,
 	GatewayPresenceUpdateData,
 	RESTGetAPIGatewayBotResult,
@@ -55,7 +54,7 @@ export interface SessionInfo {
  */
 export interface RequiredWebSocketManagerOptions {
 	/**
-	 * Function for retrieving the information returned by the `/gateway/bot` endpoint.
+	 * Information retrieved from the `/gateway/bot` endpoint.
 	 * We recommend using a REST client that respects Discord's rate limits, such as `@discordjs/rest`.
 	 *
 	 * @example
@@ -63,13 +62,11 @@ export interface RequiredWebSocketManagerOptions {
 	 * const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 	 * const manager = new WebSocketManager({
 	 *  token: process.env.DISCORD_TOKEN,
-	 *  fetchGatewayInformation() {
-	 *    return rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
-	 *  },
+	 *  gatewayInformation: (await rest.get(Routes.gatewayBot())) as RESTGetAPIGatewayBotResult,
 	 * });
 	 * ```
 	 */
-	fetchGatewayInformation(): Awaitable<RESTGetAPIGatewayBotResult>;
+	gatewayInformation: RESTGetAPIGatewayBotResult;
 	/**
 	 * The intents to request
 	 */
@@ -93,9 +90,7 @@ export interface OptionalWebSocketManagerOptions {
 	 * const manager = new WebSocketManager({
 	 *  token: process.env.DISCORD_TOKEN,
 	 *  intents: 0, // for no intents
-	 *  fetchGatewayInformation() {
-	 *    return rest.get(Routes.gatewayBot()) as Promise<RESTGetAPIGatewayBotResult>;
-	 *  },
+	 *  gatewayInformation: (await rest.get(Routes.gatewayBot())) as RESTGetAPIGatewayBotResult,
 	 *  buildStrategy: (manager) => new WorkerShardingStrategy(manager, { shardsPerWorker: 2 }),
 	 * });
 	 * ```
@@ -231,19 +226,6 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 	public readonly options: Omit<WebSocketManagerOptions, 'token'>;
 
 	/**
-	 * Internal cache for a GET /gateway/bot result
-	 */
-	private gatewayInformation: {
-		data: APIGatewayBotInfo;
-		expiresAt: number;
-	} | null = null;
-
-	/**
-	 * Internal cache for the shard ids
-	 */
-	private shardIds: number[] | null = null;
-
-	/**
 	 * Strategy used to manage shards
 	 *
 	 * @defaultValue `SimpleShardingStrategy`
@@ -266,8 +248,8 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 	}
 
 	public constructor(options: CreateWebSocketManagerOptions) {
-		if (typeof options.fetchGatewayInformation !== 'function') {
-			throw new TypeError('fetchGatewayInformation is required');
+		if (!options.gatewayInformation) {
+			throw new TypeError('gatewayInformation is required');
 		}
 
 		super();
@@ -280,28 +262,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 	}
 
 	/**
-	 * Fetches the gateway information from Discord - or returns it from cache if available
-	 *
-	 * @param force - Whether to ignore the cache and force a fresh fetch
-	 */
-	public async fetchGatewayInformation(force = false) {
-		if (this.gatewayInformation) {
-			if (this.gatewayInformation.expiresAt <= Date.now()) {
-				this.gatewayInformation = null;
-			} else if (!force) {
-				return this.gatewayInformation.data;
-			}
-		}
-
-		const data = await this.options.fetchGatewayInformation();
-
-		// For single sharded bots session_start_limit.reset_after will be 0, use 5 seconds as a minimum expiration time
-		this.gatewayInformation = { data, expiresAt: Date.now() + (data.session_start_limit.reset_after || 5_000) };
-		return this.gatewayInformation.data;
-	}
-
-	/**
-	 * Updates your total shard count on-the-fly, spawning shards as needed
+	 * Updates your total shard count on-the-fly, re-spawning all shards to the new amount
 	 *
 	 * @param shardCount - The new shard count to use
 	 */
@@ -309,7 +270,7 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 		await this.strategy.destroy({ reason: 'User is adjusting their shards' });
 		this.options.shardCount = shardCount;
 
-		const shardIds = await this.getShardIds(true);
+		const shardIds = this.getShardIds();
 		await this.strategy.spawn(shardIds);
 
 		return this;
@@ -318,23 +279,19 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 	/**
 	 * Yields the total number of shards across for your bot, accounting for Discord recommendations
 	 */
-	public async getShardCount(): Promise<number> {
+	public getShardCount(): number {
 		if (this.options.shardCount) {
 			return this.options.shardCount;
 		}
 
-		const shardIds = await this.getShardIds();
+		const shardIds = this.getShardIds();
 		return Math.max(...shardIds) + 1;
 	}
 
 	/**
 	 * Yields the ids of the shards this manager should manage
 	 */
-	public async getShardIds(force = false): Promise<number[]> {
-		if (this.shardIds && !force) {
-			return this.shardIds;
-		}
-
+	public getShardIds(): number[] {
 		let shardIds: number[];
 		if (this.options.shardIds) {
 			if (Array.isArray(this.options.shardIds)) {
@@ -344,27 +301,24 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 				shardIds = [...range({ start, end: end + 1 })];
 			}
 		} else {
-			const data = await this.fetchGatewayInformation();
-			shardIds = [...range(this.options.shardCount ?? data.shards)];
+			shardIds = [...range(this.options.shardCount ?? this.options.gatewayInformation.shards)];
 		}
 
-		this.shardIds = shardIds;
 		return shardIds;
 	}
 
 	public async connect() {
-		const shardCount = await this.getShardCount();
+		const shardCount = this.getShardCount();
 		// Spawn shards and adjust internal state
 		await this.updateShardCount(shardCount);
 
-		const shardIds = await this.getShardIds();
-		const data = await this.fetchGatewayInformation();
+		const shardIds = this.getShardIds();
 
-		if (data.session_start_limit.remaining < shardIds.length) {
+		if (this.options.gatewayInformation.session_start_limit.remaining < shardIds.length) {
 			throw new Error(
 				`Not enough sessions remaining to spawn ${shardIds.length} shards; only ${
-					data.session_start_limit.remaining
-				} remaining; resets at ${new Date(Date.now() + data.session_start_limit.reset_after).toISOString()}`,
+					this.options.gatewayInformation.session_start_limit.remaining
+				} remaining; resets at ${new Date(Date.now() + this.options.gatewayInformation.session_start_limit.reset_after).toISOString()}`,
 			);
 		}
 
