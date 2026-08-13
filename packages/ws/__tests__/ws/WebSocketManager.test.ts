@@ -4,121 +4,91 @@ import { describe, expect, test, vi } from 'vitest';
 import { WebSocketManager, type IShardingStrategy } from '../../src/index.js';
 import { mockGatewayInformation } from '../gateway.mock.js';
 
-vi.useFakeTimers();
-
-const NOW = vi.fn().mockReturnValue(Date.now());
-global.Date.now = NOW;
-
-test('fetch gateway information', async () => {
-	const fetchGatewayInformation = vi.fn(async () => mockGatewayInformation);
-
-	const manager = new WebSocketManager({
-		token: 'A-Very-Fake-Token',
-		intents: 0,
-		fetchGatewayInformation,
-	});
-
-	const initial = await manager.fetchGatewayInformation();
-	expect(initial).toEqual(mockGatewayInformation);
-	expect(fetchGatewayInformation).toHaveBeenCalledOnce();
-
-	fetchGatewayInformation.mockClear();
-
-	const cached = await manager.fetchGatewayInformation();
-	expect(cached).toEqual(mockGatewayInformation);
-	expect(fetchGatewayInformation).not.toHaveBeenCalled();
-
-	fetchGatewayInformation.mockClear();
-
-	const forced = await manager.fetchGatewayInformation(true);
-	expect(forced).toEqual(mockGatewayInformation);
-	expect(fetchGatewayInformation).toHaveBeenCalledOnce();
-
-	fetchGatewayInformation.mockClear();
-
-	NOW.mockReturnValue(Number.POSITIVE_INFINITY);
-	const cacheExpired = await manager.fetchGatewayInformation();
-	expect(cacheExpired).toEqual(mockGatewayInformation);
-	expect(fetchGatewayInformation).toHaveBeenCalledOnce();
+test('it requires gateway information', () => {
+	expect(
+		() =>
+			// @ts-expect-error: Testing the runtime check for a missing gatewayInformation
+			new WebSocketManager({
+				token: 'A-Very-Fake-Token',
+				intents: 0,
+			}),
+	).toThrow(TypeError);
 });
 
 describe('get shard count', () => {
-	test('with shard count', async () => {
+	test('with no shard count or ids', () => {
+		const manager = new WebSocketManager({
+			token: 'A-Very-Fake-Token',
+			intents: 0,
+			gatewayInformation: mockGatewayInformation,
+		});
+
+		expect(manager.getShardCount()).toBe(mockGatewayInformation.shards);
+	});
+
+	test('with shard count', () => {
 		const manager = new WebSocketManager({
 			token: 'A-Very-Fake-Token',
 			intents: 0,
 			shardCount: 2,
-			async fetchGatewayInformation() {
-				return mockGatewayInformation;
-			},
+			gatewayInformation: mockGatewayInformation,
 		});
 
-		expect(await manager.getShardCount()).toBe(2);
+		expect(manager.getShardCount()).toBe(2);
 	});
 
-	test('with shard ids array', async () => {
+	test('with shard ids array', () => {
 		const shardIds = [5, 9];
 		const manager = new WebSocketManager({
 			token: 'A-Very-Fake-Token',
 			intents: 0,
 			shardIds,
-			async fetchGatewayInformation() {
-				return mockGatewayInformation;
-			},
+			gatewayInformation: mockGatewayInformation,
 		});
 
-		expect(await manager.getShardCount()).toBe(shardIds.at(-1)! + 1);
+		expect(manager.getShardCount()).toBe(shardIds.at(-1)! + 1);
 	});
 
-	test('with shard id range', async () => {
+	test('with shard id range', () => {
 		const shardIds = { start: 5, end: 9 };
 		const manager = new WebSocketManager({
 			token: 'A-Very-Fake-Token',
 			intents: 0,
 			shardIds,
-			async fetchGatewayInformation() {
-				return mockGatewayInformation;
-			},
+			gatewayInformation: mockGatewayInformation,
 		});
 
-		expect(await manager.getShardCount()).toBe(shardIds.end + 1);
+		expect(manager.getShardCount()).toBe(shardIds.end + 1);
 	});
 });
 
 test('update shard count', async () => {
-	const fetchGatewayInformation = vi.fn(async () => mockGatewayInformation);
-
 	const manager = new WebSocketManager({
 		token: 'A-Very-Fake-Token',
 		intents: 0,
 		shardCount: 2,
-		fetchGatewayInformation,
+		gatewayInformation: mockGatewayInformation,
 	});
 
-	expect(await manager.getShardCount()).toBe(2);
-	expect(fetchGatewayInformation).not.toHaveBeenCalled();
-
-	fetchGatewayInformation.mockClear();
+	expect(manager.getShardCount()).toBe(2);
 
 	await manager.updateShardCount(3);
-	expect(await manager.getShardCount()).toBe(3);
-	expect(fetchGatewayInformation).toHaveBeenCalled();
+	expect(manager.getShardCount()).toBe(3);
+	expect(manager.getShardIds()).toStrictEqual([0, 1, 2]);
 });
 
-test('it handles passing in both shardIds and shardCount', async () => {
+test('it handles passing in both shardIds and shardCount', () => {
 	const shardIds = { start: 2, end: 3 };
 	const manager = new WebSocketManager({
 		token: 'A-Very-Fake-Token',
 		intents: 0,
 		shardIds,
 		shardCount: 4,
-		async fetchGatewayInformation() {
-			return mockGatewayInformation;
-		},
+		gatewayInformation: mockGatewayInformation,
 	});
 
-	expect(await manager.getShardCount()).toBe(4);
-	expect(await manager.getShardIds()).toStrictEqual([2, 3]);
+	expect(manager.getShardCount()).toBe(4);
+	expect(manager.getShardIds()).toStrictEqual([2, 3]);
 });
 
 test('strategies', async () => {
@@ -142,9 +112,7 @@ test('strategies', async () => {
 		token: 'A-Very-Fake-Token',
 		intents: 0,
 		shardIds,
-		async fetchGatewayInformation() {
-			return mockGatewayInformation;
-		},
+		gatewayInformation: mockGatewayInformation,
 		buildStrategy: () => strategy,
 	});
 

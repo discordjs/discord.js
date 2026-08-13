@@ -46,9 +46,7 @@ test('session info', async () => {
 	const manager = new WebSocketManager({
 		token: 'A-Very-Fake-Token',
 		intents: 0,
-		async fetchGatewayInformation() {
-			return mockGatewayInformation;
-		},
+		gatewayInformation: mockGatewayInformation,
 	});
 
 	const strategy = new WorkerContextFetchingStrategy(await managerToFetchingStrategyOptions(manager));

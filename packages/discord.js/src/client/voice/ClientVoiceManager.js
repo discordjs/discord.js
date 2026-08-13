@@ -22,11 +22,18 @@ class ClientVoiceManager {
      * @type {Map<Snowflake, Object>}
      */
     this.adapters = new Map();
+  }
 
-    client.ws.on(WebSocketShardEvents.Closed, (code, shardId) => {
+  /**
+   * Needed because `Client#ws` is only set after `Client#connect` is invoked.
+   *
+   * @private
+   */
+  _attachEvents() {
+    this.client.ws.on(WebSocketShardEvents.Closed, (code, shardId) => {
       if (code === CloseCodes.Normal) {
         for (const [guildId, adapter] of this.adapters.entries()) {
-          if (client.guilds.cache.get(guildId)?.shardId === shardId) {
+          if (this.client.guilds.cache.get(guildId)?.shardId === shardId) {
             adapter.destroy();
           }
         }
