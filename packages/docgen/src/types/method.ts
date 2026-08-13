@@ -1,4 +1,5 @@
 import type { DeclarationReflection, SignatureReflection } from 'typedoc';
+
 import type { Method } from '../interfaces/index.js';
 import { parseType } from '../util/parseType.js';
 import { DocumentedItemMeta } from './item-meta.js';

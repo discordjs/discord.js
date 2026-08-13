@@ -2,20 +2,22 @@
 
 import { Buffer } from 'node:buffer';
 import crypto from 'node:crypto';
+
 import type { VoiceReceivePayload } from 'discord-api-types/voice/v8';
 import { VoiceOpcodes } from 'discord-api-types/voice/v8';
-import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection';
+
 import { NetworkingStatusCode, type ConnectionData } from '../networking/Networking';
-import { methods } from '../util/Secretbox';
 import { RTP_OPUS_PAYLOAD_TYPE } from '../util/constants';
+import { methods } from '../util/Secretbox';
+import { VoiceConnectionStatus, type VoiceConnection } from '../VoiceConnection';
 import {
 	AudioReceiveStream,
 	createDefaultAudioReceiveStreamOptions,
 	AudioPacket,
 	type AudioReceiveStreamOptions,
 } from './AudioReceiveStream';
-import { SSRCMap } from './SSRCMap';
 import { SpeakingMap } from './SpeakingMap';
+import { SSRCMap } from './SSRCMap';
 
 const UNPADDED_NONCE_LENGTH = 4;
 const AUTH_TAG_LENGTH = 16;

@@ -1,5 +1,6 @@
 /* eslint-disable unicorn/consistent-function-scoping */
 import { PermissionFlagsBits } from 'discord-api-types/v10';
+
 import type { BitFieldResolvable } from './BitField.js';
 import { BitField } from './BitField.js';
 

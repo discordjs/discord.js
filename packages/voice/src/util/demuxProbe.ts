@@ -1,7 +1,9 @@
 import { Buffer } from 'node:buffer';
 import process from 'node:process';
 import { Readable } from 'node:stream';
+
 import prism from 'prism-media';
+
 import { StreamType } from '..';
 import { noop } from './util';
 

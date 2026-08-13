@@ -13,6 +13,7 @@ import {
 } from 'react';
 import { chain } from 'react-aria';
 import { useMediaQuery } from 'usehooks-ts';
+
 import { Button, type ButtonProps } from '@/components/ui/Button';
 import { SheetBody, SheetContent, type SheetContentProps } from '@/components/ui/Sheet';
 import { cva, cx } from '@/styles/cva';
@@ -71,7 +72,7 @@ export function SidebarProvider({
 				setInternalOpenState(openState);
 			}
 
-			// eslint-disable-next-line react-compiler/react-compiler
+			// oxlint-disable-next-line unicorn/no-document-cookie
 			document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
 		},
 		[setOpenProp, open, isMobile, setOpenMobile],

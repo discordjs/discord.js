@@ -1,5 +1,6 @@
 import { ComponentType } from 'discord-api-types/v10';
 import { describe, expect, test } from 'vitest';
+
 import { TextDisplayBuilder } from '../../../src/components/v2/TextDisplay';
 
 describe('TextDisplay', () => {

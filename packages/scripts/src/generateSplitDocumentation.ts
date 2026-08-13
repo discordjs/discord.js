@@ -1,6 +1,7 @@
 import { mkdir, stat, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import process from 'node:process';
+
 import {
 	type ApiClass,
 	type ApiConstructor,
@@ -47,6 +48,7 @@ import type {
 	DocComment,
 } from '@microsoft/tsdoc';
 import type { DeclarationReference, ModuleSource } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
+
 import { BuiltinDocumentationLinks } from './builtinDocumentationLinks.js';
 import { PACKAGES, fetchVersionDocs, fetchVersions } from './shared.js';
 

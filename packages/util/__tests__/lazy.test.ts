@@ -7,6 +7,7 @@
  */
 
 import { describe, test, expect, vi } from 'vitest';
+
 import { lazy } from '../src/index.js';
 
 describe('lazy', () => {

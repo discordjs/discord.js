@@ -3,7 +3,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { ChevronDown, ChevronUp, Loader2Icon } from 'lucide-react';
 import { notFound, useParams } from 'next/navigation';
+
 import { parseDocsPathParams } from '@/util/parseDocsPathParams';
+
 import { resolveNodeKind } from './DocKind';
 import { NavigationItem } from './NavigationItem';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/Collapsible';

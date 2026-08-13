@@ -3,6 +3,7 @@
 import { MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
 import { beforeEach, afterEach, test, expect } from 'vitest';
+
 import { DiscordAPIError, REST, BurstHandlerMajorIdKey } from '../src/index.js';
 import { BurstHandler } from '../src/lib/handlers/BurstHandler.js';
 import { genPath } from './util.js';

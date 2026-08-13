@@ -1,4 +1,5 @@
 import type { DeclarationReflection } from 'typedoc';
+
 import type { Config, Item } from '../interfaces/index.js';
 
 export class DocumentedItem<Data = DeclarationReflection | Item> {

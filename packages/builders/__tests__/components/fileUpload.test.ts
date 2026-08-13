@@ -1,6 +1,7 @@
 import type { APIFileUploadComponent, FileUploadType } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
+
 import { FileUploadBuilder } from '../../src/components/fileUpload/FileUpload.js';
 
 const fileUploadComponent = () => new FileUploadBuilder();

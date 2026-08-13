@@ -1,41 +1,35 @@
 {
 	"name": "@discordjs/api-extractor",
 	"version": "7.58.7",
-	"description": "Analyze the exported API for a TypeScript library and generate reviews, documentation, and .d.ts rollups",
 	"private": true,
+	"description": "Analyze the exported API for a TypeScript library and generate reviews, documentation, and .d.ts rollups",
 	"keywords": [
-		"typescript",
+		".d.ts",
+		"AEDoc",
 		"API",
 		"JSDoc",
-		"AEDoc",
 		"TSDoc",
-		"generate",
-		"documentation",
-		"declaration",
-		"dts",
-		".d.ts",
-		"rollup",
+		"alpha",
+		"beta",
 		"bundle",
 		"compiler",
-		"alpha",
-		"beta"
+		"declaration",
+		"documentation",
+		"dts",
+		"generate",
+		"rollup",
+		"typescript"
 	],
+	"homepage": "https://discord.js.org",
+	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/discordjs/discord.js.git",
 		"directory": "packages/api-extractor"
 	},
-	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"bin": {
 		"api-extractor": "./bin/api-extractor"
-	},
-	"license": "MIT",
-	"scripts": {
-		"build": "tsc --noEmit && tsup && pnpm run copy-files",
-		"copy-files": "cpy \"src/schemas/*.json\" \"dist/schemas\" && cpy \"extends/*.json\" \"dist/extends\"",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
-		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src"
 	},
 	"exports": {
 		".": {
@@ -48,6 +42,12 @@
 				"default": "./dist/index.mjs"
 			}
 		}
+	},
+	"scripts": {
+		"build": "tsc --noEmit && tsup && pnpm run copy-files",
+		"copy-files": "cpy \"src/schemas/*.json\" \"dist/schemas\" && cpy \"extends/*.json\" \"dist/extends\"",
+		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src",
+		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src --fix --fix-suggestions"
 	},
 	"dependencies": {
 		"@discordjs/api-extractor-model": "workspace:^",
@@ -67,12 +67,9 @@
 		"@types/resolve": "^1.20.6",
 		"@types/semver": "^7.7.1",
 		"cpy-cli": "^7.0.0",
-		"cross-env": "^10.1.0",
-		"eslint": "^9.39.4",
-		"eslint-config-neon": "^0.2.9",
-		"eslint-formatter-compact": "^9.0.1",
-		"eslint-formatter-pretty": "^7.0.0",
-		"prettier": "^3.8.1",
+		"eslint-config-neon": "^0.5.4",
+		"oxfmt": "^0.62.0",
+		"oxlint": "^1.77.0",
 		"terser": "^5.46.1",
 		"tsup": "^8.5.1",
 		"turbo": "^2.8.21"

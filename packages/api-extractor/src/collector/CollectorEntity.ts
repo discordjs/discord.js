@@ -3,6 +3,7 @@
 
 import { Sort } from '@rushstack/node-core-library';
 import * as ts from 'typescript';
+
 import type { AstEntity } from '../analyzer/AstEntity.js';
 import { AstSymbol } from '../analyzer/AstSymbol.js';
 import { Collector } from './Collector.js';

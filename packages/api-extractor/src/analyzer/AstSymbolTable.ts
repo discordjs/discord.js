@@ -5,6 +5,7 @@
 
 import { type PackageJsonLookup, InternalError } from '@rushstack/node-core-library';
 import * as ts from 'typescript';
+
 import type { MessageRouter } from '../collector/MessageRouter';
 import { AstDeclaration } from './AstDeclaration.js';
 import type { AstEntity } from './AstEntity.js';

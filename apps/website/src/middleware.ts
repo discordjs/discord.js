@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
+
 import { PACKAGES } from '@/util/constants';
 import { fetchLatestVersion } from '@/util/fetchLatestVersion';
 

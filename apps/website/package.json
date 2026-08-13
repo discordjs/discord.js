@@ -2,8 +2,35 @@
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/website",
 	"version": "0.1.0",
-	"description": "Imagine a bot... the most popular way to build discord bots",
 	"private": true,
+	"description": "Imagine a bot... the most popular way to build discord bots",
+	"keywords": [
+		"api",
+		"bot",
+		"client",
+		"discord",
+		"discordapp",
+		"discordjs",
+		"node"
+	],
+	"homepage": "https://discord.js.org",
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"license": "Apache-2.0",
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "apps/website"
+	},
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
+	"directories": {
+		"lib": "src"
+	},
+	"type": "module",
 	"scripts": {
 		"cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
 		"build:copy_readme": "cpy \"../../packages/(discord.js|brokers|builders|collection|core|formatters|next|proxy|rest|structures|util|voice|ws)/README.md\" \"src/assets/readme\" --rename='home-{{basename}}'",
@@ -18,38 +45,11 @@
 		"preview:cf": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
 		"deploy:cf": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
 		"dev": "next dev --turbopack",
-		"lint": "pnpm run build:check && prettier --check . && cross-env TIMING=1 eslint --format=pretty src ",
-		"format": "pnpm run build:check && prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src ",
+		"lint": "pnpm run build:check && oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src",
+		"format": "pnpm run build:check && oxfmt && oxlint --tsconfig=tsconfig.eslint.json src --fix --fix-suggestions",
 		"fmt": "pnpm run format",
 		"postinstall": "next typegen"
 	},
-	"type": "module",
-	"directories": {
-		"lib": "src"
-	},
-	"contributors": [
-		"Crawl <icrawltogo@gmail.com>"
-	],
-	"license": "Apache-2.0",
-	"keywords": [
-		"discord",
-		"api",
-		"bot",
-		"client",
-		"node",
-		"discordapp",
-		"discordjs"
-	],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/discordjs/discord.js.git",
-		"directory": "apps/website"
-	},
-	"bugs": {
-		"url": "https://github.com/discordjs/discord.js/issues"
-	},
-	"homepage": "https://discord.js.org",
-	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@opennextjs/cloudflare": "^1.18.0",
 		"@radix-ui/react-collapsible": "^1.1.12",
@@ -90,13 +90,11 @@
 		"babel-plugin-react-compiler": "^1.0.0",
 		"cpy-cli": "^7.0.0",
 		"cross-env": "^10.1.0",
-		"eslint": "^9.39.4",
-		"eslint-config-neon": "^0.3.2",
-		"eslint-formatter-pretty": "^7.0.0",
+		"eslint-config-neon": "^0.5.4",
 		"git-describe": "^4.1.1",
+		"oxfmt": "^0.62.0",
+		"oxlint": "^1.77.0",
 		"postcss": "^8.5.8",
-		"prettier": "^3.8.1",
-		"prettier-plugin-tailwindcss": "^0.7.2",
 		"remark-gfm": "^4.0.1",
 		"remark-rehype": "^11.1.2",
 		"shiki": "^4.0.2",

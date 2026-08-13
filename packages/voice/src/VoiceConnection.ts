@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import type { Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
+
 import type { GatewayVoiceServerUpdateDispatchData, GatewayVoiceStateUpdateDispatchData } from 'discord-api-types/v10';
+
+import type { AudioPlayer } from './audio/AudioPlayer';
+import type { PlayerSubscription } from './audio/PlayerSubscription';
 import type { JoinConfig } from './DataStore';
 import {
 	getVoiceConnection,
@@ -9,14 +13,12 @@ import {
 	trackVoiceConnection,
 	untrackVoiceConnection,
 } from './DataStore';
-import type { AudioPlayer } from './audio/AudioPlayer';
-import type { PlayerSubscription } from './audio/PlayerSubscription';
+import type { CreateVoiceConnectionOptions } from './index';
 import type { VoiceWebSocket, VoiceUDPSocket } from './networking';
 import { Networking, NetworkingStatusCode, type NetworkingState } from './networking/Networking';
 import { VoiceReceiver } from './receive/index';
 import type { DiscordGatewayAdapterImplementerMethods } from './util/adapter';
 import { noop } from './util/util';
-import type { CreateVoiceConnectionOptions } from './index';
 
 /**
  * The various status codes a voice connection can hold at any one time.

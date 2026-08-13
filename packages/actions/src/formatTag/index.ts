@@ -1,4 +1,5 @@
 import { getInput, setOutput } from '@actions/core';
+
 import { formatTag } from './formatTag.js';
 
 const tag = getInput('tag', { required: true });

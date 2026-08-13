@@ -1,5 +1,6 @@
 import { AllowedMentionsTypes, BaseThemeType, MessageFlags } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
+
 import { AllowedMentionsBuilder, EmbedBuilder, MessageBuilder, SharedClientThemeBuilder } from '../../src/index.js';
 
 const base = {

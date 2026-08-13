@@ -1,4 +1,5 @@
 import type { z } from 'zod';
+
 import { ValidationError } from './ValidationError.js';
 
 let validationEnabled = true;

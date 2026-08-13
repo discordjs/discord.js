@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 import { getCiphers } from 'node:crypto';
 import { resolve, dirname } from 'node:path';
+
 import prism from 'prism-media';
 
 /**

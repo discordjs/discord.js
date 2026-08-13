@@ -1,4 +1,5 @@
 import type { DeclarationReflection } from 'typedoc';
+
 import type { Member } from '../interfaces/index.js';
 import { parseType } from '../util/parseType.js';
 import { DocumentedItemMeta } from './item-meta.js';

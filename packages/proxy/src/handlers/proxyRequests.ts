@@ -1,4 +1,5 @@
 import type { RequestMethod, REST, RouteLike } from '@discordjs/rest';
+
 import { populateSuccessfulResponse, populateErrorResponse } from '../util/responseHelpers.js';
 import type { RequestHandler } from '../util/util.js';
 

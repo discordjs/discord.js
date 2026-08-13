@@ -2,6 +2,7 @@
 // See LICENSE in the project root for license information.
 
 import { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
+
 import { Excerpt, ExcerptToken, type IExcerptTokenRange, type IExcerptToken } from '../mixins/Excerpt.js';
 import type { DeserializerContext } from '../model/DeserializerContext.js';
 import { SourceLocation } from '../model/SourceLocation.js';

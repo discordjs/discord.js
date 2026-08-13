@@ -2,9 +2,11 @@
 
 import process from 'node:process';
 import { styleText } from 'node:util';
+
 import { Option, program } from 'commander';
 import prompts from 'prompts';
 import validateProjectName from 'validate-npm-package-name';
+
 import packageJSON from '../package.json' with { type: 'json' };
 import { createDiscordBot } from '../src/create-discord-bot.js';
 import { resolvePackageManager } from '../src/helpers/packageManager.js';

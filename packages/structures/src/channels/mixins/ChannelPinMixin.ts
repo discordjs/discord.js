@@ -1,4 +1,5 @@
 import type { ChannelType, ThreadChannelType } from 'discord-api-types/v10';
+
 import { kLastPinTimestamp, kMixinConstruct, kMixinToJSON } from '../../utils/symbols.js';
 import type { Channel, ChannelDataType } from '../Channel.js';
 

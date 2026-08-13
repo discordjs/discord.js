@@ -1,5 +1,6 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APISoundboardSound } from 'discord-api-types/v10';
+
 import { Structure } from '../Structure';
 import { kData } from '../utils/symbols';
 import { isIdSet } from '../utils/type-guards';

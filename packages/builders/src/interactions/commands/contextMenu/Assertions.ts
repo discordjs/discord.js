@@ -1,5 +1,6 @@
 import { ApplicationCommandType, ApplicationIntegrationType, InteractionContextType } from 'discord-api-types/v10';
 import { z } from 'zod';
+
 import { localeMapPredicate, memberPermissionsPredicate } from '../../../Assertions.js';
 
 const namePredicate = z

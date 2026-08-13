@@ -2,6 +2,7 @@
 
 import type { ComponentProps } from 'react';
 import { Keyboard as RACKeyboard } from 'react-aria-components';
+
 import { cx } from '@/styles/cva';
 
 type KeyboardProps = ComponentProps<'div'> & {

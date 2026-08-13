@@ -1,8 +1,10 @@
 import type { Readable } from 'node:stream';
 import type { ReadableStream } from 'node:stream/web';
+
 import type { Collection } from '@discordjs/collection';
 import type { Awaitable, RawFile } from '@discordjs/util';
 import type { Agent, Dispatcher, RequestInit, BodyInit, Response } from 'undici';
+
 import type { IHandler } from '../interfaces/Handler.js';
 
 export interface RestEvents {

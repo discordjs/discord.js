@@ -1,6 +1,7 @@
 import { Events } from 'discord.js';
-import type { Event } from './index.ts';
+
 import { loadCommands } from '../util/loaders.ts';
+import type { Event } from './index.ts';
 
 const commands = await loadCommands(new URL('../commands/', import.meta.url));
 

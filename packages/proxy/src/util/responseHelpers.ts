@@ -1,6 +1,7 @@
 import type { ServerResponse } from 'node:http';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
+
 import { DiscordAPIError, HTTPError, RateLimitError, type ResponseLike } from '@discordjs/rest';
 
 /**

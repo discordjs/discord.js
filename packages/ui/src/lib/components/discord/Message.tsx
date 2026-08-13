@@ -1,4 +1,5 @@
 import type { PropsWithChildren, ReactNode } from 'react';
+
 import { DiscordMessageAuthor, type IDiscordMessageAuthor } from './MessageAuthor.js';
 import { DiscordMessageInteraction, type IDiscordMessageInteraction } from './MessageInteraction.js';
 import { DiscordMessageReply, type IDiscordMessageReply } from './MessageReply.js';

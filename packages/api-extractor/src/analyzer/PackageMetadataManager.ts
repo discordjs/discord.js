@@ -2,6 +2,7 @@
 // See LICENSE in the project root for license information.
 /* eslint-disable sonarjs/no-nested-switch */
 import path from 'node:path';
+
 import {
 	type PackageJsonLookup,
 	FileSystem,
@@ -12,6 +13,7 @@ import {
 	type IPackageJsonExports,
 } from '@rushstack/node-core-library';
 import semver from 'semver';
+
 import { ConsoleMessageId } from '../api/ConsoleMessageId.js';
 import { Extractor } from '../api/Extractor.js';
 import type { MessageRouter } from '../collector/MessageRouter.js';

@@ -1,6 +1,7 @@
 import type { Buffer } from 'node:buffer';
 import process from 'node:process';
 import { Readable, type ReadableOptions } from 'node:stream';
+
 import { SILENCE_FRAME } from '../audio/AudioPlayer';
 
 /**

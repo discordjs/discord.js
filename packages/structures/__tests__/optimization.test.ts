@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+
 import { dateToDiscordISOTimestamp } from '../src/utils/optimization.js';
 
 describe('dateToDiscordISOTimestamp', () => {

@@ -1,4 +1,5 @@
 import { readFile, writeFile } from 'node:fs/promises';
+
 import { parse as parseYAML, stringify as stringifyYAML } from 'yaml';
 
 interface LabelerData {

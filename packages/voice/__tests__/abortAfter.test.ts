@@ -1,4 +1,5 @@
 import { describe, test, expect, vitest } from 'vitest';
+
 import { abortAfter } from '../src/util/abortAfter';
 
 vitest.useFakeTimers();

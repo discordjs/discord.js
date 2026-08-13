@@ -4,6 +4,7 @@ import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import { filetypeinfo } from 'magic-bytes.js';
 import type { RequestInit, BodyInit, Dispatcher } from 'undici';
 import { v5 as uuidV5 } from 'uuid';
+
 import { CDN } from './CDN.js';
 import { BurstHandler } from './handlers/BurstHandler.js';
 import { SequentialHandler } from './handlers/SequentialHandler.js';

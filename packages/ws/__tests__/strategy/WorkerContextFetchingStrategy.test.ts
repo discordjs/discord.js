@@ -1,4 +1,5 @@
 import { test, vi, expect } from 'vitest';
+
 import {
 	managerToFetchingStrategyOptions,
 	WorkerContextFetchingStrategy,

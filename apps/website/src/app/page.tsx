@@ -1,6 +1,7 @@
 import { ExternalLink } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+
 import vercelLogo from '@/assets/powered-by-vercel.svg';
 import workersLogo from '@/assets/powered-by-workers.png';
 import { InstallButton } from '@/components/InstallButton';

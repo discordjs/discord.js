@@ -2,6 +2,7 @@
 // See LICENSE in the project root for license information.
 
 import { TSDocConfiguration } from '@microsoft/tsdoc';
+
 import type { IExcerptToken } from '../index.js';
 import { ExcerptTokenKind } from '../index.js';
 import type { IApiDeclaredItemJson } from '../items/ApiDeclaredItem.js';
@@ -21,8 +22,8 @@ import type { IApiStaticMixinJson } from '../mixins/ApiStaticMixin.js';
 import type { IApiTypeParameterListMixinJson } from '../mixins/ApiTypeParameterListMixin.js';
 import { ApiCallSignature, type IApiCallSignatureOptions } from './ApiCallSignature.js';
 import { ApiClass, type IApiClassOptions, type IApiClassJson } from './ApiClass.js';
-import { ApiConstructSignature, type IApiConstructSignatureOptions } from './ApiConstructSignature.js';
 import { ApiConstructor, type IApiConstructorOptions } from './ApiConstructor.js';
+import { ApiConstructSignature, type IApiConstructSignatureOptions } from './ApiConstructSignature.js';
 import { ApiEntryPoint, type IApiEntryPointOptions } from './ApiEntryPoint.js';
 import { ApiEnum, type IApiEnumOptions } from './ApiEnum.js';
 import { ApiEnumMember, type IApiEnumMemberOptions } from './ApiEnumMember.js';

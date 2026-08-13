@@ -1,6 +1,8 @@
 import { setTimeout as sleep } from 'node:timers/promises';
+
 import { Collection } from '@discordjs/collection';
 import { AsyncQueue } from '@sapphire/async-queue';
+
 import type { IIdentifyThrottler } from './IIdentifyThrottler.js';
 
 /**

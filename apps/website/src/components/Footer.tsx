@@ -1,4 +1,5 @@
 import Image from 'next/image';
+
 import vercelLogo from '@/assets/powered-by-vercel.svg';
 import workersLogo from '@/assets/powered-by-workers.png';
 

@@ -1,5 +1,7 @@
 import process from 'node:process';
+
 import { Client, GatewayIntentBits } from 'discord.js';
+
 import { loadEvents } from './util/loaders.js';
 
 // Initialize the client

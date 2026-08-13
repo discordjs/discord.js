@@ -3,6 +3,7 @@
 
 import type { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
 import { InternalError } from '@rushstack/node-core-library';
+
 import { ApiItemContainerMixin } from '../mixins/ApiItemContainerMixin.js';
 import { ApiParameterListMixin } from '../mixins/ApiParameterListMixin.js';
 import type { Constructor, PropertiesOf } from '../mixins/Mixin.js';

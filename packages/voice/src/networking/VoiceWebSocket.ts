@@ -1,5 +1,6 @@
 import { Buffer } from 'node:buffer';
 import { EventEmitter } from 'node:events';
+
 import type { VoiceSendPayload } from 'discord-api-types/voice/v8';
 import { VoiceOpcodes } from 'discord-api-types/voice/v8';
 import WebSocket, { type MessageEvent } from 'ws';

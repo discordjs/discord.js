@@ -1,7 +1,9 @@
 import process from 'node:process';
+
 import { info, warning } from '@actions/core';
 import { getOctokit, context } from '@actions/github';
 import { $ } from 'bun';
+
 import type { ReleaseEntry } from './generateReleaseTree.js';
 
 let octokit: ReturnType<typeof getOctokit> | undefined;

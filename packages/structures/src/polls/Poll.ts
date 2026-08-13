@@ -1,4 +1,5 @@
 import type { APIPoll } from 'discord-api-types/v10';
+
 import { Structure } from '../Structure.js';
 import { dateToDiscordISOTimestamp } from '../utils/optimization.js';
 import { kData, kExpiresTimestamp } from '../utils/symbols.js';

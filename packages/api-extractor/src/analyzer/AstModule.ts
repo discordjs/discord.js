@@ -2,6 +2,7 @@
 // See LICENSE in the project root for license information.
 
 import type * as ts from 'typescript';
+
 import type { AstEntity } from './AstEntity.js';
 import type { AstSymbol } from './AstSymbol.js';
 

@@ -1,4 +1,5 @@
 import { VscSymbolParameter } from '@react-icons/all-files/vsc/VscSymbolParameter';
+
 import { ConstructorNode } from './ConstructorNode';
 import { DeprecatedNode } from './DeprecatedNode';
 import { EnumMemberNode } from './EnumMemberNode';
@@ -14,9 +15,9 @@ import { SeeNode } from './SeeNode';
 import { SummaryNode } from './SummaryNode';
 import { SyntaxHighlighter } from './SyntaxHighlighter';
 import { TypeParameterNode } from './TypeParameterNode';
+import { Tab, TabList, TabPanel, Tabs } from './ui/Tabs';
 import { UnionMember } from './UnionMember';
 import { UnstableNode } from './UnstableNode';
-import { Tab, TabList, TabPanel, Tabs } from './ui/Tabs';
 
 async function OverloadNode({
 	node,

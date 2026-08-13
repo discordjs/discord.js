@@ -2,16 +2,45 @@
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/docgen",
 	"version": "0.12.1",
-	"description": "The docs.json generator for discord.js and its related projects",
 	"private": true,
-	"scripts": {
-		"build": "tsup",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
-		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
-		"fmt": "pnpm run format",
-		"prepack": "pnpm run format && pnpm run build"
+	"description": "The docs.json generator for discord.js and its related projects",
+	"keywords": [
+		"discordjs",
+		"docgen",
+		"docs",
+		"docsgen",
+		"documentation",
+		"generator",
+		"node"
+	],
+	"homepage": "https://discord.js.org",
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
 	},
+	"license": "Apache-2.0",
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>",
+		"Amish Shah <amishshah.2k@gmail.com>",
+		"Schuyler Cebulskie <Gawdl3y@Gawdl3y.com>"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/docgen"
+	},
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"bin": "./bin/index.js",
+	"directories": {
+		"lib": "src",
+		"bin": "bin"
+	},
+	"files": [
+		"bin/index.js",
+		"dist"
+	],
+	"main": "./dist/src/index.js",
+	"module": "./dist/src/index.mjs",
+	"types": "./dist/src/index.d.ts",
 	"exports": {
 		".": {
 			"require": {
@@ -24,42 +53,17 @@
 			}
 		}
 	},
-	"main": "./dist/src/index.js",
-	"module": "./dist/src/index.mjs",
-	"types": "./dist/src/index.d.ts",
-	"directories": {
-		"bin": "bin",
-		"lib": "src"
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
 	},
-	"files": [
-		"bin/index.js",
-		"dist"
-	],
-	"contributors": [
-		"Crawl <icrawltogo@gmail.com>",
-		"Amish Shah <amishshah.2k@gmail.com>",
-		"Schuyler Cebulskie <Gawdl3y@Gawdl3y.com>"
-	],
-	"license": "Apache-2.0",
-	"keywords": [
-		"documentation",
-		"docs",
-		"generator",
-		"docgen",
-		"docsgen",
-		"node",
-		"discordjs"
-	],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/discordjs/discord.js.git",
-		"directory": "packages/docgen"
+	"scripts": {
+		"build": "tsup",
+		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src",
+		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src --fix --fix-suggestions",
+		"fmt": "pnpm run format",
+		"prepack": "pnpm run format && pnpm run build"
 	},
-	"bugs": {
-		"url": "https://github.com/discordjs/discord.js/issues"
-	},
-	"homepage": "https://discord.js.org",
-	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"commander": "^14.0.3",
 		"jsdoc-to-markdown": "^8.0.3",
@@ -69,12 +73,9 @@
 	"devDependencies": {
 		"@types/jsdoc-to-markdown": "^7.0.6",
 		"@types/node": "^24.13.2",
-		"cross-env": "^10.1.0",
-		"eslint": "^9.39.4",
-		"eslint-config-neon": "^0.3.2",
-		"eslint-formatter-compact": "^9.0.1",
-		"eslint-formatter-pretty": "^7.0.0",
-		"prettier": "^3.8.1",
+		"eslint-config-neon": "^0.5.4",
+		"oxfmt": "^0.62.0",
+		"oxlint": "^1.77.0",
 		"terser": "^5.46.1",
 		"tsup": "^8.5.1",
 		"turbo": "^2.8.21",
@@ -82,9 +83,5 @@
 	},
 	"engines": {
 		"node": ">=24.17.0"
-	},
-	"publishConfig": {
-		"access": "public",
-		"provenance": true
 	}
 }

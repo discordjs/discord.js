@@ -3,6 +3,7 @@
 
 import { InternalError } from '@rushstack/node-core-library';
 import * as ts from 'typescript';
+
 import { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import { AstImport, AstImportKind } from '../analyzer/AstImport.js';
 import { SourceFileLocationFormatter } from '../analyzer/SourceFileLocationFormatter.js';

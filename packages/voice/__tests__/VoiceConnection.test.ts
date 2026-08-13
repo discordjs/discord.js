@@ -1,9 +1,15 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable @typescript-eslint/dot-notation */
 import { EventEmitter } from 'node:events';
+
 import type { Mocked } from 'vitest';
 import { vitest, describe, test, expect, beforeEach } from 'vitest';
+
+import * as _AudioPlayer from '../src/audio/AudioPlayer';
+import { PlayerSubscription as _PlayerSubscription } from '../src/audio/PlayerSubscription';
 import * as _DataStore from '../src/DataStore';
+import * as Networking from '../src/networking/Networking';
+import type { DiscordGatewayAdapterLibraryMethods } from '../src/util/adapter';
 import {
 	createVoiceConnection,
 	VoiceConnection,
@@ -13,10 +19,6 @@ import {
 	type VoiceConnectionReadyState,
 	type VoiceConnectionSignallingState,
 } from '../src/VoiceConnection';
-import * as _AudioPlayer from '../src/audio/AudioPlayer';
-import { PlayerSubscription as _PlayerSubscription } from '../src/audio/PlayerSubscription';
-import * as Networking from '../src/networking/Networking';
-import type { DiscordGatewayAdapterLibraryMethods } from '../src/util/adapter';
 
 vitest.mock('../src/audio/AudioPlayer');
 vitest.mock('../src/audio/PlayerSubscription');

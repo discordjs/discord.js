@@ -1,5 +1,6 @@
 import { channelLink } from '@discordjs/formatters';
 import type { GuildChannelType } from 'discord-api-types/v10';
+
 import { ChannelFlagsBitField } from '../../bitfields/ChannelFlagsBitField.js';
 import { kData } from '../../utils/symbols.js';
 import type { Channel } from '../Channel.js';

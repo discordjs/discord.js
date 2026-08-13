@@ -1,4 +1,5 @@
 import type { APIMessageCall } from 'discord-api-types/v10';
+
 import { Structure } from '../Structure.js';
 import { dateToDiscordISOTimestamp } from '../utils/optimization.js';
 import { kEndedTimestamp } from '../utils/symbols.js';

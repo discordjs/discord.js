@@ -1,4 +1,5 @@
 import type { TypeParameter, ApiModel, ApiItem } from '@discordjs/api-extractor-model';
+
 import { type TokenDocumentation, genToken } from './parse.js';
 import { type DocBlockJSON, block } from './tsdoc/CommentBlock.js';
 

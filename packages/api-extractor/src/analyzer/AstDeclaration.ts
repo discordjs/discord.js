@@ -3,6 +3,7 @@
 
 import { InternalError } from '@rushstack/node-core-library';
 import * as ts from 'typescript';
+
 import type { AstEntity } from './AstEntity.js';
 import type { AstSymbol } from './AstSymbol.js';
 import { Span } from './Span.js';

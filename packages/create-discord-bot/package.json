@@ -3,25 +3,20 @@
 	"name": "create-discord-bot",
 	"version": "4.1.0",
 	"description": "A simple way to create a startup Discord bot.",
-	"scripts": {
-		"build": "tsc --noEmit && tsup",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
-		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
-		"prepack": "pnpm run build && pnpm run lint",
-		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/create-discord-bot/*'",
-		"release": "cliff-jumper",
-		"rename-to-app": "node scripts/rename-to-app.mjs"
-	},
-	"type": "module",
-	"bin": "./dist/index.js",
-	"directories": {
-		"bin": "bin",
-		"lib": "src"
-	},
-	"files": [
-		"dist",
-		"template"
+	"keywords": [
+		"boilerplate",
+		"create-bot",
+		"discord",
+		"discord-api",
+		"discord.js",
+		"init-bot",
+		"init-discord"
 	],
+	"homepage": "https://discord.js.org",
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
+	},
+	"license": "Apache-2.0",
 	"contributors": [
 		"Crawl <icrawltogo@gmail.com>",
 		"SpaceEEC <spaceeec@yahoo.com>",
@@ -29,26 +24,35 @@
 		"Aura Román <kyradiscord@gmail.com>",
 		"Jiralite <me@jiralite.dev>"
 	],
-	"license": "Apache-2.0",
-	"keywords": [
-		"discord",
-		"discord-api",
-		"discord.js",
-		"create-bot",
-		"init-bot",
-		"init-discord",
-		"boilerplate"
-	],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/discordjs/discord.js.git",
 		"directory": "packages/create-discord-bot"
 	},
-	"bugs": {
-		"url": "https://github.com/discordjs/discord.js/issues"
-	},
-	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
+	"bin": "./dist/index.js",
+	"directories": {
+		"lib": "src",
+		"bin": "bin"
+	},
+	"files": [
+		"dist",
+		"template"
+	],
+	"type": "module",
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"scripts": {
+		"build": "tsc --noEmit && tsup",
+		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src",
+		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src --fix --fix-suggestions",
+		"prepack": "pnpm run build && pnpm run lint",
+		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/create-discord-bot/*'",
+		"release": "cliff-jumper",
+		"rename-to-app": "node scripts/rename-to-app.mjs"
+	},
 	"dependencies": {
 		"commander": "^14.0.3",
 		"prompts": "^2.4.2",
@@ -60,21 +64,14 @@
 		"@types/node": "^24.13.2",
 		"@types/prompts": "^2.4.9",
 		"@types/validate-npm-package-name": "^4.0.2",
-		"cross-env": "^10.1.0",
-		"eslint": "^9.39.4",
-		"eslint-config-neon": "^0.3.2",
-		"eslint-formatter-compact": "^9.0.1",
-		"eslint-formatter-pretty": "^7.0.0",
-		"prettier": "^3.8.1",
+		"eslint-config-neon": "^0.5.4",
+		"oxfmt": "^0.62.0",
+		"oxlint": "^1.77.0",
 		"terser": "^5.46.1",
 		"tsup": "^8.5.1",
 		"typescript": "~5.9.3"
 	},
 	"engines": {
 		"node": ">=24.17.0"
-	},
-	"publishConfig": {
-		"access": "public",
-		"provenance": true
 	}
 }

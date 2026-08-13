@@ -1,4 +1,5 @@
 import type { JSONOutput } from 'typedoc';
+
 import {
 	isArrayType,
 	isConditionalType,

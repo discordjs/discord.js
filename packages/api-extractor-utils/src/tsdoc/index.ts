@@ -11,6 +11,7 @@ import {
 	type DocCodeSpan,
 	type DocParamBlock,
 } from '@microsoft/tsdoc';
+
 import { block } from './CommentBlock.js';
 import { codeSpan } from './CommentCodeSpan.js';
 import { node as _node, type AnyDocNodeJSON } from './CommentNode.js';

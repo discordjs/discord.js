@@ -1,5 +1,6 @@
 import { ApplicationCommandType, type RESTPostAPIChatInputApplicationCommandsJSONBody } from 'discord-api-types/v10';
 import { Mixin } from 'ts-mixer';
+
 import { validate } from '../../../util/validation.js';
 import { CommandBuilder } from '../Command.js';
 import { SharedNameAndDescription } from '../SharedNameAndDescription.js';

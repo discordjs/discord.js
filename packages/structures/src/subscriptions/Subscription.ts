@@ -1,5 +1,6 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import type { APISubscription } from 'discord-api-types/v10';
+
 import { Structure } from '../Structure.js';
 import { dateToDiscordISOTimestamp } from '../utils/optimization.js';
 import {

@@ -6,6 +6,7 @@ import type {
 	RESTPostAPIInteractionCallbackWithResponseResult,
 } from 'discord-api-types/v10';
 import { expectTypeOf, describe, test } from 'vitest';
+
 import { API } from '../src/index.js';
 
 const rest = new REST();

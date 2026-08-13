@@ -3,6 +3,7 @@
 
 import * as tsdoc from '@microsoft/tsdoc';
 import * as ts from 'typescript';
+
 import type { Collector } from '../collector/Collector.js';
 import type { DeclarationMetadata } from '../collector/DeclarationMetadata.js';
 import type { IWorkingPackageEntryPoint, WorkingPackage } from '../collector/WorkingPackage.js';

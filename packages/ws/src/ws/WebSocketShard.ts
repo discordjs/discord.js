@@ -2,6 +2,7 @@ import { Buffer } from 'node:buffer';
 import { once } from 'node:events';
 import { setTimeout as sleep } from 'node:timers/promises';
 import type * as nativeZlib from 'node:zlib';
+
 import { Collection } from '@discordjs/collection';
 import { lazy, shouldUseGlobalFetchAndWebSocket } from '@discordjs/util';
 import { AsyncQueue } from '@sapphire/async-queue';
@@ -18,6 +19,7 @@ import {
 } from 'discord-api-types/v10';
 import { WebSocket, type Data } from 'ws';
 import type * as ZlibSync from 'zlib-sync';
+
 import type { IContextFetchingStrategy } from '../strategies/context/IContextFetchingStrategy';
 import {
 	CompressionMethod,

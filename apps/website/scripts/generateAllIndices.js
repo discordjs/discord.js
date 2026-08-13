@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+
 import { generateAllIndices } from '@discordjs/scripts';
 
 console.info('Generating all indices...');

@@ -1,6 +1,8 @@
 import { Buffer } from 'node:buffer';
+
 import type { RawFile } from '@discordjs/util';
 import { test, expect } from 'vitest';
+
 import { AttachmentBuilder, MessageBuilder } from '../../src/index.js';
 
 test('AttachmentBuilder stores and exposes file data', () => {

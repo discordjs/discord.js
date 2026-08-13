@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
+
 import { fetchVersions } from '@/util/fetchVersions';
 
 export async function GET(request: NextRequest) {

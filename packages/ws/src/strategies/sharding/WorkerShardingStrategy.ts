@@ -1,8 +1,10 @@
 import { once } from 'node:events';
 import { join, isAbsolute, resolve } from 'node:path';
 import { Worker } from 'node:worker_threads';
+
 import { Collection } from '@discordjs/collection';
 import type { GatewaySendPayload } from 'discord-api-types/v10';
+
 import type { IIdentifyThrottler } from '../../throttling/IIdentifyThrottler.js';
 import type { SessionInfo, WebSocketManager } from '../../ws/WebSocketManager.js';
 import type {

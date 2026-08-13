@@ -2,6 +2,7 @@
 // See LICENSE in the project root for license information.
 
 import type * as tsdoc from '@microsoft/tsdoc';
+
 import { ApiDocumentedItem } from '../items/ApiDocumentedItem.js';
 import type { ApiTypeParameterListMixin } from '../mixins/ApiTypeParameterListMixin.js';
 import type { Excerpt } from '../mixins/Excerpt.js';

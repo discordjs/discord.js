@@ -11,6 +11,7 @@ import type {
 	GatewayDispatchPayload,
 	GatewayReadyDispatchData,
 } from 'discord-api-types/v10';
+
 import type { IShardingStrategy } from '../strategies/sharding/IShardingStrategy.js';
 import type { IIdentifyThrottler } from '../throttling/IIdentifyThrottler.js';
 import { DefaultWebSocketManagerOptions, type CompressionMethod, type Encoding } from '../utils/constants.js';

@@ -1,5 +1,6 @@
 import type { ApiItem, ApiModel } from '@discordjs/api-extractor-model';
 import type { DocNodeContainer } from '@microsoft/tsdoc';
+
 import { type AnyDocNodeJSON, type DocNodeJSON, node } from './CommentNode.js';
 import { createCommentNode } from './index.js';
 

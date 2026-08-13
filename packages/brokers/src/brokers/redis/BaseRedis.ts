@@ -2,9 +2,11 @@ import type { Buffer } from 'node:buffer';
 import { randomBytes } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+
 import { AsyncEventEmitter } from '@vladfrangu/async_event_emitter';
 import type { Redis } from 'ioredis';
 import { ReplyError } from 'ioredis';
+
 import type { BaseBrokerOptions, IBaseBroker, ToEventMap } from '../Broker.js';
 import { DefaultBrokerOptions } from '../Broker.js';
 

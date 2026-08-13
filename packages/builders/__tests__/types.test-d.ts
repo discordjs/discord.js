@@ -1,4 +1,5 @@
 import { expectTypeOf } from 'vitest';
+
 import {
 	ChatInputCommandBuilder,
 	ChatInputCommandStringOption,

@@ -7,6 +7,7 @@ import {
 	SeparatorSpacingSize,
 } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
+
 import { createComponentBuilder } from '../../../src/components/Components.js';
 import { ContainerBuilder } from '../../../src/components/v2/Container.js';
 import { SeparatorBuilder } from '../../../src/components/v2/Separator.js';

@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+
 import { MediaGalleryItemBuilder } from '../../../src/components/v2/MediaGalleryItem';
 
 const dummy = {

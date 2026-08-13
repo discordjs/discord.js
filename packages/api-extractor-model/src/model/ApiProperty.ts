@@ -2,6 +2,7 @@
 // See LICENSE in the project root for license information.
 
 import { DeclarationReference, type Component } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference.js';
+
 import { ApiItemKind, Navigation, Meaning } from '../items/ApiItem.js';
 import { ApiPropertyItem, type IApiPropertyItemOptions } from '../items/ApiPropertyItem.js';
 import { ApiAbstractMixin, type IApiAbstractMixinOptions } from '../mixins/ApiAbstractMixin.js';

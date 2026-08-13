@@ -13,6 +13,7 @@ import {
 	type FileUploadType,
 } from 'discord-api-types/v10';
 import { describe, test, expect } from 'vitest';
+
 import {
 	ChatInputCommandAttachmentOption,
 	ChatInputCommandBooleanOption,

@@ -1,5 +1,6 @@
 import { MockAgent, setGlobalDispatcher, type Interceptable } from 'undici';
 import { beforeEach, afterEach, test, expect } from 'vitest';
+
 import { REST } from '../src/index.js';
 import { normalizeRateLimitOffset } from '../src/lib/utils/utils.js';
 import { genPath } from './util.js';

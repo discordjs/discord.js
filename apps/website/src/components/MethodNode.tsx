@@ -1,7 +1,9 @@
 import { VscSymbolMethod } from '@react-icons/all-files/vsc/VscSymbolMethod';
 import { ChevronDown, ChevronUp, Code2, LinkIcon } from 'lucide-react';
 import Link from 'next/link';
+
 import { ENV } from '@/util/env';
+
 import { Badges } from './Badges';
 import { DeprecatedNode } from './DeprecatedNode';
 import { ExampleNode } from './ExampleNode';
@@ -12,9 +14,9 @@ import { ReturnNode } from './ReturnNode';
 import { SeeNode } from './SeeNode';
 import { SummaryNode } from './SummaryNode';
 import { TypeParameterNode } from './TypeParameterNode';
-import { UnstableNode } from './UnstableNode';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/Collapsible';
 import { Tab, TabList, TabPanel, Tabs } from './ui/Tabs';
+import { UnstableNode } from './UnstableNode';
 
 async function MethodBodyNode({
 	method,
@@ -47,8 +49,8 @@ async function MethodBodyNode({
 									{'>'}
 								</>
 							) : null}
-							({method.parameters?.length ? <ParameterNode node={method.parameters} version={version} /> : null}
-							) : <ExcerptNode node={method.returnTypeExcerpt} version={version} />
+							({method.parameters?.length ? <ParameterNode node={method.parameters} version={version} /> : null}) :{' '}
+							<ExcerptNode node={method.returnTypeExcerpt} version={version} />
 						</span>
 					</h3>
 

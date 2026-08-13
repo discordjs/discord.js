@@ -1,7 +1,8 @@
 import { describe, test, expect } from 'vitest';
+
 import { isJSONEncodable, type JSONEncodable } from '../src/index.js';
 
-class Encodable implements JSONEncodable<{}> {
+class Encodable implements JSONEncodable<Record<string, never>> {
 	public toJSON() {
 		return {};
 	}

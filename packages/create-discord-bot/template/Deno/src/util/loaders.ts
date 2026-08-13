@@ -2,6 +2,7 @@ import type { PathLike } from 'node:fs';
 import { glob, stat } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
 import type { Command } from '../commands/index.ts';
 import { predicate as commandPredicate } from '../commands/index.ts';
 import type { Event } from '../events/index.ts';

@@ -2,9 +2,11 @@
 // See LICENSE in the project root for license information.
 
 import * as path from 'node:path';
+
 import { FileSystem } from '@rushstack/node-core-library';
 import { CommandLineAction } from '@rushstack/ts-command-line';
 import colors from 'colors';
+
 import { ExtractorConfig } from '../api/ExtractorConfig.js';
 import type { ApiExtractorCommandLine } from './ApiExtractorCommandLine.js';
 

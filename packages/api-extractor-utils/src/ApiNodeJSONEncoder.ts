@@ -18,12 +18,13 @@ import type {
 	ApiReturnTypeMixin,
 } from '@discordjs/api-extractor-model';
 import { ApiDeclaredItem, ApiItemKind } from '@discordjs/api-extractor-model';
-import { generateTypeParamData } from './TypeParameterJSONEncoder.js';
+
 import { type TokenDocumentation, resolveName, genReference, genToken, genParameter, generatePath } from './parse.js';
 import type { DocBlockJSON } from './tsdoc/CommentBlock.js';
 import type { AnyDocNodeJSON } from './tsdoc/CommentNode.js';
 import { type DocNodeContainerJSON, nodeContainer } from './tsdoc/CommentNodeContainer.js';
 import { createCommentNode } from './tsdoc/index.js';
+import { generateTypeParamData } from './TypeParameterJSONEncoder.js';
 
 export interface ReferenceData {
 	name: string;

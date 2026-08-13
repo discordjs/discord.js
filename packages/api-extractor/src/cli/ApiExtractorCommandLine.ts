@@ -3,9 +3,11 @@
 
 import * as os from 'node:os';
 import process from 'node:process';
+
 import { AlreadyReportedError, InternalError } from '@rushstack/node-core-library';
 import { CommandLineParser, type CommandLineFlagParameter } from '@rushstack/ts-command-line';
 import colors from 'colors';
+
 import { InitAction } from './InitAction.js';
 import { RunAction } from './RunAction.js';
 

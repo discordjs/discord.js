@@ -2,18 +2,45 @@
 	"$schema": "https://json.schemastore.org/package.json",
 	"name": "@discordjs/scripts",
 	"version": "0.1.0",
-	"description": "A set of scripts that we use for our workflows",
 	"private": true,
-	"scripts": {
-		"build": "tsc --noEmit --lib ESNext,DOM && tsup",
-		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src turbo/generators/config.ts",
-		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src turbo/generators/config.ts",
-		"fmt": "pnpm run format"
+	"description": "A set of scripts that we use for our workflows",
+	"keywords": [
+		"api",
+		"bot",
+		"client",
+		"discordjs",
+		"node"
+	],
+	"homepage": "https://discord.js.org",
+	"bugs": {
+		"url": "https://github.com/discordjs/discord.js/issues"
 	},
+	"license": "Apache-2.0",
+	"contributors": [
+		"Crawl <icrawltogo@gmail.com>"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/discordjs/discord.js.git",
+		"directory": "packages/scripts"
+	},
+	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"bin": {
 		"generate-split-documentation": "./bin/generateSplitDocumentation.js",
 		"sort-labels": "./bin/sortLabels.js"
 	},
+	"directories": {
+		"lib": "src",
+		"bin": "bin",
+		"example": "turbo"
+	},
+	"files": [
+		"bin/generateSplitDocumentation.js",
+		"dist"
+	],
+	"main": "./dist/src/index.js",
+	"module": "./dist/src/index.mjs",
+	"types": "./dist/src/index.d.ts",
 	"exports": {
 		".": {
 			"require": {
@@ -26,39 +53,12 @@
 			}
 		}
 	},
-	"main": "./dist/src/index.js",
-	"module": "./dist/src/index.mjs",
-	"types": "./dist/src/index.d.ts",
-	"directories": {
-		"bin": "bin",
-		"lib": "src",
-		"example": "turbo"
+	"scripts": {
+		"build": "tsc --noEmit --lib ESNext,DOM && tsup",
+		"lint": "oxfmt --check && oxlint --tsconfig=tsconfig.eslint.json src turbo/generators/config.ts",
+		"format": "oxfmt && oxlint --tsconfig=tsconfig.eslint.json src turbo/generators/config.ts --fix --fix-suggestions",
+		"fmt": "pnpm run format"
 	},
-	"files": [
-		"bin/generateSplitDocumentation.js",
-		"dist"
-	],
-	"contributors": [
-		"Crawl <icrawltogo@gmail.com>"
-	],
-	"license": "Apache-2.0",
-	"keywords": [
-		"api",
-		"bot",
-		"client",
-		"node",
-		"discordjs"
-	],
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/discordjs/discord.js.git",
-		"directory": "packages/scripts"
-	},
-	"bugs": {
-		"url": "https://github.com/discordjs/discord.js/issues"
-	},
-	"homepage": "https://discord.js.org",
-	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
 		"@actions/glob": "^0.6.1",
 		"@discordjs/api-extractor-model": "workspace:^",
@@ -75,12 +75,9 @@
 	"devDependencies": {
 		"@turbo/gen": "^2.8.21",
 		"@types/node": "^24.13.2",
-		"cross-env": "^10.1.0",
-		"eslint": "^9.39.4",
-		"eslint-config-neon": "^0.3.2",
-		"eslint-formatter-compact": "^9.0.1",
-		"eslint-formatter-pretty": "^7.0.0",
-		"prettier": "^3.8.1",
+		"eslint-config-neon": "^0.5.4",
+		"oxfmt": "^0.62.0",
+		"oxlint": "^1.77.0",
 		"terser": "^5.46.1",
 		"tsup": "^8.5.1",
 		"turbo": "^2.8.21",

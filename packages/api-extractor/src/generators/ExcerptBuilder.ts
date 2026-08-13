@@ -9,6 +9,7 @@ import {
 } from '@discordjs/api-extractor-model';
 import type { DeclarationReference } from '@microsoft/tsdoc/lib-commonjs/beta/DeclarationReference';
 import * as ts from 'typescript';
+
 import type { AstDeclaration } from '../analyzer/AstDeclaration.js';
 import { Span } from '../analyzer/Span.js';
 import type { IWorkingPackageEntryPoint } from '../collector/WorkingPackage.js';

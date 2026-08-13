@@ -1,5 +1,6 @@
 import type { SeparatorSpacingSize, APISeparatorComponent } from 'discord-api-types/v10';
 import { ComponentType } from 'discord-api-types/v10';
+
 import { validate } from '../../util/validation.js';
 import { ComponentBuilder } from '../Component.js';
 import { separatorPredicate } from './Assertions.js';

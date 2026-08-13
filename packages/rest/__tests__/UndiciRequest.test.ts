@@ -1,7 +1,9 @@
 import { Blob, Buffer } from 'node:buffer';
+
 import { MockAgent, setGlobalDispatcher, FormData as UndiciFormData } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor.js';
 import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
+
 import { REST } from '../src/index.js';
 import { makeRequest, resolveBody } from '../src/strategies/undiciRequest.js';
 import { genPath } from './util.js';
