@@ -152,7 +152,7 @@ export function shouldRetry(error: Error | NodeJS.ErrnoException) {
  * @internal
  */
 export async function onRateLimit(manager: REST, rateLimitData: RateLimitData, requestData: HandlerRequestData) {
-	// Explicit false opts out of `REST` level `rejectOnRateLimit`, so we compare with `undefined`.
+	// Explicit false opts out of `REST` level `rejectOnRateLimit`, only `undefined` falls back.
 	const policy = requestData.rejectOnRateLimit ?? manager.options.rejectOnRateLimit;
 
 	if (!policy) return;
