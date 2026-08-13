@@ -95,7 +95,7 @@
     "prettier": "^3.8.1",
     "tsd": "^0.33.0",
     "turbo": "^2.8.21",
-    "typescript": "~5.9.3"
+    "typescript": "~6.0.3"
   },
   "engines": {
     "node": ">=24.17.0"

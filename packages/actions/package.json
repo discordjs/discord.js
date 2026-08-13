@@ -6,7 +6,7 @@
 	"private": true,
 	"scripts": {
 		"test": "vitest run --config ../../vitest.config.ts",
-		"build": "tsc --noEmit --lib ESNext,DOM && tsup",
+		"build": "tsc --noEmit --lib ESNext,DOM && tsdown --config-loader unrun",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src __tests__",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src __tests__",
 		"fmt": "pnpm run format"
@@ -66,9 +66,10 @@
 		"eslint-formatter-pretty": "^7.0.0",
 		"prettier": "^3.8.1",
 		"terser": "^5.46.1",
-		"tsup": "^8.5.1",
+		"tsdown": "^0.22.14",
 		"turbo": "^2.8.21",
-		"typescript": "~5.9.3",
+		"typescript": "~6.0.3",
+		"unrun": "^0.3.1",
 		"vitest": "^4.1.2"
 	},
 	"engines": {

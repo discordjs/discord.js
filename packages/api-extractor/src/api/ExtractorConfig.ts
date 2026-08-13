@@ -22,7 +22,7 @@ import * as resolve from 'resolve';
 import { PackageMetadataManager } from '../analyzer/PackageMetadataManager.js';
 import { MessageRouter } from '../collector/MessageRouter.js';
 import type { IApiModelGenerationOptions } from '../generators/ApiModelGenerator';
-import apiExtractorSchema from '../schemas/api-extractor.schema.json' assert { type: 'json' };
+import apiExtractorSchema from '../schemas/api-extractor.schema.json' with { type: 'json' };
 import type {
 	ApiReportVariant,
 	IConfigApiReport,
@@ -267,10 +267,10 @@ export class ExtractorConfig {
 	 *
 	 * @internal
 	 */
-	public static readonly _tsdocBaseFilePath: string = path.resolve(__dirname, './extends/tsdoc-base.json');
+	public static readonly _tsdocBaseFilePath: string = path.resolve(import.meta.dirname, './extends/tsdoc-base.json');
 
 	private static readonly _defaultConfig: Partial<IConfigFile> = JsonFile.load(
-		path.join(__dirname, './schemas/api-extractor-defaults.json'),
+		path.join(import.meta.dirname, './schemas/api-extractor-defaults.json'),
 	);
 
 	private static readonly _declarationFileExtensionRegExp: RegExp = /\.d\.[cm]?ts$/i;

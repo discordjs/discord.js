@@ -21,6 +21,7 @@ export default defineConfig({
 				'**/index.{js,ts}',
 				// All exports files that make subpackages available as submodules
 				'**/exports/*.{js,ts}',
+				'**/action.yml',
 			],
 		},
 	},
