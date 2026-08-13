@@ -360,7 +360,7 @@ export class WebSocketShard extends AsyncEventEmitter<WebSocketShardEventsMap> {
 		this.failedToConnectDueToNetworkError = false;
 
 		// Clear session state if applicable
-		if (options.recover !== WebSocketShardDestroyRecovery.Resume) {
+		if (options.recover === WebSocketShardDestroyRecovery.Reconnect) {
 			await this.strategy.updateSessionInfo(this.id, null);
 		}
 
