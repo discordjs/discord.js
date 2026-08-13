@@ -101,14 +101,14 @@ export interface RESTOptions {
 	/**
 	 * The default policy determining how rate limiting and pre-emptive throttling should be handled.
 	 *
-	 * Pass `true` to throw a {@link RateLimitError} on every rate limit, `false` or `null` to wait every
+	 * Pass `true` to throw a {@link RateLimitError} on every rate limit, `false` to wait every
 	 * rate limit out, or a filter to decide per rate limit.
 	 *
-	 * This is only consulted for requests that do not provide their own {@link RequestData.rejectOnRateLimit | rejectOnRateLimit}.
+	 * This can be overridden per request via the {@link RequestData.rejectOnRateLimit | rejectOnRateLimit} request option.
 	 *
-	 * @defaultValue `null`
+	 * @defaultValue `false`
 	 */
-	rejectOnRateLimit: RateLimitQueueFilter | boolean | null;
+	rejectOnRateLimit: RateLimitQueueFilter | boolean;
 	/**
 	 * The number of retries for errors with the 500 code, or errors
 	 * that timeout
@@ -344,8 +344,8 @@ export interface RequestData {
 	/**
 	 * Determines how a rate limit encountered while making this request should be handled.
 	 *
-	 * Pass `true` to throw a {@link RateLimitError} rather than wait, `false` (or `null`) to wait it out, or
-	 * a filter to decide per rate limit. Takes precedence over {@link RESTOptions.rejectOnRateLimit}, so
+	 * Pass `true` to throw a {@link RateLimitError} rather than wait, `false` to wait it out, or
+	 * a filter to decide based on rate limit data. Takes precedence over {@link RESTOptions.rejectOnRateLimit}, so
 	 * `false` opts this request out of an instance-wide policy. Leave it unset to inherit.
 	 *
 	 * @example
@@ -366,7 +366,7 @@ export interface RequestData {
 	 * });
 	 * ```
 	 */
-	rejectOnRateLimit?: RateLimitQueueFilter | boolean | null | undefined;
+	rejectOnRateLimit?: RateLimitQueueFilter | boolean | undefined;
 	/**
 	 * The signal to abort the queue entry or the REST call, where applicable
 	 */

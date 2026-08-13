@@ -152,13 +152,12 @@ export function shouldRetry(error: Error | NodeJS.ErrnoException) {
  * @internal
  */
 export async function onRateLimit(manager: REST, rateLimitData: RateLimitData, requestData: HandlerRequestData) {
-	// Explicit false/null opts out of `REST` level `rejectOnRateLimit`, so we compare with `undefined`.
-	const policy =
-		requestData.rejectOnRateLimit === undefined ? manager.options.rejectOnRateLimit : requestData.rejectOnRateLimit;
+	// Explicit false opts out of `REST` level `rejectOnRateLimit`, so we compare with `undefined`.
+	const policy = requestData.rejectOnRateLimit ?? manager.options.rejectOnRateLimit;
 
 	if (!policy) return;
 
-	if ((typeof policy === 'boolean' && policy) || (await policy(rateLimitData))) {
+	if (policy === true || (await policy(rateLimitData))) {
 		throw new RateLimitError(rateLimitData);
 	}
 }

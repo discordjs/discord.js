@@ -47,8 +47,6 @@ let serverOutage = true;
 let unexpected429 = true;
 let unexpected429cf = true;
 let optOut429 = true;
-let nullOptOut429 = true;
-const divergent429 = true;
 const sublimitIntervals: {
 	reset: NodeJS.Timeout | null;
 	retry: NodeJS.Timeout | null;
@@ -516,32 +514,6 @@ test('Per-call rejectOnRateLimit takes precedence over the instance-wide one', a
 		test: true,
 	});
 	expect(performance.now()).toBeGreaterThanOrEqual(previous + 1_000);
-});
-
-test('Per-call rejectOnRateLimit of null opts out of the instance-wide one', async () => {
-	mockPool
-		.intercept({
-			path: genPath('/channels/3333333333333333333'),
-			method: 'GET',
-		})
-		.reply(() => {
-			if (nullOptOut429) {
-				nullOptOut429 = false;
-
-				return {
-					statusCode: 429,
-					data: '',
-					responseOptions: { headers: { 'retry-after': '1', via: '1.1 google' } },
-				};
-			}
-
-			return { statusCode: 200, data: { test: true }, responseOptions };
-		})
-		.times(2);
-
-	expect(await rateLimitErrorApi.get('/channels/3333333333333333333', { rejectOnRateLimit: null })).toStrictEqual({
-		test: true,
-	});
 });
 
 test('Handle global rate limits', async () => {
