@@ -39,6 +39,7 @@ These examples use [ES modules](https://nodejs.org/api/esm.html#enabling).
 
 ```ts
 import {
+	Routes,
 	Client,
 	GatewayDispatchEvents,
 	GatewayIntentBits,
@@ -55,7 +56,6 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 const gateway = new WebSocketManager({
 	token: process.env.DISCORD_TOKEN,
 	intents: GatewayIntentBits.GuildMessages | GatewayIntentBits.MessageContent,
-	gatewayInformation: (await rest.get('/gateway/bot')) as RESTGetAPIGatewayBotResult,
 });
 
 // Create a client to emit relevant events.
@@ -75,7 +75,9 @@ client.on(GatewayDispatchEvents.InteractionCreate, async ({ data: interaction, a
 client.once(GatewayDispatchEvents.Ready, () => console.log('Ready!'));
 
 // Start the WebSocket connection.
-gateway.connect();
+await gateway.connect({
+	gatewayInformation: (await rest.get('/gateway/bot')) as RESTGetAPIGatewayBotResult,
+});
 ```
 
 ## Independent REST API Usage

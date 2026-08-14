@@ -973,7 +973,7 @@ export class Client<Ready extends boolean = boolean>
   public user: If<Ready, ClientUser>;
   public users: UserManager;
   public voice: ClientVoiceManager;
-  public ws: If<Ready, WebSocketManager>;
+  public ws: WebSocketManager;
 
   public destroy(): Promise<void>;
   public deleteWebhook(id: Snowflake, options?: WebhookDeleteOptions): Promise<void>;

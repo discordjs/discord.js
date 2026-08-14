@@ -54,20 +54,6 @@ export interface SessionInfo {
  */
 export interface RequiredWebSocketManagerOptions {
 	/**
-	 * Information retrieved from the `/gateway/bot` endpoint.
-	 * We recommend using a REST client that respects Discord's rate limits, such as `@discordjs/rest`.
-	 *
-	 * @example
-	 * ```ts
-	 * const rest = new REST().setToken(process.env.DISCORD_TOKEN);
-	 * const manager = new WebSocketManager({
-	 *  token: process.env.DISCORD_TOKEN,
-	 *  gatewayInformation: (await rest.get(Routes.gatewayBot())) as RESTGetAPIGatewayBotResult,
-	 * });
-	 * ```
-	 */
-	gatewayInformation: RESTGetAPIGatewayBotResult;
-	/**
 	 * The intents to request
 	 */
 	intents: GatewayIntentBits | 0;
@@ -86,11 +72,9 @@ export interface OptionalWebSocketManagerOptions {
 	 *
 	 * @example
 	 * ```ts
-	 * const rest = new REST().setToken(process.env.DISCORD_TOKEN);
 	 * const manager = new WebSocketManager({
 	 *  token: process.env.DISCORD_TOKEN,
 	 *  intents: 0, // for no intents
-	 *  gatewayInformation: (await rest.get(Routes.gatewayBot())) as RESTGetAPIGatewayBotResult,
 	 *  buildStrategy: (manager) => new WorkerShardingStrategy(manager, { shardsPerWorker: 2 }),
 	 * });
 	 * ```
@@ -202,6 +186,26 @@ export interface WebSocketManagerOptions extends OptionalWebSocketManagerOptions
 export interface CreateWebSocketManagerOptions
 	extends Partial<OptionalWebSocketManagerOptions>, RequiredWebSocketManagerOptions {}
 
+/**
+ * Options for {@link WebSocketManager.connect}
+ */
+export interface WebSocketManagerConnectOptions {
+	/**
+	 * Information retrieved from the `/gateway/bot` endpoint, used as-is.
+	 * We recommend using a REST client that respects Discord's rate limits, such as `@discordjs/rest`,
+	 * and fetching this information right before connecting, as the session start limits it reports go stale.
+	 *
+	 * @example
+	 * ```ts
+	 * const rest = new REST().setToken(process.env.DISCORD_TOKEN);
+	 * await manager.connect({
+	 *  gatewayInformation: (await rest.get(Routes.gatewayBot())) as RESTGetAPIGatewayBotResult,
+	 * });
+	 * ```
+	 */
+	gatewayInformation: RESTGetAPIGatewayBotResult;
+}
+
 export interface ManagerShardEventsMap {
 	[WebSocketShardEvents.Closed]: [code: number, shardId: number];
 	[WebSocketShardEvents.Debug]: [message: string, shardId: number];
@@ -219,6 +223,8 @@ export interface ManagerShardEventsMap {
 
 export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> implements AsyncDisposable {
 	#token: string | null = null;
+
+	#gatewayInformation: RESTGetAPIGatewayBotResult | null = null;
 
 	/**
 	 * The options being used by this manager
@@ -248,10 +254,6 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 	}
 
 	public constructor(options: CreateWebSocketManagerOptions) {
-		if (!options.gatewayInformation) {
-			throw new TypeError('gatewayInformation is required');
-		}
-
 		super();
 		this.options = {
 			...DefaultWebSocketManagerOptions,
@@ -259,6 +261,18 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 		};
 		this.strategy = this.options.buildStrategy(this);
 		this.#token = options.token ?? null;
+	}
+
+	/**
+	 * The `/gateway/bot` information provided to {@link WebSocketManager.connect}.
+	 * Throws if the method has not been invoked yet.
+	 */
+	public getGatewayInformation(): RESTGetAPIGatewayBotResult {
+		if (!this.#gatewayInformation) {
+			throw new Error('Gateway information has not been set. Invoke `connect()` first.');
+		}
+
+		return this.#gatewayInformation;
 	}
 
 	/**
@@ -278,6 +292,9 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 
 	/**
 	 * Yields the total number of shards across for your bot, accounting for Discord recommendations
+	 *
+	 * @remarks
+	 * Throws if {@link WebSocketManager.connect} has not been invoked yet.
 	 */
 	public getShardCount(): number {
 		if (this.options.shardCount) {
@@ -290,6 +307,9 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 
 	/**
 	 * Yields the ids of the shards this manager should manage
+	 *
+	 * @remarks
+	 * Throws if {@link WebSocketManager.connect} has not been invoked yet.
 	 */
 	public getShardIds(): number[] {
 		let shardIds: number[];
@@ -301,24 +321,26 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 				shardIds = [...range({ start, end: end + 1 })];
 			}
 		} else {
-			shardIds = [...range(this.options.shardCount ?? this.options.gatewayInformation.shards)];
+			shardIds = [...range(this.options.shardCount ?? this.getGatewayInformation().shards)];
 		}
 
 		return shardIds;
 	}
 
-	public async connect() {
-		const shardCount = this.getShardCount();
-		// Spawn shards and adjust internal state
-		await this.updateShardCount(shardCount);
+	public async connect(options: WebSocketManagerConnectOptions) {
+		if (!options?.gatewayInformation) {
+			throw new TypeError('gatewayInformation is required');
+		}
+
+		this.#gatewayInformation = options.gatewayInformation;
 
 		const shardIds = this.getShardIds();
 
-		if (this.options.gatewayInformation.session_start_limit.remaining < shardIds.length) {
+		if (options.gatewayInformation.session_start_limit.remaining < shardIds.length) {
 			throw new Error(
 				`Not enough sessions remaining to spawn ${shardIds.length} shards; only ${
-					this.options.gatewayInformation.session_start_limit.remaining
-				} remaining; resets at ${new Date(Date.now() + this.options.gatewayInformation.session_start_limit.reset_after).toISOString()}`,
+					options.gatewayInformation.session_start_limit.remaining
+				} remaining; resets at ${new Date(Date.now() + options.gatewayInformation.session_start_limit.reset_after).toISOString()}`,
 			);
 		}
 
@@ -333,8 +355,9 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 		this.#token = token;
 	}
 
-	public destroy(options?: Omit<WebSocketShardDestroyOptions, 'recover'>) {
-		return this.strategy.destroy(options);
+	public async destroy(options?: Omit<WebSocketShardDestroyOptions, 'recover'>) {
+		await this.strategy.destroy(options);
+		this.#gatewayInformation = null;
 	}
 
 	public send(shardId: number, payload: GatewaySendPayload) {
