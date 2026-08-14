@@ -142,7 +142,6 @@ test('spawn, connect, send a message, session info, and destroy', async () => {
 	const manager = new WebSocketManager({
 		token: 'A-Very-Fake-Token',
 		intents: 0,
-		gatewayInformation: mockGatewayInformation,
 		shardIds: [0, 1],
 		retrieveSessionInfo: mockRetrieveSessionInfo,
 		updateSessionInfo: mockUpdateSessionInfo,
@@ -151,7 +150,7 @@ test('spawn, connect, send a message, session info, and destroy', async () => {
 
 	const managerEmitSpy = vi.spyOn(manager, 'emit');
 
-	await manager.connect();
+	await manager.connect({ gatewayInformation: mockGatewayInformation });
 	expect(mockConstructor).toHaveBeenCalledWith(
 		expect.stringContaining('defaultWorker.js'),
 		expect.objectContaining({ workerData: expect.objectContaining({ shardIds: [0, 1] }) }),

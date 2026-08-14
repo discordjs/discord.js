@@ -41,6 +41,12 @@ class ShardClientUtil {
         client.on(Events.ClientReady, () => {
           process.send({ _ready: true });
         });
+        client.ws.on(WebSocketShardEvents.Closed, () => {
+          process.send({ _disconnect: true });
+        });
+        client.ws.on(WebSocketShardEvents.Resumed, () => {
+          process.send({ _resume: true });
+        });
         break;
       case 'worker':
         this.parentPort = require('node:worker_threads').parentPort;
@@ -48,32 +54,10 @@ class ShardClientUtil {
         client.on(Events.ClientReady, () => {
           this.parentPort.postMessage({ _ready: true });
         });
-        break;
-      default:
-        break;
-    }
-  }
-
-  /**
-   * Needed because `Client#ws` is only set after `Client#connect` is invoked.
-   *
-   * @private
-   */
-  _attachEvents() {
-    switch (this.mode) {
-      case 'process':
-        this.client.ws.on(WebSocketShardEvents.Closed, () => {
-          process.send({ _disconnect: true });
-        });
-        this.client.ws.on(WebSocketShardEvents.Resumed, () => {
-          process.send({ _resume: true });
-        });
-        break;
-      case 'worker':
-        this.client.ws.on(WebSocketShardEvents.Closed, () => {
+        client.ws.on(WebSocketShardEvents.Closed, () => {
           this.parentPort.postMessage({ _disconnect: true });
         });
-        this.client.ws.on(WebSocketShardEvents.Resumed, () => {
+        client.ws.on(WebSocketShardEvents.Resumed, () => {
           this.parentPort.postMessage({ _resume: true });
         });
         break;

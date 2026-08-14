@@ -46,8 +46,16 @@ test('session info', async () => {
 	const manager = new WebSocketManager({
 		token: 'A-Very-Fake-Token',
 		intents: 0,
-		gatewayInformation: mockGatewayInformation,
+		buildStrategy: () => ({
+			spawn: vi.fn(),
+			connect: vi.fn(),
+			destroy: vi.fn(),
+			send: vi.fn(),
+			fetchStatus: vi.fn(),
+		}),
 	});
+
+	await manager.connect({ gatewayInformation: mockGatewayInformation });
 
 	const strategy = new WorkerContextFetchingStrategy(await managerToFetchingStrategyOptions(manager));
 
