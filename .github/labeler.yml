@@ -78,6 +78,11 @@ packages:rest:
       - any-glob-to-any-file:
           - packages/rest/*
           - packages/rest/**/*
+packages:rpc:
+  - changed-files:
+      - any-glob-to-any-file:
+          - packages/rpc/*
+          - packages/rpc/**/*
 packages:structures:
   - changed-files:
       - any-glob-to-any-file:
