@@ -333,10 +333,9 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 		}
 
 		this.#gatewayInformation = options.gatewayInformation;
-
 		const shardIds = this.getShardIds();
-
 		if (options.gatewayInformation.session_start_limit.remaining < shardIds.length) {
+			this.#gatewayInformation = null;
 			throw new Error(
 				`Not enough sessions remaining to spawn ${shardIds.length} shards; only ${
 					options.gatewayInformation.session_start_limit.remaining
