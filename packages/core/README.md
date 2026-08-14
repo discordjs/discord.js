@@ -39,7 +39,6 @@ These examples use [ES modules](https://nodejs.org/api/esm.html#enabling).
 
 ```ts
 import {
-	Routes,
 	Client,
 	GatewayDispatchEvents,
 	GatewayIntentBits,
