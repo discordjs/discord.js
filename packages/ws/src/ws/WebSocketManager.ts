@@ -344,6 +344,9 @@ export class WebSocketManager extends AsyncEventEmitter<ManagerShardEventsMap> i
 			);
 		}
 
+		// Spawn shards and adjust internal state
+		await this.updateShardCount(this.getShardCount());
+
 		await this.strategy.connect();
 	}
 
