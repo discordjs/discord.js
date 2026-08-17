@@ -1,5 +1,6 @@
 /* eslint-disable id-length */
 /* eslint-disable promise/prefer-await-to-then */
+import { getEventListeners } from 'node:events';
 import { MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor.js';
 import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
@@ -547,6 +548,22 @@ test('malformedRequest', async () => {
 		}));
 
 	await expect(api.get('/malformedRequest')).rejects.toBeInstanceOf(DiscordAPIError);
+});
+
+test('remove abort listeners after requests complete', async () => {
+	mockPool
+		.intercept({
+			path: genPath('/abort-listener-cleanup'),
+			method: 'GET',
+		})
+		.reply(200, { message: 'Hello World' }, responseOptions)
+		.times(2);
+
+	const controller = new AbortController();
+	for (let index = 0; index < 2; index++) {
+		await api.get('/abort-listener-cleanup', { signal: controller.signal });
+		expect(getEventListeners(controller.signal, 'abort')).toHaveLength(0);
+	}
 });
 
 // TODO: flaky due to changes in undici
