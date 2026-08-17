@@ -26,7 +26,9 @@ import type {
 	RouteData,
 	RequestData,
 } from './utils/types.js';
-import { isBufferLike, parseResponse } from './utils/utils.js';
+import { deprecationWarning, isBufferLike, parseResponse } from './utils/utils.js';
+
+let deprecationEmittedForRejectOnRateLimit = false;
 
 /**
  * Represents the class that manages handlers for endpoints
@@ -79,6 +81,14 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 		this.options = { ...DefaultRestOptions, ...options };
 		this.globalRemaining = Math.max(1, this.options.globalRequestsPerSecond);
 		this.agent = options.agent ?? null;
+
+		if (Array.isArray(this.options.rejectOnRateLimit) && !deprecationEmittedForRejectOnRateLimit) {
+			deprecationWarning(
+				'Passing an array of route prefixes to the rejectOnRateLimit option is deprecated. Pass a function instead.',
+			);
+
+			deprecationEmittedForRejectOnRateLimit = true;
+		}
 
 		// Start sweepers
 		this.setupSweepers();
@@ -259,6 +269,7 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 			body: request.body,
 			files: request.files,
 			auth: request.auth !== false,
+			rejectOnRateLimit: request.rejectOnRateLimit,
 			signal: request.signal,
 		});
 	}
