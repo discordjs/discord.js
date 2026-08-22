@@ -1177,7 +1177,7 @@ importers:
         specifier: ~3.8.1
         version: 3.8.5
       tstyche:
-        specifier: ^7.2.2
+        specifier: ^7.2.3
         version: 7.2.3(@typescript/typescript6@6.0.2)
       turbo:
         specifier: ^2.10.12

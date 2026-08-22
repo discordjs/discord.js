@@ -489,10 +489,7 @@ client.on('messageCreate', async message => {
     expect(message.mentions.members).type.toBe<Collection<Snowflake, GuildMember>>();
   }
 
-  // TODO: uncomment once tstyche supports the test this way
-  // expect(message.channel).type.toBe<Exclude<TextBasedChannel, PartialGroupDMChannel>>();
-  expect(message.channel).type.toBeAssignableFrom<Exclude<TextBasedChannel, PartialGroupDMChannel>>();
-  expect(message.channel).type.toBeAssignableTo<Exclude<TextBasedChannel, PartialGroupDMChannel>>();
+  expect(message.channel).type.toBe<Exclude<TextBasedChannel, PartialGroupDMChannel>>();
   expect(message.channel).type.not.toBe<GuildTextBasedChannel>();
 
   expect(channel.send).type.not.toBeCallableWith();

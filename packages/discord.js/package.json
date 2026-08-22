@@ -87,7 +87,7 @@
     "eslint-formatter-compact": "^9.0.1",
     "eslint-formatter-pretty": "^7.1.0",
     "prettier": "~3.8.1",
-    "tstyche": "^7.2.2",
+    "tstyche": "^7.2.3",
     "turbo": "^2.10.12",
     "typescript": "npm:@typescript/typescript6@~6.0.2",
     "typescript-native": "npm:typescript@~7.0.2"
