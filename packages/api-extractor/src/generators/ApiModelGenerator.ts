@@ -1049,7 +1049,9 @@ export class ApiModelGenerator {
 		let apiInterface: ApiInterface | undefined = parentApiItem.tryGetMemberByKey(containerKey) as ApiInterface;
 		const parent = context.parentDocgenJson as DocgenJson | undefined;
 		const jsDoc =
-			parent?.interfaces.find((int) => int.name === name) ?? parent?.typedefs.find((int) => int.name === name);
+			parent?.interfaces.find((int) => int.name === name) ??
+			parent?.typedefs.find((int) => int.name === name) ??
+			parent?.classes.find((int) => int.name === name); // this case is needed for class interface merging
 
 		if (apiInterface === undefined) {
 			const interfaceDeclaration: ts.InterfaceDeclaration = astDeclaration.declaration as ts.InterfaceDeclaration;
@@ -1232,17 +1234,17 @@ export class ApiModelGenerator {
 					return;
 				}
 
+				const methodOptions = this._mapMethod(jsDoc, parentApiItem.getAssociatedPackage()!.name);
+				if (methodOptions.releaseTag === ReleaseTag.Internal || methodOptions.releaseTag === ReleaseTag.Alpha) {
+					return; // trim out items marked as "@internal" or "@alpha"
+				}
+
 				this._collector.messageRouter.addAnalyzerIssueForPosition(
 					ExtractorMessageId.DjsMissingTypeScriptType,
 					`The JSDoc comment for method ${parentApiItem.displayName}#${name}() has no matching type equivalent in the TypeScript declaration file.`,
 					this._mainSourceFile!,
 					0,
 				);
-
-				const methodOptions = this._mapMethod(jsDoc, parentApiItem.getAssociatedPackage()!.name);
-				if (methodOptions.releaseTag === ReleaseTag.Internal || methodOptions.releaseTag === ReleaseTag.Alpha) {
-					return; // trim out items marked as "@internal" or "@alpha"
-				}
 
 				apiMethod = new ApiMethod(methodOptions);
 			}
@@ -1467,16 +1469,17 @@ export class ApiModelGenerator {
 					fileColumn: sourceLocation.sourceFileColumn,
 				});
 			} else if (parentApiItem.kind === ApiItemKind.Class || parentApiItem.kind === ApiItemKind.Interface) {
+				const propertyOptions = this._mapProp(jsDoc as DocgenPropertyJson, parentApiItem.getAssociatedPackage()!.name);
+				if (propertyOptions.releaseTag === ReleaseTag.Internal || propertyOptions.releaseTag === ReleaseTag.Alpha) {
+					return; // trim out items marked as "@internal" or "@alpha"
+				}
+
 				this._collector.messageRouter.addAnalyzerIssueForPosition(
 					ExtractorMessageId.DjsMissingTypeScriptType,
 					`The JSDoc comment for property ${parentApiItem.displayName}#${name} has no matching type equivalent in the TypeScript declaration file.`,
 					this._mainSourceFile!,
 					0,
 				);
-				const propertyOptions = this._mapProp(jsDoc as DocgenPropertyJson, parentApiItem.getAssociatedPackage()!.name);
-				if (propertyOptions.releaseTag === ReleaseTag.Internal || propertyOptions.releaseTag === ReleaseTag.Alpha) {
-					return; // trim out items marked as "@internal" or "@alpha"
-				}
 
 				apiProperty = new ApiProperty(propertyOptions);
 			} else {
@@ -1911,8 +1914,10 @@ export class ApiModelGenerator {
 			case ApiItemKind.Interface: {
 				const token = (container as DocgenInterfaceJson).extends;
 				const parentNames = Array.isArray(token) ? token.map((parent) => parent[0]?.[0]) : undefined;
-				const parentJsons = parentNames?.map((name) =>
-					this._jsDocJson?.interfaces.find((inter) => inter.name === name),
+				const parentJsons = parentNames?.map(
+					(name) =>
+						this._jsDocJson?.interfaces.find((inter) => inter.name === name) ??
+						this._jsDocJson?.classes.find((clas) => clas.name === name),
 				);
 				if (propertyName === 'content') console.log(container.name, parentNames, parentJsons);
 				if (parentJsons?.length) {
