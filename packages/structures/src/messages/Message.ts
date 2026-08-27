@@ -7,8 +7,6 @@ import { kData, kEditedTimestamp } from '../utils/symbols.js';
 import { isFieldSet, isIdSet } from '../utils/type-guards.js';
 import type { Partialize } from '../utils/types.js';
 
-// TODO: missing substructures: application
-
 /**
  * Represents a message on Discord.
  *
