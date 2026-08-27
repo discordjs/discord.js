@@ -1,0 +1,6 @@
+{
+	"name": "rpc",
+	"org": "discordjs",
+	"packagePath": "packages/rpc",
+	"identifierBase": false
+}

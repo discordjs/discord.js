@@ -264,6 +264,7 @@ export class REST extends AsyncEventEmitter<RestEvents> {
 			body: request.body,
 			files: request.files,
 			auth,
+			rejectOnRateLimit: request.rejectOnRateLimit,
 			signal: request.signal,
 		});
 	}
