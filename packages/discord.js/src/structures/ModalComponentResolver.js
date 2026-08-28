@@ -13,7 +13,7 @@ const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
  */
 function isEmpty(value) {
   if (value instanceof Collection) return value.size === 0;
-
+  if (Array.isArray(value)) return value.length === 0;
   return value === null || value === undefined;
 }
 
