@@ -13,8 +13,18 @@ const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
  */
 function isEmpty(value) {
   if (value instanceof Collection) return value.size === 0;
-  if (Array.isArray(value)) return value.length === 0;
   return value === null || value === undefined;
+}
+
+/**
+ * Narrows an empty component property to null.
+ *
+ * @param {*} value The property to narrow
+ * @returns {*}
+ * @ignore
+ */
+function nullIfEmpty(value) {
+  return isEmpty(value) ? null : value;
 }
 
 /**
@@ -147,7 +157,7 @@ class ModalComponentResolver {
       ['users'],
       required,
     );
-    return component.users ?? null;
+    return nullIfEmpty(component.users);
   }
 
   /**
@@ -164,7 +174,7 @@ class ModalComponentResolver {
       ['roles'],
       required,
     );
-    return component.roles ?? null;
+    return nullIfEmpty(component.roles);
   }
 
   /**
@@ -191,7 +201,7 @@ class ModalComponentResolver {
       }
     }
 
-    return channels ?? null;
+    return nullIfEmpty(channels);
   }
 
   /**
@@ -207,7 +217,7 @@ class ModalComponentResolver {
       ['members'],
       false,
     );
-    return component.members ?? null;
+    return nullIfEmpty(component.members);
   }
 
   /**
@@ -225,15 +235,9 @@ class ModalComponentResolver {
       required,
     );
 
-    if (component.users || component.members || component.roles) {
-      return {
-        users: component.users ?? new Collection(),
-        members: component.members ?? new Collection(),
-        roles: component.roles ?? new Collection(),
-      };
-    }
+    if (isEmpty(component.users) && isEmpty(component.members) && isEmpty(component.roles)) return null;
 
-    return null;
+    return { users: component.users, members: component.members, roles: component.roles };
   }
 
   /**
@@ -244,7 +248,9 @@ class ModalComponentResolver {
    * @returns {?Collection<Snowflake, Attachment>} The uploaded files, or null if none were uploaded and not required
    */
   getUploadedFiles(customId, required = false) {
-    return this._getTypedComponent(customId, [ComponentType.FileUpload], ['attachments'], required).attachments ?? null;
+    return nullIfEmpty(
+      this._getTypedComponent(customId, [ComponentType.FileUpload], ['attachments'], required).attachments,
+    );
   }
 
   /**
