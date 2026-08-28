@@ -5,6 +5,19 @@ const { ComponentType } = require('discord-api-types/v10');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
 
 /**
+ * Checks whether a component property is absent or holds an empty collection.
+ *
+ * @param {*} value The property to check
+ * @returns {boolean}
+ * @ignore
+ */
+function isEmpty(value) {
+  if (value instanceof Collection) return value.size === 0;
+
+  return value === null || value === undefined;
+}
+
+/**
  * @typedef {Object} ModalSelectedMentionables
  * @property {Collection<Snowflake, User>} users The selected users
  * @property {Collection<Snowflake, GuildMember | APIGuildMember>} members The selected members
@@ -93,7 +106,7 @@ class ModalComponentResolver {
         component.type,
         allowedTypes.join(', '),
       );
-    } else if (required && properties.every(prop => component[prop] === null || component[prop] === undefined)) {
+    } else if (required && properties.every(prop => isEmpty(component[prop]))) {
       throw new DiscordjsTypeError(ErrorCodes.ModalSubmitInteractionComponentEmpty, customId, component.type);
     }
 
