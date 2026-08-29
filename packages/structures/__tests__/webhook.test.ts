@@ -34,7 +34,7 @@ describe('Webhook structure', () => {
 
 		const createdTimestamp = DiscordSnowflake.timestampFrom(instance.id!);
 		expect(instance.createdTimestamp).toBe(createdTimestamp);
-		expect(instance.createdAt!.valueOf()).toBe(createdTimestamp);
+		expect(instance.createdDate!.valueOf()).toBe(createdTimestamp);
 	});
 
 	test('toJSON() returns expected values', () => {
@@ -60,5 +60,13 @@ describe('Webhook structure', () => {
 		});
 
 		expect(patched).toBe(instance);
+	});
+
+	test('created Date & Timestamp are null when there is no webhook id', () => {
+		// @ts-expect-error for testing functionality with a null id
+		const webhookWithoutIdSet = new Webhook({ ...data, id: null });
+
+		expect(webhookWithoutIdSet.createdDate).toBeNull();
+		expect(webhookWithoutIdSet.createdTimestamp).toBeNull();
 	});
 });
