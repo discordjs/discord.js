@@ -1,5 +1,6 @@
 export * from './BitField.js';
 
+export * from './ActivityFlagsBitField.js';
 export * from './AttachmentFlagsBitField.js';
 export * from './ChannelFlagsBitField.js';
 export * from './MessageFlagsBitField.js';
