@@ -18,13 +18,44 @@ const getMessage = lazy(() => require('./Message.js').Message);
  */
 
 /**
- * @typedef {BaseModalData} SelectMenuModalData
+ * @typedef {BaseModalData} StringSelectModalData
  * @property {string} customId The custom id of the component
  * @property {string[]} values The values of the component
- * @property {Collection<Snowflake, GuildMember|APIGuildMember>} [members] The resolved members
- * @property {Collection<Snowflake, User|APIUser>} [users] The resolved users
- * @property {Collection<Snowflake, Role|APIRole>} [roles] The resolved roles
- * @property {Collection<Snowflake, BaseChannel|APIChannel>} [channels] The resolved channels
+ */
+
+/**
+ * @typedef {BaseModalData} UserSelectModalData
+ * @property {string} customId The custom id of the component
+ * @property {string[]} values The values of the component
+ * @property {Collection<Snowflake, User|APIUser>} users The resolved users
+ * @property {Collection<Snowflake, GuildMember|APIGuildMember>} members The resolved members
+ */
+
+/**
+ * @typedef {BaseModalData} RoleSelectModalData
+ * @property {string} customId The custom id of the component
+ * @property {string[]} values The values of the component
+ * @property {Collection<Snowflake, Role|APIRole>} roles The resolved roles
+ */
+
+/**
+ * @typedef {BaseModalData} MentionableSelectModalData
+ * @property {string} customId The custom id of the component
+ * @property {string[]} values The values of the component
+ * @property {Collection<Snowflake, User|APIUser>} users The resolved users
+ * @property {Collection<Snowflake, GuildMember|APIGuildMember>} members The resolved members
+ * @property {Collection<Snowflake, Role|APIRole>} roles The resolved roles
+ */
+
+/**
+ * @typedef {BaseModalData} ChannelSelectModalData
+ * @property {string} customId The custom id of the component
+ * @property {string[]} values The values of the component
+ * @property {Collection<Snowflake, BaseChannel|APIChannel>} channels The resolved channels
+ */
+
+/**
+ * @typedef {ChannelSelectModalData|MentionableSelectModalData|RoleSelectModalData|StringSelectModalData|UserSelectModalData} SelectMenuModalData
  */
 
 /**
