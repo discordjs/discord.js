@@ -34,7 +34,7 @@ describe('Webhook structure', () => {
 
 		const createdTimestamp = DiscordSnowflake.timestampFrom(instance.id!);
 		expect(instance.createdTimestamp).toBe(createdTimestamp);
-		expect(instance.createdAt!.valueOf()).toBe(createdTimestamp);
+		expect(instance.createdDate!.valueOf()).toBe(createdTimestamp);
 	});
 
 	test('toJSON() returns expected values', () => {
