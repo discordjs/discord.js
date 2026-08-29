@@ -36,15 +36,15 @@ describe('Entitlement structure', () => {
 
 		const createdTimestamp = DiscordSnowflake.timestampFrom(instance.id!);
 		expect(instance.createdTimestamp).toBe(createdTimestamp);
-		expect(instance.createdAt!.valueOf()).toBe(createdTimestamp);
+		expect(instance.createdDate!.valueOf()).toBe(createdTimestamp);
 
 		const startsTimestamp = Date.parse(data.starts_at!);
 		expect(instance.startsTimestamp).toBe(startsTimestamp);
-		expect(instance.startsAt!.valueOf()).toBe(startsTimestamp);
+		expect(instance.startsDate!.valueOf()).toBe(startsTimestamp);
 
 		const endsTimestamp = Date.parse(data.ends_at!);
 		expect(instance.endsTimestamp).toBe(endsTimestamp);
-		expect(instance.endsAt!.valueOf()).toBe(endsTimestamp);
+		expect(instance.endsDate!.valueOf()).toBe(endsTimestamp);
 	});
 
 	test('toJSON() is accurate', () => {
