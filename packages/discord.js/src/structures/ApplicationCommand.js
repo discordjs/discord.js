@@ -504,7 +504,7 @@ class ApplicationCommand extends Base {
       option.name !== existing.name ||
       option.type !== existing.type ||
       option.description !== existing.description ||
-      option.autocomplete !== existing.autocomplete ||
+      (option.autocomplete ?? false) !== (existing.autocomplete ?? false) ||
       (option.required ??
         ([ApplicationCommandOptionType.Subcommand, ApplicationCommandOptionType.SubcommandGroup].includes(option.type)
           ? undefined
@@ -513,10 +513,10 @@ class ApplicationCommand extends Base {
       option.options?.length !== existing.options?.length ||
       (option.channelTypes ?? option.channel_types)?.length !== existing.channelTypes?.length ||
       (option.fileTypes ?? option.file_types)?.length !== existing.fileTypes?.length ||
-      (option.minValue ?? option.min_value) !== existing.minValue ||
-      (option.maxValue ?? option.max_value) !== existing.maxValue ||
-      (option.minLength ?? option.min_length) !== existing.minLength ||
-      (option.maxLength ?? option.max_length) !== existing.maxLength ||
+      (option.minValue ?? option.min_value ?? null) !== (existing.minValue ?? null) ||
+      (option.maxValue ?? option.max_value ?? null) !== (existing.maxValue ?? null) ||
+      (option.minLength ?? option.min_length ?? null) !== (existing.minLength ?? null) ||
+      (option.maxLength ?? option.max_length ?? null) !== (existing.maxLength ?? null) ||
       !isEqual(option.nameLocalizations ?? option.name_localizations ?? {}, existing.nameLocalizations ?? {}) ||
       !isEqual(
         option.descriptionLocalizations ?? option.description_localizations ?? {},
