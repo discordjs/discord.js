@@ -221,12 +221,12 @@ class ModalSubmitInteraction extends BaseInteraction {
       const selectedIds = new Set(rawComponent.values);
       const selected = collection => collection?.filter((_, id) => selectedIds.has(id)) ?? new Collection();
 
-      if (rawComponent.type === ComponentType.UserSelect || rawComponent.type === ComponentType.MentionableSelect) {
+      if ([ComponentType.UserSelect, ComponentType.MentionableSelect].includes(rawComponent.type)) {
         data.users = selected(resolved.users);
         data.members = selected(resolved.members);
       }
 
-      if (rawComponent.type === ComponentType.RoleSelect || rawComponent.type === ComponentType.MentionableSelect) {
+      if ([ComponentType.RoleSelect, ComponentType.MentionableSelect].includes(rawComponent.type)) {
         data.roles = selected(resolved.roles);
       }
 
