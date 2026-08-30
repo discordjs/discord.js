@@ -438,7 +438,7 @@ class ApplicationCommand extends Base {
       ('description' in command && command.description !== this.description) ||
       ('version' in command && command.version !== this.version) ||
       (command.type && command.type !== this.type) ||
-      ('nsfw' in command && command.nsfw !== this.nsfw) ||
+      (command.nsfw ?? false) !== (this.nsfw ?? false) ||
       command.options?.length !== this.options?.length ||
       defaultMemberPermissions !== (this.defaultMemberPermissions?.bitfield ?? null) ||
       !isEqual(command.nameLocalizations ?? command.name_localizations ?? {}, this.nameLocalizations ?? {}) ||
