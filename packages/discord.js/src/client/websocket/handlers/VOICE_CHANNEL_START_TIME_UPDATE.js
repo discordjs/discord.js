@@ -9,7 +9,7 @@ module.exports = (client, { d: data }) => {
   const newChannel = guild.channels.cache.get(data.id);
   if (!newChannel) return;
 
-  const oldChannel = newChannel._update(data);
+  const oldChannel = newChannel._update({ ...data, voice_start_time: data.voice_start_time ?? null });
 
   /**
    * Emitted whenever the voice session start time of a voice channel changes.
