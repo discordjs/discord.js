@@ -3,18 +3,7 @@
 const { Collection } = require('@discordjs/collection');
 const { ComponentType } = require('discord-api-types/v10');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
-
-/**
- * Checks whether a component property is absent or holds an empty collection.
- *
- * @param {*} value The property to check
- * @returns {boolean}
- * @ignore
- */
-function isEmpty(value) {
-  if (value instanceof Collection) return value.size === 0;
-  return value === null || value === undefined;
-}
+const { isEmptyComponentValue } = require('../util/Util.js');
 
 /**
  * Narrows an empty component property to null.
@@ -24,7 +13,7 @@ function isEmpty(value) {
  * @ignore
  */
 function nullIfEmpty(value) {
-  return isEmpty(value) ? null : value;
+  return isEmptyComponentValue(value) ? null : value;
 }
 
 /**
@@ -116,7 +105,7 @@ class ModalComponentResolver {
         component.type,
         allowedTypes.join(', '),
       );
-    } else if (required && properties.every(prop => isEmpty(component[prop]))) {
+    } else if (required && properties.every(prop => isEmptyComponentValue(component[prop]))) {
       throw new DiscordjsTypeError(ErrorCodes.ModalSubmitInteractionComponentEmpty, customId, component.type);
     }
 
@@ -235,7 +224,13 @@ class ModalComponentResolver {
       required,
     );
 
-    if (isEmpty(component.users) && isEmpty(component.members) && isEmpty(component.roles)) return null;
+    if (
+      isEmptyComponentValue(component.users) &&
+      isEmptyComponentValue(component.members) &&
+      isEmptyComponentValue(component.roles)
+    ) {
+      return null;
+    }
 
     return { users: component.users, members: component.members, roles: component.roles };
   }
