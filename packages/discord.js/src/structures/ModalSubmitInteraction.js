@@ -18,39 +18,35 @@ const getMessage = lazy(() => require('./Message.js').Message);
  */
 
 /**
- * @typedef {BaseModalData} StringSelectModalData
+ * @typedef {BaseModalData} BaseSelectMenuModalData
  * @property {string} customId The custom id of the component
  * @property {string[]} values The values of the component
  */
 
 /**
- * @typedef {BaseModalData} UserSelectModalData
- * @property {string} customId The custom id of the component
- * @property {string[]} values The values of the component
+ * @typedef {BaseSelectMenuModalData} StringSelectModalData
+ */
+
+/**
+ * @typedef {BaseSelectMenuModalData} UserSelectModalData
  * @property {Collection<Snowflake, User|APIUser>} users The resolved users
  * @property {Collection<Snowflake, GuildMember|APIGuildMember>} members The resolved members
  */
 
 /**
- * @typedef {BaseModalData} RoleSelectModalData
- * @property {string} customId The custom id of the component
- * @property {string[]} values The values of the component
+ * @typedef {BaseSelectMenuModalData} RoleSelectModalData
  * @property {Collection<Snowflake, Role|APIRole>} roles The resolved roles
  */
 
 /**
- * @typedef {BaseModalData} MentionableSelectModalData
- * @property {string} customId The custom id of the component
- * @property {string[]} values The values of the component
+ * @typedef {BaseSelectMenuModalData} MentionableSelectModalData
  * @property {Collection<Snowflake, User|APIUser>} users The resolved users
  * @property {Collection<Snowflake, GuildMember|APIGuildMember>} members The resolved members
  * @property {Collection<Snowflake, Role|APIRole>} roles The resolved roles
  */
 
 /**
- * @typedef {BaseModalData} ChannelSelectModalData
- * @property {string} customId The custom id of the component
- * @property {string[]} values The values of the component
+ * @typedef {BaseSelectMenuModalData} ChannelSelectModalData
  * @property {Collection<Snowflake, BaseChannel|APIChannel>} channels The resolved channels
  */
 

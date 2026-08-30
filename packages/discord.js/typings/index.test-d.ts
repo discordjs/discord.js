@@ -164,6 +164,7 @@ import type {
   MessageMentions,
   MessageReaction,
   ModalData,
+  ModalSelectedMentionables,
   ModalSubmitInteraction,
   NonThreadGuildBasedChannel,
   PartialDMChannel,
@@ -3152,11 +3153,18 @@ declare const cachedRoleSelect: RoleSelectModalData<'cached'>;
 declare const cachedChannelSelect: ChannelSelectModalData<'cached'>;
 declare const cachedMentionableSelect: MentionableSelectModalData<'cached'>;
 declare const stringSelect: StringSelectModalData;
+declare const cachedMentionables: ModalSelectedMentionables<'cached'>;
 {
   expectType<ReadonlyCollection<Snowflake, User>>(cachedUserSelect.users);
   expectType<ReadonlyCollection<Snowflake, GuildMember>>(cachedUserSelect.members);
   expectType<ReadonlyCollection<Snowflake, Role>>(cachedRoleSelect.roles);
   expectType<ReadonlyCollection<Snowflake, GuildBasedChannel>>(cachedChannelSelect.channels);
+  expectType<ReadonlyCollection<Snowflake, User>>(cachedMentionableSelect.users);
+  expectType<ReadonlyCollection<Snowflake, GuildMember>>(cachedMentionableSelect.members);
   expectType<ReadonlyCollection<Snowflake, Role>>(cachedMentionableSelect.roles);
   expectType<readonly string[]>(stringSelect.values);
+
+  expectType<ReadonlyCollection<Snowflake, User>>(cachedMentionables.users);
+  expectType<ReadonlyCollection<Snowflake, GuildMember>>(cachedMentionables.members);
+  expectType<ReadonlyCollection<Snowflake, Role>>(cachedMentionables.roles);
 }
