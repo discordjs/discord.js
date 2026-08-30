@@ -3,7 +3,7 @@
 import { MockAgent, setGlobalDispatcher } from 'undici';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor';
 import { beforeEach, afterEach, test, expect } from 'vitest';
-import { DiscordAPIError, REST, BurstHandlerMajorIdKey } from '../src/index.js';
+import { DiscordAPIError, RateLimitError, REST, BurstHandlerMajorIdKey } from '../src/index.js';
 import { BurstHandler } from '../src/lib/handlers/BurstHandler.js';
 import { genPath } from './util.js';
 
@@ -136,6 +136,33 @@ test('Handle unexpected 429', async () => {
 
 	expect(await unexpectedLimit).toStrictEqual({ test: true });
 	expect(firstResolvedTime!).toBeGreaterThanOrEqual(previous + 1_000);
+});
+
+test('rejectOnRateLimit rejects on an unexpected 429', async () => {
+	mockPool
+		.intercept({
+			path: callbackPath,
+			method: 'POST',
+		})
+		.reply(() => ({
+			statusCode: 429,
+			data: '',
+			responseOptions: {
+				headers: {
+					'retry-after': '1',
+					via: '1.1 google',
+				},
+			},
+		}))
+		.times(1);
+
+	const promise = api.post('/interactions/1234567890123456789/totallyarealtoken/callback', {
+		auth: false,
+		body: { type: 4, data: { content: 'Reply' } },
+		rejectOnRateLimit: true,
+	});
+
+	await expect(promise).rejects.toBeInstanceOf(RateLimitError);
 });
 
 test('server responding too slow', async () => {

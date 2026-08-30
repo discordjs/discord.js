@@ -78,6 +78,8 @@ const getUserSelectMenuComponent = lazy(
  * @property {string} customId The custom id of the file upload
  * @property {number} [minValues] The minimum number of files that must be uploaded (0-10)
  * @property {number} [maxValues] The maximum number of files that can be uploaded (1-10)
+ * @property {FileUploadType[]} [fileTypes] The allowed types of files that can be uploaded (maximum of 10).
+ * When only using extensions, include `.jpg` for images and both `.mp4` and `.mov` for videos for mobile compatibility
  * @property {boolean} [required] Whether this component is required in modals
  */
 

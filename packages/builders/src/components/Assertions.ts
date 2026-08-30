@@ -63,7 +63,7 @@ const selectMenuBasePredicate = z.object({
 	id: idPredicate,
 	placeholder: z.string().max(150).optional(),
 	min_values: z.number().min(0).max(25).optional(),
-	max_values: z.number().min(0).max(25).optional(),
+	max_values: z.number().min(1).max(25).optional(),
 	custom_id: customIdPredicate,
 	disabled: z.boolean().optional(),
 });

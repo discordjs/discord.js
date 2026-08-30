@@ -22,6 +22,12 @@ export const enum ConsoleMessageId {
 	ApiReportCreated = 'console-api-report-created',
 
 	/**
+	 * Changes to the API report:
+	 * ___
+	 */
+	ApiReportDiff = 'console-api-report-diff',
+
+	/**
 	 * "Unable to create the API report file. Please make sure the target folder exists: ___"
 	 */
 	ApiReportFolderMissing = 'console-api-report-folder-missing',

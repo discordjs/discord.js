@@ -28,7 +28,6 @@ export interface RawFile {
 	 *
 	 * @example 'image.png'
 	 * @example 'document.pdf'
-	 * @example 'SPOILER_secret.jpeg'
 	 */
 	name: string;
 }
