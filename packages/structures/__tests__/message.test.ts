@@ -16,6 +16,7 @@ import type {
 	APIUserSelectComponent,
 } from 'discord-api-types/v10';
 import {
+	BaseThemeType,
 	MessageReferenceType,
 	MessageType,
 	MessageFlags,
@@ -28,6 +29,7 @@ import {
 import { describe, expect, test } from 'vitest';
 import { Attachment } from '../src/messages/Attachment.js';
 import { Message } from '../src/messages/Message.js';
+import { SharedClientTheme } from '../src/messages/SharedClientTheme.js';
 import { ContainerComponent } from '../src/messages/components/ContainerComponent.js';
 import { Embed } from '../src/messages/embeds/Embed.js';
 import { User } from '../src/users/User.js';
@@ -105,10 +107,10 @@ describe('message with embeds and attachments', () => {
 		expect(instance.position).toBe(data.position);
 		expect(instance.content).toBe(data.content);
 		expect(instance.createdTimestamp).toBe(Date.parse(data.timestamp));
-		expect(dateToDiscordISOTimestamp(instance.createdAt!)).toBe(data.timestamp);
+		expect(dateToDiscordISOTimestamp(instance.createdDate!)).toBe(data.timestamp);
 		expect(instance.flags?.toJSON()).toBe(data.flags);
 		expect(instance.editedTimestamp).toBe(Date.parse(data.edited_timestamp!));
-		expect(dateToDiscordISOTimestamp(instance.editedAt!)).toBe(data.edited_timestamp);
+		expect(dateToDiscordISOTimestamp(instance.editedDate!)).toBe(data.edited_timestamp);
 		expect(instance.nonce).toBe(data.nonce);
 		expect(instance.pinned).toBe(data.pinned);
 		expect(instance.tts).toBe(data.tts);
@@ -195,6 +197,8 @@ describe('message with components', () => {
 			url: 'attachment://file.txt',
 			attachment_id: '0',
 			content_type: 'text/plain',
+			// TODO: Eventually, this should allow `0`.
+			// @ts-expect-error: Eventually, this should allow `0`.
 			flags: 0,
 		},
 		id: 9,
@@ -445,10 +449,10 @@ describe('message with components', () => {
 		expect(instance.position).toBe(data.position);
 		expect(instance.content).toBe(data.content);
 		expect(instance.createdTimestamp).toBe(Date.parse(data.timestamp));
-		expect(dateToDiscordISOTimestamp(instance.createdAt!)).toBe(data.timestamp);
+		expect(dateToDiscordISOTimestamp(instance.createdDate!)).toBe(data.timestamp);
 		expect(instance.flags?.toJSON()).toBe(data.flags);
 		expect(instance.editedTimestamp).toBe(Date.parse(data.edited_timestamp!));
-		expect(dateToDiscordISOTimestamp(instance.editedAt!)).toBe(data.edited_timestamp);
+		expect(dateToDiscordISOTimestamp(instance.editedDate!)).toBe(data.edited_timestamp);
 		expect(instance.nonce).toBe(data.nonce);
 		expect(instance.pinned).toBe(data.pinned);
 		expect(instance.tts).toBe(data.tts);
@@ -474,5 +478,34 @@ describe('message with components', () => {
 		expect(containerInstance.type).toBe(container.type);
 		expect(containerInstance.id).toBe(container.id);
 		expect(containerInstance.spoiler).toBe(container.spoiler);
+	});
+});
+
+describe('SharedClientTheme structure', () => {
+	const rawTheme = {
+		colors: ['5865F2', '7258F2', '9858F2'],
+		gradient_angle: 45,
+		base_mix: 58,
+		base_theme: BaseThemeType.Dark,
+	};
+
+	test('GIVEN a shared client theme THEN exposes all getters correctly', () => {
+		const instance = new SharedClientTheme(rawTheme);
+		expect(instance.colors).toStrictEqual(rawTheme.colors);
+		expect(instance.gradientAngle).toBe(rawTheme.gradient_angle);
+		expect(instance.baseMix).toBe(rawTheme.base_mix);
+		expect(instance.baseTheme).toBe(BaseThemeType.Dark);
+		expect(instance.toJSON()).toEqual(rawTheme);
+	});
+
+	test('GIVEN a shared client theme without base_theme THEN baseTheme is undefined', () => {
+		const { base_theme: _, ...withoutTheme } = rawTheme;
+		const instance = new SharedClientTheme(withoutTheme);
+		expect(instance.baseTheme).toBeUndefined();
+	});
+
+	test('GIVEN a shared client theme with null base_theme THEN baseTheme is null', () => {
+		const instance = new SharedClientTheme({ ...rawTheme, base_theme: null });
+		expect(instance.baseTheme).toBeNull();
 	});
 });

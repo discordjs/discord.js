@@ -29,6 +29,12 @@ function capitalizeFirstLetter(input: string): string {
 	return input === '' ? '' : `${input[0]!.toLocaleUpperCase()}${input.slice(1)}`;
 }
 
+interface IContext {
+	alreadyProcessedSignatures: Set<Span>;
+	collector: Collector;
+	reportVariant: ApiReportVariant;
+}
+
 export class ApiReportGenerator {
 	private static _trimSpacesRegExp: RegExp = / +$/gm;
 
@@ -98,6 +104,12 @@ export class ApiReportGenerator {
 
 			writer.ensureSkippedLine();
 
+			const context: IContext = {
+				collector,
+				reportVariant,
+				alreadyProcessedSignatures: new Set(),
+			};
+
 			// Emit the regular declarations
 			for (const entity of entryPointEntities) {
 				const astEntity: AstEntity = entity.astEntity;
@@ -157,7 +169,7 @@ export class ApiReportGenerator {
 								if (apiItemMetadata.isPreapproved) {
 									ApiReportGenerator._modifySpanForPreapproved(span);
 								} else {
-									ApiReportGenerator._modifySpan(collector, span, entity, astDeclaration, false, reportVariant);
+									ApiReportGenerator._modifySpan(span, entity, astDeclaration, false, context);
 								}
 
 								span.writeModifiedText(writer);
@@ -281,13 +293,14 @@ export class ApiReportGenerator {
 	 * Before writing out a declaration, _modifySpan() applies various fixups to make it nice.
 	 */
 	private static _modifySpan(
-		collector: Collector,
 		span: Span,
 		entity: CollectorEntity,
 		astDeclaration: AstDeclaration,
 		insideTypeLiteral: boolean,
-		reportVariant: ApiReportVariant,
+		context: IContext,
 	): void {
+		const { collector, reportVariant } = context;
+
 		// Should we process this declaration at all?
 
 		if (!ApiReportGenerator._shouldIncludeDeclaration(collector, astDeclaration, reportVariant)) {
@@ -308,6 +321,15 @@ export class ApiReportGenerator {
 				break;
 
 			case ts.SyntaxKind.ExportKeyword:
+				if (DtsEmitHelpers.isExportKeywordInNamespaceExportDeclaration(span.node)) {
+					// This is an export declaration inside a namespace - preserve the export keyword
+					break;
+				}
+
+				// Otherwise, delete the export keyword -- we will re-add it below
+				span.modification.skipAll();
+				break;
+
 			case ts.SyntaxKind.DefaultKeyword:
 			case ts.SyntaxKind.DeclareKeyword:
 				// Delete any explicit "export" or "declare" keywords -- we will re-add them below
@@ -381,6 +403,18 @@ export class ApiReportGenerator {
 
 				break;
 
+			case ts.SyntaxKind.Parameter:
+				{
+					// (signature) -> SyntaxList -> Parameter
+					const signatureParent: Span | undefined = span.parent;
+					if (signatureParent && !context.alreadyProcessedSignatures.has(signatureParent)) {
+						context.alreadyProcessedSignatures.add(signatureParent);
+						DtsEmitHelpers.normalizeParameterNames(signatureParent);
+					}
+				}
+
+				break;
+
 			case ts.SyntaxKind.Identifier:
 				const referencedEntity: CollectorEntity | undefined = collector.tryGetEntityForNode(span.node as ts.Identifier);
 
@@ -407,14 +441,7 @@ export class ApiReportGenerator {
 
 			case ts.SyntaxKind.ImportType:
 				DtsEmitHelpers.modifyImportTypeSpan(collector, span, astDeclaration, (childSpan, childAstDeclaration) => {
-					ApiReportGenerator._modifySpan(
-						collector,
-						childSpan,
-						entity,
-						childAstDeclaration,
-						insideTypeLiteral,
-						reportVariant,
-					);
+					ApiReportGenerator._modifySpan(childSpan, entity, childAstDeclaration, insideTypeLiteral, context);
 				});
 				break;
 
@@ -449,7 +476,7 @@ export class ApiReportGenerator {
 					}
 				}
 
-				ApiReportGenerator._modifySpan(collector, child, entity, childAstDeclaration, insideTypeLiteral, reportVariant);
+				ApiReportGenerator._modifySpan(child, entity, childAstDeclaration, insideTypeLiteral, context);
 			}
 		}
 	}

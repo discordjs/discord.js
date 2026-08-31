@@ -1,5 +1,5 @@
 import { DiscordSnowflake } from '@sapphire/snowflake';
-import type { APISubscription, SubscriptionStatus } from 'discord-api-types/v10';
+import type { APISubscription } from 'discord-api-types/v10';
 import { Structure } from '../Structure.js';
 import { dateToDiscordISOTimestamp } from '../utils/optimization.js';
 import {
@@ -110,7 +110,7 @@ export class Subscription<
 	/**
 	 * The time at which the current subscription period will start
 	 */
-	public get currentPeriodStartAt() {
+	public get currentPeriodStartDate() {
 		const startTimestamp = this.currentPeriodStartTimestamp;
 		return startTimestamp ? new Date(startTimestamp) : null;
 	}
@@ -125,13 +125,13 @@ export class Subscription<
 	/**
 	 * The time at which the current subscription period will end
 	 */
-	public get currentPeriodEndsAt() {
+	public get currentPeriodEndDate() {
 		const endTimestamp = this.currentPeriodEndTimestamp;
 		return endTimestamp ? new Date(endTimestamp) : null;
 	}
 
 	/**
-	 * The {@link SubscriptionStatus} of the current subscription
+	 * The {@link discord-api-types/v10#SubscriptionStatus} of the current subscription
 	 */
 	public get status() {
 		return this[kData].status;
@@ -147,9 +147,9 @@ export class Subscription<
 	/**
 	 * The time when the subscription was canceled
 	 *
-	 * @remarks This is populated when the {@link Subscription#status} transitions to {@link SubscriptionStatus.Ending}.
+	 * @remarks This is populated when the {@link Subscription.status} transitions to {@link discord-api-types/v10#SubscriptionStatus.Ending}.
 	 */
-	public get canceledAt() {
+	public get canceledDate() {
 		const canceledTimestamp = this.canceledTimestamp;
 		return canceledTimestamp ? new Date(canceledTimestamp) : null;
 	}
@@ -171,7 +171,7 @@ export class Subscription<
 	/**
 	 * The time the subscription was created at
 	 */
-	public get createdAt() {
+	public get createdDate() {
 		const createdTimestamp = this.createdTimestamp;
 		return createdTimestamp ? new Date(createdTimestamp) : null;
 	}

@@ -1,8 +1,4 @@
-import type {
-	APIAutoModerationActionMetadata,
-	AutoModerationActionType,
-	AutoModerationRuleTriggerType,
-} from 'discord-api-types/v10';
+import type { APIAutoModerationActionMetadata } from 'discord-api-types/v10';
 import { Structure } from '../../Structure.js';
 import { kData } from '../../utils/symbols.js';
 import type { Partialize } from '../../utils/types.js';
@@ -30,7 +26,7 @@ export class AutoModerationActionMetadata<
 	/**
 	 * Channel to which user content should be logged. This must be an existing channel
 	 *
-	 * Associated action types: {@link AutoModerationActionType.SendAlertMessage}
+	 * Associated action types: {@link discord-api-types/v10#AutoModerationActionType.SendAlertMessage}
 	 */
 	public get channelId() {
 		return this[kData].channel_id;
@@ -39,11 +35,11 @@ export class AutoModerationActionMetadata<
 	/**
 	 * Timeout duration in seconds. Maximum of 2419200 seconds (4 weeks).
 	 *
-	 * A `TIMEOUT` action can only be set up for {@link AutoModerationRuleTriggerType.Keyword} and {@link AutoModerationRuleTriggerType.MentionSpam}.
+	 * A `TIMEOUT` action can only be set up for {@link discord-api-types/v10#AutoModerationRuleTriggerType.Keyword} and {@link discord-api-types/v10#AutoModerationRuleTriggerType.MentionSpam}.
 	 *
-	 * The `MODERATE_MEMBERS` permission is required to use {@link AutoModerationActionType.Timeout} actions.
+	 * The `MODERATE_MEMBERS` permission is required to use {@link discord-api-types/v10#AutoModerationActionType.Timeout} actions.
 	 *
-	 * Associated action types: {@link AutoModerationActionType.Timeout}
+	 * Associated action types: {@link discord-api-types/v10#AutoModerationActionType.Timeout}
 	 */
 	public get durationSeconds() {
 		return this[kData].duration_seconds;
@@ -52,7 +48,7 @@ export class AutoModerationActionMetadata<
 	/**
 	 * Additional explanation that will be shown to members whenever their message is blocked. Maximum of 150 characters
 	 *
-	 * Associated action types: {@link AutoModerationActionType.BlockMessage}
+	 * Associated action types: {@link discord-api-types/v10#AutoModerationActionType.BlockMessage}
 	 */
 	public get customMessage() {
 		return this[kData].custom_message;

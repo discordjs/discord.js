@@ -1,5 +1,6 @@
 'use strict';
 
+const { ChannelType } = require('discord-api-types/v10');
 const { Poll } = require('../../structures/Poll.js');
 const { PollAnswer } = require('../../structures/PollAnswer.js');
 const { Partials } = require('../../util/Partials.js');
@@ -33,10 +34,16 @@ class Action {
     const payloadData = {};
     const id = data.channel_id ?? data.id;
 
-    if (!('recipients' in data)) {
-      // Try to resolve the recipient, but do not add the client user.
+    if ('recipients' in data) {
+      // Try to resolve the recipient, but do not add if already existing in recipients.
       const recipient = data.author ?? data.user ?? { id: data.user_id };
-      if (recipient.id !== this.client.user.id) payloadData.recipients = [recipient];
+      if (!data.recipients.some(existingRecipient => recipient.id === existingRecipient.id)) {
+        payloadData.recipients = [...data.recipients, recipient];
+      }
+    } else if (data.type === ChannelType.DM || data.type === ChannelType.GroupDM) {
+      // Try to resolve the recipient.
+      const recipient = data.author ?? data.user ?? { id: data.user_id };
+      payloadData.recipients = [recipient];
     }
 
     if (id !== undefined) payloadData.id = id;

@@ -4,7 +4,7 @@ import type { IRPCBroker } from '../Broker.js';
 import type { RedisBrokerOptions } from './BaseRedis.js';
 import { BaseRedisBroker, DefaultRedisBrokerOptions } from './BaseRedis.js';
 
-interface InternalPromise {
+export interface InternalPromise {
 	reject(error: any): void;
 	resolve(data: any): void;
 	timeout: NodeJS.Timeout;

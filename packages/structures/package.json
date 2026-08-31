@@ -63,13 +63,13 @@
 	"dependencies": {
 		"@discordjs/formatters": "workspace:^",
 		"@sapphire/snowflake": "^3.5.5",
-		"discord-api-types": "^0.38.43"
+		"discord-api-types": "^0.38.50"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
 		"@discordjs/scripts": "workspace:^",
 		"@favware/cliff-jumper": "^6.0.0",
-		"@types/node": "^22.19.15",
+		"@types/node": "^24.13.2",
 		"@vitest/coverage-v8": "^4.1.2",
 		"cpy-cli": "^7.0.0",
 		"cross-env": "^10.1.0",
@@ -85,7 +85,7 @@
 		"vitest": "^4.1.2"
 	},
 	"engines": {
-		"node": ">=22.12.0"
+		"node": ">=24.17.0"
 	},
 	"publishConfig": {
 		"access": "public",
