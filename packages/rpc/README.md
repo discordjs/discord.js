@@ -68,7 +68,9 @@ client.login({ clientId: env.CLIENT_ID }).catch(console.error);
 const client = new RPCClient({ scopes: [OAuth2Scopes.MessagesRead] });
 const startTimestamp = Date.now();
 
-client.once(RPCEvents.MessageCreate, async ({ channel_id: channelId, message }) => {
+client.subscribe(RPCEvents.MessageCreate, { channel_id: env.CHANNEL_ID });
+
+client.on(RPCEvents.MessageCreate, async ({ channel_id: channelId, message }) => {
 	if (message.content.startsWith('IMPORTANT!'))
 		console.log(`Important message from ${message.author.username}: ${message.content}`);
 });
