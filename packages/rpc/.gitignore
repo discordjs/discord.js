@@ -21,7 +21,6 @@ dist-docs
 # Docs
 docs/**/*
 !docs/README.md
-!docs/examples/**/*
 
 # Miscellaneous
 .turbo

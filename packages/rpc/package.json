@@ -10,7 +10,7 @@
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
 		"fmt": "pnpm run format",
 		"docs": "pnpm run build:docs && api-extractor run --local --minify && generate-split-documentation",
-		"prepack": "pnpm run lint && pnpm run build",
+		"prepack": "pnpm run build && pnpm run lint",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/rpc/*'",
 		"release": "cliff-jumper"
 	},
