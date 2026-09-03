@@ -52,7 +52,7 @@
 	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
-		"@ariakit/react": "^0.4.38",
+		"@ariakit/react": "^0.4.39",
 		"@react-icons/all-files": "^4.1.0",
 		"react": "^19.2.8",
 		"react-dom": "^19.2.8"
@@ -69,8 +69,8 @@
 		"@types/node": "^24.13.3",
 		"@types/react": "^19.2.18",
 		"@types/react-dom": "^19.2.5",
-		"@unocss/eslint-plugin": "^66.9.1",
-		"@unocss/reset": "^66.9.1",
+		"@unocss/eslint-plugin": "^66.9.2",
+		"@unocss/reset": "^66.9.2",
 		"@vitejs/plugin-react": "^6.1.1",
 		"chromatic": "^18.7.2",
 		"cross-env": "^10.1.0",
@@ -83,7 +83,7 @@
 		"storybook": "^10.5.10",
 		"turbo": "^2.10.12",
 		"typescript": "~5.9.3",
-		"unocss": "^66.9.1",
+		"unocss": "^66.9.2",
 		"vite": "^8.2.2",
 		"vite-plugin-dts": "^5.1.0"
 	},
