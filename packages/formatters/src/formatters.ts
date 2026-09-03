@@ -224,6 +224,16 @@ export function linkedRoleMention<RoleId extends Snowflake>(roleId: RoleId): `<i
 }
 
 /**
+ * Formats a game id into a game profile mention.
+ *
+ * @typeParam GameId - This is inferred by the supplied game id
+ * @param gameId - The game id to format
+ */
+export function gameProfileMention<GameId extends Snowflake>(gameId: GameId): `<@$${GameId}>` {
+	return `<@$${gameId}>`;
+}
+
+/**
  * Formats an application command name and id into an application command mention.
  *
  * @typeParam CommandId - This is inferred by the supplied command id
