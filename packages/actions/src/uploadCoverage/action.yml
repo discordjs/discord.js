@@ -90,7 +90,7 @@ runs:
 
     - name: Upload RPC Coverage
       if: ${{ hashFiles('packages/rpc/coverage/cobertura-coverage.xml') != '' }}
-      uses: codecov/codecov-action@v4
+      uses: codecov/codecov-action@v7
       with:
         files: ./packages/rpc/coverage/cobertura-coverage.xml
         disable_search: true
