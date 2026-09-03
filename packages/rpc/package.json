@@ -4,13 +4,13 @@
 	"version": "0.1.0",
 	"description": "A simple RPC client for Discord",
 	"scripts": {
-		"build": "tsc",
+		"build": "tsc --noEmit && tsup",
 		"build:docs": "tsc -p tsconfig.docs.json",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src",
 		"fmt": "pnpm run format",
-		"docs": "pnpm run build:docs && api-extractor run --local --minify",
-		"prepack": "pnpm run build && pnpm run lint",
+		"docs": "pnpm run build:docs && api-extractor run --local --minify && generate-split-documentation",
+		"prepack": "pnpm run lint && pnpm run build",
 		"changelog": "git cliff --prepend ./CHANGELOG.md -u -c ./cliff.toml -r ../../ --include-path 'packages/rpc/*'",
 		"release": "cliff-jumper"
 	},
@@ -54,23 +54,24 @@
 	"homepage": "https://discord.js.org",
 	"funding": "https://github.com/discordjs/discord.js?sponsor",
 	"dependencies": {
-		"@vladfrangu/async_event_emitter": "^2.4.6",
-		"discord-api-types": "^0.38.50"
+		"@vladfrangu/async_event_emitter": "^2.4.7",
+		"discord-api-types": "^0.38.54"
 	},
 	"devDependencies": {
 		"@discordjs/api-extractor": "workspace:^",
-		"@favware/cliff-jumper": "^4.1.0",
-		"@types/node": "^22.17.2",
-		"cross-env": "^10.0.0",
+		"@discordjs/scripts": "workspace:^",
+		"@favware/cliff-jumper": "^6.1.0",
+		"@types/node": "^24.13.3",
+		"cross-env": "^10.1.0",
 		"esbuild-plugin-version-injector": "^1.2.1",
-		"eslint": "^9.33.0",
-		"eslint-config-neon": "^0.2.7",
-		"eslint-formatter-compact": "^8.40.0",
-		"eslint-formatter-pretty": "^6.0.1",
-		"prettier": "^3.6.2",
-		"tsup": "^8.5.0",
-		"turbo": "^2.5.6",
-		"typescript": "~5.9.2"
+		"eslint": "^9.39.5",
+		"eslint-config-neon": "^0.3.2",
+		"eslint-formatter-compact": "^9.0.1",
+		"eslint-formatter-pretty": "^7.1.0",
+		"prettier": "~3.8.1",
+		"tsup": "^8.5.1",
+		"turbo": "^2.10.12",
+		"typescript": "~5.9.3"
 	},
 	"engines": {
 		"node": ">=24.17.0"
