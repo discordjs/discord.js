@@ -34,6 +34,48 @@ pnpm add @discordjs/rpc
 bun add @discordjs/rpc
 ```
 
+## Examples
+
+### Setting user activity for a game
+
+```ts
+const client = new RPCClient();
+const startTimestamp = Date.now();
+
+async function setActivity(): Promise<void> {
+	await client.setActivity({
+		details: `Playing with friends :3`,
+		state: 'in the silly lobby',
+		timestamps: { start: startTimestamp },
+		instance: true,
+	});
+}
+
+client.once(Events.ApplicationReady, async () => {
+	await setActivity();
+
+	setInterval(async () => {
+		await setActivity();
+	}, 15e3);
+});
+
+client.login({ clientId: env.CLIENT_ID }).catch(console.error);
+```
+
+### Logging messages of importance for the current user
+
+```ts
+const client = new RPCClient({ scopes: [OAuth2Scopes.MessagesRead] });
+const startTimestamp = Date.now();
+
+client.once(RPCEvents.MessageCreate, async ({ channel_id: channelId, message }) => {
+	if (message.content.startsWith('IMPORTANT!'))
+		console.log(`Important message from ${message.author.username}: ${message.content}`);
+});
+
+client.login({ env.CLIENT_ID, clientSecret: env.CLIENT_SECRET }).catch(console.error);
+```
+
 ## Links
 
 - [Website][website] ([source][website-source])
