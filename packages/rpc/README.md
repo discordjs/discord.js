@@ -73,7 +73,7 @@ client.once(RPCEvents.MessageCreate, async ({ channel_id: channelId, message }) 
 		console.log(`Important message from ${message.author.username}: ${message.content}`);
 });
 
-client.login({ env.CLIENT_ID, clientSecret: env.CLIENT_SECRET }).catch(console.error);
+client.login({ clientId: env.CLIENT_ID, clientSecret: env.CLIENT_SECRET }).catch(console.error);
 ```
 
 ## Links
