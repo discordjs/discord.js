@@ -546,11 +546,11 @@ export class RPCClient extends AsyncEventEmitter<MappedRPCEventsDispatchData> {
 		activity.instance = Boolean(activity.instance);
 
 		if (activity.timestamps) {
-			if ('start' in activity.timestamps && isValidTimestamp(activity.timestamps.start)) {
+			if ('start' in activity.timestamps && !isValidTimestamp(activity.timestamps.start)) {
 				throw new RangeError('timestamps.start must fit into a unix timestamp');
 			}
 
-			if ('end' in activity.timestamps && isValidTimestamp(activity.timestamps.end)) {
+			if ('end' in activity.timestamps && !isValidTimestamp(activity.timestamps.end)) {
 				throw new RangeError('timestamps.end must fit into a unix timestamp');
 			}
 		}
