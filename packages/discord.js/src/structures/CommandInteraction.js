@@ -156,7 +156,7 @@ class CommandInteraction extends BaseInteraction {
       if (role) result.role = this.guild?.roles._add(role) ?? role;
 
       const attachment = resolved.attachments?.[option.value];
-      if (attachment) result.attachment = new Attachment(attachment);
+      if (attachment) result.attachment = new Attachment(this.client, attachment);
     }
 
     return result;
