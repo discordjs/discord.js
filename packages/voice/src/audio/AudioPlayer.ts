@@ -491,7 +491,8 @@ export class AudioPlayer extends EventEmitter {
 	 */
 	public stop(force = false) {
 		if (this.state.status === AudioPlayerStatus.Idle) return false;
-		if (force || this.state.resource.silencePaddingFrames === 0) {
+
+		if (this.state.status === AudioPlayerStatus.Buffering || force || this.state.resource.silencePaddingFrames === 0) {
 			this.state = {
 				status: AudioPlayerStatus.Idle,
 			};
