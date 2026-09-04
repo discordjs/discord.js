@@ -20,7 +20,10 @@ export class Message<Omitted extends keyof APIMessage | '' = 'edited_timestamp' 
 	Omitted
 > {
 	/**
-	 * The template used for removing data from the raw data stored for each Message
+	 * The template used for removing data from the raw data stored for each Message.
+	 *
+	 * @remarks This template has defaults, if you want to remove additional data and keep the defaults,
+	 * use `Object.defineProperties`. To override the defaults, set this value directly.
 	 */
 	public static override DataTemplate: Partial<APIMessage> = {
 		set timestamp(_: string) {},
