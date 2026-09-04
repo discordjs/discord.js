@@ -1,12 +1,19 @@
 'use strict';
 
+const { Buffer } = require('node:buffer');
+const { Collection } = require('@discordjs/collection');
+const { lazy } = require('@discordjs/util');
 const { RouteBases, Routes, PermissionFlagsBits } = require('discord-api-types/v10');
 const Base = require('./Base');
 const { GuildScheduledEvent } = require('./GuildScheduledEvent');
 const IntegrationApplication = require('./IntegrationApplication');
 const InviteStageInstance = require('./InviteStageInstance');
 const { DiscordjsError, ErrorCodes } = require('../errors');
+const { resolveInviteTargetUsersFile } = require('../util/DataResolver');
 const { InviteFlagsBitField } = require('../util/InviteFlagsBitField.js');
+const { _transformAPIInviteTargetUsersJobStatus } = require('../util/Transformers');
+
+const getInviteRole = lazy(() => require('./InviteRole'));
 
 /**
  * Represents an invitation to a guild channel.
@@ -234,6 +241,24 @@ class Invite extends Base {
     } else {
       this.flags ??= new InviteFlagsBitField().freeze();
     }
+
+    if ('roles' in data || 'role_ids' in data) {
+      /**
+       * The roles assigned to the user upon accepting the invite.
+       *
+       * @type {?Collection<Snowflake, Role|InviteRole>}
+       */
+      this.roles = new Collection(
+        data.roles?.map(role => [
+          role.id,
+          this.guild?.roles?._add(role, false) ?? new (getInviteRole())(this.client, role),
+        ]) ??
+          // `role_ids` is only received from gateway `INVITE_CREATE` event, so `this.guild` should be "Guild" instance
+          data.role_ids?.map(roleId => [roleId, this.guild.roles.resolve(roleId)]),
+      );
+    } else {
+      this.roles ??= null;
+    }
   }
 
   /**
@@ -307,6 +332,47 @@ class Invite extends Base {
   async delete(reason) {
     await this.client.rest.delete(Routes.invite(this.code), { reason });
     return this;
+  }
+
+  /**
+   * Update target users of this invite.
+   *
+   * @param {UserResolvable[]|BufferResolvable} targetUsersFile An array of users or a CSV file
+   * with a single column of user ids for all the users able to accept this invite
+   * @returns {Promise<void>}
+   */
+  async updateTargetUsers(targetUsersFile) {
+    await this.client.rest.put(Routes.inviteTargetUsers(this.code), {
+      files: [
+        {
+          key: 'target_users_file',
+          data: await resolveInviteTargetUsersFile(this.client, targetUsersFile),
+          name: 'users.csv',
+          contentType: 'text/csv',
+        },
+      ],
+    });
+  }
+
+  /**
+   * Get target users of this invite.
+   *
+   * @returns {Promise<Buffer>}
+   */
+  async fetchTargetUsers() {
+    const arrayBuff = await this.client.rest.get(Routes.inviteTargetUsers(this.code));
+
+    return Buffer.from(arrayBuff);
+  }
+
+  /**
+   * Get status of the job processing target users of this invite.
+   *
+   * @returns {Promise<TargetUsersJobStatusForInvite>}
+   */
+  async fetchTargetUsersJobStatus() {
+    const job = await this.client.rest.get(Routes.inviteTargetUsersJobStatus(this.code));
+    return _transformAPIInviteTargetUsersJobStatus(job);
   }
 
   /**
