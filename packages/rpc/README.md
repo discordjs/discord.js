@@ -39,6 +39,8 @@ bun add @discordjs/rpc
 ### Setting user activity for a game
 
 ```ts
+import { RPCClient, Events } from '@discordjs/rpc';
+
 const client = new RPCClient();
 const startTimestamp = Date.now();
 
@@ -59,23 +61,26 @@ client.once(Events.ApplicationReady, async () => {
 	}, 15e3);
 });
 
-client.login({ clientId: env.CLIENT_ID }).catch(console.error);
+client.login({ clientId: process.env.CLIENT_ID }).catch(console.error);
 ```
 
 ### Logging messages of importance for the current user
 
 ```ts
+import { RPCClient, RPCEvents } from '@discordjs/rpc';
+import { OAuth2Scopes } from 'discord-api-types';
+
 const client = new RPCClient({ scopes: [OAuth2Scopes.MessagesRead] });
 const startTimestamp = Date.now();
 
-client.subscribe(RPCEvents.MessageCreate, { channel_id: env.CHANNEL_ID });
+client.subscribe(RPCEvents.MessageCreate, { channel_id: process.env.CHANNEL_ID });
 
 client.on(RPCEvents.MessageCreate, async ({ channel_id: channelId, message }) => {
 	if (message.content.startsWith('IMPORTANT!'))
 		console.log(`Important message from ${message.author.username}: ${message.content}`);
 });
 
-client.login({ clientId: env.CLIENT_ID, clientSecret: env.CLIENT_SECRET }).catch(console.error);
+client.login({ clientId: process.env.CLIENT_ID, clientSecret: process.env.CLIENT_SECRET }).catch(console.error);
 ```
 
 ## Links
