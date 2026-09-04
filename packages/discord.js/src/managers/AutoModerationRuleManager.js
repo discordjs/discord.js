@@ -265,10 +265,13 @@ class AutoModerationRuleManager extends CachedManager {
    *   .catch(console.error)
    */
   async fetch(options) {
-    if (!options) return this._fetchMany();
+    if (options === undefined) {
+      return this._fetchMany();
+    }
+
     const { autoModerationRule, cache, force } = options;
     const resolvedAutoModerationRule = this.resolveId(autoModerationRule ?? options);
-    if (resolvedAutoModerationRule) {
+    if (resolvedAutoModerationRule !== null) {
       return this._fetchSingle({ autoModerationRule: resolvedAutoModerationRule, cache, force });
     }
 

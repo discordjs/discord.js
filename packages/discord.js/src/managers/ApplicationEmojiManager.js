@@ -80,7 +80,7 @@ class ApplicationEmojiManager extends CachedManager {
    *   .catch(console.error);
    */
   async fetch(id, { cache = true, force = false } = {}) {
-    if (id) {
+    if (id !== undefined) {
       if (!force) {
         const existing = this.cache.get(id);
         if (existing) return existing;
