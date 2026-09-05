@@ -541,10 +541,9 @@ client.on('messageCreate', async message => {
 
   defaultCollector.on('collect', (...args) => expect(args).type.toBe<[ButtonInteraction | SelectMenuInteraction]>());
   defaultCollector.on('dispose', (...args) => expect(args).type.toBe<[ButtonInteraction | SelectMenuInteraction]>());
-  // TODO: uncomment once tstyche supports this test
-  /* defaultCollector.on('end', (...args) =>
+  defaultCollector.on('end', (...args) =>
     expect(args).type.toBe<[ReadonlyCollection<Snowflake, ButtonInteraction | SelectMenuInteraction>, string]>(),
-  ); */
+  );
 
   // Verify that additional options don't affect default collector types.
   const semiDefaultCollector = message.createMessageComponentCollector({ time: 10_000 });

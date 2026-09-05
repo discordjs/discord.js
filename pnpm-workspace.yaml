@@ -19,6 +19,9 @@ allowBuilds:
 
 autoInstallPeers: false
 
+minimumReleaseAgeExclude:
+  - tstyche@7.2.4
+
 peerDependencyRules:
   allowAny:
     - '*'
