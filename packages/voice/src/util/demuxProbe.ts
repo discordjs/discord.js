@@ -2,8 +2,8 @@ import { Buffer } from 'node:buffer';
 import process from 'node:process';
 import { Readable } from 'node:stream';
 import prism from 'prism-media';
-import { StreamType } from '..';
-import { noop } from './util';
+import { StreamType } from '../audio/TransformerGraph.js';
+import { noop } from './util.js';
 
 /**
  * Takes an Opus Head, and verifies whether the associated Opus audio is suitable to play in a Discord voice channel.

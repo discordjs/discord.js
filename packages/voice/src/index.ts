@@ -1,7 +1,7 @@
-export * from './joinVoiceChannel';
-export * from './audio/index';
-export * from './util/index';
-export * from './receive/index';
+export * from './joinVoiceChannel.js';
+export * from './audio/index.js';
+export * from './util/index.js';
+export * from './receive/index.js';
 
 export {
 	Networking,
@@ -41,9 +41,9 @@ export {
 	VoiceConnectionDisconnectReason,
 	type VoiceConnectionReadyState,
 	type VoiceConnectionSignallingState,
-} from './VoiceConnection';
+} from './VoiceConnection.js';
 
-export { type JoinConfig, getVoiceConnection, getVoiceConnections, getGroups } from './DataStore';
+export { type JoinConfig, getVoiceConnection, getVoiceConnections, getGroups } from './DataStore.js';
 
 /**
  * The {@link https://github.com/discordjs/discord.js/blob/main/packages/voice#readme | @discordjs/voice} version

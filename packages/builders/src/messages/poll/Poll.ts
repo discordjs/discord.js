@@ -3,7 +3,7 @@ import type { RESTAPIPoll, APIPollMedia, PollLayoutType, APIPollAnswer } from 'd
 import { normalizeArray, type RestOrArray } from '../../util/normalizeArray.js';
 import { resolveBuilder } from '../../util/resolveBuilder.js';
 import { validate } from '../../util/validation.js';
-import { pollPredicate } from './Assertions';
+import { pollPredicate } from './Assertions.js';
 import { PollAnswerBuilder } from './PollAnswer.js';
 import { PollQuestionBuilder } from './PollQuestion.js';
 

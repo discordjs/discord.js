@@ -5,30 +5,25 @@
 	"description": "A set of scripts that we use for our workflows",
 	"private": true,
 	"scripts": {
-		"build": "tsc --noEmit --lib ESNext,DOM && tsup",
+		"build": "tsc",
 		"lint": "prettier --check . && cross-env TIMING=1 eslint --format=pretty src turbo/generators/config.ts",
 		"format": "prettier --write . && cross-env TIMING=1 eslint --fix --format=pretty src turbo/generators/config.ts",
 		"fmt": "pnpm run format"
 	},
 	"bin": {
 		"generate-split-documentation": "./bin/generateSplitDocumentation.js",
-		"sort-labels": "./bin/sortLabels.js"
+		"sort-labels": "./bin/sortLabels.js",
+		"inject-version": "./bin/injectVersion.js"
 	},
 	"exports": {
 		".": {
-			"require": {
-				"types": "./dist/src/index.d.ts",
-				"default": "./dist/src/index.js"
-			},
-			"import": {
-				"types": "./dist/src/index.d.mts",
-				"default": "./dist/src/index.mjs"
-			}
+			"types": "./dist/src/index.d.ts",
+			"default": "./dist/src/index.js"
 		}
 	},
 	"main": "./dist/src/index.js",
-	"module": "./dist/src/index.mjs",
 	"types": "./dist/src/index.d.ts",
+	"type": "module",
 	"directories": {
 		"bin": "bin",
 		"lib": "src",
@@ -77,14 +72,14 @@
 		"@types/node": "^24.13.3",
 		"cross-env": "^10.1.0",
 		"eslint": "^9.39.5",
-		"eslint-config-neon": "^0.3.2",
+		"eslint-config-neon": "^0.5.4",
 		"eslint-formatter-compact": "^9.0.1",
 		"eslint-formatter-pretty": "^7.1.0",
 		"prettier": "~3.8.1",
 		"terser": "^5.51.2",
-		"tsup": "^8.5.1",
 		"turbo": "^2.10.12",
-		"typescript": "~5.9.3"
+		"typescript": "npm:@typescript/typescript6@~6.0.2",
+		"typescript-native": "npm:typescript@~7.0.2"
 	},
 	"engines": {
 		"node": ">=24.17.0"

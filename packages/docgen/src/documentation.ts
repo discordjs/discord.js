@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/switch-exhaustiveness-check */
 import { dirname, join, relative } from 'node:path';
-import type { DeclarationReflection } from 'typedoc';
-import packageFile from '../package.json';
+import { ReflectionKind } from 'typedoc';
+import packageFile from '../package.json' with { type: 'json' };
 import type { ChildTypes, Class, Config, CustomDocs, RootTypes } from './interfaces/index.js';
 import { DocumentedClass } from './types/class.js';
 import { DocumentedConstructor } from './types/constructor.js';
@@ -10,6 +11,7 @@ import { DocumentedInterface } from './types/interface.js';
 import { DocumentedMember } from './types/member.js';
 import { DocumentedMethod } from './types/method.js';
 import { DocumentedTypeDef } from './types/typedef.js';
+import type { DeclarationReflection } from './index.js';
 
 export class Documentation {
 	public readonly classes = new Map<string, DocumentedClass>();
@@ -31,8 +33,8 @@ export class Documentation {
 			const items = data as DeclarationReflection[];
 
 			for (const item of items) {
-				switch (item.kindString) {
-					case 'Class': {
+				switch (item.kind) {
+					case ReflectionKind.Class: {
 						this.classes.set(item.name, new DocumentedClass(item, config));
 						if (item.children) {
 							this.parse(item.children, item);
@@ -41,14 +43,14 @@ export class Documentation {
 						break;
 					}
 
-					case 'Function': {
+					case ReflectionKind.Function: {
 						this.functions.set(item.name, new DocumentedMethod(item, config));
 						break;
 					}
 
-					case 'Interface':
-					case 'Type alias':
-					case 'Enumeration':
+					case ReflectionKind.Interface:
+					case ReflectionKind.TypeAlias:
+					case ReflectionKind.Enum:
 						this.typedefs.set(item.name, new DocumentedTypeDef(item, config));
 						if (item.children) {
 							this.parse(item.children, item);
@@ -115,13 +117,13 @@ export class Documentation {
 			for (const member of it) {
 				let item: DocumentedConstructor | DocumentedEvent | DocumentedMember | DocumentedMethod | null = null;
 
-				switch (member.kindString) {
-					case 'Constructor': {
+				switch (member.kind) {
+					case ReflectionKind.Constructor: {
 						item = new DocumentedConstructor(member, this.config);
 						break;
 					}
 
-					case 'Method': {
+					case ReflectionKind.Method: {
 						const event = prop?.groups?.find((group) => group.title === 'Events');
 						if ((event?.children as unknown as number[])?.includes(member.id)) {
 							item = new DocumentedEvent(member, this.config);
@@ -132,13 +134,16 @@ export class Documentation {
 						break;
 					}
 
-					case 'Property': {
+					case ReflectionKind.Property:
+					case ReflectionKind.Accessor: {
 						item = new DocumentedMember(member, this.config);
 						break;
 					}
 
 					default: {
-						console.warn(`- Unknown documentation kind "${member.kindString}" - \n${JSON.stringify(member)}\n`);
+						console.warn(
+							`- Unknown documentation kind "${ReflectionKind[member.kind]}" - \n${JSON.stringify(member)}\n`,
+						);
 					}
 				}
 
@@ -158,7 +163,7 @@ export class Documentation {
 				const info = [];
 				const name = (member.name || item?.data.name) ?? 'UNKNOWN';
 				const meta =
-					member.kindString === 'constructor'
+					member.kind === ReflectionKind.Constructor
 						? null
 						: {
 								file: member.sources?.[0]?.fileName,

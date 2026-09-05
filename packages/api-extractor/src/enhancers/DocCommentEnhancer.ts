@@ -61,6 +61,7 @@ export class DocCommentEnhancer {
 
 		if (metadata.tsdocComment?.inheritDocTag) {
 			this._applyInheritDoc(astDeclaration, metadata.tsdocComment, metadata.tsdocComment.inheritDocTag, entryPoint);
+			metadata.artificialDocComment = true;
 		}
 
 		this._analyzeNeedsDocumentation(astDeclaration, metadata);
@@ -95,6 +96,7 @@ export class DocCommentEnhancer {
 					}),
 					new tsdoc.DocPlainText({ configuration, text: ' class' }),
 				]);
+				metadata.artificialDocComment = true;
 			}
 
 			const apiItemMetadata: ApiItemMetadata = this._collector.fetchApiItemMetadata(astDeclaration);
@@ -131,6 +133,8 @@ export class DocCommentEnhancer {
 						new tsdoc.DocPlainText({ configuration, text: ' class.' }),
 					]),
 				);
+
+				classMetadata.artificialDocComment = true;
 			}
 
 			return;
