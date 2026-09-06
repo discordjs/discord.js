@@ -13,7 +13,7 @@ class GuildStickerUpdateAction extends Action {
      * @param {Sticker} oldSticker The old sticker
      * @param {Sticker} newSticker The new sticker
      */
-    this.client.emit(Events.GuildStickerUpdate, old, current);
+    if (!current.equals(old)) this.client.emit(Events.GuildStickerUpdate, old, current);
     return { sticker: current };
   }
 }

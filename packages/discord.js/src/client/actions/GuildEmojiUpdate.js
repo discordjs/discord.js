@@ -13,7 +13,7 @@ class GuildEmojiUpdateAction extends Action {
      * @param {GuildEmoji} oldEmoji The old emoji
      * @param {GuildEmoji} newEmoji The new emoji
      */
-    this.client.emit(Events.GuildEmojiUpdate, old, current);
+    if (!current.equals(old)) this.client.emit(Events.GuildEmojiUpdate, old, current);
     return { emoji: current };
   }
 }
