@@ -1,9 +1,11 @@
 import { Blob, Buffer } from 'node:buffer';
+import { sensitiveHeaders } from 'node:http2';
 import { MockAgent, setGlobalDispatcher, FormData as UndiciFormData } from 'undici';
+import type { IncomingHttpHeaders } from 'undici/types/header.js';
 import type { Interceptable, MockInterceptor } from 'undici/types/mock-interceptor.js';
 import { beforeEach, afterEach, test, expect, vitest } from 'vitest';
 import { REST } from '../src/index.js';
-import { makeRequest, resolveBody } from '../src/strategies/undiciRequest.js';
+import { buildHeaders, makeRequest, resolveBody } from '../src/strategies/undiciRequest.js';
 import { genPath } from './util.js';
 
 const makeRequestMock = vitest.fn(makeRequest);
@@ -100,6 +102,20 @@ test('resolveBody', async () => {
 	// Unknown type
 	// @ts-expect-error: This test is ensuring that this throws
 	await expect(resolveBody(true)).rejects.toThrow(TypeError);
+});
+
+test('buildHeaders', () => {
+	const raw: IncomingHttpHeaders = {
+		'content-type': 'application/json',
+		'x-array-header': ['a', 'b'],
+	};
+	(raw as Record<symbol, string[]>)[sensitiveHeaders] = ['authorization'];
+
+	const headers = buildHeaders(raw);
+
+	expect(headers.get('content-type')).toBe('application/json');
+	expect(headers.get('x-array-header')).toStrictEqual('a, b');
+	expect([...headers.keys()]).toStrictEqual(['content-type', 'x-array-header']);
 });
 
 test('use passed undici request', async () => {

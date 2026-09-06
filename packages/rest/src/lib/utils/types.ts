@@ -2,7 +2,7 @@ import type { Readable } from 'node:stream';
 import type { ReadableStream } from 'node:stream/web';
 import type { Collection } from '@discordjs/collection';
 import type { Awaitable, RawFile } from '@discordjs/util';
-import type { Agent, Dispatcher, RequestInit, BodyInit, Response } from 'undici';
+import type { Agent, Dispatcher, Headers, RequestInit, BodyInit, Response } from 'undici';
 import type { IHandler } from '../interfaces/Handler.js';
 
 export interface RestEvents {
@@ -264,9 +264,11 @@ export interface APIRequest {
 
 export interface ResponseLike extends Pick<
 	Response,
-	'arrayBuffer' | 'bodyUsed' | 'headers' | 'json' | 'ok' | 'status' | 'statusText' | 'text'
+	'arrayBuffer' | 'bodyUsed' | 'json' | 'ok' | 'status' | 'statusText' | 'text'
 > {
 	body: Readable | ReadableStream | null;
+	clone?(): ResponseLike;
+	headers: Pick<Headers, typeof Symbol.iterator | 'get' | 'has'>;
 }
 
 export interface InvalidRequestWarningData {
