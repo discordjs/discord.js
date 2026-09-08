@@ -10,6 +10,27 @@ export const kArchiveTimestamp = Symbol.for('djs.structures.archiveTimestamp');
 export const kStartsTimestamp = Symbol.for('djs.structures.startsTimestamp');
 export const kEndsTimestamp = Symbol.for('djs.structures.endsTimestamp');
 
+export const kPermissions = Symbol.for('djs.structures.permissions');
+
+export const kDmsDisabledUntil = Symbol.for('djs.structures.dmsDisabledUntil');
+export const kDmSpamDetectedAt = Symbol.for('djs.structures.dmSpamDetectedAt');
+export const kInvitesDisabledUntil = Symbol.for('djs.structures.invitesDisabledUntil');
+export const kRaidDetectedAt = Symbol.for('djs.structures.raidDetectedAt');
+
+export const kJoinedAt = Symbol.for('djs.structures.joinedAt');
+export const kCommunicationDisabledUntil = Symbol.for('djs.structures.communicationDisabledUntil');
+export const kPremiumSince = Symbol.for('djs.structures.premiumSince');
+
+export const kSyncedAt = Symbol.for('djs.structures.syncedAt');
+
+export const kCreatedAt = Symbol.for('djs.structures.createdAt');
+export const kUpdatedAt = Symbol.for('djs.structures.updatedAt');
+
+export const kScheduledEndTime = Symbol.for('djs.structures.scheduledEndTime');
+export const kScheduledStartTime = Symbol.for('djs.structures.scheduledStartTime');
+
+export const kStart = Symbol.for('djs.structures.start');
+export const kEnd = Symbol.for('djs.structures.end');
 export const kCurrentPeriodStartTimestamp = Symbol.for('djs.structures.currentPeriodStartTimestamp');
 export const kCurrentPeriodEndTimestamp = Symbol.for('djs.structures.currentPeriodEndTimestamp');
 export const kCanceledTimestamp = Symbol.for('djs.structures.canceledTimestamp');
