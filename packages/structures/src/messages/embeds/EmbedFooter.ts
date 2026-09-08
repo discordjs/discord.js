@@ -10,7 +10,7 @@ import type { Partialize } from '../../utils/types.js';
  */
 export class EmbedFooter<Omitted extends keyof APIEmbedFooter | '' = ''> extends Structure<APIEmbedFooter, Omitted> {
 	/**
-	 * @param data - The raw data received from the API for the connection
+	 * @param data - The raw data received from the API for the embed footer
 	 */
 	public constructor(data: Partialize<APIEmbedFooter, Omitted>) {
 		super(data);

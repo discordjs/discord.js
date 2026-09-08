@@ -1,12 +1,12 @@
-import type { APIUnfurledMediaItem } from 'discord-api-types/v10';
+import type { APIUnfurledMediaItem, UnfurledMediaItemFlags } from 'discord-api-types/v10';
 import { Structure } from '../../Structure.js';
+import { UnfurledMediaItemFlagsBitField } from '../../bitfields/UnfurledMediaItemFlagsBitField.js';
 import { kData } from '../../utils/symbols.js';
+import { isFieldSet } from '../../utils/type-guards.js';
 import type { Partialize } from '../../utils/types.js';
 
-// TODO: add `flags` as a BitField class and appropriate getter, once it gets properly documented
-
 /**
- * Represents a media  item in a component on a message.
+ * Represents a media item in a component on a message.
  *
  * @typeParam Omitted - Specify the properties that will not be stored in the raw data field as a union, implement via `DataTemplate`
  */
@@ -41,10 +41,33 @@ export class UnfurledMediaItem<Omitted extends keyof APIUnfurledMediaItem | '' =
 	}
 
 	/**
-	 * The height of the media item (if image)
+	 * Unfurled media item flags combined as a bitfield
+	 */
+	public get flags() {
+		return isFieldSet(this[kData], 'flags', 'number')
+			? new UnfurledMediaItemFlagsBitField(this[kData].flags as UnfurledMediaItemFlags)
+			: null;
+	}
+
+	/**
+	 * The height of the media item (if image or video)
 	 */
 	public get height() {
 		return this[kData].height;
+	}
+
+	/**
+	 * ThumbHash placeholder (if image or video)
+	 */
+	public get placeholder() {
+		return this[kData].placeholder;
+	}
+
+	/**
+	 * Version of the placeholder (if image or video)
+	 */
+	public get placeholderVersion() {
+		return this[kData].placeholder_version;
 	}
 
 	/**
@@ -55,14 +78,14 @@ export class UnfurledMediaItem<Omitted extends keyof APIUnfurledMediaItem | '' =
 	}
 
 	/**
-	 * Supports arbitrary URLs and attachment:// references
+	 * Supports arbitrary URLs and `attachment://<filename>` references
 	 */
 	public get url() {
 		return this[kData].url;
 	}
 
 	/**
-	 * The width of the media item (if image)
+	 * The width of the media item (if image or video)
 	 */
 	public get width() {
 		return this[kData].width;
