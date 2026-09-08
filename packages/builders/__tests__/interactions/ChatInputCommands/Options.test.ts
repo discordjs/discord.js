@@ -86,6 +86,18 @@ describe('Application Command toJSON() results', () => {
 		});
 	});
 
+	test('GIVEN a channel option with DM and group DM channel types THEN calling toJSON should return a valid JSON', () => {
+		expect(
+			getChannelOption().setChannelTypes(ChannelType.DM, ChannelType.GroupDM).toJSON(),
+		).toEqual<APIApplicationCommandChannelOption>({
+			name: 'owo',
+			description: 'Testing 123',
+			type: ApplicationCommandOptionType.Channel,
+			required: true,
+			channel_types: [ChannelType.DM, ChannelType.GroupDM],
+		});
+	});
+
 	test('GIVEN a integer option THEN calling toJSON should return a valid JSON', () => {
 		expect(getIntegerOption().toJSON()).toEqual<APIApplicationCommandIntegerOption>({
 			name: 'owo',
