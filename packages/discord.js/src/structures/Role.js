@@ -507,7 +507,7 @@ class Role extends Base {
       this.colors.secondaryColor === role.colors.secondaryColor &&
       this.colors.tertiaryColor === role.colors.tertiaryColor &&
       this.hoist === role.hoist &&
-      this.position === role.position &&
+      this.rawPosition === role.rawPosition &&
       this.permissions.bitfield === role.permissions.bitfield &&
       this.managed === role.managed &&
       this.icon === role.icon &&
