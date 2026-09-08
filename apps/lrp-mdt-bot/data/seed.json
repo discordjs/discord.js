@@ -1,0 +1,151 @@
+{
+	"citizens": [
+		{
+			"id": "102938",
+			"name": "محمد أحمد",
+			"birthDate": "01/01/2000",
+			"nationality": "سعودي",
+			"licenses": "سارية",
+			"wanted": false,
+			"record": {
+				"cases": ["CASE #LRP-000118"],
+				"violations": [
+					{
+						"id": "VIO-021847",
+						"type": "تجاوز السرعة المحددة",
+						"fine": 1200,
+						"points": 3,
+						"caseId": "—",
+						"officer": "ملازم خالد",
+						"createdAt": "2025-12-10T14:20:00.000Z"
+					}
+				],
+				"totalFines": 1200,
+				"jailTime": "لا يوجد",
+				"notes": "تم التحقق من الهوية والرخص، لا توجد ملاحظات أمنية نشطة.",
+				"lastUpdated": "2026-08-29T18:45:00.000Z",
+				"lastOfficer": "ملازم خالد"
+			}
+		},
+		{
+			"id": "208411",
+			"name": "سالم القحطاني",
+			"birthDate": "12/07/1996",
+			"nationality": "سعودي",
+			"licenses": "موقوفة",
+			"wanted": true,
+			"record": {
+				"cases": ["CASE #LRP-000121", "CASE #LRP-000119"],
+				"violations": [],
+				"totalFines": 8500,
+				"jailTime": "18 شهراً",
+				"notes": "يجب التعامل بحذر وإبلاغ غرفة العمليات فور الرصد.",
+				"lastUpdated": "2026-09-05T21:10:00.000Z",
+				"lastOfficer": "رائد فهد"
+			}
+		}
+	],
+	"vehicles": [
+		{
+			"plate": "LRP 1024",
+			"model": "Sultan RS",
+			"owner": "محمد أحمد",
+			"registration": "ساري",
+			"insurance": "ساري",
+			"wanted": false
+		},
+		{
+			"plate": "LRP 7712",
+			"model": "Buffalo STX",
+			"owner": "سالم القحطاني",
+			"registration": "منتهي",
+			"insurance": "غير ساري",
+			"wanted": true
+		}
+	],
+	"wanted": [
+		{
+			"id": "WNT-483921",
+			"citizenId": "208411",
+			"name": "سالم القحطاني",
+			"reason": "الاشتباه في سطو مسلح",
+			"risk": "خطير",
+			"reward": "25,000 $",
+			"officer": "رائد فهد",
+			"issuedAt": "2026-09-05T21:10:00.000Z"
+		}
+	],
+	"units": [
+		{
+			"id": "101",
+			"discordId": "000000000000000101",
+			"officerName": "ملازم محمد",
+			"rank": "ملازم",
+			"badge": "1024",
+			"type": "دورية",
+			"area": "المنطقة الشمالية",
+			"status": "متاح"
+		},
+		{
+			"id": "204",
+			"discordId": "000000000000000204",
+			"officerName": "رقيب عبدالله",
+			"rank": "رقيب",
+			"badge": "2041",
+			"type": "مرور",
+			"area": "وسط المدينة",
+			"status": "مشغول"
+		}
+	],
+	"reports": [
+		{
+			"id": "#LRP-1024",
+			"type": "سرقة مركبة",
+			"location": "وسط المدينة",
+			"risk": "عالية",
+			"description": "بلاغ عن سرقة مركبة سوداء من موقف عام.",
+			"unit": "101",
+			"officer": "ملازم محمد",
+			"status": "قيد المعالجة",
+			"createdAt": "2026-09-08T09:30:00.000Z"
+		},
+		{
+			"id": "#LRP-1023",
+			"type": "اشتباه أمني",
+			"location": "الميناء",
+			"risk": "متوسطة",
+			"description": "مركبة متوقفة في منطقة محظورة.",
+			"unit": "204",
+			"officer": "رقيب عبدالله",
+			"status": "جديد",
+			"createdAt": "2026-09-08T09:05:00.000Z"
+		}
+	],
+	"cases": [
+		{
+			"id": "CASE #LRP-000124",
+			"accused": "سالم القحطاني",
+			"victim": "شركة Pacific",
+			"charges": "سطو مسلح",
+			"evidence": "كاميرات مراقبة، شهادة شاهدين",
+			"notes": "بانتظار تقرير الأدلة الجنائية.",
+			"officer": "رائد فهد",
+			"status": "تحت التحقيق",
+			"createdAt": "2026-09-05T20:00:00.000Z"
+		}
+	],
+	"announcements": [
+		{
+			"id": "OPS-17",
+			"title": "رفع الجاهزية في المنطقة الشمالية",
+			"issuer": "غرفة العمليات",
+			"date": "2026-09-08T07:00:00.000Z"
+		},
+		{
+			"id": "CMD-04",
+			"title": "تحديث آلية توثيق الأدلة",
+			"issuer": "قيادة الشرطة",
+			"date": "2026-09-07T16:30:00.000Z"
+		}
+	]
+}

@@ -1,0 +1,20 @@
+{
+	"name": "@lrp/mdt-bot",
+	"version": "1.0.0",
+	"private": true,
+	"description": "Arabic Discord MDT for LEGACY ROLEPLAY Police Department",
+	"type": "module",
+	"scripts": {
+		"start": "node src/index.js",
+		"register": "node src/register-commands.js",
+		"demo:render": "node scripts/render-demo.js",
+		"test": "node --test"
+	},
+	"dependencies": {
+		"discord.js": "workspace:^",
+		"sharp": "^0.32.6"
+	},
+	"engines": {
+		"node": ">=18"
+	}
+}
