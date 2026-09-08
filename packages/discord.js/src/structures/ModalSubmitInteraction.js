@@ -2,6 +2,7 @@
 
 const { Collection } = require('@discordjs/collection');
 const { lazy } = require('@discordjs/util');
+const { ComponentType } = require('discord-api-types/v10');
 const { transformResolved } = require('../util/Util.js');
 const { BaseInteraction } = require('./BaseInteraction.js');
 const { InteractionWebhook } = require('./InteractionWebhook.js');
@@ -9,7 +10,6 @@ const { ModalComponentResolver } = require('./ModalComponentResolver.js');
 const { InteractionResponses } = require('./interfaces/InteractionResponses.js');
 
 const getMessage = lazy(() => require('./Message.js').Message);
-const getAttachment = lazy(() => require('./Attachment.js').Attachment);
 
 /**
  * @typedef {Object} BaseModalData
@@ -18,13 +18,40 @@ const getAttachment = lazy(() => require('./Attachment.js').Attachment);
  */
 
 /**
- * @typedef {BaseModalData} SelectMenuModalData
+ * @typedef {BaseModalData} BaseSelectMenuModalData
  * @property {string} customId The custom id of the component
  * @property {string[]} values The values of the component
- * @property {Collection<Snowflake, GuildMember|APIGuildMember>} [members] The resolved members
- * @property {Collection<Snowflake, User|APIUser>} [users] The resolved users
- * @property {Collection<Snowflake, Role|APIRole>} [roles] The resolved roles
- * @property {Collection<Snowflake, BaseChannel|APIChannel>} [channels] The resolved channels
+ */
+
+/**
+ * @typedef {BaseSelectMenuModalData} StringSelectModalData
+ */
+
+/**
+ * @typedef {BaseSelectMenuModalData} UserSelectModalData
+ * @property {Collection<Snowflake, User|APIUser>} users The resolved users
+ * @property {Collection<Snowflake, GuildMember|APIGuildMember>} members The resolved members
+ */
+
+/**
+ * @typedef {BaseSelectMenuModalData} RoleSelectModalData
+ * @property {Collection<Snowflake, Role|APIRole>} roles The resolved roles
+ */
+
+/**
+ * @typedef {BaseSelectMenuModalData} MentionableSelectModalData
+ * @property {Collection<Snowflake, User|APIUser>} users The resolved users
+ * @property {Collection<Snowflake, GuildMember|APIGuildMember>} members The resolved members
+ * @property {Collection<Snowflake, Role|APIRole>} roles The resolved roles
+ */
+
+/**
+ * @typedef {BaseSelectMenuModalData} ChannelSelectModalData
+ * @property {Collection<Snowflake, BaseChannel|APIChannel>} channels The resolved channels
+ */
+
+/**
+ * @typedef {ChannelSelectModalData|MentionableSelectModalData|RoleSelectModalData|StringSelectModalData|UserSelectModalData} SelectMenuModalData
  */
 
 /**
@@ -103,6 +130,11 @@ class ModalSubmitInteraction extends BaseInteraction {
       this.message = null;
     }
 
+    const resolved = transformResolved(
+      { client: this.client, guild: this.guild, channel: this.channel },
+      data.data.resolved,
+    );
+
     /**
      * The components within the modal
      *
@@ -110,8 +142,8 @@ class ModalSubmitInteraction extends BaseInteraction {
      */
     this.components = new ModalComponentResolver(
       this.client,
-      data.data.components?.map(component => this.transformComponent(component, data.data.resolved)),
-      transformResolved({ client: this.client, guild: this.guild, channel: this.channel }, data.data.resolved),
+      data.data.components?.map(component => this.transformComponent(component, resolved)),
+      resolved,
     );
 
     /**
@@ -147,7 +179,7 @@ class ModalSubmitInteraction extends BaseInteraction {
    * Transforms component data to discord.js-compatible data
    *
    * @param {*} rawComponent The data to transform
-   * @param {APIInteractionDataResolved} resolved The resolved data for the interaction
+   * @param {BaseInteractionResolvedData} resolved The transformed resolved data for the interaction
    * @returns {ModalData[]}
    * @private
    */
@@ -180,59 +212,26 @@ class ModalSubmitInteraction extends BaseInteraction {
 
     if (rawComponent.values) {
       data.values = rawComponent.values;
-      if (resolved) {
-        const { members, users, channels, roles, attachments } = resolved;
-        const valueSet = new Set(rawComponent.values);
 
-        if (users) {
-          data.users = new Collection();
+      // Discord sends one resolved object for the whole modal.
+      const selectedIds = new Set(rawComponent.values);
+      const selected = collection => collection?.filter((_, id) => selectedIds.has(id)) ?? new Collection();
 
-          for (const [id, user] of Object.entries(users)) {
-            if (valueSet.has(id)) {
-              data.users.set(id, this.client.users._add(user));
-            }
-          }
-        }
+      if ([ComponentType.UserSelect, ComponentType.MentionableSelect].includes(rawComponent.type)) {
+        data.users = selected(resolved.users);
+        data.members = selected(resolved.members);
+      }
 
-        if (channels) {
-          data.channels = new Collection();
+      if ([ComponentType.RoleSelect, ComponentType.MentionableSelect].includes(rawComponent.type)) {
+        data.roles = selected(resolved.roles);
+      }
 
-          for (const [id, apiChannel] of Object.entries(channels)) {
-            if (valueSet.has(id)) {
-              data.channels.set(id, this.client.channels._add(apiChannel, this.guild) ?? apiChannel);
-            }
-          }
-        }
+      if (rawComponent.type === ComponentType.ChannelSelect) {
+        data.channels = selected(resolved.channels);
+      }
 
-        if (members) {
-          data.members = new Collection();
-
-          for (const [id, member] of Object.entries(members)) {
-            if (valueSet.has(id)) {
-              const user = users?.[id];
-              data.members.set(id, this.guild?.members._add({ user, ...member }) ?? member);
-            }
-          }
-        }
-
-        if (roles) {
-          data.roles = new Collection();
-
-          for (const [id, role] of Object.entries(roles)) {
-            if (valueSet.has(id)) {
-              data.roles.set(id, this.guild?.roles._add(role) ?? role);
-            }
-          }
-        }
-
-        if (attachments) {
-          data.attachments = new Collection();
-          for (const [id, attachment] of Object.entries(attachments)) {
-            if (valueSet.has(id)) {
-              data.attachments.set(id, new (getAttachment())(attachment));
-            }
-          }
-        }
+      if (rawComponent.type === ComponentType.FileUpload) {
+        data.attachments = selected(resolved.attachments);
       }
     }
 

@@ -3,6 +3,18 @@
 const { Collection } = require('@discordjs/collection');
 const { ComponentType } = require('discord-api-types/v10');
 const { DiscordjsTypeError, ErrorCodes } = require('../errors/index.js');
+const { isEmptyComponentValue } = require('../util/Util.js');
+
+/**
+ * Narrows an empty component property to null.
+ *
+ * @param {*} value The property to narrow
+ * @returns {*}
+ * @ignore
+ */
+function nullIfEmpty(value) {
+  return isEmptyComponentValue(value) ? null : value;
+}
 
 /**
  * @typedef {Object} ModalSelectedMentionables
@@ -93,7 +105,7 @@ class ModalComponentResolver {
         component.type,
         allowedTypes.join(', '),
       );
-    } else if (required && properties.every(prop => component[prop] === null || component[prop] === undefined)) {
+    } else if (required && properties.every(prop => isEmptyComponentValue(component[prop]))) {
       throw new DiscordjsTypeError(ErrorCodes.ModalSubmitInteractionComponentEmpty, customId, component.type);
     }
 
@@ -134,7 +146,7 @@ class ModalComponentResolver {
       ['users'],
       required,
     );
-    return component.users ?? null;
+    return nullIfEmpty(component.users);
   }
 
   /**
@@ -151,7 +163,7 @@ class ModalComponentResolver {
       ['roles'],
       required,
     );
-    return component.roles ?? null;
+    return nullIfEmpty(component.roles);
   }
 
   /**
@@ -178,7 +190,7 @@ class ModalComponentResolver {
       }
     }
 
-    return channels ?? null;
+    return nullIfEmpty(channels);
   }
 
   /**
@@ -194,7 +206,7 @@ class ModalComponentResolver {
       ['members'],
       false,
     );
-    return component.members ?? null;
+    return nullIfEmpty(component.members);
   }
 
   /**
@@ -212,15 +224,15 @@ class ModalComponentResolver {
       required,
     );
 
-    if (component.users || component.members || component.roles) {
-      return {
-        users: component.users ?? new Collection(),
-        members: component.members ?? new Collection(),
-        roles: component.roles ?? new Collection(),
-      };
+    if (
+      isEmptyComponentValue(component.users) &&
+      isEmptyComponentValue(component.members) &&
+      isEmptyComponentValue(component.roles)
+    ) {
+      return null;
     }
 
-    return null;
+    return { users: component.users, members: component.members, roles: component.roles };
   }
 
   /**
@@ -231,7 +243,9 @@ class ModalComponentResolver {
    * @returns {?Collection<Snowflake, Attachment>} The uploaded files, or null if none were uploaded and not required
    */
   getUploadedFiles(customId, required = false) {
-    return this._getTypedComponent(customId, [ComponentType.FileUpload], ['attachments'], required).attachments ?? null;
+    return nullIfEmpty(
+      this._getTypedComponent(customId, [ComponentType.FileUpload], ['attachments'], required).attachments,
+    );
   }
 
   /**
