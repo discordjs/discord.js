@@ -438,7 +438,7 @@ class ApplicationCommand extends Base {
       ('description' in command && command.description !== this.description) ||
       ('version' in command && command.version !== this.version) ||
       (command.type && command.type !== this.type) ||
-      ('nsfw' in command && command.nsfw !== this.nsfw) ||
+      (command.nsfw ?? false) !== (this.nsfw ?? false) ||
       command.options?.length !== this.options?.length ||
       defaultMemberPermissions !== (this.defaultMemberPermissions?.bitfield ?? null) ||
       !isEqual(command.nameLocalizations ?? command.name_localizations ?? {}, this.nameLocalizations ?? {}) ||
@@ -647,7 +647,7 @@ class ApplicationCommand extends Base {
         option.type === ApplicationCommandOptionType.SubcommandGroup
           ? undefined
           : false),
-      autocomplete: option.autocomplete,
+      ...(option.autocomplete !== undefined && { autocomplete: option.autocomplete }),
       choices: option.choices?.map(choice => ({
         name: choice.name,
         [nameLocalizedKey]: choice.nameLocalized ?? choice.name_localized,
@@ -657,10 +657,10 @@ class ApplicationCommand extends Base {
       options: option.options?.map(opt => this.transformOption(opt, received)),
       [channelTypesKey]: option.channelTypes ?? option.channel_types,
       [fileTypesKey]: option.fileTypes ?? option.file_types,
-      [minValueKey]: option.minValue ?? option.min_value,
-      [maxValueKey]: option.maxValue ?? option.max_value,
-      [minLengthKey]: option.minLength ?? option.min_length,
-      [maxLengthKey]: option.maxLength ?? option.max_length,
+      ...((option.minValue ?? option.min_value) !== undefined && { [minValueKey]: option.minValue ?? option.min_value }),
+      ...((option.maxValue ?? option.max_value) !== undefined && { [maxValueKey]: option.maxValue ?? option.max_value }),
+      ...((option.minLength ?? option.min_length) !== undefined && { [minLengthKey]: option.minLength ?? option.min_length }),
+      ...((option.maxLength ?? option.max_length) !== undefined && { [maxLengthKey]: option.maxLength ?? option.max_length }),
     };
   }
 }
